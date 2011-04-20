@@ -680,8 +680,8 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
        	     GetDocument()->ShiftDragEvent(myXmax,myYmax,0,myView);
            else
              GetDocument()->DragEvent(myXmax,myYmax,0,myView);
-       	   DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True);
-          break;
+           DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True);
+           break;
          case CurAction3d_DynamicZooming :
 	       myView->Zoom(myXmax,myYmax,point.x,point.y); 
 	       // save the current mouse coordinate in min \n";
@@ -856,9 +856,11 @@ void CViewer3dView::DrawRectangle(const Standard_Integer  MinX    ,
 
     if ( m_IsVisible && !Draw) // move or up  : erase at the old position 
     {
-     clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
+     clientDC.MoveTo(StoredMinX,StoredMinY); 
+     clientDC.LineTo(StoredMinX,StoredMaxY); 
      clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	 clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
+	   clientDC.LineTo(StoredMaxX,StoredMinY); 
+     clientDC.LineTo(StoredMinX,StoredMinY);
      m_IsVisible = false;
     }
 
@@ -869,13 +871,16 @@ void CViewer3dView::DrawRectangle(const Standard_Integer  MinX    ,
 
     if (Draw) // move : draw
     {
-     clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
+     clientDC.MoveTo(StoredMinX,StoredMinY); 
+     clientDC.LineTo(StoredMinX,StoredMaxY); 
      clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	 clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
+	   clientDC.LineTo(StoredMaxX,StoredMinY); 
+     clientDC.LineTo(StoredMinX,StoredMinY);
      m_IsVisible = true;
    }
 
-    if (m_Pen) clientDC.SelectObject(aOldPen);
+    if (m_Pen) 
+      clientDC.SelectObject(aOldPen);
 }
 
 void CViewer3dView::OnModifyChangeBackground() 

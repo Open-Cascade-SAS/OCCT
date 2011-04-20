@@ -198,7 +198,7 @@ void CAnimationDoc::DragEvent(const Standard_Integer  x        ,
       theButtonDownY=y;
     }
 
-	if (TheState == 0)
+	if (TheState == 1)
 	  myAISContext->Select(theButtonDownX,theButtonDownY,x,y,aView);  
 }
 

@@ -82,9 +82,10 @@ void OCC_3dBaseDoc::DragEvent(const Standard_Integer  x        ,
       theButtonDownX=x;
       theButtonDownY=y;
     }
-
-	if (TheState == 0)
-	  myAISContext->Select(theButtonDownX,theButtonDownY,x,y,aView);  
+	if (TheState == 1)
+  {
+     myAISContext->Select(theButtonDownX,theButtonDownY,x,y,aView);
+  }
 }
 
 //-----------------------------------------------------------------------------------------
@@ -94,7 +95,7 @@ void OCC_3dBaseDoc::InputEvent(const Standard_Integer  x     ,
 				                   const Standard_Integer  y     ,
                                    const Handle(V3d_View)& aView ) 
 {
-    myAISContext->Select(); 
+   myAISContext->Select(); 
 }
 
 //-----------------------------------------------------------------------------------------
