@@ -146,6 +146,13 @@ myViewActions( 0 )
 
     initViewActions();
     initCursors();
+
+	setBackgroundRole( QPalette::NoRole );//NoBackground );
+	// set focus policy to threat QContextMenuEvent from keyboard  
+	setFocusPolicy( Qt::StrongFocus );
+	setAttribute( Qt::WA_PaintOnScreen );
+	setAttribute( Qt::WA_NoSystemBackground );
+
 }
 
 View::~View()
@@ -347,6 +354,14 @@ QList<QAction*>* View::getViewActions()
 {
     initViewActions();
     return myViewActions;
+}
+
+/*!
+  Get paint engine for the OpenGL viewer. [ virtual public ]
+*/
+QPaintEngine* View::paintEngine() const
+{
+  return 0;
 }
 
 void View::initViewActions()
@@ -754,7 +769,7 @@ void View::DragEvent( const int x, const int y, const int TheState )
         theButtonDownY = y;
     }
 
-    if ( TheState == 0 )
+    if ( TheState == 1 )
     {
         myContext->Select( theButtonDownX, theButtonDownY, x, y, myView );
         emit selectionChanged();

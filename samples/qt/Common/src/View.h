@@ -47,6 +47,7 @@ public:
                                                       Standard_Integer&,
 						                              TopAbs_ShapeEnum& SelectionMode,
 						                              Standard_Boolean& );
+	virtual QPaintEngine*          paintEngine() const;
 signals:
     void                          selectionChanged();
 

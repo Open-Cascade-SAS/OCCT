@@ -27,6 +27,7 @@ public:
 	Handle(V3d_View) getView() const { return myView; }
     Voxel_Selector& getSelector() { return mySelector; }
     void setPrs(const Handle(Voxel_Prs)& prs) { myPrs = prs; }
+	virtual QPaintEngine*          paintEngine() const;
 
 signals:
 	

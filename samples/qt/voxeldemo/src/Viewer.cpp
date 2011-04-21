@@ -63,6 +63,12 @@ Viewer::Viewer(QWidget* parent):QWidget(parent)
     myView->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_BLACK, 0.1, V3d_ZBUFFER);
 
     mySelector.Init(myView);
+
+	setBackgroundRole( QPalette::NoRole );//NoBackground );
+	// set focus policy to threat QContextMenuEvent from keyboard  
+	setFocusPolicy( Qt::StrongFocus );
+	setAttribute( Qt::WA_PaintOnScreen );
+	setAttribute( Qt::WA_NoSystemBackground );
 }
 
 Viewer::~Viewer()
@@ -76,6 +82,14 @@ void Viewer::paintEvent(QPaintEvent * pEvent)
         myView->Redraw();
 }
 
+
+/*!
+  Get paint engine for the OpenGL viewer. [ virtual public ]
+*/
+QPaintEngine* Viewer::paintEngine() const
+{
+  return 0;
+}
 
 void Viewer::resizeEvent(QResizeEvent * e)
 {
