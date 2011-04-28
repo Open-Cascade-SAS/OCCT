@@ -61,7 +61,7 @@ void  Transfer_Binder::AddResult (const Handle(Transfer_Binder)& next)
   if (thenextr.IsNull()) 
     thenextr = next;
   else {
-    //Modification of requrcive to cycle
+    //Modification of recursive to cycle
     Handle(Transfer_Binder) theBinder = thenextr;
     while( theBinder != next ) { 
       if( theBinder->NextResult().IsNull() ) {
@@ -72,7 +72,7 @@ void  Transfer_Binder::AddResult (const Handle(Transfer_Binder)& next)
         theBinder = theBinder->NextResult();
     }
   }
-  //former requrcive
+  //former recursive
   // if (thenextr.IsNull()) thenextr = next;
   // else if (thenextr == next) return;
   // else thenextr->AddResult (next);
@@ -87,7 +87,16 @@ void  Transfer_Binder::CutResult (const Handle(Transfer_Binder)& next)
 {
   if (thenextr.IsNull()) return;
   if (thenextr == next) thenextr.Nullify();
-  else thenextr->CutResult (next);
+  //else thenextr->CutResult (next);
+  else {
+    Handle(Transfer_Binder) currBinder = thenextr, currNext;
+    while( !( (currNext = currBinder->NextResult()) == next ) ) {
+      if( currNext.IsNull() )
+        return;
+      currBinder = currNext;
+    }
+    currBinder->CutResult(next);
+  }
 }
 
 //=======================================================================
