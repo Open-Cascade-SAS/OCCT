@@ -149,7 +149,8 @@ is
 	
     class DataMapOfNodeDataMapOfShapeShape instantiates 
     	DataMap from TCollection (Node                from MAT,
-    	    	    	    	  DataMapOfShapeShape from TopTools,    	    	    	    	  MapTransientHasher  from TColStd );
+    	    	    	    	  DataMapOfShapeShape from TopTools,
+    	    	    	    	  MapTransientHasher  from TColStd );
    
     class DataMapOfNodeShape instantiates 
     	DataMap from TCollection (Node                from MAT,
@@ -175,6 +176,11 @@ is
 	    DataMap from TCollection (Shape                  from TopoDS,
 		    	    	      ListOfShape            from TopTools,  
     	    	    	    	      OrientedShapeMapHasher from TopTools); 
+
+    class IndexedDataMapOfOrientedShapeListOfShape instantiates
+	    IndexedDataMap from TCollection (Shape                  from TopoDS,
+		    	    	      	     ListOfShape            from TopTools,  
+    	    	    	    	      	     OrientedShapeMapHasher from TopTools); 
 
     class CurveConstraint ;
 	---Purpose: same as CurveConstraint from GeomPlate

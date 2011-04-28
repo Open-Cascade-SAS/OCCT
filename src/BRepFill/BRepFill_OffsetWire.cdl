@@ -17,7 +17,7 @@ uses
     JoinType    from GeomAbs,
     ListOfShape from TopTools,
     DataMapOfShapeShape               from TopTools,
-    DataMapOfOrientedShapeListOfShape from BRepFill,  
+    IndexedDataMapOfOrientedShapeListOfShape from BRepFill,  
     BisectingLocus                    from BRepMAT2d, 
     LinkTopoBilo                      from BRepMAT2d
     
@@ -92,7 +92,7 @@ is
     
     Generated (me : in out )
     	---C++: return &
-    returns DataMapOfOrientedShapeListOfShape from BRepFill
+    returns IndexedDataMapOfOrientedShapeListOfShape from BRepFill
     is static private;
     
     PrepareSpine (me : in out)
@@ -121,7 +121,7 @@ fields
     myShape     : Shape     from TopoDS;
     myIsDone    : Boolean   from Standard;
     myJoinType  : JoinType  from GeomAbs;	    
-    myMap       : DataMapOfOrientedShapeListOfShape from BRepFill; 
+    myMap       : IndexedDataMapOfOrientedShapeListOfShape from BRepFill; 
     myBilo      : BisectingLocus                    from BRepMAT2d;
     myLink      : LinkTopoBilo                      from BRepMAT2d;
     myMapSpine  : DataMapOfShapeShape               from TopTools;

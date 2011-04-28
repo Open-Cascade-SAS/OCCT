@@ -128,9 +128,8 @@ void MAT_Mat::CreateMat(Tool& atool)
 
   Standard_Integer	NbIterBis = 0;
   Standard_Integer	EvenNbIterBis = 10;
-  Standard_Integer	aControlSum = 0;
-  TColStd_Array1OfInteger ControlSums(1, EvenNbIterBis+1);
-  Standard_Integer	PrevEdgeNumber;
+  TColStd_Array1OfInteger EdgeNumbers(1, EvenNbIterBis+1);
+  EdgeNumbers.Init(-1);
   Standard_Boolean	ToNullifyNoofbisectorstoremove = Standard_False;
 
   Handle(MAT_ListOfBisector) currentbisectorlist;
@@ -225,8 +224,6 @@ void MAT_Mat::CreateMat(Tool& atool)
 //===========================================================================
   Standard_Integer NumberOfIte = 0;
 
-  PrevEdgeNumber = theedgelist->Number();
-
   while(theedgelist->Number()>1) {
 
 
@@ -269,16 +266,15 @@ void MAT_Mat::CreateMat(Tool& atool)
       // Calcul des intersections des bisectrices voisines.(etape 2.2)
       //--------------------------------------------------------------
 
-      aControlSum += theedgelist->Number() - PrevEdgeNumber;
       if (NbIterBis <= EvenNbIterBis+1)
-	ControlSums(NbIterBis) = aControlSum;
+	EdgeNumbers(NbIterBis) = theedgelist->Number();
       else
 	{
 	  for (k = 1; k <= EvenNbIterBis; k++)
-	    ControlSums(k) = ControlSums(k+1);
-	  ControlSums(EvenNbIterBis+1) = aControlSum;
+	    EdgeNumbers(k) = EdgeNumbers(k+1);
+	  EdgeNumbers(EvenNbIterBis+1) = theedgelist->Number();
 	}
-      if (ControlSums(EvenNbIterBis+1) == ControlSums(1))
+      if (EdgeNumbers(EvenNbIterBis+1) == EdgeNumbers(1))
 	ToNullifyNoofbisectorstoremove = Standard_True;
 
       for(i=0; i<theedgelist->Number(); i++) {
@@ -314,7 +310,6 @@ void MAT_Mat::CreateMat(Tool& atool)
       // Test de sortie de la boucle 2.
       //-------------------------------
 
-      PrevEdgeNumber = theedgelist->Number();
       if (ToNullifyNoofbisectorstoremove)
 	noofbisectorstoremove = 0;
       if(noofbisectorstoremove == 0) break;
