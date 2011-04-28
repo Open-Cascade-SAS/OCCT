@@ -84,6 +84,8 @@ static Handle(Graphic3d_GraphicDevice)& GetDevice() {
 #endif
 
 
+Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
+
 //=======================================================================
 //function : MakeViewer
 //purpose  : 
@@ -100,17 +102,18 @@ Handle(V3d_Viewer)  ViewerTest_Tool::MakeViewer (const Standard_CString title)
 			   title, 
 			   Handle(WNT_WClass)::DownCast (ViewerTest::WClass()), 
 			   WS_OVERLAPPEDWINDOW,
-			   0.,0.,0.25,0.25,
+			   0,460,409,409,
 			   Quantity_NOC_BLACK);
   window->Map();
 
 #else 
   window = new Xw_Window(GetDevice(), 
 			 title,
-			 0.,0.60,0.40,0.40,
+		         0,460,409,409,
 			 Xw_WQ_3DQUALITY,
 			 Quantity_NOC_BLACK);
 #endif
+  window->SetVirtual (Draw_VirtualWindows);
 
   // Viewer
 
