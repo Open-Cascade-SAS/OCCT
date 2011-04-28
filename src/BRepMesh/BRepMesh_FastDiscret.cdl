@@ -49,8 +49,8 @@ uses    Boolean                   from Standard,
         DataMapOfShapeReal        from TopTools,
         ListOfShape               from TopTools,
         Curve                     from Geom2d,
-        MapOfInteger              from MeshDS,
-        BaseAllocator             from MeshDS,
+        MapOfInteger              from BRepMesh,
+        BaseAllocator             from BRepMesh,
         DataMapOfFaceAttribute    from BRepMesh
 
 
@@ -202,19 +202,19 @@ is
             is static;
 
         VerticesOfDomain
-                 (me; Indices : in out MapOfInteger from MeshDS)
+                 (me; Indices : in out MapOfInteger from BRepMesh)
             ---Purpose: Gives the list of indices of the vertices
             is static;
 
 
         EdgesOfDomain
-                 (me; Indices : in out MapOfInteger from MeshDS)
+                 (me; Indices : in out MapOfInteger from BRepMesh)
             ---Purpose: Gives the list of indices of the edges
             ---C++: inline
             is static;
 
 
-        TrianglesOfDomain(me; Indices: in out MapOfInteger from MeshDS)
+        TrianglesOfDomain(me; Indices: in out MapOfInteger from BRepMesh)
             ---Purpose: Gives the list of indices of the triangles
             ---C++: inline
             is static;
@@ -296,6 +296,6 @@ fields
       myFacestate    : Status                        from BRepMesh;
       myMapdefle     : DataMapOfShapeReal            from TopTools;
       myNottriangulated : ListOfShape                from TopTools;
-      myAllocator    : BaseAllocator                 from MeshDS;
+      myAllocator    : BaseAllocator                 from BRepMesh;
 
 end FastDiscret;

@@ -1,0 +1,40 @@
+-- File:        BRepMesh_ComparatorOfIndexedVertex.cdl
+-- Created:     Tue Apr  5 11:45:18 1994
+-- Author:      Didier PIFFAULT
+--              <dpf@zerox>
+---Copyright:    Matra Datavision 1994
+
+
+class ComparatorOfIndexedVertexOfDelaun from BRepMesh
+
+  ---Purpose: Sort two point in a given direction.
+
+
+  uses  Boolean from Standard,
+        XY from gp,
+        DataStructureOfDelaun from BRepMesh
+
+  is      Create (theDir : XY from gp; 
+                  TheTol : Real from Standard;
+                  HDS    : DataStructureOfDelaun from BRepMesh) 
+           returns ComparatorOfIndexedVertexOfDelaun;
+
+
+         IsLower (me; Left, Right: Integer)
+           ---Purpose: returns True if <Left> is lower than <Right>
+           returns Boolean from Standard;
+
+         IsGreater (me; Left, Right: Integer)
+           ---Purpose: returns True if <Left> is greater than <Right>
+           returns Boolean from Standard;
+
+         IsEqual(me; Left, Right: Integer)
+           ---Purpose: returns True when <Right> and <Left> are equal.
+           returns Boolean from Standard;
+
+
+         fields  IndexedStructure : DataStructureOfDelaun from BRepMesh;
+                 DirectionOfSort  : XY from gp;
+                 Tolerance        : Real from Standard;
+
+end ComparatorOfIndexedVertexOfDelaun;

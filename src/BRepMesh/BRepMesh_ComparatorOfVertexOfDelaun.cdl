@@ -1,0 +1,38 @@
+-- File:        BRepMesh_ComparatorOfVertexOfDelaun.cdl
+-- Created:     Fri Jun 18 13:46:14 1993
+-- Author:      Didier PIFFAULT
+--              <dpf@zerox>
+---Copyright:    Matra Datavision 1993
+
+
+class ComparatorOfVertexOfDelaun from BRepMesh
+
+  ---Purpose: Sort two point in a given direction.
+
+
+  uses  Boolean from Standard,
+        Vertex from BRepMesh,
+        XY from gp
+
+
+  is      Create (theDir : XY from gp; TheTol: Real from Standard) 
+            returns ComparatorOfVertexOfDelaun;
+
+
+          IsLower (me; Left, Right: Vertex from BRepMesh)
+          ---Purpose: returns True if <Left> is lower than <Right>
+          returns Boolean from Standard;
+
+          IsGreater (me; Left, Right: Vertex from BRepMesh)
+          ---Purpose: returns True if <Left> is greater than <Right>
+          returns Boolean from Standard;
+
+          IsEqual(me; Left, Right: Vertex from BRepMesh)
+          ---Purpose: returns True when <Right> and <Left> are equal.
+          returns Boolean from Standard;
+
+
+fields  DirectionOfSort : XY from gp;
+        Tolerance       : Real from Standard;
+
+end ComparatorOfVertexOfDelaun;

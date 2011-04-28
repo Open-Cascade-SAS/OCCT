@@ -1,7 +1,7 @@
-// File:	BRepMesh_Edge.lxx
-// Created:	Thu Sep 23 13:44:34 1993
-// Author:	Didier PIFFAULT
-//		<dpf@zerox>
+// File:        BRepMesh_Edge.lxx
+// Created:     Thu Sep 23 13:44:34 1993
+// Author:      Didier PIFFAULT
+//              <dpf@zerox>
 
 inline Standard_Integer  BRepMesh_Edge::FirstNode()const 
 {
@@ -13,7 +13,7 @@ inline Standard_Integer  BRepMesh_Edge::LastNode()const
   return myLastNode;
 }
 
-inline MeshDS_DegreeOfFreedom  BRepMesh_Edge::Movability()const 
+inline BRepMesh_DegreeOfFreedom  BRepMesh_Edge::Movability()const 
 {
   return myMovability;
 }

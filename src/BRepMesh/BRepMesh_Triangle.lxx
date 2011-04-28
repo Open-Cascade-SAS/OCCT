@@ -1,9 +1,9 @@
-// File:	BRepMesh_Triangle.lxx
-// Created:	Thu Sep 23 13:14:07 1993
-// Author:	Didier PIFFAULT
-//		<dpf@zerox>
+// File:        BRepMesh_Triangle.lxx
+// Created:     Thu Sep 23 13:14:07 1993
+// Author:      Didier PIFFAULT
+//              <dpf@zerox>
 
-inline MeshDS_DegreeOfFreedom  BRepMesh_Triangle::Movability()const 
+inline BRepMesh_DegreeOfFreedom  BRepMesh_Triangle::Movability()const 
 {
   return myMovability;
 }

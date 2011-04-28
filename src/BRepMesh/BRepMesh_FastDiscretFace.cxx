@@ -192,7 +192,7 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
       res.SetCoord((p2d.X()-(myAttrib->GetMinX()))/(myAttrib->GetDeltaX()),
                    (p2d.Y()-(myAttrib->GetMinY()))/(myAttrib->GetDeltaY()));
       BRepMesh_Vertex v_new(res,v.Location3d(),v.Movability());
-      const MeshDS_ListOfInteger& alist = myStructure->GetNodeList(i);
+      const BRepMesh_ListOfInteger& alist = myStructure->GetNodeList(i);
       aMoveNodes.Add(v_new,alist);
       tabvert_corr(i) = i;
     }
@@ -224,9 +224,9 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
       if(myStructure->ElemConnectedTo(i).Extent() < 1)
       {
         BRepMesh_Edge& anEdge = (BRepMesh_Edge&)trigu.GetEdge(i);
-        if(anEdge.Movability()==MeshDS_Deleted)
+        if(anEdge.Movability()==BRepMesh_Deleted)
           continue;
-        anEdge.SetMovability(MeshDS_Free);
+        anEdge.SetMovability(BRepMesh_Free);
         myStructure->RemoveLink(i);
       }
     }
@@ -289,7 +289,7 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
       gp_XY res;
       res.SetCoord(p2d.X()*deltaX+umin,p2d.Y()*deltaY+vmin);
       BRepMesh_Vertex v_new(res,v.Location3d(),v.Movability());
-      const MeshDS_ListOfInteger& alist = myStructure->GetNodeList(i);
+      const BRepMesh_ListOfInteger& alist = myStructure->GetNodeList(i);
       aMoveNodes.Add(v_new,alist);
     }
     myStructure->ReplaceNodes(aMoveNodes);
@@ -388,7 +388,7 @@ Standard_Boolean BRepMesh_FastDiscretFace::RestoreStructureFromTriangulation
   
   anUV = FindUV(pBegin, uvFirst, ipf, theSurf, mindist, myLocation2d);
   Standard_Integer iv1, isv1;
-  BRepMesh_Vertex vf(anUV, ipf, MeshDS_Frontier);
+  BRepMesh_Vertex vf(anUV, ipf, BRepMesh_Frontier);
   iv1 = myStructure->AddNode(vf);
   isv1 = myVemap.FindIndex(iv1);
   if (isv1 == 0)
@@ -428,7 +428,7 @@ Standard_Boolean BRepMesh_FastDiscretFace::RestoreStructureFromTriangulation
   }
 
   anUV = FindUV(pEnd, uvLast, ipl, theSurf, mindist, myLocation2d);
-  BRepMesh_Vertex vl(anUV, ipl, MeshDS_Frontier);
+  BRepMesh_Vertex vl(anUV, ipl, BRepMesh_Frontier);
   
   Standard_Integer isvl;
   ivl = myStructure->AddNode(vl);
@@ -453,7 +453,7 @@ Standard_Boolean BRepMesh_FastDiscretFace::RestoreStructureFromTriangulation
     anUV = UVNodes(Indices(i)).Coord();
 
     Standard_Integer iv2, isv;
-    v.Initialize(anUV, myNbLocat, MeshDS_Frontier);
+    v.Initialize(anUV, myNbLocat, BRepMesh_Frontier);
     iv2 = myStructure->AddNode(v);
     isv = myVemap.FindIndex(iv2);
     if (isv == 0)
@@ -462,22 +462,22 @@ Standard_Boolean BRepMesh_FastDiscretFace::RestoreStructureFromTriangulation
     
     //add links
     if (orEdge == TopAbs_FORWARD)
-      myStructure->AddLink(BRepMesh_Edge(iv1,iv2,MeshDS_Frontier));
+      myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Frontier));
     else if (orEdge == TopAbs_REVERSED)
-      myStructure->AddLink(BRepMesh_Edge(iv2,iv1,MeshDS_Frontier));
+      myStructure->AddLink(BRepMesh_Edge(iv2,iv1,BRepMesh_Frontier));
     else if (orEdge == TopAbs_INTERNAL)
-      myStructure->AddLink(BRepMesh_Edge(iv1,iv2,MeshDS_Fixed));
+      myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Fixed));
     iv1 = iv2;  
   }
   
   // last point
   if (iv1 != ivl) {
     if (orEdge == TopAbs_FORWARD)
-      myStructure->AddLink(BRepMesh_Edge(iv1,ivl,MeshDS_Frontier));
+      myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Frontier));
     else if (orEdge == TopAbs_REVERSED)
-      myStructure->AddLink(BRepMesh_Edge(ivl,iv1,MeshDS_Frontier));
+      myStructure->AddLink(BRepMesh_Edge(ivl,iv1,BRepMesh_Frontier));
     else if (orEdge == TopAbs_INTERNAL)
-      myStructure->AddLink(BRepMesh_Edge(iv1,ivl,MeshDS_Fixed));
+      myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Fixed));
   }
   
   Handle(Poly_PolygonOnTriangulation) P1 =
@@ -538,7 +538,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
       myLocation3d.Bind(myNbLocat, p3d);
       // Record 2d point
       p2d.SetCoord((U-umin)/deltaX, (V-vmin)/deltaY);
-      newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+      newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
       theInternalV.Append(newV);
     }
   }
@@ -585,7 +585,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
           myLocation3d.Bind(myNbLocat, p3d);
           // Record 2d point
           p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
           theInternalV.Append(newV);
         }
       }
@@ -622,7 +622,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
           myLocation3d.Bind(myNbLocat, p3d);
           // Record 2d point
           p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
           theInternalV.Append(newV);
         }
       }
@@ -654,7 +654,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
           myLocation3d.Bind(myNbLocat, p3d);
           // Record 2d point
           p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
           theInternalV.Append(newV);
         }
       }
@@ -783,7 +783,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
               myLocation3d.Bind(myNbLocat, p3d);
               // Record 2d point
               p2d.SetCoord((pasu-umin)/deltaX, (pasv-vmin)/deltaY);
-              newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+              newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
               theInternalV.Append(newV);
             }
           }
@@ -955,7 +955,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
               myLocation3d.Bind(myNbLocat, P1);
               // Record 2d point
               p2d.SetCoord((U1-umin)/deltaX, (v-vmin)/deltaY);
-              newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+              newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
               theInternalV.Append(newV);
             }
           }
@@ -1062,7 +1062,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
           myLocation3d.Bind(myNbLocat, P1);
           // Record 2d point
           p2d.SetCoord((u-umin)/deltaX, (v-vmin)/deltaY);
-          newV.Initialize(p2d.XY(), myNbLocat, MeshDS_Free);
+          newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
           theInternalV.Append(newV); 
         }
       }
@@ -1181,8 +1181,8 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
     if (nbtriangles <= 0) break;
 
     // Iterate on current triangles
-    MeshDS_MapOfInteger::Iterator triDom;
-    const MeshDS_MapOfInteger& TriMap = myStructure->ElemOfDomain();
+    BRepMesh_MapOfInteger::Iterator triDom;
+    const BRepMesh_MapOfInteger& TriMap = myStructure->ElemOfDomain();
     triDom.Initialize(TriMap);
     Standard_Integer aNbPnt = 0;
     Standard_Real umin = myAttrib->GetUMin();
@@ -1193,7 +1193,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
     {
       Standard_Integer TriId = triDom.Key();
       const BRepMesh_Triangle& curTri=Triangle(TriId);
-      if (curTri.Movability()==MeshDS_Deleted) continue;
+      if (curTri.Movability()==BRepMesh_Deleted) continue;
       
       Standard_Boolean o1, o2, o3;
       Standard_Integer v1 = 0, v2 = 0, v3 = 0, e1 = 0, e2 = 0, e3 = 0;
@@ -1203,9 +1203,9 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
       const BRepMesh_Edge& edg2=Edge(e2);
       const BRepMesh_Edge& edg3=Edge(e3);
       
-      Standard_Boolean m1 = (edg1.Movability() == MeshDS_Frontier);
-      Standard_Boolean m2 = (edg2.Movability() == MeshDS_Frontier);
-      Standard_Boolean m3 = (edg3.Movability() == MeshDS_Frontier);
+      Standard_Boolean m1 = (edg1.Movability() == BRepMesh_Frontier);
+      Standard_Boolean m2 = (edg2.Movability() == BRepMesh_Frontier);
+      Standard_Boolean m3 = (edg3.Movability() == BRepMesh_Frontier);
       if (o1) {
         v1=edg1.FirstNode();
         v2=edg1.LastNode();
@@ -1278,7 +1278,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
           myNbLocat++;
           myLocation3d.Bind(myNbLocat,pDef);
           mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);
-          InsVertex.Initialize(mi2d,myNbLocat,MeshDS_Free);
+          InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
           theInternalV.Append(InsVertex);
         }
         theBadTriangles.Append(TriId);
@@ -1305,7 +1305,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
               myNbLocat++;
               myLocation3d.Bind(myNbLocat,pDef);
               mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);
-              InsVertex.Initialize(mi2d,myNbLocat,MeshDS_Free);
+              InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
               theInternalV.Append(InsVertex);
             }
             theBadTriangles.Append(TriId);
@@ -1334,7 +1334,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
               myNbLocat++;
               myLocation3d.Bind(myNbLocat,pDef);
               mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);
-              InsVertex.Initialize(mi2d,myNbLocat,MeshDS_Free);
+              InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
               theInternalV.Append(InsVertex);
             }
             theBadTriangles.Append(TriId);
@@ -1363,7 +1363,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
               myNbLocat++;
               myLocation3d.Bind(myNbLocat,pDef);
               mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);              
-              InsVertex.Initialize(mi2d,myNbLocat,MeshDS_Free);
+              InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
               theInternalV.Append(InsVertex);
             }
             theBadTriangles.Append(TriId);
@@ -1423,7 +1423,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
           theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
           myLocation3d.Bind(myNbLocat,pDef);
           mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);              
-          InsVertex.Initialize(mi2d,myNbLocat,MeshDS_Free);
+          InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
           theInternalV.Append(InsVertex);
           theBadTriangles.Append(TriId);
         }   
@@ -1472,7 +1472,7 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
             theCaro->D0(mi2d.X(), mi2d.Y(), pDef);
             myLocation3d.Bind(myNbLocat,pDef);
             mi2d.SetCoord((mi2d.X()-umin)/deltaX,(mi2d.Y()-vmin)/deltaY);              
-            InsVertex.Initialize(mi2d,myNbLocat,MeshDS_Free);
+            InsVertex.Initialize(mi2d,myNbLocat,BRepMesh_Free);
             theInternalV.Append(InsVertex);            
             theBadTriangles.Append(TriId);
           }
@@ -1513,7 +1513,7 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
   B.UpdateFace(theFace,TNull);
 
   try{
-  MeshDS_MapOfInteger::Iterator it;
+  BRepMesh_MapOfInteger::Iterator it;
 
   Standard_Integer e1, e2, e3, nTri;
   Standard_Integer v1, v2, v3, iv1, iv2, iv3;
@@ -1521,7 +1521,7 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
   Standard_Boolean o1, o2, o3;
   TopAbs_Orientation orFace = theFace.Orientation();
 
-  const MeshDS_MapOfInteger& TriMap = myStructure->ElemOfDomain();
+  const BRepMesh_MapOfInteger& TriMap = myStructure->ElemOfDomain();
   it.Initialize(TriMap);
     
   nTri = TriMap.Extent();
@@ -1776,7 +1776,7 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Vertex&                theVert,
   Standard_Real mindist = BRep_Tool::Tolerance(theVert);
   // gp_Pnt2d uvXY = BRep_Tool::Parameters(theVert,theFace);
   gp_XY anUV = FindUV(theVert, uvXY, indVert, thegFace, mindist, myLocation2d);
-  BRepMesh_Vertex vf(anUV, indVert, MeshDS_Fixed);
+  BRepMesh_Vertex vf(anUV, indVert, BRepMesh_Fixed);
   Standard_Integer ivff = myStructure->AddNode(vf);
   Standard_Integer isvf = myVemap.FindIndex(ivff);
   if (isvf == 0) isvf = myVemap.Add(ivff);  

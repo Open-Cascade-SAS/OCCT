@@ -11,7 +11,7 @@
 #include <Draw_Color.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <Standard_RangeError.hxx>
-#include <MeshDS_DegreeOfFreedom.hxx>
+#include <BRepMesh_DegreeOfFreedom.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_Vertex.hxx>
 #include <BRepMesh_Triangle.hxx>
@@ -25,7 +25,7 @@
 //=======================================================================
 
 MeshTest_DrawableMesh::MeshTest_DrawableMesh() :
-       myDeflection(1.), myinshape(Standard_False)
+myDeflection(1.), myinshape(Standard_False)
 {
 }
 
@@ -35,14 +35,14 @@ MeshTest_DrawableMesh::MeshTest_DrawableMesh() :
 //=======================================================================
 
 MeshTest_DrawableMesh::MeshTest_DrawableMesh(const TopoDS_Shape&    S,
-					     const Standard_Real    Deflect,
-					     const Standard_Boolean Partage,
-					     const Standard_Boolean inshape) :
-       myDeflection(Deflect), myinshape(inshape)
+                                             const Standard_Real    Deflect,
+                                             const Standard_Boolean Partage,
+                                             const Standard_Boolean inshape) :
+myDeflection(Deflect), myinshape(inshape)
 {
   Bnd_Box B;
   BRepBndLib::Add(S, B);
-  
+
   myMesh = new BRepMesh_FastDiscret(Deflect, S, B, 0.5, Partage, inshape);
 }
 
@@ -53,9 +53,9 @@ MeshTest_DrawableMesh::MeshTest_DrawableMesh(const TopoDS_Shape&    S,
 //=======================================================================
 
 MeshTest_DrawableMesh::MeshTest_DrawableMesh(const Handle(BRepMesh_FastDiscret)& Tr):
-       myDeflection(1.0)
+myDeflection(1.0)
 {
-    myMesh = Tr;
+  myMesh = Tr;
 }
 
 
@@ -96,18 +96,18 @@ void MeshTest_DrawableMesh::DrawOn(Draw_Display& D) const
   /*  Handle(BRepMesh_DataStructureOfDelaun) struc = myMesh->Result();
   Standard_Integer nbc;
   D.SetColor(Draw_vert);
-  
+
   for (Standard_Integer iLi=1; iLi<=myMesh->NbEdges(); iLi++) {
-    const BRepMesh_Edge& ed=myMesh->Edge(iLi);
-    if (ed.Movability()!=MeshDS_Deleted) {
-      nbc=struc->ElemConnectedTo(iLi).Extent();
-      if (nbc<=0) D.SetColor(Draw_bleu);
-      else if (nbc==1) D.SetColor(Draw_jaune);
-      else if (nbc==2) D.SetColor(Draw_vert);
-      else D.SetColor(Draw_corail);
-      D.MoveTo(myMesh->Pnt(ed.FirstNode()));
-      D.DrawTo(myMesh->Pnt(ed.LastNode()));
-    }
+  const BRepMesh_Edge& ed=myMesh->Edge(iLi);
+  if (ed.Movability()!=BRepMesh_Deleted) {
+  nbc=struc->ElemConnectedTo(iLi).Extent();
+  if (nbc<=0) D.SetColor(Draw_bleu);
+  else if (nbc==1) D.SetColor(Draw_jaune);
+  else if (nbc==2) D.SetColor(Draw_vert);
+  else D.SetColor(Draw_corail);
+  D.MoveTo(myMesh->Pnt(ed.FirstNode()));
+  D.DrawTo(myMesh->Pnt(ed.LastNode()));
+  }
   }
 
 
@@ -117,38 +117,38 @@ void MeshTest_DrawableMesh::DrawOn(Draw_Display& D) const
   Standard_Boolean o1, o2, o3;
 
   for (i = 1; i <= myTriangles.Length(); i++) {
-    const BRepMesh_Triangle& tri=struc->GetElement(myTriangles(i));
-    tri.Edges(e1, e2, e3, o1, o2, o3); 
-    const BRepMesh_Edge& ed1=myMesh->Edge(e1);
-    if (ed1.Movability()!=MeshDS_Deleted) {
-      D.MoveTo(myMesh->Pnt(ed1.FirstNode()));
-      D.DrawTo(myMesh->Pnt(ed1.LastNode()));
-    }
-    const BRepMesh_Edge& ed2=myMesh->Edge(e2);
-    if (ed2.Movability()!=MeshDS_Deleted) {
-      D.MoveTo(myMesh->Pnt(ed2.FirstNode()));
-      D.DrawTo(myMesh->Pnt(ed2.LastNode()));
-    }
-    const BRepMesh_Edge& ed3=myMesh->Edge(e3);
-    if (ed3.Movability()!=MeshDS_Deleted) {
-      D.MoveTo(myMesh->Pnt(ed3.FirstNode()));
-      D.DrawTo(myMesh->Pnt(ed3.LastNode()));
-    }
+  const BRepMesh_Triangle& tri=struc->GetElement(myTriangles(i));
+  tri.Edges(e1, e2, e3, o1, o2, o3); 
+  const BRepMesh_Edge& ed1=myMesh->Edge(e1);
+  if (ed1.Movability()!=BRepMesh_Deleted) {
+  D.MoveTo(myMesh->Pnt(ed1.FirstNode()));
+  D.DrawTo(myMesh->Pnt(ed1.LastNode()));
+  }
+  const BRepMesh_Edge& ed2=myMesh->Edge(e2);
+  if (ed2.Movability()!=BRepMesh_Deleted) {
+  D.MoveTo(myMesh->Pnt(ed2.FirstNode()));
+  D.DrawTo(myMesh->Pnt(ed2.LastNode()));
+  }
+  const BRepMesh_Edge& ed3=myMesh->Edge(e3);
+  if (ed3.Movability()!=BRepMesh_Deleted) {
+  D.MoveTo(myMesh->Pnt(ed3.FirstNode()));
+  D.DrawTo(myMesh->Pnt(ed3.LastNode()));
+  }
   }
 
   // highlighted edges
   D.SetColor(Draw_rouge);
   for (i = 1; i <= myEdges.Length(); i++) {
-    const BRepMesh_Edge& ed=myMesh->Edge(myEdges(i));
-    if (ed.Movability()!=MeshDS_Deleted) {
-      D.MoveTo(myMesh->Pnt(ed.FirstNode()));
-      D.DrawTo(myMesh->Pnt(ed.LastNode()));
-    }
+  const BRepMesh_Edge& ed=myMesh->Edge(myEdges(i));
+  if (ed.Movability()!=BRepMesh_Deleted) {
+  D.MoveTo(myMesh->Pnt(ed.FirstNode()));
+  D.DrawTo(myMesh->Pnt(ed.LastNode()));
+  }
   }
 
   // highlighted vertices
   for (i = 1; i <= myVertices.Length(); i++) {
-    D.DrawMarker(myMesh->Pnt(myVertices(i)),Draw_Losange);
+  D.DrawMarker(myMesh->Pnt(myVertices(i)),Draw_Losange);
   }
 
   */
@@ -171,28 +171,28 @@ Handle(Draw_Drawable3D) MeshTest_DrawableMesh::Copy() const
 //purpose  : 
 //=======================================================================
 
-static void printdegree(MeshDS_DegreeOfFreedom dof)
+static void printdegree(BRepMesh_DegreeOfFreedom dof)
 {
   switch (dof) {
-  case MeshDS_InVolume :
+  case BRepMesh_InVolume :
     cout << "InVolume";
     break;
-  case MeshDS_OnSurface :
+  case BRepMesh_OnSurface :
     cout << "OnSurface";
     break;
-  case MeshDS_OnCurve :
+  case BRepMesh_OnCurve :
     cout << "OnCurve";
     break;
-  case MeshDS_Fixed :
+  case BRepMesh_Fixed :
     cout << "Fixed";
     break;
-  case MeshDS_Frontier :
+  case BRepMesh_Frontier :
     cout << "Frontier";
     break;
-  case MeshDS_Deleted :
+  case BRepMesh_Deleted :
     cout << "Deleted";
     break;
-  case MeshDS_Free :
+  case BRepMesh_Free :
     cout << "Free";
     break;
   }
@@ -201,7 +201,7 @@ static void printdegree(MeshDS_DegreeOfFreedom dof)
 void MeshTest_DrawableMesh::Dump(Standard_OStream& S) const 
 {
   // Should be reimplemented
-  
+
   /*Handle(BRepMesh_DataStructureOfDelaun) struc=myMesh->Result();
   Standard_Integer e1, e2, e3;
   Standard_Boolean o1, o2, o3;
@@ -209,41 +209,41 @@ void MeshTest_DrawableMesh::Dump(Standard_OStream& S) const
   Standard_Integer nbn=struc->NbNodes();
   Standard_Integer nbl=struc->NbLinks();
   Standard_Integer nbe=struc->NbElements();
-  
+
   for (in=1; in<=nbn; in++) {
-    BRepMesh_Vertex nod=struc->GetNode(in);
-    S<<"(node "<<in<<" (uv "<<nod.Coord().X()<<" "
-      <<nod.Coord().Y()<<") (3d "
-      <<nod.Location3d()<<") ";
-    printdegree(nod.Movability());
-    S<<" (edgeconex";
-    MeshDS_ListOfInteger::Iterator tati(struc->LinkNeighboursOf(in));
-    for (; tati.More(); tati.Next()) S<<" "<<tati.Value();
-    S << "))\n";
+  BRepMesh_Vertex nod=struc->GetNode(in);
+  S<<"(node "<<in<<" (uv "<<nod.Coord().X()<<" "
+  <<nod.Coord().Y()<<") (3d "
+  <<nod.Location3d()<<") ";
+  printdegree(nod.Movability());
+  S<<" (edgeconex";
+  BRepMesh_ListOfInteger::Iterator tati(struc->LinkNeighboursOf(in));
+  for (; tati.More(); tati.Next()) S<<" "<<tati.Value();
+  S << "))\n";
   }
   S <<endl;
   for (il=1; il<=nbl; il++) {
-    BRepMesh_Edge edg=struc->GetLink(il);
-    S << "(edge "<<il<<" ("<<edg.FirstNode()<<" "<<edg.LastNode()
-      <<" ";
-    printdegree(edg.Movability());
-    S<<") (triconex";
-    const MeshDS_PairOfIndex& pair = struc->ElemConnectedTo(il);
-    for (Standard_Integer j = 1, jn = pair.Extent(); j <= jn; j++)
-      S<<" "<<pair.Index(j);
-    S << "))\n";
+  BRepMesh_Edge edg=struc->GetLink(il);
+  S << "(edge "<<il<<" ("<<edg.FirstNode()<<" "<<edg.LastNode()
+  <<" ";
+  printdegree(edg.Movability());
+  S<<") (triconex";
+  const BRepMesh_PairOfIndex& pair = struc->ElemConnectedTo(il);
+  for (Standard_Integer j = 1, jn = pair.Extent(); j <= jn; j++)
+  S<<" "<<pair.Index(j);
+  S << "))\n";
   }
   S <<endl;
   for (ie=1; ie<=nbe; ie++) {
-    BRepMesh_Triangle tri=struc->GetElement(ie);
-    tri.Edges(e1, e2, e3, o1, o2, o3); 
-    if (!o1) e1=-e1;
-    if (!o2) e2=-e2;
-    if (!o3) e3=-e3;
-    S<<" (maille "<<ie<<" (links "<<e1<<" "
-      <<e2<<" "<<e3<<")";
-    printdegree(tri.Movability());
-    S<<")\n";
+  BRepMesh_Triangle tri=struc->GetElement(ie);
+  tri.Edges(e1, e2, e3, o1, o2, o3); 
+  if (!o1) e1=-e1;
+  if (!o2) e2=-e2;
+  if (!o3) e3=-e3;
+  S<<" (maille "<<ie<<" (links "<<e1<<" "
+  <<e2<<" "<<e3<<")";
+  printdegree(tri.Movability());
+  S<<")\n";
   }
   S << endl;
   */

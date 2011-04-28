@@ -1,0 +1,27 @@
+// File:        BRepMesh_Delaun.lxx
+// Created:     Thu Aug 19 10:52:01 1993
+// Author:      Didier PIFFAULT
+//              <dpf@zerox>
+
+
+#include <BRepMesh_DataStructureOfDelaun.hxx>
+
+inline const BRepMesh_Vertex& BRepMesh_Delaun::GetVertex
+(const Standard_Integer vIndex) const
+{
+  return MeshData->GetNode(vIndex);
+}
+
+
+inline const BRepMesh_Edge& BRepMesh_Delaun::GetEdge
+(const Standard_Integer eIndex) const
+{
+  return MeshData->GetLink(eIndex);
+}
+
+
+inline const BRepMesh_Triangle& BRepMesh_Delaun::GetTriangle
+(const Standard_Integer tIndex) const
+{
+  return MeshData->GetElement(tIndex);
+}

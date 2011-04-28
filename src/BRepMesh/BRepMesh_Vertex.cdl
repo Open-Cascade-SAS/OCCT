@@ -1,81 +1,80 @@
--- File:	BRepMesh_Vertex.cdl
--- Created:	Wed Sep 22 18:04:35 1993
--- Author:	Didier PIFFAULT
---		<dpf@zerox>
----Copyright:	 Matra Datavision 1993
+-- File:        BRepMesh_Vertex.cdl
+-- Created:     Wed Sep 22 18:04:35 1993
+-- Author:      Didier PIFFAULT
+--              <dpf@zerox>
+---Copyright:    Matra Datavision 1993
 
 
 class Vertex from BRepMesh 
 
-	---Purpose: 
+  ---Purpose: 
 
 
 uses    Boolean from Standard,
-    	Integer from Standard,
-	Real from Standard,
-	XY from gp,
-	DegreeOfFreedom from MeshDS
+        Integer from Standard,
+        Real from Standard,
+        XY from gp,
+        DegreeOfFreedom from BRepMesh
 
 
-is      Create     returns Vertex from BRepMesh;
+is        Create     returns Vertex from BRepMesh;
 
-    	Create         (UV      : in XY from gp;
-    	    	    	Locat3d : in Integer from Standard;
-    	    	    	Move    : in DegreeOfFreedom from MeshDS)
-    	    returns Vertex from BRepMesh;
-	
-	
-    	Create         (U, V    : Real from Standard;
-    	    	    	Move    : in DegreeOfFreedom from MeshDS)
-	    ---Purpose: For MeshAlgo.
-    	    returns Vertex from BRepMesh;
-	
-	
-    	Initialize     (me      : in out;
-    	    	    	UV      : in XY from gp; 
-    	    	    	Locat3d : in Integer from Standard;
-    	    	    	Move    : in DegreeOfFreedom from MeshDS)
-    	    is static;
-	
-	
-	Coord          (me) 
-    	    returns XY from gp
-	    ---C++: return const &
-	    ---C++: inline
-    	    is static;
-	
-
-	Location3d    (me) 
-    	    returns Integer from Standard
-	    ---C++: inline
-    	    is static;
-	
-
-	Movability     (me)
-    	    returns DegreeOfFreedom from MeshDS
-	    ---C++: inline
-	    is static;
-
-	SetMovability  (me   : in out;
-    	    	    	Move : DegreeOfFreedom from MeshDS)
-	    is static;
+          Create         (UV      : in XY from gp;
+                          Locat3d : in Integer from Standard;
+                          Move    : in DegreeOfFreedom from BRepMesh)
+            returns Vertex from BRepMesh;
 
 
-	HashCode       (me;
-    	    	    	Upper : Integer from Standard)
-	    returns Integer from Standard
-	---C++: function call
-    	    is static;
+          Create         (U, V    : Real from Standard;
+                          Move    : in DegreeOfFreedom from BRepMesh)
+            returns Vertex from BRepMesh;
 
 
-	IsEqual        (me; Other : Vertex from BRepMesh)
-	    returns Boolean from Standard
-	---C++: alias operator ==
-    	    is static;
+          Initialize     (me      : in out;
+                          UV      : in XY from gp; 
+                          Locat3d : in Integer from Standard;
+                          Move    : in DegreeOfFreedom from BRepMesh)
+            is static;
 
 
-fields  myUV         : XY from gp;
-    	myLocation   : Integer from Standard;
-	myMovability : DegreeOfFreedom from MeshDS;
+          Coord          (me) 
+            returns XY from gp
+            ---C++: return const &
+            ---C++: inline
+            is static;
+
+
+          Location3d    (me) 
+            returns Integer from Standard
+            ---C++: inline
+            is static;
+
+
+          Movability     (me)
+            returns DegreeOfFreedom from BRepMesh
+            ---C++: inline
+            is static;
+
+          SetMovability  (me   : in out;
+                          Move : DegreeOfFreedom from BRepMesh)
+            is static;
+
+
+          HashCode       (me;
+                          Upper : Integer from Standard)
+            returns Integer from Standard
+            ---C++: function call
+            is static;
+
+
+          IsEqual        (me; Other : Vertex from BRepMesh)
+            returns Boolean from Standard
+            ---C++: alias operator ==
+            is static;
+
+
+        fields  myUV         : XY from gp;
+                myLocation   : Integer from Standard;
+                myMovability : DegreeOfFreedom from BRepMesh;
 
 end Vertex;

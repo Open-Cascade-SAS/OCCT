@@ -8,7 +8,6 @@
 package BRepMesh
 
         ---Purpose: Instantiated   package for the   class of packages
-        --          MeshAlgo, and so on ...
 
         ---Level : Advanced.  
         --  All methods of all  classes will be advanced.
@@ -22,8 +21,6 @@ uses    Standard,
         GCPnts,
         BRepAdaptor,
         BRepTopAdaptor,
-        MeshDS,
-        MeshAlgo,
         TCollection,
         MMgt,
         TopoDS,
@@ -34,10 +31,18 @@ uses    Standard,
         Geom2d,
         GeomAbs,
         GeomAdaptor,
-        TopLoc
+        TopLoc,
+        SortTools
 
 
-is 
+is    enumeration DegreeOfFreedom is 
+        Free,
+        InVolume,
+        OnSurface,
+        OnCurve,
+        Fixed,
+        Frontier,
+        Deleted;
 
       enumeration Status  is 
       ---Purpose: Discribes the wires discretisation.
@@ -45,7 +50,7 @@ is
         OpenWire,
         SelfIntersectingWire,
         Failure,
-        ReMesh 
+        ReMesh
       end Status;
        
       enumeration FactoryError is 
@@ -62,16 +67,63 @@ is
       class Triangle;
 
       class ShapeTool;
-      
+
+      class Circ;
+
       deferred class DiscretRoot; 
       class DiscretFactory;
       --
       pointer PDiscretRoot to DiscretRoot from BRepMesh;
       --
+      imported MapOfIntegerInteger from BRepMesh;
+      imported MapOfInteger from BRepMesh;
+      imported ListOfInteger from BRepMesh;
+      imported BaseAllocator from BRepMesh;
+      imported PairOfIndex from BRepMesh;
+      imported CircleInspector from BRepMesh;
+      imported CellFilter from BRepMesh;
 
-      class Delaun instantiates Delaunay from MeshAlgo(Vertex   from BRepMesh,
-                                                       Edge     from BRepMesh,
-                                                       Triangle from BRepMesh);
+      class ComparatorOfVertexOfDelaun;
+      class ComparatorOfIndexedVertexOfDelaun;
+      class SelectorOfDataStructureOfDelaun;
+      class Delaun;
+      class DataStructureOfDelaun;
+      class CircleTool;
+
+      class Array1OfVertexOfDelaun instantiates Array1 from TCollection
+        (Vertex from BRepMesh);
+
+      class HArray1OfVertexOfDelaun instantiates HArray1 from TCollection
+        (Vertex from BRepMesh, Array1OfVertexOfDelaun);
+
+      class HeapSortVertexOfDelaun instantiates  HeapSort from SortTools
+        (Vertex from BRepMesh, Array1OfVertexOfDelaun,
+        ComparatorOfVertexOfDelaun from BRepMesh);
+
+      class HeapSortIndexedVertexOfDelaun instantiates  HeapSort from SortTools
+        (Integer, Array1OfInteger from TColStd,
+        ComparatorOfIndexedVertexOfDelaun from BRepMesh);
+
+      class NodeHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
+        (Vertex from BRepMesh);
+      class LinkHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
+        (Edge from BRepMesh);
+      class ElemHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
+        (Triangle from BRepMesh);
+
+      class IDMapOfNodeOfDataStructureOfDelaun  instantiates IndexedDataMap from TCollection
+        (Vertex from BRepMesh,
+        ListOfInteger from BRepMesh,
+        NodeHasherOfDataStructureOfDelaun);
+
+      class IDMapOfLinkOfDataStructureOfDelaun  instantiates IndexedDataMap from TCollection
+        (Edge from BRepMesh,
+        PairOfIndex from BRepMesh,
+        LinkHasherOfDataStructureOfDelaun);
+
+      class IMapOfElementOfDataStructureOfDelaun instantiates IndexedMap from TCollection
+        (Triangle from BRepMesh,
+        ElemHasherOfDataStructureOfDelaun);
 
       class DataMapOfVertexInteger instantiates DataMap from TCollection
           (Vertex from TopoDS, Integer from Standard, ShapeMapHasher from TopTools);

@@ -774,7 +774,7 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
     myVertices.Bind(pBegin, ipf);
   }
   theUV = BRepMesh_FastDiscretFace::FindUV(pBegin, uvFirst, ipf, theGFace, mindist, myLocation2d);
-  BRepMesh_Vertex vf(theUV, ipf, MeshDS_Frontier);
+  BRepMesh_Vertex vf(theUV, ipf, BRepMesh_Frontier);
   Standard_Integer ivf = myStructure->AddNode(vf);
 
   // Process last vertex
@@ -805,7 +805,7 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
     }
   }
   theUV = BRepMesh_FastDiscretFace::FindUV(pEnd, uvLast, ipl, theGFace, mindist, myLocation2d);
-  BRepMesh_Vertex vl(theUV, ipl, MeshDS_Frontier);
+  BRepMesh_Vertex vl(theUV, ipl, BRepMesh_Frontier);
   Standard_Integer ivl= myStructure->AddNode(vl);
 
   Standard_Integer isvf = myVemap.FindIndex(ivf);
@@ -926,7 +926,7 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
           myLocation3d.Bind(myNbLocat, P3d);
           NodInStruct(i) = myNbLocat;
           // Record 2d point
-          v2.Initialize(uv.Coord(), myNbLocat, MeshDS_OnCurve);
+          v2.Initialize(uv.Coord(), myNbLocat, BRepMesh_OnCurve);
           iv2=myStructure->AddNode(v2);
           
           Standard_Integer isv = myVemap.FindIndex(iv2);
@@ -936,11 +936,11 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
           Param(i) = puv;
     
           if (orEdge == TopAbs_FORWARD)
-            myStructure->AddLink(BRepMesh_Edge(ivf, iv2, MeshDS_Frontier));
+            myStructure->AddLink(BRepMesh_Edge(ivf, iv2, BRepMesh_Frontier));
           else if (orEdge == TopAbs_REVERSED)
-            myStructure->AddLink(BRepMesh_Edge(iv2, ivf, MeshDS_Frontier));
+            myStructure->AddLink(BRepMesh_Edge(iv2, ivf, BRepMesh_Frontier));
           else if (orEdge == TopAbs_INTERNAL)
-            myStructure->AddLink(BRepMesh_Edge(ivf, iv2, MeshDS_Fixed));
+            myStructure->AddLink(BRepMesh_Edge(ivf, iv2, BRepMesh_Fixed));
           ivf = iv2;
         }
       }
@@ -956,11 +956,11 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
 
     if (ivf != ivl) {
       if (orEdge == TopAbs_FORWARD)
-        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, MeshDS_Frontier));
+        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, BRepMesh_Frontier));
       else if (orEdge == TopAbs_REVERSED)
-        myStructure->AddLink(BRepMesh_Edge(ivl, ivf, MeshDS_Frontier));
+        myStructure->AddLink(BRepMesh_Edge(ivl, ivf, BRepMesh_Frontier));
       else if (orEdge == TopAbs_INTERNAL)
-        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, MeshDS_Fixed));
+        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, BRepMesh_Fixed));
     }
       
 
@@ -1012,7 +1012,7 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
           {
             const Standard_Real puv = Par->Value(i);
             theC2d->D0(puv, uv);
-            v2.Initialize(uv.Coord(), NOD(i), MeshDS_OnCurve);
+            v2.Initialize(uv.Coord(), NOD(i), BRepMesh_OnCurve);
             iv2 = myStructure->AddNode(v2);
   
             Standard_Integer isv = myVemap.FindIndex(iv2);
@@ -1021,11 +1021,11 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
             PPar(i) = puv;
             
             if (orEdge==TopAbs_FORWARD)
-              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, BRepMesh_Frontier));
             else if (orEdge == TopAbs_REVERSED)
-              myStructure->AddLink(BRepMesh_Edge(iv2, ivf, MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv2, ivf, BRepMesh_Frontier));
             else if (orEdge == TopAbs_INTERNAL)
-              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, MeshDS_Fixed));
+              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, BRepMesh_Fixed));
     
             ivf = iv2;
           }
@@ -1059,7 +1059,7 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
             pcos.Perform(P3d, wCurFound);
             if (pcos.IsDone()) wCurFound = pcos.Point().Parameter();
             theC2d->D0(wCurFound, uv);
-            v2.Initialize(uv.Coord(), NOD(i), MeshDS_OnCurve);
+            v2.Initialize(uv.Coord(), NOD(i), BRepMesh_OnCurve);
             iv2 = myStructure->AddNode(v2);
                   
             Standard_Integer isv = myVemap.FindIndex(iv2);
@@ -1068,11 +1068,11 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
             PPar(i) = wCurFound;
                   
             if (orEdge==TopAbs_FORWARD)
-              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, BRepMesh_Frontier));
             else if (orEdge == TopAbs_REVERSED)
-              myStructure->AddLink(BRepMesh_Edge(iv2, ivf, MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv2, ivf, BRepMesh_Frontier));
             else if (orEdge == TopAbs_INTERNAL)
-              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, MeshDS_Fixed));
+              myStructure->AddLink(BRepMesh_Edge(ivf, iv2, BRepMesh_Fixed));
     
             ivf = iv2;
           }
@@ -1083,11 +1083,11 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
     
     if (ivf != ivl) {
       if (orEdge == TopAbs_FORWARD) 
-        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, MeshDS_Frontier));
+        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, BRepMesh_Frontier));
       else if (orEdge == TopAbs_REVERSED)
-        myStructure->AddLink(BRepMesh_Edge(ivl, ivf, MeshDS_Frontier));
+        myStructure->AddLink(BRepMesh_Edge(ivl, ivf, BRepMesh_Frontier));
       else if (orEdge == TopAbs_INTERNAL)
-        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, MeshDS_Fixed));
+        myStructure->AddLink(BRepMesh_Edge(ivf, ivl, BRepMesh_Fixed));
       }
     }
   }
@@ -1220,7 +1220,7 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
         }
         NewNodInStruct(1) = ipf;
         theUV = BRepMesh_FastDiscretFace::FindUV(pBegin, uvFirst, ipf, gFace, mindist, myLocation2d);
-        BRepMesh_Vertex vf(theUV,ipf,MeshDS_Frontier);
+        BRepMesh_Vertex vf(theUV,ipf,BRepMesh_Frontier);
         iv1 = myStructure->AddNode(vf);
         isv1 = myVemap.FindIndex(iv1);
         if (isv1 == 0) isv1 = myVemap.Add(iv1);
@@ -1257,7 +1257,7 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
         }
         NewNodInStruct(nbnodes) = ipl;
         theUV = BRepMesh_FastDiscretFace::FindUV(pEnd, uvLast, ipl, gFace, mindist, myLocation2d);
-        BRepMesh_Vertex vl(theUV,ipl,MeshDS_Frontier);
+        BRepMesh_Vertex vl(theUV,ipl,BRepMesh_Frontier);
         
         ivl = myStructure->AddNode(vl);
         isvl = myVemap.FindIndex(ivl);
@@ -1281,7 +1281,7 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
             NewNodInStruct(i) = myNbLocat;
             // Record 2d point
             uv = theC2d->Value(Param->Value(i));
-            v.Initialize(uv.Coord(), myNbLocat, MeshDS_Frontier);
+            v.Initialize(uv.Coord(), myNbLocat, BRepMesh_Frontier);
             iv2 = myStructure->AddNode(v);
             isv = myVemap.FindIndex(iv2);
             if (isv == 0) isv = myVemap.Add(iv2);
@@ -1289,22 +1289,22 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
             
             //add links
             if (orEdge == TopAbs_FORWARD)
-              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Frontier));
             else if (orEdge == TopAbs_REVERSED)
-              myStructure->AddLink(BRepMesh_Edge(iv2,iv1,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv2,iv1,BRepMesh_Frontier));
             else if (orEdge == TopAbs_INTERNAL)
-              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,MeshDS_Fixed));
+              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Fixed));
             iv1 = iv2;  
           }
           
           // last point
           if (iv1 != ivl) {
             if (orEdge == TopAbs_FORWARD)
-              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Frontier));
             else if (orEdge == TopAbs_REVERSED)
-              myStructure->AddLink(BRepMesh_Edge(ivl,iv1,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(ivl,iv1,BRepMesh_Frontier));
             else if (orEdge == TopAbs_INTERNAL)
-              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,MeshDS_Fixed));
+              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Fixed));
           }
           
           
@@ -1344,7 +1344,7 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
             pcos.Perform(P3d, wCurFound);
             if (pcos.IsDone()) wCurFound = pcos.Point().Parameter();
             theC2d->D0(wCurFound, uv);
-            v.Initialize(uv.Coord(), myNbLocat, MeshDS_Frontier);
+            v.Initialize(uv.Coord(), myNbLocat, BRepMesh_Frontier);
             iv2 = myStructure->AddNode(v);
             isv = myVemap.FindIndex(iv2);
             if (isv == 0) isv = myVemap.Add(iv2);
@@ -1353,22 +1353,22 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
             
             //add links
             if (orEdge == TopAbs_FORWARD)
-              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Frontier));
             else if (orEdge == TopAbs_REVERSED)
-              myStructure->AddLink(BRepMesh_Edge(iv2,iv1,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv2,iv1,BRepMesh_Frontier));
             else if (orEdge == TopAbs_INTERNAL)
-              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,MeshDS_Fixed));
+              myStructure->AddLink(BRepMesh_Edge(iv1,iv2,BRepMesh_Fixed));
             iv1 = iv2;              
           }
           
           // last point
           if (iv1 != ivl) {
             if (orEdge == TopAbs_FORWARD)
-              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Frontier));
             else if (orEdge == TopAbs_REVERSED)
-              myStructure->AddLink(BRepMesh_Edge(ivl,iv1,MeshDS_Frontier));
+              myStructure->AddLink(BRepMesh_Edge(ivl,iv1,BRepMesh_Frontier));
             else if (orEdge == TopAbs_INTERNAL)
-              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,MeshDS_Fixed));
+              myStructure->AddLink(BRepMesh_Edge(iv1,ivl,BRepMesh_Fixed));
           }
         }
         
@@ -1494,15 +1494,15 @@ const gp_Pnt& BRepMesh_FastDiscret::Pnt(const Standard_Integer Index) const
 //purpose  : 
 //=======================================================================
 
-void BRepMesh_FastDiscret::VerticesOfDomain(MeshDS_MapOfInteger&  Indices) const 
+void BRepMesh_FastDiscret::VerticesOfDomain(BRepMesh_MapOfInteger&  Indices) const 
 { 
   Indices.Clear();
   
   // recuperate from the map of edges.
-  const MeshDS_MapOfInteger& edmap = myStructure->LinkOfDomain();
+  const BRepMesh_MapOfInteger& edmap = myStructure->LinkOfDomain();
 
   // iterator on edges.
-  MeshDS_MapOfInteger::Iterator iter(edmap);
+  BRepMesh_MapOfInteger::Iterator iter(edmap);
   
   Standard_Integer ind_edge;
   for (iter.Reset(); iter.More(); iter.Next()) {

@@ -1,0 +1,10 @@
+// File:        BRepMesh_Circ.lxx
+// Created:     Mon Aug  9 17:46:36 1993
+// Author:      Didier PIFFAULT
+//              <dpf@zerox>
+
+inline const gp_XY& BRepMesh_Circ::Location() const
+{ return location;}
+
+inline const Standard_Real& BRepMesh_Circ::Radius() const
+{ return radius;}

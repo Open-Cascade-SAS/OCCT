@@ -41,7 +41,7 @@ inline const TopTools_DataMapOfShapeReal& BRepMesh_FastDiscret::GetMapOfDefEdge(
 //purpose  : 
 //=======================================================================
 
-inline void BRepMesh_FastDiscret::EdgesOfDomain(MeshDS_MapOfInteger&  Indices) const 
+inline void BRepMesh_FastDiscret::EdgesOfDomain(BRepMesh_MapOfInteger&  Indices) const 
 { 
   Indices = myStructure->LinkOfDomain();
 }
@@ -51,7 +51,7 @@ inline void BRepMesh_FastDiscret::EdgesOfDomain(MeshDS_MapOfInteger&  Indices) c
 //purpose  : 
 //=======================================================================
 
-inline void BRepMesh_FastDiscret::TrianglesOfDomain(MeshDS_MapOfInteger&  Indices) const 
+inline void BRepMesh_FastDiscret::TrianglesOfDomain(BRepMesh_MapOfInteger&  Indices) const 
 { 
   Indices = myStructure->ElemOfDomain();
 }

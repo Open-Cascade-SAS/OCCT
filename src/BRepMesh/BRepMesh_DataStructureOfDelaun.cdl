@@ -1,0 +1,257 @@
+-- File:        BRepMesh_DataStructureOfDelaun.cdl
+-- Created:     Wed Mar 17 11:20:52 1993
+-- Author:      Didier PIFFAULT
+--              <dpf@phylox>
+---Copyright:    Matra Datavision 1993
+
+
+class DataStructureOfDelaun from BRepMesh inherits TShared from MMgt
+
+  ---Purpose: Describes  the data structure  necessary  for  the
+  --          mesh  algorithms  in  two  dimensions  plane or on
+  --          surface by meshing in UV space.
+
+
+  uses        Integer from Standard,
+              ListOfInteger from BRepMesh,
+              MapOfInteger from BRepMesh,
+              PairOfIndex from BRepMesh,
+              Box from Bnd,
+              BoundSortBox from Bnd,
+              BaseAllocator from BRepMesh,
+              NodeHasherOfDataStructureOfDelaun from BRepMesh,
+              LinkHasherOfDataStructureOfDelaun from BRepMesh,
+              ElemHasherOfDataStructureOfDelaun from BRepMesh,
+              IDMapOfNodeOfDataStructureOfDelaun from BRepMesh,
+              IDMapOfLinkOfDataStructureOfDelaun from BRepMesh,
+              IMapOfElementOfDataStructureOfDelaun from BRepMesh,
+              SelectorOfDataStructureOfDelaun from BRepMesh,
+              Vertex from BRepMesh,
+              Edge from BRepMesh,
+              Triangle from BRepMesh
+
+  is          Create     (theAllocator: BaseAllocator from BRepMesh;
+                          NodeNumber : Integer from Standard = 100)
+               ---Purpose: <NodeNumber>   is just  an   evaluation of the
+               --          presumed  number of nodes  in this mesh.   The
+               --          Mesh   data  structure will   be automatically
+               --          redimensioned if necessary.
+               returns mutable DataStructureOfDelaun from BRepMesh ;
+
+             AddNode    (me      : mutable ;
+                          theNode : Vertex from BRepMesh) 
+            returns Integer from Standard
+            ---Purpose: Adds a node to the  mesh  if  the node is  not
+            --          already in the Mesh.  Returns the index of the
+            --          node in the structure.
+            is static;
+
+          GetNode    (me      : mutable; 
+                      Index   : Integer from Standard)
+            returns Vertex from BRepMesh 
+            ---Purpose: Get the value of node <Index>.
+            ---C++:  return const &
+            ---C++:  alias operator ()
+            is static;
+
+          GetNodeList    (me      : mutable; 
+                          Index   : Integer from Standard)
+            returns ListOfInteger from BRepMesh
+            ---Purpose: Get the list of node <Index>.
+            ---C++:  return const &
+            is static;
+
+          ForceRemoveNode (me    : mutable;
+                            Index : Integer from Standard) 
+          ---Purpose: Removes the node of index <index> from the mesh.
+          is static;
+
+        ForceRemoveLink (me    : mutable;
+                          Index : Integer from Standard) 
+          ---Purpose: Removes the link of index <index> from the mesh.
+          is static;
+
+        ReplaceNodes (me       : mutable;
+                      NewNodes : IDMapOfNodeOfDataStructureOfDelaun from BRepMesh) 
+             ---Purpose: Removes the all nodes and sets new map of 
+             -- nodes from the mesh.
+             -- For internal use only.
+             is static;
+
+           RemoveNode (me      : mutable;
+                        Index   : Integer from Standard) 
+            ---Purpose: Removes the node of index <index> from the mesh.
+            is static;
+
+          MoveNode   (me      : mutable ;
+                      Index   : Integer from Standard;
+                      newNode : Vertex from BRepMesh) 
+            ---Purpose: Changes the UV  value of node of index <Index>  by
+            --          <newNode>. Returns false if <newnode> is already in
+            --          the structure.
+            returns Boolean from Standard is static;
+
+          NbNodes        (me)
+            returns Integer from Standard
+            ---Purpose: Gives the number of nodes in this mesh.
+            is static;
+
+
+          AddLink    (me      : mutable;
+                      theLink : Edge from BRepMesh) 
+            returns Integer from Standard
+            ---Purpose: Adds a Link  to the  mesh if  the Link is  not
+            --          already in the structure. Returns the index of
+            --          the link in the structure.
+            is static;
+
+          GetLink    (me    : mutable; 
+                      Index : Integer from Standard)
+          returns Edge from BRepMesh 
+          ---Purpose: Get the value of Link <Index>.
+          ---C++: return const &
+          is static;
+
+        RemoveLink (me      : mutable;
+                    Index   : Integer from Standard) 
+            ---Purpose: Removes the Link of  index  <Index> from the
+            --          mesh.
+            is static;
+
+          SubstituteLink (me      : mutable ;
+                          Index   : Integer from Standard;
+                          newLink : Edge from BRepMesh) 
+            ---Purpose: Substitutes  the  Link  of  index  <Index>  by
+            --          <newLink> clear the connectivity.
+            returns Boolean from Standard is static;
+
+          NbLinks        (me)
+            returns Integer from Standard
+            ---Purpose: Gives the number of elements in this mesh.
+            is static;
+
+
+          AddElement     (me         : mutable;
+                          theElement : Triangle from BRepMesh) 
+               returns Integer from Standard
+               ---Purpose: Adds an element  to  the mesh  if it    is not
+               --          already in the  Mesh. Returns the index of the
+               --          element in the structure.
+               is static;
+
+             GetElement     (me    : mutable; 
+                              Index : Integer from Standard)
+          returns Triangle from BRepMesh
+          ---Purpose: Get the value of Element <Index>.
+          ---C++: return const &
+          is static;
+
+        RemoveElement  (me      : mutable;
+                        Index   : Integer from Standard) 
+            ---Purpose: Removes the element of index <Index> in the mesh.
+            is static;
+
+          SubstituteElement  (me         : mutable ;
+                              Index      : Integer from Standard;
+                              newElement : Triangle from BRepMesh) 
+               ---Purpose: Substitutes  the  element   of  index  <Index>  by
+               --          <newElement>. The links connectivity is updated.
+               returns Boolean from Standard is static;
+
+             NbElements     (me)
+               returns Integer from Standard
+               ---Purpose: Gives the number of elements in this mesh.
+               is static;
+
+
+             ClearDomain        (me         : mutable) 
+               ---Purpose:  Removes all elements
+               is static;
+
+
+             IndexOf        (me;
+                              aNode : Vertex from BRepMesh)
+          ---Purpose: Finds the index of the node.  Returns 0 if the
+          --          node is not in the mesh.
+               returns Integer from Standard;
+
+              IndexOf        (me;
+                              aLink : Edge from BRepMesh)
+          ---Purpose: Finds the index of the Link.  Returns 0 if the
+          --          Link is not in the mesh.
+                returns Integer from Standard;
+
+              IndexOf        (me;
+                              anElement : Triangle from BRepMesh)
+              ---Purpose: Finds the index  of the Element.  Returns 0 if
+              --          the Element is not in the mesh.
+                returns Integer from Standard;
+
+
+            LinkNeighboursOf (me;
+                              theNode         : in Integer from Standard)
+                    returns ListOfInteger from BRepMesh
+                    ---C++: return const &
+                    ---Purpose: Gives the list of  Link's indices handling the
+                    --          node <theNode>.
+                    is static;
+
+
+                  ElemConnectedTo (me;
+                                   theLink     : in Integer from Standard)
+                returns PairOfIndex from BRepMesh
+                ---C++: return const &
+                ---Purpose: Gives the element's indices conected
+                --          to <theLink>.
+                is static;
+
+              ElemOfDomain     (me)
+                returns MapOfInteger from BRepMesh
+                ---C++: return const &
+                ---Purpose: Gives  the  list  of element's indices
+                is static;
+
+
+              LinkOfDomain     (me)
+                returns MapOfInteger from BRepMesh
+                ---C++: return const &
+                ---Purpose: Gives  the  list  of link's indices
+                is static;
+
+
+              ClearDeleted     (me : mutable)
+                ---Purpose: This method  substitute the deleted  items  by
+                --          the last in  Indexed Data  Maps  to  have only
+                --          non-deleted  elements, links  or  nodes in the
+                --          structure.
+                is static;
+
+
+              -- Internal methods :
+
+              ClearElement   (me      : mutable;
+                              Index   : Integer from Standard;
+                              theElem : Triangle from BRepMesh) 
+            ---Purpose: Deletes  the element of  index <Index> in
+            --          the mesh. Used by RemoveElement.
+                is static private;
+
+          Statistics     (me;
+                          flot  : in out OStream from Standard) 
+          ---Purpose: Give informations on map.
+          is static;
+
+        Allocator (me) returns BaseAllocator from BRepMesh;
+        ---C++: return const&
+
+
+          fields      myNodes        : IDMapOfNodeOfDataStructureOfDelaun from BRepMesh;
+                      myDelNodes     : ListOfInteger from BRepMesh;
+                      myLinks        : IDMapOfLinkOfDataStructureOfDelaun from BRepMesh;
+                      myDelLinks     : ListOfInteger from BRepMesh;
+                      myElements     : IMapOfElementOfDataStructureOfDelaun from BRepMesh;
+                              --myDelElements  : ListOfInteger from BRepMesh;
+                      myElemOfDomain : MapOfInteger  from BRepMesh;
+                      myLinkOfDomain : MapOfInteger  from BRepMesh;
+                      myAllocator    : BaseAllocator from BRepMesh;
+end DataStructureOfDelaun;

@@ -33,7 +33,7 @@ uses    Boolean                   from Standard,
         Vertex                    from BRepMesh,
         FaceAttribute             from BRepMesh,
         ListOfInteger             from TColStd,
-        BaseAllocator             from MeshDS,
+        BaseAllocator             from BRepMesh,
         DataMapOfIntegerPnt       from BRepMesh,
         IndexedMapOfInteger       from TColStd,
         IndexedMapOfReal          from TColStd,
@@ -153,6 +153,6 @@ fields
         myInternalVerticesMode : Boolean                from Standard; --mode to accounting internal vertices 
         myUParam        : IndexedMapOfReal              from TColStd;
         myVParam        : IndexedMapOfReal              from TColStd;
-        myAllocator     : BaseAllocator                 from MeshDS;
+        myAllocator     : BaseAllocator                 from BRepMesh;
  
 end FastDiscretFace;

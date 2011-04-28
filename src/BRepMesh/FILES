@@ -1,3 +1,10 @@
 BRepMesh_PluginMacro.hxx
 BRepMesh_ClassifierPtr.hxx
+BRepMesh_CellFilter.hxx
+BRepMesh_CircleInspector.hxx
+BRepMesh_MapOfIntegerInteger.hxx
+BRepMesh_MapOfInteger.hxx
+BRepMesh_ListOfInteger.hxx
+BRepMesh_BaseAllocator.hxx
+BRepMesh_PairOfIndex.hxx
 EXTERNLIB

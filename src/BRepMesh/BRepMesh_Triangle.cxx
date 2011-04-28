@@ -1,33 +1,33 @@
-// File:	BRepMesh_Triangle.cxx
-// Created:	Thu Sep 23 13:10:58 1993
-// Author:	Didier PIFFAULT
-//		<dpf@zerox>
+// File:        BRepMesh_Triangle.cxx
+// Created:     Thu Sep 23 13:10:58 1993
+// Author:      Didier PIFFAULT
+//              <dpf@zerox>
 
 #include <BRepMesh_Triangle.ixx>
-  
+
 BRepMesh_Triangle::BRepMesh_Triangle()
-     : Edge1(0), Edge2(0), Edge3(0), myMovability(MeshDS_Free)
+: Edge1(0), Edge2(0), Edge3(0), myMovability(BRepMesh_Free)
 {}
 
 BRepMesh_Triangle::BRepMesh_Triangle (const Standard_Integer e1, 
-				      const Standard_Integer e2,
-				      const Standard_Integer e3,
-				      const Standard_Boolean o1, 
-				      const Standard_Boolean o2,
-				      const Standard_Boolean o3,
-				      const MeshDS_DegreeOfFreedom canMove)
-     : Edge1(e1),  Orientation1(o1),Edge2(e2), Orientation2(o2), 
-       Edge3(e3), Orientation3(o3), 
-       myMovability(canMove)
+                                      const Standard_Integer e2,
+                                      const Standard_Integer e3,
+                                      const Standard_Boolean o1, 
+                                      const Standard_Boolean o2,
+                                      const Standard_Boolean o3,
+                                      const BRepMesh_DegreeOfFreedom  canMove)
+                                      : Edge1(e1),  Orientation1(o1),Edge2(e2), Orientation2(o2), 
+                                      Edge3(e3), Orientation3(o3), 
+                                      myMovability(canMove)
 {}
 
 void  BRepMesh_Triangle::Initialize(const Standard_Integer e1,
-				    const Standard_Integer e2,
-				    const Standard_Integer e3,
-				    const Standard_Boolean o1, 
-				    const Standard_Boolean o2,
-				    const Standard_Boolean o3,
-				    const MeshDS_DegreeOfFreedom canMove)
+                                    const Standard_Integer e2,
+                                    const Standard_Integer e3,
+                                    const Standard_Boolean o1, 
+                                    const Standard_Boolean o2,
+                                    const Standard_Boolean o3,
+                                    const BRepMesh_DegreeOfFreedom  canMove)
 {
   Edge1        =e1;
   Edge2        =e2;
@@ -39,11 +39,11 @@ void  BRepMesh_Triangle::Initialize(const Standard_Integer e1,
 }
 
 void  BRepMesh_Triangle::Edges(Standard_Integer& e1,
-			       Standard_Integer& e2,
-			       Standard_Integer& e3,
-			       Standard_Boolean& o1, 
-			       Standard_Boolean& o2,
-			       Standard_Boolean& o3)const 
+                               Standard_Integer& e2,
+                               Standard_Integer& e3,
+                               Standard_Boolean& o1, 
+                               Standard_Boolean& o2,
+                               Standard_Boolean& o3)const 
 {
   e1=Edge1;
   e2=Edge2;
@@ -53,21 +53,21 @@ void  BRepMesh_Triangle::Edges(Standard_Integer& e1,
   o3=Orientation3;
 }
 
-void  BRepMesh_Triangle::SetMovability(const MeshDS_DegreeOfFreedom Move)
+void  BRepMesh_Triangle::SetMovability(const BRepMesh_DegreeOfFreedom  Move)
 {
   myMovability =Move;
 }
 
 Standard_Integer BRepMesh_Triangle::HashCode
-  (const Standard_Integer Upper)const 
+(const Standard_Integer Upper)const 
 {
   return ::HashCode(Edge1+Edge2+Edge3, Upper);
 }
 
 Standard_Boolean BRepMesh_Triangle::IsEqual
-  (const BRepMesh_Triangle& Other)const 
+(const BRepMesh_Triangle& Other)const 
 {
-  if (myMovability==MeshDS_Deleted || Other.myMovability==MeshDS_Deleted)
+  if (myMovability==BRepMesh_Deleted || Other.myMovability==BRepMesh_Deleted)
     return Standard_False;
   if (Edge1==Other.Edge1 && Edge2==Other.Edge2 && Edge3==Other.Edge3)
     return Standard_True;

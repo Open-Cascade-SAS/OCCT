@@ -1,71 +1,71 @@
--- File:	BRepMesh_Edge.cdl
--- Created:	Wed Sep 22 18:07:31 1993
--- Author:	Didier PIFFAULT
---		<dpf@zerox>
----Copyright:	 Matra Datavision 1993
+-- File:        BRepMesh_Edge.cdl
+-- Created:     Wed Sep 22 18:07:31 1993
+-- Author:      Didier PIFFAULT
+--              <dpf@zerox>
+---Copyright:    Matra Datavision 1993
 
 
 class Edge from BRepMesh 
 
-	---Purpose: 
+  ---Purpose: 
 
 
 uses    Boolean from Standard,
-    	Integer from Standard,
-	DegreeOfFreedom from MeshDS
+        Integer from Standard,
+        DegreeOfFreedom from BRepMesh
 
 
-is      Create         (vDebut    : Integer from Standard;
-    	    	    	vFin      : Integer from Standard;
-    	    	    	canMove   : DegreeOfFreedom from MeshDS)
-        ---Purpose: Contructs a link beetween to vertices.
-    	    returns Edge from BRepMesh;
+is          Create         (vDebut    : Integer from Standard;
+                            vFin      : Integer from Standard;
+                            canMove   : DegreeOfFreedom from BRepMesh)
+              ---Purpose: Contructs a link beetween to vertices.
+              returns Edge from BRepMesh;
 
 
-    	FirstNode      (me)
-        ---Purpose: Give the index of first node of the Link.
-	---C++: inline
-    	    returns Integer from Standard
-	    is static;
+            FirstNode      (me)
+              ---Purpose: Give the index of first node of the Link.
+              ---C++: inline
+              returns Integer from Standard
+              is static;
 
 
-    	LastNode       (me)
-        ---Purpose: Give the index of Last node of the Link.
-	---C++: inline
-    	    returns Integer from Standard
-	    is static;
+            LastNode       (me)
+              ---Purpose: Give the index of Last node of the Link.
+              ---C++: inline
+              returns Integer from Standard
+              is static;
 
 
-	Movability     (me)
-	---C++: inline
-    	    returns DegreeOfFreedom from MeshDS
-	    is static;
+            Movability     (me)
+              ---C++: inline
+              returns DegreeOfFreedom from BRepMesh
+              is static;
 
 
-	SetMovability  (me   : in out;
-    	    	    	Move : DegreeOfFreedom from MeshDS)
-	    is static;
+            SetMovability  (me   : in out;
+                            Move : DegreeOfFreedom from BRepMesh)
+              is static;
 
-	HashCode       (me;
-    	    	    	Upper : Integer from Standard)
-	    returns Integer from Standard
-	---C++: function call
-    	    is static;
-
-
-	SameOrientation(me; Other : Edge from BRepMesh)
-	    returns Boolean from Standard
-    	    is static;
+       HashCode       (me;
+                       Upper : Integer from Standard)
+          returns Integer from Standard
+          ---C++: function call
+          is static;
 
 
-	IsEqual        (me; Other : Edge from BRepMesh)
-	    returns Boolean from Standard
-	---C++: alias operator ==
-    	    is static;
+        SameOrientation(me; Other : Edge from BRepMesh)
+          returns Boolean from Standard
+          is static;
 
 
-fields  myFirstNode  : Integer from Standard;
-    	myLastNode   : Integer from Standard;
-    	myMovability : DegreeOfFreedom from MeshDS;
+        IsEqual        (me; Other : Edge from BRepMesh)
+          returns Boolean from Standard
+          ---C++: alias operator ==
+          is static;
 
-end Edge;
+
+        fields  myFirstNode  : Integer from Standard;
+                myLastNode   : Integer from Standard;
+                myMovability : DegreeOfFreedom from BRepMesh;
+
+        end Edge;

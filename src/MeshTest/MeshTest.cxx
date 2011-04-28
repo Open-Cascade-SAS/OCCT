@@ -117,7 +117,7 @@ static Standard_Integer shapesection(Draw_Interpretor&, Standard_Integer nbarg, 
   if (S1.IsNull() || S2.IsNull()) return 1;
 
   IntPoly_ShapeSection SECTION(S1,S2);
-//  char name[100];
+  //  char name[100];
   BRep_Builder B;
   TopoDS_Compound C;
   B.MakeCompound(C);
@@ -146,7 +146,7 @@ static Standard_Integer planesection(Draw_Interpretor&, Standard_Integer nbarg, 
   Handle(Geom_Plane) pl = Handle(Geom_Plane)::DownCast(Surf);
   if (!pl.IsNull()) {
     IntPoly_PlaneSection SECTION(S,pl->Pln());
-//    char name[100];
+    //    char name[100];
     BRep_Builder B;
     TopoDS_Compound C;
     B.MakeCompound(C);
@@ -316,10 +316,10 @@ static Standard_Integer fastdiscret(Draw_Interpretor& di, Standard_Integer nbarg
 
 class BRepMesh_Couple
 {
- public:
+public:
   BRepMesh_Couple() { myI1 = myI2 = 0; }
   BRepMesh_Couple(const Standard_Integer I1,
-		  const Standard_Integer I2)
+    const Standard_Integer I2)
   { myI1 = I1; myI2 = I2; }
 
   Standard_Integer myI1;
@@ -330,7 +330,7 @@ inline Standard_Boolean IsEqual(const BRepMesh_Couple& one,
                                 const BRepMesh_Couple& other)
 {
   if (one.myI1 == other.myI1 &&
-      one.myI2 == other.myI2) return Standard_True;
+    one.myI2 == other.myI2) return Standard_True;
   else return Standard_False;
 }
 
@@ -357,9 +357,9 @@ static void AddLink(BRepMesh_MapOfCouple& aMap,
 }
 
 static void MeshStats(const TopoDS_Shape& theSape,
-		      Standard_Integer& theNbTri,
-		      Standard_Integer& theNbEdges,
-		      Standard_Integer& theNbNodes)
+                      Standard_Integer& theNbTri,
+                      Standard_Integer& theNbEdges,
+                      Standard_Integer& theNbNodes)
 {
   theNbTri = 0;
   theNbEdges = 0;
@@ -379,12 +379,12 @@ static void MeshStats(const TopoDS_Shape& theSape,
       //count number of links
       Poly_Array1OfTriangle& Trian = T->ChangeTriangles();
       for(Standard_Integer i = 1; i<=Trian.Length();i++) {
-	Standard_Integer v1, v2, v3;
+        Standard_Integer v1, v2, v3;
         Trian(i).Get(v1,v2,v3);
 
-	AddLink(aMap, v1, v2);
-	AddLink(aMap, v2, v3);
-	AddLink(aMap, v3, v1);
+        AddLink(aMap, v1, v2);
+        AddLink(aMap, v2, v3);
+        AddLink(aMap, v3, v1);
       }
 
       theNbEdges+=aMap.Extent();
@@ -430,15 +430,15 @@ static Standard_Integer triangule(Draw_Interpretor& di, Standard_Integer nbarg, 
   // passe de verification du maillage.
   /*Standard_Integer nbc;
   for (Standard_Integer iLi=1; iLi<= DM->Mesh()->NbEdges(); iLi++) {
-    const BRepMesh_Edge& ed=DM->Mesh()->Edge(iLi);
-    if (ed.Movability()!=MeshDS_Deleted) {
-      nbc=struc->ElemConnectedTo(iLi).Extent();
-      if (nbc != 1 && nbc != 2) di <<"ERROR MAILLAGE Edge no "<< iLi<<"\n";
-    }
+  const BRepMesh_Edge& ed=DM->Mesh()->Edge(iLi);
+  if (ed.Movability()!=BRepMesh_Deleted) {
+  nbc=struc->ElemConnectedTo(iLi).Extent();
+  if (nbc != 1 && nbc != 2) di <<"ERROR MAILLAGE Edge no "<< iLi<<"\n";
+  }
   }*/
 
   Bnd_Box bobo;
-  
+
   for (Standard_Integer lepnt=1; lepnt<DM->Mesh()->NbPoint3d(); lepnt++) {
     bobo.Add(DM->Mesh()->Point3d(lepnt));
   }
@@ -479,19 +479,19 @@ Standard_Integer addshape(Draw_Interpretor&, Standard_Integer n, const char** a)
 
 /*Standard_Integer smooth(Draw_Interpretor&, Standard_Integer n, const char** a)
 {
-  if (n < 2) return 1;
-  Handle(MeshTest_DrawableMesh) D =
-    Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(a[1]));
-  if (D.IsNull()) return 1;
-  Handle(BRepMesh_DataStructureOfDelaun) struc=
-    D->Mesh()->Result();
-  BRepMesh_Array1OfVertexOfDelaun toto(1,1);
-  BRepMesh_Delaun trial(struc, 
-				 toto,
-				 Standard_True);
-  trial.SmoothMesh(0.1);
-  Draw::Repaint();
-  return 0;
+if (n < 2) return 1;
+Handle(MeshTest_DrawableMesh) D =
+Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(a[1]));
+if (D.IsNull()) return 1;
+Handle(BRepMesh_DataStructureOfDelaun) struc=
+D->Mesh()->Result();
+BRepMesh_Array1OfVertexOfDelaun toto(1,1);
+BRepMesh_Delaun trial(struc, 
+toto,
+Standard_True);
+trial.SmoothMesh(0.1);
+Draw::Repaint();
+return 0;
 }
 */
 
@@ -500,45 +500,45 @@ Standard_Integer addshape(Draw_Interpretor&, Standard_Integer n, const char** a)
 //purpose  : 
 //=======================================================================
 
- /*static Standard_Integer edges (Draw_Interpretor&, Standard_Integer n, const char** a)
+/*static Standard_Integer edges (Draw_Interpretor&, Standard_Integer n, const char** a)
 {
-  if (n < 3) return 1;
+if (n < 3) return 1;
 
-  Handle(MeshTest_DrawableMesh) D =
-    Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(a[1]));
-  if (D.IsNull()) return 1;
-  TopoDS_Shape S = DBRep::Get(a[2]);
-  if (S.IsNull()) return 1;
+Handle(MeshTest_DrawableMesh) D =
+Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(a[1]));
+if (D.IsNull()) return 1;
+TopoDS_Shape S = DBRep::Get(a[2]);
+if (S.IsNull()) return 1;
 
-  TopExp_Explorer ex;
-  TColStd_SequenceOfInteger& eseq = D->Edges();
-  Handle(BRepMesh_FastDiscret) M = D->Mesh();
-  Handle(BRepMesh_DataStructureOfDelaun) DS = M->Result();
-  Standard_Integer e1, e2, e3, iTri;
-  Standard_Boolean o1, o2, o3;
+TopExp_Explorer ex;
+TColStd_SequenceOfInteger& eseq = D->Edges();
+Handle(BRepMesh_FastDiscret) M = D->Mesh();
+Handle(BRepMesh_DataStructureOfDelaun) DS = M->Result();
+Standard_Integer e1, e2, e3, iTri;
+Standard_Boolean o1, o2, o3;
 
-  // the faces
-  for (ex.Init(S,TopAbs_FACE);ex.More();ex.Next()) {
-    const MeshDS_MapOfInteger& elems = DS->ElemOfDomain();
-    MeshDS_MapOfInteger::Iterator it;
-    for (it.Initialize(elems); it.More(); it.Next()) {
-      iTri = it.Key();
-      const BRepMesh_Triangle& triang = M->Triangle(iTri);
-      if (triang.Movability()!=MeshDS_Deleted) {
-	  triang.Edges(e1, e2, e3, o1, o2, o3);
-	eseq.Append(e1);
-	eseq.Append(e2);
-	eseq.Append(e3);
-      }
-    }
-  }
+// the faces
+for (ex.Init(S,TopAbs_FACE);ex.More();ex.Next()) {
+const BRepMesh_MapOfInteger& elems = DS->ElemOfDomain();
+BRepMesh_MapOfInteger::Iterator it;
+for (it.Initialize(elems); it.More(); it.Next()) {
+iTri = it.Key();
+const BRepMesh_Triangle& triang = M->Triangle(iTri);
+if (triang.Movability()!=BRepMesh_Deleted) {
+triang.Edges(e1, e2, e3, o1, o2, o3);
+eseq.Append(e1);
+eseq.Append(e2);
+eseq.Append(e3);
+}
+}
+}
 
-  // the edges
-  //for (ex.Init(S,TopAbs_EDGE,TopAbs_FACE);ex.More();ex.Next()) {
-  //}
-  
-  Draw::Repaint();
-  return 0;
+// the edges
+//for (ex.Init(S,TopAbs_EDGE,TopAbs_FACE);ex.More();ex.Next()) {
+//}
+
+Draw::Repaint();
+return 0;
 }
 */
 
@@ -560,20 +560,20 @@ static Standard_Integer vertices (Draw_Interpretor&, Standard_Integer n, const c
   TopExp_Explorer ex;
   TColStd_SequenceOfInteger& vseq = D->Vertices();
   Handle(BRepMesh_FastDiscret) M = D->Mesh();
-  
+
   // the faces
   for (ex.Init(S,TopAbs_FACE);ex.More();ex.Next()) {
-    MeshDS_MapOfInteger vtx;
+    BRepMesh_MapOfInteger vtx;
     M->VerticesOfDomain(vtx);
-    for (MeshDS_MapOfInteger::Iterator it(vtx); it.More(); it.Next())
+    for (BRepMesh_MapOfInteger::Iterator it(vtx); it.More(); it.Next())
       vseq.Append(it.Key());
   }
-  
+
 
   // the edges
   //for (ex.Init(S,TopAbs_EDGE,TopAbs_FACE);ex.More();ex.Next()) {
   //}
-  
+
   Draw::Repaint();
   return 0;
 }
@@ -601,16 +601,16 @@ static Standard_Integer medge (Draw_Interpretor&, Standard_Integer n, const char
       e = -e;
       j = 1; 
       while (j <= eseq.Length()) {
-	if (eseq(j) == e) 
-	  eseq.Remove(j);
-	else
-	  j++;
+        if (eseq(j) == e) 
+          eseq.Remove(j);
+        else
+          j++;
       }
     }
     else
       eseq.Clear();
   }
-    
+
   Draw::Repaint();
   return 0;
 }
@@ -639,10 +639,10 @@ static Standard_Integer mvertex (Draw_Interpretor&, Standard_Integer n, const ch
       v = -v;
       j = 1;
       while (j <= vseq.Length()) {
-	if (vseq(j) == v)
-	  vseq.Remove(v);
-	else
-	  j++;
+        if (vseq(j) == v)
+          vseq.Remove(v);
+        else
+          j++;
       }
     }
     else
@@ -676,10 +676,10 @@ static Standard_Integer triangle (Draw_Interpretor&, Standard_Integer n, const c
       v = -v;
       j = 1;
       while (j <= tseq.Length()) {
-	if (tseq(j) == v)
-	  tseq.Remove(v);
-	else
-	  j++;
+        if (tseq(j) == v)
+          tseq.Remove(v);
+        else
+          j++;
       }
     }
     else
@@ -695,30 +695,30 @@ static Standard_Integer triangle (Draw_Interpretor&, Standard_Integer n, const c
 //purpose  : 
 //=======================================================================
 
-static void printdegree(MeshDS_DegreeOfFreedom dof, Draw_Interpretor& di)
+static void printdegree(BRepMesh_DegreeOfFreedom dof, Draw_Interpretor& di)
 {
   switch (dof) {
-  case MeshDS_InVolume :
-    di << "InVolume";
-    break;
-  case MeshDS_OnSurface :
-    di << "OnSurface";
-    break;
-  case MeshDS_OnCurve :
-    di << "OnCurve";
-    break;
-  case MeshDS_Fixed :
-    di << "Fixed";
-    break;
-  case MeshDS_Frontier :
-    di << "Frontier";
-    break;
-  case MeshDS_Deleted :
-    di << "Deleted";
-    break;
-  case MeshDS_Free :
-    di << "Free";
-    break;
+case BRepMesh_InVolume :
+  di << "InVolume";
+  break;
+case BRepMesh_OnSurface :
+  di << "OnSurface";
+  break;
+case BRepMesh_OnCurve :
+  di << "OnCurve";
+  break;
+case BRepMesh_Fixed :
+  di << "Fixed";
+  break;
+case BRepMesh_Frontier :
+  di << "Frontier";
+  break;
+case BRepMesh_Deleted :
+  di << "Deleted";
+  break;
+case BRepMesh_Free :
+  di << "Free";
+  break;
   }
 }
 
@@ -730,38 +730,38 @@ static void printdegree(MeshDS_DegreeOfFreedom dof, Draw_Interpretor& di)
 /*
 Standard_Integer dumpvertex(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) return 1;
+if (argc < 2) return 1;
 
-  Handle(MeshTest_DrawableMesh) D =
-    Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(argv[1]));
-  if (D.IsNull()) return 1;
-  
-  Handle(BRepMesh_DataStructureOfDelaun) struc = D->Mesh()->Result();
+Handle(MeshTest_DrawableMesh) D =
+Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(argv[1]));
+if (D.IsNull()) return 1;
 
-  Standard_Integer in=1;
-  if (argc>=3) {
-    in=atoi(argv[2]);
-    in=Max(1,in);
-  }
-  Standard_Integer nbn=in;
-  if (argc>=4) {
-    nbn=atoi(argv[3]);
-    nbn=Min(nbn,struc->NbNodes());
-  }
+Handle(BRepMesh_DataStructureOfDelaun) struc = D->Mesh()->Result();
 
-  for (; in<=nbn; in++) {
-    BRepMesh_Vertex nod=struc->GetNode(in);
-    di<<"(node "<<in<<" (uv "<<nod.Coord().X()
-      <<" "<<nod.Coord().Y()<<") (3d "
-      <<nod.Location3d()<<") ";
-    printdegree(nod.Movability(), di);
-    di<<" (edgeconex";
-    MeshDS_ListOfInteger::Iterator tati(struc->LinkNeighboursOf(in));
-    for (; tati.More(); tati.Next()) di<<" "<<tati.Value();
-    di << "))\n";
-  }
-  di <<"\n";
-  return 0;
+Standard_Integer in=1;
+if (argc>=3) {
+in=atoi(argv[2]);
+in=Max(1,in);
+}
+Standard_Integer nbn=in;
+if (argc>=4) {
+nbn=atoi(argv[3]);
+nbn=Min(nbn,struc->NbNodes());
+}
+
+for (; in<=nbn; in++) {
+BRepMesh_Vertex nod=struc->GetNode(in);
+di<<"(node "<<in<<" (uv "<<nod.Coord().X()
+<<" "<<nod.Coord().Y()<<") (3d "
+<<nod.Location3d()<<") ";
+printdegree(nod.Movability(), di);
+di<<" (edgeconex";
+BRepMesh_ListOfInteger::Iterator tati(struc->LinkNeighboursOf(in));
+for (; tati.More(); tati.Next()) di<<" "<<tati.Value();
+di << "))\n";
+}
+di <<"\n";
+return 0;
 }
 
 //=======================================================================
@@ -771,37 +771,37 @@ Standard_Integer dumpvertex(Draw_Interpretor& di, Standard_Integer argc, const c
 
 Standard_Integer dumpedge(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) return 1;
+if (argc < 2) return 1;
 
-  Handle(MeshTest_DrawableMesh) D =
-    Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(argv[1]));
-  if (D.IsNull()) return 1;
-  
-  Handle(BRepMesh_DataStructureOfDelaun) struc=D->Mesh()->Result();
-  Standard_Integer il=1;
-  if (argc>=3) {
-    il=atoi(argv[2]);
-    il=Max(1, il);
-  }
-  Standard_Integer nbl=il;
-  if (argc>=4) {
-    nbl=atoi(argv[3]);
-    nbl=Min(nbl, struc->NbLinks());
-  }
+Handle(MeshTest_DrawableMesh) D =
+Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(argv[1]));
+if (D.IsNull()) return 1;
 
-  for (; il<=nbl; il++) {
-    BRepMesh_Edge edg=struc->GetLink(il);
-    di << "(edge "<<il<<" ("<<edg.FirstNode()<<" "<<edg.LastNode()
-      <<" ";
-    printdegree(edg.Movability(), di);
-    di<<") (triconex";
-    const MeshDS_PairOfIndex& pair = struc->ElemConnectedTo(il);
-    for (Standard_Integer j = 1, jn = pair.Extent(); j <= jn; j++)
-      di<<" "<<pair.Index(j);
-    di << "))\n";
-  }
-  di <<"\n";
-  return 0;
+Handle(BRepMesh_DataStructureOfDelaun) struc=D->Mesh()->Result();
+Standard_Integer il=1;
+if (argc>=3) {
+il=atoi(argv[2]);
+il=Max(1, il);
+}
+Standard_Integer nbl=il;
+if (argc>=4) {
+nbl=atoi(argv[3]);
+nbl=Min(nbl, struc->NbLinks());
+}
+
+for (; il<=nbl; il++) {
+BRepMesh_Edge edg=struc->GetLink(il);
+di << "(edge "<<il<<" ("<<edg.FirstNode()<<" "<<edg.LastNode()
+<<" ";
+printdegree(edg.Movability(), di);
+di<<") (triconex";
+const BRepMesh_PairOfIndex& pair = struc->ElemConnectedTo(il);
+for (Standard_Integer j = 1, jn = pair.Extent(); j <= jn; j++)
+di<<" "<<pair.Index(j);
+di << "))\n";
+}
+di <<"\n";
+return 0;
 }
 
 //=======================================================================
@@ -811,40 +811,40 @@ Standard_Integer dumpedge(Draw_Interpretor& di, Standard_Integer argc, const cha
 
 Standard_Integer dumptriangle(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) return 1;
+if (argc < 2) return 1;
 
-  Handle(MeshTest_DrawableMesh) D =
-    Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(argv[1]));
-  if (D.IsNull()) return 1;
-  
-  Handle(BRepMesh_DataStructureOfDelaun) struc=D->Mesh()->Result();
-  Standard_Integer ie=1;
-  if (argc>=3) {
-    ie=atoi(argv[2]);
-    ie=Max(1, ie);
-  }
-  Standard_Integer nbe=ie;
-  if (argc>=4) {
-    nbe=atoi(argv[3]);
-    nbe=Min(nbe, struc->NbElements());
-  }
+Handle(MeshTest_DrawableMesh) D =
+Handle(MeshTest_DrawableMesh)::DownCast(Draw::Get(argv[1]));
+if (D.IsNull()) return 1;
 
-  Standard_Integer e1, e2, e3;
-  Standard_Boolean o1, o2, o3;
+Handle(BRepMesh_DataStructureOfDelaun) struc=D->Mesh()->Result();
+Standard_Integer ie=1;
+if (argc>=3) {
+ie=atoi(argv[2]);
+ie=Max(1, ie);
+}
+Standard_Integer nbe=ie;
+if (argc>=4) {
+nbe=atoi(argv[3]);
+nbe=Min(nbe, struc->NbElements());
+}
 
- for (; ie<=nbe; ie++) {
-    BRepMesh_Triangle tri=struc->GetElement(ie);
-    tri.Edges(e1, e2, e3, o1, o2, o3); 
-    if (o1) e1=-e1;
-    if (o2) e2=-e2;
-    if (o3) e3=-e3;
-    di<<" (maille "<<ie<<" (links "<<e1<<" "
-      <<e2<<" "<<e3<<")";
-    printdegree(tri.Movability(), di);
-    di<<")\n";
-  }
-  di << "\n";
-  return 0;
+Standard_Integer e1, e2, e3;
+Standard_Boolean o1, o2, o3;
+
+for (; ie<=nbe; ie++) {
+BRepMesh_Triangle tri=struc->GetElement(ie);
+tri.Edges(e1, e2, e3, o1, o2, o3); 
+if (o1) e1=-e1;
+if (o2) e2=-e2;
+if (o3) e3=-e3;
+di<<" (maille "<<ie<<" (links "<<e1<<" "
+<<e2<<" "<<e3<<")";
+printdegree(tri.Movability(), di);
+di<<")\n";
+}
+di << "\n";
+return 0;
 }
 */
 
@@ -893,48 +893,48 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
   chPointValid.Show(pointvalid); chIsos.Show(isos); chPointsOnIsos.Show(pointsisos);
 
   if (tot > 0.00001) {
-  di <<"temps total de maillage:     "<<tot        <<" seconds"<< "\n";
-  di <<"dont: "<< "\n";
-  di <<"discretisation des edges:    "<<edges      <<" seconds---> "<< 100*edges/tot      <<" %"<<"\n";
-  di <<"maillage des edges:          "<<mailledges <<" seconds---> "<< 100*mailledges/tot <<" %"<<"\n";
-  di <<"controle et points internes: "<<etuinter   <<" seconds---> "<< 100*etuinter/tot   <<" %"<<"\n";
-  di <<"derniers controles:          "<<lastcontrol<<" seconds---> "<< 100*lastcontrol/tot<<" %"<<"\n";
-  di <<"stockage dans la S.D.        "<<stock      <<" seconds---> "<< 100*stock/tot      <<" %"<<"\n";
-  di << "\n";
-  di <<"et plus precisement: "<<"\n";
-  di <<"Add 11ere partie :           "<<add11     <<" seconds---> "<<100*add11/tot      <<" %"<<"\n";
-  di <<"Add 12ere partie :           "<<add12     <<" seconds---> "<<100*add12/tot      <<" %"<<"\n";
-  di <<"Add 2eme partie :            "<<add2      <<" seconds---> "<<100*add2/tot       <<" %"<<"\n";
-  di <<"Update :                     "<<upda      <<" seconds---> "<<100*upda/tot       <<" %"<<"\n";
-  di <<"AddPoint :                   "<<addp      <<" seconds---> "<<100*addp/tot       <<" %"<<"\n";
-  di <<"UniformDeflection            "<<unif      <<" seconds---> "<<100*unif/tot       <<" %"<<"\n";
-  di <<"Controle :                   "<<contr     <<" seconds---> "<<100*contr/tot      <<" %"<<"\n";
-  di <<"Points Internes:             "<<inter     <<" seconds---> "<<100*inter/tot      <<" %"<<"\n";
-  di <<"calcul des isos et du, dv:   "<<isos      <<" seconds---> "<<100*isos/tot       <<" %"<<"\n";
-  di <<"calcul des points sur isos:  "<<pointsisos<<" seconds---> "<<100*pointsisos/tot <<" %"<<"\n";
-  di <<"IsPointValid:                "<<pointvalid<<" seconds---> "<<100*pointvalid/tot <<" %"<<"\n";
-  di << "\n";
+    di <<"temps total de maillage:     "<<tot        <<" seconds"<< "\n";
+    di <<"dont: "<< "\n";
+    di <<"discretisation des edges:    "<<edges      <<" seconds---> "<< 100*edges/tot      <<" %"<<"\n";
+    di <<"maillage des edges:          "<<mailledges <<" seconds---> "<< 100*mailledges/tot <<" %"<<"\n";
+    di <<"controle et points internes: "<<etuinter   <<" seconds---> "<< 100*etuinter/tot   <<" %"<<"\n";
+    di <<"derniers controles:          "<<lastcontrol<<" seconds---> "<< 100*lastcontrol/tot<<" %"<<"\n";
+    di <<"stockage dans la S.D.        "<<stock      <<" seconds---> "<< 100*stock/tot      <<" %"<<"\n";
+    di << "\n";
+    di <<"et plus precisement: "<<"\n";
+    di <<"Add 11ere partie :           "<<add11     <<" seconds---> "<<100*add11/tot      <<" %"<<"\n";
+    di <<"Add 12ere partie :           "<<add12     <<" seconds---> "<<100*add12/tot      <<" %"<<"\n";
+    di <<"Add 2eme partie :            "<<add2      <<" seconds---> "<<100*add2/tot       <<" %"<<"\n";
+    di <<"Update :                     "<<upda      <<" seconds---> "<<100*upda/tot       <<" %"<<"\n";
+    di <<"AddPoint :                   "<<addp      <<" seconds---> "<<100*addp/tot       <<" %"<<"\n";
+    di <<"UniformDeflection            "<<unif      <<" seconds---> "<<100*unif/tot       <<" %"<<"\n";
+    di <<"Controle :                   "<<contr     <<" seconds---> "<<100*contr/tot      <<" %"<<"\n";
+    di <<"Points Internes:             "<<inter     <<" seconds---> "<<100*inter/tot      <<" %"<<"\n";
+    di <<"calcul des isos et du, dv:   "<<isos      <<" seconds---> "<<100*isos/tot       <<" %"<<"\n";
+    di <<"calcul des points sur isos:  "<<pointsisos<<" seconds---> "<<100*pointsisos/tot <<" %"<<"\n";
+    di <<"IsPointValid:                "<<pointvalid<<" seconds---> "<<100*pointvalid/tot <<" %"<<"\n";
+    di << "\n";
 
 
-  di <<"nombre d'appels de controle apres points internes          : "<< NbControls << "\n";
-  di <<"nombre de points sur restrictions                          : "<< D0Edges    << "\n";
-  di <<"nombre de points calcules par UniformDeflection            : "<< D0Unif     << "\n";
-  di <<"nombre de points calcules dans InternalVertices            : "<< D0Internal << "\n";
-  di <<"nombre de points calcules dans Control                     : "<< D0Control  << "\n";
-  if (nbnodes-D0Edges != 0) { 
-    Standard_Real ratio = (Standard_Real)(D0Internal+D0Control)/ (Standard_Real)(nbnodes-D0Edges);
-    di <<"---> Ratio: (D0Internal+D0Control) / (nbNodes-nbOnEdges)   : "<< ratio      << "\n";
-  }
+    di <<"nombre d'appels de controle apres points internes          : "<< NbControls << "\n";
+    di <<"nombre de points sur restrictions                          : "<< D0Edges    << "\n";
+    di <<"nombre de points calcules par UniformDeflection            : "<< D0Unif     << "\n";
+    di <<"nombre de points calcules dans InternalVertices            : "<< D0Internal << "\n";
+    di <<"nombre de points calcules dans Control                     : "<< D0Control  << "\n";
+    if (nbnodes-D0Edges != 0) { 
+      Standard_Real ratio = (Standard_Real)(D0Internal+D0Control)/ (Standard_Real)(nbnodes-D0Edges);
+      di <<"---> Ratio: (D0Internal+D0Control) / (nbNodes-nbOnEdges)   : "<< ratio      << "\n";
+    }
 
-  di << "\n";
+    di << "\n";
 
-  chTotal.Reset(); chAddPoint.Reset(); chUnif.Reset(); 
-  chControl.Reset(); chInternal.Reset();
-  chEdges.Reset(); chMaillEdges.Reset();
-  chEtuInter.Reset(); chLastControl.Reset(); 
-  chStock.Reset();
-  chAdd11.Reset(); chAdd12.Reset(); chAdd2.Reset(); chUpdate.Reset();
-  chPointValid.Reset(); chIsos.Reset(); chPointsOnIsos.Reset();
+    chTotal.Reset(); chAddPoint.Reset(); chUnif.Reset(); 
+    chControl.Reset(); chInternal.Reset();
+    chEdges.Reset(); chMaillEdges.Reset();
+    chEtuInter.Reset(); chLastControl.Reset(); 
+    chStock.Reset();
+    chAdd11.Reset(); chAdd12.Reset(); chAdd2.Reset(); chUpdate.Reset();
+    chPointValid.Reset(); chIsos.Reset(); chPointsOnIsos.Reset();
 
   }
 #endif
@@ -959,7 +959,7 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
   Standard_Integer i, n1, n2, n3;
   gp_Pnt2d mitri, v1, v2, v3, mi2d1, mi2d2, mi2d3;
   gp_XYZ vecEd1, vecEd2, vecEd3;
-//  Standard_Real dipo, dm, dv, d1, d2, d3, defle;
+  //  Standard_Real dipo, dm, dv, d1, d2, d3, defle;
   Standard_Real dipo, dv, d1, d2, d3, defle;
   Handle(Geom_Surface) S;
   Standard_Integer nbface = 0;
@@ -979,100 +979,100 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
       S = BRep_Tool::Surface(F, L);
 
       for(i = 1; i <= triangles.Length(); i++) {
-	if (F.Orientation() == TopAbs_REVERSED) 
-	  triangles(i).Get(n1,n3,n2);
-	else 
-	  triangles(i).Get(n1,n2,n3);
-	
-	const gp_XY& xy1 = Nodes2d(n1).XY();
-	const gp_XY& xy2 = Nodes2d(n2).XY();
-	const gp_XY& xy3 = Nodes2d(n3).XY();
-	
-	mi2d1.SetCoord((xy2.X()+xy3.X())*0.5, 
-		       (xy2.Y()+xy3.Y())*0.5);
-	mi2d2.SetCoord((xy1.X()+xy3.X())*0.5, 
-		       (xy1.Y()+xy3.Y())*0.5);
-	mi2d3.SetCoord((xy1.X()+xy2.X())*0.5, 
-		       (xy1.Y()+xy2.Y())*0.5);
+        if (F.Orientation() == TopAbs_REVERSED) 
+          triangles(i).Get(n1,n3,n2);
+        else 
+          triangles(i).Get(n1,n2,n3);
 
-	gp_XYZ p1 = Nodes(n1).Transformed(L.Transformation()).XYZ();
-	gp_XYZ p2 = Nodes(n2).Transformed(L.Transformation()).XYZ();
-	gp_XYZ p3 = Nodes(n3).Transformed(L.Transformation()).XYZ();
-	
-	vecEd1=p2-p1;
-	vecEd2=p3-p2;
-	vecEd3=p1-p3;
-	d1=vecEd1.SquareModulus();
-	d2=vecEd2.SquareModulus();
-	d3=vecEd3.SquareModulus();
-	
-	if (d1!=0. && d2!=0. && d3!=0.) {
-	  gp_XYZ equa(vecEd1^vecEd2);
-	  dv=equa.Modulus();
-	  if (dv>0.) {
-	    equa.SetCoord(equa.X()/dv, equa.Y()/dv, equa.Z()/dv);
-	    dipo=equa*p1;
-	  
-	    
-	    mitri.SetCoord(ONETHIRD*(xy1.X()+xy2.X()+xy3.X()),
-			   ONETHIRD*(xy1.Y()+xy2.Y()+xy3.Y()));
-	    v1.SetCoord(ONETHIRD*mi2d1.X()+TWOTHIRD*xy1.X(), 
-			ONETHIRD*mi2d1.Y()+TWOTHIRD*xy1.Y());
-	    v2.SetCoord(ONETHIRD*mi2d2.X()+TWOTHIRD*xy2.X(), 
-			ONETHIRD*mi2d2.Y()+TWOTHIRD*xy2.Y());
-	    v3.SetCoord(ONETHIRD*mi2d3.X()+TWOTHIRD*xy3.X(), 
-			ONETHIRD*mi2d3.Y()+TWOTHIRD*xy3.Y());
-	    
-	    S->D0(mi2d1.X(), mi2d1.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
+        const gp_XY& xy1 = Nodes2d(n1).XY();
+        const gp_XY& xy2 = Nodes2d(n2).XY();
+        const gp_XY& xy3 = Nodes2d(n3).XY();
 
-	    S->D0(mi2d2.X(), mi2d2.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
+        mi2d1.SetCoord((xy2.X()+xy3.X())*0.5, 
+          (xy2.Y()+xy3.Y())*0.5);
+        mi2d2.SetCoord((xy1.X()+xy3.X())*0.5, 
+          (xy1.Y()+xy3.Y())*0.5);
+        mi2d3.SetCoord((xy1.X()+xy2.X())*0.5, 
+          (xy1.Y()+xy2.Y())*0.5);
 
-	    S->D0(mi2d3.X(), mi2d3.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
+        gp_XYZ p1 = Nodes(n1).Transformed(L.Transformation()).XYZ();
+        gp_XYZ p2 = Nodes(n2).Transformed(L.Transformation()).XYZ();
+        gp_XYZ p3 = Nodes(n3).Transformed(L.Transformation()).XYZ();
 
-	    S->D0(v1.X(), v1.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
+        vecEd1=p2-p1;
+        vecEd2=p3-p2;
+        vecEd3=p1-p3;
+        d1=vecEd1.SquareModulus();
+        d2=vecEd2.SquareModulus();
+        d3=vecEd3.SquareModulus();
 
-	    S->D0(v2.X(), v2.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
+        if (d1!=0. && d2!=0. && d3!=0.) {
+          gp_XYZ equa(vecEd1^vecEd2);
+          dv=equa.Modulus();
+          if (dv>0.) {
+            equa.SetCoord(equa.X()/dv, equa.Y()/dv, equa.Z()/dv);
+            dipo=equa*p1;
 
-	    S->D0(v3.X(), v3.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
 
-	    S->D0(mitri.X(), mitri.Y(), PP);
-	    PP = PP.Transformed(L.Transformation());
-	    defle = Abs((equa*PP.XYZ())-dipo);
-	    deflemax = Max(deflemax, defle);
-	    deflemin = Min(deflemin, defle);
+            mitri.SetCoord(ONETHIRD*(xy1.X()+xy2.X()+xy3.X()),
+              ONETHIRD*(xy1.Y()+xy2.Y()+xy3.Y()));
+            v1.SetCoord(ONETHIRD*mi2d1.X()+TWOTHIRD*xy1.X(), 
+              ONETHIRD*mi2d1.Y()+TWOTHIRD*xy1.Y());
+            v2.SetCoord(ONETHIRD*mi2d2.X()+TWOTHIRD*xy2.X(), 
+              ONETHIRD*mi2d2.Y()+TWOTHIRD*xy2.Y());
+            v3.SetCoord(ONETHIRD*mi2d3.X()+TWOTHIRD*xy3.X(), 
+              ONETHIRD*mi2d3.Y()+TWOTHIRD*xy3.Y());
 
-	    if (defle > defstock) {
-	      di <<"face "<< nbface <<" deflection = " << defle <<" pour "<<defstock <<" stockee."<<"\n";
-	    }
-	  }
-	}
+            S->D0(mi2d1.X(), mi2d1.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            S->D0(mi2d2.X(), mi2d2.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            S->D0(mi2d3.X(), mi2d3.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            S->D0(v1.X(), v1.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            S->D0(v2.X(), v2.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            S->D0(v3.X(), v3.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            S->D0(mitri.X(), mitri.Y(), PP);
+            PP = PP.Transformed(L.Transformation());
+            defle = Abs((equa*PP.XYZ())-dipo);
+            deflemax = Max(deflemax, defle);
+            deflemin = Min(deflemin, defle);
+
+            if (defle > defstock) {
+              di <<"face "<< nbface <<" deflection = " << defle <<" pour "<<defstock <<" stockee."<<"\n";
+            }
+          }
+        }
       }
       if (!quiet) {
-	di <<"face "<< nbface<<", deflemin = "<< deflemin<<", deflemax = "<<deflemax<<"\n";
+        di <<"face "<< nbface<<", deflemin = "<< deflemin<<", deflemax = "<<deflemax<<"\n";
       }
 
     }
@@ -1096,7 +1096,7 @@ Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char** a)
   if (n != 2) return 1;
   TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
   TopoDS_Face F = TopoDS::Face(aLocalShape);
-//  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[1]));
+  //  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[1]));
   if (F.IsNull()) return 1;
   Handle(Poly_Triangulation) T;
   TopLoc_Location L;
@@ -1111,23 +1111,23 @@ Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char** a)
 
     // Build the connect tool
     Poly_Connect pc(T);
-    
+
     Standard_Integer i,j, nFree, nInternal, nbTriangles = T->NbTriangles();
     Standard_Integer t[3];
-    
+
     // count the free edges
     nFree = 0;
     for (i = 1; i <= nbTriangles; i++) {
       pc.Triangles(i,t[0],t[1],t[2]);
       for (j = 0; j < 3; j++)
-	if (t[j] == 0) nFree++;
+        if (t[j] == 0) nFree++;
     }
-    
+
     // allocate the arrays
     TColStd_Array1OfInteger Free(1,2*nFree);
     nInternal = (3*nbTriangles - nFree) / 2;
     TColStd_Array1OfInteger Internal(0,2*nInternal);
-    
+
     Standard_Integer fr = 1, in = 1;
     const Poly_Array1OfTriangle& triangles = T->Triangles();
     Standard_Integer nodes[3];
@@ -1135,21 +1135,21 @@ Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char** a)
       pc.Triangles(i,t[0],t[1],t[2]);
       triangles(i).Get(nodes[0],nodes[1],nodes[2]);
       for (j = 0; j < 3; j++) {
-	Standard_Integer k = (j+1) % 3;
-	if (t[j] == 0) {
-	  Free(fr)   = nodes[j];
-	  Free(fr+1) = nodes[k];
-	  fr += 2;
-	}
-	// internal edge if this triangle has a lower index than the adjacent
-	else if (i < t[j]) {
-	  Internal(in)   = nodes[j];
-	  Internal(in+1) = nodes[k];
-	  in += 2;
-	}
+        Standard_Integer k = (j+1) % 3;
+        if (t[j] == 0) {
+          Free(fr)   = nodes[j];
+          Free(fr+1) = nodes[k];
+          fr += 2;
+        }
+        // internal edge if this triangle has a lower index than the adjacent
+        else if (i < t[j]) {
+          Internal(in)   = nodes[j];
+          Internal(in+1) = nodes[k];
+          in += 2;
+        }
       }
     }
-    
+
     // Display the edges
     if (T->HasUVNodes()) {
       const TColgp_Array1OfPnt2d& Nodes2d = T->UVNodes();
@@ -1160,20 +1160,20 @@ Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char** a)
       Standard_Integer nn;
       nn = Free.Length() / 2;
       for (i = 1; i <= nn; i++) {
-	Seg = new Draw_Segment2D(Nodes2d(Free(2*i-1)),
-				 Nodes2d(Free(2*i)),
-				 Draw_rouge);
-	dout << Seg;
+        Seg = new Draw_Segment2D(Nodes2d(Free(2*i-1)),
+          Nodes2d(Free(2*i)),
+          Draw_rouge);
+        dout << Seg;
       }
-      
+
       // internal edges
-    
+
       nn = nInternal;
       for (i = 1; i <= nn; i++) {
-	Seg = new Draw_Segment2D(Nodes2d(Internal(2*i-1)),
-				 Nodes2d(Internal(2*i)),
-				 Draw_bleu);
-	dout << Seg;
+        Seg = new Draw_Segment2D(Nodes2d(Internal(2*i-1)),
+          Nodes2d(Internal(2*i)),
+          Draw_bleu);
+        dout << Seg;
       }
     }
     dout.Flush();
@@ -1224,9 +1224,9 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
   Standard_Real x, y, z;
   Standard_Integer n1, n2, n3;
   Standard_Integer k1, k2, k3;
-  
+
   char ffile[100];
-  
+
   if (nbarg == 3) {
     strcpy(ffile, argv[2]);
     strcat(ffile, ".obj");
@@ -1242,70 +1242,70 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
     nbface++;
     TopoDS_Face F = TopoDS::Face(ex.Current());
     Handle(Poly_Triangulation) Tr = BRep_Tool::Triangulation(F, L);
-    
+
     if (!Tr.IsNull()) {
       nbNodes = Tr->NbNodes();
       const TColgp_Array1OfPnt& Nodes = Tr->Nodes();
-      
+
       // les noeuds.
       for (i = 1; i <= nbNodes; i++) {
-	gp_Pnt Pnt = Nodes(i).Transformed(L.Transformation());
-	x = Pnt.X();
-	y = Pnt.Y();
-	z = Pnt.Z();
-	fprintf(outfile, "%s      %f  %f  %f\n", "v", x, y, z);
+        gp_Pnt Pnt = Nodes(i).Transformed(L.Transformation());
+        x = Pnt.X();
+        y = Pnt.Y();
+        z = Pnt.Z();
+        fprintf(outfile, "%s      %f  %f  %f\n", "v", x, y, z);
       }
-      
+
       fprintf(outfile, "\n%s    %d\n\n", "# number of vertex", nbNodes);
-      
-      
+
+
       // les normales.
-      
+
       if (Tr->HasUVNodes()) {
-	const TColgp_Array1OfPnt2d& UVNodes = Tr->UVNodes();
-	BRepAdaptor_Surface BS(F, Standard_False);
-	
-	for (i = 1; i <= nbNodes; i++) {
-	  U = UVNodes(i).X();
-	  V = UVNodes(i).Y();
-	  
-	  BS.D1(U,V,P,D1U,D1V);
-	  CSLib::Normal(D1U,D1V,Precision::Angular(),Status,Nor);
-	  if (Status != CSLib_Done) {
-	    BS.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
-	    CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,Precision::Angular(),OK,NStat,Nor);
-	  }
-	  if (F.Orientation() == TopAbs_REVERSED) Nor.Reverse();
-	  
-	  fprintf(outfile, "%s      %f  %f  %f\n", "vn", Nor.X(), Nor.Y(), Nor.Z());
-	}
-	
-	fprintf(outfile, "\n%s    %d\n\n", "# number of vertex normals", nbNodes);
+        const TColgp_Array1OfPnt2d& UVNodes = Tr->UVNodes();
+        BRepAdaptor_Surface BS(F, Standard_False);
+
+        for (i = 1; i <= nbNodes; i++) {
+          U = UVNodes(i).X();
+          V = UVNodes(i).Y();
+
+          BS.D1(U,V,P,D1U,D1V);
+          CSLib::Normal(D1U,D1V,Precision::Angular(),Status,Nor);
+          if (Status != CSLib_Done) {
+            BS.D2(U,V,P,D1U,D1V,D2U,D2V,D2UV);
+            CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,Precision::Angular(),OK,NStat,Nor);
+          }
+          if (F.Orientation() == TopAbs_REVERSED) Nor.Reverse();
+
+          fprintf(outfile, "%s      %f  %f  %f\n", "vn", Nor.X(), Nor.Y(), Nor.Z());
+        }
+
+        fprintf(outfile, "\n%s    %d\n\n", "# number of vertex normals", nbNodes);
       }
-      
+
       fprintf(outfile, "%s    %d\n", "s", nbface);
-      
+
       // les triangles.
       Standard_Integer nbTriangles = Tr->NbTriangles();
       const Poly_Array1OfTriangle& triangles = Tr->Triangles();
-      
-      
+
+
       for (i = 1; i <= nbTriangles; i++) {
-	if (F.Orientation()  == TopAbs_REVERSED)
-	  triangles(i).Get(n1, n3, n2);
-	else 
-	  triangles(i).Get(n1, n2, n3);
-	k1 = n1+totalnodes;
-	k2 = n2+totalnodes;
-	k3 = n3+totalnodes;
-	fprintf(outfile, "%s %d%s%d %d%s%d %d%s%d\n", "fo", k1,"//", k1, k2,"//", k2, k3,"//", k3);
+        if (F.Orientation()  == TopAbs_REVERSED)
+          triangles(i).Get(n1, n3, n2);
+        else 
+          triangles(i).Get(n1, n2, n3);
+        k1 = n1+totalnodes;
+        k2 = n2+totalnodes;
+        k3 = n3+totalnodes;
+        fprintf(outfile, "%s %d%s%d %d%s%d %d%s%d\n", "fo", k1,"//", k1, k2,"//", k2, k3,"//", k3);
       }
       nbpolygons += nbTriangles;
       totalnodes += nbNodes;
-      
+
       fprintf(outfile, "\n%s    %d\n", "# number of smooth groups", nbface);
       fprintf(outfile, "\n%s    %d\n", "# number of polygons", nbpolygons);
-      
+
     }
   }
 
@@ -1323,48 +1323,48 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
 Standard_Integer onetriangulation(Draw_Interpretor&, Standard_Integer nbarg, const char** argv)
 {
 
-/*
+  /*
 
   if (nbarg < 2) return 1;
 
   TopoDS_Shape S = DBRep::Get(argv[1]);
   if (S.IsNull()) return 1;
-  
+
   Handle(Poly_Triangulation) TFinale;
   char name[100];
   Standard_Integer nbshell = 0;
 
   TopExp_Explorer ex, exs, ex2;
-  
+
   for (ex.Init(S, TopAbs_SHELL); ex.More(); ex.Next()) {
-    nbshell++;
-    TopoDS_Shell Sh = TopoDS::Shell(ex.Current());
+  nbshell++;
+  TopoDS_Shell Sh = TopoDS::Shell(ex.Current());
 
-    for (exs.Init(Sh, TopAbs_Face); exs.More(); exs.Next()) {
-      TopoDS_Face F = TopoDS::Face(exs.Current());
-      Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
+  for (exs.Init(Sh, TopAbs_Face); exs.More(); exs.Next()) {
+  TopoDS_Face F = TopoDS::Face(exs.Current());
+  Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
 
-      for (ex2.Init(F, TopAbs_EDGE); ex2.More(); ex2.Next()) {
-	TopoDS_Edge edge = TopoDS::Edge(ex2.Current());
-	const TColgp_Array1OfPnt& Nodes = T->Nodes();
-	const Poly_Array1OfTriangle& triangles = T->Triangles();
-	
-	if (mapedges.IsBound(edge)) {
-	  const TColStd_ListOfTransient& L = edges.Find(edge);
-	  const Handle(Poly_PolygonOnTriangulation)& P = 
-	    *(Handle(Poly_PolygonOnTriangulation)*)&(L.First());
-	  const TColStd_Array1OfInteger& NOD = P->Nodes();
-	  
-	}
-      }
-    }
-    
-    sprintf(name, "%s_%i", "tr", nbshell);
-    DrawTrSurf::Set(name, TFinale);
+  for (ex2.Init(F, TopAbs_EDGE); ex2.More(); ex2.Next()) {
+  TopoDS_Edge edge = TopoDS::Edge(ex2.Current());
+  const TColgp_Array1OfPnt& Nodes = T->Nodes();
+  const Poly_Array1OfTriangle& triangles = T->Triangles();
+
+  if (mapedges.IsBound(edge)) {
+  const TColStd_ListOfTransient& L = edges.Find(edge);
+  const Handle(Poly_PolygonOnTriangulation)& P = 
+  *(Handle(Poly_PolygonOnTriangulation)*)&(L.First());
+  const TColStd_Array1OfInteger& NOD = P->Nodes();
+
+  }
+  }
+  }
+
+  sprintf(name, "%s_%i", "tr", nbshell);
+  DrawTrSurf::Set(name, TFinale);
 
   }
 
-*/
+  */
   return 0;
 }
 
@@ -1386,34 +1386,34 @@ Standard_Integer vb(Draw_Interpretor& di, Standard_Integer nbarg, const char** a
       math_Vector GaussP(1, NbPoints), GaussW(1, NbPoints);
       math_Vector TheWeights(1, NbPoints), VBParam(1, NbPoints);
       math_Matrix VB(1, Deg+1, 1, NbPoints);
-      
+
       math::GaussPoints(NbPoints, GaussP);
-      
+
       Standard_Integer i, j, classe = Deg+1, cl1 = Deg;
-      
+
       // calcul et mise en ordre des parametres et des poids:
       for (i = 1; i <= NbPoints; i++) {
-	if (i <=  (NbPoints+1)/2) {
-	  VBParam(NbPoints-i+1)  = 0.5*(1 + GaussP(i));
-	}
-	else {
-	  VBParam(i-(NbPoints+1)/2)  = 0.5*(1 + GaussP(i));
-	}
+        if (i <=  (NbPoints+1)/2) {
+          VBParam(NbPoints-i+1)  = 0.5*(1 + GaussP(i));
+        }
+        else {
+          VBParam(i-(NbPoints+1)/2)  = 0.5*(1 + GaussP(i));
+        }
       }
-      
-      
+
+
       // Calcul du VB (Valeur des fonctions de Bernstein):
       for (i = 1; i <= classe; i++) {
-	for (j = 1; j <= NbPoints; j++) {
-	  VB(i,j)=PLib::Binomial(cl1,i-1)*Pow((1-VBParam(j)),classe-i)*Pow(VBParam(j),i-1);
-	}
+        for (j = 1; j <= NbPoints; j++) {
+          VB(i,j)=PLib::Binomial(cl1,i-1)*Pow((1-VBParam(j)),classe-i)*Pow(VBParam(j),i-1);
+        }
       }
-      
-      
+
+
       for (i = 1; i <= classe; i++) {
-	for (j = 1; j <= NbPoints; j++) {
-	  di<< VB(i, j) << ", ";
-	}
+        for (j = 1; j <= NbPoints; j++) {
+          di<< VB(i, j) << ", ";
+        }
       }
       di << "\n" << "\n";
     }
@@ -1427,8 +1427,8 @@ Standard_Integer vb(Draw_Interpretor& di, Standard_Integer nbarg, const char** a
 
 Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer nbarg, const char** argv)
 {
-  
-  
+
+
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(argv[1]);
 
   Standard_Real X, Y, Z, U0;
@@ -1458,7 +1458,7 @@ Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer nbarg, const cha
 
 
 //=======================================================================
-  void  MeshTest::Commands(Draw_Interpretor& theCommands)
+void  MeshTest::Commands(Draw_Interpretor& theCommands)
 //=======================================================================
 {
   Draw::Commands(theCommands);
@@ -1468,7 +1468,7 @@ Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer nbarg, const cha
   const char* g;
 
   g = "Mesh Commands";
-  
+
   theCommands.Add("shpsec","shpsec result shape shape",__FILE__, shapesection, g);
   theCommands.Add("plnsec","plnsec result shape plane",__FILE__, planesection, g);
   theCommands.Add("incmesh","incmesh shape deflection",__FILE__, incrementalmesh, g);

@@ -1,38 +1,38 @@
-// File:	BRepMesh_Vertex.cxx
-// Created:	Thu Sep 23 12:46:51 1993
-// Author:	Didier PIFFAULT
-//		<dpf@zerox>
+// File:        BRepMesh_Vertex.cxx
+// Created:     Thu Sep 23 12:46:51 1993
+// Author:      Didier PIFFAULT
+//              <dpf@zerox>
 
 #include <BRepMesh_Vertex.ixx>
 #include <Precision.hxx>
 
 
 BRepMesh_Vertex::BRepMesh_Vertex()
-     : myLocation(0), myMovability(MeshDS_Free)
+: myLocation(0), myMovability(BRepMesh_Free)
 {}
 
 BRepMesh_Vertex::BRepMesh_Vertex(const gp_XY& UV,
-				 const Standard_Integer Locat3d,
-				 const MeshDS_DegreeOfFreedom Move)
-     : myUV(UV), myLocation(Locat3d), myMovability(Move)
+                                 const Standard_Integer Locat3d,
+                                 const BRepMesh_DegreeOfFreedom Move)
+                                 : myUV(UV), myLocation(Locat3d), myMovability(Move)
 {}
 
 BRepMesh_Vertex::BRepMesh_Vertex(const Standard_Real U,
-				 const Standard_Real V,
-				 const MeshDS_DegreeOfFreedom Move)
-     : myUV(U, V), myLocation(0), myMovability(Move)
+                                 const Standard_Real V,
+                                 const BRepMesh_DegreeOfFreedom Move)
+                                 : myUV(U, V), myLocation(0), myMovability(Move)
 {}
 
 void  BRepMesh_Vertex::Initialize(const gp_XY& UV,
-				  const Standard_Integer Locat3d,
-				  const MeshDS_DegreeOfFreedom Move)
+                                  const Standard_Integer Locat3d,
+                                  const BRepMesh_DegreeOfFreedom Move)
 {
   myUV=UV;
   myLocation=Locat3d;
   myMovability=Move;
 }
 
-void  BRepMesh_Vertex::SetMovability(const MeshDS_DegreeOfFreedom Move)
+void  BRepMesh_Vertex::SetMovability(const BRepMesh_DegreeOfFreedom Move)
 {
   myMovability=Move;
 }
@@ -48,7 +48,7 @@ Standard_Integer  BRepMesh_Vertex::HashCode(const Standard_Integer Upper)const
 
 Standard_Boolean  BRepMesh_Vertex::IsEqual(const BRepMesh_Vertex& Other)const
 {
-  if (myMovability!=MeshDS_Deleted && Other.myMovability!=MeshDS_Deleted)
+  if (myMovability!=BRepMesh_Deleted && Other.myMovability!=BRepMesh_Deleted)
     return (myUV.IsEqual(Other.myUV, Precision::PConfusion()));
   return Standard_False;
 }
