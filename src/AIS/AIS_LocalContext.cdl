@@ -20,7 +20,7 @@
 ---Copyright:    Matra Datavision 1996
 
 
-private class LocalContext from AIS inherits TShared from MMgt
+class LocalContext from AIS inherits TShared from MMgt
 
         ---Purpose: Defines a specific context  for selection.      
         --          It becomes possible to:
@@ -531,10 +531,10 @@ is
 
 
     FindSelectedOwnerFromIO(me;anIObj:InteractiveObject from AIS)
-    returns EntityOwner from SelectMgr is private;
+    returns EntityOwner from SelectMgr;
 
     FindSelectedOwnerFromShape(me;aShape : Shape from TopoDS)
-    returns EntityOwner from SelectMgr is private;
+    returns EntityOwner from SelectMgr;
 
 
 

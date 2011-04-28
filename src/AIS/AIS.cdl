@@ -318,7 +318,7 @@ is
 
     class GraphicTool;
                             
-    private class LocalContext;    
+    class LocalContext;    
 
     private class LocalStatus;
 

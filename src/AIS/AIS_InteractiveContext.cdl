@@ -2038,6 +2038,18 @@ is
     
 	    ---Category: Internal
 
+        ---Category: Internal
+
+    LocalContext(me) returns LocalContext from AIS;
+    ---Level: Internal 
+    ---Purpose:
+    -- This method is only intended for advanced operation, particularly with
+    -- the aim to improve performance when many objects have to be selected
+    -- together. Otherwise, you should use other (non-internal) methods of
+    -- class AIS_InteractiveContext without trying to obtain an instance of
+    -- AIS_LocalContext.
+    ---C++: inline
+
     SelectionManager(me) returns any SelectionManager from SelectMgr;
     ---C++: inline
     ---C++: return const &
