@@ -55,6 +55,8 @@ static unsigned long vRand = 1L;
 #include <OpenGl_tgl_funcs.hxx>
 #include <OpenGl_LightBox.hxx>
 #include <OpenGl_TextureBox.hxx>
+#include <OpenGl_ResourceCleaner.hxx>
+#include <OpenGl_ResourceVBO.hxx>
 #include <InterfaceGraphic_PrimitiveArray.hxx>
 #include <OpenGl_Memory.hxx>
 #include <Standard.hxx>
@@ -232,6 +234,10 @@ static void  BuildVBO( CALL_DEF_PARRAY* p )
 
   if( p->flagBufferVBO == VBO_OK )
     clearRAMMemory(p);
+
+  //specify context for VBO resource
+  p->contextId = (Standard_Address)GET_GL_CONTEXT();
+
 }
 
 /*----------------------------------------------------------------------*/
@@ -753,6 +759,21 @@ draw_array( call_def_parray p, Tint hflag,
 static  TStatus
 ParrayDelete( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 {
+  call_def_parray p = (call_def_parray)data.pdata;
+  if( p->VBOEnabled == VBO_OK ) {
+    OpenGl_ResourceCleaner* resCleaner = OpenGl_ResourceCleaner::GetInstance();
+    if( p->bufferVBO[VBOEdges] )
+      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOEdges]) ); 
+    if( p->bufferVBO[VBOVertices] )
+      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVertices]) ); 
+    if( p->bufferVBO[VBOVcolours] )
+	  resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVcolours]) ); 
+    if( p->bufferVBO[VBOVnormals] )
+      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVnormals]) ); 
+    if( p->bufferVBO[VBOVtexels] )
+      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVtexels]) ); 
+  }
+
   return TSuccess;
 }
 

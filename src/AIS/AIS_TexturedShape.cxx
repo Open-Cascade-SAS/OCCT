@@ -342,8 +342,10 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 	BRepTools::Update(myshape);
 
 	Handle(Graphic3d_StructureManager) aStrucMana = GetContext()->MainPrsMgr()->StructureManager();
-
-	myAspect = (new Prs3d_ShadingAspect())->Aspect();
+	  {  
+	    Handle(Prs3d_ShadingAspect) aPrs3d_ShadingAspect = new Prs3d_ShadingAspect;
+	    myAspect = aPrs3d_ShadingAspect->Aspect();
+	  }
 	if (!DoMapTexture)
 	  {
 	    myAspect->SetTextureMapOff();

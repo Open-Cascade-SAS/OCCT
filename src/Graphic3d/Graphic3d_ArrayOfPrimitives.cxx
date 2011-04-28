@@ -85,6 +85,7 @@ Graphic3d_ArrayOfPrimitives :: Graphic3d_ArrayOfPrimitives (
   myPrimitiveArray->num_edges     = 0;
   myPrimitiveArray->VBOEnabled    = -1;
   myPrimitiveArray->flagBufferVBO = -1;
+  myPrimitiveArray->contextId     = 0;
 
   for( int i =0 ; i < VBOMaxType ; i++){
     myPrimitiveArray->bufferVBO[i] = 0;

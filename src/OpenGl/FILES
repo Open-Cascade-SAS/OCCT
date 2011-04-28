@@ -240,3 +240,10 @@ OpenGl_graduatedtrihedron.hxx
 OpenGl_togl_graduatedtrihedron.cxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
+OpenGl_Resource.hxx
+OpenGl_ResourceCleaner.cxx
+OpenGl_ResourceCleaner.hxx
+OpenGl_ResourceVBO.cxx
+OpenGl_ResourceVBO.hxx
+OpenGl_ResourceTexture.cxx
+OpenGl_ResourceTexture.hxx

@@ -81,6 +81,8 @@
 #include <OpenGl_ImageBox.hxx>
 #include <OpenGl_TextureBox.hxx>
 #include <OpenGl_Memory.hxx>
+#include <OpenGl_ResourceCleaner.hxx>
+#include <OpenGl_ResourceTexture.hxx>
 
 
 /*----------------------------------------------------------------------*/
@@ -183,7 +185,6 @@ static GLboolean    use_bind_texture = GL_FALSE;
 /*
 * Fonctions privees
 */
-
 
 /*----------------------------------------------------------------------*/
 /*
@@ -853,6 +854,7 @@ void SetCurrentTexture(TextureID ID)
 void FreeTexture(TextureID ID)
 {
   TextureDataID data;
+  bool notResource = false; // if there old-style texture deletion
 
 #if defined(GL_EXT_texture_object)
   GLCONTEXT cur_context;
@@ -880,24 +882,35 @@ void FreeTexture(TextureID ID)
         printf("FreeTexture::liberation de %d\n", ID);
 #endif
         cur_context = 0;
+        bool isResource = false; 
+
         if (textab[ID].use_bind_texture[i])
         {
-          GL_MAKE_CURRENT(GetCurrentDisplay(),
-            textab[ID].drawable[i],
-            textab[ID].context[i]);
+          if( !OpenGl_ResourceCleaner::GetInstance()->AddResource(textab[ID].context[i], 
+			      new OpenGl_ResourceTexture(textab[ID].number[i])) )
+          {
+            GL_MAKE_CURRENT(GetCurrentDisplay(),
+              textab[ID].drawable[i],
+              textab[ID].context[i]);
 
-          /*This check has been added to avoid exception, 
-          which is raised when trying to delete textures when no rendering context
-          is available*/
-          cur_context = GET_GL_CONTEXT();
-          if( cur_context )
-            glDeleteTextures(1, &textab[ID].number[i]);
+            /*This check has been added to avoid exception, 
+            which is raised when trying to delete textures when no rendering context
+            is available*/
+            cur_context = GET_GL_CONTEXT();
+            if( cur_context )
+              glDeleteTextures(1, &textab[ID].number[i]);
+            notResource = true;
+          }
+          else
+            isResource = true;
         }
-        if( cur_context )
+
+        if( !isResource && cur_context )
           glFinish();
       }
 
-      GL_MAKE_CURRENT(GetCurrentDisplay(),cur_drawable,cur_context);
+      if( notResource )
+        GL_MAKE_CURRENT(GetCurrentDisplay(),cur_drawable,cur_context);
 
       texdata[data].status = TEXDATA_NONE;
 #ifndef IMP141100

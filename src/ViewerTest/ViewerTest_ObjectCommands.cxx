@@ -24,7 +24,7 @@
 #include <Draw_Appli.hxx>
 #include <DBRep.hxx>
 
-
+#include <OSD_Chronometer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
@@ -91,7 +91,7 @@ extern Handle(AIS_InteractiveContext)& TheAISContext();
 //==============================================================================
 //function : Vtrihedron 2d
 //purpose  : Create a plane with a 2D  trihedron from a faceselection
-//Draw arg : vtri2d  name  
+//Draw arg : vtri2d  name
 //==============================================================================
 #include <AIS_PlaneTrihedron.hxx>
 
@@ -105,7 +105,7 @@ static int VTrihedron2D (Draw_Interpretor& di, Standard_Integer argc, const char
 
   // Declarations
   Standard_Integer myCurrentIndex;
-  // Fermeture des contextes 
+  // Fermeture des contextes
   TheAISContext()->CloseAllContexts();
   // Ouverture d'un contexte local et recuperation de son index.
   TheAISContext()->OpenLocalContext();
@@ -133,7 +133,7 @@ static int VTrihedron2D (Draw_Interpretor& di, Standard_Integer argc, const char
   TopExp_Explorer FaceExpB(FaceB,TopAbs_EDGE);
 
   TopoDS_Edge EdgeB=TopoDS::Edge(FaceExpB.Current() );
-  // declarations 
+  // declarations
   gp_Pnt A,B,C;
 
   // si il y a plusieurs edges
@@ -167,7 +167,7 @@ static int VTrihedron2D (Draw_Interpretor& di, Standard_Integer argc, const char
   TheAISContext()->Display(theAISPlaneTri );
   GetMapOfAIS().Bind ( theAISPlaneTri ,argv[1]);
 
-  return 0; 
+  return 0;
 }
 
 
@@ -219,7 +219,7 @@ static int VTrihedron (Draw_Interpretor& di, Standard_Integer argc, const char**
   GetMapOfAIS().Bind(aShape,name);
   TheAISContext()->Display(aShape);
 
-  return 0; 
+  return 0;
 }
 
 
@@ -241,7 +241,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   Standard_Boolean             ThereIsName;
   Standard_Boolean             ThereIsCurrent;
   Standard_Real                value;
-  Standard_Boolean             hascol; 
+  Standard_Boolean             hascol;
 #ifdef DEB
   Quantity_NameOfColor         col;
 #else
@@ -257,7 +257,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   else              {ThereIsName=Standard_True;value=atof(argv[2]);}
 
   // On ferme le contexte local pour travailler dans le contexte global
-  if(TheAISContext()->HasOpenedContext()) 
+  if(TheAISContext()->HasOpenedContext())
     TheAISContext()->CloseLocalContext();
 
   // On set le booleen ThereIsCurrent
@@ -269,7 +269,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   //===============================================================
   // Il n'y a pas de nom  mais des objets selectionnes
   //===============================================================
-  if (!ThereIsName && ThereIsCurrent) 
+  if (!ThereIsName && ThereIsCurrent)
   {
 
     ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
@@ -283,7 +283,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       if (!aShape.IsNull() &&  TheAISContext()->IsCurrent(aShape) )
       {
 
-        // On verifie que l'AIS InteraciveObject selectionne est bien 
+        // On verifie que l'AIS InteraciveObject selectionne est bien
         // un AIS_Trihedron
         if (aShape->Type()==AIS_KOI_Datum && aShape->Signature()==3) {
 
@@ -342,7 +342,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       Handle(AIS_InteractiveObject) aShape =
         Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
 
-      // On verifie que l'AIS InteraciveObject est bien 
+      // On verifie que l'AIS InteraciveObject est bien
       // un AIS_Trihedron
       if (!aShape.IsNull() &&
         aShape->Type()==AIS_KOI_Datum && aShape->Signature()==3)
@@ -375,7 +375,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
       }
     }
   }
-  return 0; 
+  return 0;
 }
 
 
@@ -384,7 +384,7 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 //==============================================================================
 //function : VPlaneTrihedron
 //purpose  : Create a plane from a trihedron selection. If no arguments are set, the default
-//Draw arg : vplanetri  name  
+//Draw arg : vplanetri  name
 //==============================================================================
 #include <AIS_Plane.hxx>
 
@@ -401,7 +401,7 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
   // Fermeture des contextes locaux
   TheAISContext()->CloseAllContexts();
 
-  // On recupere tous les trihedrons de la GetMapOfAIS() 
+  // On recupere tous les trihedrons de la GetMapOfAIS()
   // et on active le mode de selection par face.
   // =================================================
 
@@ -448,14 +448,14 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
   TheAISContext()->Display(PlaneB );
   GetMapOfAIS().Bind ( PlaneB ,argv[1]);
 
-  return 0; 
+  return 0;
 }
 
 
 
 //==============================================================================
 // Fonction        First click      2de click
-// 
+//
 // vaxis           vertex           vertex
 //                 edge             None
 // vaxispara       edge             vertex
@@ -465,7 +465,7 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
 
 //==============================================================================
 //function : VAxisBuilder
-//purpose  : 
+//purpose  :
 //Draw arg : vaxis AxisName Xa Ya Za Xb Yb Zb
 //==============================================================================
 #include <TopoDS_Edge.hxx>
@@ -473,7 +473,7 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
 #include <TopExp.hxx>
 #include <Geom_Line.hxx>
 
-static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   // Declarations
   Standard_Boolean HasArg;
@@ -523,7 +523,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvv = (const char **) buff;
       while (ViewerMainLoop( argcc, argvv) ) { }
-      // fin de la boucle 
+      // fin de la boucle
 
       // recuperation de la shape.
       TopoDS_Shape ShapeA;
@@ -547,7 +547,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
           const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
           const char **argvvv = (const char **) bufff;
           while (ViewerMainLoop( argccc, argvvv) ) { }
-          // fin de la boucle 
+          // fin de la boucle
           for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
             ShapeB = TheAISContext()->SelectedShape();
           }
@@ -558,7 +558,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
         // Fermeture du context local
         TheAISContext()->CloseLocalContext(MyCurrentIndex);
 
-        // Construction de l'axe 
+        // Construction de l'axe
         gp_Pnt   A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA)  );
         gp_Pnt   B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB)  );
         gp_Vec   V (A,B);
@@ -567,12 +567,12 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
         Handle(AIS_Axis) TheAxis=new AIS_Axis (OrigineAndVect);
         GetMapOfAIS().Bind (TheAxis,name);
         TheAISContext()->Display(TheAxis);
-      } 
+      }
       else {
         // Un unique edge (ShapeA) a ete picke
         // Fermeture du context local
         TheAISContext()->CloseLocalContext(MyCurrentIndex);
-        // Constuction de l'axe 
+        // Constuction de l'axe
         TopoDS_Edge    ed =TopoDS::Edge(ShapeA);
         TopoDS_Vertex  Va,Vb;
         TopExp::Vertices(ed,Va,Vb );
@@ -595,7 +595,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       TheAISContext()->OpenLocalContext();
       MyCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
 
-      // Active le mode edge 
+      // Active le mode edge
       TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(2) );
       di<<" Select an edge."<<"\n";
 
@@ -604,7 +604,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvv = (const char **) buff;
       while (ViewerMainLoop( argcc, argvv) ) { }
-      // fin de la boucle 
+      // fin de la boucle
 
       TopoDS_Shape ShapeA;
       for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
@@ -620,7 +620,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvvv = (const char **) bufff;
       while (ViewerMainLoop( argccc, argvvv) ) { }
-      // fin de la boucle 
+      // fin de la boucle
 
       // On peut choisir un pnt sur l'edge
       TopoDS_Shape ShapeB;
@@ -651,7 +651,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       TheAISContext()->OpenLocalContext();
       MyCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
 
-      // Active le mode edge 
+      // Active le mode edge
       TheAISContext()->ActivateStandardMode(AIS_Shape::SelectionType(2) );
       di<<" Select an edge."<<"\n";
 
@@ -660,7 +660,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvv = (const char **) buff;
       while (ViewerMainLoop( argcc, argvv) ) { }
-      // fin de la boucle 
+      // fin de la boucle
 
       TopoDS_Shape ShapeA;
       for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
@@ -676,7 +676,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
       const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvvv = (const char **) bufff;
       while (ViewerMainLoop( argccc, argvvv) ) { }
-      // fin de la boucle 
+      // fin de la boucle
 
       // On peut choisir un pnt sur l'edge
       TopoDS_Shape ShapeB;
@@ -710,7 +710,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
 //==============================================================================
 // Fonction        First click      Result
-// 
+//
 // vpoint          vertex           AIS_Point=Vertex
 //                 edge             AIS_Point=Middle of the edge
 //==============================================================================
@@ -726,7 +726,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 #include <AIS_Point.hxx>
 #include <Geom_CartesianPoint.hxx>
 
-static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   // Declarations
   Standard_Boolean HasArg;
@@ -811,7 +811,7 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
 }
 
 //==============================================================================
-// Fonction        1st click   2de click  3de click   
+// Fonction        1st click   2de click  3de click
 // vplane          Vertex      Vertex     Vertex
 //                 Vertex      Edge
 //                 Edge        Vertex
@@ -843,7 +843,7 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
 #include <gp_Pln.hxx>
 #include <GC_MakePlane.hxx>
 
-static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   // Declarations
   Standard_Boolean HasArg;
@@ -895,7 +895,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
           return 1;
         }
 
-        // Traitement des objets A,B,C 
+        // Traitement des objets A,B,C
         // Downcaste de AIS_IO en AIS_Point
         Handle(AIS_Point) theAISPointA= *(Handle(AIS_Point)*)& theShapeA;
         Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
@@ -939,7 +939,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         TheAISContext()->Display(myAISPlane);
       }
 
-      // si le premier argument est un AIS_Axis 2 
+      // si le premier argument est un AIS_Axis 2
       // creation d'un plan orthogonal a l'axe passant par un point
     else if (theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==2 ) {
       // le deuxieme argument doit etre un AIS_Point
@@ -959,7 +959,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         return 1;
       }
 
-      // Traitement des objets A et B 
+      // Traitement des objets A et B
       Handle(AIS_Axis) theAISAxisA= *(Handle(AIS_Axis)*)& theShapeA;
       Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
 
@@ -1000,7 +1000,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         return 1;
       }
 
-      // Traitement des objets A et B 
+      // Traitement des objets A et B
       Handle(AIS_Plane) theAISPlaneA= *(Handle(AIS_Plane)*)& theShapeA;
       Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
 
@@ -1085,10 +1085,10 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
           // ShapeC est aussi un vertex...
           if (ShapeC.IsSame(ShapeA)||ShapeC.IsSame(ShapeB) ) {di<<" vplane: error, same points selected"<<"\n";return 1; }
 
-          // Fermeture du contexte local 
+          // Fermeture du contexte local
           TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-          // Construction du plane 
+          // Construction du plane
           gp_Pnt A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA ) );
           gp_Pnt B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB ) );
           gp_Pnt C=BRep_Tool::Pnt(TopoDS::Vertex(ShapeC ) );
@@ -1112,9 +1112,9 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
           }
           else {
             // le vertex n'appartient pes a l'edge on peut construire le plane
-            // Fermeture du contexte local 
+            // Fermeture du contexte local
             TheAISContext()->CloseLocalContext(myCurrentIndex);
-            // Construction du plane 
+            // Construction du plane
             gp_Pnt A=BRep_Tool::Pnt(VertA );
             TopoDS_Vertex VBa,VBb;
             TopExp::Vertices(EdgeB ,VBa ,VBb );
@@ -1161,9 +1161,9 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         }
         else {
           // le vertex n'appartient pas a l'edge on peut construire le plane
-          // Fermeture du contexte local 
+          // Fermeture du contexte local
           TheAISContext()->CloseLocalContext(myCurrentIndex);
-          // Construction du plane 
+          // Construction du plane
           gp_Pnt B=BRep_Tool::Pnt(VertB );
           TopoDS_Vertex VAa,VAb;
           TopExp::Vertices(EdgeA ,VAa ,VAb );
@@ -1183,7 +1183,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
       else {
         // Fermeture du contexte local: Plus rien a selectionner
         TheAISContext()->CloseLocalContext(myCurrentIndex);
-        // Construction du plane 
+        // Construction du plane
         TopoDS_Face myFace=TopoDS::Face(ShapeA);
         BRepAdaptor_Surface mySurface (myFace, Standard_False );
         if (mySurface.GetType()==GeomAbs_Plane ) {
@@ -1210,7 +1210,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
       TheAISContext()->OpenLocalContext();
       myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
 
-      // Active les modes Vertex et Face 
+      // Active les modes Vertex et Face
       TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
       TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
       di<<" Select a vertex or a face."<<"\n";
@@ -1249,7 +1249,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         // Fermeture du context local
         TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-        // Construction du plane 
+        // Construction du plane
         gp_Pnt A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA ) );
 
         TopoDS_Face myFace=TopoDS::Face(ShapeB);
@@ -1290,7 +1290,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         // Fermeture du context local
         TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-        // Construction du plane 
+        // Construction du plane
         gp_Pnt B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB ) );
 
         TopoDS_Face myFace=TopoDS::Face(ShapeA);
@@ -1321,7 +1321,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
       TheAISContext()->OpenLocalContext();
       myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
 
-      // Active les modes Edge et Face 
+      // Active les modes Edge et Face
       TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
       TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
       di<<" Select a face and an edge coplanar."<<"\n";
@@ -1359,7 +1359,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         // Fermeture du context local
         TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-        // Construction du plane 
+        // Construction du plane
         TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
         TopoDS_Vertex VAa,VAb;
         // vi
@@ -1369,8 +1369,8 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         gp_Vec ab  (Aa,Ab);
 
         gp_Dir Dab (ab);
-        // Creation de mon axe de rotation 
-        gp_Ax1 myRotAxis (Aa,Dab); 
+        // Creation de mon axe de rotation
+        gp_Ax1 myRotAxis (Aa,Dab);
 
         TopoDS_Face myFace=TopoDS::Face(ShapeB);
         // Il faut imperativement que l'edge soit parallele a la face
@@ -1379,7 +1379,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         BRepExtrema_ExtPF myHauteurB (VAb , myFace );
         // on compare les deux hauteurs a la tolerance pres
         if ( fabs(sqrt(myHauteurA.SquareDistance(1)) - sqrt (myHauteurB.SquareDistance(1)) )>0.1 ) {
-          // l'edge n'est pas parallele a la face 
+          // l'edge n'est pas parallele a la face
           di<<" vplaneOrtho error: l'edge n'est pas parallele a la face."<<"\n";return 1;
         }
         // l'edge est OK
@@ -1424,7 +1424,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         // Fermeture du context local
         TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-        // Construction du plane 
+        // Construction du plane
         TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
         TopoDS_Vertex VBa,VBb;
         TopExp::Vertices(EdgeB ,VBa ,VBb );
@@ -1432,8 +1432,8 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         gp_Pnt Bb=BRep_Tool::Pnt(VBb);
         gp_Vec ab  (Ba,Bb);
         gp_Dir Dab (ab);
-        // Creation de mon axe de rotation 
-        gp_Ax1 myRotAxis (Ba,Dab); 
+        // Creation de mon axe de rotation
+        gp_Ax1 myRotAxis (Ba,Dab);
 
         TopoDS_Face myFace=TopoDS::Face(ShapeA);
         // Il faut imperativement que l'edge soit parallele a la face
@@ -1441,7 +1441,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         BRepExtrema_ExtPF myHauteurB (VBb , myFace );
         // on compare les deux hauteurs a la tolerance pres
         if ( fabs(sqrt(myHauteurA.SquareDistance(1)) - sqrt(myHauteurB.SquareDistance(1)) )>0.1 ) {
-          // l'edge n'est pas parallele a la face 
+          // l'edge n'est pas parallele a la face
           di<<" vplaneOrtho error: l'edge n'est pas parallele a la face."<<"\n";return 1;
         }
         // l'edge est OK
@@ -1479,7 +1479,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
 
 //==============================================================================
 //function : VLineBuilder
-//purpose  : Build an AIS_Line 
+//purpose  : Build an AIS_Line
 //Draw arg : vline LineName  [AIS_PointName] [AIS_PointName]
 //                           [Xa] [Ya] [Za]   [Xb] [Yb] [Zb]
 //==============================================================================
@@ -1487,7 +1487,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
 #include <AIS_Line.hxx>
 
 
-static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   Standard_Integer myCurrentIndex;
   // Verifications
@@ -1517,7 +1517,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
           return 1;
         }
       }
-    else {di <<"vline error: wrong type of 1st argument."<<"\n";return 1; } 
+    else {di <<"vline error: wrong type of 1st argument."<<"\n";return 1; }
     // Les deux parametres sont du bon type. On verifie que les points ne sont pas confondus
     Handle(AIS_Point) theAISPointA= *(Handle(AIS_Point)*)& theShapeA;
     Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
@@ -1545,7 +1545,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
   // ==================
 
   else if (argc==8) {
-    // On verifie que les deux points ne sont pas confondus 
+    // On verifie que les deux points ne sont pas confondus
 
     Standard_Real coord[6];
     for(Standard_Integer i=0;i<=2;i++){
@@ -1598,7 +1598,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
         const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
         const char **argvvv = (const char **) bufff;
         while (ViewerMainLoop( argccc, argvvv) ) { }
-        // fin de la boucle 
+        // fin de la boucle
 
         for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
           ShapeB = TheAISContext()->SelectedShape();
@@ -1639,7 +1639,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
 //==============================================================================
 //function : VCircleBuilder
-//purpose  : Build an AIS_Circle 
+//purpose  : Build an AIS_Circle
 //Draw arg : vcircle CircleName PlaneName PointName Radius
 //                              PointName PointName PointName
 //==============================================================================
@@ -1650,7 +1650,7 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
 
-static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   Standard_Integer myCurrentIndex;
   // verification of the arguments
@@ -1674,7 +1674,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
     {
       if (theShapeB->Type()!=AIS_KOI_Datum || theShapeB->Signature()!=1 ) {
         di<<"vcircle error: 2de argument is unexpected to be a point."<<"\n";
-        return 1; 
+        return 1;
       }
       // Le troisieme objet doit etre un point
       Handle(AIS_InteractiveObject) theShapeC =
@@ -1682,7 +1682,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
       if (theShapeC.IsNull() ||
         theShapeC->Type()!=AIS_KOI_Datum || theShapeC->Signature()!=1 ) {
           di<<"vcircle error: 3de argument is unexpected to be a point."<<"\n";
-          return 1; 
+          return 1;
         }
         // tag
         // On verifie que les 3 points sont differents.
@@ -1701,15 +1701,15 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 
         // Test A=B
         if (myCartPointA->X()==myCartPointB->X() && myCartPointA->Y()==myCartPointB->Y() && myCartPointA->Z()==myCartPointB->Z()  ) {
-          di<<"vcircle error: Same points."<<"\n";return 1; 
+          di<<"vcircle error: Same points."<<"\n";return 1;
         }
         // Test A=C
         if (myCartPointA->X()==myCartPointC->X() && myCartPointA->Y()==myCartPointC->Y() && myCartPointA->Z()==myCartPointC->Z()  ) {
-          di<<"vcircle error: Same points."<<"\n";return 1; 
+          di<<"vcircle error: Same points."<<"\n";return 1;
         }
         // Test B=C
         if (myCartPointB->X()==myCartPointC->X() && myCartPointB->Y()==myCartPointC->Y() && myCartPointB->Z()==myCartPointC->Z()  ) {
-          di<<"vcircle error: Same points."<<"\n";return 1; 
+          di<<"vcircle error: Same points."<<"\n";return 1;
         }
         // Construction du cercle
         GC_MakeCircle Cir=GC_MakeCircle (myCartPointA->Pnt(),myCartPointB->Pnt(),myCartPointC->Pnt() );
@@ -1724,7 +1724,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
     // ===================================
     else if (theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==7 ) {
       if (theShapeB->Type()!=AIS_KOI_Datum || theShapeB->Signature()!=1 ) {
-        di<<"vcircle error: 2de element is a unexpected to be a point."<<"\n";return 1; 
+        di<<"vcircle error: 2de element is a unexpected to be a point."<<"\n";return 1;
       }
       // On verifie que le rayon est bien >=0
       if (atof(argv[4])<=0 ) {di<<"vcircle error: the radius must be >=0."<<"\n";return 1;  }
@@ -1795,7 +1795,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
         const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
         const char **argvvv = (const char **) bufff;
         while (ViewerMainLoop( argccc, argvvv) ) { }
-        // fin de la boucle 
+        // fin de la boucle
 
         for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
           ShapeB = TheAISContext()->SelectedShape();
@@ -1814,7 +1814,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
         const char *buffff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
         const char **argvvvv = (const char **) buffff;
         while (ViewerMainLoop( argcccc, argvvvv) ) { }
-        // fin de la boucle 
+        // fin de la boucle
 
         for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
           ShapeC = TheAISContext()->SelectedShape();
@@ -1826,7 +1826,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
       // Fermeture du context local
       TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-      // Construction du cercle 
+      // Construction du cercle
       gp_Pnt   A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA)  );
       gp_Pnt   B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB)  );
       gp_Pnt   C=BRep_Tool::Pnt(TopoDS::Vertex(ShapeC)  );
@@ -1849,7 +1849,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
       const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvvv = (const char **) bufff;
       while (ViewerMainLoop( argccc, argvvv) ) { }
-      // fin de la boucle 
+      // fin de la boucle
 
       for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
         ShapeB = TheAISContext()->SelectedShape();
@@ -1906,7 +1906,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic2d_GraphicObject.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx> 
+#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
@@ -1930,7 +1930,7 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 
 #include <gp_Pnt.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Quantity_Color.hxx>                                 
+#include <Quantity_Color.hxx>
 
 
 DEFINE_STANDARD_HANDLE(MyTextClass, AIS_InteractiveObject)
@@ -1943,15 +1943,15 @@ public:
 
   MyTextClass(){};
 
-  MyTextClass 
+  MyTextClass
     (
       const TCollection_ExtendedString& , const gp_Pnt& ,
-      Quantity_Color color, 
-      Standard_Integer aHJust, 
+      Quantity_Color color,
+      Standard_Integer aHJust,
       Standard_Integer aVJust ,
-      Standard_Real Angle , 
-      Standard_Boolean Zoom , 
-      Standard_Real  Height, 
+      Standard_Real Angle ,
+      Standard_Boolean Zoom ,
+      Standard_Real  Height,
       OSD_FontAspect FontAspect,
       Standard_CString Font
     );
@@ -1963,7 +1963,7 @@ private:
                   const Standard_Integer aMode);
 
   void ComputeSelection (  const Handle(SelectMgr_Selection)& aSelection,
-                           const Standard_Integer aMode){} ; 
+                           const Standard_Integer aMode){} ;
 
 protected:
   TCollection_ExtendedString          aText;
@@ -1972,10 +1972,10 @@ protected:
   Standard_Real                       Green;
   Standard_Real                       Blue;
   Standard_Real                       aAngle;
-  Standard_Real                       aHeight; 
+  Standard_Real                       aHeight;
   Standard_Boolean                    aZoomable;
   Quantity_Color                      aColor;
-  Standard_CString                    aFont; 
+  Standard_CString                    aFont;
   OSD_FontAspect                      aFontAspect;
   Graphic3d_HorizontalTextAlignment   aHJustification;
   Graphic3d_VerticalTextAlignment     aVJustification;
@@ -1984,13 +1984,13 @@ protected:
 
 
 IMPLEMENT_STANDARD_HANDLE(MyTextClass, AIS_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(MyTextClass, AIS_InteractiveObject) 
+IMPLEMENT_STANDARD_RTTIEXT(MyTextClass, AIS_InteractiveObject)
 
 
 
-MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& position, 
-                          Quantity_Color    color       = Quantity_NOC_YELLOW, 
-                          Standard_Integer  aHJust      = Graphic3d_HTA_LEFT, 
+MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& position,
+                          Quantity_Color    color       = Quantity_NOC_YELLOW,
+                          Standard_Integer  aHJust      = Graphic3d_HTA_LEFT,
                           Standard_Integer  aVJust      = Graphic3d_VTA_BOTTOM,
                           Standard_Real     angle       = 0.0 ,
                           Standard_Boolean  zoomable    = Standard_True,
@@ -1999,12 +1999,12 @@ MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& 
                           Standard_CString  font        = "Courier")
 {
   aText           = text;
-  aPosition       = position; 
+  aPosition       = position;
   aHJustification = Graphic3d_HorizontalTextAlignment(aHJust);
   aVJustification = Graphic3d_VerticalTextAlignment(aVJust);
   aAngle          = angle;
-  aZoomable       = zoomable; 
-  aHeight         = height;  
+  aZoomable       = zoomable;
+  aHeight         = height;
   aColor          = color;
   aFontAspect     = fontAspect;
   aFont           = font;
@@ -2027,12 +2027,12 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentat
   asp->SetHeight(aHeight); // I am changing the myHeight value
 
   asp->SetHorizontalJustification(aHJustification);
-  asp->SetVerticalJustification(aVJustification); 
+  asp->SetVerticalJustification(aVJustification);
   asp->Aspect()->SetTextZoomable(aZoomable);
   asp->Aspect()->SetTextAngle(aAngle);
   asp->Aspect()->SetTextFontAspect(aFontAspect);
   Prs3d_Text::Draw(aPresentation, asp, aText, aPosition);
-                  
+
   /* This comment code is worked
   Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
   Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
@@ -2073,7 +2073,7 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
   G = atof(argv[6])/255.;
   B = atof(argv[7])/255.;
 
-  hor_align = atoi(argv[8]); 
+  hor_align = atoi(argv[8]);
   ver_align = atoi(argv[9]);
 
   angle = atof(argv[10]);
@@ -2091,16 +2091,16 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
   if(argc == 16)
   {
     font.AssignCat(argv[14]);
-    font.AssignCat(" "); 
-    font.AssignCat(argv[15]);   
-  }
-  if(argc == 17)   
-  {                                    
-    font.AssignCat(argv[14]);
-    font.AssignCat(" ");   
+    font.AssignCat(" ");
     font.AssignCat(argv[15]);
-    font.AssignCat(" ");   
-    font.AssignCat(argv[16]); 
+  }
+  if(argc == 17)
+  {
+    font.AssignCat(argv[14]);
+    font.AssignCat(" ");
+    font.AssignCat(argv[15]);
+    font.AssignCat(" ");
+    font.AssignCat(argv[16]);
   }
 
   aColor.SetValues( R, G, B, Quantity_TOC_RGB );
@@ -2111,12 +2111,12 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
 
   aContext->Display(my,Standard_True);
 
-  if(aContext.IsNull()) 
-  { 
+  if(aContext.IsNull())
+  {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return -1;
   }
-  return 0; 
+  return 0;
 }
 
 #include <math.h>
@@ -2159,7 +2159,7 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
 //purpose  : Create a Sphere
 //===============================================================================================
 
-Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z , 
+Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z ,
                                                   int res ,
                                                   double Radius ){
   double mRadius = Radius;
@@ -2222,7 +2222,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
     number_pointArray++;
     numPoles++;
   }
-  
+
   // Check data, determine increments, and convert to radians
   startTheta = (localStartTheta < localEndTheta ? localStartTheta : localEndTheta);
   startTheta *= Standard_PI  / 180.0;
@@ -2260,7 +2260,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
   if ( mStartPhi <= 0.0 ) { // around north pole
     number_triangle += localThetaResolution;
   }
-  
+
   if ( mEndPhi >= 180.0 ) { // around south pole
     number_triangle += localThetaResolution;
   }
@@ -2319,7 +2319,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
         number_triangle++;
       }
     }
-  
+
   if (  mEndPhi >= 180.0 ){ // around south pole
     numOffset = phiResolution - 1 + numPoles;
     for (i=0; i < localThetaResolution; i++){
@@ -2332,7 +2332,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
     }
 
   // bands in-between poles
-    
+
   for (i=0; i < localThetaResolution; i++){
     for (j=0; j < (phiResolution-1); j++){
         pts[0] = phiResolution*i + j + numPoles;
@@ -2369,9 +2369,9 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
 
       Standard_Real modmax = eqPlan.Modulus();
 
-      if(modmax > Tol) 
+      if(modmax > Tol)
         Nor = gp_Dir(eqPlan);
-      else 
+      else
         Nor = gp_Dir(0., 0., 1.);
 
       Standard_Integer j = (i - PointsOfArray.Lower()) * 3;
@@ -2390,138 +2390,176 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
 //function : VDrawSphere
 //author   : psn
 //purpose  : Create an AIS shape.
-//Draw arg : vdrawsphere [X] [Y] [Z] [Rezolution] [Radius] [VBOEnabled] 
 //===============================================================================================
-
-#include <OSD_Chronometer.hxx>
-	
-static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char** argv){
-  // Verification des arguments
-  if ( argc > 9 ) {di<<argv[0]<<" Syntaxe error"<<"\n"; return 1;}
-
-  Standard_Real X,Y,Z;
-  X = atof(argv[1]);
-  Y = atof(argv[2]);
-  Z = atof(argv[3]);
-
-  Standard_Integer Rezolution = atoi(argv[4]);
-  Standard_Real Radius = atof(argv[5]);
-  Standard_Integer VBOenabled = atoi(argv[6]);;
-  Standard_Integer NumberOfViewerUpdate = 1;
-  Standard_Integer ShowEdges = 0;
-
-  if( argc == 9)
-    ShowEdges = atoi(argv[8]);
-  if( argc == 8) 
-    NumberOfViewerUpdate = atoi(argv[7]);
-  if( argc == 7)
-    NumberOfViewerUpdate = 1;
-  
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  //ViewerTest::CurrentView()->SetTransparency(Standard_True);
-
-  //enable VBO
-  Handle(Graphic3d_GraphicDriver) aDriver = 
-         Handle(Graphic3d_GraphicDriver)::DownCast(aContext->CurrentViewer()->Device()->GraphicDriver() );
-
-  aDriver->EnableVBO( VBOenabled );
-
-  Standard_Integer numberTriangles = 0, numberPoints = 0;
-  printf("Compute Triangulation...\n");
-  Handle(AIS_Triangulation) myShape = new  AIS_Triangulation(CalculationOfSphere( X, Y, Z,
-                                                                                  Rezolution, 
-                                                                                  Radius));
-  numberPoints = myShape->GetTriangulation()->Nodes().Length();
-  numberTriangles = myShape->GetTriangulation()->Triangles().Length();
-
-  Handle(TColStd_HArray1OfInteger)  aColorArray = new TColStd_HArray1OfInteger(1,numberPoints);
-  int color = 0;
-  int red   = 0 ;
-  int green = 255 ;
-  int blue  = 0 ;
-  int alpha = 0 ; // not used
-  color = red;
-  color += green << 8;
-  color += blue  << 16; 
-  color += alpha << 24;
-  for( int i = 1; i <= numberPoints ; i++ ){
-    aColorArray->SetValue( i,color );
+static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  // check for errors
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cout << "Call vinit before!\n";
+    return 1;
   }
-  //enable or disable color
-  myShape->SetColors(aColorArray); 
+  else if (argc < 3)
+  {
+    std::cout << "Use: " << argv[0]
+              << " shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToEnableVBO=1] [NumberOfViewerUpdate=1] [ToShowEdges=0]\n";
+    return 1;
+  }
 
-  printf("NumberOfPoints = %.i \n",numberPoints);
-  printf("NumberOfTriangles =  %.i \n",numberTriangles);
-  int PointsSize      = numberPoints * 12;
-  int NormalsSize     = numberPoints * 12;
-  int ColorsSize      = numberPoints * 12;
-  int TrianglesSize   = numberTriangles * 3 * 4;
-  int PolyConnectSize = numberPoints * 4 + numberTriangles * 6 * 4;
-  int size = PointsSize + NormalsSize + ColorsSize + TrianglesSize ;
-  size>>=20;//MB
-  NormalsSize >>= 20;
-  ColorsSize >>= 20;
-  TrianglesSize >>= 20;
-  PolyConnectSize >>= 20;
-  printf("Amount of memory required for PolyTriangulation without Normals: %i Mb \n", size - NormalsSize );
-  printf("Amount of memory for colors: %i Mb \n",ColorsSize);
-  printf("Amount of memory for PolyConnect: %i Mb \n", PolyConnectSize );
-  printf("Amount of graphic card memory required: %i Mb \n",size);
+  // read the arguments
+  TCollection_AsciiString aShapeName (argv[1]);
+  Standard_Integer aResolution = atoi (argv[2]);
+  Standard_Real aCenterX = (argc > 5) ? atof (argv[3]) : 0.0;
+  Standard_Real aCenterY = (argc > 5) ? atof (argv[4]) : 0.0;
+  Standard_Real aCenterZ = (argc > 5) ? atof (argv[5]) : 0.0;
+  Standard_Real aRadius =  (argc > 6) ? atof (argv[6]) : 100.0;
+  Standard_Boolean isVBOEnabled = (argc > 7) ? atoi (argv[7]) : Standard_True;
+  Standard_Integer aRedrawsNb =   (argc > 8) ? atoi (argv[8]) : 1;
+  Standard_Boolean toShowEdges =  (argc > 9) ? atoi (argv[9]) : Standard_False;
+
+  if (aRedrawsNb <= 0)
+  {
+    aRedrawsNb = 1;
+  }
+
+  // remove AIS object with given name from map
+  if (GetMapOfAIS().IsBound2 (aShapeName))
+  {
+    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aShapeName);
+    Handle(AIS_InteractiveObject) anInterObj = Handle(AIS_InteractiveObject)::DownCast (anObj);
+    if (anInterObj.IsNull())
+    {
+      std::cout << "Shape name was used for non AIS viewer\n!";
+      return 1;
+    }
+    aContextAIS->Remove (anInterObj, Standard_False);
+    GetMapOfAIS().UnBind2 (aShapeName);
+  }
+
+  // enable/disable VBO
+  Handle(Graphic3d_GraphicDriver) aDriver =
+         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  if (!aDriver.IsNull())
+  {
+    aDriver->EnableVBO (isVBOEnabled);
+  }
+
+  std::cout << "Compute Triangulation...\n";
+  Handle(AIS_Triangulation) aShape
+    = new AIS_Triangulation (CalculationOfSphere (aCenterX, aCenterY, aCenterZ,
+                                                  aResolution,
+                                                  aRadius));
+  Standard_Integer aNumberPoints    = aShape->GetTriangulation()->Nodes().Length();
+  Standard_Integer aNumberTriangles = aShape->GetTriangulation()->Triangles().Length();
+
+  // register the object in map
+  GetMapOfAIS().Bind (aShape, aShapeName);
+
+  // stupid initialization of Green color in RGBA space as integer
+  // probably wrong for big-endian CPUs
+  Standard_Integer aRed    = 0;
+  Standard_Integer aGreen  = 255;
+  Standard_Integer aBlue   = 0;
+  Standard_Integer anAlpha = 0; // not used
+  Standard_Integer aColorInt = aRed;
+  aColorInt += aGreen  << 8;
+  aColorInt += aBlue   << 16;
+  aColorInt += anAlpha << 24;
+
+  // setup colors array per vertex
+  Handle(TColStd_HArray1OfInteger) aColorArray = new TColStd_HArray1OfInteger (1, aNumberPoints);
+  for (Standard_Integer aNodeId = 1; aNodeId <= aNumberPoints; ++aNodeId)
+  {
+    aColorArray->SetValue (aNodeId, aColorInt);
+  }
+  aShape->SetColors (aColorArray);
+
+  // show statistics
+  Standard_Integer aPointsSize      = aNumberPoints * 3 * sizeof(float);  // 3x GLfloat
+  Standard_Integer aNormalsSize     = aNumberPoints * 3 * sizeof(float);  // 3x GLfloat
+  Standard_Integer aColorsSize      = aNumberPoints * 3 * sizeof(float);  // 3x GLfloat without alpha
+  Standard_Integer aTrianglesSize   = aNumberTriangles * 3 * sizeof(int); // 3x GLint
+  Standard_Integer aPolyConnectSize = aNumberPoints * 4 + aNumberTriangles * 6 * 4;
+  Standard_Integer aTotalSize       = aPointsSize + aNormalsSize + aColorsSize + aTrianglesSize;
+  aTotalSize >>= 20; //MB
+  aNormalsSize >>= 20;
+  aColorsSize >>= 20;
+  aTrianglesSize >>= 20;
+  aPolyConnectSize >>= 20;
+  std::cout << "NumberOfPoints:    " << aNumberPoints << "\n"
+            << "NumberOfTriangles: " << aNumberTriangles << "\n"
+            << "Amount of memory required for PolyTriangulation without Normals: " << (aTotalSize - aNormalsSize) << " Mb\n"
+            << "Amount of memory for colors: " << aColorsSize << " Mb\n"
+            << "Amount of memory for PolyConnect: " << aPolyConnectSize << " Mb\n"
+            << "Amount of graphic card memory required: " << aTotalSize << " Mb\n";
 
   // Setting material properties, very important for desirable visual result!
-  Graphic3d_MaterialAspect aMat( Graphic3d_NOM_PLASTIC );
-  aMat.SetAmbient( 0.2 );
-  aMat.SetSpecular( 0.5 );
-  Handle(Graphic3d_AspectFillArea3d) aspect =  new Graphic3d_AspectFillArea3d( Aspect_IS_SOLID,
-                                                                               Quantity_NOC_RED,
-                                                                               Quantity_NOC_YELLOW,
-                                                                               Aspect_TOL_SOLID,
-                                                                               1.,
-                                                                               aMat,
-                                                                               aMat);
+  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_PLASTIC);
+  aMat.SetAmbient (0.2);
+  aMat.SetSpecular (0.5);
+  Handle(Graphic3d_AspectFillArea3d) anAspect
+    = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
+                                      Quantity_NOC_RED,
+                                      Quantity_NOC_YELLOW,
+                                      Aspect_TOL_SOLID,
+                                      1.0,
+                                      aMat,
+                                      aMat);
   Handle(Prs3d_ShadingAspect) aShAsp = new Prs3d_ShadingAspect();
-
-  if( ShowEdges > 0 )
-    aspect->SetEdgeOn();
+  if (toShowEdges)
+  {
+    anAspect->SetEdgeOn();
+  }
   else
-    aspect->SetEdgeOff();
+  {
+    anAspect->SetEdgeOff();
+  }
+  aShAsp->SetAspect (anAspect);
+  aShape->Attributes()->SetShadingAspect (aShAsp);
 
-  aShAsp  -> SetAspect( aspect );
-  //aShAsp  -> SetTransparency( 0.5 );
-  myShape -> Attributes() -> SetShadingAspect( aShAsp );
-
-  aContext->Display(myShape,Standard_False);
-
-  const Handle(V3d_Viewer)& viewer = aContext->CurrentViewer();
+  aContextAIS->Display (aShape, Standard_False);
 
   // Two viewer updates are needed in order to measure time spent on
-  // loading triangulation to graphic card memory + redrawing (1st update) and 
+  // loading triangulation to graphic card memory + redrawing (1st update) and
   // time spent on redrawing itself (2nd and all further updates)
-  OSD_Chronometer timer;
-  Standard_Real UserSeconds, SystemSeconds;
-  timer.Start();
-  for ( int repeat = 0; repeat < NumberOfViewerUpdate; repeat++ ){
-    for (viewer->InitActiveViews();viewer->MoreActiveViews();viewer->NextActiveViews())
+  OSD_Chronometer aTimer;
+  Standard_Real aUserSeconds, aSystemSeconds;
+  aTimer.Start();
+  const Handle(V3d_Viewer)& aViewer = aContextAIS->CurrentViewer();
+  for (Standard_Integer anInteration = 0; anInteration < aRedrawsNb; ++anInteration)
+  {
+    for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
     {
-      if( repeat == 0 )
-        viewer->ActiveView()->Update();
+      if (anInteration == 0)
+      {
+        aViewer->ActiveView()->Update();
+      }
       else
-        viewer->ActiveView()->Redraw();
+      {
+        aViewer->ActiveView()->Redraw();
+      }
     }
   }
-  timer.Show(UserSeconds,SystemSeconds);
-  timer.Stop();
-  printf("Number of scene redrawings: %.i \n", NumberOfViewerUpdate);
-  printf("User Seconds: %.20f sec \n",   UserSeconds);
-  printf("System Seconds: %.20f sec \n", SystemSeconds);
-  printf("Average time of scene redrawing : %.20f sec \n", (UserSeconds)/(Standard_Real)NumberOfViewerUpdate);
+  aTimer.Show (aUserSeconds, aSystemSeconds);
+  aTimer.Stop();
+  std::cout << "Number of scene redrawings: " << aRedrawsNb << "\n"
+            << "CPU user time: "
+            << std::setiosflags(std::ios::fixed) << std::setprecision(16) << 1000.0 * aUserSeconds
+            << " msec\n"
+            << "CPU system time: "
+            << std::setiosflags(std::ios::fixed) << std::setprecision(16) << 1000.0 * aSystemSeconds
+            << " msec\n"
+            << "CPU average time of scene redrawing: "
+            << std::setiosflags(std::ios::fixed) << std::setprecision(16) << 1000.0 * (aUserSeconds / (Standard_Real )aRedrawsNb)
+            << " msec\n";
   return 0;
 }
 
 
 //=======================================================================
 //function : ObjectsCommands
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
@@ -2531,11 +2569,11 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vtrihedron         : vtrihedron name [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw] ",
     __FILE__,VTrihedron,group);
 
-  theCommands.Add("vtri2d", 
+  theCommands.Add("vtri2d",
     "vtri2d Name Selection in the viewer only ",
     __FILE__,VTrihedron2D ,group);
 
-  theCommands.Add("vplanetri",  
+  theCommands.Add("vplanetri",
     "vplanetri Name Selection in the viewer only ",
     __FILE__,VPlaneTrihedron ,group);
 
@@ -2547,7 +2585,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vaxis nom [Xa] [Ya] [Za] [Xb] [Yb] [Zb]",
     __FILE__,VAxisBuilder,group);
 
-  theCommands.Add("vaxispara", 
+  theCommands.Add("vaxispara",
     "vaxispara  nom ",
     __FILE__,VAxisBuilder,group);
 
@@ -2571,7 +2609,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vplaneortho  PlaneName  ",
     __FILE__,VPlaneBuilder,group);
 
-  theCommands.Add("vline", 
+  theCommands.Add("vline",
     "vline: vline LineName [Xa/PointName] [Ya/PointName] [Za] [Xb] [Yb] [Zb]  ",
     __FILE__,VLineBuilder,group);
 
@@ -2584,7 +2622,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VDrawText,group);
 
   theCommands.Add("vdrawsphere",
-    "vdrawsphere: VDrawSphere X Y Z Fineness Radius EnableVBO [NumberOfViewerUpdate(Default=1)] [ShowEdges(Default=0)]",
+    "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToEnableVBO=1] [NumberOfViewerUpdate=1] [ToShowEdges=0]\n",
     __FILE__,VDrawSphere,group);
 
 }

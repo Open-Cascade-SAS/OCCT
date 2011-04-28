@@ -67,6 +67,7 @@ typedef struct {
   Tint                   VBOEnabled;              /* -1 - it is not known VBO status
                                                       0 - draw object without VBO
                                                       1 - draw object with VBO */
+  Standard_Address       contextId;               /* remember context for VBO */
 } CALL_DEF_PARRAY;
 
 #endif /* _InterfaceGraphic_PrimitiveArray_header_file_ */
