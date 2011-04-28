@@ -310,7 +310,8 @@ int OpenGl_FontMgr::request_font( const Handle(TCollection_HAsciiString)& fontNa
   return -1;
 }
 
-void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text)
+void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text,
+				  const Standard_Boolean is2d )
 {
 #ifdef TRACE
   cout << "TKOpenGl::render_text\n"
@@ -329,8 +330,13 @@ void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text)
 
     if( !enableTexture )
       glEnable(GL_TEXTURE_2D);
-    if( !enableDepthTest )
-      glEnable(GL_DEPTH_TEST);
+    if ( !is2d ) {
+      if ( !enableDepthTest )
+        glEnable(GL_DEPTH_TEST);
+    } 
+    else if ( enableDepthTest ) {
+        glDisable(GL_DEPTH_TEST);
+    }
 
     GLint* param = new GLint;    
     glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, param);
@@ -357,8 +363,8 @@ void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text)
 
 }
 
-void OpenGl_FontMgr::render_text( const char* text){
-  render_text( _CurrentFontId, text );
+void OpenGl_FontMgr::render_text( const char* text, const Standard_Boolean is2d ){
+  render_text( _CurrentFontId, text, is2d );
 }
 
 
@@ -371,7 +377,6 @@ Standard_ShortReal OpenGl_FontMgr::computeWidth( const Standard_Integer id, cons
     return 0.f;
 
   OGLFont_Cache cache = _FontCache.Find( id );
-  GLenum err = glGetError();
 
   Standard_ShortReal w = cache.Font->Advance( str );
 

@@ -336,7 +336,7 @@ call_togl_redraw_layer2d (
 #endif
   glPushAttrib (
     GL_LIGHTING_BIT | GL_LINE_BIT | GL_POLYGON_BIT |
-    GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT );
   glDisable (GL_DEPTH_TEST);
   glCallList (alayer->ptrLayer->listIndex);
 

@@ -28,10 +28,11 @@ public:
     const Standard_Integer                 fontHeight );
 
   void render_text( const Standard_Integer id,
-    const char* text );
+    const char* text,
+    const Standard_Boolean is2d = 0 );
 
   //render text by last requested font
-  void render_text( const char* text );
+  void render_text( const char* text, const Standard_Boolean is2d = 0 );
 
   //returns direct access to FTGL font
   //Warning: don't change font pointer.
