@@ -19,8 +19,8 @@
 
 Select3D_SensitiveEntity::Select3D_SensitiveEntity(const Handle(SelectBasics_EntityOwner)& OwnerId):
 SelectBasics_SensitiveEntity(OwnerId),
-mylastprj(NULL),
-mylastdepth(0.0)
+mylastprj(),
+mylastdepth(ShortRealLast())
 {}
 
 //=======================================================================
@@ -28,9 +28,9 @@ mylastdepth(0.0)
 //purpose  : 
 //=======================================================================
 
-void Select3D_SensitiveEntity::Project(const Select3D_Projector& aPrj)
+void Select3D_SensitiveEntity::Project(const Handle(Select3D_Projector)& aPrj)
 {
-  mylastprj = (Standard_Address*)&aPrj;
+  mylastprj = aPrj;
 }
 
 //=======================================================================
@@ -43,12 +43,17 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
 						   const Standard_Real aTol,
 						   Standard_Real&  DMin)
 {
-  gp_Lin L;
-  if(mylastprj!=NULL)
-    L = (* ((Select3D_Projector*) mylastprj)).Shoot(X,Y);
-  SetLastDepth( ComputeDepth(L) );
-
-  return (Abs(mylastdepth)>Precision::Confusion());
+  if (!mylastprj.IsNull())
+  {
+    gp_Lin L = mylastprj->Shoot (X, Y);
+    SetLastDepth (ComputeDepth (L));
+    return (mylastdepth > mylastprj->DepthMin()) && (mylastdepth < mylastprj->DepthMax());
+  }
+  else
+  {
+    SetLastDepth (ComputeDepth (gp_Lin())); // how we determine depth without eyeline here?
+    return (mylastdepth > ShortRealFirst()) && (mylastdepth < ShortRealLast());
+  }
 }
 
 //=======================================================================
@@ -184,8 +189,10 @@ gp_Lin Select3D_SensitiveEntity::GetEyeLine(const Standard_Real X,
 					    const Standard_Real Y) const
 {
   gp_Lin L;
-  if(mylastprj!=NULL)
-    L = (* ((Select3D_Projector*) mylastprj)).Shoot(X,Y);
+  if (!mylastprj.IsNull())
+  {
+    L = mylastprj->Shoot (X, Y);
+  }
   return L;
 }
 
@@ -202,8 +209,8 @@ Standard_Integer Select3D_SensitiveEntity::MaxBoxes() const
 //purpose  : 
 //=======================================================================
 
-void Select3D_SensitiveEntity::SetLastPrj(const Select3D_Projector& aprj)
-{ mylastprj = (Standard_Address*)& aprj;}
+void Select3D_SensitiveEntity::SetLastPrj(const Handle(Select3D_Projector)& aprj)
+{ mylastprj = aprj; }
 
 
 //=======================================================================

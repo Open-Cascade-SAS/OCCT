@@ -49,10 +49,10 @@ Select3D_SensitiveEntity(OwnerId)
 // Purpose :
 //==================================================
 void Select3D_SensitiveBox::
-Project(const Select3D_Projector& aProj)
+Project(const Handle(Select3D_Projector)& aProj)
 {
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
-  
+
   if(HasLocation()){
     Bnd_Box B = mybox3d.Transformed(Location().Transformation());
     ProjectBox(aProj,B);
@@ -164,29 +164,29 @@ void Select3D_SensitiveBox::Dump(Standard_OStream& S,const Standard_Boolean Full
 //purpose  : 
 //=======================================================================
 
-void Select3D_SensitiveBox::ProjectBox(const Select3D_Projector& aPrj,
+void Select3D_SensitiveBox::ProjectBox(const Handle(Select3D_Projector)& aPrj,
 				       const Bnd_Box& aBox) 
 {
   mybox2d.SetVoid();
   gp_Pnt2d curp2d;
   Standard_Real XMin,YMin,ZMin,XMax,YMax,ZMax;
   aBox.Get(XMin,YMin,ZMin,XMax,YMax,ZMax);
-  
-  aPrj.Project(gp_Pnt(XMin,YMin,ZMin),curp2d);
+
+  aPrj->Project(gp_Pnt(XMin,YMin,ZMin),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMax,YMin,ZMin),curp2d);
+  aPrj->Project(gp_Pnt(XMax,YMin,ZMin),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMax,YMax,ZMin),curp2d);
+  aPrj->Project(gp_Pnt(XMax,YMax,ZMin),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMin,YMax,ZMin),curp2d);
+  aPrj->Project(gp_Pnt(XMin,YMax,ZMin),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMin,YMin,ZMax),curp2d);
+  aPrj->Project(gp_Pnt(XMin,YMin,ZMax),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMax,YMin,ZMax),curp2d);
+  aPrj->Project(gp_Pnt(XMax,YMin,ZMax),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMax,YMax,ZMax),curp2d);
+  aPrj->Project(gp_Pnt(XMax,YMax,ZMax),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
-  aPrj.Project(gp_Pnt(XMin,YMax,ZMax),curp2d);
+  aPrj->Project(gp_Pnt(XMin,YMax,ZMax),curp2d);
   mybox2d.Update(curp2d.X(),curp2d.Y());
 }
 

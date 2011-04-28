@@ -5,13 +5,13 @@
 ---Copyright:	Matra Datavision 1992
 
 
-class Plane from V3d 
-	
-inherits 
+class Plane from V3d
+
+inherits
 
 	TShared
 	---Purpose: Defines the services of Plane type objects. Only
-	--	    the creation and editing of the functions is dealt 
+	--	    the creation and editing of the functions is dealt
 	--	    with here.
 	-- Warning: The representation of the clipping plane must be
 	--	    calculated by the application by means of Graphic3d.
@@ -20,12 +20,11 @@ inherits
 
 uses
 
-	Viewer from V3d,
 	View from V3d,
 	ClipPlane from Visual3d,
 	Structure from Graphic3d,
 	Parameter from Quantity,
-	Color from Quantity  
+	Color from Quantity
 
 
 raises
@@ -38,11 +37,11 @@ is
         -- The methods :
         --
 
-	Create ( VM : Viewer ; A: Parameter = 0.0; 
-	                       B: Parameter  = 0.0;
-	                       C: Parameter  = 1.0;
-	                       D: Parameter  = 0.0
-	)  returns mutable Plane 
+	Create (A: Parameter = 0.0;
+	        B: Parameter = 0.0;
+	        C: Parameter = 1.0;
+	        D: Parameter = 0.0
+	)  returns mutable Plane
 	---Level : Public
         ---Purpose: Creates a clipping plane using the equation :
         --          <A>*X + <B>*Y + <C>*Z + <D> = 0.0
@@ -54,7 +53,7 @@ is
         ---Category: Methods to modify the Attributs of the Plane
         --------------------------------------------------------
 
-	SetPlane( me : mutable; A,B,C,D : Parameter) 
+	SetPlane( me : mutable; A,B,C,D : Parameter)
 	---Level : Public
 	---Purpose: Modifies the plane equation.
 	raises BadValue from Viewer
@@ -67,13 +66,13 @@ is
 			     aColor: Color from Quantity= Quantity_NOC_GRAY)
 	---Level : Public
 	---Purpose: Display the plane representation
-        --          in the choosen view. 
+        --          in the choosen view.
         is virtual;
 
         Erase(me: mutable) is static;
         ---Level: Public
         ---Purpose: Erase the plane representation.
-	
+
         ---------------------------------------------------
         ---Category: Inquire methods
         ---------------------------------------------------
@@ -84,7 +83,7 @@ is
 
 	IsDisplayed( me ) returns Boolean from Standard is static;
 	---Level : Public
-	---Purpose: Returns TRUE when the plane representation is displayed 
+	---Purpose: Returns TRUE when the plane representation is displayed
 
         -----------------------------------------
         ---Category: Private or Protected methods
@@ -97,7 +96,7 @@ is
 	Update( me : mutable ) is static private;
 	---Level : Internal
 	---Purpose: Updates the the plane representation.
-	
+
 
 fields
 

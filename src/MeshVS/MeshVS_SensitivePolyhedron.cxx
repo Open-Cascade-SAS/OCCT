@@ -34,7 +34,7 @@ MeshVS_SensitivePolyhedron( const Handle( SelectBasics_EntityOwner )& Owner,
 // Function : Project
 // Purpose  :
 //================================================================
-void MeshVS_SensitivePolyhedron::Project( const Select3D_Projector& aProjector )
+void MeshVS_SensitivePolyhedron::Project( const Handle(Select3D_Projector)& aProjector )
 {
   Select3D_SensitiveEntity::Project( aProjector );
 
@@ -55,9 +55,9 @@ void MeshVS_SensitivePolyhedron::Project( const Select3D_Projector& aProjector )
   {
     pnt = myNodes->Value( i );
     if( !hasLoc )
-      aProjector.Project( pnt, proj );
+      aProjector->Project( pnt, proj );
     else
-      aProjector.Project( pnt.Transformed( Location().Transformation() ), proj );
+      aProjector->Project( pnt.Transformed( Location().Transformation() ), proj );
 
     myNodes2d->SetValue( i, proj.XY() );
     myCenter += proj.XY();
@@ -161,9 +161,10 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const Standard_Real X,
   }
 
   if( inside )
-    Select3D_SensitiveEntity::Matches( X, Y, aTol, DMin );
-
-  return inside;
+  {
+    return Select3D_SensitiveEntity::Matches( X, Y, aTol, DMin );
+  }
+  return Standard_False;
 }
 
 //================================================================

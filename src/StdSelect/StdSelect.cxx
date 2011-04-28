@@ -4,8 +4,6 @@
 // Author:	Robert COUBLANC
 //		<rob>
 
-
-
 #include <StdSelect.ixx>
 #include <SelectMgr_Selection.hxx>
 #include <Graphic3d_StructureManager.hxx>
@@ -24,12 +22,8 @@
 #include <gp_Ax3.hxx>
 #include <V3d_PerspectiveView.hxx>
 #include <StdSelect_BRepOwner.hxx>
-//#include <.hxx>
 
-
-
-
-Select3D_Projector  StdSelect::GetProjector(const Handle(V3d_View)& aViou)
+Handle(Select3D_Projector) StdSelect::GetProjector(const Handle(V3d_View)& aViou)
 {
   Standard_Real Focale=0.,Xat,Yat,Zat,XUp,YUp,ZUp,DX,DY,DZ;
   Standard_Boolean Pers=Standard_False;
@@ -48,7 +42,7 @@ Select3D_Projector  StdSelect::GetProjector(const Handle(V3d_View)& aViou)
   gp_Ax3 Axe (At, Zpers, Xpers);
   gp_Trsf T;
   T.SetTransformation(Axe);
-  return Select3D_Projector(T,Pers,Focale);
+  return new Select3D_Projector(T,Pers,Focale);
   
 }
 

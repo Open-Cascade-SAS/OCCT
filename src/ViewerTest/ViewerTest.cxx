@@ -305,12 +305,12 @@ void ViewerTest::SetAISContext (const Handle(AIS_InteractiveContext)& aCtx)
 
 Handle(V3d_Viewer) ViewerTest::GetViewerFromContext()
 {
-  return TheAISContext()->CurrentViewer();
+  return !TheAISContext().IsNull() ? TheAISContext()->CurrentViewer() : Handle(V3d_Viewer)();
 }
 
 Handle(V3d_Viewer) ViewerTest::GetCollectorFromContext()
 {
-  return TheAISContext()->CurrentViewer();
+  return !TheAISContext().IsNull() ? TheAISContext()->CurrentViewer() : Handle(V3d_Viewer)();
 }
 
 
@@ -2066,7 +2066,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
 // Function : VAnimation
 //==================================================================================
 static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char** argv) {
-  if (argc != 5) {
+  if (argc =! 5) {
     di<<"Use: "<<argv[0]<<" CrankArmFile CylinderHeadFile PropellerFile EngineBlockFile"<<"\n";
     return 1;
   }
@@ -2580,7 +2580,7 @@ Standard_Boolean  ViewerTest::PickObjects(Handle(TColStd_HArray1OfTransient)& ar
   Standard_Integer curindex = (TheType == AIS_KOI_None) ? 0 : TheAISContext()->OpenLocalContext();
 
   // step 1: prepare the data
-  if(curindex != 0){
+  if(curindex !=0){
     Handle(AIS_SignatureFilter) F1 = new AIS_SignatureFilter(TheType,TheSignature);
     TheAISContext()->AddFilter(F1);
   }
@@ -2639,7 +2639,7 @@ Handle(AIS_InteractiveObject) ViewerTest::PickObject(const AIS_KindOfInteractive
 
   // step 1: prepare the data
 
-  if(curindex != 0){
+  if(curindex !=0){
     Handle(AIS_SignatureFilter) F1 = new AIS_SignatureFilter(TheType,TheSignature);
     TheAISContext()->AddFilter(F1);
   }
@@ -2666,7 +2666,7 @@ Handle(AIS_InteractiveObject) ViewerTest::PickObject(const AIS_KindOfInteractive
     IO = TheAISContext()->SelectedInteractive();
   }
 
-  if(curindex != 0)
+  if(curindex!=0)
     TheAISContext()->CloseLocalContext(curindex);
   return IO;
 }
@@ -3079,7 +3079,7 @@ static int VIOTypes( Draw_Interpretor& di, Standard_Integer , const char** )
 
 static int VEraseType( Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if(argc != 2) return 1;
+  if(argc!=2) return 1;
 
   AIS_KindOfInteractive TheType;
   Standard_Integer TheSign(-1);

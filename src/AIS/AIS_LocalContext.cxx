@@ -660,22 +660,25 @@ void AIS_LocalContext::RemoveFilter(const Handle(SelectMgr_Filter)& aFilter)
 
 
 
-Standard_Boolean AIS_LocalContext::HasSameProjector(const Select3D_Projector& aPrj) const
+Standard_Boolean AIS_LocalContext::HasSameProjector(const Handle(Select3D_Projector)& thePrj) const
 {
-  const Select3D_Projector& CurPrj = myMainVS->Projector();
-  if(CurPrj.Perspective()!=aPrj.Perspective()) return Standard_False;  
-  if(CurPrj.Perspective())
-    if(CurPrj.Focus()!=aPrj.Focus()) return Standard_False;
-  gp_GTrsf CurTrsf(CurPrj.Transformation());
-  gp_GTrsf PrjTrsf(aPrj.Transformation());
-  
-  for(Standard_Integer i=1;i<=3;i++){
-    for(Standard_Integer j=1;j<=3;j++){
-      if(CurTrsf.Value(i,j)!=PrjTrsf.Value(i,j)) 
-	return Standard_False;
+  const Handle(Select3D_Projector)& aCurPrj = myMainVS->Projector();
+  if (aCurPrj->Perspective() != thePrj->Perspective())
+    return Standard_False;  
+  if (aCurPrj->Perspective() && aCurPrj->Focus() != thePrj->Focus())
+    return Standard_False;
+  const gp_GTrsf& aCurTrsf = aCurPrj->Transformation();
+  const gp_GTrsf& aPrjTrsf = thePrj->Transformation();
+
+  for (Standard_Integer i = 1; i <= 3; ++i)
+  {
+    for (Standard_Integer j = 1; j <= 3 ; ++j)
+    {
+      if (aCurTrsf.Value (i, j) != aPrjTrsf.Value (i, j))
+        return Standard_False;
     }
   }
-  
+
   return Standard_True;
 }
 

@@ -64,16 +64,18 @@ Standard_Boolean Select3D_SensitiveCurve
   Standard_Integer Rank;
   TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
   Points2D(aArrayOf2dPnt);
-  Standard_Boolean KK = SelectBasics_BasicTool::MatchPolyg2d(aArrayOf2dPnt,
-                                 X,Y,
-                                 aTol,
-                                 DMin,
-                                 Rank);
-  if(KK){
-    Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+  if (SelectBasics_BasicTool::MatchPolyg2d (aArrayOf2dPnt,
+                                            X, Y,
+                                            aTol,
+                                            DMin,
+                                            Rank))
+  {
     mylastseg = Rank;
+    // compute and validate the depth (::Depth()) along the eyeline
+    return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin);
+    
   }
-  return KK;
+  return Standard_False;
 
 }
 //==================================================

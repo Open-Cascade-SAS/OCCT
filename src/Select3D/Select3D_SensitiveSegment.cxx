@@ -45,7 +45,7 @@ mymaxrect(MaxRect)
 // Purpose  :
 //=====================================================
 void Select3D_SensitiveSegment
-::Project(const Select3D_Projector& aProj)
+::Project(const Handle(Select3D_Projector)& aProj)
 {
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
   gp_Pnt2d aPoint2dStart;
@@ -54,12 +54,12 @@ void Select3D_SensitiveSegment
   if(HasLocation()){
     gp_Pnt aStart(mystart.x, mystart.y, mystart.z);
     gp_Pnt aEnd(myend.x, myend.y, myend.z);
-    aProj.Project(aStart.Transformed(Location().Transformation()),aPoint2dStart);
-    aProj.Project(aEnd.Transformed(Location().Transformation()),aPoint2dEnd);
+    aProj->Project(aStart.Transformed(Location().Transformation()),aPoint2dStart);
+    aProj->Project(aEnd.Transformed(Location().Transformation()),aPoint2dEnd);
   }
   else{
-    aProj.Project(mystart,aPoint2dStart);
-    aProj.Project(myend,aPoint2dEnd);
+    aProj->Project(mystart,aPoint2dStart);
+    aProj->Project(myend,aPoint2dEnd);
   }
   myprojstart = aPoint2dStart;
   myprojend = aPoint2dEnd;
@@ -124,8 +124,7 @@ Standard_Boolean Select3D_SensitiveSegment
   gp_Pnt2d aPEnd(myprojend.x,myprojend.y);
   if ( ! SelectBasics_BasicTool::MatchSegment (aPStart, aPEnd, X, Y, aTol, DMin) )
     return Standard_False;
-  Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin); // to compute depth
-  return Standard_True;
+  return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin); // compute and validate depth
 }
 
 Standard_Boolean Select3D_SensitiveSegment::

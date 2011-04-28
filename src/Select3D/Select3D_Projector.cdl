@@ -1,15 +1,15 @@
--- File:	Select3D_Projector.cdl
--- Created:	Thu Mar 12 13:32:28 1992
--- Author:	Christophe MARION
---		<cma@sdsun2> copie quasi exacte de HLRAlgo_Projector
----Copyright:	 Matra Datavision 1992
+-- File:    Select3D_Projector.cdl
+-- Created:    Thu Mar 12 13:32:28 1992
+-- Author:    Christophe MARION
+--        <cma@sdsun2> copie quasi exacte de HLRAlgo_Projector
+---Copyright:     Matra Datavision 1992
 
-class Projector from Select3D
-    	---Purpose: A framework to define 3D projectors.
+class Projector from Select3D inherits Transient from Standard
+    ---Purpose: A framework to define 3D projectors.
 uses
     Real    from Standard,
     Boolean from Standard,
-    Trsf    from gp, 
+    Trsf    from gp,
     GTrsf   from gp,
     Lin     from gp,
     Pnt     from gp,
@@ -19,155 +19,169 @@ uses
     Pnt2d   from gp,
     Box     from Bnd,
     View    from V3d
-    
+
 raises
     NoSuchObject from Standard
 
 is
 
     Create(aView:View from V3d) returns Projector from Select3D;
-    	--- Purpose: Constructs the 3D projector object defined by the 3D view aView.  
+    --- Purpose: Constructs the 3D projector object defined by the 3D view aView.
     Create returns Projector from Select3D;
 
     Create(CS : Ax2 from gp)
-	---Purpose: Creates   an axonometric  projector.   <CS> is the
-	--          viewing coordinate system.
+    ---Purpose: Creates   an axonometric  projector.   <CS> is the
+    --          viewing coordinate system.
     returns Projector from Select3D;
 
     Create(CS    : Ax2  from gp;
-    	   Focus : Real from Standard)
-	---Purpose: Creates  a  perspective  projector.   <CS>  is the
-	--          viewing coordinate system.
+           Focus : Real from Standard)
+    ---Purpose: Creates  a  perspective  projector.   <CS>  is the
+    --          viewing coordinate system.
     returns Projector from Select3D;
 
     Create(T         : Trsf    from gp;
-    	   Persp     : Boolean from Standard;
-    	   Focus     : Real    from Standard)
-	---Purpose: build a Projector with automatic minmax directions.
+           Persp     : Boolean from Standard;
+           Focus     : Real    from Standard)
+    ---Purpose: build a Projector with automatic minmax directions.
     returns Projector from Select3D;
 
     Create(T         : Trsf    from gp;
-    	   Persp     : Boolean from Standard;
-    	   Focus     : Real    from Standard;
-	   v1,v2,v3  : Vec2d   from gp)
-	---Purpose: build a Projector with given minmax directions.
+           Persp     : Boolean from Standard;
+           Focus     : Real    from Standard;
+       v1,v2,v3  : Vec2d   from gp)
+    ---Purpose: build a Projector with given minmax directions.
     returns Projector from Select3D;
-  
+
     Create(GT        : GTrsf   from gp;
-    	   Persp     : Boolean from Standard;
-    	   Focus     : Real    from Standard)
-	---Purpose: build a Projector with automatic minmax directions.
+           Persp     : Boolean from Standard;
+           Focus     : Real    from Standard)
+    ---Purpose: build a Projector with automatic minmax directions.
     returns Projector from Select3D;
 
-    Delete(me:out) is virtual;
-    	---C++: alias "Standard_EXPORT virtual ~Select3D_Projector(){Delete() ; }"
-    
-    Set (me: in out ;
-    	 T         : Trsf    from gp;
+    Set (me : mutable;
+         T         : Trsf    from gp;
          Persp     : Boolean from Standard;
-         Focus     : Real    from Standard) 
+         Focus     : Real    from Standard)
     is static;
 
-	 
-    SetView(me:in out ; V : View from V3d);
-    	---Purpose: Sets the 3D view V used at the time of construction.
+
+    SetView(me : mutable; V : View from V3d);
+    ---Purpose: Sets the 3D view V used at the time of construction.
 
     View(me) returns any View from V3d;
-    	---Purpose: Returns the 3D view used at the time of construction.
-    	---C++: return const&
-    	---C++: inline
+    ---Purpose: Returns the 3D view used at the time of construction.
+    ---C++: return const&
+    ---C++: inline
 
 
     Directions(me; D1 , D2 , D3 : out Vec2d from gp)
-	---C++: inline
+    ---C++: inline
     is virtual;
 
-    Scaled(me : in out; On : Boolean from Standard = Standard_False)
-	---Purpose: to compute with the given scale and translation.
+    Scaled(me : mutable; On : Boolean from Standard = Standard_False)
+    ---Purpose: to compute with the given scale and translation.
     is virtual;
 
     Perspective(me) returns Boolean
-	---Purpose: Returns True if there is a perspective transformation.
-	---C++: inline
+    ---Purpose: Returns True if there is a perspective transformation.
+    ---C++: inline
     is virtual;
 
     Transformation(me) returns GTrsf from gp
-	---Purpose: Returns the active transformation.
-	---C++: inline
-	---C++: return const &
+    ---Purpose: Returns the active transformation.
+    ---C++: inline
+    ---C++: return const &
     is virtual;
 
     InvertedTransformation(me) returns GTrsf from gp
-	---Purpose: Returns the active inverted transformation.
-	---C++: inline
-	---C++: return const &
+    ---Purpose: Returns the active inverted transformation.
+    ---C++: inline
+    ---C++: return const &
     is virtual;
 
     FullTransformation(me) returns Trsf from gp
-	---Purpose: Returns the original transformation.
-	---C++: inline
-	---C++: return const &
+    ---Purpose: Returns the original transformation.
+    ---C++: inline
+    ---C++: return const &
     is virtual;
 
     Focus(me) returns Real from Standard
-	---Purpose: Returns the focal length.
-	---C++: inline
+    ---Purpose: Returns the focal length.
+    ---C++: inline
     raises
-    	NoSuchObject from Standard -- if there is no perspective
+        NoSuchObject from Standard -- if there is no perspective
     is virtual;
-    
+
     Transform(me; D : in out Vec from gp)
-	---C++: inline
+    ---C++: inline
     is virtual;
 
     Transform(me; Pnt : in out Pnt from gp)
-    	---C++: inline
+        ---C++: inline
     is virtual;
-    
+
     Project(me; P    :     Pnt   from gp;
                 Pout : out Pnt2d from gp)
-	---Purpose: Transform and apply perspective if needed.
+    ---Purpose: Transform and apply perspective if needed.
     is virtual;
-    
+
     Project(me; P     :     Pnt  from gp;
                 X,Y,Z : out Real from Standard)
-	---Purpose: Transform and apply perspective if needed.
+    ---Purpose: Transform and apply perspective if needed.
     is static;
- 
+
     Project(me; P     :     Pnt   from gp;
                 D1    :     Vec   from gp;
-    	        Pout  : out Pnt2d from gp;
-		D1out : out Vec2d from gp)
-	---Purpose: Transform and apply perspective if needed.
+                Pout  : out Pnt2d from gp;
+        D1out : out Vec2d from gp)
+    ---Purpose: Transform and apply perspective if needed.
     is virtual;
-    
+
     BoxAdd(me; P :     Pnt2d from gp;
                B : out Box   from Bnd)
-	---Purpose: Adds to the box <B> the min-max of the point <P>.
+    ---Purpose: Adds to the box <B> the min-max of the point <P>.
     is virtual;
 
     Shoot(me; X , Y : Real from Standard)
     returns Lin from gp
-	---Purpose: return a line going through the eye towards the
-	--          2d point <X,Y>.
+    ---Purpose: return a line going through the eye towards the
+    --          2d point <X,Y>.
     is virtual;
 
-    SetDirection(me: in out) 
-    is static private; 
-      
-    Transform(me; P : in out Pnt from gp; 
-    	    	  T : GTrsf from gp)
-	---C++: inline
-    is virtual;  
-     
-    Transform(me; D : in out Lin from gp; 
-    	    	  T : GTrsf from gp)
-	---C++: inline
+    DepthMin(me) returns Real from Standard;
+    ---Purpose: Returns the minimum depth value (if clipping plane defined).
+    ---         Should be used when call ::Shoot() to compute eyeline.
+    ---C++: inline
+
+    DepthMax(me) returns Real from Standard;
+    ---Purpose: Returns the maximum depth value (if clipping plane defined).
+    ---         Should be used when call ::Shoot() to compute eyeline.
+    ---C++: inline
+
+    DepthMinMax(me : mutable;
+                theDepthMin : in Real from Standard;
+                theDepthMax : in Real from Standard);
+    ---Purpose: Setup the min/max depth values (doesn't affect
+    ---         projection functionality itself).
+    ---         Should be used when call ::Shoot() to compute eyeline.
+
+    SetDirection(me : mutable)
+    is static private;
+
+    Transform(me; P : in out Pnt from gp;
+                  T : GTrsf from gp)
+    ---C++: inline
+    is virtual;
+
+    Transform(me; D : in out Lin from gp;
+                  T : GTrsf from gp)
+    ---C++: inline
     is virtual;
 
 fields
-    myType       : Integer from Standard; 
-		     
+    myType       : Integer from Standard;
+
     myPersp      : Boolean from Standard is protected;
     myFocus      : Real    from Standard is protected;
     myScaledTrsf : Trsf    from gp is protected;
@@ -177,7 +191,8 @@ fields
     myD2         : Vec2d   from gp is protected;
     myD3         : Vec2d   from gp is protected;
 
-
-    myView       : View from V3d;
+    myView       : View    from V3d;
+    myDepthMin   : Real    from Standard;
+    myDepthMax   : Real    from Standard;
 
 end Projector;

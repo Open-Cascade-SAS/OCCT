@@ -286,23 +286,19 @@ void EXPORT call_togl_clear_immediat_mode (
     call_subr_displayCB(aview,OCC_REDRAW_WINDOW);
 #endif
     call_func_redraw_all_structs_end (aview->WsId, aFlush);
-    /*
-    After a redraw,
-    Made the back identical to the front buffer
-    */
-    if( retainmode && (partial >= 0) )
-      TelCopyBuffers (aview->WsId, GL_FRONT, GL_BACK,
-      xm, ym, zm, XM, YM, ZM, partial);
+    // After a redraw,
+    // Made the back identical to the front buffer.
+    // Always perform full copy (partial update optimization is useless on mordern hardware)!
+    if (retainmode)
+      TelCopyBuffers (aview->WsId, GL_FRONT, GL_BACK, xm, ym, zm, XM, YM, ZM, 0);
 #ifdef TRACE
     printf(" $$$ REDRAW\n");
 #endif
     TelSetBackBufferRestored (TOn);
   } else if( partial >= 0 ) {
-    /*
-    Restore pixels from the back buffer.
-    */
-    TelCopyBuffers (aview->WsId, GL_BACK, GL_FRONT,
-      xm, ym, zm, XM, YM, ZM, partial);
+    // Restore pixels from the back buffer.
+    // Always perform full copy (partial update optimization is useless on mordern hardware)!
+    TelCopyBuffers (aview->WsId, GL_BACK, GL_FRONT, xm, ym, zm, XM, YM, ZM, 0);
   }
 
   TsmGetWSAttri (aview->WsId, WSTransient, &data);

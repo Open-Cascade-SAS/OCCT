@@ -12,10 +12,10 @@
 
 //=======================================================================
 //function : Directions
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-inline void Select3D_Projector::Directions 
+inline void Select3D_Projector::Directions
   (gp_Vec2d& D1, gp_Vec2d& D2, gp_Vec2d& D3) const
 {
   D1 = myD1;
@@ -25,7 +25,7 @@ inline void Select3D_Projector::Directions
 
 //=======================================================================
 //function : Perspective
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline Standard_Boolean Select3D_Projector::Perspective() const
@@ -33,7 +33,7 @@ inline Standard_Boolean Select3D_Projector::Perspective() const
 
 //=======================================================================
 //function : Transformation
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline const gp_GTrsf& Select3D_Projector::Transformation() const
@@ -41,7 +41,7 @@ inline const gp_GTrsf& Select3D_Projector::Transformation() const
 
 //=======================================================================
 //function : InvertedTransformation
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline const gp_GTrsf& Select3D_Projector::InvertedTransformation() const
@@ -49,7 +49,7 @@ inline const gp_GTrsf& Select3D_Projector::InvertedTransformation() const
 
 //=======================================================================
 //function : FullTransformation
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline const gp_Trsf& Select3D_Projector::FullTransformation() const
@@ -57,7 +57,7 @@ inline const gp_Trsf& Select3D_Projector::FullTransformation() const
 
 //=======================================================================
 //function : Focus
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline Standard_Real Select3D_Projector::Focus() const
@@ -69,7 +69,7 @@ inline Standard_Real Select3D_Projector::Focus() const
 
 //=======================================================================
 //function : Transform
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline void Select3D_Projector::Transform (gp_Vec& D) const
@@ -83,11 +83,11 @@ inline void Select3D_Projector::Transform (gp_Vec& D) const
 
 //=======================================================================
 //function : Transform
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 inline void Select3D_Projector::Transform (gp_Pnt& Pnt) const
-{ 
+{
   gp_XYZ xyz = Pnt.XYZ();
   myGTrsf.Transforms(xyz);
   Pnt = gp_Pnt(xyz);
@@ -98,7 +98,7 @@ inline const Handle(V3d_View)& Select3D_Projector::View() const
 {return myView;}
 
 inline void Select3D_Projector::Transform (gp_Lin& Lin, const gp_GTrsf& T) const
-{ 
+{
   gp_Ax1 ax1 = Lin.Position();
   gp_XYZ xyz = ax1.Location().XYZ();
   T.Transforms(xyz);
@@ -118,10 +118,18 @@ inline void Select3D_Projector::Transform (gp_Lin& Lin, const gp_GTrsf& T) const
 }
 
 inline void Select3D_Projector::Transform (gp_Pnt& Pnt, const gp_GTrsf& T) const
-{ 
+{
   gp_XYZ xyz = Pnt.XYZ();
   T.Transforms(xyz);
   Pnt = gp_Pnt(xyz);
 }
 
+inline Standard_Real Select3D_Projector::DepthMin() const
+{
+  return myDepthMin;
+}
 
+inline Standard_Real Select3D_Projector::DepthMax() const
+{
+  return myDepthMax;
+}

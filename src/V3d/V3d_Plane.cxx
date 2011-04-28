@@ -6,33 +6,36 @@
 
 //-Version
 
-//-Design       
+//-Design
 
-//-Warning      
+//-Warning
 
 //-References
 
 //-Language     C++ 2.1
 
-// for the class
 #include <V3d.hxx>
 #include <V3d_Plane.ixx>
 #include <Viewer_BadValue.hxx>
 
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <gp_Pln.hxx>
+
 //-Constructors
 
-V3d_Plane::V3d_Plane(const Handle(V3d_Viewer)& VM, const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D) {
+V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D) {
 
   Viewer_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::V3d_Plane, bad plane coefficients");
 
-  MyPlane = new Visual3d_ClipPlane(A,B,C,D) ;	
-  VM->AddPlane(this) ;
+  MyPlane = new Visual3d_ClipPlane(A,B,C,D) ;
 }
 
 //-Methods, in order
 
 void V3d_Plane::SetPlane( const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D) {
-  
+
   Viewer_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::SetPlane, bad plane coefficients");
 
   MyPlane->SetPlane(A,B,C,D) ;
@@ -42,31 +45,28 @@ void V3d_Plane::SetPlane( const Standard_Real A, const Standard_Real B, const St
   }
 }
 
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx> 
-#include <Graphic3d_AspectFillArea3d.hxx>
 void V3d_Plane::Display(const Handle(V3d_View)& aView,
 			const Quantity_Color& aColor) {
     Handle(V3d_Viewer) theViewer = aView->Viewer();
-    if (!MyGraphicStructure.IsNull()) {       
+    if (!MyGraphicStructure.IsNull()) {
       MyGraphicStructure->Clear();
     }
-    Standard_Real size = theViewer->DefaultViewSize(); 
+    Standard_Real size = theViewer->DefaultViewSize();
     Standard_Real offset = size/10000.;
     MyGraphicStructure = new Graphic3d_Structure(theViewer->Viewer());
     Handle(Graphic3d_Group) group = new Graphic3d_Group(MyGraphicStructure);
-    Handle(Graphic3d_AspectFillArea3d) aspect = 
+    Handle(Graphic3d_AspectFillArea3d) aspect =
 				new Graphic3d_AspectFillArea3d();
     Graphic3d_MaterialAspect plastic(Graphic3d_NOM_PLASTIC);
     plastic.SetColor(aColor);
     plastic.SetTransparency(0.5);
     aView->SetTransparency(Standard_True);
-    aspect->SetFrontMaterial(plastic); 
+    aspect->SetFrontMaterial(plastic);
 //    aspect->SetInteriorStyle (Aspect_IS_SOLID);
     aspect->SetInteriorStyle (Aspect_IS_HATCH);
     aspect->SetHatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE);
     MyGraphicStructure->SetPrimitivesAspect(aspect);
-    Graphic3d_Array1OfVertex p(1,4); 
+    Graphic3d_Array1OfVertex p(1,4);
     p(1).SetCoord(-size/2.,-size/2.,offset);
     p(2).SetCoord(-size/2., size/2.,offset);
     p(3).SetCoord( size/2., size/2.,offset);
@@ -96,7 +96,6 @@ Standard_Boolean V3d_Plane::IsDisplayed() const {
   return MyGraphicStructure->IsDisplayed();
 }
 
-#include <gp_Pln.hxx>
 void V3d_Plane::Update() {
 
   if( !MyGraphicStructure.IsNull() ) {

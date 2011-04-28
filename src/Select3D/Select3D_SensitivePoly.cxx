@@ -61,7 +61,7 @@ Select3D_SensitiveEntity(OwnerId)
 // Purpose :
 //==================================================
 
-void Select3D_SensitivePoly::Project(const Select3D_Projector& aProj)
+void Select3D_SensitivePoly::Project(const Handle(Select3D_Projector)& aProj)
 {
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
   mybox2d.SetVoid();
@@ -71,11 +71,14 @@ void Select3D_SensitivePoly::Project(const Select3D_Projector& aProj)
   for(Standard_Integer i=0;i<mynbpoints;i++)
     {
       gp_Pnt aPnt(((Select3D_Pnt*)mypolyg3d)[i].x, ((Select3D_Pnt*)mypolyg3d)[i].y, ((Select3D_Pnt*)mypolyg3d)[i].z);
-      if(hasloc){
-	aProj.Project(aPnt.Transformed(Location().Transformation()),aPnt2d);
+      if (hasloc)
+      {
+        aProj->Project(aPnt.Transformed(Location().Transformation()),aPnt2d);
       }
       else
-	aProj.Project(aPnt,aPnt2d);
+      {
+        aProj->Project(aPnt,aPnt2d);
+      }
       mybox2d.Update(aPnt2d);
       ((Select3D_Pnt2d*)mypolyg2d)[i] = aPnt2d;
     }

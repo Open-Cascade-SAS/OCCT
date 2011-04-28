@@ -1,5 +1,4 @@
-
--- -- File:        Poly.cdl
+-- File:        Poly.cdl
 -- Created:     Mon Mar  6 09:38:50 1995
 -- Author:      Laurent PAINNOT
 --              <lpa@metrox>
@@ -7,17 +6,17 @@
 
 
 
-package Poly 
+package Poly
 
         ---Purpose: This  package  provides  classes  and services  to
         --          handle :
-        --          
+        --
         --          * 3D triangular polyhedrons.
-        --          
+        --
         --          * 3D polygons.
-        --          
+        --
         --          * 2D polygon.
-        --          
+        --
         --          * Tools to dump, save and restore those objects.
 
 uses
@@ -26,7 +25,7 @@ uses
     TCollection,
     TColStd,
     gp,
-    TColgp, 
+    TColgp,
     TShort
 
 is
@@ -37,7 +36,7 @@ is
 
     class Array1OfTriangle
     instantiates Array1 from TCollection(Triangle from Poly);
-    
+
     class HArray1OfTriangle
     instantiates HArray1 from TCollection(Triangle         from Poly,
                                           Array1OfTriangle from Poly);
@@ -47,7 +46,7 @@ is
         --          triangles.  It   is  made  of  a nodes  which  are
         --          indexed. Nodes  have a 3d  value  and a  2d value.
         --          Triangles are triplet of node indices.
-        --          
+        --
         --          This is a Transient class.
 
 
@@ -64,10 +63,10 @@ is
         --          referencing a triangulation.
 
 
-    --         
+    --
     -- Tools to use triangulations
-    -- 
-    
+    --
+
     class Connect;
         ---Purpose: Computes and  stores  the    link from   nodes  to
         --          triangles     and from triangles to   neighbouring
@@ -89,8 +88,8 @@ is
 
     --
     --  Package methods
-    --  
-    
+    --
+
     Catenate (lstTri: ListOfTriangulation from Poly)
         returns Triangulation from Poly;
         ---Purpose: Join several triangulations to one new triangulation object.
@@ -101,7 +100,7 @@ is
     Write(T       : Triangulation from Poly;
           OS      : in out OStream;
           Compact : Boolean = Standard_True);
-  
+
         ---Purpose: Writes the content of the triangulation <T> on the
         --          stream <OS>. If <Compact> is true this is a "save"
         --          format  intended  to  be read back   with the Read
@@ -111,7 +110,7 @@ is
     Write(P       : Polygon3D from Poly;
           OS      : in out OStream;
           Compact : Boolean = Standard_True);
-  
+
         ---Purpose: Writes  the  content  of the 3D polygon <P> on the
         --          stream <OS>. If <Compact> is true this is a "save"
         --          format  intended  to  be read back   with the Read
@@ -121,7 +120,7 @@ is
     Write(P       : Polygon2D from Poly;
           OS      : in out OStream;
           Compact : Boolean = Standard_True);
-  
+
         ---Purpose: Writes the  content  of the 2D polygon  <P> on the
         --          stream <OS>. If <Compact> is true this is a "save"
         --          format  intended  to  be read back   with the Read
@@ -133,32 +132,45 @@ is
          OS      : in out OStream);
        ---Purpose: Dumps  the triangulation.  This   is a call to  the
        --          previous method with Comapct set to False.
-       
+
     Dump(P       : Polygon3D from Poly;
          OS      : in out OStream);
        ---Purpose: Dumps  the  3D  polygon.  This   is a call to  the
        --          previous method with Comapct set to False.
-       
+
     Dump(P       : Polygon2D from Poly;
          OS      : in out OStream);
        ---Purpose: Dumps  the  2D  polygon.  This   is a call to  the
        --          previous method with Comapct set to False.
-       
+
 
     ReadTriangulation(IS : in out IStream)
     returns Triangulation from Poly;
         ---Purpose: Reads a triangulation from the stream <IS>.
-  
+
     ReadPolygon3D(IS : in out IStream)
     returns Polygon3D from Poly;
         ---Purpose: Reads a 3d polygon from the stream <IS>.
-  
+
     ReadPolygon2D(IS : in out IStream)
     returns Polygon2D from Poly;
         ---Purpose: Reads a 2D polygon from the stream <IS>.
 
     ComputeNormals(Tri : Triangulation from Poly);
-        ---Purpose: Compute node normals for face triangulation 
+        ---Purpose: Compute node normals for face triangulation
         --  as mean normal of surrounding triangles
-  
+
+    PointOnTriangle(P1, P2, P3, P: XY from gp; UV: out XY from gp)
+    returns Real;
+        ---Purpose: Computes parameters of the point P on triangle
+        --          defined by points P1, P2, and P3, in 2d.
+        --          The parameters U and V are defined so that
+        --          P = P1 + U * (P2 - P1) + V * (P3 - P1),
+        --          with U >= 0, V >= 0, U + V <= 1.
+        --          If P is located outside of triangle, or triangle
+        --          is degenerated, the returned parameters correspond
+        --          to closest point, and returned value is square of
+        --          the distance from original point to triangle (0 if
+        --          point is inside).
+
 end Poly;

@@ -139,14 +139,14 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected( const TopLo
 //=======================================================================
 Standard_Real MeshVS_SensitiveMesh::ComputeDepth( const gp_Lin& /*EyeLine*/ ) const
 {
-  return 0.;
+  return Precision::Infinite();
 }
 
 //==================================================
 // Function: ProjectOneCorner
 // Purpose :
 //==================================================
-void MeshVS_SensitiveMesh::ProjectOneCorner(const Select3D_Projector& theProj,
+void MeshVS_SensitiveMesh::ProjectOneCorner(const Handle(Select3D_Projector)& theProj,
 					    const Standard_Real theX, 
 					    const Standard_Real theY, 
 					    const Standard_Real theZ)
@@ -154,9 +154,9 @@ void MeshVS_SensitiveMesh::ProjectOneCorner(const Select3D_Projector& theProj,
   gp_Pnt aPnt( theX, theY, theZ );  
   gp_Pnt2d aProjPnt;
   if( HasLocation() )
-    theProj.Project( aPnt.Transformed(Location().Transformation()), aProjPnt );
+    theProj->Project( aPnt.Transformed(Location().Transformation()), aProjPnt );
   else 
-    theProj.Project( aPnt, aProjPnt );
+    theProj->Project( aPnt, aProjPnt );
   mybox2d.Add( aProjPnt );
 }
 
@@ -164,7 +164,7 @@ void MeshVS_SensitiveMesh::ProjectOneCorner(const Select3D_Projector& theProj,
 // Function: Project
 // Purpose :
 //==================================================
-void MeshVS_SensitiveMesh::Project(const Select3D_Projector& aProj)
+void MeshVS_SensitiveMesh::Project(const Handle(Select3D_Projector)& aProj)
 {
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
 

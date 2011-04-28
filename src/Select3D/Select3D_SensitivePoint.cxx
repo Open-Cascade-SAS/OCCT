@@ -32,15 +32,15 @@ Select3D_SensitiveEntity(anOwner)
 // Purpose :
 //==================================================
 void Select3D_SensitivePoint
-::Project (const Select3D_Projector& aProj)
+::Project (const Handle(Select3D_Projector)& aProj)
 {
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
   gp_Pnt2d aPoint2d;
   if(!HasLocation())
-    aProj.Project(mypoint, aPoint2d);
+    aProj->Project(mypoint, aPoint2d);
   else{
     gp_Pnt aP(mypoint.x, mypoint.y, mypoint.z);
-    aProj.Project(aP.Transformed(Location().Transformation()), aPoint2d);
+    aProj->Project(aP.Transformed(Location().Transformation()), aPoint2d);
   }
   myprojpt = aPoint2d;
 }
@@ -69,9 +69,10 @@ Standard_Boolean Select3D_SensitivePoint
 	  Standard_Real& DMin)
 {
   DMin = gp_Pnt2d(X,Y).Distance(myprojpt);
-  if(DMin<=aTol*SensitivityFactor()) {
-    Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-    return Standard_True;
+  if(DMin<=aTol*SensitivityFactor())
+  {
+    // compute and validate the depth (::Depth()) along the eyeline
+    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
   }
   return Standard_False;
 }

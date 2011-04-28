@@ -758,7 +758,8 @@ static Standard_Integer BUC60698(Draw_Interpretor& di, Standard_Integer argc, co
   gp_Pln thegpPln = gce_MakePln(gp_Pnt(0.5,0.5,0.5),gp_Dir(0,0,1));
   Standard_Real A,B,C,D;
   thegpPln.Coefficients(A,B,C,D);
-  Handle_V3d_Plane thePlane = new V3d_Plane(myAISContext->CurrentViewer(),A,B,C,D);
+  Handle_V3d_Plane thePlane = new V3d_Plane(A,B,C,D);
+  myAISContext->CurrentViewer()->AddPlane (thePlane); // add to defined planes list
   for (myAISContext->CurrentViewer()->InitActiveViews();
        myAISContext->CurrentViewer()->MoreActiveViews ();
        myAISContext->CurrentViewer()->NextActiveViews ()) {

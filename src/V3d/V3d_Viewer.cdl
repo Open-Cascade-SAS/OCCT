@@ -1,28 +1,28 @@
--- File:	Viewer.cdl
--- Created:	Fri Jan 17 11:23:08 1992
--- Author:	GG
--- Modified 	FMN - 02/02/98 -> Specifique UNIX
---		CAL - 16/07/98 -> S3892. Ajout grilles 3d.
---		GG  - 15/12/99 -> GER61351 Add SetDefaultBackgroundColor()
---				           and DefaultBackgroundColor() methods
---		GG  - 20/01/00 -> IMP200100 Add GridDrawMode() method
---		GG  - 24/01/00 -> IMP240100 Add SetGridEcho() methods
---					    Add GridEcho() method.
---					    Add ShowGridEcho() private method
---      SAV - 26/11/02 -> Add new field to store grid echo aspect
---		
----Copyright:	Matra Datavision 1992
+-- File:    Viewer.cdl
+-- Created: Fri Jan 17 11:23:08 1992
+-- Author:  GG
+-- Modified FMN - 02/02/98 -> Specifique UNIX
+--          CAL - 16/07/98 -> S3892. Ajout grilles 3d.
+--          GG  - 15/12/99 -> GER61351 Add SetDefaultBackgroundColor()
+--                                     and DefaultBackgroundColor() methods
+--          GG  - 20/01/00 -> IMP200100 Add GridDrawMode() method
+--          GG  - 24/01/00 -> IMP240100 Add SetGridEcho() methods
+--                                      Add GridEcho() method.
+--                                      Add ShowGridEcho() private method
+--          SAV - 26/11/02 -> Add new field to store grid echo aspect
+--
+---Copyright:        Matra Datavision 1992
 
 class Viewer from V3d
 
-	---Version:
+        ---Version:
 
-	---Purpose: Defines services on Viewer type objects.
-	--	    The methods of this class allow editing and
-	--	    interrogation of the parameters linked to the viewer
-	--	    its friend classes (View,light,plane).
+        ---Purpose: Defines services on Viewer type objects.
+        --            The methods of this class allow editing and
+        --            interrogation of the parameters linked to the viewer
+        --            its friend classes (View,light,plane).
 
-        ---Keywords: Viewer,Default Attributes 
+        ---Keywords: Viewer,Default Attributes
 
         ---References:
 
@@ -30,656 +30,652 @@ inherits
 
         Viewer from Viewer
 
-uses 
+uses
 
---        GraphicDevice from Graphic3d,
         GraphicDevice from Aspect,
-	TypeOfUpdate from V3d,
-	TypeOfVisualization from V3d,
-	TypeOfShadingModel from V3d,
-	TypeOfSurfaceDetail from V3d,
-	TypeOfOrientation from V3d,
-	View from V3d,
-	Light from V3d,
-	Plane from V3d,
-	ListOfTransient from V3d,
+        TypeOfUpdate from V3d,
+        TypeOfVisualization from V3d,
+        TypeOfShadingModel from V3d,
+        TypeOfSurfaceDetail from V3d,
+        TypeOfOrientation from V3d,
+        View from V3d,
+        Light from V3d,
+        Plane from V3d,
+        ListOfTransient from V3d,
         ListIteratorOfListOfTransient from TColStd,
         TypeOfView from V3d,
-	Vector from Graphic3d,
-    	ViewManager from Visual3d,
-	NameOfColor from Quantity,
-	TypeOfColor from Quantity,
-	Color from Quantity,
-	Length from Quantity,
-	PlaneAngle from Quantity,
-	Background from Aspect,
-	GradientBackground from Aspect,
-	Parameter from Quantity,
-	OrthographicView from V3d,
-	PerspectiveView from V3d,
+        Vector from Graphic3d,
+        ViewManager from Visual3d,
+        NameOfColor from Quantity,
+        TypeOfColor from Quantity,
+        Color from Quantity,
+        Length from Quantity,
+        PlaneAngle from Quantity,
+        Background from Aspect,
+        GradientBackground from Aspect,
+        Parameter from Quantity,
+        OrthographicView from V3d,
+        PerspectiveView from V3d,
         AsciiString,ExtendedString from TCollection,
         Ax3 from gp,Structure from Graphic3d,
-	Vertex from Graphic3d,
-	Group from Graphic3d,
- 	AspectMarker3d from Graphic3d,	
-	RectangularGrid from V3d,
-	CircularGrid from V3d,
-	Grid from Aspect,
-	GridType from Aspect,
-	GridDrawMode from Aspect,
+        Vertex from Graphic3d,
+        Group from Graphic3d,
+        AspectMarker3d from Graphic3d,
+        RectangularGrid from V3d,
+        CircularGrid from V3d,
+        Grid from Aspect,
+        GridType from Aspect,
+        GridDrawMode from Aspect,
         GradientFillMethod from Aspect
 
-	
 raises
 
-	BadValue from Viewer
+        BadValue from Viewer
 
 is
 
---    	Create ( Device	        : GraphicDevice from Graphic3d;
-    	Create ( Device	        : GraphicDevice from Aspect;
-	         aName          : ExtString from Standard;
-		 aDomain        : CString from Standard = "";
-    		 ViewSize 	: Length from Quantity = 1000.0 ;
-		 ViewProj 	: TypeOfOrientation from V3d= V3d_XposYnegZpos ;
-		 ViewBackground : NameOfColor from Quantity = Quantity_NOC_GRAY30;
-		 Visualization  : TypeOfVisualization from V3d = V3d_ZBUFFER;
-		 ShadingModel   : TypeOfShadingModel  from V3d = V3d_GOURAUD ;
-		 UpdateMode     : TypeOfUpdate from V3d = V3d_WAIT;
-                 ComputedMode   : Boolean from Standard = Standard_True;
-                 DefaultComputedMode: Boolean from Standard = Standard_True; 
-		 SurfaceDetail   : TypeOfSurfaceDetail  from V3d = V3d_TEX_NONE)
-						returns mutable Viewer from V3d
-	---Purpose: Create a Viewer on the given device with the given parameters  or
-	--          with their default values.
-		raises BadValue from Viewer ;
-	---Purpose:	If the size of the view is <= 0 
-	--      if ComputedMode is false, only the degenerate mode will be used.
-	--          
-	--  Warning: Client must creates a graphic-device of type
-	--	    Graphic3d_GraphicDevice under UNIX 
-	--	 or Graphic3d_WNTGraphicDevice under WindowsNT
+        Create ( Device     : GraphicDevice from Aspect;
+             aName          : ExtString from Standard;
+             aDomain        : CString from Standard = "";
+             ViewSize       : Length from Quantity = 1000.0 ;
+             ViewProj       : TypeOfOrientation from V3d= V3d_XposYnegZpos ;
+             ViewBackground : NameOfColor from Quantity = Quantity_NOC_GRAY30;
+             Visualization  : TypeOfVisualization from V3d = V3d_ZBUFFER;
+             ShadingModel   : TypeOfShadingModel  from V3d = V3d_GOURAUD ;
+             UpdateMode     : TypeOfUpdate from V3d = V3d_WAIT;
+             ComputedMode   : Boolean from Standard = Standard_True;
+             DefaultComputedMode: Boolean from Standard = Standard_True;
+             SurfaceDetail  : TypeOfSurfaceDetail  from V3d = V3d_TEX_NONE)
+        returns mutable Viewer from V3d
+        ---Purpose: Create a Viewer on the given device with the given parameters  or
+        --          with their default values.
+        raises BadValue from Viewer ;
+        ---Purpose:        If the size of the view is <= 0
+        --      if ComputedMode is false, only the degenerate mode will be used.
+        --
+        --  Warning: Client must creates a graphic-device of type
+        --            Graphic3d_GraphicDevice under UNIX
+        --         or Graphic3d_WNTGraphicDevice under WindowsNT
 
         CreateView (me: mutable) returns mutable View from V3d;
-	---Level: Public
-	---Purpose: creates a view in the viewer according to its 
-	--          default parameters.
-	
+        ---Level: Public
+        ---Purpose: creates a view in the viewer according to its
+        --          default parameters.
+
         DefaultOrthographicView(me: mutable) returns mutable OrthographicView from V3d;
-	
+
         DefaultPerspectiveView(me: mutable) returns mutable PerspectiveView from V3d;
 
         -------------------------------------------------------
-        ---Category: Methods to modify the status of the viewer 
+        ---Category: Methods to modify the status of the viewer
         -------------------------------------------------------
 
         SetViewOn (me:mutable );
-	---Level: Public
-        ---Purpose: Activates all of the views of a viewer attached 
-	--	    to a window.
+        ---Level: Public
+        ---Purpose: Activates all of the views of a viewer attached
+        --            to a window.
 
-	SetViewOn (me:mutable; View : View from V3d ) 
-	---Level: Public
-	---Purpose: Activates a particular view in the Viewer .
-	--	    Must be call if the Window attached to the view
-	--	    has been Deiconified .
-		raises BadValue from Viewer;
-	--	If the view is not mapped on the window.
+        SetViewOn (me:mutable; View : View from V3d )
+        ---Level: Public
+        ---Purpose: Activates a particular view in the Viewer .
+        --            Must be call if the Window attached to the view
+        --            has been Deiconified .
+                raises BadValue from Viewer;
+        --        If the view is not mapped on the window.
 
         SetViewOff (me:mutable);
-	---Level: Public
+        ---Level: Public
         ---Purpose: Deactivates all the views of a Viewer
-	--	    attached to a window.
-	
-	SetViewOff (me:mutable; View : View from V3d) 
-	---Level: Public
-	---Purpose: Deactivates a particular view in the Viewer.
-	--	    Must be call if the Window attached to the view
-	--	    has been Iconified .
-		raises BadValue from Viewer;
-	--	If the view is not mapped on the window.
+        --            attached to a window.
+
+        SetViewOff (me:mutable; View : View from V3d)
+        ---Level: Public
+        ---Purpose: Deactivates a particular view in the Viewer.
+        --            Must be call if the Window attached to the view
+        --            has been Iconified .
+                raises BadValue from Viewer;
+        --        If the view is not mapped on the window.
 
         Update (me:mutable ) is redefined static;
-	---Level: Public
+        ---Level: Public
         ---Purpose: Updates the display of all the views of a viewer.
-	--	    Must be called when the views must be updated
-	--	    simultaneously while the Update mode is deferred (WAIT). 
+        --            Must be called when the views must be updated
+        --            simultaneously while the Update mode is deferred (WAIT).
 
         UpdateLights (me: mutable);
-	---Level: Public
-	---Purpose: Updates the lights of all the views of a viewer.
+        ---Level: Public
+        ---Purpose: Updates the lights of all the views of a viewer.
 
         Redraw ( me );
-	---Level: Public
+        ---Level: Public
         ---Purpose: Redraws all the views of the Viewer even if no
-	--	    modification has taken place. Must be called if
-	--	    all the views of the Viewer are exposed, as for
-	--	   example in a global DeIconification.
+        --            modification has taken place. Must be called if
+        --            all the views of the Viewer are exposed, as for
+        --           example in a global DeIconification.
 
         Remove (me:mutable);
-	---Level: Public
+        ---Level: Public
         ---Purpose: Suppresses the Viewer.
 
-	Erase ( me );
-	---Level: Public
-	---Purpose: Erase all Objects in All the views.
+        Erase ( me );
+        ---Level: Public
+        ---Purpose: Erase all Objects in All the views.
 
-	UnHighlight ( me );
-	---Level: Public
-	---Purpose: UnHighlight all Objects in All the views.
+        UnHighlight ( me );
+        ---Level: Public
+        ---Purpose: UnHighlight all Objects in All the views.
 
-	SetDefaultBackgroundColor (me:mutable; Type : TypeOfColor; V1, V2, V3 : Parameter );
-	---Level: Public
-	---Purpose: Defines the default base colour of views attached
-	--	    to the Viewer by supplying the type of colour
-	--	    definition and the three component values..
+        SetDefaultBackgroundColor (me:mutable; Type : TypeOfColor; V1, V2, V3 : Parameter );
+        ---Level: Public
+        ---Purpose: Defines the default base colour of views attached
+        --            to the Viewer by supplying the type of colour
+        --            definition and the three component values..
 
-    	SetDefaultBackgroundColor (me:mutable; Name : NameOfColor );
-	---Level: Public
-	---Purpose: Defines the default background colour of views
-	--	    attached to the viewer by supplying the name of the
-	--	    colour under the form Quantity_NOC_xxxx .
+        SetDefaultBackgroundColor (me:mutable; Name : NameOfColor );
+        ---Level: Public
+        ---Purpose: Defines the default background colour of views
+        --            attached to the viewer by supplying the name of the
+        --            colour under the form Quantity_NOC_xxxx .
 
-    	SetDefaultBackgroundColor (me:mutable; Color : Color from Quantity);
-	---Level: Public
-	---Purpose: Defines the default background colour of views
-	--	    attached to the viewer by supplying the color object 
+        SetDefaultBackgroundColor (me:mutable; Color : Color from Quantity);
+        ---Level: Public
+        ---Purpose: Defines the default background colour of views
+        --            attached to the viewer by supplying the color object
 
-    	SetDefaultBgGradientColors ( me:mutable;
+        SetDefaultBgGradientColors ( me:mutable;
                                      Name1 : NameOfColor;
                                      Name2 : NameOfColor;
                                      FillStyle : GradientFillMethod from Aspect = Aspect_GFM_HOR  );
-	---Level: Public
-	---Purpose: Defines the default gradient background colours of view
-	--	    attached to the viewer by supplying the name of the
-	--	    colours under the form Quantity_NOC_xxxx .
+        ---Level: Public
+        ---Purpose: Defines the default gradient background colours of view
+        --            attached to the viewer by supplying the name of the
+        --            colours under the form Quantity_NOC_xxxx .
 
-        SetDefaultBgGradientColors ( me : mutable ; 
-                                     Color1 : Color from Quantity; 
+        SetDefaultBgGradientColors ( me : mutable ;
+                                     Color1 : Color from Quantity;
                                      Color2 : Color from Quantity;
                                      FillStyle : GradientFillMethod from Aspect = Aspect_GFM_HOR );
         ---Level: Public
-	---Purpose: Defines the default gradient background colours of views
-	--	    attached to the viewer by supplying the colour objects   
+        ---Purpose: Defines the default gradient background colours of views
+        --            attached to the viewer by supplying the colour objects
 
-    	SetDefaultViewSize (me:mutable; Size : Length )
-	---Level: Public
-	---Purpose: Gives a default size for the creation of views of
-	--	    the viewer.
-		raises BadValue from Viewer;
-	--	If the size of the view is <= 0 
+        SetDefaultViewSize (me:mutable; Size : Length )
+        ---Level: Public
+        ---Purpose: Gives a default size for the creation of views of
+        --            the viewer.
+                raises BadValue from Viewer;
+        --        If the size of the view is <= 0
 
-    	SetDefaultViewProj (me:mutable; Orientation : TypeOfOrientation );
-	---Level: Public
-	---Purpose: Gives the default projection for creating views
-	--	    in the viewer. 
+        SetDefaultViewProj (me:mutable; Orientation : TypeOfOrientation );
+        ---Level: Public
+        ---Purpose: Gives the default projection for creating views
+        --            in the viewer.
 
-	SetDefaultVisualization(me:mutable; Type : TypeOfVisualization from V3d);
-	---Level: Public
-	---Purpose: Gives the default visualisation mode..
+        SetDefaultVisualization(me:mutable; Type : TypeOfVisualization from V3d);
+        ---Level: Public
+        ---Purpose: Gives the default visualisation mode..
 
 
         SetZBufferManagment(me: mutable; Automatic: Boolean from Standard);
-	---Level: Public
-	---Purpose: defines the strategy concerning the ZBuffer activity.
-	--          If Automatic is true, ZBuffer will be activated or
-	--          deactivated depending on the fact that faces exist or
-	--          not in the Viewer. This will optimize the response time
-	--          in the case where only wireframe objects are displayed.
-	--          If Automatic is False, ZBuffer will be activated or
-	--          deactivated depending on the choice of SetVisualization 
-	--          in each View.
-	--          Note that by default, the ZBufferManagment is not automatic.
-	
+        ---Level: Public
+        ---Purpose: defines the strategy concerning the ZBuffer activity.
+        --          If Automatic is true, ZBuffer will be activated or
+        --          deactivated depending on the fact that faces exist or
+        --          not in the Viewer. This will optimize the response time
+        --          in the case where only wireframe objects are displayed.
+        --          If Automatic is False, ZBuffer will be activated or
+        --          deactivated depending on the choice of SetVisualization
+        --          in each View.
+        --          Note that by default, the ZBufferManagment is not automatic.
+
         ZBufferManagment(me) returns Boolean from Standard;
-	---Level: Public
-	---Purpose: returns the ZBuffer stategy choice.
-	
-	SetDefaultShadingModel(me:mutable; Type : TypeOfShadingModel from V3d);
-	---Level: Public
-	---Purpose: Gives the default type of SHADING.
-	
-	SetDefaultSurfaceDetail(me:mutable; Type : TypeOfSurfaceDetail from V3d);
-	---Level: Public
-	---Purpose: Gives the default type of texture mapping.
+        ---Level: Public
+        ---Purpose: returns the ZBuffer stategy choice.
+
+        SetDefaultShadingModel(me:mutable; Type : TypeOfShadingModel from V3d);
+        ---Level: Public
+        ---Purpose: Gives the default type of SHADING.
+
+        SetDefaultSurfaceDetail(me:mutable; Type : TypeOfSurfaceDetail from V3d);
+        ---Level: Public
+        ---Purpose: Gives the default type of texture mapping.
 
         SetDefaultAngle (me:mutable; Angle : PlaneAngle from Quantity);
-	---Level: Public
-			       
-	SetUpdateMode ( me: mutable ; Mode : TypeOfUpdate from V3d );
-	---Level: Public
-	---Purpose: Defines the mode of regenerating the views making
-	--	    up the viewer. This can be immediate <ASAP> or
-	--	    deferred <WAIT>. In this latter case, the views are
-	--	    updated when the method Update(me) is called.
+        ---Level: Public
+
+        SetUpdateMode ( me: mutable ; Mode : TypeOfUpdate from V3d );
+        ---Level: Public
+        ---Purpose: Defines the mode of regenerating the views making
+        --            up the viewer. This can be immediate <ASAP> or
+        --            deferred <WAIT>. In this latter case, the views are
+        --            updated when the method Update(me) is called.
 
         SetDefaultTypeOfView(me:mutable; Type : TypeOfView from V3d);
-	---Level: Public
+        ---Level: Public
 
 
         SetPrivilegedPlane(me: mutable; aPlane: Ax3 from gp);
-	---Level: Public
-	
+        ---Level: Public
+
         PrivilegedPlane(me) returns Ax3 from gp;
-	---Level: Public
-	
-	DisplayPrivilegedPlane(me: mutable; OnOff: Boolean from Standard; aSize: Length from Quantity = 1);
-	---Level: Public
+        ---Level: Public
 
-	SetLightOn(me:mutable; MyLight : Light from V3d ) 
-	---Level: Public
-	---Purpose: Activates MyLight in the viewer.
-		raises BadValue from Viewer;
-	--	If No More Light can be activated in MyViewer .
+        DisplayPrivilegedPlane(me: mutable; OnOff: Boolean from Standard; aSize: Length from Quantity = 1);
+        ---Level: Public
 
-	SetLightOn(me:mutable) 
-	---Level: Public
-	---Purpose: Activates all the lights defined in this viewer.
-		raises BadValue from Viewer;
-	--	If No More Light can be activated in MyViewer .
+        SetLightOn(me:mutable; MyLight : Light from V3d )
+        ---Level: Public
+        ---Purpose: Activates MyLight in the viewer.
+                raises BadValue from Viewer;
+        --        If No More Light can be activated in MyViewer .
 
-	SetLightOff(me:mutable; MyLight : Light  from V3d );
-	---Level: Public
-	---Purpose: Desactivate MyLight in this viewer.
+        SetLightOn(me:mutable)
+        ---Level: Public
+        ---Purpose: Activates all the lights defined in this viewer.
+                raises BadValue from Viewer;
+        --        If No More Light can be activated in MyViewer .
 
-	SetLightOff(me:mutable);
-	---Level: Public
-	---Purpose: Deactivate all the Lights defined in this viewer.
+        SetLightOff(me:mutable; MyLight : Light  from V3d );
+        ---Level: Public
+        ---Purpose: Desactivate MyLight in this viewer.
 
-	DelLight(me:mutable; MyLight : Light from V3d);
-	---Level: Internal
-	---Purpose: Delete Light in Sequence Of Lights.
-				   
+        SetLightOff(me:mutable);
+        ---Level: Public
+        ---Purpose: Deactivate all the Lights defined in this viewer.
+
+        DelLight(me:mutable; MyLight : Light from V3d);
+        ---Level: Internal
+        ---Purpose: Delete Light in Sequence Of Lights.
+
         SetCurrentSelectedLight (me : mutable; TheLight : Light from V3d);
-	---Level: Advanced 
+        ---Level: Advanced
         ---Purpose: Defines the selected light.
 
-    	ClearCurrentSelectedLight (me : mutable);
-	---Level: Advanced 
-	---Purpose: Defines the selected light at NULL.
+            ClearCurrentSelectedLight (me : mutable);
+        ---Level: Advanced
+        ---Purpose: Defines the selected light at NULL.
 
         -----------------------------------------
         ---Category: Inquire methods
         -----------------------------------------
 
-	DefaultBackgroundColor ( me ; Type : TypeOfColor ; V1,V2,V3 : out Parameter);
-	---Level:  Public 
-	---Purpose: Returns the default background colour depending of the type. 
-	DefaultBackgroundColor ( me ) returns Color from Quantity;
-	---Level:  Public 
-	---Purpose: Returns the default background colour object. 
+        DefaultBackgroundColor ( me ; Type : TypeOfColor ; V1,V2,V3 : out Parameter);
+        ---Level:  Public
+        ---Purpose: Returns the default background colour depending of the type.
+        DefaultBackgroundColor ( me ) returns Color from Quantity;
+        ---Level:  Public
+        ---Purpose: Returns the default background colour object.
 
-        DefaultBgGradientColors( me; 
+        DefaultBgGradientColors( me;
                                  Color1 : out Color from Quantity;
-                                 Color2 : out Color from Quantity) ; 
-        ---Level: Public 
+                                 Color2 : out Color from Quantity) ;
+        ---Level: Public
         ---Purpose: Returns the gradient background colour objects of the view.
 
-	DefaultViewSize ( me) returns Length; 
-	---Level:  Public 
-	---Purpose: Returns the default size of the view. 
+        DefaultViewSize ( me) returns Length;
+        ---Level:  Public
+        ---Purpose: Returns the default size of the view.
 
-	DefaultViewProj ( me) returns TypeOfOrientation; 
-	---Level:  Public 
-	---Purpose: Returns the default Projection. 
+        DefaultViewProj ( me) returns TypeOfOrientation;
+        ---Level:  Public
+        ---Purpose: Returns the default Projection.
 
-	DefaultVisualization ( me ) returns TypeOfVisualization from V3d;  
-	---Level:  Public 
-	---Purpose: Returns the default type of Visualization.
+        DefaultVisualization ( me ) returns TypeOfVisualization from V3d;
+        ---Level:  Public
+        ---Purpose: Returns the default type of Visualization.
 
-	DefaultShadingModel ( me ) returns TypeOfShadingModel from V3d;  
-	---Level:  Public 
-	---Purpose: Returns the default type of Shading
+        DefaultShadingModel ( me ) returns TypeOfShadingModel from V3d;
+        ---Level:  Public
+        ---Purpose: Returns the default type of Shading
 
-	DefaultSurfaceDetail ( me ) returns TypeOfSurfaceDetail from V3d;  
-	---Level:  Public 
-	---Purpose: Returns the default type of texture mapping
+        DefaultSurfaceDetail ( me ) returns TypeOfSurfaceDetail from V3d;
+        ---Level:  Public
+        ---Purpose: Returns the default type of texture mapping
 
         DefaultAngle ( me ) returns PlaneAngle from Quantity;
-	---Level:  Public 
-	
-	UpdateMode ( me ) returns TypeOfUpdate from V3d;
-	---Level:  Public 
-	---Purpose: Returns the regeneration mode of views in the viewer.
+        ---Level:  Public
+
+        UpdateMode ( me ) returns TypeOfUpdate from V3d;
+        ---Level:  Public
+        ---Purpose: Returns the regeneration mode of views in the viewer.
 
         IfMoreViews( me ) returns Boolean;
-	---Level:   Advanced 
+        ---Level:   Advanced
         ---Purpose: Returns True if One View more can be
         --          activated in this Viewer.
-        --          
+        --
 
-	------------------------------
-	---Category: iteration methods
-	------------------------------
+        ------------------------------
+        ---Category: iteration methods
+        ------------------------------
 
-	InitActiveViews(me: mutable);
-	---Level:   Advanced 
-	---Purpose: initializes an iteration on the active views.
-	
-	MoreActiveViews (me) returns Boolean from Standard;
-	---Level:   Advanced 
-	---Purpose: returns true if there are more active view(s) to return.
-	
-	NextActiveViews (me: mutable);
-	---Level:   Advanced 
+        InitActiveViews(me: mutable);
+        ---Level:   Advanced
+        ---Purpose: initializes an iteration on the active views.
+
+        MoreActiveViews (me) returns Boolean from Standard;
+        ---Level:   Advanced
+        ---Purpose: returns true if there are more active view(s) to return.
+
+        NextActiveViews (me: mutable);
+        ---Level:   Advanced
         ---Purpose : Go to the next active view
         --           (if there is not, ActiveView will raise an exception)
-	
+
         ActiveView(me) returns mutable View from V3d;
-	---Level:   Advanced 
-	
-	LastActiveView(me) returns Boolean from Standard;
-	---Level:   Advanced 
-	---Purpose: returns true if there is only
-	--          one active view.
-	
-	InitDefinedViews(me: mutable);
-	---Level:   Advanced 
-	---Purpose: initializes an iteration on the Defined views.
+        ---Level:   Advanced
 
-	
-	MoreDefinedViews (me) returns Boolean from Standard;
-	---Level:   Advanced 
-	---Purpose: returns true if there are more Defined view(s) to return.
+        LastActiveView(me) returns Boolean from Standard;
+        ---Level:   Advanced
+        ---Purpose: returns true if there is only
+        --          one active view.
 
-	
-	NextDefinedViews (me: mutable);
-	---Level:   Advanced 
+        InitDefinedViews(me: mutable);
+        ---Level:   Advanced
+        ---Purpose: initializes an iteration on the Defined views.
+
+
+        MoreDefinedViews (me) returns Boolean from Standard;
+        ---Level:   Advanced
+        ---Purpose: returns true if there are more Defined view(s) to return.
+
+
+        NextDefinedViews (me: mutable);
+        ---Level:   Advanced
         ---Purpose : Go to the next Defined view
         --           (if there is not, DefinedView will raise an exception)
-	
-        DefinedView(me)	returns View from V3d;
-	---Level:   Advanced 
-	
-	InitActiveLights(me: mutable); 
-	---Level:   Advanced 
-	---Purpose: initializes an iteration on the active Lights.
-	
-	MoreActiveLights (me) returns Boolean from Standard;
-	---Level:   Advanced 
-	---Purpose: returns true if there are more active Light(s) to return.
 
-	
-	NextActiveLights (me: mutable);
-	---Level:   Advanced 
+        DefinedView(me)        returns View from V3d;
+        ---Level:   Advanced
+
+        InitActiveLights(me: mutable);
+        ---Level:   Advanced
+        ---Purpose: initializes an iteration on the active Lights.
+
+        MoreActiveLights (me) returns Boolean from Standard;
+        ---Level:   Advanced
+        ---Purpose: returns true if there are more active Light(s) to return.
+
+
+        NextActiveLights (me: mutable);
+        ---Level:   Advanced
         ---Purpose : Go to the next active Light
         --           (if there is not, ActiveLight will raise an exception)
 
-	
-        ActiveLight(me)	returns mutable Light from V3d;
-	---Level:   Advanced 
-	
-	InitDefinedLights(me: mutable);
-	---Level:   Advanced 
-	---Purpose: initializes an iteration on the Defined Lights.
-	
-	MoreDefinedLights (me)	returns Boolean from Standard;
-	---Level:   Advanced 
-	---Purpose: returns true if there are more Defined Light(s) to return.
-	
-	NextDefinedLights (me: mutable);
-	---Level:   Advanced 
+
+        ActiveLight(me)        returns mutable Light from V3d;
+        ---Level:   Advanced
+
+        InitDefinedLights(me: mutable);
+        ---Level:   Advanced
+        ---Purpose: initializes an iteration on the Defined Lights.
+
+        MoreDefinedLights (me)        returns Boolean from Standard;
+        ---Level:   Advanced
+        ---Purpose: returns true if there are more Defined Light(s) to return.
+
+        NextDefinedLights (me: mutable);
+        ---Level:   Advanced
         ---Purpose : Go to the next Defined Light
         --           (if there is not, DefinedLight will raise an exception)
-	
-        DefinedLight(me) returns Light from V3d;
-	---Level:   Advanced 
-	
-	InitDefinedPlanes(me: mutable); 
-	---Level:   Advanced 
-	---Purpose: initializes an iteration on the Defined Planes.
-	
-	MoreDefinedPlanes (me) returns Boolean from Standard;
-	---Level:   Advanced 
-	---Purpose: returns true if there are more Defined Plane(s) to return.
 
-	NextDefinedPlanes (me: mutable);
-	---Level:   Advanced 
+        DefinedLight(me) returns Light from V3d;
+        ---Level:   Advanced
+
+        AddPlane( me: mutable; MyPlane : Plane from V3d);
+        ---Purpose: Adds Plane in Sequence Of Planes.
+
+        DelPlane( me: mutable; MyPlane : Plane from V3d);
+        ---Purpose: Delete Plane in Sequence Of Planes.
+
+        InitDefinedPlanes(me: mutable);
+        ---Level:   Advanced
+        ---Purpose: initializes an iteration on the Defined Planes.
+
+        MoreDefinedPlanes (me) returns Boolean from Standard;
+        ---Level:   Advanced
+        ---Purpose: returns true if there are more Defined Plane(s) to return.
+
+        NextDefinedPlanes (me: mutable);
+        ---Level:   Advanced
         ---Purpose : Go to the next Defined Plane
         --           (if there is not, DefinedPlane will raise an exception)
-	
+
         DefinedPlane(me) returns Plane from V3d;
-	---Level:   Advanced 
-	
-	Viewer (me) returns mutable ViewManager ; 
-	---Level:   Advanced 
-	---Purpose: Returns the viewer associated to Visual3d .
+        ---Level:   Advanced
+
+        Viewer (me) returns mutable ViewManager ;
+        ---Level:   Advanced
+        ---Purpose: Returns the viewer associated to Visual3d .
 
         CurrentSelectedLight (me) returns Light from V3d;
-	---Level:   Advanced 
-	---Purpose: Returns the Selected Light.
+        ---Level:   Advanced
+        ---Purpose: Returns the Selected Light.
 
         IsGlobalLight (me; TheLight : Light from V3d) returns Boolean;
-	---Level:   Advanced 
-	
+        ---Level:   Advanced
+
         ComputedMode(me) returns Boolean from Standard;
-	---Level:   Public 
-	---Purpose: returns true if the computed mode can be used.
+        ---Level:   Public
+        ---Purpose: returns true if the computed mode can be used.
 
         DefaultComputedMode(me) returns Boolean from Standard;
-	---Level:   Public 
-	---Purpose: returns true if by default the computed mode must be used.
+        ---Level:   Public
+        ---Purpose: returns true if by default the computed mode must be used.
 
         -----------------------------------------
-	---Category: grid management
+        ---Category: grid management
         -----------------------------------------
 
-	ActivateGrid (me		: mutable;
-		      aGridType		: GridType from Aspect;
-		      aGridDrawMode	: GridDrawMode from Aspect)
-	is static;
-	---Purpose: Activates the grid in all views of <me>.
-	---Level : Public
-	---Category: grid management
+        ActivateGrid (me                : mutable;
+                      aGridType                : GridType from Aspect;
+                      aGridDrawMode        : GridDrawMode from Aspect)
+        is static;
+        ---Purpose: Activates the grid in all views of <me>.
+        ---Level : Public
+        ---Category: grid management
 
-	DeactivateGrid (me	: mutable)
-	is static;
-	---Purpose: Deactivates the grid in all views of <me>.
-	---Level : Public
-	---Category: grid management
+        DeactivateGrid (me        : mutable)
+        is static;
+        ---Purpose: Deactivates the grid in all views of <me>.
+        ---Level : Public
+        ---Category: grid management
 
-	SetGridEcho (me : mutable; 
-		showGrid: Boolean from Standard = Standard_True) is static; 
-	---Purpose: Show/Don't show grid echo to the hit point.
-	-- If TRUE,the grid echo will be shown at ConvertToGrid() time.
-	---Level : Public
-	---Category: grid management
+        SetGridEcho (me : mutable;
+                showGrid: Boolean from Standard = Standard_True) is static;
+        ---Purpose: Show/Don't show grid echo to the hit point.
+        -- If TRUE,the grid echo will be shown at ConvertToGrid() time.
+        ---Level : Public
+        ---Category: grid management
 
-	SetGridEcho (me : mutable; 
-		aMarker: AspectMarker3d from Graphic3d) is static;
-	---Purpose: Show grid echo <aMarker> to the hit point.
-	--  Warning: When the grid echo marker is not set, 
-	--	   a default marker is build with the attributes:
-	--	   marker type : Aspect_TOM_STAR
-	--	   marker color : Quantity_NOC_GRAY90
-	--	   marker size : 3.0
-	---Level : Public
-	---Category: grid management
+        SetGridEcho (me : mutable;
+                aMarker: AspectMarker3d from Graphic3d) is static;
+        ---Purpose: Show grid echo <aMarker> to the hit point.
+        --  Warning: When the grid echo marker is not set,
+        --           a default marker is build with the attributes:
+        --           marker type : Aspect_TOM_STAR
+        --           marker color : Quantity_NOC_GRAY90
+        --           marker size : 3.0
+        ---Level : Public
+        ---Category: grid management
 
-	GridEcho (me) returns Boolean from Standard is static;
-	---Purpose: Returns TRUE when grid echo must be displayed
-	--	   at hit point.
-	---Level : Public
-	---Category: grid management
+        GridEcho (me) returns Boolean from Standard is static;
+        ---Purpose: Returns TRUE when grid echo must be displayed
+        --           at hit point.
+        ---Level : Public
+        ---Category: grid management
 
-	IsActive (me) 
-		returns Boolean from Standard
-	is static;
-	---Purpose: Returns Standard_True if a grid is activated in <me>.
-	---Level : Public
-	---Category: grid management
+        IsActive (me)
+                returns Boolean from Standard
+        is static;
+        ---Purpose: Returns Standard_True if a grid is activated in <me>.
+        ---Level : Public
+        ---Category: grid management
 
-	Grid (me)
-	returns mutable Grid from Aspect
-	is static;
+        Grid (me)
+        returns mutable Grid from Aspect
+        is static;
         ---Purpose : Returns the defined grid in <me>.
-	---Level : Public
-	---Category: grid management
+        ---Level : Public
+        ---Category: grid management
 
-	GridType (me)
-		returns GridType from Aspect
-	is static;
-	---Purpose: Returns the current grid type defined in <me>.
-	---Level : Public
-	---Category: grid management
+        GridType (me)
+                returns GridType from Aspect
+        is static;
+        ---Purpose: Returns the current grid type defined in <me>.
+        ---Level : Public
+        ---Category: grid management
 
-	GridDrawMode (me)
-		returns GridDrawMode from Aspect
-	is static;
-	---Purpose: Returns the current grid draw mode defined in <me>.
-	---Level : Public
-	---Category: grid management
+        GridDrawMode (me)
+                returns GridDrawMode from Aspect
+        is static;
+        ---Purpose: Returns the current grid draw mode defined in <me>.
+        ---Level : Public
+        ---Category: grid management
 
-	RectangularGridValues (me; 
-		XOrigin, YOrigin	: out Length from Quantity;
-		XStep, YStep		: out Length from Quantity;
-		RotationAngle		: out PlaneAngle from Quantity)
-	is static;
-	---Purpose: Returns the definition of the rectangular grid.
-	---Level : Public
-	---Category: grid management
+        RectangularGridValues (me;
+                XOrigin, YOrigin        : out Length from Quantity;
+                XStep, YStep                : out Length from Quantity;
+                RotationAngle                : out PlaneAngle from Quantity)
+        is static;
+        ---Purpose: Returns the definition of the rectangular grid.
+        ---Level : Public
+        ---Category: grid management
 
-	SetRectangularGridValues (me	: mutable; 
-		XOrigin, YOrigin	: Length from Quantity;
-		XStep, YStep		: Length from Quantity;
-		RotationAngle		: PlaneAngle from Quantity)
-	is static;
-	---Purpose: Sets the definition of the rectangular grid.
-	---	    <XOrigin>, <YOrigin> defines the origin of the grid.
-	---	    <XStep> defines the interval between 2 vertical lines.
-	---	    <YStep> defines the interval between 2 horizontal lines.
-	---	    <RotationAngle> defines the rotation angle of the grid.
-	---Level : Public
-	---Category: grid management
+        SetRectangularGridValues (me        : mutable;
+                XOrigin, YOrigin        : Length from Quantity;
+                XStep, YStep                : Length from Quantity;
+                RotationAngle                : PlaneAngle from Quantity)
+        is static;
+        ---Purpose: Sets the definition of the rectangular grid.
+        ---            <XOrigin>, <YOrigin> defines the origin of the grid.
+        ---            <XStep> defines the interval between 2 vertical lines.
+        ---            <YStep> defines the interval between 2 horizontal lines.
+        ---            <RotationAngle> defines the rotation angle of the grid.
+        ---Level : Public
+        ---Category: grid management
 
-	CircularGridValues (me; 
-		XOrigin, YOrigin	: out Length from Quantity;
-		RadiusStep		: out Length from Quantity;
-		DivisionNumber		: out Integer from Standard;
-		RotationAngle		: out PlaneAngle from Quantity)
-	is static;
-	---Purpose: Returns the definition of the circular grid.
-	---Level : Public
-	---Category: grid management
+        CircularGridValues (me;
+                XOrigin, YOrigin        : out Length from Quantity;
+                RadiusStep                : out Length from Quantity;
+                DivisionNumber                : out Integer from Standard;
+                RotationAngle                : out PlaneAngle from Quantity)
+        is static;
+        ---Purpose: Returns the definition of the circular grid.
+        ---Level : Public
+        ---Category: grid management
 
-	SetCircularGridValues (me	: mutable; 
-		XOrigin, YOrigin	: Length from Quantity;
-		RadiusStep		: Length from Quantity;
-		DivisionNumber		: Integer from Standard;
-		RotationAngle		: PlaneAngle from Quantity)
-	is static;
-	---Purpose: Sets the definition of the circular grid.
-	---	    <XOrigin>, <YOrigin> defines the origin of the grid.
-	---	    <RadiusStep> defines the interval between 2 circles.
-	---	    <DivisionNumber> defines the section number of one half circle.
-	---	    <RotationAngle> defines the rotation angle of the grid.
-	---Level : Public
-	---Category: grid management
+        SetCircularGridValues (me        : mutable;
+                XOrigin, YOrigin        : Length from Quantity;
+                RadiusStep                : Length from Quantity;
+                DivisionNumber                : Integer from Standard;
+                RotationAngle                : PlaneAngle from Quantity)
+        is static;
+        ---Purpose: Sets the definition of the circular grid.
+        ---            <XOrigin>, <YOrigin> defines the origin of the grid.
+        ---            <RadiusStep> defines the interval between 2 circles.
+        ---            <DivisionNumber> defines the section number of one half circle.
+        ---            <RotationAngle> defines the rotation angle of the grid.
+        ---Level : Public
+        ---Category: grid management
 
-	CircularGridGraphicValues (me; 
-		Radius			: out Length from Quantity;
-		OffSet			: out Length from Quantity)
-	is static;
-	---Purpose: Returns the location and the size of the grid.
-	---Level : Public
-	---Category: grid management
+        CircularGridGraphicValues (me;
+                Radius                        : out Length from Quantity;
+                OffSet                        : out Length from Quantity)
+        is static;
+        ---Purpose: Returns the location and the size of the grid.
+        ---Level : Public
+        ---Category: grid management
 
-	SetCircularGridGraphicValues (me	: mutable; 
-		Radius			: Length from Quantity;
-		OffSet			: Length from Quantity)
-	is static;
-	---Purpose: Sets the location and the size of the grid.
-	---	    <XSize> defines the width of the grid.
-	---	    <YSize> defines the height of the grid.
-	---	    <OffSet> defines the displacement along the plane normal.
-	---Level : Public
-	---Category: grid management
+        SetCircularGridGraphicValues (me        : mutable;
+                Radius                        : Length from Quantity;
+                OffSet                        : Length from Quantity)
+        is static;
+        ---Purpose: Sets the location and the size of the grid.
+        ---            <XSize> defines the width of the grid.
+        ---            <YSize> defines the height of the grid.
+        ---            <OffSet> defines the displacement along the plane normal.
+        ---Level : Public
+        ---Category: grid management
 
-	RectangularGridGraphicValues (me; 
-		XSize, YSize		: out Length from Quantity;
-		OffSet			: out Length from Quantity)
-	is static;
-	---Purpose: Returns the location and the size of the grid.
-	---Level : Public
-	---Category: grid management
+        RectangularGridGraphicValues (me;
+                XSize, YSize                : out Length from Quantity;
+                OffSet                        : out Length from Quantity)
+        is static;
+        ---Purpose: Returns the location and the size of the grid.
+        ---Level : Public
+        ---Category: grid management
 
-	SetRectangularGridGraphicValues (me	: mutable; 
-		XSize, YSize		: Length from Quantity;
-		OffSet			: Length from Quantity)
-	is static;
-	---Purpose: Sets the location and the size of the grid.
-	---	    <XSize> defines the width of the grid.
-	---	    <YSize> defines the height of the grid.
-	---	    <OffSet> defines the displacement along the plane normal.
-	---Level : Public
-	---Category: grid management
+        SetRectangularGridGraphicValues (me        : mutable;
+                XSize, YSize                : Length from Quantity;
+                OffSet                        : Length from Quantity)
+        is static;
+        ---Purpose: Sets the location and the size of the grid.
+        ---            <XSize> defines the width of the grid.
+        ---            <YSize> defines the height of the grid.
+        ---            <OffSet> defines the displacement along the plane normal.
+        ---Level : Public
+        ---Category: grid management
 
         -----------------------------------------
         ---Category: Private or Protected methods
         -----------------------------------------
 
-	GetBackgroundColor ( me ) 
-			returns Background from Aspect is private;
-	---Purpose: Returns the default background colour.
+        GetBackgroundColor ( me )
+                        returns Background from Aspect is private;
+        ---Purpose: Returns the default background colour.
 
-	GetGradientBackground ( me ) returns GradientBackground from Aspect;
-	---Level: Public
-	---Purpose: Returns the gradient background of the view.  
+        GetGradientBackground ( me ) returns GradientBackground from Aspect;
+        ---Level: Public
+        ---Purpose: Returns the gradient background of the view.
 
-	AddView( me: mutable; MyView : View from V3d) is private;
-	---Purpose: Adds View in Sequence Of Views.
+        AddView( me: mutable; MyView : View from V3d) is private;
+        ---Purpose: Adds View in Sequence Of Views.
 
-	DelView( me: mutable; MyView : View from V3d) is private;
-	---Purpose: Delete View in Sequence Of Views.
+        DelView( me: mutable; MyView : View from V3d) is private;
+        ---Purpose: Delete View in Sequence Of Views.
 
-	AddLight( me: mutable; MyLight : Light from V3d) is private;
-	---Purpose: Adds Light in Sequence Of Lights.
-
-	AddPlane( me: mutable; MyPlane : Plane from V3d) is private ;
-	---Purpose: Adds Plane in Sequence Of Planes.
-
-	DelPlane( me: mutable; MyPlane : Plane from V3d) is private;
-	---Purpose: Delete Plane in Sequence Of Planes.
+        AddLight( me: mutable; MyLight : Light from V3d) is private;
+        ---Purpose: Adds Light in Sequence Of Lights.
 
         SetDefaultLights(me: mutable);
-	---Purpose: defines default lights  -
-	--          positional-light 0.3 0. 0.
-	--          directional-light V3d_XnegYposZpos
-	--          directional-light V3d_XnegYneg
-	--          ambient-light
+        ---Purpose: defines default lights  -
+        --          positional-light 0.3 0. 0.
+        --          directional-light V3d_XnegYposZpos
+        --          directional-light V3d_XnegYneg
+        --          ambient-light
 
         Init(me: mutable);
 
         IsActive(me; aView: View from V3d)
-	returns Boolean from Standard is private;
+        returns Boolean from Standard is private;
 
-	ShowGridEcho(me : mutable;
-			aView: View from V3d;
-			aPoint: Vertex from Graphic3d) is private;
-	---Purpose:
-	-- Display grid echo at requested point in the view.
-	
-	
+        ShowGridEcho(me : mutable;
+                        aView: View from V3d;
+                        aPoint: Vertex from Graphic3d) is private;
+        ---Purpose:
+        -- Display grid echo at requested point in the view.
+
 fields
 
-        MyViewer:       	ViewManager from Visual3d ;
-	MyDefinedViews:		ListOfTransient from V3d;
-	MyActiveViews:		ListOfTransient from V3d;
-	MyDefinedLights:	ListOfTransient from V3d;
-	MyActiveLights:  	ListOfTransient from V3d;
-	MyDefinedPlanes:	ListOfTransient from V3d;
-	MyBackground:		Background from Aspect ;
-	MyGradientBackground:	GradientBackground from Aspect ;
-	MyViewSize:		Real ;
-	MyViewProj:		TypeOfOrientation from V3d ;
+        MyViewer:               ViewManager from Visual3d ;
+        MyDefinedViews:                ListOfTransient from V3d;
+        MyActiveViews:                ListOfTransient from V3d;
+        MyDefinedLights:        ListOfTransient from V3d;
+        MyActiveLights:          ListOfTransient from V3d;
+        MyDefinedPlanes:        ListOfTransient from V3d;
+        MyBackground:                Background from Aspect ;
+        MyGradientBackground:        GradientBackground from Aspect ;
+        MyViewSize:                Real ;
+        MyViewProj:                TypeOfOrientation from V3d ;
         MyVisualization:        TypeOfVisualization from V3d ;
-        MyShadingModel:         TypeOfShadingModel from V3d ; 
-        MySurfaceDetail:        TypeOfSurfaceDetail from V3d ; 
-	MyDefaultAngle:         PlaneAngle from Quantity;
+        MyShadingModel:         TypeOfShadingModel from V3d ;
+        MySurfaceDetail:        TypeOfSurfaceDetail from V3d ;
+        MyDefaultAngle:         PlaneAngle from Quantity;
         MyDefaultTypeOfView:    TypeOfView from V3d;
         MyDefaultOrthographicView: OrthographicView from V3d;
         MyDefaultPerspectiveView: PerspectiveView from V3d;
-	MyCurrentSelectedLight:   Light from V3d;
+        MyCurrentSelectedLight:   Light from V3d;
         myActiveViewsIterator: ListIteratorOfListOfTransient from TColStd;
         myDefinedViewsIterator: ListIteratorOfListOfTransient from TColStd;
         myActiveLightsIterator: ListIteratorOfListOfTransient from TColStd;
@@ -687,23 +683,23 @@ fields
         myDefinedPlanesIterator: ListIteratorOfListOfTransient from TColStd;
         myComputedMode: Boolean from Standard;
         myDefaultComputedMode: Boolean from Standard;
-	myPrivilegedPlane: Ax3 from gp;
-	myPlaneStructure: Structure from Graphic3d;
-	myDisplayPlane: Boolean from Standard;
+        myPrivilegedPlane: Ax3 from gp;
+        myPlaneStructure: Structure from Graphic3d;
+        myDisplayPlane: Boolean from Standard;
         myDisplayPlaneLength: Length from Quantity;
 
-	myRGrid: RectangularGrid from V3d;
-	myCGrid: CircularGrid from V3d;
-	myGridType: GridType from Aspect;
+        myRGrid: RectangularGrid from V3d;
+        myCGrid: CircularGrid from V3d;
+        myGridType: GridType from Aspect;
 
-	myGridEcho: Boolean from Standard;
-	myGridEchoStructure: Structure from Graphic3d;
-	myGridEchoGroup: Group from Graphic3d;
-	myGridEchoAspect : AspectMarker3d from Graphic3d;
+        myGridEcho: Boolean from Standard;
+        myGridEchoStructure: Structure from Graphic3d;
+        myGridEchoGroup: Group from Graphic3d;
+        myGridEchoAspect : AspectMarker3d from Graphic3d;
 friends
 
-	class View from V3d,
-	class Light from V3d,
-	class Plane from V3d,
+        class View from V3d,
+        class Light from V3d,
+        class Plane from V3d,
         SetPlane  from package V3d (aViewer: Viewer from V3d; x1,y1,z1,x2,y2,z2: Length from Quantity)
 end Viewer;

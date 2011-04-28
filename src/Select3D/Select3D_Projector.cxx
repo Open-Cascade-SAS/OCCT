@@ -3,7 +3,7 @@
 // Author:	Christophe MARION
 //		<cma@sdsun2>
 
-#define IMP240100	//GG 
+#define IMP240100	//GG
 //			Change RefToPix()/Convert() to Project() method.
 
 #include <Select3D_Projector.ixx>
@@ -14,33 +14,34 @@
 
 // formula for derivating a perspective, from Mathematica
 
-//        X'[t]      X[t] Z'[t]                                     
-// D1 =  -------- + -------------                                   
-//           Z[t]          Z[t] 2                                   
-//       1 - ----   f (1 - ----)                                    
-//            f             f                                       
+//        X'[t]      X[t] Z'[t]
+// D1 =  -------- + -------------
+//           Z[t]          Z[t] 2
+//       1 - ----   f (1 - ----)
+//            f             f
 
 //=======================================================================
 //function : Select3D_Projector
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-
-Select3D_Projector::Select3D_Projector(const Handle(V3d_View)& aViou):
-myPersp(aViou->Type()==V3d_PERSPECTIVE),
-myFocus(aViou->Focale()),
-myD1(1,0),
-myD2(0,1),
-myD3(1,1),
-myView(aViou)
+Select3D_Projector::Select3D_Projector(const Handle(V3d_View)& aViou)
+: myPersp(aViou->Type()==V3d_PERSPECTIVE),
+  myFocus(aViou->Focale()),
+  myD1(1,0),
+  myD2(0,1),
+  myD3(1,1),
+  myView(aViou),
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
 {
   Standard_Real Xat,Yat,Zat,XUp,YUp,ZUp,DX,DY,DZ;
   //Standard_Boolean Pers=Standard_False;
-  
+
   aViou->At(Xat,Yat,Zat);
   aViou->Up(XUp,YUp,ZUp);
   aViou->Proj(DX,DY,DZ);
-  gp_Pnt At (Xat,Yat,Zat); 
+  gp_Pnt At (Xat,Yat,Zat);
   gp_Dir Zpers (DX,DY,DZ);
   gp_Dir Ypers (XUp,YUp,ZUp);
   gp_Dir Xpers = Ypers.Crossed(Zpers);
@@ -48,40 +49,37 @@ myView(aViou)
   myScaledTrsf.SetTransformation(Axe);
   myGTrsf.SetTrsf(myScaledTrsf);
   Scaled();
-  
-}
 
-Select3D_Projector::Select3D_Projector () :
-myPersp(Standard_False),myFocus(0),myD1(1,0),myD2(0,1),myD3(1,1)
-{
-  Scaled();
-  SetDirection();
-} 
+}
 
 //=======================================================================
 //function : Select3D_Projector
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Select3D_Projector::Select3D_Projector 
-  (const gp_Ax2& CS) :
-  myPersp(Standard_False), myFocus(0)
+Select3D_Projector::Select3D_Projector()
+: myPersp(Standard_False),
+  myFocus(0),
+  myD1(1,0),
+  myD2(0,1),
+  myD3(1,1),
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
 {
-  myScaledTrsf.SetTransformation(CS);
-  myGTrsf.SetTrsf(myScaledTrsf);
   Scaled();
   SetDirection();
 }
 
 //=======================================================================
 //function : Select3D_Projector
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Select3D_Projector::Select3D_Projector 
-  (const gp_Ax2& CS, 
-   const Standard_Real Focus) :
-  myPersp(Standard_True), myFocus(Focus)
+Select3D_Projector::Select3D_Projector (const gp_Ax2& CS)
+: myPersp(Standard_False),
+  myFocus(0),
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
 {
   myScaledTrsf.SetTransformation(CS);
   myGTrsf.SetTrsf(myScaledTrsf);
@@ -91,16 +89,35 @@ Select3D_Projector::Select3D_Projector
 
 //=======================================================================
 //function : Select3D_Projector
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Select3D_Projector::Select3D_Projector 
-  (const gp_Trsf& T, 
-   const Standard_Boolean Persp,
-   const Standard_Real Focus) :
-  myPersp(Persp),
+Select3D_Projector::Select3D_Projector (const gp_Ax2& CS,
+                                        const Standard_Real Focus)
+: myPersp(Standard_True),
   myFocus(Focus),
-  myScaledTrsf(T)
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
+{
+  myScaledTrsf.SetTransformation(CS);
+  myGTrsf.SetTrsf(myScaledTrsf);
+  Scaled();
+  SetDirection();
+}
+
+//=======================================================================
+//function : Select3D_Projector
+//purpose  :
+//=======================================================================
+
+Select3D_Projector::Select3D_Projector (const gp_Trsf& T,
+                                        const Standard_Boolean Persp,
+                                        const Standard_Real Focus)
+: myPersp(Persp),
+  myFocus(Focus),
+  myScaledTrsf(T),
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
 {
   myGTrsf.SetTrsf(myScaledTrsf);
   Scaled();
@@ -109,22 +126,23 @@ Select3D_Projector::Select3D_Projector
 
 //=======================================================================
 //function : Select3D_Projector
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Select3D_Projector::Select3D_Projector 
-  (const gp_Trsf& T, 
-   const Standard_Boolean Persp,
-   const Standard_Real Focus,
-   const gp_Vec2d& v1,
-   const gp_Vec2d& v2,
-   const gp_Vec2d& v3) :
-  myPersp(Persp),
+Select3D_Projector::Select3D_Projector (const gp_Trsf& T,
+                                        const Standard_Boolean Persp,
+                                        const Standard_Real Focus,
+                                        const gp_Vec2d& v1,
+                                        const gp_Vec2d& v2,
+                                        const gp_Vec2d& v3)
+: myPersp(Persp),
   myFocus(Focus),
   myScaledTrsf(T),
   myD1(v1),
   myD2(v2),
-  myD3(v3)
+  myD3(v3),
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
 {
   myGTrsf.SetTrsf(myScaledTrsf);
   Scaled();
@@ -132,33 +150,31 @@ Select3D_Projector::Select3D_Projector
 
 //=======================================================================
 //function : Select3D_Projector
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Select3D_Projector::Select3D_Projector 
-  (const gp_GTrsf& GT, 
-   const Standard_Boolean Persp,
-   const Standard_Real Focus) :
-  myPersp(Persp),
+Select3D_Projector::Select3D_Projector (const gp_GTrsf& GT,
+                                        const Standard_Boolean Persp,
+                                        const Standard_Real Focus)
+: myPersp(Persp),
   myFocus(Focus),
-  myGTrsf(GT)
+  myGTrsf(GT),
+  myDepthMin(-Precision::Infinite()),
+  myDepthMax( Precision::Infinite())
 {
   Scaled();
   SetDirection();
 }
 
-void Select3D_Projector::Delete()
-{}
-
 //=======================================================================
 //function : Set
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_Projector::Set
-  (const gp_Trsf& T, 
+  (const gp_Trsf& T,
    const Standard_Boolean Persp,
-   const Standard_Real Focus) 
+   const Standard_Real Focus)
 {
   myPersp      = Persp;
   myFocus      = Focus;
@@ -169,59 +185,59 @@ void Select3D_Projector::Set
 
 //=======================================================================
 //function : Scaled
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 #include <gp_Mat.hxx>
 
-static Standard_Integer TrsfType(const gp_GTrsf& Trsf) { 
+static Standard_Integer TrsfType(const gp_GTrsf& Trsf) {
   const gp_Mat& Mat = Trsf.VectorialPart();
-  if(   (Abs(Mat.Value(1,1)-1.0) < 1e-15) 
+  if(   (Abs(Mat.Value(1,1)-1.0) < 1e-15)
      && (Abs(Mat.Value(2,2)-1.0) < 1e-15)
-     && (Abs(Mat.Value(3,3)-1.0) < 1e-15)) { 
+     && (Abs(Mat.Value(3,3)-1.0) < 1e-15)) {
     return(1); //-- top
   }
   else if(   (Abs(Mat.Value(1,1)-0.7071067811865476) < 1e-15)
 	  && (Abs(Mat.Value(1,2)+0.5) < 1e-15)
 	  && (Abs(Mat.Value(1,3)-0.5) < 1e-15)
-	  
+
 	  && (Abs(Mat.Value(2,1)-0.7071067811865476) < 1e-15)
 	  && (Abs(Mat.Value(2,2)-0.5) < 1e-15)
 	  && (Abs(Mat.Value(2,3)+0.5) < 1e-15)
-	  
-	  && (Abs(Mat.Value(3,1)) < 1e-15)  
+
+	  && (Abs(Mat.Value(3,1)) < 1e-15)
 	  && (Abs(Mat.Value(3,2)-0.7071067811865476) < 1e-15)
-	  && (Abs(Mat.Value(3,3)-0.7071067811865476) < 1e-15)) { 
-    return(0); //-- 
+	  && (Abs(Mat.Value(3,3)-0.7071067811865476) < 1e-15)) {
+    return(0); //--
   }
-  else if(   (Abs(Mat.Value(1,1)-1.0) < 1e-15) 
+  else if(   (Abs(Mat.Value(1,1)-1.0) < 1e-15)
 	  && (Abs(Mat.Value(2,3)-1.0) < 1e-15)
-	  && (Abs(Mat.Value(3,2)+1.0) < 1e-15)) { 
+	  && (Abs(Mat.Value(3,2)+1.0) < 1e-15)) {
     return(2); //-- front
   }
   else if(   (Abs(Mat.Value(1,1)-0.7071067811865476) < 1e-15)
 	  && (Abs(Mat.Value(1,2)-0.7071067811865476) < 1e-15)
 	  && (Abs(Mat.Value(1,3)) < 1e-15)
-	  
+
 	  && (Abs(Mat.Value(2,1)+0.5) < 1e-15)
 	  && (Abs(Mat.Value(2,2)-0.5) < 1e-15)
 	  && (Abs(Mat.Value(2,3)-0.7071067811865476) < 1e-15)
-	  
-	  && (Abs(Mat.Value(3,1)-0.5) < 1e-15)  
+
+	  && (Abs(Mat.Value(3,1)-0.5) < 1e-15)
 	  && (Abs(Mat.Value(3,2)+0.5) < 1e-15)
-	  && (Abs(Mat.Value(3,3)-0.7071067811865476) < 1e-15)) { 
+	  && (Abs(Mat.Value(3,3)-0.7071067811865476) < 1e-15)) {
     return(3); //-- axo
   }
   return(-1);
 }
 
 void Select3D_Projector::Scaled (const Standard_Boolean On)
-{ 
+{
   myType=-1;
   if (!On) {
-    if (!myPersp) { 
+    if (!myPersp) {
       //myGTrsf.SetTranslationPart(gp_XYZ(0.,0.,0.));
-      myType=TrsfType(myGTrsf); 
+      myType=TrsfType(myGTrsf);
     }
   }
   myInvTrsf = myGTrsf;
@@ -230,7 +246,7 @@ void Select3D_Projector::Scaled (const Standard_Boolean On)
 
 //=======================================================================
 //function : Project
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_Projector::Project (const gp_Pnt& P, gp_Pnt2d& Pout) const
@@ -249,9 +265,9 @@ void Select3D_Projector::Project (const gp_Pnt& P, gp_Pnt2d& Pout) const
     Pout.SetCoord(Xout,Yout);
   }
   else{
-    if(myType!=-1) { 
+    if(myType!=-1) {
       Standard_Real X,Y;
-      switch (myType) { 
+      switch (myType) {
       case 0: {  //-- axono standard
 	Standard_Real x07 = P.X()*0.7071067811865475;
 	Standard_Real y05 = P.Y()*0.5;
@@ -266,12 +282,12 @@ void Select3D_Projector::Project (const gp_Pnt& P, gp_Pnt2d& Pout) const
 	Pout.SetCoord(X,Y);
 	break;
       }
-      case 2: { 
+      case 2: {
 	X=P.X(); Y=P.Z(); //-- Z=-P.Y();
 	Pout.SetCoord(X,Y);
 	break;
       }
-      case 3: { 
+      case 3: {
 	Standard_Real xmy05 = (P.X()-P.Y())*0.5;
 	Standard_Real z07 = P.Z()*0.7071067811865476;
 	X=0.7071067811865476*(P.X()+P.Y());
@@ -280,37 +296,37 @@ void Select3D_Projector::Project (const gp_Pnt& P, gp_Pnt2d& Pout) const
 	//-- Z= xmy05+z07;
 	break;
       }
-      default: { 
+      default: {
 	gp_Pnt P2 = P;
 	Transform(P2);
 	if (myPersp) {
 	  Standard_Real R = 1.-P2.Z()/myFocus;
 	  Pout.SetCoord(P2.X()/R,P2.Y()/R);
 	}
-	else 
-	  Pout.SetCoord(P2.X(),P2.Y());    
+	else
+	  Pout.SetCoord(P2.X(),P2.Y());
 	break;
       }
       }
     }
-    else { 
+    else {
       gp_Pnt P2 = P;
       Transform(P2);
       if (myPersp) {
 	Standard_Real R = 1.-P2.Z()/myFocus;
 	Pout.SetCoord(P2.X()/R,P2.Y()/R);
       }
-      else 
-	Pout.SetCoord(P2.X(),P2.Y()); 
+      else
+	Pout.SetCoord(P2.X(),P2.Y());
     }
   }
-  
+
 
 }
 
 //=======================================================================
 //function : Project
-//purpose  : 
+//purpose  :
 //=======================================================================
 /*  ====== TYPE 0  (??)
    (0.7071067811865476, -0.5               ,  0.4999999999999999)
@@ -327,7 +343,7 @@ void Select3D_Projector::Project (const gp_Pnt& P, gp_Pnt2d& Pout) const
 (0.0,  1.110223024625157e-16 , 1.0)
 (0.0, -1.0                   , 1.110223024625157e-16)
 
- ======= TYPE 3 
+ ======= TYPE 3
 ( 0.7071067811865476, 0.7071067811865475, 0.0)
 (-0.5               , 0.5000000000000001, 0.7071067811865475)
 ( 0.4999999999999999, -0.5              , 0.7071067811865476)
@@ -349,8 +365,8 @@ void Select3D_Projector::Project (const gp_Pnt& P,
 #endif
   }
   else{
-    if(myType!=-1) { 
-      switch (myType) { 
+    if(myType!=-1) {
+      switch (myType) {
       case 0: {  //-- axono standard
 	Standard_Real x07 = P.X()*0.7071067811865475;
 	Standard_Real y05 = P.Y()*0.5;
@@ -364,11 +380,11 @@ void Select3D_Projector::Project (const gp_Pnt& P,
 	X=P.X(); Y=P.Y(); Z=P.Z();
 	break;
       }
-      case 2: { 
+      case 2: {
 	X=P.X(); Y=P.Z(); Z=-P.Y();
 	break;
       }
-      case 3: { 
+      case 3: {
 	Standard_Real xmy05 = (P.X()-P.Y())*0.5;
 	Standard_Real z07 = P.Z()*0.7071067811865476;
 	X=0.7071067811865476*(P.X()+P.Y());
@@ -376,7 +392,7 @@ void Select3D_Projector::Project (const gp_Pnt& P,
 	Z= xmy05+z07;
 	break;
       }
-      default: { 
+      default: {
 	gp_Pnt P2 = P;
 	Transform(P2);
 	P2.Coord(X,Y,Z);
@@ -384,7 +400,7 @@ void Select3D_Projector::Project (const gp_Pnt& P,
       }
       }
     }
-    else { 
+    else {
       gp_Pnt P2 = P;
       Transform(P2);
       P2.Coord(X,Y,Z);
@@ -398,7 +414,7 @@ void Select3D_Projector::Project (const gp_Pnt& P,
 }
 //=======================================================================
 //function : Project
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_Projector::Project (const gp_Pnt& P,
@@ -424,7 +440,7 @@ void Select3D_Projector::Project (const gp_Pnt& P,
 
 //=======================================================================
 //function : BoxAdd
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_Projector::BoxAdd
@@ -438,7 +454,7 @@ void Select3D_Projector::BoxAdd
 
 //=======================================================================
 //function : Shoot
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 gp_Lin Select3D_Projector::Shoot
@@ -446,7 +462,7 @@ gp_Lin Select3D_Projector::Shoot
    const Standard_Real Y) const
 {
   gp_Lin L;
-  
+
   if (myPersp) {
     L = gp_Lin(gp_Pnt(0,0, myFocus),
 	       gp_Dir(X,Y,-myFocus));
@@ -462,10 +478,10 @@ gp_Lin Select3D_Projector::Shoot
 
 //=======================================================================
 //function : SetDirection
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void Select3D_Projector::SetDirection () 
+void Select3D_Projector::SetDirection ()
 {
   gp_Vec V1(1,0,0);
   Transform(V1);
@@ -491,16 +507,23 @@ void Select3D_Projector::SetView(const Handle(V3d_View)& aViou)
   myFocus= aViou->Focale();
   Standard_Real Xat,Yat,Zat,XUp,YUp,ZUp,DX,DY,DZ;
   //Standard_Boolean Pers=Standard_False;
-  
+
   aViou->At(Xat,Yat,Zat);
   aViou->Up(XUp,YUp,ZUp);
   aViou->Proj(DX,DY,DZ);
-  gp_Pnt At (Xat,Yat,Zat); 
+  gp_Pnt At (Xat,Yat,Zat);
   gp_Dir Zpers (DX,DY,DZ);
   gp_Dir Ypers (XUp,YUp,ZUp);
   gp_Dir Xpers = Ypers.Crossed(Zpers);
   gp_Ax3 Axe (At, Zpers, Xpers);
   myScaledTrsf.SetTransformation(Axe);
   Scaled();
-  
+
+}
+
+void Select3D_Projector::DepthMinMax (const Standard_Real theDepthMin,
+                                      const Standard_Real theDepthMax)
+{
+  myDepthMin = theDepthMin;
+  myDepthMax = theDepthMax;
 }

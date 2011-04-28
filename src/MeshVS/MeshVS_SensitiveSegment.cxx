@@ -27,13 +27,13 @@ MeshVS_SensitiveSegment::MeshVS_SensitiveSegment (
 // name    : MeshVS_SensitiveSegment::Project
 // Purpose :
 //=======================================================================
-void MeshVS_SensitiveSegment::Project( const Select3D_Projector& aProj )
+void MeshVS_SensitiveSegment::Project( const Handle(Select3D_Projector)& aProj )
 {
   Select3D_SensitiveSegment::Project( aProj );
   if ( HasLocation() )
-    aProj.Project( myCentre.Transformed( Location().Transformation() ), myProjCentre );
+    aProj->Project( myCentre.Transformed( Location().Transformation() ), myProjCentre );
   else
-    aProj.Project( myCentre, myProjCentre );
+    aProj->Project( myCentre, myProjCentre );
 }
 
 //=======================================================================

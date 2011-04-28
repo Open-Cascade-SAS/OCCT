@@ -8,6 +8,7 @@
 //Modif on jul-21-97 : changement en harray1 pour eventuelles connexions ...
 
 #include <Select3D_SensitiveFace.ixx>
+#include <Select3D_Projector.hxx>
 #include <SelectBasics_BasicTool.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
@@ -117,11 +118,9 @@ Matches(const Standard_Real X,
     Standard_Real valtst = PlaneTest^V1;
     if(isplane2d && Abs(valtst)>aTol) isplane2d=Standard_False;
   }
-
-  if(isplane2d) {
-    Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-    
-    return Standard_True;
+  if (isplane2d)
+  {
+    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
   }
   //detection d'une auto - intersection dans le polygon 2D; si oui on sort
 //    if (!AutoComputeFlag(myautointer)) {
@@ -151,10 +150,11 @@ Matches(const Standard_Real X,
 	res = Standard_True;
     }
   }
-  if(res)
-    Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-    
-  return res;
+  if (res)
+  {
+    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+  }
+  return Standard_False;
 }
 
 //=======================================================================
@@ -230,8 +230,17 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
 //=======================================================================
 Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
 {
-  Standard_Real val(Precision::Infinite());
-  for(Standard_Integer i=0;i<mynbpoints-1;i++)
-    val = Min(val,ElCLib::Parameter(EyeLine,((Select3D_Pnt*)mypolyg3d)[i]));
-  return val;
+  Standard_Real aDepth = Precision::Infinite();
+  Standard_Real aDepthMin = !mylastprj.IsNull() ? mylastprj->DepthMin() : -Precision::Infinite();
+  Standard_Real aDepthMax = !mylastprj.IsNull() ? mylastprj->DepthMax() :  Precision::Infinite();
+  Standard_Real aDepthTest;
+  for (Standard_Integer i = 0; i < mynbpoints - 1; i++)
+  {
+    aDepthTest = ElCLib::Parameter (EyeLine, ((Select3D_Pnt* )mypolyg3d)[i]);
+    if (aDepthTest < aDepth && (aDepthTest > aDepthMin) && (aDepthTest < aDepthMax))
+    {
+      aDepth = aDepthTest;
+    }
+  }
+  return aDepth;
 }

@@ -15,6 +15,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_GTrsf.hxx>
 #include <V3d_PerspectiveView.hxx>
+#include <V3d_Plane.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
@@ -83,6 +84,7 @@ static Standard_Boolean StdSelectDebugModeOn()
 
 StdSelect_ViewerSelector3d
 ::StdSelect_ViewerSelector3d():
+myprj(new Select3D_Projector()),
 mylastzoom(0.0),
 mypixtol(2),
 myupdatetol(Standard_True)
@@ -98,7 +100,7 @@ myupdatetol(Standard_True)
 //==================================================
 
 StdSelect_ViewerSelector3d
-::StdSelect_ViewerSelector3d(const Select3D_Projector& aProj):
+::StdSelect_ViewerSelector3d(const Handle(Select3D_Projector)& aProj):
 myprj(aProj),
 mylastzoom(0.0),
 mypixtol(2),
@@ -147,7 +149,7 @@ void StdSelect_ViewerSelector3d
 //==================================================
 
 void StdSelect_ViewerSelector3d
-::Set(const Select3D_Projector& aProj)
+::Set(const Handle(Select3D_Projector)& aProj)
 {
   myprj = aProj;
   toupdate=Standard_True;
@@ -167,7 +169,53 @@ void StdSelect_ViewerSelector3d
   Standard_Real Xr3d,Yr3d,Zr3d;
   gp_Pnt2d P2d;
   aView->Convert(XPix,YPix,Xr3d,Yr3d,Zr3d);
-  myprj.Project(gp_Pnt(Xr3d,Yr3d,Zr3d),P2d);
+  myprj->Project(gp_Pnt(Xr3d,Yr3d,Zr3d),P2d);
+
+  // compute depth limits if clipping plane(s) enabled
+  gp_Lin anEyeLine = myprj->Shoot (P2d.X(), P2d.Y());
+  Standard_Real aPlaneA, aPlaneB, aPlaneC, aPlaneD;
+  Standard_Real aDepthFrom = ShortRealFirst();
+  Standard_Real aDepthTo   = ShortRealLast();
+  for (aView->InitActivePlanes(); aView->MoreActivePlanes(); aView->NextActivePlanes())
+  {
+    aView->ActivePlane()->Plane (aPlaneA, aPlaneB, aPlaneC, aPlaneD);
+    const gp_Dir& anEyeLineDir  = anEyeLine.Direction();
+    gp_Dir aPlaneNormal (aPlaneA, aPlaneB, aPlaneC);
+
+    Standard_Real aDotProduct = anEyeLineDir.Dot (aPlaneNormal);
+    Standard_Real aDirection = -(aPlaneD + anEyeLine.Location().XYZ().Dot (aPlaneNormal.XYZ()));
+    if (Abs (aDotProduct) < Precision::Angular())
+    {
+      // eyeline parallel to the clipping plane
+      if (aDirection > 0.0)
+      {
+        // invalidate the interval
+        aDepthTo   = ShortRealFirst();
+        aDepthFrom = ShortRealFirst();
+        break;
+      }
+      // just ignore this plane
+      continue;
+    }
+
+    // compute distance along the eyeline from eyeline location to intersection with clipping plane
+    Standard_Real aDepth = aDirection / aDotProduct;
+
+    // reduce depth limits
+    if (aDotProduct < 0.0)
+    {
+      if (aDepth < aDepthTo)
+      {
+        aDepthTo = aDepth;
+      }
+    }
+    else if (aDepth > aDepthFrom)
+    {
+      aDepthFrom = aDepth;
+    }
+  }
+  myprj->DepthMinMax (aDepthFrom, aDepthTo);
+
   InitSelect(P2d.X(),P2d.Y());
 }
 
@@ -195,8 +243,8 @@ void StdSelect_ViewerSelector3d
   gp_Pnt2d P2d_1,P2d_2;
   aView->Convert(XPMin,YPMin,x1,y1,z1);
   aView->Convert(XPMax,YPMax,x2,y2,z2);
-  myprj.Project(gp_Pnt(x1,y1,z1),P2d_1);
-  myprj.Project(gp_Pnt(x2,y2,z2),P2d_2);
+  myprj->Project(gp_Pnt(x1,y1,z1),P2d_1);
+  myprj->Project(gp_Pnt(x2,y2,z2),P2d_2);
 
   InitSelect (Min(P2d_1.X(),P2d_2.X()),
               Min(P2d_1.Y(),P2d_2.Y()),
@@ -236,7 +284,7 @@ void StdSelect_ViewerSelector3d
     gp_Pnt2d Pnt2d;
 
     aView->Convert (XP, YP, x, y, z);
-    myprj.Project (gp_Pnt (x, y, z), Pnt2d);
+    myprj->Project (gp_Pnt (x, y, z), Pnt2d);
 
     P2d->SetValue (i, Pnt2d);
   }
@@ -272,8 +320,8 @@ DisplayAreas(const Handle(V3d_View)& aView)
   }
 
   SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive It(myentities);
-  Select3D_Projector prj = StdSelect::GetProjector(aView);
-  prj.SetView(aView);
+  Handle(Select3D_Projector) prj = StdSelect::GetProjector(aView);
+  prj->SetView(aView);
 
 
   Graphic3d_Array1OfVertex Av1 (1,5);
@@ -291,23 +339,23 @@ DisplayAreas(const Handle(V3d_View)& aView)
       itb.Value().Get (xmin, ymin, xmax, ymax);
 
       Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      prj.Transform (Pbid, prj.InvertedTransformation());
+      prj->Transform (Pbid, prj->InvertedTransformation());
       Av1.SetValue (1, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmax + mytolerance, ymin - mytolerance, 0.0);
-      prj.Transform (Pbid, prj.InvertedTransformation());
+      prj->Transform (Pbid, prj->InvertedTransformation());
       Av1.SetValue (2, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmax + mytolerance, ymax + mytolerance, 0.0);
-      prj.Transform (Pbid, prj.InvertedTransformation());
+      prj->Transform (Pbid, prj->InvertedTransformation());
       Av1.SetValue (3, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmin - mytolerance, ymax + mytolerance, 0.0);
-      prj.Transform (Pbid, prj.InvertedTransformation());
+      prj->Transform (Pbid, prj->InvertedTransformation());
       Av1.SetValue (4,Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      prj.Transform (Pbid, prj.InvertedTransformation());
+      prj->Transform (Pbid, prj->InvertedTransformation());
       Av1.SetValue (5, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       myareagroup->Polyline (Av1);
@@ -421,14 +469,14 @@ UpdateProj(const Handle(V3d_View)& aView)
     GT.SetTranslationPart (loc);
     GT.SetVectorialPart (matrix);
 
-    myprj = Select3D_Projector (GT, Pers, mycoeff[9]);
+    myprj = new Select3D_Projector (GT, Pers, mycoeff[9]);
 
     // SAV 08/05/02 : fix for detection problem in a perspective view
     if (aView->Type() == V3d_PERSPECTIVE)
-      myprj.SetView (aView);
+      myprj->SetView (aView);
     // NKV 31/07/07 : fix for detection problem in case of custom matrix
     else if (aView->ViewOrientation().IsCustomMatrix())
-      myprj.SetView (aView);
+      myprj->SetView (aView);
   }
 
   if (Abs (aView->Scale() - mylastzoom) > 1.e-3)
@@ -1008,23 +1056,23 @@ ComputeAreasPrs (const Handle(SelectMgr_Selection)& Sel)
       itb.Value().Get (xmin, ymin, xmax, ymax);
 
       Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      myprj.Transform (Pbid, myprj.InvertedTransformation());
+      myprj->Transform (Pbid, myprj->InvertedTransformation());
       Av1.SetValue (1, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmax + mytolerance, ymin - mytolerance, 0.0);
-      myprj.Transform (Pbid, myprj.InvertedTransformation());
+      myprj->Transform (Pbid, myprj->InvertedTransformation());
       Av1.SetValue (2, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmax + mytolerance, ymax + mytolerance, 0.0);
-      myprj.Transform (Pbid, myprj.InvertedTransformation());
+      myprj->Transform (Pbid, myprj->InvertedTransformation());
       Av1.SetValue (3, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmin - mytolerance, ymax + mytolerance, 0.0);
-      myprj.Transform (Pbid, myprj.InvertedTransformation());
+      myprj->Transform (Pbid, myprj->InvertedTransformation());
       Av1.SetValue (4, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      myprj.Transform (Pbid, myprj.InvertedTransformation());
+      myprj->Transform (Pbid, myprj->InvertedTransformation());
       Av1.SetValue (5, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
 
       myareagroup->Polyline (Av1);
