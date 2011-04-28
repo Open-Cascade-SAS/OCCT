@@ -479,11 +479,7 @@ const Handle(WNT_Window) theWindow = *(Handle(WNT_Window) *) &AWindow;
 #ifdef RIC120302
         MyCView.DefWindow.XParentWindow = ( HWND )(theWindow->HParentWindow());
 #endif
-#ifndef _WIN64
-        wd = ( WNT_WindowData* )GetWindowLong (( HWND )(theWindow->HWindow()), GWL_USERDATA);
-#else
-        wd = ( WNT_WindowData* )GetWindowLong (( HWND )(theWindow->HWindow()), GWLP_USERDATA);
-#endif
+        wd = ( WNT_WindowData* )GetWindowLongPtr (( HWND )(theWindow->HWindow()), GWLP_USERDATA);
         wd -> WNT_WDriver_Ptr = ( void* )this;
         wd -> WNT_VMgr        = ( void* )MyPtrViewManager;
 #endif  /* WNT */
