@@ -21,7 +21,8 @@ uses
     MapOfShape  from TopTools,
     IndexedDataMapOfShapeListOfShape from TopTools,
     DataMapOfShapeReal from TopTools,
-    FastDiscret from BRepMesh      
+    FastDiscret from BRepMesh,
+    Status      from BRepMesh
 
 is      
     Create
@@ -72,6 +73,9 @@ is
             --          correctly, the triangulation  of this face  is
             --          built.
     	is static private;
+      
+    EchoStatus(me)
+      is static;
 	
       
 fields

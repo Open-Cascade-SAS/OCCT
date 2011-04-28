@@ -140,26 +140,53 @@ void BRepMesh_IncrementalMesh::Perform()
   Init(); 
   //
   BRepBndLib::Add(myShape, aBox);
-  if (aBox.IsVoid() == Standard_False)
-  {
-    myBox = aBox;
+  myBox = aBox;
   //
-    if (!myMesh.IsNull()) {
-      myMesh.Nullify();
-    }
-  //
-    myMesh = new BRepMesh_FastDiscret(myDeflection,
-                                      myAngle,
-                                      aBox,
-                                      Standard_True,
-                                      Standard_True,
-                                      myRelative,
-                                      Standard_True);
-  //
-    Update(myShape);
+  if (!myMesh.IsNull()) {
+    myMesh.Nullify();
   }
+  //
+  myMesh = new BRepMesh_FastDiscret(myDeflection,
+				    myAngle,
+				    aBox,
+				    Standard_True,
+				    Standard_True,
+				    myRelative,
+				    Standard_True);
+  //
+  Update(myShape);
+#ifdef DEB
+  EchoStatus();
+#endif
 }
 
+//=======================================================================
+//function : EchoStatus
+//purpose  : 
+//=======================================================================
+void BRepMesh_IncrementalMesh::EchoStatus() const
+{
+  cout << "BRepMesh_FastDiscret::Meshing status: ";
+  switch(myMesh->CurrentFaceStatus())
+  {
+    case BRepMesh_NoError:
+      cout << "NoError" << endl;
+      break;
+    case BRepMesh_OpenWire:
+      cout << "OpenWire" << endl;
+      break;
+    case BRepMesh_SelfIntersectingWire:
+      cout << "SelfIntersectingWire" << endl;
+      break;
+    case BRepMesh_Failure:
+      cout << "Failure" << endl;
+      break;
+    case BRepMesh_ReMesh:
+      cout << "ReMesh" << endl;
+      break;
+    default: cout << "UnsupportedStatus" << endl;
+  }
+}
 
 //=======================================================================
 //function : Update(shape)
