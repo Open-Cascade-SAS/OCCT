@@ -249,6 +249,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 //=======================================================================
 
 GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
+				       const GeomFill_SequenceOfTrsf& Trsfs,
 				       const TColStd_SequenceOfReal& NP,
 				       const Standard_Real UF,
 				       const Standard_Real UL,
@@ -257,6 +258,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 				       const Handle(Geom_BSplineSurface)& Surf)
 {
   mySections = NC;
+  myTrsfs = Trsfs;
   myParams = NP;
   UFirst = UF;
   ULast = UL;
@@ -936,29 +938,43 @@ void GeomFill_NSections::GetMinimalWeight(TColStd_Array1OfReal& Weights) const
                      &&  ( AC2.GetType() == GeomAbs_Circle ) ;
     if (isconic) {
       gp_Circ C1 = AC1.Circle();
+      if (!myTrsfs.IsEmpty())
+        C1.Transform(myTrsfs(1).Inverted());
       gp_Circ C2 = AC2.Circle();
+      if (!myTrsfs.IsEmpty())
+        C2.Transform(myTrsfs(2).Inverted());
       Standard_Real Tol = 1.e-7;
-      Standard_Boolean samedir, linearrad, sameaxis;
-      samedir = (C1.Axis().IsParallel(C2.Axis(),1.e-4));
+      //Standard_Boolean samedir, linearrad, sameaxis;
+      isconic = (C1.Axis().IsParallel(C2.Axis(),1.e-4));
       //  pour 2 sections, la variation du rayon est forcement lineaire
-      linearrad = Standard_True;
+      //linearrad = Standard_True;
       //  formule plus generale pour 3 sections au moins
       //  Standard_Real param0 = C2.Radius()*myParams(1) - C1.Radius()*myParams(2);
       //  param0 = param0 / (C2.Radius()-C1.Radius()) ;
       //  linearrad = ( Abs( C3.Radius()*myParams(1)-C1.Radius()*myParams(3)
       //                          - param0*(C3.Radius()-C1.Radius()) ) < Tol);
-      sameaxis = (C1.Location().Distance(C2.Location())<Tol);
-      if (!sameaxis) {
+      if (isconic)
+      {
+        gp_Lin Line1(C1.Axis());
+        isconic = (Line1.Distance(C2.Location()) < Tol);
+        /*
+        sameaxis = (C1.Location().Distance(C2.Location())<Tol);
+        if (!sameaxis) {
         gp_Ax1 D(C1.Location(),gp_Vec(C1.Location(),C2.Location()));
         sameaxis = (C1.Axis().IsParallel(D,1.e-4));
+        }
+        isconic = samedir && linearrad && sameaxis;
+        */
+        if (isconic)
+        {
+          //// Modified by jgv, 18.02.2009 for OCC20866 ////
+          Standard_Real first1 = AC1.FirstParameter(), last1 = AC1.LastParameter();
+          Standard_Real first2 = AC2.FirstParameter(), last2 = AC2.LastParameter();
+          isconic = (Abs(first1-first2) <= Precision::PConfusion() &&
+                     Abs(last1-last2)   <= Precision::PConfusion());
+          //////////////////////////////////////////////////
+        }
       }
-      isconic = samedir && linearrad && sameaxis;
-      //// Modified by jgv, 18.02.2009 for OCC20866 ////
-      Standard_Real first1 = AC1.FirstParameter(), last1 = AC1.LastParameter();
-      Standard_Real first2 = AC2.FirstParameter(), last2 = AC2.LastParameter();
-      isconic = (Abs(first1-first2) <= Precision::PConfusion() &&
-		 Abs(last1-last2)   <= Precision::PConfusion());
-      //////////////////////////////////////////////////
     }
   }
 

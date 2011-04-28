@@ -21,8 +21,8 @@ uses
  Array1OfVec      from TColgp, 
  Array1OfInteger  from TColStd,
  Array1OfReal     from TColStd,   
- SequenceOfReal   from TColStd  
-
+ SequenceOfReal   from TColStd,
+ SequenceOfTrsf   from GeomFill
 
 raises
  OutOfRange
@@ -56,8 +56,9 @@ is
                    
     returns  NSections from GeomFill; 
     
-   Create(NC :  SequenceOfCurve from TColGeom; 
-          NP   : SequenceOfReal from TColStd; 
+   Create(NC    :  SequenceOfCurve from TColGeom; 
+          Trsfs : SequenceOfTrsf from GeomFill; 
+          NP    : SequenceOfReal from TColStd; 
     	  UF,  UL,  VF,  VL  :  Real  from  Standard; 
     	  Surf  :  BSplineSurface  from  Geom) 
        ---Purpose: Make a SectionLaw with N Curves and N associated parameters.
@@ -264,7 +265,8 @@ is
 fields     
   UFirst,  ULast,  VFirst,  VLast : Real;
   mySections :  SequenceOfCurve from TColGeom;  
-  myParams :  SequenceOfReal    from TColStd;  
+  myTrsfs    :  SequenceOfTrsf  from GeomFill;
+  myParams   :  SequenceOfReal  from TColStd;  
   mySurface  :  BSplineSurface  from Geom; 
   myRefSurf  :  BSplineSurface  from Geom; 
 end NSections;
