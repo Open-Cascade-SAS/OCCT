@@ -315,8 +315,8 @@ fields
     myData            : Data         from TDF;    
     myUndoLimit       : Integer      from Standard;
     myUndoTransaction : Transaction  from TDF;
-    myUndos           : DeltaList    from TDF;
-    myRedos           : DeltaList    from TDF;
+    myUndos           : DeltaList    from TDF is protected;
+    myRedos           : DeltaList    from TDF is protected;
 
     myFromUndo        : Delta        from TDF;
     myFromRedo        : Delta        from TDF;
