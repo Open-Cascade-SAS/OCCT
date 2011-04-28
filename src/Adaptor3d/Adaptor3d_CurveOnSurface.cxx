@@ -127,13 +127,14 @@ static void Hunt(const TColStd_Array1OfReal& Arr,
   //        when co-ordinate component definitly equals a knot only.
   Standard_Real Tol=Precision::PConfusion()/10;
   Standard_Integer i=1; 
-  while((i<=Arr.Upper())&&(Abs(Coord-Arr(i))>Tol)){
+  while((i <= Arr.Upper()) && (Abs(Coord - Arr(i)) > Tol)){
     i++;}
  
-  if(Abs(Coord-Arr(i))<Tol)
+  if(Abs(Coord - Arr(i)) < Tol)
     Iloc = i;
   else
-    if(Abs(Coord-Arr(i)>Tol)) Standard_NotImplemented::Raise("Adaptor3d_CurveOnSurface:Hunt");
+    if(Abs(Coord - Arr(i)) > Tol) 
+      Standard_NotImplemented::Raise("Adaptor3d_CurveOnSurface:Hunt");
 }
 
 //=======================================================================

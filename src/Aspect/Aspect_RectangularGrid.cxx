@@ -163,7 +163,7 @@ void Aspect_RectangularGrid::Init () {
 
 Standard_Boolean Aspect_RectangularGrid::CheckAngle(const Standard_Real alpha,
                                             const Standard_Real beta) const {
-  return Abs( Sin(alpha)*Cos(beta+Standard_PI/2.) - Cos(alpha)*Sin(beta+Standard_PI/2.) != 0) ;
+  return (Abs( Sin(alpha) * Cos(beta+Standard_PI/2.) - Cos(alpha) * Sin(beta+Standard_PI/2.)) != 0) ;
 }
 
 
