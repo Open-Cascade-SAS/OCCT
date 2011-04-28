@@ -1,20 +1,10 @@
-// File:	BRepMesh_FastDiscret.lxx
-// Created:	Fri Sep 26 16:39:53 2003
-// Author:	Open CASCADE Support
-//		<support@opencascade.com>
-// Copyright:	 Open CASCADE 2003
+// File:        BRepMesh_FastDiscret.lxx
+// Created:     Fri Sep 26 16:39:53 2003
+// Author:      Open CASCADE Support
+//              <support@opencascade.com>
+// Copyright:    Open CASCADE 2003
 
 #include <BRepMesh_DataStructureOfDelaun.hxx>
-
-//=======================================================================
-//function : InternalVerticesMode
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean& BRepMesh_FastDiscret::InternalVerticesMode ()
-{
-  return myInternalVerticesMode;
-}
 
 //=======================================================================
 //function : GetDeflection
@@ -23,7 +13,7 @@ inline Standard_Boolean& BRepMesh_FastDiscret::InternalVerticesMode ()
 
 inline Standard_Real BRepMesh_FastDiscret::GetDeflection() const
 {
-  return mydeflection;
+  return myDeflection;
 }
 
 //=======================================================================
@@ -33,7 +23,7 @@ inline Standard_Real BRepMesh_FastDiscret::GetDeflection() const
 
 inline Standard_Real BRepMesh_FastDiscret::GetAngle() const
 {
-  return myangle;
+  return myAngle;
 }
 
 //=======================================================================
@@ -43,7 +33,7 @@ inline Standard_Real BRepMesh_FastDiscret::GetAngle() const
 
 inline const TopTools_DataMapOfShapeReal& BRepMesh_FastDiscret::GetMapOfDefEdge() const
 {
-  return mapdefle;
+  return myMapdefle;
 }
 
 //=======================================================================
@@ -53,7 +43,7 @@ inline const TopTools_DataMapOfShapeReal& BRepMesh_FastDiscret::GetMapOfDefEdge(
 
 inline void BRepMesh_FastDiscret::EdgesOfDomain(MeshDS_MapOfInteger&  Indices) const 
 { 
-  Indices = structure->LinkOfDomain();
+  Indices = myStructure->LinkOfDomain();
 }
 
 //=======================================================================
@@ -63,7 +53,7 @@ inline void BRepMesh_FastDiscret::EdgesOfDomain(MeshDS_MapOfInteger&  Indices) c
 
 inline void BRepMesh_FastDiscret::TrianglesOfDomain(MeshDS_MapOfInteger&  Indices) const 
 { 
-  Indices = structure->ElemOfDomain();
+  Indices = myStructure->ElemOfDomain();
 }
 
 //=======================================================================
@@ -73,7 +63,7 @@ inline void BRepMesh_FastDiscret::TrianglesOfDomain(MeshDS_MapOfInteger&  Indice
 
 inline Standard_Integer BRepMesh_FastDiscret::NbPoint3d() const
 {
-  return nbLocat;
+  return myNbLocat;
 }
 
 //=======================================================================
@@ -83,7 +73,7 @@ inline Standard_Integer BRepMesh_FastDiscret::NbPoint3d() const
 
 inline const gp_Pnt& BRepMesh_FastDiscret::Point3d(const Standard_Integer Index) const
 {
-  return Location3d(Index);
+  return myLocation3d(Index);
 }
 
 //=======================================================================
@@ -103,7 +93,7 @@ inline Standard_Boolean BRepMesh_FastDiscret::WithShare() const
 
 inline Standard_Boolean BRepMesh_FastDiscret::InShape() const
 {
-  return myinshape;
+  return myInshape;
 }
 
 //=======================================================================
@@ -113,5 +103,5 @@ inline Standard_Boolean BRepMesh_FastDiscret::InShape() const
 
 inline Standard_Boolean BRepMesh_FastDiscret::ShapeTrigu() const
 {
-  return myshapetrigu;
+  return myShapetrigu;
 }
