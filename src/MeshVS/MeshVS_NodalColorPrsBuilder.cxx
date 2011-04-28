@@ -74,7 +74,7 @@ MeshVS_ImageTexture2D::MeshVS_ImageTexture2D
                          const Handle(AlienImage_AlienImage)& theImg)
 : Graphic3d_Texture2D( theSM, "", Graphic3d_TOT_2D )
 {
-  MyCInitTexture.doModulate = 0/*1*/;
+  MyCInitTexture.doModulate = 1;
   MyCInitTexture.doRepeat = 0;
   MyCInitTexture.Mode = (int)Graphic3d_TOTM_MANUAL;
   MyCInitTexture.doLinear = 1;
@@ -178,10 +178,6 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   aDrawer->GetBoolean( MeshVS_DA_ColorReflection, IsReflect );
   aDrawer->GetBoolean( MeshVS_DA_SmoothShading,   IsMeshSmoothShading );
   
-  // NOTE: Lighting effect not tested with textures, so turning off reflectance when textures are used.
-  // This can be improved if necessary...
-  IsReflect = IsReflect && !myUseTexture;
-
   // Following parameter are used for texture presentation only
   int nbColors = 0; // Number of colors from color map
   int nbTextureColors = 0; // Number of colors in texture (it will be pow of 2)
@@ -307,10 +303,29 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
             // transform texture coordinate in accordance with number of colors specified 
             // by upper level and real size of Gl texture
-            aTexCoord = aTexCoord * nbColors / nbTextureColors;
+            // The Gl texture has border colors interpolated with the colors from the color map,
+            // thats why we need to shrink texture coordinates around the middle point to 
+            // exclude areas where the map colors are interpolated with the borders color
+            double aWrapCoord = 1.0 / (2.0 * nbTextureColors) + aTexCoord * (nbColors - 1.0) / nbTextureColors;
 
-            aCPolyArr->AddVertex( P, aDefNorm, 
-              gp_Pnt2d( aTexCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 1 : 0 ) );
+            if ( hasNormals )
+            {
+              gp_Vec aNorm(aNormals->Value( 3 * i - 2 ), 
+                           aNormals->Value( 3 * i - 1 ), 
+                           aNormals->Value( 3 * i     ));
+              // There are two "rows" of colors: user's invalid color at the top
+              // of texture and line of map colors at the bottom of the texture.
+              // Since the texture has borders, which are interpolated with the "rows" of colors
+              // we should specify the 0.25 offset to get the correct texture color
+              aNorm.SquareMagnitude() > aMin ?
+                aCPolyArr->AddVertex(P, gp_Dir( aNorm ), 
+                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) : 
+                aCPolyArr->AddVertex(P, aDefNorm, 
+                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
+            }
+            else
+              aCPolyArr->AddVertex( P, aDefNorm, 
+                gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
           }
           else
           {
@@ -377,10 +392,29 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
               // transform texture coordinate in accordance with number of colors specified 
               // by upper level and real size of Gl texture
-              aTexCoord = aTexCoord * nbColors / nbTextureColors;
+              // The Gl texture has border colors interpolated with the colors from the color map,
+              // thats why we need to shrink texture coordinates around the middle point to 
+              // exclude areas where the map colors are interpolated with the borders color
+              double aWrapCoord = 1.0 / (2.0 * nbTextureColors) + aTexCoord * (nbColors - 1.0) / nbTextureColors;
 
-              gp_Pnt2d aTP( aTexCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 1 : 0 );
-              aCPolyArr->AddVertex( P, aDefNorm, aTP );
+              if ( hasNormals )
+              {
+                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ), 
+                             aNormals->Value( 3 * i - 1 ), 
+                             aNormals->Value( 3 * i     ));
+                // There are two "rows" of colors: user's invalid color at the top
+                // of texture and line of map colors at the bottom of the texture.
+                // Since the texture has borders, which are interpolated with the "rows" of colors
+                // we should specify the 0.25 offset to get the correct texture color
+                aNorm.SquareMagnitude() > aMin ?
+                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ), 
+                    gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) : 
+                  aCPolyArr->AddVertex(P, aDefNorm, 
+                    gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
+              }
+              else
+                aCPolyArr->AddVertex( P, aDefNorm, 
+                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
             }
             else
             {
@@ -464,6 +498,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
     anAsp->SetTextureMapOn();  
     anAsp->SetTextureMap( aTexture );
+    anAsp->SetInteriorColor( Quantity_NOC_WHITE );
   }
   else
   {
@@ -477,7 +512,6 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
   anAsp->SetDistinguishOff();
   anAsp->SetEdgeOff();
-  anAsp->SetInteriorColor( Quantity_NOC_GRAY );
 
   Handle(Graphic3d_AspectLine3d) anLAsp = 
     new Graphic3d_AspectLine3d( anEdgeColor, anEdgeType, anEdgeWidth );

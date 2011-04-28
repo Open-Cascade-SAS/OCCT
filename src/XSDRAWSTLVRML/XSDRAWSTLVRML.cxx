@@ -58,7 +58,8 @@
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_ShapeConvert.hxx>
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
-
+#include <TColStd_Array1OfReal.hxx>
+#include <Bnd_Box.hxx>
 
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
@@ -714,10 +715,11 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
       if ( argc < 2 )
       {
         di << "Use : meshcolors meshname mode isreflect" << "\n";
-        di << "mode : {elem1|elem2|nodal|none}"<< "\n";
+        di << "mode : {elem1|elem2|nodal|nodaltex|none}"<< "\n";
         di << "       elem1 - different color for each element" << "\n";
         di << "       elem2 - one color for one side"<<"\n";
-        di << "       nodal - different color for each node"<< "\n"; 
+        di << "       nodal - different color for each node"<< "\n";
+        di << "       nodaltex - different color for each node with texture interpolation"<< "\n";
         di << "       none  - clear"<< "\n"; 
         di << "isreflect : {0|1} "<< "\n";
          
@@ -742,7 +744,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
         TCollection_AsciiString aMode = TCollection_AsciiString (argv[2]);
         Quantity_Color aColor1( (Quantity_NameOfColor)( Quantity_NOC_BLUE1 ) );
         Quantity_Color aColor2( (Quantity_NameOfColor)( Quantity_NOC_RED1 ) );
-        if( aMode.IsEqual("elem1") || aMode.IsEqual("elem2") || aMode.IsEqual("nodal") || aMode.IsEqual("none") )
+        if( aMode.IsEqual("elem1") || aMode.IsEqual("elem2") || aMode.IsEqual("nodal") || aMode.IsEqual("nodaltex") || aMode.IsEqual("none") )
         {
           Handle(MeshVS_PrsBuilder) aTempBuilder;
           Standard_Integer reflection = atoi(argv[3]);
@@ -796,6 +798,67 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
               aBuilder->SetColor( anIter.Key(), aColor );
             }
             aMesh->AddBuilder( aBuilder, Standard_True );
+          }
+
+          if(aMode.IsEqual("nodaltex"))
+          {
+            // assign nodal builder to the mesh
+            Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder( 
+                   aMesh, MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask);
+            aMesh->AddBuilder(aBuilder, Standard_True);
+            aBuilder->UseTexture(Standard_True);
+
+            // prepare color map for texture
+            Aspect_SequenceOfColor aColorMap;
+            aColorMap.Append((Quantity_NameOfColor) Quantity_NOC_RED);
+            aColorMap.Append((Quantity_NameOfColor) Quantity_NOC_YELLOW);
+            aColorMap.Append((Quantity_NameOfColor) Quantity_NOC_BLUE1);
+
+            // prepare scale map for mesh - it will be assigned to mesh as texture coordinates
+            // make mesh color interpolated from minimum X coord to maximum X coord
+            Handle(MeshVS_DataSource) aDataSource = aMesh->GetDataSource();
+            Standard_Real aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
+
+            // get bounding box for calculations
+            aDataSource->GetBoundingBox().Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);
+            Standard_Real aDelta = aMaxX - aMinX;
+
+            // assign color scale map values (0..1) to nodes
+            TColStd_DataMapOfIntegerReal aScaleMap;
+            TColStd_Array1OfReal aCoords(1, 3);
+            Standard_Integer     aNbNodes;
+            MeshVS_EntityType    aType;
+
+            // iterate nodes
+            const TColStd_PackedMapOfInteger& anAllNodes =
+                  aMesh->GetDataSource()->GetAllNodes();
+            TColStd_MapIteratorOfPackedMapOfInteger anIter(anAllNodes);
+            for (; anIter.More(); anIter.Next())
+            {
+              //get node coordinates to aCoord variable
+              aDataSource->GetGeom(anIter.Key(), Standard_False, aCoords, aNbNodes, aType);
+
+              Standard_Real aScaleValue;
+              try {
+                OCC_CATCH_SIGNALS
+                aScaleValue = (aCoords.Value(1) - (Standard_Real) aMinX) / aDelta;
+              } catch(Standard_Failure) {
+                aScaleValue = 0;
+              }
+
+              aScaleMap.Bind(anIter.Key(), aScaleValue); 
+            }
+
+            //set color map for builder and a color for invalid scale value
+            aBuilder->SetColorMap(aColorMap);
+            aBuilder->SetInvalidColor(Quantity_NOC_BLACK);
+            aBuilder->SetTextureCoords(aScaleMap);
+            aMesh->AddBuilder(aBuilder, Standard_True);
+			
+            //set viewer to display texures
+            const Handle(V3d_Viewer)& aViewer = anIC->CurrentViewer();
+            for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
+                 aViewer->ActiveView()->SetSurfaceDetail(V3d_TEX_ALL);
           }
 
           aMesh->GetDrawer()->SetBoolean ( MeshVS_DA_ColorReflection, Standard_Boolean(reflection) );
