@@ -3,9 +3,9 @@
 // Author:	Marc LEGAY
 //		<mle@bourdon>
 
-// Copyright:    Matra Datavision	
+// Copyright:    Matra Datavision
 
-#include <RWStl.ixx>	
+#include <RWStl.ixx>
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -22,12 +22,12 @@
 
 
 // constants
-static const int HEADER_SIZE           =  84; 
-static const int SIZEOF_STL_FACET      =  50; 
-static const int STL_MIN_FILE_SIZE     = 284; 
-static const int ASCII_LINES_PER_FACET =   7; 
+static const int HEADER_SIZE           =  84;
+static const int SIZEOF_STL_FACET      =  50;
+static const int STL_MIN_FILE_SIZE     = 284;
+static const int ASCII_LINES_PER_FACET =   7;
 
-//=============== =======================================================
+//=======================================================================
 //function : WriteInteger
 //purpose  : writing a Little Endian 32 bits integer
 //=======================================================================
@@ -42,7 +42,7 @@ inline static void WriteInteger(OSD_File& ofile,const Standard_Integer value)
   bidargum.i = value;
 
   Standard_Integer entier;
-  
+
   entier  =  bidargum.c[0] & 0xFF;
   entier |= (bidargum.c[1] & 0xFF) << 0x08;
   entier |= (bidargum.c[2] & 0xFF) << 0x10;
@@ -66,7 +66,7 @@ inline static void WriteDouble2Float(OSD_File& ofile,Standard_Real value)
   bidargum.f = (Standard_ShortReal)value;
 
   Standard_Integer entier;
-  
+
   entier  =  bidargum.c[0] & 0xFF;
   entier |= (bidargum.c[1] & 0xFF) << 0x08;
   entier |= (bidargum.c[2] & 0xFF) << 0x10;
@@ -110,28 +110,28 @@ inline static Standard_Real ReadFloat2Double(OSD_File &aFile)
 
 Standard_Boolean RWStl::WriteBinary(const Handle(StlMesh_Mesh)& aMesh, const OSD_Path& aPath)
 {
-  
+
   OSD_File theFile = OSD_File (aPath);
   theFile.Build(OSD_WriteOnly,OSD_Protection());
 
   Standard_Real x1, y1, z1;
   Standard_Real x2, y2, z2;
   Standard_Real x3, y3, z3;
-  
+
   //pgo  Standard_Real x,y,z;
-  
+
   char sval[80];
   Standard_Integer NBTRIANGLES=0;
   unsigned int NBT;
   NBTRIANGLES = aMesh->NbTriangles();
   NBT = NBTRIANGLES ;
   theFile.Write ((Standard_Address)sval,80);
-  WriteInteger(theFile,NBT);  
+  WriteInteger(theFile,NBT);
 //  theFile.Write ((Standard_Address)&NBT,4);
   int dum=0;
   StlMesh_MeshExplorer aMexp (aMesh);
-  
-  
+
+
   for (Standard_Integer nbd=1;nbd<=aMesh->NbDomains();nbd++) {
     for (aMexp.InitTriangle (nbd); aMexp.MoreTriangle (); aMexp.NextTriangle ()) {
 	aMexp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
@@ -147,11 +147,11 @@ Standard_Boolean RWStl::WriteBinary(const Handle(StlMesh_Mesh)& aMesh, const OSD
 	  // si Vnorm est quasi-nul, on le charge a 0 explicitement
 	  Vnorm.SetCoord (0., 0., 0.);
 	}
-	
+
 	WriteDouble2Float (theFile,Vnorm.X());
 	WriteDouble2Float (theFile,Vnorm.Y());
 	WriteDouble2Float (theFile,Vnorm.Z());
-	
+
 	WriteDouble2Float (theFile,x1);
 	WriteDouble2Float (theFile,y1);
 	WriteDouble2Float (theFile,z1);
@@ -159,16 +159,16 @@ Standard_Boolean RWStl::WriteBinary(const Handle(StlMesh_Mesh)& aMesh, const OSD
 	WriteDouble2Float (theFile,x2);
 	WriteDouble2Float (theFile,y2);
 	WriteDouble2Float (theFile,z2);
-	
+
 	WriteDouble2Float (theFile,x3);
 	WriteDouble2Float (theFile,y3);
 	WriteDouble2Float (theFile,z3);
 
 	theFile.Write (&dum,2);
-	
+
       }
   }
-  
+
   theFile.Close ();
   return Standard_True;
 }
@@ -183,24 +183,24 @@ Standard_Boolean RWStl::WriteAscii(const Handle(StlMesh_Mesh)& aMesh, const OSD_
   theFile.Build(OSD_WriteOnly,OSD_Protection());
   TCollection_AsciiString buf = TCollection_AsciiString ("solid\n");
   theFile.Write (buf,buf.Length());buf.Clear();
-  
+
   Standard_Real x1, y1, z1;
   Standard_Real x2, y2, z2;
   Standard_Real x3, y3, z3;
-  
+
   //pgo  Standard_Real x,y,z;
-  
+
   char sval[16];
-  
+
   StlMesh_MeshExplorer aMexp (aMesh);
-  
+
   for (Standard_Integer nbd=1;nbd<=aMesh->NbDomains();nbd++) {
     for (aMexp.InitTriangle (nbd); aMexp.MoreTriangle (); aMexp.NextTriangle ()) {
       aMexp.TriangleVertices (x1,y1,z1,x2,y2,z2,x3,y3,z3);
-      
+
 //      Standard_Real x, y, z;
 //      aMexp.TriangleOrientation (x,y,z);
-      
+
       gp_XYZ Vect12 ((x2-x1), (y2-y1), (z2-z1));
       gp_XYZ Vect23 ((x3-x2), (y3-y2), (z3-z2));
 	gp_XYZ Vnorm = Vect12 ^ Vect23;
@@ -212,72 +212,72 @@ Standard_Boolean RWStl::WriteAscii(const Handle(StlMesh_Mesh)& aMesh, const OSD_
 	// si Vnorm est quasi-nul, on le charge a 0 explicitement
 	Vnorm.SetCoord (0., 0., 0.);
       }
-      buf += " facet normal "; 
+      buf += " facet normal ";
       sprintf (sval,"% 12e",Vnorm.X());
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",Vnorm.Y());
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",Vnorm.Z());
       buf += sval;
       buf += '\n';
       theFile.Write (buf,buf.Length());buf.Clear();
-      buf += "   outer loop\n"; 
+      buf += "   outer loop\n";
       theFile.Write (buf,buf.Length());buf.Clear();
-      
-      buf += "     vertex "; 
+
+      buf += "     vertex ";
       sprintf (sval,"% 12e",x1);
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",y1);
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",z1);
       buf += sval;
       buf += '\n';
       theFile.Write (buf,buf.Length());buf.Clear();
-      
-      buf += "     vertex "; 
+
+      buf += "     vertex ";
       sprintf (sval,"% 12e",x2);
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",y2);
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",z2);
       buf += sval;
       buf += '\n';
       theFile.Write (buf,buf.Length());buf.Clear();
-      
-      buf += "     vertex "; 
+
+      buf += "     vertex ";
       sprintf (sval,"% 12e",x3);
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",y3);
       buf += sval;
-      buf += " "; 
+      buf += " ";
       sprintf (sval,"% 12e",z3);
       buf += sval;
       buf += '\n';
       theFile.Write (buf,buf.Length());buf.Clear();
-      buf += "   endloop\n"; 
+      buf += "   endloop\n";
       theFile.Write (buf,buf.Length());buf.Clear();
-      buf += " endfacet\n"; 
+      buf += " endfacet\n";
       theFile.Write (buf,buf.Length());buf.Clear();
     }
   }
-  
+
   buf += "endsolid\n";
   theFile.Write (buf,buf.Length());buf.Clear();
-  
+
   theFile.Close ();
   return Standard_True;
 }
 //=======================================================================
 //function : ReadFile
-//Design   : 
-//Warning  : 
+//Design   :
+//Warning  :
 //=======================================================================
 
 Handle_StlMesh_Mesh RWStl::ReadFile(const OSD_Path& aPath)
@@ -289,7 +289,7 @@ Handle_StlMesh_Mesh RWStl::ReadFile(const OSD_Path& aPath)
   Standard_Integer lread,i;
   Standard_Address ach;
   ach = (Standard_Address)str;
-  
+
   // we skip the header which is in Ascii for both modes
   file.Read(ach,HEADER_SIZE,lread);
 
@@ -302,11 +302,11 @@ Handle_StlMesh_Mesh RWStl::ReadFile(const OSD_Path& aPath)
       IsAscii = Standard_False;
     }
   }
-
-  printf("%s\n",(IsAscii?"ascii":"binary"));
-  
+#ifdef DEB
+  cout << (IsAscii ? "ascii\n" : "binary\n");
+#endif
   file.Close();
-  
+
   if (IsAscii) {
     return RWStl::ReadAscii (aPath);
   } else {
@@ -316,8 +316,8 @@ Handle_StlMesh_Mesh RWStl::ReadFile(const OSD_Path& aPath)
 
 //=======================================================================
 //function : ReadBinary
-//Design   : 
-//Warning  : 
+//Design   :
+//Warning  :
 //=======================================================================
 
 Handle_StlMesh_Mesh RWStl::ReadBinary(const OSD_Path& aPath)
@@ -330,7 +330,7 @@ Handle_StlMesh_Mesh RWStl::ReadBinary(const OSD_Path& aPath)
   Standard_Address adr;
   adr = (Standard_Address)buftest;
 
-  // Open the file 
+  // Open the file
   OSD_File theFile = OSD_File(aPath);
   theFile.Open(OSD_ReadOnly,OSD_Protection(OSD_RWD,OSD_RWD,OSD_RWD,OSD_RWD));
 
@@ -340,7 +340,7 @@ Handle_StlMesh_Mesh RWStl::ReadBinary(const OSD_Path& aPath)
   // compute file size
   Standard_Integer filesize = theFile.Size();
 
-  if ( (filesize - HEADER_SIZE) % SIZEOF_STL_FACET !=0 
+  if ( (filesize - HEADER_SIZE) % SIZEOF_STL_FACET !=0
 	|| (filesize < STL_MIN_FILE_SIZE)) {
     Standard_NoMoreObject::Raise("RWStl::ReadBinary (wrong file size)");
   }
@@ -388,12 +388,12 @@ Handle_StlMesh_Mesh RWStl::ReadBinary(const OSD_Path& aPath)
 
   theFile.Close ();
   return ReadMesh;
-  
+
 }
 //=======================================================================
 //function : ReadAscii
-//Design   : 
-//Warning  : 
+//Design   :
+//Warning  :
 //=======================================================================
 
 Handle_StlMesh_Mesh RWStl::ReadAscii(const OSD_Path& aPath)
@@ -409,7 +409,7 @@ Handle_StlMesh_Mesh RWStl::ReadAscii(const OSD_Path& aPath)
 
   aPath.SystemName( filename);
 
-  // Open the file 
+  // Open the file
   FILE* file = fopen(filename.ToCString(),"r");
 
   fseek(file,0L,SEEK_END);
@@ -437,9 +437,10 @@ Handle_StlMesh_Mesh RWStl::ReadAscii(const OSD_Path& aPath)
 
   // skip header
   while (getc(file) != '\n');
-
-  cout<< "start mesh\n";
-  ReadMesh = new StlMesh_Mesh(); 
+#ifdef DEB
+  cout << "start mesh\n";
+#endif
+  ReadMesh = new StlMesh_Mesh();
   ReadMesh->AddDomain();
 
   // main reading
@@ -455,7 +456,7 @@ Handle_StlMesh_Mesh RWStl::ReadAscii(const OSD_Path& aPath)
     fscanf(file,"%*s %f %f %f\n",&x[2],&y[2],&z[2]);
     fscanf(file,"%*s %f %f %f\n",&x[3],&y[3],&z[3]);
 
-    // here the facet must be built and put in the mesh datastructure		  
+    // here the facet must be built and put in the mesh datastructure
 
     i1 = ReadMesh->AddOnlyNewVertex ((Standard_Real)x[1],(Standard_Real)y[1],(Standard_Real)z[1]);
     i2 = ReadMesh->AddOnlyNewVertex ((Standard_Real)x[2],(Standard_Real)y[2],(Standard_Real)z[2]);
@@ -469,9 +470,10 @@ Handle_StlMesh_Mesh RWStl::ReadAscii(const OSD_Path& aPath)
     fscanf(file,"%*s");
 
   }
-
-  cout<< "end mesh\n"<<endl;
+#ifdef DEB
+  cout << "end mesh\n";
+#endif
   fclose(file);
   return ReadMesh;
-  
+
 }
