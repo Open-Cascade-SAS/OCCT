@@ -270,7 +270,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   mySurface = AppPlate.Surface(1);
   myAppError = AppPlate.MaxError(3,1);
   myCritError = AppPlate.CritError(3,1);
-#if DEB
+#if PLATE_DEB
   cout<<"Approximation results"<<endl;
   cout<<"  Approximation error : "<<myAppError<<endl;
   cout<<"  Criterium error : "<<myCritError<<endl;
@@ -335,13 +335,13 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   Standard_Real seuil = Tol3d;
   if (CritOrder==0&&Tol3d<10*dmax) {
     seuil=10*dmax;
-#if DEB
+#if PLATE_DEB
     cout<<"Seuil G0 choisi trop faible par rapport au contour. On prend "<<seuil<<endl;
 #endif
   }
   if (CritOrder==1&&Tol3d<10*dmax) {
     seuil=10*dmax;
-#if DEB
+#if PLATE_DEB
     cout<<"Seuil G1 choisi trop faible par rapport au contour. On prend "<<seuil<<endl;
 #endif
   }
@@ -380,7 +380,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     mySurface = AppPlate.Surface(1);
     myAppError = AppPlate.MaxError(3,1);
     myCritError = 0.;
-#if DEB
+#if PLATE_DEB
     cout<<"Approximation results"<<endl;
     cout<<"  Approximation error : "<<myAppError<<endl;
 #endif
@@ -402,7 +402,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     mySurface = AppPlate.Surface(1);
     myAppError = AppPlate.MaxError(3,1);
     myCritError = AppPlate.CritError(3,1);
-#if DEB
+#if PLATE_DEB
     cout<<"Approximation results"<<endl;
     cout<<"  Approximation error : "<<myAppError<<endl;
     cout<<"  Criterium error : "<<myCritError<<endl;
@@ -425,7 +425,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
     mySurface = AppPlate.Surface(1);
     myAppError = AppPlate.MaxError(3,1);
     myCritError = AppPlate.CritError(3,1);
-#if DEB
+#if PLATE_DEB
     cout<<"Approximation results"<<endl;
     cout<<"  Approximation error : "<<myAppError<<endl;
     cout<<"  Criterium error : "<<myCritError<<endl;

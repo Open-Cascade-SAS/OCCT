@@ -283,7 +283,7 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
      else
        {
 	 Curve2d.Nullify(); // Pas de solution continue
-#if DEB
+#if PLATE_DEB
 	 cout << "BuildPlateSurace :: Pas de projection continue" << endl;
 #endif
        }
@@ -328,7 +328,7 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
  if (Projector.NbCurves() != 1) {
      
      HProjector.Nullify(); // Pas de solution continue
-#if DEB
+#if PLATE_DEB
      cout << "BuildPlateSurace :: Pas de projection continue" << endl;
 #endif
    }
@@ -350,7 +350,7 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
      else
      {
          HProjector.Nullify(); // Pas de solution continue
-#if DEB
+#if PLATE_DEB
          cout << "BuildPlateSurace :: Pas de projection complete" << endl;
 #endif
      }
@@ -483,7 +483,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 	    myInitOrder->SetValue(l,l);
 	  if (!CourbeJointive(myTol3d)) 
 	    {//    Standard_Failure::Raise("Curves are not joined"); 
-#ifdef DEB	      
+#ifdef PLATE_DEB
 	      cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  
 	    }
@@ -607,7 +607,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 
   do 
     {
-#if DEB
+#if PLATE_DEB
       if (Affich && NbBoucle) {   
 	cout<<"Resultats boucle"<< NbBoucle << endl;
 	cout<<"DistMax="<<myG0Error<<endl;
@@ -650,7 +650,7 @@ void GeomPlate_BuildPlateSurface::Perform()
 	  Fini = VerifSurface(NbBoucle);
 	  if ((NbBoucle >= myNbIter)&&(!Fini))
 	    { 
-#ifdef DEB
+#ifdef PLATE_DEB
 	      cout<<"Warning objectif non atteint"<<endl;
 #endif
 	      Fini = Standard_True;
@@ -678,7 +678,7 @@ void GeomPlate_BuildPlateSurface::Perform()
           VerifPoints(di,an,cu);
 	}
     } while (!Fini); // Fin boucle pour meilleur surface
-#ifdef DEB  
+#ifdef PLATE_DEB
   if (NTLinCont != 0)
     { cout<<"======== Resultats globaux ==========="<<endl;
       cout<<"DistMax="<<myG0Error<<endl;
@@ -796,7 +796,10 @@ void GeomPlate_BuildPlateSurface::
                   Disc2dContour ( const Standard_Integer nbp,
 				 TColgp_SequenceOfXY& Seq2d)
 {
-  if (nbp!=4) cout<<"nbp doit etre egal a 4 pour Disc2dContour"<<endl;
+#ifdef PLATE_DEB
+  if (nbp!=4)
+    cout<<"nbp doit etre egal a 4 pour Disc2dContour"<<endl;
+#endif
   //  initialisation
   Seq2d.Clear();
   
@@ -930,8 +933,12 @@ Disc3dContour ( const Standard_Integer nbp,
 	       const Standard_Integer iordre,
 	       TColgp_SequenceOfXYZ& Seq3d)
 {
-  if (nbp!=4) cout<<"nbp doit etre egal a 4 pour Disc3dContour"<<endl;
-  if (iordre!=0&&iordre!=1) cout<<"iordre incorrect pour Disc3dContour"<<endl;
+#ifdef PLATE_DEB
+  if (nbp!=4)
+    cout<<"nbp doit etre egal a 4 pour Disc3dContour"<<endl;
+  if (iordre!=0&&iordre!=1)
+    cout<<"iordre incorrect pour Disc3dContour"<<endl;
+#endif
   //  initialisation
   Seq3d.Clear();
   //  echantillonnage en "cosinus" + 3 points sur chaque intervalle
@@ -1474,7 +1481,9 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 	} //if (isHalfSpace)
       if (!isHalfSpace)
 	{
+#ifdef PLATE_DEB
 	  cout<<endl<<"Normals are not in half space"<<endl<<endl;
+#endif
 	  myIsLinear = Standard_False;
 	  nopt = 2;
 	}
@@ -1489,7 +1498,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 	nopt = 1;  //Calcul par la methode du plan d'inertie
       else if (!CourbeJoint || NTLinCont != myNbBounds)
 	{//    Standard_Failure::Raise("Curves are not joined"); 
-#ifdef DEB	    
+#ifdef PLATE_DEB	    
 	  cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
 #endif	  
 	  nopt = 1;
@@ -1598,7 +1607,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 		}
 	    }
 	}
-#if DEB
+#if PLATE_DEB
       if (! myIsLinear)
 	cout <<"Metrics are too different :"<< Ratio<<endl;
 #endif
@@ -1745,7 +1754,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		{ int2d = Intersection.Point(k);
 		  myLinCont->Value(i)->D0(int2d.ParamOnFirst(),P1);
 		  myLinCont->Value(j)->D0(int2d.ParamOnSecond(),P2);
-#if DEB
+#if PLATE_DEB
 		  if (Affich> 1)
 		    {
 		      cout << " Intersection "<< k << " entre " << i 
@@ -1800,7 +1809,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			      if (A1>(PI/2))
 				A1= PI - A1;
 			      if (Abs(Abs(A1)-PI)<myTolAng) Tol = 100000 * myTol3d;
-#if DEB
+#if PLATE_DEB
 			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
 				<<" "<<Abs(Abs(A1)-PI)<<endl;
 #endif
@@ -1854,7 +1863,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			      if (A1 > PI/2)
 				A1= PI - A1;
 			      if (Abs(Abs(A1) - PI) < myTolAng) Tol = 100000 * myTol3d;
-#if DEB
+#if PLATE_DEB
 			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
 				<<" "<<Abs(Abs(A1)-PI)<<endl;
 #endif
@@ -1862,7 +1871,9 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				{
 				  coin = Ci.Resolution(Tol);
 				  coin *=  Angle / myTolAng * 10.;
+#if PLATE_DEB
 				  cout<<endl<<"coin = "<<coin<<endl;
+#endif
 				  Standard_Real Par1 = int2d.ParamOnFirst() - coin;
 				  Standard_Real Par2 = int2d.ParamOnFirst() + coin;
 				  // Stockage de l'intervalle pour la courbe i
@@ -1873,7 +1884,9 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				{
 				  coin = Cj.Resolution(Tol);
 				  coin *= Angle / myTolAng * 10.;
+#if PLATE_DEB
 				  cout<<endl<<"coin = "<<coin<<endl;
+#endif
 				  Standard_Real Par1 = int2d.ParamOnSecond() - coin;
 				  Standard_Real Par2 = int2d.ParamOnSecond() + coin;
 				  // Stockage de l'intervalle pour la courbe j
@@ -1905,7 +1918,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			  Append( int2d.ParamOnSecond() + tolint);
 		      }		       
 		    
-#ifdef DEB		        
+#ifdef PLATE_DEB
 		    cout<<"Attention: Deux points 3d ont la meme projection dist="
 		      <<Dist<<endl;
 #endif	
@@ -2001,7 +2014,7 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
     NbPtInter= PntInter->Value(i).Length();
     NbPtG1G1= PntG1G1->Value(i).Length();
 
-#if DEB
+#if PLATE_DEB
     if (Affich > 1) {
       cout << "Courbe : " << i << endl;
       cout << "  NbPnt, NbPtInter, NbPtG1G1 :" << NbPnt_i << ", " 
