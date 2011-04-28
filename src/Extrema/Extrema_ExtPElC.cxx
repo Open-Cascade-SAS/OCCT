@@ -115,8 +115,8 @@ Methode:
     TolU= Tol/aR;
   }
   //modified by NIZNHY-PKV Fri Apr 20 15:03:32 2001 t
-  ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, Precision::PConfusion(), myuinf, Usol[0]);
-  ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, Precision::PConfusion(), myuinf, Usol[1]);
+  ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, TolU, myuinf, Usol[0]);
+  ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, TolU, myuinf, Usol[1]);
   if (((Usol[0]-2*PI-Uinf) < TolU) && ((Usol[0]-2*PI-Uinf) > -TolU)) Usol[0] = Uinf;
   if (((Usol[1]-2*PI-Uinf) < TolU) && ((Usol[1]-2*PI-Uinf) > -TolU)) Usol[1] = Uinf;
 
