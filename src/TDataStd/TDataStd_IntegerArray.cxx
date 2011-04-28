@@ -145,7 +145,8 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
   Standard_Boolean aDimEqual = Standard_False;
   Standard_Integer i;
 #ifdef OCC2932
-  if ((Lower() || Upper()) && Lower() == aLower && Upper() == anUpper ) {
+
+  if(Lower() == aLower && Upper() == anUpper ) {
     aDimEqual = Standard_True;
     if(isCheckItems) {
       Standard_Boolean isEqual = Standard_True;
@@ -163,7 +164,7 @@ void TDataStd_IntegerArray::ChangeArray(const Handle(TColStd_HArray1OfInteger)& 
   
   Backup();
 // Handles of myValue of current and backuped attributes will be different!
-  if(!aDimEqual) 
+  if(myValue.IsNull() || !aDimEqual) 
     myValue = new TColStd_HArray1OfInteger(aLower, anUpper);  
 
   for(i = aLower; i <= anUpper; i++) 

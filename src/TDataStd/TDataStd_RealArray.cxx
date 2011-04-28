@@ -146,7 +146,7 @@ void TDataStd_RealArray::ChangeArray(const Handle(TColStd_HArray1OfReal)& newArr
   Standard_Integer i;
 
 #ifdef OCC2932
-  if ((Lower() || Upper()) && Lower() == aLower && Upper() == anUpper ) {
+  if (Lower() == aLower && Upper() == anUpper ) {
     aDimEqual = Standard_True;
     Standard_Boolean isEqual = Standard_True;
     if(isCheckItems) {
@@ -164,7 +164,7 @@ void TDataStd_RealArray::ChangeArray(const Handle(TColStd_HArray1OfReal)& newArr
 
   Backup();
 
-  if(!aDimEqual) 
+  if(myValue.IsNull() || !aDimEqual) 
     myValue = new TColStd_HArray1OfReal(aLower, anUpper);
 
   for(i = aLower; i <= anUpper; i++) 

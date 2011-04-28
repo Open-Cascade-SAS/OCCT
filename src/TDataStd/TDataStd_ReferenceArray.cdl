@@ -73,7 +73,8 @@ is
     returns HLabelArray1 from TDataStd;
     
     SetInternalArray (me : mutable;
-    	    	      values : HLabelArray1 from TDataStd);
+    	    	      values : HLabelArray1 from TDataStd;
+		      isCheckItems : Boolean = Standard_True);
 
 
     ---Category: Methodes of TDF_Attribute

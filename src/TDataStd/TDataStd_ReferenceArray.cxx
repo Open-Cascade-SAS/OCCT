@@ -32,10 +32,9 @@ TDataStd_ReferenceArray::TDataStd_ReferenceArray()
 void TDataStd_ReferenceArray::Init(const Standard_Integer lower,
 				   const Standard_Integer upper)
 {
+  Standard_RangeError_Raise_if(upper < lower,"TDataStd_ReferenceArray::Init");
   Backup();
-
-  if (upper >= lower)
-    myArray = new TDataStd_HLabelArray1(lower, upper);
+  myArray = new TDataStd_HLabelArray1(lower, upper);
 }
 
 //=======================================================================
@@ -130,9 +129,39 @@ const Handle(TDataStd_HLabelArray1)& TDataStd_ReferenceArray::InternalArray () c
 //function : SetInternalArray
 //purpose  : 
 //=======================================================================
-void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArray1)& values)
+void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArray1)& values,
+						const Standard_Boolean isCheckItem)
 {
-  myArray = values;
+//  myArray = values;
+  Standard_Integer aLower    = values->Lower();
+  Standard_Integer anUpper   = values->Upper();
+  Standard_Boolean aDimEqual = Standard_False;
+  Standard_Integer i;
+
+#ifdef OCC2932
+  if (Lower() == aLower && Upper() == anUpper ) {
+    aDimEqual = Standard_True;
+    Standard_Boolean isEqual = Standard_True;
+    if(isCheckItems) {
+      for(i = aLower; i <= anUpper; i++) {
+	if(myArray->Value(i) != values->Value(i)) {
+	  isEqual = Standard_False;
+	  break;
+	}
+      }
+      if(isEqual)
+	return;
+    }
+  }
+#endif
+
+  Backup();
+
+  if(myArray.IsNull() || !aDimEqual) 
+    myArray = new TDataStd_HLabelArray1(aLower, anUpper);
+
+  for(i = aLower; i <= anUpper; i++) 
+    myArray->SetValue(i, values->Value(i));
 }
 
 //=======================================================================
@@ -141,7 +170,7 @@ void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArra
 //=======================================================================
 const Standard_GUID& TDataStd_ReferenceArray::ID () const 
 { 
-  return GetID(); 
+  return GetID();
 }
 
 //=======================================================================
