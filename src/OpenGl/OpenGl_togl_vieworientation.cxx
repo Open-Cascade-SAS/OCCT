@@ -15,7 +15,6 @@ xx-xx-xx : CAL ; Creation.
 10-07-96 : FMN ; Suppression #define sur calcul matrice
 
 ************************************************************************/
-#define GER61454        //GG 14-09-99 Activates the model clipping planes
 
 /*----------------------------------------------------------------------*/
 /*
@@ -96,9 +95,6 @@ call_togl_vieworientation
       waitwait = 1;
       call_togl_viewmapping( aview, waitwait );
       call_togl_cliplimit( aview, waitwait );
-#ifdef GER61454
-      call_togl_setplane( aview );
-#endif
       TelSetViewRepresentation( aview->WsId, aview->ViewId, &call_viewrep );
     }
   }

@@ -312,6 +312,8 @@ call_togl_print
     // redraw to new Rendering Context
     call_func_redraw_all_structs_begin (aview->WsId);
 
+    call_togl_setplane( aview ); /* update clipping planes */
+
     if (background == 0)
     {
       glClearColor(1.0, 1.0, 1.0, 1.0);

@@ -25,6 +25,8 @@ Suppression de TelPrintAllViews()
 #define  OPENGL_TELEM_VIEW_H
 
 #include <OpenGl_telem.hxx>
+#include <OpenGl_tgl.hxx>
+#include <NCollection_List.hxx>
 
 typedef  struct
 {
@@ -43,6 +45,8 @@ typedef  struct
   Tfloat    zmin;
   Tfloat    zmax;
 } Tlimit3;
+
+
 
 typedef  enum
 {
@@ -74,6 +78,7 @@ typedef  struct
   Tint        border_indicator;
   TEL_COLOUR  border_colour;
   Tint        active_status;
+  NCollection_List<CALL_DEF_PLANE> clipping_planes;
   struct
   {
     Tfloat  vrp[3];

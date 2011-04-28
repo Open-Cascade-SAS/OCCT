@@ -67,6 +67,9 @@ void EXPORT call_togl_update
     TsmGetWSAttri (aview->WsId, WSWindow, &data);
     if (TxglWinset (call_thedisplay, (Window) data.ldata) == TSuccess) {
       call_func_redraw_all_structs_begin (aview->WsId);
+      
+      call_togl_setplane( aview ); /* update clipping planes */
+
       if (anunderlayer->ptrLayer)
         call_togl_redraw_layer2d (aview, anunderlayer);
       call_func_redraw_all_structs_proc (aview->WsId);

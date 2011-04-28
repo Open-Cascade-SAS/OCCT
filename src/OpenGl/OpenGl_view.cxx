@@ -86,6 +86,7 @@ if any was defined
 #include <OpenGl_tsm_ws.hxx>
 #include <OpenGl_txgl.hxx>
 #include <OpenGl_Memory.hxx>
+#include <Standard_TypeDef.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -138,7 +139,9 @@ typedef TEL_VIEW_DATA *tel_view_data;   /* Internal data stored for every view r
 * Variables statiques
 */
 
-static void set_clipplanes( tel_view_rep );
+static void set_clipplanes( tel_view_rep );      /* front & back clip planes */
+static void set_userclipplanes( tel_view_rep );  /* user-defined clipping planes */
+
 #ifdef CAL_100498
 static  void  TelEvalInverseMatrix( Tfloat*, Tfloat*, Tfloat*, /*vrp,vpn,vup*/
                                     Tfloat, Tmatrix3 );        /*vpd,inverse*/
@@ -504,6 +507,7 @@ TelGetViewRepresentation( Tint  Wsid /* Workstation id*/,
       vrep->extra.map.viewport.zmin = ( float )0.0;
     vrep->extra.map.viewport.xmax = vrep->extra.map.viewport.ymax =
       vrep->extra.map.viewport.zmax = ( float )1.0;
+    vrep->clipping_planes.Clear();
     return TSuccess;
   }
 
@@ -791,6 +795,7 @@ TelSetViewIndex( Tint  Wsid /* Workstation id */,
   vptr = (tel_view_data)key.pdata ; /* Obtain defined view data*/
   if( !vptr ) return TFailure; /* no view defined yet */ 
 
+ 
 #ifdef TRACE_MATRIX
   printf("OpenGl_view.c::TelSetViewIndex::glMatrixMode(GL_MODELVIEW) \n"); 
 #endif
@@ -802,8 +807,10 @@ TelSetViewIndex( Tint  Wsid /* Workstation id */,
     glDisable(GL_NORMALIZE);
   glMatrixMode(GL_MODELVIEW);
   set_clipplanes( &(vptr->vrep) );
+  
 
   glLoadMatrixf((GLfloat *) vptr->vrep.orientation_matrix );
+  set_userclipplanes( &(vptr->vrep) ); /* set clipping planes defined by user */
 
 #ifdef ENVTEX
   /*
@@ -844,7 +851,6 @@ TelSetViewIndex( Tint  Wsid /* Workstation id */,
   printf( "mapping_matrix :\n" );
   pr_matrix( vptr->vrep.mapping_matrix );
 #endif
-
 
   return vptr->vrep.active_status == TOn ? TSuccess : TFailure;
 }
@@ -889,14 +895,14 @@ TelSetViewProjection( Tint  Wsid /* Workstation id */,
   if( !vptr ) return TFailure; /* no view defined yet */ 
 
   set_clipplanes( &(vptr->vrep) );
+  set_userclipplanes( &(vptr->vrep) );
 
 #ifdef TRACE_MATRIX
   printf("OpenGl_view.c::TelSetViewProjection::glMatrixMode(GL_PROJECTION) \n"); 
 #endif
   glMatrixMode(GL_PROJECTION);
   glLoadMatrixf((GLfloat *) vptr->vrep.mapping_matrix );
-
-
+ 
   return vptr->vrep.active_status == TOn ? TSuccess : TFailure;
 }
 
@@ -1078,6 +1084,60 @@ set_clipplanes( tel_view_rep vrep )
   }
 
   glLoadMatrixf( (GLfloat *) mat );
+}
+
+static void
+set_userclipplanes( tel_view_rep vrep )
+{
+  int j,planeid;
+  CALL_DEF_PLANE* plane;
+
+#ifdef TRACE_MATRIX
+  printf("OpenGl_view.c::set_userclipplanes::glMatrixMode(GL_MODELVIEW) \n"); 
+#endif
+
+  
+  NCollection_List<CALL_DEF_PLANE>::Iterator planeIter(vrep->clipping_planes);
+  
+  // go through all of planes in the list & preview them
+  for( j=0 ; planeIter.More(); planeIter.Next(), j++ ) 
+  {
+    plane = const_cast<CALL_DEF_PLANE*>(&planeIter.Value());
+    
+    if( plane->PlaneId > 0 ) 
+    {
+      planeid = GL_CLIP_PLANE2 + j;
+
+      if( plane->Active ) 
+      {
+	  // Activates new clip planes
+	  GLdouble equation[4];
+	  equation[0] = plane->CoefA;
+	  equation[1] = plane->CoefB;
+	  equation[2] = plane->CoefC;
+	  equation[3] = plane->CoefD;
+	  
+          glClipPlane( planeid , equation );     
+          if( !glIsEnabled( planeid ) ) glEnable( planeid );     
+      } 
+      else 
+      {
+	if( glIsEnabled( planeid ) ) glDisable( planeid );     
+      }
+    }
+  }   //for( ; planeIter.More(); planeIter.Next() ) 
+
+  // Disable the remainder Clip planes
+
+  for( j=vrep->clipping_planes.Size(); j < call_facilities_list.MaxPlanes; j++ )
+  {
+    planeid = GL_CLIP_PLANE2 + j; 
+
+    if( glIsEnabled( planeid ) ) 
+      glDisable( planeid );
+   }
+
+  
 }
 
 /*----------------------------------------------------------------------*/
