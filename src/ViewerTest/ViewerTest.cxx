@@ -1659,17 +1659,17 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
   if(myAISContext.IsNull())
     {
       di << "use 'vinit' command before " << argv[0] << "\n";
-      return 0;
+      return 1;
     }
 
   Handle(AIS_InteractiveObject) TheAisIO;
   Handle(AIS_TexturedShape) myShape;
   Standard_Integer myPreviousMode = 0;
 
-  if (!argv[1])
+  if (argc<2 || !argv[1])
     {
       di << argv[0] <<" syntax error - Type 'help vtex'"<<"\n";
-      return 0;
+      return 1;
     }
 
   TCollection_AsciiString name = argv[1];
@@ -1681,7 +1681,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
   if (TheAisIO.IsNull())
   {
     di <<"shape "<<name.ToCString()<<" doesn\'t exist"<<"\n";
-    return 0;
+    return 1;
   }
 
   if (TheAisIO->IsKind(STANDARD_TYPE(AIS_TexturedShape)) && !TheAisIO.IsNull())
@@ -1691,7 +1691,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
     }
   else
     {
-      myAISContext->Erase(TheAisIO,Standard_False);
+      myAISContext->Clear(TheAisIO,Standard_False);
       myShape = new AIS_TexturedShape (DBRep::Get(argv[1]));
       GetMapOfAIS().UnBind1(TheAisIO);
       GetMapOfAIS().UnBind2(name);
@@ -1703,9 +1703,9 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       if(argc<=1)
 	{
 	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 0;
+	  return 1;
 	}
-      if (argv[2])
+      if (argc>2 && argv[2])
 	{
 	  if(strcasecmp(argv[2],"?")==0)
 	    {
@@ -1744,7 +1744,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       if(argc<2)
 	{
 	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 0;
+	  return 1;
 	}
 
       myShape->SetTextureScale (( argv[2] ? Standard_True    : Standard_False ),
@@ -1756,7 +1756,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       if(argc<2)
 	{
 	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 0;
+	  return 1;
 	}
       myShape->SetTextureOrigin (( argv[2] ? Standard_True    : Standard_False ),
 				 ( argv[2] ? atof(argv[2])    : 0.0 ),
@@ -1767,9 +1767,9 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       if(argc<2)
 	{
 	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 0;
+	  return 1;
 	}
-      if (argv[2])
+      if (argc>2 && argv[2])
 	{
 	  di <<"Texture repeat enabled"<<"\n";
 	  myShape->SetTextureRepeat(Standard_True, atof(argv[2]), atof(argv[argc-1]) );
@@ -1789,7 +1789,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       if(argc<2)
 	{
 	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 0;
+	  return 1;
 	}
       myShape->SetTextureRepeat(Standard_False);
       myShape->SetTextureOrigin(Standard_False);
@@ -1805,7 +1805,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       myAISContext->Display(myShape, Standard_True);
       myAISContext->Update(myShape,Standard_True);
     }
-  return 1;
+  return 0;
 }
 
 //==============================================================================
@@ -2066,7 +2066,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
 // Function : VAnimation
 //==================================================================================
 static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char** argv) {
-  if (argc =! 5) {
+  if (argc != 5) {
     di<<"Use: "<<argv[0]<<" CrankArmFile CylinderHeadFile PropellerFile EngineBlockFile"<<"\n";
     return 1;
   }
