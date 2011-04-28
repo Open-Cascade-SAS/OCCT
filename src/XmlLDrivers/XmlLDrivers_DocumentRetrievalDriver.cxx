@@ -115,11 +115,11 @@ static TCollection_AsciiString AbsolutePath(
   
   while (RelFilePath.Search("../") == 1) {
       if (len == 3)
-	  return EmptyString ;
+    return EmptyString ;
       RelFilePath = RelFilePath.SubString(4,len) ;
       len -= 3 ;
       if (DirPath.IsEmpty())
-	  return EmptyString ;
+    return EmptyString ;
       i = DirPath.SearchFromEnd("/") ;
       if (i < 0)
           return EmptyString ;
@@ -231,12 +231,27 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
       aCurDocVersion = 2;
     else if (!aDocVerStr.GetInteger(aCurDocVersion)) {
       TCollection_ExtendedString aMsg =
-	TCollection_ExtendedString ("Cannot retrieve the current Document version"
+        TCollection_ExtendedString ("Cannot retrieve the current Document version"
                                     " attribute as \"") + aDocVerStr + "\"";
       if(!aMsgDriver.IsNull()) 
-	aMsgDriver->Write(aMsg.ToExtString());
+        aMsgDriver->Write(aMsg.ToExtString());
     }
-    if(aCurDocVersion < 2) aCurDocVersion = 2;
+    
+    // oan: OCC22305 - check a document verison and if it's greater than
+    // current version of storage driver set an error status and return
+    if( aCurDocVersion > XmlLDrivers::StorageVersion().IntegerValue() )
+    {
+      TCollection_ExtendedString aMsg =
+        TCollection_ExtendedString ("error: wrong file version: ") +
+                                    aDocVerStr  + " while current is " +
+                                    XmlLDrivers::StorageVersion();
+      myReaderStatus = PCDM_RS_NoVersion;
+      if(!aMsgDriver.IsNull()) 
+        aMsgDriver->Write(aMsg.ToExtString());
+      return;
+    }
+
+    if( aCurDocVersion < 2) aCurDocVersion = 2;
 
     PropagateDocumentVersion(aCurDocVersion);
 
@@ -246,111 +261,111 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
       if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE) {
         if (XmlObjMgt::GetExtendedString ((LDOM_Element&)aNode, anInfo)) {
 
-	  // Read ref counter
-	  if(anInfo.Search(REFERENCE_COUNTER) != -1) {
-	    try {
-	      OCC_CATCH_SIGNALS
-	      TCollection_AsciiString anInf(anInfo,'?');
-	      Standard_Integer aRefCounter = anInf.Token(" ",2).IntegerValue();
-	      //theNewDocument->SetReferenceCounter(aRefCounter);
-	    }
-	    catch (Standard_Failure) { 
-	      //	  cout << "warning: could not read the reference counter in " << aFileName << endl;
-	      TCollection_ExtendedString aMsg("Warning: ");
-	      aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
-	      if(!aMsgDriver.IsNull()) 
-		aMsgDriver->Write(aMsg.ToExtString());
-	    }
-	  }
-	  
-	  if(anInfo == END_REF)
-	    isRef = Standard_False;
-	  if(isRef) { // Process References
-	    
-	    Standard_Integer pos=anInfo.Search(" ");
-	    if(pos != -1) {
-	      // Parce RefId, DocumentVersion and FileName
-	      Standard_Integer aRefId;
-	      TCollection_ExtendedString aFileName;
-	      Standard_Integer aDocumentVersion;
-
-
-	      TCollection_ExtendedString aRest=anInfo.Split(pos);
-	      aRefId = UTL::IntegerValue(anInfo);
-	      
-	      Standard_Integer pos2 = aRest.Search(" ");
-	      
-	      aFileName = aRest.Split(pos2);
-	      aDocumentVersion = UTL::IntegerValue(aRest);
-	      
-	      TCollection_AsciiString aPath = UTL::CString(aFileName);
-	      TCollection_AsciiString anAbsolutePath;
-	      if(!anAbsoluteDirectory.IsEmpty()) {
-		anAbsolutePath = AbsolutePath(anAbsoluteDirectory,aPath);
-		if(!anAbsolutePath.IsEmpty()) aPath=anAbsolutePath;
-	      }
-	      if(!aMsgDriver.IsNull()) {
-		//      cout << "reference found; ReferenceIdentifier: " << theReferenceIdentifier << "; File:" << thePath << ", version:" << theDocumentVersion;
-		TCollection_ExtendedString aMsg("Warning: ");
-		aMsg = aMsg.Cat("reference found; ReferenceIdentifier:  ").Cat(aRefId).Cat("; File:").Cat(aPath).Cat(", version:").Cat(aDocumentVersion).Cat("\0");
-		aMsgDriver->Write(aMsg.ToExtString());
-	      }
-	      // Add new ref!
-	      /////////////
-		TCollection_ExtendedString theFolder,theName;
-	      //TCollection_ExtendedString theFile=myReferences(myIterator).FileName();
-	      TCollection_ExtendedString f(aPath);
-#ifndef WNT
-	      
-	      Standard_Integer i= f.SearchFromEnd("/");
-	      TCollection_ExtendedString n = f.Split(i); 
-	      f.Trunc(f.Length()-1);
-	      theFolder = f;
-	      theName = n;
-#else
-	      OSD_Path p = UTL::Path(f);
-	      Standard_ExtCharacter      chr;
-	      TCollection_ExtendedString dir, dirRet, name;
-	      
-	      dir = UTL::Disk(p);
-	      dir += UTL::Trek(p);
-	      
-	      for ( int i = 1; i <= dir.Length (); ++i ) {
-		
-		chr = dir.Value ( i );
-		
-		switch ( chr ) {
-		  
-		case _TEXT( '|' ):
-		  dirRet += _TEXT( "/" );
-		  break;
+    // Read ref counter
+    if(anInfo.Search(REFERENCE_COUNTER) != -1) {
+      try {
+        OCC_CATCH_SIGNALS
+        TCollection_AsciiString anInf(anInfo,'?');
+        Standard_Integer aRefCounter = anInf.Token(" ",2).IntegerValue();
+        //theNewDocument->SetReferenceCounter(aRefCounter);
+      }
+      catch (Standard_Failure) { 
+        //    cout << "warning: could not read the reference counter in " << aFileName << endl;
+        TCollection_ExtendedString aMsg("Warning: ");
+        aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
+        if(!aMsgDriver.IsNull()) 
+    aMsgDriver->Write(aMsg.ToExtString());
+      }
+    }
+    
+    if(anInfo == END_REF)
+      isRef = Standard_False;
+    if(isRef) { // Process References
       
-		case _TEXT( '^' ):
-		  
-		  dirRet += _TEXT( ".." );
-		  break;
-		  
-		default:
-		  dirRet += chr;
-		  
-		}  
-	      }
-	      theFolder = dirRet;
-	      theName   = UTL::Name(p); theName+= UTL::Extension(p);
+      Standard_Integer pos=anInfo.Search(" ");
+      if(pos != -1) {
+        // Parce RefId, DocumentVersion and FileName
+        Standard_Integer aRefId;
+        TCollection_ExtendedString aFileName;
+        Standard_Integer aDocumentVersion;
+
+
+        TCollection_ExtendedString aRest=anInfo.Split(pos);
+        aRefId = UTL::IntegerValue(anInfo);
+        
+        Standard_Integer pos2 = aRest.Search(" ");
+        
+        aFileName = aRest.Split(pos2);
+        aDocumentVersion = UTL::IntegerValue(aRest);
+        
+        TCollection_AsciiString aPath = UTL::CString(aFileName);
+        TCollection_AsciiString anAbsolutePath;
+        if(!anAbsoluteDirectory.IsEmpty()) {
+    anAbsolutePath = AbsolutePath(anAbsoluteDirectory,aPath);
+    if(!anAbsolutePath.IsEmpty()) aPath=anAbsolutePath;
+        }
+        if(!aMsgDriver.IsNull()) {
+    //      cout << "reference found; ReferenceIdentifier: " << theReferenceIdentifier << "; File:" << thePath << ", version:" << theDocumentVersion;
+    TCollection_ExtendedString aMsg("Warning: ");
+    aMsg = aMsg.Cat("reference found; ReferenceIdentifier:  ").Cat(aRefId).Cat("; File:").Cat(aPath).Cat(", version:").Cat(aDocumentVersion).Cat("\0");
+    aMsgDriver->Write(aMsg.ToExtString());
+        }
+        // Add new ref!
+        /////////////
+    TCollection_ExtendedString theFolder,theName;
+        //TCollection_ExtendedString theFile=myReferences(myIterator).FileName();
+        TCollection_ExtendedString f(aPath);
+#ifndef WNT
+        
+        Standard_Integer i= f.SearchFromEnd("/");
+        TCollection_ExtendedString n = f.Split(i); 
+        f.Trunc(f.Length()-1);
+        theFolder = f;
+        theName = n;
+#else
+        OSD_Path p = UTL::Path(f);
+        Standard_ExtCharacter      chr;
+        TCollection_ExtendedString dir, dirRet, name;
+        
+        dir = UTL::Disk(p);
+        dir += UTL::Trek(p);
+        
+        for ( int i = 1; i <= dir.Length (); ++i ) {
+    
+    chr = dir.Value ( i );
+    
+    switch ( chr ) {
+      
+    case _TEXT( '|' ):
+      dirRet += _TEXT( "/" );
+      break;
+      
+    case _TEXT( '^' ):
+      
+      dirRet += _TEXT( ".." );
+      break;
+      
+    default:
+      dirRet += chr;
+      
+    }  
+        }
+        theFolder = dirRet;
+        theName   = UTL::Name(p); theName+= UTL::Extension(p);
 #endif  // WNT
-	      
-	      Handle(CDM_MetaData) aMetaData =  CDM_MetaData::LookUp(theFolder,theName,aPath,aPath,UTL::IsReadOnly(aFileName));
+        
+        Handle(CDM_MetaData) aMetaData =  CDM_MetaData::LookUp(theFolder,theName,aPath,aPath,UTL::IsReadOnly(aFileName));
 ////////////
-	      theNewDocument->CreateReference(aMetaData,aRefId,
-					   theApplication,aDocumentVersion,Standard_False);
+        theNewDocument->CreateReference(aMetaData,aRefId,
+             theApplication,aDocumentVersion,Standard_False);
 
-	      
-	    }
+        
+      }
 
-	    
-	  }
-	  if(anInfo == START_REF)
-	    isRef = Standard_True;
+      
+    }
+    if(anInfo == START_REF)
+      isRef = Standard_True;
         }
       }
     }
@@ -495,7 +510,7 @@ void XmlLDrivers_DocumentRetrievalDriver::PropagateDocumentVersion(
 //=======================================================================
 Handle(XmlMDF_ADriver) XmlLDrivers_DocumentRetrievalDriver::ReadShapeSection(
                                const XmlObjMgt_Element&       /*theElement*/,
-			       const Handle(CDM_MessageDriver)& /*aMsgDriver*/)
+             const Handle(CDM_MessageDriver)& /*aMsgDriver*/)
 {
   Handle(XmlMDF_ADriver) aDriver;
   //empty; to be redefined
@@ -507,5 +522,5 @@ Handle(XmlMDF_ADriver) XmlLDrivers_DocumentRetrievalDriver::ReadShapeSection(
 //purpose  : definition of ShapeSetCleaning
 //=======================================================================
 void XmlLDrivers_DocumentRetrievalDriver::ShapeSetCleaning(
-			      const Handle(XmlMDF_ADriver)& /*theDriver*/) 
+            const Handle(XmlMDF_ADriver)& /*theDriver*/) 
 {}
