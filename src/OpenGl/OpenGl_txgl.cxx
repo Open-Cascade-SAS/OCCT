@@ -83,6 +83,7 @@ Old code resulted in crashes on some ATI Radeon cards under Linux.
 #include <stdio.h>
 
 #include <OpenGl_Memory.hxx>
+#include <OpenGl_ResourceCleaner.hxx>
 
 
 #ifdef WNT
@@ -312,6 +313,8 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
 
     if( !ctx) return TFailure;
 
+    OpenGl_ResourceCleaner::GetInstance()->AppendContext( ctx, true );
+
     cmap = XCreateColormap( disp,  par, vis->visual, AllocNone );
 
     color.red = (unsigned short) (bgcolr * 0xFFFF);
@@ -451,12 +454,29 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
       return 0;     
     }  
 
-    if (previous_ctx == 0 )    
-    {
-      previous_ctx = hte -> hGLRC;
-    } else
-      wglShareLists(previous_ctx, hte -> hGLRC);
+    Standard_Boolean isShared = Standard_True;
 
+    if (previous_ctx == 0 )
+      previous_ctx = hte -> hGLRC;
+    // if we already have some shared context
+    else
+    {
+      // try to share context with one from resource cleaner list
+      GLCONTEXT shareCtx = OpenGl_ResourceCleaner::GetInstance()->GetSharedContext();
+      
+      if (shareCtx != 0)
+        isShared = (Standard_Boolean)wglShareLists(shareCtx, hte -> hGLRC);
+      else
+      {
+        isShared = (Standard_Boolean)wglShareLists(previous_ctx, hte -> hGLRC);
+	      // add shared previous_ctx to a control list if it's not there
+        if (isShared)
+          OpenGl_ResourceCleaner::GetInstance()->AppendContext(previous_ctx, isShared);
+      }
+    }
+
+    // add the context to OpenGl_ResourceCleaner control list
+    OpenGl_ResourceCleaner::GetInstance()->AppendContext( hte -> hGLRC, isShared);
     _Txgl_Map.Bind( (Tint)par, hte );
 
     return par;
@@ -763,6 +783,7 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     /* FSXXX sync necessary if non-direct rendering */
     glXWaitGL();
 
+    OpenGl_ResourceCleaner::GetInstance()->RemoveContext( ctx );
     _Txgl_Map.UnBind( win );
 
     if (previous_ctx == ctx) {
@@ -811,12 +832,16 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
 
     if ( --hte -> nUsed == 0 ) 
     { 
+      OpenGl_ResourceCleaner::GetInstance()->RemoveContext( hte -> hGLRC );
 #ifdef OCC954    
       if ( wglGetCurrentContext() != NULL )
 #endif
         wglDeleteContext ( hte -> hGLRC );
       ReleaseDC ( win, hte -> hDC );
       _Txgl_Map.UnBind( (Tint ) win );
+      if( _Txgl_Map.Size() == 0 ) {
+        previous_ctx = 0;
+      }
       delete hte;
     }  
 
