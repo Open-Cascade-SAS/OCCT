@@ -64,5 +64,5 @@ inline Standard_Boolean Message_ProgressSentry::More () const
 
 inline void Message_ProgressSentry::Show () const
 {
-  if ( myProgress ) myProgress->Show();
+  if ( ! myProgress.IsNull() ) myProgress->Show();
 }
