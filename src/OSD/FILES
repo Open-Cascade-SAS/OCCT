@@ -23,3 +23,5 @@ OSD_Localizer.cxx
 OSD_PerfMeter.c
 OSD_PerfMeter.h
 OSD_PerfMeter.hxx
+OSD_MAllocHook.cxx
+OSD_MAllocHook.hxx

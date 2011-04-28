@@ -57,6 +57,7 @@ static clock_t MDTV_CPU_CURRENT; // cpu time already used at last
 #endif
 
 #include <Draw_Chronometer.hxx>
+#include <OSD_MAllocHook.hxx>
 
 #if defined (__hpux) || defined ( HPUX )
 #define RLIM_INFINITY   0x7fffffff
@@ -249,6 +250,131 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
+//=======================================================================
+//function : mallochook
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer mallochook(Draw_Interpretor& di, Standard_Integer n,
+                                   const char** a)
+{
+  if (n < 2)
+  {
+    di << "\
+usage: mallochook cmd\n\
+where cmd is one of:\n\
+  set [<op>]      - set callback to malloc/free; op is one of the following:\n\
+                    0 - set callback to NULL,\n\
+                    1 - set callback OSD_MAllocHook::CollectBySize (default)\n\
+                    2 - set callback OSD_MAllocHook::LogFileHandler\n\
+  reset           - reset the CollectBySize handler\n\
+  report1 [<outfile>]\n\
+                  - write report from CollectBySize handler in <outfile>\n\
+  open [<logfile>]\n\
+                  - open file for writing the log with LogFileHandler\n\
+  close           - close the log file with LogFileHandler\n\
+  report2 [<flag>] [<logfile>] [<outfile>]\n\
+                  - scan <logfile> written with LogFileHandler\n\
+                    and make synthesized report in <outfile>; <flag> can be:\n\
+                    0 - simple stats by sizes (default),\n\
+                    1 - with alive allocation numbers\n\
+By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
+      << "\n";
+    return 0;
+  }
+  if (strcmp(a[1], "set") == 0)
+  {
+    int aType = (n > 2 ? atoi(a[2]) : 1);
+    if (aType < 0 || aType > 2)
+    {
+      di << "unknown op of the command set" << "\n";
+      return 1;
+    }
+    else if (aType == 0)
+    {
+      OSD_MAllocHook::SetCallback(NULL);
+      di << "callback is unset" << "\n";
+    }
+    else if (aType == 1)
+    {
+      OSD_MAllocHook::SetCallback(OSD_MAllocHook::GetCollectBySize());
+      di << "callback is set to CollectBySize" << "\n";
+    }
+    else //if (aType == 2)
+    {
+      OSD_MAllocHook::SetCallback(OSD_MAllocHook::GetLogFileHandler());
+      di << "callback is set to LogFileHandler" << "\n";
+    }
+  }
+  else if (strcmp(a[1], "reset") == 0)
+  {
+    OSD_MAllocHook::GetCollectBySize()->Reset();
+    di << "CollectBySize handler is reset" << "\n";
+  }
+  else if (strcmp(a[1], "open") == 0)
+  {
+    const char* aFileName = (n > 2 ? a[2] : "mem-log.txt");
+    if (!OSD_MAllocHook::GetLogFileHandler()->Open(aFileName))
+    {
+      di << "cannot create file " << aFileName << " for writing" << "\n";
+      return 1;
+    }
+    di << "log file " << aFileName << " is opened for writing" << "\n";
+  }
+  else if (strcmp(a[1], "close") == 0)
+  {
+    OSD_MAllocHook::GetLogFileHandler()->Close();
+    di << "log file is closed" << "\n";
+  }
+  else if (strcmp(a[1], "report1") == 0)
+  {
+    const char* aOutFile = "mem-stat.txt";
+    if (n > 2)
+      aOutFile = a[2];
+    if (OSD_MAllocHook::GetCollectBySize()->MakeReport(aOutFile))
+    {
+      di << "report " << aOutFile << " has been created" << "\n";
+    }
+    else
+    {
+      di << "cannot create report " << aOutFile << "\n";
+      return 1;
+    }
+  }
+  else if (strcmp(a[1], "report2") == 0)
+  {
+    Standard_Boolean includeAlive = Standard_False;
+    const char* aLogFile = "mem-log.txt";
+    const char* aOutFile = "mem-stat.txt";
+    if (n > 2)
+    {
+      includeAlive = (atoi(a[2]) != 0);
+      if (n > 3)
+      {
+        aLogFile = a[3];
+        if (n > 4)
+          aOutFile = a[4];
+      }
+    }
+    if (OSD_MAllocHook::LogFileHandler::MakeReport(aLogFile, aOutFile, includeAlive))
+    {
+      di << "report " << aOutFile << " has been created" << "\n";
+    }
+    else
+    {
+      di << "cannot create report " << aOutFile << " from the log file "
+        << aLogFile << "\n";
+      return 1;
+    }
+  }
+  else
+  {
+    di << "unrecognized command " << a[1] << "\n";
+    return 1;
+  }
+  return 0;
+}
+
 
 void Draw::BasicCommands(Draw_Interpretor& theCommands)
 {
@@ -270,4 +396,7 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,chronom,g);
   theCommands.Add("dchrono","dchrono [ name start/stop/reset/show]",
 		  __FILE__,dchronom,g);
+  theCommands.Add("mallochook",
+                  "debug memory allocation/deallocation, w/o args for help",
+                  __FILE__, mallochook, g);
 }
