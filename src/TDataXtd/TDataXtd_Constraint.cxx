@@ -216,7 +216,7 @@ const Handle(TNaming_NamedShape)&  TDataXtd_Constraint::GetPlane() const
 void TDataXtd_Constraint::SetType (const TDataXtd_ConstraintEnum CTR) 
 {  
   // OCC2932 correction
-  if(myType = CTR) return;
+  if(myType == CTR) return;
 
   Backup();
   myType = CTR;
