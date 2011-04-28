@@ -164,7 +164,7 @@ Standard_Boolean AIS_LocalContext::Display(const Handle(AIS_InteractiveObject)& 
       Att->SetDecomposition(Standard_True);
     else 
       Att->SetDecomposition(Standard_False);
-    // statut temporaire ou non
+    // status temporary or not
     if(myCTX->DisplayStatus(anInteractive) == AIS_DS_None ||
        myCTX->DisplayStatus(anInteractive) == AIS_DS_Temporary)
       Att->SetTemporary(Standard_True);
@@ -429,23 +429,23 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
   
   TColStd_ListIteratorOfListOfInteger It;
   Standard_Boolean jobdone(Standard_False);
-  // on regarde quel etaient ses attributs temporaires et on
-  // remet tout a 0
+  // it is checked which were the temporary attributes 
+  // and they are set to 0
 
-  // desactiver les modes stantard
+  // desactivate standard modes
   if(Att->Decomposed()){
     for(It.Initialize(myListOfStandardMode);It.More();It.Next()){
       mySM->Deactivate(aSelectable,It.Value(),myMainVS);
     }
   }
   
-  // si objet ou presentations temporaires...
+  // if object or temporary presentations...
   if(Att->IsTemporary())
     {
       if(Att->IsSubIntensityOn())
 	myMainPM->Unhighlight(aSelectable,Att->HilightMode());
       
-      // enlever quand bug sur clear corrige...
+      // remove if bug on clear correct...
       myMainPM->Erase(aSelectable,Att->DisplayMode());
       myMainPM->Clear(aSelectable,Att->DisplayMode());
       if(myMainPM->IsDisplayed(aSelectable,Att->HilightMode()))
@@ -453,18 +453,16 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
       //	myMainPM->Clear(aSelectable,Att->HilightMode());
       jobdone = Standard_True;
     }
-  // si sous intensite
+  // if below intensity
   else
     {
       if(Att->IsSubIntensityOn())
 	myCTX->SubIntensityOff(aSelectable);
     }
-  // desactiver les modes propres stockes
+  // desactivate stored proper modes
   for(It.Initialize(Att->SelectionModes());It.More();It.Next()){
     mySM->Deactivate(aSelectable,It.Value(),myMainVS);
   }
-// pop : si je laisses cela plantes dans les elements de construction  
-//       alors a toi de jouer ROB
 //  RemoveSelected(aSelectable);
 
   if(IsSelected(aSelectable))
@@ -544,17 +542,16 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
 void AIS_LocalContext::ActivateStandardMode(const TopAbs_ShapeEnum aType)
 {
   
-  //on verifie qu'il n'esiste pas deja dans la liste
+  //check if it is not in the list
   TColStd_ListIteratorOfListOfInteger It(myListOfStandardMode);
   for(;It.More();It.Next())
     if(It.Value()==aType)  return;
   Standard_Integer IMode = AIS_Shape::SelectionMode(aType);
   
 
-  // on cree de facon cachee un filtre repondant ok au type 
-  //sauf :
-  // si le type est shape...
-  // si des filtres agissent deja sur le  type <aType>
+  // create a hidden filter answering ok to the type except for :
+  // if the type is shape...
+  // if the filters already impact at the type <aType>
   if(aType != TopAbs_SHAPE){
     if(myStdFilters[IMode].IsNull())
       myStdFilters[IMode] = new StdSelect_ShapeTypeFilter(aType);
@@ -562,8 +559,8 @@ void AIS_LocalContext::ActivateStandardMode(const TopAbs_ShapeEnum aType)
       myFilters->Add(myStdFilters[IMode]);
   }
   
-  // on active le mode pour tous les objets de type Shape 
-  // acceptant la decomposition en mode standard.
+  // the mode is activated for all objects of type Shape 
+  // accepting the decomposition in standard mode.
   myListOfStandardMode.Append(IMode);
   
   AIS_DataMapIteratorOfDataMapOfSelStat ItM(myActiveObjects);
@@ -620,8 +617,8 @@ void AIS_LocalContext::DeactivateStandardMode(const TopAbs_ShapeEnum aType)
 
 void AIS_LocalContext::AddFilter(const Handle(SelectMgr_Filter)& aFilter)
 {
-  // on regarde si le filtre agit sur un type de sous shape 
-  // active pour lequel on aurait deja mis un filtre de type...
+  // it is checked if the filter impacts at the type of active sub-shape 
+  // for which a filter of type has been already implemented...
 
   TColStd_ListIteratorOfListOfInteger It(myListOfStandardMode);
   
@@ -642,12 +639,11 @@ void AIS_LocalContext::RemoveFilter(const Handle(SelectMgr_Filter)& aFilter)
 {
   if(myFilters->IsIn(aFilter)) myFilters->Remove(aFilter);
   
-  // on regarde si le filtre concernait un type standard active.
-  // si oui , on regarde s'il en existe de semblables encore
-  //      parmi les filtres restant..
-  //     s'il n'en reste pas , on remet le filtre standard
-  //     permettant de continuer a selectionner les modes
-  //     actifs...
+  // it is checked if the filter for type standard is active.
+  // if yes, it is checked there are still similarities among the
+  // remaining filters...
+  //     otherwise, the standard filter is restored to
+  //     continu selecting active modes...
   TColStd_ListIteratorOfListOfInteger It(myListOfStandardMode);
   TopAbs_ShapeEnum SE;
   for(;It.More();It.Next()){
@@ -660,25 +656,22 @@ void AIS_LocalContext::RemoveFilter(const Handle(SelectMgr_Filter)& aFilter)
 
 
 
-Standard_Boolean AIS_LocalContext::HasSameProjector(const Handle(Select3D_Projector)& thePrj) const
+Standard_Boolean AIS_LocalContext::HasSameProjector(const Select3D_Projector& aPrj) const
 {
-  const Handle(Select3D_Projector)& aCurPrj = myMainVS->Projector();
-  if (aCurPrj->Perspective() != thePrj->Perspective())
-    return Standard_False;  
-  if (aCurPrj->Perspective() && aCurPrj->Focus() != thePrj->Focus())
-    return Standard_False;
-  const gp_GTrsf& aCurTrsf = aCurPrj->Transformation();
-  const gp_GTrsf& aPrjTrsf = thePrj->Transformation();
-
-  for (Standard_Integer i = 1; i <= 3; ++i)
-  {
-    for (Standard_Integer j = 1; j <= 3 ; ++j)
-    {
-      if (aCurTrsf.Value (i, j) != aPrjTrsf.Value (i, j))
-        return Standard_False;
+  const Select3D_Projector& CurPrj = myMainVS->Projector();
+  if(CurPrj.Perspective()!=aPrj.Perspective()) return Standard_False;  
+  if(CurPrj.Perspective())
+    if(CurPrj.Focus()!=aPrj.Focus()) return Standard_False;
+  gp_GTrsf CurTrsf(CurPrj.Transformation());
+  gp_GTrsf PrjTrsf(aPrj.Transformation());
+  
+  for(Standard_Integer i=1;i<=3;i++){
+    for(Standard_Integer j=1;j<=3;j++){
+      if(CurTrsf.Value(i,j)!=PrjTrsf.Value(i,j)) 
+	return Standard_False;
     }
   }
-
+  
   return Standard_True;
 }
 
@@ -695,7 +688,7 @@ void AIS_LocalContext::Terminate( const Standard_Boolean updateviewer )
   myMapOfOwner.Clear();
   
   mylastindex=0;
-  // nettoyons le selecteur...
+  // clear the selector...
   myMainVS->Clear();
   myCTX->SelectionManager()->Remove(myMainVS);
   
@@ -815,7 +808,7 @@ void AIS_LocalContext::Unhilight(const Handle(AIS_InteractiveObject)& anObject)
 {
   if(!myActiveObjects.IsBound(anObject)) return;
   
-  // pour voir si d'aventure l'objet est quelque part ailleurs...
+  // chieck if by hazard the object is somewhere else...
   Standard_Integer Indx;
   Standard_Boolean IsSomeWhereElse  = 
     myCTX->IsInLocal(anObject,Indx) && Indx != myCTX->IndexOfCurrentLocal();
@@ -1071,7 +1064,7 @@ void AIS_LocalContext::ClearObjects()
       
       const Handle(AIS_LocalStatus)& CurAtt = It.Value();
       //TColStd_ListIteratorOfListOfInteger ItL;
-      // si objet temporaire on efface ses presentations geree par myMainPM
+      // if object is temporary the presentations managed by myMainPM are removed
       AIS_DisplayStatus TheDS = myCTX->DisplayStatus(SO);
       
       if(TheDS != AIS_DS_Displayed){

@@ -380,7 +380,7 @@ void SelectMgr_ViewerSelector::InitSelect(const TColgp_Array1OfPnt2d& aPoly)
   if (toupdate) UpdateConversion();
   if (tosort)   UpdateSort();
   if (myactivenb!=0){
-    // on utilise les Bnd box dans un premier temps  
+    // the Bnd boxes are used for the first time  
     Bnd_Box2d aBox;
     Standard_Integer NbPnt = aPoly.Length();
     Standard_Integer i;
@@ -396,10 +396,9 @@ void SelectMgr_ViewerSelector::InitSelect(const TColgp_Array1OfPnt2d& aPoly)
 
 //==================================================
 // Function: LoadResult
-// Purpose : on laisse tomber pour l'instant la taille 
-//          de la primitive dans les criteres de tri...
-//          On prend la priorite, la profondeur et 
-//         la distance mini au CDG ou Bords...
+// Purpose : for the moment the size of the primitive 
+//           is not taken into account in the search criteriai...
+//           The priority, the depth and the min. distance to CDG or Borders is taken...
 //==================================================
 void SelectMgr_ViewerSelector::
 LoadResult()
@@ -488,14 +487,14 @@ void SelectMgr_ViewerSelector::LoadResult(const Bnd_Box2d& abox)
     }
   }
 
-  // pas de tri a faire dans le cas d'une selection par rectangle elastique (BUG ANALYST)
+  // do not parse in case of selection by elastic rectangle (BUG ANALYST)
   if(mystored.IsEmpty()) return; 
   if(myIndexes.IsNull()) 
     myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent()); 
   else if(mystored.Extent() !=myIndexes->Length()) 
     myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent()); 
 
-  // pour travailler plus vite... 
+  // to work faster... 
   TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1(); 
   for(Standard_Integer I=1;I<=mystored.Extent();I++) 
     thearr(I)=I; 
@@ -543,7 +542,7 @@ void SelectMgr_ViewerSelector::LoadResult(const TColgp_Array1OfPnt2d& aPoly)
     else if(mystored.Extent() !=myIndexes->Length()) 
       myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent()); 
 
-    // pour travailler plus vite... 
+    // to work faster... 
     TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1(); 
     for(Standard_Integer I=1;I<=mystored.Extent();I++) 
       thearr(I)=I; 
@@ -808,7 +807,7 @@ void SelectMgr_ViewerSelector::Dump(Standard_OStream& S) const
 TCollection_AsciiString SelectMgr_ViewerSelector::
 Status(const Handle(SelectMgr_SelectableObject)& SO) const
 {
-  TCollection_AsciiString Status("Status Objet :\n\t");
+  TCollection_AsciiString Status("Status Object :\n\t");
   Standard_Boolean Found= Standard_False;
   for(SO->Init();SO->More();SO->Next()){
     if(myselections.IsBound(SO->CurrentSelection()))
@@ -818,13 +817,13 @@ Status(const Handle(SelectMgr_SelectableObject)& SO) const
         TCollection_AsciiString(SO->CurrentSelection()->Mode()) +
         " present - " ;
       if(myselections(SO->CurrentSelection())) 
-        Status = Status + " Actif \n\t";
+        Status = Status + " Active \n\t";
       else
-        Status = Status + " Inactif \n\t";
+        Status = Status + " Inactive \n\t";
     }
   }
 
-  if(!Found) Status = Status + "Non Present dans le selecteur\n\n";
+  if(!Found) Status = Status + "Not Present in the selector\n\n";
   return Status;
 }
 
@@ -832,11 +831,11 @@ Status(const Handle(SelectMgr_SelectableObject)& SO) const
 TCollection_AsciiString SelectMgr_ViewerSelector::
 Status () const 
 {
-  // les primitives sensibles presentes 
-  //------------------------------------
+  // sevsitive primitives present 
+  //-----------------------------
   TCollection_AsciiString Status("\t\tSelector Status :\n\t");
-  // les selections
-  //---------------
+  // selections
+  //-----------
   Standard_Integer NbActive =0,NbPrim=0;
   Status = Status + "Number of already computed selections : " + 
     TCollection_AsciiString(myselections.Extent());
@@ -861,14 +860,13 @@ Status () const
 
 //=======================================================================
 //function : SortResult
-//purpose  :  on a un certain nombre d'entites rangees avec leur critere 
-//            (profondeur, taille, priorite , distance de la souris 
-//            par rapport aux bords ou au CDG de la primitive detectee.
-//            on va trier :
-//             les priorites maxi.
-//             puis un savant dosage entre profondeur et distance...
-// enfin on stocke dans myindexes les rangs en fonction de ce tri.
-// il ne reste plus qu'a lire 
+//purpose  :  there is a certain number of entities ranged by criteria 
+//            (depth, size, priority, mouse distance from borders or
+//            CDG of the detected primitive. Parsing :
+//             maximum priorities .
+//             then a reasonable compromise between depth and distance...
+// finally the ranges are stored in myindexes depending on the parsing.
+// so, it is possible to only read 
 //=======================================================================
 void SelectMgr_ViewerSelector::SortResult()
 {
@@ -878,10 +876,10 @@ void SelectMgr_ViewerSelector::SortResult()
   if(myIndexes.IsNull() || anExtent != myIndexes->Length())
     myIndexes = new TColStd_HArray1OfInteger (1, anExtent);
 
-  // pour travailler plus vite...
+  // to work faster...
   TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1();
 
-  // on charge les index de 1 a N
+  // indices from 1 to N are loaded
   Standard_Integer I ;
   for (I=1; I <= anExtent; I++)
     thearr(I)=I;
@@ -926,7 +924,7 @@ void SelectMgr_ViewerSelector::SortResult()
       myprim (I) = myPrimArr (ind);
   }
   // OCC4201 (AGV): fin
-  // ne nous restera plus qu'a recuperer les proprietaires correspondant aux index tries...
+  // it is enough to return owners corresponding to parced indices...
 
 }
 

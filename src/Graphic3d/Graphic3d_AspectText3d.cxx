@@ -8,14 +8,14 @@
 
 //-Version  
 
-//-Design Declaration des variables specifiques au contexte
-//    de trace des textes 3d
+//-Design Declaration of variables specific to the context
+//    of trace of texts 3d
 
-//-Warning  Un contexte de trace de texte est defini par :
-//    - la font utilisee
-//    - la couleur
-//    - l'echelle
-//    - l'espace entre caracteres
+//-Warning  A context of trace of text is defined by :
+//    - the font used
+//    - the color
+//    - the scale
+//    - the space between characters
 
 //-References 
 

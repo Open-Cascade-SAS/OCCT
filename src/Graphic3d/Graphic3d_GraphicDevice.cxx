@@ -69,15 +69,7 @@ Standard_Boolean status ;
 	}
 
 	this->InitMaps (connexion,Xw_TOM_READONLY,Ncolors,UseDefault);
-	// 24/07/97
-	// avant : this->InitMaps (connexion,Mapping,Ncolors,UseDefault);
-	//         uniquement pour HPUX
-	// info GG :
-	//  L'action doit etre generalisee puisque l'on trouve le meme pb
-	//sur HP et SIL lie au fait que la root est PseudoColor.
-	//  Ceci est donc compatible avec SUN et DEC ou la root est TrueColor.
-	//  De toute facon seul le driver Xdps a besoin d'un ColorCube et
-	//il le cree tout seul s'il n'existe pas deja .
+
 
 }
 
@@ -152,7 +144,7 @@ Standard_Boolean Result = TheSharedLibrary.DlOpen (OSD_RTLD_LAZY);
 		(TheSharedLibrary.DlError ());
 	}
 	else {
-	    // Gestion des traces
+	    // Management of traces
 char *tracevalue = NULL;
 	    tracevalue = (char *)(getenv ("CSF_GraphicTrace"));
 	    if (tracevalue)
@@ -168,10 +160,10 @@ OSD_Function new_GLGraphicDriver =
 			(TheSharedLibrary.DlError ());
 	    }
 	    else {
-		// Sequence artistique :
-		// new_GLGraphicDriver est une OSD_Function :
+		// Sequence :
+		// new_GLGraphicDriver is OSD_Function :
 		// typedef int (* OSD_Function)(...);
-		// d'ou le magnifique cast en GraphicDriver.
+		// that is why good cast in GraphicDriver.
 		Handle(Graphic3d_GraphicDriver)
 			(*fp) (Standard_CString) = NULL;
 		fp = (Handle(Graphic3d_GraphicDriver)
@@ -182,7 +174,7 @@ OSD_Function new_GLGraphicDriver =
 
 //		MyGraphicDriver = (*fp) (TheSharedLibrary.Name ());
 
-		// Gestion des traces
+		// Management of traces
 		if (tracevalue)
 		    MyGraphicDriver->SetTrace
 			((Standard_Integer) atoi (tracevalue));

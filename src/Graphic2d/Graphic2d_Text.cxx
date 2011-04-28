@@ -1,10 +1,3 @@
-// Modified     23/02/98 : FMN ; Remplacement PI par Standard_PI
-// S3824	10/06/98 : GG ; 
-//      	1) La methode "Fit" comporte un argum optionnel supplementaire
-//		   "Expand" permettant de ne pas ajuster la largeur du texte
-//		    lorsque celle ci est < a la taille du FIT.
-//		2) La methode "Trunc" permet de tronquer le texte a la
-//		   taille precisee.
 
 #define PERF	//GG_200898
 //		The MinMax are now computed at the right time and no more
@@ -209,9 +202,9 @@ Standard_ShortReal oy = aDrawer->ConvertMapToFrom(myDeltay);
             cosa -= A; sina -= B;
             if( aTrsf.IsNegative() ) hscale = - hscale;
 #else
-	    // Pour calculer les nouveaux angles d'ouverture
-	    // le calcul est fait sur le cercle trigonometrique
-	    // et l'on tient pas compte dans ce cas de la translation.
+	    // To calculate new aperture angles 
+	    // calculation is done on the trigonometric circle
+	    // and in this case translation is not taken into account.
 	    aTrsf.SetValue (1, 3, 0.0);
 	    aTrsf.SetValue (2, 3, 0.0);
             aTrsf.Transforms (cosa, sina);

@@ -42,7 +42,7 @@ void V3d_PositionLight::SetTarget(const Standard_Real X, const Standard_Real Y, 
 
   Standard_Real Xc,Yc,Zc, Xp,Yp,Zp;
   
-  // Recalcul de la position
+  // Recalculation of the position
   MyTarget.Coord(Xc,Yc,Zc);
   Position (Xp,Yp,Zp) ;
 
@@ -62,8 +62,8 @@ void V3d_PositionLight::SetRadius(const Standard_Real Radius) {
 
   Standard_Real X0,Y0,Z0, Xn,Yn,Zn, Xp,Yp,Zp;
   
-  // Le point cible reste inchange, seul la position de la lumiere est modifiee
-  // en conservant la direction.
+  // The target point remains unchanged, only the position of the light is modified
+  // by preserving the direction.
 	Position (Xp,Yp,Zp);
   Graphic3d_Vector  D(MyTarget, Graphic3d_Vertex(Xp, Yp, Zp));
   D.Normalize();
@@ -84,7 +84,7 @@ void V3d_PositionLight::OnHideFace(const Handle(V3d_View)& aView) {
 	V3d_Light::SymetricPointOnSphere (aView, 
 		MyTarget, Graphic3d_Vertex(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
 
-  // Actuellement est on sur le point vu
+  // This is a visible point
   if ((VX*(X-Xp) < 0.) && (VY*(Y-Yp) < 0.) && (VZ*(Z-Zp) < 0.))
     SetPosition (X,Y,Z);
 }
@@ -97,7 +97,7 @@ void V3d_PositionLight::OnSeeFace(const Handle(V3d_View)& aView) {
 	V3d_Light::SymetricPointOnSphere (aView, 
 		MyTarget, Graphic3d_Vertex(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
 
-  // Actuellement est on sur le point cache
+  // This is a hidden point
   if ((VX*(X-Xp) > 0.) && (VY*(Y-Yp) > 0.) && (VZ*(Z-Zp) > 0.))
     SetPosition (X,Y,Z);
 }
@@ -110,11 +110,11 @@ Standard_Boolean V3d_PositionLight::SeeOrHide(const Handle(V3d_View)& aView) con
 	V3d_Light::SymetricPointOnSphere (aView, 
 		MyTarget, Graphic3d_Vertex(Xp,Yp,Yp), Radius(), X,Y,Z, VX,VY,VZ);
 
-  // Avons nous le point cache ou le point vu
+  // Is it a visible or a hidden point
   return ( (VX*(X-Xp) > 0.) || (VY*(Y-Yp) > 0.) || (VZ*(Z-Zp) > 0.) )?
-    // la source est sur la face cachee
+    // the source is on the hidden face 
     Standard_False:
-    // la source est sur la face vue.
+    // the source is on the visible face.
     Standard_True;
 }
 
@@ -136,10 +136,11 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
   V3d_TypeOfRepresentation Pres;
   V3d_TypeOfUpdate UpdSov;
 
-//  Creation d'une structure slight d'elements reperables (la position de
-//  la light, et le domaine d'eclairage represente par un cercle)
-//  Creation d'une structure snopick d'elements non reperables ( cible, meridien et 
-//  parallele ).
+//  Creation of a structure of markable elements (position of the
+//  light, and the domain of lighting represented by a circle)
+//  Creation of a structure snopick of non-markable elements (target, meridian and 
+//  parallel).
+
 
     Pres = TPres;
     Handle(V3d_Viewer) TheViewer = aView->Viewer();
@@ -182,7 +183,7 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
   Y0 = MyTarget.Y();
   Z0 = MyTarget.Z();
   
-//Affichage de la position de la light.
+// Display of the light position.
 
   glight->SetPickId(1);
   this->Color(Quantity_TOC_RGB,R1,G1,B1);
@@ -192,7 +193,7 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
   glight->SetPrimitivesAspect(Asp1);
   this->Symbol(glight,aView);
 
-//Affichage de la sphere de reperage (limite au cercle).
+// Display of the marking sphere (limit at the circle).
 
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) {
       
@@ -204,7 +205,7 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
 
 		if (MyType != V3d_DIRECTIONAL) {
 
-      //Affichage du rayon de la sphere (ligne + texte)
+      //Display of the radius of the sphere (line + text)
 
 			if (Pres == V3d_COMPLETE) {
 				gradius->SetPickId(3);
@@ -225,14 +226,14 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
 		}
 
 
-    //Affichage du meridien
+    // Display of the meridian
 
     Quantity_Color Col2(Quantity_NOC_GREEN);
     Handle(Graphic3d_AspectLine3d) Asp2 = new Graphic3d_AspectLine3d
       (Col2,Aspect_TOL_SOLID,1.);
     gnopick->SetPrimitivesAspect(Asp2);
     
-    // Definition de l'axe du cercle
+    // Definition of the axis of circle
     aView->Up(DXRef,DYRef,DZRef);
     this->Position(X,Y,Z);
     DXini = X-X0; DYini = Y-Y0; DZini = Z-Z0;
@@ -242,9 +243,9 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
     
     V3d::CircleInPlane(gnopick,X0,Y0,Z0,VX,VY,VZ,Rayon);
       
-    // Affichage de la parallele
+    // Display of the parallel
 
-    // Definition de l'axe du cercle
+    // Definition of the axis of circle
     aView->Proj(VX,VY,VZ);
     aView->Up(X1,Y1,Z1);
     DXRef = VY * Z1 - VZ * Y1;
@@ -338,11 +339,11 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
   Z0 = MyTarget.Z();
   aView->Project(X0,Y0,Z0,PXT,PYT);
   aView->Convert(PXT,PYT,IPX,IPY);
-//      Coord 3d dans le plan de projection de la cible.
+//      Coord 3d in the plane of projection of the target.
   aView->Convert(IPX,IPY,XT,YT,ZT);
   switch (WhatPick) {
   case V3d_POSITIONLIGHT :
-	  // Les Coordonnees doivent rester a l'interieur de la sphere
+	  // The Coordinates should remain inside of the sphere
     Rayon = Radius();
     XMinTrack = PXT - Rayon;
     XMaxTrack = PXT + Rayon;
@@ -356,14 +357,12 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
 	DeltaY = Y0 - YP;
 	DeltaZ = Z0 - ZP;
 	
-//                   On recherche le point d'intersection des droites definies
-//                   par :
-//                   - Droite passant par le point de projection et l'oeil
-//                     si on est en perspective, parralele a la normale de la 
-//                     vue si on a une vue axonometrique.
-//                     position dans la vue est // a la normale de la vue
-//                   - La distance position de la camera cible est egale au 
-//                     rayon.
+//      The point of intersection of straight lines defined by :
+//      - Straight line passing by the point of projection and the eye
+//        if this is a perspective, parralel to the normal of the view 
+//        if this is an axonometric view.
+//        position in the view is parallel to the normal of the view
+//      - The distance position of the target camera is equal to the radius.
 
 	A = VX*VX + VY*VY + VZ*VZ ;
 	B = -2. * (VX*DeltaX + VY*DeltaY + VZ*DeltaZ);
@@ -389,8 +388,8 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
 
   case V3d_SPACELIGHT :
     aView->Convert(PXT,PYT,IPX,IPY);
-//               Dans ce cas Xpix,Ypix correspondent a une distance , relative
-//               a la translation que l'on veut effectuer sur la sphere. 
+//               In this case Xpix,Ypix correspond to a distance, relative
+//               to the translation that is planned to be performed on the sphere. 
     aView->Convert(IPX+Xpix,IPY+Ypix,X,Y,Z);
     X = X+X0-XT;
     Y = Y+Y0-YT; 
@@ -403,8 +402,8 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
   case V3d_ExtRADIUSLIGHT :
 		if (MyType == V3d_DIRECTIONAL)
 			break;
-//             on cherche a conserver la direction cible positionnement de la 
-//             source ==> on projette le point sur la direction cible source.
+//             it is attempted to preserve the target direction position of the  
+//             source ==> the point is projected on the target source direction.
     this->Position(Xi,Yi,Zi);
     aView->Project(Xi,Yi,Zi,PXP,PYP);
     DX = PXP - PXT;
@@ -428,9 +427,8 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
   case V3d_IntRADIUSLIGHT :
 		if (MyType == V3d_DIRECTIONAL)
 			break;
-//               on cherche a conserver la direction cible positionnement 
-//               de la source ==> on projette le point sur la direction 
-//               cible source.
+//             it is attempted to preserve the target direction position of the  
+//             source ==> the point is projected on the target source direction.
     Position(Xi,Yi,Zi);
     aView->Project(Xi,Yi,Zi,PXP,PYP);
     DX = PXP - PXT;
@@ -445,8 +443,8 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
       Rap = NewRprj/OldRprj;
       Rayon = Radius();
       Rayon = Rayon * Rap;
-//                 la source doit rester a une position fixe, seule la cible
-//                 est modifie.
+//                 the source should remain at a fixed position, 
+//                 only the target is modified.
       Position (xPos, yPos, zPos);
       Graphic3d_Vector  Dir(Graphic3d_Vertex(xPos,yPos,zPos), MyTarget);
       Dir.Normalize();
@@ -454,8 +452,8 @@ void V3d_PositionLight::Tracking( const Handle(V3d_View)& aView,
       X = Xi + Rayon*X;
       Y = Yi + Rayon*Y;
       Z = Zi + Rayon*Z;
-//                 la source doit rester a une position fixe, seule la cible
-//                 est modifie.
+//                 the source should remain at a fixed position, 
+//                 only the target is modified.
       MyTarget.SetCoord(X,Y,Z);
       Display(aView,MyTypeOfRepresentation);		 
       (aView->Viewer())->UpdateLights();

@@ -173,7 +173,7 @@ Standard_Boolean Graphic2d_EllipsMarker::Pick (const Standard_ShortReal X,
      Standard_ShortReal cos = Standard_ShortReal( Cos(myAngle) );
      Standard_ShortReal sin = Standard_ShortReal( Sin(myAngle) );
 
-     //Focus 1 et 2 calcules pour l' ellipse dont le centre 
+     //Focus 1 and 2 calcules pour l' ellipse dont le centre 
      // est ramene a l' origine du repere(0,0)
      xf1 = Standard_ShortReal( q * cos ); 
      yf1 = Standard_ShortReal( q * sin );

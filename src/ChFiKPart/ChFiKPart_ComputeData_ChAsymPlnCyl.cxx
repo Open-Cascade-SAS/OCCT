@@ -107,7 +107,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   Standard_Boolean pointu = Standard_False;
   Standard_Real ConRad, Rad, SemiAngl;
 
-  //Calcul des distance
+  //Calculation of distance
   Standard_Real dis1, dis2, cosNPCyl, sinNPCyl;
 
   if ( (plandab && DisOnP) || (!plandab && !DisOnP) ) {
@@ -139,7 +139,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     Rad = Cyl.Radius() - dis1;
     if ( Abs(Rad) <= Precision::Confusion() ) pointu = Standard_True;
     if(Rad < 0 ) {
-      cout<<"le chanfrein ne passe pas"<<endl;
+      cout<<"the chamfer can't pass"<<endl;
       return Standard_False;
     }
   }
@@ -313,7 +313,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : MakeChAsym
-//purpose  : cas cylindre/plan ou plan/cylindre.
+//purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
 
 Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
@@ -332,11 +332,11 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 				      const Standard_Boolean plandab,
 				      const Standard_Boolean DisOnP)
 {
-  // calcul du conge plan.
-  // or1 et or2 permettent de determiner dans lequel des 4 cotes crees par
-  // l'intersection des 2 surfaces_on est
-  //        _|_  et Ofpl qui est l'orientation de la face du plan permettant
-  //         |4          de determiner le cote de la matiere
+  // calculation of the fillet plane.
+  // or1 and or2 permit to determine in which of four sides created by
+  // intersection of 2 surfaces we are
+  //        _|_          Ofpl is orientation of the plane face allowing
+  //         |4          to determine the side of the material
 
   gp_Pnt OrSpine = ElCLib::Value(First, Spine);
   gp_Pnt POnCyl, POnPln, OrCyl;
@@ -349,15 +349,15 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     {NorF.Reverse();} 
 
   gp_Ax3 AxCyl = Cyl.Position();
-  // OrCyl est le point sur l'axe du cylindre dans le plan normal a l'axe
-  // contenant OrSpine
+  // OrCyl is the point on axis of cylinder in the plane normal to the
+  // axis containing OrSpine
   gp_Pnt Loc = AxCyl.Location();
   gp_Vec LocSp(Loc, OrSpine);
   gp_XYZ temp = AxCyl.Direction().XYZ();
   temp = temp.Multiplied(LocSp.XYZ().Multiplied(temp) );
   OrCyl.SetXYZ( (Loc.XYZ()).Added(temp) );
  
-  //construction de POnPln
+  //construction of POnPln
   gp_Vec VecTranslPln,tmp;
 
  tmp = gp_Vec(OrSpine,OrCyl);
@@ -372,7 +372,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   gp_Vec VecTranslCyl;
   VecTranslCyl = gp_Vec(OrSpine,OrCyl);
 
-  // Calcul des distances dis1 et dis2, en fonction de Dis et Angle
+  // Calculation of distances dis1 and dis2, depending on Dis and Angle
   gp_Vec DirSOrC = VecTranslCyl.Normalized();
   Standard_Real cosA1 = DirSOrC.Dot(VecTranslPln.Normalized());
   Standard_Real sinA1 = Sqrt(1. - cosA1 * cosA1);
@@ -397,7 +397,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     dis2 = temp2 + temp1 * (cosAhOC - temp1);
 
     if (dis2 < -1.E-09) {
-      cout<<"angle du chanfrein trop grand"<<endl;
+      cout<<"too great angle of chamfer"<<endl;
       return Standard_False;
     }
     else if (dis2 < 1.E-09) {
@@ -411,7 +411,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     dis2 = Dis;
   }
 
-  //construction de POnCyl 
+  //construction of POnCyl 
   Standard_Real alpha = ( 2*ASin(dis2*0.5/ray) );
   gp_Vec VecTemp = VecTranslCyl.Reversed();
 
@@ -428,7 +428,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::CylinderD1(UOnCyl, VOnCyl, AxCyl, Cyl.Radius(),
                      POnCyl, DUOnCyl, DVOnCyl);		
 
-  // Construction du point sur le plan
+  // Construction of the point on the plane
   if (!IsDisOnP) {
     gp_Vec Corde(POnCyl, OrSpine);
     gp_Vec TCyl = DUOnCyl.Crossed(DVOnCyl);
@@ -455,11 +455,11 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 
   POnPln.SetXYZ( (OrSpine.XYZ()).Added(VecTranslPln.XYZ()) );
 
-  //construction du chanfrein  
+  //construction of the chamfer  
   ElSLib::Parameters(Pln,POnPln,UOnPln,VOnPln);
   POnPln = ElSLib::PlaneValue(UOnPln,VOnPln,AxPln);
 
-  //construction de YDir pour aller de face1 vers face2.
+  //construction of YDir to go from face1 to face2.
   gp_Vec YDir(POnPln,POnCyl);
   if (!plandab){ 
     YDir.Reverse();
@@ -469,7 +469,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   Handle(Geom_Plane) Chamfer = new Geom_Plane(AxCh);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(Chamfer,DStr));
 
-  // On charge les FaceInterferences avec les pcurves et courbes 3d.
+  // FaceInterferences are loaded with pcurves and curves 3d.
      //----------- edge plan-Chamfer
   gp_Pnt2d PPln2d(UOnPln,VOnPln);
   gp_Dir2d VPln2d(XDir.Dot(AxPln.XDirection()),
@@ -495,7 +495,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 
   if ( !IsDisOnP && PosChamfPln )
     toreverse = !toreverse;
-  // On regarde si l orientation du Chamfer est la meme que celle du plan
+  // It is checked if the orientation of the Chamfer is the same as of the plane
   if (toreverse)
     {Data->ChangeOrientation() = TopAbs::Reverse(Ofpl);}
   else          
@@ -505,7 +505,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   if ((!plandab && toreverse) || (plandab && !toreverse))
     {trans=TopAbs_REVERSED;}
   
-  //trans permet de determiner le cote "matiere" sur S1(2) delimite par L3d
+  //trans allows to determine the "material" side on S1(2) limited by L3d
   if (plandab) 
     {Data->ChangeInterferenceOnS1().
      SetInterference(ChFiKPart_IndexCurveInDS(L3d,DStr),trans,LFac,LFil);}

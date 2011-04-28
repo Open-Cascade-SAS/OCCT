@@ -220,7 +220,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
   if (Abs(valsol(1)) <= Tol &&
       Abs(valsol(2)) <= Tol ) {
     
-    // Calcul des tangentes
+    // Calculation of tangents
     prmrst1  = Sol(1);    
     pt2drst1 = rst1->Value(prmrst1);
     prmrst2  = Sol(2);
@@ -286,7 +286,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
     Sina = nplan.Dot(n1.Crossed(n2));
 
     if (choix%2 != 0) {
-      Sina = -Sina;  //nplan est change en -nplan
+      Sina = -Sina;  //nplan is changed into -nplan
     }
     
     Angle = ACos(Cosa);
@@ -446,11 +446,11 @@ Blend_DecrochStatus BRepBlend_RstRstConstRad::Decroch(const math_Vector& Sol,
 
   rstref1->Value(Sol(1)).Coord(u, v);
   surfref1->D1(u, v,PtTmp1,d1u,d1v);
-  // Normale a la surface de reference 1
+  // Normal to the reference surface 1
   NRst1     = d1u.Crossed(d1v);  
   rstref2->Value(Sol(2)).Coord(u, v);
   surfref2->D1(u, v, PtTmp2, d1u, d1v);
-  // Normale a la surface de reference 2
+  // Normal to the reference surface 2
   NRst2     = d1u.Crossed(d1v);
 
   Standard_Boolean IsCenter;
@@ -483,7 +483,7 @@ Blend_DecrochStatus BRepBlend_RstRstConstRad::Decroch(const math_Vector& Sol,
     TgRst2.Reverse();
   }
 
-  // On retourne les vecteurs 
+  // The vectors are returned 
   if (NRst1InPlane.Dot(TgRst1) > -1.e-10) {
     if (NRst2InPlane.Dot(TgRst2) < 1.e-10) {
       return Blend_DecrochBoth;
@@ -530,7 +530,7 @@ void BRepBlend_RstRstConstRad::Set(const BlendFunc_SectionShape TypeSection)
 
 //=======================================================================
 //function : CenterCircleRst1Rst2
-//purpose  : Calculer le centre du cercle passant par les deux points des restrictions
+//purpose  : Calculate the center of the circle passing by two points of restrictions
 //=======================================================================
 Standard_Boolean  BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt&       PtRst1,
 								 const gp_Pnt&       PtRst2,
@@ -540,11 +540,11 @@ Standard_Boolean  BRepBlend_RstRstConstRad::CenterCircleRst1Rst2(const gp_Pnt&  
 {  
   
   gp_Vec rst1rst2(PtRst1, PtRst2);
-  gp_Vec   vdmedNor; //,NRst1;    vdmedNor  vecteur directeur de la Mediatrice  
+  gp_Vec   vdmedNor; //,NRst1;    vdmedNor directong vector of the perpendicular bisector  
   Standard_Real norm2;
-  Standard_Real Dist;// distance entre le milieu de PtRst1,PtRst2 et Center
+  Standard_Real Dist;// distance between the middle of PtRst1,PtRst2 and Center
 
-  // Calcul du centre du cercle 
+  // Calculate the center of the circle 
   VdMed = rst1rst2.Crossed(np); 
   norm2 = rst1rst2.SquareMagnitude();
   Dist  = ray * ray - 0.25 * norm2;
@@ -609,7 +609,7 @@ void BRepBlend_RstRstConstRad::Section(const Standard_Real Param,
   Pdeb = 0; //ElCLib::Parameter(C, pts);
   Pfin = ElCLib::Parameter(C, ptrst2);
 
-  // Test des angles negatif et quasi null : Cas Singulier
+  // Test of angles negative and almost null : Special Case
   if (Pfin > 1.5 * PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center, np, ns));
@@ -646,7 +646,7 @@ Standard_Real BRepBlend_RstRstConstRad::GetSectionSize() const
 void BRepBlend_RstRstConstRad::GetMinimalWeight(TColStd_Array1OfReal& Weights) const 
 {
   BlendFunc::GetMinimalWeights(mySShape, myTConv, minang, maxang, Weights );
-  // On suppose que cela ne depend pas du Rayon! 
+  // It is supposed that it does not depend on the Radius! 
 }
 
 //=======================================================================
@@ -686,7 +686,7 @@ void BRepBlend_RstRstConstRad::GetShape (Standard_Integer& NbPoles,
 
 //=======================================================================
 //function : GetTolerance
-//purpose  : Determine les Tolerance a utiliser dans les approximations.
+//purpose  : Determine Tolerances to be used in approximations.
 //=======================================================================
 
 void BRepBlend_RstRstConstRad::GetTolerance(const Standard_Real BoundTol, 
@@ -759,7 +759,7 @@ void BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
   Poles2d(Poles2d.Lower()).SetCoord(pt2d1.X(),pt2d1.Y());
   Poles2d(Poles2d.Upper()).SetCoord(pt2d2.X(),pt2d2.Y());
   
-  // Cas Linear
+  // Linear case
   if (mySShape == BlendFunc_Linear) {
     Poles(low)   = ptrst1;
     Poles(upp)   = ptrst2;
@@ -768,11 +768,11 @@ void BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
     return;
   }
 
-  // Calcul du centre du cercle
+  // Calculate the center of the circle
   Standard_Boolean IsCenter;
   IsCenter = CenterCircleRst1Rst2(ptrst1, ptrst2, nplan, Center, NotUsed);
 
-  // normales a la section aux points 
+  // normals to the section with points 
   ns  = gp_Vec(Center, ptrst1).Normalized();  
   ns2 = gp_Vec(Center, ptrst2).Normalized();
 
@@ -873,8 +873,8 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
   n2.Normalize();
 
   if (!istgt) {
-    // secmember contient les derivees des parametres sur les courbes
-    // par rapport a t  
+    // secmember contains derivatives of parameters on curves
+    // compared to t  
     tgrst1 = secmember(1) * d11;
     tgrst2 = secmember(2) * d21;
 
@@ -887,7 +887,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
     if (Dist >  1.E-07) { 
       gp_Vec d1P1P2CrosNp, dmed;
       d1P1P2CrosNp = d1rst1rst2.Crossed(nplan) + rst1rst2.Crossed(dnplan);
-      // derivee de la mediatrice
+      // derivative of the perpendicular bisector
       dmed = d1P1P2CrosNp - med.Dot(d1P1P2CrosNp) * med;
       dmed /= normmed; 
       Dist = sqrt(Dist);
@@ -897,26 +897,26 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
         dmed.Reverse();
       }
 
-      // on met dans dmed la derivee du coefficient Dist
+      // the derivative of coefficient Dist is located in dmed
       dmed.SetLinearForm(Dist, dmed, d1Dist, med);
       d1rst1rst2 *= 0.5;   
-      // derivee de la Normale a la courbe en P1    
+      // derivative of the Normal to the curve in P1    
       d1n1 = - (dmed + d1rst1rst2) / ray;
 
-      // derivee de la Normale a la courbe en P2
+      // derivative of the Normal to the curve in P2
       d1n2 = (d1rst1rst2 - dmed) / ray; 
     }
     else {
       d1rst1rst2 *= 0.5;
-      // Normale a la courbe en P1    
+      // Normal to the curve in P1    
       d1n1 = - d1rst1rst2 / ray;
 
-      // Normale a la courbe en P2
+      // Normal to the curve in P2
       d1n2 = d1rst1rst2 / ray;       
     }   
   }
   
-  // Les poles 2d
+  // Tops 2d
   
   Poles2d(Poles2d.Lower()).SetCoord(pt2drst1.X(), pt2drst1.Y());
   Poles2d(Poles2d.Upper()).SetCoord(pt2drst2.X(), pt2drst2.Y());
@@ -931,7 +931,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
     DPoles2d(Poles2d.Upper()).SetCoord(a, b);
   }
   
-  // Cas Linear
+  // Linear case
   if (mySShape == BlendFunc_Linear) {
     Poles(low)   = ptrst1;
     Poles(upp)   = ptrst2;
@@ -946,8 +946,8 @@ Standard_Boolean BRepBlend_RstRstConstRad::Section(const Blend_Point& P,
     return (!istgt);
   }
   
-  // Cas du cercle
-  // tangente au centre du cercle
+  // Case of the circle
+  // tangent to the center of the circle
   if (!istgt) {
     tgct.SetLinearForm(-ray, d1n1, tgrst1);
   }

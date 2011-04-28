@@ -164,9 +164,9 @@ void ChFiDS_Spine::SetFirstParameter(const Standard_Real Par)
 {
 #ifdef DEB
   if(Par >= Precision::Confusion()) 
-    cout<<"Prolongement interieur en debut de ligne guide"<<endl;
+    cout<<"Interior extension at the start of guideline"<<endl;
   if(IsPeriodic())
-    cout<<"WARNING!!! Prolongement sur ligne guide periodique."<<endl;
+    cout<<"WARNING!!! Extension on periodic guideline."<<endl;
 #endif
   firstprolon = Standard_True;
   firstparam = Par;
@@ -183,9 +183,9 @@ void ChFiDS_Spine::SetLastParameter(const Standard_Real Par)
 #ifdef DEB
   Standard_Real lll = abscissa->Value(abscissa->Upper());
   if((Par - lll) <= -Precision::Confusion()) 
-    cout<<"Prolongement interieur en fin de ligne guide"<<endl;
+    cout<<"Interior extension at the end of guideline"<<endl;
   if(IsPeriodic())
-    cout<<"WARNING!!! Prolongement sur ligne guide periodique."<<endl;
+    cout<<"WARNING!!! Extension on periodic guideline."<<endl;
 #endif
   lastprolon = Standard_True;
   lastparam = Par;
@@ -310,7 +310,7 @@ Standard_Real ChFiDS_Spine::Absc(const TopoDS_Vertex& V) const
 
 Standard_Real ChFiDS_Spine::Period() const
 {
-  if(!IsPeriodic()) Standard_Failure::Raise("Spine non periodique");
+  if(!IsPeriodic()) Standard_Failure::Raise("Non-periodic Spine");
   return abscissa->Value(abscissa->Upper());
 }
 
@@ -334,16 +334,16 @@ Standard_Real ChFiDS_Spine::Resolution(const Standard_Real R3d) const
 void  ChFiDS_Spine::SetFirstTgt(const Standard_Real W)
 {
   if(IsPeriodic()) Standard_Failure::Raise
-    ("Pas de prolongement par tangente sur les contours periodiques"); 
+    ("No extension by tangent on periodic contours"); 
 #ifdef DEB
   if(W >= Precision::Confusion()) 
-    cout<<"Prolongement interieur en debut de ligne guide"<<endl;
+    cout<<"Interior extension at start of the guideline"<<endl;
 #endif
-  //On vire le flag au cas ou il serait deja positionne pour 
-  //ne pas planter le d1
+  //The flag is suspended if is already positioned to avoid  
+  //stopping d1
   hasfirsttgt = Standard_False;
   D1(W,firstori,firsttgt);
-  //et on le remet.
+  //and it is reset.
   hasfirsttgt = Standard_True;
   firsttgtpar = W;
 }
@@ -357,18 +357,18 @@ void  ChFiDS_Spine::SetFirstTgt(const Standard_Real W)
 void  ChFiDS_Spine::SetLastTgt(const Standard_Real W)
 {
   if(IsPeriodic()) Standard_Failure::Raise
-    ("Pas de prologement par tangente sur les contours periodiques"); 
+    ("No extension by tangent periodic contours"); 
 
 #ifdef DEB
   Standard_Real L = W - abscissa->Value(abscissa->Upper());
   if(L <= -Precision::Confusion()) 
-    cout<<"Prolongement interieur en fin de ligne guide"<<endl;
+    cout<<"Interior extension at the end of guideline"<<endl;
 #endif
-  //On vire le flag au cas ou il serait deja positionne pour 
-  //ne pas planter le d1
+  //The flag is suspended if is already positioned to avoid  
+  //stopping d1 
   haslasttgt = Standard_False;
   D1(W,lastori,lasttgt);
-  //et on le remet.
+  //and it is reset.
   haslasttgt = Standard_True;
   lasttgtpar = W;
 }
@@ -480,7 +480,7 @@ void  ChFiDS_Spine::Load()
 {
   if(!abscissa.IsNull()){
 #ifdef DEB
-    cout<<"nouveau load du CE"<<endl;
+    cout<<"new load of CE"<<endl;
 #endif
   }
   Standard_Integer len = spine.Length();

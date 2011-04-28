@@ -46,8 +46,8 @@ Standard_Integer AIS_ConnectedInteractive::Signature() const
 void AIS_ConnectedInteractive::
 Connect(const Handle(AIS_InteractiveObject)& anotherIObj)
 {
-  // Pour Avoir le temps de faire le Disconnect en dessous, 
-  // on garde l'ancien un peu. SMO. 
+  // To have the time to Disconnect below, 
+  // the old is kept for a while. 
   if(myReference==anotherIObj) return;
   myOldReference = myReference;
 //Disconnect();
@@ -65,7 +65,7 @@ Connect(const Handle(AIS_InteractiveObject)& anotherIobj,
   if(myLocation!=aLocation)
     myLocation = aLocation;
   if(myReference!=anotherIobj) {
-    myOldReference = myReference; // necessaire pour pouvoir faire le disconnect en dessous..
+    myOldReference = myReference; // necessary to disconnect below..
 //  Disconnect();
     myReference = anotherIobj;}
   

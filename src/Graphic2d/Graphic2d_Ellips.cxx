@@ -1,23 +1,22 @@
 /*=====================================================================
 
-     FONCTION :
+     FUNCTION :
      ----------
-        Classe Graphic2d_Ellips
+        Class Graphic2d_Ellips
 
      TEST :
      ------
 
         Voir TestG2D/TestG21
 
-     REMARQUES:
+     NOTES:
      ----------
 
-     HISTORIQUE DES MODIFICATIONS   :
+     HISTORY OF MODIFICATIONS   :
      --------------------------------
 
       27-01-98 : GG ; OPTIMISATION LOADER
-                    Transformer les variables static globales en static
-                   locales.
+                    Transform global static variables into static locals.
 
 =====================================================================*/
 #define G002	//Add new DrawElement(), DrawVertex() methods
@@ -52,7 +51,7 @@ Graphic2d_Ellips::Graphic2d_Ellips
 
       myAngle =Standard_ShortReal(anAngle); 
 
-      // Cas de l'ellipse horizontale
+      // Case of horizontal ellipse 
       if (Abs (anAngle) <= RealEpsilon ()) {
           myMinX = myX - myMajorRadius;
           myMaxX = myX + myMajorRadius;
@@ -317,15 +316,15 @@ Standard_Boolean Graphic2d_Ellips::Pick (const Standard_ShortReal X,
               }
             }   
         }
-        Standard_ShortReal xf1,yf1,xf2,yf2; //Les foyers.
+        Standard_ShortReal xf1,yf1,xf2,yf2; //Sources.
         Standard_ShortReal q = 
            Standard_ShortReal(Sqrt( Abs( myMajorRadius*myMajorRadius - myMinorRadius*myMinorRadius) ));
 
         Standard_ShortReal cos = Standard_ShortReal(Cos(myAngle));
         Standard_ShortReal sin = Standard_ShortReal(Sin(myAngle));
 
-     //Focus 1 et 2 calcules pour l' ellipse dont le centre 
-     // est ramene a l' origine du repere(0,0)
+     // Focus 1 and 2 calculated for the ellipse with centre 
+     // at the origin of mark(0,0)
         xf1 = q*cos; 
         yf1 = q*sin;
         xf2 = -q*cos; 
@@ -344,7 +343,7 @@ Standard_Boolean Graphic2d_Ellips::Pick (const Standard_ShortReal X,
           SetPickedIndex( 0 );
      }
  #else	 
-	  Standard_ShortReal xf1,yf1,xf2,yf2; //Les foyers.
+	  Standard_ShortReal xf1,yf1,xf2,yf2; //Sourses.
       Standard_ShortReal Xp, Yp; 
       Standard_ShortReal q = 
          Sqrt( Abs( myMajorRadius*myMajorRadius - myMinorRadius*myMinorRadius) );
@@ -352,8 +351,8 @@ Standard_Boolean Graphic2d_Ellips::Pick (const Standard_ShortReal X,
       Standard_ShortReal cos = Cos (myAngle);
       Standard_ShortReal sin = Sin (myAngle);
 
-     //Focus 1 et 2 calcules pour l' ellipse dont le centre 
-     // est ramene a l' origine du repere(0,0)
+     // Focus 1 and 2 calculated for the ellipse with centre 
+     // at the origin of mark(0,0)
       xf1 = q*cos; 
       yf1 = q*sin;
       xf2 = -q*cos; 

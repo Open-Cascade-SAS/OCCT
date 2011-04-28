@@ -372,7 +372,7 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
   if (status == ChFi2d_ConnexionError) return commonVertex;
 
   TopoDS_Edge basisEdge1, basisEdge2, E1, E2;
-  // E1 and E2 are the adjacentes edges to Fillet
+  // E1 and E2 are the adjacent edges to Fillet
 
   if (adjEdge1.IsSame(Fillet)) E1 = adjEdge2;
   else E1 = adjEdge1;
@@ -429,7 +429,7 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
       newEdge1.Location(E1.Location());
     } // if (firstVertex ...
     else if (lastVertex.IsSame(connectionE1Fillet)) { 
-//  syntaxe invalide sur NT
+//  syntax wrong on NT
 //      const Handle(Geom_Curve)& curve = 
 //	BRep_Tool::Curve(E1, loc, first, last);   
       Handle(Geom_Curve) curve = BRep_Tool::Curve(E1, loc, first, last);   
@@ -452,7 +452,7 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
   else {
     // It means the edge support one fillet on each end.
     if (firstVertex.IsSame(connectionE2Fillet)) {
-//  syntaxe invalide sur NT
+//  syntax wrong on NT
 //      const Handle(Geom_Curve)& curve = 
 //	BRep_Tool::Curve(E2, loc, first, last);   
       Handle(Geom_Curve) curve = BRep_Tool::Curve(E2, loc, first, last);
@@ -462,7 +462,7 @@ TopoDS_Vertex ChFi2d_Builder::RemoveFillet(const TopoDS_Edge& Fillet)
       newEdge2.Location(E2.Location());
     } // if (firstVertex ...
     else if (lastVertex.IsSame(connectionE2Fillet)) {
-//  syntaxe invalide sur NT
+//  syntax wrong on NT
 //      const Handle(Geom_Curve)& curve = 
 //	BRep_Tool::Curve(E2, loc, first, last);   
       Handle(Geom_Curve) curve = BRep_Tool::Curve(E2, loc, first, last);
@@ -650,7 +650,7 @@ TopoDS_Edge ChFi2d_Builder::BuildNewEdge(const TopoDS_Edge& E1,
   gp_Pnt Pnew = BRep_Tool::Pnt(NewExtr);
   Standard_Boolean PonctualEdge = Standard_False;
   Standard_Real Tol = Precision::Confusion();
-//  syntaxe invalide sur NT
+//  syntax wrong on NT
 //      const Handle(Geom_Curve)& curve = 
 //	BRep_Tool::Curve(E1, first, last);   
   Handle(Geom_Curve) curve = BRep_Tool::Curve(E1, first, last);   
@@ -765,7 +765,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   TopoDS_Vertex V4 = TopExp::LastVertex(E2);
 
   //========================================================================
-  //    On a trouve un premier arc.                                        +
+  //    The first arc is found.                                        +
   //========================================================================
 
   TopAbs_Orientation O1,O2;
@@ -783,7 +783,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   Standard_Real param1,param2,param3,param4;
   
   //========================================================================
-  //    Sauvegarde des parties non modifiees sur les aretes touchees.      +
+  //    Save non-modified parts of edges concerned.      +
   //========================================================================
 
   if (V1.IsSame(V)) {
@@ -808,7 +808,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   }
   
   //========================================================================
-  //    Recuperation des supports geometriques.                            +
+  //    Restore geometric supports.                            +
   //========================================================================
 
   Handle(Geom2d_Curve) C1,C2; 
@@ -818,7 +818,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   C2 = BRep_Tool::CurveOnSurface(E2,newFace,ufirst2,ulast2);
 
   //========================================================================
-  //   Determination du cote pour le conge.                                +
+  //   Determination of the face for fillet.                                +
   //========================================================================
 
   gp_Pnt2d p;
@@ -865,9 +865,9 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
   Ve3 = Ve1;
   Ve4 = Ve2;
 
-  // traitement des point de tangence ou de rebroussement
+  // processing of tangency or downcast point 
   if (Ve1.IsParallel(Ve2,Precision::Angular())) {
-    // Ve1 et Ve2 sont paralleles : on met cross a 0
+    // Ve1 and Ve2 are parallel : cross at 0
     cross = 0.;
     if (param1<param2) {
       Ve3 = -Ve1;
@@ -877,11 +877,11 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     }
 
     if (! Ve4.IsOpposite(Ve3,Precision::Angular())) {
-      // Il y a un vrai point de tangence, on arrete
+      // There is a true tangency point and the calculation is stopped
       status = ChFi2d_TangencyError;
       return filletEdge;
     }
-      // Sinon, c'est un point de rebroussement, on continue
+      // Otherwise this is a downcast point, and the calculation is continued
   }
 
   GccEnt_Position Qual1,Qual2;
@@ -973,7 +973,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
 	Fillet.Tangency2(nsol,PPU1,PPU2,Ptg2);
         dist = Ptg2.Distance(p);
         inside = (PPU2<param3 && PPU2>param4) || (PPU2<param4 && PPU2>param3);
-        //  cas de l'arc de cercle passant sur la couture
+        //  case of arc of circle passing on the sewing
         if ( ( basisC2->DynamicType() == STANDARD_TYPE(Geom2d_Circle) ) && 
             ( (2*PI<param3 && 2*PI>param4) || (2*PI<param4 && 2*PI>param3) ) ) {
         //  cas param3<param4
@@ -999,14 +999,14 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     Fillet.Tangency1(numsol,U1,U2,Ptg1);
     Fillet.Tangency2(numsol,Vv1,Vv2,Ptg2);
 
-    // verification de la validite des parametres
+    // check the validity of parameters
     inside = (U2<param1 && U2>param2) || (U2<param2 && U2>param1);
     if ( (basisC1->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
       &&  ( (2*PI<param1 && 2*PI>param2) || (2*PI<param2 && 2*PI>param1) ) ) {
-      // arc de cercle contenant l'origine du cercle
-      //  cas param1<param2
+      // arc of circle containing the circle origin
+      //  case param1<param2
       inside = (param1<U2 && U2<2*PI) || (0<=U2 && U2<param2-2*PI);
-      //  cas param2<param1
+      //  case param2<param1
       inside = inside || (param2<U2 && U2<2*PI) || (0<=U2 && U2<param1-2*PI);
     }
     if (!inside) {
@@ -1017,7 +1017,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     inside = (Vv2<param3 && Vv2>param4) || (Vv2<param4 && Vv2>param3);
     if ( (basisC2->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
       &&  ( (2*PI<param3 && 2*PI>param4) || (2*PI<param4 && 2*PI>param3) ) ) {
-      // arc de cercle contenant l'origine du cercle
+    // arc of circle containing the circle origin
       //  cas param3<param4
       inside = (param3<Vv2 && Vv2<2*PI) || (0<=Vv2 && Vv2<param4-2*PI);
       //  cas param4<param3
@@ -1049,7 +1049,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     }
 
     //=======================================================================
-    //   Mise a jour des sommets du conge.                                  +
+    //   Update tops of the fillet.                                  +
     //=======================================================================
     gp_Pnt Pntbid;
     gp_Pnt2d sommet;

@@ -1,10 +1,8 @@
 //
 // S3593    //GG_270298
-//              Eviter d'appeler IsKind() qui est couteux.
-//		Ajouter un champs myIsUpToDate permettant de savoir
-//		si l'objet est a jour.
-//		Ajouter un champs myIsTransformed permettant de savoir
-//		si l'objet est transforme.
+//              Avoid calling IsKind() which is expensive.
+//		Add field myIsUpToDate informing if the object is updated.
+//		Add field myIsTransformed informing if the object is transformed.
 //
 
 #define G002	    //GG_140400
@@ -417,11 +415,11 @@ void Graphic2d_GraphicObject::RemovePrimitive (const Handle(Graphic2d_Primitive)
 
 #ifdef OK
 	//
-	// Pour retracer ce qui est necessaire
-	// On parcourt les primitives de 1 jusqu'a Index
-	// et on recupere l'Index de la premiere primitive
-	// dont le rectangle englobant intersecte celui
-	// de la primitive retiree.
+	// To retrace whatever is necessary
+	// Parse the primitives from 1 to Index
+	// and return l'Index of the first primitive
+	// with bounding box intersecting the bounding
+        // box of the removed primitive.
 	//
 Standard_Boolean stop = Standard_False;
 Standard_ShortReal sMinx, sMiny, sMaxx, sMaxy;
@@ -433,17 +431,17 @@ Standard_ShortReal RL	= ShortRealLast ();
 	for (Standard_Integer i=1; i<Index && ! stop; i++) {
 		(Primitive (i))->MinMax (x, X, y, Y);
 		//
-		// Les lignes infinies
+		// Infinite lines
 		//
 		if ((x == RF) || (X == RL) || (y == RF) || (Y == RL)) {
-			// infinie horizontale
+			// infinite horizontal
 			if (y == Y) stop = (sMiny <= y) && (y <= sMaxy);
-			// infinie verticale
+			// infinite vertical
 			if (x == X) stop = (sMinx <= x) && (x <= sMaxx);
-			// infinie oblique
+			// infinite diagonal
 			if ((y != Y) && (x != X)) {
-				// Pb pas d'interrogation possible
-				// sur le contenu de la primitive.
+				// no interrogation possible
+				// about the content of the primitive.
 				stop = Standard_True;
 			}
 		}
@@ -754,7 +752,7 @@ Standard_Boolean Graphic2d_GraphicObject::MinMax (Quantity_Length & Minx, Quanti
 		    (thePrimitive->Family() == Graphic2d_TOP_MARKER);
 		    if (! TheFlag) {
 		      if( thePrimitive->MinMax (x, X, y, Y) ) {
-			// Tests pour cause de lignes infinies
+			// Tests for cause of infinite lines
 			if (x != RF) sMinx = (sMinx < x ? sMinx : x);
 			if (X != RL) sMaxx = (sMaxx > X ? sMaxx : X);
 			if (y != RF) sMiny = (sMiny < y ? sMiny : y);
@@ -764,8 +762,8 @@ Standard_Boolean Graphic2d_GraphicObject::MinMax (Quantity_Length & Minx, Quanti
 		}
 	}
 
-	// Attention, il se peut que :
-	// sMinx = sMiny = ShortRealLast (); et
+	// Attention, it is possible that :
+	// sMinx = sMiny = ShortRealLast (); and
 	// sMaxx = sMaxy = ShortRealFirst();
 	if (sMinx > sMaxx) {
 	  status = Standard_False;
@@ -805,7 +803,7 @@ Standard_Boolean Graphic2d_GraphicObject::MarkerMinMax (Quantity_Length & Minx, 
 		    (thePrimitive->Family() == Graphic2d_TOP_MARKER);
 		    if (TheFlag) {
 		      if( thePrimitive->MinMax (x, X, y, Y) ) {
-			// Tests pour cause de lignes infinies
+			// Tests for cause of infinite lines
 			if (x != RF) sMinx = (sMinx < x ? sMinx : x);
 			if (X != RL) sMaxx = (sMaxx > X ? sMaxx : X);
 			if (y != RF) sMiny = (sMiny < y ? sMiny : y);
@@ -815,8 +813,8 @@ Standard_Boolean Graphic2d_GraphicObject::MarkerMinMax (Quantity_Length & Minx, 
 		}
 	}
 
-	// Attention, il se peut que :
-	// sMinx = sMiny = ShortRealLast (); et
+	// Attention, it is possible that :
+	// sMinx = sMiny = ShortRealLast (); and
 	// sMaxx = sMaxy = ShortRealFirst();
 	if (sMinx > sMaxx) {
 	  status = Standard_False;

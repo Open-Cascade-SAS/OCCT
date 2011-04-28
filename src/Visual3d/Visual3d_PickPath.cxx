@@ -7,11 +7,11 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques a la classe
-//		decrivant un reperage.
+//-Design	Declaration of variables specific to the classe
+//		describing a marking.
 
-//-Warning	Un reperage est defini par :
-//		- un vecteur (Elem_Num, Pick_Id, Structure)
+//-Warning	Marking is defined by :
+//		- vector (Elem_Num, Pick_Id, Structure)
 
 //-References	
 

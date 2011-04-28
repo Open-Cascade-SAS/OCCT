@@ -805,7 +805,7 @@ void AIS_AngleDimension::ComputeTwoEdgesAngle(const Handle(Prs3d_Presentation)& 
     return;
   }
   // Temporary: computation of myVal
-  //  myVal = Abs(geom_lin1->Lin().Angle( geom_lin2->Lin())); // Pb avec les angles JPR
+  //  myVal = Abs(geom_lin1->Lin().Angle( geom_lin2->Lin())); // Pb with angles JPR
 
   if (copyOfMyExtShape != 0) myExtShape = copyOfMyExtShape;  
 
@@ -833,7 +833,7 @@ void AIS_AngleDimension::ComputeTwoEdgesAngle(const Handle(Prs3d_Presentation)& 
 #endif
 
 
-  // Traitement du cas ou les 2 droites sont paralleles
+  // Processing in  case of 2 parallel straight lines
   if (lin1_2d->Lin2d().Direction()
       .IsParallel(lin2_2d->Lin2d().Direction(),Precision::Angular())) {    
     ComputeTwoEdgesNullAngle(aPresentation,
@@ -844,7 +844,7 @@ void AIS_AngleDimension::ComputeTwoEdgesAngle(const Handle(Prs3d_Presentation)& 
 			     isInfinite1,isInfinite2);
   }
   
-  // Traitement du cas ou les 2 droites ne sont pas paralleles
+  // Processing in case of 2 non-parallel straight lines
   else {
     ComputeTwoEdgesNotNullAngle(aPresentation,
 				geom_lin1,
@@ -1035,7 +1035,7 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
     Standard_Real par = ElCLib::Parameter(circle,curpos);
     curpos = ElCLib::Value(par,circle);    
 
-    // un petit offset comme LengthDimension
+    // small offset like in LengthDimension
     gp_Vec transl(myCenter, curpos);
     transl*= 0.3;
     curpos.Translate(transl);
@@ -1048,7 +1048,7 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
   }
 
   else {
-  // on projette le point dans le plan
+  // point is projected on the plane
     gp_Pnt2d pointOnPln(ProjLib::Project(myPlane->Pln(),myPosition));
     myPosition = BRepAdaptor_Surface(BRepBuilderAPI_MakeFace(myPlane->Pln()).Face()).Value(pointOnPln.X(),pointOnPln.Y());
     curpos = myPosition;
@@ -1058,10 +1058,10 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
       curpos.SetXYZ(curpos.XYZ()+delta);
       dist = curpos.Distance(myCenter);
     }
-    // Pour savoir si on doit prendre la distance -dist ou non
-    // il faut savoir si on est dans le secteur oppose a l'angle
-    // ou non : on est dans le secteur oppose si les coordonnees
-    // de curpos dans le repere (d1,d2) sont negatives
+    // To learn if it is necessary to take distance -dist or not
+    // it is necessary to know if we are in the sector opposite to the angle
+    // if not : we are in the opposite sector if the coordinates
+    // of curpos in point (d1,d2) are negative
     gp_Ax2 ax(myCenter,myFDir.Crossed(mySDir),myFDir);
     gp_Circ circle(ax,dist);
 #ifdef DEB
@@ -1075,7 +1075,7 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
     Standard_Real ufin = uc2;
     if (uco > ufin) {
       if (Abs(myVal)<PI) {
-	// test si uco est dans le secteur oppose 
+	// test if uco is in the opposite sector 
 	if (uco > udeb+PI && uco < ufin+PI){
 	  dist = -dist;
 	}
@@ -1172,14 +1172,14 @@ void AIS_AngleDimension::ComputeTwoEdgesNullAngle(const Handle(Prs3d_Presentatio
   gp_Lin gpl2 = l2->Lin();
 
   //------------------------------------------------------------
-  //                Calcul de myCenter
-  // -> Point situe sur la ligne mediane des 2 droites,
-  //    calcule comme etant le milieu des 2 points les plus
-  //    proches de chaque droite.
+  //                Computation of myCenter
+  // -> Point located on the median of 2 straight lines,
+  //    is calculated as located between 2 closest points 
+  //    of each straight line.
   //-----------------------------------------------------------
-     //   theLength : rayon du futur cercle
+     //   theLength : radius of the future circle
   Standard_Real theLength = gpl1.Distance(gpl2.Location());
-  // traitement du cas particulier ou les 2 droites sont confondues
+  // processing of the particular case when 2 straight lines are coincident
   Standard_Boolean SameLines(Standard_False);
   if ( theLength <= Precision::Confusion()) {
     SameLines = Standard_True;
@@ -1247,9 +1247,9 @@ void AIS_AngleDimension::ComputeTwoEdgesNullAngle(const Handle(Prs3d_Presentatio
     if ( V1.CrossMagnitude(V2) < 0 ) theaxis.Reverse();
   }
 
-  gp_Pnt curpos; // position du curseur
+  gp_Pnt curpos; // cursor position
   TColStd_Array1OfReal tabdist(1,4);
-  gp_Pnt P1, P2; // points d'intersection du cercle avec les 2 droites
+  gp_Pnt P1, P2; // points at intersection of the circle with 2 straight lines
  
   if (myAutomaticPosition) {
     if (!isInfinite1) {
@@ -1279,9 +1279,9 @@ void AIS_AngleDimension::ComputeTwoEdgesNullAngle(const Handle(Prs3d_Presentatio
 
       myCenter.Translate(gp_Vec(d1)*theLength);
 
-      // calcul des points d'attache de la cote 
-      //  -> ils sont != des points d'intersection si les 
-      //     intersection sont en dehors des limites des edges
+      // calculate attachments of the face 
+      //  -> they are points of intersection if  
+      //     intersection is outside of the edges
       Standard_Real pparam = ElCLib::Parameter(gpl1,myFAttach);
       Standard_Real pparam1 = ElCLib::Parameter(gpl1,ptat11);
       Standard_Real pparam2 = ElCLib::Parameter(gpl1,ptat12);
@@ -1315,8 +1315,8 @@ void AIS_AngleDimension::ComputeTwoEdgesNullAngle(const Handle(Prs3d_Presentatio
       Handle(Geom_Circle)  circle = new Geom_Circle(AX,theLength);
       Handle(Geom2d_Curve) geoCurve = GeomAPI::To2d(circle,myPlane->Pln());
       Handle(Geom2d_Circle) c2d = *((Handle(Geom2d_Circle)*)& geoCurve);
-      // calcul du point d'intersection du cercle avec l1
-      Standard_Real pparam; // parametre du point d'intersection sur l1
+      // calculate the intersection of circle with l1
+      Standard_Real pparam; // parameter of the point of intersection on l1
       IntAna2d_AnaIntersection inter(l1_2d->Lin2d(),c2d->Circ2d());
       gp_Pnt2d pint1(inter.Point(1).Value());
       gp_Pnt2d pint2(inter.Point(2).Value());
@@ -1382,18 +1382,18 @@ void AIS_AngleDimension::ComputeTwoEdgesNullAngle(const Handle(Prs3d_Presentatio
     gp_Lin Media(myCenter, gpl1.Direction());
     Standard_Real pcurpos = ElCLib::Parameter(Media, curpos);
     myCenter =  ElCLib::Value(pcurpos, Media);
-    // on translate le centre de facon a avoir un rayon constant!
+    // the centre is translated to avoid a constant radius!
     myCenter.Translate(-theLength*gp_Vec(gpl1.Direction()));
     gp_Ax2 AX(myCenter,theaxis,gpl1.Direction());
     Handle(Geom_Circle)  circle = new Geom_Circle(AX,theLength);
 
-    // remise a jour de curpos
+    // re-update curpos
     pcurpos = ElCLib::Parameter(circle->Circ(), curpos);
     curpos = ElCLib::Value(pcurpos, circle->Circ());
 
     Handle(Geom2d_Curve) geoCurve = GeomAPI::To2d(circle,myPlane->Pln());
     Handle(Geom2d_Circle) c2d = *((Handle(Geom2d_Circle)*)& geoCurve);
-    // calcul du point d'intersection du cercle avec l1
+    // calculate the point of intersection of circle with l1
     IntAna2d_AnaIntersection inter(l1_2d->Lin2d(),c2d->Circ2d());
     gp_Pnt2d pint1(inter.Point(1).Value());
     gp_Pnt2d pint2(inter.Point(2).Value());
@@ -1403,9 +1403,9 @@ void AIS_AngleDimension::ComputeTwoEdgesNullAngle(const Handle(Prs3d_Presentatio
     else myFAttach = Int2;
     P1 = myFAttach;
     
-    // calcul du point d'intersection du cercle avec l2
-    // -> c'est la projection car le cercle a son centre
-    //    au milieu de l1 et l2
+    // calculate the point of intersection of circle with l2
+    // -> this is the projection because the centre of circle
+    //    is in the middle of l1 and l2
     Standard_Real pparam = ElCLib::Parameter(gpl2,myFAttach);
     mySAttach = ElCLib::Value(pparam, gpl2);
 
@@ -1598,9 +1598,8 @@ void AIS_AngleDimension::Compute3DSelection( const Handle( SelectMgr_Selection )
 
 //=======================================================================
 //function : Compute2DSelection
-//purpose  : calcule les zones de selection sur une cote d'angle entre 2
-//           edges
-//            Traitement particulier pour les angles nuls!
+//purpose  : compute zones of selection on a side of angle between 2 edges
+//           Special processing of zero angles!
 //=======================================================================
 
 void AIS_AngleDimension::Compute2DSelection(const Handle(SelectMgr_Selection)& aSelection)
@@ -1636,7 +1635,7 @@ void AIS_AngleDimension::Compute2DSelection(const Handle(SelectMgr_Selection)& a
   }
   
   //----------------------------------------------------------
-  //  Cas classique ( angle != 0 )
+  //  Classic case  ( angle != 0 )
   else {
 
     if (myFDir.IsParallel(mySDir,Precision::Angular())) {
@@ -1679,7 +1678,7 @@ void AIS_AngleDimension::Compute2DSelection(const Handle(SelectMgr_Selection)& a
       
       if (uco > ufin) {
 	if (Abs(myVal)<PI) {
-	  // test si uco est dans le secteur oppose 
+	  // test if uco is in the opposing sector 
 	  if (uco > udeb+PI && uco < ufin+PI){
 	    udeb = udeb + PI;
 	  ufin = ufin + PI;
@@ -1695,7 +1694,7 @@ void AIS_AngleDimension::Compute2DSelection(const Handle(SelectMgr_Selection)& a
       p1   = ElCLib::Value(udeb,cer);
       p2   = ElCLib::Value(ufin,cer);
       
-      //Creation des 2 owners pour chaque partie de la fleche
+      //Create 2 owners for each part of the arrow
       Handle(AIS_DimensionOwner) own1 = new AIS_DimensionOwner(this,7);
       Handle(AIS_DimensionOwner) own2 = new AIS_DimensionOwner(this,7);
       if (myExtShape != 0) {
@@ -1772,7 +1771,7 @@ void AIS_AngleDimension::ComputeNull2DSelection(
 
   if (uco > ufin) {
     if (Abs(myVal)<PI) {
-      // test si uco est dans le secteur oppose 
+      // test if uco is in the opposing sector 
       if (uco > udeb+PI && uco < ufin+PI){
 	udeb = udeb + PI;
 	ufin = ufin + PI;
@@ -1791,7 +1790,7 @@ void AIS_AngleDimension::ComputeNull2DSelection(
     }
   }
 
-  //Creation des 2 owners pour chaque partie de la fleche
+  //Create 2 owners for each part of the arrow
   Handle(AIS_DimensionOwner) own1 = new AIS_DimensionOwner(this,7);
   Handle(AIS_DimensionOwner) own2 = new AIS_DimensionOwner(this,7);
   if (myExtShape != 0) {
@@ -1821,7 +1820,7 @@ void AIS_AngleDimension::ComputeNull2DSelection(
     aSelection->Add(scurv);
   }
   else {
-    // on trace un bout de segment pour permettre la selection
+    // find end of segment to allow selection
     gp_Vec VTrans(myFDir.Crossed(Norm));
     Handle(Select3D_SensitiveSegment) seg1;
     seg1 = new Select3D_SensitiveSegment(own1, 

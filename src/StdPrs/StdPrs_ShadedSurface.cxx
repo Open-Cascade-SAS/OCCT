@@ -40,7 +40,7 @@ void StdPrs_ShadedSurface::Add(const Handle(Prs3d_Presentation)& aPresentation,
   
   if ( ! aDrawer->ShadingAspectGlobal() ) {
 
-// Si la surface est fermee, on ne tracera pas les faces tournant le dos:
+// If the surface is closed, the faces from back-side are not traced:
 
     Handle(Graphic3d_AspectFillArea3d) Asp = aDrawer->ShadingAspect()->Aspect();
 
@@ -129,7 +129,7 @@ void StdPrs_ShadedSurface::Add(const Handle(Prs3d_Presentation)& aPresentation,
       DU = (U2-U1)/ N1;
       DV = (V2-V1)/ N2;
       
-      // Calcul de la premiere ligne;
+      // Calculation of the first line;
       
       for ( i = 1; i<= N2+1; i++) {
 	aSurface.D1(U1 , V1 + DV * (i-1),P,D1U,D1V);

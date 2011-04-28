@@ -110,7 +110,7 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo(const Standard_Integer Xpix,
 					       const Standard_Integer Ypix,
 					       const Handle(V3d_View)& aview)
 {
-  // d'abord voir ce que le ViewerSelector donne 
+  // check that ViewerSelector gives 
   if(aview->Viewer()== myCTX->CurrentViewer()) {
 #ifdef IMP160701
     //Nullify class members storing information about detected AIS objects.
@@ -128,7 +128,7 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo(const Standard_Integer Xpix,
       EO = myMainVS->Picked(i_detect);
       if(!EO.IsNull()){
 	if(myFilters->IsOk(EO)) {
-	  myDetectedSeq.Append(i_detect); // normalement ils sont deja ranges dans le bon ordre...
+	  myDetectedSeq.Append(i_detect); // normallly they are already arranged in correct order...
 #ifdef IMP160701
         Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast(EO->Selectable());
         if(!Handle(AIS_Shape)::DownCast(anObj).IsNull())
@@ -138,7 +138,7 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo(const Standard_Integer Xpix,
     }
     }
     
-    //resultat des courses..
+    //result of  courses..
     if(had_nothing || myDetectedSeq.IsEmpty()){
       if(mylastindex !=0 && mylastindex <= myMapOfOwner.Extent()){
 
@@ -153,9 +153,8 @@ AIS_StatusOfDetection AIS_LocalContext::MoveTo(const Standard_Integer Xpix,
       return (had_nothing ? AIS_SOD_Nothing : AIS_SOD_AllBad);
     }
     
-    // quelque chose...
-    // on passe tous les proprietaires detectes par le selecteur 
-    // aux filtres et on garde les bons..
+    // all owners detected by the selector are passed to the 
+    // filters and correct ones are preserved...
     myCurDetected = 1;
     EO = myMainVS->Picked(myDetectedSeq(myCurDetected));
     
@@ -270,7 +269,7 @@ AIS_StatusOfPick AIS_LocalContext::Select(const Standard_Integer XPMin,
     for(myMainVS->Init();myMainVS->More();myMainVS->Next()){
       const Handle(SelectMgr_EntityOwner)& OWNR = myMainVS->Picked();
       if(myFilters->IsOk(OWNR)){
-	// rangeons ce proprietaire au chaud, il pourrait servir...
+	// it can be helpfil to classify this owner immediately...
 #ifdef BUC60569
 	  Standard_Integer state = OWNR->State();
 	  if( state < 1 ){
@@ -365,8 +364,8 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect(const Standard_Boolean updateview
   return AIS_SOP_Error;
 }
 //==================================================
-// Function: les objets deja selectionnes sont deselectionnes
-// Purpose : les autres sont selectionnes.
+// Function: the already selected objects are unselected
+// Purpose : others are selected.
 //==================================================
 AIS_StatusOfPick AIS_LocalContext::ShiftSelect(const Standard_Integer XPMin,
 				   const Standard_Integer YPMin,
@@ -386,7 +385,7 @@ AIS_StatusOfPick AIS_LocalContext::ShiftSelect(const Standard_Integer XPMin,
 #ifdef BUC60774
       return LastExt == 0 ? AIS_SOP_NothingSelected:AIS_SOP_Removed;
 #else
-      return AIS_SOP_NothingSelected; // aucun effet si on a clique dans le vide
+      return AIS_SOP_NothingSelected; // no effet if click on empty space
 #endif
 
     AIS_Selection::SetCurrentSelection(mySelName.ToCString());
@@ -448,7 +447,7 @@ AIS_StatusOfPick AIS_LocalContext::Select(const TColgp_Array1OfPnt2d& aPolyline,
     for(myMainVS->Init();myMainVS->More();myMainVS->Next()){
       const Handle(SelectMgr_EntityOwner)& OWNR = myMainVS->Picked();
       if(myFilters->IsOk(OWNR)){
-	// rangeons ce proprietaire au chaud, il pourrait servir...
+	// it can be helpfil to classify this owner immediately...
 #ifdef BUC60953
         Standard_Integer state = OWNR->State();
         if( state < 1 ){
@@ -590,7 +589,7 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
   Handle (PrsMgr_PresentationManager3d) PM = myMainPM;
   SelectMgr_DataMapOfObjectOwners aMap;
   
-  // pour eviter les Pbs quand on est dans une boucle de recherche des objets selectionnes....
+  // to avoid problems when there is a loop searching for selected objects...
 #if !defined OCC189 && !defined USE_MAP
   const TColStd_Array1OfTransient& Obj = Sel->Objects()->Array1();
   for(Standard_Integer i =Obj.Lower();i<=Sel->NbStored();i++)
@@ -876,7 +875,7 @@ SelectedApplicative() const
 
 //=======================================================================
 //function : UpdateSelection
-//purpose  : devrait disparaitre ...
+//purpose  : should disappear...
 //=======================================================================
 void AIS_LocalContext::UpdateSelected(const Standard_Boolean updateviewer)
 {
@@ -955,15 +954,15 @@ void AIS_LocalContext::SetSelected(const Handle(AIS_InteractiveObject)& anIObj,
   if(!IsValidForSelection(anIObj)) return;
   UnhilightPicked(Standard_False);
   
-  //1er cas , on trouve un proprietaire qui a deja <anIObj> comme proprietaire 
-  // et qui ne soit pas decompose...
+  //1st case, owner already <anIObj> as owner  
+  // and not separated is found...
 
   Handle(AIS_Selection) sel = AIS_Selection::Selection(mySelName.ToCString());
   //Standard_Boolean found(Standard_False);
   Handle(Standard_Transient) Tr;
   Handle(SelectMgr_EntityOwner) EO = FindSelectedOwnerFromIO(anIObj);
   if(EO.IsNull()){
-    //regardons s'il a dans sa selection numero 0 un proprietaire qu'on pourrait triturer...
+    //check if in selection number 0 there is an owner that can be triturated...
     if(anIObj->HasSelection(0)){
       const Handle(SelectMgr_Selection)& SIOBJ = anIObj->Selection(0);
       SIOBJ->Init();
@@ -997,7 +996,7 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
 {
   if(!IsValidForSelection(anIObj)) return;
   UnhilightPicked(Standard_False);
-  // d'abord regardons s'il est selectionne...
+  // first check if it is selected...
   Handle(SelectMgr_EntityOwner) EO;
 
   EO = FindSelectedOwnerFromIO(anIObj);
@@ -1042,7 +1041,7 @@ void AIS_LocalContext::AddOrRemoveSelected(const Handle(AIS_InteractiveObject)& 
 
 //=======================================================================
 //function : AddOrRemoveSelected
-//purpose  :  A revoir...
+//purpose  : To check...
 //=======================================================================
 void AIS_LocalContext::AddOrRemoveSelected(const TopoDS_Shape& Sh,
 					   const Standard_Boolean updateviewer)
@@ -1103,21 +1102,21 @@ void AIS_LocalContext::ManageDetected(const Handle(SelectMgr_EntityOwner)& aPick
   // OK...
   if(okStatus){
     //=======================================================================================================
-    // 2 cas : a- l'objet est dans la map des pickes:
-    //             1. c'est le meme index que le dernier detecte: ->On ne fait rien
-    //             2. sinon :
-    //                  - si lastindex = 0 (aucun objet detecte au dernier move)
-    //                    on hilighte la prs de l'objet et on met lastindex = index(objet)
-    //                  - sinon : 
-    //                           on "desighlighte" la prs de l'objet correspondant a lastindex
-    //                           voire on l'efface si l'objet n'est pas visualise mais juste actif
-    //                           puis on hilighte la Prs de l'objet detecte ici et on met lastindex = index(objet)
-    //         b- l'objet n'est pas dans la map des objets pickes
-    //                  - si lastindex != 0 (objet detecte au dernier move) on desighlighte ...
-    //            si l'objet a ete decompose, on cree une prs pour la shape detectee et on ajoute
-    //            le couple (Proprietaire,Prs) dans la map.
-    //           sinon on met dans la map le couple(proprietaire, NullPrs) et on hilighte l'objet interactif
-    //           lui meme.
+    // 2 cases : a- object is in the map of picks:
+    //             1. this is the same index as the last detected: -> Do nothing
+    //             2. otherwise :
+    //                  - if lastindex = 0 (no object was detected at the last step)
+    //                    the object presentation is highlighted and lastindex = index(objet)
+    //                  - othrwise : 
+    //                           the presentation of the object corresponding to lastindex is "unhighlighted" 
+    //                           it is removed if the object is not visualized but only active
+    //                           then the presentation of the detected object is highlighted and lastindex = index(objet)
+    //         b- the object is not in the map of picked objects
+    //                  - if lastindex != 0 (object detected at the last step) it is unhighlighted ...
+    //            if the object was decomposed, presentation is created for the detected shape and the couple
+    //             (Proprietaire,Prs)is added in the map.
+    //           otherwise the couple(proprietaire, NullPrs) is placed in the map and the interactive object 
+    //           itself is highlighted.
     //                              
     //=======================================================================================================
 
@@ -1237,7 +1236,7 @@ Standard_Boolean AIS_LocalContext::ComesFromDecomposition(const Standard_Integer
 {
   const Handle(SelectMgr_EntityOwner)& OWN = myMapOfOwner.FindKey(PickedIndex);
   Handle(SelectMgr_SelectableObject) aSel  = OWN->Selectable();
-  if (myActiveObjects.IsBound (aSel)) { // debug de jmi
+  if (myActiveObjects.IsBound (aSel)) { // debug of jmi
     const Handle(AIS_LocalStatus)& Stat      = myActiveObjects(aSel);    
     return Stat->Decomposed();
   }
@@ -1319,7 +1318,7 @@ Standard_Boolean AIS_LocalContext::IsValidForSelection(const Handle(AIS_Interact
 
 Standard_Integer AIS_LocalContext::HilightNextDetected(const Handle(V3d_View)& V)
 {
-  // on va jusqu'au prochain proprietaire
+  // go to the next owner
 
   if(myDetectedSeq.IsEmpty()) return Standard_False;
   Standard_Integer L = myDetectedSeq.Length();
@@ -1452,8 +1451,7 @@ void AIS_LocalContext::HilightTriangle(const Standard_Integer Rank,
 
 //=======================================================================
 //function : FindSelectedOwnerFromIO
-//purpose  : on regarde si l''un des proprietaires selectionnes represente
-//           effectivement IObj
+//purpose  : it is checked if one of the selected owners really presents IObj
 //=======================================================================
 Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromIO
                           (const Handle(AIS_InteractiveObject)& anIObj) const 
@@ -1499,7 +1497,7 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromIO
 
 //=======================================================================
 //function : FindSelectedOwnerFromShape
-//purpose  : on regarde si l''un des proprietaires selectionnes represente effectivement IObj
+//purpose  : it is checked if one of the selected owners really presents IObj
 //=======================================================================
 Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const TopoDS_Shape& sh) const 
 {

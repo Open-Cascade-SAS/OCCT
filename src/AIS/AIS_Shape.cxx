@@ -2,12 +2,6 @@
 // Created:	Fri Dec 20 17:18:37 1996
 // Author:	Robert COUBLANC
 //		<rob@robox.paris1.matra-dtv.fr>
-// Modified:    Christiane ARMAND: 5/05/97: dans le compute on prend en 
-//              compte le cas des objets infinis     
-//              ROB : introduction des primitives connectees
-//                    Pour le calcul des faces sensibles...
-//   oct-03-97  ROB : en fonction du type de shapes, on change les coeffs de polygonisation...
-//                    (correction du Pb des cercles pas assez discretises...)
 
 #define BUC60577	//GG_191099 Draw correct bounding box and Menage ...
 
@@ -241,7 +235,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
   }
   
   
-  if (IsInfinite()) aPrs->SetInfiniteState(Standard_True); //pas de prise en compte lors du FITALL
+  if (IsInfinite()) aPrs->SetInfiniteState(Standard_True); //not taken in account duting FITALL
   switch (aMode) {
   case 0:{
     try { OCC_CATCH_SIGNALS  StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer); }
@@ -250,7 +244,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       cout << "AIS_Shape::Compute()  failed"<< endl;
 #endif
       cout << "a Shape should be incorrect : No Compute can be maked on it  "<< endl;     
-// on calcule une presentation de la boite englobante
+// presentation of the bounding box is calculated
 //      Compute(aPresentationManager,aPrs,2);
     }
     break;
@@ -275,7 +269,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 	  BRepTools::Clean(myshape);
 	}
       
-      //shading seulement a partir de face...
+      //shading only on face...
       if ((Standard_Integer) myshape.ShapeType()>4)
 	StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
       else {
@@ -306,7 +300,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     }
   case 2:
     {
-      // boite englobante
+      // bounding box
       if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
       else DisplayBox(aPrs,BoundingBox(),myDrawer);
     }
@@ -379,7 +373,7 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
   Aspect_TypeOfDeflection prevdef = defdrawer->TypeOfDeflection();
   defdrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
 
-// coefficients pour le calcul
+// coefficients for calculation
 
   Standard_Real prevangle, newangle ,prevcoeff,newcoeff ; 
   if (OwnHLRDeviationAngle(newangle,prevangle) || OwnHLRDeviationCoefficient(newcoeff, prevcoeff))
@@ -486,7 +480,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 #else
     TopExp_Explorer anExplor (myshape, TopAbs_VERTEX);
 #endif
-    if (!anExplor.More()) // Shape vide -> Assemblage vide.
+    if (!anExplor.More()) // empty Shape -> empty Assembly.
       return;
   }
 
@@ -500,12 +494,12 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   }
 #endif
 
-// POP on protege contre un plantage dans les couches basses
+// POP protection against crash in low layers
 
   Standard_Real aDeflection = myDrawer->MaximalChordialDeviation();
   if (myDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
   {
-    // On calcule la fleche en fonction des min max globaux de la piece:
+    // Vector is calculated depending on global min max of the part:
     Bnd_Box aBndBox; //= BoundingBox(); ?
     BRepBndLib::Add (shape, aBndBox);
     if (!aBndBox.IsVoid())
@@ -583,7 +577,7 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   myOwnColor  = aCol; 
   if(!myDrawer->HasShadingAspect()){
     Handle(Prs3d_ShadingAspect) asp = new Prs3d_ShadingAspect();
-// recuperons le materiau reference...
+// retrieve the reference materials...
     if(myDrawer->HasLink()){
       const Handle(Prs3d_Drawer)& refdr = myDrawer->Link();
       Graphic3d_MaterialAspect theRefMat = 
@@ -611,7 +605,7 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   myDrawer->SetUnFreeBoundaryAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
   myDrawer->SetSeenLineAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
 
-  // modif du shading rapide...
+  // fast shading modification...
   if(!GetContext().IsNull()){
     if( GetContext()->MainPrsMgr()->HasPresentation(this,1)){
       Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
@@ -622,13 +616,6 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
       G->SetGroupPrimitivesAspect(a4bis);
 #else
       a4bis->SetInteriorColor(Quantity_Color(aCol)); // Already done above in SetColor(...)	
-
-//***test rob : pour avoir la vraie couleur demandee en shading ***
-// mais du coup, le shading est "plat" ...****
-//      Graphic3d_MaterialAspect FMAT = a4bis->FrontMaterial();
-//      FMAT.SetColor(Quantity_Color(aCol));
-//      a4bis->SetFrontMaterial(FMAT);
-//******
 
       P->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
       G->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
@@ -646,7 +633,6 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
 
 void AIS_Shape::UnsetColor()
 {
-  // Evitons les stupidites...
   if(!HasColor() ){  myToRecomputeModes.Clear();
 		     return;}
   
@@ -757,8 +743,8 @@ void AIS_Shape::SetWidth(const Standard_Real W)
 #endif    
   }
   myOwnWidth = W;
-  LoadRecomputable(0); // signifier qu'il faut recalculer uniquement le wireframe....
-  LoadRecomputable(2); // et la boite englobante...
+  LoadRecomputable(0); // means that it is necessary to recompute only the wireframe....
+  LoadRecomputable(2); // and the bounding box...
   
 }
 
@@ -817,7 +803,7 @@ void AIS_Shape::SetMaterial(const Graphic3d_NameOfMaterial aMat)
       G->SetGroupPrimitivesAspect(a4bis);
     }
   }
-  myRecomputeEveryPrs =Standard_False; // aucun mode a recalculer :uniquement update viewer
+  myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();  
 }
 //=======================================================================
@@ -845,7 +831,7 @@ void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& aMat)
     G->SetGroupPrimitivesAspect(a4bis);
   }
 }
-  myRecomputeEveryPrs =Standard_False; // aucun mode a recalculer :uniquement update viewer
+  myRecomputeEveryPrs =Standard_False; // no mode to recalculate  :only viewer update
   myToRecomputeModes.Clear();  
 }
 
@@ -887,7 +873,7 @@ void AIS_Shape::UnsetMaterial()
       G->SetGroupPrimitivesAspect(a4bis);
     }
   }
-  myRecomputeEveryPrs =Standard_False; // aucun mode a recalculer :uniquement update viewer
+  myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();  
   
 }
@@ -920,7 +906,7 @@ void AIS_Shape::SetTransparency(const Standard_Real AValue)
       G->SetGroupPrimitivesAspect(a4bis);
     }
   }
-  myRecomputeEveryPrs =Standard_False; // aucun mode a recalculer :uniquement update viewer
+  myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();  
   
 }
@@ -956,7 +942,7 @@ void AIS_Shape::UnsetTransparency()
 #endif
     }
   }
-  myRecomputeEveryPrs =Standard_False; // aucun mode a recalculer :uniquement update viewer
+  myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();  
 }
 
@@ -983,7 +969,7 @@ const Bnd_Box& AIS_Shape::BoundingBox()
 #else
     TopExp_Explorer anExplor (myshape, TopAbs_VERTEX);
 #endif
-    if (!anExplor.More()) { // Shape vide -> Assemblage vide.
+    if (!anExplor.More()) { // empty Shape  -> empty Assembly.
       myBB.SetVoid();      
       return myBB;
     }

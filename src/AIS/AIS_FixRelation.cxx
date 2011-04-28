@@ -180,8 +180,8 @@ void AIS_FixRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 {
   aPresentation->Clear();
 
-  // Calcul du point de positionnement du symbole et du
-  // point d'attache du segment de raccord sur la shape
+  // Calculate position of the symbol and
+  // point of attach of the segment on the shape
   gp_Pnt curpos;
   if (myFShape.ShapeType() == TopAbs_VERTEX)
     ComputeVertex(TopoDS::Vertex(myFShape), curpos);
@@ -191,14 +191,14 @@ void AIS_FixRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   const gp_Dir& nor = myPlane->Axis().Direction();
 
   
-  // calcul de la presentation
-  //definition de la taille du symbole
+  // calculate presentation
+  // definition of the symbol size
 #ifdef BUC60915
   if( !myArrowSizeIsDefined )
 #endif
     myArrowSize = 5.;
 
-    //creation du presentable
+    //creation of the presentation
   DsgPrs_FixPresentation::Add(aPresentation,
 			      myDrawer,
 			      myPntAttach,
@@ -255,15 +255,15 @@ void AIS_FixRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelec
 {
   Handle(SelectMgr_EntityOwner) own = new SelectMgr_EntityOwner(this,7);
 
-  // creation d'un segment sensible pour le segment de raccordement 
-  // de la shape fixe au symbole 'Fix'
+  // creation of segment sensible for the linked segment  
+  // of the shape fixed to symbol 'Fix'
   Handle(Select3D_SensitiveSegment) seg;
   seg = new Select3D_SensitiveSegment(own,
 				      myPntAttach,
 				      myPosition);
   aSelection->Add(seg);
   
-  // Creation de la zone sensible du symbole 'Fix'
+  // Creation of the sensible zone of symbol 'Fix'
   gp_Dir norm = myPlane->Axis().Direction();
     
   gp_Vec dirac(myPntAttach,myPosition);
@@ -343,7 +343,7 @@ gp_Pnt AIS_FixRelation::ComputePosition(const Handle(Geom_Curve)& curv1,
 					const gp_Pnt& lastp2) const 
 {
   //---------------------------------------------------------
-  // calcul du point d'attache
+  // calculate the point of attach
   //---------------------------------------------------------
   gp_Pnt curpos;
 
@@ -391,7 +391,7 @@ gp_Pnt AIS_FixRelation::ComputePosition(const Handle(Geom_Curve)& curv,
 					const gp_Pnt& lastp) const 
 {
   //---------------------------------------------------------
-  // calcul du point d'attache
+  // calculate the point of attach
   //---------------------------------------------------------
   gp_Pnt curpos;
 
@@ -435,7 +435,7 @@ void AIS_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
   //---------------------------------------------------------
   // calcul du point de positionnement du symbole 'fix'
   //---------------------------------------------------------
-        //--> Dans le cas d'une droite
+        //--> In case of a straight line
   if (curEdge->IsKind(STANDARD_TYPE(Geom_Line))){
     gp_Lin glin = Handle(Geom_Line)::DownCast(curEdge)->Lin();
     Standard_Real pfirst(ElCLib::Parameter(glin,ptbeg));
@@ -443,7 +443,7 @@ void AIS_FixRelation::ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos)
     ComputeLinePosition(glin, curpos, pfirst, plast);
   }
   
-        //--> Dans le cas d'un cercle
+        //--> In case of a circle
   else if (curEdge->IsKind(STANDARD_TYPE(Geom_Circle))) {
     gp_Circ  gcirc = Handle(Geom_Circle)::DownCast(curEdge)->Circ();
     Standard_Real pfirst, plast;
@@ -471,7 +471,7 @@ void AIS_FixRelation::ComputeLinePosition(const gp_Lin& glin,
 					  Standard_Real& plast)
 {
   if (myAutomaticPosition) {
-    // le point d'attache est choisi comme milieu du segment
+    // point of attach is chosen as middle of the segment
     myPntAttach = ElCLib::Value((pfirst+ plast)/2, glin);
     
     gp_Dir norm = myPlane ->Axis().Direction();
@@ -485,14 +485,14 @@ void AIS_FixRelation::ComputeLinePosition(const gp_Lin& glin,
     pos = myPosition;
     Standard_Real linparam = ElCLib::Parameter(glin, pos);
 
-    //cas ou la projection de position se situe entre les 2 vertex
+    // case if the projection of position is located between 2 vertices
     // de l'edge
     if ( (linparam >= pfirst) && (linparam <= plast) )
       myPntAttach = ElCLib::Value(linparam,glin);
     
-    // cas ou la projection de Position est en dehors des limites
-    // de l'edge : alors on choisit comme point d'attache le point
-    // le plus proche de la projection
+    // case if the projection of Position is outside of the limits
+    // of the edge : the point closest to the projection is chosen 
+    // as the attach point
     else {
       Standard_Real pOnLin;
       if (linparam > plast)
@@ -525,7 +525,7 @@ void AIS_FixRelation::ComputeCirclePosition(
 	Standard_Real& pfirst, 
 	Standard_Real& plast)
 {
-  // reajustement des parametres sur le cercle
+  // readjust parametres on the circle
   if (plast > 2*PI ) {
     Standard_Real nbtours = Floor(plast / (2*PI));
     plast -= nbtours*2*PI;
@@ -533,8 +533,8 @@ void AIS_FixRelation::ComputeCirclePosition(
   }
 
   if (myAutomaticPosition) {
-    // le point d'attache est le "milieu" du segment (par rapport
-    // aux parametres des vertex de debut et de fin de l'edge
+    // the point attach is the "middle" of the segment (relatively
+    // to the parametres of start and end vertices of the edge
     
     Standard_Real circparam = (pfirst + plast)/2.;
 
@@ -555,9 +555,9 @@ void AIS_FixRelation::ComputeCirclePosition(
   } // if (myAutomaticPosition)
 
   else {
-    // cas ou la projection de myPosition est en dehors des 2
-    // vertex de l'edge. Dans ce cas on reajuste le parametre
-    // dans la portion valable du cercle
+    // case if the projection of myPosition is outside of 2
+    // vertices of the edge. In this case the parameter is readjusted
+    // in the valid part of the circle
     pos = myPosition;
 
     Standard_Real circparam = ElCLib::Parameter(gcirc, pos);

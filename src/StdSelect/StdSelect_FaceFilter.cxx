@@ -4,14 +4,6 @@
 //		<rob@fidox>
 
 
-// Modifie par jmi le 21/9/96
-// Utilisation des termes StdSelect_Sphere  pour StdSelect_Cone 
-//                        StdSelect_Torus   pour StdSelect_PlaneOrCone
-//                        StdSelect_Revol   pour StdSelect_CylinderOrCone
-// en attendant la possibilite de modifier du CDL.
-// mettre a jour alors Placement-menu.ccl de DsgFront
-//                  et Part-placement.ccl de AssemblyScripts
-
 #define BUC60576	//GG_5/10/99 Adds Cone to enum TypeOfFace
 
 
@@ -99,7 +91,7 @@ IsOk(const Handle(SelectMgr_EntityOwner)& EO) const
 	     ); 
     }
 #ifdef BUC60576
-  case StdSelect_Cone: // en attendant la liberation du cdl, on l'utilise pour Cone
+  case StdSelect_Cone: // waiting for the free cdl, it is used for Cone
     {
       BRepAdaptor_Surface surf(TopoDS::Face(anobj));
       return (surf.GetType() == GeomAbs_Cone);      

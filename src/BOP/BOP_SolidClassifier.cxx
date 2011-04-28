@@ -66,9 +66,9 @@
   myState = myPClassifier->State();
   const TopoDS_Shape& fres = myPClassifier->Face();
   if (fres.IsNull()) {
-    // NYI : en cas d'elimination des faces EXTERNAL et INTERNAL par le
-    // classifier BRepClass3d_SolidClassifier, traiter quand meme ces faces
-    // pour generer l'etat ON/Solid quand le point est IN/face INTERNAL ou EXTERNAL 
+    // NYI : in case of removal of EXTERNAL and INTERNAL faces by the
+    // classifier BRepClass3d_SolidClassifier, process these faces
+    // to generate state ON/Solid when the point is IN/face INTERNAL or EXTERNAL 
     return myState;
   }
   

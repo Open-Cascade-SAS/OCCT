@@ -128,7 +128,7 @@ void AIS_ConnectedShape::Compute(const Handle(Prs3d_Projector)& aProjector,
       Aspect_TypeOfDeflection prevdef = defdrawer->TypeOfDeflection();
       defdrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
 
-      // traitement HLRAngle et HLRDeviationCoefficient()
+      // process HLRAngle and HLRDeviationCoefficient()
       Standard_Real prevangl = myDrawer->HLRAngle();
       Standard_Real newangl = defdrawer->HLRAngle();
       if (Abs(newangl- prevangl) > Precision::Angular()) {
@@ -182,8 +182,8 @@ void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aS
 {
   UpdateShape();
   aSelection->Clear();
-  // On regarde s'il n'y a pas des choses a faire sur la reference,
-  // du type mise a jour...
+  // It is checked if there is nothing to do with the reference
+  // of type update...
   
   if(!myReference->HasSelection(aMode))
     myReference->UpdateSelection(aMode);
@@ -193,8 +193,8 @@ void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aS
   if(RefSel->UpdateStatus()==SelectMgr_TOU_Full)
     myReference->UpdateSelection(aMode);
 
-  //suivant le type de decomposition, on deduit les primitives connectees.
-  // il faut suivre l'ordre de creation de StdSelect_BRepSelectionTool...
+  // depending on the type of decomposition, connected primitives are subtracted
+  // it is necessary to follow the order of creation of StdSelect_BRepSelectionTool...
   
   TopAbs_ShapeEnum TheType = AIS_Shape::SelectionType(aMode);
   Handle(StdSelect_BRepOwner) OWNR;
@@ -235,8 +235,8 @@ void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aS
   case TopAbs_SHAPE:
   default:
     {
-      // Dans ce cas on n'a qu'un seul proprietaire pour l'ensemble des
-      // primitives sensibles...
+      // In case if there is only one owner of the set of
+      // sensible primitives...
       OWNR = new StdSelect_BRepOwner(myOwnSh,this);
       Standard_Boolean FirstIncr(Standard_True);
       for(RefSel->Init();RefSel->More();RefSel->Next()){
@@ -286,7 +286,7 @@ void AIS_ConnectedShape::UpdateShape(const Standard_Boolean WithTheLocation)
 {
   if(myReference.IsNull()) return;
 
-  // attention grosse ligne...
+  // attention great line...
   if(myReference->Type()!=AIS_KOI_Shape) return;
 
   Standard_Integer Sig = myReference->Signature();

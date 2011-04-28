@@ -178,11 +178,11 @@ void Graphic2d_Circle::Draw (const Handle(Graphic2d_Drawer)& aDrawer) {
 	   aTrsf.Transforms (A, B);
 	   a = Standard_ShortReal (A); b = Standard_ShortReal (B);
 	   if( Abs(f-e) < Standard_ShortReal(2.*Standard_PI) ) {
-	  // Pour calculer les nouveaux angles d'ouverture
-	  // le calcul est fait sur le cercle trigonometrique
-	  // et l'on tient pas compte dans ce cas de la translation
-	  // sauf pour les transformation de type Mirror
-	  // dont le determinant est negatif.
+	  // To calculate new aperture angles 
+	  // the calculation is done on the trigonometric circle
+	  // and in this case the translation is not taken into account
+	  // except for transformations of type Mirror
+	  // with negative determinant.
 #ifndef BUC50076
 	  aTrsf.SetValue (1, 3, 0.0);
 	  aTrsf.SetValue (2, 3, 0.0);

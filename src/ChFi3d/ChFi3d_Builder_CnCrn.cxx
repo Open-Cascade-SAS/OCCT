@@ -236,7 +236,7 @@ static void RemoveSD(Handle(ChFiDS_Stripe)& Stripe,
 
 //=======================================================================
 //function : cherche_edge1
-//purpose  : cherche l'edge commune entre les faces F1 et F2 
+//purpose  : find common edge of faces F1 and F2 
 //=======================================================================
 
 static void cherche_edge1 (const TopoDS_Face & F1,
@@ -266,9 +266,9 @@ static void cherche_edge1 (const TopoDS_Face & F1,
 
 //=======================================================================
 //function : CurveHermite
-//purpose  : calcule une courbe 3d  au moyen des polynomes d'Hermite.
-//           l'arete ic est une arete de regularite . On construit une courbe 3d entre 
-//           les aretes icmoins et icplus. 
+//purpose  : calculate a  curve 3d using polynoms of Hermite.
+//           the edge is a regular edge. Curve 3D is constructed  
+//           between edges icmoins and icplus. 
 //=======================================================================
 
 static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
@@ -437,7 +437,7 @@ static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : CalculDroite
-//purpose  : calcule une droite 2d  passant par le point  p2d1 et de direction xdir ydir 
+//purpose  : calculate a 2D straight line passing through point p2d1 and direction xdir ydir 
 //=======================================================================
 
 static void CalculDroite(const gp_Pnt2d & p2d1,
@@ -452,7 +452,7 @@ static void CalculDroite(const gp_Pnt2d & p2d1,
 
 //=======================================================================
 //function : CalculBatten
-//purpose  : calcule un batten entre les courbes 2d  curv2d1 et curv2d2  aux points p2d1 et p2d2  
+//purpose  : calcule a batten between curves 2d  curv2d1 and curv2d2 at points p2d1 and p2d2  
 //=======================================================================
 
 static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf, 
@@ -514,7 +514,7 @@ static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf,
     Ok = Bat.Compute(Iana,25,1.e-2);
 #if DEB
     if (!Ok) { 
-      cout<<"pas de batten :";
+      cout<<"no batten :";
       Bat.Dump(cout);
     }    
 #endif  
@@ -539,8 +539,8 @@ static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf,
 
 //=======================================================================
 //function : OrientationIcNonVive
-//purpose  : calcule l'orientation de la courbe de raccord  entre ic et icplus sachant que ic 
-//           n'est pas une arete vive
+//purpose  : calculate the orientation of the curve between ic and icplus knowing that ic 
+//           is not a living edge.
 //=======================================================================
 
 static void OrientationIcNonVive (const Handle(ChFiDS_Stripe) & CDic,
@@ -563,8 +563,8 @@ static void OrientationIcNonVive (const Handle(ChFiDS_Stripe) & CDic,
 
 //=======================================================================
 //function : OrientationIcplusNonVive
-//purpose  : calcule l'orientation de la courbe de raccord  entre ic et icplus sachant que icplus
-//           n'est pas une arete vive;
+//purpose  : calculate the orientation of the curve between ic and icplus knowing that icplus
+//           is not a living edge;
 //=======================================================================
 
 static void OrientationIcplusNonVive (const Handle(ChFiDS_Stripe) & CDicplus,
@@ -588,8 +588,8 @@ static void OrientationIcplusNonVive (const Handle(ChFiDS_Stripe) & CDicplus,
 
 //=======================================================================
 //function : OrientationAreteViveConsecutive
-//purpose  : calcule l'orientation  de la courbe de raccord  entre les aretes ic et icplus 
-//           ou ic et icplus sont vives consecutives
+//purpose  : calculate the orientation of the curve between edges ic and icplus 
+//           where ic and icplus are consecutively living 
 //=======================================================================
 
 static void OrientationAreteViveConsecutive (const TopoDS_Shape & Fviveicicplus,
@@ -597,7 +597,7 @@ static void OrientationAreteViveConsecutive (const TopoDS_Shape & Fviveicicplus,
                                              const TopoDS_Vertex & V1,
                                              TopAbs_Orientation & orien)
 
-{ // orinterf est l'orientation de l'edge ic  par rapport a la face Fviveicicplus prise FORWARD
+{ // orinterf is orientation of edge ic corresponding to face Fviveicicplus taken FORWARD
 #ifndef DEB
   TopAbs_Orientation orinterf = TopAbs_FORWARD;
 #else
@@ -612,8 +612,8 @@ static void OrientationAreteViveConsecutive (const TopoDS_Shape & Fviveicicplus,
       break;
     }
   }
-  // si V1 est le vertex REVERSED  de l'edge ic alors la courbe de 
-  // raccord a la meme orientation que ic 
+  // if V1 is vertex REVERSED of edge ic the curve  
+  // has the same orientation as ic 
   TopoDS_Vertex vl;
   vl=TopExp::LastVertex(E);
   if (vl.IsSame(V1)){ 
@@ -628,7 +628,7 @@ static void OrientationAreteViveConsecutive (const TopoDS_Shape & Fviveicicplus,
 
 //=======================================================================
 //function : PerformTwoCornerSameExt
-//purpose  : calcule l'intersection entre les deux stripes stripe1 et stripe2 
+//purpose  : calculate intersection between two stripes stripe1 and stripe2 
 //=======================================================================
 
 static void PerformTwoCornerSameExt(TopOpeBRepDS_DataStructure& DStr,
@@ -754,7 +754,7 @@ static void PerformTwoCornerSameExt(TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : CpOnEdge
-//purpose  : determine si la surfdata num  a un common point sur Eadj1 ou Eadj2
+//purpose  : determine if surfdata num has a common point on Eadj1 or Eadj2
 //=======================================================================
 
 static void  CpOnEdge (const  Handle(ChFiDS_Stripe) & stripe,
@@ -780,7 +780,7 @@ static void  CpOnEdge (const  Handle(ChFiDS_Stripe) & stripe,
 
 //=======================================================================
 //function : RemoveSurfData
-//purpose  : pour chaque stripe suppression des surfdatas initiles 
+//purpose  : for each stripe removal of unused surfdatas 
 //=======================================================================
 
 static void RemoveSurfData (const ChFiDS_StripeMap & myVDataMap,
@@ -815,9 +815,9 @@ static void RemoveSurfData (const ChFiDS_StripeMap & myVDataMap,
       Standard_Integer ind;
       if (sense==1) {
         ind=0;
-	// parmi les surfdatas on cherche le plus grand indice ind tel que 
-	// la surfdata ait un de ses commonpoint sur Eadj1 et Eadj2
-	// on supprime les surfdata de 1 a ind-1   
+	// among surfdatas find the greatest indice ind so that 
+	// surfdata could have one of commonpoint on Eadj1 and Eadj2
+	// remove surfdata from 1 to ind-1   
 	for (Standard_Integer i=1;i<=nbsurf;i++) {
 	  CpOnEdge (It.Value(),i,isfirst,Eadj1,Eadj2,compoint);
 	  if (compoint) ind=i;
@@ -826,9 +826,9 @@ static void RemoveSurfData (const ChFiDS_StripeMap & myVDataMap,
       }
       else {
         ind=num;
-	// parmi les surfdatas on cherche le plus petit indice ind tel que 
-	// la surfdata ait un de ses commonpoint sur Eadj1 et Eadj2
-	// on supprime les surfdata de ind+1 a num   
+	// among surfdatas find the smallest indice ind so that 
+	// surfdata could have one of commonpoint on Eadj1 and Eadj2
+	// remove surfdata from ind+1 to num   
 	for (Standard_Integer i=num;i>=1;i--) {
 	  CpOnEdge (It.Value(),i,isfirst,Eadj1,Eadj2,compoint);
 	  if (compoint) ind=i;
@@ -971,7 +971,7 @@ static TopAbs_Orientation PlateOrientation(const Handle(Geom_Surface)& thePlateS
                                           
 //=======================================================================
 //function : PerformMoreThreeCorner
-//purpose  : Traite le cas d'un sommet a n aretes.      
+//purpose  : Process case of a top with n edges.      
 //=======================================================================
 
 void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
@@ -1061,8 +1061,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   TopoDS_Face F1,F2;
   gp_Vec SumFaceNormalAtV1(0,0,0); // is used to define Plate orientation 
 
-  // on determine s'il y a une arete de couture 
-  // la face qui a une arete de couture et l'arete de couture
+  // it is determined if there is a sewing edge
   Standard_Boolean couture=Standard_False;
   TopoDS_Face facecouture;
   TopoDS_Edge edgecouture;
@@ -1073,10 +1072,10 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       facecouture=fcur;
   }
 
-// On enleve les surfdata inutiles 
+// unused surfdata are removed 
   RemoveSurfData (myVDataMap, myEFMap,edgecouture,facecouture,V1);
 
- // tri des aretes et des faces
+ // parse edges and faces
   trouve=Standard_False;
   TopoDS_Edge Enext;
   TopoDS_Vertex VV;
@@ -1100,7 +1099,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     ChFi3d_cherche_edge(V1,Evive,Fcur,Enext,VV);
     trouve= !Enext.IsNull();
   }
-  // find sum of all face normales at V1
+  // find sum of all face normals at V1
   SummarizeNormal(V1, Fcur, Ecur, SumFaceNormalAtV1);
   
   Standard_Integer nbcouture=0;
@@ -1111,7 +1110,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
     else ChFi3d_cherche_edge(V1,Evive,Fcur,Enext,VV);
     if (Enext.IsNull())Standard_Failure::Raise
-    ("PerformMoreThreeCorner: pb dans le tri des aretes et des faces"); 
+    ("PerformMoreThreeCorner: pb in the parsing of edges and faces"); 
     if (Enext.IsSame(edgelibre1)|| Enext.IsSame(edgelibre2)) {
       CD.SetValue(ii, cdbid);
       Index.SetValue(ii, 0);
@@ -1146,7 +1145,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       jf.SetValue(ii, 0); 
     }
     else {
-// on cherche si Enext est dans la map des stripes 
+// it is found if Enext is in the map of stripes 
       TopoDS_Edge EE;
       /*Standard_Boolean */trouve = Standard_False;
       for (It.Initialize(myVDataMap(Jndex));It.More()&&!trouve;It.Next()) {
@@ -1168,7 +1167,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	Evive.SetValue(ii, Enext);
       }
       else {
-	//      l'arete ii est vive
+	//      edge ii is alive
 	CD.SetValue(ii, cdbid);
 	Index.SetValue(ii, 0);
 	sens.SetValue(ii, -1);
@@ -1179,7 +1178,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	Evive.SetValue(ii, Enext);
 	jf.SetValue(ii, 0);
       }
-      // On cherche la face Fnext!=Fcur qui contient Enext 
+      // Face Fnext!=Fcur containing Enext 
       Fnext=Fcur;
       ChFi3d_cherche_face1(myEFMap(Enext),Fcur,Fnext);
       Indices(nedge,ii,icplus,icmoins);
@@ -1189,11 +1188,11 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       numfa.SetValue(icplus,ii,numfa.Value(ii,icplus));
       Standard_Integer numface1,numface2;
       if (trouve) {
-	// on regarde si numfa correspond a IndexOfS1 ou IndexOfS2 
-	// on met a jour en consequence jf 
-        // si ce n'est pas le cas on recherche parmi les faces precedentes 
-        // celle qui correspond a IndexOfs1 IndexOfS2  et on remet a jour 
-        // numfa et Fvive (cts16288)  
+	// it is checked if numfa corresponds to IndexOfS1 or IndexOfS2 
+	// jf is updated is consequently updated
+        // if it is not the case among the previous faces are found 
+        // those which correspond to  IndexOfs1 IndexOfS2  and  
+        // numfa and Fvive are reupdated (cts16288)  
 	numface2 = SurfIndex(CD, ii, Index.Value(ii), FACE2);
 	if (numface2==numfa.Value(ii,icplus))
 	  jf.SetValue(ii, 2);
@@ -1239,8 +1238,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     }
   }
-  // on verifie qu'une arete de regularite n'est pas tangente a une autre arete
-  // dans ce cas on ne la considere pas comme reguliere (cts60072)
+  // it is checked if a regular edge is not tangent to another edge
+  // in case if it is not considered regular (cts60072)
   for (ic=0;ic<nedge;ic++) {
     if (regul.Value(ic) ) {
       trouve=Standard_False;
@@ -1259,10 +1258,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }
 
-  // la variable deuxconges permet de detecter les cas ou on a un sommet a
-  // n aretes et deux conges sur deux aretes tangentes qui ne sont pas
-  // des bords libres 
-  // les courbes de raccord partent du conge jusqu'au sommet 
+  // variable deuxconges allows detecting cases when there is a top with 
+  // n edges and two fillets on two tangent edges that are not free borders
+  // the connecting curves start from the fillet and end on top 
   
   Standard_Boolean deuxconges,deuxcgnontg;
   deuxconges=Standard_False;
@@ -1280,9 +1278,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }
 
-  // on utilise la variable deuxconges dans le cas particulier
-  // ou on a deux conges et si les deux autres aretes vives 
-  // sont tangentes (cts60072) 
+  // variable deuxconges is used in the special case when there are 
+  // two fillets and if two other living edges are tangent (cts60072) 
   if (nconges==2 && nedge==4) {
     TopoDS_Edge E1,E2; 
      for (ic=0;ic<nedge&&!deuxconges;ic++) {
@@ -1331,10 +1328,10 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     PerformOneCorner (Jndex, Standard_True);
   }
 
-// si le commonpoint est sur une arete qui n'a pas comme
-// extremite le vertex , on  determine a nouveau Evive     
-// On determine a nouveau Fvive si elle ne correspondant 
-// pas a une des deux faces adjacentes a Evive (cts16288)
+// if the commonpoint is on an edge that does not have a 
+// vertex at the extremity, Evive is found anew    
+// Fvive is found anew if it does not correspond 
+// to two faces adjacent to Evive (cts16288)
 
   if (!deuxconges && !isOnSameDiff) 
     for (ic=0;ic<nedge;ic++) { 
@@ -1411,7 +1408,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     } 
 
-// on recupere la premiere arete libre si elle existe
+// the first free edge is restored if it exists
   trouve=Standard_False;
   for (ic=0; ic<nedge&&!trouve;ic++) {  
     TopoDS_Edge ecom;
@@ -1422,7 +1419,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }  
 
-// determination de la distance de recul distmin a ne pas depasser
+// determine the minimum recoil distance that can't be exceeded 
   Standard_Boolean distmini=Standard_False;
   gp_Pnt som=BRep_Tool::Pnt(V1),pic;  
   gp_Pnt2d p2;
@@ -1445,8 +1442,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     if (dst<distmin) distmin=dst;
   }
 
-//  calcul des intersections entre les stripes et determination des parametres
-// sur chaque pcurve  
+//  calculate intersections between stripes and determine the parameters on each pcurve  
   Standard_Boolean inters=Standard_True;
   for (ic=0;ic<nedge;ic++) {
     Indices(nedge,ic,icplus,icmoins);
@@ -1461,8 +1457,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       Handle(ChFiDS_Stripe) strip;
       Standard_Real angedg;
       Standard_Integer iface;
-      // si les deux aretes sont tangentes on ne tente pas
-      // l'intersection (cts60046)
+      // if two edges are tangent the intersection is not attempted (cts60046)
       angedg=Abs(ChFi3d_AngleEdge(V1,TopoDS::Edge(Evive.Value(ic)),TopoDS::Edge(Evive.Value(icplus))));
       if (Abs(angedg-PI)>0.01)
 	ok = ChFi3d_SearchFD(DStr,CD.Value(ic),CD.Value(icplus),sens.Value(ic),sens.Value(icplus),
@@ -1470,9 +1465,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 				  Index.Value(ic),Index.Value(icplus),
 				  face,sameside,jf1,jfp);
       else ok=Standard_False;
-      // s'il y a une intersection on regarde si la surfdata ou il y a l'intersection
-     // correspond a la premiere ou  a la derniere 
-     // si ce n'est pas le cas on enleve de la SD les surfdata  
+     // if there is an intersection it is checked if surfdata with the intersection
+     // corresponds to the first or the last 
+     // if this is not the case, the surfdata are removed from SD 
       
       if (ok) {
 	if (i1!=Index.Value(ic) ){
@@ -1556,8 +1551,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     if (!oksea.Value(ic) ) inters=Standard_False; 
   }
 
-  // cas ou il n'y a pas que des intersections 
-  // les parametres sur les Pcurves sont les extremites  de la stripe
+  // case if there are only intersections 
+  // the parametres on Pcurves are the extremities of the stripe
   Standard_Real para;
   if (!inters) {
     for (ic=0;ic<nedge;ic++) {
@@ -1607,7 +1602,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     }
       
-//  calcul  de la distance max du sommet a chaque point  
+//  calculate max distance to the top at each point  
     TColStd_Array1OfReal dist1(0,size);
     TColStd_Array1OfReal dist2(0,size);
     Standard_Real distance=0.;
@@ -1636,8 +1631,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     }
 
-//  decalage des parametres  et elimination des points d'intersections 
-//  trop proches du sommet 
+//  offset of parameters and removal of intersection points 
+//  too close to the top 
 
     Standard_Real ec, dist; 
     if (!deuxconges && !deuxcgnontg)
@@ -1645,7 +1640,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       Indices(nedge,ic,icplus,icmoins);
       if (sharp.Value(ic) ) {
         BRepAdaptor_Curve C(TopoDS::Edge(Evive.Value(ic)));
-        // pour passer d'une distance 3d a une distance parametrique
+        // to pass from 3D distance to a parametric distance
 	if (!tangentregul(ic))
 	  ec = distance*100*C.Resolution(0.01);
         else ec=0.0;
@@ -1657,7 +1652,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
           para=p.Value(ic,icmoins) - ec;
 	  p.SetValue(ic,icmoins,para);
         }
-// il faudra etre sur de rester sur l'edge
+// it is necessary to be on to remain on the edge
 	p.SetValue(ic,icplus, p.Value(ic,icmoins));
       }
       else if (!distmini) {
@@ -1701,7 +1696,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }
 
-// on tente de limiter l'arete vive par un des commonpoint
+// it is attempted to limit the edge by a commonpoint
 //
  
   Standard_Real tolcp=0;
@@ -1731,10 +1726,10 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       if (!sharp.Value(icmoins) &&  !sharp.Value(icplus))
 	samecompoint=cp1.Point().Distance(cp2.Point())<tolapp;
       if ((dS<d1 || dS<d2)&& !samecompoint) {
-// on recule jusqu'aux Common Points
-// sans sortir de l'Edge ??
+// step back till Common Points
+// without leaving the Edge ??
 	if (d2<d1 &&cp1.IsOnArc() ) {
-// on choisit cp1
+// cp1 is chosen
 	  p.SetValue(ic,icmoins, cp1.ParameterOnArc());
 	  p.SetValue(ic,icplus, p.Value(ic,icmoins));
 	  isfirst=(sens.Value(icplus)==1);
@@ -1744,7 +1739,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
           if (cp1.Tolerance()>tolcp &&cp1.Tolerance()<1 ) tolcp=cp1.Tolerance();
 	}
 	else if( cp2.IsOnArc()){
-// on choisit cp2
+// cp2 is chosen
 	  p.SetValue(ic,icmoins, cp2.ParameterOnArc());
 	  p.SetValue(ic,icplus, p.Value(ic,icmoins));
 	  isfirst=(sens.Value(icmoins)==1);
@@ -1754,11 +1749,11 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	}
       }
       else {
-// on se recale sur un Common Point uniquement si on en est tres pres
+// step back till Common Point only if it is very close
 	if (!sharp.Value(icplus)) {
 	  if ((cp1.Point().Distance(PE)<cp1.Tolerance() || 
                samecompoint || nconges==1) && cp1.IsOnArc()) {
-// on est tres proche de cp1
+// it is very close to cp1
 	    p.SetValue(ic,icmoins, cp1.ParameterOnArc());
             ponctuel.SetValue(ic,Standard_True);
 	    p.SetValue(ic,icplus, p.Value(ic,icmoins));
@@ -1772,7 +1767,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	 if (!sharp.Value(icmoins)){
 	  if ((cp2.Point().Distance(PE)<cp2.Tolerance() || 
 	       samecompoint || nconges==1) && cp2.IsOnArc()) {
-// on est tres proche de cp2
+// it is very close to cp2
             ponctuel.SetValue(icmoins,Standard_True);
 	    p.SetValue(ic,icmoins, cp2.ParameterOnArc());
 	    p.SetValue(ic,icplus,p.Value(ic,icmoins));
@@ -1786,8 +1781,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }
 
-// dans le cas d'un bord libre  on prend le parametre correspondant 
-// au common point sur l'arete libre. 
+// in case of a free border the parameter corresponding 
+// to the common point on the free edge is chosen. 
 
   for (ic=0;ic<nedge;ic++) {
     if (TopoDS::Edge(Evive.Value(ic)).IsSame(edgelibre1) || 
@@ -1821,11 +1816,11 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }   
   }
 
-// si ic est une arete de regularite, on cherche l'arete indfin qui ne 
-// soit pas une arete de regularite, on construit une courbe 3d 
-// entre les aretes (ou stripes ) icmoins et indfin. 
-// On projette ensuite cette courbe3d sur toutes les faces (nbface) qui
-// separent icmoins et indfin
+// if ic is a regular edge, one finds edge indfin which is not 
+// a regular edge, and construtc a curve 3d 
+// between edges (or stripes ) icmoins and indfin. 
+// Then this courbe3d is projected on all faces (nbface) that
+// separate icmoins and indfin
 #ifndef DEB
   Standard_Integer nbface = 0;
 #else
@@ -1922,7 +1917,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }       
   }
 
- // cas ou  la courbe de raccord entre ic et icplus traverse plusieurs faces
+ // case when the conncting curve between ic and icplus crosses many faces
   
   TopTools_SequenceOfShape Ecom;
   TopTools_SequenceOfShape Eproj;
@@ -1984,9 +1979,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   } 
 
-// cas ou deux conges ont les memes commonpoints 
-// on procede alors par intersection 
-// on verifie cependant que les extremites de l'intersection coincident avec les commonpoints
+// case when two fillets have the same commonpoints 
+// one continues then by intersection 
+// it is checked if the extremities of the intersection coincide with commonpoints
 
   Standard_Boolean intersection=Standard_False, introuve;
   if (nconges==2 && !deuxconges) { 
@@ -2034,10 +2029,10 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   } 
 
-// declaration pour plate 
+// declaration for plate 
   GeomPlate_BuildPlateSurface PSurf(3,10,3,tol2d,tolesp,angular);
 
-// calcul des courbes sur surface  pour chaque   stripe 
+// calculation of curves on surface for each stripe 
   for (ic=0;ic<nedge;ic++) {
     gp_Pnt2d p2d1, p2d2;
     if (!sharp.Value(ic)) {
@@ -2050,7 +2045,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       indice= SurfIndex(CD, ic, i.Value(ic,icplus), ChFiSURFACE);
       Handle (GeomAdaptor_HSurface) Asurf =
 	new GeomAdaptor_HSurface(DStr.Surface(indice).Surface());
-      // calcul de la courbe 2d  
+      // calculation of curve 2d  
       xdir= p2d2.X()-p2d1.X();  
       ydir= p2d2.Y()-p2d1.Y();
       Standard_Real l0 = sqrt(xdir*xdir+ ydir*ydir );
@@ -2066,7 +2061,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	new GeomPlate_CurveConstraint(HCons,Order.Value(ic),10,tolesp,angular,0.1);
       PSurf.Add(Cont);
       
-      // calcul des indices de points  et de  la courbe pour la DS         
+      // calculate indexes of points and of the curve for the DS         
       isfirst=(sens.Value(ic)==1);
       GeomLib::BuildCurve3d(tolapp,CurvOnS,CurvOnS.FirstParameter(),
 			    CurvOnS.LastParameter(),Curv3d,maxapp,avedev);
@@ -2080,13 +2075,13 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       TopOpeBRepDS_Point tpoint2 (point2,maxapp);
       errapp.SetValue(ic,maxapp);
       if (ic==0) {
-// il faut creer les deux points
+// it is necessary to create two points
 	indpoint.SetValue(ic,0,DStr.AddPoint(tpoint1));
 	indpoint.SetValue(ic,1,DStr.AddPoint(tpoint2));
       }
       else {
-// les points existent peut-etre deja sur un conge 
-// (intersection precedente,...)
+// probably the points are already on the fillet 
+// (previous intersection...)
 	trouve = Standard_False;
 	for (ii=0;ii<ic&&(!trouve);ii++) {
 	  if (!sharp.Value(ii)) {
@@ -2114,7 +2109,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	  indpoint.SetValue(ic,1,DStr.AddPoint(tpoint2));
       }
       
-      //   mise a jour de la stripe 
+      //   update of the stripe 
       isurf1=3-jf.Value(ic); isurf2=jf.Value(ic);
       if (isurf1==2)  CD.Value(ic)->SetOrientation(TopAbs_REVERSED,isfirst);
       CD.Value(ic)->SetCurve(indcurve3d.Value(n3d),isfirst);
@@ -2137,7 +2132,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }
       
-// calcul des indices de points pour les aretes vives   
+// calculate the indices of points for living edges    
   for (ic=0;ic<nedge;ic++) {
     if (sharp.Value(ic)) {
       Indices(nedge,ic,icplus,icmoins);
@@ -2156,7 +2151,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	cp = CD.Value(icplus)->SetOfSurfData()->Value(i.Value(icplus,ic))->
 	  ChangeVertex (isfirst,jfp);
 	if ( cp.Point().Distance(PE) <= Max(1.e-4,tolcp)) {
-// l'arete a ete limitee par le 1er CommonPoint de CD[icplus]
+// edge was limited by the 1st CommonPoint of CD[icplus]
 	  indpoint.SetValue(ic,0,indpoint.Value(icplus,0));
 	  indpoint.SetValue(ic,1,indpoint.Value(icplus,0));
 	}
@@ -2166,7 +2161,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	cp = CD.Value(icmoins)->SetOfSurfData()->Value(i.Value(icmoins,ic))->
 	  ChangeVertex (isfirst,jf.Value(icmoins));
 	if ( cp.Point().Distance(PE) <= Max(1.e-4,tolcp)) {
-// l'arete a ete limitee par le 2eme CommonPoint de CD[icmoins]
+// edge was limited by the 2nd CommonPoint of CD[icmoins]
 	 if (indpoint.Value(ic,0)==0) { 
           indpoint.SetValue(ic,0, indpoint.Value(icmoins,1));
 	  indpoint.SetValue(ic,1, indpoint.Value(icmoins,1));
@@ -2180,8 +2175,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }
   }
 
- // calcul des courbes intermediaires reliant  deux stripes dans le cas ou il n'y a pas 
-// d'intersection. La courbe peut etre une droite une projection ou un batten 
+// calculation of intermediary curves connecting two stripes in case if  
+// there is no intersection. The curve is a straight line, projection or batten 
   
   Standard_Boolean raccordbatten;
   if (!inters) {
@@ -2204,8 +2199,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	Handle (GeomAdaptor_HSurface) Asurf;
 	Standard_Real u1bid,u2bid;
 	
-	// recuperation de la premiere courbe 2d 
-	// et du premier point de raccordement
+	// return the 1st curve 2d 
+	// and the 1st connection point 
 	if (sharp.Value(ic))
 	  curv2d1 = BRep_Tool::CurveOnSurface(TopoDS::Edge(Evive.Value(ic)),TopoDS::Face(Fvive.Value(ic,icplus)),
                                               u1bid,u2bid);
@@ -2231,7 +2226,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	if (tolu>tolv) ratio=tolu/tolv;
 	else ratio=tolv/tolu;
         
-        // dans le cas d'une arete de couture on recadre les parametres 
+        // in case of a sewing edge the parameters are reframed 
         if (couture) {
 	  Standard_Boolean PI1=Standard_False, PI2=Standard_False;
 	  Standard_Real xx;
@@ -2257,7 +2252,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 
 	Standard_Real l0 = sqrt(xdir*xdir+ ydir*ydir );
 	if (l0<1.e-7|| ponctuel.Value(ic)) {
-// raccord inutile
+// unused connection
 	  n3d--;
           ponctuel.SetValue(ic,Standard_True);
           if (!deuxconges) {
@@ -2271,13 +2266,13 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	   }
           }
 	}
-	else {  // le raccord est soit une droite soit une projection soit un batten 
+	else {  // the connection is a straight line, projection or batten 
          if (ratio>10 && nconges==1) raccordbatten=Standard_True; 
          if (ratio>10 && raccordbatten) {
 	    CalculDroite(p2d1,xdir,ydir,pcurve);
             raccordbatten=Standard_False;
           }
-          else  if (!raccordbatten){  // on recupere les courbes projetees 
+          else  if (!raccordbatten){  // the projected curves are returned 
 	    if (regul.Value(ic)) {
                if (cproj2.Value(ic).IsNull()){ 
                    raccordbatten=Standard_True;
@@ -2304,7 +2299,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
                             contraint2=Standard_True;
           if (raccordbatten) {
 #ifdef DEB
-	    ChFi3d_InitChron(ch);// init performances pour les batten  
+	    ChFi3d_InitChron(ch);// initial performances for  battens  
 #endif  
             Standard_Boolean inverseic,inverseicplus;
             if (sharp.Value(ic)) {
@@ -2330,17 +2325,17 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	    CalculBatten(Asurf,TopoDS::Face(Fvive(ic,icplus)),xdir,ydir,p2d1,p2d2,contraint1,contraint2,curv2d1,curv2d2,p.Value(ic,icplus),
 			 p.Value(icplus,ic),inverseic,inverseicplus,pcurve);
 #ifdef DEB
-	    ChFi3d_ResultChron( ch,t_batten);  // result performances pour les batten 
+	    ChFi3d_ResultChron( ch,t_batten);  // resulting performances for battens 
 #endif 
           }
 
-         // construction des frontieres pour Plate 
+         // construction of borders for Plate 
          Handle (Geom2dAdaptor_HCurve)  Acurv=new Geom2dAdaptor_HCurve(pcurve);
          Adaptor3d_CurveOnSurface  CurvOnS (Acurv,Asurf);
          Handle(Adaptor3d_HCurveOnSurface) HCons =
            new Adaptor3d_HCurveOnSurface(CurvOnS);
 
-         // on met des contraintes G1  si les aretes ic et icplus ne sont pas toutes les deux vives 
+         // constraints G1 are set if edges ic and icplus are not both alive 
 
 
          Order.SetValue(n3d,0);
@@ -2358,7 +2353,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
            new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolesp,angular,0.1);
          PSurf.Add(Cont);
 
-         //calcul de la courbe 3d si ce n'est pas une projection 
+         //calculation of curve 3d if it is not a projection 
          if (curveint.IsNull()) {
            GeomLib::BuildCurve3d(tolapp,CurvOnS,CurvOnS.FirstParameter(),
                                  CurvOnS.LastParameter(),Curv3d,maxapp1,avedev);
@@ -2367,13 +2362,13 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
            curveint= new Geom_TrimmedCurve(Curv3d,pardeb,parfin);
          }
 
-         //stockage dans la DS  
+         //storage in the DS  
          TopOpeBRepDS_Curve tcurv3d( curveint,maxapp1);
          indcurve3d.SetValue(n3d, DStr.AddCurve(tcurv3d));
          pardeb=curveint->FirstParameter();
          parfin=curveint->LastParameter();
          if ( sharp.Value(icplus) && indpoint.Value(icplus,0) == 0) {
-           // il faut initialiser indpoint[icplus][0] et indpoint[icplus][1]
+           // it is necessary to initialize indpoint[icplus][0] and indpoint[icplus][1]
            gp_Pnt point2; 
            point2 =curveint->Value(parfin);
            TopOpeBRepDS_Point tpoint2 (point2,maxapp); 
@@ -2401,7 +2396,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	    tpt2.Tolerance (tpt2.Tolerance()+maxapp1);     
 	  }
 
-	// calcul de l'orientation de la courbe  
+	// calculate orientation of the curve  
 	  TopAbs_Orientation orinterf; 
 	  if (!sharp.Value(ic)) {
               OrientationIcNonVive(CD.Value(ic),jf.Value(ic),i.Value(ic,icplus),sens.Value(ic),orinterf);
@@ -2415,11 +2410,11 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	  Interfc=ChFi3d_FilCurveInDS(indcurve3d.Value(n3d),numfa.Value(ic,icplus),pcurve,orinterf);	  
 	  DStr.ChangeShapeInterferences(numfa.Value(ic,icplus)).Append(Interfc);
 	}
-       } // fin du traitement par arete
-    } // fin de la boucle sur les aretes
-  }  // fin du traitement pour les courbes intermediaires 
+       } // end of processing by edge 
+    } // end of the loop on edges 
+  }  // end of processing for intermediary curves 
         
-//  stockage dans la DS des courbes projetees sur plusieurs faces 
+//  storage in the DS of curves projected on several faces 
   for (ic=0;ic<nedge;ic++) {
     if (moresurf.Value(ic) ){
       TopoDS_Vertex Vf,Vl;
@@ -2495,7 +2490,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	    }
 	  }
 
-	  //calcul de l'orientation 	  
+	  //calculation of the orientation 	  
 	  TopAbs_Orientation orinterf;
 	  if (P1.Distance(Pcom)>1.e-4) {
 	    if (orvt==TopAbs_FORWARD) {
@@ -2529,7 +2524,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     }                     
   }
             
-// cas ou les deux bords libres sont tangents 
+// case when two free borders are tangent
   if (droit)      
     for (ic=0;ic<nedge;ic++) {
       Handle(Geom_Curve) curve,ctrim,rcurve;
@@ -2602,19 +2597,19 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   } 
  
 #ifdef DEB
-  ChFi3d_InitChron(ch); // init performances pour plate 
+  ChFi3d_InitChron(ch); // init performances for plate 
 #endif
 
   PSurf.Perform();
 
 #ifdef DEB  
-  ChFi3d_ResultChron(ch, t_plate); //result performances pour plate 
+  ChFi3d_ResultChron(ch, t_plate); //result performances for plate 
 #endif 
 
-  // appel a l'approx  
+  // call of approx  
  
 #ifdef DEB
-  ChFi3d_InitChron(ch);  // init performances pour approxplate
+  ChFi3d_InitChron(ch);  // init performances for approxplate
 #endif
   if (PSurf.IsDone()) {
     Standard_Integer nbcarreau=9;
@@ -2636,10 +2631,10 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     apperror=Mapp.CriterionError()*coef;
 
 #ifdef DEB  
-  ChFi3d_ResultChron(ch, t_approxplate); // result performances pour approxplate
+  ChFi3d_ResultChron(ch, t_approxplate); // result performances for approxplate
 #endif
   
-//  Stockage de la surface plate  et des courbes  correspondantes dans la DS 
+//  Storage of the surface plate and corresponding curves in the DS 
 
     TopAbs_Orientation orplate,orsurfdata,orpcurve,orien;
 #ifdef DEB
@@ -2664,9 +2659,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
     TopOpeBRepDS_ListOfInterference& SolidInterfs = 
       DStr.ChangeShapeInterferences(SolInd);
  
-// dans le cas ou l'on relie au sommet , il faut que les 
-// aretes  vives qui arrivent au sommet  soient enlevees de la DS. 
-// Pour cela on les stocke dans la DS avec leur orientation inverse 
+// in case when one rereads at top, it is necessary that 
+// alive edges that arrive at the top should be removed from the DS. 
+// For this they are stored in the DS with their inverted orientation 
     Standard_Integer nbedge;
     TopExp_Explorer ex;
     if (deuxconges)
@@ -2699,8 +2694,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	}
       }
     
-    // calcul de l'orientation de Plate  orplate  par rapport aux surfdata 
-    // on fait le calcul par rapport a la premiere la stripe 
+    // calculate orientation of Plate orplate corresponding to surfdata 
+    // calculation corresponding to the first stripe 
     Indices(nedge,0,icplus,icmoins);
     isfirst=(sens.Value(0)==1);
     const Handle(ChFiDS_SurfData)& Fd = 
@@ -2723,7 +2718,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 //     else  orplate=TopAbs::Reverse(orsurfdata);  
     orplate = PlateOrientation(Surf,PSurf.Curves2d(),SumFaceNormalAtV1);
     
-    //  creation de la solidinterderence pour Plate 
+    //  creation of solidinterderence for Plate 
     Handle(TopOpeBRepDS_SolidSurfaceInterference) SSI = 
       new TopOpeBRepDS_SolidSurfaceInterference(TopOpeBRepDS_Transition(orplate),
 					      TopOpeBRepDS_SOLID,
@@ -2732,9 +2727,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 					      Isurf);
     SolidInterfs.Append(SSI);
   
-  // calcul de l'orientation orien des pcurves de Plate
-  // les courbes allant de ic a icplus les pcurves de Plate 
-  // ont toutes la meme orientation  
+  // calculate orientation orien of pcurves of Plate
+  // the curves from ic to icplus the pcurves of Plate 
+  // all have the same orientation  
     Standard_Integer Ishape1,Ishape2; 
 #ifndef DEB
     TopAbs_Orientation trafil1 = TopAbs_FORWARD, trafil2 = TopAbs_FORWARD;
@@ -2822,7 +2817,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	Indices(nedge,ic,icplus,icmoins);
 	
 	isfirst=(sens.Value(ic)==1);
-      //   calcul des curves interference relatives aux stripes
+      //   calculate curves interference relative to stripes
       
 	apperror=Mapp.CriterionError()*coef;
 	pardeb=CD.Value(ic)->PCurve(isfirst)->FirstParameter();
@@ -2842,7 +2837,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	tpt1.Tolerance (tpt1.Tolerance()+apperror);
 	tpt2.Tolerance (tpt2.Tolerance()+apperror ); 
 	
-      // calcul de la surfaceinterference
+      // calculate surfaceinterference
 	Interfc=ChFi3d_FilCurveInDS(indcurve3d.Value(n3d),Isurf,
 				  PSurf.Curves2d()->Value(n3d),orien);     
 	DStr.ChangeSurfaceInterferences(Isurf).Append(Interfc);
@@ -2854,13 +2849,13 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     }
 
-  // stockages des courbes de raccords 
+  // storage of connection curves 
 
     for (ic=0; ic<nedge;ic++) {
       Indices(nedge,ic,icplus,icmoins);
       if (!oksea.Value(ic)) {
 	if (sharp.Value(ic) &&!deuxconges) {
-	  // limitation de l'arete vive
+	  // limitation of the alive edge 
 	  TopAbs_Orientation ori;
 	  gp_Pnt Pf,Pl,sommet1;
 	  TopoDS_Vertex Vd = TopExp::FirstVertex(TopoDS::Edge(Evive.Value(ic)));
@@ -2878,7 +2873,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	}
 	
 	if (!ponctuel.Value(ic) && !libre.Value(ic)) {
-	  // raccord effectif
+	  // actual connection
 	  if (!moresurf.Value(ic)){
 	    n3d++;
 	    TopOpeBRepDS_Curve& tcourb1 = DStr.ChangeCurve(indcurve3d.Value(n3d));
@@ -2903,7 +2898,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       }
     }
 
-  //stockage des courbes projetees sur plusieurs faces 
+  //storage of curves projected on several faces 
     for (ic=0; ic<nedge;ic++) {
       Indices(nedge,ic,icplus,icmoins);
       if (moresurf(ic))
@@ -2929,7 +2924,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	} 
     }
 
-  // stockage des courbes dans le cas de bords libres tangents 
+  // storage of curves in case of tangent free borders 
     if (droit)
       for (ic=0; ic<nedge;ic++) {
 	Indices(nedge,ic,icplus,icmoins);  
@@ -2945,14 +2940,14 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	}	  
       } 
   }
-  else { // il n'y a qu'un resultat partiel 
+  else { // there is only one partial result 
     done=Standard_False;
     hasresult=Standard_True;
     for (ic=0; ic<nedge;ic++) {
       Indices(nedge,ic,icplus,icmoins);
       if (!oksea.Value(ic)) {
 	if (sharp.Value(ic) &&!deuxconges) {
-	  // limitation de l'arete vive
+	  // limitation of the alive edge
 	  TopAbs_Orientation ori;
 	  gp_Pnt Pf,Pl,sommet1;
 	  TopoDS_Vertex Vd = TopExp::FirstVertex(TopoDS::Edge(Evive.Value(ic)));

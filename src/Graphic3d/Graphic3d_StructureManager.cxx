@@ -9,9 +9,9 @@
 
 //-Version      
 
-//-Design       Declaration des variables specifiques aux managers
+//-Design       Declaration of variables specific to managers
 
-//-Warning      Un manager manipule un ensemble de structures
+//-Warning      Manager manages a set of structures
 
 //-References   
 
@@ -77,7 +77,7 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
         if (Initialisation) {
 
                 Initialisation = Standard_False;
-                /* tableau pour gerer les identificateurs de StructureManager */
+                /* table to manage IDs of StructureManager */
                 for (i=1; i<=Limit; i++) StructureManager_ArrayId[i]    = 0;
 
                 StructureManager_CurrentId      = 1;
@@ -307,7 +307,7 @@ Standard_Real Xm, Ym, Zm, XM, YM, ZM, RL, RF;
           }
         }
 
-        // Si toutes les structures sont vides ou infinies
+        // If all structures are empty or infinite
         if (Flag) {
           XMin = YMin = ZMin = RF;
           XMax = YMax = ZMax = RL;

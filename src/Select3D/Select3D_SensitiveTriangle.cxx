@@ -192,17 +192,17 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   B.Enlarge(aTol);
   if(B.IsOut(TheP)) return 2; 
   
-  // on classifie le point par rapport aux demi -espaces delimites
-  // par chaque cote du triangle (a la tolerance pres)
+  // the point is classified corresponding to demi-spaces limited
+  // by each side of the triangle (with tolerance)
   gp_XY V01(p1);V01-=p0;
   gp_XY V02(p2);V02-=p0;
   gp_XY V12(p2);V12-=p1;
 
   Standard_Real TolTol = aTol*aTol;
 
-  // regardons les cas particuliers...
-  //si l'un des vecteurs est quasi nul (2 points sont confondus), 
-  // on sort tout de suite (on est deja dans la boite d'encombrement, c'est bon...)
+  // check these particular cases...
+  // if one of vectors is almost null (2 points are mixed), 
+  // leave at once (it is already in the bounding box, which is good...)
   
   DMin = aTol;
   
@@ -210,7 +210,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   {
     Standard_Real LV = V02.SquareModulus();
     if ( LV <= gp::Resolution())
-      return 0; // les 3 points sont confondus, et TheP est dans la boite englobante B...
+      return 0; // 3 points are mixed, and TheP is in the bounding box B...
 
     if ( S3D_Str_NearSegment (p0, p2, TheP, aTol, DMin) )
       return 0;
@@ -235,7 +235,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
     return 2;
   }
 
-  // normale a p0p1 orientee...
+  // oriented normal to p0p1...
   gp_Dir2d N (-V01.Y(), V01.X()); 
   Standard_Boolean Neg = (N * V02 < 0.);
   if ( Neg ) 
@@ -248,7 +248,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   if ( aD1 < -aTol ) 
     return 2;
 
-  // normale a p1p2 orientee...
+  // oriented normal to p1p2...
   if(Neg)
     N.SetCoord(p2.Y()-p1.Y(),p1.X()-p2.X());
   else
@@ -257,9 +257,9 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   Vec.SetCoord(TheP.X()-p1.X(),TheP.Y()-p1.Y());
   Standard_Real aD2 = Vec * N.XY();
   if ( aD2 < -aTol ) 
-    return 2;   // dehors
+    return 2;   // outside
 
-  // normale a p2p0 orientee...
+  // oriented normal to p2p0...
   // attention v20 (x0-x2)    =>   N y2-y0   => -N  y0-y2
   //               (y0-y2)           x0-x2          x2-x0
   if(Neg)
@@ -270,7 +270,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   Vec.SetCoord(TheP.X()-p2.X(),TheP.Y()-p2.Y());
   Standard_Real aD3 = Vec * N.XY();
   if ( aD3 < -aTol ) 
-    return 2;  // dehors
+    return 2;  // outside
 
   // compute 2d distance to triangle
   Standard_Real aD = Min (aD1, Min (aD2, aD3));
@@ -285,7 +285,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
 
 void Select3D_SensitiveTriangle::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const 
 {
-  // les generalites....
+  // general information....
   
   S<<"\tSensitiveTriangle 3D :\n";
   if(HasLocation())
@@ -327,10 +327,10 @@ Standard_Real Select3D_SensitiveTriangle::ComputeDepth(const gp_Lin& EyeLine) co
   }
   
   Standard_Real prof(Precision::Infinite());
-  // formule calcul du parametre du point sur l'intersection
+  // formula calculation of the point parameters on intersection
   // t = (P1P2 ^P1P3)* OP1  / ((P1P2^P1P3)*Dir)
   
-  gp_Pnt Oye  = EyeLine.Location(); // origine de la ligne oeil/point vise...
+  gp_Pnt Oye  = EyeLine.Location(); // origin of the target line eye/point...
   gp_Dir Dir  = EyeLine.Direction();
   
   gp_Vec P1P2 (P1,P2), P1P3(P1,P3);

@@ -198,12 +198,11 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
         if ( !myLocalContexts( myCurLocalIndex )->Filter()->IsOk( selector->OnePicked() ) )
           return AIS_SOD_AllBad;
     
-    // si c'est le meme qu'au coup precedent -> fin
+ 
     // Does nothing if previously detected object is equal to the current one
     if ( selector->OnePicked()->Selectable() == myLastPicked )
       return AIS_SOD_OnlyOneDetected;
-    //si le precedent est un objet courant, on ne le desilighte pas, sinon si
-    
+ 
     // Previously detected object is unhilighted if it is not selected or hilighted 
     // with selection color if it is selected. Such highlighting with selection color 
     // is needed only if myToHilightSelected flag is true. In this case previously detected
@@ -233,7 +232,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
       myLastinMain = myLastPicked;
     else 
       myLastinColl = myLastPicked;
-    // si l'objet detecte n'est pas courant, on le hilighte...
 #ifdef IMP191001
     // Highlight detected object if it is not selected or myToHilightSelected flag is true
     if ( !myLastPicked.IsNull() && 
@@ -297,8 +295,8 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Integer XPMin,
 						const Handle(V3d_View)& aView,
 						const Standard_Boolean updateviewer)
 {
-  // on prend  tous les objets detectes par le selecteur, on vide les precedents objets courants,
-  // on met les nouveaux...
+  // all objects detected by the selector are taken, previous current objects are emptied,
+  // new objects are put...
 
   if(HasOpenedContext())
     return myLocalContexts(myCurLocalIndex)->Select(XPMin,YPMin,XPMax,YPMax,aView,updateviewer);
@@ -367,8 +365,8 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const TColgp_Array1OfPnt2d& aPol
 						const Handle(V3d_View)& aView,
 						const Standard_Boolean updateviewer)
 {
-  // on prend  tous les objets detectes par le selecteur, on vide les precedents objets courants,
-  // on met les nouveaux...
+  // all objects detected by the selector are taken, previous current objects are emptied,
+  // new objects are put...
 
   if(HasOpenedContext())
     return myLocalContexts(myCurLocalIndex)->Select(aPolyline,aView,updateviewer);
@@ -439,7 +437,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Boolean updatevie
     if(myWasLastMain)
       return myLocalContexts(myCurLocalIndex)->Select(updateviewer);
     else
-      // on a picke dans le collecteur, il faut faire un traitement special...
+      // picking was done in the collector, special processing is required...
       {
 	myLocalContexts(myCurLocalIndex)->SetSelected(myLastPicked,updateviewer);
 	return AIS_SOP_OneSelected;
@@ -624,7 +622,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect( const TColgp_Array1OfPnt2d
 void AIS_InteractiveContext::SetCurrentObject(const Handle(AIS_InteractiveObject)& anIObj,
 					      const Standard_Boolean updateviewer)
 {
-  // traitement d'un cas singulier...
+  // single case processing...
   if(NbCurrents()==1 && anIObj->State()==1){
     Quantity_NameOfColor HiCol;
     Standard_Boolean HasHiCol;
@@ -660,7 +658,7 @@ void AIS_InteractiveContext::SetCurrentObject(const Handle(AIS_InteractiveObject
       sel->Next();
     }
     
-    // ajout pour ne pas faire d'updateviewer intempestif...
+    // added to avoid untimely viewer update...
     AIS_Selection::ClearAndSelect(anIObj);
     anIObj->State(1);
     Quantity_NameOfColor HiCol;

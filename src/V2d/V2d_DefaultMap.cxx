@@ -1,4 +1,3 @@
-//syl le 28/9/98: reactivation de 3 polices buggees + reagencement des polices
 #include <V2d_DefaultMap.ixx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Aspect_ColorMapEntry.hxx>

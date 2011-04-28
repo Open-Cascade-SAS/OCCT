@@ -7,12 +7,12 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques a la classe
-//		decrivant un reperage.
+//-Design	Declaration of variables specific to the class
+//		describing marking.
 
-//-Warning	Un retour de reperage est defini par :
-//		- une sequence de (Elem_Num, Pick_Id, Structure)
-//		- une profondeur
+//-Warning	A return of marking is defined by :
+//		- sequence of (Elem_Num, Pick_Id, Structure)
+//		- depth
 
 //-References	
 
@@ -75,14 +75,14 @@ Visual3d_PickPath Result;
 	switch (MyContext.Order ()) {
 
 		case Visual3d_TOO_TOPFIRST :
-			// MyPickPathSequence->First retourne le premier
-			// PickPath qui se trouve dans la sequence.
+			// MyPickPathSequence->First returns the first
+			// PickPath found in the sequence.
 			Result	= MyPickPathSequence->Sequence().First ();
 		break;
 
 		case Visual3d_TOO_BOTTOMFIRST :
-			// MyPickPathSequence->Last retourne le dernier
-			// PickPath qui se trouve dans la sequence.
+			// MyPickPathSequence->Last returns the last
+			// PickPath found in the sequence.
 			Result	= MyPickPathSequence->Sequence().Last ();
 		break;
 
@@ -100,14 +100,14 @@ Visual3d_PickPath Result;
 	switch (MyContext.Order ()) {
 
 		case Visual3d_TOO_TOPFIRST :
-			// MyPickPathSequence->First retourne le premier
-			// PickPath qui se trouve dans la sequence.
+			// MyPickPathSequence->First returns the first
+			// PickPath found in the sequence.
 			Result	= MyPickPathSequence->Sequence().First ();
 		break;
 
 		case Visual3d_TOO_BOTTOMFIRST :
-			// MyPickPathSequence->Last retourne le dernier
-			// PickPath qui se trouve dans la sequence.
+			// MyPickPathSequence->Last returns the last
+			// PickPath found in the sequence.
 			Result	= MyPickPathSequence->Sequence().Last ();
 		break;
 
@@ -125,14 +125,14 @@ Visual3d_PickPath Result;
 	switch (MyContext.Order ()) {
 
 		case Visual3d_TOO_TOPFIRST :
-			// MyPickPathSequence->First retourne le premier
-			// PickPath qui se trouve dans la sequence.
+			// MyPickPathSequence->First returns the first
+			// PickPath found in the sequence.
 			Result	= MyPickPathSequence->Sequence().First ();
 		break;
 
 		case Visual3d_TOO_BOTTOMFIRST :
-			// MyPickPathSequence->Last retourne le dernier
-			// PickPath qui se trouve dans la sequence.
+			// MyPickPathSequence->Last returns the last
+			// PickPath found in the sequence.
 			Result	= MyPickPathSequence->Sequence().Last ();
 		break;
 

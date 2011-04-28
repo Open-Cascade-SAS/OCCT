@@ -80,10 +80,10 @@ void SearchCommonFaces(const ChFiDS_Map& EFMap,
 
 //=======================================================================
 //function : ExtentSpinesOnCommonFace
-//purpose  : Etend les spines des deux chanfreins de distances dis1,dis2
-//           sur leur face commune
-//           Les deux lignes guides Spine1 et Spine2 qui se coupent en V
-//           isfirst(i) = False si Spine(i) est orientee vers V (i = 1,2)
+//purpose  : Extend spines of two chamfers by distance dis1,dis2
+//           on their common face
+//           Two guide lines Spine1 and Spine2 cross in V
+//           isfirst(i) = False if Spine(i) is oriented to V (i = 1,2)
 //=======================================================================
 
 void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
@@ -96,8 +96,8 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
 {		  
   Standard_Real tolesp = 1.e-7;
 
-    // On determine alpha, l'angle d'ouverture entre les
-    // tangentes des deux lignes guides en V
+    // alpha, the opening angle between two 
+    // tangents of two guidelines in V is found
     Standard_Real tga1,tga2;
     Standard_Real d1plus = 0., d2plus = 0.;
 
@@ -129,7 +129,7 @@ void ExtentSpineOnCommonFace(Handle(ChFiDS_Spine)&  Spine1,
       d2plus = dis2/tga2;
     }
 
-    //on prolonge avec les distances calculees
+    //extension by the calculated distance
     if (d1plus > 0.) {
       d1plus *= 3.;
       if (isfirst1){
@@ -286,7 +286,7 @@ void  ChFi3d_ChBuilder::SetDist(const Standard_Real    Dis,
 
     }
     else
-      Standard_DomainError::Raise("la face n'est commune a aucune des edges du contour");
+      Standard_DomainError::Raise("the face is not common to any of edges of the contour");
 
   }
 }
@@ -425,7 +425,7 @@ void  ChFi3d_ChBuilder::SetDists(const Standard_Real    Dis1,
       else csp->SetDists(Dis1,Dis2);
     }
     else
-      Standard_DomainError::Raise("la face n'est commune a aucune des edges du contour");
+      Standard_DomainError::Raise("the face is not common to any of edges of the contour");
 
   }
 }
@@ -574,7 +574,7 @@ void  ChFi3d_ChBuilder::SetDistAngle(const Standard_Real    Dis,
       }
     }
     else
-      Standard_DomainError::Raise("la face n'est commune a aucune des edges du contour");
+      Standard_DomainError::Raise("the face is not common to any edges of the contour");
 
   }
 }
@@ -647,11 +647,11 @@ void ChFi3d_ChBuilder::Simulate (const Standard_Integer IC)
 #ifdef DEB
   if(ChFi3d_GettraceCHRON()){
     simul.Stop();
-    cout<<"Temps total simulation : ";
+    cout<<"Total simulation time : ";
     simul.Show();
-    cout<<"dont temps construction spine : ";
+    cout<<"Spine construction time : ";
     elspine.Show();
-    cout<<"et temps cheminement : ";
+    cout<<"and progression time : ";
     chemine.Show();
   }
 #endif
@@ -798,19 +798,19 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   
   if (chsp.IsNull()) 
     Standard_ConstructionError::Raise
-      ("SimulSurf : la spine n est pas celle d un chanfrein");
+      ("SimulSurf : this is not the spine of a chamfer");
 
 
   Standard_Real radius;
-  // Des parametres souples!!!
+  // Flexible parameters!
   Standard_Real la = HGuide->LastParameter(), fi = HGuide->FirstParameter();
   Standard_Real longueur = la - fi;
   Standard_Real MaxStep = longueur * 0.05;
   Standard_Real radiusspine = 0, locfleche, w;
   gp_Pnt Pbid;
   gp_Vec d1,d2;
-  // Puisque l ElSpine est parametree par une quasi-abscissecurviligne,
-  // on evalue le rayon min par 1/D2 max;
+  // As ElSpine is parameterized by a curvilinear quasi-abscissa,
+  // the min radius is estimated as 1/D2 max;
   //for(Standard_Integer i = 0; i <= 20; i++){
   Standard_Integer i;
   for( i = 0; i <= 20; i++){ 
@@ -831,7 +831,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     Standard_Real dis;
     chsp->GetDist(dis);
     radius = Max(dis, radiusspine);
-    locfleche = radius*1.e-2; //critere graphique
+    locfleche = radius*1.e-2; //graphic criterion
 
     BRepBlend_Chamfer Func(S1,S2,HGuide);
     BRepBlend_ChamfInv FInv(S1,S2,HGuide); 
@@ -911,7 +911,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     chsp->Dists(dis1, dis2);
     radius = Max(dis1, dis2);
     radius = Max(radius, radiusspine);
-    locfleche = radius*1.e-2; //critere graphique
+    locfleche = radius*1.e-2; //graphic criterion
 
     BRepBlend_Chamfer Func(S1,S2,HGuide);
     BRepBlend_ChamfInv FInv(S1,S2,HGuide); 
@@ -992,7 +992,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     chsp->GetDistAngle(dis, angle, disonF1);
     radius = Max(dis, dis * tan(angle));
     radius = Max(radius, radiusspine);
-    locfleche = radius*1.e-2; //critere graphique
+    locfleche = radius*1.e-2; //graphic criterion
 
     Standard_Integer Ch = FindChoiceDistAngle(Choix, disonF1);
 
@@ -1271,7 +1271,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
   
   if (chsp.IsNull()) 
     Standard_ConstructionError::Raise
-      ("PerformSurf : la spine n est pas celle d un chanfrein");
+      ("PerformSurf : this is not the spine of a chamfer");
 
   Standard_Real TolGuide = HGuide->Resolution(tolesp) ;
 
@@ -1284,7 +1284,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     Func.Set(dis,dis,Choix);
     BRepBlend_Walking TheWalk(S1,S2,I1,I2);
     
-    //calcul d'une solution de depart approchee
+    //calculate an approximate starting solution
     gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
     gp_Pnt pt1, pt2, ptgui;
     gp_XYZ temp;
@@ -1341,7 +1341,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     Func.Set(dis1,dis2,Choix);
     BRepBlend_Walking TheWalk(S1,S2,I1,I2);
     
-    //calcul d'une solution de depart approchee
+    //calculate an approximate starting solution
     gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
     gp_Pnt pt1, pt2, ptgui;
     gp_XYZ temp;
@@ -1402,7 +1402,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       Func.Set(dis1, angle, Ch);
       BRepBlend_Walking TheWalk(S1,S2,I1,I2);
     
-      //calcul d'une solution de depart approchee
+    //calculate an approximate starting solution
       gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
       gp_Pnt pt1, pt2, ptgui;
       gp_XYZ temp;
@@ -1464,7 +1464,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       Func.Set(dis1, angle, Ch);
       BRepBlend_Walking TheWalk(S2,S1,I2,I1);
     
-      //calcul d'une solution de depart approchee
+    //calculate an approximate starting solution
       gp_Vec TgF, TgL, tmp1, tmp2, d1gui;
       gp_Pnt pt1, pt2, ptgui;
       gp_XYZ temp;
@@ -1573,7 +1573,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
   
   if (chsp.IsNull()) 
     Standard_ConstructionError::Raise
-      ("PerformSurf : la spine n est pas celle d un chanfrein");
+      ("PerformSurf : this is not the spine of a chamfer");
   
   Standard_Boolean gd1,gd2,gf1,gf2;
   Handle(BRepBlend_Line) lin;
@@ -1596,7 +1596,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
     if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist) {
     BRepBlend_Chamfer  Func(S1,S2,HGuide);
@@ -1612,7 +1612,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 		       gd1,gd2,gf1,gf2,RecOnS1,RecOnS2);
     if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
     done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
   }
   else {
     Standard_Real d1, angle;
@@ -1634,7 +1634,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 
       if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
       done = CompleteData(Data,Func,lin,S1,S2,Or,gd1,gd2,gf1,gf2);
-      if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+      if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
     }
     else {
       Standard_Real Rtemp;
@@ -1665,7 +1665,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
       Data->ChangeVertexLastOnS2() = tmp;
       if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
       done = CompleteData(Data,Func,lin,S1,S2,Or2,gd1,gd2,gf1,gf2, Standard_True);
-      if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+      if(!done) Standard_Failure::Raise("PerformSurf : Fail of approximation!");
     }      
 
   }
@@ -1766,7 +1766,7 @@ void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 //=======================================================================
 //function : ExtentOneCorner
 //purpose  : extends the spine of the stripe S on the side of the vertex V
-// PMN : 28/11/97 : Reprend le code des conges, et cela semble marcher mieux...
+// PMN : 28/11/97 : Reproduces the code of fillets, and it seems to work better...
 //=======================================================================
 
 void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex&          V,
@@ -1776,7 +1776,7 @@ void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex&          V,
   Standard_Real         Coeff = 0.5;
   Handle(ChFiDS_Spine)  Spine = S->Spine();
   ChFi3d_IndexOfSurfData(V,S,Sens);
-  if (Spine->IsTangencyExtremity((Sens == 1))) return; //Pas de prolongement sur queue
+  if (Spine->IsTangencyExtremity((Sens == 1))) return; //No extension on queue
   Standard_Real dU = Spine->LastParameter(Spine->NbEdges());
   if (Sens == 1) {
     Spine->SetFirstParameter(-dU*Coeff);
@@ -1939,7 +1939,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
     }
     else {
       chsp[i]->GetDistAngle(tmd, tmpang, disonF1);
-      // on fait un calcul grossier de la distance 2
+      // an approximate calculation of distance 2 is done
       if (disonF1) {
 	d[j]   = tmd;
 	d[j+1] = tmd * tan(tmpang); 
@@ -1983,8 +1983,8 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
   
   if (State[0] == ChFiDS_AllSame ){
 /*      
-   // On cherche l'intersection du chanfrein le plus gros (sur l'arete incidente)
-    // avec la face en bout
+   // The greatest intersection of the chamfer is found (on the incident edge)
+    // with the face at end
     i = 0;
     j = 1;
     if(dOnArc[j] > dOnArc[i]) {
@@ -1994,7 +1994,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
     }
     ExtentOneCorner( V, Stripe[i] ); */
 
-    // il faut que les deux chanfreins touchent la face en bout 
+    // it is necessary that two chamfers touch the face at end 
     for (j=0; j<2; j++)
       ExtentOneCorner( V, Stripe[j] ); 
   }
@@ -2066,7 +2066,7 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
     }
     else {
       chsp[i]->GetDistAngle(tmd, tmpangle, disonF1);
-      // on fait un calcul grossier de la distance 2 
+      // an approximate calculation of distance 2 is done
 
       if (disonF1) {
 	d[i][0] = tmd;
@@ -2080,8 +2080,8 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
   }
 
 
-  // dis[i][j] la distance du chanfrein i sur la face commune avec 
-  // le chanfrein j
+  // dis[i][j] distance from chamfer i on the common face with 
+  // chamfer j
   Standard_Real dis[3][3];
 
   for (i=0; i<3; i++) {
@@ -2176,8 +2176,7 @@ void ChFi3d_ChBuilder::SetRegul()
 
 //=======================================================================
 //function : ConexFaces
-//purpose  : F1, F2 connexes a l'edge telles que F1 corresponde
-//           a dis
+//purpose  : F1, F2 are connected to edge so that F1 corresponds to distance
 //=======================================================================
 
 void ChFi3d_ChBuilder::ConexFaces (const Handle(ChFiDS_Spine)&  Spine,
@@ -2190,7 +2189,7 @@ void ChFi3d_ChBuilder::ConexFaces (const Handle(ChFiDS_Spine)&  Spine,
   Standard_Integer RC,Choix;
   TopoDS_Face f1,f2,ff1,ff2;
 
-  //calcul de l'orientation de reference
+  //calculate the reference orientation
   // ChFi3d_Builder::StripeOrientations is private
   SearchCommonFaces(myEFMap,Spine->Edges(1),ff1,ff2);
   ff1.Orientation(TopAbs_FORWARD);
@@ -2199,7 +2198,7 @@ void ChFi3d_ChBuilder::ConexFaces (const Handle(ChFiDS_Spine)&  Spine,
   Sb2.Initialize(ff2);
   RC = ChFi3d::ConcaveSide(Sb1,Sb2,Spine->Edges(1),tmp1,tmp2);
 				  
-  //calcul des faces connexes
+  //calculate the connected faces
   SearchCommonFaces(myEFMap,Spine->Edges(IEdge),f1,f2);
   Sb1.Initialize(f1);
   Sb2.Initialize(f2);
@@ -2218,8 +2217,7 @@ void ChFi3d_ChBuilder::ConexFaces (const Handle(ChFiDS_Spine)&  Spine,
 
 //=======================================================================
 //function : FindChoiceDistAngle
-//purpose  : F1, F2 connexes a l'edge telles que F1 corresponde
-//           a dis
+//purpose  : F1, F2 connected to the edge so that F1 corresponds to distance
 //=======================================================================
 
 Standard_Integer ChFi3d_ChBuilder::FindChoiceDistAngle(const Standard_Integer Choice,

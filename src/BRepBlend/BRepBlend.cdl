@@ -138,54 +138,52 @@ is
     --          Edge/Face  and  evolutif  radius	 
 
     class SurfRstConstRad;
-    ---Purpose:  Copie de CSConstRad mais avec une pcurve sur surface 
-    --           comme support. 
+    ---Purpose: Copy of CSConstRad with pcurve on surface 
+    --          as support. 
 
     class RstRstEvolRad;
     ---Purpose: Function  to approximate by AppSurface  for  
     --          Edge/Edge  and  evolutif  radius
     --          
     class RstRstConstRad;
-    ---Purpose:  Copie de CSConstRad mais avec une pcurve sur surface 
-    --           comme support. 
+    ---Purpose: Copy of CSConstRad with a pcurve on surface 
+    --          as support. 
 
     class SurfPointConstRadInv;
-    ---Purpose: Fonction de recadrage entre  un  point et une surface.
+    ---Purpose: Function of reframing between a point and a surface.
 
     class SurfCurvConstRadInv;
-    ---Purpose: Fonction de recadrage entre une restriction surface de
-    --          la surface et une courbe.
+    ---Purpose: Function of reframing between a restriction surface of the
+    --          surface and a curve.
 
     class SurfPointEvolRadInv;
-    ---Purpose: Fonction de recadrage entre  un  point et une surface.
+    ---Purpose: Fonction of reframing between a point and a surface.
 
     class CurvPointRadInv;
-    ---Purpose: Fonction de recadrage entre  un  point et une courbe.
-    --          valable dans les cas rsyon constant et rayon evolutif
+    ---Purpose: Function of reframing between a point and a curve.
+    --          valid in cases of constant and progressive radius
     class SurfCurvEvolRadInv;
-    ---Purpose: Fonction de recadrage entre une restriction surface de
-    --          la surface et une courbe.
+    ---Purpose: Function of reframing between a surface restriction 
+    --          of the surface and a curve.
 
     class SurfRstLineBuilder;
-    ---Purpose: Construction d'une BRepBlend_Line entre une surface et
-    --          une   pcurve sur surface a  partir   d'une solution de
-    --          depart approchee.   Les entrees sorties  de ce builder
-    --          sont  de  meme     nature  que  celle  d'un    walking
-    --          traditionnel, mais les  exigences sur la Line  ne sont
-    --          pas    les   memes.   Si l'on   garanti    toujours la
-    --          determination du  range de  validite,  on ne  respecte
-    --          plus les criteres de bonne repartition des sections en
-    --          vue d'un lissage. En  resume la Line resultat est f(t)
-    --          oriented.
+    ---Purpose: Construction of a BRepBlend_Line between a surface and
+    --          a pcurve on surface from an approached
+    --          starting solution. The output entries of this builder
+    --          are of the same nature as of the traditional walking
+    --          but the requirements on the Line are not the same
+    --          If the determination of validity range is always
+    --          guaranteed, the criteria of correct repartition of sections 
+    --          before smoothing are not respected. The resulting Line
+    --          is f(t) oriented.
 
     class RstRstLineBuilder;
-    ---Purpose: Construction d'une BRepBlend_Line entre deux pcurves a
-    --           partir d'une   solution de  depart  approchee.    Les
-    --          entrees sorties de ce builder sont  de meme nature que
-    --          celle d'un  walking  traditionnel, mais les  exigences
-    --          sur la Line  ne sont pas  les memes.  Si l'on  garanti
-    --          toujours la determination du range  de validite, on ne
-    --          respecte plus les criteres   de bonne repartition  des
-    --          sections  en  vue  d'un  lissage. En  resume  la  Line
-    --          resultat est f(t) oriented.
+    ---Purpose: Construction of a BRepBlend_Line between two pcurves
+    --          from an approached starting solution. The output
+    --          entries of this builder are of the same nature 
+    --          as of a traditional walking, but the requirements 
+    --          to the Line are not the same. If the determination of validity range is always
+    --          guaranteed, the criteria of correct repartition of sections 
+    --          before smoothing are not respected. The resulting Line
+    --          is f(t) oriented.          
 end BRepBlend;

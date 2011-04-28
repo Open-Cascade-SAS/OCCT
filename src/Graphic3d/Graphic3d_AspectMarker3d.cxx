@@ -7,14 +7,14 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au contexte
-//		de trace des markers 3d
+//-Design	Declaration of variables specific to the context
+//		of trace of markers 3d
 
-// Rappels	Un contexte de trace de markers 3d herite du contexte
-//		defini par :
-//		- la couleur
-//		- le type de marker
-//		- l'echelle
+// Rappels	Context of trace of markers 3d inherits the context
+//		defined by :
+//		- the color
+//		- the type of marker
+//		- the scale
 
 //-Warning	
 

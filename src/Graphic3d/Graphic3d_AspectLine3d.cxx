@@ -7,14 +7,14 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au contexte
-//		de trace des lignes 3d
+//-Design	Declaration of variables specific to the context
+//		of tracing of lines 3d
 
-//-Warning	Un contexte de trace de lignes 3d herite du contexte
-//		defini par :
-//		- la couleur
-//		- le type de trait
-//		- l'epaisseur
+//-Warning	Context of tracing of lines 3d inherits the context
+//		defined by :
+//		- the color
+//		- the type of trait
+//		- the thickness
 
 //-References	
 
@@ -38,8 +38,8 @@
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d () {
 }
 
-// le :(AColor, AType, AWidth)
-// car AspectLine3d herite de AspectLine et il faut appeler
-// l'initialisation de AspectLine avec AColor, AType, AWidth.
+// (AColor, AType, AWidth)
+// because  AspectLine3d inherits AspectLine and it is necessary to call
+// initialisation of AspectLine with AColor, AType, AWidth.
 
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color& AColor, const Aspect_TypeOfLine AType, const Standard_Real AWidth):Aspect_AspectLine (AColor, AType, AWidth) {}

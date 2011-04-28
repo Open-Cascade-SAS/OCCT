@@ -176,7 +176,7 @@
 	TolVertex=TolVertex1;
       }	
       //
-      //-- Verification des cas ou on a oublie de coder degenereted
+      //-- Verification of cases when forgotten to code degenereted
       if(!degenerated) {
 	Standard_Real aR2;
 	gp_Pnt P3da, P3db;
@@ -243,10 +243,10 @@
       }
       //
       //-- ------------------------------------------------------------
-      //-- On regarde la distance uv entre le point de debut de l edge
-      //-- et le dernier point enregistre dans SeqPnt2d
-      //-- On cherche a eloigner le premier point de l edge courant 
-      //-- du dernier point enregistre
+      //-- Check distance uv between the start point of the edge
+      //-- and the last point saved in SeqPnt2d
+      //-- To to set the first point of the current 
+      //-- afar from the last saved point
       Avant = nbpnts;
       for(iX=firstpoint; iX<=aNbs1; iX++) {
 	Standard_Boolean IsRealCurve3d;
@@ -355,7 +355,7 @@
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //
     if(NbEdges) { 
-      //-- on compte ++ avec un explorateur normal et -- avec le Wire Exploreur
+      //-- count ++ with normal explorer and -- with Wire Explorer
       TColgp_Array1OfPnt2d PClass(1,2);
       gp_Pnt2d anInitPnt(0., 0.);
       //
@@ -463,7 +463,7 @@
   Standard_Integer nbtabclass = TabClass.Length();
   //
   if(nbtabclass>0) { 
-    //-- Si une erreur sur un wire a ete detecte : On met tous les TabOrien a -1
+    //-- if an error on a wire was detected : all TabOrien set to -1
     if(BadWire) {
       TabOrien(1)=-1;
     }
@@ -521,7 +521,7 @@
     return(TopAbs_IN);
   }
   
-  //-- U1 est le First Param et U2 ds ce cas est U1+Period
+  //-- U1 is the First Param and U2 is in this case U1+Period
   Standard_Real u, v, uu, vv,  uperiod, vperiod;
   Standard_Boolean IsUPer, IsVPer, urecadre, vrecadre;
   TopAbs_State Status= TopAbs_UNKNOWN;
@@ -618,7 +618,7 @@
       }
     } // if(TabOrien(1)!=-1) {
     
-    else {  //-- TabOrien(1)=-1    Wire Faux
+    else {  //-- TabOrien(1)=-1   Wrong Wire
       BRepClass_FaceClassifier aClassifier;
       aClassifier.Perform(Face,Puv,Toluv);
       Status = aClassifier.State();
@@ -677,7 +677,7 @@
     return(TopAbs_IN);
   }
   
-  //-- U1 est le First Param et U2 ds ce cas est U1+Period
+  //-- U1 is the First Param and U2 in this case is U1+Period
   Standard_Real u=_Puv.X();
   Standard_Real v=_Puv.Y();
   Standard_Real uu = u, vv = v;
@@ -755,7 +755,7 @@
 	Status = TopAbs_OUT;
       }
     }
-    else {  //-- TabOrien(1)=-1    Wire Faux
+    else {  //-- TabOrien(1)=-1  Wrong  Wire 
       BRepClass_FaceClassifier aClassifier;
       aClassifier.Perform(Face,Puv,Tol);
       Status = aClassifier.State();

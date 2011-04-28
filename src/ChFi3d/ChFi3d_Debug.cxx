@@ -33,7 +33,7 @@ OSD_Chronometer simul,elspine,chemine;
 #endif
 
 //*********************************
-// chronometrage de la simulation
+// timing of the simulation
 //*********************************
 
 static Standard_Boolean ChFi3d_traceCHRON = Standard_False;
@@ -43,7 +43,7 @@ Standard_Boolean ChFi3d_GettraceCHRON()
 { return ChFi3d_traceCHRON; }
 
 //*********************************
-// trace d une ligne de cheminement
+// trace a line of path
 //*********************************
 
 static Standard_Boolean ChFi3d_traceDRAWWALK = Standard_False;
@@ -53,7 +53,7 @@ Standard_Boolean ChFi3d_GettraceDRAWWALK()
 { return ChFi3d_traceDRAWWALK; }
 
 //**********************************
-// trace d une ligne d intersection
+// trace a line of intersection
 //**********************************
 
 static Standard_Boolean ChFi3d_traceDRAWINT = Standard_False;
@@ -63,7 +63,7 @@ Standard_Boolean ChFi3d_GettraceDRAWINT()
 { return ChFi3d_traceDRAWINT; }
 
 //*************************************************
-// recuperation des surfaces des conges approximes.
+// return surfaces of approximated fillets.
 //*************************************************
 
 static Standard_Boolean ChFi3d_traceDRAWFIL = Standard_False;
@@ -74,7 +74,7 @@ Standard_Boolean ChFi3d_GettraceDRAWFIL()
 
 
 //*************************************************
-// recuperation des faces elargie pour le cheminement.
+// return extended faces for the path.
 //*************************************************
 
 static Standard_Boolean ChFi3d_traceDRAWENLARGE = Standard_False;
@@ -84,7 +84,7 @@ Standard_Boolean ChFi3d_GettraceDRAWENLARGE()
 { return ChFi3d_traceDRAWENLARGE; }
 
 //*************************************************
-// recuperation de la ligne guide pour les coins triples.
+// return the guideline for the triple corners.
 //*************************************************
 
 static Standard_Boolean ChFi3d_traceDRAWSPINE = Standard_False;
@@ -94,7 +94,7 @@ Standard_Boolean ChFi3d_GettraceDRAWSPINE()
 { return ChFi3d_traceDRAWSPINE; }
 
 //*************************************************
-// set du type de ligne guide pour les coins triples.
+// set the type of guideline for the triple corners.
 //*************************************************
 
 void ChFi3d_SetcontextSPINEBEZIER(const Standard_Boolean b); 
@@ -135,7 +135,7 @@ Standard_Boolean ChFi3d_GetcontextSPINECE()
 { return ChFi3d_contextSPINECE; }
 
 //*************************************************
-// Passage force par le cheminement pour les KPart
+// Forced passage by the path for KPart
 //*************************************************
 static Standard_Boolean ChFi3d_contextFORCEBLEND = Standard_False;
 void ChFi3d_SetcontextFORCEBLEND(const Standard_Boolean b) 
@@ -150,7 +150,7 @@ Standard_Boolean ChFi3d_GetcontextFORCEFILLING()
 { return ChFi3d_contextFORCEFILLING; }
 
 //*************************************************
-// Pas d optimisation pour les approx
+// No optimization for approx
 //*************************************************
 static Standard_Boolean ChFi3d_contextNOOPT = Standard_False;
 void ChFi3d_SetcontextNOOPT(const Standard_Boolean b) 
@@ -159,7 +159,7 @@ Standard_Boolean ChFi3d_GetcontextNOOPT()
 { return ChFi3d_contextNOOPT; }
 
 // ***********************************************
-//    initialisation et resultat d'un chrono 
+//    initialization and result of a chrono 
 //************************************************
 Standard_EXPORT void ChFi3d_InitChron(OSD_Chronometer& ch)
 { 
@@ -179,9 +179,8 @@ Standard_EXPORT void ChFi3d_ResultChron( OSD_Chronometer & ch,
 
 //==============================================================
 // function : ChFi3d_CheckSurfData
-// purpose  : fonction permettant de tracer une SurfData afin
-//            de verifier la bonne construction de tous les 
-//            elements, notamment des pcurves
+// purpose  : function allows to trace SurfData to check
+//            construction of all elements, namely pcurves
 //==============================================================
 #ifdef DRAW
 static Standard_Integer NbSD = 0; 
@@ -189,8 +188,8 @@ static Standard_Integer NbSD = 0;
 void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
 			  const Handle(ChFiDS_SurfData)& Data)
 {
-  //trace de la surface definie par le chanfrein ou le conge
-  // correspondant a la SurfData
+  //trace of the surface defined by the chamfer or the fillet
+  // corresponding to SurfData
   
   Handle(Geom_Surface) surf = (DStr.Surface( Data->Surf())).Surface();
   if (!surf.IsNull()){

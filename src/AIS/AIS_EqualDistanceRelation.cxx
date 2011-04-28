@@ -455,7 +455,7 @@ void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Prese
     Position = AIS::ProjectPointOnPlane( Position, Plane->Pln() );
   }
 
-  // recherche points attache
+  // find attach points
   if (!isInfinite1) {
     if (Position.Distance(ptat11) > Position.Distance(ptat12)) FirstAttach = ptat12;
     else FirstAttach = ptat11;
@@ -823,8 +823,8 @@ void AIS_EqualDistanceRelation::ComputeOneEdgeOneVertexLength( const Handle( Prs
   // computation of Val
   Val = FirstAttach.Distance(SecondAttach);
   
-  //Display des morceaux de raccordement vers la curve si elle
-  // n'est pas dans le WP
+  //Display the pieces of attached to the curve if it is not 
+  // in the WP
   if (!isOnPlanEdge) { // add presentation of projection of the edge in WP
       AIS::ComputeProjEdgePresentation(aPresentation,aDrawer,theedge,aCurve,ptonedge1,ptonedge2);
       }

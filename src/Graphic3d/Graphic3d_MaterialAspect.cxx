@@ -1,15 +1,5 @@
 // File		Graphic3d_MaterialAspect.cxx
 // Created	Fevrier 1992
-// Author	NW,JPB,CAL
-// modified     1/07/97 ; PCT : ajout texture mapping
-//              8/04/98 ; FGU : Ajout Emission
-//              9/07/98 ; CAL : Ajout de l'initialisation de l'EmissiveCoef
-//              26/03/99 ; FMN : Ajout methodes SetColor() et Color()
-//              26/03/99 : FMN ; Compatibilite ascendante: Ajout des anciens noms de materiaux.
-//              09/04/99 : GG ; Compatibilite ascendante: NameOfPhysicalMaterial disparait
-//		07/07/99 : GG ; MyEmissiveActivity MUST be initialized in the
-//			   constructor of the class.
-//              23/11/99 : GG ; BUC60488 : Add Name() & Reset() methods
 
 #define BUC60565        //GG_19/10/99 ; Don't change the color components when the corresponding
 //                      coefficient is modified because the resulting color is computed in
@@ -28,31 +18,31 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques aux definition
-//		des matieres
+//-Design	Declaration of variables specific to the definition
+//		of materials
 
-//-Warning	Une matiere est definie par :
-//		- Un coefficient de transparence
-//		- Un coefficient de reflection diffuse
-//		- Un coefficient de reflection ambiante
-//		- Un coefficient de reflection speculaire
-//              - Un coefficient d emission
+//-Warning	A material is defined by :
+//		- coefficient of transparence
+//		- coefficient of disperse reflection
+//		- coefficient of ambiant reflection
+//		- coefficient of specular reflection
+//              - coefficient of emission
 
-//		2 proprietes permettent de definir une matiere :
-//		- sa transparence
-//		- sa reflection c-a-d ses proprietes d'absorbtion
-//		et de diffusion de la lumiere
+//		2 properties permiting to define a material :
+//		- transparence
+//		- reflection, i.e. absorbtion properties
+//		and light diffusion
 
-//		La reflection diffuse est percue comme une composante
-//		La reflection speculaire est percue comme une composante
-//		de la couleur de la source lumineuse
+//		Disperse reflection is considered a component
+//		The specular reflection is considered a component
+//		of the color of the light source
 
-//		Pour determiner les 3 couleurs de reflection il faut :
-//		- Un coefficient de reflection diffuse
-//		- Un coefficient de reflection ambiante
-//		- Un coefficient de reflection speculaire
+//		To determine 3 colors of reflection it is necessary :
+//		- coefficient of disperse reflection
+//		- coefficient of ambiant reflection
+//		- coefficient of specular reflection
 
-//		( Sous GL, on determine 3 couleurs )
+//		( Under GL, 3 colors are determined)
 
 //-References	Getting started with DEC PHIGS, annexe C
 //		Iris Advanced Graphics, unite D
@@ -147,7 +137,7 @@ void Graphic3d_MaterialAspect::Init(const Graphic3d_NameOfMaterial AName) {
 
 	switch (AName) {
 		case Graphic3d_NOM_PLASTIC : /* Blue plastic */
-			/* Coefficient d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.0078125);
 			MyAmbientCoef		= Standard_ShortReal (0.5);
 			MyDiffuseCoef		= Standard_ShortReal (0.24);
@@ -155,7 +145,7 @@ void Graphic3d_MaterialAspect::Init(const Graphic3d_NameOfMaterial AName) {
 		break;				
 		
 	        case Graphic3d_NOM_SHINY_PLASTIC : /* black plastic */
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (1.0);
 			MyAmbientCoef		= Standard_ShortReal (0.44);
 			MyDiffuseCoef		= Standard_ShortReal (0.5);
@@ -170,7 +160,7 @@ void Graphic3d_MaterialAspect::Init(const Graphic3d_NameOfMaterial AName) {
 		break;
 		
 		case Graphic3d_NOM_NEON_GNC: 
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.05);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
@@ -181,123 +171,123 @@ void Graphic3d_MaterialAspect::Init(const Graphic3d_NameOfMaterial AName) {
 		break;
 		
 		case Graphic3d_NOM_METALIZED :			
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.13);
 			MyAmbientCoef		= Standard_ShortReal (0.9);
 			MyDiffuseCoef		= Standard_ShortReal (0.47);
 			MySpecularCoef		= Standard_ShortReal (0.45);
 			MyAmbientActivity  = Standard_False;
 						
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			//MyDiffuseColor.SetValues (0.87, 0.96, 1.0, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			//MySpecularColor.SetValues (0.93, 0.95, 0.78, Quantity_TOC_RGB);						
 		break;
 
-// Compatibilite ascendante materiaux physiques. On prend la meme definition
-// que dans le createur suivant.	
+// Ascending Compatibility physical materials. The same definition is taken
+// as in the next constructor.	
 
 		case Graphic3d_NOM_BRASS :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Initialisation des coefficients et couleur d eclairage : brass */
+			/* Initialisation of coefficients and lighting color : brass */
 			MyShininess		= Standard_ShortReal (0.21794844);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.329412, 0.223529, 0.027451, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.780392, 0.568627, 0.113725, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.992157, 0.941176, 0.807843, Quantity_TOC_RGB);								
 		break;
 
 		case Graphic3d_NOM_BRONZE :						
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-		        /* Coef d eclairage */
+		        /* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.2);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.2125, 0.1275, 0.054, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.714, 0.4284, 0.18144, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.393548, 0.271906, 0.166721, Quantity_TOC_RGB);						
 		break;
 
 		case Graphic3d_NOM_COPPER :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-                        /* Coefficient d eclairage */
+                        /*  Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.93);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.33, 0.26, 0.23, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.50, 0.11, 0.0, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.95, 0.73, 0.0, Quantity_TOC_RGB);			
 		break;
 
 		case Graphic3d_NOM_GOLD :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-		        /* Coefficient d eclairage */
+		        /* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.0625);
 			MyAmbientCoef		= Standard_ShortReal (0.3);
 			MyDiffuseCoef		= Standard_ShortReal (0.4);
 			MySpecularCoef		= Standard_ShortReal (0.9);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (1.0, 0.76862745, 0.31764706, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (1.0, 0.69, 0.0, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (1.0, 0.98, 0.78, Quantity_TOC_RGB);									
 		break;		
 
 		case Graphic3d_NOM_PEWTER :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Coefficient d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.076923047);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.105882, 0.058824, 0.113725, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.427451, 0.470588, 0.541176, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.333333, 0.333333, 0.521569, Quantity_TOC_RGB);					
 		break;	
 
 		case Graphic3d_NOM_PLASTER :
 #ifdef BUG      // The plaster material must be considered as Generic.
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-                        /* Coefficient d eclairage */
+                        /*  Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.2);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 #else
-                        /* Coefficient d eclairage */
+                        /* Lighting Coefficient */
                         MyShininess             = Standard_ShortReal (0.0078125)
 ;
                         MyAmbientCoef           = Standard_ShortReal (0.26);
@@ -305,88 +295,88 @@ void Graphic3d_MaterialAspect::Init(const Graphic3d_NameOfMaterial AName) {
                         MySpecularCoef          = Standard_ShortReal (0.06);
 #endif
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.19225, 0.19225, 0.19225, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.50754, 0.50754, 0.50754, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.508273, 0.508273, 0.508273, Quantity_TOC_RGB);
 		break;
 
 		case Graphic3d_NOM_SILVER :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-                        /* Coefficient d eclairage */
+                        /* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.2);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.19225, 0.19225, 0.19225, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.50754, 0.50754, 0.50754, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.508273, 0.508273, 0.508273, Quantity_TOC_RGB);
 		break;
 		
 		case Graphic3d_NOM_STEEL :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-		        /* Coefficient d eclairage */
+		        /* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.06); 
 			MyAmbientCoef		= Standard_ShortReal (0.01);
 			MyDiffuseCoef		= Standard_ShortReal (0.03);
 			MySpecularCoef		= Standard_ShortReal (0.98);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (1.0, 1.0, 1.0, Quantity_TOC_RGB);
 		break;	
 		
 		case Graphic3d_NOM_STONE :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-		        /* Coefficient d eclairage */
+		        /* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.17);
 			MyAmbientCoef		= Standard_ShortReal (0.19);
 			MyDiffuseCoef		= Standard_ShortReal (0.75);
 			MySpecularCoef		= Standard_ShortReal (0.08);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (1.0, 0.8, 0.62, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (1.0, 0.8, 0.62, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */						
+			/* Color resulting from specular */						
 			MySpecularColor.SetValues (0.98, 1.0, 0.60, Quantity_TOC_RGB);			
 		break;
 
-// Compatibilite ascendante materiaux physiques. On prend la meme definition
-// que dans le createur suivant. Nouveaux materials
+// Ascending Compatibility of physical materials. Takes the same definition
+// as in the next constructor. New materials
 		
 		case Graphic3d_NOM_CHROME :			
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.1);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.35, 0.35, 0.35, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.4, 0.4, 0.4, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/*  Color resulting from specular */
 			MySpecularColor.SetValues (0.974597, 0.974597, 0.974597, Quantity_TOC_RGB);						
 		break;
 		
 		case Graphic3d_NOM_NEON_PHC: 
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.05);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
@@ -396,70 +386,70 @@ void Graphic3d_MaterialAspect::Init(const Graphic3d_NameOfMaterial AName) {
 			MyAmbientActivity = Standard_False;
 			MyDiffuseActivity  = Standard_False;
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (1.0, 1.0, 1.0, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (1.0, 1.0, 1.0, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (1.0, 1.0, 1.0, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */			
+			/* Color resulting from specular */			
 			MyEmissiveColor.SetValues (0.0, 1.0, 0.46, Quantity_TOC_RGB);							  
 		break;
 		
 		case Graphic3d_NOM_ALUMINIUM :			
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.09);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.30, 0.30, 0.30, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.30, 0.30, 0.30, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.70, 0.70, 0.80, Quantity_TOC_RGB);						
 		break;
 		
 		case Graphic3d_NOM_OBSIDIAN :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.3);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.05375, 0.05, 0.06625, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.18275, 0.17, 0.22525, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.332741, 0.328634, 0.346435, Quantity_TOC_RGB);						
 		break;	
 		
 		case Graphic3d_NOM_JADE :
 			MyMaterialType = Graphic3d_MATERIAL_PHYSIC;
-			/* Coef d eclairage */
+			/* Lighting Coefficient */
 			MyShininess		= Standard_ShortReal (0.1);
 			MyAmbientCoef		= Standard_ShortReal (1.0);
 			MyDiffuseCoef		= Standard_ShortReal (1.0);
 			MySpecularCoef		= Standard_ShortReal (1.0);
 			
-			/* Couleur issue de l ambient */
+			/* Color resulting from ambient */
 			MyAmbientColor.SetValues (0.135, 0.2225, 0.1575, Quantity_TOC_RGB);
 			
-			/* Couleur issue du diffus */
+			/* Color resulting from dispersed */
 			MyDiffuseColor.SetValues (0.54, 0.89, 0.63, Quantity_TOC_RGB);
 			
-			/* Couleur issue du speculaire */
+			/* Color resulting from specular */
 			MySpecularColor.SetValues (0.316228, 0.316228, 0.316228, Quantity_TOC_RGB);						
 		break;
 		default:
@@ -485,7 +475,7 @@ Standard_ShortReal OldShine;
 	}
 }
 
-/* Affectation type du materiel */
+/* Attribution of the type of material */
 void Graphic3d_MaterialAspect::SetMaterialType( const Graphic3d_TypeOfMaterial AType ) {
        MyMaterialType = AType ;
 #ifdef IMP171201
@@ -526,7 +516,7 @@ void Graphic3d_MaterialAspect::SetColor (const Quantity_Color& AColor) {
 #endif
 }
 
-/* Affectation couleur eclairage ambient */
+/* Attribution of color ambient lighting */
 void Graphic3d_MaterialAspect::SetAmbientColor (const Quantity_Color& AColor) {
 
 	MyAmbientColor	= AColor;
@@ -537,7 +527,7 @@ void Graphic3d_MaterialAspect::SetAmbientColor (const Quantity_Color& AColor) {
 #endif
 }
 
-/*  Affectation couleur eclairage diffus */
+/*  Attribution of color dispersed lighting */
 void Graphic3d_MaterialAspect::SetDiffuseColor (const Quantity_Color& AColor) {
 
 	MyDiffuseColor	= AColor;
@@ -548,7 +538,7 @@ void Graphic3d_MaterialAspect::SetDiffuseColor (const Quantity_Color& AColor) {
 #endif
 }
 
-/*  Affectation couleur eclairage speculaire */
+/*  Attribution of color specular lighting */
 void Graphic3d_MaterialAspect::SetSpecularColor (const Quantity_Color& AColor) {
 
 	MySpecularColor	= AColor;
@@ -591,7 +581,7 @@ void Graphic3d_MaterialAspect::SetDiffuse (const Standard_Real AValue) {
 #endif
 }
 
-/* Affectation du coefficient d emission */
+/* Attribution of coefficient of emission */
 void Graphic3d_MaterialAspect::SetEmissive (const Standard_Real AValue) {
 
 	if ((AValue < 0.0) || (AValue > 1.0))
@@ -694,31 +684,31 @@ Quantity_Color Graphic3d_MaterialAspect::Color () const {
 	return (MyAmbientColor);
 }
 
-/* Acces a la couleur de l eclairage ambient */
+/* Access to the color of the ambient lighting */
 Quantity_Color Graphic3d_MaterialAspect::AmbientColor () const {
 
 	return (MyAmbientColor);
 }
 
-/* Acces a la couleur de l eclairage diffus */
+/* Access to the color of the dispersed lighting */
 Quantity_Color Graphic3d_MaterialAspect::DiffuseColor () const {
 
 	return (MyDiffuseColor);
 }
 
-/* Acces a la couleur de l eclairage speculaire */
+/* Access to the color of the specular lighting */
 Quantity_Color Graphic3d_MaterialAspect::SpecularColor () const {
 
 	return (MySpecularColor);
 }
 
-/* Acces a la couleur d emission */
+/* Access to the color of emission */
 Quantity_Color Graphic3d_MaterialAspect::EmissiveColor () const {
 
 	return (MyEmissiveColor);
 }
 
-/* Acces type du materiel */
+/* Access to the type of material */
 Standard_Boolean Graphic3d_MaterialAspect::MaterialType( const Graphic3d_TypeOfMaterial AType ) const {
        return ( MyMaterialType == AType ) ;
 }
@@ -751,49 +741,49 @@ Standard_Boolean Result;
 
 }
 
-/* Acces a la couleur de l eclairage ambient */
+/* Access to the color of the ambient lighting */
 Standard_Real Graphic3d_MaterialAspect::Ambient () const {
 
 	return (Standard_Real (MyAmbientCoef));
 
 }
 
-/* Acces a la couleur de l eclairage diffus */
+/* Access to the color of the dispersed lighting */
 Standard_Real Graphic3d_MaterialAspect::Diffuse () const {
 
 	return (Standard_Real (MyDiffuseCoef));
 
 }
 
-/* Valeur du coefficient d emission */
+/* Value of the coefficient of emission */
 Standard_Real Graphic3d_MaterialAspect::Emissive () const {
 
 	return (Standard_Real (MyEmissiveCoef));
 
 }
 
-/* Acces a la couleur de l eclairage speculaire */
+/* Access to the color of the specular lighting */
 Standard_Real Graphic3d_MaterialAspect::Specular () const {
 
 	return (Standard_Real (MySpecularCoef));
 
 }
 
-/* Acces au coefficient de transparence */
+/* Access to the coefficient of transparency */
 Standard_Real Graphic3d_MaterialAspect::Transparency () const {
 
 	return (Standard_Real (MyTransparencyCoef));
 
 }
 
-/* Acces au coefficient de brillance */
+/* Access to the coefficient of shineness */
 Standard_Real Graphic3d_MaterialAspect::Shininess () const {
 
 	return (Standard_Real (MyShininess));
 
 }
 
-/* Affectation du coefficient de brillance */
+/* Attribution of the coefficient of shineness */
 void Graphic3d_MaterialAspect::SetShininess (const Standard_Real AValue) {
 
 	if ((AValue < 0.0) || (AValue > 1.0))
@@ -889,7 +879,7 @@ static Material theMaterials[] = {
 Standard_Integer Graphic3d_MaterialAspect::NumberOfMaterials() {
 Standard_Integer n =sizeof(theMaterials)/sizeof(Material);
   if( n > Graphic3d_NOM_DEFAULT ) {
-    cout << " *** Graphic3d_MaterialAspect::NumberOfMaterials() may returns a badvalue due to incoherente size between material name array and enum" << endl;
+    cout << " *** Graphic3d_MaterialAspect::NumberOfMaterials() may return a badvalue due to incoherente size between material name array and enum" << endl;
   }
   return Graphic3d_NOM_DEFAULT;
 }

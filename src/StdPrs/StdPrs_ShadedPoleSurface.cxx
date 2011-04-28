@@ -34,7 +34,7 @@ void StdPrs_ShadedPoleSurface::Add(
 {
   if ( ! aDrawer->ShadingAspectGlobal() ) {
 
-// Si la surface est fermee, on ne tracera pas les faces tournant le dos:
+// If the surface is closed, the faces from back-side are not traced:
 
 
     Handle(Graphic3d_AspectFillArea3d) Asp = aDrawer->ShadingAspect()->Aspect();

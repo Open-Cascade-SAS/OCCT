@@ -7,9 +7,9 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques aux points
+//-Design	Declaration of variables specific to points
 
-//-Warning	Un point est defini par ses coordonnees et sa couleur
+//-Warning	A point is defined by its coordinates and color
 
 //-References	
 
@@ -24,7 +24,7 @@
 
 //-Global data definitions
 
-//	-- la couleur du point
+//	-- point color
 //	MyColor		:	Color;
 
 //-Constructors
@@ -36,18 +36,16 @@
 Graphic3d_VertexC::Graphic3d_VertexC () {
 }
 
-// le :(AX, AY, AZ) car VertexC herite de Vertex et il faut appeler le
-// constructeur de Vertex avec AX, AY et AZ pour mettre a jour
-// les fields MyX, MyY, MyZ.
+// :(AX, AY, AZ) as VertexC inherits Vertex and it is necessary to call
+// constructor of Vertex with AX, AY and AZ to update fields MyX, MyY, MyZ.
 
 Graphic3d_VertexC::Graphic3d_VertexC (const Standard_Real AX, const Standard_Real AY, const Standard_Real AZ, const Quantity_Color& AColor):
 Graphic3d_Vertex (AX, AY, AZ),
 MyColor (AColor) {
 }
 
-// le :(APoint) car VertexC herite de Vertex et il faut appeler le
-// constructeur de Vertex avec APoint pour mettre a jour
-// les fields MyX, MyY, MyZ.
+// :(APoint) as VertexC inherits Vertex and it is necessary to call
+// constructor of Vertex with APoint to update fields MyX, MyY, MyZ.
 
 Graphic3d_VertexC::Graphic3d_VertexC (const Graphic3d_Vertex& APoint, const Quantity_Color& AColor):
 Graphic3d_Vertex (APoint),

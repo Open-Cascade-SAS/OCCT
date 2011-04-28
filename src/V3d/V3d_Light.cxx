@@ -7,7 +7,6 @@
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
       00-09-92 : GG  ; Creation.
-      18-06-96 : FMN ; Ajout MyGraphicStructure1 pour sauvegarder snopick
       30-03-98 : ZOV ; PRO6774 (reconstruction of the class hierarchy and suppressing useless methods)
       IMP230300: GG Add SetColor() and Color() methods
       IMP231100: GG Add IsDisplayed() method
@@ -114,14 +113,12 @@ void V3d_Light::SymetricPointOnSphere (const Handle(V3d_View)& aView, const Grap
   DeltaY = Y0 - YP;
   DeltaZ = Z0 - ZP;
 
-//      On recherche le point d'intersection des droites definies
-//      par :
-//      - Droite passant par le point de projection et l'oeil
-//        si on est en perspective, parralele a la normale de la 
-//        vue si on a une vue axonometrique.
-//        position dans la vue est // a la normale de la vue
-//      - La distance position de la camera cible est egale au 
-//        rayon.
+//      The point of intersection of straight lines defined by :
+//      - Straight line passing by the point of projection and the eye
+//        if this is a perspective, parralel to the normal of the view 
+//        if this is an axonometric view.
+//        position in the view is parallel to the normal of the view
+//      - The distance position of the target camera is equal to the radius.
 
   A = VX*VX + VY*VY + VZ*VZ ;
   B = -2. * (VX*DeltaX + VY*DeltaY + VZ*DeltaZ);

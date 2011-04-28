@@ -7,13 +7,12 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques a
-//		l'orientation des vues
+//-Design	Declaration of variables specific to the orientation of views
 
-//-Warning	L'orientation d'une vue est definie par :
-//		- le point origine du repere
-//		- le vecteur normal au plan de visualisation
-//		- le vecteur vertical de l'observateur
+//-Warning	The view orientation is defined by :
+//		- the point of origin of the reference mark 
+//		- the normal vector to the visualisation plane
+//		- the vertical vector of the viewer
 
 //-References	
 

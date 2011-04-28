@@ -35,7 +35,7 @@
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_CircularGrid.hxx>
 
-// Pour l'echo du point choisi
+// For the echo of the chosen point
 #include <Visual3d_TransientManager.hxx>
 
 /*----------------------------------------------------------------------*/
@@ -43,14 +43,14 @@
  * Constant
  */
 
-// en cas NO_TRACE_ECHO et de NO_TRACE_POINTS, dans V3d_View_4.cxx ET dans
-// V3d_View.cxx, virer MyGridEchoStructure et MyGridEchoGroup dans le cdl
+// in case NO_TRACE_ECHO and NO_TRACE_POINTS, in V3d_View_4.cxx and 
+// V3d_View.cxx, suspend MyGridEchoStructure and MyGridEchoGroup in cdl
 #define TRACE_ECHO
 #define NO_TRACE_VALUES
 #define NO_TRACE_POINTS
 
-#define MYEPSILON1 0.0001		// Comparaison avec 0.0
-#define MYEPSILON2 Standard_PI / 180.	// Delta entre 2 angles
+#define MYEPSILON1 0.0001		// Comparison with 0.0
+#define MYEPSILON2 Standard_PI / 180.	// Delta between 2 angles
 
 #ifdef TRACE_POINTS
 #include <Graphic3d_AspectLine3d.hxx>
@@ -123,7 +123,7 @@ TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
 	Trsf1 (1, 4) = xl,
 	Trsf1 (2, 4) = yl,
 	Trsf1 (3, 4) = zl;
-	// Transformation de changement de repere
+	// Transformation change of marker
 	Trsf1 (1, 1) = xdx,
 	Trsf1 (2, 1) = xdy,
 	Trsf1 (3, 1) = xdz,
@@ -137,11 +137,11 @@ TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
 TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
 	Trsf2 (4, 4) = 1.0;
 	Trsf2 (4, 1) = Trsf2 (4, 2) = Trsf2 (4, 3) = 0.0;
-	// Translation de l'origine
+	// Translation of the origin
 	Trsf2 (1, 4) = -MyGrid->XOrigin (),
 	Trsf2 (2, 4) = -MyGrid->YOrigin (),
 	Trsf2 (3, 4) = 0.0;
-	// Rotation Alpha autour de l'axe -Z
+	// Rotation Alpha around axis -Z
 	Trsf2 (1, 1) = CosAlpha,
 	Trsf2 (2, 1) = -SinAlpha,
 	Trsf2 (3, 1) = 0.0,
@@ -156,7 +156,7 @@ Standard_Real valuetrsf;
 Standard_Real valueoldtrsf;
 Standard_Real valuenewtrsf;
 Standard_Integer i, j, k;
-	// Le calcul de produit de matrices
+	// Calculation of the product of matrices
 	for (i=1; i<=4; i++)
 	    for (j=1; j<=4; j++) {
 		MyTrsf (i, j) = 0.0;
@@ -228,8 +228,8 @@ gp_Dir GPN (X2, Y2, Z2);
 	cout << "AVertex : " << X1 << ", " << Y1 << ", " << Z1 << endl;
 #endif
 
-	// Cas ou le plan de la grille et le plan de la vue
-	// sont perpendiculaires a MYEPSILON2 radians pres
+	// Casw when the plane of the grid and the plane of the view
+	// are perpendicular to MYEPSILON2 close radians
 	if (Abs (VPN.Angle (GPN) - Standard_PI / 2.) < MYEPSILON2) {
 		NewPoint.SetCoord (X1, Y1, Z1);
 #ifdef TRACE_POINTS
@@ -288,7 +288,7 @@ Standard_Real XAp, YAp;
 Standard_Real XBp, YBp;
 
 	X1 = XO, Y1 = YO, Z1 = 0.0;
-	// MyTrsf * Point pour se retrouver sur le plan de la grille 3D
+	// MyTrsf * Point to return to the plane of 3D grid
 	P1.SetCoord (X1, Y1, Z1);
 	CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 	CurPoint.Coord (X2, Y2, Z2);
@@ -311,7 +311,7 @@ Handle(Aspect_RectangularGrid) theGrid =
 		XS = theGrid->XStep (), YS = theGrid->YStep ();
 
 		X1 = XO + XS, Y1 = YO, Z1 = 0.0;
-		// MyTrsf * Point pour se retrouver sur le plan de la grille 3D
+		// MyTrsf *  Point to return to the plane of 3D grid
 		P1.SetCoord (X1, Y1, Z1);
 		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 		CurPoint.Coord (X2, Y2, Z2);
@@ -323,7 +323,7 @@ Handle(Aspect_RectangularGrid) theGrid =
 #endif
 
 		X1 = XO, Y1 = YO + YS, Z1 = 0.0;
-		// MyTrsf * Point pour se retrouver sur le plan de la grille 3D
+		// MyTrsf *  Point to return to the plane of 3D grid
 		P1.SetCoord (X1, Y1, Z1);
 		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 		CurPoint.Coord (X2, Y2, Z2);
@@ -352,20 +352,19 @@ Standard_Real Determin = XAp*YBp - XBp*YAp;
 			Standard_Real (Standard_Integer (Abs (Y1)+0.5)) * YS :
 			- Standard_Real (Standard_Integer (Abs (Y1)+0.5)) * YS);
 #ifdef TRACE_VALUES
-			cout << "Point choisi : " << X1 << ", " << Y1 << endl;
+			cout << "Chosen point : " << X1 << ", " << Y1 << endl;
 #endif
-			// MyTrsf * Point pour se retrouver sur le plan
-			// de la grille 3D
+			// MyTrsf *  Point to return to the plane of 3D grid
 			P1.SetCoord (X1, Y1, Z1);
 			CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 			CurPoint.Coord (X2, Y2, Z2);
 		}
 		else {
 cout << "*****************" << endl;
-cout << "Determinant nul !" << endl;
+cout << "Zero Determinant!" << endl;
 cout << "*****************" << endl;
 #ifdef TRACE_VALUES
-			cout << "Determinant nul !" << endl;
+			cout << "Zero Determinant !" << endl;
 #endif
 			AVertex.Coord (X2, Y2, Z2);
 			CurPoint.SetCoord (X2, Y2, Z2);
@@ -392,8 +391,7 @@ gp_Dir2d OP (XPp, YPp);
 			X1 = XO + Cos (Alpha * i) * RS,
 			Y1 = YO + Sin (Alpha * i) * RS,
 			Z1 = 0.0;
-			// MyTrsf * Point pour se retrouver sur le plan
-			// de la grille 3D
+			// MyTrsf * Point to return to the plane of 3D grid
 			P1.SetCoord (X1, Y1, Z1);
 			CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 			CurPoint.Coord (X2, Y2, Z2);
@@ -406,7 +404,7 @@ gp_Dir2d OP (XPp, YPp);
 				AngleCur = Angle;
 				XCurp = XAp, YCurp = YAp;
 #ifdef TRACE_VALUES
-				cout << "Angle entre OP et O" << CAR [i-1]
+				cout << "Angle between OP and O" << CAR [i-1]
 				     << " : " << Angle << endl;
 #endif
 			}
@@ -418,11 +416,11 @@ gp_Dir2d OP (XPp, YPp);
 
 Standard_Real DistOCur = Sqrt (XCurp*XCurp + YCurp*YCurp);
 
-		// Determination du cercle de la grille le plus proche de P
+		// Determination of the circle of the grid closest to P
 Standard_Integer N = Standard_Integer (DistOP / DistOCur + 0.5);
 Standard_Real Radius = N * RS;
 #ifdef TRACE_VALUES
-		cout << "Cercle : " << N << " Radius : " << Radius << endl;
+		cout << "Circle : " << N << " Radius : " << Radius << endl;
 #endif
 
 		X1 = Cos (Alpha * ICur) * Radius,
@@ -430,9 +428,9 @@ Standard_Real Radius = N * RS;
 		Z1 = 0.0;
 
 #ifdef TRACE_VALUES
-		cout << "Point choisi : " << X1 << ", " << Y1 << endl;
+		cout << "Chosen Point : " << X1 << ", " << Y1 << endl;
 #endif
-		// MyTrsf * Point pour se retrouver sur le plan de la grille 3D
+		// MyTrsf * Point to return to the plane of 3D grid
 		P1.SetCoord (X1, Y1, Z1);
 		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 		CurPoint.Coord (X2, Y2, Z2);

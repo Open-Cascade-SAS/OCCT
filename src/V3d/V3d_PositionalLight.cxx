@@ -78,7 +78,7 @@ V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Sta
   MyType = V3d_POSITIONAL ;
   MyLight = new Visual3d_Light(C,P,A1,A2) ;
   MyTarget = T;
-  // La Structure graphique sera initialisee lors de l'affichage.
+  // Graphic structure is initialized during the display.
 
 }
 
@@ -127,18 +127,18 @@ void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const 
   Rayon = this->Radius();
   aView->Project(Xi,Yi,Zi,PXT,PYT); 
   aView->Convert(PXT,PYT,IXP,IYP);
-//  Coord 3d dans le plan de projection de la source.
+//  3D Coordinate in the plane of projection of the source.
   aView->Convert(IXP,IYP,XT,YT,ZT);
   aView->Convert(PXT,PYT+Rayon,IXP,IYP);
   aView->Convert(IXP,IYP,X,Y,Z);
   X = X+Xi-XT; Y = Y+Yi-YT; Z = Z+Zi-ZT;
   Dist = Sqrt( Square(X-Xi) + Square(Y-Yi) + Square(Z-Zi) );
-//  Axe de rotation.
+//  Axis of rotation.
   A = (X-Xi)/Dist;
   B = (Y-Yi)/Dist;
   C = (Z-Zi)/Dist;
 
-//  On dessine une sphere
+//  A sphere is drawn
   V3d::CircleInPlane(gsymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
   for( j=1 ; j<=3 ; j++ ) {
     Beta = j * Standard_PI/4.;
@@ -157,7 +157,7 @@ void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const 
     Xf = Xi * MatRot(0,0) + Yi * MatRot(0,1) + Zi * MatRot(0,2);
     Yf = Xi * MatRot(1,0) + Yi * MatRot(1,1) + Zi * MatRot(1,2);
     Zf = Xi * MatRot(2,0) + Yi * MatRot(2,1) + Zi * MatRot(2,2);
-//    Rotation de la normale
+//    Rotation of the normal
     X1 = VX * MatRot(0,0) + VY * MatRot(0,1) + VZ * MatRot(0,2);
     Y1 = VX * MatRot(1,0) + VY * MatRot(1,1) + VZ * MatRot(1,2);
     Z1 = VX * MatRot(2,0) + VY * MatRot(2,1) + VZ * MatRot(2,2);
@@ -180,10 +180,10 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
   V3d_TypeOfRepresentation Pres;
   V3d_TypeOfUpdate UpdSov;
 
-//  Creation d'une structure slight d'elements reperables (la position de
-//  la light, et le domaine d'eclairage represente par un cercle)
-//  Creation d'une structure snopick d'elements non reperables ( cible, meridien et 
-//  parallele ).
+//  Creation of a structure slight of markable elements (position of the
+//  light, and the domain of lighting represented by a circle)
+//  Creation of a structure snopick of non-markable elements (target, meridian and 
+//  parallel).
 
     Pres = TPres;
     Handle(V3d_Viewer) TheViewer = aView->Viewer();
@@ -222,7 +222,7 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
   Y0 = MyTarget.Y();
   Z0 = MyTarget.Z();
   
-//Affichage de la position de la light.
+// Display of the position of the light.
 
   glight->SetPickId(1);
   this->Color(Quantity_TOC_RGB,R1,G1,B1);
@@ -232,7 +232,7 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
   glight->SetPrimitivesAspect(Asp1);
   this->Symbol(glight,aView);
 
-//Affichage de la sphere de reperage (limite au cercle).
+// Display of the markable sphere (limit at the cercle).
 
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) {
       
@@ -241,7 +241,7 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
     gsphere->SetPickId(2);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
 
-//Affichage du rayon de la sphere (ligne + texte)
+// Display of the radius of the sphere (line + text)
 
     if (Pres == V3d_COMPLETE) {
       gradius->SetPickId(3);
@@ -260,14 +260,14 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);
     }
     
-//Affichage du meridien
+// Display of the meridian
 
     Quantity_Color Col2(Quantity_NOC_GREEN);
     Handle(Graphic3d_AspectLine3d) Asp2 = new Graphic3d_AspectLine3d
       (Col2,Aspect_TOL_SOLID,1.);
     gnopick->SetPrimitivesAspect(Asp2);
     
-//    Definition de l'axe du cercle
+//    Definition of the axis of circle
     aView->Up(DXRef,DYRef,DZRef);
     this->Position(X,Y,Z);
     DXini = X-X0; DYini = Y-Y0; DZini = Z-Z0;
@@ -277,9 +277,9 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
     
     V3d::CircleInPlane(gnopick,X0,Y0,Z0,VX,VY,VZ,Rayon);
       
-//  Affichage de la parallele
+//  Display of the parallel
 
-//    Definition de l'axe du cercle
+//  Definition of the axis of circle
     aView->Proj(VX,VY,VZ);
     aView->Up(X1,Y1,Z1);
     DXRef = VY * Z1 - VZ * Y1;

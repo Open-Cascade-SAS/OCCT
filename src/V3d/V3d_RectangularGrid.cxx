@@ -48,7 +48,7 @@
 #define NO_TRACE_MINMAX
 #define NO_TRACE_MAKE
 #define NO_TRACE_VALUES
-#define NO_TRACE_PLANE // Penser a virer du cdl my*GridPlane my*ViewPlane
+#define NO_TRACE_PLANE 
 
 #define MYMINMAX 25.
 #define MYFACTOR 50.
@@ -175,7 +175,7 @@ TColStd_Array2OfReal Trsf (1, 4, 1, 4);
 		Trsf (1, 4) = xl,
 		Trsf (2, 4) = yl,
 		Trsf (3, 4) = zl;
-		// Transformation de changement de repere
+		// Transformation of change of marker
 		Trsf (1, 1) = xdx,
 		Trsf (2, 1) = xdy,
 		Trsf (3, 1) = xdz,
@@ -187,11 +187,11 @@ TColStd_Array2OfReal Trsf (1, 4, 1, 4);
 		Trsf (3, 3) = dz;
 		myStructure->SetTransform (Trsf, Graphic3d_TOC_REPLACE);
 
-		// Translation de l'origine
+		// Translation of the origin
 		Trsf (1, 4) = -XOrigin (),
 		Trsf (2, 4) = -YOrigin (),
 		Trsf (3, 4) = 0.0;
-		// Rotation Alpha autour de l'axe -Z
+		// Rotation Alpha around axis -Z
 		Trsf (1, 1) = CosAlpha,
 		Trsf (2, 1) = -SinAlpha,
 		Trsf (3, 1) = 0.0,
@@ -203,11 +203,6 @@ TColStd_Array2OfReal Trsf (1, 4, 1, 4);
 		Trsf (3, 3) = 1.0;
 		myStructure->SetTransform (Trsf,Graphic3d_TOC_POSTCONCATENATE);
 
-		// CAL : 19 aout 1998
-		// Il y avait aussi la possibilite de faire le calcul
-		// de changement de repere par :
-		// gp_Trsf::SetTransformation
-		//	(myGridPlane, myViewer->PrivilegedPlane ());
 
 #ifdef TRACE_VALUES
 Standard_Integer i, j;
@@ -369,7 +364,7 @@ Standard_Boolean MakeVerticales = Standard_False;
 #ifdef TRACE_MAKE
 		cout << "MakeVerticales" << endl;
 #endif
-		// verticales
+		// verticals
 		myGroup1->Clear ();
 		LineAttrib->SetColor (myTenthColor);
 		myGroup1->SetGroupPrimitivesAspect (LineAttrib);
@@ -377,7 +372,7 @@ Standard_Boolean MakeVerticales = Standard_False;
 		P1.SetCoord (0.0, -myYSize, -zl);
 		P2.SetCoord (0.0, myYSize, -zl);
 		myGroup1->Polyline (P1, P2, Standard_False);
-		nblines = 1; // on commence par une ligne gris fonce
+		nblines = 1; // start with a dark grey line 
 		LineAttrib->SetColor (myColor);
 		myGroup1->SetPrimitivesAspect (LineAttrib);
 		for (xl = aXStep; xl < myXSize; xl += aXStep) {
@@ -419,7 +414,7 @@ Standard_Boolean MakeHorizontales = Standard_False;
 #ifdef TRACE_MAKE
 		cout << "MakeHorizontales" << endl;
 #endif
-		// horizontales
+		// horizontals
 		myGroup2->Clear ();
 		LineAttrib->SetColor (myTenthColor);
 		myGroup2->SetGroupPrimitivesAspect (LineAttrib);
@@ -427,7 +422,7 @@ Standard_Boolean MakeHorizontales = Standard_False;
 		P1.SetCoord (-myXSize, 0., -zl);
 		P2.SetCoord (myXSize, 0., -zl);
 		myGroup2->Polyline (P1, P2, Standard_False);
-		nblines = 1; // on commence par une ligne gris fonce
+		nblines = 1; // start with a dark grey line
 		LineAttrib->SetColor (myColor);
 		myGroup2->SetPrimitivesAspect (LineAttrib);
 		for (yl = aYStep; yl < myYSize; yl += aYStep) {
@@ -487,7 +482,7 @@ Standard_Boolean MakeHorizontales = Standard_False;
 #ifdef TRACE_MAKE
 		cout << "MakeHorizontales" << endl;
 #endif
-		// horizontales
+		// horizontals
 		myGroup1->Clear ();
 		myGroup1->SetGroupPrimitivesAspect (MarkerAttrib);
 		myGroup1->BeginPrimitives ();

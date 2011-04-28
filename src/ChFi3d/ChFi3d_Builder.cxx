@@ -57,7 +57,7 @@
 #ifdef DEB
 #include <OSD_Chronometer.hxx>
 
-// variables pour les performances 
+// variables for performances 
 
 
 OSD_Chronometer cl_total,cl_extent,cl_perfsetofsurf,cl_perffilletonvertex,
@@ -208,7 +208,7 @@ void  ChFi3d_Builder::Compute()
   TestTopOpe::Shapes(myShape,bids);
 #endif
   
-  // remplissage de myVDatatMap
+  // filling of myVDatatMap
   ChFiDS_ListIteratorOfListOfStripe itel;
   
   for (itel.Initialize(myListStripe);itel.More(); itel.Next()) {
@@ -221,7 +221,7 @@ void  ChFi3d_Builder::Compute()
     else if (itel.Value()->Spine()->LastStatus() == ChFiDS_FreeBoundary)
       ExtentOneCorner(itel.Value()->Spine()->LastVertex(),itel.Value());
   }
-  // preanalyse pour  evaluer les prolongements.
+  // preanalysis to evaluate the extensions.
   ExtentAnalyse();
   
   
@@ -230,7 +230,7 @@ void  ChFi3d_Builder::Compute()
   ChFi3d_InitChron(cl_perfsetofsurf);
 #endif
   
-  // Construction de la bande de conge sur chaque stripe.
+  // Construction of the stripe of fillet on each stripe.
   for (itel.Initialize(myListStripe);itel.More(); itel.Next()) {
     itel.Value()->Spine()->SetErrorStatus(ChFiDS_Ok);
     try {
@@ -257,7 +257,7 @@ void  ChFi3d_Builder::Compute()
   ChFi3d_InitChron(cl_perffilletonvertex);
 #endif 
   
-  //construire les conges sur chaque vertex +alimenter la Ds
+  //construct fillets on each vertex + feed the Ds
   if (done) {
    //Standard_Integer nbresult=0;
 //    for (Standard_Integer j=1;j<=myVDataMap.Extent();j++) {
@@ -351,8 +351,8 @@ void  ChFi3d_Builder::Compute()
     if (done) {
       BRep_Builder B1;
       CompleteDS(DStr,myShape);
-      //Update des tolerances sur vertex au max des aretes adjacentes ou
-      //Update des tolerances sur arete degeneree au max des vertex adjacents.
+      //Update tolerances on vertex to max adjacent edges or
+      //Update tolerances on degenerated edge to max of adjacent vertexes.
       TopOpeBRepDS_CurveExplorer cex(DStr);
       for(;cex.More();cex.Next()){
 	TopOpeBRepDS_Curve& c = *((TopOpeBRepDS_Curve*)(void*)&(cex.Curve()));
@@ -421,7 +421,8 @@ void  ChFi3d_Builder::Compute()
 	  its = myCoup->Merged(curshape,TopAbs_IN);
 	if(!its.More()) B1.Add(myShapeResult,curshape);
 	else {
-	  //Si l'ancien type est du Shape est un Shell, on mettre un Shell et non un Solid, Il reste neanmoins un pbleme pour compound de Shell ouvert.
+	  //If the old type of Shape is Shell, Shell is placed instead of Solid, 
+          //However there is a problem for compound of open Shell.
 	  while (its.More()) {
 	    const TopAbs_ShapeEnum letype = curshape.ShapeType();
 	    if (letype == TopAbs_SHELL){
@@ -461,7 +462,7 @@ void  ChFi3d_Builder::Compute()
       ChFi3d_InitChron(cl_setregul);
 #endif
       
-      // On code les regularites apres coup.
+      // Regularities are coded after cutting.
       SetRegul();
       
       
@@ -475,7 +476,7 @@ void  ChFi3d_Builder::Compute()
 #endif
       
   
-  // affichage des temps pour les perfs 
+  // display of time for perfs 
   
 #ifdef DEB  
   cout<<endl; 
@@ -546,7 +547,7 @@ void  ChFi3d_Builder::Compute()
 
 //=======================================================================
 //function : PerformSingularCorner
-//purpose  : Charge le vertex et les aretes degeneree.
+//purpose  : Load vertex and degenerated edges.
 //=======================================================================
 
 void ChFi3d_Builder::PerformSingularCorner
@@ -565,17 +566,17 @@ void ChFi3d_Builder::PerformSingularCorner
 #endif
   for (It.Initialize(myVDataMap(Index)), i=0; It.More(); It.Next(),i++){
     stripe = It.Value(); 
-    // la SurfData en cause et ses CommonPoints,
+    // SurfData concerned and its CommonPoints,
     Standard_Integer sens = 0;
     Standard_Integer num = ChFi3d_IndexOfSurfData(Vtx,stripe,sens);
     Standard_Boolean isfirst = (sens == 1);
     Fd =  stripe->SetOfSurfData()->Sequence().Value(num);
     const ChFiDS_CommonPoint& CV1 = Fd->Vertex(isfirst,1);
     const ChFiDS_CommonPoint& CV2 = Fd->Vertex(isfirst,2);
-    // Est ce toujours degenere ?
+    // Is it always degenerated ?
     if ( CV1.Point().IsEqual( CV2.Point(), 0) ) { 
-      // si oui on stoke le vertex dans la stripe
-      // et on fabrique l'arete en bout
+      // if yes the vertex is stored in the stripe
+      // and the edge at end is created
       if (i==0) Ivtx = ChFi3d_IndexPointInDS(CV1, DStr);
       Standard_Real tolreached;
       Standard_Real Pardeb, Parfin; 
@@ -638,14 +639,14 @@ void ChFi3d_Builder::PerformFilletOnVertex
   for (It.Initialize(myVDataMap(Index)), i=0; It.More(); It.Next(),i++){
     stripe = It.Value(); 
     sp = stripe->Spine();
-    // la SurfData en cause et ses CommonPoints,
+    // SurfData and its CommonPoints,
     Standard_Integer sens = 0;
     Standard_Integer num = ChFi3d_IndexOfSurfData(Vtx,stripe,sens);
     isfirst = (sens == 1);
     Fd =  stripe->SetOfSurfData()->Sequence().Value(num);
     const ChFiDS_CommonPoint& CV1 = Fd->Vertex(isfirst,1);
     const ChFiDS_CommonPoint& CV2 = Fd->Vertex(isfirst,2);
-    // Est ce toujours degenere ?
+    // Is it always degenerated ?
     if ( CV1.Point().IsEqual( CV2.Point(), 0) )  
       nondegenere = Standard_False;
     else  toujoursdegenere = Standard_False;
@@ -671,7 +672,7 @@ void ChFi3d_Builder::PerformFilletOnVertex
   nba=nba/2;*/
   Standard_Integer nba = ChFi3d_NumberOfEdges(Vtx, myVEMap);
 
-  if (nondegenere) { // Traitement normal
+  if (nondegenere) { // Normal processing
     switch (i) {
     case 1 : 
       {
@@ -753,9 +754,9 @@ void ChFi3d_Builder::PerformFilletOnVertex
       }
     }
   }
-  else { // Traitement des cas singulier
+  else { // Single case processing
     if (toujoursdegenere) PerformSingularCorner(Index);
-    else                  PerformMoreThreeCorner(Index, i);//Derniere chance...
+    else                  PerformMoreThreeCorner(Index, i);//Last chance...
   }              
 }
 

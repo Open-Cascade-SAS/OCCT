@@ -97,7 +97,7 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face&  aFirstFace,
 
 //=======================================================================
 //function : Constructor
-//purpose  : TwoFacesLength dimension  (avec position et texte)
+//purpose  : TwoFacesLength dimension  (with position and text)
 //=======================================================================
 
 AIS_LengthDimension::AIS_LengthDimension(const TopoDS_Face& aFirstFace,
@@ -129,8 +129,7 @@ AIS_LengthDimension::AIS_LengthDimension(const TopoDS_Face& aFirstFace,
 
 //=======================================================================
 //function : AIS_LengthDimension
-//purpose  : Distance Face - Edge pour chamfrein 3D
-//           Ajout Jean-Claude Vauthier le 17/06/98
+//purpose  : Distance Face - Edge for chamfer 3D
 //=======================================================================
 
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& Face,const TopoDS_Edge& Edge,const Standard_Real Val,const TCollection_ExtendedString& Text)
@@ -223,13 +222,13 @@ void AIS_LengthDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&,
     switch (myFShape.ShapeType()) {
     case TopAbs_FACE:
       {
-        // cas longueur sur une face
+        // case length on a face
         ComputeOneFaceLength(aPresentation);
       }
       break;
     case TopAbs_EDGE:
       {
-        // cas longueur d'un edge
+        // case length of an edge
         ComputeOneEdgeLength(aPresentation);
       }
       break;
@@ -242,7 +241,7 @@ void AIS_LengthDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&,
     case TopAbs_FACE:
       {
 	if (mySShape.ShapeType () == TopAbs_FACE) {
-	  // cas longueur entre deux faces
+	  // case length between two faces
 	  ComputeTwoFacesLength(aPresentation);
 	}
 	else if (mySShape.ShapeType () == TopAbs_EDGE) {
@@ -276,7 +275,7 @@ void AIS_LengthDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 					mySymbolPrs );
         }
         else if (mySShape.ShapeType() == TopAbs_EDGE) {
-          // cas longueur entre deux edges
+          // case length between two edges
 #ifdef BUC60915
 	  if( !myArrowSizeIsDefined ) 
 #endif
@@ -471,7 +470,7 @@ void AIS_LengthDimension::ComputeTwoFacesLength( const Handle( Prs3d_Presentatio
       myDrawer->LengthAspect()->Arrow1Aspect()->SetLength( myArrowSize );
       myDrawer->LengthAspect()->Arrow2Aspect()->SetLength( myArrowSize );
 
-      // Recherche du texte de la cote
+      // Find text of the face
 
       DsgPrs_LengthPresentation::Add( aPresentation,
 				      myDrawer,
@@ -676,18 +675,18 @@ void AIS_LengthDimension::ComputeTwoEdgesLength( const Handle( Prs3d_Presentatio
     else {
       curpos.SetXYZ((l1.Location().XYZ()+l2.Location().XYZ())/2.);
     }
-    // offset pour eviter confusion Edge et Dimension
+    // offset to avoid confusion Edge and Dimension
     gp_Vec offset(DirAttach);
     offset = offset*ArrowSize*(-10.);
     curpos.Translate(offset);
     Position = curpos;
   }
-  else {    // on projette le point dans le plan
+  else {    // the point is projected in the plane
     // it is patch!
     Position = AIS::ProjectPointOnPlane( Position, Plane->Pln() );
   }
 
-  // recherche points attache
+  // find attachment points 
   if (!isInfinite1) {
     if (Position.Distance(ptat11) > Position.Distance(ptat12)) FirstAttach = ptat12;
     else FirstAttach = ptat11;
@@ -780,12 +779,12 @@ void AIS_LengthDimension::ComputeOneEdgeOneVertexLength( const Handle( Prs3d_Pre
   if (FirstShape.ShapeType() == TopAbs_VERTEX) {
     thevertex = TopoDS::Vertex(FirstShape);
     theedge   = TopoDS::Edge(SecondShape);
-    numedge = 2;// edge = 2 iem shape
+    numedge = 2;// edge = 2nd shape
   }
   else {
     thevertex = TopoDS::Vertex(SecondShape);
     theedge   = TopoDS::Edge(FirstShape);
-    numedge = 1;  // edge = 1 ere shape
+    numedge = 1;  // edge = 1st shape
   }
 
   gp_Pnt ptonedge1,ptonedge2;
@@ -798,7 +797,7 @@ void AIS_LengthDimension::ComputeOneEdgeOneVertexLength( const Handle( Prs3d_Pre
   aPresentation->SetInfiniteState(isInfinite);
   AIS::ComputeGeometry(thevertex, FirstAttach, Plane, isOnPlanVertex);
 
-  // on considere que seule la courbe peut etre projetee 
+  // take into consideration that only the curve can be projected 
   if (!isOnPlanEdge && !isOnPlanVertex)
     return;
 
@@ -826,13 +825,13 @@ void AIS_LengthDimension::ComputeOneEdgeOneVertexLength( const Handle( Prs3d_Pre
   if (AutomaticPos) {
     gp_Pnt p = ElCLib::Value(ElCLib::Parameter(l,FirstAttach),l);
     gp_Pnt curpos((FirstAttach.XYZ()+p.XYZ())/2.);
-    // offset pour eviter confusion Edge et Dimension
+    // offset to avoid confusion Edge and Dimension
     gp_Vec offset(DirAttach);
     offset = offset*ArrowSize*(-10.);
     curpos.Translate(offset);
     Position = curpos;
   }
-  else {    // on projette le point dans le plan
+  else {    // the point is projected in the plane
     // it is patch!
     Position = AIS::ProjectPointOnPlane( Position, Plane->Pln() );
 
@@ -943,7 +942,7 @@ void AIS_LengthDimension::ComputeTwoVerticesLength( const Handle( Prs3d_Presenta
   if (AutomaticPos) {
    if (!samePoint) {
      gp_Pnt curpos((FirstAttach.XYZ()+SecondAttach.XYZ())/2.);
-     // offset pour eviter confusion Edge et Dimension
+     // offset to avoid confusion Edge and Dimension
      gp_Vec offset(DirAttach);
      offset = offset*ArrowSize*(-10.);
      curpos.Translate(offset);
@@ -968,7 +967,7 @@ void AIS_LengthDimension::ComputeTwoVerticesLength( const Handle( Prs3d_Presenta
   arr = la->Arrow2Aspect();
   arr->SetLength(ArrowSize);
 
-  // Type des fleches
+  // Type of arrows
   if ( ExtShape == 1) SymbolPrs = DsgPrs_AS_FIRSTPT_LASTAR;
   else if (ExtShape == 2) SymbolPrs = DsgPrs_AS_FIRSTAR_LASTPT;
 
@@ -984,7 +983,7 @@ void AIS_LengthDimension::ComputeTwoVerticesLength( const Handle( Prs3d_Presenta
                                  Position,
                                  SymbolPrs);
 
-  // Calcul de la projection du vertex
+  // Calculate the projection of the vertex
   if ( ExtShape == 1)
     AIS::ComputeProjVertexPresentation(aPresentation, aDrawer, FirstVertex, FirstAttach);
   else if ( ExtShape == 2)
@@ -1117,10 +1116,10 @@ void AIS_LengthDimension::ComputeFaceSelection( const Handle( SelectMgr_Selectio
 void AIS_LengthDimension::ComputeEdgeVertexSelection(const Handle(SelectMgr_Selection)& aSelection)
 {
   //  ********** NB ->
-  // dans le cas d'une contrainte par rapport au bord d'une face 
-  // seule la shape de ce contour est valide
+  // in the case of a constraint relatively to the border of a face 
+  // only the shape of this contour is valid
 
-  // Creation de 2 owner pour permettre l'edition de contraintes  
+  // Create 2 owner for edition of constraints  
   Handle(AIS_DimensionOwner) own1 = new AIS_DimensionOwner(this,7);
   Handle(AIS_DimensionOwner) own2 = new AIS_DimensionOwner(this,7);  
 
@@ -1150,8 +1149,8 @@ void AIS_LengthDimension::ComputeEdgeVertexSelection(const Handle(SelectMgr_Sele
 
   if (!Proj1.IsEqual(Proj2,confusion)) L3 = gce_MakeLin(Proj1,Proj2);
   else { 
-    // cas ou la dimension est nulle
-    // on choisit le own1 par defaut
+    // cas of zero dimension
+    // own1 is chosen by default
     L3 = gce_MakeLin(Proj1,myDirAttach);
     Standard_Real size(Min(myVal/100.+1.e-6,myArrowSize+1.e-6));
     Handle(Select3D_SensitiveBox) box = new Select3D_SensitiveBox(own1,myPosition.X(),myPosition.Y(),myPosition.Z(),

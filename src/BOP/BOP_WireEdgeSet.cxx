@@ -146,7 +146,7 @@ static void GetOrientationVOnE(const TopoDS_Shape& V,
 
 //=======================================================================
 //function : MakeNeighboursList
-//purpose  : recherche des edges connexes a Earg par Varg 
+//purpose  : find edges connected to Earg by Varg 
 //=======================================================================
   const TopTools_ListOfShape & BOP_WireEdgeSet::MakeNeighboursList(const TopoDS_Shape& Earg,
 								   const TopoDS_Shape& Varg)
@@ -176,10 +176,10 @@ static void GetOrientationVOnE(const TopoDS_Shape& V,
     if (newn >= 2 ) {
 
       const TopoDS_Face& F = myFace;
-      // plusieurs aretes de couture connexes a E par V et telles que :
-      // orientation de V dans E # orientation de V dans ces aretes.
-      // on ne garde,parmi les aretes de couture connexes,
-      // que l'arete A qui verifie tg(E) ^ tg(A) > 0
+      // several sewing edges connected to E by V such as :
+      // orientation of V in E # orientation of V in its edges.
+      // one leaves among the connected sewing edges,
+      // only edge A that checks tg(E) ^ tg(A) > 0
 
       TopAbs_Orientation Eori;
       gp_Vec2d d1E; gp_Pnt2d pE;
@@ -244,11 +244,11 @@ static void GetOrientationVOnE(const TopoDS_Shape& V,
 	                      ( (cross < 0) && oVE == TopAbs_FORWARD );
 
 	if ( t2 ) { //-- t1
-	  // c'est la bonne IsClosed,on ne garde qu'elle parmi les IsClosed 
+	  // this is proper IsClosed, only it is preserved among IsClosed 
 	  lclo.Next();
 	}
 	else {
-	  // on vire l'arete IsClosed 
+	  // edge IsClosed is suspended
 	  myCurrentShapeNeighbours.Remove(lclo);
 	}
       }// end of while (lclo.More())
@@ -327,11 +327,11 @@ static void GetOrientationVOnE(const TopoDS_Shape& V,
   Standard_Boolean resu = Standard_False;
   TopAbs_Orientation o1,o2;
 
-  // SSCONNEX = False ==> on selectionne E2 de facon a creer ulterieurement
-  // (defaut)             autant de faces que de composantes connexes en UV.
-  // SSCONNEX = True ==> on prend toute arete E2 qui partage V avec E1
-  //                     et telle que orientation(V/E1) # orientation(V/E2)
-  //                     ==> face de part et d'autre des coutures
+  // SSCONNEX = False ==> E2 is  selected to create as many 
+  // (default)           faces as there are components connected in UV.
+  // SSCONNEX = True ==> the entire edge E2 sharing V with E1 is taken
+  //                     so that orientation(V/E1) # orientation(V/E2)
+  //                     ==> face of part and other sewings
   if ((c1 && c2)) {
     Standard_Boolean u1 = c1 ? IsUClosed(E1) : Standard_False; 
     Standard_Boolean v1 = c1 ? IsVClosed(E1) : Standard_False; 
@@ -345,8 +345,8 @@ static void GetOrientationVOnE(const TopoDS_Shape& V,
     resu = VertexConnectsEdges(V,E1,E2,o1,o2);
   }
   else { 
-    // cto 012 O2 arete de couture de face cylindrique
-    // chainage des composantes splitees ON et OUT de meme orientation
+    // cto 012 O2 sewing edge of cylindric face
+    // chain of components split ON and OUT of the same orientation
     TopAbs_Orientation oe1 = E1.Orientation();
     TopAbs_Orientation oe2 = E2.Orientation();
     Standard_Boolean iseq = E1.IsEqual(E2);

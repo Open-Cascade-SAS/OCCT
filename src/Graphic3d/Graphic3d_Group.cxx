@@ -8,11 +8,11 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques aux groupes
-//		de primitives
+//-Design	Declaration of variables specific to groups
+//		of primitives
 
-//-Warning	Un groupe est defini dans une structure
-//		Il s'agit de la plus petite entite editable
+//-Warning	A group is definedv in a structure
+//		This is the smallest editable entity
 
 //-References	
 
@@ -51,15 +51,15 @@ MyListOfPArray()
   MyBounds.ZMax	= ShortRealFirst ();
 
 //
-// Un petit commentaire sur l'utilisation du This !
+// A small commentary on the usage of This !
 //
-// Un Graphic3d_Group est cree dans une structure. Graphic3d_Structure est
-// donc un manager de Graphic3d_Group. Dans le constructeur de Graphic3d_Group
-// est appele une methode de Graphic3d_Structure, Add, qui permet d'ajouter
-// l'instance du Graphic3d_Group dans son manager. Il y a donc 2 references
-// a <me> et tout va bien.
+// Graphic3d_Group is created in a structure. Graphic3d_Structure is a
+// manager of Graphic3d_Group. In the constructor of Graphic3d_Group
+// a method Add of Graphic3d_Structure is called. It allows adding
+// the instance of Graphic3d_Group in its manager. So there are 2 references
+// to <me> and everything works well.
 //
-// This () est l'instance de la classe, c-a-d le groupe courant
+// This () is the instance of the class, the current groupe
 //Handle(Graphic3d_Group) me	= Handle(Graphic3d_Group)::DownCast (This ());
 
 Standard_Integer TheLabelBegin, TheLabelEnd;

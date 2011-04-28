@@ -1,8 +1,6 @@
 #define WTO0001         //GG_140596
-//                      Calcul des min-max faux apres transformation.
 
 #define PRO5663         //GG_291196
-//                      Renseigner les MinMax de l'image !.
 
 #include <Graphic2d_Image.ixx>
 #include <Graphic2d_Image.pxx>
@@ -95,15 +93,15 @@ Standard_Real A, B;
         else
                 FillAndDraw (aDrawer);
 
-        // Dans le cas d'un GraphicObject Highlighted
-        // on trace le rectangle englobant de l'image
+        // In case of GraphicObject Highlighted
+        // bounding box of the image is traced
         if (myGOPtr->IsHighlighted ()) {
 
 Standard_Integer Width  = myImage->Width ();
 Standard_Integer Height = myImage->Height ();
                 //
-                // - 2 sur Width et Height pour eviter que
-                // le bord soit en dehors de l'image.
+                // - 2 on Width and Height to avoid
+                // border outside of the image.
                 //
                 if (Width > 2) Width -= 2;
                 if (Height > 2) Height -= 2;
@@ -226,12 +224,12 @@ Standard_Real R, G, B;
         UpperY  = myImage->UpperY ();
 
         if (Height*Width <= Graphic2d_Image::SmallSize ()) {
-                // Les petites images sont remplies d'un coup
+                // Small images are filled at once
                 pixels  = new Aspect_RGBPixel [Height*Width];
 
                 Quantity_Array1OfColor Array (0, Width-1);
 
-                // Parcours de l'image Lignes-Colonnes (Height-Width)
+                // Parsing of the image Lines-Columns (Height-Width)
                 for (i=0, ii=LowerY; ii<=UpperY; i++, ii++) {
                         myImage->RowColor (ii, Array);
                         for (j=0; j<Width; j++) {
@@ -250,12 +248,12 @@ Standard_Real R, G, B;
                 delete [] pixels;
         }
         else {
-                // Les grandes images sont remplies ligne a ligne
+                // Great images are filled line by line
                 pixels  = new Aspect_RGBPixel [Width];
 
                 Quantity_Array1OfColor Array (0, Width-1);
 
-                // Parcours de l'image Lignes-Colonnes (Height-Width)
+                // Parsing of image Lines-Columns (Height-Width)
                 for (i=0, ii=LowerY; ii<=UpperY; i++, ii++) {
                         myImage->RowColor (ii, Array);
                         for (j=0; j<Width; j++) {

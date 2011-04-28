@@ -26,8 +26,8 @@
 
 //=======================================================================
 //function : ChFiKPart_Sphere
-//purpose  : Construction d un conge spherique dont les contours ne sont
-//           pas tous des isos, a partir de ses trois sommets.
+//purpose  : Construction of a spherical fillet the contours which of 
+//           are not all isos, from three tops.
 //=======================================================================
 
 Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
@@ -43,10 +43,10 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
 				  const gp_Pnt2d& P1S2,
 				  const gp_Pnt2d& P2S2)
 {
-  // Construction de la sphere :
-  // - pole sud sur PS1
-  // - origine des u donnee par P1S2
-  // - u+ vers P2S2
+  // Construction of the sphere :
+  // - pole south on PS1
+  // - origine of u given by P1S2
+  // - u+ to P2S2
 
   Standard_Real ptol = Precision::Confusion();
   gp_Pnt p1,p2,p3;
@@ -75,7 +75,7 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
     dz = gp_Dir(gp_Vec(p1,cen));
     if(Abs(ds1.Dot(dz)-1.)>ptol){
 #ifdef DEB
-      cout<<"centre du coin spherique non trouve"<<endl;
+      cout<<"center of the spherical corner not found"<<endl;
 #endif
       return Standard_False;
     }
@@ -95,22 +95,22 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
     gsph = new Geom_SphericalSurface(FilAx3,Rad);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gsph,DStr));
 
-  // on compare la normale de la sphere a celle de la face
-  // orientee pour determiner l orientation finale du conge.
+  // the normal of the sphere is compared to the normal of the face
+  // oriented to determine the final orientation of the fillet.
   Standard_Boolean toreverse = ( ddz.Dot(df1) <= 0. );
   if (toreverse) { Data->ChangeOrientation() = TopAbs_REVERSED; }
   else { Data->ChangeOrientation() = TopAbs_FORWARD; }
 
-  // On calcule les parametres de p2 et p3 sur la Sphere pour avoir
-  // les ranges des courbes.
+  // Parameters of p2 and p3 are calculated on the Sphere to have 
+  // ranges of curves.
   Standard_Real uu1,vv1,uu2,vv2;
   ElSLib::SphereParameters(FilAx3,Rad,p2,uu1,vv1);
   uu1 = 0.;
   ElSLib::SphereParameters(FilAx3,Rad,p3,uu2,vv2);
 
-  // On charge les FaceInterferences avec les pcurves et courbes 3d.
+  // FaceInterferences are loaded with pcurves and curves 3d.
 
-  // Le cote pointu.
+  // Pointed side.
   
   Handle(Geom_Curve) C;
   Handle(Geom2d_Curve) C2d;
@@ -124,7 +124,7 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
     SetInterference(ChFiKPart_IndexCurveInDS(C,DStr),
 		    trans,C2d,C2dFil);
 
-  // L autre cote.
+  // The other side.
 
   Standard_Real ang = ddx.Angle(ddy);
   gp_Dir dci = ddx.Crossed(ddy);

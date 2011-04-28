@@ -78,7 +78,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 
   PointMax.Coord(X,Y,Z);
   V(2).SetCoord(X,Y,Z);
-  // trait de cote : 1er groupe
+  // face processing : 1st group
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
   Prs3d_Root::NewGroup(aPresentation);
@@ -92,7 +92,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   if (outside) {
     arrdir.Reverse();
   }
-  // fleche 1 : 2eme groupe
+  // arrow 1 : 2nd group
   Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,
 		    LA->Arrow1Aspect()->Angle(),
 		    LA->Arrow1Aspect()->Length());
@@ -100,14 +100,14 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
-  // fleche 2 : 3eme groupe
+  // arrow 2 : 3rd group
   Prs3d_Arrow::Draw(aPresentation,Proj2,arrdir.Reversed(),
 		    LA->Arrow2Aspect()->Angle(),
 		    LA->Arrow2Aspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   
-  // texte : 4eme groupe
+  // text : 4th group
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
   
   AttachmentPoint1.Coord(X,Y,Z);
@@ -117,7 +117,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  // trait de rappel 1 : 5eme groupe
+  // processing of call 1 : 5th group
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   
   AttachmentPoint2.Coord(X,Y,Z);
@@ -127,7 +127,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  // trait de rappel 2 : 6eme groupe
+  // processing of call 2 : 6th group
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   
 }
@@ -271,7 +271,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   PointMax.Coord(X,Y,Z);
   V(2).SetCoord(X,Y,Z);
 
-  // trait de cote 
+  // processing of face 
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   
   
@@ -290,7 +290,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   Proj1.Coord(X,Y,Z);
   V(2).SetCoord(X,Y,Z);
 
-  // trait de rappel 1 
+  // processing of call  1 
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   
   AttachmentPoint2.Coord(X,Y,Z);
@@ -298,14 +298,14 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   Proj2.Coord(X,Y,Z);
   V(2).SetCoord(X,Y,Z);
 
-  // trait de rappel 2 
+  // processing of call 2 
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
  
-  // texte 
+  // text 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
 
-  // symbols aux extremites de la cote
+  // symbols at the extremities of the face
   DsgPrs::ComputeSymbol(aPresentation,LA,Proj1,Proj2,arrdir,arrdir.Reversed(),ArrowPrs);
 }
 

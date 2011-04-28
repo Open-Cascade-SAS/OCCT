@@ -2,7 +2,7 @@
     -- File:    Graphic3d_Group.cdl
     -- Created: Vendredi 6 Septembre 1991
     -- Author:  NW,JPB,CAL
-    --      27/09/97 ; PCT : ajout du controle manuel des textures
+    --      27/09/97 ; PCT : add manual control of  textures
     --              11/97 ; CAL : ajout polyline par 2 points
     --      16/06/2000 : ATS: Study G005 - Group store presentations of it's objects in field
     --                        MyListOfPArray to avoid deletion of handle-manipulating 
@@ -383,7 +383,7 @@
         ---Level: Public
         ---Purpose: Links up points to create a face drawn
         --      using the current fill attributes (AspectFillArea3d))
-        --      The first and last points are not duplicates.
+        --      The first and last points are not duplicated.
         --      The normal is defined and normalised for each vertex.
         --          The texture coordinate is defined for each vertex.
         ---Category: Methods to create Polygon

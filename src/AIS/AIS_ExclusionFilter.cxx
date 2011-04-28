@@ -175,13 +175,13 @@ Standard_Boolean AIS_ExclusionFilter::IsOk(const Handle(SelectMgr_EntityOwner)& 
   if(IO.IsNull()) 
     return Standard_False;
 
-  // le type de l'ais n'est pas dans la map...
+  // type of AIS is not in the map...
   if(!myStoredTypes.IsBound(IO->Type()))
     return myIsExclusionFlagOn ;
-  // le type de l'ais est dans la map et il n'y a pas de signature precisee
+  // type of AIS is not in the map and there is no signature indicated
   if(myStoredTypes(IO->Type()).IsEmpty())
     return !myIsExclusionFlagOn ;
-  // il y a une ou des signatures precisees...
+  // one or several signatures are indicated...
   if(IsSignatureIn(IO->Type(),IO->Signature()))
     return !myIsExclusionFlagOn;
   

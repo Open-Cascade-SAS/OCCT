@@ -1,5 +1,4 @@
 #define PERF    //GG_270298
-//              Eviter d'appeler IsKind() qui est couteux.
 
 
 #ifdef WNT
@@ -68,7 +67,7 @@ Standard_Integer i,j ;
 
   	if( i <= myObjects.Length() ) {
     	  myObjects.Remove(i) ;
-	  // pas tres astucieux mais qui va utiliser Remove (anObject) ?
+	  // not very clever, but who will use Remove (anObject) ?
 	  for( j=1 ; j<=anObject->Length() ; j++ ) {
 	    Remove(anObject->Primitive(j)) ;
 	  }
@@ -314,16 +313,16 @@ printf(" Graphic2d_Buffer::ReLoad(%d)\n",ResetPosition);
 
 	    myBufferId = this->HashCode(IntegerLast());
 
-	    // On a demande l'epaisseur maximum des primitives lignes
-	    // contenues dans le buffer
+	    // Maximum depth of primitive lines
+	    // contained in the buffer is required
 	    if (theWidthIndex < 0) {
 		Standard_Real theWidthMax;
-		// Il n'y a pas de primitives lignes => epaisseur par defaut
+		// There are no primitive lines => thickness by default
 		if (! MaxWidth (theWidthMax, theWidthIndex))
 		    theWidthIndex = 0;
 	    }
 
-	    // On demande la font de la 1ere primitive text du buffer
+	    // The font of the 1st primitive text from the buffer is required
 	    if( theFontIndex < 0) {
 	        Standard_Integer i;
 		Handle(Graphic2d_Primitive) agp;
@@ -343,7 +342,7 @@ printf(" Graphic2d_Buffer::ReLoad(%d)\n",ResetPosition);
 		if( theFontIndex < 0 ) theFontIndex = 0;
 	    }
 
-	    // On demande la couleur de la 1ere primitive du buffer
+	    // The color of the 1st primitive from the buffer is required
 	    if( theColorIndex < 0) {
 	        Standard_Integer i;
                 for (i=1; i<=myPrimitives.Length(); i++) {
@@ -406,18 +405,18 @@ Standard_Boolean Result = Standard_False;
 #else
 	    if (agp->IsKind (STANDARD_TYPE (Graphic2d_Line))) {
 #endif
-		// Il y a des lignes dans le Buffer
-		// et non pas de la friture sur la ligne
+		// There are lines in the Buffer
+		// and not by fracture on the line
 		Result = Standard_True;
 		IndexCur =
 		    (*(Handle(Graphic2d_Line) *) &agp)->WidthIndex ();
 		if ((IndexCur <= 0) || (IndexCur > size)) {
-		    // Cas des epaisseurs non precisees, IndexCur == 0
-		    // ou alors il y a vraiment un gros probleme !
+		    // Case when thicknesses are not precised, IndexCur == 0
+		    // or there is a really huge problem !
 		}
 		else {
-		    // +1 car dans la table il y a en 1 une entry par defaut
-		    // qui definit une epaisseur par defaut
+		    // +1 because in the table there is 1 default entry
+		    // which defines default thickness
 		    WidthCur = (theWidthMap->Entry (IndexCur+1)).Width ();
 		    if (theWidth < WidthCur) {
 			theWidth = WidthCur;

@@ -43,39 +43,39 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 {
   Standard_Integer ind1=1, ind2=1;
   Standard_Real    Epspar = Precision::PConfusion()*0.99;
-  // en suposant que le positionement fonctionne a PConfusion()/2
+  // supposed that the positioning works with PConfusion()/2
   Standard_Real    v1, v2;
-// Initialisations : les IND1 et IND2 pointent sur le 1er element
-// de chacune des 2 tables a traiter.INDS pointe sur le dernier
-// element cree de TABSOR
+// Initialisations : IND1 and IND2 point the 1st element
+// of each of 2 tables to be processed. INDS points at the last
+// created element of TABSOR
 
 
-//--- On remplit TABSOR en parcourant TABLE1 et TABLE2 simultanement ---
-//------------------ en eliminant les occurrences multiples ------------
+//--- TABSOR is filled by parsing TABLE1 and TABLE2 simultaneously ---
+//------------------ and removing multiple occurrencies ------------
 
  while ((ind1<=I1.Upper()) && (ind2<=I2.Upper())) {
       v1 = I1(ind1);
       v2 = I2(ind2);
       if (Abs(v1-v2)<= Epspar) {
-// Ici les elements de I1 et I2 conviennent .
+// elements of I1 and I2 fit here
          Seq.Append((v1+v2)/2);
 	 ind1++;
          ind2++;
        }
       else if (v1 < v2) {
-	// Ici l' element de I1 convient.
+	// element of I1 fits here.
          Seq.Append(v1);
          ind1++;
        }
       else {
-// Ici l' element de TABLE2 convient.
+// element of TABLE2 fits here.
 	 Seq.Append(v2);
 	 ind2++;
        }
     }
 
   if (ind1>I1.Upper()) { 
-//----- Ici I1 est epuise, on complete avec la fin de TABLE2 -------
+//----- Here I1 is exhausted, completed using the end of TABLE2 -------
 
     for (; ind2<=I2.Upper(); ind2++) {
       Seq.Append(I2(ind2));
@@ -83,7 +83,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
   }
 
   if (ind2>I2.Upper()) { 
-//----- Ici I2 est epuise, on complete avec la fin de I1 -------
+//----- Here I2 is exhausted, completed using the end of I1 -------
 
     for (; ind1<=I1.Upper(); ind1++) {
       Seq.Append(I1(ind1));
@@ -291,7 +291,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::IsSolution(const math_Vector&  Sol,
   if (Abs(valsol(1)) <= Tol &&
       Abs(valsol(2)) <= Tol ) {
     
-    // Calcul des tangentes
+    // Calculation of tangents
     prmrst1  = Sol(1);    
     pt2drst1 = rst1->Value(prmrst1);
     prmrst2  = Sol(2);
@@ -517,11 +517,11 @@ Blend_DecrochStatus BRepBlend_RstRstEvolRad::Decroch(const math_Vector& Sol,
 
   rstref1->Value(Sol(1)).Coord(u, v);
   surfref1->D1(u, v,PtTmp1,d1u,d1v);
-  // Normale a la surface de reference 1
+  // Normal to the reference surface 1
   NRst1     = d1u.Crossed(d1v);  
   rstref2->Value(Sol(2)).Coord(u, v);
   surfref2->D1(u, v, PtTmp2, d1u, d1v);
-  // Normale a la surface de reference 2
+  // Normal to the reference surface 2
   NRst2     = d1u.Crossed(d1v);
 
   Standard_Boolean IsCenter;
@@ -554,7 +554,7 @@ Blend_DecrochStatus BRepBlend_RstRstEvolRad::Decroch(const math_Vector& Sol,
     TgRst2.Reverse();
   }
 
-  // On retourne les vecteurs 
+  // Vectors are returned 
   if (NRst1InPlane.Dot(TgRst1) > -1.e-10) {
     if (NRst2InPlane.Dot(TgRst2) < 1.e-10) {
       return Blend_DecrochBoth;
@@ -598,7 +598,7 @@ void BRepBlend_RstRstEvolRad::Set(const BlendFunc_SectionShape TypeSection)
 
 //=======================================================================
 //function : CenterCircleRst1Rst2
-//purpose  : Calculer le centre du cercle passant par les deux points des restrictions
+//purpose  : Calculate the center of circle passing by two points of restrictions
 //=======================================================================
 Standard_Boolean  BRepBlend_RstRstEvolRad::CenterCircleRst1Rst2(const gp_Pnt&       PtRst1,
 								const gp_Pnt&       PtRst2,
@@ -608,11 +608,11 @@ Standard_Boolean  BRepBlend_RstRstEvolRad::CenterCircleRst1Rst2(const gp_Pnt&   
 {  
   
   gp_Vec rst1rst2(PtRst1, PtRst2);
-  gp_Vec   vdmedNor; //,NRst1;  vdmedNor  vecteur directeur de la Mediatrice  
+  gp_Vec   vdmedNor; //,NRst1;  vdmedNor  vector director of the perpendicular bisector  
   Standard_Real norm2;
-  Standard_Real Dist;// distance entre le milieu de PtRst1,PtRst2 et Center
+  Standard_Real Dist;// distance between the middle of PtRst1,PtRst2 and Center
 
-  // Calcul du centre du cercle 
+  // Calculate the center of the circle 
   VdMed = rst1rst2.Crossed(np); 
   norm2  = rst1rst2.SquareMagnitude();
   Dist  = ray * ray - 0.25 * norm2;
@@ -678,7 +678,7 @@ void BRepBlend_RstRstEvolRad::Section(const Standard_Real Param,
   Pdeb = 0; //ElCLib::Parameter(C, pts);
   Pfin = ElCLib::Parameter(C, ptrst2);
 
-  // Test des angles negatif et quasi null : Cas Singulier
+  // Test negative and quasi null angles: Special case
   if (Pfin > 1.5 * PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center, np, ns));
@@ -715,7 +715,7 @@ Standard_Real BRepBlend_RstRstEvolRad::GetSectionSize() const
 void BRepBlend_RstRstEvolRad::GetMinimalWeight(TColStd_Array1OfReal& Weights) const 
 {
   BlendFunc::GetMinimalWeights(mySShape, myTConv, minang, maxang, Weights );
-  // On suppose que cela ne depend pas du Rayon! 
+  // It is supposed that it does not depend on the Radius! 
 }
 
 //=======================================================================
@@ -788,7 +788,7 @@ void BRepBlend_RstRstEvolRad::GetShape (Standard_Integer& NbPoles,
 
 //=======================================================================
 //function : GetTolerance
-//purpose  : Determine les Tolerance a utiliser dans les approximations.
+//purpose  : Determine the Tolerance to be used in approximations.
 //=======================================================================
 
 void BRepBlend_RstRstEvolRad::GetTolerance(const Standard_Real BoundTol, 
@@ -862,7 +862,7 @@ void BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
   Poles2d(Poles2d.Lower()).SetCoord(pt2d1.X(),pt2d1.Y());
   Poles2d(Poles2d.Upper()).SetCoord(pt2d2.X(),pt2d2.Y());
   
-  // Cas Linear
+  // Linear Case
   if (mySShape == BlendFunc_Linear) {
     Poles(low)   = ptrst1;
     Poles(upp)   = ptrst2;
@@ -871,11 +871,11 @@ void BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
     return;
   }
 
-  // Calcul du centre du cercle
+  // Calculate the center of the circle
   Standard_Boolean IsCenter;
   IsCenter = CenterCircleRst1Rst2(ptrst1, ptrst2, nplan, Center, NotUsed);
 
-  // normales a la section aux points 
+  // normals to the section with points 
   n1  = gp_Vec(Center, ptrst1).Normalized();  
   n2  = gp_Vec(Center, ptrst2).Normalized();
 
@@ -975,8 +975,8 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
   gp_Vec n1(Center, ptrst1), n2(Center, ptrst2);
 
   if (!istgt) {
-    // secmember contient les derivees des parametres sur les courbes
-    // par rapport a t  
+    // secmember contains derivatives of parameters on curves
+    // corresponding to t  
     tgrst1 = secmember(1) * d11;
     tgrst2 = secmember(2) * d21;
 
@@ -990,7 +990,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
     if (Dist >  1.E-07) { 
       gp_Vec d1P1P2CrosNp, dmed;
       d1P1P2CrosNp = d1rst1rst2.Crossed(nplan) + rst1rst2.Crossed(dnplan);
-      // derivee de la mediatrice
+      // derivative of the bisector 
       dmed = d1P1P2CrosNp - med.Dot(d1P1P2CrosNp) * med;
       dmed /= normmed; 
       Dist = sqrt(Dist);
@@ -1002,13 +1002,13 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
         dmed.Reverse();
       }
 
-      // on met dans dmed la derivee du coefficient Dist
+      // derivative of the coefficient Dist is located in dmed
       dmed.SetLinearForm(Dist, dmed, d1Dist, med);
       d1rst1rst2 *= 0.5;   
-      // derivee de la Normale a la courbe en P1    
+      // derivative of the Normal to the curve in P1    
       d1n1 = - (d1rst1rst2 + dmed + Invdray * n1) / ray;
 
-      // derivee de la Normale a la courbe en P2
+      // derivative of the Normal to the curve in P2
       d1n2 = (d1rst1rst2 - dmed - Invdray * n2) / ray; 
     }
     else {
@@ -1024,7 +1024,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
   n1.Normalize();
   n2.Normalize();
   
-  // Les poles 2d
+  // Tops 2D
   
   Poles2d(Poles2d.Lower()).SetCoord(pt2drst1.X(), pt2drst1.Y());
   Poles2d(Poles2d.Upper()).SetCoord(pt2drst2.X(), pt2drst2.Y());
@@ -1039,7 +1039,7 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
     DPoles2d(Poles2d.Upper()).SetCoord(a, b);
   }
   
-  // Cas Linear
+  // Linear Case
   if (mySShape == BlendFunc_Linear) {
     Poles(low)   = ptrst1;
     Poles(upp)   = ptrst2;
@@ -1054,8 +1054,8 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
     return (!istgt);
   }
   
-  // Cas du cercle
-  // tangente au centre du cercle
+  // Case of the circle
+  // tangent to the center of the circle
   if (!istgt) {
     tgct.SetLinearForm(-ray, d1n1, -dray, n1, tgrst1);
   }

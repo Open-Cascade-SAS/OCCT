@@ -113,7 +113,7 @@ Handle(AlienImage_AlienImage) Graphic3d_TextureRoot::LoadTexture() const
   OSD_File File(MyPath);
   File.Open(OSD_ReadOnly, Protection);
 
-  // ouverture du fichier ok ?
+  // open file ok ?
   if ( File.IsOpen() == Standard_False ) {
     TCollection_AsciiString sysname;
     MyPath.SystemName(sysname);
@@ -123,7 +123,7 @@ Handle(AlienImage_AlienImage) Graphic3d_TextureRoot::LoadTexture() const
 
 
   ////////////////////////
-  // lecture du fichier //
+  // file reading       //
   ////////////////////////
 
 
@@ -174,7 +174,6 @@ Handle(AlienImage_AlienImage) Graphic3d_TextureRoot::LoadTexture() const
 
   // Euclid ?
   ///////////
-  // plantouille royalement
   Handle(AlienImage_EuclidAlienImage) EuclidAlienImage = new AlienImage_EuclidAlienImage() ;
 
   if (EuclidAlienImage->Read( File )) {
@@ -193,7 +192,7 @@ Handle(AlienImage_AlienImage) Graphic3d_TextureRoot::LoadTexture() const
   }
 
 
-  // lever exception: type de fichier inconnu
+  // raise exception: file type unknown 
   return TheAlienImage;
 }
 

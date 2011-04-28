@@ -77,7 +77,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef DEB
-// Pour les mesures.
+// For measurements.
 #include <OSD_Chronometer.hxx>
 //static OSD_Chronometer appclock;
 #endif
@@ -251,8 +251,8 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
 		      const Standard_Real  preftg)
 {
   Standard_Boolean found = 0;
-  //(1) On verifie si les paramtres fournies sont bon
-  //    cas ou les pcurves sont paramtres comme la spine.
+  //(1) It is checked if the provided parameters are good 
+  //    if pcurves have the same parameters as the spine.
   gp_Pnt2d point = Carc.Value(prefarc);
   Standard_Real distini = point.Distance(Ctg->Value(preftg));
   if (distini <= Precision::PConfusion()) {
@@ -261,9 +261,9 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
     found = Standard_True;
   }
   else {
-    //(2) On intersecte
+    //(2) Intersection
 #ifdef DEB
-    cout<< "CompParam : mauvais parametres on intersecte"<<endl; 
+    cout<< "CompParam : bad intersection parameters"<<endl; 
 #endif
     IntRes2d_IntersectionPoint int2d;
     Geom2dInt_GInter Intersection;
@@ -278,7 +278,7 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
 	nbseg = Intersection.NbSegments();
 	if ( nbseg > 0 ){ 
 #ifdef DEB
-	  cout<< "segments d intersection sur les restrictions"<<endl; 
+	  cout<< "segments of intersection on the restrictions"<<endl; 
 #endif  
 	}
 	nbpt = Intersection.NbPoints();
@@ -298,23 +298,23 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
   }
   
   if(!found){
-    // (3) On projette...
+    // (3) Projection...
 #ifdef DEB
-    cout<<"CompParam : echec intersection PC, on projette."<<endl;
+    cout<<"CompParam : failed intersection PC, projection is created."<<endl;
 #endif
     parc = prefarc;
     Geom2dAPI_ProjectPointOnCurve projector(point,Ctg);
 
     if(projector.NbPoints() == 0){
-      // Cela arrive parfois dans les cas singuliers ou l'on sort 
-      // en bout de spine sur vertex...
+      // This happens in some cases when there is a vertex 
+      // at the end of spine...
       ptg = preftg; 
 #ifdef DEB
-      cout<<"CompParam :  echec proj p2d/c2d, on prend l'extremite!" <<endl;
+      cout<<"CompParam : failed proj p2d/c2d, the extremity is taken!" <<endl;
 #endif
     }
     else  {
-      // On controle que l'on n'as pas calculer n'importe quoi (EDC402 C2)
+      // It is checked if everything was calculated correctly (EDC402 C2)
       if  (projector.LowerDistance() < distini) 
 	ptg = projector.LowerDistanceParameter();
       else  ptg = preftg;
@@ -324,8 +324,8 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
 
 //=======================================================================
 //function : CompBlendPoint
-//purpose  : fabrique le BlendPoint correspondant a une tangence sur Vertex
-// pmn : 15/10/1997 : renvoi false, si l'on n' a pas de pcurve    
+//purpose  : create BlendPoint corresponding to a tangency on Vertex
+// pmn : 15/10/1997 : returns false, if there is no pcurve    
 //=======================================================================
 
 static Standard_Boolean CompBlendPoint(const TopoDS_Vertex& V,
@@ -355,7 +355,7 @@ static Standard_Boolean CompBlendPoint(const TopoDS_Vertex& V,
 
 //=======================================================================
 //function :  UpdateLine
-//purpose  : Met a jour les extremites apres une invalidation partiel   
+//purpose  : Updates extremities after a partial invalidation   
 //=======================================================================
 
 static void UpdateLine(Handle(BRepBlend_Line)& Line, 
@@ -398,8 +398,8 @@ static void UpdateLine(Handle(BRepBlend_Line)& Line,
 
 //=======================================================================
 //function : CompleteData
-//purpose  : Calcule les courbes et les CommonPoints a partir des donnees
-//           calculees par remplissage.
+//purpose  : Calculates curves and CommonPoints from the data
+//           calculated by filling.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::CompleteData
@@ -436,7 +436,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
   if(!Gf1) Data->ChangeVertexLastOnS1().SetPoint(Surfcoin->Value(ULast,VFirst));
   if(!Gf2) Data->ChangeVertexLastOnS2().SetPoint(Surfcoin->Value(ULast,VLast));
 
-  //calcul des courbes cote S1
+  //calculate curves side S1
   Handle(Geom_Curve) Crv3d1;
   if(!PC1.IsNull()) Crv3d1= Surfcoin->VIso(VFirst);
   gp_Pnt2d pd1(UFirst,VFirst), pf1(ULast,VFirst);
@@ -466,7 +466,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
   Fint1.SetFirstParameter(UFirst);
   Fint1.SetLastParameter(ULast);
   Fint1.SetInterference(Index1OfCurve,tra1,c2dtrim,PCurveOnSurf);
-  //calcul des courbes cote S2
+  //calculate curves side S2
   Handle(Geom_Curve) Crv3d2;
   if(!PC2.IsNull()) Crv3d2 = Surfcoin->VIso(VLast);
   gp_Pnt2d pd2(UFirst,VLast), pf2(ULast,VLast);
@@ -499,11 +499,10 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 
 //=======================================================================
 //function : CompleteData
-//purpose  : Calcule la surface les courbes et eventuellement les
-//           CommonPoints a partir des donnees calculees dans 
-//           ComputeData.
+//purpose  : Calculates the surface of curves and eventually 
+//           CommonPoints from the data calculated in ComputeData.
 //
-//  11/08/1996 : Utilisation de F(t)
+//  11/08/1996 : Use of F(t)
 //
 //=======================================================================
 
@@ -543,7 +542,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 
 //=======================================================================
 //function : CompleteData
-//purpose  : Nouvelle surcharge pour les fonctions surf/rst
+//purpose  : New overload for functions surf/rst
 // jlr le 28/07/97 branchement F(t)
 //=======================================================================
 
@@ -566,7 +565,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 			       myConti);  
  if (!approx.IsDone()) {
 #ifdef DEB
-    cout << "Approximation non faite !!!" << endl;
+    cout << "Approximation is not done!" << endl;
 #endif  
     return Standard_False;
   }
@@ -581,7 +580,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 
 //=======================================================================
 //function : CompleteData
-//purpose  : Nouvelle surcharge pour les fonctions rst/rst
+//purpose  : New overload for functions rst/rst
 // jlr le 28/07/97 branchement F(t)
 //=======================================================================
 
@@ -619,7 +618,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 
 //=======================================================================
 //function : StoreData
-//purpose  : Recopie d un resultat d approx dans une SurfData.
+//purpose  : Copy of an approximation result in SurfData.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
@@ -634,7 +633,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 					   const Standard_Boolean Gf2,
 					   const Standard_Boolean Reversed)
 {
-  // Petits outils pour les controles.
+  // Small control tools.
   static Handle(GeomAdaptor_HCurve) checkcurve;
   if(checkcurve.IsNull()) checkcurve = new GeomAdaptor_HCurve();
   GeomAdaptor_Curve& chc = checkcurve->ChangeCurve();
@@ -653,8 +652,8 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   }
 
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  // On rend l espace parametric de la surface carre a defaut de pouvoir
-  // parametrer en U par # R*teta // a revoir lbo 29/08/97
+  // By default parametric space is created using a square surface
+  // to be able to parameterize in U by # R*teta // a revoir lbo 29/08/97
   const TColStd_Array1OfReal& ku = approx.SurfUKnots();
   const TColStd_Array1OfReal& kv = approx.SurfVKnots();
   Standard_Real larg = (kv(kv.Upper())-kv(kv.Lower()));
@@ -665,7 +664,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 			    kku,kv,
 			    approx.SurfUMults(),approx.SurfVMults(),
 			    approx.UDegree(),approx.VDegree());
-// prolongement de la surface 
+// extension of the surface 
 
   Standard_Real length1,length2;
   length1=Data->FirstExtensionValue();
@@ -701,7 +700,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   Standard_Integer ion1 = 1, ion2 = 2;
   if(Reversed) { Uon1 = ULast; Uon2 = UFirst; ion1 = 2; ion2 = 1; }
   
-  // On remplit la SurfData pour ce qui concerne S1,
+  // The SurfData is filled in what concerns S1,
   Handle(Geom_Curve) Crv3d1 = Surf->UIso(Uon1);
   gp_Pnt2d pori1(Uon1,0.);
   gp_Lin2d lfil1(pori1,gp::DY2d());
@@ -718,7 +717,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
    
  if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S1,tolC1,tolcheck)){
 #ifdef DEB
-   cout<<"tol approx sous evaluee : "<<tolC1<<" pour "<<tolcheck<<endl;
+   cout<<"aaproximate tolerance under-valued : "<<tolC1<<" for "<<tolcheck<<endl;
 #endif 
     tolC1 = tolcheck;
   }
@@ -758,7 +757,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   else TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
   Fint1.SetInterference(Index1OfCurve,TraOn1,PCurveOnFace,PCurveOnSurf);
   
-  // on remplit la SurfData pour ce qui concerne S2,
+  // SurfData is filled in what concerns S2,
   Handle(Geom_Curve) Crv3d2 = Surf->UIso(Uon2);
   gp_Pnt2d pori2(Uon2,0.);
   gp_Lin2d lfil2(pori2,gp::DY2d());
@@ -771,7 +770,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
     chc.Load(Crv3d2,par1,par2);
    if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S2,tolC2,tolcheck)){
 #ifdef DEB
-      cout<<"tol approx sous evaluee : "<<tolC2<<" pour "<<tolcheck<<endl;
+      cout<<"approximate tolerance under-evaluated : "<<tolC2<<" for "<<tolcheck<<endl;
 #endif 
       tolC2 = tolcheck;
     }
@@ -817,7 +816,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
       (Index2OfCurve,TopAbs_FORWARD,bidpc,PCurveOnSurf);
   }
 
-  // on calcule l orientation du conge par rapport aux faces,
+  // the orientation of the fillet in relation to the faces is evaluated,
 
   Handle(Adaptor3d_HSurface) Sref = S1;
   PCurveOnFace = Fint1.PCurveOnFace();
@@ -885,7 +884,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   if(!Gf2 && !S2.IsNull())
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
 			  Standard_False, Data->ChangeVertex(0,ion2),tolC2);
-  // Les parametres sur l ElSpine
+  // Parameters on ElSpine
   Standard_Integer nbp = lin->NbPoints();
   Data->FirstSpineParam(lin->Point(1).Parameter());
   Data->LastSpineParam(lin->Point(nbp).Parameter());
@@ -896,8 +895,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 
 //=======================================================================
 //function : ComputeData
-//purpose  : Chapeau du cheminement edge/face pour le contournement
-//           d obstacle.
+//purpose  : Head of the path edge/face for the bypass of obstacle.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::ComputeData
@@ -948,7 +946,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 #else
   Standard_Integer Nbpnt;
 #endif
-  // on recadre la solution de depart a la demande.
+  // the initial solution is reframed if necessary.
   math_Vector ParSol(1,3);
   Standard_Real NewFirst = PFirst;
   if(RecP || RecS || RecRst){
@@ -956,7 +954,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 				    tolesp,TolGuide,RecRst,RecP,RecS,
 				    NewFirst,ParSol)){
 #ifdef DEB
-      cout<<"ChFi3d_Builder::ComputeData : echec calcul first section"<<endl;
+      cout<<"ChFi3d_Builder::ComputeData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
     }
@@ -971,7 +969,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
     if (!TheWalk.IsDone()) {
 #ifdef DEB
-      cout << "Cheminement non fait" << endl;
+      cout << "Path not created" << endl;
 #endif  
       return Standard_False;
     }
@@ -979,7 +977,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (reverse) {
       if (!TheWalk.Complete(Func,FInv,FInvP,FInvC,SpLast)) {
 #ifdef DEB
-	cout << "Complement non fait" << endl;
+	cout << "Not completed" << endl;
 #endif
       }
     }  
@@ -990,14 +988,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (Nbpnt <= 1 && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"1 seul point de cheminement on essaye MS/50."<<endl;
+      cout <<"one point of the path MS/50 is attempted."<<endl;
 #endif  
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt<=nbptmin && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"Nombre de points insuffisant on reduit le pas"<<endl;
+      cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif  
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
@@ -1007,7 +1005,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     }
     else if(Nbpnt<=nbptmin){
 #ifdef DEB
-      cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+      cout <<"Number of points is still too small, quit"<<endl;
 #endif  
       return Standard_False;
     }
@@ -1029,8 +1027,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
 //=======================================================================
 //function : ComputeData
-//purpose  : Chapeau du cheminement edge/edge pour le contournement
-//           d obstacle.
+//purpose  : Heading of the path edge/edge for the bypass of obstacle.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::ComputeData
@@ -1085,7 +1082,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 #else
   Standard_Integer Nbpnt;
 #endif
-  // on recadre la solution de depart a la demande.
+  // the initial solution is reframed if necessary.
   math_Vector ParSol(1,2);
   Standard_Real NewFirst = PFirst;
   if (RecP1 || RecRst1 || RecP2 || RecRst2) {
@@ -1093,7 +1090,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 	  			     tolesp, TolGuide, RecRst1, RecP1, RecRst2, RecP2,
 				     NewFirst, ParSol)){
 #ifdef DEB
-      cout<<"ChFi3d_Builder::ComputeData : echec calcul first section"<<endl;
+      cout<<"ChFi3d_Builder::ComputeData : fail calculation first section"<<endl;
 #endif
       return Standard_False;
     }
@@ -1108,7 +1105,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
     if (!TheWalk.IsDone()) {
 #ifdef DEB
-      cout << "Cheminement non fait" << endl;
+      cout << "Path not done" << endl;
 #endif  
       return Standard_False;
     }
@@ -1116,7 +1113,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (reverse) {
       if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast)) {
 #ifdef DEB
-	cout << "Complement non fait" << endl;
+	cout << "Not completed" << endl;
 #endif
       }
     }  
@@ -1127,14 +1124,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (Nbpnt <= 1 && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"1 seul point de cheminement on essaye MS/50."<<endl;
+      cout <<"one point of path MS/50 is attempted."<<endl;
 #endif  
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt<=nbptmin && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"Nombre de points insuffisant on reduit le pas"<<endl;
+      cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif  
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
@@ -1143,7 +1140,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     }
     else if(Nbpnt<=nbptmin){
 #ifdef DEB
-      cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+      cout <<"Number of points is still too small, quit"<<endl;
 #endif  
       return Standard_False;
     }
@@ -1171,8 +1168,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
 //=======================================================================
 //function : SimulData
-//purpose  : Chapeau du cheminement edge/face pour le contournement
-//           d obstacle en mode simulation.
+//purpose  : Heading of the path edge/face for the bypass of obstacle in simulation mode.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::SimulData
@@ -1220,7 +1216,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 #else
   Standard_Integer Nbpnt; 
 #endif
-  // on recadre la solution de depart a la demande.
+  // the starting solution is reframed if needed.
   math_Vector ParSol(1,3);
   Standard_Real NewFirst = PFirst;
   if(RecP || RecS || RecRst){
@@ -1229,7 +1225,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 				    NewFirst,ParSol)){
 #ifdef DEB
 
-      cout<<"ChFi3d_Builder::SimulData : echec calcul first section"<<endl;
+      cout<<"ChFi3d_Builder::SimulData : fail calculate first section"<<endl;
 #endif
       return Standard_False;
     }
@@ -1243,14 +1239,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
 		     MS,TolGuide,ParSol,tolesp,Fleche,Appro);
     if (!TheWalk.IsDone()) {
 #ifdef DEB
-      cout << "Cheminement non fait" << endl;
+      cout << "Path not done" << endl;
 #endif
       return Standard_False;
     }
     if (reverse) {
       if (!TheWalk.Complete(Func,FInv,FInvP,FInvC,SpLast)) {
 #ifdef DEB
-	cout << "Complement non fait" << endl;
+	cout << "Not completed" << endl;
 #endif
       }
     }  
@@ -1259,14 +1255,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     if (Nbpnt <= 1 && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"1 seul point de cheminement on essaye MS/50."<<endl;
+      cout <<"one point of path MS/50 is attempted."<<endl;
 #endif
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt <= NbSecMin && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"Nombre de points insuffisant on reduit le pas"<<endl;
+      cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
@@ -1275,7 +1271,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     }
     else if(Nbpnt<=NbSecMin){
 #ifdef DEB
-      cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+      cout <<"Number of points is still too small, quit"<<endl;
 #endif
       return Standard_False;
     }
@@ -1297,8 +1293,8 @@ Standard_Boolean ChFi3d_Builder::SimulData
 
 //=======================================================================
 //function : SimulData
-//purpose  : Chapeau du cheminement edge/edge pour le contournement
-//           d obstacle en mode simulation.
+//purpose  : Heading of path edge/edge for the bypass
+//           of obstacle in simulation mode.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::SimulData
@@ -1350,7 +1346,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 #else
   Standard_Integer Nbpnt; 
 #endif
-  // on recadre la solution de depart a la demande.
+  // The initial solution is reframed if necessary.
   math_Vector ParSol(1,2);
   Standard_Real NewFirst = PFirst;
   if (RecP1 || RecRst1 || RecP2 || RecRst2) {
@@ -1359,7 +1355,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 				    NewFirst,ParSol)){
 #ifdef DEB
 
-      cout<<"ChFi3d_Builder::SimulData : echec calcul first section"<<endl;
+      cout<<"ChFi3d_Builder::SimulData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
     }
@@ -1373,14 +1369,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
 		     MS, TolGuide, ParSol, tolesp, Fleche, Appro);
     if (!TheWalk.IsDone()) {
 #ifdef DEB
-      cout << "Cheminement non fait" << endl;
+      cout << "Path not created" << endl;
 #endif
       return Standard_False;
     }
     if (reverse) {
       if (!TheWalk.Complete(Func, FInv1, FInvP1, FInv2, FInvP2, SpLast)) {
 #ifdef DEB
-	cout << "Complement non fait" << endl;
+	cout << "Not completed" << endl;
 #endif
       }
     }  
@@ -1389,14 +1385,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     if (Nbpnt <= 1 && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"1 seul point de cheminement on essaye MS/50."<<endl;
+      cout <<"only one point of path MS/50 is attempted."<<endl;
 #endif
       MS = MS/50.; Target = Targetsov;
     }
     else if (Nbpnt <= NbSecMin && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"Nombre de points insuffisant on reduit le pas"<<endl;
+      cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
       Standard_Real u1 = Lin->Point(1).Parameter();
       Standard_Real u2 = Lin->Point(Nbpnt).Parameter();
@@ -1405,7 +1401,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     }
     else if(Nbpnt<=NbSecMin){
 #ifdef DEB
-      cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+      cout <<"Number of points is still too small, quit"<<endl;
 #endif
       return Standard_False;
     }
@@ -1435,7 +1431,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 
 //=======================================================================
 //function : ComputeData
-//purpose  : Construction d un conge elementaire par cheminement.
+//purpose  : Construction of elementary fillet by path.
 //
 //=======================================================================
 
@@ -1469,27 +1465,27 @@ Standard_Boolean ChFi3d_Builder::ComputeData
  const Standard_Boolean RecOnS1,
  const Standard_Boolean RecOnS2)
 {
-  //Les prolongements en cas de sortie des deux domaines sont faits
-  //de facon directe et non plus par cheminement ( trop hasardeux ).
+  //The extrensions are created in case of output of two domains
+  //directly and not by path ( too hasardous ).
   Data->FirstExtensionValue(0);
   Data-> LastExtensionValue(0);
 
-  //On recupere les faces eventuelles pour les tests de saut d edge.
+  //The eventual faces are restored to test the jump of edge.
   TopoDS_Face F1, F2;
   Handle(BRepAdaptor_HSurface) HS = Handle(BRepAdaptor_HSurface)::DownCast(S1); 
   if(!HS.IsNull()) F1 = HS->ChangeSurface().Face();
   HS = Handle(BRepAdaptor_HSurface)::DownCast(S2); 
   if(!HS.IsNull()) F2 = HS->ChangeSurface().Face();
   
-  // Variables d'encadrement du cheminement
+  // Path framing variables
   Standard_Real TolGuide=tolguide, TolEsp = tolesp;
   Standard_Integer nbptmin = 4;
 
   BRepBlend_Walking TheWalk(S1,S2,I1,I2);
 
-  //Debut du carnage, on eteint les controles 2d du cheminement
-  //qui s'accomodent mal des surfaces a parametrages non homogenes
-  //en u et en v.
+  //Start of removal, 2D path controls 
+  //that qui s'accomodent mal des surfaces a parametrages non homogenes
+  //en u et en v are extinguished.
   TheWalk.Check2d(0);
   
   Standard_Real MS = MaxStep;
@@ -1497,9 +1493,8 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   Standard_Real SpFirst = HGuide->FirstParameter();
   Standard_Real SpLast =  HGuide->LastParameter();
 
-  // Lorsque le point de depart est interne, on chemine 
-  // d abord a gauche afin de determiner le Last pour les
-  // periodiques.
+  // When the start point is inside, the path goes first to the left  
+  // to determine the Last for the periodicals.
   Standard_Boolean reverse = (!Forward || Inside);
   Standard_Real Target;
   if(reverse){
@@ -1511,8 +1506,8 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if(!intl) Target = Last;
   }
 
-  // Dans le cas de singularite pre-determinee,
-  // on en informe le cheminement
+  // In case if the singularity is pre-determined,
+  // the path is indicated.
   if (!Spine.IsNull()){
     if (Spine->IsTangencyExtremity(Standard_True)) {
       TopoDS_Vertex V = Spine->FirstVertex();
@@ -1546,7 +1541,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     }
   }
 
-  //On recadre la solution de depart a la demande.
+  //The starting solution is reframed if necessary.
   //**********************************************//
   math_Vector ParSol(1,4);
   Standard_Real NewFirst = PFirst;
@@ -1555,7 +1550,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 				    tolesp,TolGuide,RecOnS1,RecOnS2,
 				    NewFirst,ParSol)){
 #ifdef DEB
-      cout<<"ChFi3d_Builder::ComputeData : echec calcul first section"<<endl;
+      cout<<"ChFi3d_Builder::ComputeData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
     }
@@ -1564,7 +1559,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     ParSol = Soldep;
   }
 
-  //On calcule d abord la partie valide, sans souci des prolongements.
+  //First the valid part is calculate, without caring for the extensions.
   //******************************************************************//
   Standard_Integer again = 0;
   Standard_Boolean tchernobyl = 0;
@@ -1574,15 +1569,15 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   Standard_Real u1sov, u2sov;
 #endif
   TopoDS_Face bif;
-  //Un pas max coherent, mais grand, on compte sur la fleche pour detecter
-  //les vrillages.
+  //Max step is relevant, but too great, the vector is required to detect
+  //the twists.
   if( (Abs(Last-First) <= MS * 5.) &&
       (Abs(Last-First) >= 0.01*Abs(NewFirst-Target)) ){ 
     MS = Abs(Last-First)*0.2; 
   }
 
   while(again < 3){
-    //On chemine. 
+    //Path. 
     if(!again && (MS < 5*TolGuide)) MS = 5*TolGuide;
     else {
       if (5*TolGuide > MS) TolGuide = MS/5;
@@ -1592,7 +1587,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 		    ParSol,TolEsp,Fleche,Appro);
     if (!TheWalk.IsDone()) {
 #ifdef DEB
-      cout << "Cheminement non fait" << endl;
+      cout << "Path is not created" << endl;
 #endif
       return Standard_False;
     }
@@ -1608,18 +1603,18 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
     if(!complmnt){
 #ifdef DEB
-      cout << "Complement non fait" << endl;
+      cout << "Not completed" << endl;
 #endif
       return Standard_False;
     }
     
-    //On controle le resultat avec deux criteres :
-    //- y a-t-il assez de points,
-    //- est-on alle assez loin.
+    //The result is controlled using two criterions :
+    //- if there is enough points,
+    //- if one has gone far enough.
     Nbpnt = Lin->NbPoints();
     if (Nbpnt == 0){
 #ifdef DEB
-      cout <<"0 point de cheminement on sort."<<endl;
+      cout <<"0 point of path, quit."<<endl;
 #endif
       return Standard_False;
     }
@@ -1640,12 +1635,11 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       okfin = (narc1 > 0 || narc2 > 0 || (Last-lpointpar) < 10*TolGuide);
     }
     if(!okdeb || !okfin || Nbpnt == 1){
-      //Ca frotte, on eteint les controles on espere evaluer un pas max
-      //satisfaisant, et on serre les fesses!!!. Si c est deja fait on
-      //sort.
+      //It drags, the controls are extended, it is  expected to evaluate a
+      //satisfactory maximum step. If it already done, quit.
       if(tchernobyl){
 #ifdef DEB
-	cout <<"Ca frotte meme sans controle, on sort."<<endl;
+	cout <<"If it drags without control, quit."<<endl;
 #endif
 	return Standard_False;
       }
@@ -1653,14 +1647,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       TheWalk.Check(0);
       if (Nbpnt == 1){
 #ifdef DEB
-	cout <<"1 seul point de cheminement on essaye MS/100"<<endl;
-	cout <<"et on eteint les controles."<<endl;
+	cout <<"only one point of path MS/100 is attempted"<<endl;
+	cout <<"and the controls are extended."<<endl;
 #endif
 	MS *= 0.01;
       }
       else{
 #ifdef DEB
-	cout <<"Ca frotte on eteint les controles."<<endl;
+	cout <<"It drags, the controls are extended."<<endl;
 #endif
 	MS = (lpointpar-fpointpar)/Nbpnt; //EvalStep(Lin);
       }
@@ -1668,7 +1662,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     else if (Nbpnt < nbptmin){
       if(again == 0){
 #ifdef DEB
-	cout <<"Nombre de points insuffisant on reduit le pas"<<endl;
+	cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
 	u1sov = fpointpar;
 	u2sov = lpointpar;
@@ -1678,13 +1672,13 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 	if(Abs(fpointpar-u1sov)>=TolGuide || 
 	   Abs(lpointpar-u2sov)>=TolGuide){
 #ifdef DEB
-	  cout <<"Nombre de points encore insuffisant on reduit le pas"<<endl;
+	  cout <<"Number of points is still too small, the step is reduced"<<endl;
 #endif  
 	  MS = (lpointpar - fpointpar) * factor;
 	}
 	else{
 #ifdef DEB
-	  cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+	  cout <<"Number of points is still too small, quit"<<endl;
 #endif  
 	  return Standard_False;
 	}
@@ -1699,20 +1693,20 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   if(TheWalk.TwistOnS1()){
     Data->TwistOnS1(Standard_True);
 #ifdef DEB
-    cout<<"Cheminement complet mais VRILLE sur S1"<<endl;
+    cout<<"Path completed, but TWIST on S1"<<endl;
 #endif
   }
   if(TheWalk.TwistOnS2()){
     Data->TwistOnS2(Standard_True);
 #ifdef DEB
-    cout<<"Cheminement complet mais VRILLE sur S2"<<endl;
+    cout<<"Parh completed, but TWIST on S2"<<endl;
 #endif
   }
 
 
-  //Ici on a un resultat plus ou moins presentable mais qui recouvre 
-  //la zone minimum visee.
-  //On attaque les prolongements.
+  //Here there is a more or less presentable result 
+  //however it covers a the minimum zone.
+  //The extensions are targeted.
   //*****************************//
 
   Gd1 = Gd2 = Gf1 = Gf2 = Standard_False;
@@ -1743,7 +1737,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 			    Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
       debarc1 = Standard_True;
       if(!SearchFace(Spine,Data->VertexFirstOnS1(),F1,bif)){
-	//On regarde si ce n'est pas un obstacle.
+	//It is checked if there is not an obstacle.
 	debcas1 = Standard_True;
 	if(!Spine.IsNull()){
 	  if(Spine->IsPeriodic()){
@@ -1761,7 +1755,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 			    Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
       debarc2 = Standard_True;
       if(!SearchFace(Spine,Data->VertexFirstOnS2(),F2,bif)){
-	//On regarde si ce n'est pas un obstacle.
+	//It is checked if it is not an obstacle.
 	debcas2 = Standard_True;
 	if(!Spine.IsNull()){
 	  if(Spine->IsPeriodic()){
@@ -1782,7 +1776,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if(oncontinue) {
       TheWalk.ClassificationOnS1(!debarc1);
       TheWalk.ClassificationOnS2(!debarc2);
-      TheWalk.Check2d(Standard_True); // Il faut etre severe (PMN)
+      TheWalk.Check2d(Standard_True); // It should be strict (PMN)
       TheWalk.Continu(Func,FInv,Target);
       TheWalk.ClassificationOnS1(Standard_True);
       TheWalk.ClassificationOnS2(Standard_True);
@@ -1798,7 +1792,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 				Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
 	  debarc1 = Standard_True;
 	  if(!SearchFace(Spine,Data->VertexFirstOnS1(),F1,bif)){
-	    //On regarde si ce n'est pas un obstacle.
+	    //It is checked if it is not an obstacle.
 	    debcas1 = Standard_True;
 // 	    if(!Spine.IsNull()) {
 // 	      if(Spine->IsPeriodic()){
@@ -1819,7 +1813,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
                                 Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
           debarc2 = Standard_True;
           if(!SearchFace(Spine,Data->VertexFirstOnS2(),F2,bif)){
-            //On regarde si ce n'est pas un obstacle.
+	    //It is checked if it is not an obstacle.
             debcas2 = Standard_True;
 //             if(!Spine.IsNull()){
 //               if(Spine->IsPeriodic()){
@@ -1854,7 +1848,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 			    Standard_False, Data->ChangeVertexLastOnS1(),tolesp);
       finarc1 = Standard_True;
       if(!SearchFace(Spine,Data->VertexLastOnS1(),F1,bif)){
-	//On regarde si ce n'est pas un obstacle.
+             //It is checked if it is not an obstacle.
 	fincas1 = Standard_True;
 	if(!Spine.IsNull()){
 	  finobst1 = IsObst(Data->VertexLastOnS1(),
@@ -1867,7 +1861,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 			    Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
       finarc2 = Standard_True;
       if(!SearchFace(Spine,Data->VertexLastOnS2(),F2,bif)){
-	//On regarde si ce n'est pas un obstacle.
+	 //It is checked if it is not an obstacle.
 	fincas2 = Standard_True;
 	if(!Spine.IsNull()){
 	  finobst2 = IsObst(Data->VertexLastOnS2(),
@@ -1883,7 +1877,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if(oncontinue){
       TheWalk.ClassificationOnS1(!finarc1);
       TheWalk.ClassificationOnS2(!finarc2);
-      TheWalk.Check2d(Standard_True); // Il faut etre severe (PMN)
+      TheWalk.Check2d(Standard_True); // It should be strict (PMN)
       TheWalk.Continu(Func,FInv,Target);
       TheWalk.ClassificationOnS1(Standard_True);
       TheWalk.ClassificationOnS2(Standard_True);
@@ -1899,7 +1893,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 				Standard_False, Data->ChangeVertexLastOnS1(),tolesp);
 	  finarc1 = Standard_True;
 	  if(!SearchFace(Spine,Data->VertexLastOnS1(),F1,bif)){
-	    //On regarde si ce n'est pas un obstacle.
+             //It is checked if it is not an obstacle.
 	    fincas1 = Standard_True;
 // 	    if(!Spine.IsNull()){
 // 	      finobst1 = IsObst(Data->VertexLastOnS1(),
@@ -1948,8 +1942,8 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     Gd1 = debcas1/* && !debobst1*/; // skv(occ67)
     Gd2 = debcas2/* && !debobst2*/; // skv(occ67)
     if ((debarc1^debarc2) && !unseulsuffitdeb && (First!=SpFirst)) {
-      // Cas de cheminement incomplet, cela finit surement mal : 
-      // on tronque le resultat au lieu de sortie.
+      // Case of incomplete path, of course this ends badly : 
+      // the result is truncated instead of exit.
       Standard_Real sortie;
       Standard_Integer ind;
       if (debarc1)  sortie = Data->VertexFirstOnS1().Parameter();
@@ -1989,7 +1983,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       || backwContinueFailed; // eap
     else if (intf && unseulsuffitdeb && (intf<5)) {
       intf = (Gd1 || Gd2);
-      // On controle qu'il n'y pas de nouvelle face.
+      // It is checked if there is no new face.
       if (intf && 
 	  ((!debcas1 && debarc1) || (!debcas2 && debarc2)) ) intf = 0;  
     }
@@ -2000,8 +1994,8 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     Gf1 = fincas1/* && !finobst1*/; // skv(occ67)
     Gf2 = fincas2/* && !finobst2*/; // skv(occ67)
     if ((finarc1 ^finarc2) && !unseulsuffitfin && (Last!=SpLast)) {
-      // Cas de cheminement incomplet, cela finit surement mal : 
-      // on tronque le resultat au lieu de sortie.
+      // Case of incomplete path, of course, this ends badly : 
+      // the result is truncated instead of exit.
       Standard_Real sortie;
       Standard_Integer ind;
       if (finarc1)  sortie = Data->VertexLastOnS1().Parameter();
@@ -2018,7 +2012,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       }
     }
     else if ((intl>=5) && !finarc1 && !finarc2 && (Last!=SpLast) ) {
-      // Idem dans le cas ou toute la "Lin" constitue un prolongement
+      // The same in case when the entire "Lin" is an extension
       Standard_Real sortie = (First+2*Last)/3;
       Standard_Integer ind;
       if (Last - sortie > tolesp) {
@@ -2042,7 +2036,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if (intl && !unseulsuffitfin) intl = (Gf1 && Gf2)//;
       || forwContinueFailed;  // eap
     else if (intl && unseulsuffitfin && (intl<5)) {
-      intl = (Gf1 || Gf2);// On controle qu'il n'y pas de nouvelle face.
+      intl = (Gf1 || Gf2);// It is checked if there is no new face.
       if (intl && 
 	  ((!fincas1 && finarc1) || (!fincas2 && finarc2)) ) intl = 0;  
     }
@@ -2111,7 +2105,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
 				    tolesp,TolGuide,RecOnS1,RecOnS2,
 				    NewFirst,ParSol)){
 #ifdef DEB
-      cout<<"ChFi3d_Builder::SimulData : echec calcul first section"<<endl;
+      cout<<"ChFi3d_Builder::SimulData : calculation fail first section"<<endl;
 #endif
       return Standard_False;
     }
@@ -2121,9 +2115,8 @@ Standard_Boolean ChFi3d_Builder::SimulData
   }
   Standard_Integer again = 0;
   while(again < 3){
-    // Lorsque le point de depart est interne, on chemine 
-    // d abord a gauche afin de determiner le Last pour les
-    // periodiques.
+     // When the start point is inside, the path goes first to the left  
+     // to determine the Last for the periodicals.
     if(!again && (MS < 5*TolGuide)) MS = 5*TolGuide;
     else  {
       if (5*TolGuide > MS) TolGuide = MS/5;
@@ -2135,7 +2128,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     
     if (!TheWalk.IsDone()) {
 #ifdef DEB
-      cout << "Cheminement non fait" << endl;
+      cout << "Path not created" << endl;
 #endif
       return Standard_False;
     }
@@ -2151,7 +2144,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
       if (Inside)  complmnt = TheWalk.Complete(Func,FInv,SpLast);
       if(!complmnt){
 #ifdef DEB
-	cout << "Complement non fait" << endl;
+	cout << "Not completed" << endl;
 #endif
 	return Standard_False;
       }
@@ -2160,14 +2153,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
     Standard_Real factor =  1./(NbSecMin + 1);
     if (Nbpnt == 0){
 #ifdef DEB
-      cout <<"0 point de cheminement on sort."<<endl;
+      cout <<"0 point of path, quit."<<endl;
 #endif
       return Standard_False;
     }
     else if (Nbpnt == 1 && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"1 seul point de cheminement on essaye MS/100."<<endl;
+      cout <<"only one point of path, MS/100 is attempted."<<endl;
 #endif
       MS *= 0.01; Target = Targetsov;
       u1sov = u2sov = Lin->Point(1).Parameter();
@@ -2175,7 +2168,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
     else if (Nbpnt< NbSecMin && again == 0)  {
       again++;
 #ifdef DEB
-      cout <<"Nombre de points insuffisant on reduit le pas"<<endl;
+      cout <<"Number of points is too small, the step is reduced"<<endl;
 #endif
       Standard_Real u1 = u1sov = Lin->Point(1).Parameter();
       Standard_Real u2 = u2sov = Lin->Point(Nbpnt).Parameter();
@@ -2188,21 +2181,21 @@ Standard_Boolean ChFi3d_Builder::SimulData
       if(Abs(u1-u1sov)>=TolGuide || Abs(u2-u2sov)>=TolGuide){
 	again++;
 #ifdef DEB
-	cout <<"Nombre de points encore insuffisant on reduit le pas"<<endl;
+	cout <<"Number of points is still too small, the step is reduced"<<endl;
 #endif
 	MS /= 100;
 	Target = Targetsov;
       }
       else{
 #ifdef DEB
-	cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+	cout <<"Number of points is still too small, quit"<<endl;
 #endif
 	return Standard_False;
       }
     }
     else if(Nbpnt < NbSecMin){
 #ifdef DEB
-      cout <<"Nombre de points toujours insuffisant on sort"<<endl;
+      cout <<"Number of points is still too small, quit"<<endl;
 #endif
       return Standard_False;
     }

@@ -9,31 +9,30 @@
 
 class Spine from ChFiDS inherits TShared from MMgt
 
-	---Purpose: Contient  les  informations  necessaires   a    la
-	--          construction d un conge volumique :
+	---Purpose: Contains information necessary for construction of
+	--          a 3D fillet :
 	--          
 	--          
-	--          - ligne guide composee d'edges du solide, tangents
-	--          entre eux, et bordes par des faces tangentes entre
-	--          elles. 
+	--          - guideline composed of edges of the solid, tangents
+	--          between them, and borders by faces tangents
+	--          between them. 
 	--          
-	--          Les outils de construction du   Sp
-	--          par propagation a partir d un  edge du solide sont
-	--          fournis dans le Builder de Fil3d.
+	--          Tools for construction of the Sp
+	--          by propagation from an edge of solid 
+	--          are provided in the Builder of Fil3d.
 	--          
-    	--          Le Spine contient par aileurs     des
-    	--          informations concernant la nature des   extremites
-    	--          du conge ( sur bord libre, sur cassure ou ferme ).
+    	--          The Spine contains among others the 
+    	--          information about the nature of extremities
+    	--          of the fillet ( on free border , on section or closed ).
 	--          
-	--          REMARQUE  IMPORTANTE  :    la  ligne  guide  ainsi
-	--          representee n est pas C2, alors que le cheminement
-	--          le  reclame.   Un  certain  nombre d  amenagements
-	--          paliatifs (voir les  methodes en fin) sont prevus,
- 	--          s  ils  sont insuffisants  il faudra changer notre
-	--          fusil d  epaule et doubler le Spine d
-	--          une  ligne C2 avec  les consequences que l on sait
-	--          pour gerer les va et  vient entre KPart Blend dans
-	--          Fil3d.
+	--          IMPORTANT NOTE  :    the guideline 
+	--          represented in this way is not C2, although the path
+	--          claims it. Several palliative workarounds 
+	--          (see the methods at the end) are planned,
+ 	--          but they are not enough. It is necessary to change
+	--          the approach and double the Spine of line C2 with
+	--          the known consequences for management of
+	--          interactions between KPart Blend in Fil3d.
 
 
 
@@ -66,11 +65,11 @@ is
     Create(Tol : Real from Standard) returns mutable Spine from ChFiDS;
 
     SetEdges(me : mutable; E : Edge from TopoDS) is static;
-    ---Purpose: stocker les edges qui vont composer la ligne guide
+    ---Purpose: store edges composing the guideline
     ---C++: inline
 
     PutInFirst(me : mutable; E : Edge from TopoDS) is static;
-    ---Purpose:stocker l edge en premiere position avant tous les autres
+    ---Purpose: store the edge at the first position before all others
     ---C++: inline
 
     NbEdges(me) returns Integer is static;
@@ -83,14 +82,14 @@ is
 
     
     SetFirstStatus(me : mutable; S : State from ChFiDS) is static;
-    ---Purpose: stocker si le debut de l ensemble des edges demarre
-    --          sur une cassure un bord libre ou forme un contour ferme
+    ---Purpose: stores if the start of a set of edges starts on a
+    -- section of free border or forms  a closed contour
     ---C++: inline
 
 
     SetLastStatus(me : mutable; S : State from ChFiDS) is static;
-    ---Purpose: stocker si la fin de l ensemble des edges demarre
-    --          sur une cassure un bord libre ou forme un contour ferme
+   ---Purpose: stores if the end of a set of edges starts on a
+    -- section of free border or forms  a closed contour
     ---C++: inline
 
     AppendElSpine(me : mutable; Els : HElSpine from ChFiDS) 
@@ -124,11 +123,12 @@ is
 ----------------------
 
     Load(me : mutable) is static;
-    ---Purpose: preparer la ligne guide en fonction  des edges qui
-    --          sont des arcs elementaires (prendre un parametrage
-    --          unique  abscisse curviligne );pour pouvoir appeller
-    --          les methodes sur la geometrie (first,last,value,d1,d2)
-    --          il faut d abord preparer sinon une exception sera levee
+    ---Purpose: prepare the guideline depending on the edges that 
+    --          are elementary arks (take parameters from
+    --          a single curvilinear abscissa); to be able to call 
+    --          methods on the geometry (first,last,value,d1,d2)
+    --          it is necessary to start with preparation otherwise an
+    --          exception will be raised
 
     Resolution(me; R3d : Real) returns Real
     is static;
@@ -149,17 +149,17 @@ is
     is static;
     
     FirstParameter(me; IndexSpine : Integer ) returns Real 
-    ---Purpose: donne  la longueur cumulee  de tous les  arcs avant le
-    --          numero IndexSp
+    ---Purpose: gives the total length of all arcs before the 
+    --          number IndexSp
     is static;
     
     LastParameter(me; IndexSpine : Integer ) returns Real 
-    ---Purpose: donne  la longueur cumulee  jusqu  a l  arc de  numero
+    ---Purpose: gives the total length till the ark with number
     --          IndexSpine (inclus)
     is static;
     
     Length(me;IndexSpine : Integer ) returns Real 
-    ---Purpose: donne la longueur de l arc de numero IndexSp
+    ---Purpose: gives the length of ark with number IndexSp
     is static;
     
     IsPeriodic(me) returns Boolean
@@ -210,7 +210,7 @@ is
     is static;
     
     CurrentElementarySpine (me : mutable; Index : Integer ) 
-    ---Purpose: set la courbe courante et la renvoie 
+    ---Purpose: sets the current curve and returns it 
     returns Curve from BRepAdaptor is static; 
     ---C++: return const &
 

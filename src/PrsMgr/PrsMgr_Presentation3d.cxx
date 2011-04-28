@@ -3,8 +3,7 @@
 // Author:	Jean-Louis FRENKEL
 // Modified by  rob 09-oct-96
 //		<jlf@stylox>
-//              rob 18-may-98 : Pb de la Trsf dont le type n'est pas calcule en fonction
-//                              des coefficients.
+
 
 #define IMP040200	//GG Recompute HLR after transformation
 //			in all the case.
@@ -131,14 +130,14 @@ void PrsMgr_Presentation3d::SetShadingAspect(const Handle(Prs3d_ShadingAspect)& 
 
 //=======================================================================
 //function : Compute
-//purpose  : Les methodes pour les parties cachees...
+//purpose  : Methods for hidden parts...
 //=======================================================================
 
 Handle(Graphic3d_Structure) PrsMgr_Presentation3d::
 Compute(const Handle(Graphic3d_DataStructureManager)& aProjector)
 {
 #ifdef DEB
-  cout<<"passage dans g = Compute(P) "<<endl;
+  cout<<"passage in g = Compute(P) "<<endl;
 #endif
   Handle(Prs3d_Presentation) g = new Prs3d_Presentation(Handle(PrsMgr_PresentationManager3d)::DownCast(PresentationManager())->StructureManager());
   myPresentableObject->Compute(Projector(aProjector),g);
@@ -154,7 +153,7 @@ void PrsMgr_Presentation3d::Compute(const Handle(Graphic3d_DataStructureManager)
 				    const Handle(Graphic3d_Structure)& TheStructToFill)
 {
 #ifdef DEB
-  cout<<"passage dans Compute(P,Str)"<<endl;
+  cout<<"passage in Compute(P,Str)"<<endl;
 #endif
   TheStructToFill->Clear();
   const Handle(Prs3d_Presentation)& P = *((Handle(Prs3d_Presentation)*) &TheStructToFill);
@@ -170,7 +169,7 @@ Compute(const Handle(Graphic3d_DataStructureManager)& aProjector,
 	const Handle(Geom_Transformation)& TheTrsf)
 {
 #ifdef DEB
-  cout<<"passage dans G =  Compute(P,Trsf)"<<endl;
+  cout<<"passage in G =  Compute(P,Trsf)"<<endl;
 #endif
   Handle(Prs3d_Presentation) g = new Prs3d_Presentation(Handle(PrsMgr_PresentationManager3d)::DownCast(PresentationManager())->StructureManager());
 
@@ -184,7 +183,7 @@ Compute(const Handle(Graphic3d_DataStructureManager)& aProjector,
     g->Transform(TheTrsf);
   }
   else{
-    // en attendant que la chose soit effectue dans gp_Trsf...rob
+    // waiting that something is done in gp_Trsf...rob
     Standard_Boolean good (Standard_True);
     for (Standard_Integer i=1;i<=3 && good ;i++){
       for (Standard_Integer j=1;j<=3 && good ;j++){
@@ -197,7 +196,7 @@ Compute(const Handle(Graphic3d_DataStructureManager)& aProjector,
     
     if(good){
 #ifdef DEB
-      cout<<"\ton a verifie que la Trsf est une Translation"<<endl;
+      cout<<"\t it is checked if Trsf is a Translation"<<endl;
 #endif
     myPresentableObject->Compute(Projector(aProjector),g);
     g->Transform(TheTrsf);
@@ -205,7 +204,7 @@ Compute(const Handle(Graphic3d_DataStructureManager)& aProjector,
     }
     else{
 #ifdef DEB
-      cout<<"\tla Trsf n'est pas seulement translation..."<<endl;
+      cout<<"\t Trsf is not only translation..."<<endl;
 #endif
       myPresentableObject->Compute(Projector(aProjector),TheTrsf,g);
     }
@@ -223,7 +222,7 @@ void PrsMgr_Presentation3d::Compute(const Handle(Graphic3d_DataStructureManager)
 {
   
 #ifdef DEB
-  cout<<"passage dans Compute(P,Trsf,Str)"<<endl;
+  cout<<"passage in Compute(P,Trsf,Str)"<<endl;
 #endif
 
   Handle(Prs3d_Presentation) P = *((Handle(Prs3d_Presentation)*)&TheStructToFill);
@@ -231,16 +230,16 @@ void PrsMgr_Presentation3d::Compute(const Handle(Graphic3d_DataStructureManager)
 #ifdef IMP040200	
   TheStructToFill->Clear();
   myPresentableObject->Compute(Projector(aProjector),TheTrsf,P);
-#else	//Does not work properly ,HLR seems deactivated for view rotation 
+#else	//Does not work properly, HLR seems deactivated for view rotation 
   if(TheTrsf->Form()== gp_Translation){
 #ifdef DEB
-    cout<<"\tla Trsf est une translation"<<endl;
+    cout<<"\t Trsf is a translation"<<endl;
 #endif
 //    myPresentableObject->Compute(Projector(aProjector),P);
     P->Transform(TheTrsf);
   }
   else{
-    // en attendant que la chose soit effectue dans gp_Trsf...rob
+    //  waiting that something is done in gp_Trsf...rob
     Standard_Boolean good (Standard_True);
     for (Standard_Integer i=1;i<=3 && good ;i++){
       for (Standard_Integer j=1;j<=3 && good ;j++){
@@ -252,7 +251,7 @@ void PrsMgr_Presentation3d::Compute(const Handle(Graphic3d_DataStructureManager)
     }
     if(good && !TheStructToFill->IsEmpty()){
 #ifdef DEB
-      cout<<"\ton a verifie que la Trsf est une Translation"<<endl;
+      cout<<"\t it is checked if Trsf is a Translation"<<endl;
 #endif
       
       P->Transform(TheTrsf);
@@ -261,7 +260,7 @@ void PrsMgr_Presentation3d::Compute(const Handle(Graphic3d_DataStructureManager)
       TheStructToFill->Clear();
       
 #ifdef DEB
-      cout<<"\tla Trsf n'est pas seulement translation..."<<endl;
+      cout<<"\t Trsf is not only translation..."<<endl;
 #endif
       
       myPresentableObject->Compute(Projector(aProjector),TheTrsf,P);

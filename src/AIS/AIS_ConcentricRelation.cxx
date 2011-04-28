@@ -173,8 +173,8 @@ void AIS_ConcentricRelation::ComputeTwoEdgesConcentric(const Handle(Prs3d_Presen
   
   myCenter = gcirc1->Location();
   
-  // on choisit le rayon egal a 1/5 ieme du rayon du plus petit des
-  // 2 cercles. On impose une borne sup au rayon( 0.02 au hasard)
+  // choose the radius equal to 1/5 of the smallest radius of 
+  // 2 circles. Limit is imposed ( 0.02 by chance)
   Standard_Real rad1 = gcirc1->Radius();
   Standard_Real rad2 = gcirc2->Radius();
   myRad = (rad1 > rad2 ) ? rad2 : rad1;
@@ -182,7 +182,7 @@ void AIS_ConcentricRelation::ComputeTwoEdgesConcentric(const Handle(Prs3d_Presen
   if (myRad > 15.) myRad =15.;
   
   
-  //Calcul d'un point du cercle de rayon myRad
+  //Calculate a point of circle of radius myRad
   gp_Dir vec(ptat11.XYZ() - myCenter.XYZ() );
   gp_Vec vectrans(vec);
   myPnt = myCenter.Translated(vectrans.Multiplied(myRad));
@@ -243,21 +243,21 @@ void AIS_ConcentricRelation::ComputeSelection(const Handle(SelectMgr_Selection)&
 {
   Handle(SelectMgr_EntityOwner) own = new SelectMgr_EntityOwner(this,7);
   
-  //Creation de 2 sensitives cercles
-     // le plus grand
+  //Creation of 2 sensitive circles
+     // the greater
   gp_Ax2 ax(myCenter, myDir);
   Handle(Geom_Circle) Circ = new Geom_Circle(ax, myRad) ;
   Handle(Select3D_SensitiveCircle) 
     sensit = new Select3D_SensitiveCircle (own,
 					   Circ);
   aSelection->Add(sensit);
-     // le plus petit
+     // the smaller
   Circ->SetRadius(myRad/2);
   sensit = new Select3D_SensitiveCircle (own,
 					 Circ);
   aSelection->Add(sensit);
 
-  //Creation de 2 segments sensitifs pour la croix
+  //Creation of 2 segments sensitive for the cross
   Handle(Select3D_SensitiveSegment) seg;
   gp_Pnt otherPnt = myPnt.Mirrored(myCenter);
   seg = new Select3D_SensitiveSegment(own,

@@ -52,8 +52,7 @@ void DsgPrs_Chamf2dPresentation::Add(
 
 //==========================================================================
 // function : DsgPrs_Chamf2dPresentation::Add
-// purpose  : ODL 4-fevrier-97 
-//  on peut choisir le symbol des extremites de la cote (fleche, point ...)
+// purpose  : it is possible to choose the symbol of extremities of the face (arrow, point ...)
 //==========================================================================
 
 void DsgPrs_Chamf2dPresentation::Add(

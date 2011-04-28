@@ -8,10 +8,10 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques aux points
+//-Design	Declaration of variables specific to points
 
-//-Warning	Un point est defini par ses coordonnees, sa normale
-//		et sa couleur
+//-Warning	A point is defined by its coordinates, normal 
+//		and color
 
 //-References	
 
@@ -26,7 +26,7 @@
 
 //-Global data definitions
 
-//	-- la couleur
+//	-- the color
 //	MyColor		:	Color;
 
 //-Constructors
@@ -44,18 +44,18 @@ Quantity_Color AColor (Quantity_NOC_WHITE);
 
 }
 
-// le :(AX, AY, AZ) car VertexNC herite de VertexN et il faut appeler le
-// constructeur de VertexN avec AX, AY, AZ, ANX, ANY et ANZ pour
-// mettre a jour les fields.
+// :(AX, AY, AZ) as VertexNC inherits VertexN and it is necessary to call
+// constructor of VertexN with AX, AY, AZ, ANX, ANY and ANZ to
+// update fields.
 
 Graphic3d_VertexNC::Graphic3d_VertexNC (const Standard_Real AX, const Standard_Real AY, const Standard_Real AZ, const Standard_Real ANX, const Standard_Real ANY, const Standard_Real ANZ, const Quantity_Color& AColor,const Standard_Boolean FlagNormalise):
 Graphic3d_VertexN (AX, AY, AZ, ANX, ANY, ANZ,FlagNormalise),
 MyColor (AColor) {
 }
 
-// le :(APoint, AVector) car VertexNC herite de VertexN et il faut appeler le
-// constructeur de VertexN avec APoint et AVector pour mettre a jour
-// les fields.
+//  :(APoint, AVector) as VertexNC inherits VertexN and it is necessary to call
+// constructor of VertexN with APoint and AVector to
+// update fields.
 
 Graphic3d_VertexNC::Graphic3d_VertexNC (const Graphic3d_Vertex& APoint, const Graphic3d_Vector& AVector, const Quantity_Color& AColor,const Standard_Boolean FlagNormalise):
 Graphic3d_VertexN (APoint, AVector,FlagNormalise),

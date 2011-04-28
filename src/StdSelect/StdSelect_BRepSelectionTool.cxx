@@ -66,7 +66,7 @@ static Standard_Boolean first = Standard_True;
 
 //==================================================
 // Function: Load 
-// Purpose :  Version debuggee....
+// Purpose : 
   //==================================================
 
 void StdSelect_BRepSelectionTool
@@ -159,7 +159,7 @@ void StdSelect_BRepSelectionTool
         aPriority,
         NbPOnEdge);
 
-  //chargement des selectables...
+  //loading of selectables...
   for (aSelection->Init();aSelection->More();aSelection->Next()) {
     Handle(SelectBasics_EntityOwner) BOwn = aSelection->Sensitive()->OwnerId();
     Handle(SelectMgr_EntityOwner) Own = *((Handle(SelectMgr_EntityOwner)*) &BOwn);
@@ -422,11 +422,11 @@ static Standard_Boolean  FindLimits(const Adaptor3d_Curve& aCurve,
 
 //=====================================================
 // Function : GetEdgeSensitive
-// Purpose  : cree un edge sensible pour pouvoir l'ajouter 
-//            dans computeselection a "aselection" (cas d'une selection d'un edge)
-//            ou a "aSensitiveWire" (cas d'une selection d'un wire; dans ce cas la,
-//            c'est le sensitive wire qui est ajoute a "aselection" )
-//            odl - pour la selection par rectangle -
+// Purpose  : create a sensitive edge to add it  
+//            in computeselection to "aselection" (case of selection of an edge)
+//            or to "aSensitiveWire" (case of selection of a wire; in this case,
+//            the sensitive wire is added to "aselection" )
+//            odl - for selection by rectangle -
 //=====================================================   
 void StdSelect_BRepSelectionTool
 ::GetEdgeSensitive (const TopoDS_Shape& shap,
@@ -483,10 +483,7 @@ Handle(Select3D_SensitiveEntity)& aSensitive)
     }
   default:
     {
-      // modif-rob : on prend le meme deroulement que dans StdPrs_Curve
-      // nb de points...
-      //============================================
-
+   
       //aLimit = myDrawer->MaximalParameterValue(); ??
       Standard_Real aLimit = 200.; // TODO (kgv) - do we need set MaxParam here?
       Standard_Real V1 = cu3d.FirstParameter();
@@ -671,7 +668,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
 								  const Standard_Real MaxParam,
 								  const Standard_Boolean InteriorFlag)
 {
-  // voyons s y a une triangulation de la face...
+  // check if there is triangulation of the face...
    BRepAdaptor_Curve cu3d;
   Handle(Poly_Triangulation) T;
   TopLoc_Location loc;
@@ -690,8 +687,8 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
     return Standard_True;
   }
 
-  // pour les faces a bugs de triangulation ou sans autotriangulation ....
-  // tres laid et  ne devrait meme plus exister ...
+  // for faces with triangulation bugs or without autotriangulation ....
+  // very ugly and should not even exist ...
    BRepAdaptor_Surface BS;
   BS.Initialize (F);
   
@@ -714,7 +711,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
     BS.D0(FirstU,LastV,pcur);
     P->SetValue(4,pcur);
     P->SetValue(5,P->Value(1));
-    // si le plan est "infini", on ne le rend sensible que sur sa frontiere delimitee par MaxParam
+    // if the plane is "infinite", it is sensitive only on the border limited by MaxParam
     if(FirstU ==-MaxParam && LastU==MaxParam && FirstV ==-MaxParam && LastV==MaxParam)
       LL.Append(new Select3D_SensitiveFace
 		(Owner, P, Select3D_TOS_BOUNDARY));
@@ -726,8 +723,8 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
     return Standard_True;
   }
   
-  // IL S'AGIT DE CONSTRUIRE UN POLYGONE "SENSIBLE" A PARTIR DU CONTOUR EXTERIEUR DE LA FACE...
-  // CA N'EST PAS BEAU DU TOUT MAIS...
+  // This is construction of a sevsitive polygon from the exterior contour of the face...
+  // It is not good at all, but...
   TopoDS_Wire aWire;
 //  Standard_Integer NbEdges=1;
 
@@ -735,7 +732,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
 
   TopExp_Explorer EW(F,TopAbs_WIRE);
   if(EW.More())
-    aWire = TopoDS::Wire(EW.Current()); // en esperant que c'est le premier... a voir
+    aWire = TopoDS::Wire(EW.Current()); // believing that this is the first... to be seen
 
 #ifdef OCC872
    if ( aWire.IsNull() )
@@ -779,7 +776,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
 	  if(BS.GetType()==GeomAbs_Cylinder ||
 	     BS.GetType()==GeomAbs_Torus ||
 	     BS.GetType()==GeomAbs_Cone  ||
-	     BS.GetType()==GeomAbs_BSplineSurface) // beuurkk pour l'instant...
+	     BS.GetType()==GeomAbs_BSplineSurface) 
 	    {
 	      Standard_Real ff= wf ,ll= wl ;
 	      Standard_Real dw
@@ -844,11 +841,10 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_F
   Standard_Integer ArrayPosition = WirePoints.Length();
   
   Handle(TColgp_HArray1OfPnt)  facepoints = new TColgp_HArray1OfPnt(1,ArrayPosition);
-  // beurk beurk beurk...
   for(Standard_Integer I=1 ;I<=ArrayPosition;I++)
     {facepoints->SetValue (I, WirePoints.Value(I));}
   
-  if ((facepoints->Array1()).Length() > 1) { // 1 si un seul edge circulaire plein.
+  if ((facepoints->Array1()).Length() > 1) { // 1 if only one circular edge
     Select3D_TypeOfSensitivity TS = InteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
     LL.Append(new Select3D_SensitiveFace
 	       (Owner, facepoints, TS));

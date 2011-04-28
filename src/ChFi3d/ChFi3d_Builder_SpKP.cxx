@@ -57,7 +57,7 @@ extern void ChFi3d_CheckSurfData(const TopOpeBRepDS_DataStructure& DStr,
 #endif
 //=======================================================================
 //function : CompTra
-//purpose  : Calcule la Transition d'un point de debut.
+//purpose  : Calculate the Transition from start point.
 //=======================================================================
 
 static TopAbs_Orientation CompTra (const TopAbs_Orientation O1,
@@ -71,7 +71,7 @@ static TopAbs_Orientation CompTra (const TopAbs_Orientation O1,
 
 //=======================================================================
 //function : CompCommonpoint
-//purpose  : Remplit le commonpoint dans le cas d un vertex.
+//purpose  : Fill the commonpoint in case of a vertex.
 //=======================================================================
 
 static void CompCommonPoint (ChFiDS_CommonPoint& FilPoint, 
@@ -95,8 +95,7 @@ static void CompCommonPoint (ChFiDS_CommonPoint& FilPoint,
 
 //=======================================================================
 //function : CpInterf
-//purpose  : Construit une nouvelle SurfData partageant les faces,
-//           la surface et les courbes.  
+//purpose  : Construct new SurfData sharing faces, surface and curves.  
 //=======================================================================
 
 static ChFiDS_FaceInterference CpInterf (TopOpeBRepDS_DataStructure&    DStr,
@@ -121,8 +120,7 @@ static ChFiDS_FaceInterference CpInterf (TopOpeBRepDS_DataStructure&    DStr,
 
 //=======================================================================
 //function : CpSD
-//purpose  : Construit une nouvelle SurfData partageant les faces,
-//           la surface et les courbes.  
+//purpose  : Construct new SurfData sharing faces, surface and curves.  
 //=======================================================================
 
 static Handle(ChFiDS_SurfData) CpSD (      TopOpeBRepDS_DataStructure&         DStr,
@@ -185,7 +183,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
   default:
     return 0;
   }    
-  Standard_NotImplemented::Raise("calcul abscisse non traite ");
+  Standard_NotImplemented::Raise("calculate abscisse non-processed");
   return 0.;
 }
 
@@ -215,7 +213,7 @@ static Standard_Real ParamOnSpine(const TopOpeBRepDS_DataStructure& DStr,
     return Nl;
   }
   else {
-    //construction du plan contenant la section de CD au parametre ptg.
+    //construction of the plane containing the section of CD with parameter ptg.
     gp_Pnt PP;
     gp_Vec VV;
     Handle(Geom_Curve) c3d;
@@ -232,7 +230,7 @@ static Standard_Real ParamOnSpine(const TopOpeBRepDS_DataStructure& DStr,
     Handle(GeomAdaptor_HSurface) 
       plan = new GeomAdaptor_HSurface(GeomAdaptor_Surface(pln));
     
-    // intersection plan spine.
+    // intersection plane spine.
     Standard_Boolean found = Standard_False;
     Standard_Boolean fini  = Standard_False;
     Standard_Integer sens = 1;
@@ -322,7 +320,7 @@ void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
 			   const Standard_Integer            cntlFiOnS)
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  //On recupere points et tangentes sur edge et spine.
+  // Return points and tangents on edge and spine.
   Standard_Real wtg = SD->InterferenceOnS1().Parameter(isfirst);
   Standard_Boolean bid;
   Standard_Real wsp = ParamOnSpine(DStr,wtg,SD,Spine,iedge,0,0,tolesp,bid);
@@ -332,7 +330,7 @@ void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
 
   
   const BRepAdaptor_Curve& bc = Spine->CurrentElementarySpine(iedge);
-//Modif contre Vertex isole sur spine
+//Modif against Vertex isolated on spine
   TopoDS_Edge support = bc.Edge();
   TopExp::Vertices(support,bout1,bout2);
   if (support.Orientation() == TopAbs_REVERSED) {
@@ -383,7 +381,7 @@ void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
       }
     }
   }
-  //modif de lvt contre vertex isole
+  //modification of lvt against isolated vertex
   if(!tron && YaUnVoisin(Spine,iedge,ivois,isfirst)) {
     TopTools_ListIteratorOfListOfShape It;
     Standard_Integer nbed = -2;
@@ -503,7 +501,7 @@ static Standard_Boolean Tri(const Geom2dHatch_Hatcher& H,
   if (iSansFirst != 0) {
     if (iSansLast == 0) {
 #ifdef DEB
-      cout<<"Tri : Pb de Hatcher"<<endl;
+      cout<<"Parsing : Pb of Hatcher"<<endl;
 #endif
       return 0;
     }
@@ -561,7 +559,7 @@ static void FillSD (TopOpeBRepDS_DataStructure& DStr,
     CD->ChangeVertex(isFirst,ons).SetPoint(Surf->Value(x,y));
   }
   else {
-//Modification pour tromper les vertex deja existants
+//Modification to find already existing vertexes
     Standard_Integer LeType = 1;
     Standard_Integer NbInt = pPH->NbPoints();
     if (NbInt>1) {
@@ -626,8 +624,7 @@ static void FillSD (TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : SplitKPart
-//purpose  : Reconstitue les SurfData en fonction des restrictions
-//           des faces.
+//purpose  : Reconstruct SurfData depending on restrictions of faces.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::SplitKPart
@@ -642,7 +639,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
    Standard_Boolean&                intf,
    Standard_Boolean&                intl)
 {
-  //On lance le hachurage de chacune des faces par les lignes de tangence.
+  //The the hatching of each faces is started by tangency lines.
   
   Standard_Real pitol = Precision::PIntersection();
   
@@ -654,7 +651,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
 #endif
   Standard_Integer  Nb1 = 1,Nb2 = 1;
   
-  // Decoupe des lignes de tangence (hachurage).
+  // Cutting of tangency lines (hatching).
   Geom2dHatch_Intersector Inter(pitol,pitol);
   Geom2dHatch_Hatcher H1(Inter,tol2d,tolesp), H2(Inter,tol2d,tolesp);
   Standard_Integer ie;
@@ -678,7 +675,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     Nb1 = H1.NbDomains(iH1);
     if(Nb1 == 0) {
 #ifdef DEB
-      cout<<"SplitKPart : ligne de tangence en dehors de la face"<<endl;
+      cout<<"SplitKPart : tangency line out of the face"<<endl;
 #endif
       return Standard_False;
     }
@@ -704,13 +701,13 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     Nb2 = H2.NbDomains(iH2);
     if(Nb2 == 0) {
 #ifdef DEB
-      cout<<"SplitKPart : ligne de tangence en dehors de la face"<<endl;
+      cout<<"SplitKPart : tangency line out of the face"<<endl;
 #endif
       return Standard_False;
     }
   }
 
-  //Recuperation des vertex deb et fin de Spine
+  //Return start and end vertexes of the Spine
   TopoDS_Vertex bout1,bout2,boutemp;
   const BRepAdaptor_Curve& bc = Spine->CurrentElementarySpine(Iedge);
   TopoDS_Edge support = bc.Edge();
@@ -721,7 +718,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     bout1 = boutemp;
   }
   
-  // Recuperation des faces.
+  // Return faces.
   TopoDS_Face F1, F2;
   Handle(BRepAdaptor_HSurface) 
     bhs = Handle(BRepAdaptor_HSurface)::DownCast(S1);
@@ -730,7 +727,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   if(!bhs.IsNull()) F2 = bhs->ChangeSurface().Face();
   TopoDS_Face FBID;
   
-  // Restriction des SurfDatas par les lignes decoupees.
+  // Restriction of SurfDatas by cut lines.
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   Handle(ChFiDS_SurfData) CD = Data;
   CD->ChangeIndexOfS1(DStr.AddShape(F1));
@@ -746,22 +743,21 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   
   if (C1.IsNull() && C2.IsNull()) {
 #ifdef DEB
-    cout<<"SplitData : 2 lignes nulles hachurage impossible"<<endl;
+    cout<<"SplitData : 2 zero lines hatching impossible"<<endl;
 #endif
     return Standard_False;
   }
   else if (C1.IsNull() || (Nb1 == 1 && !H1.Domain(iH1,1).HasFirstPoint())) {   
-    // On verifie que le point 2d de l arete degeneree est bien dans
-    // la face.
+    // It is checked if the point 2d of the degenerated edge is in the face.
     if (C1.IsNull()) {
       gp_Pnt2d p2d1 = CD->Get2dPoints(0,1);
       TopAbs_State situ = I1->Classify(p2d1,1.e-8,0);
       if(situ == TopAbs_OUT) return Standard_False;
     }
 
-    // Tri des domaines par parametres croissants,
+    // Parsing of domains by increasing parameters,
     if(!Tri(H2,iH2,Ind2,wref,0.,pitol,Nb2)) return 0;
-    // Remplissage des SurfData
+    // Filling of SurfData
     for(Standard_Integer i = 1; i <= Nb2; i++) {
       const HatchGen_Domain& Dom2 = H2.Domain(iH2,Ind2(i));
       FillSD(DStr,CD,M2,Dom2,Dom2.FirstPoint().Parameter(),1,2,pitol,bout1);
@@ -787,17 +783,16 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     }
   }
   else if (C2.IsNull() || (Nb2 == 1 && !H2.Domain(iH2,1).HasFirstPoint())) { 
-    // On verifie que le point 2d de l arete degeneree est bien dans
-    // la face.
+    // It is checked if the point 2d of the degenerated is in the face.
     if (C2.IsNull()) {
       gp_Pnt2d p2d2 = CD->Get2dPoints(0,2);
       TopAbs_State situ = I2->Classify(p2d2,1.e-8,0);
       if(situ == TopAbs_OUT) return Standard_False;
     }
 
-    // Tri des domaines par parametres croissants,
+    // Parsing of domains by increasing parameters,
     if(!Tri(H1,iH1,Ind1,wref,0.,pitol,Nb1)) return 0;
-    // Remplissage des SurfData
+    // Filling of SurfData
     for(Standard_Integer i = 1; i <= Nb1; i++) {
       const HatchGen_Domain& Dom1 = H1.Domain(iH1,Ind1(i));
       FillSD(DStr,CD,M1,Dom1,Dom1.FirstPoint().Parameter(),1,1,pitol,bout1);
@@ -824,9 +819,8 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   }
   else {
     
-    // Tri des domaines par parametres croissants,
-    // lorsqu il y a un cercle 2d sur un plan, on 
-    // se cale sur la ligne 2d d en face.
+    // Parsing of domains by increasing parameters,
+    // if there is a 2d circle on a plane, one goes on 2D line of opposite face.
     Standard_Real period1 = 0., period2 = 0.;
     if(ll1.IsPeriodic()) {
       if(!Tri(H2,iH2,Ind2,wref,0.,pitol,Nb2)) return 0;
@@ -840,7 +834,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     }
     
     
-    // Remplissage des SurfData
+    // Filling of SurfData
     TColStd_SequenceOfInteger ion1, ion2;
     for(Standard_Integer i = 1; i <= Nb1; i++) {
       const HatchGen_Domain& Dom1 = H1.Domain(iH1,Ind1(i));
@@ -878,15 +872,15 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
       }
     }
     
-    // Traitement des prolongements.
-    // Ne pas tronquer, sinon, pb d'intersection pour les PerformCorner
+    // Processing of extensions.
+    // Do not truncate, otherwise, problems of intersection for PerformCorner
     // -----------------------------------------------------------------
-    // A l'appel de SplitKPart dans PerformSetOfKPart, les spines ont ete
-    // justement, prolongees aux extremites par les methodes Extent pour permettre 
-    // les intersections. On conserve les extensions des SurfData.
+    // After call of SplitKPart in PerformSetOfKPart, spines have been 
+    // extended to the extremities by methods Extent to permit 
+    // intersections. Extensions of  SurfData are preserved.
     
     if(intf) {
-      // On est en debut de spine
+      // We are at the beginning of the spine
       //-------------------------
       Standard_Integer ifirst = 0;
       Standard_Real dist = RealLast(), ptg, dsp; 
@@ -978,7 +972,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
       }
     }
     if(intl) {
-      // on est en fin de spine
+      // we are at the end of the spine
       //-----------------------
       Standard_Integer ilast = 0;
       Standard_Real dist = RealLast(), ptg, dsp; 
@@ -1075,7 +1069,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   }
 
   if(!intf) { 
-    // On vire les SurfData entierement avant le debut de l'arete.
+    // SurfData are entirely suspended before the beginning of the edge.
     Standard_Boolean okdoc = SetData.IsEmpty();
     Standard_Integer i = 1;
     while(!okdoc) {
@@ -1088,7 +1082,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     }
   }
   if(!intl) { 
-    // On vire les SurfData entierement apres la fin de l'arete.
+    // SurfData are entirely suspended after the end of the edge.
     Standard_Boolean okdoc = SetData.IsEmpty();
     Standard_Integer i = 1;
     while(!okdoc) {
@@ -1102,7 +1096,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
       okdoc = (SetData.IsEmpty() || i > SetData.Length());
     }
   }
-  // Ajout des parametres de la spine sur les SurfDatas.
+  // Add parameters of the spine on SurfDatas.
 //  for (Standard_Integer i = 1; i <= SetData.Length(); i++) {
   Standard_Integer i;
   for ( i = 1; i <= SetData.Length(); i++) {
@@ -1125,11 +1119,11 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   }
 
   if (intf && !SetData.IsEmpty()) {
-    // prolongement de la spine par extension
+    // extension of the spine
     Spine->SetFirstParameter(SetData.First()->FirstSpineParam());
   }
   else {
-    // Troncature au debut.
+    // Trnncation at the beginning.
     for (i = 1; i <= SetData.Length(); i++) {
       Handle(ChFiDS_SurfData)& CD8 = SetData.ChangeValue(i);
       Standard_Real fsp = CD8->FirstSpineParam();
@@ -1151,11 +1145,11 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
 
 
   if (intl && !SetData.IsEmpty()) {
-    // prolongement de la spine par extension
+    // extension of the spine
     Spine->SetLastParameter(SetData.Last()->LastSpineParam()); 
   }
   else {
-    // Troncature a la fin.
+    // Truncation at the end.
     for (i = SetData.Length(); i >= 1; i--) {
       Handle(ChFiDS_SurfData)& CD9 = SetData.ChangeValue(i);
       Standard_Real fsp = CD9->FirstSpineParam();

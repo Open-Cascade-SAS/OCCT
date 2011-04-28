@@ -7,11 +7,11 @@
 
 //-Version  
 
-//-Design Declaration des variables specifiques aux groupes
-//    de primitives
+//-Design Declaration of variables specific to groups
+//    of primitives
 
-//-Warning  Un groupe est defini dans une structure
-//    Il s'agit de la plus petite entite editable
+//-Warning  A group is defined in a structure
+// This is the smallest editable entity
 
 //-References 
 
@@ -25,8 +25,8 @@
 
 #include <Graphic3d_StructureManager.hxx>
 
-// Structures c necessaires a l'interfacage avec les routines c
-// Routines C a declarer en extern
+// Structures are necessairy for interfacing with routines c
+// Routines C should be declared externally
 //-Methods, in order
 
 Standard_Boolean Graphic3d_Group::IsDeleted () const {
@@ -87,7 +87,7 @@ Handle(Graphic3d_Structure) Graphic3d_Group::Structure () const {
 void Graphic3d_Group::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
 
   if (IsEmpty ()) {
-    // Groupe vide
+    // Empty Group
     XMin  = YMin  = ZMin  = ShortRealFirst ();
     XMax  = YMax  = ZMax  = ShortRealLast ();
   }

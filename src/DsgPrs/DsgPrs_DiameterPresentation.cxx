@@ -36,8 +36,7 @@
 
 //==========================================================================
 // function : DsgPrs_DiameterPresentation::Add
-// purpose  : ODL 4-fevrier-97 
-//  on peut choisir le symbol des extremites de la cote (fleche, point ...)
+// purpose  : it is possible to choose the symbol of extremities of the face (arrow, point ...)
 //==========================================================================
 void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
 				       const Handle(Prs3d_Drawer)& aDrawer,
@@ -55,7 +54,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Standard_Real parat    = ElCLib::Parameter(aCircle, AttachmentPoint);
   gp_Pnt        ptoncirc = ElCLib::Value    (parat, aCircle);
 
-  // ligne de cote
+  // sideline
 
   gp_Pnt        center  = aCircle.Location();
   gp_Vec        vecrap  (ptoncirc,center);
@@ -160,7 +159,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 // AspectText3d from Graphic3d
   Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle,AttachmentPoint); //
   gp_Pnt EndOfArrow;
-  gp_Pnt DrawPosition = AttachmentPoint;// attachment point
+  gp_Pnt DrawPosition = AttachmentPoint;// point of attachment
   Standard_Boolean otherside = Standard_False;
 
   gp_Pnt Center = aCircle.Location();

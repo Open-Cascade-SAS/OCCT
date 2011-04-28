@@ -1,46 +1,34 @@
 /***********************************************************************
 
-     FONCTION :
+     FUNCTION :
      ----------
         File Visual3d_Light :
 
-	Declaration des variables specifiques aux sources lumineuses
+	Declaration of variables specific to light sources
 
-     REMARQUES:
+     NOTES:
      ----------
 
-	Une source lumineuse est definie par :
-	- son type
-	- sa couleur
-	- les facteurs d'attenuation (positionnelle et spot uniquement )
-	- son angle ( pour spot uniquement )
-	- sa concentration ( pour spot uniquement )
-	- sa direction ( directionnelle et spot uniquement )
-	- sa position ( positionnelle et spot uniquement )
+	A light source is defined by :
+	- type
+	- color
+	- reduction factors  ( for positional and spot only )
+	- its angle ( for spot only )
+	- its concentration ( for spot only )
+	- its direction ( directional and spot only )
+	- its position ( positional and spot only )
 
-	Elle est active dans une vue, dans le contexte associe.
+	It is active in a view, in the associated context.
 
      ATTENTION:
      ----------
 
-	- AngleCone est exprime en radian [Pex] alors que OpenGl travaille
-	en degres. Les limites pour Pex sont [0,PI] alors que pour OpenGl
-	ce sont [0,90].
-	- On utilise 2 facteurs d'attenuation avec Pex alors qu'OpenGl en utilise 3.
-	- Les facteurs d'attenuation sont limites entre [0.0,1.0] pour Pex alors 
-	que pour OpenGl la limite est [0.0,n] 
-	- La concentration varie entre [0.,1.0] pour Pex et [0,128] pour OpenGl.	
-
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-       01-03-92 : NW,JPB,CAL ; Creation.
-       19-12-96 : FMN ; PRO6793: 
-		Modification des bornes pour AngleCone [0,PI/2]
-		Ajout commentaires dans le cdl.
-		Ajout tests sur les bornes.
-       10-07-97 : PCT
-                Ajout des headlights
-       23-02-98 : FMN ; Remplacement PI par Standard_PI
+	- AngleCone is given in radian [Pex] while OpenGl works in 
+	degreees. The limits for Pex are [0,PI] while for OpenGl this is [0,90].
+	- Two reduction factors are used with Pex while OpenGl uses three.
+	- The ereduction factors have range [0.0,1.0] for Pex and 
+	for OpenGl the range is [0.0,n] 
+	- The concentration varies from [0.,1.0] for Pex to [0,128] for OpenGl.	
 
 ************************************************************************/
 

@@ -4,10 +4,7 @@
 // Author:  Mister rmi
 //  <rmi>
 
-
-// Modified     jmi/rob 29/8/96
-//              appel de Loadmode dans Load d'un objet fait une seule fois.
-//              
+             
 
 #include <SelectMgr_SelectionManager.ixx>
 #include <SelectMgr_ViewerSelector.hxx>
@@ -305,7 +302,6 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
 
   if (!anObject->HasSelection(aMode)) LoadMode(anObject,aMode);
 
-  // ATTENTION : si la selection est a remettre a jour, on le fait la ....      
   const Handle(SelectMgr_Selection)& Sel = anObject->Selection(aMode);
 
   switch(Sel->UpdateStatus()){
@@ -590,7 +586,7 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
   if( SelectDebugModeOnSM() ) cout<<"===>SelectMgr_SelectionManager::Update"<<endl;
 
   if(ForceUpdate){
-    if( SelectDebugModeOnSM() ) cout<<"\tRecalcul Complet des selections"<<endl;
+    if( SelectDebugModeOnSM() ) cout<<"\t Global Recalculation of selections"<<endl;
     if(aMode==-1){
       anObject->UpdateSelection();
       anObject->UpdateLocation();
@@ -601,10 +597,10 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
     }
     return;
   }
-  // l'objet n'est pas connu du SMgr.
+  // objet is not known to SMgr.
   if (!(myglobal.Contains(anObject) || mylocal.IsBound(anObject))){
-    if( SelectDebugModeOnSM() ) {cout<<"\tObjet non charge dans le SelectionManager"<<endl;
-    cout<<"\t on flagge ses selections eventuelles"<<endl;}
+    if( SelectDebugModeOnSM() ) {cout<<"\t Object not loaded in the SelectionManager"<<endl;
+    cout<<"\t eventual selections are flagged"<<endl;}
     if( aMode == -1 ){
       for(anObject->Init();anObject->More();anObject->Next()){
         if( SelectDebugModeOnSM() ) cout<<"\t\t Mode "<<anObject->CurrentSelection()->Mode()<<"  ";
@@ -617,13 +613,13 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
       anObject->Selection(aMode)->UpdateStatus(SelectMgr_TOU_Full);
   }
 
-  // la il l'est, il s'agit de recalculer ce qui doit l'etre
-  // et de flagger ce qui est en sommeil...
+  // recalculate whatever is required
+  // and set flag on top...
   else{
     TColStd_MapIteratorOfMapOfTransient It;
     Handle(Standard_Transient) Tr;
     Standard_Boolean Found;
-    // on balaye les selections de l'objet
+    // object selections are parsed
 
     for(anObject->Init();anObject->More();anObject->Next()){
       const Handle(SelectMgr_Selection)& Sel = anObject->CurrentSelection();
@@ -631,7 +627,7 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
       Standard_Integer curmode = Sel->Mode();
       Found = Standard_False;
 
-      // balayage des selecteurs ...
+      // parsing of selections ...
       for(It.Initialize(myselectors);It.More();It.Next()){
         Tr = It.Key();
         Handle(SelectMgr_ViewerSelector) VS = *((Handle(SelectMgr_ViewerSelector)*)&Tr);
@@ -639,7 +635,7 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
           Found  = Standard_True;
           switch(Sel->UpdateStatus()){
     case SelectMgr_TOU_Full:
-      anObject->UpdateSelection(curmode); // pas de break expres...
+      anObject->UpdateSelection(curmode); // no break on purpose...
     case SelectMgr_TOU_Partial:
       anObject->UpdateLocation(Sel);
       break;
@@ -660,10 +656,10 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
 
 //=======================================================================
 //function : Update
-//purpose  : On recalcule les Selections si elles sont flaggees
-//           "A RECALCULER" et qu'elles sont activees dans un des selecteurs.
-//           Si ForceUpdate = True, et qu'elles sont "A RECALCULER"
-//           On le fait sans se preoccuper de l'etat d'activation.
+//purpose  : Selections are recalculated if they are flagged
+//           "TO RECALCULATE" and activated in one of selectors.
+//           If ForceUpdate = True, and they are "TO RECALCULATE"
+//           This is done without caring for the state of activation.
 //=======================================================================
 void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)& anObject,
                                         const Standard_Boolean ForceUpdate)
@@ -676,7 +672,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
     if(ForceUpdate){
       switch(Sel->UpdateStatus()){
       case SelectMgr_TOU_Full:
-        anObject->UpdateSelection(Sel->Mode()); // pas de break expres...
+        anObject->UpdateSelection(Sel->Mode()); // no break on purpose...
       case SelectMgr_TOU_Partial:
         anObject->UpdateLocation(Sel);
         wasrecomputed = Standard_True;
@@ -689,8 +685,8 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
       Sel->UpdateStatus(SelectMgr_TOU_None);
     }
 
-    // on regarde quels selecteurs sont concernes par la selection
-    // pour refaire les projections si besoin est.
+    // it is checked which selectors are concerned by the selection
+    // to redo projections if necessary.
     Handle(Standard_Transient) Tr;
     for(TColStd_MapIteratorOfMapOfTransient It(myselectors);It.More();It.Next()){
       Tr = It.Key();
@@ -698,7 +694,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
       if(VS->Status(Sel)==SelectMgr_SOS_Activated)
         switch(Sel->UpdateStatus()){
   case SelectMgr_TOU_Full:
-    anObject->UpdateSelection(Sel->Mode()); // pas de break expres...
+    anObject->UpdateSelection(Sel->Mode()); // no break on purpose...
   case SelectMgr_TOU_Partial:
     anObject->UpdateLocation(Sel);
     wasrecomputed = Standard_True;
@@ -718,7 +714,7 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
 
 //==================================================
 // Function: Update
-// Purpose : Attention, il faut savoir ce que l'on fait....
+// Purpose : Attention, it is required to know what is done...
 //==================================================
 void SelectMgr_SelectionManager::
 Update(const Handle(SelectMgr_SelectableObject)& anObject,
@@ -742,7 +738,7 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
     if(ForceUpdate){
       switch(Sel->UpdateStatus()){
       case SelectMgr_TOU_Full:
-        anObject->UpdateSelection(Sel->Mode()); // pas de break expres...
+        anObject->UpdateSelection(Sel->Mode()); //  no break on purpose...
       case SelectMgr_TOU_Partial:
         anObject->UpdateLocation(Sel);
         wasrecomputed = Standard_True;

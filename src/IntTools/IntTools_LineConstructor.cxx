@@ -63,7 +63,7 @@ static void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
     }
     default:
     {
-      //-- Le cas de biparametrees periodiques est gere en amont
+      //-- Case of periodic biparameters is processed upstream
       myHS1IsUPeriodic = myHS1IsVPeriodic = Standard_False;
       break;
     }
@@ -87,7 +87,7 @@ static void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
     }
     default:
     {
-      //-- Le cas de biparametrees periodiques est gere en amont
+      //-- Case of periodic biparameters is processed upstream
       myHS2IsUPeriodic = myHS2IsVPeriodic = Standard_False;
       break;
     }
@@ -216,9 +216,9 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 	  Pmid.Parameters(u1,v1,u2,v2);
 	  Recadre(myHS1,myHS2,u1,v1,u2,v2);
 	  const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	  if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
+	  if(in1 !=  TopAbs_OUT) {   
 	    const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-	    if(in2 != TopAbs_OUT) { //-- !=ON  
+	    if(in2 != TopAbs_OUT) {   
 	      seqp.Append(firstp);
 	      seqp.Append(lastp);
 	    }
@@ -371,9 +371,8 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       }
     }      
     if (!intrvtested) {
-      // on garde a priori. Il faudrait un point 2d sur chaque
-      // surface pour prendre la decision. Sera fait dans 
-      // l`appelant
+      // Keep a priori. A point 2d on each
+      // surface is required to make the decision. Will be done in the caller
       seqp.Append(GeomInt_LineTool::FirstParameter(L));
       seqp.Append(GeomInt_LineTool::LastParameter(L));
     }
@@ -446,9 +445,8 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   done = Standard_False;
   seqp.Clear();
   nbvtx = GeomInt_LineTool::NbVertex(L);
-  if (nbvtx == 0) { // on garde a priori. Il faudrait un point 2d sur chaque
-                    // surface pour prendre la decision. Sera fait dans 
-                    // l`appelant
+  if (nbvtx == 0) { // Keep a priori. Point 2d is required on each
+                    // surface to make the decision. Will be done in the caller
     seqp.Append(GeomInt_LineTool::FirstParameter(L));
     seqp.Append(GeomInt_LineTool::LastParameter(L));
     done = Standard_True;
@@ -494,7 +492,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     {
       if (Abs(prm-seqpss(j).Parameter()) <= Tol)
       {
-	// on cumule
+	// accumulate
 	GeomInt_ParameterAndOrientation& valj = seqpss.ChangeValue(j);
 	if (or1 != TopAbs_INTERNAL) {
 	  if (valj.Orientation1() != TopAbs_INTERNAL) {
@@ -522,7 +520,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       }
       
       if (prm < seqpss(j).Parameter()-Tol ) {
-	// on insere avant la position j
+	// insert before position j
 	seqpss.InsertBefore(j,GeomInt_ParameterAndOrientation(prm,or1,or2));
 	inserted = Standard_True;
 	break;
@@ -534,7 +532,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     }
   }
 
-  // on determine l`etat en debut de ligne
+  // determine the state at the beginning of line
   Standard_Boolean trim = Standard_False;
   Standard_Boolean dansS1 = Standard_False;
   Standard_Boolean dansS2 = Standard_False;
@@ -567,7 +565,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         break;
       }
     }
-    dansS1 = Standard_True; // on garde dans le doute
+    dansS1 = Standard_True; // Keep in doubt
   }
 
   for (i=1; i<= nbvtx; i++)
@@ -596,18 +594,18 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         break;
       }
     }
-    dansS2 = Standard_True; // on garde dans le doute
+    dansS2 = Standard_True; //  Keep in doubt
   }
 
-  if (!trim) { // on a necessairement dansS1 == dansS2 == Standard_True
+  if (!trim) { // necessarily dansS1 == dansS2 == Standard_True
     seqp.Append(GeomInt_LineTool::FirstParameter(L));
     seqp.Append(GeomInt_LineTool::LastParameter(L));
     done = Standard_True;
     return;
   }
 
-  // On epluche la sequence seqpss pour constituer les bouts valides
-  // et les stocker dans seqp(2*i+1) et seqp(2*i+2)
+  // sequence seqpss is peeled to create valid ends 
+  // and store them in seqp(2*i+1) and seqp(2*i+2)
 
   Standard_Real thefirst = GeomInt_LineTool::FirstParameter(L);
   Standard_Real thelast = GeomInt_LineTool::LastParameter(L);
@@ -676,7 +674,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     }
   }
 
-  // le petit dernier a rajouter
+  // finally to add
   if (dansS1 && dansS2)
   {
     lastp  = thelast;

@@ -9,37 +9,25 @@
 
         Voir TestG2D/TestG21
 
-     REMARQUES:
-     ----------
-
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-
-      27-01-98 : GG ; OPTIMISATION LOADER
-                    Transformer les variables static globales en static
-                   locales.
-      23/02/98 : FMN ; Remplacement PI par Standard_PI
-
 =====================================================================*/
 
 #define PRO12982  //GG_230498
-//            Prendre en compte le soulignement dans le calcul de la taille
-//            du paragraphe.
+//            Take into account the underlining in calculation of 
+//            paragraph size.
 
 #define PRO11004  //GG_051197
-//            Le pourtour du paragraphe n'est pas un rectangle
+//            The contour of the paragraph is not rectangle
 
 #define PRO11005  //GG_131197
-//            La couleur de fond du paragraphe n'est pas respectee
-//            En mode Highlight,on ne voit plus les textes.
+//            Text can't be seen in mode Highlight.
 
 #define PRO11041 //GG_201197
-//            Modification de SetCurrentFont(...,aHScale,aWScale)
-//            de maniere a pouvoir parametrer la taille du texte.
+//            Modification of SetCurrentFont(...,aHScale,aWScale)
+//            to parameterize the size of the text.
 
 #define PRO12320//GG_120297
-//            Espacer les textes en fonction de la hauteur capitalisee de la
-//            chaine de caracteres.
+//            Compose texts depending on the summary height of the
+//            chain of characters.
 
 #define PERF    //GG_200898
 //              The MinMax are now computed at the right time and no more
@@ -457,9 +445,9 @@ static TShort_Array1OfShortReal theYarray(1,5) ;
 
             aTrsf.Transforms (A, B);
 
-            // Pour calculer les nouveaux angles d'ouverture
-            // le calcul est fait sur le cercle trigonometrique
-            // et l'on tient pas compte dans ce cas de la translation.
+            // To calculate new aperture angles
+            // the calculation is done on trigonometric circle
+            // and in this case translation is not taken into account.
             aTrsf.SetValue (1, 3, 0.0);
             aTrsf.SetValue (2, 3, 0.0);
             aTrsf.Transforms (cosa, sina);
@@ -739,7 +727,7 @@ Standard_Boolean status = Standard_False;
           Standard_ShortReal twidth = 0.,theight = 0.,txoffset = 0.,tyoffset = 0.;
           Standard_ShortReal lwidth = 0.,lheight = 0.,loffset = 0.;
           myWidth = myHeight = 0. ;
-          for( i=1,j=lrow=0 ; i<=length ; i++ ) {       // Passe 1,gets texts minmax 
+          for( i=1,j=lrow=0 ; i<=length ; i++ ) {       // Passe 1, gets texts minmax 
             descriptor = myTextDescriptorList.Value(i) ;
             atext = myTextStringList.Value(i) ;
             hscale = scale*myTextHScaleList.Value(i) ;

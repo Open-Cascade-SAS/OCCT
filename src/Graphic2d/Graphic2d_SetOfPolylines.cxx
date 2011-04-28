@@ -9,26 +9,12 @@
 
         Voir TestG2D/TestG21
 
-     REMARQUES:
-     ----------
 
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-
-      27-01-98 : GG ; OPTIMISATION LOADER
-                    Transformer les variables static globales en static
-                   locales.
-
-      10-12-97 : GG ; Envoyer plutot des polylines que des segments lorsque
-		le type de trait n'est pas SOLID de maniere a assurer
-		la continuite.
 
 =====================================================================*/
 
 // PRO13369	//GG_280498
-//			Attention sous WNT
-//			MapPolylineFromTo() doit etre appele avec le 
-//			nombre exacte de points
+//			MapPolylineFromTo() should be called with exact number of points
 
 #define G002    //GG_140400 Use SetPickedIndex method 
 
@@ -102,7 +88,7 @@ void Graphic2d_SetOfPolylines::Add( const Standard_Real X1,
 	      if( V1.IsEqual(P->Value(lv)) ) {
 		//first vertex of segment is the same that the last vertex of the
 		//ref line
-		if( ip > 1 ) { 	//Try to concatenates ref line with others
+		if( ip > 1 ) { 	//Try to concatenate ref line with others
 		  for( ipp=1 ; ipp<ip ; ipp++ ) {
 	      	    PP = myPolylines.Value(ipp);	//other polyline 
 		    if( V2.IsEqual(PP->Value(1)) ) {
@@ -124,7 +110,7 @@ void Graphic2d_SetOfPolylines::Add( const Standard_Real X1,
 	      } else if( V2.IsEqual(P->Value(lv)) ) {
 		//second vertex of segment is the same that the last vertex of the
 		//ref line
-		if( ip > 1 ) { 	//Try to concatenates ref line with others
+		if( ip > 1 ) { 	//Try to concatenate ref line with others
 		  for( ipp=1 ; ipp<ip ; ipp++ ) {
 	      	    PP = myPolylines.Value(ipp);	//other polyline 
 		    if( V1.IsEqual(PP->Value(1)) ) {
@@ -146,7 +132,7 @@ void Graphic2d_SetOfPolylines::Add( const Standard_Real X1,
 	      } else if( V1.IsEqual(P->Value(1)) ) {
 		//first vertex of segment is the same that the first vertex of the
 		//ref line
-		if( ip > 1 ) { 	//Try to concatenates ref line with others
+		if( ip > 1 ) { 	//Try to concatenate ref line with others
 		  for( ipp=1 ; ipp<ip ; ipp++ ) {
 	      	    PP = myPolylines.Value(ipp);	//other polyline 
 		    if( V2.IsEqual(PP->Value(PP->Length())) ) {
@@ -168,7 +154,7 @@ void Graphic2d_SetOfPolylines::Add( const Standard_Real X1,
 	      } else if( V2.IsEqual(P->Value(1)) ) {
 		//second vertex of segment is the same that the first vertex of the
 		//ref line
-		if( ip > 1 ) { 	//Try to concatenates ref line with others
+		if( ip > 1 ) { 	//Try to concatenate ref line with others
 		  for( ipp=1 ; ipp<ip ; ipp++ ) {
 	      	    PP = myPolylines.Value(ipp);	//other polyline 
 		    if( V1.IsEqual(PP->Value(PP->Length())) ) {

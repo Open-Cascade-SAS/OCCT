@@ -2,8 +2,8 @@
 // Created:	Wed Jun 24 12:49:59 1992
 // Author:	Gilles DEBARBOUILLE
 //		<gde@phobox>
-// Historique :
-// CRD : 03/07/97 : Portage Windows NT.
+// History :
+// CRD : 03/07/97 : Porting Windows NT.
 
 #include <Standard_Stream.hxx>
 
@@ -199,7 +199,7 @@ Handle(Dynamic_Parameter) Dynamic_FuzzyDefinitionsDictionary::Switch(
   const Standard_CString avalue) const
 {
   Handle(Dynamic_ObjectParameter) objectparameter;
-  cout<<"Le parametre "<<aname<<" du type "<<atype<<" avec "<<avalue<<" n'existe pas."<<endl;
+  cout<<"Parameter "<<aname<<" of type "<<atype<<" with "<<avalue<<" does not exist."<<endl;
   return objectparameter;
 }
 

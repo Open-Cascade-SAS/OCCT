@@ -1,13 +1,11 @@
 // S3824        10/06/98 : GG ;
-//              1) La methode "Fit" comporte un argum optionnel supplementaire
-//                 "Expand" permettant de ne pas ajuster la largeur du texte
-//                  lorsque celle ci est < a la taille du FIT.
-//              2) La methode "Trunc" permet de tronquer le texte a la
-//                 taille precisee.
+//              1) Method "Fit" includes optional argument 
+//                 "Expand" allowing to avoid adjusting text width
+//                 when it is less then size of FIT.
+//              2) Method "Trunc" allows trunkating the text to the 
+//                 exact size.
 
 #define PRO14304	//GG_160698
-//		Corrige une erreur de calcul sur les MINMAX provoquant
-//		la disparition du text
 
 #define PERF    //GG_200898
 //              The MinMax are now computed at the right time and no more
@@ -111,9 +109,9 @@ Standard_ShortReal oy = aDrawer->ConvertMapToFrom(myDeltay);
             cosa -= A; sina -= B;
             if( aTrsf.IsNegative() ) hscale = - hscale;
 #else
-	    // Pour calculer les nouveaux angles d'ouverture
-	    // le calcul est fait sur le cercle trigonometrique
-	    // et l'on tient pas compte dans ce cas de la translation.
+	    // To calculate new aperture angles 
+	    // the calculation is done on the trigonometric circle
+	    // and taken into account in case of translation.
 	    aTrsf.SetValue (1, 3, 0.0);
 	    aTrsf.SetValue (2, 3, 0.0);
             aTrsf.Transforms (cosa, sina);

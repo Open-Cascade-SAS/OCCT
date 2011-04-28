@@ -124,7 +124,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
       if ( Abs(ChamfRad) < Precision::Confusion() ) pointu = Standard_True;
       if( ChamfRad < 0 ) {
 #ifdef DEB
-	cout<<"le chanfrein ne passe pas"<<endl;
+	cout<<"the chamfer can't pass"<<endl;
 #endif
 	return Standard_False;
       }
@@ -137,7 +137,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 
     if (ouvert) {
       if (Abs(angCon) - Abs(SemiAngl) > -Precision::Confusion() ) {
-	cout<<"mauvais choix d'angle pour le chanfrein"<<endl;
+	cout<<"wrong choice of angle for the chamfer"<<endl;
 	return Standard_False; 
       } 
     }
@@ -149,7 +149,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
       SemiAngl =  Abs(angCon) + Angle;
 
       if ( (PI / 2. - SemiAngl) < Precision::Confusion() ) {
-	cout <<"mauvais choix d'angle pour le chanfrein"<<endl;
+	cout <<"wrong choice of angle for the chamfer"<<endl;
 	return Standard_False;
       }
       Dis1 =  move * Tan(SemiAngl) - Dis * Abs(Sin(angCon));
@@ -182,7 +182,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
       if ( Abs(ChamfRad) < Precision::Confusion() ) pointu = Standard_True;
       if( ChamfRad < 0 ) {
 #ifdef DEB
-	cout<<"le chanfrein ne passe pas"<<endl;
+	cout<<"the chamfer can't pass"<<endl;
 #endif
 	return Standard_False;
       }

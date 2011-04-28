@@ -3,9 +3,9 @@
 // Author:    Jacques GOUSSARD
 // Copyright: OPEN CASCADE 1993
 
-// Modified 09/09/1996 PMN Ajout de Nb(Intervalls), IsRationnal
-//                         Optimisation, utilisation de GetCircle
-// Modified 20/02/1998 PMN Gestion des surfaces singulieres
+// Modified 09/09/1996 PMN Adde Nb(Intervalls), IsRationnal
+//                         Optimisation, use of GetCircle
+// Modified 20/02/1998 PMN Singular surfaces management
 
 #include <BlendFunc_ConstRad.ixx>
 
@@ -43,7 +43,7 @@ BlendFunc_ConstRad::BlendFunc_ConstRad(const Handle(Adaptor3d_HSurface)& S1,
 				  distmin(RealLast()),
 				  mySShape(BlendFunc_Rational)
 { 
-// Initialisaton des variables de controle du cache.
+// Initialisaton of cash control variables.
   tval = -9.876e100;
   xval.Init(-9.876e100);
   myXOrder = -1;
@@ -116,11 +116,11 @@ void BlendFunc_ConstRad::Set(const BlendFunc_SectionShape TypeSection)
 
 //=======================================================================
 //function : ComputeValues
-//purpose  : Passage OBLIGATOIRE pour tous les calculs
-//           Cette methode gere les positionemment sur Surfaces et Courbe
-//           Calcul les equation et leurs derives partielle
-//           Stock certains resultat intermediaire dans les champs pour etre
-//           utiliser dans d'autre methodes.
+//purpose  : OBLIGATORY passage for all calculations
+//           This method manages positioning on Surfaces and Curves
+//           Calculate the equations and their partial derivates
+//           Stock certain intermediate results in fields to 
+//           use in other methods.
 //=======================================================================
 
 Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
@@ -128,7 +128,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
                                                    const Standard_Boolean byParam,
                                                    const Standard_Real Param)
 {
- // declaration statique afin d'eviter la realloc systematique
+ // static declaration to avoid systematic reallocation
  
  static gp_Vec d3u1,d3v1,d3uuv1,d3uvv1,d3u2,d3v2,d3uuv2,d3uvv2; 
  static gp_Vec d1gui, d2gui, d3gui;
@@ -136,10 +136,10 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
  static Standard_Real invnormtg, dinvnormtg;
  Standard_Real T =  Param, aux;
 
- // Cas du parametre implicite
+ // Case of implicite parameter
  if ( !byParam) { T = param;}
 
- // Le travail est il dejas fait ?
+ // Is the work already done ?
  Standard_Boolean myX_OK = (Order<=myXOrder) ;
  for (Standard_Integer ii=1; ((ii<=X.Length()) && myX_OK); ii++) {
    myX_OK = ( X(ii) == xval(ii) );
@@ -152,12 +152,12 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    return Standard_True;
  }
 
- // Traitement de t
+ // Processing of t
  if (!t_OK) {
    tval = T;
    if (byParam) { myTOrder = Order;}
    else         { myTOrder = 0;}
-   //----- Positionement sur la courbe ----------------
+   //----- Positioning on the curve ----------------
    switch (myTOrder) {
    case 0 :
      {
@@ -196,11 +196,11 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    }
  }
 
- // Traitement de X
+ // Processing of X
  if (!myX_OK) {
    xval = X;
    myXOrder = Order;
-   //-------------- Positionement sur les surfaces -----------------
+   //-------------- Positioning on surfaces -----------------
    switch (myXOrder) {
    case 0 :
      {
@@ -238,7 +238,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    default:
      return Standard_False;
    }
-   // Cas des surfaces degeneree
+   // Case of degenerated surfaces
    if (nsurf1.Magnitude() < Eps ) {
      //gp_Vec normal;
      gp_Pnt2d P(X(1), X(2)); 
@@ -253,7 +253,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    }
  }
 
- // -------------------- Positionement a l'ordre 0 ---------------------
+ // -------------------- Positioning of order 0 ---------------------
  Standard_Real invnorm1, invnorm2, ndotns1, ndotns2, theD;
  gp_Vec ncrossns1,ncrossns2,resul,temp;
 
@@ -271,14 +271,14 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
 
  if (invnorm1 > Eps) invnorm1 = ((Standard_Real) 1) /invnorm1;
  else {
-   invnorm1 = 1; // Insufisant, mais il ne faut pas planter
+   invnorm1 = 1; // Unsatisfactory, but it is not necessary to crash
 #if DEB
    cout << " ConstRad : Surface singuliere " << endl;
 #endif
  }
  if (invnorm2 > Eps) invnorm2 = ((Standard_Real) 1) /invnorm2;
  else {
-   invnorm2 = 1; // Insufisant, mais il ne faut pas planter
+   invnorm2 = 1; //  Unsatisfactory, but it is not necessary to crash
 #if DEB
    cout << " ConstRad : Surface singuliere " << endl;
 #endif
@@ -299,7 +299,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
  E(3) = resul.Y();
  E(4) = resul.Z();
 
- // -------------------- Positionement a l'ordre 1 ---------------------
+ // -------------------- Positioning of order 1 ---------------------
  if (Order >= 1) {
    Standard_Real  grosterme, cube, carre;
   
@@ -310,7 +310,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    DEDX(1,4) = nplan.Dot(d1v2)/2;
 
    cube =invnorm1*invnorm1*invnorm1;
-   // Derivee par rapport a u1
+   // Derived in relation to u1
    grosterme = - ncrossns1.Dot(nplan.Crossed(dns1u1))*cube;
    dndu1.SetLinearForm( grosterme*ndotns1
 		      + invnorm1*nplan.Dot(dns1u1), nplan,
@@ -322,7 +322,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    DEDX(3,1) = resul.Y();
    DEDX(4,1) = resul.Z();
 
-   // Derivee par rapport a v1
+   // Derived in relation to v1
 
    grosterme = - ncrossns1.Dot(nplan.Crossed(dns1v1))*cube;
    dndv1.SetLinearForm( grosterme*ndotns1
@@ -336,7 +336,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    DEDX(4,2) = resul.Z();
 
    cube = invnorm2*invnorm2*invnorm2;
-   // Derivee par rapport a u2
+   // Derived in relation to u2
    grosterme = - ncrossns2.Dot(nplan.Crossed(dns1u2))*cube;
    dndu2.SetLinearForm( grosterme*ndotns2
 		       +invnorm2*nplan.Dot(dns1u2), nplan,
@@ -348,7 +348,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
    DEDX(3,3) = resul.Y();
    DEDX(4,3) = resul.Z();
 
-   // Derivee par rapport a v2
+   // Derived in relation to v2
    grosterme = -ncrossns2.Dot(nplan.Crossed(dns1v2))*cube;
    dndv2.SetLinearForm( grosterme*ndotns2
 		       +invnorm2*nplan.Dot(dns1v2), nplan,
@@ -362,13 +362,13 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
 
    if (byParam) {
      temp.SetXYZ( (pts1.XYZ()+pts2.XYZ())/2 - ptgui.XYZ());
-     // Derivee de n1 par rapport a w     
+     // Derived from n1 in relation to w     
      grosterme = ncrossns1.Dot(dnplan.Crossed(nsurf1))*invnorm1*invnorm1;
      dn1w.SetLinearForm((dnplan.Dot(nsurf1)-grosterme*ndotns1)*invnorm1, nplan,
 			 ndotns1*invnorm1,dnplan,
 			 grosterme*invnorm1,nsurf1);
   
-     // Derivee de n2 par rapport a w
+     // Derivee from n2 in relation to w
      grosterme = ncrossns2.Dot(dnplan.Crossed(nsurf2))*invnorm2*invnorm2;
      dn2w.SetLinearForm((dnplan.Dot(nsurf2)-grosterme*ndotns2)*invnorm2,nplan,
 			ndotns2*invnorm2,dnplan,
@@ -380,7 +380,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      DEDT(3) =  ray1*dn1w.Y() - ray2*dn2w.Y();
      DEDT(4) =  ray1*dn1w.Z() - ray2*dn2w.Z();
    }
-   // ------   Positionemement a l'ordre 2  -----------------------------
+   // ------   Positioning of order 2  -----------------------------
    if (Order == 2) {
 //     gp_Vec d2ndu1,  d2ndu2, d2ndv1, d2ndv2, d2nduv1, d2nduv2;
      gp_Vec d2ns1u1,  d2ns1u2, d2ns1v1, d2ns1v2, d2ns1uv1, d2ns1uv2;
@@ -400,8 +400,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
                                // ================
      carre = invnorm1*invnorm1;
      cube  = carre*invnorm1;
-     // Derivee double par rapport a u1       
-       // Derivation de la norme
+     // Derived double compared to u1       
+       // Derived from the norm
      d2ns1u1.SetLinearForm(1, d3u1.Crossed(d1v1),
 			   2, d2u1.Crossed(d2uv1),
 			   1, d1u1.Crossed(d3uuv1));
@@ -425,8 +425,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      D2EDX2(3,1,1) = resul.Y();
      D2EDX2(4,1,1) = resul.Z();
 
-     // Derivee double par rapport a u1, v1       
-       // Derivation de la norme
+     // Derived double compared to u1, v1       
+       // Derived from the norm
      d2ns1uv1 =  (d3uuv1.Crossed(d1v1))
               +  (d2u1  .Crossed(d2v1))
 	      +  (d1u1  .Crossed(d3uvv1));
@@ -435,7 +435,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      DSecn = (nplan.Crossed(dns1v1)).Dot(nplan.Crossed(dns1u1))
            +  ncrossns1.Dot(nplan.Crossed(d2ns1uv1));
      grosterme  = (3*uterm*vterm*carre-DSecn)*cube;
-     uterm *= -cube; //et seulement maintenant
+     uterm *= -cube; //and only now
      vterm *= -cube;
        
      p1 = nplan.Dot(dns1u1);
@@ -456,8 +456,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      D2EDX2(3,2,1) = D2EDX2(3,1,2) = resul.Y();
      D2EDX2(4,2,1) = D2EDX2(4,1,2) = resul.Z();    
 
-     // Derivee double par rapport a v1       
-       // Derivation de la norme
+     // Derived double compared to v1       
+       // Derived from the norm
      d2ns1v1.SetLinearForm(1, d1u1.Crossed(d3v1),
 			   2, d2uv1.Crossed(d2v1),
 			   1, d3uvv1.Crossed(d1v1));
@@ -486,8 +486,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
                                // ================
      carre = invnorm2*invnorm2;
      cube  = carre*invnorm2;
-     // Derivee double par rapport a u2       
-       // Derivation de la norme
+     // Derived double compared to u2       
+       // Derived from the norm
      d2ns1u2.SetLinearForm(1, d3u2.Crossed(d1v2),
 			   2, d2u2.Crossed(d2uv2),
 			   1, d1u2.Crossed(d3uuv2));
@@ -511,8 +511,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      D2EDX2(3,3,3) = resul.Y();
      D2EDX2(4,3,3) = resul.Z();
 
-     // Derivee double par rapport a u2, v2       
-       // Derivation de la norme
+     // Derived double compared to u2, v2       
+       // Derived from the norm
      d2ns1uv2 =  (d3uuv2.Crossed(d1v2))
               +  (d2u2  .Crossed(d2v2))
 	      +  (d1u2  .Crossed(d3uvv2));
@@ -521,7 +521,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      DSecn = (nplan.Crossed(dns1v2)).Dot(nplan.Crossed(dns1u2))
            +  ncrossns2.Dot(nplan.Crossed(d2ns1uv2));
      grosterme  = (3*uterm*vterm*carre-DSecn)*cube;
-     uterm *= -cube; //et seulement maintenant
+     uterm *= -cube; //and only now
      vterm *= -cube;
        
      p1 = nplan.Dot(dns1u2);
@@ -542,8 +542,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
      D2EDX2(3,4,3) = D2EDX2(3,3,4) = resul.Y();
      D2EDX2(4,4,3) = D2EDX2(4,3,4) = resul.Z();    
 
-     // Derivee double par rapport a v2       
-       // Derivation de la norme
+     // Derived double compared to v2       
+       // Derived from the norm
      d2ns1v2.SetLinearForm(1, d1u2.Crossed(d3v2),
 			   2, d2uv2.Crossed(d2v2),
 			   1, d3uvv2.Crossed(d1v2));
@@ -570,7 +570,7 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
 
      if (byParam) {
        Standard_Real tterm;
-        //  ---------- Derivation double en t, X --------------------------
+        //  ---------- Derivation double in t, X --------------------------
        D2EDXDT(1,1) = dnplan.Dot(d1u1)/2;
        D2EDXDT(1,2) = dnplan.Dot(d1v1)/2;
        D2EDXDT(1,3) = dnplan.Dot(d1u2)/2;
@@ -578,10 +578,10 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
 
        carre = invnorm1*invnorm1;
        cube = carre*invnorm1;
-       //--> Derivee par rapport a u1 et t
+       //--> Derived compared to u1 and t
        tterm =  ncrossns1.Dot(dnplan.Crossed(nsurf1));
        smallterm  = - tterm*cube;
-       // Derivation de la norme
+       // Derived from the norm
        uterm =  ncrossns1.Dot(nplan. Crossed(dns1u1));
        DSecn = (nplan.Crossed(dns1u1)).Dot(dnplan.Crossed(nsurf1))
 	      + ncrossns1.Dot(dnplan.Crossed(dns1u1));
@@ -606,8 +606,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
        D2EDXDT(3,1) = resul.Y();
        D2EDXDT(4,1) = resul.Z();
 
-       //--> Derivee par rapport a v1 et t
-       // Derivation de la norme
+       //--> Derived compared to v1 and t
+       // Derived from the norm
        uterm =  ncrossns1.Dot(nplan. Crossed(dns1v1));
        DSecn = (nplan. Crossed(dns1v1)).Dot(dnplan.Crossed(nsurf1))
 	      + ncrossns1.Dot(dnplan.Crossed(dns1v1));
@@ -633,10 +633,10 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
 
        carre = invnorm2*invnorm2;
        cube = carre*invnorm2;
-       //--> Derivee par rapport a u2 et t
+       //--> Derived compared to u2 and t
        tterm =  ncrossns2.Dot(dnplan.Crossed(nsurf2));
        smallterm = -tterm*cube;
-       // Derivation de la norme
+       // Derived from the norm
        uterm =  ncrossns2.Dot(nplan. Crossed(dns1u2));
        DSecn = (nplan. Crossed(dns1u2)).Dot(dnplan.Crossed(nsurf2))
 	     + ncrossns2.Dot(dnplan.Crossed(dns1u2));
@@ -661,8 +661,8 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
        D2EDXDT(3,3) = resul.Y();
        D2EDXDT(4,3) = resul.Z();
 
-       //--> Derivee par rapport a v2 et t
-       // Derivation de la norme
+       //--> Derived compared to v2 and t
+       // Derived from the norm
        uterm =  ncrossns2.Dot(nplan. Crossed(dns1v2));
        DSecn = (nplan.Crossed(dns1v2)).Dot(dnplan.Crossed(nsurf2))
 	     +  ncrossns2.Dot(dnplan.Crossed(dns1v2)); 
@@ -688,11 +688,11 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
        D2EDXDT(4,4) = resul.Z();     
 
 
-        //  ---------- Derivation double en t -----------------------------
-    // Derivee de n1 par rapport a w
+        //  ---------- Derivation double in t -----------------------------
+    // Derived from n1 compared to w
        carre = invnorm1*invnorm1;
        cube = carre*invnorm1;
-       // Derivation de la norme
+       // Derived from the norm
        DPrim =  ncrossns1.Dot(dnplan.Crossed(nsurf1));
        smallterm = - 2*DPrim*cube;
        DSecn     = (dnplan.Crossed(nsurf1)).SquareMagnitude()
@@ -711,10 +711,10 @@ Standard_Boolean BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
 			     ndotns1*invnorm1,   d2nplan);
        d2n1w += temp;
   
-     // Derivee de n2 par rapport a w
+     // Derived from n2 compared to w
        carre = invnorm2*invnorm2;
        cube = carre*invnorm2;
-       // Derivation de la norme
+       // Derived from the norm
        DPrim =  ncrossns2.Dot(dnplan.Crossed(nsurf2));
        smallterm = - 2*DPrim*cube;
        DSecn     = (dnplan.Crossed(nsurf2)).SquareMagnitude()
@@ -756,8 +756,8 @@ void BlendFunc_ConstRad::Set(const Standard_Real Param)
 
 //=======================================================================
 //function : Set
-//purpose  : Segmente la courbe a sa partie utile.
-//           La prcision est prise arbitrairement petite !?
+//purpose  : Segmentation of the useful part of the curve
+//           Precision is taken at random and small !?
 //=======================================================================
 
 void BlendFunc_ConstRad::Set(const Standard_Real First, const Standard_Real Last)
@@ -821,7 +821,7 @@ Standard_Boolean BlendFunc_ConstRad::IsSolution(const math_Vector& Sol, const St
   if (Abs(E(1)) <= Tol &&
       E(2)*E(2) + E(3)*E(3) +  E(4)*E(4) <= Tol*Tol) { 
 
-    // on recopie localement ns1, ns2, np afin de ne pas ecraser les champs !
+    // ns1, ns2 and  np are copied locally to avoid crushing the fields !
     gp_Vec ns1,ns2,np;
     ns1 = nsurf1;
     ns2 = nsurf2;
@@ -829,13 +829,13 @@ Standard_Boolean BlendFunc_ConstRad::IsSolution(const math_Vector& Sol, const St
   
     norm = nplan.Crossed(ns1).Magnitude();
     if (norm < Eps)  {
-      norm = 1; // Insufisant, mais il ne faut pas planter
+      norm = 1; // Unsatisfactory, but it is not necessary to stop
     }
     ns1.SetLinearForm(nplan.Dot(ns1)/norm,nplan, -1./norm, ns1);
 
     norm = nplan.Crossed(ns2).Magnitude();
     if (norm < Eps)  {
-      norm = 1; // Insufisant, mais il ne faut pas planter
+      norm = 1; // Unsatisfactory, but it is not necessary to stop
     }
     ns2.SetLinearForm(nplan.Dot(ns2)/norm,nplan, -1./norm, ns2);   
 
@@ -882,7 +882,7 @@ Standard_Boolean BlendFunc_ConstRad::IsSolution(const math_Vector& Sol, const St
       tg22d.SetCoord(solution(3),solution(4));
     }
  
-  // mise a jour de maxang
+  // update of maxang
 
     if (ray1 > 0.) {
       ns1.Reverse();
@@ -893,13 +893,13 @@ Standard_Boolean BlendFunc_ConstRad::IsSolution(const math_Vector& Sol, const St
     Cosa = ns1.Dot(ns2);
     Sina = np.Dot(ns1.Crossed(ns2));
     if (choix%2 != 0) {
-      Sina = -Sina;  //nplan est change en -nplan
+      Sina = -Sina;  //nplan is changed in -nplan
     }
 
     if(Cosa > 1.) {Cosa = 1.; Sina = 0.;}
     Angle = ACos(Cosa);
 
- // Recadrage sur ]-pi/2, 3pi/2]
+ // Reframing on  ]-pi/2, 3pi/2]
     if (Sina <0.) {
       if (Cosa > 0.) Angle = -Angle;
       else           Angle =  2.*PI - Angle;
@@ -1158,12 +1158,12 @@ void BlendFunc_ConstRad::Section(const Standard_Real Param,
   Standard_Real  norm1;
   norm1 = nplan.Crossed(ns1).Magnitude();
   if (norm1 < Eps)  {
-    norm1 = 1; // Insufisant, mais il ne faut pas planter
+    norm1 = 1; // Unsatisfactory, but it is not necessary to stop
   }   
   ns1.SetLinearForm(nplan.Dot(ns1)/norm1,nplan, -1./norm1,ns1);
   Center.SetXYZ(pts1.XYZ()+ray1*ns1.XYZ());
 
-// on oriente ns1 du centre vers pts1,
+// ns1 is oriented from the center to pts1,
 
   if (ray1 > 0.) {
     ns1.Reverse();
@@ -1175,7 +1175,7 @@ void BlendFunc_ConstRad::Section(const Standard_Real Param,
   C.SetPosition(gp_Ax2(Center,np,ns1));
   Pdeb = 0.;
   Pfin = ElCLib::Parameter(C,pts2);
-  // Test des angles negatif et quasi null : Cas Singulier
+  // Test negative and almost null angles : Singular Case
   if (Pfin>1.5*PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center,np,ns1));
@@ -1210,7 +1210,7 @@ Standard_Real BlendFunc_ConstRad::GetSectionSize() const
 void BlendFunc_ConstRad::GetMinimalWeight(TColStd_Array1OfReal& Weigths) const 
 {
   BlendFunc::GetMinimalWeights(mySShape, myTConv, minang, maxang, Weigths );
-  // On suppose que cela ne depend pas du Rayon!
+  // It is supposed that it does not depend on the Radius!
 }
 
 //=======================================================================
@@ -1251,7 +1251,7 @@ void BlendFunc_ConstRad::GetShape (Standard_Integer& NbPoles,
 
 //=======================================================================
 //function : GetTolerance
-//purpose  : Determine les Tolerances a utiliser dans les approximations.
+//purpose  : Determine Tolerances used for approximations.
 //=======================================================================
 void BlendFunc_ConstRad::GetTolerance(const Standard_Real BoundTol, 
 				      const Standard_Real SurfTol, 
@@ -1318,7 +1318,7 @@ void BlendFunc_ConstRad::Section(const Blend_Point& P,
   Ok = ComputeValues(X, 0, Standard_True, prm);
   distmin = Min (distmin, pts1.Distance(pts2));
 
-  // on recopie localement ns1, ns2, np afin de ne pas ecraser les champs !
+  // ns1, ns2, np are copied locally to avoid crushing the fields !
   ns1 = nsurf1;
   ns2 = nsurf2;
   np = nplan;
@@ -1339,13 +1339,13 @@ void BlendFunc_ConstRad::Section(const Blend_Point& P,
   norm1 = nplan.Crossed(ns1).Magnitude();
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps)  {
-    norm1 = 1; // Insufisant, mais il ne faut pas planter
+    norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 //#if DEB
 //    cout << " ConstRad : Surface singuliere " << endl;
 //#endif
   }
   if (norm2 < Eps) {
-    norm2 = 1; // Insufisant, mais il ne faut pas planter
+    norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 //#if DEB
 //    cout << " ConstRad : Surface singuliere " << endl;
 //#endif
@@ -1356,8 +1356,8 @@ void BlendFunc_ConstRad::Section(const Blend_Point& P,
 
   Center.SetXYZ(pts1.XYZ()+ray1*ns1.XYZ());
 
-// on oriente ns1 (resp. ns2) du centre vers pts1 (resp. pts2),
-// et on rend direct le triedre ns1,ns2,nplan.
+// ns1 (resp. ns2) is oriented from center to pts1 (resp. pts2),
+// and the triedron ns1,ns2,nplan is made direct.
 
   if (ray1 > 0.) {
     ns1.Reverse();
@@ -1405,11 +1405,11 @@ Standard_Boolean BlendFunc_ConstRad::Section
   P.ParametersOnS1(sol(1),sol(2));
   P.ParametersOnS2(sol(3),sol(4));
 
-  // Calculs des equations
+  // Calculation of equations
   ComputeValues(sol, 1, Standard_True, prm);
   distmin = Min (distmin, pts1.Distance(pts2));
 
-  // on recopie localement ns1, ns2, np afin de ne pas ecraser les champs !
+  // ns1, ns2, np are copied locally to avoid crushing the fields !
   ns1 = nsurf1;
   ns2 = nsurf2;
   np = nplan;
@@ -1417,7 +1417,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
 
   if ( ! pts1.IsEqual(pts2, 1.e-4)) {
 
-    // Calcul des derives Traitement Normal
+    // Calculation of derivates Processing Normal
     math_Gauss Resol(DEDX, 1.e-9);
 
     if (Resol.IsDone()) {  
@@ -1443,7 +1443,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
   }
 
 
-  // Les poles 2d  
+  // Tops 2d  
   Poles2d(Poles2d.Lower()).SetCoord(sol(1),sol(2));
   Poles2d(Poles2d.Upper()).SetCoord(sol(3),sol(4));
   if (!istgt) {
@@ -1451,7 +1451,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
     DPoles2d(Poles2d.Upper()).SetCoord(secmember(3),secmember(4));
   }
 
-  // on traite le cas linear...
+  // the linear case is processed...
   if (mySShape == BlendFunc_Linear) {
     Poles(low) = pts1;
     Poles(upp) = pts2;
@@ -1466,17 +1466,17 @@ Standard_Boolean BlendFunc_ConstRad::Section
     return (!istgt);
   }
 
-  // Cas du cercle
+  // Case of the circle
   norm1 = nplan.Crossed(ns1).Magnitude();
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps) {
-    norm1 = 1; // Insufisant, mais il ne faut pas planter
+    norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps) {
-   norm2 = 1; // Insufisant, mais il ne faut pas planter
+   norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
    cout << " ConstRad : Surface singuliere " << endl;
 #endif
@@ -1490,8 +1490,8 @@ Standard_Boolean BlendFunc_ConstRad::Section
     tgc.SetLinearForm(ray1,dnorm1w,tg1); //  = tg1.Added(ray1*dn1w);
   }
 
-  // On oriente ns1 du centre vers pts1, et ns2 du centre vers pts2
-  // et on rend le triedre ns1,ns2,nplan direct
+  // ns1 is oriented from the center to pts1, and ns2 from the center to pts2
+  // and the trihedron ns1,ns2,nplan is made direct
 
   if (ray1 > 0.) {
     ns1.Reverse();
@@ -1609,7 +1609,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
 # endif 
 */
 
-  // Calculs des equations
+  // Calculation of equations
   ComputeValues(X, 2, Standard_True, prm);
   distmin = Min (distmin, pts1.Distance(pts2));
 
@@ -1707,19 +1707,19 @@ Standard_Boolean BlendFunc_ConstRad::Section
 
 #endif
 */
-  // on recopie localement ns1, ns2, np afin de ne pas ecraser les champs !
+  // ns1, ns2, np are copied locally to avois crushing the fields !
   ns1 = nsurf1;
   ns2 = nsurf2;
   np  = nplan;
   dnp = dnplan;
   d2np = d2nplan;
 
-  // Calcul des derives
+  // Calculation of derivatives
 
 
   if ( ! pts1.IsEqual(pts2, 1.e-4)) {
-    math_Gauss Resol(DEDX, 1.e-9); // !Tol a affiner !!!!! 
-    // Calcul des derives Traitement Normal
+    math_Gauss Resol(DEDX, 1.e-9); // Precise tolerance !!!!! 
+    // Calculation of derivatives Processing Normal
     if (Resol.IsDone()) {  
       Resol.Solve(-DEDT, sol);
       D2EDX2.Multiply(sol, D2DXdSdt);    
@@ -1779,7 +1779,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
     d2norm2w.SetLinearForm(secmember(3),dndu2, secmember(4),dndv2, temp);
   }
 
-  // Les poles 2d  
+  // Tops 2d  
   Poles2d(Poles2d.Lower()).SetCoord(X(1),X(2));
   Poles2d(Poles2d.Upper()).SetCoord(X(3),X(4));
   if (!istgt) {
@@ -1789,7 +1789,7 @@ Standard_Boolean BlendFunc_ConstRad::Section
     D2Poles2d(Poles2d.Upper()).SetCoord(secmember(3), secmember(4));    
   }
 
-  // on traite le cas linear...
+  // linear case is processed...
   if (mySShape == BlendFunc_Linear) {
     Poles(low) = pts1;
     Poles(upp) = pts2;
@@ -1808,17 +1808,17 @@ Standard_Boolean BlendFunc_ConstRad::Section
     return (!istgt);
   }
 
-  // Cas du cercle
+  // Case of circle
   norm1 = nplan.Crossed(ns1).Magnitude();
   norm2 = nplan.Crossed(ns2).Magnitude();
   if (norm1 < Eps) {
-    norm1 = 1; // Insufisant, mais il ne faut pas planter
+    norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRad : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps) {
-    norm2 = 1; // Insufisant, mais il ne faut pas planter
+    norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRad : Surface singuliere " << endl;
 #endif
@@ -1833,8 +1833,8 @@ Standard_Boolean BlendFunc_ConstRad::Section
     dtgc.SetLinearForm(ray1, d2norm1w, dtg1);
   }
 
-  // On oriente ns1 du centre vers pts1, et ns2 du centre vers pts2
-  // et on rend le triedre ns1,ns2,nplan direct
+  // ns1 is oriented from the center to pts1 and ns2 from the center to pts2
+  // trihedron ns1,ns2,nplan is made direct
 
   if (ray1 > 0.) {
     ns1.Reverse();
@@ -1908,7 +1908,7 @@ gp_Ax1 BlendFunc_ConstRad::AxeRot (const Standard_Real Prm)
     axrot.SetDirection(dirax);
   }
   else {
-    axrot.SetDirection(np);  // Pour ne pas planter
+    axrot.SetDirection(np);  // To avoid stop
   }
   if (dnp.Magnitude() >= gp::Resolution()) {
     oriax.SetXYZ(ptgui.XYZ()+

@@ -1,38 +1,18 @@
 /*=====================================================================
 
-     FONCTION :
+     FUNCTION :
      ----------
-        Classe Graphic2d_ImageFile
+        Class Graphic2d_ImageFile
 
      TEST :
      ------
 
-        Voir TestG2D/TestG21
+        See TestG2D/TestG21
 
-     REMARQUES:
-     ----------
-
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-
-      27-01-98 : GG ; OPTIMISATION LOADER
-                Transformer les variables static globales en static
-                locales.
-
-      05-11-97 : GG :  JAP60017
-                Nouvelle methode SetScale(...) pour pouvoir
-                changer le facteur d'echelle de l'image dynamiquement
-
-      11-07-97 : GG ; BUC50015
-                Tenir compte de l'attribut Zoomable de l'image
-                pour en determiner les MIN-MAX.
 
 =====================================================================*/
 
 #define S3593           //GG_100398
-//                      Optimisation concernant le chargement des images,
-//                      eviter de recharger des images deja chargees!
-//                      Utiliser les methodes du driver qui sont optimisees.
 
 #define xTRACE
 
@@ -159,8 +139,8 @@ static TShort_Array1OfShortReal TheY (1, 5);
     Standard_ShortReal scale = (myIsZoomable) ? Standard_ShortReal(aDrawer->Scale()) : Standard_ShortReal(1.);
     aDrawer->DrawImageFile (myFileName.ToCString(), Xc, Yc, scale*myScale);
 
-    // Dans le cas d'un GraphicObject Highlighted
-    // on trace le rectangle englobant de l'image
+    // In case of GraphicObject Highlighted
+    // the bounding box of the image is traced
     if (myGOPtr->IsHighlighted ()) {
 
 #ifdef TRACE
@@ -375,7 +355,7 @@ Standard_Boolean Result = Standard_False;
 Standard_Boolean Reopen = Standard_False;
         aWidth = aHeight = aDepth = 0;
         if (aFile.IsOpen () && aFile.IsLocked()) {
-                cout << "Can't analyse an locked file.\n" << flush;
+                cout << "Can't analyse a locked file.\n" << flush;
                 return Result;
         }
 

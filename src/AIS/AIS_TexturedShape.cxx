@@ -342,10 +342,8 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 	BRepTools::Update(myshape);
 
 	Handle(Graphic3d_StructureManager) aStrucMana = GetContext()->MainPrsMgr()->StructureManager();
-	  {  
-	    Handle(Prs3d_ShadingAspect) aPrs3d_ShadingAspect = new Prs3d_ShadingAspect;
-	    myAspect = aPrs3d_ShadingAspect->Aspect();
-	  }
+
+	myAspect = (new Prs3d_ShadingAspect())->Aspect();
 	if (!DoMapTexture)
 	  {
 	    myAspect->SetTextureMapOff();
@@ -423,21 +421,21 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 	    dVmax = (Vmax - Vmin);
 	    Handle(Graphic3d_Group) mygroup = Prs3d_Root::CurrentGroup(aPrs);
 
-	    Standard_Integer nnn = myT->NbTriangles();					// nnn : nombre de triangles
-	    Standard_Integer nt, n1, n2, n3 = 0;						// nt  : triangle courant
-	    // ni  : sommet i du triangle courant
+	    Standard_Integer nnn = myT->NbTriangles();					// nnn : number of triangles
+	    Standard_Integer nt, n1, n2, n3 = 0;						// nt  : current triangle
+	    // ni  : top i of the current triangle
 	    for (nt = 1; nt <= nnn; nt++)					
 	      {
 #ifdef DEBUG
 		cout << "On traite actuellement le triangle : "<< nt <<"\n";
 #endif						
-		if (SST.Orientation(myFace) == TopAbs_REVERSED)			// si la face est "reversed"
-		  triangles(nt).Get(n1,n3,n2);						// le triangle est n1,n3,n2
+		if (SST.Orientation(myFace) == TopAbs_REVERSED)			// if the face is "reversed"
+		  triangles(nt).Get(n1,n3,n2);						// the triangle is n1,n3,n2
 		else 
-		  triangles(nt).Get(n1,n2,n3);						// le triangle est n1,n2,n3
+		  triangles(nt).Get(n1,n2,n3);						// the triangle is n1,n2,n3
 
 		if (TriangleIsValid (Nodes(n1),Nodes(n2),Nodes(n3)) )
-		  {	// Associates a vertexNT to each node
+		  {	// Associates vertexNT to each node
 		    Graphic3d_Array1OfVertexNT Points(1,3);
 		    Aspect_Array1OfEdge aretes(1,3);
 

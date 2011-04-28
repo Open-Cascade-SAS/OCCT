@@ -49,7 +49,7 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   // find vertices not under ancestors.
   TopAbs_ShapeEnum E = aShape.ShapeType();
   if (E == TopAbs_COMPOUND) {
-    // il faut presenter les vertex isoles a defaut de les cacher.
+    // it is necessary to present isolated vertexes instead of hiding them.
     for (ex.Init(aShape, TopAbs_VERTEX, TopAbs_EDGE); ex.More(); ex.Next()) {
       StdPrs_WFShape::Add(aPresentation, ex.Current(), aDrawer);
     }
@@ -109,7 +109,7 @@ void StdPrs_HLRPolyShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   }
   
   
-  // stockage dans le groupe:
+  // storage in the group:
   
   HLRBRep_ListIteratorOfListOfBPoint ItB;
 

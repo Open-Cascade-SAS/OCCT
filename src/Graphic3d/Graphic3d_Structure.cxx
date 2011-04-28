@@ -57,11 +57,10 @@
 
 //-Version      
 
-//-Design       Declaration des variables specifiques aux structures
-//              graphiques
+//-Design       Declaration of variables specific to graphic structures
 
-//-Warning      Une structure est definie dans un manager
-//              Il s'agit d'une sequence de groupes de primitives
+//-Warning      A structure is defined in a manager
+//              This is a sequence of groups of primitives
 
 //-References   
 
@@ -124,7 +123,7 @@ MyHighlightColor (Quantity_NOC_WHITE)
   Handle(Graphic3d_AspectFillArea3d) aAspectFillArea3d =
     new Graphic3d_AspectFillArea3d ();
 
-  // Recuperation des valeurs par defaut
+  // Return default values
   AManager->PrimitivesAspect (aAspectLine3d, aAspectText3d,
     aAspectMarker3d, aAspectFillArea3d);
 
@@ -133,7 +132,7 @@ MyHighlightColor (Quantity_NOC_WHITE)
   aAspectFillArea3d->SetPolygonOffsets( Aspect_POM_Fill, 1., 0. );
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 
-  // Mise a jour de la CStructure associee
+  // Update the associated CStructure
   UpdateStructure (aAspectLine3d, aAspectText3d,
     aAspectMarker3d, aAspectFillArea3d);
 
@@ -253,10 +252,10 @@ void Graphic3d_Structure::Remove () {
   Standard_Integer i, Length;
   //        Standard_Address APtr = (void *) This ().operator->();
   Standard_Address APtr = (void *) this;
-  // Il faut enlever le pointeur possible sur cette structure
-  // que l'on est en train de detruire, dans la liste des descendants
-  // des ancetres de cette structure et dans la liste des ancetres
-  // des descendants de cette meme structure.
+  // It is necessary to remove the eventual pointer on the structure
+  // that can be destroyed, in the list of descendants
+  // of ancesters of this structure and in the list of ancesters
+  // of descendants of the same structure.
 
   Length  = MyDescendants.Length ();
   for (i=1; i<=Length; i++)
@@ -271,11 +270,11 @@ void Graphic3d_Structure::Remove () {
   MyCStructure.ContainsFacet      = 0;
   MyCStructure.IsDeleted  = 1;
 
-  // Destruction de me dans la bibliotheque graphique
+  // Destruction of me in the graphic library
   MyGraphicDriver->RemoveStructure (MyCStructure);
 
-  // Liberation de l'identification de la structure detruite
-  // dans le premier manager qui a gere la creation de la structure.
+  // Liberation of the identification if the destroyed structure 
+  // in the first manager that performs creation of the structure.
   if ( MyFirstPtrStructureManager )
     MyFirstStructureManager->Remove (Standard_Integer (MyCStructure.Id));
 
@@ -369,15 +368,15 @@ void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod AMethod)
 
   if (IsDeleted ()) return;
 
-  // Highlight sur une structure deja Highlighted.
+  // Highlight on already Highlighted structure.
   if (MyCStructure.highlight) {
 
     Aspect_TypeOfUpdate UpdateMode = MyStructureManager->UpdateMode ();
     if (UpdateMode == Aspect_TOU_WAIT)
       UnHighlight ();
     else {
-      // Pour eviter d'appeler la methode : Update ()
-      // Inutile et peut-etre couteux.
+      // To avoid call of method : Update ()
+      // Not useful and can be costly.
       MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
       UnHighlight ();
       MyStructureManager->SetUpdateMode (UpdateMode);
@@ -404,14 +403,14 @@ void Graphic3d_Structure::SetHighlightColor (const Quantity_Color& AColor) {
   if (! MyCStructure.highlight)
     MyHighlightColor = AColor;
   else {
-    // Changement de highlight color sur une structure deja Highlighted.
+    // Change highlight color on already Highlighted structure.
 
     Aspect_TypeOfUpdate UpdateMode  = MyStructureManager->UpdateMode ();
     if (UpdateMode == Aspect_TOU_WAIT)
       UnHighlight ();
     else {
-      // Pour eviter d'appeler la methode : Update ()
-      // Inutile et peut-etre couteux.
+      // To avoid call of method : Update ()
+      // Not useful and can be costly.
       MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
       UnHighlight ();
       MyStructureManager->SetUpdateMode (UpdateMode);
@@ -529,7 +528,7 @@ Standard_Boolean Graphic3d_Structure::IsVisible () const {
 
 Standard_Boolean Graphic3d_Structure::IsRotated () const {
 
-  // Test un peu leger !
+  // A somewhat light test !
   return   ( MyCStructure.Transformation[0][1] != 0.
     || MyCStructure.Transformation[0][2] != 0.
     || MyCStructure.Transformation[1][0] != 0.
@@ -552,11 +551,11 @@ Standard_Boolean Graphic3d_Structure::IsTransformed () const {
         Result = MyCStructure.Transformation[i][j] != 0.;
 
 #ifdef TRACE_ISTRSF
-  cout << "La structure " << Identification ();
+  cout << "Structure " << Identification ();
   if (Result)
-    cout << " est transformee\n" << flush;
+    cout << " is transformed\n" << flush;
   else
-    cout << " n'est pas transformee\n" << flush;
+    cout << " is not transformed\n" << flush;
 #endif
 
   return Result;
@@ -567,8 +566,8 @@ Standard_Boolean Graphic3d_Structure::ContainsFacet () const {
 
   if (IsDeleted ()) return (Standard_False);
 
-  // Une structure contient au moins une facette :
-  // si l'un de ses groupes est contient au moins une facette.
+  // A structure contains at least one facet :
+  // if one of these groups contains at least one facet.
 
   Standard_Boolean Result1 = Standard_False;
   Standard_Boolean Result2 = Standard_False;
@@ -576,13 +575,12 @@ Standard_Boolean Graphic3d_Structure::ContainsFacet () const {
 
   Result1 = (MyCStructure.ContainsFacet > 0);
 
-  // Si un des groupes contient au moins une facette alors
-  // la structure aussi.
+  // If one of groups contains at least one facet, the structure contains it too.
   if (Result1) return (Result1);
 
   Length  = MyDescendants.Length ();
 
-  // Je m'arrete au premier descendant qui contient au moins une facette.
+  // Stop at the first descendant  containing at least one facet.
   for (i=1; i<=Length && ! Result2; i++)
     Result2 = ((Graphic3d_Structure *)
     (MyDescendants.Value (i)))->ContainsFacet ();
@@ -595,26 +593,26 @@ Standard_Boolean Graphic3d_Structure::IsEmpty () const {
 
   if (IsDeleted ()) return (Standard_True);
 
-  // Une structure est vide :
-  // si l'ensemble de ses groupes est vide ou tous ses
-  // groupes sont vides et si l'ensemble de ses descendants
-  // est vide ou tous ses descendants sont vides.
+  // A structure is empty :
+  // if all these groups are empty or if all 
+  // groups are empty and all their descendants
+  // are empty or if all its descendants are empty.
 
   Standard_Boolean Result1   = Standard_True;
   Standard_Integer i, Length = MyGroups.Length ();
 
-  // Je m'arrete au premier groupe non vide
+  // Stop at the first non-empty group
   for (i=1; i<=Length && Result1; i++)
     Result1 = (MyGroups.Value (i))->IsEmpty ();
 
-  // Si un des groupes est non vide alors la structure l'est aussi.
+  // If a group is non-empty the structure is also non-empty.
   if (! Result1) return (Standard_False);
 
   Standard_Boolean Result2 = Standard_True;
 
   Length  = MyDescendants.Length ();
 
-  // Je m'arrete au premier descendant non vide
+  // Stop at the first non-empty descendant 
   for (i=1; i<=Length && Result2; i++)
     Result2 = ((Graphic3d_Structure *)
     (MyDescendants.Value (i)))->IsEmpty ();
@@ -1044,8 +1042,8 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine
   MyGraphicDriver->ContextStructure (MyCStructure);
 
   // CAL 14/04/95
-  // Les attributs sont "IsSet" lors de la premiere mise a jour
-  // d'un contexte (line, marker...)
+  // attributes are "IsSet" during the first update 
+  // of a context (line, marker...)
   MyCStructure.ContextLine.IsSet          = 1;
   MyCStructure.ContextFillArea.IsSet      = 1;
   MyCStructure.ContextMarker.IsSet        = 1;
@@ -1261,8 +1259,8 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
 #endif
 
   // CAL 14/04/95
-  // Les attributs sont "IsSet" lors de la premiere mise a jour
-  // d'un contexte (line, marker...)
+  // Attributes are "IsSet" during the first update
+  // of context (line, marker...)
   MyCStructure.ContextLine.IsSet          = 1;
   MyCStructure.ContextFillArea.IsSet      = 1;
   MyCStructure.ContextMarker.IsSet        = 1;
@@ -1313,8 +1311,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText
   MyGraphicDriver->ContextStructure (MyCStructure);
 
   // CAL 14/04/95
-  // Les attributs sont "IsSet" lors de la premiere mise a jour
-  // d'un contexte (line, marker...)
+  // Attributes are "IsSet" during the first update of a context (line, marker...)
   MyCStructure.ContextLine.IsSet          = 1;
   MyCStructure.ContextFillArea.IsSet      = 1;
   MyCStructure.ContextMarker.IsSet        = 1;
@@ -1345,9 +1342,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectMark
 
   MyGraphicDriver->ContextStructure (MyCStructure);
 
-  // CAL 14/04/95
-  // Les attributs sont "IsSet" lors de la premiere mise a jour
-  // d'un contexte (line, marker...)
+  // Attributes are "IsSet" during the first update of a context (line, marker...)
   MyCStructure.ContextLine.IsSet          = 1;
   MyCStructure.ContextFillArea.IsSet      = 1;
   MyCStructure.ContextMarker.IsSet        = 1;
@@ -1376,8 +1371,8 @@ void Graphic3d_Structure::SetVisual (const Graphic3d_TypeOfStructure AVisual) {
       Display ();
     }
     else {
-      // Pour eviter d'appeler la methode : Update ()
-      // Inutile et peut-etre couteux.
+      // To avoid calling method : Update ()
+      // Not useful and can be costly.
       MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
       Erase ();
       MyVisual        = AVisual;
@@ -1500,8 +1495,8 @@ void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& AStructure
         MyAncestors.Append ((void *) AStructure.operator->());
         AStructure->Connect (this, Graphic3d_TOC_DESCENDANT);
 
-        // MyGraphicDriver->Connect est appele dans le cas
-        // d'un connect entre mere et fille
+        // MyGraphicDriver->Connect is called in case
+        // if connection between parent and child
       }
     }
     break;
@@ -1521,7 +1516,7 @@ void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& AStruct
     if ((void *) (MyDescendants.Value (i)) ==
       (void *) (AStructure.operator->())) indexD  = i;
 
-  // On cherche dans les Descendants
+  // Search in the Descendants
   if (indexD != 0) {
     MyDescendants.Remove (indexD);
     AStructure->Disconnect (this);
@@ -1538,13 +1533,13 @@ void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& AStruct
       if ((void *) (MyAncestors.Value (i)) ==
         (void *) (AStructure.operator->())) indexA  = i;
 
-    // On cherche dans les Ancestors
+    // Search in the Ancestors
     if (indexA != 0) {
       MyAncestors.Remove (indexA);
       AStructure->Disconnect (this);
 
-      // Pas de call a MyGraphicDriver->Disconnect
-      // dans le cas d'un ancetre
+      // No call of MyGraphicDriver->Disconnect
+      // in case of an ancestor
     }
   }
 
@@ -1562,20 +1557,20 @@ void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection AType)
   case Graphic3d_TOC_DESCENDANT :
     Length      = MyDescendants.Length ();
     for (i=1; i<=Length; i++)
-      // Value (1) et non Value (i) car MyDescendants
-      // est modifiee par :
+      // Value (1) instead of Value (i) as MyDescendants
+      // is modified by :
       // Graphic3d_Structure::Disconnect (AStructure)
-      // qui enleve AStructure de MyDescendants
+      // that takes AStructure from MyDescendants
       ((Graphic3d_Structure *)
       (MyDescendants.Value (1)))->Disconnect (this);
     break;
   case Graphic3d_TOC_ANCESTOR :
     Length      = MyAncestors.Length ();
     for (i=1; i<=Length; i++)
-      // Value (1) et non Value (i) car MyAncestors
-      // est modifiee par :
+     // Value (1) instead of Value (i) as MyAncestors
+      // is modified by :
       // Graphic3d_Structure::Disconnect (AStructure)
-      // qui enleve AStructure de MyAncestors
+      // that takes AStructure from MyAncestors
       ((Graphic3d_Structure *)
       (MyAncestors.Value (1)))->Disconnect (this);
     break;
@@ -1606,7 +1601,7 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal& AMatrix, con
   TColStd_Array2OfReal AMatrix44 (0, 3, 0, 3);
 
   // Assign the new transformation in an array [0..3][0..3]
-  // Evite des problemes si le user a defini sa matrice [1..4][1..4]
+  // Avoid problemes if the user has defined matrice [1..4][1..4]
   //                                                 ou [3..6][-1..2] !!
   lr      = AMatrix.LowerRow ();
   ur      = AMatrix.UpperRow ();
@@ -1619,7 +1614,7 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal& AMatrix, con
 
   if (AType == Graphic3d_TOC_REPLACE) {
     MyCStructure.Composition = 0;
-    // La mise a jour de la CStructure
+    // Update of CStructure
     for (i=0; i<=3; i++)
       for (j=0; j<=3; j++) {
         MyCStructure.Transformation[i][j] =
@@ -1630,11 +1625,11 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal& AMatrix, con
 
   if (AType == Graphic3d_TOC_POSTCONCATENATE) {
     MyCStructure.Composition = 1;
-    // Pour simplifier la gestion des indices
+    // To simplify management of indices
     for (i=0; i<=3; i++)
       for (j=0; j<=3; j++)
         AMatrix44 (i, j) = AMatrix (lr + i, lc + j);
-    // Le calcul de produit de matrices
+    // Calculation of the product of matrices
     for (i=0; i<=3; i++)
       for (j=0; j<=3; j++) {
         NewTrsf (i, j) = 0.0;
@@ -1646,13 +1641,13 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal& AMatrix, con
           NewTrsf (i, j) = valuenewtrsf;
         }
       }
-      // La mise a jour de la CStructure
+      // Update of CStructure
       for (i=0; i<=3; i++)
         for (j=0; j<=3; j++)
           MyCStructure.Transformation[i][j] = float (NewTrsf (i, j));
   }
 
-  // Si transformation, non validation des parties cachees deja calculees.
+  // If transformation, no validation of hidden already calculated parts.
   if (IsRotated ())
     ReCompute ();
 
@@ -1691,8 +1686,8 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin
   if ((XTMin == RF) && (YTMin == RF) &&
       (ZTMin == RF) && (XTMax == RL) &&
       (YTMax == RL) && (ZTMax == RL)) {
-      // Cas impossible car cela voudrait dire
-      // que la structure est vide
+      // Case impossible as it would mean that 
+      // the structure is empty
       XMin = RF; 
       YMin = RF; 
       ZMin = RF;
@@ -1799,9 +1794,9 @@ gp_Pnt Graphic3d_Structure::TransformPersistencePoint() const
 
 void Graphic3d_Structure::Add (const Handle(Graphic3d_Group)& AGroup) {
 
-  // Methode appelee que par le constructeur de Graphic3d_Group
-  // Ce n'est pas la peine de tester l'existence de <AGroup>
-  // dans la sequence MyGroups.
+  // Method called only by the constructor of Graphic3d_Group
+  // It is easy to check presence of <AGroup>
+  // in sequence MyGroups.
   MyGroups.Append (AGroup);
 
 }
@@ -1850,7 +1845,7 @@ void Graphic3d_Structure::Remove (const Handle(Graphic3d_Group)& AGroup) {
   for (Standard_Integer i=1; i<=Length && index==0; i++)
     if (MyGroups.Value (i) == AGroup) index = i;
 
-  // On cherche dans les Groups
+  // Search in Groups
   if (index != 0) {
     Standard_Integer GroupLabelBegin, GroupLabelEnd;
     AGroup->Labels (GroupLabelBegin, GroupLabelEnd);
@@ -1980,8 +1975,8 @@ void Graphic3d_Structure::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin,
           if ((XMin == RL) && (YMin == RL) &&
               (ZMin == RL) && (XMax == RF) &&
               (YMax == RF) && (ZMax == RF)) {
-              // Cas impossible car cela voudrait dire
-              // que la structure est vide
+              // Case impossible as it would mean 
+              // that the structure is empty
               XMin    = RF;
               YMin    = RF;
               ZMin    = RF;
@@ -2075,8 +2070,7 @@ void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& AStructure
     while (IteratorD.More ()) {
       Graphic3d_Structure::Network
         (IteratorD.Key (), AType, ASet);
-      // IteratorD.Next () se positionne
-      // sur la prochaine structure
+      // IteratorD.Next () is located on the next structure
       IteratorD.Next ();
     }
     break;
@@ -2085,9 +2079,8 @@ void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& AStructure
     while (IteratorA.More ()) {
       Graphic3d_Structure::Network
         (IteratorA.Key (), AType, ASet);
-      // IteratorA.Next () se positionne
-      // sur la prochaine structure
-      IteratorA.Next ();
+      // IteratorD.Next () is located on the next structure
+     IteratorA.Next ();
     }
     break;
   }
@@ -2394,7 +2387,7 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod A
     break;
   case Aspect_TOHM_BOUNDBOX :
     if (IsEmpty () || IsInfinite ()) {
-      // Structure vide ou infinie
+      // Empty or infinite structure
       XMin = YMin = ZMin = 0.;
       XMax = YMax = ZMax = 0.;
     }
@@ -2462,11 +2455,11 @@ Graphic3d_TypeOfStructure Graphic3d_Structure::ComputeVisual () const {
 
 void Graphic3d_Structure::SetComputeVisual (const Graphic3d_TypeOfStructure AVisual) {
 
-  // On ne memorise le ComputeVisual que lorsque la structure est
-  // declaree TOS_ALL, TOS_WIREFRAME ou TOS_SHADING.
-  // C'est cette declaration qui va nous permettre de calculer
-  // la bonne representation de la structure calculee par Compute
-  // et non pas le passage en TOS_COMPUTED.
+  // The ComputeVisual is saved only if the structure is
+  // declared TOS_ALL, TOS_WIREFRAME or TOS_SHADING.
+  // This declaration permits to calculate
+  // proper representation of the structure calculated by Compute
+  // instead of passage to TOS_COMPUTED.
   if (AVisual != Graphic3d_TOS_COMPUTED)
     MyComputeVisual = AVisual;
 
@@ -2478,7 +2471,7 @@ void Graphic3d_Structure::Plot (const Handle(Graphic3d_Plotter)& ) {
 
 void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& AManager, const Standard_Boolean WithPropagation) {
 
-  // Toutes les structures connectees doivent suivre ?
+  // All connected structures should follow ?
 #ifdef IMPLEMENTED
   if (WithPropagation) {
     Standard_Integer i, Length;
@@ -2494,7 +2487,7 @@ void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& 
   }
 #endif
 
-  // changement d'identification ?
+  // change of identification ?
   // MyStructureManager->Remove (Standard_Integer (MyCStructure.Id));
   // AManager->NewIdentification ();
   // MyCStructure.Id      = int (AManager->NewIdentification ());
@@ -2525,7 +2518,7 @@ void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& 
   MyStructureManager->SetUpdateMode (UpdateMode);
   AManager->SetUpdateMode (NewUpdateMode);
 
-  // Nouveau manager
+  // New manager
   MyPtrStructureManager   = (void *) AManager.operator->();
 
 }
@@ -2538,9 +2531,9 @@ void Graphic3d_Structure::SetHLRValidation (const Standard_Boolean AFlag) {
 
 Standard_Boolean Graphic3d_Structure::HLRValidation () const {
 
-  // Les parties cachees stockees dans <me> sont valides si :
-  // 1/ le proprietaire est defini.
-  // 2/ elles n'ont pas ete invalidees.
+  // Hidden parts stored in <me> are valid if :
+  // 1/ the owner is defined.
+  // 2/ they are not invalid.
 
   Standard_Boolean Result = MyOwner != NULL && MyCStructure.HLRValidation != 0;
 

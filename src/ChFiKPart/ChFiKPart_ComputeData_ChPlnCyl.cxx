@@ -121,7 +121,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     Rad = Cyl.Radius()- Dis1;
     if ( Abs(Rad) <= Precision::Confusion() ) pointu = Standard_True;
     if(Rad < 0 ) {
-      cout<<"le chanfrein ne passe pas"<<endl;
+      cout<<"the chamfer can't pass"<<endl;
       return Standard_False;
     }
   }
@@ -305,7 +305,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : MakeChamfer
-//purpose  : cas cylindre/plan ou plan/cylindre.
+//purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
 
 Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
@@ -323,11 +323,12 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 				       const TopAbs_Orientation Ofpl,
 				       const Standard_Boolean plandab)
 {
-  //calcul du conge plan.
-   //or1 et or2 permettent de determiner dans lequel des 4 cotes crees par
-   //l'intersection des 2 surfaces_ on est
-   //        _|_  et Ofpl qui est l'orientation de la face du plan permettant
-   //         |4          de determiner le cote de la matiere
+  // calculation of the fillet plane.
+  // or1 and or2 permit to determine in which of four sides created by
+  // intersection of 2 surfaces we are
+  //        _|_          Ofpl is orientation of the plane face allowing
+  //         |4          to determine the side of the material
+
 
   Standard_Real dis1=Dis1, dis2=Dis2; 
   if (!plandab){
@@ -345,8 +346,8 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     {NorF.Reverse();} 
 
   gp_Ax3 AxCyl = Cyl.Position();
-  // OrCyl est le point sur l'axe du cylindre dans le plan normal a l'axe
-  // contenant OrSpine
+  // OrCyl is the point on axis of cylinder in the plane normal to the
+  // axis containing OrSpine
   gp_Pnt Loc = AxCyl.Location();
   gp_Vec LocSp(Loc, OrSpine);
   gp_XYZ temp = AxCyl.Direction().XYZ();
@@ -357,7 +358,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 //  OrCyl.SetXYZ( (AxCyl.Location().XYZ()).Added(temp) );
 
  
-  //construction de POnPln
+  //construction of POnPln
   gp_Vec VecTranslPln,tmp;
 
   tmp = gp_Vec(OrSpine,OrCyl);
@@ -372,7 +373,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
   POnPln.SetXYZ( (OrSpine.XYZ()).Added(VecTranslPln.XYZ()) );
 
-  //construction de POnCyl 
+  //construction of POnCyl 
   Standard_Real alpha = ( 2*ASin(dis2*0.5/Cyl.Radius()) );
 //  gp_Vec VecTranslCyl;
 //  VecTranslCyl = gp_Vec(OrSpine,OrCyl);
@@ -394,14 +395,14 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
   POnCyl.SetXYZ( OrCyl.XYZ().Added(VecCylTransl.XYZ()) );
 
-  //construction du chanfrein  
+  //construction of chamfer  
   Standard_Real UOnCyl,VOnCyl,UOnPln,VOnPln;
   ElSLib::Parameters(Cyl,POnCyl,UOnCyl,VOnCyl);
   POnCyl = ElSLib::CylinderValue(UOnCyl,VOnCyl,AxCyl,Cyl.Radius());		
   ElSLib::Parameters(Pln,POnPln,UOnPln,VOnPln);
   POnPln = ElSLib::PlaneValue(UOnPln,VOnPln,AxPln);
 
-  //construction de YDir pour aller de face1 vers face2.
+  //construction of YDir to go to face1 from face2.
   gp_Vec YDir(POnPln,POnCyl);
   if (!plandab){ 
     YDir.Reverse();
@@ -411,8 +412,8 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   Handle(Geom_Plane) Chamfer = new Geom_Plane(AxCh);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(Chamfer,DStr));
 
-  // On charge les FaceInterferences avec les pcurves et courbes 3d.
-     //----------- edge plan-Chamfer
+  // FaceInterferences are loaded with pcurves and curves 3d.
+     //----------- edge plane-Chamfer
   gp_Pnt2d PPln2d(UOnPln,VOnPln);
   gp_Dir2d VPln2d(XDir.Dot(AxPln.XDirection()),
 		  XDir.Dot(AxPln.YDirection()));
@@ -438,7 +439,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 
   if (PosChamfPln )
     toreverse = !toreverse; 
-  // On regarde si l orientation du Chamfer est la meme que celle du plan
+  // It is checked if the orientation of the Chamfer is the same as of the plane
   if (toreverse)
     {Data->ChangeOrientation() = TopAbs::Reverse(Ofpl);}
   else          
@@ -448,7 +449,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
   if ((!plandab && toreverse) || (plandab && !toreverse))
     {trans=TopAbs_REVERSED;}
   
-  //trans permet de determiner le cote "matiere" sur S1(2) delimite par L3d
+  //trans permits to determine the "material" side on S1(2) limited by L3d
   if (plandab) 
     {Data->ChangeInterferenceOnS1().
      SetInterference(ChFiKPart_IndexCurveInDS(L3d,DStr),trans,LFac,LFil);}
@@ -456,7 +457,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     {Data->ChangeInterferenceOnS2().
      SetInterference(ChFiKPart_IndexCurveInDS(L3d,DStr),trans,LFac,LFil);}
   
-     //------------edge cylindre-Chamfer	
+     //------------edge cylinder-Chamfer	
   gp_Pnt2d PCyl2d(UOnCyl,VOnCyl);
   gp_Dir2d VCyl2d=gp::DY2d();
   if ( XDir.Dot(AxCyl.Direction())<0 )

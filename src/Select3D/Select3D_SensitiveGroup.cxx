@@ -89,10 +89,10 @@ void Select3D_SensitiveGroup::Clear()
 //purpose  : 
 //=======================================================================
 
-void Select3D_SensitiveGroup::Project(const Handle(Select3D_Projector)& aProjector) 
+void Select3D_SensitiveGroup::Project(const Select3D_Projector& aProjector) 
 {
   Select3D_SensitiveEntity::Project(aProjector); // to set the field last proj...
-
+  
   for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()){
     It.Value()->Project(aProjector);
   }
@@ -180,16 +180,16 @@ Standard_Boolean Select3D_SensitiveGroup::Matches(const Standard_Real X,
   myLastTol = aTol;
   for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()){
     myLastRank++;
-    if (It.Value()->Matches (X, Y, aTol, DMin))
-    {
-      myX = X; myY = Y; myLastTol = aTol;
-      // compute and validate the depth (will call ::ComputeDepth())
-      return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin);
+    if(It.Value()->Matches(X,Y,aTol,DMin)){
+      myX = X;myY = Y;myLastTol = aTol;
+      SetLastDepth( Precision::Infinite() );
+      
+      Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+      return Standard_True;
     }
   }
-  // no match
-  myLastRank = 0;
-  SetLastDepth (ShortRealLast());
+  myLastRank =0;
+  SetLastDepth(0.0);
   return Standard_False;
 }
 
@@ -252,31 +252,24 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 
 //=======================================================================
 //function : ComputeDepth
-//purpose  : pour optimiser, on prend le min des profondeurs pour 
-//          les entites qui repondent OUI a Matches(X,Y,...)
-//          on commence le test a partir de mylastRank...
+//purpose  : to optimise, the minimum depth for 
+//          entities that answer YES to Matches(X,Y,...) is taken
+//          the test is started from mylastRank...
 //=======================================================================
 Standard_Real Select3D_SensitiveGroup::ComputeDepth(const gp_Lin& EyeLine) const
 {
-  Standard_Integer currank = 0;
-  Standard_Real DMin, thedepth (Precision::Infinite());
-  for (Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())
-  {
+  Standard_Integer currank(0);
+  Standard_Real DMin,thedepth(Precision::Infinite());
+  for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()){
     currank++;
-    if (currank >= myLastRank)
-    {
-      // this recomputes and validates the depth for the entity
-      if (It.Value()->Matches (myX, myY, myLastTol, DMin))
-      {
-        It.Value()->ComputeDepth (EyeLine);
-        if (It.Value()->Depth() < thedepth)
-        {
-          // search for topmost entity
-          thedepth = It.Value()->Depth();
-          //myLastRank = currank; // can not do this here...
-        }
+    if(currank>=myLastRank){
+      if(It.Value()->Matches(myX,myY,myLastTol,DMin)){
+	It.Value()->ComputeDepth(EyeLine);
+	thedepth = Min(Depth(),
+		       It.Value()->Depth());
       }
     }
+    
   }
   return thedepth;
 }
@@ -294,7 +287,7 @@ Standard_Integer Select3D_SensitiveGroup::MaxBoxes() const
   return nbboxes;
 }
 
-void Select3D_SensitiveGroup::SetLastPrj(const Handle(Select3D_Projector)& Prj)
+void Select3D_SensitiveGroup::SetLastPrj(const Select3D_Projector& Prj)
 {
   Select3D_SensitiveEntity::SetLastPrj(Prj);
   for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next())

@@ -5,15 +5,6 @@
         File V3d_View_1.cxx :
 
 
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-	01-03-92 : NW,JPB,CAL ; Creation.
-	13-07-97 : FMN: Debug sur le ZClipping BUC40193
-		       Debug sur le ZCueing aussi
-	24-12-97 : FMN ; Suppression de GEOMLITE
-
-************************************************************************/
-
 /*----------------------------------------------------------------------*/
 /*
  * Includes

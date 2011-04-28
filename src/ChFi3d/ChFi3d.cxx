@@ -22,8 +22,8 @@
 
 //=======================================================================
 //function : ConcaveSide
-//purpose  : calcule le cote concave au voisinage de la frontiere
-//           de 2 faces.
+//purpose  : calculate the concave face at the neighborhood of the border of
+//           2 faces.
 //=======================================================================
 
 Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1, 
@@ -111,9 +111,9 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
     }
   }
   else { 
-    //les faces sont localement tangentes on bidouille!!
+    //the faces are locally tangent - this is fake!
     if(dint1.Dot(dint2) < 0.){
-      //ici c'est une regularite oubliee
+      //This is a forgotten regularity
       gp_Vec DDU, DDV, DDUV;
       S1.D2(p2d1.X(),p2d1.Y(),pt1,DU1,DV1,DDU,DDV,DDUV);
       DU1 += ( DU1 * dint1 < 0) ? -DDU : DDU;
@@ -143,15 +143,15 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
       }
       else {
 #ifdef DEB
-        cout<<"ConcaveSide : pas de cote concave"<<endl;
+        cout<<"ConcaveSide : no concave face"<<endl;
 #endif
-	//ce 10 montre que la face en bout est dans le prolongement de l'une des deux faces d'appui
+	//This 10 shows that the face at end is in the extension of one of two base faces
 	return 10;
       }
     }
     else {
-      //ici ca rebrousse, on prend des points dans les faces
-      //ni trop pres ni trop loin, comme on peut.
+      //here it turns back, the points are taken in faces
+      //neither too close nor too far as much as possible.
       Standard_Real u,v;
 #ifdef DEB
 //      Standard_Real deport = 1000*BRep_Tool::Tolerance(E);

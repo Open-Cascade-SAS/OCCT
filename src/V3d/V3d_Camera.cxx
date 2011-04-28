@@ -56,17 +56,17 @@ V3d_Camera::V3d_Camera(const Handle(V3d_View)& aView) {
   Standard_Real X,Y,Z;
   Graphic3d_Vertex P,T;
 
-// Le point oeil definit la position de la camera
+// The eye point defines the position of the camera
   aView->Eye(X,Y,Z);
   P.SetCoord(X,Y,Z);
   MyPosition = P;
-  // Le point vise definit la cible de la camera
+  // The target point defines the target of the camera
   aView->At(X,Y,Z);
   T.SetCoord(X,Y,Z);
   MyTarget = T;
-// Angle d'inclinaison de la camera
+// Incline Angle of the camera
   MyAngle = aView->Twist();
-// Angle d'ouverture de la camera
+// Aperture Angle of the camera
   MyAperture = (aView->DynamicType()==STANDARD_TYPE(V3d_PerspectiveView)) ?
     ((Handle(V3d_PerspectiveView)&)aView)->Angle() : 0.;
    
@@ -102,8 +102,8 @@ void V3d_Camera::SetRadius(const Standard_Real Radius) {
 
   Standard_Real X0,Y0,Z0,Xn,Yn,Zn;
 
-// Le point cible reste inchange, seul la position de la camera est modifiee
-// en conservant la direction.
+// Targer point remains unchanged, only the position of the camera is modified
+// preserving the direction.
   Graphic3d_Vector D(MyTarget,MyPosition);
   D.Normalize();
   D.Coord(Xn,Yn,Zn);
@@ -122,7 +122,7 @@ void V3d_Camera::OnHideFace(const Handle(V3d_View)& aView) {
   Rayon = this->Radius();
   MyPosition.Coord(XP,YP,ZP);
   SymetricPointOnSphere(aView,MyTarget,MyPosition,Rayon,X,Y,Z,VX,VY,VZ);
-  //      Actuellement est on sur le point vu
+  //      This point is visible
   if ( (VX*(X-XP) < 0.) && (VY*(Y-YP) < 0.) && (VZ*(Z-ZP) < 0.) ) {
     this->SetPosition(X,Y,Z);
   }
@@ -135,7 +135,7 @@ void V3d_Camera::OnSeeFace(const Handle(V3d_View)& aView) {
   Rayon = this->Radius();
   MyPosition.Coord(XP,YP,ZP);
   SymetricPointOnSphere(aView,MyTarget,MyPosition,Rayon,X,Y,Z,VX,VY,VZ);
-  //      Actuellement est on sur le point cache
+  //      This point is hidden
   if ( (VX*(X-XP) > 0.) && (VY*(Y-YP) > 0.) && (VZ*(Z-ZP) > 0.) ) {
     this->SetPosition(X,Y,Z);
   }
@@ -149,12 +149,12 @@ Standard_Boolean V3d_Camera::SeeOrHide(const Handle(V3d_View)& aView) const {
   Rayon = this->Radius();
   MyPosition.Coord(XP,YP,ZP);
   SymetricPointOnSphere(aView,MyTarget,MyPosition,Rayon,X,Y,Z,VX,VY,VZ);
-  //      Avons nous le point cache ou le point vu
+  //      Is it a visible or a hidden point?
   if ( (VX*(X-XP) > 0.) || (VY*(Y-YP) > 0.) || (VZ*(Z-ZP) > 0.) )
-//      la source est sur la face cachee
+//      the source is on the hidden face
     Val = Standard_False; 
   else
-    //      la source est sur la face vue.
+    //  the source is on the visible face.
     Val = Standard_True;
 
   return Val;
@@ -206,17 +206,17 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
   Graphic3d_Array1OfVertex VN2(1,NbPoints+1);
   Graphic3d_Array1OfVertex V2(1,2);
 
-//      Direction de la camera
+//      Direction of the camera
   MyPosition.Coord(XP,YP,ZP);
   MyTarget.Coord(X0,Y0,Z0);
   Dx = X0 - XP; Dy = Y0 - YP; Dz = Z0 - ZP;
   Lng = this->Radius()/10.;
   
-//      Recherche des centres des carres de base du boitier de la camera :
+//      Find centers of base squares of the case of the camera :
   Xc1 = XP - Dx * Lng; Yc1 = YP - Dy * Lng; Zc1 = ZP - Dz * Lng;
   Xc2 = XP + Dx * Lng; Yc2 = YP + Dy * Lng; Zc2 = ZP + Dz * Lng;
   
-//      Construction d'un repere i,j pour les rectangles :
+//      Construction of a mark i,j for rectangles :
   Xn=0., Yn=0., Zn=0.;
 
   if ( Abs(Dx) <= Abs(Dy) && Abs(Dx) <= Abs(Dz)) Xn=1.;
@@ -233,13 +233,13 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
   Yj = Dz * Xi - Dx * Zi;
   Zj = Dx * Yi - Dy * Xi;
 
-//      Dessin du boitier
+//      Scheme of the case
   for (i = 1 ; i <= NbPoints ; i++) {
 
     cosinus = Cos ( Alpha + (i - 1) *  Standard_PI/2. );   
     sinus   = Sin ( Alpha + (i - 1) *  Standard_PI/2. );   
     
-    //          Premier carre de base
+    //          First base square
     X = Xc1 + (cosinus * Xi + sinus * Xj) * Lng / 2.;
     Y = Yc1 + (cosinus * Yi + sinus * Yj) * Lng / 2.;
     Z = Zc1 + (cosinus * Zi + sinus * Zj) * Lng / 2.;
@@ -247,7 +247,7 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
     if(i==1) VN1(NbPoints+1).SetCoord(X,Y,Z);
     V2(1).SetCoord(X,Y,Z);
     
-//          Second carre de base
+//          Second base square
     X = Xc2 + (cosinus * Xi + sinus * Xj) * Lng / 2.;
     Y = Yc2 + (cosinus * Yi + sinus * Yj) * Lng / 2.;
     Z = Zc2 + (cosinus * Zi + sinus * Zj) * Lng / 2.;
@@ -260,7 +260,7 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
   gsymbol->Polyline(VN1);
   gsymbol->Polyline(VN2);
 
-//      Dessin de l'objectif
+//      Scheme of the objective
   for (i = 1 ; i <= NbPoints ; i++) {
     
     cosinus = Cos ( Alpha + (i - 1) *  Standard_PI/2. );   
@@ -274,7 +274,7 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
     if(i==1) VN1(NbPoints+1).SetCoord(X,Y,Z);
     V2(1).SetCoord(X,Y,Z);
 
-//          Second carre de base
+//          Second base square
     X = Xc2 + Dx * Lng / 6. + (cosinus * Xi + sinus * Xj) * Lng / 3.;
     Y = Yc2 + Dy * Lng / 6. + (cosinus * Yi + sinus * Yj) * Lng / 3.;
     Z = Zc2 + Dz * Lng / 6. + (cosinus * Zi + sinus * Zj) * Lng / 3.;
@@ -303,8 +303,8 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
   V3d_TypeOfUpdate UpdSov;
 
 
-//  Creation d'une structure d'elements reperables (la position de
-//  la camera, et la sphere de deplacement de cette camera)
+//  Creation of a structure of markable elements (position of the
+//  camera, and the sphere of displacement of this camera)
 
   Pres = TPres;
   Handle(V3d_Viewer) TheViewer = aView->Viewer();
@@ -336,18 +336,18 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
   Handle(Graphic3d_Group) gsphere;
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) gsphere = new Graphic3d_Group(MyGraphicStructure);    
   
-//  Creation d'une structure d'elements non reperables ( meridien et 
-//  parallele ).
+//  Creation of a structure of non-markable elements (meridian and 
+//  parallel ).
   Handle(Graphic3d_Group) gnopick = new Graphic3d_Group(MyGraphicStructure1);
   MyGraphicStructure1->SetPick(Standard_False);
 
   MyTarget.Coord(X0,Y0,Z0);
 
-//Affichage de la position de la camera.
+// Display of the position of the camera.
 
   gcamera->SetPickId(1);
   if (Pres == V3d_SIMPLE) {
-//    on dessine un viseur
+//    a viewfinder is drawn
     Graphic3d_Array1OfVertex PViseur(1,2);
     aView->Project(X0,Y0,Z0,PXT,PYT);
     aView->Convert(PXT,PYT,IXP,IYP);
@@ -363,10 +363,10 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
     PViseur(2).SetCoord(X+X0-XT,Y+Y0-YT,Z+Z0-ZT);
     gcamera->Polyline(PViseur);
   }
-//  on dessine une camera
+//  a camera is drawn
   else this->Symbol(gcamera,aView);
 
-//Affichage de la sphere de reperage (limite au cercle).
+// Display of the marking sphere (limited to circle).
     
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) {
 
@@ -375,7 +375,7 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
     gsphere->SetPickId(2);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
     
-//Affichage du rayon de la sphere (ligne + texte)
+// Display of the radius of the sphere (line + text)
 
     if (Pres == V3d_COMPLETE) {
       gradius->SetPickId(3);
@@ -395,14 +395,14 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);
     }
  
-//Affichage du meridien
+// Display of the meridian
 
     Quantity_Color Col2(Quantity_NOC_GREEN);
     Handle(Graphic3d_AspectLine3d) Asp2 = new Graphic3d_AspectLine3d
       (Col2,Aspect_TOL_SOLID,1.);
     gnopick->SetPrimitivesAspect(Asp2);
     
-    //    Definition de l'axe du cercle
+    // Definition of the axis of circle
     aView->Up(DXRef,DYRef,DZRef);
     this->Position(X,Y,Z);
     DXini = X-X0; DYini = Y-Y0; DZini = Z-Z0;
@@ -412,9 +412,9 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
     
     V3d::CircleInPlane(gnopick,X0,Y0,Z0,VX,VY,VZ,Rayon);
 
-//Affichage de la parallele
+// Display of the parallel
 
-//    Definition de l'axe du cercle
+// Definition of the axis of circle
     aView->Proj(VX,VY,VZ);
     aView->Up(X1,Y1,Z1);
     DXRef = VY * Z1 - VZ * Y1;
@@ -500,11 +500,11 @@ void V3d_Camera::Tracking( const Handle(V3d_View)& aView,
   MyTarget.Coord(X0,Y0,Z0);
   aView->Project(X0,Y0,Z0,PXT,PYT);
   aView->Convert(PXT,PYT,IPX,IPY);
-  //      Coord 3d dans le plan de projection de la cible.
+  //      Coord 3d in the plane of projection of the target.
   aView->Convert(IPX,IPY,XT,YT,ZT);
   switch (WhatPick) {
   case V3d_POSITIONCAMERA : 
-    // Les Coordonnees doivent rester a l'interieur de la sphere
+    // Coordinates should remain inside of the sphere
     Rayon = this->Radius();
     XMinTrack = PXT - Rayon;
     XMaxTrack = PXT + Rayon;
@@ -518,14 +518,13 @@ void V3d_Camera::Tracking( const Handle(V3d_View)& aView,
 	DeltaY = Y0 - YP;
 	DeltaZ = Z0 - ZP;
 	
-//             On recherche le point d'intersection des droites definies
-//             par :
-//              - Droite passant par le point de projection et l'oeil
-//                si on est en perspective, parralele a la normale de la 
-//                vue si on a une vue axonometrique.
-//                position dans la vue est // a la normale de la vue
-//              - La distance position de la camera cible est egale au 
-//                rayon.
+//             The point of intersection of straight lines defined by :
+//              - Straight line passing by the point of projection and the eye
+//                if this is a perspective, parallel to the normal of the 
+//                view if there is an axonometric view.
+//                position in the view is parallel to the normal of the view
+//              - The distance position of the target camera cible is equal 
+//                to the radius.
 
 	A = VX*VX + VY*VY + VZ*VZ ;
 	B = -2. * (VX*DeltaX + VY*DeltaY + VZ*DeltaZ);
@@ -547,8 +546,8 @@ void V3d_Camera::Tracking( const Handle(V3d_View)& aView,
     }
   case V3d_SPACECAMERA : 
     aView->Convert(PXT,PYT,IPX,IPY);
-//               Dans ce cas Xpix,Ypix correspondent a une distance , relative
-//               a la translation que l'on veut effectuer sur la sphere. 
+//               In case Xpix,Ypix corresponding to a distance , relative
+//               to the translation that is planned to be done on the sphere. 
     aView->Convert(IPX+Xpix,IPY+Ypix,X,Y,Z);
     X = X+X0-XT;
     Y = Y+Y0-YT; 
@@ -564,8 +563,8 @@ void V3d_Camera::Tracking( const Handle(V3d_View)& aView,
     break;
   
   case V3d_ExtRADIUSCAMERA :
-//             on cherche a conserver la direction cible positionnement de la 
-//             camera ==> on projette le point sur la direction cible camera.
+//             It is attempted to preserve the target positioning direction of the  
+//             camera ==> the point is projected on the target camera direction.
     this->Position(Xi,Yi,Zi);
     aView->Project(Xi,Yi,Zi,PXP,PYP);
     DX = PXP - PXT;
@@ -586,9 +585,8 @@ void V3d_Camera::Tracking( const Handle(V3d_View)& aView,
     }
     break;
   case V3d_IntRADIUSCAMERA :
-//               on cherche a conserver la direction cible positionnement 
-//               de la camera ==> on projette le point sur la direction 
-//               cible camera.
+//               It is attempted to preserve the target positioning direction of the  
+//             camera ==> the point is projected on the target camera direction.
     this->Position(Xi,Yi,Zi);
     aView->Project(Xi,Yi,Zi,PXP,PYP);
     DX = PXP - PXT;
@@ -603,8 +601,7 @@ void V3d_Camera::Tracking( const Handle(V3d_View)& aView,
       Rap = NewRprj/OldRprj;
       Rayon = this->Radius();
       Rayon = Rayon * Rap;
-//                 la camera doit rester a une position fixe, seule la cible
-//                 est modifie.
+//                 the camera should remain at a fixed position, only the target is modified.
       Graphic3d_Vector Dir(MyPosition,MyTarget);
       Dir.Normalize();
       Dir.Coord(X,Y,Z);
@@ -639,10 +636,10 @@ void V3d_Camera::AerialPilot( const Handle(V3d_View)& aView,
   aView->At(Xv,Yv,Zv);
   aView->Project(Xv,Yv,Zv,PXT,PYT);
   aView->Convert(PXT,PYT,IPX,IPY);
-//      Recherche de tangage ==> Xpix = IPX et Ypix inverse
-//      C'est le point vise qui tourne autour de l'axe passant par l'oeil et 
-//      de direction un vecteur appartenant au plan de la vue et 
-//      perpendiculaire au vecteur haut de la vue.
+//      Find the pitching ==> Xpix = IPX and Ypix inverted
+//      The target point turns around an axis passing through the eye and the  
+//      direction of vector belonging to the view plane  
+//      and perpendicular to the vector above the view.
   if ( Ypix != IPY ) {
     aView->Size(Width,Height);
     IHeight = aView->Convert(Height);
@@ -669,14 +666,14 @@ void V3d_Camera::AerialPilot( const Handle(V3d_View)& aView,
     Xf = Xp * MatRot(0,0) + Yp * MatRot(0,1) + Zp * MatRot(0,2);
     Yf = Xp * MatRot(1,0) + Yp * MatRot(1,1) + Zp * MatRot(1,2);
     Zf = Xp * MatRot(2,0) + Yp * MatRot(2,1) + Zp * MatRot(2,2);
-//        Rotation du point vise (cible de la camera)
+//        Rotation of the target point (target of the camera)
     X1 = Xc * MatRot(0,0) + Yc * MatRot(0,1) + Zc * MatRot(0,2);
     Y1 = Xc * MatRot(1,0) + Yc * MatRot(1,1) + Zc * MatRot(1,2);
     Z1 = Xc * MatRot(2,0) + Yc * MatRot(2,1) + Zc * MatRot(2,2);
     Xc = X1 + Xp - Xf ; Yc = Y1 + Yp - Yf ; Zc = Z1 + Zp - Zf;
     MyTarget.SetCoord(Xc,Yc,Zc);
   }
-//      Recherche de roulis determine par Xpix 
+//      Find the rolling determined by Xpix 
   if ( Xpix != IPX ) {
     IWidth = aView->Convert(Width);
     Beta  = ((IPX - Xpix)*Standard_PI)/(IWidth*2.);
@@ -688,8 +685,8 @@ void V3d_Camera::AerialPilot( const Handle(V3d_View)& aView,
 void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
 			     const Standard_Integer Xpix,
 			     const Standard_Integer Ypix) {
-// Le pilotage en mode terrestre, ressemble a la conduite d'une voiture
-// Dans ce cas, seul le point cible est modifie.
+// Piloting in land mode, resembles to the car driving 
+// In this case, only the target point is modified.
 
   Standard_Real    Xp,Yp,Zp,Xc,Yc,Zc,Xv,Yv,Zv,Xf,Yf,Zf;
   Standard_Real    VX,VY,VZ,DXH,DYH,DZH,A,B,C,PXT,PYT,X1,Y1,Z1,Dist;
@@ -702,10 +699,10 @@ void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
   aView->At(Xv,Yv,Zv);
   aView->Project(Xv,Yv,Zv,PXT,PYT);
   aView->Convert(PXT,PYT,IPX,IPY);
-  //      Recherche d' inclinaison==> Xpix = IPX et Ypix inverse
-//      C'est le point vise qui tourne autour de l'axe passant par l'oeil et 
-//      de direction un vecteur appartenant au plan de la vue et 
-//      perpendiculaire au vecteur haut de la vue.
+//      Find the pitching ==> Xpix = IPX and Ypix inverted
+//      The target point turns around an axis passing through the eye and the  
+//      direction of vector belonging to the view plane  
+//      and perpendicular to the vector above the view.
   if ( Ypix != IPY ) {
     aView->Size(Width,Height);
     IHeight = aView->Convert(Height);
@@ -732,14 +729,14 @@ void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
     Xf = Xp * MatRot(0,0) + Yp * MatRot(0,1) + Zp * MatRot(0,2);
     Yf = Xp * MatRot(1,0) + Yp * MatRot(1,1) + Zp * MatRot(1,2);
     Zf = Xp * MatRot(2,0) + Yp * MatRot(2,1) + Zp * MatRot(2,2);
-//        Rotation du point vise (cible de la camera)
+//        Rotation of the target point (target of the camera)
     X1 = Xc * MatRot(0,0) + Yc * MatRot(0,1) + Zc * MatRot(0,2);
     Y1 = Xc * MatRot(1,0) + Yc * MatRot(1,1) + Zc * MatRot(1,2);
     Z1 = Xc * MatRot(2,0) + Yc * MatRot(2,1) + Zc * MatRot(2,2);
 	  Xc = X1 + Xp - Xf ; Yc = Y1 + Yp - Yf ; Zc = Z1 + Zp - Zf;
   }
-//      Recherche de virage ==> Ypix = IPY . Le point vise tourne aoutour 
-//      d'un axe // au vecteur haut passant par l'oeil
+//      Find turning ==> Ypix = IPY . The target point rotates around  
+//      an axis // a vector above passing through the eye
   if ( Xpix != IPX ) {
     IWidth = aView->Convert(Width);
     Beta  = ((IPX - Xpix)*Standard_PI)/(IWidth*2.);
@@ -761,7 +758,7 @@ void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
     Xf = Xp * MatRot(0,0) + Yp * MatRot(0,1) + Zp * MatRot(0,2);
     Yf = Xp * MatRot(1,0) + Yp * MatRot(1,1) + Zp * MatRot(1,2);
     Zf = Xp * MatRot(2,0) + Yp * MatRot(2,1) + Zp * MatRot(2,2);
-    //        Rotation du point vise (cible de la camera)
+    //        Rotation of the target point (target of the camera)
     X1 = Xc * MatRot(0,0) + Yc * MatRot(0,1) + Zc * MatRot(0,2);
     Y1 = Xc * MatRot(1,0) + Yc * MatRot(1,1) + Zc * MatRot(1,2);
     Z1 = Xc * MatRot(2,0) + Yc * MatRot(2,1) + Zc * MatRot(2,2);
@@ -771,7 +768,7 @@ void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
 }
 
 void V3d_Camera::Move (const Standard_Real Dist) {
-// Deplacement de la camera en conservant la direction camera - cible.
+// Displacement of the camera by preserving the direction camera - target.
 
   Standard_Real XP,YP,ZP,X0,Y0,Z0,DX,DY,DZ,Norme;
 
@@ -788,8 +785,8 @@ void V3d_Camera::Move (const Standard_Real Dist) {
 
 void V3d_Camera::GoUp (const Standard_Real Haut) {
 
-// Deplacement de la camera suivant l'axe z, en conservant la direction camera
-// cible de la camera
+// Displacement of the camera by axis z, preserving the direction camera -
+// target of the camera
 
   MyPosition.SetZCoord(MyPosition.Z()+Haut);
   MyTarget.SetZCoord(MyTarget.Z()+Haut);
@@ -811,14 +808,13 @@ void V3d_Camera::SymetricPointOnSphere (const Handle(V3d_View)& aView, const Gra
   DeltaY = Y0 - YP;
   DeltaZ = Z0 - ZP;
 
-//      On recherche le point d'intersection des droites definies
-//      par :
-//      - Droite passant par le point de projection et l'oeil
-//        si on est en perspective, parralele a la normale de la 
-//        vue si on a une vue axonometrique.
-//        position dans la vue est // a la normale de la vue
-//      - La distance position de la camera cible est egale au 
-//        rayon.
+//             The point of intersection of straight lines defined by :
+//              - Straight line passing by the point of projection and the eye
+//                if this is a perspective, parallel to the normal of the 
+//                view if there is an axonometric view.
+//                position in the view is parallel to the normal of the view
+//              - The distance position of the target camera cible is equal 
+//                to the radius.
 
   A = VX*VX + VY*VY + VZ*VZ ;
   B = -2. * (VX*DeltaX + VY*DeltaY + VZ*DeltaZ);

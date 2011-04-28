@@ -187,7 +187,7 @@ Graphic3d_Array1OfVertex Points(0,NFACES);
       if ( Norme >= 0.0001 ) {
         VX= DX/Norme; VY = DY/Norme; VZ = DZ/Norme;
 
-//Construction d'un repere i,j pour le cercle:
+//Construction of marker i,j for the circle:
         Xn=0., Yn=0., Zn=0.;   
         if ( Abs(VX) <= Abs(VY) && Abs(VX) <= Abs(VZ)) Xn=1.;
         else if ( Abs(VY) <= Abs(VZ) && Abs(VY) <= Abs(VX)) Yn=1.;
@@ -302,7 +302,7 @@ Standard_Integer u, v;
         cin >> u; cin >> v;
         V3d::SetPlane (aViewer, x1, y1, z1, x2, y2, z2);
 
-        // Pour relancer le calcul selon le nouveau plan
+        // To restart the calculation on the new plane
         if (aViewer->Grid ()->IsActive ()) {
                 Standard_Real xo, yo;
                 Quantity_PlaneAngle angle;

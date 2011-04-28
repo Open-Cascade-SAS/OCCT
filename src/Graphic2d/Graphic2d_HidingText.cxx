@@ -1,15 +1,15 @@
 #define PRO6894 //GG_150197
-//              Completer les cas de justification des textes
+//              Complete cases of text justification 
 // S3824        10/06/98 : GG ;
-//              1) La methode "Fit" comporte un argum optionnel supplementaire
-//                 "Expand" permettant de ne pas ajuster la largeur du texte
+//              1) Method "Fit" includes optional argument
+//                 "Expand" allowing to not adjust the text width
 //                  lorsque celle ci est < a la taille du FIT.
-//              2) La methode "Trunc" permet de tronquer le texte a la
-//                 taille precisee.
+//              2) Method "Trunc" allows truncating the text to the
+//                 indicated size.
 
 #define PRO14304        //GG_160698
-//              Corrige une erreur de calcul sur les MINMAX provoquant
-//              la disparition du text
+//              Correct calculation error on MINMAX causing
+//              the text to disappear
 
 #define PERF    //GG_200898
 //              The MinMax are now computed at the right time and no more
@@ -121,9 +121,9 @@ Standard_ShortReal oy = aDrawer->ConvertMapToFrom(myDeltay);
             cosa -= A; sina -= B;
             if( aTrsf.IsNegative() ) hscale = - hscale;
 #else
-	    // Pour calculer les nouveaux angles d'ouverture
-	    // le calcul est fait sur le cercle trigonometrique
-	    // et l'on tient pas compte dans ce cas de la translation.
+	    // To calculate new aperture angles 
+	    // calculation is done on the trigonometric circle
+	    // and in this case translation is taken into account.
 	    aTrsf.SetValue (1, 3, 0.0);
 	    aTrsf.SetValue (2, 3, 0.0);
             aTrsf.Transforms (cosa, sina);

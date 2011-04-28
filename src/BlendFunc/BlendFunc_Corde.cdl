@@ -6,11 +6,11 @@
 
 class Corde from BlendFunc
 
-	---Purpose: Cette fonction calcule le point pts sur la courbe intersection
- 	--          entre la normale  a  une courbe (guide) en un parametre choisi
-	--          et une surface  (surf), tel que pts soit a une distance
-	--          donnee de guide.
-	--          X(1),X(2) sont les parametres U,V de pts sur surf.
+	---Purpose: This function calculates point (pts) on the curve of
+ 	--          intersection between the normal to a curve (guide)
+ 	--          in a chosen parameter and a surface  (surf), so
+ 	--          that pts was at a given distance from the guide.
+	--          X(1),X(2) are the parameters U,V of pts on surf.
 
  
 uses Vector   from math,
@@ -110,8 +110,8 @@ is
 
 	    
     DerFguide(me: in out; Sol : Vector from math; DerF : out Vec2d from gp);
-	---Purpose: Derivee de la fonction par rapport au parametre 
-	--          de la ligne guide
+	---Purpose: Derived of the function compared to the parameter
+	-- of the guideline
 			
 			
     IsSolution(me : in out;

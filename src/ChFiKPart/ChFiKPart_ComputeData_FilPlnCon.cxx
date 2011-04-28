@@ -35,7 +35,7 @@
 
 //=======================================================================
 //function : MakeFillet
-//purpose  : cas cone/plan ou plan/cone.
+//purpose  : case cone/plane or plane/cone.
 //=======================================================================
 
 Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
@@ -52,7 +52,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 				      const TopAbs_Orientation Ofpl,
 				      const Standard_Boolean plandab)
 {
-//calcul du conge (tore ou sphere).
+//calculate the fillet (torus or sphere).
   Standard_Boolean c1sphere = Standard_False;
   gp_Ax3 PosPl = Pln.Position();
   gp_Dir Dpnat = PosPl.XDirection().Crossed(PosPl.YDirection());
@@ -78,8 +78,8 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 			   Precision::Confusion());
   gp_Pnt Pv;
   if (CInt.IsDone()) {
-    //On met l origine du conge au point de depart fourni sur la 
-    //ligne guide.
+    //The origin of the fillet is set at the start point on the  
+    //guideline.
     Pv = ElCLib::Value(ElCLib::Parameter(CInt.Circle(1),PtSp),
 		       CInt.Circle(1));
   }
@@ -113,7 +113,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     Rad = Maxrad - Rabio;
     if(Abs(Rad) <= Precision::Confusion()){ c1sphere = Standard_True; }
     else if(Rad < 0){ 
-      cout<<"le conge ne passe pas"<<endl; 
+      cout<<"the fillet does not pass"<<endl; 
       return Standard_False;
     }
   }
@@ -135,8 +135,8 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gtor,DStr));
   }
   
-  // On regarde si l orientation du conge est la meme que celle 
-  // des faces.
+  // It is checked if the orientation of the fillet is the same  
+  // as of the faces.
   gp_Pnt P,PP;
   gp_Vec deru,derv;
   P.SetCoord(cPln.X()+Rad*Dx.X(),
@@ -157,10 +157,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   if (toreverse) { Data->ChangeOrientation() = TopAbs_REVERSED; }
   else { Data->ChangeOrientation() = TopAbs_FORWARD; }
 
-  // On charge les FaceInterferences avec les pcurves et courbes 3d.
+  // FaceInterferences are loaded with pcurves and curves 3d.
   // ---------------------------------------------------------------
 
-  // La face plane.
+  // The plane face.
   // --------------
 
   Handle(Geom2d_Circle) GCirc2dPln;
@@ -198,7 +198,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 		      trans,GCirc2dPln,GLin2dFil1);
   }
 
-  // La face conique.
+  // The conic face.
   // ----------------
 
   P.SetCoord(Pv.X()+Rabio*ddc.X(),

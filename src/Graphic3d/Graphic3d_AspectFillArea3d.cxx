@@ -13,16 +13,16 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au contexte
-//		de trace des facettes 3d
+//-Design	Declaration of variables specific to the context
+//		of tracing of facets 3D
 
-//-Warning	Un contexte de trace de facette 3d herite du contexte
-//		defini par :
-//		- le style de l'interieur de la facette
-//		- le style du bord de la facette
-//		- la couleur
-//		Il possede en plus d'une definition de matiere
-//		pour les faces internes et externes.
+//-Warning	Ccontext of tracing of facets 3d inherits the context
+//		defined by :
+//		- the style of the interior of the facet
+//		- the style of the facet border
+//		- the color
+//		Additionally, it has more than one definition of material
+//		for internal and external faces.
 
 //-References	
 
@@ -77,10 +77,10 @@ DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFac
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 }
 
-// le :(InteriorStyle, InteriorColor, EdgeColor, EdgeLineType, EdgeLineWidth)
-// car AspectFillArea3d herite de AspectFillArea et il faut appeler
-// l'initialisation de AspectFillArea avec InteriorStyle, InteriorColor,
-// EdgeColor, EdgeLineType et EdgeLineWidth.
+// (InteriorStyle, InteriorColor, EdgeColor, EdgeLineType, EdgeLineWidth)
+// because AspectFillArea3d inherits AspectFillArea and it is necessary to call
+// initialisation of AspectFillArea with InteriorStyle, InteriorColor,
+// EdgeColor, EdgeLineType and EdgeLineWidth.
 
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d (const Aspect_InteriorStyle InteriorStyle, const Quantity_Color& InteriorColor, const Quantity_Color& EdgeColor, const Aspect_TypeOfLine EdgeLineType, const Standard_Real EdgeLineWidth, const Graphic3d_MaterialAspect& FrontMaterial, const Graphic3d_MaterialAspect& BackMaterial):
 Aspect_AspectFillArea (InteriorStyle, InteriorColor, EdgeColor, EdgeLineType, EdgeLineWidth), DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFaceRemovalActive (Standard_False), MyTextureMap(), MyTextureMapState(Standard_False), MyFrontMaterial (FrontMaterial), MyBackMaterial (BackMaterial) {

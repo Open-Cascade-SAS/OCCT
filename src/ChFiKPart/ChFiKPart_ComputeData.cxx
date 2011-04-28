@@ -96,7 +96,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
     break;
 #endif
   }    
-  Standard_NotImplemented::Raise("calcul abscisse non traite ");
+  Standard_NotImplemented::Raise("calcul abscisse not processed");
   return 0.;
 }
 #endif
@@ -133,7 +133,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
   else 
     ctyp = CSpine->CurrentElementarySpine(Iedge).GetType();
 
-  // Recuperation des orientations.
+  // Return orientations.
   TopAbs_Orientation OrFace1 = TopAbs_FORWARD, OrFace2 = TopAbs_FORWARD;
   Handle(BRepAdaptor_HSurface) HS = Handle(BRepAdaptor_HSurface)::DownCast(S1);
   if (!HS.IsNull()) OrFace1 = HS->ChangeSurface().Face().Orientation();
@@ -184,7 +184,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
 				    Wref,OrFace2,Standard_False);
     }
     else{
-      Standard_NotImplemented::Raise("cas particulier non ecrit");
+      Standard_NotImplemented::Raise("particular case not written");
     }
   }
   else if(!CSpine.IsNull()){
@@ -233,7 +233,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
 				       Wref,OrFace2,Standard_False); 
       }
       else{
-	Standard_NotImplemented::Raise("cas particulier non ecrit");
+	Standard_NotImplemented::Raise("particular case not written");
       }
     }
     else if (CSpine->IsChamfer() == ChFiDS_TwoDist) {    
@@ -281,7 +281,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
 				       Wref,OrFace2,Standard_False); 
       }
       else{
-	Standard_NotImplemented::Raise("cas particulier non ecrit");
+	Standard_NotImplemented::Raise("particular case not written");
       }
     }
     else {
@@ -330,7 +330,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
 				      Wref,OrFace2,Standard_False, DisOnP); 
       }
       else{
-	Standard_NotImplemented::Raise("cas particulier non ecrit");
+	Standard_NotImplemented::Raise("particular case not written");
       }
     }
   }
@@ -365,8 +365,8 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
     Standard_ConstructionError::Raise
       ("la face du conge torique doit etre plane");
   }
-  // On calcule comme ligne guide le cercle correspondant 
-  // a la section de S2, et divers elements de construction.
+  // The guideline is the circle corresponding 
+  // to the section of S2, and other construction elements.
 
   gp_Cylinder cyl;
   gp_Circ circ;
@@ -449,7 +449,7 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
       typ1 != GeomAbs_Plane ||
       typ2 != GeomAbs_Plane){
     Standard_ConstructionError::Raise
-      ("rotule torique seulement entre des plans");
+      ("torus joint only between the planes");
   }
   return ChFiKPart_MakeRotule(DStr,Data,S->Plane(),S1->Plane(),
 			      S2->Plane(),OS,OS1,OS2,Radius,OfS);

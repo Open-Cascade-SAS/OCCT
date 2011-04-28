@@ -41,39 +41,39 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 {
   Standard_Integer ind1=1, ind2=1;
   Standard_Real    Epspar = Precision::PConfusion()*0.99;
-  // en suposant que le positionement fonctionne a PConfusion()/2
+  // it is supposed that positioning works with PConfusion()/2
   Standard_Real    v1, v2;
-// Initialisations : les IND1 et IND2 pointent sur le 1er element
-// de chacune des 2 tables a traiter.INDS pointe sur le dernier
-// element cree de TABSOR
+// Initialisation : IND1 and IND2 point at the first element
+// of each of 2 tables to be processed. INDS points at the last
+// element created by TABSOR
 
 
-//--- On remplit TABSOR en parcourant TABLE1 et TABLE2 simultanement ---
-//------------------ en eliminant les occurrences multiples ------------
+//--- TABSOR is filled by parsing TABLE1 and TABLE2 simultaneously ---
+//------------------ and eliminating multiple occurrencies ------------
 
  while ((ind1<=I1.Upper()) && (ind2<=I2.Upper())) {
       v1 = I1(ind1);
       v2 = I2(ind2);
       if (Abs(v1-v2)<= Epspar) {
-// Ici les elements de I1 et I2 conviennent .
+// Here the elements of I1 and I2 fit.
          Seq.Append((v1+v2)/2);
 	 ind1++;
          ind2++;
        }
       else if (v1 < v2) {
-	// Ici l' element de I1 convient.
+	// Here the element of I1 fits.
          Seq.Append(v1);
          ind1++;
        }
       else {
-// Ici l' element de TABLE2 convient.
+// Here the element of TABLE2 fits.
 	 Seq.Append(v2);
 	 ind2++;
        }
     }
 
   if (ind1>I1.Upper()) { 
-//----- Ici I1 est epuise, on complete avec la fin de TABLE2 -------
+//----- Here I1 is exhausted, completed with the end of TABLE2 -------
 
     for (; ind2<=I2.Upper(); ind2++) {
       Seq.Append(I2(ind2));
@@ -81,7 +81,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
   }
 
   if (ind2>I2.Upper()) { 
-//----- Ici I2 est epuise, on complete avec la fin de I1 -------
+//----- Here I2 is exhausted, completed with the end of I1 -------
 
     for (; ind1<=I1.Upper(); ind1++) {
       Seq.Append(I1(ind1));
@@ -91,7 +91,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 
 //=======================================================================
 //function : BRepBlend_SurfRstEvolRad
-//purpose  : Contructeur
+//purpose  : Contructor
 //=======================================================================
 BRepBlend_SurfRstEvolRad::BRepBlend_SurfRstEvolRad
 (const Handle(Adaptor3d_HSurface)& Surf,
@@ -188,7 +188,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Derivatives
   vref.Divide(norm);
   vref.SetLinearForm(ray,vref,gp_Vec(ptrst,pts));
   
-  // Derivee par rapport a u1
+  // Derivative corresponding to u1
   temp = d2u1.Crossed(d1v1).Added(d1u1.Crossed(d2uv1));
   grosterme = ncrossns.Dot(nplan.Crossed(temp))/norm/norm;
   resul.SetLinearForm(-ray/norm*(grosterme*ndotns-nplan.Dot(temp)),nplan,
@@ -199,7 +199,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Derivatives
   D(3,1) = 2.*(resul.Dot(vref));
   
   
-  // Derivee par rapport a v1
+  // Derivative corresponding to v1
   temp = d2uv1.Crossed(d1v1).Added(d1u1.Crossed(d2v1));
   grosterme = ncrossns.Dot(nplan.Crossed(temp))/norm/norm;
   resul.SetLinearForm(-ray/norm*(grosterme*ndotns-nplan.Dot(temp)),nplan,
@@ -257,7 +257,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Values
   F(3) = vref.SquareMagnitude() - ray*ray;
   
   
-  // Derivee par rapport a u1
+  // Derivative corresponding to u1
   temp = d2u1.Crossed(d1v1).Added(d1u1.Crossed(d2uv1));
   grosterme = ncrossns.Dot(nplan.Crossed(temp))/norm/norm;
   resul.SetLinearForm(-ray/norm*(grosterme*ndotns-nplan.Dot(temp)),nplan,
@@ -268,7 +268,7 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Values
   D(3,1) = 2.*(resul.Dot(vref));
   
   
-  // Derivee par rapport a v1
+  // Derivative corresponding to v1
   temp = d2uv1.Crossed(d1v1).Added(d1u1.Crossed(d2v1));
   grosterme = ncrossns.Dot(nplan.Crossed(temp))/norm/norm;
   resul.SetLinearForm(-ray/norm*(grosterme*ndotns-nplan.Dot(temp)),nplan,
@@ -317,8 +317,8 @@ void BRepBlend_SurfRstEvolRad::Set(const Standard_Real Param)
 
 //=======================================================================
 //function : 
-//purpose  : Segmente la courbe a sa partie utile.
-//           La precision est prise arbitrairement petite !?
+//purpose  : Segments the curve in its useful part.
+//           Precision is taken arbitrary small !?
 //=======================================================================
  void BRepBlend_SurfRstEvolRad::Set
 (const Standard_Real First,
@@ -391,7 +391,7 @@ const Standard_Real Tol)
       Abs(valsol(2)) <= Tol &&
       Abs(valsol(3)) <= 2*Tol*Abs(ray) ) {
     
-    // Calcul des tangentes
+    // Calculation of tangents
     
     pt2ds  = gp_Pnt2d(Sol(1),Sol(2));
     prmrst = Sol(3);
@@ -451,14 +451,14 @@ const Standard_Real Tol)
     else {
       istangent = Standard_True;
     }
-    // mise a jour de maxang
+    // update of maxang
     if(ray>0.) ns.Reverse();
     ns2 = -resul.Normalized();
     
     Cosa = ns.Dot(ns2);
     Sina = nplan.Dot(ns.Crossed(ns2));
     if (choix%2 != 0) {
-      Sina = -Sina;  //nplan est change en -nplan
+      Sina = -Sina;  //nplan is changed into -nplan
     }
     
     Angle = ACos(Cosa);
@@ -625,7 +625,7 @@ gp_Vec& TgS) const
   Standard_Real dot, NT = NRstInPlane.Magnitude();
   NT *= TgRst.Magnitude();
   if (Abs(NT) < 1.e-7) {
-    return Standard_False; // Singularite ou Incoherence.
+    return Standard_False; // Singularity or Incoherence.
   }
   dot = NRstInPlane.Dot(TgRst);
   dot /= NT;
@@ -707,7 +707,7 @@ gp_Circ& C)
   Pdeb = 0.; //ElCLib::Parameter(C,pts);
   Pfin = ElCLib::Parameter(C,ptrst);
 
-  // Test des angles negatif et quasi null : Cas Singulier
+  // Test negative and almost null angles : Single Case
   if (Pfin>1.5*PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center,np,ns));
@@ -741,7 +741,7 @@ gp_Circ& C)
  void BRepBlend_SurfRstEvolRad::GetMinimalWeight(TColStd_Array1OfReal& Weigths) const
 {
   BlendFunc::GetMinimalWeights(mySShape, myTConv, minang, maxang, Weigths );
-  // On suppose que cela ne depend pas du Rayon! 
+  // It is supposed that it does not depend on the Radius! 
 }
 
 //=======================================================================
@@ -914,13 +914,13 @@ TColStd_Array1OfReal& DWeigths)
   ndotns = nplan.Dot(ns);
   norm = ncrossns.Magnitude();
   if (norm < Eps)  {
-    norm = 1; // Insufisant, mais il ne faut pas planter
+    norm = 1; // Not enough, but it is not necessary to stop
 #if DEB
-    cout << " SurfRstEvolRad : Surface singuliere " << endl;
+    cout << " SurfRstEvolRad : Surface single " << endl;
 #endif
   }
   
-  // Derivee de n1 par rapport a w
+  // Derivative of n1 corresponding to w
   
   grosterme = ncrossns.Dot(dnplan.Crossed(ns))/norm/norm;
   dnw.SetLinearForm((dnplan.Dot(ns)-grosterme*ndotns)/norm,nplan,
@@ -953,14 +953,14 @@ TColStd_Array1OfReal& DWeigths)
 
     tgs.SetLinearForm(secmember(1),d1u1,secmember(2),d1v1);
     tgrst = secmember(3)*d1;
-    // Derivee de n1 par rapport a u1
+    // Derivative of n1 corresponding to u1
     temp = d2u1.Crossed(d1v1).Added(d1u1.Crossed(d2uv1));
     grosterme = ncrossns.Dot(nplan.Crossed(temp))/norm/norm;
     resulu.SetLinearForm(-(grosterme*ndotns-nplan.Dot(temp))/norm,nplan,
 			 grosterme/norm,ns,
 			 -1./norm,temp);
     
-    // Derivee de n1 par rapport a v1
+    // Derivative of n1 corresponding to v1
     temp = d2uv1.Crossed(d1v1).Added(d1u1.Crossed(d2v1));
     grosterme = ncrossns.Dot(nplan.Crossed(temp))/norm/norm;
     resulv.SetLinearForm(-(grosterme*ndotns-nplan.Dot(temp))/norm,nplan,
@@ -986,7 +986,7 @@ TColStd_Array1OfReal& DWeigths)
     istgt = Standard_True;
   }
   
-  // Les poles 2d
+  // Tops 2D
   
   Poles2d(Poles2d.Lower()).SetCoord(sol(1),sol(2));
   Poles2d(Poles2d.Upper()).SetCoord(pt2drst.X(),pt2drst.Y());
@@ -998,7 +998,7 @@ TColStd_Array1OfReal& DWeigths)
     DPoles2d(Poles2d.Upper()).SetCoord(a,b);
   }
   
-  // Cas Linear
+  // Linear Case
   if (mySShape == BlendFunc_Linear) {
     Poles(low) = pts;
     Poles(upp) = ptrst;
@@ -1013,7 +1013,7 @@ TColStd_Array1OfReal& DWeigths)
     return (!istgt);
   }
   
-  // Cas du cercle
+  // Case of the circle
   Center.SetXYZ(pts.XYZ()+ray*ns.XYZ());
   if (!istgt) {
     tgct.SetLinearForm(ray,dnw,dray,ns,tgs);
@@ -1030,7 +1030,7 @@ TColStd_Array1OfReal& DWeigths)
     dnplan.Reverse();
   }
   if (!istgt) {
-    if (ray < 0.) { // pour eviter la connerie Abs(dray) qques lignes plus bas
+    if (ray < 0.) { // to avoid Abs(dray) some lines below
       rayprim = -dray;
     }
     else rayprim = dray;
@@ -1103,7 +1103,7 @@ TColStd_Array1OfReal& Weigths)
   nplan  = d1gui.Normalized();
   
   P.ParametersOnS(u1,v1);
-  w = P.ParameterOnC(); //jlr : point sur courbe pas sur surface
+  w = P.ParameterOnC(); //jlr : point on curve not on surface
   gp_Pnt2d  pt2d = rst->Value(w);
 
   surf->D1(u1,v1,pts,d1u1,d1v1);
@@ -1114,7 +1114,7 @@ TColStd_Array1OfReal& Weigths)
   Poles2d(Poles2d.Lower()).SetCoord(u1,v1);
   Poles2d(Poles2d.Upper()).SetCoord(pt2d.X(),pt2d.Y());
   
-  // Cas Linear
+  // Linear case
   if (mySShape == BlendFunc_Linear) {
     Poles(low) = pts;
     Poles(upp) = ptrst;

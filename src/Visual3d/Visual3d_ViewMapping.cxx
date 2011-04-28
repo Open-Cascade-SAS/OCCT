@@ -2,8 +2,6 @@
 // Created	Fevrier 1992
 // Author	NW,JPB,CAL
 // Modified	
-//    18-11-98  : FMN ; Correction sur la gestion de la perspective (cf Programming Guide)
-//      	Nouvelle valeur init du ViewMapping
 //    22-12-98  : FMN ; Rename CSF_WALKTHROW en CSF_WALKTHROUGH
 //    23-07-07  : NKV ; Define custom PROJECTION matrix for OpenGl context
 
@@ -11,15 +9,14 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au
-//		mapping des vues
+//-Design	Declaration of variables specific to mapping of views
 
-//-Warning	Rappels	Le mapping d'une vue est defini par :
-//		- le point reference de projection
-//		- le type de projection
-//		- une distance pour le Back Plane
-//		- une distance pour le Front Plane
-//		- une distance pour le Projection Plane
+//-Warning	Mapping of a view is defined by :
+//		- reference point of projection
+//		- type of projection
+//		- distance for the Back Plane
+//		- distance for the Front Plane
+//		- distance for the Projection Plane
 
 //-References	
 

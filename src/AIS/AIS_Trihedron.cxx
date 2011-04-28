@@ -100,8 +100,8 @@ void AIS_Trihedron::SetSize(const Standard_Real aValue)
 
 //=======================================================================
 //function : UnsetSize
-//purpose  : si l'objet a 1 couleur, on reprend la taille
-//           du drawer par defaut. sinon on nullifie le DatumAspect
+//purpose  : if the object has 1 color, the default size of the 
+//           drawer is reproduced, otherwise DatumAspect becomes null
 //=======================================================================
 
 void AIS_Trihedron::UnsetSize()
@@ -232,7 +232,6 @@ void AIS_Trihedron::Compute(
 {
   aPresentation->Clear();
 
-  //CTS16254 : pas de prise en compte des axes lors du FITALL (fpo 18/07)
   aPresentation->SetInfiniteState (Standard_True);
   switch(aMode){
   case 0: 
@@ -266,14 +265,14 @@ void AIS_Trihedron::Compute(const Handle_Prs3d_Projector& aProjector,
 void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                      const Standard_Integer aMode)
 {
-  // recuperation des points extremites du triedre.
+  // retrieve the tops of the trihedron.
   Standard_Integer Prior;
   Handle(SelectMgr_EntityOwner) eown;
   TColgp_Array1OfPnt PP(1,4),PO(1,4);
   ExtremityPoints(PP);
   switch (aMode) {
   case 0:
-    {   // triedre complet 1 seul proprietaire : this... priorite 5 (meme que faces)
+    {   // complete triedron only 1 owner : this... priority 5 (same as faces)
       Prior = 5;
       eown = new SelectMgr_EntityOwner(this,Prior);
       for (Standard_Integer i=1; i<=3;i++)
@@ -281,7 +280,7 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
       break;
     }
   case 1:
-    {  //origine : 
+    {  //origin : 
       Prior = 8;
       eown= new SelectMgr_EntityOwner(myShapes[0],Prior);
       
@@ -290,7 +289,7 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
       break;
     }
   case 2:
-    {  //axes ... priorite 7
+    {  //axes ... priority 7
       Prior = 7;
       for (Standard_Integer i=1; i<=3;i++){
 	eown= new SelectMgr_EntityOwner(myShapes[i],Prior);
@@ -301,7 +300,7 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
     }
     
   case 3:
-    {  // plans principaux priorite 6
+    {  // main planes priority 6
 //      PO(1) = PP(1);
 //      PO(4) = PP(1);
       Prior =5;

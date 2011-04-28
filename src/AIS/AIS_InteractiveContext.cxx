@@ -860,8 +860,8 @@ Standard_Boolean AIS_InteractiveContext::KeepTemporary(const Handle(AIS_Interact
   if(myObjects.IsBound(anIObj)) return Standard_False;
   if(WhichContext!=-1 && !myLocalContexts.IsBound(WhichContext)) return Standard_False;
   
-  // Protection : si on essaye de conserver un objet temporaire
-  // qui n'est pas dans le contexte local actif... rob 11-06-97
+  // Protection : if one tries to preserve a temporary object
+  // which is not in the local active context... rob 11-06-97
 
   Standard_Integer IsItInLocal = myCurLocalIndex;
   Standard_Boolean Found(Standard_False);
@@ -1798,8 +1798,8 @@ void AIS_InteractiveContext::SetDisplayMode(const Handle(AIS_InteractiveObject)&
       Handle(AIS_GlobalStatus) STATUS = myObjects(anIObj);
       // ENDCLE
 #ifndef OCC4373      
-      // l'objet interactif n'avait pas de mode propre : OldMode = Mode Session
-      //                    avait deja un mode propre  : OldMode = ancien mode Propre
+      // the interactive object has no mode : OldMode = Mode Session
+      //                    already has a mode : OldMode = old mode Propre
 
       Standard_Integer OldMode = anIObj->HasDisplayMode() ?  anIObj->DisplayMode(): myDisplayMode;
       
@@ -2004,7 +2004,7 @@ void AIS_InteractiveContext::SetDeviationCoefficient(
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 
-  // A Modifier apres descente des methodes concernees de AIS_Shape dans InteractiveObject
+  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Object && anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetOwnDeviationCoefficient(aCoefficient);
@@ -2047,7 +2047,7 @@ void AIS_InteractiveContext::SetHLRDeviationCoefficient(
  
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
-  // A Modifier apres descente des methodes concernees de AIS_Shape dans InteractiveObject
+  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Object && anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetOwnHLRDeviationCoefficient(aCoefficient);
@@ -2092,7 +2092,7 @@ void AIS_InteractiveContext::SetDeviationAngle(
  
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
-  // A Modifier apres descente des methodes concernees de AIS_Shape dans InteractiveObject
+// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetOwnDeviationAngle(anAngle);
@@ -2134,7 +2134,7 @@ void AIS_InteractiveContext::SetAngleAndDeviation(
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 
-    // A Modifier apres descente des methodes concernees de AIS_Shape dans InteractiveObject
+// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetAngleAndDeviation(anAngle);
@@ -2162,7 +2162,7 @@ void AIS_InteractiveContext::SetHLRAngleAndDeviation(
    if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 
-    // A Modifier apres descente des methodes concernees de AIS_Shape dans InteractiveObject
+// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetHLRAngleAndDeviation(anAngle);
@@ -2205,7 +2205,7 @@ void AIS_InteractiveContext::SetHLRDeviationAngle(
  
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
-    // A Modifier apres descente des methodes concernees de AIS_Shape dans InteractiveObject
+// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if( anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetOwnHLRDeviationAngle(anAngle);
@@ -3004,7 +3004,7 @@ Standard_Boolean AIS_InteractiveContext::IsInLocal(const Handle_AIS_InteractiveO
                                                    Standard_Integer& TheIndex) const 
 {
   if(anIObj.IsNull()) return Standard_False;
-  // s'il existe au point neutre on retourne l'index 0
+  // if it exists at neutral point 0 index is returned
   if(myObjects.IsBound(anIObj)) {
     TheIndex = 0;
     return Standard_False;
@@ -3048,7 +3048,7 @@ void AIS_InteractiveContext::InitAttributes()
   HLA->SetWidth(1);
   HLA->SetTypeOfLine(Aspect_TOL_DASH);
 
-  // tolerance a 4 pixels...
+  // tolerance to 4 pixels...
 #ifdef BUC60688
   SetSensitivity();
 #else

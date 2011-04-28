@@ -33,7 +33,6 @@
 #define MaxSizeOfResult 100000
 #endif
 
-// beurk mais moins qu''avant.... rob
 static void AIS_Sel_CurrentSelection (Handle(AIS_Selection)& InputSel)     
 {
   static Handle(AIS_Selection) theCurrentSelection;
@@ -120,7 +119,7 @@ Standard_Boolean AIS_Selection::Find(const Standard_CString aName)
 //=======================================================================
 Standard_Boolean AIS_Selection::SetCurrentSelection (const Standard_CString aName) 
 {  
-  AIS_Selection::CreateSelection(aName); // juste pour voir... ?????????????
+  AIS_Selection::CreateSelection(aName); 
 
 
   Handle(AIS_Selection) anAISSelection = AIS_Selection::Selection(aName) ;
@@ -193,7 +192,7 @@ AIS_SelectStatus AIS_Selection::Select(const Handle(Standard_Transient)& anObjec
     if(arr(i)==anObject)
       Found=i;
   }
-  // Il n''est pas dedans, on le rajoute....
+  // If it is not inside, it is added...
 
 #ifdef BUC60953
   if ( !selected || Found == -1 ) {
@@ -202,7 +201,6 @@ AIS_SelectStatus AIS_Selection::Select(const Handle(Standard_Transient)& anObjec
 #endif  
     if((S->myNb)+1>arr.Length()){
       Handle(TColStd_HArray1OfTransient) NiouTab = new TColStd_HArray1OfTransient(1,arr.Length()+MaxSizeOfResult);
-      // oui bon, mais...
       for(i=arr.Lower();i<=S->myNb;i++){
 	const Handle(Standard_Transient)& T = S->myresult->Value(i);
 	NiouTab->SetValue(i,T);
@@ -215,7 +213,7 @@ AIS_SelectStatus AIS_Selection::Select(const Handle(Standard_Transient)& anObjec
     S->myresult->SetValue(S->myNb,anObject);
     return AIS_SS_Added;
   }
-  // il etait dedans on l''enleve...
+  // it was inside and it is removed...
   for(i=Found;i<=S->myNb;i++)
     arr(i)=arr(i+1);
   S->myNb--;
@@ -288,7 +286,6 @@ AIS_SelectStatus AIS_Selection::AddSelect(const Handle(Standard_Transient)& anOb
   Standard_Integer i;
   if((S->myNb)+1>arr.Length()){
       Handle(TColStd_HArray1OfTransient) NiouTab = new TColStd_HArray1OfTransient(1,arr.Length()+MaxSizeOfResult);
-      // oui bon, mais...
       for(i=arr.Lower();i<=S->myNb;i++){
 	const Handle(Standard_Transient)& T = S->myresult->Value(i);
 	NiouTab->SetValue(i,T);

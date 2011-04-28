@@ -318,8 +318,8 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
     }
 
   gp_Vec theVector;
-  gp_Pnt pint3d; // le point de tangence
-  gp_Dir theDir; // la direction de la tangente
+  gp_Pnt pint3d; // tangency point
+  gp_Dir theDir; // tangency direction
   Standard_Real par_inter = 0.0; // parameter of tangency point
 
   if (found)
@@ -327,18 +327,18 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       pint3d = BRep_Tool::Pnt(VCom);
     }
 
-  //Sinon, on le cherche comme si on savait que les 2 curves
-  // sont tangentes ( ce qui dooit etre le cas, tant pis pour les autres)
+  // Otherwise it is found as if it was known that 2 curves
+  // are tangents (which must be the cases)
   switch (typArg)
     {
-    case 12: // line circle
-      {
+    case 12: // circle line      
+       {
 	const Handle(Geom_Line)& line = (Handle(Geom_Line)&) copy1;
 	const Handle(Geom_Circle)& circle = (Handle(Geom_Circle)&) copy2;
 
 	if ( !found )
 	  {
-	    // il suffit de projeter le centre du cercle sur la droite
+	    // it is enough to project the circus  center on the straight line 
 	    par_inter = ElCLib::Parameter(line->Lin(), circle->Location());
 	    pint3d = ElCLib::Value(par_inter, line->Lin());
 	  }
@@ -360,7 +360,7 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
       
 	if (!found)
 	  {
-	    // il suffit de projeter le centre du cercle sur la droite
+	    // it is enough to project the circus  center on the straight line 
 	    par_inter = ElCLib::Parameter(line->Lin(), circle->Location());
 	    pint3d = ElCLib::Value(par_inter, line->Lin());
 	  }

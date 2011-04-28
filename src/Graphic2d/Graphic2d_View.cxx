@@ -8,7 +8,7 @@
 #define xTRACE
 
 #define CSR_PRO12324        //SYL_030798
-//                      Pas de plot si objet non plottable                      
+//                      No plot if object not plottable                      
 //
 // Modified     17/12/1998 SYL pour S3604
 //              Aspect_PlotterDriver devient PlotMgt_PlotterDriver
@@ -398,15 +398,15 @@ Standard_Real RL, RF;
 
         for (i=1; i<=Length; i++) {
                 myGraphicObjects.Value (i)->MinMax (x, X, y, Y);
-                // Le GraphicObject peut etre vide
+                // GraphicObject can be empty
                 if (x > RF) Minx = (Minx < x ? Minx : x); 
                 if (X < RL) Maxx = (Maxx > X ? Maxx : X);
                 if (y > RF) Miny = (Miny < y ? Miny : y);
                 if (Y < RL) Maxy = (Maxy > Y ? Maxy : Y);
         }
 
-        // Attention, il se peut que :
-        // Minx = Miny = ShortRealLast (); et
+        // Attention, it is possible that :
+        // Minx = Miny = ShortRealLast (); and
         // Maxx = Maxy = ShortRealFirst();
         if (Minx > Maxx) { Minx = RealFirst (); Maxx = RealLast (); }
         if (Miny > Maxy) { Miny = RealFirst (); Maxy = RealLast (); }
@@ -424,7 +424,7 @@ Standard_Real RL, RF;
         for (i=1; i<=Length; i++) {
                 if (IsIn (aList->Value(i))) {
                         (aList->Value(i))->MinMax (x, X, y, Y);
-                        // Le GraphicObject peut etre vide
+                        //  GraphicObject can be empty
                         if (x > RF) Minx = (Minx < x ? Minx : x); 
                         if (X < RL) Maxx = (Maxx > X ? Maxx : X);
                         if (y > RF) Miny = (Miny < y ? Miny : y);
@@ -432,8 +432,8 @@ Standard_Real RL, RF;
                 }
         }
 
-        // Attention, il se peut que :
-        // Minx = Miny = ShortRealLast (); et
+        // Attention, it is possible that :
+        // Minx = Miny = ShortRealLast (); and
         // Maxx = Maxy = ShortRealFirst();
         if (Minx > Maxx) { Minx = RealFirst (); Maxx = RealLast (); }
         if (Miny > Maxy) { Miny = RealFirst (); Maxy = RealLast (); }
@@ -450,15 +450,15 @@ Standard_Real RL, RF;
 
         for (i=1; i<=Length; i++) {
                 myGraphicObjects.Value (i)->MarkerMinMax (x, X, y, Y);
-                // Le GraphicObject peut etre vide
+                // GraphicObject can be empty 
                 if (x > RF) Minx = (Minx < x ? Minx : x); 
                 if (X < RL) Maxx = (Maxx > X ? Maxx : X);
                 if (y > RF) Miny = (Miny < y ? Miny : y);
                 if (Y < RL) Maxy = (Maxy > Y ? Maxy : Y);
         }
 
-        // Attention, il se peut que :
-        // Minx = Miny = ShortRealLast (); et
+        // Attention, it is possible that :
+        // Minx = Miny = ShortRealLast (); and
         // Maxx = Maxy = ShortRealFirst();
         if (Minx > Maxx) { Minx = RealFirst (); Maxx = RealLast (); }
         if (Miny > Maxy) { Miny = RealFirst (); Maxy = RealLast (); }
@@ -476,7 +476,7 @@ Standard_Real RL, RF;
         for (i=1; i<=Length; i++) {
                 if (IsIn (aList->Value(i))) {
                         (aList->Value(i))->MarkerMinMax (x, X, y, Y);
-                        // Le GraphicObject peut etre vide
+                        // GraphicObject can be empty
                         if (x > RF) Minx = (Minx < x ? Minx : x); 
                         if (X < RL) Maxx = (Maxx > X ? Maxx : X);
                         if (y > RF) Miny = (Miny < y ? Miny : y);
@@ -484,8 +484,8 @@ Standard_Real RL, RF;
                 }
         }
 
-        // Attention, il se peut que :
-        // Minx = Miny = ShortRealLast (); et
+        // Attention, it is possible that :
+        // Minx = Miny = ShortRealLast (); and
         // Maxx = Maxy = ShortRealFirst();
         if (Minx > Maxx) { Minx = RealFirst (); Maxx = RealLast (); }
         if (Miny > Maxy) { Miny = RealFirst (); Maxy = RealLast (); }
@@ -641,9 +641,9 @@ Standard_Integer Index;
   for (Index=1; Index<=Length; Index++)
     //myGraphicObjects.Value(Index)->Erase ();
     // CAL le 17/11/97.
-    // On met 1 car il faut effacer N fois le premier de la liste
-    // En effet cette liste est mise a jour par la methode ci dessous
-    // qui est appelee par Graphic2d_GraphicObject::Erase.
+    // 1 is set as it is required to remove N times the first from the list
+    // Acytually this list is updated by method below
+    // called by Graphic2d_GraphicObject::Erase.
 #ifdef OCC154
     myGraphicObjects.Value(Index)->Erase();
 #else

@@ -42,10 +42,10 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
     if (myTolerance(ii)>Tol2d) { myTolerance(ii) = Tol2d;}
   }
   
-  //  Tableaux
+  //  Tables
   Func.GetShape( NbPoles, NbKnots, Degree, NbPoles2d);
   
-  // Calcul du BaryCentre (cas rationnel).
+  // Calculation of BaryCentre (rationnal case).
   if (Func.IsRational()) {
     Standard_Real Xmax =-1.e100, Xmin = 1.e100, 
     Ymax =-1.e100, Ymin = 1.e100, 
@@ -68,8 +68,8 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
 
 //================================================================================ 
 // Function: D0
-// Purpose : Calcul de la section pour v = Param, si le calcul echoue on rend
-//           Standard_False. 
+// Purpose : Calculation of section for v = Param, if calculation fails
+//           Standard_False is raised. 
 //================================================================================
 Standard_Boolean BRepBlend_AppFuncRoot::D0(const Standard_Real Param,
 					   const Standard_Real First,
@@ -89,8 +89,8 @@ Standard_Boolean BRepBlend_AppFuncRoot::D0(const Standard_Real Param,
 
 //================================================================================ 
 // Function: D1
-// Purpose : Calcul de la derive partiel de la section par rapport a v
-//           pour v = Param, si le calcul echoue on rend Standard_False.
+// Purpose : Calculation of the partial derivative of the section corresponding to v
+//           for v = Param, if the calculation fails Standard_False is raised.
 //================================================================================ 
 Standard_Boolean BRepBlend_AppFuncRoot::D1(const Standard_Real Param,
 					   const Standard_Real First,
@@ -119,9 +119,9 @@ Standard_Boolean BRepBlend_AppFuncRoot::D1(const Standard_Real Param,
 
 //=========================================================================== 
 // Function: D2
-// Purpose : Calcul de la derive et seconde partiel de la 
-//           section par rapport a v.
-//           Pour v = Param, si le calcul echoue on rend Standard_False.  
+// Purpose : Calculation of the derivative and second partial of the 
+//           section corresponding to v.
+//           For v = Param, if the calculation fails Standard_False is raised.  
 //=========================================================================== 
 Standard_Boolean BRepBlend_AppFuncRoot::D2(const Standard_Real Param,
 					   const Standard_Real First,
@@ -257,15 +257,15 @@ void BRepBlend_AppFuncRoot::GetMinimalWeight(TColStd_Array1OfReal& Weigths) cons
 //
 // Function : SearchPoint
 //
-// Purpose : Recherche du point solution au parametre Param (sur 2 Surfaces)
+// Purpose : Find point solution with parameter Param (on 2 Surfaces)
 //
-// Algorithme : 
-//     1) On recheche une solution approximative a partir des Points dejas calcules
-//     2) On Converge par une methode de type Newton
+// Algorithm : 
+//     1) Approximative solution is found from already calculated Points
+//     2) Convergence is done by a method of type Newton
 // 
-// Causes possibles d'echecs : 
-//        - Singularite sur les surfaces.
-//        - Manquent d'information dans la "line"issue du cheminement. 
+// Possible causes of fails : 
+//        - Singularity on surfaces.
+//        - no information oin the "line" resulting from processing. 
 //            
 //================================================================================  
 
@@ -275,24 +275,24 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
 {
   Standard_Boolean Trouve;
   Standard_Integer dim = Func.NbVariables();
-  // (1) Recherche d'un point d'init
+  // (1) Find a point of init
   Standard_Integer I1=1, I2=myLine->NbPoints(), Index;
   Standard_Real t1, t2;
   
-  //  (1.a) On verifie que c'est a l'interieur
+  //  (1.a) It is checked if it is inside
   if (Param < myLine->Point(I1).Parameter()) {return Standard_False;}
   if (Param > myLine->Point(I2).Parameter()) {return Standard_False;}
   
-  //  (1.b) On recheche l'intervalle
+  //  (1.b) Find the interval
   Trouve = SearchLocation(Param, I1, I2, Index);
   
-  //  (1.c) Si le point est dejas calcule on le recupere
+  //  (1.c) If the point is already calculated it is returned
   if (Trouve) {
     Pnt = myLine->Point(Index);
     Vec(XInit,Pnt);
   }
   else {
-    //  (1.d) Intialisation par interpolation lineaire
+    //  (1.d) Intialisation by linear interpolation
     Pnt = myLine->Point(Index);
     Vec(X1,Pnt);
     t1 = Pnt.Parameter();
@@ -308,7 +308,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
     }
   }
 
-  // (2) Calcul effectif de la solution ------------------------
+  // (2) Calculation of the solution ------------------------
   Func.Set(Param);
   Func.GetBounds(X1, X2);
   math_FunctionSetRoot rsnld(Func, myTolerance, 30);
@@ -323,13 +323,13 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
   }
   rsnld.Root(Sol);
   
-  // (3) Stockage du point
+  // (3) Storage of the point
   Point(Func,Param,Sol,Pnt);
 
-  // (4) Insertion du point si le cacul semble long.
+  // (4) Insertion of the point if the calculation seems long.
   if ((!Trouve)&&(rsnld.NbIterations()>3)) {
 #ifdef DEB
-    cout << "Evaluation en t = " <<  Param << "donne" << endl;
+    cout << "Evaluation in t = " <<  Param << "given" << endl;
     rsnld.Dump(cout);
 #endif
     myLine->InsertBefore(Index+1, Pnt);
@@ -342,11 +342,11 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
 //
 // Function : SearchLocation
 //
-// Purpose : Recherche dichotomiqique du rang de l'intervalle parametrique contenant
-//           Param dans la liste de points calcule (myline)
-//           si le point de parametre Param est deja stocker dans la liste on rend
-//           True et ParamIndex correspond au rang du Point.
-//           La complexite de cet algorithme est de log(n)/log(2)
+// Purpose : Binary search of the line of the parametric interval containing
+//           Param in the list of calculated points (myline)
+//           if the point of parameter Param is already stored in the list
+//           True is raised and ParamIndex corresponds to line of Point.
+//           Complexity of this algorithm is log(n)/log(2)
 //================================================================================ 
 Standard_Boolean BRepBlend_AppFuncRoot::SearchLocation(const Standard_Real Param,
 						       const Standard_Integer FirstIndex,

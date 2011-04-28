@@ -4,12 +4,8 @@
      ----------
         Classe V3d_CircularGrid :
  
-     HISTORIQUE DES MODIFICATIONS   :
+     VERSION HISTORY  :
      --------------------------------
-      16-08-98 : CAL ; S3892. Ajout grilles 3d.
-      13-10-98 : CAL ; S3892. Ajout de la gestion de la taille des grilles 3d.
-      23-10-98 : CAL ; PRO 15885. Patch K4403 et K4404
-      03-11-98 : CAL ; PRO 16161. Patch K4418 et K4419
       IMP230300: GG The color fields and methods have moved in Aspect_Grid
 
 
@@ -156,7 +152,7 @@ TColStd_Array2OfReal Trsf (1, 4, 1, 4);
 		Trsf (1, 4) = xl,
 		Trsf (2, 4) = yl,
 		Trsf (3, 4) = zl;
-		// Transformation de changement de repere
+		// Transformation  change of marker
 		Trsf (1, 1) = xdx,
 		Trsf (2, 1) = xdy,
 		Trsf (3, 1) = xdz,
@@ -168,11 +164,11 @@ TColStd_Array2OfReal Trsf (1, 4, 1, 4);
 		Trsf (3, 3) = dz;
 		myStructure->SetTransform (Trsf, Graphic3d_TOC_REPLACE);
 
-		// Translation de l'origine
+		// Translation of the origin
 		Trsf (1, 4) = -XOrigin (),
 		Trsf (2, 4) = -YOrigin (),
 		Trsf (3, 4) = 0.0;
-		// Rotation Alpha autour de l'axe -Z
+		// Rotation Alpha around axis -Z
 		Trsf (1, 1) = CosAlpha,
 		Trsf (2, 1) = -SinAlpha,
 		Trsf (3, 1) = 0.0,
@@ -184,11 +180,6 @@ TColStd_Array2OfReal Trsf (1, 4, 1, 4);
 		Trsf (3, 3) = 1.0;
 		myStructure->SetTransform (Trsf,Graphic3d_TOC_POSTCONCATENATE);
 
-		// CAL : 19 aout 1998
-		// Il y avait aussi la possibilite de faire le calcul
-		// de changement de repere par :
-		// gp_Trsf::SetTransformation
-		//	(myGridPlane, myViewer->PrivilegedPlane ());
 
 #ifdef TRACE_VALUES
 Standard_Integer i, j;
@@ -302,7 +293,7 @@ Standard_Boolean MakeCercles = Standard_False;
 #ifdef TRACE_MAKE
 		cout << "MakeCercles" << endl;
 #endif
-		// cercles
+		// circles
 #ifdef IMP300300
 		Standard_Integer nblines = 0;
 #endif
@@ -371,7 +362,7 @@ Standard_Boolean MakeDiametres = Standard_False;
 #ifdef TRACE_MAKE
 		cout << "MakeDiametres" << endl;
 #endif
-		// diametres
+		// diameters
 		myGroup1->Clear ();
 		myGroup1->SetGroupPrimitivesAspect (MarkerAttrib);
 		myGroup1->BeginPrimitives ();

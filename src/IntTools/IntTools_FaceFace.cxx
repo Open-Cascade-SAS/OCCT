@@ -852,7 +852,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       } // end of if (!Precision::IsNegativeInfinite(fprm) &&  !Precision::IsPositiveInfinite(lprm))
 
       else {
-	//  on regarde si on garde
+	//  check if keep
 	//
 	Standard_Boolean bFNIt, bLPIt;
 	Standard_Real aTestPrm, dT=100.;
@@ -1135,7 +1135,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 
 	    }//  end of if (ok) {
 	  }//  end of for (Standard_Integer j=0; j<=17; j++)
-	}//  end of else { on regarde si on garde
+	}//  end of else { check if keep
       }// for (i=1; i<=myLConstruct.NbParts(); i++)
     }// IntPatch_Circle: IntPatch_Ellipse:
     break;
@@ -1462,9 +1462,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	    ilprm = (Standard_Integer)lprm;
 	  }
 	}
-	//-- lbr : 
-	//-- Si une des surfaces est un plan , on approxime en 2d
-	//-- sur cette surface et on remonte les points 2d en 3d.
+	//-- If one of surfaces is a plane , 2D approximation is done on 
+	//-- this surface and 2D points are returned in 3D.
 	if(typs1 == GeomAbs_Plane) { 
 	  theapp3d.Perform(myHS1, myHS2, WL, Standard_False,Standard_True, myApprox2,ifprm,ilprm);
 	}	  
@@ -1869,7 +1868,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     S->Bounds(umin, umax, vmin, vmax);
 
     if (S->IsUPeriodic() && !C2d.IsNull()) {
-      // Recadre dans le domaine UV de la face
+      // Reframe in domain UV of the face
       Standard_Real period, U0, du, aEps; 
       
       du =0.0;
@@ -2020,7 +2019,7 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
   IntTools_SequenceOfCurves aNewCvs;
 
   //
-  // 1. Treatment of periodic and closed  curves
+  // 1. Processing of periodic and closed  curves
   aNbCurves=mySeqOfCurve.Length();
   for (i=1; i<=aNbCurves; i++) {
     const IntTools_Curve& aIC=mySeqOfCurve(i);
@@ -3772,7 +3771,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 // ------------------------------------------------------------------------------------------------
 // static function: ParameterOutOfBoundary
 // purpose:         Computes a new parameter for given curve. The corresponding 2d points 
-//                  does not lay on any boundary of given faces
+//                  do not lie on any boundary of given faces
 // ------------------------------------------------------------------------------------------------
 Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter, 
 					const Handle(Geom_Curve)& theCurve, 

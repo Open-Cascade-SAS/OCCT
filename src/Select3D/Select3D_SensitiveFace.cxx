@@ -8,7 +8,6 @@
 //Modif on jul-21-97 : changement en harray1 pour eventuelles connexions ...
 
 #include <Select3D_SensitiveFace.ixx>
-#include <Select3D_Projector.hxx>
 #include <SelectBasics_BasicTool.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
@@ -30,8 +29,8 @@
 #define AutoInitFlags(aflag) (aflag = 0)
 
 //==================================================
-// Function: faire disparaitre ce constructeur a la prochaine version...
-// Purpose : simplement garde pour ne pas perturber la version update
+// Function: Hide this constructor to the next version...
+// Purpose : simply avoid interfering with the version update
 //==================================================
 
 Select3D_SensitiveFace::
@@ -82,9 +81,9 @@ Matches(const Standard_Real X,
     Bnd_Box2d(mybox2d).Get(Xmin,Ymin,Xmax,Ymax);
     DMin2 = gp_XY(Xmax-Xmin,Ymax-Ymin).SquareModulus();
   }
-  // calcul d'un critere de distance mini...
-  // au depart Dmin = taille de la boite englobante 2D,
-  // ensuite distance mini du polyedre ou du cdg...
+  // calculation of a criterion of minimum distance...
+  // from start Dmin = size of the bounding box 2D,
+  // then min. distance of the polyhedron or cdg...
 
   Standard_Real aTol2 = aTol*aTol;
   gp_XY CDG(0.,0.);
@@ -111,16 +110,18 @@ Matches(const Standard_Real X,
     Standard_Real V1V1 = V1.SquareModulus();
     DMin2 = 
       (V1V1 <=aTol2) ? 
-    Min(DMin2,V.SquareModulus()): // si le segment est trop petit...
+    Min(DMin2,V.SquareModulus()): // if the segment is too small...
       Min(DMin2,Vector*Vector/V1V1);
     //cdg ...
     gp_XY PlaneTest(CDG);PlaneTest-=((Select3D_Pnt2d*)mypolyg2d)[I-1];
     Standard_Real valtst = PlaneTest^V1;
     if(isplane2d && Abs(valtst)>aTol) isplane2d=Standard_False;
   }
-  if (isplane2d)
-  {
-    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+
+  if(isplane2d) {
+    Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+    
+    return Standard_True;
   }
   //detection d'une auto - intersection dans le polygon 2D; si oui on sort
 //    if (!AutoComputeFlag(myautointer)) {
@@ -134,7 +135,7 @@ Matches(const Standard_Real X,
 //   if (AutoInterFlag(myautointer)) return Standard_True;
 // //  
 
-  //sinon on regarde si le point est dans la face...
+  //otherwise it is checked if the point is in the face...
   TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
   Points2D(aArrayOf2dPnt);
   CSLib_Class2d TheInOutTool(aArrayOf2dPnt,aTol,aTol,Xmin,Ymin,Xmax,Ymax);
@@ -150,11 +151,10 @@ Matches(const Standard_Real X,
 	res = Standard_True;
     }
   }
-  if (res)
-  {
-    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-  }
-  return Standard_False;
+  if(res)
+    Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+    
+  return res;
 }
 
 //=======================================================================
@@ -230,17 +230,8 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
 //=======================================================================
 Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
 {
-  Standard_Real aDepth = Precision::Infinite();
-  Standard_Real aDepthMin = !mylastprj.IsNull() ? mylastprj->DepthMin() : -Precision::Infinite();
-  Standard_Real aDepthMax = !mylastprj.IsNull() ? mylastprj->DepthMax() :  Precision::Infinite();
-  Standard_Real aDepthTest;
-  for (Standard_Integer i = 0; i < mynbpoints - 1; i++)
-  {
-    aDepthTest = ElCLib::Parameter (EyeLine, ((Select3D_Pnt* )mypolyg3d)[i]);
-    if (aDepthTest < aDepth && (aDepthTest > aDepthMin) && (aDepthTest < aDepthMax))
-    {
-      aDepth = aDepthTest;
-    }
-  }
-  return aDepth;
+  Standard_Real val(Precision::Infinite());
+  for(Standard_Integer i=0;i<mynbpoints-1;i++)
+    val = Min(val,ElCLib::Parameter(EyeLine,((Select3D_Pnt*)mypolyg3d)[i]));
+  return val;
 }

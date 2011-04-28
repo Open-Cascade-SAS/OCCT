@@ -185,8 +185,8 @@ static Standard_Boolean SearchFD(TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : ToricCorner
-//purpose  : Teste si on est dans le cas pariculier d un coin torique 
-//           (ou spherique limite par des isos).
+//purpose  : Test if this is a paricular cas of a torus corner 
+//           (or spherical limited by isos).
 //=======================================================================
 
 static Standard_Boolean ToricCorner(const TopoDS_Face& F,
@@ -205,8 +205,8 @@ static Standard_Boolean ToricCorner(const TopoDS_Face& F,
 
 //=======================================================================
 //function : PerformThreeCorner
-//purpose  : Calcul du conge sur un sommet avec trois aretes 
-//           incidentes portant chacune un conge.
+//purpose  : Calculate fillet on a top with three edges 
+//           incident carrying each edge.
 //=======================================================================
 
 void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
@@ -241,9 +241,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     Index[ii] = ChFi3d_IndexOfSurfData(Vtx,It.Value(),sens[ii]);
     CD[ii] = It.Value();
   }
-  // On verifie que l une des CD ne figure pas deux fois, au quel cas 
-  // il faut modifier le retour de IndexOfSurfData qui prend la 
-  // premiere des solutions.
+  // It is checked if one of CD is not present twice in which  
+  // case it is necessary to modify the return of IndexOfSurfData  
+  // that takes the first solution.
   if(CD[0] == CD[1]){ 
     Index[1] = CD[1]->SetOfSurfData()->Length();
     sens[1] = -1;
@@ -266,9 +266,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 		      p[1][2],p[2][1],Index[1],Index[2],face[0],sameside[0],
 		      jf[1][2],jf[2][1]);
   //
-  // Analyse des concavites des 3 conges :
-  //        - 2 concavites identiques et 1 inverse.
-  //        - 3 concavites identiques
+  // Analyze concavities of 3 fillets :
+  //        - 2 concavities identic and 1 inverted.
+  //        - 3 concavities identic
   //
   if(oksea[2] && oksea[1] && !sameside[2] && !sameside[1])
     { pivot = 0; deb = 1; fin = 2;}
@@ -277,11 +277,11 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   else if(oksea[1] && oksea[0] && !sameside[1] && !sameside[0])
     { pivot = 2; deb = 0; fin = 1;}
   else if(oksea[0] && oksea[1] && oksea[2]){ 
-    // 3 concavites identiques.
+    // 3 concavities identic.
     pivot = SearchPivot(sens,p,tol2d);
     if(pivot < 0){ 
 #ifdef DEB
-      cout<<"pivot non trouve, on appelle plate"<<endl;
+      cout<<"pivot not found, plate is called"<<endl;
 #endif
       PerformMoreThreeCorner(Jndex, 3);
       return;
@@ -303,14 +303,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   ifacfin = CD[fin]->ChangeSetOfSurfData()->Value(i[fin][pivot])->Index(3-jf[fin][pivot]);
   if(ifacfin != ifacdeb){
 #ifdef DEB
-    cout<<"plusieurs faces d'appui, on appelle plate"<<endl;
+    cout<<"several base faces, plate is called"<<endl;
 #endif
     PerformMoreThreeCorner(Jndex, 3);
     return;
   }
   if(i[pivot][deb] != i[pivot][fin]){
 #ifdef DEB
-    cout<<"changement de surfdata sur le pivot, on appelle plate"<<endl;
+    cout<<"load surfdata on the pivot, plate is called"<<endl;
 #endif
     PerformMoreThreeCorner(Jndex, 3);
     return;
@@ -338,9 +338,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     if(!c1toric)c1spheric=(Abs(qr[0]-qr[1])<tolesp && Abs(qr[0]-qr[2])<tolesp);
   }
   
-  //  Autrefois pour eviter les bouclages on mettait toujours les
-  //  points a l interieur, ca pouvait gener la construction de la
-  //  ligne guide du coin qui aujourd hui est un cercle.
+  //  Previously to avoid loops the points were always located 
+  //  inside, which could impede the construction of the
+  //  guideline of the corner which now is a circle.
   //  Standard_Integer jjjd = jf[deb][fin], jjjf = jf[fin][deb];
   //  if (pivdif) jjjd = jf[deb][pivot], jjjf = jf[fin][pivot];
   Standard_Integer jjjd = jf[deb][pivot], jjjf = jf[fin][pivot];
@@ -352,8 +352,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 			0,sens[pivot],Pdp,Vdp,Rdp);
   ChFi3d_ExtrSpineCarac(DStr,CD[pivot],i[pivot][fin],p[pivot][fin],
 			0,sens[pivot],Pfp,Vfp,Rfp);
-  //dans le cas allsame on controle que les points sur la face ne 
-  //sont pas trop pres ce qui risque de faire foirer le cheminement.
+  //in cas of allsame it is checked that points on the face are not 
+  //too close, which can stop the work.
   if(!pivdif) {
     gp_Pnt ptestdeb,ptestfin; gp_Vec bidvec; Standard_Real bidr;
     ChFi3d_ExtrSpineCarac(DStr,CD[deb],i[deb][pivot],p[deb][pivot],
@@ -371,14 +371,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     if(Abs(p[pivot][deb] - p[pivot][fin]) <= tol2d)
       c1toric = ToricCorner(face[pivot],Rdeb,Rfin,Vdp);
   }
-  // on a le pivot, le CD deb et le CD fin (enfin on espere !?!) :
+  // there is a pivot, the start and the end CD (finally !?!) :
   // -------------------------------------------------------------
-  // les criteres determinant si le coin est un tore ou une sphere
-  // sont uniquement fondes sur la configuration des sections en 
-  // bout et la nature des faces, il faudra faire des tests pour 
-  // determiner si une analyse plus subtile des conges incidents
-  // n est pas necessaire pour assurer la tangence entre ceux-ci
-  // et le coin (en particulier dans les cas a rayon variable).
+  // the criterions determining if the corner is a torus or a sphere
+  // are based only on the configuration of sections at end and the 
+  // nature of faces, it is necessary to make tests to 
+  // determine if a more detailed analysis of incident fillets
+  // is necessare to provide tangency between them and 
+  // the corner (in particular in the case with variable radius).
   
   
   
@@ -390,7 +390,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     fdpiv = CD[pivot]->ChangeSetOfSurfData()->ChangeValue(i[pivot][deb]);
   
   
-  // On construit les HSurfaces et autres outils qui vont bien.
+  // HSurfaces and other suitable tools are constructed.
   // ----------------------------------------------------------
   
   TopAbs_Orientation OFac = face[pivot].Orientation();
@@ -431,13 +431,13 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   
   Handle(GeomAdaptor_HSurface) Surf = new GeomAdaptor_HSurface(gasurf);
   //  Handle(BRepTopAdaptor_TopolTool) IFac = new BRepTopAdaptor_TopolTool(Fac);
-  // Essai de ne pas classifier sur la face pour les cas de conges rentrants
-  // qui debordent naturellement.  
+  // Try to not classify on the face for cases of reentering fillets which naturally depass 
+  // the border.  
   Handle(GeomAdaptor_HSurface) 
     bidsurf = new GeomAdaptor_HSurface(Fac->ChangeSurface().Surface());
   Handle(Adaptor3d_TopolTool) 
     IFac = new Adaptor3d_TopolTool(bidsurf);
-  // fin de l essai.
+  // end of the attempt.
   Handle(Adaptor3d_TopolTool) ISurf = new Adaptor3d_TopolTool(Surf);
   Handle(ChFiDS_Stripe) corner = new ChFiDS_Stripe();
   Handle(ChFiDS_HData)& cornerset = corner->ChangeSetOfSurfData();
@@ -489,30 +489,30 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   if (c1toric){
     
 #ifdef DEB 
-    ChFi3d_InitChron(ch); // init perf cas torique 
+    ChFi3d_InitChron(ch); // init perf case torus 
 #endif 
     
-    // Construction directe.
+    // Direct Construction.
     // ---------------------
     done = ChFiKPart_ComputeData::ComputeCorner
       (DStr,coin,Fac,Surf,oo1,oo2,o1,o2,Rdeb,Rdp,pfac1,pfac2,psurf1,psurf2);
     
 #ifdef DEB 
-    ChFi3d_ResultChron(ch , t_torique); // result perf cas torique 
+    ChFi3d_ResultChron(ch , t_torique); // result perf case torus 
 #endif 
     
   }
   else if(c1spheric){
     
 #ifdef DEB   
-    ChFi3d_InitChron(ch); //init perf cas spherique 
+    ChFi3d_InitChron(ch); //init perf case sphere 
 #endif 
     
     done = ChFiKPart_ComputeData::ComputeCorner
       (DStr,coin,Fac,Surf,oo1,oo2,o1,o2,Rdp,pfac1,psurf1,psurf2);
     
 #ifdef DEB  
-    ChFi3d_ResultChron(ch , t_spherique);// result perf cas spherique 
+    ChFi3d_ResultChron(ch , t_spherique);// result perf cas sphere 
 #endif 
     
   }
@@ -526,14 +526,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       ChFi3d_InitChron(ch);// init perf not filling 
 #endif
       
-      //on se calcule une ligne guide,
+      //Calculate a guideline,
       //------------------------------
-      //Problemes nombreux de bouclages et demi-tours lies 
-      //a la courbure de la ligne guide !!!!!! 
-      //POUR L INSTANT CERCLE.
-      //Si un jour on change de nature de ligne guide il faudra
-      //remettre les points Pdeb et Pfin a l interieur (voir le
-      //commentaire a ce sujet a la ligne du calcul de Pdeb et Pfin).
+      //Numerous problems with loops and half-turns connected to 
+      //the curvature of the guideline !!!!!! 
+      //FOR CIRCLE.
+      //If the nature of guideline is changed it is necessary to 
+      //reset points Pdeb and Pfin at the inside (see the
+      //comments about it in the calculation of Pdeb and Pfin).
       
       Standard_Real radpondere = (Rdp+Rfp)/2.;
       Standard_Real locfleche = fleche;
@@ -543,8 +543,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 							  Pdeb,Vdeb,
 							  Pfin,Vfin,radpondere);
       if(spinecoin.IsNull()){
-	// On est dans un cas pourri ou l intersection des plans 
-	// de section se fait en dehors du secteur.
+	// This is a bad case when the intersection of 
+	// section planes is done out of the sector.
 	spinecoin = ChFi3d_Spine(Pdeb,Vdeb,
 				 Pfin,Vfin,radpondere);
 	WFirst = 0.; WLast = 1.;
@@ -555,11 +555,11 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       cornerspine->ChangeCurve().SetCurve(spinecoin);
       cornerspine->ChangeCurve().FirstParameter(WFirst - pasmax);
       cornerspine->ChangeCurve().LastParameter(WLast + pasmax);
-      // Juste pour leurrer le Compute data qui ne doit pas
-      // en avoir besoin dans ce cas precis ...
+      // Just to confuse Compute that should not require this 
+      // in this exact case ...
       Handle(ChFiDS_Spine) NullSpine;
-      // On calcule le conge : - de deb vers fin 
-      //                       - de la face vers la surface
+      // The fillet is calculated - from beginning to end 
+      //                       - from the face to the surface
       //
       math_Vector Soldep(1,4);
       Soldep(1) = pfac1.X();
@@ -628,9 +628,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       ChFi3d_InitChron(ch); // init perf filling
 #endif
       
-      // le contour a remplir est constitue de droites uv sur deb et fin
-      // de deux pcurves (une seule si c1pointu) calculees comme on peut
-      // sur piv et la face opposee.
+      // the contour to be fillet consists of straight lines uv in beginning and end 
+      // of two pcurves (only one if c1pointu) calculted as possible
+      // on piv and the opposite face.
       Handle(GeomFill_Boundary) Bdeb,Bfin,Bpiv,Bfac;
       Handle(Geom2d_Curve) PCurveOnFace;
       if(!c1pointu) 
@@ -678,7 +678,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       else fil.Init(Bpiv,Bfin,Bfac,Bdeb,1);
       
       Handle(Geom_Surface) Surfcoin = fil.Surface();
-      Surfcoin->VReverse(); // on se ramene au sens face surf;
+      Surfcoin->VReverse(); // revert to direction face surface;
       done = CompleteData(coin,Surfcoin,
 			  Fac,PCurveOnFace,
 			  Surf,PCurveOnPiv,fdpiv->Orientation(),0,
@@ -697,11 +697,11 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   }
   
   if (done){    
-    // Mise a jour des 4 Stripes et de la DS
+    // Update of 4 Stripes and the DS
     // -------------------------------------
     
 #ifdef DEB  
-    ChFi3d_InitChron(ch);// init perf mise a jour DS
+    ChFi3d_InitChron(ch);// init perf update DS
 #endif 
     
     gp_Pnt2d pp1,pp2;
@@ -719,7 +719,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     pbf1->Add(Pf1.Point());pbf2->Add(Pf2.Point());
     pbl1->Add(Pl1.Point());pbl2->Add(Pl2.Point());
     
-    // le coin pour commencer,
+    // the start corner,
     // -----------------------
     ChFiDS_Regul regdeb, regfin;
     If1 = ChFi3d_IndexPointInDS(Pf1,DStr);
@@ -773,8 +773,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     corner->ChangeIndexLastPointOnS2(Il2);
     ChFi3d_EnlargeBox(DStr,corner,coin,*pbl1,*pbl2,0);
     
-    // puis la CornerData du debut,
-    // ----------------------------
+    // then CornerData of the beginning,
+    // --------------------------------
     Standard_Boolean isfirst = (sens[deb] == 1), rev = (jf[deb][fin] == 2);
     Standard_Integer isurf1 = 1, isurf2 = 2;
     parpp1 = p[deb][fin]; parpp2 = p[deb][pivot]; 
@@ -803,8 +803,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     if(rev) ChFi3d_EnlargeBox(DStr,CD[deb],fddeb,*pbf2,*pbf1,isfirst);
     else ChFi3d_EnlargeBox(DStr,CD[deb],fddeb,*pbf1,*pbf2,isfirst);
     
-    // puis la CornerData de la fin,
-    // -----------------------------
+    // then the end CornerData,
+    // ------------------------
     isfirst = (sens[fin] == 1); rev = (jf[fin][deb] == 2);
     isurf1 = 1; isurf2 = 2;
     parpp1 = p[fin][deb]; parpp2 = p[fin][pivot]; 
@@ -833,7 +833,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     if(rev) ChFi3d_EnlargeBox(DStr,CD[fin],fdfin,*pbl2,*pbl1,isfirst);
     else ChFi3d_EnlargeBox(DStr,CD[fin],fdfin,*pbl1,*pbl2,isfirst);
     
-    // et enfin le pivot.
+    // anf finally the pivot.
     // ------------------
     ChFiDS_FaceInterference& fi = coin->ChangeInterferenceOnS2();
     isfirst = (sens[pivot] == 1); rev = (jf[pivot][deb] == 2);
@@ -861,18 +861,18 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     fdpiv->ChangeVertex(isfirst,isurf2) = Pl2;
     fdpiv->ChangeInterference(isurf1).SetParameter(p[pivot][deb],isfirst);
     fdpiv->ChangeInterference(isurf2).SetParameter(p[pivot][fin],isfirst);
-    CD[pivot]->InDS(isfirst); // filDS fait deja le boulot depuis le coin.
+    CD[pivot]->InDS(isfirst); // filDS already does it from the corner.
     if(rev) ChFi3d_EnlargeBox(DStr,CD[pivot],fdpiv,*pbl2,*pbf2,isfirst);
     else ChFi3d_EnlargeBox(DStr,CD[pivot],fdpiv,*pbf2,*pbl2,isfirst);
     
-    //Pour finir on recale les tolerances des points.
+    //To end the tolerances of points are rescaled.
     ChFi3d_SetPointTolerance(DStr,*pbf1,If1);
     ChFi3d_SetPointTolerance(DStr,*pbf2,If2);
     ChFi3d_SetPointTolerance(DStr,*pbl1,Il1);
     ChFi3d_SetPointTolerance(DStr,*pbl2,Il2);
   }
   
-  //On tronque les corners data et met a jour les index.
+  //The data corners are truncated and index is updated.
   //----------------------------------------------------
   
   if(i[deb][pivot] < Index[deb]){
@@ -891,7 +891,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     CD[fin]->ChangeSetOfSurfData()->Remove(Index[fin],i[fin][pivot]-1);
     i[fin][pivot] = Index[fin]; 
   }
-  // il faudra ici tenir compte des coins mutants.
+  // it is necessary to take into account mutant corners.
   if(i[pivot][deb] < Index[pivot]) {
     CD[pivot]->ChangeSetOfSurfData()->Remove(i[pivot][deb]+1,Index[pivot]);
     Index[pivot] = i[pivot][deb];
@@ -909,6 +909,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   myListStripe.Append(corner);
   
 #ifdef DEB  
-  ChFi3d_ResultChron(ch , t_t3cornerDS);// result perf mise a jour DS
+  ChFi3d_ResultChron(ch , t_t3cornerDS);// result perf update DS
 #endif 
 }

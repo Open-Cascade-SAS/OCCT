@@ -66,7 +66,7 @@ raises
 
 is
 
-    -- Construction et donnees generales.
+    -- Construction and general data.
     -------------------------------------
 
     Delete(me:out) is virtual;
@@ -84,7 +84,7 @@ is
 		  AngularTolerance   : Real);
 
 
-    -- Acquisition et interrogation concernant les trajets.
+    -- Acquisition and questioning on trajectories.
     -------------------------------------------------------
 
     Remove(me : in out; E : Edge from TopoDS) 
@@ -166,20 +166,19 @@ is
     is static; 
     
     
-    -- Le calcul et la recuperation des resultats.
+    -- Calculation and the restoration of results.
     ----------------------------------------------
 
     Compute(me : in out)
-    ---Purpose: calculation general 
-    --          -geometrie sur l ensemble des aretes,
-    --          -reconstruction topologique
+    ---Purpose: general calculation of geometry on all edges,
+    --          topologic reconstruction.
     is static;
 
     IsDone(me) returns Boolean from Standard is static;
     ---Purpose: returns True if the computation  is  success
     
     Shape(me) returns Shape from TopoDS 
-    ---Purpose: if (Isdone()) rend le resultat.
+    ---Purpose: if (Isdone()) makes the result.
     raises NoSuchObject from Standard
     ---Purpose: if (!Isdone())
     is static;
@@ -486,9 +485,9 @@ is
                Intf,Intl   : in out Boolean from Standard)
 
     returns Boolean from Standard is static;	
-    ---Purpose: Methode, implementee dans les heritants, calculant
-    --          les elements de construction de la surface (conge
-    --          ou chanfrein). 
+    ---Purpose: Method, implemented in the inheritants, calculates
+    --          the elements of construction of the surface (fillet or
+    --          chamfer). 
   
     CallPerformSurf(me          : in out;  
     	    	Stripe          : in out Stripe from ChFiDS;
@@ -535,9 +534,9 @@ is
                 Intf,Intl       : in out Boolean from Standard)
     returns  Boolean
     is deferred protected;	
-    ---Purpose: Methode, implementee dans les heritants, calculant
-    --          les elements de construction de la surface (conge
-    --          ou chanfrein).  
+    ---Purpose: Method, implemented in the inheritants, calculating
+    --          elements of construction of the surface (fillet or
+    --          chamfer).  
 
     PerformSurf(me                   : in out; 
                 Data                 : out SequenceOfSurfData from ChFiDS;
@@ -856,7 +855,7 @@ is
     	    	Forward          : Boolean from Standard;
                 RecP1, RecRst1   : Boolean from Standard;
                 RecP2, RecRst2   : Boolean from Standard)
-    ---Purpose: Calculated a Line of contact edge/edge.
+    ---Purpose: Calculates a Line of contact edge/edge.
     returns Boolean from Standard is static protected;
 
 
@@ -917,57 +916,57 @@ is
 
 fields
 
--- La piece d entree
+-- Input part
 myShape        : Shape from TopoDS;
 
--- Donnees numeriques (tolerances) REMARQUE : il faut virer les tol2d!!!
-angular        : Real from Standard;              -- tangence entre aretes
-tolappangle    : Real from Standard is protected; -- approx angulaire      
+-- Numeric data (tolerances) NOTE : suspend tol2d!!!
+angular        : Real from Standard;              -- tangency of edges
+tolappangle    : Real from Standard is protected; -- angular approximation      
 tolesp         : Real from Standard is protected; -- confusion 3d          : def 1.e-4
 tol2d          : Real from Standard is protected; -- confusion 2d          : def 1.e-5
 tolapp3d       : Real from Standard is protected; -- approx 3d             : def 1.e-4
 tolapp2d       : Real from Standard is protected; -- approx 2d             : def 1.e-5
-fleche         : Real from Standard is protected; -- fleche du walking     : def 1.e-6
+fleche         : Real from Standard is protected; -- vector of walking     : def 1.e-6
 
--- Continuite pour la geometrie approximee
+-- Continuity for the approximated geometry
 myConti        : Shape from GeomAbs is protected;
 
--- Maps de pointeurs arrieres pour travailler
+-- Maps of back-pointers to work
 myEFMap        : Map from ChFiDS is protected;
 myESoMap       : Map from ChFiDS is protected;
 myEShMap       : Map from ChFiDS is protected;
 myVFMap        : Map from ChFiDS is protected;
 myVEMap        : Map from ChFiDS is protected;
 
--- Les outils de stockage et de reconstruction
+-- Tools of storage and reconstruction
 myDS           : HDataStructure from TopOpeBRepDS is protected;
 myCoup         : HBuilder from TopOpeBRepBuild is protected;
 
--- Les outils de stockage interne
+-- Tools of internal storage
 myListStripe   : ListOfStripe from ChFiDS is protected;
 myVDataMap     : StripeMap from ChFiDS is protected;
 myRegul        : Regularities from ChFiDS is protected;
 
--- Les stripes dont le calcul a plante
+-- Stripes the calculation which of hangs
 badstripes     : ListOfStripe from ChFiDS is protected;
 
--- Les vertex au voisinage desquels la finition a plante
+-- Vertexes in the neighborhood which of the finition hangs
 badvertices    : ListOfShape from TopTools is protected;
 
--- donnees calculees pendant le compute pour l historique 
+-- Data calculated during the computation for the history 
 myGenerated    : ListOfShape from TopTools;
 myEVIMap       : DataMapOfShapeListOfInteger from TopTools is protected;
 
--- flag si tout s est bien passe
+-- flag if all has passed well
 done           : Boolean from Standard is protected;
 
--- le resultat
+-- result
 myShapeResult  : Shape from TopoDS;
 
--- flag si il y a un resultat partiel(badshape)
+-- flag there is partial result (badshape)
 hasresult      : Boolean from Standard is protected;
 
--- resultat partiel eventuel
+-- eventual partial result
 badShape       : Shape from TopoDS;
 
 

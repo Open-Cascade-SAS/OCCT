@@ -387,7 +387,7 @@ void AIS_IdenticRelation::Compute(const Handle_Prs3d_Projector& aProjector, cons
 //           "identic" presentation
 // note    : if we are in the case of lines, we create a segment between
 //           myFAttach and mySAttach. In the case of Circles, we create
-//           an arc of circle between the sames points.We Add a segment
+//           an arc of circle between the sames points. We Add a segment
 //           to link Position to its projection on the curve described
 //           before.
 //=======================================================================
@@ -452,7 +452,7 @@ void AIS_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aS
 	      seg = new Select3D_SensitiveSegment(own, myFAttach, mySAttach);
 	      aSelection->Add(seg);
 	      
-	      //attach = projection de Position() sur la curve;
+	      //attach = projection of Position() on the curve;
 	      gp_Vec v1 (myFAttach, mySAttach);
 	      gp_Vec v2 (myFAttach, myPosition);
 	      if ( v1.IsParallel(v2, Precision::Angular()) )
@@ -521,7 +521,7 @@ void AIS_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Present
   //  Treatement of the case of circles
   else if ( curv1->IsInstance(STANDARD_TYPE(Geom_Circle)) && curv2->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
     //gp_Pnt curpos;
-    isCircle = Standard_True; // usefull for ComputeSelection
+    isCircle = Standard_True; // useful for ComputeSelection
     const Handle(Geom_Circle)& thecirc = (Handle(Geom_Circle)&) curv1;
     ComputeTwoCirclesPresentation(aPrs, thecirc, firstp1, lastp1, firstp2, lastp2);
   }
@@ -537,7 +537,7 @@ void AIS_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Present
   else
     return;
 
- // Calcul de la presentation des edges projettees
+ // Calculate presentation of projected edges
  if ( (myExtShape != 0) &&  !extCurv.IsNull()) {
    if (myExtShape == 1 )
      ComputeProjEdgePresentation(aPrs, TopoDS::Edge(myFShape), curv1, firstp1, lastp1);
@@ -1529,7 +1529,7 @@ void AIS_IdenticRelation::ComputeTwoVerticesPresentation(const Handle(Prs3d_Pres
 				  vals,
 				  myFAttach,
 				  curpos);
-  // Calcul de la projection du vertex
+  // Calculate the projection of vertex
   if ( myExtShape == 1)
     ComputeProjVertexPresentation(aPrs,FVertex,myFAttach);
   else if ( myExtShape == 2)
@@ -1551,7 +1551,7 @@ Standard_Real AIS_IdenticRelation::ComputeSegSize() const
 //function : ComputeDirection
 //purpose  : Compute a direction according to the different geometric
 //           elements connected to the vertex <VERT>, in way to not have
-//            overlap between the symbol and them.
+//           overlap between the symbol and them.
 //=======================================================================
 Standard_Boolean AIS_IdenticRelation::ComputeDirection(const TopoDS_Wire& aWire, 
 						       const TopoDS_Vertex& VERT, 
@@ -1665,12 +1665,12 @@ void AIS_IdenticRelation::ComputeOneEdgeOVertexPresentation(const Handle(Prs3d_P
   if (myFShape.ShapeType() == TopAbs_VERTEX) {
     V = TopoDS::Vertex(myFShape);
     E = TopoDS::Edge(mySShape);
-    numedge = 2;// edge = 2 iem shape
+    numedge = 2;// edge = 2nd shape
   }
   else {
     V = TopoDS::Vertex(mySShape);
     E   = TopoDS::Edge(myFShape);
-    numedge = 1;  // edge = 1 ere shape
+    numedge = 1;  // edge = 1st shape
   }
   gp_Pnt ptonedge1,ptonedge2;
   Handle(Geom_Curve) aCurve;
@@ -1682,7 +1682,7 @@ void AIS_IdenticRelation::ComputeOneEdgeOVertexPresentation(const Handle(Prs3d_P
   aPrs->SetInfiniteState(isInfinite);
   AIS::ComputeGeometry(V, myFAttach, myPlane, isOnPlanVertex);
 
-  // on considere que seule la courbe peut etre projetee 
+  // only the curve can be projected 
   if (!isOnPlanEdge && !isOnPlanVertex) return;
 
   if (!isOnPlanEdge) {
@@ -1736,7 +1736,7 @@ void AIS_IdenticRelation::ComputeOneEdgeOVertexPresentation(const Handle(Prs3d_P
 				  myFAttach,
 				  curpos);
   if (myExtShape != 0) {
-    if (!extCurv.IsNull()) { // c'est l'edge qui n'est pas dans le WP
+    if (!extCurv.IsNull()) { // the edge is not in the WP
      ComputeProjEdgePresentation(aPrs,E,(Handle(Geom_Line)&) aCurve,ptonedge1,ptonedge2);
     }
   }

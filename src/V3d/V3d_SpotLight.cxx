@@ -60,7 +60,7 @@ V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real X
 
   MyType = V3d_SPOT ;
   MyLight = new Visual3d_Light(C,P,D,CN,A1,A2,AN) ;
-  // On fixe la cible, a partir de la position de la light et de la direction.
+  // The target is fixed, starting from the light position and the direction.
   T.SetCoord(X + D.X(), Y + D.Y(), Z + D.Z());
   MyTarget = T;
 } 
@@ -207,10 +207,10 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
   V3d_TypeOfRepresentation Pres;
   V3d_TypeOfUpdate UpdSov;
 
-//  Creation d'une structure slight d'elements reperables (la position de
-//  la light, et le domaine d'eclairage represente par un cercle)
-//  Creation d'une structure snopick d'elements non reperables ( cible, meridien et 
-//  parallele ).
+//  Creation of a structure slight of markable elements (position of the
+//  light, and the domain of lighting represented by a circle)
+//  Creation of a structure snopick of non-markable elements (target, meridian and 
+//  parallel).// 
 
     Pres = TPres;
     Handle(V3d_Viewer) TheViewer = aView->Viewer();
@@ -249,7 +249,7 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
   Y0 = MyTarget.Y();
   Z0 = MyTarget.Z();
   
-//Affichage de la position de la light.
+//Display of the position of the light.
 
   glight->SetPickId(1);
   this->Color(Quantity_TOC_RGB,R1,G1,B1);
@@ -259,7 +259,7 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
   glight->SetPrimitivesAspect(Asp1);
   this->Symbol(glight,aView);
   
-//Affichage de la sphere de reperage (limite au cercle).
+// Display of the reference sphere (limited by circle).
 
   if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) {
     
@@ -268,7 +268,7 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
     gsphere->SetPickId(2);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
 
-//Affichage du rayon de la sphere (ligne + texte)
+// Display of the radius of the sphere (line + text)
 
     if (Pres == V3d_COMPLETE) {
       gradius->SetPickId(3);
@@ -287,14 +287,14 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);
     }
     
-//Affichage du meridien
+// Display of the meridian
 
     Quantity_Color Col2(Quantity_NOC_GREEN);
     Handle(Graphic3d_AspectLine3d) Asp2 = new Graphic3d_AspectLine3d
       (Col2,Aspect_TOL_SOLID,1.);
     gnopick->SetPrimitivesAspect(Asp2);
     
-//    Definition de l'axe du cercle
+//    Definition of the axis of the circle
     aView->Up(DXRef,DYRef,DZRef);
     this->Position(X,Y,Z);
     DXini = X-X0; DYini = Y-Y0; DZini = Z-Z0;
@@ -304,9 +304,9 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
     
     V3d::CircleInPlane(gnopick,X0,Y0,Z0,VX,VY,VZ,Rayon);
 
-//    Affichage de la parallele
+//    Display of the parallel
 
-//    Definition de l'axe du cercle
+//    Definition of the axis of the circle
     aView->Proj(VX,VY,VZ);
     aView->Up(X1,Y1,Z1);
     DXRef = VY * Z1 - VZ * Y1;

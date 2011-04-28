@@ -15,15 +15,15 @@ void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
 
   Quantity_Length dx,dy,dz;  aDirection.Coord(dx,dy,dz);
 //
-// Pointe de la fleche:
+// Point of the arrow:
   Quantity_Length xo,yo,zo;  aLocation.Coord(xo,yo,zo);
 
-// Centre du cercle base de la fleche:
+// Center of the base circle of the arrow:
   Quantity_Length xc = xo - dx * aLength;
   Quantity_Length yc = yo - dy * aLength;
   Quantity_Length zc = zo - dz * aLength;
 
-// Construction d'un repere i,j pour le cercle:
+// Construction of i,j mark for the circle:
   Quantity_Length xn=0., yn=0., zn=0.;
 
   if ( Abs(dx) <= Abs(dy) && Abs(dx) <= Abs(dz)) xn=1.;

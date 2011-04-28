@@ -417,7 +417,7 @@ void ChFi3d_FilBuilder::SetLaw(const Standard_Integer      IC,
 			       const TopoDS_Edge&          E,
 			       const Handle(Law_Function)& L)
 {
-  // Voir si il ne faut pas faire un controle des bounds ici!!!!!
+  // Check if it is necessary to check borders!
   if(IC <= NbElements()) {
     Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Value(IC));
     fsp->ChangeLaw(E) = L;
@@ -448,11 +448,11 @@ void ChFi3d_FilBuilder::Simulate (const Standard_Integer IC)
 #ifdef DEB
   if(ChFi3d_GettraceCHRON()){
     simul.Stop();
-    cout<<"Temps total simulation : ";
+    cout<<"Total simulation time : ";
     simul.Show();
-    cout<<"dont temps construction spine : ";
+    cout<<"Spine construction time : ";
     elspine.Show();
-    cout<<"et temps cheminement : ";
+    cout<<"and process time : ";
     chemine.Show();
   }
 #endif
@@ -613,12 +613,12 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("SimulSurf : la spine n est pas celle d un conge");
+    ("SimulSurf : this is not the spine of the fillet");
   Handle(BRepBlend_Line) lin;
 #ifdef DEB
 //  TopAbs_Orientation Or = S1->ChangeSurface().Face().Orientation();
 #endif
-  // Des parametres souples!!!
+  // Flexible parameters!!!
   Standard_Real locfleche, MaxStep;
   SimulParams(HGuide,fsp,MaxStep,locfleche);
   Handle(ChFiDS_SecHArray1) sec;
@@ -757,10 +757,10 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of the fillet");
   Handle(BRepBlend_Line) lin;
   
-  // Des parametres souples!!!
+  // Flexible parameters!
   Standard_Real locfleche, MaxStep;
   SimulParams(HGuide,fsp,MaxStep,locfleche);
   Handle(ChFiDS_SecHArray1) sec;
@@ -793,7 +793,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 		     PFirst,MaxStep,locfleche,TolGuide,First,Last,
 		     Soldep,4,Inside,Appro,Forward,RecP,RecS,RecRst);
     if(!done) {
-      Standard_Failure::Raise("SimulSurf : Echec cheminement!");
+      Standard_Failure::Raise("SimulSurf : Failed process!");
     }
     Standard_Integer nbp = lin->NbPoints();
     sec = new ChFiDS_SecHArray1(1,nbp);
@@ -832,7 +832,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 		     func,finv,finvp,finvc,
 		     PFirst,MaxStep,locfleche,TolGuide,First,Last,
 		     Soldep,4,Inside,Appro,Forward,RecP,RecS,RecRst);
-    if(!done) Standard_Failure::Raise("SimulSurf : Echec !");
+    if(!done) Standard_Failure::Raise("SimulSurf : Fail !");
     Standard_Integer nbp = lin->NbPoints();
     sec = new ChFiDS_SecHArray1(1,nbp);
     for(Standard_Integer i = 1; i <= nbp; i++){
@@ -880,7 +880,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 				   const Handle(BRepAdaptor_HSurface)& HSref2,
 				   const Handle(BRepAdaptor_HCurve2d)& PCref2,
 				   Standard_Boolean&                   Decroch2,
-				   const Standard_Real                 /*Fleche*/,
+				   const Standard_Real                 /*Arrow*/,
 				   const Standard_Real                 TolGuide,
 				   Standard_Real&                      First,
 				   Standard_Real&                      Last,
@@ -894,10 +894,10 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : it is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
   
-  // Des parametres souples!!!
+  // Flexible parameters!
   Standard_Real locfleche, MaxStep;
   SimulParams(HGuide,fsp,MaxStep,locfleche);
   Handle(ChFiDS_SecHArray1) sec;
@@ -929,7 +929,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 		     func,finv,finvp,finvc,
 		     PFirst,MaxStep,locfleche,TolGuide,First,Last,
 		     Soldep,4,Inside,Appro,Forward,RecP,RecS,RecRst);
-    if(!done) Standard_Failure::Raise("SimulSurf : Echec cheminement!");
+    if(!done) Standard_Failure::Raise("SimulSurf : Failed Processing!");
     Standard_Integer nbp = lin->NbPoints();
     sec = new ChFiDS_SecHArray1(1,nbp);
     for(Standard_Integer i = 1; i <= nbp; i++){
@@ -967,7 +967,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 		     func,finv,finvp,finvc,
 		     PFirst,MaxStep,locfleche,TolGuide,First,Last,
 		     Soldep,4,Inside,Appro,Forward,RecP,RecS,RecRst);
-    if(!done) Standard_Failure::Raise("SimulSurf : Echec !");
+    if(!done) Standard_Failure::Raise("SimulSurf : Fail !");
     Standard_Integer nbp = lin->NbPoints();
     sec = new ChFiDS_SecHArray1(1,nbp);
     for(Standard_Integer i = 1; i <= nbp; i++){
@@ -1037,10 +1037,10 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : it is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
   
-  // Des parametres souples!!!
+  // Flexible parameters!
   Standard_Real locfleche, MaxStep;
   SimulParams(HGuide,fsp,MaxStep,locfleche);
   Handle(ChFiDS_SecHArray1) sec;
@@ -1082,7 +1082,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 		     func, finv1, finvp1, finv2, finvp2,
 		     PFirst, MaxStep, locfleche, TolGuide, First, Last,
 		     Soldep, 4, Inside, Appro, Forward, RecP1, RecRst1, RecP2, RecRst2);
-    if(!done) Standard_Failure::Raise("SimulSurf : Echec cheminement!");
+    if(!done) Standard_Failure::Raise("SimulSurf : Failed processing!");
     Standard_Integer nbp = lin->NbPoints();
     sec = new ChFiDS_SecHArray1(1,nbp);
     for(Standard_Integer i = 1; i <= nbp; i++){
@@ -1135,7 +1135,7 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 		     PFirst, MaxStep, locfleche, TolGuide, First, Last,
 		     Soldep, 4, Inside, Appro, Forward, RecP1, RecRst1, RecP2, RecRst2);
 
-    if(!done) Standard_Failure::Raise("SimulSurf : Echec !");
+    if(!done) Standard_Failure::Raise("SimulSurf : Fail !");
     Standard_Integer nbp = lin->NbPoints();
     sec = new ChFiDS_SecHArray1(1, nbp);
     for(Standard_Integer i = 1; i <= nbp; i++){
@@ -1192,7 +1192,7 @@ Standard_Boolean ChFi3d_FilBuilder::PerformFirstSection
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of a fillet");
   Standard_Real TolGuide = HGuide->Resolution(tolesp);
   if(fsp->IsConstant()){
     BRepBlend_ConstRad Func(S1,S2,HGuide);
@@ -1246,7 +1246,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
   Handle(ChFiDS_SurfData) Data = SeqData(1);
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of a fillet");
   Standard_Boolean gd1,gd2,gf1,gf2, maybesingular;
   Handle(BRepBlend_Line) lin;
   TopAbs_Orientation Or = S1->ChangeSurface().Face().Orientation();
@@ -1273,7 +1273,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
         ChFi3d_ResultChron(ch , t_computedata);// result perf ComputeData
 #endif 
 
-    if(!done) return Standard_False; // ratrappage possible PMN 14/05/1998
+    if(!done) return Standard_False; // recovery is possible PMN 14/05/1998
 
 #ifdef DEB 
           ChFi3d_InitChron(ch);// init  perf  CompleteData
@@ -1285,7 +1285,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
          ChFi3d_ResultChron(ch , t_completedata);// result perf CompleteData
 #endif 
 
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (Func.GetMinimalDistance()<=100*tolapp3d);
   }
   else {
@@ -1319,7 +1319,7 @@ ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
          ChFi3d_ResultChron(ch , t_completedata);// result perf CompleteData
 #endif 
 
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (Func.GetMinimalDistance()<=100*tolapp3d); 
   }
   if (maybesingular) SplitSurf(SeqData, lin);
@@ -1360,7 +1360,7 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
   Handle(ChFiDS_SurfData)  Data = SeqData(1);
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
   Standard_Real PFirst = First;
   Standard_Boolean maybesingular;
@@ -1392,11 +1392,11 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 		       Soldep,Inside,Appro,Forward,RecP,RecS,RecRst);
     if(!done) {
        Spine->SetErrorStatus(ChFiDS_WalkingFailure); 
-       Standard_Failure::Raise("PerformSurf : Echec cheminement!");
+       Standard_Failure::Raise("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS2->ChangeSurface().Face().Orientation();
     done = CompleteData(Data,func,lin,HS1,HS2,Or,1);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
   }
   else {
@@ -1426,11 +1426,11 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 		       Soldep,Inside,Appro,Forward,RecP,RecS,RecRst);
     if(!done) {
       Spine->SetErrorStatus(ChFiDS_WalkingFailure);
-      Standard_Failure::Raise("PerformSurf : Echec cheminement!");
+      Standard_Failure::Raise("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS2->ChangeSurface().Face().Orientation();
     done = CompleteData(Data,func,lin,HS1,HS2,Or,1);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
    maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
   }
   if (maybesingular) SplitSurf(SeqData, lin);
@@ -1470,7 +1470,7 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
   Handle(ChFiDS_SurfData) Data = SeqData(1);;
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
   Standard_Real PFirst = First;
   Standard_Boolean maybesingular;
@@ -1502,11 +1502,11 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 		       Soldep,Inside,Appro,Forward,RecP,RecS,RecRst);
     if(!done) {
       Spine->SetErrorStatus(ChFiDS_WalkingFailure);
-      Standard_Failure::Raise("PerformSurf : Echec cheminement!");
+      Standard_Failure::Raise("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS1->ChangeSurface().Face().Orientation();
     done = CompleteData(Data,func,lin,HS1,HS2,Or,0);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
   }
   else {
@@ -1534,11 +1534,11 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 		       Soldep,Inside,Appro,Forward,RecP,RecS,RecRst);
     if(!done) {
       Spine->SetErrorStatus(ChFiDS_WalkingFailure);
-      Standard_Failure::Raise("PerformSurf : Echec cheminement!");
+      Standard_Failure::Raise("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS1->ChangeSurface().Face().Orientation();
     done = CompleteData(Data,func,lin,HS1,HS2,Or,0);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
   }
   if (maybesingular) SplitSurf(SeqData, lin); 
@@ -1589,7 +1589,7 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
   Handle(ChFiDS_SurfData) Data = SeqData(1);;
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
   Standard_Real PFirst = First;
   Standard_Boolean maybesingular;
@@ -1629,11 +1629,11 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 		       Soldep, Inside, Appro, Forward, RecP1, RecRst1, RecP2, RecRst2);
     if(!done) {
        Spine->SetErrorStatus(ChFiDS_WalkingFailure);
-       Standard_Failure::Raise("PerformSurf : Echec cheminement!");
+       Standard_Failure::Raise("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS1->ChangeSurface().Face().Orientation();
     done = CompleteData(Data, func, lin, HS1, HS2, Or);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
   }
   else {
@@ -1674,11 +1674,11 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 
     if(!done) {
       Spine->SetErrorStatus(ChFiDS_WalkingFailure);
-      Standard_Failure::Raise("PerformSurf : Echec cheminement!");
+      Standard_Failure::Raise("PerformSurf : Failed processing!");
     }
     TopAbs_Orientation Or = HS1->ChangeSurface().Face().Orientation();
     done = CompleteData(Data, func, lin, HS1, HS2, Or);
-    if(!done) Standard_Failure::Raise("PerformSurf : Echec approximation!");
+    if(!done) Standard_Failure::Raise("PerformSurf : Failed approximation!");
     maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
 
 
@@ -1716,13 +1716,13 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
   Standard_Real precedant, suivant, courant;
   Standard_Real a, b, c;
   
-  // (1) Rechecheche des vi tel que l'iso v=vi soit ponctuelles
+  // (1) Finds vi so that iso v=vi is punctual
   VFirst = Min( ref->InterferenceOnS1().FirstParameter(),
                 ref->InterferenceOnS2().FirstParameter() );
   VLast  = Max( ref->InterferenceOnS1().LastParameter(),
                 ref->InterferenceOnS2().LastParameter() );
 
-  // (1.1) Recherche du premier point a l'interieur
+  // (1.1) Finds the first point inside
   for (ii=1; ii<=Nbpnt && Line->Point(ii).Parameter()<VFirst; ii++) {}
   if (ii==1) ii++;
   P =  Line->Point(ii);
@@ -1733,7 +1733,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
   precedant = P.PointOnS1().Distance(P.PointOnS2());
   ii ++;
 
-  // (1.2) Recherche d'un minimum par "points"
+  // (1.2) Find a minimum by "points"
   for ( ; ii<=Nbpnt && Line->Point(ii).Parameter()<=VLast; ii++) {
     for (;ii<=Nbpnt && 
 	 Line->Point(ii).Parameter()<VLast &&
@@ -1743,7 +1743,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
     c = pnt.Parameter();    
     suivant = pnt.PointOnS1().Distance(pnt.PointOnS2());
     if ( (courant <  precedant) && (courant < suivant) ) {
-      // (1.3) Recherche du minimum exact
+      // (1.3) Find the exact minimum
       math_FunctionRoot Resol(Fonc, (a+c)/2,
 			      tol2d,//Surf->VResolution(toleps), 
 			      a, c,
@@ -1753,7 +1753,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
 	
 	Fonc.Value(Resol.Root(), Val);
         if (Val< tolapp3d) { 
-	  // On insere la solution (en evitant les risques de confusion)
+	  // the solution (avoiding the risks of confusion)
 	  if (LesVi.Length()==0) {
 	    if ( (racine > VFirst+tol2d) &&
 		 (racine < VLast -tol2d) ) {
@@ -1770,18 +1770,18 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
       }
       else {
 # if DEB
-	cout << "Echec calcul de la longeur minimum" << endl;
+	cout << "Failed calculation of the minimum length" << endl;
 # endif
       }
     }
-    // mise a jour si non duplication
+    // update if non duplication
     a = b;
     precedant = courant;
     b = c;
     courant = suivant;
   }
 
-  // (2) Mise a jour de la sequence de SurfData
+  // (2) Update of the sequence of SurfData
   if (LesVi.Length()>0) {
     TopOpeBRepDS_DataStructure& DStru = myDS->ChangeDS();
     Handle(ChFiDS_SurfData) SD;
@@ -1793,7 +1793,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
     for (ii=1 ; ii<=LesVi.Length(); ii++) {
 
       T = LesVi(ii);
-      // (2.0) copie et insertion
+      // (2.0) copy and insertion
       SD = new (ChFiDS_SurfData);
       SD->Copy(ref);
       SeqData.InsertBefore(ii, SD);
@@ -1804,7 +1804,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
       C2 = DStru.Curve(SD->InterferenceOnS2().LineIndex());
       SD->ChangeInterferenceOnS2().SetLineIndex(DStru.AddCurve(C2));
 
-      // (2.1) Modif des common Point
+      // (2.1) Modification of common Point
       SD-> ChangeVertexLastOnS1().Reset();
       SD-> ChangeVertexLastOnS2().Reset();
       ref->ChangeVertexFirstOnS1().Reset();
@@ -1824,13 +1824,13 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
       ref->ChangeVertexFirstOnS1().SetTolerance(VertexTol);
       ref->ChangeVertexFirstOnS2().SetTolerance(VertexTol);     
 
-      // (2.2) Modif des interferences
+      // (2.2) Modification of interferences
       SD->ChangeInterferenceOnS1().SetLastParameter(T);
       SD->ChangeInterferenceOnS2().SetLastParameter(T);
       ref->ChangeInterferenceOnS1().SetFirstParameter(T);
       ref->ChangeInterferenceOnS2().SetFirstParameter(T);
 
-      // Les parametres sur l ElSpine
+      // Parameters on ElSpine
       SD->LastSpineParam(T);
       ref->FirstSpineParam(T);
     }
@@ -1845,8 +1845,8 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
 void ChFi3d_FilBuilder::ExtentOneCorner(const TopoDS_Vertex& V,
 					const Handle(ChFiDS_Stripe)& S)
 {
-  // revoir en utilisant les donnees au bout des conges (point,rayon,normale
-  // aux faces et tangentes a la ligne guide.
+  // review by using the data at end of fillets (point, radius, normal
+  // to the faces and tangents of the guideline).
 #ifndef DEB
   Standard_Integer      Sens = 0;
 #else
@@ -1857,10 +1857,10 @@ void ChFi3d_FilBuilder::ExtentOneCorner(const TopoDS_Vertex& V,
   ChFi3d_IndexOfSurfData(V,S,Sens);
   Standard_Real dU = Spine->LastParameter(Spine->NbEdges());
   if (Spine->IsTangencyExtremity((Sens == 1))) 
-    return; //Pas de prolongement sur queue de billard
+    return; //No extension in the queue
 
   if (Spine->Status((Sens == 1)) == ChFiDS_FreeBoundary) {
-    Coeff *= 2; // Il faut aller j'usquau bout.Il faudrait evaluer la longeur
+    Coeff *= 2; // It is necessary to go to the end and to evaluate the length
   }
 
   if (Sens == 1) {
@@ -1881,8 +1881,8 @@ void ChFi3d_FilBuilder::ExtentOneCorner(const TopoDS_Vertex& V,
 void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
 					const ChFiDS_ListOfStripe& LS)
 {
-  // revoir en utilisant les donnees au bout des conges (point,rayon,normale
-  // aux faces et tangentes a la ligne guide.
+  // Review by using the data at end of fillets (point, radius, normal
+  // to faces and tangents to the guideline.
   Standard_Integer Sens;
   Standard_Real    Coeff = 0.3, Eval=0.0, dU, rad;
   Standard_Integer IE;
@@ -1891,7 +1891,7 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
   Handle(ChFiDS_Stripe) Stripe;
   Handle(ChFiDS_Spine)  Spine;
 
-  // On calcul une valeur de prolongement symetrique
+  // A value of symetric extension is calculated
   for ( ; itel.More(); itel.Next()) {    
    Stripe = itel.Value();
    Spine = Stripe->Spine();
@@ -1913,13 +1913,13 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
    if (dU > Eval) Eval = dU;
  }
 
-  // On applique
+  // One applies
   for (itel.Initialize(LS) ; itel.More(); itel.Next()) {    
     IE = ChFi3d_IndexOfSurfData(V,itel.Value(),Sens);
     if (!FF && Stripe == itel.Value()) Sens = -Sens;
     Stripe = itel.Value();
     Spine = Stripe->Spine();
-    if (! Spine->IsTangencyExtremity((Sens == 1))) { //Pas de prolongement sur queue
+    if (! Spine->IsTangencyExtremity((Sens == 1))) { //No extension on queue
       if (Sens == 1){ 
 	Spine->SetFirstParameter(-Eval);
 	Spine->SetFirstTgt(0.);
@@ -1943,8 +1943,8 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
 void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
 					  const ChFiDS_ListOfStripe& LS)
 {
-  // revoir en utilisant les donnees au bout des conges (point,rayon,normale
-  // aux faces et tangentes a la ligne guide.
+  // Review by using the data at end of fillets (point, radius, normal
+  // to faces and tangents to the guideline.
 #ifndef DEB
   Standard_Integer Sens = 0;
 #else
@@ -1963,7 +1963,7 @@ void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
       }
     }
     Handle(ChFiDS_Spine) Spine = Stripe->Spine();
-    if (Spine->IsTangencyExtremity((Sens == 1))) return; //Pas de prolongement sur queue
+    if (Spine->IsTangencyExtremity((Sens == 1))) return; //No extension on queue
     Standard_Real dU = Spine->LastParameter(Spine->NbEdges());
     if (Sens == 1){ 
       Spine->SetFirstParameter(-dU*Coeff);

@@ -64,7 +64,7 @@ AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
   DA->SecondAxisAspect()->SetColor(col);
   DA->SetDrawFirstAndSecondAxis(Standard_True);
   DA->SetDrawThirdAxis(Standard_False);
-  myDrawer->SetDatumAspect(DA); // odl - on en cree un specifique puisqu'on le modifie
+  myDrawer->SetDatumAspect(DA); // odl - specific is created because it is modified
   myShapes[0] = Position();
   myShapes[1] = XAxis();
   myShapes[2] = YAxis();

@@ -99,7 +99,7 @@ static Standard_Boolean IntPlanEdge(Handle(BRepAdaptor_HCurve)& Ed,
   gp_Pnt pdeb = Ed->Value(f);
   gp_Pnt pfin = Ed->Value(l);
   Standard_Real u,v;
-  //on regarde si les extremites ne sont pas solution
+  //check if the extremities are not solution
   ElSLib::Parameters(P,pdeb,u,v);
   gp_Pnt projdeb = ElSLib::Value(u,v,P);
   Standard_Real dprojdeb = pdeb.Distance(projdeb);
@@ -159,14 +159,14 @@ FilletSurf_InternalBuilder::FilletSurf_InternalBuilder
 
 //=======================================================================
 //function : Add
-//purpose  : creation d une spine sur un paquet d'aretes
+//purpose  : creation of spine on a set of edges
 // 
-//  0 : pas de probleme  
-//  1 : liste vide 
-//  2 : aretes non g1 
-//  3 : faces adjacentes non G1
-//  4 : l'arete n'est pas sur le shape
-//  5 : l'arete n'est pas vive 
+//  0 : no problem  
+//  1 : empty list 
+//  2 : non g1 edges
+//  3 : non G1 adjacent faces
+//  4 : edge is not on the shape
+//  5 : edge is not alive 
 //=======================================================================
 
 Standard_Integer  FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E, 
@@ -178,7 +178,7 @@ Standard_Integer  FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
     TopoDS_Edge cured = TopoDS::Edge(It.Value());
     if(cured.IsNull()) return 4;
     if(!myEFMap.Contains(cured)) return 4;
-    //on controle que l arete est bien une arete de cassure
+    //check if the edge is a fracture edge
     TopoDS_Face ff1,ff2;  
     for(It.Initialize(myEFMap(cured));It.More();It.Next()){  
       if (ff1.IsNull()) {
@@ -202,9 +202,9 @@ Standard_Integer  FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
   Handle(ChFiDS_Spine)& sp = st->ChangeSpine();
   Standard_Boolean periodic = sp->IsPeriodic();
   
-  //On controle que les aretes de la liste E sont bien dans le contour,
-  //on retire les aretes du contour qui ne sont pas dans la liste,
-  //on controle que le residu est bien monobloc.
+  //It is checked if edges of list E are in the contour,
+  //the edges that arenot in the list are removed from the contour,
+  //it is checked that the remainder is monoblock.
  
   for(It.Initialize(E); It.More(); It.Next()){
     TopoDS_Edge cured = TopoDS::Edge(It.Value());
@@ -247,7 +247,7 @@ Standard_Integer  FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
     sp = newsp;
   }
 
-  //On construit l ElSpine dans la foulee
+  //ElSpine is immediately constructed
   Handle(ChFiDS_HElSpine) hels =  new ChFiDS_HElSpine();
   gp_Vec TFirst,TLast;
   gp_Pnt PFirst,PLast;
@@ -270,7 +270,7 @@ Standard_Integer  FilletSurf_InternalBuilder::Add(const TopTools_ListOfShape& E,
 
 void FilletSurf_InternalBuilder::Perform()
 {
-  //On se contente d un PerformSetOfSurfOnElSpine.
+  //PerformSetOfSurfOnElSpine is enough.
   
   Handle(ChFiDS_Stripe) Stripe = myListStripe.First();
   Handle(ChFiDS_HData)&  HData  = Stripe->ChangeSetOfSurfData();
@@ -316,11 +316,11 @@ Standard_Boolean
   Handle(ChFiDS_SurfData) Data = SeqData(1);
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) Standard_ConstructionError::Raise
-    ("PerformSurf : la spine n est pas celle d un conge");
+    ("PerformSurf : this is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
   TopAbs_Orientation Or = S1->ChangeSurface().Face().Orientation();
   if(!fsp->IsConstant()) Standard_ConstructionError::Raise
-    ("PerformSurf : pas de rayons variables");
+    ("PerformSurf : no variable radiuses");
   // Standard_Boolean maybesingular; //pour scinder les Surfdata singulieres 
   
   BRepBlend_ConstRad Func(S1,S2,Guide);
@@ -360,7 +360,7 @@ Standard_Boolean
 			  Standard_False, Data->ChangeVertexLastOnS2(), tolesp);
   }
   done = CompleteData(Data,Func,lin,S1,S2,Or,0,0,0,0);
-  if(!done)  Standard_Failure::Raise("PerformSurf : Echec approximation!");
+  if(!done)  Standard_Failure::Raise("PerformSurf : Failed approximation!");
 //  maybesingular = (Func.GetMinimalDistance()<=100*tolapp3d);
   Standard_Boolean ok = 0;
   if(!Forward){

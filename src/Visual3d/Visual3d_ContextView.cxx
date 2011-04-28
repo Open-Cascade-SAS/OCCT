@@ -1,24 +1,19 @@
 /***********************************************************************
 
-     FONCTION :
+     FUNCTION :
      ----------
-        Classe Visual3d_ContextView.cxx :
+        Class Visual3d_ContextView.cxx :
 
-	Declaration des variables specifiques aux contextes des vues.
+	Declaration of variables specific to view contexts.
 
-	Un contexte de vues est defini par :
-		- l'activite de l'aliasing
-		- l'activite du depth-cueing
-		- l'activite du Z clipping
-		- l'activite des sources lumineuses definies
-		- le type de visualisation demande
-		- le modele de shading si besoin est
+	A view context is defined by :
+		- the activity of aliasing
+		- the activity of depth-cueing
+		- the activity of Z clipping
+		- the activity of defined light sources
+		- the required type of visualization
+		- the model of shading if required
 
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      Mars 1992 : NW,JPB,CAL ; Creation.
-      01-08-97  : PCT ; Ajout support texture mapping
-      01-10-97  : CAL ; Retrait de DownCast.
 
 ************************************************************************/
 
@@ -244,13 +239,13 @@ void Visual3d_ContextView::SetLightOn (const Handle(Visual3d_Light)& ALight) {
 Standard_Integer LengthL	= MyLights.Length ();
 Standard_Integer indexL = 0;
 
-	// Recherche de la light <ALight> dans la
-	// sequence des lights deja allumees
+	// Find light <ALight> in 
+	// the sequence of already active lights
 	for (Standard_Integer i=1; i<=LengthL && indexL==0; i++)
 		if ((void *) (MyLights.Value (i)) ==
 		    (void *) (ALight.operator->())) indexL = i;
 
-	// Il s'agit d'une nouvelle light a activer
+	// This is the activation of a new light
 	if (indexL == 0)
 		MyLights.Append ((void *) ALight.operator->());
 
@@ -261,13 +256,13 @@ void Visual3d_ContextView::SetLightOff (const Handle(Visual3d_Light)& ALight) {
 Standard_Integer LengthL	= MyLights.Length ();
 Standard_Integer indexL = 0;
 
-	// Recherche de la light <ALight> dans la
-	// sequence des lights deja allumees
+	// Find light <ALight> in 
+	// the sequence of already active lights
 	for (Standard_Integer i=1; i<=LengthL && indexL==0; i++)
 		if ((void *) (MyLights.Value (i)) ==
 		    (void *) (ALight.operator->())) indexL = i;
 
-	// Il s'agit d'une light allumee
+	// This is the activation of a new light
 	if (indexL != 0) MyLights.Remove (indexL);
 
 }
@@ -303,13 +298,13 @@ void Visual3d_ContextView::SetClipPlaneOn (const Handle(Visual3d_ClipPlane)& ACl
 Standard_Integer LengthC	= MyClipPlanes.Length ();
 Standard_Integer indexC		= 0;
 
-	// Recherche du plan <AClipPlane> dans la
-	// sequence des plans deja actives
+	// Find plane <AClipPlane> in the
+	// sequence of already active planes 
 	for (Standard_Integer i=1; i<=LengthC && indexC==0; i++)
 		if ((void *) (MyClipPlanes.Value (i)) ==
 		    (void *) (AClipPlane.operator->())) indexC = i;
 
-	// Il s'agit d'un nouveau plan a activer
+	// This is the activation of a new plane
 	if (indexC == 0)
 		MyClipPlanes.Append ((void *) AClipPlane.operator->());
 
@@ -320,13 +315,13 @@ void Visual3d_ContextView::SetClipPlaneOff (const Handle(Visual3d_ClipPlane)& AC
 Standard_Integer LengthC	= MyClipPlanes.Length ();
 Standard_Integer indexC		= 0;
 
-	// Recherche du plan <AClipPlane> dans la
-	// sequence des plans deja actives
+	// Find plane <AClipPlane> in the
+	// sequence of already active planes 
 	for (Standard_Integer i=1; i<=LengthC && indexC==0; i++)
 		if ((void *) (MyClipPlanes.Value (i)) ==
 		    (void *) (AClipPlane.operator->())) indexC = i;
 
-	// Il s'agit d'un plane actif
+	// This is an active plane
 	if (indexC != 0) MyClipPlanes.Remove (indexC);
 
 }

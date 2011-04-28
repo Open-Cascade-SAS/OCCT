@@ -375,9 +375,9 @@ Handle(TopOpeBRepBuild_HBuilder) ChFi3d_Builder::Builder()const
 
 //=======================================================================
 //function : ChFi3d_FaceTangency
-//purpose  : determiner si les faces en vis a vis des edges sont tangents
-//           pour aller des faces en vis a vis sur e0 vers les faces en vis
-//a vis sur e1 ,considerer l ensemble des faces partant du sommet commun
+//purpose  : determine if the faces opposing to edges are tangent
+//           to go from opposing faces on e0 to opposing faces 
+//           on e1, consider all faces starting at a common top.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
@@ -389,7 +389,7 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
   Standard_Integer Nbf;
   TopoDS_Face F[2];
 
-  //On verifie qu on ne chaine pas sur une arete de regularite.
+  //It is checked if the connection is not on a regular edge.
   for (It.Initialize(myEFMap(E1)), Nbf= 0 ;It.More();It.Next(), Nbf++) {
     if (Nbf>1) 
       Standard_ConstructionError::Raise("ChFi3d_Builder:only 2 faces");
@@ -430,7 +430,7 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
 
 //=======================================================================
 //function : TangentExtremity
-//purpose  : Test si 2 face sont tangentes en bout d'une edge
+//purpose  : Test if 2 faces are tangent at the end of an edge
 //=======================================================================
 static Standard_Boolean TangentExtremity(const TopoDS_Vertex&                V,
 					 const TopoDS_Edge&                  E,
@@ -461,7 +461,7 @@ static Standard_Boolean TangentExtremity(const TopoDS_Vertex&                V,
     n1.SetXYZ(theProp1.Normal().XYZ());
     if (O1 == TopAbs_REVERSED) n1.Reverse();
   }
-  else return Standard_False; // On ne sait pas ...
+  else return Standard_False; // It is not known...
 
  
   Handle(Geom2d_Curve) pc2 = BRep_Tool::CurveOnSurface(e2,f2,f,l);
@@ -471,14 +471,14 @@ static Standard_Boolean TangentExtremity(const TopoDS_Vertex&                V,
     n2.SetXYZ(theProp2.Normal().XYZ());
     if(O2 == TopAbs_REVERSED) n2.Reverse();
   }
-  else return Standard_False; // On ne sait pas ...
+  else return Standard_False; //  It is not known...
 
   return (n1.Angle(n2) < tang);
 }
 
 //=======================================================================
 //function : TangentOnVertex
-//purpose  : Test si les faces support d'une edge sont tangente en bout.
+//purpose  : Test if support faces of an edge are tangent at end.
 //=======================================================================
 static Standard_Boolean TangentOnVertex(const TopoDS_Vertex&    V,
 					const TopoDS_Edge&      E,
@@ -495,10 +495,9 @@ static Standard_Boolean TangentOnVertex(const TopoDS_Vertex&    V,
 
 //=======================================================================
 //function : PerformExtremity
-//purpose  : Dans le cas ou PerformElement a renvoye BreakPoint 
-//           a l une ou l autre des extremites, on essaye de raffiner
-//           en fonction des concavite entres les faces voisines du 
-//           sommet.
+//purpose  : In case if PerformElement returned BreakPoint at one or  
+//           another extremity, it is attempted to refine 
+//           depending on concavities between neighbour faces of the top.
 //=======================================================================
 
 void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine) 
@@ -520,7 +519,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
       E[0] = Spine->Edges(iedge);
       V = Spine->LastVertex();
     }
-    //On verifie avant tout que l on ne meurt pas en tangence.
+    //Before all it is checked if the tangency is not dead.
     E[0] = Spine->Edges(iedge);
     ConexFaces (Spine,iedge,0,hs1,hs2);
     if(TangentExtremity(V,E[0],hs1,hs2,angular)){
@@ -554,7 +553,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
 	  }
 	  else{
 #ifdef DEB
-	    cout<<"sommet a plus de 3 aretes"<<endl;
+	    cout<<"top has more than 3 edges"<<endl;
 #endif
 	    sommetpourri = Standard_True;
 	    break;
@@ -570,7 +569,6 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     }
   }
   
-  //petite verue pour debug avec MPS.
   if (!Spine->IsPeriodic()) {
     TopTools_ListIteratorOfListOfShape It,Jt;
     Standard_Integer nbf = 0, jf = 0;
@@ -586,7 +584,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     if(nbf>3) {
       Spine->SetFirstStatus(ChFiDS_BreakPoint);
 #if DEB
-      cout<<"sommet a : "<<nbf<<" faces."<<endl;
+      cout<<"top has : "<<nbf<<" faces."<<endl;
 #endif
     }
     nbf = 0, jf = 0;
@@ -602,7 +600,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     if(nbf>3) {
       Spine->SetLastStatus(ChFiDS_BreakPoint);
 #if DEB
-      cout<<"sommet a : "<<nbf<<" faces."<<endl;
+      cout<<"top has : "<<nbf<<" faces."<<endl;
 #endif
     }
   }
@@ -610,10 +608,9 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
 
 //=======================================================================
 //function : PerformElement
-//purpose  :  rechercher l ensemble des edges tangents entre eux ;
-// Chaque edge retenu a 2 faces en vis
-// a vis pour 2 edges adjacents tangents il faut que les faces en vis a vis 
-// soient tangentes
+//purpose  :  find all mutually tangent edges ;
+// Each edge has 2 opposing faces. For 2 adjacent tangent edges it is required that 
+// the opposing faces were tangent.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spine) 
@@ -629,7 +626,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
   TopoDS_Vertex Ve1,VStart,FVEc,LVEc,FVEv,LVEv;
   TopoDS_Edge Ev,Ec(Spine->Edges(1));
   if(BRep_Tool::Degenerated(Ec)) return 0;
-  //on controle que l arete est bien une arete de cassure
+  //it is checked if the edge is a cut edge
   TopoDS_Face ff1,ff2;
   ChFi3d_conexfaces(Ec,ff1,ff2,myEFMap);
   if(ff1.IsNull() || ff2.IsNull()) return 0;
@@ -650,7 +647,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 #else
   ChFiDS_State CurSt;
 #endif
-  if (VStart.IsSame(LVEc)) {//cas ou un seul edge ferme
+  if (VStart.IsSame(LVEc)) {//case if only one edge is closed
     CEc.Initialize(Ec);
     Wl = BRep_Tool::Parameter(VStart,Ec);
     CEc.D1(Wl,P2,V1);
@@ -670,7 +667,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
     Spine->SetLastStatus(CurSt);
     Spine->SetFirstStatus(CurSt);
   }
-  else { // Progression aval
+  else { // Downstream progression
     FVEc = VStart;
     TopAbs_Orientation Or1;
     while (!Fini) {
@@ -700,18 +697,18 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	  Standard_Boolean rev = (Or1 != curor);    
 	  Standard_Boolean OnAjoute = Standard_False;
 	  if (FaceTangency(Ec,Ev,FVEv)) {
-	    //il n'y a pas besoin  de tolerance
-	    // pour se decider (PRO9486) la regularite suffit.
-            // On verifie quand meme le non rebrousement (PRO9810)
+	    // there is no need of tolerance
+	    // to make a decision (PRO9486) the regularity is enough.
+            // However, the abcense of turn-back is checked (PRO9810)
 	    OnAjoute = ((!rev && av1v2 < PI/2) 
 			||(rev && av1v2 > PI/2));
-            // Il faut faire Attention au cas singulier (cf CTS21610_1)
+            // mate attention to the single case (cf CTS21610_1)
             if (OnAjoute && (degeneOnEc || 
                 TangentOnVertex(LVEc, Ev,myEFMap, ta)) )
 	      OnAjoute=((!rev && av1v2 < ta) || (rev && (PI - av1v2) < ta));
 	  }
 	  if (OnAjoute) {
-	    Fini = Standard_False; // Si Si cela peut etre util (Cf PRO14713)
+	    Fini = Standard_False; // If this can be useful (Cf PRO14713)
 	    Ec = Ev; 
 //	    Ec = TopoDS::Edge(Ev); 
 	    Ec.Orientation(Or1);
@@ -733,8 +730,6 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 		 Nbface++) {}
 	    if (Nbface> 1) CurSt = ChFiDS_BreakPoint;
 	    Fini = ((!rev && av1v2 < ta) || (rev && (PI - av1v2) < ta)); 
-	    //attention dans le cas ou sur un vertex il part 3 edges dont l edge courant
-	    //+un edge bord libre et un edge cassure le status sera au pif 
 	  }
 	} 
       } 
@@ -744,7 +739,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
     if (CurSt == ChFiDS_Closed) {
       Spine->SetFirstStatus(CurSt);
     }
-    else {// Progression amont
+    else {// Upstream progression
       Fini = Standard_False;
       Ec = Spine->Edges(1);
       curor = Ec.Orientation();
@@ -797,8 +792,6 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 		  Nbface++) {}
 	      if (Nbface> 1) CurSt = ChFiDS_BreakPoint;
 	      Fini = ((!rev && av1v2 < ta) || (rev && (PI - av1v2) < ta));
-	      //attention dans le cas ou sur un vertex il part 3 edges dont l edge courant
-	      //+un edge bord libre et un edge cassure le status sera au pif 
 	    }
 	  } 
 	} 

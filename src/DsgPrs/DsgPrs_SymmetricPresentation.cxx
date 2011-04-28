@@ -75,7 +75,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Pnt P1,P2;
 
   //===================================
-  // SYMETRIE D'EDGE PERPEND. A L'AXE    
+  // SYMETRY OF EDGE PERPEND. TO THE AXIS    
   //   ____        :        ____
   // edge2 |       : -=-   | edge 1
   //       |<------:------>|
@@ -129,15 +129,15 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 
   
 /*//=======================================================
-  // POUR EVITER LES CROISSEMENTS
-  //        P1  -=- P2                 P2  -=- P1         
-  //          \<-->/                     |<-->|
-  //           \  /                      |    |
-  //            \/                       |    | 
-  //            /\                       |    |
-  //           /  \                      |    |
-  // Pattach2 /____\ Pattach1  Pattach2 /______\ Pattach1
-  //         /  NON \                  /   OUI  \
+  // TO AVOID CROSSING
+  //        P1  -=- P2                P2  -=- P1         
+  //          \<-->/                    |<-->|
+  //           \  /                     |    |
+  //            \/                      |    | 
+  //            /\                      |    |
+  //           /  \                     |    |
+  // Pattach2 /____\ Pattach1 Pattach2 /______\ Pattach1
+  //         /  NO \                  /   YES  \
   //=======================================================
 */
 
@@ -152,7 +152,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     P2       = PntTempo;
   }  
 /*  //===================================
-  // CASSURES DES TRAITS DE RAPPEL    
+  // FRACTURES OF TRAITS OF CALL    
   //        /             \         
   //       /               \
   //       |      -=-      |
@@ -165,7 +165,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 
   if(aAxis.Distance(P1) > D1*(1 + coeff) && !Cross){
 
-    //==== TRAIT DE COTE ===========
+    //==== PROCESSING OF FACE ===========
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Pj_P1 = ElCLib::Value(ElCLib::Parameter(aAxis,P1),aAxis);
@@ -177,7 +177,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     P2.SetCoord(X,Y,Z);
 
     //=================================
-    // COTATION A L'EXTERIEUR
+    // LISTING AT THE EXTERIOR
     //                        -=-
     //      ->|----------|<------
     //        |          |
@@ -210,7 +210,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
-    //==== TRAIT DE RAPPEL 1 =====
+    //==== PROCESSING OF CALL 1 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     AttachmentPoint1.Coord(X,Y,Z);
@@ -228,7 +228,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Vc(3).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc);
     
-    //==== TRAIT DE RAPPEL 2 =====
+    //==== PROCESSING OF CALL 2 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     AttachmentPoint2.Coord(X,Y,Z);
@@ -247,7 +247,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
 
 /*//===================================
-  // CASSURES DES TRAITS DE RAPPEL    
+  // FRACTURES OF PROCESSING OF CALL    
   //              -=-    
   //         |<--------->| 
   //         |           |   
@@ -257,7 +257,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 */
   else if (aAxis.Distance(P1) < D1*(1 - coeff) || Cross) {
 
-    //------ TRAIT DE COTE ------------
+    //------ PROCESSING OF FACE ------------
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Pj_P1 = ElCLib::Value(ElCLib::Parameter(aAxis,P1),aAxis);
@@ -269,7 +269,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     P2.SetCoord(X,Y,Z);
 
     //=================================
-    // COTATION A L'EXTERIEUR
+    // LISTING AT THE EXTERIOR
     //                        -=-
     //      ->|----------|<------
     //        |          |
@@ -301,7 +301,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
-    //==== TRAIT DE RAPPEL 1 =====
+    //==== PROCESSING OF CALL 1 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     AttachmentPoint1.Coord(X,Y,Z);
@@ -319,7 +319,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Vc(3).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc);
     
-    //==== TRAIT DE RAPPEL 2 =====
+    //==== PROCESSING OF CALL 2 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     AttachmentPoint2.Coord(X,Y,Z);
@@ -338,7 +338,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
   else {
     
-    //==== TRAIT DE COTE ===========
+    //==== PROCESSING OF FACE ===========
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     PointMin.Coord(X,Y,Z);
@@ -347,7 +347,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-    //==== TRAIT DE RAPPEL 1 =====
+    //==== PROCESSING OF CALL 1 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     AttachmentPoint1.Coord(X,Y,Z);
@@ -356,7 +356,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-    //==== TRAIT DE RAPPEL 2 =====
+    //==== PROCESSING OF CALL 2 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     AttachmentPoint2.Coord(X,Y,Z);
@@ -366,30 +366,30 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   }
 
-  //==== FLECHES ================
+  //==== ARROWS ================
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) outside = Standard_True;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
-  // fleche 1 ----
+  // arrow 1 ----
   Prs3d_Arrow::Draw(aPresentation,P1,arrdir,
 		    LA->Arrow1Aspect()->Angle(),
 		    LA->Arrow1Aspect()->Length());
   
-  // fleche 2 ----
+  // arrow 2 ----
   Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),
 		    LA->Arrow2Aspect()->Angle(),
 		    LA->Arrow2Aspect()->Length());
 
-  //--------------------------------------------------------------------------------------
-  //|                                SYMBOLE DE SYMETRIE                                 |
-  //--------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------
+  //|                                SYMBOL OF SYMMETRY                                 |
+  //-------------------------------------------------------------------------------------
 
-  //           -------    : Segment superieur
-  //         -----------  : Axe
-  //           -------    : Segment inferieur
+  //           -------    : Superior Segment 
+  //         -----------  : Axis
+  //           -------    : Inferior Segment 
   
   gp_Vec Vvar(P1,P2);
   gp_Vec vec;
@@ -414,7 +414,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //pm = P1.Translated(Vvar.Multiplied(.5));
   pOff = OffsetPoint.Translated(vecB);
   
-  //Calcul des points extremes de l'axe du symbole
+  //Calculate the extremities of the symbol axis
   gp_Vec vecAxe = vecA.Multiplied(.7);
   pOff.Translated(vecAxe).Coord(X,Y,Z);
   V(1).SetCoord(X,Y,Z);
@@ -424,7 +424,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  //Calcul des points extremes du segment sup du symbole
+  //Calculate the extremities of the superior segment of the symbol
   gp_Vec vec1 = vecAxe.Multiplied(.6);
   vecAxe = Vaxe.Multiplied(vecAxe.Magnitude());
   gp_Vec vec2 = vecAxe.Multiplied(.4);
@@ -437,7 +437,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  //Calcul des points extremes du segment inf du symbole
+  //Calculate the extremities of the inferior segment of the symbol
   pOff.Translated(vec1.Added(vec2.Reversed())).Coord(X,Y,Z);
   V(1).SetCoord(X,Y,Z);
   pOff.Translated(vec1.Reversed().Added(vec2.Reversed())).Coord(X,Y,Z);
@@ -447,10 +447,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   
 /*//--------------------------------------------------------------------------------------
-  //|                          REPERAGE DE L'AXE DE SYMETRIE                             |
+  //|                          MARKING OF THE SYMMETRY AXIS                             |
   //--------------------------------------------------------------------------------------     
   //        ____
-  //        \  / :Curseur
+  //        \  / :Cursor
   //         \/
   //         /\
   //        /__\
@@ -556,7 +556,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Graphic3d_Array1OfVertex V(1,2);
   Quantity_Length X,Y,Z;
     
-  //==== TRAIT DE COTE ===========
+  //==== PROCESSING OF FACE ===========
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   PointMin.Coord(X,Y,Z);
@@ -565,7 +565,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   V(2).SetCoord(X,Y,Z);
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  //==== TRAIT DE RAPPEL 1 =====
+  //==== PROCESSING OF CALL 1 =====
   Standard_Integer nbp = 10;
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect()); 
@@ -614,7 +614,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc1);
   
-  //==== TRAIT DE RAPPEL 2 =====
+  //==== PROCESSING OF CALL 2 =====
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Pnt Center2 = ProjCenter1.Translated(Vp.Reversed());
@@ -664,30 +664,30 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc2);
   
-  //==== FLECHES ================
+  //==== ARROWS ================
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) outside = Standard_True;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
-  // fleche 1 ----
+  // arrow 1 ----
   Prs3d_Arrow::Draw(aPresentation,P1,arrdir,
 		    LA->Arrow1Aspect()->Angle(),
 		    LA->Arrow1Aspect()->Length());
   
-  // fleche 2 ----
+  // arrow 2 ----
   Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),
 		    LA->Arrow2Aspect()->Angle(),
 		    LA->Arrow2Aspect()->Length());
 
-  //--------------------------------------------------------------------------------------
-  //|                                SYMBOLE DE SYMETRIE                                 |
-  //--------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------
+  //|                                SYMBOL OF SYMMETRY                                 |
+  //-------------------------------------------------------------------------------------
 
-  //           -------    : Segment superieur
-  //         -----------  : Axe
-  //           -------    : Segment inferieur
+  //           -------    : Superior Segment
+  //         -----------  : Axis
+  //           -------    : Inferior Segment 
   
   gp_Vec Vvar(P1,P2);
   gp_Vec vec;
@@ -706,7 +706,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   pm = P1.Translated(Vvar.Multiplied(.5));
   pOff = OffsetPnt.Translated(vecB);
 
-  //Calcul des points extremes de l'axe du symbole
+  //Calculation of extremas of the axis of the symbol
   gp_Vec vecAxe = vecA.Multiplied(.7);
   pOff.Translated(vecAxe).Coord(X,Y,Z);
   V(1).SetCoord(X,Y,Z);
@@ -716,7 +716,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  //Calcul des points extremes du segment sup du symbole
+  //Calculation of extremas of the superior segment of the symbol
   gp_Vec vec1 = vecAxe.Multiplied(.6);
 
   vecAxe = Vaxe.Multiplied(vecAxe.Magnitude());
@@ -732,7 +732,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  //Calcul des points extremes du segment inf du symbole
+  //Calculation of extremas of the inferior segment of the symbol
   pOff.Translated(vec1.Added(vec2.Reversed())).Coord(X,Y,Z);
   V(1).SetCoord(X,Y,Z);
   pOff.Translated(vec1.Reversed().Added(vec2.Reversed())).Coord(X,Y,Z);
@@ -742,10 +742,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
   
 /*//--------------------------------------------------------------------------------------
-  //|                          REPERAGE DE L'AXE DE SYMETRIE                             |
+  //|                          MARKING OF THE AXIS OF SYMMETRY                           |
   //--------------------------------------------------------------------------------------     
   //        ____
-  //        \  / :Curseur
+  //        \  / :Cursor
   //         \/
   //         /\
   //        /__\
@@ -803,9 +803,9 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 
   if (AttachmentPoint1.IsEqual(AttachmentPoint2,Precision::Confusion())){
     //==============================================================
-    //  CAS DE SYMETRIE OU LE POINT REFERENCE EST SUR L'AXE DE SYM.:
+    //  SYMMETRY WHEN THE REFERENCE POINT IS ON THE AXIS OF SYM.:
     //==============================================================
-    //Marker de localisation de la cote
+    //Marker of localisation of the face
     Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
     MarkerAsp->SetType(Aspect_TOM_BALL);
     MarkerAsp->SetScale(0.8);
@@ -820,7 +820,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 			 AttachmentPoint1.Z());
     Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
 
-    //Trace du segment de raccordement
+    //Trace of the linking segment 
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Graphic3d_Array1OfVertex Vrac(1,2);
@@ -833,13 +833,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
   
     //--------------------------------------------------------------------------------------
-    //|                                SYMBOLE DE SYMETRIE                                 |
+    //|                                SYMBOL OF SYMMETRY                                 |
     //--------------------------------------------------------------------------------------
-    //           -------    : Segment superieur
-    //         -----------  : Axe
-    //           -------    : Segment inferieur
+    //           -------    : Superior Segment 
+    //         -----------  : Axis
+    //           -------    : Inferior Segment 
 
-    //Calcul des points extremes de l'axe du symbole
+    //Calculate extremas of the axis of the symbol
     gp_Vec VAO (AttachmentPoint1,OffsetPoint);
     gp_Vec uVAO  = VAO.Divided(VAO.Magnitude());
     gp_Pnt pDaxe = OffsetPoint.Translated(uVAO.Multiplied(3.));
@@ -850,7 +850,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
 
-    //Calcul des points extremes du segment sup du symbole
+    //Calculate extremas of the superior segment of the symbol
     gp_Vec nVAO  (-uVAO.Y(),uVAO.X(),uVAO.Z());
     gp_Pnt sgP11 = pDaxe.Translated(uVAO.Multiplied(2.).Added(nVAO.Multiplied(2.)));
     gp_Pnt sgP12 = sgP11.Translated(uVAO.Multiplied(8.));
@@ -860,7 +860,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
 
-    //Calcul des points extremes du segment inf du symbole
+    //Calculate extremas of the inferior segment of the symbol
     gp_Vec nVAOr = nVAO.Reversed();
     gp_Pnt sgP21 = pDaxe.Translated(uVAO.Multiplied(2.).Added(nVAOr.Multiplied(2.)));
     gp_Pnt sgP22 = sgP21.Translated(uVAO.Multiplied(8.));
@@ -871,7 +871,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
   }
   //==============================================================
-  //  AUTRES CAS                                                 :
+  //  OTHER CASES                                                 :
   //==============================================================
 
   else{
@@ -909,7 +909,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Graphic3d_Array1OfVertex V(1,2);
     Quantity_Length X,Y,Z;
     
-    //==== TRAIT DE COTE ===========
+    //==== PROCESSING OF FACE ===========
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     PointMin.Coord(X,Y,Z);
@@ -918,7 +918,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
-    //==== TRAIT DE RAPPEL 1 =====
+    //==== PROCESSING OF CALL 1 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect()); 
     AttachmentPoint1.Coord(X,Y,Z);
@@ -927,7 +927,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
-    //==== TRAIT DE RAPPEL 2 =====
+    //==== PROCESSING OF CALL 2 =====
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect()); 
     AttachmentPoint2.Coord(X,Y,Z);
@@ -936,25 +936,25 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     V(2).SetCoord(X,Y,Z);
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
  
-    //==== FLECHES ================
+    //==== ARROWS ================
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     
     if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) outside = Standard_True;
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside) arrdir.Reverse();
-    // fleche 1 ----
+    // arrow 1 ----
     Prs3d_Arrow::Draw(aPresentation,P1,arrdir,
 		      LA->Arrow1Aspect()->Angle(),
 		      LA->Arrow1Aspect()->Length());
   
-    // fleche 2 ----
+    // arrow 2 ----
     Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),
 		      LA->Arrow2Aspect()->Angle(),
 		      LA->Arrow2Aspect()->Length());
     
     //==== POINTS ================
-    //Marker de localisation des points d'attachement:
+    //Marker of localization of attachment points:
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Handle(Graphic3d_AspectMarker3d) MarkerAspAtt = new Graphic3d_AspectMarker3d();
@@ -979,13 +979,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 			   AttachmentPoint2.Z());
     Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt2);    
       
-    //--------------------------------------------------------------------------------------
-    //|                                SYMBOLE DE SYMETRIE                                 |
-    //--------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------
+    //|                                SYMBOL OF SYMMETRY                                 |
+    //-------------------------------------------------------------------------------------
     
-    //           -------    : Segment superieur
-    //         -----------  : Axe
-    //           -------    : Segment inferieur
+    //           -------    : Superior Segment 
+    //         -----------  : Axis
+    //           -------    : Inferior Segment
     
     gp_Vec vec(P1,P2);
     gp_Vec vecA = vec.Multiplied(.1);
@@ -1002,7 +1002,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     pm = P1.Translated(vec.Multiplied(.5));
     pOff = OffsetPoint.Translated(vecB);
     
-    //Calcul des points extremes de l'axe du symbole
+    //Calculate the extremas of the axis of the symbol
     gp_Vec vecAxe = vecA.Multiplied(.7);
     pOff.Translated(vecAxe).Coord(X,Y,Z);
     V(1).SetCoord(X,Y,Z);
@@ -1012,7 +1012,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
-    //Calcul des points extremes du segment sup du symbole
+    //Calculate the extremas of the superior segment of the symbol
     gp_Vec vec1 = vecAxe.Multiplied(.6);
 
     vecAxe = Vaxe.Multiplied(vecAxe.Magnitude());
@@ -1028,7 +1028,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
-    //Calcul des points extremes du segment inf du symbole
+    //Calculate the extremas of the inferior segment of the symbol
     pOff.Translated(vec1.Added(vec2.Reversed())).Coord(X,Y,Z);
     V(1).SetCoord(X,Y,Z);
     pOff.Translated(vec1.Reversed().Added(vec2.Reversed())).Coord(X,Y,Z);
@@ -1038,10 +1038,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
     
 /*  //--------------------------------------------------------------------------------------
-    //|                          REPERAGE DE L'AXE DE SYMETRIE                             |
+    //|                          MARKING OF THE AXIS OF SYMMETRY                           |
     //--------------------------------------------------------------------------------------     
     //        ____
-    //        \  / :Curseur
+    //        \  / :Cursor
     //         \/
     //         /\
     //        /__\

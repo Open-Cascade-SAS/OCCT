@@ -105,16 +105,15 @@ Standard_Boolean isTangentFaces(const TopoDS_Edge &theEdge,
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:08:19 2001 End
 
 //===================================================================
-//   Finition par un plan   
+//   Definition by a plane   
 //
-// On considere P1 et P2 les points associes aux commonpoints compoint1 et
-// compoint2 ainsi que  E1 et E2 les edges  qui contiennent P1 et P2.
-// On determine (s'il existe) le plan contenant les 
-// trois directions D12 T1 T2  ou  D12 represente la direction formee 
+// It is considered that P1 and P2 are points associated to commonpoints compoint1 and
+// compoint2, while E1 and E2 are edges containing P1 and P2.
+// The plane containing three directions D12 T1 T2  ou  D12 represente la direction formee 
 // par les points P1 et P2, T1 la tangente de E1 en P1 et T2 la tangente de 
-// E2 en P2. 
-// On fait ensuite l'intersection du conge HConge par ce plan 
-// pour determiner la courbe 3d C3d et la courbe 2d associee 
+// E2 en P2 is found (if exists). 
+// Then fillet HConge is intersected by this plane 
+// to find associated curve 3d C3d and the curve 2d. 
 // 
 //====================================================================
 static void ChFi3d_CoupeParPlan (const ChFiDS_CommonPoint & compoint1,
@@ -291,7 +290,7 @@ static Standard_Boolean BonVoisin(const gp_Pnt& Point,
 
 //=======================================================================
 //function : Projection
-//purpose  : Projete un point sur une courbe
+//purpose  : Projects a point on a curve
 //=======================================================================
 
 static Standard_Boolean Projection(Extrema_ExtPC&       PExt, 
@@ -303,7 +302,7 @@ static Standard_Boolean Projection(Extrema_ExtPC&       PExt,
   Standard_Real Dist2, daux2;
   Dist2 =  C.Value(W).SquareDistance(P);
 
-  // On verifie que ce n'est pas dejas solution
+  // It is checked if it is not already a solution
   if (Dist2 < Tol * Tol) 
     return Standard_True;
 
@@ -322,7 +321,7 @@ static Standard_Boolean Projection(Extrema_ExtPC&       PExt,
     }  
   }
   
-  // Resolution global
+  // Global resolution
   PExt.Perform(P);
   if ( PExt.IsDone() ) {
     for (Standard_Integer ii=1; ii<= PExt.NbExt(); ii++) {
@@ -361,7 +360,7 @@ static void TgtKP(const Handle(ChFiDS_SurfData)& CD,
 
 //=======================================================================
 //function : IsInput
-//purpose  : Verifie si un vecteur "entre dans une Face
+//purpose  : Checks if a vector belongs to a Face
 //=======================================================================
 
 Standard_Boolean IsInput(const gp_Vec&          Vec,
@@ -377,7 +376,7 @@ Standard_Boolean IsInput(const gp_Vec&          Vec,
   gp_Vec Vec3d[2];
   gp_Pnt Point;
 
-  // Recherche des aretes et calcul des vecteurs 3d
+  // Find edges and compute 3D vectors
   for ( ; (FaceExp.More() && (Trouve<2)); FaceExp.Next()) {
     W = TopoDS::Wire(FaceExp.Current());
     for (Trouve=0, WireExp.Init(W) ; 
@@ -398,10 +397,10 @@ Standard_Boolean IsInput(const gp_Vec&          Vec,
     }
   }
   if (Trouve < 2) return Standard_False;
-  // Calcul de la normal et des angles dans le plan vectoriel asssocie
+  // Calculate the normal and the angles in the asssociated vector plane
   gp_Vec Normal;
   Normal = Vec3d[0] ^ Vec3d[1];
-  if (Normal.SquareMagnitude() < Precision::Confusion()) {//Cas colineaire
+  if (Normal.SquareMagnitude() < Precision::Confusion()) {//Colinear case
     return (Vec.IsParallel(Vec3d[0],Precision::Confusion())); 
   }
 
@@ -413,7 +412,7 @@ Standard_Boolean IsInput(const gp_Vec&          Vec,
   }
   else amin = 0;
 
-  // Projection du vecteur
+  // Projection of the vector
   gp_Ax3 Axe(Point, Normal, Vec3d[0]);  
   gp_Trsf Transf;
   Transf.SetTransformation (Axe);
@@ -424,14 +423,14 @@ Standard_Boolean IsInput(const gp_Vec&          Vec,
   Transf.Transforms(coord);
   gp_Vec theProj(coord); 
 
-  // et enfin ...
+  // and finally...
   Standard_Real Angle = theProj.AngleWithRef(Vec3d[0], Normal);
   return ( (Angle >= amin) && (Angle<=amax));
 } 
 
 //=======================================================================
 //function : IsG1
-//purpose  : Cherche un voisin G1 par une arrete
+//purpose  : Find a neighbor G1 by an edge
 //=======================================================================
 
 Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
@@ -440,7 +439,7 @@ Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
 		      TopoDS_Face&              FVoi) 
 {
   TopTools_ListIteratorOfListOfShape It;    
-  // On cherche une voisine de E differente de FRef (cas general).
+  // Find a neighbor of E different from FRef (general case).
   for(It.Initialize(TheMap(E));It.More();It.Next()) {
     if (!TopoDS::Face(It.Value()).IsSame(FRef)) {
       FVoi = TopoDS::Face(It.Value());
@@ -452,8 +451,8 @@ Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
       }
     }
   }
-  // Si on ne l a pas trouvee on regarde si E est un edge de couture,
-  // au quel cas on renvoie FVoi = FRef (cas moins frequent).
+  // If is was not found it is checked if E is a cutting edge,
+  // in which case FVoi = FRef is returned (less frequent case).
   TopExp_Explorer Ex;
   Standard_Boolean orset = Standard_False;
 #ifndef DEB
@@ -483,11 +482,11 @@ Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
 
 //=======================================================================
 //function : SearchFaceOnV
-//purpose  : Trouve  le(s) face(s) de sortie d'un cheminement par un vertex
-//           Les criteres a respecter sont les suivants
-//         -1 : La face partage une aretes de regularite avec FRef 
-//              (condition trop forte qu'il faudrait revoir
-//         -2 : Le vecteur sortant du CommonPoint "entre" dans la face
+//purpose  : Finds the output face(s) of the path by a vertex
+//           The following criteria should be followed
+//         -1 : The face shares regular edges with FRef 
+//              (too hard condition that should be reconsidered)
+//         -2 : The vector starting in CommonPoint "belongs" to the face
 //========================================================================
 static Standard_Integer SearchFaceOnV(const ChFiDS_CommonPoint&    Pc,
 				      const TopoDS_Face&           FRef,
@@ -496,12 +495,12 @@ static Standard_Integer SearchFaceOnV(const ChFiDS_CommonPoint&    Pc,
 				      TopoDS_Face&                 F1,
 				      TopoDS_Face&                 F2)
 {
-  // on verifie que l'on sort bien de la face courante.
+  // it is checked that it leaves the current face.
   Standard_Boolean FindFace = IsInput(Pc.Vector(), Pc.Vertex(), FRef);
   if (FindFace) {
     FindFace = IsInput(Pc.Vector().Reversed(), Pc.Vertex(), FRef);
   }
-  // Si l'on ne sort pas, c'est fini
+  // If it does not leave, it is finished
   if (FindFace) {
     F1 = FRef;
     return 1;
@@ -534,10 +533,10 @@ static Standard_Integer SearchFaceOnV(const ChFiDS_CommonPoint&    Pc,
 
 //=======================================================================
 //function : ChangeTransition
-//purpose  : Change la transition du second common Point, quand la surface
-//           ne traverse pas l'arc
-//           Comme on suppose que les Faces d'appuis sont les memes, il suffit
-//           de regarder le cas des aretes de coutures
+//purpose  : Changes the transition of the second common Point, when the surface
+//           does not cross the arc
+//           As it is supposed that the support Faces are the same, it is enough
+//           to examine the cas of cutting edges.
 //========================================================================
 static void ChangeTransition(const ChFiDS_CommonPoint&    Precedant,
 			     ChFiDS_CommonPoint&          Courant,
@@ -554,7 +553,7 @@ static void ChangeTransition(const ChFiDS_CommonPoint&    Precedant,
   PCurve2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShape), F, f, l);
 //  PCurve2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(Arc.Reversed()), F, f, l);
   if (PCurve1 != PCurve2) { 
-    // C'est une arete de couture, on doit faire un petit test Geometrique
+    // This is a cutting edge, it is necessary to make a small Geometric test
     gp_Vec tgarc;
     gp_Pnt P;
     BRepAdaptor_Curve AC(Arc);
@@ -572,7 +571,7 @@ static void ChangeTransition(const ChFiDS_CommonPoint&    Precedant,
 
 //=======================================================================
 //function : CallPerformSurf
-//purpose  : Encapsule l'appel a PerformSurf/SimulSurf
+//purpose  : Encapsulates call to PerformSurf/SimulSurf
 //========================================================================
 
 void ChFi3d_Builder::
@@ -614,7 +613,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
   Handle(BRepAdaptor_HSurface) HSon1, HSon2;
   HSon1 = HS1;
   HSon2 = HS2;
-  // Definition du domaine de cheminement It1, It2
+  // Definition of the domain of path It1, It2
   It1->Initialize(HS1);
   It2->Initialize(HS2);
 
@@ -639,7 +638,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
   else{
 	
 #ifdef DEB  
-    ChFi3d_InitChron(ch1);//init perf  pour PerformSurf
+    ChFi3d_InitChron(ch1);//initial perform for PerformSurf
 #endif
 	
     isdone = PerformSurf(SeqSD,HGuide,Spine,Choix,HS1,It1,HS2,It2,
@@ -647,11 +646,11 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
                          First,Last,Inside,Inside,forward,
                          RecOnS1,RecOnS2,Soldep,intf,intl);
 #ifdef DEB   
-    ChFi3d_ResultChron(ch1,t_performsurf);// result perf pour   PerformSurf   
+    ChFi3d_ResultChron(ch1,t_performsurf);// result perf for PerformSurf   
 #endif
   }
 
- // Cas d'echecs
+ // Case of error
  if (!isdone) {
    First = thef;
    Last = thel;
@@ -685,7 +684,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
      else{
 	
 #ifdef DEB  
-       ChFi3d_InitChron(ch1);//init perf  pour PerformSurf
+       ChFi3d_InitChron(ch1);//init perf for PerformSurf
 #endif
 	
        isdone = PerformSurf(SeqSD,HGuide,Spine,Choix,HSon1,It1,HSon2,It2,
@@ -693,7 +692,7 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
                             First,Last,Inside,Inside,forward,
                             RecOnS1,RecOnS2,Soldep,intf,intl);
 #ifdef DEB   
-       ChFi3d_ResultChron(ch1,t_performsurf);// result perf pour   PerformSurf   
+       ChFi3d_ResultChron(ch1,t_performsurf);// result perf for PerformSurf   
 #endif
      }
    }
@@ -704,8 +703,8 @@ CallPerformSurf(Handle(ChFiDS_Stripe)&              Stripe,
 
 //=======================================================================
 //function : StripeOrientation
-//purpose  : Calcul des orientations de reference determinant le
-//           cote concave pour la construction du conge.
+//purpose  : Calculates the reference orientation determining the
+//           concave face for construction of the fillet.
 //=======================================================================
 
 Standard_Boolean ChFi3d_Builder::StripeOrientations
@@ -767,12 +766,11 @@ void ChFi3d_Builder::ConexFaces (const Handle(ChFiDS_Spine)&   Spine,
 
 //=======================================================================
 //function : StartSol
-//purpose  : Calcul d une solution de depart approchee :
-//           - on commence par essayer une dizaine de points sur la
-//             spine,
-//           - en cas d'echec on recherche la solution dans les faces
-//             voisines; section plane des aretes de la face adjacente
-//             et identication de la face par connexite a cette arete.
+//purpose  : Calculates a starting solution :
+//           - one starts by parsing about ten points on the spine,
+//           - in case of fail one finds the solution on neighbor faces;
+//             section plane of edges of the adjacent face 
+//             and identication of the face by connection to that edge.
 //=======================================================================
 
 void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
@@ -791,7 +789,6 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
   Standard_Integer nbessaimax = 3*nbed;
   if (nbessaimax < 10) nbessaimax = 10;
   Standard_Real unsurnbessaimax = 1./nbessaimax;
-  //On bruite un peu les bouts, plus par superstition qu autre chose.
   Standard_Real wf = 0.9981 * Spine->FirstParameter(1) +
     0.0019 * Spine->LastParameter(1);
   Standard_Real wl = 0.9973 * Spine->LastParameter(nbed) +
@@ -853,7 +850,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     PC = BRep_Tool::CurveOnSurface(cured,f1forward,Uf,Ul);
     I1->Initialize(HS1);
     PC->D1(woned, P1, derive);
-    // On des points sur le bord, on cherche des point internes
+    // There are ponts on the border, and internal points are found
     if (derive.Magnitude() > Precision::PConfusion()) {
       derive.Normalized();
       derive.Rotate(PI/2);
@@ -891,8 +888,8 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
       return;
     }
   }
-  // On a trouve aucune solution sur les faces adjacentes au trajet
-  // on essaye donc les voisines.
+  // No solution was found for the faces adjacent to the trajectory.
+  // Now one tries the neighbor faces.
   iedge = 0;
   for(nbessai = 0; nbessai <= nbessaimax; nbessai++){
     Standard_Real t = nbessai*unsurnbessaimax;
@@ -1004,7 +1001,7 @@ static void  ChFi3d_BuildPlane (TopOpeBRepDS_DataStructure&    DStr,
       NewF.Orientation(F.Orientation());
       pons.SetCoord(0.,0.);
       HS->ChangeSurface().Initialize(NewF);
-      return; // c'est tout bon !
+      return; // everything is good !
     }
   }
   Standard_Failure::Raise("ChFi3d_BuildPlane : echec .");
@@ -1012,38 +1009,37 @@ static void  ChFi3d_BuildPlane (TopOpeBRepDS_DataStructure&    DStr,
 
 //=======================================================================
 //function : StartSol
-//purpose  : La spec provisoire de StarSol est : lbo 28/03/97
-//           Si le commonpoint n est pas OnArc on renvoie la face
-//              d entree et on met a jour le point 2d,
-//           si il est OnArc
-//              si on decroche on renvoie la face d entree et on met 
-//                 a jour le point 2d,
-//              sinon
-//                 ou bien il y a une face voisine tangente et on la renvoie
-//                         avec le point 2d recalcule
-//                 ou bien il n y en a pas 
-//                         si l Arc reference Vref (extremite de la spine)
-//                            on est en bout et on renvoie la face d entree 
-//                         sinon c est un obstacle et on met a jour HC.
+//purpose  : If the commonpoint is not OnArc the input face
+//           is returned and 2D point is updated,
+//           if it is OnArc
+//              if it is detached  the input face
+//              is returned and 2D point is updated,
+//              otherwise
+//                 either there is a neighbor tangent face and it is returned
+//                         with recalculated 2D point
+//                 or if there is no face 
+//                         if the reference arc is Vref (extremity of the spine)
+//                            this is the end and the input face is returned 
+//                         otherwise this is an obstacle and HC is updated.
 //=======================================================================
 
 Standard_Boolean  
 ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
-			 Handle(BRepAdaptor_HSurface)&  HS, // Nouvelle face
-			 gp_Pnt2d&                      pons,// " Localisation
-			 Handle(BRepAdaptor_HCurve2d)&  HC, // Reprentation de l'obstacle
+			 Handle(BRepAdaptor_HSurface)&  HS, // New face
+			 gp_Pnt2d&                      pons,// " Localization
+			 Handle(BRepAdaptor_HCurve2d)&  HC, // Representation of the obstacle
 			 Standard_Real&                 W,
 			 const Handle(ChFiDS_SurfData)& SD,
 			 const Standard_Boolean         isfirst,
 			 const Standard_Integer         ons,
-			 Handle(BRepAdaptor_HSurface)&  HSref, // L'autre representation
-			 Handle(BRepAdaptor_HCurve2d)&  HCref, // de l'obstacle	   
+			 Handle(BRepAdaptor_HSurface)&  HSref, // The other representation
+			 Handle(BRepAdaptor_HCurve2d)&  HCref, // of the obstacle	   
 			 Standard_Boolean&              RecP,
 			 Standard_Boolean&              RecS,
 			 Standard_Boolean&              RecRst,
 			 Standard_Boolean&              c1obstacle,
-			 Handle(BRepAdaptor_HSurface)&  HSBis, // Face de secoure	
-			 gp_Pnt2d&                      PBis,  // et son point
+			 Handle(BRepAdaptor_HSurface)&  HSBis, // Face of support 	
+			 gp_Pnt2d&                      PBis,  // and its point
 			 const Standard_Boolean         decroch,
 			 const TopoDS_Vertex&           Vref) const 
 {
@@ -1064,21 +1060,20 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
     if (ons == 1)  notons = 2;
     else           notons = 1;
     const ChFiDS_CommonPoint& CPbis = SD->Vertex(isfirst,notons);
-    if (CPbis.IsOnArc()) { // On verifie que l'on est pas dans une zone 
-                  // de prolongement. Car dans ce cas CP n'est pas
-                  // au bout de la surfdata et il ne faut pas en tenir compte
-                  // sauf cas singuliers (ie pointus) ...
-      //ts et tns etaient avant CP.Parameter() et CPbis.Parameter, mais qques fois, ils n'avaient pas de valeurs.
+    if (CPbis.IsOnArc()) { // It is checked if it is not the extension zone 
+                  // In case CP is not at the end of surfdata and it is not necesary to take it into account
+                  // except for separate cases (ie pointus) ...
+      //ts and tns were earlier CP.Parameter() and CPbis.Parameter, but sometimes they had no values.
       Standard_Real ts=SD->Interference(ons).Parameter(isfirst), tns=SD->Interference(notons).Parameter(isfirst);
       Standard_Boolean isExtend;
-      // Test arbitraire (a raffiner)
+      // Arbitrary test (to precise)
       if (isfirst) isExtend = (ts-tns > 100*tolesp); 
       else         isExtend = (tns-ts > 100*tolesp);
       if (isExtend && !CP.Point().IsEqual(CPbis.Point(), 0) ) {
-	//  on garde l'etat et on renvoi False (prolongement par plan attendu).
+	//  the state is preserved and False is returned (extension by the expected plane).
 	HS->ChangeSurface().Initialize(F);
 	pc = SD->Interference(ons).PCurveOnFace();
-	// Le point 2d est donne par la trace sur la surface support
+	// The 2nd point is given by its trace on the support surface
         RecS = Standard_False;
 	pons = pc->Value(tns);
 	return Standard_False;
@@ -1087,13 +1082,11 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
   }  
   
   if (CP.IsVertex() && !HC.IsNull() && !decroch){
-    //On change d'arete et on met a jour le parametre et
-    //eventuellement la face d'appui et(ou) la face de 
-    //reference.
+    //The edge is changed, the parameter is updated and
+    //eventually the support face and(or) the reference face.
     TopoDS_Vertex VCP = CP.Vertex();
     TopoDS_Edge EHC = HC->ChangeCurve2d().Edge();
-    //On commence par chercher dans Fref une autre arete 
-    //referencant VCP.
+    //One starts by searching in Fref another edge referencing VCP.
     TopExp_Explorer ex1,ex2;
     TopoDS_Edge newedge, edgereg;
     TopoDS_Face bidface = Fref, facereg;
@@ -1118,7 +1111,7 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
       }
     }
     if(newedge.IsNull()){
-      //On regarde si EHC n'est pas un edge ferme.
+      //It is checked if EHC is not a closed edge.
       TopoDS_Vertex V1,V2;
       TopExp::Vertices(EHC,V1,V2);
       if(V1.IsSame(V2)){
@@ -1147,7 +1140,7 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
 	return 1;
       }
       else if(!edgereg.IsNull()){
-	// on change d arete et de face de reference.
+	// the reference edge and face are changed.
 	Fref = facereg;
 	HSref->ChangeSurface().Initialize(Fref);
 	for(ex1.Init(facereg,TopAbs_EDGE); ex1.More() && newedge.IsNull(); ex1.Next()){
@@ -1164,19 +1157,19 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
 	}
       }
     }
-    // il faut ici identifier la nouvelle face d'appui du conge : 
-    // connexe a FRef le long de newedge.
+    // it is necessary to find the new support face of the fillet : 
+    // connected to FRef along the newedge.
     if(newedge.IsNull()) {
       Standard_Failure::Raise
-	("StartSol : chainage impossible,nouvel obstacle non trouve");
+	("StartSol : chain is not possible, new obstacle not found");
     }
     if(IsG1(myEFMap,newedge,Fref,Fv)){
       Standard_Failure::Raise
-	("StartSol : chainage impossible, config non traitee");
+	("StartSol : chain is not possible, config non processed");
     }
     else if(Fv.IsNull()){
       Standard_Failure::Raise
-	("StartSol : chainage impossible, nouvel obstacle non trouve");
+	("StartSol : chain is not possible, new obstacle not found");
     }
     else{
       HS->ChangeSurface().Initialize(Fv);
@@ -1196,10 +1189,10 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
     }
     RecP = c1obstacle = 1;
     return 1;
-  } // Fin du Cas Vertex && Obstacle 
+  } // End of Case Vertex && Obstacle 
 
   else if (CP.IsOnArc() && !HC.IsNull() && !decroch){
-    //On ne change rien, on met juste a jour le parametre.
+    //Nothing is changed, the parameter is only updated.
     W = CP.ParameterOnArc();
     c1obstacle = 1;
     return 1;
@@ -1221,10 +1214,10 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
       HS->ChangeSurface().Initialize(Fv);
       RecS = 1;
       if (CP.IsVertex()) { 
-	// On passe directement par le Vertex
+	// One goes directly by the Vertex
 	Standard_Integer Nb;
 	TopoDS_Face aux;
-        // Et l'on verifie qu'il n'y a pas d'autres candidats
+        // And it is checked that there are no other candidates
 	Nb = SearchFaceOnV(CP, F, myVEMap, myEFMap, Fv, aux);
 
 	pons = BRep_Tool::Parameters(CP.Vertex(), Fv);
@@ -1235,7 +1228,7 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
 	}
 	return 1;
       }
-      // sinon on transite par l'arc...
+      // otherwise one passes by the arc...
       if(!Fv.IsSame(F)){
 	Fv.Orientation(TopAbs_FORWARD);
 	TopoDS_Edge newedge;
@@ -1247,7 +1240,7 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
 	  }
 	}
 	//gp_Vec Varc, VSurf;
-        // En cas de sortie Tangente, la face courante devient la face de secour
+        // In cas of Tangent output, the current face becomes the support face
 	if (SortieTangente(CP, F, SD, ons, 0.1)) { 
 	  pc = BRep_Tool::CurveOnSurface(CP.Arc(),F,Uf,Ul);
 	  HSBis = new (BRepAdaptor_HSurface)(F);
@@ -1307,7 +1300,7 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
 	return Standard_False;
       }
     }
-    else{ // il n'y a pas de face Voisine, on garde l'etat et on renvoi False.
+    else{ // there is no neighbor face, the state is preserved and False is returned.
       HS->ChangeSurface().Initialize(F);
       W = CP.ParameterOnArc();
       pc = BRep_Tool::CurveOnSurface(E,F,Uf,Ul);
@@ -1340,37 +1333,36 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
   FVoi.Nullify();
   TopoDS_Edge E;
   if (Pc.IsVertex()){
-    // attention il faut analyser lensemble des faces qui tournent autour du vertex
-    // voir cahier pour les cas a traiter
+    // attention it is necessary to analyze all faces that turn around of the vertex
 #if DEB
-    cout<<"Commonpoint sur vertex on va au carton"<<endl;
+    cout<<"Commonpoint on vertex, the process hangs up"<<endl;
 #endif
-    if (Pc.HasVector()) { //Traitement general
+    if (Pc.HasVector()) { //General processing
       TopoDS_Face Fbis;
       Standard_Integer nb_faces;
       nb_faces = SearchFaceOnV(Pc,  FRef, myVEMap, myEFMap, FVoi, Fbis);
       return ( nb_faces > 0);
     }
-    else { // Traitement utilisant la spine
+    else { // Processing using the spine
       Standard_Boolean  FindFace=Standard_False;
       gp_Pnt Point;
       gp_Vec VecSpine;
       Spine->D1(Pc.Parameter(), Point, VecSpine);
     
-      // on verifie que l'on sort bien de la face courante.
+      // It is checked if one leaves from the current face.
       FindFace = IsInput(VecSpine, Pc.Vertex(), FRef);
       if (FindFace) {
 	VecSpine.Reverse();
 	FindFace = IsInput(VecSpine, Pc.Vertex(), FRef);
       }
-      // Si l'on ne sort pas, c'est fini
+      // If one does not leave, it is ended
       if (FindFace) {
 	FVoi = FRef;
 	return Standard_True;
       }
     
-      // Sinon, on cherche la suivante parmis les Faces partages 
-      // par une arete communes G1
+      // Otherwise one finds the next among shared Faces 
+      // by a common edge G1
       TopTools_ListIteratorOfListOfShape ItE, ItF;
       for(ItE.Initialize(myVEMap(Pc.Vertex()));
 	  ItE.More() && (!FindFace); ItE.Next()) {
@@ -1393,10 +1385,10 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
 	    return Standard_False;
 	  }
 	
-	  // On verifie que la face Selectionnee a bien une des arretes de la spine
-	  // contenant le vertex dans sa frontierre
-	  // Ce traitement ne devrait marcher que si le Vertex appartient a la spine
-	  //  Cas singulier, pour d'autre vertex il faudrait faire autre chose
+	  // It is checked if the selected face actually possesses edges of the spine
+	  // containing the vertex on its front
+	  // This processing should go only if the Vertex belongs to the spine
+	  // This is a single case, for other vertexes it is required to do other things
 	  Trouve=Standard_False;
 	  for (Standard_Integer IE=1;//, Trouve=Standard_False;                   15.11.99  SVV
 	       (IE<=Spine->NbEdges()) && (!Trouve); IE++) {
@@ -1425,9 +1417,9 @@ Standard_Boolean  ChFi3d_Builder::SearchFace
 
 //=======================================================================
 //function : ChFi3d_SingularExtremity
-//purpose  : chargement du vertex dans la DS et calcul de la pcurve 
-//           pour une extremite dans le cas freeboundary singulier
-//           ou periodic et singulier a la couture.
+//purpose  : load the vertex in the DS and calculate the pcurve 
+//           for an extremity in case of singular freeboundary 
+//           or periodic and singular at the cut.
 //=======================================================================
 static void ChFi3d_SingularExtremity( Handle(ChFiDS_Stripe)&     stripe,
 				     TopOpeBRepDS_DataStructure& DStr,
@@ -1442,7 +1434,7 @@ static void ChFi3d_SingularExtremity( Handle(ChFiDS_Stripe)&     stripe,
   Handle(Geom_Curve) C3d;
   Handle(Geom2d_Curve) PCurv;
   TopOpeBRepDS_Curve Crv;
-  // la SurfData en cause et ses CommonPoints,
+  // SurfData and its CommonPoints,
   Standard_Integer Ivtx, Icurv;
   Standard_Boolean isfirst;
   
@@ -1459,7 +1451,7 @@ static void ChFi3d_SingularExtremity( Handle(ChFiDS_Stripe)&     stripe,
  
   const ChFiDS_CommonPoint& CV1 = Fd->Vertex(isfirst,1);
   const ChFiDS_CommonPoint& CV2 = Fd->Vertex(isfirst,2);
-  // Est ce toujours degenere ?
+  // Is it always degenerated ?
   if ( CV1.Point().IsEqual( CV2.Point(), 0) ) { 
     Ivtx = ChFi3d_IndexPointInDS(CV1, DStr);
     if (isfirst) {
@@ -1490,9 +1482,9 @@ static void ChFi3d_SingularExtremity( Handle(ChFiDS_Stripe)&     stripe,
     stripe->SetIndexPoint(Ivtx, isfirst, 2);
 
     if (stripe->Spine()->IsPeriodic()) { 
-      // cas periodique : On renouvelle l'operation
-      // on ne partage pas la courbe 3d.
-      // On fabrique 2 aretes degenere confondus en 3d
+      // periodic case : The operation is renewed
+      // the curve 3d is not shared.
+      // 2 degenerated edges coinciding in 3d
       isfirst = Standard_False;
       Fd = stripe->SetOfSurfData()->Sequence().Last();
       VOnS1 = Fd->InterferenceOnS1().PCurveOnSurf()->
@@ -1519,8 +1511,8 @@ static void ChFi3d_SingularExtremity( Handle(ChFiDS_Stripe)&     stripe,
 
 //=======================================================================
 //function : ChFi3d_MakeExtremities
-//purpose  : calcul des Courbes3d et pcurves des extremites dans les
-//           cas periodiques et freeboundary.
+//purpose  : calculate Curves3d and pcurves of extremities in
+//           periodic and freeboundary cases.
 //=======================================================================
 static Standard_Boolean IsFree(const TopoDS_Shape& E,
 			       const ChFiDS_Map&   EFMap)
@@ -1603,12 +1595,12 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
 	ChFi3d_SetPointTolerance(DStr,b2,Stripe->IndexFirstPointOnS2());
     }
     else {
-      // Cas de l'extremite singuliere
+      // Case of the single extremity
       if (CV1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, CV1.Vertex(), tol3d, tol2d);
       }
 # if DEB
-      else { cout << "MakeExtremities : Singularite hors Vertex !!" << endl; }
+      else { cout << "MakeExtremities : Singularity out of Vertex !!" << endl; }
 # endif
     }
     return;
@@ -1633,7 +1625,7 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
 			  Value(SDdeb->InterferenceOnS1().FirstParameter());     
       UV2=SDdeb->InterferenceOnS2().PCurveOnSurf()->
 			  Value(SDdeb->InterferenceOnS2().FirstParameter());
-// On essaie l'intersection du conge par un plan
+// The intersection of the fillet by a plane is attempted
 
       Handle(GeomAdaptor_HSurface) HConge=ChFi3d_BoundSurf(DStr,SDdeb,1,2);
       ChFi3d_CoupeParPlan(cpdeb1,cpdeb2,HConge,UV1,UV2,
@@ -1668,12 +1660,12 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (!cpdeb2.IsVertex())
 	ChFi3d_SetPointTolerance(DStr,b2,Stripe->IndexFirstPointOnS2());
     }
-    else { // Cas de l'extremite singuliere
+    else { // Case of a singular extremity
       if (cpdeb1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, cpdeb1.Vertex(), tol3d, tol2d);
       }
 # if DEB
-      else { cout << "MakeExtremities : Singularite hors Vertex !!" << endl; }
+      else { cout << "MakeExtremities : Singularity out of Vertex !!" << endl; }
 # endif
     }
   }
@@ -1695,7 +1687,7 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
 			  Value(SDfin->InterferenceOnS1().LastParameter());     
       UV2=SDfin->InterferenceOnS2().PCurveOnSurf()->
 			  Value(SDfin->InterferenceOnS2().LastParameter());
-// On essaie l'intersection du conge par un plan
+// Intersection of the fillet by a plane is attempted
 
       Handle(GeomAdaptor_HSurface) HConge=ChFi3d_BoundSurf(DStr,SDfin,1,2);
       ChFi3d_CoupeParPlan(cpfin1,cpfin2,HConge,UV1,UV2,
@@ -1730,12 +1722,12 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (!cpfin2.IsVertex())
 	ChFi3d_SetPointTolerance(DStr,b2,Stripe->IndexLastPointOnS2());
     }
-    else { // Cas de l'extremite singuliere
+    else { // Case of the single extremity
       if (cpfin1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, cpfin1.Vertex(), tol3d, tol2d);
       }
 # if DEB
-      else { cout << "MakeExtremities : Singularite hors Vertex !!" << endl; }
+      else { cout << "MakeExtremities : Singularity out of Vertex !!" << endl; }
 # endif
     }
   }
@@ -1754,12 +1746,12 @@ static void ChFi3d_Purge (Handle(ChFiDS_Stripe)&    Stripe,
 			  Standard_Boolean&         intf,
 			  Standard_Boolean&         intl)
 {
-  if (isfirst) intf = 1; else intl = 1; // Fini.
+  if (isfirst) intf = 1; else intl = 1; // End.
   Standard_Integer opp = 3-ons;
   if (!SD->Vertex(isfirst,opp).IsOnArc() || 
       SD->TwistOnS1() || SD->TwistOnS2() ) {
 #ifdef DEB
-    cout<<"ChFi3d_Purge : Pas de sortie sur prolongement."<<endl;
+    cout<<"ChFi3d_Purge : No output on extension."<<endl;
 #endif
     ChFiDS_SequenceOfSurfData& Seq = 
       Stripe->ChangeSetOfSurfData()->ChangeSequence();
@@ -1781,8 +1773,8 @@ static void ChFi3d_Purge (Handle(ChFiDS_Stripe)&    Stripe,
 
 //=======================================================================
 //function : InsertAfter
-//purpose  : insert Item apres ref dans Seq. Si ref est null item est
-//           insere en tete.
+//purpose  : insert Item after ref in Seq. If ref is null, the item is
+//           inserted at the beginning.
 //=======================================================================
 
 static void InsertAfter (Handle(ChFiDS_Stripe)&   Stripe,
@@ -1790,7 +1782,7 @@ static void InsertAfter (Handle(ChFiDS_Stripe)&   Stripe,
 			 Handle(ChFiDS_SurfData)& Item)
 {
   if (Ref == Item) 
-    Standard_Failure::Raise("InsertAfter : 2fois la meme surfdata.");
+    Standard_Failure::Raise("InsertAfter : twice the same surfdata.");
   
   ChFiDS_SequenceOfSurfData& Seq = 
     Stripe->ChangeSetOfSurfData()->ChangeSequence();
@@ -1830,8 +1822,8 @@ static void RemoveSD (Handle(ChFiDS_Stripe)&   Stripe,
 
 //=======================================================================
 //function : InsertBefore
-//purpose  : Insert item avant ref dans Seq. Si ref est null item est
-//           insere en queue.
+//purpose  : Insert item before ref in Seq. If ref is null, the item is
+//           inserted in the queue.
 //=======================================================================
 
 static void InsertBefore (Handle(ChFiDS_Stripe)&   Stripe,
@@ -1839,7 +1831,7 @@ static void InsertBefore (Handle(ChFiDS_Stripe)&   Stripe,
 			  Handle(ChFiDS_SurfData)& Item)
 {
   if (Ref == Item) 
-    Standard_Failure::Raise("InsertBefore : 2fois la meme surfdata.");
+    Standard_Failure::Raise("InsertBefore : twice the same surfdata.");
   
   ChFiDS_SequenceOfSurfData& Seq = 
     Stripe->ChangeSetOfSurfData()->ChangeSequence();
@@ -1877,8 +1869,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
   Standard_Real wl = Guide.LastParameter();
   Standard_Real locfleche = (wl - wf) * fleche;
   Standard_Real wfsav = wf, wlsav = wl;
-  //Maintenant on elargit artificiellement l ElSpine 
-  //pour aider rsnld.
+  //Now the ElSpine is artificially extended to help rsnld.
   Standard_Real prab = 0.01;
   Guide.FirstParameter(wf-prab*(wl-wf));
   Guide.LastParameter (wl+prab*(wl-wf));
@@ -1910,34 +1901,34 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
   math_Vector SoldepCS(1,3);
   math_Vector SoldepCC(1,2);
   
-  // Recuperation d un KPart voisin.
-  // Si pas de voisin calcul point de depart. 
+  // Restore a neighboring KPart.
+  // If no neighbor calculation start point. 
   Standard_Boolean forward = Standard_True;
   Standard_Boolean Inside  = Standard_False;
   Standard_Real    First   = wf;
   Standard_Real    Last    = wl;
   Standard_Boolean Ok1 = 1,Ok2 = 1;
-  // Recuperation du KPart suivant si il existe
+  // Restore the next KPart if it exists
   TopoDS_Vertex Vref;
   if(ref.IsNull() && raf.IsNull()){
     //sinon solution approchee.
     Inside = Standard_True;
     
 #ifdef DEB  
-    ChFi3d_InitChron(ch1);// init perf pour  StartSol 
+    ChFi3d_InitChron(ch1);// init perf for StartSol 
 #endif
     
     StartSol(Stripe,HGuide,HS1,HS2,It1,It2,pp1,pp2,First);
     
 #ifdef DEB 
-    ChFi3d_ResultChron(ch1,t_startsol); // result perf pour  StartSol  
+    ChFi3d_ResultChron(ch1,t_startsol); // result perf for StartSol  
 #endif 
     
     Last = wf;
     if(Guide.IsPeriodic()) {
       Last = First - Guide.Period();
       Guide.FirstParameter(Last);
-      Guide.LastParameter (First * 1.1);//Extension pour aider rsnld.
+      Guide.LastParameter (First * 1.1);//Extension to help rsnld.
     }
   }
   else{
@@ -1954,7 +1945,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     }
     
 #ifdef DEB  
-    ChFi3d_InitChron(ch1);// init perf pour   startsol 
+    ChFi3d_InitChron(ch1);// init perf for startsol 
 #endif
     
     
@@ -1968,7 +1959,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     HC2.Nullify();
     
 #ifdef DEB   
-    ChFi3d_ResultChron(ch1,t_startsol); // result perf pour startsol  
+    ChFi3d_ResultChron(ch1,t_startsol); // result perf for startsol  
 #endif
     
     
@@ -1985,14 +1976,14 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     if(Spine->IsPeriodic() && (indl < indf)) indl += nbed;
     nbed = indl-indf+1;
   }
-  // Pas Max a la louche : 20 points par arete en moyenne en prenant soin 
-  // de ne pas comptabiliser les prolongements.
+  // No Max at the touch : 20 points by edge at average without  
+  // counting the extensions.
 
   Standard_Real bidf = wf, bidl = wl;
   if(!Spine->IsPeriodic()) {
     bidf = Max(0.,wf);
     bidl = Min(wl,Spine->LastParameter(Spine->NbEdges()));
-    // PMN 20/07/98 : Attention au cas ou il n'y a que du prolongement
+    // PMN 20/07/98 : Attention in case if there is only extension
     if  ((bidl-bidf) < 0.01 * Spine->LastParameter(Spine->NbEdges())) {
        bidf = wf;
        bidl = wl;
@@ -2006,7 +1997,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 #endif
   Standard_Boolean      intf = 0, intl = 0;
   while(!fini){
-    // sont-ce les bouts (pas de prolongement sur les periodiques).
+    // are these the ends (no extension on periodic).
     Ok1 = 1,Ok2 = 1;
     if(!Spine->IsPeriodic()){
       if(wf < tolesp && (complete == Inside)){
@@ -2031,7 +2022,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     if(!ref.IsNull()){
       
 #ifdef DEB  
-      ChFi3d_InitChron(ch1);// init perf pour StartSol 
+      ChFi3d_InitChron(ch1);// init perf for StartSol 
 #endif
       
       Ok1 = StartSol(Spine,HS1,pp1,HC1,w1,ref,!forward,1,
@@ -2042,13 +2033,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		     HS4,pp4,decroch2,Vref);
       
 #ifdef DEB   
-      ChFi3d_ResultChron(ch1,t_startsol); // result perf pour StartSol  
+      ChFi3d_ResultChron(ch1,t_startsol); // result perf for StartSol  
 #endif 
       
     }
     
-    // Plus de face connexe. Construction du plan tangent pour continuer le cheminement 
-    // jusqu a sortie sur l autre face.
+    // No more connected faces. Construction of the tangent plane to continue the path 
+    // till the output on the other face.
     if ((!Ok1 && HC1.IsNull()) || (!Ok2 && HC2.IsNull())) {
       if ((intf && !forward) || (intl && forward)) {
 	if (!Ok1) ChFi3d_BuildPlane (DStr,HS1,pp1,ref,!forward,1);
@@ -2058,14 +2049,14 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 	if(forward) Guide.FirstParameter(wf);
 	else Guide.LastParameter(wl);
       }
-      else Standard_Failure::Raise("PerformSetOfSurfOnElSpine : Chainage impossible.");
+      else Standard_Failure::Raise("PerformSetOfSurfOnElSpine : Chaining is impossible.");
     }
     
-    // Definition du domaine de cheminement It1, It2
+    // Definition of the domain of path It1, It2
     It1->Initialize(HS1);
     It2->Initialize(HS2);
     
-    // Calcul d'une (plusieur si singularite) SurfaData
+    // Calculate one (several if singularity) SurfaData
     SD = new ChFiDS_SurfData();
     ChFiDS_SequenceOfSurfData SeqSD;
     SeqSD.Append(SD);
@@ -2079,7 +2070,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 						Stripe->Choix());
 
 
-      // Calcul du critere de Choix arete / arete
+      // Calculate the criterion of Choice edge / edge
       if (Choix%2 == 0) Choix = 4;
       else Choix = 1;
 
@@ -2093,7 +2084,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       }
       else{
 #ifdef DEB   
-	ChFi3d_InitChron(ch1); // init perf pour  PerformSurf 
+	ChFi3d_InitChron(ch1); // init perf for PerformSurf 
 #endif
 	PerformSurf(SeqSD,HGuide,Spine,Choix,
 		    HS1,It1,HC1,HSref1,HCref1,decroch1,Or1,
@@ -2101,7 +2092,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 		    MaxStep,locfleche,tolesp,First,Last,Inside,Inside,forward,
 		    RecP1,RecRst1,RecP2,RecRst2,SoldepCC);
 #ifdef DEB  
-	ChFi3d_ResultChron(ch1,t_performsurf); //result  perf pour  PerformSurf 
+	ChFi3d_ResultChron(ch1,t_performsurf); //result  perf for PerformSurf 
 #endif 
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->ChangeSurface().Face()));
@@ -2124,13 +2115,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       }
       else{
 #ifdef DEB  
-	ChFi3d_InitChron(ch1); // init perf pour  PerformSurf
+	ChFi3d_InitChron(ch1); // init perf for PerformSurf
 #endif
 	PerformSurf(SeqSD,HGuide,Spine,Choix,HS1,It1,HC1,HSref1,HCref1,decroch1,
 		    HS2,It2,Or2,MaxStep,locfleche,tolesp,First,Last,
 		    Inside,Inside,forward,RecP1,RecS2,RecRst1,SoldepCS);
 #ifdef DEB  
-	ChFi3d_ResultChron(ch1,t_performsurf);//result  perf pour  PerformSurf  
+	ChFi3d_ResultChron(ch1,t_performsurf);//result  perf for PerformSurf  
 #endif 
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->ChangeSurface().Face()));
@@ -2152,13 +2143,13 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       }
       else{
 #ifdef DEB   
-	ChFi3d_InitChron(ch1); // init perf pour  PerformSurf 
+	ChFi3d_InitChron(ch1); // init perf for PerformSurf 
 #endif
 	PerformSurf(SeqSD,HGuide,Spine,Choix,HS1,It1,Or1,
 		    HS2,It2,HC2,HSref2,HCref2,decroch2,MaxStep,locfleche,tolesp,
 		    First,Last,Inside,Inside,forward,RecP2,RecS1,RecRst2,SoldepCS);
 #ifdef DEB  
-	ChFi3d_ResultChron(ch1,t_performsurf); //result  perf pour  PerformSurf 
+	ChFi3d_ResultChron(ch1,t_performsurf); //result  perf for PerformSurf 
 #endif 
       }
       SD->ChangeIndexOfS1(DStr.AddShape(HS1->ChangeSurface().Face()));
@@ -2177,18 +2168,18 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       decroch1 = decroch2 = 0;
     }
 
-    if(!done) { // Cas d'echec
+    if(!done) { // Case of fail
       if ((!Ok1 && !obstacleon1) || (!Ok2 && !obstacleon2)) {
-	//Echec dans une partie de prolongement ce n'est pas grave
-	//On s'arrete la.
+	//Fail in a part of extension is not serious
+	//Here one stops.
 	done = Standard_True;
 	Inside = Standard_False;
 	if (forward) intl = 1;
 	else         intf = 1;
       }
-      else { // Sinon invalidation de la stripe.
+      else { // Otherwise invalidation of the stripe.
         Spine->SetErrorStatus(ChFiDS_WalkingFailure);
-	Standard_Failure::Raise("CallPerformSurf : Echec cheminement!");
+	Standard_Failure::Raise("CallPerformSurf : Path failed!");
       }
     }
     
@@ -2218,18 +2209,18 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       } 
     
       if (!Ok1 && !obstacleon1) 
-	// nettoyage des infos sur le plan de prolongement.
+	// clean infos on the plane of extension.
 	ChFi3d_Purge (Stripe,SD,ref->Vertex(!forward,1),!forward,1,intf,intl);
       
       if (!Ok2 && !obstacleon2) 
-	// nettoyage des infos sur le plan de prolongement.
+	// clean infos on the plane of extension.
 	ChFi3d_Purge (Stripe,SD,ref->Vertex(!forward,2),!forward,2,intf,intl);
     
-      // C'est fini on change la reference       
+      // The end. The reference is changed.      
       ref = refbis;  
     }  
     
-    if(Inside){// on a des solutions de depart pour les suivants.
+    if(Inside){// There are starting solutions for the next.
       Inside = Standard_False;
       Firstsov = First;
       if(Guide.IsPeriodic()) {
@@ -2240,12 +2231,12 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     }
     if(forward){
       fini = ((wl - Last) <= 10.*tolesp || 
-	      (intl && !(obstacleon1 || obstacleon2))); //Cas general
+	      (intl && !(obstacleon1 || obstacleon2))); //General case
 
       if (!fini && Guide.IsPeriodic() && 
 	  ((wl - Last)< Guide.Period()*1.e-3)) {
-	// On test si les recadrage extremes se font sur la meme edge
-        // Condition de bouclage
+	// It is tested if reframing of extremes is done at the same edge
+        // Loop Condition
 	Handle(ChFiDS_SurfData) thefirst, thelast;
 	thefirst = Stripe->SetOfSurfData()->Sequence().First();
 	thelast =  Stripe->SetOfSurfData()->Sequence().Last();
@@ -2261,11 +2252,11 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
 	    (thelast->VertexLastOnS2().Arc());
 
 	if (fini) 
-	  return; //C'est fini !!
+	  return; //It is ended!
       }
 
       if(fini && complete) {
-	// on repart dans l autre sens.
+	// restart in the opposite direction.
 	ref  = Stripe->SetOfSurfData()->Sequence().First();
 	forward = Standard_False;
 	fini = Standard_False;
@@ -2283,7 +2274,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
       Last = wf;
     }
   }
-  // On remet l etat dans les wc ou on l a trouve.
+  // The initial state is restored
   if(!Guide.IsPeriodic()){
     Guide.FirstParameter(wfsav);
     Guide.LastParameter (wlsav);
@@ -2305,7 +2296,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
   TopAbs_Orientation           Or1,Or2,RefOr1,RefOr2;
   Standard_Integer             Choix,RefChoix;
   
-  // initialisation du stripe.
+  // initialization of the stripe.
   Stripe->Reset();
   Handle(ChFiDS_HData)&  HData  = Stripe->ChangeSetOfSurfData();
   HData =  new ChFiDS_HData();
@@ -2336,7 +2327,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
   Standard_Real WEndPeriodic = Spine->LastParameter(Spine->NbEdges());
   Spine->D1(WEndPeriodic,PEndPeriodic,TEndPeriodic);
   
-  // Construction des cas particuliers.
+  // Construction of particular cases.
   
   for (Standard_Integer iedge = 1; iedge <= Spine->NbEdges(); iedge++){
     
@@ -2356,17 +2347,17 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
       
       if(!ChFiKPart_ComputeData::Compute(DStr,SD,HS1,HS2,Or1,Or2,Spine,iedge)){
 #ifdef DEB
-	cout<<"echec calcul KPart"<<endl;
+	cout<<"failed calculation KPart"<<endl;
 #endif
       }
       else if(!SplitKPart(SD,LSD,Spine,iedge,HS1,It1,HS2,It2,intf,intl)){
 #ifdef DEB
-	cout<<"echec calcul KPart"<<endl;
+	cout<<"failed calculation KPart"<<endl;
 #endif
 	LSD.Clear();
       }
       else iedgelastkpart = iedge;
-      if(Spine->IsPeriodic()){//debug provisoire pour les SD qui arrivent dans le desordre.
+      if(Spine->IsPeriodic()){//debug provisory for SD that arrive in desorder.
 	Standard_Integer nbsd = LSD.Length();
 	Standard_Real period = Spine->Period();
 	Standard_Real wfp = WStartPeriodic, wlp = WEndPeriodic;
@@ -2414,7 +2405,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
 	TgtKP(LSD.Value(j),Spine,iedge,1,PFirst,TFirst);
 	TgtKP(LSD.Value(j),Spine,iedge,0,PLast,TLast);
 	
-	// Determination des portions a approximer
+	// Determine the sections to approximate
 	if(!YaKPart){
 	  if(Spine->IsPeriodic()){
 	    WStartPeriodic = WFirst;
@@ -2427,8 +2418,8 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
 	    Spine->SetLastParameter(WEndPeriodic);
 	  }
 	  else if(!intf || (iedge > 1)){
-	    // portion debut -> premier KPart
-	    // mise a jour du prolongement.
+	    // start section -> first KPart
+	    // update of extension.
 	    Spine->SetFirstTgt(Min(0.,WFirst));
 	    CurrentHE->ChangeCurve().LastParameter (WFirst);
 	    CurrentHE->ChangeCurve().SetLastPointAndTgt(PFirst,TFirst);
@@ -2443,7 +2434,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
 	}
 	else {
 	  if (WFirst - CurrentHE->FirstParameter() > tolesp) {
-	    // portion entre deux KPart
+	    // section between two KPart
 	    CurrentHE->ChangeCurve().LastParameter(WFirst);
 	    CurrentHE->ChangeCurve().SetLastPointAndTgt(PFirst,TFirst);
 	    Spine->AppendElSpine(CurrentHE);
@@ -2460,8 +2451,8 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
   }
   
   if (!intl || (iedgelastkpart < Spine->NbEdges())) {
-    // portion dernier KPart(ou debut du spine) -> Fin du spine.
-    // mise a jour du prolongement.
+    // section last KPart(or start of the spine) -> End of the spine.
+    // update of the extension.
     
     if(Spine->IsPeriodic()){
       if(WEndPeriodic - WLast > tolesp){
@@ -2537,7 +2528,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
     Standard_Integer last = len, i;
     Standard_Boolean periodic = Spine->IsPeriodic();
     if(periodic) last++;
-    // On essaye de reprendre les carreaux qui vrillent.
+    // It is attempted to reprocess the squares that bore.
     for(i = 1; i <= len; i++){
       Handle(ChFiDS_SurfData)& cursd = SeqSurf.ChangeValue(i);
       Standard_Boolean tw1 = cursd->TwistOnS1();
@@ -2553,13 +2544,12 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	else inext = 0;
       }
 
-      // Pour l instant on ne corrige que les surfaces ou le twist est 
-      // detecte au cheminement, il faudra prevoir un controle plus 
-      // subtile des traces moches ( taille, courbure, inflexion... ) 
+      // For the moment only the surfaces where the twist is 
+      // detected at the path are corrected, it is necessary to control  
+      // more subtly the ugly traces (size, curvature, inflexion... ) 
       if(!tw1 && !tw2) continue;
       
-      // On decide (assez arbitrairement) si la surface incriminee se prete 
-      // a un remplissage.
+      // It is decided (fairly at random) if the extended surface is ready for the filling.
       ChFiDS_FaceInterference& intf1 = cursd->ChangeInterferenceOnS1();
       ChFiDS_FaceInterference& intf2 = cursd->ChangeInterferenceOnS2();
       Standard_Integer cursurf1 = cursd->IndexOfS1();
@@ -2580,10 +2570,10 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       Standard_Boolean possibleon2 = (don2 < 2*(ddeb + dfin));
       if((tw1 && !possibleon1) || (tw2 && !possibleon2)) {
         Spine->SetErrorStatus(ChFiDS_TwistedSurface);
-	Standard_Failure::Raise("rattrapage en retouchant les points non ecrit");
+	Standard_Failure::Raise("adjustment by reprocessing the non-written points");
       }
       
-      // On regarde si il y a des voisins presentables
+      // It is checked if there are presentable neighbors
       Standard_Boolean yaprevon1 = 0, yaprevon2 = 0;
       Standard_Boolean samesurfon1 = 0, samesurfon2 = 0;
       if(iprev){
@@ -2601,7 +2591,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	yanexton2 = !nextsd->TwistOnS2();
 	if(samesurfon2) samesurfon2 = (nextsd->IndexOfS2() == cursurf2);
       }
-      // On construit un contour de remplissage
+      // A contour of filling is constructed
       Handle(Geom2d_Curve) PC1 = intf1.PCurveOnFace();
       Handle(Geom2d_Curve) PC2 = intf2.PCurveOnFace();
       Handle(BRepAdaptor_HSurface) S1 = new BRepAdaptor_HSurface();
@@ -2616,15 +2606,15 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	if(!yaprevon1 || !yanexton1){
           Spine->SetErrorStatus(ChFiDS_TwistedSurface);
 	  Standard_Failure::Raise
-	    ("rattrapage en retouchant les points non ecrit : pas de voisin");
+	    ("adjustment by reprocessing the non-written points: no neighbor");
 	}
 	ChFiDS_FaceInterference& previntf1 = prevsd->ChangeInterferenceOnS1();
 	ChFiDS_FaceInterference& nextintf1 = nextsd->ChangeInterferenceOnS1();
 	Standard_Real prevpar1 = previntf1.LastParameter();
 	Standard_Real nextpar1 = nextintf1.FirstParameter();
 	if(samesurfon1){
-	  // On regarde si on peut intersecter les traces des voisins
-	  // pour faire un pointu.
+	  // It is checked if it is possible to intersect traces of neighbors
+	  // to create a sharp end.
 	  Handle(Geom2d_Curve) pcprev1 = previntf1.PCurveOnFace();
 	  Handle(Geom2d_Curve) pcnext1 = nextintf1.PCurveOnFace();
 	  Standard_Real nprevpar1,nnextpar1;
@@ -2651,7 +2641,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  }
 	}
 	else{
-	  //ici on se fonde sur les tangentes 3d des voisins.
+	  //here the base is on 3D tangents of neighbors.
 	  const Handle(Geom_Curve)& c3dprev1 = 
 	    DStr.Curve(previntf1.LineIndex()).Curve();
 	  const Handle(Geom_Curve)& c3dnext1 = 
@@ -2675,15 +2665,15 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       if(tw2){
 	if(!yaprevon2 || !yanexton2){
 	  Standard_Failure::Raise
-	    ("rattrapage en retouchant les points non ecrit : pas de voisin");
+	    ("adjustment by reprocessing the non-written points: no neighbor");
 	}
 	ChFiDS_FaceInterference& previntf2 = prevsd->ChangeInterferenceOnS2();
 	ChFiDS_FaceInterference& nextintf2 = nextsd->ChangeInterferenceOnS2();
 	Standard_Real prevpar2 = previntf2.LastParameter();
 	Standard_Real nextpar2 = nextintf2.FirstParameter();
 	if(samesurfon2){
-	  // On regarde si on peut intersecter les traces des voisins
-	  // pour faire un pointu.
+	  // It is checked if it is possible to intersect traces of neighbors
+	  // to create a sharp end.
 	  Handle(Geom2d_Curve) pcprev2 = previntf2.PCurveOnFace();
 	  Handle(Geom2d_Curve) pcnext2 = nextintf2.PCurveOnFace();
 	  Standard_Real nprevpar2,nnextpar2;
@@ -2710,7 +2700,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  }
 	}
 	else{
-	  //ici on se fonde sur les tangentes 3d des voisins.
+	 //here the base is on 3D tangents of neighbors.
 	  const Handle(Geom_Curve)& c3dprev2 = 
 	    DStr.Curve(previntf2.LineIndex()).Curve();
 	  const Handle(Geom_Curve)& c3dnext2 = 
@@ -2731,8 +2721,8 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       else{
 	Bon2 = ChFi3d_mkbound(S2,PC2,tolesp,2.e-4);
       }
-      // Les parametres des traces des voisins sont a jour, on tire donc des 
-      // droites uv.
+      // The parameters of neighbor traces are updated, so 
+      // straight lines uv are pulled.
       const Handle(Geom_Surface)& 
 	sprev = DStr.Surface(prevsd->Surf()).Surface();
       const Handle(Geom_Surface)& 
@@ -2766,13 +2756,13 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       Handle(Geom_Surface) newsurf = fil.Surface();
 #ifdef DEB
 #ifdef DRAW
-      //POP pour NT
+      //POP for NT
       char* pops = "newsurf";
       DrawTrSurf::Set(pops,newsurf);
 #endif
 #endif
       if(pointuon1) {
-	newsurf->VReverse(); // on se ramene au sens 1 vers 2;
+	newsurf->VReverse(); // we return to direction 1 from  2;
 	done = CompleteData(cursd,newsurf,S1,PC1,S2,PC2,
 			    F2.Orientation(),0,0,0,0,0);
 	cursd->ChangeIndexOfS1(0);
@@ -2791,7 +2781,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	nextsd->ChangeVertexFirstOnS2().SetPoint(cpf2.Point());
       }
     }
-    // On met a jour la tolerance des points.
+    // The tolerance of points is updated.
     for(i = 1; i < last; i++){
       Standard_Integer j = i%len + 1;
       Standard_Integer curs1, curs2;
@@ -2816,7 +2806,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       if(!curp1.IsOnArc() && nextp1.IsOnArc()){ 
 	curp1 = nextp1;
 	if ( (curs1 == nexts1) && !nextsd->IsOnCurve1()) 
-	  // Cas ou l'on passe par la frontiere sans sortir
+	  // Case when it is not possible to pass along the border without leaving
 	  ChangeTransition(nextp1, curp1, nexts1, myDS);
       }
       else if(curp1.IsOnArc() && !nextp1.IsOnArc()) { 
@@ -2854,7 +2844,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       curp1.SetTolerance(tol1); nextp1.SetTolerance(tol1); 
       curp2.SetTolerance(tol2); nextp2.SetTolerance(tol2); 
     }
-    // On met a jour les liens edge/nouvelles faces.
+    // The connections edge/new faces are updated.
     for (ILES.Initialize(ll) ; ILES.More(); ILES.Next()) {
       const Handle(ChFiDS_HElSpine)& curhels = ILES.Value();
       const ChFiDS_ElSpine& curels = curhels->ChangeCurve();
@@ -2877,7 +2867,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	IL = Spine->Index(WL,0);
       }
       if(IF == IL) {
-	//traitement rapide
+	//fast processing
 	Standard_Integer IFloc = IF;
 	if(periodic) IFloc = (IF - 1)%nbed + 1;
 	const TopoDS_Edge& Ej = Spine->Edges(IFloc);
@@ -2896,7 +2886,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       else if(IF < IL){
 	TColStd_Array1OfReal wv(IF,IL - 1);
 #ifdef  DEB
-	cout<<"longueur du trajet : "<<(WL-WF)<<endl;
+	cout<<"length of the trajectory : "<<(WL-WF)<<endl;
 #endif
 	for(i = IF; i < IL; i++){
 	  Standard_Integer iloc = i;
@@ -2916,7 +2906,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  }
 	  else {
 #ifdef DEB
-	    cout<<"echec projection vertex ElSpine!!!"<<endl;
+	    cout<<"fail of projection vertex ElSpine!!!"<<endl;
 #endif
 	  }
 	}
@@ -2967,7 +2957,7 @@ void ChFi3d_Builder::PerformSetOfSurf(Handle(ChFiDS_Stripe)& Stripe,
   
 #ifdef DEB   
   OSD_Chronometer ch;
-  ChFi3d_InitChron(ch);// init perf pour PerformSetOfKPart
+  ChFi3d_InitChron(ch);// init perf for PerformSetOfKPart
 #endif
   
   const Handle(ChFiDS_Spine)& sp = Stripe->Spine();
@@ -2977,14 +2967,14 @@ void ChFi3d_Builder::PerformSetOfSurf(Handle(ChFiDS_Stripe)& Stripe,
   
 #ifdef DEB   
   ChFi3d_ResultChron(ch ,t_perfsetofkpart); // result perf PerformSetOfKPart(
-  ChFi3d_InitChron(ch); // init perf pour  PerformSetOfKGen
+  ChFi3d_InitChron(ch); // init perf for  PerformSetOfKGen
 #endif
   
   PerformSetOfKGen(Stripe,Simul);
   
 #ifdef DEB   
   ChFi3d_ResultChron(ch, t_perfsetofkgen);//result perf PerformSetOfKGen 
-  ChFi3d_InitChron(ch); // init perf pour ChFi3d_MakeExtremities
+  ChFi3d_InitChron(ch); // init perf for ChFi3d_MakeExtremities
 #endif
   
   if(!Simul) ChFi3d_MakeExtremities(Stripe,DStr,myEFMap,tolesp,tol2d);

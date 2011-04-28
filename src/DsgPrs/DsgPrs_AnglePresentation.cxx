@@ -294,7 +294,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
   if (uco > ufin) {
     if (Abs(theval)<PI) {
-      // test si uco est dans le secteur oppose 
+      // test if uco is in the opposite sector 
       if (uco > udeb+PI && uco < ufin+PI){
 	udeb = udeb + PI;
 	ufin = ufin + PI;
@@ -331,7 +331,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   ElCLib::D1(uc1,cer,ptarr,vecarr);
   gp_Ax1 ax1(ptarr, axisdir);
   gp_Dir dirarr(-vecarr);
-  //calcul de l'angle de rotation
+  //calculate angle of rotation
   Standard_Real beta(0.);
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;
@@ -482,7 +482,7 @@ void DsgPrs_AnglePresentation::Add( const Handle(Prs3d_Presentation)& aPresentat
 	}      
       else
 	{
-	  // Creating the arc from AttachmentPoint2 to its "projection"
+	  // Creating the arc from AttachmentPoint2 to its projection
 	  Standard_Real Alpha  = Abs( LastParAttachCirc - FirstParAttachCirc );
 	  Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / PI));
 	  Graphic3d_Array1OfVertex ApproxArc( 0, NodeNumber-1 );
@@ -559,7 +559,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
   if (uco > ufin) {
     if (Abs(theval)<PI) {
-      // test si uco est dans le secteur oppose 
+      // test if uco is in the opposite sector 
       if (uco > udeb+PI && uco < ufin+PI){
 	udeb = udeb + PI;
 	ufin = ufin + PI;
@@ -596,7 +596,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   ElCLib::D1(uc1,cer,ptarr,vecarr);
   gp_Ax1 ax1(ptarr, Norm);
   gp_Dir dirarr(-vecarr);
-  //calcul de l'angle de rotation
+  //calculate the angle of rotation
   Standard_Real beta;
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;
@@ -638,8 +638,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
 //==========================================================================
 // function : DsgPrs_AnglePresentation::Add
-// purpose  : ODL 4-fevrier-97 
-//  on peut choisir le symbol des extremites de la cote (fleche, point ...)
+// purpose  : It is possible to choose the symbol of extremities of the face (arrow, point...)
 //==========================================================================
 
 void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
@@ -684,7 +683,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
   if (uco > ufin) {
     if (Abs(theval)<PI) {
-      // test si uco est dans le secteur oppose 
+      // test if uco is in the opposite sector 
       if (uco > udeb+PI && uco < ufin+PI){
 	udeb = udeb + PI;
 	ufin = ufin + PI;
@@ -716,13 +715,13 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,OffsetPoint);
   
-// Lignes de rappel
+// Lines of recall
   gp_Vec vecarr;
   gp_Pnt ptarr;
   ElCLib::D1(uc1,cer,ptarr,vecarr);
   gp_Ax1 ax1(ptarr, Norm);
   gp_Dir dirarr(-vecarr);
-  //calcul de l'angle de rotation
+  //calculate angle of rotation
   Standard_Real beta(0.);
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;
@@ -756,7 +755,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrap);
 
 
-// On trace les fleches
+// One traces the arrows
   DsgPrs::ComputeSymbol(aPresentation,LA,ptarr,ptarr1,dirarr,dirarr2,ArrowPrs);
 }
 
@@ -812,7 +811,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
   if (uco > ufin) {
     if (Abs(theval)<PI) {
-      // test si uco est dans le secteur oppose 
+      // test if uco is in the opposite sector 
       if (uco > udeb+PI && uco < ufin+PI){
 	udeb = udeb + PI;
 	ufin = ufin + PI;
@@ -849,7 +848,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   ElCLib::D1(uc1,cer,ptarr,vecarr);
   gp_Ax1 ax1(ptarr, Norm);
   gp_Dir dirarr(-vecarr);
-  //calcul de l'angle de rotation
+  //calculate the angle of rotation
   Standard_Real beta;
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;

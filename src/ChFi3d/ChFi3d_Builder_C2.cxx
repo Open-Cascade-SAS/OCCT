@@ -115,10 +115,9 @@ static void Reduce(const Standard_Real& p1,
 
 //=======================================================================
 //function : PerformTwoCornerbyInter
-//purpose  : Effectue un PerformTwoCorner par intersection.
-//           Dans le cas Biseau on utilise pour tous les cas le 
-//           cheminement biparam/biparam; on reapproxime alors la courbe
-//           3d et les 2 pcurves .
+//purpose  : Performs PerformTwoCorner by intersection.
+//           In case of Biseau for all cases the 
+//           path is used; 3D curve and 2 pcurves are approximated.
 //=======================================================================
 
 Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer Index)
@@ -128,10 +127,10 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   const TopoDS_Vertex& Vtx = myVDataMap.FindKey(Index);
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
-  //On extrait les informations necessaires sur les conges 
+  //Information on fillets is extracted 
   //------------------------------------------------------
 
-  //le premier
+  //the first
   //----------
   ChFiDS_ListIteratorOfListOfStripe It;
   It.Initialize(myVDataMap(Index));
@@ -143,7 +142,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Corner1->ChangeSetOfSurfData()->ChangeSequence();
   Handle(ChFiDS_SurfData)& Fd1 = SeqFil1.ChangeValue(IFd1);
 
-  //le deuxieme
+  //the second
   //----------
   It.Next();
   Handle(ChFiDS_Stripe)& Corner2 = It.Value(); 
@@ -158,10 +157,10 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Corner2->ChangeSetOfSurfData()->ChangeSequence();
   Handle(ChFiDS_SurfData)& Fd2 = SeqFil2.ChangeValue(IFd2);
 
-  // On analyse les concavites, dans le cas de concavites differentes, 
-  // prevoir un raccord evolutif du type ThreeCorner de R vers 0.
-  // Sinon on recherche la face en vis a vis 
-  // et l intersection  eventuelle des 2 pcurves sur cette face.
+  // The concavities are analysed in case of differents concavities, 
+  // preview an evolutionary connection of type ThreeCorner of R to 0.
+  // Otherwise the opposite face  
+  // and the eventual intersection of 2 pcurves on this face are found.
 
   ChFiDS_State Stat1,Stat2;
   Standard_Boolean isfirst1 = (Sens1 == 1);
@@ -187,8 +186,8 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     return done;
   }
   if (!OkinterCC) {
-     // On calcule l'intersection des pcurves sans les restreindre par les 
-    // common point
+     // The intersection of pcurves is calculated without restricting them by  
+    // common points.
     OkinterCC= ChFi3d_IsInFront(DStr,Corner1,Corner2,IFd1,IFd2,Sens1,Sens2,
 				 UIntPC1,UIntPC2,FaCo,SameSide,
 				 IFaCo1,IFaCo2,Okvisavis,Vtx,Standard_True,1);
@@ -196,29 +195,29 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   
   if (!Okvisavis) {
 #if DEB
-    cout<<"TwoCorner : pas de face commune"<<endl;
+    cout<<"TwoCorner : no common face"<<endl;
 #endif
     done=Standard_False;
     return done;
   }   
   if (!OkinterCC) {
 #if DEB
-    cout<<"biseau : echec intersection des lignes de tangence sur face commune"<<endl;
+    cout<<"biseau : failed intersection of tangency lines on common face"<<endl;
 #endif
     done=Standard_False;
     return done;
   }
   Standard_Integer IFaArc1 = 3-IFaCo1, IFaArc2 = 3-IFaCo2;
   
-  // On verifie que les conges ont bien un commonpoint sur un arc commun.
-  // Cet edge est le pivot du biseau ou de la rotule.
+  // It is checked if the fillets have a commonpoint on a common arc.
+  // This edge is the pivot of the bevel or of the kneecap.
   
   ChFiDS_CommonPoint& CP1 = Fd1->ChangeVertex(isfirst1,IFaArc1);
   ChFiDS_CommonPoint& CP2 = Fd2->ChangeVertex(isfirst2,IFaArc2);
 
   if (!CP1.IsOnArc() || !CP2.IsOnArc()) {
 #if DEB
-    cout<<"echec 1 des 2 conges n est pas sur arc"<<endl;
+    cout<<"fail 1 of 2 fillets are not on arc"<<endl;
 #endif
     done=Standard_False;
     return done;
@@ -226,7 +225,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   if ( ! CP1.Arc().IsSame( CP2.Arc()) ) {
     // look like OnSame + OnDiff case (eap, Arp 9 2002, occ266)
 #if DEB
-    cout<<"PerformTwoCornerbyInter(): conges ne sont pas sur la meme arc"<<endl;
+    cout<<"PerformTwoCornerbyInter(): fillets are not on the same arc"<<endl;
 #endif
     done = Standard_True;
     PerformMoreThreeCorner(Index, 2);
@@ -269,9 +268,8 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     }
   }
   if(!ok1 || !ok2){
-    //On est dans un contexte merdique
 #if DEB
-    cout<<"echec une des surfaces n a pas de face d appui commune avec l edge pivot"<<endl;
+    cout<<"fail one of surfaces has no common base face with the pivot edge"<<endl;
 #endif
     done=Standard_False;
     return done;
@@ -287,7 +285,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   Handle(Geom_Curve) Gc;
   
   if(sameparam) {
-    // Du cote face commune, calcul de Pardeb.
+    // Side common face, calculation of Pardeb.
     ChFi3d_ComputesIntPC (Fd1->Interference(IFaCo1),
 			  Fd2->Interference(IFaCo2),
 			  HS1,HS2,UIntPC1,UIntPC2);
@@ -298,7 +296,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Pardeb(3)= UV.X(); Pardeb(4)=UV.Y();
     gp_Pnt PFaCo = HS1->Surface().Value(Pardeb(1),Pardeb(2));
     
-    // Du cote arc, calcul de Parfin.
+    // Side arc, calculation of Parfin.
     Standard_Real UIntArc1 = Fd1->Interference(IFaArc1).Parameter(isfirst1);
     Standard_Real UIntArc2 = Fd2->Interference(IFaArc2).Parameter(isfirst2);
     
@@ -318,7 +316,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
 	!ChFi3d_ComputeCurves(HS1,HS2,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
 #if DEB
-      cout<<"echec calcul biseau echec interSS"<<endl;
+      cout<<"failed to calculate bevel error interSS"<<endl;
 #endif
       done=Standard_False;
       return done;
@@ -327,12 +325,12 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
 	     !ChFi3d_ComputeCurves(HS1,HS2,Parfin,Pardeb,Gc,
 				   PGc1,PGc2,tolesp,tol2d,tolreached)) {
 #if DEB
-      cout<<"echec calcul biseau echec interSS"<<endl;
+      cout<<"failed to calculate bevel error interSS"<<endl;
 #endif
       done=Standard_False;
       return done;	
     }
-    // On met a jour les CornerData avec les resultats de l intersection. 
+    // CornerData are updated with results of the intersection. 
     Standard_Real WFirst = Gc->FirstParameter();
     Standard_Real WLast = Gc->LastParameter();
     Standard_Integer Ipoin1;
@@ -370,7 +368,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
 			   isfirst2,IFaCo2);
     Corner2->SetIndexPoint(Corner1->IndexPoint(isfirst1,IFaArc1),
 			   isfirst2,IFaArc2);
-    //On update les tolerances des points.
+    //The tolerances of points are updated.
     Bnd_Box bco,barc;
     if(IFaCo1 == 1) ChFi3d_EnlargeBox(DStr,Corner1,Fd1,bco,barc,isfirst1);
     else ChFi3d_EnlargeBox(DStr,Corner1,Fd1,barc,bco,isfirst1);
@@ -382,12 +380,12 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     ChFi3d_SetPointTolerance(DStr,bco,Corner1->IndexPoint(isfirst1,IFaCo1));
   }
   else {
-    // Il faut identifier la surface qui deborde,
-    // trouver le point de fin de l intersection Surf/Surf 
-    // par l intersection de la ligne de tangence du petit sur
-    // la face opposee avec la surface du gros,
-    // et enfin intersecter le gros avec la face en bout
-    // entre ce point et le point sur arc.
+    // It is necessary to identify the border surface,
+    // find the end point of the intersection Surf/Surf 
+    // by the intersection of the tangency line of the small
+    // on the opposing face with the surface of the big,
+    // and finally intersect the big with the face at end 
+    // between this point and the point on arc.
 #ifndef DEB
     Standard_Boolean parcrois = Standard_False ;
 #else
@@ -427,11 +425,11 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
       isfirstBig = isfirst1; isfirstSma = isfirst2;
     }
     
-    //Intersection du gros avec le petit :
+    //Intersection of the big with the small :
     //------------------------------------
 
-    // Pardeb (parametres du point PFaCo)
-    // on verifie l'intersection 
+    // Pardeb (parameters of point PFaCo)
+    // the intersection is checked
     ChFi3d_ComputesIntPC (SmaFD->Interference(IFaCoSma),
 			  BigFD->Interference(IFaCoBig),
 			  SmaHS,BigHS,UIntPCSma,UIntPCBig);
@@ -442,7 +440,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Pardeb(1)= UVi.X(); Pardeb(2)=UVi.Y();
     gp_Pnt PFaCo = SmaHS->Value(UVi.X(),UVi.Y());
 
-      // Parfin (parametres du point PMil)
+      // Parfin (parameters of point PMil)
     const ChFiDS_FaceInterference& FiArcSma = SmaFD->Interference(IFaArcSma);
     Handle(Geom_Curve) ctg = DStr.Curve(FiArcSma.LineIndex()).Curve();
     Handle(GeomAdaptor_HCurve) Hctg = new GeomAdaptor_HCurve();
@@ -467,7 +465,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     }
     if(!ChFi3d_IntCS(BigHS,Hctg,UVi,wi)){
 #if DEB
-      cout<<"biseau : echec inter C S"<<endl;
+      cout<<"bevel : failed inter C S"<<endl;
 #endif
       done=Standard_False;
       return done;
@@ -481,12 +479,12 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     if (!ChFi3d_ComputeCurves(SmaHS,BigHS,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
 #if DEB
-      cout<<"echec calcul biseau echec interSS"<<endl;
+      cout<<"failed to calculate bevel failed interSS"<<endl;
 #endif
       done=Standard_False;
       return done;
     }
-      // On met a jour la SmaCD, c est fini pour elle. 
+      // SmaCD is updated, for it this is all. 
     Standard_Real WFirst = Gc->FirstParameter();
     Standard_Real WLast = Gc->LastParameter();
     Standard_Integer IpointCo, IpointMil, IpointArc;
@@ -514,7 +512,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     SmaCD->SetIndexPoint(IpointMil,isfirstSma,IFaArcSma);
     if (IFaCoSma == 2) SmaCD->SetOrientation(TopAbs_REVERSED,isfirstSma);
 
-    // Pour la BigCD on met ces premiers resultats dans la DS.
+    // For BigCD the first results are met in the DS.
     BigCD->SetIndexPoint(IpointCo,isfirstBig,IFaCoBig);
     BigFD->ChangeVertex(isfirstBig,IFaCoBig) = psmaco;
     BigFD->ChangeInterference(IFaCoBig).SetParameter(UIntPCBig,isfirstBig);
@@ -526,7 +524,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Interfp = ChFi3d_FilPointInDS(TopAbs_REVERSED,ICurv,IpointMil,WLast);
     Li.Append(Interfp);
     
-    // la transition des courbes d intersection sur la Big
+    // the transition of curves of intersection on the Big
     TopAbs_Orientation tra = BigFD->InterferenceOnS1().Transition();
     TopAbs_Orientation ofac = DStr.Shape(BigFD->IndexOfS1()).Orientation();
     TopAbs_Orientation ofil = BigFD->Orientation();
@@ -540,18 +538,18 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Interfc = ChFi3d_FilCurveInDS (ICurv,ISurf,PGc2,tracurv);
     DStr.ChangeSurfaceInterferences(ISurf).Append(Interfc);
     
-    //On update les tolerances des points (on commence).
+    //The tolerances of points are updated (beginning).
     Bnd_Box bco,bmil,barc;
     if(IFaCoSma == 1) ChFi3d_EnlargeBox(DStr,SmaCD,SmaFD,bco,bmil,isfirstSma);
     else ChFi3d_EnlargeBox(DStr,SmaCD,SmaFD,bmil,bco,isfirstSma);
     ChFi3d_EnlargeBox(BigHS,PGc2,WFirst,WLast,bco,bmil);
     
-    // Intersection du gros avec la face en bout :
+    // Intersection of the big with the face at end :
     // -------------------------------------------
 
-    // Pardeb (parametres de PMil)
-    // On rejoue l intersection courbe surface mais avec la representation
-    // pcurve on face de la courbe pour etre bien sur.
+    // Pardeb (parameters of PMil)
+    // The intersection curve surface is tried again, now with representation
+    // pcurve on face of the curve to be sure.
     TopoDS_Face F = TopoDS::Face(DStr.Shape(SmaFD->Index(IFaArcSma)));
     Handle(BRepAdaptor_HSurface) HF = new BRepAdaptor_HSurface(F);
     Standard_Real fsma = FiArcSma.FirstParameter();
@@ -570,7 +568,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Handle(Adaptor3d_HCurveOnSurface) Hconsf = new Adaptor3d_HCurveOnSurface(consf);
     if(!ChFi3d_IntCS(BigHS,Hconsf,UVi,wi)) {
 #if DEB
-      cout<<"biseau : echec inter C S"<<endl;
+      cout<<"bevel : failed inter C S"<<endl;
 #endif
       done=Standard_False;
       return done;
@@ -580,7 +578,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Pardeb(1) = UVi.X(); Pardeb(2) = UVi.Y(); 
     gp_Pnt2d ppff1 = UVi;
 
-      // Parfin (parametres du point cpend)
+      // Parfin (parameters of the point cpend)
     Standard_Real ptg = BigFD->Interference(IFaArcBig).Parameter(isfirstBig);
     UVi = BigFD->Interference(IFaArcBig).PCurveOnSurf()->Value(ptg);
     Parfin(3) = UVi.X(); Parfin(4) = UVi.Y();
@@ -595,21 +593,21 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
       // Intersection. 
     Standard_Real uu1,uu2,vv1,vv2;
     ChFi3d_Boite(ppff1,ppff2,uu1,uu2,vv1,vv2);
-    // pour le cas ou les deux chanfreins sont sur deux aretes OnSame,
-    // il faut etendre la surface portant F, sinon, au moins ne pas la
-    // restreindre.
+    // for the case when two chamfers are on two edges OnSame,
+    // it is necessary to extend the surface carrying F, or at least
+    // not to limit it.
     ChFi3d_BoundFac(HF->ChangeSurface(),uu1,uu2,vv1,vv2,Standard_True);
 
     if (!ChFi3d_ComputeCurves(HF,BigHS,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
 #if DEB
-      cout<<"echec calcul biseau echec interSS"<<endl;
+      cout<<"fail calculation bevel fail interSS"<<endl;
 #endif
       done=Standard_False;
       return done;
     }
     
-      // On finit de mettre a jour la BigCD et la DS.
+      // End of update of the BigCD and the DS.
     WFirst = Gc->FirstParameter();
     WLast = Gc->LastParameter();
     ICurv = DStr.AddCurve(TopOpeBRepDS_Curve(Gc,tolreached));
@@ -626,7 +624,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     DStr.ChangeSurfaceInterferences(ISurf).Append(Interfc);
     BigCD->InDS(isfirstBig);
     
-    // Et enfin on met dans la DS les informations cote face.
+    // Finally the information on faces is placed in the DS.
     Standard_Integer IShape = DStr.AddShape(F);
     if(SmaFD->Surf() == BigFD->Surf()){
       tracurv = TopAbs::Compose(etest.Orientation(),
@@ -646,7 +644,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Interfc = ChFi3d_FilCurveInDS(ICurv,IShape,PGc1,tracurv);
     DStr.ChangeShapeInterferences(IShape).Append(Interfc);
 
-    //On update les tolerances des points (on finit).
+    //The tolerances of points are updated (end).
     Handle(ChFiDS_Stripe) bidst;
     if(IFaCoBig == 1) ChFi3d_EnlargeBox(DStr,bidst,BigFD,bco,barc,isfirstBig);
     else ChFi3d_EnlargeBox(DStr,bidst,BigFD,barc,bco,isfirstBig);

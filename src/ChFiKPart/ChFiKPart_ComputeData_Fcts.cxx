@@ -45,8 +45,8 @@ Standard_Real  ChFiKPart_InPeriod(const Standard_Real U,
 
 //=======================================================================
 //function : PCurve 
-//purpose  : Calcule une droite sous forme de BSpline pour garantir 
-//           les parametres.
+//purpose  : Calculate a straight line in form of BSpline to guarantee 
+//           the parameters.
 //=======================================================================
 
 Handle(Geom2d_BSplineCurve) ChFiKPart_PCurve(const gp_Pnt2d& UV1,
@@ -69,8 +69,8 @@ Handle(Geom2d_BSplineCurve) ChFiKPart_PCurve(const gp_Pnt2d& UV1,
 
 //=======================================================================
 //function : ProjPC
-//purpose  : Pour les coins spheriques dont les contours ne sont 
-//           pas des isos on projette le cercle.
+//purpose  : For spherical corners the contours which of are not 
+//           isos the circle is projected.
 //=======================================================================
 
 void ChFiKPart_ProjPC(const GeomAdaptor_Curve& Cg, 
@@ -156,17 +156,17 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve& Cg,
       break;
 #endif
       default :
-      Standard_NotImplemented::Raise("echec approximation de la pcurve ");
+      Standard_NotImplemented::Raise("failed approximation of the pcurve ");
     }
   }
   else {
-    Standard_NotImplemented::Raise("approx pcurve sur une surface gauche");
+    Standard_NotImplemented::Raise("approximate pcurve on the left surface");
   }
 }
 
 //=======================================================================
 //function : IndexCurveInDS
-//purpose  : Met une Curve dans la DS et renvoie son index.
+//purpose  : Place a Curve in the DS and return its index.
 //=======================================================================
 
 Standard_Integer ChFiKPart_IndexCurveInDS(const Handle(Geom_Curve)& C,
@@ -178,7 +178,7 @@ Standard_Integer ChFiKPart_IndexCurveInDS(const Handle(Geom_Curve)& C,
 
 //=======================================================================
 //function : IndexSurfaceInDS
-//purpose  : Met une Surface dans la DS et renvoie son index.
+//purpose  : Place a Surface in the DS and return its index.
 //=======================================================================
 
 Standard_Integer ChFiKPart_IndexSurfaceInDS(const Handle(Geom_Surface)& S,

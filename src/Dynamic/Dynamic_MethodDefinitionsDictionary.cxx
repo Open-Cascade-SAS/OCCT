@@ -3,8 +3,8 @@
 // Author:	Gilles DEBARBOUILLE
 //		<gde@phobox>
 // Historique :
-// CRD : 15/04/97 : Passage WOK++ : Remplacement de TYPE par STANDARD_TYPE
-// CRD : 03/07/97 : Portage Windows NT.
+// CRD : 15/04/97 : Passage WOK++ : Replace TYPE by STANDARD_TYPE
+// CRD : 03/07/97 : Porting Windows NT.
 
 #include <Standard_Stream.hxx>
 
@@ -191,7 +191,7 @@ Standard_Boolean Dynamic_MethodDefinitionsDictionary::Definition(const Handle(Dy
     }
   else
     {
-      cout<<"la definition n'est pas une method definition"<<endl;
+      cout<<"the definition is not a method definition"<<endl;
       return Standard_False;
     }
 }
@@ -230,7 +230,7 @@ Handle(Dynamic_Parameter) Dynamic_MethodDefinitionsDictionary::Switch(
   const Standard_CString avalue) const
 {
   Handle(Dynamic_ObjectParameter) objectparameter;
-  cout<<"Le parametre "<<aname<<" du type "<<atype<<" avec "<<avalue<<" n'existe pas."<<endl;
+  cout<<"Parameter "<<aname<<" of type "<<atype<<" with "<<avalue<<" does not exist."<<endl;
   return objectparameter;
 }
 

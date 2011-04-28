@@ -264,8 +264,7 @@ Update(const Handle(V3d_View)& aView,const Standard_Boolean DoubleBuffer)
     }
       break;
     } 
-    Standard_Boolean First = Standard_True; // pour eviter de faire le begindraw s'il n'y a 
-                                            // rien (couteux ) rob 230996
+    Standard_Boolean First = Standard_True; // to avoid begindraw if there is nothing (expensive)
     
     for(it.Initialize(mynew);it.More();it.Next()){
       

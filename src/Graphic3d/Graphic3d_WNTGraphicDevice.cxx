@@ -61,7 +61,7 @@ void Graphic3d_WNTGraphicDevice::SetGraphicDriver ()
       (MySharedLibrary.DlError ());
   }
   else {
-    // Gestion des traces
+    // Management of traces
     OSD_Environment beurk("CSF_GraphicTrace");
     TCollection_AsciiString val = beurk.Value();
     if (val.Length() > 0 )
@@ -74,10 +74,10 @@ void Graphic3d_WNTGraphicDevice::SetGraphicDriver ()
         (MySharedLibrary.DlError ());
     }
     else {
-      // Sequence artistique :
-      // new_GLGraphicDriver est une OSD_Function :
+      // Sequence :
+      // new_GLGraphicDriver is OSD_Function :
       // typedef int (* OSD_Function)(...);
-      // d'ou le magnifique cast en GraphicDriver.
+      // wherefrom a good cast in GraphicDriver.
       //Handle( Graphic3d_GraphicDriver ) ADriver = new Graphic3d_GraphicDriver ( TheShr );
 
       GET_DRIVER_PROC fp = ( GET_DRIVER_PROC )new_GLGraphicDriver;
@@ -87,7 +87,7 @@ void Graphic3d_WNTGraphicDevice::SetGraphicDriver ()
         (MySharedLibrary.DlError ());
       MyGraphicDriver = ( *fp ) ( TheShr );
 
-      // Gestion des traces
+      // Management of traces
       if ( val.Length() > 0 && val.IsIntegerValue() )
         MyGraphicDriver->SetTrace(val.IntegerValue());
     }

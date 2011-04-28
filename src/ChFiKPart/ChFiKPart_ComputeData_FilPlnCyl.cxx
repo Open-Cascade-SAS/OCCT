@@ -36,7 +36,7 @@
 
 //=======================================================================
 //function : MakeFillet
-//purpose  : cas cylindre/plan ou plan/cylindre.
+//purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
 
 Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
@@ -53,9 +53,9 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 				      const TopAbs_Orientation Ofpl,
 				      const Standard_Boolean plandab)
 {
-  //calcul du conge cylindre.
+  //calculate the cylinder fillet.
 
-  //plan deporte de radius
+  //plane deviated from radius
   gp_Ax3 AxPln  = Pln.Position();
   gp_Dir NorPln = AxPln.XDirection().Crossed(AxPln.YDirection());
   gp_Dir NorF(NorPln);
@@ -64,7 +64,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   if (Or1 == TopAbs_REVERSED) { NorF.Reverse(); } 
   gp_Pln PlanOffset = Pln.Translated(Radius*gp_Vec(NorF));
 
-  // Cylindre parallele
+  // Parallel cylinder
   Standard_Real    ROff = Cyl.Radius();
   Standard_Boolean dedans = Standard_False;
 
@@ -76,11 +76,11 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   }
   else {
 #ifdef DEB
-    cout<<"le conge ne passe pas"<<endl; 
+    cout<<"the fillet does not pass"<<endl; 
 #endif
     return Standard_False;
   }
-  // intersection du plan parallele et du cylindre parallele.
+  // intersection of the parallel plane and of the parallel cylinder.
   gp_Cylinder CylOffset(Cyl.Position(),ROff);
   IntAna_QuadQuadGeo LInt(PlanOffset,CylOffset,
 			  Precision::Angular(),Precision::Confusion());
@@ -103,7 +103,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   }
   else {return Standard_False;}
 
-  // Construction conge
+  // Construction fillet
   if (DirFillet.Dot(Spine.Direction()) < 0.) {DirFillet.Reverse();}
 
   Standard_Real UOnCyl,VOnCyl,UOnPln,VOnPln;
@@ -123,7 +123,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     OtherDir = tmp;
   }
   gp_Ax3 AxFil (OrFillet,DirFillet,XDir);
-  // construction YDir pour aller de face1 vers face2.
+  // construction YDir to go from face1 to face2.
   if ((XDir^OtherDir).Dot(DirFillet) < 0.)
     AxFil.YReverse();
 
@@ -131,8 +131,8 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     Fillet = new Geom_CylindricalSurface(AxFil,Radius);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(Fillet,DStr));
 
-  // On charge les FaceInterferences avec les pcurves et courbes 3d.
-  // edge plan-Fillet
+  // FaceInterferences are loaded with pcurves and curves 3D.
+  // edge plane-Fillet
   gp_Pnt2d PPln2d(UOnPln,VOnPln);
   gp_Dir2d VPln2d(DirFillet.Dot(AxPln.XDirection()),
 		  DirFillet.Dot(AxPln.YDirection()));
@@ -151,8 +151,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::CylinderD1(UOnFillet,V,AxFil,Radius,P,deru,derv);
   gp_Dir NorFil(deru.Crossed(derv));
   Standard_Boolean toreverse = ( NorFil.Dot(NorPln) <= 0. );
-  // On regarde si l orientation du cylindre est la meme que celle 
-  // du plan.
+  // It is checked if the orientation of the cylinder is the same as of the plane.
   if (toreverse) {Data->ChangeOrientation() = TopAbs::Reverse(Ofpl);}
   else           {Data->ChangeOrientation() = Ofpl;}
 
@@ -172,7 +171,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     SetInterference(ChFiKPart_IndexCurveInDS(L3d,DStr),
 		    trans,LFac,LFil);
 
-  // edge cylindre-Fillet.
+  // edge cylinder-Fillet.
   gp_Pnt2d PCyl2d(UOnCyl,VOnCyl);
   gp_Dir2d DPC = gp::DY2d();
   if (DirFillet.Dot(AxCyl.Direction()) < 0.) DPC.Reverse();
@@ -211,7 +210,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : MakeFillet
-//purpose  : cas cylindre/plan ou plan/cylindre.
+//purpose  : case cylinder/plane or plane/cylinder.
 //=======================================================================
 
 Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
@@ -229,7 +228,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 				      const Standard_Boolean plandab)
 {
 
-//calcul du conge (tore ou sphere).
+//calculation of the fillet (torus or sphere).
   Standard_Boolean c1sphere = Standard_False;
   gp_Ax3 PosPl = Pln.Position();
   gp_Dir Dpnat = PosPl.XDirection().Crossed(PosPl.YDirection());
@@ -249,7 +248,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 	      Or.Z()+Radius*Dp.Z());
   gp_Pnt PtSp;
   gp_Vec DSp;
- // Modification pour les PtSp trouves du mauvais cote de l'arete de couture.
+ // Modification for the PtSp found at the wrong side of the sewing edge.
   gp_Pnt PtSp2;
   gp_Vec DSp2;
   Standard_Real acote = 1e-7;
@@ -267,7 +266,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
       ElCLib::D1(PR,Spine,PtSp2,DSp);
     }
   }
-  // fin de modif
+  // end of modif
   gp_Dir Dx(gp_Vec(Or,PtSp));
   Dx = Dp.Crossed(Dx.Crossed(Dp));
   gp_Dir Dy(DSp);
@@ -285,7 +284,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     if(Abs(Rad) <= Precision::Confusion()){ c1sphere = Standard_True; }
     else if(Rad < 0){ 
 #ifdef DEB
-      cout<<"le conge ne passe pas"<<endl; 
+      cout<<"the fillet can't pass"<<endl; 
 #endif
       return Standard_False;
     }
@@ -308,8 +307,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gtor,DStr));
   }
   
-  // On regarde si l orientation du conge est la meme que celle 
-  // des faces.
+  // It is checked if the orientation of the fillet is the same as of faces.
   gp_Pnt P,PP;
   gp_Vec deru,derv;
   P.SetCoord(cPln.X()+Rad*Dx.X(),
@@ -336,9 +334,9 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   if (toreverse) { Data->ChangeOrientation() = TopAbs_REVERSED; }
   else { Data->ChangeOrientation() = TopAbs_FORWARD; }
 
-  // On charge les FaceInterferences avec les pcurves et courbes 3d.
+  // FaceInterferences are loaded with pcurves and curves 3d.
 
-  // La face plane.
+  // The plane face.
   Handle(Geom2d_Circle) GCirc2dPln;
   Handle(Geom_Circle) GCircPln;
   gp_Ax2 circAx2 = FilAx3.Ax2();
@@ -384,7 +382,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 		      trans,GCirc2dPln,GLin2dFil1);
   }
 
-  // La face cylindrique.
+  // The cylindrical face.
   P.SetCoord(Or.X()+cylrad*Dx.X(),
 	     Or.Y()+cylrad*Dx.Y(),
 	     Or.Z()+cylrad*Dx.Z());

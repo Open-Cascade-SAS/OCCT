@@ -202,7 +202,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Value(const math_Vector& X,
 //#endif
   }
   if (norm2 < Eps)  {
-    norm2 = 1; // Insufisant, mais il ne faut pas planter
+    norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 //#if DEB
 //    cout << " ConstRadInv : Surface singuliere " << endl;
 //#endif
@@ -288,13 +288,13 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
   norm1 = ncrossns1.Magnitude();
   norm2 = ncrossns2.Magnitude();
   if (norm1 < Eps)  {
-    norm1 = 1; // Insufisant, mais il ne faut pas planter
+    norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRadInv : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps)  {
-    norm2 = 1; // Insufisant, mais il ne faut pas planter
+    norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRadInv : Surface singuliere " << endl;
 #endif
@@ -303,7 +303,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
   ndotns1 = nplan.Dot(ns1);
   ndotns2 = nplan.Dot(ns2);
 
-  // Derivee par rapport a u1
+  // Derived compared to u1
 
   temp = d2u1.Crossed(d1v1).Added(d1u1.Crossed(d2uv1));
   grosterme = ncrossns1.Dot(nplan.Crossed(temp))/norm1/norm1;
@@ -313,7 +313,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
 		       d1u1);
 
 
-  // Derivee par rapport a v1
+  // Derived compared to v1
 
   temp = d2uv1.Crossed(d1v1).Added(d1u1.Crossed(d2v1));
   grosterme = ncrossns1.Dot(nplan.Crossed(temp))/norm1/norm1;
@@ -338,8 +338,8 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
   }
 
 
-  // derivee par rapport a w (parametre sur ligne guide)
-  // On considere ici que le rayon est constant
+  // derived compared to w (parameter on guideline)
+  // It is assumed that the radius is constant
 
   grosterme = ncrossns1.Dot(dnplan.Crossed(ns1))/norm1/norm1;
   resul1.SetLinearForm(-ray1/norm1*(grosterme*ndotns1-dnplan.Dot(ns1)),nplan,
@@ -359,7 +359,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
 
 
 
-  // Derivee par rapport a u2
+  // Derived compared to u2
   temp = d2u2.Crossed(d1v2).Added(d1u2.Crossed(d2uv2));
   grosterme = ncrossns2.Dot(nplan.Crossed(temp))/norm2/norm2;
   resul1.SetLinearForm(ray2/norm2*(grosterme*ndotns2-nplan.Dot(temp)),nplan,
@@ -367,7 +367,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
 		       ray2/norm2,temp);
   resul1.Subtract(d1u2);
 
-  // Derivee par rapport a v2
+  // Derived compared to v2
   temp = d2uv2.Crossed(d1v2).Added(d1u2.Crossed(d2v2));
   grosterme = ncrossns2.Dot(nplan.Crossed(temp))/norm2/norm2;
   resul2.SetLinearForm(ray2/norm2*(grosterme*ndotns2-nplan.Dot(temp)),nplan,
@@ -469,13 +469,13 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
   norm1 = ncrossns1.Magnitude();
   norm2 = ncrossns2.Magnitude();
   if (norm1 < Eps)  {
-    norm1 = 1; // Insufisant, mais il ne faut pas planter
+    norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRadInv : Surface singuliere " << endl;
 #endif
   }
   if (norm2 < Eps)  {
-    norm2 = 1; // Insufisant, mais il ne faut pas planter
+    norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #if DEB
     cout << " ConstRadInv : Surface singuliere " << endl;
 #endif
@@ -493,7 +493,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
   F(3) = resul1.Y();
   F(4) = resul1.Z();
 
-  // Derivee par rapport a u1
+  // Derived compared to u1
 
   temp = d2u1.Crossed(d1v1).Added(d1u1.Crossed(d2uv1));
   grosterme = ncrossns1.Dot(nplan.Crossed(temp))/norm1/norm1;
@@ -503,7 +503,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
 		       d1u1);
 
 
-  // Derivee par rapport a v1
+  // Derived compared to v1
 
   temp = d2uv1.Crossed(d1v1).Added(d1u1.Crossed(d2v1));
   grosterme = ncrossns1.Dot(nplan.Crossed(temp))/norm1/norm1;
@@ -527,8 +527,8 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
     D(4,4) = resul2.Z();
   }
 
-  // derivee par rapport a w (parametre sur ligne guide)
-  // On considere ici que le rayon est constant
+  // derived compared to w (parameter on guideline)
+  // It is assumed that the raduis is constant
 
   grosterme = ncrossns1.Dot(dnplan.Crossed(ns1))/norm1/norm1;
   resul1.SetLinearForm(-ray1/norm1*(grosterme*ndotns1-dnplan.Dot(ns1)),nplan,
@@ -548,7 +548,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
 
 
 
-  // Derivee par rapport a u2
+  // Derived compared to u2
   temp = d2u2.Crossed(d1v2).Added(d1u2.Crossed(d2uv2));
   grosterme = ncrossns2.Dot(nplan.Crossed(temp))/norm2/norm2;
   resul1.SetLinearForm(ray2/norm2*(grosterme*ndotns2-nplan.Dot(temp)),nplan,
@@ -556,7 +556,7 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
 		       ray2/norm2,temp);
   resul1.Subtract(d1u2);
 
-  // Derivee par rapport a v2
+  // Derived compared to v2
   temp = d2uv2.Crossed(d1v2).Added(d1u2.Crossed(d2v2));
   grosterme = ncrossns2.Dot(nplan.Crossed(temp))/norm2/norm2;
   resul2.SetLinearForm(ray2/norm2*(grosterme*ndotns2-nplan.Dot(temp)),nplan,

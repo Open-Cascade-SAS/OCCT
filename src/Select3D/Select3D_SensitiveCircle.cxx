@@ -16,7 +16,7 @@
 
 //=======================================================================
 //function : Select3D_SensitiveCircle (constructeur)
-//purpose  : Definition d'un cercle sensible
+//purpose  : Definition of a sensitive circle
 //=======================================================================
 static Standard_Integer S3D_GetCircleNBPoints(const Handle(Geom_Circle)& C,
                                               const Standard_Integer anInputNumber)
@@ -73,7 +73,7 @@ myDetectedIndex(-1)
 
 //=======================================================================
 //function : Select3D_SensitiveCircle (constructeur)
-//purpose  : Definition d'un arc sensible
+//purpose  : Definition of a sensitive arc
 //=======================================================================
 Select3D_SensitiveCircle::
 Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& OwnerId, 
@@ -153,9 +153,9 @@ Matches(const Standard_Real X,
 {
   
 
-  // dans le cas Edge (pourtour de la face seulement 
-  //on regarde si le point souris X,Y se trouve a l'interieur du triangle
-  // pi,pi+1,pi+2 a la tolerance pres... si oui on a fini...
+  // in case of Edge (for the face it is only checked if 
+  // the mouse point X,Y is found inside the triangle
+  // pi,pi+1,pi+2 with close tolerance... if yes, finish...
   if(mynbpoints>1){
     Standard_Boolean Found =Standard_False;
     Standard_Integer i = 0;
@@ -199,7 +199,7 @@ Matches(const Standard_Real X,
 	  Standard_Real V1V1 = V1.SquareModulus();
 	  DMin2 = 
 	    (V1V1 <=aTol2) ? 
-	      Min(DMin2,V.SquareModulus()): // si le segment est trop petit...
+	      Min(DMin2,V.SquareModulus()): // if the segment is too small...
 		Min(DMin2,Vector*Vector/V1V1);
 	  
 	}

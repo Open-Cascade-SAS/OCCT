@@ -20,6 +20,8 @@
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <AIS_Selection.hxx>
 
+
+static TColStd_ListIteratorOfListOfInteger ItL;
 //=======================================================================
 //function : OpenLocalContext
 //purpose  : 
@@ -32,8 +34,7 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
                  const Standard_Boolean /*BothViewers*/)
 {
 
-  // on dehilighte les eventuelles entitees detectees juste avant l'ouverture
-  // du contexte...
+  // the entities eventually detected just before the context was opened are unhighlighted...
   if(!IsCurrent(myLastPicked)){
     if(!myLastPicked.IsNull()){
       Standard_Integer HiMod = myLastPicked->HasHilightMode()?myLastPicked->HilightMode():0;
@@ -45,7 +46,7 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
       myLocalContexts(myCurLocalIndex)->UnhilightLastDetected(mylastmoveview);
   }
   
-  // on met a 0 les entites liees a la selection dynamique au point neutre.
+  // entities connected to dynamic selection at neutral point are set to 0.
   
   myLastinMain.Nullify();
   myLastinColl.Nullify();
@@ -62,13 +63,21 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
                                                           UseDisplayedObjects,
                                                           AllowShapeDecomposition,
                                                           AcceptEraseOfTemporary);
-  NewLocal->MainSelector()->Set ((myLocalContexts.Extent() > 0)
-    ? myLocalContexts (untilnow)->MainSelector()->Projector()
-    : myMainSel->Projector());
-
+  
+  // rob 16/04/97 Problems of asynchronous orders
+  if(myLocalContexts.Extent()>0){
+    const Select3D_Projector& Prj = myLocalContexts(untilnow)->MainSelector()->Projector();
+    NewLocal->MainSelector()->Set(Prj);
+  }
+  else{
+    const Select3D_Projector& Prj = myMainSel->Projector();
+    NewLocal->MainSelector()->Set(Prj);
+  }
+  
   NewLocal->MainSelector()->UpdateConversion();
-
+  
   myLocalContexts.Bind(myCurLocalIndex,NewLocal);
+
 
 #ifdef DEB
   cout<<"\tOpen Local Context No "<<myCurLocalIndex<<endl;
@@ -83,6 +92,7 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
     cout<<"\t\tNo Objects Were Loaded "<<endl;
 #endif
   return myCurLocalIndex;
+  
 }
 
 //=======================================================================
@@ -111,7 +121,7 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
    return;
  }
  
- // On va fermer le seul contexte local ouvert...
+ // the only open local context is closed...
  if(myLocalContexts.Extent()==1 && GoodIndex == myCurLocalIndex){
    
    Standard_Boolean updateproj = !(myLocalContexts(myCurLocalIndex)->HasSameProjector(myMainSel->Projector()));
@@ -130,12 +140,12 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
      cout<<"No More Opened Local Context "<<endl;
  }
  
- // Sinon on aura encore un contexte local d'ouvert apres la fermeture du courant
+ // Otherwise the local context will be still open after the current is closed
  else{
    Handle(StdSelect_ViewerSelector3d) VS = myLocalContexts(GoodIndex)->MainSelector();
    myLocalContexts(GoodIndex)->Terminate();
    myLocalContexts.UnBind(GoodIndex);
-   // on ferme le courant...
+   // the current is closed...
    if(GoodIndex==myCurLocalIndex){
      myCurLocalIndex = HighestIndex();
      const Handle(AIS_LocalContext)& LocCtx = myLocalContexts(myCurLocalIndex);
@@ -257,7 +267,6 @@ Deactivate(const Handle(AIS_InteractiveObject)& anIObj)
 {
   if(!HasOpenedContext()){
     if(!myObjects.IsBound(anIObj)) return;
-    TColStd_ListIteratorOfListOfInteger ItL;
     for(ItL.Initialize(myObjects(anIObj)->SelectionModes());
         ItL.More();
         ItL.Next()){
@@ -302,9 +311,9 @@ void AIS_InteractiveContext::
 ActivatedModes(const Handle(AIS_InteractiveObject)& anIObj, 
                TColStd_ListOfInteger& theList) const 
 {
-  TColStd_ListIteratorOfListOfInteger ItL;
   if(!HasOpenedContext()){
     if(myObjects.IsBound(anIObj)){
+      //ItL is a static variable... 
       for(ItL.Initialize(myObjects(anIObj)->SelectionModes());
           ItL.More();
           ItL.Next())
@@ -383,7 +392,6 @@ SubIntensityOn(const Handle(AIS_InteractiveObject)& anIObj,
     if(myObjects.IsBound(anIObj)){
       const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
       STAT->SubIntensityOn();
-      TColStd_ListIteratorOfListOfInteger ItL;
       for (ItL.Initialize(STAT->DisplayedModes());ItL.More();ItL.Next())
         myMainPM->Color(anIObj,mySubIntensity,ItL.Value());
     }
@@ -437,7 +445,6 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     if(myObjects.IsBound(anIObj)){
       const Handle(AIS_GlobalStatus)& STAT = myObjects(anIObj);
       STAT->SubIntensityOff();
-      TColStd_ListIteratorOfListOfInteger ItL;
       for (ItL.Initialize(STAT->DisplayedModes());ItL.More();ItL.Next())
         myMainPM->Unhighlight(anIObj,ItL.Value());
       if(STAT->IsHilighted())
@@ -481,10 +488,11 @@ void AIS_InteractiveContext::SubIntensityOn(const Standard_Boolean updateviewer)
 //=======================================================================
 void AIS_InteractiveContext::SubIntensityOff(const Standard_Boolean updateviewer)
 {
+  
   if(!HasOpenedContext()) return;
-
+  
   AIS_DataMapIteratorOfDataMapOfIOStatus It (myObjects);
-  TColStd_ListIteratorOfListOfInteger ItL;
+  
   for(;It.More();It.Next()){
     const Handle(AIS_GlobalStatus)& STAT = It.Value();
     if(STAT->IsSubIntensityOn())
@@ -492,7 +500,7 @@ void AIS_InteractiveContext::SubIntensityOff(const Standard_Boolean updateviewer
     for(ItL.Initialize(STAT->DisplayedModes());ItL.More();ItL.Next())
       myMainPM->Unhighlight(It.Key());
   }
-
+  
   if(updateviewer) myMainVwr->Update();
 }
 
@@ -768,7 +776,7 @@ Standard_Integer AIS_InteractiveContext::PurgeViewer(const Handle(V3d_Viewer)& V
     Standard_Address Add = G->Owner();
     if(Add==NULL){
       G->Erase();
-      G->Clear();// ca veut dire qu'elle n'est pas reference comme une presentation d'un InterfactiveObject...
+      G->Clear();// it means that it is not referenced as a presentation of InterfactiveObject...
       NbCleared++;
     }
     Handle(AIS_InteractiveObject) IO = (AIS_InteractiveObject*)Add;
@@ -868,7 +876,7 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
 {
   Standard_Boolean upd_main(Standard_False),upd_col(Standard_False);
   TColStd_ListIteratorOfListOfInteger itl;
-
+  
   for (AIS_DataMapIteratorOfDataMapOfIOStatus it(myObjects);it.More();it.Next()){
     const Handle(AIS_InteractiveObject)& iobj = it.Key();
     const Handle(AIS_GlobalStatus)& STAT = it.Value();
@@ -876,7 +884,7 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
     case AIS_DS_Displayed:{
       upd_main = Standard_True;
       
-      // partie display...
+      // part display...
       for(itl.Initialize(STAT->DisplayedModes());itl.More();itl.Next())
         myMainPM->Display(iobj,itl.Value());
       if(STAT->IsHilighted()){
@@ -885,7 +893,7 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
         else
           Hilight(iobj,Standard_False);
       }
-      //partie selection
+      //part selection
       for(itl.Initialize(STAT->SelectionModes());itl.More();itl.Next()){
         if(itl.Value()!=-1)
           mgrSelector->Activate(iobj,itl.Value(),myMainSel);

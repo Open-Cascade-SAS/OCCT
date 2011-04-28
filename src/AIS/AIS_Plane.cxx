@@ -249,7 +249,6 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
   else if (aMode == 1){
     if (!myIsXYZPlane){
       ComputeFrame();
-      // a mettre ailleurs sans doute...
       Handle(Prs3d_PlaneAspect) theaspect = myDrawer->PlaneAspect();
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
       gp_Pnt p1;
@@ -341,8 +340,8 @@ void AIS_Plane::SetSize(const Standard_Real aLength)
 void AIS_Plane::SetSize(const Standard_Real aXLength,
 			const Standard_Real aYLength)
 {
-  //si le plan a deja une couleur ou une taille propre, 
-  //il y a deja un PlaneAspect et un DatumAspect specifique 
+  //if the plane already has a proper color or size, 
+  //there is already a specific PlaneAspect and DatumAspect 
     
   Handle(Prs3d_PlaneAspect) PA; 
   Handle(Prs3d_DatumAspect) DA;
@@ -376,7 +375,7 @@ void AIS_Plane::SetSize(const Standard_Real aXLength,
 
 //=======================================================================
 //function : UnsetSize
-//purpose  : S'il ya une couleur, on recupere la taille du drawer du context...
+//purpose  : If there is a color, the size is restaured from the drawer of the context...
 //=======================================================================
 void AIS_Plane::UnsetSize()
 {
@@ -430,7 +429,7 @@ void AIS_Plane::SetColor(const Quantity_NameOfColor aCol)
 void AIS_Plane::SetColor(const Quantity_Color &aCol)
 #endif
 {
-  // si le plan a deja sa propre taille, il y a un deja planeaspect cree
+  // if the plane already has its proper size, there is an already created planeaspect 
 //  Standard_Boolean yenadeja = hasOwnColor || myHasOwnSize;
   Handle(Prs3d_PlaneAspect) PA; 
   Handle(Prs3d_DatumAspect) DA;

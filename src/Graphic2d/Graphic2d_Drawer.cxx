@@ -7,15 +7,15 @@
 // Modified     23/02/98 : FMN ; Remplacement PI par Standard_PI
 // Modified     16/03/98 GG
 //              OPTIMISATION
-//              Ajouter un champs myWDriver et myPDriver initialise correctement        
-//              lorsque le driver est du type "WindowDriver" ou "plotterdriver".
-//              Eviter l'appel des contructeurs vides.
+//              Add fields myWDriver and myPDriver initializing correctly        
+//              when the driver is "WindowDriver" or "plotterdriver".
+//              Avoid call of empty contructors.
 
 #define CTS17857//GG_200897
-//              Permettre d'inhiber le clipping sur les primitives.
+//              Allow suppressing clipping on primitives.
 
 #define CSR_PRO12324        //SYL_030798
-//              le Plot d'un objet en echo doit se faire en normal
+//              the Plot of an objet should be a normal
 
 #define DCB_220798 // DCB
 //    Using pointers to drivers instead of handles
@@ -1085,12 +1085,12 @@ void Graphic2d_Drawer::DrawInfiniteLine (
  Standard_Boolean status = Standard_True;
 
  if ( dx == 0. ) {
-   // Bug de rejection des lignes infinies
+   // Bug with rejection of infinite lines
    // if ( my >= 0. && my <= mySpaceHeight )
    x1 = mx; y1 = 0.; x2 = mx; y2 = mySpaceHeight;
  }
  else if ( dy == 0.) {
-   // Bug de rejection des lignes infinies
+   // Bug with rejection of infinite lines
    // if ( mx >= 0. && mx <= mySpaceWidth )
    x1 = 0.; y1 = my; x2 = mySpaceWidth; y2 = my;
  }

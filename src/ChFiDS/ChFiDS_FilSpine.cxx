@@ -317,7 +317,7 @@ Standard_Real  ChFiDS_FilSpine::Radius(const Standard_Integer IE)const
       par = parandrad(i).X();
       rad = parandrad(i).Y();
       if (Abs( rad-StartRad ) > Precision::Confusion())
-	Standard_DomainError::Raise("Arete non constante");
+	Standard_DomainError::Raise("Edge is not constant");
       if (Abs( Ul-par ) <= gp::Resolution())
 	return StartRad;
       if (par > Ul)
@@ -333,7 +333,7 @@ Standard_Real  ChFiDS_FilSpine::Radius(const Standard_Integer IE)const
 
 Standard_Real  ChFiDS_FilSpine::Radius()const 
 {
-  if (!IsConstant()) Standard_DomainError::Raise("Spine non constante");
+  if (!IsConstant()) Standard_DomainError::Raise("Spine is not constant");
   return parandrad(1).Y();
 }
 
@@ -401,7 +401,7 @@ static void mklaw(Law_Laws&                  res,
 
   if(npr.IsEmpty()){
     if( Rdeb < 0. && Rfin <0. ) 
-      Standard_DomainError::Raise("construction de la loi impossible");
+      Standard_DomainError::Raise("Impossible to create the law");
     else if(Rdeb < 0. || Rfin <0.){
       Standard_Real r = (Rfin<0.)? Rdeb  : Rfin;
       Handle(Law_Constant) loi = new Law_Constant();
@@ -415,7 +415,6 @@ static void mklaw(Law_Laws&                  res,
     }
   }
   else{
-    //tri bourrin!!
     if(!yaunpointsurledeb && Rdeb >= 0.) npr.Append(gp_XY(curdeb,Rdeb));
     if(!yaunpointsurlefin && Rfin >= 0.) npr.Append(gp_XY(curfin,Rfin));
     Standard_Integer nbp = npr.Length();
@@ -430,7 +429,7 @@ static void mklaw(Law_Laws&                  res,
 	}
       }      
     }
-    //On vire les doublons.
+    //Duplicates are removed.
     Standard_Boolean fini = (nbp <= 1);
     i = 1;
     while (!fini) {
@@ -479,7 +478,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
   Standard_Integer ideb = Index(deb,Standard_True);
   Standard_Integer ifin = Index(fin,Standard_False);
   Standard_Integer len = NbEdges();
-  // si la spine est periodique attention aux index et aux parametres!!!
+  // if the spine is periodic, attention to the index and parameters
   Standard_Real spinedeb = FirstParameter();
   Standard_Real spinefin = LastParameter();
 
@@ -511,15 +510,15 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
   }
 
   if(Els->IsPeriodic()){
-    //On cree une composite periodique de range eventuellement 
-    //decale par rapport a l elspine, pour ne pas faire de l 
-    //origine un point singulier.
+    // A pereodic composite is created at range, which is eventually  
+    // offset relatively to the elspine, to avoid a single point at 
+    // origin.
     loi->SetPeriodic();
-    //Y a t il une arete constante?
+    //Is there a constant edge?
 //    for(Standard_Integer k = 1; k <= len; k++){
     Standard_Integer k;
     for( k = 1; k <= len; k++){
-      if (IsConstant(k)){ // oui !
+      if (IsConstant(k)){ // yes  !
 	spinedeb = deb = curdeb = FirstParameter(k);
 	spinefin = fin = deb + Period();
 	for(Standard_Integer l = 1; l <= len; l++){
@@ -527,7 +526,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
 	}
 	Rdeb = Rfin = Radius(k);
 	icur++;
-	if(len == 1) curfin = LastParameter(k);//car le InPeriod va rendre 0.!!!
+	if(len == 1) curfin = LastParameter(k);//because InPeriod will make 0.!!!
 	else curfin = ElCLib::InPeriod(LastParameter(k),spinedeb,spinefin);
 	Handle(Law_Constant) curloi = new Law_Constant();
 	curloi->Set(Rdeb,curdeb,curfin);
@@ -536,9 +535,9 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
 	break;
       }
     }
-    if(k > len){ // non !
+    if(k > len){ // no !
       if(parandrad.IsEmpty()) 
-	Standard_DomainError::Raise("Rayon non defini");
+	Standard_DomainError::Raise("Radius not defined");
       Standard_Integer nbp = parandrad.Length();
       if(nbp > 1){
 	deb = parandrad.First().X();
@@ -558,7 +557,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
     }
   }
   else if(IsPeriodic()){
-    // le rayon au debut.
+    // start radius.
     if (IsConstant(ind(1))) {
       Rdeb = Radius(ind(1));
       curfin = LastParameter(ind(1));
@@ -571,29 +570,29 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
       icur++;
     } 
     else{
-      // Il y a forcement un kpart juste avant!
+      // There is inevitably kpart right before!
       Standard_Integer iprec = (ind(1) - 1);
       if(iprec == 0) iprec = len;
       if (IsConstant(iprec)){
 	Rdeb = Radius(iprec);
       }
-      else Standard_DomainError::Raise("AppendLaw : pas de precedant constant bizarre!!");
+      else Standard_DomainError::Raise("AppendLaw : previous constant is missing!");
       lawencours = Standard_True;
     }
-    // le rayon a la fin.
+    // the raduis at end.
     if (IsConstant(ind(nbed))) Rfin = Radius(ind(nbed));
     else{
-      // Il y a forcement un kpart juste apres!
+      // There is inevitably kpart right after!
       Standard_Integer isuiv = (ind(nbed) + 1);
       if(isuiv == len + 1) isuiv = 1;
       if (IsConstant(isuiv)) {
 	Rfin = Radius(isuiv);
       }
-      else Standard_DomainError::Raise("AppendLaw : pas de suivant constant bizarre!!");
+      else Standard_DomainError::Raise("AppendLaw : next constant is missing!");
     }
   }
   else{
-    // le rayon au debut.
+    // the radius at start.
     if (IsConstant(ind(1))) {
       Rdeb = Radius(ind(1));
       curfin = Min(fin,LastParameter(ind(1)));
@@ -608,30 +607,30 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
 	if (IsConstant(ind(1) - 1)){
 	  Rdeb = Radius(ind(1) - 1);
 	}
-	else Standard_DomainError::Raise("AppendLaw : pas de precedant constant");
+	else Standard_DomainError::Raise("AppendLaw : previous constant is missing");
       }
       else if(parandrad.IsEmpty()){
-	Standard_DomainError::Raise("AppendLaw : pas rayon sur vertex");
+	Standard_DomainError::Raise("AppendLaw : no radius on vertex");
       }
       else Rdeb = -1.;
       lawencours = Standard_True;
     }
-    // le rayon a la fin.
+    // the radius at end.
     if (IsConstant(ind(nbed))) Rfin = Radius(ind(nbed));
     else{
       if(ind(nbed) < len){
 	if (IsConstant(ind(nbed) + 1)) Rfin = Radius(ind(nbed) + 1);
-	else Standard_DomainError::Raise("AppendLaw : pas de suivant constant");
+	else Standard_DomainError::Raise("AppendLaw : next constant is missing");
       }
       else if(parandrad.IsEmpty()){
-	Standard_DomainError::Raise("AppendLaw : pas rayon sur vertex");
+	Standard_DomainError::Raise("AppendLaw : no radius on vertex");
       }
       else Rfin = -1.;
     }
   }
 
-  // On a les infos sur les extremites de l elspine, 
-  // on parcourt toutes les aretes 
+  // There are infos on the extremities of the elspine, 
+  // all edges are parsed 
   for(; icur <= nbed; icur++){
     if (IsConstant(ind(icur))) {
       Rcur = Radius(ind(icur));
@@ -647,8 +646,8 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
       if(IsPeriodic()){ 
 	curfin = ElCLib::InPeriod(curfin,spinedeb + tol3d, spinefin + tol3d);
 	if(ind(icur) == ind(nbed)){
-	  // Attention le curfin peut etre faut si le dernier edge passe par
-	  // dessus l origine de la spine periodique.
+	  // Attention the curfin can be wrong if the last edge passes 
+	  // above the  origin periodic spline.
 	  Standard_Real biddeb = FirstParameter(ind(icur));
 	  biddeb = ElCLib::InPeriod(biddeb,spinedeb + tol3d, spinefin + tol3d);
 	  if(biddeb >= curfin) curfin = fin;
@@ -671,8 +670,8 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
       curfin = Min(fin,curfin);
       lawencours = Standard_True;
       if(ind(icur) == ind(nbed)){
-	// Attention le curfin peut etre faut si le dernier edge passe par
-	// dessus l origine de la spine periodique.
+	// Attention the curfin can be wrong if the last edge passes 
+	  // above the  origin periodic spline.
 	if(IsPeriodic()) {
 	  Standard_Real biddeb = FirstParameter(ind(icur));
 	  curfin = LastParameter(ind(icur));
@@ -681,7 +680,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
 	  if(biddeb >= curfin) curfin = fin;
 	  else curfin = Min(fin,curfin);
 	}
-	// ou si on est en fin de spine avec prolongement.
+	// or if it is the end of spine with extension.
 	else if(ind(icur) == len) curfin = fin;
 	Law_Laws temp;
 	mklaw(temp,parandrad,curdeb,curfin,Rdeb,Rfin,
@@ -719,11 +718,11 @@ Handle(Law_Composite) ChFiDS_FilSpine::Law(const Handle(ChFiDS_HElSpine)& Els) c
 Handle(Law_Function)& ChFiDS_FilSpine::ChangeLaw(const TopoDS_Edge& E)
 {
   if(!SplitDone()) {
-    Standard_DomainError::Raise("ChFiDS_FilSpine::ChangeLaw : les bornes ne sont pas a jour");
+    Standard_DomainError::Raise("ChFiDS_FilSpine::ChangeLaw : the limits are not up-to-date");
   }
   Standard_Integer IE = Index(E);
   if (IsConstant(IE)) {
-    Standard_DomainError::Raise("ChFiDS_FilSpine::ChangeLaw : pas de loi sur les aretes constantes");
+    Standard_DomainError::Raise("ChFiDS_FilSpine::ChangeLaw : no law on constant edges");
   }
   Handle(ChFiDS_HElSpine) hsp = ElSpine(IE);
   Standard_Real w = 0.5*(FirstParameter(IE) + LastParameter(IE));

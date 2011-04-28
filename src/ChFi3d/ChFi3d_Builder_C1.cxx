@@ -159,9 +159,9 @@ static Standard_Real recadre(const Standard_Real p,
 
 //=======================================================================
 //function : Update
-//purpose  : Calcul de l intersection entre la face en bout et la ligne
-//           de tangence pour mise a jour du CommonPoint et de son
-//           parametre dans la FaceInterference.
+//purpose  : Calculate the intersection of the face at the end of 
+//           the tangency line to update CommonPoint and its 
+//           parameter in FaceInterference.
 //=======================================================================
 
 static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& fb,
@@ -215,9 +215,9 @@ static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& fb,
 			       Standard_Real&            wop)
 {
   IntCurveSurface_HInter Intersection;
-  //verifier que dans les  KPart les bornes de la ligne de tangence
-  //sont deja en place a ce stade.
-  //Modif de lvt : on recadre les cas periodiques surtout si on a rien trouve.
+  //check if in KPart the limits of the tangency line 
+  //are already in place at this stage.
+  //Modif lvt : the periodic cases are reframed, espercially if nothing was found.
   Standard_Real w,uf = ct->FirstParameter(),ul = ct->LastParameter();
 #ifndef DEB
   Standard_Real  wbis = 0.;
@@ -305,9 +305,9 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
 					   gp_Pnt2d&                     FprolUV,
 					   Standard_Real&                c3dU)
 {
-  // rajouter ici des criteres plus ou moins restrictifs pour
-  // decider si on fait l intersection avec la face en bout
-  // etendue ou si on aiguille sur bouchon.
+  // add more or less restrictive criterions to
+  // decide if the intersection is done with the face at 
+  // extended end or if the end is sharp.
   Standard_Real uf = FIop.FirstParameter();
   Standard_Real ul = FIop.LastParameter();
   Handle(GeomAdaptor_HCurve) Hc3df;
@@ -330,9 +330,9 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
 
 //=======================================================================
 //function : Update
-//purpose  : Calcul de l extrema curveonsurf/curveonsurf pour privilegier
-//           les valeurs concernant la trace on surf et la pcurve sur la
-//           face en bout.
+//purpose  : Calculate the extrema curveonsurf/curveonsurf to prefer 
+//           the values concerning the trace on surf and the pcurve on the
+//           face at end.
 //=======================================================================
 
 static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& face,
@@ -419,7 +419,7 @@ static void ChFi3d_ExtendSurface (Handle(Geom_Surface) & S ,
 
 //=======================================================================
 //function : ComputeCurve2d
-//purpose  : calcule le 2d de la courbe Ct sur la face Face
+//purpose  : calculate the 2d of the curve Ct on face Face
 //=======================================================================
 
 static void  ComputeCurve2d (Handle(Geom_Curve )& Ct,
@@ -514,20 +514,19 @@ Standard_Boolean ChFi3d_SelectStripe(ChFiDS_ListIteratorOfListOfStripe & It,
 }
 //=======================================================================
 //function : PerformOneCorner
-//purpose  : Calcul d un coin a trois aretes incidentes et un conge
-//           incident.
-//           3 cas distincts : (22/07/94 seul le 1er est traite)
+//purpose  : Calculate a corner with three edges and a fillet.
+//           3 separate case: (22/07/94 only 1st is implemented)
 //
-//           - meme concavite sur les trois edges, intersection avec la
-//             face en bout,
-//           - concavite des 2 edges de sortie opposee a celle du conge,
-//             si la face en bout s y prete, idem cas 1 sur face etendue,
-//             sinon on fait un petit bouchon avec GeomFill,
-//           - un seul edge de sortie de concavite opposee a celle du
-//             conge et du troisieme edge, on relie le sommet au coin
-//             dans le vide du conge et on bouche, soit en agrandissant
-//             la face en bout si celle ci est plane et orthogonale a
-//             l edge guide, soit par un bouchon type GeomFill.
+//           - same concavity on three edges, intersection with the
+//             face at end,
+//           - concavity of 2 outgoing edges is opposite to the one of the fillet,
+//             if the face at end is ready for that, the same in  case 1 on extended face,
+//             otherwise a small cap is done with GeomFill,
+//           - only one outgoing edge has concavity opposed to the edge of the
+//             fillet and the third edge, the top of the corner is reread
+//             in the empty of the fillet and closed, either by extending the face 
+//             at end if it is plane and orthogonal to the
+//             guiding edge, or by a cap of type GeomFill.
 //
 //           <thePrepareOnSame> means that only needed thing is redefinition
 //           of intersection pameter of OnSame-Stripe with <Arcprol>
@@ -540,11 +539,11 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
 
 #ifdef DEB
-  OSD_Chronometer ch;// init perf pour PerformSetOfKPart
+  OSD_Chronometer ch;// init perf for PerformSetOfKPart
 #endif
-  // le sommet,
+  // the top,
   const TopoDS_Vertex& Vtx = myVDataMap.FindKey(Index);
-  // On recupere le conge concerne,
+  // The fillet is returned,
   ChFiDS_ListIteratorOfListOfStripe StrIt;
   StrIt.Initialize(myVDataMap(Index));
   if ( ! ChFi3d_SelectStripe (StrIt, Vtx, thePrepareOnSame)) return;
@@ -552,24 +551,24 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   const Handle(ChFiDS_Spine) spine = stripe->Spine();
   ChFiDS_SequenceOfSurfData& SeqFil =
     stripe->ChangeSetOfSurfData()->ChangeSequence();
-  // la SurfData en cause et ses CommonPoints,
+  // SurfData and its CommonPoints,
   Standard_Integer sens = 0;
 
-  // Choisit la bonne SurfData
+  // Choose proper SurfData
   Standard_Integer num = ChFi3d_IndexOfSurfData(Vtx,stripe,sens);
   Standard_Boolean isfirst = (sens == 1);
   if (isfirst) {
     for (; num<SeqFil.Length() && (
 	 (SeqFil.Value(num)->IndexOfS1()==0) ||
 	 (SeqFil.Value(num)->IndexOfS2()==0) ); ) {
-      SeqFil.Remove(num); // On elimine le surplus
+      SeqFil.Remove(num); // The surplus is removed
     }
   }
   else {
    for (; num>1 && (
 	 (SeqFil.Value(num)->IndexOfS1()==0) ||
 	 (SeqFil.Value(num)->IndexOfS2()==0) ); ) {
-     SeqFil.Remove(num);// On elimine le surplus
+     SeqFil.Remove(num);// The surplus is removed
      num--;
     }
   }
@@ -577,10 +576,10 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   Handle(ChFiDS_SurfData)& Fd = SeqFil.ChangeValue(num);
   ChFiDS_CommonPoint& CV1 = Fd->ChangeVertex(isfirst,1);
   ChFiDS_CommonPoint& CV2 = Fd->ChangeVertex(isfirst,2);
-  //Pour evaluer la boule des nouveaux points.
+  //To evaluate the new points.
   Bnd_Box box1,box2;
 
-  // On traite separement les cas bouchon des cas intersection.
+  // The cases of cap and intersection are processed separately.
   // ----------------------------------------------------------
   ChFiDS_State stat;
   if (isfirst) stat = spine->FirstStatus();
@@ -625,9 +624,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     if (!CV1.IsOnArc() && !CV2.IsOnArc())
       Standard_Failure::Raise("Corner OnSame : no point on arc");
     else if (CV1.IsOnArc() && CV2.IsOnArc()) {
-      // on explore pour detromper les KPart qui seraient sortis
-      // au diable.
-      Standard_Boolean sur1 = 0, sur2 = 0;
+       Standard_Boolean sur1 = 0, sur2 = 0;
       for(ex.Init(CV1.Arc(),TopAbs_VERTEX); ex.More(); ex.Next()) {
 	if (Vtx.IsSame(ex.Current())) {
 	  sur1 = 1;
@@ -654,7 +651,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     Fad = TopoDS::Face(DStr.Shape(Fd->Index(IFadArc)));
     Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
     TopTools_ListIteratorOfListOfShape It;
-    // On recupere la face en bout sans controle de son unicite.
+    // The face at end is returned without check of its unicity.
     for(It.Initialize(myEFMap(Arcpiv));It.More();It.Next()) {
       if (!Fad.IsSame(It.Value())) {
 	Fv = TopoDS::Face(It.Value());
@@ -662,7 +659,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       }
     }
 
-    // est-ce que la face en bout contient le Vertex ?
+    // Does the face at bout contain the Vertex ?
     Standard_Boolean isinface = Standard_False;
     for (ex.Init(Fv,TopAbs_VERTEX); ex.More(); ex.Next()) {
       if (ex.Current().IsSame(Vtx)) {
@@ -677,7 +674,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       Fad = TopoDS::Face(DStr.Shape(Fd->Index(IFadArc)));
       Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
       //TopTools_ListIteratorOfListOfShape It;
-      // On recupere la face en bout sans controle de son unicite.
+     // The face at end is returned without check of its unicity.
       for(It.Initialize(myEFMap(Arcpiv));It.More();It.Next()) {
 	if (!Fad.IsSame(It.Value())) {
 	  Fv = TopoDS::Face(It.Value());
@@ -687,13 +684,13 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     }
 
     if (Fv.IsNull()) StdFail_NotDone::Raise
-      ("OneCorner : face en bout non trouvee");
+      ("OneCorner : face at end not found");
 
     Fv.Orientation(TopAbs_FORWARD);
     Fad.Orientation(TopAbs_FORWARD);
     Fop.Orientation(TopAbs_FORWARD);
 
-    // On recupere de meme l edge qui sera a prolonger.
+    // The edge that will be extended is returned.
     for(It.Initialize(myVEMap(Vtx));It.More() && Arcprol.IsNull();It.Next()) {
       if (!Arcpiv.IsSame(It.Value())) {
 	for(ex.Init(Fv,TopAbs_EDGE); ex.More(); ex.Next()) {
@@ -734,17 +731,16 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     Bad.Initialize(Fad);
     Bop.Initialize(Fop);
   }
-  //dans le cas OnSame on va devoir modifier le CommonPoint
-  //dans le vide et son parametre dans la FaceInterference.
-  //On les recupere donc tous deux dans des references
-  //non const. Attention les modifs se font dans le dos
+  //in case of OnSame it is necessary to modify the CommonPoint
+  //in the empty and its parameter in the FaceInterference.
+  //They are both returned in non const references. Attention the modifications are done behind
   //de CV1,CV2,Fi1,Fi2.
   ChFiDS_CommonPoint& CPopArc = Fd->ChangeVertex(isfirst,IFopArc);
   ChFiDS_FaceInterference& FiopArc = Fd->ChangeInterference(IFopArc);
   ChFiDS_CommonPoint& CPadArc = Fd->ChangeVertex(isfirst,IFadArc);
   ChFiDS_FaceInterference& FiadArc = Fd->ChangeInterference(IFadArc);
-  //on initialise le parametre du vertex en l air a la valeur de son
-  //copain d en face (point sur arc).
+  //the parameter of the vertex in the air is initialiced with the value of 
+  //its opposite (point on arc).
   Standard_Real wop = Fd->ChangeInterference(IFadArc).Parameter(isfirst);
   Handle(Geom_Curve) c3df;
   Handle(GeomAdaptor_HSurface)
@@ -855,7 +851,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     Udeb = Cc->FirstParameter();
     Ufin = Cc->LastParameter();
 
-    // on determine si la courbe a une intersection avec l'arete de couture
+    //  determine if the curve has an intersection with edge of sewing
 
     ChFi3d_Couture(Fv,couture,edgecouture);
 
@@ -947,9 +943,9 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV2,DStr),isfirst,2);
 
   if (!intcouture) {
-// il n'y a pas d'intersection avec l'arete de couture
-// on stocke la courbe Cc dans la stripe
-// le stockage dans la DS se fera par FILDS.
+// there is no intersection with the sewing edge
+// the curve Cc is stored in the stripe
+// the storage in the DS is not done by FILDS.
 
     TopOpeBRepDS_Curve Tc(Cc,tolreached);
     ICurve = DStr.AddCurve(Tc);
@@ -1136,11 +1132,11 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     stripe->SetParameters(isfirst,Udeb,Ufin);
   }
   else {
-// on stocke les courbes curv1 et curv2 dans la DS
-// ces courbes ne seront pas reconstruites par FILDS car
-// on met stripe->InDS(isfirst);
+// curves curv1 are curv2 stored in the DS
+// these curves will not be reconstructed by FILDS as
+// one places stripe->InDS(isfirst);
 
-    // interferences de curv1 et curv2 sur Fv
+    // interferences of curv1 and curv2 on Fv
     ComputeCurve2d(curv1,Fv,c2d1);
     Handle(TopOpeBRepDS_SurfaceCurveInterference) InterFv;
     InterFv = ChFi3d_FilCurveInDS(Icurv1,IShape,c2d1,Et);
@@ -1148,7 +1144,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     ComputeCurve2d(curv2,Fv,c2d2);
     InterFv = ChFi3d_FilCurveInDS(Icurv2,IShape,c2d2,Et);
     DStr.ChangeShapeInterferences(IShape).Append(InterFv);
-     // interferences de curv1 et curv2 sur Isurf
+     // interferences of curv1 and curv2 on Isurf
     if (Fd->Orientation()== Fv.Orientation()) Et=TopAbs::Reverse(Et);
     c2d1=new Geom2d_TrimmedCurve(Ps,Udeb,par2);
     InterFv = ChFi3d_FilCurveInDS(Icurv1,Isurf,c2d1,Et);
@@ -1157,7 +1153,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
        InterFv = ChFi3d_FilCurveInDS(Icurv2,Isurf,c2d2,Et);
     DStr.ChangeSurfaceInterferences(Isurf).Append(InterFv);
 
-      // limitation de l'arete de couture
+      // limitation of the sewing edge
     Standard_Integer Iarc=DStr.AddShape(edgecouture);
     Handle(TopOpeBRepDS_CurvePointInterference) Interfedge;
     TopAbs_Orientation ori;
@@ -1172,7 +1168,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     Interfedge = ChFi3d_FilPointInDS(ori,Iarc,indpt,par1);
     DStr.ChangeShapeInterferences(Iarc).Append(Interfedge);
 
-    // creation des CurveInterferences de Icurv1 et Icurv2
+    // creation of CurveInterferences from Icurv1 and Icurv2
     stripe->InDS(isfirst);
     Standard_Integer ind1= stripe->IndexPoint(isfirst,1);
     Standard_Integer ind2= stripe->IndexPoint(isfirst,2);
@@ -1192,14 +1188,14 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 
   if (onsame && inters) {
     // VARIANT 1:
-    // On rajoute le petit bout de courbe qui manque pour l extension
-    // de la face en bout et la limitation de la face opposee.
+    // A small missing end of curve is added for the extension
+    // of the face at end and the limitation of the opposing face.
 
     //   VARIANT 2 : extend Arcprol, not create new small edge
     //   To do: modify for intcouture
     const Standard_Boolean variant1 = Standard_True;
 
-    // Tout d abord on coupe les ponts avec l arete de la spine.
+    // First of all the ponts are cut with the edge of the spine.
     Standard_Integer IArcspine = DStr.AddShape(Arcspine);
     Standard_Integer IVtx = DStr.AddShape(Vtx);
 #ifndef DEB
@@ -1220,7 +1216,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       interfv = ChFi3d_FilVertexInDS(OVtx,IArcspine,IVtx,parVtx);
     DStr.ChangeShapeInterferences(IArcspine).Append(interfv);
 
-    // On construit maintenant les courbes qui manquent.
+    // Now the missing curves are constructed.
     TopoDS_Vertex V2;
     for(ex.Init(Arcprol.Oriented(TopAbs_FORWARD),TopAbs_VERTEX);
 	ex.More(); ex.Next()) {
@@ -1267,8 +1263,8 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     TopOpeBRepDS_Curve Zob(zob3d,tolreached);
     Standard_Integer IZob = DStr.AddCurve(Zob);
 
-// on determine si Fop a une arete de couture
-// on determine si la courbe a une intersection avec l'arete de couture
+// it is determined if Fop has an edge of sewing 
+// it is determined if the curve has an intersection with the edge of sewing
 
     //TopoDS_Edge edgecouture;
     //Standard_Boolean couture;
@@ -1299,7 +1295,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     }
     if (intcouture) {
 
-// interference de curv1 et curv2 sur Ishape
+// interference of curv1 and curv2 on Ishape
       Et = TopAbs::Reverse(TopAbs::Compose(OVtx,OArcprolv));
       ComputeCurve2d(curv1,Fop,c2d1);
       Handle(TopOpeBRepDS_SurfaceCurveInterference)
@@ -1309,7 +1305,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       InterFv = ChFi3d_FilCurveInDS(Icurv2,IShape,/*zob2dv*/c2d2,Et);
       DStr.ChangeShapeInterferences(IShape).Append(InterFv);
 
-      // limitation de l'arete de couture
+      // limitation of the sewing edge
       Standard_Integer Iarc=DStr.AddShape(edgecouture);
       Handle(TopOpeBRepDS_CurvePointInterference) Interfedge;
       TopAbs_Orientation ori;
@@ -1324,7 +1320,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       Interfedge = ChFi3d_FilPointInDS(ori,Iarc,indpt,par1);
       DStr.ChangeShapeInterferences(Iarc).Append(Interfedge);
 
-    //  interference de curv1 et curv2 sur Iop
+    //  interference of curv1 and curv2 on Iop
       Standard_Integer Iop = DStr.AddShape(Fop);
       Et = TopAbs::Reverse(TopAbs::Compose(OVtx,OArcprolop));
       Handle(TopOpeBRepDS_SurfaceCurveInterference)  Interfop;
@@ -1397,8 +1393,8 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 
 //=======================================================================
 //function : cherche_face
-//purpose  : recherche  de la face F  appartenant a la map , differente des faces
-//           F1  F2 F3 et contenant l'edge E
+//purpose  : find face F belonging to the map, different from faces
+//           F1  F2 F3 and containing edge E
 //=======================================================================
 
 static void cherche_face (const TopTools_ListOfShape & map,
@@ -1429,7 +1425,7 @@ static void cherche_face (const TopTools_ListOfShape & map,
 
 //=======================================================================
 //function : cherche_edge1
-//purpose  : cherche l'edge commune entre les faces F1 et F2
+//purpose  : find common edge between faces F1 and F2
 //=======================================================================
 
 static void cherche_edge1 (const TopoDS_Face & F1,
@@ -1459,7 +1455,7 @@ static void cherche_edge1 (const TopoDS_Face & F1,
 
 //=======================================================================
 //function : containV
-//purpose  : renvoie vrai si le vertex V appartient a F1
+//purpose  : return true if vertex V belongs to F1
 //=======================================================================
 
 static Standard_Boolean  containV(const TopoDS_Face & F1,
@@ -1483,7 +1479,7 @@ static Standard_Boolean  containV(const TopoDS_Face & F1,
 
 //=======================================================================
 //function : containE
-//purpose  : renvoie vrai si le l'edge  E appartient a F1
+//purpose  : return true if edge E belongs to F1
 //=======================================================================
 
 static Standard_Boolean  containE(const TopoDS_Face & F1,
@@ -1552,11 +1548,11 @@ static Standard_Boolean IsShrink(const Geom2dAdaptor_Curve PC,
 void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 {
 
-  //intersection en bout d'un conge avec au moins deux faces
-  // traite les cas suivants:
-  // - sommet a n (n>3) aretes adjacentes
-  // - sommet a 3 aretes dont le conge sur une des aretes arrive sur plus
-  //   d'une face
+  // intersection at end of fillet with at least two faces
+  // process the following cases:
+  // - top has n (n>3) adjacent edges
+  // - top has 3 edges and fillet on one of edges touches
+  //   more than one face
 
 #ifdef DEB
   OSD_Chronometer ch;// init perf
@@ -1576,7 +1572,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
   //Standard_Integer sense;
   TopoDS_Edge edgelibre1,edgelibre2,EdgeSpine;
   Standard_Boolean bordlibre;
-  // determination du nombre de faces et d'aretes
+  // determine the number of faces and edges
   TopTools_Array1OfShape tabedg(0,nn);
   TopoDS_Face F1,F2;
   Standard_Integer nface=ChFi3d_nbface(myVFMap(Vtx));
@@ -1586,8 +1582,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
   ChFi3d_ChercheBordsLibres(myVEMap,Vtx,bordlibre,edgelibre1,edgelibre2);
   if (bordlibre) nbarete=(nbarete-2)/2 +2;
   else           nbarete=nbarete/2;
-  // on determine s'il y a une arete de couture, l'arete de couture
-  // et la face qui a une arete de couture
+  // it is determined if there is an edge of sewing and it face
 
   TopoDS_Face facecouture;
   TopoDS_Edge edgecouture;
@@ -1599,7 +1594,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     if (couture)
       facecouture=fcur;
   }
-  // on determine si l'une des aretes adjacente au conge est reguliere
+  // it is determined if one of edges adjacent to the fillet is regular
   Standard_Boolean reg1,reg2;
   TopoDS_Edge Ecur,Eadj1,Eadj2;
   TopoDS_Face Fga,Fdr;
@@ -1639,7 +1634,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     reg2=isTangentFaces(Eadj2,Fga,Fdr);
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:58:24 2001 End
 
-// on cherche les deux faces communes a l'edge
+// two faces common to the edge are found
     if (reg1 || reg2) {
       Standard_Boolean compoint1=Standard_False;
       Standard_Boolean compoint2=Standard_False;
@@ -1660,8 +1655,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       }
     }
   }
-// on a une seule face en bout  si FindFace est vrai et si la face
-// n'est pas la face avec arete de couture
+// there is only one face at end if FindFace is true and if the face
+// is not the face with sewing edge
   TopoDS_Face face;
   Handle(ChFiDS_SurfData) Fd = SeqFil.ChangeValue(num);
   ChFiDS_CommonPoint& CV1 = Fd->ChangeVertex(isfirst,1);
@@ -1699,7 +1694,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     SDprev = SeqFil(num1);
     IsurfPrev = SDprev->Surf();
   }
-  // calcul de l' orientation  orcourbe  des courbes en bout
+  // calculate the orientation of curves at end
 
   Standard_Real tolpt=1.e-4;
   Standard_Real tolreached;
@@ -1789,11 +1784,10 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
   }
 
   /***********************************************************************/
-  //  recherche des faces a intersecter avec le conge et des edges servant
-  // a limiter ces intersections
-  //  nbface est le nb de faces a intersecter, Face[i] contient les faces
-  // a intersecter (i=0.. nbface-1). Edge[i] contient les edges limitant
-  // les intersections (i=0 ..nbface)
+  //  find faces intersecting with the fillet and edges limiting intersections
+  //  nbface is the nb of faces intersected, Face[i] contais the faces
+  // to intersect (i=0.. nbface-1). Edge[i] contains edges limiting
+  // the intersections (i=0 ..nbface)
   /**********************************************************************/
 
   Standard_Integer nb = 1,nbface;
@@ -1820,9 +1814,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
   Edge[nbface]=CV2.Arc();
   tabedg.SetValue(0,Edge[0]);
   tabedg.SetValue(nbface,Edge[nbface]);
-  // traitement d'un conge arrivant sur un vertex
-  // l'edge contenue dans CV.Arc n'est pas forcement la bonne
-  // on cherche l'edge concernee par l'intersection
+  // processing of a fillet arriving on a vertex
+  // edge contained in CV.Arc is not inevitably good
+  // the edge concerned by the intersection is found
 
   Standard_Real dist1,dist2;
   if (CV1.IsVertex()) {
@@ -1885,8 +1879,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     }
   }
   if (!onecorner) {
-    // Lorsqu'il y a une arete de regularite les faces adjacentes a l'edge
-    // ne sont pas dans Fd->IndexOfS1 ou Fd->IndexOfS2
+    // If there is a regular edge, the faces adjacent to it 
+    // are not in Fd->IndexOfS1 or Fd->IndexOfS2
 
 //     TopoDS_Face Find1 ,Find2;
 //     if (isfirst)
@@ -1902,9 +1896,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 //       }
 //     }
 
-    // si nface =3 on a un sommet a trois arete avec un conge incident
-    // dont les commons points sont sur des faces differentes
-    // sinon on est dans le cas d'un sommet  a plus de 3 aretes
+    // if nface =3 there is a top with 3 edges and a fillet 
+    // and their common points are on different faces 
+    // otherwise there is a case when a top has more than 3 edges
 
     if (nface==3) {
       if (CV1.IsVertex ()) findonf1=Standard_True;
@@ -1945,10 +1939,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 	}
       }
 
-      // findonf1 findonf2 indiquent si F1 et ou F2 sont adajacentes
-      // a plusieurs faces en bout
-      // on determine ces faces en bout ainsi que les edges concernees par
-      // les intersections
+      // findonf1 findonf2 show if F1 and/or F2 are adjacent
+      // to many faces at end
+      // the faces at end and intersected edges are found
 
       if (findonf1 && !isOnSame1) {
 	if (CV1.TransitionOnArc()==TopAbs_FORWARD)
@@ -1965,7 +1958,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 	  cherche_edge1(Face[nb-1],Face[nb],Edge[nb]);
 	  nb++;
  	  if (nb>=nn) Standard_Failure::Raise
- 	    ("IntersectionAtEnd : nb de faces limites atteint");
+ 	    ("IntersectionAtEnd : the max number of faces reached");
 	}
 	if (!findonf2)  Edge[nb]=CV2.Arc();
       }
@@ -1987,7 +1980,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 	  cherche_edge1(Face[nb-1],Face[nb],Edge[nb]);
 	  nb++;
 	  if (nb>=nn) Standard_Failure::Raise
-	    ("IntersectionAtEnd : nb de faces limites atteint");
+	    ("IntersectionAtEnd : the max number of faces reached");
 	}
 	Edge[nb]=CV2.Arc();
       }
@@ -2001,8 +1994,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
     else {
 
-//  on est dans le cas d'un sommet a plus de trois aretes
-//  on determine les faces et les aretes concernees
+//  this is the case when a top has more than three edges
+//  the faces and edges concerned are found
       Standard_Boolean /*trouve,*/possible1, possible2;
       trouve = possible1 = possible2 = Standard_False;
       TopExp_Explorer ex;
@@ -2034,7 +2027,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 	return;
       }
       if (nbarete==4) {
-	// si deux edges consecutives sont G1 on a une seule face d'intersection
+	// if two consecutive edges are G1 there is only one face of intersection
 	Standard_Real ang1=0.0;
         TopoDS_Vertex Vcom;
         trouve=Standard_False;
@@ -2106,8 +2099,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
   Standard_Boolean extend=Standard_False;
   Handle(Geom_Surface) Sfacemoins1,Sface;
   /***************************************************************************/
-  // calcul de l'intersection  entre le conge et chaque face
-  // et stockage dans la DS
+  // calculate intersection of the fillet and each face
+  // and storage in the DS
   /***************************************************************************/
   for (nb=1;nb<=nbface;nb++) {
     prolface[nb-1]=0;
@@ -2137,10 +2130,10 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     Handle(Geom_Curve) cint;
     Handle(Geom2d_Curve) C2dint1, C2dint2,cface,cfacemoins1;
 
-    //////////////////////////////////////////////////////////////////////
-    // determination des intersections entre les  edges et le conge
-    // pour trouver les limitations des intersections face - conge
-    //////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
+    // determine intersections of edges and the fillet
+    // to find limitations of intersections face - fillet
+    ///////////////////////////////////////////////////////
 
     if (nb==1) {
       Hc1 = BRep_Tool::CurveOnSurface(Edge[0],Face[0],Ubid,Ubid);
@@ -2174,7 +2167,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       }
       else {
         if (Hc1.IsNull()) {
-          // on a pas  trouve de courbe 2d . On etend Sfacemoins1  et on y projette
+          // curve 2d not found. Sfacemoins1 is extended and projection is done there
           // CV1.Point ()
           ChFi3d_ExtendSurface(Sfacemoins1,prolface[0]);
           if (prolface[0]) {
@@ -2337,8 +2330,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     else {
       Hc2 = BRep_Tool::CurveOnSurface(E2,Face[nbface-1],Ubid,Ubid);
       if (Hc2.IsNull()) {
-        // on a pas trouve de courbe 2d ,  on etend Sfacemoins1
-        // on y projette CV2.Point()
+        // curve 2d is not found,  Sfacemoins1 is extended CV2.Point() is projected there
 
         ChFi3d_ExtendSurface(Sfacemoins1,prolface[0]);
         if (prolface[0]) {
@@ -2403,8 +2395,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     if (prolface[nb-1]) Bs.Initialize(faceprol[nb-1]);
     else                Bs.Initialize(Face[nb-1]);
 
-    // decalage des parametres s'ils ne sont pas dans
-    // la meme periode
+    // offset of parameters if they are not in the same period
 
     // commented by eap 30 May 2002 occ354
     // the following code may cause trimming a wrong part of periodic surface
@@ -2466,7 +2457,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
 
     //////////////////////////////////////////////////////////////////////
-    // calcul des intersections face - conge
+    // calculate intersections face - fillet
     //////////////////////////////////////////////////////////////////////
 
     if (!ChFi3d_ComputeCurves(HGs,HBs,Pardeb,Parfin,Cc,
@@ -2474,9 +2465,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       PerformMoreThreeCorner (Index,1);
       return;
     }
-    // stockage des informations  dans la structure de donnees
+    // storage of information in the data structure
 
-    // eval tolerances
+    // evaluate tolerances
     p1=Cc->FirstParameter();
     p2=Cc->LastParameter();
     Standard_Real to1,to2;
@@ -2499,7 +2490,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
 
     //////////////////////////////////////////////////////////////////////
-    // stokage dans la DS de la courbe d'intersection
+    // storage in the DS of the intersection curve
     //////////////////////////////////////////////////////////////////////
 
     Standard_Boolean Isvtx1=0;
@@ -2547,7 +2538,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     DStr.ChangeCurveInterferences(indcurve[nb-1]).Append(Interfp2);
 
     //////////////////////////////////////////////////////////////////////
-    // stockage pour la face
+    // storage for the face
     //////////////////////////////////////////////////////////////////////
 
 #ifndef DEB
@@ -2558,7 +2549,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     orface=Face[nb-1].Orientation();
     if (orface==orsurfdata ) orien = TopAbs::Reverse(orcourbe);
     else                     orien = orcourbe ;
-    // limitation des edges des faces
+    // limitation of edges of faces
     if (nb==1) {
       Standard_Integer Iarc1= DStr.AddShape(Edge[0]);
       Interfedge[0]= ChFi3d_FilPointInDS(CV1.TransitionOnArc(),Iarc1,
@@ -2954,8 +2945,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
 //=======================================================================
 //function : PerformMoreSurfdata
-//purpose  :  determine les intersections en bout sur plusieurs
-//            surfdata
+//purpose  :  determine intersections at end on several surfdata
 //=======================================================================
 void ChFi3d_Builder::PerformMoreSurfdata(const Standard_Integer Index)
 {
@@ -3593,10 +3583,10 @@ void ChFi3d_Builder::PerformMoreSurfdata(const Standard_Integer Index)
 }
 //  Modified by Sergey KHROMOV - Thu Apr 11 12:23:40 2002 End
 
-//=======================================================================
+//==============================================================
 //function : FindFace
-//purpose  : attention ne marche que si une seule face en commun entre
-//           P1,P2,V
+//purpose  : attention it works only if there is only one common face 
+//           between P1,P2,V
 //===========================================================
 
 
@@ -3617,7 +3607,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
 {
   if (P1.IsVertex() || P2.IsVertex()) {
 #ifdef DEB
-    cout<<"changement de face sur vertex plantatoire"<<endl;
+    cout<<"change of face on vertex"<<endl;
 #endif
   }
   if (!(P1.IsOnArc() && P2.IsOnArc())) {
@@ -3643,7 +3633,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
   }
 #ifdef DEB
   if(!ContainsV){
-    cout<<"FindFace : l extremite de la spine n est pas dans la face en bout"<<endl;
+    cout<<"FindFace : the extremity of the spine is not in the end face"<<endl;
   }
 #endif
   return Found;
@@ -3651,14 +3641,14 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
 
 //=======================================================================
 //function : MoreSurfdata
-//purpose  :  detecte si l'intersection en bout concerne plusieurs Surfdata
+//purpose  : detects if the intersection at end concerns several Surfdata
 //=======================================================================
 Standard_Boolean ChFi3d_Builder::MoreSurfdata(const Standard_Integer Index) const
 {
-  // l'intersection en bout se fait sur plusieurs surfdata si :
-  // -le nb de surfdata concernant le vertex est superieur a 1 .
-  // -et si l'avant derniere surfdata a un de ses commonpoints sur un des
-  // deux arcs qui constituent les intersections de la face en bout et du conge
+  // intersection at end is created on several surfdata if :
+  // - the number of surfdata concerning the vertex is more than 1.
+  // - and if the last but one surfdata has one of commonpoints on one of 
+  // two arcs, which constitute the intersections of the face at end and of the fillet
 
   ChFiDS_ListIteratorOfListOfStripe It;
   It.Initialize(myVDataMap(Index));
@@ -3677,7 +3667,7 @@ Standard_Boolean ChFi3d_Builder::MoreSurfdata(const Standard_Integer Index) cons
   TopoDS_Face Fv;
   Standard_Boolean inters,oksurf;
   nbsurf= stripe->SetOfSurfData()->Length();
-  // Fv est la face en bout
+  // Fv is the face at end
   inters = FindFace(Vtx,CV1,CV2,Fv);
   if (sens==1)  {
     num1=1;
@@ -3692,7 +3682,7 @@ Standard_Boolean ChFi3d_Builder::MoreSurfdata(const Standard_Integer Index) cons
 
   if (nbsurf!=1 && inters) {
 
-    // determination de arc1 et arc2 intersection du conge et de la face en bout
+    // determination of arc1 and arc2 intersection of the fillet and the face at end
 
     TopoDS_Edge arc1,arc2;
     TopTools_ListIteratorOfListOfShape ItE;
@@ -3735,7 +3725,7 @@ Standard_Boolean ChFi3d_Builder::MoreSurfdata(const Standard_Integer Index) cons
 }
 
 
-//Cas des conges sur sommet a 4 aretes avec une aretes sur la meme geometrie que l'arete du conge
+//Case of fillets on top with 4 edges, one of them is on the same geometry as the edgeof the fillet
 
 
 void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
@@ -3745,33 +3735,33 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 #ifdef DEB
   OSD_Chronometer ch;// init perf pour PerformSetOfKPart
 #endif
-  // On recupere le conge concerne,
+  // The fillet is returned,
   ChFiDS_ListIteratorOfListOfStripe StrIt;
   StrIt.Initialize(myVDataMap(Index));
   Handle(ChFiDS_Stripe) stripe = StrIt.Value();
   const Handle(ChFiDS_Spine) spine = stripe->Spine();
   ChFiDS_SequenceOfSurfData& SeqFil =
     stripe->ChangeSetOfSurfData()->ChangeSequence();
-  // le sommet,
+  // the top,
   const TopoDS_Vertex& Vtx = myVDataMap.FindKey(Index);
-  // la SurfData en cause et ses CommonPoints,
+  // the SurfData concerned and its CommonPoints,
   Standard_Integer sens = 0;
 
-  // Choisit la bonne SurfData
+  // Choose the proper SurfData
   Standard_Integer num = ChFi3d_IndexOfSurfData(Vtx,stripe,sens);
   Standard_Boolean isfirst = (sens == 1);
   if (isfirst) {
     for (; num<SeqFil.Length() && (
 	 (SeqFil.Value(num)->IndexOfS1()==0) ||
 	 (SeqFil.Value(num)->IndexOfS2()==0) ); ) {
-      SeqFil.Remove(num); // On elimine le surplus
+      SeqFil.Remove(num); // The surplus is removed
     }
   }
   else {
    for (; num>1 && (
 	 (SeqFil.Value(num)->IndexOfS1()==0) ||
 	 (SeqFil.Value(num)->IndexOfS2()==0) ); ) {
-     SeqFil.Remove(num);// On elimine le surplus
+     SeqFil.Remove(num);// The surplus is removed
      num--;
     }
   }
@@ -3779,10 +3769,10 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   Handle(ChFiDS_SurfData)& Fd = SeqFil.ChangeValue(num);
   ChFiDS_CommonPoint& CV1 = Fd->ChangeVertex(isfirst,1);
   ChFiDS_CommonPoint& CV2 = Fd->ChangeVertex(isfirst,2);
-  //Pour evaluer la boule des nouveaux points.
+  //To evaluate the cloud of new points.
   Bnd_Box box1,box2;
 
-  // On traite separement les cas bouchon des cas intersection.
+  // The cases of cap are processed separately from intersection.
   // ----------------------------------------------------------
 
   TopoDS_Face Fv,Fad,Fop,Fopbis;
@@ -3824,8 +3814,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     if(!CV1.IsOnArc() && !CV2.IsOnArc())
       Standard_Failure::Raise("Corner intersmore : no point on arc");
     else if(CV1.IsOnArc() && CV2.IsOnArc()){
-      // on explore pour detromper les KPart qui seraient sortis
-      // au diable.
       Standard_Boolean sur1 = 0, sur2 = 0;
       for(ex.Init(CV1.Arc(),TopAbs_VERTEX); ex.More(); ex.Next()){
 	if(Vtx.IsSame(ex.Current())) {
@@ -3848,7 +3836,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     Fad = TopoDS::Face(DStr.Shape(Fd->Index(IFadArc)));
     Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
     TopTools_ListIteratorOfListOfShape It;
-    // On recupere la face en bout sans controle de son unicite.
+    // The face at end is returned without control of its unicity.
     for(It.Initialize(myEFMap(Arcpiv));It.More();It.Next()) {
       if(!Fad.IsSame(It.Value())){
 	Fv = TopoDS::Face(It.Value());
@@ -3856,7 +3844,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
       }
     }
 
-    // est-ce que la face en bout contient le Vertex ?
+    // does the face at end contain the Vertex ?
     Standard_Boolean isinface = Standard_False;
     for (ex.Init(Fv,TopAbs_VERTEX); ex.More(); ex.Next()){
       if (ex.Current().IsSame(Vtx)) {
@@ -3871,8 +3859,8 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
       Fad = TopoDS::Face(DStr.Shape(Fd->Index(IFadArc)));
       Fop = TopoDS::Face(DStr.Shape(Fd->Index(IFopArc)));
       //TopTools_ListIteratorOfListOfShape It;
-      // On recupere la face en bout sans controle de son unicite.
-      for(It.Initialize(myEFMap(Arcpiv));It.More();It.Next()) {
+    // The face at end is returned without control of its unicity.
+     for(It.Initialize(myEFMap(Arcpiv));It.More();It.Next()) {
 	if(!Fad.IsSame(It.Value())){
 	  Fv = TopoDS::Face(It.Value());
 	  break;
@@ -3881,12 +3869,12 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     }
 
     if(Fv.IsNull()) StdFail_NotDone::Raise
-      ("OneCorner : face en bout non trouvee");
+      ("OneCorner : face at end is not found");
 
     Fv.Orientation(TopAbs_FORWARD);
     Fad.Orientation(TopAbs_FORWARD);
 
-    // On recupere de meme l edge qui sera a prolonger.
+    // In the same way the edge to be extended is returned.
     for(It.Initialize(myVEMap(Vtx));It.More() && Arcprol.IsNull();It.Next()){
       if(!Arcpiv.IsSame(It.Value())){
 	for(ex.Init(Fv,TopAbs_EDGE); ex.More(); ex.Next()){
@@ -3899,16 +3887,16 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
       }
     }
 
-    //Fopbis est la face contenant la trace du conge dont le CP.Arc() ne contient pas Vtx.
-    //Normalement soit Fobis est la meme que Fop (cylindre), soit Fobis est G1 avec Fop.
+    //Fopbis is the face containing the trace of fillet CP.Arc() which of does not contain Vtx.
+    //Normallly Fobis is either the same as Fop (cylinder), or Fobis is G1 with Fop.
     Fopbis.Orientation(TopAbs_FORWARD);
 
-    //on appelle Fop la 4eme face inutilisee du vertex
+    //Fop calls the 4th face non-used for the vertex
     cherche_face(myVFMap(Vtx),Arcprol,Fad,Fv,Fv,Fopbis);
     Fop.Orientation(TopAbs_FORWARD);
 
     if(Arcprol.IsNull()) StdFail_NotDone::Raise
-      ("OneCorner : edge a prolonger non trouve");
+      ("OneCorner : edge to be extended is not found");
     for(ex.Init(Fopbis,TopAbs_EDGE); ex.More(); ex.Next()){
       if(Arcprol.IsSame(ex.Current())) {
 	OArcprolop = ex.Current().Orientation();
@@ -3932,17 +3920,17 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     Bad.Initialize(Fad);
     Bop.Initialize(Fop);
   }
-  // on va devoir modifier le CommonPoint
-  //dans le vide et son parametre dans la FaceInterference.
-  //On les recupere donc tous deux dans des references
-  //non const. Attention les modifs se font dans le dos
-  //de CV1,CV2,Fi1,Fi2.
+  // it is necessary to modify the CommonPoint
+  // in the space and its parameter in FaceInterference.
+  // So both of them are returned in references
+  // non const. Attention the modifications are done behind
+  // CV1,CV2,Fi1,Fi2.
   ChFiDS_CommonPoint& CPopArc = Fd->ChangeVertex(isfirst,IFopArc);
   ChFiDS_FaceInterference& FiopArc = Fd->ChangeInterference(IFopArc);
   ChFiDS_CommonPoint& CPadArc = Fd->ChangeVertex(isfirst,IFadArc);
   ChFiDS_FaceInterference& FiadArc = Fd->ChangeInterference(IFadArc);
-  //on initialise le parametre du vertex en l air a la valeur de son
-  //copain d en face (point sur arc).
+  // the parameter of the vertex is initialized with the value 
+  // of its opposing vertex (point on arc).
   Standard_Real wop = Fd->ChangeInterference(IFadArc).Parameter(isfirst);
   Handle(Geom_Curve) c3df;
   Handle(GeomAdaptor_HSurface)
@@ -3950,9 +3938,9 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   gp_Pnt2d p2dbout;
   {
 
-    // rajouter ici des criteres plus ou moins restrictifs pour
-    // decider si on fait l intersection avec la face en bout
-    // etendue ou si on aiguille sur bouchon.
+    // add here more or less restrictive criteria to
+    // decide if the intersection with face is done at the
+    // extended end or if there will be a cap on sharp end.
     c3df = DStr.Curve(FiopArc.LineIndex()).Curve();
     Standard_Real uf = FiopArc.FirstParameter();
     Standard_Real ul = FiopArc.LastParameter();
@@ -3968,8 +3956,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 //  if(!inters && BRep_Tool::Continuity(Arcprol,Fv,Fop) != GeomAbs_C0){
     if(!inters && isTangentFaces(Arcprol,Fv,Fop)){
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:08:29 2001 End
-      // Arcprol etant une arete de tangence on tente un
-      // ultime rattrappage par un  extrema curve/curve.
+      // Arcprol is an edge of tangency, ultimate adjustment by an extrema curve/curve is attempted.
       Standard_Real ff,ll;
       Handle(Geom2d_Curve) gpcprol = BRep_Tool::CurveOnSurface(Arcprol,Fv,ff,ll);
       Handle(Geom2dAdaptor_HCurve) pcprol = new Geom2dAdaptor_HCurve(gpcprol);
@@ -4042,12 +4029,12 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     if (!ChFi3d_ComputeCurves(HGs,HBs,Pardeb,Parfin,Cc,
 			      Ps,
 			      Pc,tolesp,tol2d,tolreached))
-    Standard_Failure::Raise("OneCorner : echec calcul intersection");
+    Standard_Failure::Raise("OneCorner : failed calculation intersection");
 
     Udeb = Cc->FirstParameter();
     Ufin = Cc->LastParameter();
 
-    // on determine si la courbe a une intersection avec l'arete de couture
+    // check if the curve has an intersection with sewing edge
 
     ChFi3d_Couture(Fv,couture,edgecouture);
 
@@ -4095,7 +4082,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   }
 
   else{
-    Standard_NotImplemented::Raise("OneCorner : bouchon non ecrit");
+    Standard_NotImplemented::Raise("OneCorner : cap not written");
   }
   Standard_Integer IShape = DStr.AddShape(Fv);
 #ifndef DEB
@@ -4140,9 +4127,9 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   stripe->SetIndexPoint(ChFi3d_IndexPointInDS(CV2,DStr),isfirst,2);
 
   if (!intcouture) {
-// il n'y a pas d'intersection avec l'arete de couture
-// on stocke la courbe Cc dans la stripe
-// le stockage dans la DS se fera par FILDS.
+// there is no intersection with edge of sewing
+// curve Cc is stored in the stripe
+// the storage in the DS is done by FILDS.
 
     TopOpeBRepDS_Curve Tc(Cc,tolreached);
     ICurve = DStr.AddCurve(Tc);
@@ -4154,11 +4141,11 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     stripe->SetParameters(isfirst,Udeb,Ufin);
    }
   else {
-// on stocke les courbes curv1 et curv2 dans la DS
-// ces courbes ne seront pas reconstruites par FILDS car
-// on met stripe->InDS(isfirst);
+// curves curv1 and curv2 are stored in the DS
+// these curves are not reconstructed by FILDS as
+// stripe->InDS(isfirst) is placed;
 
-    // interferences de curv1 et curv2 sur Fv
+    // interferences of curv1 and curv2 on Fv
     ComputeCurve2d(curv1,Fv,c2d1);
     Handle(TopOpeBRepDS_SurfaceCurveInterference) InterFv;
     InterFv = ChFi3d_FilCurveInDS(Icurv1,IShape,c2d1,Et);
@@ -4166,7 +4153,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     ComputeCurve2d(curv2,Fv,c2d2);
     InterFv = ChFi3d_FilCurveInDS(Icurv2,IShape,c2d2,Et);
     DStr.ChangeShapeInterferences(IShape).Append(InterFv);
-     // interferences de curv1 et curv2 sur Isurf
+     // interferences of curv1 and curv2 on Isurf
     if (Fd->Orientation()== Fv.Orientation()) Et=TopAbs::Reverse(Et);
     c2d1=new Geom2d_TrimmedCurve(Ps,Udeb,par2);
     InterFv = ChFi3d_FilCurveInDS(Icurv1,Isurf,c2d1,Et);
@@ -4175,7 +4162,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
        InterFv = ChFi3d_FilCurveInDS(Icurv2,Isurf,c2d2,Et);
     DStr.ChangeSurfaceInterferences(Isurf).Append(InterFv);
 
-      // limitation de l'arete de couture
+      // limitation of the sewing edge
     Standard_Integer Iarc=DStr.AddShape(edgecouture);
     Handle(TopOpeBRepDS_CurvePointInterference) Interfedge;
     TopAbs_Orientation ori;
@@ -4190,7 +4177,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     Interfedge = ChFi3d_FilPointInDS(ori,Iarc,indpt,par1);
     DStr.ChangeShapeInterferences(Iarc).Append(Interfedge);
 
-    // creation des CurveInterferences de Icurv1 et Icurv2
+    // creation of CurveInterferences from Icurv1 and Icurv2
     stripe->InDS(isfirst);
     Standard_Integer ind1= stripe->IndexPoint(isfirst,1);
     Standard_Integer ind2= stripe->IndexPoint(isfirst,2);
@@ -4211,10 +4198,10 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   if( inters){
 //
 
-    // On rajoute le petit bout de courbe qui manque pour l extension
-    // de la face en bout et la limitation de la face opposee.
+    // The small end of curve missing for the extension
+    // of the face at end and the limitation of the opposing face is added.
 
-    // Tout d abord on coupe les ponts avec l arete de la spine.
+    // Above all the points cut the points with the edge of the spine.
     Standard_Integer IArcspine = DStr.AddShape(Arcspine);
     Standard_Integer IVtx = DStr.AddShape(Vtx);
     TopAbs_Orientation OVtx2;
@@ -4237,7 +4224,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     DStr.ChangeShapeInterferences(IArcspine).Append(interfv);
 
 
-    //Modif de lvt pour trouver la suite de Arcprol dans l'autre face
+    //Modif of lvt to find the suite of Arcprol in the other face
     {
       TopTools_ListIteratorOfListOfShape It;
       for (It.Initialize(myVEMap(Vtx)); It.More(); It.Next()){
@@ -4249,9 +4236,9 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 	}
       }
     }
-    //fin de modif
+    //end of modif
 
-    // On construit maintenant les courbes qui manquent.
+    //Now the missing curves are constructed.
     for(ex.Init(Arcprolbis.Oriented(TopAbs_FORWARD),TopAbs_VERTEX);
 	ex.More(); ex.Next()){
       if(Vtx.IsSame(ex.Current())) {
@@ -4266,7 +4253,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 	break;
       }
     }
-// on determine si Fop a une arete de couture
+// it is checked if Fop has a sewing edge
 
 //     TopoDS_Edge edgecouture;
 //     Standard_Boolean couture;
@@ -4325,7 +4312,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     TopOpeBRepDS_Curve Zob(zob3d,tolreached);
     Standard_Integer IZob = DStr.AddCurve(Zob);
 
-    // on ne determine pas si la courbe a une intersection avec l'arete de couture
+    // it is not determined if the curve has an intersection with the sewing edge
 
 
     {
