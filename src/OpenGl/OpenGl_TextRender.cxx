@@ -298,12 +298,6 @@ void OpenGl_TextRender::RenderText ( char* str, GLuint base, int is2d, GLfloat x
   TsmGetAttri( 1, &keyZoom );
   zoom = keyZoom.data.ldata;
 
-  CMN_KEY keyfontName;
-  keyfontName.id = TelTextFont;//This flag responding about TextFontName
-  TsmGetAttri( 1, &keyfontName );
-  char *fontName = new char[strlen((char*)keyfontName.data.pdata) + 1];
-  strcpy(fontName,(char*)keyfontName.data.pdata);
-
   OpenGl_TextRender* textRender = OpenGl_TextRender::instance(); 
   int vh = 2 ;
   int vv = 2 ;
@@ -398,10 +392,17 @@ void OpenGl_TextRender::RenderText ( char* str, GLuint base, int is2d, GLfloat x
   if ( renderMode == GL_FEEDBACK ) 
   {
 #ifdef HAVE_GL2PS
+    CMN_KEY keyfontName;
+    keyfontName.id = TelTextFont;//This flag responding about TextFontName
+    TsmGetAttri( 1, &keyfontName );
+    char *fontName = new char[strlen((char*)keyfontName.data.pdata) + 1];
+    strcpy(fontName,(char*)keyfontName.data.pdata);
+
     export_h = (GLdouble)fnt->FaceSize() / export_h;
     int aligment = alignmentforgl2ps( vh, vv );
     glPopMatrix();
     ExportText( str, fontName, export_h, angle, aligment, x, y, z, is2d!=0 );
+    delete [] fontName;
 #endif
   }
   else
@@ -409,7 +410,6 @@ void OpenGl_TextRender::RenderText ( char* str, GLuint base, int is2d, GLfloat x
     mgr->render_text( curFont, str );
     glPopMatrix();
   }
-  delete [] fontName;
   return;
 
 }

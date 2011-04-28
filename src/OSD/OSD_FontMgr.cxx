@@ -238,10 +238,15 @@ void OSD_FontMgr::InitFontDataBase() {
   Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString;
   Display * disp = XOpenDisplay("localhost:0.0");
 
-  if ( !disp ) 
+  if (!disp) 
   {
-    cout << "Display is NULL!" << endl;
-    return ;
+    // let the X server find the available connection
+    disp = XOpenDisplay(":0.0");
+    if (!disp)
+    {
+      cout << "Display is NULL!" << endl;
+      return ;
+    }
   }
 
   Standard_Integer npaths = 0;
