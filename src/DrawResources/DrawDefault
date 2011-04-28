@@ -8,11 +8,11 @@ set dir ""
 if { [info exists env(DRAWHOME) ] } { 
   set dir $env(DRAWHOME)  
 } else {
-    if { [info exists env(CASROOT) ] } {
-  set dir [file join $env(CASROOT) src DrawResources]
-    } else {
-  puts " CASROOT is Mandatory to Run OpenCascade"
-    }
+  if { [info exists env(CASROOT) ] } {
+    set dir [file join $env(CASROOT) src DrawResources]
+  } else {
+    puts " CASROOT is Mandatory to Run OpenCascade"
+  }
 }
 
 # san - 02/08/2002 - In Tcl8.3 it is no longer necessary to load Tix explicitly on WNT
@@ -23,15 +23,19 @@ if { [info exists env(DRAWHOME) ] } {
 #}
 
 if { [file exist  $dir] } { 
-   source [file join $dir StandardCommands.tcl]
-   source [file join $dir StandardViews.tcl]
-   source [file join $dir Geometry.tcl]
-   if [info exists tk_version] {source [file join $dir DrawTK.tcl]}
-   if [file readable DrawAppliInit] {
-  source DrawAppliInit
-   }
-   set stationname $tcl_platform(platform)
-   if { ${stationname} == "windows" } {
+  source [file join $dir StandardCommands.tcl]
+  source [file join $dir StandardViews.tcl]
+  source [file join $dir Geometry.tcl]
+
+  set stationname $tcl_platform(platform)
+  if [info exists tk_version] {
+    source [file join $dir DrawTK.tcl]
+    # setup the icon for main window
+    if { ${stationname} == "windows" } {
       wm iconbitmap . -default [file join $dir lamp.ico]
-   }
+    }
+  }
+  if [file readable DrawAppliInit] {
+    source DrawAppliInit
+  }
 } 

@@ -1301,8 +1301,11 @@ HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
                               WS_OVERLAPPEDWINDOW,
                               1,1,1,1,
                               NULL, NULL,::GetModuleHandle(NULL), NULL);
-    SetWindowPos(aWin, HWND_TOPMOST, 1,1,1,1, SWP_NOMOVE);
-    SetWindowPos(aWin, HWND_NOTOPMOST, 1,1,1,1, SWP_NOMOVE);
+    if (!Draw_VirtualWindows)
+    {
+      SetWindowPos(aWin, HWND_TOPMOST, 1,1,1,1, SWP_NOMOVE);
+      SetWindowPos(aWin, HWND_NOTOPMOST, 1,1,1,1, SWP_NOMOVE);
+    }
     return aWin;
   }
   else {
@@ -1955,7 +1958,6 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
   DWORD IDThread;
   HANDLE hThread;
   console_semaphore = STOP_CONSOLE;
-
   theCommands.Init();
   interp = theCommands.Interp();
   Tcl_Init(interp) ;
@@ -1993,11 +1995,6 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
   if(!hPrevInst)
     if(!RegisterAppClass(hInst))
       return(Standard_False);
-
-  if (Draw_VirtualWindows) {
-    // main window will never shown
-    Tcl_Eval(theCommands.Interp(), "wm withdraw .");
-  }
 
   /*
    ** Enter the application message-polling loop.  This is the anchor for
@@ -2052,7 +2049,6 @@ void exitProc(ClientData /*dc*/)
 static DWORD WINAPI tkLoop(VOID)
 {
   Tcl_CreateExitHandler(exitProc, 0);
-
 #if (TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5))
   Tcl_RegisterChannel(theCommands.Interp(),  Tcl_GetStdChannel(TCL_STDIN));
   Tcl_RegisterChannel(theCommands.Interp(),  Tcl_GetStdChannel(TCL_STDOUT));
@@ -2060,38 +2056,40 @@ static DWORD WINAPI tkLoop(VOID)
 #endif
 
 #ifdef _TK
-  try {
-    OCC_CATCH_SIGNALS
-    Standard_Integer res = Tk_Init(interp) ;
-    if (res != TCL_OK)
-      cout << "tkLoop: error in Tk initialization. Tcl reported: " << interp->result << endl;
-
-  } catch  (Standard_Failure) {
-    cout <<"tkLoop: exception in TK_Init "<<endl;
+  // initialize the Tk library if not in 'virtual windows' mode
+  // (virtual windows are created by OCCT with native APIs,
+  // thus Tk will be useless)
+  if (!Draw_VirtualWindows)
+  {
+    try
+    {
+      OCC_CATCH_SIGNALS
+      Standard_Integer res = Tk_Init (interp);
+      if (res != TCL_OK)
+      {
+        cout << "tkLoop: error in Tk initialization. Tcl reported: " << interp->result << endl;
+      }
+    }
+    catch (Standard_Failure)
+    {
+      cout << "tkLoop: exception in TK_Init\n";
+    }
+    Tcl_StaticPackage (interp, "Tk", Tk_Init, (Tcl_PackageInitProc* ) NULL);
+    mainWindow = Tk_MainWindow (interp);
+    if (mainWindow == NULL)
+    {
+      fprintf (stderr, "%s\n", interp->result);
+      cout << "tkLoop: Tk_MainWindow() returned NULL. Exiting...\n";
+      Tcl_Exit (0);
+    }
+    Tk_Name(mainWindow) = Tk_GetUid (Tk_SetAppName (mainWindow, "Draw"));
   }
-  Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
+#endif //#ifdef _TK
 
-  mainWindow =
-    Tk_MainWindow(interp) ;
-  if (mainWindow == NULL) {
-        fprintf(stderr, "%s\n", interp->result);
-        cout << "tkLoop: Tk_MainWindow() returned NULL. Exiting..." << endl;
-        Tcl_Exit(0);
-   }
-  Tk_Name(mainWindow) =
-    Tk_GetUid(Tk_SetAppName(mainWindow,
-                          "Draw")) ;
-
-  if (Draw_VirtualWindows) {
-    // main window will never shown
-    Tcl_Eval(theCommands.Interp(), "wm withdraw .");
-  }
-#endif  //#ifdef _TK
-
-  // msv - 16/09/2004 - set signal handler in the new thread
+  // set signal handler in the new thread
   OSD::SetSignal();
 
-  // san - 06/08/2002 - inform the others that we have started
+  // inform the others that we have started
   isTkLoopStarted = true;
 
   while (console_semaphore == STOP_CONSOLE)
@@ -2101,27 +2099,32 @@ static DWORD WINAPI tkLoop(VOID)
     Prompt(interp, 0);
 
   //process a command
-#ifdef _TK
-  // san - 10/07/02 -- We should not exit until the Main Tk window is closed
-  while (Tk_GetNumMainWindows() > 0) {
-#else
-  while (1) {
-#endif
+  Standard_Boolean toLoop = Standard_True;
+  while (toLoop)
+  {
     while(Tcl_DoOneEvent(TCL_ALL_EVENTS | TCL_DONT_WAIT));
-    if (console_semaphore == HAS_CONSOLE_COMMAND) {
-      if (Draw_Interprete(console_command))
-        if (Draw_IsConsoleSubsystem) Prompt(interp, 0);
+    if (console_semaphore == HAS_CONSOLE_COMMAND)
+    {
+      if (Draw_Interprete (console_command))
+      {
+        if (Draw_IsConsoleSubsystem) Prompt (interp, 0);
+      }
       else
-        if (Draw_IsConsoleSubsystem) Prompt(interp, 1);
+      {
+        if (Draw_IsConsoleSubsystem) Prompt (interp, 1);
+      }
       console_semaphore = WAIT_CONSOLE_COMMAND;
     }
     else
+    {
       Sleep(100);
-
+    }
+  #ifdef _TK
+    // We should not exit until the Main Tk window is closed
+    toLoop = (Tk_GetNumMainWindows() > 0) || Draw_VirtualWindows;
+  #endif
   }
-
   Tcl_Exit(0);
-
   return 0;
 }
 
