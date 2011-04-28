@@ -41,7 +41,7 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   //! Free a previously allocated memory. Does nothing
   Standard_EXPORT virtual void  Free            (void *anAddress);
 
-  //! Diagnostic method, returns the number of bytes totally allocated
+  //! Diagnostic method, returns the total allocated size
   Standard_EXPORT size_t        GetMemSize      () const;
 
   //! Destructor (calls Clean() internally)
@@ -96,6 +96,7 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   // --------- PROTECTED FIELDS ---------
   IBlock        * myFirstBlock;
   size_t        mySize;
+  size_t        myMemSize;
 
  public:
 // Declaration of CASCADE RTTI

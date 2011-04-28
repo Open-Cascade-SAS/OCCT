@@ -87,8 +87,11 @@ void NCollection_BaseList::PPrepend (NCollection_BaseList& theOther)
 { 
   if (this == &theOther || theOther.IsEmpty()) 
     return;
-  
-  theOther.myLast->Next() = myFirst;
+
+  if (IsEmpty())
+    myLast = theOther.myLast;
+  else
+    theOther.myLast->Next() = myFirst;
   myFirst = theOther.myFirst;
   theOther.myFirst = theOther.myLast = NULL;
 

@@ -48,10 +48,12 @@ NCollection_BaseVector::~NCollection_BaseVector()
 
 void NCollection_BaseVector::Clear()
 {
-  for (Standard_Integer i = 0; i < myCapacity; i++)
-    myData[i].Reinit (0, 0);
-  myLength = 0;
-  myNBlocks = 0;
+  if (myLength > 0) {
+    for (Standard_Integer i = 0; i < myCapacity; i++)
+      myData[i].Reinit (0, 0);
+    myLength = 0;
+    myNBlocks = 0;
+  }
 }
 
 //=======================================================================
@@ -104,7 +106,7 @@ NCollection_BaseVector& NCollection_BaseVector::operator =
   for (Standard_Integer i = 0; i < myCapacity; i++)
     myData[i].Reinit (0, 0);
   myDataFree (* this, myData);
-  myCapacity  = myIncrement + myLength / myIncrement;
+  myCapacity  = GetCapacity(myIncrement) + myLength / myIncrement;
   myData = myDataInit (* this, myCapacity, NULL, 0);
 //    }
   return * this;
@@ -141,7 +143,7 @@ void * NCollection_BaseVector::ExpandV (const Standard_Integer theIndex)
     myNBlocks + 1 + (theIndex - myLength) / myIncrement;
   if (myCapacity < nNewBlock) {
     // Reallocate the array myData 
-    do myCapacity += myIncrement; while (myCapacity <= nNewBlock);
+    do myCapacity += GetCapacity(myIncrement); while (myCapacity <= nNewBlock);
     MemBlock * aNewData = myDataInit (* this, myCapacity, myData, myNBlocks);
     myDataFree (* this, myData);
     myData = aNewData;

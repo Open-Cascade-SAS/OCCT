@@ -267,7 +267,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTree
    * return
    *   Number of objects accepted
    */
-  Standard_Integer Select (Selector& theSelector) const
+  virtual Standard_Integer Select (Selector& theSelector) const
         { return (IsEmpty() ? 0 : Select (Root(), theSelector)); }
 
   /**
@@ -454,6 +454,9 @@ class _HUBTREE : public _HPARENT                                        \
                                                                         \
   _HUBTREE () : myTree(new UBTree) {}                                   \
   /* Empty constructor */                                               \
+  _HUBTREE (const Handle_NCollection_BaseAllocator& theAlloc)           \
+     : myTree(new UBTree(theAlloc)) {}                                  \
+  /* Constructor */                                                     \
                                                                         \
   /* Access to the methods of UBTree */                                 \
                                                                         \

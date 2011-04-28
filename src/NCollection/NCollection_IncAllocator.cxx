@@ -4,6 +4,9 @@
 // Copyright: Open Cascade 2002
 
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
+#include <Standard_Mutex.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <stdio.h>
 
@@ -16,6 +19,129 @@ IMPLEMENT_STANDARD_RTTIEXT (NCollection_IncAllocator,NCollection_BaseAllocator)
 
 #define MaxLookup 16
 
+static Standard_Boolean IS_DEBUG = Standard_False;
+
+//=======================================================================
+/**
+ * Static data map (address -> AllocatorID)
+ */
+//=======================================================================
+static NCollection_DataMap<Standard_Address, Standard_Size>& StorageIDMap()
+{
+  static NCollection_DataMap<Standard_Address, Standard_Size> TheMap;
+  return TheMap;
+}
+
+//=======================================================================
+/**
+ * Static map (AllocatorID)
+ */
+//=======================================================================
+static NCollection_Map<Standard_Size>& StorageIDSet()
+{
+  static NCollection_Map<Standard_Size> TheMap;
+  return TheMap;
+}
+
+//=======================================================================
+//function : IncAllocator_SetDebugFlag
+//purpose  : Turn on/off debugging of memory allocation
+//=======================================================================
+
+Standard_EXPORT void IncAllocator_SetDebugFlag(const Standard_Boolean theDebug)
+{
+  IS_DEBUG = theDebug;
+}
+
+//=======================================================================
+/**
+ * Static value of the current allocation ID. It provides unique
+ * numbering of allocators.
+ */
+//=======================================================================
+static Standard_Size CurrentID = 0;
+static Standard_Size CATCH_ID = 0;
+
+//=======================================================================
+//function : Debug_Create
+//purpose  : Store the allocator address in the internal maps
+//=======================================================================
+
+static void Debug_Create(Standard_Address theAlloc)
+{
+  static Standard_Mutex aMutex;
+  Standard_Boolean isReentrant = Standard::IsReentrant();
+  if (isReentrant)
+    aMutex.Lock();
+  StorageIDMap().Bind(theAlloc, ++CurrentID);
+  StorageIDSet().Add(CurrentID);
+  if (isReentrant)
+    aMutex.Unlock();
+  if (CurrentID == CATCH_ID)
+  {
+    // Place for break point for creation of investigated allocator
+    int a = 1;
+  }
+}
+
+//=======================================================================
+//function : Debug_Destroy
+//purpose  : Forget the allocator address from the internal maps
+//=======================================================================
+
+static void Debug_Destroy(Standard_Address theAlloc)
+{
+  static Standard_Mutex aMutex;
+  Standard_Boolean isReentrant = Standard::IsReentrant();
+  if (isReentrant)
+    aMutex.Lock();
+  if (StorageIDMap().IsBound(theAlloc))
+  {
+    Standard_Size anID = StorageIDMap()(theAlloc);
+    StorageIDSet().Remove(anID);
+    StorageIDMap().UnBind(theAlloc);
+  }
+  if (isReentrant)
+    aMutex.Unlock();
+}
+
+//=======================================================================
+//function : IncAllocator_PrintAlive
+//purpose  : Outputs the alive numbers to the file inc_alive.d
+//=======================================================================
+
+Standard_EXPORT void IncAllocator_PrintAlive()
+{
+  if (!StorageIDSet().IsEmpty())
+  {
+    FILE * ff = fopen("inc_alive.d", "wt");
+    if (ff == NULL)
+    {
+      cout << "failure writing file inc_alive.d" << endl;
+    }
+    else
+    {
+      fprintf(ff, "Alive IncAllocators (number, size in Kb)\n");
+      NCollection_DataMap<Standard_Address, Standard_Size>::Iterator
+        itMap(StorageIDMap());
+      Standard_Size aTotSize = 0;
+      Standard_Integer nbAlloc = 0;
+      for (; itMap.More(); itMap.Next())
+      {
+        NCollection_IncAllocator* anAlloc =
+          static_cast<NCollection_IncAllocator*>(itMap.Key());
+        Standard_Size anID = itMap.Value();
+        Standard_Size aSize = anAlloc->GetMemSize();
+        aTotSize += aSize;
+        nbAlloc++;
+        fprintf(ff, "%-8d %8.1f\n", anID, double(aSize)/1024);
+      }
+      fprintf(ff, "Total:\n%-8d %8.1f\n", nbAlloc, double(aTotSize)/1024);
+      fclose(ff);
+    }
+  }
+}
+
 //=======================================================================
 //function : NCollection_IncAllocator()
 //purpose  : Constructor
@@ -26,11 +152,16 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
 #ifdef ALLOC_TRACK_USAGE
   printf ("\n..NCollection_IncAllocator: Created (%x)\n",this);
 #endif
+#ifdef DEB
+  if (IS_DEBUG)
+    Debug_Create(this);
+#endif
   const size_t aSize = IMEM_SIZE(sizeof(IBlock)) +
       IMEM_SIZE((theBlockSize > 2*sizeof(IBlock)) ? theBlockSize : 24600);
   IBlock * const aBlock = (IBlock *) malloc (aSize * sizeof(aligned_t));
   myFirstBlock = aBlock;
   mySize = aSize;
+  myMemSize = aSize * sizeof(aligned_t);
   if (aBlock == NULL)
     Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
   aBlock -> p_free_space = (aligned_t *) IMEM_ALIGN (&aBlock[1]);
@@ -45,6 +176,10 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
 
 NCollection_IncAllocator::~NCollection_IncAllocator ()
 {
+#ifdef DEB
+  if (IS_DEBUG)
+    Debug_Destroy(this);
+#endif
   Clean();
   free (myFirstBlock);
 }
@@ -175,6 +310,7 @@ void NCollection_IncAllocator::Clean ()
     }
     myFirstBlock -> p_next = NULL;
   }
+  myMemSize = 0;
 }
 
 //=======================================================================
@@ -201,6 +337,7 @@ void NCollection_IncAllocator::Reset (const Standard_Boolean doReleaseMem)
         }
       } else {
         IBlock * aNext = aBlock -> p_next;
+        myMemSize -= (aBlock -> p_end_block - (aligned_t *) aBlock) * sizeof (aligned_t);
         free (aBlock);
         aBlock = aNext;
       }
@@ -214,13 +351,14 @@ void NCollection_IncAllocator::Reset (const Standard_Boolean doReleaseMem)
 
 size_t NCollection_IncAllocator::GetMemSize () const
 {
-  size_t aResult = 0;
-  IBlock * aBlock = myFirstBlock;
-  while (aBlock) {
-    aResult += (aBlock -> p_end_block - (aligned_t *) aBlock);
-    aBlock = aBlock -> p_next;
-  }
-  return aResult * sizeof (aligned_t);
+//   size_t aResult = 0;
+//   IBlock * aBlock = myFirstBlock;
+//   while (aBlock) {
+//     aResult += (aBlock -> p_end_block - (aligned_t *) aBlock);
+//     aBlock = aBlock -> p_next;
+//   }
+//   return aResult * sizeof (aligned_t);
+  return myMemSize;
 }
 
 //=======================================================================
@@ -238,6 +376,7 @@ void * NCollection_IncAllocator::allocateNewBlock (const size_t cSize)
     aBlock -> p_next = myFirstBlock;
     myFirstBlock = aBlock;
     aResult = (aligned_t *) IMEM_ALIGN(&aBlock[1]);
+    myMemSize += aSz * sizeof(aligned_t);
   }
   else
     Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");

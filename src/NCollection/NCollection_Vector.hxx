@@ -48,8 +48,8 @@ template <class TheItemType> class NCollection_Vector
                             : public NCollection_BaseCollection<TheItemType>,
                               public NCollection_BaseVector
 {
-  // **************** Implementation of the Iterator interface.
  public:
+  typedef TheItemType TheItemTypeD;
   // ----------------------------------------------------------------------
   //! Nested class MemBlock
   class MemBlock : public NCollection_BaseVector::MemBlock
@@ -57,33 +57,61 @@ template <class TheItemType> class NCollection_Vector
   public:
     void * operator new (size_t, void * theAddress) { return theAddress; }
     //! Empty constructor
-    MemBlock () : NCollection_BaseVector::MemBlock(0,0) {}
+    MemBlock (NCollection_BaseAllocator* theAlloc)
+      : NCollection_BaseVector::MemBlock(0,0,theAlloc)
+    {}
     //! Constructor
     MemBlock (const Standard_Integer theFirstInd,
-              const Standard_Integer theSize)
-      : NCollection_BaseVector::MemBlock (theFirstInd, theSize)
-      { myData = new TheItemType [theSize]; }
+              const Standard_Integer theSize,
+              NCollection_BaseAllocator* theAlloc)
+      : NCollection_BaseVector::MemBlock (theFirstInd, theSize, theAlloc)
+    {
+      myData = myAlloc->Allocate(theSize * sizeof(TheItemType));
+      for (size_t i=0; i < theSize; i++)
+        new (&((TheItemType *) myData)[i]) TheItemType;
+    }
     //! Copy constructor
     MemBlock (const MemBlock& theOther)
-      : NCollection_BaseVector::MemBlock (theOther.FirstIndex(),theOther.Size())
+      : NCollection_BaseVector::MemBlock (theOther.FirstIndex(),theOther.Size(),
+                                          theOther.myAlloc)
     {
       myLength = theOther.Length();
-      myData = new TheItemType [Size()];
-      for (size_t i=0; i < Length(); i++)
-        ((TheItemType *) myData)[i] = theOther.Value(i);
+      myData = myAlloc->Allocate(Size() * sizeof(TheItemType));
+      size_t i;
+      for (i=0; i < Length(); i++)
+        new (&((TheItemType *) myData)[i]) TheItemType(theOther.Value(i));
+      for (; i < Size(); i++)
+        new (&((TheItemType *) myData)[i]) TheItemType;
     }
     //! Reinit
     virtual void Reinit (const Standard_Integer theFirst,
                          const size_t           theSize)
     {
-      if (myData) delete [] (TheItemType *) myData;
-      myData = (theSize > 0) ? new TheItemType [theSize] : NULL;
+      if (myData) {
+        for (size_t i=0; i < mySize; i++)
+          ((TheItemType *) myData)[i].~TheItemTypeD();
+        myAlloc->Free(myData);
+        myData = NULL;
+      }
+      if (theSize > 0) {
+        myData = myAlloc->Allocate(theSize * sizeof(TheItemType));
+        for (size_t i=0; i < theSize; i++)
+          new (&((TheItemType *) myData)[i]) TheItemType;
+      }
       myFirstInd = theFirst;
       mySize     = theSize;
       myLength   = 0;
     }
     //! Destructor
-    virtual ~MemBlock () { if (myData) delete [] (TheItemType *) myData; }
+    virtual ~MemBlock ()
+    {
+      if (myData) {
+        for (size_t i=0; i < Size(); i++)
+          ((TheItemType *) myData)[i].~TheItemTypeD();
+        myAlloc->Free(myData);
+        myData = NULL;
+      }
+    }
     //! Operator () const
     const TheItemType& Value (const Standard_Integer theIndex) const
     { return ((TheItemType *) myData) [theIndex]; }
@@ -263,7 +291,7 @@ template <class TheItemType> class NCollection_Vector
       i = aSize;
     }
     while (i < aCapacity)
-      new (&aData[i++]) MemBlock;
+      new (&aData[i++]) MemBlock(aSelf.myAllocator.operator->());
     return aData;
   }
 

@@ -8,6 +8,7 @@
 #define NCollection_BaseVector_HeaderFile
 
 #include <Standard_TypeDef.hxx>
+#include <NCollection_BaseAllocator.hxx>
 #include <stddef.h>
 
 #if !defined No_Exception && !defined No_Standard_OutOfRange
@@ -19,6 +20,13 @@
 #pragma warning(disable:4355)
 #endif
 
+// this value defines the number of blocks that are reserved
+// when the capacity of vector is increased
+inline Standard_Integer GetCapacity (const Standard_Integer theIncrement)
+{
+  return Max(theIncrement/8, 1);
+}
+
 /**
  *  Class NCollection_BaseVector - base for generic vector
  */
@@ -28,17 +36,20 @@ class NCollection_BaseVector
   // ------------ Class MemBlock ------------
   class MemBlock {
   protected:
-    MemBlock ()
-      : myFirstInd(0), myLength(0), mySize(0), myData(0L) {}
+    MemBlock (NCollection_BaseAllocator* theAlloc)
+      : myAlloc(theAlloc),
+        myFirstInd(0), myLength(0), mySize(0), myData(0L) {}
     MemBlock (const Standard_Integer theFirstInd,
-              const Standard_Integer theLength)
-      : myFirstInd(theFirstInd), myLength(0), mySize(theLength), myData(0L) {}
-    virtual             ~MemBlock () {}
+              const Standard_Integer theLength,
+              NCollection_BaseAllocator* theAlloc)
+      : myAlloc(theAlloc),
+        myFirstInd(theFirstInd), myLength(0), mySize(theLength), myData(0L) {}
     virtual void        Reinit     (const Standard_Integer,
                                     const size_t) {}
     Standard_Integer    FirstIndex () const     { return myFirstInd; }
     size_t              Size       () const     { return mySize; }
   public:
+    virtual             ~MemBlock () {}
     void                SetLength  (const size_t theLen)
                                                 { myLength = theLen; }
     size_t              Length     () const     { return myLength; }
@@ -51,6 +62,7 @@ class NCollection_BaseVector
     Standard_Integer             myFirstInd;
     size_t                       myLength;
     size_t                       mySize;
+    NCollection_BaseAllocator    * myAlloc;
     void                         * myData;
     friend class NCollection_BaseVector;
   };
@@ -96,11 +108,11 @@ class NCollection_BaseVector
   NCollection_BaseVector (const size_t           theSize,
                           const Standard_Integer theInc,
                           FuncPtrDataInit        theDataInit,
-			  FuncPtrDataFree        theDataFree)
+                          FuncPtrDataFree        theDataFree)
      : myItemSize  (theSize),
        myIncrement (theInc),
        myLength    (0),
-       myCapacity  (theInc),
+       myCapacity  (GetCapacity(myIncrement)),
        myNBlocks   (0),
        myData      (theDataInit (* this, myCapacity, NULL, 0)),
        myDataInit  (theDataInit),
@@ -114,11 +126,11 @@ class NCollection_BaseVector
   //! Copy constructor
   NCollection_BaseVector (const NCollection_BaseVector& theOther,
                           FuncPtrDataInit               theDataInit,
-			  FuncPtrDataFree               theDataFree)
+                          FuncPtrDataFree               theDataFree)
     : myItemSize  (theOther.myItemSize),
       myIncrement (theOther.myIncrement),
       myLength    (theOther.Length()),
-      myCapacity  (theOther.myIncrement+theOther.Length()/theOther.myIncrement),
+      myCapacity  (GetCapacity(myIncrement)+theOther.Length()/theOther.myIncrement),
       myNBlocks   (1 + (theOther.Length() - 1)/theOther.myIncrement),
       myData      (theDataInit (* this, myCapacity, NULL, 0)),
       myDataInit  (theDataInit),
