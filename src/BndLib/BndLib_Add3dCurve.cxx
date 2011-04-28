@@ -150,11 +150,14 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
 	tol = Max(FillBox(B1,GACurve,first,last,N), tol);
 	first = last;
       }
-      B1.Enlarge(weakness*tol);
-      Standard_Real x, y, z, X, Y, Z;
-      B1.Get(x, y, z, X, Y, Z);
-      B.Update(x, y, z, X, Y, Z);
-      B.Enlarge(Tol);
+      if (!B1.IsVoid())
+      {
+        B1.Enlarge(weakness*tol);
+        Standard_Real x, y, z, X, Y, Z;
+        B1.Get(x, y, z, X, Y, Z);
+        B.Update(x, y, z, X, Y, Z);
+        B.Enlarge(Tol);
+      }
       //<-OCC566(apo)
       break;
     }
