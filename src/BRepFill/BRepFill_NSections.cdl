@@ -13,8 +13,9 @@ class NSections from BRepFill inherits  SectionLaw  from  BRepFill
        
 uses 
  SectionLaw          from  GeomFill,  
- HArray1OfSectionLaw from  GeomFill, 
- BSplineSurface             from  Geom, 
+ HArray1OfSectionLaw from  GeomFill,
+ SequenceOfTrsf      from  GeomFill,
+ BSplineSurface      from  Geom, 
  HArray2OfShape      from  TopTools,  
  SequenceOfReal      from  TColStd,  
  SequenceOfShape     from  TopTools,  
@@ -31,10 +32,11 @@ is
      ---Purpose: Construct    
   returns NSections from BRepFill;  
    
-  Create (S  :  SequenceOfShape  from  TopTools; 
-  	  P  :  SequenceOfReal  from  TColStd; 
-	  VF,VL :  Real; 
-          Build :  Boolean = Standard_True)   
+  Create (S      :  SequenceOfShape from  TopTools; 
+  	  Trsfs  :  SequenceOfTrsf  from  GeomFill; 
+  	  P      :  SequenceOfReal  from  TColStd; 
+	  VF,VL  :  Real; 
+          Build  :  Boolean = Standard_True)   
      ---Purpose: Construct    
   returns NSections from BRepFill;  
    
@@ -79,7 +81,8 @@ is
 fields
   VFirst,  VLast : Real;
   myShapes:  SequenceOfShape  from  TopTools;
-  myParams:  SequenceOfReal  from  TColStd;   
+  myTrsfs:   SequenceOfTrsf   from  GeomFill;
+  myParams:  SequenceOfReal   from  TColStd;   
   myEdges:  HArray2OfShape from  TopTools;   
   mySurface:  BSplineSurface from  Geom;   
 end NSections;

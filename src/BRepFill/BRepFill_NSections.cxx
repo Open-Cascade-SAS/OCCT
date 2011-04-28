@@ -363,6 +363,7 @@ BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
 //=======================================================================
 
 BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
+                                       const GeomFill_SequenceOfTrsf& Transformations,
 				       const TColStd_SequenceOfReal & P,
 				       const Standard_Real VF,
 				       const Standard_Real VL,
@@ -389,6 +390,7 @@ BRepFill_NSections::BRepFill_NSections(const TopTools_SequenceOfShape& S,
   if (ok) {
     myParams = P;
     myShapes = S;
+    myTrsfs = Transformations;
     VFirst = VF;
     VLast = VL;
     Init(P,Build);
@@ -434,7 +436,6 @@ void BRepFill_NSections::Init(const TColStd_SequenceOfReal & P,
 //    if (! B.Degenerated(wexp.Current())) NbEdge++;
     if (! BRep_Tool::Degenerated(wexp.Current())) NbEdge++;
 
-  
   myEdges = new (TopTools_HArray2OfShape) (1, NbEdge, 1, NbSects);
   
   // On Remplit les tables
@@ -580,7 +581,7 @@ void BRepFill_NSections::Init(const TColStd_SequenceOfReal & P,
  
       Standard_Real Ufirst = ii-1;
       Standard_Real Ulast = ii;
-      myLaws->ChangeValue(ii) = new (GeomFill_NSections)(NC,myParams,
+      myLaws->ChangeValue(ii) = new (GeomFill_NSections)(NC, myTrsfs, myParams,
 							 Ufirst,Ulast,
 							 VFirst,VLast,
 							 mySurface);
@@ -724,7 +725,7 @@ void BRepFill_NSections::Init(const TColStd_SequenceOfReal & P,
     for (Standard_Integer jj=1; jj<=myShapes.Length(); jj++) {
       NCompo.Append(mySurface->VIso(myParams(jj)));
     }
-    Law = new (GeomFill_NSections)(NCompo, myParams, 
+    Law = new (GeomFill_NSections)(NCompo, myTrsfs, myParams, 
 				   Ufirst, Ulast, 
 				   Vfirst, Vlast,
 				   mySurface);

@@ -10,7 +10,8 @@ class PipeShell from BRepFill inherits  TShared from MMgt
 	---Purpose: Perform general sweeping construction
 uses  
  Dir  from  gp,
- Ax2  from  gp, 
+ Ax2  from  gp,
+ Trsf from  gp,
  Function from Law,  
  ListOfShape  from  TopTools, 
  HArray2OfShape   from  TopTools,
@@ -236,6 +237,7 @@ is
     Place(me : mutable;  
     	  Sec  :  Section  from  BRepFill; 
           W    :  out  Wire   from  TopoDS; 
+          Trsf :  out  Trsf   from  gp; 
     	param  :  out  Real  from  Standard)  is  private; 
 	   
     ResetLoc(me  :  mutable)  is  private;

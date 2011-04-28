@@ -101,8 +101,8 @@ static Standard_Boolean ComputeSection(const TopoDS_Wire& W1,
   CW.SetPercent(0.1);
   CW.Perform();
   if (!CW.IsDone()) StdFail_NotDone::Raise("Uncompatible wires");
-  Handle(BRepFill_NSections) SL = new (BRepFill_NSections) (CW.Shape(),SR,0.,1.)
-;
+  GeomFill_SequenceOfTrsf EmptyTrsfs;
+  Handle(BRepFill_NSections) SL = new (BRepFill_NSections) (CW.Shape(),EmptyTrsfs,SR,0.,1.);
   Standard_Real US = p1/(p1+p2);
   SL->D0(US, Wres);
   return Standard_True;
@@ -831,7 +831,8 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
  // Construction de la loi de section
   if (mySeq.Length() == 1) {
     Standard_Real p1;
-    Place(mySeq(1), theSect,p1);
+    gp_Trsf aTrsf;
+    Place(mySeq(1), theSect, aTrsf, p1);
     TopoDS_Wire aLocalShape = theSect;
     if (mySeq(1).IsLaw())
       mySection = new BRepFill_ShapeLaw(aLocalShape, myLaw);
@@ -844,9 +845,11 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
     {
       TColStd_SequenceOfReal Param;
       TopTools_SequenceOfShape WSeq;
-      WSeq.Clear();
-      Param.Clear();
+      GeomFill_SequenceOfTrsf Transformations;
+      //WSeq.Clear();
+      //Param.Clear();
       Standard_Integer NbL = myLocation->NbLaw();
+      gp_Trsf aTrsf;
       Standard_Real V1, V2, param;
       myLocation->CurvilinearBounds(NbL, V1, V2);
       V1 = 0.;
@@ -854,10 +857,11 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 //      for (Standard_Integer iseq=1;iseq<=mySeq.Length();iseq++) {
       Standard_Integer iseq;
       for (iseq=1;iseq<=mySeq.Length();iseq++) {
-	Place(mySeq(iseq), theSect, param);
+	Place(mySeq(iseq), theSect, aTrsf, param);
 	Param.Append(param);
 	WSeq.Append(theSect);
 //	WSeq.Append(TopoDS::Wire(theSect));
+        Transformations.Append(aTrsf);
         if (param==V1) ideb = iseq;
         if (param==V2) ifin = iseq;
       }
@@ -949,7 +953,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
       else {
 	Standard_ConstructionError::Raise("PipeShell : uncompatible wires");
       }
-      mySection = new (BRepFill_NSections) (WorkingSections,Param,V1,V2);
+      mySection = new (BRepFill_NSections) (WorkingSections,Transformations,Param,V1,V2);
       
     }// else
 
@@ -983,6 +987,7 @@ void BRepFill_PipeShell::Generated(const TopoDS_Shape&   theShape,
 //=======================================================================
 void BRepFill_PipeShell::Place(const BRepFill_Section& Sec,
 			       TopoDS_Wire& W,
+                               gp_Trsf& aTrsf,
 			       Standard_Real& param)
 {
   BRepFill_SectionPlacement Place(myLocation, 
@@ -991,6 +996,7 @@ void BRepFill_PipeShell::Place(const BRepFill_Section& Sec,
 				  Sec.WithContact(),
 				  Sec.WithCorrection());
   W =  Sec.Wire();
+  aTrsf = Place.Transformation();
   TopLoc_Location Loc2(Place.Transformation()), Loc1;
   Loc1 = W.Location();
   W.Location(Loc2.Multiplied(Loc1));
@@ -1147,11 +1153,12 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
   if(!mySeq.IsEmpty()) {
     Standard_Integer iseq;
     TopoDS_Wire aSect;
+    gp_Trsf aTrsf;
     Standard_Real param = 0., aparmin = RealLast(), aparmax = -RealLast();
     Standard_Integer ideb = 1, ifin = mySeq.Length();
 
     for (iseq = 1;iseq <= mySeq.Length(); iseq++) {
-      Place(mySeq(iseq), aSect, param);
+      Place(mySeq(iseq), aSect, aTrsf, param);
 
       if(param < aparmin) {
 	ideb = iseq;

@@ -13,6 +13,7 @@
 #include <BRepLib_FindSurface.hxx>
 #include <BRepLib_MakeWire.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <BRepCheck_Wire.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
@@ -827,7 +828,9 @@ void BRepFill_CompatibleWires::
   Standard_Boolean allClosed = Standard_True;
   Standard_Integer i,ii,ideb=1,ifin=NbSects;
   for (i=1; i<=NbSects; i++) {
-    allClosed = (allClosed && myWork(i).Closed());
+    Handle(BRepCheck_Wire) Checker = new BRepCheck_Wire(TopoDS::Wire(myWork(i)));
+    allClosed = (allClosed && (Checker->Closed() == BRepCheck_NoError));
+    //allClosed = (allClosed && myWork(i).Closed());
   }
   if (!allClosed)
     Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SameNumberByPolarMethod : the wires must be closed");
