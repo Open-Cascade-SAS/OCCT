@@ -55,8 +55,6 @@ static unsigned long vRand = 1L;
 #include <OpenGl_tgl_funcs.hxx>
 #include <OpenGl_LightBox.hxx>
 #include <OpenGl_TextureBox.hxx>
-#include <OpenGl_ResourceCleaner.hxx>
-#include <OpenGl_ResourceVBO.hxx>
 #include <InterfaceGraphic_PrimitiveArray.hxx>
 #include <OpenGl_Memory.hxx>
 #include <Standard.hxx>
@@ -234,10 +232,6 @@ static void  BuildVBO( CALL_DEF_PARRAY* p )
 
   if( p->flagBufferVBO == VBO_OK )
     clearRAMMemory(p);
-
-  //specify context for VBO resource
-  p->contextId = (Standard_Address)GET_GL_CONTEXT();
-
 }
 
 /*----------------------------------------------------------------------*/
@@ -641,18 +635,34 @@ draw_array( call_def_parray p, Tint hflag,
     // OCC22236 NOTE: draw for all situations:
     // 1) draw elements from p->bufferVBO[VBOEdges] indicies array
     // 2) draw elements from vertice array, when bounds defines count of primitive's verts.
-    //end bindings
+    // 3) draw primitive by vertexes if no edges and bounds array is specified
     if(  p->flagBufferVBO == VBO_OK ){
       if ( p->num_edges > 0 && p->bufferVBO[VBOEdges] ) {
         glVBOBindBufferARB(GL_ELEMENTS_ARRAY_BUFFER_ARB, p->bufferVBO[VBOEdges]); // for edge indices
-        glDrawElements( draw_mode, p->num_edges , GL_UNSIGNED_INT, 0);
+        
+        // draw primitives by vertex count with the indicies
+        if( p->num_bounds > 0 ) {
+          Tint* offset = 0;
+          for( i = 0, offset = 0 ; i < p->num_bounds ; i++ ) {
+            glDrawElements(draw_mode, p->bounds[i], GL_UNSIGNED_INT, offset);
+            offset += p->bounds[i]; 
+          }
+        }
+        // draw one (or sequential) primitive by the indicies
+        else {
+          glDrawElements(draw_mode, p->num_edges , GL_UNSIGNED_INT, 0);
+        }
       }
-      else {
+      else if( p->num_bounds > 0 ) {
         for( i = n = 0 ; i < p->num_bounds ; i ++ ){
-          glDrawArrays( draw_mode, n, p->bounds[i]);
+          glDrawArrays(draw_mode, n, p->bounds[i]);
           n += p->bounds[i];
         }
       }
+      else {
+        glDrawArrays(draw_mode, 0, p->num_vertexs);
+      }
+
       //bind with 0
       glVBOBindBufferARB(GL_ARRAY_BUFFER_ARB, 0); 
       glVBOBindBufferARB(GL_ELEMENTS_ARRAY_BUFFER_ARB, 0); 
@@ -759,21 +769,6 @@ draw_array( call_def_parray p, Tint hflag,
 static  TStatus
 ParrayDelete( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 {
-  call_def_parray p = (call_def_parray)data.pdata;
-  if( p->VBOEnabled == VBO_OK ) {
-    OpenGl_ResourceCleaner* resCleaner = OpenGl_ResourceCleaner::GetInstance();
-    if( p->bufferVBO[VBOEdges] )
-      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOEdges]) ); 
-    if( p->bufferVBO[VBOVertices] )
-      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVertices]) ); 
-    if( p->bufferVBO[VBOVcolours] )
-	  resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVcolours]) ); 
-    if( p->bufferVBO[VBOVnormals] )
-      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVnormals]) ); 
-    if( p->bufferVBO[VBOVtexels] )
-      resCleaner->AddResource( (GLCONTEXT)p->contextId, new OpenGl_ResourceVBO(p->bufferVBO[VBOVtexels]) ); 
-  }
-
   return TSuccess;
 }
 
@@ -823,8 +818,8 @@ draw_edges ( call_def_parray p, tel_colour edge_colour )
 
   // OCC22236 NOTE: draw edges for all situations:
   // 1) draw elements with GL_LINE style as edges from p->bufferVBO[VBOEdges] indicies array
-  // 2) draw elements with GL_LINE style as edges from vertice array,
-  //    when bounds defines count of primitive's verts.
+  // 2) draw elements from vertice array, when bounds defines count of primitive's verts.
+  // 3) draw primitive's edges by vertexes if no edges and bounds array is specified
   if(p->flagBufferVBO == VBO_OK)
   { 
     glVBOBindBufferARB( GL_ARRAY_BUFFER_ARB, p->bufferVBO[VBOVertices] );
@@ -832,14 +827,31 @@ draw_edges ( call_def_parray p, tel_colour edge_colour )
     glColor3fv( edge_colour->rgb );
     if ( p->num_edges > 0 && p->bufferVBO[VBOEdges] ) {
       glVBOBindBufferARB(GL_ELEMENTS_ARRAY_BUFFER_ARB, p->bufferVBO[VBOEdges]); 
-      glDrawElements( draw_mode, p->num_edges, GL_UNSIGNED_INT, 0);
+      
+      // draw primitives by vertex count with the indicies
+      if( p->num_bounds > 0 ) {
+        Tint* offset = 0;
+        for( i = 0, offset = 0 ; i < p->num_bounds ; i++ ) {
+          glDrawElements( draw_mode, p->bounds[i], GL_UNSIGNED_INT, offset);
+          offset += p->bounds[i];
+        }
+      }
+      // draw one (or sequential) primitive by the indicies
+      else {
+        glDrawElements( draw_mode, p->num_edges , GL_UNSIGNED_INT, 0);
+      }
     }
-    else {
-      for( i = n = 0 ; i < p->num_bounds ; i ++ ) {
-        glDrawArrays( draw_mode , n , p->bounds[i]);
+    else if( p->num_bounds > 0 ) {
+      for( i = n = 0 ; i < p->num_bounds ; i ++ ){
+        glDrawArrays( draw_mode, n, p->bounds[i]);
         n += p->bounds[i];
       }
     }
+    else {
+      glDrawArrays( draw_mode, 0, p->num_vertexs);
+    }
+
+    // unbind buffers
     glDisableClientState(GL_VERTEX_ARRAY);
     glVBOBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
     glVBOBindBufferARB(GL_ELEMENTS_ARRAY_BUFFER_ARB, 0); 
