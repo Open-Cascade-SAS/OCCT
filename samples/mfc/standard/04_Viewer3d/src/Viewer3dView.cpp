@@ -1123,8 +1123,8 @@ void CViewer3dView::OnModelclipping()
 		Standard_Real A,B,C,D;
 		tmpPln.Coefficients(A,B,C,D);
 //with these coefficients, creating a V3d_Plane
-		myPlane = new V3d_Plane(
-		GetDocument()->GetViewer(),A,B,C,D);
+		myPlane = new V3d_Plane(A,B,C,D);
+//		GetDocument()->GetViewer(),A,B,C,D);
 //creates the Face
 //NOTE : the face must be behind the clipping plane !!	  
 		tmpPln = gp_Pln(gp_Pnt(0.1,0,0),gp_Dir(1,0,0));
