@@ -39,30 +39,30 @@
 //              Ajout emission
 //      CAL : 20 mai 1998
 //              Perfs. Connection entre structures COMPUTED.
-//      30/11/98 ; FMN : S4069. Textes always visible.  
-//      22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets  
+//      30/11/98 ; FMN : S4069. Textes always visible.
+//      22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
 
 #define G003    //EUG 26/01/00 Degeneration management
 
-#define BUC60918        //GG 31/05/01 A transparente structure priority must have the 
+#define BUC60918        //GG 31/05/01 A transparente structure priority must have the
 //                      MAX_PRIORITY value so, the highlighted structure must have
-//                      MAX_PRIORITY-1 value.   
+//                      MAX_PRIORITY-1 value.
 //                      Add ResetDisplayPriority() method.
 
 #define OCC1174 // SAV 08/01/03 Added back face interior color controling
 
 
-//                      
+//
 //-Copyright    MatraDatavision 1991,1992,1993,1994,1995
 
-//-Version      
+//-Version
 
 //-Design       Declaration of variables specific to graphic structures
 
 //-Warning      A structure is defined in a manager
 //              This is a sequence of groups of primitives
 
-//-References   
+//-References
 
 //-Language     C++ 2.0
 
@@ -92,9 +92,9 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <Graphic3d_TextureMap.hxx>
 
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 #include <Aspect_PolygonOffsetMode.hxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
 //-Aliases
 
@@ -127,10 +127,10 @@ MyHighlightColor (Quantity_NOC_WHITE)
   AManager->PrimitivesAspect (aAspectLine3d, aAspectText3d,
     aAspectMarker3d, aAspectFillArea3d);
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   // It is necessary to set default polygon offsets for a new presentation
   aAspectFillArea3d->SetPolygonOffsets( Aspect_POM_Fill, 1., 0. );
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   // Update the associated CStructure
   UpdateStructure (aAspectLine3d, aAspectText3d,
@@ -208,7 +208,7 @@ void Graphic3d_Structure::Destroy () {
 #endif
 
   // as MyFirstPtrStructureManager can be already destroyed,
-  // avoid attempts to access it 
+  // avoid attempts to access it
   MyFirstPtrStructureManager = 0;
   Remove ();
 
@@ -273,7 +273,7 @@ void Graphic3d_Structure::Remove () {
   // Destruction of me in the graphic library
   MyGraphicDriver->RemoveStructure (MyCStructure);
 
-  // Liberation of the identification if the destroyed structure 
+  // Liberation of the identification if the destroyed structure
   // in the first manager that performs creation of the structure.
   if ( MyFirstPtrStructureManager )
     MyFirstStructureManager->Remove (Standard_Integer (MyCStructure.Id));
@@ -594,7 +594,7 @@ Standard_Boolean Graphic3d_Structure::IsEmpty () const {
   if (IsDeleted ()) return (Standard_True);
 
   // A structure is empty :
-  // if all these groups are empty or if all 
+  // if all these groups are empty or if all
   // groups are empty and all their descendants
   // are empty or if all its descendants are empty.
 
@@ -612,7 +612,7 @@ Standard_Boolean Graphic3d_Structure::IsEmpty () const {
 
   Length  = MyDescendants.Length ();
 
-  // Stop at the first non-empty descendant 
+  // Stop at the first non-empty descendant
   for (i=1; i<=Length && Result2; i++)
     Result2 = ((Graphic3d_Structure *)
     (MyDescendants.Value (i)))->IsEmpty ();
@@ -889,8 +889,8 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_Structure::FillArea3dAspect () cons
 
   Back.SetEnvReflexion (MyCStructure.ContextFillArea.Back.EnvReflexion);
 
-  Graphic3d_TypeOfMaterial mType = 
-    MyCStructure.ContextFillArea.Back.IsPhysic ? 
+  Graphic3d_TypeOfMaterial mType =
+    MyCStructure.ContextFillArea.Back.IsPhysic ?
 Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
   Back.SetMaterialType(mType);
 
@@ -983,41 +983,28 @@ Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
     CTXF->SetTextureMapOff ();
 #ifdef G003
   Aspect_TypeOfDegenerateModel dMode = Aspect_TypeOfDegenerateModel(
-    MyCStructure.ContextFillArea.DegenerationMode); 
+    MyCStructure.ContextFillArea.DegenerationMode);
   Quantity_Ratio dRatio =
     MyCStructure.ContextFillArea.SkipRatio;
   CTXF->SetDegenerateModel(dMode,dRatio);
 #endif  // G003
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-  CTXF->SetPolygonOffsets(MyCStructure.ContextFillArea.PolygonOffsetMode, 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+  CTXF->SetPolygonOffsets(MyCStructure.ContextFillArea.PolygonOffsetMode,
     MyCStructure.ContextFillArea.PolygonOffsetFactor,
     MyCStructure.ContextFillArea.PolygonOffsetUnits);
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   return CTXF;
 
 }
 
-Handle(Graphic3d_HSetOfGroup) Graphic3d_Structure::Groups () const {
-
-  Handle (Graphic3d_HSetOfGroup) SG = new Graphic3d_HSetOfGroup ();
-
-  if (IsDeleted ()) return (SG);
-
-  Standard_Integer i, Length = MyGroups.Length ();
-
-  for (i=1; i<=Length; i++)
-    SG->Add (MyGroups.Value (i));
-
-  return (SG);
-
+const Graphic3d_SequenceOfGroup& Graphic3d_Structure::Groups() const {
+  return MyGroups;
 }
 
 Standard_Integer Graphic3d_Structure::NumberOfGroups () const {
-
   return (MyGroups.Length ());
-
 }
 
 void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX) {
@@ -1042,8 +1029,8 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine
   MyGraphicDriver->ContextStructure (MyCStructure);
 
   // CAL 14/04/95
-  // attributes are "IsSet" during the first update 
-  // of a context (line, marker...)
+  // Attributes are "IsSet" during the first update
+  // of context (line, marker...)
   MyCStructure.ContextLine.IsSet          = 1;
   MyCStructure.ContextFillArea.IsSet      = 1;
   MyCStructure.ContextMarker.IsSet        = 1;
@@ -1093,7 +1080,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   MyCStructure.ContextFillArea.Hatch              = int (CTX->HatchStyle ());
 #ifdef G003
   Quantity_Ratio ratio;
-  MyCStructure.ContextFillArea.DegenerationMode = 
+  MyCStructure.ContextFillArea.DegenerationMode =
     int (CTX->DegenerateModel(ratio));
   MyCStructure.ContextFillArea.SkipRatio = float (ratio);
 #endif  // G003
@@ -1133,7 +1120,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   Standard_Boolean amt = ama.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
   MyCStructure.ContextFillArea.Back.IsPhysic = ( amt ? 1 : 0 );
 
-  // Specular Color 
+  // Specular Color
   MyCStructure.ContextFillArea.Back.ColorSpec.r   =
     float (((CTX->BackMaterial ()).SpecularColor ()).Red ());
   MyCStructure.ContextFillArea.Back.ColorSpec.g   =
@@ -1165,7 +1152,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   MyCStructure.ContextFillArea.Back.ColorEms.b    =
     float (((CTX->BackMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCStructure.ContextFillArea.Back.EnvReflexion = 
+  MyCStructure.ContextFillArea.Back.EnvReflexion =
     float ((CTX->BackMaterial ()).EnvReflexion());
 
   /*** Front Material ***/
@@ -1231,7 +1218,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   MyCStructure.ContextFillArea.Front.ColorEms.b   =
     float (((CTX->FrontMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCStructure.ContextFillArea.Front.EnvReflexion = 
+  MyCStructure.ContextFillArea.Front.EnvReflexion =
     float ((CTX->FrontMaterial ()).EnvReflexion());
 
   MyCStructure.ContextFillArea.IsDef      = 1; // Definition material ok
@@ -1244,14 +1231,14 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
 
   MyCStructure.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1:0;
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
   Standard_Real    aPolyFactor, aPolyUnits;
   CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
   MyCStructure.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
   MyCStructure.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   MyGraphicDriver->ContextStructure (MyCStructure);
 #ifdef G003
@@ -1302,9 +1289,9 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText
   MyCStructure.ContextText.ColorSubTitle.r  = float (Rs);
   MyCStructure.ContextText.ColorSubTitle.g  = float (Gs);
   MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
-  MyCStructure.ContextText.TextZoomable     = ATextZoomable;    
-  MyCStructure.ContextText.TextAngle        = ATextAngle;   
-  MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;   
+  MyCStructure.ContextText.TextZoomable     = ATextZoomable;
+  MyCStructure.ContextText.TextAngle        = ATextAngle;
+  MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;
 
   MyCStructure.ContextText.IsDef          = 1;
 
@@ -1460,10 +1447,10 @@ void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& AStructure
 
   // connection
   Standard_Integer i;
-  switch (AType) 
+  switch (AType)
   {
 
-  case Graphic3d_TOC_DESCENDANT : 
+  case Graphic3d_TOC_DESCENDANT :
     {
       Standard_Integer indexD = 0;
       Standard_Integer LengthD = MyDescendants.Length ();
@@ -1483,7 +1470,7 @@ void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& AStructure
     }
     break;
 
-  case Graphic3d_TOC_ANCESTOR : 
+  case Graphic3d_TOC_ANCESTOR :
     {
       Standard_Integer indexA = 0;
       Standard_Integer LengthA        = MyAncestors.Length ();
@@ -1552,7 +1539,7 @@ void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection AType)
   Standard_Integer i, Length;
 
   // disconnection
-  switch (AType) 
+  switch (AType)
   {
   case Graphic3d_TOC_DESCENDANT :
     Length      = MyDescendants.Length ();
@@ -1567,7 +1554,7 @@ void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection AType)
   case Graphic3d_TOC_ANCESTOR :
     Length      = MyAncestors.Length ();
     for (i=1; i<=Length; i++)
-     // Value (1) instead of Value (i) as MyAncestors
+      // Value (1) instead of Value (i) as MyAncestors
       // is modified by :
       // Graphic3d_Structure::Disconnect (AStructure)
       // that takes AStructure from MyAncestors
@@ -1602,7 +1589,7 @@ void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal& AMatrix, con
 
   // Assign the new transformation in an array [0..3][0..3]
   // Avoid problemes if the user has defined matrice [1..4][1..4]
-  //                                                 ou [3..6][-1..2] !!
+  //                                              or [3..6][-1..2] !!
   lr      = AMatrix.LowerRow ();
   ur      = AMatrix.UpperRow ();
   lc      = AMatrix.LowerCol ();
@@ -1686,12 +1673,12 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin
   if ((XTMin == RF) && (YTMin == RF) &&
       (ZTMin == RF) && (XTMax == RL) &&
       (YTMax == RL) && (ZTMax == RL)) {
-      // Case impossible as it would mean that 
+      // Case impossible as it would mean that
       // the structure is empty
-      XMin = RF; 
-      YMin = RF; 
+      XMin = RF;
+      YMin = RF;
       ZMin = RF;
-      
+
       XMax = RL;
       YMax = RL;
       ZMax = RL;
@@ -1764,7 +1751,7 @@ void Graphic3d_Structure::SetTransformPersistence( const Graphic3d_TransModeFlag
 void Graphic3d_Structure::SetTransformPersistence( const Graphic3d_TransModeFlags& AFlag,
                                                   const gp_Pnt& APoint )
 {
-  if (IsDeleted ()) return; 
+  if (IsDeleted ()) return;
 
   MyCStructure.TransformPersistence.Flag = AFlag;
   MyCStructure.TransformPersistence.Point.x = APoint.X();
@@ -1805,7 +1792,7 @@ void Graphic3d_Structure::Remove (const Standard_Address APtr, const Graphic3d_T
 
   Standard_Integer i, index, length;
 
-  switch (AType) 
+  switch (AType)
   {
   case Graphic3d_TOC_DESCENDANT :
     index   = 0;
@@ -1924,7 +1911,7 @@ void Graphic3d_Structure::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin,
             YMin = YMax = (Ym+ YM)/2.0;
             ZMin = ZMax = (Zm+ ZM)/2.0;
             return;
-          }  
+          }
         }
     }
     XMin = RF;
@@ -1975,7 +1962,7 @@ void Graphic3d_Structure::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin,
           if ((XMin == RL) && (YMin == RL) &&
               (ZMin == RL) && (XMax == RF) &&
               (YMax == RF) && (ZMax == RF)) {
-              // Case impossible as it would mean 
+              // Case impossible as it would mean
               // that the structure is empty
               XMin    = RF;
               YMin    = RF;
@@ -2063,7 +2050,7 @@ void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& AStructure
   ASet.Add (AStructure);
 
   // exploration
-  switch (AType) 
+  switch (AType)
   {
 
   case Graphic3d_TOC_DESCENDANT :
@@ -2079,15 +2066,15 @@ void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& AStructure
     while (IteratorA.More ()) {
       Graphic3d_Structure::Network
         (IteratorA.Key (), AType, ASet);
-      // IteratorD.Next () is located on the next structure
-     IteratorA.Next ();
+      // IteratorA.Next () is located on the next structure
+      IteratorA.Next ();
     }
     break;
   }
 
 }
 
-void Graphic3d_Structure::PrintNetwork (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType) 
+void Graphic3d_Structure::PrintNetwork (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType)
 {
 
   Graphic3d_MapOfStructure ASet;
@@ -2105,7 +2092,7 @@ void Graphic3d_Structure::PrintNetwork (const Handle(Graphic3d_Structure)& AStru
 
 }
 
-void Graphic3d_Structure::Update () const 
+void Graphic3d_Structure::Update () const
 {
 
   if (IsDeleted ()) return;
@@ -2115,7 +2102,7 @@ void Graphic3d_Structure::Update () const
 
 }
 
-void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF) 
+void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF)
 {
 
   Standard_Real             R, G, B;
@@ -2134,7 +2121,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   Aspect_InteriorStyle      AStyle;
   Aspect_TypeOfStyleText    AStyleT;
   Aspect_TypeOfDisplayText  ADisplayType;
-  Quantity_Color            AColorSubTitle; 
+  Quantity_Color            AColorSubTitle;
   Standard_Boolean          ATextZoomable;
   Standard_Real             ATextAngle;
   OSD_FontAspect            ATextFontAspect;
@@ -2175,7 +2162,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
   MyCStructure.ContextText.TextAngle        = ATextAngle;
-  MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect; 
+  MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;
 
 
 
@@ -2205,7 +2192,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextFillArea.Hatch              = int (CTXF->HatchStyle ());
 #ifdef G003
   Quantity_Ratio ratio;
-  MyCStructure.ContextFillArea.DegenerationMode = 
+  MyCStructure.ContextFillArea.DegenerationMode =
     int (CTXF->DegenerateModel(ratio));
   MyCStructure.ContextFillArea.SkipRatio = float (ratio);
 #endif  // G003
@@ -2277,7 +2264,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextFillArea.Back.ColorEms.b    =
     float (((CTXF->BackMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCStructure.ContextFillArea.Back.EnvReflexion = 
+  MyCStructure.ContextFillArea.Back.EnvReflexion =
     float ((CTXF->BackMaterial ()).EnvReflexion());
 
   /*** Front Material ***/
@@ -2343,7 +2330,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextFillArea.Front.ColorEms.b   =
     float (((CTXF->FrontMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCStructure.ContextFillArea.Front.EnvReflexion = 
+  MyCStructure.ContextFillArea.Front.EnvReflexion =
     float ((CTXF->FrontMaterial ()).EnvReflexion());
 
   Handle(Graphic3d_TextureMap) TempTextureMap = CTXF->TextureMap();
@@ -2354,14 +2341,14 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
 
   MyCStructure.ContextFillArea.Texture.doTextureMap = CTXF->TextureMapState() ? 1:0;
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
   Standard_Real    aPolyFactor, aPolyUnits;
   CTXF->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
   MyCStructure.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
   MyCStructure.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 }
 
 void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod AMethod) {
@@ -2372,7 +2359,7 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod A
   MyCStructure.highlight  = 1;
   MyHighlightMethod       = AMethod;
 
-  switch (AMethod) 
+  switch (AMethod)
   {
   case Aspect_TOHM_COLOR :
     MyHighlightColor.Values (R, G, B, Quantity_TOC_RGB);
@@ -2427,7 +2414,7 @@ void Graphic3d_Structure::GraphicUnHighlight () {
 
   MyCStructure.highlight  = 0;
 
-  switch (MyHighlightMethod) 
+  switch (MyHighlightMethod)
   {
   case Aspect_TOHM_COLOR :
     MyGraphicDriver->HighlightColor

@@ -1,16 +1,9 @@
-// Copyright: 	Matra-Datavision 1995
-// File:	StdSelect_BRepSelectionTool.cxx
-// Created:	Tue Mar 14 14:09:28 1995
-// Author:	Robert COUBLANC
-//		<rob>
+// Copyright: Matra-Datavision 1995
+// File:      StdSelect_BRepSelectionTool.cxx
+// Created:   Tue Mar 14 14:09:28 1995
+// Author:    Robert COUBLANC
+//            <rob>
 
-#define OCC232	//GG_15/03/02 Enable to compute selection also
-//		for COMPSOLID shape type.
-//		Origin: TELCO Smart70563 (jbz)
-
-#define OCC294   // SAV 22/10/02 catching exception from BRepAdaptor_Curve::Initialize
-#define OCC872   // SAV 23/10/02 checking if TopoDS_Wire is null or not to avoid "access violation" exception.
-										
 #include <StdSelect_BRepSelectionTool.ixx>
 #include <GeomAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -48,8 +41,8 @@
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <Precision.hxx>
 #include <gp_Circ.hxx>
-#include <GCPnts_TangentialDeflection.hxx> 
-#include <TopoDS_Wire.hxx> 
+#include <GCPnts_TangentialDeflection.hxx>
+#include <TopoDS_Wire.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
@@ -58,252 +51,242 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_ErrorHandler.hxx>
 
-//static Standard_Integer myArraySize = 2,myN=2;
-static Standard_Integer myN=2;
-static Standard_Boolean first = Standard_True;
+//==================================================
+// Function: Load
+// Purpose :
+//==================================================
+void StdSelect_BRepSelectionTool
+::Load (const Handle(SelectMgr_Selection)& theSelection,
+        const TopoDS_Shape& theShape,
+        const TopAbs_ShapeEnum theType,
+        const Standard_Real theDeflection,
+        const Standard_Real theDeviationAngle,
+        const Standard_Boolean isAutoTriangulation,
+        const Standard_Integer thePriority,
+        const Standard_Integer theNbPOnEdge,
+        const Standard_Real theMaxParam)
+{
+  Standard_Integer aPriority = (thePriority == -1) ? GetStandardPriority (theShape, theType) : thePriority;
+  Handle(StdSelect_BRepOwner) aBrepOwner;
+  switch (theType)
+  {
+    case TopAbs_VERTEX:
+    case TopAbs_EDGE:
+    case TopAbs_WIRE:
+    case TopAbs_FACE:
+    case TopAbs_SHELL:
+    case TopAbs_SOLID:
+    case TopAbs_COMPSOLID:
+    {
+      TopTools_IndexedMapOfShape aSubShapes;
+      TopExp::MapShapes (theShape, theType, aSubShapes);
 
-
+      Standard_Boolean isComesFromDecomposition = !((aSubShapes.Extent() == 1) && (theShape == aSubShapes (1)));
+      for (Standard_Integer aShIndex = 1; aShIndex <= aSubShapes.Extent(); ++aShIndex)
+      {
+        const TopoDS_Shape& aSubShape = aSubShapes (aShIndex);
+        aBrepOwner = new StdSelect_BRepOwner (aSubShape, aPriority, isComesFromDecomposition);
+        ComputeSensitive (aSubShape, aBrepOwner,
+                          theSelection,
+                          theDeflection,
+                          theDeviationAngle,
+                          theNbPOnEdge,
+                          theMaxParam,
+                          isAutoTriangulation);
+      }
+      break;
+    }
+    default:
+    {
+      aBrepOwner = new StdSelect_BRepOwner (theShape, aPriority);
+      ComputeSensitive (theShape, aBrepOwner,
+                        theSelection,
+                        theDeflection,
+                        theDeviationAngle,
+                        theNbPOnEdge,
+                        theMaxParam,
+                        isAutoTriangulation);
+    }
+  }
+}
 
 //==================================================
-// Function: Load 
-// Purpose : 
-  //==================================================
-
+// Function: Load
+// Purpose :
+//==================================================
 void StdSelect_BRepSelectionTool
-::Load (const Handle(SelectMgr_Selection)& aSelection,
-	const TopoDS_Shape& aShap,
-	const TopAbs_ShapeEnum aType,
-  const Standard_Real theDeflection,
-  const Standard_Real theDeviationAngle,
-	const Standard_Boolean AutoTriangulation,
-	const Standard_Integer aPriority,
-	const Standard_Integer NbPOnEdge,
-	const Standard_Real MaxParam)
+::Load (const Handle(SelectMgr_Selection)& theSelection,
+        const Handle(SelectMgr_SelectableObject)& theSelectableObj,
+        const TopoDS_Shape& theShape,
+        const TopAbs_ShapeEnum theType,
+        const Standard_Real theDeflection,
+        const Standard_Real theDeviationAngle,
+        const Standard_Boolean isAutoTriangulation,
+        const Standard_Integer thePriority,
+        const Standard_Integer theNbPOnEdge,
+        const Standard_Real theMaxParam)
 {
-
-  Standard_Integer Prior = (aPriority==-1)? GetStandardPriority(aShap,aType): aPriority;
-
-
-  switch(aType) {
-  case TopAbs_VERTEX:
-  case TopAbs_EDGE:
-  case TopAbs_WIRE:
-  case TopAbs_FACE:
-  case TopAbs_SHELL:
-  case TopAbs_SOLID:
-#ifdef OCC232
-  case TopAbs_COMPSOLID:
-#endif
-    {
-      TopTools_IndexedMapOfShape subshaps;
-      TopExp::MapShapes(aShap,aType,subshaps);
-      Standard_Boolean ComesFromDecomposition(Standard_True);
-      if(subshaps.Extent()==1)
-	if(aShap==subshaps(1))
-	  ComesFromDecomposition = Standard_False;
-      
-      Handle(StdSelect_BRepOwner) BOwn;
-      for (Standard_Integer I = 1;I<=subshaps.Extent();I++){
-	BOwn = new StdSelect_BRepOwner(subshaps(I),Prior,ComesFromDecomposition);
-//	BOwn->SetHilightMode(1);
-	ComputeSensitive (subshaps(I),
-			 BOwn,
-			 aSelection,
-       theDeflection,
-       theDeviationAngle,
-			 NbPOnEdge,
-			 MaxParam,			   
-			 AutoTriangulation);
-      }
-      break;
-    }
-  default:
-    {
-      Handle(StdSelect_BRepOwner) BOwn;
-      BOwn = new StdSelect_BRepOwner(aShap,Prior);
-//      BOwn->SetHilightMode(1);
-
-      ComputeSensitive(aShap,
-		       BOwn,
-		       aSelection,
-           theDeflection,
-           theDeviationAngle,
-		       NbPOnEdge,
-		       MaxParam,
-		       AutoTriangulation);
-    }
-    
-  }
-}
-
-
-void StdSelect_BRepSelectionTool
-::Load (const Handle(SelectMgr_Selection)& aSelection,
-	const Handle(SelectMgr_SelectableObject)& aSO,
-	const TopoDS_Shape& aShap,
-	const TopAbs_ShapeEnum aType,
-  const Standard_Real theDeflection,
-  const Standard_Real theDeviationAngle,
-	const Standard_Boolean AutoTriangulation,
-	const Standard_Integer aPriority,
-	const Standard_Integer NbPOnEdge,
-	const Standard_Real MaxParam)
-     
-{
-  Load (aSelection,
-        aShap,
-        aType,
+  Load (theSelection,
+        theShape,
+        theType,
         theDeflection,
         theDeviationAngle,
-        AutoTriangulation,
-        aPriority,
-        NbPOnEdge);
+        isAutoTriangulation,
+        thePriority,
+        theNbPOnEdge,
+        theMaxParam);
 
-  //loading of selectables...
-  for (aSelection->Init();aSelection->More();aSelection->Next()) {
-    Handle(SelectBasics_EntityOwner) BOwn = aSelection->Sensitive()->OwnerId();
-    Handle(SelectMgr_EntityOwner) Own = *((Handle(SelectMgr_EntityOwner)*) &BOwn);
-    Own->Set(aSO);
+  // loading of selectables...
+  for (theSelection->Init(); theSelection->More(); theSelection->Next())
+  {
+    Handle(SelectMgr_EntityOwner) anOwner
+      = Handle(SelectMgr_EntityOwner)::DownCast (theSelection->Sensitive()->OwnerId());
+    anOwner->Set (theSelectableObj);
   }
 }
 
-
-
-
-
-/*void StdSelect_BRepSelectionTool
-::Load (const Handle(SelectMgr_Selection)& aSelection,
-	const SelectBasics_SequenceOfAddress& Users,
-	const TopoDS_Shape& aShap,
-	const TopAbs_ShapeEnum aType,
-	const Standard_Boolean AutoTriangulation,
-	const Standard_Integer aPriority,
-	const Standard_Integer NbPOnEdge,
-	const Standard_Real MaxParam)
-
-{
-  Load(aSelection,aShap,aType,AutoTriangulation,aPriority,NbPOnEdge);
-  for (aSelection->Init();aSelection->More();aSelection->Next())
-    {
-      for(Standard_Integer i=1;i<=Users.Length();i++)
-	{aSelection->Sensitive()->OwnerId()->Add(Users(i));}
-    }
-}*/
-
-
-
-
-
+//==================================================
+// Function: ComputeSensitive
+// Purpose :
+//==================================================
 void StdSelect_BRepSelectionTool
-::ComputeSensitive(const TopoDS_Shape& shap,
-		   const Handle(StdSelect_BRepOwner)& Owner ,
-		   const Handle(SelectMgr_Selection)& aSelection,
-       const Standard_Real theDeflection,
-       const Standard_Real theDeviationAngle,
-		   const Standard_Integer NbPOnEdge,
-		   const Standard_Real MaxParam,		   
-		   const Standard_Boolean AutoTriangulation) 
+::ComputeSensitive (const TopoDS_Shape& theShape,
+                    const Handle(StdSelect_BRepOwner)& theOwner,
+                    const Handle(SelectMgr_Selection)& theSelection,
+                    const Standard_Real theDeflection,
+                    const Standard_Real theDeviationAngle,
+                    const Standard_Integer theNbPOnEdge,
+                    const Standard_Real theMaxParam,
+                    const Standard_Boolean isAutoTriangulation)
 {
-  TopAbs_ShapeEnum TheShapeType = shap.ShapeType();
-
-  switch (TheShapeType) {
-  case TopAbs_VERTEX:
-    {   
-      aSelection->Add(new Select3D_SensitivePoint
-		      (Owner , BRep_Tool::Pnt(TopoDS::Vertex(shap))));
-      break;
-    }
-  case TopAbs_EDGE:
-    {      
-      Handle (Select3D_SensitiveEntity) aSensitive;
-      GetEdgeSensitive (shap, Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, aSensitive);
-      if(!aSensitive.IsNull())
-	aSelection->Add(aSensitive);
-      break;
-    }
-  case TopAbs_WIRE:
+  switch (theShape.ShapeType())
+  {
+    case TopAbs_VERTEX:
     {
-      BRepTools_WireExplorer Exp(TopoDS::Wire(shap));
-      Handle (Select3D_SensitiveEntity) aSensitive;
-
-      Handle (Select3D_SensitiveWire) aWireSensitive = new Select3D_SensitiveWire(Owner);
-      aSelection->Add(aWireSensitive);     
-      while(Exp.More()){
-	GetEdgeSensitive (Exp.Current(), Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, aSensitive);
-	aWireSensitive->Add(aSensitive);
-	Exp.Next();
+      theSelection->Add (new Select3D_SensitivePoint
+                         (theOwner, BRep_Tool::Pnt (TopoDS::Vertex (theShape))));
+      break;
+    }
+    case TopAbs_EDGE:
+    {
+      Handle(Select3D_SensitiveEntity) aSensitive;
+      GetEdgeSensitive (theShape, theOwner, theSelection,
+                        theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam,
+                        aSensitive);
+      if (!aSensitive.IsNull())
+      {
+        theSelection->Add (aSensitive);
       }
       break;
     }
-  case TopAbs_FACE:
+    case TopAbs_WIRE:
     {
-      const TopoDS_Face& F = TopoDS::Face(shap);
-      Select3D_ListOfSensitive LL;
-      GetSensitiveForFace(F,Owner,LL,AutoTriangulation,NbPOnEdge,MaxParam);
-      for(Select3D_ListIteratorOfListOfSensitive It(LL);It.More();It.Next())
-	aSelection->Add(It.Value());
+      BRepTools_WireExplorer aWireExp (TopoDS::Wire (theShape));
+      Handle (Select3D_SensitiveEntity) aSensitive;
+      Handle (Select3D_SensitiveWire) aWireSensitive = new Select3D_SensitiveWire (theOwner);
+      theSelection->Add (aWireSensitive);
+      while (aWireExp.More())
+      {
+        GetEdgeSensitive (aWireExp.Current(), theOwner, theSelection,
+                          theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam,
+                          aSensitive);
+        if (!aSensitive.IsNull())
+        {
+          aWireSensitive->Add (aSensitive);
+        }
+        aWireExp.Next();
+      }
       break;
     }
-  case TopAbs_SHELL:{
-    TopTools_IndexedMapOfShape subshaps;
-    TopExp::MapShapes(shap,TopAbs_FACE,subshaps);
-    Handle(Select3D_SensitiveGroup) SG = new Select3D_SensitiveGroup(Owner);
-    Select3D_ListOfSensitive LL;
-    TopExp::MapShapes(shap,TopAbs_FACE,subshaps);
-    for (Standard_Integer I = 1;I<=subshaps.Extent();I++) {
-      GetSensitiveForFace(TopoDS::Face(subshaps(I)),
-			  Owner,LL,AutoTriangulation,NbPOnEdge,MaxParam);
+    case TopAbs_FACE:
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (theShape);
+      Select3D_ListOfSensitive aSensitiveList;
+      GetSensitiveForFace (aFace, theOwner,
+                           aSensitiveList,
+                           isAutoTriangulation, theNbPOnEdge, theMaxParam);
+      for (Select3D_ListIteratorOfListOfSensitive aSensIter (aSensitiveList);
+           aSensIter.More(); aSensIter.Next())
+      {
+        theSelection->Add (aSensIter.Value());
+      }
+      break;
     }
-    
-    if(!LL.IsEmpty()){
-      SG->Add(LL);
-      aSelection->Add(SG);
+    case TopAbs_SHELL:
+    {
+      Handle(Select3D_SensitiveGroup) aSensitiveGroup = new Select3D_SensitiveGroup (theOwner);
+      Select3D_ListOfSensitive aSensitiveList;
+      TopTools_IndexedMapOfShape aSubfacesMap;
+      TopExp::MapShapes (theShape, TopAbs_FACE, aSubfacesMap);
+      for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
+      {
+        GetSensitiveForFace (TopoDS::Face (aSubfacesMap (aShIndex)), theOwner,
+                             aSensitiveList,
+                             isAutoTriangulation, theNbPOnEdge, theMaxParam);
+      }
+      if (!aSensitiveList.IsEmpty())
+      {
+        aSensitiveGroup->Add (aSensitiveList);
+        theSelection->Add (aSensitiveGroup);
+      }
+      break;
     }
-    break;
+    case TopAbs_SOLID:
+    case TopAbs_COMPSOLID:
+    {
+      TopTools_IndexedMapOfShape aSubfacesMap;
+      TopExp::MapShapes (theShape, TopAbs_FACE, aSubfacesMap);
+      for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
+      {
+        ComputeSensitive (aSubfacesMap (aShIndex), theOwner,
+                          theSelection,
+                          theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam, isAutoTriangulation);
+      }
+      break;
+    }
+    case TopAbs_COMPOUND:
+    default:
+    {
+      TopExp_Explorer anExp;
+      // sub-vertices
+      for (anExp.Init (theShape, TopAbs_VERTEX, TopAbs_EDGE); anExp.More(); anExp.Next())
+      {
+        ComputeSensitive (anExp.Current(), theOwner,
+                          theSelection,
+                          theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam, isAutoTriangulation);
+      }
+      // sub-edges
+      for (anExp.Init (theShape, TopAbs_EDGE, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
+        ComputeSensitive (anExp.Current(), theOwner,
+                          theSelection,
+                          theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam, isAutoTriangulation);
+      }
+      // sub-wires
+      for (anExp.Init (theShape, TopAbs_WIRE, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
+        ComputeSensitive (anExp.Current(), theOwner,
+                          theSelection,
+                          theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam, isAutoTriangulation);
+      }
+
+      // sub-faces
+      TopTools_IndexedMapOfShape aSubfacesMap;
+      TopExp::MapShapes (theShape, TopAbs_FACE, aSubfacesMap);
+      for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
+      {
+        ComputeSensitive (aSubfacesMap (aShIndex), theOwner,
+                          theSelection,
+                          theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam, isAutoTriangulation);
+      }
+    }
   }
-  case TopAbs_SOLID:
-  case TopAbs_COMPSOLID:
-    {
-      TopTools_IndexedMapOfShape subshaps;
-      TopExp::MapShapes(shap,TopAbs_FACE,subshaps);
-      for (Standard_Integer I = 1;I<=subshaps.Extent();I++)
-	{
-	  ComputeSensitive (subshaps(I), Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, AutoTriangulation);}
-      break;
-    }
-  case TopAbs_COMPOUND:
-  default:
-    {
-
-      TopExp_Explorer Exp;
-
-      Standard_Boolean Ilibre = 0;
-      for(Exp.Init(shap,TopAbs_VERTEX,TopAbs_EDGE);Exp.More();Exp.Next()){
-	Ilibre++;
-	ComputeSensitive (Exp.Current(), Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, AutoTriangulation);}
-
-      Ilibre = 0;
-      for(Exp.Init(shap,TopAbs_EDGE,TopAbs_FACE);Exp.More();Exp.Next()){
-	Ilibre++;
-	ComputeSensitive (Exp.Current(), Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, AutoTriangulation);}
-      Ilibre = 0;
-      for(Exp.Init(shap,TopAbs_WIRE,TopAbs_FACE);Exp.More();Exp.Next()){
-	Ilibre++;
-	ComputeSensitive (Exp.Current(), Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, AutoTriangulation);}
-      
-//      Standard_Integer Iface = 0;
-      TopTools_IndexedMapOfShape subshaps;
-      TopExp::MapShapes(shap,TopAbs_FACE,subshaps);
-
-      for (Standard_Integer I = 1;I<=subshaps.Extent();I++) 
-	{
-	  ComputeSensitive (subshaps(I), Owner, aSelection, theDeflection, theDeviationAngle, NbPOnEdge, MaxParam, AutoTriangulation);
-	}
-      
-    }      
-  }  
 }
 
+//==================================================
+// Function: GetPointsFromPolygon
+// Purpose :
+//==================================================
 static Handle(TColgp_HArray1OfPnt) GetPointsFromPolygon (const TopoDS_Edge& theEdge,
                                                          const Standard_Real theDeflection)
 {
@@ -374,161 +357,125 @@ static Handle(TColgp_HArray1OfPnt) GetPointsFromPolygon (const TopoDS_Edge& theE
   return aResultPoints;
 }
 
-static Standard_Boolean  FindLimits(const Adaptor3d_Curve& aCurve,
-				    const Standard_Real  aLimit,
-				    Standard_Real&       First,
-				    Standard_Real&       Last)
+//==================================================
+// Function: FindLimits
+// Purpose :
+//==================================================
+static Standard_Boolean FindLimits (const Adaptor3d_Curve& theCurve,
+                                    const Standard_Real    theLimit,
+                                          Standard_Real&   theFirst,
+                                          Standard_Real&   theLast)
 {
-  First = aCurve.FirstParameter();
-  Last  = aCurve.LastParameter();
-  Standard_Boolean firstInf = Precision::IsNegativeInfinite(First);
-  Standard_Boolean lastInf  = Precision::IsPositiveInfinite(Last);
-
-  if (firstInf || lastInf) {
-    gp_Pnt P1,P2;
-    Standard_Real delta = 1;
-    Standard_Integer count = 0;
-    if (firstInf && lastInf) {
+  theFirst = theCurve.FirstParameter();
+  theLast  = theCurve.LastParameter();
+  Standard_Boolean isFirstInf = Precision::IsNegativeInfinite (theFirst);
+  Standard_Boolean isLastInf  = Precision::IsPositiveInfinite (theLast);
+  if (isFirstInf || isLastInf)
+  {
+    gp_Pnt aPnt1, aPnt2;
+    Standard_Real aDelta = 1.0;
+    Standard_Integer anIterCount = 0;
+    if (isFirstInf && isLastInf)
+    {
       do {
-	if (count++ == 100000) return Standard_False;
-	delta *= 2;
-	First = - delta;
-	Last  =   delta;
-	aCurve.D0(First,P1);
-	aCurve.D0(Last,P2);
-      } while (P1.Distance(P2) < aLimit);
+        if (anIterCount++ >= 100000) return Standard_False;
+        aDelta *= 2.0;
+        theFirst = - aDelta;
+        theLast  =   aDelta;
+        theCurve.D0 (theFirst, aPnt1);
+        theCurve.D0 (theLast,  aPnt2);
+      } while (aPnt1.Distance (aPnt2) < theLimit);
     }
-    else if (firstInf) {
-      aCurve.D0(Last,P2);
+    else if (isFirstInf)
+    {
+      theCurve.D0 (theLast, aPnt2);
       do {
-	if (count++ == 100000) return Standard_False;
-	delta *= 2;
-	First = Last - delta;
-	aCurve.D0(First,P1);
-      } while (P1.Distance(P2) < aLimit);
+        if (anIterCount++ >= 100000) return Standard_False;
+        aDelta *= 2.0;
+        theFirst = theLast - aDelta;
+        theCurve.D0 (theFirst, aPnt1);
+      } while (aPnt1.Distance (aPnt2) < theLimit);
     }
-    else if (lastInf) {
-      aCurve.D0(First,P1);
+    else if (isLastInf)
+    {
+      theCurve.D0 (theFirst, aPnt1);
       do {
-	if (count++ == 100000) return Standard_False;
-	delta *= 2;
-	Last = First + delta;
-	aCurve.D0(Last,P2);
-      } while (P1.Distance(P2) < aLimit);
+        if (anIterCount++ >= 100000) return Standard_False;
+        aDelta *= 2.0;
+        theLast = theFirst + aDelta;
+        theCurve.D0 (theLast, aPnt2);
+      } while (aPnt1.Distance (aPnt2) < theLimit);
     }
-  }    
+  }
   return Standard_True;
 }
 
 //=====================================================
 // Function : GetEdgeSensitive
-// Purpose  : create a sensitive edge to add it  
+// Purpose  : create a sensitive edge to add it
 //            in computeselection to "aselection" (case of selection of an edge)
 //            or to "aSensitiveWire" (case of selection of a wire; in this case,
 //            the sensitive wire is added to "aselection" )
 //            odl - for selection by rectangle -
-//=====================================================   
+//=====================================================
 void StdSelect_BRepSelectionTool
-::GetEdgeSensitive (const TopoDS_Shape& shap,
-                    const Handle(StdSelect_BRepOwner)& Owner ,
-                    const Handle(SelectMgr_Selection)& aSelection,
+::GetEdgeSensitive (const TopoDS_Shape& theShape,
+                    const Handle(StdSelect_BRepOwner)& theOwner,
+                    const Handle(SelectMgr_Selection)& theSelection,
                     const Standard_Real theDeflection,
                     const Standard_Real theDeviationAngle,
-                    const Standard_Integer NbPOnEdge,
-                    const Standard_Real MaxParam,
-Handle(Select3D_SensitiveEntity)& aSensitive) 
+                    const Standard_Integer theNbPOnEdge,
+                    const Standard_Real theMaxParam,
+                    Handle(Select3D_SensitiveEntity)& theSensitive)
 {
-   BRepAdaptor_Curve cu3d;
-
-#ifdef OCC294
-   try {
-     OCC_CATCH_SIGNALS
-     cu3d.Initialize (TopoDS::Edge(shap));
-   } catch ( Standard_NullObject ) {
-     return;
-   }
-#else
-   cu3d.Initialize (TopoDS::Edge(shap));
-#endif
-
-  // try to get points from existing polygons
-  Handle(TColgp_HArray1OfPnt) aPoints = GetPointsFromPolygon (TopoDS::Edge(shap), theDeflection);
-  if (!aPoints.IsNull() && aPoints->Length() > 0)
-  {
-    aSensitive = new Select3D_SensitiveCurve (Owner, aPoints);
+  const TopoDS_Edge& anEdge = TopoDS::Edge (theShape);
+  BRepAdaptor_Curve cu3d;
+  try {
+    OCC_CATCH_SIGNALS
+    cu3d.Initialize (anEdge);
+  } catch (Standard_NullObject) {
     return;
   }
 
-  Standard_Real wf,wl;  
-  BRep_Tool::Range(TopoDS::Edge(shap), wf, wl);
+  // try to get points from existing polygons
+  Handle(TColgp_HArray1OfPnt) aPoints = GetPointsFromPolygon (anEdge, theDeflection);
+  if (!aPoints.IsNull() && aPoints->Length() > 0)
+  {
+    theSensitive = new Select3D_SensitiveCurve (theOwner, aPoints);
+    return;
+  }
 
-  switch(cu3d.GetType()){
-  case GeomAbs_Line:
+  Standard_Real aParamFirst = cu3d.FirstParameter();
+  Standard_Real aParamLast  = cu3d.LastParameter();
+  switch (cu3d.GetType())
+  {
+    case GeomAbs_Line:
     {
-      aSensitive = new Select3D_SensitiveSegment
-			  (Owner,
-			   cu3d.Value(wf),cu3d.Value(wl));
+      BRep_Tool::Range (anEdge, aParamFirst, aParamLast);
+      theSensitive = new Select3D_SensitiveSegment (theOwner,
+                                                    cu3d.Value (aParamFirst),
+                                                    cu3d.Value (aParamLast));
       break;
     }
-  case GeomAbs_Circle:
+    case GeomAbs_Circle:
     {
-      Handle (Geom_Circle) TheCircle =new Geom_Circle(cu3d.Circle());
-      Standard_Real TheStart = cu3d.FirstParameter();
-      Standard_Real TheEnd = cu3d.LastParameter();
-      if(TheCircle->Radius()<=Precision::Confusion())
-	aSelection->Add(new Select3D_SensitivePoint(Owner,TheCircle->Location()));
+      Handle (Geom_Circle) aCircle = new Geom_Circle (cu3d.Circle());
+      if (aCircle->Radius() <= Precision::Confusion())
+      {
+        theSelection->Add (new Select3D_SensitivePoint (theOwner, aCircle->Location()));
+      }
       else
-	aSensitive = new Select3D_SensitiveCircle(Owner,TheCircle,TheStart,TheEnd,Standard_False,16);
+      {
+        theSensitive = new Select3D_SensitiveCircle (theOwner, aCircle,
+                                                     aParamFirst, aParamLast, Standard_False, 16);
+      }
       break;
     }
-  default:
+    default:
     {
-   
-      //aLimit = myDrawer->MaximalParameterValue(); ??
-      Standard_Real aLimit = 200.; // TODO (kgv) - do we need set MaxParam here?
-      Standard_Real V1 = cu3d.FirstParameter();
-      Standard_Real V2  = cu3d.LastParameter();
-      Standard_Boolean firstInf = Precision::IsNegativeInfinite(V1);
-      Standard_Boolean lastInf  = Precision::IsPositiveInfinite(V2);
-      
-      if (firstInf || lastInf) {
-	gp_Pnt P1,P2;
-	Standard_Real delta = 1;
-	if (firstInf && lastInf) {
-	  do {
-	    delta *= 2;
-	    V1 = - delta;
-	    V2  =   delta;
-	    cu3d.D0(V1,P1);
-	    cu3d.D0(V2,P2);
-	  } while (P1.Distance(P2) < aLimit);
-	}
-	else if (firstInf) {
-	  cu3d.D0(V2,P2);
-	  do {
-	    delta *= 2;
-	    V1 = V2 - delta;
-	    cu3d.D0(V1,P1);
-	  } while (P1.Distance(P2) < aLimit);
-	}
-	else if (lastInf) {
-	  cu3d.D0(V1,P1);
-	  do {
-	    delta *= 2;
-	    V2 = V1 + delta;
-	    cu3d.D0(V2,P2);
-	  } while (P1.Distance(P2) < aLimit);
-	}
-      }    
-
-      Standard_Real aLimitV1, aLimitV2;
-      Standard_Boolean isOK = FindLimits (cu3d, aLimit, aLimitV1, aLimitV2);
-      //aLimitV1 = cu3d.FirstParameter();
-      //aLimitV2 = cu3d.LastParameter();
-
-      // reproduce drawing behavour
-      // TODO (kgv) - remove copy-paste
-      if (isOK)
+      // reproduce drawing behaviour
+      // TODO: remove copy-paste from StdPrs_Curve and some others...
+      if (FindLimits (cu3d, theMaxParam, aParamFirst, aParamLast))
       {
         Standard_Integer aNbIntervals = cu3d.NbIntervals (GeomAbs_C1);
         TColStd_Array1OfReal anIntervals (1, aNbIntervals + 1);
@@ -536,28 +483,25 @@ Handle(Select3D_SensitiveEntity)& aSensitive)
         Standard_Real aV1, aV2;
         Standard_Integer aNumberOfPoints;
         TColgp_SequenceOfPnt aPointsSeq;
-
         for (Standard_Integer anIntervalId = 1; anIntervalId <= aNbIntervals; ++anIntervalId)
         {
-          aV1 = anIntervals (anIntervalId); aV2 = anIntervals (anIntervalId + 1);
-          if (aV2 > aLimitV1 && aV1 < aLimitV2)
+          aV1 = anIntervals (anIntervalId);
+          aV2 = anIntervals (anIntervalId + 1);
+          if (aV2 > aParamFirst && aV1 < aParamLast)
           {
-            aV1 = Max (aV1, aLimitV1);
-            aV2 = Min (aV2, aLimitV2);
+            aV1 = Max (aV1, aParamFirst);
+            aV2 = Min (aV2, aParamLast);
 
             GCPnts_TangentialDeflection anAlgo (cu3d, aV1, aV2, theDeviationAngle, theDeflection);
             aNumberOfPoints = anAlgo.NbPoints();
 
-            if (aNumberOfPoints > 0)
+            for (Standard_Integer aPntId = 1; aPntId < aNumberOfPoints; ++aPntId)
             {
-              for (Standard_Integer i = 1; i < aNumberOfPoints; ++i)
-              { 
-                aPointsSeq.Append (anAlgo.Value (i)); 
-              }
-              if (anIntervalId == aNbIntervals)
-              {
-                aPointsSeq.Append (anAlgo.Value (aNumberOfPoints)); 
-              }
+              aPointsSeq.Append (anAlgo.Value (aPntId));
+            }
+            if (aNumberOfPoints > 0 && anIntervalId == aNbIntervals)
+            {
+              aPointsSeq.Append (anAlgo.Value (aNumberOfPoints));
             }
           }
         }
@@ -567,287 +511,275 @@ Handle(Select3D_SensitiveEntity)& aSensitive)
         {
           aPoints->SetValue (aPntId, aPointsSeq.Value (aPntId));
         }
-        aSensitive = new Select3D_SensitiveCurve (Owner, aPoints);
+        theSensitive = new Select3D_SensitiveCurve (theOwner, aPoints);
         break;
       }
 
       // simple subdivisions
       Standard_Integer nbintervals = 1;
-      
-      if (cu3d.GetType() == GeomAbs_BSplineCurve) {
-	nbintervals = cu3d.NbKnots() - 1;
-	nbintervals = Max(1, nbintervals/3);}
-      
-      Standard_Real V;
-      Standard_Integer N = Max(2, NbPOnEdge*nbintervals);
-      Standard_Real DV = (V2-V1) / (N-1);
-      gp_Pnt p;
-      
-      if (first) {
-	myN = N;
-	first = Standard_False;
+      if (cu3d.GetType() == GeomAbs_BSplineCurve)
+      {
+        nbintervals = cu3d.NbKnots() - 1;
+        nbintervals = Max (1, nbintervals / 3);
       }
-      if (myN == N) {
-	
-	Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, N);
-	
-	for (Standard_Integer i = 1; i <= N;i++) 
-	  { 
-	    V = V1 + (i-1)*DV;
-	    p = cu3d.Value(V);
-	    points->SetValue(i,p); 
-	  }
-	aSensitive = new Select3D_SensitiveCurve(Owner,points);
-	
+
+      Standard_Real aParam;
+      Standard_Integer aPntNb = Max (2, theNbPOnEdge * nbintervals);
+      Standard_Real aParamDelta = (aParamLast - aParamFirst) / (aPntNb - 1);
+      Handle(TColgp_HArray1OfPnt) aPointArray = new TColgp_HArray1OfPnt (1, aPntNb);
+      for (Standard_Integer aPntId = 1; aPntId <= aPntNb; ++aPntId)
+      {
+        aParam = aParamFirst + aParamDelta * (aPntId - 1);
+        aPointArray->SetValue (aPntId, cu3d.Value (aParam));
       }
-      else {
-	Handle(TColgp_HArray1OfPnt) pointsbis = new TColgp_HArray1OfPnt(1, N);
-	
-	for (Standard_Integer i = 1; i <= N;i++) 
-	  { 
-	    V = V1 + (i-1)*DV;
-	    p = cu3d.Value(V);
-	    pointsbis->SetValue(i,p);
-	  }
-	aSensitive = new Select3D_SensitiveCurve(Owner,pointsbis);
-	
-      }
+      theSensitive = new Select3D_SensitiveCurve (theOwner, aPointArray);
     }
     break;
   }
 }
 
-
-Standard_Integer StdSelect_BRepSelectionTool::GetStandardPriority (const TopoDS_Shape& SH,
-								   const TopAbs_ShapeEnum aType) 
+//=====================================================
+// Function : GetStandardPriority
+// Purpose  :
+//=====================================================
+Standard_Integer StdSelect_BRepSelectionTool::GetStandardPriority (const TopoDS_Shape& theShape,
+                                                                   const TopAbs_ShapeEnum theType)
 {
-  switch(aType) {
-  case TopAbs_VERTEX:
-    return 8;
-  case TopAbs_EDGE:
-    return 7;
-  case TopAbs_WIRE:
-    return 6;
-  case TopAbs_FACE:
-    return 5;
-  case TopAbs_SHAPE:
-  default:
-    switch(SH.ShapeType())
-    {
-    case TopAbs_VERTEX:
-      return 9;
-    case TopAbs_EDGE:
-      return 8;
-    case TopAbs_WIRE:
-      return 7;
-    case TopAbs_FACE:
-      return 6;
-    case TopAbs_SHELL:
-      return 5;
-    case TopAbs_COMPOUND:
-    case TopAbs_COMPSOLID:
-    case TopAbs_SOLID:
+  switch (theType)
+  {
+    case TopAbs_VERTEX: return 8;
+    case TopAbs_EDGE:   return 7;
+    case TopAbs_WIRE:   return 6;
+    case TopAbs_FACE:   return 5;
     case TopAbs_SHAPE:
     default:
-      return 4;
-    }
+      switch (theShape.ShapeType())
+      {
+        case TopAbs_VERTEX:    return 9;
+        case TopAbs_EDGE:      return 8;
+        case TopAbs_WIRE:      return 7;
+        case TopAbs_FACE:      return 6;
+        case TopAbs_SHELL:     return 5;
+        case TopAbs_COMPOUND:
+        case TopAbs_COMPSOLID:
+        case TopAbs_SOLID:
+        case TopAbs_SHAPE:
+        default:
+          return 4;
+      }
   }
-  
-  return 0;
 }
 
 //=======================================================================
 //function : GetSensitiveEntityForFace
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace(const TopoDS_Face& F,
-								  const Handle(StdSelect_BRepOwner)& Owner,
-								  Select3D_ListOfSensitive& LL,
-								  const Standard_Boolean AutoTriangulation,
-								  const Standard_Integer NbPOnEdge,
-								  const Standard_Real MaxParam,
-								  const Standard_Boolean InteriorFlag)
+Standard_Boolean StdSelect_BRepSelectionTool
+::GetSensitiveForFace (const TopoDS_Face& theFace,
+                       const Handle(StdSelect_BRepOwner)& theOwner,
+                       Select3D_ListOfSensitive& theSensitiveList,
+                       const Standard_Boolean theAutoTriangulation,
+                       const Standard_Integer NbPOnEdge,
+                       const Standard_Real    theMaxParam,
+                       const Standard_Boolean theInteriorFlag)
 {
   // check if there is triangulation of the face...
-   BRepAdaptor_Curve cu3d;
-  Handle(Poly_Triangulation) T;
-  TopLoc_Location loc;
-  T = BRep_Tool::Triangulation(F,loc);
-  
-  if(T.IsNull() && AutoTriangulation){
-    Standard_Real Defl=.2,Ang=30*PI/180.;
-    BRepMesh_IncrementalMesh(F,Defl,Standard_True,Ang);
-    T = BRep_Tool::Triangulation(F,loc);
-    
+  TopLoc_Location aLoc;
+  Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
+  if (aTriangulation.IsNull() && theAutoTriangulation)
+  {
+    Standard_Real aDefaultDefl = 0.2;
+    Standard_Real aDefaultAng  = 30 * PI / 180.0;
+    BRepMesh_IncrementalMesh (theFace, aDefaultDefl, Standard_True, aDefaultAng);
+    aTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
   }
-  if(!T.IsNull()){
-    Handle(Select3D_SensitiveTriangulation) STG = 
-      new Select3D_SensitiveTriangulation(Owner,T,loc,InteriorFlag);
-    LL.Append(STG);
+  if (!aTriangulation.IsNull())
+  {
+    Handle(Select3D_SensitiveTriangulation) STG = new Select3D_SensitiveTriangulation (theOwner, aTriangulation, aLoc, theInteriorFlag);
+    theSensitiveList.Append (STG);
     return Standard_True;
   }
 
   // for faces with triangulation bugs or without autotriangulation ....
   // very ugly and should not even exist ...
-   BRepAdaptor_Surface BS;
-  BS.Initialize (F);
-  
-  Standard_Real FirstU = BS.FirstUParameter()<=-Precision::Infinite()? -MaxParam:BS.FirstUParameter();
-  Standard_Real LastU  = BS.LastUParameter() >=Precision::Infinite()? MaxParam:BS.LastUParameter();
-  Standard_Real FirstV = BS.FirstVParameter()<=-Precision::Infinite()? -MaxParam:BS.FirstVParameter();
-  Standard_Real LastV  = BS.LastVParameter()>=Precision::Infinite()? MaxParam:BS.LastVParameter();
-  
+  BRepAdaptor_Surface BS;
+  BS.Initialize (theFace);
 
+  Standard_Real FirstU = BS.FirstUParameter() <= -Precision::Infinite() ? -theMaxParam : BS.FirstUParameter();
+  Standard_Real LastU  = BS.LastUParameter()  >=  Precision::Infinite() ?  theMaxParam : BS.LastUParameter();
+  Standard_Real FirstV = BS.FirstVParameter() <= -Precision::Infinite() ? -theMaxParam : BS.FirstVParameter();
+  Standard_Real LastV  = BS.LastVParameter()  >=  Precision::Infinite() ?  theMaxParam : BS.LastVParameter();
 
-  if(BS.GetType()==GeomAbs_Plane){
+  if (BS.GetType() == GeomAbs_Plane)
+  {
     gp_Pnt pcur;
-    Handle(TColgp_HArray1OfPnt) P = new TColgp_HArray1OfPnt(1,5);
-    BS.D0(FirstU,FirstV,pcur);
-    P->SetValue(1,pcur);
-    BS.D0(LastU,FirstV,pcur);
-    P->SetValue(2,pcur);
-    BS.D0(LastU,LastV,pcur);
-    P->SetValue(3,pcur);
-    BS.D0(FirstU,LastV,pcur);
-    P->SetValue(4,pcur);
-    P->SetValue(5,P->Value(1));
+    Handle(TColgp_HArray1OfPnt) P = new TColgp_HArray1OfPnt (1, 5);
+    BS.D0 (FirstU, FirstV, pcur);
+    P->SetValue (1, pcur);
+    BS.D0 (LastU, FirstV, pcur);
+    P->SetValue (2, pcur);
+    BS.D0 (LastU, LastV, pcur);
+    P->SetValue (3, pcur);
+    BS.D0 (FirstU, LastV, pcur);
+    P->SetValue (4, pcur);
+    P->SetValue (5, P->Value (1));
     // if the plane is "infinite", it is sensitive only on the border limited by MaxParam
-    if(FirstU ==-MaxParam && LastU==MaxParam && FirstV ==-MaxParam && LastV==MaxParam)
-      LL.Append(new Select3D_SensitiveFace
-		(Owner, P, Select3D_TOS_BOUNDARY));
-    else{
-      Select3D_TypeOfSensitivity TS = InteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-      LL.Append(new Select3D_SensitiveFace
-		(Owner, P, TS));
+    if (FirstU == -theMaxParam && LastU == theMaxParam && FirstV == -theMaxParam && LastV == theMaxParam)
+    {
+      theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, P, Select3D_TOS_BOUNDARY));
+    }
+    else
+    {
+      Select3D_TypeOfSensitivity TS = theInteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
+      theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, P, TS));
     }
     return Standard_True;
   }
-  
+
   // This is construction of a sevsitive polygon from the exterior contour of the face...
   // It is not good at all, but...
   TopoDS_Wire aWire;
-//  Standard_Integer NbEdges=1;
+  TopExp_Explorer anExpWiresInFace (theFace, TopAbs_WIRE);
+  if (anExpWiresInFace.More())
+  {
+    // believing that this is the first... to be seen
+    aWire = TopoDS::Wire (anExpWiresInFace.Current());
+  }
+  if (aWire.IsNull())
+  {
+    return Standard_False;
+  }
 
-//  Standard_Integer NbPoints(0);
-
-  TopExp_Explorer EW(F,TopAbs_WIRE);
-  if(EW.More())
-    aWire = TopoDS::Wire(EW.Current()); // believing that this is the first... to be seen
-
-#ifdef OCC872
-   if ( aWire.IsNull() )
-     return Standard_False;
-#endif
-
-  BRepTools_WireExplorer Exp;
-  Exp.Init(aWire); 
-  
   TColgp_SequenceOfPnt WirePoints;
   Standard_Boolean FirstExp = Standard_True;
-  Standard_Real wf,wl;
-  
-  for(;Exp.More();Exp.Next()){
-    cu3d.Initialize (Exp.Current());	
-    BRep_Tool::Range(Exp.Current(), wf, wl);
-    if(Abs(wf-wl)<=Precision::Confusion()){
-#ifdef DEB
+  Standard_Real wf, wl;
+  BRepAdaptor_Curve cu3d;
+  for (BRepTools_WireExplorer aWireExplorer (aWire);
+       aWireExplorer.More(); aWireExplorer.Next())
+  {
+    cu3d.Initialize (aWireExplorer.Current());
+    BRep_Tool::Range (aWireExplorer.Current(), wf, wl);
+    if (Abs (wf - wl) <= Precision::Confusion())
+    {
+    #ifdef DEB
       cout<<" StdSelect_BRepSelectionTool : Curve where ufirst = ulast ...."<<endl;
-#endif
+    #endif
     }
-    else{
-      if(FirstExp){
-	if(Exp.Orientation()==TopAbs_FORWARD ){
-	  WirePoints.Append(cu3d.Value(wf));
-	}
-	else{
-	  WirePoints.Append(cu3d.Value(wl));}
-	FirstExp = Standard_False;}
-      
-      switch(cu3d.GetType()){
-      case GeomAbs_Line:{
-	if(Exp.Orientation()==TopAbs_FORWARD){
-	  WirePoints.Append(cu3d.Value(wl));}
-	else{
-	  WirePoints.Append(cu3d.Value(wf));}
-	
-	break;}
-      case GeomAbs_Circle:{
-	if (2*PI - Abs(wl-wf)  <= Precision::Confusion()) {
-	  if(BS.GetType()==GeomAbs_Cylinder ||
-	     BS.GetType()==GeomAbs_Torus ||
-	     BS.GetType()==GeomAbs_Cone  ||
-	     BS.GetType()==GeomAbs_BSplineSurface) 
-	    {
-	      Standard_Real ff= wf ,ll= wl ;
-	      Standard_Real dw
-		=(Max(wf, wl)-Min(wf,wl))/(Standard_Real)Max(2, NbPOnEdge-1);
-	      if (Exp.Orientation()==TopAbs_FORWARD){		  
-		for (Standard_Real wc=wf+dw; wc <= wl; wc+=dw){
-		  WirePoints.Append(cu3d.Value(wc));	    
-		}
-	      } else if (Exp.Orientation()==TopAbs_REVERSED){		
-		for (Standard_Real wc=ll-dw; wc >= ff; wc-=dw){
-		  WirePoints.Append(cu3d.Value(wc));	    
-		}
-	      }
-	    }
-	  
-	  else {
-	    if(cu3d.Circle().Radius() <= Precision::Confusion())
-	      LL.Append(new Select3D_SensitivePoint(Owner,cu3d.Circle().Location()));
-	    else
-	      LL.Append(new Select3D_SensitiveCircle(Owner,new Geom_Circle(cu3d.Circle()),InteriorFlag,16));
-	    
-	  }
-	}
-	else {
-	  Standard_Real ff= wf ,ll= wl ;
-	  Standard_Real dw
-	    =(Max(wf, wl)-Min(wf,wl))/(Standard_Real)Max(2, NbPOnEdge-1);
-	  
-	  if (Exp.Orientation()==TopAbs_FORWARD){		  
-	    for (Standard_Real wc=wf+dw; wc <= wl; wc+=dw){
-	      WirePoints.Append(cu3d.Value(wc));	    
-	    }
-	  } else if (Exp.Orientation()==TopAbs_REVERSED){		
-	    for (Standard_Real wc=ll-dw; wc >= ff; wc-=dw){
-	      WirePoints.Append(cu3d.Value(wc));	    
-	    }
-	  }
-	}
-	
-	break;
+    else
+    {
+      if (FirstExp)
+      {
+        if (aWireExplorer.Orientation() == TopAbs_FORWARD)
+        {
+          WirePoints.Append (cu3d.Value (wf));
+        }
+        else
+        {
+          WirePoints.Append (cu3d.Value (wl));
+        }
+        FirstExp = Standard_False;
       }
-      default:
-	{
-	  Standard_Real ff= wf ,ll= wl ;
-	  Standard_Real dw
-	    =(Max(wf, wl)-Min(wf,wl))/(Standard_Real)Max(2, NbPOnEdge-1);
-	  
-	  
-	  if (Exp.Orientation()==TopAbs_FORWARD){		
-	    for (Standard_Real wc=wf+dw; wc <= wl; wc+=dw){
-	      WirePoints.Append(cu3d.Value(wc));	    		  
-	    }
-	  } else if (Exp.Orientation()==TopAbs_REVERSED) {
-	    for (Standard_Real wc=ll-dw; wc >= ff; wc-=dw){
-	      WirePoints.Append(cu3d.Value(wc));	    		  
-	    }
-	  }
-	}
+
+      switch (cu3d.GetType())
+      {
+        case GeomAbs_Line:
+        {
+          WirePoints.Append (cu3d.Value ((aWireExplorer.Orientation() == TopAbs_FORWARD) ? wl : wf));
+          break;
+        }
+        case GeomAbs_Circle:
+        {
+          if (2 * PI - Abs (wl - wf) <= Precision::Confusion())
+          {
+            if (BS.GetType() == GeomAbs_Cylinder ||
+                BS.GetType() == GeomAbs_Torus ||
+                BS.GetType() == GeomAbs_Cone  ||
+                BS.GetType() == GeomAbs_BSplineSurface) // beuurkk pour l'instant...
+            {
+              Standard_Real ff = wf ,ll = wl;
+              Standard_Real dw =(Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
+              if (aWireExplorer.Orientation() == TopAbs_FORWARD)
+              {
+                for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
+                {
+                  WirePoints.Append (cu3d.Value (wc));
+                }
+              }
+              else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
+              {
+                for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
+                {
+                  WirePoints.Append (cu3d.Value (wc));
+                }
+              }
+            }
+            else
+            {
+              if (cu3d.Circle().Radius() <= Precision::Confusion())
+              {
+                theSensitiveList.Append (new Select3D_SensitivePoint (theOwner, cu3d.Circle().Location()));
+              }
+              else
+              {
+                theSensitiveList.Append (new Select3D_SensitiveCircle (theOwner, new Geom_Circle (cu3d.Circle()), theInteriorFlag, 16));
+              }
+            }
+          }
+          else
+          {
+            Standard_Real ff = wf, ll = wl;
+            Standard_Real dw = (Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
+            if (aWireExplorer.Orientation() == TopAbs_FORWARD)
+            {
+              for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
+              {
+                WirePoints.Append (cu3d.Value (wc));
+              }
+            }
+            else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
+            {
+              for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
+              {
+                WirePoints.Append (cu3d.Value (wc));
+              }
+            }
+          }
+          break;
+        }
+        default:
+        {
+          Standard_Real ff = wf, ll = wl;
+          Standard_Real dw = (Max (wf, wl) - Min (wf, wl)) / (Standard_Real )Max (2, NbPOnEdge - 1);
+          if (aWireExplorer.Orientation()==TopAbs_FORWARD)
+          {
+            for (Standard_Real wc = wf + dw; wc <= wl; wc += dw)
+            {
+              WirePoints.Append (cu3d.Value (wc));
+            }
+          }
+          else if (aWireExplorer.Orientation() == TopAbs_REVERSED)
+          {
+            for (Standard_Real wc = ll - dw; wc >= ff; wc -= dw)
+            {
+              WirePoints.Append (cu3d.Value (wc));
+            }
+          }
+        }
       }
     }
   }
   Standard_Integer ArrayPosition = WirePoints.Length();
-  
-  Handle(TColgp_HArray1OfPnt)  facepoints = new TColgp_HArray1OfPnt(1,ArrayPosition);
-  for(Standard_Integer I=1 ;I<=ArrayPosition;I++)
-    {facepoints->SetValue (I, WirePoints.Value(I));}
-  
-  if ((facepoints->Array1()).Length() > 1) { // 1 if only one circular edge
-    Select3D_TypeOfSensitivity TS = InteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-    LL.Append(new Select3D_SensitiveFace
-	       (Owner, facepoints, TS));
+
+  Handle(TColgp_HArray1OfPnt) facepoints = new TColgp_HArray1OfPnt (1, ArrayPosition);
+  for (Standard_Integer I = 1; I <= ArrayPosition; ++I)
+  {
+    facepoints->SetValue (I, WirePoints.Value(I));
+  }
+
+  if ((facepoints->Array1()).Length() > 1)
+  { //1 if only one circular edge
+    Select3D_TypeOfSensitivity TS = theInteriorFlag ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
+    theSensitiveList.Append (new Select3D_SensitiveFace (theOwner, facepoints, TS));
   }
   return Standard_True;
 }

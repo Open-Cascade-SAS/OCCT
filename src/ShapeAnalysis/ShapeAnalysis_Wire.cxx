@@ -1624,7 +1624,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckNotchedEdges(const Standard_Integer nu
   ShapeAnalysis_Curve sac;
   
   gp_Pnt Proj1, Proj2;
-  Standard_Real param1, param2;
+  Standard_Real param1 = 0., param2 = 0.;
   p2d2=c2d2->Value(E2.Orientation()==TopAbs_FORWARD ? b2 : a2);
   p2d1=c2d1->Value(E1.Orientation()==TopAbs_FORWARD ? a1 : b1);
   Standard_Real dist1 = ProjectInside(Ad1,gp_Pnt(p2d2.X(),p2d2.Y(),0),Tolerance,Proj1,param1,Standard_False);

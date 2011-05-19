@@ -50,8 +50,6 @@ uses
 	HSequenceOfGroup	from Graphic3d,
 	SequenceOfStructure	from Graphic3d,
 	HSequenceOfStructure	from Graphic3d,
-	SetOfGroup		from Graphic3d,
-	HSetOfGroup		from Graphic3d,
 	MapOfStructure		from Graphic3d,
 	Plotter			from Graphic3d,
 	StructureManager	from Graphic3d,
@@ -62,7 +60,7 @@ uses
 	Vector			from Graphic3d,
 	VertexNC		from Graphic3d,
 	Vertex			from Graphic3d,
-        TransModeFlags          from Graphic3d, 
+        TransModeFlags          from Graphic3d,
 	Pnt                     from gp
 
 raises
@@ -237,7 +235,7 @@ is
 	ResetDisplayPriority ( me		: mutable)
 		is static;
 	---Level: Public
-	---Purpose: Reset the current priority of the structure to the 
+	---Purpose: Reset the current priority of the structure to the
 	--	    previous priority.
 	--  Category: Methods to modify the class definition
 	--  Warning: If <me> is displayed then the SetDisplayPriority
@@ -495,10 +493,11 @@ is
 	---Category: Inquire methods
 
 	Groups ( me )
-		returns HSetOfGroup from Graphic3d
+		returns SequenceOfGroup from Graphic3d
 		is static;
+	---C++: return const &
 	---Level: Internal
-	---Purpose: Returns the set of groups included in the structure <me>.
+	---Purpose: Returns the groups sequence included in the structure <me> (internal storage).
 	---Category: Inquire methods
 
 	NumberOfGroups ( me )
@@ -833,27 +832,27 @@ is
 	---Level: Public
 	---Purpose: Returns the transformation associated with
 	--	    the structure <me>.
-	---Category: Methods to manage the structure transformation 
-	 
+	---Category: Methods to manage the structure transformation
+
 	SetTransformPersistence( me	: mutable;
-                                 AFlag  : TransModeFlags from Graphic3d; 
+                                 AFlag  : TransModeFlags from Graphic3d;
                                  APoint : Pnt from gp  )
         ---Level: Public
 	---Purpose: Modifies the current modelling transform persistence (pan, zoom or rotate)
         is static;
 
-        SetTransformPersistence(  me  :  mutable; 
+        SetTransformPersistence(  me  :  mutable;
 	                          AFlag  :  TransModeFlags  from  Graphic3d  )
         --  Calls previous   method  with  point  (0,0,0)
         is  static;
-	
+
 
 	TransformPersistenceMode( me )
  			returns TransModeFlags from Graphic3d
         ---Level: Public
 	---Purpose: Get the current modelling transform persistence (pan, zoom or rotate)
-        is static; 
-	 
+        is static;
+
 	TransformPersistencePoint( me )
  			returns Pnt from gp
         ---Level: Public
@@ -926,7 +925,7 @@ is
 			   AMatrix	: Array2OfReal from TColStd )
 		is static;
 	---Level: Internal
-	---Purpose: 
+	---Purpose:
 	---Category: Private methods
 
 	GraphicUnHighlight ( me	: mutable )

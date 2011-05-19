@@ -56,6 +56,8 @@ void PrsMgr_Presentation3d::Clear() {
   // Consequence: 
   //    1. The memory zone of the group is reused
   //    2. The speed for animation is constant
+  //myPresentableObject = NULL;
+  SetUpdateStatus(Standard_True);
   myStructure->Clear(Standard_True);
   //  myStructure->Clear(Standard_False);
 
