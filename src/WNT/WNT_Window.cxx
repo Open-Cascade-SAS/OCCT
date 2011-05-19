@@ -462,7 +462,7 @@ void WNT_Window :: Flush () const {
 //***//
 Standard_Boolean WNT_Window :: IsMapped () const {
   if (IsVirtual()) {
-    Standard_True;
+    return Standard_True;
   }
 
   WINDOWPLACEMENT wp;
