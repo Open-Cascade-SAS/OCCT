@@ -100,8 +100,8 @@ private:
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)( '\1' << ( i % BitsPerCell() ) );
-      Cell  anold = ( *abyte & amask );
-      *abyte |= amask;
+      Cell  anold = (Cell)( *abyte & amask );
+      *abyte = (Cell)( *abyte | amask );
       return ! anold;
     }
 
@@ -110,7 +110,7 @@ private:
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)( '\1' << ( i % BitsPerCell() ) );
-      return ( *abyte & amask );
+      return (Cell)( *abyte & amask );
     }
 
     //! Unset bit for i-th item; returns non-null if that bit 
@@ -119,8 +119,8 @@ private:
     {
       Cell* abyte = Bits + i / BitsPerCell();
       Cell  amask = (Cell)( '\1' << ( i % BitsPerCell() ) );
-      Cell  anold = ( *abyte & amask );
-      *abyte &= ~amask;
+      Cell  anold = (Cell)( *abyte & amask );
+      *abyte = (Cell)( *abyte & ~amask );
       return anold;
     }
 
