@@ -17,6 +17,7 @@
 #include <ShapeBuild_Edge.hxx>
 #include <IGESToBRep.hxx>
 #include <IGESToBRep_TopoCurve.hxx>
+#include <ShapeFix_Wire.hxx>
 
 //=======================================================================
 //function : IGESToBRep_IGESBoundary
@@ -260,9 +261,12 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
 //           Orientation of each edge is not changed
 //=======================================================================
 
- void IGESToBRep_IGESBoundary::ReverseCurves3d (const Handle(ShapeExtend_WireData)& sewd)
+void IGESToBRep_IGESBoundary::ReverseCurves3d (const Handle(ShapeExtend_WireData)& sewd)
 {
   sewd->Reverse();
+  BRep_Builder B;
+  TopoDS_Wire W;
+  B.MakeWire(W);
   for (Standard_Integer i = 1; i <= sewd->NbEdges(); i++) {
     TopoDS_Edge oldedge = sewd->Edge (i), newedge;
     TopLoc_Location L;
@@ -276,8 +280,13 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
 				Max (curve->ReversedParameter(curve->LastParameter()), curve->ReversedParameter (p2)),
 				Min (curve->ReversedParameter(curve->FirstParameter()),  curve->ReversedParameter (p1)));
     newedge.Orientation(TopAbs::Reverse (oldedge.Orientation()));
-    sewd->Set (newedge, i);
+    //sewd->Set (newedge, i);
+    B.Add(W,newedge);
   }
+  Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire();
+  sfw->Load(W);
+  sfw->FixConnected();
+  sewd->Init(sfw->Wire());
 }
 
 //=======================================================================
