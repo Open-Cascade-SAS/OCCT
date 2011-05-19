@@ -4,6 +4,7 @@
 // Copyright: Open Cascade 2007
 
 #include <NIS_Drawer.hxx>
+#include <NIS_View.hxx>
 #include <NIS_InteractiveContext.hxx>
 #include <NIS_InteractiveObject.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
@@ -34,6 +35,9 @@ void NIS_Drawer::Assign (const Handle_NIS_Drawer& theOther)
 {
   if (theOther->IsKind(DynamicType()) == Standard_False)
     Standard_TypeMismatch::Raise ("NIS_Drawer::Assign");
+  myIniId        = theOther->myIniId;
+  myObjPerDrawer = theOther->myObjPerDrawer;
+  myTransparency = theOther->myTransparency;
 }
 
 //=======================================================================
@@ -43,7 +47,9 @@ void NIS_Drawer::Assign (const Handle_NIS_Drawer& theOther)
 
 Standard_Integer NIS_Drawer::HashCode(const Standard_Integer theN) const
 {
-  return ::HashCode (DynamicType(), theN);
+  Standard_Integer aKey = ::HashCode (DynamicType(), theN);
+  aKey += (myIniId / myObjPerDrawer);
+  return ((aKey & 0x7fffffff) % theN) + 1;
 }
 
 //=======================================================================
@@ -56,7 +62,13 @@ Standard_Boolean NIS_Drawer::IsEqual (const Handle_NIS_Drawer& theOther) const
   Standard_Boolean aResult (Standard_False);
   if (theOther.IsNull() == Standard_False)
     if (DynamicType() == theOther->DynamicType())
-      aResult = (myMapID.Extent() < 2048);
+      if (theOther->myIniId/theOther->myObjPerDrawer == myIniId/myObjPerDrawer)
+        aResult = Standard_True;
+
+  if (aResult)
+    if (fabs(myTransparency - theOther->myTransparency) > 0.01)
+      aResult = Standard_False;
+
   return aResult;
 }
 
@@ -79,6 +91,36 @@ void NIS_Drawer::AfterDraw (const DrawType, const NIS_DrawList&)
 }
 
 //=======================================================================
+//function : UpdateExListId
+//purpose  : 
+//=======================================================================
+
+void NIS_Drawer::UpdateExListId (const Handle_NIS_View& theView) const
+{
+  if (theView.IsNull()) {
+    if (myCtx) {
+      if (myCtx->myViews.IsEmpty() == Standard_False) {
+        const Handle(NIS_View)& aView = myCtx->myViews.First();
+        NCollection_List<NIS_DrawList *>::Iterator anIterL(myLists);
+        for (; anIterL.More(); anIterL.Next()) {
+          NIS_DrawList * const pList = anIterL.Value();
+          pList->ClearListID(aView);
+        }
+      }
+    }
+  } else {
+    NCollection_List<NIS_DrawList *>::Iterator anIterL(myLists);
+    for (; anIterL.More(); anIterL.Next()) {
+      NIS_DrawList * const pList = anIterL.Value();
+      if (pList->GetView() == theView) {       
+        pList->ClearListID(theView);
+        break;
+      }
+    }
+  }
+}
+
+//=======================================================================
 //function : redraw
 //purpose  : 
 //=======================================================================
@@ -93,13 +135,25 @@ void NIS_Drawer::redraw (const DrawType           theType,
     NCollection_List<NIS_DrawList*>::Iterator anIter (myLists);
     for (; anIter.More(); anIter.Next()) {
       NIS_DrawList& aDrawList = * anIter.ChangeValue();
-      if (aDrawList.GetView() == theView) {
+      const Handle_NIS_View& aView = aDrawList.GetView();
+      if (aView == theView || aView.IsNull()) {
         if (aDrawList.IsUpdated(theType)) {
+          // Get the IDs of objects concerned
+          TColStd_PackedMapOfInteger mapObj;
+          mapObj.Intersection (myCtx->myMapObjects[theType], myMapID);
+#ifndef ARRAY_LISTS
+          // Release the list that is no more in use
+          if (mapObj.IsEmpty() && theType != Draw_DynHilighted) {
+            aDrawList.ClearListID(theType);
+            break;
+          }
+#endif
           aDrawList.BeginPrepare(theType);
-          prepareList (theType, aDrawList);
+          prepareList (theType, aDrawList, mapObj);
           aDrawList.EndPrepare(theType);
         }
-        aDrawList.Call(theType);
+        if (aDrawList.GetListID(theType) > 0)
+          aDrawList.Call(theType);
         break;
       }
     }
@@ -159,6 +213,28 @@ void NIS_Drawer::SetUpdated (const DrawType theType1,
 }
 
 //=======================================================================
+//function : SetUpdated
+//purpose  : 
+//=======================================================================
+
+
+void NIS_Drawer::SetUpdated (const DrawType theType1,
+                             const DrawType theType2,
+                             const DrawType theType3,
+                             const DrawType theType4) const
+{
+  NCollection_List<NIS_DrawList*>::Iterator anIter (myLists);
+  for (; anIter.More(); anIter.Next()) {
+    NIS_DrawList& aDrawList = * anIter.ChangeValue();
+    aDrawList.SetUpdated (theType1);
+    aDrawList.SetUpdated (theType2);
+    aDrawList.SetUpdated (theType3);
+    aDrawList.SetUpdated (theType4);
+  }
+  const_cast<Bnd_B3f&>(myBox).Clear();
+}
+
+//=======================================================================
 //function : SetDynamicHilighted
 //purpose  : 
 //=======================================================================
@@ -180,7 +256,8 @@ void NIS_Drawer::SetDynamicHilighted
     } else
       for (; anIter.More(); anIter.Next()) {
         NIS_DrawList& aDrawList = * anIter.ChangeValue();
-        if (aDrawList.GetView() == theView) {
+        const Handle(NIS_View)& aView = aDrawList.GetView();
+        if (aView == theView || aView.IsNull()) {
           aDrawList.SetDynHilighted (isHilighted, theObj);
           theObj->myIsDynHilighted = isHilighted;
           aDrawList.SetUpdated (Draw_DynHilighted);
@@ -195,15 +272,18 @@ void NIS_Drawer::SetDynamicHilighted
 //=======================================================================
 
 void NIS_Drawer::removeObject (const NIS_InteractiveObject * theObj,
-                               const Standard_Boolean        isUpdateViews)
+                               const Standard_Boolean      isUpdateViews)
 {
   const Standard_Integer anID = theObj->ID();
   myMapID.Remove (anID);
   // Stop dynamic hilighting if it has been activated
   if (theObj->IsDynHilighted())
     SetDynamicHilighted (Standard_False, theObj);
+  if (myMapID.IsEmpty()) {
+    UpdateExListId(NULL);
+  }
   // Set Updated for the draw type.
-  if (theObj->IsHidden() == Standard_False && isUpdateViews)
+  else if (theObj->IsHidden() == Standard_False && isUpdateViews)
     SetUpdated (theObj->DrawType());
 }
 
@@ -213,6 +293,7 @@ void NIS_Drawer::removeObject (const NIS_InteractiveObject * theObj,
 //=======================================================================
 
 void NIS_Drawer::addObject (const NIS_InteractiveObject * theObj,
+                            const Standard_Boolean        isShareList,
                             const Standard_Boolean        isUpdateViews)
 {
   myMapID.Add (theObj->ID());
@@ -220,9 +301,13 @@ void NIS_Drawer::addObject (const NIS_InteractiveObject * theObj,
   // Fill the drawer (if new) with DrawList instances for available Views.
   if ( myLists.IsEmpty())
   {
-    NCollection_List<Handle_NIS_View>::Iterator anIter (GetContext()->myViews);
-    for (; anIter.More(); anIter.Next())
-      myLists.Append (createDefaultList(anIter.Value()));
+    if (isShareList)
+      myLists.Append (createDefaultList(NULL));
+    else {
+      NCollection_List<Handle_NIS_View>::Iterator anIter(GetContext()->myViews);
+      for (; anIter.More(); anIter.Next())
+        myLists.Append (createDefaultList(anIter.Value()));
+    }
   }
 
   if (theObj->IsHidden() == Standard_False && isUpdateViews)
@@ -245,7 +330,8 @@ const Bnd_B3f& NIS_Drawer::GetBox (const NIS_View * pView) const
         NCollection_List<NIS_DrawList*>::Iterator anIterL (myLists);
         for (; anIterL.More(); anIterL.Next()) {
           NIS_DrawList& aDrawList = * anIterL.ChangeValue();
-          if (aDrawList.GetView().operator->() == pView)
+          const Handle(NIS_View)& aView = aDrawList.GetView();
+          if (aView.IsNull() || aView.operator->() == pView)
             break;
         }
         if (anIterL.More())
@@ -269,8 +355,9 @@ const Bnd_B3f& NIS_Drawer::GetBox (const NIS_View * pView) const
 //function : prepareList
 //purpose  : 
 //=======================================================================
-void NIS_Drawer::prepareList( const NIS_Drawer::DrawType theType,
-                              const NIS_DrawList&        theDrawList )
+void NIS_Drawer::prepareList(const NIS_Drawer::DrawType         theType,
+                             const NIS_DrawList&                theDrawList,
+                             const TColStd_PackedMapOfInteger&  mapObj)
 {
   if (!myCtx)
     return;
@@ -280,17 +367,15 @@ void NIS_Drawer::prepareList( const NIS_Drawer::DrawType theType,
   if (theType == NIS_Drawer::Draw_DynHilighted) {
     NCollection_List<Handle_NIS_InteractiveObject>::Iterator
       anIter (theDrawList.DynHilightedList());
-    for (; anIter.More(); anIter.Next())
-    {
+    if (anIter.More()) {
       BeforeDraw (theType, theDrawList);
-      Draw (anIter.Value(), NIS_Drawer::Draw_DynHilighted, theDrawList);
+      for (; anIter.More(); anIter.Next())
+        Draw (anIter.Value(), NIS_Drawer::Draw_DynHilighted, theDrawList);
       AfterDraw (theType, theDrawList);
     }
   } else {
     // The common part of two maps (objects for this draw type & objects in
     // the current Drawer) is used for updating the presentation.
-    TColStd_PackedMapOfInteger mapObj;
-    mapObj.Intersection (myCtx->myMapObjects[theType&0x3], myMapID);
     TColStd_MapIteratorOfPackedMapOfInteger anIter (mapObj);
     if (anIter.More()) {
       BeforeDraw (theType, theDrawList);
@@ -313,5 +398,5 @@ void NIS_Drawer::prepareList( const NIS_Drawer::DrawType theType,
 NIS_DrawList* NIS_Drawer::createDefaultList
                         (const Handle_NIS_View& theView) const
 {
-  return new NIS_DrawList( theView );
+  return new NIS_DrawList(theView);
 }

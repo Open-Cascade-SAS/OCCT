@@ -438,12 +438,12 @@ void ViewerTest::Clear()
       } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_InteractiveObject) anObj =
           Handle(NIS_InteractiveObject)::DownCast (it.Key1());
-        TheNISContext()->Remove(anObj,Standard_False);
+        TheNISContext()->Remove(anObj);
       }
       it.Next();
     }
     TheAISContext()->UpdateCurrentViewer();
-    TheNISContext()->UpdateViews();
+//    TheNISContext()->UpdateViews();
     GetMapOfAIS().Clear();
   }
 }
@@ -1391,7 +1391,7 @@ static int VDonly2(Draw_Interpretor& , Standard_Integer argc, const char** argv)
       } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_InteractiveObject) aShape =
           Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-        TheNISContext()->Erase(aShape,Standard_False);
+        TheNISContext()->Erase(aShape);
       }
       it.Next();
     }
@@ -1407,14 +1407,14 @@ static int VDonly2(Draw_Interpretor& , Standard_Integer argc, const char** argv)
             Handle(AIS_InteractiveObject)::DownCast (anObj);
           TheAISContext()->Display(aShape, Standard_False);
         } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-          const Handle(NIS_InteractiveObject) aShape =
+          Handle(NIS_InteractiveObject) aShape =
             Handle(NIS_InteractiveObject)::DownCast (anObj);
-          TheNISContext()->Display(aShape, 0L, Standard_False);
+          TheNISContext()->Display(aShape);
         }
       }
     }
     TheAISContext() ->UpdateCurrentViewer();
-    TheNISContext() ->UpdateViews();
+//    TheNISContext() ->UpdateViews();
   }
   return 0;
 }
@@ -1473,12 +1473,12 @@ static int VErase2(Draw_Interpretor& , 	Standard_Integer argc, 	const char** arg
       } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_InteractiveObject) aShape =
           Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-        TheNISContext()->Erase(aShape,Standard_False);
+        TheNISContext()->Erase(aShape);
       }
       it.Next();
     }
     TheAISContext() ->UpdateCurrentViewer();
-    TheNISContext()->UpdateViews();
+//    TheNISContext()->UpdateViews();
   }
 
   //===============================================================
@@ -1497,12 +1497,12 @@ static int VErase2(Draw_Interpretor& , 	Standard_Integer argc, 	const char** arg
         } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
           const Handle(NIS_InteractiveObject) aShape =
             Handle(NIS_InteractiveObject)::DownCast (anObj);
-          TheNISContext()->Erase(aShape,Standard_False);
+          TheNISContext()->Erase(aShape);
         }
       }
     }
     TheAISContext() ->UpdateCurrentViewer();
-    TheNISContext() ->UpdateViews();
+//    TheNISContext() ->UpdateViews();
   }
   return 0;
 }
@@ -1530,12 +1530,12 @@ static int VEraseAll(Draw_Interpretor& di, Standard_Integer argc, const char** a
     } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
       const Handle(NIS_InteractiveObject) aShape =
         Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-      TheNISContext()->Erase(aShape,Standard_False);
+      TheNISContext()->Erase(aShape);
     }
     it.Next();
   }
   TheAISContext() ->UpdateCurrentViewer();
-  TheNISContext() ->UpdateViews();
+//  TheNISContext() ->UpdateViews();
   return 0;
 }
 
@@ -1563,7 +1563,7 @@ static int VDisplayAll(	Draw_Interpretor& di, Standard_Integer argc, const char*
       } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_InteractiveObject) aShape =
           Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-        TheNISContext()->Erase(aShape,Standard_False);
+        TheNISContext()->Erase(aShape);
       }
       it.Next();
     }
@@ -1574,14 +1574,14 @@ static int VDisplayAll(	Draw_Interpretor& di, Standard_Integer argc, const char*
           Handle(AIS_InteractiveObject)::DownCast(it.Key1());
         TheAISContext()->Display(aShape, Standard_False);
       } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-        const Handle(NIS_InteractiveObject) aShape =
+        Handle(NIS_InteractiveObject) aShape =
           Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-        TheNISContext()->Display(aShape, 0L, Standard_False);
+        TheNISContext()->Display(aShape);
       }
       it.Next();
     }
     TheAISContext() ->UpdateCurrentViewer();
-    TheNISContext() ->UpdateViews();
+//    TheNISContext() ->UpdateViews();
   }
   return 0;
 }
@@ -1865,7 +1865,7 @@ static int VDisplay2 (Draw_Interpretor& di, Standard_Integer argc, const char** 
       } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         Handle(NIS_InteractiveObject) aShape =
           Handle(NIS_InteractiveObject)::DownCast(anObj);
-        TheNISContext()->Display(aShape, 0L, Standard_False);
+        TheNISContext()->Display(aShape);
       }
     }
     else { // Create the AIS_Shape from a name
@@ -1879,7 +1879,7 @@ static int VDisplay2 (Draw_Interpretor& di, Standard_Integer argc, const char** 
   }
   // Upadate the screen and redraw the view
   TheAISContext()->UpdateCurrentViewer();
-  TheNISContext()->UpdateViews();
+//  TheNISContext()->UpdateViews();
   return 0;
 }
 

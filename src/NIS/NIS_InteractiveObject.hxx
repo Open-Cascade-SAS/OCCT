@@ -16,22 +16,26 @@
  * An InteractiveObject has the attributes:
  * <ul>
  * <li>Integer ID that is unique within the Interactive Context that hosts
- *     this Object. Thsi ID is 0 if the Object is not yet attached to an
+ *     this Object. This ID is 0 if the Object is not yet attached to an
  *     InteractiveContext</li>
  * <li>3D Bounding box</li>
- * <li>Presenatble state of the Object: Normal, Hilighted or Transparent.</li>
+ * <li>Presentable state of the Object: Normal, Hilighted or Transparent.</li>
  * <li>Visibility state (shown/hidden)</li>
- * <li>Transparency level (0 to 1) - for transparent state</li>
+ * <li>Selectability (selectable/non-selectable)</li>
+ * <li>Transparency level (0 to 1 in 1/1000 steps) - for transparent state</li>
  * </ul>
  * Because the class is abstract, it does not define any color, material and
  * other visual aspect - all relevant aspects should be defined in derived
- * classes.<br>
+ * classes and their Drawers.
+ *
+ * @section nis_interactiveobject_drawer Drawers for NIS_InteractiveObject
  * Every InteractiveObject type should have an associated NIS_Drawer type; a
- * new instance of this associated drawer is returned by the virtual method
+ * new instance of this associated drawer must be returned by the virtual method
  * DefaultDrawer(). The drawer is responsible for the correct calculation of
  * the presentation in every possible state (normal, hilighted, etc.); usually
- * the associated drawer instance contains all relevant visual aspects.<p>
- * Association with a Drawer instance is performed by method SetDrawer. This
+ * the associated drawer instance contains all relevant visual aspects.
+ * <p>
+ * Association with a Drawer instance is performed by method SetDrawer(). This
  * method should not be called by any custom code, it is used internally by
  * NIS algorithms (in NIS_InteractiveContext::Display() for instance). If you
  * develop your own InteractiveObject type, you will need to call SetDrawer
@@ -39,17 +43,68 @@
  * @code
  * void MyIOClass::SetColor (const Quantity_Color&  theColor);
  * {
- *   Handle(MyIOClassDrawer) aDrawer = new MyIOClassDrawer;
+ *   const Handle(MyIOClassDrawer) aDrawer =
+ *     static_cast<MyIOClassDrawer*>(DefaultDrawer(0L));
  * // copy the current visual aspects and other attributes to the new Drawer
  *   aDrawer->Assign (GetDrawer());
  * // replace the Drawer
  *   aDrawer->myColor = theColor;
  *   SetDrawer (aDrawer);
- * // optional: redraws the changed InteractiveObject in the views
- *   GetDrawer()->GetContext()->UpdateViews();
  * }
  * @endcode
- * <p>
+ * Please keep in mind that with this scheme you should not store the color in
+ * MyIOClass type, because it is already stored in its Drawer. 
+ *
+ * @section nis_interactiveobject_selection Interactive selection
+ * Interactive selection is made in class NIS_InteractiveContext, methods
+ * selectObjects(). These methods call the virtual API of interactive object,
+ * that consists of 3 methods:
+ * <ul>
+ * <li>Intersect (theAxis, theOver) : find the intersection point with a 3D ray,
+ *     the method returns the coordinate of intersection point on the ray.
+ *     Parameter theOver provides the tolerance for intersection of thin
+ *     geometries (lines, vertices)</li>
+ * <li>Intersect (theBox, theTrsf, isFullIn) : check if the interactive object
+ *     intersects with a 3D box. Transformation 'theTrf' is the <b>inverse</b>
+ *     box transformation, so it is applied to the interactive object rather
+ *     than to the 3D box (3D box stays axis-aligned during intersection
+ *     test). Parameter IsFullIn defines the condition for the result: if
+ *     True then the whole interactive object must be contained inside the box,
+ *     otherwise it is sufficient if only a portion (e.g., a point) is inside.
+ *     This method is used for interactive rectangle selection.</li>
+ * <li>Intersect (thePolygon, theTrsf, isFullIn) : similar to the previous
+ *     method, but using a polygonal prism instead of box, for selection by
+ *     closed curve or polygon.</li>
+ * </ul>
+ * 
+ * @section nis_interactiveobject_memory Memory management
+ * All data used in the scope of NIS_InteractiveObject subtype should be either
+ * its explicit fields or pointers to memory managed by a special NIS_Allocator
+ * instance that belongs to NIS_InteractiveContext. This is strictly required
+ * because NIS_InteractiveContext should completely manage all its objects,
+ * meaning that it destroys/reallocates them automatically. To support that,
+ * the virtual method Clone() should be correctly defined for every interactive
+ * object subtype. Supposing that MyIOClass inherits MyBaseIOBase :
+ * @code
+ * void MyIOCalss::Clone (const Handle_NCollection_BaseAllocator& theAlloc,
+ *                        Handle_NIS_InteractiveObject&           theDest) const
+ * {
+ *   Handle(MyIOClass) aNewObj;
+ *   if (theDest.IsNull()) {
+ *     aNewObj = new MyIOClass();
+ *     theDest = aNewObj;
+ *   } else {
+ *     aNewObj = reinterpret_cast<MyIOClass*> (theDest.operator->());
+ *     aNewObj->myAlloc = theAlloc;
+ *   }
+ *   MyIOBase::Clone(theAlloc, theDest);
+ *   aNewObj->myDataField = myDataField;
+ *   memcpy(myNewObj->myDataArray, myDataArray, nBytes);
+ *   ...
+ * }
+ * @endcode
+ *
+ * @section nis_interactiveobject_attribute Attribute
  * An instance of this class can have an associated value (Attribute) that is
  * stored as a pointer. It can accommodate an integer/float/boolean value or
  * a pointer to some structure. This attribute is NOT automatically destroyed
@@ -68,10 +123,11 @@ class NIS_InteractiveObject : public Standard_Transient
   inline NIS_InteractiveObject ()
     : myID              (0),
       myDrawType        (NIS_Drawer::Draw_Normal),
+      myBaseType        (NIS_Drawer::Draw_Normal),
       myIsHidden        (Standard_True),
       myIsDynHilighted  (Standard_False),
       myIsUpdateBox     (Standard_True),
-      myTransparency    (0.f),
+      myTransparency    (0),
       myAttributePtr    (0L)
   {}
 
@@ -106,7 +162,9 @@ class NIS_InteractiveObject : public Standard_Transient
    *   the Context. 
    */
   Standard_EXPORT const Handle_NIS_Drawer&
-                          SetDrawer     (const Handle_NIS_Drawer& theDrawer);
+                          SetDrawer     (const Handle_NIS_Drawer& theDrawer,
+                                         const Standard_Boolean   setUpdated
+                                         = Standard_True);
 
   /**
    * Query the current drawer.
@@ -116,10 +174,14 @@ class NIS_InteractiveObject : public Standard_Transient
   { return myDrawer; }
 
   /**
-   * Create a default drawer instance.
+   * Create a default drawer instance. In the upper-level call (in subclass)
+   * it is always called with NULL parameter. Then it should call the same
+   * method of the superclass (except for NIS_InteractiveObject superclass type)
+   * with the created Drawer instance as parameter.
+   * @see NIS_Triangulated as example.
    */
-  Standard_EXPORT virtual Handle_NIS_Drawer
-                          DefaultDrawer () const = 0;
+  Standard_EXPORT virtual NIS_Drawer *
+                          DefaultDrawer (NIS_Drawer * theDrv) const = 0;
 
   /**
    * Query a 3D bounding box of the object.
@@ -131,7 +193,7 @@ class NIS_InteractiveObject : public Standard_Transient
    * Query the Transparent state.
    */
   inline Standard_Boolean IsTransparent () const
-  { return myTransparency > 0.001; }
+  { return myTransparency > 0; }
 
   /**
    * Query the Hidden state
@@ -154,7 +216,7 @@ class NIS_InteractiveObject : public Standard_Transient
   /**
    * Query if the Object is selectable.
    */
-  Standard_EXPORT Standard_Boolean
+  Standard_EXPORT virtual Standard_Boolean
                           IsSelectable  () const;
 
   /**
@@ -163,14 +225,15 @@ class NIS_InteractiveObject : public Standard_Transient
    *   True (default) - the Object will be selectable, False - it will be
    *   ignored by selection/hilighting algorithms.
    */
-  Standard_EXPORT void    SetSelectable (const Standard_Boolean isSel
+  Standard_EXPORT virtual void    
+                          SetSelectable (const Standard_Boolean isSel
                                          = Standard_True) const; 
 
   /**
    * Query the Transparency factor.
    */
-  inline Standard_Real    Transparency  () const
-  { return myTransparency; }
+  inline Standard_ShortReal Transparency  () const
+  { return static_cast<Standard_ShortReal>(myTransparency) / MaxTransparency; }
 
   /**
    * Set the Transparency factor.
@@ -182,6 +245,23 @@ class NIS_InteractiveObject : public Standard_Transient
    */
   inline void             UnsetTransparency ()
   { SetTransparency (0.); }
+
+  /**
+   * Create a copy of theObject except its ID.
+   * @param theAll
+   *   Allocator where the Dest should store its private data.
+   * @param theDest
+   *   <tt>[in-out]</tt> The target object where the data are copied.
+   */
+  Standard_EXPORT virtual void
+                          Clone (const Handle_NCollection_BaseAllocator& theAll,
+                                 Handle_NIS_InteractiveObject& theDest) const;
+
+  /**
+   * The same as Clone() but also copies the ID.
+   */
+  Standard_EXPORT void    CloneWithID (const Handle_NCollection_BaseAllocator&,
+                                       Handle_NIS_InteractiveObject&);
 
   /**
    * Intersect the InteractiveObject geometry with a line/ray.
@@ -228,6 +308,32 @@ class NIS_InteractiveObject : public Standard_Transient
                                          const Standard_Boolean isFull) const;
 
   /**
+   * Intersect the InteractiveObject geometry with a selection polygon.
+   * The default implementation (in this abstract class) always returns True,
+   * signalling that every object pre-selected by its bounding box is
+   * automatically selected. The specializations should define a more correct
+   * behaviour.<br>
+   * The algorithm should transform the InteractiveObject geometry using the
+   * parameter theTrf and then reject it with polygon.
+   * @param thePolygon
+   *   the list of vertices of a free-form closed polygon without
+   *   self-intersections. The last point should not coincide with the first
+   *   point of the list. Any two neighbor points should not be confused.
+   * @param theTrf
+   *   Position/Orientation of the polygon. It coincides with theTrfInv that is
+   *   passed to NIS_InteractiveContext::selectObjects().
+   * @param isFull
+   *   True if full inclusion is required (full inside the tested box) for
+   *   the positive result, False - if only partial inclusion give a result.
+   * @return
+   *   True if the InteractiveObject geometry intersects the polygon or is inside it
+   */
+  Standard_EXPORT virtual Standard_Boolean
+       Intersect     (const NCollection_List<gp_XY> &thePolygon,
+                      const gp_Trsf                 &theTrf,
+                      const Standard_Boolean         isFull) const;
+
+  /**
    * Set the pointer to custom (arbitrary) data associated with the Object.
    */
   inline void             SetAttribute  (void * theAttributePtr)
@@ -267,17 +373,20 @@ class NIS_InteractiveObject : public Standard_Transient
   // ---------- PRIVATE FIELDS ----------
 
   Handle_NIS_Drawer             myDrawer;
-  Standard_Size                 myID            : 26;
-  NIS_Drawer::DrawType          myDrawType      : 2;
+  Standard_Size                 myID;
+  NIS_Drawer::DrawType          myDrawType      : 3;
+  NIS_Drawer::DrawType          myBaseType      : 3;
   Standard_Boolean              myIsHidden      : 1;
   Standard_Boolean              myIsDynHilighted: 1;
 
   Standard_Boolean              myIsUpdateBox   : 1;
-  Standard_ShortReal            myTransparency;
+  unsigned int                  myTransparency  : 10;
+  static const unsigned int     MaxTransparency = 1000;
 
 protected:
   Bnd_B3f                       myBox;
   void                          * myAttributePtr;
+
 
   friend class NIS_InteractiveContext;
   friend class NIS_Drawer;

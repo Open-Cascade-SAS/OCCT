@@ -15,34 +15,65 @@ class Handle_Poly_Triangulation;
 class TopoDS_Shape;
 
 /**
- * This class describes a presentation of a meshed surface.
+ * Presentation of a meshed surface.
+ * Consists of 4 arrays: Nodes, Triangles, Normals and Edges. Normals are
+ * defined in nodes, so the number of stored normals is strictly the number of
+ * nodes. Edges is an array of pointers: each pointer starts an array of
+ * node indices that define a single edge (i.e., a polygon that can be closed or
+ * open, no matter). The first number in the edge is the number of nodes in it.
+ * <p>
+ * Instances of this class can be initialized either atomically (setting every
+ * node and triangle and edge) or from a TopoDS_Shape object. In side the
+ * TopoDS_Shape only triangulations in faces are used; edges are taken from
+ * PolygonOnTriangulation also belonging to faces.
+ * <p>
+ * This class is conceived as replacement of AIS_Shape; both wireframe and
+ * shading modes are available for dynamic switching.
  */
 
 class NIS_Surface : public NIS_InteractiveObject
 {
 public:
+  enum DisplayMode {
+    Shading,
+    Wireframe
+  };
+
   /**
    * Constructor
    */
   Standard_EXPORT NIS_Surface(const Handle_Poly_Triangulation& theTri,
-                                    const Handle_NCollection_BaseAllocator&
+                              const Handle_NCollection_BaseAllocator&
                                                                 theAlloc =0L);
   /**
    * Constructor. Creates the presentation of all faces in 'theShape' object.
-   * @aparm theShape
+   * @param theShape
    *   Source geometry. It should contain triangulations inside.
-   * @param theAlloc
+   * @param theDeflection
+   *   Absolute deflection for meshing 'theShape' if such meshing is needed.
+   * @param theAl
    *   Allocator used for nodes and triangles in this presentation.
    */
   Standard_EXPORT NIS_Surface(const TopoDS_Shape& theShape,
-//                                     const Standard_Real theDeflection,
-                                    const Handle_NCollection_BaseAllocator&
-                                                        theAlloc = 0L);
+                              const Standard_Real theDeflection,
+                              const Handle_NCollection_BaseAllocator& theAl=0L);
 
   /**
    * Destructor
    */
   Standard_EXPORT virtual ~NIS_Surface ();
+
+  /**
+   * Initialize the instance with a TopoDS_Shape. Used in constructor but can
+   * be called any time to redefine the geometry.
+   */
+  Standard_EXPORT void              Init        (const TopoDS_Shape& theShape,
+                                                 const Standard_Real theDefl);
+
+  /**
+   * Deallocate all internal data structures.
+   */
+  Standard_EXPORT void              Clear       ();
 
   /**
    * Query the number of nodes.
@@ -53,6 +84,11 @@ public:
    * Query the number of triangles.
    */
   inline Standard_Integer           NTriangles  () const { return myNTriangles;}
+
+  /**
+   * Query the number of edges for wireframe display.
+   */
+  inline Standard_Integer           NEdges      () const { return myNEdges; }
 
   /**
    * Query the node by its index.
@@ -77,6 +113,18 @@ public:
   }
 
   /**
+   * Access to array of integers that represents an Edge.
+   * @return
+   *   Pointer to array where the 0th element is the number of nodes in the edge
+   *   and the elements starting from the 1st are node indices.
+   */
+  inline const Standard_Integer*
+                        Edge            (const Standard_Integer theIndex) const
+  {
+    return mypEdges[theIndex];
+  }
+
+  /**
    * Query the normal vector at the given triangulation node (by index)
    * @return
    *   pointer to array of 3 Standard_ShortReal values (X,Y,Z coordinates)
@@ -90,8 +138,8 @@ public:
   /**
    * Create a default drawer instance.
    */
-  Standard_EXPORT virtual Handle_NIS_Drawer
-                        DefaultDrawer   () const;
+  Standard_EXPORT virtual NIS_Drawer *
+                        DefaultDrawer   (NIS_Drawer *) const;
 
   /**
    * Set the normal color for presentation.
@@ -115,15 +163,31 @@ public:
   Standard_EXPORT void  SetPolygonOffset (const Standard_Real theValue);
 
   /**
-   * Set the transparency factor.
-   * @param theValue
-   *   1.0 means full transparency, 0.0 means opaque. Valid quantities are in
-   *   this interval.
+   * Set the display mode: Shading or Wireframe.
+   * The default mode is Shading.
    */
-  Standard_EXPORT void  SetTransparency (const Standard_Real theValue);
+  Standard_EXPORT void  SetDisplayMode   (const DisplayMode theMode);
 
   /**
-   * Intersect the InteractiveObject geometry with a line/ray.
+   * Query the current display mode: Shading or Wireframe.
+   */
+  Standard_EXPORT DisplayMode
+                        GetDisplayMode   () const;
+
+  /**
+   * Create a copy of theObject except its ID.
+   * @param theAll
+   *   Allocator where the Dest should store its private data.
+   * @param theDest
+   *   <tt>[in-out]</tt> The target object where the data are copied. If
+   *   passed NULL then the target should be created.
+   */
+  Standard_EXPORT virtual void
+                          Clone (const Handle_NCollection_BaseAllocator& theAll,
+                                 Handle_NIS_InteractiveObject& theDest) const;
+
+  /**
+   * Intersect the surface shading/wireframe geometry with a line/ray.
    * @param theAxis
    *   The line or ray in 3D space.
    * @param theOver
@@ -134,11 +198,11 @@ public:
    *   on the ray. May be negative.
    */
   Standard_EXPORT virtual Standard_Real
-                        Intersect       (const gp_Ax1&       theAxis,
+                          Intersect     (const gp_Ax1&       theAxis,
                                          const Standard_Real theOver) const;
 
   /**
-   * Intersect the InteractiveObject geometry with an oriented box.
+   * Intersect the surface shading/wireframe geometry with an oriented box.
    * @param theBox
    *   3D box of selection
    * @param theTrf
@@ -153,7 +217,31 @@ public:
                                             const gp_Trsf&         theTrf,
                                             const Standard_Boolean isFull)const;
 
+  /**
+   * Intersect the surface shading/wireframe geometry with a selection polygon.
+   * @param thePolygon
+   *   the list of vertices of a free-form closed polygon without
+   *   self-intersections. The last point should not coincide with the first
+   *   point of the list. Any two neighbor points should not be confused.
+   * @param theTrf
+   *   Position/Orientation of the polygon.
+   * @param isFullIn
+   *   True if full inclusion is required, False - if partial.
+   * @return
+   *   True if the InteractiveObject geometry intersects the polygon or is
+   *   inside it
+   */
+  Standard_EXPORT virtual Standard_Boolean Intersect
+                    (const NCollection_List<gp_XY> &thePolygon,
+                     const gp_Trsf                 &theTrf,
+                     const Standard_Boolean         isFullIn) const;
+
 protected:
+
+  /**
+   * Allocator for method Clone().
+   */
+  Standard_EXPORT NIS_Surface (const Handle_NCollection_BaseAllocator& theAl); 
 
   /**
    * Create a 3D bounding box of the object.
@@ -168,15 +256,20 @@ protected:
                                   gp_XYZ& theNormal) const;
 
 private:
+  Handle_NCollection_BaseAllocator myAlloc;
   //! Array of nodes in triangles
   Standard_ShortReal               * mypNodes;
   //! Array of normals (TriNodes)
   Standard_ShortReal               * mypNormals;
+  //! Array of triangles (node indices)
   Standard_Integer                 * mypTriangles;
+  //! Array of edges, each edge is an array of indices prefixed by N nodes
+  Standard_Integer                 ** mypEdges;
   //! Number of nodes in triangles
   Standard_Integer                 myNNodes;
   Standard_Integer                 myNTriangles;
-  Handle_NCollection_BaseAllocator myAlloc;
+  Standard_Integer                 myNEdges;
+  Standard_Boolean                 myIsWireframe;
 
 public:
 // Declaration of CASCADE RTTI

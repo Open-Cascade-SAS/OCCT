@@ -26,15 +26,14 @@ class NIS_SurfaceDrawer : public NIS_Drawer
    */
   Standard_EXPORT NIS_SurfaceDrawer(const Quantity_Color   &theNormal,
                                     const Quantity_Color   &theHilight
-                                                        = Quantity_NOC_GRAY80,
+                                                        = Quantity_NOC_GRAY65,
                                     const Quantity_Color   &theDynHilight
                                                         = Quantity_NOC_CYAN1);
 
   /**
-   * Sets the color and transparency of the drawer.
+   * Sets the color of the drawer.
    */
-  Standard_EXPORT void         SetColor (const Quantity_Color &theColor,
-                                         const Standard_Real   theTransparency);
+  Standard_EXPORT void         SetColor (const Quantity_Color &theColor);
 
   /**
    * Define the color used for the back side of rendered triangles.
@@ -66,7 +65,7 @@ class NIS_SurfaceDrawer : public NIS_Drawer
    */
   inline void                  SetPolygonOffset  (const Standard_Real theOffset)
   {
-    myPolygonOffset = static_cast<const Standard_ShortReal>(theOffset);
+    myPolygonOffset = static_cast<Standard_ShortReal>(theOffset);
   }
 
   /**
@@ -74,9 +73,8 @@ class NIS_SurfaceDrawer : public NIS_Drawer
    */
   inline Standard_Real         GetPolygonOffset  () const
   {
-    return static_cast<const Standard_Real>(myPolygonOffset);
+    return static_cast<Standard_Real>(myPolygonOffset);
   }
-
 
   /**
    * Copy the relevant information from another instance of Drawer.
@@ -115,11 +113,11 @@ class NIS_SurfaceDrawer : public NIS_Drawer
 
 
 private:
-  Quantity_Color      myColor[4];
+  Quantity_Color      myColor[5];
   Quantity_Color      myBackColor;
   gp_Trsf             myTrsf;
-  Standard_Real       myTransparency;
   Standard_ShortReal  myPolygonOffset;
+  Standard_Boolean    myIsWireframe;
 
   friend class NIS_Surface;
 

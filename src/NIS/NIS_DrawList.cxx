@@ -4,6 +4,7 @@
 // Copyright: Open Cascade 2007
 
 #include <NIS_Drawer.hxx>
+#include <NIS_View.hxx>
 
 #ifdef WNT
 #include <windows.h>
@@ -16,12 +17,21 @@
 //=======================================================================
 
 NIS_DrawList::NIS_DrawList ()
-  : myListID    (0)
 {
+#ifdef ARRAY_LISTS
+  myListID = 0;
+#else
+  myListID[0] = 0;
+  myListID[1] = 0;
+  myListID[2] = 0;
+  myListID[3] = 0;
+  myListID[4] = 0;
+#endif
   myIsUpdated[0] = Standard_True;
   myIsUpdated[1] = Standard_True;
   myIsUpdated[2] = Standard_True;
   myIsUpdated[3] = Standard_True;
+  myIsUpdated[4] = Standard_True;
 }
 
 //=======================================================================
@@ -30,13 +40,22 @@ NIS_DrawList::NIS_DrawList ()
 //=======================================================================
 
 NIS_DrawList::NIS_DrawList (const Handle_NIS_View& theView)
-  : myView      (theView),
-    myListID    (0)
+  : myView      (theView)
 {
+#ifdef ARRAY_LISTS
+  myListID = 0;
+#else
+  myListID[0] = 0;
+  myListID[1] = 0;
+  myListID[2] = 0;
+  myListID[3] = 0;
+  myListID[4] = 0;
+#endif
   myIsUpdated[0] = Standard_True;
   myIsUpdated[1] = Standard_True;
   myIsUpdated[2] = Standard_True;
   myIsUpdated[3] = Standard_True;
+  myIsUpdated[4] = Standard_True;
 }
 
 //=======================================================================
@@ -46,8 +65,67 @@ NIS_DrawList::NIS_DrawList (const Handle_NIS_View& theView)
 
 NIS_DrawList::~NIS_DrawList ()
 {
-  if (myListID != 0)
-    glDeleteLists (myListID, 4);
+  //if (myListID != 0)
+    //glDeleteLists (myListID, 5);
+}
+
+//=======================================================================
+//function : ClearListID
+//purpose  : Set myListID to 0.
+//=======================================================================
+
+void NIS_DrawList::ClearListID (const Standard_Integer theType)
+{
+#ifndef ARRAY_LISTS
+  if (theType >= 0) {
+    // To be called only in Callback context (i.e. when GL context is active)
+    if (myListID[theType] > 0) {
+      glDeleteLists(myListID[theType], 1);
+      myListID[theType] = 0;
+    }
+    myIsUpdated[theType] = Standard_False;
+  }
+#endif
+}
+
+//=======================================================================
+//function : ClearListID
+//purpose  : Set myListID to 0.
+//=======================================================================
+
+void NIS_DrawList::ClearListID (const Handle_NIS_View& theView)
+{
+#ifdef ARRAY_LISTS
+  if (myListID > 0)
+    myView->GetExListId().Add(myListID);
+  myListID = 0;
+#else
+  NIS_View * pView = (myView.IsNull()) ?
+    theView.operator->() : myView.operator->();
+  if (pView) {
+    if (myListID[0] > 0)
+      pView->GetExListId().Add(myListID[0]);
+    myListID[0] = 0;
+    if (myListID[1] > 0)
+      pView->GetExListId().Add(myListID[1]);
+    myListID[1] = 0;
+    if (myListID[2] > 0)
+      pView->GetExListId().Add(myListID[2]);
+    myListID[2] = 0;
+    if (myListID[3] > 0)
+      pView->GetExListId().Add(myListID[3]);
+    myListID[3] = 0;
+    if (myListID[4] > 0)
+      pView->GetExListId().Add(myListID[4]);
+    myListID[4] = 0;
+  }
+
+#endif
+  myIsUpdated[0] = Standard_False;
+  myIsUpdated[1] = Standard_False;
+  myIsUpdated[2] = Standard_False;
+  myIsUpdated[3] = Standard_False;
+  myIsUpdated[4] = Standard_False;
 }
 
 //=======================================================================
@@ -57,9 +135,14 @@ NIS_DrawList::~NIS_DrawList ()
 
 void NIS_DrawList::BeginPrepare (const Standard_Integer theType)
 {
+#ifdef ARRAY_LISTS
   if (myListID == 0)
-    myListID = glGenLists(4);
-  glNewList (GetListID (theType), GL_COMPILE);
+    myListID = glGenLists(5);
+#else
+  if (GetListID(theType) == 0)
+    myListID[theType] = glGenLists(1);
+#endif
+  glNewList (GetListID(theType), GL_COMPILE);
 }
 
 //=======================================================================
@@ -70,7 +153,7 @@ void NIS_DrawList::BeginPrepare (const Standard_Integer theType)
 void NIS_DrawList::EndPrepare (const Standard_Integer theType)
 {
   glEndList ();
-  myIsUpdated[theType&0x3] = Standard_False;
+  myIsUpdated[theType] = Standard_False;
 }
 
 //=======================================================================
@@ -120,9 +203,20 @@ Standard_Boolean NIS_DrawList::SetDynHilighted
 void NIS_DrawList::SetUpdated (const Standard_Integer theType,
                                const Standard_Boolean theFlag)
 { 
-  if ( theFlag )
-    SetUpdated( theType );
+  if (theFlag)
+    SetUpdated(theType);
   else
-    myIsUpdated [theType&0x3] = Standard_False;
+    myIsUpdated [theType] = Standard_False;
 }
 
+//=======================================================================
+//function : SetUpdated
+//purpose  : 
+//=======================================================================
+
+void NIS_DrawList::SetUpdated (const Standard_Integer theType)
+{
+  myIsUpdated [theType] = Standard_True;
+  if (theType == NIS_Drawer::Draw_Hilighted)
+    myDynHilighted.Clear();
+}

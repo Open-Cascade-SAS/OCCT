@@ -12,9 +12,18 @@
 #include <NCollection_List.hxx>
 
 class NIS_InteractiveContext;
+/**
+ * This macro defines that OpenGL draw lists will be allocated as array of 5
+ * integers and any of them would not be deleted unless all interactive objects
+ * in the given drawer are removed.
+ * When the macro is undefined every draw list is created when needed and it is
+ * destroyed when there is no objects to show in this draw list.
+ */
+//#define ARRAY_LISTS
 
 /**
- * Block of comments describing class NIS_DrawList
+ * Implementation of a set of OpenGL draw lists for a given NIS_Drawer and
+ * given NIS_View. Stored in NIS_Drawer instances.
  */
 
 class NIS_DrawList 
@@ -43,8 +52,26 @@ class NIS_DrawList
    * @param theType
    *   Integer value coinciding with the enumerated NIS_Drawer:DrawType.
    */
-  inline Standard_Integer       GetListID      (const Standard_Integer theType)
-  { return myListID + (theType&0x3); }
+  inline Standard_Integer       GetListID (const Standard_Integer theType) const
+#ifdef ARRAY_LISTS
+  { return myListID + theType; }
+#else
+  { return myListID[theType]; }
+#endif
+
+  /**
+   * Set myListID to 0.
+   * @return
+   *   Previous value of myListID
+   */
+  Standard_EXPORT void ClearListID        (const Standard_Integer theType);
+
+  /**
+   * Set myListID to 0.
+   * @return
+   *   Previous value of myListID
+   */
+  Standard_EXPORT void ClearListID        (const Handle_NIS_View& theView=NULL);
 
   /**
    * This method is called to start recording a new list. It must be eventually
@@ -74,14 +101,13 @@ class NIS_DrawList
    * @param theType
    *   Integer value coinciding with the enumerated NIS_Drawer::DrawType.
    */
-  inline Standard_Boolean       IsUpdated      (const Standard_Integer theType)
-  { return myIsUpdated [theType&0x3]; }
+  inline Standard_Boolean       IsUpdated (const Standard_Integer theType) const
+  { return myIsUpdated [theType]; }
 
   /**
    * Set the flag indicating that the List should be updated (rebuilt).
    */
-  inline void                   SetUpdated     (const Standard_Integer theType)
-  { myIsUpdated [theType&0x3] = Standard_True; }
+  Standard_EXPORT void          SetUpdated     (const Standard_Integer theType);
 
   /**
    * Query if the given list should be processed by Dynamic Hilighting.
@@ -108,10 +134,10 @@ class NIS_DrawList
   Standard_EXPORT void          SetUpdated      (const Standard_Integer,
                                                  const Standard_Boolean);
 
+#ifdef ARRAY_LISTS
   inline void                   SetListID       (const Standard_Integer theID)
   { myListID = theID; }
-
-
+#endif
 
  private:
   // ---------- PRIVATE METHODS (PROHIBITED) ----------
@@ -122,8 +148,12 @@ class NIS_DrawList
   // ---------- PRIVATE FIELDS ----------
 
   Handle_NIS_View                                myView;
+#ifdef ARRAY_LISTS
   Standard_Integer                               myListID;
-  Standard_Boolean                               myIsUpdated[4];
+#else
+  Standard_Integer                               myListID[5];
+#endif
+  Standard_Boolean                               myIsUpdated[5];
   NCollection_List<Handle_NIS_InteractiveObject> myDynHilighted;
 };
 

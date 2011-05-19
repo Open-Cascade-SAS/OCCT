@@ -11,6 +11,10 @@
 #include <V3d_OrthographicView.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_Vector.hxx>
+#include <Bnd_B3f.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <gp_XY.hxx>
 
 class NIS_InteractiveContext;
 class gp_Ax1;
@@ -58,9 +62,49 @@ class NIS_View : public V3d_OrthographicView
   Standard_EXPORT void SetWindow(const Handle_Aspect_Window &theWindow);
 
   /**
-   * Zoom the view to fit to visible objects size and positions.
+   * Indicate whether to draw hilighted objects on top of all other ones
    */
-  Standard_EXPORT void FitAll3d ();
+  inline void SetHilightOnTop(const Standard_Boolean theTop = Standard_True)
+  { myIsTopHilight = theTop; }
+
+  /**
+   * Indicate whether to hilight selected object dynamically
+   * By default dynamic hilight works on all objects independently on its
+   * selected/non-selected state.
+   * This behaviour differs from the behaviour of AIS interactive context,
+   * that doesn't hilight dynamically (on mouse movements) selected objects. 
+   * In the case both context are used in the same view the behaviour of both
+   * context can be made consistent by setting this flag to False
+   */
+  inline void SetDynHilightSelected     (const Standard_Boolean
+                                         theHilight = Standard_True)
+  { myDoHilightSelected = theHilight; }
+
+  /**
+   * Zoom the view to fit to visible objects size and positions.
+   * @param theCoef
+   *   Relative margin in both X and Y dimensions. For example, value 1.0
+   *   will fit to twice the actual size.
+   * @return
+   *   True if operation performed, False if failed (most likely because of
+   *   very big actual scale)
+   */
+  Standard_EXPORT Standard_Boolean FitAll3d (const Quantity_Coefficient theCoef
+                                             = 0.01);
+
+  /**
+   * Gets bounding box covering objects displayed in viewer.
+   */
+  Standard_EXPORT Bnd_B3f GetBndBox() const;
+
+  /**
+   * Gets bounding box covering objects displayed in viewer.
+   * If operation is fails when Xmax < Xmin abd Ymax < Ymin
+   */
+  Standard_EXPORT void GetBndBox(Standard_Integer& theXMin,
+                                 Standard_Integer& theXMax, 
+                                 Standard_Integer& theYMin,
+                                 Standard_Integer& theYMax ) const;
 
 //   /**
 //    * Destructor.
@@ -81,20 +125,29 @@ class NIS_View : public V3d_OrthographicView
   Standard_EXPORT void  DynamicUnhilight(const Handle_NIS_InteractiveObject&);
 
   /**
+   * Unhilights the currently hilighted object.
+   */
+  inline void  DynamicUnhilight()  { DynamicUnhilight(myDynHilighted); }
+
+  /**
    * Set or unset the selected (hilighted) state of the object that is under
    * the coordinates theX, theY.
    * @param theX
    *   X coordinate of the view window
-   * @param theX
+   * @param theY
    *   X coordinate of the view window
    * @param isForceMult
    *   True if the effect of multi-Selection should be forced (e.g., when Shift
    *   is pressed).
+   * @param theRedraw
+   *   True to redraw view automatically (default value).
    */
   Standard_EXPORT void  Select          (const Standard_Integer theX,
                                          const Standard_Integer theY,
                                          const Standard_Boolean isForceMult
-                                                         = Standard_False);
+                                                         = Standard_False,
+                                         const Standard_Boolean theRedraw
+                                                         = Standard_True);
 
   /**
    * Set or unset the selected (hilighted) state of the objects that are
@@ -114,6 +167,8 @@ class NIS_View : public V3d_OrthographicView
    *   True if only those objects are processed that are fully inside the
    *   selection rectangle. False if objects fully or partially included in
    *   the rectangle are processed. 
+   * @param theRedraw
+   *   True to redraw view automatically (default value).
    */
   Standard_EXPORT void  Select          (const Standard_Integer  theXmin,
                                          const Standard_Integer  theYmin,
@@ -122,7 +177,35 @@ class NIS_View : public V3d_OrthographicView
                                          const Standard_Boolean  isForceMult
                                                          = Standard_False,
                                          const Standard_Boolean isFullyIncluded
-                                                         = Standard_False);
+                                                         = Standard_False,
+                                         const Standard_Boolean theRedraw
+                                                         = Standard_True);
+
+  /**
+   * Set or unset the selected (hilighted) state of the objects that are
+   * intersected by 2D polygon in the view
+   * @param thePolygon
+   *   defines the vertices of a free-form closed polygon without
+   *   self-intersections. The last point should not coincide with the first
+   *   point of the list. Points are interpreted as X and Y integer coordinates
+   *   of the view window. Any two neighbor points should not be confused.
+   * @param isForceMult
+   *   True if the effect of multi-Selection should be forced (e.g., when Shift
+   *   is pressed).
+   * @param isFullyIncluded
+   *   True if only those objects are processed that are fully inside the
+   *   selection rectangle. False if objects fully or partially included in
+   *   the rectangle are processed. 
+   * @param theRedraw
+   *   True to redraw view automatically (default value).
+   */
+  Standard_EXPORT void  Select   (const NCollection_List<gp_XY> &thePolygon,
+                                  const Standard_Boolean         isForceMult
+                                                         = Standard_False,
+                                  const Standard_Boolean         isFullyIncluded
+                                                         = Standard_False,
+                                  const Standard_Boolean theRedraw
+                                                         = Standard_True);
 
   /**
    * Interactive selection by mouse click. Selection itself is performed in each
@@ -138,7 +221,7 @@ class NIS_View : public V3d_OrthographicView
    */
   Standard_EXPORT Handle_NIS_InteractiveObject
                         Pick            (const Standard_Integer theX,
-                                         const Standard_Integer theY) const;
+                                         const Standard_Integer theY);
 
   /**
    * Interactive selection by mouse click. Selection itself is performed in each
@@ -148,7 +231,7 @@ class NIS_View : public V3d_OrthographicView
    *   3D axis for objects selection
    * @param theOver
    *   Overlap for the selecting axis
-   * @param isOnlySelectable
+   * @param isOnlySel
    *   If False, any displayed object can be picked, otherwise only selectable
    *   ones.
    * @return
@@ -156,9 +239,21 @@ class NIS_View : public V3d_OrthographicView
    *   all contexts attached to this View.
    */
   Standard_EXPORT Handle_NIS_InteractiveObject
-                        Pick    (const gp_Ax1&          theAxis,
-                                 const Standard_Real    theOver,
-                                 const Standard_Boolean isOnlySelectable) const;
+                        Pick            (const gp_Ax1&          theAxis,
+                                         const Standard_Real    theOver,
+                                         const Standard_Boolean isOnlySel);
+
+  /**
+   * Gets all objects detected by last call of Pick() method
+   */
+  inline NCollection_Vector<NIS_InteractiveObject *> GetDetected() const
+  { return myDetected; }
+
+  /**
+   * Obtain the IDs of ex-lists.
+   */
+  inline TColStd_PackedMapOfInteger& GetExListId ()
+  { return myExListId; }
 
  protected:
   // ---------- PROTECTED METHODS ----------
@@ -182,6 +277,10 @@ class NIS_View : public V3d_OrthographicView
 
   NCollection_List<NIS_InteractiveContext *>       myContexts;
   Handle_NIS_InteractiveObject                     myDynHilighted;
+  Standard_Boolean                                 myIsTopHilight      : 1;
+  Standard_Boolean                                 myDoHilightSelected : 1;
+  NCollection_Vector<NIS_InteractiveObject *>      myDetected;
+  TColStd_PackedMapOfInteger                       myExListId;
 
   friend class NIS_InteractiveContext;
 

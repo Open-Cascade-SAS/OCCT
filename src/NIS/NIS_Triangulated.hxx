@@ -10,27 +10,65 @@
 #include <NIS_InteractiveObject.hxx>
 #include <Quantity_Color.hxx>
 
+#ifdef WNT
+// Disable the warning "operator new unmatched by delete"
+#pragma warning (push)
+#pragma warning (disable:4291)
+#endif
+
 class Handle_NIS_TriangulatedDrawer;
 class NCollection_BaseAllocator;
 class Handle_NCollection_BaseAllocator;
+class NIS_TriangulatedDrawer;
 
 /**
- * Block of comments describing class NIS_Triangulated
+ * Interactive object that consists of triangles, lines and polygons without
+ * normals. Particularly can be used to render planar 2D shapes.
+ *
+ * @par 2D and 3D model
+ * Vertices are stored in an array of float numbers, 2 or 3 numbers per vertex.
+ * The number of dimensions is defined in the constructor, see the parameter
+ * 'is2D'. When 2D is defined then for all vertices the Z coordinate is 0.
+ * To display planar objects in a plane different from XOY you should subclass
+ * this type together with the correponding Drawer and store the transformation
+ * parameters. In Drawer subclass either in method BeforeDraw() or in method
+ * Draw() you would call glTranslate() or glMultMatrix() so that all vertices
+ * should be located in their proper positions.
+ *
+ * @par Compressed storage
+ * For efficient memory utilization, indice (triangles, segments, polygons) are
+ * 8-bit, 16-bit or 32-bit numbers. The width of this numeric representation is
+ * chosen automatically when the total number of nodes is passed in the
+ * constructor or in any Set* method. For example, if this number of nodes is
+ * smaller than 256 then 8-bit representation is selected. The choice is stored
+ * in 'myIndexType' data member.
  */
 
 class NIS_Triangulated : public NIS_InteractiveObject
 {
  protected:
-  // Constants defining the mode (type) of presentation. They allow mixed type,
-  // e.g., Triangulation+Line. Line and Segments are not mixable, their mix is
-  // treated as Line only.
+  /**
+   * Constants defining the mode (type) of presentation. They allow mixed type,
+   * e.g., Triangulation+Line. Line and Segments are not mixable, their mix is
+   * treated as Line only.
+   */
   enum {
     Type_None          =  0,
-    Type_Loop          =  1,  // modifier to Line
+    Type_Loop          =  1,  //!< modifier to Line
     Type_Line          =  2,
     Type_Segments      =  4,
     Type_Triangulation =  8,
     Type_Polygons      = 16
+  };
+
+ public:
+  /**
+   * Enumerated type of polygon rendering.
+   */
+  enum PolygonType {
+    Polygon_Default  = 0,  //!< Polygon as LINE, Triangulation as FILL
+    Polygon_Line     = 1,  //!< Both Polygon and Triangulation as LINE
+    Polygon_Fill     = 2   //!< Both Polygon and Triangulation as FILL
   };
 
  public:
@@ -42,9 +80,17 @@ class NIS_Triangulated : public NIS_InteractiveObject
    * (this number may be defined later in methods Set*Prs) as well as the
    * memory allocator where the nodes, lines and triangles will be stored by
    * this instance.
+   * @param nNodes
+   *   Total number of nodes that will be initialized for this object
+   * @param is2D
+   *   If true then the nodes will be 2D in plane Z=0, otherwise normal 3D.
+   * @param theAlloc
+   *   Allocator for internal data
    */
   Standard_EXPORT NIS_Triangulated(const Standard_Integer nNodes = 0,
-                                   const Handle_NCollection_BaseAllocator& =0L);
+                                   const Standard_Boolean is2D = Standard_False,
+                                   const Handle_NCollection_BaseAllocator&
+                                   theAlloc = 0L);
 
   /**
    * Define the polygonal presentration.
@@ -137,9 +183,8 @@ class NIS_Triangulated : public NIS_InteractiveObject
   /**
    * Create a default drawer instance.
    */
-  Standard_EXPORT virtual Handle_NIS_Drawer
-                                    DefaultDrawer () const;
-
+  Standard_EXPORT virtual NIS_Drawer *
+                                    DefaultDrawer (NIS_Drawer *) const;
 
   /**
    * Define the coordinates of node [ind].
@@ -163,16 +208,14 @@ class NIS_Triangulated : public NIS_InteractiveObject
 
   /**
    * Allocate a single polygon, should be called for each polygon following
-   * the call SetPolygonsPrs().
+   * the call SetPolygonsPrs(). The polygon can be filled by node indices using
+   * the method SetPolygonNode().
    * @param ind
    *   Index of the polygon, should be [0..Npolygons-1]
    * @param theSz
    *   Number of points (segments) in the polygon.
-   * @return
-   *   Pointer to the allocated buffer where you should store the indices
-   *   of all polygon nodes in order, total "theSz" integers.
    */
-  Standard_EXPORT Standard_Integer* SetPolygon (const Standard_Integer  ind,
+  Standard_EXPORT void              SetPolygon (const Standard_Integer  ind,
                                                 const Standard_Integer  theSz);
 
   /**
@@ -203,48 +246,43 @@ class NIS_Triangulated : public NIS_InteractiveObject
    * Query the number of polygons.
    */
   inline Standard_Integer           NPolygons () const
-  { return myNPolygons; }
+  { return static_cast<Standard_Integer>(myNPolygons); }
 
   /**
    * Query the node by its index.
    * @return
-   *   pointer to array of 3 Standard_ShortReal values (X,Y,Z coordinates)
+   *   pointer to array of 2 or 3 Standard_ShortReal values {X,Y(,Z) coord}
    */
   inline const Standard_ShortReal * Node      (const Standard_Integer ind) const
-  { return &mypNodes[ind*3]; }
+  { return &mypNodes[ind * myNodeCoord]; }
 
   /**
-   * Query the triangle by its index.
-   * @return
-   *   pointer to array of 3 Standard_Integer values (nodes 0, 1, 2)
-   */
-  inline const Standard_Integer *   Triangle  (const Standard_Integer ind) const
-  { return &mypTriangles[ind*3]; }
-
-  /**
-   * Query the node of line or segments by index in the array of node indices.
-   * This method does not make distinction of the presentation type
-   * (field myType), so the correct definition of ind is to be done by the
-   * caller.
-   * @return
-   *   pointer to the Integer value representing the index of the node.
-   */
-  inline const Standard_Integer *   LineNode  (const Standard_Integer ind) const
-  { return &mypLines[ind]; }
-
-
-  /**
-   * Query the polygon.
+   * Define the node of a polygon by index.
+   * @param indPoly
+   *   Index of the Polygon, should be less than the number of polygons that is
+   *   defined in SetPolygonsPrs() and can be returned by NPOlygons().
    * @param ind
-   *   rank of the polygon [0 .. N-1]
-   * @param outInd
-   *   <tt>[out]</tt> array of vertex indice
-   * @return
-   *   number of vertice in the polygon - the dimension of outInd array
+   *   Index of the node in the Polygon. Should be less than the parameter theSz
+   *   in the corresponding previous SetPolygon() call.
+   * @param iNode
+   *   Index of the node in the given position of the Polygon. 
    */
-  inline const Standard_Integer     Polygon   (const Standard_Integer ind,
-                                               Standard_Integer* & outInd) const
-  { return * (outInd = mypPolygons[ind])++; }
+  Standard_EXPORT void              SetPolygonNode
+                                              (const Standard_Integer indPoly,
+                                               const Standard_Integer ind,
+                                               const Standard_Integer iNode);
+
+  /**
+   * Get the node with index 'ind' from the polygon number 'indPoly'.
+   */
+  Standard_EXPORT Standard_Integer PolygonNode(const Standard_Integer indPoly,
+                                               const Standard_Integer ind)const;
+
+  /**
+   * Get the number of nodes for the polygon number 'indPoly'.
+   */
+  Standard_EXPORT Standard_Integer NPolygonNodes
+                                         (const Standard_Integer indPoly)const;
 
   /**
    * Set the boolean flag defining if the polygons or the triangulation
@@ -252,24 +290,22 @@ class NIS_Triangulated : public NIS_InteractiveObject
    * Line/Segments.
    * @param isDrawPolygons
    *   True defines that no triangulation is drawn, only polygons are. False
-   *   defines that only triangulation is draw, no polygons.
-   * @param isUpdateV
-   *   True if all views should be updated, otherwise wait till the next update
+   *   defines that only triangulation is drawn, no polygons.
    */
   Standard_EXPORT void              SetDrawPolygons
-                                        (const Standard_Boolean isDrawPolygons,
-                                         const Standard_Boolean isUpdateViews
-                                         = Standard_True);
+                                        (const Standard_Boolean isDrawPolygons);
+  /**
+   * Set the type of polygon rendering.
+   */
+  Standard_EXPORT void              SetPolygonType
+                                        (const PolygonType      theType);
+
   /**
    * Set the normal color for presentation.
    * @param theColor
    *   New color to use for the presentation.
-   * @param isUpdateV
-   *   True if all views should be updated, otherwise wait till the next update
    */
-  Standard_EXPORT void              SetColor  (const Quantity_Color&  theColor,
-                                               const Standard_Boolean isUpdateV
-                                               = Standard_True);
+  Standard_EXPORT void              SetColor  (const Quantity_Color&  theColor);
 
   /**
    * Get Normal, Transparent or Hilighted color of the presentation.
@@ -283,34 +319,34 @@ class NIS_Triangulated : public NIS_InteractiveObject
    * Set the color for hilighted presentation.
    * @param theColor
    *   New color to use for the presentation.
-   * @param isUpdateV
-   *   True if all views should be updated, otherwise wait till the next update
    */
-  Standard_EXPORT void      SetHilightColor   (const Quantity_Color&  theColor,
-                                               const Standard_Boolean isUpdateV
-                                               = Standard_True);
+  Standard_EXPORT void      SetHilightColor   (const Quantity_Color&  theColor);
 
   /**
    * Set the color for dynamic hilight presentation.
    * @param theColor
    *   New color to use for the presentation.
-   * @param isUpdateV
-   *   True if all views should be updated, otherwise wait till the next update
    */
-  Standard_EXPORT void      SetDynHilightColor(const Quantity_Color&  theColor,
-                                               const Standard_Boolean isUpdateV
-                                               = Standard_True);
+  Standard_EXPORT void      SetDynHilightColor(const Quantity_Color&  theColor);
 
   /**
    * Set the width of line presentations in pixels.
    * @param theWidth
    *   New line width to use for the presentation.
-   * @param isUpdateV
-   *   True if all views should be updated, otherwise wait till the next update
    */
-  Standard_EXPORT void      SetLineWidth      (const Standard_Real    theWidth,
-                                               const Standard_Boolean isUpdateV
-                                               = Standard_True);
+  Standard_EXPORT void      SetLineWidth      (const Standard_Real    theWidth);
+
+  /**
+   * Create a copy of theObject except its ID.
+   * @param theAll
+   *   Allocator where the Dest should store its private data.
+   * @param theDest
+   *   <tt>[in-out]</tt> The target object where the data are copied. If
+   *   passed NULL then the target should be created.
+   */
+  Standard_EXPORT virtual void
+                          Clone (const Handle_NCollection_BaseAllocator& theAll,
+                                 Handle_NIS_InteractiveObject& theDest) const;
 
   /**
    * Intersect the InteractiveObject geometry with a line/ray.
@@ -323,7 +359,7 @@ class NIS_Triangulated : public NIS_InteractiveObject
    *   detected. Otherwise returns the coordinate of thePnt on the ray. May be
    *   negative.
    */
-  Standard_EXPORT Standard_Real
+  Standard_EXPORT virtual Standard_Real
                             Intersect       (const gp_Ax1&       theAxis,
                                              const Standard_Real theOver) const;
 
@@ -343,19 +379,52 @@ class NIS_Triangulated : public NIS_InteractiveObject
                                             const gp_Trsf&         theTrf,
                                             const Standard_Boolean isFull)const;
 
-  Standard_EXPORT static int tri_line_intersect (const double      start[3],
-                                                 const double      dir[3],
-                                                 const float       V0[3],
-                                                 const float       V1[3],
-                                                 const float       V2[3],
-                                                 double            * tInter);
+  /**
+   * Intersect the InteractiveObject geometry with a selection polygon.
+   * @param thePolygon
+   *   the list of vertices of a free-form closed polygon without
+   *   self-intersections. The last point should not coincide with the first
+   *   point of the list. Any two neighbor points should not be confused.
+   * @param theTrf
+   *   Position/Orientation of the polygon.
+   * @param isFullIn
+   *   True if full inclusion is required, False - if partial.
+   * @return
+   *   True if the InteractiveObject geometry intersects the polygon or is
+   *   inside it
+   */
+  Standard_EXPORT virtual Standard_Boolean Intersect
+                    (const NCollection_List<gp_XY> &thePolygon,
+                     const gp_Trsf                 &theTrf,
+                     const Standard_Boolean         isFullIn) const;
 
-  Standard_EXPORT static int seg_line_intersect (const gp_XYZ&     aStart,
-                                                 const gp_XYZ&     aDir,
-                                                 const double      over2,
-                                                 const float       V0[3],
-                                                 const float       V1[3],
-                                                 double            * tInter);
+  Standard_EXPORT static int tri_line_intersect  (const double      start[3],
+                                                  const double      dir[3],
+                                                  const float       V0[3],
+                                                  const float       V1[3],
+                                                  const float       V2[3],
+                                                  double            * tInter);
+
+  Standard_EXPORT static int tri2d_line_intersect(const double      start[3],
+                                                  const double      dir[3],
+                                                  const float       V0[2],
+                                                  const float       V1[2],
+                                                  const float       V2[2],
+                                                  double            * tInter);
+
+  Standard_EXPORT static int seg_line_intersect  (const gp_XYZ&     aStart,
+                                                  const gp_XYZ&     aDir,
+                                                  const double      over2,
+                                                  const float       V0[3],
+                                                  const float       V1[3],
+                                                  double            * tInter);
+
+  Standard_EXPORT static int seg2d_line_intersect(const gp_XYZ&     aStart,
+                                                  const gp_XYZ&     aDir,
+                                                  const double      over2,
+                                                  const float       V0[2],
+                                                  const float       V1[2],
+                                                  double            * tInter);
 
   Standard_EXPORT static int seg_box_intersect  (const Bnd_B3f&    theBox,
                                                  const gp_Pnt      thePnt[2]);
@@ -363,11 +432,57 @@ class NIS_Triangulated : public NIS_InteractiveObject
   Standard_EXPORT static int seg_box_included   (const Bnd_B3f&    theBox,
                                                  const gp_Pnt      thePnt[2]);
 
+  Standard_EXPORT static int seg_polygon_intersect
+                              (const NCollection_List<gp_XY> &thePolygon,
+                               const gp_XY                    thePnt[2]);
+
+  Standard_EXPORT static int seg_polygon_included
+                              (const NCollection_List<gp_XY> &thePolygon,
+                               const gp_XY                    thePnt[2]);
+
   Standard_EXPORT static void ComputeBox    (Bnd_B3f&                  theBox,
                                              const Standard_Integer    nNodes,
-                                             const Standard_ShortReal* pNodes);
+                                             const Standard_ShortReal* pNodes,
+                                             const Standard_Integer    nCoord);
+
+  /**
+   * Classification of thePoint with respect to thePolygon.
+   * @param thePolygon
+   *   the list of vertices of a free-form closed polygon without
+   *   self-intersections. The last point should not coincide with the first
+   *   point of the list. Any two neighbor points should not be confused.
+   * @param thePoint
+   *   the point to be classified.
+   * @return
+   *   Standard_True if thePoint in inside thePolygon or lies on its boundary.
+   */
+  Standard_EXPORT static Standard_Boolean
+                 IsIn (const NCollection_List<gp_XY> &thePolygon,
+                       const gp_XY                   &thePoint);
+
+  /**
+   * Implements deallocation of the object instance
+   */
+  Standard_EXPORT virtual void Delete () const; 
+
+  /**
+   * Operator new for memory allocation uses Open CASCADE memory manager
+   */
+  void* operator new    (size_t size)
+  {
+    return Standard::Allocate(size);
+  }
 
  protected:
+
+  /**
+   * Allocator-based operator new for dynamic allocations in method Clone()
+   */
+  void* operator new    (Standard_Size theSz,
+                         const Handle(NCollection_BaseAllocator)& theAllocator)
+  {
+    return theAllocator->Allocate(theSz);
+  }
 
   /**
    * Create a 3D bounding box of the object.
@@ -380,30 +495,49 @@ class NIS_Triangulated : public NIS_InteractiveObject
    */
   Standard_EXPORT void         allocateNodes  (const Standard_Integer nNodes);
 
+  /**
+   * Get the node pointed by the i-th index in the array.
+   */
+  Standard_EXPORT gp_Pnt       nodeAtInd      (const Standard_Integer * theArr,
+                                               const Standard_Integer i) const;
+
+  /**
+   * Get the node pointed by the i-th index in the array.
+   */
+  Standard_EXPORT float*       nodeArrAtInd   (const Standard_Integer * theArr,
+                                               const Standard_Integer i) const;
+
  protected:
   // ---------- PROTECTED FIELDS ----------
 
-  /**
-   * Combination of Type_* constants
-   */
-  Standard_Integer                 myType;
-  Standard_ShortReal               *  mypNodes;
-  Standard_Integer                 *  mypTriangles;
-  Standard_Integer                 *  mypLines;
-  Standard_Integer                 ** mypPolygons;
-  Standard_Integer                 myNNodes;
-  Standard_Integer                 myNTriangles;
-  Standard_Integer                 myNPolygons;
-  Standard_Integer                 myNLineNodes;
-  NCollection_BaseAllocator        * myAlloc;
-  Standard_Boolean                 myIsDrawPolygons;
+  NCollection_BaseAllocator  * myAlloc; //!< Usually from InteractiveContext
+  Standard_Integer           myType;    //!< Combination of Type_* constants
+  Standard_ShortReal         *  mypNodes;
+  Standard_Integer           *  mypTriangles;
+  Standard_Integer           *  mypLines;
+  Standard_Integer           ** mypPolygons;
+  Standard_Integer           myNNodes;
+  Standard_Integer           myNTriangles;
+  Standard_Integer           myNLineNodes;
+  unsigned int               myNPolygons      : 24;
+  Standard_Boolean           myIsDrawPolygons : 1;
+  Standard_Boolean           myIsCloned       : 1; //!< How it is allocated
+  unsigned int               myIndexType      : 2; //!< 0:8bit, 1:16bit, 2:32bit
+  unsigned int               myNodeCoord      : 2; //!< 2 or 3 coordinates
+  unsigned int               myPolygonType    : 2;
 
  public:
 // Declaration of CASCADE RTTI
 DEFINE_STANDARD_RTTI (NIS_Triangulated)
+
+  friend class NIS_TriangulatedDrawer;
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (NIS_Triangulated, NIS_InteractiveObject)
+
+#ifdef WNT
+#pragma warning (pop)
+#endif
 
 #endif

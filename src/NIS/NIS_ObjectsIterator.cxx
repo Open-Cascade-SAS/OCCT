@@ -34,3 +34,16 @@ void NIS_ObjectsIterator::Next ()
     if (myIter.Value().IsNull() == Standard_False)
       break;
 }
+
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+
+const Handle(NIS_InteractiveObject)& NIS_ObjectsIterator::Value() const
+{
+  if (More())
+    return myIter.Value();
+  static const Handle(NIS_InteractiveObject) aNullObj;
+  return aNullObj;
+}

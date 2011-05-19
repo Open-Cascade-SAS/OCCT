@@ -69,9 +69,8 @@ class NIS_ObjectsIterator
    * Returns the current object at the iteration pointer. If the iteration is
    * over (More() == False) this method returns NULL Handle.
    */
-  inline Handle(NIS_InteractiveObject)
-                                Value   () const
-  { if (More()) return myIter.Value(); return NULL; }
+  Standard_EXPORT const Handle_NIS_InteractiveObject&
+                                Value   () const;
 
   /**
    * Step forward to the next valid InteractiveObject instance.

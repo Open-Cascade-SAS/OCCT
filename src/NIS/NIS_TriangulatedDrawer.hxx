@@ -60,10 +60,20 @@ class NIS_TriangulatedDrawer : public NIS_Drawer
    */
   Standard_EXPORT virtual Standard_Boolean
                                 IsEqual  (const Handle_NIS_Drawer& theOth)const;
-private:
-  Quantity_Color      myColor[4];
+
+protected:
+  /**
+   * If myPolygonAsLineLoop is true then draw polygons of the object
+   * in the mode GL_LINE_LOOP instead of GL_POLYGON in the case if no filling
+   * was requested. This will eliminate the bug with Intel integrated graphic
+   * cards (e.g. 945G Express) for the sake of polygon offset functionality.
+   */
+  Standard_Boolean    myPolygonAsLineLoop;
+
+  Quantity_Color      myColor[5];
   Standard_ShortReal  myLineWidth;
   Standard_Boolean    myIsDrawPolygons;
+  unsigned int        myPolygonType;
 
   friend class NIS_Triangulated;
 

@@ -9,9 +9,9 @@
 
 #include <Handle_NIS_InteractiveObject.hxx>
 #include <Handle_NIS_View.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
+#include <NIS_Allocator.hxx>
 #include <NIS_Drawer.hxx>
 #include <NIS_SelectFilter.hxx>
 
@@ -23,36 +23,42 @@
 
 class NIS_View;
 class Bnd_B3f;
+class Bnd_B2f;
 
 /**
  * InteractiveContext is the central NIS structure that stores and manages
- * all InteractiveObject instances as well as the Drawers for their
+ * all NIS_InteractiveObject instances as well as the Drawers for their
  * visualisation.
  * There may be one or more Views referred by an InteractiveContext instance.
  * Also there may be one or more InteractiveContext instances referring the same
  * View. However the latter case is not typical (see NIS_View description).<br>
  * To add or remove a View in a Context, use methods AttachView() and
  * DetachView().
- * <p>The main purpose of class NIS_InteractiveContext is allocation and
+ *
+ * @section nis_interactivecontext_mgtobjects Management of objects
+ * The main purpose of class NIS_InteractiveContext is allocation and
  * management of NIS_InteractiveObject instances.
  * <p>An InteractiveObject should be added to the Context by a call to method
- * Display(). After that (not before) it becomes possible to:
+ * Display() or DisplayOnTop(). After that (not before) it becomes possible to:
  * <ul>
  * <li>change the presentation of the InteractiveObject (e.g., modify the color)
  *     </li>
- * <li>make the InteractiveObject visible or invisible;</li>
+ * <li>make the InteractiveObject visible or invisible, selectable or
+ *     unselectable;</li>
  * <li>set Transparency;</li>
  * <li>select InteractiveObject interactively, including the hilighting and
  *     the dynamic hilighting.</li>
  * </ul>
- * All methods managing InteractiveObject instances have the optional parameter
- * 'isUpdateViews'. When it is set to True (default), the modification of the
- * object brings about the immediate update of the presentation (the
- * corresponding Drawer is flagged to recompute presentations). However, for
- * block operations when many InteractiveObject instances are affected it is
- * usually better to delay this recalculation till a definite moment in the end
- * of updates. Then you can set the optional parameter to False and in the end -
- * call the method UpdateViews of the NIS_InteractiveContext.
+ * Methods that add/remove/display/hide NIS_InteractiveObject instances have
+ * the optional parameter 'isUpdateViews'. When it is set to True (default),
+ * the modification of the object brings about an immediate update of its
+ * presentation (the corresponding Drawer flagged to recompute presentations).
+ * Normally you do not have to worry about this parameter leaving it assigned to
+ * the default value; use the alternative value 'Standard_False' only for
+ * very special purposes, like animation -- when many updates should be
+ * synchronized in time. For other methods like changing the transparency or
+ * color definition there is no parameter 'isUpdateViews', all changes mark
+ * the corresponding drawers immediately. 
  * <p>Typical scheme of usage:
  * @code
  *   const Handle(NIS_InteractiveContext) aContext = new NIS_InteractiveContext;
@@ -60,26 +66,53 @@ class Bnd_B3f;
  *   aContext->AttachView (aView);
  *   ....
  *   for (; ;) {
- *     const Handle(NIS_InteractiveObject) anObject = new ...
- *     aContext->Display (anObject, NULL, Standard_False);
+ *     const Handle(MyIOClass) anObject = new MyIOClass();
+ *     aContext->Display (anObject);
+ *     anObject->SetColor(...);  // method of class MyIOClass
  *     ...
  *   }
- *   aContext->UpdateViews();
  * @endcode
- * Additional services provided by InteractiveContext:
+ * @section nis_interactivecontext_display Method Display()
+ * This method performs three important tasks, when called the first time for
+ * an object:
  * <ul>
- * <li>Every instance of this class maintains a distinct
- *     NCollection_IncAllocator that can be used by contained
- *     NIS_InteractiveObject and NIS_Drawer instances. For example, each Object
- *     may be assigned a name using the method SetAttribute, like:
- * @code
- *     Standard_Size aLen = strlen(theName)+1;
- *     char * aName = (char *) myContext->Allocator()->Allocate(aLen);
- *     memcpy (aName, theName, aLen);
- *     myObject->SetAttribute(aName);
- * @endcode
- * </li>
+ * <li>Copy its argument to the memory pool that is managed by the internal
+ *     Allocator of NIS_InteractiveContext. Then <b>the new instance of
+ *     object</b> is returned back in the same argument (in-out parameter);</li>
+ * <li>Store the copied instance in the internal vector of objects, so that
+ *     the displayed object receives its ID (sequential address in the vector);
+ *     </li>
+ * <li>Create a Drawer instance if necessary; attach the displayed interactive
+ *     object to this instance (or to a relevant and already existing Drawer)
+ *     </li>
  * </ul>
+ * Thus any methods dealing with Drawer-related properties like color, line
+ * width, polygon offset, etc. can only be called following the necessary call
+ * of method Display().
+ * <p>
+ * Subsequent calls to Display() just revert previous calls of Erase() without
+ * any re-initialization of interactive object or its drawer.
+ *
+ * @section nis_interactivecontext_memory Using the memory
+ * As described in the sections above, all interactive objects should completely
+ * reside in the special memory pool managed by the InteractiveContext instance.
+ * This is a fast memory (NCollection_IncAllocator is used) but it has the
+ * drawback: when you destroy an object using method Remove() it is detached
+ * from NIS_InteractiveContext and its presentation is removed from all Views.
+ * But the memory allocated for that removed object is not released and it
+ * cannot be reused by new interactive objects. In time there may appear too
+ * many "dead" objects to hinder or even crash the application.
+ * <p>
+ * This problem is resolved by automatic keeping the record of the total size
+ * of both  used and unused memory, in the instance of NIS_Allocator. When the
+ * amount of unused memory becomes too big then the method compactObjects() 
+ * creates a new NIS_Allocator instance and copies there all interactive
+ * objects that are 'alive' then releasing the previous memory pool. All
+ * object IDs and their drawers remain intact, so nothing is changed except
+ * the greater amount of available memory in the system.
+ * <p>
+ * This mechanism works when either UpdateViews() or RebuildViews() is called
+ * from time to time, only these two methods can call compactObjects().
  */
 
 class NIS_InteractiveContext : public Standard_Transient
@@ -135,7 +168,7 @@ class NIS_InteractiveContext : public Standard_Transient
                        NbObjects  ()
 //  { return myObjects.Length()-1; }
   { return (myMapObjects[0].Extent() + myMapObjects[1].Extent() +
-            myMapObjects[2].Extent()); }
+            myMapObjects[2].Extent()) + myMapObjects[3].Extent(); }
 
   /**
    * Query the total number of Drawers instances.
@@ -145,11 +178,12 @@ class NIS_InteractiveContext : public Standard_Transient
   { return myDrawers.Size(); }
 
   /**
-   * Query the memory allocator associated with InteractiveContext instance.
-   */ 
-  inline const Handle_NCollection_IncAllocator&
-                        Allocator  () const
-  { return myAllocator; }
+   * Access to Drawers, can be used for specific operations where it is not
+   * desirale to iterate InteractiveObjects.
+   */
+  inline NCollection_Map<Handle_NIS_Drawer>::Iterator
+                        GetDrawers () const
+  { return NCollection_Map<Handle_NIS_Drawer>::Iterator(myDrawers); }
 
   // ================ BEGIN Mangement of Objects ================
   ///@name Management of Objects
@@ -157,6 +191,31 @@ class NIS_InteractiveContext : public Standard_Transient
 
   /**
    * Make the given interactive object visible in the current context.
+   * If the object is not yet added to this context, it is added. Therefore
+   * this method should follow the creation of an InteractiveObject instance
+   * before it can be displayed.
+   * @param theObj
+   *   <tt>[in/out]</tt>Interactive object instance. If the object is displayed
+   *   for the first time then the output value will be a new (cloned) object.
+   * @param theDrawer
+   *   If this parameter is NULL, the default drawer is used for theObj, defined
+   *   by the object type. Otherwise the given Drawer (must be present in this
+   *   context) is used for theObj. Use the parameter to change the presentation
+   *   of theObj.
+   * @param isUpdateViews
+   *   If True, the drawer receives isUpdate flag, then it will recompute
+   *   the presentations when Redraw event happens. You can leave the parameter
+   *   to False if you have to make a number of similar calls, then you would
+   *   call UpdateViews() in the end.
+   */
+  Standard_EXPORT void Display    (Handle_NIS_InteractiveObject& theObj,
+                                   const Handle_NIS_Drawer& theDrawer = NULL,
+                                   const Standard_Boolean isUpdateViews
+                                                        = Standard_True);
+
+  /**
+   * Make the given interactive object visible on top of other objects in
+   * the current context.
    * If the object is not yet added to this context, it is added. Therefore
    * this method should follow the creation of an InteractiveObject instance
    * before it can be displayed.
@@ -173,10 +232,10 @@ class NIS_InteractiveContext : public Standard_Transient
    *   to False if you have to make a number of similar calls, then you would
    *   call UpdateViews() in the end.
    */
-  Standard_EXPORT void Display    (const Handle_NIS_InteractiveObject& theObj,
-                                   const Handle_NIS_Drawer& theDrawer = NULL,
-                                   const Standard_Boolean isUpdateViews
-                                                        = Standard_True);
+  Standard_EXPORT void DisplayOnTop (Handle_NIS_InteractiveObject& theObj,
+                                     const Handle_NIS_Drawer& theDrawer = NULL,
+                                     const Standard_Boolean isUpdateViews
+                                                          = Standard_True);
 
   /**
    * Make the given object invisible in the current InteractiveContext.
@@ -209,44 +268,32 @@ class NIS_InteractiveContext : public Standard_Transient
   /**
    * Make all stored InteractiveObject instances visible, equivalent to
    * calling method Display() for all contained objects.
-   * @param isUpdateViews
-   *   If True, the drawer receives isUpdate flag, then it will recompute
-   *   the presentations when Redraw event happens. You can leave the parameter
-   *   to False if you have to make a number of similar calls, then you would
-   *   call UpdateViews() in the end.
    */
-  Standard_EXPORT void DisplayAll (const Standard_Boolean isUpdateViews
-                                                        = Standard_True);
+  Standard_EXPORT void DisplayAll ();
 
   /**
    * Make all stored InteractiveObject instances invisible, equivalent to
    * calling method Erase() for all contained objects.
-   * @param isUpdateViews
-   *   If True, the drawer receives isUpdate flag, then it will recompute
-   *   the presentations when Redraw event happens. You can leave the parameter
-   *   to False if you have to make a number of similar calls, then you would
-   *   call UpdateViews() in the end.
    */
-  Standard_EXPORT void EraseAll   (const Standard_Boolean isUpdateViews
-                                                        = Standard_True);
+  Standard_EXPORT void EraseAll   ();
 
   /**
-   * Clean the context of its contained objects. Drawers are not destroyed
-   * however all presentations should become empty.
-   * @param isUpdateViews
-   *   If True, the drawer receives isUpdate flag, then it will recompute
-   *   the presentations when Redraw event happens. You can leave the parameter
-   *   to False if you have to make a number of similar calls, then you would
-   *   call UpdateViews() in the end.
+   * Clean the context of its contained objects. Drawers are destroyed
+   * and all presentations become empty.
    */
-  Standard_EXPORT void RemoveAll  (const Standard_Boolean isUpdateViews
-                                                        = Standard_True);
+  Standard_EXPORT void RemoveAll  ();
 
   /**
-   * This method signal that the presenation should be refreshed in all
-   * Drawers and in all Views.
+   * This method signals that the presenation should be refreshed in all updated
+   * Drawers and in all Views. Calls Redraw() of each view from inside.
    */
   Standard_EXPORT void UpdateViews ();
+
+  /**
+   * Similar to UpdateViews but forces all presentations to be rebuilt whether
+   * the drawers are marked as updated or not.
+   */
+  Standard_EXPORT void RebuildViews();
 
   /**
    * Find the bounding box of all Objects displayed (visible) in the given View.
@@ -402,24 +449,35 @@ class NIS_InteractiveContext : public Standard_Transient
   inline Standard_Boolean IsSelectable  (const Standard_Integer objID) const
   { return (myMapNonSelectableObjects.Contains( objID ) == Standard_False); }
 
+  /**
+   * Set or reset the flag that tells to NIS_Drawer to create shared DrawList.
+   * The default mode (in Constructor) is True.
+   */
+  inline void             SetShareDrawList  (Standard_Boolean isShare)
+  { myIsShareDrawList = isShare; }
 
   //@}
   // ====== END Selection API ================
 
  protected:
+  //! Structure referencing one detected (picked) interactive entity.
+  struct DetectedEnt
+  {
+    Standard_Real          Dist; //!< Distance on the view direction
+    NIS_InteractiveObject* PObj; //!< Pointer to interactive object
+  };
+
   // ---------- PROTECTED METHODS ----------
 
   Standard_EXPORT void redraw           (const Handle_NIS_View&     theView,
                                          const NIS_Drawer::DrawType theType);
 
-  /*Standard_EXPORT void prepareList      (const NIS_Drawer::DrawType theType,
-                                         const NIS_DrawList&        theView,
-                                         NIS_Drawer *               theDrawer);
-  */
   /**
    * Detect the object selected by the given ray.
    * @param theSel
    *   <tt>[out]</tt> The selected object that has the lowest ray distance.
+   * @param theDet
+   *   <tt>[out]</tt> Sorted list of all detected objects with ray distances
    * @param theAxis
    *   Selection ray
    * @param theOver
@@ -432,6 +490,7 @@ class NIS_InteractiveContext : public Standard_Transient
    */
   Standard_EXPORT Standard_Real
                        selectObject     (Handle_NIS_InteractiveObject& theSel,
+                                         NCollection_List<DetectedEnt>& theDet,
                                          const gp_Ax1&                 theAxis,
                                          const Standard_Real           theOver,
                                          const Standard_Boolean isOnlySelectable
@@ -461,8 +520,57 @@ class NIS_InteractiveContext : public Standard_Transient
                                          const gp_Trsf&        theTrfInv,
                                          const Standard_Boolean isFullyIn)const;
 
+  /**
+   * Build a list of objects that are inside or touched by a polygon.
+   * @param mapObj
+   *   <tt>[out]</tt> Container of object IDs, updated by detected objects.
+   * @param thePolygon
+   *   the list of vertices of a free-form closed polygon without
+   *   self-intersections. The last point should not coincide with the first
+   *   point of the list. Any two neighbor points should not be confused.
+   * @param thePolygonBox
+   *   2D box of selection polygon
+   * @param theTrfInv
+   *   Inverted Position/Orientation of the plane where thePolygon is defined
+   *   (for polygon-object intersections)
+   * @param isFullyIn
+   *   True if only those objects are processed that are fully inside the
+   *   selection polygon. False if objects fully or partially included in
+   *   the polygon are processed. 
+   * @return
+   *   True if at least one object was selected.
+   */
+  Standard_EXPORT Standard_Boolean
+        selectObjects           (TColStd_PackedMapOfInteger    &mapObj,
+                                 const NCollection_List<gp_XY> &thePolygon,
+                                 const Bnd_B2f                 &thePolygonBox,
+                                 const gp_Trsf                 &theTrfInv,
+                                 const Standard_Boolean        isFullyIn) const;
+
+private:
+  void  deselectObj             (const Handle_NIS_InteractiveObject&,
+                                 const Standard_Integer);
+
+  void  selectObj               (const Handle_NIS_InteractiveObject&,
+                                 const Standard_Integer);
+
+  const Handle_NIS_Drawer&
+        drawerForDisplay        (const Handle_NIS_InteractiveObject&,
+                                 const Handle_NIS_Drawer&);
+
+  void  objectForDisplay        (Handle_NIS_InteractiveObject&,
+                                 const NIS_Drawer::DrawType);
+
+  Handle_NIS_Allocator
+        compactObjects          ();
+
  private:
   // ---------- PRIVATE FIELDS ----------
+
+  /**
+   * Allocator for all data associated with objects.
+   */
+  Handle_NIS_Allocator                              myAllocator;
 
   /**
    * Container of InteractiveObject instances.
@@ -483,11 +591,12 @@ class NIS_InteractiveContext : public Standard_Transient
   /**
    * Three maps indicating the state of contained objects:
    *  - #0 - normally presented objects
-   *  - #1 - hilighted objects (i.e., selected)
-   *  - #2 - transparent objects
+   *  - #1 - top objects
+   *  - #2 - hilighted objects (i.e., selected)
+   *  - #3 - transparent objects
    * <br>Each object can have only one entry in these maps.
    */
-  TColStd_PackedMapOfInteger                        myMapObjects[3];
+  TColStd_PackedMapOfInteger                        myMapObjects[4];
 
   /**
    * Objects contained in this map are ignored by SetSelected methods,
@@ -501,19 +610,14 @@ class NIS_InteractiveContext : public Standard_Transient
   Handle_NIS_SelectFilter                           mySelectFilter;
 
   /**
-   * Current selection.
-   */
-  //  TColStd_PackedMapOfInteger                    mySelection;
-
-  /**
    * Current mode of selection.
    */
   SelectionMode                                     mySelectionMode;
 
   /**
-   * Allocator for arbitrary data associated with objects and drawers.
+   * Flag that allows to use single draw list for all views.
    */
-  Handle_NCollection_IncAllocator                   myAllocator;
+  Standard_Boolean                                  myIsShareDrawList;
 
   friend class NIS_View;
   friend class NIS_Drawer;

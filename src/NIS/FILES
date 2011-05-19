@@ -1,5 +1,7 @@
 EXTERNLIB
 FILES
+NIS_Allocator.cxx
+NIS_Allocator.hxx
 NIS_Drawer.cxx
 NIS_Drawer.hxx
 NIS_DrawList.cxx
