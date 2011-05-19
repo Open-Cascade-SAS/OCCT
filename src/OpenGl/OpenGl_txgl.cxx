@@ -302,7 +302,6 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
       /* recover display lists from dead_ctx, then destroy it */
       ctx = glXCreateContext( disp, vis, dead_ctx, GL_TRUE );
       glXDestroyContext(dead_dpy, dead_ctx);
-      dead_ctx = 0;
     } else if (previous_ctx == 0) {
       ctx = glXCreateContext( disp, vis, NULL, GL_TRUE );
     } else {
@@ -311,9 +310,16 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     }
     previous_ctx = ctx;
 
-    if( !ctx) return TFailure;
+    if( ctx )
+      OpenGl_ResourceCleaner::GetInstance()->AppendContext( ctx, true );
 
-    OpenGl_ResourceCleaner::GetInstance()->AppendContext( ctx, true );
+    // remove the dead_ctx for ResourceCleaner after appending shared ctx
+    if (dead_ctx) {
+      OpenGl_ResourceCleaner::GetInstance()->RemoveContext(dead_ctx);
+      dead_ctx = 0;
+    }
+
+    if( !ctx) return TFailure;
 
     cmap = XCreateColormap( disp,  par, vis->visual, AllocNone );
 
@@ -783,7 +789,6 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     /* FSXXX sync necessary if non-direct rendering */
     glXWaitGL();
 
-    OpenGl_ResourceCleaner::GetInstance()->RemoveContext( ctx );
     _Txgl_Map.UnBind( win );
 
     if (previous_ctx == ctx) {
@@ -800,12 +805,14 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
       * losing any shared display lists (fonts...)
       */
       if (previous_ctx) {
+        OpenGl_ResourceCleaner::GetInstance()->RemoveContext(ctx);
         glXDestroyContext(disp, ctx);
       } else {
         dead_ctx = ctx;
         dead_dpy = disp;
       }
     } else {
+      OpenGl_ResourceCleaner::GetInstance()->RemoveContext(ctx);
       glXDestroyContext(disp, ctx);
     }
 

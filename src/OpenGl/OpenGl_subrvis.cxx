@@ -120,6 +120,8 @@ from higher API */
 #include <OpenGl_tgl_util.hxx>
 #include <OpenGl_Memory.hxx>
 #include <OpenGl_graduatedtrihedron.hxx>
+#include <OpenGl_ResourceCleaner.hxx>
+#include <OpenGl_ResourceTexture.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -759,20 +761,39 @@ void
 call_subr_close_ws( CALL_DEF_VIEW * aview )
 {
   CMN_KEY_DATA key;
-#ifdef OCC1188
-  tsm_bg_texture texture;
-
-  TsmGetWSAttri( aview->WsId, WSBgTexture, &key );
-  texture = (tsm_bg_texture)key.pdata;
-  
-  if( texture == 0 )
-     return;
-
-  if ( texture->texId != 0 )
-    glDeleteTextures( 1,(GLuint *)&(texture->texId) );
-#endif
+  CMN_KEY_DATA textureKey;
 
   TsmGetWSAttri( aview->WsId, WSWindow, &key );
+
+#ifdef OCC1188
+  tsm_bg_texture texture;
+  WINDOW aWnd = (WINDOW) key.ldata;
+
+  TsmGetWSAttri( aview->WsId, WSBgTexture, &textureKey );
+  texture = (tsm_bg_texture)textureKey.pdata;
+
+  if ( texture != 0 && texture->texId != 0 )
+  {
+    OpenGl_ResourceCleaner* anCleaner = OpenGl_ResourceCleaner::GetInstance();
+
+    // Delete the texture with ResourceCleaner; if it is not possible
+    // do this directly with proper context selected
+    if ( !anCleaner->AddResource( TxglGetContext(aWnd), 
+                   new OpenGl_ResourceTexture(texture->texId) ) )
+    {
+      GLCONTEXT  cur_context  = GET_GL_CONTEXT(); 
+      GLDRAWABLE cur_drawable = GET_GLDEV_CONTEXT();
+
+      if ( TxglWinset( call_thedisplay, aWnd ) == TSuccess )
+        glDeleteTextures( 1,(GLuint *)&(texture->texId) ); 
+
+      // activate the previous context for this thread
+      GL_MAKE_CURRENT( call_thedisplay, cur_drawable, cur_context );
+    }
+  }
+  
+#endif
+
 #ifdef RIC120302
   if( !aview->GContext )
 #endif

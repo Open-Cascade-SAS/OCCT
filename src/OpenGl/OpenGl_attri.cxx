@@ -527,7 +527,7 @@ TsmPopAttri( void )
     if( attri_tail->TransPers.mode != node->TransPers.mode ||
         attri_tail->TransPers.pointX != node->TransPers.pointX ||
         attri_tail->TransPers.pointY != node->TransPers.pointY ||
-        attri_tail->TransPers.pointZ != node->TransPers.pointX )
+        attri_tail->TransPers.pointZ != node->TransPers.pointZ )
 
     {
       transform_persistence_begin( attri_tail->TransPers.mode, 

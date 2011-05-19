@@ -95,6 +95,7 @@ call_togl_redraw
       call_togl_redraw_layer2d (aview, anunderlayer);
     }
     call_func_redraw_all_structs_proc (aview->WsId);
+    call_subr_displayCB (aview, OCC_REDRAW_WINDOW | OCC_PRE_OVERLAY);
     if (anoverlayer->ptrLayer)
     {
       call_togl_redraw_layer2d (aview, anoverlayer);
@@ -172,6 +173,7 @@ call_togl_redraw_area
         call_togl_redraw_layer2d (aview, anunderlayer);
       }
       call_func_redraw_all_structs_proc (aview->WsId);
+      call_subr_displayCB (aview, OCC_REDRAW_WINDOWAREA | OCC_PRE_OVERLAY);
       if (anoverlayer->ptrLayer)
       {
         call_togl_redraw_layer2d (aview, anoverlayer);
