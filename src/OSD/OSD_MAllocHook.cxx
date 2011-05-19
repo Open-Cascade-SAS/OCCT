@@ -15,6 +15,10 @@
 #include <set>
 #include <map>
 
+#ifndef SIZE_MAX
+#define SIZE_MAX UINT_MAX
+#endif
+
 #define MAX_STR 80
 
 static OSD_MAllocHook::Callback* MypCurrentCallback = NULL;
