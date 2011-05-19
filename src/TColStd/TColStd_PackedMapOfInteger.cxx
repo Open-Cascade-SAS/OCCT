@@ -772,8 +772,10 @@ Standard_Boolean TColStd_PackedMapOfInteger::Intersect
             // Store the block - result of operation
             if (aNewData == 0)
               p2 = 0L;  // no match - the block has to be removed
-            else if ( aNewData != p1->Data() ) {
-              p1->ChangeData() = aNewData;
+            else
+            {
+              if ( aNewData != p1->Data() )
+                p1->ChangeData() = aNewData;
               aNewExtent += TColStd_Population (p1->ChangeMask(), aNewData);
             }
             break;
