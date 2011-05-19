@@ -13,6 +13,8 @@
 
 #include <QANCollection_PerfTest.hxx>
 
+#include <QANCollection_PerfSparseArray.hxx>
+
 IMPLEMENT_HARRAY1(QANCollection_HArray1Perf)
 IMPLEMENT_HARRAY2(QANCollection_HArray2Perf)
 IMPLEMENT_HSET(QANCollection_HSetPerf)
@@ -224,6 +226,20 @@ static Standard_Integer QANColPerfIndexedDataMap(Draw_Interpretor& di, Standard_
   return 0;
 }
 
+//=======================================================================
+//function : QANColCheckSparseArray
+//purpose  : 
+//=======================================================================
+static Standard_Integer QANColCheckSparseArray(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  Standard_Integer Repeat, Size;
+  if ( CheckArguments(di, argc, argv, Repeat, Size) ) {
+    return 1;
+  }
+  CompSparseArray(Repeat,Size);
+  return 0;
+}
+
 void QANCollection::Commands3(Draw_Interpretor& theCommands) {
   char *group = "QANCollection";
 
@@ -241,6 +257,9 @@ void QANCollection::Commands3(Draw_Interpretor& theCommands) {
   theCommands.Add("QANColPerfDoubleMap",      "QANColPerfDoubleMap Repeat Size",      __FILE__, QANColPerfDoubleMap,      group);  
   theCommands.Add("QANColPerfIndexedMap",     "QANColPerfIndexedMap Repeat Size",     __FILE__, QANColPerfIndexedMap,     group);  
   theCommands.Add("QANColPerfIndexedDataMap", "QANColPerfIndexedDataMap Repeat Size", __FILE__, QANColPerfIndexedDataMap, group);  
-
+  
+  theCommands.Add("QANColCheckSparseArray",   "QANColCheckSparseArray Repeat Size",   __FILE__, QANColCheckSparseArray,   group);
+  
   return;
 }
+

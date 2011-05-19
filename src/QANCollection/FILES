@@ -17,3 +17,4 @@ QANCollection_PerfLists.hxx
 QANCollection_PerfMaps.hxx
 QANCollection_PerfTest.hxx
 QANCollectionTest.cxx
+QANCollection_PerfSparseArray.hxx
