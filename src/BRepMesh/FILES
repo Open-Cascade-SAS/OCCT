@@ -7,4 +7,5 @@ BRepMesh_MapOfInteger.hxx
 BRepMesh_ListOfInteger.hxx
 BRepMesh_BaseAllocator.hxx
 BRepMesh_PairOfIndex.hxx
+BRepMesh_Status.hxx
 EXTERNLIB

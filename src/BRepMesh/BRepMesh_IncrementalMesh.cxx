@@ -52,7 +52,8 @@
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh() 
 : myRelative(Standard_False),
-  myModified(Standard_False)
+  myModified(Standard_False),
+  myStatus(0)
 {
   mymapedge.Clear();
   myancestors.Clear();
@@ -69,7 +70,8 @@ BRepMesh_IncrementalMesh(const TopoDS_Shape& S,
 			 const Standard_Boolean Rel,
 			 const Standard_Real Ang) :
 			 myRelative(Rel),
-			 myModified(Standard_False)
+			 myModified(Standard_False),
+                         myStatus(0)
 {
   mymapedge.Clear();
   myancestors.Clear();
@@ -155,37 +157,15 @@ void BRepMesh_IncrementalMesh::Perform()
 				    Standard_True);
   //
   Update(myShape);
-#ifdef DEB
-  EchoStatus();
-#endif
 }
 
 //=======================================================================
-//function : EchoStatus
+//function : GetStatus
 //purpose  : 
 //=======================================================================
-void BRepMesh_IncrementalMesh::EchoStatus() const
+Standard_Integer BRepMesh_IncrementalMesh::GetStatusFlags() const
 {
-  cout << "BRepMesh_FastDiscret::Meshing status: ";
-  switch(myMesh->CurrentFaceStatus())
-  {
-    case BRepMesh_NoError:
-      cout << "NoError" << endl;
-      break;
-    case BRepMesh_OpenWire:
-      cout << "OpenWire" << endl;
-      break;
-    case BRepMesh_SelfIntersectingWire:
-      cout << "SelfIntersectingWire" << endl;
-      break;
-    case BRepMesh_Failure:
-      cout << "Failure" << endl;
-      break;
-    case BRepMesh_ReMesh:
-      cout << "ReMesh" << endl;
-      break;
-    default: cout << "UnsupportedStatus" << endl;
-  }
+  return myStatus;
 }
 
 //=======================================================================
@@ -454,6 +434,7 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
       B.UpdateFace(F, TNull);
     }
     myMesh->Add(F);
+    myStatus |= (Standard_Integer)(myMesh->CurrentFaceStatus());
     if (myMesh->CurrentFaceStatus() == BRepMesh_ReMesh) {
 #ifdef DEB_MESH
       cout << " face remaillee + finement que prevu."<< endl;

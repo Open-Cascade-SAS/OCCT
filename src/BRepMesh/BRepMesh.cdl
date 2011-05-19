@@ -44,14 +44,7 @@ is    enumeration DegreeOfFreedom is
         Frontier,
         Deleted;
 
-      enumeration Status  is 
-      ---Purpose: Discribes the wires discretisation.
-        NoError,
-        OpenWire,
-        SelfIntersectingWire,
-        Failure,
-        ReMesh
-      end Status;
+      imported Status from BRepMesh;
        
       enumeration FactoryError is 
         FE_NOERROR,  

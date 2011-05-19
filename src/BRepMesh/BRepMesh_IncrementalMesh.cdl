@@ -74,7 +74,8 @@ is
             --          built.
     	is static private;
       
-    EchoStatus(me)
+    GetStatusFlags(me)
+      returns Integer from Standard
       is static;
 	
       
@@ -87,6 +88,7 @@ fields
     myancestors  : IndexedDataMapOfShapeListOfShape from TopTools is protected;
     mydtotale    : Real from Standard is protected;
     myBox        : Box  from Bnd is protected;
+    myStatus     : Integer from Standard is protected;
 
 end IncrementalMesh;
 

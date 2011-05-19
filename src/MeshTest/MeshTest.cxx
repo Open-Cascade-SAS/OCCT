@@ -1,7 +1,7 @@
-// File:	MeshTest.cxx
-// Created:	Wed Sep 22 18:35:55 1993
-// Author:	Didier PIFFAULT
-//		<dpf@zerox>
+// File:    MeshTest.cxx
+// Created: Wed Sep 22 18:35:55 1993
+// Author:  Didier PIFFAULT
+//          <dpf@zerox>
 
 #include <Standard_Stream.hxx>
 
@@ -79,6 +79,11 @@
 #include <TopoDS_Wire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepTools.hxx>
+
+//OAN: for triepoints
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <TopTools_MapIteratorOfMapOfShape.hxx>
 
 #ifdef WNT
 Standard_IMPORT Draw_Viewer dout;
@@ -166,7 +171,7 @@ static Standard_Integer planesection(Draw_Interpretor&, Standard_Integer nbarg, 
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer incrementalmesh(Draw_Interpretor&, Standard_Integer nbarg, const char** argv)
+static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer nbarg, const char** argv)
 {
   if (nbarg < 3) return 1;
 
@@ -175,6 +180,40 @@ static Standard_Integer incrementalmesh(Draw_Interpretor&, Standard_Integer nbar
   if (S.IsNull()) return 1;
 
   BRepMesh_IncrementalMesh MESH(S,d);
+  Standard_Integer statusFlags = MESH.GetStatusFlags();  
+
+  di << "Meshing statuses: ";
+
+  if( !statusFlags )
+  {
+    di << "NoError";
+  }
+  else
+  {
+    Standard_Integer i;
+    for( i = 0; i < 4; i++ )
+    {
+      if( (statusFlags >> i) & (Standard_Integer)1 )
+      {
+        switch(i+1)
+        {
+          case 1:
+            di << "OpenWire ";
+            break;
+          case 2:
+            di << "SelfIntersectingWire ";
+            break;
+          case 3:
+            di << "Failure ";
+            break;
+          case 4:
+            di << "ReMesh ";
+            break;
+        }
+      }
+    }
+  }
+
   return 0;
 }
 
@@ -1455,7 +1494,78 @@ Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer nbarg, const cha
 #endif
 
 
+//=======================================================================
+//function : triedgepoints
+//purpose  : 
+//=======================================================================
 
+Standard_Integer triedgepoints(Draw_Interpretor& di, Standard_Integer nbarg, const char** argv)
+{
+  if( nbarg < 2 )
+    return 1;
+
+  for( Standard_Integer i = 1; i < nbarg; i++ )
+  {
+    TopoDS_Shape aShape = DBRep::Get(argv[i]);
+    if ( aShape.IsNull() )
+      continue;
+
+    Handle(Poly_PolygonOnTriangulation) aPoly;
+    Handle(Poly_Triangulation)          aT;
+    TopLoc_Location                     aLoc;
+    TopTools_MapOfShape                 anEdgeMap;
+    TopTools_MapIteratorOfMapOfShape    it;
+    
+    if( aShape.ShapeType() == TopAbs_EDGE )
+    {
+      anEdgeMap.Add( aShape );
+    }
+    else
+    {
+      TopExp_Explorer ex(aShape, TopAbs_EDGE);
+      for(; ex.More(); ex.Next() )
+        anEdgeMap.Add( ex.Current() );
+    }
+
+    if ( anEdgeMap.Extent() == 0 )
+      continue;
+
+    char newname[1024];
+    strcpy(newname,argv[i]);
+    char* p = newname;
+    while (*p != '\0') p++;
+    *p = '_';
+    p++;
+
+    Standard_Integer nbEdge = 1;
+    for(it.Initialize(anEdgeMap); it.More(); it.Next())
+    {
+      BRep_Tool::PolygonOnTriangulation(TopoDS::Edge(it.Key()), aPoly, aT, aLoc);
+      if ( aT.IsNull() || aPoly.IsNull() )
+        continue;
+      
+      const TColgp_Array1OfPnt&      Nodes   = aT->Nodes();
+      const TColStd_Array1OfInteger& Indices = aPoly->Nodes();
+      const Standard_Integer         nbnodes = Indices.Length();
+
+      for( Standard_Integer j = 1; j <= nbnodes; j++ )
+      {
+        gp_Pnt P3d = Nodes(Indices(j));
+        if( !aLoc.IsIdentity() )
+          P3d.Transform(aLoc.Transformation());
+
+        if( anEdgeMap.Extent() > 1 )
+          sprintf(p,"%d_%d",nbEdge,j);
+        else
+          sprintf(p,"%d",j);
+	      DBRep::Set( newname, BRepBuilderAPI_MakeVertex(P3d) );
+	      di.AppendElement(newname);
+      }
+      nbEdge++;
+    }
+  }
+  return 0;
+}
 
 //=======================================================================
 void  MeshTest::Commands(Draw_Interpretor& theCommands)
@@ -1491,6 +1601,7 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("veriftriangles","veriftriangles name, verif triangles",__FILE__,veriftriangles,g);
   theCommands.Add("wavefront","wavefront name",__FILE__, wavefront, g);
   theCommands.Add("onetriangulation","onetriangulation name",__FILE__, onetriangulation, g);
+  theCommands.Add("triepoints", "triepoints shape1 [shape2 ...]",__FILE__, triedgepoints, g);
 
 #if 0
   theCommands.Add("extrema","extrema ",__FILE__, extrema, g);
