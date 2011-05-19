@@ -872,35 +872,11 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
                      Standard_True);
       }
 
-      // Creation des polygones sur triangulation:
+      // Creation of polygons on triangulation:
       Standard_Real puv;
       Standard_Integer i;      
-      Standard_Real aEdgeLen = 0., a2dEdgeLen = 0.;
-      gp_Pnt P3dPrev;
-      gp_Pnt2d uvPrev;
-      GT.Value(cons, theGFace, 1, puv, P3dPrev, uvPrev);
-      for (i = 2; i <= GT.NbPoints(); i++)
-      {
-        // Record 3d point
-	      GT.Value(cons, theGFace, i, puv, P3d, uv);
-        aEdgeLen += P3d.SquareDistance(P3dPrev);
-        a2dEdgeLen += uv.SquareDistance(uvPrev);
-        P3dPrev = P3d;
-        uvPrev = uv;
-      }
-
       Standard_Integer nbnodes = GT.NbPoints();
-      Standard_Real aMinToler = Min(theDefEdge, myDeflection);
-      if(aEdgeLen < aMinToler*aMinToler)
-      {
-        //check 2D resolution
-        Standard_Real ddu = theGFace->UResolution(aMinToler);
-        Standard_Real ddv = theGFace->VResolution(aMinToler);
-        Standard_Real aMin = Min(ddu, ddv);
 
-        if(a2dEdgeLen < aMin*aMin)
-          nbnodes = 2;
-      }
       TColStd_Array1OfInteger Nodes(1, nbnodes);
       TColStd_Array1OfInteger NodInStruct(1, nbnodes);
       TColStd_Array1OfReal Param(1, nbnodes);
