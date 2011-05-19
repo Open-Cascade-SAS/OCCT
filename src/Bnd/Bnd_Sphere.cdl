@@ -1,0 +1,86 @@
+-- File:      Bnd_Sphere.cdl
+-- Created:   Fri Dec 3 17:39:44 2010
+-- Author:    Artem SHAL
+---Copyright: OPEN CASCADE 2010
+
+class Sphere from Bnd
+
+    ---Purpose: This class represents a bounding sphere of a geometric entity
+    --          (triangle, segment of line or whatever else).
+
+uses XYZ from gp
+
+is
+
+    Create returns Sphere;
+	    ---Purpose: Empty constructor
+
+    Create (theCntr : XYZ from gp; theRad : Real; theU : Integer; theV : Integer)
+	    returns Sphere;
+	    ---Purpose: Constructor of a definite sphere
+
+    U (me) returns Integer;
+        ---C++: inline
+        ---Purpose: Returns the U parameter on shape
+
+    V (me) returns Integer;
+        ---C++: inline
+        ---Purpose: Returns the V parameter on shape
+
+    IsValid (me) returns Boolean;
+        ---C++: inline
+	    ---Purpose: Returns validity status, indicating that this
+	    --		sphere corresponds to a real entity
+
+    SetValid (me : in out; isValid : Boolean);
+        ---C++: inline
+
+    Center (me) returns XYZ from gp;
+        ---C++: inline
+	    ---C++: return const &
+	    ---Purpose: Returns center of sphere object
+
+    Radius (me) returns Real;
+        ---C++: inline
+	    ---Purpose: Returns the radius value
+
+    Distances (me; theXYZ : XYZ from gp; theMin : in out Real; theMax : in out Real) is static;
+	    ---Purpose: Calculate and return minimal and maximal distance to sphere.
+	    --		NOTE: This function is tightly optimized; any modifications
+	    --		may affect performance!
+	    
+    SquareDistances (me; theXYZ : XYZ from gp; theMin : in out Real; theMax : in out Real) is static;
+	    ---Purpose: Calculate and return minimal and maximal distance to sphere.
+	    --		NOTE: This function is tightly optimized; any modifications
+	    --		may affect performance!
+
+    Project (me; theNode : XYZ from gp; theProjNode : in out XYZ from gp; theDist : in out Real; theInside : in out Boolean)
+	    ---Purpose: Projects a point on entity.
+	    --		   Returns true if success
+	    returns Boolean;
+
+    Distance (me; theNode : XYZ from gp)
+	    returns Real;
+	    
+    SquareDistance (me; theNode : XYZ from gp)
+	    returns Real;
+
+    Add (me : in out; theOther : Sphere from Bnd);
+
+    IsOut (me; theOther : Sphere from Bnd)
+	    returns Boolean;
+
+    IsOut (me; thePnt : XYZ from gp; theMaxDist : in out Real)
+	    returns Boolean;
+
+    SquareExtent (me) returns Real;
+
+fields
+
+    myCenter	: XYZ from gp;
+    myRadius	: Real;
+    myIsValid	: Boolean;
+    myU		: Integer;
+    myV		: Integer;
+
+end Sphere;

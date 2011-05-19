@@ -13,10 +13,15 @@ class   GenExtPS from Extrema
 
 uses  	POnSurf       from Extrema,
     	Pnt           from gp,
-	HArray2OfPnt  from TColgp,
 	FuncExtPS     from Extrema,
 	Surface       from Adaptor3d,
-	SurfacePtr    from Adaptor3d
+	SurfacePtr    from Adaptor3d,
+        HUBTreeOfSphere from Extrema,
+        ExtFlag from Extrema,
+	ExtAlgo from Extrema,
+	HArray1OfSphere from Bnd,
+	Vector        from math,
+	HArray2OfPnt from TColgp
 
 raises  NotDone      from StdFail,
     	OutOfRange   from Standard,
@@ -27,7 +32,7 @@ is
 
     Create returns GenExtPS;
     
-    Create (P: Pnt; S: Surface from Adaptor3d; NbU,NbV: Integer; TolU,TolV: Real)
+    Create (P: Pnt; S: Surface from Adaptor3d; NbU,NbV: Integer; TolU,TolV: Real; F : ExtFlag from Extrema = Extrema_ExtFlag_MINMAX; A : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     	returns GenExtPS;
       	---Purpose: It calculates all the distances.
         --          The function F(u,v)=distance(P,S(u,v)) has an 
@@ -44,7 +49,7 @@ is
 
 
     Create (P: Pnt; S: Surface from Adaptor3d; NbU,NbV: Integer; 
-    	    Umin, Usup, Vmin, Vsup: Real; TolU,TolV: Real)
+    	    Umin, Usup, Vmin, Vsup: Real; TolU,TolV: Real; F : ExtFlag from Extrema = Extrema_ExtFlag_MINMAX; A : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     	returns GenExtPS;
       	---Purpose: It calculates all the distances.
         --          The function F(u,v)=distance(P,S(u,v)) has an 
@@ -77,6 +82,12 @@ is
         --          been initialized.  
     raises TypeMismatch from Standard
     is static;
+    
+    SetFlag(me : in out; F : ExtFlag from Extrema)
+    	is static;
+	
+    SetAlgo(me : in out; A : ExtAlgo from Extrema)
+    	is static;
 
 
     IsDone (me) returns Boolean
@@ -107,6 +118,12 @@ is
 
     Bidon(me) returns SurfacePtr from Adaptor3d
     is static private;
+    
+    BuildTree(me : in out)
+    is static private;
+    
+    FindSolution(me: in out; P : Pnt from gp; UV : Vector from math; PasU, PasV : Real; f : ExtFlag from Extrema)
+    is static private;
 
 fields
     myDone    : Boolean;
@@ -117,10 +134,14 @@ fields
     myvsup    : Real;
     myusample : Integer;
     myvsample : Integer;
-    mypoints  : HArray2OfPnt from TColgp;
     mytolu    : Real;
     mytolv    : Real;
+    mypoints  : HArray2OfPnt from TColgp;
+    mySphereUBTree : HUBTreeOfSphere from Extrema;
+    mySphereArray : HArray1OfSphere from Bnd;
     myF	      : FuncExtPS from Extrema;
     myS       : SurfacePtr from Adaptor3d;
+    myFlag    : ExtFlag from Extrema;
+    myAlgo    : ExtAlgo from Extrema;
 
 end GenExtPS;

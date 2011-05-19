@@ -1,12 +1,10 @@
 // File:	BRepExtrema_ExtCC.cxx
 // Created:	Wed Dec 15 16:48:53 1993
 // Author:	Christophe MARION
-//		<cma@sdsun1>
 
-#include <BRepExtrema_ExtCC.ixx>
+#include <BRepExtrema_ExtCC.hxx>
+
 #include <BRep_Tool.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_Failure.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_HCurve.hxx>
@@ -17,18 +15,7 @@
 //purpose  : 
 //=======================================================================
 
-BRepExtrema_ExtCC::BRepExtrema_ExtCC()
-{
-}
-
-//=======================================================================
-//function : BRepExtrema_ExtCC
-//purpose  : 
-//=======================================================================
-
-BRepExtrema_ExtCC::BRepExtrema_ExtCC
-  (const TopoDS_Edge& E1,
-   const TopoDS_Edge& E2)
+BRepExtrema_ExtCC::BRepExtrema_ExtCC(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 {
   Initialize(E2);
   Perform(E1);
@@ -45,7 +32,7 @@ void BRepExtrema_ExtCC::Initialize(const TopoDS_Edge& E2)
   BRepAdaptor_Curve Curv(E2);
   myHC = new BRepAdaptor_HCurve(Curv);
   BRep_Tool::Range(E2,V1,V2);
-  myExtrem.SetCurve (2, myHC->Curve(),V1,V2);
+  myExtCC.SetCurve(2,myHC->Curve(),V1,V2);
 }
 
 //=======================================================================
@@ -59,49 +46,8 @@ void BRepExtrema_ExtCC::Perform(const TopoDS_Edge& E1)
   BRepAdaptor_Curve Curv(E1);
   Handle(BRepAdaptor_HCurve) HC = new BRepAdaptor_HCurve(Curv);
   BRep_Tool::Range(E1,U1,U2);
-  myExtrem.SetCurve (1, HC->Curve(), U1, U2);
-  myExtrem.Perform();
-}
-
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean BRepExtrema_ExtCC::IsDone()const
-{
-  return myExtrem.IsDone();
-}
-
-//=======================================================================
-//function : NbExt
-//purpose  : 
-//=======================================================================
-
-Standard_Integer BRepExtrema_ExtCC::NbExt() const
-{
-  return myExtrem.NbExt();
-}
-
-//=======================================================================
-//function : IsMin
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean BRepExtrema_ExtCC::IsParallel() const
-{
-  return myExtrem.IsParallel();
-}
-
-//=======================================================================
-//function : SquareDistance
-//purpose  : 
-//=======================================================================
-
-Standard_Real BRepExtrema_ExtCC::SquareDistance
-  (const Standard_Integer N) const
-{
-  return myExtrem.SquareDistance(N);
+  myExtCC.SetCurve (1, HC->Curve(), U1, U2);
+  myExtCC.Perform();
 }
 
 //=======================================================================
@@ -109,11 +55,10 @@ Standard_Real BRepExtrema_ExtCC::SquareDistance
 //purpose  : 
 //=======================================================================
 
-Standard_Real BRepExtrema_ExtCC::ParameterOnE1
-  (const Standard_Integer N) const
+Standard_Real BRepExtrema_ExtCC::ParameterOnE1(const Standard_Integer N) const
 {
   Extrema_POnCurv POnE1, POnE2;
-  myExtrem.Points(N, POnE1, POnE2);
+  myExtCC.Points(N, POnE1, POnE2);
   return POnE1.Parameter();
 }
 
@@ -122,13 +67,11 @@ Standard_Real BRepExtrema_ExtCC::ParameterOnE1
 //purpose  : 
 //=======================================================================
 
-gp_Pnt BRepExtrema_ExtCC::PointOnE1
-  (const Standard_Integer N) const
+gp_Pnt BRepExtrema_ExtCC::PointOnE1(const Standard_Integer N) const
 {
   Extrema_POnCurv POnE1, POnE2;
-  myExtrem.Points(N, POnE1, POnE2);
-  gp_Pnt P = POnE1.Value();
-  return P; 
+  myExtCC.Points(N, POnE1, POnE2);
+  return POnE1.Value();
 }
 
 //=======================================================================
@@ -136,11 +79,10 @@ gp_Pnt BRepExtrema_ExtCC::PointOnE1
 //purpose  : 
 //=======================================================================
 
-Standard_Real BRepExtrema_ExtCC::ParameterOnE2
-  (const Standard_Integer N) const
+Standard_Real BRepExtrema_ExtCC::ParameterOnE2(const Standard_Integer N) const
 {
   Extrema_POnCurv POnE1, POnE2;
-  myExtrem.Points(N, POnE1, POnE2);
+  myExtCC.Points(N, POnE1, POnE2);
   return POnE2.Parameter();
 }
 
@@ -149,13 +91,11 @@ Standard_Real BRepExtrema_ExtCC::ParameterOnE2
 //purpose  : 
 //=======================================================================
 
-gp_Pnt BRepExtrema_ExtCC::PointOnE2
-  (const Standard_Integer N) const
+gp_Pnt BRepExtrema_ExtCC::PointOnE2(const Standard_Integer N) const
 {
   Extrema_POnCurv POnE1, POnE2;
-  myExtrem.Points(N, POnE1, POnE2);
-  gp_Pnt P = POnE2.Value();
-  return P; 
+  myExtCC.Points(N, POnE1, POnE2);
+  return POnE2.Value();
 }
 
 
@@ -174,7 +114,6 @@ void BRepExtrema_ExtCC::TrimmedSquareDistances
    gp_Pnt& pnt21,
    gp_Pnt& pnt22) const
 {
-  myExtrem.TrimmedSquareDistances(dist11,dist12,dist21, dist22,
-			    pnt11,pnt12, pnt21, pnt22);
+  myExtCC.TrimmedSquareDistances(dist11,dist12,dist21,dist22,
+                                 pnt11,pnt12,pnt21,pnt22);
 }
-

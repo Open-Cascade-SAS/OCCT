@@ -52,6 +52,9 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
       if(Step < Precision::PConfusion()) {
         return Standard_False;
       }
+      if(Step < Precision::PConfusion()) {
+        return Standard_False;
+      }
       D1NormMax=0.;
       for (T=U1;T<=U2;T=T+Step) 
       {
@@ -65,6 +68,9 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
     else 
     {
       Step = (V2 - V1)/10;
+      if(Step < Precision::PConfusion()) {
+        return Standard_False;
+      }
       if(Step < Precision::PConfusion()) {
         return Standard_False;
       }
@@ -126,9 +132,13 @@ Extrema_ExtPS::Extrema_ExtPS()
 Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&          P,
 			     const Adaptor3d_Surface& S,
 			     const Standard_Real    TolU,
-			     const Standard_Real    TolV)
+			     const Standard_Real    TolV,
+           const Extrema_ExtFlag F,
+           const Extrema_ExtAlgo A)
 
 {
+  myExtPS.SetFlag(F);
+  myExtPS.SetAlgo(A);
   Initialize(S, S.FirstUParameter(), S.LastUParameter(), 
 	        S.FirstVParameter(), S.LastVParameter(), 
 	        TolU, TolV);
@@ -147,9 +157,13 @@ Extrema_ExtPS::Extrema_ExtPS(const gp_Pnt&          P,
 			     const Standard_Real    Vinf,	
 			     const Standard_Real    Vsup,
 			     const Standard_Real    TolU,
-			     const Standard_Real    TolV)
+			     const Standard_Real    TolV,
+           const Extrema_ExtFlag F,
+           const Extrema_ExtAlgo A)
 
 {
+  myExtPS.SetFlag(F);
+  myExtPS.SetAlgo(A);
   Initialize(S, Uinf, Usup, Vinf, Vsup, TolU, TolV);
   Perform(P);
 }
@@ -335,4 +349,14 @@ void Extrema_ExtPS::TrimmedSquareDistances(Standard_Real& dUfVf,
   PUfVl = P12;
   PUlVf = P21;
   PUlVl = P22;
+}
+
+void Extrema_ExtPS::SetFlag(const Extrema_ExtFlag F)
+{
+  myExtPS.SetFlag(F);
+}
+
+void Extrema_ExtPS::SetAlgo(const Extrema_ExtAlgo A)
+{
+  myExtPS.SetAlgo(A);
 }

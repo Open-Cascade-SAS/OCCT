@@ -30,9 +30,14 @@ uses
     Adaptor3d,
     Adaptor2d,
     Geom,
-    Geom2d
+    Geom2d,
+	Bnd
 
 is
+
+    enumeration ExtFlag is ExtFlag_MIN, ExtFlag_MAX, ExtFlag_MINMAX;
+
+    enumeration ExtAlgo is ExtAlgo_Grad, ExtAlgo_Tree;
 
     class CurveTool;
     class Curve2dTool;
@@ -70,6 +75,7 @@ is
     private class FuncExtPS;
     class GenExtPS;
     class GenLocateExtPS; 
+    imported HUBTreeOfSphere;
     
     ----------------------------------------------
     --  generic classes for  CURVE-CURVE extremas:

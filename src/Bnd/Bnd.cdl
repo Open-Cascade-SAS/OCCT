@@ -47,7 +47,8 @@ package Bnd
 uses    Standard,
         TCollection,
         TColStd,
-        gp
+        gp,
+	MMgt
 
 
 is  class Box;
@@ -58,6 +59,13 @@ is  class Box;
     class HArray1OfBox instantiates HArray1 from TCollection
                                    (Box from Bnd,
                                     Array1OfBox from Bnd);
+
+   class Sphere;
+   class Array1OfSphere instantiates Array1 from TCollection
+   	 			     (Sphere from Bnd);
+   class HArray1OfSphere instantiates HArray1 from TCollection
+   	 		 	      (Sphere from Bnd,
+				      Array1OfSphere from Bnd);
 
 
     class Box2d;

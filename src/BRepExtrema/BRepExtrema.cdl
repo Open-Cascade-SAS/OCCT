@@ -1,8 +1,7 @@
--- File:	BRepExtrema.cdl
--- Created:	Fri Dec  3 15:48:19 1993
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1993
+-- File:      BRepExtrema.cdl
+-- Created:   Fri Dec  3 15:48:19 1993
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1993
 
 package BRepExtrema
 
@@ -27,37 +26,37 @@ is
     ----------------------------------------------------------
     --  Extrema between two Shapes with triangulation.
     ----------------------------------------------------------
-    class Poly;
+    imported Poly;
 
 
     ----------------------------------------------------------
     --  Extrema between a Point and an Edge.
     ----------------------------------------------------------
-    class ExtPC;
+    imported ExtPC;
 
 
     ----------------------------------------------------------
     --  Extrema between two Edges.
     ----------------------------------------------------------
-    class ExtCC;
+    imported ExtCC;
 
 
     ----------------------------------------------------------
     --  Extrema between a Point and a Face.
     ----------------------------------------------------------
-    class ExtPF;
+    imported ExtPF;
 
 
     ----------------------------------------------------------
     --  Extrema between an Edge  and a Face.
     ----------------------------------------------------------
-    class ExtCF;
+    imported ExtCF;
 
 
     ----------------------------------------------------------
     --  Extrema between two Faces.
     ----------------------------------------------------------
-    class ExtFF;
+    imported ExtFF;
 
 
     ----------------------------------------------------------
@@ -73,8 +72,7 @@ is
     -- 	    IsInFace => The solution is inside a Face.    
      
     ----------------------------------------------------------
-    enumeration SupportType is IsVertex, IsOnEdge, IsInFace end SupportType;
-
+    imported SupportType;
 
 
     ----------------------------------------------------------
@@ -82,39 +80,21 @@ is
     -- between two shapes and  the corresponding couples of solution points.  
     
     ----------------------------------------------------------
-    class DistShapeShape;
-
-
+    imported DistShapeShape;
 
 
     ----------------------------------------------------------
     --  This class is used to store a solution on a Shape. 
     --  (used only by class DistShapeShape)
     ----------------------------------------------------------
-    class SolutionElem;          
-
+    imported SolutionElem;
 
 
     ----------------------------------------------------------
     -- This sequence is used to store all the solution on each Shape.
     ----------------------------------------------------------
-    class SeqOfSolution instantiates Sequence from TCollection 
-     	( SolutionElem  from  BRepExtrema); 
+    imported SeqOfSolution;
 
-
-    
-
-
-    ----------------------------------------------------------
-    -- This class is used to compute minimum distance between two elementary
-    -- Shapes ( Vertex, Edge, Face ) (used only by class DistShapeShape)
-    ----------------------------------------------------------
-      private class DistanceSS from BRepExtrema;
-
-
-
-
-
-
+    imported DistanceSS;
 
 end BRepExtrema;

@@ -1,0 +1,30 @@
+
+inline Standard_Integer Bnd_Sphere::U() const
+{
+  return myU;
+}
+
+inline Standard_Integer Bnd_Sphere::V() const
+{
+  return myV;
+}
+
+inline Standard_Boolean Bnd_Sphere::IsValid() const
+{
+  return myIsValid;
+}
+
+inline void Bnd_Sphere::SetValid(const Standard_Boolean isValid)
+{
+  myIsValid = isValid;
+}
+
+inline const gp_XYZ& Bnd_Sphere::Center() const
+{ 
+  return myCenter; 
+}
+
+inline Standard_Real Bnd_Sphere::Radius() const
+{ 
+  return myRadius; 
+}

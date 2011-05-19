@@ -20,7 +20,9 @@ uses
     SequenceOfReal    from TColStd,
     Surface           from Adaptor3d,
     SurfacePtr        from Adaptor3d,
-    GenExtPS          from Extrema
+    GenExtPS          from Extrema,
+    ExtFlag			  from Extrema,
+    ExtAlgo			  from Extrema
 --    ExtPExtS from Extrema,
 --    ExtPRevS from Extrema
 
@@ -35,7 +37,9 @@ is
     Create returns ExtPS;
 
 
-    Create (P: Pnt from gp; S: Surface from Adaptor3d; TolU,TolV: Real)
+    Create (P: Pnt from gp; S: Surface from Adaptor3d; TolU,TolV: Real; 
+			F : ExtFlag from Extrema = Extrema_ExtFlag_MINMAX; 
+			A : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     	returns ExtPS;
       	---Purpose: It calculates all the distances.
       	--          NbU and NbV are used to locate the close points
@@ -48,7 +52,9 @@ is
     
     Create (P: Pnt from gp; S: Surface from Adaptor3d;
     	    Uinf, Usup, Vinf, Vsup: Real;
-    	    TolU,TolV: Real)
+    	    TolU,TolV: Real; 
+    	    F : ExtFlag from Extrema = Extrema_ExtFlag_MINMAX; 
+    	    A : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     	returns ExtPS;
       	---Purpose: It calculates all the distances.
       	--          NbU and NbV are used to locate the close points
@@ -114,6 +120,12 @@ is
     	--          dUlVl is a square distance between <P> and the point
     	--          of parameter LastUParameter and LastVParameter <PUlVl>.
     is static;
+    
+    SetFlag(me : in out; F : ExtFlag from Extrema)
+    	is static;
+	
+    SetAlgo(me : in out; A : ExtAlgo from Extrema)
+    	is static;
 
 
     Bidon(me) returns SurfacePtr from Adaptor3d
