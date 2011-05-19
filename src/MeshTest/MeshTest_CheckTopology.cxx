@@ -4,7 +4,7 @@
 
 #include <MeshTest_CheckTopology.hxx>
 #include <BRep_Tool.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
@@ -112,8 +112,9 @@ void MeshTest_CheckTopology::Perform ()
 #endif
       continue;
     }
+
     // remember boundary nodes
-    TColStd_MapOfInteger aMapBndNodes;
+    TColStd_PackedMapOfInteger aMapBndNodes;
     TopExp_Explorer ex(aFace, TopAbs_EDGE);
     for (; ex.More(); ex.Next()) {
       const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
@@ -126,11 +127,19 @@ void MeshTest_CheckTopology::Perform ()
 	aMapBndNodes.Add(aNodes(i));
     }
 
+    TColStd_PackedMapOfInteger aUsedNodes;
+
+    // check of free links and nodes
     Poly_Connect aConn(aT);
     const Poly_Array1OfTriangle& aTriangles = aT->Triangles();
     Standard_Integer nbTri = aT->NbTriangles(), i, j, n[3], t[3];
     for (i = 1; i <= nbTri; i++) {
       aTriangles(i).Get(n[0], n[1], n[2]);
+      
+      aUsedNodes.Add (n[0]);
+      aUsedNodes.Add (n[1]);
+      aUsedNodes.Add (n[2]);
+
       aConn.Triangles(i, t[0], t[1], t[2]);
       for (j = 0; j < 3; j++) {
 	if (t[j] == 0) {
@@ -152,6 +161,15 @@ void MeshTest_CheckTopology::Perform ()
 	}
       }
     }
+
+    // check of free nodes
+    Standard_Integer aNbNodes = aT->NbNodes();
+    for (Standard_Integer i = 1; i <= aNbNodes; i++)
+      if ( ! aUsedNodes.Contains(i) )
+      {
+	myFreeNodeFaces.Append (iF);
+	myFreeNodeNums.Append (i);
+      }
   }
 }
 

@@ -204,15 +204,17 @@ void Poly_Connect::Initialize(const Standard_Integer N)
   mynode = N;
   myfirst = Triangle(N);
   mytr = myfirst;
-
-  Standard_Integer i, no[3];
-  const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
-  triangles(myfirst).Get(no[0], no[1], no[2]);
-  for (i = 0; i < 3; i++)
-    if (no[i] == mynode) break;
-  myothernode = no[(i+2)%3];
   mysense = Standard_True;
-  mymore = Standard_True;
+  mymore = (myfirst != 0);
+  if (mymore)
+  {
+    Standard_Integer i, no[3];
+    const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
+    triangles(myfirst).Get(no[0], no[1], no[2]);
+    for (i = 0; i < 3; i++)
+      if (no[i] == mynode) break;
+    myothernode = no[(i+2)%3];
+  }
 }
 
 //=======================================================================

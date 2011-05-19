@@ -318,8 +318,11 @@ static Standard_Integer checktopo (Draw_Interpretor& di, int n, const char ** a)
   TopExp::MapShapes (shape, TopAbs_FACE, aMapF);
   Standard_CString name = ".";
 
+  // execute check
   MeshTest_CheckTopology aCheck(shape);
   aCheck.Perform();
+
+  // dump info on free links inside the triangulation
   Standard_Integer nbFree = 0;
   Standard_Integer nbFac = aCheck.NbFacesWithFL(), i, k;
   if (nbFac > 0) {
@@ -357,6 +360,7 @@ static Standard_Integer checktopo (Draw_Interpretor& di, int n, const char ** a)
     }
   }
 
+  // dump info on cross face errors
   Standard_Integer nbErr = aCheck.NbCrossFaceErrors();
   if (nbErr > 0) {
     cout<<"cross face errors: {face1, node1, face2, node2, distance}"<<endl;
@@ -369,6 +373,7 @@ static Standard_Integer checktopo (Draw_Interpretor& di, int n, const char ** a)
     cout<<endl;
   }
 
+  // dump info on edges
   Standard_Integer nbAsync = aCheck.NbAsyncEdges();
   if (nbAsync > 0) {
     cout<<"async edges:"<<endl;
@@ -379,9 +384,23 @@ static Standard_Integer checktopo (Draw_Interpretor& di, int n, const char ** a)
     cout<<endl;
   }
 
-  if (nbFree > 0 || nbErr > 0 || nbAsync > 0)
-    di<<"Free_links "<<nbFree
-      <<" Cross_face_errors "<<nbErr
-      <<" Async_edges "<<nbAsync << " ";
+  // dump info on free nodes
+  Standard_Integer nbFreeNodes = aCheck.NbFreeNodes();
+  if (nbFreeNodes > 0) {
+    cout << "free nodes (in pairs: face / node): " << endl;
+    for (i=1; i <= nbFreeNodes; i++) {
+      Standard_Integer iface, inode;
+      aCheck.GetFreeNodeNum(i, iface, inode);
+      cout << "{" << iface << " " << inode << "} ";
+    }
+    cout << endl;
+  }
+
+  // output errors summary to DRAW
+  if ( nbFree > 0 || nbErr > 0 || nbAsync > 0 || nbFreeNodes > 0 )
+    di << "Free_links " << nbFree
+       << " Cross_face_errors " << nbErr
+       << " Async_edges " << nbAsync 
+       << " Free_nodes " << nbFreeNodes << " ";
   return 0;
 }
