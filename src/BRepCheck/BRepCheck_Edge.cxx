@@ -48,11 +48,30 @@
 #include <Precision.hxx>
 
 
-static Standard_Boolean Validate(const Adaptor3d_Curve&,
-				 const Adaptor3d_Curve&,
-				 const Standard_Real,
-				 const Standard_Boolean);
+//modified by NIZNHY-PKV Thu May 05 09:01:57 2011f
+static 
+  Standard_Boolean Validate(const Adaptor3d_Curve&,
+			    const Adaptor3d_CurveOnSurface&,
+			    const Standard_Real,
+			    const Standard_Boolean);
+static
+  void PrintProblematicPoint(const gp_Pnt&,
+			     const Standard_Real,
+			     const Standard_Real);
 
+static
+  Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
+		     const Adaptor3d_CurveOnSurface& aACS);
+static
+  Standard_Real PrecCurve(const Adaptor3d_Curve& aAC3D);
+static
+  Standard_Real PrecSurface(const Adaptor3d_CurveOnSurface& aACS);
+
+//static Standard_Boolean Validate(const Adaptor3d_Curve&,
+//				 const Adaptor3d_Curve&,
+//				 const Standard_Real,
+//				 const Standard_Boolean);
+//modified by NIZNHY-PKV Thu May 05 09:02:01 2011t
 
 #define NCONTROL 23
 
@@ -421,113 +440,6 @@ Standard_Boolean BRepCheck_Edge::GeometricControls() const
 }
 
 
-//=======================================================================
-//function : Validate
-//purpose  : 
-//=======================================================================
-
-static Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
-				 const Adaptor3d_Curve& Other,
-				 const Standard_Real Tol,
-				 const Standard_Boolean SameParameter)
-{
-  Standard_Boolean  Status = Standard_True;
-  gp_Pnt  problematic_point ;
-  Standard_Real First = CRef.FirstParameter();
-  Standard_Real Last  = CRef.LastParameter();
-  //gka OCC
-  Standard_Boolean proj = (!SameParameter || 
-			   fabs(Other.FirstParameter()-First) > Precision::PConfusion() || 
-                           fabs( Other.LastParameter()-Last) > Precision::PConfusion());//First != Other.FirstParameter() ||Last  != Other.LastParameter()); gka OCC
-
-  Standard_Real Error = 0;
-
-  if (!proj) {
-    Standard_Real Tol2 = Tol*Tol;
-    for (Standard_Integer i = 0; i< NCONTROL; i++) {
-      Standard_Real prm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
-      gp_Pnt pref = CRef.Value(prm);
-      gp_Pnt pother = Other.Value(prm);
-      if (pref.SquareDistance(pother) > Tol2) {
-	problematic_point = pref ;
-	Status = Standard_False;
-	Error  = pref.Distance(pother);
-        goto FINISH ;
-      }
-    }
-  }
-  else {
-    Extrema_LocateExtPC refd,otherd;
-    Standard_Real OFirst = Other.FirstParameter();
-    Standard_Real OLast  = Other.LastParameter();
-    gp_Pnt pd = CRef.Value(First);
-    gp_Pnt pdo = Other.Value(OFirst);
-    Standard_Real distt = pd.SquareDistance(pdo);
-    if (distt > Tol*Tol) {
-      problematic_point = pd ;
-      Status = Standard_False ;
-      Error = Sqrt(distt);
-      goto FINISH ;
-    }
-    pd = CRef.Value(Last);
-    pdo = Other.Value(OLast);
-    distt = pd.SquareDistance(pdo);
-    if (distt > Tol*Tol) {
-      problematic_point = pd ;
-      Status = Standard_False ;
-      Error = Sqrt(distt);
-      goto FINISH ;
-    }
-
-    refd.Initialize(CRef,First,Last,CRef.Resolution(Tol));
-    otherd.Initialize(Other,OFirst,OLast,Other.Resolution(Tol));
-    for (Standard_Integer i = 2; i< NCONTROL-1; i++) {
-      Standard_Real rprm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
-      gp_Pnt pref = CRef.Value(rprm);
-      Standard_Real oprm = ((NCONTROL-1-i)*OFirst + i*OLast)/(NCONTROL-1);
-      gp_Pnt pother = Other.Value(oprm);
-      refd.Perform(pother,rprm);
-      if (!refd.IsDone() || refd.SquareDistance() > Tol * Tol) {
-	problematic_point = pref ;
-	Status = Standard_False ;
-	if (refd.IsDone()) {
-	  Error = sqrt (refd.SquareDistance());
-	}
-	else {
-	  Error = RealLast();
-	}
-        goto FINISH ;
-      }
-      otherd.Perform(pref,oprm);
-      if (!otherd.IsDone() || otherd.SquareDistance() > Tol * Tol) {
-	problematic_point = pref ;
-	Status = Standard_False ;
-	if (otherd.IsDone()) {
-	  Error = sqrt (otherd.SquareDistance());
-	}
-	else {
-	  Error = RealLast();
-	}
-	goto FINISH ;
-      }
-    }
-  }
-  FINISH :
-
-#ifdef DEB
-    if (! Status) {
-      cout << " **** probleme de SameParameter au point :" << endl;
-      cout << "         " << problematic_point.Coord(1) << " " 
-	   << problematic_point.Coord(2) << " " 
-	   << problematic_point.Coord(3) << endl ;
-      cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << endl;
-    }
-#endif
-  
-
-  return Status ;
-  
-}
 
 
 //=======================================================================
@@ -625,3 +537,234 @@ Standard_Real BRepCheck_Edge::Tolerance()
   // On prend 5% de marge car au dessus on crontrole severement
   return sqrt(tolCal)*1.05;
 }
+
+//=======================================================================
+//function : Validate
+//purpose  : 
+//=======================================================================
+Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
+			  const Adaptor3d_CurveOnSurface& Other,
+			  const Standard_Real Tol,
+			  const Standard_Boolean SameParameter)
+{
+  Standard_Boolean  Status, proj; 
+  Standard_Real aPC, First, Last, Error;
+  gp_Pnt  problematic_point ;
+  //
+  Status = Standard_True;
+  Error = 0.;
+  First = CRef.FirstParameter();
+  Last  = CRef.LastParameter();
+  //
+  aPC=Precision::PConfusion();
+  proj = (!SameParameter || 
+	  fabs(Other.FirstParameter()-First) > aPC || 
+	  fabs( Other.LastParameter()-Last) > aPC);
+  if (!proj) {
+    Standard_Integer i;
+    Standard_Real Tol2, prm, aD2, dD;
+    gp_Pnt pref, pother;
+    //modified by NIZNHY-PKV Thu May 05 09:06:41 2011f
+    //OCC22428
+    dD=Prec(CRef, Other);//3.e-15;
+    Tol2=Tol+dD;
+    Tol2=Tol2*Tol2;
+    //Tol2=Tol*Tol;
+    //modified by NIZNHY-PKV Thu May 05 09:06:47 2011t
+    
+    for (i = 0; i< NCONTROL; ++i) {
+      prm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
+      pref = CRef.Value(prm);
+      pother = Other.Value(prm);
+      if (pref.SquareDistance(pother) > Tol2) {
+	problematic_point = pref ;
+	Status = Standard_False;
+	Error  = pref.Distance(pother);
+	PrintProblematicPoint(problematic_point, Error, Tol);
+	return Status;
+        //goto FINISH ;
+      }
+    }
+  }
+  else {
+    Extrema_LocateExtPC refd,otherd;
+    Standard_Real OFirst = Other.FirstParameter();
+    Standard_Real OLast  = Other.LastParameter();
+    gp_Pnt pd = CRef.Value(First);
+    gp_Pnt pdo = Other.Value(OFirst);
+    Standard_Real distt = pd.SquareDistance(pdo);
+    if (distt > Tol*Tol) {
+      problematic_point = pd ;
+      Status = Standard_False ;
+      Error = Sqrt(distt);
+      PrintProblematicPoint(problematic_point, Error, Tol);
+      return Status;
+      //goto FINISH ;
+    }
+    pd = CRef.Value(Last);
+    pdo = Other.Value(OLast);
+    distt = pd.SquareDistance(pdo);
+    if (distt > Tol*Tol) {
+      problematic_point = pd ;
+      Status = Standard_False ;
+      Error = Sqrt(distt);
+      PrintProblematicPoint(problematic_point, Error, Tol);
+      return Status;
+      //goto FINISH ;
+    }
+
+    refd.Initialize(CRef,First,Last,CRef.Resolution(Tol));
+    otherd.Initialize(Other,OFirst,OLast,Other.Resolution(Tol));
+    for (Standard_Integer i = 2; i< NCONTROL-1; i++) {
+      Standard_Real rprm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
+      gp_Pnt pref = CRef.Value(rprm);
+      Standard_Real oprm = ((NCONTROL-1-i)*OFirst + i*OLast)/(NCONTROL-1);
+      gp_Pnt pother = Other.Value(oprm);
+      refd.Perform(pother,rprm);
+      if (!refd.IsDone() || refd.SquareDistance() > Tol * Tol) {
+	problematic_point = pref ;
+	Status = Standard_False ;
+	if (refd.IsDone()) {
+	  Error = sqrt (refd.SquareDistance());
+	}
+	else {
+	  Error = RealLast();
+	}
+	PrintProblematicPoint(problematic_point, Error, Tol);
+	return Status;
+        //goto FINISH ;
+      }
+      otherd.Perform(pref,oprm);
+      if (!otherd.IsDone() || otherd.SquareDistance() > Tol * Tol) {
+	problematic_point = pref ;
+	Status = Standard_False ;
+	if (otherd.IsDone()) {
+	  Error = sqrt (otherd.SquareDistance());
+	}
+	else {
+	  Error = RealLast();
+	}
+	PrintProblematicPoint(problematic_point, Error, Tol);
+	return Status;
+	//goto FINISH ;
+      }
+    }
+  }
+  //FINISH :
+/*
+#ifdef DEB
+    if (! Status) {
+      cout << " **** probleme de SameParameter au point :" << endl;
+      cout << "         " << problematic_point.Coord(1) << " " 
+	   << problematic_point.Coord(2) << " " 
+	   << problematic_point.Coord(3) << endl ;
+      cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << endl;
+    }
+#endif
+*/
+
+  return Status ;
+  
+}
+//=======================================================================
+//function : Prec
+//purpose  : 
+//=======================================================================
+Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
+		   const Adaptor3d_CurveOnSurface& aACS)
+{
+  Standard_Real aXEmax, aXC, aXS;
+  //
+  aXC=PrecCurve(aAC3D);
+  aXS=PrecSurface(aACS);
+  aXEmax=(aXC>aXS) ? aXC: aXS;
+  return aXEmax;
+}
+//=======================================================================
+//function : PrecCurve
+//purpose  : 
+//=======================================================================
+Standard_Real PrecCurve(const Adaptor3d_Curve& aAC3D)
+{
+  Standard_Real aXEmax;
+  GeomAbs_CurveType aCT;
+  //
+  aXEmax=RealEpsilon(); 
+  //
+  aCT=aAC3D.GetType();
+  if (aCT==GeomAbs_Ellipse) {
+    Standard_Integer i;
+    Standard_Real aX[5], aXE;
+    //
+    gp_Elips aEL3D=aAC3D.Ellipse();
+    aEL3D.Location().Coord(aX[0], aX[1], aX[2]);
+    aX[3]=aEL3D.MajorRadius();
+    aX[4]=aEL3D.MinorRadius();
+    aXEmax=-1.;
+    for (i=0; i<5; ++i) {
+      if (aX[i]<0.) {
+	aX[i]=-aX[i];
+      }
+      aXE=Epsilon(aX[i]);
+      if (aXE>aXEmax) {
+	aXEmax=aXE;
+      }
+    }
+  }//if (aCT=GeomAbs_Ellipse) {
+  //
+  return aXEmax;
+}
+//=======================================================================
+//function : PrecSurface
+//purpose  : 
+//=======================================================================
+Standard_Real PrecSurface(const Adaptor3d_CurveOnSurface& aACS)
+{
+  Standard_Real aXEmax;
+  GeomAbs_SurfaceType aST;
+  //
+  aXEmax=RealEpsilon(); 
+  //
+  const Handle(Adaptor3d_HSurface)& aAHS=aACS.GetSurface();
+  aST=aAHS->GetType();
+  if (aST==GeomAbs_Cone) {
+    gp_Cone aCone=aAHS->Cone();
+    Standard_Integer i;
+    Standard_Real aX[4], aXE;
+    //
+    aCone.Location().Coord(aX[0], aX[1], aX[2]);
+    aX[3]=aCone.RefRadius();
+    aXEmax=-1.;
+    for (i=0; i<4; ++i) {
+      if (aX[i]<0.) {
+	aX[i]=-aX[i];
+      }
+      aXE=Epsilon(aX[i]);
+      if (aXE>aXEmax) {
+	aXEmax=aXE;
+      }
+    }
+  }//if (aST==GeomAbs_Cone) {
+  return aXEmax;
+}
+//=======================================================================
+//function : PrintProblematicPoint
+//purpose  : 
+//=======================================================================
+#ifdef DEB
+void PrintProblematicPoint(const gp_Pnt& problematic_point,
+			   const Standard_Real Error,
+			   const Standard_Real Tol)
+{
+  cout << " **** probleme de SameParameter au point :" << endl;
+  cout << "         " << problematic_point.Coord(1) << " " 
+    << problematic_point.Coord(2) << " " << problematic_point.Coord(3) << endl ;
+  cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << endl;
+}
+#else
+void PrintProblematicPoint(const gp_Pnt&,
+			   const Standard_Real,
+			   const Standard_Real)
+{
+}
+#endif
