@@ -1592,12 +1592,22 @@ Standard_Boolean STEPControl_ActorRead::ComputeTransformation (const Handle(Step
   Handle(Geom_Axis2Placement) theTarg;
   StepToGeom_MakeAxis2Placement::Convert(trg,theTarg);
   if ( oldSRContext != TargContext  ) PrepareUnits(oldSRContext,TP);
-
+  
   gp_Ax3 ax3Orig(theOrig->Ax2());
   gp_Ax3 ax3Targ(theTarg->Ax2());
-
+  //ax3Orig - defines CS for component(always is equal to (0 0 0 ))(related product from NAUO)
+  //ax3Targ - defines place of component in assemby CS (relating product
   //  ne pas se tromper de sens !
-  Trsf.SetTransformation(ax3Targ, ax3Orig);
+
+
+  gp_Trsf aTrsf2;
+  gp_Ax3 anAxis(gp_Pnt(0.,0.,0.), gp::DZ(), gp::DX());;
+  aTrsf2.SetTransformation(anAxis,ax3Orig);
+  gp_Trsf aTrsf3;
+  aTrsf3.SetTransformation(ax3Targ,anAxis);
+
+  Trsf = aTrsf3 * aTrsf2;
+  
   return Trsf.Form() != gp_Identity;
 }
 
