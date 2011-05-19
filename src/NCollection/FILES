@@ -74,3 +74,6 @@ NCollection_SparseArrayBase.cxx
 NCollection_CellFilter.hxx
 NCollection_Handle.hxx
 NCollection_Handle.cxx
+
+NCollection_Comparator.hxx
+NCollection_QuickSort.hxx
