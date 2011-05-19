@@ -98,7 +98,6 @@
 #include <IGESToBRep.hxx>
 #include <IGESToBRep_AlgoContainer.hxx>
 #include <IGESToBRep_ToolContainer.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
 
 //=======================================================================
 //function : IGESToBRep_TopoCurve
@@ -1014,13 +1013,8 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferTopoBasicCurve
     SetEpsilon(1.E-04);
     if (IGESData_ToolLocation::ConvertLocation
        (GetEpsilon(),start->CompoundLocation(),T, GetUnitFactor())) { 
-      //TopLoc_Location L(T);
-      BRepBuilderAPI_Transform trf(T);
-      trf.Perform(myshape);
-      if (trf.IsDone()){
-        myshape = trf.Shape();
-      }
-      //myshape.Move(L);
+      TopLoc_Location L(T);
+      myshape.Move(L);
     }
     else {
       Message_Msg Msg1035("IGES_1035");
