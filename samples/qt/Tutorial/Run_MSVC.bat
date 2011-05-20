@@ -8,7 +8,7 @@ call %~dp0env.bat
 call %~dp0..\..\..\ros\env_build.bat vc8 win32
 
 rem Define path to project file
-set PRJFILE=%~dp0Tutorial.sln
+set PRJFILE=%~dp0Tutorial-vc8.sln
 
 rem Launch Visual Studio - either professional (devenv) or Express, as available
 if exist "%DevEnvDir%\devenv.exe"  (
