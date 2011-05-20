@@ -212,7 +212,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
     BRepClass3d_SolidClassifier Classi(myShape1);
     const Standard_Integer nbv2 = myMapV2.Extent();
     Standard_Integer nbv1 = 0;
-    do
+    while ( (nbv1<nbv2) && (!myInnerSol) )
     {
       nbv1++;
       V = TopoDS::Vertex(myMapV2(nbv1));
@@ -228,7 +228,6 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
         mySolutionsShape2.Append(Sol);
       }  
     }
-    while ( (nbv1<nbv2) && (!myInnerSol) );
   }
   
   const TopAbs_ShapeEnum Type2 = myShape2.ShapeType();
@@ -237,7 +236,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
     BRepClass3d_SolidClassifier Classi(myShape2);
     const Standard_Integer nbv1 = myMapV1.Extent();
     Standard_Integer nbv2 = 0;
-    do
+    while ( (nbv2<nbv1) && (!myInnerSol) )
     {
       nbv2++;
       V = TopoDS::Vertex(myMapV1(nbv2));
@@ -252,7 +251,6 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform()
         mySolutionsShape2.Append(Sol);
       }
     }
-    while ( (nbv2<nbv1) && (!myInnerSol) );
   }
   
   if (!myInnerSol)
