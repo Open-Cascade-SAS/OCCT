@@ -140,25 +140,25 @@ class BRepExtrema_DistanceSS
   void Perform(const TopoDS_Vertex& S1,const TopoDS_Face& S2,const Bnd_Box& B1,const Bnd_Box& B2);
 
   //! computes the minimum distance between an edge and a vertex <br>
-  void Perform(const TopoDS_Edge& S1,const TopoDS_Vertex& S2,const Bnd_Box& B1,const Bnd_Box& B2)
-  {
+  void Perform(const TopoDS_Edge& S1,const TopoDS_Vertex& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  /*{
     Perform(S2, S1, B2, B1);
-  }
+  }*/
   //! computes the minimum distance between two edges <br>
   void Perform(const TopoDS_Edge& S1,const TopoDS_Edge& S2,const Bnd_Box& B1,const Bnd_Box& B2);
   //! computes the minimum distance an edge and a face <br>
   void Perform(const TopoDS_Edge& S1,const TopoDS_Face& S2,const Bnd_Box& B1,const Bnd_Box& B2);
 
   //! computes the minimum distance betwwen a face and a vertex <br>
-  void Perform(const TopoDS_Face& S1,const TopoDS_Vertex& S2,const Bnd_Box& B1,const Bnd_Box& B2)
-  {
+  void Perform(const TopoDS_Face& S1,const TopoDS_Vertex& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  /*{
     Perform(S2, S1, B2, B1);
-  }
+  }*/
   //! computes the minimum distance between a face and an edge <br>
-  void Perform(const TopoDS_Face& S1,const TopoDS_Edge& S2,const Bnd_Box& B1,const Bnd_Box& B2)
-  {
+  void Perform(const TopoDS_Face& S1,const TopoDS_Edge& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  /*{
     Perform(S2, S1, B2, B1);
-  }
+  }*/
   //! computes the minimum distance between two faces <br>
   void Perform(const TopoDS_Face& S1,const TopoDS_Face& S2,const Bnd_Box& B1,const Bnd_Box& B2);
 
