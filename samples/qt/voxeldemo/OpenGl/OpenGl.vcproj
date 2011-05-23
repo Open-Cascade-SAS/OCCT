@@ -215,803 +215,803 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_addnames.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_addnames.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_antialias.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_antialias.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_applid.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_applid.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_attri.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_attri.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_AVIWriter.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_AVIWriter.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_bintcol.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_bintcol.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_bintrefl.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_bintrefl.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_bsurfprop.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_bsurfprop.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_charexpan.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_charexpan.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_charspace.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_charspace.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_curve.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_curve.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_degmodel.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_degmodel.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_depthcue.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_depthcue.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_dind.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_dind.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_dotexturemap.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_dotexturemap.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_edgecol.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_edgecol.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_edgeflag.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_edgeflag.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_edgetyp.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_edgetyp.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_edgewid.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_edgewid.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_execstruct.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_execstruct.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_Extension.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_Extension.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_facecull.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_facecull.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_facedmode.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_facedmode.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_filters.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_filters.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_FontMgr.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_FontMgr.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_FrameBuffer.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_FrameBuffer.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_funcs.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_funcs.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_graduatedtrihedron.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_graduatedtrihedron.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_1.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_1.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_2.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_2.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_3.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_3.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_4.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_4.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_5.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_5.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_6.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_6.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_7.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_7.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_703.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_703.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_705.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_705.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_707.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_707.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_709.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_709.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_710.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_710.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_711.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_711.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_712.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_712.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_713.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_713.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_8.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_8.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_9.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_9.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_Export.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_Export.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_Layer.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_Layer.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_GraphicDriver_print.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_GraphicDriver_print.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_highlight.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_highlight.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_hlind.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_hlind.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_ImageBox.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_ImageBox.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_indexpolygons.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_indexpolygons.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_initelem.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_initelem.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_inquire.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_inquire.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_intcol.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_intcol.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_intrefl.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_intrefl.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_intshademtd.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_intshademtd.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_intstyle.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_intstyle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_intstyleind.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_intstyleind.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_label.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_label.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_LightBox.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_LightBox.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_lightstate.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_lightstate.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_localtran3.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_localtran3.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_Memory.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_Memory.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_mrkr.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_mrkr.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_mrkrcol.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_mrkrcol.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_mrkrset.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_mrkrset.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_mrkrsize.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_mrkrsize.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_mrkrtype.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_mrkrtype.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_pick.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_pick.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_pickid.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_pickid.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polygon.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polygon.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polygonholes.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polygonholes.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polygonoffset.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polygonoffset.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polyl.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polyl.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polylcol.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polylcol.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polyltyp.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polyltyp.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_polylwid.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_polylwid.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_PrimitiveArray.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_PrimitiveArray.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_qstrip.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_qstrip.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_remnames.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_remnames.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_ResourceCleaner.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_ResourceCleaner.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_ResourceTexture.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_ResourceTexture.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_ResourceVBO.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_ResourceVBO.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_subrs.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_subrs.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_subrvis.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_subrvis.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_surfprop.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_surfprop.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_util.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_util.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_text.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_text.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textalignment.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textalignment.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textangle.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textangle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textcol.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textcol.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textcolsubtitle.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textcolsubtitle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textdisplaytype.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textdisplaytype.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textfont.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textfont.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textfontaspect.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textfontaspect.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textheight.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textheight.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_TextRender.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_TextRender.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textstyle.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textstyle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_texture.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_texture.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_TextureBox.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_TextureBox.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_textzoomable.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_textzoomable.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_util.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_util.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_utilgr.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_utilgr.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tmesh.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tmesh.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_activateview.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_activateview.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_antialiasing.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_antialiasing.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_backfacing.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_backfacing.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_background.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_background.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_begin.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_begin.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_begin_animation.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_begin_animation.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_begin_immediat_mode.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_begin_immediat_mode.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_begin_layer_mode.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_begin_layer_mode.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_bezier.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_bezier.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_bezier_weight.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_bezier_weight.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_blink.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_blink.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_boundarybox.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_boundarybox.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_cleargroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_cleargroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_clearstructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_clearstructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_cliplimit.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_cliplimit.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_closegroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_closegroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_connect.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_connect.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_contextstructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_contextstructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_curve.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_curve.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_deactivateview.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_deactivateview.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_degeneratestructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_degeneratestructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_depthcueing.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_depthcueing.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_depthtest.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_depthtest.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_disconnect.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_disconnect.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_displaystructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_displaystructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_element_exploration.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_element_exploration.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_end.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_end.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_erasestructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_erasestructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_facecontextgroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_facecontextgroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_gradient_background.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_gradient_background.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_togl_graduatedtrihedron.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_togl_graduatedtrihedron.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_group.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_group.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_highlightcolor.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_highlightcolor.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_init_pick.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_init_pick.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_inquirefacilities.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_inquirefacilities.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_inquirelight.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_inquirelight.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_inquireplane.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_inquireplane.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_inquireview.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_inquireview.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_light.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_light.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_light_exploration.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_light_exploration.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_linecontextgroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_linecontextgroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_marker.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_marker.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_marker_set.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_marker_set.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_markercontextgroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_markercontextgroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_namesetstructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_namesetstructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_opengroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_opengroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_parray.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_parray.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_pick.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_pick.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_pickid.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_pickid.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_plane.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_plane.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_polygon.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_polygon.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_polygon_holes.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_polygon_holes.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_polygon_indices.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_polygon_indices.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_polygon_set.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_polygon_set.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_polyline.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_polyline.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_print.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_print.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_project_raster.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_project_raster.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_quadrangle.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_quadrangle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_ratio_window.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_ratio_window.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_redraw.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_redraw.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_removegroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_removegroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_removestructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_removestructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_removeview.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_removeview.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_set_environment.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_set_environment.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_setlight.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_setlight.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_setplane.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_setplane.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_setvisualisation.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_setvisualisation.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_structure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_structure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_structure_exploration.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_structure_exploration.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_text.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_text.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_textcontextgroup.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_textcontextgroup.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_texture.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_texture.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_transformstructure.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_transformstructure.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_transparency.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_transparency.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_triangle.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_triangle.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_triedron.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_triedron.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_unproject_raster.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_unproject_raster.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_update.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_update.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_userdraw.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_userdraw.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_view.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_view.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_view_exploration.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_view_exploration.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_viewmapping.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_viewmapping.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_togl_vieworientation.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_togl_vieworientation.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tox.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tox.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_transform_persistence.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_transform_persistence.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_triedron.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_triedron.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tsm.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tsm.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_txgl.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_txgl.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_undefined.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_undefined.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_userdraw.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_userdraw.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_view.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_view.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_vind.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_vind.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_ws.cxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_ws.cxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\voxelclient\VoxelClient_VisDrawer.cxx"
+				RelativePath="$(CASROOT)\src\voxelclient\VoxelClient_VisDrawer.cxx"
 				>
 			</File>
 		</Filter>
@@ -1020,191 +1020,191 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_animation.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_animation.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_AVIWriter.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_AVIWriter.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_callback.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_callback.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_cmn_varargs.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_cmn_varargs.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_context.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_context.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_degeneration.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_degeneration.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_Extension.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_Extension.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_FontMgr.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_FontMgr.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_graduatedtrihedron.hxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_graduatedtrihedron.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_ImageBox.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_ImageBox.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_inquire.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_inquire.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_LightBox.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_LightBox.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_Memory.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_Memory.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_ResourceCleaner.hxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_ResourceCleaner.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_ResourceTexture.hxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_ResourceTexture.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\OpenGl\OpenGl_ResourceVBO.hxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_ResourceVBO.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_attri.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_attri.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_depthcue.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_depthcue.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_filters.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_filters.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_highlight.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_highlight.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_inquire.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_inquire.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_pick.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_pick.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_util.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_util.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_telem_view.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_telem_view.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_TextRender.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_TextRender.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_TextureBox.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_TextureBox.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_all.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_all.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_elems.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_elems.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_funcs.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_funcs.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_pick.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_pick.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_subrs.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_subrs.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_subrvis.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_subrvis.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_tox.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_tox.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_util.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_util.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_utilgr.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_utilgr.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tgl_vis.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tgl_vis.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_traces.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_traces.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_transform_persistence.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_transform_persistence.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_triangulate.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_triangulate.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_triedron.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_triedron.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_trsf_stack.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_trsf_stack.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tsm.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tsm.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_tsm_ws.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_tsm_ws.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\opengl\OpenGl_txgl.hxx"
+				RelativePath="$(CASROOT)\src\opengl\OpenGl_txgl.hxx"
 				>
 			</File>
 			<File
-				RelativePath="${CASROOT}\src\voxelclient\VoxelClient_VisDrawer.h"
+				RelativePath="$(CASROOT)\src\voxelclient\VoxelClient_VisDrawer.h"
 				>
 			</File>
 		</Filter>
