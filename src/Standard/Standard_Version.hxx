@@ -22,7 +22,7 @@
 // Primary definitions
 #define OCC_VERSION_MAJOR         6
 #define OCC_VERSION_MINOR         5
-#define OCC_VERSION_MAINTENANCE   0
+#define OCC_VERSION_MAINTENANCE   1
 
 // Derived: version as real and string (major.minor)
 #define OCC_VERSION         6.5
