@@ -1746,120 +1746,180 @@ void V3d_View::SetAxialScale( const Standard_Real Sx, const Standard_Real Sy, co
 void V3d_View::FitAll(const Standard_Real Coef, const Standard_Boolean FitZ,
                       const Standard_Boolean update)
 {
-  Standard_Real Umin,Umax,Vmin,Vmax,Xrp,Yrp,Zrp,U,V,W,U1,V1,W1 ;
-  Standard_Real Xmin,Ymin,Zmin,Xmax,Ymax,Zmax ;
-  Standard_Real DxvOld,DyvOld,DxvNew,DyvNew,RapOld,RapNew ;
-  Standard_Integer Xpixel,Ypixel;
-  // CAL 6/11/98
-  Standard_Integer Nstruct = MyView->NumberOfDisplayedStructures() ;
-  Standard_Integer nbPasse = 2;
+  Standard_Real Umin, Umax, Vmin, Vmax, Xrp, Yrp, Zrp, U, V, W, U1, V1, W1;
+  Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+  Standard_Real DxvOld, DyvOld, DxvNew, DyvNew;
+  Standard_Integer Nstruct = MyView->NumberOfDisplayedStructures();
 
-  if( (Nstruct <= 0) || (Coef < 0.) || (Coef > 1.) ) {
+  if ((Nstruct <= 0) || (Coef < 0.0) || (Coef > 1.0))
+  {
 #ifndef IMP020300
     ImmediateUpdate();
 #endif
-    return ;
-  }
-  MyProjReferencePoint = MyViewMapping.ProjectionReferencePoint() ;
-  MyProjReferencePoint.Coord(Xrp,Yrp,Zrp) ;
-  if( MyView->IsDefined() ) {
-    MyWindow->Size(Xpixel,Ypixel);
-    DxvOld = Xpixel; DyvOld = Ypixel;
-  } else {
-    MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax) ;
-    DxvOld = Abs(Umax - Umin) ; DyvOld = Abs(Vmax - Vmin) ;
-  }
-  if( (DxvOld == 0.) || (DyvOld == 0.) ) return ;
-  RapOld = DxvOld/DyvOld ;
-
-  MyView->MinMaxValues(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax) ;
-
-  //Object with null bounding box for anyone axis has been
-  //obtained unit bounding interval
-  if( Xmin == Xmax ) {
-    Xmin--; Xmax++;
-  }
-  if( Ymin == Ymax ) {
-    Ymin--; Ymax++;
-  }
-  if( Zmin == Zmax ) {
-    Zmin--; Zmax++;
+    return;
   }
 
-  Standard_Real LIM = ShortRealLast() -1.;
-  if     (Abs(Xmin) > LIM || Abs(Ymin) > LIM || Abs(Zmin) > LIM
-    ||  Abs(Xmax) > LIM || Abs(Ymax) > LIM || Abs(Zmax) > LIM ) {
+  MyProjReferencePoint = MyViewMapping.ProjectionReferencePoint();
+  MyProjReferencePoint.Coord (Xrp, Yrp, Zrp);
+  if (MyView->IsDefined())
+  {
+    Standard_Integer Xpixel, Ypixel;
+    MyWindow->Size (Xpixel, Ypixel);
+    DxvOld = Xpixel;
+    DyvOld = Ypixel;
+  }
+  else
+  {
+    MyViewMapping.WindowLimit (Umin, Vmin, Umax, Vmax);
+    DxvOld = Abs (Umax - Umin);
+    DyvOld = Abs (Vmax - Vmin);
+  }
+  if ((DxvOld == 0.0) || (DyvOld == 0.0))
+  {
+    return;
+  }
+
+  Standard_Real aWinRatio = DxvOld / DyvOld;
+
+  // retrieve min / max values for current displayed objects
+  MyView->MinMaxValues (Xmin, Ymin, Zmin,
+                        Xmax, Ymax, Zmax);
+
+  Standard_Real LIM = ShortRealLast() - 1.0;
+  if  (Abs(Xmin) > LIM || Abs(Ymin) > LIM || Abs(Zmin) > LIM
+    || Abs(Xmax) > LIM || Abs(Ymax) > LIM || Abs(Zmax) > LIM)
+  {
 #ifndef IMP020300
-      ImmediateUpdate();
+    ImmediateUpdate();
 #endif
-      return ;
-    }
+    return;
+  }
 
-    while (nbPasse != 0)
+  // eliminate fluctuations between sequential FitAll() calls
+  MyViewMapping.SetWindowLimit (-1.0 * aWinRatio, -1.0, 1.0 * aWinRatio, 1.0);
+  if (MyType != V3d_PERSPECTIVE)
+  {
+    MyProjReferencePoint.SetCoord (0.0, 0.0, Zrp);
+    MyViewMapping.SetProjectionReferencePoint (MyProjReferencePoint);
+  }
+  MyView->SetViewMapping (MyViewMapping);
+
+  // iterate 2 times to find optimal view plane size
+  // (use view plane values computed on previous iteration)
+  for (Standard_Integer aIteration = 2; aIteration > 0; --aIteration)
+  {
+    MyView->Projects (Xmin, Ymin, Zmin,  U,  V,  W);
+    MyView->Projects (Xmax, Ymax, Zmax, U1, V1, W1);
+    Umin = Min (U, U1); Umax = Max (U, U1);
+    Vmin = Min (V, V1); Vmax = Max (V, V1);
+
+    MyView->Projects (Xmin, Ymin, Zmax, U, V, W);
+    Umin = Min (U, Umin); Umax = Max (U, Umax);
+    Vmin = Min (V, Vmin); Vmax = Max (V, Vmax);
+
+    MyView->Projects (Xmax, Ymin, Zmax, U, V, W);
+    Umin = Min (U, Umin); Umax = Max (U, Umax);
+    Vmin = Min (V, Vmin); Vmax = Max (V, Vmax);
+
+    MyView->Projects (Xmax, Ymin, Zmin, U, V, W);
+    Umin = Min (U, Umin); Umax = Max (U, Umax);
+    Vmin = Min (V, Vmin); Vmax = Max (V, Vmax);
+
+    MyView->Projects (Xmax, Ymax, Zmin, U, V, W);
+    Umin = Min (U, Umin); Umax = Max (U, Umax);
+    Vmin = Min (V, Vmin); Vmax = Max (V, Vmax);
+
+    MyView->Projects (Xmin, Ymax, Zmax, U, V, W);
+    Umin = Min (U, Umin); Umax = Max (U, Umax);
+    Vmin = Min (V, Vmin); Vmax = Max (V, Vmax);
+
+    MyView->Projects (Xmin, Ymax, Zmin, U, V, W);
+    Umin = Min (U, Umin); Umax = Max (U, Umax);
+    Vmin = Min (V, Vmin); Vmax = Max (V, Vmax);
+
+    DxvNew = Abs (Umax - Umin);
+    DyvNew = Abs (Vmax - Vmin);
+
+    if (DyvNew < 10.0 * Precision::Confusion())
     {
-      MyView->Projects(Xmin,Ymin,Zmin,U,V,W) ;
-      MyView->Projects(Xmax,Ymax,Zmax,U1,V1,W1) ;
-      Umin = Min(U,U1) ; Umax = Max(U,U1) ;
-      Vmin = Min(V,V1) ; Vmax = Max(V,V1) ;
-      MyView->Projects(Xmin,Ymin,Zmax,U,V,W) ;
-      Umin = Min(U,Umin) ; Umax = Max(U,Umax) ;
-      Vmin = Min(V,Vmin) ; Vmax = Max(V,Vmax) ;
-      MyView->Projects(Xmax,Ymin,Zmax,U,V,W) ;
-      Umin = Min(U,Umin) ; Umax = Max(U,Umax) ;
-      Vmin = Min(V,Vmin) ; Vmax = Max(V,Vmax) ;
-      MyView->Projects(Xmax,Ymin,Zmin,U,V,W) ;
-      Umin = Min(U,Umin) ; Umax = Max(U,Umax) ;
-      Vmin = Min(V,Vmin) ; Vmax = Max(V,Vmax) ;
-      MyView->Projects(Xmax,Ymax,Zmin,U,V,W) ;
-      Umin = Min(U,Umin) ; Umax = Max(U,Umax) ;
-      Vmin = Min(V,Vmin) ; Vmax = Max(V,Vmax) ;
-      MyView->Projects(Xmin,Ymax,Zmax,U,V,W) ;
-      Umin = Min(U,Umin) ; Umax = Max(U,Umax) ;
-      Vmin = Min(V,Vmin) ; Vmax = Max(V,Vmax) ;
-      MyView->Projects(Xmin,Ymax,Zmin,U,V,W) ;
-      Umin = Min(U,Umin) ; Umax = Max(U,Umax) ;
-      Vmin = Min(V,Vmin) ; Vmax = Max(V,Vmax) ;
-      if( (Umax > Umin) && (Vmax > Vmin) ) {
-        DxvNew = Abs(Umax - Umin) ; DyvNew = Abs(Vmax - Vmin) ;
-
-        RapNew = DxvNew/DyvNew ;
-        if( RapNew >= RapOld ) {
-          DxvNew += Coef*DxvNew ;
-          DyvNew = DxvNew/RapOld ;
-        } else {
-          DyvNew += Coef*DyvNew ;
-          DxvNew = DyvNew*RapOld ;
+      if (DxvNew < 10.0 * Precision::Confusion())
+      {
+        // whole scene projected to point
+        DxvNew = Max (Abs (Zmax - Zmin), (Max (Abs (Xmax - Xmin), Abs (Ymax - Ymin))));
+        if (DxvNew < 10.0 * Precision::Confusion())
+        {
+          // this is really just one (!) point and zooming has no any effect
+          // just center the view
+          DyvNew = DyvOld;
+          DxvNew = DxvOld;
         }
-
-        Xrp = (Umin + Umax)/2. ; Yrp = (Vmin + Vmax)/2. ;
-        Umin = Xrp - DxvNew/2. ; Umax = Xrp + DxvNew/2. ;
-        Vmin = Yrp - DyvNew/2. ; Vmax = Yrp + DyvNew/2. ;
-        MyViewMapping.SetWindowLimit(Umin,Vmin,Umax,Vmax) ;
-
-#ifdef OCC280
-        if( MyType != V3d_PERSPECTIVE ) {
-          MyProjReferencePoint.SetCoord(Xrp,Yrp,Zrp) ;
-          MyViewMapping.SetProjectionReferencePoint(MyProjReferencePoint);
+        else
+        {
+          // we look along some line
+          // fit view like that to see whole scene on rotation
+          DxvNew += Coef * DxvNew;
+          DyvNew = DxvNew / aWinRatio;
         }
-#else
-        MyProjReferencePoint.SetCoord(Xrp,Yrp,Zrp) ;
-        MyViewMapping.SetProjectionReferencePoint(MyProjReferencePoint);
-#endif
-        MyView->SetViewMapping(MyViewMapping) ;
       }
-
-      nbPasse--;
-    } // while
-
-    if(FitZ) {
-      ZFitAll(Zmargin);
-#ifdef IMP020300
-    } else {
-      ImmediateUpdate();
-#endif
+      else
+      {
+        // whole scene projected to horizontal line
+        DxvNew += Coef * DxvNew;
+        DyvNew = DxvNew / aWinRatio;
+      }
     }
+    else
+    {
+      // general case (or DxvNew == 0.0 - vertical line)
+      // safe original ratio
+      Standard_Real aFitRatio = DxvNew / DyvNew;
+      if (aFitRatio >= aWinRatio)
+      {
+        DxvNew += Coef * DxvNew;
+        DyvNew = DxvNew / aWinRatio;
+      }
+      else
+      {
+        DyvNew += Coef * DyvNew;
+        DxvNew = DyvNew * aWinRatio;
+      }
+    }
+
+    // new scene center
+    Xrp = 0.5 * (Umin + Umax);
+    Yrp = 0.5 * (Vmin + Vmax);
+
+    // new window limits
+    Umin = Xrp - 0.5 * DxvNew;
+    Umax = Xrp + 0.5 * DxvNew;
+    Vmin = Yrp - 0.5 * DyvNew;
+    Vmax = Yrp + 0.5 * DyvNew;
+    MyViewMapping.SetWindowLimit (Umin, Vmin, Umax, Vmax);
+
+    if (MyType != V3d_PERSPECTIVE)
+    {
+      // center the view
+      MyProjReferencePoint.SetCoord (Xrp, Yrp, Zrp);
+      MyViewMapping.SetProjectionReferencePoint (MyProjReferencePoint);
+    }
+    MyView->SetViewMapping (MyViewMapping);
+  }
+
+  if (FitZ)
+  {
+    ZFitAll (Zmargin);
 #ifdef IMP020300
-    if( !myImmediateUpdate && update ) Update();
+  }
+  else
+  {
+    ImmediateUpdate();
+#endif
+  }
+#ifdef IMP020300
+  if (!myImmediateUpdate && update)
+  {
+    Update();
+  }
 #endif
 }
 
@@ -1888,18 +1948,6 @@ void V3d_View::ZFitAll(const Standard_Real Coef) {
       ImmediateUpdate();
       return ;
     }
-
-  //Object with null bounding box for anyone axis has been
-  //obtained unit bounding interval
-  if( Xmin == Xmax ) {
-    Xmin--; Xmax++;
-  }
-  if( Ymin == Ymax ) {
-    Ymin--; Ymax++;
-  }
-  if( Zmin == Zmax ) {
-    Zmin--; Zmax++;
-  }
 
     // CAL 6/11/98
     // Case when view contains only a point
@@ -1953,18 +2001,6 @@ void V3d_View::DepthFitAll(const Quantity_Coefficient Aspect,
       ImmediateUpdate();
       return ;
     }
-
-  //Object with null bounding box for anyone axis has been
-  //obtained unit bounding interval
-  if( Xmin == Xmax ) {
-    Xmin--; Xmax++;
-  }
-  if( Ymin == Ymax ) {
-    Ymin--; Ymax++;
-  }
-  if( Zmin == Zmax ) {
-    Zmin--; Zmax++;
-  }
 
     if (Xmin == Xmax && Ymin == Ymax && Zmin == Zmax) {
       ImmediateUpdate();
