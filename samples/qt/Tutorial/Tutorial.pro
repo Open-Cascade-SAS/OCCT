@@ -29,6 +29,10 @@ unix {
     INCLUDEPATH += $$QMAKE_INCDIR_X11 $$QMAKE_INCDIR_OPENGL $$QMAKE_INCDIR_THREAD
     DEFINES += LIN LININTEL OCC_CONVERT_SIGNALS HAVE_CONFIG_H HAVE_WOK_CONFIG_H
     LIBS = -L$(CASROOT)/Linux/lib -L$$QMAKE_LIBDIR_X11 $$QMAKE_LIBS_X11 -L$$QMAKE_LIBDIR_OPENGL $$QMAKE_LIBS_OPENGL $$QMAKE_LIBS_THREAD
+    FREEIMAGE_DIR = $$(FREEIMAGEDIR)
+    exists($$FREEIMAGE_DIR) {
+	LIBS += -L$(FREEIMAGEDIR)/lib -lfreeimageplus
+    }
     TBB_LIB = $$(TBBLIB)
     exists($$TBB_LIB) {
 	LIBS += -L$(TBBLIB) -ltbb -ltbbmalloc
@@ -144,7 +148,7 @@ LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKV2d \
 lrelease.name = LRELASE ${QMAKE_FILE_IN}
 lrelease.commands = $(QTDIR)/bin/lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm
 lrelease.output = ./res/${QMAKE_FILE_BASE}.qm
-lrelease.input = TS_FILES
+lrelease.input = TRANSLATIONS
 lrelease.clean = ./res/${QMAKE_FILE_BASE}.qm
 lrelease.CONFIG += no_link target_predeps
 QMAKE_EXTRA_COMPILERS += lrelease
