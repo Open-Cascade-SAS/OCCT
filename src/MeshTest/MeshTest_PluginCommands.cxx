@@ -36,7 +36,7 @@ static Standard_Integer mpgetfunctionname (Draw_Interpretor& , Standard_Integer 
 static Standard_Integer mperror           (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer mpincmesh         (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer triarea           (Draw_Interpretor& , Standard_Integer , const char** );
-static Standard_Integer checktopo         (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer tricheck          (Draw_Interpretor& , Standard_Integer , const char** );
 
 //=======================================================================
 //function : PluginCommands
@@ -60,7 +60,7 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
   theCommands.Add("mperror"          , "use mperror"          , __FILE__, mperror     , g);
   theCommands.Add("mpincmesh"        , "use mpincmesh"        , __FILE__, mpincmesh      , g);
   theCommands.Add("triarea","shape [eps]  (computes triangles and surface area)",__FILE__, triarea, g);
-  theCommands.Add("checktopo", "shape   (checks mesh topology)", __FILE__, checktopo, g);
+  theCommands.Add("tricheck", "shape   (checks triangulation of shape)", __FILE__, tricheck, g);
   
 }
 
@@ -273,22 +273,22 @@ static Standard_Integer triarea (Draw_Interpretor& di, int n, const char ** a)
       TopLoc_Location aLoc;
       Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
       if (aPoly.IsNull()) {
-	cout << "face "<<i<<" has no triangulation"<<endl;
-	break;
+        cout << "face "<<i<<" has no triangulation"<<endl;
+        continue;
       }
       const Poly_Array1OfTriangle& triangles = aPoly->Triangles();
       const TColgp_Array1OfPnt& nodes = aPoly->Nodes();
       for (int j=triangles.Lower(); j <= triangles.Upper(); j++) {
-	const Poly_Triangle& tri = triangles(j);
-	int n1, n2, n3;
-	tri.Get (n1, n2, n3);
-	const gp_Pnt& p1 = nodes(n1);
-	const gp_Pnt& p2 = nodes(n2);
-	const gp_Pnt& p3 = nodes(n3);
-	gp_Vec v1(p1, p2);
-	gp_Vec v2(p1, p3);
-	double ar = v1.CrossMagnitude(v2);
-	aTriArea += ar;
+        const Poly_Triangle& tri = triangles(j);
+        int n1, n2, n3;
+        tri.Get (n1, n2, n3);
+        const gp_Pnt& p1 = nodes(n1);
+        const gp_Pnt& p2 = nodes(n2);
+        const gp_Pnt& p3 = nodes(n3);
+        gp_Vec v1(p1, p2);
+        gp_Vec v2(p1, p3);
+        double ar = v1.CrossMagnitude(v2);
+        aTriArea += ar;
       }
     }
     aTriArea /= 2;
@@ -307,7 +307,7 @@ static Standard_Integer triarea (Draw_Interpretor& di, int n, const char ** a)
 }
 
 //#######################################################################
-static Standard_Integer checktopo (Draw_Interpretor& di, int n, const char ** a)
+static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
 {
   if (n < 2) return 1;
 
@@ -340,21 +340,21 @@ static Standard_Integer checktopo (Draw_Interpretor& di, int n, const char ** a)
       TColgp_Array1OfPnt pnts(1,2);
       TColgp_Array1OfPnt2d pnts2d(1,2);
       for (i=1; i <= nbEdge; i++) {
-	Standard_Integer n1, n2;
-	aCheck.GetFreeLink(k, i, n1, n2);
-	cout<<"{"<<n1<<" "<<n2<<"} ";
-	pnts(1) = aPoints(n1).Transformed(trsf);
-	pnts(2) = aPoints(n2).Transformed(trsf);
-	Handle(Poly_Polygon3D) poly = new Poly_Polygon3D (pnts);
-	DrawTrSurf::Set (name, poly);
-	DrawTrSurf::Set (name, pnts(1));
-	DrawTrSurf::Set (name, pnts(2));
-	pnts2d(1) = aPoints2d(n1);
-	pnts2d(2) = aPoints2d(n2);
-	Handle(Poly_Polygon2D) poly2d = new Poly_Polygon2D (pnts2d);
-	DrawTrSurf::Set (name, poly2d);
-	DrawTrSurf::Set (name, pnts2d(1));
-	DrawTrSurf::Set (name, pnts2d(2));
+        Standard_Integer n1, n2;
+        aCheck.GetFreeLink(k, i, n1, n2);
+        cout<<"{"<<n1<<" "<<n2<<"} ";
+        pnts(1) = aPoints(n1).Transformed(trsf);
+        pnts(2) = aPoints(n2).Transformed(trsf);
+        Handle(Poly_Polygon3D) poly = new Poly_Polygon3D (pnts);
+        DrawTrSurf::Set (name, poly);
+        DrawTrSurf::Set (name, pnts(1));
+        DrawTrSurf::Set (name, pnts(2));
+        pnts2d(1) = aPoints2d(n1);
+        pnts2d(2) = aPoints2d(n2);
+        Handle(Poly_Polygon2D) poly2d = new Poly_Polygon2D (pnts2d);
+        DrawTrSurf::Set (name, poly2d);
+        DrawTrSurf::Set (name, pnts2d(1));
+        DrawTrSurf::Set (name, pnts2d(2));
       }
       cout<<endl;
     }

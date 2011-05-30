@@ -107,9 +107,7 @@ void MeshTest_CheckTopology::Perform ()
     TopLoc_Location aLoc;
     Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
     if (aT.IsNull()) {
-#ifdef DEB
-      cout<<"no Triangulation of face "<<iF<<endl;
-#endif
+      cout<< "face "<<iF<<" has no triangulation"<<endl;
       continue;
     }
 
