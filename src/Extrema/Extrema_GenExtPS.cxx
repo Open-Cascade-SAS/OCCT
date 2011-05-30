@@ -322,7 +322,7 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
 
   myF.Initialize(S);
 
-  mySphereUBTree.Clear();
+  mySphereUBTree.Nullify();
 
   if(myAlgo == Extrema_ExtAlgo_Grad)
   {
@@ -364,44 +364,37 @@ a- Constitution du tableau des distances (TbDist(0,myusample+1,0,myvsample+1)):
 
 void Extrema_GenExtPS::BuildTree()
 {
-	if(mySphereUBTree.IsEmpty())
-	{
-	  Standard_Real PasU = myusup - myumin;
-	  Standard_Real PasV = myvsup - myvmin;
-	  Standard_Real U0 = PasU / myusample / 100.;
-	  Standard_Real V0 = PasV / myvsample / 100.;
-	  gp_Pnt P1;
-	  PasU = (PasU - U0) / (myusample - 1);
-	  PasV = (PasV - V0) / (myvsample - 1);
-	  U0 = U0/2. + myumin;
-	  V0 = V0/2. + myvmin;
+  // if tree already exists, assume it is already correctly filled
+  if ( ! mySphereUBTree.IsNull() )
+    return;
 
-	// Calcul des distances
+  Standard_Real PasU = myusup - myumin;
+  Standard_Real PasV = myvsup - myvmin;
+  Standard_Real U0 = PasU / myusample / 100.;
+  Standard_Real V0 = PasV / myvsample / 100.;
+  gp_Pnt P1;
+  PasU = (PasU - U0) / (myusample - 1);
+  PasV = (PasV - V0) / (myvsample - 1);
+  U0 = U0/2. + myumin;
+  V0 = V0/2. + myvmin;
 
-	  Standard_Integer NoU, NoV;
-	  //mySphereUBTree.Clear();
-	  Extrema_UBTreeFillerOfSphere aFiller(mySphereUBTree.ChangeTree());
-	  Standard_Integer i = myusample * myvsample;
-	  Standard_Real U, V;
-	  /*for ( NoU = 1; NoU <= myusample; NoU++) {
-		for ( NoV = 1; NoV <= myvsample; NoV++) {
-			i++;
-		}
-	  }*/
-	  mySphereArray = new Bnd_HArray1OfSphere(0, i);
-	  i = 0;
-	  for ( NoU = 1, U = U0; NoU <= myusample; NoU++, U += PasU) {
-		for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV) {
-		  P1 = myS->Value(U, V);
-		  //mypoints->SetValue(NoU, NoV, P1);
-		  Bnd_Sphere aSph(P1.XYZ(), 0/*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
-		  aFiller.Add(i, aSph);
-		  mySphereArray->SetValue( i, aSph );
-		  i++;
-		}
-	  }
-	  aFiller.Fill();
-	}
+  // Calcul des distances
+  mySphereUBTree = new Extrema_UBTreeOfSphere;
+  Extrema_UBTreeFillerOfSphere aFiller(*mySphereUBTree);
+  Standard_Integer i = 0;
+  Standard_Real U, V;
+  mySphereArray = new Bnd_HArray1OfSphere(0, myusample * myvsample);
+  Standard_Integer NoU, NoV;
+  for ( NoU = 1, U = U0; NoU <= myusample; NoU++, U += PasU) {
+    for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV) {
+      P1 = myS->Value(U, V);
+      Bnd_Sphere aSph(P1.XYZ(), 0/*mytolu < mytolv ? mytolu : mytolv*/, NoU, NoV);
+      aFiller.Add(i, aSph);
+      mySphereArray->SetValue( i, aSph );
+      i++;
+    }
+  }
+  aFiller.Fill();
 }
 
 void Extrema_GenExtPS::FindSolution(const gp_Pnt& P, const math_Vector& UV, const Standard_Real PasU, const Standard_Real PasV, const Extrema_ExtFlag f)
@@ -611,7 +604,7 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       Bnd_SphereUBTreeSelectorMin aSelector(mySphereArray, aSol);
       //aSelector.SetMaxDist( RealLast() );
       aSelector.DefineCheckPoint( P );
-      Standard_Integer aNbSel = mySphereUBTree.Select( aSelector );
+      Standard_Integer aNbSel = mySphereUBTree->Select( aSelector );
       //TODO: check if no solution in binary tree
       Bnd_Sphere& aSph = aSelector.Sphere();
 
@@ -626,7 +619,7 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       Bnd_SphereUBTreeSelectorMax aSelector(mySphereArray, aSol);
       //aSelector.SetMaxDist( RealLast() );
       aSelector.DefineCheckPoint( P );
-      Standard_Integer aNbSel = mySphereUBTree.Select( aSelector );
+      Standard_Integer aNbSel = mySphereUBTree->Select( aSelector );
       //TODO: check if no solution in binary tree
       Bnd_Sphere& aSph = aSelector.Sphere();
 

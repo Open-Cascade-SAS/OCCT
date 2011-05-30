@@ -485,9 +485,11 @@ class _HUBTREE : public _HPARENT                                        \
   DEFINE_STANDARD_RTTI (_HUBTREE)                                       \
   /* Type management */                                                 \
                                                                         \
- protected:                                                             \
-  _HUBTREE (UBTree *theTree) : myTree(theTree) {}                       \
-  /* Constructor from an existing tree. */                              \
+ private:                                                               \
+  /* Copying and assignment are prohibited  */                          \
+  _HUBTREE (UBTree*);                                                   \
+  _HUBTREE (const _HUBTREE&);                                           \
+  void operator = (const _HUBTREE&);                                    \
                                                                         \
  private:                                                               \
   UBTree       *myTree;        /* pointer to the tree algorithm */      \
