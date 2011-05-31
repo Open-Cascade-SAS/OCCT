@@ -11,7 +11,7 @@ SET CASLIBS=%CASROOT%\win32\vc8\bin
 SET ROOT=%CASROOT%\..
 
 set RES_DIR=%~dp0res
-set BIN_DIR=%~dp0win32\bin
+set BIN_DIR=%~dp0win32\vc8\bin
 SET CSF_ResourcesDefaults=%RES_DIR%
 SET CSF_IEResourcesDefaults=%RES_DIR%
 
