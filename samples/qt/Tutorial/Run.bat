@@ -2,7 +2,7 @@
 
 call "%~dp0env.bat"
 
-IF NOT EXIST win32\obj goto QTSET 
+IF NOT EXIST win32\vc8\obj goto QTSET 
 
 IF NOT EXIST "%QTDIR%" goto QTSET
 
