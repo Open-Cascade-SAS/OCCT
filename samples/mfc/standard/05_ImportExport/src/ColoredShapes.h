@@ -14,6 +14,7 @@ class CColoredShapes : public CObject
 public:
 	CColoredShapes();
 	void Add(const Quantity_NameOfColor aColor, const TopoDS_Shape& aShape);
+	void Remove(const TopoDS_Shape& aShape);
 
 	void Display( Handle(AIS_InteractiveContext)& anAIScontext);
 

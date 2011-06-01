@@ -23,6 +23,17 @@ void CColoredShapes::Add(const Quantity_NameOfColor aColor, const TopoDS_Shape& 
 	m_colorMap.Bind(aShape, aColor);
 }
 
+void CColoredShapes::Remove(const TopoDS_Shape& aShape)
+{
+	m_colorMap.UnBind(aShape);
+	for ( TopoDS_ListIteratorOfListOfShape iter(m_shapeList); iter.More(); iter.Next() ) {
+		if(iter.Value() == aShape) {
+			m_shapeList.Remove(iter);
+			break;
+		}
+	}
+}
+
 IMPLEMENT_SERIAL(CColoredShapes, CObject,1);
 
 // This schema contains all the Persistent Geometry and Topology

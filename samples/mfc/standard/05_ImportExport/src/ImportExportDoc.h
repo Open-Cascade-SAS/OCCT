@@ -46,6 +46,9 @@ protected:
 	afx_msg void OnFileExportStl();
 	afx_msg void OnBox();
 	afx_msg void OnCylinder();
+	afx_msg void OnObjectRemove();
+	afx_msg void OnObjectErase();
+	afx_msg void OnObjectDisplayall();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

@@ -362,7 +362,7 @@ void OCC_3dBaseDoc::OnUpdateObjectTransparency(CCmdUI* pCmdUI)
 
 void OCC_3dBaseDoc::OnObjectDisplayall() 
 {
-	myAISContext->DisplayAll(Standard_True);
+	myAISContext->DisplayAll(Standard_False);
 }
 
 void OCC_3dBaseDoc::OnUpdateObjectDisplayall(CCmdUI* pCmdUI) 

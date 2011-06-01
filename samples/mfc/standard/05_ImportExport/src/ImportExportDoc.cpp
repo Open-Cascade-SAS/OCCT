@@ -37,6 +37,9 @@ BEGIN_MESSAGE_MAP(CImportExportDoc, OCC_3dBaseDoc)
 	ON_COMMAND(ID_FILE_EXPORT_STL, OnFileExportStl)
 	ON_COMMAND(ID_BOX, OnBox)
 	ON_COMMAND(ID_Cylinder, OnCylinder)
+	ON_COMMAND(ID_OBJECT_REMOVE, OnObjectRemove)
+	ON_COMMAND(ID_OBJECT_ERASE, OnObjectErase)
+	ON_COMMAND(ID_OBJECT_DISPLAYALL, OnObjectDisplayall)
 	//}}AFX_MSG_MAP
 
 END_MESSAGE_MAP()
@@ -283,4 +286,33 @@ void CImportExportDoc::OnCylinder()
 
 	// document has been modified
 	SetModifiedFlag(TRUE);
+}
+void CImportExportDoc::OnObjectRemove() 
+
+{
+	for(GetAISContext()->InitCurrent();GetAISContext()->MoreCurrent();GetAISContext()->NextCurrent()) {
+		Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(GetAISContext()->Current());
+		if(!aShape.IsNull()) {
+			m_pcoloredshapeList->Remove(aShape->Shape());
+		}
+	}
+	OCC_3dBaseDoc::OnObjectRemove();
+}
+
+void CImportExportDoc::OnObjectErase() 
+
+{
+	for(GetAISContext()->InitCurrent();GetAISContext()->MoreCurrent();GetAISContext()->NextCurrent()) {
+		Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(GetAISContext()->Current());
+		if(!aShape.IsNull()) {
+			m_pcoloredshapeList->Remove(aShape->Shape());
+		}
+	}
+	OCC_3dBaseDoc::OnObjectErase(); 
+}
+
+void CImportExportDoc::OnObjectDisplayall() 
+
+{
+	OCC_3dBaseDoc::OnObjectDisplayall(); 
 }
