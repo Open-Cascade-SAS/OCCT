@@ -8,4 +8,5 @@ BRepMesh_ListOfInteger.hxx
 BRepMesh_BaseAllocator.hxx
 BRepMesh_PairOfIndex.hxx
 BRepMesh_Status.hxx
+BRepMesh_CMPLRS.edl
 EXTERNLIB
