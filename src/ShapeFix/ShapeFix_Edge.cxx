@@ -751,6 +751,13 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
 	//create copyedge as copy of edge with the same vertices and copy of pcurves on the same surface(s)
 	copyedge = ShapeBuild_Edge().Copy ( edge, Standard_False );
 	B.SameParameter ( copyedge, Standard_False );
+        // ShapeBuild_Edge::Copy() may change 3D curve range (if it's outside of its period).
+        // In this case pcurves in BRepLib::SameParameter() will be changed as well
+        // and later ShapeBuild_Edge::CopyPCurves() will copy pcurves keeping original range.
+        // To prevent this discrepancy we enforce original 3D range.
+        Standard_Real aF, aL;
+        BRep_Tool::Range (edge, aF, aL);
+        B.Range (copyedge, aF, aL, Standard_True); // only 3D
 	BRepLib::SameParameter ( copyedge, ( tolerance >= Precision::Confusion() ? 
 					    tolerance : tol ) );
 	SP = BRep_Tool::SameParameter ( copyedge );
