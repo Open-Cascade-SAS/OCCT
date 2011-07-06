@@ -31,25 +31,4 @@ inline Standard_ExtString ShallowCopy (const Standard_ExtString Value)
 //============================================================================
 __Standard_API Standard_Integer HashCode (const Standard_ExtString, const Standard_Integer);
 
-//============================================================================
-//==== IsSimilar : Returns Standard_True if two booleans have the same value
-//============================================================================
-inline Standard_Boolean IsSimilar(const Standard_ExtString One
-				 ,const Standard_ExtString Two)
-{ return One == Two; }
-
-//============================================================================
-// IsEqual : Returns Standard_True if two ExtString have the same value
-//============================================================================
-inline Standard_Boolean IsEqual(const Standard_ExtString One
-			       ,const Standard_ExtString Two)
-{ return One == Two; }
-
-
 #endif
-
-
-
-
-
-

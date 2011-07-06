@@ -33,8 +33,6 @@ inline  Standard_Integer Abs (const Standard_Integer);
 inline Standard_CString ShallowCopy (const Standard_CString Value);
 inline Standard_Boolean IsSimilar(const Standard_CString One
 				 ,const Standard_CString Two);
-inline Standard_Boolean IsEqual(const Standard_CString One
-			       ,const Standard_CString Two);
 __Standard_API Standard_Integer HashCode (const Standard_CString,
                            const Standard_Integer);
 inline Standard_Integer HashCode (const Standard_CString,
@@ -78,15 +76,6 @@ inline Standard_Boolean IsSimilar(const Standard_CString One
 				 ,const Standard_CString Two)
 { 
   return (strcmp(One,Two) == 0);
-}
-
-//============================================================================
-// IsEqual : Returns Standard_True if two CString have the same value
-//============================================================================
-inline Standard_Boolean IsEqual(const Standard_CString One
-			       ,const Standard_CString Two)
-{ 
-  return (One == Two);
 }
 
 //============================================================================
