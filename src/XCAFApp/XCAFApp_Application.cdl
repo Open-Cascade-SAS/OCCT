@@ -15,7 +15,7 @@ uses
 
 is
 
-    Create returns mutable Application from XCAFApp is private;
+    Create returns mutable Application from XCAFApp is protected;
 
 
     ---Purpose: methods from CDF_Application
