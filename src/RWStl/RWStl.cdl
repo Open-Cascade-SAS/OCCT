@@ -21,24 +21,28 @@ uses
 
     OSD, 
     Standard, 
-    StlMesh 
+    StlMesh,
+    Message
     
 is 
 
-	WriteBinary (aMesh : Mesh from StlMesh; aPath : Path from OSD) 
+	WriteBinary (aMesh : Mesh from StlMesh; aPath : Path from OSD;
+	    aProgInd : ProgressIndicator from Message = NULL) 
     	    	returns Boolean from Standard;
 	  ---Purpose : write the meshing in a file following the 
 	  --         binary format of an STL file.
 	  --         Returns false if the cannot be opened; 	    	
 
-	WriteAscii (aMesh : Mesh from StlMesh; aPath : Path from OSD) 
+	WriteAscii (aMesh : Mesh from StlMesh; aPath : Path from OSD;
+	    aProgInd : ProgressIndicator from Message = NULL) 
     	    	returns Boolean from Standard;
 	  ---Purpose : write the meshing in a file following the 
 	  --         Ascii  format of an STL file. 	    	
 	  --         Returns false if the cannot be opened; 	    	
 
 
-    	ReadFile   (aPath : Path from OSD) returns
+    	ReadFile   (aPath : Path from OSD;
+	    aProgInd : ProgressIndicator from Message = NULL) returns
     	    	Mesh from StlMesh;
 	  ---Purpose : This method will chwck if the file is a binary 
 	  --         file or an AsciiFile testing  the 5 first 
@@ -46,7 +50,8 @@ is
 	  --         ascii file. If we do not find that word we assume 
 	  --         that it is a binary file.	
 
-    	ReadBinary (aPath : Path from OSD) returns 
+    	ReadBinary (aPath : Path from OSD;
+	    aProgInd : ProgressIndicator from Message = NULL) returns 
     	    	Mesh from StlMesh;
 	 ---Purpose : Read a meshing from a binary file
 	 --        Raises NoMoreObject from Standard if a statement 
@@ -54,7 +59,8 @@ is
 	 --        Raises TypeMisMatch if a token has not the good 
 	 --        type (often real)
 
-    	ReadAscii (aPath : Path from OSD) returns 
+    	ReadAscii (aPath : Path from OSD;
+	    aProgInd : ProgressIndicator from Message = NULL) returns 
     	    	Mesh from StlMesh;
 	 ---Purpose : Read a meshing from a binary file
 	 --        Raises NoMoreObject from Standard if a statement 

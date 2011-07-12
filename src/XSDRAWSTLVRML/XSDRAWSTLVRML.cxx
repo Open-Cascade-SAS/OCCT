@@ -24,6 +24,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <ViewerTest.hxx>
 #include <Draw.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <RWStl.hxx>
 #include <Quantity_Color.hxx>
 #include <V3d_View.hxx>
@@ -119,7 +120,7 @@ static Standard_Integer writevrml
 
 //=======================================================================
 //function : loadvrml
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 static Standard_Integer loadvrml
@@ -184,7 +185,7 @@ static Standard_Integer loadvrml
 
 //=======================================================================
 //function : storevrml
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 static Standard_Integer storevrml
@@ -216,7 +217,7 @@ static Standard_Integer storevrml
     filebuf foc;
     ostream outStream (&foc);
     if (foc.open (argv[2], ios::out))
-      outStream << aScene;       
+      outStream << aScene;
   }
   return 0;
 }
@@ -233,9 +234,10 @@ static Standard_Integer createmesh
     return 1;
   }
 
+  // Progress indicator
   OSD_Path aFile( argv[2] );
-  Handle( StlMesh_Mesh ) aSTLMesh = RWStl::ReadFile( aFile );
-  //  DBRep::Set(argv[1],shape);
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
+  Handle(StlMesh_Mesh) aSTLMesh = RWStl::ReadFile (aFile, aProgress);
 
   di << "Reading OK..." << "\n";
   Handle( XSDRAWSTLVRML_DataSource ) aDS = new XSDRAWSTLVRML_DataSource( aSTLMesh );
@@ -267,7 +269,7 @@ static Standard_Integer createmesh
 
   if ( aContext.IsNull() )
   {
-    ViewerTest::ViewerInit(); 
+    ViewerTest::ViewerInit();
     //To create a 3D view if it doesn't exist
     aContext = ViewerTest::GetAISContext();
     if( aContext.IsNull() )
@@ -616,9 +618,9 @@ static Standard_Integer showonly
     di << "The context is null" << "\n";
   else
   {
-    Handle(TColStd_HPackedMapOfInteger) aHiddenNodes = 
+    Handle(TColStd_HPackedMapOfInteger) aHiddenNodes =
       new TColStd_HPackedMapOfInteger(aMesh->GetDataSource()->GetAllNodes());
-    Handle(TColStd_HPackedMapOfInteger) aHiddenElements = 
+    Handle(TColStd_HPackedMapOfInteger) aHiddenElements =
       new TColStd_HPackedMapOfInteger(aMesh->GetDataSource()->GetAllElements());
     for( aContext->InitSelected(); aContext->MoreSelected(); aContext->NextSelected() )
     {
@@ -705,8 +707,8 @@ static Standard_Integer delmesh
 }
 //-----------------------------------------------------------------------------
 
-static Standard_Integer meshcolors( Draw_Interpretor& di, 
-                                    Standard_Integer argc, 
+static Standard_Integer meshcolors( Draw_Interpretor& di,
+                                    Standard_Integer argc,
                                     const char** argv )
 {
   try
@@ -720,9 +722,9 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
         di << "       elem2 - one color for one side"<<"\n";
         di << "       nodal - different color for each node"<< "\n";
         di << "       nodaltex - different color for each node with texture interpolation"<< "\n";
-        di << "       none  - clear"<< "\n"; 
+        di << "       none  - clear"<< "\n";
         di << "isreflect : {0|1} "<< "\n";
-         
+
         return 0;
       }
 
@@ -761,7 +763,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
 
           if( aMode.IsEqual("elem1") || aMode.IsEqual("elem2") )
           {
-            Handle(MeshVS_ElementalColorPrsBuilder) aBuilder = new MeshVS_ElementalColorPrsBuilder( 
+            Handle(MeshVS_ElementalColorPrsBuilder) aBuilder = new MeshVS_ElementalColorPrsBuilder(
                 aMesh, MeshVS_DMF_ElementalColorDataPrs | MeshVS_DMF_OCCMask );
               // Color
             const TColStd_PackedMapOfInteger& anAllElements = aMesh->GetDataSource()->GetAllElements();
@@ -780,10 +782,10 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
             aMesh->AddBuilder( aBuilder, Standard_True );
           }
 
-          
+
           if( aMode.IsEqual("nodal") )
           {
-            Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder( 
+            Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder(
                 aMesh, MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask );
             aMesh->AddBuilder( aBuilder, Standard_True );
 
@@ -793,7 +795,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
             TColStd_MapIteratorOfPackedMapOfInteger anIter( anAllNodes );
             for ( ; anIter.More(); anIter.Next() )
             {
-              Quantity_Color aColor( (Quantity_NameOfColor)( 
+              Quantity_Color aColor( (Quantity_NameOfColor)(
                 anIter.Key() % Quantity_NOC_WHITE ) );
               aBuilder->SetColor( anIter.Key(), aColor );
             }
@@ -803,7 +805,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
           if(aMode.IsEqual("nodaltex"))
           {
             // assign nodal builder to the mesh
-            Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder( 
+            Handle(MeshVS_NodalColorPrsBuilder) aBuilder = new MeshVS_NodalColorPrsBuilder(
                    aMesh, MeshVS_DMF_NodalColorDataPrs | MeshVS_DMF_OCCMask);
             aMesh->AddBuilder(aBuilder, Standard_True);
             aBuilder->UseTexture(Standard_True);
@@ -846,7 +848,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
                 aScaleValue = 0;
               }
 
-              aScaleMap.Bind(anIter.Key(), aScaleValue); 
+              aScaleMap.Bind(anIter.Key(), aScaleValue);
             }
 
             //set color map for builder and a color for invalid scale value
@@ -854,7 +856,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
             aBuilder->SetInvalidColor(Quantity_NOC_BLACK);
             aBuilder->SetTextureCoords(aScaleMap);
             aMesh->AddBuilder(aBuilder, Standard_True);
-			
+
             //set viewer to display texures
             const Handle(V3d_Viewer)& aViewer = anIC->CurrentViewer();
             for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
@@ -866,7 +868,7 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
           anIC->Redisplay( aMesh );
         }
         else
-        { 
+        {
           di << "Wrong mode name" << "\n";
           return 0;
         }
@@ -881,8 +883,8 @@ static Standard_Integer meshcolors( Draw_Interpretor& di,
 }
 //-----------------------------------------------------------------------------
 
-static Standard_Integer mesh_edge_width( Draw_Interpretor& di, 
-                                        Standard_Integer argc, 
+static Standard_Integer mesh_edge_width( Draw_Interpretor& di,
+                                        Standard_Integer argc,
                                         const char** argv )
 {
   try
