@@ -150,10 +150,10 @@ is
 
 fields
 
-    nbTriangles : Integer;
-    nbVertices  : Integer;
-    domains     : SequenceOfMeshDomain;
-    xyzmax      : XYZ;
-    xyzmin      : XYZ;
+    nbTriangles : Integer is protected;
+    nbVertices  : Integer is protected;
+    domains     : SequenceOfMeshDomain is protected;
+    xyzmax      : XYZ is protected;
+    xyzmin      : XYZ is protected;
 	
 end Mesh;
