@@ -58,18 +58,10 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 
+#include <OSD_Chronometer.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 
-
-
-//XX
-// CHRONOMETER
-//
-#include <Standard_Static.hxx>
-#include <OSD_Chronometer.hxx>
-
-
-Standard_STATIC(OSD_Chronometer, S_Chrono);
+static OSD_Chronometer DRAW_BOP_CHRONO;
 static void StartChrono();
 static void StopChrono(Draw_Interpretor&); 
 Standard_Integer btimesum (Draw_Interpretor& , Standard_Integer n, const char** a);
@@ -752,8 +744,8 @@ void StartChrono()
   char *xr=getenv ("BOPCHRONO");
   if (xr!=NULL){
     if (!strcmp (xr, "yes")){
-      S_Chrono().Reset();
-      S_Chrono().Start();
+      DRAW_BOP_CHRONO.Reset();
+      DRAW_BOP_CHRONO.Start();
     }
   }
 }
@@ -768,8 +760,8 @@ void StopChrono(Draw_Interpretor& di)
   if (xr!=NULL){
     if (!strcmp (xr, "yes")) {
       Standard_Real Chrono;
-      S_Chrono().Stop();
-      S_Chrono().Show(Chrono);
+      DRAW_BOP_CHRONO.Stop();
+      DRAW_BOP_CHRONO.Show(Chrono);
       //
       char *aFileName=getenv("BOPCHRONOFILE");
       if (aFileName!=NULL){

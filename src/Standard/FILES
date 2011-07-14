@@ -48,7 +48,6 @@ Standard_SStream.hxx
 Standard_ShallowDump.cxx
 Standard_ShortReal.cxx
 Standard_ShortReal.hxx
-Standard_Static.hxx
 Standard_Stream.hxx
 Standard_String.hxx
 Standard_Transient.hxx

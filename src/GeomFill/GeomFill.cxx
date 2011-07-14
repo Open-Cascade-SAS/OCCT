@@ -26,12 +26,7 @@
 #include <GeomFill_PolynomialConvertor.hxx>
 #include <GeomFill_QuasiAngularConvertor.hxx>
 #include <Precision.hxx>
-#include <Standard_Static.hxx>
 
-// La classe de convertion
-Standard_STATIC (GeomFill_PolynomialConvertor, PConvertor);
-Standard_STATIC (GeomFill_QuasiAngularConvertor, QConvertor);
- 
 
 //=======================================================================
 //function : Surface
@@ -390,15 +385,17 @@ void GeomFill::GetCircle( const Convert_ParameterisationType  TConv,
 
   switch (TConv) {
   case Convert_QuasiAngular:
-    {   // On utilise le bon  "Convertor" 
-      if (!QConvertor().Initialized()) QConvertor().Init();
-      QConvertor().Section(pts1, Center, nplan, Angle, Poles, Weights);
+    {
+      GeomFill_QuasiAngularConvertor QConvertor;
+      QConvertor.Init();
+      QConvertor.Section(pts1, Center, nplan, Angle, Poles, Weights);
       break;
     }
   case Convert_Polynomial:
-    { // On utilise le bon  "Convertor" 
-      if (!PConvertor().Initialized()) PConvertor().Init();
-      PConvertor().Section(pts1, Center, nplan, Angle, Poles);
+    { 
+      GeomFill_PolynomialConvertor PConvertor;
+      PConvertor.Init();
+      PConvertor.Section(pts1, Center, nplan, Angle, Poles);
       Weights.Init(1);
       break;
     }
@@ -495,8 +492,9 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
   switch (TConv) {
   case Convert_QuasiAngular:
     {
-      if (!QConvertor().Initialized()) QConvertor().Init();
-      QConvertor().Section(pts1, tang1, 
+      GeomFill_QuasiAngularConvertor QConvertor;
+      QConvertor.Init();
+      QConvertor.Section(pts1, tang1, 
 			Center, DCenter, 
 			nplan, dnplan,
 			Angle, DAngle,
@@ -506,8 +504,9 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
   }
   case Convert_Polynomial:
     {
-      if (!PConvertor().Initialized()) PConvertor().Init();
-      PConvertor().Section(pts1, tang1, 
+      GeomFill_PolynomialConvertor PConvertor;
+      PConvertor.Init();
+      PConvertor.Section(pts1, tang1, 
 			Center, DCenter, 
 			nplan, dnplan,
 			Angle, DAngle,
@@ -647,8 +646,9 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
   switch (TConv) {
   case Convert_QuasiAngular:
     {
-      if (!QConvertor().Initialized()) QConvertor().Init();
-      QConvertor().Section(pts1, tang1, Dtang1,
+      GeomFill_QuasiAngularConvertor QConvertor;
+      QConvertor.Init();
+      QConvertor.Section(pts1, tang1, Dtang1,
 			   Center, DCenter, D2Center,
 			   nplan, dnplan, d2nplan,
 			   Angle, DAngle, D2Angle,
@@ -658,8 +658,9 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
   }
   case Convert_Polynomial:
     {
-      if (!PConvertor().Initialized()) PConvertor().Init();
-      PConvertor().Section(pts1, tang1, Dtang1,
+      GeomFill_PolynomialConvertor PConvertor;
+      PConvertor.Init();
+      PConvertor.Section(pts1, tang1, Dtang1,
 			   Center, DCenter, D2Center,
 			   nplan, dnplan,  d2nplan,
 			   Angle, DAngle, D2Angle,

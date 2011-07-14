@@ -55,7 +55,6 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Static.hxx>
 #include <OSD_Chronometer.hxx>
 
 #include <BRepTools.hxx>
