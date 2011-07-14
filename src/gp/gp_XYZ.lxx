@@ -166,10 +166,9 @@ inline void gp_XYZ::Multiply (const gp_XYZ& Other)
 
 inline void gp_XYZ::Multiply (const gp_Mat& Matrix)
 {
-  const Standard_Address M = (Standard_Address)&(Matrix.matrix[0][0]);
-  Standard_Real Xresult = Mat00 * x + Mat01 * y + Mat02 * z;
-  Standard_Real Yresult = Mat10 * x + Mat11 * y + Mat12 * z;
-  z                     = Mat20 * x + Mat21 * y + Mat22 * z;
+  Standard_Real Xresult = Matrix.matrix[0][0] * x + Matrix.matrix[0][1] * y + Matrix.matrix[0][2] * z;
+  Standard_Real Yresult = Matrix.matrix[1][0] * x + Matrix.matrix[1][1] * y + Matrix.matrix[1][2] * z;
+  z                     = Matrix.matrix[2][0] * x + Matrix.matrix[2][1] * y + Matrix.matrix[2][2] * z;
   x                     = Xresult;
   y                     = Yresult;
 }
@@ -184,10 +183,9 @@ inline gp_XYZ gp_XYZ::Multiplied (const gp_XYZ& Other) const {
 
 inline gp_XYZ gp_XYZ::Multiplied (const gp_Mat& Matrix) const
 {
-  const Standard_Address M = (Standard_Address)&(Matrix.matrix[0][0]);
-  return gp_XYZ (Mat00 * x + Mat01 * y + Mat02 * z,
-		 Mat10 * x + Mat11 * y + Mat12 * z,
-		 Mat20 * x + Mat21 * y + Mat22 * z);
+  return gp_XYZ (Matrix.matrix[0][0] * x + Matrix.matrix[0][1] * y + Matrix.matrix[0][2] * z,
+		 Matrix.matrix[1][0] * x + Matrix.matrix[1][1] * y + Matrix.matrix[1][2] * z,
+		 Matrix.matrix[2][0] * x + Matrix.matrix[2][1] * y + Matrix.matrix[2][2] * z);
 }
 
 inline void gp_XYZ::Normalize ()
