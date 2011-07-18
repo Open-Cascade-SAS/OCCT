@@ -1,7 +1,11 @@
 TKBRep
 TKernel
+TKV3d
 TKMath
-TKG2d
+TKService
 TKGeomBase
-TKG3d
+TKG2d
 TKTopAlgo
+TKG3d
+TKV2d
+TKMesh
