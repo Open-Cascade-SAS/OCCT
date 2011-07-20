@@ -57,6 +57,7 @@
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <PrsMgr_PresentableObject.hxx>
+#include <Standard_Atomic.hxx>
 #include <UnitsAPI.hxx>
 
 #include <AIS_Trihedron.hxx>
@@ -91,28 +92,23 @@ static Standard_Boolean AISDebugModeOn()
   return (isDebugMode != 0);
 }
 
-static TCollection_AsciiString AIS_Context_NewSelName()
+namespace
 {
-  static Standard_Integer index_sel = 1;
-  TCollection_AsciiString name("AIS_SelContext_");
-  TCollection_AsciiString theind(index_sel);
-  name += theind;
-  index_sel++;
-  return name;
-}
+  static volatile Standard_Integer THE_AIS_INDEX_SEL = 0;
+  static volatile Standard_Integer THE_AIS_INDEX_CUR = 0;
 
-static TCollection_AsciiString AIS_Context_NewCurName()
-{
-  static Standard_Integer index_cur = 1;
-  TCollection_AsciiString name("AIS_CurContext_");
-  TCollection_AsciiString theind(index_cur);
-  name += theind;
-  index_cur++;
-  return name;
-}
+  static TCollection_AsciiString AIS_Context_NewSelName()
+  {
+    return TCollection_AsciiString ("AIS_SelContext_")
+         + TCollection_AsciiString (Standard_Atomic_Increment (&THE_AIS_INDEX_SEL));
+  }
 
-static TColStd_ListIteratorOfListOfInteger ItL;
-
+  static TCollection_AsciiString AIS_Context_NewCurName()
+  {
+    return TCollection_AsciiString ("AIS_CurContext_")
+         + TCollection_AsciiString (Standard_Atomic_Increment (&THE_AIS_INDEX_CUR));
+  }
+};
 
 //=======================================================================
 //function : AIS_InteractiveContext
@@ -504,7 +500,8 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
         updcol = updateviewer;
                          }// attention on fait expres de ne pas mettre de break..
       case AIS_DS_FullErased:{
-        for (ItL.Initialize(STATUS->DisplayedModes());ItL.More();ItL.Next()){
+        TColStd_ListIteratorOfListOfInteger ItL (STATUS->DisplayedModes());
+        for (;ItL.More();ItL.Next()){
           myMainPM->Display(anIObj,ItL.Value());
           if(STATUS->IsSubIntensityOn())
             myMainPM->Color(anIObj,mySubIntensity,ItL.Value());
@@ -523,7 +520,8 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
       //       Finally, activate selection mode <SelMode> if not yet activated.
       case AIS_DS_Displayed:{
         TColStd_ListOfInteger aModesToRemove;
-        for(ItL.Initialize(STATUS->DisplayedModes());ItL.More();ItL.Next()){
+        TColStd_ListIteratorOfListOfInteger ItL (STATUS->DisplayedModes());
+        for(;ItL.More();ItL.Next()){
 
           Standard_Integer OldMode = ItL.Value();
 
@@ -1817,7 +1815,8 @@ void AIS_InteractiveContext::SetDisplayMode(const Handle(AIS_InteractiveObject)&
       // SAN : erase presentations for all display modes different from <aMode>
       if(STATUS->GraphicStatus()==AIS_DS_Displayed){
         TColStd_ListOfInteger aModesToRemove;
-        for(ItL.Initialize(STATUS->DisplayedModes());ItL.More();ItL.Next()){
+        TColStd_ListIteratorOfListOfInteger ItL (STATUS->DisplayedModes());
+        for(;ItL.More();ItL.Next()){
 
           Standard_Integer OldMode = ItL.Value();
 
@@ -2092,7 +2091,7 @@ void AIS_InteractiveContext::SetDeviationAngle(
  
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
-// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetOwnDeviationAngle(anAngle);
@@ -2134,7 +2133,7 @@ void AIS_InteractiveContext::SetAngleAndDeviation(
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 
-// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetAngleAndDeviation(anAngle);
@@ -2162,7 +2161,7 @@ void AIS_InteractiveContext::SetHLRAngleAndDeviation(
    if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 
-// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if(anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetHLRAngleAndDeviation(anAngle);
@@ -2205,7 +2204,7 @@ void AIS_InteractiveContext::SetHLRDeviationAngle(
  
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
-// To be modified after the related methods of AIS_Shape are passed to InteractiveObject
+  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   if( anIObj->Type()!=AIS_KOI_Shape) return;
   if(anIObj->Signature()!=0) return;
   (*((Handle(AIS_Shape)*)&anIObj))->SetOwnHLRDeviationAngle(anAngle);
@@ -2626,7 +2625,8 @@ void AIS_InteractiveContext::Status(const Handle(AIS_InteractiveObject)& anIObj,
       break;
     }
     astatus += "\t| Active Display Modes in the MainViewer :\n";
-    for(ItL.Initialize(ST->DisplayedModes());ItL.More();ItL.Next()){
+    TColStd_ListIteratorOfListOfInteger ItL (ST->DisplayedModes());
+    for(;ItL.More();ItL.Next()){
       astatus += "\t|\t Mode ";
       astatus += TCollection_AsciiString(ItL.Value());
       astatus+="\n";
@@ -2688,7 +2688,8 @@ void AIS_InteractiveContext::EraseGlobal(const Handle(AIS_InteractiveObject)& an
   Standard_Integer Dmode = anIObj->HasHilightMode() ? anIObj->HilightMode() : 0;
   if(STATUS->GraphicStatus()==AIS_DS_Displayed){
     
-    for(ItL.Initialize(STATUS->DisplayedModes());ItL.More();ItL.Next()){
+    TColStd_ListIteratorOfListOfInteger ItL (STATUS->DisplayedModes());
+    for(;ItL.More();ItL.Next()){
       if(myMainPM->IsHighlighted(anIObj,ItL.Value()))
         myMainPM->Unhighlight(anIObj,ItL.Value());
       myMainPM->Erase(anIObj,ItL.Value());
@@ -2732,7 +2733,8 @@ void AIS_InteractiveContext::ClearGlobal(const Handle(AIS_InteractiveObject)& an
   // const Handle(AIS_GlobalStatus)& STATUS = myObjects(anIObj);
   Handle(AIS_GlobalStatus) STATUS = myObjects(anIObj);
   // ENDCLE
-   for(ItL.Initialize(STATUS->DisplayedModes());ItL.More();ItL.Next()){
+   TColStd_ListIteratorOfListOfInteger ItL (STATUS->DisplayedModes());
+   for(;ItL.More();ItL.Next()){
      if(STATUS->IsHilighted()){
        if(IsCurrent(anIObj))
 #ifdef OCC204

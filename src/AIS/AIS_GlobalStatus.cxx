@@ -3,14 +3,8 @@
 // Author:	Robert COUBLANC
 //		<rob@robox.paris1.matra-dtv.fr>
 
-
 #include <AIS_GlobalStatus.ixx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-
-
-
-static TColStd_ListIteratorOfListOfInteger It;
-
 
 AIS_GlobalStatus::AIS_GlobalStatus():
 myStatus(AIS_DS_None),
@@ -37,22 +31,32 @@ mySubInt(Standard_False)
   mySelModes.Append(SMode);
 }
 
-
 void AIS_GlobalStatus::RemoveDisplayMode(const Standard_Integer aMode)
 {
-  for(It.Initialize(myDispModes);It.More();It.Next()){
-    if(It.Value()==aMode){ myDispModes.Remove(It);
-			   return;}
+  TColStd_ListIteratorOfListOfInteger anIt (myDispModes);
+  for (; anIt.More(); anIt.Next())
+  {
+    if (anIt.Value() == aMode)
+    {
+      myDispModes.Remove (anIt);
+      return;
+    }
   }
 }
 
 void AIS_GlobalStatus::RemoveSelectionMode(const Standard_Integer aMode)
 {
-  for(It.Initialize(mySelModes);It.More();It.Next()){
-    if(It.Value()==aMode){ mySelModes.Remove(It);
-			   return;}
+  TColStd_ListIteratorOfListOfInteger anIt (mySelModes);
+  for (; anIt.More(); anIt.Next())
+  {
+    if (anIt.Value() == aMode)
+    {
+      mySelModes.Remove (anIt);
+      return;
+    }
   }
 }
+
 void AIS_GlobalStatus::ClearSelectionModes()
 {
   mySelModes.Clear();
@@ -60,16 +64,26 @@ void AIS_GlobalStatus::ClearSelectionModes()
 
 Standard_Boolean AIS_GlobalStatus::IsDModeIn(const Standard_Integer aMode) const 
 {
-  for(It.Initialize(myDispModes);It.More();It.Next())
-    if(It.Value()==aMode) return Standard_True;
+  TColStd_ListIteratorOfListOfInteger anIt (myDispModes);
+  for (; anIt.More(); anIt.Next())
+  {
+    if (anIt.Value() == aMode)
+    {
+      return Standard_True;
+    }
+  }
   return Standard_False;
-  
 }
 
 Standard_Boolean AIS_GlobalStatus::IsSModeIn(const Standard_Integer aMode) const 
 {
-  for(It.Initialize(mySelModes);It.More();It.Next())
-    if(It.Value()==aMode) return Standard_True;
+  TColStd_ListIteratorOfListOfInteger anIt (mySelModes);
+  for (; anIt.More(); anIt.Next())
+  {
+    if (anIt.Value() == aMode)
+    {
+      return Standard_True;
+    }
+  }
   return Standard_False;
 }
-

@@ -23,12 +23,9 @@ void Handle(Standard_Transient)::Assign (const Standard_Transient *anItem)
 
 void Handle(Standard_Transient)::BeginScope()
 {
-  if (entity != UndefinedHandleAddress) 
+  if (entity != UndefinedHandleAddress)
   {
-    if ( Standard::IsReentrant() ) 
-      Standard_Atomic_Increment (&entity->count);
-    else 
-      entity->count++;
+    Standard_Atomic_Increment (&entity->count);
   }
 }
 
@@ -36,11 +33,9 @@ void Handle(Standard_Transient)::BeginScope()
 
 void Handle(Standard_Transient)::EndScope()
 {
-  if (entity == UndefinedHandleAddress) 
+  if (entity == UndefinedHandleAddress)
     return;
-  if ( Standard::IsReentrant() ? 
-       Standard_Atomic_DecrementTest (&entity->count) : 
-       (--entity->count == 0) )
+  if (Standard_Atomic_Decrement (&entity->count) == 0)
     entity->Delete();
   entity = UndefinedHandleAddress;
 }

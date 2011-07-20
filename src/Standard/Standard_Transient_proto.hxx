@@ -86,7 +86,7 @@ class Standard_Transient
 
  private:
 
-   Standard_Integer count;
+   volatile Standard_Integer count;
 };
 
 Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(Standard_Transient);
