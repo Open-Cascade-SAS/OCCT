@@ -1463,13 +1463,22 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
     // Two consecutive tangential segments are considered as one, merge them.
     for ( i=1; i <= IntEdgePar.Length(); i++ ) {
       j = ( i > 1 ? i-1 : IntEdgePar.Length() );
+
+      int k = ( i < IntEdgePar.Length() ? i + 1 : 1 ); // [ACIS22539]
+
       if ( SegmentCodes(j) == IOR_UNDEF && 
-	   SegmentCodes(i) == IOR_UNDEF ) {
-	IntEdgeInd.Remove(i);
-	IntEdgePar.Remove(i);
-	IntLinePar.Remove(i);
-	SegmentCodes.Remove(i);
-	i--;
+           SegmentCodes(i) == IOR_UNDEF ) {
+
+        // Very specific case when the constructed seam edge
+        // overlaps with spur edge [ACIS22539]
+        if (myClosedMode && (IntLinePar(i) - IntLinePar(j)) * (IntLinePar(k) - IntLinePar(i)) <= 0. )
+          continue;
+
+        IntEdgeInd.Remove(i);
+        IntEdgePar.Remove(i);
+        IntLinePar.Remove(i);
+        SegmentCodes.Remove(i);
+        i--;
       }
     }
     }
