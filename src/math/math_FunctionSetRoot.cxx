@@ -49,6 +49,8 @@
 //     On change de direction
 //============================================================================
 
+static  Standard_Boolean mydebug = Standard_False;
+
 class MyDirFunction : public math_Function
 {
 
@@ -200,6 +202,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P0,
   F.Initialize(P1, Delta);
 
   // (2) On minimise
+  if (mydebug)cout << "      minimisation dans la direction" << endl;
   ax = -1; bx = 0;
   cx = (P2-P1).Norm()*invnorme;
   if (cx < 1.e-2) return Standard_False;
@@ -240,6 +243,8 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
     
   // (1) On realise une premiere interpolation quadratique
   Standard_Real ax, bx, cx, df1, df2, Delta, tsol, fsol, tsolbis;
+  if (mydebug) { cout << "     essai d interpolation" << endl;}
+
   df1 = Gradient*Dir;
   df2 = DGradient*Dir;
 
@@ -259,7 +264,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
       Delta = bx*bx - 4*ax*cx;
       if (Delta > 1.e-9) {
 	// il y a des racines, on prend la plus proche de 0
-	Delta = sqrt(Delta);
+	Delta = Sqrt(Delta);
 	tsol = -(bx + Delta);
 	tsolbis = (Delta - bx);
 	if (Abs(tsolbis) < Abs(tsol)) tsol = tsolbis;
@@ -280,6 +285,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
   if (fsol<PValue) { 
     good = Standard_True;
     Result = fsol;
+    if (mydebug) cout << "t= "<<tsol<<" F = " << fsol << " OldF = "<<PValue <<endl;
   }
 
   // (2) Si l'on a pas assez progresser on realise une recherche 
@@ -292,11 +298,14 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
     else {
       ax = 0.0; bx = tsol; cx = 1.0;
     }
+    if (mydebug) cout << " minimisation dans la direction" << endl;
     math_BrentMinimum Sol(F, ax, bx, cx, tol1d, 100, tol1d);
     if(Sol.IsDone()) {
       if (Sol.Minimum() <= Result) {
-        tsol = Sol.Location();
-        good = Standard_True;
+	tsol = Sol.Location();
+	good = Standard_True;
+	if (mydebug) cout << "t= "<<tsol<<" F ="<< Sol.Minimum() 
+	                  << " OldF = "<<Result <<endl;
       }
     }
   }
@@ -327,10 +336,11 @@ static void SearchDirection(const math_Matrix& DF,
       math_Gauss Solut(DF, 1.e-9);
       if (Solut.IsDone()) Solut.Solve(Direction);
       else { // we have to "forget" singular directions.
-        math_SVD SolvebySVD(DF);
+	if (mydebug) cout << " Matrice singuliere : On prend SVD" << endl;
+	math_SVD SolvebySVD(DF);
         if (SolvebySVD.IsDone()) SolvebySVD.Solve(-1*FF, Direction);
-        else ChangeDirection = Standard_True;
-      }
+	else ChangeDirection = Standard_True;
+      } 
     }
     else if (Ninc > Neq) {
       math_SVD Solut(DF);
@@ -447,28 +457,22 @@ static void SearchDirection(const math_Matrix& DF,
 
 
 //====================================================
-Standard_Boolean Bounds(const math_Vector&  InfBound,
-                        const math_Vector&  SupBound,
-                        const math_Vector&  Tol,
-                        math_Vector&        Sol,
-                        const math_Vector&  SolSave,
-                        math_IntegerVector& Constraints,
-                        math_Vector&        Delta,
-                        Standard_Boolean&   theIsNewSol)
+Standard_Boolean Bounds(const math_Vector& InfBound,
+			const math_Vector& SupBound,
+			const math_Vector& Tol,
+			math_Vector&       Sol,
+			const math_Vector& SolSave,
+			math_IntegerVector& Constraints,
+			math_Vector&        Delta)
 //
-// Purpose: Trims an initial solution Sol to be within a domain defined by
-//   InfBound and SupBound. Delta will contain a distance between final Sol and
-//   SolSave.
-//   IsNewSol returns False, if final Sol fully coincides with SolSave, i.e.
-//   if SolSave already lied on a boundary and initial Sol was fully beyond it
+// Purpose : Troncate un pas d'optimisation pour rester 
+//           dans le domaine, Delta donne le pas final
 //======================================================
 {
   Standard_Boolean Out = Standard_False;
   Standard_Integer i, Ninc = Sol.Length();
   Standard_Real    monratio = 1;
   
-  theIsNewSol = Standard_True;
-
   // Calcul du ratio de recadrage
   for (i = 1; i <= Ninc; i++) {
     Constraints(i) = 0;
@@ -480,36 +484,28 @@ Standard_Boolean Bounds(const math_Vector&  InfBound,
     else if(Sol(i) < InfBound(i)) {
       Constraints(i) = 1;
       Out = Standard_True;
-      // Delta(i) is negative
-      if (-Delta(i) > Tol(i)) // Afin d'eviter des ratio nulles pour rien
-        monratio = Min(monratio, (InfBound(i) - SolSave(i))/Delta(i) );
+      if (Abs(Delta(i)) > Tol(i)) // Afin d'eviter des ratio nulles pour rien
+	monratio = Min(monratio, Abs( (SolSave(i)-InfBound(i))/Delta(i)) );
     }
     else if (Sol(i) > SupBound(i)) {
       Constraints(i) = 1;
       Out = Standard_True;
-      // Delta(i) is positive
-      if (Delta(i) > Tol(i))
-        monratio = Min(monratio, (SupBound(i) - SolSave(i))/Delta(i) );
+      if (Abs(Delta(i)) > Tol(i))
+	monratio = Min(monratio, Abs( (SolSave(i)-SupBound(i))/Delta(i)) );
     }
   }
 
   if (Out){ // Troncature et derniers recadrage pour blinder (pb numeriques)
-    if (monratio == 0.0) {
-      theIsNewSol = Standard_False;
-      Sol = SolSave;
-      Delta.Init (0.0);
-    } else {
-      Delta *= monratio;
-      Sol = SolSave+Delta;
-      for (i = 1; i <= Ninc; i++) {
-        if(Sol(i) < InfBound(i))  {
-          Sol(i) = InfBound(i);
-          Delta(i) = Sol(i) - SolSave(i);
-        }
-        else if (Sol(i) > SupBound(i)) {
-          Sol(i) = SupBound(i);
-          Delta(i) = Sol(i) - SolSave(i);
-        }
+    Delta *= monratio;
+    Sol = SolSave+Delta;
+    for (i = 1; i <= Ninc; i++) {
+      if(Sol(i) < InfBound(i))  {
+	Sol(i) = InfBound(i);
+	Delta(i) = Sol(i) - SolSave(i);
+      }
+      else if (Sol(i) > SupBound(i)) {
+	Sol(i) = SupBound(i);
+	Delta(i) = Sol(i) - SolSave(i);
       }
     }
   }
@@ -680,10 +676,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
       (SupBound.Length() != Ninc))  { Standard_DimensionError:: Raise(); }
 
   Standard_Integer i;
-  Standard_Boolean ChangeDirection = Standard_False, Sort = Standard_False, isNewSol = Standard_False;
+  Standard_Boolean ChangeDirection = Standard_False, Sort = Standard_False;
   Standard_Boolean Good, Verif;
   Standard_Boolean Stop;
-  const Standard_Real EpsSqrt = 1.e-16, Eps = 1.e-32, Eps2 = 1.e-64, Progres = 0.005;
+  Standard_Real Eps = 1.e-32, Progres = 0.005;
   Standard_Real F2, PreviousMinimum, Dy, OldF;
   Standard_Real Ambda, Ambda2, Gnr1, Oldgr;
   math_Vector InvLengthMax(1, Ninc); // Pour bloquer les pas a 1/4 du domaine
@@ -718,9 +714,14 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // Le rang 0 de Save ne doit servir q'au test accelarteur en fin de boucle
   // s'il on est dejas sur la solution, il faut leurer ce test pour eviter
   // de faire une seconde iteration...
-  Save(0) = Max (F2, EpsSqrt);
+  Save(0) = Max (F2, Sqrt(Eps));
 
-  if ((F2 <= Eps) || (Gnr1 <= Eps2)) {
+  if (mydebug) {
+    cout << "=== Mode Debug de Function Set Root"<<endl;
+    cout << "    F2 Initial = " << F2 << endl;
+  }
+
+  if ((F2 <= Eps) || (Sqrt(Gnr1) <= Eps)) {
     Done = Standard_True;
     State = F.GetStateNumber();
     return;
@@ -739,7 +740,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
       return;
     }
     if (ChangeDirection) {
-      Ambda = Ambda2 / sqrt(Abs(Dy));
+      Ambda = Ambda2/Sqrt(Abs(Dy));
       if (Ambda > 1.0) Ambda = 1.0;
     }
     else {
@@ -751,20 +752,26 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
       Sol(i) = Sol(i) + Ambda * DH(i);
     }
     Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-		  Constraints, Delta, isNewSol);
+		  Constraints, Delta);
 
       
     DHSave = GH;
-    if (isNewSol) {
-//      F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
-      if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
-        Done = Standard_False;
-        State = F.GetStateNumber();
-        return;
-      }
+//    F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
+    if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
+      Done = Standard_False;
+      State = F.GetStateNumber();
+      return;
     }
 
-    if ((F2 <= Eps) || (Gnr1 <= Eps2)) {
+#if DEB
+    if (mydebug) {
+      cout << "Kount         = " << Kount << endl;
+      cout << "Le premier F2 = " << F2 << endl;
+      cout << "Direction     = " << ChangeDirection << endl;
+    }
+#endif
+
+    if ((F2 <= Eps) || (Sqrt(Gnr1) <= Eps)) {
       Done = Standard_True;
       State = F.GetStateNumber();
       return;
@@ -785,14 +792,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	while((F2/PreviousMinimum > Progres) && !Stop) {
 	  if (F2 < OldF && (Dy < 0.0)) {
 	    // On essaye de progresser dans cette direction.
+	    if (mydebug)  cout << " iteration de descente = " << DescenteIter<<endl;
 	    DescenteIter++;
 	    SolSave = Sol;
 	    OldF = F2;
 	    for( i = Sol.Lower(); i <= Sol.Upper(); i++) {
-	      Sol(i) = Sol(i) + Ambda * DH(i);
-	    }
+	    Sol(i) = Sol(i) + Ambda * DH(i);
+	  }
 	    Stop = Bounds(InfBound, SupBound, Tol, Sol, SolSave, 
-			  Constraints, Delta, isNewSol);
+			  Constraints, Delta);
+	    if (mydebug) { cout << " Augmentation de lambda" << endl;}
 	    Ambda *= 1.7;
 	  }
 	  else {
@@ -817,23 +826,21 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 		F2 = OldF;
 	      }
 	      else {
-	        Sol = SolSave+Delta;
-	        Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-	          Constraints, Delta, isNewSol);
+		Sol = SolSave+Delta;
 	      }
+	      Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
+			    Constraints, Delta);
 	      Sort = Standard_False; // On a rejete le point sur la frontiere
 	    }
 	    Stop = Standard_True; // et on sort dans tous les cas...
 	  }
 	  DHSave = GH;
-          if (isNewSol) {
-//            F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
-            if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
-              Done = Standard_False;
-              State = F.GetStateNumber();
-              return;
-            }
-          }
+//	  F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
+	  if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
+	    Done = Standard_False;
+	    State = F.GetStateNumber();
+	    return;
+	  }
 	  Dy = GH*DH;
 	  if (Abs(Dy) <= Eps) {
 	    State = F.GetStateNumber();
@@ -844,6 +851,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	  if (DescenteIter >= 10) {
 	    Stop = Standard_True;
 	  }
+	}
+	if (mydebug) {
+	  cout << "--- Sortie du Traitement Standard"<<endl;
+	  cout << "    DescenteIter = "<<DescenteIter << " F2 = " << F2 << endl;
 	}
       }
       // ------------------------------------
@@ -861,11 +872,12 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	  OldF = F2;
 	  SearchDirection(DF, GH, FF,  Constraints, Sol, 
 			  ChangeDirection, InvLengthMax, DH, Dy);
+	  if (mydebug) { cout << " Conditional Direction = " << ChangeDirection << endl;}
 	  if (Dy<-Eps) { //Pour eviter des calculs inutiles et des /0...
 	    if (ChangeDirection) {
 
-// 	      Ambda = Ambda2 / sqrt(Abs(Dy));
-	      Ambda = Ambda2 / sqrt(-Dy);
+// 	      Ambda = Ambda2/Sqrt(Abs(Dy));
+	      Ambda = Ambda2/Sqrt(-Dy);
 	      if (Ambda > 1.0) Ambda = 1.0;
 	    }
 	    else {
@@ -877,18 +889,20 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	      Sol(i) = Sol(i) + Ambda * DH(i);
 	    }
 	    Sortbis = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-			     Constraints, Delta, isNewSol);
+			     Constraints, Delta);
 
 	    DHSave = GH;
-            if (isNewSol) {
-//              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
-              if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
-                Done = Standard_False;
-                State = F.GetStateNumber();
-                return;
-              }
-            }
+//	    F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
+	    if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
+	      Done = Standard_False;
+	      State = F.GetStateNumber();
+	      return;
+	    }
 	    Ambda2 = Gnr1;
+	     if (mydebug) {
+	       cout << "---  Iteration au bords : " << DescenteIter << endl; 
+	       cout << "---  F2 = " << F2 << endl;
+	     }
 	  }
 	  else {
 	    Stop = Standard_True;
@@ -896,6 +910,8 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 
 	  while((F2/PreviousMinimum > Progres) && (F2<OldF) && (!Stop) ) {
 	    DescenteIter++;
+	    if (mydebug)  cout << "--- Iteration de descente conditionnel = " 
+	      << DescenteIter<<endl;
 	    if (F2 < OldF && Dy < 0.0) {
 	      // On essaye de progresser dans cette direction.
 	      SolSave = Sol;
@@ -904,17 +920,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 		Sol(i) = Sol(i) + Ambda * DH(i);
 	      }
 	      Sortbis = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-			       Constraints, Delta, isNewSol);     
+			       Constraints, Delta );     
 	    }
 	    DHSave = GH;
-            if (isNewSol) {
-//              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
-              if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
-                Done = Standard_False;
-                State = F.GetStateNumber();
-                return;
-              }
-            }
+//	    F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
+	    if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
+	      Done = Standard_False;
+	      State = F.GetStateNumber();
+	      return;
+	    }
 	    Ambda2 = Gnr1;
 	    Dy = GH*DH;
 	    Stop = ((Dy >=0) || (DescenteIter >= 10) || Sortbis);
@@ -929,23 +943,24 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 				   DHSave, GH, Tol, F_Dir);
 	  if (!Good) {
 	    Sol = SolSave;
-            Sort = Standard_False;
 	  }
 	  else {
 	    Sol = SolSave + Delta;
-	    Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-	      Constraints, Delta, isNewSol);
-            if (isNewSol) {
-//              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
-              if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
-                Done = Standard_False;
-                State = F.GetStateNumber();
-                return;
-              }
-	    }
+	  }
+	  Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
+			Constraints, Delta);
+//	  F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
+	  if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
+	    Done = Standard_False;
+	    State = F.GetStateNumber();
+	    return;
 	  }
 	  Dy = GH*DH;
 	}	
+	if (mydebug) {
+	  cout << "--- Sortie du Traitement des Bords"<<endl;
+	  cout << "--- DescenteIter = "<<DescenteIter << " F2 = " << F2 << endl;
+	}      
       }
     }
 
@@ -1063,3 +1078,10 @@ void math_FunctionSetRoot::FunctionSetErrors(math_Vector& Err) const{
   Standard_DimensionError_Raise_if(Err.Length() != Sol.Length(), " ");
   Err = Delta;
 }
+
+
+
+
+
+
+
