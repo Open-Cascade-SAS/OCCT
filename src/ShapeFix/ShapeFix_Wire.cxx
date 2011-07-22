@@ -2986,9 +2986,7 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
   if ( ! Context().IsNull() ) UpdateWire();
   Handle(ShapeExtend_WireData) sewd = WireData();
   
-  for (Standard_Integer i = 1; i <= NbEdges() && NbEdges() >= 2; i++) {
-    // NbEdges >= 2 -- equality also acceptable (ssv; 16.06.2011; ACIS22569)
-
+  for (Standard_Integer i = 1; i <= NbEdges() && NbEdges() > 2; i++) {
     Standard_Real param;
     Standard_Integer toRemove;
     if(theAdvAnalyzer->CheckNotchedEdges(i,toRemove,param,MinTolerance())){
