@@ -24,6 +24,7 @@ void GeometryTest::AllCommands(Draw_Interpretor& theCommands)
 //  GeometryTest::API2dCommands(theCommands);
   GeometryTest::APICommands(theCommands);
   GeometryTest::ContinuityCommands(theCommands);
+  GeometryTest::TestProjCommands(theCommands);
   // define the TCL variable Draw_GEOMETRY
   //char* com = "set Draw_GEOMETRY 1";
   //theCommands.Eval(com);

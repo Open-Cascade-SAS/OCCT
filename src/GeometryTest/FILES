@@ -6,5 +6,4 @@ GeometryTest_API2dCommands.cxx
 GeometryTest_APICommands.cxx
 GeometryTest_ContinuityCommands.cxx
 GeometryTest_PolyCommands.cxx
-
-
+GeometryTest_TestProjCommands.cxx

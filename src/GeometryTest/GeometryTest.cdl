@@ -55,4 +55,7 @@ is
 	---Purpose: defines     command  to    test  the    polyhedral
 	--          triangulations and the polygons from the Poly package.
     
+    TestProjCommands(I : in out Interpretor from Draw);
+	---Purpose: defines commands to test projection of geometric objects
+    
 end GeometryTest;

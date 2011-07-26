@@ -419,71 +419,82 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& P, const math_Vector& UV, cons
   if (myF.HasDegIso())
     aNbMaxIter = 150;
 
+  gp_Pnt PStart = myS->Value(UV(1), UV(2));
+  Standard_Real DistStart = P.SquareDistance(PStart);
+  Standard_Real DistSol = DistStart;
+  
   math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
-  if(S.IsDone()) {
-    root = S.Root();
-    myF.Value(root, errors);
-    if(f == Extrema_ExtFlag_MIN) 
+  Standard_Boolean ToResolveOnSubgrid = Standard_False;
+  if (f == Extrema_ExtFlag_MIN)
+  {
+    if(S.IsDone())
     {
-      if(Abs(errors(1)) > eps || Abs(errors(2)) > eps) {
+      root = S.Root();
+      myF.Value(root, errors);
+      gp_Pnt PSol = myS->Value(root(1), root(2));
+      DistSol = P.SquareDistance(PSol);
+      if(Abs(errors(1)) > eps || Abs(errors(2)) > eps || DistStart < DistSol)
         //try to improve solution on subgrid of sample points
-        gp_Pnt PSol = myS->Value(root(1), root(2));
-        Standard_Real DistSol = P.SquareDistance(PSol);
-
-        Standard_Real u1 = Max(UV(1) - PasU, myumin), u2 = Min(UV(1) + PasU, myusup);
-        Standard_Real v1 = Max(UV(2) - PasV, myvmin), v2 = Min(UV(2) + PasV, myvsup);
-
-        if(u2 - u1 < 2.*PasU) {
-          if(Abs(u1 - myumin) < 1.e-9) {
-            u2 = u1 + 2.*PasU;
-            u2 = Min(u2, myusup);
-          }
-          if(Abs(u2 - myusup) < 1.e-9) {
-            u1 = u2 - 2.*PasU;
-            u1 = Max(u1, myumin);
-          }
-        }
-
-        if(v2 - v1 < 2.*PasV) {
-          if(Abs(v1 - myvmin) < 1.e-9) {
-            v2 = v1 + 2.*PasV;
-            v2 = Min(v2, myvsup);
-          }
-          if(Abs(v2 - myvsup) < 1.e-9) {
-            v1 = v2 - 2.*PasV;
-            v1 = Max(v1, myvmin);
-          }
-        }
-
-        Standard_Real du = (u2 - u1)/(nbsubsample-1);
-        Standard_Real dv = (v2 - v1)/(nbsubsample-1);
-        Standard_Real u, v;
-        Standard_Real dist;
-
-        Standard_Boolean NewSolution = Standard_False;
-        Standard_Integer Nu, Nv;
-        for (Nu = 1, u = u1; Nu < nbsubsample; Nu++, u += du) {
-          for (Nv = 1, v = v1; Nv < nbsubsample; Nv++, v += dv) {
-            gp_Pnt Puv = myS->Value(u, v);
-            dist = P.SquareDistance(Puv);
-
-            if(dist < DistSol) {
-              UV(1) = u;
-              UV(2) = v;
-              NewSolution = Standard_True;
-              DistSol = dist;
-            }
-          }
-        }
-
-        if(NewSolution) {
-          //try to precise
-          math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
-        }
-
-      }
+        ToResolveOnSubgrid = Standard_True;
     }
-  }
+    else
+      ToResolveOnSubgrid = Standard_True;
+    
+    if (ToResolveOnSubgrid)
+    {
+      Standard_Real u1 = Max(UV(1) - PasU, myumin), u2 = Min(UV(1) + PasU, myusup);
+      Standard_Real v1 = Max(UV(2) - PasV, myvmin), v2 = Min(UV(2) + PasV, myvsup);
+      
+      if(u2 - u1 < 2.*PasU) {
+        if(Abs(u1 - myumin) < 1.e-9) {
+          u2 = u1 + 2.*PasU;
+          u2 = Min(u2, myusup);
+        }
+        if(Abs(u2 - myusup) < 1.e-9) {
+          u1 = u2 - 2.*PasU;
+          u1 = Max(u1, myumin);
+        }
+      }
+      
+      if(v2 - v1 < 2.*PasV) {
+        if(Abs(v1 - myvmin) < 1.e-9) {
+          v2 = v1 + 2.*PasV;
+          v2 = Min(v2, myvsup);
+        }
+        if(Abs(v2 - myvsup) < 1.e-9) {
+          v1 = v2 - 2.*PasV;
+          v1 = Max(v1, myvmin);
+        }
+      }
+      
+      Standard_Real du = (u2 - u1)/(nbsubsample-1);
+      Standard_Real dv = (v2 - v1)/(nbsubsample-1);
+      Standard_Real u, v;
+      Standard_Real dist;
+      
+      Standard_Boolean NewSolution = Standard_False;
+      Standard_Integer Nu, Nv;
+      for (Nu = 1, u = u1; Nu < nbsubsample; Nu++, u += du) {
+        for (Nv = 1, v = v1; Nv < nbsubsample; Nv++, v += dv) {
+          gp_Pnt Puv = myS->Value(u, v);
+          dist = P.SquareDistance(Puv);
+          
+          if(dist < DistSol) {
+            UV(1) = u;
+            UV(2) = v;
+            NewSolution = Standard_True;
+            DistSol = dist;
+          }
+        }
+      }
+      
+      if(NewSolution) {
+        //try to precise
+        math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
+      }
+    } //end of if (ToResolveOnSubgrid)
+  } //end of if (f == Extrema_ExtFlag_MIN)
+  
   myDone = Standard_True;
 }
 
