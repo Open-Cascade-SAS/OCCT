@@ -130,7 +130,7 @@ class BRepExtrema_DistanceSS
  private:
 
   //! computes the distance between two Shapes ( face edge vertex) <br>
-  void Perform(const TopoDS_Shape& S1,const TopoDS_Shape& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  Standard_EXPORT void Perform(const TopoDS_Shape& S1,const TopoDS_Shape& S2,const Bnd_Box& B1,const Bnd_Box& B2);
 
   //! computes the distance between two vertices <br>
   void Perform(const TopoDS_Vertex& S1,const TopoDS_Vertex& S2);
