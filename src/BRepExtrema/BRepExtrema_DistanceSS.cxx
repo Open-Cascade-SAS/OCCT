@@ -347,6 +347,8 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
 	    Vmin = aV;
 	  else if (aV > Vmax)
 	    Vmax = aV;
+
+      i++;
 	}
       
     GeomAdaptor_Surface aGAS(pSurf);
