@@ -627,15 +627,61 @@ void  BRepSweep_Rotation::SetDirectingPCurve
 	       thePCurve);
 }
 
-
+//modified by NIZNHY-PKV Tue Jun 14 08:33:55 2011f
 //=======================================================================
 //function : DirectSolid
 //purpose  : 
 //=======================================================================
-
-TopAbs_Orientation BRepSweep_Rotation::DirectSolid
-  (const TopoDS_Shape& aGenS,
-   const Sweep_NumShape&)
+TopAbs_Orientation 
+  BRepSweep_Rotation::DirectSolid (const TopoDS_Shape& aGenS,
+				   const Sweep_NumShape&)
+{  // compare the face normal and the direction
+  Standard_Real aU1, aU2, aV1, aV2, aUx, aVx, aX, aMV2, aTol2, aTx;
+  TopAbs_Orientation aOr;
+  gp_Pnt aP;
+  gp_Vec du,dv;
+  BRepAdaptor_Surface surf(TopoDS::Face(aGenS));
+  //
+  aTol2=Precision::Confusion();
+  aTol2=aTol2*aTol2;
+  //
+  const gp_Pnt& aPAxeLoc=myAxe.Location();
+  const gp_Dir& aPAxeDir=myAxe.Direction();
+  //
+  aU1=surf.FirstUParameter();
+  aU2=surf.LastUParameter();
+  aV1=surf.FirstVParameter();
+  aV2=surf.LastVParameter();
+  //
+  aTx=0.5;
+  aUx=aTx*(aU1+aU2);
+  aVx=aTx*(aV1+aV2);
+  surf.D1(aUx, aVx, aP, du, dv);
+  //
+  gp_Vec aV(aPAxeLoc, aP);
+  aV.Cross(aPAxeDir);
+  aMV2=aV.SquareMagnitude();
+  if (aMV2<aTol2) {
+    aTx=0.43213918;
+    aUx=aU1*(1.-aTx)+aU2*aTx;
+    aVx=aV1*(1.-aTx)+aV2*aTx;
+    surf.D1(aUx, aVx, aP, du, dv);
+    aV.SetXYZ(aP.XYZ()-aPAxeLoc.XYZ());
+    aV.Cross(aPAxeDir);
+  }
+  //
+  aX = aV.DotCross(du, dv);
+  aOr = (aX > 0.) ? TopAbs_FORWARD : TopAbs_REVERSED;
+  return aOr;
+}
+/*
+//=======================================================================
+//function : DirectSolid
+//purpose  : 
+//=======================================================================
+TopAbs_Orientation 
+  BRepSweep_Rotation::DirectSolid (const TopoDS_Shape& aGenS,
+				   const Sweep_NumShape&)
 {
   // compare the face normal and the direction
   BRepAdaptor_Surface surf(TopoDS::Face(aGenS));
@@ -651,7 +697,8 @@ TopAbs_Orientation BRepSweep_Rotation::DirectSolid
   TopAbs_Orientation orient = (x > 0) ? TopAbs_FORWARD : TopAbs_REVERSED;
   return orient;
 }
-
+*/
+//modified by NIZNHY-PKV Tue Jun 14 08:33:59 2011t
 
 //=======================================================================
 //function : GGDShapeIsToAdd
