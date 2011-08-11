@@ -87,6 +87,8 @@
 #include <tbb/parallel_for_each.h>
 #endif
 
+#define UVDEFLECTION 1.e-05
+
 inline Standard_Real MaxFaceTol (const TopoDS_Face& theFace)
 {
   Standard_Real T, TMax = BRep_Tool::Tolerance(theFace);
@@ -235,6 +237,14 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
   Handle(NCollection_IncAllocator) anAlloc = Handle(NCollection_IncAllocator)::DownCast(myAllocator);
   anAlloc->Reset(Standard_False);  
   myStructure=new BRepMesh_DataStructureOfDelaun(anAlloc);
+
+  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  BRepTools::UVBounds(theface, aXmin, aXmax, aYmin, aYmax);
+  Standard_Real aTolU = (aXmax - aXmin) * UVDEFLECTION;
+  Standard_Real aTolV = (aYmax - aYmin) * UVDEFLECTION;
+  myStructure->Data().SetCellSize ( 14 * aTolU, 14 * aTolV );
+  myStructure->Data().SetTolerance( aTolU, aTolV );
+
   BRepAdaptor_Surface  BS(face, Standard_False);
   Handle(BRepAdaptor_HSurface) gFace = new BRepAdaptor_HSurface(BS);
   
@@ -260,7 +270,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
   i = 1;
 
   Standard_Real defedge, defface;
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, dx, dy, dz;
+  Standard_Real dx, dy, dz;
   Standard_Integer nbEdge = 0;
   Standard_Real savangle = myAngle;
   Standard_Real cdef;
@@ -313,7 +323,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
         else defedge = myDeflection;
     
         defedge = Max(maxdef, defedge);
-        defedge = Max(1.e-05 , defedge);
+        defedge = Max(UVDEFLECTION , defedge);
         myMapdefle.Bind(edge, defedge);
       }
       else{

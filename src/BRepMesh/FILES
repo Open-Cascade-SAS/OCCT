@@ -9,4 +9,8 @@ BRepMesh_BaseAllocator.hxx
 BRepMesh_PairOfIndex.hxx
 BRepMesh_Status.hxx
 BRepMesh_CMPLRS.edl
+BRepMesh_VertexCellFilter.hxx
+BRepMesh_VertexInspector.hxx
+BRepMesh_VertexInspector.cxx
+BRepMesh_VectorOfVertex.hxx
 EXTERNLIB

@@ -41,6 +41,8 @@
 #include <GeomLib.hxx>
 #include <Bnd_Box2d.hxx>
 
+#define UVDEFLECTION 1.e-05
+
 static Standard_Real FUN_CalcAverageDUV(TColStd_Array1OfReal& P, const Standard_Integer PLen)
 {
   Standard_Integer i, j, n = 0;
@@ -112,6 +114,21 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     Handle(NCollection_IncAllocator) anAlloc = Handle(NCollection_IncAllocator)::DownCast(myAllocator);
     anAlloc->Reset(Standard_False);  
     myStructure=new BRepMesh_DataStructureOfDelaun(anAlloc);
+    
+    Standard_Real umax   = myAttrib->GetUMax();
+    Standard_Real umin   = myAttrib->GetUMin();
+    Standard_Real vmax   = myAttrib->GetVMax();
+    Standard_Real vmin   = myAttrib->GetVMin();
+
+    Standard_Real aTolU = (umax - umin) * UVDEFLECTION;
+    Standard_Real aTolV = (vmax - vmin) * UVDEFLECTION;
+    Standard_Real uCellSize = 14 * aTolU;
+    Standard_Real vCellSize = 14 * aTolV;
+
+    myStructure->Data().SetCellSize ( uCellSize, vCellSize );
+    myStructure->Data().SetTolerance( aTolU, aTolV );
+
+
     BRepAdaptor_Surface  BS(face, Standard_False);
     Handle(BRepAdaptor_HSurface) gFace = new BRepAdaptor_HSurface(BS);
     
@@ -165,10 +182,8 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     //Standard_Real longu = 0.0, longv = 0.0; //, last , first;
     //gp_Pnt P11, P12, P21, P22, P31, P32;
 
-    Standard_Real umax = myAttrib->GetUMax();
-    Standard_Real umin = myAttrib->GetUMin();
-    Standard_Real vmax = myAttrib->GetVMax();
-    Standard_Real vmin = myAttrib->GetVMin();
+    Standard_Real deltaX = myAttrib->GetDeltaX();
+    Standard_Real deltaY = myAttrib->GetDeltaY();
     
     TColStd_Array1OfInteger tabvert_corr(1, nbVertices);
     gp_Pnt2d p2d;
@@ -180,8 +195,11 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     myUParam.Clear(); 
     myVParam.Clear();
   
-    BRepMesh_IDMapOfNodeOfDataStructureOfDelaun aMoveNodes(myVemap.Extent());
+    BRepMesh_VertexTool aMoveNodes(myVemap.Extent(), myAllocator);
     
+    aMoveNodes.SetCellSize ( uCellSize / deltaX, vCellSize / deltaY);
+    aMoveNodes.SetTolerance( aTolU     / deltaX, aTolV     / deltaY);
+
     for (i = 1; i <= myStructure->NbNodes(); i++)
     {
       const BRepMesh_Vertex& v = myStructure->GetNode(i);
@@ -191,15 +209,15 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
         myVParam.Add(p2d.Y());
       }
       gp_XY res;
-      res.SetCoord((p2d.X()-(myAttrib->GetMinX()))/(myAttrib->GetDeltaX()),
-                   (p2d.Y()-(myAttrib->GetMinY()))/(myAttrib->GetDeltaY()));
+      res.SetCoord((p2d.X() - umin ) / deltaX,
+                   (p2d.Y() - vmin ) / deltaY);
       BRepMesh_Vertex v_new(res,v.Location3d(),v.Movability());
       const BRepMesh_ListOfInteger& alist = myStructure->GetNodeList(i);
-      aMoveNodes.Add(v_new,alist);
+      aMoveNodes.Add(v_new, alist);
       tabvert_corr(i) = i;
     }
     myStructure->ReplaceNodes(aMoveNodes);
-    
+
     Standard_Boolean rajout;
     
     BRepMesh_ClassifierPtr& classifier = theAttrib->GetClassifier();
@@ -234,7 +252,7 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     }
 
     Standard_Boolean isaline;
-    isaline = ((umax-umin)<1.e-05) || ((vmax-vmin)<1.e-05);
+    isaline = ((umax-umin) < UVDEFLECTION) || ((vmax-vmin) < UVDEFLECTION);
     
     Standard_Real aDef = -1;
     if (!isaline && myStructure->ElemOfDomain().Extent() > 0) {
@@ -281,18 +299,17 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     }
 
     //modify myStructure back
-    aMoveNodes.Clear();
-    Standard_Real deltaX = myAttrib->GetDeltaX();
-    Standard_Real deltaY = myAttrib->GetDeltaY();
+    aMoveNodes.SetCellSize ( uCellSize, vCellSize );
+    aMoveNodes.SetTolerance( aTolU    , aTolV     );
     for (i = 1; i <= myStructure->NbNodes(); i++)
     {
       const BRepMesh_Vertex& v = myStructure->GetNode(i);
       p2d = v.Coord();
       gp_XY res;
-      res.SetCoord(p2d.X()*deltaX+umin,p2d.Y()*deltaY+vmin);
+      res.SetCoord(p2d.X() * deltaX + umin, p2d.Y() * deltaY + vmin);
       BRepMesh_Vertex v_new(res,v.Location3d(),v.Movability());
       const BRepMesh_ListOfInteger& alist = myStructure->GetNodeList(i);
-      aMoveNodes.Add(v_new,alist);
+      aMoveNodes.Add(v_new, alist);
     }
     myStructure->ReplaceNodes(aMoveNodes);
   
@@ -1607,6 +1624,7 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
     }
   }
  }
+
  catch(Standard_Failure)
  {
    //   MESH_FAILURE(theFace);

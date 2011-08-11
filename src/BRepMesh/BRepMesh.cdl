@@ -75,6 +75,9 @@ is    enumeration DegreeOfFreedom is
       imported PairOfIndex from BRepMesh;
       imported CircleInspector from BRepMesh;
       imported CellFilter from BRepMesh;
+      imported VertexInspector from BRepMesh;
+      imported VertexCellFilter from BRepMesh;
+      imported VectorOfVertex from BRepMesh;
 
       class ComparatorOfVertexOfDelaun;
       class ComparatorOfIndexedVertexOfDelaun;
@@ -82,7 +85,8 @@ is    enumeration DegreeOfFreedom is
       class Delaun;
       class DataStructureOfDelaun;
       class CircleTool;
-
+      class VertexTool;
+    
       class Array1OfVertexOfDelaun instantiates Array1 from TCollection
         (Vertex from BRepMesh);
 
@@ -103,6 +107,9 @@ is    enumeration DegreeOfFreedom is
         (Edge from BRepMesh);
       class ElemHasherOfDataStructureOfDelaun instantiates MapHasher from TCollection
         (Triangle from BRepMesh);
+
+      class DataMapOfIntegerListOfInteger     instantiates DataMap from TCollection
+        (Integer from Standard, ListOfInteger from BRepMesh, MapIntegerHasher from TColStd);
 
       class IDMapOfNodeOfDataStructureOfDelaun  instantiates IndexedDataMap from TCollection
         (Vertex from BRepMesh,
