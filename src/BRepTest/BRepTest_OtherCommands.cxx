@@ -327,6 +327,50 @@ static Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const c
   return 0;
 }
 
+//=======================================================================
+//function : xbounds
+//purpose  : 
+//=======================================================================
+Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n<2) {
+    di << "Usage : " << a[0] << " face" << "\n";
+    return 0;
+  }
+  //
+ 
+  Standard_Real aUMin, aUMax, aVMin, aVMax;
+  TopoDS_Shape aS;
+  TopoDS_Face aF;
+  //
+  aS=DBRep::Get(a[1]);
+  if (aS.IsNull()) {
+    di << " null shapes is not allowed here\n";
+    return 0;
+  }
+  if (aS.ShapeType()!=TopAbs_FACE) {
+    di << " shape" << a[1] <<" must be a face\n";
+    return 0;
+  }
+  //
+  aF=*((TopoDS_Face*)&aS);
+  //
+  BRepTools::UVBounds(aF, aUMin, aUMax, aVMin, aVMax);
+  //
+  TCollection_AsciiString aStr;
+  TCollection_AsciiString sUMin(aUMin);
+  TCollection_AsciiString sUMax(aUMax);
+  TCollection_AsciiString sVMin(aVMin);
+  TCollection_AsciiString sVMax(aVMax);
+  //
+  aStr=aStr+sUMin + "\n";
+  aStr=aStr+sUMax + "\n";
+  aStr=aStr+sVMin + "\n";
+  aStr=aStr+sVMax + "\n";
+  di <<aStr.ToCString();
+  //
+  return 0;
+}
 
 //=======================================================================
 //function : OtherCommands
@@ -357,6 +401,10 @@ void  BRepTest::OtherCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("mksh",
 		  "create a shell on Shape", __FILE__, MakeShell, g);
+
+
+  theCommands.Add("xbounds",
+		  "xbounds face", __FILE__, xbounds, g);
 
 }
 

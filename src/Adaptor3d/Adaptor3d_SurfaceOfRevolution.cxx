@@ -530,78 +530,110 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::VResolution
 
 GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const 
 {
-
-  Standard_Real TolConf = Precision::Confusion();
-  Standard_Real TolAng  = Precision::Angular();
+  Standard_Real TolConf, TolAng;
+  GeomAbs_SurfaceType bRet;
+  //
+  bRet=GeomAbs_SurfaceOfRevolution;
+  TolConf = Precision::Confusion();
+  TolAng  = Precision::Angular();
+  //
   switch ( myBasisCurve->GetType()) {
+  case GeomAbs_Line:    {
+    const gp_Ax1& Axe = (myBasisCurve->Line()).Position();
     
-  case GeomAbs_Line:
-    {
-      const gp_Ax1& Axe = (myBasisCurve->Line()).Position();
-      
-      if (myAxis.IsParallel(Axe, TolAng)) {
-	return GeomAbs_Cylinder;
+    if (myAxis.IsParallel(Axe, TolAng)) {
+      bRet=GeomAbs_Cylinder;
+      return bRet;
+    }
+    else if (myAxis.IsNormal( Axe, TolAng)) {
+      bRet=GeomAbs_Plane;
+      return bRet;
+    }
+    else {
+      Standard_Real uf = myBasisCurve->FirstParameter();
+      Standard_Real ul = myBasisCurve->LastParameter();
+      Standard_Boolean istrim = (!Precision::IsInfinite(uf) && 
+				 !Precision::IsInfinite(ul));
+      if(istrim){
+	gp_Pnt pf = myBasisCurve->Value(uf);
+	gp_Pnt pl = myBasisCurve->Value(ul);
+	Standard_Real len = pf.Distance(pl);
+	//on calcule la distance projetee sur l axe.
+	gp_Vec vlin(pf,pl);
+	gp_Vec vaxe(myAxis.Direction());
+	Standard_Real projlen = Abs(vaxe.Dot(vlin));
+	Standard_Real aTolConf = len*TolAng;
+	if ((len - projlen) <= aTolConf) {
+	  bRet=GeomAbs_Cylinder;
+	  return bRet;
+	}
+	else if (projlen <= aTolConf) {
+	  bRet=GeomAbs_Plane;
+	  return bRet;
+	}
       }
-      else if (myAxis.IsNormal( Axe, TolAng)) {
-	return GeomAbs_Plane;
+      gp_Vec V(myAxis.Location(),
+	       myBasisCurve->Line().Location());
+      gp_Vec W(Axe.Direction());
+      if (Abs(V.DotCross(myAxis.Direction(),W)) <= TolConf){
+	bRet=GeomAbs_Cone;
+	return bRet;
       }
       else {
-	Standard_Real uf = myBasisCurve->FirstParameter();
-	Standard_Real ul = myBasisCurve->LastParameter();
-	Standard_Boolean istrim = (!Precision::IsInfinite(uf) && 
-				   !Precision::IsInfinite(ul));
-	if(istrim){
-	  gp_Pnt pf = myBasisCurve->Value(uf);
-	  gp_Pnt pl = myBasisCurve->Value(ul);
-	  Standard_Real len = pf.Distance(pl);
-	  //on calcule la distance projetee sur l axe.
-	  gp_Vec vlin(pf,pl);
-	  gp_Vec vaxe(myAxis.Direction());
-	  Standard_Real projlen = Abs(vaxe.Dot(vlin));
-	  Standard_Real aTolConf = len*TolAng;
-	  if ((len - projlen) <= aTolConf) {
-	    return GeomAbs_Cylinder;
-	  }
-	  else if (projlen <= aTolConf) {
-	    return GeomAbs_Plane;
-	  }
-	}
-	gp_Vec V(myAxis.Location(),
-		 myBasisCurve->Line().Location());
-	gp_Vec W(Axe.Direction());
-	if (Abs(V.DotCross(myAxis.Direction(),W)) <= TolConf){
-	  return GeomAbs_Cone;
-	}
-	else {
-	  return GeomAbs_SurfaceOfRevolution;
-	}
+	return bRet;
       }
-      break;
     }
+    break;
+  }//case GeomAbs_Line: 
+  //  
+  case GeomAbs_Circle:   {
     
-  case GeomAbs_Circle: 
-    {
-      const gp_Circ& C = myBasisCurve->Circle();
-      if (!C.Position().IsCoplanar(myAxis,TolConf,TolAng)) {
-	return GeomAbs_SurfaceOfRevolution;
-      }
-      else if( gp_Lin(myAxis).Distance(C.Location()) <= TolConf) {
-	return GeomAbs_Sphere;
-      }
-      else {
-	Standard_Real MajorRadius = gp_Lin(myAxis).Distance(C.Location());
-	if(MajorRadius > C.Radius()) return GeomAbs_Torus;
-	return GeomAbs_SurfaceOfRevolution;
-      }
-      break;
+    Standard_Real MajorRadius, aR;
+    gp_Lin aLin(myAxis);
+    //
+    const gp_Circ& C=myBasisCurve->Circle();
+    const gp_Pnt& aLC=C.Location();
+    aR=C.Radius();
+    //
+   
+    if (!C.Position().IsCoplanar(myAxis, TolConf, TolAng)) {
+      return bRet;
     }
-    
+    else if(aLin.Distance(aLC) <= TolConf) {
+      bRet=GeomAbs_Sphere;
+      return bRet;
+    }
+    else {
+      MajorRadius = aLin.Distance(aLC);
+      if(MajorRadius>aR) {
+	//modified by NIZNHY-PKV Thu Feb 24 09:46:29 2011f
+	Standard_Real aT, aDx, dX;
+	gp_Pnt aPx;
+	//
+	aT=0.;
+	aPx=ElCLib::Value(aT, C);
+	aDx=aLin.Distance(aPx);
+	dX=aDx-MajorRadius-aR;
+	if (dX<0.) {
+	  dX=-dX;
+	}
+	if (dX<TolConf) {
+	  bRet=GeomAbs_Torus;
+	}
+	//bRet=GeomAbs_Torus;
+	//return bRet;
+	//modified by NIZNHY-PKV Thu Feb 24 09:52:29 2011t
+      }
+      return bRet;
+    }
+    break;
+  }
+  //  
   default:
-    return GeomAbs_SurfaceOfRevolution;
+    break;
   }
   
-  // portage WNT
-  return GeomAbs_SurfaceOfRevolution;
+  return bRet;
 }
 
 //=======================================================================

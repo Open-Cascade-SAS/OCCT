@@ -378,23 +378,26 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Circ2d& Circle
     NbSolTotal++;
   }
 }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//=======================================================================
+//function : LineCircleGeometricIntersection
+//purpose  : 
 //~~ On cherche des segments d intersection dans le `tuyau` 
 //~~   R+Tol   R-Tol  ( Tol est TolConf : Tolerance de confusion d arc)
 //~~ On Cherche un point d intersection a une distance TolTang du cercle.   
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void LineCircleGeometricIntersection(const gp_Lin2d& Line
-				     ,const gp_Circ2d& Circle
-				     ,const Standard_Real Tol
-				     ,const Standard_Real TolTang
-				     ,PeriodicInterval& CInt1
-				     ,PeriodicInterval& CInt2
-				     ,Standard_Integer& nbsol) {
+//=======================================================================
+void LineCircleGeometricIntersection(const gp_Lin2d& Line,
+				     const gp_Circ2d& Circle,
+				     const Standard_Real Tol,
+				     const Standard_Real TolTang,
+				     PeriodicInterval& CInt1,
+				     PeriodicInterval& CInt2,
+				     Standard_Integer& nbsol) 
+{
   
 
   Standard_Real dO1O2=Line.Distance(Circle.Location());
   Standard_Real R=Circle.Radius();
-  //  Standard_Real RpTol=R+Tol; 
   Standard_Real RmTol=R-Tol;
   Standard_Real binf1,binf2=0,bsup1,bsup2=0;
     
@@ -412,12 +415,24 @@ void LineCircleGeometricIntersection(const gp_Lin2d& Line
   }
   else { 
     //---------------------------------------------------------------- 
-//    Standard_Real dO1O2dO1O2=dO1O2*dO1O2;
+    Standard_Boolean b2Sol;
     Standard_Real dAlpha1;
     //---------------------------------------------------------------
     //-- Line coupe le cercle Circle+ (=C(x1,y1,R1+Tol))
-    
-    if(dO1O2 > RmTol) { 
+    //modified by NIZNHY-PKV Thu May 12 12:25:17 2011f
+    b2Sol=Standard_False;
+    if (R>dO1O2+TolTang) {
+      Standard_Real aX2, aTol2;
+      //
+      aTol2=Tol*Tol;
+      aX2=4.*(R*R-dO1O2*dO1O2);
+      if (aX2>aTol2) {
+	b2Sol=!b2Sol;
+      }
+    }
+    if(dO1O2 > RmTol && !b2Sol) { 
+    //if(dO1O2 > RmTol) { 
+    //modified by NIZNHY-PKV Thu May 12 12:25:20 2011t
       Standard_Real dx=dO1O2;
       Standard_Real dy=0.0;     //(RpTol*RpTol-dx*dx); //Patch !!!
       dy=(dy>=0.0)? Sqrt(dy) : 0.0;

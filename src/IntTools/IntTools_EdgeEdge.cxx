@@ -55,6 +55,7 @@
 #include <gp_Circ.hxx>
 #include <Extrema_ExtElC.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <TopoDS_Iterator.hxx>
 
 //=======================================================================
 //function : IntTools_EdgeEdge::IntTools_EdgeEdge
@@ -516,11 +517,8 @@
   aCurveFrom->D0(t, aPFrom);
   
   Handle(Geom_Curve)aCurveTo=BRep_Tool::Curve (myCTo.Edge(), f, l);
-  //modified by NIZNHY-PKV Mon Jun  8 09:52:09 2009f
-  //aProjector.Init(aPFrom, aCurveTo, myTminTo, myTmaxTo);
   aProjector.Init(aCurveTo, myTminTo, myTmaxTo);
   aProjector.Perform(aPFrom);
-  //modified by NIZNHY-PKV Mon Jun  8 09:53:00 2009t
   aNbProj=aProjector.NbPoints();
   //
   if (myCTo.GetType()==GeomAbs_Circle) {
@@ -567,11 +565,8 @@
     }
   }
   
-  //modified by NIZNHY-PKV Mon Jun  8 09:54:19 2009f
-  //aProjector.Init(aPFrom, aCurveTo, myTminTo, myTmaxTo);
   aProjector.Init(aCurveTo, myTminTo, myTmaxTo);
   aProjector.Perform(aPFrom);
-  //modified by NIZNHY-PKV Mon Jun  8 09:55:11 2009t
   //
   Standard_Integer j, aNbPoints;
   //
@@ -585,11 +580,8 @@
       }
 	
       aCurveFrom->D0 (tt, aPFrom);
-      //modified by NIZNHY-PKV Mon Jun  8 09:54:52 2009f
-      //aProjector.Init(aPFrom, aCurveTo, myTminTo, myTmaxTo);
       aProjector.Init(aCurveTo, myTminTo, myTmaxTo);
       aProjector.Perform(aPFrom);
-      //modified by NIZNHY-PKV Mon Jun  8 09:55:07 2009t
       aNbPoints=aProjector.NbPoints();
       if (aNbPoints) {
 	break;
@@ -863,11 +855,8 @@
     }
   }
   //
-  //modified by NIZNHY-PKV Mon Jun  8 09:55:42 2009f
-  //aProjector.Init(aPm2, aCurveFrom, myTminFrom, myTmaxFrom);
   aProjector.Init(aCurveFrom, myTminFrom, myTmaxFrom);
   aProjector.Perform(aPm2);
-  //modified by NIZNHY-PKV Mon Jun  8 09:56:12 2009t
   Standard_Integer aNbPoints=aProjector.NbPoints();
   if (aNbPoints) { 
     Standard_Real aDD=aProjector.LowerDistance();
@@ -982,7 +971,6 @@
     }
   }
   //
-  //modified by NIZNHY-PKV Wed May 13 11:08:46 2009f
   if (aCT1==GeomAbs_Circle && aCT2==GeomAbs_Circle) {
     Standard_Boolean bIsDone, bIsParallel;
     Standard_Integer aNbExt;
@@ -1016,7 +1004,6 @@
       }
     }
   }
-  //modified by NIZNHY-PKV Wed May 13 11:08:51 2009t
   //
   // Prepare values of arguments for the interval [ta, tb]
   pri=IntTools::PrepareArgs (myCFrom, tb, ta, myDiscret, myDeflection, anArgs);
@@ -1133,11 +1120,8 @@
   gp_Pnt aP1;
   aCurveFrom->D0 (aT1, aP1);
   GeomAPI_ProjectPointOnCurve aProjector;
-  //modified by NIZNHY-PKV Mon Jun  8 09:56:53 2009f
-  //aProjector.Init(aP1, aCurveTo, myTminTo, myTmaxTo);
   aProjector.Init(aCurveTo, myTminTo, myTmaxTo);
   aProjector.Perform(aP1);
-  //modified by NIZNHY-PKV Mon Jun  8 09:57:12 2009t
   aNbPoints=aProjector.NbPoints();
   found=1;
   if (!aNbPoints) {
@@ -1149,11 +1133,8 @@
 	tt=aT1-myEpsT;
       }
       aCurveFrom->D0 (tt, aP1);
-      //modified by NIZNHY-PKV Mon Jun  8 09:57:34 2009f
-      //aProjector.Init(aP1, aCurveTo, myTminTo, myTmaxTo);
       aProjector.Init(aCurveTo, myTminTo, myTmaxTo);
       aProjector.Perform(aP1);
-      //modified by NIZNHY-PKV Mon Jun  8 09:57:51 2009t
       aNbPoints=aProjector.NbPoints();
       if (aNbPoints) {
 	found=1;
@@ -1456,12 +1437,9 @@
     if(!isfirst || !islast) {
       if(isfirst) {
 	aTx1 = aTF1;
-	//modified by NIZNHY-PKV Mon Jun  8 09:59:27 2009f
-	//GeomAPI_ProjectPointOnCurve aProjector(Curve1->Value(aTx1), Curve2, aTF2, aTL2);	
 	GeomAPI_ProjectPointOnCurve aProjector;
 	aProjector.Init(Curve2, aTF2, aTL2);
 	aProjector.Perform(Curve1->Value(aTx1));
-	//modified by NIZNHY-PKV Mon Jun  8 10:00:12 2009t
 	//
 	if(aProjector.NbPoints() > 0)
 	  aTx2 = aProjector.LowerDistanceParameter();
@@ -1476,12 +1454,9 @@
       
       if(islast) {
 	aTx1 = aTL1;
-	//modified by NIZNHY-PKV Mon Jun  8 10:00:24 2009f
-	//GeomAPI_ProjectPointOnCurve aProjector(Curve1->Value(aTx1), Curve2, aTF2, aTL2);
 	GeomAPI_ProjectPointOnCurve aProjector;
 	aProjector.Init(Curve2, aTF2, aTL2);
 	aProjector.Perform(Curve1->Value(aTx1));
-	//modified by NIZNHY-PKV Mon Jun  8 10:00:26 2009t
 	if(aProjector.NbPoints() > 0)
 	  aTx2 = aProjector.LowerDistanceParameter();
 	else {
@@ -1587,11 +1562,8 @@
   GeomAPI_ProjectPointOnCurve aProjector;
   Standard_Real aMidPar, aMidDist;   
   aMidPar = (aTF1 + aTL1) * 0.5;  
-  //modified by NIZNHY-PKV Mon Jun  8 10:01:32 2009f
-  //aProjector.Init(Curve1->Value(aMidPar), Curve2, aTF2, aTL2);
   aProjector.Init(Curve2, aTF2, aTL2);
   aProjector.Perform(Curve1->Value(aMidPar));
-  //modified by NIZNHY-PKV Mon Jun  8 10:02:09 2009t
   if(aProjector.NbPoints() > 0) {
     aMidDist=aProjector.LowerDistance();
     if(aMidDist * aMidDist < aDist2 || !istouch) {
@@ -1675,13 +1647,17 @@
 //=======================================================================
   void IntTools_EdgeEdge::ComputeLineLine()
 {
-  Standard_Real Tolang2 = 1.e-16; 
-  Standard_Real Tol2 = myCriteria*myCriteria; 
-  Standard_Boolean IsParallel = Standard_False, IsCoincide = Standard_False;
-  myIsDone = Standard_True;
-
+  Standard_Boolean IsParallel, IsCoincide;
+  Standard_Real Tolang2, Tol2;
   gp_Pnt P11, P12, P21, P22;
-
+  //
+  myIsDone = Standard_True;
+  //
+  IsParallel = Standard_False;
+  IsCoincide = Standard_False;
+  Tolang2 = 1.e-16;
+  Tol2 = myCriteria*myCriteria; 
+  //
   gp_Lin C1 = myCFrom.Line();
   gp_Lin C2 = myCTo.Line();
   const gp_Dir& D1 = C1.Position().Direction();
@@ -1756,7 +1732,26 @@
   if(IsParallel) {
     return;
   }
-
+  //
+  //modified by NIZNHY-PKV Tue Mar 29 08:29:14 2011f
+  {
+    TopoDS_Iterator aIt1, aIt2;
+    //
+    aIt1.Initialize(myEdge1);
+    for (; aIt1.More(); aIt1.Next()) {
+      const TopoDS_Shape& aV1=aIt1.Value();
+      aIt2.Initialize(myEdge2);
+      for (; aIt2.More(); aIt2.Next()) {
+	const TopoDS_Shape& aV2=aIt2.Value();
+	if (aV2.IsSame(aV1)) {
+	  // the two straight lines have commpn vertex
+	  return;
+	}
+      }
+    }
+  }
+  //modified by NIZNHY-PKV Tue Mar 29 08:29:16 2011t
+  //
   Standard_Real aSin2 = 1. - aCos*aCos;
   gp_Pnt O1 = C1.Location();
   gp_Pnt O2 = C2.Location();
@@ -1779,7 +1774,7 @@
   if(d2 > Tol2) {
     return;
   }
-
+  //
   IntTools_CommonPrt aCommonPrt;
   aCommonPrt.SetEdge1(myCFrom.Edge());
   aCommonPrt.SetEdge2(myCTo.Edge());

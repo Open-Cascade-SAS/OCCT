@@ -131,7 +131,11 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
                    nbFaces = 0, 
                    nbWires = 0, 
                    nbEdges = 0, 
-                   nbVertexes = 0;
+                   nbVertexes = 0,
+                   nbCompounds = 0;
+
+  if (S.ShapeType() == TopAbs_COMPOUND)
+    nbCompounds++;
 
   for( ; itL.More(); itL.Next() ) {
     TopoDS_Iterator it( itL.Value() );
@@ -140,6 +144,8 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
       if ( !aMapOfShape.Add(aSubShape) )
         continue;
       aListOfShape.Append(aSubShape);
+      if (aSubShape.ShapeType() == TopAbs_COMPOUND)
+        nbCompounds++;
       if (aSubShape.ShapeType() == TopAbs_SOLID)
         nbSolids++;
       if (aSubShape.ShapeType() == TopAbs_SHELL) {
@@ -158,6 +164,7 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
     }
   }
   #ifdef DEB
+  cout << "//What is?// NB COMPOUNDS: " << nbCompounds << endl;
   cout << "//What is?// NB SOLIDS: " << nbSolids << endl;
   cout << "//What is?// NB SHELLS: " << nbShells << endl;
   cout << "//What is?//    OPEN SHELLS: " << nbOpenShells << endl;
@@ -168,6 +175,13 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
   cout << "//What is?// NB VERTEXES: " << nbVertexes << endl;
   #endif
 }
+
+namespace {
+  // Set global var to inform outer methods that current representation item is non-manifold.
+  // The better way is to pass this information via binder or via TopoDS_Shape itself, however,
+  // this is very specific info to do so...
+  Standard_Boolean NM_DETECTED = Standard_False;
+};
 
 // ============================================================================
 // Method  : STEPControl_ActorRead::STEPControl_ActorRead  ()    
@@ -515,7 +529,19 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
     TopoDS_Shape theResult = TransferBRep::ShapeResult (binder);
     if (!theResult.IsNull()) {
       Result1 = theResult;
-      B.Add(Cund, theResult);
+      // [BEGIN] ssv: OCCT#22436: extra compound in NMSSR case
+      if (NM_DETECTED && Result1.ShapeType() == TopAbs_COMPOUND)
+      {
+        TopoDS_Iterator it(Result1);
+        for ( ; it.More(); it.Next() ) 
+        {
+          TopoDS_Shape aSubShape = it.Value();
+          B.Add(Cund, aSubShape);
+        }
+      }
+      else
+        B.Add(Cund, theResult);
+      // [END] ssv: OCCT#22436: extra compound in NMSSR case
       nbComponents++;
     }
   }
@@ -547,7 +573,19 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
       theResult = TransferBRep::ShapeResult (binder);
       if (!theResult.IsNull()) {
         Result1 = theResult;
-        B.Add(Cund, theResult);
+        // [BEGIN] ssv: OCCT#22436: extra compound in NMSSR case
+        if (NM_DETECTED && Result1.ShapeType() == TopAbs_COMPOUND)
+        {
+          TopoDS_Iterator it(Result1);
+          for ( ; it.More(); it.Next() ) 
+          {
+            TopoDS_Shape aSubShape = it.Value();
+            B.Add(Cund, aSubShape);
+          }
+        }
+        else
+          B.Add(Cund, theResult);
+        // [END] ssv: OCCT#22436: extra compound in NMSSR case
         nbShapes++;
       }
     }
@@ -688,6 +726,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
                                                                        const Handle(Transfer_TransientProcess)& TP,
                                                                        Standard_Boolean& isBound)
 {
+  NM_DETECTED = Standard_False;
   Handle(TransferBRep_ShapeBinder) shbinder;
   if(!Recognize(sr))
     return shbinder;
@@ -717,6 +756,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   Standard_Boolean isManifold = Standard_True;
   if ( isNMMode && sr->IsKind(STANDARD_TYPE(StepShape_NonManifoldSurfaceShapeRepresentation)) ) {
     isManifold = Standard_False;
+    NM_DETECTED = Standard_True;
     #ifdef DEB
     Standard_Integer NMSSRItemsLen = sr->Items()->Length();
     cout << "NMSSR with " << NMSSRItemsLen << " items detected" << endl;
@@ -727,6 +767,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
     Standard_Integer isIDeasMode = Interface_Static::IVal("read.step.ideas");
     if (isNMMode && myNMTool.IsIDEASCase() && isIDeasMode) {
       isManifold = Standard_False;
+      NM_DETECTED = Standard_True;
       #ifdef DEB
       cout << "I-DEAS post processing for non-manifold topology ENABLED" << endl;
       #endif
@@ -1592,22 +1633,12 @@ Standard_Boolean STEPControl_ActorRead::ComputeTransformation (const Handle(Step
   Handle(Geom_Axis2Placement) theTarg;
   StepToGeom_MakeAxis2Placement::Convert(trg,theTarg);
   if ( oldSRContext != TargContext  ) PrepareUnits(oldSRContext,TP);
-  
+
   gp_Ax3 ax3Orig(theOrig->Ax2());
   gp_Ax3 ax3Targ(theTarg->Ax2());
-  //ax3Orig - defines CS for component(always is equal to (0 0 0 ))(related product from NAUO)
-  //ax3Targ - defines place of component in assemby CS (relating product
+
   //  ne pas se tromper de sens !
-
-
-  gp_Trsf aTrsf2;
-  gp_Ax3 anAxis(gp_Pnt(0.,0.,0.), gp::DZ(), gp::DX());;
-  aTrsf2.SetTransformation(anAxis,ax3Orig);
-  gp_Trsf aTrsf3;
-  aTrsf3.SetTransformation(ax3Targ,anAxis);
-
-  Trsf = aTrsf3 * aTrsf2;
-  
+  Trsf.SetTransformation(ax3Targ, ax3Orig);
   return Trsf.Form() != gp_Identity;
 }
 

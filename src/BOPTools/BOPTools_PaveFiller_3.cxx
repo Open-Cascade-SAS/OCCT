@@ -182,6 +182,13 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
                                            const TopTools_ListOfShape& theL,
                                            Standard_Real&        theTF);
 
+//modified by NIZNHY-PKV Sat Mar 05 12:23:05 2011f
+void CorrectTolR3D(BOPTools_PaveFiller& aPF,
+		   const BOPTools_SSInterference& aFF,
+		   const TColStd_MapOfInteger& aMVStick,
+		   Standard_Real& aTolR3D);
+//modified by NIZNHY-PKV Sat Mar 05 12:23:07 2011t
+
 //=======================================================================
 // function: PerformFF
 // purpose: 
@@ -448,13 +455,14 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
 
   for (i=1; i<=aNbFFs; i++) {
     BOPTools_SSInterference& aFFi=aFFs(i);
-    // 
+    //  
+    nF1=aFFi.Index1();
+    nF2=aFFi.Index2();
+    //
     // Curves' tolerance
     aTolR3D=aFFi.TolR3D();
     //
     // Faces
-    nF1=aFFi.Index1();
-    nF2=aFFi.Index2();
     const TopoDS_Face& aF1=TopoDS::Face(myDS->GetShape(nF1));
     const TopoDS_Face& aF2=TopoDS::Face(myDS->GetShape(nF2));
 
@@ -570,7 +578,6 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
             continue;
           }
         }
-        // -&&
         //
 	aBC.AppendNewBlock(aPBNew);
       }
@@ -1324,9 +1331,10 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
 {
   Standard_Integer nV;
   Standard_Boolean bIsVertexOnLine;
-  Standard_Real aT, aTolVExt;
-  
-
+  Standard_Real aT, aTolVExt, aTolTresh;
+  BRep_Builder aBB;
+  //
+  aTolTresh=0.01;
   nV=aPave.Index();
   const TopoDS_Vertex& aV=TopoDS::Vertex(myDS->Shape(nV));
   const IntTools_Curve& aC=aBC.Curve();
@@ -1342,6 +1350,11 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
     aPaveSet.Append(aPaveNew);
     //<-B
     BOPTools_Tools::UpdateVertex (aC, aT, aV);
+    //modified by NIZNHY-PKV Sat Mar 05 13:43:27 2011f
+    if(aTolR3D<aTolTresh) {
+    aBB.UpdateVertex(aV, aTolR3D);
+    }
+    //modified by NIZNHY-PKV Sat Mar 05 13:43:29 2011t
   }
 }
 //
@@ -1431,7 +1444,25 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
     // Put existing paves on curves
     BOPTools_PaveSet aPSF;
     PrepareSetForFace (nF1, nF2, aPSF);
-
+    //
+    //modified by NIZNHY-PKV Sat Mar 05 12:12:05 2011f
+    {
+      Standard_Integer nVX;
+      BOPTools_ListIteratorOfListOfPave aItLP;
+      TColStd_MapOfInteger aMVStick;
+      //
+      const BOPTools_ListOfPave& aLPX=aPSF.Set();
+      aItLP.Initialize(aLPX);
+      for (; aItLP.More(); aItLP.Next()) {
+	const BOPTools_Pave& aPX=aItLP.Value();
+	nVX=aPX.Index();
+	aMVStick.Add(nVX);
+      }
+      //
+      CorrectTolR3D(*this, aFFi, aMVStick, aTolR3D);
+    }
+    //modified by NIZNHY-PKV Sat Mar 05 12:12:07 2011t
+    //
     BOPTools_SequenceOfCurves& aSCvs=aFFi.Curves();
     aNbCurves=aSCvs.Length();
     for (j=1; j<=aNbCurves; j++) {
@@ -1793,6 +1824,7 @@ Standard_Boolean IsFound(const TColStd_IndexedMapOfInteger& aMapWhat,
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <BOPTools_Tools3D.hxx>
 
 //=======================================================================
 // function: ProcessAloneStickVertices
@@ -3053,3 +3085,102 @@ Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
   theTF = maxD;
   return eIndex;
 }
+//modified by NIZNHY-PKV Sat Mar 05 12:18:43 2011f
+//=======================================================================
+//function : CorrectTolR3D
+//purpose  : 
+//=======================================================================
+void CorrectTolR3D(BOPTools_PaveFiller& aPF,
+		   const BOPTools_SSInterference& aFF,
+		   const TColStd_MapOfInteger& aMVStick,
+		   Standard_Real& aTolR3D)
+{
+  Standard_Boolean bHasBounds;
+  Standard_Integer i, nF[2], nV, aNbCurves;
+  Standard_Real aT1, aT2, aU, aV, aT, aA, aTolV, aTolVmax;
+  Standard_Real aTolR, aTolTresh, aAmin, aAmax;
+  TColStd_MapIteratorOfMapOfInteger aIt;
+  gp_Pnt aP, aP1, aP2;
+  gp_Dir aDN[2];
+  gp_Vec aVT;
+  Handle(Geom_Surface) aS[2];
+  Handle(Geom_Curve) aC3D;
+  GeomAdaptor_Surface aGAS;
+  GeomAbs_SurfaceType aType;
+  TopoDS_Face aF[2];
+  //
+  BooleanOperations_PShapesDataStructure myDS=aPF.DS();
+  IntTools_Context& myContext=aPF.ChangeContext();
+  //
+  aTolTresh=0.0005;
+  aAmin=0.012;// 0.7-7 deg
+  aAmax=0.12;
+  //
+  if (!aMVStick.Extent()) {
+    return;
+  }
+  //
+  BOPTools_SSInterference& aFFi=*((BOPTools_SSInterference*)&aFF);
+  BOPTools_SequenceOfCurves& aSCvs=aFFi.Curves();
+  aNbCurves=aSCvs.Length();
+  if (aNbCurves!=1){
+    return;
+  }
+  //
+  aFFi.Indices(nF[0], nF[1]);
+  for (i=0; i<2; ++i) {
+    aF[i]=*((TopoDS_Face*)(&myDS->Shape(nF[i])));
+    aS[i]=BRep_Tool::Surface(aF[i]);
+    aGAS.Load(aS[i]);
+    aType=aGAS.GetType();
+    if (aType!=GeomAbs_BSplineSurface) {
+      return;
+    }
+  }
+  //
+  BOPTools_Curve& aBC=aSCvs(1);
+  const IntTools_Curve& aIC=aBC.Curve();
+  bHasBounds=aIC.HasBounds();
+  if (!bHasBounds){
+    return;
+  }
+  //
+  aIC.Bounds (aT1, aT2, aP1, aP2);
+  aT=IntTools_Tools::IntermediatePoint(aT1, aT2);
+  aC3D=aIC.Curve();
+  aC3D->D0(aT, aP);
+  //
+  for (i=0; i<2; ++i) {
+    GeomAPI_ProjectPointOnSurf& aPPS=myContext.ProjPS(aF[i]);
+    aPPS.Perform(aP);
+    aPPS.LowerDistanceParameters(aU, aV);
+    BOPTools_Tools3D::GetNormalToSurface(aS[i], aU, aV, aDN[i]);
+  }
+  //
+  aA=aDN[0].Angle(aDN[1]);
+  aA=fabs(aA);
+  if (aA>0.5*PI) {
+    aA=PI-aA;
+  }
+  //
+  if (aA<aAmin || aA>aAmax) {
+    return;
+  }
+  //
+  aTolVmax=-1.;
+  aIt.Initialize(aMVStick);
+  for (; aIt.More(); aIt.Next()) {
+    nV=aIt.Key();
+    const TopoDS_Vertex& aV=*((TopoDS_Vertex*)(&myDS->Shape(nV)));
+    aTolV=BRep_Tool::Tolerance(aV);
+    if (aTolV>aTolVmax) {
+      aTolVmax=aTolV;
+    }
+  }
+  //
+  aTolR=aTolVmax/aA;
+  if (aTolR<aTolTresh) {
+    aTolR3D=aTolR;
+  }
+}
+//modified by NIZNHY-PKV Sat Mar 05 12:18:46 2011t
