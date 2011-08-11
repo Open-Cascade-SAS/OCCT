@@ -835,6 +835,41 @@ void BRepFill_CompatibleWires::
   if (!allClosed)
     Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::SameNumberByPolarMethod : the wires must be closed");
   
+  // sections ponctuelles, sections bouclantes ?
+  if (myDegen1) ideb++;
+  if (myDegen2) ifin--;
+  Standard_Boolean vClosed = (!myDegen1) && (!myDegen2)
+                                && (myWork(ideb).IsSame(myWork(ifin)));
+
+  //Removing degenerated edges
+  for (i = ideb; i <= ifin; i++)
+  {
+    Standard_Boolean hasDegEdge = Standard_False;
+    TopoDS_Iterator anItw(myWork(i));
+    for (; anItw.More(); anItw.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(anItw.Value());
+      if (BRep_Tool::Degenerated(anEdge))
+      {
+        hasDegEdge = Standard_True;
+        break;
+      }
+    }
+    if (hasDegEdge)
+    {
+      TopoDS_Wire aNewWire;
+      BRep_Builder aBBuilder;
+      aBBuilder.MakeWire(aNewWire);
+      for (anItw.Initialize(myWork(i)); anItw.More(); anItw.Next())
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anItw.Value());
+        if (!BRep_Tool::Degenerated(anEdge))
+          aBBuilder.Add(aNewWire, anEdge);
+      }
+      myWork(i) = aNewWire;
+    }
+  }
+  
   // Nombre max de decoupes possibles
   Standard_Integer NbMaxV = 0;
   for (i=1; i<=NbSects; i++) {
@@ -842,12 +877,6 @@ void BRepFill_CompatibleWires::
       NbMaxV++;
     }
   }
-  
-  // sections ponctuelles, sections bouclantes ?
-  if (myDegen1) ideb++;
-  if (myDegen2) ifin--;
-  Standard_Boolean vClosed = (!myDegen1) && (!myDegen2)
-                                && (myWork(ideb).IsSame(myWork(ifin)));
   
   // construction des tableaux de plans des wires 
   gp_Pln P;
@@ -1954,11 +1983,3 @@ void BRepFill_CompatibleWires::SearchOrigin()
   // sections bouclantes ?
   if (vClosed) myWork(myWork.Length()) = myWork(1);
 }
-
-
-
-
-
-
-
-
