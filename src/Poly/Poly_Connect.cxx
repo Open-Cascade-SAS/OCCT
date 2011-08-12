@@ -225,8 +225,8 @@ void Poly_Connect::Initialize(const Standard_Integer N)
 void Poly_Connect::Next()
 {
   Standard_Integer i, j;
-  static Standard_Integer n[3];
-  static Standard_Integer t[3];
+  Standard_Integer n[3];
+  Standard_Integer t[3];
   const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
   Triangles(mytr, t[0], t[1], t[2]);
   if (mysense) {
