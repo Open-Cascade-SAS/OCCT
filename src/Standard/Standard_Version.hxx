@@ -10,6 +10,7 @@
 //            OCC_VERSION_MAJOR       : (integer) number identifying major version 
 //            OCC_VERSION_MINOR       : (integer) number identifying minor version 
 //            OCC_VERSION_MAINTENANCE : (integer) number identifying maintenance version 
+//            OCC_VERSION_DEVELOPMENT : (no value) if defined, identify development version.
 //            OCC_VERSION             : (real)    complete number (major.minor)
 //            OCC_VERSION_STRING      : (string)  complete number ("major.minor")
 //            OCC_VERSION_HEX         : (hex)     complete number as hex, two positions per each of major, minor, and patch number 
@@ -23,6 +24,7 @@
 #define OCC_VERSION_MAJOR         6
 #define OCC_VERSION_MINOR         5
 #define OCC_VERSION_MAINTENANCE   1
+#define OCC_VERSION_DEVELOPMENT // This line must be commented in any final version (release)
 
 // Derived: version as real and string (major.minor)
 #define OCC_VERSION         6.5
