@@ -1282,7 +1282,7 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
       Standard_Real LastPar  = C3d->LastParameter();
       
       if (C3d->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) &&
-	  FirstPar > anEf - a2Offset || LastPar < anEl + a2Offset)
+	  (FirstPar > anEf - a2Offset || LastPar < anEl + a2Offset))
 	{
 	  Handle(Geom_TrimmedCurve) aTrCurve = 
 	    new Geom_TrimmedCurve(C3d, FirstPar, LastPar);
