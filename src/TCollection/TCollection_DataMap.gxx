@@ -137,24 +137,6 @@ Standard_Boolean TCollection_DataMap::Bind(const TheKey& K, const TheItem& I)
   return Standard_True;
 }
 
-//=======================================================================
-//function : Contains
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean TCollection_DataMap::IsBound(const TheKey& K) const
-{
-  if (IsEmpty()) return Standard_False;
-  TCollection_DataMapNode** data = (TCollection_DataMapNode**) myData1;
-  TCollection_DataMapNode* p = data[Hasher::HashCode(K,NbBuckets())];
-  while (p) {
-    if (Hasher::IsEqual(p->Key(),K)) {
-      return Standard_True;
-      }
-    p = (TCollection_DataMapNode*) p->Next();
-  }
-  return Standard_False;
-}
 
 //=======================================================================
 //function : Remove
@@ -181,12 +163,27 @@ Standard_Boolean TCollection_DataMap::UnBind(const TheKey& K)
   }
   return Standard_False;
 }
-
+//=======================================================================
+//function : IsBound
+//purpose  : 
+//=======================================================================
+Standard_Boolean TCollection_DataMap::IsBound(const TheKey& K) const
+{
+  if (IsEmpty()) return Standard_False;
+  TCollection_DataMapNode** data = (TCollection_DataMapNode**) myData1;
+  TCollection_DataMapNode* p = data[Hasher::HashCode(K,NbBuckets())];
+  while (p) {
+    if (Hasher::IsEqual(p->Key(),K)) {
+      return Standard_True;
+      }
+    p = (TCollection_DataMapNode*) p->Next();
+  }
+  return Standard_False;
+}
 //=======================================================================
 //function : Find
 //purpose  : 
 //=======================================================================
-
 const TheItem& TCollection_DataMap::Find(const TheKey& K) const
 {
   Standard_NoSuchObject_Raise_if(IsEmpty(),"TCollection_DataMap::Find");
@@ -201,12 +198,10 @@ const TheItem& TCollection_DataMap::Find(const TheKey& K) const
   Standard_NoSuchObject::Raise("TCollection_DataMap::Find");
   return p->Value();
 }
-
 //=======================================================================
 //function : ChangeFind
 //purpose  : 
 //=======================================================================
-
 TheItem& TCollection_DataMap::ChangeFind(const TheKey& K)
 {
   Standard_NoSuchObject_Raise_if(IsEmpty(),"TCollection_DataMap::ChangeFind");
@@ -221,7 +216,36 @@ TheItem& TCollection_DataMap::ChangeFind(const TheKey& K)
   Standard_NoSuchObject::Raise("TCollection_DataMap::ChangeFind");
   return p->Value();
 }
-
+//modified by NIZNHY-PKV Tue Jul 05 09:54:14 2011f
+//=======================================================================
+//function : Find1
+//purpose  : 
+//=======================================================================
+Standard_Address TCollection_DataMap::Find1(const TheKey& K) const
+{
+  TCollection_DataMap *pMap=(TCollection_DataMap *)this;
+  return pMap->ChangeFind1(K);
+}
+//=======================================================================
+//function : ChangeFind1
+//purpose  : 
+//=======================================================================
+Standard_Address TCollection_DataMap::ChangeFind1(const TheKey& K)
+{
+  if (IsEmpty()) {
+    return NULL;
+  }
+  TCollection_DataMapNode** data = (TCollection_DataMapNode**) myData1;
+  TCollection_DataMapNode* p = data[Hasher::HashCode(K,NbBuckets())];
+  while (p) {
+    if (Hasher::IsEqual(p->Key(),K)) {
+      return (Standard_Address)&p->Value();
+      }
+    p = (TCollection_DataMapNode*)  p->Next();
+  }
+  return NULL;
+}
+//modified by NIZNHY-PKV Tue Jul 05 09:54:18 2011t
 
 
 

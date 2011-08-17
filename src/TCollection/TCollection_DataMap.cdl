@@ -191,5 +191,16 @@ is
 	---C++: return &
     raises NoSuchObject from Standard 
     is static;
-    
+     
+--modified by NIZNHY-PKV Tue Jul 05 09:57:10 2011f 
+     Find1(me; K : TheKey) 
+    	returns Address from Standard;	
+	---Purpose: Returns the address of Item of the key <K>  
+        -- or NULL if K is not in the map. 
+     ChangeFind1(me:out; K : TheKey) 
+    	returns Address from Standard;	
+	---Purpose: Returns the address of Item of the key <K>  
+        -- or NULL if K is not in the map. 
+--modified by NIZNHY-PKV Tue Jul 05 09:57:14 2011t  
+
 end DataMap;

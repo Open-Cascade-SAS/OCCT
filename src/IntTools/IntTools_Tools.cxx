@@ -83,25 +83,34 @@ static
 //=======================================================================
   Standard_Boolean IntTools_Tools::IsClosed (const Handle(Geom_Curve)& aC3D)
 {
-  
-  Standard_Real aF, aL, aDist;
+  Standard_Boolean bRet;
+  Standard_Real aF, aL, aDist, aPC;
   gp_Pnt aP1, aP2;
-   
+  
   Handle (Geom_BoundedCurve) aGBC=
       Handle (Geom_BoundedCurve)::DownCast(aC3D);
   if (aGBC.IsNull()) {
     return Standard_False;
   }
-
+  
   aF=aC3D->FirstParameter();
   aL=aC3D-> LastParameter();
   
   aC3D->D0(aF, aP1);
   aC3D->D0(aL, aP2);
 
-  aDist=aP1.Distance(aP2);
-  //return (aDist < 1.e-12); 
-  return (aDist < Precision::Confusion()); 
+  
+  //
+  //modified by NIZNHY-PKV Mon Jul 04 11:58:23 2011f
+  aPC=Precision::Confusion();
+  aPC=aPC*aPC;
+  aDist=aP1.SquareDistance(aP2);
+  bRet=aDist<aPC;
+  return bRet;
+  //
+  //aDist=aP1.Distance(aP2);
+  //return (aDist < Precision::Confusion()); 
+  //modified by NIZNHY-PKV Mon Jul 04 11:59:50 2011t
 }
 
 //=======================================================================
@@ -218,7 +227,6 @@ static
   aF=aC3D->FirstParameter();
   aL=aC3D->LastParameter();
   aMid=0.5*(aF+aL);
-  //modified by NIZNHY-PKV Thu Feb  5 08:26:58 2009 f
   GeomAdaptor_Curve aGAC(aC3D);
   GeomAbs_CurveType aCT=aGAC.GetType();
   if (aCT==GeomAbs_BSplineCurve ||
@@ -226,7 +234,6 @@ static
     //aMid=0.5*aMid;
     aMid=IntTools_Tools::IntermediatePoint(aF, aL);
   }
-  //modified by NIZNHY-PKV Thu Feb  5 08:27:00 2009 t
   //
   Handle(Geom_Curve) aC3DNewF, aC3DNewL;
   aC3DNewF =new Geom_TrimmedCurve  (aC3D, aF, aMid);
@@ -278,20 +285,26 @@ static
 					     const Standard_Real aTolPV,
 					     const TopoDS_Vertex& aV)
 {
+  Standard_Boolean bRet;
   Standard_Real aTolV, aD, dTol;
   gp_Pnt aPv; 
   
   aTolV=BRep_Tool::Tolerance(aV);
   //
-  //modified by NIZNHY-PKV Thu Jan 18 17:44:46 2007f
-  //aTolV=aTolV+aTolPV;
   dTol=Precision::Confusion();
   aTolV=aTolV+aTolPV+dTol;
-  //modified by NIZNHY-PKV Thu Jan 18 17:44:49 2007t
   //
   aPv=BRep_Tool::Pnt(aV);
-  aD=aPv.Distance(aP);
-  return (aD<=aTolV);
+  //
+  //modified by NIZNHY-PKV Mon Jul 04 12:00:37 2011f
+  aD=aPv.SquareDistance(aP);
+  aTolV=aTolV*aTolV;
+  bRet=(aD<=aTolV);
+  return bRet;
+  //
+  //aD=aPv.Distance(aP);
+  //return (aD<=aTolV);
+  //modified by NIZNHY-PKV Mon Jul 04 12:00:40 2011t
 }
 
 
@@ -390,11 +403,14 @@ static
   aTolV1=BRep_Tool::Tolerance(aV1);
   aTolV2=BRep_Tool::Tolerance(aV2);
   aTolSum=aTolV1+aTolV2;
-
+  
   aP1=BRep_Tool::Pnt(aV1);
   aP2=BRep_Tool::Pnt(aV2);
-  
-  d=aP1.Distance(aP2);
+  //modified by NIZNHY-PKV Mon Jul 04 11:55:52 2011f
+  aTolSum=aTolSum*aTolSum;
+  d=aP1.SquareDistance(aP2);
+  //d=aP1.Distance(aP2);
+  //modified by NIZNHY-PKV Mon Jul 04 11:55:53 2011t
   if (d<aTolSum) {
     return 0;
   }
@@ -442,7 +458,8 @@ static
 						       const TopoDS_Edge& aE2)
 						       
 {
-  Standard_Real f1, l1, m1, f2, l2, m2, aTol1, aTol2, aSumTol;
+  Standard_Boolean bRet;
+  Standard_Real f1, l1, m1, f2, l2, m2, aTol1, aTol2, aSumTol, aD2;
   gp_Pnt aP1, aP2;
 
   aTol1=BRep_Tool::Tolerance(aE1);
@@ -456,11 +473,17 @@ static
   C2->D0(m2, aP2);
 
   aSumTol=aTol1+aTol2;
-  
-  if (aP1.Distance(aP2) < aSumTol) {
-    return Standard_True;
-  }
-  return Standard_False;
+  //modified by NIZNHY-PKV Mon Jul 04 12:02:20 2011f
+  aSumTol=aSumTol*aSumTol;
+  aD2=aP1.SquareDistance(aP2);
+  bRet=aD2<aSumTol;
+  return bRet;
+  //
+  //if (aP1.Distance(aP2) < aSumTol) {
+  //  return Standard_True;
+  //}
+  //return Standard_False;
+  //modified by NIZNHY-PKV Mon Jul 04 12:02:24 2011t
 }
 
 //=======================================================================

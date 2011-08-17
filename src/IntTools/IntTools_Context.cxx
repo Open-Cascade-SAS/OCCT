@@ -108,8 +108,9 @@
 {
   Standard_Address anAdr;
   IntTools_FClass2d* pFClass2d;
- 
-  if (!myFClass2dMap.Contains(aF)) {
+  //
+  anAdr=myFClass2dMap.FindFromKey1(aF);
+  if (!anAdr) {
     Standard_Real aTolF;
     TopoDS_Face aFF=aF;
     aFF.Orientation(TopAbs_FORWARD);
@@ -122,8 +123,8 @@
   }
 
   else {
-    anAdr=myFClass2dMap.FindFromKey(aF);
-    pFClass2d=(IntTools_FClass2d*)anAdr;
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pFClass2d=(IntTools_FClass2d*)*pAdr;
   }
 
   return *pFClass2d;
@@ -136,8 +137,9 @@
 {
   Standard_Address anAdr;
   GeomAPI_ProjectPointOnSurf* pProjPS;
- 
-  if (!myProjPSMap.Contains(aF)) {
+  //
+  anAdr=myProjPSMap.FindFromKey1(aF);
+  if (!anAdr) {
     Standard_Real Umin, Usup, Vmin, Vsup, anEpsT=1.e-12 ;
     BRepAdaptor_Surface aBAS;
     //
@@ -157,8 +159,8 @@
   }
   
   else {
-    anAdr=myProjPSMap.FindFromKey(aF);
-    pProjPS=(GeomAPI_ProjectPointOnSurf*)anAdr;
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pProjPS=(GeomAPI_ProjectPointOnSurf*)*pAdr;
   }
   return *pProjPS;
 }
@@ -170,8 +172,9 @@
 {
   Standard_Address anAdr;
   GeomAPI_ProjectPointOnCurve* pProjPC;
- 
-  if (!myProjPCMap.Contains(aE)) {
+  //
+  anAdr=myProjPCMap.FindFromKey1(aE);
+  if (!anAdr) {
     Standard_Real f, l;
     //
     Handle(Geom_Curve)aC3D=BRep_Tool::Curve (aE, f, l);
@@ -182,10 +185,9 @@
     anAdr=(Standard_Address)pProjPC;
     myProjPCMap.Add(aE, anAdr);
   }
-  
   else {
-    anAdr=myProjPCMap.FindFromKey(aE);
-    pProjPC=(GeomAPI_ProjectPointOnCurve*)anAdr;
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pProjPC=(GeomAPI_ProjectPointOnCurve*)*pAdr;
   }
   return *pProjPC;
 }
@@ -198,8 +200,9 @@
 {
   Standard_Address anAdr;
   GeomAPI_ProjectPointOnCurve* pProjPT;
- 
-  if (!myProjPTMap.Contains(aC3D)) {
+  //
+  anAdr=myProjPTMap.FindFromKey1(aC3D);
+  if (!anAdr) {
     Standard_Real f, l;
     f=aC3D->FirstParameter();
     l=aC3D->LastParameter();
@@ -212,8 +215,8 @@
   }
   
   else {
-    anAdr=myProjPTMap.FindFromKey(aC3D);
-    pProjPT=(GeomAPI_ProjectPointOnCurve*)anAdr;
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pProjPT=(GeomAPI_ProjectPointOnCurve*)*pAdr;
   }
   return *pProjPT;
 }
@@ -225,8 +228,9 @@
 {
   Standard_Address anAdr;
   IntTools_SurfaceRangeLocalizeData* pSData;
- 
-  if (!myProjSDataMap.Contains(aF)) {
+  //
+  anAdr=myProjSDataMap.FindFromKey1(aF);
+  if (!anAdr) {
     //
     pSData=new IntTools_SurfaceRangeLocalizeData(3, 
 						 3, 
@@ -238,8 +242,8 @@
   }
   
   else {
-    anAdr=myProjSDataMap.FindFromKey(aF);
-    pSData=(IntTools_SurfaceRangeLocalizeData*)anAdr;
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pSData=(IntTools_SurfaceRangeLocalizeData*)*pAdr;
   }
   return *pSData;
 
@@ -252,24 +256,21 @@
 {
   Standard_Address anAdr;
   BRepClass3d_SolidClassifier* pSC;
- 
-  if (!mySClassMap.Contains(aSolid)) {
+  //
+  anAdr=mySClassMap.FindFromKey1(aSolid);
+  if (!anAdr) {
     //
     pSC=new BRepClass3d_SolidClassifier(aSolid);
     //
     anAdr=(Standard_Address)pSC;
     mySClassMap.Add(aSolid, anAdr);
   }
-  
   else {
-    anAdr=mySClassMap.FindFromKey(aSolid);
-    pSC =(BRepClass3d_SolidClassifier*)anAdr;
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pSC =(BRepClass3d_SolidClassifier*)*pAdr;
   }
   return *pSC;
 }
-
-
-//modified by NIZNHY-PKV Tue Feb  2 08:33:16 2010f
 //=======================================================================
 //function : ComputeVE
 //purpose  : 
@@ -302,9 +303,12 @@
   if (BRep_Tool::Degenerated(aE2)) {
     return -1;
   }
-  if (!BRep_Tool::IsGeometric(aE2)) { 
-    return -2;
-  }
+  //
+  //modified by NIZNHY-PKV Wed Jul 13 08:30:08 2011f
+  //if (!BRep_Tool::IsGeometric(aE2)) { 
+  //  return -2;
+  //}
+  //modified by NIZNHY-PKV Wed Jul 13 08:30:13 2011t
   //
   Standard_Real aTolV1, aTolE2, aTolSum, aTolVx;
   Standard_Integer aNbProj;
@@ -337,7 +341,6 @@
   //
   return 0;
 }
-//modified by NIZNHY-PKV Tue Feb  2 08:33:21 2010t
 //=======================================================================
 //function : ComputeVS
 //purpose  : 

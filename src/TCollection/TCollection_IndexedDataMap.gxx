@@ -242,24 +242,6 @@ void TCollection_IndexedDataMap::RemoveLast()
   delete p;
 }
 
-//=======================================================================
-//function : Contains
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean TCollection_IndexedDataMap::Contains(const TheKey& K1) const
-{
-  if (IsEmpty()) return Standard_False;
-  TCollection_IndexedDataMapNode** data1 = (TCollection_IndexedDataMapNode**)myData1;
-  Standard_Integer k1 = Hasher::HashCode(K1,NbBuckets());
-  TCollection_IndexedDataMapNode *p1;
-  p1 = data1[k1];
-  while (p1) {
-    if (Hasher::IsEqual(p1->Key1(),K1)) return Standard_True;
-    p1 = (TCollection_IndexedDataMapNode*) p1->Next();
-  }
-  return Standard_False;
-}
 
 //=======================================================================
 //function : FindKey
@@ -340,12 +322,27 @@ Standard_Integer TCollection_IndexedDataMap::FindIndex(const TheKey& K1) const
   }
   return 0;
 }
-
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+Standard_Boolean TCollection_IndexedDataMap::Contains(const TheKey& K1) const
+{
+  if (IsEmpty()) return Standard_False;
+  TCollection_IndexedDataMapNode** data1 = (TCollection_IndexedDataMapNode**)myData1;
+  Standard_Integer k1 = Hasher::HashCode(K1,NbBuckets());
+  TCollection_IndexedDataMapNode *p1;
+  p1 = data1[k1];
+  while (p1) {
+    if (Hasher::IsEqual(p1->Key1(),K1)) return Standard_True;
+    p1 = (TCollection_IndexedDataMapNode*) p1->Next();
+  }
+  return Standard_False;
+}
 //=======================================================================
 //function : FindFromKey
 //purpose  : 
 //=======================================================================
-
 const TheItem& TCollection_IndexedDataMap::FindFromKey(const TheKey& K1) const
 {
   Standard_OutOfRange_Raise_if(IsEmpty(),"TCollection_IndexedDataMap::FindFromKey");  
@@ -360,12 +357,10 @@ const TheItem& TCollection_IndexedDataMap::FindFromKey(const TheKey& K1) const
   Standard_OutOfRange::Raise("TCollection_IndexedDataMap::FindFromKey");
   return p1->Value();
 }
-
 //=======================================================================
 //function : ChangeFromKey
 //purpose  : 
 //=======================================================================
-
 TheItem& TCollection_IndexedDataMap::ChangeFromKey(const TheKey& K1)
 {
   Standard_OutOfRange_Raise_if(IsEmpty(),"TCollection_IndexedDataMap::ChangeFromKey");  
@@ -380,8 +375,37 @@ TheItem& TCollection_IndexedDataMap::ChangeFromKey(const TheKey& K1)
   Standard_OutOfRange::Raise("TCollection_IndexedDataMap::ChangeFromKey");
   return p1->Value();
 }
-
-
+//modified by NIZNHY-PKV Tue Jul 05 08:37:03 2011f
+//=======================================================================
+//function : FindFromKey1
+//purpose  : 
+//=======================================================================
+Standard_Address TCollection_IndexedDataMap::FindFromKey1(const TheKey& K1) const
+{
+  TCollection_IndexedDataMap *pMap=(TCollection_IndexedDataMap *)this;
+  return pMap->ChangeFromKey1(K1);
+}
+//=======================================================================
+//function : ChangeFromKey1
+//purpose  : 
+//=======================================================================
+Standard_Address TCollection_IndexedDataMap::ChangeFromKey1(const TheKey& K1)
+{
+  if (IsEmpty()) {
+    return NULL;
+  }
+  TCollection_IndexedDataMapNode** data1 = (TCollection_IndexedDataMapNode**)myData1;
+  Standard_Integer k1 = Hasher::HashCode(K1,NbBuckets());
+  TCollection_IndexedDataMapNode *p1;
+  p1 = data1[k1];
+  while (p1) {
+    if (Hasher::IsEqual(p1->Key1(),K1)) {
+      return (Standard_Address)&p1->Value();
+    }
+    p1 = (TCollection_IndexedDataMapNode*) p1->Next();
+  }
+  return NULL;
+}
 
 // @@SDM: begin
 

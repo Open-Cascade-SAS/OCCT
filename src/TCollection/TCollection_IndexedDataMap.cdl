@@ -203,6 +203,17 @@ is
         -- Trigger: Raises NoSuchObject if K is not in the map.
     raises NoSuchObject from Standard 
     ---C++: return &
-    is static;
-    
+    is static; 
+     
+--modified by NIZNHY-PKV Tue Jul 05 08:38:26 2011f 
+    FindFromKey1(me; K : TheKey) 
+    	returns Address from Standard;	
+	---Purpose: Returns the address of Item of the key <K>  
+        -- or NULL if K is not in the map. 
+    ChangeFromKey1(me:out; K : TheKey) 
+    	returns Address from Standard;	
+	---Purpose: Returns the address of Item of the key <K>  
+        -- or NULL if K is not in the map. 
+--modified by NIZNHY-PKV Tue Jul 05 08:38:26 2011t
+ 
 end IndexedDataMap;
