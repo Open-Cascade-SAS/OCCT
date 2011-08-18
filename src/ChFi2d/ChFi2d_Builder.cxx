@@ -1000,7 +1000,10 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     Fillet.Tangency2(numsol,Vv1,Vv2,Ptg2);
 
     // check the validity of parameters
-    inside = (U2<param1 && U2>param2) || (U2<param2 && U2>param1);
+    //// modified by jgv, 08.08.2011 for bug 0022695 ////
+    //inside = (U2<param1 && U2>param2) || (U2<param2 && U2>param1);
+    inside = (U2 < param1 && U2 >= param2) || (U2 <= param2 && U2 > param1);
+    /////////////////////////////////////////////////////
     if ( (basisC1->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
       &&  ( (2*PI<param1 && 2*PI>param2) || (2*PI<param2 && 2*PI>param1) ) ) {
       // arc of circle containing the circle origin
@@ -1014,7 +1017,10 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
       return filletEdge;
     }
 
-    inside = (Vv2<param3 && Vv2>param4) || (Vv2<param4 && Vv2>param3);
+    //// modified by jgv, 08.08.2011 for bug 0022695 ////
+    //inside = (Vv2<param3 && Vv2>param4) || (Vv2<param4 && Vv2>param3);
+    inside = (Vv2 < param3 && Vv2 >= param4) || (Vv2 <= param4 && Vv2 > param3);
+    /////////////////////////////////////////////////////
     if ( (basisC2->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
       &&  ( (2*PI<param3 && 2*PI>param4) || (2*PI<param4 && 2*PI>param3) ) ) {
     // arc of circle containing the circle origin
