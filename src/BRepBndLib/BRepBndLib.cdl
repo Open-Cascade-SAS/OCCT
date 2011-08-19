@@ -24,7 +24,9 @@ is
     -- 	 Package methods for shapes
     -- 	 
 
-    Add(S : Shape from TopoDS; B : in out Box from Bnd);
+    Add(S               : Shape from TopoDS; 
+        B               : in out Box from Bnd;
+        useTriangulation: Boolean from Standard = Standard_True);
     	---Purpose:Adds the shape S to the bounding box B.
 -- More precisely are successively added to B:
 -- -   each face of S; the triangulation of the face is used if it exists,

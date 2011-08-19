@@ -94,7 +94,7 @@ Matches (const Standard_Real XMin,
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
   
-  for(Standard_Integer j=0; j<mynbpoints-1; j++)
+  for(Standard_Integer j=0; j<mynbpoints; j++)
     {
       if(BoundBox.IsOut(((Select3D_Pnt2d*)mypolyg2d)[j])) return Standard_False;
     }

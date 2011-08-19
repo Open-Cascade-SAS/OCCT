@@ -67,6 +67,12 @@ void StdSelect_BRepSelectionTool
         const Standard_Real theMaxParam)
 {
   Standard_Integer aPriority = (thePriority == -1) ? GetStandardPriority (theShape, theType) : thePriority;
+
+  if( isAutoTriangulation && !BRepTools::Triangulation (theShape, Precision::Infinite()) )
+  {
+    BRepMesh_IncrementalMesh(theShape, theDeflection, Standard_False, theDeviationAngle);
+  }
+
   Handle(StdSelect_BRepOwner) aBrepOwner;
   switch (theType)
   {
@@ -586,13 +592,7 @@ Standard_Boolean StdSelect_BRepSelectionTool
   // check if there is triangulation of the face...
   TopLoc_Location aLoc;
   Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
-  if (aTriangulation.IsNull() && theAutoTriangulation)
-  {
-    Standard_Real aDefaultDefl = 0.2;
-    Standard_Real aDefaultAng  = 30 * PI / 180.0;
-    BRepMesh_IncrementalMesh (theFace, aDefaultDefl, Standard_True, aDefaultAng);
-    aTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
-  }
+
   if (!aTriangulation.IsNull())
   {
     Handle(Select3D_SensitiveTriangulation) STG = new Select3D_SensitiveTriangulation (theOwner, aTriangulation, aLoc, theInteriorFlag);

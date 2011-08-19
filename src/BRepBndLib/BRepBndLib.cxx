@@ -26,12 +26,11 @@
 //purpose  : Add a shape bounding to a box
 //=======================================================================
 
-void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B)
+void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTriangulation)
 {
   TopExp_Explorer ex;
 
   // Add the faces
-
   BRepAdaptor_Surface BS;
   Handle(Geom_Surface) GS;
   Handle(Poly_Triangulation) T;
@@ -42,80 +41,86 @@ void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B)
   for (ex.Init(S,TopAbs_FACE); ex.More(); ex.Next()) {
     const TopoDS_Face& F = TopoDS::Face(ex.Current());
     T = BRep_Tool::Triangulation(F, l);
-    if (!T.IsNull()) {
+    if (useTriangulation && !T.IsNull())
+    {
       nbNodes = T->NbNodes();
       const TColgp_Array1OfPnt& Nodes = T->Nodes();
       for (i = 1; i <= nbNodes; i++) {
-	if (l.IsIdentity()) B.Add(Nodes(i));
-	else B.Add(Nodes(i).Transformed(l));
+        if (l.IsIdentity()) B.Add(Nodes(i));
+        else B.Add(Nodes(i).Transformed(l));
       }
       //       B.Enlarge(T->Deflection());
       B.Enlarge(T->Deflection() + BRep_Tool::Tolerance(F));
-    }
-    else {
+    } else
+    {
       GS = BRep_Tool::Surface(F, l);
       if (!GS.IsNull()) {
-	BS.Initialize(F, Standard_False);
-	if (BS.GetType() != GeomAbs_Plane) {
-	  BS.Initialize(F);
-	  BndLib_AddSurface::Add(BS, BRep_Tool::Tolerance(F), B);
-	}
-	else {
-	  // on travaille directement sur les courbes 3d.
-	  TopExp_Explorer ex2(F, TopAbs_EDGE);
-	  if (!ex2.More()) {
-	    BS.Initialize(F);
-	    BndLib_AddSurface::Add(BS, BRep_Tool::Tolerance(F), B);
-	  }
-	  else {
-	    for (;ex2.More();ex2.Next()) {
-	      BC.Initialize(TopoDS::Edge(ex2.Current()));
-	      BndLib_Add3dCurve::Add(BC, BRep_Tool::Tolerance(F), B);
-	    }
-	    B.Enlarge(BRep_Tool::Tolerance(F));
-	  }
-	}
+        BS.Initialize(F, Standard_False);
+        if (BS.GetType() != GeomAbs_Plane) {
+          BS.Initialize(F);
+          BndLib_AddSurface::Add(BS, BRep_Tool::Tolerance(F), B);
+        }
+        else {
+          // on travaille directement sur les courbes 3d.
+          TopExp_Explorer ex2(F, TopAbs_EDGE);
+          if (!ex2.More()) {
+            BS.Initialize(F);
+            BndLib_AddSurface::Add(BS, BRep_Tool::Tolerance(F), B);
+          }
+          else {
+            for (;ex2.More();ex2.Next()) {
+              BC.Initialize(TopoDS::Edge(ex2.Current()));
+              BndLib_Add3dCurve::Add(BC, BRep_Tool::Tolerance(F), B);
+            }
+            B.Enlarge(BRep_Tool::Tolerance(F));
+          }
+        }
       }
     }
   }
 
   // Add the edges not in faces
-
-
   Handle(TColStd_HArray1OfInteger) HIndices;
   Handle(Poly_PolygonOnTriangulation) Poly;
 
-  for (ex.Init(S,TopAbs_EDGE,TopAbs_FACE); ex.More(); ex.Next()) {
+  for (ex.Init(S,TopAbs_EDGE,TopAbs_FACE); ex.More(); ex.Next())
+  {
     const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
     Handle(Poly_Polygon3D) P3d = BRep_Tool::Polygon3D(E, l);
-    if (!P3d.IsNull()) {
+    if (!P3d.IsNull())
+    {
       const TColgp_Array1OfPnt& Nodes = P3d->Nodes();
       nbNodes = P3d->NbNodes();
-      for (i = 1; i <= nbNodes; i++) {
-	if (l.IsIdentity()) B.Add(Nodes(i));
-	else B.Add(Nodes(i).Transformed(l));
+      for (i = 1; i <= nbNodes; i++)
+      {
+        if (l.IsIdentity()) B.Add(Nodes(i));
+        else B.Add(Nodes(i).Transformed(l));
       }
       //       B.Enlarge(P3d->Deflection());
       B.Enlarge(P3d->Deflection() + BRep_Tool::Tolerance(E));
     }
-    else {
+    else
+    {
       BRep_Tool::PolygonOnTriangulation(E, Poly, T, l);
-      if (!Poly.IsNull()) {
-	const TColStd_Array1OfInteger& Indices = Poly->Nodes();
-	const TColgp_Array1OfPnt& Nodes = T->Nodes();
-	nbNodes = Indices.Length();
-	for (i = 1; i <= nbNodes; i++) {
-	  if (l.IsIdentity()) B.Add(Nodes(Indices(i)));
-	  else B.Add(Nodes(Indices(i)).Transformed(l));
-	}
-	// 	B.Enlarge(T->Deflection());
-	B.Enlarge(Poly->Deflection() + BRep_Tool::Tolerance(E));
+      if (useTriangulation && !Poly.IsNull())
+      {
+        const TColStd_Array1OfInteger& Indices = Poly->Nodes();
+        const TColgp_Array1OfPnt& Nodes = T->Nodes();
+        nbNodes = Indices.Length();
+        for (i = 1; i <= nbNodes; i++)
+        {
+          if (l.IsIdentity()) B.Add(Nodes(Indices(i)));
+          else B.Add(Nodes(Indices(i)).Transformed(l));
+        }
+        // 	B.Enlarge(T->Deflection());
+        B.Enlarge(Poly->Deflection() + BRep_Tool::Tolerance(E));
       }
       else {
-	if (BRep_Tool::IsGeometric(E)) {
-	  BC.Initialize(E);
-	  BndLib_Add3dCurve::Add(BC, BRep_Tool::Tolerance(E), B);
-	}
+        if (BRep_Tool::IsGeometric(E))
+        {
+          BC.Initialize(E);
+          BndLib_Add3dCurve::Add(BC, BRep_Tool::Tolerance(E), B);
+        }
       }
     }
   }

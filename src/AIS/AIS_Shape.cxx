@@ -84,13 +84,13 @@
 static Standard_Boolean myFirstCompute;
 
 Standard_Real AIS_Shape::GetDeflection(const TopoDS_Shape& aShape,
-				   const Handle(Prs3d_Drawer)& aDrawer)
+                                       const Handle(Prs3d_Drawer)& aDrawer)
 {
   // WARNING: this same piece of code appears several times in Prs3d classes
-  Standard_Real aDeflection;
+  Standard_Real aDeflection = aDrawer->MaximalChordialDeviation();
   if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE) {
     Bnd_Box B;
-    BRepBndLib::Add(aShape, B);
+    BRepBndLib::Add(aShape, B, Standard_False);
     if ( ! B.IsVoid() )
     {
       Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
@@ -98,17 +98,13 @@ Standard_Real AIS_Shape::GetDeflection(const TopoDS_Shape& aShape,
       aDeflection = Max( aXmax-aXmin, Max(aYmax-aYmin, aZmax-aZmin)) *
                     aDrawer->DeviationCoefficient() * 4;
     }
-    else
-      aDeflection = aDrawer->MaximalChordialDeviation();
   }
-  else
-    aDeflection = aDrawer->MaximalChordialDeviation();
   return aDeflection;
 }
 
 void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
-		       const Bnd_Box& B,
-		       const Handle(Prs3d_Drawer)& aDrawer)
+                           const Bnd_Box& B,
+                           const Handle(Prs3d_Drawer)& aDrawer)
 {
   Standard_Real X[2],Y[2],Z[2];
   Standard_Integer Indx [16] ;
@@ -133,7 +129,7 @@ void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
   for(Standard_Integer k=0;k<=1;k++)
     for(Standard_Integer j=0;j<=1;j++)
       for(Standard_Integer i=0;i<=1;i++)
-	V(++Rank) = Graphic3d_Vertex(X[i],Y[j],Z[k]);
+        V(++Rank) = Graphic3d_Vertex(X[i],Y[j],Z[k]);
   
   
   Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPrs);
@@ -156,7 +152,7 @@ void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
   }
   G->EndPrimitives();
 }
-		     
+
 static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard_Integer aMode)
 {
   TColStd_ListIteratorOfListOfInteger It(LL);
@@ -210,8 +206,8 @@ Standard_Boolean AIS_Shape::AcceptShapeDecomposition() const
 //purpose  : 
 //=======================================================================
 void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-			const Handle(Prs3d_Presentation)& aPrs,
-			const Standard_Integer aMode)
+                        const Handle(Prs3d_Presentation)& aPrs,
+                        const Standard_Integer aMode)
 {  
   aPrs->Clear();
   if(myshape.IsNull()) return;
@@ -258,42 +254,42 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       
       
       if (OwnDeviationAngle(newangle,prevangle) ||
-	  OwnDeviationCoefficient(newcoeff,prevcoeff))
-	if (Abs (newangle - prevangle) > Precision::Angular() ||
-	    Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
+          OwnDeviationCoefficient(newcoeff,prevcoeff))
+        if (Abs (newangle - prevangle) > Precision::Angular() ||
+            Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
 #ifdef DEB
-	  cout << "AIS_Shape : compute"<<endl;
-	  cout << "newangl   : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
-	  cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
+          cout << "AIS_Shape : compute"<<endl;
+          cout << "newangl   : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
+          cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
 #endif
-	  BRepTools::Clean(myshape);
-	}
+          BRepTools::Clean(myshape);
+        }
       
       //shading only on face...
       if ((Standard_Integer) myshape.ShapeType()>4)
-	StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
+        StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
       else {
-	myDrawer->SetShadingAspectGlobal(Standard_False);
-	if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
-	else 	{
-	  {
-	    try {
-	      OCC_CATCH_SIGNALS
-	      StdPrs_ShadedShape::Add(aPrs,myshape,myDrawer);
-	    }
-	    catch (Standard_Failure) {
+        myDrawer->SetShadingAspectGlobal(Standard_False);
+        if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
+        else {
+          {
+            try {
+              OCC_CATCH_SIGNALS
+              StdPrs_ShadedShape::Add(aPrs,myshape,myDrawer);
+            }
+            catch (Standard_Failure) {
 #ifdef DEB
-	      cout << "AIS_Shape::Compute() in ShadingMode failed"<< endl;
+              cout << "AIS_Shape::Compute() in ShadingMode failed"<< endl;
 #endif
-	      StdPrs_WFShape::Add(aPrs,myshape,myDrawer);
-	    }
-	  }
-	}
+              StdPrs_WFShape::Add(aPrs,myshape,myDrawer);
+            }
+          }
+        }
       }
 #ifdef BUC60918
       Standard_Real value = Transparency() ;
       if( value > 0. ) {
-	SetTransparency( value );
+        SetTransparency( value );
       }
 #endif
       break;
@@ -317,8 +313,8 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 //=======================================================================
 
 void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager2d)& /*aPresentationManager*/,
-			const Handle(Graphic2d_GraphicObject)& /*aGRO*/,
-			const Standard_Integer /*aMode*/)
+                        const Handle(Graphic2d_GraphicObject)& /*aGRO*/,
+                        const Standard_Integer /*aMode*/)
 {
 }
 
@@ -327,7 +323,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager2d)& /*aPresentat
 //purpose  : Hidden Line Removal
 //=======================================================================
 void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
-			const Handle(Prs3d_Presentation)& aPresentation)
+                        const Handle(Prs3d_Presentation)& aPresentation)
 {
   Compute(aProjector,aPresentation,myshape);
 }
@@ -338,8 +334,8 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
 //=======================================================================
 
 void AIS_Shape::Compute(const Handle(Prs3d_Projector)&     aProjector,
-			const Handle(Geom_Transformation)& TheTrsf,
-			const Handle(Prs3d_Presentation)&  aPresentation)
+                        const Handle(Geom_Transformation)& TheTrsf,
+                        const Handle(Prs3d_Presentation)&  aPresentation)
 {
   const TopLoc_Location& loc = myshape.Location();
   TopoDS_Shape shbis = myshape.Located(TopLoc_Location(TheTrsf->Trsf())*loc);
@@ -352,8 +348,8 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)&     aProjector,
 //=======================================================================
 
 void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
-			const Handle(Prs3d_Presentation)& aPresentation,
-			const TopoDS_Shape& SH)
+                        const Handle(Prs3d_Presentation)& aPresentation,
+                        const TopoDS_Shape& SH)
 {
   if (SH.ShapeType() == TopAbs_COMPOUND) {
 #ifdef BUC60547
@@ -379,7 +375,7 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
   if (OwnHLRDeviationAngle(newangle,prevangle) || OwnHLRDeviationCoefficient(newcoeff, prevcoeff))
       
     if (Abs (newangle - prevangle) > Precision::Angular() ||
-	Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
+        Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
 #ifdef DEB
       cout << "AIS_Shape : compute"<<endl;
       cout << "newangle  : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
@@ -471,7 +467,7 @@ Standard_Integer AIS_Shape::SelectionMode(const TopAbs_ShapeEnum aType)
 //=======================================================================
 
 void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-		 const Standard_Integer aMode)
+                                              const Standard_Integer aMode)
 {
   if(myshape.IsNull()) return;
   if (myshape.ShapeType() == TopAbs_COMPOUND) {
@@ -496,20 +492,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 // POP protection against crash in low layers
 
-  Standard_Real aDeflection = myDrawer->MaximalChordialDeviation();
-  if (myDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
-  {
-    // Vector is calculated depending on global min max of the part:
-    Bnd_Box aBndBox; //= BoundingBox(); ?
-    BRepBndLib::Add (shape, aBndBox);
-    if (!aBndBox.IsVoid())
-    {
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-      aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-      aDeflection = Max (aXmax - aXmin, Max (aYmax - aYmin, aZmax - aZmin)) * myDrawer->DeviationCoefficient();
-    }
-  }
-
+  Standard_Real aDeflection = GetDeflection(shape, myDrawer);
   Standard_Boolean autoTriangulation = Standard_True;
   try {  
     OCC_CATCH_SIGNALS
@@ -518,7 +501,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                       shape,
                                       TypOfSel,
                                       aDeflection,
-                                      myDrawer->DeviationAngle(),
+                                      myDrawer->HLRAngle(),
                                       autoTriangulation); 
   } catch ( Standard_Failure ) {
 //    cout << "a Shape should be incorrect : A Selection on the Bnd  is activated   "<<endl;
@@ -571,7 +554,7 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   hasOwnColor = Standard_True;
 #ifdef GER61351
   if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
-	myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
 #else
   myOwnColor  = aCol; 
@@ -786,7 +769,7 @@ void AIS_Shape::SetMaterial(const Graphic3d_NameOfMaterial aMat)
 {
 #ifdef GER61351
   if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
-	myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
   myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
   hasOwnMaterial = Standard_True;
@@ -814,7 +797,7 @@ void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 {
 #ifdef GER61351
   if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
-	myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
   myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
   hasOwnMaterial = Standard_True;
@@ -846,11 +829,11 @@ void AIS_Shape::UnsetMaterial()
   if( HasColor() || IsTransparent()) {
     Graphic3d_MaterialAspect mat = AIS_GraphicTool::GetMaterial(myDrawer->Link()); 
     if( HasColor() ) {
-	Quantity_Color color = myDrawer->ShadingAspect()->Color(myCurrentFacingModel);
+      Quantity_Color color = myDrawer->ShadingAspect()->Color(myCurrentFacingModel);
       mat.SetColor(color);
     }
     if( IsTransparent() ) {
-	Standard_Real trans = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+      Standard_Real trans = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
       mat.SetTransparency(trans);
     }
     myDrawer->ShadingAspect()->SetMaterial(mat,myCurrentFacingModel);
@@ -900,8 +883,8 @@ void AIS_Shape::SetTransparency(const Standard_Real AValue)
       
       Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
-#ifdef BUC60918 	//force highest priority for transparent objects
-      P->SetDisplayPriority(10);	
+#ifdef BUC60918   //force highest priority for transparent objects
+      P->SetDisplayPriority(10);
 #endif
       G->SetGroupPrimitivesAspect(a4bis);
     }
@@ -937,7 +920,7 @@ void AIS_Shape::UnsetTransparency()
       Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
       G->SetGroupPrimitivesAspect(a4bis);
-#ifdef BUC60918	
+#ifdef BUC60918
       P->ResetDisplayPriority();
 #endif
     }
@@ -1133,7 +1116,7 @@ void AIS_Shape::SetOwnHLRDeviationAngle ( const Standard_Real  anAngle )
 //=======================================================================
 
 Standard_Boolean AIS_Shape::OwnDeviationCoefficient ( Standard_Real &  aCoefficient,
-						      Standard_Real & aPreviousCoefficient ) const
+                                                      Standard_Real & aPreviousCoefficient ) const
 {
   aCoefficient = myDrawer->DeviationCoefficient();
   aPreviousCoefficient = myDrawer->PreviousDeviationCoefficient ();
@@ -1146,7 +1129,7 @@ Standard_Boolean AIS_Shape::OwnDeviationCoefficient ( Standard_Real &  aCoeffici
 //=======================================================================
 
 Standard_Boolean AIS_Shape::OwnHLRDeviationCoefficient ( Standard_Real & aCoefficient,
-							 Standard_Real & aPreviousCoefficient ) const
+                                                         Standard_Real & aPreviousCoefficient ) const
 {
   aCoefficient = myDrawer->HLRDeviationCoefficient();
   aPreviousCoefficient = myDrawer->PreviousHLRDeviationCoefficient ();
@@ -1160,7 +1143,7 @@ Standard_Boolean AIS_Shape::OwnHLRDeviationCoefficient ( Standard_Real & aCoeffi
 //=======================================================================
 
 Standard_Boolean AIS_Shape::OwnDeviationAngle ( Standard_Real &  anAngle,
-						Standard_Real & aPreviousAngle ) const
+                                                Standard_Real & aPreviousAngle ) const
 {
   anAngle = myDrawer->DeviationAngle();
   aPreviousAngle = myDrawer->PreviousDeviationAngle (); 
@@ -1173,10 +1156,9 @@ Standard_Boolean AIS_Shape::OwnDeviationAngle ( Standard_Real &  anAngle,
 //=======================================================================
 
 Standard_Boolean AIS_Shape::OwnHLRDeviationAngle ( Standard_Real &  anAngle,
-						   Standard_Real & aPreviousAngle ) const
+                                                   Standard_Real & aPreviousAngle ) const
 {
   anAngle = myDrawer->HLRAngle();
   aPreviousAngle = myDrawer->PreviousHLRDeviationAngle (); 
   return myDrawer->IsOwnHLRDeviationAngle();
-
 }
