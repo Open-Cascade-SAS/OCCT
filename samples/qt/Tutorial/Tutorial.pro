@@ -9,10 +9,10 @@ SOURCES = src/*.cxx
 INCLUDEPATH = $(CASROOT) $(CASROOT)/inc $(CASROOT)/src/WOKTclLib $(QTDIR)/include/QtCore \
               $(QTDIR)/include/QtGui $(QTDIR)/include
 
-TRANSLATIONS += ./src/Common-icon.ts \
-                ./src/Common-string.ts \
-                ./src/Tutorial-icon.ts \
-		./src/Tutorial-string.ts
+TS_FILES = ./src/Common-icon.ts \
+           ./src/Common-string.ts \
+           ./src/Tutorial-icon.ts \
+	   ./src/Tutorial-string.ts
 
 DEFINES = CSFDB
 
@@ -148,7 +148,7 @@ LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKV2d \
 lrelease.name = LRELASE ${QMAKE_FILE_IN}
 lrelease.commands = $(QTDIR)/bin/lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm
 lrelease.output = ./res/${QMAKE_FILE_BASE}.qm
-lrelease.input = TRANSLATIONS
+lrelease.input = TS_FILES
 lrelease.clean = ./res/${QMAKE_FILE_BASE}.qm
 lrelease.CONFIG += no_link target_predeps
 QMAKE_EXTRA_COMPILERS += lrelease
