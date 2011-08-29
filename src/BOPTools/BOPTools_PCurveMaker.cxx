@@ -6,10 +6,12 @@
 
 #include <BOPTools_PCurveMaker.ixx>
 
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
 #include <Precision.hxx>
 
+#include <Geom_Surface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom2d_Curve.hxx>
@@ -45,6 +47,10 @@
 #include <BOPTools_PaveBlock.hxx>
 #include <BOPTools_Tools2D.hxx>
 
+//modified by NIZNHY-PKV Tue Jun 28 13:24:42 2011f
+static 
+  void UpdateVertices(const TopoDS_Edge& aE, const TopoDS_Face& aF);
+//modified by NIZNHY-PKV Tue Jun 28 13:24:46 2011t
 
 //=======================================================================
 // function: BOPTools_PCurveMaker
@@ -71,7 +77,6 @@
 //=======================================================================
   void BOPTools_PCurveMaker::Do()
 {
-  
   BOPTools_CArray1OfSSInterference& aFFs=(myFiller->InterfPool())->SSInterferences();
   
   Standard_Integer i, aNb,  nF1, nF2, nE;
@@ -152,7 +157,6 @@
 	const Handle(Geom_Curve)& aC3DE=BRep_Tool::Curve(aE, aTFirst, aTLast);
 	Handle(Geom_TrimmedCurve)aC3DETrim=new Geom_TrimmedCurve(aC3DE, aTFirst, aTLast);
 	//
-	//modified by NIZNHY-PKV Wed Sep  3 11:13:41 2003 f 
 	Handle(Geom2d_Curve) aC2D1, aC2D1A, aC2D2, aC2D2A;
 	//
 	aC2D1=aIC.FirstCurve2d();
@@ -160,9 +164,6 @@
 	  BOPTools_Tools2D::BuildPCurveForEdgeOnFace(aE, aF1FWD);
 	  BOPTools_Tools2D::CurveOnSurface(aE, aF1FWD, aC2D1, aOutFirst, aOutLast, aOutTol, Standard_True);
 	}
-	//const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
-	//Handle(Geom2d_Curve) aC2D1A;
-	//modified by NIZNHY-PKV Wed Sep  3 11:13:48 2003 t
 	//
 	if (aC3DE->IsPeriodic()) {
 	  BOPTools_Tools2D::AdjustPCurveOnFace(aF1FWD, aTFirst, aTLast,  aC2D1, aC2D1A); 
@@ -172,16 +173,15 @@
 	}
 	//
 	aBB.UpdateEdge(aE, aC2D1A, aF1FWD, aTolFact);
+	//modified by NIZNHY-PKV Tue Jun 28 07:52:55 2011f
+	UpdateVertices(aE, aF1FWD);
+	//modified by NIZNHY-PKV Tue Jun 28 07:52:57 2011t
 
-	//modified by NIZNHY-PKV Wed Sep  3 11:23:00 2003 f
 	aC2D2=aIC.SecondCurve2d();
 	if (aC2D2.IsNull()) {
 	  BOPTools_Tools2D::BuildPCurveForEdgeOnFace(aE, aF2FWD);
 	  BOPTools_Tools2D::CurveOnSurface(aE, aF2FWD, aC2D2, aOutFirst, aOutLast, aOutTol, Standard_True);
 	}
-	//const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
-	//Handle(Geom2d_Curve) aC2D2A;
-	//modified by NIZNHY-PKV Wed Sep  3 11:23:12 2003 t
 	//
 	if (aC3DE->IsPeriodic()) {
 	  BOPTools_Tools2D::AdjustPCurveOnFace(aF2FWD, aTFirst, aTLast, aC2D2, aC2D2A); 
@@ -191,6 +191,9 @@
 	}
 	//
 	aBB.UpdateEdge(aE, aC2D2A, aF2FWD, aTolFact);
+	//modified by NIZNHY-PKV Tue Jun 28 07:52:55 2011f
+	UpdateVertices(aE, aF2FWD);
+	//modified by NIZNHY-PKV Tue Jun 28 07:52:57 2011t
       } 
     }// for (j=1; j<=aNbCurves; j++)
     
@@ -198,3 +201,47 @@
   myIsDone=Standard_True;
 }
 
+//modified by NIZNHY-PKV Tue Jun 28 07:37:47 2011f
+//=======================================================================
+//function : UpdateVertices
+//purpose  : update tolerances of vertices comparing extremities of
+//           3d and 2d curves
+//=======================================================================
+void UpdateVertices(const TopoDS_Edge& aE, const TopoDS_Face& aF)
+{
+  Standard_Integer j;
+  Standard_Real aT[2], aUx, aVx, aTolV2, aD2, aD;
+  gp_Pnt aP3D, aP3Dx;
+  gp_Pnt2d aP2Dx;
+  Handle(Geom_Surface) aS;
+  Handle(Geom_Curve) aC3D;
+  Handle(Geom2d_Curve) aC2D;
+  TopoDS_Edge aEf;
+  TopoDS_Vertex aV[2];
+  BRep_Builder aBB;
+  //
+  aEf=aE;
+  aEf.Orientation(TopAbs_FORWARD);
+  //
+  TopExp::Vertices(aEf, aV[0], aV[1]);
+  //
+  aS=BRep_Tool::Surface(aF);
+  aC3D=BRep_Tool::Curve(aEf, aT[0], aT[1]);
+  aC2D=BRep_Tool::CurveOnSurface(aEf, aF, aT[0], aT[1]);
+  //
+  for (j=0; j<2; ++j) {
+    aTolV2=BRep_Tool::Tolerance(aV[j]);
+    aTolV2=aTolV2*aTolV2;
+    //
+    aC3D->D0(aT[j], aP3D);
+    aC2D->D0(aT[j], aP2Dx);
+    aP2Dx.Coord(aUx, aVx);
+    aS->D0(aUx, aVx, aP3Dx);
+    aD2=aP3D.SquareDistance(aP3Dx);
+    if (aD2>aTolV2) {
+      aD=sqrt(aD2);
+      aBB.UpdateVertex(aV[j], aD);
+    }
+  }
+}
+//modified by NIZNHY-PKV Tue Jun 28 07:37:50 2011t
