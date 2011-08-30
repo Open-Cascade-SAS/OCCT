@@ -52,8 +52,6 @@ Facility : CAS-CADE V1
 #include <Aspect_GraphicCallbackProc.hxx>
 #endif
 
-#include <OSD_FontAspect.hxx>
-
 typedef float CALL_DEF_MATRIX4X4[4][4];
 
 /* SOMMET */
@@ -255,62 +253,5 @@ typedef struct {
 	} Pick;
 
 } CALL_DEF_PICK;
-
-/* Graduated trihedron */
-typedef void (*minMaxValuesCallback)(void*);
-typedef struct
-{
-    /* Names of axes */
-    char *xname, *yname, *zname;
-    /* Draw names */
-    unsigned char xdrawname, ydrawname, zdrawname;
-    /* Draw values */
-    unsigned char xdrawvalues, ydrawvalues, zdrawvalues;
-    /* Draw grid */
-    unsigned char drawgrid;
-    /* Draw axes */
-    unsigned char drawaxes;
-    /* Number of splits along axes */
-    unsigned int nbx, nby, nbz;
-    /* Offset for drawing values */
-    int xoffset, yoffset, zoffset;
-    /* Offset for drawing names of axes */
-    int xaxisoffset, yaxisoffset, zaxisoffset;
-    /* Draw tickmarks */
-    unsigned char xdrawtickmarks, ydrawtickmarks, zdrawtickmarks;
-    /* Length of tickmarks */
-    unsigned int xtickmarklength, ytickmarklength, ztickmarklength;
-    /* Grid color */
-    float gridcolor[3];
-    /* X name color */
-    float xnamecolor[3];
-    /* Y name color */
-    float ynamecolor[3];
-    /* Z name color */
-    float znamecolor[3];
-    /* X color of axis and values */
-    float xcolor[3];
-    /* Y color of axis and values */
-    float ycolor[3];
-    /* Z color of axis and values */
-    float zcolor[3];
-    /* Font name of names of axes: Courier, Arial, ... */
-    char* fontOfNames;
-    /* Style of names of axes: OSD_FA_Regular, OSD_FA_Bold, ... */
-    OSD_FontAspect styleOfNames;
-    /* Size of names of axes: 8, 10, 12, 14, ... */
-    int sizeOfNames;
-    /* Font name of values: Courier, Arial, ... */
-    char* fontOfValues;
-    /* Style of values: OSD_FA_Regular, OSD_FA_Bold, ... */
-    OSD_FontAspect styleOfValues;
-    /* Size of values: 8, 10, 12, 14, ... */
-    int sizeOfValues;
-
-    /* Callback function to define boundary box of displayed objects */
-    minMaxValuesCallback cbCubicAxes;
-    void* ptrVisual3dView;
-
-} CALL_DEF_GRADUATEDTRIHEDRON;
 
 #endif /* InterfaceGraphic_Visual3dHeader */

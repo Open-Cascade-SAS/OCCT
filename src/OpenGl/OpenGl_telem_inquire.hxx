@@ -22,7 +22,7 @@ typedef union
   {
     TEL_POINT   ref_pt;  /* reference text point */
     TEL_POINT   anno;    /* annotation pt/offset */
-    Tchar       *string; /* text string */
+    Techar      *string; /* text string */
   } atext3;
 
   Tint            size;

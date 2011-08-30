@@ -3672,268 +3672,258 @@ void SetMinMaxValuesCallback(void* Visual3dView)
     }
 }
 
-void Visual3d_View::GetGraduatedTrihedron(/* Names of axes */
-                                          Standard_CString& xname,
-                                          Standard_CString& yname,
-                                          Standard_CString& zname,
-                                          /* Draw names */
-                                          Standard_Boolean& xdrawname,
-                                          Standard_Boolean& ydrawname,
-                                          Standard_Boolean& zdrawname,
-                                          /* Draw values */
-                                          Standard_Boolean& xdrawvalues,
-                                          Standard_Boolean& ydrawvalues,
-                                          Standard_Boolean& zdrawvalues,
-                                          /* Draw grid */
-                                          Standard_Boolean& drawgrid,
-                                          /* Draw axes */
-                                          Standard_Boolean& drawaxes,
-                                          /* Number of splits along axes */
-                                          Standard_Integer& nbx,
-                                          Standard_Integer& nby,
-                                          Standard_Integer& nbz,
-                                          /* Offset for drawing values */
-                                          Standard_Integer& xoffset,
-                                          Standard_Integer& yoffset,
-                                          Standard_Integer& zoffset,
-                                          /* Offset for drawing names of axes */
-                                          Standard_Integer& xaxisoffset,
-                                          Standard_Integer& yaxisoffset,
-                                          Standard_Integer& zaxisoffset,
-                                          /* Draw tickmarks */
-                                          Standard_Boolean& xdrawtickmarks,
-                                          Standard_Boolean& ydrawtickmarks,
-                                          Standard_Boolean& zdrawtickmarks,
-                                          /* Length of tickmarks */
-                                          Standard_Integer& xtickmarklength,
-                                          Standard_Integer& ytickmarklength,
-                                          Standard_Integer& ztickmarklength,
-                                          /* Grid color */
-                                          Quantity_Color& gridcolor,
-                                          /* X name color */
-                                          Quantity_Color& xnamecolor,
-                                          /* Y name color */
-                                          Quantity_Color& ynamecolor,
-                                          /* Z name color */
-                                          Quantity_Color& znamecolor,
-                                          /* X color of axis and values */
-                                          Quantity_Color& xcolor,
-                                          /* Y color of axis and values */
-                                          Quantity_Color& ycolor,
-                                          /* Z color of axis and values */
-                                          Quantity_Color& zcolor,
-                                          /* Name of font for names of axes */
-                                          Standard_CString& fontOfNames,
-                                          /* Style of names of axes */
-                                          OSD_FontAspect& styleOfNames,
-                                          /* Size of names of axes */
-                                          Standard_Integer& sizeOfNames,
-                                          /* Name of font for values */
-                                          Standard_CString& fontOfValues,
-                                          /* Style of values */
-                                          OSD_FontAspect& styleOfValues,
-                                          /* Size of values */
-                                          Standard_Integer& sizeOfValues) const
+Standard_Boolean Visual3d_View::GetGraduatedTrihedron
+    (/* Names of axes */
+     TCollection_ExtendedString& xname,
+     TCollection_ExtendedString& yname,
+     TCollection_ExtendedString& zname,
+     /* Draw names */
+     Standard_Boolean& xdrawname,
+     Standard_Boolean& ydrawname,
+     Standard_Boolean& zdrawname,
+     /* Draw values */
+     Standard_Boolean& xdrawvalues,
+     Standard_Boolean& ydrawvalues,
+     Standard_Boolean& zdrawvalues,
+     /* Draw grid */
+     Standard_Boolean& drawgrid,
+     /* Draw axes */
+     Standard_Boolean& drawaxes,
+     /* Number of splits along axes */
+     Standard_Integer& nbx,
+     Standard_Integer& nby,
+     Standard_Integer& nbz,
+     /* Offset for drawing values */
+     Standard_Integer& xoffset,
+     Standard_Integer& yoffset,
+     Standard_Integer& zoffset,
+     /* Offset for drawing names of axes */
+     Standard_Integer& xaxisoffset,
+     Standard_Integer& yaxisoffset,
+     Standard_Integer& zaxisoffset,
+     /* Draw tickmarks */
+     Standard_Boolean& xdrawtickmarks,
+     Standard_Boolean& ydrawtickmarks,
+     Standard_Boolean& zdrawtickmarks,
+     /* Length of tickmarks */
+     Standard_Integer& xtickmarklength,
+     Standard_Integer& ytickmarklength,
+     Standard_Integer& ztickmarklength,
+     /* Grid color */
+     Quantity_Color& gridcolor,
+     /* Colors of axis names */
+     Quantity_Color& xnamecolor,
+     Quantity_Color& ynamecolor,
+     Quantity_Color& znamecolor,
+     /* Colors of axis and values */
+     Quantity_Color& xcolor,
+     Quantity_Color& ycolor,
+     Quantity_Color& zcolor,
+     /* Name of font for names of axes */
+     TCollection_AsciiString& fontOfNames,
+     /* Style of names of axes */
+     OSD_FontAspect& styleOfNames,
+     /* Size of names of axes */
+     Standard_Integer& sizeOfNames,
+     /* Name of font for values */
+     TCollection_AsciiString& fontOfValues,
+     /* Style of values */
+     OSD_FontAspect& styleOfValues,
+     /* Size of values */
+     Standard_Integer& sizeOfValues) const
 {
-    MyGraphicDriver->GetGraduatedTrihedron(MyCView,
-                                           /* Names of axes */
-                                           xname,
-                                           yname,
-                                           zname,
-                                           /* Draw names */
-                                           xdrawname,
-                                           ydrawname,
-                                           zdrawname,
-                                           /* Draw values */
-                                           xdrawvalues,
-                                           ydrawvalues,
-                                           zdrawvalues,
-                                           /* Draw grid */
-                                           drawgrid,
-                                           /* Draw axes */
-                                           drawaxes,
-                                           /* Number of splits along axes */
-                                           nbx,
-                                           nby,
-                                           nbz,
-                                           /* Offset for drawing values */
-                                           xoffset,
-                                           yoffset,
-                                           zoffset,
-                                           /* Offset for drawing names of axes */
-                                           xaxisoffset,
-                                           yaxisoffset,
-                                           zaxisoffset,
-                                           /* Draw tickmarks */
-                                           xdrawtickmarks,
-                                           ydrawtickmarks,
-                                           zdrawtickmarks,
-                                           /* Length of tickmarks */
-                                           xtickmarklength,
-                                           ytickmarklength,
-                                           ztickmarklength,
-                                           /* Grid color */
-                                           gridcolor,
-                                           /* X name color */
-                                           xnamecolor,
-                                           /* Y name color */
-                                           ynamecolor,
-                                           /* Z name color */
-                                           znamecolor,
-                                           /* X color of axis and values */
-                                           xcolor,
-                                           /* Y color of axis and values */
-                                           ycolor,
-                                           /* Z color of axis and values */
-                                           zcolor,
-                                           /* Name of font for names of axes */
-                                           fontOfNames,
-                                           /* Style of names of axes */
-                                           styleOfNames,
-                                           /* Size of names of axes */
-                                           sizeOfNames,
-                                           /* Name of font for values */
-                                           fontOfValues,
-                                           /* Style of values */
-                                           styleOfValues,
-                                           /* Size of values */
-                                           sizeOfValues);
+    if (!MyGTrihedron.ptrVisual3dView)
+        return Standard_False;
+
+    /* Names of axes */
+    xname = MyGTrihedron.xname;
+    yname = MyGTrihedron.yname; 
+    zname = MyGTrihedron.zname;
+    /* Draw names */
+    xdrawname = MyGTrihedron.xdrawname; 
+    ydrawname = MyGTrihedron.ydrawname; 
+    zdrawname = MyGTrihedron.zdrawname;
+    /* Draw values */
+    xdrawvalues = MyGTrihedron.xdrawvalues; 
+    ydrawvalues = MyGTrihedron.ydrawvalues; 
+    zdrawvalues = MyGTrihedron.zdrawvalues;
+    /* Draw grid */
+    drawgrid = MyGTrihedron.drawgrid;
+    /* Draw axes */
+    drawaxes = MyGTrihedron.drawaxes;
+    /* Number of splits along axes */
+    nbx = MyGTrihedron.nbx;
+    nby = MyGTrihedron.nby;
+    nbz = MyGTrihedron.nbz;
+    /* Offset for drawing values */
+    xoffset = MyGTrihedron.xoffset;
+    yoffset = MyGTrihedron.yoffset;
+    zoffset = MyGTrihedron.zoffset;
+    /* Offset for drawing names of axes */
+    xaxisoffset = MyGTrihedron.xaxisoffset;
+    yaxisoffset = MyGTrihedron.yaxisoffset;
+    zaxisoffset = MyGTrihedron.zaxisoffset;
+    /* Draw tickmarks */
+    xdrawtickmarks = MyGTrihedron.xdrawtickmarks;
+    ydrawtickmarks = MyGTrihedron.ydrawtickmarks;
+    zdrawtickmarks = MyGTrihedron.zdrawtickmarks;
+    /* Length of tickmarks */
+    xtickmarklength = MyGTrihedron.xtickmarklength;
+    ytickmarklength = MyGTrihedron.ytickmarklength;
+    ztickmarklength = MyGTrihedron.ztickmarklength;
+    /* Grid color */
+    gridcolor = MyGTrihedron.gridcolor;
+    /* Colors of axis names */
+    xnamecolor = MyGTrihedron.xnamecolor;
+    ynamecolor = MyGTrihedron.ynamecolor;
+    znamecolor = MyGTrihedron.znamecolor;
+    /* Colors of axis and values */
+    xcolor = MyGTrihedron.xcolor;
+    ycolor = MyGTrihedron.ycolor;
+    zcolor = MyGTrihedron.zcolor;
+    /* Name of font for names of axes */
+    fontOfNames = MyGTrihedron.fontOfNames;
+    /* Style of names of axes */
+    styleOfNames = MyGTrihedron.styleOfNames;
+    /* Size of names of axes */
+    sizeOfNames = MyGTrihedron.sizeOfNames;
+    /* Name of font for values */
+    fontOfValues = MyGTrihedron.fontOfValues;
+    /* Style of values */
+    styleOfValues = MyGTrihedron.styleOfValues;
+    /* Size of values */
+    sizeOfValues = MyGTrihedron.sizeOfValues;
+
+    return Standard_True;
 }
 
-void Visual3d_View::GraduatedTrihedronDisplay(/* Names of axes */
-                                              const Standard_CString xname,
-                                              const Standard_CString yname,
-                                              const Standard_CString zname,
-                                              /* Draw names */
-                                              const Standard_Boolean xdrawname,
-                                              const Standard_Boolean ydrawname,
-                                              const Standard_Boolean zdrawname,
-                                              /* Draw values */
-                                              const Standard_Boolean xdrawvalues,
-                                              const Standard_Boolean ydrawvalues,
-                                              const Standard_Boolean zdrawvalues,
-                                              /* Draw grid */
-                                              const Standard_Boolean drawgrid,
-                                              /* Draw axes */
-                                              const Standard_Boolean drawaxes,
-                                              /* Number of splits along axes */
-                                              const Standard_Integer nbx,
-                                              const Standard_Integer nby,
-                                              const Standard_Integer nbz,
-                                              /* Offset for drawing values */
-                                              const Standard_Integer xoffset,
-                                              const Standard_Integer yoffset,
-                                              const Standard_Integer zoffset,
-                                              /* Offset for drawing names of axes */
-                                              const Standard_Integer xaxisoffset,
-                                              const Standard_Integer yaxisoffset,
-                                              const Standard_Integer zaxisoffset,
-                                              /* Draw tickmarks */
-                                              const Standard_Boolean xdrawtickmarks,
-                                              const Standard_Boolean ydrawtickmarks,
-                                              const Standard_Boolean zdrawtickmarks,
-                                              /* Length of tickmarks */
-                                              const Standard_Integer xtickmarklength,
-                                              const Standard_Integer ytickmarklength,
-                                              const Standard_Integer ztickmarklength,
-                                              /* Grid color */
-                                              const Quantity_Color& gridcolor,
-                                              /* X name color */
-                                              const Quantity_Color& xnamecolor,
-                                              /* Y name color */
-                                              const Quantity_Color& ynamecolor,
-                                              /* Z name color */
-                                              const Quantity_Color& znamecolor,
-                                              /* X color of axis and values */
-                                              const Quantity_Color& xcolor,
-                                              /* Y color of axis and values */
-                                              const Quantity_Color& ycolor,
-                                              /* Z color of axis and values */
-                                              const Quantity_Color& zcolor,
-                                              /* Name of font for names of axes */
-                                              const Standard_CString fontOfNames,
-                                              /* Style of names of axes */
-                                              const OSD_FontAspect styleOfNames,
-                                              /* Size of names of axes */
-                                              const Standard_Integer sizeOfNames,
-                                              /* Name of font for values */
-                                              const Standard_CString fontOfValues,
-                                              /* Style of values */
-                                              const OSD_FontAspect styleOfValues,
-                                              /* Size of values */
-                                              const Standard_Integer sizeOfValues)
+void Visual3d_View::GraduatedTrihedronDisplay
+    (/* Names of axes */
+     const TCollection_ExtendedString &xname,
+     const TCollection_ExtendedString &yname,
+     const TCollection_ExtendedString &zname,
+     /* Draw names */
+     const Standard_Boolean xdrawname,
+     const Standard_Boolean ydrawname,
+     const Standard_Boolean zdrawname,
+     /* Draw values */
+     const Standard_Boolean xdrawvalues,
+     const Standard_Boolean ydrawvalues,
+     const Standard_Boolean zdrawvalues,
+     /* Draw grid */
+     const Standard_Boolean drawgrid,
+     /* Draw axes */
+     const Standard_Boolean drawaxes,
+     /* Number of splits along axes */
+     const Standard_Integer nbx,
+     const Standard_Integer nby,
+     const Standard_Integer nbz,
+     /* Offset for drawing values */
+     const Standard_Integer xoffset,
+     const Standard_Integer yoffset,
+     const Standard_Integer zoffset,
+     /* Offset for drawing names of axes */
+     const Standard_Integer xaxisoffset,
+     const Standard_Integer yaxisoffset,
+     const Standard_Integer zaxisoffset,
+     /* Draw tickmarks */
+     const Standard_Boolean xdrawtickmarks,
+     const Standard_Boolean ydrawtickmarks,
+     const Standard_Boolean zdrawtickmarks,
+     /* Length of tickmarks */
+     const Standard_Integer xtickmarklength,
+     const Standard_Integer ytickmarklength,
+     const Standard_Integer ztickmarklength,
+     /* Grid color */
+     const Quantity_Color& gridcolor,
+     /* Colors of axis names */
+     const Quantity_Color& xnamecolor,
+     const Quantity_Color& ynamecolor,
+     const Quantity_Color& znamecolor,
+     /* Colors of axis and values */
+     const Quantity_Color& xcolor,
+     const Quantity_Color& ycolor,
+     const Quantity_Color& zcolor,
+     /* Name of font for names of axes */
+     const TCollection_AsciiString &fontOfNames,
+     /* Style of names of axes */
+     const OSD_FontAspect styleOfNames,
+     /* Size of names of axes */
+     const Standard_Integer sizeOfNames,
+     /* Name of font for values */
+     const TCollection_AsciiString &fontOfValues,
+     /* Style of values */
+     const OSD_FontAspect styleOfValues,
+     /* Size of values */
+     const Standard_Integer sizeOfValues)
 {
-    CALL_DEF_GRADUATEDTRIHEDRON cubic;
-    cubic.ptrVisual3dView = this;
-    cubic.cbCubicAxes = SetMinMaxValuesCallback;
-    MyGraphicDriver->GraduatedTrihedronDisplay(MyCView,
-                                               cubic,
-                                               /* Names of axes */
-                                               xname,
-                                               yname,
-                                               zname,
-                                               /* Draw names */
-                                               xdrawname,
-                                               ydrawname,
-                                               zdrawname,
-                                               /* Draw values */
-                                               xdrawvalues,
-                                               ydrawvalues,
-                                               zdrawvalues,
-                                               /* Draw grid */
-                                               drawgrid,
-                                               /* Draw axes */
-                                               drawaxes,
-                                               /* Number of splits along axes */
-                                               nbx,
-                                               nby,
-                                               nbz,
-                                               /* Offset for drawing values */
-                                               xoffset,
-                                               yoffset,
-                                               zoffset,
-                                               /* Offset for drawing names of axes */
-                                               xaxisoffset,
-                                               yaxisoffset,
-                                               zaxisoffset,
-                                               /* Draw tickmarks */
-                                               xdrawtickmarks,
-                                               ydrawtickmarks,
-                                               zdrawtickmarks,
-                                               /* Length of tickmarks */
-                                               xtickmarklength,
-                                               ytickmarklength,
-                                               ztickmarklength,
-                                               /* Grid color */
-                                               gridcolor,
-                                               /* X name color */
-                                               xnamecolor,
-                                               /* Y name color */
-                                               ynamecolor,
-                                               /* Z name color */
-                                               znamecolor,
-                                               /* X color of axis and values */
-                                               xcolor,
-                                               /* Y color of axis and values */
-                                               ycolor,
-                                               /* Z color of axis and values */
-                                               zcolor,
-                                               /* Name of font for names of axes */
-                                               fontOfNames,
-                                               /* Style of names of axes */
-                                               styleOfNames,
-                                               /* Size of names of axes */
-                                               sizeOfNames,
-                                               /* Name of font for values */
-                                               fontOfValues,
-                                               /* Style of values */
-                                               styleOfValues,
-                                               /* Size of values */
-                                               sizeOfValues);
+    /* Names of axes */
+    MyGTrihedron.xname = xname;
+    MyGTrihedron.yname = yname;
+    MyGTrihedron.zname = zname;
+    /* Draw names */
+    MyGTrihedron.xdrawname = xdrawname;
+    MyGTrihedron.ydrawname = ydrawname;
+    MyGTrihedron.zdrawname = zdrawname;
+    /* Draw values */
+    MyGTrihedron.xdrawvalues = xdrawvalues;
+    MyGTrihedron.ydrawvalues = ydrawvalues;
+    MyGTrihedron.zdrawvalues = zdrawvalues;
+    /* Draw grid */
+    MyGTrihedron.drawgrid = drawgrid;
+    /* Draw axes */
+    MyGTrihedron.drawaxes = drawaxes;
+    /* Number of splits along axes */
+    MyGTrihedron.nbx = nbx;
+    MyGTrihedron.nby = nby;
+    MyGTrihedron.nbz = nbz;
+    /* Offset for drawing values */
+    MyGTrihedron.xoffset = xoffset;
+    MyGTrihedron.yoffset = yoffset;
+    MyGTrihedron.zoffset = zoffset;
+    /* Offset for drawing names of axes */
+    MyGTrihedron.xaxisoffset = xaxisoffset;
+    MyGTrihedron.yaxisoffset = yaxisoffset;
+    MyGTrihedron.zaxisoffset = zaxisoffset;
+    /* Draw tickmarks */
+    MyGTrihedron.xdrawtickmarks = xdrawtickmarks;
+    MyGTrihedron.ydrawtickmarks = ydrawtickmarks;
+    MyGTrihedron.zdrawtickmarks = zdrawtickmarks;
+    /* Length of tickmarks */
+    MyGTrihedron.xtickmarklength = xtickmarklength;
+    MyGTrihedron.ytickmarklength = ytickmarklength;
+    MyGTrihedron.ztickmarklength = ztickmarklength;
+    /* Grid color */
+    MyGTrihedron.gridcolor = gridcolor;
+    /* Colors of axis names */
+    MyGTrihedron.xnamecolor = xnamecolor;
+    MyGTrihedron.ynamecolor = ynamecolor;
+    MyGTrihedron.znamecolor = znamecolor;
+    /* Colors of axis and values */
+    MyGTrihedron.xcolor = xcolor;
+    MyGTrihedron.ycolor = ycolor;
+    MyGTrihedron.zcolor = zcolor;
+    /* Name of font for names of axes */
+    MyGTrihedron.fontOfNames = fontOfNames;
+    /* Style of names of axes */
+    MyGTrihedron.styleOfNames = styleOfNames;
+    /* Size of names of axes */
+    MyGTrihedron.sizeOfNames = sizeOfNames;
+    /* Name of font for values */
+    MyGTrihedron.fontOfValues = fontOfValues;
+    /* Style of values */
+    MyGTrihedron.styleOfValues = styleOfValues;
+    /* Size of values */
+    MyGTrihedron.sizeOfValues = sizeOfValues;
+
+    MyGTrihedron.ptrVisual3dView = this;
+    MyGTrihedron.cbCubicAxes = SetMinMaxValuesCallback;
+    MyGraphicDriver->GraduatedTrihedronDisplay(MyCView,MyGTrihedron);
 }
 
 void Visual3d_View::GraduatedTrihedronErase()
 {
+    MyGTrihedron.ptrVisual3dView = NULL;
     MyGraphicDriver->GraduatedTrihedronErase(MyCView);
 }
 

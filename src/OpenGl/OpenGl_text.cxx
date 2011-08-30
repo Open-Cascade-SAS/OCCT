@@ -49,8 +49,16 @@ xx-xx-xx : xxx ; Creation.
 #include <OpenGl_Extension.hxx>
 #include <OpenGl_Memory.hxx>
 
-
 #include <OpenGl_TextRender.hxx>
+
+struct TEL_TEXT_DATA
+{
+  TEL_POINT      attach_pt;
+  Tint           length;
+  const wchar_t *sdata;
+  IMPLEMENT_MEMORY_OPERATORS
+};
+typedef TEL_TEXT_DATA* tel_text_data;
 
 /*----------------------------------------------------------------------*/
 /*
@@ -103,12 +111,6 @@ extern int    g_nDegenerateModel;
 extern float  g_fSkipRatio;
 #endif
 
-void putText( Tchar* data, Tfloat x, Tfloat y, Tfloat z )
-{
-  OpenGl_TextRender* textRender=OpenGl_TextRender::instance();
-  textRender->RenderText ( (char*)data, fontBase, 0, x, y, z );
-}
-
 /*----------------------------------------------------------------------*/
 
 MtblPtr
@@ -127,7 +129,7 @@ TextAdd( TSM_ELEM_DATA d, Tint n, cmn_key *k )
   TEL_POINT      def_pt = {{ ( float )0.0, ( float )0.0, ( float )0.0 }};
   tel_point      pt = &def_pt;
   tel_text_data  data;
-  Tchar          *str= 0;
+  Techar         *str= 0;
 
   for( i = 0; i < n; i++ )
   {
@@ -137,23 +139,27 @@ TextAdd( TSM_ELEM_DATA d, Tint n, cmn_key *k )
       pt = (tel_point)k[i]->data.pdata;
       break;
     case TEXT_STRING_ID:
-      str = (Tchar*)k[i]->data.pdata;
+      str = (Techar*)k[i]->data.pdata;
       break;
     }
   }
 
-  i = strlen((char*)str) + 1;
-
   data = new TEL_TEXT_DATA();
   if( !data )
     return TFailure;
-  data->data = new Tchar[i];
-  if( !data->data )
+
+  //szv: instead of strlen + 1
+  i = 0; while (str[i++]);
+
+  wchar_t *wstr = new wchar_t[i];
+  if( !wstr )
     return TFailure;
 
   data->attach_pt = *pt;
   data->length    = i;
-  memcpy( data->data, str, i );
+  //szv: instead of memcpy
+  i = 0; while (wstr[i++] = (wchar_t)(*str++));
+  data->sdata = wstr;
 
   ((tsm_elem_data)(d.pdata))->pdata = data;
 
@@ -225,6 +231,8 @@ TextDisplay( TSM_ELEM_DATA data, Tint n, cmn_key *k )
     if (flag_zbuffer) glDisable(GL_DEPTH_TEST);
   }
 
+  OpenGl_TextRender* textRender=OpenGl_TextRender::instance();
+
   /* display type of text */
   if (display_type != ASPECT_TODT_NORMAL)
   {
@@ -237,7 +245,6 @@ TextDisplay( TSM_ELEM_DATA data, Tint n, cmn_key *k )
     glGetDoublev (GL_MODELVIEW_MATRIX, modelMatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, projMatrix);
 
-    OpenGl_TextRender* textRender=OpenGl_TextRender::instance();
     switch (display_type) 
     {
     case ASPECT_TODT_BLEND:            
@@ -272,7 +279,7 @@ TextDisplay( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 #endif
       break;
     case ASPECT_TODT_SUBTITLE:
-      textRender->StringSize((char *)d->data, &sWidth, &sAscent, &sDescent);
+      textRender->StringSize(d->sdata, &sWidth, &sAscent, &sDescent);
       objrefX = (float)d->attach_pt.xyz[0];   
       objrefY = (float)d->attach_pt.xyz[1];   
       objrefZ = (float)d->attach_pt.xyz[2];
@@ -326,30 +333,30 @@ TextDisplay( TSM_ELEM_DATA data, Tint n, cmn_key *k )
         &objX, &objY, &objZ);
 
       glColor3fv( colours.rgb );
-      putText( d->data, (float)objX, (float)objY,(float)objZ );
+      textRender->RenderText( d->sdata, fontBase, 0, (float)objX, (float)objY,(float)objZ );
       winx = winx1-1;
       winy = winy1-1;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &objX, &objY, &objZ);
 
-      putText( d->data, (float)objX, (float)objY,(float)objZ );
+      textRender->RenderText( d->sdata, fontBase, 0, (float)objX, (float)objY,(float)objZ );
       winx = winx1-1;
       winy = winy1+1;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &objX, &objY, &objZ); 
 
-      putText( d->data, (float)objX, (float)objY,(float)objZ );
+      textRender->RenderText( d->sdata, fontBase, 0, (float)objX, (float)objY,(float)objZ );
       winx = winx1+1;
       winy = winy1-1;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &objX, &objY, &objZ);
-      putText( d->data, (float)objX, (float)objY,(float)objZ );
+      textRender->RenderText( d->sdata, fontBase, 0, (float)objX, (float)objY,(float)objZ );
       break;
     }
   }
 
   glColor3fv( colour.rgb );
-  putText( d->data, (float)d->attach_pt.xyz[0], (float)d->attach_pt.xyz[1],(float)d->attach_pt.xyz[2] );
+  textRender->RenderText( d->sdata, fontBase, 0, (float)d->attach_pt.xyz[0], (float)d->attach_pt.xyz[1],(float)d->attach_pt.xyz[2] );
   /* maj attributs */   
   if (flag_zbuffer) glEnable(GL_DEPTH_TEST); 
   if (display_type == ASPECT_TODT_BLEND) 
@@ -370,8 +377,12 @@ TextDisplay( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 static  TStatus
 TextDelete( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 {
-  if (data.pdata)
-    delete data.pdata;
+  tel_text_data d = (tel_text_data)data.pdata;
+  if (d)
+  {
+    delete[] d->sdata;
+    delete d;
+  }
   return TSuccess;
 }
 
@@ -385,7 +396,7 @@ TextPrint( TSM_ELEM_DATA data, Tint n, cmn_key *k )
   p = (tel_text_data)data.pdata;
 
   fprintf( stdout, "TelText.\n" );
-  fprintf( stdout, "\t\tString : %s\n", p->data );
+  fprintf( stdout, "\t\tString : %S\n", p->sdata );
   fprintf( stdout, "\t\tAttach Point : %f %f %f\n", p->attach_pt.xyz[0],
     p->attach_pt.xyz[1],
     p->attach_pt.xyz[2] );
@@ -406,7 +417,7 @@ TextInquire( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 
   d = (tel_text_data)data.pdata;
 
-  size_reqd = d->length;
+  size_reqd = sizeof(Techar)*d->length;
 
   for( i = 0; i < n; i++ )
   {
@@ -429,12 +440,15 @@ TextInquire( TSM_ELEM_DATA data, Tint n, cmn_key *k )
 
         if( c->size >= size_reqd )
         {
-          w->atext3.string = c->buf;
+          w->atext3.string = (Techar*)c->buf;
           w->atext3.ref_pt = d->attach_pt;
           w->atext3.anno.xyz[0] = ( float )0.0;
           w->atext3.anno.xyz[1] = ( float )0.0;
           w->atext3.anno.xyz[2] = ( float )0.0;
-          strcpy( (char*)w->atext3.string, (char*)d->data );
+          //szv: instead of strcpy
+          Techar *ptr1 = w->atext3.string;
+          const wchar_t *ptr2 = d->sdata;
+          while (*ptr1++ = (Techar)(*ptr2++));
           status = TSuccess;
         }
         else

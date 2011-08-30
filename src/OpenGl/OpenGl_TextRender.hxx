@@ -11,22 +11,21 @@
 #define NUM_CHAR_FONT 1024
 #define CACHE_SIZE 30
 
-class OpenGl_TextRender{
-
-public:
+class OpenGl_TextRender
+{
+ public:
 
   static OpenGl_TextRender* instance();
   Tint FindFont ( Tchar*, OSD_FontAspect, Tfloat, Tfloat = 1. , Tfloat = 1.);
 
-  void   StringSize( char *text, GLint *width, GLint *ascent, GLint *descent);
-  void   RenderText( const Standard_Integer id, const char* text);
-  void   RenderText( char*, GLuint, int, GLfloat, GLfloat, GLfloat );
-  void   ExportText( char* str, char* fontname, GLfloat height, GLfloat angle, GLint alingment, GLfloat x, GLfloat y, GLfloat z, GLboolean is2d );
+  void StringSize( const wchar_t *text, GLint *width, GLint *ascent, GLint *descent);
+  void RenderText( const wchar_t*, GLuint, int, GLfloat, GLfloat, GLfloat );
+  void ExportText( const wchar_t* text, char* fontname, GLfloat height, GLfloat angle, GLint alingment, GLfloat x, GLfloat y, GLfloat z, GLboolean is2d );
 #ifdef HAVE_GL2PS
   static void getGL2PSFontName(char *src_font, char *ps_font);
 #endif
-  
-private:
+
+ private:
 
   static int curFont  ;
   static int curSize  ;

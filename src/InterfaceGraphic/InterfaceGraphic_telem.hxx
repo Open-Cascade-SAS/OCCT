@@ -112,15 +112,6 @@ struct TEL_MATRIX3_DATA
 };
 typedef TEL_MATRIX3_DATA* tel_matrix3_data;
 
-struct TEL_TEXT_DATA
-{
-  TEL_POINT  attach_pt;
-  Tint       length;
-  Tchar*     data;
-  IMPLEMENT_MEMORY_OPERATORS
-};
-typedef TEL_TEXT_DATA* tel_text_data;
-
 struct TEL_ALIGN_DATA
 {
   Tint Hmode;

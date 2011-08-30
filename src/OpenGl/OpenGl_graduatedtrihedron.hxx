@@ -1,3 +1,8 @@
+// File:      OpenGl_graduatedtrihedron.hxx
+// Created:   6 March 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE SA 2011
+
 #ifndef __OPENGL_GRADUATEDTRIHEDRON_H_
 #define __OPENGL_GRADUATEDTRIHEDRON_H_
 
@@ -9,8 +14,9 @@
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
-extern TStatus call_graduatedtrihedron_get(int WsId, CALL_DEF_GRADUATEDTRIHEDRON* data);
-extern TStatus call_graduatedtrihedron_display(int WsId, CALL_DEF_GRADUATEDTRIHEDRON* data);
+#include <Graphic3d_CGraduatedTrihedron.hxx>
+
+extern TStatus call_graduatedtrihedron_display(int WsId, const Graphic3d_CGraduatedTrihedron &data);
 extern TStatus call_graduatedtrihedron_redraw(int WsId);
 extern TStatus call_graduatedtrihedron_erase(int WsId);
 extern TStatus call_graduatedtrihedron_minmaxvalues(const float xMin,

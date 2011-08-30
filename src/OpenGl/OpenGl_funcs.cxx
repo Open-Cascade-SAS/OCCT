@@ -667,7 +667,7 @@ call_func_set_anno_align( Tint hor, Tint ver )
 /*----------------------------------------------------------------------*/
 
 void
-call_func_anno_text_rel3( tel_point pt, Tchar *str )
+call_func_anno_text_rel3( tel_point pt, Techar *str )
 {
   CMN_KEY  k[2];
 

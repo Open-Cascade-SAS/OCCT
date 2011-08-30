@@ -1,3 +1,7 @@
+// File:      Graphic3d_CGraduatedTrihedron.cxx
+// Created:   6 March 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE SA 2011
 
 #include <Graphic3d_CGraduatedTrihedron.hxx>
 

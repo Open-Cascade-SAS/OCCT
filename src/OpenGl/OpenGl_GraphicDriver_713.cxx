@@ -36,8 +36,7 @@ Standard_Boolean OpenGl_GraphicDriver
 {
 #ifdef BUC61044
   Graphic3d_CView MyCView = view;
-  if ( call_togl_isdepthtest( &MyCView ) )
-    return Standard_True;
+  return (call_togl_isdepthtest( &MyCView ) != 0);
 #endif
 }
 
@@ -65,8 +64,7 @@ Standard_Boolean OpenGl_GraphicDriver
 {
 #ifdef BUC61045
   Graphic3d_CView MyCView = view;
-  if ( call_togl_isgllight( &MyCView ) )
-    return Standard_True;
+  return (call_togl_isgllight( &MyCView ) != 0);
 #endif
 }
 

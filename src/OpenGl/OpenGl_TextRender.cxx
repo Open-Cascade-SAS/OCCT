@@ -23,7 +23,6 @@
 #include <gl2ps.h>
 #endif
 
-
 /*-----------------------------------------------------------------------------*/
 /*
 * Prototypes variables statiques
@@ -237,7 +236,7 @@ Tint OpenGl_TextRender::FindFont ( Tchar* fontName,
 }
 
 /*-----------------------------------------------------------------------------*/
-void OpenGl_TextRender::StringSize(char *str, GLint *Width, GLint *Ascent, GLint *Descent)
+void OpenGl_TextRender::StringSize(const wchar_t *str, GLint *Width, GLint *Ascent, GLint *Descent)
 {
 
   /*    int       dir, asc, des;*/
@@ -261,7 +260,7 @@ void OpenGl_TextRender::StringSize(char *str, GLint *Width, GLint *Ascent, GLint
 
 /*-----------------------------------------------------------------------------*/
 
-void OpenGl_TextRender::RenderText ( char* str, GLuint base, int is2d, GLfloat x, GLfloat y, GLfloat z ) 
+void OpenGl_TextRender::RenderText ( const wchar_t* str, GLuint base, int is2d, GLfloat x, GLfloat y, GLfloat z ) 
 {
   GLdouble projMatrix[4][4], modelMatrix[4][4];
   GLint viewport[4];
@@ -351,7 +350,7 @@ void OpenGl_TextRender::RenderText ( char* str, GLuint base, int is2d, GLfloat x
     glTranslatef(x, y, 0.f);
     glRotatef( 180, 1, 0, 0 );
   }
-  else {   
+  else {
     GLdouble wx, wy, wz;
     GLdouble x1, y1, z1;
     GLdouble x2, y2, z2;
@@ -415,7 +414,6 @@ void OpenGl_TextRender::RenderText ( char* str, GLuint base, int is2d, GLfloat x
     glPopMatrix();
   }
   glPopAttrib();
-  return;
 
 }
 
@@ -465,7 +463,7 @@ int OpenGl_TextRender::alignmentforgl2ps(int vh, int vy)
 #endif
 
 /*-----------------------------------------------------------------------------*/
-void OpenGl_TextRender::ExportText( char* str, char* fontname, GLfloat height, GLfloat angle, GLint alignment,
+void OpenGl_TextRender::ExportText( const wchar_t* text, char* fontname, GLfloat height, GLfloat angle, GLint alignment,
                                     GLfloat x, GLfloat y, GLfloat z, GLboolean is2d )
 {
 #ifdef HAVE_GL2PS
@@ -479,11 +477,15 @@ void OpenGl_TextRender::ExportText( char* str, char* fontname, GLfloat height, G
     glRasterPos2f( x, y );
   else
     glRasterPos3f( x, y, z );
-  
+
   glBitmap( 1, 1, 0, 0, 0, 0, &zero );
 
-  gl2psTextOpt( str, ps_font, height, alignment, angle);
+  //szv: workaround for gl2ps!
+  const int len = 4 * (wcslen(text) + 1); //szv: should be more than enough
+  char *astr = new char[len];
+  wcstombs(astr,text,len);
+  gl2psTextOpt(astr, ps_font, height, alignment, angle);
+  delete[] astr;
 
 #endif
-
 }

@@ -106,7 +106,10 @@ uses
     ExportFormat            from Graphic3d,
     SortType                from Graphic3d,
     Color                   from Quantity,
-    FontAspect              from OSD
+    FontAspect              from OSD,
+    AsciiString             from TCollection,
+    ExtendedString          from TCollection,
+    CGraduatedTrihedron     from Graphic3d
 
 raises
     TransformError          from Visual3d,
@@ -591,129 +594,82 @@ is
 
     GetGraduatedTrihedron(me;
                           -- Names of axes --
-                          xname : out CString from Standard;
-                          yname : out CString from Standard;
-                          zname : out CString from Standard;
+                          xname, yname, zname : out ExtendedString from TCollection;
                           -- Draw names --
-                          xdrawname : out Boolean from Standard;
-                          ydrawname : out Boolean from Standard;
-                          zdrawname : out Boolean from Standard;
+                          xdrawname, ydrawname, zdrawname : out Boolean from Standard;
                           -- Draw values --
-                          xdrawvalues : out Boolean from Standard;
-                          ydrawvalues : out Boolean from Standard;
-                          zdrawvalues : out Boolean from Standard;
+                          xdrawvalues, ydrawvalues, zdrawvalues : out Boolean from Standard;
                           -- Draw grid --
                           drawgrid : out Boolean from Standard;
                           -- Draw axes --
                           drawaxes : out Boolean from Standard;
                           -- Number of splits along axes --
-                          nbx : out Integer from Standard;
-                          nby : out Integer from Standard;
-                          nbz : out Integer from Standard;
+                          nbx, nby, nbz : out Integer from Standard;
                           -- Offset for drawing values --
-                          xoffset : out Integer from Standard;
-                          yoffset : out Integer from Standard;
-                          zoffset : out Integer from Standard;
+                          xoffset, yoffset, zoffset : out Integer from Standard;
                           -- Offset for drawing names of axes --
-                          xaxisoffset : out Integer from Standard;
-                          yaxisoffset : out Integer from Standard;
-                          zaxisoffset : out Integer from Standard;
+                          xaxisoffset, yaxisoffset, zaxisoffset : out Integer from Standard;
                           -- Draw tickmarks --
-                          xdrawtickmarks : out Boolean from Standard;
-                          ydrawtickmarks : out Boolean from Standard;
-                          zdrawtickmarks : out Boolean from Standard;
+                          xdrawtickmarks, ydrawtickmarks, zdrawtickmarks : out Boolean from Standard;
                           -- Length of tickmarks --
-                          xtickmarklength : out Integer from Standard;
-                          ytickmarklength : out Integer from Standard;
-                          ztickmarklength : out Integer from Standard;
+                          xtickmarklength, ytickmarklength, ztickmarklength : out Integer from Standard;
                           -- Grid color --
                           gridcolor : out Color from Quantity;
-                          -- X name color --
-                          xnamecolor : out Color from Quantity;
-                          -- Y name color --
-                          ynamecolor : out Color from Quantity;
-                          -- Z name color --
-                          znamecolor : out Color from Quantity;
-                          -- X color of axis and values --
-                          xcolor : out Color from Quantity;
-                          -- Y color of axis and values --
-                          ycolor : out Color from Quantity;
-                          -- Z color of axis and values --
-                          zcolor : out Color from Quantity;
+                          -- Colors of axis names --
+                          xnamecolor, ynamecolor, znamecolor : out Color from Quantity;
+                          -- Colors of axis and values --
+                          xcolor, ycolor, zcolor : out Color from Quantity;
                           -- Name of font for names of axes --
-                          fontOfNames : out CString from Standard;
+                          fontOfNames : out AsciiString from TCollection;
                           -- Style of names of axes --
                           styleOfNames : out FontAspect from OSD;
                           -- Size of names of axes --
                           sizeOfNames : out Integer from Standard;
                           -- Name of font for values --
-                          fontOfValues : out CString from Standard;
+                          fontOfValues : out AsciiString from TCollection;
                           -- Style of values --
                           styleOfValues : out FontAspect from OSD;
                           -- Size of values --
                           sizeOfValues : out Integer from Standard)
-    ---Purpose: Returns data of a graduated trihedron.
+    returns Boolean from Standard
     is static;
+    ---Purpose: Returns data of a graduated trihedron if displayed (return value is True)
 
     GraduatedTrihedronDisplay(me : mutable;
                               -- Names of axes --
-                              xname : CString from Standard;
-                              yname : CString from Standard;
-                              zname : CString from Standard;
+                              xname, yname, zname : ExtendedString from TCollection;
                               -- Draw names --
-                              xdrawname : Boolean from Standard;
-                              ydrawname : Boolean from Standard;
-                              zdrawname : Boolean from Standard;
+                              xdrawname, ydrawname, zdrawname : Boolean from Standard;
                               -- Draw values --
-                              xdrawvalues : Boolean from Standard;
-                              ydrawvalues : Boolean from Standard;
-                              zdrawvalues : Boolean from Standard;
+                              xdrawvalues, ydrawvalues, zdrawvalues : Boolean from Standard;
                               -- Draw grid --
                               drawgrid : Boolean from Standard;
                               -- Draw axes --
                               drawaxes : Boolean from Standard;
                               -- Number of splits along axes --
-                              nbx : Integer from Standard;
-                              nby : Integer from Standard;
-                              nbz : Integer from Standard;
+                              nbx, nby, nbz : Integer from Standard;
                               -- Offset for drawing values --
-                              xoffset : Integer from Standard;
-                              yoffset : Integer from Standard;
-                              zoffset : Integer from Standard;
+                              xoffset, yoffset, zoffset : Integer from Standard;
                               -- Offset for drawing names of axes --
-                              xaxisoffset : Integer from Standard;
-                              yaxisoffset : Integer from Standard;
-                              zaxisoffset : Integer from Standard;
+                              xaxisoffset, yaxisoffset, zaxisoffset : Integer from Standard;
                               -- Draw tickmarks --
-                              xdrawtickmarks : Boolean from Standard;
-                              ydrawtickmarks : Boolean from Standard;
-                              zdrawtickmarks : Boolean from Standard;
+                              xdrawtickmarks, ydrawtickmarks, zdrawtickmarks : Boolean from Standard;
                               -- Length of tickmarks --
-                              xtickmarklength : Integer from Standard;
-                              ytickmarklength : Integer from Standard;
-                              ztickmarklength : Integer from Standard;
+                              xtickmarklength, ytickmarklength, ztickmarklength : Integer from Standard;
                               -- Grid color --
                               gridcolor : Color from Quantity;
-                              -- X name color --
-                              xnamecolor : Color from Quantity;
-                              -- Y name color --
-                              ynamecolor : Color from Quantity;
-                              -- Z name color --
-                              znamecolor : Color from Quantity;
-                              -- X color of axis and values --
-                              xcolor : Color from Quantity;
-                              -- Y color of axis and values --
-                              ycolor : Color from Quantity;
-                              -- Z color of axis and values --
-                              zcolor : Color from Quantity;
+                              -- Colors of axis names --
+                              xnamecolor, ynamecolor, znamecolor : Color from Quantity;
+                              -- Colors of axis and values --
+                              xcolor, ycolor, zcolor : Color from Quantity;
                               -- Name of font for names of axes --
-                              fontOfNames : CString from Standard;
+                              fontOfNames : AsciiString from TCollection;
                               -- Style of names of axes --
                               styleOfNames : FontAspect from OSD;
                               -- Size of names of axes --
                               sizeOfNames : Integer from Standard;
                               -- Name of font for values --
-                              fontOfValues : CString from Standard;
+                              fontOfValues : AsciiString from TCollection;
                               -- Style of values --
                               styleOfValues : FontAspect from OSD;
                               -- Size of values --
@@ -1326,6 +1282,8 @@ fields
 
 	-- Booleans
 	MyCBitFields		:	CBitFields8 from Graphic3d;
+
+	MyGTrihedron        :   CGraduatedTrihedron from Graphic3d;
 
 friends
 

@@ -11,7 +11,7 @@
 #include <Aspect_DriverDefinitionError.hxx>
 #include <Standard_NotImplemented.hxx>
 
-#include "OpenGl_tgl_funcs.hxx"
+#include <OpenGl_tgl_funcs.hxx>
 
 
 /************************************************************************/

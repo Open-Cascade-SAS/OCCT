@@ -1,9 +1,7 @@
-
-// File		Graphic3d_Group_10.cxx (Text)
-// Created	Fevrier 1992
-// Author	NW,JPB,CAL
-
-//-Copyright	MatraDatavision 1991,1992
+// File:      Graphic3d_Group_10.cxx (Text)
+// Created:   Fevrier 1992
+// Author:    NW,JPB,CAL
+// Copyright: OPEN CASCADE 1992
 
 //-Version	
 
@@ -36,29 +34,27 @@ void Graphic3d_Group::Text (
                        const Graphic3d_HorizontalTextAlignment AHta,
                        const Graphic3d_VerticalTextAlignment AVta,
                        const Standard_Boolean EvalMinMax
-                      ) {
+                      )
+{
+  if (IsDeleted ()) return;
 
-	if (IsDeleted ()) return;
+  MyIsEmpty = Standard_False;
 
-	MyIsEmpty	= Standard_False;
+  // Min-Max Update
+  if (EvalMinMax) {
+    Standard_Real X, Y, Z;
+    APoint.Coord (X, Y, Z);
+    if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
+    if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
+    if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
+    if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
+    if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
+    if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
+  }
 
-	// Min-Max Update
-	if (EvalMinMax) {
-Standard_Real X, Y, Z;
-		APoint.Coord (X, Y, Z);
-		if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
-		if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
-		if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
-		if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
-		if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
-		if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
-	}
+  MyGraphicDriver->Text(MyCGroup, AText, APoint, AHeight, AAngle, ATp, AHta, AVta, EvalMinMax);
 
-	MyGraphicDriver->Text
-(MyCGroup, AText, APoint, AHeight, AAngle, ATp, AHta, AVta, EvalMinMax);
-
-	Update ();
-
+  Update ();
 }
 
 void Graphic3d_Group::Text (
@@ -66,28 +62,27 @@ void Graphic3d_Group::Text (
                        const Graphic3d_Vertex& APoint, 
                        const Standard_Real AHeight, 
                        const Standard_Boolean EvalMinMax
-                      ) {
+                      )
+{
+  if (IsDeleted ()) return;
 
-	if (IsDeleted ()) return;
+  MyIsEmpty = Standard_False;
 
-	MyIsEmpty	= Standard_False;
+  // Min-Max Update
+  if (EvalMinMax) {
+    Standard_Real X, Y, Z;
+    APoint.Coord (X, Y, Z);
+    if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
+    if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
+    if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
+    if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
+    if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
+    if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
+  }
 
-	// Min-Max Update
-	if (EvalMinMax) {
-Standard_Real X, Y, Z;
-		APoint.Coord (X, Y, Z);
-		if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
-		if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
-		if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
-		if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
-		if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
-		if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
-	}
+  MyGraphicDriver->Text (MyCGroup, AText, APoint, AHeight, EvalMinMax);
 
-	MyGraphicDriver->Text (MyCGroup, AText, APoint, AHeight, EvalMinMax);
-
-	Update ();
-
+  Update ();
 }
 
 void Graphic3d_Group::Text (
@@ -99,31 +94,27 @@ void Graphic3d_Group::Text (
                        const Graphic3d_HorizontalTextAlignment AHta, 
                        const Graphic3d_VerticalTextAlignment AVta, 
                        const Standard_Boolean EvalMinMax
-                      ) {
+                      )
+{
+  if (IsDeleted ()) return;
 
-	if (IsDeleted ()) return;
+  MyIsEmpty	= Standard_False;
 
-	if (! AText.IsAscii ()) return;
+  // Min-Max Update
+  if (EvalMinMax) {
+    Standard_Real X, Y, Z;
+    APoint.Coord (X, Y, Z);
+    if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
+    if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
+    if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
+    if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
+    if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
+    if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
+  }
 
-	MyIsEmpty	= Standard_False;
+  MyGraphicDriver->Text(MyCGroup, AText, APoint, AHeight, AAngle, ATp, AHta, AVta, EvalMinMax);
 
-	// Min-Max Update
-	if (EvalMinMax) {
-Standard_Real X, Y, Z;
-		APoint.Coord (X, Y, Z);
-		if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
-		if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
-		if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
-		if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
-		if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
-		if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
-	}
-
-	MyGraphicDriver->Text
-(MyCGroup, AText, APoint, AHeight, AAngle, ATp, AHta, AVta, EvalMinMax);
-
-	Update ();
-
+  Update ();
 }
 
 void Graphic3d_Group::Text (
@@ -131,28 +122,25 @@ void Graphic3d_Group::Text (
                        const Graphic3d_Vertex& APoint, 
                        const Standard_Real AHeight, 
                        const Standard_Boolean EvalMinMax
-                      ) {
+                      )
+{
+  if (IsDeleted ()) return;
 
-	if (IsDeleted ()) return;
+  MyIsEmpty = Standard_False;
 
-	if (! AText.IsAscii ()) return;
+  // Min-Max Update
+  if (EvalMinMax) {
+    Standard_Real X, Y, Z;
+    APoint.Coord (X, Y, Z);
+    if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
+    if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
+    if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
+    if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
+    if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
+    if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
+  }
 
-	MyIsEmpty	= Standard_False;
+  MyGraphicDriver->Text (MyCGroup, AText, APoint, AHeight, EvalMinMax);
 
-	// Min-Max Update
-	if (EvalMinMax) {
-Standard_Real X, Y, Z;
-		APoint.Coord (X, Y, Z);
-		if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
-		if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
-		if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
-		if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
-		if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
-		if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
-	}
-
-	MyGraphicDriver->Text (MyCGroup, AText, APoint, AHeight, EvalMinMax);
-
-	Update ();
-
+  Update ();
 }

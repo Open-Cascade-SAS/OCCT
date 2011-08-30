@@ -78,7 +78,6 @@ call_togl_text
   call_func_set_anno_char_up_vec (up_vect);
   call_func_set_anno_path (path);
   call_func_set_anno_align (hor_align, ver_align);
-  call_func_anno_text_rel3 (&text_pt, (Tchar*)atext->string);
+  call_func_anno_text_rel3 (&text_pt, (Techar*)atext->string);
   if (! agroup->IsOpen) call_togl_closegroup (agroup);
-  return;
 }

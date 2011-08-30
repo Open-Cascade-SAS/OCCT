@@ -1,7 +1,6 @@
 #ifndef OPENGL_FONT_MGR_H
 #define OPENGL_FONT_MGR_H
 
-
 #ifdef WNT
 # include <windows.h>
 # include <stdlib.h>
@@ -20,26 +19,27 @@ void dump_texture();
 
 class OpenGl_FontMgr
 {
-public:
+ public:
   static OpenGl_FontMgr*  instance();
 
   int request_font( const Handle(TCollection_HAsciiString)& fontName,
-    const OSD_FontAspect                   fontAspect,
-    const Standard_Integer                 fontHeight );
+                    const OSD_FontAspect                    fontAspect,
+                    const Standard_Integer                  fontHeight );
 
   void render_text( const Standard_Integer id,
-    const char* text,
-    const Standard_Boolean is2d = 0 );
+    const wchar_t* text,
+    const Standard_Boolean is2d = Standard_False );
 
   //render text by last requested font
-  void render_text( const char* text, const Standard_Boolean is2d = 0 );
+  void render_text( const wchar_t* text,
+    const Standard_Boolean is2d = Standard_False );
 
   //returns direct access to FTGL font
   //Warning: don't change font pointer.
   const FTFont*   fontById( const Standard_Integer id );
 
   //returns width of string
-  Standard_ShortReal computeWidth( const Standard_Integer id, const char* str );
+  Standard_ShortReal computeWidth( const Standard_Integer id, const wchar_t *str );
 
   bool requestFontList( Graphic3d_NListOfHAsciiString& );
 

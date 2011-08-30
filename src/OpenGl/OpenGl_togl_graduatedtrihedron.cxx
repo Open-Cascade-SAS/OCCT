@@ -1,3 +1,8 @@
+// File:      OpenGl_togl_graduatedtrihedron.cxx
+// Created:   6 March 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE SA 2011
+
 #include <OpenGl_graduatedtrihedron.hxx>
 
 #include <OpenGl_tsm_ws.hxx>
@@ -7,14 +12,8 @@
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
-void EXPORT call_togl_graduatedtrihedron_get(CALL_DEF_VIEW* view, 
-                                             CALL_DEF_GRADUATEDTRIHEDRON* cubic)
-{
-    call_graduatedtrihedron_get(view->WsId, cubic);
-}
-
 void EXPORT call_togl_graduatedtrihedron_display(CALL_DEF_VIEW* view, 
-                                                 CALL_DEF_GRADUATEDTRIHEDRON* cubic)
+                                                 const Graphic3d_CGraduatedTrihedron &cubic)
 {
     call_graduatedtrihedron_display(view->WsId, cubic);
 }

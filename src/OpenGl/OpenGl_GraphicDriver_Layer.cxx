@@ -200,7 +200,8 @@ void OpenGl_GraphicDriver::SetTextAttributes (const Standard_CString Font, const
   call_togl_set_text_attributes ((Tchar*)Font, AType, R, G, B);
 }   
 
-void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Height) {
+void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Height)
+{
   if (MyTraceLevel) {
     PrintFunction ("call_togl_text2d");
     PrintString ("Text", AText);
@@ -208,14 +209,15 @@ void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_Sh
     PrintShortReal ("Y", Y);
     PrintShortReal ("Height", Height);
   }
-  Standard_ShortReal h = Height;
-  if ( h < 0 )
-    h = DefaultTextHeight();
-  call_togl_text2d ((char *)AText, X, Y, h);
+  const Standard_ShortReal h = (Height < 0)? DefaultTextHeight() : Height;
+  TCollection_ExtendedString estr(AText);
+  call_togl_text2d ((Techar *)estr.ToExtString(), X, Y, h);
 }
 
-void OpenGl_GraphicDriver::TextSize (const Standard_CString AText, const Standard_ShortReal AHeight, Standard_ShortReal& AWidth, Standard_ShortReal& AnAscent, Standard_ShortReal& ADescent) const {
-  call_togl_textsize2d ((char *) AText, AHeight, &AWidth, &AnAscent, &ADescent);
+void OpenGl_GraphicDriver::TextSize (const Standard_CString AText, const Standard_ShortReal AHeight, Standard_ShortReal& AWidth, Standard_ShortReal& AnAscent, Standard_ShortReal& ADescent) const
+{
+  TCollection_ExtendedString estr(AText);
+  call_togl_textsize2d ((Techar *)estr.ToExtString(), AHeight, &AWidth, &AnAscent, &ADescent);
   if (MyTraceLevel) {
     PrintFunction ("call_togl_textsize2d");
     PrintString ("Text", AText);

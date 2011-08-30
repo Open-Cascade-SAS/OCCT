@@ -19,6 +19,8 @@ therefore it should be made signed explicitly, as on Linux
 typedef  signed char  Tchar;
 typedef  char         Tbool;
 typedef  unsigned int Tuint;
+/* szv: Techar is an Extended character */
+typedef  unsigned short Techar;
 
 #define  TGL_SP   1
 #define  TGL_DP   0

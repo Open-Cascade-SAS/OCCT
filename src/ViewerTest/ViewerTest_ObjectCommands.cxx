@@ -1,7 +1,7 @@
-// File:  ViewerTest_ObjectsCommands.cxx
-// Created: Thu Nov 12 15:50:42 1998
-// Author:  Robert COUBLANC
-//    <rob@robox.paris1.matra-dtv.fr>
+// File:      ViewerTest_ObjectsCommands.cxx
+// Created:   Thu Nov 12 15:50:42 1998
+// Author:    Robert COUBLANC
+// Copyright: OPEN CASCADE 1998
 
 
 //===============================================
@@ -1937,8 +1937,8 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 
 DEFINE_STANDARD_HANDLE(MyTextClass, AIS_InteractiveObject)
 
-class MyTextClass:public AIS_InteractiveObject{
-
+class MyTextClass:public AIS_InteractiveObject
+{
 public:
   // CASCADE RTTI
   DEFINE_STANDARD_RTTI(MyTextClass );
@@ -1987,7 +1987,6 @@ protected:
 
 IMPLEMENT_STANDARD_HANDLE(MyTextClass, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(MyTextClass, AIS_InteractiveObject)
-
 
 
 MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& position,
@@ -2049,75 +2048,90 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentat
 
 static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  // Verification des arguments
-  if ( argc > 17 ) {di<<argv[0]<<" Syntaxe error"<<"\n"; return 1;}
-  Quantity_Parameter        R, G, B;
-  Quantity_Color            aColor;
-  Standard_Real             angle;
-  Standard_Real             height;
-  Standard_Boolean          zoom;
-  OSD_FontAspect            aspect;
-  TCollection_AsciiString   font;
-  gp_Pnt                    pnt;
-  int                       hor_align;
-  int                       ver_align;
-  TCollection_AsciiString   aFont;
-  TCollection_AsciiString   name = argv[1];
+  // Check arguments
+  if (argc < 14)
+  {
+    di<<"Error: "<<argv[0]<<" - invalid number of arguments\n";
+    di<<"Usage: type help "<<argv[0]<<"\n";
+    return 1; //TCL_ERROR
+  }
 
-  //Declarations et creation des objets par default
-  Standard_Real X,Y,Z;
-  X = atof(argv[2]);
-  Y = atof(argv[3]);
-  Z = atof(argv[4]);
-  pnt.SetCoord(X,Y,Z);
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
 
-  R = atof(argv[5])/255.;
-  G = atof(argv[6])/255.;
-  B = atof(argv[7])/255.;
+  // Create 3D view if it doesn't exist
+  if ( aContext.IsNull() )
+  {
+    ViewerTest::ViewerInit();
+    aContext = ViewerTest::GetAISContext();
+    if( aContext.IsNull() )
+    {
+      di << "Error: Cannot create a 3D view\n";
+      return 1; //TCL_ERROR
+    }
+  }
 
-  hor_align = atoi(argv[8]);
-  ver_align = atoi(argv[9]);
+  // Text position
+  const Standard_Real X = atof(argv[2]);
+  const Standard_Real Y = atof(argv[3]);
+  const Standard_Real Z = atof(argv[4]);
+  const gp_Pnt pnt(X,Y,Z);
 
-  angle = atof(argv[10]);
+  // Text color
+  const Quantity_Parameter R = atof(argv[5])/255.;
+  const Quantity_Parameter G = atof(argv[6])/255.;
+  const Quantity_Parameter B = atof(argv[7])/255.;
+  const Quantity_Color aColor( R, G, B, Quantity_TOC_RGB );
 
-  zoom = atoi(argv[11]);
+  // Text alignment
+  const int hor_align = atoi(argv[8]);
+  const int ver_align = atoi(argv[9]);
 
-  height = atof(argv[12]);
+  // Text angle
+  const Standard_Real angle = atof(argv[10]);
 
-  aspect = OSD_FontAspect(atoi(argv[13]));
+  // Text zooming
+  const Standard_Boolean zoom = atoi(argv[11]);
 
-  if(argc == 14)
+  // Text height
+  const Standard_Real height = atof(argv[12]);
+
+  // Text aspect
+  const OSD_FontAspect aspect = OSD_FontAspect(atoi(argv[13]));
+
+  // Text font
+  TCollection_AsciiString font;
+  if(argc < 15)
     font.AssignCat("Courier");
-  if(argc == 15)
+  else
     font.AssignCat(argv[14]);
-  if(argc == 16)
+
+  // Text is multibyte
+  const Standard_Boolean isMultibyte = (argc < 16)? Standard_False : (atoi(argv[15]) != 0);
+
+  // Read text string
+  TCollection_ExtendedString name;
+  if (isMultibyte)
   {
-    font.AssignCat(argv[14]);
-    font.AssignCat(" ");
-    font.AssignCat(argv[15]);
+    const char *str = argv[1];
+    while (*str)
+    {
+      unsigned short c1 = *str++;
+      unsigned short c2 = *str++;
+      if (!c1 || !c2) break;
+      name += (Standard_ExtCharacter)((c1 << 8) | c2);
+    }
   }
-  if(argc == 17)
+  else
   {
-    font.AssignCat(argv[14]);
-    font.AssignCat(" ");
-    font.AssignCat(argv[15]);
-    font.AssignCat(" ");
-    font.AssignCat(argv[16]);
+    name += argv[1];
   }
 
-  aColor.SetValues( R, G, B, Quantity_TOC_RGB );
-
-  Handle(AIS_InteractiveContext) aContext= ViewerTest::GetAISContext();
-
-  Handle(MyTextClass) my=new MyTextClass(argv[1],pnt,aColor,hor_align,ver_align,angle,zoom,height,aspect,font.ToCString());
-
-  aContext->Display(my,Standard_True);
-
-  if(aContext.IsNull())
+  if (name.Length())
   {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
+    Handle(MyTextClass) myT = new MyTextClass(name,pnt,aColor,hor_align,ver_align,angle,zoom,height,aspect,font.ToCString());
+    aContext->Display(myT,Standard_True);
   }
+
   return 0;
 }
 
@@ -2723,7 +2737,7 @@ static int VClipPlane (Draw_Interpretor& di, Standard_Integer argc, const char**
   if (anActivePlanes < aView->View()->PlaneLimit())
   {
     aView->SetPlaneOn (aPlaneV3d); // add to enabled planes list
-    aView->Update();    
+    aView->Update();
   }
   else
   {
@@ -2794,7 +2808,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VCircleBuilder,group);
 
   theCommands.Add("vdrawtext",
-    "vdrawtext  : vdrawtext name X Y Z R G B hor_align ver_align angle zoomable height Aspect FONT ",
+    "vdrawtext  : vdrawtext name X Y Z R G B hor_align ver_align angle zoomable height Aspect [Font [isMultiByte]]",
     __FILE__,VDrawText,group);
 
   theCommands.Add("vdrawsphere",
@@ -2804,5 +2818,4 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vclipplane",
     "vclipplane : vclipplane [x y z dx dy dz] [planeId {on/off/del/display/hide}]",
     __FILE__,VClipPlane,group);
-
 }

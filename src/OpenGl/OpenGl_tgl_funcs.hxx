@@ -58,6 +58,7 @@ from higher API */
 #include <InterfaceGraphic_Visual3d.hxx>
 
 #include <OSD_FontAspect.hxx>
+#include <Graphic3d_CGraduatedTrihedron.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -152,7 +153,7 @@ extern  void  call_func_set_anno_char_ht(Tfloat); /* height */
 extern  void  call_func_set_anno_char_up_vec(Tfloat[2]); /* up_vector */
 extern  void  call_func_set_anno_path(Tint); /* path */
 extern  void  call_func_set_anno_align(Tint, Tint); /* hor, ver */
-extern  void  call_func_anno_text_rel3( tel_point, Tchar* );
+extern  void  call_func_anno_text_rel3( tel_point, Techar* );
 extern  void  call_func_dcue_ind(Tint); /* dcid */
 extern  void  call_func_set_do_texturemap(Tint); /* bool */
 extern  void  call_func_set_texture_id(Tint); /* TextureID */
@@ -383,11 +384,8 @@ void EXPORT call_togl_triedron_echo (
 
 /* Graduated trihedron */
 
-void EXPORT call_togl_graduatedtrihedron_get(CALL_DEF_VIEW* view, 
-                                             CALL_DEF_GRADUATEDTRIHEDRON* cubic);
-
-void EXPORT call_togl_graduatedtrihedron_display(CALL_DEF_VIEW* view, 
-                                                 CALL_DEF_GRADUATEDTRIHEDRON* cubic);
+void EXPORT call_togl_graduatedtrihedron_display(CALL_DEF_VIEW* view,
+                                                 const Graphic3d_CGraduatedTrihedron &cubic);
 
 void EXPORT call_togl_graduatedtrihedron_erase(CALL_DEF_VIEW* view);
 
@@ -1288,7 +1286,7 @@ void EXPORT call_togl_set_text_scale_factors (
 
 void EXPORT call_togl_text2d (
 
-                              char *s,
+                              Techar *s,
                               float x,
                               float y,
                               float height
@@ -1297,7 +1295,7 @@ void EXPORT call_togl_text2d (
 
 void EXPORT call_togl_textsize2d (
 
-                                  char *s,
+                                  Techar *s,
                                   float height,
                                   float *width,
                                   float *ascent,

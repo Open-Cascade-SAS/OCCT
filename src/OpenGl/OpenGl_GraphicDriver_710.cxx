@@ -43,35 +43,11 @@ void OpenGl_GraphicDriver::Text
  const Graphic3d_TextPath ATp,
  const Graphic3d_HorizontalTextAlignment AHta,
  const Graphic3d_VerticalTextAlignment AVta,
- const Standard_Boolean 
+ const Standard_Boolean EvalMinMax
  ) 
 {
-
-
-  Graphic3d_CGroup MyCGroup = ACGroup;
-
-  Standard_Real X, Y, Z;
-
-  CALL_DEF_TEXT atext;
-  APoint.Coord (X, Y, Z);
-  atext.Position.x  = float (X);
-  atext.Position.y  = float (Y);
-  atext.Position.z  = float (Z);
-  atext.Height      = float (AHeight);
-  if (atext.Height < 0)
-    atext.Height = DefaultTextHeight();
-  atext.Angle       = float (AAngle);
-  atext.Path        = int (ATp);
-  atext.HAlign      = int (AHta);
-  atext.VAlign      = int (AVta);
-  atext.string      = (char *) AText;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_text");
-    PrintCGroup (MyCGroup, 1);
-  }
-  call_togl_text (&MyCGroup, &atext);
-
+  TCollection_ExtendedString TheText(AText);
+  OpenGl_GraphicDriver::Text(ACGroup,TheText,APoint,AHeight,AAngle,ATp,AHta,AVta,EvalMinMax);
 }
 
 void OpenGl_GraphicDriver::Text 
@@ -80,35 +56,11 @@ void OpenGl_GraphicDriver::Text
  const Standard_CString AText, 
  const Graphic3d_Vertex& APoint, 
  const Standard_Real AHeight, 
- const Standard_Boolean 
+ const Standard_Boolean EvalMinMax
  ) 
 {
-
-
-  Graphic3d_CGroup MyCGroup = ACGroup;
-
-  Standard_Real X, Y, Z;
-
-  CALL_DEF_TEXT atext;
-  APoint.Coord (X, Y, Z);
-  atext.Position.x  = float (X);
-  atext.Position.y  = float (Y);
-  atext.Position.z  = float (Z);
-  atext.Height    = float (AHeight);
-  if (atext.Height < 0)
-    atext.Height = DefaultTextHeight();
-  atext.Angle   = float (Standard_PI / 2.);
-  atext.Path    = int (Graphic3d_TP_RIGHT);
-  atext.HAlign    = int (Graphic3d_HTA_LEFT);
-  atext.VAlign    = int (Graphic3d_VTA_BOTTOM);
-  atext.string    = (char *) AText;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_text");
-    PrintCGroup (MyCGroup, 1);
-  }
-  call_togl_text (&MyCGroup, &atext);
-
+  TCollection_ExtendedString TheText(AText);
+  OpenGl_GraphicDriver::Text(ACGroup,TheText,APoint,AHeight,EvalMinMax);
 }
 
 void OpenGl_GraphicDriver::Text 
@@ -124,14 +76,11 @@ void OpenGl_GraphicDriver::Text
  const Standard_Boolean 
  ) 
 {
-
-
   Graphic3d_CGroup MyCGroup = ACGroup;
 
-  Standard_Real X, Y, Z;
   CALL_DEF_TEXT atext;
-  TCollection_AsciiString ascii (AText,'?');
 
+  Standard_Real X, Y, Z;
   APoint.Coord (X, Y, Z);
   atext.Position.x  = float (X);
   atext.Position.y  = float (Y);
@@ -143,15 +92,13 @@ void OpenGl_GraphicDriver::Text
   atext.Path    = int (ATp);
   atext.HAlign    = int (AHta);
   atext.VAlign    = int (AVta);
-  atext.string    = (Standard_PCharacter)ascii.ToCString ();
+  atext.string    = (unsigned short *)AText.ToExtString ();
 
   if (MyTraceLevel) {
     PrintFunction ("call_togl_text");
     PrintCGroup (MyCGroup, 1);
   }
   call_togl_text (&MyCGroup, &atext);
-  ascii.Clear ();
-
 }
 
 void OpenGl_GraphicDriver::Text 
@@ -161,33 +108,29 @@ void OpenGl_GraphicDriver::Text
  const Graphic3d_Vertex& APoint, 
  const Standard_Real AHeight, 
  const Standard_Boolean 
- ) {
+ )
+{
+  Graphic3d_CGroup MyCGroup = ACGroup;
 
+  CALL_DEF_TEXT atext;
 
-   Graphic3d_CGroup MyCGroup = ACGroup;
+  Standard_Real X, Y, Z;
+  APoint.Coord (X, Y, Z);
+  atext.Position.x  = float (X);
+  atext.Position.y  = float (Y);
+  atext.Position.z  = float (Z);
+  atext.Height    = float (AHeight);
+  if (atext.Height < 0)
+    atext.Height = DefaultTextHeight();
+  atext.Angle   = float (Standard_PI / 2.);
+  atext.Path    = int (Graphic3d_TP_RIGHT);
+  atext.HAlign    = int (Graphic3d_HTA_LEFT);
+  atext.VAlign    = int (Graphic3d_VTA_BOTTOM);
+  atext.string    = (unsigned short *)AText.ToExtString ();
 
-   Standard_Real X, Y, Z;
-   CALL_DEF_TEXT atext;
-   TCollection_AsciiString ascii (AText, '?');
-
-   APoint.Coord (X, Y, Z);
-   atext.Position.x  = float (X);
-   atext.Position.y  = float (Y);
-   atext.Position.z  = float (Z);
-   atext.Height    = float (AHeight);
-   if (atext.Height < 0)
-     atext.Height = DefaultTextHeight();
-   atext.Angle   = float (Standard_PI / 2.);
-   atext.Path    = int (Graphic3d_TP_RIGHT);
-   atext.HAlign    = int (Graphic3d_HTA_LEFT);
-   atext.VAlign    = int (Graphic3d_VTA_BOTTOM);
-   atext.string    = (Standard_PCharacter)ascii.ToCString ();
-
-   if (MyTraceLevel) {
-     PrintFunction ("call_togl_text");
-     PrintCGroup (MyCGroup, 1);
-   }
-   call_togl_text (&MyCGroup, &atext);
-   ascii.Clear ();
-
- }
+  if (MyTraceLevel) {
+    PrintFunction ("call_togl_text");
+    PrintCGroup (MyCGroup, 1);
+  }
+  call_togl_text (&MyCGroup, &atext);
+}

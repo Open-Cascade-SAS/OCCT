@@ -493,9 +493,9 @@ void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho AType ) {
 }
 
 void V3d_View::GetGraduatedTrihedron(/* Names of axes */
-                                     Standard_CString& xname, 
-                                     Standard_CString& yname, 
-                                     Standard_CString& zname,
+                                     TCollection_ExtendedString &xname,
+                                     TCollection_ExtendedString &yname,
+                                     TCollection_ExtendedString &zname,
                                      /* Draw names */
                                      Standard_Boolean& xdrawname, 
                                      Standard_Boolean& ydrawname, 
@@ -543,13 +543,13 @@ void V3d_View::GetGraduatedTrihedron(/* Names of axes */
                                      /* Z color of axis and values */
                                      Quantity_Color& zcolor,
                                      /* Name of font for names of axes */
-                                     Standard_CString& fontOfNames,
+                                     TCollection_AsciiString &fontOfNames,
                                      /* Style of names of axes */
                                      OSD_FontAspect& styleOfNames,
                                      /* Size of names of axes */
                                      Standard_Integer& sizeOfNames,
                                      /* Name of font for values */
-                                     Standard_CString& fontOfValues,
+                                     TCollection_AsciiString &fontOfValues,
                                      /* Style of values */
                                      OSD_FontAspect& styleOfValues,
                                      /* Size of values */
@@ -620,9 +620,9 @@ void V3d_View::GetGraduatedTrihedron(/* Names of axes */
 }
 
 void V3d_View::GraduatedTrihedronDisplay(/* Names of axes */
-                                         const Standard_CString xname, 
-                                         const Standard_CString yname, 
-                                         const Standard_CString zname,
+                                         const TCollection_ExtendedString &xname, 
+                                         const TCollection_ExtendedString &yname, 
+                                         const TCollection_ExtendedString &zname,
                                          /* Draw names */
                                          const Standard_Boolean xdrawname, 
                                          const Standard_Boolean ydrawname, 
@@ -670,13 +670,13 @@ void V3d_View::GraduatedTrihedronDisplay(/* Names of axes */
                                          /* Z color of axis and values */
                                          const Quantity_Color& zcolor,
                                          /* Name of font for names of axes */
-                                         const Standard_CString fontOfNames,
+                                         const TCollection_AsciiString &fontOfNames,
                                          /* Style of names of axes */
                                          const OSD_FontAspect styleOfNames,
                                          /* Size of names of axes */
                                          const Standard_Integer sizeOfNames,
                                          /* Name of font for values */
-                                         const Standard_CString fontOfValues,
+                                         const TCollection_AsciiString &fontOfValues,
                                          /* Style of values */
                                          const OSD_FontAspect styleOfValues,
                                          /* Size of values */
@@ -750,4 +750,3 @@ void V3d_View::GraduatedTrihedronErase()
 {
     MyView->GraduatedTrihedronErase();
 }
-

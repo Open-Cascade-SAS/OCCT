@@ -310,8 +310,8 @@ int OpenGl_FontMgr::request_font( const Handle(TCollection_HAsciiString)& fontNa
   return -1;
 }
 
-void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text,
-				  const Standard_Boolean is2d )
+void OpenGl_FontMgr::render_text( const Standard_Integer id, const wchar_t* text,
+                                  const Standard_Boolean is2d )
 {
 #ifdef TRACE
   cout << "TKOpenGl::render_text\n"
@@ -333,7 +333,7 @@ void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text,
     if ( !is2d ) {
       if ( !enableDepthTest )
         glEnable(GL_DEPTH_TEST);
-    } 
+    }
     else if ( enableDepthTest ) {
         glDisable(GL_DEPTH_TEST);
     }
@@ -363,28 +363,30 @@ void OpenGl_FontMgr::render_text( const Standard_Integer id, const char* text,
 
 }
 
-void OpenGl_FontMgr::render_text( const char* text, const Standard_Boolean is2d ){
+void OpenGl_FontMgr::render_text ( const wchar_t* text, const Standard_Boolean is2d )
+{
   render_text( _CurrentFontId, text, is2d );
 }
 
-
-const FTFont* OpenGl_FontMgr::fontById( const Standard_Integer id ){
+const FTFont* OpenGl_FontMgr::fontById (const Standard_Integer id)
+{
   return _FontCache.IsBound( id ) ? _FontCache.Find( id ).Font: NULL;
 }
 
-Standard_ShortReal OpenGl_FontMgr::computeWidth( const Standard_Integer id, const char* str ){
+Standard_ShortReal OpenGl_FontMgr::computeWidth( const Standard_Integer id, const wchar_t* text )
+{
   if( !_FontCache.IsBound( id ) )
     return 0.f;
 
   OGLFont_Cache cache = _FontCache.Find( id );
 
-  Standard_ShortReal w = cache.Font->Advance( str );
+  Standard_ShortReal w = cache.Font->Advance( text );
 
   return w;
 }
 
-void OpenGl_FontMgr::setCurrentScale( const Standard_ShortReal xScale,
-                                     const Standard_ShortReal yScale)
+void OpenGl_FontMgr::setCurrentScale (const Standard_ShortReal xScale,
+                                      const Standard_ShortReal yScale)
 {
   _XCurrentScale = xScale;
   _YCurrentScale = yScale;
@@ -397,7 +399,8 @@ void OpenGl_FontMgr::setCurrentScale( const Standard_ShortReal xScale,
 #include <Image_ColorImage.hxx>
 #include <Quantity_Color.hxx>
 
-void dump_texture( int id) {
+void dump_texture( int id)
+{
   Handle(AlienImage_BMPAlienData) image = new AlienImage_BMPAlienData();
 
   if (!glIsTexture(id))

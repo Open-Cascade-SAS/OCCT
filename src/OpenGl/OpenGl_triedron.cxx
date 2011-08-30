@@ -299,7 +299,6 @@ TStatus call_triedron_redraw (
 
   GLuint fontBase = 0;
   GLint mode;
-  char AxeName[]="X\0";
 
 #ifdef QTOCC_PATCH /* PCD 10/02/08 */
   /* Fix to problem with clipping planes chopping off pieces of the triedron */
@@ -581,25 +580,22 @@ TStatus call_triedron_redraw (
   OpenGl_TextRender* textRender=OpenGl_TextRender::instance();
 
   /* Axe X */
-  strcpy ( AxeName, "X\0" );
   TriedronCoord[0] = TriedronOrigin[0] + ( L + rayon ) ;
   TriedronCoord[1] = TriedronOrigin[1] + 0.0;
   TriedronCoord[2] = TriedronOrigin[2] - rayon ;
+  textRender->RenderText(L"X", fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2] );
 
-  textRender->RenderText(AxeName, fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2] );
   /* Axe Y */
-  strcpy ( AxeName, "Y\0" );
   TriedronCoord[0] = TriedronOrigin[0] + rayon ;
   TriedronCoord[1] = TriedronOrigin[1] + ( L + 3.0 * rayon ) ;
   TriedronCoord[2] = TriedronOrigin[2] + ( 2.0 * rayon );
-  textRender->RenderText(AxeName, fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
+  textRender->RenderText(L"Y", fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
+
   /* Axe Z */
-  strcpy ( AxeName, "Z\0" );
   TriedronCoord[0] = TriedronOrigin[0] + ( - 2.0 * rayon ) ;
   TriedronCoord[1] = TriedronOrigin[1] +  rayon/2. ;
   TriedronCoord[2] = TriedronOrigin[2] + ( L + 3.0 * rayon ) ;
-
-  textRender->RenderText(AxeName, fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
+  textRender->RenderText(L"Z", fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
 
 #ifdef QTOCC_PATCH /* PCD 10/02/08 */
   /* Recover the clip planes */
@@ -658,7 +654,6 @@ TStatus call_zbuffer_triedron_redraw (
   GLdouble TriedronCoord[3] = { 1.0, 0.0, 0.0 };
 
   GLuint fontBase = 0;
-  char AxeName[]="X\0";
 
   GLuint startList;
   GLUquadricObj* aQuadric;
@@ -1092,27 +1087,22 @@ TStatus call_zbuffer_triedron_redraw (
   OpenGl_TextRender* textRender=OpenGl_TextRender::instance();
 
   /* Axe X */
-  strcpy ( AxeName, "X\0" );
   TriedronCoord[0] = TriedronOrigin[0] + ( L + rayon ) ;
   TriedronCoord[1] = TriedronOrigin[1] + 0.0;
   TriedronCoord[2] = TriedronOrigin[2] - rayon ;
-
-  textRender->RenderText(AxeName, fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
+  textRender->RenderText(L"X", fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
 
   /* Axe Y */
-  strcpy ( AxeName, "Y\0" );
   TriedronCoord[0] = TriedronOrigin[0] + rayon ;
   TriedronCoord[1] = TriedronOrigin[1] + ( L + 3.0 * rayon ) ;
   TriedronCoord[2] = TriedronOrigin[2] + ( 2.0 * rayon );
-
-  textRender->RenderText(AxeName, fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
+  textRender->RenderText(L"Y", fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
 
   /* Axe Z */
-  strcpy ( AxeName, "Z\0" );
   TriedronCoord[0] = TriedronOrigin[0] + ( - 2.0 * rayon ) ;
   TriedronCoord[1] = TriedronOrigin[1] +  rayon/2. ;
   TriedronCoord[2] = TriedronOrigin[2] + ( L + 3.0 * rayon ) ;
-  textRender->RenderText(AxeName, fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
+  textRender->RenderText(L"Z", fontBase, 0, (float)TriedronCoord[0], (float)TriedronCoord[1], (float)TriedronCoord[2]);
 
 #ifdef QTOCC_PATCH 
   /*PCD 17/06/07    */

@@ -63,6 +63,7 @@
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
+#include <Graphic3d_CGraduatedTrihedron.hxx>
 
 #define  BUC61044    /* 25/10/01 SAV ; added functionality to control gl depth testing
       from higher API */
@@ -1091,21 +1092,13 @@ int EXPORT call_togl_isgllight (
   CALL_DEF_VIEW *aview
 #endif
 );
-void EXPORT call_togl_graduatedtrihedron_get (
-#ifdef INTERFACEGRAPHIC_PROTOTYPE
-    /* View id */
-	CALL_DEF_VIEW* aview, 
-    /* Graduated trihedron data */
-    CALL_DEF_GRADUATEDTRIHEDRON* cubic
-#endif
-);
 
 void EXPORT call_togl_graduatedtrihedron_display (
 #ifdef INTERFACEGRAPHIC_PROTOTYPE
     /* View id */
 	CALL_DEF_VIEW* aview, 
     /* Graduated trihedron data */
-    CALL_DEF_GRADUATEDTRIHEDRON* cubic
+    const Graphic3d_CGraduatedTrihedron &cubic
 #endif
 );
 

@@ -246,7 +246,7 @@ typedef struct {
 
 typedef struct {
 
-        char *string;
+        unsigned short *string;
 
         CALL_DEF_POINT Position;
 
@@ -260,7 +260,7 @@ typedef struct {
 
         int VAlign;
 	
-	bool Zoomable;
+        bool Zoomable;
 
 } CALL_DEF_TEXT;
 

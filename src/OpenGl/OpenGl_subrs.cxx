@@ -1631,7 +1631,7 @@ call_subr_structure_exploration( Tint             Id,
           else
           {
             printf( "\tELEM_ANNO_TEXT_REL3\n" );
-            printf( "\t\tANNOTATION TEXT RELATIVE 3 %s\n",
+            printf( "\t\tANNOTATION TEXT RELATIVE 3 %S\n",
               data.atext3.string );
             printf( "\t\treference point %f %f %f\n",
               data.atext3.ref_pt.xyz[0],

@@ -1661,51 +1661,102 @@ static int VColorScale (Draw_Interpretor& di, Standard_Integer argc, const char 
 //function : VGraduatedTrihedron
 //purpose  : Displays a graduated trihedron
 //==============================================================================
+
+static void AddMultibyteString (TCollection_ExtendedString &name, const char *arg)
+{
+  const char *str = arg;
+  while (*str)
+  {
+    unsigned short c1 = *str++;
+    unsigned short c2 = *str++;
+    if (!c1 || !c2) break;
+    name += (Standard_ExtCharacter)((c1 << 8) | c2);
+  }
+}
+
 static int VGraduatedTrihedron(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-  if (V3dView.IsNull())
-      return 1;
-
-  if (argc < 2)
+  // Check arguments
+  if (argc != 2 && argc < 5)
   {
-    di << argv[0] << " Invalid number of arguments" << "\n";
-    return 1;
+    di<<"Error: "<<argv[0]<<" - invalid number of arguments\n";
+    di<<"Usage: type help "<<argv[0]<<"\n";
+    return 1; //TCL_ERROR
   }
 
-  Standard_CString xname = "X (mm)";
-  Standard_CString yname = "Y (mm)";
-  Standard_CString zname = "Z (mm)";
+  Handle(V3d_View) aV3dView = ViewerTest::CurrentView();
 
-  if (argc > 2)
+  // Create 3D view if it doesn't exist
+  if ( aV3dView.IsNull() )
   {
-      if (argc != 5)
-      {
-        di << argv[0] << " Define all X, Y and Z axes names, please" << "\n";
-        return 1;
-      }
-      xname = argv[2];
-      yname = argv[3];
-      zname = argv[4];
+    ViewerTest::ViewerInit(); 
+    aV3dView = ViewerTest::CurrentView();
+    if( aV3dView.IsNull() )
+    {
+      di << "Error: Cannot create a 3D view\n";
+      return 1; //TCL_ERROR
+    }
   }
 
-  int display = atoi(argv[1]);
+  // Erase (==0) or display (!=0)
+  const int display = atoi(argv[1]);
+
   if (display)
-    V3dView->GraduatedTrihedronDisplay(xname, yname, zname,
-                                       Standard_True/*xdrawname*/, Standard_True/*ydrawname*/, Standard_True/*zdrawname*/,
-                                       Standard_True/*xdrawvalues*/, Standard_True/*ydrawvalues*/, Standard_True/*zdrawvalues*/,
-                                       Standard_True/*drawgrid*/,
-                                       Standard_True/*drawaxes*/,
-                                       5/*nbx*/, 5/*nby*/, 5/*nbz*/,
-                                       10/*xoffset*/, 10/*yoffset*/, 10/*zoffset*/,
-                                       30/*xaxisoffset*/, 30/*yaxisoffset*/, 30/*zaxisoffset*/,
-                                       Standard_True/*xdrawtickmarks*/, Standard_True/*ydrawtickmarks*/, Standard_True/*zdrawtickmarks*/,
-                                       10/*xtickmarklength*/, 10/*ytickmarklength*/, 10/*ztickmarklength*/);
+  {
+    // Text font
+    TCollection_AsciiString font;
+    if (argc < 6)
+      font.AssignCat("Courier");
+    else
+      font.AssignCat(argv[5]);
+
+    // Text is multibyte
+    const Standard_Boolean isMultibyte = (argc < 7)? Standard_False : (atoi(argv[6]) != 0);
+
+    // Set axis names
+    TCollection_ExtendedString xname, yname, zname;
+    if (argc >= 5)
+    {
+      if (isMultibyte)
+      {
+        AddMultibyteString(xname, argv[2]);
+        AddMultibyteString(yname, argv[3]);
+        AddMultibyteString(zname, argv[4]);
+      }
+      else
+      {
+        xname += argv[2];
+        yname += argv[3];
+        zname += argv[4];
+      }
+    }
+    else
+    {
+      xname += "X (mm)";
+      yname += "Y (mm)";
+      zname += "Z (mm)";
+    }
+
+    aV3dView->GraduatedTrihedronDisplay(xname, yname, zname,
+                                        Standard_True/*xdrawname*/, Standard_True/*ydrawname*/, Standard_True/*zdrawname*/,
+                                        Standard_True/*xdrawvalues*/, Standard_True/*ydrawvalues*/, Standard_True/*zdrawvalues*/,
+                                        Standard_True/*drawgrid*/,
+                                        Standard_True/*drawaxes*/,
+                                        5/*nbx*/, 5/*nby*/, 5/*nbz*/,
+                                        10/*xoffset*/, 10/*yoffset*/, 10/*zoffset*/,
+                                        30/*xaxisoffset*/, 30/*yaxisoffset*/, 30/*zaxisoffset*/,
+                                        Standard_True/*xdrawtickmarks*/, Standard_True/*ydrawtickmarks*/, Standard_True/*zdrawtickmarks*/,
+                                        10/*xtickmarklength*/, 10/*ytickmarklength*/, 10/*ztickmarklength*/,
+                                        Quantity_NOC_WHITE/*gridcolor*/,
+                                        Quantity_NOC_RED/*xnamecolor*/,Quantity_NOC_GREEN/*ynamecolor*/,Quantity_NOC_BLUE1/*znamecolor*/,
+                                        Quantity_NOC_RED/*xcolor*/,Quantity_NOC_GREEN/*ycolor*/,Quantity_NOC_BLUE1/*zcolor*/,font);
+  }
   else
-    V3dView->GraduatedTrihedronErase();
+    aV3dView->GraduatedTrihedronErase();
 
   ViewerTest::GetAISContext()->UpdateCurrentViewer();
-  V3dView->Redraw();
+  aV3dView->Redraw();
+
   return 0;
 }
 
@@ -1773,6 +1824,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vcolorscale     : vcolorscale [RangeMin = 0 RangeMax = 100 Intervals = 10 HeightFont = 16 Position = 2 X = 0 Y = 0]: draw color scale",
     __FILE__,VColorScale,group);
   theCommands.Add("vgraduatedtrihedron",
-    "vgraduatedtrihedron : 1/0 (display/erase) [Xname Yname Zname]",
+    "vgraduatedtrihedron : 1/0 (display/erase) [Xname Yname Zname [Font [isMultibyte]]]",
     __FILE__,VGraduatedTrihedron,group);
 }
