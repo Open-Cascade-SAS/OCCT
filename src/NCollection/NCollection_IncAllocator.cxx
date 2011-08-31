@@ -13,9 +13,22 @@
 IMPLEMENT_STANDARD_HANDLE  (NCollection_IncAllocator,NCollection_BaseAllocator)
 IMPLEMENT_STANDARD_RTTIEXT (NCollection_IncAllocator,NCollection_BaseAllocator)
 
-#define IMEM_SIZE(_size) ((((_size) - 1)/sizeof(aligned_t)) + 1)
-#define IMEM_FREE(p_bl) ((unsigned int)(p_bl->p_end_block - p_bl->p_free_space))
-#define IMEM_ALIGN(_addr) (sizeof(aligned_t)* IMEM_SIZE((unsigned long)(_addr)))
+namespace
+{
+
+  inline size_t IMEM_SIZE (const size_t theSize)
+  {
+    return (theSize - 1) / sizeof(NCollection_IncAllocator::aligned_t) + 1;
+  }
+
+  inline size_t IMEM_ALIGN (const void* theAddress)
+  {
+    return sizeof(NCollection_IncAllocator::aligned_t) * IMEM_SIZE (size_t(theAddress));
+  }
+
+  #define IMEM_FREE(p_bl) (size_t(p_bl->p_end_block - p_bl->p_free_space))
+
+};
 
 #define MaxLookup 16
 
