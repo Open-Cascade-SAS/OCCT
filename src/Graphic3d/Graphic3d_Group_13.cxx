@@ -45,8 +45,17 @@ void Graphic3d_Group :: AddPrimitiveArray ( const Handle(Graphic3d_ArrayOfPrimit
 }
 
 void Graphic3d_Group :: RemovePrimitiveArrays () {
+  // clear primitives array's visualization data in graphics driver and remove
+  // references to it in driver
+  if (!IsEmpty() && !MyGraphicDriver.IsNull())
+  {
+    for (Graphic3d_ListIteratorOfListOfPArray it (MyListOfPArray);
+         it.More(); it.Next())
+      MyGraphicDriver->RemovePrimitiveArray (MyCGroup, it.Value()->Array());
+  }
 
-	MyListOfPArray.Clear();
+  // remove references to primitives arrays
+  MyListOfPArray.Clear();
 }
 
 Standard_Integer Graphic3d_Group :: ArrayNumber () const {
@@ -80,7 +89,14 @@ void Graphic3d_Group :: RemovePrimitiveArray ( const Standard_Integer aRank ) {
 	for( Standard_Integer i=1 ; it.More() ; it.Next(),i++ ) {
 	  if( aRank == i ) break;
 	}
-	MyListOfPArray.Remove(it);
+
+  // clear primitives array's visualization data in graphics driver and remove
+  // references to it in driver
+  if (!IsEmpty() && !MyGraphicDriver.IsNull())
+    MyGraphicDriver->RemovePrimitiveArray (MyCGroup, it.Value()->Array());
+
+  // remove references to primitives array
+  MyListOfPArray.Remove (it);
 }
 
 void Graphic3d_Group :: UserDraw ( const Standard_Address AnObject,				   

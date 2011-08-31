@@ -216,22 +216,32 @@ void Graphic3d_Structure::Destroy () {
 
 //-Methods, in order
 
-void Graphic3d_Structure::Clear (const Standard_Boolean WithDestruction) {
+void Graphic3d_Structure::Clear (const Standard_Boolean WithDestruction)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  MyCStructure.ContainsFacet = 0;
 
-  if (WithDestruction) {
-    MyGroupGenId.Free ();
-    MyGroups.Clear ();
+  // clean groups in graphics driver at first
+  if (WithDestruction)
+  {
+    // clean and empty each group
+    Standard_Integer Length = MyGroups.Length();
+    for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
+      MyGroups.ChangeValue (aGrId)->Clear();
+  }
+  GraphicClear (WithDestruction);
+
+  // only then remove group references
+  if (WithDestruction)
+  {
+    MyGroupGenId.Free();
+    MyGroups.Clear();
   }
 
-  MyCStructure.ContainsFacet      = 0;
-
-  GraphicClear (WithDestruction);
   MyStructureManager->Clear (this, WithDestruction);
 
-  Update ();
-
+  Update();
 }
 
 void Graphic3d_Structure::Remove () {
@@ -250,6 +260,12 @@ void Graphic3d_Structure::Remove () {
 #endif
 
   Standard_Integer i, Length;
+
+  // clean groups in graphics driver at first
+  Length = MyGroups.Length();
+  for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
+    MyGroups.ChangeValue (aGrId)->Clear();
+
   //        Standard_Address APtr = (void *) This ().operator->();
   Standard_Address APtr = (void *) this;
   // It is necessary to remove the eventual pointer on the structure

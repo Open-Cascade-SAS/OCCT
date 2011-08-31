@@ -69,6 +69,10 @@ void Graphic3d_Group::Destroy () {
 	cout << "Graphic3d_Group::Destroy ()\n";
 #endif
 
+  // tell graphics driver to clear internal resources of the group
+  if (!IsEmpty () && !MyGraphicDriver.IsNull ())
+    MyGraphicDriver->ClearGroup (MyCGroup);
+
 }
 
 void Graphic3d_Group::Remove () {

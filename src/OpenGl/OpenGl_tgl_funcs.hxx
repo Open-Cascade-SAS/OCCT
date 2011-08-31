@@ -351,6 +351,7 @@ extern void call_func_eval_map_matrix3( view_map3 *Map, int *err_ind,
 #define  call_func_del_struct          TsmDeleteStructure 
 
 #define call_func_inq_elem_ptr             TsmGetCurElemPtr
+#define call_func_inq_elem                 TsmGetCurElem
 
 /* Declarations  des subroutines  triedron */
 
@@ -1317,6 +1318,13 @@ void EXPORT call_togl_parray (
                               CALL_DEF_PARRAY* parray
 
                               );
+
+void EXPORT call_togl_parray_remove (
+
+                                    CALL_DEF_GROUP *agroup,
+                                    CALL_DEF_PARRAY* parray
+
+                                    );
 
 void EXPORT call_togl_userdraw (
 

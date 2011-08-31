@@ -36,7 +36,7 @@ Standard_Boolean OpenGl_GraphicDriver
 {
 #ifdef BUC61044
   Graphic3d_CView MyCView = view;
-  return (call_togl_isdepthtest( &MyCView ) != 0);
+  return call_togl_isdepthtest (&MyCView) != 0;
 #endif
 }
 
@@ -64,7 +64,7 @@ Standard_Boolean OpenGl_GraphicDriver
 {
 #ifdef BUC61045
   Graphic3d_CView MyCView = view;
-  return (call_togl_isgllight( &MyCView ) != 0);
+  return call_togl_isgllight (&MyCView) != 0;
 #endif
 }
 
@@ -77,6 +77,20 @@ void OpenGl_GraphicDriver :: PrimitiveArray( const Graphic3d_CGroup& ACGroup,
   if( parray ) call_togl_parray (&MyCGroup,parray);
 }
 
+//=======================================================================
+//function : RemovePrimitiveArray
+//purpose  : Purpose: Clear visualization data in graphical driver and
+//           stop displaying the primitives array of the graphical group
+//           <theCGroup>. This method is internal and should be used by
+//           Graphic3d_Group only.
+//=======================================================================
+
+void OpenGl_GraphicDriver::RemovePrimitiveArray (const Graphic3d_CGroup&         theCGroup,
+                                                 const Graphic3d_PrimitiveArray& thePArray)
+{
+  Graphic3d_CGroup MyCGroup = theCGroup;
+  if (thePArray != NULL) call_togl_parray_remove (&MyCGroup, thePArray);
+}
 
 void OpenGl_GraphicDriver :: UserDraw ( const Graphic3d_CGroup& ACGroup,
                                         const Graphic3d_CUserDraw& AUserDraw )

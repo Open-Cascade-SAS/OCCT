@@ -1323,6 +1323,15 @@ is
                 ProgressBarFunc  : Address from Standard = NULL;
                 ProgressObject   : Address from Standard = NULL ) is deferred;
 
+    RemovePrimitiveArray( me        : mutable;
+                          theCGroup : CGroup from Graphic3d;
+                          thePArray : PrimitiveArray from Graphic3d )
+        is deferred;
+        ---Purpose: Clear visualization data in graphical driver and
+        -- stop displaying the primitives array of the graphical group
+        -- <theCGroup>. This method is internal and should be used
+        -- by Graphic3d_Group only.
+
     --------------------------
     -- Category: Class methods
     --------------------------

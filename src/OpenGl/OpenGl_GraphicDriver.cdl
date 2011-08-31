@@ -1302,4 +1302,13 @@ is
     --            returns Standard_False if fails
     --  ABD Integration support of system fonts (using FTGL and FreeType)
 
+        RemovePrimitiveArray( me        : mutable;
+                              theCGroup : CGroup from Graphic3d;
+                              thePArray : PrimitiveArray from Graphic3d )
+        is redefined static;
+        ---Purpose: Clear visualization data in graphical driver and
+        -- stop displaying the primitives array of the graphical group
+        -- <theCGroup>. This method is internal and should be used
+        -- by Graphic3d_Group only.
+
 end GraphicDriver from OpenGl;
