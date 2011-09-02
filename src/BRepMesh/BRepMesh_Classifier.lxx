@@ -15,13 +15,3 @@ inline BRepMesh_Status BRepMesh_Classifier::State() const
 {
   return myState;
 }
-
-//=======================================================================
-//function : NaturalRestriction
-//purpose  : 
-//=======================================================================
-
-inline Standard_Boolean BRepMesh_Classifier::NaturalRestriction() const
-{
-  return isnatural;
-}

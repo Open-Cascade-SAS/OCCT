@@ -128,6 +128,18 @@ is
                 last   : Real     from Standard)     
         returns Boolean is private;
 
+        RelativeEdgeDeflection(myclass;
+                               edge    : Edge    from TopoDS;
+                               defle   : Real    from Standard;
+                               dtotale : Real    from Standard;
+                               cdef    : out Real    from Standard)
+        ---Purpose: Returns computed relative deflection for edge
+          returns Real from Standard;
+
+        BoxMaxDimension(myclass;
+                        box    : in Box from Bnd;
+                        maxdim : out Real from Standard);
+        ---Purpose: Returns the maximal dimension of Bnd_Box
 
         InternalVertices
                (me         : mutable;

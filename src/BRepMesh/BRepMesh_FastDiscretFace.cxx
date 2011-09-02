@@ -217,16 +217,13 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
       tabvert_corr(i) = i;
     }
     myStructure->ReplaceNodes(aMoveNodes);
-
+    
     Standard_Boolean rajout;
     
     BRepMesh_ClassifierPtr& classifier = theAttrib->GetClassifier();
 
     switch (thetype)
     {
-    case GeomAbs_Plane:
-      rajout = !classifier->NaturalRestriction();
-      break;
     case GeomAbs_Sphere:
     case GeomAbs_Torus:
       rajout = Standard_True;
@@ -617,26 +614,9 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
   Standard_Real deltaX = myAttrib->GetDeltaX();
   Standard_Real deltaY = myAttrib->GetDeltaY();
 
-  if (thetype == GeomAbs_Plane && !theClassifier->NaturalRestriction())
-  {
-    // rajout d`un seul point au milieu.
-    const Standard_Real U = 0.5*(umin+umax);
-    const Standard_Real V = 0.5*(vmin+vmax);
-    if (theClassifier->Perform(gp_Pnt2d(U, V)) == TopAbs_IN)
-    {
-      // Record 3d point
-      BRepMesh_GeomTool::D0(theCaro, U, V, p3d);
-      myNbLocat++;
-      myLocation3d.Bind(myNbLocat, p3d);
-      // Record 2d point
-      p2d.SetCoord((U-umin)/deltaX, (V-vmin)/deltaY);
-      newV.Initialize(p2d.XY(), myNbLocat, BRepMesh_Free);
-      theInternalV.Append(newV);
-    }
-  }
-  else if (thetype == GeomAbs_Sphere)
-  {
-    gp_Sphere S = BS.Sphere();
+  if (thetype == GeomAbs_Sphere)
+  { 
+    gp_Sphere S = BS.Sphere(); 
     const Standard_Real R = S.Radius();
 
     // Calculate parameters for iteration in V direction

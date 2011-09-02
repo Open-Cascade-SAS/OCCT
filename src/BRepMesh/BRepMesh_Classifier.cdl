@@ -27,15 +27,6 @@ is
     	      Tol    : Real                          from Standard;
     	      edges  : DataMapOfShapePairOfPolygon   from BRepMesh;
        	      themap : IndexedMapOfInteger           from TColStd;
-    	      Str    : IndexedMapOfVertex            from BRepMesh;
-    	      Umin, Umax, Vmin, Vmax: Real           from Standard)
-    returns Classifier from BRepMesh;
-    
-    
-    Create   (F      : Face                          from TopoDS; 
-    	      Tol    : Real                          from Standard;
-    	      edges  : DataMapOfShapePairOfPolygon   from BRepMesh;
-       	      themap : IndexedMapOfInteger           from TColStd;
     	      Str    : DataStructureOfDelaun         from BRepMesh;
     	      Umin, Umax, Vmin, Vmax: Real           from Standard)
     returns Classifier from BRepMesh;
@@ -47,10 +38,6 @@ is
 
     State (me)
     returns Status from BRepMesh;
-        ---C++: inline
-
-    NaturalRestriction(me)
-    returns Boolean from Standard;
         ---C++: inline
 
 
@@ -76,6 +63,5 @@ fields
     U2          : Real              from Standard;
     V2          : Real              from Standard;
     myState     : Status            from BRepMesh;
-    isnatural   : Boolean           from Standard;
 
 end Classifier from BRepMesh;

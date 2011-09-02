@@ -3,7 +3,7 @@
 -- Author:      Didier PIFFAULT
 --              <dpf@nonox>
 ---Copyright:	 Matra Datavision 1993, 1994 
-
+ 
 
 class Delaun from BRepMesh
 
@@ -33,115 +33,95 @@ class Delaun from BRepMesh
   is
   -- Interface :
 
-            Create         (Vertices  : in out Array1OfVertexOfDelaun from BRepMesh;
-                            ZPositive : in Boolean from Standard=Standard_True)
+          Create         (Vertices  : in out Array1OfVertexOfDelaun from BRepMesh;
+                          ZPositive : in Boolean from Standard=Standard_True)
               ---Purpose: Creates the  triangulation with an  empty Mesh
               --          data structure.
               returns Delaun from BRepMesh;
 
 
-            Create         (OldMesh   : mutable DataStructureOfDelaun from BRepMesh;
-                            Vertices  : in out Array1OfVertexOfDelaun from BRepMesh;
-                            ZPositive : in Boolean from Standard=Standard_True)
+          Create         (OldMesh   : mutable DataStructureOfDelaun from BRepMesh;
+                          Vertices  : in out Array1OfVertexOfDelaun from BRepMesh;
+                          ZPositive : in Boolean from Standard=Standard_True)
               ---Purpose: Creates  the triangulation with   and existant
               --          Mesh data structure.
               returns Delaun from BRepMesh;
 
 
-            Create         (OldMesh       : mutable DataStructureOfDelaun from BRepMesh;
-                            VertexIndices : in out Array1OfInteger from TColStd;
-                            ZPositive     : in Boolean from Standard=Standard_True)
+          Create         (OldMesh       : mutable DataStructureOfDelaun from BRepMesh;
+                          VertexIndices : in out Array1OfInteger from TColStd;
+                          ZPositive     : in Boolean from Standard=Standard_True)
                   ---Purpose: Creates  the triangulation with   and existant
                   --          Mesh data structure.
                   returns Delaun from BRepMesh;
 
 
-                AddVertex      (me            : in out;
-                                theVertex     : in Vertex from BRepMesh);
-                ---Purpose: Adds a new vertex in the triangulation.
-
-
-                  RemoveVertex   (me            : in out;
-                                  theVertex     : in Vertex from BRepMesh);
+          RemoveVertex   (me            : in out;
+                          theVertex     : in Vertex from BRepMesh);
                 ---Purpose: Removes a vertex in the triangulation.
 
 
-                  AddVertices    (me            : in out;
-                                  Vertices      : in out Array1OfVertexOfDelaun from BRepMesh);
+           AddVertices    (me            : in out;
+                           Vertices      : in out Array1OfVertexOfDelaun from BRepMesh);
                 ---Purpose: Adds some vertices in the triangulation.
 
 
-                  RevertDiagonal (me            : in out;
-                                  theEdge       : in Integer from Standard)
-                  ---Purpose: Substitutes the Edge beetween to  triangles by the
-                  --          other  diagonal  of  the  quadrilatere  if  it  is
-                  --          possible (convex polygon). Return True if done.
-                  returns Boolean from Standard;
-
-
-                UseEdge        (me            : in out;
-                                theEdge       : in Integer from Standard)
+           UseEdge        (me            : in out;
+                           theEdge       : in Integer from Standard)
                   ---Purpose: Modify mesh to use the edge. Return True if done.
                   returns Boolean from Standard;
 
 
-                SmoothMesh     (me            : in out;
-                                Epsilon       : in Real from Standard);
-                ---Purpose: Smooths the  mesh  in 2d space. The  method  is to
-                  --          move  the  free  and  OnSurface  vertices  at  the
-                  --          barycentre of their polygon.
-
-
-                  Result         (me)
+           Result         (me)
                   ---C++: return const &
                   ---Purpose: Gives the Mesh data structure.
                   returns DataStructureOfDelaun from BRepMesh;
 
 
-                Frontier       (me     : in out)
+           Frontier       (me     : in out)
                   ---Purpose: Gives the list of frontier edges
                   ---C++: return const &
                   returns MapOfInteger from BRepMesh;
 
 
-                InternalEdges  (me     : in out)
+           InternalEdges  (me     : in out)
                   ---Purpose: Gives the list of internal edges
                   ---C++: return const &
                   returns MapOfInteger from BRepMesh;
 
 
-                FreeEdges      (me     : in out)
+           FreeEdges      (me     : in out)
                   ---Purpose: Gives the list of free edges used only one time
                   ---C++: return const &
                   returns MapOfInteger from BRepMesh;
 
 
-                GetVertex      (me;
-                                vIndex : in Integer from Standard)
+           GetVertex      (me;
+                           vIndex : in Integer from Standard)
                  ---C++: return const &
                  ---C++: inline
                  returns Vertex from BRepMesh;
 
 
-         GetEdge        (me;
-                          eIndex : in Integer from Standard)
+           GetEdge        (me;
+                           eIndex : in Integer from Standard)
            ---C++: return const &
            ---C++: inline
            returns Edge from BRepMesh;
 
 
-         GetTriangle    (me;
-                          tIndex : in Integer from Standard)
+           GetTriangle    (me;
+                           tIndex : in Integer from Standard)
            ---C++: return const &
            ---C++: inline
            returns Triangle from BRepMesh;
 
 
-         -- Implementation :
+           -- Implementation :
 
-         Init           (me            : in out;
-                          Vertices      : in out Array1OfVertexOfDelaun from BRepMesh);
-         ---Purpose: Initializes the triangulation with an Array of
+           Init           (me            : in out;
+                           Vertices      : in out Array1OfVertexOfDelaun from BRepMesh);
+           ---Purpose: Initializes the triangulation with an Array of
            --          Vertex.
 
            Compute        (me            : in out;
@@ -149,14 +129,10 @@ class Delaun from BRepMesh
            ---Purpose: Computes the triangulation and add the vertices
            --          edges and triangles to the Mesh data structure.
 
-           ReCompute      (me            : in out;
-                            VertexIndices : in out Array1OfInteger from TColStd);
-            ---Purpose: Clear the  existing  triangles  and recomputes
-            --          the triangulation .
 
            SuperMesh      (me            : in out;
-                            theBox        : Box2d from Bnd);
-         ---Purpose: Build the super mesh .
+                           theBox        : Box2d from Bnd);
+           ---Purpose: Build the super mesh .
 
 
            FrontierAdjust (me            : in out)
@@ -164,9 +140,9 @@ class Delaun from BRepMesh
            is private;
 
 
-         MeshLeftPolygonOf  (me        : in out;
-                              EdgeIndex : Integer from Standard;
-                              EdgeSens  : Boolean from Standard)
+           MeshLeftPolygonOf  (me        : in out;
+                               EdgeIndex : Integer from Standard;
+                               EdgeSens  : Boolean from Standard)
               ---Purpose: Find left polygon of the edge and call MeshPolygon.
               is private;
 
@@ -178,7 +154,7 @@ class Delaun from BRepMesh
 
 
             CreateTriangles(me            : in out; 
-                                vertexIndex   : Integer from Standard; 
+                            vertexIndex   : Integer from Standard; 
                 --vertex        : in Vertex from BRepMesh; 
                                 freeEdges: out MapOfIntegerInteger from BRepMesh)
                 ---Purpose: Creates the triangles beetween the node 
@@ -194,34 +170,40 @@ class Delaun from BRepMesh
                --          When an edge is suppressed more than one time 
                --          it is destroyed.
                is private;
+               
+               
+           Perform (me: in out;
+                    theBndBox       : out Box2d from Bnd;
+                    theVertexIndices: out Array1OfInteger from TColStd)
+              is private;
 
 
-             Contains       (me;
-                              TrianIndex    : Integer from Standard;
-                              theVertex     : in Vertex from BRepMesh;
-                              edgeOn        : out Integer from Standard)
-                  ---Purpose: Test  if   triangle   of  index   <TrianIndex>
-                  --          contains geometricaly <theVertex>. If <EdgeOn>
-                  --          is != 0  then theVertex is  on Edge  of  index
-                  --          <edgeOn>.
-                  returns Boolean from Standard;
-
-                TriangleContaining
-                  (me            : in out;
-                    theVertex     : in Vertex from BRepMesh)
-                  ---Purpose: Gives  the   index   of  triangle   containing
-                  --          geometricaly <theVertex>. 
-                  returns Integer from Standard;
+           Contains       (me;
+                           TrianIndex    : Integer from Standard;
+                           theVertex     : in Vertex from BRepMesh;
+                           edgeOn        : out Integer from Standard)
+            ---Purpose: Test  if   triangle   of  index   <TrianIndex>
+            --          contains geometricaly <theVertex>. If <EdgeOn>
+            --          is != 0  then theVertex is  on Edge  of  index
+            --          <edgeOn>.
+            returns Boolean from Standard;
 
 
-                fields  MeshData               : DataStructureOfDelaun from BRepMesh;
-                        PositiveOrientation    : Boolean from Standard;
-                        tCircles               : CircleTool from BRepMesh;
-                        supVert1               : Integer from Standard;
-                        supVert2               : Integer from Standard;
-                        supVert3               : Integer from Standard;
-                        supTrian               : Triangle from BRepMesh;
-                        mapEdges               : MapOfInteger from BRepMesh;
+            CreateTrianglesOnNewVertices(me            : in out;
+                                       theVertexIndices: out Array1OfInteger from TColStd)
+                --vertex        : in Vertex from BRepMesh; 
+                ---Purpose: Creates the triangles on new nodes
+              is private;
+
+
+            fields  MeshData               : DataStructureOfDelaun from BRepMesh;
+                    PositiveOrientation    : Boolean from Standard;
+                    tCircles               : CircleTool from BRepMesh;
+                    supVert1               : Integer from Standard;
+                    supVert2               : Integer from Standard;
+                    supVert3               : Integer from Standard;
+                    supTrian               : Triangle from BRepMesh;
+                    mapEdges               : MapOfInteger from BRepMesh;
 
 
 end Delaun;

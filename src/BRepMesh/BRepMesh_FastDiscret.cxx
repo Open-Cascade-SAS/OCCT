@@ -126,16 +126,8 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const Standard_Real    theDefle,
   myInshape(theInshape)
 {
   myAllocator = new NCollection_IncAllocator(64000);
-  if (theRelative)
-  {
-    Standard_Real TXmin, TYmin, TZmin, TXmax, TYmax, TZmax;
-    theBox.Get(TXmin, TYmin, TZmin, TXmax, TYmax, TZmax);
-    myDtotale = TXmax-TXmin;
-    const Standard_Real dy = TYmax-TYmin;
-    const Standard_Real dz = TZmax-TZmin;
-    if (dy > myDtotale) myDtotale = dy;
-    if (dz > myDtotale) myDtotale = dz;
-  }
+  if(myRelative)
+    BoxMaxDimension(theBox, myDtotale);
 }
 
 //=======================================================================
@@ -156,17 +148,55 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const Standard_Real    theDefle,
   myInshape(theInshape)
 {
   myAllocator = new NCollection_IncAllocator(64000);
-  if (theRelative)
-  {
-    Standard_Real TXmin, TYmin, TZmin, TXmax, TYmax, TZmax;
-    theBox.Get(TXmin, TYmin, TZmin, TXmax, TYmax, TZmax);
-    myDtotale = TXmax-TXmin;
-    const Standard_Real dy = TYmax-TYmin;
-    const Standard_Real dz = TZmax-TZmin;
-    if (dy > myDtotale) myDtotale = dy;
-    if (dz > myDtotale) myDtotale = dz;
-  }
+  if(myRelative)
+    BoxMaxDimension(theBox, myDtotale);
   Perform(theShape);
+}
+
+//=======================================================================
+//function : BoxMaxDimension
+//purpose  : 
+//=======================================================================
+
+void BRepMesh_FastDiscret::BoxMaxDimension(const Bnd_Box& theBox, Standard_Real& theMaxDim)
+{
+  if(theBox.IsVoid())
+    return;
+  Standard_Real TXmin, TYmin, TZmin, TXmax, TYmax, TZmax;
+  theBox.Get(TXmin, TYmin, TZmin, TXmax, TYmax, TZmax);
+  theMaxDim = TXmax-TXmin;
+  const Standard_Real dy = TYmax-TYmin;
+  const Standard_Real dz = TZmax-TZmin;
+  if (dy > theMaxDim) theMaxDim = dy;
+  if (dz > theMaxDim) theMaxDim = dz;
+}
+
+//=======================================================================
+//function : RelativeEdgeDeflection
+//purpose  : 
+//=======================================================================
+
+Standard_Real BRepMesh_FastDiscret::RelativeEdgeDeflection(const TopoDS_Edge& theEdge,
+	                                          						   const Standard_Real theDefle,
+							                                             const Standard_Real theDTotale,
+                                                           Standard_Real& theDefCoef)
+{
+  theDefCoef = 1.;
+  Standard_Real defedge = theDefle;
+  if(theEdge.IsNull())
+    return defedge;
+
+  Bnd_Box B;
+  BRepBndLib::Add(theEdge, B);
+  BoxMaxDimension(B, defedge);
+            
+  // adjusted in relation to the total size:
+  theDefCoef = theDTotale/(2*defedge);
+  if (theDefCoef < 0.5) theDefCoef = 0.5;
+  if (theDefCoef > 2.) theDefCoef = 2.;
+  defedge = theDefCoef * defedge * theDefle;
+
+  return defedge;
 }
 
 //=======================================================================
@@ -270,7 +300,6 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
   i = 1;
 
   Standard_Real defedge, defface;
-  Standard_Real dx, dy, dz;
   Standard_Integer nbEdge = 0;
   Standard_Real savangle = myAngle;
   Standard_Real cdef;
@@ -301,20 +330,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
             defedge = P->Deflection();
           }
           else {
-            Bnd_Box B;
-            BRepBndLib::Add(edge, B);
-            B.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-            dx = aXmax-aXmin;
-            dy = aYmax-aYmin;
-            dz = aZmax-aZmin;
-            defedge = dx;
-            if (defedge < dy) defedge = dy;
-            if (defedge < dz) defedge = dz;
-            // adjusted in relation to the total size:
-            cdef = myDtotale/(2*defedge);
-            if (cdef < 0.5) cdef = 0.5;
-            if (cdef > 2.) cdef = 2.;
-            defedge = cdef * defedge * myDeflection;
+            defedge = RelativeEdgeDeflection(edge, myDeflection, myDtotale, cdef);
             myAngle = savangle * cdef;
           }
           defface = defface + defedge;
@@ -510,7 +526,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
     BS.D0 (myumin, myvmin, P11);
     BS.D0 (myumin, dfvave, P21);
     BS.D0 (myumin, myvmax, P31);
-    for (i1=0, dfucur=myumin; i1 <= 20; i1++, dfucur+=du)  {
+    for (i1=1, dfucur=myumin+du; i1 <= 20; i1++, dfucur+=du)  {
       BS.D0 (dfucur, myvmin, P12);
       BS.D0 (dfucur, dfvave, P22);
       BS.D0 (dfucur, myvmax, P32);
@@ -523,7 +539,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
     BS.D0(myumin, myvmin, P11);
     BS.D0(dfuave, myvmin, P21);
     BS.D0(myumax, myvmin, P31);
-    for (i1=0, dfvcur=myvmin; i1 <= 20; i1++, dfvcur+=dv) {
+    for (i1=1, dfvcur=myvmin+dv; i1 <= 20; i1++, dfvcur+=dv) {    
       BS.D0 (myumin, dfvcur, P12);
       BS.D0 (dfuave, dfvcur, P22);
       BS.D0 (myumax, dfvcur, P32);
@@ -662,7 +678,6 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
 #endif // DEB_MESH
   myStructure.Nullify();
 }
-
 
 //=======================================================================
 //function : Add
