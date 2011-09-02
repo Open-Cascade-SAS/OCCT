@@ -978,17 +978,17 @@ void XCAFDoc_ShapeTool::UpdateAssembly (const TDF_Label& L) const
 //purpose  : 
 //=======================================================================
 
-static Standard_Boolean CheckSubShape (const TopoDS_Shape &S, const TopoDS_Shape &sub)
-{
-  if ( S.IsSame ( sub ) ) return Standard_True;
-  
-  if ( S.ShapeType() >= sub.ShapeType() ) return Standard_False;
-  
-  for ( TopoDS_Iterator it(S); it.More(); it.Next() ) {
-    if ( CheckSubShape ( it.Value(), sub ) ) return Standard_True;
-  }
-  return Standard_False;
-}
+//static Standard_Boolean CheckSubShape (const TopoDS_Shape &S, const TopoDS_Shape &sub)
+//{
+//  if ( S.IsSame ( sub ) ) return Standard_True;
+//  
+//  if ( S.ShapeType() >= sub.ShapeType() ) return Standard_False;
+//  
+//  for ( TopoDS_Iterator it(S); it.More(); it.Next() ) {
+//    if ( CheckSubShape ( it.Value(), sub ) ) return Standard_True;
+//  }
+//  return Standard_False;
+//}
 
 //=======================================================================
 //function : IsSubShape
