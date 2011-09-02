@@ -302,7 +302,7 @@ static Standard_Integer triarea (Draw_Interpretor& di, int n, const char ** a)
     BRepGProp::SurfaceProperties(shape, props, anEps);
   double aGeomArea = props.Mass();
 
-  di << aTriArea << " " << aGeomArea << " ";
+  di << aTriArea << " " << aGeomArea << "\n";
   return 0;
 }
 
@@ -320,7 +320,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
 
   // execute check
   MeshTest_CheckTopology aCheck(shape);
-  aCheck.Perform();
+  aCheck.Perform(di);
 
   // dump info on free links inside the triangulation
   Standard_Integer nbFree = 0;
@@ -330,7 +330,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
       Standard_Integer nbEdge = aCheck.NbFreeLinks(k);
       Standard_Integer iF = aCheck.GetFaceNumWithFL(k);
       nbFree += nbEdge;
-      cout<<"free links of face "<<iF<<endl;
+      di << "free links of face " << iF << "\n";
       const TopoDS_Face& aFace = TopoDS::Face(aMapF.FindKey(iF));
       TopLoc_Location aLoc;
       Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
@@ -342,7 +342,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
       for (i=1; i <= nbEdge; i++) {
         Standard_Integer n1, n2;
         aCheck.GetFreeLink(k, i, n1, n2);
-        cout<<"{"<<n1<<" "<<n2<<"} ";
+        di << "{" << n1 << " " << n2 << "} ";
         pnts(1) = aPoints(n1).Transformed(trsf);
         pnts(2) = aPoints(n2).Transformed(trsf);
         Handle(Poly_Polygon3D) poly = new Poly_Polygon3D (pnts);
@@ -356,44 +356,44 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
         DrawTrSurf::Set (name, pnts2d(1));
         DrawTrSurf::Set (name, pnts2d(2));
       }
-      cout<<endl;
+      di << "\n";
     }
   }
 
   // dump info on cross face errors
   Standard_Integer nbErr = aCheck.NbCrossFaceErrors();
   if (nbErr > 0) {
-    cout<<"cross face errors: {face1, node1, face2, node2, distance}"<<endl;
+    di << "cross face errors: {face1, node1, face2, node2, distance}" << "\n";
     for (i=1; i <= nbErr; i++) {
       Standard_Integer iF1, n1, iF2, n2;
       Standard_Real aVal;
       aCheck.GetCrossFaceError(i, iF1, n1, iF2, n2, aVal);
-      cout<<"{"<<iF1<<" "<<n1<<" "<<iF2<<" "<<n2<<" "<<aVal<<"} ";
+      di << "{" << iF1 << " " << n1 << " " << iF2 << " " << n2 << " " << aVal << "} ";
     }
-    cout<<endl;
+    di << "\n";
   }
 
   // dump info on edges
   Standard_Integer nbAsync = aCheck.NbAsyncEdges();
   if (nbAsync > 0) {
-    cout<<"async edges:"<<endl;
+    di << "async edges:" << "\n";
     for (i=1; i <= nbAsync; i++) {
       Standard_Integer ie = aCheck.GetAsyncEdgeNum(i);
-      cout<<ie<<" ";
+      di << ie << " ";
     }
-    cout<<endl;
+    di << "\n";
   }
 
   // dump info on free nodes
   Standard_Integer nbFreeNodes = aCheck.NbFreeNodes();
   if (nbFreeNodes > 0) {
-    cout << "free nodes (in pairs: face / node): " << endl;
+    di << "free nodes (in pairs: face / node): " << "\n";
     for (i=1; i <= nbFreeNodes; i++) {
       Standard_Integer iface, inode;
       aCheck.GetFreeNodeNum(i, iface, inode);
-      cout << "{" << iface << " " << inode << "} ";
+      di << "{" << iface << " " << inode << "} ";
     }
-    cout << endl;
+    di << "\n";
   }
 
   // output errors summary to DRAW
@@ -401,6 +401,6 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
     di << "Free_links " << nbFree
        << " Cross_face_errors " << nbErr
        << " Async_edges " << nbAsync 
-       << " Free_nodes " << nbFreeNodes << " ";
+       << " Free_nodes " << nbFreeNodes << "\n";
   return 0;
 }

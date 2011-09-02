@@ -10,6 +10,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+#include <Draw_Interpretor.hxx>
 
 //! This class checks topology of the mesh presented by
 //! triangulations of faces.
@@ -34,7 +35,7 @@ public:
     : myShape(theShape) {}
 
   //! performs checking
-  Standard_EXPORT void Perform();
+  Standard_EXPORT void Perform(Draw_Interpretor& di);
 
   //! returns the number of faces with free links
   Standard_Integer NbFacesWithFL() const

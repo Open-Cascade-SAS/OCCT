@@ -24,7 +24,7 @@
 //purpose  : Performs checking
 //=======================================================================
 
-void MeshTest_CheckTopology::Perform ()
+void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
 {
   TopTools_IndexedMapOfShape aMapF;
   TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
@@ -107,7 +107,7 @@ void MeshTest_CheckTopology::Perform ()
     TopLoc_Location aLoc;
     Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(aFace, aLoc);
     if (aT.IsNull()) {
-      cout<< "face "<<iF<<" has no triangulation"<<endl;
+      di << "face " <<iF <<" has no triangulation" << "\n";
       continue;
     }
 
