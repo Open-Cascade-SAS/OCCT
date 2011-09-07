@@ -2,7 +2,7 @@
 // Created:	Fri Mar  8 11:07:06 1991
 // Author:	Christophe MARION
 //		<cma@topsn3>
-
+//
 #include <Bnd_Box.ixx>
 
 #define VoidMask  0x01
@@ -748,7 +748,22 @@ Standard_Boolean Bnd_Box::IsOut (const gp_Lin& L) const
 //=======================================================================
 
 Standard_Boolean Bnd_Box::IsOut (const Bnd_Box& Other) const
-{
+{ 
+  //modified by NIZNHY-PKV Fri Jul 08 11:03:43 2011f
+  if (!Flags && !Other.Flags) {
+    Standard_Boolean bRet;
+    Standard_Real delta;
+    //
+    delta = Other.Gap + Gap;
+    bRet=((Xmin - Other.Xmax > delta) ||
+	  (Other.Xmin - Xmax > delta) ||
+	  (Ymin - Other.Ymax > delta) ||
+	  (Other.Ymin - Ymax > delta) ||
+	  (Zmin - Other.Zmax > delta) ||
+	  (Other.Zmin - Zmax > delta));
+    return bRet;
+  }
+  //modified by NIZNHY-PKV Fri Jul 08 11:03:46 2011t
   if   (IsVoid())         return Standard_True;
   if   (Other.IsVoid())   return Standard_True;
   if   (IsWhole())        return Standard_False;
