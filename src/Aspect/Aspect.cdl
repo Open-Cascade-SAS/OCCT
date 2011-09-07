@@ -844,6 +844,29 @@ is
         end TypeOfColorScaleOrientation;
         ---Purpose: Defines the type of color scale orientation
 
+        enumeration PrintAlgo is
+          PA_STRETCH,
+          PA_TILE
+        end PrintAlgo;
+        ---Purpose: Defines print algorithm
+        --          Aspect_PrintAlgo:
+        --          1) PA_STRETCH - Stretch offscreen printing frame
+        --                          if its dimensions are smaller than
+        --                          the printer's printing area dimensions;
+        --                          This algorithm is more reliable as it
+        --                          works on any hardware and is recommended
+        --                          to be used with average printing resolutions,
+        --                          as it more RAM memory dependent than PA_TILE;
+        --                          Stretching is performend using bicubic interpolation
+        --                          algorithm from FreeImage library if OCCT is built
+        --                          with FreeImage support, otherwise Windows API 
+        --                          StretchBlt() function in STRETCH_HALFTONE mode
+        --                          is used;
+        --          2) PA_TILE    - If the offscreen printing frame dimensions
+        --                          are smaller than the printer's printing
+        --                          area dimensions - use multiple printing
+        --                          frames to cover the whole printing area
+
         ---------------------------------
         -- Category: Instantiated classes
         ---------------------------------

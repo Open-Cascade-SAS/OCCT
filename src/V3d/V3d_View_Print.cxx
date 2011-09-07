@@ -53,18 +53,20 @@ Device::~Device()
 /* Print Method                                                        */
 /************************************************************************/
 
-void V3d_View::Print (const Aspect_Handle       hPrnDC,
-                      const Standard_Boolean    showDialog,
-                      const Standard_Boolean    showBackground,
-                      const Standard_CString    filename) const 
+Standard_Boolean V3d_View::Print (const Aspect_Handle    hPrnDC,
+                                  const Standard_Boolean showDialog,
+                                  const Standard_Boolean showBackground,
+                                  const Standard_CString filename,
+                                  const Aspect_PrintAlgo printAlgorithm) const
 {
 #ifdef WNT
 	if( MyView->IsDefined() ) 
 	{
 		if (hPrnDC != NULL)
 		{
-			MyView->Print(hPrnDC, showBackground, filename) ;
-			return;
+			return MyView->Print(hPrnDC, showBackground,
+			                     filename, printAlgorithm) ;
+			
 		}
 
 		if (device._pd.hDC == NULL || showDialog )
@@ -85,7 +87,7 @@ void V3d_View::Print (const Aspect_Handle       hPrnDC,
 		
 			if (!ispd)
 			{
-				return;
+				return Standard_False;
 			}
 			
 			if (!(device._pd.hDC)) 
@@ -101,12 +103,21 @@ void V3d_View::Print (const Aspect_Handle       hPrnDC,
 					device._pd.hDevMode = NULL;
 				}
 				MessageBox(0, "Couldn't create Printer Device Context", "Error", MB_OK | MB_ICONSTOP);
-				return;
+				return Standard_False;
 			}
 		}
-		MyView->Print(device._pd.hDC, showBackground, filename) ;
+
+    // process scale factor accordingly to the new printing approach
+    DEVMODE* aMode = (LPDEVMODE)GlobalLock(device._pd.hDevMode);
+
+    // convert percents to multiplication factor, 100% = 1.0
+    Standard_Real aScaleFactor = (Standard_Real) aMode->dmScale / 100.0;
+    GlobalUnlock (device._pd.hDevMode);
+   return MyView->Print(device._pd.hDC, showBackground,
+                        filename, printAlgorithm, aScaleFactor) ;
 	}
 #else
 	Standard_NotImplemented::Raise ("V3d_View::Print is implemented only on Windows");
 #endif
+  return Standard_False;
 }

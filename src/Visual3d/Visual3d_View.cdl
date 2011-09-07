@@ -74,6 +74,7 @@ uses
     RenderingContext        from Aspect,
     GraphicCallbackProc     from Aspect,
     ColorScale              from Aspect,
+    PrintAlgo               from Aspect,
 
     CRawBufferData          from Image,
 
@@ -1075,12 +1076,14 @@ is
 	--	    displayed in <me>.
 	---Category: Private methods
 
-	  Print (me; AnUnderLayer	: Layer from Visual3d;
-		 	 AnOverLayer	: Layer from Visual3d;
-			 hPrnDC: Handle from Aspect;
-			 showBackground: Boolean;
-			 filename: CString)
-	  is static;
+	  Print (me; AnUnderLayer : Layer from Visual3d;
+		 AnOverLayer	  : Layer from Visual3d;
+		 hPrnDC           : Handle from Aspect;
+		 showBackground   : Boolean;
+		 filename         : CString;
+		 printAlgorithm   : PrintAlgo from Aspect = Aspect_PA_STRETCH;
+                 theScaleFactor   : Real from Standard = 1.0)
+	  returns Boolean from Standard is static;
 
       	---Level: Internal
       	---Purpose: print the contents of all layers of the view to the printer.
@@ -1089,12 +1092,21 @@ is
 	-- (background is white)
       	-- else set to TRUE for printing with current background color.
 	-- <filename>: If != NULL, then the view will be printed to a file.
+	-- <printAlgo>: Select print algorithm: stretch, tile.
+        -- <theScaleFactor>: Scaling coefficient, used internally to scale the
+        -- printings accordingly to the scale factor selected in the printer 
+        -- properties dialog.
+        -- Returns Standard_True if the data is passed to the printer, otherwise
+        -- Standard_False if the print operation failed due to printer error
+        -- or insufficient memory.
 	--  Warning: Works only under Windows.
 
-	  Print (me; hPrnDC: Handle from Aspect;
-			 showBackground: Boolean;
-			 filename: CString)
-	  is static;
+	  Print (me; hPrnDC     : Handle from Aspect;
+		 showBackground : Boolean;
+		 filename       : CString;
+		 printAlgorithm : PrintAlgo from Aspect = Aspect_PA_STRETCH;
+                 theScaleFactor : Real from Standard = 1.0 )
+	  returns Boolean from Standard is static;
 
       	---Level: Internal
       	---Purpose: print the contents of the view to printer.
@@ -1103,6 +1115,13 @@ is
 	-- (background is white)
       	-- else set to TRUE for printing with current background color.
 	-- <filename>: If != NULL, then the view will be printed to a file.
+	-- <printAlgo>: Select print algorithm: stretch, tile.
+        -- <theScaleFactor>: Scaling coefficient, used internally to scale the
+        -- printings accordingly to the scale factor selected in the printer 
+        -- properties dialog.
+        -- Returns Standard_True if the data is passed to the printer, otherwise
+        -- Standard_False if the print operation failed due to printer error
+        -- or insufficient memory.
 	--  Warning: Works only under Windows.
 
 	SetTransparency ( me : mutable;

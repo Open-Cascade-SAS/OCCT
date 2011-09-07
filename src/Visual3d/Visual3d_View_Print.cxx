@@ -14,28 +14,34 @@
 /* Print Methods                                                        */
 /************************************************************************/
 
-void Visual3d_View::Print (const Aspect_Handle    hPrintDC, 
-                           const Standard_Boolean showBackground, 
-                           const Standard_CString filename) const
+Standard_Boolean Visual3d_View::Print
+  (const Aspect_Handle    hPrintDC, 
+   const Standard_Boolean showBackground,
+   const Standard_CString filename,
+   const Aspect_PrintAlgo printAlgorithm,
+   const Standard_Real    theScaleFactor) const
 {
-  Print (MyViewManager->UnderLayer (), 
-         MyViewManager->OverLayer (), 
-         hPrintDC, 
-         showBackground, 
-         filename);
+  return Print (MyViewManager->UnderLayer (),
+                MyViewManager->OverLayer (),
+                hPrintDC, showBackground,
+                filename, printAlgorithm, 
+                theScaleFactor);
 }
 
-void Visual3d_View::Print (const Handle(Visual3d_Layer)& AnUnderLayer, 
-                           const Handle(Visual3d_Layer)& AnOverLayer,
-                           const Aspect_Handle           hPrintDC,
-                           const Standard_Boolean        showBackground,
-                           const Standard_CString        aFilename) const
+Standard_Boolean Visual3d_View::Print
+  (const Handle(Visual3d_Layer)& AnUnderLayer,
+   const Handle(Visual3d_Layer)& AnOverLayer,
+   const Aspect_Handle           hPrintDC,
+   const Standard_Boolean        showBackground,
+   const Standard_CString        aFilename,
+   const Aspect_PrintAlgo        printAlgorithm,
+   const Standard_Real           theScaleFactor) const
 {
-  if (IsDeleted ()) return;
+  if (IsDeleted ()) return Standard_False;
 
-  if ((! IsDefined ()) || (! IsActive ())) return;
+  if ((! IsDefined ()) || (! IsActive ())) return Standard_False;
 
-  if (! MyWindow->IsMapped ()) return;
+  if (! MyWindow->IsMapped ()) return Standard_False;
 
   Aspect_CLayer2d OverCLayer;
   Aspect_CLayer2d UnderCLayer;
@@ -44,6 +50,7 @@ void Visual3d_View::Print (const Handle(Visual3d_Layer)& AnUnderLayer,
   if (! AnOverLayer.IsNull ()) OverCLayer = AnOverLayer->CLayer ();
   if (! AnUnderLayer.IsNull ()) UnderCLayer = AnUnderLayer->CLayer ();
 
-  MyGraphicDriver->Print (MyCView, UnderCLayer, OverCLayer,
-                          hPrintDC, showBackground, aFilename);
+  return MyGraphicDriver->Print (MyCView, UnderCLayer, OverCLayer,
+                                 hPrintDC, showBackground, aFilename,
+                                 printAlgorithm, theScaleFactor);
 }

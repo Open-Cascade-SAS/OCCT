@@ -57,6 +57,7 @@ HISTORIQUE DES MODIFICATIONS   :
 #include <Visual3d_Layer.hxx>
 
 #include <OpenGl_Extension.hxx>
+#include <OpenGl_PrinterContext.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -297,6 +298,35 @@ call_togl_redraw_layer2d (
   printf ("\tratio %f new ortho %f %f %f %f\n",
     ratio, left, right, bottom, top);
 #endif
+
+#ifdef WNT
+  // Check printer context that exists only for print operation
+  OpenGl_PrinterContext* aPrinterContext = 
+    OpenGl_PrinterContext::GetPrinterContext (GET_GL_CONTEXT());
+
+  if (aPrinterContext)
+  {
+    // additional transformation matrix could be applied to
+    // render only those parts of viewport that will be
+    // passed to a printer as a current "frame" to provide
+    // tiling; scaling of graphics by matrix helps render a
+    // part of a view (frame) in same viewport, but with higher
+    // resolution
+    GLfloat aProjMatrix[16];
+    aPrinterContext->GetProjTransformation (aProjMatrix);
+    glLoadMatrixf ((GLfloat*) aProjMatrix);
+
+    // printing operation also assumes other viewport dimension
+    // to comply with transformation matrix or graphics scaling
+    // factors for tiling for layer redraw
+    GLsizei anViewportX = 0;
+    GLsizei anViewportY = 0;
+    aPrinterContext->GetLayerViewport (anViewportX, anViewportY);
+    if (anViewportX != 0 && anViewportY != 0)
+      glViewport (0, 0, anViewportX, anViewportY);
+  }
+#endif 
+
   glOrtho (left, right, bottom, top, -1.0, 1.0);
 
 #ifdef TRACE_MAT

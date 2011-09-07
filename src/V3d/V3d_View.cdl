@@ -144,7 +144,8 @@ uses
         GradientFillMethod                from Aspect,
         FontAspect                        from OSD,
         AsciiString                       from TCollection,
-        ExtendedString                    from TCollection
+        ExtendedString                    from TCollection,
+        PrintAlgo                         from Aspect
 
 raises
 
@@ -1606,9 +1607,10 @@ is
 
       Print (me; hPrnDC: Handle from Aspect = NULL;
              showDialog: Boolean = Standard_True;
-             showBackground: Boolean = Standard_True;
-             filename: CString = NULL)
-      is static;
+             showBackground : Boolean = Standard_True;
+             filename: CString = NULL;
+             printAlgorithm : PrintAlgo from Aspect = Aspect_PA_STRETCH)
+      returns Boolean from Standard is static;
 
         ---Level: Public
         ---Purpose: print the contents of the view to printer with preview.
@@ -1625,6 +1627,15 @@ is
     -- (background is white)
         -- else set to TRUE for printing with current background color.
     -- <filename>: If != NULL, then the view will be printed to a file.
+    -- <printAlgorithm>: If you want to select the print algorithm, then you can
+        -- specify one of existing algorithms: Aspect_PA_STRETCH, Aspect_PA_TILE.
+    -- Returns Standard_True if the data is passed to the printer, otherwise
+    -- Standard_False if the print operation failed. This might be related to
+    -- insufficient memory or some internal errors. All this errors are
+    -- indicated by the message boxes (on level of OpenGl_GraphicDriver).
+    --  Warning: This function can reuse FBO assigned to the 
+    --  view on level of OpenGl_GraphicDriver; Please take it into account if
+    --  you use it for your purposes;
     --  Warning: Works only under Windows.
 
         ToPixMap ( me : mutable;

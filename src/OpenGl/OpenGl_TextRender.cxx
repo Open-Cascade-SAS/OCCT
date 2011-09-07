@@ -4,16 +4,16 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
-
-#include <Standard_Stream.hxx>
-
+#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_FontMgr.hxx>   
 #include <OpenGl_tgl_funcs.hxx>
 #include <OpenGl_TextRender.hxx>
 #include <OpenGl_telem_attri.hxx>
 #include <OpenGl_cmn_varargs.hxx>
+#include <OpenGl_PrinterContext.hxx>
+#include <Standard_Stream.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 #include <OSD_Environment.hxx>
 #include <Quantity_NameOfColor.hxx>
@@ -384,6 +384,22 @@ void OpenGl_TextRender::RenderText ( const wchar_t* str, GLuint base, int is2d, 
 
     if( ! zoom )
     {
+#ifdef WNT
+      // if the context has assigned printer context, use it's parameters
+      OpenGl_PrinterContext* aPrinterContext = 
+        OpenGl_PrinterContext::GetPrinterContext( GET_GL_CONTEXT() );
+      if( aPrinterContext )
+      {
+        // get printing scaling in x and y dimensions
+        GLfloat aTextScalex = 1, aTextScaley = 1;
+        aPrinterContext->GetScale( aTextScalex, aTextScaley );
+        
+        // text should be scaled in all directions with same
+        // factor to save its proportions, so use height (y) scaling
+        // as it is better for keeping text/3d graphics proportions
+        glScalef( aTextScaley, aTextScaley, aTextScaley );
+      }
+#endif
       glScaled( h, h, h );
     }
     else

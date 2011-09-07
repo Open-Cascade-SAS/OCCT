@@ -14,10 +14,14 @@
 /* Print Methods                                                        */
 /************************************************************************/
 
-void Graphic3d_GraphicDriver::Print (const Graphic3d_CView& , 
-                                     const Aspect_CLayer2d& , 
-                                     const Aspect_CLayer2d& , 
-                                     const Aspect_Handle ,
-                                     const Standard_Boolean ,
-                                     const Standard_CString ) const {
-                                     }
+Standard_Boolean Graphic3d_GraphicDriver::Print (const Graphic3d_CView& , 
+                                                 const Aspect_CLayer2d& , 
+                                                 const Aspect_CLayer2d& , 
+                                                 const Aspect_Handle ,
+                                                 const Standard_Boolean ,
+                                                 const Standard_CString ,
+                                                 const Aspect_PrintAlgo ,
+	                                         const Standard_Real ) const
+{
+  return Standard_False;
+}

@@ -1334,16 +1334,18 @@ void EXPORT call_togl_userdraw (
                                 );
 
 /* ------------------------- */
-void EXPORT call_togl_print (
+Standard_Boolean EXPORT call_togl_print (
 
-                             CALL_DEF_VIEW *aview,
-                             CALL_DEF_LAYER *anunderlayer,
-                             CALL_DEF_LAYER *anoverlayer,
-                             const Aspect_Drawable hPrintDC,
-                             const int background,
-                             const char* filename
+                                         CALL_DEF_VIEW *aview,
+                                         CALL_DEF_LAYER *anunderlayer,
+                                         CALL_DEF_LAYER *anoverlayer,
+                                         const Aspect_Drawable hPrintDC,
+                                         const int background,
+                                         const char* filename,
+                                         const int printalgo = 0,
+                                         const float theScaleFactor = 1.0
 
-                             );
+                                         );
 
 
 #ifdef BUC61044

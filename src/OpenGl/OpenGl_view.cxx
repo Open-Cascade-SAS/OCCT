@@ -87,6 +87,7 @@ if any was defined
 #include <OpenGl_txgl.hxx>
 #include <OpenGl_Memory.hxx>
 #include <Standard_TypeDef.hxx>
+#include <OpenGl_PrinterContext.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -842,7 +843,22 @@ TelSetViewIndex( Tint  Wsid /* Workstation id */,
   printf("OpenGl_view.c::TelSetViewIndex::glMatrixMode(GL_PROJECTION) \n"); 
 #endif
   glMatrixMode(GL_PROJECTION);
-  glLoadMatrixf((GLfloat *) vptr->vrep.mapping_matrix );
+  glLoadIdentity();
+
+#ifdef WNT
+  // add printing scale/tiling transformation
+  OpenGl_PrinterContext* aPrinterContext = 
+    OpenGl_PrinterContext::GetPrinterContext(GET_GL_CONTEXT());
+
+  if (aPrinterContext)
+  {
+    GLfloat aProjMatrix[16];
+    aPrinterContext->GetProjTransformation(aProjMatrix);
+    glLoadMatrixf((GLfloat*) aProjMatrix);
+  }
+#endif
+
+  glMultMatrixf((GLfloat *) vptr->vrep.mapping_matrix );
 
 #ifdef TRACE_MAT
   printf( "\nTelSetViewIndex WS : %d, view : %d", Wsid, Vid );

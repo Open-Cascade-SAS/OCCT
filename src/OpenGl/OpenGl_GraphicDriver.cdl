@@ -49,6 +49,7 @@ uses
     TypeOfTriedronPosition  from Aspect,
     Handle              from Aspect,
     Display             from Aspect,
+    PrintAlgo           from Aspect,
 
     AspectLine3d        from Graphic3d,
     AspectMarker3d      from Graphic3d,
@@ -1208,8 +1209,10 @@ is
              ACOverLayer     : CLayer2d from Aspect;
              hPrnDC          : Handle from Aspect;
              showBackground  : Boolean;
-             filename        : CString)
-        is redefined static;
+             filename        : CString;
+             printAlgorithm  : PrintAlgo from Aspect = Aspect_PA_STRETCH;
+             theScaleFactor  : Real from Standard = 1.0 ) 
+        returns Boolean from Standard is redefined static;
       ---Level: Internal
       ---Purpose: print the contents of all layers of the view to the printer.
     -- <hPrnDC> : Pass the PrinterDeviceContext (HDC),
@@ -1217,6 +1220,17 @@ is
     -- (background is white)
       -- else set to TRUE for printing with current background color.
     -- <filename>: If != NULL, then the view will be printed to a file.
+    -- <printAlgorithm>: Select print algorithm: stretch, tile.
+    -- <theScaleFactor>: Scaling coefficient, used internally to scale the
+    -- printings accordingly to the scale factor selected in the printer 
+    -- properties dialog.
+    -- Returns Standard_True if the data is passed to the printer, otherwise
+    -- Standard_False if the print operation failed due to the printer errors, 
+    -- or lack of system memory. This might be related to insufficient memory
+    -- or some internal errors. All this errors are indicated by the message 
+    -- boxes (on level of OpenGl_GraphicDriver).
+    -- Warning: This function can reuse FBO assigned to the view
+    -- Please take it into account if you use it for your purposes;
     ---Warning: Works only under Windows.
 
 

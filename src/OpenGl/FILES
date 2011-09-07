@@ -247,3 +247,5 @@ OpenGl_ResourceVBO.cxx
 OpenGl_ResourceVBO.hxx
 OpenGl_ResourceTexture.cxx
 OpenGl_ResourceTexture.hxx
+OpenGl_PrinterContext.cxx
+OpenGl_PrinterContext.hxx
