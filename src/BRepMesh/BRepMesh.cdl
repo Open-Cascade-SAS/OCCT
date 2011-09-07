@@ -32,7 +32,8 @@ uses    Standard,
         GeomAbs,
         GeomAdaptor,
         TopLoc,
-        SortTools
+        SortTools,
+        Plugin
 
 
 is    enumeration DegreeOfFreedom is 
@@ -78,6 +79,8 @@ is    enumeration DegreeOfFreedom is
       imported VertexInspector from BRepMesh;
       imported VertexCellFilter from BRepMesh;
       imported VectorOfVertex from BRepMesh;
+
+      primitive PluginEntryType;
 
       class ComparatorOfVertexOfDelaun;
       class ComparatorOfIndexedVertexOfDelaun;

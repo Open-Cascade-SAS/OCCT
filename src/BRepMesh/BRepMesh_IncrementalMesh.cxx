@@ -10,6 +10,7 @@
 #include <BRepMesh_Edge.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_FastDiscretFace.hxx>
+#include <BRepMesh_PluginMacro.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
@@ -36,24 +37,27 @@
 
 #include <vector>
 
-// NOTE: to be replaced by more correct check
-// #if defined(WNT) || defined(LIN)
-// #define HAVE_TBB 1
-// #endif
-
-// paralleling with Intel TBB
 #ifdef HAVE_TBB
-#include <tbb/parallel_for_each.h>
+  // paralleling using Intel TBB
+  #include <tbb/parallel_for_each.h>
 #endif
+
+namespace
+{
+  //! Default flag to control parallelization for BRepMesh_IncrementalMesh
+  //! tool returned for Mesh Factory
+  static Standard_Boolean IS_IN_PARALLEL = Standard_False;
+};
 
 //=======================================================================
 //function : BRepMesh_IncrementalMesh
 //purpose  : 
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh() 
-: myRelative(Standard_False),
-  myModified(Standard_False),
-  myStatus(0)
+: myRelative (Standard_False),
+  myInParallel (Standard_False),
+  myModified (Standard_False),
+  myStatus (0)
 {
   mymapedge.Clear();
   myancestors.Clear();
@@ -63,24 +67,23 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 //function : BRepMesh_IncrementalMesh
 //purpose  : 
 //=======================================================================
-
-BRepMesh_IncrementalMesh::
-BRepMesh_IncrementalMesh(const TopoDS_Shape& S,
-			 const Standard_Real D,
-			 const Standard_Boolean Rel,
-			 const Standard_Real Ang) :
-			 myRelative(Rel),
-			 myModified(Standard_False),
-                         myStatus(0)
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh (const TopoDS_Shape& theShape,
+                                                    const Standard_Real theDeflection,
+                                                    const Standard_Boolean theRelative,
+                                                    const Standard_Real theAngle)
+: myRelative (theRelative),
+  myInParallel (Standard_False),
+  myModified (Standard_False),
+  myStatus (0)
 {
   mymapedge.Clear();
   myancestors.Clear();
-  myDeflection = D;
-  myAngle = Ang;
-  myShape = S;
-  
+  myDeflection = theDeflection;
+  myAngle = theAngle;
+  myShape = theShape;
+
   //
-  Perform(); 
+  Perform();
 }
 
 //=======================================================================
@@ -89,6 +92,24 @@ BRepMesh_IncrementalMesh(const TopoDS_Shape& S,
 //=======================================================================
 BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh() 
 {
+}
+
+//=======================================================================
+//function : SetParallel
+//purpose  :
+//=======================================================================
+void BRepMesh_IncrementalMesh::SetParallel (const Standard_Boolean theInParallel)
+{
+  myInParallel = theInParallel;
+}
+
+//=======================================================================
+//function : IsParallel
+//purpose  :
+//=======================================================================
+Standard_Boolean BRepMesh_IncrementalMesh::IsParallel() const
+{
+  return myInParallel;
 }
 
 //=======================================================================
@@ -173,7 +194,6 @@ Standard_Integer BRepMesh_IncrementalMesh::GetStatusFlags() const
 //purpose  : Builds the incremental mesh of the shape
 //=======================================================================
 void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
-				  
 {
   myModified = Standard_False;
   TopExp_Explorer ex;
@@ -209,14 +229,22 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
     aFaces.push_back (F);
   }
 
-  // mesh faces in parallel threads using TBB
-#ifdef HAVE_TBB
-  if (Standard::IsReentrant())
+  if (myInParallel)
+  {
+  #ifdef HAVE_TBB
+    // mesh faces in parallel threads using TBB
     tbb::parallel_for_each (aFaces.begin(), aFaces.end(), *myMesh.operator->());
+  #else
+    // alternative parallelization not yet available
+    for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
+      myMesh->Process (*it);
+  #endif
+  }
   else
-#endif
-  for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
-    myMesh->Process (*it);
+  {
+    for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
+      myMesh->Process (*it);
+  }
 
   // maillage des edges non contenues dans les faces :
   Standard_Real f, l, defedge;
@@ -270,7 +298,8 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
 
     ex.Next();
   }
-}    
+}
+
 //=======================================================================
 //function : Update(edge)
 //purpose  : Locate a correct discretisation if it exists
@@ -441,3 +470,47 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
     }
   }
 }
+
+//=======================================================================
+//function : Discret
+//purpose  :
+//=======================================================================
+Standard_Integer BRepMesh_IncrementalMesh::Discret (const TopoDS_Shape&    theShape,
+                                                    const Standard_Real    theDeflection,
+                                                    const Standard_Real    theAngle,
+                                                    BRepMesh_PDiscretRoot& theAlgo)
+{
+  BRepMesh_IncrementalMesh* anAlgo = new BRepMesh_IncrementalMesh();
+  anAlgo->SetDeflection (theDeflection);
+  anAlgo->SetAngle (theAngle);
+  anAlgo->SetShape (theShape);
+  anAlgo->SetParallel (IS_IN_PARALLEL);
+  theAlgo = anAlgo;
+  return 0; // no error
+}
+
+//=======================================================================
+//function : IsParallelDefault
+//purpose  :
+//=======================================================================
+Standard_Boolean BRepMesh_IncrementalMesh::IsParallelDefault()
+{
+#ifdef HAVE_TBB
+  return IS_IN_PARALLEL;
+#else
+  // no alternative parallelization yet - flag has no meaning
+  return Standard_False;
+#endif
+}
+
+//=======================================================================
+//function : Discret
+//purpose  :
+//=======================================================================
+void BRepMesh_IncrementalMesh::SetParallelDefault (const Standard_Boolean theInParallel)
+{
+  IS_IN_PARALLEL = theInParallel;
+}
+
+//! Export Mesh Plugin entry function
+DISCRETPLUGIN(BRepMesh_IncrementalMesh)

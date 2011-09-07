@@ -77,14 +77,9 @@
 
 #include <vector>
 
-// NOTE: replaced by more correct check
-// #if defined(WNT) || defined(LIN)
-// #define HAVE_TBB 1
-// #endif
-
-// paralleling with Intel TBB
 #ifdef HAVE_TBB
-#include <tbb/parallel_for_each.h>
+  // paralleling using Intel TBB
+  #include <tbb/parallel_for_each.h>
 #endif
 
 #define UVDEFLECTION 1.e-05
@@ -121,9 +116,14 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const Standard_Real    theDefle,
                                            const Standard_Boolean theInshape,
                                            const Standard_Boolean theRelative,
                                            const Standard_Boolean theShapetrigu) :
-  myAngle(theAngl), myDeflection(theDefle),myWithShare(theWithShare),
-  myNbLocat(0), myRelative(theRelative), myShapetrigu(theShapetrigu), 
-  myInshape(theInshape)
+  myAngle (theAngl),
+  myDeflection (theDefle),
+  myWithShare (theWithShare),
+  myInParallel (Standard_False),
+  myNbLocat (0),
+  myRelative (theRelative),
+  myShapetrigu (theShapetrigu), 
+  myInshape (theInshape)
 {
   myAllocator = new NCollection_IncAllocator(64000);
   if(myRelative)
@@ -143,9 +143,14 @@ BRepMesh_FastDiscret::BRepMesh_FastDiscret(const Standard_Real    theDefle,
                                            const Standard_Boolean theInshape,
                                            const Standard_Boolean theRelative,
                                            const Standard_Boolean theShapetrigu): 
-  myAngle(theAngl), myDeflection(theDefle),myWithShare(theWithShare),
-  myNbLocat(0), myRelative(theRelative), myShapetrigu(theShapetrigu),
-  myInshape(theInshape)
+  myAngle (theAngl),
+  myDeflection (theDefle),
+  myWithShare (theWithShare),
+  myInParallel (Standard_False),
+  myNbLocat (0),
+  myRelative (theRelative),
+  myShapetrigu (theShapetrigu),
+  myInshape (theInshape)
 {
   myAllocator = new NCollection_IncAllocator(64000);
   if(myRelative)
@@ -212,15 +217,23 @@ void BRepMesh_FastDiscret::Perform(const TopoDS_Shape& theShape)
     Add(aF);
     aFaces.push_back(aF);
   }
-  
-  // mesh faces in parallel threads using TBB
-#ifdef HAVE_TBB
-  if (Standard::IsReentrant())
+
+  if (myInParallel)
+  {
+  #ifdef HAVE_TBB
+    // mesh faces in parallel threads using TBB
     tbb::parallel_for_each (aFaces.begin(), aFaces.end(), *this);
+  #else
+    // alternative parallelization not yet available
+    for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
+      Process (*it);
+  #endif
+  }
   else
-#endif
-  for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
-    Process (*it);
+  {
+    for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
+      Process (*it);
+  }
 }
 
 

@@ -316,19 +316,20 @@ void Prs3d_ShadedShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
     }
   }
   Standard_Real aDeflection = GetDeflection(aShape, aDrawer);
-  //using of plugin
+
   // Check if it is possible to avoid unnecessary recomputation 
   // of shape triangulation
-  if( !BRepTools::Triangulation(aShape, aDeflection) )
+  if (!BRepTools::Triangulation (aShape, aDeflection))
   {
-    BRepTools::Clean(aShape);
+    BRepTools::Clean (aShape);
 
-    BRepMesh_PDiscretRoot pAlgo;
-    pAlgo=BRepMesh_DiscretFactory::Get().Discret(aShape,
-                                                 aDeflection,
-                                                 aDrawer->HLRAngle());
-    if (pAlgo)
-      pAlgo->Perform();
+    // retrieve meshing tool from Factory
+    Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (aShape,
+                                                                                     aDeflection,
+                                                                                     aDrawer->HLRAngle());
+    if (!aMeshAlgo.IsNull())
+      aMeshAlgo->Perform();
   }
+
   ShadeFromShape(aShape, aDeflection, Standard_True, aPresentation, aDrawer);
 }

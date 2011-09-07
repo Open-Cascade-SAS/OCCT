@@ -1,3 +1,4 @@
+BRepMesh_PluginEntryType.hxx
 BRepMesh_PluginMacro.hxx
 BRepMesh_ClassifierPtr.hxx
 BRepMesh_CellFilter.hxx

@@ -1,65 +1,83 @@
--- File:	BRepMesh_DiscretRoot.cdl
--- Created:	Thu Apr 10 09:57:55 2008
--- Author:	Peter KURNEV
---		<pkv@irinox>
----Copyright:	 Matra Datavision 2008
+-- File:      BRepMesh_DiscretRoot.cdl
+-- Created:   Thu Apr 10 09:57:55 2008
+-- Author:    Peter KURNEV <pkv@irinox>
+--
+---Copyright: Matra Datavision 2008
 
+deferred class DiscretRoot from BRepMesh
 
-deferred class DiscretRoot from BRepMesh  
-	 
-    ---Purpose: 
+inherits Transient from Standard
+
+    ---Purpose:
+    -- This is a common interface for meshing algorithms
+    -- instantiated by Mesh Factory and implemented by plugins.
 
 uses
-    Shape from TopoDS 
-    
+    Shape from TopoDS
+
 --raises
 
-is 
-    
-    Initialize 
-    	returns DiscretRoot from BRepMesh;  
-	      
-    SetDeflection(me: out; 
-    	    theDeflection : Real from Standard); 
-    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_DiscretRoot();" 
-    
-    Deflection(me) 
-    	returns Real from Standard; 
+is
+    Initialize
+        returns DiscretRoot from BRepMesh;
 
-    SetAngle(me: out; 
-    	    theAngle: Real from Standard); 
-	     
-    Angle(me) 
-    	returns Real from Standard;     
-     
-    SetShape(me: out; 
-    	    theShape: Shape from TopoDS); 
+    SetDeflection (           me : mutable;
+                   theDeflection : Real from Standard);
+    ---Purpose:
+    -- Setup linear deflection.
 
-    Shape(me) 
-    	returns Shape from TopoDS; 
-    ---C++: return const &    	     
+    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_DiscretRoot();"
 
-    Perform(me: out) 
-    	is deferred; 
+    Deflection (me)
+        returns Real from Standard;
+    ---Purpose:
+    -- Returns linear deflection.
 
-    IsDone(me) 
-    	returns Boolean from Standard;   
+    SetAngle (      me : mutable;
+              theAngle : Real from Standard);
+    ---Purpose:
+    -- Setup angular deflection.
 
-    -- 
-    --  Protected methods 
-    --     
-    SetDone(me:out) 
-    	is protected;  
-	
-    SetNotDone(me:out) 
-    	is protected; 
-     
-    Init(me:out) 
-    	is virtual protected;  
-fields 
-    myDeflection : Real from Standard is protected; 
+    Angle (me)
+        returns Real from Standard;
+    ---Purpose:
+    -- Returns angular deflection.
+
+    SetShape (      me : mutable;
+              theShape : Shape from TopoDS);
+    ---Purpose:
+    -- Set the shape to triangulate.
+
+    Shape (me)
+        returns Shape from TopoDS;
+    ---C++: return const &
+
+    Perform (me : mutable)
+        is deferred;
+    ---Purpose:
+    -- Compute triangulation for set shape.
+
+    IsDone (me)
+        returns Boolean from Standard;
+    ---Purpose:
+    -- Returns true if triangualtion was performed and has success.
+
+    --
+    --  Protected methods
+    --
+    SetDone (me : mutable)
+        is protected;
+
+    SetNotDone (me : mutable)
+        is protected;
+
+    Init (me : mutable)
+        is virtual protected;
+
+fields
+    myDeflection : Real from Standard is protected;
     myAngle      : Real from Standard is protected;
-    myShape      : Shape from TopoDS  is protected; 
-    myIsDone     : Boolean from Standard is protected;  
-    
+    myShape      : Shape from TopoDS  is protected;
+    myIsDone     : Boolean from Standard is protected;
+
 end DiscretRoot;

@@ -11,6 +11,7 @@
 #include <TColStd_MapIteratorOfMapOfAsciiString.hxx>
 #include <BRepMesh_FactoryError.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepMesh_PDiscretRoot.hxx>
 #include <DBRep.hxx>
@@ -35,6 +36,7 @@ static Standard_Integer mpsetfunctionname (Draw_Interpretor& , Standard_Integer 
 static Standard_Integer mpgetfunctionname (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer mperror           (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer mpincmesh         (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer mpparallel        (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer triarea           (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer tricheck          (Draw_Interpretor& , Standard_Integer , const char** );
 
@@ -59,6 +61,8 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
   theCommands.Add("mpgetfunctionname", "use mpgetfunctionname", __FILE__, mpgetfunctionname     , g);
   theCommands.Add("mperror"          , "use mperror"          , __FILE__, mperror     , g);
   theCommands.Add("mpincmesh"        , "use mpincmesh"        , __FILE__, mpincmesh      , g);
+  theCommands.Add("mpparallel"       , "mpparallel [toTurnOn] : show / set multi-threading flag for incremental mesh",
+    __FILE__, mpparallel, g);
   theCommands.Add("triarea","shape [eps]  (computes triangles and surface area)",__FILE__, triarea, g);
   theCommands.Add("tricheck", "shape   (checks triangulation of shape)", __FILE__, tricheck, g);
   
@@ -109,8 +113,10 @@ static Standard_Integer mpsetdefaultname (Draw_Interpretor& , Standard_Integer n
   //
   aName=a[1];
   //
-  BRepMesh_DiscretFactory::Get().SetDefaultName(aName);
-  printf(" *ready\n");
+  if (BRepMesh_DiscretFactory::Get().SetDefaultName (aName))
+    printf(" *ready\n");
+  else
+    printf(" *fault\n");
   //
   return 0;
 }
@@ -145,8 +151,10 @@ static Standard_Integer mpsetfunctionname (Draw_Interpretor& , Standard_Integer 
   //
   aName=a[1];
   //
-  BRepMesh_DiscretFactory::Get().SetFunctionName(aName);
-  printf(" *ready\n");
+  if (BRepMesh_DiscretFactory::Get().SetFunctionName (aName))
+    printf(" *ready\n");
+  else
+    printf(" *fault\n");
   //
   return 0;
 }
@@ -191,11 +199,8 @@ static Standard_Integer mperror (Draw_Interpretor& , Standard_Integer n, const c
 //=======================================================================
 static Standard_Integer mpincmesh (Draw_Interpretor& , Standard_Integer n, const char** a)
 {
-  Standard_Boolean bIsDone;
   Standard_Real aDeflection, aAngle;
   TopoDS_Shape aS;
-  BRepMesh_FactoryError aErr;
-  BRepMesh_PDiscretRoot pAlgo;
   //
   if (n<3) {
     printf(" use mpincmesh s deflection [angle]\n");
@@ -214,23 +219,25 @@ static Standard_Integer mpincmesh (Draw_Interpretor& , Standard_Integer n, const
     aAngle=atof(a[3]);
   }
   //
-  pAlgo=BRepMesh_DiscretFactory::Get().Discret(aS,
-					       aDeflection,
-					       aAngle); 
+  Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (aS,
+                                                                                   aDeflection,
+                                                                                   aAngle);
   //
-  aErr=BRepMesh_DiscretFactory::Get().ErrorStatus();
-  if (aErr!=BRepMesh_FE_NOERROR) {
+  BRepMesh_FactoryError aErr = BRepMesh_DiscretFactory::Get().ErrorStatus();
+  if (aErr != BRepMesh_FE_NOERROR)
+  {
     printf(" *Factory::Get().ErrorStatus()=%d\n", (int)aErr);
   }
   //
-  if (!pAlgo) {
+  if (aMeshAlgo.IsNull())
+  {
     printf(" *Can not create the algo\n");
     return 0;
   }
   //
-  pAlgo->Perform();
-  bIsDone=pAlgo->IsDone();
-  if (!bIsDone) {
+  aMeshAlgo->Perform();
+  if (!aMeshAlgo->IsDone())
+  {
     printf(" *Not done\n");
   }
   //
@@ -402,5 +409,21 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
        << " Cross_face_errors " << nbErr
        << " Async_edges " << nbAsync 
        << " Free_nodes " << nbFreeNodes << "\n";
+  return 0;
+}
+
+//=======================================================================
+//function : mpparallel
+//purpose  :
+//=======================================================================
+static int mpparallel (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc == 2)
+  {
+    Standard_Boolean isParallelOn = atoi (argv[1]) == 1;
+    BRepMesh_IncrementalMesh::SetParallelDefault (isParallelOn);
+  }
+  std::cout << "Incremental Mesh, multi-threading "
+            << (BRepMesh_IncrementalMesh::IsParallelDefault() ? "ON\n" : "OFF\n");
   return 0;
 }

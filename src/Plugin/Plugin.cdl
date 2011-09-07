@@ -12,7 +12,7 @@ is
 
     exception Failure inherits Failure from Standard;
 
-    private class MapOfFunctions instantiates DataMap from TCollection(AsciiString from TCollection ,Function from OSD, AsciiString from TCollection);
+    class MapOfFunctions instantiates DataMap from TCollection(AsciiString from TCollection ,Function from OSD, AsciiString from TCollection);
 
 
     Load(aGUID: GUID from Standard) returns Transient from Standard

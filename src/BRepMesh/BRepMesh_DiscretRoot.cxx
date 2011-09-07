@@ -1,105 +1,115 @@
-// File:	BRepMesh_DiscretRoot.cxx
-// Created:	Thu Apr 10 10:08:44 2008
-// Author:	Peter KURNEV
-//		<pkv@irinox>
-
+// File:    BRepMesh_DiscretRoot.cxx
+// Created: Thu Apr 10 10:08:44 2008
+// Author:  Peter KURNEV <pkv@irinox>
 
 #include <BRepMesh_DiscretRoot.ixx>
- 
+
 //=======================================================================
 //function : BRepMesh_DiscretRoot
-//purpose  : 
+//purpose  :
 //=======================================================================
 BRepMesh_DiscretRoot::BRepMesh_DiscretRoot()
+: myDeflection (0.001),
+  myAngle (0.1),
+  myIsDone (Standard_False)
 {
-  myIsDone=Standard_False;
-  myDeflection=0.001;
-  myAngle=0.1;
+  //
 }
+
 //=======================================================================
 //function : ~
-//purpose  : 
+//purpose  :
 //=======================================================================
 BRepMesh_DiscretRoot::~BRepMesh_DiscretRoot()
 {
 }
+
 //=======================================================================
 //function : SetDeflection
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::SetDeflection(const Standard_Real theDeflection)
+void BRepMesh_DiscretRoot::SetDeflection (const Standard_Real theDeflection)
 {
-  myDeflection=theDeflection;
+  myDeflection = theDeflection;
 }
+
 //=======================================================================
 //function : Deflection
 //purpose  : 
 //=======================================================================
-Standard_Real BRepMesh_DiscretRoot::Deflection()const 
+Standard_Real BRepMesh_DiscretRoot::Deflection() const
 {
   return myDeflection;
 }
+
 //=======================================================================
 //function : SetAngle
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::SetAngle(const Standard_Real theAngle)
+void BRepMesh_DiscretRoot::SetAngle (const Standard_Real theAngle)
 {
-  myAngle=theAngle;
+  myAngle = theAngle;
 }
+
 //=======================================================================
 //function : Angle
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Real BRepMesh_DiscretRoot::Angle()const 
+Standard_Real BRepMesh_DiscretRoot::Angle() const
 {
   return myAngle;
 }
+
 //=======================================================================
 //function : SetShape
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::SetShape(const TopoDS_Shape& theShape)
+void BRepMesh_DiscretRoot::SetShape (const TopoDS_Shape& theShape)
 {
-  myShape=theShape;
+  myShape = theShape;
 }
+
 //=======================================================================
 //function : Shape
-//purpose  : 
+//purpose  :
 //=======================================================================
-const TopoDS_Shape& BRepMesh_DiscretRoot::Shape()const
+const TopoDS_Shape& BRepMesh_DiscretRoot::Shape() const
 {
   return myShape;
 }
+
 //=======================================================================
 //function : IsDone
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Boolean BRepMesh_DiscretRoot::IsDone()const 
+Standard_Boolean BRepMesh_DiscretRoot::IsDone() const
 {
   return myIsDone;
 }
+
 //=======================================================================
 //function : SetDone
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::SetDone() 
+void BRepMesh_DiscretRoot::SetDone()
 {
-  myIsDone=Standard_True;
+  myIsDone = Standard_True;
 }
+
 //=======================================================================
 //function : SetNotDone
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::SetNotDone() 
+void BRepMesh_DiscretRoot::SetNotDone()
 {
-  myIsDone=Standard_False;
+  myIsDone = Standard_False;
 }
+
 //=======================================================================
 //function : Init
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepMesh_DiscretRoot::Init() 
+void BRepMesh_DiscretRoot::Init()
 {
-  
+  //
 }

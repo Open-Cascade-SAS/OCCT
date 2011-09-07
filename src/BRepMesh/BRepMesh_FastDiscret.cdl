@@ -165,6 +165,16 @@ is
                    defedge: Real from Standard)
         is static private;
 
+        SetParallel (           me : mutable;
+                     theInParallel : Boolean from Standard);
+        ---Purpose:
+        -- Request algorithm to launch in multiple threads
+        -- to improve performance (should be supported by plugin).
+
+        IsParallel (me)
+            returns Boolean from Standard;
+        ---Purpose:
+        -- Returns the multi-threading usage flag.
 
 -- Output :
 
@@ -293,6 +303,7 @@ fields
       myDeflection   : Real                          from Standard;
       myDtotale      : Real                          from Standard;
       myWithShare    : Boolean                       from Standard;
+      myInParallel   : Boolean                       from Standard;
       myVertices     : DataMapOfVertexInteger        from BRepMesh;
       myEdges        : DataMapOfShapePairOfPolygon   from BRepMesh;
       myInternaledges: DataMapOfShapePairOfPolygon   from BRepMesh;

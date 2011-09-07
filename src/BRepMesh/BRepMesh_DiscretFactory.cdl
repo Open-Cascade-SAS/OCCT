@@ -1,71 +1,105 @@
--- File:	BRepMesh_DiscretFactory.cdl
--- Created:	Thu Apr 10 12:34:15 2008
--- Author:	Peter KURNEV
---		<pkv@irinox>
----Copyright:	 Matra Datavision 2008
+-- File:      BRepMesh_DiscretFactory.cdl
+-- Created:   Thu Apr 10 12:34:15 2008
+-- Author:    Peter KURNEV <pkv@irinox>
+--
+---Copyright: Matra Datavision 2008
 
+class DiscretFactory from BRepMesh
 
-class DiscretFactory from BRepMesh 
-
-	---Purpose: 
+    ---Purpose:
+    -- This class intended to setup / retrieve default triangulation algorithm.
+    -- Use BRepMesh_DiscretFactory::Get() static method to retrieve global Factory instance.
+    -- Use BRepMesh_DiscretFactory::Discret() method to retrieve meshing tool.
 
 uses
-    AsciiString from TCollection, 
-    PDiscretRoot from BRepMesh, 
-    MapOfAsciiString from TColStd, 
-    FactoryError from BRepMesh,
-    Shape from TopoDS  
+    DiscretRoot      from BRepMesh,
+    FactoryError     from BRepMesh,
+    PluginEntryType  from BRepMesh,
+    AsciiString      from TCollection,
+    MapOfAsciiString from TColStd,
+    Shape            from TopoDS,
+    MapOfFunctions   from Plugin
+
 --raises
 
-
-is     
+is
     Create
-    	returns DiscretFactory from BRepMesh 
-    	is protected;  
-    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_DiscretFactory();" 
+        returns DiscretFactory from BRepMesh
+        is protected;
+    ---C++: alias "Standard_EXPORT virtual ~BRepMesh_DiscretFactory();"
 
-    Get(myclass) 
-    	returns DiscretFactory from BRepMesh; 
-    ---C++: return &  
-     
-    Names(me) 
-    	returns MapOfAsciiString from TColStd;  
-    ---C++: return const & 	 
+    Get (myclass)
+        returns DiscretFactory from BRepMesh;
+    ---C++: return &
+    ---Purpose:
+    -- Returns the global factory instance.
 
-    SetDefaultName(me:out; 
-    	    theName:AsciiString from TCollection); 
-	 
-    DefaultName(me) 
-    	returns  AsciiString from TCollection; 
-    ---C++: return const &  
-     	 
-    SetFunctionName(me:out; 
-    	    theName:AsciiString from TCollection); 
-	 
-    FunctionName(me) 
-    	returns  AsciiString from TCollection;  
-    ---C++: return const &  
+    Names (me)
+        returns MapOfAsciiString from TColStd;
+    ---C++: return const &
+    ---Purpose:
+    -- Returns the list of registered meshing algorithms.
 
-    Discret(me:out; 
-	    theShape:Shape from TopoDS; 
-    	    theDeflection : Real    from Standard; 
-    	    theAngle      : Real    from Standard)
-    	returns PDiscretRoot from BRepMesh; 
-    ---C++: return &  
-     
-    ErrorStatus(me) 
-    	returns FactoryError from BRepMesh; 
+    SetDefaultName (     me : out;
+                    theName : AsciiString from TCollection)
+        returns Boolean from Standard;
+    ---Purpose:
+    -- Setup meshing algorithm by name.
+    -- Returns true if requested tool is available.
+    -- On fail Factory will continue to use previous algo.
 
-    Clear(me:out) 
-    	is protected; 
-	 
-fields 
-    myPDiscret    : PDiscretRoot from BRepMesh is protected; 
-    myErrorStatus : FactoryError from BRepMesh is protected;
-    myNames       : MapOfAsciiString from TColStd is protected; 
-    myFixedNames  : AsciiString from TCollection[1] is protected; 
-    myDefaultName : AsciiString from TCollection is protected; 
-    myFunctionName: AsciiString from TCollection is protected; 
-     
+    DefaultName (me)
+        returns AsciiString from TCollection;
+    ---C++: return const &
+    ---Purpose:
+    -- Returns name for current meshing algorithm.
+
+    SetFunctionName (         me : out;
+                     theFuncName : AsciiString from TCollection)
+        returns Boolean from Standard;
+    ---Purpose:
+    -- Advanced function. Changes function name to retrieve from plugin.
+    -- Returns true if requested tool is available.
+    -- On fail Factory will continue to use previous algo.
+
+    SetDefault (         me : out;
+                    theName : AsciiString from TCollection;
+                theFuncName : AsciiString from TCollection = "DISCRETALGO")
+        returns Boolean from Standard;
+    ---Purpose:
+    -- Setup meshing algorithm that should be created by this Factory.
+    -- Returns true if requested tool is available.
+    -- On fail Factory will continue to use previous algo.
+    -- Call ::ErrorStatus() method to retrieve fault reason.
+
+    FunctionName (me)
+        returns AsciiString from TCollection;
+    ---C++: return const &
+    ---Purpose:
+    -- Returns function name that should be exported by plugin.
+
+    Discret (me            : out;
+             theShape      : Shape from TopoDS;
+             theDeflection : Real  from Standard;
+             theAngle      : Real  from Standard)
+        returns DiscretRoot from BRepMesh;
+    ---Purpose:
+    -- Returns triangulation algorithm instance.
+
+    ErrorStatus (me)
+        returns FactoryError from BRepMesh;
+    ---Purpose:
+    -- Returns error status for last meshing algorithm switch.
+
+    Clear (me : out)
+        is protected;
+
+fields
+    myPluginEntry    : PluginEntryType from BRepMesh is protected;
+    myErrorStatus    : FactoryError from BRepMesh is protected;
+    myNames          : MapOfAsciiString from TColStd is protected;
+    myDefaultName    : AsciiString from TCollection is protected;
+    myFunctionName   : AsciiString from TCollection is protected;
+    myFactoryMethods : MapOfFunctions from Plugin is protected;
+
 end DiscretFactory;
-
