@@ -1261,12 +1261,12 @@ static Standard_Integer surfpoints (Draw_Interpretor& /*di*/, Standard_Integer /
 //function : intersect
 //purpose  : 
 //=======================================================================
-
 static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  
-  if (n < 4) return 1;
-
+  if (n < 4) {
+    return 1;
+  }
+  //
   Handle(Geom_Curve) GC1;
   Handle(Geom_Surface) GS1 = DrawTrSurf::GetSurface(a[2]);
   if (GS1.IsNull()) {
@@ -1274,61 +1274,41 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
     if (GC1.IsNull())
       return 1;
   }
-  
+  //
   Handle(Geom_Surface) GS2 = DrawTrSurf::GetSurface(a[3]);
-  if (GS2.IsNull()) return 1;
-
+  if (GS2.IsNull()) {
+    return 1;
+  }
+  //
   Standard_Real tol = Precision::Confusion();
   if (n == 5 || n == 9 || n == 13 || n == 17) tol = atof(a[n-1]);
-
+  //
   Handle(Geom_Curve) Result;
   gp_Pnt             Point;
-
+  //
   if (GC1.IsNull()) {
-
+    GeomInt_IntSS Inters;
+    //
     // Surface Surface
-
     if (n <= 5) {
       // General case
-      GeomAPI_IntSS Inters(GS1,GS2,tol);
-  
-      if (!Inters.IsDone()) return 1;
-    
-      Standard_Integer nblines = Inters.NbLines();
-      if (nblines >= 2) {
-        char newname[1024];
-        for (Standard_Integer i=1; i<=nblines; i++) {
-          sprintf(newname,"%s_%d",a[1],i);
-          Result = Inters.Line(i);
-          const char* temp = newname; // pour portage WNT
-          DrawTrSurf::Set(temp,Result);
-        }
-      }
-      else if (nblines == 1) {
-        Result = Inters.Line(1);
-        DrawTrSurf::Set(a[1],Result);
-      }
+      Inters.Perform(GS1,GS2,tol,Standard_True);
     }
-
     else if (n == 8 || n == 9 || n == 12 || n == 13 || n == 16 || n == 17) {
-      GeomInt_IntSS Inters;
       Standard_Boolean useStart = Standard_True, useBnd = Standard_True;
       Standard_Integer ista1=0,ista2=0,ibnd1=0,ibnd2=0;
       Standard_Real UVsta[4];
       Handle(GeomAdaptor_HSurface) AS1,AS2;
-
-      if (n <= 9) {
-        // user starting point
+      //
+      if (n <= 9) {        // user starting point
         useBnd = Standard_False;
         ista1 = 4; ista2 = 7;
       }
-      else if (n <= 13) {
-        // user bounding
+      else if (n <= 13) {        // user bounding
         useStart = Standard_False;
         ibnd1 = 4; ibnd2 = 11;
       }
-      else {
-        // both user starting point and bounding
+      else {        // both user starting point and bounding
         ista1 = 4; ista2 = 7;
         ibnd1 = 8; ibnd2 = 15;
       }
@@ -1342,56 +1322,56 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
         AS1 = new GeomAdaptor_HSurface(GS1,UVbnd[0],UVbnd[1],UVbnd[2],UVbnd[3]);
         AS2 = new GeomAdaptor_HSurface(GS2,UVbnd[4],UVbnd[5],UVbnd[6],UVbnd[7]);
       }
-
-      if      (useStart && !useBnd)
+      //
+      if (useStart && !useBnd) {
         Inters.Perform(GS1,GS2,tol,UVsta[0],UVsta[1],UVsta[2],UVsta[3]);
-      else if (!useStart && useBnd)
+      }
+      else if (!useStart && useBnd) {
         Inters.Perform(AS1,AS2,tol);
-      else
+      }
+      else {
         Inters.Perform(AS1,AS2,tol,UVsta[0],UVsta[1],UVsta[2],UVsta[3]);
-
-      if (!Inters.IsDone()) return 1;
-
-      Standard_Integer nblines = Inters.NbLines();
-      if (nblines >= 2) {
-        char newname[1024];
-        for (Standard_Integer i=1; i<=nblines; i++) {
-          sprintf(newname,"%s_%d",a[1],i);
-          Result = Inters.Line(i);
-          const char* temp = newname;
-          DrawTrSurf::Set(temp,Result);
-        }
       }
-      else if (nblines == 1) {
-        Result = Inters.Line(1);
-        DrawTrSurf::Set(a[1],Result);
-      }
-
-      nblines = Inters.NbBoundaries();
-      if (nblines > 0) {
-        di<<"there are "<<nblines<<" boundary solutions"<<"\n";
-        char newname[1024];
-        for (Standard_Integer i=1; i<=nblines; i++) {
-          if (nblines > 1) sprintf(newname,"%s_b_%d",a[1],i);
-          else             sprintf(newname,"%s_b",a[1]);
-          Result = Inters.Boundary(i);
-          const char* temp = newname;
-          DrawTrSurf::Set(temp,Result);
-        }
-      }
-    }
-
+    }//else if (n == 8 || n == 9 || n == 12 || n == 13 || n == 16 || n == 17) {
     else {
       di<<"incorrect number of arguments"<<"\n";
       return 1;
     }
-  }
-
+    //
+    if (!Inters.IsDone()) {
+      return 1;
+    }
+    //
+    char buf[1024];
+    Standard_Integer i, aNbLines, aNbPoints; 
+      //
+    aNbLines = Inters.NbLines();
+    if (aNbLines >= 2) {
+      for (i=1; i<=aNbLines; ++i) {
+	sprintf(buf, "%s_%d",a[1],i);
+	Result = Inters.Line(i);
+	const char* temp = buf; 
+	DrawTrSurf::Set(temp,Result);
+      }
+    }
+    else if (aNbLines == 1) {
+      Result = Inters.Line(1);
+      DrawTrSurf::Set(a[1],Result);
+    }
+    //
+    aNbPoints=Inters.NbPoints();
+    for (i=1; i<=aNbPoints; ++i) {
+      Point=Inters.Point(i);
+      sprintf(buf,"%s_p_%d",a[1],i);
+      const char* temp =buf;
+      DrawTrSurf::Set(temp, Point);
+    }
+  }// if (GC1.IsNull()) {
+  //
   else {
-    
     // Curve Surface
     GeomAPI_IntCS Inters(GC1,GS2);
-  
+    //
     if (!Inters.IsDone()) return 1;
     
     Standard_Integer nblines = Inters.NbSegments();
@@ -1431,8 +1411,6 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
 //function : CurveCommands
 //purpose  : 
 //=======================================================================
-
-
 void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
 {
   

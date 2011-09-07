@@ -3,11 +3,18 @@
 // Author:    Jacques GOUSSARD
 // Copyright: OPEN CASCADE 1992
 
+//=======================================================================
+//function : IntPatch_ImpImpIntersection
+//purpose  : 
+//=======================================================================
 IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection ():
        done(Standard_False)
 {
 }
-//--------------------------------------------------------------
+//=======================================================================
+//function : IntPatch_ImpImpIntersection
+//purpose  : 
+//=======================================================================
 IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
        (const Handle(Adaptor3d_HSurface)&  S1,
 	const Handle(Adaptor3d_TopolTool)& D1,
@@ -18,7 +25,10 @@ IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
 {
   Perform(S1,D1,S2,D2,TolArc,TolTang);
 }
-//--------------------------------------------------------------
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 					  const Handle(Adaptor3d_TopolTool)& D1,
 					  const Handle(Adaptor3d_HSurface)&  S2,
@@ -39,25 +49,21 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   Standard_Boolean multpoint = Standard_False;
 
   Standard_Boolean nosolonS1 = Standard_False;
-              // indique s il y a des points sur restriction du carreau 1
+  // indique s il y a des points sur restriction du carreau 1
   Standard_Boolean nosolonS2 = Standard_False;
-              // indique s il y a des points sur restriction du carreau 2
-
+  // indique s il y a des points sur restriction du carreau 2
   Standard_Integer i, nbpt, nbseg;
-
   IntPatch_SequenceOfSegmentOfTheSOnBounds edg1,edg2;
   IntPatch_SequenceOfPathPointOfTheSOnBounds pnt1,pnt2;
-
+  //
   // On commence par intersecter les supports des surfaces
-
   IntSurf_Quadric quad1;
   IntSurf_Quadric quad2;
   IntPatch_ArcFunction AFunc;
   Standard_Real Tolang = 1.e-8;
   GeomAbs_SurfaceType typs1 = S1->GetType();
   GeomAbs_SurfaceType typs2 = S2->GetType();
-
-
+  //
   switch (typs1) {
 
   case GeomAbs_Plane :
@@ -338,21 +344,16 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       Standard_ConstructionError::Raise();
       break;
     }
-  }
-
-
+  } //switch (typs1) {
+  //
   if (!SameSurf) {
-
     AFunc.SetQuadric(quad2);
     AFunc.Set(S1);
     
     solrst.Perform(AFunc, D1, TolArc, TolTang);
-
-
     if (!solrst.IsDone()) {
       return;
     }
-
 
     if (solrst.AllArcSolution() && typs1 == typs2) {
       all1 = Standard_True;
@@ -370,19 +371,16 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     if (nosolonS1 && all1) {  // cas de face sans restrictions
       all1 = Standard_False;
     }
-
-  }
+  }//if (!SameSurf) {
   else {
     nosolonS1 = Standard_True;
   }
 
   if (!SameSurf) {
-
     AFunc.SetQuadric(quad1);
     AFunc.Set(S2);
 
     solrst.Perform(AFunc, D2, TolArc, TolTang);
-
     if (!solrst.IsDone()) {
       return;
     }
@@ -404,16 +402,13 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     if (nosolonS2 && all2) {  // cas de face sans restrictions
       all2 = Standard_False;
     }
-
-  }
+  }// if (!SameSurf) {
   else {
     nosolonS2 = Standard_True;
   }
-
+  //
   if (SameSurf || (all1 && all2)) {
-
     // faces "paralleles" parfaites
-
     empt = Standard_False;
     tgte = Standard_True;
     slin.Clear();
@@ -422,46 +417,34 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     gp_Pnt Ptreference;
 
     switch (typs1) {
-    case GeomAbs_Plane:
-      {
-	Ptreference = (S1->Plane()).Location();
-      }
+    case GeomAbs_Plane:      {
+      Ptreference = (S1->Plane()).Location();
+    }
       break;
-    case GeomAbs_Cylinder:
-      {
-	Ptreference = ElSLib::Value(0.,0.,S1->Cylinder());
-      }
+    case GeomAbs_Cylinder: {
+      Ptreference = ElSLib::Value(0.,0.,S1->Cylinder());
+    }
       break;
-    case GeomAbs_Sphere:
-      {
-	Ptreference = ElSLib::Value(PI/4.,PI/4.,S1->Sphere());
-      }
+    case GeomAbs_Sphere:      {
+      Ptreference = ElSLib::Value(PI/4.,PI/4.,S1->Sphere());
+    }
       break;
-    case GeomAbs_Cone:
-      {
-	Ptreference = ElSLib::Value(0.,10.,S1->Cone());
-      }
+    case GeomAbs_Cone:      {
+      Ptreference = ElSLib::Value(0.,10.,S1->Cone());
+    }
       break;
-    
-#ifndef DEB
     default: 
       break;
-#endif
     }
+    //
     oppo = quad1.Normale(Ptreference).Dot(quad2.Normale(Ptreference)) < 0.0;
-
     done = Standard_True;
     return;
-  }
+  }// if (SameSurf || (all1 && all2)) {
 
   if (!nosolonS1 || !nosolonS2) {
-
-
     empt = Standard_False;
-
     // C est la qu il faut commencer a bosser...
-
-
     PutPointsOnLine(S1,S2,pnt1, slin, Standard_True, D1, quad1,quad2,
 		    multpoint,TolArc);
     
@@ -477,19 +460,52 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     }
 
     if (edg1.Length() !=0 || edg2.Length() !=0) {
-//      ProcessRLine(slin,S1,S2,TolArc);
+      //      ProcessRLine(slin,S1,S2,TolArc);
       ProcessRLine(slin,quad1,quad2,TolArc);
     }
-
-  }
+  }//if (!nosolonS1 || !nosolonS2) {
   else {
     empt = ((slin.Length()==0) && (spnt.Length()==0));
   }
-
-  Standard_Integer nblin = slin.Length();
-
-
-
+  //
+  Standard_Integer nblin, aNbPnt;
+  //
+  //modified by NIZNHY-PKV Tue Sep 06 10:03:35 2011f
+  aNbPnt=spnt.Length();
+  if (aNbPnt) {
+    IntPatch_SequenceOfPoint aSIP;
+    //
+    for(i=1; i<=aNbPnt; ++i) {
+      Standard_Real aU1, aV1, aU2, aV2;
+      gp_Pnt2d aP2D;
+      TopAbs_State aState1, aState2;
+      //
+      const IntPatch_Point& aIP=spnt(i);
+      aIP.Parameters(aU1, aV1, aU2, aV2);
+      //
+      aP2D.SetCoord(aU1, aV1);
+      aState1=D1->Classify(aP2D, TolArc);
+      //
+      aP2D.SetCoord(aU2, aV2);
+      aState2=D2->Classify(aP2D, TolArc);
+      //
+      if(aState1!=TopAbs_OUT && aState2!=TopAbs_OUT) {
+	aSIP.Append(aIP);
+      }
+    }
+    //
+    spnt.Clear();
+    //
+    aNbPnt=aSIP.Length();
+    for(i=1; i<=aNbPnt; ++i) {
+      const IntPatch_Point& aIP=aSIP(i);
+      spnt.Append(aIP);
+    }
+    //
+  }//  if (aNbPnt) {
+  //modified by NIZNHY-PKV Tue Sep 06 10:18:20 2011t
+  //
+  nblin = slin.Length();
   for(i=1; i<=nblin; i++) {
     IntPatch_IType thetype = slin.Value(i)->ArcType();
     if(  (thetype ==  IntPatch_Ellipse)
@@ -498,70 +514,6 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
        ||(thetype ==  IntPatch_Parabola)
        ||(thetype ==  IntPatch_Hyperbola)) { 
       Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
-      
-/*      if(thetype  == IntPatch_Circle) { 
-	gp_Pnt P;
-	IntPatch_Point point;
-	Standard_Real u1,v1,u2,v2; 
-	Standard_Boolean Addf = Standard_False;
-	Standard_Boolean Addl = Standard_False;
-	Standard_Integer v=0;
-	Standard_Integer nbv;
-	gp_Circ Circ = glin->Circle();
-	nbv = glin->NbVertex();
-	if(glin->HasFirstPoint() == Standard_False) { 
-	  P=ElCLib::Value(0.0,Circ);
-	  quad1.Parameters(P,u1,v1); quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2); 
-	  point.SetParameter(0.0);
-	  glin->AddVertex(point);
-	  nbv++;
-	  glin->SetFirstPoint(nbv);
-	}
-	if(glin->HasLastPoint() == Standard_False) { 
-	  P=ElCLib::Value(0.0,Circ);
-	  quad1.Parameters(P,u1,v1); quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(PI+PI);
-	  glin->AddVertex(point);
-	  nbv++;
-	  glin->SetLastPoint(nbv);
-	}
-      }
-      else if(thetype == IntPatch_Ellipse) { 
-	gp_Pnt P;
-	IntPatch_Point point;
-	Standard_Real u1,v1,u2,v2; 
-	Standard_Boolean Addf = Standard_False;
-	Standard_Boolean Addl = Standard_False;
-	Standard_Integer v=0;
-	Standard_Integer nbv;
-	gp_Elips Elips = glin->Ellipse();
-	nbv = glin->NbVertex();
-	if(glin->HasFirstPoint() == Standard_False) { 
-	  P=ElCLib::Value(0.0,Elips);
-	  quad1.Parameters(P,u1,v1);  quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(0.0);
-	  glin->AddVertex(point);
-	  nbv++;
-	  glin->SetFirstPoint(nbv);
-	}
-	if(glin->HasLastPoint() == Standard_False) {
-	  P=ElCLib::Value(0.0,Elips);
-	  quad1.Parameters(P,u1,v1);  quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(PI+PI);
-	  glin->AddVertex(point);
-	  nbv++;
-	  glin->SetLastPoint(nbv);
-	}
-	} 
-*/
     glin->ComputeVertexParameters(TolArc); 
     }
     else if(thetype == IntPatch_Analytic) { 
@@ -573,20 +525,14 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       rlig->ComputeVertexParameters(TolArc); 
     }
   }
-#if 1 
+  //
   //----------------------------------------------------------------
   //-- On place 2 vertex sur les courbes de GLine qui n en 
   //-- contiennent pas. 
-  
   for(i=1; i<=nblin; i++) {
     gp_Pnt P;
     IntPatch_Point point;
     Standard_Real u1,v1,u2,v2; 
-#ifdef DEB
-    Standard_Boolean Addf = Standard_False;
-    Standard_Boolean Addl = Standard_False;
-    Standard_Integer v=0;
-#endif
     Standard_Integer nbv;
     if(slin.Value(i)->ArcType() == IntPatch_Circle) { 
       const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
@@ -634,115 +580,6 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       }
     }
   }
-#endif
-
   done = Standard_True;
 }
-//--------------------------------------------------------------
 
-
-#if 0
-//-- Ancien bout de code 
-  //----------------------------------------------------------------
-  //-- On place 2 vertex sur les courbes de GLine qui n en 
-  //-- contiennent pas. 
-  
-  for(i=1; i<=nblin; i++) {
-    gp_Pnt P;
-    IntPatch_Point point;
-    Standard_Real u1,v1,u2,v2; 
-    Standard_Boolean Addf = Standard_False;
-    Standard_Boolean Addl = Standard_False;
-    Standard_Integer v=0;
-    Standard_Integer nbv;
-    if(slin.Value(i)->ArcType() == IntPatch_Circle) { 
-      const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
-      nbv = glin->NbVertex();
-      if(glin->NbVertex() == 0) { Addf=Addl=Standard_True; } 
-      else { 
-	if(glin->HasFirstPoint() == Standard_False) { 
-	  Addf = Standard_True;
-	  for(v=1;v<=nbv;v++) { 
-	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
-	    if(gv<Precision::PConfusion()) 
-	      Addf = Standard_False;
-	  }
-	}
-	if(glin->HasLastPoint() == Standard_False) { 
-	  Addl = Standard_True;
-	  for(v=1;v<=nbv;v++) { 
-	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
-	    if((PI+PI-gv)<Precision::PConfusion()) 
-	      Addl = Standard_False;
-	  }
-	}
-      }
-      if(Addl || Addf) { 
-	gp_Circ Circ = glin->Circle();
-	if(Addf) { 
-	  P=ElCLib::Value(0.0,Circ);
-	  quad1.Parameters(P,u1,v1);
-	  quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(0.0);
-	  glin->AddVertex(point);
-	}
-	if(Addl) { 
-	  P=ElCLib::Value(0.0,Circ);
-	  quad1.Parameters(P,u1,v1);
-	  quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(PI+PI);
-	  glin->AddVertex(point);
-	}
-      }
-    }
-    
-    else if(slin.Value(i)->ArcType() == IntPatch_Ellipse) { 
-      const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
-      nbv = glin->NbVertex();
-      if(glin->NbVertex() == 0) { Addf=Addl=Standard_True; } 
-      else { 
-	if(glin->HasFirstPoint() == Standard_False) { 
-	  Addf = Standard_True;
-	  for(v=1;v<=nbv;v++) { 
-	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
-	    if(gv<Precision::PConfusion()) 
-	      Addf = Standard_False;
-	  }
-	}
-	if(glin->HasLastPoint() == Standard_False) { 
-	  Addl = Standard_True;
-	  for(v=1;v<=nbv;v++) { 
-	    Standard_Real gv = glin->Vertex(v).ParameterOnLine();
-	    if((PI+PI-gv)<Precision::PConfusion()) 
-	      Addl = Standard_False;
-	  }
-	}
-      }
-      if(Addl || Addf) { 
-	gp_Elips Elips = glin->Ellipse();
-	if(Addf) { 
-	  P=ElCLib::Value(0.0,Elips);
-	  quad1.Parameters(P,u1,v1);
-	  quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(0.0);
-	  glin->AddVertex(point);
-	}
-	if(Addl) { 
-	  P=ElCLib::Value(0.0,Elips);
-	  quad1.Parameters(P,u1,v1);
-	  quad2.Parameters(P,u2,v2);
-	  point.SetValue(P,TolArc,Standard_False);
-	  point.SetParameters(u1,v1,u2,v2);
-	  point.SetParameter(PI+PI);
-	  glin->AddVertex(point);
-	}
-      }
-    }
-  }
-#endif
