@@ -15,7 +15,7 @@
 #include <ElCLib.hxx>
 // Geometry
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx> 
+#include <gp_Pnt2d.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -135,6 +135,258 @@ void BRepMesh_Classifier::AnalizeWire (const TColgp_SequenceOfPnt2d&  theSeqPnt2
 }
 
 //=======================================================================
+//function : triangle2Area
+//purpose  : calculating area under triangle
+//=======================================================================
+
+inline static Standard_Real triangle2Area(const gp_XY& p1, const gp_XY& p2)
+{
+  return p1.Crossed(p2);
+}
+
+//=======================================================================
+//function : getSegmentParams
+//purpose  : extracting segment attributes 
+//=======================================================================
+
+static Standard_Real getSegmentParams(const BRepMesh_Array1OfBiPoint& theBiPoints,
+                                      const Standard_Integer Index,
+                                      Standard_Real& x11,
+                                      Standard_Real& y11,
+                                      Standard_Real& x12,
+                                      Standard_Real& y12,
+                                      Standard_Real& A,
+                                      Standard_Real& B,
+                                      Standard_Real& C)
+{
+  Standard_Real *aCoordinates;
+  aCoordinates = ((Standard_Real*)(theBiPoints(Index).Coordinates()));
+  x11 =  aCoordinates[0];
+  y11 =  aCoordinates[1];
+  x12 =  aCoordinates[2];
+  y12 =  aCoordinates[3];
+  A   =  aCoordinates[5];
+  B   = -aCoordinates[4];
+  C   = - x11*A - y11*B;
+  return A*A+B*B;
+}
+
+//=======================================================================
+//function : checkWiresIntersection
+//purpose  : finding intersection.
+//           If the intersection is found return Standard_True
+//=======================================================================
+
+static Standard_Boolean checkWiresIntersection(const Standard_Integer            theFirstWireId,
+                                              const Standard_Integer            theSecondWireId,
+                                              Standard_Integer* const           theFirstOuterSegmentId,
+                                              Standard_Integer                  theLastOuterSegmentId,
+                                              const TColStd_SequenceOfInteger&  theWireLength,
+                                              const BRepMesh_Array1OfBiPoint&   theBiPoints,
+                                              const Standard_Boolean            findNextIntersection   = Standard_False,
+                                              const Standard_Boolean            isFirstSegment         = Standard_False,
+                                              Standard_Integer* const           theFirstInnerSegmentId = 0)
+{
+  Standard_Real A1, B1, C1, A2, B2, C2, AB, BC, CA, xc, yc;
+  Standard_Real  mu1, d, mu2;
+  Standard_Integer ik = *theFirstOuterSegmentId, jk;
+  Standard_Real x11, x12, y11, y12, x21, x22, y21, y22;
+
+  // Calculate bounds for first wire
+  Standard_Integer ikEnd = theLastOuterSegmentId;
+  Standard_Boolean isFirst = Standard_True;
+  if ( findNextIntersection )
+  {
+    isFirst = isFirstSegment;
+  }
+
+  // Calculate bounds for second wire
+  Standard_Integer jkStart = 0, jkEnd = 0;
+  for (jk = 1; jk <= theSecondWireId; jk++)
+  {
+    jkStart = jkEnd + 1;
+    jkEnd  += theWireLength(jk);
+  }
+
+  // total area under polygon (area of loop)
+  Standard_Real aLoopArea          = 0.0;
+  // area under first triangles of polygon
+  Standard_Real aFirstTriangleArea = 0.0;
+  // contains coordinates of the end point of segment if first intersection point is finding
+  // or coordinates of the intersecting point if second intersection point is finding
+  gp_XY aStartPoint;
+
+  for (; ik <= ikEnd; ik++)
+  {
+    mu1 = getSegmentParams(theBiPoints, ik, x11, y11, x12, y12, A1, B1, C1);
+    // for second intersection point we must count the area from first intersection point 
+    if ( !findNextIntersection )
+    {
+      aLoopArea = 0.0;
+      aStartPoint.SetCoord(x12, y12);
+    }
+
+    //for theFirstWireId == theSecondWireId the algorithm check current wire on selfintersection
+    if ( findNextIntersection && theFirstInnerSegmentId && isFirst)
+    {
+      jk = *theFirstInnerSegmentId;
+    }
+    else if (theSecondWireId == theFirstWireId)
+    {
+      jk = ik + 2;
+    }
+    else
+    {
+      jk = jkStart;
+    }
+
+    // Explore second wire
+    Standard_Boolean aFirstPass = Standard_True;
+    for (; jk <= jkEnd; jk++)
+    {
+      // don't check end's segment of the wire on selfrestriction
+      if ( theSecondWireId == theFirstWireId && isFirst && jk == ikEnd ) continue;
+
+      mu2 = getSegmentParams(theBiPoints, jk, x21, y21, x22, y22, A2, B2, C2);
+      gp_XY p2(x21, y21), p3(x22, y22);
+
+      //different segments may have common vertex (see OCC287 bug for example)
+      AB = A1*B2 - A2*B1;
+      //check on minimal of distance between current segment and points of another linear segments - OCC319
+      d = A1*x22 + B1*y22 + C1;
+      Standard_Real dTol = MIN_DIST*MIN_DIST;
+      if(theFirstWireId != theSecondWireId       && // if compared wires are different &&
+         AB*AB > PARALL_COND*PARALL_COND*mu1*mu2 && // angle between two segments greater then PARALL_COND &&
+         d*d   < dTol*mu1 &&             // distance between vertex of the segment and other one's less then MIN_DIST
+         (x22-x11)*(x22-x12) < 0.0 && (y22-y11)*(y22-y12) < 0.0)
+      {
+        // if we finding the second intersection we must return Standard_False for setting
+        // self-intersection result flag
+        if ( findNextIntersection )
+          return Standard_False;
+
+        // we can step here when finding first intersection, return self-intersection flag
+        return Standard_True;
+      }
+
+      if( aFirstPass )
+      {
+        aFirstTriangleArea = triangle2Area(aStartPoint, p2);
+      }
+      Standard_Real aTmpArea = triangle2Area(p2, p3);
+
+      //look for intersection of two linear segments
+      if(Abs(AB) <= RESOLUTION)
+      {
+        aLoopArea += aTmpArea;
+        continue;  //current segments seem parallel - no intersection
+      }
+      
+      //calculate coordinates of point of the intersection
+      BC = B1*C2 - B2*C1;  xc = BC/AB;
+      CA = C1*A2 - C2*A1;  yc = CA/AB;
+
+      // remember current intersection point and area of first triangle
+      if( findNextIntersection && ik == *theFirstOuterSegmentId && jk == *theFirstInnerSegmentId )
+      {
+        aStartPoint.SetCoord(xc, yc);
+        continue;
+      }
+
+      //check on belonging of intersection point to the both of segments
+      Standard_Boolean isOnLines = Standard_True;
+
+      Standard_Real dd[2][4] = { {(xc-x11), (xc-x12), (xc-x21), (xc-x22)},   //dX
+                                 {(yc-y11), (yc-y12), (yc-y21), (yc-y22)} }; //dY
+
+      Standard_Integer i = 0;
+      for(; i < 2; i++ )
+      {
+        if ( dd[i][0]*dd[i][1] > dTol || dd[i][2]*dd[i][3] > dTol)
+        {
+          isOnLines = Standard_False;
+          break;
+        }
+      }
+
+      // check the intersection point is on the ends of segments
+      if ( isOnLines )
+      {
+        for( i = 0; i < 2; i++ )
+        {
+          //     if it's the last segment and intersection point lies at the end
+          if ( ( jk == jkEnd                                              ||
+          //     dX                        && dY
+          //     or when the start or the end point of the first segment
+                (Abs(dd[0][0])  < MIN_DIST && Abs(dd[1][0])   < MIN_DIST) ||
+                (Abs(dd[0][1])  < MIN_DIST && Abs(dd[1][1])   < MIN_DIST)) &&
+          //     is equal to one of the end points of the second
+               (Abs(dd[0][i+2]) < MIN_DIST && Abs(dd[1][i+2]) < MIN_DIST))
+          {
+            // no intersection
+            isOnLines = Standard_False;
+            aLoopArea = aTmpArea = 0.0;
+            aFirstPass = Standard_True;
+            break;
+          }
+        }
+      }
+
+
+      if( isOnLines )
+      {
+        p3.SetX(xc); p3.SetY(yc); 
+        aLoopArea += aFirstTriangleArea;             // First triangle area
+        aLoopArea += triangle2Area(p2, p3); 
+        aLoopArea += triangle2Area(p3, aStartPoint); // Last triangle area
+
+        if( Abs(aLoopArea)/2 > PI*MIN_DIST )
+        {
+          if ( findNextIntersection )
+          {
+            // intersection is found, but Standard_False returns, because area is too much
+            return Standard_False;
+          }
+
+          if ( checkWiresIntersection(theFirstWireId, theSecondWireId, &ik, ikEnd, theWireLength,
+                           theBiPoints, Standard_True, isFirst, &jk) )
+          {
+            // small crossing is not intersection, continue cheching
+            aLoopArea = aTmpArea = 0.0;
+            aFirstPass = Standard_True;
+          }
+          else
+          {
+            // if we found only one intersection
+            return Standard_True;
+          }
+        }
+        else if ( findNextIntersection )
+        {
+          // small intersection, skip double checking
+          *theFirstOuterSegmentId = ik;
+          *theFirstInnerSegmentId = jk + 1;
+          return Standard_True;
+        }
+      }
+      if ( aFirstPass )
+      {
+        aFirstPass = Standard_False;
+      }
+
+      aLoopArea += aTmpArea;
+    }
+    
+    if ( isFirst )
+    {
+      isFirst = Standard_False;
+    }
+  }
+  return Standard_False;
+}
+
+
+//=======================================================================
 //function : BRepMesh_Classifier
 //purpose  : 
 //=======================================================================
@@ -223,7 +475,7 @@ BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& aFace,
         }
         const TColStd_Array1OfInteger& indices = NOD->Nodes();
 
-        // indexFirst and nodeLast are the indices of first and last
+        // indexFirst and indexLast are the indices of first and last
         // vertices of the edge in IndexedMap <Str>
         const Standard_Integer indexFirst = themap.FindKey(indices(iFirst));
         const Standard_Integer indexLast = themap.FindKey(indices(iLast));
@@ -344,85 +596,18 @@ BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& aFace,
     }
   }
 
-  Standard_Real *Coordinates2;
-  Standard_Real A1, B1, C1, A2, B2, C2, AB, BC, CA, xc, yc;
-  Standard_Real  mu1, d, mu2;
-  Standard_Integer ik, ikEnd = 0, jk, jkEnd;
-  Standard_Real x11, x12, y11, y12, x21, x22, y21, y22;
+  // Search the intersection
+  // Explore first wire
+  Standard_Integer ik, ikEnd = 0;
   for(i = 1; i <= nbwires; i++)
   {
     ik = ikEnd + 1;  ikEnd += aWireLength(i);
-    // Explore first wire
-    for (; ik <= ikEnd; ik++)
+    // Explore second wire
+    for (j = i; j <= nbwires; j++)
     {
-      Coordinates1 = ((Standard_Real*)(BiPoints.ChangeValue(ik).Coordinates()));
-      x11 = Coordinates1[0];
-      y11 = Coordinates1[1];
-      x12 = Coordinates1[2];
-      y12 = Coordinates1[3];
-      A1 =  Coordinates1[5];
-      B1 = -Coordinates1[4];
-      C1 = - x11*A1 - y11*B1;
-      //mu1 = Sqrt(A1*A1+B1*B1);
-      mu1 = A1*A1+B1*B1;
-      for (j = i; j <= nbwires; j++)
+      if ( checkWiresIntersection(i, j, &ik, ikEnd, aWireLength, BiPoints) )
       {
-        //for i==j the algorithm check current wire on selfintersection
-        if (j == i)
-        {
-          jk = ik + 2;  jkEnd = ikEnd;
-        }
-        else
-        {
-          jk = jkEnd + 1;  jkEnd = jk + aWireLength(j) - 1;
-        }
-        // Explore second wire
-        for (; jk <= jkEnd; jk++)
-        {
-          // don't check end's segment of the wire on selfrestriction
-          if (jk == ikEnd) continue;
-          Coordinates2 = ((Standard_Real*)(BiPoints.ChangeValue(jk).Coordinates()));
-          x21 = Coordinates2[0];
-          y21 = Coordinates2[1];
-          x22 = Coordinates2[2];
-          y22 = Coordinates2[3];
-          A2 =  Coordinates2[5];
-          B2 = -Coordinates2[4];
-          C2 = - x21*A2 - y21*B2;
-          //mu2 = Sqrt(A2*A2+B2*B2);
-          mu2 = A2*A2+B2*B2;
-          //different segments may have common vertex (see OCC287 bug for example)
-          //if(x22 == x11 && y22 == y11){ myState = BRepMesh_OpenWire;  return;}
-          AB = A1*B2 - A2*B1;
-          //check on minimal of distance between current segment and points of another linear segments - OCC319
-          //d = Abs(A1*x22 + B1*y22 + C1);
-          d = A1*x22 + B1*y22 + C1;
-          if(i != j &&                        // if compared wires are different &&
-             AB*AB > PARALL_COND*PARALL_COND*mu1*mu2 && // angle between two segments greater then PARALL_COND &&
-             d*d < MIN_DIST*MIN_DIST*mu1 &&              // distance between vertex of the segment and other one's less then MIN_DIST
-             (x22-x11)*(x22-x12) < 0.0 && (y22-y11)*(y22-y12) < 0.0)
-          {
-            myState = BRepMesh_SelfIntersectingWire;  return;
-          }
-          //look for intersection of two linear segments
-          if(Abs(AB) <= RESOLUTION) continue;  //current segments seem parallel - no intersection
-          //calculate coordinates of point of the intersection
-          BC = B1*C2 - B2*C1;  xc = BC/AB;
-          CA = C1*A2 - C2*A1;  yc = CA/AB;
-          //check on belonging of intersection point to the both of segments
-          if( Abs(xc-x11) > RESOLUTION && Abs(xc-x12) > RESOLUTION &&
-              Abs(yc-y11) > RESOLUTION && Abs(yc-y12) > RESOLUTION &&
-              Abs(xc-x21) > RESOLUTION && Abs(xc-x22) > RESOLUTION &&
-              Abs(yc-y21) > RESOLUTION && Abs(yc-y22) > RESOLUTION )
-          {
-            if((xc-x11)*(xc-x12) < 0.0 && (yc-y11)*(yc-y12) < 0.0 &&
-               (xc-x21)*(xc-x22) < 0.0 && (yc-y21)*(yc-y22) < 0.0)
-            {
-              //different segments may have common vertex (why "<" but "<=")
-              myState = BRepMesh_SelfIntersectingWire;  return;
-            }
-          }
-        }
+        myState = BRepMesh_SelfIntersectingWire; return;
       }
     }
   }
