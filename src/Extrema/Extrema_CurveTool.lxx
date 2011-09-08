@@ -207,7 +207,7 @@ inline gp_Parab Extrema_CurveTool::Parabola(const Adaptor3d_Curve& C)
 
  inline Standard_Boolean Extrema_CurveTool::IsRational(const Adaptor3d_Curve& C)
 {
-  return C.Degree();
+  return C.IsRational();
 }
 
 //=======================================================================
