@@ -130,7 +130,16 @@ static
 				 BOPTools_PaveFiller& aPF,
 				 TColStd_SequenceOfInteger& aSeqVx,
 				 TColStd_SequenceOfReal& aSeqTolVx);
- 
+//modified by NIZNHY-PKV Wed Aug 31 10:32:52 2011f 
+static
+  void ProcessAloneStickVertices(const Standard_Integer nF1,
+				 const Standard_Integer nF2,
+				 const BOPTools_PaveSet& aPSF,
+				 BOPTools_SequenceOfCurves& aSCvs,
+				 BOPTools_PaveFiller& aPF,
+				 TColStd_SequenceOfInteger& aSeqVx,
+				 TColStd_SequenceOfReal& aSeqTolVx);
+//modified by NIZNHY-PKV Wed Aug 31 10:32:59 2011t 
 //wkar OCC334 t
 
 static
@@ -183,10 +192,11 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
                                            Standard_Real&        theTF);
 
 //modified by NIZNHY-PKV Sat Mar 05 12:23:05 2011f
-void CorrectTolR3D(BOPTools_PaveFiller& aPF,
-		   const BOPTools_SSInterference& aFF,
-		   const TColStd_MapOfInteger& aMVStick,
-		   Standard_Real& aTolR3D);
+static
+  void CorrectTolR3D(BOPTools_PaveFiller& aPF,
+		     const BOPTools_SSInterference& aFF,
+		     const TColStd_MapOfInteger& aMVStick,
+		     Standard_Real& aTolR3D);
 //modified by NIZNHY-PKV Sat Mar 05 12:23:07 2011t
 
 //=======================================================================
@@ -1473,7 +1483,43 @@ void CorrectTolR3D(BOPTools_PaveFiller& aPF,
       //
       PutPaveOnCurve (aPSF, aTolR3D, aBC);
     }
+    //modified by NIZNHY-PKV Tue Aug 30 14:54:50 2011f
+    {
+      Standard_Integer aNbVtx, jx;
+      Standard_Real aTolVRange;
+      TColStd_SequenceOfInteger aSeqVx;
+      TColStd_SequenceOfReal    aSeqTolVx;
+      //
+      ProcessAloneStickVertices(nF1, 
+				nF2, 
+				aPSF, 
+				aSCvs, 
+				*this,
+				aSeqVx, 
+				aSeqTolVx);
+      // 
+      aNbVtx=aSeqVx.Length();
+      for (jx=1; jx<=aNbVtx; ++jx) {
+	BOPTools_PaveSet aPSFx;
+	BOPTools_Pave aPVx;
 
+	nV=aSeqVx(jx);
+	aTolVRange=aSeqTolVx(jx);
+	
+	aPVx.SetIndex(nV);
+	aPSFx.Append(aPVx);
+
+	for (j=1; j<=aNbCurves; j++) {
+	  BOPTools_Curve& aBC=aSCvs(j);
+	  // DEBUG
+	  const IntTools_Curve& aC=aBC.Curve();
+	  Handle (Geom_Curve) aC3D= aC.Curve();
+	  //
+	  PutPaveOnCurve (aPSFx, aTolVRange, aBC);
+	}
+      }
+    }
+    //modified by NIZNHY-PKV Tue Aug 30 14:54:56 2011t
     //
     // Put bounding paves on curves
     //Check very specific case of cone-cone intersection (OCC13211)
@@ -1916,6 +1962,106 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
     }
   }
 }
+//modified by NIZNHY-PKV Wed Aug 31 10:29:29 2011f
+//=======================================================================
+// function: ProcessAloneStickVertices
+// purpose: 
+//=======================================================================
+void ProcessAloneStickVertices(const Standard_Integer nF1,
+			       const Standard_Integer nF2,
+			       const BOPTools_PaveSet& aPSF,
+			       BOPTools_SequenceOfCurves& aSCvs,
+			       BOPTools_PaveFiller& aPF,
+			       TColStd_SequenceOfInteger& aSeqVx,
+			       TColStd_SequenceOfReal& aSeqTolVx)
+{
+  GeomAbs_SurfaceType aType1, aType2;
+  //
+  BooleanOperations_PShapesDataStructure pDS=aPF.DS();
+  //
+  const TopoDS_Face& aF1= TopoDS::Face(pDS->Shape(nF1));
+  const TopoDS_Face& aF2= TopoDS::Face(pDS->Shape(nF2));
+  Handle(Geom_Surface) aS1=BRep_Tool::Surface(aF1);
+  Handle(Geom_Surface) aS2=BRep_Tool::Surface(aF2);
+  GeomAdaptor_Surface aGAS1(aS1);
+  GeomAdaptor_Surface aGAS2(aS2);
+  //
+  aType1=aGAS1.GetType();
+  aType2=aGAS2.GetType();
+  //
+  if(aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
+    Standard_Integer aNbSCvs, jVU, aNbVU, nVU, k, m, n;
+    Standard_Real aTC[2], aD, aD2, aDT2, aU, aV, aScPr, aDScPr;
+    TColStd_IndexedMapOfInteger aMVU;
+    GeomAbs_CurveType aTypeC;
+    gp_Pnt aPC[2], aPVU;
+    gp_Dir aDN[2];
+    gp_Pnt2d aP2D;
+    
+    Handle(Geom2d_Curve) aC2D[2];
+    //
+    aDT2=2e-7;     // the rich criteria
+    aDScPr=5.e-9;  // the creasing criteria
+    //
+    UnUsedMap(aSCvs, aPSF, aMVU);
+    //
+    aNbVU=aMVU.Extent();
+    for (jVU=1; jVU<=aNbVU; ++jVU) {
+      nVU=aMVU(jVU);
+      const TopoDS_Vertex& aVU=*((TopoDS_Vertex*)&pDS->Shape(nVU));
+      aPVU=BRep_Tool::Pnt(aVU);
+      //
+      aNbSCvs=aSCvs.Length();
+      for (k=1; k<=aNbSCvs; ++k) {
+	BOPTools_Curve& aBC=aSCvs(k);
+	const IntTools_Curve& aIC=aBC.Curve();
+	//Handle(Geom_Curve) aC3D=aIC.Curve(); //DEB
+	aTypeC=aIC.Type();
+	if (!(aTypeC==GeomAbs_BezierCurve || GeomAbs_BSplineCurve)) {
+	  continue;
+	}
+	//
+	aIC.Bounds(aTC[0], aTC[1], aPC[0], aPC[1]);
+	aC2D[0]=aIC.FirstCurve2d();
+	aC2D[1]=aIC.SecondCurve2d();
+	if (aC2D[0].IsNull() || aC2D[1].IsNull()) {
+	   continue;
+	}
+	//
+	for (m=0; m<2; ++m) {
+	  aD2=aPC[m].SquareDistance(aPVU);
+	  if (aD2>aDT2) {// no rich
+	    continue; 
+	  }
+	  //
+	  for (n=0; n<2; ++n) {
+	    Handle(Geom_Surface)& aS=(!n)? aS1 : aS2;
+	    aC2D[n]->D0(aTC[m], aP2D);
+	    aP2D.Coord(aU, aV);
+	    BOPTools_Tools3D::GetNormalToSurface(aS, aU, aV, aDN[n]);
+	  }
+	  // 
+	  aScPr=aDN[0]*aDN[1];
+	  if (aScPr<0.) {
+	    aScPr=-aScPr;
+	  }
+	  aScPr=1.-aScPr;
+	  //
+	  if (aScPr>aDScPr) {
+	    continue;
+	  }
+	  //
+	  // The intersection curve aIC is vanishing curve (the crease)
+	  aD=sqrt(aD2);
+	  //
+	  aSeqVx.Append(nVU);
+	  aSeqTolVx.Append(aD);
+	}
+      }//for (k=1; k<=aNbSCvs; ++k) {
+    }//for (jVU=1; jVU=aNbVU; ++jVU) {
+  }//if(aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
+}
+//modified by NIZNHY-PKV Wed Aug 31 10:29:37 2011t
 //=======================================================================
 // function: UnUsedMap
 // purpose: 
@@ -3085,7 +3231,6 @@ Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
   theTF = maxD;
   return eIndex;
 }
-//modified by NIZNHY-PKV Sat Mar 05 12:18:43 2011f
 //=======================================================================
 //function : CorrectTolR3D
 //purpose  : 
@@ -3183,4 +3328,3 @@ void CorrectTolR3D(BOPTools_PaveFiller& aPF,
     aTolR3D=aTolR;
   }
 }
-//modified by NIZNHY-PKV Sat Mar 05 12:18:46 2011t

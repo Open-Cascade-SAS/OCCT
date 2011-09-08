@@ -2835,8 +2835,12 @@ Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
       if ( bIsOut )
 	acurvec.Reverse();
 
-      if((aVec.Dot(acurvec) > 0.) &&
-	 (aVec.Angle(acurvec) < Precision::PConfusion())) {
+      Standard_Real aDotX, anAngleX;
+      //
+      aDotX = aVec.Dot(acurvec);
+      anAngleX = aVec.Angle(acurvec);
+      //
+      if(aDotX > 0. && fabs(anAngleX) < Precision::PConfusion()) {
 	if((i % 2) == 0) {
 	  if((acurpoint.Y() >= theVmin) &&
 	     (acurpoint.Y() <= theVmax)) {
@@ -3462,7 +3466,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 
 	if(nbboundaries == 2) {
 	  //xf
-	  //bComputeLineEnd = Standard_True;
+	  bComputeLineEnd = Standard_True;
 	  //xt
 	}
 	else if(nbboundaries == 1) {
