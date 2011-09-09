@@ -3651,8 +3651,8 @@ HLRBRep_PolyAlgo::UpdatePolyData (TColStd_Array1OfTransient& PD,
 	    Tri1Flags |=  FMskBack;
 	  }
 	  else
-//	    Tri1Flags &= ~FMskBack;
-	    Tri1Flags |= FMskBack;//OCC349
+	    Tri1Flags &= ~FMskBack;
+	    //Tri1Flags |= FMskBack;//OCC349
 	}
 	Tri2Node1 = Tri1Node1;
 	Tri2Node2 = Tri1Node2;

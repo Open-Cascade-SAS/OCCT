@@ -76,6 +76,12 @@
 #include <Geom_Axis1Placement.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
+
+#include <HLRAlgo_Projector.hxx>
+#include <HLRBRep_PolyAlgo.hxx>
+#include <HLRBRep_PolyHLRToShape.hxx>
+#include <Aspect_Window.hxx>
+
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -2747,6 +2753,140 @@ static int VClipPlane (Draw_Interpretor& di, Standard_Integer argc, const char**
   return 0;
 }
 
+//=============================================================================
+//function : VComputeHLR
+//purpose  :
+//=============================================================================
+
+static int VComputeHLR (Draw_Interpretor& di,
+                        Standard_Integer argc,
+                        const char** argv)
+{
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext ();
+
+  if (aContextAIS.IsNull ())
+  {
+    di << "Please call vinit before\n";
+    return 1;
+  }
+
+  if ( argc != 3 &&  argc != 12 )
+  {
+    di << "Usage: " << argv[0] << " ShapeName HlrName "
+       << "[ eye_x eye_y eye_z dir_x dir_y dir_z upx upy upz ]" << "\n"
+       << "                    ShapeName - name of the initial shape\n"
+       << "                    HlrName - result hlr object from initial shape\n"
+       << "                    eye, dir are eye position and look direction\n"
+       << "                    up is the look up direction vector\n"
+       << "                    Use vtop to see projected hlr shape\n";
+    return 1;
+  }
+
+  // shape and new object name
+  TCollection_AsciiString aShapeName (argv[1]);
+  TCollection_AsciiString aHlrName (argv[2]);
+
+  TopoDS_Shape aSh = DBRep::Get (argv[1]);
+  if (aSh.IsNull()) 
+  {
+    BRep_Builder aBrepBuilder;
+    BRepTools::Read (aSh, argv[1], aBrepBuilder);
+    if (aSh.IsNull ())
+    {
+      di << "No shape with name " << argv[1] << " found\n";
+      return 1;
+    }
+  }
+
+  if (GetMapOfAIS ().IsBound2 (aHlrName))
+  {
+    di << "Presentable object with name " << argv[2] << " already exists\n";
+    return 1;
+  }
+
+  // close local context
+  if (aContextAIS->HasOpenedContext ())
+    aContextAIS->CloseLocalContext ();
+
+  Handle(HLRBRep_PolyAlgo) aPolyAlgo = new HLRBRep_PolyAlgo();
+  HLRBRep_PolyHLRToShape aHLRToShape;
+
+  gp_Pnt anEye;
+  gp_Dir aDir;
+  gp_Ax2 aProjAx;
+  if (argc == 9)
+  {
+    gp_Dir anUp;
+
+    anEye.SetCoord (atof (argv[3]), atof (argv[4]), atof (argv[5]));
+    aDir.SetCoord (atof (argv[6]), atof (argv[7]), atof (argv[8]));
+    anUp.SetCoord (atof (argv[9]), atof (argv[10]), atof (argv[11]));
+    aProjAx.SetLocation (anEye);
+    aProjAx.SetDirection (aDir);
+    aProjAx.SetYDirection (anUp);
+  }
+  else
+  {
+    gp_Dir aRight;
+
+    Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
+    Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+    Standard_Integer aWidth, aHeight;
+    Standard_Real aCentX, aCentY, aCentZ, aDirX, aDirY, aDirZ;
+    Standard_Real aRightX, aRightY, aRightZ;
+    aView->Window()->Size (aWidth, aHeight);
+
+    aView->ConvertWithProj (aWidth, aHeight/2, 
+                            aRightX, aRightY, aRightZ,
+                            aDirX, aDirY, aDirZ);
+
+    aView->ConvertWithProj (aWidth/2, aHeight/2, 
+                            aCentX, aCentY, aCentZ,
+                            aDirX, aDirY, aDirZ);
+
+    anEye.SetCoord (-aCentX, -aCentY, -aCentZ);
+    aDir.SetCoord (-aDirX, -aDirY, -aDirZ);
+    aRight.SetCoord (aRightX - aCentX, aRightY - aCentY, aRightZ - aCentZ);
+    aProjAx.SetLocation (anEye);
+    aProjAx.SetDirection (aDir);
+    aProjAx.SetXDirection (aRight);
+  }
+
+  HLRAlgo_Projector aProjector (aProjAx);
+  aPolyAlgo->Projector (aProjector);
+  aPolyAlgo->Load (aSh);
+  aPolyAlgo->Update ();
+
+  aHLRToShape.Update (aPolyAlgo);
+
+  // make hlr shape from input shape
+  TopoDS_Compound aHlrShape;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound (aHlrShape);
+
+  TopoDS_Shape aCompound = aHLRToShape.VCompound();
+  if (!aCompound.IsNull ())
+  {
+    aBuilder.Add (aHlrShape, aCompound);
+  }
+  
+  // extract visible outlines
+  aCompound = aHLRToShape.OutLineVCompound();
+  if (!aCompound.IsNull ())
+  {
+    aBuilder.Add (aHlrShape, aCompound);
+  }
+
+  // create an AIS shape and display it
+  Handle(AIS_Shape) anObject = new AIS_Shape (aHlrShape);
+  GetMapOfAIS().Bind (anObject, aHlrName);
+  aContextAIS->Display (anObject);
+
+  aContextAIS->UpdateCurrentViewer ();
+
+  return 0;
+}
+
 //=======================================================================
 //function : ObjectsCommands
 //purpose  :
@@ -2818,4 +2958,10 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vclipplane",
     "vclipplane : vclipplane [x y z dx dy dz] [planeId {on/off/del/display/hide}]",
     __FILE__,VClipPlane,group);
+
+  theCommands.Add (
+    "vcomputehlr",
+    "vcomputehlr: shape hlrname [ eyex eyey eyez lookx looky lookz ]",
+    __FILE__, VComputeHLR, group);
+
 }
