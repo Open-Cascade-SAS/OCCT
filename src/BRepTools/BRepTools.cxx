@@ -674,9 +674,6 @@ Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh,
 
   errno = 0;
   os.close();
-#ifdef DEB
-//  cout<<"!!!"<<strerror(errno)<<endl;
-#endif
   isGood = os.good() && isGood && !errno;
 
   return isGood;
