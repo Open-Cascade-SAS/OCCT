@@ -48,4 +48,3 @@ Aspect_GradientFillMethod Aspect_GradientBackground::BgGradientFillMethod( ) con
 {
   return MyGradientMethod;
 }
-

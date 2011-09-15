@@ -47,9 +47,6 @@ is
     ---Purpose: Modifies the colours of the window gradient background <me>.
     ---Category: Methods to modify the class definition
 
-    SetBgGradientFillMethod( me      ;
-                             AMethod : GradientFillMethod from Aspect = Aspect_GFM_NONE);
-
     ----------------------------
     -- Category: Inquire methods
     ----------------------------
