@@ -267,13 +267,12 @@ static
 		  Standard_Real& aUVMaxStep,
 		  Standard_Real& aDeflection);
 
-//modified by NIZNHY-PKV Tue Feb 15 10:16:05 2011f
 static
   Standard_Boolean SortTypes(const GeomAbs_SurfaceType aType1,
 			     const GeomAbs_SurfaceType aType2);
 static
   Standard_Integer IndexType(const GeomAbs_SurfaceType aType);
-//modified by NIZNHY-PKV Tue Feb 15 10:16:09 2011t
+
 //
 //=======================================================================
 //function : 
@@ -415,7 +414,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   aType1=aBAS1.GetType();
   aType2=aBAS2.GetType();
   //
-  //modified by NIZNHY-PKV Tue Feb 15 10:34:39 2011f
   bReverse=SortTypes(aType1, aType2);
   if (bReverse) {
     myFace1=aF2;
@@ -435,7 +433,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       }
     }
   }
-  //modified by NIZNHY-PKV Tue Feb 15 10:34:45 2011t
   //
   S1=BRep_Tool::Surface(myFace1);
   S2=BRep_Tool::Surface(myFace2);
@@ -480,7 +477,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=aTolFMax;
     }
     myTolReached2d = myTolReached3d;
-    //modified by NIZNHY-PKV Tue Feb 15 10:33:42 2011f
+    //
     if (bReverse) {
       Handle(Geom2d_Curve) aC2D1, aC2D2;
       //
@@ -494,7 +491,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	aIC.SetSecondCurve2d(aC2D1);
       }
     }
-    //modified by NIZNHY-PKV Tue Feb 15 10:33:46 2011t
     return;
   }//if(aType1==GeomAbs_Plane && aType2==GeomAbs_Plane){
   //
@@ -637,7 +633,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     //
     ComputeTolReached3d();
     //
-    //modified by NIZNHY-PKV Tue Feb 15 14:13:25 2011f
     if (bReverse) {
       Handle(Geom2d_Curve) aC2D1, aC2D2;
       //
@@ -651,7 +646,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	aIC.SetSecondCurve2d(aC2D1);
       }
     }
-    //modified by NIZNHY-PKV Tue Feb 15 14:13:29 2011t
     //
     // Points
     Standard_Real U1,V1,U2,V2;
@@ -665,7 +659,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       aISPnt.Parameters(U1,V1,U2,V2);
       aPntOnF1.Init(myFace1, aPnt, U1, V1);
       aPntOnF2.Init(myFace2, aPnt, U2, V2);
-      //modified by NIZNHY-PKV Tue Feb 15 10:34:10 2011f
+      //
       if (!bReverse) {
 	aPntOn2Faces.SetP1(aPntOnF1);
 	aPntOn2Faces.SetP2(aPntOnF2);
@@ -674,9 +668,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	aPntOn2Faces.SetP2(aPntOnF1);
 	aPntOn2Faces.SetP1(aPntOnF2);
       }
-      //aPntOn2Faces.SetP1(aPntOnF1);
-      //aPntOn2Faces.SetP2(aPntOnF2);
-      //modified by NIZNHY-PKV Tue Feb 15 10:34:14 2011t
       myPnts.Append(aPntOn2Faces);
     }
     //
@@ -738,7 +729,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     }
   }
   //t
-
   //IFV Bug OCC20297 
   if((aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Plane) ||
      (aType2 == GeomAbs_Cylinder && aType1 == GeomAbs_Plane)) {
@@ -773,7 +763,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   } // aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Plane) ...
   //End IFV Bug OCC20297
   //
-  //modified by NIZNHY-PKV Mon Feb 14 12:02:46 2011f
   if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
       (aType2==GeomAbs_Plane && aType1==GeomAbs_Torus)) {
     aNbLin=mySeqOfCurve.Length();
@@ -832,7 +821,99 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=1.1*myTolReached3d;
     }
   }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
-  //modified by NIZNHY-PKV Mon Feb 14 12:02:49 2011t
+  //modified by NIZNHY-PKV Mon Sep 12 09:32:44 2011f
+  if ((aType1==GeomAbs_SurfaceOfRevolution && aType2==GeomAbs_Cylinder) ||
+      (aType2==GeomAbs_SurfaceOfRevolution && aType1==GeomAbs_Cylinder)) {
+    Standard_Boolean bIsDone;
+    Standard_Integer i, j, aNbP;
+    Standard_Real aT, aT1, aT2, dT, aU1, aV1, aU2, aV2;
+    Standard_Real aDSmax, aDS1, aDS2, aDS;
+    gp_Pnt2d aP2D1, aP2D2;
+    gp_Pnt aP3D, aP3D1, aP3D2;
+    IntTools_Context aCtx;
+    //
+    aNbLin=mySeqOfCurve.Length();
+    aDSmax=-1.;
+    aNbP=11;
+    //
+    for (i=1; i<=aNbLin; ++i) {
+      const IntTools_Curve& aIC=mySeqOfCurve(i);
+      const Handle(Geom_Curve)& aC3D=aIC.Curve();
+      const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
+      const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
+      //
+      if (aC3D.IsNull()) {
+	continue;
+      }
+      const Handle(Geom_BSplineCurve)& aBC=Handle(Geom_BSplineCurve)::DownCast(aC3D);
+      if (aBC.IsNull()) {
+	return;
+      }
+      //
+      aT1=aBC->FirstParameter();
+      aT2=aBC->LastParameter();
+      //
+      dT=(aT2-aT1)/(aNbP-1);
+      for (j=0; j<aNbP; ++j) {
+	aT=aT1+j*dT;
+	if (j==aNbP-1) {
+	  aT=aT2;
+	}
+	//
+	aC3D->D0(aT, aP3D);
+	// 1
+	if (!aC2D1.IsNull()) {
+	  aC2D1->D0(aT, aP2D1);
+	  aP2D1.Coord(aU1, aV1);
+	  myHS1->D0(aU1, aV1, aP3D1);
+	  aDS1=aP3D.SquareDistance(aP3D1);
+	  if (aDS1>aDSmax) {
+	    aDSmax=aDS1;
+	  }
+	}
+	// 2
+	if (!aC2D2.IsNull()) {
+	  aC2D2->D0(aT, aP2D2);
+	  aP2D2.Coord(aU2, aV2);
+	  myHS2->D0(aU2, aV2, aP3D2);
+	  aDS2=aP3D.SquareDistance(aP3D2);
+	  if (aDS2>aDSmax) {
+	    aDSmax=aDS2;
+	  }
+	}
+	// 3
+	GeomAPI_ProjectPointOnSurf& aPPS1=aCtx.ProjPS(myFace1);
+	aPPS1.Perform(aP3D);
+	bIsDone=aPPS1.IsDone();
+	if (bIsDone) {
+	  aPPS1.LowerDistanceParameters(aU1, aV1);
+	  myHS1->D0(aU1, aV1, aP3D1);
+	  aDS1=aP3D.SquareDistance(aP3D1);
+	  if (aDS1>aDSmax) {
+	    aDSmax=aDS1;
+	  }
+	}
+	// 4
+	GeomAPI_ProjectPointOnSurf& aPPS2=aCtx.ProjPS(myFace2);
+	aPPS2.Perform(aP3D);
+	bIsDone=aPPS2.IsDone();
+	if (bIsDone) {
+	  aPPS2.LowerDistanceParameters(aU2, aV2);
+	  myHS2->D0(aU2, aV2, aP3D2);
+	  aDS2=aP3D.SquareDistance(aP3D2);
+	  if (aDS2>aDSmax) {
+	    aDSmax=aDS2;
+	  }
+	}
+      }//for (j=0; j<aNbP; ++j) {
+    }//for (i=1; i<=aNbLin; ++i) {
+    //
+    aDS=myTolReached3d*myTolReached3d;
+    if (aDSmax > aDS) {
+      myTolReached3d=sqrt(aDSmax);
+    }
+  }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
+  //modified by NIZNHY-PKV Mon Sep 12 09:32:46 2011t
 }
 //=======================================================================
 //function : MakeCurve
@@ -4382,7 +4463,6 @@ void Tolerances(const Handle(GeomAdaptor_HSurface)& aHS1,
     }
   }
 }
-//modified by NIZNHY-PKV Tue Feb 15 10:15:31 2011f
 //=======================================================================
 //function : SortTypes
 //purpose  : 
@@ -4447,4 +4527,3 @@ Standard_Integer IndexType(const GeomAbs_SurfaceType aType)
   } 
   return aIndex;
 }
-//modified by NIZNHY-PKV Tue Feb 15 10:15:39 2011t
