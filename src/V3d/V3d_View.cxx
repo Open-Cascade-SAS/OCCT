@@ -491,6 +491,11 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)& TheWindow)
     "V3d_View::SetWindow, window of view already defined");
 
   MyView->SetWindow(TheWindow) ;
+  // AGV: Method V3d_View::SetWindow() should assign the field MyWindow before
+  // calling Redraw(). Otherwise it is impossible to call certain methods of
+  // V3d_View like Convert() inside the context of Redraw(),
+  // particularly in class NIS_View.
+  MyWindow = TheWindow;
   // SetWindow carries out SetRatio and modifies
   // ViewMapping and ViewMappingDefault of MyView.
   MyViewMapping = MyView->ViewMapping() ;
@@ -504,7 +509,6 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)& TheWindow)
   MyGridEchoStructure->Display ();                              // S3892
 #endif
   MyView->Redraw() ;
-  MyWindow = TheWindow;
 
 }
 
@@ -520,6 +524,11 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)&      aWindow,
   Standard_MultiplyDefined_Raise_if( MyView->IsDefined(),
     "V3d_View::SetWindow, "
     "window of view already defined");
+  // AGV: Method V3d_View::SetWindow() should assign the field MyWindow before
+  // calling Redraw(). Otherwise it is impossible to call certain methods of
+  // V3d_View like Convert() inside the context of Redraw(),
+  // particularly in class NIS_View.
+  MyWindow = aWindow;
   MyView->SetWindow(aWindow, aContext, aDisplayCB, aClientData) ;
   MyViewMapping = MyView->ViewMapping() ;
   MyView->SetContext(MyViewContext) ;
@@ -528,7 +537,6 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)&      aWindow,
   MyView->SetBackground(MyBackground) ;
   MyViewer->SetViewOn(this) ;
   MyView->Redraw() ;
-  MyWindow = aWindow;
 
 }
 // RIC120302
