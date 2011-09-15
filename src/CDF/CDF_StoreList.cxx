@@ -65,61 +65,60 @@ void CDF_StoreList::Next() {
 Handle(CDM_Document) CDF_StoreList::Value() const {
   return myIterator.Key();
 }
-CDF_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, TCollection_ExtendedString& aStatusAssociatedText) {
+PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, TCollection_ExtendedString& aStatusAssociatedText) {
 
   Handle(CDF_MetaDataDriver) theMetaDataDriver = CDF_Session::CurrentSession()->MetaDataDriver();
 
-  static CDF_StoreStatus status ;
-  status = CDF_SS_OK;
+  PCDM_StoreStatus status = PCDM_SS_OK;
   {
     try {
       OCC_CATCH_SIGNALS
       for (; !myStack.IsEmpty(); myStack.Pop()) {
-	
-	Handle(CDM_Document) theDocument = myStack.Top();
-	if( theDocument == myMainDocument || theDocument->IsModified()) {
 
-	  if(!PCDM::FindStorageDriver(theDocument)){
-	    Standard_SStream aMsg;
-	    aMsg <<"No storage driver does exist for this format: " << theDocument->StorageFormat() << (char)0;
-	    Standard_Failure::Raise(aMsg);
-	  }
-	  
-	  
-	  if(!theMetaDataDriver->FindFolder(theDocument->RequestedFolder())) {
-	    Standard_SStream aMsg; aMsg << "could not find the active dbunit";
-	    aMsg << TCollection_ExtendedString(theDocument->RequestedFolder())<< (char)0;
-	    Standard_NoSuchObject::Raise(aMsg);
-	  }
-	  TCollection_ExtendedString theName=theMetaDataDriver->BuildFileName(theDocument);
+        Handle(CDM_Document) theDocument = myStack.Top();
+        if( theDocument == myMainDocument || theDocument->IsModified()) {
 
-	  CDF_Timer theTimer;
-	  
-	  PCDM::StorageDriver(theDocument)->Write(theDocument,theName);
-	  theTimer.ShowAndRestart("Driver->Write: ");
+          if(!PCDM::FindStorageDriver(theDocument)){
+            Standard_SStream aMsg;
+            aMsg <<"No storage driver does exist for this format: " << theDocument->StorageFormat() << (char)0;
+            Standard_Failure::Raise(aMsg);
+          }
 
-	  aMetaData = theMetaDataDriver->CreateMetaData(theDocument,theName);
-	  theTimer.ShowAndStop("metadata creating: ");
-	    
-	  theDocument->SetMetaData(aMetaData);
-	  
+          if(!theMetaDataDriver->FindFolder(theDocument->RequestedFolder())) {
+            Standard_SStream aMsg; aMsg << "could not find the active dbunit";
+            aMsg << TCollection_ExtendedString(theDocument->RequestedFolder())<< (char)0;
+            Standard_NoSuchObject::Raise(aMsg);
+          }
+          TCollection_ExtendedString theName=theMetaDataDriver->BuildFileName(theDocument);
 
-	  CDM_ReferenceIterator it(theDocument);
-	  for(; it.More();it.Next()) {
-	    theMetaDataDriver->CreateReference(aMetaData,it.Document()->MetaData(),it.ReferenceIdentifier(),it.DocumentVersion());
-	  }
-	  
-	}
+          CDF_Timer theTimer;
+          Handle(PCDM_StorageDriver) aDocumentStorageDriver = PCDM::StorageDriver(theDocument);
+
+          aDocumentStorageDriver->Write(theDocument,theName);
+          status = aDocumentStorageDriver->GetStoreStatus();
+
+          theTimer.ShowAndRestart("Driver->Write: ");
+
+          aMetaData = theMetaDataDriver->CreateMetaData(theDocument,theName);
+          theTimer.ShowAndStop("metadata creating: ");
+
+          theDocument->SetMetaData(aMetaData);
+
+          CDM_ReferenceIterator it(theDocument);
+          for(; it.More();it.Next()) {
+            theMetaDataDriver->CreateReference(aMetaData,it.Document()->MetaData(),it.ReferenceIdentifier(),it.DocumentVersion());
+          }
+        }
       }
     }
 
     catch (CDF_MetaDataDriverError) {
       CAUGHT(aStatusAssociatedText,TCollection_ExtendedString("metadatadriver failed; reason:"));
-      status = CDF_SS_DriverFailure;
+      status = PCDM_SS_DriverFailure;
     }
     catch (Standard_Failure) {
       CAUGHT(aStatusAssociatedText,TCollection_ExtendedString("driver failed; reason:"));
-      status = CDF_SS_Failure; 
+      status = PCDM_SS_Failure; 
     }
   }
 

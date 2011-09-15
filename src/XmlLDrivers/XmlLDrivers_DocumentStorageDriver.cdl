@@ -45,8 +45,6 @@ is
     AddNamespace      (me:mutable; thePrefix, theURI: AsciiString)
 	is protected;
 
-    IsError	      (me) returns Boolean from Standard;
-
     AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
 	returns ADriverTable from XmlMDF
 	is virtual; 
@@ -60,6 +58,5 @@ fields
     mySeqOfNS	:	SequenceOfNamespaceDef	 from XmlLDrivers;
     myCopyright :       ExtendedString           from TCollection;
     myRelocTable:	SRelocationTable	 from XmlObjMgt  is protected;
-    myIsError   :	Boolean			 from Standard is protected;
 
 end DocumentStorageDriver;

@@ -55,7 +55,9 @@ void BinLDrivers_DocumentStorageDriver::Write
                           (const Handle(CDM_Document)&       theDocument,
                            const TCollection_ExtendedString& theFileName)
 {
-  myIsError   = Standard_False;
+  SetIsError(Standard_False);
+  SetStoreStatus(PCDM_SS_OK);
+
   myMsgDriver = theDocument -> Application() -> MessageDriver();
   myMapUnsupported.Clear();
 
@@ -69,7 +71,8 @@ void BinLDrivers_DocumentStorageDriver::Write
   Handle(TDocStd_Document) aDoc =
     Handle(TDocStd_Document)::DownCast(theDocument);
   if (aDoc.IsNull()) {
-    myIsError = Standard_True;
+    SetIsError(Standard_True);
+    SetStoreStatus(PCDM_SS_Doc_IsNull);
   }
   else {
     // Open the file
@@ -84,8 +87,11 @@ void BinLDrivers_DocumentStorageDriver::Write
 //  1. Write info section (including types table)
     WriteInfoSection(theDocument, aFileName);
     myTypesMap.Clear();
-    if (myIsError)
-      return;
+    if (IsError())
+    {
+        SetStoreStatus(PCDM_SS_Info_Section_Error);
+        return;
+    }
 
 #if !defined(IRIX) // 10.10.2005
     ofstream anOS (aFileName.ToCString(), ios::in | ios::binary | ios::ate);
@@ -140,7 +146,9 @@ void BinLDrivers_DocumentStorageDriver::Write
 #ifdef DEB
         WriteMessage (aMethStr + "no objects written");
 #endif
-        myIsError = Standard_True;
+       SetIsError(Standard_True);
+       SetStoreStatus(PCDM_SS_No_Obj);
+
       }
       myRelocTable.Clear();
     }
@@ -156,7 +164,8 @@ void BinLDrivers_DocumentStorageDriver::Write
         anErrorStr + aMethStr + "Problem writing the file ";
       WriteMessage (aStr + theFileName);
 #endif
-      myIsError = Standard_True;
+      SetIsError(Standard_True);
+      SetStoreStatus(PCDM_SS_DiskWritingFailure);
     }
 
   }
@@ -259,16 +268,6 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
 }
 
 //=======================================================================
-//function : IsError
-//purpose  :
-//=======================================================================
-
-Standard_Boolean BinLDrivers_DocumentStorageDriver::IsError () const
-{
-  return myIsError;
-}
-
-//=======================================================================
 //function : AttributeDrivers
 //purpose  :
 //=======================================================================
@@ -364,7 +363,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
     WriteMessage (TCollection_ExtendedString("Error: Cannot open file ") +
                   theFileName);
 #endif
-    myIsError = Standard_True;
+    SetIsError(Standard_True);
     return;
   }
 
@@ -424,7 +423,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
     WriteMessage(TCollection_ExtendedString("Error: Problem writing header "
                                             "into file ") + theFileName);
 #endif
-    myIsError = Standard_True;
+    SetIsError(Standard_True);
   }
 #ifdef DEB
     const Standard_Integer aP = (Standard_Integer) aFileDriver.Tell(); 

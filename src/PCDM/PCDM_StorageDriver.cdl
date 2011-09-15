@@ -23,7 +23,15 @@ deferred class StorageDriver from PCDM inherits Writer from PCDM
     --          
     ---Category: persistent implemention of storage.
 
-uses Document from CDM, Document from PCDM, Data from Storage, ExtendedString from TCollection, Schema from Storage,SequenceOfExtendedString from TColStd, SequenceOfDocument from PCDM
+uses
+    Document from CDM,
+    Document from PCDM,
+    Data from Storage,
+    ExtendedString from TCollection,
+    Schema from Storage,
+    SequenceOfExtendedString from TColStd,
+    SequenceOfDocument from PCDM,
+    StoreStatus from PCDM
 
 raises NoSuchObject from Standard,DriverError from PCDM
 is
@@ -62,9 +70,17 @@ is
 
     GetFormat (me)
     returns ExtendedString from TCollection;
-
+    
+    IsError   (me) returns Boolean from Standard;
+    SetIsError(me : mutable; theIsError : Boolean);
+    
+    GetStoreStatus   (me) returns StoreStatus from PCDM;
+    SetStoreStatus(me : mutable; theStoreStatus : StoreStatus from PCDM);
+ 
 fields 
 
     myFormat : ExtendedString from TCollection;
+    myIsError: Boolean        from Standard;
+    myStoreStatus: StoreStatus from PCDM;
 
 end StorageDriver from PCDM;

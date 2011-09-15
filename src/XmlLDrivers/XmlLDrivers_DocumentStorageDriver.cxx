@@ -120,7 +120,7 @@ void XmlLDrivers_DocumentStorageDriver::Write
       ::take_time (0, " +++++ Fin formatting to XML : ", aMessageDriver);
 
     }else{
-      myIsError = Standard_True;
+      SetIsError (Standard_True);
       TCollection_ExtendedString aMsg =
         TCollection_ExtendedString("Error: the file ") + aFileName +
           " cannot be opened for writing";
@@ -143,7 +143,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
                                    XmlObjMgt_Element&           theElement,
 				   const TCollection_ExtendedString& theFileName)
 {
-  myIsError = Standard_False;
+  SetIsError(Standard_False);
   Handle(CDM_MessageDriver) aMessageDriver =
     theDocument -> Application() -> MessageDriver();
   // 1. Write header information
@@ -289,13 +289,13 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
     }
     catch (Standard_Failure)
     {
-      myIsError = Standard_True;
+      SetIsError (Standard_True);
       TCollection_ExtendedString anErrorString (Standard_Failure::Caught()->GetMessageString());
       aMessageDriver -> Write (anErrorString.ToExtString());
     }
   }
-  if (anObjNb <= 0 && myIsError == Standard_False) {
-    myIsError = Standard_True;
+  if (anObjNb <= 0 && IsError() == Standard_False) {
+    SetIsError (Standard_True);
     TCollection_ExtendedString anErrorString ("error occurred");
     aMessageDriver -> Write (anErrorString.ToExtString());
   }
@@ -311,7 +311,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   // 4. Write Shapes section
   if(WriteShapeSection(theElement))
     ::take_time (0, " +++ Fin DOM data for Shapes : ", aMessageDriver);
-  return myIsError;
+  return IsError();
 }
 
 //=======================================================================
@@ -351,16 +351,6 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
   cout << "First step failed" << endl;  // No MessageDriver available
 #endif
   return -1; // error
-}
-
-//=======================================================================
-//function : IsError
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean XmlLDrivers_DocumentStorageDriver::IsError () const
-{
-  return myIsError;
 }
 
 //=======================================================================

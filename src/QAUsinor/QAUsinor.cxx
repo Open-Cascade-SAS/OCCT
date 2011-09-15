@@ -117,11 +117,11 @@ static Standard_Integer OCC267 (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(TDocStd_Application) A;
   if (!DDocStd::Find(A)) return 1;
 
-  CDF_StoreStatus theStatus = A->SaveAs(D,path);
-  if (theStatus == CDF_SS_OK ) {
-    di << "OCC267 : CDF_StoreStatus = CDF_SS_OK" << "\n";
+  PCDM_StoreStatus theStatus = A->SaveAs(D,path);
+  if (theStatus == PCDM_SS_OK ) {
+    di << "OCC267 : PCDM_StoreStatus = PCDM_SS_OK" << "\n";
   } else {
-    di << "OCC267 : CDF_StoreStatus = Bad_Store_Status" << "\n";
+    di << "OCC267 : PCDM_StoreStatus = Bad_Store_Status" << "\n";
   }
 
   return 0;

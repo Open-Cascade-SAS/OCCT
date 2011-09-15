@@ -12,7 +12,7 @@ uses
     Document from CDM,  
     Manager from Resource, 
     MetaData from CDM,  
-    RetrievableStatus  from CDF,  
+    ReaderStatus  from PCDM,  
     GUID from Standard, 
     Reader from PCDM,  
     Writer from PCDM, 
@@ -101,18 +101,18 @@ is
 
     CanRetrieve(me: mutable; aFolder, aName: ExtendedString from TCollection)
     ---Purpose:
-    returns RetrievableStatus from CDF;
+    returns ReaderStatus from PCDM;
     
     CanRetrieve(me: mutable; aFolder, aName, aVersion: ExtendedString from TCollection)
     ---Purpose:
-    returns RetrievableStatus from CDF;
+    returns ReaderStatus from PCDM;
        
     Formats(me: mutable; Formats: out SequenceOfExtendedString from TColStd) 
     is deferred;
 ---Category: CurrentDocument methods.
 --           
 
-    GetRetrieveStatus(me) returns RetrievableStatus from CDF; 
+    GetRetrieveStatus(me) returns ReaderStatus from PCDM; 
     ---C++: inline     
     ---Purpose: Checks  status  after  Retrieve 
      
@@ -200,12 +200,12 @@ is
     is private;
 
     CanRetrieve(me: mutable; aMetaData: MetaData from CDM)
-    returns RetrievableStatus from CDF
+    returns ReaderStatus from PCDM
     is private;
 fields
 
     myDefaultFolder: ExtendedString from TCollection; 
-    myRetrievableStatus :  RetrievableStatus from CDF  is protected; 
+    myRetrievableStatus :  ReaderStatus from PCDM  is protected; 
     
 friends 
     class Session from CDF--,

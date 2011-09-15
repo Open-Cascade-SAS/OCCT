@@ -2003,8 +2003,8 @@ static int BUC60867(Draw_Interpretor& di, Standard_Integer argc, const char ** a
       di<<2;
       return 0;
     }
-    CDF_RetrievableStatus Result = A->Open(path,D);
-    if(Result==CDF_RS_OK){
+    PCDM_ReaderStatus Result = A->Open(path,D);
+    if(Result==PCDM_RS_OK){
       di<<0;
       return 0; 
     }

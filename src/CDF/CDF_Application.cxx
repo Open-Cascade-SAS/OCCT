@@ -15,11 +15,11 @@
 #include <CDF_Session.hxx>
 #include <CDF_Directory.hxx>
 #include <CDF_MetaDataDriver.hxx>
-#include <CDF_RetrievableStatus.hxx>
+#include <PCDM_ReaderStatus.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
-#include <PCDM_ReaderStatus.hxx>
+
 
 #include <Plugin.hxx>
 #include <UTL.hxx>
@@ -33,7 +33,7 @@
 //function : 
 //purpose  : 
 //=======================================================================
-CDF_Application::CDF_Application():myRetrievableStatus(CDF_RS_OK) {}
+CDF_Application::CDF_Application():myRetrievableStatus(PCDM_RS_OK) {}
 
 //=======================================================================
 //function : Load
@@ -128,7 +128,7 @@ Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString
 //function : CanRetrieve
 //purpose  : 
 //=======================================================================
-CDF_RetrievableStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString&  aName) {
+PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString&  aName) {
  TCollection_ExtendedString aVersion;
  return CanRetrieve(aFolder,aName,aVersion);
 }
@@ -137,16 +137,16 @@ CDF_RetrievableStatus CDF_Application::CanRetrieve(const TCollection_ExtendedStr
 //function : CanRetrieve
 //purpose  : 
 //=======================================================================
-CDF_RetrievableStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&  aFolder, const TCollection_ExtendedString&  aName, const TCollection_ExtendedString&  aVersion) {
+PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&  aFolder, const TCollection_ExtendedString&  aName, const TCollection_ExtendedString&  aVersion) {
   
 #ifdef DEB
   CDF_Timer theTimer;
 #endif
 
   if (!theMetaDataDriver->Find(aFolder,aName,aVersion))
-    return CDF_RS_UnknownDocument;
+    return PCDM_RS_UnknownDocument;
   else if (!theMetaDataDriver->HasReadPermission(aFolder,aName,aVersion))
-    return CDF_RS_PermissionDenied;
+    return PCDM_RS_PermissionDenied;
   else {
 #ifdef DEB
     theTimer.ShowAndRestart("theMetaDataDriver->Find: ");
@@ -160,7 +160,7 @@ CDF_RetrievableStatus CDF_Application::CanRetrieve(const TCollection_ExtendedStr
 
     if(theMetaData->IsRetrieved()) {
       return theMetaData->Document()->IsModified()
-	? CDF_RS_AlreadyRetrievedAndModified : CDF_RS_AlreadyRetrieved;
+	? PCDM_RS_AlreadyRetrievedAndModified : PCDM_RS_AlreadyRetrieved;
     }
     else {
       TCollection_ExtendedString theFileName=theMetaData->FileName();
@@ -172,12 +172,12 @@ CDF_RetrievableStatus CDF_Application::CanRetrieve(const TCollection_ExtendedStr
 	  theFormat=UTL::Value(Resources(),ResourceName);
 	}
 	else
-	  return CDF_RS_UnrecognizedFileFormat;
+	  return PCDM_RS_UnrecognizedFileFormat;
       }
-      if(!FindReaderFromFormat(theFormat)) return CDF_RS_NoDriver;
+      if(!FindReaderFromFormat(theFormat)) return PCDM_RS_NoDriver;
     }
   }
-  return CDF_RS_OK;
+  return PCDM_RS_OK;
   
 }
 
@@ -242,82 +242,24 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
 } 
 
 //=======================================================================
-//function : ConvertStatus
-//purpose  : 
-//=======================================================================
-static CDF_RetrievableStatus ConvertStatus(const PCDM_ReaderStatus theStatus) {
-  CDF_RetrievableStatus aStatus;
-  switch(theStatus) {
-  case PCDM_RS_OK:
-    aStatus=CDF_RS_OK;
-    break;
-  case PCDM_RS_NoDriver:
-    aStatus=CDF_RS_NoDriver;
-    break;
-  case PCDM_RS_UnknownFileDriver:
-    aStatus=CDF_RS_UnknownFileDriver;
-    break;
-  case PCDM_RS_OpenError:
-    aStatus=CDF_RS_OpenError;
-    break;
-  case PCDM_RS_NoVersion:
-    aStatus=CDF_RS_NoVersion;
-    break;
-  case PCDM_RS_NoSchema:
-    aStatus=CDF_RS_NoSchema;
-    break;
-  case PCDM_RS_NoDocument:
-    aStatus=CDF_RS_NoDocument;
-    break;
-  case PCDM_RS_ExtensionFailure:
-    aStatus=CDF_RS_ExtensionFailure;
-    break;
-  case PCDM_RS_WrongStreamMode:
-    aStatus=CDF_RS_WrongStreamMode;
-    break;
-  case PCDM_RS_FormatFailure:
-    aStatus=CDF_RS_FormatFailure;
-    break;
-  case PCDM_RS_TypeFailure:
-    aStatus=CDF_RS_TypeFailure;
-    break;
-  case PCDM_RS_TypeNotFoundInSchema:
-    aStatus=CDF_RS_TypeNotFoundInSchema;
-    break;
-  case PCDM_RS_UnrecognizedFileFormat:
-    aStatus=CDF_RS_UnrecognizedFileFormat;
-    break;
-  case PCDM_RS_MakeFailure:
-    aStatus=CDF_RS_MakeFailure;
-    break;
-  case PCDM_RS_PermissionDenied:
-    aStatus=CDF_RS_PermissionDenied;
-    break;
-  default:
-    aStatus=CDF_RS_DriverFailure;    
-  }
-  return aStatus;
-}
-
-//=======================================================================
 //function : Retrieve
 //purpose  : 
 //=======================================================================
 Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMetaData,const Standard_Boolean UseStorageConfiguration, const Standard_Boolean IsComponent) {
   
   Handle(CDM_Document) theDocumentToReturn;
-  myRetrievableStatus = CDF_RS_DriverFailure;
+  myRetrievableStatus = PCDM_RS_DriverFailure;
   if(IsComponent) {
     Standard_SStream aMsg;
     switch (CanRetrieve(aMetaData)) {
-    case CDF_RS_UnknownDocument: 
+    case PCDM_RS_UnknownDocument: 
       aMsg << "could not find the referenced document: " << aMetaData->Path() << "; not found."  <<(char)0 << endl;
-      myRetrievableStatus = CDF_RS_UnknownDocument;
+      myRetrievableStatus = PCDM_RS_UnknownDocument;
       Standard_Failure::Raise(aMsg);
       break;
-    case CDF_RS_PermissionDenied:      
+    case PCDM_RS_PermissionDenied:      
       aMsg << "Could not find the referenced document: " << aMetaData->Path() << "; permission denied. " <<(char)0 << endl;
-      myRetrievableStatus = CDF_RS_PermissionDenied;
+      myRetrievableStatus = PCDM_RS_PermissionDenied;
       Standard_Failure::Raise(aMsg);
       break;
     default:
@@ -326,9 +268,9 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
     
   }
   Standard_Boolean AlreadyRetrieved=aMetaData->IsRetrieved();
-  if(AlreadyRetrieved) myRetrievableStatus = CDF_RS_AlreadyRetrieved;
+  if(AlreadyRetrieved) myRetrievableStatus = PCDM_RS_AlreadyRetrieved;
   Standard_Boolean Modified=AlreadyRetrieved && aMetaData->Document()->IsModified();
-  if(Modified) myRetrievableStatus = CDF_RS_AlreadyRetrievedAndModified;
+  if(Modified) myRetrievableStatus = PCDM_RS_AlreadyRetrievedAndModified;
   if(!AlreadyRetrieved || Modified) {
 
     Handle(PCDM_Reader) theReader=Reader(aMetaData->FileName());
@@ -353,17 +295,14 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
       theReader->Read(aMetaData->FileName(),theDocument,this);
     } 
     catch (Standard_Failure) {
-      PCDM_ReaderStatus aStatus = theReader->GetStatus();
-      myRetrievableStatus = ConvertStatus(aStatus);
-      if(myRetrievableStatus  > CDF_RS_AlreadyRetrieved){
+      myRetrievableStatus = theReader->GetStatus();
+      if(myRetrievableStatus  > PCDM_RS_AlreadyRetrieved){
 	Standard_SStream aMsg;
 	aMsg << Standard_Failure::Caught() << endl;
 	Standard_Failure::Raise(aMsg);
       }	
     }
-    PCDM_ReaderStatus aStatus = theReader->GetStatus();
-    myRetrievableStatus = ConvertStatus(aStatus);
-    
+    myRetrievableStatus = theReader->GetStatus();    
     theDocument->SetMetaData(aMetaData);
 
     theDocumentToReturn=theDocument;
@@ -451,7 +390,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
   if(!FindReaderFromFormat(aFormat,thePluginId,UnfoundResourceName)) {
     Standard_SStream aMsg; 
     aMsg << "Could not found the item:" << UnfoundResourceName <<(char)0;
-    myRetrievableStatus = CDF_RS_WrongResource;
+    myRetrievableStatus = PCDM_RS_WrongResource;
     Standard_NoSuchObject::Raise(aMsg);
   } 
   Handle(PCDM_Reader) R;
@@ -460,7 +399,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
     R = Handle(PCDM_Reader)::DownCast(Plugin::Load(thePluginId));  
   } 
   catch (Standard_Failure) {
-    myRetrievableStatus = CDF_RS_WrongResource;
+    myRetrievableStatus = PCDM_RS_WrongResource;
     Standard_SStream aMsg;
     aMsg << Standard_Failure::Caught() << endl;
     Standard_Failure::Raise(aMsg);
@@ -470,7 +409,7 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
     RD->SetFormat(aFormat);
     return RD;
   } else 
-    myRetrievableStatus = CDF_RS_WrongResource;
+    myRetrievableStatus = PCDM_RS_WrongResource;
   return R;
 }
 
@@ -540,7 +479,7 @@ Standard_Boolean CDF_Application::FindReaderFromFormat(const TCollection_Extende
 //function : CanRetrieve
 //purpose  : 
 //=======================================================================
-CDF_RetrievableStatus CDF_Application::CanRetrieve(const Handle(CDM_MetaData)& aMetaData) {
+PCDM_ReaderStatus CDF_Application::CanRetrieve(const Handle(CDM_MetaData)& aMetaData) {
   if(aMetaData->HasVersion())
     return CanRetrieve(aMetaData->Folder(),aMetaData->Name(),aMetaData->Version());
   else

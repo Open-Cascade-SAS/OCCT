@@ -43,8 +43,8 @@ uses Manager                  from Resource,
      CString                  from Standard,
      ExtendedString           from TCollection,
      SequenceOfExtendedString from TColStd,
-     RetrievableStatus        from CDF,
-     StoreStatus              from CDF
+     ReaderStatus             from PCDM,
+     StoreStatus              from PCDM
 
 raises NoSuchObject from Standard
 
@@ -182,13 +182,13 @@ is
     	-- In order not to override a version of aDoc which
     	-- is already in memory, this method can be made
     	-- to depend on the value returned by IsInSession.
-    returns RetrievableStatus from CDF;
+    returns ReaderStatus from PCDM;
 
     SaveAs (me : mutable; aDoc : Document from TDocStd;
                           path : ExtendedString from TCollection)
     	---Purpose:  Save the  active document  in the file  <name> in the
     	--           path <path> ; o verwrites  the file  if  it already exists.
-    returns StoreStatus from CDF;
+    returns StoreStatus from PCDM;
     
     
     Save (me : mutable; aDoc : Document from TDocStd)
@@ -196,7 +196,7 @@ is
         -- Exceptions:
     	--  Standard_NotImplemented if the document
     	-- was not retrieved in the applicative session by using Open. 
-    returns StoreStatus from CDF;
+    returns StoreStatus from PCDM;
     
     SaveAs (me : mutable; aDoc : Document from TDocStd;
                           path : ExtendedString from TCollection;
@@ -204,12 +204,12 @@ is
     	---Purpose:  Save the  active document  in the file  <name> in the
     	--           path <path>  .  overwrite  the file  if  it
     	--          already exist. 
-    returns StoreStatus from CDF;    
+    returns StoreStatus from PCDM;    
     
     Save (me : mutable; aDoc : Document from TDocStd; 
     	    	    	theStatusMessage:  out  ExtendedString from TCollection)
     	---Purpose: Save the document overwriting the previous file 
-    returns StoreStatus from CDF;
+    returns StoreStatus from PCDM;
     
     --Exit (me)
     --  to quit the application. the applicative documents must be closed before.
@@ -235,4 +235,3 @@ friends
     class Document from TDocStd
 
 end Application;
-

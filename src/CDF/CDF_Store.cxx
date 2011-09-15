@@ -2,7 +2,7 @@
 #include <CDF_Store.ixx>
 #include <CDF_Session.hxx>
 #include <CDF_Application.hxx>
-#include <CDF_StoreStatus.hxx>
+#include <PCDM_StoreStatus.hxx>
 #include <CDF_StoreSetNameStatus.hxx>
 #include <Standard_ProgramError.hxx>
 #include <CDF_MetaDataDriver.hxx>
@@ -160,7 +160,7 @@ void CDF_Store::Realize() {
   Handle(CDM_MetaData) m;
   myText = "";
   myStatus = myList->Store(m,myText);
-  if(myStatus==CDF_SS_OK) myPath = m->Path();
+  if(myStatus==PCDM_SS_OK) myPath = m->Path();
 }
 Standard_ExtString CDF_Store::Path() const {
   return myPath.ToExtString();
@@ -280,7 +280,7 @@ CDF_SubComponentStatus CDF_Store::SubComponentStatus(const Standard_ExtString aP
 
 
 
-CDF_StoreStatus CDF_Store::StoreStatus() const {
+PCDM_StoreStatus CDF_Store::StoreStatus() const {
   return myStatus;
 }
 Standard_ExtString CDF_Store::AssociatedStatusText() const {

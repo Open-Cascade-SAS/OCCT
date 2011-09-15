@@ -22,21 +22,7 @@ is
     
     deferred class Application;
 
-
----Category: Store in Database related classes.
---           
     private class StoreList;
-
-    enumeration StoreStatus is  
-    SS_OK,  
-    SS_DriverFailure,  
-    SS_WriteFailure,  
-    SS_Failure
-    end StoreStatus from CDF;
-
-
----Category: Retrieve from Database related classes.
---           
 
 ---Category: API for Store and retrieve
 --           
@@ -46,30 +32,6 @@ is
     
     enumeration TryStoreStatus is TS_OK,TS_NoCurrentDocument,TS_NoDriver,TS_NoSubComponentDriver
     end TryStoreStatus;
-    
-    enumeration RetrievableStatus is  
-    RS_OK, 
-    RS_AlreadyRetrievedAndModified, 
-    RS_AlreadyRetrieved, 
-    RS_UnknownDocument, 
-    RS_NoDriver, 
-    RS_UnknownFileDriver, 
-    RS_WrongResource,
-    RS_OpenError,  
-    RS_NoVersion, 
-    RS_NoModel, 
-    RS_NoSchema, 
-    RS_NoDocument, 
-    RS_ExtensionFailure,
-    RS_WrongStreamMode, 
-    RS_FormatFailure, 
-    RS_TypeFailure,
-    RS_TypeNotFoundInSchema, 
-    RS_UnrecognizedFileFormat, 
-    RS_MakeFailure,	
-    RS_PermissionDenied, 
-    RS_DriverFailure
-    end RetrievableStatus;
 
     enumeration SubComponentStatus is SCS_Consistent, SCS_Unconsistent,SCS_Stored,SCS_Modified
     end SubComponentStatus;
@@ -105,4 +67,3 @@ is
     returns Boolean from Standard;
 
 end CDF;
-

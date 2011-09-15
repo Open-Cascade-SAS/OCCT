@@ -788,7 +788,7 @@ static Standard_Integer OCC166 (Draw_Interpretor& di, Standard_Integer /*argc*/,
 
 #include <TDocStd_Document.hxx>
 #include <DDocStd.hxx>
-#include <CDF_StoreStatus.hxx>
+#include <PCDM_StoreStatus.hxx>
 #include <TDocStd_Application.hxx>
 
 static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, const char ** a)
@@ -809,18 +809,18 @@ static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, 
     di << "this document has never been saved" << "\n";
     return 0;
   }
-  CDF_StoreStatus theStatus = A->Save(D, theStatusMessage);
-  if (theStatus != CDF_SS_OK ) {
+  PCDM_StoreStatus theStatus = A->Save(D, theStatusMessage);
+  if (theStatus != PCDM_SS_OK ) {
     switch ( theStatus ) {
-    case CDF_SS_DriverFailure: {
+    case PCDM_SS_DriverFailure: {
       di << " Could not store , no driver found to make it " <<"\n" ;
       break ;
     }
-    case CDF_SS_WriteFailure: {
+    case PCDM_SS_WriteFailure: {
       di << " Write access failure " << "\n" ;
       break;
     }
-    case CDF_SS_Failure: {
+    case PCDM_SS_Failure: {
       di << " Write failure " << "\n" ;
     }
     }
@@ -844,18 +844,18 @@ static Standard_Integer OCC381_SaveAs (Draw_Interpretor& di, Standard_Integer nb
   if (!DDocStd::Find(A)) return 1;
 
   TCollection_ExtendedString theStatusMessage;
-  CDF_StoreStatus theStatus = A->SaveAs(D,path, theStatusMessage);
-  if (theStatus != CDF_SS_OK ) {
+  PCDM_StoreStatus theStatus = A->SaveAs(D,path, theStatusMessage);
+  if (theStatus != PCDM_SS_OK ) {
     switch ( theStatus ) {
-    case CDF_SS_DriverFailure: {
+    case PCDM_SS_DriverFailure: {
       di << " Could not store , no driver found to make it " <<"\n" ;
       break ;
     }
-    case CDF_SS_WriteFailure: {
+    case PCDM_SS_WriteFailure: {
       di << " Write access failure " << "\n" ;
       break;
     }
-    case CDF_SS_Failure: {
+    case PCDM_SS_Failure: {
       di << " Write failure " << "\n" ;
     }
     }
@@ -1104,7 +1104,7 @@ static Standard_Integer OCC363 (Draw_Interpretor& di, Standard_Integer argc, con
     // 3. Open document
     TCollection_ExtendedString name(argv[2]);
     Handle(TDocStd_Document) Doc;
-    if(App->Open(name, Doc) != CDF_RS_OK) { di << "Error OCC363 : document was not opened successfully\n"; return 1;}
+    if(App->Open(name, Doc) != PCDM_RS_OK) { di << "Error OCC363 : document was not opened successfully\n"; return 1;}
     Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(Doc);
     TDataStd_Name::Set(Doc->GetData()->Root(),argv[1]);
     Draw::Set(argv[1],DD);
@@ -4218,8 +4218,8 @@ int TestOpenSave(TCollection_ExtendedString aFile1,
   Handle(TDF_Reference) ref = TDF_Reference::Set(doc_std->Main(), Lstd3);
   // 
   // Save
-  //if (app->SaveAs(doc_std, "W:\\doc.std") != CDF_SS_OK)
-  if (app->SaveAs(doc_std, aFile1) != CDF_SS_OK)
+  //if (app->SaveAs(doc_std, "W:\\doc.std") != PCDM_SS_OK)
+  if (app->SaveAs(doc_std, aFile1) != PCDM_SS_OK)
     return 1;
   intlist.Nullify();
   dbllist.Nullify();
@@ -4230,8 +4230,8 @@ int TestOpenSave(TCollection_ExtendedString aFile1,
   ref.Nullify();
   app->Close(doc_std);
   doc_std.Nullify();
-  //if (app->Open("W:\\doc.std", doc_std_open) != CDF_RS_OK)
-  if (app->Open(aFile1, doc_std_open) != CDF_RS_OK)
+  //if (app->Open("W:\\doc.std", doc_std_open) != PCDM_RS_OK)
+  if (app->Open(aFile1, doc_std_open) != PCDM_RS_OK)
     return 2;
   if (!doc_std_open->Main().IsAttribute(TDataStd_Tick::GetID()))
     return 3;
@@ -4364,15 +4364,15 @@ int TestOpenSave(TCollection_ExtendedString aFile1,
   ref = TDF_Reference::Set(doc_xml->Main(), Lstd3);
   // 
   // Save
-  //if (app->SaveAs(doc_xml, "W:\\doc.xml") != CDF_SS_OK)
-  if (app->SaveAs(doc_xml, aFile2) != CDF_SS_OK)
+  //if (app->SaveAs(doc_xml, "W:\\doc.xml") != PCDM_SS_OK)
+  if (app->SaveAs(doc_xml, aFile2) != PCDM_SS_OK)
     return 1;
   intlist.Nullify();
   ref.Nullify();
   app->Close(doc_xml);
   doc_xml.Nullify();
-  //if (app->Open("W:\\doc.xml", doc_xml_open) != CDF_RS_OK)
-  if (app->Open(aFile2, doc_xml_open) != CDF_RS_OK)
+  //if (app->Open("W:\\doc.xml", doc_xml_open) != PCDM_RS_OK)
+  if (app->Open(aFile2, doc_xml_open) != PCDM_RS_OK)
     return 2;
   if (!doc_xml_open->Main().IsAttribute(TDataStd_Tick::GetID()))
     return 3;
@@ -4525,15 +4525,15 @@ int TestOpenSave(TCollection_ExtendedString aFile1,
   ref = TDF_Reference::Set(doc_bin->Main(), Lstd3);
   // 
   // Save
-  //if (app->SaveAs(doc_bin, "W:\\doc.cbf") != CDF_SS_OK)
-  if (app->SaveAs(doc_bin, aFile3) != CDF_SS_OK)
+  //if (app->SaveAs(doc_bin, "W:\\doc.cbf") != PCDM_SS_OK)
+  if (app->SaveAs(doc_bin, aFile3) != PCDM_SS_OK)
     return 1;
   intlist.Nullify();
   ref.Nullify();
   app->Close(doc_bin);
   doc_bin.Nullify();
-  //if (app->Open("W:\\doc.cbf", doc_bin_open) != CDF_RS_OK)
-  if (app->Open(aFile3, doc_bin_open) != CDF_RS_OK)
+  //if (app->Open("W:\\doc.cbf", doc_bin_open) != PCDM_RS_OK)
+  if (app->Open(aFile3, doc_bin_open) != PCDM_RS_OK)
     return 2;
   if (!doc_bin_open->Main().IsAttribute(TDataStd_Tick::GetID()))
     return 3;

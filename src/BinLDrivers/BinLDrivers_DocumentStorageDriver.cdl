@@ -39,8 +39,6 @@ is
         is redefined virtual;
         ---Purpose: Write <theDocument> to the binary file <theFileName>
 
-    IsError           (me) returns Boolean from Standard;
-
     AttributeDrivers  (me : mutable; theMsgDriver: MessageDriver from CDM)
         returns ADriverTable from BinMDF
         is virtual;
@@ -93,7 +91,6 @@ fields
     myPAtt      :       Persistent              from BinObjMgt;
     myDrivers   :       ADriverTable            from BinMDF    is protected;
     myRelocTable:       SRelocationTable        from BinObjMgt is protected;
-    myIsError   :       Boolean                 from Standard  is protected;
     myMsgDriver :       MessageDriver           from CDM;
 
     -- labels not having writable attributes on it-self and on children

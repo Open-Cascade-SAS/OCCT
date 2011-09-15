@@ -12,7 +12,7 @@ uses Document from CDM,
      SubComponentStatus from CDF,
      ExtendedString from TCollection,
      StoreList from CDF,
-     StoreStatus from CDF,
+     StoreStatus from PCDM,
      ExtendedString from TCollection
     
 is
@@ -148,7 +148,7 @@ is
 --           be used just after Realize  or Import --  method to know if
 --           thes methods worked correctly, and if not why.
 
-    StoreStatus(me) returns StoreStatus from CDF;
+    StoreStatus(me) returns StoreStatus from PCDM;
     AssociatedStatusText(me) returns ExtString from Standard;
 
     ---Category: Private methods
@@ -181,7 +181,7 @@ fields
 
     myPath: ExtendedString from TCollection;
     myText: ExtendedString from TCollection;
-    myStatus: StoreStatus from CDF;
+    myStatus: StoreStatus from PCDM;
     
 
 end Store from CDF;

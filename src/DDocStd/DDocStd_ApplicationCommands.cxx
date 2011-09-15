@@ -162,38 +162,40 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
       di <<"document " << insession << "  is already in session" << "\n";
       return 0;
     }
-    CDF_RetrievableStatus theStatus = A->Open(path,D);
-    if (theStatus == CDF_RS_OK && !D.IsNull()) {
+    PCDM_ReaderStatus theStatus = A->Open(path,D);
+    if (theStatus == PCDM_RS_OK && !D.IsNull()) {
       Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(D);
       TDataStd_Name::Set(D->GetData()->Root(),a[2]);
       Draw::Set(a[2],DD);
       return 0; 
     } else {
       switch ( theStatus ) {
-      case CDF_RS_AlreadyRetrieved: 
-      case CDF_RS_AlreadyRetrievedAndModified: {
+      case PCDM_RS_AlreadyRetrieved: 
+      case PCDM_RS_AlreadyRetrievedAndModified: {
 	di << " already retrieved " << "\n" ;  
 	break;
       }
-      case CDF_RS_NoDriver: {
+      case PCDM_RS_NoDriver: {
 	di << " could not retrieve , no Driver to make it " <<"\n" ;
 	break ;
       }
-      case CDF_RS_UnknownDocument:
-      case CDF_RS_NoModel: {
+      case PCDM_RS_UnknownDocument:
+      case PCDM_RS_NoModel: {
 	di << " could not retrieve , Unknown Document or No Model " <<"\n";
 	break ; 
       }
-      case CDF_RS_TypeNotFoundInSchema:
-      case CDF_RS_UnrecognizedFileFormat: {
+      case PCDM_RS_TypeNotFoundInSchema:
+      case PCDM_RS_UnrecognizedFileFormat: {
 	di << " could not retrieve , Type not found or Unrecognized File Format" <<"\n";
 	break ;
       }
-      case CDF_RS_PermissionDenied: {
+      case PCDM_RS_PermissionDenied: {
 	di << " could not retrieve , permission denied " << "\n" ;  
 	break;
       }
-	
+      default:
+	di << " could not retrieve " << "\n" ;  
+	break;
       }
       di << "DDocStd_Open : Error" << "\n";
     }	
@@ -241,18 +243,18 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     TCollection_ExtendedString path (a[2]); 
     Handle(TDocStd_Application) A;
     if (!DDocStd::Find(A)) return 1;
-    CDF_StoreStatus theStatus = A->SaveAs(D,path);
-    if (theStatus != CDF_SS_OK ) {
+    PCDM_StoreStatus theStatus = A->SaveAs(D,path);
+    if (theStatus != PCDM_SS_OK ) {
       switch ( theStatus ) {
-      case CDF_SS_DriverFailure: {
+      case PCDM_SS_DriverFailure: {
 	di << " could not store , no driver found to make it " <<"\n" ;
 	break ;
       }
-      case CDF_SS_WriteFailure: {
+      case PCDM_SS_WriteFailure: {
 	di << " Write access failure " << "\n" ;  
 	break;
       }
-      case CDF_SS_Failure: {
+      case PCDM_SS_Failure: {
 	di << " Write failure " << "\n" ;  
       }
       }

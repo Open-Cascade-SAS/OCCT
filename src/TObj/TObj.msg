@@ -52,6 +52,21 @@
 
 .TObj_Appl_SWriteFailure
   Error saving document %s : write failure
+  
+.TObj_Appl_SFailure
+  Error saving document %s : general failure of persistence driver
+  
+.TObj_Appl_SDiskWritingFailure
+  Error saving document %s : possibly the disk is full or other disk write problem occurred
+  
+.TObj_Appl_SDocIsNull
+  Error saving document %s : No document to save
+  
+.TObj_Appl_SNoObj
+ Error saving document %s : No objects written
+ 
+.TObj_Appl_SInfoSectionError
+ Error saving document %s : Write info section failure
 
 .TObj_Appl_SUnknownFailure
   Error saving document %s : unknown failure

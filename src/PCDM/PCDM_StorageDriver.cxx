@@ -133,3 +133,40 @@ TCollection_ExtendedString PCDM_StorageDriver::GetFormat () const
 {
   return myFormat;
 }
+
+//=======================================================================
+//function : IsError
+//purpose  :
+//=======================================================================
+
+Standard_Boolean PCDM_StorageDriver::IsError () const 
+{
+  return myIsError;
+}
+
+//=======================================================================
+//function : SetIsError
+//purpose  :
+//=======================================================================
+void PCDM_StorageDriver::SetIsError(const Standard_Boolean theIsError)
+{
+    myIsError = theIsError;
+}
+
+//=======================================================================
+//function : GetStoreStatus
+//purpose  :
+//=======================================================================
+
+PCDM_StoreStatus PCDM_StorageDriver::GetStoreStatus () const 
+{
+  return myStoreStatus;
+}
+//=======================================================================
+//function : SetStoreStatus
+//purpose  :
+//=======================================================================
+void PCDM_StorageDriver::SetStoreStatus(const PCDM_StoreStatus theStoreStatus)
+{
+    myStoreStatus = theStoreStatus;
+}

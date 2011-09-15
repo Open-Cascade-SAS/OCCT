@@ -174,8 +174,8 @@ Standard_Integer TDocStd_Application::IsInSession (const TCollection_ExtendedStr
 //purpose  :
 //=======================================================================
 
-CDF_RetrievableStatus TDocStd_Application::Open(const TCollection_ExtendedString& path,Handle(TDocStd_Document)& aDoc) {
-  CDF_RetrievableStatus status = CDF_RS_DriverFailure;
+PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString& path,Handle(TDocStd_Document)& aDoc) {
+  PCDM_ReaderStatus status = PCDM_RS_DriverFailure;
   TDocStd_PathParser tool (path);
   TCollection_ExtendedString directory = tool.Trek();
   TCollection_ExtendedString file = tool.Name();
@@ -183,7 +183,7 @@ CDF_RetrievableStatus TDocStd_Application::Open(const TCollection_ExtendedString
   file+=tool.Extension();
 #ifdef BUC60867
   status = CanRetrieve(directory,file);
-  if (status != CDF_RS_OK) return status;
+  if (status != PCDM_RS_OK) return status;
 #endif
   try {
     OCC_CATCH_SIGNALS
@@ -215,7 +215,7 @@ CDF_RetrievableStatus TDocStd_Application::Open(const TCollection_ExtendedString
 //purpose  :
 //=======================================================================
 
-CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,const TCollection_ExtendedString& path) {
+PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,const TCollection_ExtendedString& path) {
   TDocStd_PathParser tool (path);
   TCollection_ExtendedString directory = tool.Trek();
   TCollection_ExtendedString file = tool.Name();
@@ -246,7 +246,7 @@ CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,co
       MessageDriver()->Write(aString.ToExtString());
     }
   }
-  if(storer.StoreStatus() == CDF_SS_OK)
+  if(storer.StoreStatus() == PCDM_SS_OK)
     D->SetSaved();
 #ifdef BUC60867
 #ifdef DEB
@@ -261,9 +261,9 @@ CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,co
 //purpose  :
 //=======================================================================
 
-CDF_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
+PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
 #ifdef BUC60867
-  CDF_StoreStatus status = CDF_SS_OK;
+  PCDM_StoreStatus status = PCDM_SS_OK;
 #endif
   if (D->IsSaved()) {
     CDF_Store storer (D);
@@ -278,18 +278,17 @@ CDF_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
         MessageDriver()->Write(aString.ToExtString());
       }
     }
-    if(storer.StoreStatus() == CDF_SS_OK)
+    if(storer.StoreStatus() == PCDM_SS_OK)
       D->SetSaved();
 #ifdef BUC60867
     status = storer.StoreStatus();
 #endif
   } else {
-//    Standard_DomainError::Raise ("TDocStd_Application::Save document is not already saved");
     if(!MessageDriver().IsNull()) {
-      TCollection_ExtendedString aMsg("Document is already saved");
+      TCollection_ExtendedString aMsg("Document has not been saved yet");
       MessageDriver()->Write(aMsg.ToExtString());
     }
-    status = CDF_SS_Failure;
+    status = PCDM_SS_Failure;
   }
 #ifdef BUC60867
 #ifdef DEB
@@ -330,12 +329,12 @@ CDF_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
 //purpose  : 
 //=======================================================================
 
-CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,
+PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,
 					      const TCollection_ExtendedString& path,
 					      TCollection_ExtendedString& theStatusMessage) 
 { 
   TDocStd_PathParser tool (path);
-  CDF_StoreStatus aStatus = CDF_SS_Failure;
+  PCDM_StoreStatus aStatus = PCDM_SS_Failure;
   TCollection_ExtendedString directory = tool.Trek();   
   TCollection_ExtendedString file = tool.Name();   
   file+=".";   
@@ -355,7 +354,7 @@ CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,
         MessageDriver()->Write(aString.ToExtString());
       }
     }
-    if(storer.StoreStatus() == CDF_SS_OK)
+    if(storer.StoreStatus() == PCDM_SS_OK)
       D->SetSaved();
     theStatusMessage = storer.AssociatedStatusText();
     aStatus = storer.StoreStatus();
@@ -363,7 +362,7 @@ CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,
     theStatusMessage =
       TCollection_ExtendedString("TDocStd_Application::SaveAs"
                                  ": No such directory ") + directory;
-    aStatus = CDF_SS_Failure;
+    aStatus = PCDM_SS_Failure;
   }
   return aStatus;
 }
@@ -373,10 +372,10 @@ CDF_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,
 //purpose  : 
 //=======================================================================
 
-CDF_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D,
+PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D,
 					   TCollection_ExtendedString& theStatusMessage)
 {  
-  CDF_StoreStatus status = CDF_SS_OK;
+  PCDM_StoreStatus status = PCDM_SS_OK;
   if (D->IsSaved()) {  
     CDF_Store storer (D);  
     try {
@@ -390,14 +389,13 @@ CDF_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D,
         MessageDriver()->Write(aString.ToExtString());
       }
     }
-    if(storer.StoreStatus() == CDF_SS_OK)
+    if(storer.StoreStatus() == PCDM_SS_OK)
       D->SetSaved();
     status = storer.StoreStatus();
     theStatusMessage = storer.AssociatedStatusText();
   } else {
-    Standard_DomainError::Raise ("TDocStd_Application::Save"
-                                 " document is not already saved");
-    theStatusMessage = "TDocStd_Application::the document is not already saved";
+    theStatusMessage = "TDocStd_Application::the document has not been saved yet";
+    status = PCDM_SS_Failure;
   }
   return status;
 }

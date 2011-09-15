@@ -29,9 +29,25 @@ is
 	    RS_UnrecognizedFileFormat, 
 	    RS_MakeFailure,		     
 	    RS_PermissionDenied, 
-	    RS_DriverFailure
+	    RS_DriverFailure,
+	    RS_AlreadyRetrievedAndModified,
+	    RS_AlreadyRetrieved,
+	    RS_UnknownDocument,
+	    RS_WrongResource,
+	    RS_NoModel
     end ReaderStatus;
-
+    
+    enumeration StoreStatus is
+	    SS_OK,
+	    SS_DriverFailure,
+	    SS_WriteFailure,
+	    SS_Failure,
+	    SS_DiskWritingFailure,
+	    SS_UserRightsFailure,
+	    SS_Doc_IsNull,
+	    SS_No_Obj,
+	    SS_Info_Section_Error
+    end StoreStatus;
     
     deferred class Document;
     class SequenceOfDocument instantiates Sequence from TCollection(Document from PCDM);
@@ -84,4 +100,3 @@ is
     returns TypeOfFileDriver from PCDM
     is private;
 end PCDM;
-

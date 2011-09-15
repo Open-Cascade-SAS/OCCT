@@ -73,19 +73,33 @@ Standard_Boolean TObj_Application::SaveDocument
   myIsError = Standard_False;
   TCollection_ExtendedString aPath ((const Standard_CString)theTargetFile);
 
-  CDF_StoreStatus aStatus = SaveAs (theSourceDoc, aPath);
-  myIsError = aStatus != CDF_SS_OK;
+  PCDM_StoreStatus aStatus = SaveAs (theSourceDoc, aPath);
+  myIsError = aStatus != PCDM_SS_OK;
   if (myIsError)
   {
     switch (aStatus)
     {
-    case CDF_SS_DriverFailure:
+    case PCDM_SS_DriverFailure:
       ErrorMessage (Message_Msg("TObj_Appl_SDriverFailure") << aPath);
       break;
-    case CDF_SS_WriteFailure:
+    case PCDM_SS_WriteFailure:
       ErrorMessage (Message_Msg("TObj_Appl_SWriteFailure") << aPath);
       break;
-    case CDF_SS_Failure:
+    case PCDM_SS_Failure:
+      ErrorMessage (Message_Msg("TObj_Appl_SFailure") << aPath);
+      break;
+    case PCDM_SS_DiskWritingFailure:
+      ErrorMessage (Message_Msg("TObj_Appl_SDiskWritingFailure") << aPath);
+      break;
+    case PCDM_SS_Doc_IsNull:
+      ErrorMessage (Message_Msg("TObj_Appl_SDocIsNull") << aPath);
+      break;
+    case PCDM_SS_No_Obj:
+      ErrorMessage (Message_Msg("TObj_Appl_SNoObj") << aPath);
+      break;
+    case PCDM_SS_Info_Section_Error:
+      ErrorMessage (Message_Msg("TObj_Appl_SInfoSectionError") << aPath);
+      break;
     default:
       ErrorMessage (Message_Msg("TObj_Appl_SUnknownFailure") << aPath);
       break;
@@ -109,7 +123,7 @@ Standard_Boolean TObj_Application::LoadDocument
   myIsError = Standard_False;
   TCollection_ExtendedString aPath ((const Standard_CString)theSourceFile);
 
-  CDF_RetrievableStatus aStatus = (CDF_RetrievableStatus) -1;
+  PCDM_ReaderStatus aStatus = (PCDM_ReaderStatus) -1;
   {
     try
     {
@@ -123,54 +137,54 @@ Standard_Boolean TObj_Application::LoadDocument
 #endif
     }
   }
-  myIsError = aStatus != CDF_RS_OK;
+  myIsError = aStatus != PCDM_RS_OK;
   if (myIsError)
   {
     switch (aStatus)
     {
-    case CDF_RS_UnknownDocument:
+    case PCDM_RS_UnknownDocument:
       ErrorMessage (Message_Msg("TObj_Appl_RUnknownDocument") << aPath);
       break;
-    case CDF_RS_AlreadyRetrieved:
+    case PCDM_RS_AlreadyRetrieved:
       ErrorMessage (Message_Msg("TObj_Appl_RAlreadyRetrieved") << aPath);
       break;
-    case CDF_RS_AlreadyRetrievedAndModified:
+    case PCDM_RS_AlreadyRetrievedAndModified:
       ErrorMessage (Message_Msg("TObj_Appl_RAlreadyRetrievedAndModified") << aPath);
       break;
-    case CDF_RS_NoDriver:
+    case PCDM_RS_NoDriver:
       ErrorMessage (Message_Msg("TObj_Appl_RNoDriver") << aPath);
       break;
-    case CDF_RS_UnknownFileDriver:
+    case PCDM_RS_UnknownFileDriver:
       ErrorMessage (Message_Msg("TObj_Appl_RNoDriver") << aPath);
       break;
-    case CDF_RS_OpenError:
+    case PCDM_RS_OpenError:
       ErrorMessage (Message_Msg("TObj_Appl_ROpenError") << aPath);
       break;
-    case CDF_RS_NoVersion:
+    case PCDM_RS_NoVersion:
       ErrorMessage (Message_Msg("TObj_Appl_RNoVersion") << aPath);
       break;
-    case CDF_RS_NoModel:
+    case PCDM_RS_NoModel:
       ErrorMessage (Message_Msg("TObj_Appl_RNoModel") << aPath);
       break;
-    case CDF_RS_NoDocument:
+    case PCDM_RS_NoDocument:
       ErrorMessage (Message_Msg("TObj_Appl_RNoDocument") << aPath);
       break;
-    case CDF_RS_FormatFailure:
+    case PCDM_RS_FormatFailure:
       ErrorMessage (Message_Msg("TObj_Appl_RFormatFailure") << aPath);
       break;
-    case CDF_RS_TypeNotFoundInSchema:
+    case PCDM_RS_TypeNotFoundInSchema:
       ErrorMessage (Message_Msg("TObj_Appl_RTypeNotFound") << aPath);
       break;
-    case CDF_RS_UnrecognizedFileFormat:
+    case PCDM_RS_UnrecognizedFileFormat:
       ErrorMessage (Message_Msg("TObj_Appl_RBadFileFormat") << aPath);
       break;
-    case CDF_RS_MakeFailure:
+    case PCDM_RS_MakeFailure:
       ErrorMessage (Message_Msg("TObj_Appl_RMakeFailure") << aPath);
       break;
-    case CDF_RS_PermissionDenied:
+    case PCDM_RS_PermissionDenied:
       ErrorMessage (Message_Msg("TObj_Appl_RPermissionDenied") << aPath);
       break;
-    case CDF_RS_DriverFailure:
+    case PCDM_RS_DriverFailure:
       ErrorMessage (Message_Msg("TObj_Appl_RDriverFailure") << aPath);
       break;
     case -1:

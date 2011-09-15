@@ -6,7 +6,15 @@
 
 private class StoreList from CDF inherits Transient from Standard
 
-uses  Document from CDM, StackOfDocument from CDM, MapOfDocument from CDM, MapIteratorOfMapOfDocument from CDM, StackIteratorOfStackOfDocument from CDM,MetaData from CDM, ExtendedString from TCollection, StoreStatus from CDF
+uses
+    Document from CDM,
+    StackOfDocument from CDM,
+    MapOfDocument from CDM,
+    MapIteratorOfMapOfDocument from CDM,
+    StackIteratorOfStackOfDocument from CDM,
+    MetaData from CDM,
+    ExtendedString from TCollection,
+    StoreStatus from PCDM
 
 raises NoSuchObject from Standard
 is
@@ -19,7 +27,7 @@ is
     
     Store(me: mutable; aMetaData: out MetaData from CDM;
 		       aStatusAssociatedText: out ExtendedString from TCollection)
-    returns StoreStatus from CDF
+    returns StoreStatus from PCDM
     ---Purpose: stores each object of the storelist in the reverse
     --          order of which they had been added.
     raises NoSuchObject from Standard;

@@ -10,7 +10,7 @@
 // !       szy ! Creation                                !26-06-2003! 5.0-20-%L%!
 // +---------------------------------------------------------------------------+
 
-inline CDF_RetrievableStatus CDF_Application::GetRetrieveStatus() const {
+inline PCDM_ReaderStatus CDF_Application::GetRetrieveStatus() const {
   return myRetrievableStatus;
 }
 // @@SDM: begin
