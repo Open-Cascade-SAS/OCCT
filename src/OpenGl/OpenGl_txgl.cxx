@@ -177,70 +177,83 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
 #ifndef WNT
 
     GLCONTEXT ctx;
-    static int sdesc[11];
     Colormap cmap;
     XVisualInfo* vis=NULL;
     /*    XVisualInfo tmplt;*/
     XSetWindowAttributes cwa;
     XColor color;
-    /*    Tint i, n, nret;*/
-    Tint n;
-    Tint scr;
     int value;
     char string[CALL_DEF_STRING_LENGTH];
-    int DBuffer = True;
-    XWindowAttributes wattr;
-
     WINDOW win;
 
-    unsigned long mask = 0;
-    /*    unsigned long background_pixel = 0;*/
-
-    if (call_util_osd_getenv("CALL_OPENGL_NO_DBF", string, CALL_DEF_STRING_LENGTH))
-      DBuffer    = False;
+    int DBuffer = (call_util_osd_getenv ("CALL_OPENGL_NO_DBF", string, CALL_DEF_STRING_LENGTH)) ? False : True;
 
     if (call_util_osd_getenv("JWR_PIXMAP_DB", string, CALL_DEF_STRING_LENGTH))
       TelSetPixmapDB(1);
 
-    XGetWindowAttributes( disp , par , &wattr );
-
-    n = 0;
-    sdesc[n] = GLX_RGBA;n++;
-
-    sdesc[n] = GLX_DEPTH_SIZE;n++;
-    sdesc[n] = 1;n++;
-
-    sdesc[n] = GLX_RED_SIZE;n++;
-    sdesc[n] = (wattr.depth <= 8) ? 0 : 1;n++;
-
-    sdesc[n] = GLX_GREEN_SIZE;n++;
-    sdesc[n] = (wattr.depth <= 8) ? 0 : 1;n++;
-
-    sdesc[n] = GLX_BLUE_SIZE;n++;
-    sdesc[n] = (wattr.depth <= 8) ? 0 : 1;n++;
-
-    if (DBuffer) {
-      sdesc[n] = GLX_DOUBLEBUFFER;n++;
-    }
-
-    sdesc[n] = None;n++;
-
-    scr = DefaultScreen( disp );
+    XWindowAttributes wattr;
+    XGetWindowAttributes (disp, par, &wattr);
+    Tint scr = DefaultScreen (disp);
 
 #if defined(__linux) || defined(Linux)
     {
-      XVisualInfo vinfo;
-      int ninfo;
-      unsigned long vmask = VisualIDMask |  VisualScreenMask;
-      vinfo.visualid = wattr.visual->visualid;
-      vinfo.screen = DefaultScreen( disp );
-      vis = XGetVisualInfo( disp, vmask, &vinfo, &ninfo);
+      XVisualInfo aVisInfo;
+      int aNbItems;
+      int isGl, isDoubleBuffer, isRGBA, aDepthSize;
+      unsigned long aVisInfoMask = VisualIDMask | VisualScreenMask;
+      aVisInfo.visualid = wattr.visual->visualid;
+      aVisInfo.screen   = DefaultScreen (disp);
+      vis = XGetVisualInfo (disp, aVisInfoMask, &aVisInfo, &aNbItems);
+      if (vis != NULL)
+      {
+        // check Visual for OpenGl context's parameters compability
+        if (glXGetConfig (disp, vis, GLX_USE_GL, &isGl) != 0)
+          isGl = 0;
+
+        if (glXGetConfig (disp, vis, GLX_RGBA, &isRGBA) != 0)
+          isRGBA = 0;
+
+        if (glXGetConfig (disp, vis, GLX_DOUBLEBUFFER, &isDoubleBuffer) != 0)
+          isDoubleBuffer = 0;
+
+        if (glXGetConfig (disp, vis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
+          aDepthSize = 0;
+
+        if (!isGl || !aDepthSize || !isRGBA  || isDoubleBuffer != DBuffer)
+        {
+          XFree (vis);
+          vis = NULL;
+        }
+      }
     }
 #endif
 
-    if( !vis )
-      vis = glXChooseVisual( disp, scr, sdesc );
-    if( !vis) return TFailure;
+    if (vis == NULL)
+    {
+      int anIter = 0;
+      int anAttribs[11];
+      anAttribs[anIter++] = GLX_RGBA;
+
+      anAttribs[anIter++] = GLX_DEPTH_SIZE;
+      anAttribs[anIter++] = 1;
+
+      anAttribs[anIter++] = GLX_RED_SIZE;
+      anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
+
+      anAttribs[anIter++] = GLX_GREEN_SIZE;
+      anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
+
+      anAttribs[anIter++] = GLX_BLUE_SIZE;
+      anAttribs[anIter++] = (wattr.depth <= 8) ? 0 : 1;
+
+      if (DBuffer)
+        anAttribs[anIter++] = GLX_DOUBLEBUFFER;
+
+      anAttribs[anIter++] = None;
+
+      vis = glXChooseVisual (disp, scr, anAttribs);
+      if (vis == NULL) return TFailure;
+    }
 
 #ifdef TRACE
     printf ("TxglCreateWindow \n");
@@ -271,22 +284,8 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     */
 
     glXGetConfig( disp, vis, GLX_RED_SIZE, &value );
-
-    if ( value < 8 ) {
-      DitherProp = True;
-    }
-    else
-    {
-      DitherProp = False;
-    }
-
-    if ( vis->depth <= 8 ) {
-      BackDitherProp = True;
-    }
-    else
-    {
-      BackDitherProp = False;
-    }
+    DitherProp = (value < 8) ? True : False;
+    BackDitherProp = (vis->depth <= 8) ? True : False;
 
 #ifdef TRACE
     printf("Dithering %d BackDithering %d \n",DitherProp,BackDitherProp);
@@ -334,7 +333,7 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     cwa.border_pixel  = color.pixel;
     cwa.background_pixel = color.pixel;
 
-    mask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
+    unsigned long mask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
 
     if( vis->visualid == wattr.visual->visualid ) {
       win = par;
@@ -684,9 +683,9 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     }
     if (!i)
     {
-      errorcode = glGetError();
-      errorstring = gluErrorString(errorcode);
-      printf("glXMakeCurrent failed: %d %s\n", errorcode, errorstring);
+      // if there is no current context it might be impossible to use
+      // glGetError correctly
+      printf("glXMakeCurrent failed!\n");
     }
 
     return  i == True ? TSuccess : TFailure;
