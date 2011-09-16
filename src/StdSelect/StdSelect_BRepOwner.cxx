@@ -139,7 +139,7 @@ void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
 #else
   Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
 #endif
-  if(myPrsSh.IsNull())
+  if (!myPrsSh.IsNull())
     PM->Clear(myPrsSh,M);
   myPrsSh.Nullify();
 }
@@ -157,7 +157,3 @@ void StdSelect_BRepOwner::ResetLocation()
   if(!myPrsSh.IsNull())
     myPrsSh.Nullify(); 
 }
-
-
-
-
