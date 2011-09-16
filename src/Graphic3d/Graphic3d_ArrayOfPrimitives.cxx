@@ -906,6 +906,9 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid() {
       return Standard_False;
   }
 
+  // total number of edges(verticies) in bounds should be the same as variable
+  // of total number of defined edges(verticies); if no edges - only verticies 
+  // could be in bounds.
   if( nbounds > 0 ) {
     for( i=n=0 ; i<nbounds ; i++ ) {
       n += myPrimitiveArray->bounds[i];
@@ -916,7 +919,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid() {
 #endif
       if( nedges > n ) myPrimitiveArray->num_edges = n;
       else return Standard_False;
-    } else if( n != nvertexs ) {
+    } else if ( nedges == 0 && n != nvertexs ) {
 #if TRACE > 0
       cout << " *** An " << name << " has an incoherent number of vertexs " << nvertexs << endl;
 #endif
@@ -925,6 +928,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid() {
     }
   }
 
+  // check that edges (indexes to an array of verticies) are in range.
   if( nedges > 0 ) {
     for( i=0 ; i<nedges ; i++ ) {
       if( myPrimitiveArray->edges[i] >= myPrimitiveArray->num_vertexs ) {
@@ -932,117 +936,6 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid() {
         cout << " *** An " << name << " has a vertex index " << myPrimitiveArray->edges[i] << " greater than the number of defined vertexs " << myPrimitiveArray->num_vertexs << endl;
 #endif
         myPrimitiveArray->edges[i] = myPrimitiveArray->num_vertexs-1;
-      }
-    }
-  }
-
-  Standard_Integer format;
-  Standard_Boolean valid = Standard_True;
-  for( i=0 ; i<nvertexs ; i++ ) {
-    format = myPrimitiveArray->format;
-    if( format != myPrimitiveArray->format ) {
-      valid = Standard_False;
-#if TRACE > 0
-      cout << " *** An " << name << " has an incoherent kind of vertexs " 
-        << i+1 << " of type " << myPrimitiveArray->format << "/" << format << endl;
-#endif
-      break;
-    }
-  }
-
-  if( valid ) return Standard_True;
-
-  if( nbounds > 0 ) 
-  {
-    for( j=n=0 ; j<nbounds ; j++ ) 
-    {
-      k = myPrimitiveArray->bounds[j];
-      for( i=0 ; i<k ; i++ ) 
-      {
-         format = myPrimitiveArray->format;
-        if( format != myPrimitiveArray->format ) 
-        {
-          if( myPrimitiveArray->format & MVNORMAL ) switch( myPrimitiveArray->type ) 
-          {
-      case TelPolygonsArrayType:
-        if( i == 0 ) ComputeVNormals(n+i,n+k-1);
-        break;
-      case TelTrianglesArrayType:
-        if( !(i % 3) ) ComputeVNormals(n+i,n+i+2);
-        break;
-      case TelQuadranglesArrayType:
-        if( !(i % 4) ) ComputeVNormals(n+i,n+i+3);
-        break;
-      case TelTriangleFansArrayType:
-      case TelTriangleStripsArrayType:
-        if( i < k-2 ) ComputeVNormals(n+i,n+i+2);
-        else
-          break;
-      case TelQuadrangleStripsArrayType:
-        if( !(i %2) && (i < k-3) ) ComputeVNormals(n+i,n+i+3);
-        break;
-      default:
-        break;
-          }
-        }
-      }
-      n += myPrimitiveArray->bounds[j];
-    }
-  } else if( nedges > 0 ) {
-    for( i=0 ; i<nedges ; i++ ) {
-      k = myPrimitiveArray->edges[i];
-      format = myPrimitiveArray->format;
-      if( format != myPrimitiveArray->format ) {
-        if( myPrimitiveArray->format & MVNORMAL ) switch( myPrimitiveArray->type ) {
-          case TelPolygonsArrayType:
-            if( i == 0 ) ComputeVNormals(i,nedges-1);
-            break;
-          case TelTrianglesArrayType:
-            k = i/3*3;
-            ComputeVNormals(k,k+2);
-            break;
-          case TelQuadranglesArrayType:
-            k = i/4*4;
-            ComputeVNormals(k,k+3);
-            break;
-          case TelTriangleFansArrayType:
-          case TelTriangleStripsArrayType:
-            if( i < nedges-2 ) ComputeVNormals(i,i+2);
-            else
-            break;
-          case TelQuadrangleStripsArrayType:
-            if( !(i %2) && (i < nedges-3) ) ComputeVNormals(i,i+3);
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  } else if( nvertexs > 0 ) {
-    for( i=0 ; i<nvertexs ; i++ ) {
-      format = myPrimitiveArray->format;
-      if( format != myPrimitiveArray->format ) {
-        if( myPrimitiveArray->format & MVNORMAL ) switch( myPrimitiveArray->type ) {
-          case TelPolygonsArrayType:
-            if( i == 0 ) ComputeVNormals(i,nvertexs-1);
-            break;
-          case TelTrianglesArrayType:
-            if( !(i % 3) ) ComputeVNormals(i,i+2);
-            break;
-          case TelQuadranglesArrayType:
-            if( !(i % 4) ) ComputeVNormals(i,i+3);
-            break;
-          case TelTriangleFansArrayType:
-          case TelTriangleStripsArrayType:
-            if( i < nvertexs-2 ) ComputeVNormals(i,i+2);
-            else
-            break;
-          case TelQuadrangleStripsArrayType:
-            if( !(i %2) && (i < nvertexs-3) ) ComputeVNormals(i,i+3);
-            break;
-          default:
-            break;
-        }
       }
     }
   }

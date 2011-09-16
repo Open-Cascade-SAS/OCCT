@@ -82,6 +82,18 @@
 #include <HLRBRep_PolyHLRToShape.hxx>
 #include <Aspect_Window.hxx>
 
+#include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_ArrayOfTriangleFans.hxx>
+#include <Graphic3d_ArrayOfTriangleStrips.hxx>
+#include <Graphic3d_ArrayOfQuadrangles.hxx>
+#include <Graphic3d_ArrayOfQuadrangleStrips.hxx>
+#include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Standard_Real.hxx>
+
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -92,6 +104,9 @@
 #endif
 
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
+extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
+                                           const Handle(AIS_InteractiveObject)& theAISObj,
+                                           Standard_Boolean theReplaceIfExists = Standard_True);
 Standard_IMPORT int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext();
 
@@ -2887,6 +2902,301 @@ static int VComputeHLR (Draw_Interpretor& di,
   return 0;
 }
 
+// This class is a wrap for Graphic3d_ArrayOfPrimitives; it is used for
+// manipulating and displaying such an array with AIS context
+DEFINE_STANDARD_HANDLE(MyPArrayObject, AIS_InteractiveObject)
+class MyPArrayObject : public AIS_InteractiveObject
+{
+
+public:
+
+  MyPArrayObject (const Handle(Graphic3d_ArrayOfPrimitives) theArray)
+  {
+    myArray = theArray;
+  }
+
+  DEFINE_STANDARD_RTTI(MyPArrayObject);
+
+private:
+
+  void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                const Handle(Prs3d_Presentation)& aPresentation,
+                const Standard_Integer aMode);
+
+  void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
+                         const Standard_Integer aMode) {};
+
+protected:
+
+  Handle(Graphic3d_ArrayOfPrimitives) myArray;
+
+};
+
+IMPLEMENT_STANDARD_HANDLE(MyPArrayObject, AIS_InteractiveObject)
+IMPLEMENT_STANDARD_RTTIEXT(MyPArrayObject, AIS_InteractiveObject)
+
+void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                              const Handle(Prs3d_Presentation)& aPresentation,
+                              const Standard_Integer aMode)
+{
+  aPresentation->Clear();
+
+  Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+  aGroup->BeginPrimitives ();
+  aGroup->AddPrimitiveArray (myArray);
+  aGroup->EndPrimitives ();
+}
+
+static bool CheckInputCommand (const TCollection_AsciiString theCommand,
+                               const char **theArgStr, int &theArgIndex,
+                               int theArgCount, int theMaxArgs)
+{
+  // check if there is more elements than expected
+  if (theArgIndex >= theMaxArgs)
+    return false;
+
+  TCollection_AsciiString aStrCommand(theArgStr[theArgIndex]);
+  aStrCommand.LowerCase();
+  if (aStrCommand.Search(theCommand) != 1 ||
+      theArgIndex + (theArgCount - 1) >= theMaxArgs)
+    return false;
+
+  // go to the first data element
+  theArgIndex++;
+
+  // check data if it can be converted to numeric
+  for (int aElement = 0; aElement < theArgCount; aElement++, theArgIndex++)
+  {
+    aStrCommand = theArgStr[theArgIndex];
+    if (!aStrCommand.IsRealValue())
+      return false;
+  }
+
+  return true;
+}
+
+//=============================================================================
+//function : VDrawPArray
+//purpose  : Draws primitives array from list of vertexes, bounds, edges
+//=============================================================================
+
+static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    di << "Call vinit before!\n";
+    return 1;
+  }
+  else if (argc < 3)
+  {
+    di << "Use: " << argv[0] << " Name TypeOfArray [EnableVBO={0 | 1}]"
+       << " [vertex] ... [bounds] ... [edges]\n"
+       << "  TypeOfArray={ points | segments | polylines | triangles |\n"
+       << "                trianglefan | trianglestrips | quads |\n"
+       << "                quadstrips | polygons }\n"
+       << "  vertex={ 'v' x y z [normal={ 'n' nx ny nz }] [color={ 'c' r g b }]"
+       << " [texel={ 't' tx ty }] } \n"
+       << "  bounds={ 'b' verticies_count [color={ 'c' r g b }] }\n"
+       << "  edges={ 'e' vertex_id [hidden_edge={'h'}] }\n";
+    return 1;
+  }
+
+  // read the arguments
+  TCollection_AsciiString aName (argv[1]);
+  TCollection_AsciiString anArrayType (argv[2]);
+  
+  // is argument list has an vbo flag
+  Standard_Boolean hasFlagVbo = Standard_False;
+  if (isdigit (argv[3][0]) && atoi (argv[3]) >= 0 && atoi (argv[3]) <= 1)
+    hasFlagVbo = Standard_True;
+
+  // parse number of verticies, bounds, edges
+  Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
+  Standard_Boolean hasVColors, hasBColors, hasNormals, hasInfos, hasTexels;
+  hasVColors = hasNormals = hasBColors = hasInfos = hasTexels = Standard_False;
+
+  Standard_Integer aArgIndex = (hasFlagVbo) ? 4 : 3;
+  TCollection_AsciiString aCommand;
+  while (aArgIndex < argc)
+  {
+    aCommand = argv[aArgIndex];
+    aCommand.LowerCase();
+    if (!aCommand.IsAscii())
+    {
+      di << "Unexpected argument: #" << aArgIndex - 1 << " , "
+         << "should be an array element: 'v', 'b', 'e' \n";
+      break;
+    }
+
+    // vertex command
+    if (CheckInputCommand ("v", argv, aArgIndex, 3, argc))
+    {
+      // vertex has a normal or normal with color or texel
+      if (CheckInputCommand ("n", argv, aArgIndex, 3, argc))
+        hasNormals = Standard_True;
+
+      // vertex has a color
+      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
+        hasVColors = Standard_True;
+
+      // vertex has a texel
+      if (CheckInputCommand ("t", argv, aArgIndex, 2, argc))
+        hasTexels = Standard_True;
+
+      aVertexNum++;
+    }
+    // bound command
+    else if (CheckInputCommand ("b", argv, aArgIndex, 1, argc))
+    {
+      // bound has color
+      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
+        hasBColors = Standard_True;
+
+      aBoundNum++;
+    }
+    // edge command
+    else if (CheckInputCommand ("e", argv, aArgIndex, 1, argc))
+    {
+      // edge has a hide flag
+      if (CheckInputCommand ("h", argv, aArgIndex, 0, argc))
+        hasInfos = Standard_True;
+
+      aEdgeNum++;
+    }
+    // unknown command
+    else
+      aArgIndex++;
+  }
+
+  if (aVertexNum == 0)
+  {
+    di << "You should pass any verticies in the list of array elements\n";
+    return 1;
+  }
+
+  // create an array of primitives by types
+  Handle(Graphic3d_ArrayOfPrimitives) anArray;
+  if (anArrayType == "points")
+    anArray = new Graphic3d_ArrayOfPoints (aVertexNum);
+  else if (anArrayType == "segments")
+    anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, hasVColors);
+  else if (anArrayType == "polylines")
+    anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum,
+                                              hasVColors, hasBColors, hasInfos);
+  else if (anArrayType == "triangles")
+    anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, hasNormals,
+                                              hasVColors, hasTexels, hasInfos);
+  else if (anArrayType == "trianglefans")
+    anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum,
+                                                 hasNormals, hasVColors,
+                                                 hasBColors, hasTexels);
+  else if (anArrayType == "trianglestrips")
+    anArray = new Graphic3d_ArrayOfTriangleStrips (aVertexNum, aBoundNum,
+                                                   hasNormals, hasVColors,
+                                                   hasBColors, hasTexels);
+  else if (anArrayType == "quads")
+    anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum,
+                                                hasNormals, hasVColors,
+                                                hasTexels, hasInfos);
+  else if (anArrayType == "quadstrips")
+    anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum,
+                                                     hasNormals, hasVColors,
+                                                     hasBColors, hasTexels);
+  else if (anArrayType == "polygons")
+    anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum,
+                                             hasNormals, hasVColors, hasBColors,
+                                             hasTexels, hasInfos);
+  else
+  {
+    di << "Unexpected type of primitiives array\n";
+    return 1;
+  }
+
+  // parse an array of primitives
+  aArgIndex = (hasFlagVbo) ? 4 : 3;
+  while (aArgIndex < argc)
+  {
+    aCommand = argv[aArgIndex];
+    aCommand.LowerCase();
+    if (!aCommand.IsAscii())
+      break;
+
+    // vertex command
+    if (CheckInputCommand ("v", argv, aArgIndex, 3, argc))
+    {
+      anArray->AddVertex (atof (argv[aArgIndex - 3]),
+                          atof (argv[aArgIndex - 2]),
+                          atof (argv[aArgIndex - 1]));
+
+      // vertex has a normal or normal with color or texel
+      if (CheckInputCommand ("n", argv, aArgIndex, 3, argc))
+        anArray->SetVertexNormal (anArray->VertexNumber (),
+                                  atof (argv[aArgIndex - 3]),
+                                  atof (argv[aArgIndex - 2]),
+                                  atof (argv[aArgIndex - 1]));
+      
+      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
+        anArray->SetVertexColor (anArray->VertexNumber (),
+                                 atof (argv[aArgIndex - 3]),
+                                 atof (argv[aArgIndex - 2]),
+                                 atof (argv[aArgIndex - 1]));
+      
+      if (CheckInputCommand ("t", argv, aArgIndex, 2, argc))
+        anArray->SetVertexTexel (anArray->VertexNumber (),
+                                 atof (argv[aArgIndex - 2]),
+                                 atof (argv[aArgIndex - 1]));
+    }
+    // bounds command
+    else if (CheckInputCommand ("b", argv, aArgIndex, 1, argc))
+    {
+      Standard_Integer aVertCount = atoi (argv[aArgIndex - 1]);
+
+      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
+        anArray->AddBound (aVertCount,
+                           atof (argv[aArgIndex - 3]),
+                           atof (argv[aArgIndex - 2]),
+                           atof (argv[aArgIndex - 1]));
+
+      else
+        anArray->AddBound (aVertCount);
+    }
+    // edge command
+    else if (CheckInputCommand ("e", argv, aArgIndex, 1, argc))
+    {
+      Standard_Integer aVertIndex = atoi (argv[aArgIndex - 1]);
+
+      // edge has/hasn't hide flag
+      if (CheckInputCommand ("h", argv, aArgIndex, 0, argc))
+        anArray->AddEdge (aVertIndex, Standard_False);
+      else
+        anArray->AddEdge (aVertIndex, Standard_True);
+    }
+    // unknown command
+    else
+      aArgIndex++;
+  }
+
+  if (hasFlagVbo)
+  {
+    // enable / disable vbo
+    Handle(Graphic3d_GraphicDriver) aDriver =
+      Handle(Graphic3d_GraphicDriver)::DownCast (
+                      aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+
+    if (!aDriver.IsNull())
+      aDriver->EnableVBO ((Standard_Boolean) atoi (argv[3]));
+  }
+
+  // create primitives array object
+  Handle (MyPArrayObject) aPObject = new MyPArrayObject (anArray);
+
+  // register the object in map
+  VDisplayAISObject (aName, aPObject);
+
+  return 0;
+}
+
 //=======================================================================
 //function : ObjectsCommands
 //purpose  :
@@ -2964,4 +3274,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vcomputehlr: shape hlrname [ eyex eyey eyez lookx looky lookz ]",
     __FILE__, VComputeHLR, group);
 
+  theCommands.Add("vdrawparray",
+    "vdrawparray : vdrawparray Name TypeOfArray [EnableVbo=1] [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id [edge_hidden = { 'h' }] ]",
+    __FILE__,VDrawPArray,group);
 }

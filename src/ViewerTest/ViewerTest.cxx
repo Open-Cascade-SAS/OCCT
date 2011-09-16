@@ -253,6 +253,57 @@ Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS(){
   return TheMap;
 }
 
+
+//==============================================================================
+//function : VDisplayAISObject
+//purpose  : register interactive object in the map of AIS objects;
+//           if other object with such name already registered, it will be kept
+//           or replaced depending on value of <theReplaceIfExists>,
+//           if "true" - the old object will be cleared from AIS context;
+//           returns Standard_True if <theAISObj> registered in map;
+//==============================================================================
+Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
+                                                    const Handle(AIS_InteractiveObject)& theAISObj,
+                                                    Standard_Boolean theReplaceIfExists = Standard_True)
+{
+  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cout << "AIS context is not available.\n";
+    return Standard_False;
+  }
+
+  if (aMap.IsBound2 (theName))
+  {
+    if (!theReplaceIfExists)
+    {
+      std::cout << "Other interactive object has been already "
+                << "registered with name: " << theName << ".\n"
+                << "Please use another name.\n";
+      return Standard_False;
+    }
+
+    // stop displaying object
+    Handle(AIS_InteractiveObject) anOldObj =
+       Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (theName));
+
+    if (!anOldObj.IsNull())
+      aContextAIS->Clear (anOldObj, Standard_True);
+
+    // remove name and old object from map
+    aMap.UnBind2 (theName);
+  }
+
+  // unbind AIS object if was bound with another name
+  aMap.UnBind1 (theAISObj);
+
+  // can be registered without rebinding
+  aMap.Bind (theAISObj, theName);
+  aContextAIS->Display (theAISObj, Standard_True);
+  return Standard_True;
+}
+
 static TColStd_MapOfInteger theactivatedmodes(8);
 static TColStd_ListOfTransient theEventMgrs;
 
