@@ -328,6 +328,8 @@ static Standard_Boolean MinMaxSmall
   Standard_Integer nb = 0;
   for (TopExp_Explorer ex(F,TopAbs_EDGE); ex.More(); ex.Next()) {
     TopoDS_Edge E = TopoDS::Edge (ex.Current());
+    if (nb == 1 && E.IsSame(E1))
+      continue; // ignore seam edge
     TopoDS_Vertex V1,V2;
     TopExp::Vertices (E,V1,V2);
     gp_Pnt p1,p2;
@@ -393,6 +395,8 @@ static Standard_Boolean MinMaxSmall
   nb = 0;
   for (TopExp_Explorer ite (F,TopAbs_EDGE); ite.More(); ite.Next()) {
     TopoDS_Edge E = TopoDS::Edge (ite.Current());
+    if (nb == 1 && E.IsSame(E1))
+      continue; // ignore seam edge
     TopoDS_Vertex VA,VB;
     TopExp::Vertices (E,VA,VB);
     if (tol < 0) {

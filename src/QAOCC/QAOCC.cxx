@@ -5122,6 +5122,58 @@ Standard_Integer OCC17424 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
+Standard_Integer OCC22301 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+
+  // Create mask 1111: extent == 4
+  TColStd_PackedMapOfInteger aFullMask;
+  for (Standard_Integer i = 0; i < 4; i++)
+    aFullMask.Add(i);
+  
+  // Create mask 1100: extent == 2
+  TColStd_PackedMapOfInteger aPartMask;
+  for (Standard_Integer i = 0; i < 2; i++)
+    aPartMask.Add(i);
+  
+  di << "aFullMask = 1111" << "\n";
+  di << "aPartMask = 1100" << "\n";
+  
+  Standard_Boolean isAffected;
+  
+  isAffected = aFullMask.Intersect(aPartMask); // true; extent == 2 (OK)
+  di << "First time: aFullMask.Intersect(aPartMask), isAffected = " << (Standard_Integer)isAffected << "\n";
+  isAffected = aFullMask.Intersect(aPartMask); // true; extent == 0 (?)
+  di << "Second time: aFullMask.Intersect(aPartMask), isAffected = " << (Standard_Integer)isAffected << "\n";
+  isAffected = aFullMask.Subtract(aPartMask); // false (?)
+  di << "After two intersections: aFullMask.Subtract(aPartMask), isAffected = " << (Standard_Integer)isAffected << "\n";
+
+  return 0;
+}
+#include <ShapeFix_FixSmallFace.hxx>
+Standard_Integer OCC22586 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	
+  if (argc != 3) {
+    di << "Usage : " << argv[0] << " shape resshape\n";
+    return 1;
+  }
+  
+  // try to read a shape:
+  TopoDS_Shape aShape=DBRep::Get(argv[1]);
+  ShapeFix_FixSmallFace aFixSmallFaces;
+  aFixSmallFaces.Init (aShape);
+  aFixSmallFaces.Perform();
+  TopoDS_Shape aResShape = aFixSmallFaces.Shape();
+  DBRep::Set(argv[2],aResShape);
+  
+  return 0;
+
+}
+
 void QAOCC::Commands(Draw_Interpretor& theCommands) {
   const char *group = "QAOCC";
 
@@ -5225,5 +5277,7 @@ void QAOCC::Commands(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC20766", "OCC20766 plane a b c d", __FILE__, OCC20766, group);
   theCommands.Add("OCC20627", "OCC20627", __FILE__, OCC20627, group);
   theCommands.Add("OCC17424", "OCC17424  shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf", __FILE__, OCC17424, group);
+  theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
+  theCommands.Add("OCC22586", "OCC22586 shape resshape", __FILE__, OCC22586, group);
   return;
 }
