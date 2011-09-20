@@ -77,3 +77,5 @@ NCollection_Handle.cxx
 
 NCollection_Comparator.hxx
 NCollection_QuickSort.hxx
+
+NCollection_Haft.h
