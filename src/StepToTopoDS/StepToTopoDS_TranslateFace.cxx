@@ -229,11 +229,14 @@ void StepToTopoDS_TranslateFace::Init
       Handle(StepShape_VertexLoop) VL = Handle(StepShape_VertexLoop)::DownCast(Loop);
 
       // abv 10.07.00 pr1sy.stp: vertex_loop can be wrong; so just make natural bounds
-      if (GeomSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface))) {
-	BRepBuilderAPI_MakeFace mf (GeomSurf);
-	for (TopoDS_Iterator it(mf); it.More(); it.Next() ) 
-	  B.Add ( F, it.Value() );
-	continue;
+      if (GeomSurf->IsKind (STANDARD_TYPE(Geom_SphericalSurface)) ||
+          GeomSurf->IsKind (STANDARD_TYPE(Geom_BSplineSurface)) )
+      {
+        BRepBuilderAPI_MakeFace mf (GeomSurf, Precision());
+        for (TopoDS_Iterator it(mf); it.More(); it.Next()) 
+          B.Add (F, it.Value());
+
+        continue;
       }
       
       if (//GeomSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||

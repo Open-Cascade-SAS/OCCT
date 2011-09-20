@@ -675,7 +675,8 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_FaceBasedSurfaceModel)& 
 // ============================================================================
 //:i6 abv 17 Sep 98: ProSTEP TR9 r0601-ct.stp: to be able read GS: GeometricCurveSet -> GeometricSet
 
-static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf)
+static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
+                                         const Standard_Real TolDegen)
 {
   TopoDS_Face res;
 
@@ -684,7 +685,7 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf)
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) return res;
 
   //gka 11.01.99 file PRO7755.stp entity #2018 surface #1895: error BRepLib_MakeFace func IsDegenerated
-  BRepBuilderAPI_MakeFace myMkFace(theSurf);
+  BRepBuilderAPI_MakeFace myMkFace(theSurf, TolDegen);
   return myMkFace.Face();
 }
 
@@ -790,13 +791,13 @@ void StepToTopoDS_Builder::Init
 	for ( Standard_Integer ii=1; ii <= nbi; ii++ ) 
 	  for ( Standard_Integer j=1; j <= nbj; j++ ) {
 	    Handle(StepGeom_SurfacePatch) patch = RCS->SegmentsValue ( ii, j );
-	    TopoDS_Face f = TranslateBoundedSurf ( patch->ParentSurface() );
+	    TopoDS_Face f = TranslateBoundedSurf (patch->ParentSurface(), preci);
 	    if ( ! f.IsNull() ) B.Add ( C, f );
 	  }
 	res = C;
       }
       // try other surfs
-      else res = TranslateBoundedSurf ( aSurf );
+      else res = TranslateBoundedSurf (aSurf, preci);
     }
     else TP->AddWarning (ent," Entity is not a Curve, Point or Surface");
     if ( ! res.IsNull() ) {

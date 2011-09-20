@@ -71,7 +71,7 @@ void BRepMAT2d_Explorer::Perform(const TopoDS_Face& aFace)
   TopExp_Explorer Exp (F,TopAbs_WIRE);
 //  Modified by Sergey KHROMOV - Tue Nov 26 16:10:37 2002 Begin
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(F);
-  TopoDS_Face          aNewF = BRepBuilderAPI_MakeFace(aSurf);
+  TopoDS_Face          aNewF = BRepBuilderAPI_MakeFace(aSurf, Precision::Confusion());
 
   while (Exp.More()) {
     Add (TopoDS::Wire (Exp.Current()),F, aNewF);

@@ -316,7 +316,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface
     res = plane; 
   }
   else {
-    BRepLib_MakeFace makeFace(surf);
+    BRepLib_MakeFace makeFace(surf, Precision::Confusion());
     res = makeFace.Face();
   }
 
@@ -765,7 +765,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution
         // PTV 29.08.2002  end of OCC663
       }
       if (!aResultSurf.IsNull()) {
-        BRepBuilderAPI_MakeFace aMakeF(aResultSurf);
+        BRepBuilderAPI_MakeFace aMakeF(aResultSurf, Precision::Confusion());
         if (aMakeF.IsDone()) res = aMakeF.Face();
       }
     }
@@ -902,7 +902,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder
                                              aBasisCurve->FirstParameter(),
                                              aBasisCurve->LastParameter(),
                                              0., dir.Magnitude() );
-        BRepBuilderAPI_MakeFace aMakeF(aResultSurf);
+        BRepBuilderAPI_MakeFace aMakeF(aResultSurf, Precision::Confusion());
         if (aMakeF.IsDone()) res = aMakeF.Face();
       }
     }
@@ -1089,7 +1089,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface
     basisSrf = new Geom_OffsetSurface(geomSupport, st->Distance()*GetUnitFactor());
   }
   
-  BRepLib_MakeFace MF(basisSrf);
+  BRepLib_MakeFace MF(basisSrf, Precision::Confusion());
   if(!MF.IsDone()) {
     Message_Msg msg1265("IGES_1265");
     SendFail(st, msg1265); // OffsetSurface Construction Error.

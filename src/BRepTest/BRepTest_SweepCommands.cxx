@@ -166,7 +166,7 @@ static Standard_Integer geompipe(Draw_Interpretor& ,
   Handle(Geom_Surface) Sur=aPipe.Surface();
   TopoDS_Face F;
   if(!Sur.IsNull())
-    F =BRepBuilderAPI_MakeFace(Sur);
+    F = BRepBuilderAPI_MakeFace(Sur, Precision::Confusion());
   DBRep::Set(a[1],F);
   return 0;
 }

@@ -31,6 +31,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <Precision.hxx>
 
 #ifdef WNT
 //#define strcasecmp strcmp Already defined
@@ -78,7 +79,7 @@ static Standard_Integer mkface(Draw_Interpretor& , Standard_Integer n, const cha
 
   if (n == 3) {
     if (mkface)
-      res = BRepBuilderAPI_MakeFace(S);
+      res = BRepBuilderAPI_MakeFace(S, Precision::Confusion());
     else
       res = BRepBuilderAPI_MakeShell(S,Segment);
   }
@@ -91,7 +92,7 @@ static Standard_Integer mkface(Draw_Interpretor& , Standard_Integer n, const cha
   }
   else {
     if (mkface)
-      res = BRepBuilderAPI_MakeFace(S,atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]));
+      res = BRepBuilderAPI_MakeFace(S,atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]),Precision::Confusion());
     else
       res = BRepBuilderAPI_MakeShell(S,atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]),
 			      Segment);

@@ -766,7 +766,7 @@ static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, cons
 
   Handle(Geom_BezierSurface) BezSurf = new Geom_BezierSurface(poles);
   Handle(Geom_BSplineSurface) BSpSurf = GeomConvert::SurfaceToBSplineSurface(BezSurf);
-  BRepBuilderAPI_MakeFace faceMaker(BSpSurf);
+  BRepBuilderAPI_MakeFace faceMaker(BSpSurf, Precision::Confusion());
   TopoDS_Face face = faceMaker.Face();
 
   gp_Pnt pnt(0, size, 0);

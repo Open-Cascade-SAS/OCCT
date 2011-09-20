@@ -81,7 +81,7 @@ void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W,
 {
 //  if (ShapeUpgrade::Debug()) cout <<"ShapeUpgrade_WireDivide::Init with Wire, Surface "<<endl;
   myWire = W;
-  BRepLib_MakeFace mkf(S);
+  BRepLib_MakeFace mkf(S, Precision::Confusion());
   myFace = mkf.Face();
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
 }
@@ -125,7 +125,7 @@ void ShapeUpgrade_WireDivide::SetFace(const TopoDS_Face& F)
 
 void ShapeUpgrade_WireDivide::SetSurface(const Handle(Geom_Surface)& S)
 {
-  BRepLib_MakeFace mkf(S);
+  BRepLib_MakeFace mkf(S, Precision::Confusion());
   myFace = mkf.Face();
 }
 

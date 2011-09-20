@@ -314,7 +314,7 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
   
   Henri.Surface()->Bounds( Umin, Umax, Vmin, Vmax);
   
-  BRepBuilderAPI_MakeFace MF(Surf,Umin, Umax, Vmin, Vmax);
+  BRepBuilderAPI_MakeFace MF(Surf, Umin, Umax, Vmin, Vmax, Precision::Confusion());
   
   DBRep::Set(a[1],MF.Face());
   return 0;

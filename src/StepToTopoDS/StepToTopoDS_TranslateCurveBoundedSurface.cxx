@@ -90,7 +90,7 @@ Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
   // add natural bound if implicit
   if ( CBS->ImplicitOuter() ) { 
     if ( Surf->IsKind(STANDARD_TYPE(Geom_BoundedSurface)) ) {
-      BRepBuilderAPI_MakeFace mf (Surf);
+      BRepBuilderAPI_MakeFace mf (Surf, Precision::Confusion());
       myFace = mf.Face();
     }
     else TP->AddWarning ( CBS, "Cannot make natural bounds on infinite surface" );

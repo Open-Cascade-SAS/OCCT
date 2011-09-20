@@ -367,7 +367,7 @@ static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
       TopExp::MapShapes(OrtProj.Projection() , TopAbs_EDGE, MapE1);
         if (MapE1.Extent()!=0){
           if (MapE1.Extent()!=1) {
-            BRepLib_MakeFace Bface (BRep_Tool::Surface(F));
+            BRepLib_MakeFace Bface (BRep_Tool::Surface(F), Precision::Confusion());
             F=Bface.Face();
             OrtProj.Init(F);
             OrtProj.Build();

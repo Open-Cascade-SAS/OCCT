@@ -839,7 +839,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
 	S = Handle(Geom_RectangularTrimmedSurface)::
 	  DownCast(S)->BasisSurface();
       }
-      BRepLib_MakeFace fac(S);
+      BRepLib_MakeFace fac(S, Precision::Confusion());
       mySFrom = fac.Face();  
       Trf = TransformShapeFU(0);
       FFrom = TopoDS::Face(mySFrom);

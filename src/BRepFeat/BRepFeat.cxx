@@ -522,7 +522,7 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
     return;
   }
 
-  FUntil = BRepLib_MakeFace(str);
+  FUntil = BRepLib_MakeFace(str, Precision::Confusion());
 }
 
 

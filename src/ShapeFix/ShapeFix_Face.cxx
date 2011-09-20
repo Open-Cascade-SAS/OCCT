@@ -764,7 +764,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
 
   // deal with case of empty face: just create a new one by standard tool
   if ( ws.Length() <=0 ) {
-    BRepBuilderAPI_MakeFace mf (mySurf->Surface());
+    BRepBuilderAPI_MakeFace mf (mySurf->Surface(), Precision::Confusion());
     if ( ! Context().IsNull() ) Context()->Replace ( myFace, mf.Face() );
     myFace = mf.Face();
 
@@ -859,7 +859,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
 /* variant 2 */
   TopLoc_Location L;
   Handle(Geom_Surface) surf = BRep_Tool::Surface ( myFace, L );
-  BRepBuilderAPI_MakeFace mf (surf);
+  BRepBuilderAPI_MakeFace mf (surf, Precision::Confusion());
   TopoDS_Face ftmp = mf.Face();
   ftmp.Location ( L );
   for (wi.Initialize (ftmp,Standard_False); wi.More(); wi.Next()) {

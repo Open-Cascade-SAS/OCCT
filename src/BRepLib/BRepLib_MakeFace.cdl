@@ -88,9 +88,10 @@ is
 	---Level: Public
     returns MakeFace from BRepLib;
 
-    Create(S : Surface from Geom)
-	---Purpose: Make a face from a Surface.
-	---Level: Public
+    Create(S : Surface from Geom; TolDegen : Real)
+    ---Purpose: Make a face from a Surface. Accepts tolerance value (TolDegen)
+    --          for resolution of degenerated edges.
+    ---Level: Public
     returns MakeFace from BRepLib;
 
     ----------------------------------------------
@@ -122,9 +123,11 @@ is
 	---Level: Public
     returns MakeFace from BRepLib;
 
-    Create(S : Surface from Geom; UMin, UMax, VMin, VMax : Real)
-	---Purpose: Make a face from a Surface.
-	---Level: Public
+    Create(S : Surface from Geom; UMin, UMax, VMin, VMax, TolDegen : Real)
+    ---Purpose: Make a face from a Surface. Accepts min & max parameters
+    --          to construct the face's bounds. Also accepts tolerance value (TolDegen)
+    --          for resolution of degenerated edges.
+    ---Level: Public
     returns MakeFace from BRepLib;
 
     ----------------------------------------------
@@ -198,16 +201,19 @@ is
 	---Level: Public
     is static;
 
-    Init(me : in out; S : Surface from Geom; Bound : Boolean = Standard_True)
-	---Purpose: Creates the face  from the  surface.  If Bound  is
-	--          True a wire is made from the natural bounds.
-	---Level: Public
+    Init(me : in out; S : Surface from Geom; Bound : Boolean; TolDegen : Real)
+    ---Purpose: Creates the face  from the  surface. If Bound is
+    --          True a wire is made from the natural bounds.
+    --          Accepts tolerance value (TolDegen) for resolution
+    --          of degenerated edges.
+    ---Level: Public
     is static;
 
-    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax : Real) 
-	---Purpose: Creates the face from the surface  and the min-max
-	--          values.
-	---Level: Public
+    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax, TolDegen : Real) 
+    ---Purpose: Creates the face from the surface and the min-max
+    --          values. Accepts tolerance value (TolDegen) for resolution
+    --          of degenerated edges.
+    ---Level: Public
     is static;
 
     Add(me : in out; W : Wire from TopoDS)
@@ -244,6 +250,5 @@ is
     is static;
     
 fields
-    myError : FaceError from BRepLib;
-
+    myError    : FaceError from BRepLib;
 end MakeFace;

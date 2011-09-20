@@ -574,7 +574,7 @@ void AIS_AngleDimension::ComputeConeAngle(const Handle(Prs3d_Presentation)& aPre
    if ( aType == STANDARD_TYPE(Geom_OffsetSurface) || Offset > 0.01 ) {            //offset surface
      aOffsetSurf = new Geom_OffsetSurface (aSurf, Offset);
      aSurf = aOffsetSurf->Surface();
-     BRepBuilderAPI_MakeFace mkFace(aSurf);
+     BRepBuilderAPI_MakeFace mkFace(aSurf, Precision::Confusion());
      mkFace.Build();
      if( !mkFace.IsDone() ) return;
      tmpSurf.Initialize( mkFace.Face() );
@@ -1910,7 +1910,7 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
     if ( aType == STANDARD_TYPE(Geom_OffsetSurface) || Offset > 0.01 ) {            //offset surface
       aOffsetSurf = new Geom_OffsetSurface (aSurf, Offset);
       aSurf = aOffsetSurf->Surface();
-      BRepBuilderAPI_MakeFace mkFace(aSurf);
+      BRepBuilderAPI_MakeFace mkFace(aSurf, Precision::Confusion());
       mkFace.Build();
       if( !mkFace.IsDone() ) return;
       tmpSurf.Initialize( mkFace.Face() );

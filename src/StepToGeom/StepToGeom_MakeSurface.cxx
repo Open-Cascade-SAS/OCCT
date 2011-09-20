@@ -33,6 +33,7 @@
 #include <TopoDS.hxx>
 #include <BRep_Tool.hxx>  
 #include <gp_Trsf.hxx>
+#include <Precision.hxx>
 
 //=============================================================================
 // Creation d' une Surface de Geom a partir d' une Surface de Step
@@ -71,7 +72,7 @@ Standard_Boolean StepToGeom_MakeSurface::Convert (const Handle(StepGeom_Surface)
         const Standard_Real anOffset = OS->Distance() * UnitsMethods::LengthFactor();
         if (aBasisSurface->Continuity() == GeomAbs_C0)
         {
-          const BRepBuilderAPI_MakeFace aBFace(aBasisSurface);
+          const BRepBuilderAPI_MakeFace aBFace(aBasisSurface, Precision::Confusion());
           if (aBFace.IsDone())
           {
             const TopoDS_Shape aResult = ShapeAlgo::AlgoContainer()->C0ShapeToC1Shape(aBFace.Face(), Abs(anOffset));

@@ -420,7 +420,7 @@ void TopOpeBRepBuild_FuseFace::PerformFace()
 	S = Handle(Geom_RectangularTrimmedSurface)::
 	  DownCast(S)->BasisSurface();
       }
-      BRepLib_MakeFace MF(S);  
+      BRepLib_MakeFace MF(S, Precision::Confusion());  
 
       for(it2.Initialize(myFaceLW); it2.More(); it2.Next()) {
 	const TopoDS_Wire& wir1 = TopoDS::Wire(it2.Value());

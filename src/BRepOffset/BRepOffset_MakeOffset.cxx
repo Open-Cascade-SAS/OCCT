@@ -2085,7 +2085,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
       {
 	Vfirst = -PI/2.; Vlast = p2d1.Y();
       }
-    TopoDS_Face NewSphericalFace = BRepLib_MakeFace(aSphSurf, Ufirst, Ulast, Vfirst, Vlast);
+    TopoDS_Face NewSphericalFace = BRepLib_MakeFace(aSphSurf, Ufirst, Ulast, Vfirst, Vlast, Precision::Confusion());
     TopoDS_Edge OldEdge;
     for (Explo.Init(NewSphericalFace, TopAbs_EDGE); Explo.More(); Explo.Next())
       {

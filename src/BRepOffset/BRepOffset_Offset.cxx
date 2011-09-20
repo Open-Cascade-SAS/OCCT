@@ -1446,7 +1446,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Edge,
   GeomFill_Pipe Pipe(CP,myOffset);
   Pipe.Perform();
 
-  BRepLib_MakeFace MF(Pipe.Surface());
+  BRepLib_MakeFace MF(Pipe.Surface(), Precision::Confusion());
   myFace = MF.Face();
 
   if ( Offset < 0.) myFace.Reverse();

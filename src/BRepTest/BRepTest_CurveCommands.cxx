@@ -862,7 +862,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
       S = BRepBuilderAPI_MakeFace(P,MW.Wire());
     else {
       BRepBuilderAPI_MakeFace MFace;
-      MFace.Init(Surface,Standard_False);
+      MFace.Init(Surface,Standard_False,Precision::Confusion());
       MFace.Add(MW.Wire());
       S = MFace.Face();
     }
@@ -1106,7 +1106,7 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
       S = BRepBuilderAPI_MakeFace(P,MW.Wire());
     else {
       BRepBuilderAPI_MakeFace MFace;
-      MFace.Init(Surface,Standard_False);
+      MFace.Init(Surface,Standard_False,Precision::Confusion());
       MFace.Add(MW.Wire());
       S = MFace.Face();
     }

@@ -36,7 +36,7 @@
 static TopoDS_Shape MakeShape(const Handle(Geom_Surface)& S)
 {
   GeomAbs_Shape c = S->Continuity();
-  if (c >= GeomAbs_C2) return BRepBuilderAPI_MakeFace(S);
+  if (c >= GeomAbs_C2) return BRepBuilderAPI_MakeFace(S, Precision::Confusion());
   else return BRepBuilderAPI_MakeShell(S);
 }
 

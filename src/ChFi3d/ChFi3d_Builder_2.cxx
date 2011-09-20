@@ -997,7 +997,7 @@ static void  ChFi3d_BuildPlane (TopOpeBRepDS_DataStructure&    DStr,
     if  (theProp.IsNormalDefined()) {
       P =  theProp.Value();
       Handle(Geom_Plane) Pln  = new Geom_Plane(P, theProp.Normal());
-      TopoDS_Face        NewF = BRepLib_MakeFace(Pln);
+      TopoDS_Face        NewF = BRepLib_MakeFace(Pln, Precision::Confusion());
       NewF.Orientation(F.Orientation());
       pons.SetCoord(0.,0.);
       HS->ChangeSurface().Initialize(NewF);

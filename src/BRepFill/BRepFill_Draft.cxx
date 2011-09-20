@@ -552,7 +552,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   // En attendant une utilisation des traces & retriction dans BRepFill_Sweep
   // On fait un Fuse.
     BRepLib_MakeFace MkF;
-    MkF.Init(Surf);
+    MkF.Init(Surf, Standard_True, Precision::Confusion());
     Fuse(MkF.Face(), KeepOutSide);
   }
 }

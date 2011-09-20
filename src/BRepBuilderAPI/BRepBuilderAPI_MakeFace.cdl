@@ -90,9 +90,10 @@ is
 	---Level: Public
     returns MakeFace from BRepBuilderAPI;
 
-    Create(S : Surface from Geom)
-	---Purpose: Make a face from a Surface.
-	---Level: Public
+    Create(S : Surface from Geom; TolDegen : Real)
+    ---Purpose: Make a face from a Surface. Accepts tolerance value (TolDegen)
+    -- for resolution of degenerated edges.
+    ---Level: Public
     returns MakeFace from BRepBuilderAPI;
 
     ----------------------------------------------
@@ -124,9 +125,10 @@ is
 	---Level: Public
     returns MakeFace from BRepBuilderAPI;
 
-    Create(S : Surface from Geom; UMin, UMax, VMin, VMax : Real)
-	---Purpose: Make a face from a Surface.
-	---Level: Public
+    Create(S : Surface from Geom; UMin, UMax, VMin, VMax, TolDegen : Real)
+    ---Purpose: Make a face from a Surface. Accepts tolerance value (TolDegen)
+    --          for resolution of degenerated edges.
+    ---Level: Public
     returns MakeFace from BRepBuilderAPI;
 
     ----------------------------------------------
@@ -243,26 +245,29 @@ is
     	-- want to work on the geometries of the two faces independently.
     is static;
 
-    Init(me : in out; S : Surface from Geom; Bound : Boolean = Standard_True)
-	---Purpose: Initializes (or reinitializes) the construction of a face on
-    	-- the surface S. If Bound is true (the default value), a wire is
-    	-- automatically created from the natural bounds of the
-    	-- surface S and added to the face in order to bound it. If
-    	-- Bound is false, no wire is added. This option is used
-    	-- when real bounds are known. These will be added to
-    	-- the face after this initialization, using the function Add.
-      is static;
+    Init(me : in out; S : Surface from Geom; Bound : Boolean; TolDegen : Real)
+    ---Purpose: Initializes (or reinitializes) the construction of a face on
+    -- the surface S. If Bound is true, a wire is
+    -- automatically created from the natural bounds of the
+    -- surface S and added to the face in order to bound it. If
+    -- Bound is false, no wire is added. This option is used
+    -- when real bounds are known. These will be added to
+    -- the face after this initialization, using the function Add.
+    -- TolDegen parameter is used for resolution of degenerated edges
+    -- if calculation of natural bounds is turned on.
+    is static;
 
-    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax : Real) 
-	---Purpose:  Initializes (or reinitializes) the construction of a face on
-    	-- the surface S, limited in the u parametric direction by
-    	-- the two parameter values UMin and UMax and in the
-    	-- v parametric direction by the two parameter values VMin and VMax.
-    	-- Warning
-    	--  Error returns:
-    	-- -      BRepBuilderAPI_ParametersOutOfRange
-    	--    when the parameters given are outside the bounds of the
-    	--    surface or the basis surface of a trimmed surface.
+    Init(me : in out; S : Surface from Geom; UMin, UMax, VMin, VMax, TolDegen : Real) 
+    ---Purpose:  Initializes (or reinitializes) the construction of a face on
+    -- the surface S, limited in the u parametric direction by
+    -- the two parameter values UMin and UMax and in the
+    -- v parametric direction by the two parameter values VMin and VMax.
+    -- Warning
+    --  Error returns:
+    -- -      BRepBuilderAPI_ParametersOutOfRange
+    --    when the parameters given are outside the bounds of the
+    --    surface or the basis surface of a trimmed surface.
+    -- TolDegen parameter is used for resolution of degenerated edges.
     is static;
 
     Add(me : in out; W : Wire from TopoDS)

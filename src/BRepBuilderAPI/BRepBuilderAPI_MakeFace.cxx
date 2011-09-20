@@ -112,8 +112,9 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus& T)
 //purpose  : 
 //=======================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S)
-: myMakeFace(S)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
+                                                 const Standard_Real TolDegen)
+: myMakeFace(S, TolDegen)
 {
   if ( myMakeFace.IsDone()) {
     Done();
@@ -222,12 +223,13 @@ BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const gp_Torus& T,
 //purpose  : 
 //=======================================================================
 
-BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
-: myMakeFace(S,UMin,UMax,VMin,VMax)
+BRepBuilderAPI_MakeFace::BRepBuilderAPI_MakeFace (const Handle(Geom_Surface)& S,
+                                                  const Standard_Real UMin,
+                                                  const Standard_Real UMax,
+                                                  const Standard_Real VMin,
+                                                  const Standard_Real VMax,
+                                                  const Standard_Real TolDegen)
+: myMakeFace (S, UMin, UMax, VMin, VMax, TolDegen)
 {
   if ( myMakeFace.IsDone()) {
     Done();
@@ -389,9 +391,10 @@ void BRepBuilderAPI_MakeFace::Init(const TopoDS_Face& F)
 //=======================================================================
 
 void  BRepBuilderAPI_MakeFace::Init(const Handle(Geom_Surface)& S,
-			     const Standard_Boolean Bound)
+                                    const Standard_Boolean Bound,
+                                    const Standard_Real TolDegen)
 {
-  myMakeFace.Init(S,Bound);
+  myMakeFace.Init(S, Bound, TolDegen);
   if ( myMakeFace.IsDone()) {
     Done();
     myShape = myMakeFace.Shape();
@@ -404,13 +407,14 @@ void  BRepBuilderAPI_MakeFace::Init(const Handle(Geom_Surface)& S,
 //purpose  : 
 //=======================================================================
 
-void  BRepBuilderAPI_MakeFace::Init(const Handle(Geom_Surface)& SS,
-			     const Standard_Real Um,
-			     const Standard_Real UM,
-			     const Standard_Real Vm,
-			     const Standard_Real VM)
+void  BRepBuilderAPI_MakeFace::Init (const Handle(Geom_Surface)& SS,
+                                     const Standard_Real Um,
+                                     const Standard_Real UM,
+                                     const Standard_Real Vm,
+                                     const Standard_Real VM,
+                                     const Standard_Real TolDegen)
 {
-  myMakeFace.Init(SS,Um,UM,Vm,VM);
+  myMakeFace.Init (SS, Um, UM, Vm, VM, TolDegen);
   if ( myMakeFace.IsDone()) {
     Done();
     myShape = myMakeFace.Shape();

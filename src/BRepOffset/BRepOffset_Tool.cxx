@@ -377,7 +377,7 @@ static void BuildPCurves (const TopoDS_Edge&  E,
     {
       gp_Pnt fpoint = AC.Value( AC.FirstParameter() );
       gp_Pnt lpoint = AC.Value( AC.LastParameter() );
-      TopoDS_Face theFace = BRepLib_MakeFace( theSurf );
+      TopoDS_Face theFace = BRepLib_MakeFace( theSurf, Precision::Confusion() );
       Standard_Real U1 = 0., U2 = 0., TolProj = 1.e-4; //1.e-5;
       TopoDS_Edge theEdge;
       TopExp_Explorer Explo;

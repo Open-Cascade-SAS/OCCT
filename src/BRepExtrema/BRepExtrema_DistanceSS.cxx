@@ -369,7 +369,7 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
     }
 
     Handle(Geom_Surface) result = new Geom_RectangularTrimmedSurface(pSurf, Umin, Umax, Vmin, Vmax);
-    aResFace = BRepBuilderAPI_MakeFace(result);
+    aResFace = BRepBuilderAPI_MakeFace(result, Precision::Confusion());
 
     bIsInfinit = Standard_True;
   }

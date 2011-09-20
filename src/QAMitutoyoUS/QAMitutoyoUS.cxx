@@ -34,21 +34,21 @@ static Standard_Integer BUC60857 (Draw_Interpretor& di, Standard_Integer /*argc*
   }
 
   Handle(Geom_RectangularTrimmedSurface) S = GC_MakeTrimmedCone (P1, P2, R1, R2).Value();
-  TopoDS_Shape myshape = BRepBuilderAPI_MakeFace(S).Shape();
+  TopoDS_Shape myshape = BRepBuilderAPI_MakeFace(S, Precision::Confusion()).Shape();
   DBRep::Set("BUC60857_BLUE",myshape);
   Handle(AIS_Shape) ais1 = new AIS_Shape(myshape);
   aContext->Display(ais1);
   aContext->SetColor(ais1, Quantity_NOC_BLUE1);
 
   Handle(Geom_RectangularTrimmedSurface) S2 = GC_MakeTrimmedCone (P1, P2, R1, 0).Value();
-  TopoDS_Shape myshape2 = BRepBuilderAPI_MakeFace(S2).Shape();
+  TopoDS_Shape myshape2 = BRepBuilderAPI_MakeFace(S2, Precision::Confusion()).Shape();
   DBRep::Set("BUC60857_RED",myshape2);
   Handle(AIS_Shape) ais2 = new AIS_Shape(myshape2);
   aContext->Display(ais2);
   aContext->SetColor(ais2, Quantity_NOC_RED);
 
   Handle(Geom_RectangularTrimmedSurface) S3 = GC_MakeTrimmedCone (P1, P2, R2, R1).Value();
-  TopoDS_Shape myshape3 = BRepBuilderAPI_MakeFace(S3).Shape();
+  TopoDS_Shape myshape3 = BRepBuilderAPI_MakeFace(S3, Precision::Confusion()).Shape();
   DBRep::Set("BUC60857_GREEN",myshape3);
   Handle(AIS_Shape) ais3 = new AIS_Shape(myshape3);
   aContext->Display(ais3);

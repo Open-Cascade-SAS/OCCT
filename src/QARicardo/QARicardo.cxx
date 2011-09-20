@@ -235,7 +235,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   // Make face for first opening
   Handle(Geom_Plane) Plane1 = new Geom_Plane(circ1Plane);
-  mkFace.Init(Plane1,Standard_False);
+  mkFace.Init(Plane1,Standard_False,Precision::Confusion());
   // SUPPORT:
   // - Use wires created by MakePipeShell
   //mkFace.Add(TopoDS::Wire(outerWire1_));
@@ -247,7 +247,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 
   // Make face for second opening
   Handle(Geom_Plane) Plane2 = new Geom_Plane(circ2Plane);
-  mkFace.Init(Plane2,Standard_False);
+  mkFace.Init(Plane2,Standard_False,Precision::Confusion());
   // SUPPORT:
   // - Use wires created by MakePipeShell
   //mkFace.Add(TopoDS::Wire(outerWire2_));
@@ -606,7 +606,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   // Make face for first opening
   Handle(Geom_Plane) Plane1 = new Geom_Plane(circ1Plane);
-  mkFace.Init(Plane1,Standard_False);
+  mkFace.Init(Plane1,Standard_False,Precision::Confusion());
   mkFace.Add(TopoDS::Wire(outerWire1_));
   mkFace.Add(TopoDS::Wire(Wire1_.Reversed()));
   if (!mkFace.IsDone()) return TCL_ERROR;
@@ -614,7 +614,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   // Make face for second opening
   Handle(Geom_Plane) Plane2 = new Geom_Plane(circ2Plane);
-  mkFace.Init(Plane2,Standard_False);
+  mkFace.Init(Plane2,Standard_False,Precision::Confusion());
   mkFace.Add(TopoDS::Wire(outerWire2_));
   mkFace.Add(TopoDS::Wire(Wire2_.Reversed()));
   if (!mkFace.IsDone()) return TCL_ERROR;

@@ -1075,7 +1075,7 @@ static Standard_Integer OCC606 ( Draw_Interpretor& di, Standard_Integer n, const
       Handle(Geom_BSplineSurface) result_surf1 = b_surface1.BSplineSurface();
       if (!result_surf1.IsNull())
       {
-        BRepBuilderAPI_MakeFace b_face1(result_surf1);
+        BRepBuilderAPI_MakeFace b_face1(result_surf1, Precision::Confusion());
         TopoDS_Face bsp_face1 = b_face1.Face();
         DBRep::Set(a[1],bsp_face1);
       }

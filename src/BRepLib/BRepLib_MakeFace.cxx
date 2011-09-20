@@ -68,7 +68,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Face& F)
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P)
 {
   Handle(Geom_Plane) GP = new Geom_Plane(P);
-  Init(GP);
+  Init(GP, Standard_True, Precision::Confusion());
 }
 
 
@@ -80,7 +80,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P)
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C)
 {
   Handle(Geom_CylindricalSurface) GC = new Geom_CylindricalSurface(C);
-  Init(GC);
+  Init(GC, Standard_True, Precision::Confusion());
 }
 
 
@@ -92,7 +92,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C)
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C)
 {
   Handle(Geom_ConicalSurface) GC = new Geom_ConicalSurface(C);
-  Init(GC);
+  Init(GC, Standard_True, Precision::Confusion());
 }
 
 
@@ -104,7 +104,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C)
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S)
 {
   Handle(Geom_SphericalSurface) GS = new Geom_SphericalSurface(S);
-  Init(GS);
+  Init(GS, Standard_True, Precision::Confusion());
 }
 
 
@@ -116,98 +116,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S)
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T)
 {
   Handle(Geom_ToroidalSurface) GT = new Geom_ToroidalSurface(T);
-  Init(GT);
-}
-
-
-//=======================================================================
-//function : BRepLib_MakeFace
-//purpose  : 
-//=======================================================================
-
-BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S)
-{
-  Init(S);
-}
-
-
-//=======================================================================
-//function : BRepLib_MakeFace
-//purpose  : 
-//=======================================================================
-
-BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
-{
-  Handle(Geom_Plane) GP = new Geom_Plane(P);
-  Init(GP,UMin,UMax,VMin,VMax);
-}
-
-
-//=======================================================================
-//function : BRepLib_MakeFace
-//purpose  : 
-//=======================================================================
-
-BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
-{
-  Handle(Geom_CylindricalSurface) GC = new Geom_CylindricalSurface(C);
-  Init(GC,UMin,UMax,VMin,VMax);
-}
-
-
-//=======================================================================
-//function : BRepLib_MakeFace
-//purpose  : 
-//=======================================================================
-
-BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
-{
-  Handle(Geom_ConicalSurface) GC = new Geom_ConicalSurface(C);
-  Init(GC,UMin,UMax,VMin,VMax);
-}
-
-
-//=======================================================================
-//function : BRepLib_MakeFace
-//purpose  : 
-//=======================================================================
-
-BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
-{
-  Handle(Geom_SphericalSurface) GS = new Geom_SphericalSurface(S);
-  Init(GS,UMin,UMax,VMin,VMax);
-}
-
-
-//=======================================================================
-//function : BRepLib_MakeFace
-//purpose  : 
-//=======================================================================
-
-BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
-{
-  Handle(Geom_ToroidalSurface) GT = new Geom_ToroidalSurface(T);
-  Init(GT,UMin,UMax,VMin,VMax);
+  Init(GT, Standard_True, Precision::Confusion());
 }
 
 
@@ -217,12 +126,105 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S,
-				   const Standard_Real UMin,
-				   const Standard_Real UMax,
-				   const Standard_Real VMin,
-				   const Standard_Real VMax)
+                                   const Standard_Real TolDegen)
 {
-  Init(S,UMin,UMax,VMin,VMax);
+  Init(S, Standard_True, TolDegen);
+}
+
+
+//=======================================================================
+//function : BRepLib_MakeFace
+//purpose  : 
+//=======================================================================
+
+BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax)
+{
+  Handle(Geom_Plane) GP = new Geom_Plane(P);
+  Init(GP, UMin, UMax, VMin, VMax, Precision::Confusion());
+}
+
+
+//=======================================================================
+//function : BRepLib_MakeFace
+//purpose  : 
+//=======================================================================
+
+BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax)
+{
+  Handle(Geom_CylindricalSurface) GC = new Geom_CylindricalSurface(C);
+  Init(GC, UMin, UMax, VMin, VMax, Precision::Confusion());
+}
+
+
+//=======================================================================
+//function : BRepLib_MakeFace
+//purpose  : 
+//=======================================================================
+
+BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax)
+{
+  Handle(Geom_ConicalSurface) GC = new Geom_ConicalSurface(C);
+  Init(GC, UMin, UMax, VMin, VMax, Precision::Confusion());
+}
+
+
+//=======================================================================
+//function : BRepLib_MakeFace
+//purpose  : 
+//=======================================================================
+
+BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax)
+{
+  Handle(Geom_SphericalSurface) GS = new Geom_SphericalSurface(S);
+  Init(GS, UMin, UMax, VMin, VMax, Precision::Confusion());
+}
+
+
+//=======================================================================
+//function : BRepLib_MakeFace
+//purpose  : 
+//=======================================================================
+
+BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax)
+{
+  Handle(Geom_ToroidalSurface) GT = new Geom_ToroidalSurface(T);
+  Init(GT, UMin, UMax, VMin, VMax, Precision::Confusion());
+}
+
+
+//=======================================================================
+//function : BRepLib_MakeFace
+//purpose  : 
+//=======================================================================
+
+BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S,
+                                   const Standard_Real UMin,
+                                   const Standard_Real UMax,
+                                   const Standard_Real VMin,
+                                   const Standard_Real VMax,
+                                   const Standard_Real TolDegen)
+{
+  Init(S, UMin, UMax, VMin, VMax, TolDegen);
 }
 
 
@@ -232,7 +234,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
-				   const Standard_Boolean OnlyPlane)
+                                   const Standard_Boolean OnlyPlane)
 
 {
   // Find a surface through the wire
@@ -263,11 +265,11 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P,
-				   const TopoDS_Wire& W,
-				   const Standard_Boolean Inside)
+                                   const TopoDS_Wire& W,
+                                   const Standard_Boolean Inside)
 {
   Handle(Geom_Plane) Pl = new Geom_Plane(P);
-  Init(Pl,Standard_False);
+  Init(Pl, Standard_False, Precision::Confusion());
   Add(W);
   if (Inside) CheckInside();
 }
@@ -279,11 +281,11 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C,
-				   const TopoDS_Wire& W,
-				   const Standard_Boolean Inside)
+                                   const TopoDS_Wire& W,
+                                   const Standard_Boolean Inside)
 {
   Handle(Geom_CylindricalSurface) GC = new Geom_CylindricalSurface(C);
-  Init(GC,Standard_False);
+  Init(GC, Standard_False, Precision::Confusion());
   Add(W);
   if (Inside) CheckInside();
 }
@@ -295,11 +297,11 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C,
-				   const TopoDS_Wire& W,
-				   const Standard_Boolean Inside)
+                                   const TopoDS_Wire& W,
+                                   const Standard_Boolean Inside)
 {
   Handle(Geom_ConicalSurface) GC = new Geom_ConicalSurface(C);
-  Init(GC,Standard_False);
+  Init(GC, Standard_False, Precision::Confusion());
   Add(W);
   if (Inside) CheckInside();
 }
@@ -311,11 +313,11 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S,
-				   const TopoDS_Wire& W,
-				   const Standard_Boolean Inside)
+                                   const TopoDS_Wire& W,
+                                   const Standard_Boolean Inside)
 {
   Handle(Geom_SphericalSurface) GS = new Geom_SphericalSurface(S);
-  Init(GS,Standard_False);
+  Init(GS, Standard_False, Precision::Confusion());
   Add(W);
   if (Inside) CheckInside();
 }
@@ -327,11 +329,11 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T,
-				   const TopoDS_Wire& W,
-				   const Standard_Boolean Inside)
+                                   const TopoDS_Wire& W,
+                                   const Standard_Boolean Inside)
 {
   Handle(Geom_ToroidalSurface) GT = new Geom_ToroidalSurface(T);
-  Init(GT,Standard_False);
+  Init(GT, Standard_False, Precision::Confusion());
   Add(W);
   if (Inside) CheckInside();
 }
@@ -343,10 +345,10 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S,
-				   const TopoDS_Wire& W,
-				   const Standard_Boolean Inside)
+                                   const TopoDS_Wire& W,
+                                   const Standard_Boolean Inside)
 {
-  Init(S,Standard_False);
+  Init(S, Standard_False, Precision::Confusion());
   Add(W);
   if (Inside) CheckInside();
 }
@@ -358,7 +360,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const Handle(Geom_Surface)& S,
 //=======================================================================
 
 BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Face& F,
-				   const TopoDS_Wire& W)
+                                   const TopoDS_Wire& W)
 {
   Init(F);
   Add(W);
@@ -389,13 +391,14 @@ void BRepLib_MakeFace::Init(const TopoDS_Face& F)
 //=======================================================================
 
 void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& S,
-			     const Standard_Boolean Bound)
+                             const Standard_Boolean Bound,
+                             const Standard_Real TolDegen)
 {
   myError = BRepLib_FaceDone;
   if (Bound) {
     Standard_Real UMin,UMax,VMin,VMax;
     S->Bounds(UMin,UMax,VMin,VMax);
-    Init(S,UMin,UMax,VMin,VMax);
+    Init(S,UMin,UMax,VMin,VMax,TolDegen);
   }
   else {
     BRep_Builder B;
@@ -408,44 +411,58 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& S,
 
 //=======================================================================
 //function : IsDegenerated
-//purpose  : fonction statique qui verifie qu'une courbe n'est pas reduite 
-//           a un point, pour ainsi coder l'edge Degenere.
+//purpose  : Checks whether the passed curve is degenerated with the
+//           passed tolerance value
 //=======================================================================
 
-static Standard_Boolean IsDegenerated(const Handle(Geom_Curve)& C,
-				      const Standard_Real       tol)
+static Standard_Boolean IsDegenerated(const Handle(Geom_Curve)& theCurve,
+                                      const Standard_Real theMaxTol,
+                                      Standard_Real& theActTol)
 {
-  GeomAdaptor_Curve AC(C);
-  
+  GeomAdaptor_Curve AC(theCurve);
+  Standard_Real aConfusion = Precision::Confusion();
+  theActTol = aConfusion;
   GeomAbs_CurveType Type = AC.GetType();
+
   if (Type == GeomAbs_Circle) {
     gp_Circ Circ = AC.Circle();
-    return (Circ.Radius() < tol);
+    if ( Circ.Radius() > theMaxTol )
+      return Standard_False;
+    theActTol = Max(Circ.Radius(), aConfusion);
+    return Standard_True;
   }
   else if (Type == GeomAbs_BSplineCurve) {
     Handle(Geom_BSplineCurve) BS = AC.BSpline();
     Standard_Integer NbPoles = BS->NbPoles();
-    Standard_Real tol2 = tol*tol;
+    Standard_Real aMaxPoleDist2 = 0.0, aMaxTol2 = theMaxTol*theMaxTol;
     gp_Pnt P1,P2;
     P1 = BS->Pole(1);
     for (Standard_Integer i = 2; i <= NbPoles; i++) {
       P2 = BS->Pole(i);
-      if (P1.SquareDistance(P2) > tol2) return Standard_False;
-//      P1 = P2;
+      Standard_Real aPoleDist2 = P1.SquareDistance(P2);
+      if (aPoleDist2 > aMaxTol2)
+        return Standard_False;
+      if (aPoleDist2 > aMaxPoleDist2)
+        aMaxPoleDist2 = aPoleDist2;
     }
+    theActTol = Max(1.000001*Sqrt(aMaxPoleDist2), aConfusion);
     return Standard_True;
   }
   else if (Type == GeomAbs_BezierCurve) {
     Handle(Geom_BezierCurve) BZ = AC.Bezier();
     Standard_Integer NbPoles = BZ->NbPoles();
-    Standard_Real tol2 = tol*tol;
+    Standard_Real aMaxPoleDist2 = 0.0, aMaxTol2 = theMaxTol*theMaxTol;;
     gp_Pnt P1,P2;
     P1 = BZ->Pole(1);
     for (Standard_Integer i = 2; i <= NbPoles; i++) {
       P2 = BZ->Pole(i);
-      if (P1.SquareDistance(P2) > tol2) return Standard_False;
-//      P1 = P2;
+      Standard_Real aPoleDist2 = P1.SquareDistance(P2);
+      if (aPoleDist2 > aMaxTol2)
+        return Standard_False;
+      if (aPoleDist2 > aMaxPoleDist2)
+        aMaxPoleDist2 = aPoleDist2;
     }
+    theActTol = Max(1.000001*Sqrt(aMaxPoleDist2), aConfusion);
     return Standard_True;
   }
   
@@ -458,10 +475,11 @@ static Standard_Boolean IsDegenerated(const Handle(Geom_Curve)& C,
 //=======================================================================
 
 void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
-			     const Standard_Real Um,
-			     const Standard_Real UM,
-			     const Standard_Real Vm,
-			     const Standard_Real VM)
+                             const Standard_Real Um,
+                             const Standard_Real UM,
+                             const Standard_Real Vm,
+                             const Standard_Real VM,
+                             const Standard_Real TolDegen)
 {
   myError = BRepLib_FaceDone;
 
@@ -549,26 +567,27 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
   
   
   // compute 3d curves and degenerate flag
-  Standard_Real tol = Precision::Confusion();
+  Standard_Real maxTol = TolDegen;
   Handle(Geom_Curve) Cumin,Cumax,Cvmin,Cvmax;
   Standard_Boolean Dumin,Dumax,Dvmin,Dvmax;
   Dumin = Dumax = Dvmin = Dvmax = Standard_False;
+  Standard_Real uminTol, umaxTol, vminTol, vmaxTol;
 
   if (!umininf) {
     Cumin = S->UIso(UMin);
-    Dumin = IsDegenerated(Cumin,tol);
+    Dumin = IsDegenerated(Cumin, maxTol, uminTol);
   }
   if (!umaxinf) {
     Cumax = S->UIso(UMax);
-    Dumax = IsDegenerated(Cumax,tol);
+    Dumax = IsDegenerated(Cumax, maxTol, umaxTol);
   }
   if (!vmininf) {
     Cvmin = S->VIso(VMin);
-    Dvmin = IsDegenerated(Cvmin,tol);
+    Dvmin = IsDegenerated(Cvmin, maxTol, vminTol);
   }
   if (!vmaxinf) {
     Cvmax = S->VIso(VMax);
-    Dvmax = IsDegenerated(Cvmax,tol);
+    Dvmax = IsDegenerated(Cvmax, maxTol, vmaxTol);
   }
 
   // compute vertices
@@ -577,12 +596,12 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
   TopoDS_Vertex V00,V10,V11,V01;
   
   if (!umininf) {
-    if (!vmininf) B.MakeVertex(V00,S->Value(UMin,VMin),tol);
-    if (!vmaxinf) B.MakeVertex(V01,S->Value(UMin,VMax),tol);
+    if (!vmininf) B.MakeVertex(V00,S->Value(UMin,VMin), Max(uminTol, vminTol));
+    if (!vmaxinf) B.MakeVertex(V01,S->Value(UMin,VMax), Max(uminTol, vmaxTol));
   }
   if (!umaxinf) {
-    if (!vmininf) B.MakeVertex(V10,S->Value(UMax,VMin),tol);
-    if (!vmaxinf) B.MakeVertex(V11,S->Value(UMax,VMax),tol);
+    if (!vmininf) B.MakeVertex(V10,S->Value(UMax,VMin), Max(umaxTol, vminTol));
+    if (!vmaxinf) B.MakeVertex(V11,S->Value(UMax,VMax), Max(umaxTol, vmaxTol));
   }
 
   if (uclosed) {
@@ -613,20 +632,20 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
   
   // make the face
   TopoDS_Face& F = TopoDS::Face(myShape);
-  B.MakeFace(F,S,tol);
+  B.MakeFace(F,S,Precision::Confusion());
 
   // make the edges
   TopoDS_Edge eumin,eumax,evmin,evmax;
 
   if (!umininf) {
     if (!Dumin)
-      B.MakeEdge(eumin,Cumin,tol);
+      B.MakeEdge(eumin,Cumin,uminTol);
     else
       B.MakeEdge(eumin);
     if (uclosed) 
-      B.UpdateEdge(eumin,Lumax,Lumin,F,tol);
+      B.UpdateEdge(eumin,Lumax,Lumin,F,Max(uminTol, umaxTol));
     else
-      B.UpdateEdge(eumin,Lumin,F,tol);
+      B.UpdateEdge(eumin,Lumin,F,uminTol);
     B.Degenerated(eumin,Dumin);
     if (!vmininf) {
       V00.Orientation(TopAbs_FORWARD);
@@ -644,10 +663,10 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
       eumax = eumin;
     else {
       if (!Dumax)
-	B.MakeEdge(eumax,Cumax,tol);
+	B.MakeEdge(eumax,Cumax,umaxTol);
       else
 	B.MakeEdge(eumax);
-      B.UpdateEdge(eumax,Lumax,F,tol);
+      B.UpdateEdge(eumax,Lumax,F,umaxTol);
       B.Degenerated(eumax,Dumax);
       if (!vmininf) {
 	V10.Orientation(TopAbs_FORWARD);
@@ -663,13 +682,13 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
 
   if (!vmininf) {
     if (!Dvmin)
-      B.MakeEdge(evmin,Cvmin,tol);
+      B.MakeEdge(evmin,Cvmin,vminTol);
     else
       B.MakeEdge(evmin);
     if (vclosed)
-      B.UpdateEdge(evmin,Lvmin,Lvmax,F,tol);
+      B.UpdateEdge(evmin,Lvmin,Lvmax,F,Max(vminTol, vmaxTol));
     else
-      B.UpdateEdge(evmin,Lvmin,F,tol);
+      B.UpdateEdge(evmin,Lvmin,F,vminTol);
     B.Degenerated(evmin,Dvmin);
     if (!umininf) {
       V00.Orientation(TopAbs_FORWARD);
@@ -687,10 +706,10 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
       evmax = evmin;
     else {
       if (!Dvmax)
-	B.MakeEdge(evmax,Cvmax,tol);
+	B.MakeEdge(evmax,Cvmax,vmaxTol);
       else
 	B.MakeEdge(evmax);
-      B.UpdateEdge(evmax,Lvmax,F,tol);
+      B.UpdateEdge(evmax,Lvmax,F,vmaxTol);
       B.Degenerated(evmax,Dvmax);
       if (!umininf) {
 	V01.Orientation(TopAbs_FORWARD);
@@ -748,7 +767,7 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
     // Les Isos sont Approximees a Precision::Approximation()
     // et on code Precision::Confusion() dans l'arete.
     // ==> Un petit passage dans SamePrameter pour regler les tolerances.
-    BRepLib::SameParameter( F, tol, Standard_True);
+    BRepLib::SameParameter(F, Precision::Confusion(), Standard_True);
   }
 
   Done();
