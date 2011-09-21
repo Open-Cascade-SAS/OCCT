@@ -821,7 +821,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=1.1*myTolReached3d;
     }
   }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
-  //modified by NIZNHY-PKV Mon Sep 12 09:32:44 2011f
+  //
   if ((aType1==GeomAbs_SurfaceOfRevolution && aType2==GeomAbs_Cylinder) ||
       (aType2==GeomAbs_SurfaceOfRevolution && aType1==GeomAbs_Cylinder)) {
     Standard_Boolean bIsDone;
@@ -912,8 +912,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     if (aDSmax > aDS) {
       myTolReached3d=sqrt(aDSmax);
     }
-  }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Torus) ||
-  //modified by NIZNHY-PKV Mon Sep 12 09:32:46 2011t
+  }//if((aType1==GeomAbs_SurfaceOfRevolution ...
 }
 //=======================================================================
 //function : MakeCurve
@@ -2216,59 +2215,57 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 
   return new Geom2d_BSplineCurve(poles,knots,mults,1);
 }
+//modified by NIZNHY-PKV Fri Sep 16 07:57:30 2011f
 //=======================================================================
 //function : PrepareLines3D
 //purpose  : 
 //=======================================================================
-  void IntTools_FaceFace::PrepareLines3D()
+  void IntTools_FaceFace::PrepareLines3D(const Standard_Boolean bToSplit)
 {
-  Standard_Integer i, aNbCurves, j, aNbNewCurves;
+  Standard_Integer i, aNbCurves;
+  GeomAbs_SurfaceType aType1, aType2;
   IntTools_SequenceOfCurves aNewCvs;
-
   //
-  // 1. Treatment of periodic and closed  curves
+  // 1. Treatment closed  curves
   aNbCurves=mySeqOfCurve.Length();
-  for (i=1; i<=aNbCurves; i++) {
+  for (i=1; i<=aNbCurves; ++i) {
     const IntTools_Curve& aIC=mySeqOfCurve(i);
-    // DEBUG
-    // const Handle(Geom_Curve)&   aC3D =aIC.Curve();
-    // const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
-    // const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
     //
-    IntTools_SequenceOfCurves aSeqCvs;
-    aNbNewCurves=IntTools_Tools::SplitCurve(aIC, aSeqCvs);
-    
-    if (aNbNewCurves) {
-      for (j=1; j<=aNbNewCurves; j++) {
-	const IntTools_Curve& aICNew=aSeqCvs(j);
-	aNewCvs.Append(aICNew);
+    if (bToSplit) {
+      Standard_Integer j, aNbC;
+      IntTools_SequenceOfCurves aSeqCvs;
+      //
+      aNbC=IntTools_Tools::SplitCurve(aIC, aSeqCvs);
+      if (aNbC) {
+	for (j=1; j<=aNbC; ++j) {
+	  const IntTools_Curve& aICNew=aSeqCvs(j);
+	  aNewCvs.Append(aICNew);
+	}
+      }
+      else {
+	aNewCvs.Append(aIC);
       }
     }
-    //
     else {
       aNewCvs.Append(aIC);
     }
   }
   //
   // 2. Plane\Cone intersection when we had 4 curves
-  GeomAbs_SurfaceType aType1, aType2;
-  BRepAdaptor_Surface aBS1, aBS2;
-  
-  aBS1.Initialize(myFace1);
-  aType1=aBS1.GetType();
-  
-  aBS2.Initialize(myFace2);
-  aType2=aBS2.GetType();
-  
+  aType1=myHS1->GetType();
+  aType2=myHS2->GetType();
+  aNbCurves=aNewCvs.Length();
+  //
   if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Cone) ||
       (aType2==GeomAbs_Plane && aType1==GeomAbs_Cone)) {
-    aNbCurves=aNewCvs.Length();
     if (aNbCurves==4) {
-      GeomAbs_CurveType aCType1=aNewCvs(1).Type();
+      GeomAbs_CurveType aCType1;
+      //
+      aCType1=aNewCvs(1).Type();
       if (aCType1==GeomAbs_Line) {
 	IntTools_SequenceOfCurves aSeqIn, aSeqOut;
 	//
-	for (i=1; i<=aNbCurves; i++) {
+	for (i=1; i<=aNbCurves; ++i) {
 	  const IntTools_Curve& aIC=aNewCvs(i);
 	  aSeqIn.Append(aIC);
 	}
@@ -2277,26 +2274,23 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 	//
 	aNewCvs.Clear();
 	aNbCurves=aSeqOut.Length(); 
-	for (i=1; i<=aNbCurves; i++) {
+	for (i=1; i<=aNbCurves; ++i) {
 	  const IntTools_Curve& aIC=aSeqOut(i);
 	  aNewCvs.Append(aIC);
 	}
-	//
       }
     }
-  }// end of if ((aType1==GeomAbs_Plane && ...
+  }// if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Cone)...
   //
   // 3. Fill  mySeqOfCurve
   mySeqOfCurve.Clear();
   aNbCurves=aNewCvs.Length();
-  for (i=1; i<=aNbCurves; i++) {
+  for (i=1; i<=aNbCurves; ++i) {
     const IntTools_Curve& aIC=aNewCvs(i);
     mySeqOfCurve.Append(aIC);
   }
-
 }
-
-
+//modified by NIZNHY-PKV Fri Sep 16 07:57:32 2011t
 //=======================================================================
 //function : CorrectSurfaceBoundaries
 //purpose  : 

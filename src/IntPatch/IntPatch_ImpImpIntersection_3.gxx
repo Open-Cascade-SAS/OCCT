@@ -3,13 +3,35 @@
 // Author:    Jacques GOUSSARD
 // Copyright: OPEN CASCADE 1992
 
+//modified by NIZNHY-PKV Thu Sep 15 11:09:12 2011
+static 
+  void SeamPosition(const gp_Pnt& aPLoc, 
+		    const gp_Ax3& aPos,
+		    gp_Ax2& aSeamPos);
+static
+  void AdjustToSeam (const gp_Cylinder& aQuad,
+		     gp_Circ& aCirc);
+static
+  void AdjustToSeam (const gp_Sphere& aQuad,
+		     gp_Circ& aCirc,
+		     const Standard_Real aTolAng);
+static
+  void AdjustToSeam (const gp_Cone& aQuad,
+		     gp_Circ& aCirc);
+//modified by NIZNHY-PKV Thu Sep 15 11:09:13 2011
+
+//=======================================================================
+//function : IntPP
+//purpose  : 
+// Traitement du cas Plan/Plan
+//=======================================================================
 Standard_Boolean IntPP (const IntSurf_Quadric& Quad1,
 			const IntSurf_Quadric& Quad2,
 			const Standard_Real Tolang,
 			const Standard_Real TolTang,
 			Standard_Boolean& Same,
 			IntPatch_SequenceOfLine& slin)
-// Traitement du cas Plan/Plan
+
 {
   IntSurf_TypeTrans trans1,trans2;
   IntAna_ResultType typint;
@@ -37,12 +59,17 @@ Standard_Boolean IntPP (const IntSurf_Quadric& Quad1,
       trans1 = IntSurf_In;
       trans2 = IntSurf_Out;
     }
-    Handle(IntPatch_GLine) glig = new IntPatch_GLine (linsol,Standard_False,trans1,trans2);
+    Handle(IntPatch_GLine) glig = 
+      new IntPatch_GLine (linsol,Standard_False,trans1,trans2);
     slin.Append(glig);
   }
   return Standard_True;
 }
-//====================================================================================
+//=======================================================================
+//function : IntPCy
+//purpose  : 
+// Traitement du cas Plan/Cylindre et reciproquement
+//=======================================================================
 Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 			 const IntSurf_Quadric& Quad2,
 			 const Standard_Real Tolang,
@@ -51,7 +78,6 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 			 Standard_Boolean& Empty,
 			 IntPatch_SequenceOfLine& slin)
 
-// Traitement du cas Plan/Cylindre et reciproquement
 {
   gp_Pln Pl;
   gp_Cylinder Cy;
@@ -76,14 +102,12 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 
   switch (typint) {
 	    
-  case IntAna_Empty :
-    {
+    case IntAna_Empty :    {
       Empty = Standard_True;
     }
-    break;
+      break;
 
-  case IntAna_Line:
-    {
+    case IntAna_Line:    {
       gp_Lin linsol = inter.Line(1);
       gp_Pnt orig(linsol.Location());
       if (NbSol == 1) {                 // ligne de tangence
@@ -128,7 +152,8 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 	}
 	slin.Append(glig);
       }
-      else {      // on a 2 droites. Il faut determiner les transitions
+      else {      
+	// on a 2 droites. Il faut determiner les transitions
 	// de chacune.
 	
 	if (linsol.Direction().DotCross(Quad2.Normale(orig),
@@ -140,7 +165,8 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 	  trans1 = IntSurf_In;
 	  trans2 = IntSurf_Out;
 	}
-	Handle(IntPatch_GLine) glig = new IntPatch_GLine(linsol, Standard_False,trans1,trans2);
+	Handle(IntPatch_GLine) glig = 
+	  new IntPatch_GLine(linsol, Standard_False,trans1,trans2);
 	slin.Append(glig);
 	
 	linsol = inter.Line(2);
@@ -159,15 +185,19 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 	slin.Append(glig);
       }
     }
-    break;
-    
-  case IntAna_Circle:
-    {
-      gp_Circ cirsol = inter.Circle(1);
+      break;
+      //
+    case IntAna_Circle:    {
+      gp_Circ cirsol;
       gp_Pnt ptref;
       gp_Vec Tgt;
+      //
+      cirsol = inter.Circle(1);
+      //modified by NIZNHY-PKV Thu Sep 15 11:30:03 2011f
+      AdjustToSeam(Cy, cirsol);
+      //modified by NIZNHY-PKV Thu Sep 15 11:30:15 2011t
       ElCLib::D1(0.,cirsol,ptref,Tgt);
-
+      
       if (Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref)) > 0.0) {
 	trans1 = IntSurf_Out;
 	trans2 = IntSurf_In;
@@ -179,15 +209,14 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
       Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
       slin.Append(glig);
     }
-    break;
-    
-  case IntAna_Ellipse:
-    {
+      break;
+      // 
+    case IntAna_Ellipse:    {
       gp_Elips elipsol = inter.Ellipse(1);
       gp_Pnt ptref;
       gp_Vec Tgt;
       ElCLib::D1(0.,elipsol,ptref,Tgt);
-
+      
       if (Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref)) > 0.0) {
 	trans1 = IntSurf_Out;
 	trans2 = IntSurf_In;
@@ -199,25 +228,31 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
       Handle(IntPatch_GLine) glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
       slin.Append(glig);
     }
-    break;
-    
-  default:
-    {
+      break;
+      //
+    default:    {
       return Standard_False; // on ne doit pas passer ici
     }
   }
   return Standard_True;
 }
-//====================================================================================
+//=======================================================================
+//function : IntPSp
+//purpose  : 
+// Traitement du cas Plan/Sphere et reciproquement
+//=======================================================================
 Standard_Boolean IntPSp (const IntSurf_Quadric& Quad1,
 			 const IntSurf_Quadric& Quad2,
+			 //modified by NIZNHY-PKV Tue Sep 20 08:59:36 2011f
+			 const Standard_Real Tolang,
+			 //modified by NIZNHY-PKV Tue Sep 20 08:59:39 2011t
 			 const Standard_Real TolTang,
 			 const Standard_Boolean Reversed,
 			 Standard_Boolean& Empty,
 			 IntPatch_SequenceOfLine& slin,
 			 IntPatch_SequenceOfPoint& spnt)
 
-// Traitement du cas Plan/Sphere et reciproquement
+
 {
   gp_Circ cirsol;
   gp_Pln Pl;
@@ -242,15 +277,12 @@ Standard_Boolean IntPSp (const IntSurf_Quadric& Quad1,
   Empty = Standard_False;
 
   switch (typint) {
-
-  case IntAna_Empty :
-    {
+    case IntAna_Empty :    {
       Empty = Standard_True;
     }
-    break;
-    
-  case IntAna_Point:
-    {
+      break;
+      //
+    case IntAna_Point:    {
       gp_Pnt psol = inter.Point(1);
       Standard_Real U1,V1,U2,V2;
       Quad1.Parameters(psol,U1,V1);
@@ -260,11 +292,13 @@ Standard_Boolean IntPSp (const IntSurf_Quadric& Quad1,
       ptsol.SetParameters(U1,V1,U2,V2);
       spnt.Append(ptsol);
     }
-    break;
-    
-  case IntAna_Circle:
-    {
+      break;
+      //
+    case IntAna_Circle:    {
       cirsol = inter.Circle(1);
+      //modified by NIZNHY-PKV Thu Sep 15 11:30:03 2011f
+      AdjustToSeam(Sp, cirsol, Tolang);
+      //modified by NIZNHY-PKV Thu Sep 15 11:30:15 2011t
       gp_Pnt ptref;
       gp_Vec Tgt;
       ElCLib::D1(0.,cirsol,ptref,Tgt);
@@ -280,16 +314,19 @@ Standard_Boolean IntPSp (const IntSurf_Quadric& Quad1,
       Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
       slin.Append(glig);
     }
-    break;
-    
-  default:
-    {
+      break;
+      
+    default:    {
       return Standard_False;  // on ne doit pas passer ici
     }
   }
   return Standard_True;
 }
-//====================================================================================
+//=======================================================================
+//function : IntPCo
+//purpose  : 
+// Traitement du cas Plan/Cone et reciproquement
+//=======================================================================
 Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
 			 const IntSurf_Quadric& Quad2,
 			 const Standard_Real Tolang,
@@ -300,7 +337,7 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
 			 IntPatch_SequenceOfLine& slin,
 			 IntPatch_SequenceOfPoint& spnt)
 
-// Traitement du cas Plan/Cone et reciproquement
+
 {
   gp_Pnt apex;
 
@@ -323,16 +360,16 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
   }
 
   inter.Perform(Pl,Co,Tolang,TolTang);
-  if (!inter.IsDone()) {return Standard_False;}
-
+  if (!inter.IsDone()) {
+    return Standard_False;
+  }
+  //
   typint = inter.TypeInter();
   Standard_Integer NbSol = inter.NbSolutions();
   Empty = Standard_False;
 
   switch (typint) {
-	    
-  case IntAna_Point:
-    {
+    case IntAna_Point:    {
       gp_Pnt psol = inter.Point(1);
       Standard_Real U1,V1,U2,V2;
       Quad1.Parameters(psol,U1,V1);
@@ -342,10 +379,9 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
       ptsol.SetParameters(U1,V1,U2,V2);
       spnt.Append(ptsol);
     }
-    break;
-    
-  case IntAna_Line:
-    {
+      break;
+      
+    case IntAna_Line:    {
       gp_Lin linsol = inter.Line(1);
       if (linsol.Direction().Dot(Co.Axis().Direction()) <0.) {
 	linsol.SetDirection(linsol.Direction().Reversed());
@@ -355,7 +391,7 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
       Standard_Real U1,V1,U2,V2;
       Quad1.Parameters(apex,U1,V1);
       Quad2.Parameters(apex,U2,V2);
-
+      
       if (NbSol == 1) {                 // ligne de tangence
 	IntPatch_Point ptsol;
 	ptsol.SetValue(apex,TolTang,Standard_False);
@@ -372,10 +408,9 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
 	  Normp = Quad2.Normale(ptbid);
 	  Normco = Quad1.Normale(ptbid);
 	}
-
 	IntSurf_Situation situco,situco_otherside;
 	IntSurf_Situation situp,situp_otherside;
-
+	
 	if (Normp.Dot(TestCurvature) > 0.) {
 	  situco           = IntSurf_Outside;
 	  situco_otherside = IntSurf_Inside;
@@ -504,100 +539,71 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
       }
     }
     break;
-    
-  case IntAna_Circle:
-    {
+      
+    case IntAna_Circle:    {
       gp_Circ cirsol = inter.Circle(1);
-#if 0 
-      if (ElCLib::LineParameter(Co.Axis(),cirsol.Location()) < 
-	  ElCLib::LineParameter(Co.Axis(),apex) ) {
-	Empty = Standard_True;
+      //modified by NIZNHY-PKV Thu Sep 15 11:34:04 2011f
+      AdjustToSeam(Co, cirsol);
+      //modified by NIZNHY-PKV Thu Sep 15 11:36:08 2011t
+      gp_Pnt ptref;
+      gp_Vec Tgt;
+      ElCLib::D1(0.,cirsol,ptref,Tgt);
+      
+      if (Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref)) >0.) {
+	trans1 = IntSurf_Out;
+	trans2 = IntSurf_In;
       }
-#endif
-      if(0) { } 
       else {
-
-	gp_Pnt ptref;
-	gp_Vec Tgt;
-	ElCLib::D1(0.,cirsol,ptref,Tgt);
-	
-	if (Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref)) >0.) {
-	  trans1 = IntSurf_Out;
-	  trans2 = IntSurf_In;
-	}
-	else {
-	  trans1 = IntSurf_In;
-	  trans2 = IntSurf_Out;
-	}
-	Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
-	slin.Append(glig);
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
       }
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(cirsol,Standard_False,trans1,trans2);
+      slin.Append(glig);
     }
-    break;
-    
-  case IntAna_Ellipse:
-    {
+      break;
+      
+    case IntAna_Ellipse:    {
       gp_Elips  elipsol = inter.Ellipse(1);
-#if 0 
-      if (ElCLib::LineParameter(Co.Axis(),elipsol.Location()) < 
-	  ElCLib::LineParameter(Co.Axis(),apex) ) {
-	Empty = Standard_True;
+      gp_Pnt ptref;
+      gp_Vec Tgt;
+      ElCLib::D1(0.,elipsol,ptref,Tgt);
+      
+      if (Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref)) >0.) {
+	trans1 = IntSurf_Out;
+	trans2 = IntSurf_In;
       }
-#endif
-      if(0) { } 
       else {
-	gp_Pnt ptref;
-	gp_Vec Tgt;
-	ElCLib::D1(0.,elipsol,ptref,Tgt);
-	
-	if (Tgt.DotCross(Quad2.Normale(ptref),Quad1.Normale(ptref)) >0.) {
-	  trans1 = IntSurf_Out;
-	  trans2 = IntSurf_In;
-	}
-	else {
-	  trans1 = IntSurf_In;
-	  trans2 = IntSurf_Out;
-	}
-	Handle(IntPatch_GLine) glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
-	slin.Append(glig);
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
       }
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
+      slin.Append(glig);
     }
-    break;
-    
-  case IntAna_Parabola:
-    {
+      break;
+      
+    case IntAna_Parabola:    {
       gp_Parab parabsol = inter.Parabola(1);
-#if 0 
-      if (ElCLib::LineParameter(Co.Axis(),parabsol.Focus()) < 
-	  ElCLib::LineParameter(Co.Axis(),apex) ) {
-	Empty = Standard_True;
+      
+      gp_Vec Tgtorig(parabsol.YAxis().Direction());
+      Standard_Real ptran = Tgtorig.DotCross(Quad2.Normale(parabsol.Location()),
+					     Quad1.Normale(parabsol.Location()));
+      if (ptran >0.00000001) {
+	trans1 = IntSurf_Out;
+	trans2 = IntSurf_In;
       }
-#endif
-      if(0) { } 
-      else {
-	
-	gp_Vec Tgtorig(parabsol.YAxis().Direction());
-	Standard_Real ptran = Tgtorig.DotCross(Quad2.Normale(parabsol.Location()),
-					       Quad1.Normale(parabsol.Location()));
-	if (ptran >0.00000001) {
-	  trans1 = IntSurf_Out;
-	  trans2 = IntSurf_In;
-	}
-	else if (ptran <-0.00000001) {
-	  trans1 = IntSurf_In;
-	  trans2 = IntSurf_Out;
-	}
-	else { 
-	  trans1=trans2=IntSurf_Undecided; 
-	}
-	Handle(IntPatch_GLine) glig = new IntPatch_GLine(parabsol,Standard_False,trans1,trans2);
-	slin.Append(glig);
+      else if (ptran <-0.00000001) {
+	trans1 = IntSurf_In;
+	trans2 = IntSurf_Out;
       }
+      else { 
+	trans1=trans2=IntSurf_Undecided; 
+      }
+      Handle(IntPatch_GLine) glig = new IntPatch_GLine(parabsol,Standard_False,trans1,trans2);
+      slin.Append(glig);
     }
-    break;
-    
-  case IntAna_Hyperbola:
-    {
+      break;
+      
+    case IntAna_Hyperbola:    {
       gp_Pnt tophypr;
       gp_Vec Tgttop;
       
@@ -624,13 +630,78 @@ Standard_Boolean IntPCo (const IntSurf_Quadric& Quad1,
 	slin.Append(glig);
       }
     }
-    break;
-    
-  default:
-    {
+      break;
+      
+    default:    {
       return Standard_False;
     }
   }
   return Standard_True;
 }
-//====================================================================================
+//
+//modified by NIZNHY-PKV Thu Sep 15 10:53:39 2011f
+//=======================================================================
+//function : AdjustToSeam
+//purpose  : 
+//=======================================================================
+void AdjustToSeam (const gp_Cone& aQuad,
+		   gp_Circ& aCirc)
+{
+   gp_Ax2 aAx2;
+   //
+   const gp_Pnt& aPLoc=aCirc.Location();
+   const gp_Ax3& aAx3=aQuad.Position();
+   SeamPosition(aPLoc, aAx3, aAx2);
+   aCirc.SetPosition(aAx2);
+} 
+//=======================================================================
+//function : AdjustToSeam
+//purpose  : 
+//=======================================================================
+void AdjustToSeam (const gp_Sphere& aQuad,
+		   gp_Circ& aCirc,
+		   const Standard_Real aTolAng)
+{
+   gp_Ax2 aAx2;
+   //
+   const gp_Ax1& aAx1C=aCirc.Axis();
+   const gp_Ax3& aAx3=aQuad.Position();
+   const gp_Ax1& aAx1Q=aAx3.Axis();
+   //
+   const gp_Dir& aDirC=aAx1C.Direction();
+   const gp_Dir& aDirQ=aAx1Q.Direction();
+   if (aDirC.IsParallel(aDirQ, aTolAng)) {
+     const gp_Pnt& aPLoc=aCirc.Location();
+     SeamPosition(aPLoc, aAx3, aAx2);
+     aCirc.SetPosition(aAx2);
+   }
+} 
+//=======================================================================
+//function : AdjustToSeam
+//purpose  : 
+//=======================================================================
+void AdjustToSeam (const gp_Cylinder& aQuad,
+		   gp_Circ& aCirc)
+{
+   gp_Ax2 aAx2;
+   //
+   const gp_Pnt& aPLoc=aCirc.Location();
+   const gp_Ax3& aAx3=aQuad.Position();
+   SeamPosition(aPLoc, aAx3, aAx2);
+   aCirc.SetPosition(aAx2);
+} 
+//=======================================================================
+//function : SeamPosition
+//purpose  : 
+//=======================================================================
+void SeamPosition(const gp_Pnt& aPLoc, 
+		  const gp_Ax3& aPos, 
+		  gp_Ax2& aSeamPos)
+{
+  const gp_Dir& aDZ=aPos.Direction();
+  const gp_Dir& aDX=aPos.XDirection();
+  gp_Ax2 aAx2(aPLoc, aDZ, aDX);
+  aSeamPos=aAx2;
+}
+			    
+//modified by NIZNHY-PKV Thu Sep 15 10:53:41 2011t

@@ -21,6 +21,9 @@ static Standard_Boolean IntPCy (const IntSurf_Quadric&,
 
 static Standard_Boolean IntPSp (const IntSurf_Quadric&,
 				const IntSurf_Quadric&,
+				//modified by NIZNHY-PKV Tue Sep 20 08:59:56 2011t
+				const Standard_Real,
+				//modified by NIZNHY-PKV Tue Sep 20 08:59:52 2011t
 				const Standard_Real,
 				const Standard_Boolean,
 				Standard_Boolean&,

@@ -98,7 +98,10 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       case GeomAbs_Sphere:
 	{
 	  quad2.SetValue(S2->Sphere());
-	  if (!IntPSp(quad1,quad2,TolTang,Standard_False,empt,slin,spnt)) {
+	  //modified by NIZNHY-PKV Tue Sep 20 09:03:06 2011f
+	  if (!IntPSp(quad1,quad2,Tolang,TolTang,Standard_False,empt,slin,spnt)) {
+	  //if (!IntPSp(quad1,quad2,TolTang,Standard_False,empt,slin,spnt)) {
+	    //modified by NIZNHY-PKV Tue Sep 20 09:03:10 2011t
 	    return;
 	  }
 	  if (empt) {
@@ -208,7 +211,10 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       case GeomAbs_Plane:
 	{
 	  quad2.SetValue(S2->Plane());
-	  if (!IntPSp(quad1,quad2,TolTang,Standard_True,empt,slin,spnt)) {
+	  //modified by NIZNHY-PKV Tue Sep 20 09:03:35 2011f
+	  if (!IntPSp(quad1,quad2,Tolang,TolTang,Standard_True,empt,slin,spnt)) {
+	  //if (!IntPSp(quad1,quad2,TolTang,Standard_True,empt,slin,spnt)) {
+	    //modified by NIZNHY-PKV Tue Sep 20 09:03:38 2011t
 	    return;
 	  }
 	  if (empt) {

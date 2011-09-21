@@ -101,14 +101,18 @@ is
     	returns Boolean from Standard; 
 	---Purpose:
 	--- Returns True if faces are tangent
-	---
-
-    PrepareLines3D (me:out);
+	--- 
+    --modified by NIZNHY-PKV Fri Sep 16 07:44:22 2011	
+    PrepareLines3D (me:out; 
+    	    bToSplit: Boolean from Standard=Standard_True);
+    --PrepareLines3D (me:out);
     	---Purpose: 
-    	--- Provides post-processing the result lines,
-	--- which includes spliting closed curves.
-	---
-    --amv
+    	--- Provides post-processing the result lines. 
+        --- <bToSplit> - the flag.    		     
+    	--  In case of <bToSplit> is true the closed 3D-curves will be splitted  
+        --  on parts. 
+        --  In case of <bToSplit> is false the closed 3D-curves remain untouched.  
+    
     SetList (me: in out; ListOfPnts: in out ListOfPntOn2S from IntSurf);
     
     ----------------------------------------------------------
@@ -119,10 +123,8 @@ is
     	                  D2      : TopolTool from Adaptor3d)
 	is protected; 
 	
-    --modified by NIZNHY-PKV Tue Jul 10 10:01:27 2007f
     ComputeTolReached3d(me:out) 
     	is  protected; 
-    --modified by NIZNHY-PKV Tue Jul 10 10:01:30 2007t	
 
 fields 
  
