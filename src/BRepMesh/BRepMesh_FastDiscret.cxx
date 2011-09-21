@@ -13,6 +13,7 @@
 #include <BRepMesh_PairOfPolygon.hxx>
 #include <BRepMesh_DataMapOfShapePairOfPolygon.hxx>
 #include <BRepMesh_DataMapIteratorOfDataMapOfShapePairOfPolygon.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <TopAbs.hxx>
@@ -211,10 +212,12 @@ Standard_Real BRepMesh_FastDiscret::RelativeEdgeDeflection(const TopoDS_Edge& th
 
 void BRepMesh_FastDiscret::Perform(const TopoDS_Shape& theShape)
 {
+  TopTools_IndexedDataMapOfShapeListOfShape anAncestors;
+  TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anAncestors);
   std::vector<TopoDS_Face> aFaces;
   for (TopExp_Explorer ex(theShape, TopAbs_FACE); ex.More(); ex.Next()) {
     TopoDS_Face aF = TopoDS::Face(ex.Current());
-    Add(aF);
+    Add(aF, anAncestors);
     aFaces.push_back(aF);
   }
 
@@ -266,7 +269,8 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
   return;                            \
 }
 
-void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
+void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface,
+                               const TopTools_IndexedDataMapOfShapeListOfShape& theAncestors)
 {
 #ifndef DEB_MESH
   try
@@ -367,7 +371,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
       aLSeq.Append(l1);
       aCSeq.Append(C);
       aShSeq.Append(edge);
-      Add(edge, face, gFace, C, defedge, f1, l1);
+      Add(edge, face, gFace, C, theAncestors, defedge, f1, l1);
       myAngle = savangle;
     }
   }
@@ -500,7 +504,7 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
           defedge = Max(defedge, eps);
           myMapdefle.Bind(edge, defedge);
           const Handle(Geom2d_Curve)& C = aCSeq.Value(j1);
-          Add(edge, face, gFace, C, defedge, aFSeq.Value(j1), aLSeq.Value(j1));
+          Add(edge, face, gFace, C, theAncestors, defedge, aFSeq.Value(j1), aLSeq.Value(j1));
         }
 
         classifier.Nullify();
@@ -693,6 +697,60 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface)
 }
 
 //=======================================================================
+//function : splitSegment
+//purpose  :
+//=======================================================================
+static void splitSegment( BRepMesh_GeomTool&    theGT, 
+                          const Handle(Geom_Surface)& theSurf, 
+                          const Handle(Geom2d_Curve)& theCurve2d,
+                          const BRepAdaptor_Curve&    theBAC,
+                          const Standard_Real         theSquareEDef,
+                          const Standard_Real         theFirst,
+                          const Standard_Real         theLast,
+                          const Standard_Integer      theNbIter)
+{
+  //limit ineration depth
+  if(theNbIter > 10)
+    return;
+  gp_Pnt2d uvf, uvl, uvm;
+  gp_Pnt   P3dF, P3dL, midP3d, midP3dFromSurf;
+  Standard_Real midpar;
+  
+  if(Abs(theLast - theFirst) < 2*Precision::PConfusion())
+    return;
+
+  theCurve2d->D0(theFirst, uvf);
+  theCurve2d->D0(theLast, uvl);
+
+  P3dF = theSurf->Value(uvf.X(), uvf.Y());
+  P3dL = theSurf->Value(uvl.X(), uvl.Y());
+  
+  if(P3dF.SquareDistance(P3dL) < theSquareEDef)
+    return;
+
+  uvm = gp_Pnt2d((uvf.XY() + uvl.XY())*0.5);
+  midP3dFromSurf = theSurf->Value(uvm.X(), uvm.Y());
+
+  gp_XYZ aVec = P3dL.XYZ()-P3dF.XYZ();
+  aVec.Normalize();
+
+  gp_XYZ Vec1 = midP3dFromSurf.XYZ() - P3dF.XYZ();
+  Standard_Real aModulus = Vec1.Dot(aVec);
+  gp_XYZ aProj = aVec*aModulus;
+  gp_XYZ aDist = Vec1 - aProj;
+    
+  if(aDist.SquareModulus() < theSquareEDef)
+    return;
+
+  midpar = (theFirst + theLast) * 0.5;
+  theBAC.D0(midpar, midP3d);
+  theGT.AddPoint(midP3d, midpar, Standard_False);
+
+  splitSegment(theGT, theSurf, theCurve2d, theBAC, theSquareEDef, theFirst, midpar, theNbIter+1);
+  splitSegment(theGT, theSurf, theCurve2d, theBAC, theSquareEDef, midpar, theLast,  theNbIter+1); 
+}
+
+//=======================================================================
 //function : Add
 //purpose  : 
 //=======================================================================
@@ -700,6 +758,7 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
                                 const TopoDS_Face&                  theFace, 
                                 const Handle(BRepAdaptor_HSurface)& theGFace,
                                 const Handle(Geom2d_Curve)&         theC2d,
+                                const TopTools_IndexedDataMapOfShapeListOfShape& theAncestors,
                                 const Standard_Real                 theDefEdge,
                                 const Standard_Real                 theFirst,
                                 const Standard_Real                 theLast)
@@ -884,7 +943,8 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
       if (orEdge == TopAbs_INTERNAL) otherdefedge *= 0.5;
       
       BRepAdaptor_Curve cons;
-      if (BRep_Tool::SameParameter(theEdge))
+      Standard_Boolean isSameParam = BRep_Tool::SameParameter(theEdge);
+      if (isSameParam)
       {
         cons.Initialize(theEdge);
       }
@@ -910,10 +970,46 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
                      Standard_True);
       }
 
+      Standard_Integer i; 
+      Standard_Integer nbnodes = GT.NbPoints();
+      //Check deflection in 2d space for improvement of edge tesselation.
+      if( isSameParam && nbnodes > 1)
+      {
+        Standard_Real aSquareEdgeDef = otherdefedge * otherdefedge;
+        const TopTools_ListOfShape& lf = theAncestors.FindFromKey(theEdge);
+        TopTools_ListIteratorOfListOfShape itl(lf);
+        for (; itl.More(); itl.Next()) {
+          const TopoDS_Face& aFace = TopoDS::Face (itl.Value());          
+
+          TopLoc_Location aLoc;
+          Standard_Real aF, aL;
+          Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace, aLoc);
+          const Handle(Standard_Type)& aType = aSurf->DynamicType();
+          if(aType == STANDARD_TYPE(Geom_Plane))
+            continue;
+          Handle(Geom2d_Curve) aCurve2d = BRep_Tool::CurveOnSurface(theEdge, aFace, aF, aL);
+          if(Abs(aF-wFirst)>Precision::PConfusion()||Abs(aL-wLast)>Precision::PConfusion())
+            continue;
+          
+          gp_Pnt2d uvf;
+          Standard_Real parf;
+          nbnodes = GT.NbPoints();
+          TColStd_Array1OfReal aParamArray(1, nbnodes);
+          for (i = 1; i <= nbnodes; i++)
+          {          
+            GT.Value(cons, theGFace, i, parf, P3d, uvf);            
+            aParamArray.SetValue(i, parf);
+          }
+          for (i = 1; i < nbnodes; i++)
+          {
+            splitSegment(GT, aSurf, aCurve2d, cons, aSquareEdgeDef, aParamArray(i), aParamArray(i+1), 1);
+          }
+        }
+      }
+
       // Creation of polygons on triangulation:
       Standard_Real puv;
-      Standard_Integer i;      
-      Standard_Integer nbnodes = GT.NbPoints();
+      nbnodes = GT.NbPoints();
 
       TColStd_Array1OfInteger Nodes(1, nbnodes);
       TColStd_Array1OfInteger NodInStruct(1, nbnodes);

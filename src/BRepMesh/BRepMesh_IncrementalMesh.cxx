@@ -201,6 +201,8 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
   //AGV 080407: Since version 6.2.0 there would be exception without this check
   if (myBox.IsVoid())
     return;
+
+  TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, myancestors);
   
   BRepMesh_FastDiscret::BoxMaxDimension(myBox, mydtotale);
   
@@ -412,7 +414,7 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
       }
       B.UpdateFace(F, TNull);
     }
-    myMesh->Add(F);
+    myMesh->Add(F, myancestors);
     myStatus |= (Standard_Integer)(myMesh->CurrentFaceStatus());
     if (myMesh->CurrentFaceStatus() == BRepMesh_ReMesh) {
 #ifdef DEB_MESH
@@ -420,9 +422,7 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
 #endif
 
       Standard_Integer index;
-      if( myancestors.Extent() < 1 )
-        TopExp::MapShapesAndAncestors(myShape,TopAbs_EDGE,TopAbs_FACE,myancestors);
-
+      
       TopTools_MapOfShape MShape;
       MShape.Add(F);
 
@@ -460,7 +460,7 @@ void  BRepMesh_IncrementalMesh::Update(const TopoDS_Face& F)
                     }
                   }
                   B.UpdateFace(F2, TNull);
-                  myMesh->Add(F2);
+                  myMesh->Add(F2, myancestors);
                 }
               }
             }
