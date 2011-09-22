@@ -1,7 +1,7 @@
-// File:	GCPnts_TangentialDeflection.gxx
-// Created:	Fri Nov  8 11:26:11 1996
-// Author:	Jean Claude VAUTHIER
-//		<jcv@brunox.paris1.matra-dtv.fr>
+// File:    GCPnts_TangentialDeflection.gxx
+// Created: Fri Nov  8 11:26:11 1996
+// Author:  Jean Claude VAUTHIER
+//    <jcv@brunox.paris1.matra-dtv.fr>
 
 #include <GCPnts_DeflectionType.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -16,9 +16,9 @@
 void GCPnts_TangentialDeflection::EvaluateDu (
   const TheCurve& C,
   const Standard_Real      U,
-	gp_Pnt&   P,
-	Standard_Real&     Du,
-	Standard_Boolean&  NotDone) const {
+  gp_Pnt&   P,
+  Standard_Real&     Du,
+  Standard_Boolean&  NotDone) const {
 
   gp_Vec T, N;
   D2 (C, U, P, T, N);
@@ -26,8 +26,9 @@ void GCPnts_TangentialDeflection::EvaluateDu (
   Standard_Real LTol = Precision::Confusion ();
   if (Lt > LTol && N.Magnitude () > LTol) {
     Standard_Real Lc = N.CrossMagnitude (T);
-    if (Lc/Lt > LTol) {
-      Du = sqrt (8.0 * curvatureDeflection * Lt / Lc);
+    Standard_Real Ln = Lc/Lt;
+    if (Ln > LTol) {
+      Du = sqrt (8.0 * curvatureDeflection / Ln);
       NotDone = Standard_False;
     }
   }
@@ -67,12 +68,12 @@ GCPnts_TangentialDeflection::GCPnts_TangentialDeflection (
 
 { 
   Initialize (C, 
-	      FirstParameter, 
-	      LastParameter,
-	      AngularDeflection, 
-	      CurvatureDeflection, 
-	      MinimumOfPoints,
-	      UTol);
+        FirstParameter, 
+        LastParameter,
+        AngularDeflection, 
+        CurvatureDeflection, 
+        MinimumOfPoints,
+        UTol);
 }
 
 
@@ -95,8 +96,8 @@ void GCPnts_TangentialDeflection::Initialize (
               C.LastParameter (),
               AngularDeflection, 
               CurvatureDeflection,
-	      MinimumOfPoints,
-	      UTol);
+              MinimumOfPoints,
+              UTol);
 }
 
 
@@ -147,14 +148,14 @@ void GCPnts_TangentialDeflection::Initialize (
    {
      Handle_TheBSplineCurve BS = C.BSpline() ;
      if (BS->NbPoles() == 2 ) PerformLinear (C);
-     else     	              PerformCurve  (C);
+     else                     PerformCurve  (C);
      break;
    }
  case GeomAbs_BezierCurve:
    {
      Handle_TheBezierCurve  BZ = C.Bezier(); 
      if (BZ->NbPoles() == 2) PerformLinear (C);
-     else        	     PerformCurve  (C);
+     else                    PerformCurve  (C);
      break;
    }
  default: PerformCurve (C);
@@ -233,22 +234,17 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
 
 {
   Standard_Integer i;       
-  Standard_Boolean Correction, TooLarge, TooSmall, MorePoints;
   gp_XYZ V1, V2;
-//  gp_Pnt MiddlePoint, CurrentPoint, LastPoint, PreviousPoint;   
   gp_Pnt MiddlePoint, CurrentPoint, LastPoint;   
-  Standard_Real Coef, ACoef, FCoef, Du, Dusave, MiddleU, L1, L2;
+  Standard_Real Du, Dusave, MiddleU, L1, L2;
 
   Standard_Real U1       = firstu;   
-  Standard_Real U2       = firstu;   
-  Standard_Real AngleMax = angularDeflection * 0.5;  //car on prend le point milieu
   Standard_Real LTol     = Precision::Confusion ();  //protection longueur nulle
   Standard_Real ATol     = Precision::Angular ();    //protection angle nul
 
   D0 (C, lastu, LastPoint);
 
   //Initialization du calcul
-  //---------------------------------------------------------------------
 
   Standard_Boolean NotDone = Standard_True;
   Dusave = (lastu - firstu)*Us3;
@@ -270,38 +266,38 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       Du = (lastu-firstu)/NbPoints;
       MiddleU = firstu + Du;
       for (i = 2; i < NbPoints; i++) {
-	D0 (C, MiddleU, MiddlePoint);
-	V2 = MiddlePoint.XYZ();
-	V2.Subtract (CurrentPoint.XYZ());
-	L2 = V2.Modulus ();
-	if (L2 > LTol) {
-	  if (((V2.CrossMagnitude (V1))/(L1*L2)) >= ATol) {
-	    //C'etait une singularite
-	    IsLine = Standard_False;
-	    break;
-	  }
-	  if (minNbPnts > 2) {
-	    parameters.Append (MiddleU);
-	    points    .Append (MiddlePoint);
-	  }
-	}
-	MiddleU += Du;
+        D0 (C, MiddleU, MiddlePoint);
+        V2 = MiddlePoint.XYZ();
+        V2.Subtract (CurrentPoint.XYZ());
+        L2 = V2.Modulus ();
+        if (L2 > LTol) {
+          if (((V2.CrossMagnitude (V1))/(L1*L2)) >= ATol) {
+            //C'etait une singularite
+            IsLine = Standard_False;
+            break;
+          }
+          if (minNbPnts > 2) {
+            parameters.Append (MiddleU);
+            points    .Append (MiddlePoint);
+          }
+        }
+        MiddleU += Du;
       }
       if (IsLine) {
-	//C'etait une droite (plusieurs poles alignes), Calcul termine :
-	parameters.Append (lastu);
-	points    .Append (LastPoint);
-	return;
+        //C'etait une droite (plusieurs poles alignes), Calcul termine :
+        parameters.Append (lastu);
+        points    .Append (LastPoint);
+        return;
       }
       else {
-	//c'etait une singularite on continue :
-	Standard_Integer pointsLength=points.Length ();
-	for (i = 2; i <= pointsLength; i++) {
-	  points    .Remove (i);
-	  parameters.Remove (i);
-	  pointsLength--;
-	}
-	Du = (lastu-firstu)*Us3;
+        //c'etait une singularite on continue :
+        Standard_Integer pointsLength=points.Length ();
+        for (i = 2; i <= pointsLength; i++) {
+          points    .Remove (i);
+          parameters.Remove (i);
+          pointsLength--;
+        }
+        Du = Dusave;
       }
     }
     else  {
@@ -313,11 +309,11 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       V1.Subtract (CurrentPoint.XYZ());
       L1 = V1.Modulus ();
       if (L1 < LTol) {
-	// L1 < LTol C'est une courbe de longueur nulle, calcul termine :
-	// on renvoi un segment de 2 points   (protection)
-	parameters.Append (lastu);
-	points    .Append (LastPoint);
-	return;
+        // L1 < LTol C'est une courbe de longueur nulle, calcul termine :
+        // on renvoi un segment de 2 points   (protection)
+        parameters.Append (lastu);
+        points    .Append (LastPoint);
+        return;
       }
     }
   }
@@ -335,8 +331,11 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   }
 
   //Traitement normal pour une courbe
-  //-------------------------------------------------------------------
-  MorePoints = Standard_True;
+  Standard_Boolean MorePoints = Standard_True;
+  Standard_Real U2            = firstu;   
+  Standard_Real AngleMax      = angularDeflection * 0.5;  //car on prend le point milieu
+
+  gp_Pnt aPrevPoint = points.Last();
 
   while (MorePoints) {
 
@@ -350,18 +349,22 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
     }
     else D0 (C, U2, CurrentPoint);           //Point suivant
 
+    Standard_Real Coef, ACoef, FCoef;
+    Standard_Boolean Correction, TooLarge, TooSmall;
     TooLarge   = Standard_False;
     TooSmall   = Standard_False;
     Correction = Standard_True;
+
+    Standard_Real lastCoef = 0;
      
     while (Correction) {                     //Ajustement Du
       MiddleU = (U1+U2)*0.5;                 //Verif / au point milieu
       D0 (C, MiddleU, MiddlePoint);
 
       V1 = CurrentPoint.XYZ ();              //Critere de fleche
-      V1.Subtract (points.Last().XYZ());
+      V1.Subtract (aPrevPoint.XYZ());
       V2 = MiddlePoint.XYZ ();
-      V2.Subtract (points.Last().XYZ());
+      V2.Subtract (aPrevPoint.XYZ());
       L1 = V1.Modulus ();
       if (L1 > LTol) FCoef = V1.CrossMagnitude(V2)/(L1*curvatureDeflection);
       else           FCoef = 0.0;
@@ -378,48 +381,54 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
       else                Coef = FCoef;
 
 
-      if (Coef <= 1.0) {                     
-	if (Abs (lastu-U2) < uTol) {
+      if (Coef <= 1.0) {
+        if (Abs (lastu-U2) < uTol) {
           parameters.Append (lastu);
-	  points    .Append (LastPoint);
-	  MorePoints = Standard_False;
-	  Correction = Standard_False;
-	}
-	else {
-	  if (Coef >= 0.75 || TooLarge || TooSmall) { 
-	    parameters.Append (U2);
-	    points    .Append (CurrentPoint);
-	    Correction = Standard_False;
-	  }
-	  else {
-	    TooSmall = Standard_True;
-	    Standard_Real UUU2 = U2;
-	    Du += Min((U2-U1)*(1.-Coef), Du*Us3);
+          points    .Append (LastPoint);
+          MorePoints = Standard_False;
+          Correction = Standard_False;
+        }
+        else {
+          if (Coef >= 0.55 || TooLarge) { 
+            parameters.Append (U2);
+            points    .Append (CurrentPoint);
+            aPrevPoint = CurrentPoint;
+            Correction = Standard_False;
+          }
+          else if (TooSmall) {
+            Correction = Standard_False;
+            aPrevPoint = CurrentPoint;
+          }
+          else {
+            TooSmall = Standard_True;
+            lastCoef = Coef;
+            //Standard_Real UUU2 = U2;
+            Du += Min((U2-U1)*(1.-Coef), Du*Us3);
 
-	    U2 = U1 + Du;
-	    if (U2 >= lastu) U2 = UUU2;
-	    if (U2 >= lastu) {
-	      parameters.Append (lastu);
-	      points    .Append (LastPoint);
-	      MorePoints = Standard_False;
-	      Correction = Standard_False;
-	    }
-	    else D0 (C, U2, CurrentPoint);
-	  }
-	}
+            U2 = U1 + Du;
+            //if (U2 >= lastu) U2 = UUU2;
+            if (U2 >= lastu) {
+              parameters.Append (lastu);
+              points    .Append (LastPoint);
+              MorePoints = Standard_False;
+              Correction = Standard_False;
+            }
+            else D0 (C, U2, CurrentPoint);
+          }
+        }
       }
       else {
 
-	if (Coef >= 1.5) {
-	  U2 = MiddleU;
-	  CurrentPoint = MiddlePoint;
-	}
-	else {
-	  Du*=0.9;
-	  U2 = U1 + Du;
-	  D0 (C, U2, CurrentPoint);
-	  TooLarge = Standard_True;
-	}
+        if (Coef >= 1.5) {
+          U2 = MiddleU;
+          CurrentPoint = MiddlePoint;
+        }
+        else {
+          Du*=0.9;
+          U2 = U1 + Du;
+          D0 (C, U2, CurrentPoint);
+          TooLarge = Standard_True;
+        }
 
       }
     }
@@ -428,37 +437,37 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
 
     if (MorePoints) {
       if (U1 > firstu) {
-	if (FCoef > ACoef) {
-	  //La fleche est critere de decoupage
-	  EvaluateDu (C, U2, CurrentPoint, Du, NotDone);
-	  if (NotDone) {
-	    Du += (Du-Dusave)*(Du/Dusave);
-	    if (Du > 1.5 * Dusave) Du = 1.5  * Dusave;
-	    if (Du < 0.75* Dusave) Du = 0.75 * Dusave;
-	  }
-	}
-	else {
-	  //L'angle est le critere de decoupage
-	  Du += (Du-Dusave)*(Du/Dusave);
-	  if (Du > 1.5 * Dusave) Du = 1.5  * Dusave;
-	  if (Du < 0.75* Dusave) Du = 0.75 * Dusave;
-	}
+        if (FCoef > ACoef) {
+          //La fleche est critere de decoupage
+          EvaluateDu (C, U2, CurrentPoint, Du, NotDone);
+          if (NotDone) {
+            Du += (Du-Dusave)*(Du/Dusave);
+            if (Du > 1.5 * Dusave) Du = 1.5  * Dusave;
+            if (Du < 0.75* Dusave) Du = 0.75 * Dusave;
+          }
+        }
+        else {
+          //L'angle est le critere de decoupage
+          Du += (Du-Dusave)*(Du/Dusave);
+          if (Du > 1.5 * Dusave) Du = 1.5  * Dusave;
+          if (Du < 0.75* Dusave) Du = 0.75 * Dusave;
+        }
       }
       
       if (Du < uTol) {
-	Du = lastu - U2;
-	if (Du < uTol) {
-	  parameters.Append (lastu);
-	  points    .Append (LastPoint);
-	  MorePoints = Standard_False;
-	}
-	else if (Du*Us3 > uTol) Du*=Us3;
+        Du = lastu - U2;
+        if (Du < uTol) {
+          parameters.Append (lastu);
+          points    .Append (LastPoint);
+          MorePoints = Standard_False;
+        }
+        else if (Du*Us3 > uTol) Du*=Us3;
       }
       U1 = U2;
       Dusave = Du;
     }
   }
-                              //Recalage avant dernier point :
+  //Recalage avant dernier point :
   i = points.Length()-1;
 //  Real d = points (i).Distance (points (i+1));
 // if (Abs(parameters (i) - parameters (i+1))<= 0.000001 || d < Precision::Confusion()) {
@@ -476,13 +485,12 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
     points    .SetValue (i, MiddlePoint);
   }
 
-  //-- ------------------------------------------------------------
   //-- On rajoute des points aux milieux des segments si le nombre
   //-- mini de points n'est pas atteint
   //--
   Standard_Integer Nbp =  points.Length();
   Standard_Integer MinNb= (9*minNbPnts)/10;
-  if(MinNb<3) MinNb=3;
+  //if(MinNb<4) MinNb=4;
 
   //-- if(Nbp <  MinNb) { cout<<"\n*"; } else {  cout<<"\n."; } 
   while(Nbp < MinNb) { 
@@ -497,8 +505,3 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
     }
   }
 }
-
-
-
-
-

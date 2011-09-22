@@ -592,6 +592,28 @@ static void filterParameters(const TColStd_IndexedMapOfReal& theParams,
     isCandidateDefined = Standard_True;
   }
   theResult.Append(aParamTmp.Last());
+  
+  if( theResult.Length() == 2 )
+  {
+    Standard_Real    dist  = theResult.Last() - theResult.First();
+    Standard_Integer nbint = (Standard_Integer)((dist / theFilterDist) + 0.5);
+
+    if( nbint > 1 )
+    {
+      //Five points more is maximum
+      if( nbint > 5 )
+      {
+        nbint = 5;
+      }
+
+      Standard_Integer i;
+      Standard_Real dU = dist / nbint;
+      for( i = 1; i < nbint; i++ )
+      {
+        theResult.InsertAfter(i, theResult.First()+i*dU);
+      }
+    }
+  }
 }
 
 void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurface)& theCaro,
