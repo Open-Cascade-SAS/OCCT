@@ -262,8 +262,16 @@ void NIS_View::GetBndBox( Standard_Integer& theXMin, Standard_Integer& theXMax,
 
 int NIS_View::MyCallback (Aspect_Drawable                /* Window ID */,
                           void*                          ptrData, 
-                          Aspect_GraphicCallbackStruct*  /* call data */)
+                          Aspect_GraphicCallbackStruct*  callData /* call data */)
 {
+  // Avoid multiple rendering of the scene ( accordingly with update of
+  // callback mechanism, that invokes additional callbacks before
+  // underlay and overlay redrawing with OCC_PRE_REDRAW and OCC_PRE_OVERLAY
+  // bits added to the "reason" value of the callback data structure;
+  // see comments to OCC_REDRAW_ADDITIONAL_CALLBACKS definition )
+  if (callData->reason & OCC_REDRAW_ADDITIONAL_CALLBACKS)
+    return 0;
+  
   const Handle(NIS_View) thisView (static_cast<NIS_View *> (ptrData));
   NCollection_List<NIS_InteractiveContext *>::Iterator anIter;
 #ifdef CLIP

@@ -89,6 +89,7 @@ call_togl_redraw
     }
     OpenGl_ResourceCleaner::GetInstance()->Cleanup();
     call_func_redraw_all_structs_begin (aview->WsId);
+    call_subr_displayCB (aview, OCC_REDRAW_WINDOW | OCC_PRE_REDRAW);
     call_togl_setplane( aview );
     if (anunderlayer->ptrLayer)
     {
@@ -167,6 +168,7 @@ call_togl_redraw_area
                  (GLsizei )width, (GLsizei )height);
       OpenGl_ResourceCleaner::GetInstance()->Cleanup();
       call_func_redraw_all_structs_begin (aview->WsId);
+      call_subr_displayCB (aview, OCC_REDRAW_WINDOWAREA | OCC_PRE_REDRAW);
       call_togl_setplane( aview );
       if (anunderlayer->ptrLayer)
       {

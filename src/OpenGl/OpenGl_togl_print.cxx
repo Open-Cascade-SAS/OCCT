@@ -163,6 +163,7 @@ static void redrawView (CALL_DEF_VIEW *aview,
 {
   // prepare for redraw
   call_func_redraw_all_structs_begin (aview->WsId);
+  call_subr_displayCB (aview, OCC_REDRAW_BITMAP | OCC_PRE_REDRAW);
   call_togl_setplane (aview);
 
   // clear background
