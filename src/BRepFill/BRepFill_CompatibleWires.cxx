@@ -1442,14 +1442,19 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 
   //Consider that all wires have same number of edges (polar==Standard_False)
   TopTools_SequenceOfShape PrevSeq;
+  TopTools_SequenceOfShape PrevEseq;
   Standard_Integer theLength = 0;
   const TopoDS_Wire& wire = TopoDS::Wire( myWork(ideb) );
   for (anExp.Init(wire); anExp.More(); anExp.Next())
     {
       PrevSeq.Append(anExp.CurrentVertex());
+      PrevEseq.Append(anExp.Current());
       theLength++;
     }
 
+  Standard_Integer nbs, NbSamples = 0;
+  if (theLength <= 2)
+    NbSamples = 4;
   for (i = ideb+1; i <= ifin; i++)
     {
       const TopoDS_Wire& wire = TopoDS::Wire(myWork(i));
@@ -1485,6 +1490,27 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
 		gp_Pnt P = BRep_Tool::Pnt(V);
 		SumDist += Pprev.Distance(P);
+                if (NbSamples > 0)
+                {
+                  const TopoDS_Edge& PrevEdge = TopoDS::Edge(PrevEseq(n));
+                  const TopoDS_Edge& CurEdge = TopoDS::Edge(SeqEdges(k));
+                  BRepAdaptor_Curve PrevEcurve(PrevEdge);
+                  BRepAdaptor_Curve Ecurve(CurEdge);
+                  Standard_Real SampleOnPrev = (PrevEcurve.LastParameter()-PrevEcurve.FirstParameter())/NbSamples;
+                  Standard_Real SampleOnCur = (Ecurve.LastParameter()-Ecurve.FirstParameter())/NbSamples;
+                  for (nbs = 1; nbs <= NbSamples-1; nbs++)
+                  {
+                    Standard_Real ParOnPrev = (PrevEdge.Orientation() == TopAbs_FORWARD)?
+                      (PrevEcurve.FirstParameter() + nbs*SampleOnPrev) :
+                      (PrevEcurve.FirstParameter() + (NbSamples-nbs)*SampleOnPrev);
+                    Standard_Real ParOnCur = (CurEdge.Orientation() == TopAbs_FORWARD)?
+                      (Ecurve.FirstParameter() + nbs*SampleOnCur) :
+                      (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur);
+                    gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    SumDist += PonPrev.Distance(PonCur);
+                  }
+                }
 	      }
 	    for (k = 1; k < j; k++, n++)
 	      {
@@ -1493,6 +1519,27 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
 		gp_Pnt P = BRep_Tool::Pnt(V);
 		SumDist += Pprev.Distance(P);
+                if (NbSamples > 0)
+                {
+                  const TopoDS_Edge& PrevEdge = TopoDS::Edge(PrevEseq(n));
+                  const TopoDS_Edge& CurEdge = TopoDS::Edge(SeqEdges(k));
+                  BRepAdaptor_Curve PrevEcurve(PrevEdge);
+                  BRepAdaptor_Curve Ecurve(CurEdge);
+                  Standard_Real SampleOnPrev = (PrevEcurve.LastParameter()-PrevEcurve.FirstParameter())/NbSamples;
+                  Standard_Real SampleOnCur = (Ecurve.LastParameter()-Ecurve.FirstParameter())/NbSamples;
+                  for (nbs = 1; nbs <= NbSamples-1; nbs++)
+                  {
+                    Standard_Real ParOnPrev = (PrevEdge.Orientation() == TopAbs_FORWARD)?
+                      (PrevEcurve.FirstParameter() + nbs*SampleOnPrev) :
+                      (PrevEcurve.FirstParameter() + (NbSamples-nbs)*SampleOnPrev);
+                    Standard_Real ParOnCur = (CurEdge.Orientation() == TopAbs_FORWARD)?
+                      (Ecurve.FirstParameter() + nbs*SampleOnCur) :
+                      (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur);
+                    gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    SumDist += PonPrev.Distance(PonCur);
+                  }
+                }
 	      }
 	    if (SumDist < MinSumDist)
 	      {
@@ -1510,6 +1557,30 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
 		gp_Pnt P = BRep_Tool::Pnt(V);
 		SumDist += Pprev.Distance(P);
+                if (NbSamples > 0)
+                {
+                  Standard_Integer k_cur = k-1;
+                  if (k_cur == 0)
+                    k_cur = theLength;
+                  const TopoDS_Edge& PrevEdge = TopoDS::Edge(PrevEseq(n));
+                  const TopoDS_Edge& CurEdge = TopoDS::Edge(SeqEdges(k_cur));
+                  BRepAdaptor_Curve PrevEcurve(PrevEdge);
+                  BRepAdaptor_Curve Ecurve(CurEdge);
+                  Standard_Real SampleOnPrev = (PrevEcurve.LastParameter()-PrevEcurve.FirstParameter())/NbSamples;
+                  Standard_Real SampleOnCur = (Ecurve.LastParameter()-Ecurve.FirstParameter())/NbSamples;
+                  for (nbs = 1; nbs <= NbSamples-1; nbs++)
+                  {
+                    Standard_Real ParOnPrev = (PrevEdge.Orientation() == TopAbs_FORWARD)?
+                      (PrevEcurve.FirstParameter() + nbs*SampleOnPrev) :
+                      (PrevEcurve.FirstParameter() + (NbSamples-nbs)*SampleOnPrev);
+                    Standard_Real ParOnCur = (CurEdge.Orientation() == TopAbs_FORWARD)?
+                      (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur) :
+                      (Ecurve.FirstParameter() + nbs*SampleOnCur);
+                    gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    SumDist += PonPrev.Distance(PonCur);
+                  }
+                }
 	      }
 	    for (k = theLength; k > j; k--, n++)
 	      {
@@ -1518,6 +1589,27 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
 		gp_Pnt P = BRep_Tool::Pnt(V);
 		SumDist += Pprev.Distance(P);
+                if (NbSamples > 0)
+                {
+                  const TopoDS_Edge& PrevEdge = TopoDS::Edge(PrevEseq(n));
+                  const TopoDS_Edge& CurEdge = TopoDS::Edge(SeqEdges(k-1));
+                  BRepAdaptor_Curve PrevEcurve(PrevEdge);
+                  BRepAdaptor_Curve Ecurve(CurEdge);
+                  Standard_Real SampleOnPrev = (PrevEcurve.LastParameter()-PrevEcurve.FirstParameter())/NbSamples;
+                  Standard_Real SampleOnCur = (Ecurve.LastParameter()-Ecurve.FirstParameter())/NbSamples;
+                  for (nbs = 1; nbs <= NbSamples-1; nbs++)
+                  {
+                    Standard_Real ParOnPrev = (PrevEdge.Orientation() == TopAbs_FORWARD)?
+                      (PrevEcurve.FirstParameter() + nbs*SampleOnPrev) :
+                      (PrevEcurve.FirstParameter() + (NbSamples-nbs)*SampleOnPrev);
+                    Standard_Real ParOnCur = (CurEdge.Orientation() == TopAbs_FORWARD)?
+                      (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur) :
+                      (Ecurve.FirstParameter() + nbs*SampleOnCur);
+                    gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    SumDist += PonPrev.Distance(PonCur);
+                  }
+                }
 	      }
 	    if (SumDist < MinSumDist)
 	      {
@@ -1528,17 +1620,20 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 	  }
       
       PrevSeq.Clear();
+      PrevEseq.Clear();
       if (forward)
 	{
 	  for (j = jmin; j <= theLength; j++)
 	    {
 	      BB.Add( newwire, TopoDS::Edge(SeqEdges(j)) );
 	      PrevSeq.Append( SeqVertices(j) );
+              PrevEseq.Append( SeqEdges(j) );
 	    }
 	  for (j = 1; j < jmin; j++)
 	    {
 	      BB.Add( newwire, TopoDS::Edge(SeqEdges(j)) );
 	      PrevSeq.Append( SeqVertices(j) );
+              PrevEseq.Append( SeqEdges(j) );
 	    }
 	}
       else
@@ -1548,12 +1643,14 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 	      TopoDS_Shape aLocalShape = SeqEdges(j).Reversed();
 	      BB.Add( newwire, TopoDS::Edge(aLocalShape) );
 	      //PrevSeq.Append( SeqVertices(j) );
+              PrevEseq.Append( SeqEdges(j).Reversed() );
 	    }
 	  for (j = theLength; j >= jmin; j--)
 	    {
 	      TopoDS_Shape aLocalShape = SeqEdges(j).Reversed();
 	      BB.Add( newwire, TopoDS::Edge(aLocalShape) );
 	      //PrevSeq.Append( SeqVertices(j) );
+              PrevEseq.Append( SeqEdges(j).Reversed() );
 	    }
 	  for (j = jmin; j >= 1; j--)
 	    PrevSeq.Append( SeqVertices(j) );
