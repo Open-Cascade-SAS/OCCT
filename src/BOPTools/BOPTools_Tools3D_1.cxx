@@ -830,58 +830,6 @@ void Add(const TopoDS_Shape& aS,
   }
   return aStPF;
 }
-
-// ===========================================================================================
-// function: CheckSameDomainFaceInside
-// purpose: Check if distance between several points of theFace1 and
-//          theFace2 
-// ===========================================================================================
-Standard_Boolean BOPTools_Tools3D::CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
-							     const TopoDS_Face& theFace2,
-							     IntTools_Context&  theContext) 
-{
-  Standard_Real umin = 0., umax = 0., vmin = 0., vmax = 0.;
-  BRepTools::UVBounds(theFace1, umin, umax, vmin, vmax);
-  Handle(Geom_Surface) aSurface = BRep_Tool::Surface(theFace1);
-
-  Standard_Real aTolerance = BRep_Tool::Tolerance(theFace1);
-  aTolerance += BRep_Tool::Tolerance(theFace2);
-
-  Standard_Integer nbpoints = 5;
-  Standard_Real adeltau = (umax - umin) / (nbpoints + 1);
-  Standard_Real adeltav = (vmax - vmin) / (nbpoints + 1);
-  Standard_Real U = umin + adeltau;
-  Standard_Boolean bFoundON = Standard_False;
-  GeomAPI_ProjectPointOnSurf& aProjector = theContext.ProjPS(theFace2);
-
-  for(Standard_Integer i = 1; i <= nbpoints; i++, U+=adeltau) {
-    Standard_Real V = vmin + adeltav;
-
-    for(Standard_Integer j = 1; j <= nbpoints; j++, V+=adeltav) {
-      gp_Pnt2d aPoint(U,V);
-
-      if(theContext.IsPointInFace(theFace1, aPoint)) {
-	gp_Pnt aP3d = aSurface->Value(U, V);
-	aProjector.Perform(aP3d);
-
-	if(aProjector.IsDone()) {
-	  Standard_Real U2 = 0., V2 = 0.;
-	  aProjector.LowerDistanceParameters(U2, V2);
-
-	  aPoint = gp_Pnt2d(U2, V2);
-
-	  if(aProjector.LowerDistance() > aTolerance)
-	     return Standard_False;
-	  else if(theContext.IsPointInFace(theFace2, aPoint))
-	    bFoundON = Standard_True;
-	}
-      }
-    }
-  }
-
-  return bFoundON;
-}
-
 // ===========================================================================================
 // function: ComputeFaceState
 // purpose: 
@@ -994,3 +942,68 @@ Standard_Boolean BOPTools_Tools3D::ComputeFaceState(const TopoDS_Face&  theFace,
 
   return Standard_True;
 }
+//modified by NIZNHY-PKV Thu Sep 22 10:55:14 2011f
+// ===========================================================================================
+// function: CheckSameDomainFaceInside
+// purpose: Check if distance between several points of theFace1 and
+//          theFace2 
+// ===========================================================================================
+Standard_Boolean BOPTools_Tools3D::CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
+							     const TopoDS_Face& theFace2,
+							     IntTools_Context&  theContext) 
+{
+  Standard_Boolean bFoundON, bPointInFace; 
+  Standard_Integer nbpoints, i, j;
+  Standard_Real umin, umax, vmin, vmax, aTol, adeltau, adeltav, U, V, U2, V2, aD, aTolE;
+  gp_Pnt2d aP2D;
+  gp_Pnt aP3D; 
+  TopExp_Explorer aExp;
+  //
+  BRepTools::UVBounds(theFace1, umin, umax, vmin, vmax);
+  Handle(Geom_Surface) aS1=BRep_Tool::Surface(theFace1);
+  //
+  aTol=BRep_Tool::Tolerance(theFace1);
+  aExp.Init(theFace1, TopAbs_EDGE);
+  for(; aExp.More(); aExp.Next()) {
+    const TopoDS_Edge& aE = TopoDS::Edge(aExp.Current());
+    aTolE = BRep_Tool::Tolerance(aE);
+    aTol=(aTol < aTolE) ? aTolE : aTol;
+  }
+  aTol=aTol+BRep_Tool::Tolerance(theFace2);
+  //
+  nbpoints=5;
+  adeltau=(umax - umin) / (nbpoints + 1);
+  adeltav=(vmax - vmin) / (nbpoints + 1);
+  bFoundON = Standard_False;
+  //
+  GeomAPI_ProjectPointOnSurf& aProjector = theContext.ProjPS(theFace2);
+  //
+  for(i=1; i<=nbpoints; ++i){
+    U=umin+i*adeltau;
+    for(j=1; j<=nbpoints; ++j) {
+      V=vmin+j*adeltav;
+      aP2D.SetCoord(U,V);
+      bPointInFace=theContext.IsPointInFace(theFace1, aP2D);
+      if(bPointInFace) {
+	aP3D=aS1->Value(U, V);
+	aProjector.Perform(aP3D);
+	if(aProjector.IsDone()) {
+	  aProjector.LowerDistanceParameters(U2, V2);
+	  aP2D.SetCoord(U2, V2);
+	  //
+	  aD=aProjector.LowerDistance();
+	  if(aD > aTol) {
+	    return Standard_False;
+	  }
+	  //
+	  bPointInFace=theContext.IsPointInFace(theFace2, aP2D);
+	  if (bPointInFace) {
+	    bFoundON = Standard_True;
+	  }
+	}
+      }
+    }
+  }
+  return bFoundON;
+}
+//modified by NIZNHY-PKV Thu Sep 22 10:55:19 2011t

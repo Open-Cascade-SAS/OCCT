@@ -218,10 +218,23 @@
       }
     }//  if (aNbF==1)
   }// for (i=1; i<=aNb; ++i)
-  
+  //
+  //modified by NIZNHY-PKV Wed Nov 03 14:27:22 2010f
+  Standard_Boolean bFound;
+  TopoDS_Iterator aItS;
+  TopAbs_Orientation aOr;
+  //modified by NIZNHY-PKV Wed Nov 03 14:27:24 2010t
+  //
   aNbF=aMFE.Extent();
   for (i=1; i<=aNbF; ++i) {
-    const TopoDS_Face& aF=TopoDS::Face(aMFE.FindKey(i));
+    //modified by NIZNHY-PKV Wed Nov 03 14:29:03 2010f
+    TopoDS_Face aF=TopoDS::Face(aMFE.FindKey(i));
+    aOr=aF.Orientation();
+    if (aOr==TopAbs_INTERNAL) {
+      aF.Orientation(TopAbs_FORWARD);
+    }
+    //const TopoDS_Face& aF=TopoDS::Face(aMFE.FindKey(i));
+    //modified by NIZNHY-PKV Wed Nov 03 14:29:06 2010t
     TopoDS_Face* pF=(TopoDS_Face*)&aF;
     
     const TopTools_ListOfShape& aLE=aMFE(i);
@@ -241,6 +254,23 @@
 	TopTools_ListIteratorOfListOfShape aWIt(aLW);
 	for (; aWIt.More(); aWIt.Next()) {
 	  const TopoDS_Wire& aW=TopoDS::Wire(aWIt.Value());
+	  //
+	  //modified by NIZNHY-PKV Wed Nov 03 14:12:48 2010f
+	  bFound=Standard_False;
+	  aItS.Initialize(aW);
+	  for(; aItS.More(); aItS.Next()) {
+	    const TopoDS_Shape& aEW=aItS.Value();
+	    if (aEW==aE) {
+	      bFound=Standard_True;
+	      break;
+	    }
+	  }
+	  //
+	  if (!bFound) {
+	    continue;
+	  }
+	  //modified by NIZNHY-PKV Wed Nov 03 14:14:22 2010t
+	  //
 	  TopoDS_Wire* pW=(TopoDS_Wire*)&aW;
 	  pW->Free(Standard_True);
 	  //
@@ -253,6 +283,9 @@
 	  //
 	  pF->Free(Standard_True);
 	  aBB.Remove(*pF, aW);
+	  //modified by NIZNHY-PKV Wed Nov 03 14:29:56 2010f
+	  pF->Orientation(aOr);
+	  //modified by NIZNHY-PKV Wed Nov 03 14:29:59 2010t
 	  myNbRemovedEdges++;
 	}
       }

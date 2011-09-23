@@ -547,7 +547,8 @@ static Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
   BooleanOperations_StateOfShape aState, aStateCmp;
   TopAbs_Orientation anOr;
   TopExp_Explorer anExp;
-  
+  TopoDS_Edge aSS;
+  //
   iRankF1=aDS.Rank(nF1);
   aStateCmp=BOP_BuilderTools::StateToCompare(iRankF1, myOperation);
   
@@ -564,10 +565,21 @@ static Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
     if (!aNbPB) {
       aState=aDS.GetState(nE);
       if (aState==aStateCmp) {
-	TopoDS_Edge aSS=TopoDS::Edge(anE);
-	aSS.Orientation(anOr);
-	//
-	aWES.AddStartElement (aSS);
+	aSS=TopoDS::Edge(anE);
+	//modified by NIZNHY-PKV Mon Sep 19 09:13:59 2011f
+	if (anOr==TopAbs_INTERNAL) {
+	  aSS.Orientation(TopAbs_FORWARD);
+	  aWES.AddStartElement (aSS);
+	  aSS.Orientation(TopAbs_REVERSED);
+	  aWES.AddStartElement (aSS);
+	}
+	else{
+	  aSS.Orientation(anOr);
+	  aWES.AddStartElement (aSS);
+	}
+	//aSS.Orientation(anOr);
+	//aWES.AddStartElement (aSS);
+	//modified by NIZNHY-PKV Mon Sep 19 09:14:02 2011t
       }
       continue;
     }
@@ -580,10 +592,21 @@ static Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
       aState=aDS.GetState(nSp);
       if (aState==aStateCmp) {
 	const TopoDS_Shape& aSplit=aDS.Shape(nSp);
-	TopoDS_Edge aSS=TopoDS::Edge(aSplit);
-	aSS.Orientation(anOr);
-	//
-	aWES.AddStartElement (aSS);
+	aSS=TopoDS::Edge(aSplit);
+	//modified by NIZNHY-PKV Mon Sep 19 08:58:23 2011f
+	if (anOr==TopAbs_INTERNAL) {
+	  aSS.Orientation(TopAbs_FORWARD);
+	  aWES.AddStartElement (aSS);
+	  aSS.Orientation(TopAbs_REVERSED);
+	  aWES.AddStartElement (aSS);
+	}
+	else{
+	  aSS.Orientation(anOr);
+	  aWES.AddStartElement (aSS);
+	}
+	//aSS.Orientation(anOr);
+	//aWES.AddStartElement (aSS);
+	//modified by NIZNHY-PKV Mon Sep 19 08:58:33 2011t
       }
     }
   }
