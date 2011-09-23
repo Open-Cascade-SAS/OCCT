@@ -14,6 +14,7 @@
 
 #include <set>
 #include <map>
+#include <cstdlib>
 
 #ifndef SIZE_MAX
 #define SIZE_MAX UINT_MAX
