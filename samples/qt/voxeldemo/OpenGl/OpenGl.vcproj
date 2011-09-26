@@ -535,7 +535,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\ros\src\OpenGl\OpenGl_PrinterContext.cxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_PrinterContext.cxx"
 				>
 			</File>
 			<File
@@ -1076,7 +1076,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\ros\src\OpenGl\OpenGl_PrinterContext.hxx"
+				RelativePath="$(CASROOT)\src\OpenGl\OpenGl_PrinterContext.hxx"
 				>
 			</File>
 			<File
