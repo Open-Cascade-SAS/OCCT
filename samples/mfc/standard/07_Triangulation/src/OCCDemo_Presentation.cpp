@@ -91,7 +91,7 @@ Handle_AIS_InteractiveObject OCCDemo_Presentation::drawSurface
   fixParam(v2);
 
   Handle_AIS_Shape aGraphicSurface = 
-    new AIS_Shape(BRepBuilderAPI_MakeFace (theSurface, u1, u2, v1, v2));
+    new AIS_Shape(BRepBuilderAPI_MakeFace (theSurface, u1, u2, v1, v2, Precision::Confusion()));
 
   getAISContext()->SetMaterial(aGraphicSurface, Graphic3d_NOM_PLASTIC, toDisplay);
   getAISContext()->SetColor(aGraphicSurface, theColor, toDisplay);

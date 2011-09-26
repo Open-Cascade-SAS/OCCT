@@ -1786,7 +1786,7 @@ void CModelingDoc::OnPrismLocal()
 	aline = GCE2d_MakeLine(p1,p2).Value();
 	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 	BRepBuilderAPI_MakeFace MKF;
-	MKF.Init(surf,Standard_False);
+	MKF.Init(surf,Standard_False, Precision::Confusion());
 	MKF.Add(MW.Wire());
 	TopoDS_Shape FP = MKF.Face();
 	BRepLib::BuildCurves3d(FP);
@@ -1820,7 +1820,7 @@ void CModelingDoc::OnPrismLocal()
 	aline = GCE2d_MakeLine(p1,p2).Value();
 	MW2.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 	BRepBuilderAPI_MakeFace MKF2;
-	MKF2.Init(surf,Standard_False);
+	MKF2.Init(surf,Standard_False, Precision::Confusion());
 	MKF2.Add(MW2.Wire());
 	FP = MKF2.Face();
 	BRepLib::BuildCurves3d(FP);
@@ -1941,7 +1941,7 @@ void CModelingDoc::OnDprismLocal()
 	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,PI));
 	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,PI,2.*PI));
 	BRepBuilderAPI_MakeFace MKF;
-	MKF.Init(surf,Standard_False);
+	MKF.Init(surf,Standard_False, Precision::Confusion());
 	MKF.Add(MW.Wire());
 	TopoDS_Face FP = MKF.Face();
 	BRepLib::BuildCurves3d(FP);
@@ -2034,7 +2034,7 @@ void CModelingDoc::OnRevolLocal()
 	aline = GCE2d_MakeLine(p1,p2).Value();
 	MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 	BRepBuilderAPI_MakeFace MKF1;
-	MKF1.Init(surf,Standard_False);
+	MKF1.Init(surf,Standard_False, Precision::Confusion());
 	MKF1.Add(MW1.Wire());
 	TopoDS_Face FP = MKF1.Face();
 	BRepLib::BuildCurves3d(FP);
@@ -2290,7 +2290,7 @@ void CModelingDoc::OnPipeLocal()
 	aline = GCE2d_MakeLine(p1,p2).Value();
 	MW1.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,p1.Distance(p2)));
 	BRepBuilderAPI_MakeFace MKF1;
-	MKF1.Init(surf,Standard_False);
+	MKF1.Init(surf,Standard_False, Precision::Confusion());
 	MKF1.Add(MW1.Wire());
 	TopoDS_Face FP = MKF1.Face();
 	BRepLib::BuildCurves3d(FP);
@@ -3038,7 +3038,7 @@ void CModelingDoc::OnFace()
 	array.SetValue(3,2,P6);
 	Handle (Geom_BSplineSurface) curve = GeomAPI_PointsToBSplineSurface(array,3,8,GeomAbs_C2,0.001);
 
-	RedFace = BRepBuilderAPI_MakeFace(curve);
+	RedFace = BRepBuilderAPI_MakeFace(curve, Precision::Confusion());
 
 ////////////////////
 
@@ -3075,7 +3075,7 @@ void CModelingDoc::OnFace()
 	
 	Handle (Geom_BSplineSurface) BSplineSurf = GeomAPI_PointsToBSplineSurface(array2,3,8,GeomAbs_C2,0.001);
 	
-	TopoDS_Face aFace = BRepBuilderAPI_MakeFace(BSplineSurf);
+	TopoDS_Face aFace = BRepBuilderAPI_MakeFace(BSplineSurf, Precision::Confusion());
 
 	//2d lines
 	gp_Pnt2d P12d(0.9,0.1);
@@ -3262,7 +3262,7 @@ void CModelingDoc::OnShell()
 	
 	Handle (Geom_BSplineSurface) BSpline = new Geom_BSplineSurface(Poles,UKnots,VKnots,UMults,VMults,UDegree,VDegree);
 	
-	TopoDS_Face WhiteFace = BRepBuilderAPI_MakeFace(BSpline);
+	TopoDS_Face WhiteFace = BRepBuilderAPI_MakeFace(BSpline, Precision::Confusion());
 
 	
 	Handle(AIS_Shape) white = new AIS_Shape(WhiteFace);
@@ -3400,7 +3400,7 @@ void CModelingDoc::OnSewing()
 	gp_Vec V(0,0,1);
 	Handle(Geom_Plane) Pi=new Geom_Plane(P,V);
 	Handle(Geom_RectangularTrimmedSurface) GeometricSurface=new Geom_RectangularTrimmedSurface(Pi,0.,100.,0.,100.);
-	TopoDS_Shape FirstShape = BRepBuilderAPI_MakeFace(GeometricSurface);
+	TopoDS_Shape FirstShape = BRepBuilderAPI_MakeFace(GeometricSurface, Precision::Confusion());
 	
 	Handle(AIS_Shape) white1 = new AIS_Shape(FirstShape);
 	
@@ -3426,7 +3426,7 @@ void CModelingDoc::OnSewing()
 	Array.SetValue(3,2,P6);
 
 	Handle (Geom_BSplineSurface) aSurf = GeomAPI_PointsToBSplineSurface(Array,3,8,GeomAbs_C2,0.00001);
-	TopoDS_Shape SecondShape = BRepBuilderAPI_MakeFace(aSurf);
+	TopoDS_Shape SecondShape = BRepBuilderAPI_MakeFace(aSurf, Precision::Confusion());
 	
 	Handle(AIS_Shape) white2 = new AIS_Shape(SecondShape);
 	
@@ -4083,7 +4083,7 @@ void CModelingDoc::OnGeometrie()
 	gp_Vec V(0,0,1);
 	Handle(Geom_Plane) Pi=new Geom_Plane(P,V);
 	Handle(Geom_RectangularTrimmedSurface) Surface=new Geom_RectangularTrimmedSurface(Pi,0.,100.,0.,100.);
-	TopoDS_Face RedFace = BRepBuilderAPI_MakeFace(Surface);
+	TopoDS_Face RedFace = BRepBuilderAPI_MakeFace(Surface, Precision::Confusion());
 
 	Handle(AIS_Shape) red = new AIS_Shape(RedFace);
 	myAISContext->SetColor(red,Quantity_NOC_RED,Standard_False);
@@ -4440,7 +4440,7 @@ void CModelingDoc::OnSurface()
 	fill.Init(C1,C2,C3,C4,GeomFill_CoonsStyle);
 	Handle(Geom_BSplineSurface) BSS = fill.Surface();
 
-	TopoDS_Shape S = BRepBuilderAPI_MakeFace(BSS).Face();
+	TopoDS_Shape S = BRepBuilderAPI_MakeFace(BSS, Precision::Confusion()).Face();
 
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
 	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 

@@ -924,7 +924,7 @@ void CGeometryDoc::OnCreateSol()
   
 		if (sol.IsDone() == Standard_True){
 			Handle(Geom_BSplineSurface) GeomSol = sol.Surface();
-			TopoDS_Face aface = BRepBuilderAPI_MakeFace(GeomSol);
+			TopoDS_Face aface = BRepBuilderAPI_MakeFace(GeomSol, Precision::Confusion());
 			if (!BRepAlgo::IsValid(aface))
 				MessageBox(AfxGetApp()->m_pMainWnd->m_hWnd,"Error : The plate surface is not valid!","CasCade Error",MB_ICONERROR);
 			Handle_AIS_Shape anAISShape=new AIS_Shape(aface);
@@ -1337,7 +1337,7 @@ Handle_AIS_InteractiveObject CGeometryDoc::drawSurface
   fixParam(v2);
 
   Handle_AIS_Shape aGraphicSurface = 
-    new AIS_Shape(BRepBuilderAPI_MakeFace (theSurface, u1, u2, v1, v2));
+    new AIS_Shape(BRepBuilderAPI_MakeFace (theSurface, u1, u2, v1, v2, Precision::Confusion()));
 
   myAISContext->SetMaterial(aGraphicSurface, Graphic3d_NOM_PLASTIC, toDisplay);
   myAISContext->SetColor(aGraphicSurface, theColor, toDisplay);

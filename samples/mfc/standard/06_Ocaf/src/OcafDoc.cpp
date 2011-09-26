@@ -1132,8 +1132,8 @@ BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	PathName=lpszPathName;
 
 	// open the document in the current application
-
-	CDF_RetrievableStatus RS = m_App->Open(TPath,myOcafDoc);
+	PCDM_ReaderStatus RS = m_App->Open(TPath,myOcafDoc);
+//	CDF_RetrievableStatus RS = m_App->Open(TPath,myOcafDoc);
 
 	//connect the document CAF (myDoc) with the AISContext (myAISContext)
 //	TPrsStd_AISViewer::Has(myOcafDoc->Main());

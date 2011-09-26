@@ -392,7 +392,7 @@ void CAnimationDoc::OnFileLoadgrid()
 	  gp_Trsf T;
 	  T.SetTranslation(V);
 	  mySurface->Transform(T);
-	  BRepBuilderAPI_MakeFace aMkFace(mySurface);
+	  BRepBuilderAPI_MakeFace aMkFace(mySurface, Precision::Confusion());
 	  myFace = aMkFace.Face();
 
 	  // Remove all other shapes
