@@ -535,6 +535,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\ros\src\OpenGl\OpenGl_PrinterContext.cxx"
+				>
+			</File>
+			<File
 				RelativePath="$(CASROOT)\src\opengl\OpenGl_qstrip.cxx"
 				>
 			</File>
@@ -1069,6 +1073,10 @@
 			</File>
 			<File
 				RelativePath="$(CASROOT)\src\opengl\OpenGl_Memory.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\ros\src\OpenGl\OpenGl_PrinterContext.hxx"
 				>
 			</File>
 			<File
