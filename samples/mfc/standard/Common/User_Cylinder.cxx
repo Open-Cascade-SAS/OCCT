@@ -389,10 +389,10 @@ void User_Cylinder::ComputeSelection(const Handle_SelectMgr_Selection& aSelectio
 {
 	switch(aMode){
 	case 0:
-		StdSelect_BRepSelectionTool::Load(aSelection,this,myShape,TopAbs_SHAPE, 0, 0);
+		StdSelect_BRepSelectionTool::Load(aSelection,this,myShape,TopAbs_SHAPE, 0.01, 0.1);
 		break;
 	case 4:
-		StdSelect_BRepSelectionTool::Load(aSelection,this,myShape,TopAbs_FACE, 0, 0);
+		StdSelect_BRepSelectionTool::Load(aSelection,this,myShape,TopAbs_FACE, 0.01, 0.1);
 		break;
 	}
 }
