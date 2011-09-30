@@ -110,10 +110,17 @@
         -- Category: Methods to modify the class definition
         ---------------------------------------------------
     
-        Clear ( me  : mutable )
+        Clear ( me  : mutable;
+                theUpdateStructureMgr : Boolean from Standard = Standard_True )
             is static;
         ---Level: Public
         ---Purpose: Supress all primitives and attributes of <me>.
+        --          To clear group without update in Graphic3d_StructureManager
+        --          pass Standard_False as <theUpdateStructureMgr>. This
+        --          used on context and viewer destruction, when the pointer
+        --          to structure manager in Graphic3d_Structure could be 
+        --          already released (pointers are used here to avoid handle 
+        --          cross-reference);
         ---Category: Methods to modify the class definition
     
         Destroy ( me    : mutable )

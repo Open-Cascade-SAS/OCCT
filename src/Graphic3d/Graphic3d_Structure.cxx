@@ -261,10 +261,14 @@ void Graphic3d_Structure::Remove () {
 
   Standard_Integer i, Length;
 
-  // clean groups in graphics driver at first
+  // clean groups in graphics driver at first; this is also should be done
+  // to avoid unwanted group cleaning in group's destructor
+  // Pass Standard_False to Clear(..) method to avoid updating in
+  // structure manager, it isn't necessary, besides of it structure manager
+  // could be already destroyed and invalid pointers used in structure;
   Length = MyGroups.Length();
   for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
-    MyGroups.ChangeValue (aGrId)->Clear();
+    MyGroups.ChangeValue (aGrId)->Clear (Standard_False);
 
   //        Standard_Address APtr = (void *) This ().operator->();
   Standard_Address APtr = (void *) this;

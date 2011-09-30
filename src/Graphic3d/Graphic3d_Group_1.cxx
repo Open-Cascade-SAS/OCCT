@@ -27,40 +27,43 @@
 
 //-Methods, in order
 
-void Graphic3d_Group::Clear () {
+void Graphic3d_Group::Clear (Standard_Boolean theUpdateStructureMgr)
+{
+  if (IsDeleted ()) return;
 
-	if (IsDeleted ()) return;
+  MyCGroup.ContextLine.IsSet     = 0,
+  MyCGroup.ContextText.IsSet     = 0,
+  MyCGroup.ContextMarker.IsSet   = 0,
+  MyCGroup.ContextFillArea.IsSet = 0;
 
-	MyCGroup.ContextLine.IsSet	= 0,
-	MyCGroup.ContextText.IsSet	= 0,
-	MyCGroup.ContextMarker.IsSet    = 0,
-	MyCGroup.ContextFillArea.IsSet	= 0;
+  MyCGroup.ContextLine.IsDef     = 0,
+  MyCGroup.ContextText.IsDef     = 0,
+  MyCGroup.ContextMarker.IsDef   = 0,
+  MyCGroup.ContextFillArea.IsDef = 0;
 
-	MyCGroup.ContextLine.IsDef	= 0,
-	MyCGroup.ContextText.IsDef	= 0,
-	MyCGroup.ContextMarker.IsDef    = 0,
-	MyCGroup.ContextFillArea.IsDef	= 0;
+  MyCGroup.PickId.IsDef = 0,
+  MyCGroup.PickId.IsSet = 0,
+  MyCGroup.PickId.Value = 0;
 
-	MyCGroup.PickId.IsDef		= 0,
-	MyCGroup.PickId.IsSet		= 0,
-	MyCGroup.PickId.Value		= 0;
+  MyBounds.XMin	= ShortRealLast (),
+  MyBounds.YMin	= ShortRealLast (),
+  MyBounds.ZMin	= ShortRealLast ();
 
-	MyBounds.XMin	= ShortRealLast (),
-	MyBounds.YMin	= ShortRealLast (),
-	MyBounds.ZMin	= ShortRealLast ();
+  MyBounds.XMax	= ShortRealFirst (),
+  MyBounds.YMax	= ShortRealFirst (),
+  MyBounds.ZMax	= ShortRealFirst ();
 
-	MyBounds.XMax	= ShortRealFirst (),
-	MyBounds.YMax	= ShortRealFirst (),
-	MyBounds.ZMax	= ShortRealFirst ();
+  if (MyContainsFacet) MyStructure->GroupsWithFacet (-1);
+  MyContainsFacet = Standard_False,
+  MyIsEmpty       = Standard_True;
 
-	if (MyContainsFacet) MyStructure->GroupsWithFacet (-1);
-	MyContainsFacet	= Standard_False,
-	MyIsEmpty	= Standard_True;
+  MyGraphicDriver->ClearGroup (MyCGroup);
 
-	MyGraphicDriver->ClearGroup (MyCGroup);
-
-	Update ();
-
+  // clear method could be used on Graphic3d_Structure destruction,
+  // and its structure manager could be already destroyed, in that
+  // case we don't need to update it;
+  if (theUpdateStructureMgr)
+    Update ();
 }
 
 void Graphic3d_Group::Destroy () {
