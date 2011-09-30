@@ -21,6 +21,10 @@
 #include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
 
+//modified by NIZNHY-PKV Wed Sep 21 08:02:16 2011f
+static
+  void RefineDir(gp_Dir& aDir);
+//modified by NIZNHY-PKV Wed Sep 21 08:02:20 2011t
 //=======================================================================
 //class    : ExtremaExtElC_TrigonometricRoots
 //purpose  : 
@@ -336,59 +340,97 @@ Methode:
     cette equation.
 -----------------------------------------------------------------------------*/
 {
+  Standard_Real Dx,Dy,Dz,aRO2O1, aTolRO2O1;
+  Standard_Real R, A1, A2, A3, A4, A5, aTol;
+  gp_Dir x2, y2, z2, D, D1;
+  //
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
-
-// Calcul de T1 dans le repere du cercle ...
-  gp_Dir D = C1.Direction();
-  gp_Dir D1 = D;
-  gp_Dir x2, y2, z2;
+  //
+  // Calcul de T1 dans le repere du cercle ...
+  D = C1.Direction();
+  D1 = D;
   x2 = C2.XAxis().Direction();
   y2 = C2.YAxis().Direction();
   z2 = C2.Axis().Direction();
-  Standard_Real Dx = D.Dot(x2);
-  Standard_Real Dy = D.Dot(y2);
-  Standard_Real Dz = D.Dot(z2);
-  D.SetCoord(Dx,Dy,Dz);
-
-// Calcul de V dans le repere du cercle:
+  Dx = D.Dot(x2);
+  Dy = D.Dot(y2);
+  Dz = D.Dot(z2);
+  //
+  D.SetCoord(Dx, Dy, Dz);
+  //modified by NIZNHY-PKV Wed Sep 21 08:02:46 2011f
+  RefineDir(D);
+  D.Coord(Dx, Dy, Dz);
+  //modified by NIZNHY-PKV Wed Sep 21 08:02:48 2011t
+  //
+  // Calcul de V dans le repere du cercle:
   gp_Pnt O1 = C1.Location();
   gp_Pnt O2 = C2.Location();
   gp_Vec O2O1 (O2,O1);
-  O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
+  //
+  //modified by NIZNHY-PKV Wed Sep 21 07:45:39 2011f
+  aTolRO2O1=gp::Resolution();
+  aRO2O1=O2O1.Magnitude();
+  if (aRO2O1 > aTolRO2O1) {
+    gp_Dir aDO2O1;
+    //
+    O2O1.Multiply(1./aRO2O1);
+    aDO2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
+    RefineDir(aDO2O1);
+    O2O1.SetXYZ(aRO2O1*aDO2O1.XYZ());
+  }
+  else {
+    O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
+  }
+  //O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
+  //modified by NIZNHY-PKV Wed Sep 21 07:45:42 2011t
+  //
   gp_XYZ Vxyz = (D.XYZ()*(O2O1.Dot(D)))-O2O1.XYZ();
-
-// Calcul des coefficients de l equation en Cos et Sin ...
-  Standard_Real R = C2.Radius();
-  Standard_Real A5 = R*R*Dx*Dy;
-  Standard_Real A1 = -2.*A5;
-  Standard_Real A2 = R*R*(Dx*Dx-Dy*Dy)/2.0;
-  Standard_Real A3 = R*Vxyz.Y();
-  Standard_Real A4 = -R*Vxyz.X();
- // Standard_Real TolU = Tol * R;
-
-  
-  if(fabs(A5) <= 1.e-12) A5 = 0.;
-  if(fabs(A1) <= 1.e-12) A1 = 0.;
-  if(fabs(A2) <= 1.e-12) A2 = 0.;
-  if(fabs(A3) <= 1.e-12) A3 = 0.;
-  if(fabs(A4) <= 1.e-12) A4 = 0.;
-  
-
+  //
+  // Calcul des coefficients de l equation en Cos et Sin ... 
+  aTol=1.e-12;
+  R = C2.Radius();
+  A5 = R*R*Dx*Dy;
+  A1 = -2.*A5;
+  A2 = R*R*(Dx*Dx-Dy*Dy)/2.;
+  A3 = R*Vxyz.Y();
+  A4 = -R*Vxyz.X();
+  //
+  if(fabs(A5) <= aTol) {
+    A5 = 0.;
+  }
+  if(fabs(A1) <= aTol) {
+    A1 = 0.;
+  }
+  if(fabs(A2) <= aTol) {
+    A2 = 0.;
+  }
+  if(fabs(A3) <= aTol) {
+    A3 = 0.;
+  }
+  if(fabs(A4) <= aTol) {
+    A4 = 0.;
+  }
+  //
   ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,PI+PI);
-  if (!Sol.IsDone()) { return; }
+  if (!Sol.IsDone()) { 
+    return; 
+  }
   if (Sol.InfiniteRoots()) { 
     myIsPar = Standard_True;
     mySqDist[0] = R*R;
     myDone = Standard_True;
     return; 
   }
-// Stockage des solutions ...
-  gp_Pnt P1,P2;
+  //
+  // Stockage des solutions ...
+  Standard_Integer NoSol, NbSol;
   Standard_Real U1,U2;
-  Standard_Integer NbSol = Sol.NbSolutions();
-  for (Standard_Integer NoSol = 1; NoSol <= NbSol; NoSol++) {
+  gp_Pnt P1,P2;
+  //
+  NbSol = Sol.NbSolutions();
+  for (NoSol=1; NoSol<=NbSol; ++NoSol) {
     U2 = Sol.Value(NoSol);
     P2 = ElCLib::Value(U2,C2);
     U1 = (gp_Vec(O1,P2)).Dot(D1);
@@ -968,6 +1010,10 @@ Standard_Real Extrema_ExtElC::SquareDistance (const Standard_Integer N) const
   }
   return mySqDist[N-1];
 }
+//=======================================================================
+//function : Points
+//purpose  : 
+//=======================================================================
 void Extrema_ExtElC::Points (const Standard_Integer N,
 			     Extrema_POnCurv& P1, 
 			     Extrema_POnCurv& P2) const
@@ -978,3 +1024,34 @@ void Extrema_ExtElC::Points (const Standard_Integer N,
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];
 }
+//modified by NIZNHY-PKV Wed Sep 21 07:59:19 2011f
+//=======================================================================
+//function : RefineDir
+//purpose  : 
+//=======================================================================
+void RefineDir(gp_Dir& aDir)
+{
+  Standard_Integer i, j, k, iK;
+  Standard_Real aCx[3], aEps, aX1, aX2, aOne;
+  //
+  iK=3;
+  aEps=RealEpsilon();
+  aDir.Coord(aCx[0], aCx[1], aCx[2]);
+  //
+  for (i=0; i<iK; ++i) {
+    aOne=(aCx[i]>0.) ? 1. : -1.;
+    aX1=aOne-aEps;
+    aX2=aOne+aEps;
+    //
+    if (aCx[i]>aX1 && aCx[i]<aX2) {
+      j=(i+1)%iK;
+      k=(i+2)%iK;
+      aCx[i]=aOne;
+      aCx[j]=0.;
+      aCx[k]=0.;
+      aDir.SetCoord(aCx[0], aCx[1], aCx[2]);
+      return;
+    }
+  }
+}
+//modified by NIZNHY-PKV Wed Sep 21 07:59:26 2011t
