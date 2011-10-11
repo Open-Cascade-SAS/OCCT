@@ -196,8 +196,12 @@ void gp_Trsf2d::Multiply(const gp_Trsf2d& T)
   }
   else if (shape == gp_Ax1Mirror && T.shape == gp_Ax1Mirror) {
     shape = gp_Rotation;
-    loc.Add (T.loc.Multiplied (matrix));
-    matrix.Multiply(T.matrix);
+    gp_XY Tloc (T.loc);
+    Tloc.Multiply (matrix);
+    Tloc.Multiply (scale);
+    scale = scale * T.scale;
+    loc.Add (Tloc);
+    matrix.Multiply (T.matrix);
   }
   else if ((shape == gp_CompoundTrsf || shape == gp_Rotation ||
 	    shape == gp_Ax1Mirror) && T.shape == gp_Translation) {
@@ -409,6 +413,8 @@ void gp_Trsf2d::PreMultiply (const gp_Trsf2d& T)
   else if (shape == gp_Ax1Mirror && T.shape == gp_Ax1Mirror) {
     shape = gp_Rotation;
     loc.Multiply (T.matrix);
+    loc.Multiply(T.scale);
+    scale = scale * T.scale;
     loc.Add (T.loc);
     matrix.PreMultiply(T.matrix);
   }

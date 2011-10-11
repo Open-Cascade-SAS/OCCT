@@ -5174,6 +5174,67 @@ Standard_Integer OCC22586 (Draw_Interpretor& di, Standard_Integer argc, const ch
 
 }
 
+Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	
+  if (argc != 9) {
+    di << "Usage : " << argv[0] << " X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2\n";
+    return 1;
+  }
+
+  Standard_Real X_mirrorFirstPoint = atof(argv[1]);
+  Standard_Real Y_mirrorFirstPoint = atof(argv[2]);
+  Standard_Real X_mirrorSecondPoint = atof(argv[3]);
+  Standard_Real Y_mirrorSecondPoint = atof(argv[4]);
+  Standard_Real X_p1 = atof(argv[5]);
+  Standard_Real Y_p1 = atof(argv[6]);
+  Standard_Real X_p2 = atof(argv[7]);
+  Standard_Real Y_p2 = atof(argv[8]);
+  
+  gp_Trsf2d identityTransformation;
+
+  gp_Pnt2d mirrorFirstPoint(X_mirrorFirstPoint,Y_mirrorFirstPoint);
+  gp_Pnt2d mirrorSecondPoint(X_mirrorSecondPoint,Y_mirrorSecondPoint);
+  gp_Ax2d  mirrorAxis(mirrorFirstPoint,gp_Vec2d(mirrorFirstPoint,mirrorSecondPoint));
+
+  gp_Pnt2d p1(X_p1,Y_p1);
+  gp_Pnt2d p2(X_p2,Y_p2);
+
+  gp_Trsf2d M1;
+  M1.SetMirror(mirrorAxis);
+  gp_Trsf2d M2;
+  M2.SetMirror(mirrorAxis);
+  gp_Trsf2d Tcomp;
+  Tcomp = M2.Multiplied(M1);
+
+  Standard_Real aTol = Precision::Confusion();
+  Standard_Integer aStatus = 0;
+
+  //After applying two times the same mirror the point is located on the same location OK
+  gp_Pnt2d p1MirrorM1   = p1.Transformed(M1);
+  if ( Abs(p2.X() - p1MirrorM1.X()) > aTol )
+    aStatus = 2;
+  if ( Abs(p2.Y() - p1MirrorM1.Y()) > aTol )
+    aStatus = 3;
+
+  gp_Pnt2d p1MirrorM1M2 = p1MirrorM1.Transformed(M2);
+  if ( Abs(p1.X() - p1MirrorM1M2.X()) > aTol )
+    aStatus = 4;
+  if ( Abs(p1.Y() - p1MirrorM1M2.Y()) > aTol )
+    aStatus = 5;
+
+  //If we apply the composed transformation of the same two mirrors to a point the result is //not located on the initial position.-->>ERROR
+  gp_Pnt2d p1MirrorComp = p1.Transformed(Tcomp);
+  if ( Abs(p1.X() - p1MirrorComp.X()) > aTol )
+    aStatus = 6;
+  if ( Abs(p1.Y() - p1MirrorComp.Y()) > aTol )
+    aStatus = 7;
+
+  di << "Status = " << aStatus << "\n";
+  return 0;
+
+}
+
 void QAOCC::Commands(Draw_Interpretor& theCommands) {
   const char *group = "QAOCC";
 
@@ -5279,5 +5340,6 @@ void QAOCC::Commands(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC17424", "OCC17424  shape X_Pnt Y_Pnt Z_Pnt X_Dir Y_Dir Z_Dir PInf", __FILE__, OCC17424, group);
   theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
   theCommands.Add("OCC22586", "OCC22586 shape resshape", __FILE__, OCC22586, group);
+  theCommands.Add("OCC22736", "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2", __FILE__, OCC22736, group);
   return;
 }
