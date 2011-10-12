@@ -1,7 +1,7 @@
-// File:	HLRBRep_EdgeInterferenceTool.lxx
-// Created:	Thu Apr 17 21:17:06 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_EdgeInterferenceTool.lxx
+// Created:   Thu Apr 17 21:17:06 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRAlgo_Interference.hxx>
 
@@ -80,4 +80,3 @@ inline Standard_Real
 HLRBRep_EdgeInterferenceTool::ParameterOfInterference
   (const HLRAlgo_Interference& I) const
 { return I.Intersection().Parameter(); }
-

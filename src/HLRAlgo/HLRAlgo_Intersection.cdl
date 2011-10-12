@@ -1,8 +1,7 @@
--- File:	Intersection.cdl
--- Created:	Fri Aug 21 10:41:54 1992
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo_Intersection.cdl
+-- Created:   Fri Aug 21 10:41:54 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class Intersection from HLRAlgo
 

@@ -1,7 +1,7 @@
-// File:	HLRAlgo_EdgeIterator.lxx
-// Created:	Mon Jan 11 13:58:26 1993
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_EdgeIterator.lxx
+// Created:   Mon Jan 11 13:58:26 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRAlgo_EdgeStatus.hxx>
 
@@ -73,4 +73,3 @@ HLRAlgo_EdgeIterator::Visible (Standard_Real& Start,
   ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart
     (iVis,Start,TolStart,End,TolEnd);
 }
-

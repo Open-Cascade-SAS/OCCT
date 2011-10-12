@@ -1,8 +1,7 @@
--- File:	Coincidence.cdl
--- Created:	Thu Aug 20 18:06:13 1992
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo_Coincidence.cdl
+-- Created:   Thu Aug 20 18:06:13 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class Coincidence from HLRAlgo
 

@@ -1,10 +1,7 @@
--- File:	Contap_ContAna.cdl
--- Created:	Thu Mar  4 10:51:23 1993
--- Author:	Jacques GOUSSARD
---		<jag@form4>
----Copyright:	 Matra Datavision 1993
-
-
+-- File:      Contap_ContAna.cdl
+-- Created:   Thu Mar  4 10:51:23 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 
 class ContAna from Contap

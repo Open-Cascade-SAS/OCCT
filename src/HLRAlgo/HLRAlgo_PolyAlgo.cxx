@@ -1,7 +1,8 @@
-// File:	HLRAlgo_PolyAlgo.cxx
-// Created:	Fri May  5 15:58:19 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_PolyAlgo.cxx
+// Created:   Fri May  5 15:58:19 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 //#define No_Exception
 #endif
@@ -219,11 +220,7 @@ void HLRAlgo_PolyAlgo::Update ()
 	Standard_Real X1,X2,X3,Y1,Y2,Y3,Z1,Z2,Z3;
 	Standard_Real dn,dnx,dny,dnz,dx1,dy1,dz1,dx2,dy2,dz2,dx3,dy3;
 	Standard_Real adx1,ady1,adx2,ady2,adx3,ady3;
-#ifndef DEB
 	Standard_Real a =0.,b =0.,c =0.,d =0.;
-#else
-	Standard_Real a,b,c,d;
-#endif
 	const Standard_Address PolyTIndices = (*pd)->Indices();
 	TColgp_Array1OfXYZ   & Nodes        = (*pd)->Nodes();
 	HLRAlgo_Array1OfTData& TData        = (*pd)->TData();

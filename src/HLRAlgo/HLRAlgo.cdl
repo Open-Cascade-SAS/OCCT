@@ -1,8 +1,7 @@
--- File:	HLRAlgo.cdl
--- Created:	Tue Feb 18 17:18:30 1992
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo.cdl
+-- Created:   Tue Feb 18 17:18:30 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 package HLRAlgo 
 --- Purpose:        In order to have the precision required in

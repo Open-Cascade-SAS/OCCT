@@ -1,10 +1,14 @@
+// File:      Contap_Line.lxx
+// Created:   Fri Feb  5 12:13:00 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 #include <Standard_DomainError.hxx>
 #include <TColgp_HSequenceOfPnt.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <IntSurf_LineOn2S.hxx>
-
 
 #include TheHSequenceOfPoint_hxx
 
@@ -54,4 +58,3 @@ inline gp_Circ Contap_Line::Circle () const
   if (typL != Contap_Circle) {Standard_DomainError::Raise();}
   return gp_Circ(gp_Ax2(pt,dir1,dir2),rad);
 }
-

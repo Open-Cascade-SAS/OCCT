@@ -1,7 +1,7 @@
-// File:	HLRBRep_EdgeData.cxx
-// Created:	Thu Apr 17 11:44:47 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_EdgeData.cxx
+// Created:   Thu Apr 17 11:44:47 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_EdgeData.ixx>
 #include <BRep_Tool.hxx>
@@ -77,4 +77,3 @@ void HLRBRep_EdgeData::UpdateMinMax (const Standard_Address TotMinMax)
   myMinMax[14] = ((Standard_Integer*)TotMinMax)[14];
   myMinMax[15] = ((Standard_Integer*)TotMinMax)[15];
 }
-

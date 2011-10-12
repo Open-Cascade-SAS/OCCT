@@ -1,7 +1,8 @@
-// File:	HLRAlgo_EdgesBlock.cxx
-// Created:	Fri Mar 27 17:08:48 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRAlgo_EdgesBlock.cxx
+// Created:   Fri Mar 27 17:08:48 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -26,4 +27,3 @@ void HLRAlgo_EdgesBlock::UpdateMinMax (const Standard_Address TotMinMax)
   for (Standard_Integer i = 0; i <= 15; i++)
     myMinMax[i] = ((Standard_Integer*)TotMinMax)[i];
 }
-

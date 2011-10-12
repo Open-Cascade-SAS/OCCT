@@ -1,7 +1,7 @@
-// File:	HLRAlgo_PolyInternalNode.lxx
-// Created:	Fri Jan 10 22:25:51 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRAlgo_PolyInternalNode.lxx
+// Created:   Fri Jan 10 22:25:51 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //=======================================================================
 //function : HLRAlgo_PolyInternalNode
@@ -31,4 +31,3 @@ inline Standard_Address HLRAlgo_PolyInternalNode::Indices () const
 
 inline Standard_Address HLRAlgo_PolyInternalNode::RValues () const
 { return (Standard_Address)myRValues; }
-

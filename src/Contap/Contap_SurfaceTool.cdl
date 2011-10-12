@@ -1,9 +1,7 @@
--- File:	Contap_SurfaceTool.cdl
--- Created:	Wed May 12 09:11:00 1993
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1993
-
+-- File:      Contap_SurfaceTool.cdl
+-- Created:   Wed May 12 09:11:00 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 
 deferred generic class SurfaceTool from Contap

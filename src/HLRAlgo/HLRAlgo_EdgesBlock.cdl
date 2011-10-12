@@ -1,8 +1,7 @@
--- File:	HLRAlgo_EdgesBlock.cdl
--- Created:	Mon Apr  6 17:57:45 1992
--- Author:	Christophe MARION
---		<cma@sdsun2>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo_EdgesBlock.cdl
+-- Created:   Mon Apr  6 17:57:45 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class EdgesBlock from HLRAlgo inherits TShared from MMgt
 

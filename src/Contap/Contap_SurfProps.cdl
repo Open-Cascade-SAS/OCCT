@@ -1,8 +1,7 @@
--- File:	Contap_SurfProps.cdl
--- Created:	Fri Feb 24 15:30:15 1995
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1995
+-- File:      Contap_SurfProps.cdl
+-- Created:   Fri Feb 24 15:30:15 1995
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1995
 
 
 generic class SurfProps from Contap 

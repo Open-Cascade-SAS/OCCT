@@ -1,8 +1,7 @@
--- File:	HLRBRep_LineTool.cdl
--- Created:	Wed Aug 18 14:58:10 1993
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_LineTool.cdl
+-- Created:   Wed Aug 18 14:58:10 1993
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1993
 
 class LineTool from HLRBRep
 

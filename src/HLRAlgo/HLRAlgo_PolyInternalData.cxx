@@ -1,7 +1,7 @@
-// File:	HLRAlgo_PolyInternalData.cxx
-// Created:	Tue Jul 11 16:59:46 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_PolyInternalData.cxx
+// Created:   Tue Jul 11 16:59:46 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <Standard_Stream.hxx>
 #include <HLRAlgo_PolyInternalData.ixx>
@@ -917,4 +917,3 @@ IncPINod (Standard_Address& PINod1,
   }
   myNbPINod++;
 }
-

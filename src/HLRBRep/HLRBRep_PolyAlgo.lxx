@@ -1,7 +1,7 @@
-// File:	HLRBRep_PolyAlgo.lxx
-// Created:	Thu Jun 15 16:17:43 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRBRep_PolyAlgo.lxx
+// Created:   Thu Jun 15 16:17:43 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRAlgo_PolyAlgo.hxx>
 
@@ -150,4 +150,3 @@ inline Standard_Boolean HLRBRep_PolyAlgo::Debug () const
 
 inline void HLRBRep_PolyAlgo::Debug (const Standard_Boolean B)
 { myDebug = B; }
-

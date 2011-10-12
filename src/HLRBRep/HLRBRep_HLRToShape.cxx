@@ -1,7 +1,7 @@
-// File:	HLRBRep_HLRToShape.cxx
-// Created:	Mon Oct 11 16:55:56 1993
-// Author:	Christophe MARION
-//		<cma@nonox>
+// File:      HLRBRep_HLRToShape.cxx
+// Created:   Mon Oct 11 16:55:56 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_HLRToShape.ixx>
 #include <TopoDS.hxx>
@@ -212,4 +212,3 @@ HLRBRep_HLRToShape::DrawEdge (const Standard_Boolean visible,
     }
   }
 }
-

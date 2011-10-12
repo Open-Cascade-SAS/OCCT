@@ -1,8 +1,7 @@
--- File:	HLRAlgo_Projector.cdl
--- Created:	Thu Mar 12 13:32:28 1992
--- Author:	Christophe MARION
---		<cma@sdsun2>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo_Projector.cdl
+-- Created:   Thu Mar 12 13:32:28 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class Projector from HLRAlgo
 ---Purpose: Implements a  projector object.

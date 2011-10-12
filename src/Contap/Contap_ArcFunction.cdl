@@ -1,10 +1,7 @@
--- File:	Contap_ArcFunction.cdl
--- Created:	Thu Jun  3 12:32:05 1993
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1993
-
-
+-- File:      Contap_ArcFunction.cdl
+-- Created:   Thu Jun  3 12:32:05 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 generic class ArcFunction from Contap 
     (TheArc          as any;

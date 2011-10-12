@@ -1,7 +1,7 @@
-// File:	HLRBRep_Curve.lxx
-// Created:	Fri Mar 13 11:08:32 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_Curve.lxx
+// Created:   Fri Mar 13 11:08:32 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <Standard_NotImplemented.hxx>
 #include <gp_Pnt2d.hxx>
@@ -191,4 +191,3 @@ inline Standard_Boolean HLRBRep_Curve::IsRational() const
 {
   return HLRBRep_BCurveTool::IsRational(myCurve);
 }
-

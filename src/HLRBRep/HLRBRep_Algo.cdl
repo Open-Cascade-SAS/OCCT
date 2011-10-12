@@ -1,8 +1,7 @@
--- File:	HLRBRep_Algo.cdl
--- Created:	Wed Aug  3 16:15:26 1994
--- Author:	Christophe MARION
---		<cma@ecolox>
----Copyright:	 Matra Datavision 1994
+-- File:      HLRBRep_Algo.cdl
+-- Created:   Wed Aug  3 16:15:26 1994
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1994
 
 class Algo from HLRBRep inherits InternalAlgo from HLRBRep
 

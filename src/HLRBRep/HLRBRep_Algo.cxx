@@ -1,7 +1,7 @@
-// File:	HLRBRep_Algo.cxx
-// Created:	Thu Aug  4 10:18:44 1994
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRBRep_Algo.cxx
+// Created:   Thu Aug  4 10:18:44 1994
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define No_Standard_OutOfRange
 
@@ -80,4 +80,3 @@ void HLRBRep_Algo::OutLinedShapeNullify ()
     ShapeBounds(i).Shape()->DataStructure().Clear();
   }
 }
-

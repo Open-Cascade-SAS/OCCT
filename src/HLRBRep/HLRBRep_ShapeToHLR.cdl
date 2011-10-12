@@ -1,8 +1,7 @@
--- File:	HLRBRep_ShapeToHLR.cdl
--- Created:	Tue May  4 16:52:14 1993
--- Author:	Modelistation
---		<model@phylox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_ShapeToHLR.cdl
+-- Created:   Tue May  4 16:52:14 1993
+-- Author:    Modelistation
+---Copyright: Matra Datavision 1993
 
 class ShapeToHLR from HLRBRep
 

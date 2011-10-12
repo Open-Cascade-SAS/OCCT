@@ -1,7 +1,7 @@
-// File:	HLRBRep_Hider.cxx
-// Created:	Thu Apr 17 19:33:55 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_Hider.cxx
+// Created:   Thu Apr 17 19:33:55 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define No_Standard_OutOfRange
 
@@ -94,17 +94,8 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
   HLRBRep_EdgeInterferenceTool EIT(myDS); // List of Intersections
   HLRBRep_Array1OfEData& myEData = myDS->EDataArray();
 
-#ifdef DEB
-  Standard_Integer EToBeChecked = -1;
-#endif
   for (; myDS->MoreEdge(); myDS->NextEdge()) {       // loop on the Edges
     Standard_Integer E = myDS->Edge();               // *****************
-
-#ifdef DEB
-    if(E == EToBeChecked) {
-      cout << E << endl;
-    }
-#endif
 
     try {
       OCC_CATCH_SIGNALS
@@ -589,4 +580,3 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
     }
   }
 }
-

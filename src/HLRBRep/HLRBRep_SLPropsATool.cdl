@@ -1,8 +1,7 @@
--- File:	HLRBRep_SLPropsATool.cdl
--- Created:	Fri Apr 23 13:56:45 1993
--- Author:	Modelistation
---		<model@phylox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_SLPropsATool.cdl
+-- Created:   Fri Apr 23 13:56:45 1993
+-- Author:    Modelistation
+---Copyright: Matra Datavision 1993
 
 class SLPropsATool from HLRBRep
 

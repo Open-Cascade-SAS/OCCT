@@ -1,7 +1,7 @@
-// File:	HLRAlgo_PolyHidingData.lxx
-// Created:	Wed Jun 21 19:29:59 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_PolyHidingData.lxx
+// Created:   Wed Jun 21 19:29:59 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //=======================================================================
 //function : PolyHidingData
@@ -51,4 +51,3 @@ HLRAlgo_PolyHidingData::IndexAndMinMax() const
 inline Standard_Address
 HLRAlgo_PolyHidingData::Plan() const
 { return (Standard_Address)myPlan; }
-

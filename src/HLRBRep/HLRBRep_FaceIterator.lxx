@@ -1,7 +1,7 @@
-// File:	HLRBRep_FaceIterator.lxx
-// Created:	Thu Apr 17 16:03:06 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_FaceIterator.lxx
+// Created:   Thu Apr 17 16:03:06 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRAlgo_WiresBlock.hxx>
 #include <HLRAlgo_EdgesBlock.hxx>
@@ -96,4 +96,3 @@ inline Standard_Boolean HLRBRep_FaceIterator::Double() const
 
 inline Standard_Boolean HLRBRep_FaceIterator::IsoLine() const
 { return myEdges->IsoLine(iEdge); }
-

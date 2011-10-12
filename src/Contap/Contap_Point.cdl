@@ -1,9 +1,7 @@
--- File:	Contap_Point.cdl
--- Created:	Thu Mar  4 17:22:45 1993
--- Author:	Jacques GOUSSARD
---		<jag@form4>
----Copyright:	 Matra Datavision 1993
-
+-- File:      Contap_Point.cdl
+-- Created:   Thu Mar  4 17:22:45 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 generic class Point from Contap
     (TheVertex as any;

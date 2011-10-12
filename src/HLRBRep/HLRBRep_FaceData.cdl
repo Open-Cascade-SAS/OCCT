@@ -1,8 +1,7 @@
--- File:	HLRBRep_FaceData.cdl
--- Created:	Thu Apr 17 11:55:00 1997
--- Author:	Christophe MARION
---		<cma@partox.paris1.matra-dtv.fr>
----Copyright:	 Matra Datavision 1997
+-- File:      HLRBRep_FaceData.cdl
+-- Created:   Thu Apr 17 11:55:00 1997
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1997
 
 class FaceData from HLRBRep
 

@@ -1,8 +1,7 @@
--- File:        HLRBRep_CurveTool.cdl
--- Created:	Mon Jul 17 16:25:23 1995
--- Author:	Modelistation
---		<model@mastox>
----Copyright:	 Matra Datavision 1995
+-- File:      HLRBRep_CurveTool.cdl
+-- Created:   Mon Jul 17 16:25:23 1995
+-- Author:    Modelistation
+---Copyright: Matra Datavision 1995
 
 class CurveTool from HLRBRep
 

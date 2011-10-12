@@ -1,7 +1,8 @@
-// File:	HLRBRep_Intersector.gxx
-// Created:	Thu Oct 22 11:37:24 1992
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRBRep_Intersector.gxx
+// Created:   Thu Oct 22 11:37:24 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif

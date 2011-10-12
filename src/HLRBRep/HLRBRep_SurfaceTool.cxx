@@ -1,8 +1,8 @@
-//-- File       : HLRBRep_SurfaceTool.gxx 
-//-- Created    : Wed Jui 7 18:00:00 1c93
-//-- Author     : Laurent BUCHARD
-//--              <lbr@nonox>
-//-- Copyright:	 Matra Datavision 1993
+// File:      HLRBRep_SurfaceTool.cxx
+// Created:   Wed Jui 7 18:00:00 1c93
+// Author:    Laurent BUCHARD
+// Copyright: Matra Datavision 1993
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_SurfaceTool.ixx>
 #include <BRepAdaptor_Surface.hxx>
@@ -124,4 +124,3 @@ Standard_Integer  HLRBRep_SurfaceTool::NbSamplesV(const Standard_Address S,
   }
   return(n);
 }
-

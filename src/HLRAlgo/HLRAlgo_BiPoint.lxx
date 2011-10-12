@@ -1,7 +1,7 @@
-// File:	HLRAlgo_BiPoint.lxx
-// Created:	Thu Jun 22 12:35:03 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_BiPoint.lxx
+// Created:   Thu Jun 22 12:35:03 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define EMskRg1Line  ((Standard_Boolean)1)
 #define EMskRgNLine  ((Standard_Boolean)2)
@@ -128,4 +128,3 @@ inline Standard_Address HLRAlgo_BiPoint::Indices () const
 
 inline Standard_Address HLRAlgo_BiPoint::Coordinates () const
 { return (Standard_Address)myCoordinates; }
-

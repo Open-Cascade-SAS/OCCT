@@ -1,9 +1,7 @@
--- File:	Contap_Line.cdl
--- Created:	Fri Feb  5 12:13:00 1993
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1993
-
+-- File:      Contap_Line.cdl
+-- Created:   Fri Feb  5 12:13:00 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 generic class Line from Contap
     (TheVertex           as any;

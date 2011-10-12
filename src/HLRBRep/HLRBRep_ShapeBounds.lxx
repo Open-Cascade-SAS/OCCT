@@ -1,7 +1,7 @@
-// File:	HLRBRep_ShapeBounds.lxx
-// Created:	Thu Apr 17 18:34:31 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_ShapeBounds.lxx
+// Created:   Thu Apr 17 18:34:31 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //=======================================================================
 //function : HLRBRep_ShapeBounds
@@ -69,4 +69,3 @@ inline Standard_Integer HLRBRep_ShapeBounds::NbOfIso () const
 
 inline Standard_Address HLRBRep_ShapeBounds::MinMax () const
 { return (Standard_Address)&myMinMax; }
-

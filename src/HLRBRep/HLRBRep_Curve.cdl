@@ -1,8 +1,7 @@
--- File:	HLRBRep_Curve.cdl
--- Created:	Thu Apr  1 15:09:20 1993
--- Author:	Modelistation
---		<model@phylox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_Curve.cdl
+-- Created:   Thu Apr  1 15:09:20 1993
+-- Author:    Modelistation
+---Copyright: Matra Datavision 1993
 
 class Curve from HLRBRep
 	

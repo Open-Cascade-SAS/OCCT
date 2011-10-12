@@ -1,7 +1,8 @@
-// File:	HLRBRep_ShapeToHLR.cxx
-// Created:	Thu Aug 27 12:33:14 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_ShapeToHLR.cxx
+// Created:   Thu Aug 27 12:33:14 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 // #define No_Exception
 #endif
@@ -86,10 +87,6 @@ HLRBRep_ShapeToHLR::Load(const Handle(HLRTopoBRep_OutLiner)& S,
 
   // Create the data structure
   Handle(HLRBRep_Data) DS = new HLRBRep_Data (nbVert, nbEdge, nbFace);
-#ifdef DEB
-  HLRBRep_Array1OfEData& ED = 
-#endif
-    DS->EDataArray ();
   HLRBRep_EdgeData* ed; 
   if(nbEdge != 0) ed = &(DS->EDataArray().ChangeValue(1));
 //  ed++;
@@ -281,4 +278,3 @@ HLRBRep_ShapeToHLR::ExploreShape (const Handle(HLRTopoBRep_OutLiner)& S,
     }
   }
 }
-

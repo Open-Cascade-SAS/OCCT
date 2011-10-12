@@ -1,7 +1,7 @@
-// File:	HLRBRep_Data.cxx
-// Created:	Thu Apr 17 19:17:52 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_Data.cxx
+// Created:   Thu Apr 17 19:17:52 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //#define No_Standard_OutOfRange
 
@@ -534,10 +534,6 @@ void HLRBRep_Data::Write (const Handle(HLRBRep_Data)& DS,
 			  const Standard_Integer de,
 			  const Standard_Integer df)
 {
-#ifdef DEB
-  Standard_Integer n1vert = 
-#endif
-    DS->NbVertices();
   Standard_Integer n1edge = DS->NbEdges();
   Standard_Integer n1face = DS->NbFaces();
 
@@ -1490,49 +1486,59 @@ void HLRBRep_Data::LocalFEGeometry2D (const Standard_Integer FE,
 //=======================================================================
 
 void HLRBRep_Data::EdgeState (const Standard_Real p1,
-			      const Standard_Real p2,
-			      TopAbs_State& stbef,
-			      TopAbs_State& staft)
+                              const Standard_Real p2,
+                              TopAbs_State& stbef,
+                              TopAbs_State& staft)
 {
   // compute the state of The Edge near the Intersection
   // this method should give the states before and after
   // it should get the parameters on the surface
-  
-  gp_Pnt Pbid;
-  gp_Vec TngEdge;
-  ((HLRBRep_Curve*)myLEGeom)->D1(p1,Pbid,TngEdge);
+
   Standard_Real pu,pv;
-  if (HLRBRep_EdgeFaceTool::UVPoint(p2,myFEGeom,iFaceGeom,pu,pv)) {
+  if (HLRBRep_EdgeFaceTool::UVPoint(p2,myFEGeom,iFaceGeom,pu,pv))
+  {
     mySLProps.SetParameters(pu,pv);
-    gp_Dir NrmFace  = mySLProps.Normal();
-    const gp_Trsf& TI = myProj.InvertedTransformation();
-    gp_Dir V;
-    if (myProj.Perspective()) {
-      gp_Pnt2d P2d;
-      myProj.Project(Pbid,P2d);
-      V = gp_Dir(P2d.X(),P2d.Y(),-myProj.Focus());
+    if (mySLProps.IsNormalDefined())
+    {
+      gp_Dir NrmFace  = mySLProps.Normal();
+
+      gp_Pnt Pbid;
+      gp_Vec TngEdge;
+      ((HLRBRep_Curve*)myLEGeom)->D1(p1,Pbid,TngEdge);
+
+      const gp_Trsf& TI = myProj.InvertedTransformation();
+      gp_Dir V;
+      if (myProj.Perspective()) {
+        gp_Pnt2d P2d;
+        myProj.Project(Pbid,P2d);
+        V = gp_Dir(P2d.X(),P2d.Y(),-myProj.Focus());
+      }
+      else {
+        V = gp_Dir(0,0,-1);
+      }
+      V.Transform(TI);
+      if (NrmFace.Dot(V) > 0.)
+        NrmFace.Reverse();
+    
+      const Standard_Real scal = (TngEdge.SquareMagnitude()>1.e-10)? NrmFace.Dot(gp_Dir(TngEdge)) : 0.;
+
+      if      (scal >  myToler*10) {stbef = TopAbs_IN ;staft = TopAbs_OUT;}
+      else if (scal < -myToler*10) {stbef = TopAbs_OUT;staft = TopAbs_IN ;}
+      else                         {stbef = TopAbs_ON ;staft = TopAbs_ON ;}
     }
     else {
-      V = gp_Dir(0,0,-1);
+      stbef = TopAbs_OUT;
+      staft = TopAbs_OUT;
+#ifdef DEB
+    cout << "HLRBRep_Data::EdgeState : undefined" << endl;
+#endif
     }
-    V.Transform(TI);
-    if (NrmFace.Dot(V) > 0)
-      NrmFace.Reverse();
-    
-    Standard_Real scal;
-    if(TngEdge.SquareMagnitude()>1e-10) 
-      scal=NrmFace.Dot(gp_Dir(TngEdge));
-    else scal=0.0;
-    
-    if      (scal >  myToler*10) {stbef = TopAbs_IN ;staft = TopAbs_OUT;}
-    else if (scal < -myToler*10) {stbef = TopAbs_OUT;staft = TopAbs_IN ;}
-    else                         {stbef = TopAbs_ON ;staft = TopAbs_ON ;}
   }
   else {
     stbef = TopAbs_OUT;
     staft = TopAbs_OUT; 
 #ifdef DEB
-    cout << "HLRBRep_Data::EdgeState : undefined" << endl; 
+    cout << "HLRBRep_Data::EdgeState : undefined" << endl;
 #endif
   }
 }
@@ -1563,22 +1569,15 @@ HLRBRep_Data::HidingStartLevel (const Standard_Integer E,
       Loop = Standard_False;
     else {
       if (Abs(param-sta) > Abs(param-end))
-	end = param;
+        end = param;
       else
-	sta = param;
+        sta = param;
     }
     It.Next();
   }
-  param = (sta + end) / 2;
-#ifndef DEB
+  param = 0.5 * (sta + end);
   Standard_Integer level = 0;
-#else
-  Standard_Integer level;
-#endif
-#ifdef DEB
-  TopAbs_State st = 
-#endif
-    Classify(E,ED,Standard_True,level,param);
+  /*TopAbs_State st = */Classify(E,ED,Standard_True,level,param);
   Loop = Standard_True;
   It.Initialize(IL);
 
@@ -1589,15 +1588,15 @@ HLRBRep_Data::HidingStartLevel (const Standard_Integer E,
       switch (Int.Transition()) {
 	
       case TopAbs_FORWARD  :
-	level = level - Int.Intersection().Level();
-	break;
+        level -= Int.Intersection().Level();
+        break;
       case TopAbs_REVERSED :
-	level = level + Int.Intersection().Level();
-	break;
+        level += Int.Intersection().Level();
+        break;
       case TopAbs_EXTERNAL :
       case TopAbs_INTERNAL :
-	default :
-	  break;
+	  default :
+	    break;
       }
     }
     else if (p > param + tolpar)
@@ -1619,10 +1618,10 @@ HLRBRep_Data::HidingStartLevel (const Standard_Integer E,
 //=======================================================================
 
 TopAbs_State HLRBRep_Data::Compare (const Standard_Integer E,
-				    const HLRBRep_EdgeData& ED)
+                                    const HLRBRep_EdgeData& ED)
 {
-  Standard_Integer level;
-  Standard_Real parbid = 0;
+  Standard_Integer level = 0;
+  Standard_Real parbid = 0.;
   return Classify(E,ED,Standard_False,level,parbid);
 }
 
@@ -2207,11 +2206,7 @@ HLRBRep_Data::RejectedPoint (const IntRes2d_IntersectionPoint& PInter,
   Standard_Real p1,p2,dz;
   Standard_ShortReal t1,t2;
   TopAbs_State st;
-#ifndef DEB
   TopAbs_Orientation Orie =TopAbs_FORWARD ;
-#else
-  TopAbs_Orientation Orie ;
-#endif
   TopAbs_Orientation Or2 = TopAbs_INTERNAL;
   Standard_Boolean inverted = Standard_False;
   const IntRes2d_Transition* Tr1;
@@ -2287,11 +2282,7 @@ HLRBRep_Data::RejectedPoint (const IntRes2d_IntersectionPoint& PInter,
   }
 
   if (iFaceBack) Orie = TopAbs::Complement(Orie);  // change the transition
-#ifndef DEB
   TopAbs_Orientation Ori = TopAbs_FORWARD;
-#else
-  TopAbs_Orientation Ori;
-#endif
   switch (Tr1->PositionOnCurve()) {
   case IntRes2d_Head   : Ori = TopAbs_FORWARD ; break;
   case IntRes2d_Middle : Ori = TopAbs_INTERNAL; break;
@@ -2446,4 +2437,3 @@ HLRBRep_Data::SameVertex (const Standard_Boolean h1,
   }
   return SameV;
 }
-

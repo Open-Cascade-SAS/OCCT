@@ -1,7 +1,7 @@
-// File:	HLRBRep_InternalAlgo.cxx
-// Created:	Thu Apr 17 21:49:17 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_InternalAlgo.cxx
+// Created:   Thu Apr 17 21:49:17 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <Standard_Stream.hxx>
 #include <HLRBRep_InternalAlgo.ixx>
@@ -109,13 +109,8 @@ void HLRBRep_InternalAlgo::Update ()
   if (!myShapes.IsEmpty()) {
     Standard_Integer n = myShapes.Length();
     Handle(HLRBRep_Data) *DS = new Handle(HLRBRep_Data) [n];
-#ifndef DEB
-    static
-#endif
-      Standard_Integer i,dv,de,df,nv,ne,nf;
-    nv = 0;
-    ne = 0;
-    nf = 0;
+
+    Standard_Integer i,dv,de,df,nv=0,ne=0,nf=0;
 
     for (i = 1; i <= n; i++) {
       HLRBRep_ShapeBounds& SB = myShapes(i);
@@ -974,4 +969,3 @@ Standard_Boolean HLRBRep_InternalAlgo::Debug () const
 
 Handle(HLRBRep_Data) HLRBRep_InternalAlgo::DataStructure () const
 { return myDS; }
-

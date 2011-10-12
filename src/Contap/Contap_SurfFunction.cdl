@@ -1,8 +1,7 @@
--- File:	Contap_SurfFunction.cdl
--- Created:	Thu Jun  3 15:23:20 1993
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1993
+-- File:      Contap_SurfFunction.cdl
+-- Created:   Thu Jun  3 15:23:20 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 
 generic class SurfFunction from Contap 

@@ -1,7 +1,7 @@
-// File:	HLRAlgo_EdgeStatus.lxx
-// Created:	Tue Feb 18 11:30:12 1992
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_EdgeStatus.lxx
+// Created:   Tue Feb 18 11:30:12 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define EMaskAllHidden  ((Standard_Boolean)1)
 #define EMaskAllVisible ((Standard_Boolean)2)
@@ -80,4 +80,3 @@ inline void HLRAlgo_EdgeStatus::AllVisible (const Standard_Boolean B)
   if (B) myFlags |=  EMaskAllVisible;
   else   myFlags &= ~EMaskAllVisible;
 }
-

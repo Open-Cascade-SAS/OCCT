@@ -1,7 +1,7 @@
-// File:	HLRBRep_FaceData.cxx
-// Created:	Thu Apr 17 12:02:21 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_FaceData.cxx
+// Created:   Thu Apr 17 12:02:21 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_FaceData.ixx>
 #include <HLRAlgo_EdgesBlock.hxx>
@@ -65,4 +65,3 @@ void HLRBRep_FaceData::SetWEdge (const Standard_Integer WI,
   Wires()->Wire(WI)->Double     (EWI,Dble);
   Wires()->Wire(WI)->IsoLine    (EWI,IsoL);
 }
-

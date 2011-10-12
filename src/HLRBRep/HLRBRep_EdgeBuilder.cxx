@@ -1,7 +1,8 @@
-// File:	HLRBRep_EdgeBuilder.cxx
-// Created:	Thu Apr 17 21:45:17 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_EdgeBuilder.cxx
+// Created:   Thu Apr 17 21:45:17 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -465,4 +466,3 @@ void HLRBRep_EdgeBuilder::Destroy()
   right.Nullify();
   myLimits.Nullify();
 }
-

@@ -1,8 +1,7 @@
--- File:	HLRAlgo_PolyInternalSegment.cdl
--- Created:	Tue Dec  3 17:00:57 1996
--- Author:	Christophe MARION
---		<cma@partox.paris1.matra-dtv.fr>
----Copyright:	 Matra Datavision 1996
+-- File:      HLRAlgo_PolyInternalSegment.cdl
+-- Created:   Tue Dec  3 17:00:57 1996
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1996
 
 class PolyInternalSegment from HLRAlgo
 

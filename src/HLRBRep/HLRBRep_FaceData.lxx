@@ -1,7 +1,7 @@
-// File:	HLRBRep_FaceData.lxx
-// Created:	Thu Apr 17 12:00:16 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_FaceData.lxx
+// Created:   Thu Apr 17 12:00:16 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define EMaskOrient   ((Standard_Boolean)15)
 #define FMaskSelected ((Standard_Boolean)16)
@@ -323,4 +323,3 @@ inline HLRBRep_Surface& HLRBRep_FaceData::Geometry()
 
 inline Standard_ShortReal HLRBRep_FaceData::Tolerance () const
 { return myTolerance; }
-

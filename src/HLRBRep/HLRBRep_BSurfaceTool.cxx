@@ -1,8 +1,8 @@
-//-- File       : HLRBRep_BSurfaceTool.cxx 
-//-- Created    : Wed Jui 7 18:00:00 1993
-//-- Author     : Laurent BUCHARD
-//--              <lbr@nonox>
-//-- Copyright:	 Matra Datavision 1993
+// File:      HLRBRep_BSurfaceTool.cxx
+// Created:   Wed Jui 7 18:00:00 1993
+// Author:    Laurent BUCHARD
+// Copyright: Matra Datavision 1993
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_BSurfaceTool.ixx>
 #include <BRepAdaptor_Surface.hxx>
@@ -152,4 +152,3 @@ HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S,
   }
   return(n);
 }
-

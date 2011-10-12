@@ -1,9 +1,7 @@
--- File:	Contap_ArcTool.cdl
--- Created:	Wed May 12 09:09:34 1993
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1993
-
+-- File:      Contap_ArcTool.cdl
+-- Created:   Wed May 12 09:09:34 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 
 deferred generic class ArcTool from Contap
@@ -48,5 +46,3 @@ is
 
 
 end ArcTool;
-
-

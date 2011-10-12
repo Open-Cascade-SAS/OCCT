@@ -1,7 +1,10 @@
+// File:      Contap_ArcFunction.gxx
+// Created:   Thu Jun  3 12:32:05 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-
-
 
 Contap_ArcFunction::Contap_ArcFunction ():
        myMean(1.),
@@ -72,11 +75,7 @@ Standard_Boolean Contap_ArcFunction::Derivative (const Standard_Real U,
 {
   gp_Pnt2d pt2d;
   gp_Vec2d d2d;
-#ifndef DEB
   Standard_Real dfu =0.,dfv =0.;
-#else
-  Standard_Real dfu,dfv;
-#endif
 //  gp_Vec d1u,d1v,d2u,d2v,d2uv;
   TheArcTool::D1(myArc,U,pt2d,d2d);
 //  TheSurfaceTool::D2(mySurf,pt2d.X(),pt2d.Y(),solpt,d1u,d1v,d2u,d2v,d2uv);
@@ -130,11 +129,7 @@ Standard_Boolean Contap_ArcFunction::Values (const Standard_Real U,
 {
   gp_Pnt2d pt2d;
   gp_Vec2d d2d;
-#ifndef DEB
   Standard_Real dfu =0.,dfv =0.;
-#else
-  Standard_Real dfu,dfv;
-#endif
 // gp_Vec d1u,d1v,d2u,d2v,d2uv;
   TheArcTool::D1(myArc,U,pt2d,d2d);
 //  TheSurfaceTool::D2(mySurf,pt2d.X(),pt2d.Y(),solpt,d1u,d1v,d2u,d2v,d2uv);

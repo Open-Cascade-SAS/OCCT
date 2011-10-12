@@ -1,7 +1,7 @@
-// File:	HLRAlgo_EdgesBlock.lxx
-// Created:	Thu Apr 20 11:31:26 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_EdgesBlock.lxx
+// Created:   Thu Apr 20 11:31:26 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define EMaskOrient   ((Standard_Boolean)15)
 #define EMaskOutLine  ((Standard_Boolean)16)
@@ -166,4 +166,3 @@ inline void HLRAlgo_EdgesBlock::IsoLine (const Standard_Integer I,
 
 inline Standard_Address HLRAlgo_EdgesBlock::MinMax () const
 { return (Standard_Address)&myMinMax; }
-

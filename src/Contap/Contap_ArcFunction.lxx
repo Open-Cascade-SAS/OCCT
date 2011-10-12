@@ -1,3 +1,8 @@
+// File:      Contap_ArcFunction.lxx
+// Created:   Thu Jun  3 12:32:05 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 inline void Contap_ArcFunction::Set(const gp_Dir& Direction,
 				    const Standard_Real Angle)
 {
@@ -37,4 +42,3 @@ inline const gp_Pnt& Contap_ArcFunction::Valpoint
 {
   return seqpt(Index);
 }
-

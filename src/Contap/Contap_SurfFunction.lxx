@@ -1,3 +1,8 @@
+// File:      Contap_SurfFunction.lxx
+// Created:   Thu Jun  3 15:23:20 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 #include <StdFail_UndefinedDerivative.hxx>
 
 inline void Contap_SurfFunction::Set(const gp_Pnt& Eye)

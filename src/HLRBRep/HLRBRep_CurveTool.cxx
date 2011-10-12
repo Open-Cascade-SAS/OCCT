@@ -1,7 +1,7 @@
-// File:	HLRBRep_CurveTool.cxx
-// Created:	Mon Jul 17 17:39:39 1995
-// Author:	Modelistation
-//		<model@mastox>
+// File:      HLRBRep_CurveTool.cxx
+// Created:   Mon Jul 17 17:39:39 1995
+// Author:    Modelistation
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_CurveTool.ixx>
 #include <HLRBRep_Curve.hxx>
@@ -64,4 +64,3 @@ HLRBRep_CurveTool::NbSamples (const Standard_Address C,
     nbs = 50;
   return((Standard_Integer)nbs);
 }
-

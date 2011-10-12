@@ -1,7 +1,7 @@
-// File:	HLRAlgo_TriangleData.lxx
-// Created:	Mon Jan 11 13:58:26 1993
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_TriangleData.lxx
+// Created:   Mon Jan 11 13:58:26 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //=======================================================================
 //function : TriangleData
@@ -18,4 +18,3 @@ inline HLRAlgo_TriangleData::HLRAlgo_TriangleData ()
 
 inline Standard_Address HLRAlgo_TriangleData::Indices () const
 { return (Standard_Address)myIndices; }
-

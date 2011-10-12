@@ -1,8 +1,7 @@
--- File:	HLRBRep_HLRToShape.cdl
--- Created:	Mon Oct 11 16:45:31 1993
--- Author:	Christophe MARION
---		<cma@nonox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_HLRToShape.cdl
+-- Created:   Mon Oct 11 16:45:31 1993
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1993
 
 class HLRToShape from HLRBRep
     	---Purpose: A framework for filtering the computation

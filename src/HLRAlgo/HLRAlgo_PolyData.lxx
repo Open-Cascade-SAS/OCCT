@@ -1,8 +1,7 @@
-
-// File:	HLRAlgo_PolyData.lxx
-// Created:	Mon Jan 11 13:58:26 1993
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_PolyData.lxx
+// Created:   Mon Jan 11 13:58:26 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <HLRAlgo_HArray1OfTData.hxx>
@@ -68,4 +67,3 @@ inline Standard_Boolean HLRAlgo_PolyData::Hiding () const
 
 inline Standard_Address HLRAlgo_PolyData::Indices ()
 { return (Standard_Address)myIndices; }
-

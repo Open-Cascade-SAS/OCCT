@@ -1,6 +1,7 @@
-//--------------------------------------------------
-//--        C o n t a p _ L i n e . g x x         --
-//--------------------------------------------------
+// File:      Contap_Line.gxx
+// Created:   Fri Feb  5 12:13:00 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
 
 Contap_Line::Contap_Line () {
   svtx = new TheHSequenceOfPoint ();
@@ -10,8 +11,6 @@ Contap_Line::Contap_Line () {
 void Contap_Line::ResetSeqOfVertex() {
   svtx = new TheHSequenceOfPoint ();
 }
-
-
 
 void Contap_Line::Add(const ThePoint& P) {
   Standard_Integer n = svtx->Length();
@@ -34,9 +33,6 @@ void Contap_Line::Add(const ThePoint& P) {
     }
   }
 }
-
-
-
 
 void Contap_Line::Clear () {
   if(!curv.IsNull()) 
@@ -80,10 +76,8 @@ IntSurf_TypeTrans Contap_Line::TransitionOnS() const {
   return(Trans);
 }
 
-
 const TheArc& Contap_Line::Arc () const
 {
   if (typL != Contap_Restriction) {Standard_DomainError::Raise();}
   return thearc;
 }
-

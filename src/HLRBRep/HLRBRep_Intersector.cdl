@@ -1,8 +1,7 @@
--- File:	Intersector.cdl
--- Created:	Wed Aug 26 18:11:37 1992
--- Author:	Christophe MARION
---		<cma@sdsun2>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRBRep_Intersector.cdl
+-- Created:   Wed Aug 26 18:11:37 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class Intersector from HLRBRep
 

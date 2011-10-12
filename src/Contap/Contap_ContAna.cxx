@@ -1,17 +1,19 @@
+// File:      Contap_ContAna.cxx
+// Created:   Thu Mar  4 10:51:23 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 #include <Contap_ContAna.ixx>
 
 #include <gp_XYZ.hxx>
 #include <gp.hxx>
 
-
-
 #define Tolpetit 1.e-8
-
 
 Contap_ContAna::Contap_ContAna (): done(Standard_False) {}
 
 void Contap_ContAna::Perform (const gp_Sphere& S,
-			      const gp_Dir& D)
+                              const gp_Dir& D)
 {
   done  = Standard_False;
   typL  = GeomAbs_Circle;
@@ -29,8 +31,8 @@ void Contap_ContAna::Perform (const gp_Sphere& S,
 }
 
 void Contap_ContAna::Perform (const gp_Sphere& S,
-			      const gp_Dir& D,
-			      const Standard_Real Angle)
+                              const gp_Dir& D,
+                              const Standard_Real Angle)
 {
   done  = Standard_False;
   typL  = GeomAbs_Circle;
@@ -50,7 +52,7 @@ void Contap_ContAna::Perform (const gp_Sphere& S,
 }
 
 void Contap_ContAna::Perform (const gp_Sphere& S,
-			      const gp_Pnt& Eye)
+                              const gp_Pnt& Eye)
 {
   done = Standard_False;
 
@@ -81,10 +83,8 @@ void Contap_ContAna::Perform (const gp_Sphere& S,
   done = Standard_True;
 }
 
-
 void Contap_ContAna::Perform (const gp_Cylinder& C,
-			      const gp_Dir& D)
-
+                              const gp_Dir& D)
 {
   done = Standard_False;
 
@@ -107,9 +107,8 @@ void Contap_ContAna::Perform (const gp_Cylinder& C,
 }
 
 void Contap_ContAna::Perform (const gp_Cylinder& C,
-			      const gp_Dir& D,
-			      const Standard_Real Angle)
-
+                              const gp_Dir& D,
+                              const Standard_Real Angle)
 {
   done = Standard_False;
 
@@ -167,8 +166,7 @@ void Contap_ContAna::Perform (const gp_Cylinder& C,
 }
 
 void Contap_ContAna::Perform (const gp_Cylinder& C,
-			      const gp_Pnt& Eye)
-
+                              const gp_Pnt& Eye)
 {
   done = Standard_False;
 
@@ -195,10 +193,8 @@ void Contap_ContAna::Perform (const gp_Cylinder& C,
   done = Standard_True;
 }
 
-
 void Contap_ContAna::Perform (const gp_Cone& C,
-			      const gp_Dir& D)
-
+                              const gp_Dir& D)
 {
   done = Standard_False;
 
@@ -257,11 +253,9 @@ void Contap_ContAna::Perform (const gp_Cone& C,
   done = Standard_True;
 }
 
-
 void Contap_ContAna::Perform (const gp_Cone& C,
-			      const gp_Dir& D,
-			      const Standard_Real Angle)
-
+                              const gp_Dir& D,
+                              const Standard_Real Angle)
 {
   done = Standard_False;
   nbSol = 0;
@@ -358,13 +352,10 @@ void Contap_ContAna::Perform (const gp_Cone& C,
   }
 
   done = Standard_True;
-
-
 }
 
 void Contap_ContAna::Perform (const gp_Cone& C,
-			      const gp_Pnt& Eye)
-
+                              const gp_Pnt& Eye)
 {
   done = Standard_False;
 
@@ -424,9 +415,7 @@ void Contap_ContAna::Perform (const gp_Cone& C,
     nbSol = 0;
   }
   done = Standard_True;
-
 }
-
 
 gp_Lin Contap_ContAna::Line (const Standard_Integer Index) const
 {
@@ -443,7 +432,6 @@ gp_Lin Contap_ContAna::Line (const Standard_Integer Index) const
   case 4:
     return gp_Lin(pt4,dir4);
   }
-  Standard_OutOfRange::Raise("Erreur de programmation dans Contap_ContAna");
+  Standard_OutOfRange::Raise("Program error in Contap_ContAna");
   return gp_Lin();
 }
-

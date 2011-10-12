@@ -1,8 +1,7 @@
--- File:	HLRAlgo_WiresBlock.cdl
--- Created:	Mon Apr  6 17:56:12 1992
--- Author:	Christophe MARION
---		<cma@sdsun2>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo_WiresBlock.cdl
+-- Created:   Mon Apr  6 17:56:12 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class WiresBlock from HLRAlgo inherits TShared from MMgt
 

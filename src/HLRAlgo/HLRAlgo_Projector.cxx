@@ -1,7 +1,8 @@
-// File:	HLRAlgo_Projector.cxx
-// Created:	Fri Mar 13 11:08:32 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRAlgo_Projector.cxx
+// Created:   Fri Mar 13 11:08:32 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 // #define No_Exception
 #endif

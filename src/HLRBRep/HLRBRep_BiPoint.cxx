@@ -1,7 +1,7 @@
-// File:	HLRBRep_BiPoint.cxx
-// Created:	Tue Aug 25 10:43:05 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_BiPoint.cxx
+// Created:   Tue Aug 25 10:43:05 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_BiPoint.ixx>
 
@@ -40,4 +40,3 @@ HLRBRep_BiPoint::HLRBRep_BiPoint (const Standard_Real x1,
   OutLine(outl);
   IntLine(intl);
 }
-

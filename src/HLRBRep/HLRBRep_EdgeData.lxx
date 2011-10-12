@@ -1,7 +1,7 @@
-// File:	HLRBRep_EdgeData.lxx
-// Created:	Thu Apr 17 11:42:44 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_EdgeData.lxx
+// Created:   Thu Apr 17 11:42:44 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define EMaskSelected ((Standard_Boolean)1)
 #define EMaskUsed     ((Standard_Boolean)2)
@@ -360,4 +360,3 @@ inline Standard_Address HLRBRep_EdgeData::Curve ()
 
 inline Standard_ShortReal HLRBRep_EdgeData::Tolerance () const
 { return myTolerance; }
-

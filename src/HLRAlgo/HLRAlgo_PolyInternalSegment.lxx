@@ -1,7 +1,7 @@
-// File:	HLRAlgo_PolyInternalSegment.lxx
-// Created:	Tue Dec  3 17:09:42 1996
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRAlgo_PolyInternalSegment.lxx
+// Created:   Tue Dec  3 17:09:42 1996
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //=======================================================================
 //function : HLRAlgo_PolyInternalSegment
@@ -18,4 +18,3 @@ inline HLRAlgo_PolyInternalSegment::HLRAlgo_PolyInternalSegment ()
 
 inline Standard_Address HLRAlgo_PolyInternalSegment::Indices () const
 { return (Standard_Address)myIndices; }
-

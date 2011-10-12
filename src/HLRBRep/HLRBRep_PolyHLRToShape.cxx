@@ -1,7 +1,8 @@
-// File:	HLRBRep_PolyHLRToShape.cxx
-// Created:	Mon Oct 11 16:55:56 1993
-// Author:	Christophe MARION
-//		<cma@nonox>
+// File:      HLRBRep_PolyHLRToShape.cxx
+// Created:   Mon Oct 11 16:55:56 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 // Modified by cma, Fri Nov 10 17:36:13 1995
 
 #include <HLRBRep_PolyHLRToShape.ixx>
@@ -172,4 +173,3 @@ HLRBRep_PolyHLRToShape::InternalCompound (const Standard_Integer typ,
   if (!added) Result = TopoDS_Shape();
   return Result;
 }
-

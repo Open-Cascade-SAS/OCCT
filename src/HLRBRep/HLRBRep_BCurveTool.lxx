@@ -1,7 +1,7 @@
-// File:	HLRBRep_BCurveTool.lxx
-// Created:	Thu Oct 22 12:14:59 1992
-// Author:	Laurent BUCHARD
-//		<lbr@sdsun2>
+// File:      HLRBRep_BCurveTool.lxx
+// Created:   Thu Oct 22 12:14:59 1992
+// Author:    Laurent BUCHARD
+// Copyright: OPEN CASCADE 2000
 
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -253,4 +253,3 @@ HLRBRep_BCurveTool::NbPoles (const BRepAdaptor_Curve& C)
 inline Standard_Integer
 HLRBRep_BCurveTool::NbKnots(const BRepAdaptor_Curve& C)
 { return(C.NbKnots()); }
-

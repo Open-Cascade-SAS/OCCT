@@ -1,7 +1,7 @@
-// File:	HLRBRep_SLPropsATool.lxx
-// Created:	Tue Aug 18 15:16:03 1992
-// Author:	Herve LEGRAND
-//		<hl@bravox>
+// File:      HLRBRep_SLPropsATool.lxx
+// Created:   Tue Aug 18 15:16:03 1992
+// Author:    Herve LEGRAND
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -87,4 +87,3 @@ inline void  HLRBRep_SLPropsATool::Bounds
   U1 = V1 = RealFirst();
   U2 = V2 = RealLast();
 }
-

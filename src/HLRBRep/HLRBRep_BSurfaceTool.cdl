@@ -1,8 +1,7 @@
--- File:	HLRBRep_BSurfaceTool.cdl
--- Created:	Fri Jul  2 16:59:47 1993
--- Author:	Laurent BUCHARD
---		<lbr@nonox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_BSurfaceTool.cdl
+-- Created:   Fri Jul  2 16:59:47 1993
+-- Author:    Laurent BUCHARD
+---Copyright: Matra Datavision 1993
 
 
 class BSurfaceTool from HLRBRep

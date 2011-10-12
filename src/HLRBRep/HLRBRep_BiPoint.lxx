@@ -1,7 +1,7 @@
-// File:	HLRBRep_BiPoint.lxx
-// Created:	Tue Aug 25 10:43:05 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_BiPoint.lxx
+// Created:   Tue Aug 25 10:43:05 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #define EMskRg1Line  ((Standard_Boolean)1)
 #define EMskRgNLine  ((Standard_Boolean)2)
@@ -115,4 +115,3 @@ inline void HLRBRep_BiPoint::IntLine (const Standard_Boolean B)
   if (B) myFlags |=  EMskIntLine;
   else   myFlags &= ~EMskIntLine;
 }
-

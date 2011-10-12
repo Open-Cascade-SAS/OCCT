@@ -1,7 +1,7 @@
-// File:	HLRBRep_BiPnt2D.cxx
-// Created:	Tue Aug 25 10:43:05 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_BiPnt2D.cxx
+// Created:   Tue Aug 25 10:43:05 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_BiPnt2D.ixx>
 
@@ -38,4 +38,3 @@ HLRBRep_BiPnt2D::HLRBRep_BiPnt2D (const Standard_Real x1,
   OutLine(outl);
   IntLine(intl);
 }
-

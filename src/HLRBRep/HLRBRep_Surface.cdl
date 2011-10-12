@@ -1,8 +1,7 @@
--- File:	HLRBRep_Surface.cdl
--- Created:	Wed Apr 14 19:48:14 1993
--- Author:	Modelistation
---		<model@phylox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_Surface.cdl
+-- Created:   Wed Apr 14 19:48:14 1993
+-- Author:    Modelistation
+---Copyright: Matra Datavision 1993
 
 class Surface from HLRBRep
 

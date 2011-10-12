@@ -1,8 +1,7 @@
--- File:	HLRBRep_EdgeIList.cdl
--- Created:	Thu Apr 17 19:56:30 1997
--- Author:	Christophe MARION
---		<cma@partox.paris1.matra-dtv.fr>
----Copyright:	 Matra Datavision 1997
+-- File:      HLRBRep_EdgeIList.cdl
+-- Created:   Thu Apr 17 19:56:30 1997
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1997
 
 class EdgeIList from HLRBRep
 

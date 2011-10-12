@@ -1,8 +1,7 @@
-// File:	HLRBRep_AreaLimit.cxx
-// Created:	Thu Apr 17 21:43:21 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
-
+// File:      HLRBRep_AreaLimit.cxx
+// Created:   Thu Apr 17 21:43:21 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_AreaLimit.ixx>
 
@@ -189,4 +188,3 @@ void HLRBRep_AreaLimit::Clear()
   myPrevious.Nullify();
   myNext.Nullify();
 }
-

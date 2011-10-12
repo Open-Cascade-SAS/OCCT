@@ -1,7 +1,8 @@
-// File:	HLRBRep_VertexList.cxx
-// Created:	Thu Apr 17 21:25:08 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_VertexList.cxx
+// Created:   Thu Apr 17 21:25:08 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -151,4 +152,3 @@ TopAbs_Orientation  HLRBRep_VertexList::BoundaryTransition() const
     Standard_DomainError::Raise("HLRBRep_VertexList::BoundaryTransition");
   return TopAbs_EXTERNAL; // only for WNT.
 }
-

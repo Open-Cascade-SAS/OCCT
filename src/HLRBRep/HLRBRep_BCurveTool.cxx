@@ -1,7 +1,7 @@
-// File:	HLRBRep_BCurveTool.cxx
-// Created:	Mon Jul 17 17:39:39 1995
-// Author:	Modelistation
-//		<model@mastox>
+// File:      HLRBRep_BCurveTool.cxx
+// Created:   Mon Jul 17 17:39:39 1995
+// Author:    Modelistation
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_BCurveTool.ixx>
 #include <GeomAbs_CurveType.hxx>
@@ -94,4 +94,3 @@ Handle(Geom_BezierCurve)
 Handle(Geom_BSplineCurve)
      HLRBRep_BCurveTool::BSpline (const BRepAdaptor_Curve& C)
 { return(C.BSpline()); }
-

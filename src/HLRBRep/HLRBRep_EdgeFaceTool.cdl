@@ -1,8 +1,7 @@
--- File:	HLRBRep_EdgeFaceTool.cdl
--- Created:	Mon Oct 18 19:19:43 1993
--- Author:	Christophe MARION
---		<cma@nonox>
----Copyright:	 Matra Datavision 1993
+-- File:      HLRBRep_EdgeFaceTool.cdl
+-- Created:   Mon Oct 18 19:19:43 1993
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1993
 
 class EdgeFaceTool from HLRBRep
 

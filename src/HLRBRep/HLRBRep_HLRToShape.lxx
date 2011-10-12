@@ -1,7 +1,7 @@
-// File:	HLRBRep_HLRToShape.lxx
-// Created:	Tue Nov  2 15:55:51 1993
-// Author:	Christophe MARION
-//		<cma@nonox>
+// File:      HLRBRep_HLRToShape.lxx
+// Created:   Tue Nov  2 15:55:51 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <TopoDS_Shape.hxx>
 
@@ -174,4 +174,3 @@ inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineHCompound()
 inline TopoDS_Shape
 HLRBRep_HLRToShape::IsoLineHCompound(const TopoDS_Shape& S)
 { return InternalCompound(1,Standard_False,S); }
-

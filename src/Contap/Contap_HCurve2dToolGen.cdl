@@ -1,8 +1,7 @@
--- File:        Contap_HCurve2dToolGen.cdl
--- Created:	Mon Jul 17 16:25:23 1995
--- Author:	Laurent BUCHARD
---		<lbr@mastox>
----Copyright:	 Matra Datavision 1995
+-- File:      Contap_HCurve2dToolGen.cdl
+-- Created:   Mon Jul 17 16:25:23 1995
+-- Author:    Laurent BUCHARD
+---Copyright: Matra Datavision 1995
 
 
 generic class HCurve2dToolGen from Contap (
@@ -223,5 +222,3 @@ is
     returns Integer from Standard;
 
 end HCurve2dToolGen;
-
-

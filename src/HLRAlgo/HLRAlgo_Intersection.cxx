@@ -1,7 +1,7 @@
-// File:	HLRAlgo_Intersection.cxx
-// Created:	Wed Feb 19 14:22:05 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRAlgo_Intersection.cxx
+// Created:   Wed Feb 19 14:22:05 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRAlgo_Intersection.ixx>
 
@@ -34,4 +34,3 @@ HLRAlgo_Intersection::HLRAlgo_Intersection
   myToler(Tol),
   myState(S)
 {}
-

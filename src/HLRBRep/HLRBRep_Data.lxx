@@ -1,7 +1,7 @@
-// File:	HLRBRep_Data.lxx
-// Created:	Thu Apr 17 16:56:27 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_Data.lxx
+// Created:   Thu Apr 17 16:56:27 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 //=======================================================================
 //function : EDataArray
@@ -124,4 +124,3 @@ inline Standard_Boolean
 HLRBRep_Data::EdgeOfTheHidingFace (const Standard_Integer E,
 				   const HLRBRep_EdgeData& ED) const
 { return ED.HideCount() == myHideCount-1; }
-

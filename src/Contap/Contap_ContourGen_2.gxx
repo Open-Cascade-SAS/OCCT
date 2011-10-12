@@ -1,7 +1,7 @@
-//----------------------------------------------
-//-- C o n t a p _ C o n t o u r _ 2 . g x x  --
-//----------------------------------------------
-
+// File:      Contap_ContourGen_2.gxx
+// Created:   Fri Feb  5 09:39:18 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
 
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
@@ -128,13 +128,8 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
     Standard_Integer nbvtx = L.NbVertex();
     //-- cout<<" WLine -> "<<nbvtx<<" vtx"<<endl;
     for(Standard_Integer i=1;i<nbvtx;i++) { 
-//#ifndef DEB
       Standard_Integer firstp = (Standard_Integer) L.Vertex(i).ParameterOnLine();
       Standard_Integer lastp =  (Standard_Integer) L.Vertex(i+1).ParameterOnLine();
-//#else
-//      Standard_Integer firstp = L.Vertex(i).ParameterOnLine();
-//      Standard_Integer lastp =  L.Vertex(i+1).ParameterOnLine();
-//#endif
       if(firstp!=lastp) {  
 	Standard_Integer pmid = (firstp+lastp)/2; //-- entiers
 	const IntSurf_PntOn2S& Pmid = L.Point(pmid);
@@ -705,11 +700,7 @@ void ProcessSegments (const Contap_TheSearch& solrst,
   Contap_ThePathPointOfTheSearch PStartf,PStartl;
 
   Standard_Boolean dofirst,dolast,procf,procl;
-#ifndef DEB
   Standard_Real paramf =0.,paraml =0.,U;
-#else
-  Standard_Real paramf,paraml,U;
-#endif
   Contap_TheLine theline;
 
   gp_Vec tgline;//,norm1,norm2;
@@ -853,11 +844,7 @@ void ComputeInternalPointsOnRstr
   gp_Pnt pcour;
   gp_Pnt2d p2d;
   gp_Vec2d d2d;
-  Standard_Boolean found,ok
-#ifndef DEB
-    = Standard_False
-#endif
-  ,toutvu,solution;
+  Standard_Boolean found,ok = Standard_False,toutvu,solution;
   Standard_Real paramp,paraminf,paramsup,toler;
 
   if (Line.TypeContour() != Contap_Restriction) {
@@ -1003,17 +990,8 @@ void ComputeInternalPoints
   Standard_Integer indexinf,indexsup,index;
   gp_Vec tgt, vecref, vectest, vtestb, vecregard;
   //gp_Pnt pprec,pcour;
-  Standard_Boolean found,ok
-#ifndef DEB
-    = Standard_False
-#endif
-      ,toutvu,solution;
-
-  Standard_Real paramp
-#ifndef DEB
-    = Standard_False
-#endif
-      ,U,V;
+  Standard_Boolean found,ok = Standard_False,toutvu,solution;
+  Standard_Real paramp = 0.,U,V;
 
   math_Vector XInf(1,2),XSup(1,2),X(1,2),F(1,1);
   math_Matrix DF(1,1,1,2);

@@ -1,3 +1,8 @@
+// File:      Contap_Point.gxx
+// Created:   Thu Mar  4 17:22:45 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 Contap_Point::Contap_Point ():
        onarc(Standard_False),isvtx(Standard_False),ismult(Standard_False),
        myInternal(Standard_False)
@@ -9,4 +14,3 @@ Contap_Point::Contap_Point (const gp_Pnt& Pt,
        pt(Pt),uparam(U),vparam(V),onarc(Standard_False),isvtx(Standard_False),
        ismult(Standard_False),myInternal(Standard_False)
 {}
-

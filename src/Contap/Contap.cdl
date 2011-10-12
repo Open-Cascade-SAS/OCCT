@@ -1,8 +1,7 @@
--- File:	Contap.cdl
--- Created:	Fri Feb  5 11:50:39 1993
--- Author:	Jacques GOUSSARD
---		<jag@topsn2>
----Copyright:	 Matra Datavision 1993
+-- File:      Contap.cdl
+-- Created:   Fri Feb  5 11:50:39 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 
 package Contap
@@ -82,4 +81,3 @@ is
 
 
 end Contap;
-

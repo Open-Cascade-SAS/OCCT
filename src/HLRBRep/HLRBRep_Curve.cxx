@@ -1,7 +1,7 @@
-// File:	HLRBRep_Curve.gxx
-// Created:	Fri Mar 13 11:08:32 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_Curve.cxx
+// Created:   Fri Mar 13 11:08:32 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_Curve.ixx>
 #include <gp.hxx>
@@ -18,7 +18,7 @@
 #include <Handle_Geom_BSplineCurve.hxx>
 #include <Handle_Geom_BezierCurve.hxx>
 
-#define OCC155 // jfa 05.03.2002 // bad vectors projection
+//OCC155 // jfa 05.03.2002 // bad vectors projection
 
 //=======================================================================
 //function : HLRBRep_Curve
@@ -44,29 +44,25 @@ void HLRBRep_Curve::Curve (const TopoDS_Edge& E)
 Standard_Real 
 HLRBRep_Curve::Parameter2d (const Standard_Real P3d) const
 {
-
   // Mathematical formula for lines
 
   //        myOF P3d (myOF myVX - myOZ myVX + myOX myVZ)
-  // P2d -> --------------------------------------------
+  // Res -> --------------------------------------------
   //        (-myOF + myOZ) (-myOF + myOZ + P3d myVZ)
 
-  Standard_Real P2d;
   if (myType == GeomAbs_Line) {
     if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-      Standard_Real FmOZ = myOF - myOZ;
-      P2d = myOF * P3d * (myVX * FmOZ + myOX * myVZ) /
-	(FmOZ * (FmOZ - P3d * myVZ));
+      const Standard_Real FmOZ = myOF - myOZ;
+      return myOF * P3d * (myVX * FmOZ + myOX * myVZ) / (FmOZ * (FmOZ - P3d * myVZ));
     }
-    else P2d = P3d * myVX;
+    return P3d * myVX;
   }
 
   else if (myType == GeomAbs_Ellipse) {
-    P2d = P3d + myOX;
+    return P3d + myOX;
   }
 
-  else P2d = P3d;
-  return P2d;
+  return P3d;
 }
 
 //=======================================================================
@@ -77,7 +73,6 @@ HLRBRep_Curve::Parameter2d (const Standard_Real P3d) const
 Standard_Real
 HLRBRep_Curve::Parameter3d (const Standard_Real P2d) const
 {
-
   // Mathematical formula for lines
 
   //                                 2   
@@ -85,22 +80,19 @@ HLRBRep_Curve::Parameter3d (const Standard_Real P2d) const
   // P3d -> -----------------------------------------------------
   //        (myOF - myOZ) (myOF myVX + P2d myVZ) + myOF myOX myVZ
 
-  Standard_Real P3d;
   if (myType == GeomAbs_Line) {
     if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-      Standard_Real FmOZ = myOF - myOZ;
-      P3d = P2d * FmOZ * FmOZ /
-	(FmOZ * (myOF * myVX + P2d * myVZ) + myOF * myOX * myVZ);
+      const Standard_Real FmOZ = myOF - myOZ;
+      return P2d * FmOZ * FmOZ / (FmOZ * (myOF * myVX + P2d * myVZ) + myOF * myOX * myVZ);
     }
-    else P3d = P2d / myVX;
+    return P2d / myVX;
   }
 
   else if (myType == GeomAbs_Ellipse) {
-    P3d = P2d - myOX;
+    return P2d - myOX;
   }
 
-  else P3d = P2d;
-  return P3d;
+  return P2d;
 }
 
 //=======================================================================
@@ -109,7 +101,7 @@ HLRBRep_Curve::Parameter3d (const Standard_Real P2d) const
 //=======================================================================
 
 Standard_Real  HLRBRep_Curve::Update (const Standard_Address TotMin,
-				      const Standard_Address TotMax)
+                                      const Standard_Address TotMax)
 {
   GeomAbs_CurveType typ = HLRBRep_BCurveTool::GetType(myCurve);
   myType = GeomAbs_OtherCurve;
@@ -125,16 +117,16 @@ Standard_Real  HLRBRep_Curve::Update (const Standard_Address TotMin,
       gp_Dir D1 = HLRBRep_BCurveTool::Circle(myCurve).Axis().Direction();
       D1.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
       if (D1.IsParallel(gp::DZ(),Precision::Angular()))
-	myType = GeomAbs_Circle;
+        myType = GeomAbs_Circle;
       else if (Abs(D1.Dot(gp::DZ())) < Precision::Angular()*10) //*10: The minor radius of ellipse should not be too small.
-	myType = GeomAbs_OtherCurve;
+        myType = GeomAbs_OtherCurve;
       else {
-	myType = GeomAbs_Ellipse;
-	// compute the angle offset
-	gp_Dir D3 = D1.Crossed(gp::DZ());
-	gp_Dir D2 = HLRBRep_BCurveTool::Circle(myCurve).XAxis().Direction();
-	D2.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-	myOX = D3.AngleWithRef(D2,D1);
+        myType = GeomAbs_Ellipse;
+        // compute the angle offset
+        gp_Dir D3 = D1.Crossed(gp::DZ());
+        gp_Dir D2 = HLRBRep_BCurveTool::Circle(myCurve).XAxis().Direction();
+        D2.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+        myOX = D3.AngleWithRef(D2,D1);
       }
     }
     break;
@@ -144,8 +136,8 @@ Standard_Real  HLRBRep_Curve::Update (const Standard_Address TotMin,
       gp_Dir D1 = HLRBRep_BCurveTool::Ellipse(myCurve).Axis().Direction();
       D1.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
       if (D1.IsParallel(gp::DZ(),Precision::Angular())) {
-	myOX = 0.;    // no offset on the angle
-	myType = GeomAbs_Ellipse;
+        myOX = 0.;    // no offset on the angle
+        myType = GeomAbs_Ellipse;
       }
     }
     break;
@@ -224,11 +216,7 @@ HLRBRep_Curve::UpdateMinMax (const Standard_Address TotMin,
     Standard_Integer nbPnt = 30;
     Standard_Integer i;
     Standard_Real step = (b-a)/(nbPnt+1);
-#ifndef DEB
     Standard_Real xa,ya,za,xb =0.,yb =0.,zb =0.;
-#else
-    Standard_Real xa,ya,za,xb,yb,zb;
-#endif
     Standard_Real dx1,dy1,dz1,dd1;
     Standard_Real dx2,dy2,dz2,dd2;
 
@@ -238,21 +226,21 @@ HLRBRep_Curve::UpdateMinMax (const Standard_Address TotMin,
       xb = x ; yb = y ; zb = z ;
       ((HLRAlgo_Projector*) myProj)->Project(Value3D(a),x,y,z);
       HLRAlgo::UpdateMinMax(x,y,z,TotMin,TotMax);
-      if (i >= 2) { 
-	dx1 = x - xa; dy1 = y - ya; dz1 = z - za;
-	dd1 = sqrt (dx1 * dx1 + dy1 * dy1 + dz1 * dz1);
-	if (dd1 > 0) {
-	  dx2 = xb - xa; dy2 = yb - ya; dz2 = zb - za;
-	  dd2 = sqrt (dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
-	  if (dd2 > 0) {
-	    Standard_Real p = (dx1 * dx2 + dy1 * dy2 + dz1 * dz2) / (dd1 * dd2);
-	    dx1 = xa + p * dx1 - xb;
-	    dy1 = ya + p * dy1 - yb;
-	    dz1 = za + p * dz1 - zb;
-	    dd1 = sqrt (dx1 * dx1 + dy1 * dy1 + dz1 * dz1);
-	    if (dd1 > tolMinMax) tolMinMax = dd1;
-	  }
-	} 
+      if (i >= 2) {
+        dx1 = x - xa; dy1 = y - ya; dz1 = z - za;
+        dd1 = sqrt (dx1 * dx1 + dy1 * dy1 + dz1 * dz1);
+        if (dd1 > 0) {
+          dx2 = xb - xa; dy2 = yb - ya; dz2 = zb - za;
+          dd2 = sqrt (dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
+          if (dd2 > 0) {
+            Standard_Real p = (dx1 * dx2 + dy1 * dy2 + dz1 * dz2) / (dd1 * dd2);
+            dx1 = xa + p * dx1 - xb;
+            dy1 = ya + p * dy1 - yb;
+            dz1 = za + p * dz1 - zb;
+            dd1 = sqrt (dx1 * dx1 + dy1 * dy1 + dz1 * dz1);
+            if (dd1 > tolMinMax) tolMinMax = dd1;
+          }
+        }
       }
     }
   }
@@ -280,12 +268,10 @@ Standard_Real HLRBRep_Curve::Z (const Standard_Real U) const
 //=======================================================================
 
 void HLRBRep_Curve::Tangent (const Standard_Boolean AtStart,
-			     gp_Pnt2d& P,
-			     gp_Dir2d& D) const
+                             gp_Pnt2d& P, gp_Dir2d& D) const
 {
-  Standard_Real U;
-  if (AtStart) U = HLRBRep_BCurveTool::FirstParameter(myCurve);
-  else         U = HLRBRep_BCurveTool::LastParameter (myCurve);
+  Standard_Real U = AtStart? HLRBRep_BCurveTool::FirstParameter(myCurve) :
+                             HLRBRep_BCurveTool::LastParameter (myCurve);
 
   D0(U,P);
   HLRBRep_CLProps CLP(2,Epsilon(1.));
@@ -304,20 +290,17 @@ void HLRBRep_Curve::Tangent (const Standard_Boolean AtStart,
 
 void HLRBRep_Curve::D0 (const Standard_Real U, gp_Pnt2d& P) const
 {
-#if 0
-  gp_Pnt P3d;
+  /* gp_Pnt P3d;
   HLRBRep_BCurveTool::D0(myCurve,U,P3d);
   P3d.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
   if (((HLRAlgo_Projector*) myProj)->Perspective()) {
     Standard_Real R = 1.-P3d.Z()/((HLRAlgo_Projector*) myProj)->Focus();
     P.SetCoord(P3d.X()/R,P3d.Y()/R);
   }
-  else P.SetCoord(P3d.X(),P3d.Y());
-#else 
+  else P.SetCoord(P3d.X(),P3d.Y()); */
   gp_Pnt P3d;
   HLRBRep_BCurveTool::D0(myCurve,U,P3d); 
   ((HLRAlgo_Projector*) myProj)->Project(P3d,P);
-#endif
 }
 
 //=======================================================================
@@ -326,10 +309,8 @@ void HLRBRep_Curve::D0 (const Standard_Real U, gp_Pnt2d& P) const
 //=======================================================================
 
 void HLRBRep_Curve::D1 (const Standard_Real U,
-			gp_Pnt2d& P,
-			gp_Vec2d& V) const
+                        gp_Pnt2d& P, gp_Vec2d& V) const
 {
-
   // Mathematical formula for lines
 
   //        X'[t]      X[t] Z'[t]                                     
@@ -338,8 +319,7 @@ void HLRBRep_Curve::D1 (const Standard_Real U,
   //       1 - ----   f (1 - ----)                                    
   //            f             f                                       
 
-#if 0
-  gp_Pnt P3D;
+  /* gp_Pnt P3D;
   gp_Vec V13D;
   HLRBRep_BCurveTool::D1(myCurve,U,P3D,V13D);
   P3D .Transform(((HLRAlgo_Projector*) myProj)->Transformation());
@@ -354,8 +334,7 @@ void HLRBRep_Curve::D1 (const Standard_Real U,
   else {
     P.SetCoord(P3D .X(),P3D .Y());
     V.SetCoord(V13D.X(),V13D.Y());
-  }
-#else 
+  } */
   gp_Pnt P3D;
   gp_Vec V13D;
   HLRBRep_BCurveTool::D1(myCurve,U,P3D,V13D);
@@ -367,17 +346,14 @@ void HLRBRep_Curve::D1 (const Standard_Real U,
     V.SetCoord(V13D.X()/R + P3D.X()*e, V13D.Y()/R + P3D.Y()*e);
   }
   else {
-#ifdef OCC155
+    //OCC155
     ((HLRAlgo_Projector*) myProj)->Project(P3D,V13D,P,V);
-#else
-    ((HLRAlgo_Projector*) myProj)->Project(P3D,P);
+    /* ((HLRAlgo_Projector*) myProj)->Project(P3D,P);
     gp_Pnt2d opop;
     gp_Pnt uiui(V13D.X(),V13D.Y(),V13D.Z());
     ((HLRAlgo_Projector*) myProj)->Project(uiui,opop);
-    V.SetCoord(opop.X(),opop.Y());
-#endif
+    V.SetCoord(opop.X(),opop.Y()); */
   }
-#endif
 }
 
 //=======================================================================
@@ -386,11 +362,8 @@ void HLRBRep_Curve::D1 (const Standard_Real U,
 //=======================================================================
 
 void HLRBRep_Curve::D2 (const Standard_Real U,
-			gp_Pnt2d& P,
-			gp_Vec2d& V1,
-			gp_Vec2d& V2) const 
+                        gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
-
   // Mathematical formula for lines
   
   //                                   2
@@ -430,10 +403,7 @@ void HLRBRep_Curve::D2 (const Standard_Real U,
 //=======================================================================
 
 void HLRBRep_Curve::D3 (const Standard_Real,
-				 gp_Pnt2d&,
-				 gp_Vec2d&,
-				 gp_Vec2d&,
-				 gp_Vec2d&) const 
+                        gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&, gp_Vec2d&) const
 {
 }
 
@@ -442,8 +412,7 @@ void HLRBRep_Curve::D3 (const Standard_Real,
 //purpose  : 
 //=======================================================================
 
-gp_Vec2d HLRBRep_Curve::DN (const Standard_Real,
-			    const Standard_Integer) const
+gp_Vec2d HLRBRep_Curve::DN (const Standard_Real, const Standard_Integer) const
 { return gp_Vec2d(); }
 
 //=======================================================================
@@ -478,25 +447,23 @@ gp_Circ2d HLRBRep_Curve::Circle () const
 
 gp_Elips2d HLRBRep_Curve::Ellipse () const
 {
-  GeomAbs_CurveType typ = HLRBRep_BCurveTool::GetType(myCurve);
-  if (typ == GeomAbs_Ellipse) {
+  if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_Ellipse) {
     gp_Elips E = HLRBRep_BCurveTool::Ellipse(myCurve);
     E.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
     return ProjLib::Project(gp_Pln(gp::XOY()),E);
   }
-  else { // this is a circle
-    gp_Circ C = HLRBRep_BCurveTool::Circle(myCurve);
-    C.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
-    const gp_Dir& D1 = C.Axis().Direction();
-    const gp_Dir& D3 = D1.Crossed(gp::DZ());
-    const gp_Dir& D2 = D1.Crossed(D3);
-    Standard_Real rap = sqrt( D2.X()*D2.X() + D2.Y()*D2.Y() );
-    gp_Dir2d d(D1.Y(),-D1.X());
-    gp_Pnt2d p(C.Location().X(),C.Location().Y());
-    gp_Elips2d El(gp_Ax2d(p,d),C.Radius(),C.Radius()*rap);
-    if ( D1.Z() < 0 ) El.Reverse();
-    return El;
-  }
+  // this is a circle
+  gp_Circ C = HLRBRep_BCurveTool::Circle(myCurve);
+  C.Transform(((HLRAlgo_Projector*) myProj)->Transformation());
+  const gp_Dir& D1 = C.Axis().Direction();
+  const gp_Dir& D3 = D1.Crossed(gp::DZ());
+  const gp_Dir& D2 = D1.Crossed(D3);
+  Standard_Real rap = sqrt( D2.X()*D2.X() + D2.Y()*D2.Y() );
+  gp_Dir2d d(D1.Y(),-D1.X());
+  gp_Pnt2d p(C.Location().X(),C.Location().Y());
+  gp_Elips2d El(gp_Ax2d(p,d),C.Radius(),C.Radius()*rap);
+  if ( D1.Z() < 0 ) El.Reverse();
+  return El;
 }
 
 //=======================================================================
@@ -568,7 +535,6 @@ void  HLRBRep_Curve::PolesAndWeights (TColgp_Array1OfPnt2d& TP,
   }
 }
 
-
 //=======================================================================
 //function : Knots
 //purpose  : 
@@ -582,7 +548,6 @@ void  HLRBRep_Curve::Knots (TColStd_Array1OfReal& kn) const
   }
 }
 
-
 //=======================================================================
 //function : Multiplicities
 //purpose  : 
@@ -595,4 +560,3 @@ void  HLRBRep_Curve::Multiplicities (TColStd_Array1OfInteger& mu) const
     HB->Multiplicities(mu);
   }
 }
-

@@ -1,10 +1,7 @@
-//-- File:	Contap_HContToolGen.cdl
-//-- Created:	Fri Jul  2 13:19:22 1995
-//-- Author:	Laurent BUCHARD
-//--		<lbr@mastox>
-//---Copyright:	 Matra Datavision 1995
-
-
+// File:      Contap_HContToolGen.gxx
+// Created:   Fri Jul  2 13:19:22 1995
+// Author:    Laurent BUCHARD
+// Copyright: OPEN CASCADE 2000
 
 #include <Extrema_EPCOfExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
@@ -248,11 +245,7 @@ Standard_Integer Contap_HContToolGen::NbSamplesOnArc
   default:
     nbsOnC = 10;
   } 
-//#ifndef DEB
   return (Standard_Integer)(nbsOnC);
-//#else
-//  return(nbsOnC);
-//#endif
 }
 
 

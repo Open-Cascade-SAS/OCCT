@@ -1,3 +1,8 @@
+// File:      Contap_ContourGen.gxx
+// Created:   Fri Feb  5 09:39:18 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
+
 #include <ElCLib.hxx>
 
 #include <gp_Pln.hxx>

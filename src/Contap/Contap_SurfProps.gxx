@@ -1,8 +1,7 @@
-// File:	Contap_SurfProps.gxx
-// Created:	Fri Feb 24 15:37:28 1995
-// Author:	Jacques GOUSSARD
-//		<jag@topsn2>
-
+// File:      Contap_SurfProps.gxx
+// Created:   Fri Feb 24 15:37:28 1995
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
 
 #include <ElSLib.hxx>
 
@@ -321,4 +320,3 @@ void Contap_SurfProps::NormAndDn(const TheSurface& S,
     break;
   }
 }
-

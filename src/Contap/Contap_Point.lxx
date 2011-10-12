@@ -1,5 +1,9 @@
-#include <Standard_DomainError.hxx>
+// File:      Contap_Point.lxx
+// Created:   Thu Mar  4 17:22:45 1993
+// Author:    Jacques GOUSSARD
+// Copyright: OPEN CASCADE 2000
 
+#include <Standard_DomainError.hxx>
 
 inline void Contap_Point::SetValue (const gp_Pnt& Pt,
 				    const Standard_Real U,
@@ -112,4 +116,3 @@ inline const TheVertex& Contap_Point::Vertex () const {
   if (!isvtx) {Standard_DomainError::Raise();}
   return vtx;
 }
-

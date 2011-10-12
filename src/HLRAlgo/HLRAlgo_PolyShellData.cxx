@@ -1,7 +1,8 @@
-// File:	HLRAlgo_PolyShellData.cxx
-// Created:	Fri May  5 15:58:19 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_PolyShellData.cxx
+// Created:   Fri May  5 15:58:19 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 //#define No_Exception
 #endif
@@ -101,4 +102,3 @@ UpdateHiding (const Standard_Integer nbHiding)
     myHPolHi = new TColStd_HArray1OfTransient(1,nbHiding);
   else myHPolHi.Nullify();
 }
-

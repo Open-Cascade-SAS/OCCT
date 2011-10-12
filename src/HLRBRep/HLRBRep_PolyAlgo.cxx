@@ -1,7 +1,8 @@
-// File:	HLRBRep_PolyAlgo.cxx
-// Created:	Fri May  5 15:58:19 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRBRep_PolyAlgo.cxx
+// Created:   Fri May  5 15:58:19 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 // Modified by cma, Tue Apr  1 11:39:48 1997
 // Modified by cma, Tue Apr  1 11:40:30 1997
 
@@ -2629,7 +2630,6 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
   Standard_Real dd,dX,dY,nX,nY;
   Standard_Boolean FrBackInList;
   Standard_Address TData ,PISeg ,PINod ;
-#ifndef DEB
 /*  Standard_Address IndexPtr = NULL; 
   const Handle(HLRAlgo_PolyInternalData)& pid1 =
     *(Handle(HLRAlgo_PolyInternalData)*)&(PID(F1Index));
@@ -2644,10 +2644,6 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
   PINod2 = &pid2->PISeg();*/
   Standard_Address TData1 = NULL,PISeg1 = NULL,PINod1 = NULL;
   Standard_Address TData2 = NULL,PISeg2 = NULL,PINod2 = NULL;
-#else
-  Standard_Address TData1,PISeg1,PINod1;
-  Standard_Address TData2,PISeg2,PINod2;
-#endif
   Standard_Address Nod11Indices,Nod12Indices,Nod13Indices;
   Standard_Address Nod11RValues,Nod12RValues,Nod13RValues;
   Standard_Address Tri1Indices;

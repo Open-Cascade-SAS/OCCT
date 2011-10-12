@@ -1,8 +1,7 @@
-// File:	HLRBRep_ShapeBounds.cxx
-// Created:	Thu Apr 17 18:35:42 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
-
+// File:      HLRBRep_ShapeBounds.cxx
+// Created:   Thu Apr 17 18:35:42 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_ShapeBounds.ixx>
 
@@ -111,4 +110,3 @@ void HLRBRep_ShapeBounds::UpdateMinMax (const Standard_Address TotMinMax)
   for (Standard_Integer i = 0; i <= 15; i++)
     myMinMax[i] = ((Standard_Integer*)TotMinMax)[i];
 }
-

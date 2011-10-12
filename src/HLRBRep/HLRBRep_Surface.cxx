@@ -1,7 +1,7 @@
-// File:	HLRBRep_Surface.cxx
-// Created:	Fri Mar 13 11:08:32 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_Surface.cxx
+// Created:   Fri Mar 13 11:08:32 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep_Surface.ixx>
 #include <HLRBRep_BSurfaceTool.hxx>
@@ -273,4 +273,3 @@ gp_Pln  HLRBRep_Surface::Plane () const
     return HLRBRep_BSurfaceTool::Plane(mySurf);
   }
 }
-

@@ -1,7 +1,7 @@
-// File:	HLRBRep_LineTool.lxx
-// Created:	Wed Aug 18 15:06:22 1993
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRBRep_LineTool.lxx
+// Created:   Wed Aug 18 15:06:22 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>

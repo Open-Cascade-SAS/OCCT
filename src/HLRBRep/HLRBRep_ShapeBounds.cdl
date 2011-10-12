@@ -1,8 +1,7 @@
--- File:	HLRBRep_ShapeBounds.cdl
--- Created:	Thu Apr 17 17:51:44 1997
--- Author:	Christophe MARION
---		<cma@partox.paris1.matra-dtv.fr>
----Copyright:	 Matra Datavision 1997
+-- File:      HLRBRep_ShapeBounds.cdl
+-- Created:   Thu Apr 17 17:51:44 1997
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1997
 
 class ShapeBounds from HLRBRep
     ---Purpose: Contains  a Shape and the  bounds of its vertices,
@@ -83,4 +82,3 @@ fields
     myMinMax    : Integer  from Standard[16];
 
 end ShapeBounds from HLRBRep;
-

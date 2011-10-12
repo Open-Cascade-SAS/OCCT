@@ -1,7 +1,8 @@
-// File:	HLRAlgo_BiPoint.cxx
-// Created:	Thu Jun 22 12:31:58 1995
-// Author:	Christophe MARION
-//		<cma@ecolox>
+// File:      HLRAlgo_BiPoint.cxx
+// Created:   Thu Jun 22 12:31:58 1995
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -315,4 +316,3 @@ HLRAlgo_BiPoint::HLRAlgo_BiPoint (const Standard_Real X1,
   SegFlags   = flag;
   Hidden(Standard_False);
 }
-

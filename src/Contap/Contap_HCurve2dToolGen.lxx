@@ -1,8 +1,7 @@
-// File:	Contap_HCurve2dToolGen.lxx
-// Created:	Thu Oct 22 12:14:59 1992
-// Author:	Laurent BUCHARD
-//		<lbr@sdsun2>
-
+// File:      Contap_HCurve2dToolGen.lxx
+// Created:   Thu Oct 22 12:14:59 1992
+// Author:    Laurent BUCHARD
+// Copyright: OPEN CASCADE 2000
 
 #include CurveGen_hxx
 
@@ -138,17 +137,3 @@ inline Handle(Geom2d_BSplineCurve) Contap_HCurve2dToolGen::BSpline (const CurveG
   return(C->BSpline());
 }
 //============================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-

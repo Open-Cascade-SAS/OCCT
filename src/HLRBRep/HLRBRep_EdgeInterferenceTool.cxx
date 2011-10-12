@@ -1,7 +1,8 @@
-// File:	HLRBRep_EdgeInterferenceTool.cxx
-// Created:	Thu Apr 17 21:22:03 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_EdgeInterferenceTool.cxx
+// Created:   Thu Apr 17 21:22:03 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -102,4 +103,3 @@ void HLRBRep_EdgeInterferenceTool::InterferenceBoundaryGeometry
   Tang.SetCoord(TgFE.X(),TgFE.Y(),0);
   Norm.SetCoord(NmFE.X(),NmFE.Y(),0);
 }
-

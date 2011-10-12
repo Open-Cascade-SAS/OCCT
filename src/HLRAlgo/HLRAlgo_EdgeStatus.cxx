@@ -1,7 +1,8 @@
-// File:	HLRAlgo_EdgeStatus.cxx
-// Created:	Tue Feb 18 11:30:23 1992
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_EdgeStatus.cxx
+// Created:   Tue Feb 18 11:30:23 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -100,4 +101,3 @@ void HLRAlgo_EdgeStatus::Hide (const Standard_Real Start     ,
     if (!AllHidden()) AllHidden(myVisibles.NbIntervals() == 0);
   }
 }
-

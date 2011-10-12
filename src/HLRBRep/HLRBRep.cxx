@@ -1,7 +1,7 @@
-// File:	HLRBRep.cxx
-// Created:	Thu Aug 27 12:33:14 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep.cxx
+// Created:   Thu Aug 27 12:33:14 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <HLRBRep.ixx>
 #include <BRepLib_MakeEdge2d.hxx>
@@ -116,4 +116,3 @@ HLRBRep::PolyHLRAngleAndDeflection (const Standard_Real InAngl,
 			   (HAngMax - HAngLim) / (HAngMax - HAngMin));
   OutDefl = OutAngl * OutAngl * 0.5;
 }
-

@@ -1,7 +1,7 @@
-// File:	HLRBRep_Surface.lxx
-// Created:	Fri Mar 13 11:08:32 1992
-// Author:	Christophe MARION
-//		<cma@sdsun2>
+// File:      HLRBRep_Surface.lxx
+// Created:   Fri Mar 13 11:08:32 1992
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
 
 #include <BRepAdaptor_Surface.hxx>
 #include <HLRBRep_BSurfaceTool.hxx>
@@ -302,4 +302,3 @@ inline Standard_Integer  HLRBRep_Surface::NbVKnots()const
 
 inline gp_Ax1  HLRBRep_Surface::Axis()const 
 { return HLRBRep_BSurfaceTool::AxeOfRevolution(mySurf); }
-

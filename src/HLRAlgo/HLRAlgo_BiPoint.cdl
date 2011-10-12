@@ -1,8 +1,7 @@
--- File:	HLRAlgo_BiPoint.cdl
--- Created:	Thu Jun 22 12:28:58 1995
--- Author:	Christophe MARION
---		<cma@ecolox>
----Copyright:	 Matra Datavision 1995
+-- File:      HLRAlgo_BiPoint.cdl
+-- Created:   Thu Jun 22 12:28:58 1995
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1995
 
 class BiPoint from HLRAlgo
 

@@ -1,8 +1,7 @@
--- File:	HLRAlgo_PolyAlgo.cdl
--- Created:	Tue Feb 18 10:36:07 1992
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRAlgo_PolyAlgo.cdl
+-- Created:   Tue Feb 18 10:36:07 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class PolyAlgo from HLRAlgo inherits TShared from MMgt
 

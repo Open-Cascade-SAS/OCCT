@@ -1,7 +1,8 @@
-// File:	HLRBRep_FaceIterator.cxx
-// Created:	Thu Apr 17 16:00:19 1997
-// Author:	Christophe MARION
-//		<cma@partox.paris1.matra-dtv.fr>
+// File:      HLRBRep_FaceIterator.cxx
+// Created:   Thu Apr 17 16:00:19 1997
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -48,4 +49,3 @@ void HLRBRep_FaceIterator::NextEdge()
     }
   }
 }
-

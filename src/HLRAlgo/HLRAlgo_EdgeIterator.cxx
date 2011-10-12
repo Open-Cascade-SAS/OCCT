@@ -1,7 +1,8 @@
-// File:	HLRAlgo_EdgeIterator.cxx
-// Created:	Mon Jan 11 13:58:26 1993
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_EdgeIterator.cxx
+// Created:   Mon Jan 11 13:58:26 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 #define No_Exception
 #endif
@@ -66,4 +67,3 @@ void HLRAlgo_EdgeIterator::NextHidden ()
       (iHid,myHidEnd,myHidTolEnd,B1,B2);
   }
 }
-

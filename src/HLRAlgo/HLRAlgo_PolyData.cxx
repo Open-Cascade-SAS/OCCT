@@ -1,7 +1,8 @@
-// File:	HLRAlgo_PolyData.cxx
-// Created:	Mon Jan 11 13:58:26 1993
-// Author:	Christophe MARION
-//		<cma@sdsun1>
+// File:      HLRAlgo_PolyData.cxx
+// Created:   Mon Jan 11 13:58:26 1993
+// Author:    Christophe MARION
+// Copyright: OPEN CASCADE 2000
+
 #ifndef No_Exception
 //#define No_Exception
 #endif
@@ -807,4 +808,3 @@ HideByOneTriangle (const Standard_Address Coordinates,
   else       status.Hide(psta,(Standard_ShortReal)TolParam,pend,(Standard_ShortReal)TolParam,
 			 Standard_False,Standard_False);
 }
-

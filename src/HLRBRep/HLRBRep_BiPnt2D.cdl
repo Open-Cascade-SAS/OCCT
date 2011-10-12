@@ -1,8 +1,7 @@
--- File:	HLRBRep_BiPnt2D.cdl
--- Created:	Fri Aug 21 17:10:30 1992
--- Author:	Christophe MARION
---		<cma@sdsun1>
----Copyright:	 Matra Datavision 1992
+-- File:      HLRBRep_BiPnt2D.cdl
+-- Created:   Fri Aug 21 17:10:30 1992
+-- Author:    Christophe MARION
+---Copyright: Matra Datavision 1992
 
 class BiPnt2D from HLRBRep
 
