@@ -28,6 +28,7 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Polygon2D.hxx>
+#include <Standard.hxx>
 
 static Standard_Integer mpnames           (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer mpsetdefaultname  (Draw_Interpretor& , Standard_Integer , const char** );
@@ -422,6 +423,8 @@ static int mpparallel (Draw_Interpretor& di, Standard_Integer argc, const char**
   {
     Standard_Boolean isParallelOn = atoi (argv[1]) == 1;
     BRepMesh_IncrementalMesh::SetParallelDefault (isParallelOn);
+    if (isParallelOn)
+      Standard::SetReentrant(Standard_True);
   }
   std::cout << "Incremental Mesh, multi-threading "
             << (BRepMesh_IncrementalMesh::IsParallelDefault() ? "ON\n" : "OFF\n");

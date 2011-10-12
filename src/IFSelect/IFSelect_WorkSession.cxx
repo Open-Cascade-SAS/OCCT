@@ -2488,7 +2488,11 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll
     }
   }
   else checks = thecopier->SendAll(filename,thegraph->Graph(),thelibrary,theprotocol);
-
+  Handle_Interface_Check aMainFail = checks.CCheck(0);
+  if (!aMainFail.IsNull() && aMainFail->HasFailed ())
+  {
+        return IFSelect_RetStop;
+  }
   if (theloaded.Length() == 0) theloaded.AssignCat(filename);
   thecheckrun = checks;
   if (checks.IsEmpty(Standard_True)) return IFSelect_RetDone;

@@ -213,22 +213,31 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
   }
 
   // get list of faces
-  TopTools_ListOfShape LF;
-  BRepLib::ReverseSortFaces(S,LF);
-
-  // make array of faces suitable for processing (excluding faces without surface)
   std::vector<TopoDS_Face> aFaces;
-  for (TopTools_ListIteratorOfListOfShape it(LF); it.More(); it.Next()) 
   {
-    TopoDS_Face F = TopoDS::Face(it.Value());
+    TopTools_ListOfShape aFaceList;
+    BRepLib::ReverseSortFaces (S, aFaceList);
+    TopTools_MapOfShape aFaceMap;
+    aFaces.reserve (aFaceList.Extent());
 
-    TopLoc_Location L1;
-    const Handle(Geom_Surface)& Surf = BRep_Tool::Surface(F, L1);
-    if(Surf.IsNull())
-      continue;
-    
-    Update (F);
-    aFaces.push_back (F);
+    // make array of faces suitable for processing (excluding faces without surface)
+    TopLoc_Location aDummyLoc;
+    const TopLoc_Location anEmptyLoc;
+    for (TopTools_ListIteratorOfListOfShape aFaceIter (aFaceList); aFaceIter.More(); aFaceIter.Next())
+    {
+      TopoDS_Shape aFaceNoLoc = aFaceIter.Value();
+      aFaceNoLoc.Location (anEmptyLoc);
+      if (!aFaceMap.Add (aFaceNoLoc))
+        continue; // already processed
+
+      TopoDS_Face aFace = TopoDS::Face (aFaceIter.Value());
+      const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aDummyLoc);
+      if (aSurf.IsNull())
+        continue;
+
+      Update (aFace);
+      aFaces.push_back (aFace);
+    }
   }
 
   if (myInParallel)
