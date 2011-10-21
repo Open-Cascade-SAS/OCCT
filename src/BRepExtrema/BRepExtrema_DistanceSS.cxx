@@ -715,7 +715,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge& S1,const TopoDS_Vertex& 
         Standard_Real Udeb,Ufin;
         BRep_Tool::Range(S1,Udeb,Ufin);
 
-        gp_Pnt Pt,P1=BRep_Tool::Pnt(S2);
+        gp_Pnt Pt, P2 = BRep_Tool::Pnt(S2);
         const Standard_Real epsP=Precision::PConfusion();
 
         for (i = 1; i <= NbExtrema; i++)
@@ -732,8 +732,8 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Edge& S1,const TopoDS_Vertex& 
                 if (myDstRef > Dstmin)
                   myDstRef=Dstmin;
                 myModif=Standard_True;
-                const BRepExtrema_SolutionElem Sol1(Dstmin,P1,BRepExtrema_IsOnEdge,S1,t);
-                const BRepExtrema_SolutionElem Sol2(Dstmin,Pt,BRepExtrema_IsVertex,S2);
+                const BRepExtrema_SolutionElem Sol1(Dstmin,Pt,BRepExtrema_IsOnEdge,S1,t);
+                const BRepExtrema_SolutionElem Sol2(Dstmin,P2,BRepExtrema_IsVertex,S2);
                 SeqSolShape1.Append(Sol1);
                 SeqSolShape2.Append(Sol2);
               }
