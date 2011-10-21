@@ -143,11 +143,11 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& F,
   Standard_Real pf,pl;
   Bnd_Box2d Baux; 
   const Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface(E,F,pf,pl);
+  if (C.IsNull()) return;
   if (pl < pf) { // Petit Blindage
     Standard_Real aux;
     aux = pf; pf = pl; pl = aux;
   }
-  if (C.IsNull()) return;
   Geom2dAdaptor_Curve PC(C,pf,pl);
   if (Precision::IsNegativeInfinite(pf) ||
       Precision::IsPositiveInfinite(pf)) {
