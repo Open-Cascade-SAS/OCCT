@@ -71,9 +71,41 @@ myHasOwnSize(Standard_False)
 void AIS_Trihedron::SetComponent(const Handle(Geom_Axis2Placement)& aComponent)
 {
   myComponent = aComponent;
+
+  // Remove from current context and nullify objects to update
+  Handle(AIS_InteractiveContext) anAISContext = GetContext();
+  Standard_Boolean hasContext = (anAISContext.IsNull() == Standard_False);
+  Standard_Integer anIdx;
+  for (anIdx = 0; anIdx < 7; anIdx++)
+  {
+    // Deselect object
+    if (hasContext)
+    {
+      if (anAISContext->IsSelected (myShapes[anIdx]))
+        anAISContext->AddOrRemoveSelected (myShapes[anIdx], Standard_False);
+
+      anAISContext->Remove (myShapes[anIdx], Standard_False);
+    }
+    myShapes[anIdx].Nullify();
+  }
+
   LoadSubObjects();
 }
 
+//=======================================================================
+//function : SetLocation
+//purpose  : 
+//=======================================================================
+
+void AIS_Trihedron::SetLocation(const TopLoc_Location& aLoc)
+{
+  // Update location to the subshapes
+  Standard_Integer anIdx;
+  for (anIdx = 0; anIdx < 7; anIdx++)
+    myShapes[anIdx]->SetLocation (aLoc);
+
+  AIS_InteractiveObject::SetLocation (aLoc);
+}
 
 //=======================================================================
 //function : SetSize
@@ -266,10 +298,23 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
                                      const Standard_Integer aMode)
 {
   // retrieve the tops of the trihedron.
-  Standard_Integer Prior;
+  Standard_Integer Prior, anIdx;
   Handle(SelectMgr_EntityOwner) eown;
   TColgp_Array1OfPnt PP(1,4),PO(1,4);
   ExtremityPoints(PP);
+
+  // remove shapes from active selections
+  Handle(AIS_InteractiveContext) anAISContext = GetContext();
+  if (!anAISContext.IsNull())
+    for (anIdx = 0; anIdx < 7; anIdx++)
+    {
+      // Deselect object
+      if (anAISContext->IsSelected (myShapes[anIdx]))
+        anAISContext->AddOrRemoveSelected (myShapes[anIdx], Standard_False);
+
+      anAISContext->Remove (myShapes[anIdx], Standard_False);
+    }
+  
   switch (aMode) {
   case 0:
     {   // complete triedron only 1 owner : this... priority 5 (same as faces)
@@ -285,7 +330,15 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
       eown= new SelectMgr_EntityOwner(myShapes[0],Prior);
       
       aSelection->Add(new Select3D_SensitivePoint (eown,myComponent->Location()));
-
+      // If the trihedron's shapes display and selection modes are the same
+      // the shapes are still displayed after selection, so we need to
+      // use different presentation and hide it by nullifying
+      if (!anAISContext.IsNull())
+      {
+        anAISContext->Display (myShapes[0], 1, 0, Standard_False);
+        anAISContext->ClearPrs (myShapes[0], 1, Standard_False);
+      }
+      
       break;
     }
   case 2:
@@ -296,6 +349,29 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
 	aSelection->Add(new Select3D_SensitiveSegment(eown,PP(1),PP(i+1)));
 
       }
+
+      // If the trihedron's shapes display and selection modes are the same
+      // the shapes are still displayed after selection, so we need to
+      // use different presentation and hide it by nullifying
+      AIS_TypeOfAxis anAxisType;
+      if (!anAISContext.IsNull())
+        for (anIdx = 1; anIdx <= 3; anIdx++)
+        {
+          // update AIS_Axis for selection
+          Handle(AIS_Axis) anAxis = Handle(AIS_Axis)::DownCast(myShapes[anIdx]);
+          Handle(AIS_Drawer) aDrawer = anAxis->Attributes();
+          Handle(Prs3d_DatumAspect) aDatum = myDrawer->DatumAspect();
+          aDrawer->DatumAspect()->SetAxisLength (aDatum->FirstAxisLength(),
+                                                 aDatum->SecondAxisLength(),
+                                                 aDatum->ThirdAxisLength());
+          anAxisType = anAxis->TypeOfAxis();
+          anAxis->SetAxis2Placement (myComponent, anAxisType);
+
+          // display
+          anAISContext->Display (myShapes[anIdx], 1, 0, Standard_False);
+          anAISContext->ClearPrs (myShapes[anIdx], 1, Standard_False);
+        }
+      
       break;
     }
     
@@ -318,6 +394,15 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
 //      PO(2) = PP(4);PO(3) = PP(2);
       aSelection->Add(new Select3D_SensitiveTriangle(eown,PP(1),PP(3),PP(4)));
       
+      // If the trihedron's shapes display and selection modes are the same
+      // the shapes are still displayed after selection, so we need to
+      // use different presentation and hide it by nullifying
+      if (!anAISContext.IsNull())
+        for (anIdx = 4; anIdx < 7; anIdx++)
+	{
+          anAISContext->Display (myShapes[anIdx], 1, 0, Standard_False);
+          anAISContext->ClearPrs (myShapes[anIdx], 1, Standard_False);
+        }
     }
   }
   
@@ -550,9 +635,26 @@ void AIS_Trihedron::SetContext(const Handle(AIS_InteractiveContext)& Ctx)
 {
 //  Standard_Boolean same_DA = myDrawer->Link() == Ctx->DefaultDrawer();
 
-  AIS_InteractiveObject::SetContext(Ctx);
+  // Remove subobjects from current context
+  Handle(AIS_InteractiveContext) anAISContext = GetContext();
+  Standard_Boolean hasContext = (anAISContext.IsNull() == Standard_False);
+  Standard_Integer anIdx;
+  for (anIdx = 0; anIdx < 7; anIdx++)
+    {
+      // Deselect object
+      if (hasContext)
+	{
+	  if (anAISContext->IsSelected (myShapes[anIdx]))
+	    anAISContext->AddOrRemoveSelected (myShapes[anIdx]);
+	  
+	  anAISContext->Remove (myShapes[anIdx], Standard_False);
+	}
+      myShapes[anIdx].Nullify();
+    }
+
+  AIS_InteractiveObject::SetContext (Ctx);
   
   LoadSubObjects();
   for(Standard_Integer i= 0;i<=6;i++)
-    myShapes[i]->SetContext(Ctx);
+    myShapes[i]->SetContext (Ctx);
 }

@@ -76,6 +76,8 @@
 #include <Geom_Axis1Placement.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
+#include <gp_Trsf.hxx>
+#include <TopLoc_Location.hxx>
 
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
@@ -3198,6 +3200,62 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
 }
 
 //=======================================================================
+//function : VSetLocation
+//purpose  : Change location of AIS interactive object
+//=======================================================================
+
+static Standard_Integer VSetLocation (Draw_Interpretor& di,
+                                      Standard_Integer argc,
+                                      const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    di << argv[0] << "ERROR : use 'vinit' command before " << "\n";
+    return 1;
+  }
+
+  if (argc != 5)
+  {
+    di << "ERROR : Usage : " << argv[0] << " name x y z; new location" << "\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aName (argv[1]);
+  Standard_Real aX = atof (argv[2]);
+  Standard_Real aY = atof (argv[3]);
+  Standard_Real aZ = atof (argv[4]);
+
+  // find object
+  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  Handle(AIS_InteractiveObject) anIObj;
+  if (!aMap.IsBound2 (aName))
+  {
+    di << "Use 'vdisplay' before" << "\n";
+    return 1;
+  }
+  else
+  {
+    anIObj = Handle(AIS_InteractiveObject)::DownCast (aMap.Find2 (aName));
+
+    // not an AIS_InteractiveObject
+    if (anIObj.IsNull())
+    {
+      di << argv[1] << " : Not an AIS interactive object" << "\n";
+      return 1;
+    }
+
+    gp_Trsf aTrsf;
+    aTrsf.SetTranslation (gp_Vec (aX, aY, aZ));
+    TopLoc_Location aLocation (aTrsf);
+    aContext->SetLocation (anIObj, aLocation);
+    aContext->UpdateCurrentViewer();
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -3268,6 +3326,10 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vclipplane",
     "vclipplane : vclipplane [x y z dx dy dz] [planeId {on/off/del/display/hide}]",
     __FILE__,VClipPlane,group);
+
+  theCommands.Add ("vsetlocation",
+        "vsetlocation : name x y z; set new location for an interactive object",
+        __FILE__, VSetLocation, group);
 
   theCommands.Add (
     "vcomputehlr",

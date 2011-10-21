@@ -78,10 +78,21 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
 #else
   Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
 #endif
-  if(myFromDecomposition)
+  if (myFromDecomposition)
+  {
+    // do the update flag check
+    if (!myPrsSh.IsNull())
+    {
+      TColStd_ListOfInteger aModesList;
+      myPrsSh->ToBeUpdated (aModesList);
+      if (!aModesList.IsEmpty())
+        myPrsSh.Nullify();
+    }
+
     if(myPrsSh.IsNull())
-      myPrsSh = new StdSelect_Shape(myShape);
-  
+      myPrsSh = new StdSelect_Shape (myShape);
+  }  
+
   if(myPrsSh.IsNull())
     PM->Highlight(Selectable(),M);
   else
@@ -100,7 +111,17 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
 #else
   Standard_Integer M = (myCurMode==-1) ? aMode:myCurMode;
 #endif
-  if(myFromDecomposition){
+  if (myFromDecomposition)
+  {
+    // do the update flag check
+    if (!myPrsSh.IsNull())
+    {
+      TColStd_ListOfInteger aModesList;
+      myPrsSh->ToBeUpdated (aModesList);
+      if (!aModesList.IsEmpty())
+        myPrsSh.Nullify();
+    }
+
     if(myPrsSh.IsNull()){
       if(HasLocation()){
 	TopLoc_Location lbid = Location() * myShape.Location();
@@ -147,13 +168,20 @@ void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
 void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
 {
   SelectMgr_EntityOwner::SetLocation(aLoc);
-  if(!myPrsSh.IsNull())
-    myPrsSh.Nullify();
-  
+  // we must not nullify the myPrsSh here, because unhilight method
+  // will be working with wrong entity in this case, the best is to
+  // set the update flag and then recompute myPrsSh on hilighting
+  if (!myPrsSh.IsNull())
+    myPrsSh->SetToUpdate();
+ 
 }
 void StdSelect_BRepOwner::ResetLocation()
 {
   SelectMgr_EntityOwner::ResetLocation();
-  if(!myPrsSh.IsNull())
-    myPrsSh.Nullify(); 
+  // we must not nullify the myPrsSh here, because unhilight method
+  // will be working with wrong entity in this case, the best is to
+  // set the update flag and then recompute myPrsSh on hilighting
+  if (!myPrsSh.IsNull())
+    myPrsSh->SetToUpdate();
+
 }

@@ -28,7 +28,11 @@ class Trihedron from AIS inherits InteractiveObject from AIS
     	-- for length are stocked. For trihedra, this is
     	-- AIS_Drawer_FirstAxisAspect. You change the
     	-- values inside this Aspect and recalculate the presentation.
-    	--  
+    	-- If you want to use extended selection modes, different than 0,
+    	-- you should take care of removing of the shapes from the interactive
+        -- context that has been computed for selection; it might be necessary
+        -- when you change selection mode. You can use methods Axis, Point,
+        -- Plane to retrieve the shapes.
 
 uses 
     Axis2Placement        from Geom,
@@ -46,7 +50,8 @@ uses
     Plane                 from AIS,
     KindOfInteractive     from AIS,
     InteractiveContext    from AIS,
-    Array1OfPnt           from  TColgp
+    Array1OfPnt           from  TColgp,
+    Location              from TopLoc
 is
 
     Create(aComponent : Axis2Placement from Geom)
@@ -139,6 +144,12 @@ is
     	--          Translation. The HLR Prs can't be deducted automatically
     	--          WARNING :<aTrsf> must be applied
     	--           to the object to display before computation  !!!
+
+-- Methods from PresentableObject
+
+    SetLocation(me              : mutable;
+    	    	aLoc            : Location from TopLoc)
+    is redefined static;
 
 -- Methods from SelectableObject
 

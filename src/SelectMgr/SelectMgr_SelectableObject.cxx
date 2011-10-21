@@ -216,6 +216,11 @@ void SelectMgr_SelectableObject::UpdateLocation(const Handle(SelectMgr_Selection
     SE =  *((Handle(Select3D_SensitiveEntity)*) &(Sel->Sensitive()));
     if(!SE.IsNull()){
       SE->UpdateLocation(myLocation);
+      const Handle(SelectBasics_EntityOwner)& aEOwner = SE->OwnerId();
+      Handle(SelectMgr_EntityOwner) aMgrEO =
+                              Handle(SelectMgr_EntityOwner)::DownCast (aEOwner);
+      if (!aMgrEO.IsNull())
+        aMgrEO->SetLocation (myLocation);
     }
   }
 }
