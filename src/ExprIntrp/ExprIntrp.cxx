@@ -28,14 +28,14 @@ Standard_Boolean ExprIntrp::Parse(const Handle(ExprIntrp_Generator)& gen, const 
     try {
       OCC_CATCH_SIGNALS
       while (kerror!=0) {
-	kerror = ExprIntrpparse();
+        kerror = ExprIntrpparse();
       }
+      ExprIntrp_stop_string();
       return Standard_True;
     }
-    catch (Standard_Failure) {
-      return Standard_False;
-    }
+    catch (Standard_Failure) {}
   }
+  ExprIntrp_stop_string();
   return Standard_False;
 }
 
