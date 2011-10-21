@@ -9,16 +9,17 @@
 /************************************************************************/
 
 
-void Graphic3d_GraphicDriver::Export( const Standard_CString FileName,
-                                     const Graphic3d_ExportFormat Format,
-                                     const Graphic3d_SortType aSortType,
-                                     const Standard_Integer W,
-                                     const Standard_Integer H,
-                                     const Graphic3d_CView& View,
-                                     const Aspect_CLayer2d& Under,
-                                     const Aspect_CLayer2d& Over,
-                                     const Standard_Real Precision,
-                                     const Standard_Address ProgressBarFunc,
-                                     const Standard_Address ProgressObject )
+Standard_Boolean Graphic3d_GraphicDriver::Export (const Standard_CString theFileName,
+                                                  const Graphic3d_ExportFormat theFormat,
+                                                  const Graphic3d_SortType theSortType,
+                                                  const Standard_Integer theW,
+                                                  const Standard_Integer theH,
+                                                  const Graphic3d_CView& theView,
+                                                  const Aspect_CLayer2d& theLayerUnder,
+                                                  const Aspect_CLayer2d& theLayerOver,
+                                                  const Standard_Real    thePrecision,
+                                                  const Standard_Address theProgressBarFunc,
+                                                  const Standard_Address theProgressObject)
 {
+  return Standard_False;
 }

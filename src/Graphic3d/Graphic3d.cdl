@@ -630,7 +630,8 @@ is
         EF_TEX,
         EF_PDF,
         EF_SVG,
-        EF_PGF
+        EF_PGF,
+        EF_EMF
 
     end ExportFormat;
 

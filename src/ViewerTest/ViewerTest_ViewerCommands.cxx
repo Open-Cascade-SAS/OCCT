@@ -1563,35 +1563,79 @@ static int VPan( Draw_Interpretor& di, Standard_Integer argc, const char** argv 
 
 //==============================================================================
 //function : VExport
-//purpose  : Export teh view to a vector graphic format (PS, EMF, PDF)
+//purpose  : Export the view to a vector graphic format (PS, EMF, PDF)
 //==============================================================================
 
 static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
-  if ( V3dView.IsNull() ) return 1;
+  if (V3dView.IsNull())
+    return 1;
 
-  if ( argc != 3 ) {
-    di << argv[0] << "Invalid number of arguments" << "\n";
+  if (argc == 1)
+  {
+    std::cout << "Usage: " << argv[0] << " Filename [Format]\n";
     return 1;
   }
 
-  TCollection_AsciiString aFormat( argv[2] );
-  aFormat.UpperCase();
-  Graphic3d_ExportFormat exFormat;
-  if ( aFormat == "PS" )
-    exFormat = Graphic3d_EF_PostScript;
-  if ( aFormat == "EPS" )
-    exFormat = Graphic3d_EF_EnhPostScript;
-  if ( aFormat == "TEX" )
-    exFormat = Graphic3d_EF_TEX;
-  if ( aFormat == "PDF" )
-    exFormat = Graphic3d_EF_PDF;
-  if ( aFormat == "SVG" )
-    exFormat = Graphic3d_EF_SVG;
-  if ( aFormat == "PGF" )
-    exFormat = Graphic3d_EF_PGF;
-  V3dView->View()->Export( argv[1], exFormat );
+  Graphic3d_ExportFormat anExpFormat = Graphic3d_EF_PDF;
+  TCollection_AsciiString aFormatStr;
+
+  TCollection_AsciiString aFileName (argv[1]);
+  Standard_Integer aLen = aFileName.Length();
+
+  if (argc > 2)
+  {
+    aFormatStr = TCollection_AsciiString (argv[2]);
+  }
+  else if (aLen >= 4)
+  {
+    if (aFileName.Value (aLen - 2) == '.')
+    {
+      aFormatStr = aFileName.SubString (aLen - 1, aLen);
+    }
+    else if (aFileName.Value (aLen - 3) == '.')
+    {
+      aFormatStr = aFileName.SubString (aLen - 2, aLen);
+    }
+    else
+    {
+      std::cout << "Export format couln't be detected from filename '" << argv[1] << "'\n";
+      return 1;
+    }
+  }
+  else
+  {
+    std::cout << "Export format couln't be detected from filename '" << argv[1] << "'\n";
+    return 1;
+  }
+
+  aFormatStr.UpperCase();
+  if (aFormatStr == "PS")
+    anExpFormat = Graphic3d_EF_PostScript;
+  else if (aFormatStr == "EPS")
+    anExpFormat = Graphic3d_EF_EnhPostScript;
+  else if (aFormatStr == "TEX")
+    anExpFormat = Graphic3d_EF_TEX;
+  else if (aFormatStr == "PDF")
+    anExpFormat = Graphic3d_EF_PDF;
+  else if (aFormatStr == "SVG")
+    anExpFormat = Graphic3d_EF_SVG;
+  else if (aFormatStr == "PGF")
+    anExpFormat = Graphic3d_EF_PGF;
+  else if (aFormatStr == "EMF")
+    anExpFormat = Graphic3d_EF_EMF;
+  else
+  {
+    std::cout << "Invalid export format '" << aFormatStr << "'\n";
+    return 1;
+  }
+
+  if (!V3dView->View()->Export (argv[1], anExpFormat))
+  {
+    std::cout << "Export failed!\n";
+    return 1;
+  }
   return 0;
 }
 
@@ -1955,7 +1999,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vpan            : vpan dx dy",
     __FILE__,VPan,group);
   theCommands.Add("vexport",
-    "vexport         : vexport full_file_path {PS | EPS | TEX | PDF | SVG | PGV } : exports the view to a vector file of a given format",
+    "vexport         : vexport full_file_path {PS | EPS | TEX | PDF | SVG | PGF | EMF }"
+    " : exports the view to a vector file of a given format"
+    " : notice that EMF format requires patched gl2ps",
     __FILE__,VExport,group);
   theCommands.Add("vcolorscale",
     "vcolorscale     : vcolorscale [RangeMin = 0 RangeMax = 100 Intervals = 10 HeightFont = 16 Position = 2 X = 0 Y = 0]: draw color scale",

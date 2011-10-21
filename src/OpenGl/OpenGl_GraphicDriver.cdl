@@ -1235,15 +1235,24 @@ is
 
 
         Export( me: mutable;
-                FileName         : CString from Standard;
-                Format           : ExportFormat from Graphic3d;
-                SortType         : SortType from Graphic3d;
-                W, H             : Integer from Standard;
-                View             : CView from Graphic3d;
-                Under, Over      : CLayer2d from Aspect;
-                Precision        : Real from Standard = 0.005;
-                ProgressBarFunc  : Address from Standard = NULL;
-                ProgressObject   : Address from Standard = NULL ) is redefined virtual;
+                theFileName         : CString from Standard;
+                theFormat           : ExportFormat from Graphic3d;
+                theSortType         : SortType from Graphic3d;
+                theWidth, theHeight : Integer from Standard;
+                theView             : CView from Graphic3d;
+                theLayerUnder       : CLayer2d from Aspect;
+                theLayerOver        : CLayer2d from Aspect;
+                thePrecision        : Real from Standard = 0.005;
+                theProgressBarFunc  : Address from Standard = NULL;
+                theProgressObject   : Address from Standard = NULL )
+        returns Boolean from Standard
+        is redefined virtual;
+    ---Purpose:
+    -- Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
+    -- Requires gl2ps library.
+    -- In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits on printing to laser printer).
+    -- Notice however that results may differ a lot and do not contain some elements.
+    -- EMF export format requiers modified gl2ps library and available only on Windows platform.
 
 
         SetDepthTestEnabled( me; view : CView from Graphic3d;

@@ -4287,28 +4287,29 @@ Standard_Boolean Visual3d_View::IsGLLightEnabled() const
 #endif
 }
 
-void Visual3d_View::Export( const Standard_CString FileName,
-                            const Graphic3d_ExportFormat Format,
-                            const Graphic3d_SortType aSortType,
-                            const Standard_Real Precision,
-                            const Standard_Address ProgressBarFunc,
-                            const Standard_Address ProgressObject ) const
+Standard_Boolean Visual3d_View::Export (const Standard_CString       theFileName,
+                                        const Graphic3d_ExportFormat theFormat,
+                                        const Graphic3d_SortType     theSortType,
+                                        const Standard_Real          thePrecision,
+                                        const Standard_Address       theProgressBarFunc,
+                                        const Standard_Address       theProgressObject) const
 {
-    Handle( Visual3d_Layer ) AnUnderLayer = MyViewManager->UnderLayer(),
-                             AnOverLayer  = MyViewManager->OverLayer();
+  Handle(Visual3d_Layer) anUnderLayer = MyViewManager->UnderLayer();
+  Handle(Visual3d_Layer) anOverLayer  = MyViewManager->OverLayer();
 
-    Aspect_CLayer2d OverCLayer;
-    Aspect_CLayer2d UnderCLayer;
-    OverCLayer.ptrLayer = UnderCLayer.ptrLayer = NULL;
+  Aspect_CLayer2d anOverCLayer;
+  Aspect_CLayer2d anUnderCLayer;
+  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
 
-    if( !AnOverLayer.IsNull() )
-        OverCLayer = AnOverLayer->CLayer();
-    if( !AnUnderLayer.IsNull() )
-        UnderCLayer = AnUnderLayer->CLayer();
+  if (!anOverLayer.IsNull())
+    anOverCLayer = anOverLayer->CLayer();
+  if (!anUnderLayer.IsNull())
+    anUnderCLayer = anUnderLayer->CLayer();
 
-    Standard_Integer W, H;
-    Window()->Size( W, H );
+  Standard_Integer aWidth, aHeight;
+  Window()->Size (aWidth, aHeight);
 
-    MyGraphicDriver->Export( FileName, Format, aSortType, W, H, MyCView, UnderCLayer, OverCLayer,
-                             Precision, ProgressBarFunc, ProgressObject );
+  return MyGraphicDriver->Export (theFileName, theFormat, theSortType,
+                                  aWidth, aHeight, MyCView, anUnderCLayer, anOverCLayer,
+                                  thePrecision, theProgressBarFunc, theProgressObject);
 }
