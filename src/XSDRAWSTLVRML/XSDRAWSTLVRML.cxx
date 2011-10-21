@@ -74,13 +74,15 @@
 static Standard_Integer writestl
 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc<3) di << "wrong number of parameters"    << "\n";
+  if (argc<3 || argc>4) di << "Use: " << argv[0] << "shape file [ascii/binary (0/1) : 1 by default]" << "\n";
   else {
     TopoDS_Shape shape = DBRep::Get(argv[1]);
-    //     StlAPI_Writer writer;
-    //     writer.ASCIIMode() = Standard_False;
-    //     writer.Write (shape, "binary.stl");
-    StlAPI::Write(shape, argv[2],Standard_False); //now write in binary mode
+    Standard_Boolean anASCIIMode = Standard_False;
+    if (argc==4) {
+      Standard_Integer mode = atoi(argv[3]);
+      if (mode==0) anASCIIMode = Standard_True;
+    }
+    StlAPI::Write(shape, argv[2],anASCIIMode);
   }
   return 0;
 }
@@ -945,7 +947,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   //XSDRAW::LoadDraw(theCommands);
 
   theCommands.Add ("writevrml", "shape file",__FILE__,writevrml,g);
-  theCommands.Add ("writestl",  "shape file",__FILE__,writestl,g);
+  theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",   "shape file",__FILE__,readstl,g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
   theCommands.Add ("storevrml" , "shape file defl [type]",__FILE__,storevrml,g);

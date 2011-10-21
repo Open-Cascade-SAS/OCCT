@@ -248,6 +248,7 @@ Standard_Boolean RWStl::WriteAscii (const Handle(StlMesh_Mesh)& theMesh,
           x1, y1, z1,
           x2, y2, z2,
           x3, y3, z3);
+      buf += sval;
       theFile.Write (buf, buf.Length()); buf.Clear();
 
       // update progress only per 1k triangles
