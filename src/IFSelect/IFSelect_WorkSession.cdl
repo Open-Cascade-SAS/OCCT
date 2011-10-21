@@ -819,8 +819,13 @@ is
     --           
     --           The Model and File Modifiers recorded to be applied on sending
     --           files are.
-    --           Returns a status of execution : Done if OK, Void if no def.
-    --             available, Error if errors occured, Fail if no file written
+    --           Returns a status of execution : 
+    --             Done if OK, 
+    --             Void if no data available,
+    --             Error if errors occured (work library is not defined), errors 
+    --             during translation
+    --             Fail if exception during translation is raised
+    --             Stop if no disk space or disk, file is write protected
     --           Fills LastRunCheckList
 
     SendSelected (me : mutable; filename : CString; sel : Selection;

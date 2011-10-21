@@ -423,7 +423,8 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
   switch (stat) {
     case IFSelect_RetVoid : di<<"No file written"<<"\n"; break;
     case IFSelect_RetDone : di<<"File "<<nomfic<<" written"<<"\n"; break;
-    default : di<<"Error on writing file"<<"\n"; break;
+    case IFSelect_RetStop : di<<"Error on writing file: no space on disk or destination is write protected"<<"\n"; break;
+    default : di<<"File "<<nomfic<<" written with fail messages"<<"\n"; break;
   }
 
   progress->EndScope();
