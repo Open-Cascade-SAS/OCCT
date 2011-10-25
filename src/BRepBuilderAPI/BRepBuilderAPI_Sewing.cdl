@@ -419,7 +419,8 @@ is
     	    	    	 last    : Real from Standard;
     	    	    	 arrDist : in out Array1OfReal from TColStd;
     	    	    	 arrPara : in out Array1OfReal from TColStd;
-    	    	    	 arrProj : in out Array1OfPnt from TColgp) is virtual protected;
+    	    	    	 arrProj : in out Array1OfPnt from TColgp;
+    	    	    	 isConsiderEnds : in Boolean from Standard) is protected;
 	---Purpose: Projects points on curve
         --          This method is called from Cutting only
 

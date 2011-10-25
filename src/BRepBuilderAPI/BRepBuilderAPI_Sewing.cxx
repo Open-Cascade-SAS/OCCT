@@ -485,18 +485,11 @@ static Standard_Boolean findNMVertices(const TopoDS_Edge& theEdge,
   return Standard_True;
 }
 
-static Standard_Real ComputeToleranceVertex(Standard_Real dist, Standard_Real Tol1, Standard_Real Tol2)
+static inline Standard_Real ComputeToleranceVertex(const Standard_Real dist, const Standard_Real Tol1, const Standard_Real Tol2)
 {
-  Standard_Real resTol =0;
-  if((dist + Tol1) <= Tol2)
-    resTol = Tol2;
-  else if((dist + Tol2) <= Tol1)
-    resTol = Tol1;
-  else 
-    resTol =(dist + Tol1 + Tol2)*0.5;
-  return resTol;
-  
+  return (dist * 0.5 + Tol1 + Tol2);
 }
+
 TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirst,
 					       const TopoDS_Edge& edgeLast,
 					       const TopTools_ListOfShape& listFacesFirst,
@@ -579,6 +572,18 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
     TopoDS_Vertex V11,V12,V21,V22;
     TopExp::Vertices(edge1,V11,V12);
     TopExp::Vertices(edge2,V21,V22);
+
+    // Check that edges are merged correctly (for edges having length less than specified tolerance)
+    if(secForward)
+    {
+      if( V11.IsSame(V22) || V12.IsSame(V21) )
+        return TopoDS_Edge();
+    }
+    else
+    {
+      if( V11.IsSame(V21) || V12.IsSame(V22) )
+        return TopoDS_Edge();
+    }
 
     //szv: do not reshape here!!!
     //V11 = TopoDS::Vertex(myReShape->Apply(V11));
@@ -990,6 +995,7 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
   secForward.Init(Standard_True);
   tabDst.Init(-1.0);
   arrLen.Init(0.);
+  tabMinDist.Init(Precision::Infinite());
   const Standard_Integer npt = 8; // Number of points for curve discretization
   TColgp_Array1OfPnt ptsRef(1, npt), ptsSec(1, npt);
 
@@ -998,7 +1004,7 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
 
   Handle(Geom_Curve) c3dRef;
   Standard_Real firstRef=0., lastRef=0.;
-
+  Standard_Integer nbFound = 0;
   for (i = indRef; i <= lengSec; i++) {
 
     // reading of the edge (attention for the first one: reference)
@@ -1016,11 +1022,12 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
       c3dRef = c3d; firstRef = first; lastRef = last;
     }
 
-    Standard_Real dist, distFor = -1.0, distRev = -1.0;
+    Standard_Real dist = Precision::Infinite(), distFor = -1.0, distRev = -1.0;
     Standard_Real aMinDist = Precision::Infinite();
 
     Standard_Real T, deltaT = (last - first) / (npt - 1);
     Standard_Real aLenSec2 = 0.;
+    Standard_Boolean isFound = (indRef == i);
     for (j = 1; j <= npt; j++) {
 
       // Uniform parameter on curve
@@ -1030,14 +1037,16 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
 
       // Take point on curve
       gp_Pnt pt = c3d->Value(T);
-
+     
       if (i == indRef) {
         ptsRef(j) = pt;
+        if(j > 1)
+          aLenSec2 += pt.SquareDistance(ptsRef(j-1));
       }
       else {
         ptsSec(j) = pt;
         //protection to avoid merging with small sections
-        if( j >1)
+        if(j > 1)
           aLenSec2 += pt.SquareDistance(ptsSec(j-1));
         // To evaluate mutual orientation and distance
         dist = pt.Distance(ptsRef(j));
@@ -1045,9 +1054,19 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
           aMinDist = dist;
         if (distFor < dist) distFor = dist;
         dist = pt.Distance(ptsRef(npt-j+1));
+   
         if(aMinDist > dist)
           aMinDist = dist;
         if (distRev < dist) distRev = dist;
+
+        // Check that point lays between vertices of reference curve
+        const gp_Pnt &p11 = ptsRef(1);
+        const gp_Pnt &p12 = ptsRef(npt);
+        const gp_Vec aVec1(pt,p11);
+        const gp_Vec aVec2(pt,p12);
+        const gp_Vec aVecRef(p11,p12);
+        if((aVecRef * aVec1) * (aVecRef * aVec2) < 0.)
+          nbFound++;
       }
     }
 
@@ -1061,18 +1080,39 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
     secForward(i) = isForward;
 
     dist = (isForward? distFor : distRev);
-    if (dist < /*Precision::Confusion()*/ myTolerance) {
-      // Section is close - record distance
+    if(i == indRef || (dist < myTolerance && nbFound >= npt * 0.5) )
+    {
       tabDst(i) = dist;
       tabMinDist(i) = aMinDist;
-
     }
-    else {
-      // Section is distant - record points
-      for (j = 1; j <= npt; j++) seqSec.Append(ptsSec(j));
+    else
+    {
+      nbFound = 0, aMinDist = Precision::Infinite(), dist = -1;
+      TColgp_Array1OfPnt arrProj(1, npt);
+      TColStd_Array1OfReal arrDist(1, npt), arrPara(1, npt);
+      if( arrLen(indRef) >= arrLen(i)) 
+        ProjectPointsOnCurve(ptsSec,c3dRef,firstRef,lastRef,arrDist,arrPara,arrProj,Standard_False);
+      else
+        ProjectPointsOnCurve(ptsRef,c3d,first,last,arrDist,arrPara,arrProj,Standard_False);
+      for( j = 1; j <= npt; j++ )
+      {
+        if(arrDist(j) < 0. || arrDist(j) > myTolerance)
+          continue;
+        if(dist < arrDist(j))
+          dist = arrDist(j);
+        if( aMinDist > arrDist(j))
+          aMinDist = arrDist(j);
+        nbFound++;
+      }
+      if(nbFound > 1)
+      {
+        tabDst(i) = dist;
+        tabMinDist(i) =  aMinDist;
+      }
     }
   }
 
+  /*
   // Project distant points
   Standard_Integer nbFailed = seqSec.Length();
   if (!nbFailed) return;
@@ -1081,7 +1121,7 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
   for (i = 1; i <= nbFailed; i++) arrPnt(i) = seqSec(i); seqSec.Clear();
   TColStd_Array1OfReal arrDist(1, nbFailed), arrPara(1, nbFailed);
 
-  ProjectPointsOnCurve(arrPnt,c3dRef,firstRef,lastRef,arrDist,arrPara,arrProj);
+  ProjectPointsOnCurve(arrPnt,c3dRef,firstRef,lastRef,arrDist,arrPara,arrProj,Standard_False);
 
   // Process distant sections
   Standard_Integer idx1 = 1;
@@ -1130,7 +1170,7 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
     }
 
     idx1++; // To the next distant curve
-  }
+  }*/
 }
 
 //=======================================================================
@@ -3537,7 +3577,7 @@ void BRepBuilderAPI_Sewing::Cutting()
       TColgp_Array1OfPnt arrPnt(1,nbCandidates), arrProj(1,nbCandidates);
       for (Standard_Integer j = 1; j <= nbCandidates; j++)
         arrPnt(j) = BRep_Tool::Pnt(TopoDS::Vertex(CandidateVertices(j)));
-      ProjectPointsOnCurve(arrPnt,c3d,first,last,arrDist,arrPara,arrProj);
+      ProjectPointsOnCurve(arrPnt,c3d,first,last,arrDist,arrPara,arrProj,Standard_True);
       // Create cutting nodes
       TopTools_SequenceOfShape seqNode;
       TColStd_SequenceOfReal seqPara;
@@ -4120,7 +4160,8 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
                                                  const Standard_Real last,
                                                  TColStd_Array1OfReal& arrDist,
                                                  TColStd_Array1OfReal& arrPara,
-                                                 TColgp_Array1OfPnt& arrProj) const
+                                                 TColgp_Array1OfPnt& arrProj,
+                                                 const Standard_Boolean isConsiderEnds) const
 {
   arrDist.Init(-1.0);
 
@@ -4181,7 +4222,7 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
       Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
     }
-    if (!isProjected) {
+    if (!isProjected && isConsiderEnds) {
       if (Min(distF2,distL2) < worktol * worktol) {
         if (distF2 < distL2) {
           arrDist(i1) = sqrt (distF2);
