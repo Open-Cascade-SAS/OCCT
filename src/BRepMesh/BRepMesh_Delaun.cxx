@@ -321,7 +321,7 @@ void BRepMesh_Delaun::FrontierAdjust()
         }
       }
 
-      // Destruction des triangles :
+    // Destruction of triangles :
       Standard_Integer kk = 0;
       for (; !tril.IsEmpty(); tril.RemoveFirst()) {
         DeleteTriangle(tril.First(), loopEdges);
@@ -351,7 +351,7 @@ void BRepMesh_Delaun::FrontierAdjust()
         (itFr.Key()==e3 && !o3))   {
 #ifdef TRIANGULATION_DEBUG
           if (Triangulation_Trace>0) {
-            cout << "---> destruction du triangle " << aPair.Index(j) << endl;
+            cout << "---> destruction of triangle " << aPair.Index(j) << endl;
           }
 #endif
           tril.Append(aPair.Index(j));
@@ -427,7 +427,7 @@ void BRepMesh_Delaun::MeshLeftPolygonOf(const Standard_Integer indexEdg,
   if (oth==0) {
 #ifdef TRIANGULATION_DEBUG
     if (Triangulation_Trace>0)
-      cout << " MeshLeftPolygonOf : Aucun chemin Edge précédente !" << endl; 
+      cout << " MeshLeftPolygonOf : No path previous Edge!" << endl; 
 #endif
     return;
   }
@@ -521,7 +521,7 @@ void BRepMesh_Delaun::MeshLeftPolygonOf(const Standard_Integer indexEdg,
           //there is a risk of looping (attention to open contours)
 #ifdef TRIANGULATION_DEBUG
           if (Triangulation_Trace>0)
-            cout << " MeshLeftPolygonOf : pas de fermeture du polygone !" 
+            cout << " MeshLeftPolygonOf : no closing of the polygon !" 
             << endl; 
 #endif
 
@@ -554,7 +554,7 @@ void BRepMesh_Delaun::MeshLeftPolygonOf(const Standard_Integer indexEdg,
     else {
 #ifdef TRIANGULATION_DEBUG
       if (Triangulation_Trace>0)
-        cout << " MeshLeftPolygonOf : Pas de suivante !" << endl; 
+        cout << " MeshLeftPolygonOf : No next !" << endl; 
 #endif
       return;
     }
@@ -822,7 +822,7 @@ void BRepMesh_Delaun::CreateTriangles (const Standard_Integer theVertexIndex,
 #ifdef TRIANGULATION_DEBUG
     else {
       if (Triangulation_Trace>0)
-        cout << " CreateTriangles : produit vectoriel trop petit !" << endl;
+        cout << " CreateTriangles : vector product too small !" << endl;
     }
 #endif
   }

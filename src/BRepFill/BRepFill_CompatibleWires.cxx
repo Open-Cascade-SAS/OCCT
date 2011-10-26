@@ -81,7 +81,7 @@ static void EdgesFromVertex (const TopoDS_Wire&   W,
   }
 
   if (Abs(I2-I1)==1) {
-    // numeros consecutifs
+    // consecutive numbers
     if (I2==I1+1) {
       E1 = e1;
       E2 = e2;
@@ -92,7 +92,7 @@ static void EdgesFromVertex (const TopoDS_Wire&   W,
     }
   }
   else {
-    // numeros non consecutifs sur un wire ferme
+    // non consecutive numbers on a closed wire
     if (I1==1&&I2==NE) {
       E1 = e2;
       E2 = e1;
@@ -133,14 +133,14 @@ static Standard_Boolean PlaneOfWire (const TopoDS_Wire& W, gp_Pln& P)
   BRepGProp::LinearProperties(W,GP);
   gp_Pnt Bary = GP.CentreOfMass();
 
-// blindage pour les cas particuliers : 1 seule edge cercle ou ellipse
-// sur un wire ferme !
+// shielding for particular cases : only one edge circle or ellipse
+// on a closed wire !
   Standard_Integer nbEdges = 0;
   BRepTools_WireExplorer anExp;
   anExp.Init(W);
   Standard_Boolean wClosed = W.Closed();
   if (!wClosed) {
-    // on regarde quand meme si les vertex sont les memes.
+    // it is checked if the vertices are the same.
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(W,V1,V2);
     if ( V1.IsSame(V2)) wClosed = Standard_True;
@@ -176,7 +176,7 @@ static Standard_Boolean PlaneOfWire (const TopoDS_Wire& W, gp_Pln& P)
     P.SetLocation(Bary);
   }
   else {
-    // wire non plan !
+    // wire not plane !
     GProp_PrincipalProps Pp  = GP.PrincipalProperties();
     gp_Vec Vec;
     Standard_Real R1, R2, R3,Tol = Precision::Confusion();
@@ -291,11 +291,11 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
   Vbid.Nullify();
 
   if (SeqOrder) {
-    // de first vers last
+    // from first to last
     m0 = first;
     V0 = Vf;
     for (j=1; j<=ndec; j++) {
-      // morceau d'edge  
+      // piece of edge  
       m1 = (CutValues.Value(j)-t0)*(last-first)/(t1-t0)+first;
       TopoDS_Edge CutE = BRepLib_MakeEdge(C,V0,Vbid,m0,m1);
       CutE.Orientation(CurrentOrient);
@@ -303,7 +303,7 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
       m0 = m1;
       V0 = TopExp::LastVertex(CutE);
       if (j==ndec) {
-	// dernier morceau
+	// last piece
 	TopoDS_Edge LastE = BRepLib_MakeEdge(C,V0,Vl,m0,last);
 	LastE.Orientation(CurrentOrient);
 	S.Append(LastE);
@@ -311,11 +311,11 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
     }
   }
   else {
-    // de last vers first
+    // from last to first
     m1 = last;
     V1 = Vl;
     for (j=ndec; j>=1; j--) {
-      // morceau d'edge  
+      // piece of edge  
       m0 = (CutValues.Value(j)-t0)*(last-first)/(t1-t0)+first;
       TopoDS_Edge CutE = BRepLib_MakeEdge(C,Vbid,V1,m0,m1);
       CutE.Orientation(CurrentOrient);
@@ -323,7 +323,7 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
       m1 = m0;
       V1 = TopExp::FirstVertex(CutE);
       if (j==1) {
-	// dernier morceau
+	// last piece
 	TopoDS_Edge LastE = BRepLib_MakeEdge(C,Vf,V1,first,m1);
 	LastE.Orientation(CurrentOrient);
 	S.Append(LastE);
@@ -401,18 +401,17 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 
   BRepTools_WireExplorer anExp;
 
-  // construction de l'edge d'intersection
+  // construction of the edge of intersection
   Standard_Boolean NewVertex = Standard_False;
   gp_Lin droite(P1,gp_Dir(gp_Vec(P1,P2)));
-  // ATTENTION : en toute rigueur, il faudrait construire une demi-droite
-  //             mais il y a un bug dans BRepExtrema_DistShapeShape
-  //             on se contente de 100 * la distance entre P1 et P2
-  //             en esperant que ce soit suffisant jusqu'a ce que le bug
-  //             soit corrige
+  // ATTENTION : it is required to construct a half-straight
+  //             but there is a bug in BRepExtrema_DistShapeShape
+  //             it is enough to take 100 * distance between P1 and P2
+  //             hoping that it is enough until the bug is corrected
   //  Standard_Real dernierparam = Precision::Infinite();
-  // ATTENTION : le retour !!
-  //             100 c'est mieux que 10 mais quelquefois c'est trop !
-  //             finalement, rien ne vaut une bonne boite d'encombrement
+  // ATTENTION : return !!
+  //             100 is better than 10 but it is too much !
+  //             finally, nothing is better than a blocking box
   //  Standard_Real dernierparam = 100 * P1.Distance(P2);
   Bnd_Box B;
   BRepBndLib::Add(W,B);
@@ -424,10 +423,10 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
   BRepLib_MakeEdge ME(droite,0.,dernierparam);
   TopoDS_Edge ECur = BRepLib_MakeEdge(droite,0.,P1.Distance(P2));
 
-  // calcul de l'intersection par BRepExtrema (point de distance mini)
+  // calculate the intersection by BRepExtrema (point of min distance)
   BRepExtrema_DistShapeShape DSS(ME.Edge(),W);
   if (DSS.IsDone()) {
-    // on choisit la solution la plus proche de P2
+    // choose the solution closest to P2
     Standard_Integer isol = 1;
     Standard_Real dss = P2.Distance(DSS.PointOnShape2(isol));
     for (Standard_Integer iss=2; iss<=DSS.NbSolution(); iss++) {
@@ -440,7 +439,7 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
     gp_Pnt Psol = 
 #endif
       DSS.PointOnShape2(isol);
-    // la solution est-elle un nouveau vertex ?
+    // is the solution a new vertex ?
     NewVertex = (DSS.SupportTypeShape2(isol) != BRepExtrema_IsVertex);
     if (NewVertex) {
       TopoDS_Shape aLocalShape = DSS.SupportOnShape2(isol);
@@ -459,7 +458,7 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 	NewVertex = Standard_False;
 	Vsol = TopExp::LastVertex(E);
       }
-      // verif
+      // check
       if (!NewVertex) {
 	TopoDS_Vertex VRoot;
 	if (SearchRoot(Vsol,Map,VRoot)) NewVertex = Standard_True;
@@ -471,7 +470,7 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 //      Vsol = TopoDS::Vertex(DSS.SupportOnShape2(isol));
     }
 
-    // il faut decouper l'edge
+    // it is required to cut the edge
     if (NewVertex) {
       TopoDS_Shape aLocalShape = DSS.SupportOnShape2(isol);
       TopoDS_Edge E = TopoDS::Edge(aLocalShape);
@@ -697,9 +696,9 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
   // compute origin and orientation on wires to avoid twisted results
   // and update wires to have same number of edges
 
-  // determination de report:
-  // si le nombre d'elements est identique  et si les wires ont des discontinuites
-  // en tangence, on n'effectue pas le report par abscisse curviligne, ni
+  // determination of report:
+  // if the number of elements is the same and if the wires have discontinuities
+  // by tangency, the report is not carried out by curvilinear abscissa
   Standard_Integer nbSects = myWork.Length(), i;
   BRepTools_WireExplorer anExp;
   Standard_Integer nbmax=0, nbmin=0;
@@ -720,12 +719,12 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
     if (nbmax<nbEdges(i)) nbmax = nbEdges(i);
     if (nbmin>nbEdges(i)) nbmin = nbEdges(i);
   } 
-  // si on n'a pas le meme nombre d'elements ou si tous les wires sont au moins
-  // C1, on effectue le report par abscisse curviligne des decoupes sinon, on se
-  // fait un report vertex / Vertex
+  // if the number of elements is not the same or if all wires are at least
+  // C1, the report is carried out by curvilinear abscissa of cuts, otherwise 
+  // a report vertex / Vertex is done
   report = (nbmax != nbmin || contS >= GeomAbs_C1 );
   
-  // initialisation de la map
+  // initialization of the map
   Standard_Integer nbE = 0;
   TopTools_ListOfShape Empty;
   for (i=1; i<=nbSects; i++) {
@@ -738,16 +737,16 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
     }
   } 
   
-  // sections ouvertes / sections fermees
-  // initialisation de myDegen1, myDegen2
+  // open/closed sections
+  // initialisation of myDegen1, myDegen2
   Standard_Integer ideb=1, ifin=myWork.Length();
-  // on regarde si le premier wire est ponctuel
+  // check if the first wire is punctual
   myDegen1 = Standard_True;
   for(anExp.Init(TopoDS::Wire(myWork(ideb))); anExp.More(); anExp.Next()) {
     myDegen1 = myDegen1 && (BRep_Tool::Degenerated(anExp.Current()));
   }
   if (myDegen1) ideb++;
-  // on regarde si le dernier wire est ponctuel
+  // check if the last wire is punctual
   myDegen2 = Standard_True;
   for(anExp.Init(TopoDS::Wire(myWork(ifin))); anExp.More(); anExp.Next()) {
     myDegen2 = myDegen2 && (BRep_Tool::Degenerated(anExp.Current()));
@@ -758,7 +757,7 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
   for (i=ideb; i<=ifin; i++) {
     wClosed = myWork(i).Closed();
     if (!wClosed) {
-      // on regarde quand meme si les vertex sont les memes.
+      // check if the vertices are the same.
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(TopoDS::Wire(myWork(i)),V1,V2);
       if ( V1.IsSame(V2)) wClosed = Standard_True;
@@ -768,20 +767,20 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
   }
   
   if (allClosed) {
-    // Toutes les sections sont fermees 
+    // All sections are closed 
     if (report) {
       // same number of elements  
       SameNumberByPolarMethod(WithRotation);
     }
     else {
-      // origine
+      // origin
       ComputeOrigin(Standard_False);
     }
     myIsDone = Standard_True;
   }
   else if (allOpen) {
-    // Toutes les sections sont ouvertes
-    // origine
+    // All sections are open
+    // origin
     SearchOrigin();
     // same number of elements
     if (report) {
@@ -790,8 +789,8 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
     myIsDone = Standard_True;
   }
   else {
-    // Il y a des sections ouvertes et des sections fermees :
-    // on ne traite pas
+    // There are open and closed sections :
+    // not processed
     Standard_DomainError::Raise("Sections must be all closed or all open");
   }
   
@@ -878,7 +877,7 @@ void BRepFill_CompatibleWires::
     }
   }
   
-  // construction des tableaux de plans des wires 
+  // construction of tables of planes of wires 
   gp_Pln P;
   Handle(TColgp_HArray1OfPnt) Pos
     = new (TColgp_HArray1OfPnt) (1,NbSects);
@@ -902,47 +901,47 @@ void BRepFill_CompatibleWires::
     Axe->SetValue(NbSects,Axe->Value(ifin));
   }
   
-  // construction de RMap, map des reports du wire i vers le wire i-1
+  // construction of RMap, map of reports of wire i to wire i-1
   TopTools_DataMapOfShapeListOfShape RMap;
   RMap.Clear();
   
-  // boucle sur i
+  // loop on i
   for (i=ifin; i>ideb; i--) {
     
     const TopoDS_Wire& wire1 = TopoDS::Wire(myWork(i));
     
-    // sequence des vertex du premier wire
+    // sequence of vertices of the first wire
     SeqOfVertices(wire1,SeqV);
     if (SeqV.Length()>NbMaxV) 
       Standard_NoSuchObject::Raise("BRepFill::SameNumberByPolarMethod failed");
     
-    // extremite du premier wire
+    // extremity of the first wire
     V1 = TopoDS::Vertex(SeqV.Value(1));	
-    // wire precedent
+    // previous wire 
 #ifdef DEB
     const TopoDS_Wire& wire2 = 
 #endif
       TopoDS::Wire(myWork(i-1));
-    // boucle sur les vertex de wire1
+    // loop on vertices of wire1
     for (ii=1;ii<=SeqV.Length();ii++) {
       
       TopoDS_Vertex Vi = TopoDS::Vertex(SeqV.Value(ii));
       
-      // init de RMap pour Vi
+      // init of RMap for Vi
       TopTools_ListOfShape Init;
       Init.Clear();
       RMap.Bind(Vi,Init);
       
-      // il faut chercher l'intersection Vi - wire2
+      // it is required to find intersection Vi - wire2
       gp_Pnt Pi = BRep_Tool::Pnt(Vi);
       
-      // on ramene Pi dans le plan courant
+      // return Pi in the current plane
       gp_Pnt Pnew;
       Transform(WithRotation,Pi,
 		Pos->Value(i),Axe->Value(i), 
 		Pos->Value(i-1),Axe->Value(i-1),Pnew);
       
-      // calcul de l'intersection
+      // calculate the intersection
       TopoDS_Shape Support;
       Standard_Boolean NewVertex;
       TopoDS_Vertex Vsol;
@@ -956,10 +955,10 @@ void BRepFill_CompatibleWires::
 	RMap(Vi).Append(Vsol);
       }
       
-    } // boucle sur ii
-  }   // boucle sur i
+    } // loop on  ii
+  }   // loop on  i
   
-  // initialisation de MapVLV, map des correspondances vertex - liste de vertex
+  // initialisation of MapVLV, map of correspondences vertex - list of vertices
   TopTools_DataMapOfShapeListOfShape MapVLV;
   SeqOfVertices(TopoDS::Wire(myWork(ideb)),SeqV);
   Standard_Integer SizeMap = SeqV.Length();
@@ -977,7 +976,7 @@ void BRepFill_CompatibleWires::
     while (tantque) {
       MapVLV(Vi).Append(V1);
       NbV++;
-      // test sur NbV necessaire pour les sections bouclantes
+      // test on NbV required for looping sections 
       if (V1.IsSame(Vi) || NbV >= myWork.Length()) {
 	tantque = Standard_False;
       }
@@ -988,23 +987,23 @@ void BRepFill_CompatibleWires::
     }
   }
   
-  // boucle sur i
+  // loop on i
   for (i=ideb; i<ifin; i++) {
     
     const TopoDS_Wire& wire1 = TopoDS::Wire(myWork(i));
     
-    // sequence des vertex du premier wire
+    // sequence of vertices of the first wire
     SeqOfVertices(wire1,SeqV);
     if ( SeqV.Length()>NbMaxV || SeqV.Length()>SizeMap ) 
       Standard_NoSuchObject::Raise("BRepFill::SameNumberByPolarMethod failed");
     
-    // extremite du premier wire
+    // extremity of the first wire
     V1 = TopoDS::Vertex(SeqV.Value(1));
 
-    // wire suivant
+    // next wire 
     const TopoDS_Wire& wire2 = TopoDS::Wire(myWork(i+1));
     
-    // boucle sur les vertex de wire1
+    // loop on vertices of wire1
     for (ii=1;ii<=SeqV.Length();ii++) {
       
       TopoDS_Vertex Vi = TopoDS::Vertex(SeqV.Value(ii));
@@ -1019,16 +1018,16 @@ void BRepFill_CompatibleWires::
       }
       
       if (intersect) {
-	// il faut chercher l'intersection Vi - wire2
+	// it is necessary to find intersection Vi - wire2
 	gp_Pnt Pi = BRep_Tool::Pnt(Vi);
 	
-	// on ramene Pi dans le plan courant
+	// return Pi in the current plane
 	gp_Pnt Pnew;
 	Transform(WithRotation,Pi,
 		  Pos->Value(i),Axe->Value(i), 
 		  Pos->Value(i+1),Axe->Value(i+1),Pnew);
 	
-	// calcul de l'intersection
+	// calculate the intersection
 	TopoDS_Shape Support;
 	Standard_Boolean NewVertex;
 	TopoDS_Vertex Vsol;
@@ -1043,13 +1042,13 @@ void BRepFill_CompatibleWires::
 	}
 	
       }
-    } // boucle sur ii
-  }   // boucle sur i
+    } // loop on ii
+  }   // loop on i
   
-  // mise en ordre des wires en suivant MapVLV
+  // regularize wires following MapVLV
   TopoDS_Wire wire = TopoDS::Wire(myWork(ideb));
 
-  // sauf le dernier si les sections sont bouclantes
+  // except for the last if the sections loop 
   Standard_Integer ibout = ifin;
   if (vClosed) ibout--;
 
@@ -1083,7 +1082,7 @@ void BRepFill_CompatibleWires::
 	TopoDS_Vertex VVF,VVL;
 	TopExp::Vertices(E,VVF,VVL,Standard_True);
 	
-	// tri des edges candidates
+	// parse candidate edges
 	Standard_Real scal1,scal2;
 	if ( (V1.IsSame(VVF)&&V2.IsSame(VVL)) || (V2.IsSame(VVF)&&V1.IsSame(VVL)) ) {
 	  Standard_Real U1 = BRep_Tool::Parameter(VVF,E);
@@ -1138,7 +1137,7 @@ void BRepFill_CompatibleWires::
 	TopoDS_Vertex VVF,VVL;
 	TopExp::Vertices(E,VVF,VVL,Standard_True);
 
-	// tri des edges candidates
+	// parse candidate edges
 	Standard_Real scal1,scal2;
 	U1 = BRep_Tool::Parameter(VVF,E);
 	U2 = BRep_Tool::Parameter(VVL,E);
@@ -1169,10 +1168,10 @@ void BRepFill_CompatibleWires::
     myWork(i) = MW.Wire();
   }
   
-  // sections bouclantes ?
+  // blocking sections?
   if (vClosed) myWork(myWork.Length()) = myWork(1);
 
-  // verification du nombre d'edges pour debug
+  // check the number of edges for debug
   Standard_Integer nbmax=0, nbmin=0;
   for ( i=ideb; i<=ifin; i++) {
     Standard_Integer nbEdges=0;
@@ -1200,7 +1199,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
   Standard_Integer ideb=1, ifin=myWork.Length();
   BRepTools_WireExplorer anExp;
 
-  // sections ponctuelles, sections bouclantes ?
+  // point sections, blocking  sections?
   if (myDegen1) ideb++;
   if (myDegen2) ifin--;
   Standard_Boolean vClosed = (!myDegen1) && (!myDegen2)
@@ -1220,29 +1219,29 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
   }
 
   if (nbmax>1) {
-    // plusieurs edges
+    // several edges
 
     if (report || nbmin<nbmax) {
-      // insertion des decoupes
+      // insertion of cuts
       Standard_Integer nbdec=(nbmax-1)*nbSects+1;
       Standard_Real tol = 0.01;
       TColStd_Array1OfReal dec(1,nbdec);
       dec.Init(0);
       dec(2)=1;
-      // calcul du tableau des decoupes
+      // calculate the table of cuts
       Standard_Integer j,k,l;
       for (i=1; i<=nbSects; i++) {
-	// wire courant
+	// current wire
 	const TopoDS_Wire& wire1 = TopoDS::Wire(myWork(i));
 	Standard_Integer nbE = 0;
 	for(anExp.Init(wire1); anExp.More(); anExp.Next()) {
 	  nbE++;
 	}
-	// longueur et ACR du wire 
+	// length and ACR of the wire 
 	TColStd_Array1OfReal ACR(0,nbE);
 	ACR.Init(0);
 	BRepFill::ComputeACR(wire1, ACR);
-	// insertion des ACR du wire dans le tableau des decoupes
+	// insertion of ACR of the wire in the table of cuts
 	for (j=1; j<ACR.Length()-1; j++) {
 	  k=1;
 	  while (dec(k)<ACR(j)) {
@@ -1258,7 +1257,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 	}
       }
       
-      // tableau effectif des decoupes
+      // table of cuts
       k=1;
       while (dec(k)<1) {
 	k++;
@@ -1270,7 +1269,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 	dec2(k) = dec(k);
       }
       
-      // insertion des decoupes dans chaque wire
+      // insertion of cuts in each wire
       for (i=1; i<=nbSects; i++) {
 	const TopoDS_Wire& oldwire = TopoDS::Wire(myWork(i));
 	TopoDS_Wire newwire = BRepFill::InsertACR(oldwire, dec2, tol);
@@ -1344,10 +1343,10 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
     }
   }
   
-  // sections bouclantes ?
+  // blocking sections ?
   if (vClosed) myWork(myWork.Length()) = myWork(1);
 
-  // verification du nombre d'edges pour debug
+  // check the number of edges for debug
   nbmax = 0;
   for (i=ideb; i<=ifin; i++) {
     nbEdges(i) = 0;
@@ -1381,7 +1380,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
   Standard_Integer NbSects = myWork.Length();
   Standard_Integer i, ideb=1,ifin=NbSects;
 
-  // sections ponctuelles, sections bouclantes
+  // point sections, blocking sections 
   if (myDegen1) ideb++;
   if (myDegen2) ifin--;
   Standard_Boolean vClosed = (!myDegen1) && (!myDegen2)
@@ -1391,7 +1390,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
   for (i=ideb; i<=ifin; i++) {
     wClosed = myWork(i).Closed();
     if (!wClosed) {
-      // on regarde quand meme si les vertex sont les memes.
+      // check if the vertices are the same.
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(TopoDS::Wire(myWork(i)),V1,V2);
       if ( V1.IsSame(V2)) wClosed = Standard_True;
@@ -1407,7 +1406,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
     Standard_NoSuchObject::Raise("BRepFill_CompatibleWires::ComputeOrigin : the wires must be closed");
 
 /*  
-  // Nombre max de decoupes possibles
+  // Max number of possible cuts
   Standard_Integer NbMaxV = 0;
   for (i=1; i<=NbSects; i++) {
     for(anExp.Init(TopoDS::Wire(myWork(i))); anExp.More(); anExp.Next()) {
@@ -1415,7 +1414,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
     }
   }
   
-  // construction des tableaux de plans des wires 
+  // construction of tables of planes of wires 
   gp_Pln P;  
   Handle(TColgp_HArray1OfPnt) Pos
     = new (TColgp_HArray1OfPnt) (1,NbSects);
@@ -1474,7 +1473,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
       Standard_Boolean forward;
       if (i == myWork.Length() && myDegen2)
 	{
-	  // derniere section ponctuelle
+	  // last point section
 	  jmin = 1;
 	  forward = Standard_True;
 	}
@@ -1915,7 +1914,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
   }
 */
   
-  // sections bouclantes ?
+  // blocking sections ?
   if (vClosed) myWork(myWork.Length()) = myWork(1);
 }
 
@@ -1987,7 +1986,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
 
     if (isline0 || isline) {
       
-      // cas particulier des segments de droite
+      // particular case of straight segments 
       gp_Pnt P1 = BRep_Tool::Pnt(Vdeb),
              P2 = BRep_Tool::Pnt(Vfin);
       Standard_Real dist1, dist2;
@@ -2000,7 +1999,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
       //OCC86
       gp_Pnt P1 = BRep_Tool::Pnt(Vdeb), P1o = Pdeb,
              P2 = BRep_Tool::Pnt(Vfin), P2o = Pfin;
-/*    // on ramene Pdeb dans le plan courant
+/*    // return Pdeb in the current plane
       gp_Pnt Pnew = Pdeb.Translated (P0.Location(),P.Location());
       gp_Ax1 A0 = P0.Axis();
       gp_Ax1 A1 = P.Axis();
@@ -2041,7 +2040,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
       parcours = (AStraight < PI/2.0? Standard_True: Standard_False);
     }
     
-    // reconstruction du wire
+    // reconstruction of the wire
     Standard_Integer rang;
     if (parcours) {
       for (rang=1;rang<=nbEdges;rang++) {
@@ -2058,11 +2057,11 @@ void BRepFill_CompatibleWires::SearchOrigin()
       }
     }
 
-    // orientation du wire
+    // orientation of the wire
     newwire.Oriented(TopAbs_FORWARD);
     myWork(i) = newwire;
 
-    // on passe au wire suivant
+    // passe to the next wire 
     if (parcours) {
       Pdeb = BRep_Tool::Pnt(Vdeb);
       Pfin = BRep_Tool::Pnt(Vfin);
@@ -2077,6 +2076,6 @@ void BRepFill_CompatibleWires::SearchOrigin()
     E0 = E;
   }
   
-  // sections bouclantes ?
+  // blocking sections ?
   if (vClosed) myWork(myWork.Length()) = myWork(1);
 }
