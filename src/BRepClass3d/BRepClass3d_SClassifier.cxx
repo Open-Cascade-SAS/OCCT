@@ -49,7 +49,7 @@ BRepClass3d_SClassifier::BRepClass3d_SClassifier(BRepClass3d_SolidExplorer& S,
 						 const gp_Pnt&  P,
 						 const Standard_Real Tol) { 
   if(S.Reject(P)) { 
-    myState=3; //-- in ds le cas solide sans face 
+    myState=3; //-- in ds solid case without face 
   }
   else { 
     Perform(S,P,Tol);
@@ -63,15 +63,15 @@ BRepClass3d_SClassifier::BRepClass3d_SClassifier(BRepClass3d_SolidExplorer& S,
 //=======================================================================
 void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aSE,
 						   const Standard_Real /*Tol*/) {
-  //-- Idee : On prend un point A dans la face1 et un point B dans la face B 
-  //-- ( si on a une seule face , on prend 2 points dans la meme face.)
+  //-- Idea : Take point A in face1 and point B in face B 
+  //-- (if there is only one face, take 2 points in the same face.)
   //-- 
-  //-- On intersecte la droite AB avec le solide et on s interesse a la transition du 
-  //-- premier point. Si le solide a une seule face et que la droite AB ne le coupe pas 
-  //-- on ne peut pas decider.
+  //-- Intersect straight line AB with the solid and produce transition of the 
+  //-- first point. If the solid has only one face and the straight line AB does not cut it 
+  //-- it is not possible to decide.
 
   if(aSE.Reject(gp_Pnt(0,0,0))) { 
-    myState=3; //-- in ds le cas solide sans face 
+    myState=3; //-- in ds solid case without face 
     return;
   }
   //
@@ -232,7 +232,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 
 
   if(SolidExplorer.Reject(P)) { 
-    myState=3; //-- in ds le cas solide sans face 
+    myState=3; //-- in ds solid case without face 
     return;
   }
 
@@ -246,10 +246,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     //-- and the shape.
 
     //-- --------------------------------------------------------------------------------
-    //-- ON calcule l intersection avec la face la plus proche au sens des boites 
-    //-- englobantes en priorite de facon a avoir un parmin le plus faible possible. 
-    //-- optimisation pour assurer le plus de rejections possibles avec les autres 
-    //-- faces. 
+    //-- Calculate intersection with the face closest to the direction of bounding boxes 
+    //-- by priority so that to have the smallest possible parmin. 
+    //-- optimization to produce as much as possible rejections with other faces. 
     Standard_Integer iFlag;
     //
 
@@ -383,7 +382,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 		      IntCurveSurface_TransitionOnCurve tran = Intersector3d.Transition(i);
 		      if (tran == IntCurveSurface_Tangent) {
 #ifdef DEB
-			cout<<"*Probleme ds BRepClass3d_SClassifier.cxx"<<endl;
+			cout<<"*Problem ds BRepClass3d_SClassifier.cxx"<<endl;
 #endif
 			continue; // ignore this point
 		      }
