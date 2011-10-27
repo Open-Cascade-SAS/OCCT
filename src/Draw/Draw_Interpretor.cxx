@@ -150,14 +150,14 @@ static void CommandDelete (ClientData clientData)
 Draw_Interpretor::Draw_Interpretor() :
   isAllocated(Standard_False)
 {
-// On ne cree pas tout de suite l'interpreteur tcl car s'il est detenu
-// par une variable globale il est cree et ecrase avant le main().
+// The tcl interpreter is not created immediately as it is kept 
+// by a global variable and created and deleted before the main().
   myInterp  = NULL;
 }
 
 //=======================================================================
 //function : Init
-//purpose  : Il faut appeler cette fonction
+//purpose  : It is necessary to call this function
 //=======================================================================
 
 void Draw_Interpretor::Init()

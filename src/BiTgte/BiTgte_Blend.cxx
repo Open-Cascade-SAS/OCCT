@@ -7,10 +7,10 @@
 
 #include <BiTgte_Blend.ixx>
 
-// include - de tous les hxx,
-//         - de toutes les petites fonctions statiques.
+// include - all hxx,
+//         - all small static functions.
 
-//======================== DEBUT DES FUNCTIONS STATIQUES ============
+//======================== START STATIC FUNCTIONS ============
 #include <BiTgte_DataMapOfShapeBox.hxx>
 #include <BiTgte_CurveOnEdge.hxx>
 
@@ -84,7 +84,7 @@
 #include <TopExp.hxx>
 
 #include <OSD_Chronometer.hxx>
-// variables pour les performances 
+// variables for performance 
 Standard_Real t_mkcurve;
 //Standard_IMPORT extern void ChFi3d_InitChron(OSD_Chronometer& ch);
 Standard_EXPORT void ChFi3d_InitChron(OSD_Chronometer& ch);
@@ -107,12 +107,12 @@ static Standard_Boolean IsOnRestriction(const TopoDS_Vertex& V,
 					const TopoDS_Face&   F,
 					      TopoDS_Edge&   E) 
 {
-  // on cherche si le Vertex V de CurE est sur une restriction de F.
-  // si oui, on stocke dans E cette restriction.
+  // find if Vertex V of CurE is on a restriction of F.
+  // if yes, store this restriction in E.
 
   // dub - 03 01 97
-  // Methode un peu brutale : on peut vraisemblablement optimiser par
-  // un appel direct a la SD des intersections -> Voir LBR
+  // Method somewhat brutal : possible to really optimize by a
+  // direct call the SD of intersections -> See LBR
 
   Standard_Real f,l;
   Handle(Geom2d_Curve) CurC = BRep_Tool::CurveOnSurface(CurE,F,f,l);
@@ -121,8 +121,8 @@ static Standard_Boolean IsOnRestriction(const TopoDS_Vertex& V,
 
   Geom2dAPI_ProjectPointOnCurve Proj;
   
-  // On gonfle la tolerance : il vaut mieux construire trop de tuyaux
-  // que de rater des intersections.
+  // The tolerance is exaggerated : it is better to construct too many
+  // tubes than to miss intersections.
   // Standard_Real Tol = 100 * BRep_Tool::Tolerance(V);
   Standard_Real Tol = BRep_Tool::Tolerance(V);
   TopExp_Explorer exp(F,TopAbs_EDGE);
@@ -150,7 +150,7 @@ static void Add(const TopoDS_Edge&         E,
 		const BRepOffset_Offset&   OF,
 		const BRepOffset_Analyse&  Analyse,
 		const Standard_Boolean     WarningSurBordLibre)
-// Si WarningSurBordLibre = TRUE, pas de propagation si l'arete est verte
+// If WarningSurBordLibre = TRUE, no propagation if the edge is open.
 {
   TopAbs_ShapeEnum Type = S.ShapeType();
 
@@ -163,9 +163,9 @@ static void Add(const TopoDS_Edge&         E,
 //      const TopoDS_Edge& IE   = TopoDS::Edge(OF.Generated(OriE));
       if ( E.IsEqual(IE)) {
 	if (WarningSurBordLibre) {
-	  // On s'assure alors que ce n'est pas un bord libre.
+	  // It is checked that the border is not free.
 	  const TopTools_ListOfShape& L = Analyse.Ancestors(OriE);
-	  if (L.Extent() == 1) break; // On ne fait rien.
+	  if (L.Extent() == 1) break; // Nothing is done.
 	}
 	Map.Add(exp.Current());
 	break;
@@ -223,14 +223,14 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 
   Standard_Boolean IsComputed = Standard_False;
 
-  // Seach only isos on analytiques surfaces.
+  // Seach only isos on analytical surfaces.
   Geom2dAdaptor_Curve C(Curve);
   GeomAdaptor_Surface S(Surf);
   GeomAbs_CurveType   CTy = C.GetType();
   GeomAbs_SurfaceType STy = S.GetType();
   BRep_Builder TheBuilder;
 
-  if ( STy != GeomAbs_Plane) { // if plane buildcurve3d gere KPart
+  if ( STy != GeomAbs_Plane) { // if plane buildcurve3d manage KPart
     if ( CTy == GeomAbs_Line) {
       gp_Dir2d D = C.Line().Direction();
       if ( D.IsParallel(gp::DX2d(),Precision::Angular())) { // Iso V.
@@ -311,15 +311,15 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  gp_Sphere Sph  = S.Sphere();
 	  gp_Pnt2d  P    = C.Line().Location();
 	  gp_Ax3    Axis = Sph.Position();
-	  // calculde l'iso 0.
+	  // calculate iso 0.
 	  gp_Circ   Ci   = ElSLib::SphereUIso(Axis, Sph.Radius(),0.);
 
-	  // mise a sameparameter (rotation du cercle - decalage du Y)
+	  // set to sameparameter (rotation of the circle - offset from Y)
 	  gp_Dir DRev = Axis.XDirection().Crossed(Axis. Direction());
 	  gp_Ax1 AxeRev(Axis.Location(),DRev);
 	  Ci.Rotate(AxeRev, P.Y());
 
-	  // transformation en iso U ( = P.X())
+	  // transformation by iso U ( = P.X())
 	  DRev = Axis.XDirection().Crossed(Axis.YDirection());
 	  AxeRev = gp_Ax1(Axis.Location(), DRev);
 	  Ci.Rotate(AxeRev, P.X());
@@ -365,7 +365,7 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
       }
     }
   }
-  else { // Cas Plan
+  else { // Case Plane
     Handle(Geom_Curve) C3d = GeomAPI::To3d(Curve,S.Plane());
     TheBuilder.UpdateEdge(Edge, C3d, Loc, Tol);
     IsComputed = Standard_True;
@@ -413,7 +413,7 @@ Handle(Geom_Curve) MakeCurve (const BiTgte_CurveOnEdge& HC)
     C = new Geom_Circle(HC.Circle());
     C = new Geom_TrimmedCurve(C,HC.FirstParameter(),HC.LastParameter());
   }
-  else { // on fait l'approx
+  else { // the approximation is done
     MakeCurve_Function F(HC);
     Standard_Integer Deg1, Deg2;
     Deg1 = Deg2 = 8;
@@ -421,12 +421,12 @@ Handle(Geom_Curve) MakeCurve (const BiTgte_CurveOnEdge& HC)
     Approx_FitAndDivide Fit(F,Deg1,Deg2,Tol,Tol,Standard_True);
     Standard_Integer i;
     Standard_Integer NbCurves = Fit.NbMultiCurves();
-    // on essaie de rendre la courbe au moins C1
+    // it is attempted to make the curve at least C1
     Convert_CompBezierCurvesToBSplineCurve Conv;
     
     for (i = 1; i <= NbCurves; i++) {
-      AppParCurves_MultiCurve MC = Fit.Value( i);    //Charge la Ieme Curve
-      TColgp_Array1OfPnt Poles( 1, MC.Degree() + 1); //Recupere les poles
+      AppParCurves_MultiCurve MC = Fit.Value( i);    //Load the Ith Curve
+      TColgp_Array1OfPnt Poles( 1, MC.Degree() + 1); //Return poles
       MC.Curve(1, Poles);
       
       Conv.AddCurve(Poles);
@@ -463,7 +463,7 @@ Handle(Geom_Curve) MakeCurve (const BiTgte_CurveOnEdge& HC)
 
 //=======================================================================
 //function : Touched
-//purpose  : On ne donne que les faces connexes aux bouchons
+//purpose  : Only the faces connected with caps are given
 //=======================================================================
 
 static void Touched(const BRepOffset_Analyse&  Analyse, 
@@ -471,8 +471,7 @@ static void Touched(const BRepOffset_Analyse&  Analyse,
 		    const TopoDS_Shape&        Shape,
 		    TopTools_MapOfShape& TouchedByCork)
 {
-  // pour l'instant on ne fait rien !!
-  // Le traitement merde  !!
+  // currently nothing is done !!
   if ( Standard_True) {
     return;
   }
@@ -509,16 +508,16 @@ static TopoDS_Vertex FindVertex(const gp_Pnt&              P,
       TopExp::Vertices(E,VV[0],VV[1]);
 
       for (Standard_Integer i = 0; i < 2 ; i++) {
-	// si OK dans la Tolerance du Vertex
+	// if OK la Tolerance du Vertex
 	Tol2 = BRep_Tool::Tolerance(VV[i]);
 	Tol2 *= Tol2;
 	gp_Pnt P1 = BRep_Tool::Pnt(VV[i]);
 	Dist = P.SquareDistance(P1);
 	if ( Dist <= Tol2) return VV[i];
-	// sinon dans la tolerance demandee.
+	// otherwise with the required tolerance.
 	if (TolCarre > Tol2) {
 	  if ( Dist <= TolCarre) {
-	    // il faut alors updater la tolerance du Vertex.
+	    // so it is necessary to update the tolerance of Vertex.
 	    B.UpdateVertex(VV[i],Tol);
 	    return VV[i];
 	  }
@@ -630,9 +629,8 @@ static TopoDS_Edge FindCreatedEdge
       Find = Standard_True;
     }
     else {
-      // On cherche le partage des vertex dans le cas de 3 edges 
-      // tgts consecutifs dont le deuxieme est un edge qui degenere 
-      // le tuyau.
+      // Find the sharing of vertices in case of tangent consecutive 3 edges 
+      // the second of which is the edge that degenerates the tube.
       TopLoc_Location CLoc;
       Standard_Real ff,ll;
       Handle(Geom_Curve) CET = 
@@ -679,7 +677,7 @@ static TopoDS_Edge FindCreatedEdge
 
 //=======================================================================
 //function : Bubble
-//purpose  : Ordonne la sequence de vertex en parametre croissant. 
+//purpose  : Sets in increasing order the sequence of vertices. 
 //=======================================================================
 
 static void Bubble(const TopoDS_Edge&        E,
@@ -733,15 +731,15 @@ static void CutEdge (const TopoDS_Edge&          E,
     SV.Append(it.Value());
   }
   //--------------------------------
-  // Tri des vertex sur l edge.
+  // Parse vertices on the edge.
   //--------------------------------
   Bubble (WE,SV);
 
   Standard_Integer NbVer = SV.Length();
   //----------------------------------------------------------------
-  // Construction des nouvelles edges.
-  // Remarque : les vertex extremites de l edges ne sont pas 
-  //            forcement dans la liste des vertex
+  // Construction of new edges.
+  // The vertices at the extremities of edges are not 
+  // necessarily in the list of vertices
   //----------------------------------------------------------------
   if (SV.IsEmpty()) {
     NE.Append(E);
@@ -759,9 +757,9 @@ static void CutEdge (const TopoDS_Edge&          E,
     }
   }
   //----------------------------------------------------
-  // Traitement des edges fermes
-  // Si un vertex d intersection est sur le vertex
-  // commun il doit apparaitre eb debut et en fin de SV.
+  // Processing of closed edges 
+  // If a vertex of intersection is on the common vertex,
+  // it should appear at the beginning and the end of SV.
   //----------------------------------------------------
   TopoDS_Vertex VCEI;
 
@@ -781,7 +779,7 @@ static void CutEdge (const TopoDS_Edge&          E,
       continue;
     }
     //-------------------------------------------
-    // Copie de l edge et restriction par V1 V2.
+    // Copy the edge and restriction by V1 V2.
     //-------------------------------------------
     TopoDS_Shape aLocalShape =WE.EmptyCopied();
     TopoDS_Edge NewEdge = TopoDS::Edge(aLocalShape);
@@ -810,7 +808,7 @@ static void CutEdge (const TopoDS_Edge&          E,
     V1 = V2;
   }
 }
-//======================== FIN DES FUNCTIONS STATIQUES ============
+//======================== END OF STATIC FUNCTIONS ============
 
 
 
@@ -889,7 +887,7 @@ void BiTgte_Blend::SetStoppingFace(const TopoDS_Face& Face)
 {
   myStopFaces.Add(Face);    
   //-------------
-  // MAJ SD. -> Pour le debouclage, on met les faces d'arrets
+  // MAJ SD. -> To end loop, set faces of edges
   //-------------
 //  myInitOffsetFace.SetRoot(Face);    
 //  myInitOffsetFace.Bind   (Face,Face);
@@ -929,8 +927,8 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
 {
   myBuildShape = BuildShape;
 
-  // On essaie la couture pour eviter des tuyaux sur bords libres 
-  // qui n en sont pas vraiment.
+  // Try cutting to avoid tubes on free borders
+  // that are not actually free.
   Handle(BRepBuilderAPI_Sewing) Sew = new BRepBuilderAPI_Sewing(myTol);
   BRepLib::BuildCurves3d(myShape);
   TopExp_Explorer expf(myShape,TopAbs_FACE);
@@ -939,7 +937,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   TopoDS_Shape SewedShape = Sew->SewedShape();
   if ( SewedShape.IsNull()) Standard_Failure::Raise("Sewing aux fraises");
 
-  // Le sewing a t il modifie des orientations.
+  // Check if the sewing modified the orientation.
   expf.Init(myShape,TopAbs_FACE);
   TopoDS_Face FaceRef = TopoDS::Face(expf.Current());
   TopAbs_Orientation OriRef  = FaceRef.Orientation();
@@ -953,8 +951,8 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
     }
   } 
   
-  // On fait le SameParameter cas Sew ne le fait pas (Detecte que les edges
-  // ne sont pas sameparameter mais ne fait rien.)
+  // Make SameParameter if Sew does not do it (Detect that edges
+  // are not sameparameter but it does nothing.)
   expf.Init(SewedShape, TopAbs_EDGE);
   for (; expf.More(); expf.Next()) {
     const TopoDS_Edge& sec = TopoDS::Edge(expf.Current());
@@ -964,7 +962,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   TopExp::MapShapesAndAncestors
     (SewedShape,TopAbs_EDGE,TopAbs_FACE,myAncestors);
   
-  // Maj myFaces avec les faces du sewed shape.
+  // Extend myFaces with the faces of the sewed shape.
   expf.Init(myShape,TopAbs_FACE);
   for ( ; expf.More(); expf.Next()) {
     const TopoDS_Shape& F = expf.Current();
@@ -975,7 +973,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   }
   
   myShape = SewedShape;
-// fin Sewing pour faux bords libres.
+// end Sewing for false free borders.
 
 #if DEB
   OSD_Chronometer cl_total, ch;
@@ -986,7 +984,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
 #endif  
 
   // ----------------------------------------------------------------
-  // on met les faces avec la bonne orientation dans le shape initial
+  // place faces with the proper orientation in the initial shape
   // ----------------------------------------------------------------
   TopExp_Explorer exp(myShape,TopAbs_FACE);
   for ( ; exp.More(); exp.Next()) {
@@ -1002,7 +1000,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   }
 
   // ----------------------------------------------
-  // Calcul des lignes de centres et des surfaces
+  // Calculate lines of centers and of surfaces
   // ----------------------------------------------
 #if DEB
   ChFi3d_InitChron(ch);
@@ -1015,7 +1013,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
 #endif 
 
   // -----------------------------
-  // Calcul des Surfaces raccords 
+  // Calculate connection Surfaces
   // -----------------------------
 #if DEB
   ChFi3d_InitChron(ch);
@@ -1028,7 +1026,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
 #endif 
 
   // ----------------------------------
-  // Calcul du shape genere si demande
+  // Calculate the generated shape if required
   // ----------------------------------
 #if DEB
   ChFi3d_InitChron(ch);
@@ -1040,8 +1038,8 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   ChFi3d_ResultChron(ch, t_shape);
 #endif 
 
-  // Finalement on construit les courbes 3d des edges
-  // A VIRER des que le partage sera assure ( A Priori);
+  // Finally construct curves 3d from edges to be transfered
+  // since the partition is provided ( A Priori);
   BRepLib::BuildCurves3d(myResult, Precision::Confusion());
 
 #ifdef DEB
@@ -1220,7 +1218,7 @@ const TopoDS_Shape& BiTgte_Blend::SupportShape1(const Standard_Integer Index)
   const TopTools_ListOfShape& L = myAsDes->Ascendant(CurE);
     
   // --------------------------------------------------------------
-  // F1 et F2 = les 2 faces paralleles qui s'intersectent en CurE.
+  // F1 and F2 = 2 parallel faces intersecting at CurE.
   // --------------------------------------------------------------
   const TopoDS_Face& F1 = TopoDS::Face(L.First()); 
   const TopoDS_Shape& Or1 = myInitOffsetFace.ImageFrom(F1);
@@ -1241,7 +1239,7 @@ const TopoDS_Shape& BiTgte_Blend::SupportShape2(const Standard_Integer Index)
   const TopTools_ListOfShape& L = myAsDes->Ascendant(CurE);
     
   // --------------------------------------------------------------
-  // F1 et F2 = les 2 faces paralleles qui s'intersectent en CurE.
+  // F1 and F2 = 2 parallel faces intersecting at CurE.
   // --------------------------------------------------------------
   const TopoDS_Face& F2 = TopoDS::Face(L.Last()); 
   const TopoDS_Shape& Or2 = myInitOffsetFace.ImageFrom(F2);
@@ -1260,8 +1258,8 @@ Handle(Geom_Curve) BiTgte_Blend::CurveOnShape1
   const TopoDS_Edge& CurE = TopoDS::Edge(myCenters(Index));
   const TopoDS_Shape& F = myMapSF(CurE).Face();
 
-  // methode un peu brutale basee UNIQUEMENT sur la construction du conge:
-  // le premier edge du tuyau est justement celui sur Shape1.
+  // somewhat brutal method based ONLY on the construction of the fillet:
+  // the first edge of the tube is exactly the edge on Shape1.
 
   TopExp_Explorer exp(F,TopAbs_EDGE);
   const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
@@ -1286,8 +1284,8 @@ Handle(Geom_Curve) BiTgte_Blend::CurveOnShape2
   const TopoDS_Edge& CurE = TopoDS::Edge(myCenters(Index));
   const TopoDS_Shape& F = myMapSF(CurE).Face();
 
-  // methode un peu brutale basee UNIQUEMENT sur la construction du conge:
-  // le second edge du tuyau est justement celui sur Shape2.
+  // somewhat brutal method based ONLY on the construction of the fillet:
+  // the first edge of the tube is exactly the edge on Shape2.
 
   TopExp_Explorer exp(F,TopAbs_EDGE);
   exp.Next();
@@ -1369,10 +1367,10 @@ Standard_Integer BiTgte_Blend::NbBranches()
   
   Standard_Integer NbFaces = myCenters.Extent();
 
-  // pour les cons qui veulent tout savoir avant le Calcul !!
+
   if (NbFaces == 0) return 0;
 
-  // pour les autres !!
+
   Standard_Integer i;
   for ( i = 1; i <= NbFaces; i++) {
     const TopoDS_Shape& CenterLine = myCenters(i);
@@ -1382,10 +1380,9 @@ Standard_Integer BiTgte_Blend::NbBranches()
   const TopoDS_Shape Shells = Glue.Shells();
 
 
-  // On reordonne la Map myCenters.
-  // La methode est brutale et vraisemblablement en n24, 
-  // on fera mieux plus tard.
-  // Cela dit, je suis d'accord, ce n'est vraiment pas elegant !!!!!!!!
+  // Reorder Map myCenters.
+  // The method is brutal and unpolished, 
+  // it is possible to refine it.
   myNbBranches = 0;
   TopTools_IndexedMapOfShape tmpMap;
 
@@ -1403,18 +1400,18 @@ Standard_Integer BiTgte_Blend::NbBranches()
 
   exp.Init(Shells,TopAbs_SHELL);
   for (; exp.More(); exp.Next()) {
-    // CurS = le Shell courant.
+    // CurS = the current Shell.
     const TopoDS_Shape CurS = exp.Current();
 
     TopExp_Explorer exp2(CurS, TopAbs_FACE);
     for (; exp2.More(); exp2.Next()) {
-      // CurF = La face courante du Shell courant.
+      // CurF = the current face of the current Shell.
       const TopoDS_Shape CurF = exp2.Current();
 
       for ( i = 1; i <= NbFaces; i++) {
 	const TopoDS_Shape& Center = myCenters(i);
 	const TopoDS_Shape& Rakk   = myMapSF(Center).Face();
-	// Rakk = la ieme face raccord generee
+	// Rakk = the ith generated connection face
 	if (CurF.IsEqual(Rakk)) {
 	  tmpMap.Add(Center);
 	  Count++;
@@ -1441,9 +1438,9 @@ void BiTgte_Blend::IndicesOfBranche
        Standard_Integer& From,
        Standard_Integer& To   ) const 
 {
-  // Attention au rangement dans myIndices:
-  // Si les branches sont  1-4 5-9 10-12, on range dans myIndices:
-  //                       0 4   9    12
+  // Attention to the ranking in myIndices:
+  // If the branches are  1-4 5-9 10-12, it is ranked in myIndices:
+  //                      0 4   9    12
   From = myIndices->Value(Index) + 1;
   To   = myIndices->Value(Index + 1);
 }
@@ -1457,19 +1454,19 @@ void BiTgte_Blend::IndicesOfBranche
 void BiTgte_Blend::ComputeCenters() 
 {
   // ------------
-  // Preanalyse.
+  // Preanalyze.
   // ------------
   Standard_Real TolAngle = 2*ASin(myTol/Abs(myRadius*0.5));
   myAnalyse.Perform(myShape,TolAngle);
 
   // ------------------------------------------
-  // calcul des faces touchees par les bouchons
+  // calculate faces touched by caps
   // ------------------------------------------
   TopTools_MapOfShape TouchedByCork;
   Touched(myAnalyse, myStopFaces, myShape, TouchedByCork);
 
   // -----------------------
-  // init de l'intersector
+  // init of the intersector
   // -----------------------
   TopAbs_State       Side = TopAbs_IN;
   if (myRadius < 0.) Side = TopAbs_OUT;
@@ -1480,11 +1477,11 @@ void BiTgte_Blend::ComputeCenters()
   TopTools_MapIteratorOfMapOfShape it;
 
   BRep_Builder B;
-  TopoDS_Compound Co; // juste pour savoir sur quels edges on fait les tuyaux
+  TopoDS_Compound Co; // to only know on which edges the tubes are made
   B.MakeCompound(Co);
 
   // ----------------------------------------
-  // Calcul Sections Face/Face + Propagation
+  // Calculate Sections Face/Face + Propagation
   // ----------------------------------------
   Standard_Boolean JenRajoute = Standard_True;
 
@@ -1498,7 +1495,7 @@ void BiTgte_Blend::ComputeCenters()
     while ( !Fini) {
 
       // -------------------------------------------------
-      // on met dans myFaces les Faces connexes a myEdges.
+      // locate in myFaces the Faces connected to myEdges.
       // -------------------------------------------------
       Fini = Standard_True;
       for (it.Initialize(myEdges); it.More(); it.Next()) {
@@ -1507,12 +1504,10 @@ void BiTgte_Blend::ComputeCenters()
 
 	const TopTools_ListOfShape& L = myAncestors.FindFromKey(E);
 	if ( L.Extent() == 1) {
-	  // Alors c'est un bord libre sur lequel la bille 
-	  // doit rouler.
+	  // So this is a free border onwhich the ball should roll.
 	  myFaces.Add(E);
 	  
-	  // on le mets dans myStopFaces pour ne pas propager sur 
-	  // le tuyau sur bord libre.
+	  // set in myStopFaces to not propagate the tube on free border.
 	  myStopFaces.Add(E);
 	}
 	else {
@@ -1526,7 +1521,7 @@ void BiTgte_Blend::ComputeCenters()
       myEdges.Clear();
       
       // --------------------------------------------
-      // Construction des Offsets a toutes les faces.
+      // Construction of Offsets of all faces.
       // --------------------------------------------
       for (it.Initialize(myFaces); it.More(); it.Next()) {
 	const TopoDS_Shape& AS = it.Key();
@@ -1545,12 +1540,12 @@ void BiTgte_Blend::ComputeCenters()
 	    OF1.Init(F,myRadius,EdgeTgt);
 	  }
 	}
-	else { // Alors c'est un edge Bord libre sur lequel la bille roule.
+	else { // So this is a Free Border edge on which the ball rolls.
 	  OF1.Init(TopoDS::Edge(AS),myRadius);
 	}
 
 	// ------------------------------------
-	// Maj de la map des created tangents
+	// Increment the map of created tangents
 	// ------------------------------------
 	TopTools_ListOfShape Let;
 	if ( AS.ShapeType() == TopAbs_FACE) { 
@@ -1584,14 +1579,14 @@ void BiTgte_Blend::ComputeCenters()
 	    }
 	  }
 	}
-	// fin MaJ map created tgt
+	// end of map created tangent
 
 	if (OF1.Status() == BRepOffset_Reversed ||
 	    OF1.Status() == BRepOffset_Degenerated ) continue;
 
 	const TopoDS_Face& F1 = OF1.Face();
 
-	// maj S D
+	// increment S D
 	myInitOffsetFace.SetRoot(AS);
 	myInitOffsetFace.Bind(AS,F1);
 
@@ -1600,7 +1595,7 @@ void BiTgte_Blend::ComputeCenters()
 	MapSBox.Bind(F1,Box1);
 
 	// ---------------------------------------------
-	// intersection avec toutes les faces deja crees.
+	// intersection with all already created faces.
 	// ---------------------------------------------
 	Fini = !Intersect(AS,F1,MapSBox,OF1,Inter);
 
@@ -1613,10 +1608,10 @@ void BiTgte_Blend::ComputeCenters()
 
 
     //--------------------------------------------------------
-    // on a alors cree et intersecte les offsets.
-    // on construit maintenant les tuyaux.
+    // so the offsets were created and intersected.
+    // now the tubes are constructed.
     //--------------------------------------------------------
-    // Construction des tuyaux sur arete.
+    // Construction of tubes on edge.
     //--------------------------------------------------------
     BRepOffset_Type    OT = BRepOffset_Convex;
     if (myRadius < 0.) OT = BRepOffset_Concave; 
@@ -1682,7 +1677,7 @@ void BiTgte_Blend::ComputeCenters()
 	  MapSBox.Bind(F1,Box1);
 
 	  // ---------------------------------------------
-	  // intersection avec toutes les faces deja crees.
+	  // intersection with all already created faces.
 	  // ---------------------------------------------
 	  Standard_Boolean IsOnRest = Intersect(E,F1,MapSBox,OF1,Inter);
 	  JenRajoute = JenRajoute || IsOnRest;
@@ -1692,18 +1687,18 @@ void BiTgte_Blend::ComputeCenters()
       }
     }
     
-  } // fin while JenRajoute
+  } // end while JenRajoute
   
 
   myEdges.Clear();
   myEdges = Inter.NewEdges();
 
   // -------------------------------------------------------------------
-  // il faut maintenant restreindre les edges sur les voisins (sinon on 
-  // va trop loin et on ne peut plus construire les faces).
+  // now it is necessary to limit edges on the neighbors (otherwise one 
+  // will go too far and will not be able to construct faces).
   // -------------------------------------------------------------------
 
-  // On y va avec le MakeLoops 
+  // Proceed with MakeLoops 
 
   BRepOffset_Type    OT = BRepOffset_Concave;
   if (myRadius < 0.) OT = BRepOffset_Convex; 
@@ -1713,10 +1708,10 @@ void BiTgte_Blend::ComputeCenters()
   for ( ; it.More(); it.Next()) {
     const TopoDS_Shape& CurS  = it.Key();
 
-    // tuyau sur bord libre, on n en veut pas.
+    // tube on free border, it is undesirable.
     if ( myStopFaces.Contains(CurS)) continue;
 
-    if ( !myMapSF.IsBound(CurS)) continue; // inverted ou degenere
+    if ( !myMapSF.IsBound(CurS)) continue; // inverted or degenerated
 
     const TopoDS_Face& CurOF = myMapSF(CurS).Face();
     LOF.Append(CurOF);
@@ -1726,14 +1721,14 @@ void BiTgte_Blend::ComputeCenters()
       TopExp_Explorer expe(CurF.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
       for (; expe.More(); expe.Next()) {
 	// --------------------------------------------------------------
-	// on met dans myAsDes les edges generes par les restrictions du
-	// carreau initial si du bon type (On ne met pas les edges qui 
-	// vont disparaitre)
+	// set in myAsDes the edges generated by limitations of the 
+	// initial square if the type is correct (The edges that will 
+	// disappear are not set)
 	// --------------------------------------------------------------
 	const TopoDS_Edge& CurE = TopoDS::Edge(expe.Current());
 	const BRepOffset_ListOfInterval& L = myAnalyse.Type(CurE);
 	if (!L.IsEmpty() && L.First().Type() != OT) {
-	  // a priori ne disparait pas, donc on le met
+	  // a priori doe s not disappear, so it is set
 	  TopoDS_Shape aLocalShape = myMapSF(CurF).Generated(CurE);
 	  const TopoDS_Edge& CurOE = TopoDS::Edge(aLocalShape);
 //	  const TopoDS_Edge& CurOE = 
@@ -1762,8 +1757,8 @@ void BiTgte_Blend::ComputeCenters()
   }
 
   // ----------------------------------------------------------------
-  // Il faut aussi faire les intersections 2d avec les tuyaux generes
-  // (Utile au debouclage)
+  // It is also required to make 2D intersections with generated tubes
+  // (Useful for unwinding)
   // ----------------------------------------------------------------
   BRepOffset_DataMapIteratorOfDataMapOfShapeOffset It(myMapSF);
   for ( ; It.More(); It.Next()) {
@@ -1772,13 +1767,13 @@ void BiTgte_Blend::ComputeCenters()
 
     const TopoDS_Face& CurOF = It.Value().Face();
 
-    // on ne deboucle pas les tuyaux sur bord libre.
+    // no unwinding by tubes on free border.
     if ( myStopFaces.Contains(CurS)) continue;
 
     LOF.Append(CurOF);
 
     // --------------------------------------------------------------
-    // on met dans myAsDes les edges restrictions du carreau.
+    // set in myAsDes the edge restrictions of the square
     // --------------------------------------------------------------
     TopExp_Explorer expe(CurOF.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
     for (; expe.More(); expe.Next()) {
@@ -1792,19 +1787,19 @@ void BiTgte_Blend::ComputeCenters()
 				myTol);
   }
   // ------------
-  // On deboucle
+  // unwinding 
   // ------------
   BRepOffset_MakeLoops MakeLoops;
   MakeLoops.Build( LOF, myAsDes, myImageOffset );
 
   // ------------------------------------------------------------
-  // On a deboucle les edges dont l'un au moins des ancetres est
-  // une face du shape initial, donc:
-  // il manque les edges generes par intersection tuyau-tuyau
+  // It is possible to unwind edges at least one ancestor which of 
+  // is a face of the initial shape, so:
+  // the edges generated by intersection tube-tube are missing
   // ------------------------------------------------------------
 
   // --------------------------------------------------------------
-  // On met pour l'instant dans <myResult> les surfaces debouclees
+  // Currently set the unwinded surfaces in <myResult>
   // --------------------------------------------------------------
   B.MakeCompound(TopoDS::Compound(myResult));
   TopTools_ListIteratorOfListOfShape itLOF(LOF);
@@ -1818,7 +1813,7 @@ void BiTgte_Blend::ComputeCenters()
     myImageOffset.LastImage(CurLOF,Lim);
     TopTools_ListIteratorOfListOfShape itLim(Lim);
     for ( ;itLim.More(); itLim.Next()) {
-      // Si une face est sa propre image, on ne la mets pas
+      // If a face is its own image, it is not set
       const TopoDS_Shape& CurLIM = itLim.Value();
       if (CurLIM.IsSame(CurLOF)) break;
 
@@ -1828,11 +1823,11 @@ void BiTgte_Blend::ComputeCenters()
 
 #ifdef DEB
   if ( myResult.IsNull()) {
-    cout << " Pas de Lignes de Centres Generees" << endl;
+    cout << " No Lines of Generated Centers" << endl;
   }
 #ifdef DRAW
   else {
-    if (Affich) DBRep::Set("Debouc",myResult);
+    if (Affich) DBRep::Set("Unwind",myResult);
   }
 #endif
 #endif
@@ -1846,13 +1841,12 @@ void BiTgte_Blend::ComputeCenters()
 
 void BiTgte_Blend::ComputeSurfaces()
 {
-  // on met dans myFaces, les faces reellement impliquee dans 
-  // le raccord
+  // set in myFaces, the faces actually implied in the connection
   myFaces.Clear();
 
-  // on construit
-  // 1 - Les Tuyaux ( Les Vrais Conges)
-  // 2 - Les Spheres.
+  // construct
+  // 1 - Tubes (True Fillets)
+  // 2 - Spheres.
 
 #ifdef DRAW
   Standard_Integer nbc = 1;
@@ -1868,22 +1862,22 @@ void BiTgte_Blend::ComputeSurfaces()
   BRepOffset_Analyse CenterAnalyse(myResult,TolAngle);
 
   // -----------------------------------------------------
-  // Construction des tuyaux que l'on benne dans myResult
+  // Construction of tubes in myResult
   // -----------------------------------------------------
   BRep_Builder B;
   B.MakeCompound(TopoDS::Compound(myResult));
 
   // --------------------------------------------------------------------
-  // Dummy: pour construction des spheres:
-  // On met dans Co les lignes de centres, puis si il existe au moins 3
-  // ligne de centre partageant un meme vertex, Sphere sur ce vertex.
+  // Dummy: for construction of spheres:
+  // Set in Co the center line, then it there are at least 3
+  // center lines sharing the same vertex, Sphere on this vertex.
   // --------------------------------------------------------------------
   TopoDS_Compound Co; 
   B.MakeCompound(Co);
 
   // --------------------------------------------------------------------
-  // Iteration sur les les edges lignes de centre
-  // et On prend leur partie valide apres decoupe, et construction tuyau.
+  // Iteration on the edges lines of center
+  // and their valid valid part is taken after cut and tube construction.
   // --------------------------------------------------------------------
   BRepOffset_Type    OT = BRepOffset_Concave;
   if (myRadius < 0.) OT = BRepOffset_Convex; 
@@ -1896,14 +1890,14 @@ void BiTgte_Blend::ComputeSurfaces()
     if ( L.Extent() != 2) continue;
     
     // --------------------------------------------------------------
-    // F1 et F2 = les 2 faces paralleles qui s'intersectent en CurE.
+    // F1 and F2 = 2 parallel faces intersecting in CurE.
     // --------------------------------------------------------------
     const TopoDS_Face& F1 = TopoDS::Face(L.First()); 
     const TopoDS_Face& F2 = TopoDS::Face(L.Last());
 
     // -----------------------------------------------------
-    // on cherche les orientations des edges d'intersection
-    // dans les faces initiales.
+    // find the orientation of edges of intersection
+    // in the initial faces.
     // -----------------------------------------------------
     const TopTools_ListOfShape& LD1 = myAsDes->Descendant(F1);
     const TopTools_ListOfShape& LD2 = myAsDes->Descendant(F2);
@@ -1912,7 +1906,7 @@ void BiTgte_Blend::ComputeSurfaces()
     TopAbs_Orientation Orien2 = Orientation(CurE, F2, LD2);
     
     // ---------------------------------------------------------
-    // Or1 et Or2 : les shapes generateurs des faces paralleles.
+    // Or1 and Or2 : the shapes generators of parallel faces 
     // ---------------------------------------------------------
     const TopoDS_Shape& Or1 = myInitOffsetFace.ImageFrom(F1);
     const TopoDS_Shape& Or2 = myInitOffsetFace.ImageFrom(F2);
@@ -1940,8 +1934,8 @@ void BiTgte_Blend::ComputeSurfaces()
     }
 
     // ----------------------------------------------------------------
-    // Si mise en jeu d'un vertex dans le contact, on ne fait rien 
-    // pour l'instant on ne gere pas les vertex ( Inters  avec sphere);
+    // If a vertex is used in contact, currently nothing is done  
+    // and the vertexes are not managed (Intersections with sphere);
     // ----------------------------------------------------------------
     if ( OF1.IsNull() && OE1.IsNull()) continue;
     
@@ -1960,18 +1954,18 @@ void BiTgte_Blend::ComputeSurfaces()
       GS2 = BRep_Tool::Surface(OF2);
     }
     // ----------------------------------------------------------------
-    // Si mise en jeu d'un vertex dans le contact, on ne fait rien 
-    // pour l'instant on ne gere pas les vertex ( Inters  avec sphere);
+    // If a vertex is used in contact, currently nothing is done  
+    // and the vertexes are not managed (Intersections with sphere);
     // ----------------------------------------------------------------
     if ( OF2.IsNull() && OE2.IsNull()) continue;
 
 
     TopTools_ListOfShape CurL;
 
-    if ( !myImageOffset.HasImage(CurE)) {// les tuyaux ne sont pas deboucles
-      if ( OF1isEdge && OF2isEdge) {     // si je n'ai pas d'image, peut etre
-	CurL.Append(CurE);               // suis-je sur inters tuyau tuyau
-      }                                  // Voir commentaire sur l'appel a 
+    if ( !myImageOffset.HasImage(CurE)) {// the tubes are not unwinded
+      if ( OF1isEdge && OF2isEdge) {     // if I don't have the image, possibly
+	CurL.Append(CurE);               // I'm on intersection tube-tube
+      }                                  // See comment on the call to 
       else                               // MakeLoops
 	continue;
     }
@@ -1980,7 +1974,7 @@ void BiTgte_Blend::ComputeSurfaces()
     }
 
     // ---------------------------------------------------------------
-    // CurL = List des edges descendant de CurE ( = Decoupes de CurE)
+    // CurL = List of edges descending from CurE ( = Cuts of CurE)
     // ---------------------------------------------------------------
     TopTools_ListIteratorOfListOfShape itl(CurL);
     for ( ; itl.More(); itl.Next()) {
@@ -1992,7 +1986,7 @@ void BiTgte_Blend::ComputeSurfaces()
 	BRep_Tool::CurveOnSurface(CurCutE,F2,f2,l2);
       if ( PC1.IsNull() || PC2.IsNull()) {
 #ifdef DEB
-	cout << "Pas de PCurves sur Intersections : Pas de tuyau construit";
+	cout << "No PCurves on Intersections : No tubes constructed";
 	cout << endl;
 #endif	
 	continue;
@@ -2007,7 +2001,7 @@ void BiTgte_Blend::ComputeSurfaces()
       TopExp::Vertices(CurCutE,V1f,V1l);
 
       // find if the pipe on the tangent edges are soon created.
-      // edges generes par V1f et V1l + Maj MapOnV1f/l
+      // edges generated by V1f and V1l + Maj MapOnV1f/l
       E1f = FindCreatedEdge(V1f,CurCutE,myMapSF,MapOnV1f,
 			    CenterAnalyse,myRadius,myTol);
 
@@ -2027,8 +2021,8 @@ void BiTgte_Blend::ComputeSurfaces()
 	if ( VlOnE1.IsNull()) 
 	  VlOnE1 = FindVertex(P2,MapOnV1f,myTol);
 	if ( P1.SquareDistance(P2) < myTol*myTol) {
-	  //BRepOffset_Offset gere les KPart degeneres
-	  //IL FAUT que C soit un cercle de rayon NUL
+	  //BRepOffset_Offset manages degenerated KPart 
+	  //It is REQUIRED that C should be a circle with ZERO radius
 	  E1 = MakeDegeneratedEdge(C,VfOnE1);
 	}
 	else {
@@ -2066,8 +2060,8 @@ void BiTgte_Blend::ComputeSurfaces()
 	if ( VlOnE2.IsNull())
 	  VlOnE2 = FindVertex(P2,MapOnV1f,myTol);
 	if ( P1.SquareDistance(P2) < myTol*myTol) {
-	  //BRepOffset_Offset gere les KPart degeneres
-	  //IL FAUT que C soit un cercle de rayon NUL
+	  //BRepOffset_Offset manages degenerated KParts
+	  //It is REQUIRED that C should be a circle with ZERO radius
 	  E2 = MakeDegeneratedEdge(C,VfOnE2);
 	}
 	else {
@@ -2091,7 +2085,7 @@ void BiTgte_Blend::ComputeSurfaces()
 	}
 	KPartCurve3d(E2,PC2,GS2);
       }
-      // Maj de la Map des Created si reconstruction du Shape est demandee.
+      // Increment of the Map of Created if reconstruction of the Shape is required
       if ( myBuildShape) {
 	myCreated.Bind(CurCutE,EmptyMap);
 
@@ -2104,9 +2098,9 @@ void BiTgte_Blend::ComputeSurfaces()
 
       // ----------------------------------------------------------
       // try to init E1f, E1l, if not found with Analysis.
-      // Ne devrait se produire que si les edges tangents THEORIQUES
-      // ne sont pas reelememt tangent ( Cf: Approx des lignes 
-      // d'intersection qui bruitent)
+      // Should happen only if the THEORETICALLY tangent edges 
+      // are not actually tangent ( Cf: Approximation of lines 
+      // of intersection that add noise.)
       // ----------------------------------------------------------
       TopoDS_Vertex V1,V2;
       if ( E1f.IsNull() && !VfOnE1.IsNull() && !VfOnE2.IsNull()) {
@@ -2151,12 +2145,12 @@ void BiTgte_Blend::ComputeSurfaces()
       B.Add(myResult,Tuyo);
 
       if ( myBuildShape) {
-	// methode basee UNIQUEMENT sur la construction du conge:
-	// le premier edge du tuyau est justement celui sur Shape1.
+	// method based ONLY on the construction of fillet:
+	// the first edge of the tube is exactly on Shape1.
 	GeomAPI_ProjectPointOnCurve Projector;
 	TopExp_Explorer exp(Tuyo,TopAbs_EDGE);
 	TopoDS_Vertex V1,V2;
-	if (OF1isEdge) { // On met les CutEdges a jour.
+	if (OF1isEdge) { // Update CutEdges.
 	  const TopoDS_Edge& EOnF1 = TopoDS::Edge(exp.Current());
 	  TopExp::Vertices(EOnF1,V1,V2);
 
@@ -2184,7 +2178,7 @@ void BiTgte_Blend::ComputeSurfaces()
 	  TopTools_ListOfShape& L1 = myCutEdges(Or1);
 	  L1.Append(V1); L1.Append(V2);
 	}
-	if (OF2isEdge) { // On met les CutEdges a jour.
+	if (OF2isEdge) { // Update CutEdges.
 	  exp.Next();
 	  const TopoDS_Edge& EOnF2 = TopoDS::Edge(exp.Current());
 	  TopExp::Vertices(EOnF2,V1,V2);;
@@ -2226,8 +2220,8 @@ void BiTgte_Blend::ComputeSurfaces()
   }
 
   // ---------------------------------------------------
-  // Construction des spheres, 
-  // si nombre suffisant de tuyaux arrive sur le vertex
+  // Construction of spheres, 
+  // if enough tubes arrive at the vertex
   // ---------------------------------------------------
   TopTools_IndexedDataMapOfShapeListOfShape Map;
   TopExp::MapShapesAndAncestors(Co,TopAbs_VERTEX,TopAbs_EDGE,Map);
@@ -2272,13 +2266,12 @@ void BiTgte_Blend::ComputeSurfaces()
 
 void BiTgte_Blend::ComputeShape() 
 {
-  // On trouvera dans le Shape final:
-  //  - les Faces non touchees.
-  //  - les tuyaux generes
-  //  - les faces voisines des tuyaux qu'il faut reconstruire en assurant
-  //    le partage.
+  // Find in the initial Shapel:
+  //  - untouched Faces
+  //  - generated tubes
+  //  - the faces neighbors of tubes that sould be reconstucted preserving sharing.
 
-  // Pour Debug : Visu des edges du shape initial qui sont a reconstruire.
+  // For Debug : Visualize edges of the initial shape that should be reconstructed.
 #ifdef DRAW
   if (Affich) {
     TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(myCutEdges);
@@ -2296,10 +2289,10 @@ void BiTgte_Blend::ComputeShape()
     }
   }
 #endif
-  // fin debug
+  // end debug
 
   //
-  // On modifie les tuyaux sur arete pour le partage des edges.
+  // modify the tubes on edge for partition of edges.
   //
   Standard_Integer NbS = NbSurfaces();
   NbS = 0;
@@ -2308,8 +2301,8 @@ void BiTgte_Blend::ComputeShape()
 
     if ( S1.ShapeType() == TopAbs_EDGE) {
       const TopoDS_Edge& E1   = TopoDS::Edge(S1);
-      // il faut remplacer dans F, les edges decoupe de E1, qui
-      // representent CutE
+      // it is required to replace in F the cut edges of E1, that
+      // represent CutE
       const TopTools_ListOfShape& VonE = myCutEdges(E1);
       TopTools_ListOfShape NewE;
       CutEdge(E1,VonE,NewE);
@@ -2329,24 +2322,24 @@ void BiTgte_Blend::ComputeShape()
   Standard_Integer NbNT = 1;
 #endif
 
-  // Maj de la Map des created.
-  // On met a jour les edges qui ne changent pas dans le shape resultat
-  // i.e. les edges invariants dans le debouclage.
+  // Maj of the Map of created.
+  // Update edges that do not change in the resulting shape 
+  // i.e. invariant edges in the unwinding.
   TopExp_Explorer exp(myShape,TopAbs_FACE);
   // Standard_Integer nbe = 1;
   for ( ;exp.More(); exp.Next()) {
 
     const TopoDS_Face& CurF = TopoDS::Face(exp.Current());
 
-    if ( !myFaces.Contains(CurF)) continue; // alors la face n'est pas touchee
+    if ( !myFaces.Contains(CurF)) continue; // so the face is not touched
 
-    // alors les faces sont debouclees
-    if ( !myMapSF.IsBound(CurF)) continue; // inverted ou degenere
+    // so the faces are unwinded
+    if ( !myMapSF.IsBound(CurF)) continue; // inverted or degenerated
     
     const BRepOffset_Offset& Offset = myMapSF(CurF);
     const TopoDS_Face& CurOF = myMapSF(CurF).Face();
     
-    if ( !myImageOffset.HasImage(CurOF)) // face disparait dans debouclage
+    if ( !myImageOffset.HasImage(CurOF)) // face disappears in unwinding
       continue;
     
     TopExp_Explorer exp2(CurF,TopAbs_EDGE);
@@ -2357,7 +2350,7 @@ void BiTgte_Blend::ComputeShape()
 //      const TopoDS_Edge& CurOE = TopoDS::Edge(Offset.Generated(CurE));
 
       if (!myImageOffset.HasImage(CurOE)) continue; 
-      // CurOE disparait
+      // CurOE disappears
 
       const TopoDS_Edge& ImE = 
 	TopoDS::Edge(myImageOffset.Image(CurOE).First());
@@ -2369,34 +2362,34 @@ void BiTgte_Blend::ComputeShape()
     }
   }
 
-  // Les faces raccords sont deja dans myResult.
-  // Il faut alors rajouter les faces:
-  //    - non touchees (donc pas dans myFaces)
-  //    - issues du debouclage(non degenerees, non inverted, non disparues)
+  // The connected faces are already in myResult.
+  // So it is necessary to add faces:
+  //    - non-touched (so not in myFaces)
+  //    - issuing from the unwinding (non degenerated, non inverted, non disappeared)
   exp.Init(myShape,TopAbs_FACE);
   for ( ;exp.More(); exp.Next()) {
 
     const TopoDS_Face& CurF = TopoDS::Face(exp.Current());
 
     if ( !myFaces.Contains(CurF)) { 
-      // alors la face n'est pas touchee
+      // so the face is not touched
       B.Add(myResult,CurF);
     }
-    else { // alors les faces sont debouclees
+    else { // so the faces are unwindeds
 
-      if ( !myMapSF.IsBound(CurF)) continue; // inverted ou degenere
+      if ( !myMapSF.IsBound(CurF)) continue; // inverted or degenerated
 
       const TopoDS_Face& CurOF = myMapSF(CurF).Face();
       
-      if ( !myImageOffset.HasImage(CurOF)) // face disparait dans debouclage
+      if ( !myImageOffset.HasImage(CurOF)) // face disappears in unwinding
 	continue;
       
-      // Liste des faces generees par une face dans le debouclage.
+      // List of faces generated by a face in the unwinding
       TopTools_ListOfShape Lim;
       myImageOffset.LastImage(CurOF,Lim);
       TopTools_ListIteratorOfListOfShape itLim(Lim);
       for ( ;itLim.More(); itLim.Next()) {
-	// DeboucFace = La Face offset debouclee dans "Debouc".
+	// DeboucFace = offset Face unwinded in "Debouc".
 	const TopoDS_Face& DeboucFace = TopoDS::Face(itLim.Value());
 
 	TopLoc_Location L;
@@ -2448,7 +2441,7 @@ void BiTgte_Blend::ComputeShape()
 	    Handle(Geom2d_Curve) C2d = 
 	      BRep_Tool::CurveOnSurface(E,Face,f,l);
 	    TopoDS_Edge OE;
-	    if ( MapSS.IsBound(E)) { // c`est un edge de couture 
+	    if ( MapSS.IsBound(E)) { // this is an edge of cutting 
 	      OE = TopoDS::Edge(MapSS(E));
 	      TopoDS_Shape aLocalShape = E.Reversed();
 	      Handle(Geom2d_Curve) C2d_1 = 
@@ -2463,7 +2456,7 @@ void BiTgte_Blend::ComputeShape()
 	      B.Range(OE,f,l);
 	    }
 	    else {
-	      // E a-t-il ume image dans la Map des Created ?
+	      // Is there an image in the Map of Created ?
 	      if ( myCreated.IsBound(E)) {
 		if ( myCreated(E).IsBound(CurF)) {
 		  OE = TopoDS::Edge(myCreated(E)(CurF).First());
@@ -2524,8 +2517,7 @@ void BiTgte_Blend::ComputeShape()
     }
   }
 
-  // en desespoir de cause, s'il reste toujours des bords verts sur ce
-  // satane Shape, on sew le shape.
+  // non-regarding the cause, there always remain greeb borders on this Shape, so it is sewn.
   Handle(BRepBuilderAPI_Sewing) Sew = new BRepBuilderAPI_Sewing(myTol);
   
   BRepLib::BuildCurves3d(myResult);
@@ -2536,8 +2528,8 @@ void BiTgte_Blend::ComputeShape()
   
   Sew->Perform();
 
-  // On fait le SameParameter cas Sew ne le fait pas (Detecte que les edges
-  // ne sont pas sameparameter mais ne fait rien.)
+  // SameParameter is done in case Sew does not do it (Detect that the edges
+  // are not sameparameter but does nothing.)
   
   const TopoDS_Shape& SewedShape = Sew->SewedShape();
   if ( !SewedShape.IsNull()) {
@@ -2568,7 +2560,7 @@ Standard_Boolean BiTgte_Blend::Intersect
   const Bnd_Box& Box1 = MapSBox(Face);
 
   // -----------------------------------------------
-  // intersection avec toutes les faces deja creees.
+  // intersection with all already created faces.
   // -----------------------------------------------
   const TopoDS_Shape& InitShape1 = OF1.InitialShape();
   Standard_Boolean F1surBordLibre = 
@@ -2585,7 +2577,7 @@ Standard_Boolean BiTgte_Blend::Intersect
     
     if ( Inter.IsDone(Face,F2)) continue;
     
-    // on n intersecte pas 2 tuyaix construits sur bord libre.
+    // 2 tubes created on free border are not intersected.
     const TopoDS_Shape& InitShape2 = OF2.InitialShape();
     Standard_Boolean F2surBordLibre = 
       InitShape2.ShapeType() == TopAbs_EDGE &&
@@ -2593,7 +2585,7 @@ Standard_Boolean BiTgte_Blend::Intersect
 
 #ifdef DEB
     if ( F1surBordLibre && F2surBordLibre) {
-      cout << "Rejection : On n intersecte pas 2 tuyaux sur bord libre";
+      cout << "Rejection : 2 tubes on free border are not intersected";
       cout << endl;
     }
 #endif
@@ -2601,7 +2593,7 @@ Standard_Boolean BiTgte_Blend::Intersect
     if ( F1surBordLibre && F2surBordLibre) continue;
 
     // -------------------------------------------------------
-    // On n'intersecte pas les tuyaux avec ses faces voisines.
+    // Tubes are not intersected with neighbor faces.
     // -------------------------------------------------------
     const TopoDS_Shape& ItKey = It.Key();
 
@@ -2613,8 +2605,8 @@ Standard_Boolean BiTgte_Blend::Intersect
     Inter.FaceInter(Face,F2,myInitOffsetFace);
     
     // ------------------------------------------
-    // un edge de F1 ou F2 a-t-il ete touche ?
-    // si oui, on rajoute des faces dans myFaces
+    // an edge of F1 or F2 has been touched ?
+    // if yes, add faces in myFaces
     //   ==> JenRajoute = True
     // ------------------------------------------
     TopTools_ListOfShape LInt;
@@ -2632,8 +2624,8 @@ Standard_Boolean BiTgte_Blend::Intersect
 	  Standard_Boolean IsOnR2 = IsOnRestriction(V1,CurE,F2,E2);
 #ifdef DEB
 	  if (IsOnR1 && IsOnR2) {
-	    cout << "On sort en meme tps sur les 2 faces, ";
-	    cout << "on ne propage pas si bord libre";
+	    cout << "Leave in the same tps on 2 faces, ";
+	    cout << "propagation only on free border";
 	    cout << endl;
 	  }
 #endif
@@ -2655,14 +2647,14 @@ Standard_Boolean BiTgte_Blend::Intersect
 	  Standard_Boolean IsOnR1 = IsOnRestriction(V2,CurE,Face,E1);
 	  Standard_Boolean IsOnR2 = IsOnRestriction(V2,CurE,F2,E2);
 
-	  // Si IsOnR1 && IsOnR2,
-	  // On sort en meme tps sur les 2 faces, on ne propage pas
-	  // sur les bords libres.
-	  // A priori, la facette se ferme toute seule.
+	  // If IsOnR1 && IsOnR2,
+	  // Leave in the same tps on 2 faces, propagate only on 
+	  // free borders.
+	  // A priori, only facet is closed.
 #ifdef DEB
 	  if (IsOnR1 && IsOnR2) {
-	    cout << "On sort en meme tps sur les 2 faces, ";
-	    cout << "on ne propage pas si bord libre";
+	    cout << "Leave with the same tps on 2 faces, ";
+	    cout << "propagate only if the border is free";
 	    cout << endl;
 	  }
 #endif

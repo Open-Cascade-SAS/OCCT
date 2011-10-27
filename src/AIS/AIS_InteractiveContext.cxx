@@ -70,7 +70,7 @@
 // is always equal to 0 if it is -1.
 #define BUC61051
 
-// On close the local context the method ::ResetOriginalState() sets the selection mode equal to 0
+// The local context is closed the method ::ResetOriginalState() sets the selection mode equal to 0
 // in spite of the selection mode of the interactive object in Natural Point.
 #define OCC166
 
@@ -226,7 +226,7 @@ void AIS_InteractiveContext::UpdateCurrentViewer()
 void AIS_InteractiveContext::OpenCollector()
 {
   myIsCollClosed =Standard_True;
-  // a completer....
+  // to be completed....
 }
 
 
@@ -263,7 +263,7 @@ void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
   }
   else{
     TColStd_MapOfTransient theMap;
-    // point neutre
+    // neutral point
     for(;It.More();It.Next()){
       if(It.Value()->GraphicStatus()==AIS_DS_Displayed)
         theMap.Add(It.Key());
@@ -272,7 +272,7 @@ void AIS_InteractiveContext::DisplayedObjects(AIS_ListOfInteractive& aListOfIO,
     cout<<"\tFrom Neutral Point : "<<theMap.Extent()<<endl;
 #endif
 
-    //balayons tous les contextes locaux...
+    //parse all local contexts...
     Standard_Integer NbDisp;
     for(AIS_DataMapIteratorOfDataMapOfILC it1(myLocalContexts);it1.More();it1.Next()){
       const Handle(AIS_LocalContext)& LC = it1.Value();
@@ -457,7 +457,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
   if(!anIObj->HasInteractiveContext()) 
     anIObj->SetContext(aThis);
   
-  //PAS DE CONTEXTE LOCAL OUVERT
+  //NO LOCAL CONTEXT OPEN
   if(!HasOpenedContext()) {
 #ifndef OCC4373
     // SAN : Do not return here. Perform advanced display mode analysis a bit later...
@@ -465,7 +465,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
 #endif
     Standard_Boolean updcol = Standard_False;
     
-    // il n'existait pas encore
+    // it did not yet exist
     if(!myObjects.IsBound(anIObj)){
       
       Handle(AIS_GlobalStatus) STATUS= 
@@ -485,7 +485,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
         
      if(updateviewer) myMainVwr->Update();
     }
-    // il est quelque part ailleurs....
+    // it is somewhere else...
     else {
       // CLE
       // const Handle(AIS_GlobalStatus)& STATUS = myObjects(anIObj);
@@ -498,7 +498,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
         myCollectorPM->Erase(anIObj,HiMod);
         mgrSelector->Deactivate(anIObj,myCollectorSel);
         updcol = updateviewer;
-                         }// attention on fait expres de ne pas mettre de break..
+                         }// attention the break is not set on purpose...
       case AIS_DS_FullErased:{
         TColStd_ListIteratorOfListOfInteger ItL (STATUS->DisplayedModes());
         for (;ItL.More();ItL.Next()){
@@ -565,7 +565,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
     if(updcol && !myCollectorVwr.IsNull()) myCollectorVwr->Update();
   }
   
-  //  CONTEXTE LOCAL OUVERT
+  //  LOCAL CONTEXT OPEN
   else
   {
     myLocalContexts(myCurLocalIndex)->Display(anIObj,DispMode,anIObj->AcceptShapeDecomposition(),SelMode);
@@ -593,7 +593,7 @@ void AIS_InteractiveContext::Display(const Handle(AIS_InteractiveObject)& anIObj
 
   if(!anIObj->HasInteractiveContext()) anIObj->SetContext(this);
   
-  // si aucun contexte local...
+  // if no local context...
   if(!HasOpenedContext()) {
     //    if(!anIObj->HasDisplayMode())
     //      anIObj->SetDisplayMode(aDisplayMode);
@@ -685,9 +685,8 @@ void AIS_InteractiveContext::Erase(const Handle(AIS_InteractiveObject)& anIObj,
   }
   else
     {
-      // d'abors on regarde si on peut effacer dans le contexte local courant
-      // ensuite, on essaye d'effacer dans les autres contextes locaux,
-      // s'ils le permettent...
+      // First it is checked if it is possible to remove in the current local context
+      // then one tries to remove in other local contexts, if they allow it...
       
       Standard_Boolean WasInCtx = myLocalContexts(myCurLocalIndex)->Erase(anIObj);
 //      if(!WasInCtx) {
@@ -1488,7 +1487,7 @@ void AIS_InteractiveContext::RecomputeSelectionOnly(const Handle(AIS_Interactive
   mgrSelector->RecomputeSelection(anIObj);
 
 
-  // A VOIR SI ENCORE UTILE...
+
   TColStd_ListOfInteger LI;
   TColStd_ListIteratorOfListOfInteger Lit;
   ActivatedModes(anIObj,LI);
@@ -1576,7 +1575,7 @@ void AIS_InteractiveContext::SetLocation(const Handle(AIS_InteractiveObject)& an
   }
   if(aLoc.IsIdentity()) return ;
 
-  // d'abord faire un reset de la precedente location pour tout nettoyer proprement...
+  // first reset the previous location to properly clean everything...
   if(anIObj->HasLocation())
     anIObj->ResetLocation();
 
@@ -1950,7 +1949,7 @@ void AIS_InteractiveContext::SetColor(const Handle(AIS_InteractiveObject)& anIOb
         }
       anIObj->SetRecomputeOk();
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
 
@@ -2025,7 +2024,7 @@ void AIS_InteractiveContext::SetDeviationCoefficient(
         }
       anIObj->SetRecomputeOk();
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
   if(updateviewer) UpdateCurrentViewer();
@@ -2069,7 +2068,7 @@ void AIS_InteractiveContext::SetHLRDeviationCoefficient(
         }
       anIObj->SetRecomputeOk();
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
   if(updateviewer) UpdateCurrentViewer();
@@ -2112,7 +2111,7 @@ void AIS_InteractiveContext::SetDeviationAngle(
         }
       anIObj->SetRecomputeOk();
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
   if(updateviewer) UpdateCurrentViewer();
@@ -2183,7 +2182,7 @@ void AIS_InteractiveContext::SetHLRAngleAndDeviation(
         }
       anIObj->SetRecomputeOk();
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
   if(updateviewer) UpdateCurrentViewer();
@@ -2225,7 +2224,7 @@ void AIS_InteractiveContext::SetHLRDeviationAngle(
         }
       anIObj->SetRecomputeOk();
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
     }
   if(updateviewer) UpdateCurrentViewer();
@@ -2253,7 +2252,7 @@ void AIS_InteractiveContext::UnsetColor(const Handle(AIS_InteractiveObject)& anI
           NbDisp++;
         }
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
       anIObj->SetRecomputeOk();
     }
@@ -2326,7 +2325,7 @@ void AIS_InteractiveContext::SetWidth(const Handle(AIS_InteractiveObject)& anIOb
           NbDisp++;
         }
 #ifdef DEB
-      cout<<"nb de modes a recalculer : "<<NbDisp<<endl;
+      cout<<"nb of modes to recalculate : "<<NbDisp<<endl;
 #endif
       anIObj->SetRecomputeOk();
     }

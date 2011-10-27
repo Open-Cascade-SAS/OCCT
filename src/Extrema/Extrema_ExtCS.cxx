@@ -2,10 +2,6 @@
 // Created:	Tue Jul 18 10:33:04 1995
 // Author:	Modelistation
 //		<model@metrox>
-// Modified by MPS  (june 96)  : 
-// Dans les  cas line /cone et line /tore on utilise la classe GenExtCS  
-// a la place de  ExtElCS. Dans ExtElCS les cas line/cone et line/tore ne sont 
-// pas implementes               
 
 //  Modified by skv - Thu Jul  7 12:29:34 2005 OCC9134
 

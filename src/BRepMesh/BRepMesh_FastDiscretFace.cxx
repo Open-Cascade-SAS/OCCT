@@ -540,7 +540,7 @@ static void filterParameters(const TColStd_IndexedMapOfReal& theParams,
   TCollection_CompareOfReal aCompare;
   SortTools_ShellSortOfReal::Sort(aParamArray, aCompare);
 
-  // mandadory pre filtering using the first (minimal) filter value
+  // mandadory pre-filtering using the first (minimal) filter value
   Standard_Real aP1, aP2;
   aP1 = aParamArray(1);
   aParamTmp.Append(aP1);
@@ -625,7 +625,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
   gp_Pnt2d p2d;
   gp_Pnt p3d;
   
-  // travail suivant le type de surface
+  // work following the type of surface
   const BRepAdaptor_Surface& BS = *(BRepAdaptor_Surface*)&(theCaro->Surface());
   GeomAbs_SurfaceType thetype = theCaro->GetType();
 
@@ -792,12 +792,11 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
     
     if (R < r)
     {
-      // comme on recupere les points des edges.
-      // dans ce cas, les points ne sont pas representatifs.
+      // As the points of edges are returned.
+      // in this case, the points are not representative.
             
-      //-- On choisit DeltaX et DeltaY de facon a ce qu on ne saute pas 
-      //-- de points sur la grille
-      for (i = 0; i <= nbU; i++) ParamU.Append(umin + i* Du);
+      //-- Choose DeltaX and DeltaY so that to avoid skipping points on the grid
+           for (i = 0; i <= nbU; i++) ParamU.Append(umin + i* Du);
     }//R<r
     else //U if R > r
     {
@@ -808,7 +807,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
       TColStd_Array1OfReal Up(1,LenU);
       for (j = 1; j <= LenU; j++) Up(j) = myUParam(j);
       
-      // Calculate DU, sort array of parameters
+      // Calculate DU, leave array of parameters
       Standard_Real aDU = FUN_CalcAverageDUV(Up,LenU);
       aDU = Max(aDU, Abs(umax -  umin) / (Standard_Real) nbU / 2.);
       Standard_Real dUstd = Abs(umax -  umin) / (Standard_Real) LenU;
@@ -1071,7 +1070,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
       }
     }
     
-    // recuperation du tableau de parametres V:
+    // return table of parameters V:
     Standard_Integer NV = tabGU[imax].NbPoints();
     for (i = 1; i <= NV; i++) {
       ParamV.Append(tabGU[imax].Parameter(i));
@@ -1094,7 +1093,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
       }
     }
     
-    // recuperation du tableau de parametres U:
+    // return table of parameters U:
     Standard_Integer NU = tabGV[imax].NbPoints();
     for (i = 1; i <= NU; i++) {
       ParamU.Append(tabGV[imax].Parameter(i));
@@ -1597,7 +1596,7 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
     
     T->Deflection(theDefFace);
     
-    // stockage de la triangulation dans la BRep.
+    // storage of triangulation in BRep.
     BRep_Builder B1;
     //TopLoc_Location loc = theFace.Location();
     if (!loc.IsIdentity()) {
@@ -1608,7 +1607,7 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
     }
     B1.UpdateFace(theFace, T);
 
-    // mise en place des polygones sur triangulation dans la face:
+    // implement polygons on triangulation in the face:
     BRepMesh_DataMapIteratorOfDataMapOfShapePairOfPolygon It(myInternaledges);
 
     for (; It.More(); It.Next()) {
@@ -1754,7 +1753,7 @@ static Standard_Boolean GetVertexParameters(const TopoDS_Vertex& theVert,
   L = L.Predivided(theVert.Location());
   BRep_ListIteratorOfListOfPointRepresentation itpr =
     ((*((Handle(BRep_TVertex)*) &theVert.TShape()))->Points());
-  // On regarde dabord si il y des PointRepresentation (cas non Manifold)
+  // Check first if there are PointRepresentation (case non Manifold)
 
   while (itpr.More()) {
     if (itpr.Value()->IsPointOnSurface(S,L)) {
@@ -1769,7 +1768,7 @@ static Standard_Boolean GetVertexParameters(const TopoDS_Vertex& theVert,
 
 //=======================================================================
 //function : Add
-//purpose  : method intended to addition internal myVertices in triangulation.
+//purpose  : method intended to add internal myVertices in triangulation.
 //=======================================================================
 void BRepMesh_FastDiscretFace::Add(const TopoDS_Vertex&                theVert, 
                                    const TopoDS_Face&                  theFace, 

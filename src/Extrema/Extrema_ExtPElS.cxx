@@ -1,7 +1,4 @@
-// modified by MPS (june 96)  gestion du cas ou le plan de reference du cone 
-//                            passe par le sommet ( O et M sont alors confondus)
-//
-// 
+ 
 #include <Extrema_ExtPElS.ixx>
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -20,20 +17,20 @@ Extrema_ExtPElS::Extrema_ExtPElS (const gp_Pnt& P,
  Perform(P, S, Tol);
 }
 /*-----------------------------------------------------------------------------
-Fonction:
-   Recherche des 2 distances extremales entre le point P et le cylindre S.
+Function:
+Find 2 extreme distances between point P and cylinder S.
 
-Methode:
-   Soit Pp la projection de P dans le plan XOY du cylindre;
-  2 cas sont consideres:
+Method:
+  Let Pp be the projection of P in plane XOY of the cylinder;
+  2 cases are considered:
   1- distance(Pp,O) < Tol:
-     Il y a une infinite de solutions; IsDone() = Standard_False.
+     There are infinite solutions; IsDone() = Standard_False.
   2- distance(Pp,O) > Tol:
-     Soit V = OP.OZ,
-          U1 = angle(OX,OPp) avec 0 < U1 < 2.*PI
-	  U2 = U1 + PI avec 0 < U2 < 2.*PI;
-     alors (U1,V) correspond a la distance minimale
-     et    (U2,V) correspond a la distance maximale.
+     let V = OP.OZ,
+          U1 = angle(OX,OPp) with 0 < U1 < 2.*PI
+	  U2 = U1 + PI with 0 < U2 < 2.*PI;
+     then (U1,V) corresponds to the min distance.
+     and  (U2,V) corresponds to the max distance.
 -----------------------------------------------------------------------------*/
 
 void Extrema_ExtPElS::Perform(const gp_Pnt&       P, 
@@ -43,14 +40,14 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   myDone = Standard_False;
   myNbExt = 0;
 
-// Projection du point P dans le plan XOY du cylindre ...
+// Projection of point P in plane XOY of the cylinder ...
   gp_Ax3 Pos = S.Position();
   gp_Pnt O = Pos.Location();
   gp_Vec OZ (Pos.Direction());
   Standard_Real V = gp_Vec(O,P).Dot(OZ);
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-V));
 
-// Calcul des extrema
+// Calculation of extrema
   gp_Vec OPp (O,Pp);
   if (OPp.Magnitude() < Tol) { return; }
   gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
@@ -78,33 +75,33 @@ Extrema_ExtPElS::Extrema_ExtPElS (const gp_Pnt&       P,
   Perform(P, S, Tol);
 }
 /*-----------------------------------------------------------------------------
-Fonction:
-   Recherche des 2 distances extremales entre le point P et le cone S.
+Function:
+   Find 2 extreme distances between point P and cone S.
 
-Methode:
-   Soit M le sommet du cone.
-  2 cas sont consideres:
+Method:
+  Let M the top of the cone.
+  2 cases are considered:
   1- distance(P,M) < Tol:
-     Il y a un minimum en M.
+     there is a minimum in M.
   2- distance(P,M) > Tol:
-     Soit Pp la projection de P dans le plan XOY du cone;
-     2 cas sont consideres:
+     Let Pp the projection of P in the plane XOY of the cone;
+     2 cases are considered:
      1- distance(Pp,O) < Tol:
-        Il y a une infinite de solutions; IsDone() = Standard_False.
+     There is an infinite number of solutions; IsDone() = Standard_False.
      2- distance(Pp,O) > Tol:
-        Il existe 2 extrema:
-        Soit Vm = valeur de v pour le point M,
-             Vp = valeur de v pour le point P,
-             U1 = angle(OX,OPp) si Vp > Vm )
-	         -angle(OX,OPp) sinon      ) avec 0. < U1 < 2*PI,
-             U2 = U1 + PI avec 0. < U2 < 2*PI;
-        On se place dans le plan PpOZ.
-        Soit A l'angle du cone,
-             B = angle(MP,MO) avec 0. < B < PI,
+        There exist 2 extrema:
+        Let Vm = value of v for point M,
+             Vp = value of v for point P,
+             U1 = angle(OX,OPp) if Vp > Vm )
+	         -angle(OX,OPp) otherwise      ) with 0. < U1 < 2*PI,
+             U2 = U1 + PI with 0. < U2 < 2*PI;
+        We are in plane PpOZ.
+       Let A the angle of the cone,
+             B = angle(MP,MO) with 0. < B < PI,
 	     L = longueur(MP),
 	     V1 = (L * cos(B-A)) + Vm,
 	     V2 = (L * cos(B+A)) + Vm;
-        alors (U1,V1) et (U2,V2) correspondent aux distances minimales.
+       then (U1,V1) and (U2,V2) correspond to min distances.
 -----------------------------------------------------------------------------*/
 
 void Extrema_ExtPElS::Perform(const gp_Pnt&       P, 
@@ -130,7 +127,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   gp_Vec(O, M).Dot(OZ);
 #endif
 
-// Cas ou P est confondu avec S ...
+// Case when P is mixed with S ...
   if (L2 < Tol * Tol) {
     mySqDist[0] = L2;
     myPoint[0] = Extrema_POnSurf(0.,Vm,M);
@@ -145,7 +142,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
     }
     else 
      DirZ=gp_Vec(M,O); 
-// Projection de P dans le plan de reference du cone ...
+// Projection of P in the reference plane of the cone ...
   Standard_Real Zp = gp_Vec(O, P).Dot(OZ);
 
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-Zp));
@@ -195,25 +192,25 @@ Extrema_ExtPElS::Extrema_ExtPElS (const gp_Pnt&       P,
   Perform(P, S, Tol);
 }
 /*-----------------------------------------------------------------------------
-Fonction:
-   Recherche des 2 distances extremales entre le point P et la sphere S.
+Function:
+  Find 2 extreme distances between point P and sphere S.
 
-Methode:
-   Soit O l'origine de la sphere.
-  2 cas sont consideres:
+Method:
+   Let O be the origin of the sphere.
+  2 cases are considered:
   1- distance(P,O) < Tol:
-     Il y a une infinite de solutions; IsDone() = Standard_False
+     There is an infinite number of solutions; IsDone() = Standard_False
   2- distance(P,O) > Tol:
-     Soit Pp la projection du point P dans le plan XOY de la sphere;
-     2 cas sont consideres:
+     Let Pp be the projection of point P in the plane XOY of the sphere;
+     2 cases are considered:
      1- distance(Pp,O) < Tol:
-        Les 2 solutions sont: (0,-PI/2.) et (0.,PI/2.)
+        2 solutions are: (0,-PI/2.) and (0.,PI/2.)
      2- distance(Pp,O) > Tol:
-        Soit U1 = angle(OX,OPp) avec 0. < U1 < 2.*PI,
+        Let U1 = angle(OX,OPp) with 0. < U1 < 2.*PI,
 	     U2 = U1 + PI avec 0. < U2 < 2*PI,
-	     V1 = angle(OPp,OP) avec -PI/2. < V1 < PI/2. ,
-	alors (U1, V1) correspond a la distance minimale
-	et    (U2,-V1) correspond a la distance maximale.
+	     V1 = angle(OPp,OP) with -PI/2. < V1 < PI/2. ,
+	then (U1, V1) corresponds to the min distance
+	and  (U2,-V1) corresponds to the max distance.
 -----------------------------------------------------------------------------*/
 
 void Extrema_ExtPElS::Perform(const gp_Pnt&       P, 
@@ -226,16 +223,16 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   gp_Ax3 Pos = S.Position();
   gp_Vec OP (Pos.Location(),P);
 
-// Cas ou P est confondu avec O ...
+// Case when P is mixed with O ...
   if (OP.SquareMagnitude() < Tol * Tol) { return; }
 
-// Projection de P dans le plan XOY de la sphere ...
+// Projection if P in plane XOY of the sphere ...
   gp_Pnt O = Pos.Location();
   gp_Vec OZ (Pos.Direction());
   Standard_Real Zp = OP.Dot(OZ);
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-Zp));
 
-// Calcul des extrema ...
+// Calculation of extrema ...
   gp_Vec OPp (O,Pp);
   Standard_Real U1, U2, V;
   if (OPp.SquareMagnitude() < Tol * Tol) {
@@ -273,23 +270,23 @@ Extrema_ExtPElS::Extrema_ExtPElS (const gp_Pnt&       P,
   Perform(P, S, Tol);
 }
 /*-----------------------------------------------------------------------------
-Fonction:
-   Recherche des 2 distances extremales entre le point P et le tore S.
+Function:
+  Find 2 extreme distances between point P and torus S.
 
-Methode:
-   Soit Pp la projection du point P dans le plan XOY du tore;
-  2 cas sont consideres:
+  Method:
+  Let Pp be the projection of point P in plane XOY of the torus;
+  2 cases are consideres:
   1- distance(Pp,O) < Tol:
-     Il y a une infinite de solutions; IsDone() = Standard_False.
+     There is an infinite number of solutions; IsDone() = Standard_False.
   2- distance(Pp,O) > Tol:
-     On se place dans le plan PpOZ;
-     Soit V1 = angle(OX,OPp) avec 0. < V1 < 2.*PI,
-	  V2 = V1 + PI avec 0. < V2 < 2.*PI,
-	  O1 et O2 les centres des cercles (O1 sur coord. posit.)
-          U1 = angle(OPp,O1P),
-	  U2 = angle(OPp,PO2);
-     alors (U1,V1) correspond a la distance minimale
-     et    (U2,V2) correspond a la distance maximale.
+     One is located in plane PpOZ;
+     Let V1 = angle(OX,OPp) with 0. < V1 < 2.*PI,
+	 V2 = V1 + PI with 0. < V2 < 2.*PI,
+	 O1 and O2 centers of circles (O1 on coord. posit.)
+         U1 = angle(OPp,O1P),
+	 U2 = angle(OPp,PO2);
+     then (U1,V1) corresponds to the min distance
+     and  (U2,V2) corresponds to the max distance.
 -----------------------------------------------------------------------------*/
 void Extrema_ExtPElS::Perform(const gp_Pnt&       P, 
 			      const gp_Torus&     S,
@@ -298,13 +295,13 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   myDone = Standard_False;
   myNbExt = 0;
 
-// Projection de P dans le plan XOY ...
+// Projection of P in plane XOY ...
   gp_Ax3 Pos = S.Position();
   gp_Pnt O = Pos.Location();
   gp_Vec OZ (Pos.Direction());
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-(gp_Vec(O,P).Dot(Pos.Direction()))));
 					 
-// Calcul des extrema ...
+// Calculation of extrema ...
   gp_Vec OPp (O,Pp);
   Standard_Real R2 = OPp.SquareMagnitude();
   if (R2 < Tol * Tol) { return; }
@@ -364,7 +361,7 @@ void Extrema_ExtPElS::Perform (const gp_Pnt&       P,
   myDone = Standard_False;
   myNbExt = 0;
 
-// Projection du point P dans le plan XOY du cylindre ...
+// Projection of point P in plane XOY of the cylinder ...
   gp_Pnt O = S.Location();
   gp_Vec OZ (S.Axis().Direction());
   Standard_Real U, V = gp_Vec(O,P).Dot(OZ);

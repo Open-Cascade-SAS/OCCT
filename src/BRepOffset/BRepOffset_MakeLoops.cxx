@@ -54,11 +54,11 @@ void BRepOffset_MakeLoops::Build(const TopTools_ListOfShape&   LF,
   for (; it.More(); it.Next()) {
     const TopoDS_Face& F = TopoDS::Face(it.Value());
     //---------------------------
-    // Initialisation de Loops.
+    // Initialization of Loops.
     //---------------------------
     Loops.Init(F);
     //-----------------------------
-    // recuperation des edges de F.
+    // return edges of F.
     //-----------------------------
     const TopTools_ListOfShape& LE = AsDes->Descendant(F);
     TopTools_ListOfShape        AddedEdges;
@@ -67,10 +67,9 @@ void BRepOffset_MakeLoops::Build(const TopTools_ListOfShape&   LF,
       TopoDS_Edge E = TopoDS::Edge(itl.Value());
       if (Image.HasImage(E)) {
 	//-------------------------------------------
-	// E a deja ete decoupeee dans une autre face.
-	// Recuperation des edges decoupees et reorientation
-	// de ces edges comme E.
-	// Voir pb pour les edges qui ont disparu?
+	// E was already cut in another face.
+	// Return the cut edges reorientate them as E.
+	// See pb for the edges that have disappeared?
 	//-------------------------------------------
 	const TopTools_ListOfShape& LCE = Image.Image(E);
 	for (itLCE.Initialize(LCE); itLCE.More(); itLCE.Next()) {
@@ -84,7 +83,7 @@ void BRepOffset_MakeLoops::Build(const TopTools_ListOfShape&   LF,
       }
     }
     //------------------------
-    // Debouclage.
+    // Unwind.
     //------------------------
     Loops.Perform();
     Loops.WiresToFaces();      
@@ -93,7 +92,7 @@ void BRepOffset_MakeLoops::Build(const TopTools_ListOfShape&   LF,
     //------------------------
     const TopTools_ListOfShape&  NF = Loops.NewFaces();
     //-----------------------
-    // F => Nouvelles faces;
+    // F => New faces;
     //-----------------------
     Image.Bind(F,NF);
 
@@ -101,7 +100,7 @@ void BRepOffset_MakeLoops::Build(const TopTools_ListOfShape&   LF,
     for (itAdded.Initialize(AddedEdges); itAdded.More(); itAdded.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(itAdded.Value());
       //-----------------------
-      //  E => Nouvelles edges;
+      //  E => New edges;
       //-----------------------
       const TopTools_ListOfShape& LoopNE = Loops.NewEdges(E);
       if (Image.HasImage(E)) {
@@ -194,7 +193,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
 					  const Standard_Boolean        InSide)
 {
   //-----------------------------------------
-  // debouclage des bouchons.
+  // unwinding of caps.
   //-----------------------------------------
   TopTools_ListIteratorOfListOfShape  it(LContext);
   TopTools_ListIteratorOfListOfShape  itl,itLCE;
@@ -207,16 +206,16 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
     const TopoDS_Face& F = TopoDS::Face(it.Value());
     TopTools_MapOfShape                 MBound;
     //-----------------------------------------------
-    // Initialisation de Loops.
-    // F est reversed elle sera ajoute dans myOffC.
-    // et myOffC sera reversed dans le resultat final.
+    // Initialisation of Loops.
+    // F is reversed it will be added in myOffC.
+    // and myOffC will be reversed in the final result.
     //-----------------------------------------------
     TopoDS_Shape aLocalShape = F.Reversed();
     if (InSide) Loops.Init(TopoDS::Face(aLocalShape));
 //    if (InSide) Loops.Init(TopoDS::Face(F.Reversed()));
     else        Loops.Init(F);
     //--------------------------------------------------------
-    // recuperation des edges de F non modifie par definition.
+    // return edges of F not modified by definition.
     //--------------------------------------------------------
     for (exp.Init(F.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
 	 exp.More();
@@ -224,7 +223,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
       TopoDS_Edge CE = TopoDS::Edge(exp.Current());
       MBound.Add(CE);   
       if (Analyse.HasAncestor(CE)) {
-	// les arretes des bouchons sauf les arretes de conexite entre bouchons.
+	// the stop of cups except for the connectivity stops between caps.
 	//      if (!AsDes->HasAscendant(CE)) {
 	aLocalShape = CE.Reversed();
 	if (InSide) Loops.AddConstEdge(CE);
@@ -233,7 +232,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
       }
     }
     //------------------------------------------------------
-    // Trace des offsets + edge de connexite entre bouchons.
+    // Trace of offsets + connectivity edge between caps.
     //------------------------------------------------------    
     const TopTools_ListOfShape& LE = AsDes->Descendant(F);
     TopTools_ListOfShape        AddedEdges;
@@ -242,10 +241,9 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
       TopoDS_Edge E = TopoDS::Edge(itl.Value());
       if (Image.HasImage(E)) {
 	//-------------------------------------------
-	// E a deja ete decoupeee dans une autre face.
-	// Recuperation des edges decoupees et reorientation
-	// de ces edges comme E.
-	// Voir pb pour les edges qui ont disparu?
+	// E was already cut in another face.
+	// Return cut edges and orientate them as E.
+	// See pb for the edges that have disappeared?
 	//-------------------------------------------
 	const TopTools_ListOfShape& LCE = Image.Image(E);
 	for (itLCE.Initialize(LCE); itLCE.More(); itLCE.Next()) {
@@ -266,7 +264,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
       }
       else {
 	if (IsBetweenCorks(E,AsDes,LContext) && AsDes->HasDescendant(E)) {
-	  //conexite entre 2 bouchons
+	  //connection between 2 caps
 	  MapExtent.Add(E);
 	  TopTools_ListOfShape LV;
 	  if (InSide) {
@@ -297,7 +295,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
       }
     }
     //------------------------
-    // Debouclage.
+    // Unwind.
     //------------------------
     Loops.Perform();
     Loops.WiresToFaces();      
@@ -306,7 +304,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
     //------------------------
     const TopTools_ListOfShape&  NF = Loops.NewFaces();
     //-----------------------
-    // F => Nouvelles faces;
+    // F => New faces;
     //-----------------------
     Image.Bind(F,NF);   
 
@@ -314,7 +312,7 @@ void BRepOffset_MakeLoops::BuildOnContext(const TopTools_ListOfShape&   LContext
     for (itAdded.Initialize(AddedEdges); itAdded.More(); itAdded.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(itAdded.Value());
       //-----------------------
-      //  E => Nouvelles edges;
+      //  E => New edges;
       //-----------------------
       if (Image.HasImage(E)) {
 	Image.Add(E,Loops.NewEdges(E));
@@ -385,7 +383,7 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
   BRep_Builder                       B;
 
   //----------------------------------
-  // Boucle sur toutes les faces //.
+  // Loop on all faces //.
   //----------------------------------
   for (itr.Initialize(LF); itr.More(); itr.Next()) {
     TopoDS_Face F = TopoDS::Face(itr.Value());
@@ -395,14 +393,13 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
     
     if (!Image.HasImage(F)) {
       //----------------------------------
-      // Face F non deja reconstruite.
+      // Face F not yet reconstructed.
       //----------------------------------
       const TopTools_ListOfShape& LE = AsDes->Descendant(F);
       //----------------------------------------------------------------
-      // premiere boucle pour determiner si des edges de la face ont ete
-      // reconstruite.
-      // - maj de la map MONV. certains vertex sur les edges reconstruites
-      // coincide geometriquement avec les anciens mais ne sont pas IsSame.
+      // first loop to find if the edges of the face were reconstructed.
+      // - maj on map MONV. Some vertices on reconstructed edges
+      // coincide geometrically with old but are not IsSame.
       //----------------------------------------------------------------
       TopTools_DataMapOfShapeShape MONV;
       TopoDS_Vertex OV1,OV2,NV1,NV2;
@@ -419,7 +416,7 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
 	    continue;
 	  }
 	  //----------------------------------
-	  // F doit etre reconstruite.
+	  // F should be reconstructed.
 	  //----------------------------------
 	  ToRebuild = Standard_True;
 	  for (itLCE.Initialize(LCE); itLCE.More(); itLCE.Next()) {
@@ -436,7 +433,7 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
       }
       if (ToRebuild) {
 #ifdef DRAW
-//POP pour NT
+//POP for NT
 	if ( Affich) {
 	  char* name = new char[100];
 	  sprintf(name,"CF_%d",NbF++);
@@ -445,9 +442,8 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
 #endif
 
 	//-----------------------------------------------------------
-	// les edges non reconstruites dans d autre faces sont 
-	// ajoutees .si leurs vertex ont ete reconstruits elles
-	// seront reconstruites.
+	// Non-reconstructed edges on other faces are added.  
+	// If their vertices were reconstructed they are reconstructed.
 	//-----------------------------------------------------------
 	for (itl.Initialize(LE); itl.More(); itl.Next()) {
 	  Standard_Real f,l;
@@ -494,7 +490,7 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
       //------------------------
       const TopTools_ListOfShape&  NF = Loops.NewFaces();
       //-----------------------
-      // F => Nouvelles faces;
+      // F => New faces;
       //-----------------------
       Image.Bind(F,NF); 
 
@@ -502,7 +498,7 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
       for (itAdded.Initialize(AddedEdges); itAdded.More(); itAdded.Next()) {
 	const TopoDS_Edge& E = TopoDS::Edge(itAdded.Value());
 	//-----------------------
-	//  E => Nouvelles edges;
+	//  E => New edges;
 	//-----------------------
 	if (Image.HasImage(E)) {
 	  Image.Add(E,Loops.NewEdges(E));

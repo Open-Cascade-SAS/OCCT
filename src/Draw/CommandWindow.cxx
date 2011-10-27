@@ -25,17 +25,17 @@
 
 
 
-Standard_Boolean Draw_Interprete(char*); // Implemente dans draw.cxx
+Standard_Boolean Draw_Interprete(char*); // Implement in draw.cxx
 
 #define CLIENTWND 0
 
 #define PROMPT "Command >> "
-#define COMMANDSIZE 1000 // Nb caracteres maximun pour un commande
+#define COMMANDSIZE 1000 // Max nb of characters for a command
 
 
-// Definition des varaibles globales
+// Definition of global variables
 #ifdef STRICT
-  WNDPROC OldEditProc;  // Sauvegarde la procedure standard de la fenetre d'edition (Sous Classement)
+  WNDPROC OldEditProc;  // Save the standard procedure of the edition (sub-class)
 #else
   FARPROC OldEditProc;
 #endif
@@ -70,7 +70,7 @@ HWND CreateCommandWindow(HWND hWnd, int nitem)
 LONG APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
 {
   HWND hWndEdit;
-  int index; // Nombre de caractere dans le buffer de hWndEdit
+  int index; // Nb of characters in the buffer of hWndEdit
   MINMAXINFO* lpmmi;
 
   switch(wMsg)
@@ -90,7 +90,7 @@ LONG APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
     case WM_SIZE :
     			hWndEdit = (HWND)GetWindowLong(hWnd, CLIENTWND);          
     			MoveWindow(hWndEdit, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
-            // Place le curseur a la fin du buffer
+            // Place the cursor at the end of the buffer
           index =  SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
           SendMessage(hWnd, EM_SETSEL, index, index); 
     			break;
@@ -127,13 +127,13 @@ BOOL CommandCreateProc(HWND hWnd)
   			  hWnd, 0,
   			  hInstance, NULL);
 
-    // Enregistrement hWndEdit deans l'extra memory en 0 de CommandWindow
+    // Save hWndEdit in the extra memory in 0 of CommandWindow
   if (hWndEdit)
     SetWindowLong(hWnd, CLIENTWND, (LONG)hWndEdit);
 
-    // Sous Classement de la fenetre
+    // Sub-Class of the window
     //-------
-    // Sauvegarde du pointeur sur la procedure existante
+    // Save the pointer on the existing procedure
   #ifdef STRICT
    #ifndef _WIN64
     OldEditProc = (WNDPROC)GetWindowLong(hWndEdit, GWL_WNDPROC);
@@ -143,7 +143,7 @@ BOOL CommandCreateProc(HWND hWnd)
   #else
     OldEditProc = (FARPROC)GetWindowLong(hWndEdit, GWL_WNDPROC);
   #endif
-    // Mise en place de la nouvelle fonction
+    // Implement the new function
 #ifndef _WIN64
   SetWindowLong(hWndEdit, GWL_WNDPROC, (LONG) EditProc);
 #else
@@ -169,7 +169,7 @@ int GetCommand(HWND hWnd, char* buffer)
   while ( again && nbLine > -1 && nbChar < COMMANDSIZE-1)
     {
       strcat(buffer, strrev(temp));
-      // Initialisation du 1er WORD de temp au nombre de caracteres a lire 
+      // Initialization of the 1st WORD to the nb of characters to read 
       WORD* nbMaxChar = (WORD*)temp;
       *nbMaxChar = COMMANDSIZE-1;
       
@@ -199,7 +199,7 @@ LONG APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
   char buffer[COMMANDSIZE];	
 	POINT pos;
 	BOOL rep;
-	static int nbline; // Taille du buffer de la fenetre d`edition 
+	static int nbline; // Process the buffer of the edit window 
   int index;
     
   switch(wMsg)
@@ -209,21 +209,21 @@ LONG APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
       return 0l;
     			switch(LOWORD(wParam))
     			{
-              // Surcharge du caractere \n
+              // Overload of character \n
     	  		case 0x0d :    	      
 									GetCommand(hWnd, buffer);									
-    	      			  // Traitement standard
+    	      			  // Standard processing
 			    	      CallWindowProc(OldEditProc, hWnd, wMsg, wParam, lParam);
-    				        // Affichage du PROMPT
+    				        // Display of PROMPT
 									rep = GetCaretPos(&pos);
     	      			SendMessage(hWnd, EM_REPLACESEL, 0, (LPARAM)PROMPT);							
-                    // Affiche la commande dans la console
+                    // Display the command in the console
                   cout << buffer << endl; 
 									/*if (Draw_Interprete(buffer+strlen(PROMPT))== -2)
 									    DestroyProc(hWnd); */ 
 									strcpy(console_command, buffer+strlen(PROMPT));
 									console_semaphore = HAS_CONSOLE_COMMAND;
-									  // Purge du buffer
+									  // Purge the buffer
                   nbline = SendMessage(hWnd, EM_GETLINECOUNT, 0l, 0l);
 									if(nbline > 200)
 									{
@@ -232,7 +232,7 @@ LONG APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
                       index = SendMessage(hWnd, EM_LINEINDEX, 100, 0);
 											SendMessage(hWnd, EM_SETSEL, 0, index);			
 											SendMessage(hWnd, WM_CUT, 0, 0);
-                        // Place le curseur en fin de text
+                        // Place the cursor at the end of text
                       index =  SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
                       SendMessage(hWnd, EM_SETSEL, index, index);                      
 									}
@@ -241,7 +241,7 @@ LONG APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
                 default :
                   if (IsAlphanumeric((Standard_Character)LOWORD(wParam)))
                   {
-                      // Place le curseur en fin de texte avant affichage
+                      // Place the cursor at the end of text before display
                     index =  SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
                     SendMessage(hWnd, EM_SETSEL, index, index);
                     CallWindowProc(OldEditProc, hWnd, wMsg, wParam, lParam);                    

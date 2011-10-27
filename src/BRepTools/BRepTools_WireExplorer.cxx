@@ -212,7 +212,7 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
       it.Next();
     }
 
-  //Construction de l ensemble des aretes doubles.
+  //Construction of the set of double edges.
   TopoDS_Iterator it2(W);  
   TopTools_MapOfShape emap;
   while (it2.More()) {
@@ -261,8 +261,8 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
       const TopoDS_Edge& E = TopoDS::Edge(it.Value());
       TopAbs_Orientation Eori = E.Orientation();
       if (Eori == TopAbs_INTERNAL || Eori == TopAbs_EXTERNAL) {
-	// JYL 10-03-97 : en attendant un traitement correct 
-	// des aretes INTERNAL/EXTERNAL
+	// JYL 10-03-97 : waiting for correct processing 
+	// of INTERNAL/EXTERNAL edges
 	it.Next();
 	continue;
       }
@@ -369,15 +369,15 @@ void  BRepTools_WireExplorer::Next()
   }
   else {
     if (myFace.IsNull()) {
-      // Sans la Face On essait qd meme de renvoyer les aretes
-      // le plus logiquement possible
-      // En premier choix les aretes degenerees.
+      // Without Face - try to return edges
+      // as logically as possible
+      // At first degenerated edges.
       TopoDS_Edge E = myEdge;
       if (SelectDegenerated(l,E)) {
 	myEdge = E;
 	return;
       }
-      // En deuxieme choix les aretes doubles.
+      // At second double edges.
       E = myEdge;
       if (SelectDouble(myDoubles,l,E)) {
 	myEdge = E;

@@ -131,7 +131,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
 
 //=======================================================================
 //function : Add
-//purpose  : add faces de collage
+//purpose  : add faces of gluing
 //=======================================================================
 
 void BRepFeat_MakePipe::Add(const TopoDS_Edge& E,
@@ -245,7 +245,7 @@ void BRepFeat_MakePipe::Perform()
 
 //=======================================================================
 //function : Perform
-//purpose  : jusqu'au shape Until
+//purpose  : till shape Until
 //=======================================================================
 
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
@@ -289,7 +289,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 
 //=======================================================================
 //function : Perform
-//purpose  : entre From et Until
+//purpose  : between From and Until
 //=======================================================================
 
 void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From,
@@ -350,7 +350,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From,
 
 //=======================================================================
 //function : Curves
-//purpose  : courbes paralleles au wire-generarice du pipe
+//purpose  : curves parallel to the generating wire of the pipe
 //=======================================================================
 
 void BRepFeat_MakePipe::Curves(TColGeom_SequenceOfCurve& scur)
@@ -360,7 +360,7 @@ void BRepFeat_MakePipe::Curves(TColGeom_SequenceOfCurve& scur)
 
 //=======================================================================
 //function : BarycCurve
-//purpose  : passe par le centre des masses
+//purpose  : pass through the center of mass
 //=======================================================================
 
 Handle(Geom_Curve) BRepFeat_MakePipe::BarycCurve()
@@ -371,7 +371,7 @@ Handle(Geom_Curve) BRepFeat_MakePipe::BarycCurve()
 
 //=======================================================================
 //function : SetGluedFaces
-//purpose  : gestion des faces de collage et glissement 
+//purpose  : management of faces of gluing and sliding  
 //=======================================================================
 
 static void SetGluedFaces(const TopoDS_Face& theSkface,
@@ -403,7 +403,7 @@ static void SetGluedFaces(const TopoDS_Face& theSkface,
     }
   }
 
-  // Glissements
+  // Sliding
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(theSlmap);
   if(!theSlmap.IsEmpty()) {
     for (; itm.More(); itm.Next()) {
@@ -427,7 +427,7 @@ static void SetGluedFaces(const TopoDS_Face& theSkface,
 
 //=======================================================================
 //function : MajMap
-//purpose  : gestion de descendants
+//purpose  : management of descendants
 //=======================================================================
 
 static void MajMap(const TopoDS_Shape& theB,

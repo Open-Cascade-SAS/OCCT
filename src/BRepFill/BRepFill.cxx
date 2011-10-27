@@ -5,28 +5,28 @@
 // Modified:	Mon Jan 12 10:50:10 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
-//              gestion automatique de l'origine et de l'orientation
-//              avec la methode Organize
+//              automatic management of origin and orientation
+//              with method Organize
 // Modified:	Mon Feb 23 09:28:46 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
-//              methode Organize avec option de projection pour les wires fermes
-//              nouvelle methode SameNumber avec option de report des decoupes
-//              + utilitaires ComputeACR et InsertACR
-//              + traitement du cas derniere section ponctuelle
+//              method Organize with option of projection for closed wires
+//              new method SameNumber with option to report cuts
+//              + utilities ComputeACR and InsertACR
+//              + processing of the case of last point section 
 // Modified:	Thu Apr 30 15:24:17 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
-//              separation sections fermees / sections ouvertes + debug 
-//              Organize devient ComputeOrigin et SearchOrigin 
+//              separation closed / open sections + debug 
+//              Organize becomes ComputeOrigin and SearchOrigin 
 // Modified:	Tue Jul 21 16:48:35 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
-//              cas limite pour Pnext d'ou vrillage (BUC60281) 
+//              limited case for Pnext of a twist (BUC60281) 
 // Modified:	Thu Jul 23 11:38:36 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
-//              calcul de l'angle de la rotation dans SearchOrigin 
+//              calculate the angle of rotation in SearchOrigin 
 // Modified:	Fri Jul 31 15:14:19 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
@@ -34,7 +34,7 @@
 // Modified:	Mon Oct 12 09:42:33 1998
 // Author:	Joelle CHAUVET
 //		<jct@sgi64>
-//              numero des aretes dans EdgesFromVertex (CTS21570) 
+//              number of edges in EdgesFromVertex (CTS21570) 
 
 #include <BRepFill.ixx>
 
@@ -167,11 +167,11 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
   Vbid.Nullify();
 
   if (SeqOrder) {
-    // de first vers last
+    // from first to last
     m0 = first;
     V0 = Vf;
     for (j=1; j<=ndec; j++) {
-      // morceau d'edge  
+      // piece of edge  
       m1 = (CutValues.Value(j)-t0)*(last-first)/(t1-t0)+first;
       TopoDS_Edge CutE = BRepLib_MakeEdge(C,V0,Vbid,m0,m1);
       CutE.Orientation(CurrentOrient);
@@ -179,7 +179,7 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
       m0 = m1;
       V0 = TopExp::LastVertex(CutE);
       if (j==ndec) {
-	// dernier morceau
+	// last piece
 	TopoDS_Edge LastE = BRepLib_MakeEdge(C,V0,Vl,m0,last);
 	LastE.Orientation(CurrentOrient);
 	S.Append(LastE);
@@ -187,11 +187,11 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
     }
   }
   else {
-    // de last vers first
+    // from last to first
     m1 = last;
     V1 = Vl;
     for (j=ndec; j>=1; j--) {
-      // morceau d'edge  
+      // piece of edge  
       m0 = (CutValues.Value(j)-t0)*(last-first)/(t1-t0)+first;
       TopoDS_Edge CutE = BRepLib_MakeEdge(C,Vbid,V1,m0,m1);
       CutE.Orientation(CurrentOrient);
@@ -199,7 +199,7 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
       m1 = m0;
       V1 = TopExp::FirstVertex(CutE);
       if (j==1) {
-	// dernier morceau
+	// last piece
 	TopoDS_Edge LastE = BRepLib_MakeEdge(C,Vf,V1,first,m1);
 	LastE.Orientation(CurrentOrient);
 	S.Append(LastE);
@@ -243,7 +243,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
 
   TopoDS_Vertex V1f,V1l,V2f,V2l;
   
-  // on cree un new Handle
+  // create a new Handle
   if (Abs(f1 - C1->FirstParameter()) > Precision::PConfusion() ||
       Abs(l1 - C1->LastParameter())  > Precision::PConfusion()   ) {
     C1 = new Geom_TrimmedCurve(C1,f1,l1);
@@ -251,11 +251,11 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
   else {
     C1 = Handle(Geom_Curve)::DownCast(C1->Copy());
   }
-  // eventuellement on bouge la courbe
+  // eventually the curve is concerned
   if ( !SameLoc) {
     C1->Transform(L1.Transformation());
   }
-  // on la met dans le bon sens et on prend ses vertex
+  // it is set in the proper direction and its vertices are taken
   if (Edge1.Orientation() == TopAbs_REVERSED) {
     TopExp::Vertices(Edge1,V1l,V1f);
     C1->Reverse();
@@ -264,7 +264,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
     TopExp::Vertices(Edge1,V1f,V1l);
   }
 
-  // on cree un new Handle
+  // a new Handle is created
   if (Abs(f2 - C2->FirstParameter()) > Precision::PConfusion() ||
       Abs(l2 - C2->LastParameter())  > Precision::PConfusion()   ) {
     C2 = new Geom_TrimmedCurve(C2,f2,l2);
@@ -272,11 +272,11 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
   else {
     C2 = Handle(Geom_Curve)::DownCast(C2->Copy());
   }
-  // eventuellement on bouge la courbe
+  // eventually the curve is concerned
   if ( !SameLoc) {
     C2->Transform(L2.Transformation());
   }
-  // on la met dans le bon sens et on prend ses vertex
+  // it is set in the proper direction and its vertices are taken
   if (Edge2.Orientation() == TopAbs_REVERSED) {
     TopExp::Vertices(Edge2,V2l,V2f);
     C2->Reverse();
@@ -285,7 +285,7 @@ TopoDS_Face BRepFill::Face(const TopoDS_Edge& Edge1,
     TopExp::Vertices(Edge2,V2f,V2l);
   }
 
-  // Sont-ce des edges fermes
+  // Are they closed edges?
   Standard_Boolean Closed = V1f.IsSame(V1l) && V2f.IsSame(V2l);
 
 
@@ -642,7 +642,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
   
   TopoDS_Face aFace;
 
-  // normale au Spine.
+  // normal to the Spine.
   if (Spine.ShapeType() == TopAbs_FACE) {
     aFace = TopoDS::Face(Spine);
     S = BRep_Tool::Surface(TopoDS::Face(Spine), L);  
@@ -670,7 +670,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
   
   Normal = Handle(Geom_Plane)::DownCast(S)->Pln().Axis().Direction();
 
-  // Recherche du vertex du profil  le plus proche du spine.
+  // Find vertex of the profile closest to the spine.
   Standard_Real     DistMin = Precision::Infinite();
   Standard_Real     Dist;
 //  Standard_Real     Tol2 = Tol*Tol;
@@ -681,7 +681,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
 //  Standard_Real     D1,D2;
   gp_Pnt            P1,P2;
 
-  // On cherche d'abord si il y a contact Vertex Vertex.
+  // First check if there is contact Vertex Vertex.
   Standard_Boolean IsOnVertex = Standard_False;
   SE.Init(aFace.Oriented(TopAbs_FORWARD),TopAbs_VERTEX);
 //  modified by NIZHNY-EAP Wed Feb 23 12:31:52 2000 ___BEGIN___
@@ -780,7 +780,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
 	    }
 	  }
 	}
-	// sauvegarde minimum.
+	// save minimum.
 	if (Dist < DistMin) {
 	  DistMin = Dist;
 	  BRepAdaptor_Curve BAC(E);
@@ -800,7 +800,7 @@ void BRepFill::Axe (const TopoDS_Shape&       Spine,
 
 //=======================================================================
 //function : SearchOrigin
-//purpose  : Decoupe et oriente un wire ferme. 
+//purpose  : Cut and orientate a closed wire. 
 //=======================================================================
 
 void BRepFill::SearchOrigin(TopoDS_Wire & W,
@@ -821,9 +821,9 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
 // Class BRep_Tool without fields and without Constructor :
 //  BRep_Tool BT;
 
-  W.Orientation(TopAbs_FORWARD); //pour ne pas composer les orientations
+  W.Orientation(TopAbs_FORWARD); //to avoid composing the orientations
 
-  // Calcul la distance
+  // Calculate the distance
   B.MakeVertex(V, P, Tol);  
   BRepExtrema_DistShapeShape DSS(V, W);
   if (DSS.IsDone()) {
@@ -870,14 +870,14 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
   Standard_Boolean forward;
   BRepTools_WireExplorer exp;
 
-  // Calcul le nombre d'edges
+  // Calculate the number of edges
   for(exp.Init(W); exp.More(); exp.Next()) NbEdges++;
   if (NewVertex) {
     NbEdges++;
     Eref = E;
   }
 
-  // Construit la Table et calcul rangdeb
+  // Construct the Table and calculate rangdeb
   TopTools_Array1OfShape Edges(1, NbEdges);
   for(exp.Init(W), ii=1; exp.More(); exp.Next(), ii++) {
     E = exp.Current();
@@ -898,7 +898,7 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
   }
   if (rangdeb == 0) rangdeb = NbEdges;
 
-  // Calcul du sens de parcourt
+  // Calculate the direction of parsing
   E = TopoDS::Edge(Edges(rangdeb));
   if (!NewVertex) {
 //    theparam = BT.Parameter(V, E);
@@ -930,11 +930,11 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
 void BRepFill::ComputeACR(const TopoDS_Wire& wire,
 			  TColStd_Array1OfReal& ACR)
 {
-  // calcul des abscisses curvilignes reduites et de la longueur du wire
+  // calculate the reduced curvilinear abscisses and the length of the wire
   BRepTools_WireExplorer anExp;
   Standard_Integer nbEdges=0, i;
 
-  // longueurs cumulees
+  // cumulated lengths
   ACR.Init(0);
   for(anExp.Init(wire); anExp.More(); anExp.Next()) {
     nbEdges++;
@@ -946,17 +946,17 @@ void BRepFill::ComputeACR(const TopoDS_Wire& wire,
     }
   }
 
-  // longueur totale du wire
+  // total length of the wire
   ACR(0) = ACR(nbEdges);
 
-  // abscisses curvilignes reduites
+  // reduced curvilinear abscisses 
   if (ACR(0)>Precision::Confusion()) {
     for (i=1; i<=nbEdges; i++) {
       ACR(i) /= ACR(0);
     }
   }
   else {
-    // wire ponctuel
+    // punctual wire 
     ACR(nbEdges) = 1;
   }
 
@@ -971,7 +971,7 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire& wire,
 				const TColStd_Array1OfReal& ACRcuts,
 				const Standard_Real prec)
 {
-  // calcul des ACR du wire a decouper
+  // calculate ACR of the wire to be cut
   BRepTools_WireExplorer anExp;
   Standard_Integer nbEdges=0;
   for(anExp.Init(wire); anExp.More(); anExp.Next()) {
@@ -987,13 +987,13 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire& wire,
   Standard_Real t0,t1=0;
   nbEdges=0;
 
-  // traitement edge par edge
+  // processing edge by edge
   for(anExp.Init(wire); anExp.More(); anExp.Next()) {
     nbEdges++;
     t0 = t1;
     t1 = ACRwire(nbEdges);
 
-    // parametres de decoupe sur cette edge
+    // parameters of cut on this edge
     Standard_Integer ndec=0;
     for (i=1; i<=ACRcuts.Length(); i++ ) {
       if (t0+prec<ACRcuts(i) && ACRcuts(i)<t1-prec) {
@@ -1006,19 +1006,19 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire& wire,
     TopoDS_Vertex V = anExp.CurrentVertex();
 
     if (ndec==0 || BRep_Tool::Degenerated(E)) {
-      // on copie l'edge
+      // copy the edge
       MW.Add(E);
     }
     else {
-      // il faut couper l'edge
-      // en respectant le sens de parcours du wire
+      // it is necessary to cut the edge
+      // following the direction of parsing of the wire
       Standard_Boolean SO = (V.IsSame(TopExp::FirstVertex(E)));
       TopTools_SequenceOfShape SE;
       SE.Clear();
       TColStd_SequenceOfReal SR;
       SR.Clear();
-      // le wire est toujours FORWARD
-      // il faut modifier le parametre de decoupe si l'edge est REVERSED
+      // the wire is always FORWARD
+      // it is necesary to modify the parameter of cut6 if the edge is REVERSED
       if (E.Orientation() == TopAbs_FORWARD) {
 	for (j=1; j<=ndec; j++) SR.Append(paradec(j));
       }
@@ -1032,7 +1032,7 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire& wire,
     }
   }
 
-  // resultat
+  // result
   TopAbs_Orientation Orien = wire.Orientation();
   TopoDS_Shape aLocalShape = MW.Wire();
   aLocalShape.Orientation(Orien);

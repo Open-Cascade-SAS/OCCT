@@ -14,13 +14,13 @@
 #include <Standard_NegativeValue.hxx>
 #include <GccEnt_BadQualifier.hxx>
 
-//   Cercle passant par deux points de rayon donne.
+//   Circle passing by two points of given radius.
 //   ==============================================
 
-//=========================================================================
-//   Resolution de l equation du second degre indiquant que le centre du  +
-//   cercle est equidistant des deux points.                              +
-//=========================================================================
+//==============================================================================
+//   Solution of the equation of second degree showing that the center of the  +
+//   circle is equidistant from two points.                                    +
+//==============================================================================
 
 GccAna_Circ2d2TanRad::
    GccAna_Circ2d2TanRad (const gp_Pnt2d&             Point1     ,

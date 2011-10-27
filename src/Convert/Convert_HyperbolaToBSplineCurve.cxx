@@ -43,7 +43,7 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve
   knots->ChangeArray1()(1) = UF;  mults->ChangeArray1()(1) = 3;  
   knots->ChangeArray1()(2) = UL;  mults->ChangeArray1()(2) = 3;  
   
-  // construction de l hyperbole dans le repere de reference xOy.
+  // construction of hyperbola in the reference xOy.
   
   Standard_Real R = H.MajorRadius();
   Standard_Real r = H.MinorRadius();
@@ -51,10 +51,10 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve
   gp_Dir2d Oy = H.Axis().YDirection();
   Standard_Real S = ( Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ?  1 : -1;
   
-  // poles exprimes dans le repere de reference
-  // le 2eme pole est a l intersection des 2 tangentes a la courbe
-  // aux pointx P(UF), P(UL)
-  // le poids de ce pole est egal a : Cosh((UL-UF)/2)
+  // poles expressed in the reference mark
+  // the 2nd pole is at the intersection of 2 tangents to the curve
+  // at points P(UF), P(UL)
+  // the weight of this pole is equal to : Cosh((UL-UF)/2)
 
   weights->ChangeArray1()(1) = 1.;
   weights->ChangeArray1()(2) = Cosh((UL-UF)/2);
@@ -67,7 +67,7 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve
   poles->ChangeArray1()(2) = gp_Pnt2d( x, y);
   poles->ChangeArray1()(3) = gp_Pnt2d( R * Cosh(UL), S * r * Sinh(UL));
 
-  // on replace la bspline dans le repere de l hyperbole
+  // replace the bspline in the mark of the hyperbola
   gp_Trsf2d Trsf;
   Trsf.SetTransformation( H.Axis().XAxis(), gp::OX2d());
   poles->ChangeArray1()(1).Transform( Trsf);

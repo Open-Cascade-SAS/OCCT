@@ -7,13 +7,13 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au contexte
-//		de trace de lignes
+//-Design	Declaration of variables specific to the context
+//		of line tracing
 
-//-Warning	Un contexte de trace de ligne est defini par :
-//		- la couleur
-//		- le type de trait
-//		- l'epaisseur
+//-Warning	A context of line tracing is defined by :
+//		- the color
+//		- the type of line
+//		- the thickness
 
 //-References	
 
@@ -28,13 +28,13 @@
 
 //-Global data definitions
 
-//	-- la couleur
+//	-- color
 //	MyColor	:	Color;
 
-//	-- le type de trait
+//	-- type of line
 //	MyType	:	TypeOfLine;
 
-//	-- l'epaisseur
+//	-- thickness
 //	MyWidth	:	Standard_Real;
 
 //-Constructors

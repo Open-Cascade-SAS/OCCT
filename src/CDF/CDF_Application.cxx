@@ -421,7 +421,7 @@ Standard_Boolean CDF_Application::FindReader(const TCollection_ExtendedString& a
   
   TCollection_ExtendedString theFormat=PCDM_ReadWriter::FileFormat(aFileName);
 
-// Si le format est dans le fichier, tant mieux. Sinon on se base sur l'extension.
+// It is good if the format is in the file. Otherwise base on the extension.
   
   if(theFormat.Length()==0) {
     ResourceName=UTL::Extension(aFileName);
@@ -445,7 +445,7 @@ Standard_Boolean CDF_Application::Format(const TCollection_ExtendedString& aFile
 {
   
   theFormat = PCDM_ReadWriter::FileFormat(aFileName);
-  // Si le format est dans le fichier, tant mieux. Sinon on se base sur l'extension.
+// It is good if the format is in the file. Otherwise base on the extension.
   if(theFormat.Length()==0) {
     TCollection_ExtendedString ResourceName;
     ResourceName=UTL::Extension(aFileName);

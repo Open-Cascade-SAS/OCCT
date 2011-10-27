@@ -54,7 +54,7 @@ static void DrawCurve(const Handle(Geom2d_Curve)& aCurve,
 
 //==========================================================================
 //function : topoLoad
-//           chargement d une face dans l explorer.
+//           loading of a face in the explorer.
 //==========================================================================
 static Standard_Integer topoload (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 { 
@@ -70,7 +70,7 @@ static Standard_Integer topoload (Draw_Interpretor& , Standard_Integer argc, con
 
 //==========================================================================
 //function : drawcont
-//           visualisation du contour defini par l explorateur.
+//           visualization of the contour defined by the explorer.
 //==========================================================================
 static Standard_Integer drawcont(Draw_Interpretor& , Standard_Integer , const char**)
 {
@@ -86,8 +86,8 @@ static Standard_Integer drawcont(Draw_Interpretor& , Standard_Integer , const ch
 
 //==========================================================================
 //function : mat
-//           calcul de la carte des lieux bisecteur sur le contour defini
-//           par l explorateur.
+//           calculate the map of locations bisector on the contour defined by 
+//           the explorer.
 //==========================================================================
 static Standard_Integer mat(Draw_Interpretor& , Standard_Integer, const char**)
 {
@@ -97,11 +97,11 @@ static Standard_Integer mat(Draw_Interpretor& , Standard_Integer, const char**)
   return 0;
 }
 
-//==========================================================================
+//============================================================================
 //function : zone
-//           construction et affichage de la zone de proximite associee aux
-//           elements de base definis par l edge ou le vertex.
-//==========================================================================
+//           construction and display of the proximity zone associated to the
+//           base elements defined by the edge or the vertex.
+//============================================================================
 static Standard_Integer zone(Draw_Interpretor& , Standard_Integer argc , const char** argv)
 {
   if (argc < 2) return 1;
@@ -132,8 +132,8 @@ static Standard_Integer zone(Draw_Interpretor& , Standard_Integer argc , const c
 
 //==========================================================================
 //function : side
-//           side = left  => calcul a gauche du contour.
-//           side = right => calcul a droite du contour.
+//           side = left  => calculation to the left of the contour.
+//           side = right => calculation to the right of the contour.
 //==========================================================================
 
 static Standard_Integer side(Draw_Interpretor& , Standard_Integer, const char** argv)
@@ -148,7 +148,7 @@ static Standard_Integer side(Draw_Interpretor& , Standard_Integer, const char** 
 
 //==========================================================================
 //function : result
-//           Affichage complet de la carte calculee.
+//           Complete display of the calculated map.
 //==========================================================================
 static Standard_Integer result(Draw_Interpretor& , Standard_Integer, const char**)
 {
@@ -165,12 +165,11 @@ static Standard_Integer result(Draw_Interpretor& , Standard_Integer, const char*
 
 //==========================================================================
 //function : DrawCurve
-//           Affichage d une courbe <aCurve> de Geom2d. dans une couleur
-//           definie par <Indice>.
-//  Indice = 1 jaune,
-//  Indice = 2 bleu,
-//  Indice = 3 rouge,
-//  Indice = 4 vert.
+//           Display of curve <aCurve> of Geom2d in a color defined by <Indice>.
+//  Indice = 1 yellow,
+//  Indice = 2 blue,
+//  Indice = 3 red,
+//  Indice = 4 green.
 //==========================================================================
 void DrawCurve(const Handle(Geom2d_Curve)& aCurve,
 	       const Standard_Integer      Indice)
@@ -187,14 +186,14 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve,
       curve =(*(Handle_Bisector_BisecAna*)&curve)->Geom2dCurve(); 
       type = curve->DynamicType(); 
     }
-    // PB de representation des courbes semi_infinies.
+    // PB of representation of semi_infinite curves.
     gp_Parab2d gpParabola;
     gp_Hypr2d  gpHyperbola;
     Standard_Real Focus;
     Standard_Real Limit = 50000.;
     Standard_Real delta = 400;
 
-    // PB de representation des courbes semi_infinies.
+    // PB of representation of semi_infinite curves.
     if (aCurve->LastParameter() == Precision::Infinite()) {
       
       if (type == STANDARD_TYPE(Geom2d_Parabola)) {
@@ -224,7 +223,7 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve,
     else {
       CurveDraw = aCurve;
     }
-    // fin PB.
+    // end PB.
   }
   else {
     CurveDraw = aCurve;

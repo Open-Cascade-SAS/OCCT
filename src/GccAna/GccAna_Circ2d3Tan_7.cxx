@@ -20,9 +20,9 @@
 #include <GccEnt_BadQualifier.hxx>
 #include <Precision.hxx>
 
-//=========================================================================
-//   Creation d un cercle tangent a un cercle et a deux points.           +
-//=========================================================================
+//=======================================================================
+//   Creation of a circle tangent to a circle and two points.           +
+//=======================================================================
 
 GccAna_Circ2d3Tan::
    GccAna_Circ2d3Tan (const GccEnt_QualifiedCirc& Qualified1 ,
@@ -59,7 +59,7 @@ GccAna_Circ2d3Tan::
    }
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
    gp_Circ2d C1 = Qualified1.Qualified();

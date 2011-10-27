@@ -55,7 +55,7 @@ Standard_Boolean BRepFeat_SplitShape::IsDeleted(const TopoDS_Shape& F)
 {
   TopTools_ListIteratorOfListOfShape itl
     (((LocOpe_Spliter*) &mySShape)->DescendantShapes(F));
-  // tout ceci pour truander le const
+  // all that to swindle the constant
 
   return (!itl.More());// a priori impossible
 

@@ -30,7 +30,7 @@
 
 //=======================================================================
 //function : NbLaw
-//purpose  : Donne le nombre de loi elementaire (ou Geometrique)
+//purpose  : Gives the number of elementary (or Geometric) law
 //=======================================================================
  Standard_Integer BRepFill_SectionLaw::NbLaw() const
 {
@@ -68,7 +68,7 @@
 
 //=======================================================================
 //function : Init
-//purpose  : Prepare le parcour d'un wire
+//purpose  : Prepare the parsing of a wire
 //=======================================================================
  void BRepFill_SectionLaw::Init(const TopoDS_Wire& W)
 {
@@ -77,7 +77,7 @@
 
 //=======================================================================
 //function : 
-//purpose  : Parcourt d'un wire en sautant les Edges degenere
+//purpose  : Parses the wire omitting the degenerated Edges
 //=======================================================================
  TopoDS_Edge BRepFill_SectionLaw::CurrentEdge() 
 {
@@ -87,14 +87,14 @@
   Standard_Boolean Suivant = Standard_False;
   if (myIterator.More()) {
     E =  myIterator.Current();
-//    Suivant = (B.Degenerated(E));
+//    Next = (B.Degenerated(E));
     Suivant = (BRep_Tool::Degenerated(E));
   }
 
   while (Suivant) {
      myIterator.Next();
      E = myIterator.Current();
-//     Suivant = (B.Degenerated(E) && myIterator.More());
+//    Next = (B.Degenerated(E) && myIterator.More());
      Suivant = (BRep_Tool::Degenerated(E) && myIterator.More());
    }
 

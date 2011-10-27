@@ -1,7 +1,7 @@
 // File GccEnt.cxx, REG 13/08/91
 
 //=========================================================================
-//   Methodes de package permettant de qualifier les objets.              +
+//   Methods of packing allowing to qualify  objects.              +
 //                                                                        +
 //=========================================================================
 

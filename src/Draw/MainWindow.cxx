@@ -15,7 +15,7 @@
 #include <Draw_Window.hxx>
 #include <CommandWindow.h>
 
-Standard_Boolean Draw_Interprete(char* command); // Implemente dans Draw.cxx
+Standard_Boolean Draw_Interprete(char* command); // Implemented in Draw.cxx
 extern Standard_Boolean Draw_IsConsoleSubsystem;
 
 //extern "C" int  compat_unlink(const char *fname); // Implemente dans TCL
@@ -59,14 +59,14 @@ LONG APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LONG lParam )
 
 /*--------------------------------------------------------------------------*\
 |  CLIENT CREATE PROCEDURE
-|     Handler pour le message WM_CREATE. Creation de la fenetre de control MDI
+|     Handler for message WM_CREATE. Creation of control window MDI
 |
 \*--------------------------------------------------------------------------*/
 BOOL CreateProc(HWND hWndFrame)
 {
   HWND hWnd;
 
-  // Enregistre le hWnd dans la fenetre principale dans extra memory en 0
+  // Save hWnd in the main window in extra memory in 0
   if (hWnd = CreateMDIClientWindow(hWndFrame))
     SetWindowLong(hWndFrame, CLIENTWND, (LONG)hWnd);
   return(TRUE);
@@ -75,12 +75,12 @@ BOOL CreateProc(HWND hWndFrame)
 
 /*--------------------------------------------------------------------------*\
 |  COMMAND PROCEDURE
-|  		Handler pour le message WM_COMMAND   
+|  		Handler for message WM_COMMAND   
 |
 \*--------------------------------------------------------------------------*/
 BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM lParam)
 {
-  HWND hWndClient; // Handle sur la fenetre MDI
+  HWND hWndClient; // Handle on window MDI
   HWND hWndActive;
 
 	hWndClient = (HWND)GetWindowLong(hWndFrame, CLIENTWND);
@@ -120,7 +120,7 @@ BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM lParam)
 
 /*--------------------------------------------------------------------------*\
 |  CLIENT DESTROY PROCEDURE
-|     Handler pour le message WM_DESTROY.
+|     Handler for message WM_DESTROY.
 |
 \*--------------------------------------------------------------------------*/
 VOID DestroyProc(HWND hWnd)

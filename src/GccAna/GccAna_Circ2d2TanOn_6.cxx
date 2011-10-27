@@ -19,18 +19,17 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Creation d un cercle tangent a deux cercle C1 et C2.                 +
-//                        centre sur un cercle.                           +
-//  Nous commencons par distinguer les differents cas limites que nous    +
-//  allons traiter separement.                                            +
-//  Pour le cas general:                                                  +
+//   Creation of a circle tangent to two circles C1 and C2.               +
+//                        centered on a circle.                           +
+//  We start with distinguishing various boundary cases that will be      +
+//  processed separately.                                            +
+//  In the general case:                                                  +
 //  ====================                                                  +
-//  Nous calculons les bissectrices a C1 et C2 qui nous donnent           +
-//  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tangents aC1 et C2.                                                   +
-//  Nous intersectons ces bissectrices avec le cercle OnCirc ce qui nous  +
-//  donne les points parmis lesquels nous allons choisir les solutions.   +
-//  Les choix s effectuent a partir des Qualifieurs qualifiant C1 et C2.  +
+//  We calculate bissectrices to C1 and C2 that give us all           +
+//  possible locations of centers of all circles tangent to C1 and C2.                                                   +
+//  We intersect these bissectrices with circle OnCirc which gives us   +
+//  points among which we choose the solutions.   +
+//  The choice is made basing in Qualifiers of C1 and C2.  +
 //=========================================================================
 
 GccAna_Circ2d2TanOn::
@@ -80,7 +79,7 @@ GccAna_Circ2d2TanOn::
   Standard_Real R2 = C2.Radius();
 
 //=========================================================================
-//   Traitement des cas limites.                                          +
+//   Processing of boundary cases.                                          +
 //=========================================================================
 
   Standard_Integer nbsol1 = 1;
@@ -178,7 +177,7 @@ GccAna_Circ2d2TanOn::
   }
   
 //=========================================================================
-//   Cas general.                                                         +
+//   General case.                                                         +
 //=========================================================================
 
   GccAna_Circ2dBisec Bis(C1,C2);

@@ -104,7 +104,7 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
   
 
 
-  // calcul de myAxis
+  // calculation of myAxis
   gp_Pln pln1, pln2;
   if (!DrawDim::Pln(myPlane1,pln1)) return;
   if (!DrawDim::Pln(myPlane2,pln2)) return; 
@@ -127,7 +127,7 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
 
 // void AIS_AngleDimension::ComputeTwoFacesAngle(const Handle(Prs3d_Presentation)& aPresentation)
 // {
-  // Recuperation des plans
+  // Return planes
  
   gp_Pnt curpos;
   gp_Ax1 AxePos = myAxis;      
@@ -157,7 +157,7 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
   }
   else {
     curpos = myPosition;
-    //myFAttach  = le point de myFShape le plus proche de curpos (sauf si c'est un point sur l'axe)
+    //myFAttach  = the point of myFShape closest to curpos (except for the case when this is a point on the axis)
     Standard_Real dist = RealLast(); 
     TopExp_Explorer explo1(myFShape,TopAbs_VERTEX);
     gp_Pnt  AxePosition = AxePos.Location();
@@ -192,7 +192,7 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
   mySDir.SetXYZ (SVec.XYZ());
 
   if (!myAutomaticPosition) {
-    //Projection de la position sur le plan defini par  myFDir mySDir et de normale  theAxisDir
+    //Projection of the position on the plane defined by myFDir mySDir and normal theAxisDir
     gp_Pln aPln (myCenter, theAxisDir);
     Standard_Real U,V;
     ElSLib::Parameters (aPln, curpos, U, V);

@@ -15,17 +15,17 @@
 #include <Standard_NegativeValue.hxx>
 #include <GccEnt_BadQualifier.hxx>
 
-// circulaire tangent a un cercle et une ligne et de rayon donne
+// circular tangent to a circle, a line and a given radius
 //==============================================================
 //========================================================================
-// On initialise WellDone a false.                                       +
-// On recupere le cercle C1 et la droite L2.                             +
-// On sort en erreur dans les cas ou la construction est impossible.     +
-// On fait la parallele a C1 dans le bon sens.                           +
-// On fait la parallele a L2 dans le bon sens.                           +
-// On intersecte les paralleles ==> point de centre de la solution.      +
-// On cree la solution qu on ajoute aux solutions deja trouvees.         +
-// On remplit les champs.                                                +
+// Initialize WellDone to false.                                         +
+// Return circle C1 and straight line L2.                                +
+// Leave with error if the construction is impossible.                   +
+// Create parallel to C1 in the proper direction.                        +
+// Create parallel to L2 in the proper direction.                        +
+// Intersect parallels ==> center point of the solution.                 +
+// Create the solution and add it to already found ones.                 +
+// Fill the fields.                                                      +
 //========================================================================
 
 GccAna_Circ2d2TanRad::

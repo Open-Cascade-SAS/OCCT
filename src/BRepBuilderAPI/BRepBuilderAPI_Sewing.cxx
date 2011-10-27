@@ -21,8 +21,8 @@
 //              Add of SameParameter call
 
 
-//-- lbr le 1er avril 97
-//-- dpf le 10 decembre 1997 Traitement des collections de pcurve
+//-- lbr April 1 97
+//-- dpf December 10 1997 Processing of pcurve collections
 
 //rln 02.02.99 BUC60449 Making compilable on NT in DEB mode 
 //rln 02.02.99 BUC60449 Protection against exception on NT
@@ -146,7 +146,7 @@ Handle(Geom2d_Curve) BRepBuilderAPI_Sewing::SameRange(const Handle(Geom2d_Curve)
 
 //=======================================================================
 //function : WhichFace
-//purpose  : Give the face dont ledge est le bord
+//purpose  : Give the face whose edge is the border
 //=======================================================================
 
 TopoDS_Face BRepBuilderAPI_Sewing::WhichFace(const TopoDS_Edge& theEdg, const Standard_Integer index) const

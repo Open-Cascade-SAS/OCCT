@@ -297,7 +297,7 @@ void AIS_TangentRelation::ComputeTwoEdgesTangent(const Handle(Prs3d_Presentation
     }
   else return;
 
-  //On cherche d'abord le vertex de tangence s'il existe
+  //First find the tangengy vector if exists
   TopoDS_Vertex VCom;
   TopExp_Explorer expF(TopoDS::Edge(myFShape),TopAbs_VERTEX);
   TopExp_Explorer expS(TopoDS::Edge(mySShape),TopAbs_VERTEX);

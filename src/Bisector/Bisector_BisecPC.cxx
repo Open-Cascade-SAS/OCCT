@@ -87,7 +87,7 @@ void  Bisector_BisecPC::Perform(const Handle(Geom2d_Curve)& Cu,
   sign     = Side;
   isConvex = Bisector::IsConvex(curve,sign);
   //--------------------------------------------
-  // Calcul intervalle de definition.
+  // Calculate interval of definition.
   //--------------------------------------------
   ComputeIntervals();
   if (isEmpty) return;
@@ -285,8 +285,8 @@ Standard_Boolean Bisector_BisecPC::IsClosed() const
 {
   if (curve->IsClosed()) {
     //-----------------------------------------------------------------------
-    // La bisectrice est fermee si la curve est fermee et que la bissectrice
-    // a un seul domaine de continuite egale a celui de la courbe.
+    // The bisectrice is closed if the curve is closed and the bissectrice
+    // has only one domain of continuity equal to the one of the curve.
     // -----------------------------------------------------------------------
     if (startIntervals.First() == curve->FirstParameter() &&
 	endIntervals  .First() == curve->LastParameter ()    )
@@ -339,14 +339,14 @@ void Bisector_BisecPC::Extension(const Standard_Real    U,
 
 //=============================================================================
 //function : Values
-// purpose : A chaque point de la courbe est associe un point sur la 
-//           bissectrice. l equation de la bissectrice est:
+// purpose : To each point of the curve is associated a point on the 
+//           bissectrice. The equation of the bissectrice is:
 //                              || PP(u)||**2
 //           F(u) = P(u) - 1/2* -------------- * N(u)
 //                              (N(u)|PP(u))
 //
-//           N(u) normale a la courbe en u.
-//           ( | ) designe le produit scalaire.
+//           N(u) normal to the curve by u.
+//           ( | ) designation of the scalar product.
 //=============================================================================
 void Bisector_BisecPC::Values(const Standard_Real    U,
 			      const Standard_Integer N,
@@ -387,9 +387,9 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
   }
   else {return; }
   
-  if (N == 0) return;                                 // Fin Calcul Point;
+  if (N == 0) return;                                 // End Calculation Point;
 
-  gp_Vec2d      Nu ( - Tuu.Y() , Tuu.X());            // derivee de la normale en U.
+  gp_Vec2d      Nu ( - Tuu.Y() , Tuu.X());            // derivative of the normal by U.
   Standard_Real NuPPC     = Nu .Dot(PPC);
   Standard_Real TuPPC     = Tu .Dot(PPC);
   Standard_Real NorPPCE2  = NorPPC*NorPPC;
@@ -398,7 +398,7 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
 //--------------------------
   V1 = Tu - A1*Nu - A2*Nor;
 //--------------------------
-  if (N == 1) return;                                       //Fin calcul D1.
+  if (N == 1) return;                                       // End calculation D1.
 
   gp_Vec2d Nuu ( - T3u.Y() , T3u.X());
   
@@ -442,13 +442,13 @@ static Standard_Real Curvature (const Handle(Geom2d_Curve)& C,
 
 //=============================================================================
 //function : Distance
-//purpose  : distance au carre du point de parametre U a la courbe et au point:
+//purpose  : distance at the square of the point of parameter U to the curve and at point:
 //
 //            2             ||PP(u)||**4           2
 //           d =   1/4* ------------------- ||Nor||
 //                         (Nor(u)/PP(u))**2 
 //
-//           ou Nor est la normale a la courbe en U. 
+//           where Nor is the normal to the curve by U. 
 //=============================================================================
 Standard_Real Bisector_BisecPC::Distance (const Standard_Real U) const
 {
@@ -468,9 +468,9 @@ Standard_Real Bisector_BisecPC::Distance (const Standard_Real U) const
   if (point.IsEqual(PC,Precision::Confusion())) {
     if (isConvex) { return 0.;}
     //----------------------------------------------------
-    // le point est sur une courbe concave. 
-    // Le point voulu n est pas le point commun.
-    // ceci pour evite la discontinuite de la bisectrice.
+    // the point is on a concave curve. 
+    // The required point is not the common point.
+    // This can avoid the discontinuity of the bisectrice.
     //----------------------------------------------------
     else { return Precision::Infinite();} 
   }
@@ -482,7 +482,7 @@ Standard_Real Bisector_BisecPC::Distance (const Standard_Real U) const
     Standard_Real A  = 0.5*SquareMagPPC/Prosca;
     Standard_Real Dist = A*A*NorNor;
     //----------------------------------------
-    // Test Courbure si la courbe est concave.
+    // Test Curvature if the curve is concave.
     //----------------------------------------
 //    if (!isConvex){
 //      Standard_Real K  = Curvature(curve,UOnCurve,Precision::Confusion());
@@ -687,20 +687,19 @@ void Bisector_BisecPC::ComputeIntervals ()
   endIntervals  .Append(UEnd);
 
   //------------------------------------------------------------------------
-  // Decalage eventuel du parametre sur la courbe par rapport a celui sur
-  // la curve. Le decalage est effectue si la curve est periodique. et
-  // que le point de parametre initial est interieure a un interval de cont
-  // inuite.
+  // Eventual offset of the parameter on the curve correspondingly to the one 
+  // on the curve. The offset can be done if the curve is periodical and the 
+  // point of initial parameter is less then the interval of continuity.
   //------------------------------------------------------------------------
   if (curve->IsPeriodic()) {
     if (startIntervals.Length() > 1) {               // Plusieurs intervals.
       if (endIntervals  .Last()  == curve->LastParameter() &&
 	  startIntervals.First() == curve->FirstParameter()   ) {
 	//---------------------------------------------------------------
-	// la bissectrice est definie a l origine.
-	// => Fusion du premier et du dernier interval.
-	// => le 0 sur la bisectrice devient le debut du premier interval
-	// => decalage de parametre sur toutes les bornes des intervals.
+	// the bissectrice is defined at the origin.
+	// => Fusion of the first and the last interval.
+	// => 0 on the bisectrice becomes the start of the first interval
+	// => offset of parameter on all limits of intervals.
 	//---------------------------------------------------------------
 	startIntervals.Remove(1);
 	endIntervals  .Remove(endIntervals.Length());

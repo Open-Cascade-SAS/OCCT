@@ -6,8 +6,7 @@
 
 
 // modif le 25/03/96 mjm
-// mise en place de ShapeCustom::DirectModification pour les surfaces
-// indirectes (hors norme IGES)
+// implement ShapeCustom::DirectModification for indirect surfaces (out of norm IGES)
 //:l4 abv 12 Jan 99: CTS22022-2: correct writing reversed shells
 //:n3 abv 8 Feb 99: PRO17820: BRepTools::OuterWire() -> ShapeAnalysis::OuterWire
 //szv#4 S4163
@@ -242,7 +241,7 @@ void BRepToIGESBRep_Entity::TransferEdgeList()
     Curves->SetValue(iedge, amycurve);
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(myedge, V1, V2);
-    //  les vertex suivent l`orientation de la courbe 3d
+    //  vertices follow the orientation of curve 3d
     mystartindex = IndexVertex(V1);
     myendindex = IndexVertex(V2);
     startVertexIndex->SetValue(iedge, mystartindex);
@@ -347,7 +346,7 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape
       res = TransferCompound(C);
     }  
     else {
-      // message d`erreur
+      // error message
     }  
   }
 
@@ -385,10 +384,9 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge (const TopoDS_Ed
   BR.SetModel(GetModel());
   ICurve2d = BR.TransferEdge (myedge, myface, Length, Standard_True);
 
-  // la courbe 3d est obligatoire . Si elle n`existe pas on la cree et on
-  // la stocke dans "myCurves".
-  // Si l`edge est degenere , il n`y a pas de 3d associe.Alors l"edge-tuple" 
-  // sera un Vertex.
+  // curve 3d is obligatory. If it does not exist it is created and stored in "myCurves".
+  // If the edge is degenerated, there is no associated 3d. So "edge-tuple" 
+  // will be a Vertex.
 
   if (!BRep_Tool::Degenerated(myedge)) {
     ICurve3d = TransferEdge(myedge);
@@ -435,7 +433,7 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire (const TopoDS_Wire& m
 	Seq2d->Append(ent2d);
 	Standard_Integer myindex; 
 
-	// on ajoute les Vertex dans la Map "myVertices"
+	// add Vertices in the Map "myVertices"
 	TopoDS_Vertex V1, V2;
 	TopExp::Vertices(E, V1, V2);
 	//Standard_Integer Ivertex1, Ivertex2; //szv#4:S4163:12Mar99 not needed
@@ -538,7 +536,7 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
   Handle(Geom_Surface) Surf = BRep_Tool::Surface(start);
   if (!Surf.IsNull()) {
     Standard_Real U1, U2, V1, V2;
-    BRepTools::UVBounds(start, U1, U2, V1, V2);  // pour limiter les surfaces de base
+    BRepTools::UVBounds(start, U1, U2, V1, V2);  // to limit the base surfaces
     GeomToIGES_GeomSurface GS;
     //S4181 pdn 17.04.99 Boolean flags in order to define write of elementary surfaces added.
     GS.SetBRepMode(Standard_True);
@@ -566,7 +564,7 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
   // returns the wires of start
   // --------------------------
 
-  // pour explorer la face , il faut la mettre fORWARD.
+  // to explore the face , it is required to set it FORWARD.
   TopoDS_Face myface = start;
   Standard_Boolean IsReversed = Standard_False;
   if (start.Orientation() == TopAbs_REVERSED) {
@@ -584,7 +582,7 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
     OuterLoop = TransferWire(Outer, myface, Length);
   }
 
-  // inners wires
+  // inner wires
   TopExp_Explorer Ex;
   Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
 
@@ -592,7 +590,7 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
     TopoDS_Wire W = TopoDS::Wire(Ex.Current());
     Handle(IGESSolid_Loop) InnerLoop = new IGESSolid_Loop;
     if (W.IsNull()) {
-      AddWarning(start," an Wire is a null entity");
+      AddWarning(start," a Wire is a null entity");
     }
     else if (!W.IsSame(Outer)) {
       InnerLoop = TransferWire(W, myface, Length);
@@ -600,7 +598,7 @@ Handle(IGESSolid_Face) BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Face& s
     }
   }
 
-  // all inners edges not in a wire
+  // all inner edges not in a wire
   for (Ex.Init(myface,TopAbs_EDGE,TopAbs_WIRE); Ex.More(); Ex.Next()) {
     TopoDS_Edge E = TopoDS::Edge(Ex.Current());
     AddWarning ( E, "An edge alone is not transfer as an IGESBRep Entity");
@@ -697,7 +695,7 @@ Handle(IGESSolid_ManifoldSolid) BRepToIGESBRep_Entity ::TransferSolid (const Top
   for (Ex.Init(start,TopAbs_SHELL); Ex.More(); Ex.Next()) {
     TopoDS_Shell S = TopoDS::Shell(Ex.Current());
     if (S.IsNull()) {
-      AddWarning(start," an Shell is a null entity");
+      AddWarning(start," a Shell is a null entity");
     }
     else {
       IShell = TransferShell(S);
@@ -814,7 +812,7 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   Handle(IGESData_IGESEntity) IShape;
   Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
 
-  // on prend tous les Solids
+  // take all Solids
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next()) {
     TopoDS_Solid S = TopoDS::Solid(Ex.Current());
     if (S.IsNull()) {
@@ -826,7 +824,7 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
     }
   }
 
-  // on prend tous les Shells isoles
+  // take all isolated Shells 
   for (Ex.Init(start, TopAbs_SHELL, TopAbs_SOLID); Ex.More(); Ex.Next()) {
     TopoDS_Shell S = TopoDS::Shell(Ex.Current());
     if (S.IsNull()) {
@@ -839,7 +837,7 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   }
 
 
-  // on prend toutes les Faces isoles
+  // take all isolated Faces
   for (Ex.Init(start, TopAbs_FACE, TopAbs_SHELL); Ex.More(); Ex.Next()) {
     TopoDS_Face S = TopoDS::Face(Ex.Current());
     if (S.IsNull()) {
@@ -852,27 +850,27 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
   }
 
 
-  // on prend tous les Wires isoles
+  // take all isolated Wires 
   for (Ex.Init(start, TopAbs_WIRE, TopAbs_FACE); Ex.More(); Ex.Next()) {
     TopoDS_Wire S = TopoDS::Wire(Ex.Current());
     AddWarning(S," a Wire alone is not an IGESBRep entity : no Transfer");
   }
 
 
-  // on prend tous les Edges isoles
+  // take all isolated Edges 
   for (Ex.Init(start, TopAbs_EDGE, TopAbs_WIRE); Ex.More(); Ex.Next()) {
     TopoDS_Edge S = TopoDS::Edge(Ex.Current());
     AddWarning(S," a Edge alone is not an IGESBRep entity : no Transfer");
   }
 
 
-  // on prend tous les Vertices isoles
+  // take all isolated Vertices 
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next()) {
     TopoDS_Vertex S = TopoDS::Vertex(Ex.Current());
     AddWarning(S," a Vertex alone is not an IGESBRep entity : no Transfer");
   }
 
-  // on construit le groupe
+  // construct the group
   Standard_Integer nbshapes = Seq->Length();
   Handle(IGESData_HArray1OfIGESEntity) Tab;
   if (nbshapes > 1) {

@@ -9,9 +9,9 @@
 #include <Standard_NotImplemented.hxx>
 
 //=========================================================================
-//   Creation d un cylindre limite par trois points <P1>, <P2> et <P3>.   +
-//   le cylindre resultat a comme hauteur la distance de <P1> a <P2>.     +
-//   Il a comme rayon la distance de <P3> a l axe <P1P2>.                 +
+//   Creation of a cylinder limited by three points <P1>, <P2> and <P3>.         +
+//   the height og the resulting cylinder is the distance from <P1> to <P2>.     +
+//   The radius is the distance from <P3> to axis <P1P2>.                 +
 //=========================================================================
 
 GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Pnt& P1 ,
@@ -27,7 +27,7 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Pnt& P1 ,
 }
 
 //=========================================================================
-//   Creation d un cylindre limite par un cercle et une hauteur.          +
+//   Creation of a cylinder limited by a circle and height.          +
 //=========================================================================
 
 GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Circ&      Circ   ,

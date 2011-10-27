@@ -139,8 +139,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   Done();
   myGenerated.Clear();
   
-// modify = 0 si on ne veut pas faire de glissement
-//        = 1 si on veut essayer de faire un glissement
+// modify = 0 if there is no intention to make sliding
+//        = 1 if one tries to make sliding
   Standard_Boolean Sliding = Modify;
   myLFMap.Clear();
 
@@ -176,7 +176,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 #endif
 
   
-// ---Determination Tolerance : tolerance max sur les parametres
+// ---Determine Tolerance : max tolerance on parameters
   myTol = Precision::Confusion();
 
   TopExp_Explorer exx;  
@@ -194,8 +194,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     if(tol > myTol) myTol = tol;
   }
 
-// ---Controle des directions
-//    le wire doit etre dans la nervure
+// ---Control of directions
+//    the wire should be in the rib
   gp_Vec nulldir(0, 0, 0);
   if(!myDir1.IsEqual(nulldir, myTol, myTol)) {
     Standard_Real ang = myDir1.Angle(myDir);
@@ -225,7 +225,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     myPln->Transform(T);
   }
 
-// ---Calcul boite englobante
+// ---Calculate bounding box
   BRep_Builder BB;
 
   TopTools_ListOfShape theList;  
@@ -240,7 +240,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   TopoDS_Solid BndBox = Bndbox.Solid();
 
 
-// ---Construction de la face plan de travail (section boite englobante)
+// ---Construction of the face workplane (section bounding box)
   BRepLib_MakeFace PlaneF(myPln->Pln(), -6.*myBnd, 
 			  6.*myBnd, -6.*myBnd, 6.*myBnd);
   TopoDS_Face PlaneFace = TopoDS::Face(PlaneF.Shape());
@@ -257,7 +257,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   TopoDS_Face BndFace = TopoDS::Face(Bndface.Shape());
 
 
-// ---Recherche des faces d'appui de la nervure
+// ---Find support faces of the rib
   TopoDS_Edge FirstEdge, LastEdge;
   TopoDS_Face FirstFace, LastFace;
   TopoDS_Vertex FirstVertex, LastVertex;
@@ -286,23 +286,23 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   }
 
 
-// ---Point detrompeur pour le cote du wire a remplir - cote matiere
+// ---Proofing Point for the side of the wire to be filled - side material
   gp_Pnt CheckPnt = CheckPoint(FirstEdge, bnd/10., myPln);
 
 //  Standard_Real f, l;
 
-// ---Controle glissement valable
-// Plein de cas ou on sort du glissement
-  Standard_Integer Concavite = 3;  // a priori le profile n'est pas concave
+// ---Control sliding valuable
+// Many cases when the sliding is abandoned
+  Standard_Integer Concavite = 3;  // a priori the profile is not concave
 
   myFirstPnt = BRep_Tool::Pnt(FirstVertex);
   myLastPnt  = BRep_Tool::Pnt(LastVertex);
 
-// SliList : liste des faces concernees par la nervure
+// SliList : list of faces concerned by the rib
   TopTools_ListOfShape SliList;
   SliList.Append(FirstFace);
 
-  if(Sliding) {    // glissement
+  if(Sliding) {    // sliding
 #ifdef DEB
     if (trc) cout << " Sliding" << endl;
 #endif
@@ -315,15 +315,15 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     }
     if(s->DynamicType() == STANDARD_TYPE(Geom_Plane) ||
        s->DynamicType() == STANDARD_TYPE(Geom_CylindricalSurface)) {
-// si plan ou cylindre : glissement possible
+// if plane or cylinder : sliding is possible
       Sliding = Standard_True;
     }
   }
 
-// Controle uniquement points de depart et d'arrivee
-// -> pas de controle au milieu - a ameliorer
-// Si on faisait un controle entre Surface et sgement entre les 2 points limite
-// -> tres cher - a ameliorer
+// Control only start and end points
+// -> no control at the middle - improve
+// Controle between Surface and segment between 2 limit points
+// is too expensive - improve
   if(Sliding) {
     gp_Pnt p1(myFirstPnt.X()+myDir.X(),myFirstPnt.Y()+myDir.Y(),
 	      myFirstPnt.Z()+myDir.Z());
@@ -333,7 +333,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
       gp_Pnt p2(myLastPnt.X()+myDir.X(),myLastPnt.Y()+myDir.Y(),
 		myLastPnt.Z()+myDir.Z());
       BRepLib_MakeEdge ee2(myLastPnt, p2);
-      BRepExtrema_ExtCF ext2(ee2, LastFace); // ExtCF : courbes et surfaces
+      BRepExtrema_ExtCF ext2(ee2, LastFace); // ExtCF : curves and surfaces
       if(ext2.NbExt() == 1 && ext2.SquareDistance(1)<=BRep_Tool::Tolerance(LastFace) * BRep_Tool::Tolerance(LastFace)) {
 	Sliding = Standard_True;
       }
@@ -371,13 +371,13 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   }
 
 
-// On construit un gros profil qui va jusqu`a la boite englobante
-// -> par tangence avec premier et dernier edge du Wire
-// -> par normales aux faces d'appui : statistiquement meilleur
-// On intersecte le tout pour trouver le profil final
+// Construct a great profile that goes till the bounding box
+// -> by tangency with the first and the last edge of the Wire
+// -> by normals to the support faces : statistically better
+// Intersect everything to find the final profile
 
 
-// ---cas de glissement : construction de la face profil
+// ---case of sliding : construction of the profile face 
   if(Sliding) {
 #ifdef DEB
     if (trc) cout << " still Sliding" << endl;
@@ -399,11 +399,11 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     }
 
 
-// ---Propagation sur les faces du shape initial
-// pour trouver les faces concernees par la nervure
+// ---Propagation on faces of the initial shape 
+// to find the faces concerned by the rib
     Standard_Boolean falseside = Standard_True;
     Sliding = Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
-// Controle si on a ce qu`il faut pour avoir la matiere du bon cote
+// Control if there is everything required to have the material at the proper side
     if(falseside == Standard_False) {
 #ifdef DEB
       cout << "Verify plane and wire orientation" << endl;
@@ -415,7 +415,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   }
 
 
-// ---Generation du profile de base de la nervure
+// ---Generation of the base of the rib profile 
 
   TopoDS_Wire w;
   BB.MakeWire(w);
@@ -423,10 +423,10 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   TopoDS_Vertex theFV;
   thePreviousEdge.Nullify();
 
-// compteur du nombre d`edges pour remplir la map
+// calculate the number of edges to fill the map
   Standard_Integer counter = 1;
 
-// ---cas de glissement
+// ---case of sliding
   if(Sliding && !myListOfEdges.IsEmpty()) {
     BRepTools_WireExplorer EX1(myWire);
     for(; EX1.More(); EX1.Next()) {
@@ -480,7 +480,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
       }
     }
  
-// Cas plusieurs edges
+// Case of several edges
     if(!FirstEdge.IsSame(LastEdge)) {
       for(; EX1.More(); EX1.Next()) {
 	const TopoDS_Edge& E = EX1.Current();
@@ -698,8 +698,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     mySlface = SlidMap;
   }
 
-// ---Arguments de LocOpe_LinearForm : arguments du prism
-// glissement
+// ---Arguments of LocOpe_LinearForm : arguments of the prism sliding
   if(Sliding) {
     TopoDS_Face F;
     BB.MakeFace(F, myPln, myTol);
@@ -711,7 +710,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   }
   
 
-// ---Cas sans glissement : construction de la face profil  
+// ---Case without sliding : construction of the profile face   
   if(!Sliding) {
 #ifdef DEB
     if (trc) {
@@ -737,11 +736,11 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     }
 
 
-// ---Propagation sur les faces du shape initial
-// pour trouver les faces concernees par la nervure
+// ---Propagation on faces of the initial shape
+// to find the faces concerned by the rib
     Standard_Boolean falseside = Standard_True;
     Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
-// Controle si on a ce qu`il faut pour avoir la matiere du bon cote
+// Control if there is everything required to have the material at the proper side
     if(falseside == Standard_False) {
 #ifdef DEB
       cout << "Verify plane and wire orientation" << endl;
@@ -825,7 +824,7 @@ void BRepFeat_MakeLinearForm::Add(const TopoDS_Edge& E,
 
 //=======================================================================
 //function : Perform
-//purpose  : construction de nervure a partir d'un profile et du shape init
+//purpose  : construction of rib from a profile and the initial shape
 //=======================================================================
 
 void BRepFeat_MakeLinearForm::Perform()
@@ -864,11 +863,11 @@ void BRepFeat_MakeLinearForm::Perform()
   else 
     theForm.Perform(myPbase, V, myDir1, myFirstPnt, myLastPnt);
 
-  TopoDS_Shape VraiForm = theForm.Shape();   // primitive de la nervure
+  TopoDS_Shape VraiForm = theForm.Shape();   // primitive of the rib
 
   myFacesForDraft.Append(theForm.FirstShape());
   myFacesForDraft.Append(theForm.LastShape());
-  MajMap(myPbase,theForm,myMap,myFShape,myLShape);   // gestion de descendants
+  MajMap(myPbase,theForm,myMap,myFShape,myLShape);   // management of descendants
 
   TopExp_Explorer exx(myPbase, TopAbs_EDGE);
   for(; exx.More(); exx.Next()) {
@@ -884,7 +883,7 @@ void BRepFeat_MakeLinearForm::Perform()
   }
 
   myGShape = VraiForm;
-  SetGluedFaces(mySlface, theForm, myGluedF);  // gestion des faces de glissement 
+  SetGluedFaces(mySlface, theForm, myGluedF);  // management of sliding faces  
 
   if(!myGluedF.IsEmpty() && !mySUntil.IsNull()) {
 #ifdef DEB
@@ -937,8 +936,8 @@ void BRepFeat_MakeLinearForm::Perform()
 
 //=======================================================================
 //function : Propagate
-//purpose  : propagation sur les faces du shape initial, recherche 
-// des faces concernees par la nervure
+//purpose  : propagation on faces of the initial shape, find 
+// faces concerned by the rib
 //=======================================================================
   Standard_Boolean BRepFeat_MakeLinearForm::Propagate(TopTools_ListOfShape& SliList,
 						      const TopoDS_Face& fac,
@@ -1013,7 +1012,7 @@ void BRepFeat_MakeLinearForm::Perform()
   myListOfEdges.Clear();
   myListOfEdges.Append(eb);
     
-  // Les deux points sont sur la meme face.
+  // two points are on the same face.
   if(LastOK && FirstOK) {
     return result;
   }
@@ -1040,7 +1039,7 @@ void BRepFeat_MakeLinearForm::Perform()
       tvp=t1;
     }
     
-    // retrouver l'edge connexe a v1 ou v2:
+    // find edge connected to v1 or v2:
     for (ex.Init(CurrentFace, TopAbs_EDGE); ex.More(); ex.Next()) {
       const TopoDS_Edge& rfe = TopoDS::Edge(ex.Current());
 
@@ -1058,8 +1057,8 @@ void BRepFeat_MakeLinearForm::Perform()
 	if (index != 0) {
 	  if (dist2min <= BRep_Tool::Tolerance(rfe) * BRep_Tool::Tolerance(rfe)) {
 	    FirstEdge = rfe;
-	    // Si l'edge n'est pas perpendiculaire au plan de la nervure il
-	    // faut mettre Sliding(result) a faux.
+	    // If the edge is not perpendicular to the plane of the rib
+	    // it is required to set Sliding(result) to false.
 	    if (result) {
 	      result=Standard_False;
 	      ve1 = TopExp::FirstVertex(rfe,Standard_True);
@@ -1146,7 +1145,7 @@ void BRepFeat_MakeLinearForm::Perform()
       }
     }
     else {
-      // on arrive pas a chainer la section
+      // end by chaining the section
       return Standard_False;
     }
 // #ifdef DEB
@@ -1167,7 +1166,7 @@ void BRepFeat_MakeLinearForm::Perform()
 
 //=======================================================================
 //function : MajMap
-//purpose  : gestion de descendants
+//purpose  : management of descendants
 //=======================================================================
 
 static void MajMap(const TopoDS_Shape& theB,
@@ -1211,14 +1210,14 @@ static void MajMap(const TopoDS_Shape& theB,
 
 //=======================================================================
 //function : SetGluedFaces
-//purpose  : gestion des faces de collage
+//purpose  : management of faces of gluing
 //=======================================================================
 
 static void SetGluedFaces(const TopTools_DataMapOfShapeListOfShape& theSlmap,
 			  LocOpe_LinearForm& thePrism,
 			  TopTools_DataMapOfShapeShape& theMap)
 {
-  // Glissements
+  // Slidings
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(theSlmap);
   if(!theSlmap.IsEmpty()) {
     for (; itm.More(); itm.Next()) {

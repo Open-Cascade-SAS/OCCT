@@ -299,87 +299,79 @@ int mma1cdi_(integer *ndimen,
   static integer ibb, kkm, kkp;
   static doublereal bid1, bid2, bid3;
 
-
 /* ********************************************************************** 
 */
-
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation sur les parametres des polynomes d'interpolation */
-/*     des contraintes a l'ordre IORDRE. */
+/*     Discretisation on the parameters of interpolation polynomes */
+/*     constraints of order IORDRE. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     TOUS, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
+/*     ALL, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension de l' espace. */
-/*     NBROOT: Nbre de parametres INTERNES de discretisation. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     ROOTLG: Tableau des parametres de discretisation SUR (-1,1). */
-/*     IORDRE: Ordre de contrainte impose aux extremites de l'iso. */
-/*             = 0, on calcule les extremites de l'iso */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso */
-/*     CONTR1: Contient, si IORDRE>=0, les IORDRE+1 valeurs en TTABLE(0) 
+/*     NDIMEN: Space dimension. */
+/*     NBROOT: Number of INTERNAL discretisation parameters. */
+/*             It is also the root number Legendre polynome where */
+/*             the discretization is performed. */
+/*     ROOTLG: Table of discretization parameters ON (-1,1). */
+/*     IORDRE: Order of constraint imposed to the extremities of the iso. */
+/*             = 0, the extremities of the iso are calculated */
+/*             = 1, additionally, the 1st derivative in the direction */
+/*                  of the iso is calculated. */
+/*             = 2, additionally, the 2nd derivative in the direction */
+/*                  of the iso is calculated. */
+/*     CONTR1: Contains, if IORDRE>=0, values IORDRE+1 in TTABLE(0) 
 */
-/*             (1ere extremitee) de derivees de F(Uc,Ve) ou F(Ue,Vc), */
-/*             voir ci dessous. */
-/*     CONTR2: Contient, si IORDRE>=0, les IORDRE+1 valeurs en */
-/*             TTABLE(NBROOT+1) (2eme extremitee) de: */
-/*                Si ISOFAV=1, derivee d'ordre IDERIV en U, derivee */
-/*             d'ordre 0 a IORDRE en V de F(Uc,Ve) ou Uc=TCONST */
-/*             (valeur de l'iso fixe) et Ve est l'extremite fixe. */
-/*                Si ISOFAV=2, derivee d'ordre IDERIV en V, derivee */
-/*             d'ordre 0 a IORDRE en U de F(Ue,Vc) ou Vc=TCONST */
-/*             (valeur de l'iso fixe) et Ue est l'extremite fixe. */
+/*             (1st extremity) of derivatives of F(Uc,Ve) or F(Ue,Vc), */
+/*             see below. */
+/*     CONTR2: Contains, if IORDRE>=0, values IORDRE+1 in */
+/*             TTABLE(NBROOT+1) (2nd extremity) of: */
+/*              If ISOFAV=1, derived of order IDERIV by U, derived */
+/*             ordre 0 to IORDRE by V of F(Uc,Ve) or Uc=TCONST */
+/*             (fixed iso value) and Ve is the fixed extremity. */
+/*               If  ISOFAV=2, derivative of order IDERIV by V, derivative */
+/*             of order 0 to IORDRE by U of F(Ue,Vc) or Vc=TCONST */
+/*             (fixed iso value) and Ue is the fixed extremity. */
 
-/*     SOMTAB: Tableau des NBROOT/2 sommes des 2 points d'indices */
-/*             NBROOT-II+1 et II, pour II = 1, NBROOT/2. */
-/*     DIFTAB: Tableau des NBROOT/2 differences des 2 points d'indices */
-/*             NBROOT-II+1 et II, pour II = 1, NBROOT/2. */
+/*     SOMTAB: Table of NBROOT/2 sums of 2 index points */
+/*             NBROOT-II+1 and II, for II = 1, NBROOT/2. */
+/*     DIFTAB: Table of NBROOT/2 differences of 2 index points */
+/*             NBROOT-II+1 and II, for II = 1, NBROOT/2. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     SOMTAB: Tableau des NBROOT/2 sommes des 2 points d'indices */
-/*             NBROOT-II+1 et II, pour II = 1, NBROOT/2 */
-/*     DIFTAB: Tableau des NBROOT/2 differences des 2 points d'indices */
-/*             NBROOT-II+1 et II, pour II = 1, NBROOT/2 */
-/*     FPNTAB: Tableau auxiliaire. */
-/*     HERMIT: Table des coeff. des 2*(IORDRE+1) polynomes d'Hermite */
-/*             de degre 2*IORDRE+1. */
-/*     IERCOD: Code d'erreur, */
-/*             = 0, Tout est OK */
-/*             = 1, La valeur de IORDRE est hors de (0,2) */
-
-/*     COMMONS UTILISES   : */
+/*     SOMTAB: Table of NBROOT/2 sums of 2 index points */
+/*             NBROOT-II+1 and II, for II = 1, NBROOT/2 */
+/*     DIFTAB: Table of  NBROOT/2 differences of 2 index points */
+/*             NBROOT-II+1 and II, for II = 1, NBROOT/2 */
+/*     FPNTAB: Auxiliary table. */
+/*     HERMIT: Table of coeff. 2*(IORDRE+1) Hermite polynoms */
+/*             of degree 2*IORDRE+1. */
+/*     IERCOD: Error code, */
+/*             = 0, Everythig is OK */
+/*             = 1, The value of IORDRE is out of (0,2) */
+/*     COMMON USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     Les resultats de la discretisation sont ranges dans 2 tableaux */
-/*     SOMTAB et DIFTAB pour gagner du temps par la suite lors du */
-/*     calcul des coefficients de la courbe d' approximation. */
+/*     The results of discretization are arranged in 2 tables */
+/*     SOMTAB and DIFTAB to earn time during the */
+/*     calculation of coefficients of the approximation curve. */
 
-/*     Si NBROOT est impair, on stocke dans SOMTAB(0,*) et DIFTAB(0,*) */
-/*     les valeurs de la racine mediane de Legendre (0.D0 dans (-1,1)). */
+/*     If NBROOT is uneven in SOMTAB(0,*) and DIFTAB(0,*) one stores */
+/*     the values of the median root of Legendre (0.D0 in (-1,1)). */
 
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     02-07-1991: RBD; Creation. */
-/* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -410,7 +402,7 @@ int mma1cdi_(integer *ndimen,
     }
     *iercod = 0;
 
-/* --- Recup des 2*(IORDRE+1) coeff des 2*(IORDRE+1) polyn. d'Hermite --- 
+/* --- Recuperate 2*(IORDRE+1) coeff of 2*(IORDRE+1) of Hermite polynom --- 
 */
 
     AdvApp2Var_ApproxF2var::mma1her_(iordre, &hermit[hermit_offset], iercod);
@@ -418,7 +410,7 @@ int mma1cdi_(integer *ndimen,
 	goto L9100;
     }
 
-/* ------------------- Discretisation des polynomes d'Hermite ----------- 
+/* ------------------- Discretization of Hermite polynoms ----------- 
 */
 
     ncfhe = (*iordre + 1) << 1;
@@ -433,7 +425,7 @@ int mma1cdi_(integer *ndimen,
 /* L100: */
     }
 
-/* ---- On retranche les discretisations des polynomes de contrainte ---- 
+/* ---- Discretizations of boundary polynoms are taken ---- 
 */
 
     nroo2 = *nbroot / 2;
@@ -466,9 +458,9 @@ int mma1cdi_(integer *ndimen,
 /* L300: */
     }
 
-/* ------------ Cas ou l' on discretise sur les racines d' un ----------- 
+/* ------------ Cas when discretization is done on the roots of a  ----------- 
 */
-/* ---------- polynome de Legendre de degre impair, 0 est racine -------- 
+/* ---------- Legendre polynom of uneven degree, 0 is root -------- 
 */
 
     if (*nbroot % 2 == 1) {
@@ -492,7 +484,7 @@ int mma1cdi_(integer *ndimen,
 
 /* ------------------------------ The End ------------------------------- 
 */
-/* --> IORDRE n'est pas dans la plage autorisee. */
+/* --> IORDRE is not in the authorized zone. */
 L9100:
     *iercod = 1;
     goto L9999;
@@ -529,51 +521,46 @@ int mma1cnt_(integer *ndimen,
   /* ***********************************************************************
    */
   
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
-  /*     Ajout du polynome de contrainte. */
+  /*     Add constraint to polynom. */
   
   /*     MOTS CLES : */
   /*     ----------- */
-  /*     TOUS,AB_SPECIFI::COURE&,APPROXIMATION,ADDITION,&CONTRAINTE */
+  /*     ALL,AB_SPECIFI::COURE&,APPROXIMATION,ADDITION,&CONSTRAINT */
   
-  /*     ARGUMENTS D'ENTREE : */
+  /*     INPUT ARGUMENTS : */
   /*     -------------------- */
-  /*     NDIMEN: Dimension de l'espace */
-  /*     IORDRE: Ordre de contrainte. */
-  /*     CONTR1: pt de contrainte en -1, de l'ordre 0 a IORDRE. */
-  /*     CONTR2: Pt de contrainte en +1, de l'ordre 0 a IORDRE. */
-  /*     HERMIT: Table des polynomes d'hermite d'ordre IORDRE. */
-  /*     CRVJAV: Courbe d'approximation dans la base de Jacobi. */
+  /*     NDIMEN: Dimension of the space */
+  /*     IORDRE: Order of constraint. */
+  /*     CONTR1: pt of constraint in -1, from order 0 to IORDRE. */
+  /*     CONTR2: Pt of constraint in +1, from order 0 to IORDRE. */
+  /*     HERMIT: Table of Hermit polynoms of order IORDRE. */
+  /*     CRVJAV: Curve of approximation in Jacobi base. */
   
-  /*     ARGUMENTS DE SORTIE : */
+  /*     OUTPUT ARGUMENTS : */
   /*     --------------------- */
-  /*     CRVJAV: Courbe d'approximation dans la base de Jacobi */
-  /*             a laquelle on a ajoute le polynome d'interpolation des */
-  /*             contraintes. */
+  /*     CRVJAV: Curve of approximation in Jacobi base */
+  /*             to which the polynom of interpolation of constraints is added. */
   
-  /*     COMMONS UTILISES : */
+  /*     COMMON USED : */
   /*     ------------------ */
   
   
-  /*     REFERENCES APPELEES : */
+  /*     REFERENCES CALLED : */
   /*     --------------------- */
   
   
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     07-08-91:RBD; Ecriture version originale. */
 /* > */
 /* ***********************************************************************
  */
 /*                            DECLARATIONS */
 /* ***********************************************************************
  */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 /* ***********************************************************************
  */
@@ -603,7 +590,7 @@ int mma1cnt_(integer *ndimen,
 
 /* ***********************************************************************
  */
-/*                            TRAITEMENT */
+/*                            Processing */
 /* ***********************************************************************
  */
 
@@ -627,7 +614,7 @@ int mma1cnt_(integer *ndimen,
 
 /* ***********************************************************************
  */
-/*                   RETOUR PROGRAMME APPELANT */
+/*                   RETURN CALLING PROGRAM */
 /* ***********************************************************************
  */
 
@@ -685,97 +672,89 @@ int mma1fdi_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation d' une fonction non polynomiale F(U,V) ou d'une */
-/*     de ses derivees a isoparametre fixe. */
+/*     DiscretiZation of a non-polynomial function F(U,V) or of */
+/*     its derivative with fixed isoparameter. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     TOUS, AB_SPECIFI::FONCTION&, DISCRETISATION, &POINT */
+/*     ALL, AB_SPECIFI::FONCTION&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension de l' espace. */
-/*     UVFONC: Bornes du pave de definition en U et en V de la fonction */
-/*             a approcher. */
-/*     FONCNP: Le NOM de la fonction non polynomiale a approcher */
-/*             (programme externe). */
-/*     ISOFAV: Isoparametre fixe pour la discretisation; */
-/*             = 1, on discretise a U fixe et V variable. */
-/*             = 2, on discretise a V fixe et U variable. */
-/*     TCONST: Valeur de l'iso fixe. */
-/*     NBROOT: Nbre de parametres INTERNES de discretisation. */
-/*             (s'il y a des contraintes, on doit ajouter 2 extremites). 
+/*     NDIMEN: Space dimension. */
+/*     UVFONC: Limits of the path of definition by U and by V of the approximated function */
+/*     FONCNP: The NAME of the non-polynomial function to be approximated */
+/*             (external program). */
+/*     ISOFAV: Fixed isoparameter for the discretization; */
+/*             = 1, discretization with fixed U and variable V. */
+/*             = 2, discretization with fixed V and variable U. */
+/*     TCONST: Iso value is also fixed. */
+/*     NBROOT: Number of INTERNAL discretization parameters. */
+/*             (if there are constraints, 2 extremities should be added). 
 */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     TTABLE: Tableau des parametres de discretisation et des 2 */
-/*             extremites */
-/*             (Respectivement (-1, NBROOT racines de Legendre,1) */
-/*             recadrees dans l'intervalle adequat. */
-/*     IORDRE: Ordre de contrainte impose aux extremites de l'iso. */
-/*             (Si Iso-U, on doit calculer les derivees en V et vice */
+/*             This is also the root number of the Legendre polynom where */
+/*             the discretization is done. */
+/*     TTABLE: Table of discretization parameters and of 2 extremities */
+/*             (Respectively (-1, NBROOT Legendre roots,1) */
+/*             reframed within the adequate interval. */
+/*     IORDRE: Order of constraint imposed on the extremities of the iso. */
+/*             (If Iso-U, it is necessary to calculate the derivatives by V and vice */
 /*             versa). */
-/*             = 0, on calcule les extremites de l'iso */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso */
-/*     IDERIV: Ordre de derivee transverse a l'iso fixee (Si Iso-U=Uc */
-/*             fixee, on discretise la derivee d'ordre IDERIV en U de */
-/*             F(Uc,v). Idem si on fixe une iso-V). */
-/*             Varie de 0 (positionnement) a 2 (derivee 2nde). */
+/*             = 0, the extremities of the iso are calculated. */
+/*             = 1, additionally the 1st derivative in the direction of the iso is calculated */
+/*             = 2, additionally the 2nd derivative in the direction of the iso is calculated */
+/*     IDERIV: Order of derivative transversal to fixed iso (If Iso-U=Uc */
+/*             is fixed, the derivative of order IDERIV is discretized by U of */
+/*             F(Uc,v). Same if iso-V is fixed). */
+/*             Varies from 0 (positioning) to 2 (2nd derivative). */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     FPNTAB: Tableau auxiliaire. */
-/*     SOMTAB: Tableau des NBROOT/2 sommes des 2 points d'indices */
-/*             NBROOT-II+1 et II, pour II = 1, NBROOT/2 */
-/*     DIFTAB: Tableau des NBROOT/2 differences des 2 points d'indices */
-/*             NBROOT-II+1 et II, pour II = 1, NBROOT/2 */
-/*     CONTR1: Contient, si IORDRE>=0, les IORDRE+1 valeurs en TTABLE(0) 
+/*     FPNTAB: Auxiliary table. 
+       SOMTAB: Table of NBROOT/2 sums of 2 index points */
+/*             NBROOT-II+1 and II, for II = 1, NBROOT/2 */
+/*     DIFTAB: Table of  NBROOT/2 differences of 2 index points */
+/*             NBROOT-II+1 and II, for II = 1, NBROOT/2 */
+/*     CONTR1: Contains, if IORDRE>=0, values IORDRE+1 in TTABLE(0) 
 */
-/*             (1ere extremitee) de derivees de F(Uc,Ve) ou F(Ue,Vc), */
-/*             voir ci dessous. */
-/*     CONTR2: Contient, si IORDRE>=0, les IORDRE+1 valeurs en */
-/*             TTABLE(NBROOT+1) (2eme extremitee) de: */
-/*                Si ISOFAV=1, derivee d'ordre IDERIV en U, derivee */
-/*             d'ordre 0 a IORDRE en V de F(Uc,Ve) ou Uc=TCONST */
-/*             (valeur de l'iso fixe) et Ve est l'extremite fixe. */
-/*                Si ISOFAV=2, derivee d'ordre IDERIV en V, derivee */
-/*             d'ordre 0 a IORDRE en U de F(Ue,Vc) ou Vc=TCONST */
-/*             (valeur de l'iso fixe) et Ue est l'extremite fixe. */
-/*     IERCOD: Code d' erreur > 100; Pb dans l' evaluation de FONCNP, */
-/*             le code d'erreur renvoye est egal au code d' erreur */
-/*             de FONCNP + 100. */
+/*             (1st extremity) of derivatives of F(Uc,Ve) or F(Ue,Vc), */
+/*             see below. */
+/*     CONTR2: Contains, if IORDRE>=0, values IORDRE+1 in */
+/*             TTABLE(NBROOT+1) (2nd extremity) of: */
+/*              If ISOFAV=1, derived of order IDERIV by U, derived */
+/*             ordre 0 to IORDRE by V of F(Uc,Ve) or Uc=TCONST */
+/*             (fixed iso value) and Ve is the fixed extremity. */
+/*               If  ISOFAV=2, derivative of order IDERIV by V, derivative */
+/*             of order 0 to IORDRE by U of F(Ue,Vc) or Vc=TCONST */
+/*             (fixed iso value) and Ue is the fixed extremity. */
+/*     IERCOD: Error code > 100; Pb in  evaluation of FONCNP, */
+/*             the returned error code is equal to error code of FONCNP + 100. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     Les resultats de la discretisation sont ranges dans 2 tableaux */
-/*     SOMTAB et DIFTAB pour gagner du temps par la suite lors du */
-/*     calcul des coefficients de la courbe d' approximation. */
+/*     The results of discretization are arranged in 2 tables */
+/*     SOMTAB and DIFTAB to earn time during the */
+/*     calculation of coefficients of the approximation curve. */
 
-/*     Si NBROOT est impair, on stocke dans SOMTAB(0,*) et DIFTAB(0,*) */
-/*     les valeurs de la racine mediane de Legendre (0.D0 dans (-1,1)). */
+/*     If NBROOT is uneven in SOMTAB(0,*) and DIFTAB(0,*) one stores */
+/*     the values of the median root of Legendre (0.D0 in (-1,1)). */
 
-/*     La fonction F(u,v) definie dans UVFONC est reparametre dans */
-/*     (-1,1)x(-1,1). On renormalise donc les derivees 1eres et 2ndes. */
+/*     Function F(u,v) defined in UVFONC is reparameterized in */
+/*     (-1,1)x(-1,1). Then 1st and 2nd derivatives are renormalized. */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     24-06-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -802,32 +781,32 @@ int mma1fdi_(integer *ndimen,
     }
     *iercod = 0;
 
-/* --------------- Definition du nbre de points a calculer -------------- 
+/* --------------- Definition of the nb of points to calculate -------------- 
 */
-/* --> Si contraintes, on prend aussi les bornes */
+/* --> If constraints, the limits are also taken */
     if (*iordre >= 0) {
 	ideb = 0;
 	ifin = *nbroot + 1;
-/* --> Sinon, seule les racines de Legendre (recadrees) sont utilisees
+/* --> Otherwise, only Legendre roots (reframed) are used
 . */
     } else {
 	ideb = 1;
 	ifin = *nbroot;
     }
-/* --> Nbre de point a calculer. */
+/* --> Nb of point to calculate. */
     nbp = ifin - ideb + 1;
     nroo2 = *nbroot / 2;
 
-/* --------------- Determination de l'ordre de derivation global -------- 
+/* --------------- Determination of the order of global derivation -------- 
 */
-/* --> Ici ISOFAV ne prend que les valeurs 1 ou 2. */
-/*    Si Iso-U, on derive en U a l'ordre IDERIV */
+/* --> ISOFAV takes only values 1 or 2. */
+/*    if Iso-U, derive by U of order IDERIV */
     if (*isofav == 1) {
 	ideru = *ideriv;
 	iderv = 0;
 	d__1 = (uvfonc[4] - uvfonc[3]) / 2.;
 	renor = AdvApp2Var_MathBase::pow__di(&d__1, ideriv);
-/*    Si Iso-V, on derive en V a l'ordre IDERIV */
+/*    if Iso-V, derive by V of order IDERIV */
     } else {
 	ideru = 0;
 	iderv = *ideriv;
@@ -835,9 +814,9 @@ int mma1fdi_(integer *ndimen,
 	renor = AdvApp2Var_MathBase::pow__di(&d__1, ideriv);
     }
 
-/* ----------- Discretisation sur les racines du polynome --------------- 
+/* ----------- Discretization on roots of the  --------------- 
 */
-/* ---------------------- de Legendre de degre NBROOT ------------------- 
+/* ---------------------- Legendre polynom of degree NBROOT ------------------- 
 */
 
     (*foncnp)(ndimen, 
@@ -869,9 +848,9 @@ int mma1fdi_(integer *ndimen,
 /* L100: */
     }
 
-/* ------------ Cas ou l' on discretise sur les racines d' un ----------- 
+/* ------------ Case when discretisation is done on roots of a ---- 
 */
-/* ---------- polynome de Legendre de degre impair, 0 est racine -------- 
+/* ---------- Legendre polynom of uneven degree, 0 is root -------- 
 */
 
     if (*nbroot % 2 == 1) {
@@ -892,11 +871,11 @@ int mma1fdi_(integer *ndimen,
     }
 
 
-/* --------------------- Prise en compte des contraintes ---------------- 
+/* --------------------- Take into account constraints ---------------- 
 */
 
     if (*iordre >= 0) {
-/* --> Recup des extremites deja calculees. */
+/* --> Recover already calculated extremities. */
 	i__1 = *ndimen;
 	for (nd = 1; nd <= i__1; ++nd) {
 	    contr1[nd + contr1_dim1] = renor * fpntab[nd];
@@ -904,11 +883,11 @@ int mma1fdi_(integer *ndimen,
 		    fpntab_dim1];
 /* L400: */
 	}
-/* --> Nbre de pts a calculer/appel a FONCNP */
+/* --> Nb of points to calculate/call to FONCNP */
 	nbp = 1;
-/*    Si Iso-U, on derive en V jusqu'a l'ordre IORDRE */
+/*    If Iso-U, derive by V till order IORDRE */
 	if (*isofav == 1) {
-/* --> Facteur de normalisation derivee 1ere. */
+/* --> Factor of normalisation 1st derivative. */
 	    bid1 = (uvfonc[6] - uvfonc[5]) / 2.;
 	    i__1 = *iordre;
 	    for (iderv = 1; iderv <= i__1; ++iderv) {
@@ -930,9 +909,9 @@ int mma1fdi_(integer *ndimen,
 		}
 /* L510: */
 	    }
-/*    Si Iso-V, on derive en U jusqu'a l'ordre IORDRE */
+/*    If Iso-V, derive by U till order IORDRE */
 	} else {
-/* --> Facteur de normalisation derivee 1ere. */
+/* --> Factor of normalization  1st derivative. */
 	    bid1 = (uvfonc[4] - uvfonc[3]) / 2.;
 	    i__1 = *iordre;
 	    for (ideru = 1; ideru <= i__1; ++ideru) {
@@ -956,9 +935,9 @@ int mma1fdi_(integer *ndimen,
 	    }
 	}
 
-/* ------------------------- Normalisation des derivees -------------
+/* ------------------------- Normalization of derivatives -------------
 ---- */
-/* (La fonction est redefinie sur (-1,1)*(-1,1)) */
+/* (The function is redefined on (-1,1)*(-1,1)) */
 	bid2 = renor;
 	i__1 = *iordre;
 	for (ii = 1; ii <= i__1; ++ii) {
@@ -1016,71 +995,65 @@ int mma1fer_(integer *,//ndimen,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul du degre et les erreurs d'approximation d'une frontiere. */
+/*     Calculate the degree and the errors of approximation of a border. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*      TOUS,AB_SPECIFI :: COURBE&,TRONCATURE, &PRECISION */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*     NDIMEN: Dimension totale de l' espace (somme des dimensions */
-/*             des sous-espaces) */
-/*     NBSESP: Nombre de sous-espaces "independants". */
-/*     NDIMSE: Table des dimensions des sous-espaces. */
-/*     IORDRE: Ordre de contrainte aux extremites de la frontiere */
-/*              -1 = pas de contraintes, */
-/*               0 = contraintes de passage aux bornes (i.e. C0), */
-/*               1 = C0 + contraintes de derivees 1eres (i.e. C1), */
-/*               2 = C1 + contraintes de derivees 2ndes (i.e. C2). */
-/*     NDGJAC: Degre du developpement en serie a utiliser pour le calcul 
-*/
-/*             dans la base de Jacobi. */
-/*     CRVJAC: Table des coeff. de la courbe d'approximation dans la */
-/*             base de Jacobi. */
-/*     NCFLIM: Nombre maxi de coeff de la "courbe" polynomiale */
-/*             d' approximation (doit etre superieur ou egal a */
-/*             2*IORDRE+2 et inferieur ou egal a 50). */
-/*     EPSAPR: Table des erreurs d' approximations a ne pas depasser, */
-/*             sous-espace par sous-espace. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     NDIMEN: Total Dimension of the space (sum of dimensions of sub-spaces) */
+/*     NBSESP: Number of "independent" sub-spaces. */
+/*     NDIMSE: Table of dimensions of sub-spaces. */
+/*     IORDRE: Order of constraint at the extremities of the border */
+/*              -1 = no constraints, */
+/*               0 = constraints of passage to limits (i.e. C0), */
+/*               1 = C0 + constraintes of 1st derivatives (i.e. C1), */
+/*               2 = C1 + constraintes of 2nd derivatives (i.e. C2). */
+/*     NDGJAC: Degree of development in series to use for the calculation  
+/*             in the base of Jacobi. */
+/*     CRVJAC: Table of coeff. of the curve of approximation in the */
+/*             base of Jacobi. */
+/*     NCFLIM: Max number of coeff of the polynomial curve */
+/*             of approximation (should be above or equal to */
+/*             2*IORDRE+2 and below or equal to 50). */
+/*     EPSAPR: Table of errors of approximations that cannot be passed, */
+/*             sub-space by sub-space. */
+
+/*     OUTPUT ARGUMENTS : */
 /*     --------------------- */
-/*     YCVMAX: Tableau auxiliaire. */
-/*     ERRMAX: Table des erreurs (sous-espace par sous espace) */
-/*             MAXIMALES commises dans l' approximation de FONCNP par */
+/*     YCVMAX: Auxiliary Table. */
+/*     ERRMAX: Table of errors (sub-space by sub-space) */
+/*             MAXIMUM made in the approximation of FONCNP by */
 /*             COURBE. */
-/*     ERRMOY: Table des erreurs (sous-espace par sous espace) */
-/*             MOYENNES commises dans l' approximation de FONCNP par */
+/*     ERRMOY: Table of errors (sub-space by sub-space) */
+/*             AVERAGE made in the approximation of FONCNP by */
 /*             COURBE. */
-/*     NCOEFF: Nombre de coeff. significatifs de la "courbe" calculee. */
-/*     IERCOD: Code d'erreur */
+/*     NCOEFF: Number of significative coeffs. of the calculated "curve". */
+/*     IERCOD: Error code */
 /*             = 0, ok, */
-/*             =-1, warning, la tolerance demandee ne peut etre */
-/*                  satisfaite avec NCFLIM coefficients. */
-/*             = 1, L'ordre des contraintes (IORDRE) n'est pas dans les */
-/*                  valeurs autorisees. */
+/*             =-1, warning, required tolerance can't be */
+/*                  met with coefficients NFCLIM. */
+/*             = 1, order of constraints (IORDRE) is not within authorised values */
+/*                  
 
-/*     COMMONS UTILISES : */
+/*     COMMONS USED : */
 /*     ------------------ */
 
-/*     REFERENCES APPELEES : */
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     07-02-92: RBD; Correction du retour du code d'erreur negatif. */
-/*     07-08-91: RBD; VERSION ORIGINALE */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*  Name of the routine */
 
 
     /* Parameter adjustments */
@@ -1103,16 +1076,16 @@ int mma1fer_(integer *,//ndimen,
     *ncoeff = 0;
     ncfja = *ndgjac + 1;
 
-/* ------------ Calcul du degre de la courbe et de l' erreur Max -------- 
+/* ------------ Calculate the degree of the curve and of the Max error -------- 
 */
-/* -------------- de l' approximation pour tous les sous-espaces -------- 
+/* -------------- of approximation for all sub-spaces -------- 
 */
 
     i__1 = *nbsesp;
     for (ii = 1; ii <= i__1; ++ii) {
 	ndses = ndimse[ii];
 
-/* ------------ coupure des coeff. et calcul de l' erreur Max -------
+/* ------------ cutting of coeff. and calculation of Max error -------
 ---- */
 
 	AdvApp2Var_MathBase::mmtrpjj_(&ncfja, &ndses, &ncfja, &epsapr[ii], iordre, &crvjac[idim * 
@@ -1120,7 +1093,7 @@ int mma1fer_(integer *,//ndimen,
 
 /* ******************************************************************
 **** */
-/* ------------- Si precision OK, calcul de l' erreur moyenne -------
+/* ------------- If precision OK, calculate the average error -------
 ---- */
 /* ******************************************************************
 **** */
@@ -1130,7 +1103,7 @@ int mma1fer_(integer *,//ndimen,
 		    crvjac_dim1], &ncfnw, &errmoy[ii]);
 	    *ncoeff = max(ncfnw,*ncoeff);
 
-/* ------------- Mise a 0.D0 des coefficients ecartes -----------
+/* ------------- Set the declined coefficients to 0.D0 -----------
 -------- */
 
 	    nbr0 = *ncflim - ncfnw;
@@ -1146,14 +1119,14 @@ int mma1fer_(integer *,//ndimen,
 
 /* **************************************************************
 ******** */
-/* ------------------- Si precision souhaitee non atteinte ------
+/* ------------------- If required precision can't be reached----
 -------- */
 /* **************************************************************
 ******** */
 
 	    *iercod = -1;
 
-/* ------------------------- calcul de l' erreur Max ------------
+/* ------------------------- calculate the Max error ------------
 -------- */
 
 	    AdvApp2Var_MathBase::mmaperx_(&ncfja, &ndses, &ncfja, iordre, &crvjac[idim * 
@@ -1162,12 +1135,12 @@ int mma1fer_(integer *,//ndimen,
 		goto L9100;
 	    }
 
-/* -------------------- du nbre de coeff a renvoyer -------------
+/* -------------------- nb of coeff to be returned -------------
 -------- */
 
 	    *ncoeff = *ncflim;
 
-/* ------------------- et calcul de l' erreur moyenne -----------
+/* ------------------- and calculation of the average error ----
 -------- */
 
 	    mmaperm_(&ncfja, &ndses, &ncfja, iordre, &crvjac[idim * 
@@ -1181,7 +1154,7 @@ int mma1fer_(integer *,//ndimen,
 
 /* ------------------------------ The end ------------------------------- 
 */
-/* --> L'ordre des contraintes n'est pas dans les valeurs autorisees. */
+/* --> The order of constraints is not within autorized values. */
 L9100:
     *iercod = 1;
     goto L9999;
@@ -1216,55 +1189,50 @@ int AdvApp2Var_ApproxF2var::mma1her_(const integer *iordre,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul des 2*(IORDRE+1) polynomes d'Hermite de degre 2*IORDRE+1 */
-/*     sur (-1,1) */
+/*     Calculate 2*(IORDRE+1) Hermit polynoms of  degree 2*IORDRE+1 */
+/*     on (-1,1) */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     TOUS, AB_SPECIFI::CONTRAINTE&, INTERPOLATION, &POLYNOME */
+/*     ALL, AB_SPECIFI::CONTRAINTE&, INTERPOLATION, &POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     IORDRE: Ordre de contrainte. */
-/*      = 0, Polynome d'interpolation a l'ordre C0 sur (-1,1). */
-/*      = 1, Polynome d'interpolation a l'ordre C0 et C1 sur (-1,1). */
-/*      = 2, Polynome d'interpolation a l'ordre C0, C1 et C2 sur (-1,1). 
+/*     IORDRE: Order of constraint. */
+/*      = 0, Polynom of interpolation of order C0 on (-1,1). */
+/*      = 1, Polynom of interpolation of order C0 and C1 on (-1,1). */
+/*      = 2, Polynom of interpolation of order C0, C1 and C2 on (-1,1). 
 */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     HERMIT: Table des 2*IORDRE+2 coeff. de chacun des 2*(IORDRE+1) */
-/*             polynomes d'HERMITE. */
-/*     IERCOD: Code d'erreur, */
+/*     HERMIT: Table of 2*IORDRE+2 coeff. of each of  2*(IORDRE+1) */
+/*             HERMIT polynom. */
+/*     IERCOD: Error code, */
 /*      = 0, Ok */
-/*      = 1, L'ordre de contrainte demande n'est pas gere ici. */
-/*     COMMONS UTILISES   : */
+/*      = 1, required order of constraint is not managed here. */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     La partie du tableau HERMIT(*,2*i+j) ou j=1 ou 2 et i=0 a IORDRE, 
-*/
-/*     contient les coefficients du polynome de degre 2*IORDRE+1 */
-/*     tel que TOUTES les valeurs en -1 et en +1 de ce polynome et de */
-/*     ses derivees jusqu'a l'ordre de derivation IORDRE sont NULLES, */
-/*     SAUF la derivee d'ordre i: */
-/*        - qui vaut 1 en -1 si j=1 */
-/*        - qui vaut 1 en +1 si j=2. */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     02-07-1991: RBD; Creation. */
+/*     The part of HERMIT(*,2*i+j) table where  j=1 or 2 and i=0 to IORDRE, 
+/*     contains the coefficients of the polynom of degree 2*IORDRE+1 */
+/*     such as ALL values in -1 and in +1 of this polynom and its */
+/*     derivatives till order of derivation IORDRE are NULL, */
+/*     EXCEPT for the derivative of order i: */
+/*        - valued 1 in -1 if j=1 */
+/*        - valued 1 in +1 if j=2. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*  Name of the routine */
 
 
     /* Parameter adjustments */
@@ -1279,7 +1247,7 @@ int AdvApp2Var_ApproxF2var::mma1her_(const integer *iordre,
     }
     *iercod = 0;
 
-/* --- Recup des (IORDRE+2) coeff des 2*(IORDRE+1) polynomes d'Hermite -- 
+/* --- Recover (IORDRE+2) coeff of 2*(IORDRE+1) Hermit polynoms -- 
 */
 
     if (*iordre == 0) {
@@ -1387,59 +1355,50 @@ int mma1jak_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*      Calcule la courbe d' approximation d' une fonction non */
-/*      polynomiale dans la base de Jacobi. */
+/*     Calculate the curve of approximation of a non-polynomial function */
+/*     in the base of Jacobi. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     FONCTION,DISCRETISATION,APPROXIMATION,CONTRAINTE,COURBE,JACOBI */
+/*     FUNCTION,DISCRETISATION,APPROXIMATION,CONSTRAINT,CURVE,JACOBI */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension totale de l' espace (somme des dimensions */
-/*             des sous-espaces) */
-/*     NBROOT: Nbre de points de discretisation de l'iso, extremites non 
-*/
-/*             comprises. */
-/*     IORDRE: Ordre de contrainte aux extremites de la frontiere */
-/*              -1 = pas de contraintes, */
-/*               0 = contraintes de passage aux bornes (i.e. C0), */
-/*               1 = C0 + contraintes de derivees 1eres (i.e. C1), */
-/*               2 = C1 + contraintes de derivees 2ndes (i.e. C2). */
-/*     NDGJAC: Degre du developpement en serie a utiliser pour le calcul 
-*/
-/*             dans la base de Jacobi. */
+/*     NDIMEN: Total dimension of the space (sum of dimensions */
+/*             of sub-spaces) */
+/*     NBROOT: Nb of points of discretization of the iso, extremities not 
+/*             included. */
+/*     IORDRE: Order of constraint at the extremities of the boundary */
+/*              -1 = no constraints, */
+/*               0 = constraints of passage of limits (i.e. C0), */
+/*               1 = C0 + constraints of 1st derivatives (i.e. C1), */
+/*               2 = C1 + constraints of 2nd derivatives (i.e. C2). */
+/*     NDGJAC: Degree of development in series to be used for calculation in the  
+/*             base of Jacobi. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     CRVJAC : Courbe d' approximation de FONCNP avec (eventuellement) */
-/*              prise en compte des contraintes aux extremites. */
-/*              Cette courbe est de degre NDGJAC. */
-/*     IERCOD : Code d' erreur : */
-/*               0 = Tout est ok. */
-/*              33 = Pb dans la recuperation des donnees du block data */
-/*                   des coeff. d' integration par la methode de GAUSS. */
-/*                   par le programme MMAPPTT. */
+/*     CRVJAC : Curve of approximation of FONCNP with (eventually) */
+/*              taking into account of constraints at the extremities. */
+/*              This curve is of degree NDGJAC. */
+/*     IERCOD : Error code : */
+/*               0 = All is ok. */
+/*              33 = Pb to return data of du block data */
+/*                   of coeff. of integration by GAUSS method. */
+/*                   by program MMAPPTT. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
-
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     07-08-1991 : RBD ; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
     /* Parameter adjustments */
     diftab_dim1 = *nbroot / 2 + 1;
@@ -1460,7 +1419,7 @@ int mma1jak_(integer *ndimen,
     }
     *iercod = 0;
 
-/* ----------------- Recup des coeff. d'integration par Gauss ----------- 
+/* ----------------- Recover coeffs of integration by Gauss ----------- 
 */
 
     AdvApp2Var_ApproxF2var::mmapptt_(ndgjac, nbroot, iordre, cgauss, iercod);
@@ -1469,7 +1428,7 @@ int mma1jak_(integer *ndimen,
 	goto L9999;
     }
 
-/* --------------- Calcul de la courbe dans la base de Jacobi ----------- 
+/* --------------- Calculate the curve in the base of Jacobi ----------- 
 */
 
     mmmapcoe_(ndimen, ndgjac, iordre, nbroot, &somtab[somtab_offset], &diftab[
@@ -1513,72 +1472,68 @@ int mma1noc_(doublereal *dfuvin,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Normalisation des contraintes de derivees, definies sur DFUVIN */
-/*     sur le pave DUVOUT. */
+/*     Normalization of constraints of derivatives, defined on DFUVIN */
+/*     on block DUVOUT. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     TOUS, AB_SPECIFI::VECTEUR&,DERIVEE&,NORMALISATION,&VECTEUR */
+/*     ALL, AB_SPECIFI::VECTEUR&,DERIVEE&,NORMALISATION,&VECTEUR */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     DFUVIN: Bornes du pave de definition en U et en V ou sont definies 
+/*     DFUVIN: Limits of the block of definition by U and by V where 
 */
-/*             les contraintes CNTRIN. */
-/*     NDIMEN: Dimension de l' espace. */
-/*     IORDRE: Ordre de contrainte impose aux extremites de l'iso. */
-/*             (Si Iso-U, on doit calculer les derivees en V et vice */
+/*             constraints CNTRIN are defined. */
+/*     NDIMEN: Dimension of the space. */
+/*     IORDRE: Order of constraint imposed at the extremities of the iso. */
+/*             (if Iso-U, it is necessary to calculate derivatives by V and vice */
 /*             versa). */
-/*             = 0, on a calcule les extremites de l'iso */
-/*             = 1, on a calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso */
-/*             = 2, on a calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso */
-/*     CNTRIN: Contient, si IORDRE>=0, les IORDRE+1 derivees */
-/*             d'ordre IORDRE de F(Uc,v) ou de F(u,Vc), suivant la */
-/*             valeur de ISOFAV, RENORMALISEES pour u et v dans (-1,1). */
-/*     DUVOUT: Bornes du pave de definition en U et en V ou seront */
-/*             definies les contraintes CNTOUT. */
-/*     ISOFAV: Isoparametre fixe pour la discretisation; */
-/*             = 1, on discretise a U=Uc fixe et V variable. */
-/*             = 2, on discretise a V=Vc fixe et U variable. */
+/*             = 0, the extremities of the iso are calculated */
+/*             = 1, additionally the 1st derivative in the direction */
+/*                  of the iso is calculated */
+/*             = 2, additionally the 2nd derivative in the direction */
+/*                  of the iso is calculated */
+/*     CNTRIN: Contains, if IORDRE>=0, IORDRE+1 derivatives */
+/*             of order IORDRE of F(Uc,v) or of F(u,Vc), following the */
+/*             value of ISOFAV, RENORMALIZED by u and v in (-1,1). */
+/*     DUVOUT: Limits of the block of definition by U and by V where the */
+/*             constraints CNTOUT will be defined. */
+/*     ISOFAV: Isoparameter fixed for the discretization; */
+/*             = 1, discretization with fixed U=Uc and variable V. */
+/*             = 2, discretization with fixed V=Vc and variable U. */
 /*     IDERIV: Ordre de derivee transverse a l'iso fixee (Si Iso-U=Uc */
-/*             fixee, on discretise la derivee d'ordre IDERIV en U de */
-/*             F(Uc,v). Idem si on fixe une iso-V). */
-/*             Varie de 0 (positionnement) a 2 (derivee 2nde). */
+/*             is fixed, the derivative of order IDERIV is discretized by U */
+/*             of F(Uc,v). The same if iso-V is fixed). */
+/*             Varies from (positioning) to 2 (2nd derivative). */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     CNTOUT: Contient, si IORDRE>=0, les IORDRE+1 derivees */
-/*             d'ordre IORDRE de F(Uc,v) ou de F(u,Vc), suivant la */
-/*             valeur de ISOFAV, RENORMALISEES pour u et v dans DUVOUT. */
+/*     CNTOUT: Contains, if IORDRE>=0, IORDRE+1 derivatives */
+/*             of order IORDRE of F(Uc,v) or of F(u,Vc), depending on the */
+/*             value of ISOFAV, RENORMALIZED for u and v in DUVOUT. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-/*     CNTRIN peut etre un argument d'entree/sortie, */
-/*     c'est a dire que l'appel: */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
+/*     CNTRIN can be an output/input  argument, */
+/*     so the call: */
 
 /*      CALL MMA1NOC(DFUVIN,NDIMEN,IORDRE,CNTRIN,DUVOUT */
 /*     1           ,ISOFAV,IDERIV,CNTRIN) */
 
-/*     est correct. */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     10-02-1992: RBD; Creation. */
+/*     is correct. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -1593,7 +1548,7 @@ int mma1noc_(doublereal *dfuvin,
 	AdvApp2Var_SysBase::mgenmsg_("MMA1NOC", 7L);
     }
 
-/* --------------- Determination des coefficients de normalisation -------
+/* --------------- Determination of coefficients of normalization -------
  */
 
     if (*isofav == 1) {
@@ -1609,7 +1564,7 @@ int mma1noc_(doublereal *dfuvin,
 	riord = AdvApp2Var_MathBase::pow__di(&d__1, iordre);
     }
 
-/* ------------- Renormalisation du vecteur de contrainte --------------- 
+/* ------------- Renormalization of the vector of constraint --------------- 
 */
 
     bid = rider * riord;
@@ -1652,47 +1607,35 @@ int mma1nop_(integer *nbroot,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Normalisation de parametres d'une iso, a partir du pave */
-/*     parametrique et des parametres sur (-1,1). */
+/*     Normalization of parameters of an iso, starting from  */
+/*     parametric block and parameters on (-1,1). */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*      TOUS,AB_SPECIFI :: ISO&,POINT&,NORMALISATION,&POINT,&ISO */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*        NBROOT: Nbre de pts de discretisation INTERIEURS a l'iso */
-/*                definie sur (-1,1). */
-/*        ROOTLG: Table des parametres de discretisation sur )-1,1( */
-/*                de l'iso. */
-/*        UVFONC: Pave de definition de l'iso */
-/*        ISOFAV: = 1, c'est une iso-u; =2, c'est une iso-v. */
+/*        NBROOT: Nb of points of discretisation INSIDE the iso */
+/*                defined on (-1,1). */
+/*        ROOTLG: Table of discretization parameters on )-1,1( */
+/*                of the iso. */
+/*        UVFONC: Block of definition of the iso */
+/*        ISOFAV: = 1, this is iso-u; =2, this is iso-v. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     --------------------- */
-/*        TTABLE: Table des parametres renormalises sur UVFONC de l'iso. 
+/*        TTABLE: Table of parameters renormalized on UVFONC of the iso. 
 */
 /*        IERCOD: = 0, OK */
-/*                = 1, ISOFAV est hors des valeurs permises. */
+/*                = 1, ISOFAV is out of allowed values. */
 
-/*     COMMONS UTILISES : */
-/*     ------------------ */
-
-/*     REFERENCES APPELEES : */
-/*     --------------------- */
-
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     06-02-92: RBD; Creation version originale, d'apres MA1NPA. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -1788,65 +1731,52 @@ int AdvApp2Var_ApproxF2var::mma2ac1_(integer const *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Ajout des polynomes de contraintes des coins. */
+/*     Add polynoms of edge constraints. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*  TOUS,AB_SPECIFI::POINT&,CONTRAINTE&,ADDITION,&POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS  : */
 /*     ------------------ */
-/*   NDIMEN: Dimension de l'espace. */
-/*   MXUJAC: Degre maxi du polynome d' approximation en U. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre MXUJAC-2*(IORDRU+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*   MXVJAC: Degre maxi du polynome d' approximation en V. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre MXVJAC-2*(IORDRV+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*   IORDRU: Ordre de la base de Jacobi (-1,0,1 ou 2) en U. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   IORDRV: Ordre de la base de Jacobi (-1,0,1 ou 2) en V. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   CONTR1: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*           extremitees de F(U0,V0)et de ses derivees. */
-/*   CONTR2: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*           extremitees de F(U1,V0)et de ses derivees. */
-/*   CONTR3: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*           extremitees de F(U0,V1)et de ses derivees. */
-/*   CONTR4: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*           extremitees de F(U1,V1)et de ses derivees. */
-/*   UHERMT: Coeff. des polynomes d'Hermite d'ordre IORDRU. */
-/*   VHERMT: Coeff. des polynomes d'Hermite d'ordre IORDRV. */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) SANS prise en compte des contraintes. */
+/*   NDIMEN: Dimension of the space. */
+/*   MXUJAC: Max degree of the polynom of approximation by U. The  */
+/*           representation in the orthogonal base starts from degree */
+/*           0 to degree MXUJAC-2*(IORDRU+1). The polynomial base is the */
+/*           base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*   MXVJAC: Max degree of the polynom of approximation by V. The  */
+/*           representation in the orthogonal base starts from degree */
+/*           0 to degree MXUJAC-2*(IORDRU+1). The polynomial base is the */
+/*           base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*   IORDRU: Order of the base of Jacobi (-1,0,1 or 2) by U. Corresponds */
+/*           to the step of constraints: C0, C1 or C2. */
+/*   IORDRV: Order of the base of Jacobi (-1,0,1 or 2) by V. Corresponds */
+/*           to the step of constraints: C0, C1 or C2. */
+/*   CONTR1: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U0,V0) and its derivatives. */
+/*   CONTR2: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U1,V0) and its derivatives. */
+/*   CONTR3: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U0,V1) and its derivatives. */
+/*   CONTR4: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U1,V1) and its derivatives. */
+/*   UHERMT: Coeff. of Hermit polynoms of order IORDRU. */
+/*   VHERMT: Coeff. of Hermit polynoms of order IORDRV. */
+/*   PATJAC: Table of coefficients of the polynom P(u,v) of approximation */
+/*           of F(u,v) WITHOUT taking into account the constraints. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) AVEC prise en compte des contraintes. */
-
-/*     COMMONS UTILISES   : */
-/*     ---------------- */
-
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
-
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     06-02-1992: RBD; Creation d'apres MA2CA1. */
+/*   PATJAC: Table of coefficients of the polynom P(u,v) by approximation */
+/*           of F(u,v) WITH taking into account of constraints. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
-/* --------------------------- Initialisations -------------------------- 
+/* --------------------------- Initialization -------------------------- 
 */
 
     /* Parameter adjustments */
@@ -1883,7 +1813,7 @@ int AdvApp2Var_ApproxF2var::mma2ac1_(integer const *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2AC1", 7L);
     }
 
-/* ------------ SOUSTRACTION des CONTRAINTES DE COINS ------------------- 
+/* ------------ SUBTRACTION OF ANGULAR CONSTRAINTS ------------------- 
 */
 
     ioru1 = *iordru + 1;
@@ -1964,59 +1894,49 @@ int AdvApp2Var_ApproxF2var::mma2ac2_(const integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Ajout des polynomes de contraintes */
+/*     Add polynoms of constraints */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     FONCTION,APPROXIMATION,COEFFICIENT,POLYNOME */
+/*     FUNCTION,APPROXIMATION,COEFFICIENT,POLYNOM */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*   NDIMEN: Dimension de l'espace. */
-/*   MXUJAC: Degre maxi du polynome d' approximation en U. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre MXUJAC-2*(IORDRU+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*   MXVJAC: Degre maxi du polynome d' approximation en V. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre MXVJAC-2*(IORDRV+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*   IORDRV: Ordre de la base de Jacobi (-1,0,1 ou 2) en V. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   NCLIMU: Nbre LIMITE de coeff. en u de la solution P(u,v). */
-/*   NCFIV1: Nbre de Coeff. des courbes stockees dans CRBIV1. */
-/*   CRBIV1: Table des coeffs de l'approximation de l'iso-V0 et ses */
-/*           derivees jusqu'a l'ordre IORDRV. */
-/*   NCFIV2: Nbre de Coeff. des courbes stockees dans CRBIV2. */
-/*   CRBIV2: Table des coeffs de l'approximation de l'iso-V1 et ses */
-/*           derivees jusqu'a l'ordre IORDRV. */
-/*   VHERMT: Table des coeff. des polynomes d'Hermite d'ordre IORDRV. */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) SANS prise en compte des contraintes. */
+/*   NDIMEN: Dimension of the space. */
+/*   MXUJAC: Max degree of the polynom of approximation by U. The  */
+/*           representation in the orthogonal base starts from degree */
+/*           0 to degree MXUJAC-2*(IORDRU+1). The polynomial base is the */
+/*           base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*   MXVJAC: Max degree of the polynom of approximation by V. The  */
+/*           representation in the orthogonal base starts from degree */
+/*           0 to degree MXUJAC-2*(IORDRU+1). The polynomial base is the */
+/*           base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*   IORDRV: Order of the base of Jacobi (-1,0,1 or 2) by V. Corresponds */
+/*           to the step of constraints: C0, C1 or C2. */
+/*   NCLIMU  LIMIT nb of coeff by u of the solution P(u,v) 
+*    NCFIV1: Nb of Coeff. of curves stored in CRBIV1. */
+/*   CRBIV1: Table of coeffs of the approximation of iso-V0 and its */
+/*           derivatives till order IORDRV. */
+/*   NCFIV2: Nb of Coeff. of curves stored in CRBIV2. */
+/*   CRBIV2: Table of coeffs of approximation of iso-V1 and its */
+/*           derivatives till order IORDRV. */
+/*   VHERMT: Coeff. of Hermit polynoms of order IORDRV. */
+/*   PATJAC: Table of coefficients of the polynom P(u,v) of approximation */
+/*           of F(u,v) WITHOUT taking into account the constraints. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) AVEC prise en compte des contraintes. */
+/*   PATJAC: Table of coefficients of the polynom P(u,v) by approximation */
+/*           of F(u,v) WITH taking into account of constraints. */
+/* > *//*
 
-/*     COMMONS UTILISES   : */
-/*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
-
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     06-02-1992: RBD; Creation d'apres MA2CA2. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 /* --------------------------- Initialisations -------------------------- 
 */
@@ -2046,7 +1966,7 @@ int AdvApp2Var_ApproxF2var::mma2ac2_(const integer *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2AC2", 7L);
     }
 
-/* ------------ AJOUT des coeff en u des courbes, en v d'Hermite -------- 
+/* ------------ ADDING of coeff by u of curves, by v of Hermit -------- 
 */
 
     i__1 = *iordrv + 1;
@@ -2123,61 +2043,50 @@ int AdvApp2Var_ApproxF2var::mma2ac3_(const integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
 /*     Ajout des polynomes de contraintes */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     FONCTION,APPROXIMATION,COEFFICIENT,POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*   NDIMEN: Dimension de l'espace. */
-/*   MXUJAC: Degre maxi du polynome d' approximation en U. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre MXUJAC-2*(IORDRU+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*   MXVJAC: Degre maxi du polynome d' approximation en V. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre MXVJAC-2*(IORDRU+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*   IORDRU: Ordre de la base de Jacobi (-1,0,1 ou 2) en V. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   NCLIMV: Nbre LIMITE de coeff. en v de la solution P(u,v). */
-/*   NCFIU1: Nbre de Coeff. des courbes stockees dans CRBIU1. */
-/*   CRBIU1: Table des coeffs de l'approximation de l'iso-U0 et ses */
-/*           derivees jusqu'a l'ordre IORDRU. */
-/*   NCFIU2: Nbre de Coeff. des courbes stockees dans CRBIU2. */
-/*   CRBIU2: Table des coeffs de l'approximation de l'iso-U1 et ses */
-/*           derivees jusqu'a l'ordre IORDRU. */
-/*   UHERMT: Table des coeff. des polynomes d'Hermite d'ordre IORDRU. */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) SANS prise en compte des contraintes. */
+/*   NDIMEN: Dimension of the space. */
+/*   MXUJAC: Max degree of the polynom of approximation by U. The  */
+/*           representation in the orthogonal base starts from degree */
+/*           0 to degree MXUJAC-2*(IORDRU+1). The polynomial base is the */
+/*           base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*   MXVJAC: Max degree of the polynom of approximation by V. The  */
+/*           representation in the orthogonal base starts from degree */
+/*           0 to degree MXUJAC-2*(IORDRU+1). The polynomial base is the */
+/*           base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*   IORDRU: Order of the base of Jacobi (-1,0,1 or 2) by U. Corresponds */
+/*           to the step of constraints: C0, C1 or C2. */
+/*   NCLIMV  LIMIT nb of coeff by v of the solution P(u,v) 
+*    NCFIU1: Nb of Coeff. of curves stored in CRBIU1. */
+/*   CRBIU1: Table of coeffs of the approximation of iso-U0 and its */
+/*           derivatives till order IORDRU. */
+/*   NCFIU2: Nb of Coeff. of curves stored in CRBIU2. */
+/*   CRBIU2: Table of coeffs of approximation of iso-U1 and its */
+/*           derivatives till order IORDRU */
+/*   UHERMT: Coeff. of Hermit polynoms of order IORDRU. */
+/*   PATJAC: Table of coefficients of the polynom P(u,v) of approximation */
+/*           of F(u,v) WITHOUT taking into account the constraints. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) AVEC prise en compte des contraintes. */
+/*   PATJAC: Table of coefficients of the polynom P(u,v) by approximation */
+/*           of F(u,v) WITH taking into account of constraints. */
 
-/*     COMMONS UTILISES   : */
-/*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
-
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     06-02-1991: RBD; Creation d'apres MA2CA3. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   The name of the routine */
 
-/* --------------------------- Initialisations -------------------------- 
+/* --------------------------- Initializations -------------------------- 
 */
 
     /* Parameter adjustments */
@@ -2205,7 +2114,7 @@ int AdvApp2Var_ApproxF2var::mma2ac3_(const integer *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2AC3", 7L);
     }
 
-/* ------------ AJOUT des coeff en u des courbes, en v d'Hermite -------- 
+/* ------------ ADDING of coeff by u of curves, by v of Hermit -------- 
 */
 
     i__1 = *iordru + 1;
@@ -2282,49 +2191,44 @@ int AdvApp2Var_ApproxF2var::mma2can_(const integer *ncfmxu,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Changement de base Jacobi vers canonique (-1,1) et ecriture dans */
-/*     un tableau + grand. */
+/*     Change of Jacobi base to canonical (-1,1) and writing in a greater */
+/*     table. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*     TOUS,AB_SPECIFI,CARREAU&,CONVERSION,JACOBI,CANNONIQUE,&CARREAU */
+/*     ALL,AB_SPECIFI,CARREAU&,CONVERSION,JACOBI,CANNONIQUE,&CARREAU */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*     NCFMXU: Dimension en U du tableau resultat PATCAN */
-/*     NCFMXV: Dimension en V du tableau resultat PATCAN */
-/*     NDIMEN: Dimension de l'espace de travail. */
-/*     IORDRU: Ordre de contrainte en U */
-/*     IORDRV: Ordre de contrainte en V. */
-/*     NCOEFU: Nbre de coeff en U du carreau PATJAC */
-/*     NCOEFV: Nbre de coeff en V du carreau PATJAC */
-/*     PATJAC: Carreau dans la base de Jacobi d'ordre IORDRU en U et */
-/*             IORDRV en V. */
+/*     NCFMXU: Dimension by U of resulting table PATCAN */
+/*     NCFMXV: Dimension by V of resulting table PATCAN */
+/*     NDIMEN: Dimension of the workspace. */
+/*     IORDRU: Order of constraint by U */
+/*     IORDRV: Order of constraint by V. */
+/*     NCOEFU: Nb of coeff by U of square PATJAC */
+/*     NCOEFV: Nb of coeff by V of square PATJAC */
+/*     PATJAC: Square in the base of Jacobi of order IORDRU by U and */
+/*             IORDRV by V. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     --------------------- */
-/*     PATAUX: Tableau auxiliaire. */
-/*     PATCAN: Tableau des coefficients dans la base canonique. */
-/*     IERCOD: Code d'erreur. */
-/*             = 0, tout va tres bien, toutes choses etant egales par */
-/*                  ailleurs. */
-/*             = 1, le programme refuse de traiter avec des arguments */
-/*                  d'entrees aussi stupides. */
+/*     PATAUX: Auxiliary Table. */
+/*     PATCAN: Table of coefficients in the canonic base. */
+/*     IERCOD: Error code. */
+/*             = 0, everything goes well, and all things are equal. */
+/*             = 1, the program refuses to process with incorrect input arguments */
 
-/*     COMMONS UTILISES : */
+
+/*     COMMONS USED : */
 /*     ------------------ */
 
-/*     REFERENCES APPELEES : */
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     29-01-1992: RBD; Ecriture version originale. */
 /* > */
 /* ********************************************************************** 
 */
@@ -2358,16 +2262,11 @@ int AdvApp2Var_ApproxF2var::mma2can_(const integer *ncfmxu,
 	goto L9100;
     }
 
-/* -------------------- Ah les jolis changements de bases --------------- 
-*/
-/* ------------ (Sur l'air des 'jolies colonies de vacances') ----------- 
-*/
-
-/* --> On passe en base canonique (-1,1) */
+/* --> Pass to canonic base (-1,1) */
     mmjacpt_(ndimen, ncoefu, ncoefv, iordru, iordrv, &patjac[patjac_offset], &
 	    pataux[1], &patcan[patcan_offset]);
 
-/* --> On ecrit le tout dans un tableau + grand */
+/* --> Write all in a greater table */
     AdvApp2Var_MathBase::mmfmca8_((integer *)ncoefu, 
 	     (integer *)ncoefv, 
 	     (integer *)ndimen, 
@@ -2377,7 +2276,7 @@ int AdvApp2Var_ApproxF2var::mma2can_(const integer *ncfmxu,
 	     (doublereal *)&patcan[patcan_offset], 
 	     (doublereal *)&patcan[patcan_offset]);
 
-/* --> On complete avec des zeros le tableau resultat. */
+/* --> Complete with zeros the resulting table. */
     ilon1 = *ncfmxu - *ncoefu;
     ilon2 = *ncfmxu * (*ncfmxv - *ncoefv);
     i__1 = *ndimen;
@@ -2399,7 +2298,7 @@ int AdvApp2Var_ApproxF2var::mma2can_(const integer *ncfmxu,
 
     goto L9999;
 
-/* ---------------------- A la revoyure M'sieu dames -------------------- 
+/* ---------------------- 
 */
 
 L9100:
@@ -2464,95 +2363,83 @@ int mma2cd1_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation sur les parametres des polynomes d'interpolation */
-/*     des contraintes aux coins a l'ordre IORDRE. */
+/*     Discretisation on the parameters of polynoms of interpolation */
+/*     of constraints at the corners of order IORDRE. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension de l' espace. */
-/*     NBPNTU: Nbre de parametres INTERNES de discretisation EN U. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     UROOTL: Tableau des parametres de discretisation SUR (-1,1) EN U. 
+/*     NDIMEN: Dimension of the space. */
+/*     NBPNTU: Nb of INTERNAL parameters of discretisation by U. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     UROOTL: Table of parameters of discretisation ON (-1,1) by U. 
 */
-/*     NBPNTV: Nbre de parametres INTERNES de discretisation EN V. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     VROOTL: Tableau des parametres de discretisation SUR (-1,1) EN V. 
-*/
-/*     IORDRU: Ordre de contrainte impose aux extremites de l'iso-V */
-/*             = 0, on calcule les extremites de l'iso-V */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso-V */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso-V */
-/*     IORDRV: Ordre de contrainte impose aux extremites de l'iso-U */
-/*             = 0, on calcule les extremites de l'iso-U. */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso-U */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso-U */
-/*     CONTR1: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U0,V0)et de ses derivees. */
-/*     CONTR2: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U1,V0)et de ses derivees. */
-/*     CONTR3: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U0,V1)et de ses derivees. */
-/*     CONTR4: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U1,V1)et de ses derivees. */
-/*     SOSOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DISOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     SODITB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DIDITB: Tableau deja initialise (argument d'entree/sortie). */
+/*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     VROOTL: Table of discretization parameters on (-1,1) by V. 
+/*     IORDRU: Order of constraint imposed at the extremities of iso-V */
+/*             = 0, calculate the extremities of iso-V */
+/*             = 1, calculate, additionally, the 1st derivative in the direction of iso-V */
+/*             = 2, calculate, additionally, the 2nd derivative in the direction of iso-V */
+/*     IORDRV: Order of constraint imposed at the extremities of iso-U */
+/*             = 0, calculate the extremities of iso-U */
+/*             = 1, calculate, additionally, the 1st derivative in the direction of iso-U */
+/*             = 2, calculate, additionally, the 2nd derivative in the direction of iso-U */
+/*   CONTR1: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U0,V0) and its derivatives. */
+/*   CONTR2: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U1,V0) and its derivatives. */
+/*   CONTR3: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U0,V1) and its derivatives. */
+/*   CONTR4: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U1,V1) and its derivatives. */
+/*     SOSOTB: Preinitialized table (input/output argument). */
+/*     DISOTB: Preinitialized table (input/output argument). */
+/*     SODITB: Preinitialized table (input/output argument). */
+/*     DIDITB: Preinitialized table (input/output argument) */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     FPNTBU: Tableau auxiliaire. */
-/*     FPNTBV: Tableau auxiliaire. */
-/*     UHERMT: Table des 2*(IORDRU+1) coeff. des 2*(IORDRU+1) polynomes */
-/*             d'Hermite. */
-/*     VHERMT: Table des 2*(IORDRV+1) coeff. des 2*(IORDRV+1) polynomes */
-/*             d'Hermite. */
-/*   SOSOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*     FPNTBU: Auxiliary table. */
+/*     FPNTBV: Auxiliary table. */
+/*     UHERMT: Table of 2*(IORDRU+1) coeff. of 2*(IORDRU+1) polynoms of Hermite. */
+/*     VHERMT: Table of 2*(IORDRV+1) coeff. of 2*(IORDRV+1) polynoms of Hermite. */
+/*   SOSOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) + C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DISOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DISOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) - C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) + C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) - C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     09-08-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -2609,7 +2496,7 @@ int mma2cd1_(integer *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2CD1", 7L);
     }
 
-/* ------------------- Discretisation des polynomes d'Hermite ----------- 
+/* ------------------- Discretisation of Hermite polynoms ----------- 
 */
 
     ncfhu = (*iordru + 1) << 1;
@@ -2635,7 +2522,7 @@ int mma2cd1_(integer *ndimen,
 /* L30: */
     }
 
-/* ---- On retranche les discretisations des polynomes de contrainte ---- 
+/* ---- The discretizations of polynoms of constraints are subtracted ---- 
 */
 
     nuroo = *nbpntu / 2;
@@ -2701,10 +2588,10 @@ int mma2cd1_(integer *ndimen,
 /* L400: */
 		}
 
-/* ------------ Cas ou l' on discretise sur les racines d' un 
+/* ------------ Case when the discretization is done only on the roots  
 ----------- */
-/* ---------- polynome de Legendre de degre impair, 0 est raci
-ne -------- */
+/* ----------   of Legendre polynom of uneven degree, 0 is root 
+----------- */
 
 		if (*nbpntu % 2 == 1) {
 		    sou1 = fpntbu[nuroo + 1 + ((ii << 1) - 1) * fpntbu_dim1];
@@ -2830,86 +2717,81 @@ int mma2cd2_(integer *ndimen,
 
 /* ********************************************************************** 
 */
-
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation sur les parametres des polynomes d'interpolation */
-/*     des contraintes sur les 2 bords iso-V a l'ordre IORDRV. */
+/*     Discretisation on the parameters of polynoms of interpolation */
+/*     of constraints on 2 borders iso-V of order IORDRV. */
 
-/*     MOTS CLES : */
+
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+
+
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension de l' espace. */
-/*     NBPNTU: Nbre de parametres INTERNES de discretisation EN U. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     NBPNTV: Nbre de parametres INTERNES de discretisation EN V. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     VROOTL: Tableau des parametres de discretisation SUR (-1,1) EN V. 
+/*     NDIMEN: Dimension of the space. */
+/*     NBPNTU: Nb of INTERNAL parameters of discretisation by U. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     UROOTL: Table of parameters of discretisation ON (-1,1) by U. 
 */
-/*     IORDRV: Ordre de derivation de l'iso-V */
-/*             = 0, on calcule l'iso-V. */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  transverse a l'iso-V (donc en V). */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  transverse a l'iso-V (donc en V). */
-/*     SOTBV1: Tableau des NBPNTV/2 sommes des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V0. */
-/*     SOTBV2: Tableau des NBPNTV/2 sommes des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V1. */
-/*     DITBV1: Tableau des NBPNTV/2 differences des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V0. */
-/*     DITBV2: Tableau des NBPNTV/2 differences des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V1. */
-/*     SOSOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DISOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     SODITB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DIDITB: Tableau deja initialise (argument d'entree/sortie). */
+/*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     VROOTL: Table of discretization parameters on (-1,1) by V. 
+/*     IORDRV: Order of constraint imposed at the extremities of iso-V */
+/*             = 0, calculate the extremities of iso-V */
+/*             = 1, calculate, additionally, the 1st derivative in the direction of iso-V */
+/*             = 2, calculate, additionally, the 2nd derivative in the direction of iso-V */
+/*     SOTBV1: Table of NBPNTV/2 sums of 2 index points  */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V0. */
+/*     SOTBV2: Table of NBPNTV/2 sums of 2 index points  */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V1. */
+/*     DITBV1: Table of NBPNTV/2 differences of 2 index points */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V0. */
+/*     DITBV2: Table of NBPNTV/2 differences of 2 index points */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V1. */
+/*     SOSOTB: Preinitialized table (input/output argument). */
+/*     DISOTB: Preinitialized table (input/output argument). */
+/*     SODITB: Preinitialized table (input/output argument). */
+/*     DIDITB: Preinitialized table (input/output argument) */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     FPNTAB: Tableau auxiliaire. */
-/*     VHERMT: Table des 2*(IORDRV+1) coeff. des 2*(IORDRV+1) polynomes */
-/*             d'Hermite. */
-/*   SOSOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*     FPNTAB: Auxiliary table. */
+/*     VHERMT: Table of 2*(IORDRV+1) coeff. of 2*(IORDRV+1) polynoms of Hermite. */
+/*   SOSOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) + C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DISOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DISOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) - C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) + C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) - C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     08-08-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -2959,7 +2841,7 @@ int mma2cd2_(integer *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2CD2", 7L);
     }
 
-/* ------------------- Discretisation des polynomes d'Hermite ----------- 
+/* ------------------- Discretization of Hermit polynoms ----------- 
 */
 
     ncfhv = (*iordrv + 1) << 1;
@@ -2974,7 +2856,7 @@ int mma2cd2_(integer *ndimen,
 /* L50: */
     }
 
-/* ---- On retranche les discretisations des polynomes de contrainte ---- 
+/* ---- The discretizations of polynoms of constraints are subtracted ---- 
 */
 
     nuroo = *nbpntu / 2;
@@ -3030,10 +2912,9 @@ int mma2cd2_(integer *ndimen,
 /* L200: */
 	}
 
-/* ------------ Cas ou l' on discretise sur les racines d' un -------
----- */
-/* ---------- polynome de Legendre de degre impair, 0 est racine ----
----- */
+/* ------------ Case when the discretization is done only on the roots  */
+/* ----------   of Legendre polynom of uneven degree, 0 is root */
+
 
 	if (*nbpntv % 2 == 1) {
 	    i__2 = *iordrv + 1;
@@ -3149,77 +3030,71 @@ int mma2cd3_(integer *ndimen,
 
 /* ********************************************************************** 
 */
-
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation sur les parametres des polynomes d'interpolation */
-/*     des contraintes sur les 2 bords iso-U a l'ordre IORDRU. */
+/*     Discretisation on the parameters of polynoms of interpolation */
+/*     of constraints on 2 borders iso-U of order IORDRU. */
 
-/*     MOTS CLES : */
+
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension de l' espace. */
-/*     NBPNTU: Nbre de parametres INTERNES de discretisation EN U. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     UROOTL: Tableau des parametres de discretisation SUR (-1,1) EN U. 
+/*     NDIMEN: Dimension of the space. */
+/*     NBPNTU: Nb of INTERNAL parameters of discretisation by U. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     UROOTL: Table of parameters of discretisation ON (-1,1) by U. 
 */
-/*     NBPNTV: Nbre de parametres INTERNES de discretisation EN V. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     IORDRU: Ordre de derivation de l'iso-U */
-/*             = 0, on calcule l'iso-U. */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  transverse a l'iso-U (donc en U). */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  transverse a l'iso-U (donc en U). */
-/*     SOTBU1: Tableau des NBPNTU/2 sommes des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U0. */
-/*     SOTBU2: Tableau des NBPNTU/2 sommes des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U1. */
-/*     DITBU1: Tableau des NBPNTU/2 differences des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U0. */
-/*     DITBU2: Tableau des NBPNTU/2 differences des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U1. */
-/*     SOSOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DISOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     SODITB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DIDITB: Tableau deja initialise (argument d'entree/sortie). */
+/*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     IORDRV: Order of constraint imposed at the extremities of iso-V */
+/*             = 0, calculate the extremities of iso-V */
+/*             = 1, calculate, additionally, the 1st derivative in the direction of iso-V */
+/*             = 2, calculate, additionally, the 2nd derivative in the direction of iso-V */
+/*     SOTBU1: Table of NBPNTU/2 sums of 2 index points  */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V0. */
+/*     SOTBU2: Table of NBPNTV/2 sums of 2 index points  */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V1. */
+/*     DITBU1: Table of NBPNTU/2 differences of 2 index points */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V0. */
+/*     DITBU2: Table of NBPNTU/2 differences of 2 index points */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V1. */
+/*     SOSOTB: Preinitialized table (input/output argument). */
+/*     DISOTB: Preinitialized table (input/output argument). */
+/*     SODITB: Preinitialized table (input/output argument). */
+/*     DIDITB: Preinitialized table (input/output argument) */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     FPNTAB: Tableau auxiliaire. */
-/*     UHERMT: Table des 2*(IORDRU+1) coeff. des 2*(IORDRU+1) polynomes */
-/*             d'Hermite. */
-/*   SOSOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*     FPNTAB: Auxiliary table. */
+/*     UHERMT: Table of 2*(IORDRU+1) coeff. of 2*(IORDRU+1) polynoms of Hermite. */
+/*   SOSOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) + C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DISOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DISOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) - C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) + C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) - C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-
 
 /* $    HISTORIQUE DES MODIFICATIONS   : */
 /*     -------------------------------- */
@@ -3228,7 +3103,7 @@ int mma2cd3_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -3278,7 +3153,7 @@ int mma2cd3_(integer *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2CD3", 7L);
     }
 
-/* ------------------- Discretisation des polynomes d'Hermite ----------- 
+/* ------------------- Discretization of polynoms of Hermit ----------- 
 */
 
     ncfhu = (*iordru + 1) << 1;
@@ -3297,7 +3172,7 @@ int mma2cd3_(integer *ndimen,
 /* L50: */
     }
 
-/* ---- On retranche les discretisations des polynomes de contrainte ---- 
+/* ---- The discretizations of polynoms of constraints are subtracted ---- 
 */
 
     nvroo = *nbpntv / 2;
@@ -3353,10 +3228,10 @@ int mma2cd3_(integer *ndimen,
 /* L200: */
 	}
 
-/* ------------ Cas ou l' on discretise sur les racines d' un -------
----- */
-/* ---------- polynome de Legendre de degre impair, 0 est racine ----
----- */
+/* ------------ Case when the discretization is done only on the roots  */
+/* ----------   of Legendre polynom of uneven degree, 0 is root */
+
+
 
 	if (*nbpntu % 2 == 1) {
 	    i__2 = *iordru + 1;
@@ -3489,109 +3364,99 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation sur les parametres des polynomes d'interpolation */
-/*     des contraintes a l'ordre IORDRE. */
+/*     Discretisation on the parameters of polynomes of interpolation */
+/*     of constraints of order IORDRE. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+//*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDIMEN: Dimension de l' espace. */
-/*     NBPNTU: Nbre de parametres INTERNES de discretisation EN U. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     UROOTL: Tableau des parametres de discretisation SUR (-1,1) EN U. 
+/*     NDIMEN: Dimension of the space. */
+/*     NBPNTU: Nb of INTERNAL parameters of discretisation by U. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     UROOTL: Table of parameters of discretisation ON (-1,1) by U. 
 */
-/*     NBPNTV: Nbre de parametres INTERNES de discretisation EN V. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     VROOTL: Tableau des parametres de discretisation SUR (-1,1) EN V. 
-*/
-/*     IORDRU: Ordre de contrainte impose aux extremites de l'iso-V */
-/*             = 0, on calcule les extremites de l'iso-V */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso-V */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso-V */
-/*     IORDRV: Ordre de contrainte impose aux extremites de l'iso-U */
-/*             = 0, on calcule les extremites de l'iso-U. */
-/*             = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*                  de l'iso-U */
-/*             = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*                  de l'iso-U */
-/*     CONTR1: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U0,V0)et de ses derivees. */
-/*     CONTR2: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U1,V0)et de ses derivees. */
-/*     CONTR3: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U0,V1)et de ses derivees. */
-/*     CONTR4: Contient, si IORDRU et IORDRV>=0, les valeurs aux */
-/*             extremitees de F(U1,V1)et de ses derivees. */
-/*     SOTBU1: Tableau des NBPNTU/2 sommes des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U0. */
-/*     SOTBU2: Tableau des NBPNTU/2 sommes des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U1. */
-/*     DITBU1: Tableau des NBPNTU/2 differences des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U0. */
-/*     DITBU2: Tableau des NBPNTU/2 differences des 2 points d'indices */
-/*             NBPNTU-II+1 et II, pour II = 1, NBPNTU/2 sur l'iso-U1. */
-/*     SOTBV1: Tableau des NBPNTV/2 sommes des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V0. */
-/*     SOTBV2: Tableau des NBPNTV/2 sommes des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V1. */
-/*     DITBV1: Tableau des NBPNTV/2 differences des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V0. */
-/*     DITBV2: Tableau des NBPNTV/2 differences des 2 points d'indices */
-/*             NBPNTV-II+1 et II, pour II = 1, NBPNTV/2 sur l'iso-V1. */
-/*     SOSOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DISOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*     SODITB: Tableau deja initialise (argument d'entree/sortie). */
-/*     DIDITB: Tableau deja initialise (argument d'entree/sortie). */
+/*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
+/*             This is also the nb of root of Legendre polynom where discretization is done. */
+/*     VROOTL: Table of parameters of discretisation ON (-1,1) by V. 
+
+/*     IORDRV: Order of constraint imposed at the extremities of iso-U */
+/*             = 0, calculate the extremities of iso-U */
+/*             = 1, calculate, additionally, the 1st derivative in the direction of iso-U */
+/*             = 2, calculate, additionally, the 2nd derivative in the direction of iso-U */
+/*     IORDRU: Order of constraint imposed at the extremities of iso-V */
+/*             = 0, calculate the extremities of iso-V */
+/*             = 1, calculate, additionally, the 1st derivative in the direction of iso-V */
+/*             = 2, calculate, additionally, the 2nd derivative in the direction of iso-V */
+/*   CONTR1: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U0,V0) and its derivatives. */
+/*   CONTR2: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U1,V0) and its derivatives. */
+/*   CONTR3: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U0,V1) and its derivatives. */
+/*   CONTR4: Contains, if IORDRU and IORDRV>=0, the values at the */
+/*           extremities of F(U1,V1) and its derivatives. */
+/*     SOTBU1: Table of NBPNTU/2 sums of 2 index points  */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V0. */
+/*     SOTBU2: Table of NBPNTV/2 sums of 2 index points  */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V1. */
+/*     DITBU1: Table of NBPNTU/2 differences of 2 index points */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V0. */
+/*     DITBU2: Table of NBPNTU/2 differences of 2 index points */
+/*             NBPNTU-II+1 and II, for II = 1, NBPNTU/2 on iso-V1. */
+/*     SOTBV1: Table of NBPNTV/2 sums of 2 index points  */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V0. */
+/*     SOTBV2: Table of NBPNTV/2 sums of 2 index points  */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V1. */
+/*     DITBV1: Table of NBPNTV/2 differences of 2 index points */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V0. */
+/*     DITBV2: Table of NBPNTV/2 differences of 2 index points */
+/*             NBPNTV-II+1 and II, for II = 1, NBPNTV/2 on iso-V1. */
+/*     SOSOTB: Preinitialized table (input/output argument). */
+/*     DISOTB: Preinitialized table (input/output argument). */
+/*     SODITB: Preinitialized table (input/output argument). */
+/*     DIDITB: Preinitialized table (input/output argument) */
 
 /*     ARGUMENTS DE SORTIE : */
 /*     ------------------- */
-/*   SOSOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*   SOSOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) + C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DISOTB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DISOTB: Table where the terms of constraints are added */
 /*           C(ui,vj) + C(ui,-vj) - C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) + C(-ui,vj) - C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau ou l'on ajoute les termes de contraintes */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table where the terms of constraints are added */
 /*           C(ui,vj) - C(ui,-vj) - C(-ui,vj) + C(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
+/*           with ui and vj positive roots of the polynom of Legendre */
+/*           of degree NBPNTU and NBPNTV respectively. */
 /*   IERCOD: = 0, OK, */
-/*           = 1, Valeur de IORDRV ou IORDRU hors des valeurs permises. */
-/*           =13, Pb d'alloc dynamique. */
+/*           = 1, Value or IORDRV or IORDRU is out of allowed values. */
+/*           =13, Pb of dynamic allocation. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED  : */
+/*     -------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
 
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     08-08-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   The name of the routine */
 
 
     /* Parameter adjustments */
@@ -3652,7 +3517,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 	goto L9100;
     }
 
-/* ------------------------- Mise a zero -------------------------------- 
+/* ------------------------- Set to zero -------------------------------- 
 */
 
     ilong = (*nbpntu / 2 + 1) * (*nbpntv / 2 + 1) * *ndimen;
@@ -3683,7 +3548,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 
     if (*iordru >= 0 && *iordru <= 2) {
 
-/* --- Recup des 2*(IORDRU+1) coeff des 2*(IORDRU+1) polyn. d'Hermite 
+/* --- Return 2*(IORDRU+1) coeff of 2*(IORDRU+1) polynoms of Hermite 
 --- */
 
 	AdvApp2Var_ApproxF2var::mma1her_(iordru, &wrkar[ipt1], iercod);
@@ -3691,7 +3556,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 	    goto L9100;
 	}
 
-/* ---- On retranche les discretisations des polynomes de contrainte 
+/* ---- Subract discretizations of polynoms of constraints 
 ---- */
 
 	mma2cd3_(ndimen, nbpntu, &urootl[1], nbpntv, iordru, &sotbu1[1], &
@@ -3702,7 +3567,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 
     if (*iordrv >= 0 && *iordrv <= 2) {
 
-/* --- Recup des 2*(IORDRV+1) coeff des 2*(IORDRV+1) polyn. d'Hermite 
+/* --- Return 2*(IORDRV+1) coeff of 2*(IORDRV+1) polynoms of Hermite 
 --- */
 
 	AdvApp2Var_ApproxF2var::mma1her_(iordrv, &wrkar[ipt2], iercod);
@@ -3710,7 +3575,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 	    goto L9100;
 	}
 
-/* ---- On retranche les discretisations des polynomes de contrainte 
+/* ---- Subtract discretisations of polynoms of constraint 
 ---- */
 
 	mma2cd2_(ndimen, nbpntu, nbpntv, &vrootl[1], iordrv, &sotbv1[1], &
@@ -3719,7 +3584,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 		disotb_offset], &diditb[diditb_offset]);
     }
 
-/* --------------- On retranche les contraintes de coins ---------------- 
+/* --------------- Subtract constraints of corners ---------------- 
 */
 
     if (*iordru >= 0 && *iordrv >= 0) {
@@ -3734,11 +3599,11 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 
 /* ------------------------------ The End ------------------------------- 
 */
-/* --> IORDRE n'est pas dans la plage autorisee. */
+/* --> IORDRE is not within the autorised diapason. */
 L9100:
     *iercod = 1;
     goto L9999;
-/* --> PB d'alloc dyn. */
+/* --> PB of dynamic allocation. */
 L9013:
     *iercod = 13;
     goto L9999;
@@ -3811,122 +3676,113 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(integer *numdec,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul des coefficients de l' approximation polynomiale de degre */
-/*     (NDJACU,NDJACV) d'une fonction F(u,v) quelconque, a partir de sa */
-/*     discretisation sur les racines du polynome de Legendre de degre */
-/*     NBPNTU en U et NBPNTV en V. */
+/*     Calculation of coefficients of polynomial approximation of degree */
+/*     (NDJACU,NDJACV) of a function F(u,v), starting from its */
+/*     discretization on roots of Legendre polynom of degree  */
+/*     NBPNTU by U and NBPNTV by V. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS,AB_SPECIFI::FONCTION&,APPROXIMATION,&POLYNOME,&ERREUR */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*   NUMDEC: Indique si on PEUT decouper encore la fonction F(u,v). */
-/*           = 5, On PEUT couper en U ou en V ou dans les 2 sens a la */
-/*                fois. */
-/*           = 4, On PEUT couper en U ou en V MAIS PAS dans les 2 sens */
-/*                a la fois (decoupe en V favorisee). */
-/*           = 3, On PEUT couper en U ou en V MAIS PAS dans les 2 sens */
-/*                a la fois (decoupe en U favorisee). */
-/*           = 2, on ne PEUT couper qu'en V (i.e. inserer un parametre */
-/*                de decoupe Vj). */
-/*           = 1, on ne PEUT couper qu'en U (i.e. inserer un parametre */
-/*                de decoupe Ui). */
-/*           = 0, on ne PEUT plus rien couper */
-/*   NDIMEN: Dimension de l'espace. */
-/*   NBSESP: Nbre de sous-espaces independant sur lesquels on calcule */
-/*           les erreurs. */
-/*   NDIMSE: Table des dimensions de chacun des sous-espaces. */
-/*   NDMINU: Degre minimum en U a conserver pour l'approximation. */
-/*   NDMINV: Degre minimum en V a conserver pour l'approximation. */
-/*   NDGULI: Limite du nbre de coefficients en U de la solution. */
-/*   NDGVLI: Limite du nbre de coefficients en V de la solution. */
-/*   NDJACU: Degre maxi du polynome d' approximation en U. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre NDJACU-2*(IORDRU+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2. */
-/*           On doit avoir 2*IORDRU+1 <= NDMINU <= NDGULI < NDJACU */
-/*   NDJACV: Degre maxi du polynome d' approximation en V. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre NDJACV-2*(IORDRV+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*           On doit avoir 2*IORDRV+1 <= NDMINV <= NDGVLI < NDJACV */
-/*   IORDRU: Ordre de la base de Jacobi (-1,0,1 ou 2) en U. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   IORDRV: Ordre de la base de Jacobi (-1,0,1 ou 2) en V. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   NBPNTU: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant u */
-/*           par la methode de Gauss. On doit avoir NBPNTU = 30, 40, */
-/*           50 ou 61 et NDJACU-2*(IORDRU+1) < NBPNTU. */
-/*   NBPNTV: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant v */
-/*           par la methode de Gauss. On doit avoir NBPNTV = 30, 40, */
-/*           50 ou 61 et NDJACV-2*(IORDRV+1) < NBPNTV. */
-/*   EPSAPR: Table des NBSESP tolerances imposees sur chacun des */
-/*           sous-espaces. */
-/*   SOSOTB: Tableau de F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. De plus, */
-/*           le tableau SOSOTB(0,j) contient F(0,vj) + F(0,-vj), */
-/*           le tableau SOSOTB(i,0) contient F(ui,0) + F(-ui,0) et */
-/*           SOSOTB(0,0) contient F(0,0). */
-/*   DISOTB: Tableau de F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau de F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau de F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. De plus, */
-/*           le tableau DIDITB(0,j) contient F(0,vj) - F(0,-vj), */
-/*           et le tableau DIDITB(i,0) contient F(ui,0) - F(-ui,0). */
+/*   NUMDEC: Indicates if it is POSSIBLE to cut function F(u,v). */
+/*           = 5, It is POSSIBLE to cut by U or by V or in both directions simultaneously. */
+/*           = 4, It is POSSIBLE to cut by U or by V BUT NOT in both  */
+/*                directions simultaneously (cutting by V is preferable). */
+/*           = 3, It is POSSIBLE to cut by U or by V BUT NOT in both */
+/*                directions simultaneously (cutting by U is preferable). */
+/*           = 2, It is POSSIBLE to cut only by V (i.e. insert parameter */
+/*                of cutting Vj). */
+/*           = 1, It is POSSIBLE to cut only by U (i.e. insert parameter */
+/*                of cutting Ui). */
+/*           = 0, It is not POSSIBLE to cut anything */
+/*   NDIMEN: Dimension of the space. */
+/*   NBSESP: Nb of independent sub-spaces on which the errors are calculated. */
+/*   NDIMSE: Table of dimensions of each of sub-spaces. */
+/*   NDMINU: Minimum degree by U to be preserved for the approximation. */
+/*   NDMINV: Minimum degree by V to be preserved for the approximation. */
+/*   NDGULI: Limit of nb of coefficients by U of the solution. */
+/*   NDGVLI: Limit of nb of coefficients by V of the solution. */
+/*   NDJACU: Max degree of the polynom of approximation by U. */
+/*           The representation in the orthogonal base starts from degree */
+/*           0 to degree NDJACU-2*(IORDRU+1). The polynomial base is the base of  */
+/*           Jacobi of order -1 (Legendre), 0, 1 or 2. */
+/*           It is required that 2*IORDRU+1 <= NDMINU <= NDGULI < NDJACU */
+/*   NDJACV: Max degree of the polynom of approximation by V. */
+/*           The representation in the orthogonal base starts from degree */
+/*           0 to degree NDJACV-2*(IORDRV+1). The polynomial base is */
+/*           the base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*           It is required that 2*IORDRV+1 <= NDMINV <= NDGVLI < NDJACV */
+/*   IORDRU: Order of the Jacobi base (-1,0,1 or 2) by U. Corresponds */
+/*           to the step of constraints C0, C1 or C2. */
+/*   IORDRV: Order of the Jacobi base (-1,0,1 or 2) by U. Corresponds */
+/*           to the step of constraints C0, C1 or C2. */
+/*   NBPNTU: Degree of Legendre polynom on  the roots which of are */
+/*           calculated the coefficients of integration by u */
+/*           by Gauss method. It is required that NBPNTU = 30, 40, */
+/*           50 or 61 and NDJACU-2*(IORDRU+1) < NBPNTU. */
+/*   NBPNTV: Degree of Legendre polynom on  the roots which of are */
+/*           calculated the coefficients of integration by u */
+/*           by Gauss method. It is required that NBPNTV = 30, 40, */
+/*           50 or 61 and NDJACV-2*(IORDRV+1) < NBPNTV. */
+/*   EPSAPR: Table of NBSESP tolerances imposed on each sub-spaces. */
+/*   SOSOTB: Table of F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
+/*           with ui and vj - positive roots of the Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. Additionally, */
+/*           table SOSOTB(0,j) contains F(0,vj) + F(0,-vj), */
+/*           table SOSOTB(i,0) contains F(ui,0) + F(-ui,0) and */
+/*           SOSOTB(0,0) contains F(0,0). */
+/*   DISOTB: Table of F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table of F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table of F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. Additionally, */
+/*           table DIDITB(0,j) contains F(0,vj) - F(0,-vj), */
+/*           and table DIDITB(i,0) contains F(ui,0) - F(-ui,0). */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     ------------------- */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) avec eventuellement prise en compte des */
-/*           contraintes. P(u,v) est de degre (NDJACU,NDJACV). */
-/*           Ce tableau ne contient les coeff que si ITYDEC = 0. */
-/*   ERRMAX: Pour 1<=i<=NBSESP, ERRMAX(i) contient les erreurs maxi */
-/*           sur chacun des sous-espaces SI ITYDEC = 0. */
-/*   ERRMOY: Contient les erreurs moyennes pour chacun des NBSESP */
-/*           sous-espaces SI ITYDEC = 0. */
-/*   NDEGPU: Degre en U pour le carreau PATJAC. Valable si ITYDEC=0. */
-/*   NDEGPV: Degre en V pour le carreau PATJAC. Valable si ITYDEC=0. */
-/*   ITYDEC: Indique si on DOIT decouper encore la fonction F(u,v). */
-/*           = 0, on ne DOIT plus rien couper, PATJAC est OK. */
-/*           = 1, on ne DOIT couper qu'en U (i.e. inserer un parametre */
-/*                de decoupe Ui). */
-/*           = 2, on ne DOIT couper qu'en V (i.e. inserer un parametre */
-/*                de decoupe Vj). */
-/*           = 3, On DOIT couper en U ET en V a la fois. */
-/*   IERCOD: Code d'erreur. */
-/*           =  0, Eh bien tout va tres bien. */
-/*           = -1, On a une solution, la meilleure possible, mais la */
-/*                 tolerance utilisateur n'est pas satisfaite (3*helas) */
-/*           =  1, Entrees incoherentes. */
+/*   OUTPUT ARGUMENTS  */
+/*     --------------- */
+/*   PATJAC: Table of coefficients of polynom P(u,v) of approximation */
+/*           of F(u,v) with eventually taking into account of */
+/*           constraints. P(u,v) is of degree (NDJACU,NDJACV). */
+/*           This table contains other coeff if ITYDEC = 0. */
+/*   ERRMAX: For 1<=i<=NBSESP, ERRMAX(i) contains max errors */
+/*           on each of sub-spaces SI ITYDEC = 0. */
+/*   ERRMOY: Contains average errors for each of NBSESP sub-spaces SI ITYDEC = 0. */
+/*   NDEGPU: Degree by U for square PATJAC. Valable if ITYDEC=0. */
+/*   NDEGPV: Degree by V for square PATJAC. Valable if ITYDEC=0. */
+/*   ITYDEC: Shows if it is NECESSARY to cut again function F(u,v). */
+/*           = 0, it is not NECESSARY to cut anything, PATJAC is OK. */
+/*           = 1, it is NECESSARY to cut only by U (i.e. insert parameter of cutting Ui). */
+/*           = 2, it is NECESSARY to cut only by V (i.e. insert parameter of cutting Vj). */
+/*           = 3, it is NECESSARY to cut both by U AND by V. */
+/*   IERCOD: Error code. */
+/*           =  0, Everything is OK. */
+/*           = -1, There is the best possible solution, but the */
+/*                 user tolerance is not satisfactory (3*only) */
+/*           =  1, Incoherent entries. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     22-01-1992: RBD; Creation d'apres MA2CF1. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* --------------------------- Initialisations -------------------------- 
@@ -3986,7 +3842,7 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(integer *numdec,
     ipt6 = ipt5 + isz5;
     ipt7 = ipt6 + isz6;
 
-/* ----------------- Recup des coeff. d'integr. de Gauss ---------------- 
+/* ----------------- Return Gauss coefficients of integration ---------------- 
 */
 
     AdvApp2Var_ApproxF2var::mmapptt_(ndjacu, nbpntu, iordru, &wrkar[ipt1], iercod);
@@ -3998,13 +3854,13 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(integer *numdec,
 	goto L9999;
     }
 
-/* ------------------- Recup des max des polynomes de Jacobi ------------ 
+/* ------------------- Return max polynoms of  Jacobi ------------ 
 */
 
     AdvApp2Var_ApproxF2var::mma2jmx_(ndjacu, iordru, &wrkar[ipt5]);
     AdvApp2Var_ApproxF2var::mma2jmx_(ndjacv, iordrv, &wrkar[ipt6]);
 
-/* ------ Calcul des coefficients et de leur contribution a l'erreur ---- 
+/* ------ Calculate the coefficients and their contribution to the error ---- 
 */
 
     mma2ce2_(numdec, ndimen, nbsesp, &ndimse[1], ndminu, ndminv, ndguli, 
@@ -4097,144 +3953,126 @@ int mma2ce2_(integer *numdec,
 
 /* ********************************************************************** 
 */
-
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul des coefficients de l' approximation polynomiale de degre */
-/*     (NDJACU,NDJACV) d'une fonction F(u,v) quelconque, a partir de sa */
-/*     discretisation sur les racines du polynome de Legendre de degre */
-/*     NBPNTU en U et NBPNTV en V. */
+/*     Calculation of coefficients of polynomial approximation of degree */
+/*     (NDJACU,NDJACV) of a function F(u,v), starting from its */
+/*     discretization on roots of Legendre polynom of degree  */
+/*     NBPNTU by U and NBPNTV by V. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS,AB_SPECIFI::FONCTION&,APPROXIMATION,&COEFFICIENT,&POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*   NUMDEC: Indique si on PEUT decouper encore la fonction F(u,v). */
-/*           = 5, On PEUT couper en U ou en V ou dans les 2 sens a la */
-/*                fois. */
-/*           = 4, On PEUT couper en U ou en V MAIS PAS dans les 2 sens */
-/*                a la fois (decoupe en V favorisee). */
-/*           = 3, On PEUT couper en U ou en V MAIS PAS dans les 2 sens */
-/*                a la fois (decoupe en U favorisee). */
-/*           = 2, on ne PEUT couper qu'en V (i.e. inserer un parametre */
-/*                de decoupe Vj). */
-/*           = 1, on ne PEUT couper qu'en U (i.e. inserer un parametre */
-/*                de decoupe Ui). */
-/*           = 0, on ne PEUT plus rien couper */
-/*   NDIMEN: Dimension totale de l'espace */
-/*   NBSESP: Nbre de sous-espaces independant sur lesquels on calcule */
-/*           les erreurs. */
-/*   NDIMSE: Table des dimensions de chacun des sous-espaces. */
-/*   NDMINU: Degre minimum en U a conserver pour l'approximation. */
-/*   NDMINV: Degre minimum en V a conserver pour l'approximation. */
-/*   NDGULI: Limite du degre en U de la solution. */
-/*   NDGVLI: Limite du degre en V de la solution. */
-/*   NDJACU: Degre maxi du polynome d' approximation en U. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre NDJACU-2*(IORDRU+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2. */
-/*           On doit avoir 2*IORDRU+1 <= NDMINU <= NDGULI < NDJACU */
-/*   NDJACV: Degre maxi du polynome d' approximation en V. La */
-/*           representation dans la base orthogonale part du degre */
-/*           0 au degre NDJACV-2*(IORDRV+1). La base polynomiale est */
-/*           la base de Jacobi d' ordre -1 (Legendre), 0, 1 ou 2 */
-/*           On doit avoir 2*IORDRV+1 <= NDMINV <= NDGVLI < NDJACV */
-/*   IORDRU: Ordre de la base de Jacobi (-1,0,1 ou 2) en U. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   IORDRV: Ordre de la base de Jacobi (-1,0,1 ou 2) en V. Correspond */
-/*           a pas de contraintes, contraintes C0, C1 ou C2. */
-/*   NBPNTU: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant u */
-/*           par la methode de Gauss. On doit avoir NBPNTU = 30, 40, */
-/*           50 ou 61 et NDJACU-2*(IORDRU+1) < NBPNTU. */
-/*   NBPNTV: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant v */
-/*           par la methode de Gauss. On doit avoir NBPNTV = 30, 40, */
-/*           50 ou 61 et NDJACV-2*(IORDRV+1) < NBPNTV. */
-/*   EPSAPR: Table des NBSESP tolerances imposees sur chacun des */
-/*           sous-espaces. */
-/*   SOSOTB: Tableau de F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. De plus, */
-/*           le tableau SOSOTB(0,j) contient F(0,vj) + F(0,-vj), */
-/*           le tableau SOSOTB(i,0) contient F(ui,0) + F(-ui,0) et */
-/*           SOSOTB(0,0) contient F(0,0). */
-/*   DISOTB: Tableau de F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau de F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau de F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. De plus, */
-/*           le tableau DIDITB(0,j) contient F(0,vj) - F(0,-vj), */
-/*           et le tableau DIDITB(i,0) contient F(ui,0) - F(-ui,0). */
-/*   GSSUTB: Table des coefficients d' integration par la methode de */
-/*           Gauss suivant U: i varie de 0 a NBPNTU/2 et k varie de 0 a */
+/*   NUMDEC: Indicates if it is POSSIBLE to cut function F(u,v). */
+/*           = 5, It is POSSIBLE to cut by U or by V or in both directions simultaneously. */
+/*           = 4, It is POSSIBLE to cut by U or by V BUT NOT in both  */
+/*                directions simultaneously (cutting by V is preferable). */
+/*           = 3, It is POSSIBLE to cut by U or by V BUT NOT in both */
+/*                directions simultaneously (cutting by U is preferable). */
+/*           = 2, It is POSSIBLE to cut only by V (i.e. insert parameter */
+/*                of cutting Vj). */
+/*           = 1, It is POSSIBLE to cut only by U (i.e. insert parameter */
+/*                of cutting Ui). */
+/*           = 0, It is not POSSIBLE to cut anything */
+/*   NDIMEN: Total dimension of the space. */
+/*   NBSESP: Nb of independent sub-spaces on which the errors are calculated. */
+/*   NDIMSE: Table of dimensions of each of sub-spaces. */
+/*   NDMINU: Minimum degree by U to be preserved for the approximation. */
+/*   NDMINV: Minimum degree by V to be preserved for the approximation. */
+/*   NDGULI: Limit of nb of coefficients by U of the solution. */
+/*   NDGVLI: Limit of nb of coefficients by V of the solution. */
+/*   NDJACU: Max degree of the polynom of approximation by U. */
+/*           The representation in the orthogonal base starts from degree */
+/*           0 to degree NDJACU-2*(IORDRU+1). The polynomial base is the base of  */
+/*           Jacobi of order -1 (Legendre), 0, 1 or 2. */
+/*           It is required that 2*IORDRU+1 <= NDMINU <= NDGULI < NDJACU */
+/*   NDJACV: Max degree of the polynom of approximation by V. */
+/*           The representation in the orthogonal base starts from degree */
+/*           0 to degree NDJACV-2*(IORDRV+1). The polynomial base is */
+/*           the base of Jacobi of order -1 (Legendre), 0, 1 or 2 */
+/*           It is required that 2*IORDRV+1 <= NDMINV <= NDGVLI < NDJACV */
+/*   IORDRU: Order of the Jacobi base (-1,0,1 or 2) by U. Corresponds */
+/*           to the step of constraints C0, C1 or C2. */
+/*   IORDRV: Order of the Jacobi base (-1,0,1 or 2) by U. Corresponds */
+/*           to the step of constraints C0, C1 or C2. */
+/*   NBPNTU: Degree of Legendre polynom on  the roots which of are */
+/*           calculated the coefficients of integration by u */
+/*           by Gauss method. It is required that NBPNTU = 30, 40, */
+/*           50 or 61 and NDJACU-2*(IORDRU+1) < NBPNTU. */
+/*   NBPNTV: Degree of Legendre polynom on  the roots which of are */
+/*           calculated the coefficients of integration by u */
+/*           by Gauss method. It is required that NBPNTV = 30, 40, */
+/*           50 or 61 and NDJACV-2*(IORDRV+1) < NBPNTV. */
+/*   EPSAPR: Table of NBSESP tolerances imposed on each sub-spaces. */
+/*   SOSOTB: Table of F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
+/*           with ui and vj - positive roots of the Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. Additionally, */
+/*           table SOSOTB(0,j) contains F(0,vj) + F(0,-vj), */
+/*           table SOSOTB(i,0) contains F(ui,0) + F(-ui,0) and */
+/*           SOSOTB(0,0) contains F(0,0). */
+/*   DISOTB: Table of F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table of F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table of F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. Additionally, */
+/*           table DIDITB(0,j) contains F(0,vj) - F(0,-vj), */
+/*           and table DIDITB(i,0) contains F(ui,0) - F(-ui,0). */
+/*   GSSUTB: Table of coefficients of integration by Gauss method */
+/*           by U: i varies from 0 to NBPNTU/2 and k varies from 0 to */
 /*           NDJACU-2*(IORDRU+1). */
-/*   GSSVTB: Table des coefficients d' integration par la methode de */
-/*           Gauss suivant V: i varie de 0 a NBPNTV/2 et k varie de 0 a */
+/*   GSSVTB: Table of coefficients of integration by Gauss method */
+/*           by V: i varies from 0 to NBPNTV/2 and k varies from 0 to */
 /*           NDJACV-2*(IORDRV+1). */
-/*   XMAXJU: Valeur maximale des polynomes de Jacobi d'ordre IORDRU, */
-/*           du degre 0 au degre NDJACU - 2*(IORDRU+1) */
-/*   XMAXJV: Valeur maximale des polynomes de Jacobi d'ordre IORDRV, */
-/*           du degre 0 au degre NDJACV - 2*(IORDRV+1) */
+/*   XMAXJU: Maximum value of Jacobi polynoms of order IORDRU, */
+/*           from degree 0 to degree NDJACU - 2*(IORDRU+1) */
+/*   XMAXJV: Maximum value of Jacobi polynoms of order IORDRV, */
+/*           from degree 0 to degree NDJACV - 2*(IORDRV+1) */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   VECERR: Tableau auxiliaire. */
-/*   CHPAIR: Tableau auxiliaire de termes lies au degre NDJACU en U */
-/*           pour calculer les coeff. de l'approximation de degre PAIR */
-/*           en V. */
-/*   CHIMPR: Tableau auxiliaire de termes lies au degre NDJACU en U */
-/*           pour calculer les coeff. de l'approximation de degre IMPAIR 
-*/
-/*           en V. */
-/*   PATJAC: Table des coefficients du polynome P(u,v) d' approximation */
-/*           de F(u,v) avec eventuellement prise en compte des */
-/*           contraintes. P(u,v) est de degre (NDJACU,NDJACV). */
-/*           Ce tableau ne contient les coeff que si ITYDEC = 0. */
-/*   ERRMAX: Pour 1<=i<=NBSESP, ERRMAX(i) contient les erreurs maxi */
-/*           sur chacun des sous-espaces SI ITYDEC = 0. */
-/*   ERRMOY: Contient les erreurs moyennes pour chacun des NBSESP */
-/*           sous-espaces SI ITYDEC = 0. */
-/*   NDEGPU: Degre en U pour le carreau PATJAC. Valable si ITYDEC=0. */
-/*   NDEGPV: Degre en V pour le carreau PATJAC. Valable si ITYDEC=0. */
-/*   ITYDEC: Indique si on DOIT decouper encore la fonction F(u,v). */
-/*           = 0, on ne DOIT plus rien couper, PATJAC est OK ou alors */
-/*                NUMDEC etant egal a zero, on ne pouvait plus couper. */
-/*           = 1, on ne DOIT couper qu'en U (i.e. inserer un parametre */
-/*                de decoupe Ui). */
-/*           = 2, on ne DOIT couper qu'en V (i.e. inserer un parametre */
-/*                de decoupe Vj). */
-/*           = 3, On DOIT couper en U ET en V a la fois. */
-/*   IERCOD: Code d'erreur. */
-/*           =  0, Eh bien tout va tres bien. */
-/*           = -1, On a une solution, la meilleure possible, mais la */
-/*                 tolerance utilisateur n'est pas satisfaite (3*helas) */
-/*           =  1, Entrees incoherentes. */
+/*   VECERR: Auxiliary table. */
+/*   CHPAIR: Auxiliary table of terms connected to degree NDJACU by U */
+/*           to calculate the coeff. of approximation of EVEN degree by V. */
+/*   CHIMPR: Auxiliary table of terms connected to degree NDJACU by U */
+/*           to calculate the coeff. of approximation of UNEVEN degree by V. */
+/*   PATJAC: Table of coefficients of polynom P(u,v) of approximation */
+/*           of F(u,v) with eventually taking into account of */
+/*           constraints. P(u,v) is of degree (NDJACU,NDJACV). */
+/*           This table contains other coeff if ITYDEC = 0. */
+/*   ERRMAX: For 1<=i<=NBSESP, ERRMAX(i) contains max errors */
+/*           on each of sub-spaces SI ITYDEC = 0. */
+/*   ERRMOY: Contains average errors for each of NBSESP sub-spaces SI ITYDEC = 0. */
+/*   NDEGPU: Degree by U for square PATJAC. Valable if ITYDEC=0. */
+/*   NDEGPV: Degree by V for square PATJAC. Valable if ITYDEC=0. */
+/*   ITYDEC: Shows if it is NECESSARY to cut again function F(u,v). */
+/*           = 0, it is not NECESSARY to cut anything, PATJAC is OK. */
+/*           = 1, it is NECESSARY to cut only by U (i.e. insert parameter of cutting Ui). */
+/*           = 2, it is NECESSARY to cut only by V (i.e. insert parameter of cutting Vj). */
+/*           = 3, it is NECESSARY to cut both by U AND by V. */
+/*   IERCOD: Error code. */
+/*           =  0, Everything is OK. */
+/*           = -1, There is the best possible solution, but the */
+/*                 user tolerance is not satisfactory (3*only) */
+/*           =  1, Incoherent entries. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     07-02-1992: RBD; Gestion des cas MINU>MAXU et/ou MINV>MAXV */
-/*     05-02-1992: RBD: Prise en compte decalages de CHPAIR et CHIMPR */
-/*     22-01-1992: RBD; Creation d'apres MA2CF2. */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* --------------------------- Initialisations -------------------------- 
@@ -4284,9 +4122,9 @@ int mma2ce2_(integer *numdec,
     if (ldbg) {
 	AdvApp2Var_SysBase::mgenmsg_("MMA2CE2", 7L);
     }
-/* --> A priori tout va bien */
+/* --> A priori everything is OK */
     *iercod = 0;
-/* --> test des entrees */
+/* --> test of inputs */
     if (*numdec < 0 || *numdec > 5) {
 	goto L9001;
     }
@@ -4308,16 +4146,16 @@ int mma2ce2_(integer *numdec,
     if (*ndgvli >= *ndjacv) {
 	goto L9001;
     }
-/* --> A priori, pas de decoupes a faire. */
+/* --> A priori, no cuts to be done */
     *itydec = 0;
-/* --> Degres mini a retourner: NDMINU,NDMINV */
+/* --> Min. degrees to return: NDMINU,NDMINV */
     *ndegpu = *ndminu;
     *ndegpv = *ndminv;
-/* --> Pour le moment, les erreurs max sont nulles */
+/* --> For the moment, max errors are null */
     AdvApp2Var_SysBase::mvriraz_(nbsesp, (char *)&errmax[1]);
     nd = *ndimen << 2;
     AdvApp2Var_SysBase::mvriraz_(&nd, (char *)&vecerr[vecerr_offset]);
-/* --> et le carreau aussi. */
+/* --> and the square, too. */
     nd = (*ndjacu + 1) * (*ndjacv + 1) * *ndimen;
     AdvApp2Var_SysBase::mvriraz_(&nd, (char *)&patjac[patjac_offset]);
 
@@ -4326,7 +4164,7 @@ int mma2ce2_(integer *numdec,
 
 /* ********************************************************************** 
 */
-/* -------------------- ICI, ON PEUT ENCORE DECOUPER -------------------- 
+/* -------------------- HERE IT IS POSSIBLE TO CUT ---------------------- 
 */
 /* ********************************************************************** 
 */
@@ -4335,7 +4173,7 @@ int mma2ce2_(integer *numdec,
 
 /* ******************************************************************
 **** */
-/* ---------------------- Calcul des coeff de la zone 4 -------------
+/* ---------------------- Calculate coeff of zone 4 -------------
 ---- */
 
 	minu = *ndguli + 1;
@@ -4349,7 +4187,7 @@ int mma2ce2_(integer *numdec,
 	    goto L9001;
 	}
 
-/* ---------------- Calcul des termes lies au degre en U ------------
+/* ---------------- Calculate the terms connected to degree by U ---------
 ---- */
 
 	i__1 = *ndimen;
@@ -4369,7 +4207,7 @@ int mma2ce2_(integer *numdec,
 /* L100: */
 	}
 
-/* ------------------- Calcul des coefficients de PATJAC ------------
+/* ------------------- Calculate the coefficients of PATJAC ------------
 ---- */
 
 	igsu = minu - i2rdu;
@@ -4386,9 +4224,8 @@ int mma2ce2_(integer *numdec,
 /* L130: */
 	    }
 
-/* ----- Contribution des termes calcules a l'erreur d'approximati
-on ---- */
-/* pour les termes (I,J) avec MINU <= I <= MAXU, J fixe. */
+/* ----- Contribution of calculated terms to the approximation error  */
+/* for terms (I,J) with MINU <= I <= MAXU, J fixe. */
 
 	    idim = 1;
 	    i__2 = *nbsesp;
@@ -4409,7 +4246,7 @@ on ---- */
 
 /* ******************************************************************
 **** */
-/* ---------------------- Calcul des coeff de la zone 2 -------------
+/* ---------------------- Calculate the coeff of zone 2 -------------
 ---- */
 
 	minu = (*iordru + 1) << 1;
@@ -4417,13 +4254,13 @@ on ---- */
 	minv = *ndgvli + 1;
 	maxv = *ndjacv;
 
-/* --> Si la zone 2 est vide, on passe a la zone 3. */
-/*    VECERR(ND,2) a deja ete mis a zero. */
+/* --> If zone 2 is empty, pass to zone 3. */
+/*    VECERR(ND,2) was already set to zero. */
 	if (minu > maxu) {
 	    goto L300;
 	}
 
-/* ---------------- Calcul des termes lies au degre en U ------------
+/* ---------------- Calculate the terms connected to degree by U ------------
 ---- */
 
 	i__1 = *ndimen;
@@ -4443,7 +4280,7 @@ on ---- */
 /* L200: */
 	}
 
-/* ------------------- Calcul des coefficients de PATJAC ------------
+/* ------------------- Calculate the coefficients of PATJAC ------------
 ---- */
 
 	igsu = minu - i2rdu;
@@ -4462,9 +4299,8 @@ on ---- */
 /* L220: */
 	}
 
-/* ----- Contribution des termes calcules a l'erreur d'approximation 
----- */
-/* pour les termes (I,J) avec MINU <= I <= MAXU, MINV <= J <= MAXV */
+/* -----Contribution of calculated terms to the approximation error  */
+/* for terms (I,J) with MINU <= I <= MAXU, MINV <= J <= MAXV */
 
 	idim = 1;
 	i__1 = *nbsesp;
@@ -4480,7 +4316,7 @@ on ---- */
 
 /* ******************************************************************
 **** */
-/* ---------------------- Calcul des coeff de la zone 3 -------------
+/* ---------------------- Calculation of coeff of zone 3 -------------
 ---- */
 
 L300:
@@ -4489,15 +4325,15 @@ L300:
 	minv = (*iordrv + 1) << 1;
 	maxv = *ndgvli;
 
-/* --> Si la zone 3 est vide, on passe au test de decoupe. */
-/*    VECERR(ND,3) a deja ete mis a zero */
+/* -> If zone 3 is empty, pass to the test of cutting. */
+/*    VECERR(ND,3) was already set to zero */
 	if (minv > maxv) {
 	    goto L400;
 	}
 
-/* ----------- Les termes lies au degre en U sont deja calcules -----
+/* ----------- The terms connected to the degree by U are already calculated -----
 ---- */
-/* ------------------- Calcul des coefficients de PATJAC ------------
+/* ------------------- Calculation of coefficients of PATJAC ------------
 ---- */
 
 	igsu = minu - i2rdu;
@@ -4516,9 +4352,8 @@ L300:
 /* L320: */
 	}
 
-/* ----- Contribution des termes calcules a l'erreur d'approximation 
----- */
-/* pour les termes (I,J) avec MINU <= I <= MAXU, MINV <= J <= MAXV. */
+/* ----- Contribution of calculated terms to the approximation error
+/* for terms (I,J) with MINU <= I <= MAXU, MINV <= J <= MAXV. */
 
 	idim = 1;
 	i__1 = *nbsesp;
@@ -4534,7 +4369,7 @@ L300:
 
 /* ******************************************************************
 **** */
-/* --------------------------- Tests de decoupe ---------------------
+/* --------------------------- Tests of cutting ---------------------
 ---- */
 
 L400:
@@ -4563,7 +4398,7 @@ L400:
 
 /* ******************************************************************
 **** */
-/* --- OK, le carreau est valable, on calcule les coeff de la zone 1 
+/* --- OK, the square is valid, the coeff of zone 1 are calculated
 ---- */
 
 	minu = (*iordru + 1) << 1;
@@ -4571,16 +4406,14 @@ L400:
 	minv = (*iordrv + 1) << 1;
 	maxv = *ndgvli;
 
-/* --> Si la zone 1 est vide, on passe au calcul de l'erreur Maxi et 
-*/
-/*    Moyenne. */
+/* --> If zone 1 is empty, pass to the calculation of Max and Average error. */
 	if (minu > maxu || minv > maxv) {
 	    goto L600;
 	}
 
-/* ----------- Les termes lies au degre en U sont deja calcules -----
+/* ----------- The terms connected to degree by U are already calculated -----
 ---- */
-/* ------------------- Calcul des coefficients de PATJAC ------------
+/* ------------------- Calculate the coefficients of PATJAC ------------
 ---- */
 
 	igsu = minu - i2rdu;
@@ -4599,7 +4432,7 @@ L400:
 /* L520: */
 	}
 
-/* --------------- Maintenant, on baisse le degre au maximum --------
+/* --------------- Now the degree is maximally lowered --------
 ---- */
 
 L600:
@@ -4627,12 +4460,12 @@ L600:
 	    nu1 = nu + 1;
 	    nv1 = nv + 1;
 
-/* --> Calcul de l'erreur moyenne. */
+/* --> Calculate the average error. */
 	    mma2moy_(ndjacu, ndjacv, &ndses, &nu1, ndjacu, &nv1, ndjacv, 
 		    iordru, iordrv, &patjac[idim * patjac_dim2 * patjac_dim1],
 		     &errmoy[nd]);
 
-/* --> Mise a 0.D0 des coeff ecartes. */
+/* --> Set to 0.D0 the rejected coeffs. */
 	    i__2 = idim + ndses - 1;
 	    for (ii = idim; ii <= i__2; ++ii) {
 		i__3 = *ndjacv;
@@ -4648,7 +4481,7 @@ L600:
 /* L620: */
 	    }
 
-/* --> Recup des nbre de coeff de l'approximation. */
+/* --> Return the nb of coeffs of approximation. */
 	    *ndegpu = max(*ndegpu,nu);
 	    *ndegpv = max(*ndegpv,nv);
 	    idim += ndses;
@@ -4657,7 +4490,7 @@ L600:
 
 /* ******************************************************************
 **** */
-/* -------------------- LA, ON NE PEUT PLUS DECOUPER ----------------
+/* -------------------- IT IS NOT POSSIBLE TO CUT -------------------
 ---- */
 /* ******************************************************************
 **** */
@@ -4668,7 +4501,7 @@ L600:
 	minv = (*iordrv + 1) << 1;
 	maxv = *ndjacv;
 
-/* ---------------- Calcul des termes lies au degre en U ------------
+/* ---------------- Calculate the terms connected to the degree by U ------------
 ---- */
 
 	i__1 = *ndimen;
@@ -4686,7 +4519,7 @@ L600:
 /* L710: */
 	    }
 
-/* ---------------------- Calcul de tous les coefficients -------
+/* ---------------------- Calculate all coefficients -------
 -------- */
 
 	    igsu = minu - i2rdu;
@@ -4703,9 +4536,8 @@ L600:
 /* L700: */
 	}
 
-/* ----- Contribution des termes calcules a l'erreur d'approximation 
----- */
-/* pour les termes (I,J) avec MINU <= I <= MAXU, MINV <= J <= MAXV */
+/* ----- Contribution of calculated terms to the approximation error
+/* for  terms (I,J) with MINU <= I <= MAXU, MINV <= J <= MAXV */
 
 	idim = 1;
 	i__1 = *nbsesp;
@@ -4730,7 +4562,7 @@ L600:
 			&errmax[nd]);
 	    }
 
-/* ---------------------------- Si ERRMAX > EPSAPR, stop --------
+/* ---------------------------- IF ERRMAX > EPSAPR, stop --------
 -------- */
 
 	    if (errmax[nd] > epsapr[nd]) {
@@ -4738,7 +4570,7 @@ L600:
 		nu = *ndguli;
 		nv = *ndgvli;
 
-/* ------------- Sinon, on essaie d'enlever encore des coeff 
+/* ------------- Otherwise, try to remove again the coeff 
 ------------ */
 
 	    } else {
@@ -4761,7 +4593,7 @@ L600:
 		}
 	    }
 
-/* --------------------- Calcul de l'erreur moyenne -------------
+/* --------------------- Calculate the average error -------------
 -------- */
 
 	    nu1 = nu + 1;
@@ -4770,7 +4602,7 @@ L600:
 		    iordru, iordrv, &patjac[idim * patjac_dim2 * patjac_dim1],
 		     &errmoy[nd]);
 
-/* --------------------- Mise a 0.D0 des coeff ecartes ----------
+/* --------------------- Set to 0.D0 the rejected coeffs ----------
 -------- */
 
 	    i__2 = idim + ndses - 1;
@@ -4788,7 +4620,7 @@ L600:
 /* L740: */
 	    }
 
-/* --------------- Recup des nbre de coeff de l'approximation ---
+/* --------------- Return the nb of coeff of approximation ---
 -------- */
 
 	    *ndegpu = max(*ndegpu,nu);
@@ -4802,15 +4634,15 @@ L600:
 
 /* ------------------------------ The end ------------------------------- 
 */
-/* --> Erreur dans les entrees */
+/* --> Error in inputs */
 L9001:
     *iercod = 1;
     goto L9999;
 
-/* --------- Gestion des decoupes, ici doit avoir 0 < NUMDEC <= 5 ------- 
+/* --------- Management of cuts, it is required 0 < NUMDEC <= 5 ------- 
 */
 
-/* --> Ici on peut et on doit couper, on choisit en U si c'est possible */
+/* --> Here it is possible and necessary to cut, choose by U if it is possible */
 L9100:
     if (*numdec <= 0 || *numdec > 5) {
 	goto L9001;
@@ -4821,7 +4653,7 @@ L9100:
 	*itydec = 2;
     }
     goto L9999;
-/* --> Ici on peut et on doit couper, on choisit en V si c'est possible */
+/* --> Here it is possible and necessary to cut, choose by U if it is possible */
 L9200:
     if (*numdec <= 0 || *numdec > 5) {
 	goto L9001;
@@ -4832,7 +4664,7 @@ L9200:
 	*itydec = 1;
     }
     goto L9999;
-/* --> Ici on peut et on doit couper, on choisit en 4 si c'est possible */
+/* --> Here it is possible and necessary to cut, choose by 4 if it is possible */
 L9300:
     if (*numdec <= 0 || *numdec > 5) {
 	goto L9001;
@@ -4885,73 +4717,69 @@ int mma2cfu_(integer *ndujac,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul des termes lies au degre NDUJAC en U de l' approximation */
-/*     polynomiale d' une fonction F(u,v) quelconque, a partir de sa */
-/*     discretisation sur les racines du polynome de Legendre de degre */
-/*     NBPNTU en U et NBPNTV en V. */
+/*     Calculate the terms connected to degree NDUJAC by U of the polynomial approximation */
+/*     of function F(u,v), starting from its discretisation 
+/*     on the roots of Legendre polynom of degree */
+/*     NBPNTU by U and NBPNTV by V. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     FONCTION,APPROXIMATION,COEFFICIENT,POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTSE : */
 /*     ------------------ */
-/*   NDUJAC: Degre en U fixe pour lequel on calcule les termes */
-/*           permettant d'obtenir les coeff. dans Legendre ou Jacobi */
-/*           de degre pair ou impair en V. */
-/*   NBPNTU: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant U */
-/*           par la methode de Gauss. On doit avoir NBPNTU = 30, 40, */
-/*           50 ou 61. */
-/*   NBPNTV: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant v */
-/*           par la methode de Gauss. On doit avoir NBPNTV = 30, 40, */
-/*           50 ou 61. */
-/*   SOSOTB: Tableau de F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. De plus, */
-/*           le tableau SOSOTB(0,j) contient F(0,vj) + F(0,-vj), */
-/*           le tableau SOSOTB(i,0) contient F(ui,0) + F(-ui,0) et */
-/*           SOSOTB(0,0) contient F(0,0). */
-/*   DISOTB: Tableau de F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau de F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau de F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. De plus, */
-/*           le tableau DIDITB(0,j) contient F(0,vj) - F(0,-vj), */
-/*           et le tableau DIDITB(i,0) contient F(ui,0) - F(-ui,0). */
-/*   GSSUTB: Table des coefficients d' integration par la methode de */
-/*           Gauss suivant U pour NDUJAC fixe: i varie de 0 a NBPNTU/2. */
+/*   NDUJAC: Fixed degree by U for which the terms */
+/*           allowing to obtain the Legendre or Jacobi coeff*/
+/*           of even or uneven degree by V are calculated. */
+/*   NBPNTU: Degree of Legendre polynom on the roots which of */
+/*           the coefficients of integration by U are calculated */
+/*           by Gauss method. It is required that NBPNTU = 30, 40, 50 or 61. */
+/*   NBPNTV: Degree of Legendre polynom on the roots which of */
+/*           the coefficients of integration by V are calculated */
+/*           by Gauss method. It is required that NBPNTV = 30, 40, 50 or 61. */
+/*   SOSOTB: Table of F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. Moreover, */
+/*           table SOSOTB(0,j) contains F(0,vj) + F(0,-vj), */
+/*           table SOSOTB(i,0) contains F(ui,0) + F(-ui,0) and */
+/*           SOSOTB(0,0) contains F(0,0). */
+/*   DISOTB: Table of F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table of F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
+/*           with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table of F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
+/*           avec ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. Moreover, */
+/*           table DIDITB(0,j) contains F(0,vj) - F(0,-vj), */
+/*           and table DIDITB(i,0) contains F(ui,0) - F(-ui,0). */
+/*   GSSUTB: Table of coefficients of integration by Gauss method */
+/*           Gauss by U for fixed NDUJAC : i varies from 0 to NBPNTU/2. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   CHPAIR: Tableau de termes lies au degre NDUJAC en U pour calculer */
-/*           les coeff. de l'approximation de degre PAIR en V. */
-/*   CHIMPR: Tableau de termes lies au degre NDUJAC en U pour calculer */
-/*           les coeff. de l'approximation de degre IMPAIR en V. */
+/*   CHPAIR: Table of terms connected to degree NDUJAC by U to calculate the */
+/*           coeff. of the approximation of EVEN degree by V. */
+/*   CHIMPR: Table of terms connected to degree NDUJAC by U to calculate */
+/*           the coeff. of approximation of UNEVEN degree by V. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     10-06-1991 : RBD ; Creation. */
+
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* --------------------------- Initialisations -------------------------- 
@@ -4979,9 +4807,9 @@ int mma2cfu_(integer *ndujac,
 
 /* ********************************************************************** 
 */
-/*                    CALCUL DES COEFFICIENTS EN U */
+/*                    CALCULATE COEFFICIENTS BY U */
 
-/* ----------------- Calcul des coefficients de degre pair -------------- 
+/* ----------------- Calculate  coefficients of even degree -------------- 
 */
 
     if (*ndujac % 2 == 0) {
@@ -5001,7 +4829,7 @@ int mma2cfu_(integer *ndujac,
 /* L100: */
 	}
 
-/* --------------- Calcul des coefficients de degre impair ----------
+/* --------------- Calculate coefficients of uneven degree ----------
 ---- */
 
     } else {
@@ -5022,12 +4850,11 @@ int mma2cfu_(integer *ndujac,
 	}
     }
 
-/* ------- Ajout des termes lies a la racine supplementaire (0.D0) ------ 
+/* ------- Add terms connected to the supplementary root (0.D0) ------ 
+/* ----------- of Legendre polynom of uneven degree NBPNTU ----------- 
 */
-/* ----------- du polynome de Legendre de degre impair NBPNTU ----------- 
-*/
-/* --> Seul les termes NDUJAC pair sont modifies car GSSUTB(0) = 0 */
-/*    lorsque NDUJAC est impair. */
+/* --> Only even NDUJAC terms are modified as GSSUTB(0) = 0 */
+/*     when NDUJAC is uneven. */
 
     if (*nbpntu % 2 != 0 && *ndujac % 2 == 0) {
 	bid0 = gssutb[0];
@@ -5039,15 +4866,15 @@ int mma2cfu_(integer *ndujac,
 	}
     }
 
-/* ------ Calcul des termes lies a la racine supplementaire (0.D0) ------ 
+/* ------ Calculate the terms connected to supplementary roots (0.D0) ------ 
 */
-/* ----------- du polynome de Legendre de degre impair NBPNTV ----------- 
+/* ----------- of Legendre polynom of uneven degree NBPNTV ----------- 
 */
 
     if (*nbpntv % 2 != 0) {
-/* --> Seul les termes CHPAIR sont calcules car GSSVTB(0,IH-IDEBV)=0 
+/* --> Only CHPAIR terms are calculated as GSSVTB(0,IH-IDEBV)=0 
 */
-/*    lorsque IH est impair (voir MMA2CFV). */
+/*    when IH is uneven (see MMA2CFV). */
 
 	if (*ndujac % 2 == 0) {
 	    bid1 = 0.;
@@ -5107,62 +4934,52 @@ int mma2cfv_(integer *ndvjac,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul des coefficients de l' approximation polynomiale de F(u,v) 
-*/
-/*     de degre NDVJAC en V et de degre en U variant de MINDGU a MAXDGU. 
+/*     Calculate the coefficients of polynomial approximation of F(u,v) 
+/*     of degree NDVJAC by V and of degree by U varying from MINDGU to MAXDGU. 
 */
 
-/*     MOTS CLES : */
+/*     Keywords : */
 /*     ----------- */
 /*     FONCTION,APPROXIMATION,COEFFICIENT,POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*   NDVJAC: Degre du polynome d' approximation en V. */
-/*           La representation dans la base orthogonale part du degre */
-/*           0. La base polynomiale est la base de Jacobi d' ordre -1 */
-/*           (Legendre), 0, 1 ou 2 */
-/*   MINDGU: Degre minimum en U des coeff. a calculer. */
-/*   MAXDGU: Degre maximum en U des coeff. a calculer. */
-/*   NBPNTV: Degre du polynome de Legendre sur les racines duquel */
-/*           sont calcules les coefficients d' integration suivant V */
-/*           par la methode de Gauss. On doit avoir NBPNTV = 30, 40, */
-/*           50 ou 61 et NDVJAC < NBPNTV. */
-/*   GSSVTB: Table des coefficients d' integration par la methode de */
-/*           Gauss suivant V pour NDVJAC fixe: j varie de 0 a NBPNTV/2. */
-/*   CHPAIR: Tableau de termes lies aux degres MINDGU a MAXDGU en U pour 
-*/
-/*           calculer les coeff. de l'approximation de degre PAIR NDVJAC 
-*/
-/*           en V. */
-/*   CHIMPR: Tableau de termes lies aux degres MINDGU a MAXDGU en U pour 
-*/
-/*           calculer les coeff. de l'approximation de degre IMPAIR */
-/*           NDVJAC en V. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*   NDVJAC: Degree of the polynom of approximation by V. */
+/*           The representation in the orthogonal base starts from degre 0. 
+	     /* The polynomial base is the base of Jacobi of order -1 */
+/*           (Legendre), 0, 1 or 2 */
+/*   MINDGU: Degree minimum by U of coeff. to calculate. */
+/*   MAXDGU: Degree maximum by U of coeff. to calculate. */
+/*   NBPNTV: Degree of the Legendre polynom on the roots which of */
+/*           the coefficients of integration by V are calculated */
+/*           by Gauss method. It is reqired that NBPNTV = 30, 40, 50 or 61 and NDVJAC < NBPNTV. */
+/*   GSSVTB: Table of coefficients of integration by Gauss method */
+/*           by V for NDVJAC fixed: j varies from 0 to NBPNTV/2. */
+/*   CHPAIR: Table of terms connected to degrees from MINDGU to MAXDGU by U to 
+/*           calculate the coeff. of approximation of EVEN degree NDVJAC by V. */
+/*   CHIMPR: Table of terms connected to degrees from MINDGU to MAXDGU by U to
+/*           calculate the coeff. of approximation of UNEVEN degree NDVJAC by V. */
+
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   PATJAC: Table des coefficients en U du polynome d' approximation */
-/*           P(u,v) de degre MINDGU a MAXDGU en U et NDVJAC en V. */
+/*   PATJAC: Table of coefficients by U of the polynom of approximation */
+/*           P(u,v) of degree MINDGU to MAXDGU by U and NDVJAC by V. */
 
-/*     COMMONS UTILISES   : */
-/*     ---------------- */
+/*     COMMONS USED : */
+/*     -------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     11-06-1991 : RBD ; Creation. */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* --------------------------- Initialisations -------------------------- 
@@ -5185,7 +5002,7 @@ int mma2cfv_(integer *ndvjac,
     }
     nptv2 = *nbpntv / 2;
 
-/* --------- Calcul des coefficients pour un degre NDVJAC pair ---------- 
+/* --------- Calculate the coefficients for even degree NDVJAC ---------- 
 */
 
     if (*ndvjac % 2 == 0) {
@@ -5201,7 +5018,7 @@ int mma2cfv_(integer *ndvjac,
 /* L100: */
 	}
 
-/* -------- Calcul des coefficients pour un degre NDVJAC impair -----
+/* -------- Calculate the coefficients for uneven degree NDVJAC -----
 ---- */
 
     } else {
@@ -5218,10 +5035,8 @@ int mma2cfv_(integer *ndvjac,
 	}
     }
 
-/* ------- Ajout des termes lies a la racine supplementaire (0.D0) ------ 
-*/
-/* ----------- du polynome de Legendre de degre impair NBPNTV ----------- 
-*/
+/* ------- Add terms connected to the supplementary root (0.D0) ----- */
+/* --------of the Legendre polynom of uneven degree  NBPNTV --------- */
 
     if (*nbpntv % 2 != 0 && *ndvjac % 2 == 0) {
 	bid1 = gssvtb[0];
@@ -5291,149 +5106,142 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation d'une fonction F(u,v) sur les racines des */
-/*     polynomes de Legendre. */
+/*     Discretisation of function F(u,v) on the roots of Legendre polynoms. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     FONCTION&,DISCRETISATION,&POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*   NDIMEN: Dimension de l' espace. */
-/*   UINTFN: Bornes de l' intervalle de definition en u de la fonction */
-/*           a approcher: (UINTFN(1),UINTFN(2)). */
-/*   VINTFN: Bornes de l' intervalle de definition en v de la fonction */
-/*           a approcher: (VINTFN(1),VINTFN(2)). */
-/*   FONCNP: Le NOM de la fonction non polynomiale a approcher. */
-/*   NBPNTU: Le degre du polynome de Legendre sur les racines duquel */
-/*           on discretise FONCNP en u. */
-/*   NBPNTV: Le degre du polynome de Legendre sur les racines duquel */
-/*           on discretise FONCNP en v. */
-/*   UROOTB: Tableau des racines STRICTEMENTS POSITIVES du polynome */
-/*           de Legendre de degre NBPNTU defini sur (-1,1). */
-/*   VROOTB: Tableau des racines STRICTEMENTS POSITIVES du polynome */
-/*           de Legendre de degre NBPNTV defini sur (-1,1). */
-/*   ISOFAV: Indique le type d'iso de F(u,v) a extraire pour ameliorer */
-/*           la rapidite de calcul (n'a aucune influence sur la forme */
-/*           du resultat) */
-/*           = 1, indique que l'on doit calculer les points de F(u,v) */
-/*           avec u fixe (donc avec NBPNTV valeurs differentes de v). */
-/*           = 2, indique que l'on doit calculer les points de F(u,v) */
-/*           avec v fixe (donc avec NBPNTU valeurs differentes de u). */
-/*   SOSOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*   DISOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*   SODITB: Tableau deja initialise (argument d'entree/sortie). */
-/*   DIDITB: Tableau deja initialise (argument d'entree/sortie). */
+/*   NDIMEN: Dimension of the space. */
+/*   UINTFN: Limits of the interval of definition by u of the function */
+/*           to be processed: (UINTFN(1),UINTFN(2)). */
+/*   VINTFN: Limits of the interval of definition by v of the function */
+/*           to be processed: (VINTFN(1),VINTFN(2)). */
+/*   FONCNP: The NAME of the non-polynomial function to be processed. */
+/*   NBPNTU: The degree of Legendre polynom on the roots which of */
+/*           FONCNP is discretized by u. */
+/*   NBPNTV: The degree of Legendre polynom on the roots which of  */
+/*           FONCNP is discretized by v. */
+/*   UROOTB: Table of STRICTLY POSITIVE roots of the polynom */
+/*           of Legendre of degree NBPNTU defined on (-1,1). */
+/*   VROOTB: Table of STRICTLY POSITIVE roots of the polynom */
+/*           of Legendre of degree NBPNTV defined on (-1,1). */
+/*   ISOFAV: Shows the type of iso of F(u,v) to be extracted to improve */
+/*           the rapidity of calculation (has no influence on the form */
+/*           of result) */
+/*           = 1, shows that it is necessary to calculate the points of F(u,v) */
+/*           with fixed u (with NBPNTV values different from v). */
+/*           = 2, shows that it is necessaty to calculate the points of  F(u,v) */
+/*           with fixed v (with NBPNTU values different from u). */
+/*   SOSOTB: Preinitialized table (input/output argument). */
+/*   DISOTB: Preinitialized table (input/output argument). */ 
+/*   SODITB: Preinitialized table (input/output argument).  */
+/*   DIDITB: Preinitialized table (input/output argument). */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   SOSOTB: Tableau ou l'on ajoute les termes */
+/*   SOSOTB: Table where the terms */
 /*           F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DISOTB: Tableau ou l'on ajoute les termes */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DISOTB: Table where the terms */
 /*           F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau ou l'on ajoute les termes */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table where the terms */
 /*           F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau ou l'on ajoute les termes */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table where the terms */
 /*           F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   FPNTAB: Tableau auxiliaire. */
-/*   TTABLE: Tableau auxiliaire. */
-/*   IERCOD: Code d' erreur >100 Pb dans l' evaluation de FONCNP, */
-/*           le code d'erreur renvoye est egal au code d' erreur */
-/*           de FONCNP + 100. */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   FPNTAB: Auxiliary table. */
+/*   TTABLE: Auxiliary table. */
+/*   IERCOD: Error code >100 Pb in the evaluation of FONCNP, */
+/*           the returned error code is equal to error code of FONCNP + 100. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/* -->La fonction externe creee par l' appelant de MA2F1K, MA2FDK */
-/*   ou de MA2FXK doit etre de la forme : */
+/* --> The external function created by the caller of MA2F1K, MA2FDK */
+/*    where MA2FXK should be in the following form : */
 /*    SUBROUTINE FONCNP(NDIMEN,UINTFN,VINTFN,ISOFAV,TCONST,NBPTAB */
 /*                     ,TTABLE,IDERIU,IDERIV,PPNTAB,IERCOD) */
-/*    ou les arguments d' entree sont : */
-/*      - NDIMEN est un entier defini comme la somme des dimensions des */
-/*               sous-espaces (i.e. dimension totale du probleme). */
-/*      - UINTFN(2) est un tableau de 2 reels contenant l' intervalle */
-/*                  en u ou est definie la fonction a approximer */
-/*                  (donc ici egal a UIFONC). */
-/*      - VINTFN(2) est un tableau de 2 reels contenant l' intervalle */
-/*                  en v ou est definie la fonction a approximer */
-/*                  (donc ici egal a VIFONC). */
-/*      - ISOFAV, vaut 1 si l'on veut calculer des points a u constant, */
-/*                vaut 2 si l'on calcule les points a v constant. Tout */
-/*                autre valeur est une erreur. */
-/*      - TCONST, un reel, valeur du parametre fixe. Prend ses valeurs */
-/*                dans (UIFONC(1),UIFONC(2)) si ISOFAV = 1 ou dans */
-/*                dans (VIFONC(1),VIFONC(2)) si ISOFAV = 2. */
-/*      - NBPTAB, un entier. Indique le nombre de points a calculer. */
-/*      - TTABLE, un tableau de NBPTAB reels. Ce sont les valeurs du */
-/*                parametre 'libre' de discretisation (v si IISOFAV=1, */
-/*                u si IISOFAV=2). */
-/*      - IDERIU, un entier, prend ses valeurs entre 0 (positionnement) */
-/*                et IORDRE(1) (derivee partielle de la fonction en u a */
-/*                l' ordre IORDRE(1) si IORDRE(1) > 0). */
-/*      - IDERIV, un entier, prend ses valeurs entre 0 (positionnement) */
-/*                et IORDRE(2) (derivee partielle de la fonction en v a */
-/*                l' ordre IORDRE(2) si IORDRE(2) > 0). */
-/*                Si IDERIU=i et IDERIV=j, FONCNP devra calculer des */
-/*                points de la derivee: */
+/*    with the following input arguments : */
+/*      - NDIMEN is integer defined as the sum of dimensions of */
+/*               sub-spaces (i.e. total dimension of the problem). */
+/*      - UINTFN(2) is a table of 2 reals containing the interval */
+/*                  by u where the function to be approximated is defined */
+/*                  (so it is equal to UIFONC). */
+/*      - VINTFN(2) is a table of 2 reals containing the interval */
+/*                  by v where the function to be approximated is defined */
+/*                  (so it is equal to VIFONC). */
+/*      - ISOFAV, is 1 if it is necessary to calculate points with constant u, */
+/*                is 2 if it is necessary to calculate points with constant v. */
+/*                Any other value is an error. */
+/*      - TCONST, real, value of the fixed parameter. Takes values */
+/*                in (UIFONC(1),UIFONC(2)) if ISOFAV = 1 or  */
+/*                ins (VIFONC(1),VIFONC(2)) if ISOFAV = 2. */
+/*      - NBPTAB, integer. Shows the number of points to be calculated. */
+/*      - TTABLE, a table of reals NBPTAB. These are the values of */
+/*                'free' parameter of discretization (v if IISOFAV=1, */
+/*                u if IISOFAV=2). */
+/*      - IDERIU, integer, takes values between 0 (position) */
+/*                and IORDRE(1) (partial derivative of the function by u */
+/*                of order IORDRE(1) if IORDRE(1) > 0). */
+/*      - IDERIV, integer, takes values between 0 (position) */
+/*                and IORDRE(2) (partial derivative of the function by v */
+/*                of order IORDRE(2) if IORDRE(2) > 0). */
+/*                If IDERIU=i and IDERIV=j, FONCNP should calculate the */
+/*                points of the derivative : */
 /*                            i+j */
 /*                           d     F(u,v) */
 /*                        -------- */
 /*                           i  j */
 /*                         du dv */
 
-/*     et les arguments de sortie sont : */
-/*        - FPNTAB(NDIMEN,NBPTAB) contient, en sortie, le tableau des */
-/*                                NBPTAB points calcules dans FONCNP. */
-/*        - IERCOD est, en sortie, le code d' erreur de FONCNP. Ce code */
-/*                 (entier) doit etre strictement positif s' il y a eu */
-/*                 un probleme. */
+/*     and the output arguments aret : */
+/*        - FPNTAB(NDIMEN,NBPTAB) contains, at output, the table of */
+/*                                NBPTAB points calculated in FONCNP. */
+/*        - IERCOD is, at output the error code of FONCNP. This code */
+/*                 (integer) should be strictly positive if there is a problem. */
 
-/*     Les arguments d' entree NE DOIVENT PAS etre modifies sous FONCNP. 
+/*     The input arguments SHOULD NOT be modified under FONCNP. 
 */
 
-/* -->Comme FONCNP n' est pas forcement definie dans (-1,1)*(-1,1), on */
-/* modifie les valeurs de UROOTB et VROOTB en consequence. */
+/* -->As FONCNP is not forcedly defined in (-1,1)*(-1,1), the */
+/* values of UROOTB and VROOTB are consequently modified. */
 
-/* -->Les resultats de la discretisation sont ranges dans 4 tableaux */
-/* SOSOTB, DISOTB, SODITB et DIDITB pour gagner du temps par la suite */
-/* lors du calcul des coefficients du polynome d' approximation. */
+/* -->The results of discretisation are ranked in 4 tables */
+/* SOSOTB, DISOTB, SODITB and DIDITB to earn time */
+/* during the calculation of coefficients of the polynom of approximation. */
 
-/*     Lorsque NBPNTU est impair: */
-/*        le tableau SOSOTB(0,j) contient F(0,vj) + F(0,-vj), */
-/*        le tableau DIDITB(0,j) contient F(0,vj) - F(0,-vj), */
-/*     Lorsque NBPNTV est impair: */
-/*        le tableau SOSOTB(i,0) contient F(ui,0) + F(-ui,0), */
-/*        le tableau DIDITB(i,0) contient F(ui,0) - F(-ui,0), */
-/*     Lorsque NBPNTU et NBPNTV sont impairs: */
-/*        le terme SOSOTB(0,0) contient F(0,0). */
+/*     When NBPNTU is uneven : */
+/*        table SOSOTB(0,j) contains F(0,vj) + F(0,-vj), */
+/*        table DIDITB(0,j) contains F(0,vj) - F(0,-vj), */
+/*     When NBPNTV is uneven : */
+/*        table SOSOTB(i,0) contains F(ui,0) + F(-ui,0), */
+/*        table DIDITB(i,0) contains F(ui,0) - F(-ui,0), */
+/*     When NBPNTU and NBPNTV are uneven : */
+/*        term SOSOTB(0,0) contains F(0,0). */
 
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     06-06-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
-/* --------------------------- Initialisations -------------------------- 
+/* --------------------------- Initialization -------------------------- 
 */
 
     /* Parameter adjustments */
@@ -5476,10 +5284,8 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer *ndimen,
 
 /* ********************************************************************** 
 */
-/* --------- Discretisation en U sur les racines du polynome de --------- 
-*/
-/* --------------- Legendre de degre NBPNTU, iso-V par iso-V ------------ 
-*/
+/* --------- Discretization by U on the roots of the polynom of ------ */
+/* --------------- Legendre of degree NBPNTU, iso-V by iso-V --------- */
 /* ********************************************************************** 
 */
 
@@ -5491,15 +5297,13 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer *ndimen,
 
 /* ******************************************************************
 **** */
-/* --------- Discretisation en V sur les racines du polynome de -----
----- */
-/* --------------- Legendre de degre NBPNTV, iso-U par iso-U --------
----- */
+/* --------- Discretization by V on the roots of the polynom of ------ */
+/* --------------- Legendre of degree NBPNTV, iso-V by iso-V --------- */
 /* ******************************************************************
 **** */
 
     } else {
-/* --> Inversion des indices des tableaux */
+/* --> Inversion of indices of tables */
 	i__1 = *ndimen;
 	for (nd = 1; nd <= i__1; ++nd) {
 	    isz1 = *nbpntu / 2 + 1;
@@ -5537,7 +5341,7 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer *ndimen,
 		vrootb[1], &urootb[1], &iuouv, &sosotb[sosotb_offset], &
 		soditb[soditb_offset], &disotb[disotb_offset], &diditb[
 		diditb_offset], &fpntab[fpntab_offset], &ttable[1], iercod);
-/* --> Inversion des indices des tableaux */
+/* --> Inversion of indices of tables */
 	i__1 = *ndimen;
 	for (nd = 1; nd <= i__1; ++nd) {
 	    isz1 = *nbpntv / 2 + 1;
@@ -5639,164 +5443,151 @@ int mma2ds2_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Discretisation d'une fonction F(u,v) sur les racines des polynomes 
-*/
-/*     de Legendre. */
+/*     Discretization of function F(u,v) on the roots of polynoms of Legendre. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     FONCTION&,DISCRETISATION,&POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS  : */
 /*     ------------------ */
-/*   NDIMEN: Dimension de l' espace. */
-/*   UINTFN: Bornes de l' intervalle de definition en u de la fonction */
-/*           a approcher: (UINTFN(1),UINTFN(2)). */
-/*   VINTFN: Bornes de l' intervalle de definition en v de la fonction */
-/*           a approcher: (VINTFN(1),VINTFN(2)). */
-/*   FONCNP: Le NOM de la fonction non polynomiale a approcher. */
-/*   NBPNTU: Le degre du polynome de Legendre sur les racines duquel */
-/*           on discretise FONCNP en u. */
-/*   NBPNTV: Le degre du polynome de Legendre sur les racines duquel */
-/*           on discretise FONCNP en v. */
-/*   UROOTB: Tableau des racines STRICTEMENTS POSITIVES du polynome */
-/*           de Legendre de degre NBPNTU defini sur (-1,1). */
-/*   VROOTB: Tableau des racines STRICTEMENTS POSITIVES du polynome */
-/*           de Legendre de degre NBPNTV defini sur (-1,1). */
-/*   IIUOUV: Indique le type d'iso de F(u,v) a extraire pour ameliorer */
-/*           la rapidite de calcul (n'a aucune influence sur la forme */
-/*           du resultat) */
-/*           = 1, indique que l'on doit calculer les points de F(u,v) */
-/*           avec u fixe (donc avec NBPNTV valeurs differentes de v). */
-/*           = 2, indique que l'on doit calculer les points de F(u,v) */
-/*           avec v fixe (donc avec NBPNTU valeurs differentes de u). */
-/*   SOSOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*   DISOTB: Tableau deja initialise (argument d'entree/sortie). */
-/*   SODITB: Tableau deja initialise (argument d'entree/sortie). */
-/*   DIDITB: Tableau deja initialise (argument d'entree/sortie). */
+/*   NDIMEN: Dimension of the space. */
+/*   UINTFN: Limits of the interval of definition by u of the function */
+/*           to be processed: (UINTFN(1),UINTFN(2)). */
+/*   VINTFN: Limits of the interval of definition by v of the function */
+/*           to be processed: (VINTFN(1),VINTFN(2)). */
+/*   FONCNP: The NAME of the non-polynomial function to be processed. */
+/*   NBPNTU: The degree of Legendre polynom on the roots which of */
+/*           FONCNP is discretized by u. */
+/*   NBPNTV: The degree of Legendre polynom on the roots which of  */
+/*           FONCNP is discretized by v. */
+/*   UROOTB: Table of STRICTLY POSITIVE roots of the polynom */
+/*           of Legendre of degree NBPNTU defined on (-1,1). */
+/*   VROOTB: Table of STRICTLY POSITIVE roots of the polynom */
+/*           of Legendre of degree NBPNTV defined on (-1,1). */
+/*   IIUOUV: Shows the type of iso of F(u,v) tom be extracted to improve the */
+/*           rapidity of calculation (has no influence on the form of result) */
+/*           = 1, shows that it is necessary to calculate the points of F(u,v) */
+/*           with fixed u (so with NBPNTV values different from v). */
+/*           = 2, shows that it is necessary to calculate the points of F(u,v) */
+/*           with fixed v (so with NBPNTV values different from u). */
+/*   SOSOTB: Preinitialized table (input/output argument). */
+/*   DISOTB: Preinitialized table (input/output argument). */ 
+/*   SODITB: Preinitialized table (input/output argument).  */
+/*   DIDITB: Preinitialized table (input/output argument). */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*   SOSOTB: Tableau ou l'on ajoute les termes */
+/*   SOSOTB: Table where the terms */
 /*           F(ui,vj) + F(ui,-vj) + F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DISOTB: Tableau ou l'on ajoute les termes */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DISOTB: Table where the terms */
 /*           F(ui,vj) + F(ui,-vj) - F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   SODITB: Tableau ou l'on ajoute les termes */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   SODITB: Table where the terms */
 /*           F(ui,vj) - F(ui,-vj) + F(-ui,vj) - F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   DIDITB: Tableau ou l'on ajoute les termes */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   DIDITB: Table where the terms */
 /*           F(ui,vj) - F(ui,-vj) - F(-ui,vj) + F(-ui,-vj) */
-/*           avec ui et vj racines positives du polynome de Legendre */
-/*           de degre NBPNTU et NBPNTV respectivement. */
-/*   FPNTAB: Tableau auxiliaire. */
-/*   TTABLE: Tableau auxiliaire. */
-/*   IERCOD: Code d' erreur >100 Pb dans l' evaluation de FONCNP, */
-/*           le code d'erreur renvoye est egal au code d' erreur */
-/*           de FONCNP + 100. */
+/*           are added with ui and vj positive roots of Legendre polynom */
+/*           of degree NBPNTU and NBPNTV respectively. */
+/*   FPNTAB: Auxiliary table. */
+/*   TTABLE: Auxiliary table. */
+/*   IERCOD: Error code >100 Pb in the evaluation of FONCNP, */
+/*           the returned error code is equal to error code of FONCNP + 100. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/* -->La fonction externe creee par l' appelant de MA2F1K, MA2FDK */
-/*   ou de MA2FXK doit etre de la forme : */
+/* --> The external function created by the caller of MA2F1K, MA2FDK */
+/*    where MA2FXK should be in the following form : */
 /*    SUBROUTINE FONCNP(NDIMEN,UINTFN,VINTFN,IIIUOUV,TCONST,NBPTAB */
 /*                     ,TTABLE,IDERIU,IDERIV,PPNTAB,IERCOD) */
-/*    ou les arguments d' entree sont : */
-/*      - NDIMEN est un entier defini comme la somme des dimensions des */
-/*               sous-espaces (i.e. dimension totale du probleme). */
-/*      - UINTFN(2) est un tableau de 2 reels contenant l' intervalle */
-/*                  en u ou est definie la fonction a approximer */
-/*                  (donc ici egal a UIFONC). */
-/*      - VINTFN(2) est un tableau de 2 reels contenant l' intervalle */
-/*                  en v ou est definie la fonction a approximer */
-/*                  (donc ici egal a VIFONC). */
-/*      - IIIUOUV, vaut 1 si l'on veut calculer des points a u constant, 
-*/
-/*                vaut 2 si l'on calcule les points a v constant. Tout */
-/*                autre valeur est une erreur. */
-/*      - TCONST, un reel, valeur du parametre fixe. Prend ses valeurs */
-/*                dans (UIFONC(1),UIFONC(2)) si IIUOUV = 1 ou dans */
-/*                dans (VIFONC(1),VIFONC(2)) si IIUOUV = 2. */
-/*      - NBPTAB, un entier. Indique le nombre de points a calculer. */
-/*      - TTABLE, un tableau de NBPTAB reels. Ce sont les valeurs du */
-/*                parametre 'libre' de discretisation (v si IIIUOUV=1, */
-/*                u si IIIUOUV=2). */
-/*      - IDERIU, un entier, prend ses valeurs entre 0 (positionnement) */
-/*                et IORDRE(1) (derivee partielle de la fonction en u a */
-/*                l' ordre IORDRE(1) si IORDRE(1) > 0). */
-/*      - IDERIV, un entier, prend ses valeurs entre 0 (positionnement) */
-/*                et IORDRE(2) (derivee partielle de la fonction en v a */
-/*                l' ordre IORDRE(2) si IORDRE(2) > 0). */
-/*                Si IDERIU=i et IDERIV=j, FONCNP devra calculer des */
-/*                points de la derivee: */
+/*    with the following input arguments : */
+/*      - NDIMEN is integer defined as the sum of dimensions of */
+/*               sub-spaces (i.e. total dimension of the problem). */
+/*      - UINTFN(2) is a table of 2 reals containing the interval */
+/*                  by u where the function to be approximated is defined */
+/*                  (so it is equal to UIFONC). */
+/*      - VINTFN(2) is a table of 2 reals containing the interval */
+/*                  by v where the function to be approximated is defined */
+/*                  (so it is equal to VIFONC). */
+/*      - IIIUOUV, is 1 if it is necessary to calculate points with constant u, */
+/*                 is 2 if it is necessary to calculate points with constant v. */
+/*                 Any other value is an error. */
+/*      - TCONST, real, value of the fixed parameter. Takes values */
+/*                in (UIFONC(1),UIFONC(2)) if ISOFAV = 1 or  */
+/*                ins (VIFONC(1),VIFONC(2)) if ISOFAV = 2. */
+/*      - NBPTAB, integer. Shows the number of points to be calculated. */
+/*      - TTABLE, a table of reals NBPTAB. These are the values of */
+/*                'free' parameter of discretization (v if IIIUOUV=1, */
+/*                u if IIIUOUV=2). */
+/*      - IDERIU, integer, takes values between 0 (position) */
+/*                and IORDRE(1) (partial derivative of the function by u */
+/*                of order IORDRE(1) if IORDRE(1) > 0). */
+/*      - IDERIV, integer, takes values between 0 (position) */
+/*                and IORDRE(2) (partial derivative of the function by v */
+/*                of order IORDRE(2) if IORDRE(2) > 0). */
+/*                If IDERIU=i and IDERIV=j, FONCNP should calculate the */
+/*                points of the derivative : */
 /*                            i+j */
 /*                           d     F(u,v) */
 /*                        -------- */
 /*                           i  j */
 /*                         du dv */
 
-/*     et les arguments de sortie sont : */
-/*        - FPNTAB(NDIMEN,NBPTAB) contient, en sortie, le tableau des */
-/*                                NBPTAB points calcules dans FONCNP. */
-/*        - IERCOD est, en sortie, le code d' erreur de FONCNP. Ce code */
-/*                 (entier) doit etre strictement positif s' il y a eu */
-/*                 un probleme. */
+/*     and the output arguments aret : */
+/*        - FPNTAB(NDIMEN,NBPTAB) contains, at output, the table of */
+/*                                NBPTAB points calculated in FONCNP. */
+/*        - IERCOD is, at output the error code of FONCNP. This code */
+/*                 (integer) should be strictly positive if there is a problem. */
 
-/*     Les arguments d' entree NE DOIVENT PAS etre modifies sous FONCNP. 
+/*     The input arguments SHOULD NOT be modified under FONCNP. 
 */
 
-/* -->Comme FONCNP n' est pas forcement definie dans (-1,1)*(-1,1), on */
-/* modifie les valeurs de UROOTB et VROOTB en consequence. */
+/* -->As FONCNP is not forcedly defined in (-1,1)*(-1,1), the */
+/* values of UROOTB and VROOTB are consequently modified. */
 
-/* -->Les resultats de la discretisation sont ranges dans 4 tableaux */
-/* SOSOTB, DISOTB, SODITB et DIDITB pour gagner du temps par la suite */
-/* lors du calcul des coefficients du polynome d' approximation. */
+/* -->The results of discretisation are ranked in 4 tables */
+/* SOSOTB, DISOTB, SODITB and DIDITB to earn time */
+/* during the calculation of coefficients of the polynom of approximation. */
 
-/*     Lorsque NBPNTU est impair: */
-/*        le tableau SOSOTB(0,j) contient F(0,vj) + F(0,-vj), */
-/*        le tableau DIDITB(0,j) contient F(0,vj) - F(0,-vj), */
-/*     Lorsque NBPNTV est impair: */
-/*        le tableau SOSOTB(i,0) contient F(ui,0) + F(-ui,0), */
-/*        le tableau DIDITB(i,0) contient F(ui,0) - F(-ui,0), */
-/*     Lorsque NBPNTU et NBPNTV sont impairs: */
-/*        le terme SOSOTB(0,0) contient F(0,0). */
+/*     When NBPNTU is uneven : */
+/*        table SOSOTB(0,j) contains F(0,vj) + F(0,-vj), */
+/*        table DIDITB(0,j) contains F(0,vj) - F(0,-vj), */
+/*     When NBPNTV is uneven : */
+/*        table SOSOTB(i,0) contains F(ui,0) + F(-ui,0), */
+/*        table DIDITB(i,0) contains F(ui,0) - F(-ui,0), */
+/*     When NBPNTU and NBPNTV are uneven : */
+/*        term SOSOTB(0,0) contains F(0,0). */
 
-/*   ATTENTION: On remplit toujours ces 4 tableaux en faisant varier */
-/*   le 1er indice d'abord. C'est a dire que les discretisations */
-/*   de F(...,t) (pour IIUOUV = 2) ou de F(t,...) (IIUOUV = 1) */
-/*   sont stockees dans SOSOTB(...,t), SODITB(...,t), etc... */
-/*   (ceci permet un gain de temps non negligeable). */
-/*   Il faut donc que l'appelant, dans le cas ou IIUOUV=1, */
-/*   intervertisse les roles de u et v, de SODITB et DISOTB AVANT le */
-/*   calcul puis, APRES le calcul prenne la transposee des 4 tableau. */
+/*   ATTENTION: These 4 tables are filled by varying the */
+/*   1st index first. So, the discretizations */
+/*   of F(...,t) (for IIUOUV = 2) or of F(t,...) (IIUOUV = 1) */
+/*   are stored in SOSOTB(...,t), SODITB(...,t), etc... */
+/*   (this allows to gain important time). */
+/*   It is required that the caller, in case of IIUOUV=1, */
+/*   invert the roles of u and v, of SODITB and DISOTB BEFORE the */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     26-09-1996: JCT; TCONS toujours defini sur VINTFN, d'ou init. */
-/*                      de DBFN1, DBFN2 en fonction de IIUOUV. */
-/*     06-06-1991: RBD; Finalisation du developpement. */
-/*     31-07-1989: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
-/* --> Indices de boucles. */
+/* --> Indices of loops. */
 
-/* --------------------------- Initialisations -------------------------- 
+/* --------------------------- Initialization -------------------------- 
 */
 
     /* Parameter adjustments */
@@ -5851,10 +5642,8 @@ int mma2ds2_(integer *ndimen,
 
 /* ********************************************************************** 
 */
-/* -------- Discretisation en U sur les racines du polynome de ---------- 
-*/
-/* ---------------- Legendre de degre NBPNTU, a Vj fixe  ---------------- 
-*/
+/* -------- Discretization by U on the roots of Legendre polynom -------- */
+/* ---------------- of degree NBPNTU, with Vj fixed  -------------------- */
 /* ********************************************************************** 
 */
 
@@ -5862,8 +5651,7 @@ int mma2ds2_(integer *ndimen,
     nvroo = *nbpntv / 2;
     jdec = (*nbpntu + 1) / 2;
 
-/* ----------- Chargement des parametres de discretisation en U --------- 
-*/
+/* ----------- Loading of parameters of discretization by U ------------- */
 
     i__1 = *nbpntu;
     for (iu = 1; iu <= i__1; ++iu) {
@@ -5871,8 +5659,7 @@ int mma2ds2_(integer *ndimen,
 /* L100: */
     }
 
-/* -------------- Pour Vj fixe, racine de Legendre negative ------------- 
-*/
+/* -------------- For Vj fixed, negative root of Legendre ------------- */
 
     i__1 = nvroo;
     for (iv = 1; iv <= i__1; ++iv) {
@@ -5914,8 +5701,7 @@ int mma2ds2_(integer *ndimen,
 /* L200: */
     }
 
-/* --------- Pour Vj = 0 (NBPNTV impair), discretisation en U ----------- 
-*/
+/* --------- For Vj = 0 (uneven NBPNTV), discretization by U ----------- */
 
     if (*nbpntv % 2 != 0) {
 	tcons = blinv;
@@ -5944,8 +5730,7 @@ int mma2ds2_(integer *ndimen,
 	}
     }
 
-/* -------------- Pour Vj fixe, racine de Legendre positive ------------- 
-*/
+/* -------------- For Vj fixed, positive root of Legendre ------------- */
 
     i__1 = nvroo;
     for (iv = 1; iv <= i__1; ++iv) {
@@ -6030,92 +5815,73 @@ int mma2er1_(integer *ndjacu,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*  Calcule l' erreur d' approximation maxi faite lorsque l'on */
-/*  enleve les coefficients de PATJAC t.q. le degre en U varie entre */
-/*  MINDGU et MAXDGU et le degre en V varie entre MINDGV et MAXDGV. */
+/*  Calculate max approximation error done when  */
+/*  the coefficients of PATJAC such that the degree by U varies between */
+/*  MINDGU and MAXDGU and the degree by V varies between MINDGV and MAXDGV are removed. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS,AB_SPECIFI:: CARREAU&,CALCUL,&ERREUR */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS  : */
 /*     ------------------ */
-/*     NDJACU: Dimension en U du tableau PATJAC. */
-/*     NDJACV: Dimension en V du tableau PATJAC. */
-/*     NDIMEN: Dimension de l'espace. */
-/*     MINDGU: Borne inf de l'indice en U des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     MAXDGU: Borne sup de l'indice en U des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     MINDGV: Borne inf de l'indice en V des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     MAXDGV: Borne sup de l'indice en V des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     IORDRU: Ordre de continuite en U assure par le carreau PATJAC */
-/*             (de -1 a 2) */
-/*     IORDRV: Ordre de continuite en V assure par le carreau PATJAC */
-/*             (de -1 a 2) */
-/*     XMAXJU: Valeur maximale des polynomes de Jacobi d'ordre IORDRU, */
-/*             du degre 0 a MAXDGU - 2*(IORDU+1) */
-/*     XMAXJV: Valeur maximale des polynomes de Jacobi d'ordre IORDRV, */
-/*             du degre 0 a MAXDGV - 2*(IORDV+1) */
-/*     PATJAC: Table des coeff. du carreau d'approximation avec */
-/*             contraintes d'ordre IORDRU en U et IORDRV en V. */
+/*     NDJACU: Dimension by U of table PATJAC. */
+/*     NDJACV: Dimension by V of table PATJAC. */
+/*     NDIMEN: Dimension of the space. */
+/*     MINDGU: Lower limit of index by U of coeff. of PATJAC to be taken into account. */
+/*     MAXDGU: Upper limit of index by U of coeff. of PATJAC to be taken into account. */
+/*     MINDGV: Lower limit of index by V of coeff. of PATJAC to be taken into account. */
+/*     MAXDGV: Upper limit of index by V of coeff. of PATJAC to be taken into account. */
+/*     IORDRU: Order of continuity by U provided by square PATJAC (from -1 to 2) */
+/*     IORDRV: Order of continuity by U provided by square PATJAC (from -1 to 2) */
+/*     XMAXJU: Maximum value of Jacobi polynoms of order IORDRU, */
+/*             from degree 0 to MAXDGU - 2*(IORDU+1) */
+/*     XMAXJV: Maximum value of Jacobi polynoms of order IORDRV, */
+/*             from degree 0 to MAXDGV - 2*(IORDV+1) */
+/*     PATJAC: Table of coeff. of square of approximation with */
+/*             constraints of order IORDRU by U and IORDRV by V. */
+/*     VECERR: Auxiliary vector. */
+/*     ERREUR: MAX Error commited during removal of ALREADY CALCULATED coeff of PATJAC */
 
-/*     VECERR: Vecteur auxiliaire. */
-/*     ERREUR: L'erreur MAXI commise enlevant les coeff de PATJAC */
-/*             DEJA CALCULEE */
-
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*     ERREUR: L'erreur MAXI commise enlevant les coeff de PATJAC */
-/*             d'indices MINDGU a MAXDGU en U et MINDGV a MAXDGV en V */
-/*             PLUS l'erreur deja calculee. */
+/*     ERREUR: MAX Error commited during removal of coeff of PATJAC */
+/*             of indices from MINDGU to MAXDGU by U and from MINDGV to MAXDGV by V */
+/*             THEN the already calculated error. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     Dans le tableau PATJAC sont stockes les coeff. Cij du carreau */
-/*     d'approximation de F(U,V). Les indices i et j indique le degre en 
-*/
-/*     U et en V des polynomes de base. Ces polynomes de base sont de la 
-*/
-/*     forme: */
+/*     Table PATJAC is the place of storage of coeff. Cij of the square of */
+/*     approximation of F(U,V). The indices i and j show the degree  */
+/*     by U and by V of base polynoms. These polynoms have the form: */
 
-/*          ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), ou */
+/*          ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), where */
 
-/*     le polynome J(i-2*(IORDU+1)(U) est le polynome de Jacobi d'ordre */
-/*     IORDRU+1 (idem en V en remplacant U par V dans l'expression ci */
-/*     dessus). */
+/*     polynom J(i-2*(IORDU+1)(U) is the Jacobi polynom of order */
+/*     IORDRU+1 (the same by V by replacing U u V in the expression above). */
 
-/*     La contribution a l'erreur du terme Cij lorsque celui-ci est */
-/*     enleve de PATJAC est majoree par: */
+/*     The contribution to the error of term Cij when it is */
+/*     removed from PATJAC is increased by: */
 
-/*  DABS(Cij)*XMAXJU(i-2*(IORDRU+1))*XMAXJV(J-2*(IORDRV+1)) ou on a */
+/*  DABS(Cij)*XMAXJU(i-2*(IORDRU+1))*XMAXJV(J-2*(IORDRV+1)) where */
 
 /*  XMAXJU(i-2*(IORDRU+1) = ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), 
 */
 /*  XMAXJV(i-2*(IORDRV+1) = ((1 - V*V)**(IORDRV+1)).J(j-2*(IORDRV+1)(V). 
 */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     22-01-1992:RBD; Creation d'apres MA2ERR. */
 /* > */
 /* ***********************************************************************
  */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* ----------------------------- Initialisations ------------------------ 
@@ -6137,12 +5903,9 @@ int mma2er1_(integer *ndjacu,
     minu = (*iordru + 1) << 1;
     minv = (*iordrv + 1) << 1;
 
-/* ------------------- Calcul du majorant de l'erreur max --------------- 
-*/
-/* ----- lorsque sont enleves les coeff. d'indices MINDGU a MAXDGU ------ 
-*/
-/* ---------------- en U et d'indices MINDGV a MAXDGV en V -------------- 
-*/
+/* ------------------- Calculate the increment of the max error --------------- */
+/* ----- during the removal of the coeffs of indices from MINDGU to MAXDGU ---- */
+/* ---------------- by U and indices from MINDGV to MAXDGV by V --------------- */
 
     i__1 = *ndimen;
     for (nd = 1; nd <= i__1; ++nd) {
@@ -6164,8 +5927,7 @@ int mma2er1_(integer *ndjacu,
 /* L100: */
     }
 
-/* ----------------------- Calcul de l' erreur max ---------------------- 
-*/
+/* ----------------------- Calculate the max error  ----------------------*/
 
     bid1 = AdvApp2Var_MathBase::mzsnorm_(ndimen, &vecerr[1]);
     vaux[0] = *erreur;
@@ -6221,88 +5983,78 @@ int mma2er2_(integer *ndjacu,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*  Enleve des coefficients de PATJAC jusqu'a obtenir les degre en U */
-/*  et V minimum verifiant la tolerance imposee. */
+/*  Remove coefficients of PATJAC to obtain the minimum degree */
+/*  by U and V checking the imposed tolerance. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS,AB_SPECIFI:: CARREAU&,CALCUL,&ERREUR */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/* NDJACU: Degre en U du tableau PATJAC. */
-/* NDJACV: Degre en V du tableau PATJAC. */
-/* NDIMEN: Dimension de l'espace. */
-/* MINDGU: Borne de l'indice en U des coeff. de PATJAC a GARDER */
-/*         (doit etre >= 0). */
-/* MAXDGU: Borne sup de l'indice en U des coeff. de PATJAC a prendre */
-/*         en compte. */
-/* MINDGV: Borne de l'indice en V des coeff. de PATJAC a GARDER */
-/*         (doit etre >= 0). */
-/* MAXDGV: Borne sup de l'indice en V des coeff. de PATJAC a prendre */
-/*         en compte. */
-/* IORDRU: Ordre de continuite en U assure par le carreau PATJAC */
-/*         (de -1 a 2) */
-/* IORDRV: Ordre de continuite en V assure par le carreau PATJAC */
-/*         (de -1 a 2) */
-/* XMAXJU: Valeur maximale des polynomes de Jacobi d'ordre IORDRU, */
-/*         du degre 0 a MAXDGU - 2*(IORDU+1) */
-/* XMAXJV: Valeur maximale des polynomes de Jacobi d'ordre IORDRV, */
-/*         du degre 0 a MAXDGV - 2*(IORDV+1) */
-/* PATJAC: Table des coeff. du carreau d'approximation avec */
-/*         contraintes d'ordre IORDRU en U et IORDRV en V. */
-/* EPMSCUT: Tolerance d'approximation. */
-/* VECERR: tableau auxiliaire. */
-/* ERREUR: L'erreur MAXI commise DEJA CALCULEE. */
+/*     NDJACU: Degree by U of table PATJAC. */
+/*     NDJACV: Degree by V of table PATJAC. */
+/*     NDIMEN: Dimension of the space. */
+/*     MINDGU: Limit of index by U of coeff. of PATJAC to be PRESERVED (should be >=0). */
+/*     MAXDGU: Upper limit of index by U of coeff. of PATJAC to be taken into account. */
+/*     MINDGV: Limit of index by V of coeff. of PATJAC to be PRESERVED (should be >=0). */
+/*     MAXDGV: Upper limit of index by V of coeff. of PATJAC to be taken into account. */
+/*     IORDRU: Order of continuity by U provided by square PATJAC (from -1 to 2) */
+/*     IORDRV: Order of continuity by U provided by square PATJAC (from -1 to 2) */
+/*     XMAXJU: Maximum value of Jacobi polynoms of order IORDRU, */
+/*             from degree 0 to MAXDGU - 2*(IORDU+1) */
+/*     XMAXJV: Maximum value of Jacobi polynoms of order IORDRV, */
+/*             from degree 0 to MAXDGV - 2*(IORDV+1) */
+/*     PATJAC: Table of coeff. of square of approximation with */
+/*             constraints of order IORDRU by U and IORDRV by V. */
+/*     EPMSCUT: Tolerance of approximation. */
+/*     VECERR: Auxiliary vector. */
+/*     ERREUR: MAX Error commited ALREADY CALCULATED  */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/* ERREUR: L'erreur MAXI commise en ne gardant que les coeff de */
-/*         PATJAC d'indices 0 a NEWDGU en U et 0 a NEWDGV en V, */
-/*         PLUS l'erreur maxi deja calculee. */
-/* NEWDGU: Degre en U minimum t.q. le carreau d'approximation */
-/*         verifie la tolerance. On a toujours NEWDGU >= MINDGU >= 0. */
-/* NEWDGV: Degre en V minimum t.q. le carreau d'approximation */
-/*         verifie la tolerance. On a toujours NEWDGV >= MINDGV >= 0. */
+/*     ERREUR: MAX Error commited by preserving only coeff of PATJAC */
+/*             of indices from 0 to NEWDGU by U and from 0 to NEWDGV by V */
+/*             PLUS the already calculated error. */
+/* NEWDGU: Min. Degree by U such as the square of approximation */
+/*         could check the tolerance. There is always NEWDGU >= MINDGU >= 0. */
+/* NEWDGV: Min. Degree by V such as the square of approximation */
+/*         could check the tolerance. There is always NEWDGV >= MINDGV >= 0. */
 
-/*     COMMONS UTILISES   : */
+
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     Dans le tableau PATJAC sont stockes les coeff. Cij du carreau */
-/*     d'approximation de F(U,V). Les indices i et j indique le degre */
-/*     en U et en V des polynomes de base. Ces polynomes de base sont */
-/*     de la forme: */
+/*     Table PATJAC is the place of storage of coeff. Cij of the square of */
+/*     approximation of F(U,V). The indices i and j show the degree  */
+/*     by U and by V of base polynoms. These polynoms have the form: */
 
-/*          ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), ou */
+/*          ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), where */
 
-/*     le polynome J(i-2*(IORDU+1)(U) est le polynome de Jacobi d'ordre */
-/*     IORDRU+1 (idem en V en remplacant U par V dans l'expression ci */
-/*     dessus). */
+/*     polynom J(i-2*(IORDU+1)(U) is the Jacobi polynom of order */
+/*     IORDRU+1 (the same by V by replacing U u V in the expression above). */
 
-/*     La contribution a l'erreur du terme Cij lorsque celui-ci est */
-/*     enleve de PATJAC est majoree par: */
+/*     The contribution to the error of term Cij when it is */
+/*     removed from PATJAC is increased by: */
 
-/*  DABS(Cij)*XMAXJU(i-2*(IORDRU+1))*XMAXJV(J-2*(IORDRV+1)) ou on a */
+/*  DABS(Cij)*XMAXJU(i-2*(IORDRU+1))*XMAXJV(J-2*(IORDRV+1)) where */
 
 /*  XMAXJU(i-2*(IORDRU+1) = ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), 
 */
 /*  XMAXJV(i-2*(IORDRV+1) = ((1 - V*V)**(IORDRV+1)).J(j-2*(IORDRV+1)(V). 
 */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     23-01-1992: RBD; Creation d'apres MA2CUT. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* ----------------------------- Initialisations ------------------------ 
@@ -6328,18 +6080,16 @@ int mma2er2_(integer *ndjacu,
 
 /* ********************************************************************** 
 */
-/* -------------------- Coupure des coefficients ------------------------ 
+/* -------------------- Cutting of oefficients ------------------------ 
 */
 /* ********************************************************************** 
 */
 
 L1001:
 
-/* ------------------- Calcul du majorant de l'erreur max --------------- 
-*/
-/* ----- lorsque sont enleves les coeff. d'indices MINDGU a MAXDGU ------ 
-*/
-/* ---------------- en U, le degre en V etant fixe a NV ----------------- 
+/* ------------------- Calculate the increment of max error --------------- */
+/* ----- during the removal of coeff. of indices from MINDGU to MAXDGU ------ */
+/* ---------------- by U, the degree by V is fixed to NV ----------------- 
 */
 
     bid0 = 0.;
@@ -6362,11 +6112,9 @@ L1001:
     }
     errnv = AdvApp2Var_MathBase::mzsnorm_(ndimen, &vecerr[1]);
 
-/* ------------------- Calcul du majorant de l'erreur max --------------- 
-*/
-/* ----- lorsque sont enleves les coeff. d'indices MINDGV a MAXDGV ------ 
-*/
-/* ---------------- en V, le degre en U etant fixe a NU ----------------- 
+/* ------------------- Calculate the increment of max error --------------- */
+/* ----- during the removal of coeff. of indices from MINDGV to MAXDGV ------ */
+/* ---------------- by V, the degree by U is fixed to NU ----------------- 
 */
 
     bid0 = 0.;
@@ -6389,7 +6137,7 @@ L1001:
     }
     errnu = AdvApp2Var_MathBase::mzsnorm_(ndimen, &vecerr[1]);
 
-/* ----------------------- Calcul de l' erreur max ---------------------- 
+/* ----------------------- Calculate the max error ---------------------- 
 */
 
     vaux[0] = *erreur;
@@ -6417,7 +6165,7 @@ L1001:
 
     goto L1001;
 
-/* -------------------------- Recuperation des degres ------------------- 
+/* -------------------------- Return the degrees ------------------- 
 */
 
 L2001:
@@ -6508,174 +6256,157 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/* Approximation d'UNE frontiere d'une fonction non polynomiale F(u,v) */
-/* (dans l' espace de dimension NDIMEN) par PLUSIEURS courbes */
-/* polynomiales, par la methode des moindres carres. Le parametre de la */
-/* fonction est conserve. */
+/* Approximation of a limit of non polynomial function F(u,v) */
+/* (in the space of dimension NDIMEN) by SEVERAL  */
+/* polynomial curves, by the method of least squares. The parameter of the function is preserved. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /* TOUS, AB_SPECIFI :: FONCTION&,EXTREMITE&, APPROXIMATION, &COURBE. */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     ------------------ */
-/*     NDIMEN: Dimension totale de l' espace (somme des dimensions */
-/*             des sous-espaces) */
-/*     NBSESP: Nombre de sous-espaces "independants". */
-/*     NDIMSE: Table des dimensions des sous-espaces. */
-/*     UVFONC: Bornes de l' intervalle (a,b)x(c,d) de definition de la */
-/*             fonction a approcher en U (UVFONC(*,1) contient (a,b)) */
-/*             et en V (UVFONC(*,2) contient (c,d)). */
-/*     FONCNP: Fonction externe de positionnement sur la fonction non */
-/*             polynomiale a approcher. */
-/*     TCONST: Valeur de l'isoparametre de F(u,v) a discretiser. */
-/*     ISOFAV: Type d'iso choisi, = 1, indique que l'on discretise a u */
-/*             fixe; = 2, indique que v est fixe. */
-/*     NBROOT: Nbre de points de discretisation de l'iso, extremites non 
-*/
-/*             comprises. */
-/*     ROOTLG: Table des racines du polynome de Legendre defini sur */
-/*             (-1,1), de degre NBROOT. */
-/*     IORDRE: Ordre de contrainte aux extremites de la frontiere */
-/*              -1 = pas de contraintes, */
-/*               0 = contraintes de passage aux bornes (i.e. C0), */
-/*               1 = C0 + contraintes de derivees 1eres (i.e. C1), */
-/*               2 = C1 + contraintes de derivees 2ndes (i.e. C2). */
-/*     IDERIV: Ordre de derivee de la frontiere. */
-/*     NDGJAC: Degre du developpement en serie a utiliser pour le calcul 
-*/
-/*             dans la base de Jacobi. */
-/*     NBCRMX: Nbre maxi de courbes a creer. */
-/*     NCFLIM: Nombre maxi de coeff de la "courbe" polynomiale */
-/*             d' approximation (doit etre superieur ou egal a */
-/*             2*IORDRE+2 et inferieur ou egal a 50). */
-/*     EPSAPR: Table des erreurs d' approximations souhaitees */
-/*             sous-espace par sous-espace. */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*     NDIMEN: Total Dimension of the space (sum of dimensions */
+/*             of sub-spaces) */
+/*     NBSESP: Number of "independent" sub-spaces. */
+/*     NDIMSE: Table of dimensions of sub-spaces. */
+/*     UVFONC: Limits of the interval (a,b)x(c,d) of definition of the */
+/*             function to be approached by U (UVFONC(*,1) contains (a,b)) */
+/*             and by V (UVFONC(*,2) contains (c,d)). */
+/*     FONCNP: External function of position on the non polynomial function to be approached. */
+/*     TCONST: Value of isoparameter of F(u,v) to be discretized. */
+/*     ISOFAV: Type of chosen iso, = 1, shose that discretization is with u */
+/*             fixed; = 2, shows that v is fixed. */
+/*     NBROOT: Nb of points of discretisation of the iso, extremities not included. */
+/*     ROOTLG: Table of roots of the polynom of Legendre defined on */
+/*             (-1,1), of degree NBROOT. */
+/*     IORDRE: Order of constraint at the extremities of the limit */
+/*              -1 = no constraints, */
+/*               0 = constraints of passage to limits (i.e. C0), */
+/*               1 = C0 + constraints of 1st derivatives (i.e. C1), */
+/*               2 = C1 + constraints of 2nd derivatives (i.e. C2). */
+/*     IDERIV: Order of derivative of the limit. */
+/*     NDGJAC: Degree of serial development to be used for calculation in */
+/*             the Jacobi base. */
+/*     NBCRMX: Max Nb of curves to be created. */
+/*     NCFLIM: Max Nb of coeff of the polynomial curve */
+/*             of approximation (should be above or equal to */
+/*             2*IORDRE+2 and below or equal to 50). */
+/*     EPSAPR: Table of required errors of approximation */
+/*             sub-space by sub-space. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*     NCOEFF: Nombre de coeff. significatifs des courbes calculees. */
-/*     COURBE: Tableau des coeff. des courbes polynomiales calculees. */
-/*             Doit etre dimensionne en (NCFLIM,NDIMEN,NBCRMX). */
-/*             Ces courbes sont TOUJOURS parametrees dans (-1,1). */
-/*     NBCRBE: Nbre de courbes calculees. */
-/*     SOMTAB: Pour F definie sur (-1,1) (sinon on recale les */
-/*             parametres), c'est la table des sommes F(u,vj) + F(u,-vj) 
+/*     NCOEFF: Number of significative coeff of calculated curves. */
+/*     COURBE: Table of coeff. of calculated polynomial curves. */
+/*             Should be dimensioned in (NCFLIM,NDIMEN,NBCRMX). */
+/*             These curves are ALWAYS parametrized in (-1,1). */
+/*     NBCRBE: Nb of calculated curves. */
+/*     SOMTAB: For F defined on (-1,1) (otherwise rescale the */
+/*             parameters), this is the table of sums F(u,vj) + F(u,-vj) 
 */
-/*             si ISOFAV = 1 (et IDERIV=0, sinon on prend les derivees */
-/*             en u d'ordre IDERIV) ou des sommes F(ui,v) + F(-ui,v) si */
-/*             ISOFAV = 2 (et IDERIV=0, sinon on prend les derivees en */
-/*             v d'ordre IDERIV). */
-/*     DIFTAB: Pour F definie sur (-1,1) (sinon on recale les */
-/*             parametres), c'est la table des sommes F(u,vj) - F(u,-vj) 
+/*             if ISOFAV = 1 (and IDERIV=0, otherwise the derivatives */
+/*             by u of order IDERIV are taken) or sumes F(ui,v) + F(-ui,v) if */
+/*             ISOFAV = 2 (and IDERIV=0, otherwise the derivatives by */
+/*             v of order IDERIV are taken). */
+/*     DIFTAB: For F defined on (-1,1) (otherwise rescale the */
+/*             parameters), this is the table of sums F(u,vj) - F(u,-vj) 
 */
-/*             si ISOFAV = 1 (et IDERIV=0, sinon on prend les derivees */
-/*             en u d'ordre IDERIV) ou des sommes F(ui,v) - F(-ui,v) si */
-/*             ISOFAV = 2 (et IDERIV=0, sinon on prend les derivees en */
-/*             v d'ordre IDERIV). */
-/*     CONTR1: Contient les coordonnees de l'extremite gauche de l'iso */
-/*             et de ses derivees jusqu'a l'ordre IORDRE */
-/*     CONTR2: Contient les coordonnees de l'extremite droite de l'iso */
-/*             et de ses derivees jusqu'a l'ordre IORDRE */
-/*     TABDEC: Table des NBCRBE+1 parametres de decoupe de UVFONC(1:2,1) 
+/*             if ISOFAV = 1 (and IDERIV=0, otherwise the derivatives */
+/*             by u of order IDERIV are taken) or sumes F(ui,v) + F(-ui,v) if */
+/*             ISOFAV = 2 (and IDERIV=0, otherwise the derivatives by */
+/*             v of order IDERIV are taken). */
+/*     CONTR1: Contains the coordinates of the left extremity of the iso */
+/*             and of its derivatives till order IORDRE */
+/*     CONTR2: Contains the coordinates of the right extremity of the iso */
+/*             and of its derivatives till order IORDRE */
+/*     TABDEC: Table of NBCRBE+1 parameters of cut of UVFONC(1:2,1) 
 */
-/*             si ISOFAV=2, ou de UVFONC(1:2,2) si ISOFAV=1. */
-/*     ERRMAX: Table des erreurs (sous-espace par sous espace) */
-/*             MAXIMALES commises dans l' approximation de FONCNP par */
-/*             les NBCRBE courbes. */
-/*     ERRMOY: Table des erreurs (sous-espace par sous espace) */
-/*             MOYENNES commises dans l' approximation de FONCNP par */
-/*             les NBCRBE courbes. */
-/*     IERCOD: Code d' erreur : */
-/*             -1 = ERRMAX > EPSAPR pour au moins un des sous-espace. */
-/*                  (les courbes resultat de degre mathematique NCFLIM-1 
-*/
-/*                  au plus , sont quand meme calculees). */
-/*              0 = Tout est ok. */
-/*              1 = Pb d' incoherence des entrees. */
-/*             10 = Pb de calcul de l' interpolation des contraintes. */
-/*             13 = Pb dans l' allocation dynamique. */
-/*             33 = Pb dans la recuperation des donnees du block data */
-/*                  des coeff. d' integration par la methode de GAUSS. */
-/*             >100 Pb dans l' evaluation de FONCNP, le code d' erreur */
-/*                  renvoye est egal au code d' erreur de FONCNP + 100. */
+/*             if ISOFAV=2, or of UVFONC(1:2,2) if ISOFAV=1. */
+/*     ERRMAX: Table of MAX errors (sub-space by sub-space) */
+/*             committed in the approximation of FONCNP by NBCRBE curves. */
+/*     ERRMOY: Table of AVERAGE errors (sub-space by sub-space) */
+/*             committed in the approximation of FONCNP by NBCRBE curves.
+/*     IERCOD: Error code: */
+/*             -1 = ERRMAX > EPSAPR for at least one sub-space. */
+/*                  (the resulting curves of at least mathematic degree NCFLIM-1 */
+/*                  are calculated). */
+/*              0 = Everything is ok. */
+/*              1 = Pb of incoherence of inputs. */
+/*             10 = Pb of calculation of the interpolation of constraints. */
+/*             13 = Pb in the dynamic allocation. */
+/*             33 = Pb in the data recuperation from block data */
+/*                  of coeff. of integration by GAUSS method. */
+/*             >100 Pb in the evaluation of FONCNP, the returned error code */
+/*                  is equal to the error code of FONCNP + 100. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/* --> La partie approximation est faite dans l' espace de dimension */
-/*    NDIMEN (la somme des dimensions des sous-espaces). Par exemple : */
-/*        Si NBSESP=2 et NDIMSE(1)=3, NDIMSE(2)=2, on a un lissage avec */
-/*        NDIMEN=5. Le resultat (dans COURBE(NDIMEN,NCOEFF,i) ), sera */
-/*        compose du resultat du lissage de la fonction 3D dans */
-/*        COURBE(1:3,1:NCOEFF,i) et du lissage de la fonction 2D dans */
+/* --> The approximation part is done in the space of dimension */
+/*    NDIMEN (the sum of dimensions of sub-spaces). For example : */
+/*        If NBSESP=2 and NDIMSE(1)=3, NDIMSE(2)=2, there is smoothing with */
+/*        NDIMEN=5. The result (in COURBE(NDIMEN,NCOEFF,i) ), will be */
+/*        composed of the result of smoothing of 3D function in */
+/*        COURBE(1:3,1:NCOEFF,i) and of smoothing of 2D function in */
 /*        COURBE(4:5,1:NCOEFF,i). */
 
-/* -->  La routine FONCNP doit etre declaree EXTERNAL dans le programme */
-/*     appelant MMA2FNC. */
+/* -->  Routine FONCNP should be declared EXTERNAL in the program */
+/*     calling MMA2FNC. */
 
-/* -->  La fonction FONCNP, declaree ici en externe, doit etre declaree */
-/*     IMPERATIVEMENT sous la forme : */
+/* -->  Function FONCNP, declared externally, should be declared */
+/*     IMPERATIVELY in form : */
 /*          SUBROUTINE FONCNP(NDIMEN,UINTFN,VINTFN,IIUOUV,TCONST,NBPTAB */
 /*                           ,TTABLE,IDERIU,IDERIV,IERCOD) */
-/*     ou les arguments d' entree sont : */
-/*      - NDIMEN est un entier defini comme la somme des dimensions des */
-/*               sous-espaces (i.e. dimension totale du probleme). */
-/*      - UINTFN(2) est un tableau de 2 reels contenant l' intervalle */
-/*                en U ou est definie la fonction a approximer */
-/*                (donc ici egal a UIFONC). */
-/*      - VINTFN(2) est un tableau de 2 reels contenant l' intervalle */
-/*                en V ou est definie la fonction a approximer */
-/*                (donc ici egal a VIFONC). */
-/*      - IIUOUV, indique que les points a calculer sont a U constant */
-/*                (IIUOUV=1) ou a V constant (IIUOUV=2). */
-/*      - TCONST, un reel, le parametre fixe de discretisation qui prend 
-*/
-/*                ses valeurs dans (UINTFN(1),UINTFN(2)) si IIUOUV=1, */
-/*                ou dans (VINTFN(1),VINTFN(2)) si IIUOUV=2. */
-/*      - NBPTAB, Le nbre de point de discretisation suivant la variable 
-*/
-/*                libre: V si IIUOUV=1 ou U si IIUOUV = 2. */
-/*      - TTABLE, La table des NBPTAB parametres de discretisation. */
-/*      - IDERIU, un entier, prend ses valeurs entre 0 (positionnement) */
-/*                et IORDRU (derivee partielle en U de la fonction a */
-/*                l' ordre IORDRU si IORDRU > 0). */
-/*      - IDERIV, un entier, prend ses valeurs entre 0 (positionnement) */
-/*                et IORDRV (derivee partielle en V de la fonction a */
-/*                l' ordre IORDRV si IORDRV > 0). */
-/*     et les arguments de sortie sont : */
-/*      - FPNTAB(NDIMEN,NBPTAB) contient, en sortie, le tableau des */
-/*                NBPTAB points calcules de dimension NDIMEN. */
-/*      - IERCOD est, en sortie, le code d' erreur de FONCNP. Ce code */
-/*               (entier) doit etre strictement positif s' il y a eu */
-/*               un probleme. */
-/*     Les arguments d' entree NE DOIVENT PAS etre modifies sous FONCNP. 
+/*     where the input arguments are : */
+/*      - NDIMEN is integer defined as the sum of dimensions of */
+/*               sub-spaces (i.e. total dimension of the problem). */
+/*      - UINTFN(2) is a table of 2 reals containing the interval */
+/*                  by u where the function to be approximated is defined */
+/*                  (so it is equal to UIFONC). */
+/*      - VINTFN(2) is a table of 2 reals containing the interval */
+/*                  by v where the function to be approximated is defined */
+/*                  (so it is equal to VIFONC). */
+/*      - IIUOUV, shows that the points to be calculated have a constant U */
+/*                (IIUOUV=1) or a constant V (IIUOUV=2). */
+/*      - TCONST, real, value of the fixed discretisation parameter. Takes values */
+/*                in  (UINTFN(1),UINTFN(2)) if IIUOUV=1, */
+/*                or in (VINTFN(1),VINTFN(2)) if IIUOUV=2. */
+/*      - NBPTAB, the nb of point of discretisation following the free variable */
+/*                : V if IIUOUV=1 or U if IIUOUV = 2. */
+/*      - TTABLE, Table of NBPTAB parametres of discretisation. . */
+/*      - IDERIU, integer, takes values between 0 (position) */
+/*                and IORDREU (partial derivative of the function by u */
+/*                of order IORDREU if IORDREU > 0). */
+/*      - IDERIV, integer, takes values between 0 (position) */
+/*                and IORDREV (partial derivative of the function by v */
+/*                of order IORDREV if IORDREV > 0). */
+/*     and the output arguments are : */
+/*        - FPNTAB(NDIMEN,NBPTAB) contains, at output, the table of */
+/*                                NBPTAB points calculated in FONCNP. */
+/*        - IERCOD is, at output the error code of FONCNP. This code */
+/*                 (integer) should be strictly positive if there is a problem. */
+
+/*     The input arguments SHOULD NOT BE modified under FONCNP. 
 */
 
-/* -->  Si IERCOD=-1, la precision demandee n' est pas atteinte (ERRMAX */
-/*     est superieur a EPSAPR sur au moins l' un des sous espaces), mais 
+/* --> If IERCOD=-1, the required precision can't be reached (ERRMAX */
+/*     is above EPSAPR on at least one sub-space), but 
 */
-/*     on donne le meilleur resultat possible pour NCFLIM et EPSAPR */
-/*     choisis par l'utilisateur. Dans ce cas (ainsi que pour */
-/*     IERCOD=0), on a une solution. */
+/*     one gives the best possible result for NCFLIM and EPSAPR */
+/*     chosen by the user. In this case (and for IERCOD=0), there is a solution. */
 
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     04-02-1992: RBD; Correction passage SOMTAB et DIFTAB en argument */
-/*                      et appel a MMFMCA8. */
-/*     26-09-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
     /* Parameter adjustments */
     --epsapr;
@@ -6718,7 +6449,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
     *iercod = 0;
     iofwr = 0;
 
-/* ---------------- Mise a zero des coefficients de COURBE -------------- 
+/* ---------------- Set to zero the coefficients of CURVE -------------- 
 */
 
     ilong = *ndimen * *ncflim * *nbcrmx;
@@ -6726,7 +6457,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
 
 /* ********************************************************************** 
 */
-/* -------------------------- Verification des entrees ------------------ 
+/* -------------------------- Checking of entries ------------------ 
 */
 /* ********************************************************************** 
 */
@@ -6744,49 +6475,46 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
     uv11[2] = -1.;
     uv11[3] = 1.;
 
-/* ********************************************************************** 
-*/
-/* ------------- Preparation des parametres de discretisation ----------- 
-*/
+/* ********************************************************************** */
+/* ------------- Preparation of parameters of discretisation ----------- */
 /* ********************************************************************** 
 */
 
-/* -- Allocation d'une table de parametres et de pts de discretisation -- 
-*/
-/* --> Pour les parametres de discretisation. */
+/* -- Allocation of a table of parameters and points of discretisation -- */
+/* --> For the parameters of discretisation. */
     isz1 = *nbroot + 2;
-/* --> Pour les pts de discretisation dans MMA1FDI et MMA1CDI et la courbe
+/* --> For the points of discretisation in MMA1FDI and MMA1CDI and
  */
-/*    auxiliaire pour MMAPCMP */
+/*    the auxiliary curve for MMAPCMP */
     ibid1 = *ndimen * (*nbroot + 2);
     ibid2 = ((*iordre + 1) << 1) * *nbroot;
     isz2 = max(ibid1,ibid2);
     ibid1 = (((*ncflim - 1) / 2 + 1) << 1) * *ndimen;
     isz2 = max(ibid1,isz2);
-/* --> Pour recuperer les polynomes d'hermite. */
+/* --> To return the polynoms of hermit. */
     isz3 = ((*iordre + 1) << 2) * (*iordre + 1);
-/* --> Pour les coeff. d'integration de Gauss. */
+/* --> For the Gauss  coeff. of integration. */
     isz4 = (*nbroot / 2 + 1) * (*ndgjac + 1 - ((*iordre + 1) << 1));
-/* --> Pour les coeff de la courbe dans la base de Jacobi */
+/* --> For the coeff of the curve in the base of Jacobi */
     isz5 = (*ndgjac + 1) * *ndimen;
 
     ndwrk = isz1 + isz2 + isz3 + isz4 + isz5;
     AdvApp2Var_SysBase::mcrrqst_(&c__8, &ndwrk, wrkar, &iofwr, &ier);
     if (ier > 0) {
 	goto L9013;    }
-/* --> Pour les parametres de discretisation (NBROOT+2 extremites). */
+/* --> For the parameters of discretisation (NBROOT+2 extremities). */
     ipt1 = iofwr;
-/* --> Pour les pts de discretisation FPNTAB(NDIMEN,NBROOT+2), */
-/*    FPNTAB(NBROOT,2*(IORDRE+1)) et pour WRKAR de MMAPCMP. */
+/* --> For the points of discretisation FPNTAB(NDIMEN,NBROOT+2), */
+/*    FPNTAB(NBROOT,2*(IORDRE+1)) and for WRKAR of MMAPCMP. */
     ipt2 = ipt1 + isz1;
-/* --> Pour les polynomes d'Hermite */
+/* --> For the polynoms of Hermit */
     ipt3 = ipt2 + isz2;
-/* --> Pour les coeff d'integration de Gauss. */
+/* --> For the Gauss  coeff of integration. */
     ipt4 = ipt3 + isz3;
-/* --> Pour la courbe dans Jacobi. */
+/* --> For the curve in Jacobi. */
     ipt5 = ipt4 + isz4;
 
-/* ------------------ Initialisation de la gestion des decoupes --------- 
+/* ------------------ Initialisation of management of cuts --------- 
 */
 
     if (*isofav == 1) {
@@ -6808,12 +6536,12 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
 
 /* ********************************************************************** 
 */
-/*                       APPROXIMATION AVEC DECOUPES */
+/*                       APPROXIMATION WITH CUTS */
 /* ********************************************************************** 
 */
 
 L1000:
-/* --> Lorsque l' on a atteint le haut de la pile, c' est fini ! */
+/* --> When the top is reached, this is the end ! */
     if (nupil - *nbcrbe == 0) {
 	goto L9900;
     }
@@ -6828,16 +6556,14 @@ L1000:
 	goto L9100;
     }
 
-/* -------------------- Normalisation des parametres -------------------- 
-*/
+/* -------------------- Normalization of parameters -------------------- */
 
     mma1nop_(nbroot, &rootlg[1], uvpav, isofav, &wrkar[ipt1], &ier);
     if (ier > 0) {
 	goto L9100;
     }
 
-/* -------------------- Discretisation de FONCNP ------------------------ 
-*/
+/* -------------------- Discretisation of FONCNP ------------------------ */
 
     mma1fdi_(ndimen, uvpav, foncnp, isofav, tconst, nbroot, &wrkar[ipt1], 
 	    iordre, ideriv, &wrkar[ipt2], &somtab[(ncb1 * somtab_dim2 + 1) * 
@@ -6848,8 +6574,7 @@ L1000:
 	goto L9900;
     }
 
-/* -----------On retranche la discretisation des contraintes ------------ 
-*/
+/* -----------Cut the discretisation of constraints ------------*/
 
     if (*iordre >= 0) {
 	mma1cdi_(ndimen, nbroot, &rootlg[1], iordre, &contr1[(ncb1 * 
@@ -6864,7 +6589,7 @@ L1000:
 
 /* ********************************************************************** 
 */
-/* -------------------- Calcul de la courbe d'approximation ------------- 
+/* -------------------- Calculate the curve of approximation ------------- 
 */
 /* ********************************************************************** 
 */
@@ -6878,7 +6603,7 @@ L1000:
 
 /* ********************************************************************** 
 */
-/* ---------------- Ajout du polynome d'interpolation ------------------- 
+/* ---------------- Add polynom of interpolation ------------------- 
 */
 /* ********************************************************************** 
 */
@@ -6891,7 +6616,7 @@ L1000:
 
 /* ********************************************************************** 
 */
-/* --------------- Calcul de l'erreur Max et Moyenne -------------------- 
+/* --------------- Calculate Max and Average error ---------------------- 
 */
 /* ********************************************************************** 
 */
@@ -6916,7 +6641,7 @@ L1000:
 	    *iercod = -1;
 	}
 	ncfja = *ndgjac + 1;
-/* -> Compression du resultat dans WRKAR(IPT2) */
+/* -> Compression of result in WRKAR(IPT2) */
 	/*pkv f*/
 	/*
 	AdvApp2Var_MathBase::mmapcmp_(ndimen, 
@@ -6930,7 +6655,7 @@ L1000:
 	/*pkv t*/
 	ilong = *ndimen * *ncflim;
 	AdvApp2Var_SysBase::mvriraz_(&ilong, (char*)&wrkar[ipt5]);
-/* -> Passage a la base canonique (-1,1) (resultat dans WRKAR(IPT5)). 
+/* -> Passage to canonic base (-1,1) (result in WRKAR(IPT5)). 
 */
 	ndgre = ncoeff[ncb1] - 1;
 	i__1 = *ndimen;
@@ -6941,14 +6666,14 @@ L1000:
 /* L400: */
 	}
 
-/* -> On stocke la courbe calculee */
+/* -> Store the calculated curve */
 	ibid1 = 1;
 	AdvApp2Var_MathBase::mmfmca8_(&ncoeff[ncb1], ndimen, &ibid1, ncflim, ndimen, &ibid1, &
 		wrkar[ipt5], &courbe[(ncb1 * courbe_dim2 + 1) * courbe_dim1 + 
 		1]);
 
-/* -> Les contraintes ayant ete normalisee sur (-1,1), on recalcule */
-/*   les contraintes vraies. */
+/* -> Before normalization of constraints on (-1,1), recalculate */
+/*    the true constraints. */
 	i__1 = *iordre;
 	for (ii = 0; ii <= i__1; ++ii) {
 	    mma1noc_(uv11, ndimen, &ii, &contr1[(ii + 1 + ncb1 * contr1_dim2) 
@@ -6976,10 +6701,10 @@ L1000:
 /* L210: */
 	}
 
-/* -> Mise ajour du nbre de courbes deja crees */
+/* -> Update the nb of already created curves */
 	++(*nbcrbe);
 
-/* -> ...sinon on essai de decouper l' intervalle courant en 2... */
+/* -> ...otherwise try to cut the current interval in 2... */
     } else {
 	tmil = (tabdec[*nbcrbe + 1] + tabdec[*nbcrbe]) / 2.;
 	ideb = *nbcrbe + 1;
@@ -6990,23 +6715,23 @@ L1000:
 	++nupil;
     }
 
-/* ---------- On fait l' approximation de la suite de la pile ----------- 
+/* ---------- Make approximation of the rest ----------- 
 */
 
     goto L1000;
 
-/* --------------------- Recuperation du code d' erreur ----------------- 
+/* --------------------- Return code of error ----------------- 
 */
-/* --> Pb alloc. dynamique. */
+/* --> Pb with dynamic allocation */
 L9013:
     *iercod = 13;
     goto L9900;
-/* --> Entrees incoherentes. */
+/* --> Inputs incoherent. */
 L9100:
     *iercod = 1;
     goto L9900;
 
-/* -------------------------- Desallocation dynamique ------------------- 
+/* -------------------------- Dynamic desallocation ------------------- 
 */
 
 L9900:
@@ -7067,82 +6792,60 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer *ncfmxu,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Reduction de degre lorsque les carreaux sont les carreaux de */
-/*     contraintes. */
+/*     Reduction of degree when the squares are the squares of constraints. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS,AB_SPECIFI::CARREAU&,REDUCTION,&CARREAU */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/* NCFMXU: Nbre maximal de coeff en u de la solution P(u,v) (tableau */
-/*         PATCAN). Cet argument sert uniquement a declarer la taille */
-/*         de ce tableau. */
-/* NCFMXV: Nbre maximal de coeff en v de la solution P(u,v) (tableau */
-/*         PATCAN). Cet argument sert uniquement a declarer la taille */
-/*         de ce tableau. */
-/* NDIMEN: Dimension totale de l' espace ou la fonction a approcher */
-/*         prend ses valeurs.(somme des dimensions des sous-espaces) */
-/* NBSESP: Nombre de sous-espaces independants ou l'on mesure les */
-/*         erreurs. */
-/* NDIMSE: Table des dimensions des NBSESP sous-espaces. */
-/* NBUPAT: Nbre de carreau solution en u. */
-/* NBVPAT: Nbre de carreau solution en v. */
-/* IORDRU: Ordre de contrainte impose aux extremites de l'iso-V */
-/*         = 0, on calcule les extremites de l'iso-V */
-/*         = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*              de l'iso-V */
-/*         = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*              de l'iso-V */
+/* NCFMXU: Max Nb of coeff by u of solution P(u,v) (table */
+/*         PATCAN). This argument serves only to declare the size of this table. */
+/* NCFMXV: Max Nb of coeff by v of solution P(u,v) (table */
+/*         PATCAN). This argument serves only to declare the size of this table. */
+/* NDIMEN: Total dimension of the space where the processed function */
+/*         takes its values.(sum of dimensions of sub-spaces) */
+/* NBSESP: Nb of independent sub-spaces where the errors are measured. */
+/* NDIMSE: Table of dimensions of NBSESP sub-spaces. */
+/* NBUPAT: Nb of square solution by u. */
+/* NBVPAT: Nb of square solution by v. */
+/* IORDRU: Order of constraint imposed at the extremities of iso-V */
+/*         = 0, the extremities of iso-V are calculated */
+/*         = 1, additionally the 1st derivative in the direction of iso-V is calculated */
+/*         = 2, additionally the 2nd derivative in the direction of iso-V is calculated  */
 /* IORDRV: Ordre de contrainte impose aux extremites de l'iso-U */
 /*         = 0, on calcule les extremites de l'iso-U. */
-/*         = 1, on calcule, en plus, la derivee 1ere dans le sens */
-/*              de l'iso-U */
-/*         = 2, on calcule, en plus, la derivee 2nde dans le sens */
-/*              de l'iso-U */
-/* EPSAPR: Table des precisions imposees, sous-espace par sous-espace. */
-/* EPSFRO: Table des precisions imposees, sous-espace par sous-espace */
-/*         sur les frontieres des carreaux. */
-/* PATCAN: Tableau des coeff. dans la base canonique des carreaux P(u,v) 
-*/
-/*         calcules, pour (u,v) dans (-1,1). */
-/* ERRMAX: Table des erreurs (sous-espace par sous espace) */
-/*         MAXIMALES commises dans l' approximation de F(u,v) par */
-/*         les P(u,v). */
-/* NCOEFU: Table des Nbres de coeff. significatifs en u des carreaux */
-/*         calcules. */
-/* NCOEFV: Table des Nbres de coeff. significatifs en v des carreaux */
-/*         calcules. */
+/*         = 1, additionally the 1st derivative in the direction of iso-U is calculated */
+/*         = 2, additionally the 2nd derivative in the direction of iso-U is calculated  */
+/* EPSAPR: Table of imposed precisions, sub-space by sub-space. */
+/* EPSFRO: Table of imposed precisions, sub-space by sub-space on the limits of squares. */
+/* PATCAN: Table of coeff. in the canonic base of squares P(u,v) calculated for (u,v) in (-1,1). */
+/* ERRMAX: Table of MAX errors (sub-space by sub-space) */
+/*         committed in the approximation of F(u,v) by P(u,v). */
+/* NCOEFU: Table of Nb of significative coeffs. by u of calculated squares. */
+/* NCOEFV: Table of Nb of significative coeffs. by v of calculated squares. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/* NCOEFU: Table des Nbres de coeff. significatifs en u des carreaux */
-/*         calcules. */
-/* NCOEFV: Table des Nbres de coeff. significatifs en v des carreaux */
-/*         calcules. */
+/* NCOEFU: Table of Nb of significative coeffs. by u of calculated squares. */
+/* NCOEFV: Table of Nb of significative coeffs. by v of calculated squares. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     15-07-1996: JCT/RBD; Initialisation de TOL quand on reduit */
-/*                          le degre uniquement en V */
-/*     14-02-1992: RBD; Creation. */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -7183,12 +6886,9 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer *ncfmxu,
 	    ncfu = ncoefu[ii + jj * ncoefu_dim1];
 	    ncfv = ncoefv[ii + jj * ncoefv_dim1];
 
-/* **************************************************************
-******** */
-/* -------------------- Reduction du degre en U -----------------
--------- */
-/* **************************************************************
-******** */
+/* ********************************************************************** */
+/* -------------------- Reduction of degree by U ------------------------- */
+/* ********************************************************************** */
 
 L200:
 	    if (ncfu <= (*iordru + 1) << 1 && ncfu > 2) {
@@ -7251,12 +6951,9 @@ L200:
 		goto L200;
 	    }
 
-/* **************************************************************
-******** */
-/* -------------------- Reduction du degre en V -----------------
--------- */
-/* **************************************************************
-******** */
+/* ********************************************************************** */
+/* -------------------- Reduction of degree by V ------------------------- */
+/* ********************************************************************** */
 
 L300:
 	    if (ncfv <= (*iordrv + 1) << 1 && ncfv > 2) {
@@ -7319,8 +7016,7 @@ L300:
 		goto L300;
 	    }
 
-/* --- On recupere les nbres de coeff. et on passe au carreau suiv
-ant --- */
+/* --- Return the nbs of coeff. and pass to the next square --- */
 
 L400:
 	    ncoefu[ii + jj * ncoefu_dim1] = max(ncfu,2);
@@ -7528,40 +7224,37 @@ int AdvApp2Var_ApproxF2var::mma2jmx_(integer *ndgjac,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*  Calcule les max des polynomes de Jacobi multiplies par le poids */
-/*  sur (-1,1) pour ordre 0,4,6 ou Legendre. */
+/*  Calculate the max of Jacobo polynoms multiplied by the weight on */
+/*  (-1,1) for order 0,4,6 or Legendre. */
 
-/*     MOTS CLES : */
+/*     KEYWORDSS : */
 /*     ----------- */
 /*        LEGENDRE,APPROXIMATION,ERREUR. */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS  : */
 /*     ------------------ */
-/*     NDGJAC: Nbre de coeff. de l'approximation de Jacobi. */
-/*     IORDRE: Ordre de continuite (de -1 a 2) */
+/*     NDGJAC: Nb of Jacobi coeff. of approximation. */
+/*     IORDRE: Order of continuity (from -1 to 2) */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     XJACMX: Table des maximums des polynomes de Jacobi. */
+/*     XJACMX: Table of maximums of Jacobi polynoms. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     20-08-1991: RBD; Creation. */
 /* > */
 /* ***********************************************************************
  */
-/*   Le nom de la routine */
+/*   Name of the routine */
 /* ----------------------------- Initialisations ------------------------ 
 */
 
@@ -7635,78 +7328,59 @@ int mma2moy_(integer *ndgumx,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*  Calcule l'erreur moyenne d'approximation faite lorsque l'on ne */
-/*  garde que les coefficients de PATJAC de degre compris entre */
-/*  2*(IORDRU+1) et MINDGU en U et 2*(IORDRV+1) et MINDGV en V. */
+/*  Calculate the average approximation error made when only */
+/*  the coefficients of PATJAC of degree between */
+/*  2*(IORDRU+1) and MINDGU by U and 2*(IORDRV+1) and MINDGV by V are preserved. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        LEGENDRE,APPROXIMATION,ERREUR MOYENNE */
+/*        LEGENDRE,APPROXIMATION, AVERAGE ERROR */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NDGUMX: Dimension en U du tableau PATJAC. */
-/*     NDGVMX: Dimension en V du tableau PATJAC. */
-/*     NDIMEN: Dimension de l'espace. */
-/*     MINDGU: Borne inf de l'indice en U des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     MAXDGU: Borne sup de l'indice en U des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     MINDGV: Borne inf de l'indice en V des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     MAXDGV: Borne sup de l'indice en V des coeff. de PATJAC a prendre 
-*/
-/*             en compte. */
-/*     IORDRU: Ordre de continuite en U assure par le carreau PATJAC */
-/*             (de -1 a 2) */
-/*     IORDRV: Ordre de continuite en V assure par le carreau PATJAC */
-/*             (de -1 a 2) */
-/*     PATJAC: Table des coeff. du carreau d'approximation avec */
-/*             contraintes d'ordre IORDRU en U et IORDRV en V. */
+/*     NDGUMX: Dimension by U of table PATJAC. */
+/*     NDGVMX: Dimension by V of table PATJAC. */
+/*     NDIMEN: Dimension of the space. */
+/*     MINDGU: Lower limit of the index by U of PATJAC coeff to be taken into account. */
+/*     MAXDGU: Upper limit of the index by U of PATJAC coeff to be taken into account. */
+/*     MINDGV: Lower limit of the index by V of PATJAC coeff to be taken into account. */
+/*     MAXDGV: Upper limit of the index by V of PATJAC coeff to be taken into account. */
+/*     IORDRU: Order of continuity by U provided by square PATJAC (from -1 to 2) */
+/*     IORDRV: Order of continuity by V provided by square PATJAC (from -1 to 2) */
+/*     PATJAC: Table of coeff. of the approximation square with  */
+/*             constraints of order IORDRU by U and IORDRV by V. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     ERRMOY: L'erreur moyenne commise en ne gardant que les coeff de */
-/*             PATJAC 2*(IORDRU+1) a MINDGU en U et 2*(IORDRV+1) a */
-/*             MINDGV en V. */
+/*     ERRMOY: Average error commited by preserving only the coeff of */
+/*             PATJAC 2*(IORDRU+1) in MINDGU by U and 2*(IORDRV+1) in MINDGV by V. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     Dans le tableau PATJAC sont stockes les coeff. Cij du carreau */
-/*     d'approximation de F(U,V). Les indices i et j indique le degre en 
-*/
-/*     U et en V des polynomes de base. Ces polynomes de base sont de la 
-*/
-/*     forme: */
+/*     Table PATJAC stores the coeff. Cij of */
+/*     approximation square F(U,V). Indexes i and j show the degree by  */
+/*     U and by V of the base polynoms. These base polynoms are in the form: */
 
-/*          ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), ou */
+/*          ((1 - U*U)**(IORDRU+1)).J(i-2*(IORDRU+1)(U), where */
 
-/*     le polynome J(i-2*(IORDU+1)(U) est le polynome de Jacobi d'ordre */
-/*     IORDRU+1 (idem en V en remplacant U par V dans l'expression ci */
-/*     dessus). */
+/*     polynom J(i-2*(IORDU+1)(U) is the Jacobi polynom of order */
+/*     IORDRU+1 (the same by V by replacing U by V in the above expression). */
 
-/*     La contribution a l'erreur moyenne du terme Cij lorsque */
-/*     celui-ci est enleve de PATJAC est Cij*Cij. */
+/*     The contribution to the average error of term Cij when */
+/*     it is removed from PATJAC is Cij*Cij. */
 
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     13-06-1991: RBD; Creation. */
 /* > */
 /* ***********************************************************************
  */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
 /* ----------------------------- Initialisations ------------------------ 
@@ -7731,12 +7405,9 @@ int mma2moy_(integer *ndgumx,
     bid0 = 0.;
     *errmoy = 0.;
 
-/* ------------------ Calcul du majorant de l'erreur moyenne ------------ 
-*/
-/* ----- lorsque sont enleves les coeff. d'indices MINDGU a MAXDGU ------ 
-*/
-/* ---------------- en U et d'indices MINDGV a MAXDGV en V -------------- 
-*/
+/* ------------------ Calculation  of the upper bound of the average error  ------------ */
+/* -------------------- when the coeff. of indexes from MINDGU to MAXDGU ------ */
+/* ---------------- by U and of indexes from MINDGV to MAXDGV by V are removed -------------- */
 
     i__1 = *ndimen;
     for (nd = 1; nd <= i__1; ++nd) {
@@ -7768,7 +7439,7 @@ int mma2moy_(integer *ndgumx,
 /* L400: */
     }
 
-/* ----------------------- Calcul de l'erreur moyenne ------------------- 
+/* ----------------------- Calculation of the average error ------------- 
 */
 
     bid0 /= 4;
@@ -7801,47 +7472,42 @@ int AdvApp2Var_ApproxF2var::mma2roo_(integer *nbpntu,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Recuperation des racines de Legendre pour les discretisations. */
+/*     Return roots of Legendre for discretisations. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     TOUS, AB_SPECIFI::CONTRAINTE&, DISCRETISATION, &POINT */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*     NBPNTU: Nbre de parametres INTERNES de discretisation EN U. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
-/*     NBPNTV: Nbre de parametres INTERNES de discretisation EN V. */
-/*             C'est aussi le nbre de racine du polynome de Legendre ou */
-/*             on discretise. */
+/*     NBPNTU: Nb of INTERNAL parameters of discretization BY U. */
+/*             This is also the nb of root of the Legendre polynom where the discretization is done. */
+/*     NBPNTV: Nb of INTERNAL parameters of discretization BY V. */
+/*             This is also the nb of root of the Legendre polynom where the discretization is done. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     UROOTL: Tableau des parametres de discretisation SUR (-1,1) EN U. 
+/*     UROOTL: Table of parameters of discretisation ON (-1,1) BY U. 
 */
-/*     VROOTL: Tableau des parametres de discretisation SUR (-1,1) EN V. 
+/*     VROOTL: Table of parameters of discretisation ON (-1,1) BY V. 
 */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     02-07-1991: RBD; Creation. */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -7854,7 +7520,7 @@ int AdvApp2Var_ApproxF2var::mma2roo_(integer *nbpntu,
 	AdvApp2Var_SysBase::mgenmsg_("MMA2ROO", 7L);
     }
 
-/* ---------------- Recup des racines POSITIVES sur U ------------------ 
+/* ---------------- Return the POSITIVE roots on U ------------------ 
 */
 
     AdvApp2Var_MathBase::mmrtptt_(nbpntu, &urootl[(*nbpntu + 1) / 2 + 1]);
@@ -7867,7 +7533,7 @@ int AdvApp2Var_ApproxF2var::mma2roo_(integer *nbpntu,
 	urootl[*nbpntu / 2 + 1] = 0.;
     }
 
-/* ---------------- Recup des racines POSITIVES sur V ------------------ 
+/* ---------------- Return the POSITIVE roots on V ------------------ 
 */
 
     AdvApp2Var_MathBase::mmrtptt_(nbpntv, &vrootl[(*nbpntv + 1) / 2 + 1]);
@@ -7916,65 +7582,55 @@ int mmmapcoe_(integer *ndim,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*     Calcul des coefficients de la courbe d' approximation polynomiale 
-*/
-/*     de degre NDGJAC par la methode des moindres carres a partir de la 
-*/
-/*     discretisation de la fonction sur les racines du polynome de */
-/*     Legendre de degre NBPNTS. */
+/*     Calculate the coefficients of polinomial approximation curve */
+/*     of degree NDGJAC by the method of smallest squares starting from */
+/*     the discretization of function on the roots of Legendre polynom */
+/*     of degree NBPNTS. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*     FONCTION,APPROXIMATION,COEFFICIENT,POLYNOME */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        NDIM   : Dimension de l' espace. */
-/*        NDGJAC : Degre maxi du polynome d' approximation. La */
-/*                 representation dans la base orthogonale part du degre 
-*/
-/*                 0 au degre NDGJAC-2*(JORDRE+1). La base polynomiale */
-/*                 est la base de Jacobi d' ordre -1 (Legendre), 0, 1 */
-/*                 et 2 */
-/*        IORDRE : Ordre de la base de Jacobi (-1,0,1 ou 2). Correspond */
-/*                 a pas de contraintes, contraintes C0,C1 ou C2. */
-/*        NBPNTS : Degre du polynome de Legendre sur les racines duquel */
-/*                 sont calcules les coefficients d' integration par la */
-/*                 methode de Gauss. On doit avoir NBPNTS=30,40,50 ou 61 
-*/
-/*                 et NDGJAC < NBPNTS. */
-/*        SOMTAB : Tableau de F(ti)+F(-ti) avec ti dans ROOTAB. */
-/*        DIFTAB : Tableau de F(ti)-F(-ti) avec ti dans ROOTAB. */
-/*        GSSTAB(i,k) : Table des coefficients d' integration par la */
-/*                      methode de Gauss : i varie de 0 a NBPNTS et */
-/*                      k varie de 0 a NDGJAC-2*(JORDRE+1). */
+/*        NDIM   : Dimension of the space. */
+/*        NDGJAC : Max Degree of the polynom of approximation. */
+/*                 The representation in the orthogonal base starts from degree */
+/*                 0 to degree NDGJAC-2*(JORDRE+1). The polynomial base */
+/*                 is the base of Jacobi of order -1 (Legendre), 0, 1 and 2 */
+/*        IORDRE : Order of the base of Jacobi (-1,0,1 or 2). Corresponds */
+/*                 to step of constraints, C0,C1 or C2. */
+/*        NBPNTS : Degree of the polynom of Legendre on the roots which of */
+/*                 are calculated the coefficients of integration by */
+/*                 Gauss method. It is required to set NBPNTS=30,40,50 or 61 */
+/*                 and NDGJAC < NBPNTS. */
+/*        SOMTAB : Table of F(ti)+F(-ti) with ti in ROOTAB. */
+/*        DIFTAB : Table of F(ti)-F(-ti) with ti in ROOTAB. */
+/*        GSSTAB(i,k) : Table of coefficients of integration by the Gauss method : */
+/*                      i varies from 0 to NBPNTS and */
+/*                      k varies from 0 to NDGJAC-2*(JORDRE+1). */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTSE : */
 /*     ------------------- */
-/*        CRVJAC : Courbe d' approximation de FONCNP avec eventuellement 
-*/
-/*                 prise en compte des contraintes aux extremites. */
-/*                 Cette courbe est de degre NDGJAC. */
+/*        CRVJAC : Curve of approximation of FONCNP with eventually */
+/*                 taking into account of constraints at the extremities. */
+/*                 This curve is of degree NDGJAC. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     11-04-1989 : RBD ; Creation. */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
 /* > */
 /* ********************************************************************** 
 */
 
-/*   Le nom de la routine */
+/*  Name of the routine */
 
     /* Parameter adjustments */
     crvjac_dim1 = *ndgjac + 1;
@@ -7999,7 +7655,7 @@ int mmmapcoe_(integer *ndim,
     i__1 = *ndim;
     for (nd = 1; nd <= i__1; ++nd) {
 
-/* ----------------- Calcul des coefficients de degre pair ----------
+/* ----------------- Calculate the coefficients of even degree ----------
 ---- */
 
 	i__2 = *ndgjac;
@@ -8016,7 +7672,7 @@ int mmmapcoe_(integer *ndim,
 /* L200: */
 	}
 
-/* --------------- Calcul des coefficients de degre impair ----------
+/* --------------- Calculate the coefficients of uneven degree ----------
 ---- */
 
 	i__2 = *ndgjac;
@@ -8036,9 +7692,8 @@ int mmmapcoe_(integer *ndim,
 /* L100: */
     }
 
-/* ------- Ajout des termes lies a la racine supplementaire (0.D0) ------ 
-*/
-/* ----------- du polynome de Legendre de degre impair NBPNTS ----------- 
+/* ------- Add terms connected to the supplementary root (0.D0) ------ */
+/* ----------- of Legendre polynom of uneven degree NBPNTS ----------- 
 */
 
     if (*nbpnts % 2 == 0) {
@@ -8090,49 +7745,43 @@ int mmaperm_(integer *ncofmx,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        Calcule la racine carree de l' erreur quadratique moyenne */
-/*        d' approximation faite lorsque l' on ne conserve que les */
-/*        premiers NCFNEW coefficients d' une courbe de degre NCOEFF-1 */
-/*        ecrite dans la base de Jacobi NORMALISEE d' ordre */
-/*        2*(IORDRE+1). */
+/*        Calculate the square root of the average quadratic error */
+/*        of approximation done when only the */
+/*        first NCFNEW coefficients of a curve of degree NCOEFF-1 */
+/*        written in NORMALIZED Jacobi base of order 2*(IORDRE+1) are preserved. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*        LEGENDRE,POLYGONE,APPROXIMATION,ERREUR. */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        NCOFMX : Degre maximum de la courbe. */
-/*        NDIM   : Dimension de l' espace. */
-/*        NCOEFF : Le degre +1 de la courbe. */
-/*        IORDRE : Ordre de contrainte de continuite aux extremites. */
-/*        CRVJAC : La courbe dont on veut baisser le degre. */
-/*        NCFNEW : Le degre +1 du polynome resultat. */
+/*        NCOFMX : Maximum degree of the curve. */
+/*        NDIM   : Dimension of the space. */
+/*        NCOEFF : Degree +1 of the curve. */
+/*        IORDRE : Order of constraint of continuity at the extremities. */
+/*        CRVJAC : The curve the degree which of will be lowered. */
+/*        NCFNEW : Degree +1 of the resulting polynom. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        ERRMOY : La precision moyenne de l' approximation. */
+/*        ERRMOY : Average precision of approximation. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     23-12-1989 : RBD ; Creation */
-
 /* > */
 /* ***********************************************************************
  */
 
-/*   Le nom de la routine */
+/*   Name of the routine */
 
     /* Parameter adjustments */
     crvjac_dim1 = *ncofmx;
@@ -8145,7 +7794,7 @@ int mmaperm_(integer *ncofmx,
 	AdvApp2Var_SysBase::mgenmsg_("MMAPERM", 7L);
     }
 
-/* --------- Degre minimum pouvant etre atteint : Arret a 1 ou IA ------- 
+/* --------- Minimum degree that can be reached : Stop at 1 or IA ------- 
 */
 
     ia = (*iordre + 1) << 1;
@@ -8154,10 +7803,8 @@ int mmaperm_(integer *ncofmx,
 	ncfcut = *ncfnew + 1;
     }
 
-/* -------------- Elimination des coefficients de haut degre ------------ 
-*/
-/* ----------- Boucle sur la serie de Jacobi :NCFCUT --> NCOEFF --------- 
-*/
+/* -------------- Elimination of coefficients of high degree ------------ */
+/* ----------- Loop on the series of Jacobi :NCFCUT --> NCOEFF --------- */
 
     *errmoy = 0.;
     bid = 0.;
@@ -8172,7 +7819,7 @@ int mmaperm_(integer *ncofmx,
 /* L100: */
     }
 
-/* ----------- Racine carree de l' erreur quadratique moyenne ----------- 
+/* ----------- Square Root of average quadratic error e ----------- 
 */
 
     bid /= 2.;
@@ -8207,164 +7854,51 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        Charge les elements necessaires a une integration par la */
-/*        methode de Gauss pour obtenir les coefficients dans la base de 
-*/
-/*        Legendre de l' approximation par les moindres carres d' une */
-/*        fonction. les elements sont stockes dans les communs MMAPGSS */
-/*        (cas sans contrainte), MMAPGS0 (contraintes C0), MMAPGS1 */
-/*        (contraintes C1) et MMAPGS2 (contraintes C2). */
+/*        Load the elements required for integration by */
+/*        Gauss method to obtain the coefficients in the base of
+/*        Legendre of the approximation by the least squares of a */
+/*        function. The elements are stored in commons MMAPGSS */
+/*        (case without constraint), MMAPGS0 (constraints C0), MMAPGS1 */
+/*        (constraints C1) and MMAPGS2 (constraints C2). */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*        INTEGRATION,GAUSS,JACOBI */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS  : */
 /*     ------------------ */
-/*        NDGJAC : Degre maxi du polynome d' approximation. La */
-/*                 representation dans la base orthogonale part du degre 
-*/
-/*                 0 au degre NDGJAC-2*(JORDRE+1). La base polynomiale */
-/*                 est la base de Jacobi d' ordre -1 (Legendre), 0, 1 */
-/*                 et 2 */
-/*        NBPNTS : Degre du polynome de Legendre sur les racines duquel */
-/*                 sont calcules les coefficients d' integration par la */
-/*                 methode de Gauss. On doit avoir NBPNTS=8,10,15,20,25, 
-*/
-/*                  30,40,50 ou 61 et NDGJAC < NBPNTS. */
-/*        JORDRE : Ordre de la base de Jacobi (-1,0,1 ou 2). Correspond */
-/*                 a pas de contraintes, contraintes C0,C1 ou C2. */
+/*        NDGJAC : Max degree of the polynom of approximation. */
+/*                 The representation in orthogonal base goes from degree
+/*                 0 to degree NDGJAC-2*(JORDRE+1). The polynomial base */
+/*                 is the base of Jacobi of order -1 (Legendre), 0, 1 and 2 */
+/*        NBPNTS : Degree of the polynom of Legendre on the roots which of */
+/*                 are calculated the coefficients of integration by the */
+/*                 method of Gauss. It is required that NBPNTS=8,10,15,20,25, */
+/*                  30,40,50 or 61 and NDGJAC < NBPNTS. */
+/*        JORDRE : Order of the base of Jacobi (-1,0,1 or 2). Corresponds */
+/*                 to step of constraints C0,C1 or C2. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        CGAUSS(i,k) : Table des coefficients d' integration par la */
-/*                      methode de Gauss : i varie de 0 a la partie */
-/*                      entiere de NBPNTS/2 et k varie de 0 a */
-/*                      NDGJAC-2*(JORDRE+1). */
-/*                      Ce sont donc les coeff. d'integration associes */
-/*                      aux racines positives du polynome de Legendre de 
-*/
-/*                      degre NBPNTS. CGAUSS(0,k) contient les coeff. */
-/*                      d'integration associes a la racine t = 0 lorsque 
-*/
-/*                      NBPNTS est impair. */
-/*        IERCOD : Code d' erreur. */
+/*        CGAUSS(i,k) : Table of coefficients of integration by */
+/*                      Gauss method : i varies from 0 to the integer part */
+/*                      of NBPNTS/2 and k varies from 0 to NDGJAC-2*(JORDRE+1). */
+/*                      These are the coeff. of integration associated to */
+/*                      positive roots of the polynom of Legendre of degree */
+/*                      NBPNTS. CGAUSS(0,k) contains coeff. */
+/*                      of integration associated to root t = 0 when */
+/*                      NBPNTS is uneven. */
+/*        IERCOD : Error code. */
 /*                 = 0 OK, */
-/*                 = 11 NBPNTS ne vaut pas 8,10,15,20,25,30,40,50 ou 61. 
-*/
-/*                 = 21 JORDRE ne vaut pas -1,0,1 ou 2. */
-/*                 = 31 NDGJAC est trop grand ou trop petit. */
+/*                 = 11 NBPNTS is not 8,10,15,20,25,30,40,50 or 61. */
+/*                 = 21 JORDRE is not -1,0,1 or 2. */
+/*                 = 31 NDGJAC is too great or too small. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 /*        MMAPGSS,MMAPGS0,MMAPGS1,MMAPGS2. */
-
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
-
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     12-03-93  : MPS ; Ajout des valeurs 8,10,15,20,25 pour */
-/*                       le nombre de points d'integration */
-/*     13-05-91  : RBD ; Ajout commentaires. */
-/*     03-03-90  : NAK ; Includes. */
-/*     21-04-87  : RBD ; Creation. */
-/* > */
-/* ********************************************************************** 
-*/
-/*   Le nom de la routine */
-
-
-/* ***********************************************************************
- */
-
-/*     FONCTION : */
-/*     ---------- */
-
-/*     MOTS CLES : */
-/*     ----------- */
-
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-/*      INITIALISATION : BLOCK DATA */
-/*      FONCTION D'ACCES SEULEMENT : MMAPPTT */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     12-03-93 : MPS ; Modification des parametres IPTGSS et IP0GSS */
-/*     02-03-90 : NAK ; Creation version originale */
-/* > */
-
-/* ***********************************************************************
- */
-
-/*     FONCTION : */
-/*     ---------- */
-
-/*     MOTS CLES : */
-/*     ----------- */
-
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-/*      INITIALISATION : BLOCK DATA */
-/*      FONCTION D'ACCES SEULEMENT : MMAPPTT */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     12-03-93: MPS ; Modification des parametres IPTGS0 et IP0GS0 */
-/*     02-03-90 : NAK ; Creation version originale */
-/* > */
-/* ***********************************************************************
- */
-
-/* ***********************************************************************
- */
-
-/*     FONCTION : */
-/*     ---------- */
-
-/*     MOTS CLES : */
-/*     ----------- */
-
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-/*      INITIALISATION : BLOCK DATA */
-/*      FONCTION D'ACCES SEULEMENT : MMAPPTT */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     12-03-93 : MPS ; Modification des parametres IPTGS1 etIP0GS1 */
-/*     02-03-90 : NAK ; Creation version originale */
-/* > */
-/* ***********************************************************************
- */
-
-
-/* ***********************************************************************
- */
-
-/*     FONCTION : */
-/*     ---------- */
-
-/*     MOTS CLES : */
-/*     ----------- */
-
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
-/*      INITIALISATION : BLOCK DATA */
-/*      FONCTION D'ACCES SEULEMENT : MMAPPTT */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     12-03-93 : MPS ; Modification des parametres IPTGS2 et IP0GS2 */
-/*     02-03-90 : NAK ; Creation version originale */
-/* > */
-
 /* ***********************************************************************
  */
     /* Parameter adjustments */
@@ -8377,7 +7911,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
     }
     *iercod = 0;
 
-/* ------------------- Tests sur la validite des entrees ---------------- 
+/* ------------------- Tests on the validity of inputs ---------------- 
 */
 
     infdg = (*jordre + 1) << 1;
@@ -8395,7 +7929,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
 	goto L9300;
     }
 
-/* --------------- Calcul du pointeur de debut suivant NBPNTS ----------- 
+/* --------------- Calculation of the start pointer following NBPNTS ----------- 
 */
 
     iptdb = 0;
@@ -8432,7 +7966,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
 	ipdb0 = ipdb0 + (24 - infdg) / 2 + 1;
     }
 
-/* ------------------ Choix du commun en fonction de JORDRE ------------- 
+/* ------------------ Choice of the common depending on JORDRE ------------- 
 */
 
     if (*jordre == -1) {
@@ -8448,7 +7982,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
 	goto L4000;
     }
 
-/* ---------------- Commun MMAPGSS (cas sans contraintes) ----------------
+/* ---------------- Common MMAPGSS (case without constraints) ----------------
  */
 
 L1000:
@@ -8461,7 +7995,7 @@ L1000:
 		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
 /* L100: */
     }
-/* --> Cas ou le nbre de points est impair. */
+/* --> Case when the number of points is uneven. */
     if (*nbpnts % 2 == 1) {
 	iptt = ipdb0;
 	i__1 = *ndgjac;
@@ -8478,7 +8012,7 @@ L1000:
     }
     goto L9999;
 
-/* ---------------- Commun MMAPGS0 (cas avec contraintes C0) -------------
+/* ---------------- Common MMAPGS0 (case with constraints C0) -------------
  */
 
 L2000:
@@ -8492,7 +8026,7 @@ L2000:
 		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
 /* L200: */
     }
-/* --> Cas ou le nbre de points est impair. */
+/* --> Case when the number of points is uneven. */
     if (*nbpnts % 2 == 1) {
 	iptt = ipdb0;
 	i__1 = mxjac;
@@ -8509,7 +8043,7 @@ L2000:
     }
     goto L9999;
 
-/* ---------------- Commun MMAPGS1 (cas avec contraintes C1) -------------
+/* ---------------- Common MMAPGS1 (case with constraints C1) -------------
  */
 
 L3000:
@@ -8523,7 +8057,7 @@ L3000:
 		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
 /* L300: */
     }
-/* --> Cas ou le nbre de points est impair. */
+/* --> Case when the number of points is uneven. */
     if (*nbpnts % 2 == 1) {
 	iptt = ipdb0;
 	i__1 = mxjac;
@@ -8540,7 +8074,7 @@ L3000:
     }
     goto L9999;
 
-/* ---------------- Commun MMAPGS2 (cas avec contraintes C2) -------------
+/* ---------------- Common MMAPGS2 (case with constraints C2) -------------
  */
 
 L4000:
@@ -8554,7 +8088,7 @@ L4000:
 		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
 /* L400: */
     }
-/* --> Cas ou le nbre de points est impair. */
+/* --> Cas of uneven number of points. */
     if (*nbpnts % 2 == 1) {
 	iptt = ipdb0;
 	i__1 = mxjac;
@@ -8571,17 +8105,17 @@ L4000:
     }
     goto L9999;
 
-/* ------------------------- Recuperation du code d' erreur --------------
+/* ------------------------- Return the error code --------------
  */
-/* --> NBPNTS n' est pas bon */
+/* --> NBPNTS is not OK */
 L9100:
     *iercod = 11;
     goto L9999;
-/* --> JORDRE n' est pas bon */
+/* --> JORDRE is not OK */
 L9200:
     *iercod = 21;
     goto L9999;
-/* --> NDGJAC n' est pas bon */
+/* --> NDGJAC is not OK */
 L9300:
     *iercod = 31;
     goto L9999;
@@ -8626,45 +8160,41 @@ int mmjacpt_(const integer *ndimen,
 
 /*     FONCTION : */
 /*     ---------- */
-/*        Passage de la base canonique a la base de Jacobi pour */
-/*        un "carreau" dans un espace de dimension qcq. */
+/*        Passage from canonical to Jacobi base for a */
+/*        "square" in a space of arbitrary dimension. */
 
 /*     MOTS CLES : */
 /*     ----------- */
-/*        LISSAGE,BASE,LEGENDRE */
+/*       SMOOTHING,BASE,LEGENDRE */
 
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        NDIMEN   : Dimension de l' espace. */
-/*        NCOEFU : Degre+1 en U. */
-/*        NCOEFV : Degre+1 en V. */
-/*        IORDRU : Ordre des polynomes de Jacobi en U. */
-/*        IORDRV : Ordre des polynomes de Jacobi en V. */
-/*        PTCLGD : Le carreau dans la base de Jacobi. */
+/*        NDIMEN   : Dimension of the space. */
+/*        NCOEFU : Degree+1 by U. */
+/*        NCOEFV : Degree+1 by V. */
+/*        IORDRU : Order of Jacobi polynoms by U. */
+/*        IORDRV : Order of Jacobi polynoms by V. */
+/*        PTCLGD : The square in the Jacobi base. */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        PTCAUX : Espace auxilliaire. */
-/*        PTCCAN : Le carreau dans la base canonique (-1,1) */
+/*        PTCAUX : Auxilliary space. */
+/*        PTCCAN : The square in the canonic base (-1,1) */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     APPLIED REFERENCES  : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     Annule et remplace MJACPC */
+/*     Cancels and replaces MJACPC */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     03-08-1989 : RBD; Creation. */
-/* > */
 /* ********************************************************************* 
 */
-/*   Le nom de la routine */
+/*   Name of the routine */
 
 
     /* Parameter adjustments */
@@ -8688,7 +8218,7 @@ int mmjacpt_(const integer *ndimen,
 	AdvApp2Var_SysBase::mgenmsg_("MMJACPT", 7L);
     }
 
-/*   Passage dans canonique en u. */
+/*   Passage into canonical by u. */
 
     kdim = *ndimen * *ncoefv;
     AdvApp2Var_MathBase::mmjaccv_((integer *)ncoefu, 
@@ -8698,7 +8228,7 @@ int mmjacpt_(const integer *ndimen,
 	     (doublereal *)&ptcaux[ptcaux_offset], 
 	     (doublereal *)&ptccan[ptccan_offset]);
 
-/*   Permutation des u et des v. */
+/*   Swapping of u and v. */
 
     i__1 = *ndimen;
     for (nd = 1; nd <= i__1; ++nd) {
@@ -8716,7 +8246,7 @@ int mmjacpt_(const integer *ndimen,
 /* L300: */
     }
 
-/*   Passage dans canonique en v. */
+/*   Passage into canonical by v. */
 
     kdim = *ndimen * *ncoefu;
     AdvApp2Var_MathBase::mmjaccv_((integer *)ncoefv, 
@@ -8726,7 +8256,7 @@ int mmjacpt_(const integer *ndimen,
 	     (doublereal *)&ptccan[ptccan_offset], 
 	     (doublereal *)&ptcaux[(((ptcaux_dim3 << 1) + 1) * ptcaux_dim2 + 1) * ptcaux_dim1 + 1]);
 
-/*   Permutation des u et des v. */
+/*  Swapping of u and v. */
 
     i__1 = *ndimen;
     for (nd = 1; nd <= i__1; ++nd) {

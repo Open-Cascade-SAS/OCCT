@@ -5,7 +5,7 @@
 
 
 //=========================================================================
-//   CREATION DE LA BISSECTRICE ENTRE DEUX POINTS.                         +
+//   CREATION of the BISSECTRICE between two POINTS.                         +
 //=========================================================================
 
 #include <GccAna_Pnt2dBisec.ixx>

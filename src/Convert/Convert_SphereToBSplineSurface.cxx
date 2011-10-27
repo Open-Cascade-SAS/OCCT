@@ -26,7 +26,7 @@ static void ComputePoles ( const Standard_Real R,
 
   Standard_Integer i, j;
 
-  // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+  // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
     nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
   Standard_Integer  
@@ -94,9 +94,9 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface
   isvperiodic = Standard_False;
 
   Standard_Integer i,j;
-  // construction de la sphere dans le repere de reference xOy.
+  // construction of the sphere in the reference mark xOy.
 
-  // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+  // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
     nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
   Standard_Integer  
@@ -125,8 +125,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface
   vmults(1)++; vmults(nbVKnots)++;
 
 
-  // On replace la bspline dans le repere de la sphere.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the reference of the sphere.
+  // and calculate the weight of the bspline.
   Standard_Real W1, W2;
   gp_Trsf Trsf;
   Trsf.SetTransformation( Sph.Position(), gp::XOY());
@@ -228,8 +228,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface
     CosU = Cos(AlfaU);
   }
 
-  // On replace la bspline dans le repere de la sphere.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the mark of the sphere.
+  // and calculate the weight of bspline.
   gp_Trsf Trsf;
   Trsf.SetTransformation( Sph.Position(), gp::XOY());
 
@@ -270,7 +270,7 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface
   nbUKnots = 4;
   nbVKnots = 3;
 
-  // Construction de la sphere dans le repere reference xOy.
+  // Construction of the sphere in the reference mark xOy.
   
   Standard_Real R = Sph.Radius();
 
@@ -289,8 +289,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface
   vmults(1) = vmults(3) = 3;
   vmults(2) = 2;
 
-  // On replace la bspline dans le repere de la sphere.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the mark of the sphere.
+  // and calculate the weight of the bspline.
   gp_Trsf Trsf;
   Trsf.SetTransformation( Sph.Position(), gp::XOY());
 

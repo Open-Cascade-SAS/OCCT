@@ -114,7 +114,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferWire
     res = TransferWire(W);
   }  
   else {
-    // message d`erreur
+    // error message
   }  
   return res;
 }
@@ -324,11 +324,11 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge (const TopoDS_Edge&
   //#29 rln 19.10.98
 
   if (!Curve2d.IsNull()) {
-    // Pour les surfaces "de revolution" et "LinearExtrusion", il faut
-    // appliquer une translation des courbes 2d pour etre en accord 
-    // sur l`origine (U,V) entre IGES et BRep (pour Cylindrical,
-    // Conical et SurfaceOfLinearExtrusion)
-    // Il faut inverser (u,v) surfaces de revol.
+    // For "revolution" and "LinearExtrusion" surfaces, it is necessary
+    // to apply a translation of 2D curves to agree on the 
+    // origin (U,V) between IGES and BRep (for Cylindrical,
+    // Conical and SurfaceOfLinearExtrusion)
+    // It is necessary to invert (u,v) surfaces of revolution.
     
     TopLoc_Location L;
     Handle(Geom_Surface) st = BRep_Tool::Surface(myface, L);
@@ -454,7 +454,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge (const TopoDS_Edge&
     ShapeBuild_Edge sbe;
     Curve2d = sbe.TransformPCurve(Curve2d,trans,uFact,First,Last);
 //      (Curve2d, Surf, First, Last, myLen, isBRepMode);
-    // si l`edge est REVERSED, il faut "REVERSER" la courbe 2d.
+    // if the edge is REVERSED, it is necessary to "REVERSE" the curve 2d.
 
     // added by skl 18.07.2005 for OCC9490
     if(Surf->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))) {
@@ -564,7 +564,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferWire
   Handle(TColStd_HSequenceOfTransient) Seq2d = new TColStd_HSequenceOfTransient();
 
 
-  // on cree une 3d CompositeCurve et une 2d CompositeCurve
+  // create a 3d CompositeCurve and a 2d CompositeCurve
   TopExp_Explorer TE(mywire, TopAbs_VERTEX);
   if ( TE.More()) {
     // PTV OCC908 workaround for KAS:dev version

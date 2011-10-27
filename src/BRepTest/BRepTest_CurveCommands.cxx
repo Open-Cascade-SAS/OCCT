@@ -987,8 +987,8 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
     }
   }
 //
-//  reste a faire : fermer le profil avec le premier point du contour
-//                  et le point pris avec mouse button 3 
+//  to be done : close the profile using the first point of the contour
+//               and the point taken with mouse button 3 
 //
  Handle(Geom2d_BSplineCurve) C ;
  Handle(Geom_Curve) curve3d_ptr ;
@@ -1559,7 +1559,7 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
   TopOpeBRep_EdgesIntersector EInter;
   char name[100];
   //------------------------------------------------------
-  // Calcul des point d intersection en 2d
+  // Calculate point of intersection 2D
   //-----------------------------------------------------
   EInter.SetFaces(F,F);
   Standard_Real TolInter = 1.e-7;
@@ -1569,8 +1569,8 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
   EInter.Perform (E[0],E[1],reducesegments);
   
   if (EInter.IsEmpty()) {
-    //cout << " Pas d'intersection trouvee" << endl;
-    di << " Pas d'intersection trouvee" << "\n";
+    //cout << " No intersection found" << endl;
+    di << " No intersection found" << "\n";
     return 0;
   }
 
@@ -1590,8 +1590,8 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
     DBRep::Set(name,V);
     for (Standard_Integer i = 1; i <= 2; i++) {
       //---------------------------------------------------------------
-      // pour pouvoir ranger le parametre sur l edge
-      // il faut le coder interne....
+      // to be able to rank parameter on edge
+      // it is necessary to code it internally
       //---------------------------------------------------------------
       Standard_Real U = P2D.Parameter(i);
       
@@ -1600,7 +1600,7 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
 //      B.UpdateVertex(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)),
 //		     U,E[i-1],Tol);
       //---------------------------------------------------------------
-      // Orientation du vertex en fct de la transition.
+      // Orientation of vertex in the transition.
       //---------------------------------------------------------------
       TopAbs_Orientation OO = TopAbs_REVERSED;
       if (P2D.IsVertex(i)) {
@@ -1609,8 +1609,8 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
       else if (P2D.Transition(i).Before() == TopAbs_OUT) {
 	OO = TopAbs_FORWARD;
       }
-      //cout << " Orientation du vertex " << NbV << " sur " << a[i+1] << ": ";
-      di << " Orientation du vertex " << NbV << " sur " << a[i+1] << ": ";
+      //cout << " Orientation of vertex " << NbV << " on " << a[i+1] << ": ";
+      di << " Orientation of vertex " << NbV << " on " << a[i+1] << ": ";
       if (OO == TopAbs_FORWARD) {
 	//cout << "FORWARD" << endl;
 	di << "FORWARD" << "\n";
@@ -1647,7 +1647,7 @@ static Standard_Integer concatwire(Draw_Interpretor&, Standard_Integer n, const 
   TopoDS_Wire res;
 
 
-  res=BRepAlgo::ConcatenateWire(W,Option);              //treatment
+  res=BRepAlgo::ConcatenateWire(W,Option);              //processing
   DBRep::Set(c[1],res);
   return 0;
 }
@@ -1662,8 +1662,8 @@ Standard_Integer  build3d(Draw_Interpretor& di,
 {
 
   if ( (n <2) || (n>3) ) {
-    //cout << " 1 ou 2 arguments attendus" << endl;
-    di << " 1 ou 2 arguments attendus" << "\n";
+    //cout << " 1 or 2 arguments expected" << endl;
+    di << " 1 or 2 arguments expected" << "\n";
     return 1;
   }
     

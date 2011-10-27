@@ -3,7 +3,7 @@
 // Author:	Remi LEQUETTE
 //		<rle@zerox>
 
-// History: pmn 26/09/97 Ajout des parametres d'approx dans BuildCurve3d
+// History: pmn 26/09/97 Add parameters of approximation in BuildCurve3d
 //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898
 
 #include <BRepLib.ixx>
@@ -71,10 +71,6 @@
 #include <Approx_CurvilinearParameter.hxx>
 #include <Geom_BSplineSurface.hxx>
 
-//
-//  comme on ne pas patcher en cdl GEOMLITE temporairement les GeomLib_ migrent
-//  dans BRepLib ...
-//
 
 static Standard_Real thePrecision = Precision::Confusion();     
 static Handle(Geom_Plane) thePlane;
@@ -361,7 +357,7 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
     
     B.UpdateEdge(AnEdge,C3d,LocalLoc,0.0e0);
     BRep_Tool::Range(AnEdge, S, LC, First, Last);
-    B.Range(AnEdge, First, Last); //Ne pas oublier le range du 3d.(PRO6412)
+    B.Range(AnEdge, First, Last); //Do not forget 3D range.(PRO6412)
     TopoDS_Edge E = AnEdge ;
     E.Closed(is_closed) ;
 
@@ -834,12 +830,12 @@ void  BRepLib::SameParameter(const TopoDS_Shape& S,
   BRepLib::UpdateTolerances(S);
 }
 
-//=======================================================================
+//================================================================
 //function : SameParameter
-//WARNING  : Nouvelle spec DUB LBO 9/9/97.
-//  On recode dans l arete la meilleure tolerance trouvee, 
-//  pour les vertex extremites il faudra trouver autre chose.
-//=======================================================================
+//WARNING  : New spec DUB LBO 9/9/97.
+//  Recode in the edge the best tolerance found, 
+//  for vertex extremities it is required to find something else
+//================================================================
 static Standard_Boolean EvalTol(const Handle(Geom2d_Curve)& pc,
 				const Handle(Geom_Surface)& s,
 				const GeomAdaptor_Curve&    gac,
@@ -1287,13 +1283,13 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   B.Range(AnEdge,f3d,l3d);
   B.SameRange(AnEdge,Standard_True);
   if ( IsSameP) {
-    // On diminue eventuellement la tolerance de l arete, puisque
-    // l on a traite toutes ses representations ( Sauf celles associees
-    // a des plans et non stockees dans l'arete !) 
-    // Il n'en va pas de meme des Vertex que l on ne peut que grossir 
-    // ou laisser tels quels.
+    // Reduce eventually the tolerance of the edge, as
+    // all its representations are processed (except for some associated
+    // to planes and not stored in the edge !) 
+    // The same cannot be done with vertices that cannot be enlarged 
+    // or left as is.
     if (YaPCu) {
-      // On evite de mettre des tol trop petites.
+      // Avoid setting too small tolerances.
       maxdist = Max(maxdist,Precision::Confusion());
       TopoDS_Vertex V1,V2;
       TopExp::Vertices(AnEdge,V1,V2);
@@ -1316,12 +1312,12 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
 				const Standard_Boolean verifyTolerance) 
 {
 
-// On harmonise les tolerance
-// avec la regle Tolerance(VERTEX)>=Tolerance(EDGE)>=Tolerance(FACE)
+// Harmonize tolerances
+// with rule Tolerance(VERTEX)>=Tolerance(EDGE)>=Tolerance(FACE)
   BRep_Builder B;
   Standard_Real tol=0;
   if (verifyTolerance) {
-    // On force la tolerance a sa valeur minimale
+    // Set tolerance to its minimum value
     Handle(Geom_Surface) S;
     TopLoc_Location l;
     TopExp_Explorer ex;
@@ -1363,7 +1359,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
 	  if (aYmin>dMax) dMax=aYmin;
 	  if (aZmin>dMax) dMax=aZmin;
 	  tol=tol*dMax;
-	  // On ne traite pas les tolerance > 1.
+	  // Do not process tolerances > 1.
 	  if (tol>1.) tol=0.99;
 	}
 	const Handle(BRep_TFace)& Tf = *((Handle(BRep_TFace)*)&curf.TShape());
@@ -1372,7 +1368,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
     }
   }
   
-  //On traite les edges
+  //Process edges
   TopTools_IndexedDataMapOfShapeListOfShape parents;
   TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, parents);
   TopTools_ListIteratorOfListOfShape lConx;
@@ -1382,12 +1378,12 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
     for (lConx.Initialize(parents(iCur)); lConx.More(); lConx.Next()) {
       tol=Max(tol, BRep_Tool::Tolerance(TopoDS::Face(lConx.Value())));
     }
-    // Update ne peut que augmenter la tolerance, donc si l'edge a
-    // une tolerance + grande que ses faces on y touche pas
+    // Update can only increase tolerance, so if the edge has a greater
+    //  tolerance than its faces it is not concerned
     B.UpdateEdge(TopoDS::Edge(parents.FindKey(iCur)), tol);
   }
 
-  //On traite les Vertices
+  //Vertices are processed
   parents.Clear();
   TopExp::MapShapesAndAncestors(aShape, TopAbs_VERTEX, TopAbs_EDGE, parents);
   TColStd_MapOfTransient Initialized;
@@ -1410,13 +1406,13 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
       BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
       const TopLoc_Location& Eloc = E.Location();
       while (itcr.More()) {
-	// Pour chaque CurveRepresentation, on verifie le parametre fourni
+	// For each CurveRepresentation, check the provided parameter
 	const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
 	const TopLoc_Location& loc = cr->Location();
 	TopLoc_Location L = (Eloc * loc);
 	if (cr->IsCurve3D()) {
 	  const Handle(Geom_Curve)& C = cr->Curve3D();
-	  if (!C.IsNull()) { // edge non degenere
+	  if (!C.IsNull()) { // edge non degenerated
 	    p3d = C->Value(par);
 	    p3d.Transform(L.Transformation());
 	    box.Add(p3d);
@@ -1449,8 +1445,8 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
     tol = Max(tol,sqrt(aXmax*aXmax+aYmax*aYmax+aZmax*aZmax));
     tol += 2.*Epsilon(tol);
     if (verifyTolerance) {
-      // On force la tolerance a sa valeur minimale
-      // Attention au partage du vertex par d'autre shapes
+      // ASet minimum value of the tolerance 
+      // Attention to sharing of the vertex by other shapes
       const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V.TShape());
       if (Initialized.Add(TV)) 
 	TV->Tolerance(tol);
@@ -1458,8 +1454,8 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
 	B.UpdateVertex(V, tol);
     }
     else {
-      // Update ne peut que augmenter la tolerance, donc si le vertex a
-      // une tolerance + grande que ses edges on y touche pas
+    // Update can only increase tolerance, so if the edge has a greater
+    //  tolerance than its faces it is not concerned
       B.UpdateVertex(V, tol);
     }
   }
@@ -1471,7 +1467,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
 //=======================================================================
 Standard_Boolean BRepLib::OrientClosedSolid(TopoDS_Solid& solid) 
 {
-// On met la matiere a l'interieur du solid
+// Set material inside the solid
   BRepClass3d_SolidClassifier where(solid);
   where.PerformInfinitePoint(Precision::Confusion());
   if (where.State()==TopAbs_IN) {
@@ -1485,8 +1481,8 @@ Standard_Boolean BRepLib::OrientClosedSolid(TopoDS_Solid& solid)
 
 //=======================================================================
 //function : tgtfaces
-//purpose  : controle de l angle a la frontiere entre 2 carreaux.
-//           Les deux carreaux doivent partager leur edge frontiere.
+//purpose  : check the angle at the border between two squares.
+//           Two shares should have a shared front edge.
 //=======================================================================
 
 static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
@@ -1526,8 +1522,8 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   Standard_Boolean IsInitialized = Standard_False;
   
   eps = (l - f)/100.;
-  f += eps; // pour eviter de faire des calculs sur les 
-  l -= eps; // pointes des carreaux pointus.
+  f += eps; // to avoid calculations on  
+  l -= eps; // points of pointed squares.
   gp_Pnt2d p;
   gp_Pnt pp1,pp2;//,PP;
   gp_Vec du,dv;
@@ -1537,7 +1533,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   Standard_Integer i;
   Standard_Boolean Nok;
   for(i = 0; (i<= 20) && (angmax<=ta) ; i++){
-    // On suppose d'abord que c'est sameParameter
+    // First suppose that this is sameParameter
     Nok = Standard_True;
     u = f + (l-f)*i/20;
     HC2d1->D0(u,p);
@@ -1557,7 +1553,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
     if(rev2) d2.Reverse();
     if (Nok) ang = d1.Angle(d2);
 
-    if (Nok &&(ang > ta)) { // On raffine par projection
+    if (Nok &&(ang > ta)) { // Refine by projection
       if (! IsInitialized ) {
 	ext.Initialize(C2,f,l,Precision::PConfusion());
 	IsInitialized = Standard_True;
@@ -1588,8 +1584,8 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
 
 //=======================================================================
 // function : EncodeRegularity
-// purpose  : code les regularites sur tous les edges du shape,frontiere
-//            de deux faces qui n en ont pas.
+// purpose  : code the regularities on all edges of the shape, boundary of 
+//            two faces that do not have it.
 //=======================================================================
 
 void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
@@ -1615,7 +1611,7 @@ void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
 	}
       }
     }
-    if (!found && !F1.IsNull()){//est ce un edge de couture?
+    if (!found && !F1.IsNull()){//is it a sewing edge?
       TopAbs_Orientation orE = E.Orientation();
       TopoDS_Edge curE;
       for(Ex.Init(F1,TopAbs_EDGE);Ex.More() && !found;Ex.Next()){
@@ -1639,7 +1635,7 @@ void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
 
 //=======================================================================
 // function : EncodeRegularity
-// purpose  : code la regularite entre 2 face sur une edge 
+// purpose  : code the regularity between 2 faces on an edge 
 //=======================================================================
 
 void BRepLib::EncodeRegularity(TopoDS_Edge& E,

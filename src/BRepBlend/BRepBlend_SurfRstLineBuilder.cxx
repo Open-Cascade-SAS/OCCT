@@ -1287,7 +1287,7 @@ Blend_Status BRepBlend_SurfRstLineBuilder::CheckDeflectionOnSurf(const Blend_Poi
 {
   //Controls 3d of Blend_CSWalking.
 
-  // rule by tests in U4 corresponds to 11.478 d
+  //rule by tests in U4 corresponds to 11.478 d
   const Standard_Real CosRef3D = 0.98;
   Standard_Real Cosi=0, Cosi2=0;
   Standard_Boolean curpointistangent = CurPoint.IsTangencyPoint();

@@ -86,14 +86,14 @@
       BRepCheck_Analyzer ana(toCheck, Standard_True);
       if (!ana.IsValid()) {
 
-// On verifie que le probleme ne soit pas juste BRepCheck_InvalidSameParameterFlag
+// Check if the problem is not just BRepCheck_InvalidSameParameterFlag
 	BRepCheck_ListIteratorOfListOfStatus itl;
 	BRepCheck_Status sta;
 	for (tEx.Init(toCheck, TopAbs_FACE); tEx.More(); tEx.Next()) {
 	  if  (!ana.Result(tEx.Current()).IsNull()) {
 	    for (itl.Initialize(ana.Result(tEx.Current())->Status()); itl.More(); itl.Next()) {
 	      sta=itl.Value();
-// Si une face est en erreur
+// If a face is incorrect
 	      if (sta != BRepCheck_NoError) {
 		BRepCheck_ListIteratorOfListOfStatus ilt;
 		TopExp_Explorer exp;
@@ -103,7 +103,7 @@
 		    if (res->ContextualShape().IsSame(tEx.Current())) {
 		      for (ilt.Initialize(res->StatusOnShape()); ilt.More(); ilt.Next()) {
 			sta=ilt.Value();
-// Si une edge est BRepCheck_InvalidSameParameterFlag ou BRepCheck_InvalidSameRangeFlag on force
+// If an edge is BRepCheck_InvalidSameParameterFlag or BRepCheck_InvalidSameRangeFlag, it is forced
 			if (sta == BRepCheck_InvalidSameParameterFlag ||
 			    sta == BRepCheck_InvalidSameRangeFlag) {
 			  bB.SameRange(TopoDS::Edge(exp.Current()), Standard_False);
@@ -121,7 +121,7 @@
 	    }
 	  }
 	}
-// On refait un controle (il pourrait y avoir un probleme d'un autre type ou non rectifiable.
+// Remake control (there can be a problem of another type orb the one that cannot be corrected
 	ana.Init(toCheck, Standard_True);
 	if (!ana.IsValid()) return Standard_False;
       }
@@ -151,10 +151,6 @@
 {
 //
 
-// pour permettre a Moliner de travailler jusqu'au 18/10/96 le temps que 
-// l'on trouve une solution reflechie au probleme de performance de BRepCheck
-//
-//POP ON n'utilise plus la varaible d'environnement
 // if (getenv("DONT_SWITCH_IS_VALID") != NULL) {
 //   return Standard_True ; 
 // }

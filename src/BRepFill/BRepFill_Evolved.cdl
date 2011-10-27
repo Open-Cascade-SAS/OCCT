@@ -7,7 +7,7 @@
 
 class Evolved from BRepFill 
 
-	---Purpose: Constructs a evolved volume from a spine (wire or face) 
+	---Purpose: Constructs an evolved volume from a spine (wire or face) 
 	--          and  a profile ( wire).
 
 uses
@@ -45,10 +45,10 @@ is
     returns Evolved from BRepFill
 	---Purpose: Creates an evolved shape by sweeping the <Profile>
 	--          along the  <Spine>.  <AxeProf> is  used to set the
-	--          position of <Profile> along  <Spine> as  follow: 
-	--          l <AxeProf> glisse  sur le profil  avec  sa
-	--          direction colineaire a la normale au <Spine>, et sa
-	--          <XDirection> confondue avec la tangente au <Spine>.
+	--          position of <Profile> along  <Spine> as  follows: 
+	--          <AxeProf> slides on the profile with direction 
+	--          colinear to the normal to <Spine>, and its 
+	--          <XDirection> mixed with the tangent to <Spine>.
 	--          
     raises
     	ConstructionError from Standard;

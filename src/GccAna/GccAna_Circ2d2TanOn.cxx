@@ -19,17 +19,15 @@
 #include <GccAna_Circ2dBisec.hxx>
 
 //=========================================================================
-//  Cercles tangents a deux cercles C1 et C2 et centres sur une droite.   +
-//  Nous commencons par distinguer les differents cas limites que nous    +
-//  allons traiter separement.                                            +
-//  Pour le cas general:                                                  +
+//  Circles tangent to two circles C1 and C2 and centered on a straight line.   +
+//  We start by distinguishing various boundary cases that will be processed separately. +
+//  In the general case:                                                  +
 //  ====================                                                  +
-//  Nous calculons les bissectrices aux deux cercles qui nous donnent     +
-//  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tangents a C1 et C2.                                                  +
-//  Nous intersectons ces bissectrices avec la droite OnLine ce qui nous  +
-//  donne les points parmis lesquels nous allons choisir les solutions.   +
-//  Les choix s effectuent a partir des Qualifieurs qualifiant C1 et C2.  +
+//  We calculate bissectrices to two circles that give us     +
+//  all possible locations of centers of all circles tangent to C1 and C2.                                                  +
+//  We intersect these bissectrices with straight line which gives us  +
+//  points among which we are going to find solutions.   +
+//  The choices are made basing on Qualifiers of C1 and C2.  +
 //=========================================================================
 
 GccAna_Circ2d2TanOn::
@@ -86,7 +84,7 @@ GccAna_Circ2d2TanOn::
   Standard_Real d4 = dist2-R2;
 
 //=========================================================================
-//  Traitement des cas limites.                                           +
+//  Processing of boundary cases.                                           +
 //=========================================================================
    
   if (Abs(d3-d4)<Tol && 
@@ -172,7 +170,7 @@ GccAna_Circ2d2TanOn::
   }
   
 //=========================================================================
-//   Cas general.                                                         +
+//   General case.                                                       +
 //=========================================================================
 
   if (!WellDone) {

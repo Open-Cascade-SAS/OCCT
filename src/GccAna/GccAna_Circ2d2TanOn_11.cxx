@@ -4,11 +4,11 @@
 //		<reg@topsn3>
 
 //=========================================================================
-//   Creation d un cercle tangent a deux elements : Droite.               +
-//                                                  Cercle.               +
+//   Creation of a circle tangent to two elements : Straight line.        +
+//                                                  Circle.               +
 //                                                  Point.                +
-//                        centre sur un troisieme : Droite.               +
-//                                                  Cercle.               +
+//                              center on a third : Straight line.        +
+//                                                  Circle.               +
 //=========================================================================
 
 #include <GccAna_Circ2d2TanOn.jxx>
@@ -21,15 +21,15 @@
 #include <GccAna_Lin2dBisec.hxx>
 
 //=========================================================================
-//   Creation d un cercle Passant par : 2 points Point1 et Point2.        +
-//                        Centre sur  : 1 cercle OnCirc.                  +
-//   avec une Tolerance de precision  : Tolerance.                        +
+//   Creation of a circle passing by  : 2 points Point1 and Point2.        +
+//                        Center on   : 1 circle OnCirc.                  +
+//   with a Tolerance of precision    : Tolerance.                        +
 //                                                                        +
-//   On cree L1 la droite des points equidistant de Point1 et Point2.     +
-//   On cree alors les solutions cirsol telles que :                      +
-//   cirsol est l ensemble des cercle ayant pour centre une des inter-    +
-//   sections de L1 avec OnCirc et de rayon la distance entre Point1 et   +
-//   le point ci dessus calcule.                                          +
+//   Create L1 the straight line of points equidistant to Point1 and Point2.     +
+//   Create then solutions cirsol so that :                      +
+//   cirsol is the set of circles with center in one of inter-    +
+//   sections of L1 with OnCirc and the radius the distance between Point1 and   +
+//   the point calculated below.                                          +
 //=========================================================================
 
 GccAna_Circ2d2TanOn::

@@ -207,7 +207,7 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
     }
   } 
 
-  // ---------------  Calcul ----------------
+  // ---------------  Calculation ----------------
 
   iiM1 = - M1;
   iiM3 = - M3;
@@ -278,7 +278,7 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
 //
 // PrepareEval :
 //
-// Pepare all data for computing points :
+// Prepare all data for computing points :
 //  local arrays of knots
 //  local array  of poles (multiplied by the weights if rational)
 //
@@ -2770,17 +2770,16 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 }
 
 //=======================================================================
-//function : Resolution
-//purpose  : this computes an estimate for the maximum of the 
+// function : Resolution
+// purpose  : this computes an estimate for the maximum of the 
 // partial derivatives both in U and in V
 //
 //
-//le calcul est en tout point semblable a celui des courbes avec un
-//indice  de  plus  pour  les  point  de controles. Soient Si,j les
-//points de controle pour ls surface  et  Di,j  les  poids  le  cas
-//echeant.  La  preuve  des  majorants pour les derivees partielles
-//sera omise et on a pour Su le majorant suivant dans le cas  poly-
-//nomial :
+// The calculation resembles at the calculation of curves with 
+// additional index for the control point. Let Si,j be the
+// control points for ls surface  and  Di,j  the weights.  
+// The checking of upper bounds for the partial derivatives 
+// will be omitted and Su is the next upper bound in the polynomial case :
 //
 //
 //
@@ -2790,7 +2789,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 //                i=1.m
 //
 //
-// et dans le cas rationel :
+// and in the rational case :
 //
 //
 //
@@ -2806,7 +2805,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 //
 //
 //
-// avec Rj = {j-d, ....,  j+d+d+1}.
+// with Rj = {j-d, ....,  j+d+d+1}.
 //
 //
 //=======================================================================
@@ -3090,7 +3089,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
   Standard_Integer VLength = VParameters.Length();
   Standard_Real * poles_array;
   
-  // extraction des iso u
+  // extraction of iso u
   dimension = 4*ULength;
   TColStd_Array2OfReal Points(1, VLength, 
 			      1, dimension);
@@ -3109,7 +3108,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
     }
   }
 
-  // interpolation des iso u
+  // interpolation of iso u
   poles_array = (Standard_Real *) &Points.ChangeValue(1,1) ;
   BSplCLib::Interpolate(VDegree,
 			VFlatKnots,
@@ -3120,7 +3119,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
 			InversionProblem) ;
   if (InversionProblem != 0) return;
 
-  // extraction des iso v
+  // extraction of iso v
 
   dimension = VLength*4;
   TColStd_Array2OfReal IsoPoles(1, ULength, 
@@ -3139,7 +3138,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
       IsoPoles (ii,ll+3) = Points(jj, kk+3);
     }
   }
-  // interpolation des iso v
+  // interpolation of iso v
   BSplCLib::Interpolate(UDegree,
 			UFlatKnots,
 			UParameters,
@@ -3148,7 +3147,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
 			poles_array[0],
 			InversionProblem);
 
-  // recuperation des resultats
+  // return results
 
   for (ii=1; ii <= ULength; ii++) {
 
@@ -3179,7 +3178,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
   Standard_Integer VLength = VParameters.Length();
   Standard_Real * poles_array;
   
-  // extraction des iso u
+  // extraction of iso u
   dimension = 3*ULength;
   TColStd_Array2OfReal Points(1, VLength, 
 			      1, dimension);
@@ -3197,7 +3196,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
     }
   }
   
-  // interpolation des iso u
+  // interpolation of iso u
   poles_array = (Standard_Real *) &Points.ChangeValue(1,1) ;
   BSplCLib::Interpolate(VDegree,
 			VFlatKnots,
@@ -3208,7 +3207,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
 			InversionProblem) ;
   if (InversionProblem != 0) return;
   
-  // extraction des iso v
+  // extraction of iso v
   
   dimension = VLength*3;
   TColStd_Array2OfReal IsoPoles(1, ULength, 
@@ -3226,7 +3225,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
       IsoPoles (ii,ll+2) = Points(jj, kk+2);
     }
   }
-  // interpolation des iso v
+  // interpolation of iso v
   BSplCLib::Interpolate(UDegree,
 			UFlatKnots,
 			UParameters,
@@ -3235,7 +3234,7 @@ void BSplSLib::Interpolate(const Standard_Integer UDegree,
 			poles_array[0],
 			InversionProblem);
   
-  // recuperation des resultats
+  // return results
 
   for (ii=1; ii <= ULength; ii++) {
 

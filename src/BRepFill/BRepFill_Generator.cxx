@@ -2,33 +2,6 @@
 // Created:	Mon Mar  7 10:01:42 1994
 // Author:	Bruno DUMORTIER
 //		<dub@fuegox>
-// Modified:	Mon Feb 23 09:28:46 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
-//              traitement des wires ponctuels
-// Modified:	Tue Mar 10 17:08:58 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
-//              suite traitement des KPart, calcul d'une BezierCurve
-//              au lieu d'une extraction d'iso pour Edge3 et Edge4
-// Modified:	Mon Apr  6 15:47:44 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
-//              correction KPart (PRO12929)
-// Modified:	Thu Apr 30 15:24:17 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
-//              debug KPart 
-// Modified:	Fri Jul 31 15:14:19 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
-//              KPart semi-cone pointe en bas : calcul de Edge4
-//
-//              ajout des methodes Generated et GeneratedShapes
-// Modified:	Mon Nov 23 12:22:04 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
-//              CTS21701 : orientation de l'edge dans DetectKPart 
 
 #include <BRepFill_Generator.ixx>
 
@@ -88,10 +61,10 @@
 Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 			     const TopoDS_Edge& Edge2)
 {
-  // initialisations
+  // initializations
   Standard_Integer IType = 0;
 
-  // caracteristiques de la premiere edge
+  // characteristics of the first edge
   Standard_Real first1, last1, first2, last2, ff, ll;
   TopLoc_Location loc;
   TopoDS_Vertex V1, V2;
@@ -99,7 +72,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
   GeomAdaptor_Curve AdC1;
   Standard_Boolean degen1 = BRep_Tool::Degenerated(Edge1);
 
-  // recherche de cas particulier
+  // find the particular case
   gp_Pnt pos1, pos;
   Standard_Real  dist;
 #ifndef DEB
@@ -127,14 +100,14 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
     }
     AdC1.Load(curv1);
     if (AdC1.GetType() == GeomAbs_Circle) {
-      // premiere section circulaire
+      // first circular section 
       IType = 1;
       pos1 = AdC1.Circle().Location();
       dist1 = AdC1.Circle().Radius();
       axe1 = AdC1.Circle().Axis();
     }
     else if (AdC1.GetType() == GeomAbs_Line) {
-      // premiere section rectiligne
+      // first straight line section 
       IType = 4;
       pos1 = AdC1.Line().Location();
       dist1 = AdC1.Value(first1).Distance(AdC1.Value(last1));
@@ -143,7 +116,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
       axe1 = gp_Ax1(AdC1.Value(first1),dir);
     }
     else {
-      // premiere section quelconque
+      // first section of any type
       IType = 0;
     }
   }
@@ -155,9 +128,9 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
       TopExp::Vertices(Edge2,V1,V2);
       pos = BRep_Tool::Pnt(V1);
       if (IType==1) {
-	// seul cas particulier avec une edge degeneree en bout : le cone
+	// the only particular case with degenerated edge at end : the cone
 	if (pos.IsEqual(pos1,Precision::Confusion())) {
-	  // le sommet est confondu avec le centre du cercle
+	  // the top is mixed with the center of the circle
 	  IType = 0;
 	}
 	else {
@@ -165,17 +138,17 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	  gp_Dir dir(vec);
 	  axe = gp_Ax1(pos1,dir);
 	  if (axe.IsParallel(axe1,Precision::Angular())) {
-	    // le sommet est bien sur l'axe du cercle
+	    // the top is on the axis of the circle
 	    IType = 2;
 	  }
 	  else {
-	    // sommet incorrect --> pas de cas particulier
+	    // incorrect top --> no particular case
 	    IType = 0;
 	  }
 	}
       }
-      else if (IType != 4) { //not plane
-	// pas de cas particulier
+      else if (IType != 4) { //not a plane
+	// no particular case
 	IType = 0;
       }
     }
@@ -194,15 +167,15 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
     
       if (IType>0 && IType<4) {
 	if (AdC.GetType() != GeomAbs_Circle) {
-	  // section non circulaire --> pas de cas particulier
+	  // section not circular --> no particular case
 	  IType = 0;
 	}
 	else {
 	  if (AdC.Circle().Axis()
 	      .IsCoaxial(axe1,Precision::Angular(),Precision::Confusion())) {
-	    // meme axe
+	    // same axis
 	    if (Abs(AdC.Circle().Radius()-dist1)< Precision::Confusion()) {
-	      // possibilite de cylindre ou de morceau de cylindre
+	      // possibility of cylinder or a piece of cylinder
 	      Standard_Real h1 = Abs(last1-first1), h2 = Abs(last2-first2);
 	      Standard_Boolean Same, 
 	       SameParametricLength = ( Abs(h1-h2) < Precision::PConfusion() );
@@ -214,16 +187,16 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	      Same = SameParametricLength 
 		&& ( gp_Vec(P1,P2).IsNormal(DU,Precision::Angular()) ) ;
 	      if (Same) {
-		// cylindre ou morceau de cylindre
+		// cylinder or piece of cylinder
 		IType = 1;
 	      }
 	      else {
-		// l'intervalle de definition n'est pas correct
+		// the interval of definition is not correct
 		IType = 0;
 	      }
 	    }
 	    else {
-	      // possibilite de tronc de cone
+	      // possibility of cone truncation
 	      Standard_Real h1 = Abs(last1-first1), h2 = Abs(last2-first2);
 	      Standard_Boolean Same, 
 	       SameParametricLength = ( Abs(h1-h2) < Precision::PConfusion() );
@@ -235,27 +208,27 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	      Same = SameParametricLength 
 		&& ( gp_Vec(P1,P2).IsNormal(DU,Precision::Angular()) ) ;
 	      if (Same) {
-		// tronc de cone
+		// truncation of cone
 		IType = 2;
 	      }
 	      else {
-		// l'intervalle de definition n'est pas correct
+		// the interval of definition is not correct
 		IType = 0;
 	      }
 	    }
 	    if (AdC.Circle().Location().IsEqual(pos1,Precision::Confusion())) {
-	      // les centres sont confondus
+	      // the centers are mixed
 	      IType = 0;
 	    }
 	  }
 	  else {
-	    // axe different
+	    // different axis
 	    if (AdC.Circle().Radius()==dist1) {
-	      // tore ?
+	      // torus ?
 	      IType = 3;
 	    }
 	    else {
-	      // rayon different --> pas de cas particulier
+	      // different radius --> no particular case
 	      IType = 0;
 	    }
 	  }
@@ -263,7 +236,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
       }
       else if (IType>=4) {
 	if (AdC.GetType() != GeomAbs_Line) {
-	  // section non rectiligne --> pas de cas particulier
+	  // not a straight line section --> no particular case
 	  IType = 0;
 	}
 	else {
@@ -273,11 +246,11 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	  gp_Dir dir(vec);
 	  axe = gp_Ax1(AdC.Value(first2),dir);
 	  if (axe.IsParallel(axe1,Precision::Angular())) {
-	    // droite parallele
+	    // parallel straight line
 	    if (Abs(dist-dist1)<Precision::Confusion()) {
 	      gp_Dir dir(gp_Vec(AdC1.Value(first1),AdC.Value(first2)));
 	      if (dir.IsNormal(gp_Dir(vec),Precision::Angular())) {
-		// plan
+		// plane
 		IType = 4;
 	      }
 	      else {
@@ -286,12 +259,12 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	      }
 	    }
 	    else {
-	      // longueur differente --> pas de cas particulier
+	      // different length --> no particular case
 	      IType = 0;
 	    }
 	  }
 	  else {
-	    // droite non parallele --> pas de cas particulier
+	    // not parallel straight line --> no particular case
 	    IType = 0;
 	  }
 	}
@@ -301,11 +274,11 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	  IType = 4; //plane
 	else if (AdC.GetType() == GeomAbs_Circle)
 	  {
-	    // seul cas particulier avec une edge degeneree au debut : le cone
+	    // the only particular case with degenerated edge at the beginning the cone
 	    pos = AdC.Circle().Location();
 	    axe = AdC.Circle().Axis();
 	    if (pos1.IsEqual(pos,Precision::Confusion())) {
-	      // le sommet est confondu avec le centre du cercle
+	      // the top is mixed with the center of the circle
 	      IType = 0;
 	    }
 	    else {
@@ -313,11 +286,11 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
 	      gp_Dir dir(vec);
 	      axe1 = gp_Ax1(pos1,dir);
 	      if (axe.IsParallel(axe1,Precision::Angular())) {
-		// le sommet est bien sur l'axe du cercle
+		// the top is on the axis of the circle
 		IType = -2;
 	      }
 	      else {
-		// sommet incorrect --> pas de cas particulier
+		// incorrect top --> no particular case
 		IType = 0;
 	      }
 	    }
@@ -328,7 +301,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
     }
     
   }
-  // tore et extrusion ne sont pas des cas part.
+  // torus and extrusion are not particular cases.
   if (IType == 3 || IType == 5) IType = 0;
   return IType;
 }
@@ -354,7 +327,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   Handle(Geom_Curve) C1;
   Standard_Boolean degen1 = BRep_Tool::Degenerated(Edge1);
   if(degen1) {
-    // cone avec arete degeneree au sommet
+    // cone with degenerated edge at the top
     TopExp::Vertices(Edge1,v1f,v1l);
   }
   else {
@@ -377,7 +350,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   Handle(Geom_Curve) C2;
   Standard_Boolean degen2 = BRep_Tool::Degenerated(Edge2);
   if(degen2) {
-    // cone avec arete degeneree au sommet
+    // cone with degenerated edge at the top
     TopExp::Vertices(Edge2,v2f,v2l);
   }
   else {
@@ -419,7 +392,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
   Handle(Geom_Surface) surface;
   Standard_Real V, Rad;
   if (IType==1) {
-    // surface cylindrique
+    // cylindrical surface
     gp_Circ c1 = (Handle(Geom_Circle)::DownCast(C1))->Circ();
     gp_Circ c2 = (Handle(Geom_Circle)::DownCast(C2))->Circ();
     gp_Ax3 Ac1 = c1.Position();
@@ -434,7 +407,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
       ( Cyl, aa, bb, Min(0.,V), Max(0.,V) );
   }
   else if (IType==2) {
-    // surface conique
+    // conical surface
     gp_Circ k1 = (Handle(Geom_Circle)::DownCast(C1))->Circ();
     gp_Ax3 Ak1 = k1.Position();
     if (degen2) {
@@ -460,7 +433,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
       ( Cone, aa, bb, Min(0.,V), Max(0.,V) );
   }
   else if (IType==-2) {
-    // surface conique avec le sommet au debut (degen1 est vrai)
+    // conical surface with the top at the beginning (degen1 is true)
     gp_Circ k2 = (Handle(Geom_Circle)::DownCast(C2))->Circ();
     gp_Ax3 Ak2 = k2.Position();
     Ak2.SetLocation(BRep_Tool::Pnt(v1f));
@@ -479,7 +452,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
       ( Cone, aa, bb, Min(0.,V), Max(0.,V) );
   }
   else if (IType==3) {
-    // surface torique ?
+    // torus surface ?
   }
   else if (IType==4) {
     // surface plane
@@ -508,7 +481,7 @@ void CreateKPart(const TopoDS_Edge& Edge1,const TopoDS_Edge& Edge2,
       //( Plan, aa, bb, Min(0.,V), Max(0.,V) );
   }
   else if (IType==5) {
-    // surface d'extrusion ?
+    // surface of extrusion ?
   }
   else {
     // IType incorrect
@@ -638,12 +611,12 @@ void BRepFill_Generator::Perform()
 
       Standard_Boolean Periodic
 	= (Edge1.Closed() || degen1) && (Edge2.Closed() || degen2);
-      // ATTENTION : un wire non ponctuel ne doit pas 
-      //             contenir une edge ponctuelle
+      // ATTENTION : a non-punctual wire should not 
+      //             contain a punctual edge
       if (!wPoint1) ex1.Next();
       if (!wPoint2) ex2.Next();
 
-      // initialisation des vertices
+      // initialization of vertices
       Handle(Geom_Surface) Surf;
       Standard_Real f1=0, l1=1, f2=0, l2=1;
       if (Edge1.Orientation() == TopAbs_REVERSED)
@@ -671,10 +644,10 @@ void BRepFill_Generator::Perform()
 	Periodic 
 	  = (E1IsReallyClosed || degen1) && (E2IsReallyClosed || degen2);
       }
-      // traitement des KPart
+      // processing of KPart
       Standard_Integer IType = DetectKPart(Edge1,Edge2);
       if (IType==0) {
-	// pas de cas part
+	// no part cases
 	TopLoc_Location L,L1,L2;
 
 	Handle(Geom_Curve) C1, C2;
@@ -735,7 +708,7 @@ void BRepFill_Generator::Perform()
 	B.MakeFace(Face,Surf,Precision::Confusion());
       }
       else {
-	// cas particulier
+	// particular case
 	CreateKPart(Edge1,Edge2,IType,Surf);
 	B.MakeFace(Face,Surf,Precision::Confusion());
       }
@@ -753,13 +726,13 @@ void BRepFill_Generator::Perform()
 	Handle(Geom_Curve) CC;
 	TColgp_Array1OfPnt Extremities(1,2);
       	if (IType==0) {
-	  // cas general : Edge3 correspond a l'iso U=f1
+	  // general case : Edge3 corresponds to iso U=f1
 	  CC = Surf->UIso(f1);
 	  first=f2;
 	  last=l2;
 	}
 	else {
-	  // cas particulier : il faut calculer la courbe 3d
+	  // particular case : it is required to calculate the curve 3d
 	  Extremities(1) = BRep_Tool::Pnt(V1f);
 	  Extremities(2) = BRep_Tool::Pnt(V2f);
 	  CC = new Geom_BezierCurve(Extremities);
@@ -794,13 +767,13 @@ void BRepFill_Generator::Perform()
 	Handle(Geom_Curve) CC;
 	TColgp_Array1OfPnt Extremities(1,2);
       	if (IType==0) {
-	  // cas general : Edge4 correspond a l'iso U=l1
+	  // general case : Edge4 corresponds to iso U=l1
 	  CC = Surf->UIso(l1);
 	  first=f2;
 	  last=l2;
 	}
 	else {
-	  // cas particulier : il faut calculer la courbe 3d
+	  // particular case : it is required to calculate the curve 3d
 	  Extremities(1) = BRep_Tool::Pnt(V1l);
 	  Extremities(2) = BRep_Tool::Pnt(V2l);
 	  CC = new Geom_BezierCurve(Extremities);

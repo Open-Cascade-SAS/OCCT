@@ -20,18 +20,18 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//  Cercles tangents un cercle C1, passant par un point Point2 et centres +
-//  sur une droite OnLine.                                                +
-//  Nous commencons par distinguer les differents cas limites que nous    +
-//  allons traiter separement.                                            +
-//  Pour le cas general:                                                  +
+//  Circles tangent to circle C1, passing by point Point2 and centers     +
+//  on a straight line OnLine.                                            +
+//  We start by making difference with boundary cases that will be        +
+//  processed separately.                                                 +
+//  For the general case:                                                 +
 //  ====================                                                  +
-//  Nous calculons les bissectrices a C1 et Point2 qui nous donnent       +
-//  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tangents a C1 et passant par Point2.                                  +
-//  Nous intersectons ces bissectrices avec la droite OnLine ce qui nous  +
-//  donne les points parmis lesquels nous allons choisir les solutions.   +
-//  Les choix s effectuent a partir des Qualifieurs qualifiant C1 et C2.  +
+//  We calculate bissectrices to C1 and Point2 that give us all           +
+//  possible locations of centers of all circles                          +
+//  tangent to C1 and passing by Point2.                                  +
+//  We intersect these bissectrices with the straight line OnLine which   +
+//  gives us the points among which we'll choose the solutions.           +
+//  The choices are made using Qualifiers of C1 and C2.                   +
 //=========================================================================
 
 GccAna_Circ2d2TanOn::
@@ -70,7 +70,7 @@ GccAna_Circ2d2TanOn::
   gp_Pnt2d center1(C1.Location());
   
 //=========================================================================
-//   Traitement des cas limites.                                          +
+//   Processing of boundary cases.                                        +
 //=========================================================================
 
   Standard_Real dp2l = OnLine.Distance(Point2);
@@ -122,7 +122,7 @@ GccAna_Circ2d2TanOn::
   }
 
 //=========================================================================
-//   cas general.                                                         +
+//   General case.                                                       +
 //=========================================================================
 
   GccAna_CircPnt2dBisec Bis(C1,Point2);

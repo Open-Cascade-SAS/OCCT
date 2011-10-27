@@ -22,7 +22,7 @@
 #include <Interface_Version.hxx>
 #include <Interface_Macros.hxx>
 
-// IL S AGIT ICI DU HEADER GENERIQUE pour tout schema STEP ...
+// This is a generic header for any STEP sheme
 
 
 static Handle(TCollection_HAsciiString) nulstr;
@@ -71,7 +71,7 @@ void  APIHeaderSection_MakeHeader::Init (const Standard_CString nameval)
   if (fn.IsNull()) fn = new HeaderSection_FileName;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString(nameval);
   fn->SetName(name);
-  Interface_MSG::TDate (timestamp,0,0,0,0,0,1,"C:%4.4d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d");  // maintenant
+  Interface_MSG::TDate (timestamp,0,0,0,0,0,1,"C:%4.4d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d");  // actually
   Handle(TCollection_HAsciiString) tst = 
     new TCollection_HAsciiString(timestamp);
   fn->SetTimeStamp(tst);
@@ -142,7 +142,7 @@ void APIHeaderSection_MakeHeader::Apply
     header.AddItem(fn);
   if (HasFs() && !model->HasHeaderEntity (STANDARD_TYPE(HeaderSection_FileSchema))) {
 
-// Schema defini ?  Sinon le prendre depuis le protocole
+// Schema defined? If not take it from the protocole
     Handle(TCollection_HAsciiString) sch;
     Handle(Interface_HArray1OfHAsciiString) schid = fs->SchemaIdentifiers();
     if (!schid.IsNull()) sch = schid->Value(1);
@@ -150,7 +150,7 @@ void APIHeaderSection_MakeHeader::Apply
       schid = new Interface_HArray1OfHAsciiString(1,1);
       fs->SetSchemaIdentifiers(schid);
     }
-    if (!sch.IsNull()) { if (sch->Length() < 2) sch.Nullify(); } // non defini
+    if (!sch.IsNull()) { if (sch->Length() < 2) sch.Nullify(); } // not defined
     if (sch.IsNull()) {
       Handle(StepData_Protocol) stepro = Handle(StepData_Protocol)::DownCast
 	( model->Protocol());

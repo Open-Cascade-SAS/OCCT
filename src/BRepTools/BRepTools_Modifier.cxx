@@ -3,7 +3,7 @@
 // Author:	Jacques GOUSSARD
 //		<jag@ecolox>
 
-// IFV 04.06.99 - PRO18974 - treatment of INTERNAL shapes.
+// IFV 04.06.99 - PRO18974 - processing of INTERNAL shapes.
 
 #include <BRepTools_Modifier.ixx>
 
@@ -104,8 +104,7 @@ void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M)
   }
   TopTools_DataMapIteratorOfDataMapOfShapeShape theIter(myMap);
 
-  // Remise a Null des shapes value, dans le cas ou on applique une autre
-  // modification au shape de depart.
+  // Set to Null the value of shapes, in case when another modification is applied to the start shape.
 
   if (!theIter.Value().IsNull()) {
     while (theIter.More()) {
@@ -136,7 +135,7 @@ void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M)
     myMap(myShape).Orientation(myShape.Orientation());
   }
 
-  // Mise a jour des continuites
+  // Update the continuities
 
   TopTools_IndexedDataMapOfShapeListOfShape theEFMap;
   TopExp::MapShapesAndAncestors(myShape,TopAbs_EDGE,TopAbs_FACE,theEFMap);
@@ -236,7 +235,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
   BRep_Builder B;
   Standard_Real tol;
   Standard_Boolean No3DCurve = Standard_False; // en fait, si on n`a pas de 
-  //modif de geometrie 3d , il faudrait tester l`existence d`une courbe 3d.
+  //modif geometry 3d , it is necessary to test the existence of a curve 3d.
 
   // new geometry ?
 
@@ -355,11 +354,10 @@ Standard_Boolean BRepTools_Modifier::Rebuild
 	if (M->NewCurve2d(edge, face,TopoDS::Edge(myMap(ex.Current())),
 			  TopoDS::Face(result),curve2d, tol)) 
         {
-	  // rem dub 16/09/97 : On fait de la topologie constante ou on
-	  // n'en fait pas.
-	  // On n'en fait pas si CopySurface = 1
-	  // Atention, les VRAIES aretes de couture (RealyClosed) le 
-	  // restent meme si CopySurface est vrai.
+	  // rem dub 16/09/97 : Make constant topology or not make at all.
+	  // Do not make if CopySurface = 1
+	  // Atention, TRUE sewing edges (RealyClosed)  
+	  // stay even if  CopySurface is true.
     
           // check that edge contains two pcurves on this surface:
           // either it is true seam on the current face, or belongs to two faces

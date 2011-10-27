@@ -14,7 +14,7 @@
 #include <gp_Ax2.hxx>
 
 
-//-- lbr le 13 decembre 95
+
 static gp_Ax2 ConeComputeAxes() { 
   static Standard_Integer firsttime=1;
   static Standard_Integer modif=0;

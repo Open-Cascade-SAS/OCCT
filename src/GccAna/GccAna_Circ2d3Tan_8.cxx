@@ -18,7 +18,7 @@
 #include <GccEnt_BadQualifier.hxx>
 #include <Precision.hxx>
 //=========================================================================
-//   Creation d un cercle tangent a une droite et a deux points.          +
+//   Creation of a circle tangent to a straight line and two points.      +
 //=========================================================================
 
 GccAna_Circ2d3Tan::
@@ -56,7 +56,7 @@ GccAna_Circ2d3Tan::
    }
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
    gp_Lin2d L1  = Qualified1.Qualified();

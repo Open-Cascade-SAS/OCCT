@@ -97,7 +97,7 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
   gp_Pnt2d         PMin,PMax;
 
   //------------------------------------------------------
-  // Recuperation Min Max domain1.
+  // Return Min Max domain1.
   //------------------------------------------------------
   if (D1.HasFirstPoint()) {MinDomain = D1.FirstParameter();}
   else                    {MinDomain = RealFirst();        }
@@ -106,8 +106,8 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
   else                    {MaxDomain = RealLast();        }
 
   //----------------------------------------------------------
-  // Decoupage de la premiere courbe selon les intervalles de
-  // continuite en tenant compte de D1
+  // Cutting the first curve by the intervals of
+  // continuity taking account of D1
   //----------------------------------------------------------
 //for (Standard_Integer IB1 = 1; IB1 <= Bis1->NbIntervals(); IB1++) {
   Standard_Integer IB1;
@@ -125,7 +125,7 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
       if ((IB1 == 1                   && Bis1->IsExtendAtStart()) || 
 	  (IB1 == Bis1->NbIntervals() && Bis1->IsExtendAtEnd())    ){
 	//--------------------------------------------------------
-	// Portion correspondante a une extension est un segment.	
+	// Part corresponding to an extension is a segment.	
 	//--------------------------------------------------------
 	SBis1 [IB1] = ConstructSegment (PMin,PMax,UMin,UMax);
       }
@@ -137,7 +137,7 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
   }
 
   //------------------------------------------------------
-  // Recuperation Min Max domain2.
+  // Return Min Max domain2.
   //------------------------------------------------------
   if (D2.HasFirstPoint()) {MinDomain = D2.FirstParameter();}
   else                    {MinDomain = RealFirst();        }
@@ -146,8 +146,8 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
   else                    {MaxDomain = RealLast();        }
 
   //----------------------------------------------------------
-  // Decoupage de la deuxieme  courbe selon les intervalles de
-  // continuite en tenant compte de D2
+  // Cut the second curve following the intervals of
+  // continuity taking account of D2
   //----------------------------------------------------------
 //for (Standard_Integer IB2 = 1; IB2 <= Bis2->NbIntervals(); IB2++) {
   Standard_Integer IB2;
@@ -165,7 +165,7 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
       if ((IB2 == 1                   && Bis2->IsExtendAtStart()) || 
 	  (IB2 == Bis1->NbIntervals() && Bis2->IsExtendAtEnd())    ){
 	//--------------------------------------------------------
-	// Portion correspondante a une extension est un segment.	
+	// Part corresponding to an extension is a segment.	
 	//--------------------------------------------------------
 	SBis2 [IB2] = ConstructSegment (PMin,PMax,UMin,UMax);
       }
@@ -177,7 +177,7 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
   }
 
   //--------------------------------------------------------------
-  // Boucle sur les intersections des portions de chaque courbe.
+  // Loop on the intersections of parts of each curve.
   //--------------------------------------------------------------
   for ( IB1 = 1; IB1 <= NB1; IB1++) {
     for ( IB2 = 1; IB2 <= NB2; IB2++) {
@@ -254,9 +254,9 @@ void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)&    CBis1,
 		     Handle(Bisector_BisecCC)::DownCast(Bis2),D2,Tol);
   }
   else {
-    // Si on arrive la une des deux bissectrices est un segment.
-    // Si une des bissectrice n est pas un segment on teste si 
-    // ses extremites sont sur la droite
+    // If we are here one of two bissectrices is a segment.
+    // If one of bissectrices is not a segment, it is tested if 
+    // its extremities are on the straight line.
 
     if (Type1 == STANDARD_TYPE(Geom2d_Line) && Type2 != STANDARD_TYPE(Geom2d_Line)) {
       TestBound(Handle(Geom2d_Line)::DownCast(Bis1),
@@ -297,15 +297,14 @@ void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)&    CBis1,
 
 //===================================================================================
 // function : NeighbourPerform
-// putpose  : Recherche de l intersection de 2 bissectrices courbe/courbe
-//            Voisines (ie Bis1 separe A et B et Bis2 separe B et C).
-//            Bis1 est parametree par B et Bis2 par C.
+// putpose  : Find the intersection of 2 neighbor bissectrices curve/curve
+//            (ie Bis1 separates A and B and Bis2 separates B and C).
+//            Bis1 is parameterized by B and Bis2 by C.
 //
-//            Methode : On parametre Bis2 par B 
-//            les 2 bissectrices sont alors parametree par la meme
-//            courbe.
-//            Soientt D1(u) = d(Bis1(u),B(u)) et D2(U) = d(Bis2(u),B(U))
-//            On cherche le parametre U0 pour lequel D1(U0)-D2(U0) = 0.
+//            Method : Bis2 is parameterized by B 
+//            2 bissectrices are thus parameterized by the same curve.
+//            Let D1(u) = d(Bis1(u),B(u)) and D2(U) = d(Bis2(u),B(U))
+//            Parameter U0 for which D1(U0)-D2(U0) = 0 is found.
 //===================================================================================
 void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
 				      const IntRes2d_Domain&           D1, 
@@ -325,7 +324,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
   Handle(Geom2d_Curve)     Guide;
   Handle(Bisector_BisecCC) BisTemp;
 
-  // Changement ligne guide sur Bis2.
+  // Change guiedline on Bis2.
   BisTemp      = Bis2->ChangeGuide();
   Guide        = Bis2->Curve(2);
 #ifdef DEB
@@ -335,7 +334,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
   Bis2->ValueAndDist(D2.FirstParameter(),U1,UMax,Dist);
   Bis2->ValueAndDist(D2.LastParameter() ,U1,UMin,Dist);
 #endif
-  // Calcul du domaine d intersection sur la ligne guide.
+  // Calculate the domain of intersection on the guideline.
   UMin = Max (D1.FirstParameter(),UMin);
   UMax = Min (D1.LastParameter() ,UMax);
 
@@ -343,7 +342,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
 
   if (UMin - Eps > UMax + Eps) {return;}
 
-  // Resolution F = 0 pour trouver le point commun.
+  // Solution F = 0 to find the common point.
   Bisector_FunctionInter Fint (Guide,Bis1,BisTemp);
   math_BissecNewton      Sol (Fint,UMin,UMax,Tol,20);
   if (Sol.IsDone()) {
@@ -361,11 +360,10 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
 
 
 
-//===================================================================================
+//=====================================================================================
 // function : TestBound
-// putpose  : Test si les extremites de Bis2 sont sur le segment coorespondant
-//            a Bis1.
-//===================================================================================
+// putpose  : Test if the extremities of Bis2 are on the segment cooresponding to Bis1.
+//=====================================================================================
 void Bisector_Inter::TestBound (const Handle(Geom2d_Line)&   Bis1,
 				const IntRes2d_Domain&       D1,
 				const Handle(Geom2d_Curve)&  Bis2,

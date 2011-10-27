@@ -33,8 +33,8 @@
 
 //=======================================================================
 //function : Create
-//purpose  : On traite le cas du Vertex en construisant, une line,
-//           ayant le vertex pour origine
+//purpose  : Process the case of Vertex by constructing a line
+//           with the vertex in the origin
 //=======================================================================
 BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Vertex& V,
 					 const Standard_Boolean Build) 
@@ -43,14 +43,14 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Vertex& V,
 {
   TheLaw.Nullify();
   uclosed = Standard_False;
-  vclosed = Standard_True; // loi constante
+  vclosed = Standard_True; // constant law
   myEdges =  new (TopTools_HArray1OfShape) (1, 1);
   myEdges->SetValue(1, V);
 
   if (Build) {
     myLaws = new (GeomFill_HArray1OfSectionLaw) (1, 1); 
 //    gp_Pnt Origine;
-    gp_Dir D(1,0,0); //Suivant la normal
+    gp_Dir D(1,0,0); //Following the normal
     Handle(Geom_Line) L = new (Geom_Line)(BRep_Tool::Pnt(V), D);
     Standard_Real Last =  2*BRep_Tool::Tolerance(V)+Precision::PConfusion();
     Handle(Geom_TrimmedCurve) TC = new (Geom_TrimmedCurve) (L, 0, Last);
@@ -78,7 +78,7 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W,
 
 //=======================================================================
 //function : Create
-//purpose  : Wire evolutif
+//purpose  : Evolutive Wire
 //=======================================================================
 
 BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W,
@@ -94,7 +94,7 @@ BRepFill_ShapeLaw::BRepFill_ShapeLaw(const TopoDS_Wire& W,
 
 //=======================================================================
 //function : Init
-//purpose  : Cas du wire : On cree une table de GeomFill_SectionLaw
+//purpose  : Case of the wire : Create a table of GeomFill_SectionLaw
 //=======================================================================
 void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 {
@@ -132,7 +132,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 	  if (E.Orientation() == TopAbs_REVERSED) {
 	    Standard_Real aux;
 	    Handle(Geom_Curve) CBis;
-	    CBis = C->Reversed(); // Pour eviter de deteriorer la topologie
+	    CBis = C->Reversed(); // To avoid the deterioration of the topology
 	    aux = C->ReversedParameter(First);
 	    First = C->ReversedParameter(Last);
 	    Last = aux;
@@ -152,11 +152,11 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 	    }
 	  }
 
-	  if ((ii>1) || !IsReallyClosed ) { // On trimme C
+	  if ((ii>1) || !IsReallyClosed ) { // Trim C
 	    Handle(Geom_TrimmedCurve) TC = new Geom_TrimmedCurve(C,First, Last);
 	    C = TC;
 	  }
-	  // sinon On garde l'integrite de la courbe
+	  // otherwise preserve the integrity of the curve
 	  if (TheLaw.IsNull()) {
 	    myLaws->ChangeValue(ii) = new GeomFill_UniformSection(C);
 	  }
@@ -171,10 +171,10 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 
 //  cout << "new law" << endl;
 
-  // La loi est elle ferme en U ?
+  //  Is the law closed by U ?
   uclosed = W.Closed();
   if (!uclosed) {
-    // le flag n'etant pas tres sur, on fait une verif
+    // if not sure about the flag, make check
     TopoDS_Edge Edge1, Edge2;
     TopoDS_Vertex V1,V2;
     Edge1 = TopoDS::Edge (myEdges->Value(myEdges->Length()));
@@ -263,7 +263,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 
 ///=======================================================================
 //function : VertexTol
-//purpose  : Evalue le trou entre 2 edges de la section
+//purpose  : Evaluate the hole between 2 edges of the section
 //=======================================================================
  Standard_Real BRepFill_ShapeLaw::VertexTol(const Standard_Integer Index,
 					      const Standard_Real Param) const
@@ -271,7 +271,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
   Standard_Real Tol = Precision::Confusion();
   Standard_Integer I1, I2;
   if ( (Index==0) || (Index==myEdges->Length()) ) {
-    if (!uclosed) return Tol; //Le moins faux possible
+    if (!uclosed) return Tol; //The least possible error
     I1 = myEdges->Length();
     I2 = 1;
   }
@@ -339,7 +339,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     TopoDS_Vertex V;
     W = TopoDS::Wire(myShape);
     if(!W.IsNull()) {
-      //  Concatenation des aretes
+      //  Concatenation of edges
       Standard_Integer ii;
       Standard_Real epsV, f, l;
       Standard_Boolean Bof;
@@ -388,7 +388,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
  
  TopoDS_Edge Edge1, Edge2;
   if ( (Index==0) || (Index==myEdges->Length()) ) {
-    if (!uclosed) return GeomAbs_C0; //Le moins faux possible
+    if (!uclosed) return GeomAbs_C0; //The least possible error
 
     Edge1 = TopoDS::Edge (myEdges->Value(myEdges->Length()));
     Edge2 = TopoDS::Edge (myEdges->Value(1));

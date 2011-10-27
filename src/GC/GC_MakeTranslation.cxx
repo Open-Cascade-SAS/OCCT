@@ -8,7 +8,7 @@
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
-//   Creation d une translation 3d de Geom de vecteur de tanslation Vec.  +
+//   Creation of a 3D Geom translation of tanslation vector Vec.  +
 //=========================================================================
 
 GC_MakeTranslation::GC_MakeTranslation(const gp_Vec&  Vec ) {
@@ -17,8 +17,8 @@ GC_MakeTranslation::GC_MakeTranslation(const gp_Vec&  Vec ) {
 }
      
 //=========================================================================
-//   Creation d une translation 3d de Geom de vecteur de tanslation le    +
-//   vecteur reliant Point1 a Point2.                                     +
+//    Creation of a 3D Geom translation of translation vector connecting 
+//    Point1 and Point2.                                     +
 //=========================================================================
 
 GC_MakeTranslation::GC_MakeTranslation(const gp_Pnt&  Point1 ,

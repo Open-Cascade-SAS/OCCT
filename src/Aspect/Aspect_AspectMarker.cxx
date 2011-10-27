@@ -7,13 +7,13 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au contexte
-//		de trace de markers
+//-Design	Declaration of variables specific to the context
+//		of tracing of markers
 
-//-Warning	Un contexte de trace de marker est defini par :
-//		- la couleur
-//		- le type
-//		- l'echelle
+//-Warning	Context of tracing of markers is defined by :
+//		- the color
+//		- the type
+//		- the scale
 
 //-References	
 
@@ -28,13 +28,13 @@
 
 //-Global data definitions
 
-//	-- la couleur
+//	-- color
 //	MyColor	:	Color;
 
-//	-- le type
+//	-- type
 //	MyType	:	TypeOfMarker;
 
-//	-- l'echelle
+//	-- scale
 //	MyScale	:	Standard_Real;
 
 //-Constructors

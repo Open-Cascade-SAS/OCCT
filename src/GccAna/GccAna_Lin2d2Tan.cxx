@@ -1,8 +1,8 @@
 // File GccAna_Lin2d2Tan.cxx, REG 08/07/91
 
 //=========================================================================
-//   Droite tangente a deux cercles ou tangente a un cercle et passant    +
-//   par un point.                                                        +
+//   Straight line tangent to two circles or tangent to a circle and passing    +
+//   through point.                                                        +
 //=========================================================================
 
 #include <GccAna_Lin2d2Tan.ixx>
@@ -17,7 +17,7 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Droite passant par deux points.                                      +
+//   Straight line passing through two points.                                      +
 //   ===============================                                      +
 //=========================================================================
 
@@ -58,14 +58,13 @@ GccAna_Lin2d2Tan::
  }
 
 //=========================================================================
-//   Droite tangente a un cercle passant par un point.                    +
+//   Straight line tangent to a circle passing by a point.                +
 //   =================================================                    +
-//   Suivant le qualifieur attache au cercle Qualified1 (C1) on definit   +
-//   la direction de la tangente a calculer.                              +
-//   Cette tangente aura comme point d attache le point P1 (point de tan- +
-//   gence avec le cercle.                                                +
-//   Elle fera un angle A (de sinus R1/dist ou -R1/dist) avec la droite   +
-//   passant par le centre du cercle et ThePoint.                         +
+//   Basing on the qualifier attached to circle Qualified1 (C1) define    +
+//   the direction of the tangent to be calculated.                       +
+//   This tangent will have connection point P1 (point of tangency with the circle. +
+//   It has angle A (sinus R1/dist or -R1/dist) with straight line        +
+//   passing by the center of the circle and ThePoint.                    +
 //=========================================================================
 
 GccAna_Lin2d2Tan::
@@ -152,21 +151,21 @@ GccAna_Lin2d2Tan::
   }
 
  //=========================================================================
- //   Droite tangente a deux cercles.                                      +
- //   ===============================                                      +
- //   Dans le cas limite (les deux cercles tangents interieurs l un a      +
- //   l autre) on prend la droite orthogonale a la droite reliant les deux +
- //   cercles.                                                             +
- //   Dans les autres cas on fait subir au centre de C1 (Qualified1) ou de +
- //   C2 (Qualified2), suivant que R1 est plus grand ou non que R2, une    +
- //   rotation d angle A avec sinus(A) = (R1+R2)/dist ou                   +
- //                           sinus(A) = (R1-R2)/dist ou                   +
- //                           sinus(A) = (R2-R1)/dist ou                   +
- //                           sinus(A) = (-R1-R2)/dist                     +
- //   Le point ainsi determine est P1 ou P2.                               +
- //   la direction de la droite a calculer est celle de la droite passant  +
- //   par le centre de la rotation (centre de C1 ou de C2) et P1 ou P2.    +
- //   On translate ensuite la droite pour la rendre tangente a C1.         +
+ //   Straight line tangent to two circles.                                +
+ //   ====================================                                 +
+ //   In the boundary cas (two interior circles are tangent to each other) +
+ //   take the straight line orthogonal to the straight line connecting    +
+ //   two circles.                                                         +
+ //   In other cases subject the center of C1 (Qualified1) or of           +
+ //   C2 (Qualified2), provided that R1 is greater than R2, to a           +
+ //   rotation of angle A with sinus(A) = (R1+R2)/dist or                  +
+ //                            sinus(A) = (R1-R2)/dist or                  +
+ //                            sinus(A) = (R2-R1)/dist or                  +
+ //                            sinus(A) = (-R1-R2)/dist                    +
+ //   The point found this way is P1 or P2.                                +
+ //   The direction of the straight line to be calculated  should  pass by +
+ //   the center of rotation (center of C1 or of C2) and P1 or P2.         +
+ //   Then translate the straight line to make it tangent to C1.           +
  //=========================================================================
 
  GccAna_Lin2d2Tan::

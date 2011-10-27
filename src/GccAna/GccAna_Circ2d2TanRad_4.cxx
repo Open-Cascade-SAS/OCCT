@@ -18,16 +18,16 @@
 
 #include <Precision.hxx>
 
-// circulaire tangent a deux ligne de rayon donne
+// circular tangent to two lines of given radius
 //===============================================
 //========================================================================
-// On initialise WellDone a false.                                       +
-// On recupere les deux lignes L1 et L2.                                 +
-// On sort en erreur dans les cas ou la construction est impossible.     +
-// On fait les paralleles a L1 et L2 dans le bon sens.                   +
-// On intersecte les paralleles ==> Le point de centre de la solution.   +
-// On cree la solution qu on ajoute aux solutions deja trouvees.         +
-// On remplit les champs.                                                +
+// Initialize WellDone to false.                                       +
+// Return two lines L1 and L2.                                 +
+// Leave with error if the construction is impossible.     +
+// Create parallel lines to L1 and L2 in the proper direction.                   +
+// Intersect parallels ==> The center point of the solution.   +
+// Create the solution to be added to the already found solutions.         +
+// Fill the fields.                                                +
 //========================================================================
 
 GccAna_Circ2d2TanRad::

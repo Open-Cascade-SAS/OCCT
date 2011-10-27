@@ -1,10 +1,10 @@
 /***********************************************************************
 
-     FONCTION :
+     FUNCTION :
      ----------
-        Classe Aspect_Driver :
+        Class Aspect_Driver :
 
-     HISTORIQUE DES MODIFICATIONS   :
+     HISTORY OF MODIFICATIONS   :
      --------------------------------
 
       14-05-98 : GG ; Disable using MFT when the symbol
@@ -12,13 +12,13 @@
 		      See dirMFTisDefined changes. 
 
       30-01-98 : GG ; SPEC_MFT
-              L'utilisation des polices MFT devient parametrable.
-	      Le driver doit utiliser la methode UseMFT() pour
-	      savoir s'il doit utiliser ou non les polices
-	      MDTV a la place des polices system.
+              Use of polices MFT becomes parameterized.
+	      The driver should use method UseMFT() to
+	      know if it is necessary or not to use MDTV policies
+	      instead of system policies.
 
-		-> Modifications dans SetFontMap()
-		-> Nouvelle methode UseMFT()
+		-> Modifications in SetFontMap()
+		-> New method UseMFT()
 
 ***********************************************************************/
 

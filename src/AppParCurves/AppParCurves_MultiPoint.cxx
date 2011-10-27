@@ -1,5 +1,4 @@
 //File AppParCurves_MultiPoint.cxx
-//Lpa, le 3/12/91
 
 
 #include <AppParCurves_MultiPoint.ixx>

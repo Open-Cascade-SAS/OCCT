@@ -32,34 +32,6 @@
 // - Draw_Appli is differently declared.
   
 
-// *******************************************************************
-//    CKY  18 Juilet 1997
-// *******************************************************************
-//  MAIN a la sauce WNT
-//  EXPLICATION : un MAIN sous NT, c est quelque chose ... different de sous UNIX
-//  ilya un tas de trucs a initialiser
-//  Deux aspects : le main et Draw_Appli
-//  le main est specifique : arguments, creation de "console"
-//  Draw_Appli aussi, mais comme certains peuvent le redefinir, et que
-//  NT ne permet pas cela, eh be il est duplique dans chaque main ...
-//  Ceci a l identique. Youpi
-//
-//  Ce source comprend :
-//  - un main repris : WinMain, qui en particlier definit une "console"
-//  - un Draw_Appli repris
-//  - la plupart des ifdef WNT sont laisses pour memoire
-//  MAIS CE CODE N EST COMPILABLE QU EN NT
-//
-//  MODE D EMPLOI
-//  Dans le source de l exec .cxx, Inclure ce gros paquet (NTMain.pxx)
-//  a la place des includes courants et du main, en ifdef WNT of course
-//
-//  On laisse les includes specifiques ainsi que le Draw_InitAppli
-//    qui lui aussi est specifique
-//  
-//  ATTENTION, avant de faire umake, taper cette commande magique (?)
-//  setenv (WOK_EXETYPE) W
-// *******************************************************************
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

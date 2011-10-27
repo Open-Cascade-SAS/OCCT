@@ -247,7 +247,7 @@ void DDataStd_DrawPresentation::AfterResume()
 
 //=======================================================================
 //function : BeforeUndo
-//purpose  : le NamedShape associe doit etre present
+//purpose  : the associated NamedShape should be present
 //=======================================================================
 
 Standard_Boolean DDataStd_DrawPresentation::BeforeUndo (const Handle(TDF_AttributeDelta)& AD,
@@ -285,7 +285,7 @@ Standard_Boolean DDataStd_DrawPresentation::BeforeUndo (const Handle(TDF_Attribu
 
 //=======================================================================
 //function : AfterUndo
-//purpose  : le NamedShape associe doit etre present
+//purpose  : associated NamedShape should be present
 //=======================================================================
 
 Standard_Boolean DDataStd_DrawPresentation::AfterUndo (const Handle(TDF_AttributeDelta)& AD,

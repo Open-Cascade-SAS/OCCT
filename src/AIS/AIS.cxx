@@ -461,11 +461,11 @@ Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge1,
 
   if (isOnPlanC1 && isOnPlanC2) return Standard_True;
 
-  if (!isOnPlanC1 && isOnPlanC2) {// courbe 2 seulement dans le plan
+  if (!isOnPlanC1 && isOnPlanC2) {// curve 2 only in the plane
     indexExt = 1;
     extCurve = aSov1;
   }
-  else if (isOnPlanC1 && !isOnPlanC2) {// courbe 1 seulement dans le plan
+  else if (isOnPlanC1 && !isOnPlanC2) {// curve 1 only in the plane
     indexExt = 2;
     extCurve = aSov2;
   }
@@ -742,7 +742,7 @@ void AIS::ComputeLengthBetweenPlanarFaces( const TopoDS_Face &      FirstFace,
                                            gp_Pnt &                 Position )
 {
   TopExp_Explorer aExp( FirstFace, TopAbs_VERTEX );
-  // cas des plans infinis . SMO.
+  // case of infinite planes. SMO.
   if (!aExp.More())
     FirstAttach = Plane1.Location();
   else  
@@ -808,7 +808,7 @@ static gp_Pnt FindFarPoint (const gp_Ax1 &           anAxis,
   TopExp_Explorer Explo (aFace, TopAbs_VERTEX);
 
   if (!Explo.More()) {
-    // Cas des plans infinis (pas de Vertex, pas d'arete)
+    // Case of infinite planes (no Vertex, no edge)
     gp_Pln plane;
     Handle( Geom_Surface ) aSurf;
     AIS_KindOfSurface KOS;
@@ -1370,7 +1370,7 @@ void AIS::ComputeProjEdgePresentation( const Handle( Prs3d_Presentation )& aPres
 
   TopoDS_Edge E;
 
-  // Calcul de la presentation de l'edge
+  // Calculate  presentation of the edge
   if (ProjCurve->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
     // CLE
     // const Handle(Geom_Line) & gl = (Handle(Geom_Line)&) ProjCurve;
@@ -1399,7 +1399,7 @@ void AIS::ComputeProjEdgePresentation( const Handle( Prs3d_Presentation )& aPres
   }
   StdPrs_WFDeflectionShape::Add(aPresentation, E, aDrawer);
 
-  //Calcul de la presentation des lignes de raccord
+  //Calculate the presentation of line connections
   aDrawer->WireAspect()->SetTypeOfLine(aCallTOL);
   if (!isInfinite) {
     gp_Pnt ppf(0.0,0.0,0.0), ppl(0.0,0.0,0.0);
@@ -1461,7 +1461,7 @@ void AIS::ComputeProjVertexPresentation( const Handle( Prs3d_Presentation )& aPr
     pa->SetTypeOfMarker(aProjTOM);
   }
   
-  // calcul du projete
+  // calculate the projection
   StdPrs_Point::Add(aPresentation, new Geom_CartesianPoint(ProjPoint), aDrawer);
 
   if (!aDrawer->HasWireAspect()){
@@ -1476,9 +1476,9 @@ void AIS::ComputeProjVertexPresentation( const Handle( Prs3d_Presentation )& aPr
     li->SetWidth(aWidth);
   }
   
-  // Si les points ne sont pas confondus...
+  // If the points are not mixed...
   if (!ProjPoint.IsEqual (BRep_Tool::Pnt(aVertex),Precision::Confusion())) {
-    // calcul des lignes de rappel
+    // calculate the lines of recall
     BRepBuilderAPI_MakeEdge MakEd(ProjPoint,BRep_Tool::Pnt(aVertex));
     StdPrs_WFDeflectionShape::Add(aPresentation, MakEd.Edge(), aDrawer);
   }

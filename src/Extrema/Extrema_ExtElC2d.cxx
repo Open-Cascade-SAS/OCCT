@@ -25,17 +25,16 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
 				    const gp_Lin2d& C2,
 				    const Standard_Real)
 /*-----------------------------------------------------------------------------
-Fonction:
-   Recherche de la distance minimale entre 2 droites.
+Function:
+   Find min distance between 2 straight lines.
 
-Methode:
-  Soit D1 et D2, les 2 directions des droites C1 et C2.
-  2 cas sont consideres:
-  1- si Angle(D1,D2) < AngTol, les droites sont paralleles.
-     La distance est la distance entre un point quelconque de C1 et la droite
-     C2.
-  2- si Angle(D1,D2) > AngTol:
-     Soit P = C1(u1) et P =C2(u2) le point intersection:
+Method:
+  Let D1 and D2 be 2 directions of straight lines C1 and C2.
+  2 cases are considered:
+  1- if Angle(D1,D2) < AngTol, the straight lines are parallel.
+     The distance is the distance between any point of C1 and straight line C2.
+  2- if Angle(D1,D2) > AngTol:
+     Let P = C1(u1) and P =C2(u2) the point intersection:
      
 -----------------------------------------------------------------------------*/
 {
@@ -60,14 +59,14 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
 				    const gp_Circ2d& C2,
 				    const Standard_Real)
 /*-----------------------------------------------------------------------------
-Fonction:
-   Recherche des distances extremales entre la droite C1 et le cercle C2.
+Function:
+  Find extreme distances between straight line C1 and circle C2.
 
-Methode:
-   Soit P1=C1(u1) et P2=C2(u2) deux points solutions
-        D la direction de la droite C1
-	T la tangente au point P2;
-  Alors, ( P1P2.D = 0. (1)
+Method:
+  Let P1=C1(u1) and P2=C2(u2) be two solution points
+        D the direction of straight line C1
+	T the tangent at point P2;
+  Then, ( P1P2.D = 0. (1)
          ( P1P2.T = 0. (2)
 -----------------------------------------------------------------------------*/
 {
@@ -75,7 +74,7 @@ Methode:
   myDone = Standard_False;
   myNbExt = 0;
 
-// Calcul de T1 dans le repere du cercle ...
+// Calculate T1 in the reference of the circle ...
   gp_Dir2d D = C1.Direction();
   gp_Dir2d x2, y2;
   x2 = C2.XAxis().Direction();
@@ -128,7 +127,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
   myDone = Standard_False;
   myNbExt = 0;
 
-// Calcul de T1 dans le repere de l ellipse ...
+// Calculate T1 in the reference of the ellipse ...
   gp_Dir2d D = C1.Direction();
   gp_Dir2d x2, y2;
   x2 = C2.XAxis().Direction();
@@ -179,7 +178,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1, const gp_Hypr2d& C2)
   myDone = Standard_False;
   myNbExt = 0;
 
-// Calcul de T1 dans le repere de la parabole ...
+// Calculate T1 in the reference of the parabole ...
   gp_Dir2d D = C1.Direction();
   gp_Dir2d x2, y2;
   x2 = C2.XAxis().Direction();
@@ -215,7 +214,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1, const gp_Parab2d& C2)
   myDone = Standard_False;
   myNbExt = 0;
 
-// Calcul de T1 dans le repere de la parabole ...
+// Calculate  T1 in the reference of the parabole ...
   gp_Dir2d D = C1.Direction();
   gp_Dir2d x2, y2;
   x2 = C2.MirrorAxis().Direction();

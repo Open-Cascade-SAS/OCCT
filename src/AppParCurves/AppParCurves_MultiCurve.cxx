@@ -1,5 +1,5 @@
 //File AppParCurves_MultiCurve.cxx
-//Lpa, le 3/12/91
+
 
 #include <AppParCurves_MultiCurve.ixx>
 #include <TColgp_Array1OfPnt.hxx>

@@ -9,25 +9,23 @@
 #include <gp_Dir2d.hxx>
 
 //=========================================================================
-//    typedef des objets manipules :                                      +
+//    typedef of handled objects :                                      +
 //=========================================================================
 
 typedef math_DirectPolynomialRoots Roots;
 
 //=========================================================================
-//   Cercle tangent a un point    Point1.                                 +
-//          centre sur une droite OnLine.                                 +
-//          de rayon              Radius.                                 +
+//   Circle tangent to a point      Point1.                               +
+//          center on straight line OnLine.                               +
+//          radius                  Radius.                               +
 //                                                                        +
-//  On initialise le tableau de solutions cirsol ainsi que tous les       +
-//  champs.                                                               +
-//  On elimine les cas ne presentant pas de solution.                     +
-//  On resoud l equation du second degre indiquant que le point de centre +
-//  recherche (xc,yc) est a une distance Radius du point Point1 et        +
-//                        sur la droite OnLine.                           +
-//  Les solutions sont representees par les cercles :                     +
-//                   - de centre Pntcen(xc,yc)                            +
-//                   - de rayon Radius.                                   +
+//  Initialize the table of solutions cirsol and all fields.              +
+//  Eliminate cases not being the solution.                     +
+//  Solve the equation of second degree showing that the found center point +
+//  (xc,yc) is at distance Radius from point Point1 and on the straight line OnLine. +
+//  The solutions are represented by circles :                     +
+//                   - of center Pntcen(xc,yc)                            +
+//                   - of radius Radius.                                   +
 //=========================================================================
 
 GccAna_Circ2dTanOnRad::

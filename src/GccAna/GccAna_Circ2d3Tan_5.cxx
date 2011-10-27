@@ -18,9 +18,9 @@
 #include <IntAna2d_Conic.hxx>
 #include <GccEnt_BadQualifier.hxx>
 
-//=========================================================================
-//   Creation d un cercle tangent a un cercle, une droite et un point.    +
-//=========================================================================
+//===========================================================================
+//   Creation of a circle tangent to a circle, a straight line and a point. +
+//===========================================================================
 
 GccAna_Circ2d3Tan::
    GccAna_Circ2d3Tan (const GccEnt_QualifiedCirc& Qualified1 ,
@@ -29,7 +29,7 @@ GccAna_Circ2d3Tan::
 		      const Standard_Real         Tolerance  ):
 
 //=========================================================================
-//   Initialisation des champs.                                           +
+//   Initialization of fields.                                           +
 //=========================================================================
 
    cirsol(1,4)     ,
@@ -64,7 +64,7 @@ GccAna_Circ2d3Tan::
    }
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
    gp_Circ2d C1(Qualified1.Qualified());
@@ -179,7 +179,7 @@ GccAna_Circ2d3Tan::
 	       for (Standard_Integer k = 1 ; k <= nbsol3 ; k++) {
 		 if (NbrSol==4)
 		   break;
-// pop : si le rayon est trop grand ( qu'est trop grand : avoir ) pas de creation		 
+// pop : if the radius is too great - no creation		 
 		 if (Radius(k) > MaxRad) break;
 		 if (Abs(Radius(k)) < MinRad) break;
 

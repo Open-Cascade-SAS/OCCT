@@ -27,7 +27,7 @@ static void ComputePoles ( const Standard_Real R,
 
   Standard_Integer i, j;
 
-  // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+  // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
     nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
   Standard_Integer  
@@ -96,9 +96,9 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface
   isvperiodic = Standard_False;
 
   Standard_Integer i,j;
-  // construction du tore dans le repere de reference xOy.
+  // construction of the torus in the reference mark xOy.
 
-  // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+  // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
     nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
   Standard_Integer  
@@ -128,8 +128,8 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface
   vmults(1)++; vmults(nbVKnots)++;
 
 
-  // On replace la bspline dans le repere du tore.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the reference of the torus.
+  // and calculate the weight of the bspline.
   Standard_Real W1, W2;
   gp_Trsf Trsf;
   Trsf.SetTransformation( T.Position(), gp::XOY());
@@ -233,8 +233,8 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface
     CosU = Cos(AlfaU);
   }
 
-  // On replace la bspline dans le repere du tore.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the reference of the torus.
+  // and calculate the weight of the bspline.
   gp_Trsf Trsf;
   Trsf.SetTransformation( T.Position(), gp::XOY());
 
@@ -276,7 +276,7 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface
   nbUKnots = 4;
   nbVKnots = 4;
 
-  // Construction du Tore dans le repere reference xOy.
+  // Construction of the Torus in the reference mark xOy.
   
   Standard_Real R = T.MajorRadius();
   Standard_Real r = T.MinorRadius();
@@ -291,8 +291,8 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface
     umults( i) = vmults( i) = 2;
   }
 
-  // On replace la bspline dans le repere du tore.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the mark of the torus.
+  // and calculate the weight of the bspline.
   gp_Trsf Trsf;
   Trsf.SetTransformation( T.Position(), gp::XOY());
 

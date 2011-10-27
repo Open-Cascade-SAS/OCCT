@@ -46,16 +46,16 @@ Bisector_BisecAna::Bisector_BisecAna()
 }
 
 //=============================================================================
-//              calcul de la distance du point a la bissectrice.              +
-//              et orientation de la bissectrice.                             +
-//    apoint        :       point de passage.                                 +
-//    abisector     :       la bissectrice calculee.                          +
-//    afirstvector  :       premier vecteur. \                                +
-//    asecondvector :       deuxieme vecteur./ pour choisir le bon cadran.    +
-//    adirection    :       indique si bissectrice interieure ou exterieure.  +
-//    aparameter    : out : le parametre de depart de la bissectrice.         +
-//    asense        : out : le sens de la bissectrice.                        +
-//    astatus       : out : indique si on garde la bissectrice.               +
+//              calcul the distance betweem the point and the bissectrice.              +
+//              and orientation of the bissectrice.                             +
+//    apoint        :       point of passage.                                 +
+//    abisector     :       calculated bissectrice.                          +
+//    afirstvector  :       first vector. \                                +
+//    asecondvector :       second vector./ to choose the proper sector.    +
+//    adirection    :       shows if the bissectrice is interior or exterior.  +
+//    aparameter    : out : the start parameter of the bissectrice.         +
+//    asense        : out : the direction of the bissectrice.                        +
+//    astatus       : out : shows if the bissectrice is preserved.               +
 //=============================================================================
 Standard_Real Bisector_BisecAna::Distance (
    const gp_Pnt2d&             apoint,
@@ -115,21 +115,21 @@ Standard_Real Bisector_BisecAna::Distance (
   gp_Dir2d secdirrev = aseconddir.Reversed();
  
 
-// 1er passage pour savoir si la courbe est dans le bon cadran
+// 1st passage to learn if the curve is in the proper sector
     
   if(asense) {
-    // le status n est determiner que dans le cas oncurve ie:
-    // la tangente a la bissectrice est bisectrice des deux vecteurs.
+    // the status is determined only in case on curve ie:
+    // tangent to the bissectrice is bisectrice of two vectors.
     Standard_Real SinPlat = 1.e-3;
-    if (Abs(afirstdir^aseconddir) < SinPlat) {   //plat
-      if (afirstdir*aseconddir >= 0.0) {       //tangente confondues
-	// bonne si le produit scalaire est proche de 1.
+    if (Abs(afirstdir^aseconddir) < SinPlat) {   //flat
+      if (afirstdir*aseconddir >= 0.0) {       //tangent mixed
+	// correct if the scalar product is close to 1.
 	if (Abs(tangdir*afirstdir) < 0.5) {
 	  astatus = Standard_False;            
 	}
       }
-      else {  // tangentes opposees.
-	// bonne si le produit scalaire proche de 0.
+      else {  // opposed tangents.
+	// correct if the scalar product is close to 0.
 	if (Abs(tangdir*afirstdir) > 0.5 ) { 
 	  astatus = Standard_False;
 	}
@@ -146,19 +146,19 @@ Standard_Real Bisector_BisecAna::Distance (
 // Replacement of -1.E-8 for a tolerance 1.e-4
     Standard_Real aTol = 1.e-4;
 
-    if ((afirstdir^secdirrev)*adirection < -0.1) {   // rentrant
+    if ((afirstdir^secdirrev)*adirection < -0.1) {   // input
       if((afirstdir^tangdir)*adirection < aTol &&
 	 (secdirrev^tangdir)*adirection < aTol) asense = Standard_False;
     }
-    else if((afirstdir^secdirrev)*adirection > 0.1) { // sortant
+    else if((afirstdir^secdirrev)*adirection > 0.1) { // output
       if((afirstdir^tangdir)*adirection < aTol ||
 	 (secdirrev^tangdir)*adirection < aTol) asense = Standard_False;
     }
-    else  {                                                // plat
+    else  {                                                // flat
       if (afirstdir.Dot(secdirrev) > 0.) {                // tangent 
 	if ((afirstdir^tangdir)*adirection < 0.) asense = Standard_False;
       }
-      else{                                                // rebroussement
+      else{                                                // turn back
 //  Modified by Sergey KHROMOV - Thu Oct 31 14:16:53 2002
 // 	if ((afirstdir.Dot(tangdir))*adirection > 0.) asense = Standard_False;
 	if (afirstdir.Dot(tangdir) < 0.) asense = Standard_False;
@@ -171,15 +171,15 @@ Standard_Real Bisector_BisecAna::Distance (
 }
 
 //===========================================================================
-//    calcul de la bissectrice entre deux courbes issue d un point.         +
+//    calculate the bissectrice between two curves coming from a point.         +
 //                                                                          +
-//   afirstcurve   : \ courbes entre lesquelles on veut calculer la         +
-//   asecondcurve  : / bissectrice.                                         +
-//   apoint        :   point par lequel doit passer la bissectrice.         +
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      +
-//   asecondvector : / la bissectrice doit se trouver.                      +
-//   adirection    :   indique le cote de la bissectrice a conserver.       +
-//   tolerance     :   seuil a partir duquel les bisectrices sont degenerees+
+//   afirstcurve   : \ curves the bissectrice between which will be calculated.      +
+//   asecondcurve  : /                                          +
+//   apoint        :   point through which the bissectrice should pass.         +
+//   afirstvector  : \ vectors to find the sector where       +
+//   asecondvector : / the bissectrice should be located.                      +
+//   adirection    :   shows the side of the bissectrice to be preserved.       +
+//   tolerance     :   threshold starting from which the bisectrices are degenerated +
 //===========================================================================
 void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 				const Handle(Geom2d_Curve)& asecondcurve  ,
@@ -225,7 +225,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
   gp_Lin2d line1,line2;
 
 //=============================================================================
-//                Determination de la nature des arguments.                   +
+//                Determination of the nature of arguments.                   +
 //=============================================================================
 
   if (type1 == STANDARD_TYPE(Geom2d_Circle)) {
@@ -273,7 +273,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
   switch(cas) {
 
 //=============================================================================
-//                       Bissectrice cercle - cercle.                         +
+//                       Bissectrice circle - circle.                         +
 //=============================================================================
 
   case 1 : {
@@ -281,7 +281,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     Standard_Real radius2 = circle2.Radius();
 
     //-----------------------------------------------------
-    // Cas particulier ou les deux cercles sont confondus.
+    // Particular case when two circles are mixed.
     //-----------------------------------------------------
     if (circle1.Location().IsEqual(circle2.Location(),PreConf)&&
 	(Abs(radius1 - radius2) <= PreConf)){
@@ -339,7 +339,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 					      parameter2);
       }
       break;
-    } //fin cas part cercles confondus. 
+    } //end of case mixed circles. 
     
     if (radius1 < radius2) {
       gp_Circ2d circle = circle1;
@@ -351,9 +351,8 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
       radius2 = radius;
     }
     
-    // petit recadrage des cercles. dans le cas ou les cercles
-    // sont OnCurve , si ils sont presque tangents on les rends
-    // tangents.
+    // small reframing of circles. in the case when the circles
+    // are OnCurve , if they are almost tangent they become tangent.
     Standard_Real    EntreAxe = circle1.Location().Distance(circle2.Location());
     Standard_Real    D1       = 0.5*(radius1 - EntreAxe - radius2);
     Standard_Boolean CirclesTangent = Standard_False;
@@ -362,7 +361,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 //     if ( oncurve && Abs(D1) <  PreConf) {
     if ( oncurve && Abs(D1) <  PreConf && tan1.IsParallel(tan2, 1.e-8)) {
 //  Modified by Sergey KHROMOV - Thu Oct 31 12:42:22 2002 Begin
-      // C2 inclus dans C1 et tangent.
+      // C2 included in C1 and tangent.
       circle1.SetRadius(radius1 - D1);
       circle2.SetRadius(radius2 + D1);
       CirclesTangent = Standard_True;
@@ -373,12 +372,12 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 //       if (oncurve && Abs(D1) < PreConf) {
       if (oncurve && Abs(D1) < PreConf && tan1.IsParallel(tan2, 1.e-8)) {
 //  Modified by Sergey KHROMOV - Thu Oct 31 12:44:25 2002 End
-	// C2 et C1 tangents et disjoints.
+	// C2 and C1 tangent and disconnected.
 	circle1.SetRadius(radius1 - D1);
 	circle2.SetRadius(radius2 - D1);
 	CirclesTangent = Standard_True;
       }
-    }   // fin recadrage.
+    }   // end of reframing.
 
     GccAna_Circ2dBisec Bisector(circle1,circle2);
     
@@ -432,14 +431,14 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	  if (!thesense) secondparameter = - Precision::Infinite();
 	  
 	  if (oncurve) {
-	    // bisectrice droite et oncurve 
-	    // soit cassure entre deux cercles de meme rayon soit cercles tangent.
+	    // bisectrice right and oncurve 
+	    // is cut between two circle of the same radius if circles are tangent.
 
-	    // si tangent plat et que  la bissectrice est du cote de la concavite
-	    // d un des cercle . la bissectrice est un segment du point commun au 
-	    // premier des 2 centre de cercle qu elle rencontre. 
-	    // dan ce cas il est important de mettre un segmnent pour les
-	    // intersection dans Tool2d.
+	    // if tangent flat and the bissectrice at the side of the concavity
+	    // of one of the circles. the bissectrice is a segment of the point common to 
+	    // first of 2 centers of circle that it meets. 
+	    // in this case it is important to set a segmnent for 
+	    // intersection in Tool2d.
 	    
 	    if (CirclesTangent) {
 	      //  Modified by skv - Tue Apr 13 17:23:31 2004 IDEM(Airbus) Begin
@@ -462,7 +461,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	      }
 	      //  Modified by skv - Tue Apr 13 17:23:32 2004 IDEM(Airbus) End
 	      if (tan1.Dot(tan2) < 0.) {
-		// plat et nom rebroussement.
+		// flat and not turn back.
 		Standard_Real Par1 = ElCLib::Parameter(gpline, circle1.Location());
 		Standard_Real Par2 = ElCLib::Parameter(gpline, circle2.Location());
 		Standard_Real MinPar = Min(Par1,Par2);
@@ -521,13 +520,12 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
   break;
     
 //=============================================================================
-//                       Bissectrice cercle - droite.                         +
+//                       Bissectrice circle - straight.                         +
 //=============================================================================
       
   case 2 : {
-    // petit recadrage des cercles. dans le cas OnCurve.
-    // Si le cercle et la droite  sont presque tangents on les rends
-    // tangents.
+    // small reframing of circles. in case OnCurve.
+    // If the circle and the straight line are almost tangent they become tangent.
     if (oncurve) {
       Standard_Real radius1 = circle1.Radius();
       Standard_Real D1 = (line2.Distance(circle1.Location()) - radius1);
@@ -580,14 +578,11 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	Handle(Geom2d_Curve) bisectorcurve;
 	if (type == GccInt_Lin) {
 	  // -----------------------------------------------------------------
-	  // Si la bisectrice est une ligne 
-	  //       => la droite est tangente au cercle.
-	  //       Si La portion de bisectrice qui nous interresse est du cote
-	  //       du centre.
-	  //       => la bisectrice est limitee par le point et le centre du 
-	  //       cercle.
-	  // Remarque : Dans ce dernier cas la bisectrice est en fait une 
-	  //            parabole degeneree.
+	  // If the bisectrice is a line 
+	  //       => the straight line is tangent to the circle.
+	  //       It the part of bisectrice concerned is at the side of the center.
+	  //       => the bisectrice is limited by the point and the center of the circle.
+	  // Note : In the latter case the bisectrice is a degenerated parabole.
 	  // -----------------------------------------------------------------
 	  gp_Pnt2d      circlecenter;
 	  gp_Lin2d      gpline;
@@ -636,7 +631,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     break;
     
 //=============================================================================
-//                       Bissectrice droite - droite.                         +
+//                       Bissectrice straight - straight.                     +
 //=============================================================================
   case 3 : {
     gp_Dir2d Direc1(line1.Direction());
@@ -737,15 +732,15 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 
 
 //===========================================================================
-//  calcul de la bissectrice entre une courbe et un point issue d un point. +
+//  calculate the bissectrice between a curve and a point and starting in a point. +
 //                                                                          +
-//   afirstcurve   : \ courbe et point entre lesquelles on veut calculer la +
-//   asecondpoint  : / bissectrice.                                         +
-//   apoint        :   point par lequel doit passer la bissectrice.         +
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      +
-//   asecondvector : / la bissectrice doit se trouver.                      +
-//   adirection    :   indique le cote de la bissectrice a conserver.       +
-//   tolerance     :   seuil a partir duquel les bisectrices sont degenerees+
+//   afirstcurve   : \ curve and point the bissectrice between which is calculated +
+//   asecondpoint  : /                                          +
+//   apoint        :   point through which the bissectrice should pass.         +
+//   afirstvector  : \ vectors to determine the sector in which      +
+//   asecondvector : / the bissectrice should be located.                      +
+//   adirection    :   shows the side of the bissectrice to be preserved.       +
+//   tolerance     :   threshold starting from which the bisectrices are degenerated+
 //===========================================================================
 
 void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
@@ -801,7 +796,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
   switch(cas) {
 
 //=============================================================================
-//                       Bissectrice point - cercle.                          +
+//                       Bissectrice point - circle.                          +
 //=============================================================================
     case 1 : {
       GccAna_CircPnt2dBisec Bisector(circle,asecondpoint->Pnt2d());
@@ -829,12 +824,11 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 	  if (type == GccInt_Lin) { 
 
 // ----------------------------------------------------------------------------
-// Si la bisectrice est une ligne 
-//       => le point est sur le cercle.
-//       Si La portion de bisectrice qui nous interresse est du cote du centre.
-//       => la bisectrice est limitee par le point et le centre du cercle.
-// Remarque : Dans ce dernier cas la bisectrice est en fait un ellipse de petit
-//            axe nul.
+// If the bisectrice is a line 
+//       => the point is on the circle.
+//       If the part of bisectrice concerned is at the side of the center.
+//       => the bisectrice is limited by the point and the center of the circle.
+// Note : In this latter case the bisectrice is actually an ellipse of small null axis.
 // ----------------------------------------------------------------------------
 	    
 	    circlecenter    = circle.Location();
@@ -907,7 +901,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
       break;
 
 //=============================================================================
-//                       Bissectrice point - droite.                          +
+//                       Bissectrice point - straight.                          +
 //=============================================================================
     case 2 : {
       GccAna_LinPnt2dBisec Bisector(line,asecondpoint->Pnt2d());
@@ -960,15 +954,15 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 
 
 //===========================================================================
-//  calcul de la bissectrice entre une courbe et un point issue d un point. +
+//  calculate the bissectrice between a curve and a point starting at a point. +
 //                                                                          +
-//   afirstpoint   : \ courbes entre lesquelles on veut calculer la         +
-//   asecondcurve  : / bissectrice.                                         +
-//   apoint        :   point par lequel doit passer la bissectrice.         +
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      +
-//   asecondvector : / la bissectrice doit se trouver.                      +
-//   adirection    :   indique le cote de la bissectrice a conserver.       +
-//   tolerance     :   seuil a partir duquel les bisectrices sont degenerees+
+//   afirstpoint   : \ curves between which the                             +
+//   asecondcurve  : / bissectrice is calculated.                           +
+//   apoint        :   point through which the bissectrice should pass.     +
+//   afirstvector  : \ vectors to determine the secteur in which            +
+//   asecondvector : / the bissectrice should be located.                   +
+//   adirection    :   shows the side of the bissectrice to be preserved.   +
+//   tolerance     :   threshold at which the bisectrices become degenerated+
 //===========================================================================
 
 void Bisector_BisecAna::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
@@ -996,14 +990,14 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
 }
 
 //===========================================================================
-//        calcul de la bissectrice entre deux points issue d un point.      +
+//        calculate the bissectrice between two points starting at a point. +
 //                                                                          +
-//   afirstpoint   : \ courbes entre lesquelles on veut calculer la         +
-//   asecondpoint  : / bissectrice.                                         +
-//   apoint        :   point par lequel doit passer la bissectrice.         +
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      +
-//   asecondvector : / la bissectrice doit se trouver.                      +
-//   adirection    :   indique le cote de la bissectrice a conserver.       +
+//   afirstpoint   : \ curves between which the                             +
+//   asecondpoint  : / bissectrice is calculated.                           +
+//   apoint        :   point through which the bissectrice should pass.     +
+//   afirstvector  : \ vectors to determine the sector in which the         +
+//   asecondvector : / bissectrice should be located.                       +
+//   adirection    :   shows the side of the bissectrice to be preserved.   +
 //===========================================================================
 
 void Bisector_BisecAna::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
@@ -1058,11 +1052,11 @@ Standard_Boolean Bisector_BisecAna::IsExtendAtEnd() const
 
 //=============================================================================
 //function : SetTrim
-//purpose  : Restriction de la bissectrice par le domaine de la courbe Cu.
-//           Le domaine de la courbe est l ensemble des points plus pres de la
-//           courbe que de ses extremites. 
-//           Pour le calcul le domaine est etendu. Extension de Epsilon1 du 
-//           First et du Last parametre de la courbe.
+//purpose  : Restriction of the bissectrice by the domain of the curve Cu.
+//           The domain of the curve is the set of points that are closer to the
+//           than to its extremities. 
+//           For the calculation the domain is extended. Extension of Epsilon1 of the 
+//           First and the Last parameter of the curve.
 //=============================================================================
 //void Bisector_BisecAna::SetTrim(const Handle(Geom2d_Curve)& Cu)
 void Bisector_BisecAna::SetTrim(const Handle(Geom2d_Curve)& )
@@ -1507,9 +1501,8 @@ void Bisector_BisecAna::Init(const Handle(Geom2d_TrimmedCurve)& Bis)
 
 //=============================================================================
 //function : Degenerate
-//purpose  : Remplace la bisectrice par une droite,
-//           si la bisectrice est une ellipse, une parabole ou une ellipse
-//           degenere.
+//purpose  : Replace the bisectrice by a straight line,
+//           if the bisectrice is an ellipse, a parabole or a degenerated ellipse.
 //=============================================================================
 Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
 			    const Standard_Real   Tolerance)
@@ -1528,8 +1521,8 @@ Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
   if (type == GccInt_Hpr) {
     gphyperbola   = aBisector->Hyperbola();
 
-    // Si l Hyperbole est degeneree, elle est remplacee par la droite
-    // de direction l axe de symetrie.
+    // If the Hyperbola is degenerated, it is replaced by the straight line
+    // with direction to the axis if symmetry.
 
     if (gphyperbola.MajorRadius() < Tolerance) {
       gp_Lin2d gpline(gphyperbola.YAxis());
@@ -1547,8 +1540,8 @@ Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
   else if (type == GccInt_Par) {
     gpparabola   = aBisector->Parabola();
     
-    // Si la parabole est degeneree, elle est remplacee par la droite
-    // issue du Sommet et de direction l axe de symetrie.
+    // If the parabole is degenerated, it is replaces by the straight 
+    // line starting at the Top and with direction of the axis of symmetry.
     
     if (gpparabola.Focal() < Tolerance) {
       gp_Lin2d gpline(gpparabola.MirrorAxis());
@@ -1560,8 +1553,8 @@ Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
   else if (type == GccInt_Ell) {
     gpellipse   = aBisector->Ellipse();
     
-    // Si l ellipse est degeneree, elle est remplacee par la droite
-    // definie par le grand axe.
+    // If the ellipse is degenerated, it is replaced by the straight line 
+    // defined by the great axis.
     
     if (gpellipse.MinorRadius() < Tolerance) {
       gp_Lin2d gpline(gpellipse.XAxis());

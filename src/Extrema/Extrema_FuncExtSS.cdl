@@ -7,8 +7,8 @@
 private class FuncExtSS from Extrema
 
  inherits FunctionSetWithDerivatives from math
-    ---Purpose: Fonction permettant de rechercher les extrema de la 
-    --          distance entre deux surfaces.
+    ---Purpose: Function to find extrema of the 
+    --          distance between two surfaces.
 
 uses    POnSurf           from Extrema,
 	SequenceOfPOnSurf from Extrema,
@@ -40,32 +40,32 @@ is
     NbEquations (me) returns Integer;
 
     Value (me: in out; UV: Vector; F: out Vector) returns Boolean;
-    	---Purpose: Calcul de Fi(U,V).
+    	---Purpose: Calculate Fi(U,V).
 
     Derivatives (me: in out; UV: Vector; DF: out Matrix)
     	returns Boolean;
-    	---Purpose: Calcul de Fi'(U,V).
+    	---Purpose: Calculate Fi'(U,V).
 
     Values (me: in out; UV: Vector; F: out Vector; DF: out Matrix)
     	returns Boolean;
-    	---Purpose: Calcul de Fi(U,V) et Fi'(U,V).
+    	---Purpose: Calculate Fi(U,V) and Fi'(U,V).
 
     GetStateNumber (me: in out) returns Integer
-    	---Purpose: Memorise l'extremum trouve.
+    	---Purpose: Save the found extremum.
     	is redefined;
 
     NbExt (me) returns Integer;
-    	---Purpose: Renvoie le nombre d'extrema trouves.
+    	---Purpose: Return the number of found extrema.
 
     SquareDistance (me; N: Integer) returns Real
-    	---Purpose: Renvoie la valeur de la Nieme distance.
+    	---Purpose: Return the value of the Nth distance.
     	raises  OutOfRange;
-	    	-- si N < 1 ou N > NbExt(me).
+	    	-- if N < 1 or N > NbExt(me).
 
     PointOnS1 (me; N: Integer) returns POnSurf
-    	---Purpose: Renvoie le Nieme extremum sur S1.
+    	---Purpose: Return the Nth extremum on S1.
     	raises  OutOfRange;
-	    	-- si N < 1 ou N > NbExt(me).
+	    	-- if N < 1 or N > NbExt(me).
 
     PointOnS2 (me; N: Integer) returns POnSurf
     	---Purpose: Renvoie le Nieme extremum sur S2.
@@ -83,10 +83,10 @@ fields
     myP1   : Pnt from gp;
     myP2   : Pnt from gp;
 
-    myU1    : Real;          -- valeur courante de U sur S1
-    myV1    : Real;          -- valeur courante de V sur S1
-    myU2    : Real;          -- valeur courante de U sur S2
-    myV2    : Real;          -- valeur courante de V sur S2
+    myU1    : Real;          -- current value of U on S1
+    myV1    : Real;          -- current value of V on S1
+    myU2    : Real;          -- current value of U on S2
+    myV2    : Real;          -- current value of V on S2
 
     mySqDist:  SequenceOfReal    from TColStd;
     myPoint1: SequenceOfPOnSurf from Extrema;

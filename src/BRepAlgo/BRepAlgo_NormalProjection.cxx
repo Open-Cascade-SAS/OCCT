@@ -375,17 +375,17 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	      prj = MKed.Edge();
 	    }
 	    else  {
-            // On teste si la solution n'est pas degeneree pour mettre le
-            // flag a l'edge, on prend quelques points, on regarde si le nuage de 
-            // points a un diametre inferieur a la tolerance 3D
+            // It is tested if the solution is not degenerated to set the
+            // flag on edge, one takes several points, checks if the cloud of 
+            // points has less diameter than the tolerance 3D
               Degenerated = Standard_True;
               Standard_Real Dist;
               Handle(Geom_BSplineCurve) BS3d  = Handle(Geom_BSplineCurve)::DownCast( appr.Curve3d());
               gp_Pnt P1(0.,0.,0.),PP; // skl : I change "P" to "PP"
               Standard_Integer NbPoint,ii ; // skl : I change "i" to "ii"
               Standard_Real Par,DPar;
-              // on commence avec 3 points pour rejeter les aretes non degenerees 
-              // tres rapidement
+              // start from 3 points to reject non degenerated edges 
+              // very fast
               NbPoint =3;
               DPar = (BS3d->LastParameter()-BS3d->FirstParameter())/(NbPoint-1);
               for (ii=0;ii<NbPoint;ii++)
@@ -404,8 +404,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
                      break;
 		 }
               }             
-              // si le test passe on fait un test plus precis
-              // avec 10 points
+              // if the test passes a more exact test with 10 points
               if (Degenerated) {
                  P1.SetCoord(0.,0.,0.);
                  NbPoint =10;
@@ -460,8 +459,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  
 	  if(myFaceBounds) {
 	    // Trimming edges by face bounds 
-            // si la solution est degeneree, on evite d'utiliser le BoolTool 
-            // qui n'aime pas ca.
+            // if the solution is degenerated, use of BoolTool is avoided
 #ifdef DEBUG
 	    InitChron(chr_booltool);
 #endif
@@ -509,7 +507,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
             }
             else {
 #ifdef DEB
-                 cout << " BooleanOperations : pas de solution " << endl;
+                 cout << " BooleanOperations : no solution " << endl;
 #endif
 
 	      BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
@@ -544,9 +542,9 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
     }
     myDescendants.Bind(Edges->Value(i), DescenList);
   }
-// JPI : la creation eventuelle d'un wire est reportee dans une methode specifique 
-//       BuilWire qui pourra etre appelee par l'utilisateur. Sinon, on perdait les 
-//       relations des map myAncestorMap, myCorresp.  
+// JPI : eventual wire creation is reported in a specific method 
+//       BuilWire that can be called by the user. Otherwise, the 
+//       relations of map myAncestorMap, myCorresp will be lost.  
 
   if(YaVertexRes) BB.Add(myRes, VertexRes);
   
@@ -675,8 +673,8 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
     if (MW.IsDone()) 
     {
       const TopoDS_Shape& Wire = MW.Shape();
-      // Si le wire resultat contient le meme d'arete qu'au depart OK
-      // sinon le resultat est vraisemblablement constitue de plusieurs wires.
+      // If the resulting wire contains the same edge as at the beginning OK
+      // otherwise the result really consists of several wires.
       TopExp_Explorer exp2(Wire,TopAbs_EDGE);
       Standard_Integer NbEdges = 0;
       for (;exp2.More(); exp2.Next()) NbEdges++;

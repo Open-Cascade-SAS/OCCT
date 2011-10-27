@@ -224,8 +224,7 @@ static
  return Adaptor3d_TopolTool::Orientation(C); 
 }
 //-- ============================================================
-//-- m e t h o d e s   u t i l i s e e s   p o u r   l e s  
-//--  s a m p l e s
+//-- methods  used for samples
 //-- ============================================================ 
 
 //=======================================================================
@@ -252,7 +251,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
 		  C.Y()-B.Y()-B.Y()+A.Y(),
 		  C.Z()-B.Z()-B.Z()+A.Z());
       Standard_Integer locnbch=0;
-      for(j=3; j<nbvp;j++) {  //-- essai
+      for(j=3; j<nbvp;j++) {  //-- test
 	const gp_Pnt& Ax=array2.Value(i,j-1);
 	const gp_Pnt& Bx=array2.Value(i,j);
 	const gp_Pnt& Cx=array2.Value(i,j+1);
@@ -284,7 +283,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
 		  C.Y()-B.Y()-B.Y()+A.Y(),
 		  C.Z()-B.Z()-B.Z()+A.Z());
       Standard_Integer locnbch=0;
-      for(i=3; i<nbup;i++) {  //-- essai
+      for(i=3; i<nbup;i++) {  //-- test
 	const gp_Pnt& Ax=array2.Value(i-1,j);
 	const gp_Pnt& Bx=array2.Value(i,j);
 	const gp_Pnt& Cx=array2.Value(i+1,j);
@@ -340,8 +339,8 @@ void Analyse(const TColgp_Array2OfPnt& array2,
   case GeomAbs_Cone:
   case GeomAbs_Sphere:
   case GeomAbs_Torus:                 { 
-    //-- On place 15 echnt pour 2pi
-    //-- pas suffisant ->25 pour 2pi
+    //-- Set 15 for 2pi
+    //-- Not enough ->25 for 2pi
     nbsu = (Standard_Integer)(8*(usup-uinf));
     nbsv = (Standard_Integer)(7*(vsup-vinf));
     if(nbsu<5) nbsu=5;
@@ -355,7 +354,7 @@ void Analyse(const TColgp_Array2OfPnt& array2,
   default:                            { nbsu = 10; nbsv=10; }    break;
   }
   
-  //-- Si le nb de points est trop grand   on analyse 
+  //-- If the number of points is too great, analyze 
   //-- 
   //-- 
   

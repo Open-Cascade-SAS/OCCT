@@ -1,8 +1,8 @@
 // File GccAna_Lin2dTanPar.cxx, REG 08/07/91
 
 //========================================================================
-//    CREATION D UNE LIGNE TANGENTE A UN CERCLE OU PASSANT PAR UN POINT  +
-//                     ET PARALLELE A UNE DROITE.                        +
+//    CREATION of a LINE TANGENT to a CIRCLE or PASSING by a POINT  +
+//                     and PARALLEL to a STRAIGHT DROITE.                        +
 //========================================================================
 
 #include <GccAna_Lin2dTanPar.ixx>
@@ -17,9 +17,9 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //========================================================================
-//   Passant par un point :                                              +
-//   On cree la droite d origine ThePoint et                             + 
-//                     de direction Lin1.Direction().                    +
+//   Passing by a point :                                              +
+//   Create the straight line with origin ThePoint and                             + 
+//                          direction Lin1.Direction().                    +
 //========================================================================
 
 GccAna_Lin2dTanPar::
@@ -43,14 +43,14 @@ GccAna_Lin2dTanPar::
 }
 
 //========================================================================
-//   Tangent a un cercle :                                               +
-//   On cree suivant le qualifieur la droite                             +
-//          - d origine P1 (P1 est un point d intersection entre C1 et   +
-//                         une droite passant par le centre de C1 et de  +
-//                         direction la normale a Lin1).                 +
-//                         le choix du point d intersection est fonction +
-//                         du qualifieur.                                +
-//          - de direction la direction de Lin1.                         +
+//   Tangent to a circle :                                               +
+//   Create following the qualifier the straight line                    +
+//          - with origin P1 (P1 is a point of intersection between C1 and +
+//                       a straight line passing by the center of C1 and  +
+//                         direction the normal to Lin1).                 +
+//                         the choice of the point of intersection depends +
+//                         on the qualifier.                            +
+//          - with direction the direction of Lin1.                         +
 //========================================================================
 
 GccAna_Lin2dTanPar::

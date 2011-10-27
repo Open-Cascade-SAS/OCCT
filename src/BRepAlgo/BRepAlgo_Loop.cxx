@@ -69,7 +69,7 @@ void BRepAlgo_Loop::Init(const TopoDS_Face& F)
 
 //=======================================================================
 //function : Bubble
-//purpose  : Ordonne la sequence de vertex en parametre croissant. 
+//purpose  : Orders the sequence of vertices by increasing parameter. 
 //=======================================================================
 
 static void Bubble(const TopoDS_Edge&        E,
@@ -140,9 +140,9 @@ void BRepAlgo_Loop::AddConstEdges(const TopTools_ListOfShape& LE)
 
 //=======================================================================
 //function : UpdateClosedEdge
-//purpose  : Si le premier ou dernier vertex d intersection
-//           coincide avec le vertex de fermeture il est supprime de SV.
-//           il sera ajoute au debut et a la fin de SV par l appelant.
+//purpose  : If the first or the last vertex of intersection
+//           coincides with the closing vertex, it is removed from SV.
+//           it will be added at the beginning and the end of SV by the caller.
 //=======================================================================
 
 static TopoDS_Vertex  UpdateClosedEdge(const TopoDS_Edge&         E,
@@ -175,7 +175,7 @@ static TopoDS_Vertex  UpdateClosedEdge(const TopoDS_Edge&         E,
     if (!VB[0].IsSame(VB[1])) {
 #ifdef DEB
       if (AffichLoop)
-	cout <<" Deux vertex different sur vertex de fermeture"<<endl;
+	cout <<"Two different vertices on the closing vertex"<<endl;
 #endif
     }
     else {
@@ -199,7 +199,7 @@ static TopoDS_Vertex  UpdateClosedEdge(const TopoDS_Edge&         E,
 static void RemovePendingEdges(TopTools_DataMapOfShapeListOfShape& MVE)
 {
   //--------------------------------
-  // Suppression des edges pendants.
+  // Remove hanging edges.
   //--------------------------------
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape Mapit;
   TopTools_ListOfShape                     ToRemove;
@@ -276,10 +276,10 @@ static Standard_Boolean  SamePnt2d(TopoDS_Vertex  V,
 
 //=======================================================================
 //function : SelectEdge
-//purpose  : Trouve l edge <NE> connexe a <CE> par le vertex <CV> dans
-//           la liste <LE>. <NE> est supprime de la liste. Si <CE> est 
-//           aussi dans la liste <LE> avec la meme orientation, il est
-//           supprime de la liste.
+//purpose  : Find edge <NE> connected to <CE> by vertex <CV> in the
+//           list <LE>. <NE> is removed from the list. If <CE> is 
+//           also in the list <LE> with the same orientation, it is
+//           removed from the list.
 //=======================================================================
 
 static Standard_Boolean  SelectEdge(const TopoDS_Face&    F,
@@ -293,7 +293,7 @@ static Standard_Boolean  SelectEdge(const TopoDS_Face&    F,
 #ifdef DEB  
   if (AffichLoop) {
     if ( LE.Extent() > 2) {
-      cout <<"vertex sur plus de 2 edges dans une face."<<endl;
+      cout <<"vertex on more than 2 edges in a face."<<endl;
     }
   }
 #endif
@@ -305,12 +305,12 @@ static Standard_Boolean  SelectEdge(const TopoDS_Face&    F,
   }
   if (LE.Extent() > 1) {
     //--------------------------------------------------------------
-    // Plusieurs edges possibles. 
-    // - Test les edges differentes de CE , Selection de l edge
-    // pour lequel CV a les U,V les plus proches dans la face
-    // que ceux correspondant a CE.
-    // - Si plusieurs edge donne des representation < la tolerance.
-    // discrimination sur les tangentes.
+    // Several edges possible.  
+    // - Test edges different from CE , Selection of edge
+    // for which CV has U,V closer to the face
+    // than corresponding to CE.
+    // - If several edges give representation less than the tolerance.
+    // discrimination on tangents.
     //--------------------------------------------------------------
     TopLoc_Location L;
     Standard_Real   f,l;
@@ -518,7 +518,7 @@ void BRepAlgo_Loop::Perform()
 #endif
   
   //------------------------------------------------
-  // Decoupe des edges
+  // Cut edges
   //------------------------------------------------
   for (Mapit.Initialize(myVerOnEdges); Mapit.More(); Mapit.Next()) {
     TopTools_ListOfShape LCE;
@@ -532,7 +532,7 @@ void BRepAlgo_Loop::Perform()
   //-----------------------------------
   TopTools_DataMapOfShapeListOfShape MVE;
 
-  // ajout des edges decoupees.
+  // add cut edges.
   for (Mapit.Initialize(myNewEdges); Mapit.More(); Mapit.Next()) {
     for (itl.Initialize(myNewEdges(Mapit.Key())); itl.More(); itl.Next()) {
       TopoDS_Edge& E = TopoDS::Edge(itl.Value());
@@ -540,9 +540,9 @@ void BRepAlgo_Loop::Perform()
     }
   }
   
-  // ajout des edges const
-  // Les edges de couture peuvent etre doubles ou non dans myConstEdges
-  // => appel une seule fois StoreInMVE qui se charge de les doubler
+  // add const edges
+  // Sewn edges can be doubled or not in myConstEdges
+  // => call only once StoreInMVE which should double them
   TopTools_MapOfShape DejaVu;
   for (itl.Initialize(myConstEdges); itl.More(); itl.Next()) {
     TopoDS_Edge& E = TopoDS::Edge(itl.Value());
@@ -568,7 +568,7 @@ void BRepAlgo_Loop::Perform()
 #endif
 
   //-----------------------------------------------
-  // Construction des wires et des nouvelles faces. 
+  // Construction of wires and new faces. 
   //----------------------------------------------
   TopoDS_Vertex    VF,VL,CV;
   TopoDS_Edge      CE,NE,EF;
@@ -581,19 +581,19 @@ void BRepAlgo_Loop::Perform()
   while (!MVE.IsEmpty()) {
     B.MakeWire(NW);
     //--------------------------------
-    // Suppression des edges pendants.
+    // Removal of hanging edges.
     //--------------------------------
     RemovePendingEdges(MVE);
 
     if (MVE.IsEmpty()) break; 
     //--------------------------------
-    // Edge de depart.
+    // Start edge.
     //--------------------------------
     Mapit.Initialize(MVE);
     EF = CE = TopoDS::Edge(Mapit.Value().First());
     TopExp::Vertices(CE,V1,V2);
     //--------------------------------
-    // VF vertex debut du nouveau wire
+    // VF vertex start of new wire
     //--------------------------------
     if (CE.Orientation() == TopAbs_FORWARD) { CV = VF = V1;}
     else                                    { CV = VF = V2;}
@@ -608,7 +608,7 @@ void BRepAlgo_Loop::Perform()
     
     while (!End) {
       //-------------------------------
-      // Construction d un wire.
+      // Construction of a wire.
       //-------------------------------
       TopExp::Vertices(CE,V1,V2);
       if (!CV.IsSame(V1)) CV = V1; else CV = V2;
@@ -628,7 +628,7 @@ void BRepAlgo_Loop::Perform()
       }
     }
     //--------------------------------------------------
-    // Ajout du nouveau wire dans l ensemble des wires
+    // Add new wire to the set of wires
     //------------------------------------------------
     Standard_Real Tol = 0.001; //5.e-05; //5.e-07;
     TopExp_Explorer explo( NW, TopAbs_VERTEX );
@@ -690,15 +690,15 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
     SV.Append(it.Value());
   }
   //--------------------------------
-  // Tri des vertex sur l edge.
+  // Parse vertices on the edge.
   //--------------------------------
   Bubble (WE,SV);
 
   Standard_Integer NbVer = SV.Length();
   //----------------------------------------------------------------
-  // Construction des nouvelles edges.
-  // Remarque : les vertex extremites de l edges ne sont pas 
-  //            forcement dans la liste des vertex
+  // Construction of new edges.
+  // Note :  vertices at the extremities of edges are not 
+  //         onligatorily in the list of vertices
   //----------------------------------------------------------------
   if (SV.IsEmpty()) {
     NE.Append(E);
@@ -721,9 +721,9 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
     }
   }
   //----------------------------------------------------
-  // Traitement des edges fermes
-  // Si un vertex d intersection est sur le vertex
-  // commun il doit apparaitre eb debut et en fin de SV.
+  // Processing of closed edges 
+  // If a vertex of intersection is on the common vertex
+  // it should appear at the beginning and end of SV.
   //----------------------------------------------------
   TopoDS_Vertex VCEI;
   if (!VF.IsNull() && VF.IsSame(VL)) {
@@ -741,7 +741,7 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
   }
   else {
     //-----------------------------------------
-    // Ajout eventuel des extremites de l edge.
+    // Eventually all extremities of the edge.
     //-----------------------------------------
     if (!VF.IsNull() && !VF.IsSame(SV.First())) SV.Prepend(VF);
     if (!VL.IsNull() && !VL.IsSame(SV.Last ())) SV.Append (VL);
@@ -762,7 +762,7 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
       V2  = TopoDS::Vertex(SV.First());
       SV.Remove(1);
       //-------------------------------------------
-      // Copie de l edge et restriction par V1 V2.
+      // Copy the edge and restriction by V1 V2.
       //-------------------------------------------
       TopoDS_Shape NewEdge = WE.EmptyCopied();
       TopoDS_Shape aLocalEdge = V1.Oriented(TopAbs_FORWARD);

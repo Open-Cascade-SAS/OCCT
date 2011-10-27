@@ -7,10 +7,9 @@
 
 class ACRLaw from BRepFill inherits LocationLaw  from  BRepFill 
 
-	---Purpose: Build Location Law,  with a Wire.   dans le cas du
-	--          contour guide et triedre par Abscisse Curviligne
-	--          Reduite
-	--          
+	---Purpose: Build Location Law,  with a Wire.   In the case 
+	--          of guided contour and trihedron by reduced
+	--          curvilinear abscissa
 	       
        
 

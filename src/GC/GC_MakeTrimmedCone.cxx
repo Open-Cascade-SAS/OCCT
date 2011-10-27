@@ -13,10 +13,10 @@
 #include <Extrema_ExtPElC.hxx>
 
 //=========================================================================
-//   Creation d un cone par quatre points.                                +
-//   les deux premiers donnent l axe.                                     +
-//   le troisieme donne le rayon de la base.                              +
-//   le troisieme et le quatrieme le demi angle.                          +
+//   Creation of a cone by four points.                                +
+//   First two give the axis.                                     +
+//   The third gives the base radius.                              +
+//   the third and the fourth demi-angle.                          +
 //=========================================================================
 
 GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1 ,

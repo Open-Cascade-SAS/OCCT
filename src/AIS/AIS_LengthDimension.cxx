@@ -868,14 +868,13 @@ void AIS_LengthDimension::ComputeOneEdgeOneVertexLength( const Handle( Prs3d_Pre
                                  Position,
                                  SymbolPrs);  
 
-  //Display des morceaux de raccordement vers la curve si elle
-  // n'est pas dans le WP
+  //Display the pieces connecting to the curve if it is not in the WP
  if (ExtShape != 0) {
    
-   if (!extCurv.IsNull()) { // c'est l'edge qui n'est pas dans le WP
+   if (!extCurv.IsNull()) { // this is the edge that is not in the WP
      AIS::ComputeProjEdgePresentation(aPresentation,aDrawer,theedge,geom_lin,ptonedge1,ptonedge2);
    }
-   else { //  c'est le point qui n'est pas dans le WP
+   else { //  this is the point that is not in the WP
      AIS::ComputeProjVertexPresentation(aPresentation,aDrawer,thevertex,FirstAttach);
    }
  }

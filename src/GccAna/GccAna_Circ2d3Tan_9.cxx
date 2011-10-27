@@ -12,18 +12,18 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Creation d un cercle passant par trois points.                       +
-//   Trois cas de figures :                                               +
-//      1/ Les trois points sont confondus.                               +
+//   Creation of a circle passing by three points.                       +
+//   Three cases  :                                               +
+//      1/ Three points coincide.                               +
 //      -----------------------------------                               +
-//      Le resultat est le cercle centre en Point1 de rayon zero.         +
-//      2/ Deux des trois points sont confondus.                          +
+//      The result is the circle with center in Point1 with zero radius.  +
+//      2/ Two of three points coincide.                          +
 //      ----------------------------------------                          +
-//      On cree la mediatrice a deux points non confondus ainsi que la    +
-//      droite passant par ces deux points.                               +
-//      La solution a pour centre l intersection de ces deux droite et    +
-//      pour rayon la distance entre ce centre et l un des trois points.  +
-//      3/ Les trois points sont distinct.                                +
+//      Create the medium line between two non-coinciding points and      +
+//      the straight line passing by these two points.                               +
+//      The center of the solution is the intersection of two straight lines and the   +
+//      radius is the distance between this center and one of three points.  +
+//      3/ The three points are distinct.                                +
 //      ----------------------------------                                +
 //      
 //=========================================================================
@@ -35,7 +35,7 @@ GccAna_Circ2d3Tan::
 		      const Standard_Real      Tolerance ):
 
 //=========================================================================
-//   Initialisation des champs.                                           +
+//   Initialization of fields.                                           +
 //=========================================================================
 
    cirsol(1,1)     ,
@@ -61,7 +61,7 @@ GccAna_Circ2d3Tan::
    NbrSol = 0;
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
    Standard_Real dist1 = Point1.Distance(Point2);

@@ -18,7 +18,7 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Creation d un cercle tangent a un cercle et a deux droites.          +
+//   Creation of a circle tangent to a circle and two straight lines.          +
 //=========================================================================
 
 GccAna_Circ2d3Tan::GccAna_Circ2d3Tan (const GccEnt_QualifiedCirc& Qualified1 ,
@@ -27,7 +27,7 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan (const GccEnt_QualifiedCirc& Qualified1 ,
 				      const Standard_Real         Tolerance  )
 		   
 //=========================================================================
-//   Initialisation des champs.                                           +
+//   Initialisation of fields.                                           +
 //=========================================================================
 
 :cirsol(1,8)    ,
@@ -65,7 +65,7 @@ pararg3(1,8)
    }
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
    gp_Circ2d C1 = Qualified1.Qualified();

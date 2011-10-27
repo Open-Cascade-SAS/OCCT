@@ -90,7 +90,7 @@ void BRepIntCurveSurface_Inter::Find() {
       Standard_Real U = intcs.Point(currentindex).U();
       Standard_Real V = intcs.Point(currentindex).V();
       //-------------------------------------------------------
-      //-- On Cherche a recadrer le point U,V ds la face UV
+      //-- Try to reframe point U,V in the face UV
       //-- 
       if(PeriodU) { 
 	while(U>UMin) 
@@ -102,9 +102,9 @@ void BRepIntCurveSurface_Inter::Find() {
       }
 //    Standard_Real UInit = U;
       Standard_Real VInit = V;
-      do { //-- Boucle Sur U  
+      do { //-- Loop on U  
 	V = VInit;
-	do { //-- Boucle sur V
+	do { //-- Loop on V
 	  gp_Pnt2d Puv(U,V);
 	  //--- 
 	  //-- classifier.Perform(TopoDS::Face(explorer.Current()),Puv,tolerance);
@@ -135,7 +135,7 @@ void BRepIntCurveSurface_Inter::Find() {
     
     brepadaptsurf.Initialize(face,Standard_True);
     //----------------------------------------------
-    //-- Mise a jour des variables PeriodU,PeriodV
+    //-- Update variables PeriodU,PeriodV
     //--
 
     SurfForFastClass->ChangeSurface().Initialize(face); //-- MODIF

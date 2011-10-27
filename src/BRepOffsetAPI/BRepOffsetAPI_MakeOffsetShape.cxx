@@ -79,8 +79,8 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeOffsetShape::Generated (const Topo
     myOffsetShape.OffsetFacesFromShapes ().LastImage (S, myGenerated);
    
     if (!myOffsetShape.ClosingFaces().IsEmpty()) {
-      // Reverse les Shape generes  dans le cas des solides minces.
-      // Utile seulement pour les faces mais sans incidence sur les autres.
+      // Reverse generated shapes in case of small solids.
+      // Useful only for faces without influence on others.
       TopTools_ListIteratorOfListOfShape it(myGenerated);
       for (; it.More(); it.Next())
 	it.Value().Reverse();

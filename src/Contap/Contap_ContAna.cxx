@@ -124,18 +124,18 @@ void Contap_ContAna::Perform (const gp_Cylinder& C,
     nbSol = 2;
     dir1 = dir2 = C.Position().Direction();
 
-    if (!C.Direct()) { // la normale est inversee.
+    if (!C.Direct()) { // The normal is inverted.
       Coefcos = -Coefcos;
       Coefsin = -Coefsin;
     }
 
-    // On doit resoudre Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
-    // et les origines des droites solution sont dans le repere du
-    // cylindre en (R*cost0, R*sint0,0) et (R*cost1,R*sint1,0)
-    // En posant cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) et
+    // Necessary to solve Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
+    // and the origins of solution are in the reference of the 
+    // cylinder in (R*cost0, R*sint0,0) and (R*cost1,R*sint1,0)
+    // By setting cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) and
     //           sin(phi) = Coefsin/Sqrt(Coefcos**2 + Coefsin**2)
-    // et en utilisant les relations trigonometriques, on a sans resolution
-    // les valeurs des cosinus et sinus aux solutions.
+    // and by using trigonometric relations the values of cosinus 
+    // and sinus to the solutions are obtained.
 
     prm = Sqrt(norm1 - Coefcst*Coefcst);
     Standard_Real cost0,sint0,cost1,sint1;
@@ -181,8 +181,7 @@ void Contap_ContAna::Perform (const gp_Cylinder& C,
     prm = radius*sqrt(1.-radius*radius/(dist*dist));
     dir1 = C.Axis().Direction();
     dir2 = dir1;
-    gp_XYZ axeye(theaxis.Normal(Eye).Direction().XYZ()); // oriente de l axe
-                                                         // vers l exterieur
+    gp_XYZ axeye(theaxis.Normal(Eye).Direction().XYZ()); // orientate the axis to the outside
     gp_XYZ normale((theaxis.Direction().Crossed(axeye)).XYZ());
 //      normale.Normalize();
     pt1.SetXYZ(C.Location().XYZ() + (radius*radius/dist)*axeye);
@@ -219,13 +218,13 @@ void Contap_ContAna::Perform (const gp_Cone& C,
     nbSol = 2;
     pt1 = C.Apex();
     pt2 = pt1;
-    // On doit resoudre Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
-    // et les vecteurs directeurs des solutions sont
+    // Necessary to solve Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
+    // and director vectors of solutions are
     // cos(t0) * XDirection + sin(t0) * YDirection + ZDirection/Tgtalpha
-    // En posant cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) et
+    // By setting cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) and
     //           sin(phi) = Coefsin/Sqrt(Coefcos**2 + Coefsin**2)
-    // et en utilisant les relations trigonometriques, on a sans resolution
-    // les valeurs des cosinus et sinus aux solutions.
+    // and by using trigonometric relations the values of cosinus 
+    // and sinus to the solutions are obtained.
 
     prm = Sqrt(norm1 - Coefcst*Coefcst);
     Standard_Real cost0,sint0,cost1,sint1;
@@ -281,13 +280,13 @@ void Contap_ContAna::Perform (const gp_Cone& C,
     pt1 = C.Apex();
     pt2 = pt1;
 
-    // On doit resoudre Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
-    // et les vecteurs directeurs des solutions sont
+    // It is requiredto solve Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
+    // and the director vectors of solutions are
     // cos(t0) * XDirection + sin(t0) * YDirection + ZDirection/Tgtalpha
-    // En posant cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) et
+    // By setting cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) and
     //           sin(phi) = Coefsin/Sqrt(Coefcos**2 + Coefsin**2)
-    // et en utilisant les relations trigonometriques, on a sans resolution
-    // les valeurs des cosinus et sinus aux solutions.
+    // and by using trigonometric relations the values of cosinus 
+    // and sinus to the solutions are obtained.
 
     prm = Sqrt(norm1 - Coefcst*Coefcst);
     Standard_Real cost0,sint0,cost1,sint1;
@@ -383,13 +382,13 @@ void Contap_ContAna::Perform (const gp_Cone& C,
     nbSol = 2;
     pt1 = C.Apex();
     pt2 = pt1;
-    // On doit resoudre Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
-    // et les vecteurs directeurs des solutions sont
+    // It is required to solve Coefcos*cos(t) + Coefsin*sin(t) = Coefcst
+    // and the director vectors of solutions are
     // cos(t0) * XDirection + sin(t0) * YDirection + ZDirection/Tgtalpha
-    // En posant cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) et
+    // By setting cos(phi) = Coefcos/Sqrt(Coefcos**2 + Coefsin**2) and
     //           sin(phi) = Coefsin/Sqrt(Coefcos**2 + Coefsin**2)
-    // et en utilisant les relations trigonometriques, on a sans resolution
-    // les valeurs des cosinus et sinus aux solutions.
+    // and by using trigonometric relations the values of cosinus 
+    // and sinus to the solutions are obtained.
 
     prm = Sqrt(norm1 - Coefcst*Coefcst);
     Standard_Real cost0,sint0,cost1,sint1;

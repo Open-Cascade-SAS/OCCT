@@ -1,11 +1,11 @@
 
 
-// modele de programme principal Draw
+// model of main program Draw
 
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 
-// main passe la main a Draw
+// main passes main to Draw
 
 main(int argc, char** argv)
 {
@@ -14,36 +14,36 @@ main(int argc, char** argv)
 
 //*******************************
 //
-// Retirez les includes inutiles
-// pour ne pas surcharger le link
+// Remove unused includes
+// to avoid overloading the link
 //
 //********************************
 
 #include <GeometryTest.hxx>
 
-// seulement si on fait de la topologie
+// only is one makes the topology
 #include <BRepTest.hxx>
 
-// pour les commandes utilisateurs topologie
+// for the commands using topology
 #include <DBRep.hxx>
 
 
-// exemple de commande utilisateur
+// example of user command
 
 static Standard_Integer macommande (Draw_Interpretor& di,
 				    Standard_Integer n, char** a)
 {
-  if (n < 2) return 1;   // erreur si pas assez d'arguments
+  if (n < 2) return 1;   // error if not enough arguments
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull()) {
-    cout << a[1] << " n'est pas un shape" << endl;
+    cout << a[1] << " is not a shape" << endl;
     return 1;
   }
 
-  // .... faite ce que vous voulez a S .....
+  // .... do what you like with S .....
 
-  //... pour retourner un chaine a TCL, mettez la dans di
+  //... to return a chain to TCL, place it in di
 
   di << a[1];
 
@@ -51,20 +51,20 @@ static Standard_Integer macommande (Draw_Interpretor& di,
 }
 
 
-// definition des commandes
+// definition of commands
 
 void Draw_InitAppli(Draw_Interpretor& theCommands)
 {
   Draw::Commands(theCommands);
 
   // geometry
-  GeometryTest::AllCommands(theCommands);   // voir GeometryTest.cdl pour etre plus fin
+  GeometryTest::AllCommands(theCommands);   // see GeometryTest.cdl for details
 
-  // pour la topologie
-  BRepTest::AllCommands(theCommands);       // voir BRepTest.cdl pour etre plus fin
+  // for the topology
+  BRepTest::AllCommands(theCommands);       // see BRepTest.cdl for details
 
 
-  // commandes utilisateur
+  // user commands
 
-  theCommands.Add("macommande","macommande et son help",macommande);
+  theCommands.Add("macommande","macommande and its help",macommande);
 }

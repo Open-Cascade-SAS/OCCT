@@ -128,22 +128,20 @@ void  BRepLib_MakeWire::Add(const TopoDS_Wire& W)
 //=======================================================================
 //function : Add
 //purpose  : 
-// PMN  19/03/1998  Pour des Probleme de performances on n'utilise pas
-//                  TopExp::Vertices sur des wire
-// PMN  10/09/1998  Dans le cas ou le wire est precedament ferme (ou degenere) 
-//                  on emploie quand meme TopExp::Vertices ... Afin de lever
-//                  les ambiguites.
+// PMN  19/03/1998  For the Problem of performance TopExp::Vertices are not used on wire
+// PMN  10/09/1998  In case if the wire is previously closed (or degenerated) 
+//                  TopExp::Vertices is used to reduce the ambiguity.
 //=======================================================================
 
 void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 {
 
   Standard_Boolean forward = Standard_False; 
-     // pour dire si on decider d'ajouter forward
+     // to tell if it has been decided to add forward
   Standard_Boolean reverse = Standard_False; 
-     // pour dire si on decide d'ajouter reversed
+     // to tell if it has been decided to add reversed
   Standard_Boolean init = Standard_False;
-     // Pour savoir s'il on doit calculer VL, VF
+     // To know if it is necessary to calculate VL, VF
   BRep_Builder B;
   TopoDS_Iterator it;
 
@@ -161,7 +159,7 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
   }
   
   else {
-    init = myShape.Closed(); // Si c'est ferme, on ne controle
+    init = myShape.Closed(); // If it is closed no control
     TopoDS_Shape aLocalShape = E.Oriented(TopAbs_FORWARD);
     TopoDS_Edge EE = TopoDS::Edge(aLocalShape);
 //    TopoDS_Edge EE = TopoDS::Edge(E.Oriented(TopAbs_FORWARD));
@@ -185,9 +183,9 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	connected = Standard_True;
         myVertex = VE;
 	if (myError != BRepLib_NonManifoldWire) {
-	  // l est on toujours ?
+	  // is it always so ?
 	  if (VF.IsSame(VL)) {
-	    // Orientation indetermine (en 3d) : On garde l'init
+	    // Orientation indetermined (in 3d) : Preserve the initial
 	    if (!VF.IsSame(VE)) myError = BRepLib_NonManifoldWire;
 	  }
 	  else {
@@ -224,9 +222,9 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	      (l < BRep_Tool::Tolerance(VW))) {
 	    copyedge = Standard_True;
 	    if (myError != BRepLib_NonManifoldWire) {
-	      // l est on toujours ?
+	      // is it always so ?
 	      if (VF.IsSame(VL)) {
-		// Orientation indetermine (en 3d) : On garde l'init
+		// Orientation indetermined (in 3d) : Preserve the initial
 		if (!VF.IsSame(VW)) myError = BRepLib_NonManifoldWire;
 	      }
 	      else {
@@ -320,12 +318,12 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
 	}
       }
     }
-    // On decide ici de l'orientation de l'arete
-    // S'il y a ambiguite (en 3d) on garde l'orientation donnee en entree
-    // Cas d'ambiguite :
-    // reverse et forward sont faux car on n'a rien decider : 
-    //       wire ferme, vertex interne ... 
-    // reverse et forward sont vrai : Edge ferme ou degenere
+    // Make a decision about the orientation of the edge
+    // If there is an ambiguity (in 3d) preserve the orientation given at input
+    // Case of ambiguity :
+    // reverse and forward are false as nothing has been decided : 
+    //       closed wire, internal vertex ... 
+    // reverse and forward are true : closed or degenerated edge
     if ( ((forward == reverse) && (E.Orientation() == TopAbs_REVERSED)) ||
        ( reverse && !forward) )  myEdge.Reverse();
   }
@@ -344,20 +342,20 @@ void  BRepLib_MakeWire::Add(const TopoDS_Edge& E)
       else if (V2.IsSame(myVertex)) VRef = V1;
       else {
 #if DEB
-	cout << "MakeWire : Y A UN PROBLEME !!" << endl;
+	cout << "MakeWire : There is a PROBLEM !!" << endl;
 #endif
 	myError = BRepLib_NonManifoldWire;
       }
       
       if (VF.IsSame(VL)) {
-	// Cas particulier: il faut controler les orientations
+	// Particular case: it is required to control the orientation
 #if DEB
 	if (!VF.IsSame(myVertex))
-	  cout << "MakeWire : Y A UN PROBLEME !!" << endl;
+	  cout << "MakeWire : There is a PROBLEM !!" << endl;
 #endif
 	
       }
-      else { // Cas general
+      else { // General case
 	if (VF.IsSame(myVertex)) VF = VRef;
 	else if (VL.IsSame(myVertex)) VL = VRef;
 	else {

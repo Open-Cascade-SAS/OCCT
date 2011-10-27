@@ -21,7 +21,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 
-//  couture
+//  sewing
 #include <BRepTools_Substitution.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepCheck.hxx>
@@ -127,8 +127,8 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
   }
   DSFiller.Insert(myS1,myS2,HDS);
 
-  // 020499 : JYL : rejet si il existe une arete de la SD
-  // codee non sameparameter et non degeneree
+  // 020499 : JYL : reject if there is an edge of the SD
+  // not coded sameparameter and not degenerated
   Standard_Boolean esp = HDS->EdgesSameParameter();
   Standard_Boolean tede = Standard_True;
   if (!esp) {
@@ -204,10 +204,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 #if MODIF 
 
     //======================================================================
-    //== Exploration des shapes en entree 
-    //== Creation de la liste des solides 
-    //== Creation de la liste des faces  HORS solide
-    //== Creation de la liste des edges  HORS face
+    //== Exploration of input shapes 
+    //== Creation of the list of solids 
+    //== Creation of the list of faces OUT OF solid
+    //== Creation of the list of edges OUT OF face
     Standard_Integer nbs1,nbs2,nbf1,nbf2,nbe1,nbe2,nbv1,nbv2;
 
     TopTools_ListOfShape Solids1,Solids2,Faces1,Faces2,Edges1,Edges2,Vertex1,Vertex2;
@@ -218,21 +218,21 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
     for(Ex.Init(myS2,TopAbs_SOLID),nbs2=0; Ex.More(); Ex.Next()) { 
       Solids2.Append(Ex.Current()); nbs2++;
     }
-    //== Les faces non ds un solide
+    //== Faces not  in a solid
     for(Ex.Init(myS1,TopAbs_FACE,TopAbs_SOLID),nbf1=0; Ex.More(); Ex.Next())  { 
       Faces1.Append(Ex.Current()); nbf1++;
     }
     for(Ex.Init(myS2,TopAbs_FACE,TopAbs_SOLID),nbf2=0; Ex.More(); Ex.Next())  {
       Faces2.Append(Ex.Current()); nbf2++;
     }
-    //== Les Edges non ds un solide
+    //== Edges not in a solid
     for(Ex.Init(myS1,TopAbs_EDGE,TopAbs_FACE),nbe1=0;  Ex.More(); Ex.Next())  { 
       Edges1.Append(Ex.Current()); nbe1++;
     }
     for(Ex.Init(myS2,TopAbs_EDGE,TopAbs_FACE),nbe2=0;  Ex.More(); Ex.Next()) {
       Edges2.Append(Ex.Current()); nbe2++;
     }
-    //== Les Vertex non ds un edge
+    //== Vertices not in an edge
     for(Ex.Init(myS1,TopAbs_VERTEX,TopAbs_EDGE),nbv1=0;  Ex.More(); Ex.Next())  { 
       Vertex1.Append(Ex.Current()); nbv1++;
     }
@@ -245,10 +245,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 
     //== 
 
-    //== Rejet des orerations sans sens 
+    //== Reject operations without direction 
   
 
-    //-- Coupe Solide par Edge 
+    //-- Cut Solid by Edge 
 //    Standard_Boolean Correct = Standard_True;
     if(    (nbs1 && nbs2==0 && St1==TopAbs_OUT && St2==TopAbs_IN) 
        ||  (nbs2 && nbs1==0 && St2==TopAbs_OUT && St1==TopAbs_IN)) { 
@@ -302,10 +302,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 		BB.Add(myShape,LV);
 	      }
 	      else { 
-		//-- On classifie : 
+		//-- Classify : 
 		Sub_Classify(Ex,St1,Solids2,BB,LIter,myShape); 
 	      }
-	      //-- Fin Classification 
+	      //-- End Classification 
 	    }
 	  }
 	} // nbf1
@@ -326,10 +326,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 		  BB.Add(myShape,LV);
 		}
 		else { 
-		  //-- On classifie : 
+		  //-- Classify : 
 		  Sub_Classify(Ex,St2,Solids1,BB,LIter,myShape); 
 		}
-		//-- Fin Classification 	
+		//-- End Classification 	
 	      }
 	    }
 	  } // nbf2
@@ -371,10 +371,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 		BB.Add(myShape,LV);
 	      }
 	      else { 
-		//-- On classifie : 
+		//-- Classify : 
 		Sub_Classify(Ex,St1,Solids2,BB,LIter,myShape); 
 	      }
-	      //-- Fin Classification 
+	      //-- End Classification 
 	    }
 	  }
 	}
@@ -411,10 +411,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 		BB.Add(myShape,LV);
 	      }
 	      else { 
-		//-- On classifie : 
+		//-- Classify : 
 		Sub_Classify(Ex,St2,Solids1,BB,LIter,myShape); 
 	      }
-	      //-- Fin Classification 	
+	      //-- End Classification 	
 	    }
 	  }
 	}
@@ -440,10 +440,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 	    BB.Add(myShape,LV);
 	  }
 	  else { 
-	    //-- On classifie : 
+	    //-- Classify : 
 	    Sub_Classify(Ex,St1,Solids2,BB,LIter,myShape); 
 	  }
-	  //-- Fin Classification 
+	  //-- End Classification 
 	}
       }
     }
@@ -465,16 +465,16 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 	    BB.Add(myShape,LV);
 	  }
 	  else { 
-	    //-- On classifie : 
+	    //-- Classify : 
 	    Sub_Classify(Ex,St2,Solids1,BB,LIter,myShape); 
 	  }
-	  //-- Fin Classification 
+	  //-- End Classification 
 	}
       }
     }
     //----------------------------------------------------------------------
-    //-- V1:Vertex1   state1 = OUT   -> On garde V1 si V1 est Out Tous les S2
-    //-- V1:Vertex1   state1 = IN    -> On garde V1 si V1 est In  un   des S2 
+    //-- V1:Vertex1   state1 = OUT   -> Preserve V1 if V1 is Out all S2
+    //-- V1:Vertex1   state1 = IN    -> Preserve V1 if V1 is In one of S2 
     if(nbv1 && nbs2) { 
       if(St1 == TopAbs_IN) { 
 	for(LIter.Initialize(Vertex1);LIter.More();LIter.Next()) {
@@ -610,10 +610,10 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
   TopExp_Explorer ex;
   ex.Init(myShape,TopAbs_FACE);
   for (; ex.More(); ex.Next()) myMap.Add(ex.Current());
-  ex.Init(myShape,TopAbs_EDGE); // pour le FRIKO
+  ex.Init(myShape,TopAbs_EDGE); // for FRIKO
   for (; ex.More(); ex.Next()) myMap.Add(ex.Current());
   
-  // Verification same parameter des nouvelles edges de section
+  // Checking same parameter of new edges of section
   Standard_Real eTol,cTol;
   for (myHBuilder->InitSection(1); 
        myHBuilder->MoreSection(); 
@@ -628,8 +628,8 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
 	for (ex.Init(cur, TopAbs_VERTEX); ex.More(); ex.Next()) {
 	  eTol = BRep_Tool::Tolerance(TopoDS::Vertex(ex.Current()));
 	  if (eTol<cTol) {
-	    // Update ne peut que augmenter la tolerance, donc si le vertex a
-	    // une tolerance + grande que ses edges on y touche pas
+	    // Update can only increase tolerance, so if the vertex 
+	    // has a greater tolerance thanits edges it is not touched
 	    BB.UpdateVertex(TopoDS::Vertex(ex.Current()), cTol);
 	  }
 	}
@@ -654,7 +654,7 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
     for (ex1.Init(myShape, TopAbs_SHELL); ex1.More(); ex1.Next()) {
       BRepCheck_Shell bcs(TopoDS::Shell(ex1.Current()));
       if (bcs.Closed()==BRepCheck_NotClosed) {
-	// il faut les ajouter face par face pour avoir linfo IsModified sur les faces
+	// it is required to add them face by face to avoid IsModified on faces
 	BRepBuilderAPI_Sewing brts;
 	for (ex3.Init(ex1.Current(), TopAbs_FACE); ex3.More(); ex3.Next()) {
 	  brts.Add(ex3.Current());
@@ -815,7 +815,7 @@ void Sub_Classify(TopExp_Explorer& Ex,
 
 //=======================================================================
 //function : InitParameters
-//purpose  : Info sur la geometrie : PCurve, Approx, ...
+//purpose  : Info on geometry : PCurve, Approx, ...
 //=======================================================================
 void BRepAlgo_BooleanOperation::InitParameters()
 {

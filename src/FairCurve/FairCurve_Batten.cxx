@@ -53,9 +53,9 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
   if (P1.IsEqual(P2, Precision::Confusion())) 
     Standard_NullValue::Raise("FairCurve : P1 and P2 are confused");
   if (Height <= 0) 
-    Standard_NegativeValue::Raise("FairCurve : Height is no positive");
+    Standard_NegativeValue::Raise("FairCurve : Height is not positive");
 //
-//   On initialise par une droite (2 poles)
+//   Initialize by a straight line (2 poles)
 //
   Handle(TColStd_HArray1OfReal)    Iknots =  new TColStd_HArray1OfReal(1,2);
   Handle(TColStd_HArray1OfInteger) Imults =  new TColStd_HArray1OfInteger(1,2);
@@ -70,7 +70,7 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
   Ipoles->SetValue(1, P1);
   Ipoles->SetValue(2, P2);
 
-//  On incremente le degree
+//  Increase the degree
   
   Handle(TColgp_HArray1OfPnt2d) Npoles = new  TColgp_HArray1OfPnt2d(1, Degree+1);
   Handle(TColStd_HArray1OfReal) Nweight = new TColStd_HArray1OfReal(1, 2);
@@ -87,13 +87,13 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
 			    Nknots->ChangeArray1(),
 			    Nmults->ChangeArray1() );
 
-   // et on affecte le resultat dans nos champs
+   // and impact the result in our fields
 
   Poles = Npoles;
   Knots = Nknots;
   Mults = Nmults;
 
-   // calcul des noeuds "plats".
+   // calculate "plane" nodes
 
   Flatknots = new TColStd_HArray1OfReal
     (1, BSplCLib::KnotSequenceLength(Mults->Array1(), Degree, Standard_False));
@@ -144,13 +144,13 @@ Standard_Boolean FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
 // ==================================================================
 {
   Standard_Boolean Ok=Standard_True, End=Standard_False;
-  Standard_Real AngleMax = 0.7;      // parametre reglant la fonction d'increment ( 40 degrees )
-  Standard_Real AngleMin = 2*PI/100; // parametre reglant la fonction d'increment 
-                                     // un tour complet ne doit pas couter plus de 100 pas.
+  Standard_Real AngleMax = 0.7;      // parameter ruling the function of increment ( 40 degrees )
+  Standard_Real AngleMin = 2*PI/100; // parameter ruling the function of increment 
+                                     // full passage should not cost more than 100 steps.
   Standard_Real DAngle1, DAngle2,  Ratio, Fraction, Toler;
   Standard_Real OldDist, NewDist;
 
-//  Boucle d'Homotopie : calcul du pas et optimisation 
+//  Loop of Homotopy : calculation of the step and optimisation 
 
   while (Ok && !End) {
      DAngle1 = NewAngle1-OldAngle1;
@@ -210,7 +210,7 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
  Standard_Boolean Ok, OkCompute=Standard_True;
  ACode = FairCurve_OK;
 
-// Deformation de la courbe par ajout d'un polynome d'interpolation
+// Deformation of the curve by adding a polynom of interpolation
    Standard_Integer L = 2 + NewConstraintOrder1 + NewConstraintOrder2, kk, ii;
    TColStd_Array1OfReal knots (1,2);
    knots(1) = 0;
@@ -220,13 +220,13 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
    TColgp_Array1OfPnt2d Interpolation(1,L);
    Handle(TColgp_HArray1OfPnt2d) NPoles = new  TColgp_HArray1OfPnt2d(1, Poles->Length());
 
-// Polynomes d'Hermites
+// Polynoms of Hermite
    math_Matrix HermiteCoef(1, L, 1, L);
    Ok = PLib::HermiteCoefficients(0,1, NewConstraintOrder1,  NewConstraintOrder2,
                                   HermiteCoef);
    if (!Ok) return Standard_False;
 
-// Definition des contraintes d'interpolation
+// Definition of constraints of interpolation
    TColgp_Array1OfXY ADelta(1,L);
    gp_Vec2d VOld(OldP1, OldP2), VNew( -(OldP1.XY()+DeltaP1.XY()) + (OldP2.XY()+DeltaP2.XY()) );
    Standard_Real DAngleRef = VNew.Angle(VOld);
@@ -258,7 +258,7 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
       }
       Interpolation(ii).SetXY(AuxXY);
   }
-// Conversion en BSpline de meme structure que le batten courant.
+// Conversion into BSpline of the same structure as the current batten.
   PLib::CoefficientsPoles( Interpolation, PLib::NoWeights(), 
                            HermitePoles,  PLib::NoWeights() ); 
 
@@ -273,13 +273,13 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
      DeltaCurve->InsertKnots(Knots->Array1(), Mults->Array1(), 1.e-10);
   }
 
-// Sommation
+// Summing
   DeltaCurve->Poles( NPoles->ChangeArray1() );
   for (kk= NPoles->Lower(); kk<=NPoles->Upper(); kk++) { 
      NPoles->ChangeValue(kk).ChangeCoord() += Poles->Value(kk).Coord(); 
    }
 
-// Donnees intermediaires
+// Intermediary data
 
  Standard_Real Angle1, Angle2, SlidingLength, 
                Alph1 =  OldAngle1 + DeltaAngle1, 
@@ -291,12 +291,12 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
                 P1P2 (  NPoles->Value(NPoles->Upper()).Coord()
                       - NPoles->Value(NPoles->Lower()).Coord() );
 
-// Angles par rapport a l'axe ox
+// Angles corresponding to axis ox
 
  Angle1 =  Ox.Angle(P1P2) + Alph1;
  Angle2 = -Ox.Angle(P1P2) + Alph2;
 
-// Calcul de la longeur de glissement (impose ou intiale);
+// Calculation of the length of sliding (imposed or intial);
  
  if (!NewFreeSliding) {
     SlidingLength = NewSlidingFactor * LReference;
@@ -312,7 +312,7 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
 
 
      
-// Energie et vecteurs d'initialisation
+// Energy and vectors of initialisation
  FairCurve_BattenLaw LBatten (NewHeight, NewSlope, SlidingLength ); 
  FairCurve_EnergyOfBatten EBatten (Degree+1, Flatknots, NPoles,  
 				   NewConstraintOrder1,  NewConstraintOrder2, 
@@ -320,8 +320,7 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
                                    Angle1, Angle2);
  math_Vector VInit (1, EBatten.NbVariables());
 
- // La valeur ci-dessous donne une idee de la plus petie valeur propre
- //   du critere de flexion.
+ // The valeur below is the smallest value of the criterion of flexion.
  Standard_Real VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
  if (VConvex < 1.e-12) {VConvex = 1.e-12;}
 
@@ -376,18 +375,18 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
 
  Ok = EBatten.Variable(VInit);
 
- // Traitement de la non convergence
+ // Processing of non-convergence
  if (!Newton.IsConverged()) {
     ACode = FairCurve_NotConverged;
   }
 
 
- // Prevention du glissement infinie
+ // Prevention of infinite sliding
  if (NewFreeSliding &&  VInit(VInit.Upper()) > 2*LReference) 
    ACode = FairCurve_InfiniteSliding;  
     
 
-// Insertion eventuelle de Noeuds
+// Eventual insertion of Nodes
  Standard_Boolean  NewKnots = Standard_False;
  Standard_Integer NbKnots = Knots->Length();
  Standard_Real ValAngles = (Abs(OldAngle1) +  Abs(OldAngle2) 
@@ -428,7 +427,7 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
    Flatknots = FKnots;		      
  } 
 
-// Pour d'eventuels debug
+// For eventual debug
 //  Newton.Dump(cout);
    
  return OkCompute;
@@ -449,7 +448,7 @@ Standard_Real FairCurve_Batten::SlidingOfReference(const Standard_Real Dist,
 {
  Standard_Real a1, a2;
 
-// cas d'angle non contraints
+// case of angle without constraints
  if ( (NewConstraintOrder1 == 0) && (NewConstraintOrder2 == 0)) return Dist;
 
  if (NewConstraintOrder1 == 0) a1 = Abs( Abs(NewAngle2)<PI ? Angle2/2 : PI/2);
@@ -458,12 +457,12 @@ Standard_Real FairCurve_Batten::SlidingOfReference(const Standard_Real Dist,
  if (NewConstraintOrder2 == 0) a2 = Abs( Abs(NewAngle1)<PI ? Angle1/2 : PI/2);
  else a2 = Abs(Angle2);
 
-// cas d'angle de meme signe 
+// case of angle of the same sign 
  if (Angle1 * Angle2 >= 0 ) {
      return Compute(Dist, a1, a2);
    }
 
-// cas d'angle de signe opposes
+// case of angle of opposite sign
  else {
     Standard_Real Ratio = a1 / ( a1 + a2 );
     Standard_Real AngleMilieu = pow(1-Ratio,2) * a1 + pow(Ratio,2) * a2;
@@ -496,10 +495,10 @@ Standard_Real FairCurve_Batten::Compute(const Standard_Real Dist,
 					const Standard_Real Angle) const
 // ==================================================================
 {
-  if (Angle < Precision::Angular() ) { return Dist; } // longeur du segment P1P2
-  if (Angle < PI/2) { return Angle*Dist / sin(Angle); } // longueur du cercle P1P2 respectant ANGLE
+  if (Angle < Precision::Angular() ) { return Dist; } // length of segment P1P2
+  if (Angle < PI/2) { return Angle*Dist / sin(Angle); } // length of circle P1P2 respecting ANGLE
   if (Angle > PI) { return Sqrt(Angle*PI) * Dist;}
-  else  { return Angle * Dist; }                      // interpolation lineaire
+  else  { return Angle * Dist; }                      // linear interpolation
 }
 
 // ==================================================================

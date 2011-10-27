@@ -171,14 +171,14 @@ void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
   }
   
   //-----------------------------------------------------
-  // Construction Liens BasicElt => Curve du contour IndC.
+  // Construction Links BasicElt => Curve of contour IndC.
   //-----------------------------------------------------
   LinkToContour(Explo,IndC,BiLo,LinkBECont);
   
 
   //---------------------------------------------------------------
-  // Iteration sur les BasicElts. L indice associe est le meme pour
-  // les courbes du contour et les edges.               .
+  // Iteration on BasicElts. The associated index is the same for
+  // the curves of the contour and the edges.               .
   //---------------------------------------------------------------
   for (Ite.Initialize(LinkBECont); Ite.More(); Ite.Next()) {
     BE     = BiLo.Graph()->BasicElt(Ite.Key());    
@@ -210,8 +210,8 @@ void BRepMAT2d_LinkTopoBilo::LinkToWire(const TopoDS_Wire&              W,
 
 //=======================================================================
 //function : LinkToContour
-//purpose  : Association a chaque basicElt de la courbe du contour initial
-//           dont il provient.
+//purpose  : Association to each basicElt of the curre of the initial
+//           contour from which it comes.
 //=======================================================================
 
 void LinkToContour (const BRepMAT2d_Explorer&              Explo,
@@ -227,14 +227,14 @@ void LinkToContour (const BRepMAT2d_Explorer&              Explo,
   Standard_Integer         NbSect,ISect;     
 
   //---------------------------------------------------
-  // NbSect : nombre de sections sur la courbe courrant.
-  // ISect  : Compteur sur les sections.
+  // NbSect : number of sections on the current curve.
+  // ISect  : Counter on sections.
   //---------------------------------------------------
 
   const TColGeom2d_SequenceOfCurve&  Cont = Explo.Contour(IndC);
   
   //------------------------------------------------------------------
-  //Initialisation de l explorateur sur la premiere courbe du contour.
+  //Initialization of the explorer on the first curve of the contour.
   //------------------------------------------------------------------
   Standard_Integer         IndOnCont     =  1;   
   Standard_Integer         PrecIndOnCont = -1;
@@ -242,8 +242,8 @@ void LinkToContour (const BRepMAT2d_Explorer&              Explo,
   ISect  = 0;
 
   //------------------------------------------------------------------
-  // Parcours des elements de base associes au contour IndC.
-  // Rq : les elements de base sont ordonnes.
+  // Parsing of base elements associated to contour IndC.
+  // Rq : the base elements are ordered.
   //------------------------------------------------------------------
   for (Standard_Integer i = 1; i <= BiLo.NumberOfElts(IndC); i++) {
 
@@ -253,9 +253,9 @@ void LinkToContour (const BRepMAT2d_Explorer&              Explo,
 
     if (Type != STANDARD_TYPE(Geom2d_CartesianPoint)) {
       ISect++;
-      //--------------------------------------------------------------------
-      // l element de base est une courbe on lui associe la courbe courante.
-      //--------------------------------------------------------------------
+      //----------------------------------------------------------------
+      // The base element is a curve associated with the current curve.
+      //----------------------------------------------------------------
       if (DirectSense) {
 	Link.Bind(BE->Index(),  IndOnCont);
       }
@@ -264,9 +264,9 @@ void LinkToContour (const BRepMAT2d_Explorer&              Explo,
       }
     }
     else {      
-      //--------------------------------------------------------------------
-      // l element de base est un point on lui associe la courbe precedente
-      //--------------------------------------------------------------------
+      //-----------------------------------------------------------------
+      // The base element is a point associated with the previous curve.
+      //-----------------------------------------------------------------
       if (DirectSense || LastPoint) {
 	Link.Bind(BE->Index(),  PrecIndOnCont);
       }
@@ -277,8 +277,8 @@ void LinkToContour (const BRepMAT2d_Explorer&              Explo,
 
     PrecIndOnCont = IndOnCont;
     //----------------------------------------------------------------------
-    // Passage a la courbe suivante dans Explo, lorsqu on a parcouru toutes
-    // les portions de courbes correspondante a la courbe initiale.
+    // Passage to the next curve in Explo, when all parts 
+    // of curves corresponding to the initial curve have been parsed.
     //---------------------------------------------------------------------
     if (Type != STANDARD_TYPE(Geom2d_CartesianPoint) && ISect == NbSect) {
       if (IndOnCont < Cont.Length() && DirectSense) {
@@ -288,7 +288,7 @@ void LinkToContour (const BRepMAT2d_Explorer&              Explo,
       }
       else {
 	//-----------------------------------------------------
-	// Pour les lignes ouvertes on repart dans l autre sens.
+	// For open lines restart in the other direction.
 	//-----------------------------------------------------
 	if (!DirectSense) {
 	  IndOnCont--;

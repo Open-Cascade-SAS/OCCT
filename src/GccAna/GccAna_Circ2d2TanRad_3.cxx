@@ -18,18 +18,18 @@
 #include <Standard_NegativeValue.hxx>
 #include <GccEnt_BadQualifier.hxx>
 
-// circulaire tangent a une ligne et un point et de rayon donne
+// circular tangent to a line and a point and a given radius
 //=============================================================
 //========================================================================
-// On initialise WellDone a false.                                       +
-// On recupere la ligne L1.                                              +
-// On sort en erreur dans les cas ou la construction est impossible.     +
-// On fait la parallele a L1 dans le bon sens.                           +
-// On fait le cercle centre en Point1 de rayon Radius.                   +
-// On intersecte la parallele et le cercle.                              +
-//                              ==> Le point de centre de la solution.   +
-// On cree la solution qu on ajoute aux solutions deja trouvees.         +
-// On remplit les champs.                                                +
+// Initialize WellDone to false.                                         +
+// Return line L1.                                                       +
+// Leave with error if the construction is impossible.                   +
+// Create parallel to L1 in the proper direction.                        +
+// Create the circle with center at Point1 of radius Radius.             +
+// Intersect the parallel and the circle.                                +
+//                              ==> The center point of the  solution.   +
+// Create the solution to be added to already found solutions.           +
+// Fill the fields.                                                      +
 //========================================================================
 
 GccAna_Circ2d2TanRad::
@@ -138,9 +138,8 @@ GccAna_Circ2d2TanRad::
 
     if (nbsol == 1) {
       if (displ1<1.e-10) {
-	// cas particulier ou Point2 est sur la ligne
-	// pas la peine de passer par les intersections
-	// on construit les deux solutions directement
+	// particular case when Point2 is on the line
+	// construct two solutions directly
 	for (Standard_Integer jcote = 1 ; jcote <= nbcote ; jcote++) {
 	  NbrSol++;
 	  gp_Pnt2d Center(cxloc-cote(jcote)*ydir*Radius,

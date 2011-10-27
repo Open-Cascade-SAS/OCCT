@@ -2,16 +2,16 @@
 // Created:	Thu Mar 10 14:52:22 1994
 // Author:	Laurent BUCHARD
 //		<lbr@fuegox>
-// Modifed:     Portage NT 7-5-97 DPF (stdio.h)
+// Modifed:     Porting NT 7-5-97 DPF (stdio.h)
 //              Apr 16 2002 eap, classification against infinite solid (occ299)
 
 
 //  Modified by skv - Thu Sep  4 12:29:30 2003 OCC578
 
-//-- Traiter le cas d un trou !!
+//-- Process the case of a hole!!
 #define REJECTION 1
 
-//-- Pour printf sur NT
+//-- To printf on NT
 #include <stdio.h>
 
 #include <BRepClass3d_SolidExplorer.ixx>
@@ -48,7 +48,7 @@ static gp_Vec staticd1v_gp_vec;
 
 //=======================================================================
 //function : FindAPointInTheFace
-//purpose  : compute a point P in the face  F. Param is a Real in
+//purpose  : Compute a point P in the face  F. Param is a Real in
 //           ]0,1[ and   is  used to  initialise  the algorithm. For
 //           different values , different points are returned.
 //=======================================================================
@@ -111,7 +111,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
       
       T.Normalize();
       P.SetCoord(P.X()+TolInit*T.X(),P.Y()+TolInit*T.Y());
-      FClassifier.Reset(gp_Lin2d(P,T),ParamInit,RealEpsilon());   //-- Longueur et Tolerance #######
+      FClassifier.Reset(gp_Lin2d(P,T),ParamInit,RealEpsilon());   //-- Length and Tolerance #######
       
       TopExp_Explorer otherfaceexplorer;
 //  Modified by Sergey KHROMOV - Tue Apr  1 11:32:51 2003 Begin
@@ -191,14 +191,14 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
     void *ptr = (void*)(myMapOfInter.Find(Face));
     if(ptr) { 
       const IntCurvesFace_Intersector& TheIntersector = (*((IntCurvesFace_Intersector *)ptr));
-      //-- On prend les 4 points dans chaque Quart de surface
+      //-- Take 4 points in each Quarter of surface
       //-- -> Index : 1 -> 16
       //-- 
       //--
-      //-- Puis on prend une matrice de points sur une grille serree
+      //--  Then take a matrix of points on a tight grid
       //--
-      for(u=du+(U1+U2)*0.5; u<U2; u+=du) {          //--  0  X    u croit
-        for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v croit
+      for(u=du+(U1+U2)*0.5; u<U2; u+=du) {          //--  0  X    u increases
+        for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v increases
           if(++NbPntCalc>=IndexPoint) { 
             if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
               u_=u; v_=v;
@@ -210,8 +210,8 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
         }
       }
 	  
-      for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  0  0    u decroit
-	for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {       //--  X  0    v decroit
+      for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  0  0    u decreases
+	for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {       //--  X  0    v decreases
 	  if(++NbPntCalc>=IndexPoint) {
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
@@ -222,8 +222,8 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  }
 	}
       }
-      for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  X  0    u decroit
-	for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v croit
+      for(u=-du+(U1+U2)*0.5; u>U1; u-=du) {         //--  X  0    u decreases
+	for(v=dv+(V1+V2)*0.5; v<V2; v+=dv) {        //--  0  0    v increases
 	  if(++NbPntCalc>=IndexPoint) { 
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
@@ -234,8 +234,8 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  }
 	}
       }
-      for(u=du+(U1+U2)*0.5; u<U2; u+=du) {         //--  0  0     u croit
-	for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {      //--  0  X     v decroit
+      for(u=du+(U1+U2)*0.5; u<U2; u+=du) {         //--  0  0     u increases
+	for(v=-dv+(V1+V2)*0.5; v>V1; v-=dv) {      //--  0  X     v decreases
 	  if(++NbPntCalc>=IndexPoint) {
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
@@ -246,7 +246,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  }
 	}
       }
-      //-- le reste
+      //-- the remainder
       du = (U2-U1)/37.0;
       dv = (V2-V1)/37.0;
       if(du<1e-12) du=1e-12;
@@ -278,7 +278,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
     IndexPoint = NbPntCalc;
   }
   else { 
-    //printf("BRepClass3d_SolidExplorer Face non trouvee ds la map \n");
+    //printf("BRepClass3d_SolidExplorer Face not found ds the map \n");
   }
   return(BRepClass3d_SolidExplorer::FindAPointInTheFace(Face,APoint_,u_,v_,param_));
   
@@ -508,8 +508,8 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
       Standard_Boolean encoreuneface = faceexplorer.More();
       if(ptfound==Standard_False && encoreuneface==Standard_False) { 
 	if(myParamOnEdge < 0.0001) { 
-	  //-- Ce cas se produit lorsque le point est sur le solide
-	  //-- et ce solide est reduit a une face 
+	  //-- This case takes place when the point is on the solid
+	  //-- and this solid is reduced to a face 
 	  gp_Pnt PBidon(P.X()+1.0,P.Y(),P.Z());
 	  gp_Vec V(P,PBidon);
 	  Par= 1.0;
@@ -528,7 +528,7 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
       _Par=0.0;
       myReject=Standard_True;
 #if DEB
-      cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid sans face)"<<endl;
+      cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
 #endif  
       //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
       //return ;
@@ -708,7 +708,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   myShape = S;
   myFirstFace = 0;
   myParamOnEdge = 0.512345;
-  //-- Exploration de la Map et delete sur les objets alloues
+  //-- Exploring of the Map and removal of allocated objects
   
   
   BRepClass3d_DataMapIteratorOfMapOfInter iter(myMapOfInter);
@@ -722,7 +722,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   
   myMapOfInter.Clear();
   
-  myReject = Standard_True; //-- cas de solide infini (sans aucune face)
+  myReject = Standard_True; //-- case of infinite solid (without any face)
 
   TopExp_Explorer Expl;
   for(Expl.Init(S,TopAbs_FACE);
@@ -731,12 +731,12 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
     const TopoDS_Face Face = TopoDS::Face(Expl.Current());
     void *ptr = (void *)(new IntCurvesFace_Intersector(Face,Precision::Confusion()));
     myMapOfInter.Bind(Face,ptr);
-    myReject=Standard_False;  //-- au moins une face dans le solide 
+    myReject=Standard_False;  //-- at least one face in the solid 
   }
   
 #if DEB
   if(myReject) { 
-    cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid sans face)"<<endl;
+    cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
   }
 #endif      
 
@@ -753,7 +753,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
 //Standard_Boolean  BRepClass3d_SolidExplorer::Reject(const gp_Pnt& P) const 
 Standard_Boolean  BRepClass3d_SolidExplorer::Reject(const gp_Pnt& ) const 
 {
-  return(myReject);  // cas de solide sans face 
+  return(myReject);  // case of solid without face 
 }
 
 //=======================================================================
@@ -919,6 +919,6 @@ void BRepClass3d_SolidExplorer::DumpSegment(const gp_Pnt&,
 					    const TopAbs_State) const
 {
 #ifdef DEB
-  // rien pour le moment.
+ 
 #endif
 }

@@ -1,42 +1,39 @@
 //-------------------------------------------------------------------
-//                algorihme lieu a fleche constante
+//                Algorithm concerns the constant arrow
 //
-// cas traites :  courbe parametree
-//               la courbe doit etre C2
-// on assure une fleche maxi
+// cases processed : parameterized curve 
+//               the curve should be C2
+// provide a max arrow
 //
-// algorithme courbe parametree:
+// algorithm of parameterized curve:
 //
-// 
-//   le calcul du pas d avancement est 
+//   calculation of the step of advancement is 
 //             du = sqrt(8*fleche*||P'(u)||/||P'(u)^P''(u)||
 //
-//   on calcule chaque point t.q. u+Du
+//   calculate each point such as u+Du
 //
-//   on verifie si la fleche est effectivement respectee ,si oui on continue
-//   sinon on rectifie le pas
+//   check if the arrow is actually taken into account, if yes, continue
+//   otherwise correct the step
 //
-//   si du ne peut etre calculer (courbure nulle ,singularite sur la courbe) on
-//   prendra alors un pas constant pour atteindre le dernier point ou le depass//   er
+//   si du cannot be calculated (null curvature, singularity on the curve) 
+//   take a constant step to reach the last point or to go past it
+//   The last point is readjusted by the following criteria:
 //
-//   le dernier point est reajuste selon les criteres suivants:
+//     if the last calculated parameter is <2*resolution, reframe the last point found
+//     between itself and the previous point and add the end point 
+//     (avoid a concentration at the end)
 //
-//     si le dernier parametre calcule <2*resolution,on recadre le dernier
-//     point trouve entre lui meme et le precedent et on rajoute le point
-//     de fin (eviter une concentration a la fin)
+//     otherwise if the distance (last calculated point, end point)<arrow, 
+//     replace the last calculated point by the end point
 //
-//     sinon si la distance (dernier point calcule ,point de fin)<fleche,on
-//     remplace le dernier point calcule par le point de fin
-//
-//     sinon on calcule une fleche max entre l avant dernier point calcule
-//     et le point de fin ;si cette fleche est superieure a la fleche on 
-//     remplace le dernier point par celui ci et le point de fin
+//     otherwise calculate max arrow between the last but one calculated point
+//     and the end point; if this arrow is greater than the arrow
+//     replace the last point by this one and the end point
 //
 //
-//    LES CONTROLES DE FLECHE ET DERNIER POINT NE SONT FAITS QUE SI
-//      withControl=true
+//    CONTROLS OF ARROW AND THE LAST POINT ARE DONE ONLY IF withControl=true
 // 
-//   chaque iteration calcule au maximum 3 points
+//   each iteration calculates at maximum 3 points
 //
 //         
 //-------------------------------------------------------------------------
@@ -131,12 +128,12 @@ void CPnts_UniformDeflection::Perform()
     P = myPoints[myNbPoints] ;
     NormD1 = V1.Magnitude();
     if (NormD1 < myTolCur || V2.Magnitude() < myTolCur) {   
-      // singularite sur la tangente ou courbure nulle
+      // singularity on the tangent or null curvature
       myDu = Min(myDwmax, 1.5 * myDu);
     }
     else { 
       NormD2 = V2.CrossMagnitude(V1);
-      if (NormD2 / NormD1 < myDeflection) {  // collinearite des derivees
+      if (NormD2 / NormD1 < myDeflection) {  // collinearity of derivatives
 	myDu = Min(myDwmax, 1.5 * myDu);            
       }
       else {
@@ -145,7 +142,7 @@ void CPnts_UniformDeflection::Perform()
       }
     }
     
-    // verifier si la fleche est respectee si WithControl
+    // check if the arrow is observed if WithControl
     
     if (myControl) {
       myDu = Min(myDu, myLastParam-myFirstParam);
@@ -165,9 +162,9 @@ void CPnts_UniformDeflection::Perform()
 	V2 = gp_Vec(myPoints[myNbPoints], P1);
 	NormD2 = V2.CrossMagnitude(V1) / NormD1;
 	
-	// le depassement de fleche a partir duquel on redivise est arbitraire
-	// il faudra peut etre le reajuster (differencier le premier point des
-	// autres) ce test ne marche pas sur les points d inflexion
+	// passing of arrow starting from which the redivision is done is arbitrary
+	// probably it will be necessary to readjust it (differenciate the first point 
+	// from the others) this test does not work on the points of inflexion
 	
 	if (NormD2 > myDeflection / 5.0) {
 	  NormD2 = Max(NormD2, 1.1 * myDeflection);
@@ -180,7 +177,7 @@ void CPnts_UniformDeflection::Perform()
     myFinish = (myLastParam - myFirstParam < myTolCur) || (myDu == 0.);
   }
   if (myFinish) {
-    // le dernier point est corrige si control
+    // the last point is corrected if control
     if (myControl && (myNbPoints == 1) ) {
       Un1 = myParams[0];
       if (myLastParam - Un1 < 0.33*(myLastParam-myFirstParam)) {
@@ -220,7 +217,7 @@ void CPnts_UniformDeflection::Perform()
 
 	  if ((VV.CrossMagnitude(gp_Vec(P2, P)) / NormD1 < myDeflection) && 
 	      (Un1 >= myLastParam - myDwmax) ) {
-	    // on supprime le point n
+	    // point n is removed
 	    myParams[1]= myLastParam;
             myPoints[1] = P1 ;
 	  }

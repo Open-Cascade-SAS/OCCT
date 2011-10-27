@@ -18,16 +18,16 @@
 #include <Precision.hxx>
 
 //Attention :
-//Pour eviter de trainer des tableaux persistent dans les champs
-//on dimensionne les tableaux au maxi (TheNbKnots et TheNbPoles)
-//qui correspondent au cercle complet.  Pour un arc de cercle on a
-//evidemment besoin de moins de poles et de noeuds, c'est pourquoi les
-//champs nbKnots et nbPoles sont presents et sont mis a jour dans le
-//constructeur d'un arc de cercle B-spline pour tenir compte du nombre
-//effectif de poles et de noeuds.
+//To avoid use of persistent tables in the fields
+//the tables are dimensioned to the maximum (TheNbKnots and TheNbPoles)
+//that correspond to the full circle. For an arc of circle there is a
+//need of less poles and nodes, that is why the fields
+//nbKnots and nbPoles are present and updated in the 
+//constructor of an arc of B-spline circle to take into account 
+//the real number of poles and nodes.
 
 
-// parametrization :
+// parameterization :
 // Reference : Rational B-spline for Curve and Surface Representation
 //             Wayne Tiller  CADG September 1983
 //
@@ -62,8 +62,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve
 
   if (Parameterisation != Convert_TgtThetaOver2 &&
     Parameterisation != Convert_RationalC1) {
-    // Dans ce cas BuildCosAndSin ne sait pas gerer la periodicite
-    // => on trim sur 0,2*PI
+    // If BuildCosAndSin cannot manage the periodicity
+    // => trim on 0,2*PI
     isperiodic = Standard_False;
     Convert_ConicToBSplineCurve::
       BuildCosAndSin(Parameterisation,
@@ -105,8 +105,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve
     value = -r ;
    }
   
-  // On replace la bspline dans le repere du cercle.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the mark of the circle.
+  // and calculate the weight of the bspline.
 
   for (ii = 1; ii <= nbPoles ; ii++) {
      poles->ChangeArray1()(ii).SetCoord(1, R * CosNumeratorPtr->Value(ii)) ;
@@ -167,8 +167,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve
     value = -r ;
   }
   
-  // On replace la bspline dans le repere du cercle.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the mark of the circle.
+  // and calculate the weight of the bspline.
   
   for (ii = 1; ii <= nbPoles ; ii++) {
     poles->ChangeArray1()(ii).SetCoord(1, R * CosNumeratorPtr->Value(ii)) ;

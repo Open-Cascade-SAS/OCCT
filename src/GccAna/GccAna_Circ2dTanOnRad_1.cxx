@@ -12,20 +12,18 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Cercle tangent a une droite  Qualified1 (L1)                         +
-//          centre sur une droite OnLine                                  +
-//          de rayon Radius.                                              +
+//   Circle tangent to straight line  Qualified1 (L1)                         +
+//          center on straight line OnLine                                  +
+//          of radius Radius.                                              +
 //                                                                        +
-//  On initialise le tableau de solutions cirsol ainsi que tous les       +
-//  champs.                                                               +
-//  On elimine en fonction du qualifieur les cas ne presentant pas de     +
-//  solutions.                                                            +
-//  On cree L1para : la parallele a L1 dans le sens voulu par le          +
-//                   qualifieur a une distance Radius.                    +
-//  Le point P d intersection entre L1para et OnLine donnera le point de  +
-//  centre de la solution.                                                +
-//  On cree les solutions cirsol de centre P et de rayon Radius.          +
-//  On remplit les champs.                                                +
+//  Initialize the table of solutions cirsol and all fields.              + 
+//  Elimine depending on the qualifier the cases not being solutions.     +
+//  Create L1para : parallel to L1 in the direction required by the       +
+//                  qualifier at distance Radius.                         +
+//  Point P of intersection between L1para and OnLine will give the center point +
+//  of the solution.                                                +
+//  Create solutions cirsol with center P and radius Radius.          +
+//  Fill the fields.                                                +
 //=========================================================================
 
 GccAna_Circ2dTanOnRad::

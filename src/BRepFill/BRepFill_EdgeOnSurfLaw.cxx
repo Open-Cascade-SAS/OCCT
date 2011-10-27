@@ -65,7 +65,7 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
 	  AS =  new  (BRepAdaptor_HSurface) (F);
 	}
       }
-      if (!Trouve) { // Impossible de construire la loi.
+      if (!Trouve) { // Impossible to construct the law.
 	hasresult = Standard_False;
 	myLaws.Nullify();
 	return;
@@ -75,7 +75,7 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
       if (Or == TopAbs_REVERSED) {
 	Handle(Geom2d_TrimmedCurve) CBis = 
 	  new (Geom2d_TrimmedCurve) (C, First, Last);
-	CBis->Reverse(); // Pour eviter de deteriorer la topologie
+	CBis->Reverse(); // To avoid spoiling the topology
 	C = CBis;
         First =  C->FirstParameter();
 	Last  =  C->LastParameter();

@@ -8,13 +8,13 @@
 
 //-Version	
 
-//-Design	Declaration des variables specifiques au contexte
-//		de trace des facettes
+//-Design	Declaration of variables specific to the context
+//		of tracing facets
 
-//-Warning	Un contexte de trace de facette est defini par :
-//		- le style de l'interieur de la facette
-//		- le style du bord de la facette
-//		- la couleur
+//-Warning	Context of tracing facets id defined by:
+//		- the style of the interior of the facet
+//		- the style of the border of the facet
+//		- the color
 
 //-References	
 
@@ -29,16 +29,16 @@
 
 //-Global data definitions
 
-//	-- l'interieur
+//	-- interior
 //	MyInteriorStyle	:	InteriorStyle;
 //	MyInteriorColor	:	Color;
 
-//	-- le bord
+//	-- border
 //	MyEdgeColor	:	Color;
 //	MyEdgeType	:	TypeOfLine;
 //	MyEdgeWidth	:	Standard_Real;
 
-//	-- les hachures
+//	-- shading
 //	MyHatchStyle	:	HatchStyle;
 
 

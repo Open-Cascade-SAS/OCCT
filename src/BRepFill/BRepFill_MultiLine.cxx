@@ -143,7 +143,7 @@ myKPart(0)
   }
   
 
-  // recuperons les isos dans leur domaine de restriction.
+  // return isos in their domain of restriction.
   Handle(Geom_Curve) UU1, UU2, VV1, VV2;
   Handle(Geom_Surface) S;
   S = BRep_Tool::Surface(myFace1,L);  
@@ -197,7 +197,7 @@ myKPart(0)
     Vmax = dummyUmax;
   }
 
-  // essai dub
+  // try duplication
   GeomAdaptor_Surface GAS1(S);
   GeomAbs_SurfaceType Type1 = GAS1.GetType();
 
@@ -223,7 +223,7 @@ myKPart(0)
 			     Precision::PConfusion(),
 			     Vmin, Vmax);
   }
-  // fin essai dub
+  // end try duplication
 
   myU1 = Geom2dAdaptor_Curve(GeomProjLib::Curve2d(UU1, BasisPlane),
 			     Umin, Umax);
@@ -260,7 +260,7 @@ myKPart(0)
     }
   }
 
-  // recuperons les isos dans leur domaine de restriction.
+  // return isos in their domain of restriction.
   S = BRep_Tool::Surface(myFace2,L);
 
   if (!L.IsIdentity())
@@ -313,7 +313,7 @@ myKPart(0)
     Vmax = dummyUmax;
   }
 
-  // essai dub
+  // try duplication
   GeomAdaptor_Surface GAS2(S);
   GeomAbs_SurfaceType Type2 = GAS2.GetType();
 
@@ -339,7 +339,7 @@ myKPart(0)
 			     Precision::PConfusion(),
 			     Vmin, Vmax);
   }
-  // fin essai dub
+  // end try duplication
 
   myU2 = Geom2dAdaptor_Curve(GeomProjLib::Curve2d(UU2, BasisPlane),
 			     Umin, Umax);
@@ -350,12 +350,12 @@ myKPart(0)
 			     Vmin, Vmax);
 
   // eval if in a particular case.
-  // Cas Particulier si :
-  //     1) - Bissec droite
-  //        - Bissec orthogonale a l`element de la base.
-  //        ==> Iso sur les 2 faces.
-  //     2) - Bissec droite
-  //        - les 2 surfaces sont des plans.
+  // Particular case if :
+  //     1) - Straight Bissectrice
+  //        - Bissectrice orthogonal to the base element.
+  //        ==> Iso on 2 faces.
+  //     2) - Straight Bissectrice
+  //        - 2 surfaces are planes.
   myCont  = GeomAbs_C0;
 
   if ( myBis.GetType() == GeomAbs_Line) {
@@ -408,8 +408,8 @@ void BRepFill_MultiLine::Curves(Handle(Geom_Curve)& Curve,
     P1   = ValueOnF1(myBis.FirstParameter());
     P2   = ValueOnF1(myBis.LastParameter());
 
-    // on recherche la valeur de l iso avec le point milieu 
-    // les bouts pouvant etre des points degeneres.
+    // find value of the with medium point 
+    // the ends can be degenerated points.
 
     PMil = ValueOnF1(0.5*(myBis.FirstParameter() + myBis.LastParameter()));
     
@@ -600,7 +600,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
     UU = Ext.LowerDistanceParameter();
     Dist = Ext.LowerDistance();
   }
-  // Controle avec les `bouts` 
+  // Control with `ends` 
   D1 = P.Distance(TheU.Value(TheU.FirstParameter()));
   D2 = P.Distance(TheU.Value(TheU.LastParameter()));
 
@@ -646,7 +646,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
     VV = TheV.LastParameter();
   }  
   else {  
-    // test si la courbe est du cote `Y negatif`.
+    // test if the curve is at the side `negative Y`.
     if ( Min( PF.Y(),PL.Y()) < -Tol)  Dist = -Dist;
    
     Handle(Geom2d_Line) Line 

@@ -18,25 +18,25 @@
 //--  lbr le 27 fev 97
 //--  
 //-- 
-//--      Initialisation:  Une boite englobante BE   
-//--                       Une liste de boites Bi (Bi dans BE)
+//--      Initialisation:  Bounding box BE   
+//--                       List of boxes Bi (Bi in BE)
 //-- 
-//--      Compare(b) renvoie la liste des Boites Bi touchees par b
+//--      Compare(b) returns the list of Boxes Bi touched by b
 //-- 
 //--      
-//--   Principe General: 
+//--      General principle: 
 //-- 
-//--       1) On discretise la boite BE en N*N*N  voxels
-//--          Chaque boite Bi touche un certain nombre de voxels
-//--          Bi touche { Vijk  avec i0<=i<=i1 ...  k0<=k<=k1 } 
-//--       2) On projete sur chaque axe X,Y,Z les boites Bi
-//--          pour obtenir les structures suivantes : 
+//--       1) Discretize box BE into N*N*N voxels
+//--          Each box Bi touches a certain number of voxels
+//--          Bi touches { Vijk with i0<=i<=i1 ...  k0<=k<=k1 } 
+//--       2) Project on each axis X,Y,Z boxes Bi
+//--          to get the following structures : 
 //-- 
-//--          Exemple :  
+//--          Example :  
 //--
-//--             la boite i1 touche les voxels { Vijk  avec 1<=i<=N-1  ... }
-//--             la boite i2 touche les voxels { Vijk  avec 2<=i<=3  ... }
-//--             la boite i3 touche les voxels { Vijk  avec 1<=i<=2  ... }
+//--             box i1 touches voxels { Vijk  with 1<=i<=N-1  ... }
+//--             box i2 touches voxels { Vijk  with 2<=i<=3  ... }
+//--             box i3 touches voxels { Vijk  with 1<=i<=2  ... }
 //--
 //-- 
 //--         X[.] |  1    2    3    4   ....   N-1   N     
@@ -46,46 +46,39 @@
 //--              |       i3 
 //-- 
 //-- 
-//--         On realise la meme chose pour les axes Y et Z 
+//--         Produce the same thing for axes Y and Z 
 //--         
-//--         On obtient donc 3 tableaux (X,Y,Z) de listes d entiers (les indices des boites)
+//--         Obtain 3 tables (X,Y,Z) of lists of integers (indexes of boxes)
 //-- 
-//--       3) Pour rechercher les boites en contact avec une boite bt
-//--             a) On cherche les voxels touches par bt -> i0bt,i1bt ... k0bt,k1bt
-//--             b) On cherche dans la liste Z les boites presentes dans les cases Z[k0bt ... k1bt]
-//--             c) On cherche parmi ces boites celles presentes dans les cases Y[j0bt ... j1bt]
-//--             d) et le resultat est l intersection du result. precedent avec X[i0bt ... i1bt]
+//--       3) To find boxes contacting with box bt
+//--             a) Find voxels touched by bt -> i0bt,i1bt ... k0bt,k1bt
+//--             b) Find in list Z the boxes present in cases Z[k0bt ... k1bt]
+//--             c) Find among these boxes the ones present in cases Y[j0bt ... j1bt]
+//--             d) and the result is the intersection of the previous result with X[i0bt ... i1bt]
 //-- 
 //--
-//--  Rejection de plus haut niveau. 
+//--  Rejection of a higher level. 
 //-- 
-//--       *) On garde une representation a l aide d un tableau de bit des voxels de l espace BE 
-//--          qui contiennenrt au moins une boite Bi.
-//--       *) Lorsque on teste une boite bt, on regarde tout d abord si cette boite comprend dans
-//--          le tableau de bit au moins un voxel occuppe. 
-//--          Si un voxel occuppe est touche : pas de rejection
-//--          Sinon return
+//--       *) Preserve a table representation of bit of voxels of space BE 
+//--          that contains at least one box Bi.
+//--       *) While box bt is texted, it is checked if this box includes in 
+//--          the table of bit at least one occupied voxel. 
+//--          If the occupied voxel is touched : no rejection
+//--          Otherwise return
 //--
-//--      **) Une autre rejection a ete adoptee. Elle consiste a ne pas checher a placer dans les
-//--          structures ci-dessus (tableaux X,Y,Z et tableau de Bits) une boite Bi qui est grande
-//--          devant la boite englobante BE. 
+//--      **) Another rejection was adopted. It consists in trying to locate in 
+//--          the above structures (tables X,Y,Z and  table of Bits) a box Bi which is greater than the 
+//--          bounding box BE. 
 //--
-//--          Les indices de ces boites sont placees dans un tableau ToTest, et on comparera
-//--          systematiquement ces boites avec bt. 
+//--          The indices of these boxes are located in table ToTest, and these 
+//            boxes are compared systematically with bt. 
 //--         
-//--         
-//--         
-//--         
-//--   Note : des tableaux C remplacent ici avantageusement les HArray1OfListOfInteger et autres      
-//--          structures agreables lorsqu il faut ajouter des donnees mais lentes a la lecture.
+//--   Note : tables C replace here HArray1OfListOfInteger and other      
+//--          structures that are sufficient for data adding but slow for reading.
 //--          
-//--          Ici, on ajoute les donnees au debut (ds les fcts Initialize et SortBoxes) et ensuite,
-//--          on passe beaucoup de temps a parcourir les tableaux. Des structures lentes a l ecriture
-//--          mais rapides a la lecture sont donc meilleures.
-//--         
-//--         
-//--         
-//--         
+//--          Here the data is added at start (Initialize and SortBoxes) and later,
+//--          it takes much time to parse the tables. The slowly written, byut fastly read structures 
+//--          are thus better.
 //--         
 
 
@@ -119,7 +112,7 @@ static long unsigned _P2[32] = { 1,2,4,8,  16,32,64,128,  256,512,1024,2048,
 				 1048576,2097152,4194304,8388608,
 				 16777216,33554432,67108864,134217728,
 				 268435456,536870912,1073741824,2147483648U};
-class BSB_T3Bits { //-- size est une puissance de 2 > 4
+class BSB_T3Bits { //-- size is power of 2 > 4
 public:
 
   Standard_Integer _DECAL;
@@ -143,7 +136,7 @@ public:
   BSB_T3Bits(int size);
   ~BSB_T3Bits();
 
-  //-- Partie HArray1OfListOfInteger
+  //-- Part HArray1OfListOfInteger
 
   void AppendAxisX(const Standard_Integer i,const Standard_Integer v);
   void AppendAxisY(const Standard_Integer i,const Standard_Integer v);
@@ -279,7 +272,7 @@ void BSB_T3Bits::AppendAxisX(const Standard_Integer i,
   n++;
   if(n<axisX[i][0]) {   axisX[i][n]=v;   }
   else { 
-    //-- il faut etendre
+    //-- it is required to extend
     Standard_Integer s=axisX[i][0];
     Standard_Integer *nt = new Standard_Integer [s+s];
     nt[0]=s+s;
@@ -433,7 +426,7 @@ void Bnd_BoundSortBox::SortBoxes()
 	  Map->AppendAxisZ(lacaseZ,labox);
 	}
 	//------------------------------------------------------------
-	//-- remplissage du tableau de bits
+	//-- fill table with bits
 	//--
 	if(Map) { 
 	  for (lacaseX=firstcaseX; lacaseX<=lastcaseX; lacaseX++) {
@@ -553,7 +546,7 @@ void Bnd_BoundSortBox::Add(const Bnd_Box& theBox,
       Map->AppendAxisZ(theGapZ,boxIndex);
     }      
     //------------------------------------------------------------
-    //-- remplissage du tableau de bits
+    //-- fill table with bits
     //--
     if(TabBits) { 
       Map=(BSB_T3Bits *)TabBits; 
@@ -580,7 +573,7 @@ static void VerifCompare(const TColStd_ListOfInteger& lastResult,
     Standard_Integer i0,i1;
     i0=taBox.Lower();
     i1=taBox.Upper();
-    char * qwe=new char [i1+1];  //-- $$$$$$$ ATTENTION SI I0 < 0
+    char * qwe=new char [i1+1];  //-- $$$$$$$ ATTENTION IF I0 < 0
     for( i=i0; i<=i1; i++) qwe[i]='\0';
     TColStd_ListIteratorOfListOfInteger  theList(lastResult);
     for (; theList.More(); theList.Next()) {
@@ -594,10 +587,10 @@ static void VerifCompare(const TColStd_ListOfInteger& lastResult,
     }
     for(i=i0;i<=i1;i++) { 
       if(qwe[i]==2) { 
-	printf("\nPb avec boite: %d ",i);
+	printf("\nPb with box: %d ",i);
       }
       else if(qwe[i]==1) { 
-	printf("\n fausse rejection en %d \n",i);
+	printf("\n false rejection by %d \n",i);
       }
     }
     delete [] qwe;
@@ -624,7 +617,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare (const Bnd_Box& theBox)
     return lastResult;
   }
   const Bnd_Array1OfBox& taBox=myBndComponents->Array1();
-  //-- Rejection avec le tableau de bits
+  //-- Rejection with the table of bits
   Standard_Boolean touch = Standard_True;
   touch = Standard_False;
   Standard_Real _Xmin,_Ymin,_Zmin,_Xmax,_Ymax,_Zmax;
@@ -658,7 +651,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare (const Bnd_Box& theBox)
       }
     }
   }
-  //-- traitement des boites a tester systematiquement
+  //-- processing of systematically tested boxes
   if(Map->ToTest) { 
     Standard_Integer l0 = taBox.Lower();
     Standard_Integer l1 = taBox.Upper();
@@ -680,9 +673,9 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare (const Bnd_Box& theBox)
 #endif
     return(lastResult);
   }
-  //-------------------------
-  //-- traitement classique 
-  //-------------------------
+  //------------------------
+  //-- classic processing -- 
+  //------------------------
   i0++; i1++; j0++; j1++; k0++; k1++;
   Crible.Clear();
   theFound=6;

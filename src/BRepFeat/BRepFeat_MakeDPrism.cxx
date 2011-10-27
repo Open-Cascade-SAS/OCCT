@@ -181,7 +181,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
 
 //=======================================================================
 //function : Add
-//purpose  : add faces et edges de glissement
+//purpose  : add sliding faces and edges
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
@@ -228,7 +228,7 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
 
 //=======================================================================
 //function : Perform
-//purpose  : feature de la hauteur Height
+//purpose  : feature of Height
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
@@ -296,20 +296,20 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
     }
   }
 
-// gestion des faces de collage
+// management of gluing faces 
 
   //SetGluedFaces(mySkface, mySbase, theBase, mySlface, theDPrism, myGluedF);
   GluedFacesValid();
 //  VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theDPrism, myGluedF);
 
-  if(!myGluedF.IsEmpty()) {   // cas collage
+  if(!myGluedF.IsEmpty()) {   // case gluing
     myJustGluer = Standard_True;
     theDPrism.Curves(myCurves);
     myBCurve = theDPrism.BarycCurve();    
     GlobalPerform();
   }
 
-// si il n'y a pas de collage -> appel des ope topo
+// if there is no gluing -> call topological operations
   if(!myJustGluer) {
     if(myFuse == 1) {
       //modified by NIZNHY-PKV Thu Mar 21 17:32:17 2002 f
@@ -342,7 +342,7 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
 
 //=======================================================================
 //function : Perform
-//purpose  : feature limitee par le shape Until
+//purpose  : feature limited by the shape Until
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
@@ -481,7 +481,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
 
 //=======================================================================
 //function : Perform
-//purpose  : feature limitee par les deux shapes 
+//purpose  : feature limited by two shapes 
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
@@ -550,22 +550,22 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
   if(!Trff) {
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);
     
-    // On fait systematiquement le dprism 
+    // Make systematically dprism 
     myGShape = VraiDPrism;
     GeneratedShapeValid();
 
-  // gestion des faces de collage
+  // management of gluing faces 
     //SetGluedFaces(TopoDS_Face(), // on ne veut pas binder mySkface
 	//	  mySbase, myPbase, mySlface, theDPrism, myGluedF);
     GluedFacesValid();
     theDPrism.Curves(myCurves);
     myBCurve = theDPrism.BarycCurve();
 
-    // reconstruction topologique
+    // topologic reconstruction 
     GlobalPerform();
   }
   else {
-    // gestion des descendants
+    // management of descendants
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);
     Handle(Geom_Curve) C1;
     if(sens == -1) {
@@ -583,7 +583,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
     ASI2.Perform(scur);
     TopAbs_Orientation OrU, OrF;
     TopoDS_Face FFrom, FUntil;
-    //sens du dprism
+    //direction of dprism
     if (ASI1.IsDone() && ASI1.NbPoints(1) >=1) {
       if (myFuse == 1) {
 	OrU = ASI1.Point(1,1).Orientation();
@@ -701,7 +701,7 @@ void BRepFeat_MakeDPrism::PerformUntilEnd()
 
 //=======================================================================
 //function : PerformFromEnd
-//purpose  : feature mi-infinie limitee par le shape Until de l'autre cote
+//purpose  : feature semiinfinite limited by the shape Until from the other side
 //=======================================================================
 
 void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
@@ -743,7 +743,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
     return;
   }
 
-  if(!Trf) {   // cas face finie
+  if(!Trf) {   // case finite face
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);    
     myGShape = VraiDPrism;
     GeneratedShapeValid();
@@ -753,7 +753,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
     myBCurve = theDPrism.BarycCurve();
     GlobalPerform();
   }
-  else {   // cas support
+  else {   // case support
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);    
     Handle(Geom_Curve) C2;
     if(sens == -1) {
@@ -864,7 +864,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
 
 //=======================================================================
 //function : PerformThruAll
-//purpose  : feature a travers tout le shape initial
+//purpose  : feature throughout the entire initial shape 
 //=======================================================================
 
 void BRepFeat_MakeDPrism::PerformThruAll()
@@ -921,7 +921,7 @@ void BRepFeat_MakeDPrism::PerformThruAll()
 
 //=======================================================================
 //function : PerformUntilHeight
-//purpose  : feature jusqu'un shape de la hauteur donnee
+//purpose  : feature until the shape is of the given height
 //=======================================================================
 
 void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
@@ -956,7 +956,7 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
   LocOpe_DPrism theDPrism(myPbase,sens*Height,myAngle);
   TopoDS_Shape VraiDPrism = theDPrism.Shape();
 
-  if(!Trf) {    // cas face finie
+  if(!Trf) {    // case face finished
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);
     myGShape = VraiDPrism;
     GeneratedShapeValid();
@@ -978,7 +978,7 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
     myBCurve = theDPrism.BarycCurve();
     GlobalPerform();
   }
-  else {      // cas support
+  else {      // case support
     MajMap(myPbase,theDPrism,myMap,myFShape,myLShape);
     Handle(Geom_Curve) C1;
     if(sens == -1) {
@@ -1045,7 +1045,7 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
 
 //=======================================================================
 //function : Curves
-//purpose  : courbes paralleles a l'axe du prism
+//purpose  : curves parallel to the axis of the prism
 //=======================================================================
 
 void BRepFeat_MakeDPrism::Curves(TColGeom_SequenceOfCurve& scur)
@@ -1090,7 +1090,7 @@ void BRepFeat_MakeDPrism::BossEdges (const Standard_Integer signature)
   
   // Edges Bottom    
   if (signature < 0) {
-// Attention voir si TgtEdges est important
+// Attention check if TgtEdges is important
     myLatEdges = NewEdges();
   }
   else if (signature > 0) {
@@ -1180,7 +1180,7 @@ Handle(Geom_Curve) BRepFeat_MakeDPrism::BarycCurve()
 
 //=======================================================================
 //function : HeightMax
-//purpose  : Calcul de la hauteur du prisme selon les parametres d`une boite englobante
+//purpose  : Calculate the height of the prism following the parameters of the bounding box 
 //=======================================================================
 
 static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
@@ -1224,7 +1224,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
 
  //=======================================================================
 //function : SensOfPrism
-//purpose  : determiner la direction de generation du prism
+//purpose  : determine the direction of prism generation
 //=======================================================================
 Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
 			     const TopoDS_Shape& Until)
@@ -1284,7 +1284,7 @@ static void SetGluedFaces(const TopoDS_Face& theSkface,
     }
   }
 
-  // Glissements
+  // Sliding
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(theSlmap);
   if(!theSlmap.IsEmpty()) {
     for (; itm.More(); itm.Next()) {
@@ -1307,8 +1307,8 @@ static void SetGluedFaces(const TopoDS_Face& theSkface,
 
 //=======================================================================
 //function : VerifGluedFaces
-//purpose  : Verification  intersection Outil/theSkface = thePbase
-//           Si oui -> OK si non -> cas sans collage
+//purpose  : Checking intersection Tool/theSkface = thePbase
+//           if yes -> OK if no -> case without gluing
 //=======================================================================
 #ifdef DEB
 static void VerifGluedFaces(const TopoDS_Face& theSkface,
@@ -1360,7 +1360,7 @@ static void VerifGluedFaces(const TopoDS_Face& theSkface,
     if (!GluedFaces) {
 #ifdef DEB
       Standard_Boolean trc = BRepFeat_GettraceFEAT();
-      if (trc) cout << " Intersection DPrism/skface : pas de collage" << endl;
+      if (trc) cout << " Intersection DPrism/skface : no gluing" << endl;
 #endif
       theMap.Clear();
     }
@@ -1492,7 +1492,7 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
 
   Standard_Boolean ValRet = Standard_False;
   if (typS1 == STANDARD_TYPE(Geom_Plane)) {
-    S1 = BRep_Tool::Surface(F1);  // pour appliquer la location.
+    S1 = BRep_Tool::Surface(F1);  // to apply the location.
     S2 = BRep_Tool::Surface(F2);
     gp_Pln pl1( (*((Handle(Geom_Plane)*)&S1))->Pln());
     gp_Pln pl2( (*((Handle(Geom_Plane)*)&S2))->Pln());

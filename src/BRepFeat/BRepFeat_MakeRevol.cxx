@@ -166,7 +166,7 @@ void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
 
 //=======================================================================
 //function : Add
-//purpose  : add faces et edges de glissement
+//purpose  : add faces add edges of sliding
 //=======================================================================
 
 void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E,
@@ -342,7 +342,7 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
 
 //=======================================================================
 //function : Perform
-//purpose  : feature jusqu'au shape Until
+//purpose  : feature till shape Until
 //=======================================================================
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
@@ -374,13 +374,13 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   Standard_Boolean Trf = TransformShapeFU(1);
   ShapeUntilValid();
 
-  // On fait systematiquement un revol quasi-complet
-//  BRepSweep_Revol theRevol(myPbase,myAxis,2.*PI-10.*Precision::Angular());
+// Do systematically almost complete revolution
+// BRepSweep_Revol theRevol(myPbase,myAxis,2.*PI-10.*Precision::Angular());
   LocOpe_Revol theRevol;
   if(!TourComplet) {
     Angle = 2.*PI- 3*PI/180.;
 #ifdef DEB
-    if (trc) cout << " No complete Revol" << endl;
+    if (trc) cout << " No complete Revolution" << endl;
 #endif
   }
   theRevol.Perform(myPbase, myAxis, Angle);
@@ -471,7 +471,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
       }
     }         
   }
-   // boucle de controle de descendance
+   // Loop of control of descendance
 /*
   TopExp_Explorer expr(mySbase, TopAbs_FACE);
   char nom1[20], nom2[20];
@@ -511,7 +511,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
 
 //=======================================================================
 //function : Perform
-//purpose  : feature limitee par les deux shapes
+//purpose  : feature limited by two shapes
 //=======================================================================
 
 void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
@@ -680,7 +680,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
 
 //=======================================================================
 //function : PerformThruAll
-//purpose  : feature a travers tout le shape initial
+//purpose  : feature throughout the initial shape
 //=======================================================================
 
 void BRepFeat_MakeRevol::PerformThruAll()
@@ -694,7 +694,7 @@ void BRepFeat_MakeRevol::PerformThruAll()
 
 //=======================================================================
 //function : PerformUntilAngle
-//purpose  : feature jusqu'au shape Until definie avec l'angle
+//purpose  : feature till shape Until defined with the angle
 //=======================================================================
 
 void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
@@ -727,7 +727,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
   Standard_Boolean Trf = TransformShapeFU(1);
   ShapeUntilValid();
 
-  // On fait systematiquement un revol quasi-complet
+// Produce systematicallt an almost complete revolution
 //  BRepSweep_Revol theRevol(myPbase,myAxis,2.*PI-10.*Precision::Angular());
   LocOpe_Revol theRevol;
   theRevol.Perform(myPbase, myAxis, Angle);
@@ -821,7 +821,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
 }
 //=======================================================================
 //function : Curves
-//purpose  : cercles parallels a la generatrice du revol
+//purpose  : circles parallel to the generating edge of revolution
 //=======================================================================
 
 void BRepFeat_MakeRevol::Curves(TColGeom_SequenceOfCurve& scur)
@@ -831,7 +831,7 @@ void BRepFeat_MakeRevol::Curves(TColGeom_SequenceOfCurve& scur)
 
 //=======================================================================
 //function : BarycCurve
-//purpose  : passe par le centre des masses de la primitive
+//purpose  : pass through the center of mass of the primitive
 //=======================================================================
 
 Handle(Geom_Curve) BRepFeat_MakeRevol::BarycCurve()
@@ -842,7 +842,7 @@ Handle(Geom_Curve) BRepFeat_MakeRevol::BarycCurve()
 
 //=======================================================================
 //function : SetGluedFaces
-//purpose  : gestion des faces de collage
+//purpose  : management of gluing faces
 //=======================================================================
 
 static void SetGluedFaces(const TopoDS_Face& theSkface,
@@ -874,7 +874,7 @@ static void SetGluedFaces(const TopoDS_Face& theSkface,
     }
   }
 
-  // Glissements
+  // Sliding
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(theSlmap);
   if(!theSlmap.IsEmpty()) {
     for (; itm.More(); itm.Next()) {
@@ -897,8 +897,8 @@ static void SetGluedFaces(const TopoDS_Face& theSkface,
 
 //=======================================================================
 //function : VerifGluedFaces
-//purpose  : Verification  intersection Outil/theSkface = thePbase
-//           Si oui -> OK si non -> cas sans collage
+//purpose  : Check intersection Tool/theSkface = thePbase
+//           if yes -> OK otherwise -> case without gluing
 //=======================================================================
 
 static void VerifGluedFaces(const TopoDS_Face& theSkface,
@@ -950,7 +950,7 @@ static void VerifGluedFaces(const TopoDS_Face& theSkface,
     if (!GluedFaces) {
 #ifdef DEB
       Standard_Boolean trc = BRepFeat_GettraceFEAT();
-      if (trc) cout << " Intersection Revol/skface : pas de collage" << endl;
+      if (trc) cout << " Intersection Revol/skface : no gluing" << endl;
 #endif
       theMap.Clear();
     }
@@ -959,7 +959,7 @@ static void VerifGluedFaces(const TopoDS_Face& theSkface,
 
 //=======================================================================
 //function : MajMap
-//purpose  : gestion de descendants
+//purpose  : management of descendants
 //=======================================================================
 
 static void MajMap(const TopoDS_Shape& theB,
@@ -1001,7 +1001,7 @@ static void MajMap(const TopoDS_Shape& theB,
 
 //=======================================================================
 //function : ToFuse
-//purpose  : deux faces samedomaine ou pas
+//purpose  : two faces samedomaine or not
 //=======================================================================
 
 Standard_Boolean ToFuse(const TopoDS_Face& F1,
@@ -1040,7 +1040,7 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
 
   Standard_Boolean ValRet = Standard_False;
   if (typS1 == STANDARD_TYPE(Geom_Plane)) {
-    S1 = BRep_Tool::Surface(F1);  // pour appliquer la location.
+    S1 = BRep_Tool::Surface(F1);  // to apply the location.
     S2 = BRep_Tool::Surface(F2);
     gp_Pln pl1( (*((Handle(Geom_Plane)*)&S1))->Pln());
     gp_Pln pl2( (*((Handle(Geom_Plane)*)&S2))->Pln());

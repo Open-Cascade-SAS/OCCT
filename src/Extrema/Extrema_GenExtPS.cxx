@@ -157,9 +157,9 @@ Function:
   S using sampling (NbU,NbV).
 
 Method:
-   The algorithm bases on the hypothesis that sampling is precise enough 
-  pour que, s'il existe N distances extremales entre le point et la surface,
-  alors il existe aussi N extrema entre le point et la grille.
+   The algorithm bases on the hypothesis that sampling is precise enough, 
+  if there exist N extreme distances between the point and the surface,
+  so there also exist N extrema between the point and the grid.
   So, the algorithm consists in starting from extrema of the grid to find the 
   extrema of the surface.
   The extrema are calculated by the algorithm math_FunctionSetRoot with the
@@ -338,7 +338,7 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
   U0 = U0/2. + myumin;
   V0 = V0/2. + myvmin;
 
-// Calcul des distances
+// Calculation of distances
 
   Standard_Integer NoU, NoV;
   Standard_Real U, V;
@@ -353,11 +353,11 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
   //mypoints = new TColgp_HArray2OfPnt(0,myusample+1,0,myvsample+1);
 
 /*
-a- Constitution du tableau des distances (TbDist(0,myusample+1,0,myvsample+1)):
+a- Constitution of the table of distances (TbDist(0,myusample+1,0,myvsample+1)):
    ---------------------------------------------------------------
 */
 
-// Parametrage de l echantillon
+// Parameterisation of the sample
 
 
 }
@@ -378,7 +378,7 @@ void Extrema_GenExtPS::BuildTree()
   U0 = U0/2. + myumin;
   V0 = V0/2. + myvmin;
 
-  // Calcul des distances
+  // Calculation of distances
   mySphereUBTree = new Extrema_UBTreeOfSphere;
   Extrema_UBTreeFillerOfSphere aFiller(*mySphereUBTree);
   Standard_Integer i = 0;

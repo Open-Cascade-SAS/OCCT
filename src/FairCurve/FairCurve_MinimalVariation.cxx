@@ -44,15 +44,13 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
 //======================================================================================
 {
   Standard_Boolean Ok=Standard_True, End=Standard_False;
-  Standard_Real AngleMax = 0.7;      // parametre reglant la fonction d'increment 
-                                     // ( 40 degrees )
-  Standard_Real AngleMin = 2*PI/100; // parametre reglant la fonction d'increment 
-                                     // un tour complet ne doit pas couter plus de 
-                                     // 100 pas.
+  Standard_Real AngleMax = 0.7;      // parameter regulating the function of increment ( 40 degrees )
+  Standard_Real AngleMin = 2*PI/100; // parameter regulating the function of increment 
+                                     // full passage should not contain more than 100 steps.
   Standard_Real DAngle1, DAngle2,  DRho1, DRho2, Ratio, Fraction, Toler;
   Standard_Real OldDist, NewDist;
 
-//  Boucle d'Homotopie : calcul du pas et optimisation 
+//  Loop of Homotopy : calculation of the step and optimisation 
 
   while (Ok && !End) {
      DAngle1 = NewAngle1-OldAngle1;
@@ -133,7 +131,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
  Standard_Boolean Ok, OkCompute=Standard_True;
  ACode = FairCurve_OK;
 
-// Deformation de la courbe par ajout d'un polynome d'interpolation
+// Deformation of the curve by adding a polynom of interpolation
    Standard_Integer L = 2 + NewConstraintOrder1 + NewConstraintOrder2,
                     kk, ii;
 //                    NbP1 = Poles->Length()-1, kk, ii;
@@ -152,24 +150,24 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
    TColgp_Array1OfPnt2d Interpolation(1,L);
    Handle(TColgp_HArray1OfPnt2d) NPoles = new  TColgp_HArray1OfPnt2d(1, Poles->Length());
 
-// Polynomes d'Hermites
+// Polynomes of Hermite
    math_Matrix HermiteCoef(1, L, 1, L);
    Ok = PLib::HermiteCoefficients(0,1, NewConstraintOrder1,  NewConstraintOrder2,
                                   HermiteCoef);
    if (!Ok) return Standard_False;
 
-// Definition des contraintes d'interpolation
+// Definition of constraints of interpolation
    TColgp_Array1OfXY ADelta(1,L);
    gp_Vec2d VOld(OldP1, OldP2), VNew( -(OldP1.XY()+DeltaP1.XY()) + (OldP2.XY()+DeltaP2.XY()) );
    Standard_Real DAngleRef = VNew.Angle(VOld);
    Standard_Real DAngle1 = DeltaAngle1 - DAngleRef,
-                 DAngle2 = DAngleRef   - DeltaAngle2; // Correction du Delta par le Delta induit par les points.
+                 DAngle2 = DAngleRef   - DeltaAngle2; // Correction of Delta by the Delta induced by the points.
 
 
    ADelta(1) = DeltaP1.XY();
    kk = 2;
    if (NewConstraintOrder1>0) {
-      // rotation de la derive premiereDeltaAngle1
+      // rotation of the derivative premiereDeltaAngle1
       gp_Vec2d OldDerive( Poles->Value(Poles->Lower()), 
                           Poles->Value(Poles->Lower()+1) );
       OldDerive *= Degree / (Knots->Value(Knots->Lower()+1)-Knots->Value(Knots->Lower()) ); 
@@ -177,7 +175,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
       kk += 1;
    
       if (NewConstraintOrder1>1) {
-	 // rotation de la derive seconde + ajout 
+	 // rotation of the second derivative + adding 
          gp_Vec2d OldSeconde( Poles->Value(Poles->Lower()).XY() + Poles->Value(Poles->Lower()+2).XY()  
                             - 2*Poles->Value(Poles->Lower()+1).XY() );
          OldSeconde *=  Degree*( Degree-1)
@@ -197,7 +195,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
       ADelta(kk) = (OldDerive.Rotated(DAngle2) -  OldDerive).XY();
       kk += 1;
       if (NewConstraintOrder2>1) {
-	 // rotation de la derive seconde + ajout 
+	 // rotation of the second derivative + adding 
          gp_Vec2d OldSeconde( Poles->Value(Poles->Upper()).XY() + Poles->Value(Poles->Upper()-2).XY()  
                             - 2*Poles->Value(Poles->Upper()-1).XY() );
          OldSeconde *=  Degree*( Degree-1)
@@ -218,7 +216,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
       }
       Interpolation(ii).SetXY(AuxXY);
   }
-// Conversion en BSpline de meme structure que le batten courant.
+// Conversion into BSpline of the same structure as the current batten.
   PLib::CoefficientsPoles(Interpolation,  PLib::NoWeights(), 
                           HermitePoles,  PLib::NoWeights()); 
 
@@ -233,13 +231,13 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
      DeltaCurve->InsertKnots(Knots->Array1(), Mults->Array1(), 1.e-10);
   }
 
-// Sommation
+// Summing
   DeltaCurve->Poles( NPoles->ChangeArray1() );
   for (kk= NPoles->Lower(); kk<=NPoles->Upper(); kk++) { 
      NPoles->ChangeValue(kk).ChangeCoord() += Poles->Value(kk).Coord(); 
    }
 
-// Donnees intermediaires
+// Intermediaires
 
  Standard_Real Angle1, Angle2, SlidingLength, 
                Alph1 =  OldAngle1 + DeltaAngle1, 
@@ -253,12 +251,12 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
                 P1P2 (  NPoles->Value(NPoles->Upper()).Coord()
                       - NPoles->Value(NPoles->Lower()).Coord() );
 
-// Angles par rapport a l'axe ox
+// Angles corresponding to axis ox
 
  Angle1 =  Ox.Angle(P1P2) + Alph1;
  Angle2 = -Ox.Angle(P1P2) + Alph2;
 
-// Calcul de la longeur de glissement (impose ou intiale);
+// Calculation of the length of sliding (imposed or intial);
  
  if (!NewFreeSliding) {
     SlidingLength = NewSlidingFactor * LReference;
@@ -274,7 +272,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
 
 
      
-// Energie et vecteurs d'initialisation
+// Energy and vectors of initialization
  FairCurve_BattenLaw LBatten (NewHeight, NewSlope, SlidingLength ); 
  FairCurve_EnergyOfMVC EMVC (Degree+1, Flatknots, NPoles,  
 			     NewConstraintOrder1,  NewConstraintOrder2, 
@@ -282,8 +280,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
                              Angle1, Angle2, Rho1, Rho2);
  math_Vector VInit (1, EMVC.NbVariables());
 
- // La valeur ci-dessous donne une idee de la plus petie valeur propre
- //   du critere de flexion.
+ // The value below gives an idea about the smallest value of the criterion of flexion.
  Standard_Real VConvex = 0.01 * pow(NewHeight / SlidingLength, 3);
  if (VConvex < 1.e-12) {VConvex = 1.e-12;}
 
@@ -358,17 +355,17 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
 
  Ok = EMVC.Variable(VInit);
 
- // Traitement de la non convergence
+ // Processing of non convergence
  if (!Newton.IsConverged()) {
     ACode = FairCurve_NotConverged;
   }
 
 
- // Prevention du glissement infinie
+ // Prevention of infinite sliding
  if (NewFreeSliding &&  VInit(VInit.Upper()) > 2*LReference) ACode = FairCurve_InfiniteSliding;  
     
 
-// Insertion eventuelle de Noeuds
+// Eventual insertion of Nodes
  Standard_Boolean  NewKnots = Standard_False;
  Standard_Integer NbKnots = Knots->Length();
  Standard_Real ValAngles = (Abs(OldAngle1) +  Abs(OldAngle2) 
@@ -410,8 +407,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
  } 
 
 
-// Pour d'eventuelle debug
-//  Newton.Dump(cout);
+// For eventual debug Newton.Dump(cout);
    
  return OkCompute;
 } 

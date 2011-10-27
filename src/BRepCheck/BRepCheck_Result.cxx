@@ -70,7 +70,7 @@ const BRepCheck_ListOfStatus& BRepCheck_Result::StatusOnShape
 void BRepCheck_Result::InitContextIterator()
 {
   myIter.Initialize(myMap);
-  // Au minimum 1 element : le Shape lui meme
+  // At least 1 element : the Shape itself
   if (myIter.Key().IsSame(myShape)) {
     myIter.Next();
   }

@@ -41,22 +41,22 @@ static void ReplaceByLineIfIsToSmall (Handle(Geom2d_Curve)& Bis,
 				      Standard_Real&        UFirst,
 				      Standard_Real&        ULast);					
 //=============================================================================
-//function : Constructeur vide                                                
+//function : Empty Constructor                                                
 //=============================================================================
 Bisector_Bisec::Bisector_Bisec()
 {
 }
 
 //===========================================================================
-//    calcul de la bissectrice entre deux courbes issue d un point.         
+//    calculate the bissectrice between two curves coming from a point.         
 //                                                                          
-//   afirstcurve   : \ courbes entre lesquelles on veut calculer la         
-//   asecondcurve  : / bissectrice.                                         
-//   apoint        :   point par lequel doit passer la bissectrice.         
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      
-//   asecondvector : / la bissectrice doit se trouver.                      
-//   adirection    :   indique le cote de la bissectrice a conserver.       
-//   tolerance     :   seuil a partir duquel les bisectrices sont degenerees
+//   afirstcurve   : \ curves between which the          
+//   asecondcurve  : / bissectrice is calculated.                                         
+//   apoint        :   point through which the bissectrice should pass.         
+//   afirstvector  : \ vectors to determine the sector where       
+//   asecondvector : / the bissectrice should be located.                      
+//   adirection    :   shows the the side of the bissectrice to be preserved.       
+//   tolerance     :   threshold starting from which the bisectrices are degenerated
 //===========================================================================
 
 void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
@@ -85,7 +85,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
   if ( (Type1 == STANDARD_TYPE(Geom2d_Circle) || Type1 == STANDARD_TYPE(Geom2d_Line)) &&
        (Type2 == STANDARD_TYPE(Geom2d_Circle) || Type2 == STANDARD_TYPE(Geom2d_Line))   ) {    
     //------------------------------------------------------------------
-    // Bissectrice analytique.
+    // Analytic Bissectrice.
     //------------------------------------------------------------------
      Handle(Bisector_BisecAna) BisAna = new Bisector_BisecAna();
      BisAna->Perform(afirstcurve   ,
@@ -113,7 +113,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
     }
     if (IsLine) {     
       //------------------------------------------------------------------
-      // Demi-Droite.
+      // Half-Staight.
       //------------------------------------------------------------------
       gp_Dir2d N ( - adirection*afirstvector.Y(), adirection*afirstvector.X());
       Handle (Geom2d_CartesianPoint) PG     = new Geom2d_CartesianPoint(apoint);
@@ -138,8 +138,8 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 		       apoint);
 
       if (BisCC -> IsEmpty()) {
-	// la bissectrice est vide apoint se projette a la fin de la courbe
-	// guide . Construction d une fausse bissectrice.
+	// bissectrice is empty. a point is projected at the end of the guide curve. 
+	// Construction of a false bissectrice.
 //  modified by NIZHNY-EAP Mon Feb 21 12:00:13 2000 ___BEGIN___
 	gp_Dir2d dir1(afirstvector), dir2(asecondvector);
 	Standard_Real
@@ -186,15 +186,15 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 }
 
 //===========================================================================
-//  calcul de la bissectrice entre une courbe et un point issue d un point. 
+//  calculate the bissectrice between a curve and a point starting in a point. 
 //                                                                          
-//   afirstcurve   : \ courbe et point entre lesquelles on veut calculer la 
-//   asecondpoint  : / bissectrice.                                         
-//   apoint        :   point par lequel doit passer la bissectrice.         
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      
-//   asecondvector : / la bissectrice doit se trouver.                      
-//   adirection    :   indique le cote de la bissectrice a conserver.       
-//   tolerance     :   seuil a partir duquel les bisectrices sont degenerees
+//   afirstcurve   : \ curve and point the bissectrice between which is calculated.
+//   asecondpoint  : /                                          
+//   apoint        :   point through which the bissectrice should pass.         
+//   afirstvector  : \ vectors to find the sector where       
+//   asecondvector : / the bissectrice should be located.                      
+//   adirection    :   shows the side of the bissectrice to be preserved.       
+//   tolerance     :   threshold starting from which the bisectrices are degenerated
 //===========================================================================
 
 void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
@@ -219,7 +219,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 
   if ( Type1 == STANDARD_TYPE(Geom2d_Circle) || Type1 == STANDARD_TYPE(Geom2d_Line)) {
     //------------------------------------------------------------------
-    // Bissectrice analytique.
+    // Analytic Bissectrice.
     //------------------------------------------------------------------
     Handle(Bisector_BisecAna) BisAna = new Bisector_BisecAna();
     BisAna -> Perform (afirstcurve   ,
@@ -246,7 +246,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
     }
     if (IsLine) {     
       //------------------------------------------------------------------
-      // Demi-Droite.
+      // Half-Right.
       //------------------------------------------------------------------
       gp_Dir2d N ( -adirection*afirstvector.Y(), adirection*afirstvector.X());
       Handle (Geom2d_Line)         L      = new Geom2d_Line (apoint,N);
@@ -326,15 +326,15 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 }
 
 //===========================================================================
-//  calcul de la bissectrice entre une courbe et un point issue d un point. 
+//   calculate the bissectrice between a curve and a point starting in a point. 
 //                                                                          
-//   afirstpoint   : \ point et courbe entre lesquelles on veut calculer la         
-//   asecondcurve  : / bissectrice.                                         
-//   apoint        :   point par lequel doit passer la bissectrice.         
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      
-//   asecondvector : / la bissectrice doit se trouver.                      
-//   adirection    :   indique le cote de la bissectrice a conserver.       
-//   tolerance     :   seuil a partir duquel les bisectrices sont degenerees
+//   afirstpoint   : \ curve and point the bissectrice between which is calculated.         
+//   asecondcurve  : /                                          
+//   apoint        :   point through which the bissectrice should pass.         
+//   afirstvector  : \ vectors to find the sector where       
+//   asecondvector : / the bissectrice should be located.                      
+//   adirection    :   shows the side of the bissectrice to be preserved.       
+//   tolerance     :   threshold starting from which the bisectrices are degenerated
 //===========================================================================
 
 void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
@@ -360,7 +360,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
   
   if ( Type1 == STANDARD_TYPE(Geom2d_Circle) || Type1 == STANDARD_TYPE(Geom2d_Line)) {
     //------------------------------------------------------------------
-    // Bissectrice analytique.
+    // Analytic Bissectrice.
     //------------------------------------------------------------------
     Handle(Bisector_BisecAna) BisAna = new Bisector_BisecAna();
     BisAna -> Perform (afirstpoint   ,
@@ -388,7 +388,7 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
     }    
     if (IsLine) {     
       //------------------------------------------------------------------
-      // Demi-Droite.
+      // Half-Staight.
       //------------------------------------------------------------------
       gp_Dir2d N ( -adirection*afirstvector.Y(), adirection*afirstvector.X());
       Handle (Geom2d_Line)         L      = new Geom2d_Line         (apoint,N);
@@ -464,14 +464,14 @@ void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
 }
 
 //===========================================================================
-//        calcul de la bissectrice entre deux points issue d un point.      
+//        calculate the bissectrice between two points starting in a point.      
 //                                                                          
-//   afirstpoint   : \ courbes entre lesquelles on veut calculer la         
-//   asecondpoint  : / bissectrice.                                         
-//   apoint        :   point par lequel doit passer la bissectrice.         
-//   afirstvector  : \ vecteurs pour determiner le secteur dans lequel      
-//   asecondvector : / la bissectrice doit se trouver.                      
-//   adirection    :   indique le cote de la bissectrice a conserver.       
+//   afirstpoint   : \ curves the bissectrice between which should be          
+//   asecondpoint  : / calculated.                                         
+//   apoint        :   point through which the bissectrice should pass.         
+//   afirstvector  : \ vectors to find the sector where       
+//   asecondvector : / the bissectrice should be located.                      
+//   adirection    :   shows the side of the bissectrice to be preserved.       
 //===========================================================================
 
 void Bisector_Bisec::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
@@ -549,8 +549,8 @@ static Standard_Boolean  PointIsOnCurve(const Handle(Geom2d_Curve)& C,
 #endif
 //=============================================================================
 //function : ReplaceByLineIfIsToSmall 
-//purpose  : Si une bissectrice algorithmique est de taille negligeable elle est
-//           remplace par une demi-droite.
+//purpose  : If the size of an algorithmic bissectrice is negligeable it is
+//           replaced by a half-straight.
 //=============================================================================
 static void ReplaceByLineIfIsToSmall (Handle(Geom2d_Curve)& Bis,
 				      Standard_Real&        UFirst,

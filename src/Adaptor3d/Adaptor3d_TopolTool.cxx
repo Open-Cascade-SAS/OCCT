@@ -24,7 +24,7 @@ static void GetConeApexParam(const gp_Cone& C, Standard_Real& U, Standard_Real& 
     U = 0.0;
   }
   else if ( -Radius > Ploc.Z()* Tan(SAngle) ) {
-    // le point est du `mauvais` cote de l`apex
+    // the point is at the `wrong` side of the apex
     U = atan2(-Ploc.Y(), -Ploc.X());
   }
   else {
@@ -60,7 +60,7 @@ void Adaptor3d_TopolTool::Initialize (const Handle(Adaptor3d_HSurface)& S)
   //Adaptor2d_Line2d  * Line2dPtr ;
 
   myNbSamplesU=-1;
-  Uinf = S->FirstUParameter(); // ou UIntervalFirst ??
+  Uinf = S->FirstUParameter(); // where UIntervalFirst ??
   Vinf = S->FirstVParameter();
   Usup = S->LastUParameter();
   Vsup = S->LastVParameter();
@@ -580,7 +580,7 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
 		  C.Y()-B.Y()-B.Y()+A.Y(),
 		  C.Z()-B.Z()-B.Z()+A.Z());
       Standard_Integer locnbch=0;
-      for(j=3; j<nbvp;j++) {  //-- essai
+      for(j=3; j<nbvp;j++) {  //-- try
 	const gp_Pnt& A1=array2.Value(i,j-1);
 	const gp_Pnt& B1=array2.Value(i,j);
 	const gp_Pnt& C1=array2.Value(i,j+1);
@@ -611,7 +611,7 @@ static void Analyse(const TColgp_Array2OfPnt& array2,
 		  C.Y()-B.Y()-B.Y()+A.Y(),
 		  C.Z()-B.Z()-B.Z()+A.Z());
       Standard_Integer locnbch=0;
-      for(i=3; i<nbup;i++) {  //-- essai
+      for(i=3; i<nbup;i++) {  //-- try
 	const gp_Pnt& A1=array2.Value(i-1,j);
 	const gp_Pnt& B1=array2.Value(i,j);
 	const gp_Pnt& C1=array2.Value(i+1,j);
@@ -665,7 +665,7 @@ void Adaptor3d_TopolTool::ComputeSamplePoints() {
   default:                            { nbsu = 10; nbsv=10; }    break;
   }
   
-  //-- Si le nb de points est trop grand   on analyse 
+  //-- If the number of points is too great... analyze 
   //-- 
   //-- 
   
@@ -863,7 +863,7 @@ void Adaptor3d_TopolTool::SamplePnts(const Standard_Real theDefl,
 //     break;
 //   case GeomAbs_BSplineSurface: {
   if(typS == GeomAbs_BSplineSurface) {
-    // Treatment BSpline surface 
+    // Processing BSpline surface 
     BSplSamplePnts(theDefl, theNUmin, theNVmin);
     return;
   }

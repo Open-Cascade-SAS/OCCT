@@ -14,7 +14,7 @@
 #include <Geom_Circle.hxx>
 #include <Geom2d_Circle.hxx>
 
-// parametres sur le meridien
+// parameters on the meridian
 
 #define PMIN (-0.5*PI)
 #define PMAX (0.5*PI)

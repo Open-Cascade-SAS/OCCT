@@ -37,7 +37,7 @@
 #include <TopExp_Explorer.hxx>
 
 
-// Dans un premier temps on ne transfere que la geometrie ( point,courbe...)
+// At first only the geometry is translated (point, curve...)
 
 //=============================================================================
 // BRepToIGES_BRSolid
@@ -82,7 +82,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferSolid(const TopoDS_Shap
     res = TransferCompound(C);
   }  
   else {
-    // message d`erreur
+    // error message
   }  
   return res;
 }
@@ -206,7 +206,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
   BRepToIGES_BRWire BW(*this);
   Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
 
-  // on prend tous les Solids
+  // take all Solids
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next()) {
     TopoDS_Solid S = TopoDS::Solid(Ex.Current());
     if (S.IsNull()) {
@@ -218,7 +218,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
     }
   }
 
-  // on prend tous les Shells isoles
+  // take all isolated Shells 
   for (Ex.Init(start, TopAbs_SHELL, TopAbs_SOLID); Ex.More(); Ex.Next()) {
     TopoDS_Shell S = TopoDS::Shell(Ex.Current());
     if (S.IsNull()) {
@@ -231,7 +231,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
   }
 
 
-  // on prend toutes les Faces isoles
+  // take all isolated Faces 
   for (Ex.Init(start, TopAbs_FACE, TopAbs_SHELL); Ex.More(); Ex.Next()) {
     TopoDS_Face S = TopoDS::Face(Ex.Current());
     if (S.IsNull()) {
@@ -244,7 +244,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
   }
 
 
-  // on prend tous les Wires isoles
+  // take all isolated Wires 
   for (Ex.Init(start, TopAbs_WIRE, TopAbs_FACE); Ex.More(); Ex.Next()) {
     TopoDS_Wire S = TopoDS::Wire(Ex.Current());
     if (S.IsNull()) {
@@ -257,7 +257,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
   }
 
 
-  // on prend tous les Edges isoles
+  // take all isolated Edges 
   for (Ex.Init(start, TopAbs_EDGE, TopAbs_WIRE); Ex.More(); Ex.Next()) {
     TopoDS_Edge S = TopoDS::Edge(Ex.Current());
     if (S.IsNull()) {
@@ -270,7 +270,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
   }
 
 
-  // on prend tous les Vertices isoles
+  // take all isolated Vertices 
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next()) {
     TopoDS_Vertex S = TopoDS::Vertex(Ex.Current());
     if (S.IsNull()) {
@@ -282,7 +282,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
     }
   }
 
-  // on construit le groupe
+  // construct the group
   Standard_Integer nbshapes = Seq->Length();
   Handle(IGESData_HArray1OfIGESEntity) Tab;
   if (nbshapes >=1) {

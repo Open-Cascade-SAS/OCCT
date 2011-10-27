@@ -12,15 +12,15 @@
 #include <IntAna2d_IntPoint.hxx>
 
 //=========================================================================
-//   Creation d un cercle Passant par : 2 points Point1 et Point2.        +
-//                        Centre sur  : 1 droite OnLine.                  +
-//   avec une Tolerance de precision  : Tolerance.                        +
+//   Creation of a circle passing by : 2 points Point1 and Point2.        +
+//                        Centered on  : 1 straight line OnLine.                  +
+//   with a Tolerance of precision  : Tolerance.                        +
 //                                                                        +
-//   On cree L1 la droite des points equidistant de Point1 et Point2.     +
-//   On cree alors la solutions cirsol telle que :                        +
-//   cirsol est l ensemble des cercle ayant pour centre l intersections   +
-//   de L1 avec OnLine et de rayon la distance entre Point1 et le point   +
-//   ci dessus calcule.                                                   +
+//   Create L1 straight line of points equidistant from Point1 and Point2.     +
+//   Then create solutions cirsol such as :                        +
+//   cirsol is all circle with center at the intersections of  +
+//   L1 with OnLine and the radius the distance between Point1 and the point   +
+//   calculated above.                                                   +
 //=========================================================================
 
 GccAna_Circ2d2TanOn::

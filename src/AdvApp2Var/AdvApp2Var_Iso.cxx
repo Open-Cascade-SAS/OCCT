@@ -103,26 +103,26 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
 			     	AdvApp2Var_Node& NodeBegin,
 				AdvApp2Var_Node& NodeEnd)
 {
-// les valeurs fixes
+// fixed values
   Standard_Integer NBCRMX=1, NBCRBE;
-// les donnees stockees dans le Context
+// data stored in the Context
   Standard_Integer NDIMEN, NBSESP, NDIMSE;
   NDIMEN = Conditions.TotalDimension();
   NBSESP = Conditions.TotalNumberSSP();
-// Attention : ne marche que pour le 3D
+// Attention : works only in 3D
   NDIMSE = 3;
-// le domaine de la grille
+// the domain of the grid
   Standard_Real UVFONC[4];
   UVFONC[0] = U0;
   UVFONC[1] = U1;
   UVFONC[2] = V0;
   UVFONC[3] = V1;
 
-// les donnees relatives a l'iso a approcher
+// data related to the processed iso
   Standard_Integer IORDRE = myExtremOrder, IDERIV = myDerivOrder;
   Standard_Real TCONST = myConstPar;
 
-// les donnees relatives au type de l'iso
+// data related to the type of the iso
   Standard_Integer ISOFAV,NBROOT,NDGJAC,NCFLIM;
   Standard_Real TABDEC[2];
   Handle (TColStd_HArray1OfReal) HUROOT  = Conditions.URoots();
@@ -162,7 +162,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
     //#endif
   }
 
-// les donnees relatives a la position de l'iso (frontiere ou ligne de decoupe)
+// data relative to the position of iso (front or cut line)
   Handle (TColStd_HArray1OfReal) HEPSAPR = new TColStd_HArray1OfReal(1,NBSESP);
   Standard_Integer iesp;
   switch(myPosition) {
@@ -195,7 +195,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
   Standard_Real *EPSAPR  
     =  (Standard_Real *) &HEPSAPR ->ChangeArray1()(HEPSAPR ->Lower());
 
-// les tableaux des approximations
+// the tables of approximations
   Standard_Integer SZCRB = NDIMEN*NCFLIM;
   Handle (TColStd_HArray1OfReal) HCOURBE  =
     new TColStd_HArray1OfReal(1,SZCRB*(IDERIV+1));
@@ -233,13 +233,13 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
                                 (HERRMOY ->LowerRow(),HERRMOY ->LowerCol());
   Standard_Real *EMYAPP = new Standard_Real[NBSESP];
 //
-// les approximations
+// the approximations
 //
   Standard_Integer IERCOD=0, NCOEFF=0;
   Standard_Integer iapp,ncfapp,ierapp;
 //  Standard_Integer id,ic,ideb;
   for (iapp=0;iapp<=IDERIV;iapp++) {
-//   approximation de la derivee d'ordre iapp
+//   approximation of the derivative of order iapp
     ncfapp = 0;
     ierapp = 0;
     // GCC 3.0 would not accept this line without the void
@@ -271,7 +271,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
 				     EMXAPP,
 				     EMYAPP,
 				     &ierapp);
-//   gestion des erreurs et du nombre de coeff.
+//   error and coefficient management.
     if (ierapp>0) {
       myApprIsDone = Standard_False;
       myHasResult  = Standard_False;
@@ -279,7 +279,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
     }
     if (NCOEFF<=ncfapp) NCOEFF=ncfapp;
     if (ierapp==-1) IERCOD = -1;
-//   recuperation des contraintes d'ordre 0 a IORDRE aux extremites
+//   return constraints of order 0 to IORDRE of extremities
     Standard_Integer ider, jpos=HCONTR1->Lower();
     for (ider=0; ider<=IORDRE;ider++) {
       gp_Pnt pt(HCONTR1->Value(jpos),
@@ -306,25 +306,25 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
       }
       jpos+=3;
     }
-//   recuperation des erreurs
+//   return errors
     for (iesp=1; iesp<=NBSESP;iesp++) {
       HERRMAX->SetValue(iesp,iapp+1,EMXAPP[iesp-1]);
       HERRMOY->SetValue(iesp,iapp+1,EMYAPP[iesp-1]);
     }
-// passage a l'approximation d'ordre superieur
+// passage to the approximation of higher order
     CRBAPP += SZCRB;
     SOMAPP += SZTAB;
     DIFAPP += SZTAB;
   }
 
-// gestion des resultats
+// management of results
   if (IERCOD == 0) {
-//   toutes les approx. sont bonnes
+//   all approximations are correct
     myApprIsDone = Standard_True;
     myHasResult  = Standard_True;
   }
   else if (IERCOD == -1) {
-//   une approx. au moins n'est pas bonne
+//   at least one approximation is not correct
     myApprIsDone = Standard_False;
     myHasResult  = Standard_True;
   } 

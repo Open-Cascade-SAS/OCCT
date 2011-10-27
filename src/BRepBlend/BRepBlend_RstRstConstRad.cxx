@@ -3,8 +3,7 @@
 // Author:	Laurent BOURESCHE
 // Author:	Jacques GOUSSARD
 //		<lbo@pomalox.paris1.matra-dtv.fr>
-// Modif : jlr le 28/07/97 modif de section pour Edge/Face
-//         modif de set (courbe bornee)
+
 #include <BRepBlend_RstRstConstRad.ixx>
 #include <math_Gauss.hxx>
 #include <math_SVD.hxx>

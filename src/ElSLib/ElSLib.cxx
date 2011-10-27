@@ -1,11 +1,6 @@
 // File:	ElSLib.cxx
 // Created:	Mon Sep  9 11:19:10 1991
 // Author:	Michel Chauvat
-//              Modifs JCV Decembre 1991 : Ajout calculs de derivees
-//              JPI : 28/10/96 : correction SphereDN
-//              JCT/RBV : 13/10/97 : correction SphereD3
-//              RBV : correction Torus 
-//              JCT : 29/03/98 : correction TorusD3 
 
 //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620
 
@@ -1364,7 +1359,7 @@ void ElSLib::ConeParameters(const gp_Ax3& Pos,
     U = 0.0;
   }
   else if ( -Radius > Ploc.Z()* Tan(SAngle) ) {
-    // le point est du `mauvais` cote de l`apex
+    // the point is at the wrong side of the apex
     U = atan2(-Ploc.Y(), -Ploc.X());
   }
   else {
@@ -1373,14 +1368,14 @@ void ElSLib::ConeParameters(const gp_Ax3& Pos,
   if      (U < -1.e-16)  U += PIPI;
   else if (U < 0)        U = 0;
 
-  // On evalue le V de la facon suivante :
+  // Evaluate V as follows :
   // P0 = Cone.Value(U,0)
   // P1 = Cone.Value(U,1)
   // V = P0 P1 . P0 Ploc
-  // Apres simplification on obtient:
+  // After simplification obtain:
   // V = Sin(Sang) * ( x cosU + y SinU - R) + z * Cos(Sang)
-  // Methode qui permet de trouver le V du point projete si le point
-  // n est pas vraiment sur le cone.
+  // Method that permits to find V of the projected point if the point
+  // is not actually on the cone.
 
   V =  sin(SAngle) * ( Ploc.X() * cos(U) + Ploc.Y() * sin(U) - Radius)
     + cos(SAngle) * Ploc.Z();
@@ -1403,7 +1398,7 @@ void ElSLib::SphereParameters(const gp_Ax3& Pos,
   Standard_Real x, y, z;
   Ploc.Coord (x, y, z);
   Standard_Real l = sqrt (x * x + y * y);
-  if (l < gp::Resolution()) {    // point sur l axe Z de la sphere
+  if (l < gp::Resolution()) {    // point on axis Z of the sphere
     if (z > 0.)
       V =   M_PI_2; // PI * 0.5
     else
@@ -1436,7 +1431,7 @@ void ElSLib::TorusParameters(const gp_Ax3& Pos,
   Standard_Real x, y, z;
   Ploc.Coord (x, y, z);
 
-  // toutes ces magouilles pour traiter le cas de Major < Minor.
+  // all that to process case of  Major < Minor.
   U = atan2(y,x);
   if (MajorRadius < MinorRadius){
     Standard_Real cosu = cos(U);

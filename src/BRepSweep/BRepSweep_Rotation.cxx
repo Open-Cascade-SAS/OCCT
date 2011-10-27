@@ -139,7 +139,7 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyVertex
   (const TopoDS_Shape& aGenV, 
    const Sweep_NumShape& aDirV)
 {
-  //appele uniquement en mode de construction avec copie.
+  //call only in construction mode with copy.
   Standard_ConstructionError_Raise_if
     (!myCopy,"BRepSweep_Translation::MakeEmptyVertex");
   gp_Pnt P = BRep_Tool::Pnt(TopoDS::Vertex(aGenV));
@@ -176,8 +176,8 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyDirectingEdge
   O.Translate(V.Dot(gp_Vec(O,P)) * V);
   if (O.IsEqual(P,Precision::Confusion())) {
     // make a degenerated edge
-    // temporairement on fout une courbe 3d nulle pour que les 
-    // parametres soient enregistres.
+    // temporary make 3D curve null so that 
+    // parameters should be registered.
     // myBuilder.Builder().MakeEdge(E);
     gp_Ax2 Axis(O,Dirz);
     Handle(Geom_Circle) GC = new Geom_Circle(Axis,0.);
@@ -211,8 +211,7 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyGeneratingEdge
   (const TopoDS_Shape& aGenE, 
    const Sweep_NumShape& aDirV)
 {
-  //appele dans le cas de construction avec copie, ou exceptionnellement
-  //lorsque le meridien touche myaxe.
+  //call in case of construction with copy, or only when meridian touches myaxe.
   Standard_Real First,Last;
   TopLoc_Location Loc;
   Handle(Geom_Curve) C = Handle(Geom_Curve)::DownCast
@@ -243,8 +242,7 @@ void  BRepSweep_Rotation::SetParameters
    const TopoDS_Shape& aGenV, 
    const Sweep_NumShape&)
 {
-  //Colle le parametre des vertex directement inclus dans les faces
-  //bouchons.
+  //Glue the parameter of vertices directly included in cap faces.
   gp_Pnt2d pnt2d = BRep_Tool::Parameters(TopoDS::Vertex(aGenV),
 					 TopoDS::Face(aGenF));
   myBuilder.Builder().UpdateVertex
@@ -402,8 +400,8 @@ void  BRepSweep_Rotation::SetPCurve
    const Sweep_NumShape&,
    const TopAbs_Orientation orien)
 {
-  //Met sur edges des faces bouchons des pcurves identiques a celles 
-  //des edges de la face generatrice.
+  //Set on edges of cap faces the same pcurves as 
+  //on edges of the generator face.
   Standard_Real First,Last;
   SetThePCurve(myBuilder.Builder(),
 	       TopoDS::Edge(aNewEdge),

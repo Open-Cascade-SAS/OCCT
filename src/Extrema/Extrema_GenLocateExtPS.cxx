@@ -24,18 +24,17 @@ Extrema_GenLocateExtPS::Extrema_GenLocateExtPS (const gp_Pnt&          P,
 						const Standard_Real    TolU, 
 						const Standard_Real    TolV)
 /*-----------------------------------------------------------------------------
-Fonction:
-  Recherche de (U,V) proche de (U0,V0) tel que dist(S(U,V),P) soit extremale.
+Function:
+  Find (U,V) close to (U0,V0) so that dist(S(U,V),P) was extreme.
 
-Methode:
-  Si (u,v) est solution, on peut ecrire:
+Method:
+  If (u,v) is a solution, it is possible to write:
    { F1(u,v) = (S(u,v)-P).dS/du(u,v) = 0.
    { F2(u,v) = (S(u,v)-P).dS/dv(u,v) = 0.
-  Le probleme consiste a rechercher, dans l'intervalle de definition de la 
-  surface, la racine du systeme la plus proche de (U0,V0).
-  On utilise la classe math_FunctionSetRoot avec les arguments de construction
-  suivants:
-  - F: Extrema_FuncExtPS cree a partir de P et S,
+  The problem consists in finding, in the interval of surface definition,
+  the root of the system closest to (U0,V0).
+  Use class math_FunctionSetRoot with the following construction arguments:
+  - F: Extrema_FuncExtPS created from P and S,
   - U0V0: math_Vector (U0,V0),
   - Tol: Min(TolU,TolV),            
 				    

@@ -21,7 +21,7 @@
 
 static Standard_Integer MaxSol = 20;
 //=========================================================================
-//   Creation d un cercle tangent a deux cercles et a un point.           +
+//   Creation of a circle tangent to two circles and a point.           +
 //=========================================================================
 
 GccAna_Circ2d3Tan::
@@ -31,7 +31,7 @@ GccAna_Circ2d3Tan::
 		      const Standard_Real         Tolerance  ):
 
 //=========================================================================
-//   Initialisation des champs.                                           +
+//   Initialization of fields.                                           +
 //=========================================================================
 
    cirsol(1,MaxSol)     ,
@@ -65,7 +65,7 @@ GccAna_Circ2d3Tan::
    }
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
    gp_Circ2d C1(Qualified1.Qualified());
@@ -289,8 +289,8 @@ GccAna_Circ2d3Tan::
 		   else {
 		     TheSame2(NbrSol) = 0;
 		     gp_Dir2d dc(center2.XY()-Center.XY());
-		     // cas des cercles concentriques : 
-		     // le 2eme point de tangence est de l'autre cote du cercle solution
+		     // case of concentric circles : 
+		     // 2nd tangency point is at the other side of the circle solution
 		     Standard_Real alpha = 1.;
 		     if (center1.Distance(center2)<=Tolerance) alpha = -1;
 		     pnttg2sol(NbrSol)=gp_Pnt2d(Center.XY()+alpha*Radius(k1)*dc.XY());
@@ -318,7 +318,7 @@ GccAna_Circ2d3Tan::
      }
    }
 
-   // Debug grossier pour que le point soit sur les cercles solutions.
+   // Debug to create the point on the solution circles.
 
    Standard_Integer kk ;
    for ( kk = 1; kk <= NbrSol; kk++) {
@@ -329,8 +329,8 @@ GccAna_Circ2d3Tan::
      }
    }
 
-   // Debug grossier pour eliminer solution multiple.
-   // ca arrive dans le cas d intersection ligne hyperbole.
+   // Debug to eliminate multiple solution.
+   // this happens in case of intersection line hyperbola.
    Standard_Real Tol2 = Tol*Tol;
    for (kk = 1; kk <NbrSol; kk++) {
      gp_Pnt2d PK = cirsol(kk).Location();

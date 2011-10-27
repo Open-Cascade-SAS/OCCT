@@ -237,7 +237,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
           MDTV_CPU_LIMIT = atoi(a[1]);
           MDTV_CPU_CURRENT = clock()/1000;
 
-          if (first) // Lancer le thread au 1er appel seulement.
+          if (first) // Launch the thread only at the 1st call.
           {
                   first=0 ;
                   _beginthreadex(NULL,0,CpuFunc,NULL,0,&ThreadID);

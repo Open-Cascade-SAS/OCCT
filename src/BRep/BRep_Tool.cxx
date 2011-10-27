@@ -314,7 +314,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
 
     TopLoc_Location LC;
 
-    Standard_Real f, l;// pour les malins qui appellent avec (u,u).
+    Standard_Real f, l;// for those who call with (u,u).
     Handle(Geom_Curve) C3d =
       BRep_Tool::Curve(E,/*LC,*/f,l); // transforming plane instead of curve
     // we can loose scale factor of Curve transformation (eap 13 May 2002)
@@ -418,9 +418,9 @@ void  BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
       if (i > Index) break;
       if (i == Index) {
         // JMB le 21 Mai 1999
-        // on fait comme dans les autres methodes CurveOnSurface. c.a.d on tient
-        // compte de l'orientation dans le cas des aretes de coutures (renvoi de PCurve2)
-        // sinon on risque de louper des curves ou de ne pas obtenir la bonne.
+        // it is done as in the other CurveOnSurface methods, ie. take into account
+        // the orientation in case of cut edges (return PCurve2)
+        // otherwise there is a risk to loop curves or to not get the prover one.
         if (GC->IsCurveOnClosedSurface() && Eisreversed)
           C = GC->PCurve2();
         else
@@ -1372,7 +1372,7 @@ gp_Pnt2d  BRep_Tool::Parameters(const TopoDS_Vertex& V,
   L = L.Predivided(V.Location());
   BRep_ListIteratorOfListOfPointRepresentation itpr
     ((*((Handle(BRep_TVertex)*) &V.TShape()))->Points());
-  // On regarde dabord si il y des PointRepresentation (cas non Manifold)
+  // It is checked if there is PointRepresentation (case non Manifold)
 
   while (itpr.More()) {
     if (itpr.Value()->IsPointOnSurface(S,L)) {
@@ -1384,8 +1384,8 @@ gp_Pnt2d  BRep_Tool::Parameters(const TopoDS_Vertex& V,
 
  TopoDS_Vertex Vf,Vl;
  TopoDS_Edge E;
- // Sinon on explore les aretes (PMN 4/06/97) On ne peut pas faire un raise 999/1000!
- // meme si souvent il y a moyen de faire plus economique au dessus...
+ // Otherwise the edges are searched (PMN 4/06/97) It is not possible to succeed 999/1000!
+ // even if often there is a way to make more economically than above...
  TopExp_Explorer exp;
  for (exp.Init(F, TopAbs_EDGE); exp.More(); exp.Next()) { 
     E = TopoDS::Edge(exp.Current());  
@@ -1394,7 +1394,7 @@ gp_Pnt2d  BRep_Tool::Parameters(const TopoDS_Vertex& V,
       gp_Pnt2d Pf, Pl;
       UVPoints(E, F, Pf, Pl);
       if (V.IsSame(Vf)) return Pf;
-      else              return Pl;//Ambiguite (naturelle) pour les edges degenerees.
+      else              return Pl;//Ambiguity (natural) for degenerated edges.
     }
   }
   Standard_NoSuchObject::Raise("BRep_Tool:: no parameters on surface");

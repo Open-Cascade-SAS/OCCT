@@ -19,7 +19,7 @@
 #include <Precision.hxx>
 
 //=========================================================================
-//   Creation d un cercle tangent a deux cercles et a une droite.         +
+//   Creation of a circle tangent to two circles and a straight line.     +
 //=========================================================================
 
 GccAna_Circ2d3Tan::
@@ -29,7 +29,7 @@ GccAna_Circ2d3Tan::
 		      const Standard_Real         Tolerance ):
 
 //=========================================================================
-//   Initialisation des champs.                                           +
+//   Initialization of fields.                                           +
 //=========================================================================
 
    cirsol(1,16)     , 
@@ -65,7 +65,7 @@ GccAna_Circ2d3Tan::
   }
 
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
   gp_Circ2d C1 = Qualified1.Qualified();
@@ -118,7 +118,7 @@ GccAna_Circ2d3Tan::
 	      Standard_Real Rradius=0;
 	      gp_Pnt2d Center(Intp.Point(j).Value());
 
-// pop : si les coordonnes sont trop grandes ( qu'est trop grand : avoir ) pas de creation		 
+// pop : if the coordinates are too great, no creation		 
 	      if (Center.X() > 1e10 || 
 		  Center.Y() > 1e10  ) break;	      
 
@@ -126,7 +126,7 @@ GccAna_Circ2d3Tan::
 	       Standard_Real dist2 = Center.Distance(C2.Location());
 	      Standard_Real dist3 = L3.Distance(Center);
 
-// pop : si les coordonnes sont trop grandes ( qu'est trop grand : avoir ) pas de creation		 
+// pop : if the coordinates are too great, no creation			 
 	      if (dist3 > 1e10  ) break;	
 
 	      Standard_Integer nbsol1 = 0;
@@ -271,13 +271,13 @@ GccAna_Circ2d3Tan::
 		    TheSame1(NbrSol) = 0;
 		    gp_Dir2d dc(C1.Location().XY()-Center.XY());
 		    pnttg1sol(NbrSol)=gp_Pnt2d(Center.XY()+Radius(ind3)*dc.XY());
-		    // POP pour portection dans le cas ou cirsol(NbrSol).Location == pnttg1sol(NbrSol)
+		    // POP for protection if cirsol(NbrSol).Location == pnttg1sol(NbrSol)
 		    if (cirsol(NbrSol).Location().IsEqual(pnttg1sol(NbrSol),Precision::Confusion()))
 		      par1sol(NbrSol)=1;
 		    else
 		      par1sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
 							pnttg1sol(NbrSol));
-		    // POP pour portection dans le cas ou C1.Location == pnttg1sol(NbrSol)
+		    // POP for protection if C1.Location == pnttg1sol(NbrSol)
 		    if (C1.Location().IsEqual(pnttg1sol(NbrSol),Precision::Confusion()))
 		      pararg1(NbrSol)=1;
 		    else
@@ -291,13 +291,13 @@ GccAna_Circ2d3Tan::
 		    TheSame2(NbrSol) = 0;
 		    gp_Dir2d dc(C2.Location().XY()-Center.XY());
 		    pnttg2sol(NbrSol)=gp_Pnt2d(Center.XY()+Radius(ind3)*dc.XY());
-		    // POP pour portection dans le cas ou cirsol(NbrSol).Location == pnttg1sol(NbrSol)
+		    // POP for protection if cirsol(NbrSol).Location == pnttg1sol(NbrSol)
 		    if (cirsol(NbrSol).Location().IsEqual(pnttg1sol(NbrSol),Precision::Confusion()))
 		      par1sol(NbrSol)=1;
 		    else
 		      par2sol(NbrSol)=ElCLib::Parameter(cirsol(NbrSol),
 							pnttg2sol(NbrSol));
-		    // POP pour portection dans le cas ou C2.Location == pnttg2sol(NbrSol)
+		    // POP for protection if C2.Location == pnttg2sol(NbrSol)
 		    if (C2.Location().IsEqual(pnttg2sol(NbrSol),Precision::Confusion()))
 		      pararg2(NbrSol)=1;
 		    else

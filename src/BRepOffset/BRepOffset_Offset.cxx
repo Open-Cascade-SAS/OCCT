@@ -83,8 +83,7 @@ static void UpdateEdge(const TopoDS_Edge& E,
 		       const TopLoc_Location& L,
 		       const Standard_Real Tol)
 {
-  // Detrime les courbes pour eviter des copies dans
-  //les extensions. 
+  // Cut curves to avoid copies in the extensions. 
   BRep_Builder B;
   Handle(Geom_TrimmedCurve) BC = Handle(Geom_TrimmedCurve)::DownCast(C);
   if (!BC.IsNull()) {
@@ -105,8 +104,7 @@ static void UpdateEdge(const TopoDS_Edge& E,
 		       const TopoDS_Face& F, 
 		       const Standard_Real Tol) 
 {
-  // Detrime les courbes pour eviter des copies dans
-  //les extensions. 
+  // Cut curves to avoid copies in the extensions. 
   BRep_Builder B;
   Handle(Geom2d_TrimmedCurve) BC = Handle(Geom2d_TrimmedCurve)::DownCast(C);
   if (!BC.IsNull()) {
@@ -128,8 +126,7 @@ static void UpdateEdge (const TopoDS_Edge& E,
 			const TopoDS_Face& F, 
 			const Standard_Real Tol) 
 {
-  // Detrime les courbes pour eviter des copies dans
-  //les extensions. 
+  // Cut curves to avoid copies in the extensions. 
   BRep_Builder B;
   Handle(Geom2d_Curve) NC1,NC2;
   Handle(Geom2d_TrimmedCurve) BC1 = Handle(Geom2d_TrimmedCurve)::DownCast(C1);
@@ -142,7 +139,7 @@ static void UpdateEdge (const TopoDS_Edge& E,
 //=======================================================================
 //function : Range3d
 //purpose  : Set the range only on the 3d curve 
-//           en attendant que le BRep_Builder le fasse !!
+//           waitint that BRep_Builder does it !!
 //=======================================================================
 
 static void Range3d (const TopoDS_Edge&  E, 
@@ -193,14 +190,14 @@ static void ComputeCurve3d(TopoDS_Edge           Edge,
 
   Standard_Boolean IsComputed = Standard_False;
 
-  // Seach only isos on analytiques surfaces.
+  // Search only isos on analytic surfaces.
   Geom2dAdaptor_Curve C(Curve);
   GeomAdaptor_Surface S(Surf);
   GeomAbs_CurveType   CTy = C.GetType();
   GeomAbs_SurfaceType STy = S.GetType();
   BRep_Builder TheBuilder;
 
-  if ( STy != GeomAbs_Plane) { // if plane buildcurve3d gere KPart
+  if ( STy != GeomAbs_Plane) { // if plane buildcurve3d manage KPart
     if ( CTy == GeomAbs_Line) {
       gp_Dir2d D = C.Line().Direction();
       if ( D.IsParallel(gp::DX2d(),Precision::Angular())) { // Iso V.
@@ -281,10 +278,10 @@ static void ComputeCurve3d(TopoDS_Edge           Edge,
 	  gp_Sphere Sph  = S.Sphere();
 	  gp_Pnt2d  P    = C.Line().Location();
 	  gp_Ax3    Axis = Sph.Position();
-	  // calculde l'iso 0.
+	  // calculate iso 0.
 	  gp_Circ   Ci   = ElSLib::SphereUIso(Axis, Sph.Radius(),0.);
 
-	  // mise a sameparameter (rotation du cercle - decalage du Y)
+	  // set to sameparameter (rotation of circle - offset of Y)
 	  gp_Dir DRev = Axis.XDirection().Crossed(Axis. Direction());
 	  gp_Ax1 AxeRev(Axis.Location(),DRev);
 	  Ci.Rotate(AxeRev, P.Y());

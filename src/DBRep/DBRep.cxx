@@ -52,7 +52,7 @@ extern Draw_Viewer dout;
 
 
 //==========================================
-// usefull methods
+// useful methods
 //==========================================
 
 Standard_EXPORT void DBRep_WriteColorOrientation ()
@@ -171,8 +171,8 @@ static Standard_Integer hlr (Draw_Interpretor& di,
       else         di << " no HiddenLines";
       di << "\n";
       if (withHLR) {
-	di << "Angle de discretisation : ";
-	di << anglHLR * 180 / PI << " degres" << "\n";
+	di << "Angle of discretization : ";
+	di << anglHLR * 180 / PI << " degrees" << "\n";
       }
     }
     else di << " wireframe";
@@ -222,8 +222,8 @@ static Standard_Integer hlr (Draw_Interpretor& di,
       if (anglHLR < HAngMin) anglHLR = HAngMin;
       if (anglHLR > HAngMax) anglHLR = HAngMax;
     }
-    di << "Angle de discretisation : ";
-    di << anglHLR * 180 / PI << " degres" << "\n";
+    di << "Angle of discretization : ";
+    di << anglHLR * 180 / PI << " degrees" << "\n";
   }
 
   if (n >= nFirst + 1) {
@@ -759,7 +759,7 @@ static Standard_Integer orientation(Draw_Interpretor& ,
 #include <TCollection_AsciiString.hxx>
 
 //=======================================================================
-// numshapes meme chose que nbshapes sauf que la sortie est cout
+// numshapes same as nbshapes but the output is cout
 //=======================================================================
 
 static Standard_Integer numshapes(Draw_Interpretor& di,
@@ -1151,7 +1151,7 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
 //  theCommands.Add("dumpmmgt",
 //		  "dump le contenu du gestionnaire de memoire",__FILE__,dumpmmgt,g);
   theCommands.Add("purgemmgt",
-		  "rend la memoire libre du gestionnaire de memoire au systeme",
+		  "returns the free memory from the system to the memory manager",
 		  __FILE__,purgemmgt,g);
   
   // Add command for DRAW-specific ProgressIndicator

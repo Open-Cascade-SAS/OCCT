@@ -30,7 +30,7 @@
 
 //=======================================================================
 //function : Norm
-//purpose  : Norme d'une Matrice
+//purpose  : Norm of a Matrix
 //=======================================================================
 
 static Standard_Real Norm(const gp_Mat& M) {
@@ -50,7 +50,7 @@ static Standard_Real Norm(const gp_Mat& M) {
 
 //=======================================================================
 //function : ToG0
-//purpose  : Cacul une tranformation T tq T.M2 = M1
+//purpose  : Calculate tranformation T such as T.M2 = M1
 //=======================================================================
 
 static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T) {
@@ -133,7 +133,7 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 
 //=======================================================================
 //function : TransformInCompatibleLaw
-//purpose  : Mise en continuite des loi
+//purpose  : Set in continuity of laws
 //=======================================================================
  void BRepFill_LocationLaw::TransformInCompatibleLaw(const Standard_Real TolAngular)
 {
@@ -168,7 +168,7 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 
 #if DEB
       if (N2.Dot(T1) > 1.e-9) {
-	cout << "Imprecision dans TransformInCompatibleLaw" << endl;
+	cout << "Inprecision in TransformInCompatibleLaw" << endl;
         cout << "--- T1.R(N2) = " << N2.Dot(T1) << endl;
 	gp_Vec tt;
 	tt = T1;
@@ -186,7 +186,7 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 
 //=======================================================================
 //function : TransformInG0Law
-//purpose  : Mise en continuite des loi
+//purpose  : Set in continuity of laws
 //=======================================================================
  void BRepFill_LocationLaw::TransformInG0Law()
 {
@@ -204,7 +204,7 @@ void BRepFill_LocationLaw::BiNormalIsMain()
     myLaws->Value(ipath)->SetTrsf(aux);
   }
   
-  // La loi est elle periodique ?
+  // Is the law periodical ?
   if  (myPath.Closed()) {
     myLaws->Value(myLaws->Length())->D0(Last, M1, V);
     myLaws->Value(1)->GetDomain(First, Last);
@@ -214,7 +214,7 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 
 //=======================================================================
 //function : DeleteTransform
-//purpose  : Supprime la Mise en continuite des loi
+//purpose  : Remove the setting in continuity of law. 
 //=======================================================================
  void BRepFill_LocationLaw::DeleteTransform()
 {
@@ -228,7 +228,7 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 
 //=======================================================================
 //function : NbHoles
-//purpose  : Rechecherche des "Trous"
+//purpose  : Find "Holes"
 //=======================================================================
  Standard_Integer BRepFill_LocationLaw::NbHoles(const Standard_Real Tol) 
 {
@@ -324,11 +324,11 @@ const TopoDS_Edge& BRepFill_LocationLaw::Edge(const Standard_Integer Index) cons
   return V;
 }
 
-//=======================================================================
+//===================================================================
 //function : PerformVertex
-//purpose  : Calcul un vertex du balayage a partir d'un vertex d'une section
-//           et de l'indice de l'edge dans la trajectoire
-//=======================================================================
+//purpose  : Calculate a vertex of sweeping from a vertex of section
+//           and the index of the edge in the trajectory
+//===================================================================
 void BRepFill_LocationLaw::PerformVertex(const Standard_Integer Index,
 					 const TopoDS_Vertex& Input,
 					 const Standard_Real TolMin,
@@ -418,7 +418,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 {
   First = myLength->Value(Index);
   Last  = myLength->Value(Index+1);
-  if (Last<0) { //Il faut effectuer le calcul
+  if (Last<0) { //It is required to carry out the calculation 
     Standard_Integer ii, NbE = myEdges->Length();
     Standard_Real Length, f, l;
     GCPnts_AbscissaPoint AbsC;
@@ -441,7 +441,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 
 //=======================================================================
 //function : IsG1
-//purpose  : Evalue la continuite de la loi en un vertex
+//purpose  : Evaluate the continuity of the law by a vertex
 //=======================================================================
  Standard_Integer 
  BRepFill_LocationLaw::IsG1(const Standard_Integer Index,
@@ -506,23 +506,23 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
   if (Norm(M1-M2) > SpatialTolerance) isG0 = Standard_False;
   
   if (!isG0) return -1;
-  if (!Ok_D1) return 0; // Pas de controle de la derive
+  if (!Ok_D1) return 0; // No control of the derivative
   
   if ( (DV1.Magnitude()>EpsNul) && (DV2.Magnitude()>EpsNul)
        && (DV1.Angle(DV2) > AngularTolerance) ) isG1 = Standard_False;
 
-  // Pour la suite, les test sont plutot empirique
+  // For the next, the tests are mostly empirical
   Standard_Real Norm1 = Norm(DM1);
   Standard_Real Norm2 = Norm(DM2);
-  // Si les 2 normes sont nulle c'est bon
+  // It two 2 norms are null, it is good
   if ((Norm1 > EpsNul) || (Norm2 > EpsNul)) {
-    // sinon on compare les matrice normalise
+    // otherwise the normalized matrices are compared
     if ((Norm1 > EpsNul) && (Norm2 > EpsNul)) {
       DM1 /= Norm1;
       DM2 /= Norm2;
       if (Norm(DM1 - DM2) > AngularTolerance) isG1 = Standard_False;
     }
-    else isG1 = Standard_False; // 1 Null l'autre pas   
+    else isG1 = Standard_False; // 1 Null the other is not   
   }
   
   if (isG1) return 1;
@@ -541,13 +541,13 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
   Standard_Integer iedge, NbE=myEdges->Length();
   Standard_Boolean Trouve =  Standard_False;
 
-  //Controle que les longueurs sont calcules
+  //Control that the lengths are calculated
   if (myLength->Value(NbE+1) < 0) {
     Standard_Real f, l;
     CurvilinearBounds(NbE, f, l);
   }
 
-  // Recherche de l'interval
+  // Find the interval
   for (iedge=1; iedge<=NbE && !Trouve; ) {
     if (myLength->Value(iedge+1) >= Abcissa) {
       Trouve = Standard_True;
@@ -581,10 +581,10 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 }
 
 
-//=======================================================================
+//===================================================================
 //function : D0
-//purpose  : Positionement d'une section, a une abscisse curviligne donnee
-//=======================================================================
+//purpose  : Position of a section, with a given curviline abscissa
+//===================================================================
  void BRepFill_LocationLaw::D0(const Standard_Real Abcissa,
 			       TopoDS_Shape& W)
 {
@@ -608,7 +608,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
   else {
     W.Nullify();
 #if DEB    
-    cout << "BRepFill_LocationLaw::D0 : Attention positionement hors borne" 
+    cout << "BRepFill_LocationLaw::D0 : Attention position out of limits" 
          << endl;
 #endif
   }
@@ -616,7 +616,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 
 //=======================================================================
 //function : Abscissa
-//purpose  : Calcul l'abscisse d'un point
+//purpose  : Calculate the abscissa of a point
 //=======================================================================
  Standard_Real BRepFill_LocationLaw::Abscissa(const Standard_Integer Index,
 					      const Standard_Real Param)

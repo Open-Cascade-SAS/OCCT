@@ -5,7 +5,7 @@
 
 
 //=========================================================================
-//   CREATION DE LA BISSECTRICE ENTRE UNE DROITE ET UN POINTS.             +
+//   CREATION of the BISSECTRICE between a DROITE and POINTS.             +
 //=========================================================================
 
 #include <GccAna_LinPnt2dBisec.ixx>

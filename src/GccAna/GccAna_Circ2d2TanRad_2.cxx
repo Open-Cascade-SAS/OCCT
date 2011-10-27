@@ -14,19 +14,19 @@
 #include <Standard_NegativeValue.hxx>
 #include <GccEnt_BadQualifier.hxx>
 
-// circulaire tangent a un cercle et un point et de rayon donne
+// circulare tangent to a circle a point and a given radius
 //=============================================================
 
 //========================================================================
-// On initialise WellDone a false.                                       +
-// On recupere le cercle C1.                                             +
-// On sort en erreur dans les cas ou la construction est impossible.     +
-// On fait la parallele a C1 dans le bon sens.                           +
-// On fait le cercle centre en Point1 de rayon Radius.                   +
-// On intersecte la parallele et le cercle.                              +
-//                              ==> Le point de centre de la solution.   +
-// On cree la solution qu on ajoute aux solutions deja trouvees.         +
-// On remplit les champs.                                                +
+// Initialize WellDone to false.                                       +
+// Return circle C1.                                             +
+// Leave with error if the construction is impossible.     +
+// Create parallel to C1 in the proper direction.                           +
+// Create circle with center in Point1 of radius Radius.                   +
+// Intersect the parallel and the circle.                              +
+//                              ==> The center point of the solution.   +
+// Create the solution that will be added to already found solutions.         +
+// Fill the fields.                                                +
 //========================================================================
 
 GccAna_Circ2d2TanRad::

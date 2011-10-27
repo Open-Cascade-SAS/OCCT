@@ -4,11 +4,11 @@
 //		<reg@topsn3>
 
 //=========================================================================
-//   Creation d un cercle tangent a deux elements : Droite.               +
-//                                                  Cercle.               +
+//   Creation of a circle tangent to two elements : Straight line.        +
+//                                                  Circle.               +
 //                                                  Point.                +
-//                        centre sur un troisieme : Droite.               +
-//                                                  Cercle.               +
+//                              center on a third : Straight line.        +
+//                                                  Circle.               +
 //=========================================================================
 
 #include <GccAna_Circ2d2TanOn.jxx>
@@ -64,7 +64,7 @@ GccAna_Circ2d2TanOn::
   gp_Pnt2d center1(C1.Location());
 
 //=========================================================================
-//   Traitement des cas limites.                                          +
+//   Processing of boundary cases.                                          +
 //=========================================================================
 
   Standard_Integer nbsol1 = 1;
@@ -140,7 +140,7 @@ GccAna_Circ2d2TanOn::
   }
   
 //=========================================================================
-//   cas general.                                                         +
+//   General case.                                                         +
 //=========================================================================
 
   GccAna_CircPnt2dBisec Bis(C1,Point2);
@@ -196,7 +196,7 @@ GccAna_Circ2d2TanOn::
 	    if (ok) {
 	      for (Standard_Integer k = 1 ; k <= nbsol ; k++) {
 		
-		// pop : protection contre le cas center1 == Center
+		// pop : protection against case center1 == Center
 		if (center1.IsEqual(Center,Precision::Confusion())) {
 		  continue;
 		}		  

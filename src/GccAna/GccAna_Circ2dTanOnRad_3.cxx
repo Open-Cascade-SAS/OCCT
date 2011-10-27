@@ -12,17 +12,16 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Cercle tangent a un cercle   Qualified1 (C1).                        +
-//          centre sur un cercle  OnCirc.                                 +
-//          de rayon              Radius.                                 +
+//   Circle tangent to a circle   Qualified1 (C1).                        +
+//          center on a circle  OnCirc.                                   +
+//          of radius              Radius.                                +
 //                                                                        +
-//  On initialise le tableau de solutions cirsol ainsi que tous les       +
-//  champs.                                                               +
-//  On elimine les cas ne presentant pas de solution.                     +
-//  On cree la (les) parallele(s) a C1 dans le (les) sens voulu(s).       +
-//  On intersecte cette (ces) parallele(s) avec OnCirc et on obtient le   +
-//  (les) point(s) de centre de la (des) solution(s) recherchee(s).       +
-//  On cree cette (ces) solution(s) cirsol.                               +
+//  Initialize the table of solutions cirsol and all fields.              +
+//  Eliminate cases not being the solution.                     +
+//  Create parallel(s) to C1 in the required direction(s).       +
+//  Intersect parallel(s) with OnCirc and obtain the   +
+//  center point(s) of found solution(s).       +
+//  Create solution(s) cirsol.                               +
 //=========================================================================
 
 GccAna_Circ2dTanOnRad::

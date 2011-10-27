@@ -5,7 +5,7 @@
 
 
 //=========================================================================
-//   CREATION DE LA BISSECTICE ENTRE DEUX CERCLES.                        +
+//   CREATION of the BISSECTICE between two CIRCLES.                        +
 //=========================================================================
 
 #include <GccAna_Circ2dBisec.ixx>
@@ -34,15 +34,15 @@ GccAna_Circ2dBisec::
 		       const gp_Circ2d& Circ2    ) {
 
 //=========================================================================
-//  Initialisation des champs :                                           +
-//            - circle1   (Cercle : premier argument.)                    +
-//            - circle2  (Ligne  : deuxieme argument.)                    +
-//            - intersection (Entier indiquant la position du plus petit  +
-//                            des deux cercles par rapport a l autre.)    +
-//            - sameradius   (Booleen indiquant si les deux cercles ont   +
-//                            meme rayon ou non.)                         +
-//            - NbrSol   (Entier indiquant le nombre de solutions.)       +
-//            - WellDone (Booleen indiquant le succes ou non de l algo.). +
+//  Initialization of fields :                                            +
+//            - circle1  (Circle : first argument.)                       +
+//            - circle2  (Line   : second argument.)                      +
+//            - intersection (Integer showing the smallest position       +
+//                            of two circles correspondingly to each other.) +
+//            - sameradius   (Booleen showing if the two circles have   +
+//                            the same radius or not.)                         +
+//            - NbrSol   (Integer showing the number of solutions.)       +
+//            - WellDone (Boolean showing succes or failure of the algo.). +
 //=========================================================================
 
    WellDone = Standard_False;
@@ -115,10 +115,10 @@ GccAna_Circ2dBisec::
  }
 
 //=========================================================================
-//  Traitement.                                                           +
-//  On recupere les coordonees des centres des cercles circle1 et circle2 +
+//  Processing.                                                           +
+//  Return the coordinates of centers of circles circle1 and circle2      +
 //  (xcencir1, ycencir1, xcencir2, ycencir2).                             +
-//  On recupere aussi les rayons des deux cercles R1 et R2.               +
+//  Also return the radiuses of two circles R1 and R2.                    +
 //=========================================================================
 
 Handle(GccInt_Bisec) GccAna_Circ2dBisec::

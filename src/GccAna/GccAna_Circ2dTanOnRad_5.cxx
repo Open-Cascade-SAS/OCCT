@@ -9,17 +9,16 @@
 #include <gp_Dir2d.hxx>
 
 //=========================================================================
-//   Cercle tangent a un point   Point1.                                  +
-//          centre sur un cercle OnCirc.                                  +
-//          de rayon             Radius.                                  +
+//   Circle tangent to a point   Point1.                                  +
+//          center on circle     OnCirc.                                  +
+//          radius               Radius.                                  +
 //                                                                        +
-//  On initialise le tableau de solutions cirsol ainsi que tous les       +
-//  champs.                                                               +
-//  On elimine les cas ne presentant pas de solution.                     +
-//  On cree le cercle centre en Point1 de rayon Radius.                   +
-//  On intersecte ce cercle avec OnCirc et on obtient les points de       +
-//  centre des solutions recherchees.                                     +
-//  On cree ces solutions cirsol.                                         +
+//  Initialize the table of solutions cirsol and all fields.              +
+//  Eliminate cases not being the solution.                               +
+//  Create the circle with center in Point1 of radius Radius.             +
+//  Intersect this circle with OnCirc and obtain the center points        +
+//  of found solutions.                                                   +
+//  Create solutions cirsol.                                              +
 //=========================================================================
 
 GccAna_Circ2dTanOnRad::

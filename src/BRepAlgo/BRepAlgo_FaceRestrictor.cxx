@@ -127,14 +127,14 @@ void BRepAlgo_FaceRestrictor::Perform()
   TopTools_ListIteratorOfListOfShape it(wires);
 
   //--------------------------------------------------------------------
-  // recuperation la geometrie de la face de reference.
+  // return geometry of the reference face.
   //--------------------------------------------------------------------
   TopLoc_Location L;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(myFace,L);
 
   //-----------------------------------------------------------------------
-  // test si les edges sont sur S. sinon ajout de S sur la premiere pcurve.
-  // ou projection de l edge sur F.
+  // test if edges are on S. otherwise  add S to the first pcurve.
+  // or projection of the edge on F.
   //---------------------------------------------------------------------- 
   TopExp_Explorer Exp;
 //  BRep_Builder    BB;
@@ -143,7 +143,7 @@ void BRepAlgo_FaceRestrictor::Perform()
   TopOpeBRepBuild_WireToFace WTF;
 
   for ( ; it.More(); it.Next()) {
-    // mise a jour de la surface sur les edges.
+    // update the surface on edges.
     const TopoDS_Wire& W = TopoDS::Wire(it.Value());
 
     for (Exp.Init(W,TopAbs_EDGE); Exp.More(); Exp.Next()) {
@@ -152,13 +152,13 @@ void BRepAlgo_FaceRestrictor::Perform()
       Handle(Geom2d_Curve) C2 = BRep_Tool::CurveOnSurface(E,S,L,f,l);
       
       if (C2.IsNull()) {
-	// pas de pcurve sur la surface de reference.
+	// no pcurve on the reference surface.
 	if (modeProj) {
-	  // Projection de la courbe 3d sur la surface.
+	  // Projection of the 3D curve on surface.
 	  ProjCurve3d ( E, S, L);
 	}
 	else {
-	  // recuperation de la premiere pcurve qui est colle sur <S>
+	  // return the first pcurve glued on <S>
 	  Standard_Boolean YaPCurve = ChangePCurve (E, S, L);
 	  if (!YaPCurve) {
 	    ProjCurve3d (E, S, L);
@@ -315,7 +315,7 @@ static void BuildFaceIn(      TopoDS_Face& F,
   
   if (!KeyContains.IsBound(W) || KeyContains(W).IsEmpty()) return;
 
-  // Suppression de W dans les KeyIsIn.
+// Removal of W in KeyIsIn.
 //  for (TopTools_ListIteratorOfListOfShape it(KeyContains(W)); it.More(); it.Next()) {
 
   TopTools_ListIteratorOfListOfShape it;
@@ -377,7 +377,7 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
   myDone = Standard_False;
   TopTools_ListIteratorOfListOfShape it(wires);
   //---------------------------------------------------------
-  // Reorientation de tous les wires fermes matiere a gauche.
+  // Reorientation of all closed wires to the left.
   //---------------------------------------------------------
   for (; it.More(); it.Next()) {
     TopoDS_Wire& W  = TopoDS::Wire(it.Value());
@@ -395,7 +395,7 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
     }
   }
   //---------------------------------------------------------
-  // Classification des wires les uns par rapport aux autres.
+  // Classification of wires ones compared to the others.
   //---------------------------------------------------------
   Standard_Integer j,i = 1;
 
@@ -442,7 +442,7 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
       B.Add     (NewFace,W);
       faces.Append(NewFace); 
       //--------------------------------------------
-      // Construction d une face par wire exterieur.
+      // Construction of a face by exterior wire.
       //--------------------------------------------
       BuildFaceIn(NewFace,W, keyContains, keyIsIn, TopAbs_FORWARD, faces);
     }

@@ -26,7 +26,7 @@ static void ComputePoles( const Standard_Real R,
   
   Standard_Integer i;
 
-  // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+  // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
     nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
   Standard_Real AlfaU = deltaU / ( nbUSpans * 2);
@@ -86,9 +86,9 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface
   isvperiodic = Standard_False;
 
   Standard_Integer i,j;
-  // construction du cone dans le repere de reference xOy.
+  // construction of cone in the reference mark xOy.
 
-  // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+  // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
     nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
   Standard_Real AlfaU = deltaU / ( nbUSpans * 2);
@@ -112,8 +112,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface
   vknots(1) = V1; vmults(1) = 2;
   vknots(2) = V2; vmults(2) = 2;
 
-  // On replace la bspline dans le repere de la sphere.
-  // et on calcule les poids de la bspline.
+  // Replace the bspline in the mark of the sphere.
+  // and calculate the weight of the bspline.
   Standard_Real W1;
   gp_Trsf Trsf;
   Trsf.SetTransformation( C.Position(), gp::XOY());
@@ -151,7 +151,7 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface
   isuperiodic = Standard_True;
   isvperiodic = Standard_False;
 
-  // construction du cone dans le repere de reference xOy.
+  // construction of the cone in the reference mark xOy.
 
   Standard_Real R = C.RefRadius();
   Standard_Real A = C.SemiAngle();
@@ -170,8 +170,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface
   vknots(1) = V1;  vmults(1) = 2;
   vknots(2) = V2;  vmults(2) = 2;
 
-  // On replace la bspline dans le repere du cone.
-  // et on calcule les poids de la bspline.
+  // replace bspline in the mark of the cone.
+  // and calculate the weight of bspline.
   Standard_Real W;
   gp_Trsf Trsf;
   Trsf.SetTransformation( C.Position(), gp::XOY());

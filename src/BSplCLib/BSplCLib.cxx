@@ -181,8 +181,8 @@ Standard_Integer  BSplCLib::FlatIndex
 
 //=======================================================================
 //function : LocateParameter
-//purpose  : Traitement des noeuds avec multiplicites
-//pmn  28-01-97 -> calcule eventuel de la periode.
+//purpose  : Processing of nodes with multiplicities
+//pmn  28-01-97 -> compute eventual of the period.
 //=======================================================================
 
 void BSplCLib::LocateParameter
@@ -207,9 +207,9 @@ void BSplCLib::LocateParameter
 
 //=======================================================================
 //function : LocateParameter
-//purpose  : Pour des noeuds plats
-//   pmn  28-01-97 -> On a bel est bien besoin du degree pour calculer
-//   la periode eventuelle
+//purpose  : For plane nodes 
+//   pmn  28-01-97 -> There is a need of the degre to calculate
+//   the eventual period
 //=======================================================================
 
 void BSplCLib::LocateParameter
@@ -236,9 +236,9 @@ void BSplCLib::LocateParameter
 
 //=======================================================================
 //function : LocateParameter
-//purpose  : Claculs effectifs
-// pmn 28-01-97 : Ajoute les bornes de la periode en argument d'entree, car il est 
-//                car il est imposible de les inventer a ce niveaux.
+//purpose  : Effective computation
+// pmn 28-01-97 : Add limits of the period as input argument,  
+//                as it is imposible to produce them at this level.
 //=======================================================================
 
 void BSplCLib::LocateParameter 
@@ -284,7 +284,7 @@ void BSplCLib::LocateParameter
   if ( KnotIndex < Knots.Upper()) {
     val = NewU - knots[KnotIndex + 1];
     if (val < 0) val = - val;
-    // <= pour etre coherant avec les Segment ou Eps correspond a un bit d'erreur.
+    // <= to be coherent with Segment where Eps corresponds to a bit of error.
     if (val <= Eps) KnotIndex++; 
   }
   if (KnotIndex < First) KnotIndex = First;
@@ -309,7 +309,7 @@ void BSplCLib::LocateParameter
 //=======================================================================
 //function : LocateParameter
 //purpose  : the index is recomputed only if out of range
-//pmn  28-01-97 -> calcule eventuel de la periode.
+//pmn  28-01-97 -> eventual computation of the period.
 //=======================================================================
 
 void BSplCLib::LocateParameter 
@@ -3456,26 +3456,26 @@ void  BSplCLib::TangExtendToConstraint
 
 ////////////////////////////////////////////////////////////////////////
 //
-//    1.  calcul du prolongement nD
+//    1. calculation of extension nD
 //
 ////////////////////////////////////////////////////////////////////////
 
-//  matrice d'Hermite
+//  Hermite matrix
   Standard_Integer Csize = Continuity + 2;
   math_Matrix  MatCoefs(1,Csize, 1,Csize);
   if (After) {
-    PLib::HermiteCoefficients(0, 1,           // Les Bornes
-			      Continuity, 0,  // Les Ordres de contraintes
+    PLib::HermiteCoefficients(0, 1,           // Limits 
+			      Continuity, 0,  // Orders of constraints
 			      MatCoefs);
   }
   else {
-    PLib::HermiteCoefficients(0, 1,           // Les Bornes
-			      0, Continuity,  // Les Ordres de contraintes
+    PLib::HermiteCoefficients(0, 1,           // Limits 
+			      0, Continuity,  // Orders of constraints
 			      MatCoefs);    
   }
 
 
-//  positionnement au noeud de raccord
+//  position at the node of connection
   Standard_Real Tbord ;
   if (After) {
     Tbord = FlatKnots(FlatKnots.Upper()-CDegree);
@@ -3491,7 +3491,7 @@ void  BSplCLib::TangExtendToConstraint
   BSplCLib::Eval(Tbord,periodic_flag,derivative_request,extrap_mode[0],
                   CDegree,FlatKnots,CDimension,Poles,*Eadr);
 
-//  norme de la tangente au noeud de raccord
+//  norm of the tangent at the node of connection
   math_Vector Tgte(1,CDimension);
 
   for (ipos=1;ipos<=CDimension;ipos++) {
@@ -3500,7 +3500,7 @@ void  BSplCLib::TangExtendToConstraint
   Standard_Real L1=Tgte.Norm();
 
 
-//  matrice de contraintes
+//  matrix of constraints
   math_Matrix Contraintes(1,Csize,1,CDimension);
   if (After) {
 
@@ -3523,7 +3523,7 @@ void  BSplCLib::TangExtendToConstraint
     }
   }
 
-//  calcul des coefficients du prolongement
+//  calculate the coefficients of extension
   Standard_Integer ii, jj, kk;
   TColStd_Array1OfReal ExtraCoeffs(1,Csize*CDimension);
   ExtraCoeffs.Init(0.);
@@ -3538,14 +3538,14 @@ void  BSplCLib::TangExtendToConstraint
     }
   }
 
-//  calcul des poles du prolongement
+//  calculate the poles of extension
   TColStd_Array1OfReal ExtrapPoles(1,Csize*CDimension);
   Standard_Real * EPadr = &ExtrapPoles(1) ;
   PLib::CoefficientsPoles(CDimension,
                           ExtraCoeffs,  PLib::NoWeights(),
 		          ExtrapPoles,  PLib::NoWeights());
 
-//  calcul des noeuds du prolongement avec leurs multiplicites
+//  calculate the nodes of extension with multiplicities
   TColStd_Array1OfReal ExtrapNoeuds(1,2);
   ExtrapNoeuds(1) = 0.;
   ExtrapNoeuds(2) = 1.;
@@ -3553,11 +3553,11 @@ void  BSplCLib::TangExtendToConstraint
   ExtrapMults(1) = Csize;
   ExtrapMults(2) = Csize;
 
-//  noeuds plats du prolongement
+// flat nodes of extension
   TColStd_Array1OfReal FK2(1, Csize*2);
   BSplCLib::KnotSequence(ExtrapNoeuds,ExtrapMults,FK2);
 
-//  norme de la tangente au point de raccord
+//  norm of the tangent at the connection point 
   if (After) {
     BSplCLib::Eval(0.,periodic_flag,1,extrap_mode[0],
                   Csize-1,FK2,CDimension,*EPadr,*Eadr);
@@ -3572,7 +3572,7 @@ void  BSplCLib::TangExtendToConstraint
   }
   Standard_Real L2 = Tgte.Norm();
 
-//  harmonisation des degres
+//  harmonisation of degrees
   TColStd_Array1OfReal NewP2(1, (CDegree+1)*CDimension);
   TColStd_Array1OfReal NewK2(1, 2);
   TColStd_Array1OfInteger NewM2(1, 2);
@@ -3587,7 +3587,7 @@ void  BSplCLib::TangExtendToConstraint
     NewM2 = ExtrapMults;
   }
 
-//  noeuds plats du prolongement apres harmonisation des degres
+//  flat nodes of extension after harmonization of degrees
   TColStd_Array1OfReal NewFK2(1, (CDegree+1)*2);
   BSplCLib::KnotSequence(NewK2,NewM2,NewFK2);
 
@@ -3598,7 +3598,7 @@ void  BSplCLib::TangExtendToConstraint
 //
 ////////////////////////////////////////////////////////////////////////
 
-//  ratio de reparametrisation
+//  ratio of reparametrization
   Standard_Real Ratio=1, Delta;
   if ( (L1 > Precision::Confusion()) && (L2 > Precision::Confusion()) ) {
     Ratio = L2 / L1;
@@ -3606,21 +3606,21 @@ void  BSplCLib::TangExtendToConstraint
   if ( (Ratio < 1.e-5) || (Ratio > 1.e5) ) Ratio = 1;
 
   if (After) {
-//    on ne bouge pas la premiere BSpline
+//    do not touch the first BSpline
     Delta = Ratio*NewFK2(NewFK2.Lower()) - FlatKnots(FlatKnots.Upper());
   }
   else {
-//    on ne bouge pas la seconde BSpline
+//    do not touch the second BSpline
     Delta = Ratio*NewFK2(NewFK2.Upper()) - FlatKnots(FlatKnots.Lower());
   }
 
-//  resultat de la concatenation
+//  result of the concatenation
   Standard_Integer NbP1 = NumPoles, NbP2 = CDegree+1;
   Standard_Integer NbK1 = FlatKnots.Length(), NbK2 = 2*(CDegree+1);
   TColStd_Array1OfReal NewPoles (1, (NbP1+ NbP2-1)*CDimension);
   TColStd_Array1OfReal NewFlats (1, NbK1+NbK2-CDegree-2);
 
-//  les poles
+//  poles
   Standard_Integer indNP, indP, indEP;
   if (After) {
 
@@ -3649,26 +3649,26 @@ void  BSplCLib::TangExtendToConstraint
     }
   }
 
-//  les noeuds plats
+//  flat nodes 
   if (After) {
-//    on commence avec les noeuds de la surface initiale
+//    start with the nodes of the initial surface
 
     for (ii=1; ii<NbK1; ii++) {
       NewFlats(ii) = FlatKnots(FlatKnots.Lower()+ii-1);
     }
-//    on continue avec les noeuds du prolongement reparametres
+//    continue with the reparameterized nodes of the extension
 
     for (ii=1; ii<=NbK2-CDegree-1; ii++) {
       NewFlats(NbK1+ii-1) = Ratio*NewFK2(NewFK2.Lower()+ii+CDegree) - Delta;
     }
   }
   else {
-//    on commence avec les noeuds du prolongement reparametres
+//    start with the reparameterized nodes of the extension
 
     for (ii=1; ii<NbK2-CDegree; ii++) {
       NewFlats(ii) = Ratio*NewFK2(NewFK2.Lower()+ii-1) - Delta;
     }
-//    on continue avec les noeuds de la surface initiale
+//    continue with the nodes of the initial surface
 
     for (ii=2; ii<=NbK1; ii++) {
       NewFlats(NbK2+ii-CDegree-2) = FlatKnots(FlatKnots.Lower()+ii-1);
@@ -3678,18 +3678,18 @@ void  BSplCLib::TangExtendToConstraint
 
 ////////////////////////////////////////////////////////////////////////
 //
-//    3.  reduction de la multiplicite au noeud de raccord
+//    3.  reduction of multiplicite at the node of connection
 //
 ////////////////////////////////////////////////////////////////////////
 
-//  nombre de noeuds distincts
+//  number of separate nodes
   Standard_Integer KLength = 1;
 
   for (ii=2; ii<=NbK1+NbK2-CDegree-2;ii++) {
     if (NewFlats(ii) != NewFlats(ii-1)) KLength++;
   }
 
-//  noeuds plats --> noeuds + multiplicites
+//  flat nodes --> nodes + multiplicities
   TColStd_Array1OfReal NewKnots (1, KLength);
   TColStd_Array1OfInteger NewMults (1, KLength);
   NewMults.Init(1);
@@ -3704,7 +3704,7 @@ void  BSplCLib::TangExtendToConstraint
     }
   }
 
-//  reduction de la multiplicite au second ou a l'avant-dernier noeud
+//  reduction of multiplicity at the second or the last but one node
   Standard_Integer Index = 2, M = CDegree;
   if (After) Index = KLength-1;
   TColStd_Array1OfReal ResultPoles (1, (NbP1+ NbP2-1)*CDimension);
@@ -3721,16 +3721,16 @@ void  BSplCLib::TangExtendToConstraint
   }
 
   if (M == CDegree) {
-//    le nombre de poles de la concatenation
+//    number of poles of the concatenation
     NbPolesResult = NbP1 + NbP2 - 1;
-//    les poles de la concatenation
+//    the poles of the concatenation
     Standard_Integer PLength = NbPolesResult*CDimension;
 
     for (jj=1; jj<=PLength; jj++) {
       PRadr[jj-1] = NewPoles(jj);
     }
   
-//    les noeuds plats de la concatenation
+//    flat nodes of the concatenation
     Standard_Integer ideb = 0;
 
     for (jj=0; jj<NewKnots.Length(); jj++) {
@@ -3743,16 +3743,16 @@ void  BSplCLib::TangExtendToConstraint
   }
 
   else {
-//    le nombre de poles du resultat
+//    number of poles of the result
     NbPolesResult = NbP1 + NbP2 - 1 - CDegree + M;
-//    les poles du resultat
+//    the poles of the result
     Standard_Integer PLength = NbPolesResult*CDimension;
 
     for (jj=0; jj<PLength; jj++) {
       PRadr[jj] = ResultPoles(jj+1);
     }
   
-//    les noeuds plats du resultat
+//    flat nodes of the result
     Standard_Integer ideb = 0;
 
     for (jj=0; jj<ResultKnots.Length(); jj++) {
@@ -3769,19 +3769,19 @@ void  BSplCLib::TangExtendToConstraint
 //function : Resolution
 //purpose  : 
 //                           d
-//  Soit C(t) = SUM      Ci Bi(t)  une courbe Bspline de degre d  
+//  Let C(t) = SUM      Ci Bi(t)  a Bspline curve of degree d  
 //	      i = 1,n      
-//  dont les noeuds sont tj pour j = 1,n+d+1 
+//  with nodes tj for j = 1,n+d+1 
 //
 //
 //         '                    C1 - Ci-1   d-1
-//  Alors C (t) = SUM     d *  ---------  Bi (t) 
+//  Then C (t) = SUM     d *  ---------  Bi (t) 
 //   	          i = 2,n      ti+d - ti
 //
 //		            d-1
-//  pour la base de BSpline  Bi  (t) de degre d-1.
+//  for the base of BSpline  Bi  (t) of degree d-1.
 //
-//  Par suite un majorant de la norme de la derivee de C est :
+//  Consequently the upper bound of the norm of the derivative from C is :
 //
 //
 //                        |  Ci - Ci-1  |
@@ -3789,7 +3789,7 @@ void  BSplCLib::TangExtendToConstraint
 //	        i = 2,n |  ti+d - ti  |
 //     
 //					N(t) 
-//  Dans le cas rationel on pose  C(t) = -----
+//  In the rational case set    C(t) = -----
 //					D(t) 
 //
 //  
@@ -3821,9 +3821,9 @@ void  BSplCLib::TangExtendToConstraint
 //    Betaj(t) =   --------
 //	           D(t) 
 //
-//  les Betaj(t) forment une partition >= 0 de l'unite dont le support
-//  est tj, tj+d+1. Par suite si Rj = {j-d, ....,  j+d+d+1} 
-//  obtient un majorant de la derivee de C en prenant :
+//  Betaj(t) form a partition >= 0 of the entity with support
+//  tj, tj+d+1. Consequently if Rj = {j-d, ....,  j+d+d+1} 
+//  obtain an upper bound of the derivative of C by taking :
 //
 //
 //

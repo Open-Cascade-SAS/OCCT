@@ -2,50 +2,44 @@
 // Created:	Tue Jul  2 10:31:42 1996
 // Author:	Joelle CHAUVET
 //		<jct@sgi38>
-// Modified:	Mon Dec  9 11:39:13 1996
-//   by:	Joelle CHAUVET
-//		G1135 : empty constructor
-//		G1134 : option 0 for precision code
-//   by         PMN
-//              PRO9093 on remplace MA1NPB par une gestion contextuelle
-//              pour determiner le degree de Jacobbi.
+
 
 #include <AdvApp2Var_Context.ixx>
 #include <Standard_ConstructionError.hxx>
 #include <AdvApp2Var_ApproxF2var.hxx>
 
-// Calcul des parametres
+// Calculaton of parameters
 static Standard_Boolean lesparam(const Standard_Integer iordre,
 				 const Standard_Integer ncflim, 
 				 const Standard_Integer icodeo, 
 				 Standard_Integer& nbpnts, 
 				 Standard_Integer& ndgjac)
 {
-  // degree de jacobi
-  ndgjac = ncflim; // il toujours garder un coeff en reserve
+  // jacobi degree
+  ndgjac = ncflim; // it always keeps a reserve coefficient
   if (icodeo< 0) return Standard_False;
   if (icodeo > 0) {
-    ndgjac += (9 - (iordre+1)); //iordre decale les frequences vers le haut
+    ndgjac += (9 - (iordre+1)); //iordre rescales the frequences upwards
     ndgjac += (icodeo-1)*10;
   }
-  // ---> Nbre mini de points necessaires.
+  // ---> Min Number of required pointss.
   if (ndgjac < 8) { nbpnts = 8;  } 
   else if (ndgjac < 10) { nbpnts = 10; }
-  //  else if (ndgjac < 15) { nbpnt = 15; } Bug Nombre impairs
+  //  else if (ndgjac < 15) { nbpnt = 15; } Bug Uneven number
   else if (ndgjac < 20) { nbpnts = 20;}
-  //  else if (ndgjac < 25) { nbpnt = 25; } Bug Nombre impairs
+  //  else if (ndgjac < 25) { nbpnt = 25; } Bug Uneven number
   else if (ndgjac < 30) { nbpnts = 30;}
   else if (ndgjac < 40) { nbpnts = 40;}
   else if (ndgjac < 50) { nbpnts = 50;}
-  //  else if (*ndgjac < 61) { nbpnt = 61;} Bug Nombre impairs
+  //  else if (*ndgjac < 61) { nbpnt = 61;} Bug Uneven number
   else {
     nbpnts = 50;
 #if DEB
-    cout << "F(U, V) : Pas assez de point de discretisation" << endl; 
+    cout << "F(U, V) : Not enough points of discretization" << endl; 
 #endif
   }
 
-  // Si contraintes aux bords, cela fait 2 points de plus
+  // If constraints are on borders, this adds 2 points
   if (iordre>-1) {  nbpnts += 2;}
 
   return Standard_True;

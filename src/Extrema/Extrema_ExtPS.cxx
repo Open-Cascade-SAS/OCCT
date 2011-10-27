@@ -1,10 +1,5 @@
 // File Extrema_ExtPS.cxx
 //-----------------------------------------------------------------
-// modif JMB le 17 Mai 1999.
-//           on trimme la surface a +/- 10000 plutot qu'a l'infini 
-//           (sinon ca raise dans les Math)
-//           voir bug ID260065 
-//-----------------------------------------------------------------
 
 #include <Extrema_ExtPS.ixx>
 #include <Extrema_GenExtPS.hxx>

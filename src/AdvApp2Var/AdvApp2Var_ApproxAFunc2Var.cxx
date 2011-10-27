@@ -2,18 +2,6 @@
 // Created:	Wed Jul  3 15:34:08 1996
 // Author:	Joelle CHAUVET
 //		<jct@sgi38>
-// Modified:	Wed Jan 15 10:04:41 1997
-//    by:	Joelle CHAUVET
-//		G1135 : Constructor with criterion
-//		        Private methods 'Init','InitGrid','Perform','ConvertBS',
-//		                        'ComputePatches','ComputeConstraints',
-//		                        'Compute3DErrors','ComputeCritError'
-//		        Public method 'CritError'
-//		        Fields 'myConditions','myResults','myConstraints'
-// Modified:	Fri Oct  3 14:58:05 1997
-//    by:	Joelle CHAUVET
-//              GeomConvert_CompBezierSurfacesToBSplineSurface est remplace par 
-//              Convert_GridPolynomialToPoles dans ConvertBS 
 
 #include <AdvApp2Var_ApproxAFunc2Var.hxx>
 #include <AdvApp2Var_EvaluatorFunc2Var.hxx>
@@ -291,7 +279,7 @@ void AdvApp2Var_ApproxAFunc2Var::InitGrid(const Standard_Integer NbInt)
 
   AdvApp2Var_Framework Constraints(Bag,UStrip,VStrip);
 
-// decoupes regulieres si NbInt>1
+// regular cutting if NbInt>1
   Standard_Real deltu = (myLastParInU-myFirstParInU)/NbInt,
                 deltv = (myLastParInV-myFirstParInV)/NbInt;
   for (iint=1;iint<=NbInt-1;iint++) {
@@ -350,10 +338,10 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 
   while (myResult.FirstNotApprox(FirstNA)) {
 
-// completude de l'ensemble des contraintes 
+// complete the set of constraints 
     ComputeConstraints(UChoice, VChoice, Func);
 
-// discretisation des contraintes relatives au carreau
+// discretization of constraints relative to the square
     myResult(FirstNA).Discretise(myConditions,myConstraints,Func);
     if ( ! myResult(FirstNA).IsDiscretised() ) {
       myHasResult =  myDone = Standard_False;
@@ -361,8 +349,8 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
               ("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
-// calcul du nombre et du type de decoupes autorisees
-// en fonction du nombre de carreaux max et de la validite des decoupes suiv.
+// calculate the number and the type of autorized cuts
+// depending on the max number of squares and the validity of next cuts.
     NbU = myResult.NbPatchInU();
     NbV = myResult.NbPatchInV();
     NbPatch = NbU*NbV;
@@ -385,13 +373,13 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
       if ( Umore && Vmore ) NumDec=5;
     }
 
-// approximation du carreau
+// approximation of the square
     myResult(FirstNA).MakeApprox(myConditions,myConstraints,NumDec);
 
     if ( ! myResult(FirstNA).IsApproximated() ) {
       switch (myResult(FirstNA).CutSense()) {
       case 0 :
-//	On ne peut plus decouper : on garde le resultat
+//	It is not possible to cut : the result is preserved
         if ( myResult(FirstNA).HasResult()) {
 	  myResult(FirstNA).OverwriteApprox();
         }
@@ -402,17 +390,17 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
         }
 	break;
       case 1 :
-//      Il faut decouper en U
+//      It is necessary to cut in U
 	myResult.UpdateInU(Udec);
 	myConstraints.UpdateInU(Udec);
 	break;
       case 2 :
-//      Il faut decouper en V
+//      It is necessary to cut in V
 	myResult.UpdateInV(Vdec);
 	myConstraints.UpdateInV(Vdec);
 	break;
       case 3 :
-//      Il faut decouper en U et en V
+//      It is necesary to cut in U and V
 	myResult.UpdateInU(Udec);
 	myConstraints.UpdateInU(Udec);
 	myResult.UpdateInV(Vdec);
@@ -444,14 +432,14 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 
   while (myResult.FirstNotApprox(FirstNA)) {
 
-// completude de l'ensemble des contraintes 
+// complete the set of constraints 
     ComputeConstraints(UChoice, VChoice, Func, Crit);
     if (decision>0) {
       m0 = m1;
       m1 = 0.;
     }
 
-// discretisation des contraintes relatives au carreau
+// discretize the constraints relative to the square
     myResult(FirstNA).Discretise(myConditions,myConstraints,Func);
     if ( ! myResult(FirstNA).IsDiscretised() ) {
       myHasResult =  myDone = Standard_False;
@@ -459,8 +447,8 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
               ("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
-// calcul du nombre et du type de decoupes autorisees
-// en fonction du nombre de carreaux max et de la validite des decoupes suiv.
+// calculate the number and type of autorized cuts
+// depending on the max number of squares and the validity of next cuts
     NbU = myResult.NbPatchInU();
     NbV = myResult.NbPatchInV();
     NbPatch = NbU*NbV;
@@ -484,7 +472,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
       if ( Umore && Vmore ) NumDec=5;
     }
 
-// approximation du carreau
+// approximation of the square
     if ( CritAbs ) {
       myResult(FirstNA).MakeApprox(myConditions,myConstraints,0);
     }
@@ -493,13 +481,13 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
     }
     if (NumDec>=3) NumDec = NumDec - 2;
 
-// evaluation du critere sur le carreau
+// evaluation of the criterion on the square
     if ( myResult(FirstNA).HasResult() ) {
       Crit.Value(myResult(FirstNA),myConditions);
       CritValue = myResult(FirstNA).CritValue();
       if (m1<CritValue) m1 = CritValue;
     }
-// doit-on decouper ?
+// is it necessary to cut ?
     decision = myResult(FirstNA).CutSense(Crit,NumDec);
     Standard_Boolean Regular = (Crit.Repartition() ==  AdvApp2Var_Regular);
 //    Standard_Boolean Regular = Standard_True;
@@ -510,7 +498,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
     else {
       switch (decision) {
       case 0 :
-//	On ne peut plus decouper : on garde le resultat
+//	Impossible to cut : the result is preserved
 	if ( myResult(FirstNA).HasResult() ) {
 	  myResult(FirstNA).OverwriteApprox();
 	}
@@ -521,17 +509,17 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 	}
 	break;
       case 1 :
-//      Il faut decouper en U
+//      It is necessary to cut in U
 	myResult.UpdateInU(Udec);
 	myConstraints.UpdateInU(Udec);
 	break;
       case 2 :
-//      Il faut decouper en V
+//      It is necessary to cut in V
 	myResult.UpdateInV(Vdec);
 	myConstraints.UpdateInV(Vdec);
 	break;
       case 3 :
-//      Il faut decouper en U et en V
+//      It is necessary to cut in U and V
 	myResult.UpdateInU(Udec);
 	myConstraints.UpdateInU(Udec);
 	myResult.UpdateInV(Vdec);
@@ -565,7 +553,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
 
   while ( myConstraints.FirstNotApprox(ind1, ind2, Is) ) {
 
-// approximation de l'iso et calcul des contraintes aux extremites
+// approximation of iso and calculation of constraints at extremities
     indN1 = myConstraints.FirstNode(Is.Type(),ind1,ind2);
     N1 = myConstraints.Node(indN1);
     indN2 = myConstraints.LastNode(Is.Type(),ind1,ind2);
@@ -577,14 +565,14 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
 		  Func, N1 , N2);
 
     if (Is.IsApproximated()) {
-// L'iso est approchee a la tolerance voulue
+// iso is approached at the required tolerance
       myConstraints.ChangeIso(ind1,ind2,Is);
       myConstraints.ChangeNode(indN1) = N1;
       myConstraints.ChangeNode(indN2) = N2;
     }
 
     else {
-// Pas d'approximation satisfaisante
+// Approximation is not satisfactory
       NbU = myResult.NbPatchInU();
       NbV = myResult.NbPatchInV();
       if (Is.Type()==GeomAbs_IsoV) {
@@ -597,7 +585,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
       }
 
       if (NbPatch<=myMaxPatches && more) {
-//	On peut decouper l'iso
+//	It is possible to cut iso
 	if (Is.Type()==GeomAbs_IsoV) {
 	  myResult.UpdateInU(dec);
 	  myConstraints.UpdateInU(dec);
@@ -609,7 +597,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
       }
 
       else {
-//	On ne peut plus decouper : on garde le resultat
+//	It is not possible to cut : the result is preserved
 	if (Is.HasResult()) {
 	  Is.OverwriteApprox();
 	  myConstraints.ChangeIso(ind1,ind2,Is);
@@ -647,7 +635,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
 
     while ( myConstraints.FirstNotApprox(ind1, ind2, Is) ) {
 
-// approximation de l'iso et calcul des contraintes aux extremites
+// approximation of the iso and calculation of constraints at the extremities
       indN1 = myConstraints.FirstNode(Is.Type(),ind1,ind2);
       N1 = myConstraints.Node(indN1);
       indN2 = myConstraints.LastNode(Is.Type(),ind1,ind2);
@@ -659,14 +647,14 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
                     Func, N1 , N2);
 
       if (Is.IsApproximated()) {
-// L'iso est approchee a la tolerance voulue
+// iso is approached at the required tolerance
 	myConstraints.ChangeIso(ind1,ind2,Is);
 	myConstraints.ChangeNode(indN1) = N1;
 	myConstraints.ChangeNode(indN2) = N2;
       }
 
       else {
-// Pas d'approximation satisfaisante
+// Approximation is not satisfactory
 	NbU = myResult.NbPatchInU();
 	NbV = myResult.NbPatchInV();
 	if (Is.Type()==GeomAbs_IsoV) {
@@ -678,11 +666,11 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
 	  more = VChoice.Value(Is.T0(),Is.T1(),dec);
 	}
 
-//      Pour forcer l'Overwrite si le critere est Absolu
+//      To force Overwrite if the criterion is Absolute
 	more = more && (CritRel);
 
 	if (NbPatch<=myMaxPatches && more) {
-//	On peut decouper l'iso
+//	It is possible to cut iso
 	  if (Is.Type()==GeomAbs_IsoV) {
 	    myResult.UpdateInU(dec);
 	    myConstraints.UpdateInU(dec);
@@ -694,7 +682,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
 	}
 
 	else {
-//	On ne peut plus decouper : on garde le resultat
+//	It is not possible to cut: the result is preserved
           if (Is.HasResult()) {
 	    Is.OverwriteApprox();
 	    myConstraints.ChangeIso(ind1,ind2,Is);
@@ -790,14 +778,14 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
 
 void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
 {
- // Homogeneisation des degres
+ // Homogeneization of degrees
   Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder();
   Standard_Integer ncfu = myConditions.ULimit(), ncfv = myConditions.VLimit();
   myResult.SameDegree(iu,iv,ncfu,ncfv);
   myDegreeInU = ncfu - 1;
   myDegreeInV = ncfv - 1;
 
- // Calcul des surfaces resultats
+ // Calculate resulting surfaces 
   mySurfaces = new ( TColGeom_HArray1OfSurface) (1,  myNumSubSpaces[2]);
 
   Standard_Integer j;
@@ -807,7 +795,7 @@ void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
   TColStd_Array1OfReal VKnots (1, myResult.NbPatchInV()+1);
   for (j=1; j<=VKnots.Length(); j++) { VKnots.SetValue(j, myResult.VParameter(j)); }
 
- // Preparation des donnees pour la conversion grille de polynomes --> poles
+ // Prepare data for conversion grid of polynoms --> poles
   Handle(TColStd_HArray1OfReal) Uint1 = 
     new (TColStd_HArray1OfReal) (1,2);
   Uint1->SetValue(1, -1);
@@ -835,7 +823,7 @@ void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
   Standard_Integer SSP, i;
   for (SSP=1; SSP <= myNumSubSpaces[2]; SSP++) { 
 
-    // Creation de la grille de polynomes
+    // Creation of the grid of polynoms
     Standard_Integer n=0,icf=1,ieq;
     for (j=1; j<=myResult.NbPatchInV(); j++) {
       for (i=1; i<=myResult.NbPatchInU(); i++) {
@@ -850,13 +838,13 @@ void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
       }
     }
   
-    // Conversion en poles
+    // Conversion into poles
     Convert_GridPolynomialToPoles CvP (myResult.NbPatchInU(),myResult.NbPatchInV(),
 				       iu,iv,myMaxDegInU,myMaxDegInV,NbCoeff,
 				       Poly,Uint1,Vint1,Uint2,Vint2);
     if ( !CvP.IsDone() ) { myDone = Standard_False; }
    
-    // Conversion en BSpline
+    // Conversion into BSpline
     mySurfaces->ChangeValue(SSP) = new (Geom_BSplineSurface) 
 	( CvP.Poles()->Array2(),   
 	  CvP.UKnots()->Array1(),  CvP.VKnots()->Array1(),

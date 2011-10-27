@@ -600,12 +600,7 @@ void BndLib::Add( const gp_Cone& S,const Standard_Real VMin,
 void BndLib::Add(const gp_Sphere& S,const Standard_Real UMin,
 		 const Standard_Real UMax,const Standard_Real VMin,
 		 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) {
-//------------------------------------------------------------
-//-- lbr le 26 novembre 97
-//-- je ne comprends pas comment ce code marche
-//-- et en plus il ne marche pas sur certains cas 
-//-- Temporairement on choisit une solution plus simple. 
-//------------------------------------------------------------
+
 #if 0
  Standard_Real Fi1;
  Standard_Real Fi2;

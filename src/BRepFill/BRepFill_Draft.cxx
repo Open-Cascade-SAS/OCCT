@@ -87,7 +87,7 @@ static void ComputeTrsf(const TopoDS_Wire& W,
 			Bnd_Box& Box,
 			gp_Trsf& Tf)
 {
-  // Calcul d'un barycentre approximatif
+  // Calculate approximate barycenter
   BRepTools_WireExplorer Exp(W);
 // Class BRep_Tool without fields and without Constructor :
 //  BRep_Tool BT;
@@ -101,19 +101,19 @@ static void ComputeTrsf(const TopoDS_Wire& W,
   }
   Bary /= nb;
 
-  // Calcul la Transfo  
+  // Calculate the Transformation  
   gp_Ax3 N(Bary, D);
   Tf.SetTransformation(N);
   BRepAdaptor_Curve AC;
 //  BndLib_Add3dCurve BC;  
 
-  // transfo du wire
+  // transformation to the wire
   TopoDS_Wire TheW = W;
   TopLoc_Location Loc(Tf);
   TheW.Location(Loc);
 
 
-  // Calcul la boite
+  // Calculate the box
   Box.SetVoid();
   for (Exp.Init(TheW); Exp.More(); Exp.Next()) {
     AC.Initialize(Exp.Current());
@@ -123,7 +123,7 @@ static void ComputeTrsf(const TopoDS_Wire& W,
 }
 
 //=======================================================================
-//function : Longueur
+//function : Length
 //purpose  : 
 //======================================================================
 static Standard_Real Longueur(const Bnd_Box& WBox,
@@ -131,11 +131,11 @@ static Standard_Real Longueur(const Bnd_Box& WBox,
 			      gp_Dir& D,
 			      gp_Pnt& P)
 {
-  // face de la boite la plus eloignee de la face entree dans 
-  //la direction de depouille
+  // face of the box most remoted from the face input in 
+  // the direction of skin
   Standard_Real Xmin,Ymin,Zmin,Xmax,Ymax,Zmax,WZmin,WZmax,L;
 
-  //"coord" de la boite
+  //"coord" of the box
   WBox.Get(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
   WZmin = Zmin;
   WZmax = Zmax;   
@@ -144,7 +144,7 @@ static Standard_Real Longueur(const Bnd_Box& WBox,
   P.SetCoord( (Xmin+Xmax)/2, (Ymin+Ymax)/2, Zmax);
 
   if (Zmax < WZmin) {
-    // Depouille dans le mauvais sens. On inverse...
+    // Skin in the wrong direction. Invert...
     D.Reverse();
     L = WZmax - Zmin;
     P.SetZ(Zmin);
@@ -157,8 +157,7 @@ static Standard_Real Longueur(const Bnd_Box& WBox,
 
 //=======================================================================
 //function : GoodOrientation
-//purpose  : Regarde si la loi est oriente de maniere a avoir une depouille
-//           "exterieur"
+//purpose  : Check if the law is oriented to have an exterior skin
 //======================================================================
 static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 					const Handle(BRepFill_LocationLaw)& Law,
@@ -182,7 +181,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 //#endif
   r = l/Nb;
 
-  Nb++; // Nombre de points
+  Nb++; // Number of points
 
   TColgp_Array1OfPnt Pnts(1, Nb);
   Handle(Adaptor3d_HCurve) AC;
@@ -266,7 +265,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       }
       else {
 #if DEB
-	  cout << "Pas de Bords Libre !" << endl;
+	  cout << "No Free Borders !" << endl;
 #endif 
 	  Standard_ConstructionError::Raise("BRepFill_Draft");
       }
@@ -276,7 +275,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       Standard_ConstructionError::Raise("BRepFill_Draft");
   }
 
-  // Attention aux wire closed non declare !
+  // Attention to closed non declared wires !
   if (!myWire.Closed()) {
     TopoDS_Vertex Vf, Vl;
     TopExp::Vertices(myWire, Vf, Vl);
@@ -300,7 +299,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function :SetOptions
-//purpose  : Definit le style
+//purpose  : Defines the style
 //======================================================================
  void BRepFill_Draft::SetOptions(const BRepFill_TransitionStyle Style,
 				 const Standard_Real Min,
@@ -323,7 +322,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function :Perform
-//purpose  : calcul d'une surface de depouille
+//purpose  : calculate a surface of skinning
 //======================================================================
  void BRepFill_Draft::Perform(const Standard_Real LengthMax)
 {
@@ -341,7 +340,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function :Perform
-//purpose  : calcul d'une surface de depouille
+//purpose  : calculate a surface of skinning
 //======================================================================
  void BRepFill_Draft::Perform(const Handle(Geom_Surface)& Surface,
 			      const Standard_Boolean KeepInsideSurface)
@@ -353,7 +352,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
   ComputeTrsf(myWire, myDir, WBox, Trsf);
 
-  // boite englobant la surface d'arret  
+  // box with bounds of the stop surface  
   Handle(Geom_Surface) Surf;
   Surf =   Handle(Geom_Surface)::DownCast(Surface->Transformed(Trsf));
   GeomAdaptor_Surface S1 (Surf);   
@@ -361,20 +360,20 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 //  AS.Add(S1, 0.1, SBox);
   BndLib_AddSurface::Add(S1, 0.1, SBox);
 
-  // on calcule la longueur maximum de la regle.
+  // calculate the maximum length of the rule.
   L = Longueur(WBox, SBox, myDir, Pt);
   L /= Abs(Cos(myAngle));
 
-  // Constructuion
+  // Construction
   Init(Surface, L, WBox);
   BuildShell(Surface, !KeepInsideSurface);
   Sewing(); 
 }
 
-//=======================================================================
+//================================================================
 //function :Perform
-//purpose  : calcul de la surface de depouille, arretee par une shape
-//======================================================================
+//purpose  : calculate the surface of skinning, stopped by a shape
+//================================================================
  void BRepFill_Draft::Perform(const TopoDS_Shape& StopShape,
 			      const Standard_Boolean KeepOutSide)
 {
@@ -385,7 +384,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
   ComputeTrsf(myWire, myDir, WBox, Trsf); 
 
-// boite englobant la shape d'arret
+// bounding box of the stop shape
   Bnd_Box BSurf;//, TheBox;
   Standard_Real Umin, Umax, Vmin, Vmax;
 #ifdef DEB
@@ -400,28 +399,28 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   TopExp_Explorer Ex (StopShape, TopAbs_FACE);
 
   SBox.SetVoid();
-  while (Ex.More()) { // on parcourt les faces de la shape d'arret
+  while (Ex.More()) { // parse faces of the stop shape
 //    B.UVBounds(TopoDS::Face(Ex.Current()), Umin,Umax,Vmin,Vmax); 
     BRepTools::UVBounds(TopoDS::Face(Ex.Current()), Umin,Umax,Vmin,Vmax); 
     Surf = Handle(Geom_Surface)::DownCast(
 //     BT.Surface(TopoDS::Face(Ex.Current()))->Transformed(Trsf) ); 
      BRep_Tool::Surface(TopoDS::Face(Ex.Current()))->Transformed(Trsf) ); 
     GeomAdaptor_Surface S1 (Surf);
-    // boite englobant la face courante
+// bounding box of the current face
 //    AS.Add(S1, Umin, Umax, Vmin, Vmax, 0.1, BSurf); 
     BndLib_AddSurface::Add(S1, Umin, Umax, Vmin, Vmax, 0.1, BSurf);
-    SBox.Add(BSurf);	// on regroupe les boites
+    SBox.Add(BSurf);	// group boxes
     Ex.Next();
   }// while_Ex
 
-  // on calcule la longueur maximum de la regle.
+  // calculate the maximum length of the rule.
   L = Longueur(WBox, SBox, myDir, Pt);
   L /= Abs(Cos(myAngle));
 
-// surface d'arret
+// surface of stop
   gp_Trsf Inv;
-  Inv = Trsf.Inverted(); // transfo inverse
-  Pt.Transform(Inv); // coord dans le repere absolu
+  Inv = Trsf.Inverted(); // inverted transformation
+  Pt.Transform(Inv); // coordinate in the absolute reference
   Handle(Geom_Plane) Plan = new (Geom_Plane)(Pt, myDir);
   Surf = new (Geom_RectangularTrimmedSurface) (Plan,-L, L, -L, L); 
 
@@ -433,7 +432,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   }
 #endif
 
-// Balayage et restriction
+// Sweeping and restriction
   Init(Plan,  L*1.01, WBox);
   BuildShell(Surf, Standard_False);
   Fuse(StopShape,  KeepOutSide);
@@ -442,7 +441,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function : Init
-//purpose  : Construction des lois.
+//purpose  : Construction of laws.
 //======================================================================
  void BRepFill_Draft::Init(const Handle(Geom_Surface)& ,
                            const Standard_Real Length,
@@ -450,7 +449,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 {
   Standard_Boolean B;
 
-// loi de positionnement  
+// law of positioning   
   Handle(GeomFill_LocationDraft) Loc
     = new (GeomFill_LocationDraft) (myDir, myAngle); 
   myLoc = new (BRepFill_DraftLaw) (myWire, Loc);
@@ -463,14 +462,14 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     myLoc = new (BRepFill_DraftLaw) (myWire, Loc);
   }
 
-  myLoc->CleanLaw(angmin); // Nettoie les petites discontinuites.
+  myLoc->CleanLaw(angmin); // Clean small discontinuities.
 
-// loi de section
-// generatrice est une droite // a la binormal.
+// law of section
+// generating line is straight and parallel to binormal.
   gp_Pnt P(0, 0, 0);
   gp_Vec D (0., 1., 0.);
 
-// Controle de l'orientation
+// Control of the orientation
   Standard_Real f,l;
   myLoc->Law(1)->GetDomain(f,l);
   gp_Mat M;
@@ -504,12 +503,12 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function : BuildShell
-//purpose  : Construction de la surface de depouille
+//purpose  : Construction of the skinning surface 
 //======================================================================
  void BRepFill_Draft::BuildShell(const Handle(Geom_Surface)& Surf,
 				 const Standard_Boolean  KeepOutSide) 
 {
-// construction de la surface
+// construction of the surface
   BRepFill_Sweep Sweep(mySec, myLoc, Standard_True);
   Sweep.SetTolerance(myTol);
   Sweep.SetAngularControl(angmin, angmax);
@@ -520,7 +519,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     myFaces    = Sweep.SubShape();
     mySections = Sweep.Sections();    
     myDone = Standard_True;
-    // Controle de l'orientation
+    // Control of the orientation
     Standard_Boolean out=Standard_True;
     TopExp_Explorer ex(myShell,TopAbs_FACE);
     TopoDS_Face F;
@@ -547,10 +546,10 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     return;
   }
 
-  if (!Surf.IsNull()) { // On ajoute la face en bout
+  if (!Surf.IsNull()) { // Add the face at end
 
-  // En attendant une utilisation des traces & retriction dans BRepFill_Sweep
-  // On fait un Fuse.
+  // Waiting the use of traces & retriction in BRepFill_Sweep
+  // Make Fuse.
     BRepLib_MakeFace MkF;
     MkF.Init(Surf, Standard_True, Precision::Confusion());
     Fuse(MkF.Face(), KeepOutSide);
@@ -560,8 +559,8 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function : Fuse
-//purpose  : Operation booleenne entre la depouille et 
-//           la shape d'arret
+//purpose  : Boolean operation between the skin and the  
+//           stop shape 
 //======================================================================
  Standard_Boolean BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape,
 			   const Standard_Boolean KeepOutSide)
@@ -578,7 +577,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   }
   else {
     B.MakeSolid(Sol1);
-    B.Add(Sol1, myShape); // shell => solid (pour fusion)    
+    B.Add(Sol1, myShape); // shell => solid (for fusion)    
   }
 
 
@@ -596,7 +595,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
  case TopAbs_SHELL :
     {
       B.MakeSolid(Sol2);
-      B.Add(Sol2, StopShape); // shell => solid (pour fusion) 
+      B.Add(Sol2, StopShape); // shell => solid (for fusion) 
       break;
     }
 
@@ -606,32 +605,32 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       B.MakeShell(S);
       B.Add(S, StopShape);
       B.MakeSolid(Sol2);
-      B.Add(Sol2, S); // shell => solid (pour fusion)
+      B.Add(Sol2, S); // shell => solid (for fusion)
       break;
     }
 
   default :
     {
-      return Standard_False; // On ne sait pas faire
+      return Standard_False; // Impossible to do
     }
   }
       
   BRepAlgo_DSAccess DSA;
   DSA.Load(Sol1, Sol2);
-  DSA.Intersect(Sol1, Sol2); // intersection des 2 solids
+  DSA.Intersect(Sol1, Sol2); // intersection of 2 solids
  
-// suppression des aretes correspondant aux intersections "inutiles"
+// removal of edges corresponding to "unused" intersections
   Standard_Integer NbPaquet;
 // gp_Pnt P1,P2;
   TopoDS_Vertex V,V1;
   TopTools_ListOfShape List;
-  List  = DSA.GetSectionEdgeSet();// liste des aretes
+  List  = DSA.GetSectionEdgeSet();// list of edges
   
   NbPaquet = List.Extent();
 
   if (NbPaquet == 0) {
 #if DRAW
-    cout << "Pas de fusion" << endl;
+    cout << "No fusion" << endl;
     DBRep::Set("DepPart", Sol1);
     DBRep::Set("StopPart", Sol2);
 #endif
@@ -639,13 +638,13 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   }
 
   if (NbPaquet > 1) {
-    // Il faut selectioner les paquets.
+    // It is required to select packs.
     TColStd_Array1OfReal Dist(1, NbPaquet);
     TopTools_ListIteratorOfListOfShape it(List);
     Standard_Real D, Dmin = 1.e10;
     Standard_Integer ii;
  
-    //On classe les paquets par eloignement.
+    //Classify the packs by distance.
     BRepExtrema_DistShapeShape Dist2;
     Dist2.LoadS1( myWire );
     for (ii=1; it.More();it.Next(),ii++){
@@ -660,7 +659,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 	Dist(ii) = 1.e10;
     }
 
-    // on supprime les edges "plus loin" que Dmin
+    // remove edges "farther" than Dmin
     for (ii=1, it.Initialize(List); it.More();it.Next(), ii++){
       if (Dist(ii) > Dmin) {
 	DSA.SuppressEdgeSet(it.Value());
@@ -674,15 +673,15 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   }
 
   if (StopShape.ShapeType() != TopAbs_SOLID) {
-    // Il faut choisir le state par la geometrie
+    // It is required to choose the state by the geometry
 
-    //(1) On recupere une edge de section
-    List  = DSA.GetSectionEdgeSet();// liste des aretes
+    //(1) Return an edge of section
+    List  = DSA.GetSectionEdgeSet();// list of edges
     TopTools_ListIteratorOfListOfShape it(List);
     TopoDS_Iterator iter(it.Value());
     TopoDS_Edge E = TopoDS::Edge(iter.Value());
 
-    // (2)  On recupere sa geometrie sur StopShape
+    //(2) Return geometry on StopShape
 // Class BRep_Tool without fields and without Constructor :
 //    BRep_Tool BT;
     Handle(Geom_Surface) S;
@@ -693,7 +692,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 //    BT.CurveOnSurface(E, C2d, S, L, f, l, 2);
     BRep_Tool::CurveOnSurface(E, C2d, S, L, f, l, 2);
 
-    // On Trouve une normale.
+    // Find a normal.
     C2d->D0((f+l)/2,P2d); 
     GeomLProp_SLProps SP(S, P2d.X(), P2d.Y(), 1, 1.e-12);
     if (! SP.IsNormalDefined()) {
@@ -705,17 +704,17 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       }
     }
 
-    // On en deduit State1
+    // Subtract State1
     if (myDir.Angle(SP.Normal()) < PI/2)  State1 = TopAbs_IN;
     else  State1 = TopAbs_OUT;
   }
 
-  if (! KeepOutSide) { // On inverse State2;
+  if (! KeepOutSide) { // Invert State2;
     if (State2 == TopAbs_IN) State2 = TopAbs_OUT;
     else State2 = TopAbs_IN;
   }
  
-//recalcul de la shape finale
+//recalculate the final shape
   TopoDS_Shape result = DSA.Merge(State1, State2); 
 
   if (issolid) myShape =  result;
@@ -725,7 +724,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     if (Exp.More()) myShape = Exp.Current();
   }
 
-// Mise a jour de l'Historique
+// Update the History 
   Standard_Integer ii;
   for (ii=1; ii<=myLoc->NbLaw(); ii++) {
     const TopTools_ListOfShape& L = DSA.Modified(myFaces->Value(1,ii));
@@ -743,7 +742,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function : Sewing 
-//purpose  : Assemble la depouille avec la face du dessus
+//purpose  : Assemble the skin with the above face
 //======================================================================
  Standard_Boolean BRepFill_Draft::Sewing()
 {
@@ -753,8 +752,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
   if ((!ToAss) || (!myDone)) return Standard_False;
 
-   // Assemblage
-  // on fait un shell a partir des faces de la shape + la shape en entree
+   // Assembly make a shell from the faces of the shape + the input shape
   Handle(BRepBuilderAPI_Sewing) Ass =  new BRepBuilderAPI_Sewing(5*myTol, Standard_True, 
    		                                     Standard_True, Standard_False);
   Ass->Add(myShape);
@@ -765,7 +763,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   Standard_Integer NbCE;
   
   Ass->Perform();
-  // On verifie que l'assemblage est effectif.
+  // Check if the assembly is real.
   NbCE = Ass->NbContigousEdges();
   
   if (NbCE > 0) {
@@ -780,7 +778,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
       TopoDS_Iterator It(res);
       res = It.Value();
       It.Next();
-      if (!It.More()) {//Une seule partie => c'est bon
+      if (!It.More()) {//Only one part => this is correct
 	myShape = res;
 	Ok = Standard_True;
       }
@@ -788,7 +786,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   }
 
   if (Ok) {
-    // Mise a jour de l'Historique
+    // Update the History
     Standard_Integer ii;
     for (ii=1; ii<=myLoc->NbLaw(); ii++) {
       if (Ass->IsModified(myFaces->Value(1,ii)))     
@@ -801,7 +799,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 			     Ass->Modified(mySections->Value(1,ii)));
     }   
 
-    if (myShape.Closed()) { // On fait un Solid
+    if (myShape.Closed()) { // Make a Solid
       TopoDS_Solid solid;
       BRep_Builder BS;
       BS.MakeSolid(solid); 
@@ -818,14 +816,14 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     }    
   }
 #if DEB
-  else cout << "Draft : Pas d'assemblage !" << endl;
+  else cout << "Draft : No assembly !" << endl;
 #endif
   return Ok;
 }
 
 //=======================================================================
 //function : Generated
-//purpose  : retourne une sous partie partie generes par balayage
+//purpose  : return a sub-part generated by sweeping
 //======================================================================
  const TopTools_ListOfShape& 
  BRepFill_Draft::Generated(const TopoDS_Shape& S) 
@@ -854,17 +852,17 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
 //=======================================================================
 //function : Shape
-//purpose  : retourne la shape complete
+//purpose  : return the complete shape
 //======================================================================
  TopoDS_Shape BRepFill_Draft::Shape()const
 {
   return myShape;
 }
 
-//=======================================================================
+//=====================================================================
 //function : Shell
-//purpose  : surface de depouille avec la face entree (=>shell)
-//======================================================================
+//purpose  : surface of skinning with the input face (=>shell)
+//=====================================================================
  TopoDS_Shell BRepFill_Draft::Shell()const
 {
   return myShell;

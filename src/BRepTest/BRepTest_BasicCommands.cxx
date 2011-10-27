@@ -730,7 +730,7 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
 
 //==========================================================================
 //function : wexplo
-//           exploration d un wire 
+//           exploration of a wire 
 //==========================================================================
 static Standard_Integer wexplo (Draw_Interpretor&, 
 				Standard_Integer argc, const char** argv)
@@ -823,7 +823,7 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  mkedgecurve,g);
 
   theCommands.Add("fsameparameter",
-		  "fsameparameter shapename [tol (default 1.e-7)], \nforce le sameparameter sur toutes les aretes du shape",
+		  "fsameparameter shapename [tol (default 1.e-7)], \nforce sameparameter on all edges of the shape",
 		  __FILE__,
 		  sameparameter,g);
 

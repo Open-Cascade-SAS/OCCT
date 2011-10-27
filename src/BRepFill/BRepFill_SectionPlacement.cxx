@@ -144,7 +144,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
 
   // modified by NIZHNY-629  Fri Jul 25 11:10:27 2003 b
 
-//   // section ponctuelle
+//   // punctual section
 //  Ex.Init(mySection, TopAbs_EDGE);
 //   Standard_Boolean isPonctual = Standard_False;
 //  if (Ex.More()) {
@@ -270,7 +270,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
 
   GeomFill_SectionPlacement Place(myLaw->Law(1), theSection);
 
-  // Dans le cas generale : Localisation via une concatenation de la spine
+  // In the general case : Localisation via concatenation of the spine
   TColStd_Array1OfReal SuperKnot(1, myLaw->NbLaw()+1); 
   TColStd_Array1OfInteger Index(1, myLaw->NbLaw()); 
   for (ii=1; ii<=myLaw->NbLaw(); ii++) {
@@ -310,7 +310,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
   Ind1 = Index(Ind1);
   if (Ind2) Ind2 = Index(Ind2);
   
-  // Positionnement sur l'edge (ou les 2 Edges) localisee(s)
+  // Positioning on the localized edge (or 2 Edges)
   Standard_Real Angle;
   Place.SetLocation(myLaw->Law(Ind1));
   if(TheV.IsNull())

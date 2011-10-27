@@ -138,7 +138,7 @@ TopoDS_Shape  BRepSweep_Translation::MakeEmptyGeneratingEdge
   (const TopoDS_Shape& aGenE, 
    const Sweep_NumShape& aDirV)
 {
-  //Appele uniquement dans le cas de construction avec copie.
+  //Call only in case of construction with copy.
   Standard_ConstructionError_Raise_if
     (!myCopy,"BRepSweep_Translation::MakeEmptyVertex");
   TopLoc_Location L;
@@ -166,8 +166,7 @@ void  BRepSweep_Translation::SetParameters
    const TopoDS_Shape& aGenV, 
    const Sweep_NumShape&)
 {
-  //Colle le parametre des vertex directement inclus dans les faces
-  //bouchons.
+  //Glue the parameter of vertices directly included in cap faces.
   gp_Pnt2d pnt2d = BRep_Tool::Parameters(TopoDS::Vertex(aGenV),
 					 TopoDS::Face(aGenF));
   myBuilder.Builder().UpdateVertex
@@ -236,8 +235,7 @@ TopoDS_Shape  BRepSweep_Translation::MakeEmptyFace
     toler = BRep_Tool::Tolerance(TopoDS::Edge(aGenS));
     gp_Trsf Tr = L.Transformation();
     C = Handle(Geom_Curve)::DownCast(C->Copy());
-    //les surfaces extrudees sont inverses par rapport a la topologie, donc 
-    //on reverse.
+    //extruded surfaces are inverted correspondingly to the topology, so reverse.
     C->Transform(Tr);
     gp_Dir D(myVec);
     D.Reverse();
@@ -289,8 +287,8 @@ void  BRepSweep_Translation::SetPCurve
    const Sweep_NumShape&,
    const TopAbs_Orientation)
 {
-  //Met sur edges des faces bouchons des pcurves identiques a celles 
-  //des edges de la face generatrice.
+  //Set on edges of cap faces the same pcurves as 
+  //edges of the generating face.
   Standard_Real First,Last;
   myBuilder.Builder().UpdateEdge
     (TopoDS::Edge(aNewEdge),
@@ -321,12 +319,11 @@ void  BRepSweep_Translation::SetGeneratingPCurve
   aNewOrientedEdge.Orientation(orien);
 
   if (AS.GetType()==GeomAbs_Plane){
-/* on ne fait rien JAG
+/* nothing is done JAG
     gp_Pln pln = AS.Plane();
     gp_Ax3 ax3 = pln.Position();
 
-// JYL : l'ecriture suivante est bugatoire sur une arete construite avec une
-// courbe 3d trimmee. :
+// JYL : the following produces bugs on an edge constructed from a trimmed 3D curve :
 //
 //    Handle(Geom_Line) 
 //      GL = Handle(Geom_Line)::DownCast(BRep_Tool::Curve(TopoDS::Edge(aGenE),

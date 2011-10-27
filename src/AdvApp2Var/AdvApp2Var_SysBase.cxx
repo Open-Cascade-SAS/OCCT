@@ -144,60 +144,52 @@ int AdvApp2Var_SysBase::macinit_(integer *imode,
   static cilist io______1 = { 0, 0, 0, (char*) "(' --- Debug-mode : ',I10,' ---')", 0 };
   
   /* ************************************************************************/
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
-  /*   INITIALISATION DES UNITES DE LECTURE-ECRITURE, ET DE 'IBB' */
+  /*   INITIALIZATION OF READING WRITING UNITS AND 'IBB' */
   
-  /*     MOTS CLES : */
+  /*     KEYWORDS : */
   /*     ----------- */
-  /*   GESTION, CONFIGURATION, UNITES, INITIALISATION */
+  /*   MANAGEMENT, CONFIGURATION, UNITS, INITIALIZATION */
   
-  /*     ARGUMENTS D'ENTREE : */
+  /*     INPUT ARGUMENTS  : */
   /*     -------------------- */
-  /*        IMODE : MODE D'INIT : 0= DEFAUT, IMP VAUDRA 6 ET IBB 0 */
-  /*                                ET LEC 5 */
-  /*                              1= FORCE LA VALEUR DE IMP */
-  /*                              2= FORCE LA VALEUR DE IBB */
-  /*                              3= FORCE LA VALEUR DE LEC */
+  /*        IMODE : MODE of INITIALIZATION : 
+	    0= DEFAULT, IMP IS 6, IBB 0 and LEC 5 */
+  /*        1= FORCE VALUE OF IMP */
+  /*        2= FORCE VALUE OF IBB */
+  /*        3= FORCE VALUE OF LEC */
   
-  /*    ARGUMENT UTILISE QUE LORSQUE IMODE VAUT 1 OU 2 : */
-  /*       IVAL : VALEUR DE IMP LORSQUE IMODE VAUT 1 */
-  /*              VALEUR DE IBB LORSQUE IMODE VAUT 2 */
-  /*              VALEUR DE LEC LORSQUE IMODE VAUT 3 */
-  /*    IL N'Y A PAS DE CONTROLE SUR LA VALIDITE DE LA VALEUR DE IVAL . */
+  /*    ARGUMENT USED ONLY WHEN IMODE IS 1 OR 2 : */
+  /*       IVAL : VALUE OF IMP WHEN IMODE IS 1 */
+  /*              VALUE OF IBB WHEN IMODE IS 2 */
+  /*              VALUE OF LEC WHEN IMODE IS 3 */
+  /*    THERE IS NO CONTROL OF VALIDITY OF VALUE OF IVAL . */
   
-  /*     ARGUMENTS DE SORTIE : */
-  /*     --------------------- */
-  /*                NEANT */
+  /*     OUTPUT ARGUMENTS  : */
+  /*     -------------------- */
+  /*                NONE */
   
-  /*     COMMONS UTILISES : */
-  /*     ------------------ */
-  /*     REFERENCES APPELEES : */
-  /*     --------------------- */
-  /*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-  /*     ----------------------------------- */
+  /*     COMMONS USED : */
+  /*     -------------- */
+  /*     REFERENCES CALLED : */
+  /*     ------------------- */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
+  /*     ------------------------------- */
   
-  /*     IL NE S'AGIT QUE D'INITIALISER LE COMMON BLANK POUR TOUS LES */
-  /*     MODULES QUI N'ONT A PRIORI PAS BESOIN DE CONNAITRE LES COMMONS */
-  /*     DE T . */
-  /*     LORSQU'UNE MODIFICATION DE IBB EST DEMANDEE (IMODE=2) UN MESSAGE */
-  /*     D'INFORMATION EST EMIS SUR IMP, AVEC LA NOUVELLE VALEUR DE IBB. */
+  /*     THIS IS ONLY INITIALIZATION OF THE COMMON BLANK FOR ALL */
+  /*     MODULES THAT A PRIORI DO NOT NEED TO KNOW THE COMMONS OF T . */
+  /*     WHEN A MODIFICATION OF IBB IS REQUIRED (IMODE=2) AN INFO MESSAGE */
+  /*     IS SUBMITTED ON IMP, WITH THE NEW VALUE OF IBB. */
   
-  /*       IBB : MODE DEBUG DE STRIM T : REGLES D'UTILISATION : */
-  /*             0 VERSION SOBRE */
-  /*             >0 LA VERSION A D'AUTANT PLUS DE COMMENTAIRES */
-  /*                QUE IBB EST GRAND . */
-  /*                PAR EXEMPLE AVEC IBB=1 LES ROUTINES APPELEES */
-  /*                SE SIGNALENT SUR IMP ('ENTREE DANS TOTO', */
-  /*                ET 'SORTIE DE TOTO'), ET LES ROUTINES RENVOYANT */
-  /*                UN CODE ERREUR NON NUL LE SIGNALENT EGALEMENT. */
-  /*            (MAIS CECI N'EST PAS VRAI POUR TOUTES LES ROUTINES DE T) */
-  
-  /* $    HISTORIQUE DES MODIFICATIONS : */
-  /*     ------------------------------ */
-  /*         22-12-89 : DGZ; MODIFICATION EN-TETE */
-  /*         30-05-88 : PP ; AJOUT DE LEC */
-  /*         15-03-88 : PP ; ECRITURE VERSION ORIGINALE */
+  /*       IBB : MODE DEBUG OF STRIM T : RULES OF USE : */
+  /*             0 RESTRAINED VERSION  */
+  /*             >0 THE GREATER IS IBB THE MORE COMMENTS THE VERSION HAS. */
+  /*                FOR EXAMPLE FOR IBB=1 THE ROUTINES CALLED */
+  /*                INFORM ON IMP ('INPUT IN TOTO', */
+  /*                AND 'OUTPUT FROM TOTO'), AND THE ROUTINES THAT RETURN */
+  /*                NON NULL ERROR CODE INFORM IT AS WELL. */
+  /*            (BUT IT IS NOT TRUE FOR ALL ROUTINES OF T) */
   /* > */
   /* ***********************************************************************
    */
@@ -243,49 +235,44 @@ int AdvApp2Var_SysBase::macrai4_(integer *nbelem,
   /* ***********************************************************************
    */
   
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
-  /*       Demande d'allocation dynamique de type INTEGER */
+  /*       Require dynamic allocation of type INTEGER */
   
-  /*     MOTS CLES : */
-  /*     ----------- */
-  /*       SYSTEME, ALLOCATION, MEMOIRE, REALISATION */
+  /*     KEYWORDS : */
+  /*     ---------- */
+  /*       SYSTEM, ALLOCATION, MEMORY, REALISATION */
   
-  /*     ARGUMENTS D'ENTREE : */
-  /*     -------------------- */
-  /*       NBELEM : Nombre d'unites demandes */
-  /*       MAXELM : Nombre maxi d'unites disponibles dans ITABLO */
-  /*       ITABLO : Adresse de reference de la zone allouee */
+  /*     INPUT ARGUMENTS : */
+  /*     ----------------- */
+  /*       NBELEM : Number of required units */
+  /*       MAXELM : Max number of units available in ITABLO */
+  /*       ITABLO : Reference Address of the rented zone */
   
-  /*     ARGUMENTS DE SORTIE : */
-  /*     --------------------- */
-  /*       IOFSET : Decalage */
-  /*       IERCOD : Code d'erreur */
+  /*     OUTPUT ARGUMENTS : */
+  /*     ------------------- */
+  /*       IOFSET : Offset */
+  /*       IERCOD : Error code */
   /*               = 0 : OK */
-  /*               = 1 : Nbre maxi d'allocs atteint */
-  /*               = 2 : Arguments incorrects */
-  /*               = 3 : Refus d'allocation dynamique */
+  /*               = 1 : Max nb of allocations attained */
+  /*               = 2 : Incorrect arguments */
+  /*               = 3 : Refused dynamic allocation */
   
-  /*     COMMONS UTILISES : */
+  /*     COMMONS USED : */
   /*     ------------------ */
   
-  /*     REFERENCES APPELEES : */
+  /*     REFERENCES CALLED : */
   /*     --------------------- */
   /*        MCRRQST */
   
-  /*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
-  /*     (Cf description dans l'entete de MCRRQST) */
+  /*     (Cf description in the heading of MCRRQST) */
   
-  /*     Le tableau ITABLO doit etre dimensionne a MAXELM par l'appelant. */
-  /*     Si la demande est inferieure ou egale a MAXELM, IOFSET rendu = 0. 
-   */
-  /*     Sinon, la demande d'allocation est effective et IOFSET > 0. */
-  
-  /* $    HISTORIQUE DES MODIFICATIONS : */
-  /*     ------------------------------ */
-  /*       16-10-91 : DGZ ; Recuperation version FBI */
-  /* > */
+  /*     Table ITABLO should be dimensioned to MAXELM by the caller. */
+  /*     If the request is lower or equal to MAXELM, IOFSET becomes = 0.    */
+  /*     Otherwise the demand of allocation is valid and IOFSET > 0. */
+   /* > */
   /* ***********************************************************************
    */
   
@@ -321,48 +308,44 @@ int AdvApp2Var_SysBase::macrar8_(integer *nbelem,
   /* ***********************************************************************
    */
   
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
-  /*       Demande d'allocation dynamique de type DOUBLE PRECISION */
+  /*       Demand of dynamic allocation of type DOUBLE PRECISION */
   
-  /*     MOTS CLES : */
+  /*     KEYWORDS : */
   /*     ----------- */
-  /*       SYSTEME, ALLOCATION, MEMOIRE, REALISATION */
+  /*       SYSTEM, ALLOCATION, MEMORY, REALISATION */
   
-  /*     ARGUMENTS D'ENTREE : */
-  /*     -------------------- */
-  /*       NBELEM : Nombre d'unites demandes */
-  /*       MAXELM : Nombre maxi d'unites disponibles dans XTABLO */
-  /*       XTABLO : Adresse de reference de la zone allouee */
+  /*     INPUT ARGUMENTS  : */
+  /*     ------------------ */
+  /*       NBELEM : Nb of units required */
+  /*       MAXELM : Max Nb of units available in XTABLO */
+  /*       XTABLO : Reference address of the rented zone */
   
-  /*     ARGUMENTS DE SORTIE : */
-  /*     --------------------- */
-  /*       IOFSET : Decalage */
-  /*       IERCOD : Code d'erreur */
+  /*     OUTPUT ARGUMENTS : */
+  /*     ------------------ */
+  /*       IOFSET : Offset */
+  /*       IERCOD : Error code */
   /*               = 0 : OK */
-  /*               = 1 : Nbre maxi d'allocs atteint */
-  /*               = 2 : Arguments incorrects */
-  /*               = 3 : Refus d'allocation dynamique */
+  /*               = 1 : Max Nb of allocations reached */
+  /*               = 2 : Arguments incorrect */
+  /*               = 3 : Refuse of dynamic allocation */
   
-  /*     COMMONS UTILISES : */
+  /*     COMMONS USED : */
   /*     ------------------ */
   
-  /*     REFERENCES APPELEES : */
+  /*     REFERENCES CALLED : */
   /*     --------------------- */
   /*        MCRRQST */
   
-  /*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
-  /*     (Cf description dans l'entete de MCRRQST) */
+  /*     (Cf description in the heading of MCRRQST) */
   
-  /*     Le tableau XTABLO doit etre dimensionne a MAXELM par l'appelant. */
-  /*     Si la demande est inferieure ou egale a MAXELM, IOFSET rendu = 0. 
-   */
-  /*     Sinon, la demande d'allocation est effective et IOFSET > 0. */
+  /*     Table XTABLO should be dimensioned to MAXELM by the caller. */
+  /*     If the request is less or equal to MAXELM, IOFSET becomes = 0.    */
+  /*     Otherwise the demand of allocation is valid and IOFSET > 0. */
 
-  /* $    HISTORIQUE DES MODIFICATIONS : */
-  /*     ------------------------------ */
-  /*       16-10-91 : DGZ ; Recuperation version FBI */
   /* > */
   /* ***********************************************************************
    */
@@ -408,48 +391,33 @@ int macrchk_()
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       CONTROLE LES DEBORDEMENTS DE ZONE MEMOIRE ALLOUEES */
+/*       CONTROL OF EXCESSES OF ALLOCATED MEMORY ZONE */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       SYSTEME, ALLOCATION, MEMOIRE, CONTROLE, DEBORDEMENT */
+/*       SYSTEM, ALLOCATION, MEMORY, CONTROL, EXCESS */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     -------------------- */
-/*       NEANT */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*       NONE */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       NEANT */
+/*     OUTPUT ARGUMENTS  : */
+/*     ------------------- */
+/*       NONE */
 
-/*     COMMONS UTILISES : */
+/*     COMMONS USED : */
 /*     ------------------ */
 /*       MCRGENE */
 
-/*     REFERENCES APPELEES : */
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 /*       MACRERR, MAOSTRD */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*       18-11-91 : DGZ; AC91118Z0000 : Resactivation */
-/*       17-10-91 : FCR; AC91118Z0000 : Desactivation */
-/*       25-09-91 : DGZ; GESTION DES FLAGS DANS MCRGENE */
-/*       31-07-90 : DGZ; AJOUT TRACE-BACK EN PHASE DE PRODUCTION */
-/*       04-11-89 : CR ; AJOUT DE OPTIONS /CHECK=NOBOUNDS . */
-/*       03-10-89 : DGZ; REMPLACE COMMON ACFLAG PAR INCLUDE ACFLAG.INC */
-/*       09-06-89 : PP ; CORRECTION DES CALCULS D'OFFSET */
-/*       31-05-89 : DGZ; APPEL MCRLOCV EN DEHORS BOUCLE DO */
-/*       25-05-89 : DGZ; CHANGE DIM ACRTAB : MALLOC PASSE DE 10000 A 200 
-*/
-/*       16-05-89 : PP ; AJOUT DE MACRERR, POUR ARRET SOUS  DBG */
-/*       11-05-89 : DGZ ; CREATION DE LA VERSION ORIGINALE */
 /* > */
 /* ***********************************************************************
  */
@@ -459,64 +427,53 @@ int macrchk_()
 
 /*     FONCTION : */
 /*     ---------- */
-/*        TABLE DE GESTION DES ALLOCATIONS DYNAMIQUES DE MEMOIRE */
+/*        TABLE OF MANAGEMENT OF DYNAMIC MEMOTY ALLOCATIONS */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        SYSTEME, MEMOIRE, ALLOCATION */
+/*        SYSTEM, MEMORY, ALLOCATION */
 
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DEMSCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       23-11-93 : FCR; AF93125U3A007 : MAXCR 200 --> 1000 */
-/*       08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*       25-09-91 : DGZ; AJOUT INFOs SUPPLEMENTAIREs POUR GESTION FLAGS */
-/*       18-01-91 : DGZ; MAXCR PASSE DE 100 A 200 SUR DEMANDE GDD */
-/*       18-05-90 : DGZ; DECLARATION TYPE INTEGER POUR MAXCR */
-/*       20-06-88 : PP ; MAXCR PASSE DE 50 A 100, SUR DEMANDE OG */
-/*                       + AJOUT DE COMMENTAIRES */
-/*       26-02-88 : PP ; MAXCR PASSE DE 40 A 50, SUR DEMANDE AB . */
-/*       15-04-85 : BF ; VERSION D'ORIGINE */
+
 /* > */
 /* ***********************************************************************
  */
 
-/*   ICORE : TABLE DES ALLOCS EXISTANTES, AVEC POUR CHACUNE : */
-/*         1 : NIVEAU DE PROTECTION (0=PAS PROTEGE, AUTRE=PROTEGE) */
-/*             (PROTEGE SIGNIFIE PAS DETRUIT PAR CRRSET .) */
-/*         2 : UNITE D'ALLOCATION */
-/*         3 : NB D'UNITES ALLOUEES */
-/*         4 : ADRESSE DE REFERENCE DU TABLEAU */
+/*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
+/*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
+/*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
+/*         2 : UNIT OF ALLOCATION */
+/*         3 : NB OF ALLOCATED UNITS */
+/*         4 : REFERENCE ADDRESS OF THE TABLE */
 /*         5 : IOFSET */
-/*         6 : NUMERO ALLOCATION STATIQUE */
-/*         7 : Taille demandee en allocation */
-/*         8 : adresse du debut de l'allocation */
-/*         9 : Taille de la ZONE UTILISATEUR */
-/*        10 : ADRESSE DU FLAG DE DEBUT */
-/*        11 : ADRESSE DU FLAG DE FIN */
-/*        12 : Rang de creation de l'allocation */
+/*         6 : STATIC ALLOCATION NUMBER */
+/*         7 : Required allocation size */
+/*         8 : address of the beginning of allocation */
+/*         9 : Size of the USER ZONE */
+/*        10 : ADDRESS of the START FLAG */
+/*        11 : ADDRESS of the END FLAG */
+/*        12 : Rank of creation of the allocation */
 
-/*   NDIMCR : NBRE DE DONNEES DE CHAQUE ALLOC DANS ICORE */
-/*   NCORE : NBRE D'ALLOCS EN COURS */
-/*   LPROT : COMMUNICATION ENTRE CRPROT ET MCRRQST, REMIS A 0 PAR MCRRQST 
-*/
-/*   FLAG  : VALEUR DU FLAG UTILISE POUR LES DEBORDEMENTS */
+/*   NDIMCR : NB OF DATA OF EACH ALLOC IN ICORE */
+/*   NCORE : NB OF CURRENT ALLOCS */
+/*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
+/*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-
-
-/* ----------------------------------------------------------------------*
- */
 
 
 /* ----------------------------------------------------------------------*
  */
 
-/* CALCUL ADRESSE DE T */
+
+/* ----------------------------------------------------------------------*
+ */
+
+/* CALCULATE ADDRESS OF T */
   mcrlocv_((long int)t, (long int *)&loc);
   
-  /* CONTROLE DES FLAGS DANS LE TABLEAU */
+  /* CONTROL OF FLAGS IN THE TABLE */
   i__1 = mcrgene_.ncore;
   for (i__ = 1; i__ <= i__1; ++i__) {
     
@@ -528,17 +485,16 @@ int macrchk_()
 	
 	if (t[ioff] != -134744073.) {
 	  
-	  /* MSG : '*** ERREUR  : ECRASEMENT DE LA MEMOIRE D''ADRESS
+	  /* MSG : '*** ERREUR  : REMOVAL FROM MEMORY OF ADDRESS
 	     E:',ICORE(J,I) */
-	  /*       ET DE RANG ICORE(12,I) */
+	  /*       AND OF RANK ICORE(12,I) */
 	  macrerr_((long int *)&mcrgene_.icore[j + i__ * 12 - 13], 
 		   (integer *)&mcrgene_.icore[i__ * 12 - 1]);
 	  
-	  /* TRACE-BACK EN PHASE DE PRODUCTION */
+	  /* BACK-PARCING IN PHASE OF PRODUCTION */
 	  maostrb_();
 	  
-	  /* SUPPRESSION DE L'ADRESSE DU FLAG POUR NE PLUS REFAIRE S
-	     ON CONTROLE */
+	  /* REMOVAL OF THE ADDRESS OF FLAG TO AVOID REMAKING ITS CONTROL */
 	  mcrgene_.icore[j + i__ * 12 - 13] = -1;
 	  
 	}
@@ -572,7 +528,7 @@ int macrclw_(long int *,//iadfld,
 int AdvApp2Var_SysBase::macrdi4_(integer *nbelem, 
 				 integer *,//maxelm, 
 				 integer *itablo, 
-				 long int *iofset, /* Offset en long (pmn) */
+				 long int *iofset, /* Offset long (pmn) */
 				 integer *iercod)
 
 {
@@ -580,42 +536,38 @@ int AdvApp2Var_SysBase::macrdi4_(integer *nbelem,
   /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FuNCTION : */
 /*     ---------- */
-/*       Destruction d'une allocation dynamique de type INTEGER */
+/*       Destruction of dynamic allocation of type INTEGER */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       SYSTEME, ALLOCATION, MEMOIRE, DESTRUCTION */
+/*       SYSTEM, ALLOCATION, MEMORY, DESTRUCTION */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     -------------------- */
-/*       NBELEM : Nombre d'unites demandes */
-/*       MAXELM : Nombre maxi d'unites disponibles dans ITABLO */
-/*       ITABLO : Adresse de reference de la zone allouee */
-/*       IOFSET : Decalage */
+/*     INPUT ARGUMENTS  : */
+/*     ------------------ */
+/*       NBELEM : Nb of units required */
+/*       MAXELM : Max Nb of units available in ITABLO */
+/*       ITABLO : Reference Address of the allocated zone */
+/*       IOFSET : Offset */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     --------------------- */
-/*       IERCOD : Code d'erreur */
+/*       IERCOD : Error Code */
 /*               = 0 : OK */
-/*               = 1 : Pb de de-allocation d'une zone allouee sur table */
-/*               = 2 : Le systeme refuse la demande de de-allocation */
+/*               = 1 : Pb of de-allocation of a zone allocated in table */
+/*               = 2 : The system refuses the demand of de-allocation */
 
-/*     COMMONS UTILISES : */
+/*     COMMONS USED : */
 /*     ------------------ */
 
-/*     REFERENCES APPELEES : */
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 /*        MCRDELT */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     (Cf description dans l'entete de MCRDELT) */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       16-10-91 : DGZ ; Recuperation version FBI */
+/*     (Cf description in the heading of MCRDELT) */
 /* > */
 /* ***********************************************************************
  */
@@ -653,43 +605,40 @@ int AdvApp2Var_SysBase::macrdr8_(integer *nbelem,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       Destruction d'une allocation dynamique de type DOUBLE PRECISION 
+/*       Destruction of dynamic allocation of type DOUBLE PRECISION 
 */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       SYSTEME, ALLOCATION, MEMOIRE, DESTRUCTION */
+/*       SYSTEM, ALLOCATION, MEMORY, DESTRUCTION */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*       NBELEM : Nombre d'unites demandes */
-/*       MAXELM : Nombre maxi d'unites disponibles dans XTABLO */
-/*       XTABLO : Adresse de reference de la zone allouee */
-/*       IOFSET : Decalage */
+/*       NBELEM : Nb of units required */
+/*       MAXELM : Max nb of units available in XTABLO */
+/*       XTABLO : Reference Address of the allocated zone */
+/*       IOFSET : Offset */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       IERCOD : Code d'erreur */
+/*     OUTPUT ARGUMENTS  : */
+/*     ------------------- */
+/*       IERCOD : Error Code */
 /*               = 0 : OK */
-/*               = 1 : Pb de de-allocation d'une zone allouee sur table */
-/*               = 2 : Le systeme refuse la demande de de-allocation */
+/*               = 1 : Pb of de-allocation of a zone allocated on table */
+/*               = 2 : The system refuses the demand of de-allocation */
 
-/*     COMMONS UTILISES : */
-/*     ------------------ */
+/*     COMMONS USED : */
+/*     -------------- */
 
-/*     REFERENCES APPELEES : */
-/*     --------------------- */
+/*     REFERENCES CALLEDS : */
+/*     -------------------- */
 /*        MCRDELT */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     (Cf description dans l'entete de MCRDELT) */
+/*     (Cf description in the heading of MCRDELT) */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       16-10-91 : DGZ ; Recuperation version FBI */
 /* > */
 /* ***********************************************************************
  */
@@ -725,37 +674,31 @@ int macrerr_(long int *,//iad,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       ECRITURE D'UNE ADRESSE ECRASEE DANS LES ALLOCS . */
+/*       WRITING OF ADDRESS REMOVED IN ALLOCS . */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       ALLOC CONTROLE */
+/*       ALLOC CONTROL */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     -------------------- */
-/*       IAD    : ADRESSE A SIGNALER ECRASEE */
-/*       NALLOC : NUMERO DE L'ALLOCATION */
-
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       NEANT */
-
-/*     COMMONS UTILISES : */
+/*     INPUT ARGUMENTS  : */
 /*     ------------------ */
+/*       IAD    : ADDRESS TO INFORM OF REMOVAL */
+/*       NALLOC : NUMBER OF ALLOCATION */
 
-/*     REFERENCES APPELEES : */
+/*     OUTPUT ARGUMENTS : */
 /*     --------------------- */
+/*       NONE */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     COMMONS USED : */
+/*     -------------- */
+
+/*     REFERENCES CALLED : */
+/*     ------------------- */
+
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       30-09-91 : DGZ; AJOUT DU NUMERO DE L'ALLOCATION */
-/*       04-11-89 : CR ; AJOUT DE OPTIONS /CHECK=NOBOUNDS . */
-/*       17-05-89 : PP ; CREATION */
 /* > */
 /* ***********************************************************************
  */
@@ -798,51 +741,38 @@ int macrgfl_(long int *iadfld,
   /* ***********************************************************************
    */
   
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
-  /*       MISE EN PLACE DES DEUX FLAGS DE DEBUT ET DE FIN DE LA ZONE */
-  /*       ALLOUEE ET MISE A OVERFLOW DE L'ESPACE UTILISATEUR EN PHASE */
-  /*       DE PRODUCTION. */
+  /*       IMPLEMENTATION OF TWO FLAGS START AND END OF THE ALLOCATED ZONE */
+  /*       AND SETTING TO OVERFLOW OF THE USER SPACE IN PHASE OF PRODUCTION. */
   
-  /*     MOTS CLES : */
+  /*     KEYWORDS : */
   /*     ----------- */
-  /*       ALLOCATION, CONTROLE, DEBORDEMENT */
+  /*       ALLOCATION, CONTROL, EXCESS */
   
-  /*     ARGUMENTS D'ENTREE : */
-  /*     -------------------- */
-  /*       IADFLD : ADRESSE DU FLAG DE DEBUT */
-  /*       IADFLF : ADRESSE DU FLAG DE FIN */
-  /*       IPHASE : TYPE DE VERSION LOGICIELLE : */
-  /*                0 = VERSION OFFICIELLE */
-  /*                1 = VERSION PRODUCTION */
-  /*       IZNUTI : TAILLE DE LA ZONE UTILISATEUR EN OCTETS */
+  /*     INPUT ARGUMENTS  : */
+  /*     ------------------ */
+  /*       IADFLD : ADDRESS OF THE START FLAG */
+  /*       IADFLF : ADDRESS OF THE END FLAG */
+  /*       IPHASE : TYPE OF SOFTWARE VERSION : */
+  /*                0 = OFFICIAL VERSION  */
+  /*                1 = PRODUCTION VERSION */
+  /*       IZNUTI : SIZE OF THE USER ZONE IN OCTETS */
   
-  /*     ARGUMENTS DE SORTIE : */
-  /*     --------------------- */
-  /*       NEANT */
+  /*     OUTPUT ARGUMENTS : */
+  /*     ------------------ */
+  /*       NONE */
   
-  /*     COMMONS UTILISES : */
+  /*     COMMONS USED : */
   /*     ------------------ */
   
-  /*     REFERENCES APPELEES : */
-  /*     --------------------- */
+  /*     REFERENCES CALLED : */
+  /*     ------------------- */
   /*       CRLOCT,MACRCHK */
   
-  /*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-  /*     ----------------------------------- */
-  
-  /* $    HISTORIQUE DES MODIFICATIONS : */
-  /*     ------------------------------ */
-  /*       25-09-91 : DGZ ; GERE LES FLAGS DANS LE COMMUN MCRGENE */
-  /*       21-08-90 : DGZ ; APPELS DE MACRCHK DANS LES DEUX CAS (AJOUT,SUPP)
-   */
-  /*       04-11-89 : CR ; AJOUT DE OPTIONS /CHECK=NOBOUNDS . */
-  /*       03-10-89 : DGZ ; REMPLACE COMMON ACFLAG PAR INCLUDE ACFLAG.INC */
-  /*       09-06-89 : PP  ; CORRECTION DU CALCUL DE L'OFFSET */
-  /*       31-05-89 : DGZ ; OPTIMISATION DE LA GESTION DU TABLEAU DES FLAGS 
-   */
-  /*       23-05-89 : DGZ ; CORRECTION DEBORDEMENT DU TABLEAU ACRTAB */
-  /*       11-05-89 : DGZ ; CREATION DE LA VERSION ORIGINALE */
+  /*     DESCRIPTION/NOTES/LIMITATIONS : */
+  /*     ------------------------------- */
+
   /* > */
   /* ***********************************************************************
    */
@@ -852,52 +782,42 @@ int macrgfl_(long int *iadfld,
   /* ***********************************************************************
    */
   
-  /*     FONCTION : */
+  /*     FUNCTION : */
   /*     ---------- */
-  /*        TABLE DE GESTION DES ALLOCATIONS DYNAMIQUES DE MEMOIRE */
+  /*        TABLE FOR MANAGEMENT OF DYNAMIC ALLOCATIONS OF MEMORY */
   
-  /*     MOTS CLES : */
+  /*     KEYWORDS : */
   /*     ----------- */
-  /*        SYSTEME, MEMOIRE, ALLOCATION */
+  /*        SYSTEM, MEMORY, ALLOCATION */
   
-  /*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+  /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
   /*     ----------------------------------- */
   
-  /* $    HISTORIQUE DES MODIFICATIONS : */
-  /*     ------------------------------ */
-  /*       23-11-93 : FCR; AF93125U3A007 : MAXCR 200 --> 1000 */
-  /*       08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-  /*       25-09-91 : DGZ; AJOUT INFOs SUPPLEMENTAIREs POUR GESTION FLAGS */
-  /*       18-01-91 : DGZ; MAXCR PASSE DE 100 A 200 SUR DEMANDE GDD */
-  /*       18-05-90 : DGZ; DECLARATION TYPE INTEGER POUR MAXCR */
-  /*       20-06-88 : PP ; MAXCR PASSE DE 50 A 100, SUR DEMANDE OG */
-  /*                       + AJOUT DE COMMENTAIRES */
-  /*       26-02-88 : PP ; MAXCR PASSE DE 40 A 50, SUR DEMANDE AB . */
-  /*       15-04-85 : BF ; VERSION D'ORIGINE */
+
   /* > */
   /* ***********************************************************************
    */
-  
-  /*   ICORE : TABLE DES ALLOCS EXISTANTES, AVEC POUR CHACUNE : */
-  /*         1 : NIVEAU DE PROTECTION (0=PAS PROTEGE, AUTRE=PROTEGE) */
-  /*             (PROTEGE SIGNIFIE PAS DETRUIT PAR CRRSET .) */
-  /*         2 : UNITE D'ALLOCATION */
-  /*         3 : NB D'UNITES ALLOUEES */
-  /*         4 : ADRESSE DE REFERENCE DU TABLEAU */
-  /*         5 : IOFSET */
-  /*         6 : NUMERO ALLOCATION STATIQUE */
-  /*         7 : Taille demandee en allocation */
-  /*         8 : adresse du debut de l'allocation */
-  /*         9 : Taille de la ZONE UTILISATEUR */
-  /*        10 : ADRESSE DU FLAG DE DEBUT */
-  /*        11 : ADRESSE DU FLAG DE FIN */
-  /*        12 : Rang de creation de l'allocation */
-  
-  /*   NDIMCR : NBRE DE DONNEES DE CHAQUE ALLOC DANS ICORE */
-  /*   NCORE : NBRE D'ALLOCS EN COURS */
-  /*   LPROT : COMMUNICATION ENTRE CRPROT ET MCRRQST, REMIS A 0 PAR MCRRQST 
-   */
-  /*   FLAG  : VALEUR DU FLAG UTILISE POUR LES DEBORDEMENTS */
+  /*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
+/*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
+/*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
+/*         2 : UNIT OF ALLOCATION */
+/*         3 : NB OF ALLOCATED UNITS */
+/*         4 : REFERENCE ADDRESS OF THE TABLE */
+/*         5 : IOFSET */
+/*         6 : STATIC ALLOCATION NUMBER */
+/*         7 : Required allocation size */
+/*         8 : address of the beginning of allocation */
+/*         9 : Size of the USER ZONE */
+/*        10 : ADDRESS of the START FLAG */
+/*        11 : ADDRESS of the END FLAG */
+/*        12 : Rank of creation of the allocation */
+
+/*   NDIMCR : NB OF DATA OF EACH ALLOC IN ICORE */
+/*   NCORE : NB OF CURRENT ALLOCS */
+/*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
+/*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
+
+
   
   
 
@@ -910,30 +830,30 @@ int macrgfl_(long int *iadfld,
     ifois = 1;
   }
   
-  /*  CALCUL DE L'ADRESSE DE T */
+  /*  CALCULATE THE ADDRESS OF T */
   mcrlocv_((long int)t, (long int *)&iadt);
   
-  /* CALCUL DE l"OFFSET */
+  /* CALCULATE THE OFFSET */
   ioff = (*iadfld - iadt) / 8;
   
-  /*  MISE A OVERFLOW DE LA ZONE UTILISATEUR EN CAS DE VERSION PRODUCTION */
+  /*  SET TO OVERFLOW OF THE USER ZONE IN CASE OF PRODUCTION VERSION */
   if (*iphase == 1 && novfl == 0) {
     ienr = *iznuti / 8;
     maoverf_(&ienr, &t[ioff + 1]);
   }
     
-  /*  MISE A JOUR DU FLAG DE DEBUT */
+  /*  UPDATE THE START FLAG */
   t[ioff] = -134744073.;
   
-  /*  APPEL BIDON POUR PERMETTRE L'ARRET AU DEBUGGER : */
+  /*  FAKE CALL TO STOP THE DEBUGGER : */
   iadrfl = *iadfld;
   macrbrk_();
   
-  /*  MISE A JOUR DU FLAG DE DEBUT */
+  /*  UPDATE THE START FLAG */
   ioff = (*iadflf - iadt) / 8;
   t[ioff] = -134744073.;
     
-  /*  APPEL BIDON POUR PERMETTRE L'ARRET AU DEBUGGER : */
+  /*  FAKE CALL TO STOP THE DEBUGGER : */
   iadrfl = *iadflf;
   macrbrk_();
   
@@ -967,59 +887,47 @@ int macrmsg_(const char *,//crout,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        MESSAGERIE DES ROUTINES D'ALLOC */
+/*        MESSAGING OF ROUTINES OF ALLOCATION */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       ALLOC,MESSAGE */
+/*       ALLOC, MESSAGE */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     -------------------- */
-/*       CROUT : NOM DE LA ROUTINE APPELANTE : MCRRQST, MCRDELT, MCRLIST 
+/*     INPUT ARGUMENTSEE : */
+/*     ------------------- */
+/*       CROUT : NAME OF THE CALLING ROUTINE : MCRRQST, MCRDELT, MCRLIST 
 */
-/*                ,CRINCR OU CRPROT */
-/*       NUM : NUMERO DU MESSAGE */
-/*       IT : TABLEAU DE DONNEES ENTIERES */
-/*       XT : TABLEAU DE DONNEES REELLES */
+/*                ,CRINCR OR CRPROT */
+/*       NUM :  MESSAGE NUMBER */
+/*       IT : TABLE OF INTEGER DATA */
+/*       XT : TABLE OF REAL DATA */
 /*       CT : ------------------ CHARACTER */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     --------------------- */
-/*       NEANT */
+/*       NONE */
 
-/*     COMMONS UTILISES : */
+/*     COMMONS USED : */
 /*     ------------------ */
 
-/*     REFERENCES APPELEES : */
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/*   ROUTINE A USAGE TEMPORAIRE, EN ATTENDANT LA 'NOUVELLE' MESSAGERIE */
-/*    (STRIM 3.3 ?) , POUR RENDRE LES ROUTINES D'ALLOC UTILISABLES */
-/*    AILLEURS QUE DANS STRIM T-M . */
+/*   ROUTINE FOR TEMPORARY USE, WAITING FOR THE 'NEW' MESSAGE */
+/*    (STRIM 3.3 ?), TO MAKE THE ROUTINES OF ALLOC USABLE */
+/*    IN STRIM T-M . */
 
-/*   EN FONCTION DE LA LANGUE, ECRITURE DU MESSAGE DEMANDE SUR */
-/*   L'UNITE IMP . */
-/*   (REPRISE DES SPECIFS DE VFORMA) */
+/*   DEPENDING ON THE LANGUAGE, WRITING OF THE REQUIRED MESSAGE ON */
+/*   UNIT IMP . */
+/*   (REUSE OF SPECIFS OF VFORMA) */
 
-/*   LE MESSAGE EST INITIALISE A 'IL MANQUE LE MESSAGE', ET CELUI-LA */
-/*   EST REMPLACE PAR LE MESSAGE DEMANDE S'IL EXISTE . */
-
-
-/*   LES MESSAGES FRANCAIS ONT ETE PRIS DANS LA 3.2 LE 26.2.88, ALORS */
-/*   QUE LES ANGLAIS ONT ETE PRIS DANS ENGUS, ET QUE LES */
-/*   ALLEMANDS VIENNENT DE LA 312 . */
-
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*      4-09-1991 : FCR ; MENAGE */
-/*      02-05-88 : PP ; CORRECTION DE SYNTAXE DE FORMAT */
-/*      26.2.88 : PP ECRITURE VERSION ORIGINALE . */
+/*   THE MESSAGE IS INITIALIZED AT 'MESSAGE MISSING', AND IT IS */
+/*   REPLACED BY THE REQUIRED MESSAGE IF EXISTS. */
 /* > */
 /* ***********************************************************************
  */
@@ -1028,10 +936,10 @@ int macrmsg_(const char *,//crout,
 
 /* ----------------------------------------------------------------------*
  */
-/*  RECHERCHE DU MESSAGE EN FONCTION DE LA LANGUE , DE LA ROUTINE */
-/*  CONCERNEE, ET DU NUMERO DE MESSAGE */
+/*  FIND MESSAGE DEPENDING ON THE LANGUAGE , THE ROUTINE */
+/*  AND THE MESSAGE NUMBER */
 
-/*  LECTURE DE LA LANGUE : */
+/*  READING OF THE LANGUAGE : */
     /* Parameter adjustments */
   ct -= ct_len;
   --xt;
@@ -1040,8 +948,8 @@ int macrmsg_(const char *,//crout,
   /* Function Body */
   mamdlng_(cln, 3L);
   
-/*  INUM : TYPE DE MESSAGE  : 0 QUE DU TEXTE, 1 1 ENTIER A ECRIRE */
-/*        -1 MESSAGE INEXISTANT (1 ENTIER ET 1 CHAINE) */
+/*  INUM : TYPE OF MESSAGE  : 0 AS TEXT, 1 1 INTEGER TO BE WRITTEN */
+/*        -1 MESSAGE INEXISTING (1 INTEGER AND 1 CHAIN) */
 
   inum = -1;
 /*
@@ -1208,7 +1116,7 @@ t !! ')", 80L, 54L);
   */
   /* ----------------------------------------------------------------------*
    */
-  /*  REALISATION DU WRITE , AVEC OU SANS DONNEES : */
+  /*  iMPLEMENTATION OF WRITE , WITH OR WITHOUT DATA : */
   
   iunite = AdvApp2Var_SysBase::mnfnimp_();
   if (inum == 0) {
@@ -1227,7 +1135,7 @@ t !! ')", 80L, 54L);
     */
     AdvApp2Var_SysBase::e__wsfe();
   } else {
-    /*  LE MESSAGE N'EXISTE PAS ... */
+    /*  MESSAGE DOES NOT EXIST ... */
     io___7.ciunit = iunite;
     /*
     s__wsfe(&io___7);
@@ -1296,72 +1204,54 @@ int magtlog_(const char *cnmlog,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        RENVOIE LA TRADUCTION D'UN "NOM LOGIQUE STRIM" DANS LA */
-/*        "SYNTAXE INTERNE" CORRESPONDANT A UN "LIEU DE RANGEMENT" */
+/*        RETURN TRANSLATION OF "NAME LOGIC STRIM" IN */
+/*        "INTERNAL SYNTAX" CORRESPONDING TO "PLACE OF RANKING" */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
 /*        NOM LOGIQUE STRIM , TRADUCTION */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        CNMLOG : NOM DU "NOM LOGIQUE STRIM" A TRADUIRE */
+/*        CNMLOG : NAME OF "NAME LOGIC STRIM" TO TRANSLATE */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*        CHAINE : ADRESSE DU "LIEU DE RANGEMENT" */
-/*        LONG   : LONGUEUR UTILE DU "LIEU DE RANGEMENT" */
-/*        IERCOD : CODE D'ERREUR */
+/*        CHAINE : ADDRESS OF "PLACE OF RANKING" */
+/*        LONG   : USEFUL LENGTH OF "PLACE OF RANKING" */
+/*        IERCOD : ERROR CODE */
 /*        IERCOD = 0 : OK */
-/*        IERCOD = 5 : LIEU DE RANGEMENT CORRESPONDANT AU NOM LOGIQUE */
-/*                     INEXISTANT */
-/*        IERCOD = 6 : TRADUCTION TROP LONGUE POUR LA VARIABLE 'CHAINE' */
-/*        IERCOD = 7 : ERREUR SEVERE */
+/*        IERCOD = 5 : PLACE OF RANKING CORRESPONDING TO INEXISTING LOGIC NAME */
+        
+/*        IERCOD = 6 : TRANSLATION TOO LONG FOR THE 'CHAIN' VARIABLE */
+/*        IERCOD = 7 : CRITICAL ERROR */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
-/*        NEANT */
+/*        NONE */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 /*        GNMLOG, MACHDIM */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
-/*     ----------------------------------- */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
+/*     ------------------------------- */
 
-/*        ROUTINE SPECIFIQUE SGI */
+/*        SPECIFIC SGI ROUTINE */
 
-/*        DANS TOUS LES CAS OU IERCOD EST >0,AUCUN RESULTAT N'EST RENVOYE 
-*/
-
-/*        NOTION DE "SYNTAXE UTILISATEUR' ET "SYNTAXE INTERNE" */
+/*        IN ALL CASES WHEN IERCOD IS >0, NO RESULT IS RETURNED*/
+/*        NOTION OF  "USER SYNTAX' AND "INTERNAL SYNTAX" */
 /*        --------------------------------------------------- */
 
-/*       LA "SYNTAXE UTILISATEUR" EST LA SYNTAXE DANS LAQUELLE L'UTILISATE
-UR*/
-/*        VISUALISE OU DESIGNE UN NOM DE FICHIER OU LE NOM REPERTOIRE AU 
-*/
-/*        COURS D'UNE SESSION DE STRIM100 */
+/*       THE "USER SYNTAX" IS THE SYNTAX WHERE THE USER*/
+/*       VISUALIZES OR INDICATES THE FILE OR DIRECTORY NAME */
+/*       DURING A SESSION OF STRIM100 */
 
-/*        LA "SYNTAXE INTERNE" EST LA SYNTAXE UTILISEE POUR EFFECTUER DES 
-*/
-/*        OPERATIONS DE TRAITEMENTS DE FICHIERS A L'INTERIEUR DU CODE */
+/*        "INTERNAL SYNTAX" IS SYNTAX USED TO CARRY OUT */
+/*        OPERATIONS OF FILE PROCESSING INSIDE THE CODE */
 /*        (OPEN,INQUIRE,...ETC) */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-
-/*    08-01-91 : B. Achispon ; Mise en forme et suppresion appel a MACHDIM
-*/
-/*     26-10-88 : C. Guinamard ; Adaptation UNIX  Traduction effective */
-/*                               du nom logique */
-/*     10-08-88 : DGZ ; CHANGE BNMLOG PAR MATRLOG */
-/*     05-02-88 : DGZ ; MODIF D'ENTETE */
-/*     26-08-87 : DGZ ; APPEL DE BNMLOG */
-/*     25-08-87 : BJ  ; MODIF ENTETE */
-/*     24-12-86 : DGZ ; CREATION VERSION ORIGINALE */
 
 /* > */
 /* ***********************************************************************
@@ -1373,14 +1263,14 @@ UR*/
 
 /* ***********************************************************************
  */
-/*              TRAITEMENT */
+/*              PROCESSING */
 /* ***********************************************************************
  */
 
   *long__ = 0;
   *iercod = 0;
   
-  /* CONTROLE DE L'EXISTENCE DU NOM LOGIQUE */
+  /* CONTROL OF EXISTENCE OF THE LOGIC NAME */
   
   matrlog_(cnmlog, cbid, &ibid, &ier, cnmlog_len, 255L);
   if (ier == 1) {
@@ -1390,7 +1280,7 @@ UR*/
     goto L9700;
   }
   
-  /* CONTROLE DE LA LONGUEUR DE CHAINE */
+  /* CONTROL OF THE LENGTH OF CHAIN */
   
   if (ibid > __i__len()/*chaine, chaine_len)*/) {
     goto L9600;
@@ -1403,7 +1293,7 @@ UR*/
   
   /* ***********************************************************************
    */
-  /*              TRAITEMENT DES ERREURS */
+  /*              ERROR PROCESSING */
   /* ***********************************************************************
    */
   
@@ -1423,7 +1313,7 @@ UR*/
   
   /* ***********************************************************************
    */
-  /*              RETOUR AU PROGRAMME APPELANT */
+  /*              RETURN TO THE CALLING PROGRAM */
   /* ***********************************************************************
    */
   
@@ -1472,48 +1362,43 @@ int AdvApp2Var_SysBase::maitbr8_(integer *itaill,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       INITIALISATION A UNE VALEUR DONNEE D'UN TABLEAU DE REEL *8 */
+/*       INITIALIZATION TO A GIVEN VALUE OF A TABLE OF REAL *8 */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       MANIPULATIONS, MEMOIRE, INITIALISATION, DOUBLE-PRECISION */
+/*       MANIPULATIONS, MEMORY, INITIALIZATION, DOUBLE-PRECISION */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     -------------------- */
-/*        ITAILL : TAILLE DU TABLEAU */
-/*        XTAB   : TABLEAU A INITIALISER AVEC XVAL */
-/*        XVAL   : VALEUR A METTRE DANS XTAB(1 A ITAILL) */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*        ITAILL : SIZE OF THE TABLE */
+/*        XTAB   : TABLE TO INITIALIZE WITH XVAL */
+/*        XVAL   : VALUE TO SET IN XTAB(FROM 1 TO ITAILL) */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*        XTAB   : TABLEAU INITIALISE */
-
-/*     COMMONS UTILISES : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------ */
+/*        XTAB   : INITIALIZED TABLE */
 
-/*     REFERENCES APPELEES : */
-/*     --------------------- */
+/*     COMMONS USED : */
+/*     -------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     REFERENCES CALLED : */
+/*     ------------------- */
+
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/*   ON APPELLE MCRFILL QUI FAIT DES MOVE PAR PAQUETS DE 63 REELS */
+/*   ONE CALLS MCRFILL WHICH MOVES BY PACKS OF 63 REALS */
 
-/*   LE PAQUET INITIAL EST BUFF0 INITE PAR DATA SI LA VALEUR EST 0 */
-/*   OU BUFFX INITE PAR XVAL (BOUCLE) SINON . */
+/*   THE INITIAL PACK IS BUFF0 INITIATED BY DATA IF THE VALUE IS 0 */
+/*   OR OTHERWISE BUFFX INITIATED BY XVAL (LOOP). */
 
 
-/*   PORTABILITE : OUI */
-/*   ACCES : LIBRE */
+/*   PORTABILITY : YES */
+/*   ACCESS : FREE */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     13-11-1991 : FCR ; VERFOR : Menage */
-/*         06-05-91 : DGZ; MODIFICATION EN-TETE */
-/*         05-07-88 : PP ; OPTIMISATION PAR POMPAGE SUR MVRMIRAZ */
-/*         28-04-88 : PP ; CREATION */
+
 /* > */
 /* ***********************************************************************
  */
@@ -1582,45 +1467,38 @@ int mamdlng_(char *,//cmdlng,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*   RENVOIE LA LANGUE COURANTE */
+/*   RETURN THE CURRENT LANGUAGE */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*   GESTION, CONFIGURATION, LANGUE, LECTURE */
+/*   MANAGEMENT, CONFIGURATION, LANGUAGE, READING */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*       CMDLNG : LANGUE */
+/*       CMDLNG : LANGUAGE */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       NEANT */
+/*     OUTPUT ARGUMENTS  : */
+/*     ------------------- */
+/*       NONE */
 
-/*     COMMONS UTILISES : */
+/*     COMMONS USED : */
 /*     ------------------ */
 /*       MACETAT */
 
-/*     REFERENCES APPELEES : */
+/*     REFERENCES CALLED : */
 /*     --------------------- */
-/*       NEANT */
+/*       NONE */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*       DROIT D'UTILISATION : TOUTES APPLICATIONS */
+/*       RIGHT OF USAGE : ANY APPLICATION */
 
-/*       ATTENTION : CETTE ROUTINE DEPEND D'UNE INITIALISATION */
-/*       ----------  PREALABLE FAITE AVEC AMDGEN. */
-/*                   IL CONVIENT DONC DE S'ASSURER QUE CETTE INIT EST */
-/*                   BIEN REALISEE DANS LE OU LES PROGRAMMES CONCERNES */
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     25-01-93 : JMB ; NETTOYAGE DE MAMDLNG */
-/*       23-03-90 : DGZ ; CORRECTION DE L'EN-TETE */
-/*       22-12-89 : DGZ ; CORRECTION DE L'EN-TETE */
-/*       22-02-88 : DGZ ; CREATION VERSION ORIGINALE */
+/*       ATTENTION : THIS ROUTINE DEPENDS ON PRELIMINARY INITIALISATION */
+/*       ----------  WITH AMDGEN. */
+/*                   SO IT IS ENOUGH TO PROVIDE THAT THIS INIT IS */
+/*                   CORRECTLY IMPLEMENTED IN THE RESPECTIVE PROGRAMS */
 /* > */
 /* ***********************************************************************
  */
@@ -1632,86 +1510,73 @@ int mamdlng_(char *,//cmdlng,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        CONTIENT LES INFORMATIONS RELATIVES A LA COMPOSITION DE */
-/*        L'EXECUTABLE ET A SON ENVIRONNEMENT : */
-/*        - LANGUES */
-/*        - APPLICATIONS PRESENTES */
-/*        - TYPES D'ENTITES AUORISEES (NON UTILISE) */
-/*        AINSI QUE DES INFORMATIONS DECRIVANTS L'ETAT COURANT : */
-/*        - APPLICATION EN COURS */
-/*        - MODE D'UTILISATION (NON UTILISE) */
+/*        CONTAINS INFORMATIONS ABOUT THE COMPOSITION OF */
+/*        THE EXECUTABLE AND ITS ENVIRONMENT : */
+/*        - LANGUAGES */
+/*        - PRESENT APPLICATIONS */
+/*        - AUTHORIZED TYPES OF ENTITIES (NON USED) */
+/*        AND INFORMATION DESCRIBING THE CURRENT STATE : */
+/*        - CURRENT APPLICATION */
+/*        - MODE OF USAGE (NOT USED) */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        APPLICATION, LANGUE */
+/*        APPLICATION, LANGUAGE */
 
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DEMSCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/*     A) CHLANG*4 : LISTE DES VALEURS POSSIBLES DE LA LANGUE : */
+/*     A) CHLANG*4 : LIST OF POSSIBLE VALUES OF THE LANGUAGE : */
 /*                   'FRA ','DEU ','ENG ' */
 
-/*        CHL10N*4 : LISTE DES VALEURS POSSIBLES DE LA LOCALISATION : */
+/*        CHL10N*4 : LIST OF POSSIBLE VALUES OF THE LOCALIZATION : */
 /*                   'FRA ','DEU ','ENG ', 'JIS ' */
 
-/*     B) CHCOUR*4, CHPREC*4, CHSUIV*4 : APPLICATION COURANTE, PRECEDENTE 
-*/
-/*                   ET SUIVANTE */
+/*     B) CHCOUR*4, CHPREC*4, CHSUIV*4 : CURRENT, PREVIOUS AND NEXT APPLICATION
 
-/*     C) CHMODE*4 : MODE COURANT (NON UTILISE) */
+/*     C) CHMODE*4 : CURRENT MODE (NOT USED) */
 
-/*     D) CHPRES*2 (1:NBRMOD) : LISTE DES APPLICATIONS PRISES EN COMPTE */
+/*     D) CHPRES*2 (1:NBRMOD) : LIST OF APPLICATIONS TAKEN INTO ACCOUNT */
 
 /*       Rang ! Code interne  !   Application */
 /*       ---------------------------------------------------------- */
-/*        1   !   CD          !   Modelisation 2D */
-/*        2   !   CA          !   Modelisation 2D par apprentissage */
-/*        3   !   CP          !   Modelisation 2D parametree */
-/*        4   !   PC          !   Modelisation rheologique 2D */
-/*        5   !   CU          !   Fraisage 2 Axes 1/2 */
-/*        6   !   CT          !   Tournage */
-/*        7   !   TS          !   Modelisation 3D surfacique */
-/*        8   !   TV          !   Modelisation 3D volumique */
-/*        9   !   MC          !   Maillage coque */
-/*        10  !   MV          !   Maillage volumique */
-/*        11  !   TU          !   Usinage 3 axes continus */
-/*        12  !   T5          !   Usinage 3-5 axes */
-/*        13  !   TR          !   Usinage 5 axes de surfaces reglees */
+/*        1   !   CD          !   Modeling 2D */
+/*        2   !   CA          !   Modeling 2D by learning */
+/*        3   !   CP          !   Parameterized 2D modelization */
+/*        4   !   PC          !   Rheological 2D modelization */
+/*        5   !   CU          !   Milling 2 Axes 1/2 */
+/*        6   !   CT          !   Turning */
+/*        7   !   TS          !   3D surface modeling */
+/*        8   !   TV          !   3D volume modeling */
+/*        9   !   MC          !   Surface Meshing */
+/*        10  !   MV          !   Volume Meshing */
+/*        11  !   TU          !   Machining by 3 axes */
+/*        12  !   T5          !   Machining by 3-5 axes */
+/*        13  !   TR          !   Machinning by 5 axes of regular surfaces */
 /*        14  !   IG          !   Interface IGES */
 /*        15  !   ST          !   Interface SET */
 /*        16  !   VD          !   Interface VDA */
-/*        17  !   IM          !   Interface de modelisation */
-/*        18  !   GA          !   Generateur APT/IFAPT */
-/*        19  !   GC          !   Generateur COMPACT II */
-/*        20  !   GP          !   Generateur PROMO */
-/*        21  !   TN          !   Usinage par copiage numerique */
-/*        22  !   GM          !   Gestion des modeles */
-/*        23  !   GT          !   Gestion de trace */
+/*        17  !   IM          !   Interface of modeling */
+/*        18  !   GA          !   Generator APT/IFAPT */
+/*        19  !   GC          !   Generator COMPACT II */
+/*        20  !   GP          !   Generator PROMO */
+/*        21  !   TN          !   Machining by numerical copying */
+/*        22  !   GM          !   Management of models */
+/*        23  !   GT          !   Management of trace */
 /*       ---------------------------------------------------------- */
 
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*        05-05-93 : JMB ; Livraison GI93033FGR019 */
-/*        8-03-1993: STT ; AJOUT CHL10N */
-/*        31-07-92 : FCR ; GI91050G0348 : Suppression de CHTYPE */
-/*        18-06-90 : DGZ ; AJOUT EXTENSION PAR COPIAGE NUMERIQUE */
-/*        15-03-89 : DGZ ; MODIF DES APPLICATIONS POUR STANDARDS METIERS 
-*/
-/*        13-09-88 : DGZ ; AJOUT DES MODULES CC (TVCC) ET CG (CA GLOBAL) 
-*/
-/*        13-09-88 : DGZ ; AJOUT DES MODULES SET, IGES, VDA */
-/*        22-02-88 : DGZ ; CREATION VERSION ORIGINALE */
+
 /* > */
 /* ***********************************************************************
  */
 
-/*     NOMBRE D'APPLICATIONS PRISES EN COMPTE */
+/*     NUMBER OF APPLICATIONS TAKEN INTO ACCOUNT */
 
 
-/*     NOMBRES DE TYPES D'ENTITE GERES PAR STRIM 100 */
+/*     NUMBER OF ENTITY TYPES MANAGED BY STRIM 100 */
   //__s__copy(cmdlng, macetat_.chlang, cmdlng_len, 4L);
   
   return 0 ;
@@ -1737,43 +1602,41 @@ int maostrd_()
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       AFFICHAGE DU TRACE-BACK EN PHASE DE PRODUCTION */
+/*       REFINE TRACE-BACK IN PRODUCTION PHASE */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       FONCTION, SYSTEME, TRACE-BACK, AFFICHAGE, DEBUGGAGE */
+/*       FUNCTION, SYSTEM, TRACE-BACK, REFINING, DEBUG */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*       NONE */
+
+/*     OUTPUT ARGUMENTS E : */
 /*     -------------------- */
-/*       NEANT */
+/*        NONE */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       NEANT */
+/*     COMMONS USED : */
+/*     -------------- */
+/*        NONE */
 
-/*     COMMONS UTILISES : */
-/*     ------------------ */
-/*       NEANT */
-
-/*     REFERENCES APPELEES : */
-/*     --------------------- */
+/*     REFERENCES CALLED : */
+/*     ------------------- */
 /*       MADBTBK */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*       CETTE ROUTINE DOIT ETRE APPELE POUR REALISER UN AFFICHAGE */
-/*       DE TRACE-BACK EN PHASE DE PRODUCTION ET LAISSER QUAND MEME */
-/*       LA POSSIBILITE AUX TESTEURS D'OBTENIR CES TRACE-BACK DANS */
-/*       LES VERSIONS CLIENTS SI UNE DES CONTIONS SUIVANTES EST */
-/*       VERIFIEE : */
-/*       - EXISTENCE DU SYMBOLE 'STRMTRBK' */
-/*       - EXISTENCE DU FICHIER 'STRMINIT:STRMTRBK.DAT' */
+/*       THIS ROUTINE SHOULD BE CALLED TO REFINE */
+/*       TRACE-BACK IN PRODUCTION PHASE AND LEAVE TO TESTERS THE  */
+/*       POSSIBILITY TO GET TRACE-BACK IN */
+/*       CLIENT VERSIONS IF ONE OF THE FOLLOWING CONDITIONS IS */
+/*       VERIFIED : */
+/*       - EXISTENCE OF SYMBOL 'STRMTRBK' */
+/*       - EXISTENCE OF FILE 'STRMINIT:STRMTRBK.DAT' */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       26-07-90 : DGZ ; CREATION DE LA VERSION ORIGINALE */
+
 /* > */
 /* ***********************************************************************
  */
@@ -1807,146 +1670,134 @@ int maoverf_(integer *nbentr,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       Initialisation en overflow d'un tableau en DOUBLE PRECISION */
+/*       Initialisation in overflow of a tableau with DOUBLE PRECISION */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       MANIPULATION, MEMOIRE, INITIALISATION, OVERFLOW */
+/*       MANIPULATION, MEMORY, INITIALISATION, OVERFLOW */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     -------------------- */
-/*       NBENTR : Nombre d'entrees du tableau */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*       NBENTR : Number of entries in the table */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       DATBLE : Tableau double precision initialise en overflow */
-
-/*     COMMONS UTILISES : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------ */
-/*       R8OVR contenu dans l'include MAOVPAR.INC */
+/*       DATBLE : Table double precision initialized in overflow */
 
-/*     REFERENCES APPELEES : */
+/*     COMMONS USED : */
+/*     ------------------ */
+/*       R8OVR contained in the include MAOVPAR.INC */
+
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 /*       MCRFILL */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*       1) Doc. programmeur : */
+/*       1) Doc. programmer : */
 
-/*       Cette routine initialise a l'overflow positif un tableau en */
+/*       This routine initialized to positive overflow a table with */
 /*       DOUBLE PRECISION. */
 
-/*       Les autres types de tableaux (INTEGER*2, INTEGER, REAL, ...) */
-/*       ne sont pas geres par la routine. */
+/*       Other types of tables (INTEGER*2, INTEGER, REAL, ...) */
+/*       are not managed by the routine. */
 
-/*       Elle est utilisable en phase de developpement pour deceler les */
-/*       erreurs d'initialisation. */
+/*       It is usable in phase of developpement to detect the */
+/*       errors of initialization. */
 
-/*       En version officielle, ses appels seront desactives. */
+/*       In official version, these calls will be inactive. */
 
-/*       ACCES : Sur accord avec AC. */
+/*       ACCESs : Agreed with AC. */
 
-/*       La routine ne renvoie pas de code d'erreur. */
+/*       The routine does not return error code. */
 
-/*       L'argument NBELEM doit etre positif. */
-/*       S'il est negatif ou nul, affichage du message "MAOVERF : NBELEM =
- */
-/*       valeur_de_NBELEM" et d'un Trace Back par l'appel a la routine */
-/*       MAOSTRB. */
+/*       Argument NBELEM should be positive. */
+/*       If it is negative or null, display message "MAOVERF : NBELEM = */
+/*       valeur_de_NBELEM" and a Trace Back by the call of routine MAOSTRB. */
 
 
-/*       2) Doc. concepteur : */
+/*       2) Doc. designer  : */
 
-/*                  L'idee est de minimiser le nombre d'appels a */
-/*                la routine de transfert de zones numeriques, */
-/*   ----------   pour des raisons de performances. */
-/*  !  buffer  !    Pour cela, on se reserve un tableau de NLONGR */
-/*  !__________!  DOUBLE PRECISIONs. Ce buffer est initialise par */
-/*  <---------->  l'instruction DATA. L'overflow est accede dans un */
-/*    NLONGR*8    COMMON specifique et non par une routine car */
-/*                l'initialisation se fait par DATA. */
+/*                  The idea is to minimize the number of calls */
+/*                to the routine of transfer of numeric zones, */
+/*   ----------   for the reason of performance. */
+/*  !  buffer  !    For this a table of NLONGR 
+/*  !__________!  DOUBLE PRECISIONs is reserved. This buffer is initialized by */
+/*  <---------->  the instruction DATA. The overflow is accessed in a  */
+/*    NLONGR*8    specific COMMON not by a routine as */
+/*                the initialisation is done by DATA. */
 
-/*                * Si NBENTR<NLONGR, une partie du buffer est transferee 
-*/
-/*     DTABLE     dans DTABLE. */
+/*                * If NBENTR<NLONGR, a part of the buffer is transfered*/
+/*     DTABLE     in DTABLE. */
 /*   __________ */
-/*  !  amorce  !  * Sinon, tout le buffer est transfere dans DTABLE. */
-/*  !__________!  C'est l'amorce. Puis on execute une boucle qui a chaque 
+/*  !  amorce  !  * Otherwise, the entire buffer is transfered in DTABLE. */
+/*  !__________!  This initiates it. Then a loop is execute, which at each  
 */
-/*  !  temps 1 !  iteration transfere la partie du tableau deja */
-/*  !__________!  initialisee dans celle qui ne l'a pas encore ete. La */
-/*  !          !  taille de la zone transferee par chaque appel a MCRFILL 
+/*  !  temps 1 !  iteration transfers the part of the already initialized table */
+/*  !__________!  in the one that was not yet initialized. */
+/*  !          !  The size of the zone transfered by each call to MCRFILL 
 */
-/*  !  temps 2 !  est donc de NLONGR*2**(numero_de_l'iteration). Lorsque 
+/*  !  temps 2 !  is NLONGR*2**(numero_de_l'iteration). When  
 */
-/*  !          !  la taille du tableau restant a initialiser est */
-/*  !__________!  inferieure a celle deja initialisee, on sort de la */
-/*  !          !  boucle et un dernier transfert est effectue pour */
-/*  !          !  initialiser le reste du tableau, sauf si la taille */
-/*  !          !  du tableau est du type NLONGR*2**K. */
+/*  !          !  the size of the table to be initialized is */
+/*  !__________!  less than the already initialized size, the loop is */
+/*  !          !  abandoned and thev last transfer is carried out to */
+/*  !          !  initialize the remaining table, except for the case when the size */
+/*  !          !  of the table is of type NLONGR*2**K. */
 /*  !  temps 3 ! */
-/*  !          !  * NLONGR sera egal a 19200. */
+/*  !          !  * NLONGR will be equal to 19200. */
 /*  !          ! */
 /*  !          ! */
 /*  !__________! */
 /*  !  reste   ! */
 /*  !__________! */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     05-03-93 : JMB ; Prise en compte MAOVPAR non specifique */
-/*     02-10-91 : DGZ ; Reprise et livraison */
-/*     17-08-90 : EVT ; Creation version originale. */
+
 /* > */
 /* ***********************************************************************
  */
 
-/* Inclusion de MAOVPAR.INC */
+/* Inclusion of MAOVPAR.INC */
 
-/*      CONSTANTES */
+/*      CONSTANTS */
 /*     INCLUDE MAOVPAR */
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       DEFINIT LES VALEURS LIMITES SPECIFIQUES MACHINE. */
+/*       DEFINES SPECIFIC LIMITED VALUES. */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       SYSTEME, LIMITES, VALEURS, SPECIFIQUE */
+/*       SYSTEM, LIMITS, VALUES, SPECIFIC */
 
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DEMSCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     *** ELLES NE PEUVENT PAS ETRE ECRASEES EN COURS D'EXECUTION. */
+/*     *** THEY CAN'T BE REMOVED DURING EXECUTION. */
 
-/*     *** LES VALEURS D'UNDERFLOW ET D'OVERFLOW NE PEUVENT PAS ETRE */
-/*     DEFINIES EN VALEUR DECIMALES (ERREUR A LA COMPILATION D_FLOAT) */
-/*     ON LES DEFINIT DONC EN VALEUR HEXADECIMALES */
+/*     *** THE VALUES OF UNDERFLOW AND OVERFLOW CAN'T BE  */
+/*     DEFINED IN DECIMAL VALUES (ERROR OF COMPILATION D_FLOAT) */
+/*     THEY ARE DEFINED AS HEXADECIMAL VALUES */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*     02-02-1993 : JMB ; SUPPRESSION DE LA SPECIFICITE DE L'INCLUDE */
-/*     29-08-1990 : DGZ ; AJOUT DES REELS X4OVR ET X4UND */
-/*     10-08-1990 : DGZ ; AJOUT DES FORMATS FRMR4,FRMR8,FRMR8G */
-/*     18-06-1990 : CS/DGZ ; CREATION VERSION ORIGINALE */
+
 /* > */
 /* ***********************************************************************
  */
 
 
-/*    DECLARATION DU COMMON POUR LES TYPES NUMERIQUES */
+/*    DECLARATION OF THE COMMON FOR NUMERIC TYPES */
 
 
-/*    DECLARATION DU COMMON POUR LES TYPES CARACTERES */
+/*    DECLARATION OF THE COMMON FOR CHARACTER TYPES*/
 
 
 
-/*      VARIABLES LOCALES */
+/*      LOCAL VARIABLES */
 
-/*      TABLEAUX */
+/*      TABLES */
 
 /*      DATAS */
     /* Parameter adjustments */
@@ -1954,11 +1805,11 @@ int maoverf_(integer *nbentr,
   
   /* Function Body */
   
-  /* vJMB R8OVR n est pas encore initialise, donc impossible d utiliser DATA
+  /* vJMB R8OVR IS NOT YET initialized, so impossible to use DATA
    */
   /*         DATA BUFF / NLONGR * R8OVR / */
   
-  /*    l init de BUFF n est faite qu'une fois */
+  /*    init of BUFF is done only once */
   
   if (ifois == 0) {
     for (icompt = 1; icompt <= 63; ++icompt) {
@@ -1975,14 +1826,14 @@ int maoverf_(integer *nbentr,
     AdvApp2Var_SysBase::mcrfill_(&nrest, (char *)buff, (char *)&dtable[1]);
   } else {
     
-    /* Amorce & initialisations */
+    /* Start & initialization */
     ioct = 504;
     AdvApp2Var_SysBase::mcrfill_(&ioct, (char *)buff, (char *)&dtable[1]);
     indic = 63;
     
-    /* Boucle. La borne sup. est la valeur entiere du logarithme de base 2
+    /* Loop. The upper limit is the integer value of the logarithm of base 2
      */
-    /* de NBENTR/NLONGR. */
+    /* of NBENTR/NLONGR. */
     i__1 = (integer) (log((real) (*nbentr) / (float)63.) / log((float)2.))
       ;
     for (ibid = 1; ibid <= i__1; ++ibid) {
@@ -2050,53 +1901,41 @@ int matrsym_(const char *cnmsym,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       RECUPERE LA VALEUR D'UN SYMBOLE DEFINI AU MOMENT DE */
-/*       L'INITIALISATION D'UN UTILISATEUR */
+/*       RETURN THE VALUE OF A SYMBOL DEFINED DURING THE */
+/*       INITIALISATION OF A USER */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       TRADUCTION, SYMBOLE */
+/*       TRANSLATION, SYMBOL */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*       CNMSYM : NOM DU SYMBOLE */
+/*       CNMSYM : NAME OF THE SYMBOL */
 
-/*     ARGUMENTS DE SORTIE : */
-/*     --------------------- */
-/*       CHAINE : TRADUCTION DU SYMBOLE */
-/*       LENGTH : LONGUEUR UTILE DE LA CHAINE */
-/*       IERCOD : CODE D'ERREUR */
-/*              = 0 : OK */
-/*              = 1 : SYMBOLE INEXISTANT */
-/*              = 2 : AUTRE ERREUR */
-
-/*     COMMONS UTILISES : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------ */
-/*       NEANT */
+/*       CHAINE : TRANSLATION OF THE SYMBOL */
+/*       LENGTH : USEFUL LENGTH OF THE CHAIN */
+/*       IERCOD : ERROR CODE */
+/*              = 0 : OK */
+/*              = 1 : INEXISTING SYMBOL */
+/*              = 2 : OTHER ERROR */
 
-/*     REFERENCES APPELEES : */
+/*     COMMONS USED : */
+/*     ------------------ */
+/*       NONE */
+
+/*     REFERENCES CALLED : */
 /*     --------------------- */
 /*       LIB$GET_SYMBOL,MACHDIM */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*       - CETTE ROUTINE EST SPECIFIQUE VAX */
-/*       - EN CAS D'ERREUR (IERCOD>0), CHAINE = ' ' ET LENGTH = 0 */
-/*      - SI LA VARIABLE D'ENTREE CNMSYM EST VIDE, LA ROUTINE RENVOIE IERC
-OD=1*/
-
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/* SGI_H  16-04-91 : CSO ; CORRECTION CAS SYMBOLE INEXISTANT ==> IERCOD=1 
-*/
-/* SGI_   07-01-91 : SVN ; MODIF IERCOD NE DOIT PAS DEPASSER 2 */
-/*                        CHAINEVIDE VAUT CARACTERE BLANC */
-/*       22-02-88 : DGZ ; CREATION DE LA VERSION ORIGINALE */
-/*       07-09-88 : SGI_H : CS; SOUS UNIX SYMBOLE=NOM LOGIQUE = VARIABLE 
-*/
-/*                           ==> idem MAGTLOG */
+/*       - THIS ROUTINE IS VAX SPECIFIC */
+/*       - IN CASE OF ERROR (IERCOD>0), CHAIN = ' ' AND LENGTH = 0 */
+/*       - IF THE INPUT VARIABLE CNMSYM IS EMPTY, THE ROUTINE RETURNS IERCOD=1*/
 /* > */
 /* ***********************************************************************
  */
@@ -2125,7 +1964,7 @@ OD=1*/
   
   /* ***********************************************************************
    */
-  /*     TRAITEMENT DES ERREURS */
+  /*     ERROR PROCESSING */
   /* ***********************************************************************
    */
   
@@ -2161,58 +2000,48 @@ int mcrcomm_(integer *kop,
 /************************************************************************
 *******/
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        ALLOCATION DYNAMIQUE SUR COMMON */
+/*        DYNAMIC ALLOCATION ON COMMON */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        . ALLOCDYNAMIQUE,MEMOIRE,COMMON,ALLOC */
+/*        . ALLOCDYNAMIQUE, MEMORY, COMMON, ALLOC */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
 /*        KOP    : (1,2) = (ALLOCATION,DESTRUCTION) */
-/*        NOCT   : NOMBRE D'OCTETS */
+/*        NOCT   : NUMBER OF OCTETS */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*        IADR   : ADRESSE EN MEMOIRE DU PREMIER OCTET */
+/*        IADR   : ADDRESS IN MEMORY OF THE FIRST OCTET */
 /*        *      : */
 /*        *      : */
-/*        IERCOD : CODE D'ERREUR */
+/*        IERCOD : ERROR CODE */
 
 /*        IERCOD = 0 : OK */
-/*        IERCOD > 0 : ERREUR GRAVE */
+/*        IERCOD > 0 : CRITICAL ERROR  */
 /*        IERCOD < 0 : WARNING */
-/*        IERCOD = 1 : DESCRIPTION DE L'ERREUR */
-/*        IERCOD = 2 : DESCRIPTION DE L'ERREUR */
+/*        IERCOD = 1 : ERROR DESCRIPTION */
+/*        IERCOD = 2 : ERROR DESCRIPTION */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
 /*    CRGEN2 */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ---------------------- */
 
 /*     Type  Name */
 /*           MCRLOCV */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/*   ATTENTION .... ITAB ET NTAB NE SONT PAS SAUVEGARDES ENTRE 2 APPELS.. 
+/*   ATTENTION .... ITAB ARE NTAB NOT SAVED BETWEEN 2 CALLS.. 
 */
-
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*       04-11-89 : CR ; AJOUT DE OPTIONS /CHECK=NOBOUNDS. */
-/*     16-05-89 : DGZ; SUPPRESSION DU COMMON CRGEN2 */
-/*     02-05-88 : PP ; AJOUT DE COMMENTAIRES */
-/*     20-01-88 : JPF; MAXCOM DE 500 --> 250 */
-/*     09-12-85 : BF ; UTILISE LES ROUTINES STANDARDS */
-/*     08-11-85 : BF ; BUG SUR DEPLACEMENT TROU */
-/*     07-11-85 : BF ; VERSION D'ORIGINE */
 
 /* > */
 /* ***********************************************************************
@@ -2220,11 +2049,11 @@ int mcrcomm_(integer *kop,
 
 /* JPF  PARAMETER ( MAXNUM = 40 , MAXCOM = 500 * 1024 ) */
 
-/*  ITAB : TABLE DE GESTION DE DTAB, ZONE DE MEMOIRE ALLOUABLE . */
-/*  NTAB : NOMBRE D'ALLOCS REALISEES . */
-/*     FORMAT DE ITAB : NOMBRE DE REAL*8 ALLOUES , ADRESSE DU 1ER REAL*8 
+/*  ITAB : TABLE OF MANAGEMENT OF DTAB, ALLOCATED MEMORY ZONE . */
+/*  NTAB : NUMBER OF COMPLETED ALLOCATIONS. */
+/*     FORMAT OF ITAB : NUMBER OF ALLOCATED REAL*8, ADDRESS OF THE 1ST REAL*8 
 */
-/*                      , NOCT , ADRESSE VIRTUELLE */
+/*                      , NOCT , VIRTUAL ADDRESS */
 
 /* PP      COMMON / CRGEN2 / DTAB */
 
@@ -2234,7 +2063,7 @@ int mcrcomm_(integer *kop,
 
   *ier = 0;
   
-  /*  ALLOCATION : RECHERCHE D'UN TROU */
+  /*  ALLOCATION : FIND A HOLE */
   
   if (*kop == 1) {
     *iadr = 0;
@@ -2260,7 +2089,7 @@ int mcrcomm_(integer *kop,
 	ideb = 32001;
       }
       if ((ideb - ipre) << 3 >= *noct) {
-	/*   ON A TROUVE UN TROU */
+	/*  A HOLE WAS FOUND */
 	i__2 = i__;
 	for (j = ntab; j >= i__2; --j) {
 	  for (k = 1; k <= 4; ++k) {
@@ -2280,13 +2109,13 @@ int mcrcomm_(integer *kop,
       /* L1001: */
     }
     
-    /*  PAS DE TROU */
+    /*  NO HOLE */
     
     *ier = 3;
     goto L9900;
     
     /* ----------------------------------- */
-    /*  DESTRUCTION DE L'ALLOCATION NUM : */
+    /*  DESTRUCTION OF THE ALLOCATION NUM : */
     
   } else {
     i__1 = ntab;
@@ -2297,7 +2126,7 @@ int mcrcomm_(integer *kop,
       if (*iadr != itab[(i__ << 2) - 1]) {
 	goto L2001;
       }
-      /*  ON A TROUVE L'ALLOCATION A SUPPRIMER */
+      /*  THE ALLOCATION TO BE REMOVED WAS FOUND */
       i__2 = ntab;
       for (j = i__ + 1; j <= i__2; ++j) {
 	for (k = 1; k <= 4; ++k) {
@@ -2312,7 +2141,7 @@ int mcrcomm_(integer *kop,
       ;
     }
     
-    /*        L'ALLOCATION N'EXISTE PAS */
+    /*        THE ALLOCATION DOES NOT EXIST */
     
     *ier = 4;
     /* PP         GOTO 9900 */
@@ -2337,161 +2166,115 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
   static doublereal xbid;
   static integer noct, iver, ksys, i__, n, nrang, 
   ibyte, ier;
-  static long int iadfd,  iadff, iaddr, loc; /* Les adrresses en long*/
+  static long int iadfd,  iadff, iaddr, loc; /* Long adDresses*/
   static integer kop;
   
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        DESTRUCTION D'UNE ALLOCATION DYNAMIQUE */
+/*        DESTRUCTION OF A DYNAMIC ALLOCATION */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        SYSTEME, ALLOCATION, MEMOIRE, DESTRUCTION */
+/*        SYSTEM, ALLOCATION, MEMORY, DESTRUCTION */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        IUNIT  : NOMBRE D'OCTETS DE L'UNITE D'ALLOCATION */
-/*        ISIZE  : NOMBRE D'UNITES DEMANDEES */
-/*        T      : ADRESSE DE REFERENCE */
-/*        IOFSET : DECALAGE */
+/*        IUNIT  : NUMBER OF OCTETS OF THE ALLOCATION UNIT */
+/*        ISIZE  : NUMBER OF UNITS REQUIRED */
+/*        T      : REFERENCE ADDRESS */
+/*        IOFSET : OFFSET */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        IERCOD : CODE D'ERREUR */
+/*        IERCOD : ERROR CODE */
 /*               = 0 : OK */
-/*               = 1 : PB DE DE-ALLOCATION D'UNE ZONE ALLOUEE EN COMMON */
-/*               = 2 : LE SYSTEME REFUSE LA DEMANDE DE DE-ALLOCATION */
-/*               = 3 : L'ALLOCATION A DETRUIRE N'EXISTE PAS. */
+/*               = 1 : PB OF DE-ALLOCATION OF A ZONE ALLOCATED IN COMMON */
+/*               = 2 : THE SYSTEM REFUSES TO DEMAND DE-ALLOCATION */
+/*               = 3 : THE ALLOCATION TO BE DESTROYED DOES NOT EXIST. */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
 
-/*     REFERENCES APPELEES   : */
-/*     ---------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
 /*     1) UTILISATEUR */
 /*        ----------- */
 
-/*       MCRDELT FAIT UNE LIBERATION DE ZONE MEMOIRE ALLOUEE */
-/*       PAR LA ROUTINE MCRRQST (OU CRINCR) */
+/*       MCRDELT FREES ALLOCATED MEMORY ZONE */
+/*       BY ROUTINE MCRRQST (OR CRINCR) */
 
-/*       LA SIGNIFICATION DES ARGUMENTS EST LA MEME QUE MCRRQST */
+/*       THE MEANING OF ARGUMENTS IS THE SAME AS MCRRQST */
 
 /* *** ATTENTION : */
 /*     ----------- */
-/*     IERCOD=2 : CAS OU LE SYSTEME NE PEUT LIBERER LA MEMOIRE ALLOUEE, */
-/*     LE MESSAGE SUIVANT APPARAIT SYSTEMATIQUEMENT SUR LA CONSOLE */
-/*     ALPHA : */
-/*     "Le systeme refuse une destruction d'allocation de memoire" */
+/*     IERCOD=2 : CASE WHEN THE SYSTEM CANNOT FREE THE ALLOCATED MEMORY, */
+/*     THE FOLLOWING MESSAGE APPEARS SYSTEMATICALLY ON CONSOLE ALPHA : */
+/*     "THe system refuseS destruction of memory allocation" */
 
-/*     IERCOD=3 CORRESPOND AU CAS OU LES ARGUMENTS SONT MAUVAIS */
-/*     (ILS NE PERMETTENT PAS DE RECONNAITRE L'ALLOCATION DANS LA TABLE) 
+/*     IERCOD=3 CORRESPONDS TO THE CASE WHEN THE ARGUMENTS ARE NOT CORRECT */
+/*     (THEY DO NOT ALLOW TO RECOGNIZE THE ALLOCATION IN THE TABLE) 
 */
 
-/*     Lorsque l'allocation est detruite, l'IOFSET correspondant est mis 
-*/
-/*     a 2 147 483 647. Ainsi, si on accede au tableau via l'IOFSET, un */
-/*     trap se produira. Ceci permet de verifier qu'on ne se sert plus */
-/*     d'une zone de memoire qu'on a liberee. Cette verification n'est */
-/*     valable que si c'est le meme sous-programme qui utilise et qui */
-/*     detruit l'allocation. */
+/*     When the allocation is destroyed, the corresponding IOFSET is set to */
+/*     2 147 483 647. So, if one gets access to the table via IOFSET, there is  */
+/*     a trap. This allows to check that the freed memory zone is not usede. This verification is */
+/*     valid only if the same sub-program uses and destroys the allocation. */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*    05-03-93 : FCR : DMSF52088 : On prend les memes et on recommence ...
-*/
-/*                      IERCOD = 3 et I4UND. */
-/*     22-02-93 : FCR : Pour TOYOTA : Desactivation de l'affectation de */
-/*                      l'IOFSET a I4UND et suppression de IERCOD = 3. */
-/*     10-02-93 : FCR ; DMSFRO253 : Ajout d'un appel a MAERMSG si IERCOD 
-*/
-/*                      = 3 */
-/*     22-01-93 : FCR ; DMSF52088 : Ajout de l'IERCOD 3. */
-/*                      Ajout de l'IOFSET mis a I4UND lorsque */
-/*                      l'allocation est detruite. */
-/*     08-10-92 : FCR ; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*     08-09-92 : FCR ; Optimisation */
-/*     18-11-91 : DGZ ; APPEL MACRCHK EN PHASE DE DEVELOPPEMENT */
-/*     23-09-91 : DGZ ; RENOMME EN .FOR ET MODIFS DE COMMENTAIRES */
-/*     14-05-91 : DGZ ; SUPPRIME L'OPTION /CHECK=NBOUNDS */
-/*     21-08-90 : DGZ ; AFFICHAGE DU TRACE-BACK EN PHASE DE PRODUCTION */
-/*                      ET RENOMME EN .VAX */
-/*     22-12-89 : DGZ ; CORRECTION DE L'EN-TETE */
-/*     04-11-89 : CR ; AJOUT DE OPTIONS /CHECK=NOBOUNDS. */
-/*     11-05-89 : DGZ; CONTROLE DEBORDEMENT DE MEMOIRE */
-/*     27-06-88 : PP ; VIRE 9001 INUTILISE */
-/*     PP 26.2.88 CHANGE LE VFORMA EN MACRMSG, POUR USAGE DANS C */
-/*     09-01-87 : BF ; ALLOCATIONS SYSTEME */
-/*     03-11-86 : BF ; RAJOUTE STATISTIQUES */
-/*     09-12-85 : BF ; UTILISE LES ROUTINES STANDARDS */
-/*     09-12-85 : BF ; PLUS D'ERREUR SI L'ALLOCATION N'EXISTE PAS */
-/*     07-11-85 : BF ; VERSION D'ORIGINE */
 /* > */
 /* ***********************************************************************
  */
 
-/* COMMON DES PARAMETRES */
+/* COMMON OF PARAMETERS */
 
-/* COMMON DES STATISTIQUES */
+/* COMMON OF STATISTICS */
 /*     INCLUDE MCRGENE */
 
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        TABLE DE GESTION DES ALLOCATIONS DYNAMIQUES DE MEMOIRE */
+/*       TABLE OF MANAGEMENT OF DYNAMIC ALLOCATIONS IN MEMORY */
 
-/*     MOTS CLES : */
+/*     KEYWORS : */
 /*     ----------- */
-/*        SYSTEME, MEMOIRE, ALLOCATION */
+/*       SYSTEM, MEMORY, ALLOCATION */
 
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DEMSCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       23-11-93 : FCR; AF93125U3A007 : MAXCR 200 --> 1000 */
-/*       08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*       25-09-91 : DGZ; AJOUT INFOs SUPPLEMENTAIREs POUR GESTION FLAGS */
-/*       18-01-91 : DGZ; MAXCR PASSE DE 100 A 200 SUR DEMANDE GDD */
-/*       18-05-90 : DGZ; DECLARATION TYPE INTEGER POUR MAXCR */
-/*       20-06-88 : PP ; MAXCR PASSE DE 50 A 100, SUR DEMANDE OG */
-/*                       + AJOUT DE COMMENTAIRES */
-/*       26-02-88 : PP ; MAXCR PASSE DE 40 A 50, SUR DEMANDE AB . */
-/*       15-04-85 : BF ; VERSION D'ORIGINE */
+
 /* > */
 /* ***********************************************************************
  */
-
-/*   ICORE : TABLE DES ALLOCS EXISTANTES, AVEC POUR CHACUNE : */
-/*         1 : NIVEAU DE PROTECTION (0=PAS PROTEGE, AUTRE=PROTEGE) */
-/*             (PROTEGE SIGNIFIE PAS DETRUIT PAR CRRSET .) */
-/*         2 : UNITE D'ALLOCATION */
-/*         3 : NB D'UNITES ALLOUEES */
-/*         4 : ADRESSE DE REFERENCE DU TABLEAU */
+/*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
+/*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
+/*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
+/*         2 : UNIT OF ALLOCATION */
+/*         3 : NB OF ALLOCATED UNITS */
+/*         4 : REFERENCE ADDRESS OF THE TABLE */
 /*         5 : IOFSET */
-/*         6 : NUMERO ALLOCATION STATIQUE */
-/*         7 : Taille demandee en allocation */
-/*         8 : adresse du debut de l'allocation */
-/*         9 : Taille de la ZONE UTILISATEUR */
-/*        10 : ADRESSE DU FLAG DE DEBUT */
-/*        11 : ADRESSE DU FLAG DE FIN */
-/*        12 : Rang de creation de l'allocation */
+/*         6 : STATIC ALLOCATION NUMBER */
+/*         7 : Required allocation size */
+/*         8 : address of the beginning of allocation */
+/*         9 : Size of the USER ZONE */
+/*        10 : ADDRESS of the START FLAG */
+/*        11 : ADDRESS of the END FLAG */
+/*        12 : Rank of creation of the allocation */
 
-/*   NDIMCR : NBRE DE DONNEES DE CHAQUE ALLOC DANS ICORE */
-/*   NCORE : NBRE D'ALLOCS EN COURS */
-/*   LPROT : COMMUNICATION ENTRE CRPROT ET MCRRQST, REMIS A 0 PAR MCRRQST 
-*/
-/*   FLAG  : VALEUR DU FLAG UTILISE POUR LES DEBORDEMENTS */
+/*   NDIMCR : NB OF DATA OF EACH ALLOC IN ICORE */
+/*   NCORE : NB OF CURRENT ALLOCS */
+/*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
+/*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
 
 
@@ -2499,13 +2282,13 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
  */
 
 
-/*     20-10-86 : BF ; VERSION D'ORIGINE */
+/*     20-10-86 : BF ; INITIAL VERSION  */
 
 
-/*     NRQST : NOMBRE D'ALLOCATIONS EFFECTUEES */
-/*     NDELT : NOMBRE DE LIBERATIONS EFFECTUEES */
-/*     NBYTE : NOMBRE TOTAL D'OCTETS DES ALLOCATIONS */
-/*     MBYTE : NOMBRE MAXI D'OCTETS */
+/*     NRQST : NUMBER OF ALLOCATIONS  */
+/*     NDELT : NUMBER OF LIBERATIONS */
+/*     NBYTE : TOTAL NUMBER OF OCTETS OF ALLOCATIONS */
+/*     MBYTE : MAX NUMBER OF OCTETS */
 
     /* Parameter adjustments */
     --t;
@@ -2513,7 +2296,7 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
     /* Function Body */
     *iercod = 0;
 
-/* RECHERCHE DANS MCRGENE */
+/* SEARCH IN MCRGENE */
 
     n = 0;
     mcrlocv_((long int)&t[1], (long int *)&loc);
@@ -2529,13 +2312,13 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
     }
 L1100:
 
-/* SI L'ALLOCATION N'EXISTE PAS , ON SORT */
+/* IF THE ALLOCATION DOES NOT EXIST, LEAVE */
 
     if (n <= 0) {
 	goto L9003;
     }
 
-/* ALLOCATION RECONNUE : ON RECUPERE LES AUTRES INFOS */
+/* ALLOCATION RECOGNIZED : RETURN OTHER INFOS */
 
     ksys = mcrgene_.icore[n * 12 - 7];
     ibyte = mcrgene_.icore[n * 12 - 6];
@@ -2544,7 +2327,7 @@ L1100:
     iadff = mcrgene_.icore[n * 12 - 2];
     nrang = mcrgene_.icore[n * 12 - 1];
 
-/*     Controle des flags */
+/*     Control of flags */
 
     madbtbk_(&iver);
     if (iver == 1) {
@@ -2552,25 +2335,25 @@ L1100:
     }
 
     if (ksys <= 1) {
-/* DE-ALLOCATION SUR COMMON */
+/* DE-ALLOCATION ON COMMON */
 	kop = 2;
 	mcrcomm_(&kop, &ibyte, &iaddr, &ier);
 	if (ier != 0) {
 	    goto L9001;
 	}
     } else {
-/* DE-ALLOCATION SYSTEME */
+/* DE-ALLOCATION SYSTEM */
 	mcrfree_((integer *)&ibyte, (uinteger *)&iaddr, (integer *)&ier);
 	if (ier != 0) {
 	    goto L9002;
 	}
     }
 
-/* APPEL PERMETTANT LE CANCEL WATCH AUTOMATQUE PAR LE DEBUGGER */
+/* CALL ALLOWING TO CANCEL AUTOMATIC WATCH BY THE DEBUGGER */
 
     macrclw_(&iadfd, &iadff, &nrang);
 
-/* MISE A JOUR DES STATISTIQUES */
+/* UPDATE OF STATISTICS */
     if (ksys <= 1) {
 	i__ = 1;
     } else {
@@ -2580,7 +2363,7 @@ L1100:
     mcrstac_.nbyte[i__ - 1] -= mcrgene_.icore[n * 12 - 11] * 
 	    mcrgene_.icore[n * 12 - 10];
 
-/* SUPPRESSION DES PARAMETRES DANS MCRGENE */
+/* REMOVAL OF PARAMETERS IN MCRGENE */
     if (n < 1000) {
 /*	noct = (mcrgene_1.ncore - n) * 48; */
         noct = (mcrgene_.ncore - n) * 12 * sizeof(long int);
@@ -2590,22 +2373,22 @@ L1100:
     }
     --mcrgene_.ncore;
 
-/* *** Mise a l'overflow de l'IOFSET */
+/* *** Set to overflow of IOFSET */
     *iofset = 2147483647;
     goto L9900;
 
 /* ----------------------------------------------------------------------*
  */
-/*     TRAITEMENT DES ERREURS */
+/*     ERROR PROCESSING */
 
 L9001:
-/*  REFUS DE DE-ALLOCATION PAR LA ROUTINE 'MCRCOMM' (ALLOC DS COMMON) */
+/*  REFUSE DE-ALLOCATION BY ROUTINE 'MCRCOMM' (ALLOC DS COMMON) */
     *iercod = 1;
     AdvApp2Var_SysBase::maermsg_("MCRDELT", iercod, 7L);
     maostrd_();
     goto L9900;
 
-/*  REFUS DE DE-ALLOCATION PAR LE SYSTEME */
+/*  REFUSE DE-ALLOCATION BY THE SYSTEM */
 L9002:
     *iercod = 2;
     AdvApp2Var_SysBase::maermsg_("MCRDELT", iercod, 7L);
@@ -2613,7 +2396,7 @@ L9002:
     maostrd_();
     goto L9900;
 
-/* ALLOCATION INEXISTANTE */
+/* ALLOCATION DOES NOT EXIST */
 L9003:
     *iercod = 3;
     AdvApp2Var_SysBase::maermsg_("MCRDELT", iercod, 7L);
@@ -2630,37 +2413,34 @@ L9900:
 /*
 C*********************************************************************
 C
-C     FONCTION :
+C     FUNCTION :
 C     ----------
-C        Transfert une zone memoire dans une autre en gerant les 
-C        recouvrements
+C        Transfer a memory zone in another by managing intersections
 C
-C     MOTS CLES :
+C     KEYWORDS :
 C     -----------
-C        MANIPULATION, MEMOIRE, TRANSFERT, CARACTERE
+C        MANIPULATION, MEMORY, TRANSFER, CHARACTER
 C
-C     ARGUMENTS D'ENTREE :
-C     ------------------
-C        nb_car    : integer*4  nombre de caracteres a transferer.
-C        source    : zone memoire source.
+C     INPUT ARGUMENTS :
+C     -----------------
+C        nb_car    : integer*4  number of characters to transfer.
+C        source    : source memory zone.
 C             
-C     ARGUMENTS DE SORTIE :
+C     OUTPUT ARGUMENTS  :
 C     -------------------
-C        dest      : zone memeoire destination.
+C        dest      : zone memory destination.
 C
-C     COMMONS UTILISES :
+C     COMMONS USED :
 C     ----------------
 C
-C     REFERENCES APPELEES :
+C     REFERENCES CALLED :
 C     -------------------
 C
-C     DEMSCRIPTION/REMARQUES/LIMITATIONS :
+C     DEMSCRIPTION/NOTES/LIMITATIONS :
 C     -----------------------------------
 C        Routine portable UNIX (SGI, ULTRIX, BULL)
 C
-C$    HISTORIQUE DES MODIFICATIONS :
-C     ----------------------------
-C     24/01/92 : DGZ ; Recuperation de la version BULL
+
 C>
 C**********************************************************************
 */
@@ -2697,51 +2477,23 @@ int AdvApp2Var_SysBase::mcrfill_(integer *size,
 
 /*........................................................................*/
 /*                                                                        */
-/*   FONCTION :                                                           */
+/*   FUNCTION :                                                           */
 /*   ----------                                                           */
-/*               Routines de gestion de la memoire dynamique.             */
+/*               Routines for management of the dynamic memory.               */
 /*                                                                        */
-/*             Routine mcrfree                                             */
+/*             Routine mcrfree                                            */
 /*             --------------                                             */
 /*                                                                        */
-/*             Desallocation d'une zone memoire.                          */
+/*             Desallocation of a memory zone  .                          */
 /*                                                                        */
-/*             CALL MCRFREE (IBYTE,IADR,IER)                               */
+/*             CALL MCRFREE (IBYTE,IADR,IER)                              */
 /*                                                                        */
-/*             IBYTE INTEGER*4 : Nombre d'Octetes a Liberer               */
+/*             IBYTE INTEGER*4 : Nb of Octets to free                     */
 /*                                                                        */
-/*             IADR POINTEUR   : Adresse de Depart                        */
+/*             IADR POINTEUR   : Start Address                            */
 /*                                                                        */
-/*             IER  INTEGER*4  : Code de Retour                           */
+/*             IER  INTEGER*4  : Return Code                              */
 /*                                                                        */
-/*                                                                        */
-/*   MOTS CLES :                                                          */
-/*   -----------                                                          */
-/*                                                                        */
-/*   ARGUMENTS D'ENTREE :                                                 */
-/*   --------------------                                                 */
-/*                                                                        */
-/*   ARGUMENTS DE SORTIE :                                                */
-/*   ---------------------                                                */
-/*                                                                        */
-/*   COMMONS UTILISES :                                                   */
-/*   ------------------                                                   */
-/*                                                                        */
-/*   REFERENCES APPELEES :                                                */
-/*   ---------------------                                                */
-/*                                                                        */
-/*   DEMSCRIPTION/REMARQUES/LIMITATIONS :                                  */
-/*   -----------------------------------                                  */
-/*                                                                        */
-/*                      ** SPECIFIQUE SPS9 **                             */
-/*                                                                        */
-/*                                                                        */
-/*   HISTORIQUE DES MODIFICATIONS :                                       */
-/*   ------------------------------                                       */
-/*                                                                        */
-/*   07-03-86 : FS; INSERTION DE L'ENTETE STANDARD C                      */
-/*   16-09-86 : FS; MODIFICATIONS PASSAGE NIVEAU INFERIEUR                */
-/* SGI_H 05-04-90 : ACT ; ECLATEMENT DU PACKAGE CRALOC                    */
 /*                                                                        */
 /*........................................................................*/
 /*                                                                        */
@@ -2765,53 +2517,26 @@ int mcrfree_(integer *,//ibyte,
 /*                                                                        */
 /*   FONCTION :                                                           */
 /*   ----------                                                           */
-/*               Routines de gestion de la memoire dynamique.             */
+/*               Routines for management of the dynamic memory.           */
 /*                                                                        */
-/*             Routine mcrgetv                                             */
+/*             Routine mcrgetv                                            */
 /*             --------------                                             */
 /*                                                                        */
-/*               Demande d'allocation de memoire.                         */
+/*               Demand of memory allocation.                             */
 /*                                                                        */
-/*               CALL MCRGETV(IBYTE,IADR,IER)                              */
+/*               CALL MCRGETV(IBYTE,IADR,IER)                             */
 /*                                                                        */
-/*               IBYTE (INTEGER*4) Nombre de Bytes d'allocation           */
-/*                                 demandee                               */    
+/*               IBYTE (INTEGER*4) Nb of Bytes of allocation required     */    
 /*                                                                        */
-/*               IADR   (INTEGER*4) : Resultat.                           */
+/*               IADR   (INTEGER*4) : Result.                             */
 /*                                                                        */
-/*               IER (INTEGER*4)    : Code d'erreur :                     */
+/*               IER (INTEGER*4)    : Error Code    :                     */
 /*                                                                        */
 /*                   = 0  ==> OK                                          */
 /*                   = 1  ==> Allocation impossible                       */
 /*                   = -1 ==> Ofset > 2**31 - 1                           */
 /*                                                                        */
-/*   MOTS CLES :                                                          */
-/*   -----------                                                          */
-/*                                                                        */
-/*   ARGUMENTS D'ENTREE :                                                 */
-/*   --------------------                                                 */
-/*                                                                        */
-/*   ARGUMENTS DE SORTIE :                                                */
-/*   ---------------------                                                */
-/*                                                                        */
-/*   COMMONS UTILISES :                                                   */
-/*   ------------------                                                   */
-/*                                                                        */
-/*   REFERENCES APPELEES :                                                */
-/*   ---------------------                                                */
-/*                                                                        */
-/*   DEMSCRIPTION/REMARQUES/LIMITATIONS :                                  */
-/*   -----------------------------------                                  */
-/*                                                                        */
-/*                      ** SPECIFIQUE SPS9 **                             */
-/*                                                                        */
-/*                                                                        */
-/*   HISTORIQUE DES MODIFICATIONS :                                       */
-/*   ------------------------------                                       */
-/*                                                                        */
-/*   07-03-86 : FS; INSERTION DE L'ENTETE STANDARD C                      */
-/*   16-09-86 : FS; MODIFICATIONS PASSAGE NIVEAU INFERIEUR                */
-/*SGI_H 05-04-90 : ACT ; ECLATEMENT DU PACKAGE CRALOC                     */
+
 /*                                                                        */
 /*........................................................................*/
 
@@ -2854,53 +2579,46 @@ int mcrlist_(integer *ier)
 /************************************************************************
 *******/
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*   IMPRESSION DU TABLEAU DES ALLOCATIONS DYNAMIQUES EN COURS */
+/*   PRINT TABLE OF CURRENT DYNAMIC ALLOCATIONS */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*   SYSTEME, ALLOCATION, MEMOIRE, LISTE */
+/*   SYSTEM, ALLOCATION, MEMORY, LIST */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        . NEANT */
+/*        . NONE */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
 /*        *      : */
 /*        *      : */
-/*        IERCOD : CODE D'ERREUR */
+/*        IERCOD : ERROR CODE */
 
 /*        IERCOD = 0 : OK */
-/*        IERCOD > 0 : ERREUR GRAVE */
+/*        IERCOD > 0 : SERIOUS ERROR  */
 /*        IERCOD < 0 : WARNING */
-/*        IERCOD = 1 : DESCRIPTION DE L'ERREUR */
-/*        IERCOD = 2 : DESCRIPTION DE L'ERREUR */
+/*        IERCOD = 1 : ERROR DESCRIPTION */
+/*        IERCOD = 2 : ERROR DESCRIPTION */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
 /*    MCRGENE     VFORMT */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ---------------------- */
 
 /*     Type  Name */
 /*           VFORMA */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*         . NEANT */
+/*         . NONE */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     04-08-92 : HCE ; CORRECTION CTLCODE */
-/*     10-06-92 : FCR ; CORRECTION CTLCODE */
-/*     16-09-1991: FCR ; Suppression INCLUDE VFORMT */
-/*      22-12-89 : DGZ ; CORRECTION DE L'EN-TETE */
-/*     PP 26.2.88 MIS VFORMA A LA PLACE DE MCRLIST */
-/*     04-11-85 : BF ; VERSION D'ORIGINE */
+
 
 /* > */
 /* ***********************************************************************
@@ -2910,52 +2628,41 @@ int mcrlist_(integer *ier)
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        TABLE DE GESTION DES ALLOCATIONS DYNAMIQUES DE MEMOIRE */
+/*        TABLE FOR MANAGEMENT OF DYNAMIC MEMORY ALLOCATIONS */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        SYSTEME, MEMOIRE, ALLOCATION */
+/*        SYSTEM, MEMORY, ALLOCATION */
 
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DEMSCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       23-11-93 : FCR; AF93125U3A007 : MAXCR 200 --> 1000 */
-/*       08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*       25-09-91 : DGZ; AJOUT INFOs SUPPLEMENTAIREs POUR GESTION FLAGS */
-/*       18-01-91 : DGZ; MAXCR PASSE DE 100 A 200 SUR DEMANDE GDD */
-/*       18-05-90 : DGZ; DECLARATION TYPE INTEGER POUR MAXCR */
-/*       20-06-88 : PP ; MAXCR PASSE DE 50 A 100, SUR DEMANDE OG */
-/*                       + AJOUT DE COMMENTAIRES */
-/*       26-02-88 : PP ; MAXCR PASSE DE 40 A 50, SUR DEMANDE AB . */
-/*       15-04-85 : BF ; VERSION D'ORIGINE */
+
 /* > */
 /* ***********************************************************************
  */
 
-/*   ICORE : TABLE DES ALLOCS EXISTANTES, AVEC POUR CHACUNE : */
-/*         1 : NIVEAU DE PROTECTION (0=PAS PROTEGE, AUTRE=PROTEGE) */
-/*             (PROTEGE SIGNIFIE PAS DETRUIT PAR CRRSET .) */
-/*         2 : UNITE D'ALLOCATION */
-/*         3 : NB D'UNITES ALLOUEES */
-/*         4 : ADRESSE DE REFERENCE DU TABLEAU */
+/*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
+/*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
+/*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
+/*         2 : UNIT OF ALLOCATION */
+/*         3 : NB OF ALLOCATED UNITS */
+/*         4 : REFERENCE ADDRESS OF THE TABLE */
 /*         5 : IOFSET */
-/*         6 : NUMERO ALLOCATION STATIQUE */
-/*         7 : Taille demandee en allocation */
-/*         8 : adresse du debut de l'allocation */
-/*         9 : Taille de la ZONE UTILISATEUR */
-/*        10 : ADRESSE DU FLAG DE DEBUT */
-/*        11 : ADRESSE DU FLAG DE FIN */
-/*        12 : Rang de creation de l'allocation */
+/*         6 : STATIC ALLOCATION NUMBER */
+/*         7 : Required allocation size */
+/*         8 : address of the beginning of allocation */
+/*         9 : Size of the USER ZONE */
+/*        10 : ADDRESS of the START FLAG */
+/*        11 : ADDRESS of the END FLAG */
+/*        12 : Rank of creation of the allocation */
 
-/*   NDIMCR : NBRE DE DONNEES DE CHAQUE ALLOC DANS ICORE */
-/*   NCORE : NBRE D'ALLOCS EN COURS */
-/*   LPROT : COMMUNICATION ENTRE CRPROT ET MCRRQST, REMIS A 0 PAR MCRRQST 
-*/
-/*   FLAG  : VALEUR DU FLAG UTILISE POUR LES DEBORDEMENTS */
+/*   NDIMCR : NB OF DATA OF EACH ALLOC IN ICORE */
+/*   NCORE : NB OF CURRENT ALLOCS */
+/*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
+/*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
 
 
@@ -2969,7 +2676,7 @@ int mcrlist_(integer *ier)
     *ier = 0;
     //__s__copy(subrou, "MCRLIST", 7L, 7L);
 
-/*     ECRITURE DE L'EN TETE */
+/*     WRITE HEADING */
 
     nufmt = 1;
     ifmt = mcrgene_.ncore;
@@ -3033,184 +2740,145 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /* ********************************************************************** 
 */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*       REALISATION D'UNE ALLOCATION DYNAMIQUE DE MEMOIRE */
+/*       IMPLEMENTATION OF DYNAMIC MEMORY ALLOCATION */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*       SYSTEME, ALLOCATION, MEMOIRE, REALISATION */
+/*       SYSTEM, ALLOCATION, MEMORY, REALISATION */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        IUNIT  : NOMBRE D'OCTEST DE L'UNITE D'ALLOCATION */
-/*        ISIZE  : NOMBRE D'UNITES DEMANDEES */
-/*        T      : ADRESSE DE REFERENCE */
+/*        IUNIT  : NUMBER OF OCTET OF THE UNIT OF ALLOCATION */
+/*        ISIZE  : NUMBER OF UNITS REQUIRED */
+/*        T      : REFERENCE ADDRESS */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*        IOFSET : DECALAGE */
-/*        IERCOD : CODE D'ERREUR, */
+/*        IOFSET : OFFSET */
+/*        IERCOD : ERROR CODE, */
 /*               = 0 : OK */
-/*               = 1 : NBRE MAXI D'ALLOCS ATTEINT */
-/*               = 2 : ARGUMENTS INCORRECTS */
-/*               = 3 : REFUS D'ALLOCATION DYNAMIQUE */
+/*               = 1 : MAX NB OF ALLOCS REACHED */
+/*               = 2 : ARGUMENTS INCORRECT */
+/*               = 3 : REFUSED DYNAMIC ALLOCATION */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 /*       MCRGENE, MCRSTAC */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 /*       MACRCHK, MACRGFL, MACRMSG, MCRLOCV,MCRCOMM, MCRGETV */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/*     1) UTILISATEUR */
+/*     1) USER */
 /*     -------------- */
 
-/* T EST L'ADRESSE D'UN TABLEAU BANAL,IOFSET REPRESENTE LE DEPLACEMENT EN 
-*/
-/* UNITES DE IUNIT OCTETS ENTRE LA ZONE ALLOUEE ET LE TABLEAU T */
-/* IERCOD=0 SIGNALE QUE L'ALLOCATION S'EST BIEN DEROULEE ,TOUTE AUTRE */
-/* VALEUR INDIQUE UNE ANOMALIE. */
+/* T IS THE ADDRESS OF A TABLE, IOFSET REPRESENTS THE DEPLACEMENT IN */
+/* UNITS OF IUNIT OCTETS BETWEEN THE ALLOCATED ZONE AND TABLE T */
+/* IERCOD=0 SIGNALS THAT THE ALLOCATION WORKS WELL, ANY OTHER */
+/* VALUE INDICATES A BUG. */
 
-/*     EXEMPLE : */
-/*          SOIT LA DECLARATION REAL*4 T(1), DONC IUNIT=4 . */
-/*          L'APPEL A MCRRQST FAIT UNE ALLOCATION DYNAMIQUE */
-/*          ET DONNE UNE VALEUR A LA VARIABLE IOFSET, */
-/*          SI L'ON VEUT ECRIRE 1. DANS LA CINQUIEME ZONE REAL*4 */
-/*          AINSI ALLOUEE ,FAIRE: */
+/*     EXAMPLE : */
+/*          LET THE DECLARATION REAL*4 T(1), SO IUNIT=4 . */
+/*          CALL TO MCRRQST PORODUCES DYNAMIC ALLOCATION */
+/*          AND GIVES VALUE TO VARIABLE IOFSET, */
+/*          IF IT IS REQUIRED TO WRITE 1. IN THE 5TH ZONE REAL*4 */
+/*          ALLOCATED IN THIS WAY, MAKE: */
 /*          T(5+IOFSET)=1. */
 
-/*     CAS D'ERREURS : */
+/*     CASE OF ERRORS : */
 /*     --------------- */
 
-/*     IERCOD=1 : NOMBRE MAXI D'ALLOCATION ATTEINT (ACTUELLEMENT 200) */
-/*     ET LE MESSAGE SUIVANT APPARAIT SUR LA CONSOLE ALPHA : */
-/*     "Le nombre maxi d'allocation de memoire est atteint : ,N" */
+/*     IERCOD=1 : MAX NB OF ALLOCATION REACHED (ACTUALLY 200) */
+/*     AND THE FOLLOWING MESSAGE APPEARS IN THE CONSOLE ALPHA : */
+/*     "The max number of memory allocation is reached : ,N" */
 
-/*     IERCOD=2 : ARGUMENT IUNIT INCORRECT CAR DIFFERENT DE 1,2,4 OU 8 */
-/*     ET LE MESSAGE SUIVANT APPARAIT SUR LA CONSOLE ALPHA : */
-/*     "Unite d'allocation invalide : ,IUNIT" */
+/*     IERCOD=2 : ARGUMENT IUNIT INCORRECT AS IT IS DIFFERENT FROM 1,2,4 OR 8 */
+/*     AND THE FOLLOWING MESSAGE APPEARS IN THE CONSOLE ALPHA : */
+/*     "Unit OF allocation invalid : ,IUNIT" */
 
-/*     IERCOD=3 : REFUS D'ALLOCATION DYNAMIQUE (PLUS DE PLACE MEMOIRE) */
-/*     ET LE MESSAGE SUIVANT APPARAIT SUR LA CONSOLE ALPHA : */
-/*    "Le systeme refuse une allocation dynamique de memoire de N octets" 
+/*     IERCOD=3 : REFUSED DYNAMIC ALLOCATION (MORE PLACE IN MEMORY) */
+/*     AND THE FOLLOWING MESSAGE APPEARS IN THE CONSOLE ALPHA : */
+/*    "The system refuses dynamic allocation of memory of N octets" 
 */
-/*     AVEC UN AFFICHAGE COMPLET DE TOUTES LES ALLOCATIONS EFFECTUEES */
-/*     JUSQU'A PRESENT. */
+/*     with completev display of all allocations carried out till now */
 
 
-/*     2) CONCEPTEUR */
+/*     2) DESIGNER */
 /*     -------------- */
 
-/* MCRRQST FAIT UNE ALLOCATION DYNAMIQUE DE MEMOIRE VIRTUELLE SUR LA BASE 
-*/
-/* D'ENTITES DE 8 OCTETS (QUADWORDS) ,BIEN QUE L'ALLOCATION SOIT DEMANDEE 
-*/
-/* PAR UNITES DE IUNIT OCTETS (1,2,4,8). */
+/* MCRRQST MAKES DYNAMIC ALLOCATION OF VIRTUAL MEMORY ON THE BASE */
+/* OF ENTITIES OF 8 OCTETS (QUADWORDS), WHILE THE ALLOCATION IS REQUIRED BY */
+/* UNITS OF IUNIT OCTETS (1,2,4,8). */
 
-/* LA QUANTITE DEMANDEE EST IUNIT*ISIZE OCTETS,CETTE VALEUR EST ARRONDIE 
-*/
-/* POUR QUE L'ALLOCATION SOIT UN NOMBRE ENTIER DE QUADWORDS. */
+/* THE REQUIRED QUANTITY IS IUNIT*ISIZE OCTETS, THIS VALUE IS ROUNDED */
+/* SO THAT THE ALLOCATION WAS AN INTEGER NUMBER OF QUADWORDS. */
 
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     14-04-94 : JMB; Suppression message ALLOC < 16 octets */
-/*     08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*     23-09-91 : DGZ; REND LA ROUTINE PORTABLE */
-/*     22-08-90 : DGZ; CORRECTION DE L'EN-TETE */
-/*     21-08-90 : DGZ; AFFICHAGE DU TRACE_BACK EN PHASE DE PRODUCTION */
-/*     22-12-89 : DGZ; CORRECTION DE L'EN-TETE */
-/*     19-05-89 : DGZ; AJOUT DOUBLE MOT SI DECALAGE ET SUPP APPEL ACRVRF 
-*/
-/*     17-05-89 : DGZ; CALCUL DE IOFSET DANS LE CAS OU IL EST NEGATIF */
-/*     11-05-89 : DGZ; CONTROLE DES ECRASEMENTS DE ZONE MEMOIRE */
-/*     04-05-88 : PP ; CHANGE MOVFLW EN MAOVERF */
-/*     23-03-88 : PP ; CORR DE PASSAGES D'ARGUMENTS DANS MACRMSG ET MOVFLW
- */
-/*     26.2.88 PP VIRE VFORMA, ET MIS MACRMSG */
-/*     22.2.88 : PP : CHANGE I*4 EN I ET R*8 EN D P, AJOUT DE ISYST */
-/*                   ,ET VIRE LE TEST SUR IBB, A REMETTRE AVANT LIVRAISON 
-*/
-/*     09-10-1987 : Initialisation a OVERFLOW si IBB <> 0 JJM */
-/*     10-04-87 : BF ; ALLOCATIONS CADREES SUR DOUBLES MOTS */
-/*     07-11-85 : BF ; VERSION D'ORIGINE */
 
 /* > */
 /* ***********************************************************************
  */
 
-/* COMMON DES PARAMETRES */
-/* COMMON DES INFORMATIONS SUR LES STATISTIQUES */
+/* COMMON OF PARAMETRES */
+/* COMMON OF INFORMATION ON STATISTICS */
 /*     INCLUDE MCRGENE */
 
 /* ***********************************************************************
  */
-
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        TABLE DE GESTION DES ALLOCATIONS DYNAMIQUES DE MEMOIRE */
+/*        TABLE FOR MANAGEMENT OF DYNAMIC MEMORY ALLOCATIONS */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        SYSTEME, MEMOIRE, ALLOCATION */
+/*        SYSTEM, MEMORY, ALLOCATION */
 
-/*     DEMSCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DEMSCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS : */
-/*     ------------------------------ */
-/*       23-11-93 : FCR; AF93125U3A007 : MAXCR 200 --> 1000 */
-/*       08-10-92 : FCR; DMSFRO131 : Modif pour DEBUG-ALLOC */
-/*       25-09-91 : DGZ; AJOUT INFOs SUPPLEMENTAIREs POUR GESTION FLAGS */
-/*       18-01-91 : DGZ; MAXCR PASSE DE 100 A 200 SUR DEMANDE GDD */
-/*       18-05-90 : DGZ; DECLARATION TYPE INTEGER POUR MAXCR */
-/*       20-06-88 : PP ; MAXCR PASSE DE 50 A 100, SUR DEMANDE OG */
-/*                       + AJOUT DE COMMENTAIRES */
-/*       26-02-88 : PP ; MAXCR PASSE DE 40 A 50, SUR DEMANDE AB . */
-/*       15-04-85 : BF ; VERSION D'ORIGINE */
+
 /* > */
 /* ***********************************************************************
  */
 
-/*   ICORE : TABLE DES ALLOCS EXISTANTES, AVEC POUR CHACUNE : */
-/*         1 : NIVEAU DE PROTECTION (0=PAS PROTEGE, AUTRE=PROTEGE) */
-/*             (PROTEGE SIGNIFIE PAS DETRUIT PAR CRRSET .) */
-/*         2 : UNITE D'ALLOCATION */
-/*         3 : NB D'UNITES ALLOUEES */
-/*         4 : ADRESSE DE REFERENCE DU TABLEAU */
+/*   ICORE : TABLE OF EXISTING ALLOCATIONS, EACH HAVING : */
+/*         1 : LEVEL OF PROTECTION (0=NOT PROTECTED, OTHER=PROTECTED) */
+/*             (PROTECTED MEANS NOT DESTROYED BY CRRSET .) */
+/*         2 : UNIT OF ALLOCATION */
+/*         3 : NB OF ALLOCATED UNITS */
+/*         4 : REFERENCE ADDRESS OF THE TABLE */
 /*         5 : IOFSET */
-/*         6 : NUMERO ALLOCATION STATIQUE */
-/*         7 : Taille demandee en allocation */
-/*         8 : adresse du debut de l'allocation */
-/*         9 : Taille de la ZONE UTILISATEUR */
-/*        10 : ADRESSE DU FLAG DE DEBUT */
-/*        11 : ADRESSE DU FLAG DE FIN */
-/*        12 : Rang de creation de l'allocation */
+/*         6 : STATIC ALLOCATION NUMBER */
+/*         7 : Required allocation size */
+/*         8 : address of the beginning of allocation */
+/*         9 : Size of the USER ZONE */
+/*        10 : ADDRESS of the START FLAG */
+/*        11 : ADDRESS of the END FLAG */
+/*        12 : Rank of creation of the allocation */
 
-/*   NDIMCR : NBRE DE DONNEES DE CHAQUE ALLOC DANS ICORE */
-/*   NCORE : NBRE D'ALLOCS EN COURS */
-/*   LPROT : COMMUNICATION ENTRE CRPROT ET MCRRQST, REMIS A 0 PAR MCRRQST 
-*/
-/*   FLAG  : VALEUR DU FLAG UTILISE POUR LES DEBORDEMENTS */
+/*   NDIMCR : NB OF DATA OF EACH ALLOC IN ICORE */
+/*   NCORE : NB OF CURRENT ALLOCS */
+/*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
+/*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
+
 
 
 
 /* ----------------------------------------------------------------------*
  */
+/*     20-10-86 : BF ; INITIAL VERSION  */
 
 
-/*     20-10-86 : BF ; VERSION D'ORIGINE */
+/*     NRQST : NUMBER OF ALLOCATIONS  */
+/*     NDELT : NUMBER OF LIBERATIONS */
+/*     NBYTE : TOTAL NUMBER OF OCTETS OF ALLOCATIONS */
+/*     MBYTE : MAX NUMBER OF OCTETS */
 
-
-/*     NRQST : NOMBRE D'ALLOCATIONS EFFECTUEES */
-/*     NDELT : NOMBRE DE LIBERATIONS EFFECTUEES */
-/*     NBYTE : NOMBRE TOTAL D'OCTETS DES ALLOCATIONS */
-/*     MBYTE : NOMBRE MAXI D'OCTETS */
 
 /* ----------------------------------------------------------------------*
  */
@@ -3228,24 +2896,24 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 	goto L9002;
     }
 
-/* Calcul de la taille demandee par l'utilsateur */
+/* Calculate the size required by the user */
     ibyte = *iunit * *isize;
 
-/* Recheche le type de version (Phase de Production ou Version Client) */
+/* Find the type of version (Phase of Production or Version Client) */
     madbtbk_(&iver);
 
-/* Controle sur la taille allouee en phase de Production */
+/* Control allocated size in Production phase */
 
     if (iver == 1) {
 
 	if (ibyte == 0) {
 	    //s__wsle(&io___3);
-	    //do__lio(&c__9, &c__1, "Demande d'allocation nulle", 26L);
+	    //do__lio(&c__9, &c__1, "Require zero allocation", 26L);
 	    AdvApp2Var_SysBase::e__wsle();
 	    maostrb_();
 	} else if (ibyte >= 4096000) {
 	    //s__wsle(&io___4);
-	    //do__lio(&c__9, &c__1, "Demande d'allocation superieure a 4 Mega-Octets : ", 50L);
+	    //do__lio(&c__9, &c__1, "Require allocation above 4 Mega-Octets : ", 50L);
 	    //do__lio(&c__3, &c__1, (char *)&ibyte, (ftnlen)sizeof(integer));
 	    AdvApp2Var_SysBase::e__wsle();
 	    maostrb_();
@@ -3253,10 +2921,10 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 
     }
 
-/* ON CALCUL LA TAILLE DE LA ZONE UTILSATEUR (IZU) */
-/*     . ajout taille demandee par l'utilisateur (IBYTE) */
-/*     . ajout d'un delta pour alignement avec la base */
-/*     . on arrondit au multiple de 8 superieur */
+/* CALCULATE THE SIZE OF THE USER ZONE (IZU) */
+/*     . add size required by the user (IBYTE) */
+/*     . add delta for alinement with the base */
+/*     . round to multiple of 8 above */
 
   mcrlocv_((long int)&t[1], (long int *)&loc);
     izu = ibyte + loc % *iunit;
@@ -3265,16 +2933,16 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 	izu = izu + 8 - irest;
     }
 
-/* ON CALCUL LA TAILLE QUI VA ETRE DEMANDEE A LA PRIMITIVE D'ALLOC */
-/*     . ajout de la taille de la zone utilisateur */
-/*     . ajout de 8 pour un alignement de l'adresse de debut */
-/*       d'allocation sur un multiple de 8 de facon a pouvoir */
-/*       poser des flags en Double Precision sans pb d'alignement */
-/*     . ajout de 16 octets pour les deux flags */
+/* CALCULATE THE SIZE REQUIRED FROM THE PRIMITIVE OF ALLOC */
+/*     . add size of the user zone */
+/*     . add 8 for alinement of start address of */
+/*       allocation on multiple of 8 so that to be able to  */
+/*       set flags with Double Precision without other pb than alignement */
+/*     . add 16 octets for two flags */
 
     ibyte = izu + 24;
 
-/* DEMANDE D'ALLOCATION */
+/* DEMAND OF ALLOCATION */
 
     isyst = 0;
 /* L1001: */
@@ -3296,30 +2964,30 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
     }
 /*      ENDIF */
 
-/* CALCUL DES ADRESSES DES FLAGS */
+/* CALCULATE THE ADDRESSES OF FLAGS */
 
     iadfd = iaddr + 8 - iaddr % 8;
     iadff = iadfd + 8 + izu;
 
-/* CALCUL DE L'OFFSET UTILISATEUR : */
-/*     . difference entre l'adresse de depart utilisateur et */
-/*       l'adresse de la base */
-/*     . convertit cette difference dans l'unite utilisateur */
+/* CALCULATE USER OFFSET : */
+/*     . difference between the user start address and the */
+/*       base address */
+/*     . converts this difference in the user unit */
 
     lofset = iadfd + 8 + loc % *iunit - loc;
     *iofset = lofset / *iunit;
 
-/* Si phase de production alors controle des flags */
+/* If phase of production control flags */
     if (iver == 1) {
 	macrchk_();
     }
 
-/*     MISE EN PLACE DES FLAGS */
-/*     . le premier flag est mis en IADFD et le second en IADFF */
-/*     . Si phase de production alors on met a overflow la ZU */
+/*     SET FLAGS */
+/*     . the first flag is set by IADFD and the second by IADFF */
+/*     . if phase of production, set to overflow the ZU */
     macrgfl_(&iadfd, &iadff, &iver, &izu);
 
-/* RANGEMENT DES PARAMETRES DANS MCRGENE */
+/* RANGING OF PARAMETERS IN MCRGENE */
 
     ++mcrgene_.ncore;
     mcrgene_.icore[mcrgene_.ncore * 12 - 12] = mcrgene_.lprot;
@@ -3337,11 +3005,11 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 
     mcrgene_.lprot = 0;
 
-/* APPEL PERMETTANT UNE MISE EN PLACE AUTO DU SET WATCH PAR LE DEBUGGER */
+/* CALL ALLOWING AUTOIMPLEMENTATION OF THE SET WATCH BY THE DEBUGGER */
 
     macrstw_((integer *)&iadfd, (integer *)&iadff, (integer *)&mcrgene_.ncore);
 
-/* STATISTIQUES */
+/* STATISTICS */
 
     ++mcrstac_.nrqst[ksys - 1];
     mcrstac_.nbyte[ksys - 1] += mcrgene_.icore[mcrgene_.ncore * 12 - 11] * 
@@ -3354,9 +3022,9 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 
 /* ----------------------------------------------------------------------*
  */
-/*   TRAITEMENT DES ERREURS */
+/*  ERROR PROCESSING */
 
-/*  NBRE MAXI D'ALLOC ATTEINT : */
+/*  MAX NB OF ALLOC REACHED : */
 L9001:
     *iercod = 1;
     ifmt = 1000;
@@ -3365,7 +3033,7 @@ L9001:
     maostrd_();
     goto L9900;
 
-/*  AURGUMENTS INCORRECTS */
+/*  INCORRECT ARGUMENTS */
 L9002:
     *iercod = 2;
     ifmt = *iunit;
@@ -3373,7 +3041,7 @@ L9002:
     macrmsg_(subr, iercod, &ifmt, &dfmt, " ", 7L, 1L);
     goto L9900;
 
-/* LE SYSTEME REFUSE L'ALLOCATION */
+/* SYSTEM REFUSES ALLOCATION */
 L9003:
     *iercod = 3;
     ifmt = ibyte;
@@ -3418,42 +3086,35 @@ int AdvApp2Var_SysBase::mgsomsg_(const char *,//nomprg,
 C
 C*****************************************************************************
 C
-C     FONCTION : CALL MIRAZ(LENGTH,ITAB)
+C     FUNCTION : CALL MIRAZ(LENGTH,ITAB)
 C     ---------- 
 C
-C     EFFECTUE UNE REMISE A ZERO D'UN TABLEAU DE LOGICAL OU D'INTEGER.
+C     RESET TO ZERO A TABLE OF LOGIC OR INTEGER.
 C
-C     MOTS CLES :
+C     KEYWORDS :
 C     -----------
 C        RAZ INTEGER
 C
-C     ARGUMENTS D'ENTREE :
+C     INPUT ARGUMENTS  :
 C     ------------------
-C               LENGTH : NOMBRE D'OCTETS A TRANSFERER
-C               ITAB   : NOM DU TABLEAU
+C               LENGTH : NUMBER OF OCTETS TO TRANSFER
+C               ITAB   : NAME OF THE TABLE
 C
-C     ARGUMENTS DE SORTIE :
-C     --------------------
-C               ITAB   : NOM DU TABLEAU REMIS A ZERO
+C     OUTPUT ARGUMENTS  :
+C     -------------------
+C               ITAB   : NAME OF THE TABLE SET TO ZERO
 C
-C     COMMONS UTILISES   :
+C     COMMONS USED   :
 C     ----------------
 C
-C     REFERENCES APPELEES   :
-C     -----------------------
+C     REFERENCES CALLED   :
+C     ---------------------
 C
-C     DEMSCRIPTION/REMARQUES/LIMITATIONS :
+C     DEMSCRIPTION/NOTES/LIMITATIONS :
 C     -----------------------------------
 C
 C           Portable VAX-SGI
-C
-C$    HISTORIQUE DES MODIFICATIONS   :
-C     --------------------------------
-C
-C     05-04-93 : JMB ; portabilite VAX SGI
-C     06-01-86 : FS,GFa; CREATION (ADAPTATION VAX)
-CSGI_H 16-02-89 : FS ; Optimisation en C en utilisant memset
-C
+
 C>
 C***********************************************************************
 */
@@ -3504,42 +3165,37 @@ int AdvApp2Var_SysBase::msifill_(integer *nbintg,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        Effectue le transfert d'Integer d'une zone dans une autre */
+/*      transfer Integer from one  zone to another */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        TRANSFERT , ENTIER , MEMOIRE */
+/*        TRANSFER , INTEGER , MEMORY */
 
-/*     ARGUMENTS D'ENTREE : */
+/*     INPUT ARGUMENTS : */
 /*     ------------------ */
-/*        NBINTG : Nombre d'entiers */
-/*        IVECIN : vecteur d'entree */
+/*        NBINTG : Nb of integers */
+/*        IVECIN : Input vector */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        IVECOU : vecteur de sortie */
+/*        IVECOU : Output vector */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
-/*     ----------------------- */
+/*     REFERENCES CALLED   : */
+/*     --------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     26-07-89 : PCR; Declaration en * pour transfert long. nulle */
-/*                          (trap sinon). */
-/*     17-10-88 : HK ; Ecriture version originale. */
 /* > */
 /* ***********************************************************************
  */
 
-/* ___ NOCTE : Nombre d'octets a transferer */
+/* ___ NOCTE : Number of octets to transfer */
 
     /* Parameter adjustments */
     --ivecou;
@@ -3567,41 +3223,35 @@ int AdvApp2Var_SysBase::msrfill_(integer *nbreel,
 
 /*     FONCTION : */
 /*     ---------- */
-/*        Effectue le transfert de reel d'une zone dans une autre */
+/*        Transfer real from one zone to another */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        TRANSFERT , REEL , MEMOIRE */
+/*        TRANSFER , REAL , MEMORY */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     ------------------ */
-/*        NBREEL : Nombre de reels */
-/*        VECENT : vecteur d'entree */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*        NBREEL : Number of reals */
+/*        VECENT : Input vector */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        VECSOR : vecteur de sortie */
+/*        VECSOR : Output vector */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     26-07-89 : PCR; Declaration en * pour transfert long. nulle */
-/*                          (trap sinon). */
-/*     06-06-89 : HK ; Nettoyages. */
-/*     17-10-88 : HK ; Ecriture version originale */
 /* > */
 /* ***********************************************************************
  */
 
-/* ___ NOCTE : Nombre d'octets a transferer */
+/* ___ NOCTE : Nb of octets to transfer */
 
     /* Parameter adjustments */
     --vecsor;
@@ -3628,34 +3278,32 @@ int AdvApp2Var_SysBase::mswrdbg_(const char *,//ctexte,
 /* ***********************************************************************
  */
 
-/*     FONCTION : */
+/*     FUNCTION : */
 /*     ---------- */
-/*        Ecrit un message sur la console alpha si IBB>0 */
+/*        Write message on console alpha if IBB>0 */
 
-/*     MOTS CLES : */
+/*     KEYWORDS : */
 /*     ----------- */
-/*        MESSAGE,DEBUG */
+/*        MESSAGE, DEBUG */
 
-/*     ARGUMENTS D'ENTREE : */
-/*     ------------------ */
-/*        CTEXTE : Texte a ecrire */
+/*     INPUT ARGUMENTS : */
+/*     ----------------- */
+/*        CTEXTE : Text to be written */
 
-/*     ARGUMENTS DE SORTIE : */
+/*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*        Neant */
+/*        None */
 
-/*     COMMONS UTILISES   : */
+/*     COMMONS USED   : */
 /*     ---------------- */
 
-/*     REFERENCES APPELEES   : */
+/*     REFERENCES CALLED   : */
 /*     ----------------------- */
 
-/*     DESCRIPTION/REMARQUES/LIMITATIONS : */
+/*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
 
-/* $    HISTORIQUE DES MODIFICATIONS   : */
-/*     -------------------------------- */
-/*     21-11-90 : DHU; Mise au propre avant transfert a AC */
+
 /* > */
 /* ***********************************************************************
  */
@@ -3666,7 +3314,7 @@ int AdvApp2Var_SysBase::mswrdbg_(const char *,//ctexte,
 
 /* ***********************************************************************
  */
-/*                      TRAITEMENT */
+/*                      PROCESSING */
 /* ***********************************************************************
  */
 
@@ -3745,37 +3393,32 @@ int AdvApp2Var_SysBase::s__wsle ()
 /*
 C*****************************************************************************
 C
-C     FONCTION : CALL MVRIRAZ(NBELT,DTAB)
+C     FUNCTION : CALL MVRIRAZ(NBELT,DTAB)
 C     ---------- 
-C     Effectue une remise a zero d'un tableau de DOUBLE PRECISION
+C     Reset to zero a table with DOUBLE PRECISION
 C
-C     MOTS CLES :
+C     KEYWORDS :
 C     -----------
 C     MVRMIRAZ DOUBLE
 C
-C     ARGUMENTS D'ENTREE :
+C     INPUT ARGUMENTS :
 C     ------------------
-C     NBELT  : Nombre d'elements du tableau
-C     DTAB   : Tableau a initialiser a zero
+C     NBELT  : Number of elements of the table
+C     DTAB   : Table to initializer to zero
 C
-C     ARGUMENTS DE SORTIE :
+C     OUTPUT ARGUMENTS :
 C     --------------------
-C     DTAB   : Tableau remis a zero
+C     DTAB   : Table reset to zero
 C
-C     COMMONS UTILISES   :
+C     COMMONS USED  :
 C     ----------------
 C
-C     REFERENCES APPELEES   :
+C     REFERENCES CALLED   :
 C     -----------------------
 C
-C     DEMSCRIPTION/REMARQUES/LIMITATIONS :
+C     DEMSCRIPTION/NOTES/LIMITATIONS :
 C     -----------------------------------
-C
-C           
-C
-C$    HISTORIQUE DES MODIFICATIONS   :
-C     --------------------------------
-C     21-11-95 : JMF ; Creation a partir de miraz
+C     
 C
 C>
 C***********************************************************************

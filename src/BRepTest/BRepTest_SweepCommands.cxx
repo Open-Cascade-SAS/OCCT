@@ -543,7 +543,7 @@ static Standard_Integer addsweep(Draw_Interpretor& di,
 
   if (n > 2) { 
     Standard_Integer cur = 2;
-    // Lecture du Vertex
+    // Reading of Vertex
     TopoDS_Shape InputVertex(DBRep::Get(a[cur],TopAbs_VERTEX));
     Vertex = TopoDS::Vertex(InputVertex);
 //    Vertex = TopoDS::Vertex(DBRep::Get(a[cur],TopAbs_VERTEX));
@@ -552,25 +552,25 @@ static Standard_Integer addsweep(Draw_Interpretor& di,
       HasVertex = Standard_True;
     }
    
-    // Lecture de l'option de translation
+    // Reading of the translation option
     if ((n>cur) && !strcmp(a[cur],"-T")) {
       cur++;
       isT = Standard_True;
     }
 
-    // Lecture de l'option de rotation
+    // Reading of the rotation option
     if ((n>cur) && !strcmp(a[cur],"-R")) {
       cur++;
       isR = Standard_True;
     }
 
-    // loi ?
+    // law ?
     if (n>cur) {
       Standard_Integer nbreal = n-cur;
       if ( (nbreal < 4) || (nbreal % 2 != 0) ) {
 	//cout << "bad arguments ! :" <<a[cur] << endl;
 	di << "bad arguments ! :" <<a[cur] << "\n";
-      } else { //loi d'interpolation
+      } else { //law of interpolation
 	Standard_Integer ii, L= nbreal/2;
 	TColgp_Array1OfPnt2d ParAndRad(1, L);
 	for (ii=1; ii<=L; ii++, cur+=2) {
@@ -664,7 +664,7 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
   if (n>cur) {
     BRepBuilderAPI_TransitionMode Transition = BRepBuilderAPI_Transformed;
 
-    // Lecture Transition
+    // Reading Transition
     if (!strcmp(a[cur],"-C")) {
       Transition = BRepBuilderAPI_RightCorner;
       cur++;
@@ -675,7 +675,7 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
     }
     Sweep->SetTransitionMode(Transition);
   }
-  // Lecture solide ?
+  // Reading solid ?
   if ((n>cur) && (!strcmp(a[cur],"-S")) ) mksolid = Standard_True;
 
   // Calcul le resultat
@@ -746,7 +746,7 @@ static Standard_Integer simulsweep(Draw_Interpretor& di,
     Sweep->SetTransitionMode(Transition);
   }
 
-  // Calcul le resultat
+  // Calculate the result
   Sweep->Simulate(N, List);
   for (ii=1, it.Initialize(List); it.More(); it.Next(), ii++) {
     sprintf(name,"%s_%d",a[1],ii);

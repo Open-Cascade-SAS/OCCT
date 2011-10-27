@@ -18,18 +18,18 @@
 #include <GccEnt_BadQualifier.hxx>
 
 //=========================================================================
-//   Creation d un cercle tangent a une Droite L1 et a un point Point2.   +
-//                        centre sur un cercle.                           +
-//  Nous commencons par distinguer les differents cas limites que nous    +
-//  allons traiter separement.                                            +
-//  Pour le cas general:                                                  +
+//   Creation of a circle tangent to straight line L1 and a point Point2.   +
+//                        centered on a circle.                           +
+//  We start by making difference between boundary cases that will be    +
+//  processed separately.                                            +
+//  In general case:                                                  +
 //  ====================                                                  +
-//  Nous calculons les bissectrices a L1 et Point2 qui nous donnent       +
-//  l ensemble des lieux possibles des centres de tous les cercles        +
-//  tangents a L1 et Point2.                                              +
-//  Nous intersectons ces bissectrices avec le cerclee OnCirc ce qui nous +
-//  donne les points parmis lesquels nous allons choisir les solutions.   +
-//  Les choix s effectuent a partir des Qualifieurs qualifiant L1.        +
+//  We calculate bissectrices to L1 and Point2 that give us all        +
+//  all possible locations of centers of all circles        +
+//  tangent to L1 and Point2.                                              +
+//  We intersect these bissectrices with circle OnCirc which gives us +
+//  points among which we'll choose the solutions.   +
+//  The choice is made using Qualifiers of L1.        +
 //=========================================================================
 
   GccAna_Circ2d2TanOn::
@@ -69,7 +69,7 @@
   gp_Dir2d normL1(-dirL1.Y(),dirL1.X());
 
 //=========================================================================
-//   Traitement des cas limites.                                          +
+//   Processing of boundary cases.                                          +
 //=========================================================================
 
   Standard_Real Ron = OnCirc.Radius();
@@ -120,7 +120,7 @@
   }
 
 //=========================================================================
-//   Cas general.                                                         +
+//   General case.                                                         +
 //=========================================================================
 
   GccAna_LinPnt2dBisec Bis(L1,Point2);

@@ -64,7 +64,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
     theList.Append(theASI.Point(i).Face());
   }
 
-  // On ne peut pas utiliser de cylindre infini pour les ope topologiques...
+  // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
   BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
@@ -75,7 +75,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 				Radius,
 				Heigth);
 
-  // Peut-etre vaudrait-il mieux faire directement une coupe
+  // Probably it is better to make cut directly
 
   BRep_Builder B;
   TopoDS_Solid theTool;
@@ -164,7 +164,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
     }
   }
 
-  // On ne peut pas utiliser de cylindre infini pour les ope topologiques...
+  // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
   BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
@@ -200,8 +200,8 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
     return;
   }
 
-  if (nbparts >= 2) { // on garde la plus petite en parametre 
-                      // le long de l`axe
+  if (nbparts >= 2) { // preserve the smallest as parameter 
+                      // along the axis
     TopoDS_Shape tokeep;
     Standard_Real parbar,parmin = Last;
     gp_Pnt Barycentre;
@@ -214,7 +214,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
       }
     }
 
-    if (tokeep.IsNull()) { // on garde le plus proche de l`intervalle
+    if (tokeep.IsNull()) { // preserve the closest interval
 
       Standard_Real dmin = RealLast();
       for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
@@ -273,8 +273,8 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
   
   if (ok) {
     if (theOr == TopAbs_REVERSED) {
-      ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo); // on remonte
-      // On pourrait aller chercher la suivante...
+      ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo); // on reset
+      // It is possible to search for the next.
     }
     if ( ok && theOr == TopAbs_FORWARD) {
       First = theASI.Point(IndFrom).Parameter();
@@ -305,7 +305,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
     }
   }
 
-  // On ne peut pas utiliser de cylindre infini pour les ope topologiques...
+  // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
   BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
@@ -341,7 +341,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
     return;
   }
 
-  if (nbparts >= 2) { // on garde tout ce qui est au dessus de First 
+  if (nbparts >= 2) { // preserve everything above the First 
     Standard_Real parbar;
     gp_Pnt Barycentre;
     for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
@@ -397,8 +397,8 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
   Standard_Boolean ok = theASI.LocalizeAfter(thePFrom,theOr,IndFrom,IndTo);
   if (ok) {
     if (theOr == TopAbs_REVERSED) {
-      ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo); // on remonte
-      // On pourrait aller chercher la suivante...
+      ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo); // reset
+      // It is possible to find the next.
     }
     if ( ok && theOr == TopAbs_FORWARD) {
       First = theASI.Point(IndFrom).Parameter();
@@ -430,7 +430,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
     }
   }
 
-  // On ne peut pas utiliser de cylindre infini pour les ope topologiques...
+  // // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
   BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
@@ -467,7 +467,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
     return;
   }
 
-  if (nbparts >= 2) { // on garde les parties entre First et Last
+  if (nbparts >= 2) { // preserve parts between First and Last
 
     TopoDS_Shape tokeep;
     Standard_Real parbar;
@@ -516,8 +516,8 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   
   if (ok) {
     if (theOr == TopAbs_REVERSED) {
-      ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo); // on remonte
-      // on pourrait aller chercher la suivante...
+      ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo); // reset
+      // it is possible to find the next
     }
     ok = ok && theOr == TopAbs_FORWARD;
   }
@@ -526,7 +526,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
     return;
   }
 
-  // on verifie a priori la longueur du trou
+  // check a priori the length of the hole
   Standard_Integer IFNext,ITNext;
   ok = theASI.LocalizeAfter(IndTo,theOr,IFNext,ITNext);
   if (!ok) {
@@ -544,14 +544,14 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
     theList.Append(theASI.Point(i).Face());
   }
 */
-  // version pour plus de controle
+  // version for advanced control
   for (Standard_Integer i=IndFrom; i<= ITNext; i++) {
     theList.Append(theASI.Point(i).Face());
   }
 
   First = theASI.Point(IndFrom).Parameter();
 
-  // On ne peut pas utiliser de cylindre infini pour les ope topologiques...
+  //// It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
   BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
   if (PMin > Length) {
@@ -592,8 +592,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
     return;
   }
 
-  if (nbparts >= 2) { // on garde la plus petite en parametre 
-                      // le long de l`axe
+  if (nbparts >= 2) { // preserve the smallest as parameter along the axis
     TopoDS_Shape tokeep;
     Standard_Real parbar,parmin = RealLast();
     gp_Pnt Barycentre;
@@ -606,7 +605,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
       }
     }
 
-    if (tokeep.IsNull()) { // on garde le plus proche de l`intervalle
+    if (tokeep.IsNull()) { // preserve the closest interval
 
       Standard_Real dmin = RealLast();
       for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
@@ -675,7 +674,7 @@ BRepFeat_Status BRepFeat_MakeCylindricalHole::Validate ()
 {
   BRepFeat_Status thestat = BRepFeat_NoError;
   TopExp_Explorer ex(myBuilder.ResultingShape(),TopAbs_FACE);
-  if (myIsBlind) { // trou borgne
+  if (myIsBlind) { // limit of the hole
     for (; ex.More(); ex.Next()) {
       if (ex.Current().IsSame(myTopFace) ) {
 	break;
@@ -712,7 +711,7 @@ void Baryc(const TopoDS_Shape& S, gp_Pnt& B)
 
   Standard_Integer i, nbp= 0;
   for (; exp.More(); exp.Next()) {
-    // On calcule 11 points par edges no degenerees
+    // Calculate points by non-degenerated edges
     const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
     if (!BRep_Tool::Degenerated(E)) {
       C = BRep_Tool::Curve(E,L,First,Last);
@@ -735,7 +734,7 @@ void BoxParameters(const TopoDS_Shape& S,
 		   Standard_Real& parmax)
 {
 
-  // calcul des parametres d`une boite englobante selon l`axe du trou
+  // calculate the parameters of a bounding box in the direction of the axis of the hole
   Bnd_Box B;
   BRepBndLib::Add(S,B);
   Standard_Real c[6];

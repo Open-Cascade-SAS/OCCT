@@ -25,7 +25,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2    ,
 }
 
 //=========================================================================
-//   Construction d un cylindre par axe <A1> et rayon <Radius>.           +
+//   Construction of a cylinder by axis <A1> et radius <Radius>.           +
 //=========================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1     ,
@@ -39,7 +39,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1     ,
 }
 
 //=========================================================================
-//   Construction d un cylindre par un cercle <Cir>.                      +
+//   Construction of a cylinder by a circle <Cir>.                      +
 //=========================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Circ& Circ ) {
@@ -49,9 +49,9 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Circ& Circ ) {
 }
 
 //=========================================================================
-//   Construction d un cylindre par trois points <P1>, <P2>, <P3>.        +
-//   Les deux premiers points definissent l axe.                          +
-//   Le troisieme donne le rayon.                                         +
+//   Construction of a cylinder by tree points <P1>, <P2>, <P3>.         +
+//   Two first points define the axis.                                   +
+//   The third gives the radius.                                         +
 //=========================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Pnt& P1 ,

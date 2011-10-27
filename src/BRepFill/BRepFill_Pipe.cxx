@@ -98,9 +98,9 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
     new (GeomFill_CurveAndTrihedron) (TLaw);
   myLoc = new (BRepFill_Edge3DLaw) (mySpine, Loc);
   if (myLoc->NbLaw() == 0) {
-    return; // Cas degenere
+    return; // Degenerated case
   }
-  myLoc->TransformInG0Law(); // Mise en continuite
+  myLoc->TransformInG0Law(); // Set into continuity
     
   BRepFill_SectionPlacement Place(myLoc, Profile);
   myTrsf = Place.Transformation();
@@ -111,7 +111,7 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
   TheProf =  myProfile;
   TheProf.Location(Loc2.Multiplied(Loc1));
  
-  // Construit les Shape First && Last
+  // Construct First && Last Shape
   Handle(GeomFill_LocationLaw) law;
 
   gp_Mat M;
@@ -134,7 +134,7 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
 
   myLoc->Law(myLoc->NbLaw())->GetDomain(first, last);
   myLoc->Law(myLoc->NbLaw())->D0(last,M, V);
-//    try { // Pas joli mais il n'y as pas d'autre moyens de tester SetValues
+//    try { // Not good, but there are no other means to test SetValues
   fila.SetValues(M(1,1), M(1,2), M(1,3), V.X(),
 		 M(2,1), M(2,2), M(2,3), V.Y(),
 		 M(3,1), M(3,2), M(3,3), V.Z(),
@@ -330,12 +330,12 @@ TopoDS_Shape BRepFill_Pipe::Section(const TopoDS_Vertex& VSpine) const
 
 //=======================================================================
 //function : PipeLine
-//purpose  : Construit un wire par balayage d'un point
+//purpose  : Construct a wire by sweeping of a point
 //=======================================================================
 
 TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point) const
 {
- // Postionnement
+ // Postioning 
  gp_Pnt P;
  P = Point;
  P.Transform(myTrsf);
@@ -344,7 +344,7 @@ TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point) const
  Handle(BRepFill_ShapeLaw) Section = 
 	new (BRepFill_ShapeLaw) (MkV.Vertex());
 
- // Balayage
+ // Sweeping
  BRepFill_Sweep MkSw(Section, myLoc, Standard_True);
  MkSw.Build( BRepFill_Modified, GeomFill_Location, GeomAbs_C2, myDegmax, mySegmax );
  TopoDS_Shape aLocalShape = MkSw.Shape();
@@ -486,7 +486,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.Build( BRepFill_Modified, GeomFill_Location, GeomAbs_C2, myDegmax, mySegmax );
       result = MkSw.Shape();
 
-      // Reperage des elements
+      // Labeling of elements
       if (mySections.IsNull()) {
 	myFaces    = MkSw.SubShape();
 	mySections = MkSw.Sections();
@@ -582,11 +582,10 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
   return result;
 }
 
-//=======================================================================
+//============================================================================
 //function : FindEdge
-//purpose  : Recherche le numero de bande correspondant a une edge du
-//           profil.
-//=======================================================================
+//purpose  : Find the number of edge corresponding to the edge of the profile.
+//============================================================================
 
 Standard_Integer BRepFill_Pipe::FindEdge(const TopoDS_Shape& S,
 					 const TopoDS_Edge& E,
@@ -640,8 +639,7 @@ Standard_Integer BRepFill_Pipe::FindEdge(const TopoDS_Shape& S,
 
 //=======================================================================
 //function : FindVertex
-//purpose  : Recherche le numero de bande correspondant a une edge du
-//           profil.
+//purpose  : Find the number of edge corresponding to an edge of the profile.
 //=======================================================================
 
 Standard_Integer BRepFill_Pipe::FindVertex(const TopoDS_Shape& S,

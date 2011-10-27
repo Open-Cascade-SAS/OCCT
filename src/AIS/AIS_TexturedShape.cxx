@@ -399,7 +399,7 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 	    TopLoc_Location aLocation	= myFace.Location();
 
 #ifdef DEBUG
-	    cout << "J\'explore actuellement la face " << NumFace << "\n" << endl;
+	    cout << "The face is being processed" << NumFace << "\n" << endl;
 #endif
 	    Handle(Poly_Triangulation) myT = BRep_Tool::Triangulation(myFace, aLocation);
 	    // Returns  the Triangulation of  the  face. It  is a null handle if there is no triangulation.
@@ -429,7 +429,7 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 	    for (nt = 1; nt <= nnn; nt++)					
 	      {
 #ifdef DEBUG
-		cout << "On traite actuellement le triangle : "<< nt <<"\n";
+		cout << "The triangle is being processed: "<< nt <<"\n";
 #endif						
 		if (SST.Orientation(myFace) == TopAbs_REVERSED)			// if the face is "reversed"
 		  triangles(nt).Get(n1,n3,n2);						// the triangle is n1,n3,n2
@@ -437,7 +437,7 @@ void AIS_TexturedShape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 		  triangles(nt).Get(n1,n2,n3);						// the triangle is n1,n2,n3
 
 		if (TriangleIsValid (Nodes(n1),Nodes(n2),Nodes(n3)) )
-		  {	// Associates vertexNT to each node
+		  {	// vertexNT associated to each node
 		    Graphic3d_Array1OfVertexNT Points(1,3);
 		    Aspect_Array1OfEdge aretes(1,3);
 

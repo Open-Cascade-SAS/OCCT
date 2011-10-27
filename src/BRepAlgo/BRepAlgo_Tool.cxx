@@ -35,8 +35,8 @@ TopoDS_Shape BRepAlgo_Tool::Deboucle3D(const TopoDS_Shape& S,
     break;
   case TopAbs_SHELL: 
     {
-      // si le shell contient des bords libres qui n'appartiennent pas aux
-      // bord libres des bouchons ( Boundary) on l'enleve.
+      // if the shell contains free borders that do not belong to the 
+      // free borders of caps ( Boundary) it is removed.
       TopTools_IndexedDataMapOfShapeListOfShape Map;
       TopExp::MapShapesAndAncestors(S,TopAbs_EDGE,TopAbs_FACE,Map);
       
@@ -55,7 +55,7 @@ TopoDS_Shape BRepAlgo_Tool::Deboucle3D(const TopoDS_Shape& S,
   case TopAbs_COMPOUND:  
   case TopAbs_SOLID:
     {
-      // on itere sur les sous-shape et on ajoute les non vides.
+      // iterate on sub-shapes and add non-empty.
       TopoDS_Iterator it(S);
       TopoDS_Shape SubShape;
       Standard_Boolean NbSub = 0;

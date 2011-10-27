@@ -52,7 +52,7 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve
   Standard_Real S = ( Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ?  1 : -1;
 
 
-  // poles exprimes dans le repere de reference
+  // poles expressed in the reference mark
   poles->ChangeArray1()(1) = 
     gp_Pnt2d( ( UF * UF) / ( 2. * p), S *   UF            );
   poles->ChangeArray1()(2) = 
@@ -60,7 +60,7 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve
   poles->ChangeArray1()(3) = 
     gp_Pnt2d( ( UL * UL) / ( 2. * p), S *   UL            );
 
-  // on replace la bspline dans le repere de la parabole.
+  // replace the bspline in the mark of the parabola
   gp_Trsf2d Trsf;
   Trsf.SetTransformation( Prb.Axis().XAxis(), gp::OX2d());
   poles->ChangeArray1()(1).Transform( Trsf);

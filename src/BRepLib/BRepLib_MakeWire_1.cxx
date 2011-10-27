@@ -224,7 +224,7 @@ void  BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
 	    if (noCandidat) {
 	      theEdges.Clear();
 // Some Edges are not connected to first edge and the diagnosis is as follows
-// but the le "Maker" is Done() because otherwise it is not possible to return the constructed connected part...
+// but the "Maker" is Done() because otherwise it is not possible to return the constructed connected part...
 	      myError=BRepLib_DisconnectedWire;
 	    }
 	    else theEdges.Remove(itMOS.Key());

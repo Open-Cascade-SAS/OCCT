@@ -58,7 +58,7 @@ GccAna_Circ2d2TanOn::
   gp_Dir2d normL2(-dirL2.Y(),dirL2.X());
 
 //=========================================================================
-//   Traitement des cas limites.                                          +
+//   Processing of boundary cases.                                          +
 //=========================================================================
 
   Standard_Real Tol = Abs(Tolerance);
@@ -143,7 +143,7 @@ GccAna_Circ2d2TanOn::
   }
 
 //=========================================================================
-//   Cas general.                                                         +
+//   General case.                                                         +
 //=========================================================================
 
   GccAna_CircLin2dBisec Bis(C1,L2);

@@ -1,6 +1,4 @@
 // AppDef_MyLineTool.cxx
-// 24-06-96 : JPI : implementation des methodes AppDef_MyLineTool::Curvature
-//                  pour le lissage variationnel 
 
 #include <AppDef_MyLineTool.ixx>
 #include <AppDef_MultiPointConstraint.hxx>

@@ -19,7 +19,7 @@
 #endif /*__AppBlend_API*/
 
 //****************************************************
-// Fonctions permettant de changer le type des approx.
+// Functions to change the type of approx.
 //****************************************************
 
 static Standard_Boolean AppBlend_ContextSplineApprox = Standard_False;

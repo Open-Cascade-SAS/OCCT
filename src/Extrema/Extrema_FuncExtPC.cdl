@@ -13,8 +13,8 @@ private generic class FuncExtPC from Extrema
  Vec      as any)
 						     
     inherits FunctionWithDerivative from math
-    ---Purpose: Fonction permettant de rechercher les extrema de la 
-    --          distance entre un point et une courbe.
+    --- Purpose: Function to find extrema of the distance between a
+    --- point and a curve.
 
 uses    SequenceOfReal    from TColStd,
 	SequenceOfInteger from TColStd
@@ -45,47 +45,47 @@ is
     -- were not initialized.
 
     Value (me: in out; U: Real; F: out Real) returns Boolean;
-    	---Purpose: Calcul de F(U).
+    	---Purpose: Calculation of F(U).
 
     Derivative (me: in out; U: Real; DF: out Real) returns Boolean;
-    	---Purpose: Calcul de F'(U).
+    	---Purpose: Calculation of F'(U).
 
     Values (me: in out; U: Real; F,DF: out Real) returns Boolean;
-    	---Purpose: Calcul de F(U) et F'(U).
+    	---Purpose: Calculation of F(U) and F'(U).
 
     GetStateNumber (me: in out) returns Integer
-    	---Purpose: Memorise l'extremum trouve.
+    	---Purpose: Save the found extremum.
     	is redefined;
 
     NbExt (me) returns Integer
-    	---Purpose: Renvoie le nombre d'extrema trouves.
+    	---Purpose: Return the nunber of found extrema.
     raises TypeMismatch from Standard;
 
     SquareDistance (me; N: Integer) returns Real
-    	---Purpose: Renvoie la Nieme distance.
+    	---Purpose: Returns the Nth distance.
     	raises  OutOfRange from Standard,
                 TypeMismatch from Standard;
-	    	-- si N < 1 ou N > NbExt(me).
+	    	-- if N < 1 or N > NbExt(me).
 
     IsMin (me; N: Integer) returns Boolean
-    	---Purpose: Indique si la Nieme distance est un minimum.
+    	---Purpose: Shows if the Nth distance is a minimum.
     	raises  OutOfRange from Standard,
                 TypeMismatch from Standard;
-	    	-- si N < 1 ou N > NbExt(me).
+	    	-- if N < 1 or N > NbExt(me).
 
     Point (me; N: Integer) returns POnC
-    	---Purpose: Renvoie le Nieme extremum.
+    	---Purpose: Returns the Nth extremum.
     	raises  OutOfRange from Standard,
                 TypeMismatch from Standard;
-	    	-- si N < 1 ou N > NbExt(me).
+	    	-- if N < 1 or N > NbExt(me).
 
 fields
     myP    : Pnt;
     myC    : Address from Standard;
 
-    myU    : Real;          -- valeur courante
-    myPc   : Pnt;           -- point courant
-    myD1f  : Real;          -- valeur de la derivee de la fonction
+    myU    : Real;          -- current
+    myPc   : Pnt;           -- current point 
+    myD1f  : Real;          -- value of derivative of the function
 
     mySqDist: SequenceOfReal    from TColStd;
     myIsMin: SequenceOfInteger from TColStd;

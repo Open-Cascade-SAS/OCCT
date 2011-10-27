@@ -21,7 +21,7 @@
 #include <math_DirectPolynomialRoots.hxx>
 
 //=========================================================================
-//   Creation d un cercle tangent a trois cercles.                        +
+//   Creation of a circle tangent to three circles.                        +
 //=========================================================================
 
 GccAna_Circ2d3Tan::
@@ -31,7 +31,7 @@ GccAna_Circ2d3Tan::
 		     const Standard_Real         Tolerance ):
 
 //=========================================================================
-//   Initialisation des champs.                                           +
+//   Initialization of fields.                                           +
 //=========================================================================
 
   cirsol(1,16)   ,
@@ -67,7 +67,7 @@ GccAna_Circ2d3Tan::
     }
   
 //=========================================================================
-//   Traitement.                                                          +
+//   Processing.                                                          +
 //=========================================================================
 
   gp_Circ2d Cir1 = Qualified1.Qualified();

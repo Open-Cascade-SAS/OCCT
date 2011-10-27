@@ -65,39 +65,39 @@ void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
 			      const Standard_Real Uinf,
 			      const Standard_Real Usup)
 /*-----------------------------------------------------------------------------
-Fonction:
-  Recherche des valeurs de parametre u telle que:
-   - dist(P,C(u)) passe par un extremum,
+Function:
+  Find values of parameter u such as:
+   - dist(P,C(u)) pass by an extrema,
    - Uinf <= u <= Usup.
 
-Methode:
-  On procede en 3 temps:
-  1- Projection du point P dans le plan du cercle,
-  2- Calculs des u solutions dans [0.,2.*PI]:
-      Soit Pp, le point projete et
-           O, le centre du cercle;
-     2 cas:
-     - si Pp est confondu avec O, il y a une infinite de solutions;
+Method:
+  Pass 3 stages:
+  1- Projection of point P in the plane of the circle,
+  2- Calculation of u solutions in [0.,2.*PI]:
+      Let Pp, the projected point and 
+           O, the center of the circle;
+     2 cases:
+     - if Pp is mixed with 0, there is an infinite number of solutions;
        IsDone() renvoie Standard_False.
-     - sinon, 2 points sont solutions pour le cercle complet:
-       . Us1 = angle(OPp,OX) correspond au minimum,
-       . soit Us2 = ( Us1 + PI si Us1 < PI,
-                    ( Us1 - PI sinon;
-         Us2 correspond au maximum.
-  3- Calcul des extrema dans [Uinf,Usup].
+     - otherwise, 2 points are solutions for the complete circle:
+       . Us1 = angle(OPp,OX) corresponds to the minimum,
+       . let Us2 = ( Us1 + PI if Us1 < PI,
+                    ( Us1 - PI otherwise;
+         Us2 corresponds to the maximum.
+  3- Calculate the extrema in [Uinf,Usup].
 -----------------------------------------------------------------------------*/
 {
   myDone = Standard_False;
   myNbExt = 0;
 
-// 1- Projection du point P dans le plan du cercle -> Pp ...
+// 1- Projection of the point P in the plane of circle -> Pp ...
 
   gp_Pnt O = C.Location();
   gp_Vec Axe (C.Axis().Direction());
   gp_Vec Trsl = Axe.Multiplied(-(gp_Vec(O,P).Dot(Axe)));
   gp_Pnt Pp = P.Translated(Trsl);
 
-// 2- Calcul des u solutions dans [0.,2.*PI] ...
+// 2- Calculate u solutions in [0.,2.*PI] ...
 
   gp_Vec OPp (O,Pp);
   if (OPp.Magnitude() < Tol) { return; }
@@ -121,7 +121,7 @@ Methode:
   if (((Usol[1]-2*PI-Uinf) < TolU) && ((Usol[1]-2*PI-Uinf) > -TolU)) Usol[1] = Uinf;
 
 
-// 3- Calcul des extrema dans [Umin,Umax] ...
+// 3- Calculate extrema in [Umin,Umax] ...
 
   gp_Pnt Cu;
   Standard_Real Us;
@@ -156,36 +156,35 @@ void Extrema_ExtPElC::Perform (const gp_Pnt&       P,
 			       const Standard_Real Uinf, 
 			       const Standard_Real Usup)
 /*-----------------------------------------------------------------------------
-Fonction:
-  Recherche des valeurs de parametre u telle que:
-   - dist(P,C(u)) passe par un extremum,
+Function:
+  Find values of parameter u so that:
+   - dist(P,C(u)) passes by an extremum,
    - Uinf <= u <= Usup.
 
-Methode:
-  On procede en 2 temps:
-  1- Projection du point P dans le plan de l'ellipse,
-  2- Calculs des solutions:
-      Soit Pp, le point projete; on recherche les valeurs u telles que:
+Method:
+  Takes 2 steps:
+  1- Projection of point P in the plane of the ellipse,
+  2- Calculation of the solutions:
+     Let Pp, the projected point; find values u so that:
        (C(u)-Pp).C'(u) = 0. (1)
-     Soit Cos = cos(u) et Sin = sin(u),
-          C(u) = (A*Cos,B*Sin) et Pp = (X,Y);
-     Alors, (1) <=> (A*Cos-X,B*Sin-Y).(-A*Sin,B*Cos) = 0.
+     Let Cos = cos(u) and Sin = sin(u),
+          C(u) = (A*Cos,B*Sin) and Pp = (X,Y);
+     Then, (1) <=> (A*Cos-X,B*Sin-Y).(-A*Sin,B*Cos) = 0.
                     (B**2-A**2)*Cos*Sin - B*Y*Cos + A*X*Sin = 0.
-     On utilise l'algorithme math_TrigonometricFunctionRoots pour resoudre
-    cette equation.
+     Use algorithm math_TrigonometricFunctionRoots to solve this equation.
 -----------------------------------------------------------------------------*/
 {
   myDone = Standard_False;
   myNbExt = 0;
 
-// 1- Projection du point P dans le plan de l ellipse -> Pp ...
+// 1- Projection of point P in the plane of the ellipse -> Pp ...
 
   gp_Pnt O = C.Location();
   gp_Vec Axe (C.Axis().Direction());
   gp_Vec Trsl = Axe.Multiplied(-(gp_Vec(O,P).Dot(Axe)));
   gp_Pnt Pp = P.Translated(Trsl);
 
-// 2- Calculs des solutions ...
+// 2- Calculation of solutions ...
 
   Standard_Integer NoSol, NbSol;
   Standard_Real A = C.MajorRadius();
@@ -235,24 +234,24 @@ void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
 			      const Standard_Real Uinf,
 			      const Standard_Real Usup)
 /*-----------------------------------------------------------------------------
-Fonction:
-  Recherche des valeurs de parametre u telle que:
-   - dist(P,C(u)) passe par un extremum,
+Function:
+  Find values of parameter u so that:
+   - dist(P,C(u)) passes by an extremum,
    - Uinf <= u <= Usup.
 
-Methode:
-  On procede en 2 temps:
-  1- Projection du point P dans le plan de l'hyperbole,
-  2- Calculs des solutions:
-      Soit Pp, le point projete; on recherche les valeurs u telles que:
+Method:
+  Takes 2 steps:
+  1- Projection of point P in the plane of the hyperbola,
+  2- Calculation of solutions:
+      Let Pp, le point projete; on recherche les valeurs u telles que:
        (C(u)-Pp).C'(u) = 0. (1)
-     Soit R et r les rayons de l'hyperbole,
-          Chu = Cosh(u) et Shu = Sinh(u),
-          C(u) = (R*Chu,r*Shu) et Pp = (X,Y);
-     Alors, (1) <=> (R*Chu-X,r*Shu-Y).(R*Shu,r*Chu) = 0.
+      Let R and r be the radiuses of the hyperbola,
+          Chu = Cosh(u) and Shu = Sinh(u),
+          C(u) = (R*Chu,r*Shu) and Pp = (X,Y);
+     Then, (1) <=> (R*Chu-X,r*Shu-Y).(R*Shu,r*Chu) = 0.
                     (R**2+r**2)*Chu*Shu - X*R*Shu - Y*r*Chu = 0. (2)
-     Soit v = e**u;
-     Alors, en utilisant Chu = (e**u+e**(-u))/2. et Sh = (e**u-e**(-u)))/2.
+     Let v = e**u;
+     Then, by using Chu = (e**u+e**(-u))/2. and Sh = (e**u-e**(-u)))/2.
             (2) <=> ((R**2+r**2)/4.) * (v**2-v**(-2)) -
 	            ((X*R+Y*r)/2.) * v +
 	            ((X*R-Y*r)/2.) * v**(-1) = 0.
@@ -260,21 +259,20 @@ Methode:
                      ((X*R+Y*r)/2.)  * v**3 +
 		     ((X*R-Y*r)/2.)  * v    -
 		    ((R**2+r**2)/4.)        = 0.
-     On utilise l'algorithme math_DirectPolynomialRoots pour resoudre
-    cette equation en v.
+  Use algorithm math_DirectPolynomialRoots to solve this equation by v.
 -----------------------------------------------------------------------------*/
 {
   myDone = Standard_False;
   myNbExt = 0;
 
-// 1- Projection du point P dans le plan de l hyperbole -> Pp ...
+// 1- Projection of point P in the plane of hyperbola -> Pp ...
 
   gp_Pnt O = C.Location();
   gp_Vec Axe (C.Axis().Direction());
   gp_Vec Trsl = Axe.Multiplied(-(gp_Vec(O,P).Dot(Axe)));
   gp_Pnt Pp = P.Translated(Trsl);
 
-// 2- Calculs des solutions ...
+// 2- Calculation of solutions ...
 
   Standard_Real Tol2 = Tol * Tol;
   Standard_Real R = C.MajorRadius();
@@ -341,36 +339,35 @@ void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
 			      const Standard_Real Uinf,
 			      const Standard_Real Usup)
 /*-----------------------------------------------------------------------------
-Fonction:
-  Recherche des valeurs de parametre u telle que:
-   - dist(P,C(u)) passe par un extremum,
+Function:
+  Find values of parameter u so that:
+   - dist(P,C(u)) pass by an extremum,
    - Uinf <= u <= Usup.
 
-Methode:
-  On procede en 2 temps:
-  1- Projection du point P dans le plan de la parabole,
-  2- Calculs des solutions:
-      Soit Pp, le point projete; on recherche les valeurs u telles que:
+Method:
+  Takes 2 steps:
+  1- Projection of point P in the plane of the parabola,
+  2- Calculation of solutions:
+     Let Pp, the projected point; find values u so that:
        (C(u)-Pp).C'(u) = 0. (1)
-     Soit F la focale de la parabole,
-          C(u) = ((u*u)/(4.*F),u) et Pp = (X,Y);
+     Let F the focus of the parabola,
+          C(u) = ((u*u)/(4.*F),u) and Pp = (X,Y);
      Alors, (1) <=> ((u*u)/(4.*F)-X,u-Y).(u/(2.*F),1) = 0.
                     (1./(4.*F)) * U**3 + (2.*F-X) * U - 2*F*Y = 0.
-     On utilise l'algorithme math_DirectPolynomialRoots pour resoudre
-    cette equation en U.
+    Use algorithm math_DirectPolynomialRoots to solve this equation by U.
 -----------------------------------------------------------------------------*/
 {
   myDone = Standard_False;
   myNbExt = 0;
 
-// 1- Projection du point P dans le plan de la parabole -> Pp ...
+// 1- Projection of point P in the plane of the parabola -> Pp ...
 
   gp_Pnt O = C.Location();
   gp_Vec Axe (C.Axis().Direction());
   gp_Vec Trsl = Axe.Multiplied(-(gp_Vec(O,P).Dot(Axe)));
   gp_Pnt Pp = P.Translated(Trsl);
 
-// 2- Calculs des solutions ...
+// 2- Calculation of solutions ...
 
   Standard_Real F = C.Focal();
   gp_Vec OPp (O,Pp);

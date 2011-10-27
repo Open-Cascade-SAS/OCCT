@@ -18,8 +18,8 @@ FairCurve_Newton::FairCurve_Newton(math_MultipleVarFunctionWithHessian& F,
 			     mySpTol(SpatialTolerance)
 						  
 {
-// Attention cette ecriture est bancale car FairCurve_Newton::IsConverged() n'est pas
-// pas utiliser dans le constructeur de NewtonMinimum !!
+// Attention this writing is wrong as FairCurve_Newton::IsConverged() is not
+// used in the constructor of NewtonMinimum !!
 }
 
 FairCurve_Newton::FairCurve_Newton(math_MultipleVarFunctionWithHessian& F,
@@ -33,14 +33,14 @@ FairCurve_Newton::FairCurve_Newton(math_MultipleVarFunctionWithHessian& F,
 			     mySpTol(SpatialTolerance)
 						  
 {
-// C'est beaucoup mieux
+// It is much better
 }
 
 Standard_Boolean FairCurve_Newton::IsConverged() const
-// On converge si le pas est tres petits
-// ou si le critere progresse peu avec un pas raisonnable, cette derniere exigence
-// permetant de detecter les glissements infinis, 
-// (cas ou le critere varie tres lentement).
+// Convert if the steps are too small 
+// or if the criterion progresses little with a reasonable step, this last requirement
+// allows detecting infinite slidings, 
+// (case when the criterion varies troo slowly).
 {
   Standard_Real N = TheStep.Norm();
   return ( (N <= mySpTol/100 ) || 
