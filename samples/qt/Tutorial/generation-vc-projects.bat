@@ -12,8 +12,8 @@ SET PATH=%QTDIR%\bin;%PATH%
 
 qmake -tp vc -r Tutorial.pro
 
+GOTO END
 :ERR_QTDIR
 ECHO Environment variable "QTDIR" has not been defined. Abort.
-GOTO END
 
 :END
