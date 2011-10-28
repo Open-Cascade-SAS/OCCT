@@ -199,7 +199,7 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     {
       XVisualInfo aVisInfo;
       int aNbItems;
-      int isGl, isDoubleBuffer, isRGBA, aDepthSize;
+      int isGl, isDoubleBuffer, isRGBA, aDepthSize, aStencilSize;
       unsigned long aVisInfoMask = VisualIDMask | VisualScreenMask;
       aVisInfo.visualid = wattr.visual->visualid;
       aVisInfo.screen   = DefaultScreen (disp);
@@ -219,7 +219,11 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
         if (glXGetConfig (disp, vis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
           aDepthSize = 0;
 
-        if (!isGl || !aDepthSize || !isRGBA  || isDoubleBuffer != DBuffer)
+        if (glXGetConfig (disp, vis, GLX_STENCIL_SIZE, &aStencilSize) != 0)
+          aStencilSize = 0;
+
+        if (!isGl || !aDepthSize || !aStencilSize ||
+            !isRGBA  || isDoubleBuffer != DBuffer)
         {
           XFree (vis);
           vis = NULL;
@@ -231,10 +235,13 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     if (vis == NULL)
     {
       int anIter = 0;
-      int anAttribs[11];
+      int anAttribs[13];
       anAttribs[anIter++] = GLX_RGBA;
 
       anAttribs[anIter++] = GLX_DEPTH_SIZE;
+      anAttribs[anIter++] = 1;
+
+      anAttribs[anIter++] = GLX_STENCIL_SIZE;
       anAttribs[anIter++] = 1;
 
       anAttribs[anIter++] = GLX_RED_SIZE;
@@ -990,12 +997,14 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
   {
     int                   iPixelFormat = 0;
     int                   iGood = 0;
-    int                   i, j;
+    int                   i, j, k;
     PIXELFORMATDESCRIPTOR pfd0;
     char                  string[ CALL_DEF_STRING_LENGTH ];
     BOOL                  DBuffer = TRUE;
+    const int             sBits[] = { 8, 1 };
     const int             cBits[] = { 32, 24 };
     const int             dBits[] = { 32, 24, 16 };
+    int                   goodBits[3] = { 0, 0, 0 };
 
     if (call_util_osd_getenv ("CALL_OPENGL_NO_DBF",
       string, CALL_DEF_STRING_LENGTH)) 
@@ -1028,28 +1037,59 @@ __declspec( dllexport ) int __fastcall __OpenGl_INIT__ (
     pfd0.dwDamageMask    = 0;
 
     hte -> nUsed = 1;    
+    /*
+      This loop tries to find the pixel format with parameters not worse
+      than given in sBits, cBits, dBits, giving the priority to color bits
+      then depth bits, with stencil bits having the lowest priority.
+      If the needed combination is not found then the iGood value is used, it
+      is rememebered during the loop as the best ever found combination. 
+     */
 
-    for (i = 0; i < sizeof(dBits) / sizeof(int); i++) {
+    for (k = 0; k < sizeof(sBits) / sizeof(int); k++) {
 
-      pfd0.cDepthBits = dBits[i];
-      iGood = 0;
-      for (j = 0; j < sizeof(cBits) / sizeof(int); j++) {
+      pfd0.cStencilBits = sBits[k];
+      for (i = 0; i < sizeof(dBits) / sizeof(int); i++) {
 
-        pfd0.cColorBits = cBits[j];
-        iPixelFormat = ChoosePixelFormat ( hte -> hDC, &pfd0 );
+        pfd0.cDepthBits = dBits[i];
+        iGood = 0;
+        for (j = 0; j < sizeof(cBits) / sizeof(int); j++) {
 
-        if (iPixelFormat) {
-          pfd->cDepthBits = 0;
-          pfd->cColorBits = 0;
-          DescribePixelFormat (hte -> hDC, iPixelFormat,
-            sizeof ( PIXELFORMATDESCRIPTOR ), pfd);
-          if (pfd->cColorBits >= cBits[j] && pfd->cDepthBits >= dBits[i])
-            break;
-          if (iGood == 0)
-            iGood = iPixelFormat;
+          pfd0.cColorBits = cBits[j];
+          iPixelFormat = ChoosePixelFormat ( hte -> hDC, &pfd0 );
+
+          if (iPixelFormat) {
+            pfd->cDepthBits = 0;
+            pfd->cColorBits = 0;
+            pfd->cStencilBits = 0;
+            DescribePixelFormat (hte -> hDC, iPixelFormat,
+                                 sizeof ( PIXELFORMATDESCRIPTOR ), pfd);
+            if (pfd->cColorBits >= cBits[j] &&
+                pfd->cDepthBits >= dBits[i] &&
+                pfd->cStencilBits >= sBits[k])
+              break; /* found - stop the lookup immediately */
+            if (pfd->cColorBits > goodBits[0]) {
+              goodBits[0] = pfd->cColorBits;
+              goodBits[1] = pfd->cDepthBits;
+              goodBits[2] = pfd->cStencilBits;
+              iGood = iPixelFormat;
+            } else if (pfd->cColorBits == goodBits[0]) {
+              if (pfd->cDepthBits > goodBits[1]) {
+                goodBits[1] = pfd->cDepthBits;
+                goodBits[2] = pfd->cStencilBits;
+                iGood = iPixelFormat;
+              } else if (pfd->cDepthBits == goodBits[1]) {
+                if (pfd->cStencilBits > goodBits[2]) {
+                  goodBits[2] = pfd->cStencilBits;
+                  iGood = iPixelFormat;
+                }
+              }
+            }
+          }
         }
+        if (j < sizeof(cBits) / sizeof(int))
+          break;
       }
-      if (j < sizeof(cBits) / sizeof(int))
+      if (i < sizeof(dBits) / sizeof(int))
         break;
     }
 
