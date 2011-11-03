@@ -32,6 +32,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Precision.hxx>
+#include <Draw_ProgressIndicator.hxx>
 
 #ifdef WNT
 //#define strcasecmp strcmp Already defined
@@ -261,7 +262,7 @@ static Standard_Integer pcurve(Draw_Interpretor& , Standard_Integer n, const cha
 // sewing
 //=======================================================================
 
-static Standard_Integer sewing (Draw_Interpretor& , 
+static Standard_Integer sewing (Draw_Interpretor& theDi, 
 				Standard_Integer n, const char** a)
 {
   if (n < 3) return (1);
@@ -289,7 +290,6 @@ static Standard_Integer sewing (Draw_Interpretor& ,
       NonManifoldMode = Standard_True;
     ntmp--;
   }
-
   aSewing.Init(tol, Standard_True,Standard_True,Standard_True,NonManifoldMode);
   
   while (i < ntmp) {
@@ -297,10 +297,9 @@ static Standard_Integer sewing (Draw_Interpretor& ,
     aSewing.Add(sh);
     i++;
   }
-
-  aSewing.Perform();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDi, 1);
+  aSewing.Perform (aProgress);
   aSewing.Dump();
-
   const TopoDS_Shape& sh2 = aSewing.SewedShape();
   if (!sh2.IsNull()) {
     DBRep::Set(a[1], sh2);

@@ -86,7 +86,8 @@ uses
     BRepLib,
     BRepTools,
     TColStd, 
-    TColgp
+    TColgp,
+    Message
 is
 
     

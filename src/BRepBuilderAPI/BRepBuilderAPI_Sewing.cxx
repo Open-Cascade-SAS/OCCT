@@ -107,6 +107,7 @@
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_ListOfPointRepresentation.hxx>
 #include <BRep_TVertex.hxx>
+#include <Message_ProgressSentry.hxx>
 
 static void SortBox (const Handle(Bnd_HArray1OfBox) hSetBoxes,
 		     const Bnd_Box& aBox,
@@ -984,7 +985,6 @@ void BRepBuilderAPI_Sewing::EvaluateAngulars(TopTools_SequenceOfShape& sequenceS
 // Evaluate distance beetween edges with indice indRef and the following edges in the list
 // Remarks (lengSec - indRef) must be >= 1 
 //=======================================================================
-
 void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequenceSec,
                                               TColStd_Array1OfBoolean& secForward,
                                               TColStd_Array1OfReal& tabDst,
@@ -1746,8 +1746,10 @@ void BRepBuilderAPI_Sewing::Add(const TopoDS_Shape& aShape)
 #include <OSD_Timer.hxx>
 #endif
 
-void BRepBuilderAPI_Sewing::Perform()
+void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& thePI)
 {
+  const Standard_Integer aNumberOfStages = myAnalysis + myCutting + mySewing + 2;
+  Message_ProgressSentry aPS (thePI, "Sewing", 0, aNumberOfStages, 1);
 #ifdef DEB
   Standard_Real t_total = 0., t_analysis = 0., t_assembling = 0., t_cutting = 0., t_merging = 0.;
   OSD_Chronometer chr_total, chr_local;
@@ -1756,13 +1758,17 @@ void BRepBuilderAPI_Sewing::Perform()
 #endif
 
   // face analysis
-  if (myAnalysis) {
+  if (myAnalysis)
+  {
 #if DEB
     cout << "Begin face analysis..." << endl;
     chr_local.Reset();
     chr_local.Start();
 #endif
-    FaceAnalysis();
+    FaceAnalysis (thePI);
+    if (!aPS.More())
+      return;
+    aPS.Next();
 #if DEB
     chr_local.Stop();
     chr_local.Show(t_analysis);
@@ -1770,34 +1776,43 @@ void BRepBuilderAPI_Sewing::Perform()
 #endif
   }
 
-  if (myNbShapes || !myShape.IsNull()) {
+  if (myNbShapes || !myShape.IsNull())
+  {
 
     FindFreeBoundaries();
 
-    if (myBoundFaces.Extent()) {
+    if (myBoundFaces.Extent())
+    {
 
 #if DEB
       cout << "Begin vertices assembling..." << endl;
       chr_local.Reset();
       chr_local.Start();
 #endif
-      VerticesAssembling();
+      VerticesAssembling (thePI);
+      if (!aPS.More())
+        return;
+      aPS.Next();
 #if DEB
       chr_local.Stop();
       chr_local.Show(t_assembling);
       cout << "Vertices assembling finished after " << t_assembling << " s" << endl;
 #endif
-      if (myCutting) {
+      if (myCutting)
+      {
 #if DEB
-	cout << "Begin cutting..." << endl;
-	chr_local.Reset();
-	chr_local.Start();
+        cout << "Begin cutting..." << endl;
+        chr_local.Reset();
+        chr_local.Start();
 #endif
-	Cutting();
+        Cutting (thePI);
+        if (!aPS.More())
+          return;
+        aPS.Next();
 #if DEB
-	chr_local.Stop();
-	chr_local.Show(t_cutting);
-	cout << "Cutting finished after " << t_cutting << " s" << endl;
+        chr_local.Stop();
+        chr_local.Show(t_cutting);
+        cout << "Cutting finished after " << t_cutting << " s" << endl;
 #endif
       }
 #if DEB
@@ -1805,30 +1820,61 @@ void BRepBuilderAPI_Sewing::Perform()
       chr_local.Reset();
       chr_local.Start();
 #endif
-      Merging(Standard_True);
+      Merging (Standard_True, thePI);
+      if (!aPS.More())
+        return;
+      aPS.Next();
 #if DEB
       chr_local.Stop();
       chr_local.Show(t_merging);
       cout << "Merging finished after " << t_merging << " s" << endl;
 #endif
     }
+    else
+    {
+      aPS.Next( 1, Handle(TCollection_HAsciiString)());
+      if (myCutting)
+        aPS.Next( 1, Handle(TCollection_HAsciiString)());
+      aPS.Next( 1, Handle(TCollection_HAsciiString)());
+      if (!aPS.More())
+        return;
+    }
 
-    if (mySewing) {
+    if (mySewing)
+    {
 
 #if DEB
       cout << "Creating sewed shape..." << endl;
 #endif
       // examine the multiple edges if any and process sameparameter for edges if necessary
-      EdgeProcessing();
+      EdgeProcessing (thePI);
+      if (!aPS.More())
+        return;
       CreateSewedShape();
-      if (mySameParameterMode && myFaceMode) SameParameterShape();
+      if (!aPS.More())
+      {
+        mySewedShape.Nullify();
+        return;
+      }
+      if (mySameParameterMode && myFaceMode)
+        SameParameterShape();
+      if (!aPS.More())
+      {
+        mySewedShape.Nullify();
+        return;
+      }
 #if DEB
       cout << "Sewed shape created" << endl;
 #endif
     }
-    
+
     // create edge informations for output
     CreateOutputInformations();
+    if (!aPS.More())
+    {
+      mySewedShape.Nullify();
+      return;
+    }
   }
 #if DEB
   chr_total.Stop();
@@ -2120,7 +2166,7 @@ void BRepBuilderAPI_Sewing::Dump() const
 //                      myDegenerated
 //=======================================================================
 
-void BRepBuilderAPI_Sewing::FaceAnalysis()
+void BRepBuilderAPI_Sewing::FaceAnalysis(const Handle(Message_ProgressIndicator)& thePI)
 {
   if (!myShape.IsNull() && myOldShapes.IsEmpty()) {
     Add(myShape);
@@ -2131,7 +2177,8 @@ void BRepBuilderAPI_Sewing::FaceAnalysis()
   TopTools_MapOfShape SmallEdges;
   TopTools_DataMapOfShapeListOfShape GluedVertices;
   Standard_Integer i = 1;
-  for (i = 1; i <= myOldShapes.Extent(); i++) {
+  Message_ProgressSentry aPS (thePI, "Shape analysis", 0, myOldShapes.Extent(), 1);
+  for (i = 1; i <= myOldShapes.Extent() && aPS.More(); i++, aPS.Next()) {
     for (TopExp_Explorer fexp(myOldShapes(i),TopAbs_FACE); fexp.More(); fexp.Next()) {
 
       // Retrieve current face
@@ -2659,9 +2706,10 @@ static Standard_Integer IsMergedVertices(const TopoDS_Shape& face1,
 }
 
 static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVertexNode,
-				     TopTools_DataMapOfShapeListOfShape& aNodeEdges,
-				     const TopTools_IndexedDataMapOfShapeListOfShape& aBoundFaces,
-				     const Standard_Real Tolerance)
+                                     TopTools_DataMapOfShapeListOfShape& aNodeEdges,
+                                     const TopTools_IndexedDataMapOfShapeListOfShape& aBoundFaces,
+                                     const Standard_Real Tolerance,
+                                     const Handle(Message_ProgressIndicator)& theProgress)
 {
   Standard_Integer i, nbVertices = aVertexNode.Extent();
   // Create map of node -> vertices
@@ -2694,7 +2742,8 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
   }
   // Merge nearest nodes
   TopTools_IndexedDataMapOfShapeShape NodeNearestNode;
-  for (i = 1; i <= nbNodes; i++) {
+  Message_ProgressSentry aPS (theProgress, "Glueing nodes", 0, nbNodes, 1, Standard_True);
+  for (i = 1; i <= nbNodes && aPS.More(); i++, aPS.Next()) {
     TopoDS_Vertex node1 = TopoDS::Vertex(NodeVertices.FindKey(i));
     // Find near nodes
     TColStd_ListOfInteger listIndex;
@@ -2823,10 +2872,11 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
   return CreateNewNodes(NodeNearestNode,NodeVertices,aVertexNode,aNodeEdges);
 }
 
-void BRepBuilderAPI_Sewing::VerticesAssembling()
+void BRepBuilderAPI_Sewing::VerticesAssembling(const Handle(Message_ProgressIndicator)& thePI)
 {
   Standard_Integer nbVert = myVertexNode.Extent();
   Standard_Integer nbVertFree = myVertexNodeFree.Extent();
+  Message_ProgressSentry aPS (thePI, "Vertices assembling", 0, 2, 1);
   if (nbVert || nbVertFree) {
     // Fill map node -> sections
     Standard_Integer i;
@@ -2848,13 +2898,16 @@ void BRepBuilderAPI_Sewing::VerticesAssembling()
 #ifdef DEB
       cout << "Assemble " << nbVert << " vertices on faces..." << endl;
 #endif
-      while (GlueVertices(myVertexNode,myNodeSections,myBoundFaces,myTolerance));
+      while (GlueVertices(myVertexNode,myNodeSections,myBoundFaces,myTolerance, thePI));
     }
+    if (!aPS.More())
+      return;
+    aPS.Next();
     if (nbVertFree) {
 #ifdef DEB
       cout << "Assemble " << nbVertFree << " vertices on floating edges..." << endl;
 #endif
-      while (GlueVertices(myVertexNodeFree,myNodeSections,myBoundFaces,myTolerance));
+      while (GlueVertices(myVertexNodeFree,myNodeSections,myBoundFaces,myTolerance, thePI));
     }
   }
 }
@@ -3013,11 +3066,13 @@ static void ReplaceEdge(const TopoDS_Shape& oldEdge,
 //
 //=======================================================================
 
-void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */)
+void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */, 
+                                    const Handle(Message_ProgressIndicator)& thePI)
 {
   BRep_Builder B;
   //  TopTools_MapOfShape MergedEdges;
-  for (Standard_Integer i = 1; i <= myBoundFaces.Extent(); i++) {
+  Message_ProgressSentry aPS (thePI, "Merging bounds", 0, myBoundFaces.Extent(), 1);
+  for (Standard_Integer i = 1; i <= myBoundFaces.Extent() && aPS.More(); i++, aPS.Next()) {
 
     TopoDS_Shape bound = myBoundFaces.FindKey(i);
 
@@ -3510,7 +3565,7 @@ Standard_Boolean BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape& e
 //                     myCuttingNode
 //=======================================================================
 
-void BRepBuilderAPI_Sewing::Cutting()
+void BRepBuilderAPI_Sewing::Cutting(const Handle(Message_ProgressIndicator)& thePI)
 {
   Standard_Integer i, nbVertices = myVertexNode.Extent();
   if (!nbVertices) return;
@@ -3529,7 +3584,8 @@ void BRepBuilderAPI_Sewing::Cutting()
   Standard_Real first, last;
   // Iterate on all boundaries
   Standard_Integer nbBounds = myBoundFaces.Extent();
-  for (i = 1; i <= nbBounds; i++) {
+  Message_ProgressSentry aPS (thePI, "Cutting bounds", 0, nbBounds, 1);
+  for (i = 1; i <= nbBounds && aPS.More(); i++, aPS.Next()) {
     const TopoDS_Edge& bound = TopoDS::Edge(myBoundFaces.FindKey(i));
     // Do not cut floating edges
     if (!myBoundFaces(i).Extent()) continue;
@@ -3865,12 +3921,13 @@ static TopoDS_Edge DegeneratedSection(const TopoDS_Shape& section, const TopoDS_
 //              - make the contigous edges sameparameter
 //=======================================================================
 
-void BRepBuilderAPI_Sewing::EdgeProcessing()
+void BRepBuilderAPI_Sewing::EdgeProcessing(const Handle(Message_ProgressIndicator)& thePI)
 {
   // constructs sectionEdge
   TopTools_MapOfShape MapFreeEdges;
   TopTools_DataMapOfShapeShape EdgeFace;
-  for (Standard_Integer i = 1; i <= myBoundFaces.Extent(); i++) {
+  Message_ProgressSentry aPS (thePI, "Edge processing", 0, myBoundFaces.Extent(), 1);
+  for (Standard_Integer i = 1; i <= myBoundFaces.Extent() && aPS.More(); i++, aPS.Next()) {
     const TopoDS_Shape& bound = myBoundFaces.FindKey(i);
     const TopTools_ListOfShape& listFaces = myBoundFaces(i);
     if (listFaces.Extent() == 1) {

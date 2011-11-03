@@ -81,7 +81,8 @@ uses
     ReShape from BRepTools,
     SequenceOfInteger from TColStd,
     SequenceOfReal from TColStd,
-    SequenceOfPnt from TColgp
+    SequenceOfPnt from TColgp,
+    ProgressIndicator from Message
 
 raises
 
@@ -117,8 +118,10 @@ is
     Add(me : mutable; shape : Shape from TopoDS);
     	---Purpose: Defines the shapes to be sewed or controlled
 
-    Perform(me : mutable); ---is virtual;
+    Perform(me : mutable;
+            thePI : ProgressIndicator from Message = 0);
     	---Purpose: Computing
+    	--          thePI - progress indicator of algorithm
 
     SewedShape(me) returns Shape from TopoDS;
     	---C++: return const &
@@ -285,10 +288,13 @@ is
     	--- INTERNAL FUCTIONS ---
 	-------------------------
     
-    Cutting(me : mutable) is protected;
+    Cutting(me : mutable;
+            thePI : ProgressIndicator from Message = 0) is protected;
     	---Purpose: Performs cutting of sections
+	--          thePI - progress indicator of processing
 
-    Merging(me : mutable; passage : Boolean) is protected;
+    Merging(me : mutable; passage : Boolean;
+            thePI : ProgressIndicator from Message = 0) is protected;
 
     IsMergedClosed(me;
     	    	   Edge1 : Edge from TopoDS;
@@ -318,7 +324,8 @@ is
     returns Boolean is protected;
     	---Purpose: Merged nearest edges.
     
-    EdgeProcessing(me : mutable) is protected;
+    EdgeProcessing(me : mutable;
+                   thePI : ProgressIndicator from Message = 0) is protected;
 
     CreateOutputInformations(me : mutable) is protected;
 
@@ -336,17 +343,21 @@ is
     returns Boolean is virtual protected;
 	---Purpose:Defines if surface is V closed.
 
-    FaceAnalysis(me : mutable) is virtual protected;
-	---Purpose: 
-        --          This method is called from Perform only
+    FaceAnalysis(me : mutable;
+                 thePI : ProgressIndicator from Message = 0) is virtual protected;
+	---Purpose:
+	--          This method is called from Perform only
+	--          thePI - progress indicator of processing
 
     FindFreeBoundaries(me : mutable) is virtual protected;
 	---Purpose: 
         --          This method is called from Perform only
 
-    VerticesAssembling(me : mutable) is virtual protected;
-	---Purpose: 
-        --          This method is called from Perform only
+    VerticesAssembling(me : mutable;
+                       thePI : ProgressIndicator from Message = 0) is virtual protected;
+	---Purpose:
+	--          This method is called from Perform only
+	--          thePI - progress indicator of processing
 
     CreateSewedShape(me : mutable) is virtual protected;
 	---Purpose: 
