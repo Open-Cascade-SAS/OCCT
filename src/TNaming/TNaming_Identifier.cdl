@@ -22,14 +22,14 @@ is
 
     Create (Lab     : Label   from TDF;
     	    S	    : Shape   from TopoDS;
-	    Context : Shape   from TopoDS;
-	    Geom    : Boolean from Standard)
+	    Context     : Shape   from TopoDS;
+	    Geom        : Boolean from Standard)
     returns Identifier from TNaming;	    
     
     Create (Lab     : Label      from TDF;
     	    S	    : Shape      from TopoDS;
-	    Context : NamedShape from TNaming;
-	    Geom    : Boolean    from Standard)
+	    ContextNS   : NamedShape from TNaming;
+	    Geom        : Boolean    from Standard)
     returns Identifier from TNaming;	    
     
     
@@ -80,6 +80,9 @@ is
     	    	   Localizer : in out Localizer  from TNaming;	
     	    	   NS        :        NamedShape from TNaming);
 
+
+    Init(me : in out; Context : Shape   from TopoDS) is private;
+		  
 fields
     
     myTDFAcces       : Label   from TDF;	

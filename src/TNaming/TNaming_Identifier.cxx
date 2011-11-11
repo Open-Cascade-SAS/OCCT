@@ -65,16 +65,42 @@ TNaming_Identifier::TNaming_Identifier(const TDF_Label&        LabAcces,
 myDone(Standard_False),myIsFeature(Standard_False)
 
 {
+  Init(Context); 
+}
+
+//=======================================================================
+//function : TNaming_Identifier
+//purpose  : 
+//=======================================================================
+
+TNaming_Identifier::TNaming_Identifier(const TDF_Label&        LabAcces,
+				       const TopoDS_Shape&                     S,
+				       const Handle(TNaming_NamedShape)&       ContextNS,
+				       const Standard_Boolean                  OneOnly)
+:myTDFAcces(LabAcces), myShape(S), myOneOnly(OneOnly),
+myDone(Standard_False),myIsFeature(Standard_False)
+
+{
+  const TopoDS_Shape& aContext = TNaming_Tool::GetShape (ContextNS);
+  Init(aContext); 
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================                                         
+void TNaming_Identifier::Init(const TopoDS_Shape&     Context)
+{
   Handle(TNaming_UsedShapes) US;
-  LabAcces.Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
+  myTDFAcces.Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
   
   TNaming_Localizer Localizer;
-  Localizer.Init (US,LabAcces.Transaction());
+  Localizer.Init (US,myTDFAcces.Transaction());
   
   Handle(TNaming_NamedShape) NS;
-  NS   = TNaming_Tool::NamedShape(S,LabAcces);
+  NS   = TNaming_Tool::NamedShape(myShape, myTDFAcces);
   if (NS.IsNull()) {
-    AncestorIdentification(Localizer,Context);
+    AncestorIdentification(Localizer, Context);
     return;
   }
 #ifdef MDTV_DEB_IDF
@@ -95,9 +121,7 @@ myDone(Standard_False),myIsFeature(Standard_False)
   else {
     Identification(Localizer,NS);
   }
-}
-
-
+}                                         
 
 //=======================================================================
 //function : Type
