@@ -192,27 +192,31 @@ static void RemoveNode(Standard_Boolean                   MapExist ,
     if (pos->FirstUse() == N) {
       TNaming_Node*  nextOld = N->nextSameOld;
       if (nextOld != 0L) 
-	pos->FirstUse(nextOld);
-      else 
-	// le shape disparait
-	if (MapExist){
-	  M.UnBind(pos->Shape());
-#ifdef BUC60921
-	  N->myOld = 0L;
-	  if(pos != N->myNew)
-	    delete pos;
-#endif 
-	}
+        pos->FirstUse(nextOld);
+      else {
+        // le shape disparait
+        if (MapExist)
+          M.UnBind(pos->Shape());
+        //#ifdef BUC60921
+        N->myOld = 0L;
+        if(pos != N->myNew)
+        {
+          delete pos;
+          pos = 0L;
+        }
+        //#endif 
+      }
     }
     else {
       TNaming_Node* pdn = pos->FirstUse();
       while (pdn != 0L) {
-	if (pdn->NextSameShape(pos) == N) {
-	  if (pdn->myOld == pos) pdn->nextSameOld =  N->nextSameOld;
-	  else                   pdn->nextSameNew =  N->nextSameOld;
-	  break;
-	}
-	pdn = pdn->NextSameShape(pos);
+        
+        if (pdn->NextSameShape(pos) == N) {
+          if (pdn->myOld == pos) pdn->nextSameOld =  N->nextSameOld;
+          else                   pdn->nextSameNew =  N->nextSameOld;
+          break;
+        }
+        pdn = pdn->NextSameShape(pos);
       }
     }
   }
@@ -222,26 +226,30 @@ static void RemoveNode(Standard_Boolean                   MapExist ,
     if (pns->FirstUse() == N) {
       TNaming_Node*  nextNew = N->nextSameNew;
       if (nextNew != 0L) 
-	pns->FirstUse(nextNew);
+        pns->FirstUse(nextNew);
       else 
-	// le shape disparait
-	if (MapExist) {
-	  M.UnBind(pns->Shape());
-#ifdef BUC60921
-	  N->myNew = 0L;
-	  delete pns;
-#endif 
-	}
+      {
+        // le shape disparait
+        if (MapExist) 
+          M.UnBind(pns->Shape());
+      
+        pns->FirstUse(0L);
+        delete pns;
+        pns = 0L;
+
+        N->myNew = 0L;
+      
+      }
     }
     else {
       TNaming_Node* pdn = pns->FirstUse();
       while (pdn != 0L) {
-	if (pdn->NextSameShape(pns) == N) {
-	  if (pdn->myOld == pns) pdn->nextSameOld =  N->nextSameNew;
-	  else                   pdn->nextSameNew =  N->nextSameNew;
-	  break;
-	}
-	pdn = pdn->NextSameShape(pns);
+        if (pdn->NextSameShape(pns) == N) {
+          if (pdn->myOld == pns) pdn->nextSameOld =  N->nextSameNew;
+          else                   pdn->nextSameNew =  N->nextSameNew;
+          break;
+        }
+        pdn = pdn->NextSameShape(pns);
       }
     }
   }
@@ -282,8 +290,11 @@ void TNaming_NamedShape::Clear()
   while (p != 0L) {
     q = p;
     p = p->nextSameAttribute;
-    delete q;
-    q = 0L;
+    if( q !=0L)
+    {
+      delete q;
+      q = 0L;
+    }
   }
     
   myNode = 0L;
@@ -347,8 +358,11 @@ Standard_Boolean TNaming_NamedShape::AfterUndo
     while (p != 0L) {
       q = p;
       p = p->nextSameAttribute;
-      delete q;
-      q = 0L;
+      if(q != 0L)
+      {
+        delete q;
+        q = 0L;
+      }
     }
 
     myNode = 0L;

@@ -9,7 +9,7 @@
 #include <TDF_DeltaOnAddition.hxx>
 #include <TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx>
 #include <TNaming_RefShape.hxx>
-
+#include <TNaming_PtrNode.hxx>
 #define BUC60862
 
 #ifdef BUC60862
@@ -46,10 +46,6 @@ TNaming_UsedShapes::TNaming_UsedShapes()
 
 void TNaming_UsedShapes::Destroy() 
 {
-  TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape itr(myMap);
-  for (; itr.More(); itr.Next()) {
-   if(itr.Value() != NULL) delete itr.Value(); // <== szy: removed "//"
-  }
   myMap.Clear();
 }
 
