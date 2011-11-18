@@ -1945,8 +1945,9 @@ static Tk_Window mainWindow;
 //* threads sinchronization *//
 DWORD  dwMainThreadId;
 console_semaphore_value volatile console_semaphore = WAIT_CONSOLE_COMMAND;
-char console_command[1000];
-
+//char console_command[1000];
+#define COMMAND_SIZE 1000     /* Console Command size */
+char console_command[COMMAND_SIZE];
 bool volatile isTkLoopStarted = false;
 
 /*--------------------------------------------------------*\
@@ -2025,7 +2026,8 @@ static DWORD WINAPI readStdinThreadFunc(VOID)
   while (1) {
     while (console_semaphore != WAIT_CONSOLE_COMMAND)
       Sleep(100);
-    if (gets(console_command))
+    //if (gets(console_command))
+	if (fgets(console_command,COMMAND_SIZE,stdin)) 
       {
         console_semaphore = HAS_CONSOLE_COMMAND;
       }
