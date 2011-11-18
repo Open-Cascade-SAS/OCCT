@@ -242,9 +242,8 @@ void SelectMgr_SelectableObject::HilightSelected
 //=======================================================================
 void SelectMgr_SelectableObject::ClearSelected ()
 {
-  //Standard_NotImplemented::Raise ("SelectMgr_SelectableObject::HilightOwnerWithColor");
   if( !mySelectionPrs.IsNull() )
-    mySelectionPrs->Clear();  
+    mySelectionPrs->Clear();
 }
 
 //=======================================================================

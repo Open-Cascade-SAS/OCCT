@@ -9,6 +9,7 @@
 #include <res\OCC_Resource.h>
 
 #include <Standard_Version.hxx>
+#include <OSD.hxx>
 
 /////////////////////////////////////////////////////////////////////////////
 // OCC_BaseApp
@@ -29,6 +30,7 @@ END_MESSAGE_MAP()
 
 OCC_BaseApp::OCC_BaseApp()
 {
+    OSD::SetSignal(Standard_True);
 	SampleName = "";
 	SetSamplePath(NULL);
 }

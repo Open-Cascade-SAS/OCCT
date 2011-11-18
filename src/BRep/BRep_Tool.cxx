@@ -1,8 +1,6 @@
 // File:      BRep_Tool.cxx
 // Created:   Wed Jul  7 15:35:57 1993
 // Author:    Remi LEQUETTE
-//            <rle@phylox>
-
 
 #include <BRep_Tool.ixx>
 #include <BRep_TFace.hxx>
@@ -128,8 +126,7 @@ Standard_Boolean  BRep_Tool::NaturalRestriction(const TopoDS_Face& F)
 //           In <First> and <Last> the parameter range.
 //=======================================================================
 
-static Handle(Geom_Curve) nullCurve;
-static Handle(Poly_Polygon3D) nullPolygon3D;
+static const Handle(Geom_Curve) nullCurve;
 
 const Handle(Geom_Curve)&  BRep_Tool::Curve(const TopoDS_Edge& E,
                                             TopLoc_Location& L,
@@ -210,6 +207,8 @@ Standard_Boolean  BRep_Tool::IsGeometric(const TopoDS_Edge& E)
 //           handle. Returns in <L> the location for the polygon.
 //=======================================================================
 
+static const Handle(Poly_Polygon3D) nullPolygon3D;
+
 const Handle(Poly_Polygon3D)& BRep_Tool::Polygon3D(const TopoDS_Edge& E,
                                                    TopLoc_Location&   L)
 {
@@ -264,7 +263,7 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
 //           <First> and <Last> the parameter range.
 //=======================================================================
 
-static Handle(Geom2d_Curve) nullPCurve;
+static const Handle(Geom2d_Curve) nullPCurve;
 
 Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E, 
                                                const Handle(Geom_Surface)& S,
@@ -291,7 +290,6 @@ Handle(Geom2d_Curve) BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
     }
     itcr.Next();
   }
-  
 
   // for planar surface and 3d curve try a projection
   // modif 21-05-97 : for RectangularTrimmedSurface, try a projection
@@ -469,7 +467,7 @@ Handle(Poly_Polygon2D) BRep_Tool::PolygonOnSurface(const TopoDS_Edge& E,
 //           handle  if this polygon  does not exist.
 //=======================================================================
 
-static Handle(Poly_Polygon2D) nullPolygon2D;
+static const Handle(Poly_Polygon2D) nullPolygon2D;
 
 Handle(Poly_Polygon2D) 
      BRep_Tool::PolygonOnSurface(const TopoDS_Edge& E, 
@@ -575,7 +573,7 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
 //           handle  if this polygon  does not exist.
 //=======================================================================
 
-static Handle(Poly_PolygonOnTriangulation) nullArray;
+static const Handle(Poly_PolygonOnTriangulation) nullArray;
 
 const Handle(Poly_PolygonOnTriangulation)&
 BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                E, 
