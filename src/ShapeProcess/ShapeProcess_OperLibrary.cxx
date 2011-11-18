@@ -13,6 +13,8 @@
 #include <BRepLib.hxx>
 
 #include <Message_MsgFile.hxx>
+#include <Message_ProgressIndicator.hxx>
+
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <ShapeProcess.hxx>
 #include <ShapeProcess_UOperator.hxx>
@@ -109,7 +111,7 @@ static Standard_Boolean directfaces (const Handle(ShapeProcess_Context)& context
   TopoDS_Shape res = ShapeProcess_OperLibrary::ApplyModifier ( ctx->Result(), ctx, DM, map );
   ctx->RecordModification ( map );
   ctx->SetResult ( res );
-  return 0;
+  return Standard_True;
 }
 
 
@@ -623,7 +625,11 @@ static Standard_Boolean fixshape (const Handle(ShapeProcess_Context)& context)
   sfw->FixNonAdjacentIntersectingEdgesMode() = ctx->IntegerVal ( "FixNonAdjacentIntersectingEdgesMode", -1 );
   
   sfs->Init(ctx->Result());
-  sfs->Perform();
+  sfs->Perform(ctx->Progress());
+
+  if ( !ctx->Progress().IsNull() && ctx->Progress()->UserBreak() )
+    return Standard_False;
+
   TopoDS_Shape result = sfs->Shape();
   if ( result != ctx->Result() ) {
     ctx->RecordModification ( sfs->Context(), msg );

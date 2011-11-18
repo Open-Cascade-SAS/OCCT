@@ -101,7 +101,8 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
   Standard_Real maxTol = Interface_Static::RVal("read.maxprecision.val");
   TopoDS_Shape Shape = XSAlgo::AlgoContainer()->ProcessShape( theShape, Tol, maxTol, 
                                                               "write.iges.resource.name", 
-                                                              "write.iges.sequence", info );
+                                                              "write.iges.sequence", info,
+                                                              progress );
   //  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
   Handle(IGESData_IGESEntity) ent; 
   BRepToIGES_BREntity   B0;  B0.SetTransferProcess(theTP); B0.SetModel(themod);

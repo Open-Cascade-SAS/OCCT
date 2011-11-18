@@ -33,6 +33,7 @@
 #include <ShapeExtend.hxx>
 #include <ShapeBuild_ReShape.hxx> 
 #include <Message_Msg.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
@@ -93,26 +94,40 @@ void ShapeFix_Shell::Init(const TopoDS_Shell& shell)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeFix_Shell::Perform() 
+Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)& theProgress) 
 {
   Standard_Boolean status = Standard_False;
-  if(Context().IsNull())
-    SetContext ( new ShapeBuild_ReShape );
+  if ( Context().IsNull() )
+    SetContext(new ShapeBuild_ReShape);
   myFixFace->SetContext(Context());
-  if ( NeedFix ( myFixFaceMode ) ) {
-    TopoDS_Shape S = Context()->Apply ( myShell );
-    for( TopoDS_Iterator iter(S); iter.More(); iter.Next()) { 
+
+  if ( NeedFix(myFixFaceMode) )
+  {
+    TopoDS_Shape S = Context()->Apply(myShell);
+
+    // Get the number of faces for progress indication
+    Standard_Integer aNbFaces = 0;
+    for ( TopExp_Explorer aFaceExp(S, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next() )
+      ++aNbFaces;
+
+    // Start progress scope (no need to check if progress exists -- it is safe)
+    Message_ProgressSentry aPSentry(theProgress, "Fixing face", 0, aNbFaces, 1);
+
+    for( TopoDS_Iterator iter(S); iter.More() && aPSentry.More(); iter.Next(), aPSentry.Next() )
+    { 
       TopoDS_Shape sh = iter.Value();
       TopoDS_Face tmpFace = TopoDS::Face(sh);
       myFixFace->Init(tmpFace);
-//      myFixFace->SetPrecision(Precision());
-      if(myFixFace->Perform()) {
-//	if(!Context().IsNull())
-//	  Context()->Replace(tmpFace,myFixFace->Face());
-	status = Standard_True;
-	myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
+      if ( myFixFace->Perform() )
+      {
+        status = Standard_True;
+        myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
       }
     }
+
+    // Halt algorithm in case of user's abort
+    if ( !aPSentry.More() )
+      return Standard_False;
   }
   TopoDS_Shape newsh = Context()->Apply(myShell);
   if ( NeedFix ( myFixOrientationMode) )

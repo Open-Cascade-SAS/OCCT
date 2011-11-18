@@ -863,7 +863,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     if (isManifold)
       aShape = XSAlgo::AlgoContainer()->ProcessShape(xShape, Tol, maxTol, 
                                                     "write.step.resource.name", 
-                                                    "write.step.sequence", info);
+                                                    "write.step.sequence", info,
+                                                    FP->GetProgress() );
     else
       aShape = xShape;
     

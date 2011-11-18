@@ -118,7 +118,8 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
     context->SetScope ( oper.ToCString() );
     try {
       OCC_CATCH_SIGNALS
-      op->Perform ( context );
+      if ( !op->Perform(context) )
+        return Standard_False;
     }
     catch (Standard_Failure) {
       Message_Msg SMSG2 ("Sequence.MSG2"); //Operator %s failed with exception %s

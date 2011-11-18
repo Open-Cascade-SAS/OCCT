@@ -19,8 +19,9 @@ uses
     Edge                from ShapeFix,
     Status              from ShapeExtend,
     MapOfShape from TopTools,
-    BasicMsgRegistrator from ShapeExtend
-    
+    BasicMsgRegistrator from ShapeExtend,
+    ProgressIndicator   from Message
+
 is
 
     Create returns Shape from ShapeFix;
@@ -33,10 +34,17 @@ is
     Init (me: mutable; shape: Shape from TopoDS);
     	---Purpose: Initislises by shape.
 
-    Perform (me: mutable) returns Boolean;
+    Perform (me          : mutable;
+             theProgress : ProgressIndicator from Message = 0) returns Boolean;
     	---Purpose: Iterates on sub- shape and performs fixes
 
-    SameParameter (me: mutable; shape: Shape from TopoDS; force: Boolean) is protected;
+    SameParameter (me          : mutable; 
+                   shape       : Shape from TopoDS; 
+                   enforce     : Boolean;
+                   theProgress : ProgressIndicator from Message = 0) is protected;
+      ---Purpose: Fixes same parameterization problem on the passed shape
+      --          by updating tolerances of the corresponding topological
+      --          entitites.
 
     Shape (me) returns Shape from TopoDS;
     	---Purpose: Returns resulting shape

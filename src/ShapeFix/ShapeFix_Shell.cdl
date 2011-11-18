@@ -16,7 +16,9 @@ uses
     Shape               from TopoDS,
     Status              from ShapeExtend,
     BasicMsgRegistrator from ShapeExtend,
-    Face                from ShapeFix
+    Face                from ShapeFix,
+    ProgressIndicator   from Message
+    
 is
 
     Create returns Shell from ShapeFix;
@@ -29,33 +31,36 @@ is
     Init (me: mutable; shell: Shell from TopoDS);
     	---Purpose: Initializes by shell.
 
-    Perform (me: mutable) returns Boolean;
-    	---Purpose: Iterates on subshapes and performs fixes
-	--          (for each face calls ShapeFix_Face::Perform and
-	--          then calls FixFaceOrientation)
+    Perform (me: mutable;
+             theProgress : ProgressIndicator from Message = 0) returns Boolean;
+        ---Purpose: Iterates on subshapes and performs fixes
+        --          (for each face calls ShapeFix_Face::Perform and
+        --          then calls FixFaceOrientation). The passed progress
+        --          indicator allows user to consult the current progress
+        --          stage and abort algorithm if needed.
 
     FixFaceOrientation (me : mutable; shell : Shell from TopoDS;
     	    	    	isAccountMultiConex : Boolean = Standard_True;
     	    	    	NonManifold : Boolean = Standard_False ) returns Boolean;
-    	---Purpose: Fixes orientation of faces in shell.
-    	--          Changes orientation of face in the shell, if it is oriented opposite
-	--          to neigbouring faces. If it is not possible to orient all faces in the
-	--          shell (like in case of mebious band), this method orients only subset
-        --          of faces. Other faces are stored in Error compound.
-	--          Modes : 
-    	--    	    isAccountMultiConex - mode for account cases of multiconnexity.
-	--          If this mode is equal to Standard_True, separate shells will be created 
-	--          in the cases of multiconnexity. If this mode is equal to Standard_False,
-	--          one shell will be created without account of multiconnexity.By defautt - Standard_True;
-	--          NonManifold - mode for creation of non-manifold shells.
-	--          If this mode is equal to Standard_True one non-manifold will be created from shell
-	--          contains multishared edges. Else if this mode is equal to Standard_False only 
-    	--          manifold shells will be created. By default - Standard_False.
-	--          
-    	---Returns: If resulting shell is ok returns TRUE, else returns FALSE.
-    	---Status : OK   - faces in shall were oriented correcty.
-    	--          DONE - faces in shell oriented succesfully
-	--          FAIL - faces orientation process has been failed
+      ---Purpose: Fixes orientation of faces in shell.
+      --          Changes orientation of face in the shell, if it is oriented opposite
+      --          to neigbouring faces. If it is not possible to orient all faces in the
+      --          shell (like in case of mebious band), this method orients only subset
+      --          of faces. Other faces are stored in Error compound.
+      --          Modes : 
+      --    	    isAccountMultiConex - mode for account cases of multiconnexity.
+      --          If this mode is equal to Standard_True, separate shells will be created 
+      --          in the cases of multiconnexity. If this mode is equal to Standard_False,
+      --          one shell will be created without account of multiconnexity.By defautt - Standard_True;
+      --          NonManifold - mode for creation of non-manifold shells.
+      --          If this mode is equal to Standard_True one non-manifold will be created from shell
+      --          contains multishared edges. Else if this mode is equal to Standard_False only 
+      --          manifold shells will be created. By default - Standard_False.
+      --          
+      ---Returns: If resulting shell is ok returns TRUE, else returns FALSE.
+      ---Status : OK   - faces in shall were oriented correcty.
+      --          DONE - faces in shell oriented succesfully
+      --          FAIL - faces orientation process has been failed
 	
     Shell(me : mutable) returns Shell from TopoDS;
     	---Purpose: Returns fixed shell (or subset of oriented faces).
@@ -74,10 +79,10 @@ is
 
     FixFaceTool (me:mutable) returns Face from ShapeFix;
     	---Purpose: Returns tool for fixing faces.
-	---C++:inline
+      ---C++:inline
 
     SetMsgRegistrator (me: mutable; msgreg: BasicMsgRegistrator from ShapeExtend) is redefined;
-	---Purpose: Sets message registrator
+      ---Purpose: Sets message registrator
 
     SetPrecision (me: mutable; preci: Real) is redefined;
     	---Purpose: Sets basic precision value (also to FixWireTool)
@@ -90,15 +95,15 @@ is
 
     FixFaceMode (me: mutable) returns Integer;
     	---C++: return &
-	---C++: inline
-        ---Purpose: Returns (modifiable) the mode for applying fixes of 
-        --          ShapeFix_Face, by default True.
+      ---C++: inline
+      ---Purpose: Returns (modifiable) the mode for applying fixes of 
+      --          ShapeFix_Face, by default True.
 
     FixOrientationMode (me: mutable) returns Integer;
     	---C++: return &
-	---C++: inline
-        ---Purpose: Returns (modifiable) the mode for applying 
-        --          FixFaceOrientation, by default True.
+      ---C++: inline
+      ---Purpose: Returns (modifiable) the mode for applying 
+      --          FixFaceOrientation, by default True.
     
 fields
 
@@ -108,5 +113,6 @@ fields
     myFixFace            : Face from ShapeFix is protected;
     myFixFaceMode        : Integer is protected;   
     myFixOrientationMode : Integer is protected; 
-    myNbShells : Integer is protected; 
+    myNbShells           : Integer is protected; 
+
 end Shell;

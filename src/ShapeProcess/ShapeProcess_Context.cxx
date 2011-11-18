@@ -354,6 +354,26 @@ Handle(Message_Messenger) ShapeProcess_Context::Messenger () const
 }
 
 //=======================================================================
+//function : SetProgress
+//purpose  : 
+//=======================================================================
+
+void ShapeProcess_Context::SetProgress (const Handle(Message_ProgressIndicator)& progress)
+{
+  myProgress = progress;
+}
+
+//=======================================================================
+//function : Progress
+//purpose  : 
+//=======================================================================
+
+Handle(Message_ProgressIndicator) ShapeProcess_Context::Progress() const
+{
+  return myProgress;
+}
+
+//=======================================================================
 //function : SetTraceLevel
 //purpose  : 
 //=======================================================================

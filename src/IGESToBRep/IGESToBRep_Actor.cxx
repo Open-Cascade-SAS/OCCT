@@ -1,27 +1,28 @@
-#include <Standard_ErrorHandler.hxx>
 #include <IGESToBRep_Actor.ixx>
-#include <Standard_Failure.hxx>
-
 #include <IGESToBRep.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_GlobalSection.hxx>
-
 #include <IGESToBRep_CurveAndSurface.hxx>
+
+#include <BRepLib.hxx>
+
+#include <Standard_Failure.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <ShapeExtend_Explorer.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
 
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 
-#include <TopoDS_Shape.hxx>
+#include <Message_ProgressSentry.hxx>
 
+#include <TopoDS_Shape.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <ShapeFix_ShapeTolerance.hxx>
-#include <BRepLib.hxx>
-#include <ShapeExtend_Explorer.hxx>
 
 //=======================================================================
 //function : IGESToBRep_Actor
@@ -144,6 +145,10 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
       (typnum == 402 && (fornum == 1 || fornum == 7|| 
                          fornum == 14 || fornum == 15)) || 
       (typnum == 408) || (typnum == 308)) {
+
+    // Start progress scope (no need to check if progress exists -- it is safe)
+    Message_ProgressSentry aPSentry(TP->GetProgress(), "Transfer stage", 0, 2, 1);
+
     XSAlgo::AlgoContainer()->PrepareForTransfer();
     IGESToBRep_CurveAndSurface CAS;
     CAS.SetModel(mymodel);
@@ -175,16 +180,19 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
 	shape.Nullify();
       }
     }
+
+    // Switch to fix stage.
+    aPSentry.Next();
     
     // fixing shape
-//    shape =  XSAlgo::AlgoContainer()->PerformFixShape( shape, TP, theeps, CAS.GetMaxTol() );
     Handle(Standard_Transient) info;
     shape = XSAlgo::AlgoContainer()->ProcessShape( shape, theeps, CAS.GetMaxTol(), 
                                                    "read.iges.resource.name", 
-                                                   "read.iges.sequence", info );
+                                                   "read.iges.sequence", info,
+                                                   TP->GetProgress() );
     XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
   }
-// if (!shape.IsNull()) TransferBRep::SameParameter (shape,Standard_False,eps);
+
   ShapeExtend_Explorer SBE;
   if (SBE.ShapeType(shape,Standard_True) != TopAbs_SHAPE) {
     if (!shape.IsNull()) {

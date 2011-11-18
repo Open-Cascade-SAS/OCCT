@@ -17,7 +17,8 @@ uses
     Shape               from TopoDS,
     Shell               from ShapeFix,
     Status              from ShapeExtend,
-    BasicMsgRegistrator from ShapeExtend
+    BasicMsgRegistrator from ShapeExtend,
+    ProgressIndicator   from Message
 
 is
     Create returns Solid from ShapeFix;
@@ -29,9 +30,12 @@ is
     Init(me: mutable; solid : Solid from TopoDS) is virtual;
     	---Purpose: Initializes by solid .
     
-    Perform(me: mutable) returns Boolean is virtual;
+    Perform(me: mutable;
+            theProgress : ProgressIndicator from Message = 0) returns Boolean is virtual;
     	---Purpose: Iterates on shells and performs fixes
-	--          (calls ShapeFix_Shell for each subshell)
+      --          (calls ShapeFix_Shell for each subshell). The passed
+      --          progress indicator allows user to consult the current
+      --          progress stage and abort algorithm if needed.
     	
     SolidFromShell (me: mutable; shell: Shell from TopoDS)
     returns Solid from TopoDS;
@@ -45,10 +49,10 @@ is
      
     FixShellTool (me) returns Shell from ShapeFix;
     	---Purpose: Returns tool for fixing shells.
-	---C++:inline
+      ---C++:inline
 	  
     SetMsgRegistrator (me: mutable; msgreg: BasicMsgRegistrator from ShapeExtend) is redefined;
-	---Purpose: Sets message registrator
+      ---Purpose: Sets message registrator
 	
     SetPrecision (me: mutable; preci: Real) is redefined;
     	---Purpose: Sets basic precision value (also to FixShellTool)
@@ -61,17 +65,17 @@ is
 	
     FixShellMode (me: mutable) returns Integer;
     	---C++: return &
-	---C++: inline
-        ---Purpose: Returns (modifiable) the mode for applying fixes of 
-        --          ShapeFix_Shell, by default True.
+      ---C++: inline
+      ---Purpose: Returns (modifiable) the mode for applying fixes of 
+      --          ShapeFix_Shell, by default True.
     CreateOpenSolidMode(me: mutable) returns Boolean;
     	---C++: return &
-	---C++: inline
-        ---Purpose: Returns (modifiable) the mode for creation of solids.
-	--          If mode myCreateOpenSolidMode is equal to true 
-        --          solids are created from open shells 
-        --          else solids are created  from closed shells only.
-        --          ShapeFix_Shell, by default False.
+      ---C++: inline
+      ---Purpose: Returns (modifiable) the mode for creation of solids.
+      --          If mode myCreateOpenSolidMode is equal to true 
+      --          solids are created from open shells 
+      --          else solids are created  from closed shells only.
+      --          ShapeFix_Shell, by default False.
 	Shape(me : mutable) returns Shape from TopoDS;
     	---Purpose: In case of multiconnexity returns compound of fixed solids
     	--          else returns one solid.

@@ -16,10 +16,11 @@ class Context from ShapeProcess inherits TShared from MMgt
 
 uses
 
-    Manager from Resource,
-    AsciiString from TCollection,
+    Manager                 from Resource,
+    AsciiString             from TCollection,
     HSequenceOfHAsciiString from TColStd,
-    Messenger from Message
+    Messenger               from Message,
+    ProgressIndicator       from Message
 
 is
 
@@ -75,6 +76,12 @@ is
 
     Messenger (me) returns Messenger from Message;
     ---Purpose : Returns Messenger used for outputting messages.
+    
+    SetProgress (me: mutable; theProgress: ProgressIndicator from Message);
+    ---Purpose : Sets Progress Indicator.
+
+    Progress (me) returns ProgressIndicator from Message;
+    ---Purpose : Returns Progress Indicator.
 
     SetTraceLevel (me: mutable; tracelev: Integer);
     ---Purpose : Sets trace level used for outputting messages
@@ -89,9 +96,10 @@ is
 
 fields
 
-    myRC:      Manager from Resource;
-    myScope:   HSequenceOfHAsciiString from TColStd;
+    myRC:        Manager from Resource;
+    myScope:     HSequenceOfHAsciiString from TColStd;
     myMessenger: Messenger from Message;
-    myTraceLev : Integer;
+    myProgress:  ProgressIndicator from Message;
+    myTraceLev:  Integer;
 
 end Context;

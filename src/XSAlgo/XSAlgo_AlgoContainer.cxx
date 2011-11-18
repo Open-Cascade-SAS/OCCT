@@ -80,16 +80,21 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
                                                  const Standard_Real maxTol,
                                                  const Standard_CString prscfile,
                                                  const Standard_CString pseq,
-                                                 Handle(Standard_Transient)& info) const
+                                                 Handle(Standard_Transient)& info,
+                                                 const Handle(Message_ProgressIndicator)& progress) const
 {
   if ( shape.IsNull() ) return shape;
   
-  Handle(ShapeProcess_ShapeContext) context = Handle(ShapeProcess_ShapeContext)::DownCast ( info );
-  if ( context.IsNull() ) {
-    Standard_CString rscfile = Interface_Static::CVal ( prscfile );
-    if ( ! rscfile ) rscfile = prscfile;
-    context = new ShapeProcess_ShapeContext (shape, rscfile);
-    context->SetDetalisation ( TopAbs_EDGE );
+  Handle(ShapeProcess_ShapeContext) context = Handle(ShapeProcess_ShapeContext)::DownCast(info);
+  if ( context.IsNull() )
+  {
+    Standard_CString rscfile = Interface_Static::CVal(prscfile);
+    if (!rscfile)
+      rscfile = prscfile;
+    context = new ShapeProcess_ShapeContext(shape, rscfile);
+    context->SetDetalisation(TopAbs_EDGE);
+    if ( !progress.IsNull() )
+      context->SetProgress(progress);
   }
   info = context;
   
@@ -123,7 +128,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
 	sfs->SetMaxTolerance ( maxTol );
 	sfs->FixFaceTool()->FixWireTool()->FixSameParameterMode() = Standard_False;
 	sfs->FixSolidTool()->CreateOpenSolidMode() = Standard_False;
-	sfs->Perform();
+	sfs->Perform(progress);
 
 	TopoDS_Shape S = sfs->Shape();
 	if ( ! S.IsNull() && S != shape ) {
@@ -151,8 +156,10 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
   // Define runtime tolerances and do Shape Processing 
   rsc->SetResource ( "Runtime.Tolerance", Prec );
   rsc->SetResource ( "Runtime.MaxTolerance", maxTol );
-  ShapeProcess::Perform ( context, seq );
-  
+
+  if ( !ShapeProcess::Perform(context, seq) )
+    return TopoDS_Shape(); // Null shape
+
   return context->Result();
 }
 						  

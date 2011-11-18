@@ -545,7 +545,8 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
     Handle(Standard_Transient) info;
     shape = XSAlgo::AlgoContainer()->ProcessShape( shape, eps*CAS.GetUnitFactor(), CAS.GetMaxTol(),
                                                    "read.iges.resource.name", 
-                                                   "read.iges.sequence", info );
+                                                   "read.iges.sequence", info,
+                                                   theProc->GetProgress() );
     XSAlgo::AlgoContainer()->MergeTransferInfo(theProc, info, nbTPitems);
 
     ShapeExtend_Explorer SBE;

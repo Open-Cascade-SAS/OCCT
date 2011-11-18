@@ -18,15 +18,16 @@ uses
     ShapeExtend,
     ShapeAnalysis,
     ShapeFix,
-    Transfer
+    Transfer,
+    Message
     
 is
 
     enumeration Caller is
     	---Purpose: Identifies the caller of the algorithm
-	DEFAULT,
-	IGES,
-	STEP
+      DEFAULT,
+      IGES,
+      STEP
     end Caller;
 
     class ToolContainer;

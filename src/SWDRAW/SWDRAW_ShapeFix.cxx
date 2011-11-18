@@ -44,6 +44,8 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopAbs_State.hxx>
 
+#include <Draw_ProgressIndicator.hxx>
+
 #ifdef AIX
 #include <strings.h>
 #endif
@@ -437,10 +439,11 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
     di << "For enhanced message output, use switch '+?'" << "\n"; 
     return 1;
   }
-  
-  sfs->Perform();
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
+  sfs->Perform (aProgress);
   DBRep::Set (res,sfs->Shape());
-  
+
   if ( mess ) {
     Standard_Integer num = 0;
     const ShapeExtend_DataMapOfShapeListOfMsg &map = msg->MapShape();

@@ -32,6 +32,8 @@
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 
+#include <Draw_ProgressIndicator.hxx>
+
 static int dejadraw = 0;
 
 //=======================================================================
@@ -168,8 +170,9 @@ static Standard_Integer NSPApply (Draw_Interpretor& di, Standard_Integer argc, c
 
   XSAlgo::AlgoContainer()->PrepareForTransfer();
   Handle(Standard_Transient) info;  // reserved for special uses
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
   newshape = XSAlgo::AlgoContainer()->ProcessShape
-    ( shape, tol, maxtol, argv[3] , argv[4] , info);
+    ( shape, tol, maxtol, argv[3] , argv[4] , info, aProgress);
 //    WHAT IS MISSING HERE IS MERGING with starting transfer map
 
   if (newshape.IsNull()) {
