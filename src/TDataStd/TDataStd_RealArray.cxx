@@ -242,7 +242,7 @@ Standard_OStream& TDataStd_RealArray::Dump (Standard_OStream& anOS) const
     for(i = lower; i<=upper; i++)
       anOS << " " <<myValue->Value(i);
   }
-  anOS << " Delta is " << myIsDelta ? "ON":"OFF";
+  anOS << " Delta is " << (myIsDelta ? "ON":"OFF");
   anOS << endl;
   return anOS;
 }

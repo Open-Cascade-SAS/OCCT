@@ -241,7 +241,7 @@ Standard_OStream& TDataStd_ExtStringArray::Dump (Standard_OStream& anOS) const
     for(i = lower; i<=upper; i++)
       anOS << "\t" <<myValue->Value(i)<<endl;
   }
-  anOS << " Delta is " << myIsDelta ? "ON":"OFF";
+  anOS << " Delta is " << (myIsDelta ? "ON":"OFF");
   anOS << endl;
   return anOS;
 }

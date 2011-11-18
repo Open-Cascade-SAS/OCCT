@@ -147,8 +147,8 @@ void Aspect_WidthMapEntry::Free () {
 void Aspect_WidthMapEntry::Dump () const {
 
   cout << " Aspect_WidthMapEntry::Dump ()\n";
-  cout << "      MyTypeIsDef : " << (MyTypeIsDef) ? "True\n" : "False\n";
-  cout << "      MyIndexIsDef : " << (MyIndexIsDef) ? "True\n" : "False\n";
+  cout << "      MyTypeIsDef : " << (MyTypeIsDef ? "True\n" : "False\n");
+  cout << "      MyIndexIsDef : " << (MyIndexIsDef ? "True\n" : "False\n");
   cout << "      TypeOfWidth : " << (Standard_Integer) MyType << "\n";//WNT
   cout << "      LineWidth : " << MyWidth << "\n";
   cout << flush;
