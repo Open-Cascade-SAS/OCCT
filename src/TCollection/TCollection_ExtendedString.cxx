@@ -991,26 +991,6 @@ Standard_ExtCharacter TCollection_ExtendedString::Value
 }
 
 
-//------------------------------------------------------------------------
-//  HashCode
-//------------------------------------------------------------------------
-Standard_Integer TCollection_ExtendedString::HashCode 
-                                (const TCollection_ExtendedString& astring,
-                                 const Standard_Integer            Upper)
-{
-  return ::HashCode(astring.ToExtString(),Upper);
-}
-
-//------------------------------------------------------------------------
-//  IsEqual
-//------------------------------------------------------------------------
-Standard_Boolean TCollection_ExtendedString::IsEqual 
-                                (const TCollection_ExtendedString& string1,
-                                 const TCollection_ExtendedString& string2)
-{
-  return string1.IsEqual(string2);
-}
-
 //----------------------------------------------------------------------------
 // Convert CString (including multibyte case) to UniCode representation
 //----------------------------------------------------------------------------

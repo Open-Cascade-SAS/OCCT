@@ -5174,6 +5174,28 @@ Standard_Integer OCC22586 (Draw_Interpretor& di, Standard_Integer argc, const ch
 
 }
 
+#include <NCollection_DataMap.hxx>
+Standard_Integer OCC22744 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	
+  if (argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+  
+  TCollection_ExtendedString anExtString;
+  
+  Standard_ExtCharacter aNonAsciiChar = 0xff00;
+  anExtString.Insert(1, aNonAsciiChar);
+
+  di << "Is ASCII: " << ( anExtString.IsAscii() ? "true" : "false" ) << "\n";
+  NCollection_DataMap<TCollection_ExtendedString, Standard_Integer> aMap;
+  aMap.Bind(anExtString, 0);
+  
+  return 0;
+
+}
+
 Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
 	
@@ -5232,7 +5254,6 @@ Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const ch
 
   di << "Status = " << aStatus << "\n";
   return 0;
-
 }
 
 void QAOCC::Commands(Draw_Interpretor& theCommands) {
@@ -5341,5 +5362,6 @@ void QAOCC::Commands(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
   theCommands.Add("OCC22586", "OCC22586 shape resshape", __FILE__, OCC22586, group);
   theCommands.Add("OCC22736", "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2", __FILE__, OCC22736, group);
+  theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
   return;
 }

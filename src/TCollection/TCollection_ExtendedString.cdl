@@ -324,11 +324,13 @@ is
  
    HashCode(myclass ; astring : ExtendedString from TCollection; Upper : Integer)
    returns Integer;
+   ---Level: Internal
    ---Purpose: Returns a hashed value for the extended string
    -- astring within the range 1..Upper.
    -- Note: if astring is ASCII, the computed value is
    -- the same as the value computed with the HashCode function on a
    -- TCollection_AsciiString string composed with equivalent ASCII characters
+   ---C++: inline
 
    IsEqual(myclass ; string1 : ExtendedString from TCollection; 
            string2 : ExtendedString from TCollection)
@@ -336,6 +338,7 @@ is
    ---Purpose: Returns true if the characters in this extended
    -- string are identical to the characters in the other extended string.
    -- Note that this method is an alias of operator ==. 
+   ---C++: inline
     
    ToUTF8CString(me; theCString : out PCharacter from Standard) 
    returns Integer from Standard; 

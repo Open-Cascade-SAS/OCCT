@@ -1,0 +1,28 @@
+//------------------------------------------------------------------------
+//  HashCode
+//------------------------------------------------------------------------
+inline Standard_Integer HashCode(const TCollection_ExtendedString& theString,
+                                 const Standard_Integer theUpper)
+{
+  return TCollection_ExtendedString::HashCode(theString, theUpper);
+}
+
+//------------------------------------------------------------------------
+//  HashCode
+//------------------------------------------------------------------------
+inline Standard_Integer 
+  TCollection_ExtendedString::HashCode (const TCollection_ExtendedString& theString,
+                                        const Standard_Integer theUpper)
+{
+  return ::HashCode(theString.ToExtString(), theUpper);
+}
+
+//------------------------------------------------------------------------
+//  IsEqual
+//------------------------------------------------------------------------
+inline Standard_Boolean
+  TCollection_ExtendedString::IsEqual (const TCollection_ExtendedString& theString1,
+                                       const TCollection_ExtendedString& theString2)
+{
+  return theString1.IsEqual(theString2);
+}
