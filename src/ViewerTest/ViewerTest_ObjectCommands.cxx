@@ -96,6 +96,21 @@
 #include <Graphic3d_Group.hxx>
 #include <Standard_Real.hxx>
 
+#include <AIS_Circle.hxx>
+#include <AIS_Drawer.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <Geom_Circle.hxx>
+#include <GC_MakeCircle.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Select3D_SensitiveCircle.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StdPrs_ShadedShape.hxx>
+#include <TopoDS_Wire.hxx>
+
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -1656,6 +1671,107 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
   return 0;
 }
 
+//==============================================================================
+// class   : FilledCircle
+// purpose : creates filled circle based on AIS_InteractiveObject 
+//           and Geom_Circle.
+//           This class is used to check method Matches() of class 
+//           Select3D_SensitiveCircle with member myFillStatus = Standard_True, 
+//           because none of AIS classes provides creation of 
+//           Select3D_SensitiveCircle with member myFillStatus = Standard_True 
+//           (look method ComputeSelection() )
+//============================================================================== 
+
+Handle(Geom_Circle) CreateCircle(gp_Pnt theCenter, Standard_Real theRadius) 
+{
+  gp_Ax2 anAxes(theCenter, gp_Dir(gp_Vec(0., 0., 1.))); 
+  gp_Circ aCirc(anAxes, theRadius);
+  Handle(Geom_Circle) aCircle = new Geom_Circle(aCirc);
+  return aCircle;
+}
+
+DEFINE_STANDARD_HANDLE(FilledCircle, AIS_InteractiveObject)
+
+class FilledCircle : public AIS_InteractiveObject 
+{
+public:
+    // CASCADE RTTI
+    DEFINE_STANDARD_RTTI(FilledCircle); 
+
+    FilledCircle(gp_Pnt theCenter, Standard_Real theRadius);
+    FilledCircle(Handle(Geom_Circle) theCircle);
+
+private:
+    TopoDS_Face ComputeFace();
+
+    // Virtual methods implementation
+    void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+                  const Handle(Prs3d_Presentation)& thePresentation,
+                  const Standard_Integer theMode);
+
+    void ComputeSelection (  const Handle(SelectMgr_Selection)& theSelection, 
+                           const Standard_Integer theMode);
+
+protected:
+    Handle(Geom_Circle) myCircle;
+    Standard_Boolean myFilledStatus;
+
+}; 
+
+IMPLEMENT_STANDARD_HANDLE(FilledCircle, AIS_InteractiveObject)
+IMPLEMENT_STANDARD_RTTIEXT(FilledCircle, AIS_InteractiveObject)
+
+FilledCircle::FilledCircle(gp_Pnt theCenter, Standard_Real theRadius) 
+{
+  myCircle = CreateCircle(theCenter, theRadius);
+  myFilledStatus = Standard_True;
+}
+
+FilledCircle::FilledCircle(Handle(Geom_Circle) theCircle) 
+{
+  myCircle = theCircle;
+  myFilledStatus = Standard_True;
+}
+
+TopoDS_Face FilledCircle::ComputeFace() 
+{
+  // Create edge from myCircle 
+  BRepBuilderAPI_MakeEdge anEdgeMaker(myCircle->Circ());
+  TopoDS_Edge anEdge = anEdgeMaker.Edge(); 
+
+  // Create wire from anEdge 
+  BRepBuilderAPI_MakeWire aWireMaker(anEdge);
+  TopoDS_Wire aWire = aWireMaker.Wire();
+
+  // Create face from aWire
+  BRepBuilderAPI_MakeFace aFaceMaker(aWire);
+  TopoDS_Face aFace = aFaceMaker.Face();
+
+  return aFace;
+}
+
+void FilledCircle::Compute(const Handle_PrsMgr_PresentationManager3d &thePresentationManager, 
+                           const Handle_Prs3d_Presentation &thePresentation, 
+                           const Standard_Integer theMode) 
+{
+  thePresentation->Clear();
+
+  TopoDS_Face aFace = ComputeFace();
+
+  if (aFace.IsNull()) return;
+  if (theMode != 0) return;
+
+  StdPrs_ShadedShape::Add(thePresentation, aFace, myDrawer);
+}
+
+void FilledCircle::ComputeSelection(const Handle_SelectMgr_Selection &theSelection, 
+                                    const Standard_Integer theMode)
+{
+  Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
+  Handle(Select3D_SensitiveCircle) aSensitiveCircle = new Select3D_SensitiveCircle(anEntityOwner, 
+      myCircle, myFilledStatus);
+  theSelection->Add(aSensitiveCircle);
+}
 
 //==============================================================================
 // Fonction  vcircle
@@ -1665,259 +1781,377 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 //==============================================================================
 //function : VCircleBuilder
 //purpose  : Build an AIS_Circle
-//Draw arg : vcircle CircleName PlaneName PointName Radius
-//                              PointName PointName PointName
+//Draw arg : vcircle CircleName PlaneName PointName Radius IsFilled
+//                              PointName PointName PointName IsFilled
 //==============================================================================
-#include <Geom_CartesianPoint.hxx>
-#include <Geom_Circle.hxx>
-#include <AIS_Circle.hxx>
-#include <GC_MakeCircle.hxx>
-#include <Geom_Plane.hxx>
-#include <gp_Pln.hxx>
+
+void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
+                    TCollection_AsciiString theName, 
+                    Standard_Boolean isFilled) 
+{
+  Handle(AIS_InteractiveObject) aCircle;
+  if (isFilled) 
+  {
+    aCircle = new FilledCircle(theGeomCircle);
+  }
+  else
+  {
+    aCircle = new AIS_Circle(theGeomCircle);
+  }
+
+  // Check if there is an object with given name
+  // and remove it from context
+  if (GetMapOfAIS().IsBound2(theName)) 
+  {
+    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(theName);
+    Handle(AIS_InteractiveObject) anInterObj = 
+         Handle(AIS_InteractiveObject)::DownCast(anObj);
+    TheAISContext()->Remove(anInterObj, Standard_False);
+    GetMapOfAIS().UnBind2(theName);
+   }
+
+   // Bind the circle to its name
+   GetMapOfAIS().Bind(aCircle, theName);
+
+   // Display the circle
+   TheAISContext()->Display(aCircle);
+  
+}
 
 static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   Standard_Integer myCurrentIndex;
-  // verification of the arguments
-  if (argc>5 ||  argc<2 ) {di<<"vcircle error: expect 3 arguments."<<"\n";return 1; }
+  // Verification of the arguments
+  if (argc>6 || argc<2) 
+  { 
+    std::cout << "vcircle error: expect 4 arguments.\n"; 
+    return 1; // TCL_ERROR 
+  }
   TheAISContext()->CloseAllContexts();
 
-  // Il y a des arguments
-  if (argc==5 ) {
+  // There are all arguments
+  if (argc == 6) 
+  {
+    // Get arguments
+    TCollection_AsciiString aName(argv[1]);
+    Standard_Boolean isFilled = (Standard_Boolean)atoi(argv[5]);
+
     Handle(AIS_InteractiveObject) theShapeA;
     Handle(AIS_InteractiveObject) theShapeB;
 
-    theShapeA=
-      Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[2]));
-    theShapeB=
-      Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[3]));
+    theShapeA =
+      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[2]));
+    theShapeB =
+      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[3]));
+
 
     // Arguments: AIS_Point AIS_Point AIS_Point
     // ========================================
-    if (!theShapeA.IsNull() && theShapeB.IsNull() &&
+    if (!theShapeA.IsNull() && !theShapeB.IsNull() &&
       theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==1)
     {
-      if (theShapeB->Type()!=AIS_KOI_Datum || theShapeB->Signature()!=1 ) {
-        di<<"vcircle error: 2de argument is unexpected to be a point."<<"\n";
-        return 1;
+      if (theShapeB->Type()!=AIS_KOI_Datum || theShapeB->Signature()!=1 ) 
+      {
+        std::cout << "vcircle error: 2d argument is unexpected to be a point.\n";
+        return 1; // TCL_ERROR 
       }
-      // Le troisieme objet doit etre un point
+      // The third object must be a point
       Handle(AIS_InteractiveObject) theShapeC =
-        Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(argv[4]));
+        Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[4]));
       if (theShapeC.IsNull() ||
-        theShapeC->Type()!=AIS_KOI_Datum || theShapeC->Signature()!=1 ) {
-          di<<"vcircle error: 3de argument is unexpected to be a point."<<"\n";
-          return 1;
-        }
+        theShapeC->Type()!=AIS_KOI_Datum || theShapeC->Signature()!=1 ) 
+      {
+        std::cout << "vcircle error: 3d argument is unexpected to be a point.\n";
+        return 1; // TCL_ERROR 
+      }
         // tag
-        // On verifie que les 3 points sont differents.
-        Handle(AIS_Point) theAISPointA= *(Handle(AIS_Point)*)& theShapeA;
-        Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
-        Handle(AIS_Point) theAISPointC= *(Handle(AIS_Point)*)& theShapeC;
+        // Verify that the three points are different
+        Handle(AIS_Point) theAISPointA = Handle(AIS_Point)::DownCast(theShapeA);
+        Handle(AIS_Point) theAISPointB = Handle(AIS_Point)::DownCast(theShapeB);
+        Handle(AIS_Point) theAISPointC = Handle(AIS_Point)::DownCast(theShapeC);
+        
+        Handle(Geom_Point) myGeomPointA = theAISPointA->Component();
+        Handle(Geom_CartesianPoint) myCartPointA = 
+          Handle(Geom_CartesianPoint)::DownCast(myGeomPointA);
 
-        Handle(Geom_Point ) myGeomPointA=  theAISPointA->Component();
-        Handle(Geom_CartesianPoint ) myCartPointA= *((Handle(Geom_CartesianPoint)*)&  myGeomPointA);
+        Handle(Geom_Point) myGeomPointB = theAISPointB->Component();
+        Handle(Geom_CartesianPoint) myCartPointB =
+          Handle(Geom_CartesianPoint)::DownCast(myGeomPointB);
 
-        Handle(Geom_Point ) myGeomPointB =  theAISPointB->Component();
-        Handle(Geom_CartesianPoint ) myCartPointB= *((Handle(Geom_CartesianPoint)*)&  theAISPointB);
-
-        Handle(Geom_Point ) myGeomPointBC=  theAISPointC->Component();
-        Handle(Geom_CartesianPoint ) myCartPointC= *((Handle(Geom_CartesianPoint)*)&  theAISPointC);
+        Handle(Geom_Point) myGeomPointC = theAISPointC->Component();
+        Handle(Geom_CartesianPoint) myCartPointC =
+          Handle(Geom_CartesianPoint)::DownCast(myGeomPointC);
 
         // Test A=B
-        if (myCartPointA->X()==myCartPointB->X() && myCartPointA->Y()==myCartPointB->Y() && myCartPointA->Z()==myCartPointB->Z()  ) {
-          di<<"vcircle error: Same points."<<"\n";return 1;
+        if (abs(myCartPointA->X()-myCartPointB->X()) <= Precision::Confusion() && 
+          abs(myCartPointA->Y()-myCartPointB->Y()) <= Precision::Confusion() && 
+          abs(myCartPointA->Z()-myCartPointB->Z()) <= Precision::Confusion() ) 
+        {
+          std::cout << "vcircle error: Same points.\n"; 
+          return 1; // TCL_ERROR 
         }
         // Test A=C
-        if (myCartPointA->X()==myCartPointC->X() && myCartPointA->Y()==myCartPointC->Y() && myCartPointA->Z()==myCartPointC->Z()  ) {
-          di<<"vcircle error: Same points."<<"\n";return 1;
+        if (abs(myCartPointA->X()-myCartPointC->X()) <= Precision::Confusion() &&
+          abs(myCartPointA->Y()-myCartPointC->Y()) <= Precision::Confusion() && 
+          abs(myCartPointA->Z()-myCartPointC->Z()) <= Precision::Confusion() ) 
+        {
+          std::cout << "vcircle error: Same points.\n"; 
+          return 1; // TCL_ERROR 
         }
         // Test B=C
-        if (myCartPointB->X()==myCartPointC->X() && myCartPointB->Y()==myCartPointC->Y() && myCartPointB->Z()==myCartPointC->Z()  ) {
-          di<<"vcircle error: Same points."<<"\n";return 1;
+        if (abs(myCartPointB->X()-myCartPointC->X()) <= Precision::Confusion() && 
+          abs(myCartPointB->Y()-myCartPointC->Y()) <= Precision::Confusion() && 
+          abs(myCartPointB->Z()-myCartPointC->Z()) <= Precision::Confusion() ) 
+        {
+          std::cout << "vcircle error: Same points.\n"; 
+          return 1;// TCL_ERROR 
         }
-        // Construction du cercle
-        GC_MakeCircle Cir=GC_MakeCircle (myCartPointA->Pnt(),myCartPointB->Pnt(),myCartPointC->Pnt() );
-        Handle (Geom_Circle) theGeomCircle=Cir.Value();
-        Handle(AIS_Circle) theAISCircle=new AIS_Circle(theGeomCircle );
-        GetMapOfAIS().Bind(theAISCircle,argv[1] );
-        TheAISContext()->Display(theAISCircle );
-
+        // Construction of the circle
+        GC_MakeCircle Cir = GC_MakeCircle (myCartPointA->Pnt(), 
+          myCartPointB->Pnt(), myCartPointC->Pnt() );
+        Handle (Geom_Circle) theGeomCircle;
+        try 
+        {
+          theGeomCircle = Cir.Value();
+        }
+        catch (StdFail_NotDone)
+        {
+          std::cout << "vcircle error: can't create circle\n";
+          return -1; // TCL_ERROR
+        }
+        
+        DisplayCircle(theGeomCircle, aName, isFilled);
     }
 
-    // Arguments: ASI_Plane AIS_Point Real
+    // Arguments: AIS_Plane AIS_Point Real
     // ===================================
-    else if (theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==7 ) {
-      if (theShapeB->Type()!=AIS_KOI_Datum || theShapeB->Signature()!=1 ) {
-        di<<"vcircle error: 2de element is a unexpected to be a point."<<"\n";return 1;
+    else if (theShapeA->Type() == AIS_KOI_Datum && 
+      theShapeA->Signature() == 7 ) 
+    {
+      if (theShapeB->Type() != AIS_KOI_Datum || 
+        theShapeB->Signature() != 1 ) 
+      {
+        std::cout << "vcircle error: 2d element is a unexpected to be a point.\n"; 
+        return 1; // TCL_ERROR 
       }
-      // On verifie que le rayon est bien >=0
-      if (atof(argv[4])<=0 ) {di<<"vcircle error: the radius must be >=0."<<"\n";return 1;  }
+      // Ñheck that the radius is >= 0
+      if (atof(argv[4]) <= 0 ) 
+      {
+        std::cout << "vcircle error: the radius must be >=0.\n"; 
+        return 1; // TCL_ERROR 
+      }
 
-      // On recupere la normale au Plane.
-      Handle(AIS_Plane) theAISPlane= *(Handle(AIS_Plane)*)& theShapeA;
-      Handle(AIS_Point) theAISPointB= *(Handle(AIS_Point)*)& theShapeB;
+      // Recover the normal to the plane
+      Handle(AIS_Plane) theAISPlane = Handle(AIS_Plane)::DownCast(theShapeA);
+      Handle(AIS_Point) theAISPointB = Handle(AIS_Point)::DownCast(theShapeB); 
 
-
-      //      Handle(Geom_Plane ) myGeomPlane= *(Handle(Geom_Plane)*)& (theAISPlane->Component() );
-      Handle(Geom_Plane ) myGeomPlane= theAISPlane->Component();
-      Handle(Geom_Point ) myGeomPointB =  theAISPointB->Component();
-      Handle(Geom_CartesianPoint ) myCartPointB= *((Handle(Geom_CartesianPoint)*)&  theAISPointB);
+      Handle(Geom_Plane) myGeomPlane = theAISPlane->Component();
+      Handle(Geom_Point) myGeomPointB = theAISPointB->Component();
+      Handle(Geom_CartesianPoint) myCartPointB = 
+        Handle(Geom_CartesianPoint)::DownCast(myGeomPointB);
 
       gp_Pln mygpPlane = myGeomPlane->Pln();
       gp_Ax1 thegpAxe = mygpPlane.Axis();
       gp_Dir theDir = thegpAxe.Direction();
-      gp_Pnt theCenter=myCartPointB->Pnt();
+      gp_Pnt theCenter = myCartPointB->Pnt();
       Standard_Real TheR = atof(argv[4]);
-      GC_MakeCircle Cir=GC_MakeCircle (theCenter, theDir ,TheR);
-      Handle (Geom_Circle) theGeomCircle=Cir.Value();
-      Handle(AIS_Circle) theAISCircle=new AIS_Circle(theGeomCircle );
-      GetMapOfAIS().Bind(theAISCircle,argv[1] );
-      TheAISContext()->Display(theAISCircle );
+      GC_MakeCircle Cir = GC_MakeCircle (theCenter, theDir ,TheR);
+      Handle (Geom_Circle) theGeomCircle;
+      try 
+      {
+        theGeomCircle = Cir.Value();
+      }
+      catch (StdFail_NotDone)
+      {
+        std::cout << "vcircle error: can't create circle\n";
+        return -1; // TCL_ERROR
+      }
+
+      DisplayCircle(theGeomCircle, aName, isFilled);
 
     }
 
     // Error
-    else{
-      di<<"vcircle error: !st argument is a unexpected type."<<"\n";return 1;
+    else
+    {
+      std::cout << "vcircle error: 1st argument is a unexpected type.\n"; 
+      return 1; // TCL_ERROR 
     }
 
   }
-  // Pas d'arguments: selection dans le viewer
+  // No arguments: selection in the viewer
   // =========================================
-  else {
+  else 
+  {
+    // Get the name of the circle 
+    TCollection_AsciiString aName(argv[1]);
 
     TheAISContext()->OpenLocalContext();
-    myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
+    myCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
 
-    // Active le mode Vertex et face.
+    // Activate selection mode for vertices and faces
     TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
     TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-    di<<" Select a vertex or a face."<<"\n";
+    std::cout << " Select a vertex or a face.\n";
 
-    // Boucle d'attente waitpick.
+    // Wait for picking
     Standard_Integer argcc = 5;
     const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
     const char **argvv = (const char **) buff;
     while (ViewerMainLoop( argcc, argvv) ) { }
-    // fin de la boucle
+    // end of the loop
 
     TopoDS_Shape ShapeA;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
+    for(TheAISContext()->InitSelected(); 
+      TheAISContext()->MoreSelected(); 
+      TheAISContext()->NextSelected() ) 
+    {
       ShapeA = TheAISContext()->SelectedShape();
     }
 
-    // ShapeA est un Vertex
-    if (ShapeA.ShapeType()==TopAbs_VERTEX ) {
+    // ShapeA is a Vertex
+    if (ShapeA.ShapeType() == TopAbs_VERTEX ) 
+    {
       TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
-      di<<" Select a different vertex."<<"\n";
+      std::cout << " Select a different vertex.\n";
 
       TopoDS_Shape ShapeB;
-      do {
-
-        // Boucle d'attente waitpick.
+      do 
+      {
+        // Wait for picking
         Standard_Integer argccc = 5;
         const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
         const char **argvvv = (const char **) bufff;
         while (ViewerMainLoop( argccc, argvvv) ) { }
-        // fin de la boucle
+        // end of the loop
 
-        for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
+        for(TheAISContext()->InitSelected(); 
+          TheAISContext()->MoreSelected(); 
+          TheAISContext()->NextSelected() ) 
+        {
           ShapeB = TheAISContext()->SelectedShape();
         }
-
-
       } while(ShapeB.IsSame(ShapeA) );
 
-      // Selection de ShapeC
-      di<<" Select the last vertex."<<"\n";
+      // Selection of ShapeC
+      std::cout << " Select the last vertex.\n";
       TopoDS_Shape ShapeC;
-      do {
-
-        // Boucle d'attente waitpick.
+      do 
+      {
+        // Wait for picking
         Standard_Integer argcccc = 5;
         const char *buffff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
         const char **argvvvv = (const char **) buffff;
         while (ViewerMainLoop( argcccc, argvvvv) ) { }
-        // fin de la boucle
+        // end of the loop
 
-        for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
+        for(TheAISContext()->InitSelected(); 
+          TheAISContext()->MoreSelected(); 
+          TheAISContext()->NextSelected() ) 
+        {
           ShapeC = TheAISContext()->SelectedShape();
         }
-
-
       } while(ShapeC.IsSame(ShapeA) || ShapeC.IsSame(ShapeB) );
+      
+      // Get isFilled
+      Standard_Boolean isFilled;
+      std::cout << "Enter filled status (0 or 1)\n";
+      cin >> isFilled;
 
-      // Fermeture du context local
+      // Close the local context
       TheAISContext()->CloseLocalContext(myCurrentIndex);
 
-      // Construction du cercle
-      gp_Pnt   A=BRep_Tool::Pnt(TopoDS::Vertex(ShapeA)  );
-      gp_Pnt   B=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB)  );
-      gp_Pnt   C=BRep_Tool::Pnt(TopoDS::Vertex(ShapeC)  );
+      // Construction of the circle
+      gp_Pnt A = BRep_Tool::Pnt(TopoDS::Vertex(ShapeA));
+      gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(ShapeB));
+      gp_Pnt C = BRep_Tool::Pnt(TopoDS::Vertex(ShapeC));
 
-      GC_MakeCircle Cir=GC_MakeCircle (A,B,C );
-      Handle (Geom_Circle) theGeomCircle=Cir.Value();
-      Handle(AIS_Circle) theAISCircle=new AIS_Circle(theGeomCircle );
-      GetMapOfAIS().Bind(theAISCircle,argv[1] );
-      TheAISContext()->Display(theAISCircle );
+      GC_MakeCircle Cir = GC_MakeCircle (A, B, C);
+      Handle (Geom_Circle) theGeomCircle;
+      try 
+      {
+        theGeomCircle = Cir.Value();
+      }
+      catch (StdFail_NotDone)
+      {
+        std::cout << "vcircle error: can't create circle\n";
+        return -1; // TCL_ERROR
+      }
+
+      DisplayCircle(theGeomCircle, aName, isFilled);
 
     }
-    // ShapeA est une face.
-    else  {
-      di<<" Select a vertex (in your face)."<<"\n";
+    // Shape is a face
+    else  
+    {
+      std::cout << " Select a vertex (in your face).\n";
       TheAISContext()->DeactivateStandardMode (AIS_Shape::SelectionType(4) );
 
       TopoDS_Shape ShapeB;
-      // Boucle d'attente waitpick.
+      // Wait for picking
       Standard_Integer argccc = 5;
       const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
       const char **argvvv = (const char **) bufff;
       while (ViewerMainLoop( argccc, argvvv) ) { }
-      // fin de la boucle
+      // end of the loop
 
-      for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
+      for(TheAISContext()->InitSelected(); 
+        TheAISContext()->MoreSelected(); 
+        TheAISContext()->NextSelected() ) 
+      {
         ShapeB = TheAISContext()->SelectedShape();
       }
 
-      // Recuperation du rayon.
-      Standard_Integer theRad;
-      do {
-        di<<" Enter the value of the radius:"<<"\n";
-        cin>>theRad;
-      } while (theRad<=0);
+      // Recover the radius 
+      Standard_Real theRad;
+      do 
+      {
+        std::cout << " Enter the value of the radius:\n";
+        cin >> theRad;
+      } while (theRad <= 0);
+      
+      // Get filled status
+      Standard_Boolean isFilled;
+      std::cout << "Enter filled status (0 or 1)\n";
+      cin >> isFilled;
 
-      // Fermeture du context local
+      // Close the local context
       TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction du cercle.
+      // Construction of the circle
 
-      // On recupere la normale au Plane. tag
-      TopoDS_Face myFace=TopoDS::Face(ShapeA);
-      BRepAdaptor_Surface mySurface (myFace, Standard_False );
-      gp_Pln myPlane=mySurface.Plane();
-      Handle(Geom_Plane) theGeomPlane=new Geom_Plane (myPlane );
+      // Recover the normal to the plane. tag
+      TopoDS_Face myFace = TopoDS::Face(ShapeA);
+      BRepAdaptor_Surface mySurface (myFace, Standard_False);
+      gp_Pln myPlane = mySurface.Plane();
+      Handle(Geom_Plane) theGeomPlane = new Geom_Plane (myPlane);
       gp_Pln mygpPlane = theGeomPlane->Pln();
       gp_Ax1 thegpAxe = mygpPlane.Axis();
       gp_Dir theDir = thegpAxe.Direction();
 
-      // On recupere le centre.
-      gp_Pnt   theCenter=BRep_Tool::Pnt(TopoDS::Vertex(ShapeB)  );
+      // Recover the center
+      gp_Pnt theCenter = BRep_Tool::Pnt(TopoDS::Vertex(ShapeB));
 
-      // On construit l'AIS_Circle
-      GC_MakeCircle Cir=GC_MakeCircle (theCenter, theDir ,theRad  );
-      Handle (Geom_Circle) theGeomCircle=Cir.Value();
-      Handle(AIS_Circle) theAISCircle=new AIS_Circle(theGeomCircle );
-      GetMapOfAIS().Bind(theAISCircle,argv[1] );
-      TheAISContext()->Display(theAISCircle );
+      // Ñonstruct the circle
+      GC_MakeCircle Cir = GC_MakeCircle (theCenter, theDir ,theRad);
+      Handle (Geom_Circle) theGeomCircle;
+      try 
+      {
+        theGeomCircle = Cir.Value();
+      }
+      catch (StdFail_NotDone)
+      {
+        std::cout << "vcircle error: can't create circle\n";
+        return -1; // TCL_ERROR
+      }
 
+      DisplayCircle(theGeomCircle, aName, isFilled);
+      
     }
-
 
   }
 
   return 0;
 }
-
 
 //===============================================================================================
 //function : VDrawText
@@ -1941,12 +2175,9 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 
 #include <Standard_DefineHandle.hxx>
 
-#include <AIS_Drawer.hxx>
-
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 
@@ -2178,7 +2409,6 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
 #include <TColgp_Array1OfDir.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-#include <AIS_Drawer.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -3312,7 +3542,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VLineBuilder,group);
 
   theCommands.Add("vcircle",
-    "vcircle CircleName [PointName/PlaneName] [PointName] [Radius] ",
+    "vcircle CircleName [PointName PointName PointName IsFilled]\n\t\t\t\t\t[PlaneName PointName Radius IsFilled]",
     __FILE__,VCircleBuilder,group);
 
   theCommands.Add("vdrawtext",

@@ -22,7 +22,10 @@ uses
     HArray1OfPnt    from TColgp,
     Array1OfPnt2d   from TColgp,
     Box2d           from Bnd,
-    Location        from TopLoc
+    Location        from TopLoc,
+    Pnt             from Select3D, 
+    Pnt2d           from Select3D, 
+    Projector       from Select3D
 
 is
     Create (OwnerId      : EntityOwner from SelectBasics;
@@ -57,7 +60,8 @@ is
         -- owner OwnerId, the array of triangles apolyg3d, and the Boolean FilledCircle.
         -- apolyg3d is an array of consecutive triangles on the
         -- circle. The triangle i+1 lies on the intersection of the
-        -- tangents to the circle of i and i+2.
+        -- tangents to the circle of i and i+2. Note, that the first point of apolyg3d 
+        -- must be equal to the last point of apolyg3d. 
 
     Create(OwnerId  : EntityOwner from SelectBasics;
            apolyg3d : Array1OfPnt   from TColgp;
@@ -65,6 +69,8 @@ is
     returns mutable SensitiveCircle;
         ---Purpose: Constructs the sensitive circle object defined by the
         -- owner OwnerId, the array of points apolyg3d, and the Boolean FilledCircle.
+        -- If the length of apolyg3d is more then 1, the first point of apolyg3d 
+        -- must be equal to the last point of apolyg3d. 
 
     Matches(me  :mutable; 
             X,Y : Real from Standard;
@@ -98,10 +104,18 @@ is
 
     Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
 
+    Project(me: mutable;aProjector: Projector from Select3D) is redefined virtual;
+
+    ComputeCenter3D(me: mutable); 
+        ---Level: Internal 
+        ---Purpose: Computes myCenter3D as the barycenter of points from mypolyg3d
+
 fields
 
     myFillStatus    : Boolean;
     myDetectedIndex : Integer from Standard; -- used for depth...
+    myCenter2D      : Pnt2d from Select3D; -- used for Matches()
+    myCenter3D      : Pnt from Select3D; -- used for Matches()
     
 end SensitiveCircle;
 

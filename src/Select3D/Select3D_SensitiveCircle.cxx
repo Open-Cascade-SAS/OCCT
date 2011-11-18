@@ -13,6 +13,7 @@
 #include <ElCLib.hxx>
 #include <Select3D_Pnt.hxx>
 #include <Select3D_Pnt2d.hxx>
+#include <Select3D_Projector.hxx>
 
 //=======================================================================
 //function : Select3D_SensitiveCircle (constructeur)
@@ -64,11 +65,18 @@ myDetectedIndex(-1)
       rank++;
       curu+=du;
     }
-    ((Select3D_Pnt*)mypolyg3d)[NbPoints*2] = ((Select3D_Pnt*)mypolyg3d)[0];
+    ((Select3D_Pnt*)mypolyg3d)[NbPoints*2] = ((Select3D_Pnt*)mypolyg3d)[0]; 
+    // Get myCenter3D 
+    myCenter3D = TheCircle->Location();
   }
   // Radius = 0.0
   else
+  {
     ((Select3D_Pnt*)mypolyg3d)[0] = TheCircle->Location();
+    // Get myCenter3D
+    myCenter3D = ((Select3D_Pnt*)mypolyg3d)[0];
+  }
+    
 }
 
 //=======================================================================
@@ -117,10 +125,16 @@ myDetectedIndex(-1)
       curu+=du;
     }
     TheCircle->D0(uend,p1);
-    ((Select3D_Pnt*)mypolyg3d)[NbPoints*2-2] = p1;            
+    ((Select3D_Pnt*)mypolyg3d)[NbPoints*2-2] = p1; 
+    // Get myCenter3D 
+    myCenter3D = TheCircle->Location();
   }
   else
-    ((Select3D_Pnt*)mypolyg3d)[0] = TheCircle->Location();                
+  {
+    ((Select3D_Pnt*)mypolyg3d)[0] = TheCircle->Location();  
+    // Get myCenter3D
+    myCenter3D = ((Select3D_Pnt*)mypolyg3d)[0];
+  }
 }
 
 //=======================================================================
@@ -134,15 +148,23 @@ Select3D_SensitivePoly(OwnerId, Thepolyg3d),
 myFillStatus(FilledCircle),
 myDetectedIndex(-1)
 {
-  
+  if (mynbpoints > 1) 
+    ComputeCenter3D();
+  else 
+    myCenter3D = ((Select3D_Pnt*)mypolyg3d)[0];
 }
+
 Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& OwnerId,
                            const TColgp_Array1OfPnt& Thepolyg3d,
                            const Standard_Boolean FilledCircle):
 Select3D_SensitivePoly(OwnerId, Thepolyg3d),
 myFillStatus(FilledCircle),
 myDetectedIndex(-1)
-{
+{ 
+  if (mynbpoints > 1) 
+    ComputeCenter3D();
+  else 
+    myCenter3D = ((Select3D_Pnt*)mypolyg3d)[0];
 }
 
 Standard_Boolean Select3D_SensitiveCircle::
@@ -151,63 +173,53 @@ Matches(const Standard_Real X,
     const Standard_Real aTol, 
     Standard_Real& DMin)
 {
-  
 
-  // in case of Edge (for the face it is only checked if 
-  // the mouse point X,Y is found inside the triangle
-  // pi,pi+1,pi+2 with close tolerance... if yes, finish...
-  if(mynbpoints>1){
-    Standard_Boolean Found =Standard_False;
+  if(mynbpoints>1)
+  {
+    Standard_Boolean Found = Standard_False;
     Standard_Integer i = 0;
-    //gp_Pnt2d p1,p2,p3,pg;
     
-    if(!myFillStatus){
-      while(i < mynbpoints-2 && !Found) {
-    Standard_Integer TheStat = 
-      Select3D_SensitiveTriangle::Status(((Select3D_Pnt2d*)mypolyg2d)[i],
+    if(!myFillStatus)
+    {
+      while(i < mynbpoints-2 && !Found) 
+      { 
+        Standard_Integer TheStat = 
+          Select3D_SensitiveTriangle::Status(((Select3D_Pnt2d*)mypolyg2d)[i],
                          ((Select3D_Pnt2d*)mypolyg2d)[i+1],
                          ((Select3D_Pnt2d*)mypolyg2d)[i+2],
-                         gp_XY(X,Y),aTol,DMin);
-    Found = (TheStat!=2);
-    if(Found) myDetectedIndex=i;
-    i+=2;
-    
+                         gp_XY(X,Y),aTol,DMin); 
+        Found = (TheStat != 2); 
+        if(Found) myDetectedIndex = i; 
+        i += 2;
       }
     }
-    else {
+    else 
+    {
       myDetectedIndex =-1;
-#ifndef DEB
-      Standard_Real DMin2 = 0.;
-#else
-      Standard_Real DMin2;
-#endif
       Standard_Real Xmin,Ymin,Xmax,Ymax;
-      Bnd_Box2d(mybox2d).Get(Xmin,Ymin,Xmax,Ymax);
-      if(!Bnd_Box2d(mybox2d).IsVoid())
-        DMin2 = gp_XY(Xmax-Xmin,Ymax-Ymin).SquareModulus();
-      TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
-      Points2D(aArrayOf2dPnt);
-      CSLib_Class2d TheInOutTool(aArrayOf2dPnt,aTol,aTol,Xmin,Ymin,Xmax,Ymax);
-      Standard_Integer TheStat = TheInOutTool.SiDans(gp_Pnt2d(X,Y));
-      Standard_Real aTol2 = aTol*aTol;
-      if(TheStat!=1) {
-	for(Standard_Integer I=0;i<mynbpoints-1;i+=2){
-	  gp_XY V1(((Select3D_Pnt2d*)mypolyg2d)[I+1]),V(X,Y);
-	  V1-=((Select3D_Pnt2d*)mypolyg2d)[I];
-	  V-=((Select3D_Pnt2d*)mypolyg2d)[I];
-	  Standard_Real Vector = V1^V;
-	  Standard_Real V1V1 = V1.SquareModulus();
-	  DMin2 = 
-	    (V1V1 <=aTol2) ? 
-	      Min(DMin2,V.SquareModulus()): // if the segment is too small...
-		Min(DMin2,Vector*Vector/V1V1);
-	  
-	}
-	Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-	return Standard_True;
-      }
-      return Standard_False;
+
+      // Get coordinates of the bounding box
+      Bnd_Box2d(mybox2d).Get(Xmin,Ymin,Xmax,Ymax); 
+      TColgp_Array1OfPnt2d anArrayOf2dPnt(1, mynbpoints); 
       
+      // Fill anArrayOf2dPnt with points from mypolig2d
+      Points2D(anArrayOf2dPnt); 
+      
+      CSLib_Class2d anInOutTool(anArrayOf2dPnt,aTol,aTol,Xmin,Ymin,Xmax,Ymax);
+
+      // Method SiDans returns the status :
+      //  1 - the point is inside the circle 
+      //  0 - the point is on the circle
+      // -1 - the point is outside the circle
+      Standard_Integer aStat = anInOutTool.SiDans(gp_Pnt2d(X,Y));
+      if(aStat != -1) 
+      {
+        // Compute DMin (a distance between the center and the point)
+        DMin = gp_XY(myCenter2D.x - X, myCenter2D.y - Y).Modulus();
+        Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin); 
+        return Standard_True;
+      }
+      return Standard_False;  
     }
     if(!Found) 
       myDetectedIndex=-1;
@@ -219,6 +231,7 @@ Matches(const Standard_Real X,
   return Standard_True;
 
 }
+
 Standard_Boolean Select3D_SensitiveCircle::
 Matches(const Standard_Real XMin,
     const Standard_Real YMin,
@@ -342,4 +355,41 @@ Standard_Real Select3D_SensitiveCircle::ComputeDepth(const gp_Lin& EyeLine) cons
 
   return  ElCLib::Parameter(EyeLine,CDG);
   
+}
+
+void Select3D_SensitiveCircle::Project(const Handle_Select3D_Projector &aProjector) 
+{
+  Select3D_SensitivePoly::Project(aProjector); 
+  // Project the center of the circle 
+  gp_Pnt2d aCenter;
+  aProjector->Project(myCenter3D, aCenter);
+  myCenter2D = aCenter;
+}
+
+void Select3D_SensitiveCircle::ComputeCenter3D() 
+{
+  gp_XYZ aCenter(0., 0., 0.);
+  if (mynbpoints > 1) 
+  {
+    // The mass of points system
+    Standard_Integer aMass = mynbpoints - 1; 
+    // Find the circle barycenter
+    for (Standard_Integer i = 0; i < mynbpoints-1; ++i) 
+    {
+      aCenter += ((Select3D_Pnt*)mypolyg3d)[i];
+    }
+    myCenter3D = aCenter / aMass;
+  }
+  else if (mynbpoints == 1) 
+  {
+    myCenter3D = ((Select3D_Pnt*)mypolyg3d)[0];
+  }
+  // bad case! there are no points in mypolyg3d 
+  // It can lead to incorrect computation of 
+  // parameter DMin in method Matches. 
+  // In spite of this myCenter3D isn't left uninitialized
+  else 
+  { 
+    myCenter3D = aCenter;
+  }
 }
