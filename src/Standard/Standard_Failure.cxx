@@ -38,7 +38,7 @@ static void deallocate_message(Standard_CString aMessage)
   if(aMessage) {
     (*((Standard_Integer*)aMessage))--;
     if(*((Standard_Integer*)aMessage)==0)
-      delete (Standard_PCharacter)aMessage;
+      delete [](Standard_PCharacter)aMessage;
   }
 }
 
