@@ -31,6 +31,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 #include <Precision.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
@@ -263,47 +264,131 @@ static Standard_Integer pcurve(Draw_Interpretor& , Standard_Integer n, const cha
 //=======================================================================
 
 static Standard_Integer sewing (Draw_Interpretor& theDi, 
-				Standard_Integer n, const char** a)
+				Standard_Integer theArgc, const char** theArgv)
 {
-  if (n < 3) return (1);
-
   BRepBuilderAPI_Sewing aSewing;
-  Standard_Integer ntmp = n;
+  Standard_Integer aPar = 1;
+  TopTools_SequenceOfShape aSeq;
 
-  TopoDS_Shape sh = DBRep::Get(a[2]);
-  Standard_Integer i=2;
-  Standard_Real tol = 1.0e-06;
-  if (sh.IsNull()) {
-    if (n < 4) return (1);
-    tol = atof(a[2]);
-    //Standard_Real tol = atof(a[2]);
-    //aSewing.Init(tol, Standard_True,Standard_True,Standard_True,Standard_False);
-    i = 3;
+  Standard_Real aTol = 1.0e-06;
+  Standard_Boolean aSewingMode = Standard_True;
+  Standard_Boolean anAnalysisMode = Standard_True;
+  Standard_Boolean aCuttingMode = Standard_True;
+  Standard_Boolean aNonManifoldMode = Standard_False;
+  Standard_Boolean aSameParameterMode = Standard_True;
+  Standard_Boolean aFloatingEdgesMode = Standard_False;
+  Standard_Boolean aFaceMode = Standard_True;
+  Standard_Real aMinTol = aTol*1e-4;
+  Standard_Real aMaxTol = Precision::Infinite();
+
+  for (Standard_Integer i = 2; i < theArgc; i++)
+  {
+    if (theArgv[i][0] == '-' || theArgv[i][0] == '+')
+    {
+      Standard_Boolean aVal = (theArgv[i][0] == '+' ? Standard_True : Standard_False);
+      switch (tolower(theArgv[i][1]))
+      {
+      case 'm':
+        {
+          if (tolower(theArgv[i][2]) == 'i' && i+1 < theArgc)
+          {
+            if (atof (theArgv[i+1]))
+              aMinTol = atof (theArgv[i+1]);
+            else
+            {
+              theDi << "Error! min tolerance can't possess the null value" << "\n";
+              return (1);
+            }
+          }
+          if (tolower(theArgv[i][2]) == 'a' && i+1 < theArgc)
+          {
+            if (atof (theArgv[i+1]))
+              aMaxTol = atof (theArgv[i+1]);
+            else
+            {
+              theDi << "Error! max tolerance can't possess the null value" << "\n";
+              return (1);
+            }
+          }
+        }
+        break;
+      case 's': aSewingMode = aVal; break;
+      case 'a': anAnalysisMode = aVal; break;
+      case 'c': aCuttingMode = aVal; break;
+      case 'n': aNonManifoldMode = aVal; break;
+      case 'p': aSameParameterMode = aVal; break;
+      case 'e': aFloatingEdgesMode = aVal; break;
+      case 'f': aFaceMode = aVal; break;
+      }
+    }
+    else
+    {
+      if (atof (theArgv[i]))
+        aTol = atof (theArgv[i]);
+      else
+      {
+        TopoDS_Shape aShape = DBRep::Get (theArgv[i]);
+        if (aShape.IsNull())
+          continue;
+        aSeq.Append (aShape);
+        aPar++;
+      }
+    }
+  }
+   
+  if (aPar < 2)
+  {
+    theDi << "Use: " << theArgv[0] << " result [tolerance] shape1 shape2 ... [min tolerance] [max tolerance] [switches]" << "\n";
+    theDi << "To set user's value of min/max tolerances the following syntax is used: +<parameter> <value>" << "\n";
+    theDi << "- parameters are identified by letters:" << "\n";
+    theDi << "  mint - min tolerance" << "\n";
+    theDi << "  maxt - max tolerance" << "\n";
+    theDi << "Switches allow to tune other parameters of Sewing" << "\n";
+    theDi << "The following syntax is used: <symbol><parameter>" << "\n";
+    theDi << "- symbol may be - to set parameter off, + to set on" << "\n";
+    theDi << "- parameters are identified by letters:" << "\n";
+    theDi << "  s - mode for creating sewed shape" << "\n";
+    theDi << "  a - mode for analysis of input shapes" << "\n";
+    theDi << "  c - mode for cutting of free edges" << "\n";
+    theDi << "  n - mode for non manifold processing" << "\n";
+    theDi << "  p - mode for same parameter processing for edges" << "\n";
+    theDi << "  e - mode for sewing floating edges" << "\n";
+    theDi << "  f - mode for sewing faces" << "\n";
+    return (1);
+  }
+    
+  if (aTol < Precision::Confusion())
+    aTol = Precision::Confusion();
+  if (aMinTol < Precision::Confusion())
+    aMinTol = Precision::Confusion();
+  if (aMinTol > aTol)
+  {
+    theDi << "Error! min tolerance can't exceed working tolerance" << "\n";
+    return (1);
+  }
+  if (aMaxTol < aTol)
+  {
+    theDi << "Error! max tolerance can't be less than working tolerance" << "\n";
+    return (1);
   }
 
-  Standard_Boolean NonManifoldMode = Standard_False;
-  sh = DBRep::Get(a[n-1]);
-  if (sh.IsNull()) {
-    // read non manifold mode
-    Standard_Integer nmm = atoi(a[n-1]);
-    if(nmm==1)
-      NonManifoldMode = Standard_True;
-    ntmp--;
-  }
-  aSewing.Init(tol, Standard_True,Standard_True,Standard_True,NonManifoldMode);
+  aSewing.Init (aTol, aSewingMode, anAnalysisMode, aCuttingMode, aNonManifoldMode);
+  aSewing.SetSameParameterMode (aSameParameterMode);
+  aSewing.SetFloatingEdgesMode (aFloatingEdgesMode);
+  aSewing.SetFaceMode (aFaceMode);
+  aSewing.SetMinTolerance (aMinTol);
+  aSewing.SetMaxTolerance (aMaxTol);
+
+  for (Standard_Integer i = 1; i <= aSeq.Length(); i++)
+    aSewing.Add(aSeq.Value(i));
   
-  while (i < ntmp) {
-    sh = DBRep::Get(a[i]);
-    aSewing.Add(sh);
-    i++;
-  }
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDi, 1);
   aSewing.Perform (aProgress);
   aSewing.Dump();
-  const TopoDS_Shape& sh2 = aSewing.SewedShape();
-  if (!sh2.IsNull()) {
-    DBRep::Set(a[1], sh2);
-  }
+
+  const TopoDS_Shape& aRes = aSewing.SewedShape();
+  if (!aRes.IsNull())
+    DBRep::Set(theArgv[1], aRes);
   return 0;
 }
 
@@ -419,7 +504,7 @@ void  BRepTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  __FILE__,pcurve,g);
 
   theCommands.Add("sewing",
-		  "sewing result [tolerance] shape1 shape2 ...",
+		  "sewing result [tolerance] shape1 shape2 ... [min tolerance] [max tolerance] [switches]",
 		  __FILE__,sewing, g);
 
   theCommands.Add("continuity", 
