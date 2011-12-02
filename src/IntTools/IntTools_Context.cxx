@@ -140,7 +140,8 @@
   //
   anAdr=myProjPSMap.FindFromKey1(aF);
   if (!anAdr) {
-    Standard_Real Umin, Usup, Vmin, Vsup, anEpsT=1.e-12 ;
+    Standard_Real Umin, Usup, Vmin, Vsup;
+    Standard_Real anEpsT = Precision::PConfusion(); //1.e-12;
     BRepAdaptor_Surface aBAS;
     //
     const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aF);

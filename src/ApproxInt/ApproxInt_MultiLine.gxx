@@ -432,7 +432,7 @@ const {
   Standard_Real dsmin = ds*0.3;
   Standard_Real smax  = AC(High);
   
-  for(i=2,s=ds; (s<smax) ; i++,s+=ds) { 
+  for(i=2,s=ds; (s < smax && Indice <= High-1); i++,s+=ds) { 
     //----------------------------------------------------------
     //-- Recherche des indices des points                     --
     //-- Point           :    2       i       NbPnts-1        --
@@ -443,7 +443,13 @@ const {
       if(!HasBeenInserted) ResultPntOn2SLine->Add(myLine->Point(Indice));
       HasBeenInserted = Standard_False;
       Indice++;
+      if (Indice == High)
+        break;
     }
+    
+    if (Indice == High)
+      break;
+    
     if(!HasBeenInserted  && AC(Indice) <= s) { 
       ResultPntOn2SLine->Add(myLine->Point(Indice));
       HasBeenInserted = Standard_True;
@@ -485,7 +491,13 @@ const {
 	  //-- cout<<" Insertion du point :"<<Indice<<endl;
 	  HasBeenInserted = Standard_False;
 	  Indice++;
+          if (Indice == High)
+            break;
 	}
+    
+        if (Indice == High)
+          break;
+    
 	if(!HasBeenInserted  && AC(Indice) <= s) { 
 	  ResultPntOn2SLine->Add(myLine->Point(Indice));
 	  HasBeenInserted = Standard_True;
