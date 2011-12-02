@@ -107,7 +107,12 @@
 #include <IntTools_PntOn2Faces.hxx>
 #include <IntTools_Context.hxx>
 #include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
-          
+
+
+//modified by NIZNHY-PKV Fri Nov 25 12:03:55 2011f
+static
+  void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
+//modified by NIZNHY-PKV Fri Nov 25 12:03:58 2011t        
 //
 static
   void TolR3d(const TopoDS_Face& ,
@@ -2215,7 +2220,6 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 
   return new Geom2d_BSplineCurve(poles,knots,mults,1);
 }
-//modified by NIZNHY-PKV Fri Sep 16 07:57:30 2011f
 //=======================================================================
 //function : PrepareLines3D
 //purpose  : 
@@ -2290,7 +2294,6 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
     mySeqOfCurve.Append(aIC);
   }
 }
-//modified by NIZNHY-PKV Fri Sep 16 07:57:32 2011t
 //=======================================================================
 //function : CorrectSurfaceBoundaries
 //purpose  : 
@@ -2730,7 +2733,10 @@ Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine
     nb = aLineOn2S->NbPoints();
     anEndIndex = (anEndIndex > nb) ? nb : anEndIndex;
 
-    if((aStartIndex >= nb) || (anEndIndex <= 1)) {
+    //modified by NIZNHY-PKV Fri Nov 25 13:02:40 2011f
+    if((aStartIndex > nb) || (anEndIndex <= 1)) {
+    //if((aStartIndex >= nb) || (anEndIndex <= 1)) {
+    //modified by NIZNHY-PKV Fri Nov 25 13:02:47 2011t
       continue;
     }
     k = aStartIndex;
@@ -4521,3 +4527,27 @@ Standard_Integer IndexType(const GeomAbs_SurfaceType aType)
   } 
   return aIndex;
 }
+
+//modified by NIZNHY-PKV Fri Nov 25 11:58:12 2011f
+//=======================================================================
+//function : DumpWLine
+//purpose  : 
+//=======================================================================
+void DumpWLine(const Handle(IntPatch_WLine)& aWLine)
+{
+  Standard_Integer i, aNbPnts; 
+  Standard_Real aX, aY, aZ, aU1, aV1, aU2, aV2;
+  //
+  aNbPnts=aWLine->NbPnts();
+  for (i=1; i<=aNbPnts; ++i) {
+    const IntSurf_PntOn2S aPntOn2S=aWLine->Point(i);
+    const gp_Pnt& aP3D=aPntOn2S.Value();
+    aP3D.Coord(aX, aY, aZ);
+    aPntOn2S.Parameters(aU1, aV1, aU2, aV2);
+    //
+    //printf("point p_%d %lf %lf %lf\n", i, aX, aY, aZ);
+    printf("point p_%d %20.15lf %20.15lf %20.15lf %20.15lf %20.15lf %20.15lf %20.15lf\n",
+	   i, aX, aY, aZ, aU1, aV1, aU2, aV2);
+  }
+}
+//modified by NIZNHY-PKV Fri Nov 25 11:58:19 2011t
