@@ -1625,9 +1625,15 @@ void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
     }
     if(found){
       if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
-	if(tgtfaces(E, F1, F2, TolAng, couture)){
-	  B.Continuity(E,F1,F2,GeomAbs_G1);
-	}
+
+        try {
+	        if(tgtfaces(E, F1, F2, TolAng, couture)){
+	          B.Continuity(E,F1,F2,GeomAbs_G1);
+          }
+        }
+        catch(Standard_Failure)
+        {
+        }
       }
     }
   }
@@ -1645,9 +1651,14 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
 {
   BRep_Builder B;
   if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
-    if( tgtfaces(E, F1, F2, TolAng, F1.IsEqual(F2))) {
-     B.Continuity(E,F1,F2,GeomAbs_G1);
-   }
+    try {
+      if( tgtfaces(E, F1, F2, TolAng, F1.IsEqual(F2))) {
+        B.Continuity(E,F1,F2,GeomAbs_G1);
+      }
+    }
+    catch(Standard_Failure)
+    {
+    }
  }
 }
 

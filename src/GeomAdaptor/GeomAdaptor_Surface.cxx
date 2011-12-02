@@ -43,6 +43,7 @@
 #include <BSplCLib.hxx>
 #include <Precision.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
 
 #define myBspl (*((Handle(Geom_BSplineSurface)*)&mySurface))
 #define myExtSurf (*((Handle(Geom_SurfaceOfLinearExtrusion)*)&mySurface))
@@ -97,7 +98,7 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
 //purpose  : 
 //=======================================================================
 
-void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S,
+void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
                                const Standard_Real UFirst,
                                const Standard_Real ULast,
                                const Standard_Real VFirst,
@@ -105,9 +106,6 @@ void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S,
                                const Standard_Real TolU,
                                const Standard_Real TolV)
 {
-  if(UFirst>ULast || VFirst>VLast)
-    Standard_ConstructionError::Raise("GeomAdaptor_Surface::Load");
-
   myTolU =  TolU;
   myTolV =  TolV;  
   myUFirst = UFirst;

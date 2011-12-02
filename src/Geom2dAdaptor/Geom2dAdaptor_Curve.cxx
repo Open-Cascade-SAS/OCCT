@@ -34,6 +34,7 @@
 
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
 #include <Standard_NotImplemented.hxx>
 
 #define myBspl (*((Handle(Geom2d_BSplineCurve)*)&myCurve))
@@ -109,6 +110,9 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const Standard_Real U1,
 //=======================================================================
 
 Geom2dAdaptor_Curve::Geom2dAdaptor_Curve()
+ : myTypeCurve(GeomAbs_OtherCurve),
+   myFirst(0.),
+   myLast(0.)
 {
 }
 
@@ -117,8 +121,9 @@ Geom2dAdaptor_Curve::Geom2dAdaptor_Curve()
 //purpose  : 
 //=======================================================================
 
-Geom2dAdaptor_Curve::Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C) {
-  Load(C,C->FirstParameter(),C->LastParameter());
+Geom2dAdaptor_Curve::Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C) 
+{
+  Load(C);
 }
 
 //=======================================================================
@@ -128,29 +133,21 @@ Geom2dAdaptor_Curve::Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C) {
 
 Geom2dAdaptor_Curve::Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C,
 					 const Standard_Real UFirst,
-					 const Standard_Real ULast) {
-  if ( UFirst > ULast) Standard_ConstructionError::Raise();
+					 const Standard_Real ULast) 
+{
   Load(C,UFirst,ULast);
 }
 
-//=======================================================================
-//function : Load
-//purpose  : 
-//=======================================================================
-
-void Geom2dAdaptor_Curve::Load(const Handle(Geom2d_Curve)& C) {
-  Load(C,C->FirstParameter(),C->LastParameter());
-}
 
 //=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================
 
-void Geom2dAdaptor_Curve::Load(const Handle(Geom2d_Curve)& C,
-			       const Standard_Real UFirst,
-			       const Standard_Real ULast) {
-  if ( UFirst > ULast) Standard_ConstructionError::Raise();
+void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
+			                         const Standard_Real UFirst,
+			                         const Standard_Real ULast) 
+{
   myFirst = UFirst;
   myLast  = ULast;
 

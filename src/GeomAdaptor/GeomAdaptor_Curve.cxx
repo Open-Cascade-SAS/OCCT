@@ -34,6 +34,7 @@
 
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Geom_OffsetCurve.hxx>
 
@@ -109,11 +110,10 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const Standard_Real U1,
 //purpose  : 
 //=======================================================================
 
-void GeomAdaptor_Curve::Load(const Handle(Geom_Curve)& C,
+void GeomAdaptor_Curve::load(const Handle(Geom_Curve)& C,
                              const Standard_Real UFirst,
                              const Standard_Real ULast)
 {
-  if ( UFirst > ULast) Standard_ConstructionError::Raise();
   myFirst = UFirst;
   myLast  = ULast;
 

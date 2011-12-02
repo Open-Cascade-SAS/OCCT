@@ -973,13 +973,21 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 	Geom2dAdaptor_Curve anOtherPCurve;
 	if (IShape == aData->IndexOfS1())
 	{
-	  anOtherPCurve.Load (aData->InterferenceOnS1().PCurveOnFace(),
+    const Handle(Geom2d_Curve)& aPCurve = aData->InterferenceOnS1().PCurveOnFace();
+    if(aPCurve.IsNull())
+      continue;
+
+	  anOtherPCurve.Load (aPCurve,
 			      aData->InterferenceOnS1().FirstParameter(),
 			      aData->InterferenceOnS1().LastParameter());
 	}
 	else if (IShape == aData->IndexOfS2())
 	{
-	  anOtherPCurve.Load (aData->InterferenceOnS2().PCurveOnFace(),
+    const Handle(Geom2d_Curve)& aPCurve = aData->InterferenceOnS2().PCurveOnFace();
+    if(aPCurve.IsNull())
+      continue;
+
+	  anOtherPCurve.Load (aPCurve,
 			      aData->InterferenceOnS2().FirstParameter(),
 			      aData->InterferenceOnS2().LastParameter());
 	}

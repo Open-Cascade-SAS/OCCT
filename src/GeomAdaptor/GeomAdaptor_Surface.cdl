@@ -59,7 +59,8 @@ is
                       TolU  :  Real  =  0.0; 
                       TolV  :  Real  =  0.0)
     raises ConstructionError from Standard;
-    ---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
+    	---C++: inline
+        ---Purpose: ConstructionError is raised if UFirst>ULast or VFirst>VLast
 
     Surface(me) returns Surface from Geom
     	---C++: return const&
@@ -358,17 +359,22 @@ is
     is redefined static;
   
   
-     Span (me;Side :Integer; Ideb,Ifin:Integer; 
-    	    	   OutIdeb,OutIfin:out Integer; 
-    	    NbKnots : Integer ) 
-     is  private; 
+    Span (me;Side :Integer; Ideb,Ifin:Integer; 
+    	     OutIdeb,OutIfin:out Integer; 
+    	     NbKnots : Integer ) 
+    is  private; 
 
     IfUVBound (me;U,V :Real;Ideb,Ifin,IVdeb,IVfin :out Integer; 
     	    	  USide,VSide:  Integer)  
 	returns  Boolean  from  Standard				    
-    is  private; 
-     
- 
+    is  private;
+    
+    load (me : in out; S : Surface from Geom; 
+    	    	       UFirst,ULast,VFirst,VLast :  Real; 
+                       TolU  :  Real  =  0.0; 
+                       TolV  :  Real  =  0.0)
+    is private;
+
 fields
 
     mySurface            : Surface          from Geom;

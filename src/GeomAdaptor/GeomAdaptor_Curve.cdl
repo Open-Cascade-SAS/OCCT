@@ -52,6 +52,7 @@ is
    Load(me : in out; C : Curve from Geom; UFirst,ULast : Real)
    raises 
     	ConstructionError from Standard;
+        ---C++: inline
     	---Purpose: ConstructionError is raised if Ufirst>Ulast
 
    Curve(me) returns Curve from Geom
@@ -263,6 +264,9 @@ is
 
    LocalContinuity(me; U1, U2 : Real) returns Shape from GeomAbs 
    is static private;
+
+   load(me : in out; C : Curve from Geom; UFirst,ULast : Real)
+   is private;
    
 fields 
 

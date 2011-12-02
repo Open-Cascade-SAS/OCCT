@@ -4,6 +4,8 @@
 // Copyright: OPEN CASCADE 1993
 
 #include <Geom_Surface.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_ConstructionError.hxx>
 
 //=======================================================================
 //function : GeomAdaptor_Surface
@@ -11,8 +13,15 @@
 //=======================================================================
 
 inline GeomAdaptor_Surface::GeomAdaptor_Surface()
- : myTolU(0.), myTolV(0.)
-{} 
+ : mySurfaceType(GeomAbs_OtherSurface), 
+   myUFirst(0.),
+   myULast(0.),
+   myVFirst(0.),
+   myVLast (0.),
+   myTolU(0.), 
+   myTolV(0.)
+{
+} 
 
 //=======================================================================
 //function : GeomAdaptor_Surface
@@ -48,10 +57,34 @@ inline GeomAdaptor_Surface::GeomAdaptor_Surface(const Handle(Geom_Surface)& S,
 
 inline void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S)
 {
+  if ( S.IsNull()) Standard_NullObject::Raise("GeomAdaptor_Surface::Load");
+
   Standard_Real U1,U2,V1,V2;
   S->Bounds(U1,U2,V1,V2);
-  Load(S,U1,U2,V1,V2);
+  load(S,U1,U2,V1,V2);
 }
+
+//=======================================================================
+//function : Load
+//purpose  : 
+//=======================================================================
+
+inline void GeomAdaptor_Surface::Load(const Handle(Geom_Surface)& S,
+                               const Standard_Real UFirst,
+                               const Standard_Real ULast,
+                               const Standard_Real VFirst,
+                               const Standard_Real VLast,
+                               const Standard_Real TolU,
+                               const Standard_Real TolV)
+{
+  if ( S.IsNull()) Standard_NullObject::Raise("GeomAdaptor_Surface::Load");
+
+  if(UFirst>ULast || VFirst>VLast)
+    Standard_ConstructionError::Raise("GeomAdaptor_Surface::Load");
+
+  load(S,UFirst,ULast,VFirst,VLast,TolU,TolV);
+}
+
 
 //=======================================================================
 //function : Surface
