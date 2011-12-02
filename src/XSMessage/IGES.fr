@@ -13,7 +13,7 @@ L'Entete et le Contenu du fichier IGES sont charges.
 Erreur de syntaxe dans le fichier IGES à la ligne %d de la section %s.
 !
 .19
-Erreur de syntaxe dans le fichier IGES à la ligne %d de la section %s.(le numero ligne est incorrect).
+Erreur de syntaxe dans le fichier IGES à la ligne %d de la section %s (numero de ligne peut etre incorrecte).
 !
 .20
 Il n'y a pas de Terminate Section, veuillez verifier la fin du fichier. Le processus continue.

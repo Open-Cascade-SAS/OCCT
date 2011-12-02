@@ -55,7 +55,7 @@ Entete et contenu du fichier IGES ont ete charges.
  Erreur de syntaxe dans le fichier IGES a la ligne %d de la section %s.
 !
 .XSTEP_19
- Erreur de syntaxe dans le fichier IGES a la ligne %d de la section %s.(Le numero de ligne est incorrect)
+ Erreur de syntaxe dans le fichier IGES a la ligne %d de la section %s (numero de ligne peut etre incorrecte).
 !
 .XSTEP_20
  Il n'y a pas de Terminate Section : le processus continue.

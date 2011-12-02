@@ -13,7 +13,7 @@ Header and Content of IGES file are loaded.
 Syntax error in the IGES file at line %d of the section %s.
 !
 .19
-Syntax error in the IGES file at line %d of the section %s.(The line number is incorrect).
+Syntax error in the IGES file at line %d of the section %s (line number may be incorrect).
 !
 .20
 There is no Terminate Section, please check the end of the IGES file. The process continues.

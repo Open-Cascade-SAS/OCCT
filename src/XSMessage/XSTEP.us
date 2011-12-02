@@ -55,7 +55,7 @@ End of model loading.
 Syntax error in IGES file at line %d in section %s.
 !
 .XSTEP_19
-Syntax error in IGES file at line %d in section %s.(line number is incorrect).
+Syntax error in IGES file at line %d in section %s (line number may be incorrect).
 !
 .XSTEP_20
 There is no Terminate Section, please check end of IGES file. Process continues.

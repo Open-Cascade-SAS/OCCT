@@ -3602,7 +3602,7 @@ void IFSelect_WorkSession::PrintCheckList
     Interface_CheckIterator chks = checklist;
     Handle(IFSelect_CheckCounter) counter =
       new IFSelect_CheckCounter (mode>1 && mode != IFSelect_CountSummary);
-    counter->Analyse (chks,themodel,Standard_False,failsonly);
+    counter->Analyse (chks,themodel,Standard_True,failsonly);
     counter->PrintList  (sout,themodel,mode);
   }
 }
