@@ -1,0 +1,4 @@
+BRepBuilderAPI_VertexInspector.hxx
+BRepBuilderAPI_CellFilter.hxx
+BRepBuilderAPI_BndBoxTreeSelector.hxx
+

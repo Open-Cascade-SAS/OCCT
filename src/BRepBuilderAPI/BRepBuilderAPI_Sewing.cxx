@@ -108,6 +108,10 @@
 #include <BRep_ListOfPointRepresentation.hxx>
 #include <BRep_TVertex.hxx>
 #include <Message_ProgressSentry.hxx>
+#include <BRepBuilderAPI_VertexInspector.hxx>
+#include <BRepBuilderAPI_CellFilter.hxx>
+#include <BRepBuilderAPI_BndBoxTreeSelector.hxx>
+#include <NCollection_UBTreeFiller.hxx>
 
 static void SortBox (const Handle(Bnd_HArray1OfBox) hSetBoxes,
 		     const Bnd_Box& aBox,
@@ -2725,6 +2729,8 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
   Standard_Integer i, nbVertices = aVertexNode.Extent();
   // Create map of node -> vertices
   TopTools_IndexedDataMapOfShapeListOfShape NodeVertices;
+  BRepBuilderAPI_CellFilter aFilter (Tolerance);
+  BRepBuilderAPI_VertexInspector anInspector (Tolerance);
   for (i = 1; i <= nbVertices; i++) {
     TopoDS_Shape vertex = aVertexNode.FindKey(i);
     TopoDS_Vertex node = TopoDS::Vertex(aVertexNode(i));
@@ -2735,38 +2741,34 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
       TopTools_ListOfShape vlist;
       vlist.Append(vertex);
       NodeVertices.Add(node,vlist);
+      gp_Pnt aPnt = BRep_Tool::Pnt (TopoDS::Vertex (node));
+      aFilter.Add (NodeVertices.FindIndex (node), aPnt.XYZ());
+      anInspector.Add (aPnt.XYZ());
     }
   }
   Standard_Integer nbNodes = NodeVertices.Extent();
 #ifdef DEB
   cout << "Glueing " << nbNodes << " nodes..." << endl;
 #endif
-  // Create array of boxes with nodes
-  Handle(Bnd_HArray1OfBox) hSetBoxes = new Bnd_HArray1OfBox(1,nbNodes);
-  Bnd_Box aBox;
-  Standard_Real eps = Tolerance*0.5;
-  for (i = 1; i <= nbNodes; i++) {
-    gp_Pnt pt = BRep_Tool::Pnt(TopoDS::Vertex(NodeVertices.FindKey(i)));
-    aBox.Set(pt);
-    aBox.Enlarge(eps);
-    hSetBoxes->SetValue(i,aBox);
-  }
   // Merge nearest nodes
   TopTools_IndexedDataMapOfShapeShape NodeNearestNode;
   Message_ProgressSentry aPS (theProgress, "Glueing nodes", 0, nbNodes, 1, Standard_True);
   for (i = 1; i <= nbNodes && aPS.More(); i++, aPS.Next()) {
     TopoDS_Vertex node1 = TopoDS::Vertex(NodeVertices.FindKey(i));
     // Find near nodes
-    TColStd_ListOfInteger listIndex;
-    SortBox(hSetBoxes,hSetBoxes->Value(i),listIndex);
-    if (listIndex.IsEmpty()) continue;
+    gp_Pnt pt1 = BRep_Tool::Pnt (node1);
+    anInspector.SetCurrent (pt1.XYZ());
+    gp_XYZ aPntMin = anInspector.Shift (pt1.XYZ(), -Tolerance);
+    gp_XYZ aPntMax = anInspector.Shift (pt1.XYZ(), Tolerance);
+    aFilter.Inspect (aPntMin, aPntMax, anInspector);
+    if (anInspector.ResInd().IsEmpty()) continue;
     // Retrieve list of edges for the first node
     const TopTools_ListOfShape& ledges1 = aNodeEdges(node1);
     // Explore list of near nodes and fill the sequence of glued nodes
     TopTools_SequenceOfShape SeqNodes;
     TopTools_ListOfShape listNodesSameEdge;
-    gp_Pnt pt1 = BRep_Tool::Pnt(node1);
-    TColStd_ListIteratorOfListOfInteger iter1(listIndex);
+    //gp_Pnt pt1 = BRep_Tool::Pnt(node1);
+    TColStd_ListIteratorOfListOfInteger iter1(anInspector.ResInd());
     for (; iter1.More(); iter1.Next()) {
       TopoDS_Vertex node2 = TopoDS::Vertex(NodeVertices.FindKey(iter1.Value()));
       if (node1 == node2) continue;
@@ -2874,11 +2876,11 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
       if (SeqNodes.Length())
 	NodeNearestNode.Add(node1,SeqNodes.First());
     }
+    anInspector.ClearResList();
   }
 
   // Create new nodes for chained nearest nodes
   if (NodeNearestNode.IsEmpty()) return Standard_False;
-  hSetBoxes.Nullify();
 
   return CreateNewNodes(NodeNearestNode,NodeVertices,aVertexNode,aNodeEdges);
 }
@@ -3580,16 +3582,20 @@ void BRepBuilderAPI_Sewing::Cutting(const Handle(Message_ProgressIndicator)& the
 {
   Standard_Integer i, nbVertices = myVertexNode.Extent();
   if (!nbVertices) return;
-  // Create a sort box with vertices
+  // Create a box tree with vertices
   Standard_Real eps = myTolerance*0.5;
-  Handle(Bnd_HArray1OfBox) hSetBoxes = new Bnd_HArray1OfBox(1,nbVertices);
+  BRepBuilderAPI_BndBoxTree aTree;
+  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller (aTree);
+  BRepBuilderAPI_BndBoxTreeSelector aSelector;
   for (i = 1; i <= nbVertices; i++) {
     gp_Pnt pt = BRep_Tool::Pnt(TopoDS::Vertex(myVertexNode.FindKey(i)));
     Bnd_Box aBox;
     aBox.Set(pt);
     aBox.Enlarge(eps);
-    hSetBoxes->ChangeValue(i) = aBox;
+    aTreeFiller.Add (i, aBox);
   }
+  aTreeFiller.Fill();
+
   Handle(Geom_Curve) c3d;
   TopLoc_Location loc;
   Standard_Real first, last;
@@ -3618,16 +3624,16 @@ void BRepBuilderAPI_Sewing::Cutting(const Handle(Message_ProgressIndicator)& the
         GeomAdaptor_Curve adptC(c3d,first,last);
         BndLib_Add3dCurve::Add(adptC,myTolerance,aGlobalBox);
         // Sort vertices to find candidates
-        TColStd_ListOfInteger listIndex;
-        SortBox(hSetBoxes,aGlobalBox,listIndex);
+        aSelector.SetCurrent (aGlobalBox);
+        aTree.Select (aSelector); 
         // Skip bound if no node is in the boundind box
-        if (!listIndex.Extent()) continue;
+        if (!aSelector.ResInd().Extent()) continue;
         // Retrieve bound nodes
         TopExp::Vertices(bound,V1,V2);
         const TopoDS_Shape& Node1 = myVertexNode.FindFromKey(V1);
         const TopoDS_Shape& Node2 = myVertexNode.FindFromKey(V2);
         // Fill map of candidate vertices
-        TColStd_ListIteratorOfListOfInteger itl(listIndex);
+        TColStd_ListIteratorOfListOfInteger itl(aSelector.ResInd());
         for (; itl.More(); itl.Next()) {
           const Standard_Integer index = itl.Value();
           const TopoDS_Shape& Node = myVertexNode.FindFromIndex(index);
@@ -3636,6 +3642,7 @@ void BRepBuilderAPI_Sewing::Cutting(const Handle(Message_ProgressIndicator)& the
             CandidateVertices.Add(vertex);
           }
         }
+        aSelector.ClearResList();
       }
       Standard_Integer nbCandidates = CandidateVertices.Extent();
       if (!nbCandidates) continue;
@@ -4671,4 +4678,26 @@ void BRepBuilderAPI_Sewing::SameParameterShape()
       continue;
     }
   }
+}
+
+//=======================================================================
+//function : Inspect
+//purpose  : Used for selection and storage of coinciding points
+//=======================================================================
+
+NCollection_CellFilter_Action BRepBuilderAPI_VertexInspector::Inspect (const Standard_Integer theTarget)
+{
+  /*gp_Pnt aPnt = gp_Pnt (myPoints.Value (theTarget - 1));
+  if (aPnt.SquareDistance (gp_Pnt (myCurrent)) <= myTol)
+    myResInd.Append (theTarget);*/
+
+  const gp_XYZ& aPnt = myPoints.Value (theTarget - 1);
+  Standard_Real aDx, aDy, aDz;
+  aDx = myCurrent.X() - aPnt.X();
+  aDy = myCurrent.Y() - aPnt.Y();
+  aDz = myCurrent.Z() - aPnt.Z();
+
+  if ((aDx*aDx <= myTol) && (aDy*aDy <= myTol) && (aDz*aDz <= myTol))
+    myResInd.Append (theTarget);
+  return CellFilter_Keep; 
 }
