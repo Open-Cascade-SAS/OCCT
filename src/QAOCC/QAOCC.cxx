@@ -5256,6 +5256,56 @@ Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
+#include <BOPTColStd_CArray1OfInteger.hxx>
+//=======================================================================
+//function : DumpArray
+//purpose  : 
+//=======================================================================
+void DumpArray(const BOPTColStd_CArray1OfInteger& aC,
+	       Draw_Interpretor& aDI)
+{
+  Standard_Integer iLength, iFactLength, iBlockLength;
+  //
+  iLength=aC.Length();
+  iFactLength=aC.FactLength();
+  iBlockLength=aC.BlockLength();
+  //
+  aDI<< "Length: " <<iLength << "\n";
+  aDI<< "FactLength: " <<iFactLength << "\n";
+  aDI<< "BlockLength: " <<iBlockLength << "\n";
+}
+//=======================================================================
+//function : bcarray
+//purpose  : 
+//=======================================================================
+Standard_Integer bcarray (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	
+  if (argc != 1) {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+
+  Standard_Integer i, aNb, aBL;
+  BOPTColStd_CArray1OfInteger aC;
+  //
+  aBL=100000;
+  aC.SetBlockLength(aBL);
+  //
+  for (i=1; i<=10; ++i) {
+    aC.Append(-i*10);
+  }
+  di<< "\nstate before release the unused memory\n";
+  DumpArray(aC, di);
+  //
+  aC.Purge();
+  //
+  di<< "\nstate after release the unused memory\n";
+  DumpArray(aC, di);
+  //
+  return 0;
+}
+
 void QAOCC::Commands(Draw_Interpretor& theCommands) {
   const char *group = "QAOCC";
 
@@ -5363,5 +5413,6 @@ void QAOCC::Commands(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22586", "OCC22586 shape resshape", __FILE__, OCC22586, group);
   theCommands.Add("OCC22736", "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2", __FILE__, OCC22736, group);
   theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
+  theCommands.Add("bcarray", "bcarray", __FILE__, bcarray, group);
   return;
 }

@@ -58,6 +58,7 @@
 #include <OSD_Chronometer.hxx>
 
 #include <BRepTools.hxx>
+#include <BOPTColStd_CArray1OfInteger.hxx>
 
 static
   Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E, 
@@ -74,6 +75,12 @@ static
   void PrintState (Draw_Interpretor& aDI,
 		   const TopAbs_State& aState);
 
+//modified by NIZNHY-PKV Thu Nov 10 12:11:15 2011f
+static
+  void DumpArray(const BOPTColStd_CArray1OfInteger& aC,
+	       Draw_Interpretor& aDI);
+//modified by NIZNHY-PKV Thu Nov 10 12:11:18 2011t
+
 static  Standard_Integer bhaspc      (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer baddve      (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer bisclosed   (Draw_Interpretor& , Standard_Integer , const char** );
@@ -86,11 +93,8 @@ static  Standard_Integer brefine     (Draw_Interpretor& , Standard_Integer , con
 static  Standard_Integer bclassify   (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer b2dclassify (Draw_Interpretor& , Standard_Integer , const char** );
 
-//modified by NIZNHY-PKV Mon May 29 11:44:24 2006f
 static  Standard_Integer bhole       (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer bxhole      (Draw_Interpretor& , Standard_Integer , const char** );
-//modified by NIZNHY-PKV Mon May 29 11:44:28 2006t
-
 //=======================================================================
 //function : LowCommands
 //purpose  : 
@@ -120,10 +124,8 @@ static  Standard_Integer bxhole      (Draw_Interpretor& , Standard_Integer , con
 		                                                __FILE__, bclassify   , g);
   theCommands.Add("b2dclassify"  , "Use >bclassify Face Point2d [Tol2D=Tol(Face)] ",
 		                                                __FILE__, b2dclassify , g);
-  //modified by NIZNHY-PKV Mon May 29 11:45:33 2006f
   theCommands.Add("bhole"   , "Use bhole"                     , __FILE__, bhole       , g);
   theCommands.Add("bxhole"  , "Use bxhole"                    , __FILE__, bxhole      , g);
-  //modified by NIZNHY-PKV Mon May 29 11:45:37 2006t
 }
 
 //=======================================================================
@@ -737,7 +739,6 @@ void PrintState (Draw_Interpretor& aDI,
   
 }
 //
-//modified by NIZNHY-PKV Mon May 29 11:40:29 2006f
 //=======================================================================
 //function : bhole
 //purpose  : 
@@ -901,4 +902,3 @@ Standard_Integer bxhole (Draw_Interpretor& aDI,
   //
   return 0;
 }
-//modified by NIZNHY-PKV Mon May 29 11:40:31 2006t

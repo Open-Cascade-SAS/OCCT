@@ -31,7 +31,8 @@ is
     ---Purpose: 
     -- Prohibits the creator by copy
     --
-    Assign  (me:out;  Other : CArray1 from BOPTColStd) 
+    Assign  (me:out;  Other :  
+    	    CArray1 from BOPTColStd) 
     	returns  CArray1 from BOPTColStd   
     	is private; 
 	---C++:  alias  operator = 
@@ -39,7 +40,8 @@ is
     ---Purpose:  
     --  Prohibits the operator = 
     -- 
-    Resize(me: in out; theNewLength: Integer from Standard);
+    Resize(me: in out;  
+    	    theNewLength: Integer from Standard);
     ---Purpose:  
     --  destroy current content and realloc the new size
     --  	   
@@ -49,30 +51,37 @@ is
     --  Frees the  allocated   area  corresponding  to the
     --  array.  
     --	 
-    Length (me) returns Integer from Standard;
+    Length (me)  
+    	returns Integer from Standard;
     ---Purpose: 
     -- Returns the number of elements of <me> 
     --
-    Extent (me) returns Integer from Standard;
+    Extent (me)  
+    	returns Integer from Standard;
     ---Purpose:  
     --  The  same  as Length(). 
     --- 
-    FactLength (me) returns Integer from Standard;
+    FactLength (me)  
+    	returns Integer from Standard;
     ---Purpose:  
     --  Returns the number of elements of <me>.
     --- 
-    Append (me:out; Value: Array1Item)  
+    Append (me:out;  
+    	    Value: Array1Item)  
     	returns Integer from Standard
     	raises  OutOfMemory from Standard; 
     ---Purpose:  
     --  Remove the Item[Index]  from the array.
     ---
-    Remove (me:out; Index:Integer from Standard) 
+    Remove (me:out;  
+    	    Index:Integer from Standard) 
     	raises  OutOfMemory from Standard; 
     ---Purpose:  
     --  Appends the Value at the end of me
     --- 
-    Value (me; Index:Integer from Standard) returns any Array1Item 
+    Value (me;  
+    	    Index:Integer from Standard)  
+    	returns any Array1Item 
     	---C++: alias operator ()
     	---C++: return const & 
     	raises OutOfRange from Standard;
@@ -81,7 +90,9 @@ is
     --  array.
     --          
     
-    ChangeValue (me: in out; Index:Integer from Standard) returns any Array1Item
+    ChangeValue (me: in out;  
+    	    Index:Integer from Standard)  
+    	returns any Array1Item
     	---C++: alias operator ()
     	---C++: return & 
     	raises OutOfRange from Standard; 
@@ -89,7 +100,8 @@ is
     --  Returns the value  of the Index-th element of the
     --  array.
 
-    SetBlockLength(me:out; aBL: Integer from Standard); 
+    SetBlockLength(me:out;  
+    	    aBL: Integer from Standard); 
     ---Purpose:  
     --  Sets the  size of the allocated block     
     --- 
@@ -97,16 +109,23 @@ is
     	returns Integer from Standard;  
     ---Purpose:  
     --  Returns the current size of the allocated block   
-    --- 
-    IsInvalidIndex  (me; Index:Integer from Standard)  
+    ---   
+    IsInvalidIndex  (me;  
+    	    Index:Integer from Standard)  
     	returns Boolean from Standard 
     	is  private;   
     ---Purpose:   
     --  Checks the input value of an Index for validity in 
     --  array.     	     
-
+ 
+    --modified by NIZNHY-PKV Wed Nov 09 09:32:13 2011f 
+    Purge(me:out); 
+    ---Purpose:   
+    --  Release the memory that is allocated but unused. 
+    --     
+    --modified by NIZNHY-PKV Wed Nov 09 09:32:16 2011t
+ 
 fields
-
     myStart      : Address;
     myLength     : Integer; 
     myFactLength : Integer;
