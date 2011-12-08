@@ -3,6 +3,7 @@
 
 #include <gp_Dir.ixx>
 
+
 Standard_Real gp_Dir::Angle (const gp_Dir& Other) const
 {
   //    Commentaires :
@@ -77,15 +78,9 @@ void gp_Dir::Mirror (const gp_Ax1& A1)
 
 void gp_Dir::Mirror (const gp_Ax2& A2)
 {
-  gp_XYZ Z = A2.Direction().XYZ();
-  gp_XYZ MirXYZ = Z.Crossed (coord);
-  if (MirXYZ.Modulus() <= gp::Resolution())
-    { coord.Reverse(); }
-  else {
-    Z.Cross (MirXYZ);
-    gp_Dir  MirDirection (MirXYZ);
-    Mirror (MirDirection);
-  }
+  const gp_Dir& Vz = A2.Direction();
+  Mirror(Vz);
+  Reverse();
 }
 
 void gp_Dir::Transform (const gp_Trsf& T)
