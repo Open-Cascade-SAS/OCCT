@@ -64,7 +64,7 @@ Standard_Real ShapeAnalysis::AdjustByPeriod(const Standard_Real Val,
   Standard_Real P = Abs ( Period );
   if ( D <= 0.5 * P ) return 0.;
   if ( P < 1e-100 ) return diff;
-  return ( diff >0 ? -P : P ) * (Standard_Integer)( D / P + 0.5 );
+  return ( diff >0 ? -P : P ) * floor( D / P + 0.5 );
 }
 
 //=======================================================================
