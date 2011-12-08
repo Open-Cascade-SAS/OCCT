@@ -818,6 +818,53 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
 } 
 
 
+//Static method computing deviation of curve and polyline
+
+static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
+                             const Handle(Geom_BSplineCurve)& thePnts,
+                             Standard_Real& theDmax,
+                             Standard_Real& theUfMax,
+                             Standard_Real& theUlMax,
+                             Standard_Integer& theImax)
+{
+  theDmax = 0.;
+  theUfMax = 0.;
+  theUlMax = 0.;
+  theImax = 0;
+  Standard_Real dmax = 0., ufmax = 0., ulmax = 0.;
+  Standard_Integer imax = 0;
+
+  //take knots
+  Standard_Integer nbp = thePnts->NbKnots();
+  TColStd_Array1OfReal aKnots(1, nbp);
+  thePnts->Knots(aKnots);
+
+  Standard_Integer i;
+  for(i = 1; i < nbp; ++i) {
+    Standard_Real uf = aKnots(i);
+    Standard_Real ul = aKnots(i+1);
+
+    GeomAPI_ExtremaCurveCurve ECC(theCurve, thePnts, uf, ul, uf, ul);
+
+    Standard_Integer nbe = ECC.NbExtrema();
+    if(nbe > 0) {
+      Standard_Integer k;
+      Standard_Real d = 0.;
+      for(k = 1; k <= nbe; k++) {
+        if(ECC.Distance(k) > d) d = ECC.Distance(k);
+      }
+
+      if(d > theDmax) {
+        theDmax = d;
+	      theUfMax = uf;
+	      theUlMax = ul;
+	      theImax = i;
+      }
+    }
+  }
+}
+
+
 //=======================================================================
 //function : crvpoints
 //purpose  : 
@@ -832,14 +879,8 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   defl = atof(a[3]);
 
   GeomAdaptor_Curve GAC(C);
-
   GCPnts_QuasiUniformDeflection PntGen(GAC, defl);
-  //GCPnts_UniformDeflection PntGen(GAC, defl);
-//  Standard_Real uf = C->FirstParameter();
-//  Standard_Real ul = C->LastParameter();
-//  Standard_Real utol = Max(.001*(ul-uf), 1.e-7);
-//  GCPnts_TangentialDeflection PntGen(GAC, defl, 0.5*defl, 2, utol);
-  
+    
   if(!PntGen.IsDone()) {
     di << "Points generation failed" << "\n";
     return 1;
@@ -874,34 +915,67 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   Standard_Real dmax = 0., ufmax = 0., ulmax = 0.;
   Standard_Integer imax = 0;
 
-  for(i = 1; i < nbp; ++i) {
-    Standard_Real uf = aKnots(i);
-    Standard_Real ul = aKnots(i+1);
-
-    GeomAPI_ExtremaCurveCurve ECC(C, aPnts, uf, ul, uf, ul);
-
-    Standard_Integer nbe = ECC.NbExtrema();
-    if(nbe > 0) {
-      Standard_Integer k;
-      Standard_Real d = 0.;
-      for(k = 1; k <= nbe; k++) {
-	if(ECC.Distance(k) > d) d = ECC.Distance(k);
-      }
-
-      if(d > dmax) {
-	dmax = d;
-	ufmax = uf;
-	ulmax = ul;
-	imax = i;
-      }
-    }
-  }
-
+  //check deviation
+  ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << i << "\n"; 
 
   return 0;
 } 
 
+//=======================================================================
+//function : crvtpoints
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  Standard_Integer i, nbp;
+  Standard_Real defl, angle = Precision::Angular();
+
+  Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
+  defl = atof(a[3]);
+
+  if(n > 3)
+    angle = atof(a[4]);
+
+  GeomAdaptor_Curve GAC(C);
+  GCPnts_TangentialDeflection PntGen(GAC, angle, defl, 2);
+  
+  nbp = PntGen.NbPoints();
+  di << "Nb points : " << nbp << "\n";
+
+  TColgp_Array1OfPnt aPoles(1, nbp);
+  TColStd_Array1OfReal aKnots(1, nbp);
+  TColStd_Array1OfInteger aMults(1, nbp);
+
+  for(i = 1; i <= nbp; ++i) {
+    aPoles(i) = PntGen.Value(i);
+    aKnots(i) = PntGen.Parameter(i);
+    aMults(i) = 1;
+  }
+  
+  aMults(1) = 2;
+  aMults(nbp) = 2;
+
+  Handle(Geom_BSplineCurve) aPnts = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+  Handle(DrawTrSurf_BSplineCurve) aDrCrv = new DrawTrSurf_BSplineCurve(aPnts);
+
+  aDrCrv->ClearPoles();
+  Draw_Color aKnColor(Draw_or);
+  aDrCrv->SetKnotsColor(aKnColor);
+  aDrCrv->SetKnotsShape(Draw_Plus);
+
+  Draw::Set(a[1], aDrCrv);
+
+  Standard_Real dmax = 0., ufmax = 0., ulmax = 0.;
+  Standard_Integer imax = 0;
+
+  //check deviation
+  ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
+  di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << i << "\n"; 
+
+  return 0;
+} 
 //=======================================================================
 //function : uniformAbscissa
 //purpose  : epa test (TATA-06-002 (Problem with GCPnts_UniformAbscissa class)
@@ -1163,29 +1237,7 @@ static Standard_Integer mypoints (Draw_Interpretor& di, Standard_Integer /*n*/, 
   Standard_Real dmax = 0., ufmax = 0., ulmax = 0., uf, ul;
   Standard_Integer imax = 0;
 
-  for(i = 1; i < nbp; ++i) {
-    uf = aKnots(i);
-    ul = aKnots(i+1);
-
-    GeomAPI_ExtremaCurveCurve ECC(C, aPnts, uf, ul, uf, ul);
-
-    Standard_Integer nbe = ECC.NbExtrema();
-    if(nbe > 0) {
-      Standard_Integer k;
-      Standard_Real d = 0.;
-      for(k = 1; k <= nbe; k++) {
-	if(ECC.Distance(k) > d) d = ECC.Distance(k);
-      }
-
-      if(d > dmax) {
-	dmax = d;
-	ufmax = uf;
-	ulmax = ul;
-	imax = i;
-      }
-    }
-  }
-
+  ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
   return 0;
@@ -1478,6 +1530,11 @@ void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
 		  "crvpoints result curv deflection",
 		  __FILE__,
 		  crvpoints,g);
+
+  theCommands.Add("crvtpoints",
+		  "crvtpoints result curv deflection angular deflection - tangential deflection points",
+		  __FILE__,
+		  crvtpoints,g);
   
   theCommands.Add("uniformAbscissa",
 		  "uniformAbscissa Curve nbPnt",
