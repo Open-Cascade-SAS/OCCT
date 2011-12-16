@@ -241,10 +241,10 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
 #else
   TopAbs_ShapeEnum TA=TopAbs_COMPOUND;
 #endif
-  if (TS == TopAbs_EDGE)   TA = TopAbs_FACE;
-  if (TS == TopAbs_VERTEX) TA = TopAbs_EDGE;
-  if (TS == TopAbs_FACE)   TA = TopAbs_SOLID;// 25.09.2009 - szy 
-  if (TS == TopAbs_EDGE || TS == TopAbs_VERTEX || TS == TopAbs_FACE && TA >= In.ShapeType()) {
+  if (TS == TopAbs_VERTEX)      TA = TopAbs_EDGE;
+  else if (TS == TopAbs_EDGE)   TA = TopAbs_FACE;
+  else if (TS == TopAbs_FACE)   TA = TopAbs_SOLID;
+  if ((TS == TopAbs_EDGE || TS == TopAbs_VERTEX || TS == TopAbs_FACE) && TA >= In.ShapeType()) {
     TopExp::MapShapesAndAncestors(In, TS, TA, myAncestors.First());
   }
   else {
