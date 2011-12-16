@@ -45,7 +45,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
 {
   Standard_Boolean Ok=Standard_True, End=Standard_False;
   Standard_Real AngleMax = 0.7;      // parameter regulating the function of increment ( 40 degrees )
-  Standard_Real AngleMin = 2*PI/100; // parameter regulating the function of increment 
+  Standard_Real AngleMin = 2*M_PI/100; // parameter regulating the function of increment 
                                      // full passage should not contain more than 100 steps.
   Standard_Real DAngle1, DAngle2,  DRho1, DRho2, Ratio, Fraction, Toler;
   Standard_Real OldDist, NewDist;
@@ -182,7 +182,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
 	             /  pow (Knots->Value(Knots->Lower()+1)-Knots->Value(Knots->Lower()), 2);
          Standard_Real CPrim = OldDerive.Magnitude();
          ADelta(kk) = ( OldSeconde.Rotated(DAngle1) -  OldSeconde 
-		      + DeltaCurvature1*CPrim*OldDerive.Rotated(PI/2+DAngle1) ).XY();
+		      + DeltaCurvature1*CPrim*OldDerive.Rotated(M_PI/2+DAngle1) ).XY();
          kk += 1;
       }
    }
@@ -202,7 +202,7 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
 	             /  pow (Knots->Value(Knots->Upper())-Knots->Value(Knots->Upper()-1), 2);
          Standard_Real CPrim = OldDerive.Magnitude();
          ADelta(kk) = ( OldSeconde.Rotated(DAngle2) -  OldSeconde 
-		      + DeltaCurvature2*CPrim*OldDerive.Rotated(PI/2+DAngle2) ).XY();
+		      + DeltaCurvature2*CPrim*OldDerive.Rotated(M_PI/2+DAngle2) ).XY();
          kk += 1;
       }
    }

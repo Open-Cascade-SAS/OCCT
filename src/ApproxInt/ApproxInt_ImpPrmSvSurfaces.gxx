@@ -329,8 +329,8 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1
 	v2 = X(2)-TranslationV;
 	ComputeParametersOnImplicitSurface(MyISurf,P,u1,v1);
 	if(MyISurf.TypeQuadric() != GeomAbs_Plane) { 
-	  while(u1-tu1>PI)  u1-=PI+PI;
-	  while(tu1-u1>PI)  u1+=PI+PI;
+	  while(u1-tu1>M_PI)  u1-=M_PI+M_PI;
+	  while(tu1-u1>M_PI)  u1+=M_PI+M_PI;
 	}
 	MyParOnS1.SetCoord(tu1,tv1);
 	MyParOnS2.SetCoord(tu2,tv2);
@@ -342,8 +342,8 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1
 	v1 = X(2)-TranslationV;
 	ComputeParametersOnImplicitSurface(MyISurf,P,u2,v2);
 	if(MyISurf.TypeQuadric() != GeomAbs_Plane) { 
-	  while(u2-tu2>PI)  u2-=PI+PI;
-	  while(tu2-u2>PI)  u2+=PI+PI;
+	  while(u2-tu2>M_PI)  u2-=M_PI+M_PI;
+	  while(tu2-u2>M_PI)  u2+=M_PI+M_PI;
 	}
 	MyParOnS1.SetCoord(tu1,tv1);
 	MyParOnS2.SetCoord(tu2,tu2);

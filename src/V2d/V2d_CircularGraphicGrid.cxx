@@ -89,7 +89,7 @@ void V2d_CircularGraphicGrid::Draw(const Handle(Graphic2d_Drawer)& aDrawer){
       DrawCircle(aDrawer,xc,yc,s,Standard_False);
       s+=ds;
     }
-    Standard_Real a = Standard_PI / Standard_Real(Division);
+    Standard_Real a = M_PI / Standard_Real(Division);
     for (Standard_Integer j=1; j<= Division; j++) {
      aDrawer->MapInfiniteLineFromTo(OX,OY ,
 	 Standard_ShortReal(Cos(angle+Standard_Real(j)*a)),
@@ -124,16 +124,16 @@ void V2d_CircularGraphicGrid::DrawCircle
     if(myRadius > Def) 
       val = Max( 0.0044 , Min (0.7854 , 2. * ACos(1.-Def/myRadius)));
     else
-      val = 0.7854;  // = Standard_PI/4.
+      val = 0.7854;  // = PI / 4.
     Standard_Integer nbpoints;
     if(DrawPoints) {
       nbpoints = Division *2;
     }
     else {
-      nbpoints = Standard_Integer(Abs(2*Standard_PI)/val) +2;
+      nbpoints = Standard_Integer(Abs (2 * M_PI) / val) + 2;
     }
       
-    Standard_ShortReal teta = Standard_ShortReal(Abs(2*Standard_PI) /nbpoints);
+    Standard_ShortReal teta = Standard_ShortReal(Abs(2 * M_PI) / nbpoints);
     Standard_ShortReal x1 = myRadius;
     Standard_ShortReal y1 = 0;
     Standard_ShortReal x2,y2,x3,y3;

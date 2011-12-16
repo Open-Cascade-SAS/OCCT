@@ -446,7 +446,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
 // Nouvelle methode
   myAdpPath = new (GeomAdaptor_HCurve) (Path);
   Handle(Geom_Circle) C = new (Geom_Circle) (gp::XOY(), Radius);
-  C->Rotate(gp::OZ(),PI/2.);
+  C->Rotate(gp::OZ(),M_PI/2.);
   
   mySec = new (GeomFill_UniformSection) (C, Path->FirstParameter(), 
 					    Path->LastParameter());
@@ -964,14 +964,14 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
        Axis.YReverse();
 
      // rotate the surface to set the iso U = 0 not in the result.
-     Axis.Rotate(gp_Ax1(P0,ZRef),-PI/2.);
+     Axis.Rotate(gp_Ax1(P0,ZRef),-M_PI/2.);
       
      mySurface = new Geom_CylindricalSurface( Axis, myRadius);
      Standard_Real Alpha = V1.AngleWithRef(V2,ZRef);
      mySurface = 
        new Geom_RectangularTrimmedSurface(mySurface,
-					  PI/2. , 
-					  PI/2. + Alpha,
+					  M_PI/2. , 
+					  M_PI/2. + Alpha,
 					  myAdpPath->FirstParameter(),
 					  myAdpPath->LastParameter());
      Ok = Standard_True; //C'est bien un cylindre
@@ -1030,7 +1030,7 @@ Standard_Boolean GeomFill_Pipe::KPartT4()
    if (deltaV < 0.) {
      T.VReverse();
      VV1 = -VV1;
-     VV2 = 2*PI + VV1 - deltaV;
+     VV2 = 2*M_PI + VV1 - deltaV;
    }
    mySurface = new Geom_RectangularTrimmedSurface
      (new Geom_ToroidalSurface(T),

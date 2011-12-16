@@ -199,7 +199,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   gp_Vec nulldir(0, 0, 0);
   if(!myDir1.IsEqual(nulldir, myTol, myTol)) {
     Standard_Real ang = myDir1.Angle(myDir);
-    if(ang != PI) {
+    if(ang != M_PI) {
 #ifdef DEB
       if (trc) cout << " Directions must be opposite" << endl;
 #endif

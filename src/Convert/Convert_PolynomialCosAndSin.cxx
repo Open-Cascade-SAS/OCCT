@@ -34,7 +34,7 @@ static Standard_Real Locate(const Standard_Real Angfin,
     BSplCLib::D0(ptest,TPoles,BSplCLib::NoWeights(),valP);
     Standard_Real theta = ATan2(valP.Y(),valP.X());
     if (theta < 0.) {
-      theta +=2.*PI;
+      theta +=2.*M_PI;
     }
     if (Abs(theta - Angfin) < Ptol) {
       return ptest;
@@ -69,7 +69,7 @@ void BuildPolynomialCosAndSin
   trim_max,
   middle,
   Angle,
-  PI2 = 2*PI ;
+  PI2 = 2*M_PI ;
   Standard_Integer ii, degree = num_poles -1 ;
   locUFirst = UFirst ;
 
@@ -91,7 +91,7 @@ void BuildPolynomialCosAndSin
   // parametre 1/2 of Bezier was exactly a point of the bissectrice 
   // of the required angular sector.
   //
-  Angle = middle - PI ;
+  Angle = middle - M_PI ;
   //
   // Circle of radius 1. See Euclid
   //
@@ -113,10 +113,10 @@ void BuildPolynomialCosAndSin
   }
 
 
-  t_min = 1.0e0 - (Delta * 1.3e0 / PI) ;
+  t_min = 1.0e0 - (Delta * 1.3e0 / M_PI) ;
   t_min *= 0.5e0 ;
   t_min = Max(t_min,0.0e0) ;
-  t_max = 1.0e0 + (Delta * 1.3e0 / PI) ;
+  t_max = 1.0e0 + (Delta * 1.3e0 / M_PI) ;
   t_max *= 0.5e0 ;
   t_max = Min(t_max,1.0e0) ;
   trim_max = Locate(Delta,

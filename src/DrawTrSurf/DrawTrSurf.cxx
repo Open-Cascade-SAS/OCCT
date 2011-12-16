@@ -445,7 +445,7 @@ static Standard_Integer transform (Draw_Interpretor& di, Standard_Integer n, con
 
   else if (!strcmp(a[0],"rotate")) {
     if (last < 8) return 1;
-    Standard_Real ang = atof(a[last]) * PI180;
+    Standard_Real ang = atof(a[last]) * (M_PI / 180.0);
     last --;
     gp_Dir D(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
     last -= 3;
@@ -515,7 +515,7 @@ static Standard_Integer d2transform (Draw_Interpretor& di, Standard_Integer n, c
 
   else if (!strcmp(a[0],"2drotate")) {
     if (last < 4) return 1;
-    Standard_Real ang = atof(a[last]) * PI180;
+    Standard_Real ang = atof(a[last]) * (M_PI / 180.0);
     last --;
     gp_Pnt2d P(atof(a[last-1]),atof(a[last]));
     last -= 2;

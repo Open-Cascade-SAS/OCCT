@@ -100,7 +100,7 @@ static Standard_Integer revol(Draw_Interpretor& ,
   gp_Dir D(atof(a[6]),atof(a[7]),atof(a[8]));
   gp_Ax1 A(P,D);
 
-  Standard_Real angle = atof(a[9]) * PI180;
+  Standard_Real angle = atof(a[9]) * (M_PI / 180.0);
   
   Standard_Boolean copy = n > 10;
 

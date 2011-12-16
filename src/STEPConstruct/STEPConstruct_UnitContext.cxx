@@ -239,7 +239,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
   // Initialise the default value
   // status : 0 if OK, else 1 2 3
   lengthFactor = solidAngleFactor = 1.;
-  planeAngleFactor = PI/180.;
+  planeAngleFactor = M_PI/180.;
 //  Standard_Real theLExp   = 1.;
 //  Standard_Real thePAExp  = 0.;
 //  Standard_Real theSAExp  = 0.;

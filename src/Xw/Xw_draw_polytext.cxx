@@ -126,9 +126,9 @@ XW_ATTRIB textcode;
 	ptextlist->slants[ntext] = 0. ;
 	strcpy(ptextlist->ptexts[ntext],text) ;
         if( angle > 0. ) {
-            while( angle > 2.*PI ) angle -= 2.*PI ;
+            while( angle > 2.*M_PI ) angle -= 2.*M_PI ;
         } else if( angle < 0. ) {
-            while( angle < -2.*PI ) angle += 2.*PI ;
+            while( angle < -2.*M_PI ) angle += 2.*M_PI ;
         }
 	ptextlist->rangles[ntext] = angle ;
 	ptextlist->marges[ntext] = marge ;

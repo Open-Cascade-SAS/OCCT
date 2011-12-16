@@ -19,24 +19,6 @@ class Handle_Standard_Type;
 
 __Standard_API Handle_Standard_Type& Standard_Real_Type_();
 
-//==== In this version "PI" is a global variables.
-#ifdef PI
-#undef PI
-#endif 
-
-#if defined(WNT) && !defined(__CYGWIN32__) && !defined(__MINGW32__)
-extern "C" __Standard_API Standard_Real PI;
-extern "C" __Standard_API Standard_Real PI180;
-extern "C" __Standard_API Standard_Real Standard_PI;
-extern "C" __Standard_API Standard_Real Standard_PI180;
-#else
-
-extern const Standard_Real PI;
-extern const Standard_Real PI180;
-
-extern const Standard_Real Standard_PI;
-extern const Standard_Real Standard_PI180;
-#endif  /* WNT */
 // ===============================================
 // Methods from Standard_Entity class which are redefined:  
 //    - Hascode

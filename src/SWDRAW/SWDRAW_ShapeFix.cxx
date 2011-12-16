@@ -537,7 +537,7 @@ static Standard_Integer fixsmalledges(Draw_Interpretor& di, Standard_Integer n, 
   Standard_Integer k = 3;
   Standard_Real tol = 100000;
   Standard_Integer mode = 2;
-  Standard_Real tolang = PI/2;
+  Standard_Real tolang = M_PI/2;
   if(n > k) 
     tol = atof(a[k++]);
   

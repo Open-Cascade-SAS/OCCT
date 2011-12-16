@@ -290,7 +290,7 @@ Standard_Boolean BRepBlend_RstRstConstRad::IsSolution(const math_Vector&  Sol,
     
     Angle = ACos(Cosa);
     if (Sina < 0.) {
-      Angle = 2.*PI - Angle;
+      Angle = 2.*M_PI - Angle;
     }
     
     if (Angle > maxang) {maxang = Angle;}
@@ -609,7 +609,7 @@ void BRepBlend_RstRstConstRad::Section(const Standard_Real Param,
   Pfin = ElCLib::Parameter(C, ptrst2);
 
   // Test of angles negative and almost null : Special Case
-  if (Pfin > 1.5 * PI) {
+  if (Pfin > 1.5 * M_PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center, np, ns));
     Pfin = ElCLib::Parameter(C, ptrst2);

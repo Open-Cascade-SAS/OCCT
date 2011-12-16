@@ -203,7 +203,7 @@ void GeomFill::GetShape (const Standard_Real MaxAng,
   default:
     {
       Standard_Integer NbSpan =
-	(Standard_Integer)(Ceiling(3.*Abs(MaxAng)/2./PI));
+	(Standard_Integer)(Ceiling(3.*Abs(MaxAng)/2./M_PI));
       NbPoles = 2*NbSpan+1;
       NbKnots = NbSpan+1;
       Degree = 2;
@@ -380,7 +380,7 @@ void GeomFill::GetCircle( const Convert_ParameterisationType  TConv,
   // Recadrage sur ]-pi/2, 3pi/2]
   if (Sina <0.) {
     if (Cosa > 0.) Angle = -Angle;
-    else           Angle =  2.*PI - Angle;
+    else           Angle =  2.*M_PI - Angle;
   }
 
   switch (TConv) {
@@ -466,7 +466,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
   // Recadrage sur ]-pi/2, 3pi/2]
   if (Sina <0.) {
     if (Cosa > 0.) Angle = -Angle;
-    else           Angle =  2.*PI - Angle;
+    else           Angle =  2.*M_PI - Angle;
   }
 
   if (Abs(Sina)>Abs(Cosa)) {
@@ -606,7 +606,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
   // Recadrage sur ]-pi/2, 3pi/2]
   if (Sina <0.) {
     if (Cosa > 0.) Angle = -Angle;
-    else           Angle =  2.*PI - Angle;
+    else           Angle =  2.*M_PI - Angle;
   }
 
   if (Abs(Sina)>Abs(Cosa)) {

@@ -59,7 +59,7 @@ void DrawDim::DrawShapeName (const TopoDS_Shape& ashape,
       }
       else if (curve->IsKind(STANDARD_TYPE(Geom_Circle))) {
 	parameter  = (f+l)/2.;
-	if (f > l) parameter = parameter + PI;  
+	if (f > l) parameter = parameter + M_PI;  
 	position = ElCLib::Value(parameter,Handle(Geom_Circle)::DownCast(curve)->Circ());
       }
     }

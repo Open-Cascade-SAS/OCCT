@@ -89,7 +89,7 @@ void Draw_Display::DrawMarker (const gp_Pnt2d& pt,
 //    gp_Circ2d C;
     C.SetRadius(ISize);
     C.SetLocation(pt);
-    Draw(C, 0, 2*PI, Standard_False);
+    Draw(C, 0, 2*M_PI, Standard_False);
     break;
 #ifndef DEB
   default:
@@ -144,7 +144,7 @@ void Draw_Display::DrawMarker (const gp_Pnt2d& pt,
     // if the circus is too small, a "plus" is drawn to mark the point 
     Standard_Boolean b = (R * Zoom()) > 2;
     if(b)
-      Draw(C, 0, 2*PI);
+      Draw(C, 0, 2*M_PI);
     else
       DrawMarker(pt, Draw_Plus);
   }
@@ -164,7 +164,7 @@ void Draw_Display::Draw(const gp_Circ& C, const Standard_Real A1,const Standard_
 			const Standard_Boolean ModifyWithZoom)
 {
   Standard_Real A2 = A3;
-  while (A2 < A1) A2 += 2*PI;
+  while (A2 < A1) A2 += 2*M_PI;
   
   Standard_Real angle = DEFLECTION / (C.Radius() * Zoom());
   Standard_Integer n = (Standard_Integer )( (A2 - A1) / angle);
@@ -213,7 +213,7 @@ void Draw_Display::Draw(const gp_Circ2d& C, const Standard_Real A1, const Standa
 			const Standard_Boolean ModifyWithZoom)
 {
   Standard_Real A2 = A3;
-  while (A2 < A1) A2 += 2*PI;
+  while (A2 < A1) A2 += 2*M_PI;
   
   Standard_Real angle = DEFLECTION / (C.Radius() * Zoom());
   Standard_Integer n = (Standard_Integer )( (A2 - A1) / angle);

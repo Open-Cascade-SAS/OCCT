@@ -159,8 +159,8 @@ Graphic3d_Array1OfVertex V2(1,2);
 
         for (i = 1 ; i <= NbPoints ; i++) {
 
-            cosinus = Cos ( 2 * Standard_PI / NbPoints * (i-1) );   
-            sinus = Sin ( 2 * Standard_PI / NbPoints * (i-1) );
+            cosinus = Cos ( 2 * M_PI / NbPoints * (i-1) );   
+            sinus = Sin ( 2 * M_PI / NbPoints * (i-1) );
 
             X = Xc + (cosinus * Xi + sinus * Xj) * Lng * Tg;
             Y = Yc + (cosinus * Yi + sinus * Yj) * Lng * Tg;
@@ -180,7 +180,7 @@ void V3d::CircleInPlane(const Handle(Graphic3d_Group)& gcircle,const Standard_Re
 Standard_Real VX,VY,VZ,X,Y,Z,Xn,Yn,Zn,Xi,Yi,Zi,Xj,Yj,Zj,Norme;
 Standard_Integer NFACES = 30 , i;
 Standard_Real Alpha = 0. ;
-Standard_Real Dalpha = 2.*Standard_PI/NFACES ;
+Standard_Real Dalpha = 2. * M_PI / NFACES ;
 Graphic3d_Array1OfVertex Points(0,NFACES);
 
       Norme = Sqrt ( DX*DX + DY*DY + DZ*DZ );
@@ -239,8 +239,8 @@ void V3d::DrawSphere(const Handle(V3d_Viewer)& aViewer,const Quantity_Length ray
   Standard_Real R,X,Y,Z ;
   Standard_Real Beta = 0. ;
   Standard_Real Alpha = 0. ;
-  Standard_Real Dbeta = 2.*Standard_PI/NFACES ;
-  Standard_Real Dalpha = 2.*Standard_PI/NFACES ;
+  Standard_Real Dbeta = 2. * M_PI / NFACES ;
+  Standard_Real Dalpha = 2. * M_PI / NFACES ;
   Standard_Integer i,j ;
   for( j=0 ; j<NFACES/2 ; j++ ) {
     Alpha = 0. ;

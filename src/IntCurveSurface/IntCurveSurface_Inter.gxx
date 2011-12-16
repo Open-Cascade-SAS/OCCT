@@ -1197,7 +1197,7 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
       //OCC516(apo)->
       static Standard_Real correction = 1.E+5*Precision::Angular();
       gp_Cone cn = TheSurfaceTool::Cone(surface);
-      if(Abs(cn.SemiAngle()) < PI/2.0 - correction){
+      if(Abs(cn.SemiAngle()) < M_PI/2.0 - correction){
 	IntAna_IntConicQuad LinCone(Line,cn);
 	AppendIntAna(curve,surface,LinCone);
 	break;
@@ -2009,7 +2009,7 @@ static void EstLimForInfRevl(const gp_Lin&   Line,
     if (U1inf)
       U1new = Max (0., U1new);
     else
-      U2new = Min (2 * PI, U2new);
+      U2new = Min (2 * M_PI, U2new);
     if (! V1inf && !V2inf) return;
   }
 
@@ -2065,7 +2065,7 @@ static void EstLimForInfRevl(const gp_Lin&   Line,
   aPln  = gp_Pln (gp_Ax3 (O, aNVec ,aXVec));
 
   // make a second plane perpendicular to the first one, rotated around aXVec
-  gp_Pln aPlnPrp = aPln.Rotated (gp_Ax1 (O,aXVec), PI/2.);
+  gp_Pln aPlnPrp = aPln.Rotated (gp_Ax1 (O,aXVec), M_PI/2.);
   
   // project Line and it's X-axe symmetric one to plane and intersect
   // resulting curve with projection of Basic Curev
@@ -2154,7 +2154,7 @@ static void EstLimForInfOffs(const gp_Lin&   Line,
       aCyl.SetRadius(aR);
     }
     else if ( aR <= -TOLTANGENCY ){
-      anA.Rotate(gp_Ax1(anA.Location(), anA.Direction()), PI);
+      anA.Rotate(gp_Ax1(anA.Location(), anA.Direction()), M_PI);
       aCyl.SetPosition(anA);
 // modified by NIZHNY-MKK  Mon Oct  3 17:37:54 2005
 //       aCyl.SetRadius(Abs(aR));

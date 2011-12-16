@@ -30,7 +30,7 @@ void Prs2d_Angularity::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
                        Y1 = Standard_ShortReal( myY - myLength/2 ), 
                        X2 = Standard_ShortReal( myX + myLength/2 ), 
                        Y2 = Y1, 
-                       X3 = Standard_ShortReal( X1 + myLength  * Cos( Standard_PI / 4 ) ), 
+                       X3 = Standard_ShortReal( X1 + myLength  * Cos( M_PI / 4 ) ), 
                        Y3 = Standard_ShortReal( myY + myLength/2 );
                        
      gp_Pnt2d P1( X1, Y1 ),

@@ -93,11 +93,11 @@ Method:
 #endif
   
   if (Abs(Dy) <= RealEpsilon()) {
-    teta[0] = PI/2.0;
+    teta[0] = M_PI/2.0;
   }
   else  teta[0] = ATan(-Dx/Dy);
-  teta[1] = teta[0]+ PI;
-  if (teta[0] < 0.0) teta[0] = teta[0] + 2.0*PI;
+  teta[1] = teta[0]+ M_PI;
+  if (teta[0] < 0.0) teta[0] = teta[0] + 2.0*M_PI;
 
   P2 = ElCLib::Value(teta[0], C2);
   U1 = (gp_Vec2d(O1, P2)).Dot(D);
@@ -143,12 +143,12 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
 #endif
   
   if (Abs(Dy) <= RealEpsilon()) {
-    teta[0] = PI/2.0;
+    teta[0] = M_PI/2.0;
   }
   else  teta[0] = ATan(-Dx*r2/(Dy*r1));
 
-  teta[1] = teta[0] + PI;
-  if (teta[0] < 0.0) teta[0] += 2.0*PI;
+  teta[1] = teta[0] + M_PI;
+  if (teta[0] < 0.0) teta[0] += 2.0*M_PI;
   P2 = ElCLib::Value(teta[0], C2);
   U1 = (gp_Vec2d(O1, P2)).Dot(D);
   P1 = ElCLib::Value(U1, C1);
@@ -296,12 +296,12 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Elips2d& C2)
   Standard_Integer i, j;
 
   Extrema_ExtPElC2d ExtElip(C1.Location(), C2, 
-			    Precision::Confusion(), 0.0, 2.0*PI);
+			    Precision::Confusion(), 0.0, 2.0*M_PI);
   
   if (ExtElip.IsDone()) {
     for (i = 1; i <= ExtElip.NbExt(); i++) {
       Extrema_ExtPElC2d ExtCirc(ExtElip.Point(i).Value(), C1, 
-				Precision::Confusion(), 0.0, 2.0*PI);
+				Precision::Confusion(), 0.0, 2.0*M_PI);
       if (ExtCirc.IsDone()) {
 	for (j = 1; j <= ExtCirc.NbExt(); j++) {
 	  mySqDist[myNbExt] = ExtCirc.SquareDistance(j);
@@ -330,7 +330,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Hypr2d& C2)
   if (ExtHyp.IsDone()) {
     for (i = 1; i <= ExtHyp.NbExt(); i++) {
       Extrema_ExtPElC2d ExtCirc(ExtHyp.Point(i).Value(), C1, 
-				Precision::Confusion(), 0.0, 2.0*PI);
+				Precision::Confusion(), 0.0, 2.0*M_PI);
       if (ExtCirc.IsDone()) {
 	for (j = 1; j <= ExtCirc.NbExt(); j++) {
 	  mySqDist[myNbExt] = ExtCirc.SquareDistance(j);
@@ -359,7 +359,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Parab2d& C2)
   if (ExtParab.IsDone()) {
     for (i = 1; i <= ExtParab.NbExt(); i++) {
       Extrema_ExtPElC2d ExtCirc(ExtParab.Point(i).Value(), 
-				C1, Precision::Confusion(), 0.0, 2.0*PI);
+				C1, Precision::Confusion(), 0.0, 2.0*M_PI);
       if (ExtCirc.IsDone()) {
 	for (j = 1; j <= ExtCirc.NbExt(); j++) {
 	  mySqDist[myNbExt] = ExtCirc.SquareDistance(j);

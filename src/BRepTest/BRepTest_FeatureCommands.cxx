@@ -1107,7 +1107,7 @@ static Standard_Integer ROW(Draw_Interpretor& theCommands,
   FFrom   = DBRep::Get(a[4],TopAbs_SHAPE);
   if (FFrom.IsNull()) {
     Angle = atof(a[4]);
-    Angle *=PI/180.;
+    Angle *=M_PI/180.;
     i = 5;
   }
   else {
@@ -1268,7 +1268,7 @@ static Standard_Integer ROF(Draw_Interpretor& theCommands,
   FFrom   = DBRep::Get(a[4],TopAbs_SHAPE);
   if (FFrom.IsNull()) {
     Angle = atof(a[4]);
-    Angle *=PI/180.;
+    Angle *=M_PI/180.;
     i = 5;
   }
   else {
@@ -1589,7 +1589,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
 	theCommands << "Invalid DPrism base";
 	return 1;
       }
-      Standard_Real Angle = atof(a[4])*PI/360; 
+      Standard_Real Angle = atof(a[4])*M_PI/360; 
       dprdef = Standard_True;
       theDPrism.Init(Sbase,TopoDS::Face(Pbase),Skface,Angle,Fuse,Modify);
     }
@@ -1773,7 +1773,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
 	thePrism.Perform(Val);
       }
       else if (Kas == 2) {
-	Val *=(PI/180.);
+	Val *=(M_PI/180.);
 	theRevol.Perform(Val);
       }
       else if (Kas == 4) {
@@ -1795,7 +1795,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
 	thePrism.PerformUntilHeight(FUntil, Val);
       }
       else if (Kas == 2) {
-	Val *=(PI/180.);
+	Val *=(M_PI/180.);
 	theRevol.PerformUntilAngle(FUntil, Val);
       }
       else if (Kas == 4) {

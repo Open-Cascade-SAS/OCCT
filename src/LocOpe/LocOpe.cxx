@@ -143,7 +143,7 @@ Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
 
   Standard_Boolean rev1 = (F1.Orientation() == TopAbs_REVERSED);
   Standard_Boolean rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  Standard_Real f,l,eps,angmin = PI,angmax = -PI,ang;
+  Standard_Real f,l,eps,angmin = M_PI,angmax = -M_PI,ang;
   BRep_Tool::Range(e,f,l);
 
   eps = (l - f)/100.;

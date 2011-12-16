@@ -285,7 +285,7 @@ static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
   if(T !=  GeomAbs_OffsetSurface)
   {
     Handle(Geom_Curve) gc = GS->UIso(U);
-    if(IsVP && (FirstV == 0.0 && LastV == (2.*PI))) I = gc;
+    if(IsVP && (FirstV == 0.0 && LastV == (2.*M_PI))) I = gc;
     else
 	{
 	  Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc,FirstV,LastV);
@@ -303,7 +303,7 @@ static void FUN_GetUiso(const Handle(Geom_Surface)& GS,
     if(IsVP || IsVC || GACT == GeomAbs_BSplineCurve || GACT == GeomAbs_BezierCurve || Abs(LastV - FirstV) < 1.e+5)
 	{
 	  Handle(Geom_Curve) gc = gos->UIso(U);
-	  if(IsVP && (FirstV == 0.0 && LastV == (2*PI))) I = gc;
+	  if(IsVP && (FirstV == 0.0 && LastV == (2*M_PI))) I = gc;
 	  else
       {
 	    Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc,FirstV,LastV);
@@ -355,7 +355,7 @@ static void FUN_GetViso(const Handle(Geom_Surface)& GS,
   if(T !=  GeomAbs_OffsetSurface)
   {
     Handle(Geom_Curve) gc = GS->VIso(V);
-    if(IsUP && (FirstU == 0.0 && LastU == (2*PI))) I = gc;
+    if(IsUP && (FirstU == 0.0 && LastU == (2*M_PI))) I = gc;
     else
 	{
 	  Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc,FirstU,LastU);
@@ -373,7 +373,7 @@ static void FUN_GetViso(const Handle(Geom_Surface)& GS,
     if(IsUP || IsUC || GACT == GeomAbs_BSplineCurve || GACT == GeomAbs_BezierCurve || Abs(LastU - FirstU) < 1.e+5)
 	{
 	  Handle(Geom_Curve) gc = gos->VIso(V);
-	  if(IsUP && (FirstU == 0.0 && LastU == (2*PI))) I = gc;
+	  if(IsUP && (FirstU == 0.0 && LastU == (2*M_PI))) I = gc;
 	  else
 	  {
 	    Handle(Geom_TrimmedCurve) gtc = new Geom_TrimmedCurve(gc,FirstU,LastU);

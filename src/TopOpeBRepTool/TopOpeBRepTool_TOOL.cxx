@@ -1038,11 +1038,11 @@ Standard_Real TopOpeBRepTool_TOOL::Matter(const gp_Vec& d1, const gp_Vec& dR2, c
   Standard_Real ang = d1.Angle(d2);
   Standard_Boolean equal = (ang < tola);
   if (equal) return 0.;
-  Standard_Boolean oppo = ((PI-ang) < tola);
-  if (oppo)  return PI;
+  Standard_Boolean oppo = ((M_PI-ang) < tola);
+  if (oppo)  return M_PI;
 
   ang = d1.AngleWithRef(d2,Ref);
-  if (ang < 0) ang = 2.*PI+ang;    
+  if (ang < 0) ang = 2.*M_PI+ang;    
   return ang;
 }
 
@@ -1099,7 +1099,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::Matter(const gp_Dir& xx1,const gp_Dir& nt1
   z1.Reverse();
   ang = xx1.AngleWithRef(xx2,z1);
   if (Abs(ang) < tola) {ang = 0.; return Standard_True;}
-  if (ang < 0) ang = 2.*PI+ang; 
+  if (ang < 0) ang = 2.*M_PI+ang; 
   
   return Standard_True;
 }
@@ -1264,7 +1264,7 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
       }
     }
     if (ST == GeomAbs_Sphere) {
-      Standard_Real pisur2 = PI*.5;
+      Standard_Real pisur2 = M_PI*.5;
       Standard_Real u = uv.X(),v = uv.Y();
       Standard_Boolean vpisur2 = (Abs(v-pisur2) < tolv);
       Standard_Boolean vmoinspisur2 = (Abs(v+pisur2) < tolv);
@@ -1357,7 +1357,7 @@ Standard_Boolean TopOpeBRepTool_TOOL::MatterKPtg(const TopoDS_Face& f1,const Top
 
   gp_Dir v12(gp_Vec(pf1,pf2));
   Standard_Real dot = v12.Dot(nt1);
-  ang = (dot < 0.) ? 0. : 2.*PI;
+  ang = (dot < 0.) ? 0. : 2.*M_PI;
 
 //  gp_Dir nt1; ok1 = TopOpeBRepTool_TOOL::Nt(uv1,f1,nt1);
 //  if (!ok1) return Standard_False;
@@ -1371,8 +1371,8 @@ Standard_Boolean TopOpeBRepTool_TOOL::MatterKPtg(const TopoDS_Face& f1,const Top
 //  if (!ok2) return Standard_False;  
 //  Standard_Real angapp; Standard_Boolean ok = TopOpeBRepTool_TOOL::Matter(xx1,nt1, xx2,nt2,tola,angapp);
 //  if (!ok) return Standard_False;
-//  Standard_Boolean is0 = (Abs(angapp) < Abs(2.*PI-angapp));
-//  ang = is0 ? 0. : 2.*PI;
+//  Standard_Boolean is0 = (Abs(angapp) < Abs(2.*M_PI-angapp));
+//  ang = is0 ? 0. : 2.*M_PI;
   return Standard_True;
 }
 

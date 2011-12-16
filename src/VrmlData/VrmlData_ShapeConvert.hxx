@@ -72,7 +72,7 @@ class VrmlData_ShapeConvert
   Standard_EXPORT void Convert (const Standard_Boolean theExtractFaces,
 				const Standard_Boolean theExtractEdges,
                                 const Standard_Real    theDeflection = 0.01,
-				const Standard_Real    theDeflAngle = 20.*PI/180.);
+				const Standard_Real    theDeflAngle = 20.*M_PI/180.);
                                 //this value of theDeflAngle is used by default 
                                 //for tesselation while shading (Drawer->HLRAngle())
   

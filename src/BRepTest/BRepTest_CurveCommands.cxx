@@ -700,7 +700,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'r':
       i++;
       if (i >= n) goto badargs;
-      angle = atof(a[i]) * PI180;
+      angle = atof(a[i]) * (M_PI / 180.0);
       if ((a[i-1][1] == 'R') || (a[i-1][1] == 'r')) {
 	dx = Cos(angle);
 	dy = Sin(angle);
@@ -736,7 +736,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
       if (i >= n) goto badargs;
       radius = atof(a[i-1]);
       if (Abs(radius) > Precision::Confusion()) {
-	angle = atof(a[i]) * PI180;
+	angle = atof(a[i]) * (M_PI / 180.0);
 	move = circle;
       }
       break;
@@ -1288,7 +1288,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'r':
       i++;
       if (i >= n) goto badargs;
-      angle = atof(a[i]) * PI180;
+      angle = atof(a[i]) * (M_PI / 180.0);
       if ((a[i-1][1] == 'R') || (a[i-1][1] == 'r')) {
 	dx = Cos(angle);
 	dy = Sin(angle);
@@ -1324,7 +1324,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
       if (i >= n) goto badargs;
       radius = atof(a[i-1]);
       if (Abs(radius) > Precision::Confusion()) {
-	angle = atof(a[i]) * PI180;
+	angle = atof(a[i]) * (M_PI / 180.0);
 	move = circle;
       }
       break;

@@ -110,7 +110,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::Parameters(Cyl,OrFillet,UOnCyl,VOnCyl);
   Standard_Real tesp = Precision::Confusion();
   if(UOnCyl < fu - tesp || UOnCyl > lu + tesp) 
-    UOnCyl = ElCLib::InPeriod(UOnCyl,fu,fu+2*PI);
+    UOnCyl = ElCLib::InPeriod(UOnCyl,fu,fu+2*M_PI);
   ElSLib::Parameters(Pln,OrFillet,UOnPln,VOnPln);
 
   gp_Vec XDir,OtherDir;
@@ -141,7 +141,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   gp_Lin   C3d(POnPln,DirFillet);
   Standard_Real UOnFillet,V;
   ElSLib::CylinderParameters(AxFil,Radius,POnPln,UOnFillet,V);
-  if(UOnFillet > PI) UOnFillet = 0.;
+  if(UOnFillet > M_PI) UOnFillet = 0.;
   gp_Lin2d LOnFillet(gp_Pnt2d(UOnFillet,V),gp::DY2d());
   Handle(Geom_Line)   L3d  = new Geom_Line  (C3d);
   Handle(Geom2d_Line) LFac = new Geom2d_Line(Lin2dPln);
@@ -179,7 +179,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   gp_Pnt POnCyl = ElSLib::Value(UOnCyl,VOnCyl,Cyl);
   C3d = gp_Lin(POnCyl,DirFillet);
   ElSLib::CylinderParameters(AxFil,Radius,POnCyl,UOnFillet,V);
-  if(UOnFillet > PI) UOnFillet = 0.;
+  if(UOnFillet > M_PI) UOnFillet = 0.;
   LOnFillet = gp_Lin2d(gp_Pnt2d(UOnFillet,V),gp::DY2d());
   L3d  = new Geom_Line  (C3d);
   LFac = new Geom2d_Line(Lin2dCyl);
@@ -254,12 +254,12 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   Standard_Real acote = 1e-7;
   ElCLib::D1(First,Spine,PtSp,DSp);
   ElSLib::Parameters(Cyl,PtSp,u,v);
-  if ((Abs(u)<acote) || (Abs(u-(2*PI))<acote)){
+  if ((Abs(u)<acote) || (Abs(u-(2*M_PI))<acote)){
     ElCLib::D1(First+0.2,Spine,PtSp2,DSp2);
     Standard_Real u2,v2;
     ElSLib::Parameters(Cyl,PtSp2,u2,v2);
-    if (Abs(u2-u)>PI){
-      u = (2*PI)-u;
+    if (Abs(u2-u)>M_PI){
+      u = (2*M_PI)-u;
       PtSp = ElSLib::Value(u,v,Cyl);
       Standard_Real PR;
       PR = ElCLib::Parameter(Spine,PtSp);
@@ -315,10 +315,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 	     cPln.Z()+Rad*Dx.Z());
   u = 0.;
   if ((dedans && plandab) || (!dedans && !plandab)){ 
-    if (c1sphere) { v = - PI / 2; }
-    else { v = 3 * PI / 2; }
+    if (c1sphere) { v = - M_PI / 2; }
+    else { v = 3 * M_PI / 2; }
   }
-  else { v = PI / 2; }
+  else { v = M_PI / 2; }
   gp_Dir norFil;
   if(c1sphere){
     ElSLib::SphereD1(u,v,FilAx3,cylrad,PP,deru,derv);
@@ -388,10 +388,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 	     Or.Z()+cylrad*Dx.Z());
   u = 0.;
   if (dedans) {
-    if (plandab && !c1sphere) { v = 2 * PI; }
+    if (plandab && !c1sphere) { v = 2 * M_PI; }
     else { v = 0. ; }
   }
-  else { v = PI; }
+  else { v = M_PI; }
   p2dFil.SetCoord(u,v);
   if(c1sphere){
     ElSLib::SphereD1(u,v,FilAx3,cylrad,PP,deru,derv);
@@ -405,10 +405,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::Parameters(Cyl,P,u,v);
   Standard_Real tol = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if(Abs(lu - fu - 2*PI) < tol) careaboutsens = 1;
+  if(Abs(lu - fu - 2*M_PI) < tol) careaboutsens = 1;
   if(u >= fu - tol && u < fu) u = fu;
   if(u <= lu + tol && u > lu) u = lu;
-  if(u < fu || u > lu) u = ChFiKPart_InPeriod(u,fu,fu + 2*PI,tol);
+  if(u < fu || u > lu) u = ChFiKPart_InPeriod(u,fu,fu + 2*M_PI,tol);
   ElSLib::D1(u,v,Cyl,PP,deru,derv);
   gp_Dir norcyl = deru.Crossed(derv);
   gp_Dir2d d2dCyl = gp::DX2d();

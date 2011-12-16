@@ -270,7 +270,7 @@ static
   Standard_Real IntTools_Tools::IntermediatePoint (const Standard_Real aFirst,
 						   const Standard_Real aLast)
 {
-  //define parameter division number as 10*e^(-PI) = 0.43213918
+  //define parameter division number as 10*e^(-M_PI) = 0.43213918
   const Standard_Real PAR_T = 0.43213918;
   Standard_Real aParm;
   aParm=(1.-PAR_T)*aFirst + PAR_T*aLast;

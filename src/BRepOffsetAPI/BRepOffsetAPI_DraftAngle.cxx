@@ -804,18 +804,18 @@ void BRepOffsetAPI_DraftAngle::CorrectWires()
 	      Pmid = bc2d.Value( (bc2d.FirstParameter()+bc2d.LastParameter())/2. );
 	      gp_Vec2d offset;
 	      Standard_Boolean translate = Standard_False;
-	      if (Pfirst.X()-2.*PI > Precision::Confusion() ||
-		  Plast.X()-2.*PI > Precision::Confusion()  ||
-		  Pmid.X()-2.*PI > Precision::Confusion())
+	      if (Pfirst.X()-2.*M_PI > Precision::Confusion() ||
+		  Plast.X()-2.*M_PI > Precision::Confusion()  ||
+		  Pmid.X()-2.*M_PI > Precision::Confusion())
 		{
-		  offset.SetCoord( -2.*PI, 0 );
+		  offset.SetCoord( -2.*M_PI, 0 );
 		  translate = Standard_True;
 		}
 	      if (Pfirst.X() < -Precision::Confusion() ||
 		  Plast.X() < -Precision::Confusion()  ||
 		  Pmid.X() < -Precision::Confusion())
 		{
-		  offset.SetCoord( 2.*PI, 0 );
+		  offset.SetCoord( 2.*M_PI, 0 );
 		  translate = Standard_True;
 		}
 	      if (translate)

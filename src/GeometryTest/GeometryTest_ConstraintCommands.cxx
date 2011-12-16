@@ -395,7 +395,7 @@ static Standard_Integer lintang (Draw_Interpretor& di,Standard_Integer n, const 
       di << "Second argument must be a line";
       return 1;
     }
-    Standard_Real ang = atof(a[4]) * PI180;
+    Standard_Real ang = atof(a[4]) * (M_PI / 180.0);
     Geom2dGcc_Lin2dTanObl ct3(Geom2dGcc::Unqualified(C1),
 			      L->Lin2d(),
 			      Precision::Angular(),

@@ -223,7 +223,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
       
       // convert basis curve to bspline in order to avoid self-intersecting
       // surface of revolution (necessary e.g. for CATIA)
-      if ( VL - VF - 2 * PI < -Precision::PConfusion() ) 
+      if ( VL - VF - 2 * M_PI < -Precision::PConfusion() ) 
 	BasisCurve = ShapeAlgo::AlgoContainer()->ConvertCurveToBSpline (BasisCurve, VF, VL, Precision::Approximation(),
 									GeomAbs_C1, 100, 9);
 //	BasisCurve = new Geom_TrimmedCurve ( BasisCurve, VF, VL );

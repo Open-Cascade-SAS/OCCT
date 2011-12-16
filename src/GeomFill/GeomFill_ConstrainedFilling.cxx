@@ -155,7 +155,7 @@ static void sortbounds(const Standard_Integer     nb,
     else bound[next]->Bounds(ln,fn);
     bound[next]->D1(fn,pbid,tgn);
     if(rev[next]) tgn.Reverse();
-    Standard_Real ang = PI - tgi.Angle(tgn);
+    Standard_Real ang = M_PI - tgi.Angle(tgn);
     stat[next].TgtAng(ang);
     if(bound[i]->HasNormals() && bound[next]->HasNormals()){
       stat[next].Constraint();
@@ -183,7 +183,7 @@ static void coonscnd(const Standard_Integer     nb,
       Standard_Real tolang = Min(bound[ip]->Tolang(),bound[i]->Tolang());
       Standard_Real an = stat[i].NorAng();
       Standard_Boolean twist = Standard_False;
-      if(an >= 0.5*PI) { twist = Standard_True; an = PI-an; }
+      if(an >= 0.5*M_PI) { twist = Standard_True; an = M_PI-an; }
       if(an > tolang) stat[i].DoKill(0.);
       else{
 	Standard_Real fact = 0.5*27./4;
@@ -1312,7 +1312,7 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
     dout << seg;
 #endif
     if(vnor.Magnitude() > 1.e-15 && vtg.Magnitude() > 1.e-15){
-      Standard_Real alpha = Abs(PI/2.-Abs(vnor.Angle(vtg)));
+      Standard_Real alpha = Abs(M_PI/2.-Abs(vnor.Angle(vtg)));
       if(Abs(alpha) > maxang) maxang = Abs(alpha);
     }
   }
@@ -1346,7 +1346,7 @@ void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
       vapp.SetXYZ(pbid.XYZ());
       vbound = bou->Norm(uu);
       if(vapp.Magnitude() > 1.e-15 && vbound.Magnitude() > 1.e-15){
-	Standard_Real alpha = Abs(PI/2.-Abs(vbound.Angle(vapp)));
+	Standard_Real alpha = Abs(M_PI/2.-Abs(vbound.Angle(vapp)));
 	if(Abs(alpha) > maxang) maxang = Abs(alpha);
       }
 #ifdef DRAW
@@ -1365,7 +1365,7 @@ void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
   cout<<"Controle approx/contrainte sur bord "<<I<<" : "<<endl;
   cout<<"Distance max : "<<maxdist<<endl;
   if (donor) {
-    maxang = maxang*180./PI;
+    maxang = maxang*180./M_PI;
     cout<<"Angle max    : "<<maxang<<" deg"<<endl;
   }
 }
@@ -1424,7 +1424,7 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
       vres[k] = V1.Crossed(V2);
       if(vres[k].Magnitude() > 1.e-15 && vbound[k].Magnitude() > 1.e-15){
 	Standard_Real alpha = Abs(vres[k].Angle(vbound[k]));
-	alpha = Min(alpha,Abs(PI-alpha));
+	alpha = Min(alpha,Abs(M_PI-alpha));
 	if(alpha > maxang) maxang = alpha;
 	ang[k] = alpha;
 	hasang[k] = 1;
@@ -1439,7 +1439,7 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
   cout<<"Controle resultat/contrainte sur bord "<<I<<" : "<<endl;
   cout<<"Distance max : "<<maxdist<<endl;
   if (donor) {
-    Standard_Real angdeg = maxang*180./PI;
+    Standard_Real angdeg = maxang*180./M_PI;
     cout<<"Angle max    : "<<angdeg<<" deg"<<endl;
   }
 #ifdef DRAW

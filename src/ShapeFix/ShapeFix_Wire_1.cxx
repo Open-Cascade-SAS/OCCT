@@ -395,7 +395,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
       if (c1->IsKind(STANDARD_TYPE(Geom_Circle)) ||
 	  c1->IsKind(STANDARD_TYPE(Geom_Ellipse))) 
       {
-	Standard_Real diff = PI - Abs(clast1-cfirst2)*0.5;
+	Standard_Real diff = M_PI - Abs(clast1-cfirst2)*0.5;
 	first1 -= diff; last1 += diff;
 	done1 = Standard_True;
       }
@@ -422,7 +422,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
       else if (c1->IsKind(STANDARD_TYPE(Geom_Circle)) ||
 	       c1->IsKind(STANDARD_TYPE(Geom_Ellipse))) 
       {
-	domfirst1 = 0.; domlast1 = 2*PI;
+	domfirst1 = 0.; domlast1 = 2*M_PI;
       }
       Standard_Real domfirst2 = first2, domlast2 = last2;
       if (c2->IsKind(STANDARD_TYPE(Geom_BSplineCurve)) ||
@@ -442,7 +442,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
       else if (c2->IsKind(STANDARD_TYPE(Geom_Circle)) ||
 	       c2->IsKind(STANDARD_TYPE(Geom_Ellipse))) 
       {
-	domfirst2 = 0.; domlast2 = 2*PI;
+	domfirst2 = 0.; domlast2 = 2*M_PI;
       }
 
       Standard_Real ipar1 = clast1, ipar2 = cfirst2;
@@ -979,7 +979,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
       if (pc1->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
 	  pc1->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) 
       {
-	Standard_Real diff = PI - Abs(clast1-cfirst2)*0.5;
+	Standard_Real diff = M_PI - Abs(clast1-cfirst2)*0.5;
 	first1 -= diff; last1 += diff;
 	done1 = Standard_True;
       }
@@ -1006,7 +1006,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
       else if (pc1->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
 	       pc1->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) 
       {
-	domfirst1 = 0.; domlast1 = 2*PI;
+	domfirst1 = 0.; domlast1 = 2*M_PI;
       }
       Standard_Real domfirst2 = first2, domlast2 = last2;
       if (pc2->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) ||
@@ -1026,7 +1026,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
       else if (pc2->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
 	       pc2->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) 
       {
-	domfirst2 = 0.; domlast2 = 2*PI;
+	domfirst2 = 0.; domlast2 = 2*M_PI;
       }
 
       Standard_Real ipar1 = clast1, ipar2 = cfirst2;

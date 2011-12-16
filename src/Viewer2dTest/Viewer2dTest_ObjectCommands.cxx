@@ -239,7 +239,7 @@ static int V2dTrihedron2D (Draw_Interpretor& , Standard_Integer argc, const char
   gp_Dir TheZVector (coord[3],coord[4],coord[5]);
   gp_Dir TheXVector (coord[6],coord[7],coord[8]);
 
-  if (!TheZVector.IsNormal(TheXVector,PI/180))
+  if (!TheZVector.IsNormal(TheXVector,M_PI/180))
   {
     cout << argv[0] << " VectorX is not normal to VectorZ" << endl;
     return 1;
@@ -1120,7 +1120,7 @@ static int V2dPlaneBuilder (Draw_Interpretor& , Standard_Integer argc, const cha
 	if (mySurface.GetType() == GeomAbs_Plane)
         {
 	  gp_Pln myPlane = mySurface.Plane();
-	  myPlane.Rotate(myRotAxis, PI/2);
+	  myPlane.Rotate(myRotAxis, M_PI/2);
 	  
 	  Handle(Geom_Plane) theGeomPlane = new Geom_Plane(myPlane);
 	  gp_Pnt theMiddle ((Aa.X()+Ab.X())/2, (Aa.Y()+Ab.Y())/2, (Aa.Z()+Ab.Z())/2);
@@ -1168,7 +1168,7 @@ static int V2dPlaneBuilder (Draw_Interpretor& , Standard_Integer argc, const cha
 	if (mySurface.GetType() == GeomAbs_Plane)
         {
 	  gp_Pln myPlane = mySurface.Plane();
-	  myPlane.Rotate(myRotAxis, PI/2);
+	  myPlane.Rotate(myRotAxis, M_PI/2);
 	  Handle(Geom_Plane) theGeomPlane = new Geom_Plane(myPlane);
 	  gp_Pnt theMiddle ((Ba.X()+Bb.X())/2, (Ba.Y()+Bb.Y())/2, (Ba.Z()+Bb.Z())/2);
 	  Handle(AIS2D_Plane) myAIS2DPlane = new AIS2D_Plane(theGeomPlane, theMiddle);

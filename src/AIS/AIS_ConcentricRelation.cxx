@@ -266,8 +266,8 @@ void AIS_ConcentricRelation::ComputeSelection(const Handle(SelectMgr_Selection)&
   aSelection->Add(seg);
 
   gp_Ax1 RotateAxis(myCenter, myDir);
-  gp_Pnt FPnt = myCenter.Rotated(RotateAxis, PI/2);
-  gp_Pnt SPnt = myCenter.Rotated(RotateAxis, -PI/2);
+  gp_Pnt FPnt = myCenter.Rotated(RotateAxis, M_PI/2);
+  gp_Pnt SPnt = myCenter.Rotated(RotateAxis, -M_PI/2);
   seg = new Select3D_SensitiveSegment(own,
 				      FPnt,
 				      SPnt);

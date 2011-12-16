@@ -72,7 +72,7 @@ static Standard_Real Penalite(const Standard_Real angle,
     penal = dist + 2;
 
   if (angle > 1.e-3) {
-    penal += 1./angle -2./PI;
+    penal += 1./angle -2./M_PI;
   }
   else {
     penal += 1.e3;
@@ -86,7 +86,7 @@ static Standard_Real EvalAngle(const gp_Vec& V1,
 {
  Standard_Real angle;
  angle = V1.Angle(V2);
- if (angle > PI/2) angle = PI - angle;
+ if (angle > M_PI/2) angle = M_PI - angle;
  return angle;
 }
 
@@ -393,7 +393,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
     {
       Extrema_ExtPC Projector(myPoint, Path->Curve(), Precision::Confusion());
       DistMini( Projector, Path->Curve(), Dist, PathParam );
-      AngleMax = PI/2;
+      AngleMax = M_PI/2;
     }
   else
     {
@@ -416,7 +416,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	}
       }
       AngleMax = EvalAngle(VRef, dp1);
-      if (isplan) AngleMax = PI/2 - AngleMax;
+      if (isplan) AngleMax = M_PI/2 - AngleMax;
       
       Standard_Boolean Trouve = Standard_False; 
       Standard_Integer ii;
@@ -498,7 +498,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 		  }
 		}
 		AngleMax = EvalAngle(VRef, dp1);
-		AngleMax = PI/2 - AngleMax;
+		AngleMax = M_PI/2 - AngleMax;
 	      }
 	  }
     
@@ -513,7 +513,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	   Tangente(Path->Curve(), Path->LastParameter(), P, dp1);
 	   V1.SetXYZ(TheAxe.Location().XYZ()-P.XYZ());
 	   if  (Abs(V1.Dot(VRef)) <= DistPlan ) { // On prend l'autre extremite
-	   alpha =  PI/2 - EvalAngle(VRef, dp1);
+	   alpha =  M_PI/2 - EvalAngle(VRef, dp1);
 	   distaux =  PonPath.Distance(PonSec);
 	   if (distaux > Tol) {
 	   myExt.Perform(P);  
@@ -545,7 +545,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	   w = Intersector.Point(ii).W();
 	   //(1.3) test d'angle
 	   Tangente( Path->Curve(), w, P, V);
-	   alpha = PI/2 - EvalAngle(V, VRef);
+	   alpha = M_PI/2 - EvalAngle(V, VRef);
 	   //(1.4) Test de distance Point-Courbe
 	   myExt.Perform(P);  
 	   if ( myExt.IsDone() ) {
@@ -683,7 +683,7 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Param,
     {
       gp_Pnt PonPath = Path->Value( PathParam );
       Dist = PonPath.Distance(myPoint);
-      AngleMax = PI/2;
+      AngleMax = M_PI/2;
     }
   else
     {
@@ -706,7 +706,7 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Param,
 	}
       }
       AngleMax = EvalAngle(VRef, dp1);
-      if (isplan) AngleMax = PI/2 - AngleMax;
+      if (isplan) AngleMax = M_PI/2 - AngleMax;
     }
 
   done = Standard_True;

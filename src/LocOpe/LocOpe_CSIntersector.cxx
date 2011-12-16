@@ -131,7 +131,7 @@ void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
   TopExp_Explorer exp(myShape,TopAbs_FACE);
   Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve ();
   Standard_Real binf = 0.;
-  Standard_Real bsup = 2.*PI;
+  Standard_Real bsup = 2.*M_PI;
 
 
   for (; exp.More(); exp.Next()) {

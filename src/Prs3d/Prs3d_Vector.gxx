@@ -40,7 +40,7 @@ void Prs3d_Vector::Add(const Handle(Prs3d_Presentation)& aPresentation,
   A(2).SetCoord(x1+dx,y1+dy,z1+dz);
   G->Polyline(A);
   Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x1+dx,y1+dy,z1+dz),gp_Dir(Vec),
-                  PI/180.*10.,Sqrt(dx*dx+dy*dy+dz*dz)/10.);
+                  M_PI/180.*10.,Sqrt(dx*dx+dy*dy+dz*dz)/10.);
   
 }
 

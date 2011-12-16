@@ -229,7 +229,7 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
   myGluedF.Clear();
   myPerfSelection = BRepFeat_NoSelection;
   PerfSelectionValid();
-  Standard_Boolean RevolComp = (2*PI-Abs(Angle) <= Precision::Angular());
+  Standard_Boolean RevolComp = (2*M_PI-Abs(Angle) <= Precision::Angular());
   LocOpe_Revol theRevol;
   Standard_Real angledec = 0.;
   TopExp_Explorer exp;
@@ -238,7 +238,7 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
     if (!mySkface.IsNull() || !mySlface.IsEmpty()) {
       for (exp.Init(mySbase,TopAbs_FACE); exp.More(); exp.Next()) {
 	if (exp.Current().IsSame(mySkface)) {
-	  angledec = PI/5; // pourquoi pas
+	  angledec = M_PI/5; // pourquoi pas
 	  if (myFuse) angledec = -angledec;
 	  break;
 	}
@@ -362,7 +362,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
     Standard_ConstructionError::Raise();
   }
   if (!mySkface.IsNull() && Until.IsSame(mySkface)) {
-    Angle = 2*PI;
+    Angle = 2*M_PI;
     TourComplet = Standard_True;
   }
   myGluedF.Clear();
@@ -375,10 +375,10 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   ShapeUntilValid();
 
 // Do systematically almost complete revolution
-// BRepSweep_Revol theRevol(myPbase,myAxis,2.*PI-10.*Precision::Angular());
+// BRepSweep_Revol theRevol(myPbase,myAxis,2.*M_PI-10.*Precision::Angular());
   LocOpe_Revol theRevol;
   if(!TourComplet) {
-    Angle = 2.*PI- 3*PI/180.;
+    Angle = 2.*M_PI- 3*M_PI/180.;
 #ifdef DEB
     if (trc) cout << " No complete Revolution" << endl;
 #endif
@@ -565,7 +565,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
   }
 
   LocOpe_Revol theRevol;
-  theRevol.Perform(myPbase, myAxis, 2*PI);
+  theRevol.Perform(myPbase, myAxis, 2*M_PI);
   TopoDS_Shape VraiRevol = theRevol.Shape();
 
   MajMap(myPbase,theRevol,myMap,myFShape,myLShape);
@@ -607,9 +607,9 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
     }
     if (ASI2.IsDone() && ASI2.NbPoints(1) >=1) {
       Standard_Real pr1 = ASI2.Point(1,1).Parameter();
-      pr1 = ElCLib::InPeriod(pr1,PrU-2*PI,PrU);
+      pr1 = ElCLib::InPeriod(pr1,PrU-2*M_PI,PrU);
       Standard_Real pr2 = ASI2.Point(1,ASI2.NbPoints(1)).Parameter();
-      pr2 = ElCLib::InPeriod(pr2,PrU-2*PI,PrU);
+      pr2 = ElCLib::InPeriod(pr2,PrU-2*M_PI,PrU);
       OrF = OrU;
       FFrom = ASI2.Point(1,1).Face();
       PrF = Max(pr1, pr2);
@@ -689,7 +689,7 @@ void BRepFeat_MakeRevol::PerformThruAll()
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
   if (trc) cout << "BRepFeat_MakeRevol::PerformThruAll()" << endl;
 #endif
-  Perform(2.*PI);
+  Perform(2.*M_PI);
 }
 
 //=======================================================================
@@ -728,7 +728,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
   ShapeUntilValid();
 
 // Produce systematicallt an almost complete revolution
-//  BRepSweep_Revol theRevol(myPbase,myAxis,2.*PI-10.*Precision::Angular());
+//  BRepSweep_Revol theRevol(myPbase,myAxis,2.*M_PI-10.*Precision::Angular());
   LocOpe_Revol theRevol;
   theRevol.Perform(myPbase, myAxis, Angle);
   TopoDS_Shape VraiRevol = theRevol.Shape();

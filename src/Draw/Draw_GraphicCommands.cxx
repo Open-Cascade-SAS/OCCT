@@ -33,7 +33,7 @@ extern Standard_Boolean Draw_Batch;
 extern Standard_Boolean Draw_BlackBackGround;
 
 
-#define DEFROTATE (5 * PI/ 180.)
+#define DEFROTATE (5 * M_PI/ 180.)
 #define DEFMAGNIFY 1.1
 #define DEFPANNING 0.1
 #define DEFFOCAL 1.1

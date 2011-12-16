@@ -685,14 +685,14 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
 		  if ( edge2.Orientation() == TopAbs_REVERSED ) Vec2.Reverse();
 		  Standard_Real tol2 = Precision::Confusion() * Precision::Confusion();
 		  if ( Vec1.SquareMagnitude() < tol2 ||
-		       Vec2.SquareMagnitude() < tol2 ) Ang1 = PI/2.;
+		       Vec2.SquareMagnitude() < tol2 ) Ang1 = M_PI/2.;
 		  else Ang1 = Abs(Vec1.Angle(Vec2));
 		  C2->D1(last2,P,Vec1);
 		  C3->D1(first3,P,Vec2);
 		  if ( edge2.Orientation() == TopAbs_REVERSED ) Vec1.Reverse();
 		  if ( edge3.Orientation() == TopAbs_REVERSED ) Vec2.Reverse();
 		  if ( Vec1.SquareMagnitude() < tol2 ||
-		       Vec2.SquareMagnitude() < tol2 ) Ang2 = PI/2.;
+		       Vec2.SquareMagnitude() < tol2 ) Ang2 = M_PI/2.;
 		  else Ang2 = Abs(Vec1.Angle(Vec2));
 		  //isLimAngle = (theLimitAngle != -1 && Min(Ang1,Ang2) > theLimitAngle);  
 		  //take_next = (Ang2<Ang1);
@@ -1125,14 +1125,14 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
 		  if ( edge2.Orientation() == TopAbs_REVERSED ) Vec2.Reverse();
 		  Standard_Real tol2 = Precision::Confusion() * Precision::Confusion();
 		  if ( Vec1.SquareMagnitude() < tol2 ||
-		       Vec2.SquareMagnitude() < tol2 ) Ang1 = PI/2.;
+		       Vec2.SquareMagnitude() < tol2 ) Ang1 = M_PI/2.;
 		  else Ang1 = Abs(Vec1.Angle(Vec2));
 		  C2->D1(last2,P,Vec1);
 		  C3->D1(first3,P,Vec2);
 		  if ( edge2.Orientation() == TopAbs_REVERSED ) Vec1.Reverse();
 		  if ( edge3.Orientation() == TopAbs_REVERSED ) Vec2.Reverse();
 		  if ( Vec1.SquareMagnitude() < tol2 ||
-		       Vec2.SquareMagnitude() < tol2 ) Ang2 = PI/2.;
+		       Vec2.SquareMagnitude() < tol2 ) Ang2 = M_PI/2.;
 		  else Ang2 = Abs(Vec1.Angle(Vec2));
 		  //isLimAngle = (theLimitAngle != -1 && Min(Ang1,Ang2) > theLimitAngle);  
 		  //take_next = (Ang2<Ang1);

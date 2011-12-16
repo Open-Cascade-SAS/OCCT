@@ -61,7 +61,7 @@ static Standard_Boolean InDomain(const Standard_Real fpar,
   if (fpar >= 0.) {
     return ((para >= fpar) && (para <= lpar));
   }
-  if (para >= (fpar+2*PI)) return Standard_True;
+  if (para >= (fpar+2*M_PI)) return Standard_True;
   if (para <= lpar) return Standard_True;
   return Standard_False;
 }
@@ -270,7 +270,7 @@ void AIS_FixRelation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelec
   dirac.Normalize();
   gp_Vec norac = dirac.Crossed(gp_Vec(norm));
   gp_Ax1 ax(myPosition, norm);
-  norac.Rotate(ax, PI/8);
+  norac.Rotate(ax, M_PI/8);
 
   norac*=(myArrowSize/2);
   gp_Pnt P1 = myPosition.Translated(norac);
@@ -414,7 +414,7 @@ gp_Pnt AIS_FixRelation::ComputePosition(const Handle(Geom_Curve)& curv,
     gp_Vec transvec = vec*myArrowSize;
     curpos = myPntAttach.Translated(transvec);
     gp_Ax1 RotAx( myPntAttach, NormPln);
-    curpos.Rotate(RotAx, PI/10);
+    curpos.Rotate(RotAx, M_PI/10);
   }
 
   return curpos;
@@ -526,10 +526,10 @@ void AIS_FixRelation::ComputeCirclePosition(
 	Standard_Real& plast)
 {
   // readjust parametres on the circle
-  if (plast > 2*PI ) {
-    Standard_Real nbtours = Floor(plast / (2*PI));
-    plast -= nbtours*2*PI;
-    pfirst -= nbtours*2*PI;
+  if (plast > 2*M_PI ) {
+    Standard_Real nbtours = Floor(plast / (2*M_PI));
+    plast -= nbtours*2*M_PI;
+    pfirst -= nbtours*2*M_PI;
   }
 
   if (myAutomaticPosition) {
@@ -539,8 +539,8 @@ void AIS_FixRelation::ComputeCirclePosition(
     Standard_Real circparam = (pfirst + plast)/2.;
 
     if ( !InDomain(pfirst,plast,circparam)) {
-      Standard_Real otherpar = circparam + PI;
-      if (otherpar > 2*PI) otherpar -= 2*PI;
+      Standard_Real otherpar = circparam + M_PI;
+      if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
       circparam = otherpar;
     }
 
@@ -563,8 +563,8 @@ void AIS_FixRelation::ComputeCirclePosition(
     Standard_Real circparam = ElCLib::Parameter(gcirc, pos);
 
     if ( !InDomain(pfirst,plast,circparam)) {
-      Standard_Real otherpar = circparam + PI;
-      if (otherpar > 2*PI) otherpar -= 2*PI;
+      Standard_Real otherpar = circparam + M_PI;
+      if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
       circparam = otherpar;
     }
     

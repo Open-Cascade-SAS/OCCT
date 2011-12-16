@@ -146,7 +146,7 @@ inline Standard_Boolean gp_Dir::IsNormal
 (const gp_Dir& Other,
  const Standard_Real AngularTolerance) const
 {
-  Standard_Real Ang = Standard_PI / 2.0 - Angle (Other);
+  Standard_Real Ang = M_PI / 2.0 - Angle (Other);
   if (Ang < 0) Ang = - Ang;
   return   Ang <= AngularTolerance;
 }    
@@ -154,14 +154,14 @@ inline Standard_Boolean gp_Dir::IsNormal
 inline Standard_Boolean gp_Dir::IsOpposite
 (const gp_Dir& Other,
  const Standard_Real AngularTolerance) const
-{ return Standard_PI - Angle (Other) <= AngularTolerance; }    
+{ return M_PI - Angle (Other) <= AngularTolerance; }    
 
 inline Standard_Boolean gp_Dir::IsParallel
 (const gp_Dir& Other, 
  const Standard_Real AngularTolerance) const
 {
   Standard_Real Ang = Angle (Other);
-  return Ang <= AngularTolerance || Standard_PI - Ang <= AngularTolerance;
+  return Ang <= AngularTolerance || M_PI - Ang <= AngularTolerance;
 }    
 
 inline void gp_Dir::Cross (const gp_Dir& Right)

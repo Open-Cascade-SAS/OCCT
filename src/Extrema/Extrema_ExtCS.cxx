@@ -297,7 +297,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
 	PS.Parameter(U, V);
 
 	if((myStype == GeomAbs_Sphere) || (myStype == GeomAbs_Cylinder)) {
-	  U = ElCLib::InPeriod(U, myuinf, myuinf+2.*PI);
+	  U = ElCLib::InPeriod(U, myuinf, myuinf+2.*M_PI);
 	}
 
 	if ((myuinf-U) <= mytolS && (U-myusup) <= mytolS &&

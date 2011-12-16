@@ -979,7 +979,7 @@ void AIS::ComputeAngleBetweenCurvilinearFaces( const TopoDS_Face &      FirstFac
       if (! Xdirection.IsEqual( ToFirstAttach, Precision::Angular() ) &&
           ! Xdirection.IsOpposite( ToFirstAttach, Precision::Angular() ) &&
           (Xdirection ^ ToFirstAttach) * Cone2->Cone().Axis().Direction() < 0.0e0)
-        SecondU = 2*PI - SecondU ;
+        SecondU = 2*M_PI - SecondU ;
       
       SecondLine = Handle( Geom_Line )::DownCast( Cone2->UIso( SecondU ) );
       
@@ -1233,18 +1233,18 @@ Standard_Boolean AIS::InDomain(const Standard_Real fpar,
     if(lpar > fpar)
       return ((para >= fpar) && (para <= lpar));
     else { // fpar > lpar
-      Standard_Real delta = 2*PI-fpar;
+      Standard_Real delta = 2*M_PI-fpar;
       Standard_Real lp, par, fp;
       lp = lpar + delta;
       par = para + delta;
-      while(lp > 2*PI) lp-=2*PI;
-      while(par > 2*PI) par-=2*PI;
+      while(lp > 2*M_PI) lp-=2*M_PI;
+      while(par > 2*M_PI) par-=2*M_PI;
       fp = 0.;
       return ((par >= fp) && (par <= lp));
     }
       
   }
-  if (para >= (fpar+2*PI)) return Standard_True;
+  if (para >= (fpar+2*M_PI)) return Standard_True;
   if (para <= lpar) return Standard_True;
   return Standard_False;
 }
@@ -1260,37 +1260,37 @@ Standard_Real AIS::DistanceFromApex(const gp_Elips & elips,
 {
   Standard_Real dist;
   Standard_Real parApex = ElCLib::Parameter ( elips, Apex );
-  if(parApex == 0.0 || parApex == PI) 
+  if(parApex == 0.0 || parApex == M_PI) 
     {//Major case
       if(parApex == 0.0) //pos Apex
-	dist = (par < PI) ? par : (2*PI - par);
+	dist = (par < M_PI) ? par : (2*M_PI - par);
       else //neg Apex
-	dist = (par < PI) ? ( PI - par) : ( par - PI );
+	dist = (par < M_PI) ? ( M_PI - par) : ( par - M_PI );
     }
   else 
     {// Minor case
-      if(parApex == PI / 2) //pos Apex
+      if(parApex == M_PI / 2) //pos Apex
 	{
-	  if(par <= parApex + PI && par > parApex) // 3/2*PI < par < PI/2
+	  if(par <= parApex + M_PI && par > parApex) // 3/2*M_PI < par < M_PI/2
 	    dist = par - parApex;
 	  else 
 	    { 
-	      if(par >  parApex + PI) // 3/2*PI < par < 2*PI
-		dist = 2*PI - par + parApex;
+	      if(par >  parApex + M_PI) // 3/2*M_PI < par < 2*M_PI
+		dist = 2*M_PI - par + parApex;
 	      else
 		dist = parApex - par; 
 	    }
 	  }
-      else //neg Apex == 3/2*PI
+      else //neg Apex == 3/2*M_PI
 	{
-	  if(par <= parApex && par >= PI/2) // PI/2 < par < 3/2*PI
+	  if(par <= parApex && par >= M_PI/2) // M_PI/2 < par < 3/2*M_PI
 	    dist = parApex - par;
 	  else
 	    {
-	      if(par >  parApex) // 3/2*PI < par < 2*PI
+	      if(par >  parApex) // 3/2*M_PI < par < 2*M_PI
 		dist = par - parApex;
 	      else
-		dist = par + PI/2; // 0 < par < PI/2
+		dist = par + M_PI/2; // 0 < par < M_PI/2
 	    }
 	}
     }

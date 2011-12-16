@@ -48,7 +48,7 @@ static Standard_Integer debclass = 0;
 #endif
 static const Standard_Real MIN_DIST = 2.E-5; //EPA: real mesh is created in the grid 10E5x10E5, so intersection should be cheched
                                              //     with double of discretization.
-static const Standard_Real PARALL_COND = Sin(PI/3.0);
+static const Standard_Real PARALL_COND = Sin(M_PI/3.0);
 static const Standard_Real RESOLUTION = 1.0E-16; //OCC319
 
 
@@ -119,7 +119,7 @@ void BRepMesh_Classifier::AnalizeWire (const TColgp_SequenceOfPnt2d&  theSeqPnt2
       const Standard_Real a = A.Angle(B);
       const Standard_Real aa = Abs(a);
       // Check if vectors are opposite
-      if (aa > Precision::Angular() && (PI - aa) > Precision::Angular())
+      if (aa > Precision::Angular() && (M_PI - aa) > Precision::Angular())
       {
         theangle += a;
         p1 = p2;
@@ -340,7 +340,7 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
         aLoopArea += triangle2Area(p2, p3); 
         aLoopArea += triangle2Area(p3, aStartPoint); // Last triangle area
 
-        if( Abs(aLoopArea)/2 > PI*MIN_DIST )
+        if( Abs(aLoopArea)/2 > M_PI*MIN_DIST )
         {
           if ( findNextIntersection )
           {

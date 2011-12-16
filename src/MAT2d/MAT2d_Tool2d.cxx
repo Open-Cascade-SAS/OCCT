@@ -469,7 +469,7 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
       ::DownCast(ChangeGeomBis(abisector->BisectorNumber()).ChangeValue());
   
   if(bisector->BasisCurve()->IsPeriodic() && param == Precision::Infinite()) {
-    param = bisector->FirstParameter() + 2*PI;
+    param = bisector->FirstParameter() + 2*M_PI;
   }
   if (param > bisector->BasisCurve()->LastParameter()) {
    param = bisector->BasisCurve()->LastParameter(); 
@@ -500,7 +500,7 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
   Param = Bis->Parameter(GeomPnt (apoint));
 
   if (Bisector->BasisCurve()->IsPeriodic()) {
-    if (Bisector->FirstParameter() > Param) Param = Param + 2*PI;
+    if (Bisector->FirstParameter() > Param) Param = Param + 2*M_PI;
   }
   if(Bisector->FirstParameter() >= Param)return Standard_False;
   if(Bisector->LastParameter()  <  Param)return Standard_False;
@@ -552,7 +552,7 @@ Standard_Boolean MAT2d_Tool2d::Projection (const Standard_Integer IEdge   ,
     if (theCircuit->ConnexionOn(INext)) {
       ParamMax = theCircuit->Connexion(INext)->ParameterOnFirst(); 
       if (Curve->BasisCurve()->IsPeriodic()){
-	ElCLib::AdjustPeriodic(0.,2*PI,Eps,ParamMin,ParamMax);
+	ElCLib::AdjustPeriodic(0.,2*M_PI,Eps,ParamMin,ParamMax);
       }
     }
     //---------------------------------------------------------------------
@@ -564,7 +564,7 @@ Standard_Boolean MAT2d_Tool2d::Projection (const Standard_Integer IEdge   ,
       Standard_Real R       = C1.Circle().Radius();
       Standard_Real EpsCirc = Eps;
       if ( R < 1.)  EpsCirc = Eps/R;
-      if (!((ParamMax - ParamMin + 2*EpsCirc) < 2*PI)) {
+      if (!((ParamMax - ParamMin + 2*EpsCirc) < 2*M_PI)) {
 	ParamMax = ParamMax + EpsCirc; ParamMin = ParamMin - EpsCirc;
       }
     }
@@ -1186,7 +1186,7 @@ IntRes2d_Domain  Domain(const Handle(Geom2d_TrimmedCurve)& Bisector1,
   IntRes2d_Domain Domain1(Bisector1->Value(Param1),Param1,Tolerance,
 			  Bisector1->Value(Param2),Param2,Tolerance);
   if(Bisector1->BasisCurve()->IsPeriodic()) {
-    Domain1.SetEquivalentParameters(0.,2.*PI);
+    Domain1.SetEquivalentParameters(0.,2.*M_PI);
   }
   return Domain1;
 }

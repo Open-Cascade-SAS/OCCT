@@ -361,7 +361,7 @@ static int V2dDebug (Draw_Interpretor& di, Standard_Integer , const char** )
   OSD_Timer myTimer;
   TheAIS2DContext()->CloseLocalContext();
   
-  Standard_Real Step = 4*PI/180;
+  Standard_Real Step = 4*M_PI/180;
   Standard_Real Angle = 0;
   
   Handle(AIS2D_InteractiveObject) aIO;
@@ -383,7 +383,7 @@ static int V2dDebug (Draw_Interpretor& di, Standard_Integer , const char** )
   if (atoi(argv[2]) == 1)
   { 
     cout << " Calcul par Transformation" << endl;
-    for (Standard_Real myAngle = 0; Angle < 10*2*PI; myAngle++)
+    for (Standard_Real myAngle = 0; Angle < 10*2*M_PI; myAngle++)
     {
       Angle = Step*myAngle;
       gp_Trsf myTransfo;
@@ -400,7 +400,7 @@ static int V2dDebug (Draw_Interpretor& di, Standard_Integer , const char** )
     TopLoc_Location myDeltaAngle (myAngleTrsf);
     TopLoc_Location myTrueLoc;
     
-    for (Standard_Real myAngle = 0; Angle < 10*2*PI; myAngle++)
+    for (Standard_Real myAngle = 0; Angle < 10*2*M_PI; myAngle++)
     {
       Angle = Step*myAngle;
       myTrueLoc = myTrueLoc*myDeltaAngle;
@@ -480,9 +480,9 @@ static int V2dDebug (Draw_Interpretor& di, Standard_Integer , const char** )
 //  TheAIS2DContext()->Deactivate(myAisPropeller   );
   
   // Boucle de mouvement
-  for (Standard_Real myAngle = 0; angleA < 2*PI*10.175; myAngle++)
+  for (Standard_Real myAngle = 0; angleA < 2*M_PI*10.175; myAngle++)
   {
-    angleA = thread*myAngle*PI/180;
+    angleA = thread*myAngle*M_PI/180;
     X = Sin(angleA)*3/8;
     angleB = atan(X / Sqrt(-X * X + 1));
 //    Standard_Real decal(25*0.6);

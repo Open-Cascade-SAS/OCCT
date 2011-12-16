@@ -207,7 +207,7 @@ Standard_Boolean BlendFunc_CSConstRad::IsSolution(const math_Vector& Sol, const 
 
     Angle = ACos(Cosa);
     if (Sina <0.) {
-      Angle = 2.*PI - Angle;
+      Angle = 2.*M_PI - Angle;
     }
 
    if (Angle>maxang) {maxang = Angle;}
@@ -649,7 +649,7 @@ Standard_Boolean BlendFunc_CSConstRad::GetSection(const Standard_Real Param,
       Sina = nplan.Dot(ns.Crossed(ns2));
       Angle = ACos(Cosa);
       if (Sina <0.) {
-	Angle = 2.*PI - Angle;
+	Angle = 2.*M_PI - Angle;
       }
       Dangle = -(dnw.Dot(ns2) + ns.Dot(dn2w))/Sina;
       ncrn = nplan.Crossed(ns);

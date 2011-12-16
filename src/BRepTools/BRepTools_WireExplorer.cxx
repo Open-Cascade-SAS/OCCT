@@ -442,7 +442,7 @@ void  BRepTools_WireExplorer::Next()
 	Standard_Integer k = 1, kMin = 0, iDone = 0;
 	Standard_Boolean isDegenerated = Standard_True;
 	Standard_Real dmin = RealLast();
-	Standard_Real dfMinAngle = 3.0*PI, dfCurAngle = 3.0*PI;
+	Standard_Real dfMinAngle = 3.0*M_PI, dfCurAngle = 3.0*M_PI;
 
 	for(iDone = 0; iDone < 2; iDone++)
 	  {

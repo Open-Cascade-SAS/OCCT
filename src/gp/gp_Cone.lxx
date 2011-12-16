@@ -5,7 +5,7 @@
 
 inline gp_Cone::gp_Cone () :
 radius (RealLast()),
-semiAngle (Standard_PI * 0.25)
+semiAngle (M_PI * 0.25)
 { }
 
 inline gp_Cone::gp_Cone (const gp_Ax3& A3,
@@ -20,7 +20,7 @@ inline gp_Cone::gp_Cone (const gp_Ax3& A3,
   Standard_ConstructionError_Raise_if
     (radius < 0. ||
      val            <= gp::Resolution() ||
-     Standard_PI * 0.5 - val <= gp::Resolution(), "");
+     M_PI * 0.5 - val <= gp::Resolution(), "");
 }
 
 inline void gp_Cone::SetAxis     (const gp_Ax1& A1)
@@ -45,7 +45,7 @@ inline void gp_Cone::SetSemiAngle (const Standard_Real Ang)
   if (val < 0) val = - val;
   Standard_ConstructionError_Raise_if
     (val            <= gp::Resolution() ||
-     Standard_PI * 0.5 - val <= gp::Resolution(),"");
+     M_PI * 0.5 - val <= gp::Resolution(),"");
   semiAngle = Ang;
 }
 

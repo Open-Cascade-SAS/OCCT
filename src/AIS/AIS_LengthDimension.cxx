@@ -930,7 +930,7 @@ void AIS_LengthDimension::ComputeTwoVerticesLength( const Handle( Prs3d_Presenta
   else {
     if (!samePoint) {
       DirAttach = gce_MakeDir(FirstAttach,SecondAttach);
-      DirAttach.Rotate(Plane->Pln().Axis(),PI/2.);
+      DirAttach.Rotate(Plane->Pln().Axis(),M_PI/2.);
     }
   }
   

@@ -154,7 +154,7 @@ Standard_Boolean Graphic2d_Line::IsIn ( const Standard_ShortReal aX,
     cosin = prosca / norme1 / norme2;
     if ( cosin >= 1 ) angle = 0.;
     else {
-      if ( cosin <= -1) angle = - Standard_PI;
+      if ( cosin <= -1) angle = - M_PI;
       else
 	angle = Sign ( ACos ( cosin ) , provec );
 	}

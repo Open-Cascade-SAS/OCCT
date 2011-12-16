@@ -32,7 +32,7 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
 
   case GeomAbs_Circle:
     Param=ElCLib::CircleParameter(ThePConic.Axis2(),P);
-    if(Param<0.0) { Param+=PI+PI; }
+    if(Param<0.0) { Param+=M_PI+M_PI; }
     break;
 
   case GeomAbs_Ellipse: {
@@ -40,7 +40,7 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
 			   ,ThePConic.Param1()
 			   ,ThePConic.Param2()
 			   ,P);
-    if (Param < 0.0) { Param+=PI+PI; }
+    if (Param < 0.0) { Param+=M_PI+M_PI; }
     break;
   }
 
@@ -84,7 +84,7 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
     
   case GeomAbs_Circle:
     Param=ElCLib::CircleParameter(ThePConic.Axis2(),P);
-    if(Param<0.0) { Param+=PI+PI; }
+    if(Param<0.0) { Param+=M_PI+M_PI; }
     break;
 
   case GeomAbs_Ellipse: {
@@ -92,7 +92,7 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
 			   ,ThePConic.Param1()
 			   ,ThePConic.Param2()
 			   ,P);
-    if (Param < 0.0) { Param+=PI+PI; }
+    if (Param < 0.0) { Param+=M_PI+M_PI; }
     break;
   }
 

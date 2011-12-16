@@ -746,9 +746,9 @@ void  ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD ) const
       gp_Cone Co = AS.Cone();
       Standard_Real rad = Co.RefRadius(), sang = Co.SemiAngle();
 //#ifndef DEB
-      Standard_Integer n = (Standard_Integer) (36.*ang/PI + 1);
+      Standard_Integer n = (Standard_Integer) (36.*ang/M_PI + 1);
 //#else
-//      Standard_Integer n = 36.*ang/PI + 1;
+//      Standard_Integer n = 36.*ang/M_PI + 1;
 //#endif
       if(n<2) n = 2;
       sec = new ChFiDS_SecHArray1(1, n);
@@ -2133,7 +2133,7 @@ void ChFi3d_ChBuilder::SetRegul()
   gp_Pnt p;
   gp_Vec n1,n2,du,dv;
   BRep_Builder B;
-  Standard_Real Seuil = PI/360.;
+  Standard_Real Seuil = M_PI/360.;
   Standard_Real Seuil2 = Seuil * Seuil;
   for (it.Initialize(myRegul); it.More(); it.Next()){
     const ChFiDS_Regul& reg = it.Value();

@@ -116,7 +116,7 @@ void  IGESDimen_ToolGeneralNote::ReadOwnParams
 		slantAngles->SetValue(i, slantAngle);
 	    }
           else
-              slantAngles->SetValue(i, PI/2);
+              slantAngles->SetValue(i, M_PI/2);
 
           //st = PR.ReadReal(PR.Current(), "Rotation Angle", rotationAngle); //szv#4:S4163:12Mar99 moved in if
 	  if (PR.ReadReal(PR.Current(), "Rotation Angle", rotationAngle))

@@ -122,7 +122,7 @@ void OpenGl_GraphicDriver::Text
   atext.Height    = float (AHeight);
   if (atext.Height < 0)
     atext.Height = DefaultTextHeight();
-  atext.Angle   = float (Standard_PI / 2.);
+  atext.Angle   = float (M_PI / 2.);
   atext.Path    = int (Graphic3d_TP_RIGHT);
   atext.HAlign    = int (Graphic3d_HTA_LEFT);
   atext.VAlign    = int (Graphic3d_VTA_BOTTOM);

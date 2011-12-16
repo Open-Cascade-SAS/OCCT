@@ -845,7 +845,7 @@ static
   case GeomAbs_Cylinder:
   case GeomAbs_Cone:
   case GeomAbs_Sphere:
-    pu1=PI+PI;
+    pu1=M_PI+M_PI;
     break;
   default:
     break;
@@ -854,7 +854,7 @@ static
   case GeomAbs_Cylinder:
   case GeomAbs_Cone:
   case GeomAbs_Sphere:
-    pu2=PI+PI;
+    pu2=M_PI+M_PI;
     break;
   default:
     break;
@@ -928,7 +928,7 @@ void RecadreMemePeriode(const IntSurf_Quadric aQuad1,
   bBothCylinders=(aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder);
   //
   while(anu1-u1 > 5.0) {
-    u1+=PI+PI;
+    u1+=M_PI+M_PI;
   }
   while(u1-anu1 > 5.0) { 
     //
@@ -942,28 +942,28 @@ void RecadreMemePeriode(const IntSurf_Quadric aQuad1,
       //
       // In any case the pb does not deal with apex problem. 
       //
-      if (u1-PI-PI<0.) {
+      if (u1-M_PI-M_PI<0.) {
 	break;
       }
     }
     */
     //
-    u1-=PI+PI;
+    u1-=M_PI+M_PI;
   }
   while(anu2-u2 > 5.0) { 
-    u2+=PI+PI;
+    u2+=M_PI+M_PI;
   }
   while(u2-anu2 > 5.0) {
     //
     /*
     if (!bBothCylinders) {//cfe900/H6
-      if (u2-PI-PI<0.) {
+      if (u2-M_PI-M_PI<0.) {
 	break;
       }
     }
     */
     //
-    u2-=PI+PI;
+    u2-=M_PI+M_PI;
   }
 }
 
@@ -1028,7 +1028,7 @@ Standard_Boolean IsApex(const IntSurf_Quadric& aQuadric,
   //
   // apex on the Sphere
   if(aType==GeomAbs_Sphere) {
-    aHalfPi=0.5*PI;
+    aHalfPi=0.5*M_PI;
     if (fabs(aVx-aHalfPi)<aEpsilon) {
       bFlag=!bFlag;
     }
@@ -1112,7 +1112,7 @@ void RefineParameters(const Handle(IntPatch_ALine)& aALine,
   //
   // apex on the Sphere
   if(aType==GeomAbs_Sphere) {
-    aHalfPi=0.5*PI;
+    aHalfPi=0.5*M_PI;
     //
     if (fabs(aVx-aHalfPi)<aEpsilon) {
       aLimV=aHalfPi;
@@ -1122,7 +1122,7 @@ void RefineParameters(const Handle(IntPatch_ALine)& aALine,
     }
     else {
       //Check: aUx must be 0 or 2*pi
-      if(fabs(aUx) < aEpsilon || fabs(aUx - 2.*PI) < aEpsilon) {
+      if(fabs(aUx) < aEpsilon || fabs(aUx - 2.*M_PI) < aEpsilon) {
 	//aUx = 0 or 2*pi, but may be it must be 2*pi or 0?
 	bFound=FindNearParameter(aALine, aTx, iDir, aTol3D, aT1);
 	if(!bFound) {
@@ -1136,8 +1136,8 @@ void RefineParameters(const Handle(IntPatch_ALine)& aALine,
 	aP1=aALine->Value(aT1);
 	aQuadric.Parameters(aP1, aU1, aV1);
 
-	if(fabs(aU1) > fabs(aU1 - 2.*PI)) {
-	  aUx = 2.*PI;
+	if(fabs(aU1) > fabs(aU1 - 2.*M_PI)) {
+	  aUx = 2.*M_PI;
 	}
 	else {
 	  aUx = 0.;

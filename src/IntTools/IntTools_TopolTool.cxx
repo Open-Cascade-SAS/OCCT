@@ -104,7 +104,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
     break;
   case GeomAbs_Cylinder: {
     Standard_Real aRadius = myS->Cylinder().Radius();
-    Standard_Real aMaxAngle = Standard_PI * 0.5;
+    Standard_Real aMaxAngle = M_PI * 0.5;
     Standard_Real aDeflection = 1.e-02;
 
     if(aRadius > aDeflection) {
@@ -133,7 +133,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
     if(aRadius < aCircle.Radius())
       aRadius = aCircle.Radius();
-    Standard_Real aMaxAngle = Standard_PI * 0.5;
+    Standard_Real aMaxAngle = M_PI * 0.5;
     Standard_Real aDeflection = 1.e-02;
 
     if(aRadius > aDeflection) {
@@ -177,7 +177,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
       aRadius1 = aSphere.Radius();
       aRadius2 = aSphere.Radius();
     }
-    Standard_Real aMaxAngle = Standard_PI * 0.5;
+    Standard_Real aMaxAngle = M_PI * 0.5;
     Standard_Real aDeflection = 1.e-02;
     
     if(aRadius1 > aDeflection) {
@@ -187,7 +187,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
     if(aMaxAngle > Precision::Angular()) {
       nbsu = Standard_Integer((usup - uinf) / aMaxAngle);
     }
-    aMaxAngle = Standard_PI * 0.5;
+    aMaxAngle = M_PI * 0.5;
 
     if(aRadius2 > aDeflection) {
       aMaxAngle = ACos(1. - aDeflection / aRadius2) * 2.;

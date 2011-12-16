@@ -242,17 +242,17 @@ void AIS_DiameterDimension::ComputeArcSelection(const Handle(SelectMgr_Selection
 
   Handle(SelectMgr_EntityOwner) own = new SelectMgr_EntityOwner(this,7);
   gp_Pnt theCenter = myCircle.Location();
-  while (lpara > 2*PI) {
-    fpara -= 2*PI;
-    lpara -= 2*PI;
+  while (lpara > 2*M_PI) {
+    fpara -= 2*M_PI;
+    lpara -= 2*M_PI;
   }
   Standard_Real parat = ElCLib::Parameter(myCircle,myPosition);
   Standard_Boolean otherside(Standard_False);
   gp_Pnt attpoint = myPosition;
 
   if (!AIS::InDomain(fpara,lpara,parat)) {
-    Standard_Real otherpar = parat + PI;
-    if (otherpar > 2*PI) otherpar -= 2*PI;
+    Standard_Real otherpar = parat + M_PI;
+    if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
     if (AIS::InDomain(fpara,lpara,otherpar)) {
       parat = otherpar;
       otherside = Standard_True;
@@ -530,7 +530,7 @@ void AIS_DiameterDimension::ComputeArcDiameter(
   myFirstPar = parfirst;
   myLastPar  = parend;
   if ( parfirst > parend) {
-    parfirst -= 2*PI;
+    parfirst -= 2*M_PI;
   }
   if (myAutomaticPosition) {
     Standard_Real pcurpos = (parfirst + parend)/2.;
@@ -667,7 +667,7 @@ void AIS_DiameterDimension::ComputeOnePlanarFaceDiameter(const Handle(Prs3d_Pres
       parfirst = ElCLib::Parameter(myCircle, ptfirst);
       parend   = ElCLib::Parameter(myCircle, ptend);
       if ( parfirst > parend) {
-	parfirst -= 2*PI;
+	parfirst -= 2*M_PI;
       }
       Standard_Real parcurPos = (parfirst + parend) * 0.5;
       curPos = ElCLib::Value(parcurPos, myCircle);

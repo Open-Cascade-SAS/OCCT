@@ -1476,8 +1476,8 @@ Standard_Boolean ShapeAnalysis_Wire::CheckLacking (const Standard_Integer num,
   myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
 
   if ( myMax2d < Precision::PConfusion() || //:abv 03.06.02 CTS21866.stp
-       ( v1.SquareMagnitude() > gp::Resolution() && Abs ( v12.Angle ( v1 ) ) > 0.9 * PI ) ||
-       ( v2.SquareMagnitude() > gp::Resolution() && Abs ( v12.Angle ( v2 ) ) > 0.9 * PI ) ) 
+       ( v1.SquareMagnitude() > gp::Resolution() && Abs ( v12.Angle ( v1 ) ) > 0.9 * M_PI ) ||
+       ( v2.SquareMagnitude() > gp::Resolution() && Abs ( v12.Angle ( v2 ) ) > 0.9 * M_PI ) ) 
        myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
   return Standard_True;
 }

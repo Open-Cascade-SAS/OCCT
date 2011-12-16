@@ -912,8 +912,8 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
     Ve *= -1;
   }
   angle = Ve.Angle(Dir);
-  if (angle > PI) angle = 2*PI - angle;
-  forward = (angle <= PI/2);
+  if (angle > M_PI) angle = 2*M_PI - angle;
+  forward = (angle <= M_PI/2);
 
   // Reconstruction
   MakeWire( Edges, rangdeb, forward, W);

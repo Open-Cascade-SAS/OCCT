@@ -300,7 +300,7 @@ static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
      }
   }
   if(myHS1IsUPeriodic) {
-    lmf = PI+PI; //-- myHS1->UPeriod();
+    lmf = M_PI+M_PI; //-- myHS1->UPeriod();
     f = myHS1->FirstUParameter();
     l = myHS1->LastUParameter();
     fpls2=0.5*(f+l);
@@ -309,7 +309,7 @@ static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
     
   }
   if(myHS1IsVPeriodic) {
-    lmf = PI+PI; //-- myHS1->VPeriod(); 
+    lmf = M_PI+M_PI; //-- myHS1->VPeriod(); 
     f = myHS1->FirstVParameter();
     l = myHS1->LastVParameter();
     fpls2=0.5*(f+l);
@@ -319,7 +319,7 @@ static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
     //--    while(v1 > l) { v1-=lmf; }
   }
   if(myHS2IsUPeriodic) { 
-    lmf = PI+PI; //-- myHS2->UPeriod();
+    lmf = M_PI+M_PI; //-- myHS2->UPeriod();
     f = myHS2->FirstUParameter();
     l = myHS2->LastUParameter();
     fpls2=0.5*(f+l);
@@ -329,7 +329,7 @@ static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
     //-- while(u2 > l) { u2-=lmf; }
   }
   if(myHS2IsVPeriodic) { 
-    lmf = PI+PI; //-- myHS2->VPeriod();
+    lmf = M_PI+M_PI; //-- myHS2->VPeriod();
     f = myHS2->FirstVParameter();
     l = myHS2->LastVParameter();
     fpls2=0.5*(f+l);
@@ -957,8 +957,8 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
       {
 	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Circle(),Psurf);
 	if ((para <= upper && para >= lower) ||
-	    (para + 2.*PI <=upper && para + 2.*PI >= lower) ||
-	    (para - 2.*PI <=upper && para - 2.*PI >= lower)) {
+	    (para + 2.*M_PI <=upper && para + 2.*M_PI >= lower) ||
+	    (para - 2.*M_PI <=upper && para - 2.*M_PI >= lower)) {
 	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Circle());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {
@@ -973,8 +973,8 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
       {
 	para = ElCLib::Parameter((*((Handle(IntPatch_GLine)*)&lin))->Ellipse(),Psurf);
 	if ((para <= upper && para >= lower) ||
-	    (para + 2.*PI <=upper && para + 2.*PI >= lower) ||
-	    (para - 2.*PI <=upper && para - 2.*PI >= lower)) {
+	    (para + 2.*M_PI <=upper && para + 2.*M_PI >= lower) ||
+	    (para - 2.*M_PI <=upper && para - 2.*M_PI >= lower)) {
 	  pt = ElCLib::Value(para,(*((Handle(IntPatch_GLine)*)&lin))->Ellipse());
 	  dist = Psurf.Distance(pt);
 	  if (dist< distmin) {

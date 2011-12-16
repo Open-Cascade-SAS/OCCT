@@ -347,20 +347,20 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   switch (Parameterisation) {
   case Convert_TgtThetaOver2: 
     num_spans =
-      (Standard_Integer)IntegerPart( 1.2 * delta / PI) + 1;
+      (Standard_Integer)IntegerPart( 1.2 * delta / M_PI) + 1;
     
     tgt_theta_flag = 1 ;
     break ;
   case Convert_TgtThetaOver2_1:
     num_spans = 1 ;
-    if (delta > 0.9999 * PI) {
+    if (delta > 0.9999 * M_PI) {
       Standard_ConstructionError::Raise() ; 
       }
     tgt_theta_flag = 1 ;
     break ;
   case Convert_TgtThetaOver2_2:
     num_spans = 2 ;
-    if (delta > 1.9999 * PI) {
+    if (delta > 1.9999 * M_PI) {
       Standard_ConstructionError::Raise() ;
       }
     tgt_theta_flag = 1 ;
@@ -490,7 +490,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
       alpha_2 = alpha * 0.5e0 ;
       p_param = - 1.0e0 / (alpha_2 * alpha_2) ;
      
-      if (alpha_2 <  PI * 0.5e0) {
+      if (alpha_2 <  M_PI * 0.5e0) {
 	tan_alpha_2 = Tan(alpha_2) ;
 	value1 = 3.0e0 * (tan_alpha_2 - alpha_2) ;
         value1 = alpha_2 / value1 ;
@@ -624,7 +624,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   if (Parameterisation == Convert_TgtThetaOver2) {
     BuildCosAndSin(Convert_TgtThetaOver2_3,
 		   0.0e0,
-		   2 * PI,
+		   2 * M_PI,
 		   temp_cos_ptr,
 		   temp_sin_ptr,
 		   temp_denominator_ptr,
@@ -649,7 +649,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   else if (Parameterisation == Convert_RationalC1) 
     {
      first_param = 0.0e0 ;
-     last_param  = PI ;
+     last_param  = M_PI ;
      BuildCosAndSin(Convert_RationalC1,
 		   first_param,
 		   last_param,
@@ -675,7 +675,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
      DenominatorPtr = 
       new TColStd_HArray1OfReal(1,num_periodic_poles) ;
     
-     half_pi = PI * 0.5e0 ;
+     half_pi = M_PI * 0.5e0 ;
      index = 1 ;
      for (jj = 1 ; jj <= 2 ; jj++) {
 	 flat_knots(index) = -  half_pi  ;
@@ -690,7 +690,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
        }
      }
      for (jj = 1 ; jj <= 2 ; jj++) {
-	 flat_knots(index) = 2 * PI +  half_pi  ;
+	 flat_knots(index) = 2 * M_PI +  half_pi  ;
          index += 1 ;
        }
      KnotsPtr = 
@@ -712,9 +712,9 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
      inverse = 1.0e0 ;
      for (ii = parameters.Lower() ; ii <= parameters.Upper() ; ii++) {
        param = parameters(ii) ;
-       if (param > PI) {
+       if (param > M_PI) {
 	 inverse = -1.0e0 ;
-         param -= PI ;
+         param -= M_PI ;
        }
        BSplCLib::D0(param,
 		    0,

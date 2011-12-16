@@ -93,28 +93,28 @@ static void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
     }
   }
   if(myHS1IsUPeriodic) {
-    const Standard_Real lmf = PI+PI; //-- myHS1->UPeriod();
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS1->UPeriod();
     const Standard_Real f = myHS1->FirstUParameter();
     const Standard_Real l = myHS1->LastUParameter();
     while(u1 < f) { u1+=lmf; } 
     while(u1 > l) { u1-=lmf; }
   }
   if(myHS1IsVPeriodic) {
-    const Standard_Real lmf = PI+PI; //-- myHS1->VPeriod(); 
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS1->VPeriod(); 
     const Standard_Real f = myHS1->FirstVParameter();
     const Standard_Real l = myHS1->LastVParameter();
     while(v1 < f) { v1+=lmf; } 
     while(v1 > l) { v1-=lmf; }
   }
   if(myHS2IsUPeriodic) { 
-    const Standard_Real lmf = PI+PI; //-- myHS2->UPeriod();
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS2->UPeriod();
     const Standard_Real f = myHS2->FirstUParameter();
     const Standard_Real l = myHS2->LastUParameter();
     while(u2 < f) { u2+=lmf; } 
     while(u2 > l) { u2-=lmf; }
   }
   if(myHS2IsVPeriodic) { 
-    const Standard_Real lmf = PI+PI; //-- myHS2->VPeriod();
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS2->VPeriod();
     const Standard_Real f = myHS2->FirstVParameter();
     const Standard_Real l = myHS2->LastVParameter();
     while(v2 < f) { v2+=lmf; } 
@@ -340,12 +340,12 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     if(typl == IntPatch_Circle || typl == IntPatch_Ellipse)
     { 
       firstp = GeomInt_LineTool::Vertex(L,nbvtx).ParameterOnLine();
-      lastp  = PI + PI + GeomInt_LineTool::Vertex(L,1).ParameterOnLine();
+      lastp  = M_PI + M_PI + GeomInt_LineTool::Vertex(L,1).ParameterOnLine();
       const Standard_Real cadrinf = GeomInt_LineTool::FirstParameter(L);
       const Standard_Real cadrsup = GeomInt_LineTool::LastParameter(L);
       Standard_Real acadr = (firstp+lastp)*0.5;
-      while(acadr < cadrinf) { acadr+=PI+PI; }
-      while(acadr > cadrsup) { acadr-=PI+PI; } 
+      while(acadr < cadrinf) { acadr+=M_PI+M_PI; }
+      while(acadr > cadrsup) { acadr-=M_PI+M_PI; } 
       if(acadr>=cadrinf && acadr<=cadrsup)
       { 
 	if(Abs(firstp-lastp)>Precision::PConfusion())
@@ -747,7 +747,7 @@ void IntTools_LineConstructor::PeriodicLine (const Handle(IntPatch_Line)& L) con
       }
     }
     if (changevtx) {
-      thevtx.SetParameter(prm + 2.*PI);
+      thevtx.SetParameter(prm + 2.*M_PI);
       glin->Replace(i,thevtx);
     }
   }

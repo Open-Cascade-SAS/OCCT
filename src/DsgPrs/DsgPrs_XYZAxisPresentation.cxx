@@ -43,7 +43,7 @@ void DsgPrs_XYZAxisPresentation::Add(
  
  G->SetPrimitivesAspect(aLineAspect->Aspect());
  G->Polyline(A);
- Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),aDir,PI/180.*10.,aVal/10.);
+ Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),aDir,M_PI/180.*10.,aVal/10.);
  Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,A(2),1./81.);
 
 }
@@ -79,7 +79,7 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   G->SetPrimitivesAspect(aLineAspect->Aspect());
   G->Polyline(A);
   G->SetPrimitivesAspect( anArrowAspect->Aspect() );
-  Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),aDir,PI/180.*10.,aVal/10.);
+  Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),aDir,M_PI/180.*10.,aVal/10.);
   G->SetPrimitivesAspect(aTextAspect->Aspect());
   Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,A(2),1./81.);
 #endif

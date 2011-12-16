@@ -558,7 +558,7 @@ void GeomFill_GuideTrihedronPlan::SetInterval(const Standard_Real First,
       (myGuide->GetType() == GeomAbs_Line)) {
     Standard_Real Angle;
     Angle = myCurve->Line().Angle(myGuide->Line());
-    if ((Angle<1.e-12) || ((2*PI-Angle)<1.e-12) )
+    if ((Angle<1.e-12) || ((2*M_PI-Angle)<1.e-12) )
       return Standard_True;
   }
 

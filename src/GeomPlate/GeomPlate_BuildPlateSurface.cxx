@@ -752,8 +752,8 @@ EcartContraintesMil  ( const Standard_Integer c,
 	    d->ChangeValue(i) = Pf.Distance(Pi);
 	    v3i = v1i^v2i; v3f=v1f^v2f;
 	    Standard_Real angle=v3f.Angle(v3i);
-	    if (angle>(PI/2))
-	      an->ChangeValue(i) = PI -angle;
+	    if (angle>(M_PI/2))
+	      an->ChangeValue(i) = M_PI -angle;
 	    else
 	      an->ChangeValue(i) = angle;
 	    courb->Init(0);
@@ -1791,8 +1791,8 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			  myLinCont->Value(j)->D2( int2d.ParamOnSecond(), P2, v21, v22, v23, v24, v25 ); 
 			  v16=v11^v12;v26=v21^v22;
 			  Standard_Real ant=v16.Angle(v26);	 
-			  if (ant>(PI/2))
-			    ant= PI -ant;
+			  if (ant>(M_PI/2))
+			    ant= M_PI -ant;
 			  if ((Abs(v16*v15-v16*v25)>(myTol3d/1000))
 			      ||(Abs(ant)>myTol3d/1000))  
 			    // Pas compatible ==> on enleve une zone en 
@@ -1806,12 +1806,12 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			      myLinCont->Value(i)->Curve2dOnSurf()->D1( int2d.ParamOnFirst(), P1, V1);
 			      myLinCont->Value(j)->Curve2dOnSurf()->D1( int2d.ParamOnSecond(), P2, V2);
 			      A1 = V1.Angle(V2);
-			      if (A1>(PI/2))
-				A1= PI - A1;
-			      if (Abs(Abs(A1)-PI)<myTolAng) Tol = 100000 * myTol3d;
+			      if (A1>(M_PI/2))
+				A1= M_PI - A1;
+			      if (Abs(Abs(A1)-M_PI)<myTolAng) Tol = 100000 * myTol3d;
 #if PLATE_DEB
 			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
-				<<" "<<Abs(Abs(A1)-PI)<<endl;
+				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
 #endif
 			      
 			      coin = Ci.Resolution(Tol);
@@ -1847,7 +1847,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			    }
 			  N = vecU ^ vecV;
 			  Standard_Real Angle = vec.Angle( N );
-			  Angle = Abs( PI/2-Angle ); 
+			  Angle = Abs( M_PI/2-Angle ); 
 			  if (Angle > myTolAng/10.) //????????? //if (Abs( scal ) > myTol3d/100)
 			    { // Pas compatible ==> on enleve une zone en 
 			      // contrainte G0 et G1 correspondant
@@ -1860,12 +1860,12 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			      myLinCont->Value(i)->Curve2dOnSurf()->D1( int2d.ParamOnFirst(), P1, V1);
 			      myLinCont->Value(j)->Curve2dOnSurf()->D1( int2d.ParamOnSecond(), P2, V2);
 			      A1 = V1.Angle( V2 );
-			      if (A1 > PI/2)
-				A1= PI - A1;
-			      if (Abs(Abs(A1) - PI) < myTolAng) Tol = 100000 * myTol3d;
+			      if (A1 > M_PI/2)
+				A1= M_PI - A1;
+			      if (Abs(Abs(A1) - M_PI) < myTolAng) Tol = 100000 * myTol3d;
 #if PLATE_DEB
 			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
-				<<" "<<Abs(Abs(A1)-PI)<<endl;
+				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
 #endif
 			      if (myLinCont->Value(i)->Order() == 1)
 				{
@@ -1998,7 +1998,7 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
         
       tabP2d(Nbint+1).SetX(Length2d);
       for (ii = 2;  ii<= Nbint; ii++) {
-	U = Uinit + (Ufinal-Uinit)*((1-Cos((ii-1)*PI/(Nbint)))/2);
+	U = Uinit + (Ufinal-Uinit)*((1-Cos((ii-1)*M_PI/(Nbint)))/2);
 	tabP2d(ii).SetY(U);
 /*        if (!HC2d.IsNull()) {
              Standard_Real L = GCPnts_AbscissaPoint::Length(HC2d->Curve2d(), Uinit, U);
@@ -2024,15 +2024,15 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
     for (Standard_Integer j=1; j<=NbPnt_i; j++)  
       { // repartition des points en cosinus selon l'ACR 2d
         // Afin d'eviter les points d'acumulation dans le 2d
-	//Inter=Uinit+(Uif)*((-cos(PI*((j-1)/(NbPnt_i-1)))+1)/2);
+	//Inter=Uinit+(Uif)*((-cos(M_PI*((j-1)/(NbPnt_i-1)))+1)/2);
 	if (j==NbPnt_i)
 	  Inter=Ufinal;//pour parer au bug sur sun
 	else if (ACR) {
-          CurLength = Length2d*(1-Cos((j-1)*PI/(NbPnt_i-1)))/2;
+          CurLength = Length2d*(1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2;
 	  Inter =  acrlaw->Value(CurLength);
 	}
 	else {
-	  Inter=Uinit+(Ufinal-Uinit)*((1-Cos((j-1)*PI/(NbPnt_i-1)))/2);
+	  Inter=Uinit+(Ufinal-Uinit)*((1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2);
 	}
 	myParCont->ChangeValue(i).Append(Inter);// on ajoute le point
 	if (NbPtInter!=0) 
@@ -2509,8 +2509,8 @@ void GeomPlate_BuildPlateSurface::
 	  Dist = Pf.Distance(Pi);
 	  v3i = v1i^v2i; v3f=v1f^v2f;
 	  Ang=v3f.Angle(v3i);
-	  if (Ang>(PI/2))
-	    Ang = PI -Ang;
+	  if (Ang>(M_PI/2))
+	    Ang = M_PI -Ang;
 	  break;
 	case 2 :
 	  Handle(Geom_Surface) Splate;

@@ -57,7 +57,7 @@ class ExtremaExtElC_TrigonometricRoots {
     Standard_Real PIpPI, aEps;
     //
     aEps=RealEpsilon();
-    PIpPI=Standard_PI+Standard_PI;
+    PIpPI = M_PI + M_PI;
     for(Standard_Integer i=0 ; i<NbRoots; i++) {
       if(Abs(u - Roots[i])<=aEps) {
 	return Standard_True ;
@@ -127,7 +127,7 @@ ExtremaExtElC_TrigonometricRoots::
 	Standard_Integer j, SvNbRoots;
 	Standard_Real aTwoPI, aMaxCoef, aPrecision;
 	//
-	aTwoPI=PI+PI;
+	aTwoPI=M_PI+M_PI;
 	NbRoots=MTFR.NbSolutions();
 	for(i=0;i<NbRoots;++i) {
 	  Roots[i]=MTFR.Value(i+1);
@@ -410,7 +410,7 @@ Method:
     A4 = 0.;
   }
   //
-  ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,PI+PI);
+  ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,M_PI+M_PI);
   if (!Sol.IsDone()) { 
     return; 
   }
@@ -520,7 +520,7 @@ Method:
   if(fabs(A4) <= aEps) A4 = 0.;
   //modified by NIZNHY-PKV Thu Feb 03 14:51:08 2011t
   //
-  ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,PI+PI);
+  ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,M_PI+M_PI);
   if (!Sol.IsDone()) { return; }
 
 // Storage of solutions ...

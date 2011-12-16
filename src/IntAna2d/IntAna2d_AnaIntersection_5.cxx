@@ -35,7 +35,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle,
    ps  = 2.0*E*radius;                                 // SIN
    pcte= F + pss;                                      // 1
 
-   math_TrigonometricFunctionRoots Sol(pcc,p2sc,pc,ps,pcte,0.0,2.0*PI);
+   math_TrigonometricFunctionRoots Sol(pcc,p2sc,pc,ps,pcte,0.0,2.0*M_PI);
 
    if(!Sol.IsDone()) {
      cout << "\n\nmath_TrigonometricFunctionRoots -> NotDone\n\n"<<endl;
@@ -55,7 +55,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle,
        ty= radius*Sin(S); 
        Coord_Ancien_Repere(tx,ty,Axe_rep);
        if(!CIsDirect) 
-	 S = PI+PI-S;
+	 S = M_PI+M_PI-S;
        lpnt[i-1].SetValue(tx,ty,S);
      }        
      Traitement_Points_Confondus(nbp,lpnt);

@@ -62,12 +62,12 @@ Standard_Boolean StepToGeom_MakeTrimmedCurve2d::Convert (const Handle(StepGeom_T
     }
     else if (BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Circle)) ||
              BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Ellipse))) {
-//      if (u1 > 2.1*PI || u2 > 2.1*PI) fact = PI / 180.;
+//      if (u1 > 2.1*M_PI || u2 > 2.1*M_PI) fact = M_PI / 180.;
       fact = UnitsMethods::PlaneAngleFactor();
       //:p3 abv 23 Feb 99: shift on pi/2 on ellipse with R1 < R2
       const Handle(StepGeom_Ellipse) ellipse = Handle(StepGeom_Ellipse)::DownCast(BasisCurve);
       if ( !ellipse.IsNull() && ellipse->SemiAxis1() - ellipse->SemiAxis2() < 0. )
-        shift = 0.5 * PI;
+        shift = 0.5 * M_PI;
     }
     else if (BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Parabola)) ||
              BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Hyperbola))) {

@@ -1601,7 +1601,7 @@ Standard_Integer CutEdge (const TopoDS_Edge& E,
   //if (E.Orientation() == TopAbs_REVERSED) CT2d->Reverse();
 
   if (CT2d->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Circle)) &&
-      ( Abs(f-l) >= PI) ) {
+      ( Abs(f-l) >= M_PI) ) {
     return 0;
     //---------------------------
     // Cut closed circle.
@@ -1844,7 +1844,7 @@ void MakeOffset (const TopoDS_Edge&        E,
       Adaptor3d_OffsetCurve   Off(AHC,-anOffset);
       Handle(Geom2d_Circle) CC = new Geom2d_Circle(Off.Circle());      
 
-      Standard_Real Delta = 2*PI - l + f;
+      Standard_Real Delta = 2*M_PI - l + f;
       f -= 0.2*Delta; l += 0.2*Delta;
 
       G2dOC = new Geom2d_TrimmedCurve(CC,f,l);

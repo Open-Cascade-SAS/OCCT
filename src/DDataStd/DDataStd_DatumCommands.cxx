@@ -192,7 +192,7 @@ static Standard_Integer DDataStd_SetPlane (Draw_Interpretor& di,
 //       Standard_Real ang = atof(arg[9]);
 //       T.SetRotation(gp_Ax1(gp_Pnt(x,y,z),
 //                         gp_Vec(dx,dy,dz)),
-//                  ang * PI180);
+//                  ang * (M_PI / 180.0));
 //     }
 //     Loc = T;
 //   }

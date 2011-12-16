@@ -82,8 +82,8 @@ void Select3D_SensitiveSegment
   else {
     gp_Vec2d MyVec(myprojstart,myprojend);//,VAxx(gp_Dir2d(0.,1.));
     Standard_Real theangle = Abs(gp_Dir2d(0.,1.).Angle(gp_Vec2d(myprojstart,myprojend)));
-    if(theangle>=PI/2.) theangle-=PI/2;
-    if(theangle>=PI/12. && theangle <=5*PI/12.)
+    if(theangle>=M_PI/2.) theangle-=M_PI/2;
+    if(theangle>=M_PI/12. && theangle <=5*M_PI/12.)
       {
 	TColgp_Array1OfPnt2d BoxPoint (1,mymaxrect+1);
 	BoxPoint (1) = myprojstart;

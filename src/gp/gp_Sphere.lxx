@@ -22,7 +22,7 @@ inline void gp_Sphere::SetRadius (const Standard_Real R)
 }
 
 inline Standard_Real gp_Sphere::Area () const
-{ return 4.0 * Standard_PI * radius * radius; }
+{ return 4.0 * M_PI * radius * radius; }
 
 inline void gp_Sphere::UReverse()
 { pos.YReverse(); }
@@ -43,7 +43,7 @@ inline Standard_Real gp_Sphere::Radius () const
 { return radius; }
 
 inline Standard_Real gp_Sphere::Volume () const
-{ return (4.0 * Standard_PI * radius * radius * radius) / 3.0; }
+{ return (4.0 * M_PI * radius * radius * radius) / 3.0; }
 
 inline gp_Ax1 gp_Sphere::XAxis () const
 { return gp_Ax1(pos.Location(), pos.XDirection()); }

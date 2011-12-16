@@ -584,7 +584,7 @@ Standard_Integer Poly_MakeLoops3D::chooseLeftWay
                     const Standard_Integer theSegIndex,
                     const NCollection_List<Standard_Integer>& theLstIndS) const
 {
-  Standard_Real aAngleMin = ::PI * 2;
+  Standard_Real aAngleMin = M_PI * 2;
   gp_Dir aNormal;
   const Helper* aHelper = getHelper();
   if (!aHelper->GetNormal (theNode, aNormal))
@@ -623,8 +623,8 @@ Standard_Integer Poly_MakeLoops3D::chooseLeftWay
     aTgt = aTgtXYZ;
 
     Standard_Real aAngle = aTgt.AngleWithRef(aTgtRef, aNormal);
-    if (aAngle < 1e-4 - ::PI)
-      aAngle = ::PI;
+    if (aAngle < 1e-4 - M_PI)
+      aAngle = M_PI;
     if (aAngle < aAngleMin)
     {
       aAngleMin = aAngle;
@@ -657,7 +657,7 @@ Standard_Integer Poly_MakeLoops2D::chooseLeftWay
                     const Standard_Integer theSegIndex,
                     const NCollection_List<Standard_Integer>& theLstIndS) const
 {
-  Standard_Real aAngleMin = ::PI * 2;
+  Standard_Real aAngleMin = M_PI * 2;
   const Helper* aHelper = getHelper();
   Link aLink = getLink(theSegIndex);
   gp_Dir2d aTgtRef;
@@ -682,8 +682,8 @@ Standard_Integer Poly_MakeLoops2D::chooseLeftWay
     Standard_Real aAngle = aTgt.Angle(aTgtRef);
     if (myRightWay)
       aAngle = -aAngle;
-    if (aAngle < 1e-4 - ::PI)
-      aAngle = ::PI;
+    if (aAngle < 1e-4 - M_PI)
+      aAngle = M_PI;
     if (aAngle < aAngleMin)
     {
       aAngleMin = aAngle;

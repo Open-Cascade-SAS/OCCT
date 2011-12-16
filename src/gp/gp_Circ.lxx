@@ -30,13 +30,13 @@ inline void gp_Circ::SetRadius (const Standard_Real R)
 }
 
 inline   Standard_Real gp_Circ::Area() const
-{ return Standard_PI*radius*radius; }
+{ return M_PI * radius * radius; }
 
 inline const gp_Ax1& gp_Circ::Axis () const
 { return pos.Axis(); }
 
 inline   Standard_Real gp_Circ::Length() const
-{ return 2.*Standard_PI*radius; }
+{ return 2. * M_PI * radius; }
 
 inline const gp_Pnt& gp_Circ::Location () const
 { return pos.Location(); }

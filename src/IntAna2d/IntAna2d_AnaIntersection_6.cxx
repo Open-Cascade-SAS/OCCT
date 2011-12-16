@@ -36,7 +36,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips,
   ps= 2.0*E*minor_radius;                             // SIN
   pcte=F+pss;                                         // 1
   
-  math_TrigonometricFunctionRoots Sol(pcc,p2sc,pc,ps,pcte,0.0,2.0*PI);
+  math_TrigonometricFunctionRoots Sol(pcc,p2sc,pc,ps,pcte,0.0,2.0*M_PI);
 
   if (!Sol.IsDone()) {
     done=Standard_False;
@@ -55,7 +55,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips,
       ty=minor_radius*Sin(S);
       Coord_Ancien_Repere(tx,ty,Axe_rep);
       if(!EIsDirect) 
-	S = PI+PI-S;
+	S = M_PI+M_PI-S;
       lpnt[i-1].SetValue(tx,ty,S);
     }
     Traitement_Points_Confondus(nbp,lpnt);

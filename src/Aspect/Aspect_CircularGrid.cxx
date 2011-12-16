@@ -71,7 +71,7 @@ void Aspect_CircularGrid::Compute(const Quantity_Length X,
   Standard_Real cosinus = (X-xo)/d;
   Standard_Real a = ACos(cosinus);
   Standard_Real ra = RotationAngle();
-  if ( Y < yo ) a = 2*Standard_PI - a;
+  if ( Y < yo ) a = 2 * M_PI - a;
 #ifdef OCC192_193
   n = (Standard_Integer ) ((a-ra)/myAlpha + Sign(0.5, a-ra)) ;
 #else
@@ -149,6 +149,6 @@ return myDivisionNumber;
 }
 
 void Aspect_CircularGrid::Init () {
-  myAlpha = Standard_PI /Standard_Real(myDivisionNumber);
+  myAlpha = M_PI / Standard_Real(myDivisionNumber);
   myA1 = Cos(myAlpha); myB1=Sin(myAlpha);
 }

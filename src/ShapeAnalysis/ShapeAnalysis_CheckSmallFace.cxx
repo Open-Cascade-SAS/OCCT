@@ -918,7 +918,7 @@ Standard_Boolean  ShapeAnalysis_CheckSmallFace::CheckTwisted (const TopoDS_Face&
 	}
 //       cout << "angle1 "   << angle1<< endl;
 //       cout << "angle2 "   << angle2<< endl;
-      if ((angle1<=0.001 && angle2<=0.01) || ((PI-angle2)<= 0.001 && (PI-angle2)<= 0.01)) return Standard_True;
+      if ((angle1<=0.001 && angle2<=0.01) || ((M_PI-angle2)<= 0.001 && (M_PI-angle2)<= 0.01)) return Standard_True;
       else return Standard_False;
     } 
     

@@ -57,7 +57,7 @@ void LocOpe_CurveShapeIntersector::Init(const gp_Circ& C,
   Standard_Real Tol = Precision::Confusion();
 
   Handle(Geom_Circle) GC = new Geom_Circle(C);
-  GeomAdaptor_Curve AC(GC,0.,2.*PI);
+  GeomAdaptor_Curve AC(GC,0.,2.*M_PI);
 
   BRepIntCurveSurface_Inter theInt;
   theInt.Init(S,AC,Tol);

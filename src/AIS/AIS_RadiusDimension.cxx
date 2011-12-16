@@ -232,10 +232,10 @@ void AIS_RadiusDimension::InitFirstShape()
 
   myCenter = myCircle.Location();
   myCircle.SetRadius(myVal);
-  while (myFirstPar > 2*PI) myFirstPar -= 2*PI;
-  while (myFirstPar < 0.0 ) myFirstPar += 2*PI;
-  while (myLastPar  > 2*PI) myLastPar  -= 2*PI;
-  while (myLastPar  < 0.0 ) myLastPar  += 2*PI;
+  while (myFirstPar > 2*M_PI) myFirstPar -= 2*M_PI;
+  while (myFirstPar < 0.0 ) myFirstPar += 2*M_PI;
+  while (myLastPar  > 2*M_PI) myLastPar  -= 2*M_PI;
+  while (myLastPar  < 0.0 ) myLastPar  += 2*M_PI;
   myPlane = new Geom_Plane(gp_Pln(gp_Ax3(myCircle.Position())));
   myFirstLine = gce_MakeLin( myCenter, ElCLib::Value( myFirstPar, myCircle ) );
   myLastLine  = gce_MakeLin( myCenter, ElCLib::Value( myLastPar, myCircle ) );
@@ -359,18 +359,18 @@ void AIS_RadiusDimension::ComputeRadius( const Handle( Prs3d_Presentation )& aPr
        Standard_Real PosPar = ElCLib::Parameter( myCircle, myPosition );
        if (!AIS::InDomain(myFirstPar, myLastPar, PosPar))
 	 { // not in domain
-	   Standard_Real otherpar = PosPar + PI;
-	   if (otherpar > 2*PI) otherpar -= 2*PI;
+	   Standard_Real otherpar = PosPar + M_PI;
+	   if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
 	   if (AIS::InDomain(myFirstPar, myLastPar, otherpar)){
 	     PosPar = otherpar;// parameter on circle
 	     myEndOfArrow = ElCLib::Value( PosPar, myCircle );
 	   }
 	   else {
 	     Standard_Real Teta1 = Abs( PosPar - myFirstPar ), Teta2 = Abs( PosPar - myLastPar );
-	     if (Teta1 > PI)
-	       Teta1 = 2.0*PI - Teta1; 
-	     if (Teta2 > PI)
-	       Teta2 = 2.0*PI - Teta2; 
+	     if (Teta1 > M_PI)
+	       Teta1 = 2.0*M_PI - Teta1; 
+	     if (Teta2 > M_PI)
+	       Teta2 = 2.0*M_PI - Teta2; 
 	     if (Teta1 < Teta2) 
 	       {
 		 if(myFirstLine.Contains(myPosition,Precision::Confusion()))

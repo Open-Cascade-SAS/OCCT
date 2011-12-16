@@ -382,24 +382,24 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge (const TopoDS_Edge&
       //#30 rln 19.10.98 transformation of pcurves for IGES Surface of Revolution
       Curve2d->Mirror (gp_Ax2d (gp::Origin2d(), gp_Dir2d (1.,1.)));
       Curve2d->Mirror (gp::OX2d());
-      Curve2d->Translate (gp_Vec2d (0, 2 * PI));
+      Curve2d->Translate (gp_Vec2d (0, 2 * M_PI));
     }
     
     if(Surf->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))||
        (Surf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))){
       Curve2d->Mirror (gp_Ax2d (gp::Origin2d(), gp_Dir2d (1.,1.)));
       Curve2d->Mirror (gp::OX2d());
-      Curve2d->Translate (gp_Vec2d (0, 2 * PI));
+      Curve2d->Translate (gp_Vec2d (0, 2 * M_PI));
     }
     
     if (analyticMode&&(Surf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)) ||
 		       Surf->IsKind(STANDARD_TYPE(Geom_ConicalSurface))))
-      myLen = PI/180.;
+      myLen = M_PI/180.;
     
     if (analyticMode&&(Surf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||
 		       Surf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))) {
       gp_Trsf2d trans;
-      trans.SetScale(gp_Pnt2d(0,0),180./PI);
+      trans.SetScale(gp_Pnt2d(0,0),180./M_PI);
       Curve2d->Transform(trans);
       First = Curve2d->TransformedParameter(First,trans);
       Last  = Curve2d->TransformedParameter(Last, trans);

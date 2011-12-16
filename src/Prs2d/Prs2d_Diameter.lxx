@@ -16,7 +16,7 @@ inline void Prs2d_Diameter::CalcTxtPos(const Standard_Boolean theFromAbs) {
   theVec.Normalized();
   
   theVecI = theVec.Reversed()*myTextPosH/theDist;
-  theVecJ = theVec.Reversed().Rotated(PI/2)*myTextPosV/theDist;
+  theVecJ = theVec.Reversed().Rotated(M_PI/2)*myTextPosV/theDist;
   
   theVec.Rotate(-myTextAngle);
   
@@ -29,14 +29,14 @@ inline void Prs2d_Diameter::CalcTxtPos(const Standard_Boolean theFromAbs) {
   gp_Pnt2d pntText;
   
   
-  if ( theTxtAngle >= 0 && theTxtAngle <= PI/2 )
+  if ( theTxtAngle >= 0 && theTxtAngle <= M_PI/2 )
         pntText = thePnt2.Translated(theVec/theDist);
-  else if ( theTxtAngle > PI/2 && theTxtAngle <= PI ) {
+  else if ( theTxtAngle > M_PI/2 && theTxtAngle <= M_PI ) {
         pntText = thePnt1.Translated(theVec.Reversed()/theDist) ;
 	theTxtAngle = VX.Angle( theVec.Reversed() );
-  } else if ( theTxtAngle >= -PI/2 && theTxtAngle < 0 )  
+  } else if ( theTxtAngle >= -M_PI/2 && theTxtAngle < 0 )  
         pntText = thePnt2.Translated(theVec/theDist);
-  else if ( theTxtAngle >= -PI && theTxtAngle < -PI/2 ) {
+  else if ( theTxtAngle >= -M_PI && theTxtAngle < -M_PI/2 ) {
         pntText = thePnt1.Translated(theVec.Reversed()/theDist);
         theTxtAngle = VX.Angle( theVec.Reversed() );
   }

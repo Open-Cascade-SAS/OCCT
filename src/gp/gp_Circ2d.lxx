@@ -38,7 +38,7 @@ inline void gp_Circ2d::SetRadius (const Standard_Real Radius)
 }
 
 inline   Standard_Real gp_Circ2d::Area() const
-{ return Standard_PI*radius*radius; }
+{ return M_PI * radius * radius; }
 
 inline void gp_Circ2d::Coefficients (Standard_Real& A,
 				     Standard_Real& B,
@@ -80,7 +80,7 @@ inline Standard_Real gp_Circ2d::SquareDistance (const gp_Pnt2d& P) const
 }
 
 inline   Standard_Real gp_Circ2d::Length() const
-{ return 2.*Standard_PI*radius; }
+{ return 2. * M_PI * radius; }
 
 inline const gp_Pnt2d& gp_Circ2d::Location () const
 {return pos.Location(); }

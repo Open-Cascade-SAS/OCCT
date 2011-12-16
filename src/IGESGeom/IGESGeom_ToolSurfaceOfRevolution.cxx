@@ -139,7 +139,7 @@ void IGESGeom_ToolSurfaceOfRevolution::OwnCheck
    const Interface_ShareTool& , Handle(Interface_Check)& /*ach*/)  const
 {
 //  Standard_Real diffang = ent->EndAngle() - ent->StartAngle();
-//  if (diffang <= 0.0 || diffang > 2.0 * PI)
+//  if (diffang <= 0.0 || diffang > 2.0 * M_PI)
 //    ach.AddFail("0 < TA - SA <=  2Pi is not satisfied");
 }
 

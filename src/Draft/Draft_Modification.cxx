@@ -409,7 +409,7 @@ Standard_Boolean Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
     gp_Pnt2d PF,PL;
     BRep_Tool::UVPoints(E,F,PF,PL);
     gp_Pnt2d NewPF = C->Value(Fp);
-    gp_Vec2d vectra(2.*PI,0.);
+    gp_Vec2d vectra(2.*M_PI,0.);
 
     if (NewPF.Translated(vectra).SquareDistance(PF) 
 	< NewPF.SquareDistance(PF)) {

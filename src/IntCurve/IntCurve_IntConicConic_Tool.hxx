@@ -20,7 +20,7 @@
 #include <gp.hxx>
 
 
-static Standard_Real PIpPI = Standard_PI+Standard_PI;
+static Standard_Real PIpPI = M_PI + M_PI;
 
 //======================================================================
 //==========          P R O T O T Y P E S                   ============

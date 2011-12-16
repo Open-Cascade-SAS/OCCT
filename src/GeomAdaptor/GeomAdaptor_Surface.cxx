@@ -858,7 +858,7 @@ Standard_Real GeomAdaptor_Surface::UResolution(const Standard_Real R3d) const
   if ( Res <= 1.)  
     return 2.*ASin(Res);
   
-  return 2.*PI;
+  return 2.*M_PI;
 }
 
 //=======================================================================
@@ -925,7 +925,7 @@ Standard_Real GeomAdaptor_Surface::VResolution(const Standard_Real R3d) const
   if ( Res <= 1.) 
     return 2.*ASin(Res);
 
-  return 2.*PI;
+  return 2.*M_PI;
 }
 
 //=======================================================================

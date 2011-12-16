@@ -42,8 +42,8 @@ void Prs2d_Concentric::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
      X1 = Standard_ShortReal( a1 );
 	 Y1 = Standard_ShortReal( b1 );
     }
-    aDrawer->MapArcFromTo( X1, Y1, myLength/2, 0.0, Standard_ShortReal( 2. * Standard_PI ) );
-    aDrawer->MapArcFromTo( X1, Y1, myLength/3, 0.0, Standard_ShortReal( 2. * Standard_PI ) );
+    aDrawer->MapArcFromTo( X1, Y1, myLength/2, 0.0, Standard_ShortReal( 2. * M_PI ) );
+    aDrawer->MapArcFromTo( X1, Y1, myLength/3, 0.0, Standard_ShortReal( 2. * M_PI ) );
  }
 
 }

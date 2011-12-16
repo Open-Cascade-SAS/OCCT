@@ -217,8 +217,8 @@ void V3d_PositionLight::Display( const Handle(V3d_View)& aView,
 				gnopick->Polyline(PRadius);
 				V3d::ArrowOfRadius(gExtArrow,X-(X-X0)/10.,
 				 Y-(Y-Y0)/10.,
-				 Z-(Z-Z0)/10.,X-X0,Y-Y0,Z-Z0,PI/15.,Rayon/20.);
-				V3d::ArrowOfRadius(gIntArrow,X0,Y0,Z0,X0-X,Y0-Y,Z0-Z,PI/15.,Rayon/20.);
+				 Z-(Z-Z0)/10.,X-X0,Y-Y0,Z-Z0,M_PI/15.,Rayon/20.);
+				V3d::ArrowOfRadius(gIntArrow,X0,Y0,Z0,X0-X,Y0-Y,Z0-Z,M_PI/15.,Rayon/20.);
 				TCollection_AsciiString ValOfRadius(Rayon);
 				PText.SetCoord( (X0+X)/2., (Y0+Y)/2. , (Z0+Z)/2. );
 				gradius->Text(ValOfRadius.ToCString(),PText,0.01);

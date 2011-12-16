@@ -105,7 +105,7 @@ static Standard_Integer transform(Draw_Interpretor& di,Standard_Integer n,const 
     if (n < 9) return 1;
     T.SetRotation(gp_Ax1(gp_Pnt(atof(a[n-7]),atof(a[n-6]),atof(a[n-5])),
 			 gp_Vec(atof(a[n-4]),atof(a[n-3]),atof(a[n-2]))),
-		  atof(a[n-1])* PI180);
+		  atof(a[n-1])* (M_PI / 180.0));
     last = n-7;
   }
   else if (!strcmp(a[0],"tmirror")) {

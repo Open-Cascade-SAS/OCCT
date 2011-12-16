@@ -230,8 +230,4 @@
 #define LOG2        0.30103
 #define PARABIT        0x40
 
-#ifndef PI
-#define PI     3.1415926535
-#endif
-
 #endif  /*  end of cgmpar.h */

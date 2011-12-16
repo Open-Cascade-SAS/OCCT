@@ -79,10 +79,10 @@ void AIS_EllipseRadiusDimension::ComputeGeometry()
   default:
     break;
   }
- while (myFirstPar > 2*PI) myFirstPar -= 2*PI;
- while (myLastPar > 2*PI)  myLastPar  -= 2*PI;
- while (myFirstPar < 0.0)  myFirstPar += 2*PI;
- while (myLastPar  < 0.0)  myLastPar  += 2*PI;
+ while (myFirstPar > 2*M_PI) myFirstPar -= 2*M_PI;
+ while (myLastPar > 2*M_PI)  myLastPar  -= 2*M_PI;
+ while (myFirstPar < 0.0)  myFirstPar += 2*M_PI;
+ while (myLastPar  < 0.0)  myLastPar  += 2*M_PI;
 }
 
 //=======================================================================

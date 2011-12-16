@@ -65,10 +65,6 @@ HISTORIQUE DES MODIFICATIONS   :
 #define GROW_SIZE_WKS 10
 #define GROW_SIZE_LIGHT 8
 
-#ifndef M_PI
-# define M_PI          3.14159265358979323846
-#endif
-
 /*----------------------------------------------------------------------*/
 /*
 * Types definis

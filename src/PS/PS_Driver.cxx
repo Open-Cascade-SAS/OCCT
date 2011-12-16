@@ -924,7 +924,7 @@ Standard_Boolean PS_Driver::PlotArc (const Standard_ShortReal Xpos,
               << Ypos + aYradius*Sin(san) << " " << MOVETO;
     (*Cout()) << GSAVE << Xpos << " " << Ypos << " " << aXradius << " ";
 
-    if (Abs(fan)-Abs(san) >= 2.*PI) {
+    if (Abs(fan)-Abs(san) >= 2.*M_PI) {
       (*Cout()) << " 0 360 " << ARC << STROKE << GRESTORE << endl;
     } else {
       Standard_Real a1 = san/DRAD;
@@ -949,14 +949,14 @@ Standard_Boolean PS_Driver::PlotPolyArc (const Standard_ShortReal Xpos,
 
   if (Abs(aXradius-aYradius) <= 1.) {
     PLOT_PCOLOR (myPolyColorIndex);
-    if (Abs(oAngle) < 2.*PI)
+    if (Abs(oAngle) < 2.*M_PI)
       (*Cout()) << Xpos << " " << Ypos << " " << MOVETO;
     else
       (*Cout()) << Xpos + aXradius*Cos(san) << " "
                 << Ypos + aXradius*Sin(san) << " " << MOVETO;
     (*Cout())  << GSAVE << Xpos << " " << Ypos << " " << aXradius << " ";
 
-    if (Abs(fan) - Abs(san) >= 2.*PI) {
+    if (Abs(fan) - Abs(san) >= 2.*M_PI) {
       (*Cout()) << " 0 360 " << ARC << FILL << GRESTORE << endl;
     } else {
       Standard_Real a1 = san/DRAD;

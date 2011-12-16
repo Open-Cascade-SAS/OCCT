@@ -62,7 +62,7 @@ inline Standard_Boolean gp_Vec2d::IsNormal
 {
   Standard_Real Ang = Angle(Other);
   if (Ang < 0) Ang = - Ang;
-  Ang = Standard_PI / 2.0 - Angle(Other);
+  Ang = M_PI / 2.0 - Angle(Other);
   if (Ang < 0) Ang = - Ang;
   return  Ang <= AngularTolerance;
 }    
@@ -73,7 +73,7 @@ inline Standard_Boolean gp_Vec2d::IsOpposite
 {
   Standard_Real Ang = Angle(Other);
   if (Ang < 0) Ang = - Ang;
-  return Standard_PI - Ang <= AngularTolerance;
+  return M_PI - Ang <= AngularTolerance;
 }    
 
 inline Standard_Boolean gp_Vec2d::IsParallel
@@ -82,7 +82,7 @@ inline Standard_Boolean gp_Vec2d::IsParallel
 {
   Standard_Real Ang = Angle(Other);
   if (Ang < 0) Ang = - Ang;
-  return   Ang <= AngularTolerance || Standard_PI - Ang <= AngularTolerance;
+  return   Ang <= AngularTolerance || M_PI - Ang <= AngularTolerance;
 }    
 
 inline Standard_Real gp_Vec2d::Magnitude() const

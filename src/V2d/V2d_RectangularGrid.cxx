@@ -61,12 +61,12 @@ void V2d_RectangularGrid::UpdateDisplay()
   myGraphicObject->RemovePrimitives();
   myGrid = new V2d_RectangularGraphicGrid
     (myGraphicObject,
-     XStep(),YStep(),FirstAngle()+RotationAngle(),SecondAngle()+RotationAngle()+Standard_PI/2.,XOrigin(),YOrigin(),myColorIndex2);
+     XStep(),YStep(),FirstAngle()+RotationAngle(),SecondAngle()+RotationAngle() + M_PI / 2.,XOrigin(),YOrigin(),myColorIndex2);
   myGrid->SetColorIndex(myColorIndex1);
   myGrid->SetDrawMode(DrawMode());
 #ifndef BUC60639        //See V2d_RectangularGraphicGrid
   Handle(Graphic2d_Marker) MK1 = new Graphic2d_Marker(myGraphicObject,14,XOrigin(),YOrigin(),0.01,0.01,FirstAngle()+RotationAngle());
-  Handle(Graphic2d_Marker) MK2 = new Graphic2d_Marker(myGraphicObject,14,XOrigin(),YOrigin(),0.01,0.01,SecondAngle()+RotationAngle()+Standard_PI/2.);
+  Handle(Graphic2d_Marker) MK2 = new Graphic2d_Marker(myGraphicObject,14,XOrigin(),YOrigin(),0.01,0.01,SecondAngle()+RotationAngle() + M_PI / 2.);
   MK1->SetColorIndex(myColorIndex2);
   MK2->SetColorIndex(myColorIndex2);
 #endif

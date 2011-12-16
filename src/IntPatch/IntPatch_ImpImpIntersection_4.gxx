@@ -311,8 +311,8 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       IntPatch_Point pmult1;
       IntPatch_Point pmult2;
       elipsol = inter.Ellipse(1);
-      gp_Pnt pttang1(ElCLib::Value(PI*0.5,elipsol));
-      gp_Pnt pttang2(ElCLib::Value(1.5*PI,elipsol));
+      gp_Pnt pttang1(ElCLib::Value(M_PI*0.5,elipsol));
+      gp_Pnt pttang2(ElCLib::Value(1.5*M_PI,elipsol));
       
       Multpoint = Standard_True;
       pmult1.SetValue(pttang1,Tol,Standard_True);
@@ -349,17 +349,17 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       //-- Transition calculee au point 0 -> Trans2 , Trans1 
       //-- car ici, on devarit calculer en PI
       Handle(IntPatch_GLine) glig = new IntPatch_GLine(elipsol,Standard_False,trans2,trans1);
-      pmult1.SetParameter(PI/2.);
+      pmult1.SetParameter(M_PI/2.);
       glig->AddVertex(pmult1);
       glig->SetFirstPoint(1);
-      pmult2.SetParameter(1.5*PI);
+      pmult2.SetParameter(1.5*M_PI);
       glig->AddVertex(pmult2);
       glig->SetLastPoint(2);
       slin.Append(glig);
       
       //-- Transitions calculee au point 0    OK
       glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
-      pmult2.SetParameter(-PI/2.);
+      pmult2.SetParameter(-M_PI/2.);
       glig->AddVertex(pmult2);
       glig->SetFirstPoint(1);
       glig->AddVertex(pmult1);
@@ -375,13 +375,13 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       Standard_Real param2 = ElCLib::Parameter(elipsol,pttang2);
       Standard_Real parampourtransition;
       if (param1 < param2) {
-	pmult1.SetParameter(PI*0.5);
-	pmult2.SetParameter(1.5*PI);
-	parampourtransition = PI;
+	pmult1.SetParameter(M_PI*0.5);
+	pmult2.SetParameter(1.5*M_PI);
+	parampourtransition = M_PI;
       }
       else {
-	pmult1.SetParameter(-PI*0.5);
-	pmult2.SetParameter(PI*0.5);
+	pmult1.SetParameter(-M_PI*0.5);
+	pmult2.SetParameter(M_PI*0.5);
 	parampourtransition = 0.0;
       }
       
@@ -408,10 +408,10 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       slin.Append(glig);
       
       if (param1 < param2) {
-	pmult2.SetParameter(-PI*0.5);
+	pmult2.SetParameter(-M_PI*0.5);
       }
       else {
-	pmult1.SetParameter(1.5*PI);
+	pmult1.SetParameter(1.5*M_PI);
       }
       
       //-- Sur l'autre ligne, on invertse la transition

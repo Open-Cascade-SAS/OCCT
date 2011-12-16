@@ -193,7 +193,7 @@ static Standard_Boolean FUN_MkTonE(const gp_Vec& faxis, const gp_Vec& dirINcle, 
   Standard_Real ang = 1.e7;
   if (isONi) {
     Standard_Real dot = dirINcle.Dot(tgi);
-    ang = (dot > 0) ? 0 : PI;
+    ang = (dot > 0) ? 0 : M_PI;
 //    outin = (ang > 0); -xpu190499
     outin = Standard_True;
   }
@@ -205,7 +205,7 @@ static Standard_Boolean FUN_MkTonE(const gp_Vec& faxis, const gp_Vec& dirINcle, 
     else          outin = (dot < 0);
   }//!isONi
 
-  Standard_Real Cang = (ang > PI) ? ang-PI : ang+PI;
+  Standard_Real Cang = (ang > M_PI) ? ang-M_PI : ang+M_PI;
   par1 = outin ? ang : Cang;
   par2 = outin ? Cang : ang;
   return Standard_True;

@@ -96,10 +96,10 @@ static void PerformExtPElC (Extrema_ExtPElC& E,
     E.Perform(P, C->Line(), Tol, -Precision::Infinite(),Precision::Infinite());
     return;
   case GeomAbs_Circle:
-    E.Perform(P, C->Circle(), Tol, 0.0, 2.0 * PI);
+    E.Perform(P, C->Circle(), Tol, 0.0, 2.0 * M_PI);
     return;
   case GeomAbs_Ellipse:
-    E.Perform(P, C->Ellipse(), Tol, 0.0, 2.0 * PI);
+    E.Perform(P, C->Ellipse(), Tol, 0.0, 2.0 * M_PI);
     return;
   case GeomAbs_Parabola:
     E.Perform(P, C->Parabola(), Tol, -Precision::Infinite(),Precision::Infinite());
@@ -309,18 +309,18 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   else {
     Ppp = Pp.Translated(Z.Multiplied(-OPpz));
     if (O.IsEqual(Ppp,Precision::Confusion())) 
-      U = PI/2;
+      U = M_PI/2;
     else {
       U = gp_Vec(O,Ppp).AngleWithRef(gp_Vec(O,Pp),Dir);
     }
   }
 
-  gp_Vec OPpp (O,Ppp), OPq (O, myS->Value(PI/2,0));
-  if (U != PI/2) {
+  gp_Vec OPpp (O,Ppp), OPq (O, myS->Value(M_PI/2,0));
+  if (U != M_PI/2) {
     if (Abs(OPq.Magnitude()) <= gp::Resolution()) 
-      OPq = gp_Vec(O, myS->Value(PI/2,anACurve->LastParameter()/10));
+      OPq = gp_Vec(O, myS->Value(M_PI/2,anACurve->LastParameter()/10));
     if (OPpp.AngleWithRef(OPq,Dir) < 0)
-      U += PI;
+      U += M_PI;
   }
   
   gp_Trsf T;
@@ -346,7 +346,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 
 	if((anACurve->GetType() == GeomAbs_Circle) || 
 	   (anACurve->GetType() == GeomAbs_Ellipse)) {
-	  newV = ElCLib::InPeriod(V, myvinf, myvinf + 2. * PI);
+	  newV = ElCLib::InPeriod(V, myvinf, myvinf + 2. * M_PI);
 
 	  if (newV > myvsup) {
 	    newV = myvsup;
@@ -366,7 +366,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 
 	if((anACurve->GetType() == GeomAbs_Circle) || 
 	   (anACurve->GetType() == GeomAbs_Ellipse)) {
-	  newV = ElCLib::InPeriod(V, myvsup - 2. * PI, myvsup);
+	  newV = ElCLib::InPeriod(V, myvsup - 2. * M_PI, myvsup);
 	  
 	  if(newV < myvinf)
 	    newV = myvinf;
@@ -385,14 +385,14 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
       }
     }
   }
-  T.SetRotation(Ax, PI);
+  T.SetRotation(Ax, M_PI);
   P1.Transform(T);
   
   PerformExtPElC(anExt, P1, anACurve, mytolv);
   if (anExt.IsDone()) {
     myDone = Standard_True;
 
-    U += PI;
+    U += M_PI;
     
     for (i=1; i<=anExt.NbExt(); i++) {
       Extrema_POnCurv POC=anExt.Point(i);
@@ -405,7 +405,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 
 	if((anACurve->GetType() == GeomAbs_Circle) || 
 	   (anACurve->GetType() == GeomAbs_Ellipse)) {
-	  newV = ElCLib::InPeriod(V, myvinf, myvinf + 2. * PI);
+	  newV = ElCLib::InPeriod(V, myvinf, myvinf + 2. * M_PI);
 
 	  if (newV > myvsup) {
 	    newV = myvsup;
@@ -422,7 +422,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 
 	if((anACurve->GetType() == GeomAbs_Circle) || 
 	   (anACurve->GetType() == GeomAbs_Ellipse)) {
-	  newV = ElCLib::InPeriod(V, myvsup - 2. * PI, myvsup);
+	  newV = ElCLib::InPeriod(V, myvsup - 2. * M_PI, myvsup);
 	  
 	  if(newV < myvinf)
 	    newV = myvinf;

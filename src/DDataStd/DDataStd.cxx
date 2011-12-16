@@ -60,7 +60,7 @@ void DDataStd::DumpConstraint (const Handle(TDataXtd_Constraint)& CTR, Standard_
     TDataStd_RealEnum t = CTR->GetValue()->GetDimension();  
     TDataStd::Print(t,anOS); 
     Standard_Real val = CTR->GetValue()->Get();
-    if (t == TDataStd_ANGULAR) val = (180.*val)/PI;
+    if (t == TDataStd_ANGULAR) val = (180.*val)/M_PI;
     anOS << " ";
     anOS << val;
   }

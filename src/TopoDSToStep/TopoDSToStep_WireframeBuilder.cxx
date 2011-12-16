@@ -214,7 +214,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 /* //:j1 abv 22 Oct 98: radians are used in the produced STEP file (at least by default)
    if(C->IsKind(STANDARD_TYPE(Geom_Circle)) ||
        C->IsKind(STANDARD_TYPE(Geom_Ellipse))) {
-      Standard_Real fact = 180. / PI;
+      Standard_Real fact = 180. / M_PI;
       trim1 = trim1 * fact;
       trim2 = trim2 * fact;
     }

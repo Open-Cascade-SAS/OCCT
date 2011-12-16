@@ -82,7 +82,7 @@ Standard_Boolean Geom_Circle::IsPeriodic () const      { return Standard_True; }
 
 Standard_Real Geom_Circle::ReversedParameter( const Standard_Real U) const 
 {
-  return ( 2. * PI - U);
+  return ( 2. * M_PI - U);
 }
 
 //=======================================================================
@@ -106,7 +106,7 @@ Standard_Real Geom_Circle::FirstParameter () const     { return 0.0; }
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_Circle::LastParameter () const      { return 2.0 * PI; }
+Standard_Real Geom_Circle::LastParameter () const      { return 2.0 * M_PI; }
 
 
 //=======================================================================

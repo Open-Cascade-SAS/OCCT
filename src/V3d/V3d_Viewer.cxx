@@ -74,7 +74,7 @@ myDisplayPlaneLength(ViewSize)
   SetDefaultVisualization(Visualization) ;
   SetDefaultShadingModel(ShadingModel) ;
   SetDefaultSurfaceDetail(SurfaceDetail) ; 
-  SetDefaultAngle(Standard_PI/2.);
+  SetDefaultAngle(M_PI / 2.);
   SetDefaultTypeOfView(V3d_ORTHOGRAPHIC);
 
   Quantity_Color Color1 (Quantity_NOC_GRAY50);

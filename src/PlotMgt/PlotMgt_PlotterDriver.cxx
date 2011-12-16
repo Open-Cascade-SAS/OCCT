@@ -624,10 +624,10 @@ Standard_Boolean PlotMgt_PlotterDriver::DrawArc (const Standard_ShortReal X,
 {
   Standard_Boolean Done = Standard_False;
   float san, oan;
-  if (anOpenAngle == 0.F || anOpenAngle > 2*PI) {
-    san = 0.F;  oan = 2.*PI;
+  if (anOpenAngle == 0.F || anOpenAngle > 2*M_PI) {
+    san = 0.F;  oan = 2.*M_PI;
   } else if (anOpenAngle < 0.F) {
-    san = 2.*PI + aStartAngle + anOpenAngle;
+    san = 2.*M_PI + aStartAngle + anOpenAngle;
     oan = -anOpenAngle;
   } else {
     san = aStartAngle; oan = anOpenAngle;
@@ -646,7 +646,7 @@ Standard_Boolean PlotMgt_PlotterDriver::DrawArc (const Standard_ShortReal X,
     if (aRadius > precis)
       value = Max (0.0044, Min (0.7854, 2. * ACos(1.-precis/aRadius)));
     else
-      value = PI/4.;
+      value = M_PI/4.;
     Standard_Integer nbpoints = Min(MAXPOINT,
                         Standard_Integer(Abs(oan)/value)+2);
 
@@ -675,10 +675,10 @@ Standard_Boolean PlotMgt_PlotterDriver::DrawPolyArc (const Standard_ShortReal X,
 {
   Standard_Boolean Done = Standard_False;
   float san, oan;
-  if (anOpenAngle == 0.F || anOpenAngle > 2*PI) {
-    san = 0.F;  oan = 2.*PI;
+  if (anOpenAngle == 0.F || anOpenAngle > 2*M_PI) {
+    san = 0.F;  oan = 2.*M_PI;
   } else if (anOpenAngle < 0.F) {
-    san = 2.*PI + aStartAngle + anOpenAngle;
+    san = 2.*M_PI + aStartAngle + anOpenAngle;
     oan = -anOpenAngle;
   } else {
     san = aStartAngle; oan = anOpenAngle;
@@ -698,7 +698,7 @@ Standard_Boolean PlotMgt_PlotterDriver::DrawPolyArc (const Standard_ShortReal X,
     if (aRadius > precis)
       value = Max (0.0044, Min (0.7854, 2. * ACos(1.-precis/aRadius)));
     else
-      value = PI/4.;
+      value = M_PI/4.;
     Standard_Integer nbpoints = Min(MAXPOINT,
                         Standard_Integer(Abs(oan)/value)+2);
 
@@ -741,8 +741,8 @@ void PlotMgt_PlotterDriver::DrawMarker (const Standard_Integer aMarker,
       const TColStd_Array1OfBoolean&  ams =
         MarkMap ()->Entry(aMarker+1).Style().SValues();
       Standard_Integer i, sl, su;
-      Standard_ShortReal Ca = (float)Cos((3*Standard_PI)/2+Angle),
-                         Sa = (float)Sin((3*Standard_PI)/2+Angle);
+      Standard_ShortReal Ca = (float)Cos((3 * M_PI) / 2 + Angle),
+                         Sa = (float)Sin((3 * M_PI) / 2 + Angle);
       Standard_ShortReal dx, dy, Cx, Cy;
 
       // Remember the old attributes

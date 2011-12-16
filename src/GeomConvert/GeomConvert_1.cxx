@@ -525,14 +525,14 @@ Handle(BSplineSurface) GeomConvert::SplitBSplineSurface
       if (Strim->IsUPeriodic()) {
 	NbUKnots = 4;
 	nbUSpans = 3;
-	AlfaU    = PI / 3.;
+	AlfaU    = M_PI / 3.;
 	NbUPoles = 6;
 	periodic = Standard_True;
       }
       else {
 	// Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
 	nbUSpans = 
-	  (Standard_Integer)IntegerPart( 1.2 * (ULast - UFirst) / PI) + 1;
+	  (Standard_Integer)IntegerPart( 1.2 * (ULast - UFirst) / M_PI) + 1;
 	AlfaU = (ULast - UFirst) / ( nbUSpans * 2);
 	NbUPoles = 2 * nbUSpans + 1;
 	NbUKnots = nbUSpans + 1;
@@ -756,7 +756,7 @@ Handle(BSplineSurface) GeomConvert::SplitBSplineSurface
       Standard_Real AlfaU;
       NbUKnots = 4;
       nbUSpans = 3;
-      AlfaU    = PI / 3.;
+      AlfaU    = M_PI / 3.;
       NbUPoles = 6;
 
       // Compute Knots and Mults

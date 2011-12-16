@@ -146,12 +146,12 @@ void ShapeAnalysis_Surface::ComputeSingularities()
     //szv#4:S4163:12Mar99 warning - possible div by zero
     Standard_Real Ang = ACos (Min (1., majorR / minorR));
     myPreci   [0] = myPreci[1] = Max (0., majorR - minorR);
-    myP3d     [0] = mySurf->Value (0., PI-Ang);
-    myFirstP2d[0].SetCoord (su1, PI-Ang);
-    myLastP2d [0].SetCoord (su2, PI-Ang);
-    myP3d     [1] = mySurf->Value (0., PI+Ang);
-    myFirstP2d[1].SetCoord (su2, PI+Ang);
-    myLastP2d [1].SetCoord (su1, PI+Ang);
+    myP3d     [0] = mySurf->Value (0., M_PI-Ang);
+    myFirstP2d[0].SetCoord (su1, M_PI-Ang);
+    myLastP2d [0].SetCoord (su2, M_PI-Ang);
+    myP3d     [1] = mySurf->Value (0., M_PI+Ang);
+    myFirstP2d[1].SetCoord (su2, M_PI+Ang);
+    myLastP2d [1].SetCoord (su1, M_PI+Ang);
     myFirstPar[0] = myFirstPar[1] = su1;
     myLastPar [0] = myLastPar [1] = su2;
     myUIsoDeg [0] = myUIsoDeg [1] = Standard_False;
@@ -917,29 +917,29 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
     {
       gp_Cylinder Cylinder = SurfAdapt.Cylinder();
       ElSLib::Parameters( Cylinder, P3D, S, T);
-      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*PI);
+      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*M_PI);
       break;
     }
   case GeomAbs_Cone :
     {
       gp_Cone Cone = SurfAdapt.Cone();
       ElSLib::Parameters( Cone, P3D, S, T);
-      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*PI);
+      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*M_PI);
       break;
     }
   case GeomAbs_Sphere :
     {
       gp_Sphere Sphere = SurfAdapt.Sphere();
       ElSLib::Parameters( Sphere, P3D, S, T);
-      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*PI);
+      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*M_PI);
       break;
     }
   case GeomAbs_Torus :
     {
       gp_Torus Torus = SurfAdapt.Torus();
       ElSLib::Parameters( Torus, P3D, S, T);
-      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*PI);
-      T += ShapeAnalysis::AdjustByPeriod(T,0.5*(vf+vl),2*PI);
+      S += ShapeAnalysis::AdjustByPeriod(S,0.5*(uf+ul),2*M_PI);
+      T += ShapeAnalysis::AdjustByPeriod(T,0.5*(vf+vl),2*M_PI);
       break;
     }
   case GeomAbs_BezierSurface :

@@ -47,7 +47,7 @@ static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 //=======================================================================
  void GeomFill_DraftTrihedron::SetAngle(const Standard_Real Angle)
 {
-  myAngle = PI/2 + Angle;
+  myAngle = M_PI/2 + Angle;
   myCos = Cos(myAngle);
 }
 
@@ -229,7 +229,7 @@ Standard_Boolean GeomFill_DraftTrihedron::D2(const Standard_Real Param,
  Handle(GeomFill_TrihedronLaw) GeomFill_DraftTrihedron::Copy() const
 {
  Handle(GeomFill_DraftTrihedron) copy = 
-   new (GeomFill_DraftTrihedron) (B,myAngle-PI/2);
+   new (GeomFill_DraftTrihedron) (B,myAngle-M_PI/2);
  copy->SetCurve(myCurve);
  return copy;
 } 

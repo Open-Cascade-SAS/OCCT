@@ -57,7 +57,7 @@ void DrawDim_PlanarDiameter::DrawOn(Draw_Display& dis) const
       TopExp::Vertices(TopoDS::Edge(myCircle),vf,vl);
       const gp_Pnt first = BRep_Tool::Pnt(vf);
       Standard_Real parfirst = ElCLib::Parameter(circle,first);
-      Standard_Real parlast = (parfirst + PI);
+      Standard_Real parlast = (parfirst + M_PI);
       gp_Pnt last = ElCLib::Value(parlast,circle);
       //
       dis.Draw (first,last);

@@ -42,14 +42,14 @@ void DrawFairCurve_Batten::SetPoint(const Standard_Integer Side, const gp_Pnt2d&
 void DrawFairCurve_Batten::SetAngle(const Standard_Integer Side, const Standard_Real Angle)
 {
   if (Side == 1) {
-     ((FairCurve_Batten*)MyBatten)->SetAngle1(Angle*PI/180);
+     ((FairCurve_Batten*)MyBatten)->SetAngle1(Angle*M_PI/180);
      if ( ((FairCurve_Batten*)MyBatten)->GetConstraintOrder1() == 0 ) 
      {
        ((FairCurve_Batten*)MyBatten)->SetConstraintOrder1(1);
      }
    }
   else {
-     ((FairCurve_Batten*)MyBatten)->SetAngle2(Angle*PI/180);
+     ((FairCurve_Batten*)MyBatten)->SetAngle2(Angle*M_PI/180);
      if ( ((FairCurve_Batten*)MyBatten)->GetConstraintOrder2() == 0 ) 
      {
      ((FairCurve_Batten*)MyBatten)->SetConstraintOrder2(1);

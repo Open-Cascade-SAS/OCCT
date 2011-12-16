@@ -145,7 +145,7 @@ Standard_Real GeomInt_LineTool::LastParameter (const Handle(IntPatch_Line)& L)
           return Precision::Infinite();
         case IntPatch_Circle:
         case IntPatch_Ellipse:
-          return 2.*PI;
+          return 2.*M_PI;
         default: break;
       }
     }

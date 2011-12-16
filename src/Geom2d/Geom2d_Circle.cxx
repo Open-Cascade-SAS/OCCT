@@ -130,7 +130,7 @@ gp_Circ2d Geom2d_Circle::Circ2d () const
 
 Standard_Real Geom2d_Circle::ReversedParameter( const Standard_Real U) const 
 {
-  return (2. * PI - U);
+  return (2. * M_PI - U);
 }
 
 //=======================================================================
@@ -160,7 +160,7 @@ Standard_Real Geom2d_Circle::FirstParameter () const
 
 Standard_Real Geom2d_Circle::LastParameter () const      
 {
-  return 2.0 * PI; 
+  return 2.0 * M_PI; 
 }
 
 //=======================================================================

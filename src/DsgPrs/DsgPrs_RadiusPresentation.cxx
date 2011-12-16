@@ -38,7 +38,7 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
   if (fpar >= 0.) {
     return ((para >= fpar) && (para <= lpar));
   }
-  if (para >= (fpar+2*PI)) return Standard_True;
+  if (para >= (fpar+2*M_PI)) return Standard_True;
   if (para <= lpar) return Standard_True;
   return Standard_False;
 }
@@ -60,9 +60,9 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 {
   Standard_Real fpara = firstparam;
   Standard_Real lpara = lastparam;
-  while (lpara > 2*PI) {
-    fpara -= 2*PI;
-    lpara -= 2*PI;
+  while (lpara > 2*M_PI) {
+    fpara -= 2*M_PI;
+    lpara -= 2*M_PI;
   }
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -70,8 +70,8 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   gp_Pnt attpoint = AttachmentPoint;
   Standard_Boolean otherside = Standard_False;
   if ( !DsgPrs_InDomain(fpara,lpara,parat)) {
-    Standard_Real otherpar = parat + PI;
-    if (otherpar > 2*PI) otherpar -= 2*PI;
+    Standard_Real otherpar = parat + M_PI;
+    if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
     if (DsgPrs_InDomain(fpara,lpara,otherpar)) {
       parat = otherpar;
       otherside = Standard_True;

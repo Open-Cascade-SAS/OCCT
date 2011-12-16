@@ -5,20 +5,20 @@
 
 #include <HLRAlgo.ixx>
 
-static const Standard_Real cosu0 = cos(0.*PI/14.);
-static const Standard_Real sinu0 = sin(0.*PI/14.);
-static const Standard_Real cosu1 = cos(1.*PI/14.);
-static const Standard_Real sinu1 = sin(1.*PI/14.);
-static const Standard_Real cosu2 = cos(2.*PI/14.);
-static const Standard_Real sinu2 = sin(2.*PI/14.);
-static const Standard_Real cosu3 = cos(3.*PI/14.);
-static const Standard_Real sinu3 = sin(3.*PI/14.);
-static const Standard_Real cosu4 = cos(4.*PI/14.);
-static const Standard_Real sinu4 = sin(4.*PI/14.);
-static const Standard_Real cosu5 = cos(5.*PI/14.);
-static const Standard_Real sinu5 = sin(5.*PI/14.);
-static const Standard_Real cosu6 = cos(6.*PI/14.);
-static const Standard_Real sinu6 = sin(6.*PI/14.);
+static const Standard_Real cosu0 = cos(0.*M_PI/14.);
+static const Standard_Real sinu0 = sin(0.*M_PI/14.);
+static const Standard_Real cosu1 = cos(1.*M_PI/14.);
+static const Standard_Real sinu1 = sin(1.*M_PI/14.);
+static const Standard_Real cosu2 = cos(2.*M_PI/14.);
+static const Standard_Real sinu2 = sin(2.*M_PI/14.);
+static const Standard_Real cosu3 = cos(3.*M_PI/14.);
+static const Standard_Real sinu3 = sin(3.*M_PI/14.);
+static const Standard_Real cosu4 = cos(4.*M_PI/14.);
+static const Standard_Real sinu4 = sin(4.*M_PI/14.);
+static const Standard_Real cosu5 = cos(5.*M_PI/14.);
+static const Standard_Real sinu5 = sin(5.*M_PI/14.);
+static const Standard_Real cosu6 = cos(6.*M_PI/14.);
+static const Standard_Real sinu6 = sin(6.*M_PI/14.);
 
 //=======================================================================
 //function : UpdateMinMax

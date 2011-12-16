@@ -215,11 +215,11 @@ myKPart(0)
   }
   if (GAS1.GetType() == GeomAbs_Sphere) {
     if (myIsoU1)
-      ElCLib::AdjustPeriodic(-PI/2.,PI/2.,
+      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
 			     Precision::PConfusion(),
 			     Umin, Umax);
     else
-      ElCLib::AdjustPeriodic(-PI/2.,PI/2.,
+      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
 			     Precision::PConfusion(),
 			     Vmin, Vmax);
   }
@@ -331,11 +331,11 @@ myKPart(0)
   }
   if (GAS2.GetType() == GeomAbs_Sphere) {
     if (myIsoU2)
-      ElCLib::AdjustPeriodic(-PI/2.,PI/2.,
+      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
 			     Precision::PConfusion(),
 			     Umin, Umax);
     else
-      ElCLib::AdjustPeriodic(-PI/2.,PI/2.,
+      ElCLib::AdjustPeriodic(-M_PI/2.,M_PI/2.,
 			     Precision::PConfusion(),
 			     Vmin, Vmax);
   }
@@ -612,7 +612,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
 	Standard_Real Ang = Axis.Angle(D12d);
 	if ( !TheU.Circle().IsDirect()) Ang = -Ang;
 	UU = ElCLib::InPeriod( Ang, TheU.FirstParameter(), 
-			            TheU.FirstParameter() + 2*PI);
+			            TheU.FirstParameter() + 2*M_PI);
 	Dist = TheU.Circle().Radius();
       }
       else {

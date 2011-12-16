@@ -149,7 +149,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   else{
     ElSLib::TorusParameters(FilAx3,Rad,Radius,P,u,v);
     ElSLib::TorusD1(u,v,FilAx3,Rad,Radius,PP,deru,derv);
-    if(!plandab && Ang < PI/2 && dedans) v = v + 2*PI;
+    if(!plandab && Ang < M_PI/2 && dedans) v = v + 2*M_PI;
   }  
   gp_Pnt2d p2dFil(0.,v);
   gp_Dir norFil(deru.Crossed(derv));
@@ -211,7 +211,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   else{
     ElSLib::TorusParameters(FilAx3,Rad,Radius,P,u,v);
     ElSLib::TorusD1(u,v,FilAx3,Rad,Radius,PP,deru,derv);
-    if(plandab && Ang < PI/2 && dedans) v = v + 2*PI;
+    if(plandab && Ang < M_PI/2 && dedans) v = v + 2*M_PI;
   }  
   norFil = deru.Crossed(derv);
   p2dFil.SetCoord(0.,v);
@@ -220,10 +220,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::Parameters(Con,P,u,v);
   Standard_Real tol = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if(Abs(lu - fu - 2*PI) < tol) careaboutsens = 1;
+  if(Abs(lu - fu - 2*M_PI) < tol) careaboutsens = 1;
   if(u >= fu - tol && u < fu) u = fu;
   if(u <= lu + tol && u > lu) u = lu;
-  if(u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*PI);
+  if(u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*M_PI);
   ElSLib::D1(u,v,Con,PP,deru,derv);
   gp_Dir norCon = deru.Crossed(derv);
   gp_Dir2d d2dCon = gp::DX2d();

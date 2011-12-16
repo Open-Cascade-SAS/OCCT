@@ -1023,7 +1023,7 @@ TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(TopTools_ListOfShape& faces,
   gp_Ax1 Axe(pp, Pln->Position().Direction());
   for ( Standard_Integer i = 1; i <=8; i++) {
     Handle(Geom_Curve) L = 
-      Handle(Geom_Curve)::DownCast(l1->Rotated(Axe, i*PI/9.));
+      Handle(Geom_Curve)::DownCast(l1->Rotated(Axe, i*M_PI/9.));
     scur.Append(L);
     Counter++;
   }

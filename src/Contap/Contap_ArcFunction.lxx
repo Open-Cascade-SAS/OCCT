@@ -8,7 +8,7 @@ inline void Contap_ArcFunction::Set(const gp_Dir& Direction,
 {
   myType = Contap_DraftStd;
   myDir  = Direction;
-  myCosAng = Cos(PI/2.+Angle);
+  myCosAng = Cos(M_PI/2.+Angle);
 }
 
 inline void Contap_ArcFunction::Set(const gp_Pnt& Eye,
@@ -16,7 +16,7 @@ inline void Contap_ArcFunction::Set(const gp_Pnt& Eye,
 {
   myType = Contap_DraftPrs;
   myEye  = Eye;
-  myCosAng = Cos(PI/2.+Angle);
+  myCosAng = Cos(M_PI/2.+Angle);
 }
 
 inline void Contap_ArcFunction::Set(const gp_Dir& Direction)

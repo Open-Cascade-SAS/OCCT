@@ -329,7 +329,7 @@ Standard_Boolean ShapeAnalysis_FreeBoundsProperties::CheckNotches(const TopoDS_W
   if ( E2.Orientation() == TopAbs_REVERSED ) vec2.Reverse();
   
   Standard_Real angl = Abs( vec1.Angle(vec2));
-  if (angl > 0.95*PI) {
+  if (angl > 0.95*M_PI) {
     distMax = .0;
     for (Standard_Integer i = 0; i < NbControl; i++) {
       Standard_Real prm = ((NbControl-1-i)*First1 + i*Last1)/(NbControl-1);

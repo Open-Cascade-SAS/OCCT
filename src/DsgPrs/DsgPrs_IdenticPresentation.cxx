@@ -118,8 +118,8 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real pFAttach =  ElCLib::Parameter(CC, aFAttach);
   Standard_Real pSAttach =  ElCLib::Parameter(CC, aSAttach);
   Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2*Standard_PI;
-  Standard_Integer nb = (Standard_Integer )( 50. * alpha / PI);
+  if ( alpha < 0 ) alpha += 2 * M_PI;
+  Standard_Integer nb = (Standard_Integer )( 50. * alpha / M_PI);
   Standard_Integer nbp = Max (4 , nb);
   Graphic3d_Array1OfVertex V(1,nbp);
   Standard_Real dteta = alpha/(nbp-1);
@@ -170,8 +170,8 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real pFAttach =  ElCLib::Parameter(CC, aFAttach);
   Standard_Real pSAttach =  ElCLib::Parameter(CC, aSAttach);
   Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2*Standard_PI;
-  Standard_Integer nb = (Standard_Integer )( 50. * alpha / PI);
+  if ( alpha < 0 ) alpha += 2 * M_PI;
+  Standard_Integer nb = (Standard_Integer )( 50. * alpha / M_PI);
   Standard_Integer nbp = Max (4 , nb);
   Graphic3d_Array1OfVertex V(1,nbp);
   Standard_Real dteta = alpha/(nbp-1);
@@ -217,8 +217,8 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real pFAttach =  ElCLib::Parameter(anEllipse, aFAttach);
   Standard_Real pSAttach =  ElCLib::Parameter(anEllipse, aSAttach);
   Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2*Standard_PI;
-  Standard_Integer nb = (Standard_Integer)(50.0*alpha/PI);
+  if ( alpha < 0 ) alpha += 2 * M_PI;
+  Standard_Integer nb = (Standard_Integer)(50.0*alpha/M_PI);
   Standard_Integer nbp = Max (4 , nb);
   Graphic3d_Array1OfVertex V(1,nbp);
   Standard_Real dteta = alpha/(nbp-1);

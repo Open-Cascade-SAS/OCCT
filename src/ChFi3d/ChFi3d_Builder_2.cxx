@@ -853,7 +853,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     // There are ponts on the border, and internal points are found
     if (derive.Magnitude() > Precision::PConfusion()) {
       derive.Normalized();
-      derive.Rotate(PI/2);
+      derive.Rotate(M_PI/2);
       AS.Initialize(f1);
       ResU = AS.UResolution(TolE);
       ResV = AS.VResolution(TolE);

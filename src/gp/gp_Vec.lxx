@@ -77,7 +77,7 @@ inline Standard_Boolean gp_Vec::IsNormal
 (const gp_Vec& Other,
  const Standard_Real AngularTolerance) const
 {
-  Standard_Real Ang = Standard_PI / 2.0 - Angle(Other);
+  Standard_Real Ang = M_PI / 2.0 - Angle(Other);
   if (Ang < 0) Ang = - Ang;
   return  Ang <= AngularTolerance;
 }    
@@ -86,7 +86,7 @@ inline Standard_Boolean gp_Vec::IsOpposite
 (const gp_Vec& Other,
  const Standard_Real AngularTolerance) const
 {
-  Standard_Real Ang = Standard_PI - Angle(Other);
+  Standard_Real Ang = M_PI - Angle(Other);
   return Ang <= AngularTolerance;
 }    
 
@@ -95,7 +95,7 @@ inline Standard_Boolean gp_Vec::IsParallel
  const Standard_Real AngularTolerance) const
 {
   Standard_Real Ang = Angle (Other);
-  return   Ang <= AngularTolerance || Standard_PI - Ang <= AngularTolerance;
+  return   Ang <= AngularTolerance || M_PI - Ang <= AngularTolerance;
 }    
 
 inline Standard_Real gp_Vec::Angle (const gp_Vec& Other) const

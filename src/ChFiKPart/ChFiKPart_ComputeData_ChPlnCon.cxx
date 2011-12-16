@@ -327,10 +327,10 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
 	      Or.Z()+Rad*Dx.Z());
   ElSLib::Parameters(Con,Pt ,u,v);
   Standard_Real tol = Precision::PConfusion();
-  if(u >= 2*PI - tol && u <= 2*PI) u = 0.;
+  if(u >= 2*M_PI - tol && u <= 2*M_PI) u = 0.;
   if(u >= fu - tol && u < fu) u = fu;
   if(u <= lu + tol && u > lu) u = lu;
-  if(u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*PI);
+  if(u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*M_PI);
   ElSLib::D1(u,v,Con,Pt,deru,derv);
   gp_Pnt2d p2dCon(u,v);
   gp_Dir2d d2dCon;

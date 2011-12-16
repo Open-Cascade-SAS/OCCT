@@ -97,14 +97,14 @@ static void Recadre(const TheSurface& myHS1,
      }
   }
   if(myHS1IsUPeriodic) {
-    lmf = PI+PI; //-- myHS1->UPeriod();
+    lmf = M_PI+M_PI; //-- myHS1->UPeriod();
     f = myHS1->FirstUParameter();
     l = myHS1->LastUParameter();
     while(u1 < f) { u1+=lmf; } 
     while(u1 > l) { u1-=lmf; }
   }
   if(myHS1IsVPeriodic) {
-    lmf = PI+PI; //-- myHS1->VPeriod(); 
+    lmf = M_PI+M_PI; //-- myHS1->VPeriod(); 
     f = myHS1->FirstVParameter();
     l = myHS1->LastVParameter();
     while(v1 < f) { v1+=lmf; } 
@@ -205,7 +205,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
     Standard_Boolean novtx = Standard_True;
     if(nbvtx) novtx=Standard_False;
     for(Standard_Integer i=1;i<nbvtx  || novtx;i++) { 
-      Standard_Real firstp=0,lastp=PI+PI;
+      Standard_Real firstp=0,lastp=M_PI+M_PI;
       if(novtx == Standard_False) { 
 	firstp = L.Vertex(i).ParameterOnLine();
 	lastp =  L.Vertex(i+1).ParameterOnLine();
@@ -248,7 +248,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
     }
     if(nbvtx)  {
       Standard_Real firstp = L.Vertex(nbvtx).ParameterOnLine();
-      Standard_Real lastp =  L.Vertex(1).ParameterOnLine() + PI+PI;
+      Standard_Real lastp =  L.Vertex(1).ParameterOnLine() + M_PI+M_PI;
       if(Abs(firstp-lastp)>0.0000000001) {  
 	Standard_Real pmid = (firstp+lastp)*0.5;
 	gp_Pnt Pmid =  ElCLib::Value(pmid,L.Circle());
@@ -276,7 +276,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
 	  Contap_ThePoint pvtx = L.Vertex(nbvtx);
 	  Line.Add(pvtx);
 
-	  pvtx = L.Vertex(1);  pvtx.SetParameter(pvtx.ParameterOnLine()+PI+PI);
+	  pvtx = L.Vertex(1);  pvtx.SetParameter(pvtx.ParameterOnLine()+M_PI+M_PI);
 	  Line.Add(pvtx);
 	  Line.SetTransitionOnS(L.TransitionOnS());
 	  slin.Append(Line);

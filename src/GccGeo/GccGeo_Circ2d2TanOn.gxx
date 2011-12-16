@@ -100,8 +100,8 @@ GccGeo_Circ2d2TanOn::
 	{
 	  gp_Circ2d Circ(Sol->Circle());
 	  IntRes2d_Domain D1(ElCLib::Value(0.,Circ),   0.,Tol1,
-			     ElCLib::Value(2.*PI,Circ),2.*PI,Tol2);
-	  D1.SetEquivalentParameters(0.,2.*PI);
+			     ElCLib::Value(2.*M_PI,Circ),2.*M_PI,Tol2);
+	  D1.SetEquivalentParameters(0.,2.*M_PI);
 	  Intp.Perform(Circ,D1,Cu2,D2,Tol1,Tol2);
 	}
 	break;
@@ -109,8 +109,8 @@ GccGeo_Circ2d2TanOn::
 	{
 	  gp_Elips2d Elips(Sol->Ellipse());
 	  IntRes2d_Domain D1(ElCLib::Value(0.,Elips),   0.,Tol1,
-			     ElCLib::Value(2.*PI,Elips),2.*PI,Tol2);
-	  D1.SetEquivalentParameters(0.,2.*PI);
+			     ElCLib::Value(2.*M_PI,Elips),2.*M_PI,Tol2);
+	  D1.SetEquivalentParameters(0.,2.*M_PI);
 	  Intp.Perform(Elips,D1,Cu2,D2,Tol1,Tol2);
 	}
 	break;
@@ -657,8 +657,8 @@ GccGeo_Circ2d2TanOn::
 	{
 	  gp_Circ2d Circ(Sol->Circle());
 	  IntRes2d_Domain D1(ElCLib::Value(0.,Circ),   0.,Tol1,
-			     ElCLib::Value(2.*PI,Circ),2.*PI,Tol2);
-	  D1.SetEquivalentParameters(0.,2.*PI);
+			     ElCLib::Value(2.*M_PI,Circ),2.*M_PI,Tol2);
+	  D1.SetEquivalentParameters(0.,2.*M_PI);
 	  Intp.Perform(Circ,D1,C2,D2,Tol1,Tol2);
 	}
 	break;
@@ -673,8 +673,8 @@ GccGeo_Circ2d2TanOn::
 	{
 	  gp_Elips2d Elips(Sol->Ellipse());
 	  IntRes2d_Domain D1(ElCLib::Value(0.,Elips),   0.,Tol1,
-			     ElCLib::Value(2.*PI,Elips),2.*PI,Tol2);
-	  D1.SetEquivalentParameters(0.,2.*PI);
+			     ElCLib::Value(2.*M_PI,Elips),2.*M_PI,Tol2);
+	  D1.SetEquivalentParameters(0.,2.*M_PI);
 	  Intp.Perform(Elips,D1,C2,D2,Tol1,Tol2);
 	}
 	break;

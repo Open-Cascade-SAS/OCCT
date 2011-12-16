@@ -103,11 +103,11 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
         if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
           d1     = atof(a[i + 3]);
           angle  = atof(a[i + 4]);
-          angle *= PI / 180.;
+          angle *= M_PI / 180.;
       
           if (   (d1 > Precision::Confusion())
 	      && (angle > Precision::Confusion())
-              && (PI /  2.-  angle > Precision::Confusion()) )
+              && (M_PI /  2.-  angle > Precision::Confusion()) )
 	    aMCh.AddDA(d1, angle, E, F);
         }
         i += 5;

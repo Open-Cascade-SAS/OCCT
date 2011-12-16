@@ -287,7 +287,7 @@ Standard_Real IntCurve_IConicTool::FindParameter(const gp_Pnt2d& P) const {
     
   case GeomAbs_Circle:
     Param=ElCLib::CircleParameter(Axis,P);
-    if(Param<0.0) { Param+=PI+PI; }
+    if(Param<0.0) { Param+=M_PI+M_PI; }
     break;
     
   case GeomAbs_Ellipse: {
@@ -295,7 +295,7 @@ Standard_Real IntCurve_IConicTool::FindParameter(const gp_Pnt2d& P) const {
 				   ,Elips_a
 				   ,Elips_b
 				   ,P);
-    if (Param < 0.0) { Param+=PI+PI; }
+    if (Param < 0.0) { Param+=M_PI+M_PI; }
     break;
   }
     

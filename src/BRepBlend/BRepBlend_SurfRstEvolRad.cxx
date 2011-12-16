@@ -463,7 +463,7 @@ const Standard_Real Tol)
     
     Angle = ACos(Cosa);
     if (Sina <0.) {
-      Angle = 2.*PI - Angle;
+      Angle = 2.*M_PI - Angle;
     }
     
     if (Angle>maxang) {maxang = Angle;}
@@ -708,7 +708,7 @@ gp_Circ& C)
   Pfin = ElCLib::Parameter(C,ptrst);
 
   // Test negative and almost null angles : Single Case
-  if (Pfin>1.5*PI) {
+  if (Pfin>1.5*M_PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center,np,ns));
     Pfin = ElCLib::Parameter(C,ptrst);

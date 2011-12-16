@@ -14,7 +14,7 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2&       A2    ,
 					       const Standard_Real Radius)
 {
   if (Radius < 0.) { TheError = gce_NegativeRadius; }
-  else if (Ang <= gp::Resolution() || Ang >= PI/2. - gp::Resolution()) {
+  else if (Ang <= gp::Resolution() || Ang >= M_PI/2. - gp::Resolution()) {
     TheError = gce_BadAngle;
   }
   else {

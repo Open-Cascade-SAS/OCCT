@@ -68,7 +68,7 @@ void Prs3d_Datum::Add( const Handle(Prs3d_Presentation)& aPresentation,
     G->SetPrimitivesAspect(aDrawer->TextAspect()->Aspect());
     G->Text(Standard_CString("X"),A(2),16.);
 #else
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oX,PI/180.*10.,DS/10.);
+    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oX,M_PI/180.*10.,DS/10.);
     Prs3d_Root::CurrentGroup(aPresentation)->Text(Standard_CString("X"),A(2),1./81.);
 #endif
 }
@@ -85,7 +85,7 @@ void Prs3d_Datum::Add( const Handle(Prs3d_Presentation)& aPresentation,
     G->SetPrimitivesAspect(aDrawer->TextAspect()->Aspect());
     G->Text(Standard_CString("Y"),A(2),16.);
 #else
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oY,PI/180.*10.,DS/10.);
+    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oY,M_PI/180.*10.,DS/10.);
     Prs3d_Root::CurrentGroup(aPresentation)->Text(Standard_CString("Y"),A(2),1./81.);
 #endif
 }
@@ -103,7 +103,7 @@ void Prs3d_Datum::Add( const Handle(Prs3d_Presentation)& aPresentation,
     G->Text(Standard_CString("Z"),A(2),16.);
 #else
     Prs3d_Root::CurrentGroup(aPresentation)->Text(Standard_CString("Z"),A(2),1./81.);
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oZ,PI/180.*10.,DS/10.);
+    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oZ,M_PI/180.*10.,DS/10.);
 #endif
 }
 }

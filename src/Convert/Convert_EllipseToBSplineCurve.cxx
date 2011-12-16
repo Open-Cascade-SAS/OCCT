@@ -67,7 +67,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve
     isperiodic = Standard_False;
     Convert_ConicToBSplineCurve::
       BuildCosAndSin(Parameterisation,
-		     0, 2*PI,
+		     0, 2*M_PI,
 		     CosNumeratorPtr,
 		     SinNumeratorPtr,
 		     weights,
@@ -131,7 +131,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve
   Standard_Real Tol = Precision::PConfusion();
   Standard_Real delta = ULast - UFirst;
 #endif
-  Standard_DomainError_Raise_if( (delta > (2*PI+Tol)) || (delta <= 0.0e0),
+  Standard_DomainError_Raise_if( (delta > (2*M_PI+Tol)) || (delta <= 0.0e0),
 				"Convert_EllipseToBSplineCurve");
   Standard_Integer ii;
   Standard_Real R, r, value;

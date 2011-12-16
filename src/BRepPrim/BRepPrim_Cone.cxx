@@ -31,7 +31,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
     Standard_DomainError::Raise("cone with null height");
   if (myHalfAngle*Height < Precision::Confusion())
     Standard_DomainError::Raise("cone with null angle");
-  if ((PI/2 - myHalfAngle)*Height < Precision::Confusion())
+  if ((M_PI/2 - myHalfAngle)*Height < Precision::Confusion())
     Standard_DomainError::Raise("cone with angle > PI/2");
   
   // cut at top
@@ -50,7 +50,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle) :
        myHalfAngle(Angle),
        myRadius(0.)
 {
-  if ((Angle < 0) || (Angle > PI/2)) 
+  if ((Angle < 0) || (Angle > M_PI/2)) 
     Standard_DomainError::Raise("cone with angle <0 or > PI/2");
   VMin(0.);
   SetMeridian();
@@ -68,7 +68,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
        myHalfAngle(Angle),
        myRadius(0.)
 {
-  if ((Angle < 0) || (Angle > PI/2)) 
+  if ((Angle < 0) || (Angle > M_PI/2)) 
     Standard_DomainError::Raise("cone with angle <0 or > PI/2");
   VMin(0.);
   SetMeridian();
@@ -84,7 +84,7 @@ BRepPrim_Cone::BRepPrim_Cone(const Standard_Real Angle,
        BRepPrim_Revolution( Axes, 0,RealLast()),
        myHalfAngle(Angle)
 {
-  if ((Angle < 0) || (Angle > PI/2)) 
+  if ((Angle < 0) || (Angle > M_PI/2)) 
     Standard_DomainError::Raise("cone with angle <0 or > PI/2");
   VMin(0.);
   SetMeridian();

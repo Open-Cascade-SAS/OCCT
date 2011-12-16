@@ -30,7 +30,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L,
     //modified by NIZNHY-PKV Fri Jun 15 09:55:00 2007f
     //Standard_Real ang;
     //ang = C.XAxis().Direction().Angle(L.Direction());
-    //ang = ang + PI / 2.0;
+    //ang = ang + M_PI / 2.0;
     //modified by NIZNHY-PKV Fri Jun 15 09:55:29 2007t
     if (Abs(Abs(d)-C.Radius())<=Epsilon(C.Radius())) {    // Cas de tangence
       
@@ -47,12 +47,12 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L,
       /*
       u=B*(L.Location().X()-C.Location().X()) -
 	A*(L.Location().Y()-C.Location().Y());
-      if (d<0.0) {ang=ang+PI;}
-      if (ang>=2.0*PI) {
-	ang=ang-2.0*PI;
+      if (d<0.0) {ang=ang+M_PI;}
+      if (ang>=2.0*M_PI) {
+	ang=ang-2.0*M_PI;
       }
       else if (ang<0.0) {
-	ang=ang+2.0*PI;
+	ang=ang+2.0*M_PI;
       }
       */
       //modified by NIZNHY-PKV Fri Jun 15 09:55:41 2007t
@@ -85,22 +85,22 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L,
       }
       else {
 	angt=ASin(sint);
-	if (cost<0) {angt=PI-angt;}
+	if (cost<0) {angt=M_PI-angt;}
       }
       
       ang1=ang-angt;
       ang2=ang+angt;
       if (ang1<0.0) {
-	ang1=ang1+2.0*PI;
+	ang1=ang1+2.0*M_PI;
       }
-      else if (ang1>=2.0*PI) {
-	ang1=ang1-2.0*PI;
+      else if (ang1>=2.0*M_PI) {
+	ang1=ang1-2.0*M_PI;
       }
       if (ang2<0.0) {
-	ang2=ang2+2.0*PI;
+	ang2=ang2+2.0*M_PI;
       }
-      else if (ang2>=2.0*PI) {
-	ang2=ang2-2.0*PI;
+      else if (ang2>=2.0*M_PI) {
+	ang2=ang2-2.0*M_PI;
       }
 
       u1=B*(L.Location().X()-C.Location().X()) -

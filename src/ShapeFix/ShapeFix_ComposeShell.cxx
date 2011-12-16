@@ -1992,7 +1992,7 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
     Standard_Integer index = 0;
     Standard_Boolean misoriented = Standard_True, samepatch = Standard_False;
     Standard_Boolean reverse = Standard_False, connected = Standard_False;
-    Standard_Real angle = -PI, mindist = RealLast();
+    Standard_Real angle = -M_PI, mindist = RealLast();
     Standard_Integer weigth = 0;
     Standard_Real shiftu=0., shiftv=0.;
 
@@ -2083,8 +2083,8 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
 	}
 	
 	// short segment is to be taken with highest priority by angle
-        Standard_Real ang = ( shorts(i) >0 ? PI : endTan.Angle ( lVec ) );
-	if ( myClosedMode && shorts(i) <=0 && PI-ang < ::Precision::Angular() )
+        Standard_Real ang = ( shorts(i) >0 ? M_PI : endTan.Angle ( lVec ) );
+	if ( myClosedMode && shorts(i) <=0 && M_PI-ang < ::Precision::Angular() )
 	  ang = 0.; // abv 21 Mar 00: trj3_s1-md-214.stp #2471: avoid going back
         // abv 05 Feb 02: face from Parasolid: use tolerance of edges for check
         // for coincidence (instead of vertex tolerance) in order 

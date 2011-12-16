@@ -454,7 +454,7 @@ void  BRepSweep_Rotation::SetGeneratingPCurve
     Standard_Real U = BC.FirstParameter();
     point = BC.Value(U);
     if (point.Distance(tor.Location()) < Precision::Confusion()) {
-      v = PI;
+      v = M_PI;
 //  modified by NIZHNY-EAP Wed Mar  1 17:49:29 2000 ___BEGIN___
       u = 0.;
     }
@@ -463,15 +463,15 @@ void  BRepSweep_Rotation::SetGeneratingPCurve
 			      tor.MinorRadius(),point,u,v);
     }
 //    u = 0.;
-    v = ElCLib::InPeriod(v,0.,2*PI);
-    if((2*PI - v) <= Precision::PConfusion()) v -= 2*PI;
+    v = ElCLib::InPeriod(v,0.,2*M_PI);
+    if((2*M_PI - v) <= Precision::PConfusion()) v -= 2*M_PI;
     if (aDirV.Index() == 2) {
       Standard_Real uLeft = u-myAng;
-      ElCLib::AdjustPeriodic(-PI,PI,Precision::PConfusion(),uLeft,u);
+      ElCLib::AdjustPeriodic(-M_PI,M_PI,Precision::PConfusion(),uLeft,u);
     }
     else {
       Standard_Real uRight = u+myAng;
-      ElCLib::AdjustPeriodic(-PI,PI,Precision::PConfusion(),u,uRight);
+      ElCLib::AdjustPeriodic(-M_PI,M_PI,Precision::PConfusion(),u,uRight);
     }
 //  modified by NIZHNY-EAP Wed Mar  1 17:49:32 2000 ___END___
     pnt2d.SetCoord(u,v-U);
@@ -575,7 +575,7 @@ void  BRepSweep_Rotation::SetDirectingPCurve
       BRepAdaptor_Curve BC(TopoDS::Edge(aGenE));
       p1 = BC.Value(BC.FirstParameter());
       if (p1.Distance(tor.Location()) < Precision::Confusion()){
-	v1 = PI;
+	v1 = M_PI;
 //  modified by NIZHNY-EAP Thu Mar  2 09:43:26 2000 ___BEGIN___
 	u1 = 0.;
 //  modified by NIZHNY-EAP Thu Mar  2 15:28:59 2000 ___END___
@@ -586,16 +586,16 @@ void  BRepSweep_Rotation::SetDirectingPCurve
       }
       p2 = BC.Value(BC.LastParameter());
       if (p2.Distance(tor.Location()) < Precision::Confusion()){
-	v2 = PI;
+	v2 = M_PI;
       }
       else {
 	ElSLib::TorusParameters(tor.Position(),tor.MajorRadius(),
 				tor.MinorRadius(),p2,u2,v2);
       }
-      ElCLib::AdjustPeriodic(0.,2*PI,Precision::PConfusion(),v1,v2);
+      ElCLib::AdjustPeriodic(0.,2*M_PI,Precision::PConfusion(),v1,v2);
 //  modified by NIZHNY-EAP Thu Mar  2 15:29:04 2000 ___BEGIN___
       u2 = u1 + myAng;
-      ElCLib::AdjustPeriodic(-PI,PI,Precision::PConfusion(),u1,u2);
+      ElCLib::AdjustPeriodic(-M_PI,M_PI,Precision::PConfusion(),u1,u2);
       if (aGenV.Orientation()==TopAbs_FORWARD){
 	p22d.SetCoord(u1,v1);
       }
@@ -747,7 +747,7 @@ Standard_Boolean BRepSweep_Rotation::GDDShapeIsToAdd
        aGenS.ShapeType() == TopAbs_FACE &&
        aDirS.Type() == TopAbs_EDGE &&
        aSubDirS.Type() == TopAbs_VERTEX ){
-    return ( Abs(myAng - 2 * PI) > Precision::Angular() );
+    return ( Abs(myAng - 2 * M_PI) > Precision::Angular() );
   }
   else if ( aNewShape.ShapeType() == TopAbs_FACE &&
        aNewSubShape.ShapeType() == TopAbs_EDGE &&
@@ -757,7 +757,7 @@ Standard_Boolean BRepSweep_Rotation::GDDShapeIsToAdd
     TopLoc_Location Loc;
     GeomAdaptor_Surface AS(BRep_Tool::Surface(TopoDS::Face(aNewShape),Loc));
     if (AS.GetType()==GeomAbs_Plane){
-      return ( Abs(myAng - 2 * PI) > Precision::Angular() );
+      return ( Abs(myAng - 2 * M_PI) > Precision::Angular() );
     }
     else {
       return Standard_True;
@@ -789,7 +789,7 @@ Standard_Boolean BRepSweep_Rotation::SeparatedWires
     TopLoc_Location Loc;
     GeomAdaptor_Surface AS(BRep_Tool::Surface(TopoDS::Face(aNewShape),Loc));
     if (AS.GetType()==GeomAbs_Plane){
-      return (Abs(myAng-2*PI) <= Precision::Angular());
+      return (Abs(myAng-2*M_PI) <= Precision::Angular());
     }
     else{
       return Standard_False;

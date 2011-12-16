@@ -53,7 +53,7 @@ Plate_FreeGtoCConstraint::Plate_FreeGtoCConstraint(const gp_XY& point2d,const Pl
       Standard_Real s =  N0.CrossMagnitude(N1);
       if((s < 1.e-2)&&(c<0.)) return;
       Standard_Real angle = atan2(c,s);
-      //if (angle < 0.) angle += PI;
+      //if (angle < 0.) angle += M_PI;
       
       gp_XYZ d = N0^N1;
       d.Normalize();

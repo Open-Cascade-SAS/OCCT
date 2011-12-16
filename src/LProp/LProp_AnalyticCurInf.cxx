@@ -35,12 +35,12 @@ void LProp_AnalyticCurInf::Perform (const GeomAbs_CurveType  CType,
   case GeomAbs_Ellipse: 
     {
       Standard_Real U1,U2,U3,U4;
-      Standard_Real UFPlus2PI = UFirst + 2*PI;
+      Standard_Real UFPlus2PI = UFirst + 2*M_PI;
       
       U1 = ElCLib::InPeriod(0.0     ,UFirst,UFPlus2PI);
-      U2 = ElCLib::InPeriod(PI/2.   ,UFirst,UFPlus2PI);
-      U3 = ElCLib::InPeriod(PI      ,UFirst,UFPlus2PI);
-      U4 = ElCLib::InPeriod(3.*PI/2.,UFirst,UFPlus2PI);
+      U2 = ElCLib::InPeriod(M_PI/2.   ,UFirst,UFPlus2PI);
+      U3 = ElCLib::InPeriod(M_PI      ,UFirst,UFPlus2PI);
+      U4 = ElCLib::InPeriod(3.*M_PI/2.,UFirst,UFPlus2PI);
       
       if (UFirst <= U1 && U1 <= ULast) {Result.AddExtCur(U1, IsMin);}
       if (UFirst <= U2 && U2 <= ULast) {Result.AddExtCur(U2, IsMax);}

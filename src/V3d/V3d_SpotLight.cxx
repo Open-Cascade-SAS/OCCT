@@ -51,7 +51,7 @@
 V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const V3d_TypeOfOrientation Direction, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2, const Standard_Real CN, const Standard_Real AN):V3d_PositionLight(VM) {
 
   Viewer_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  
-			|| AN < 0. || AN > PI, "V3d_SpotLight, bad coefficient or angle");
+			|| AN < 0. || AN > M_PI, "V3d_SpotLight, bad coefficient or angle");
 
   Quantity_Color C(Name) ;
   Graphic3d_Vector D = V3d::GetProjAxis(Direction) ;
@@ -68,7 +68,7 @@ V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real X
 V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real Xt, const Standard_Real Yt, const Standard_Real Zt, const Standard_Real Xp, const Standard_Real Yp, const Standard_Real Zp, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2, const Standard_Real CN, const Standard_Real AN):V3d_PositionLight(VM) {
 
   Viewer_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  
-			|| AN < 0. || AN > PI, "V3d_SpotLight, bad coefficient or angle");
+			|| AN < 0. || AN > M_PI, "V3d_SpotLight, bad coefficient or angle");
 
   Quantity_Color C(Name) ;
   Graphic3d_Vertex T(Xt,Yt,Zt) ;
@@ -122,7 +122,7 @@ void V3d_SpotLight::SetConcentration(const Standard_Real C) {
 
 void V3d_SpotLight::SetAngle(const Standard_Real Angle) {
 
-  Viewer_BadValue_Raise_if( Angle <= 0. || Angle >= PI,
+  Viewer_BadValue_Raise_if( Angle <= 0. || Angle >= M_PI,
 			"V3d_SpotLight::SetAngle, bad angle");
   MyLight->SetAngle(Angle) ;
 
@@ -191,7 +191,7 @@ void V3d_SpotLight::Symbol (const Handle(Graphic3d_Group)& gsymbol,
   this->Position(X,Y,Z);
   this->Direction(DX,DY,DZ);
   Rayon = this->Radius();
-  V3d::ArrowOfRadius(gsymbol,X,Y,Z,-DX,-DY,-DZ,PI/8.,Rayon/15.);
+  V3d::ArrowOfRadius(gsymbol,X,Y,Z,-DX,-DY,-DZ,M_PI/8.,Rayon/15.);
 }
     
 void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
@@ -280,8 +280,8 @@ void V3d_SpotLight::Display( const Handle(V3d_View)& aView,
       gnopick->Polyline(PRadius);
       V3d::ArrowOfRadius(gExtArrow,X-(X-X0)/10.,
 			 Y-(Y-Y0)/10.,
-			 Z-(Z-Z0)/10.,X-X0,Y-Y0,Z-Z0,Standard_PI/15.,Rayon/20.);
-      V3d::ArrowOfRadius(gIntArrow,X0,Y0,Z0,X0-X,Y0-Y,Z0-Z,Standard_PI/15.,Rayon/20.);
+			 Z-(Z-Z0) / 10., X-X0, Y-Y0, Z-Z0, M_PI / 15., Rayon / 20.);
+      V3d::ArrowOfRadius(gIntArrow, X0, Y0, Z0, X0-X, Y0-Y, Z0-Z, M_PI / 15., Rayon / 20.);
       TCollection_AsciiString ValOfRadius(Rayon);
       PText.SetCoord( (X0+X)/2., (Y0+Y)/2. , (Z0+Z)/2. );
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);

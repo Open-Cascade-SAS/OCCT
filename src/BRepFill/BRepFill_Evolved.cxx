@@ -2189,7 +2189,7 @@ void BRepFill_Evolved::MakePipe(const TopoDS_Edge& SE,
 
   gp_Trsf trsf;
   if (Side(myProfile,BRepFill_Confusion()) > 3) { // side right 
-    trsf.SetRotation(gp::OZ(),PI);
+    trsf.SetRotation(gp::OZ(),M_PI);
   }
   TopLoc_Location DumLoc (trsf);
   TopoDS_Shape aLocalShape = myProfile.Moved(DumLoc);
@@ -2276,7 +2276,7 @@ void BRepFill_Evolved::MakeRevol(const TopoDS_Edge&   SE,
 
   gp_Trsf trsf;
   if (Side(myProfile,BRepFill_Confusion()) > 3) { // side right 
-    trsf.SetRotation(gp::OZ(),PI);
+    trsf.SetRotation(gp::OZ(),M_PI);
   }
   TopLoc_Location DumLoc (trsf);
   TopoDS_Shape aLocalShape = myProfile.Moved(DumLoc);
@@ -2294,7 +2294,7 @@ void BRepFill_Evolved::MakeRevol(const TopoDS_Edge&   SE,
   // Position of the sewing on the edge of the spine
   // so that the bissectrices didn't cross the sewings.
   gp_Trsf dummy;
-  dummy.SetRotation(AxeRev, 1.5*PI);
+  dummy.SetRotation(AxeRev, 1.5*M_PI);
   TopLoc_Location DummyLoc(dummy);
   GenProf.Move(DummyLoc);
   

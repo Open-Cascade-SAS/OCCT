@@ -168,19 +168,19 @@ static Standard_Real FUN_getpar(const gp_Dir& a, const gp_Dir& x, const gp_Dir& 
   Standard_Boolean x1null = (Abs(x1) <= tol);
   Standard_Boolean x2null = (Abs(x2) <= tol);
 
-  if      (x1null) par = (x2 > 0.) ? 3.*PI*.5 : PI*.5;
-  else if (x2null) par = (x1 > 0.) ? 2.*PI    : PI;
+  if      (x1null) par = (x2 > 0.) ? 3.*M_PI*.5 : M_PI*.5;
+  else if (x2null) par = (x1 > 0.) ? 2.*M_PI    : M_PI;
   else {
     Standard_Real ac = ACos(Abs(x1));
     Standard_Boolean x1pos = (x1 > tol);
     Standard_Boolean x2pos = (x2 > tol);
-    if (x1pos && x2pos)   par = 2.*PI-ac;
+    if (x1pos && x2pos)   par = 2.*M_PI-ac;
     if (x1pos && !x2pos)  par = ac;
-    if (!x1pos && x2pos)  par = PI+ac;
-    if (!x1pos && !x2pos) par = PI-ac;
+    if (!x1pos && x2pos)  par = M_PI+ac;
+    if (!x1pos && !x2pos) par = M_PI-ac;
   }
 
-  if (complement) par = 2.*PI - par;
+  if (complement) par = 2.*M_PI - par;
   return par;
 }
 
@@ -418,9 +418,9 @@ static Standard_Boolean FUN_0or2PI(Standard_Real& paronEd, const Standard_Boolea
 {
   Standard_Real tol = Precision::Parametric(Precision::Confusion());
   Standard_Boolean extre = (Abs(paronEd) < tol);
-  extre = extre && (Abs(2.*PI-paronEd) < tol);
+  extre = extre && (Abs(2.*M_PI-paronEd) < tol);
   if (!extre) return Standard_False;
-  paronEd = (inout) ? 2.*PI : 0.;
+  paronEd = (inout) ? 2.*M_PI : 0.;
   return Standard_True;
 }
 
@@ -501,7 +501,7 @@ static Standard_Integer FUN_parondgEINFi(const TopOpeBRep_VPointInter& VP,
 
   Standard_Real par = FUN_getpar(a,x,y,complement);
   par1OnEd = par;
-  par2OnEd = (par > PI) ? par-PI : par+PI;
+  par2OnEd = (par > M_PI) ? par-M_PI : par+M_PI;
 
   // kpart Ec on Fi :
   Standard_Boolean changedpar1 = FUN_0or2PI(par1OnEd,T1inout);

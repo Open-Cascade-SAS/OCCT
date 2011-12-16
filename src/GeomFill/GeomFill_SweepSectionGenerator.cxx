@@ -319,11 +319,11 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
     myFirstSect = GeomConvert::CurveToBSplineCurve(Circ);
     // le cercle est segmente car AppBlend_AppSurf ne gere
     // pas les courbes periodiques.
-    myFirstSect->Segment(0., 2.*PI);
+    myFirstSect->Segment(0., 2.*M_PI);
 */
     Handle(Geom_TrimmedCurve) Circ = 
       new Geom_TrimmedCurve(new Geom_Circle( CircleAxis, myRadius), 
-			    0., 2.*PI); 
+			    0., 2.*M_PI); 
     
     myFirstSect = GeomConvert::CurveToBSplineCurve(Circ,Convert_QuasiAngular);
   }
@@ -414,7 +414,7 @@ void GeomFill_SweepSectionGenerator::Knots(TColStd_Array1OfReal& TKnots) const
 {
 /*
   if (myType == 1) {
-    Standard_Real U = 2.*PI/3.;
+    Standard_Real U = 2.*M_PI/3.;
     for ( Standard_Integer i = 1; i <= 4; i++) 
       TKnots(i) = ( i-1) * U;
   }

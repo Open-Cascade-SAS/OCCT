@@ -673,7 +673,7 @@ Standard_Real GeomAdaptor_Curve::Resolution(const Standard_Real R3D) const
     if ( R > R3D/2. )
       return 2*ASin(R3D/(2*R));
     else
-      return 2*PI;
+      return 2*M_PI;
   }
   case GeomAbs_Ellipse: {
     return R3D / (*((Handle(Geom_Ellipse)*)&myCurve))->MajorRadius();

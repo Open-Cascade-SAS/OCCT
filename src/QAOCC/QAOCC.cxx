@@ -1280,7 +1280,7 @@ static Standard_Integer OCC22 (Draw_Interpretor& di, Standard_Integer argc, cons
     else aConsiderLocation = Standard_True;
 
     // 2. Iniitialize aShapeUpgrade
-    ShapeUpgrade_ShapeDivideAngle aShapeUpgrade(PI/2.);
+    ShapeUpgrade_ShapeDivideAngle aShapeUpgrade(M_PI/2.);
     // precision
     aShapeUpgrade.SetPrecision (Precision::Confusion());
     // tolerance
@@ -1384,7 +1384,7 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
     if(aShape.IsNull()) {di << "OCC369 FAULTY. Entry shape is NULL \n"; return 0;}
 
     // 3. Build mesh
-    BRepMesh_IncrementalMesh aMesh(aShape, 0.2, Standard_True, PI/6);
+    BRepMesh_IncrementalMesh aMesh(aShape, 0.2, Standard_True, M_PI/6);
 
   }
   catch (Standard_Failure) {di << "OCC369 Exception \n" ;return 0;}
@@ -2221,8 +2221,8 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Shape cyl2;
   TopoDS_Shape o_cut_shape;
   if (CaseNumber == 1) {
-    //BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(21.65064, -50.0, 127.5),gp_Dir(-sin(PI/3), 0.0, 0.5)), 5, 150);
-    gp_Dir myDir_mc2(-sin(PI/3), 0.0, 0.5);
+    //BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(21.65064, -50.0, 127.5),gp_Dir(-sin(M_PI/3), 0.0, 0.5)), 5, 150);
+    gp_Dir myDir_mc2(-sin(M_PI/3), 0.0, 0.5);
     gp_Pnt myPnt_mc2(21.65064, -50.0, 127.5);
     gp_Ax2 myAx2_mc2(myPnt_mc2, myDir_mc2);
     BRepPrimAPI_MakeCylinder o_mc2 (myAx2_mc2, 5, 150);
@@ -2241,8 +2241,8 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
       o_cut_shape = BRepAlgo_Cut (o_mc1.Solid (), o_mc2.Solid ());
     }
   } else {
-    //BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(978.34936, -50.0, 127.5),gp_Dir(sin(PI/3), 0.0, 0.5)), 5, 150);
-    gp_Dir myDir_mc2(-sin(PI/3), 0.0, 0.5);
+    //BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(978.34936, -50.0, 127.5),gp_Dir(sin(M_PI/3), 0.0, 0.5)), 5, 150);
+    gp_Dir myDir_mc2(-sin(M_PI/3), 0.0, 0.5);
     gp_Pnt myPnt_mc2(21.65064, -50.0, 127.5);
     gp_Ax2 myAx2_mc2(myPnt_mc2, myDir_mc2);
     BRepPrimAPI_MakeCylinder o_mc2 (myAx2_mc2, 5, 150);
@@ -3361,7 +3361,7 @@ Standard_Integer OCC14376(Draw_Interpretor& di, Standard_Integer argc, const cha
   }
   di<<"deflection="<< aDeflection << "\n";
 
-  BRepMesh_IncrementalMesh aIMesh(aShape, aDeflection, Standard_False, PI/9.);
+  BRepMesh_IncrementalMesh aIMesh(aShape, aDeflection, Standard_False, M_PI/9.);
   TopLoc_Location aLocation;
   Handle(Poly_Triangulation) aTriang = BRep_Tool::Triangulation(TopoDS::Face(aShape), aLocation);
 

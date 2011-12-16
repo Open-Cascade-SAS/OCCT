@@ -278,7 +278,7 @@ void AIS_EqualDistanceRelation::ComputeSelection( const Handle( SelectMgr_Select
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint1),
                     LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint1);
-      if (LastPar < FirstPar ) LastPar+=PI*2;
+      if (LastPar < FirstPar ) LastPar+=M_PI*2;
       //add sensetive arc
       Handle(Select3D_SensitiveCircle) circ = 
 	new Select3D_SensitiveCircle( own, aCircle,  FirstPar, LastPar);
@@ -301,7 +301,7 @@ void AIS_EqualDistanceRelation::ComputeSelection( const Handle( SelectMgr_Select
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint2),
       LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint2);
-      if (LastPar < FirstPar ) LastPar+=PI*2;
+      if (LastPar < FirstPar ) LastPar+=M_PI*2;
       //add sensetive arc
       Handle(Select3D_SensitiveCircle) circ = 
 	new Select3D_SensitiveCircle( own,aCircle,  FirstPar, LastPar);
@@ -324,7 +324,7 @@ void AIS_EqualDistanceRelation::ComputeSelection( const Handle( SelectMgr_Select
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint3),
       LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint3);
-      if (LastPar < FirstPar ) LastPar+=PI*2;
+      if (LastPar < FirstPar ) LastPar+=M_PI*2;
       Handle(Select3D_SensitiveCircle) circ = 
 	new Select3D_SensitiveCircle( own, aCircle,  FirstPar, LastPar);
       aSelection->Add( circ );
@@ -350,7 +350,7 @@ void AIS_EqualDistanceRelation::ComputeSelection( const Handle( SelectMgr_Select
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint4),
       LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint4);
-      if (LastPar < FirstPar ) LastPar+=PI*2;
+      if (LastPar < FirstPar ) LastPar+=M_PI*2;
       //add sensetive arc
       Handle(Select3D_SensitiveCircle) circ = 
 	new Select3D_SensitiveCircle( own,aCircle,  FirstPar, LastPar);
@@ -530,18 +530,18 @@ void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Prese
       if (PrPnt12.Distance(PrCenter) >Precision::Confusion())
 	{
 	  gp_Dir aDir1(PrPnt12.XYZ() - PrCenter.XYZ());
-	  Standard_Real anAngle = aDir1.Angle(XDir); //Get the angle in range [0, PI]
+	  Standard_Real anAngle = aDir1.Angle(XDir); //Get the angle in range [0, M_PI]
 	  if (aDir1.Dot(YDir) < 0)
-	    anAngle = 2*Standard_PI - anAngle;
+	    anAngle = 2 * M_PI - anAngle;
 	  par1 = anAngle;
 	}
       
       if (PrPnt22.Distance(PrCenter) >Precision::Confusion())
 	{
 	  gp_Dir aDir2(PrPnt22.XYZ() - PrCenter.XYZ());
-	  Standard_Real anAngle = aDir2.Angle(XDir); //Get the angle in range [0, PI]
+	  Standard_Real anAngle = aDir2.Angle(XDir); //Get the angle in range [0, M_PI]
 	  if (aDir2.Dot(YDir) < 0)
-	    anAngle = 2*Standard_PI - anAngle;
+	    anAngle = 2 * M_PI - anAngle;
 	  par2 = anAngle;
 	}
       
@@ -627,7 +627,7 @@ void AIS_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d_Pr
   else {
     if (!samePoint) {
       DirAttach.SetXYZ(SecondAttach.XYZ() - FirstAttach.XYZ());
-      DirAttach.Rotate(Plane->Pln().Axis(),PI/2.);
+      DirAttach.Rotate(Plane->Pln().Axis(),M_PI/2.);
     }
   }
   

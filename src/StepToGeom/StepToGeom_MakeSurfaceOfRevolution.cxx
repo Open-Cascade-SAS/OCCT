@@ -44,7 +44,7 @@ Standard_Boolean StepToGeom_MakeSurfaceOfRevolution::Convert (const Handle(StepG
             //change parametrization for trimming
             gp_Ax2 axnew(pc,norm,dirline.Reversed());
             conic->SetPosition(axnew);
-            C = new Geom_TrimmedCurve(conic, 0., PI);
+            C = new Geom_TrimmedCurve(conic, 0., M_PI);
           }
         }
       }

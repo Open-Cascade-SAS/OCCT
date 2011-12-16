@@ -20,8 +20,8 @@ Standard_Real gp_Dir2d::Angle (const gp_Dir2d& Other) const
   else {
     if (Cosinus > 0.0)  return      asin (Sinus);
     else { 
-      if (Sinus > 0.0) return  Standard_PI - asin (Sinus);
-      else             return -Standard_PI - asin (Sinus);
+      if (Sinus > 0.0) return  M_PI - asin (Sinus);
+      else             return -M_PI - asin (Sinus);
     }
   }
 }

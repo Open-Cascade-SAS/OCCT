@@ -108,7 +108,7 @@ static Standard_Integer cylinder(Draw_Interpretor& , Standard_Integer n, const c
   }
   else if (n == 5) {
     if (P.IsNull())
-      S = BRepPrimAPI_MakeCylinder(atof(a[2]),atof(a[3]),atof(a[4]) * PI180);
+      S = BRepPrimAPI_MakeCylinder(atof(a[2]),atof(a[3]),atof(a[4]) * (M_PI / 180.0));
     else
       S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]));
   }
@@ -116,7 +116,7 @@ static Standard_Integer cylinder(Draw_Interpretor& , Standard_Integer n, const c
     if (P.IsNull())
       return 1;
     else
-      S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]),atof(a[5]) * PI180);
+      S = BRepPrimAPI_MakeCylinder(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]),atof(a[5]) * (M_PI / 180.0));
   }
   else
     return 1;
@@ -142,12 +142,12 @@ static Standard_Integer cone(Draw_Interpretor& , Standard_Integer n, const char*
   }
   else if (n == 6) {
     if (P.IsNull())
-      S = BRepPrimAPI_MakeCone(atof(a[2]),atof(a[3]),atof(a[4]),atof(a[5]) * PI180);
+      S = BRepPrimAPI_MakeCone(atof(a[2]),atof(a[3]),atof(a[4]),atof(a[5]) * (M_PI / 180.0));
     else
       S = BRepPrimAPI_MakeCone(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]),atof(a[5]));
   }
   else if (n == 7) {
-    S = BRepPrimAPI_MakeCone(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]) * PI180);
+    S = BRepPrimAPI_MakeCone(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]) * (M_PI / 180.0));
   }
   else
     return 1;
@@ -173,24 +173,24 @@ static Standard_Integer sphere(Draw_Interpretor& , Standard_Integer n, const cha
   }
   else if (n == 4) {
     if (P.IsNull())
-      S = BRepPrimAPI_MakeSphere(atof(a[2]),atof(a[3]) * PI180);
+      S = BRepPrimAPI_MakeSphere(atof(a[2]),atof(a[3]) * (M_PI / 180.0));
     else
       S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]));
   }
   else if (n == 5) {
     if (P.IsNull())
-      S = BRepPrimAPI_MakeSphere(atof(a[2]),atof(a[3]) * PI180,atof(a[4]) * PI180);
+      S = BRepPrimAPI_MakeSphere(atof(a[2]),atof(a[3]) * (M_PI / 180.0),atof(a[4]) * (M_PI / 180.0));
     else
-      S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]) * PI180);
+      S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]) * (M_PI / 180.0));
   }
   else if (n == 6) {
     if (P.IsNull())
-      S = BRepPrimAPI_MakeSphere(atof(a[2]),atof(a[3]) * PI180,atof(a[4]) * PI180,atof(a[5]) * PI180);
+      S = BRepPrimAPI_MakeSphere(atof(a[2]),atof(a[3]) * (M_PI / 180.0),atof(a[4]) * (M_PI / 180.0),atof(a[5]) * (M_PI / 180.0));
     else
-      S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]) * PI180,atof(a[5]) * PI180);
+      S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]) * (M_PI / 180.0),atof(a[5]) * (M_PI / 180.0));
   }
   else if (n == 7) {
-    S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]) * PI180,atof(a[5]) * PI180,atof(a[6]) * PI180);
+    S = BRepPrimAPI_MakeSphere(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]) * (M_PI / 180.0),atof(a[5]) * (M_PI / 180.0),atof(a[6]) * (M_PI / 180.0));
   }
   else
     return 1;
@@ -216,29 +216,29 @@ static Standard_Integer torus(Draw_Interpretor& , Standard_Integer n, const char
   }
   else if (n == 5) {
     if (P.IsNull())
-      S = BRepPrimAPI_MakeTorus(atof(a[2]),atof(a[3]),atof(a[4]) * PI180);
+      S = BRepPrimAPI_MakeTorus(atof(a[2]),atof(a[3]),atof(a[4]) * (M_PI / 180.0));
     else
       S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]));
   }
   else if (n == 6) {
     if (P.IsNull())
       S = BRepPrimAPI_MakeTorus(atof(a[2]),atof(a[3]),
-			    atof(a[4]) * PI180,atof(a[5]) * PI180);
+			    atof(a[4]) * (M_PI / 180.0),atof(a[5]) * (M_PI / 180.0));
     else
       S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(),
-			    atof(a[3]),atof(a[4]),atof(a[5]) * PI180);
+			    atof(a[3]),atof(a[4]),atof(a[5]) * (M_PI / 180.0));
   }
   else if (n == 7) {
     if (P.IsNull())
       S = BRepPrimAPI_MakeTorus(atof(a[2]),atof(a[3]),
-			    atof(a[4]) * PI180,atof(a[5]) * PI180,atof(a[6]) * PI180);
+			    atof(a[4]) * (M_PI / 180.0),atof(a[5]) * (M_PI / 180.0),atof(a[6]) * (M_PI / 180.0));
     else
       S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(),atof(a[3]),
-			    atof(a[4]),atof(a[5]) * PI180,atof(a[6]) * PI180);
+			    atof(a[4]),atof(a[5]) * (M_PI / 180.0),atof(a[6]) * (M_PI / 180.0));
   }
   else if (n == 8) {
     S = BRepPrimAPI_MakeTorus(P->Pln().Position().Ax2(),atof(a[3]),atof(a[4]),
-			  atof(a[5]) * PI180,atof(a[6]) * PI180,atof(a[7]) * PI180);
+			  atof(a[5]) * (M_PI / 180.0),atof(a[6]) * (M_PI / 180.0),atof(a[7]) * (M_PI / 180.0));
   }
   else
     return 1;

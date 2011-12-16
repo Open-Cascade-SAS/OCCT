@@ -180,135 +180,135 @@ Standard_Boolean Draw_View::Init (const char* typ)
     }
   else if (!strcmp("-Y+X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),M_PI/2);
     }
   else if (!strcmp("-X-Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),M_PI);
     }
   else if (!strcmp("+Y-X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/2);
     }
   else if (!strcmp("+Y+X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI);
       Matrix.Multiply(T);
     }
   else if (!strcmp("-X+Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI);
     }
   else if (!strcmp("-Y-X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+X-Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
     }
   else if (!strcmp("+X+Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
     }
   else if (!strcmp("-Z+X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("-X-Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+Z-X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+Z+X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("-X+Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI);
       Matrix.Multiply(T);
     }
   else if (!strcmp("-Z-X",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+X-Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
     }
   else if (!strcmp("+Y+Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("-Z+Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
     }
   else if (!strcmp("-Y-Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+Z-Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),-M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+Z+Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
     }
   else if (!strcmp("-Y+Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("-Z-Y",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI);
       Matrix.Multiply(T);
     }
   else if (!strcmp("+Y-Z",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),PI/2);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),PI/2);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(0,1,0)),M_PI/2);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),M_PI/2);
       Matrix.Multiply(T);
     }
   else if (!strcmp("AXON",typ))
     {
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/4);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-PI/4);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/4);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/4);
       Matrix.Multiply(T);
     }
   else if (!strcmp("PERS",typ))
     {
       FlagPers =1;
-      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-PI/4);
-      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-PI/4);
+      Matrix.SetRotation(gp_Ax1(Pvise,gp_Dir(1,0,0)),-M_PI/4);
+      T.SetRotation(gp_Ax1(Pvise,gp_Dir(0,0,1)),-M_PI/4);
       Matrix.Multiply(T);
     }
   else {

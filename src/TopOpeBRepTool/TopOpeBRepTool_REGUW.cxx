@@ -542,7 +542,7 @@ Standard_Boolean TopOpeBRepTool_REGUW::NearestE(const TopTools_ListOfShape& loe,
   if (M_REVERSED(efound.Orientation())) tg2dfound.Reverse();
   Standard_Real angfound = 1.e7;
   if (iStep == 1) angfound = TopOpeBRepTool_TOOL::Matter(mytg2d,tg2dfound);
-  else            angfound = 2.*PI - TopOpeBRepTool_TOOL::Matter(tg2dfound,mytg2d);
+  else            angfound = 2.*M_PI - TopOpeBRepTool_TOOL::Matter(tg2dfound,mytg2d);
 #ifdef DEB
   if (trc) cout<<"ang(e"<<FUN_adds(myed)<<",e"<<FUN_adds(efound)<<")="<<angfound<<endl;
 #endif
@@ -564,7 +564,7 @@ Standard_Boolean TopOpeBRepTool_REGUW::NearestE(const TopTools_ListOfShape& loe,
     
     Standard_Real angi = 1.e7;
     if (iStep == 1) angi = TopOpeBRepTool_TOOL::Matter(mytg2d,tg2di);
-    else            angi = 2.*PI - TopOpeBRepTool_TOOL::Matter(tg2di,mytg2d);
+    else            angi = 2.*M_PI - TopOpeBRepTool_TOOL::Matter(tg2di,mytg2d);
     Standard_Boolean eq = Abs(angi-angfound) < tola;
 #ifdef DEB
     if (trc) cout<<"ang(e"<<FUN_adds(myed)<<",e"<<FUN_adds(ei)<<")="<<angi<<endl;

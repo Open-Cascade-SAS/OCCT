@@ -63,7 +63,7 @@ Geom_ConicalSurface::Geom_ConicalSurface ( const Ax3& A3 ,
        radius(R), semiAngle (Ang) 
 {
 
-  if (R < 0.0 || Abs(Ang) <= gp::Resolution() || Abs(Ang) >= PI/2.0 - gp::Resolution()) 
+  if (R < 0.0 || Abs(Ang) <= gp::Resolution() || Abs(Ang) >= M_PI/2.0 - gp::Resolution()) 
     Standard_ConstructionError::Raise();
   
   pos = A3;
@@ -89,7 +89,7 @@ Geom_ConicalSurface::Geom_ConicalSurface ( const gp_Cone& C )
 
 Standard_Real Geom_ConicalSurface::UReversedParameter( const Standard_Real U) const
 {
-  return ( 2.*PI - U);
+  return ( 2.*M_PI - U);
 }
 
 
@@ -205,7 +205,7 @@ void Geom_ConicalSurface::SetRadius (const Standard_Real R) {
 
 void Geom_ConicalSurface::SetSemiAngle (const Standard_Real Ang) {
 
-  if (Abs(Ang) <= gp::Resolution() || Abs(Ang) >= PI/2.0 - gp::Resolution()) {
+  if (Abs(Ang) <= gp::Resolution() || Abs(Ang) >= M_PI/2.0 - gp::Resolution()) {
     Standard_ConstructionError::Raise();
   }
   semiAngle = Ang;
@@ -235,7 +235,7 @@ Pnt Geom_ConicalSurface::Apex () const
 void Geom_ConicalSurface::Bounds (Standard_Real& U1, Standard_Real& U2, 
 				  Standard_Real& V1, Standard_Real& V2) const {
 
-   U1 = 0.0;  U2 = 2.0 * PI;  
+   U1 = 0.0;  U2 = 2.0 * M_PI;  
    V1 = -Precision::Infinite();  V2 = Precision::Infinite();
 }
 

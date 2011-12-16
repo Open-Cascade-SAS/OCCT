@@ -473,21 +473,21 @@
        || surf->GetType()==GeomAbs_Torus
        || surf->GetType()==GeomAbs_Sphere
        || surf->GetType()==GeomAbs_SurfaceOfRevolution) { 
-      Standard_Real uuu=PI+PI-(Umax-Umin);
+      Standard_Real uuu=M_PI+M_PI-(Umax-Umin);
       if(uuu<0) uuu=0;
       U1 = Umin-uuu*0.5;
-      U2 = U1+PI+PI;
+      U2 = U1+M_PI+M_PI;
     }
     else { 
       U1=U2=0.0; 
     } 
     
     if(surf->GetType()==GeomAbs_Torus) { 
-      Standard_Real uuu=PI+PI-(Vmax-Vmin);
+      Standard_Real uuu=M_PI+M_PI-(Vmax-Vmin);
       if(uuu<0) uuu=0;
       
       V1 = Vmin-uuu*0.5;
-      V2 = V1+PI+PI;
+      V2 = V1+M_PI+M_PI;
     }
     else { 
       V1=V2=0.0; 

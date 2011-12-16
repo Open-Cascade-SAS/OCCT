@@ -60,7 +60,7 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams
     // Reading slantAngle(Real)
     PR.ReadReal (PR.Current(), "Slant Angle", slantAngle); //szv#4:S4163:12Mar99 `st=` not needed
   else
-    slantAngle = PI/2.0; // Default Value
+    slantAngle = M_PI/2.0; // Default Value
 
   // Reading rotationAngle(Real)
   PR.ReadReal (PR.Current(), "Rotation Angle", rotationAngle); //szv#4:S4163:12Mar99 `st=` not needed

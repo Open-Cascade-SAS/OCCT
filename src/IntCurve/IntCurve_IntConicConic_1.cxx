@@ -30,7 +30,7 @@ Standard_Boolean AffichageGraph=Standard_True;
 #define TOLERANCE_ANGULAIRE 1.e-15 //the reason is at least to make an accordance between transition and position computation.
 //modified by NIZHNY-MKK  Tue Feb 15 10:53:45 2000.END
 
-const Standard_Real PIsur2 = 0.5*PI;
+const Standard_Real PIsur2 = 0.5*M_PI;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 IntRes2d_Position FindPositionLL(Standard_Real&,const IntRes2d_Domain&);
@@ -69,7 +69,7 @@ void ProjectOnC2AndIntersectWithC2Domain(const gp_Circ2d& Circle1
   PeriodicInterval C2Inter(C2inf,C2sup);
 
   if(!IdentCircles) {
-    if(C2Inter.Length() > PI)
+    if(C2Inter.Length() > M_PI)
       C2Inter.Complement();
   }
   else {
@@ -102,7 +102,7 @@ void ProjectOnC2AndIntersectWithC2Domain(const gp_Circ2d& Circle1
 
       SolutionC1[NbSolTotal]=PeriodicInterval(C1inf,C1sup);
       if(!IdentCircles) {
-	if(SolutionC1[NbSolTotal].Length() > PI)
+	if(SolutionC1[NbSolTotal].Length() > M_PI)
 	  SolutionC1[NbSolTotal].Complement();
       }
       else {
@@ -282,12 +282,12 @@ void CircleCircleGeometricIntersection(const gp_Circ2d& C1
   //-- (permet de ne pas gerer trop de cas differents)
 
   C1_Res1.SetValues(C1_binf1,C1_bsup1);
-  if(C1_Res1.Length() > PI) C1_Res1.Complement();
+  if(C1_Res1.Length() > M_PI) C1_Res1.Complement();
 
   if(nbsol==2) {
     C1_binf2+=dAngle1;  C1_bsup2+=dAngle1;
     C1_Res2.SetValues(C1_binf2,C1_bsup2);
-    if(C1_Res2.Length() > PI) C1_Res2.Complement();
+    if(C1_Res2.Length() > M_PI) C1_Res2.Complement();
   }
   else {
     C1_Res2.SetNull(); 
@@ -371,7 +371,7 @@ void ProjectOnLAndIntersectWithLDomain(const gp_Circ2d& Circle
 #endif
     if(Cinf>=Csup) { Cinf = CDomainAndRes.Binf; Csup = CDomainAndRes.Bsup; } 
     CircleSolution[NbSolTotal]=PeriodicInterval(Cinf,Csup);
-    if(CircleSolution[NbSolTotal].Length() > PI)
+    if(CircleSolution[NbSolTotal].Length() > M_PI)
       CircleSolution[NbSolTotal].Complement();
     
     LineSolution[NbSolTotal]=LInterAndDomain;
@@ -514,7 +514,7 @@ void LineCircleGeometricIntersection(const gp_Lin2d& Line,
 
 
   CInt1.SetValues(binf1,bsup1);
-  if(CInt1.Length() > PI) CInt1.Complement();
+  if(CInt1.Length() > M_PI) CInt1.Complement();
   
 
   if(nbsol==2) {
@@ -527,7 +527,7 @@ void LineCircleGeometricIntersection(const gp_Lin2d& Line,
     }
 
     CInt2.SetValues(binf2,bsup2);
-    if(CInt2.Length() > PI) CInt2.Complement();
+    if(CInt2.Length() > M_PI) CInt2.Complement();
   }
 //  Modified by Sergey KHROMOV - Thu Oct 26 17:51:05 2000 Begin
   else {
@@ -537,9 +537,9 @@ void LineCircleGeometricIntersection(const gp_Lin2d& Line,
       bsup2 = PIpPI;
       binf1 = 0.;
       CInt1.SetValues(binf1,CInt1.Bsup - PIpPI);
-      if(CInt1.Length() > PI) CInt1.Complement();
+      if(CInt1.Length() > M_PI) CInt1.Complement();
       CInt2.SetValues(binf2,bsup2);
-      if(CInt2.Length() > PI) CInt2.Complement();
+      if(CInt2.Length() > M_PI) CInt2.Complement();
     }
   }
 //  Modified by Sergey KHROMOV - Thu Oct 26 17:51:13 2000 End

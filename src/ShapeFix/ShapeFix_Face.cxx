@@ -1442,14 +1442,14 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     // this means that degenerated edge should be added to one of poles, and
     // then usual procedure applied
     if ( ismodeu && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ) {
-      gp_Pnt2d p ( ( ismodeu < 0 ? 0. : 2.*PI ), ismodeu * 0.5 * PI );
+      gp_Pnt2d p ( ( ismodeu < 0 ? 0. : 2.*M_PI ), ismodeu * 0.5 * M_PI );
       gp_Dir2d d ( -ismodeu, 0. );
       Handle(Geom2d_Line) line = new Geom2d_Line ( p, d );
       TopoDS_Edge edge;
       B.MakeEdge ( edge );
       B.Degenerated ( edge, Standard_True );
       B.UpdateEdge ( edge, line, myFace, ::Precision::Confusion() );
-      B.Range ( edge, myFace, 0., 2*PI );
+      B.Range ( edge, myFace, 0., 2*M_PI );
       TopoDS_Vertex V;
       B.MakeVertex ( V, mySurf->Value ( p.X(), p.Y() ), ::Precision::Confusion() );
       V.Orientation(TopAbs_FORWARD);

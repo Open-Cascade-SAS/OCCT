@@ -22,17 +22,17 @@ void Compute(const Standard_Real P1,
   }
   Standard_Real Delta =Abs(Teta2-Teta1); 
 
-  if (Delta > 2. * PI) {
+  if (Delta > 2. * M_PI) {
     Teta1 = 0.;
-    Teta2 = 2. * PI;
+    Teta2 = 2. * M_PI;
   }
   else {
  
     if (Teta1 < 0.) {
-      do { Teta1+=2.*PI;} while (Teta1< 0.);
+      do { Teta1+=2.*M_PI;} while (Teta1< 0.);
     }
-    else if (Teta1> 2.*PI) {
-      do { Teta1-=2.*PI;} while (Teta1> 2.*PI);
+    else if (Teta1> 2.*M_PI) {
+      do { Teta1-=2.*M_PI;} while (Teta1> 2.*M_PI);
     }
     Teta2 = Teta1 + Delta;
 
@@ -46,7 +46,7 @@ void Compute(const Standard_Real P1,
   B.Add(Point(O +Ra*Cn2*Xd +Rb*Sn2*Yd));  
   
   Standard_Real Ram,Rbm;
-  if (Delta > PI/8.) {
+  if (Delta > M_PI/8.) {
     // Main radiuses to take into account only 8 points (/cos(Pi/8.))
     Ram=Ra/0.92387953251128674;
     Rbm=Rb/0.92387953251128674;
@@ -61,7 +61,7 @@ void Compute(const Standard_Real P1,
   B.Add(Point(O +Ram*Cn2*Xd +Rbm*Sn2*Yd));  
   
 
-// cos or sin PI/4.
+// cos or sin M_PI/4.
 #define PI4 0.70710678118654746
 
 // 8 points of the polygon
@@ -74,8 +74,8 @@ void Compute(const Standard_Real P1,
 #define addP6 B.Add(Point(O -Rbm*Yd)); 
 #define addP7 B.Add(Point(O +Ram*PI4*Xd -Rbm*PI4*Yd))
 
-  Standard_Integer deb = (Standard_Integer )( Teta1/(PI/4.));
-  Standard_Integer fin = (Standard_Integer )( Teta2/(PI/4.));
+  Standard_Integer deb = (Standard_Integer )( Teta1/(M_PI/4.));
+  Standard_Integer fin = (Standard_Integer )( Teta2/(M_PI/4.));
   deb++;
 
   if (deb>fin) return;

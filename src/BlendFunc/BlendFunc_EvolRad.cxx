@@ -971,7 +971,7 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol,
     // Reframing on ]-pi/2, 3pi/2]
     if (Sina <0.) {
       if (Cosa > 0.) Angle = -Angle;
-      else           Angle =  2.*PI - Angle;
+      else           Angle =  2.*M_PI - Angle;
     }
 
     if (Abs(Angle)>maxang) {maxang = Abs(Angle);}
@@ -1160,7 +1160,7 @@ void BlendFunc_EvolRad::Section(const Standard_Real Param,
   Pdeb = 0.;
   Pfin = ElCLib::Parameter(C,pts2);
   // Test of negative and almost null angles : Single Case
-  if (Pfin>1.5*PI) {
+  if (Pfin>1.5*M_PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center,np,ns1));
     Pfin = ElCLib::Parameter(C,pts2);

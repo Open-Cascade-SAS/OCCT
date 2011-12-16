@@ -487,7 +487,7 @@ void AIS_MidPointRelation::ComputePointsOnCirc(const gp_Circ& aCirc,
   
   Standard_Real pcurpos = ElCLib::Parameter(aCirc,curpos);
 
-  Standard_Real rad = Standard_PI/5.0;
+  Standard_Real rad = M_PI / 5.0;
   Standard_Real segm;
 
   Standard_Real pFPnt;
@@ -507,18 +507,18 @@ void AIS_MidPointRelation::ComputePointsOnCirc(const gp_Circ& aCirc,
       Standard_Real deltap = pSAttachM - pFAttach;
       if ( deltap < 0 )
 	{
-	  deltap += 2*Standard_PI;
-	  pSAttachM += 2*Standard_PI;
+	  deltap += 2 * M_PI;
+	  pSAttachM += 2 * M_PI;
 	}
       pSAttachM -= pFAttach;
 
-      Standard_Real pmiddleout = pSAttachM/2.0 + Standard_PI;
+      Standard_Real pmiddleout = pSAttachM/2.0 + M_PI;
 
       Standard_Real pcurpos1 = pcurpos;
       // define where curpos lays
       if ( pcurpos1 < pFAttach )
 	{
-	  pcurpos1 = pcurpos1 + 2*Standard_PI - pFAttach;
+	  pcurpos1 = pcurpos1 + 2 * M_PI - pFAttach;
 	  if ( pcurpos1 > pSAttachM ) // out
 	    {
 	      segm = Min(rad,deltap*0.75);
@@ -614,7 +614,7 @@ void AIS_MidPointRelation::ComputePointsOnElips(const gp_Elips& anEll,
   
   Standard_Real pcurpos = ElCLib::Parameter(anEll,curpos);
 
-  Standard_Real rad = Standard_PI/5.0;
+  Standard_Real rad = M_PI / 5.0;
   Standard_Real segm;
 
   Standard_Real pFPnt;
@@ -634,18 +634,18 @@ void AIS_MidPointRelation::ComputePointsOnElips(const gp_Elips& anEll,
       Standard_Real deltap = pSAttachM - pFAttach;
       if ( deltap < 0 )
 	{
-	  deltap += 2*Standard_PI;
-	  pSAttachM += 2*Standard_PI;
+	  deltap += 2 * M_PI;
+	  pSAttachM += 2 * M_PI;
 	}
       pSAttachM -= pFAttach;
 
-      Standard_Real pmiddleout = pSAttachM/2.0 + Standard_PI;
+      Standard_Real pmiddleout = pSAttachM / 2.0 + M_PI;
 
       Standard_Real pcurpos1 = pcurpos;
       // define where curpos lays
       if ( pcurpos1 < pFAttach )
 	{
-	  pcurpos1 = pcurpos1 + 2*Standard_PI - pFAttach;
+	  pcurpos1 = pcurpos1 + 2 * M_PI - pFAttach;
 	  if ( pcurpos1 > pSAttachM ) // out
 	    {
 	      segm = Min(rad,deltap*0.75);

@@ -95,7 +95,7 @@ Standard_Real Geom_Ellipse::FirstParameter () const   { return 0.0; }
 //purpose  : 
 //=======================================================================
 
-Standard_Real Geom_Ellipse::LastParameter () const    { return 2.0 * PI; }
+Standard_Real Geom_Ellipse::LastParameter () const    { return 2.0 * M_PI; }
 
 //=======================================================================
 //function : MajorRadius
@@ -168,7 +168,7 @@ gp_Elips Geom_Ellipse::Elips () const {
 
 Standard_Real Geom_Ellipse::ReversedParameter( const Standard_Real U) const 
 {
-  return ( 2. * PI - U);
+  return ( 2. * M_PI - U);
 }
 
 

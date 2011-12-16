@@ -53,7 +53,7 @@ void Prs2d_DrawSymbol::Draw( const Handle(Graphic2d_Drawer)& aDrawer ) {
      Standard_ShortReal theRad = ( myWidth < myHeight) ? myWidth : myHeight;
      gp_Pnt2d theCent( myX, myY );
      gp_Vec2d theVec( theCent, gp_Pnt2d( myX + 13 * theRad/ 10, myY ) );
-     theVec.Rotate( Standard_PI / 4 );
+     theVec.Rotate( M_PI / 4 );
      gp_Pnt2d P1 = theCent.Translated( theVec );
      gp_Pnt2d P2 = theCent.Translated( theVec.Reversed() );     
 
@@ -81,7 +81,7 @@ void Prs2d_DrawSymbol::Draw( const Handle(Graphic2d_Drawer)& aDrawer ) {
      }
 
      DrawLineAttrib( aDrawer );
-     aDrawer->MapArcFromTo( a, b, theRad, 0., Standard_ShortReal( 2 * Standard_PI ) );
+     aDrawer->MapArcFromTo( a, b, theRad, 0., Standard_ShortReal( 2 * M_PI ) );
      aDrawer->MapSegmentFromTo( c, d, e, f );
 
     }// end TOS_DIAMETER

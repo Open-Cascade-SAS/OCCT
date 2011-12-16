@@ -160,7 +160,7 @@ Standard_Real Adaptor3d_SurfaceOfRevolution::FirstUParameter() const
 
 Standard_Real Adaptor3d_SurfaceOfRevolution::LastUParameter() const 
 {
-  return 2*PI;
+  return 2*M_PI;
 }
 
 //=======================================================================
@@ -236,7 +236,7 @@ void Adaptor3d_SurfaceOfRevolution::UIntervals (TColStd_Array1OfReal& T,
 					      const GeomAbs_Shape ) const 
 {
   T(T.Lower()  ) = 0.;
-  T(T.Lower()+1) = 2*PI;
+  T(T.Lower()+1) = 2*M_PI;
 }
 
 
@@ -276,7 +276,7 @@ Handle(Adaptor3d_HSurface) Adaptor3d_SurfaceOfRevolution::UTrim
   Standard_Real Eps = Precision::PConfusion();
 #endif
   Standard_OutOfRange_Raise_if
-    (  Abs(First) > Eps || Abs(Last - 2.*PI) > Eps,
+    (  Abs(First) > Eps || Abs(Last - 2.*M_PI) > Eps,
      "Adaptor3d_SurfaceOfRevolution : UTrim : Parameters out of range");
 
   Handle(Adaptor3d_HSurfaceOfRevolution) HR =
@@ -341,7 +341,7 @@ Standard_Boolean Adaptor3d_SurfaceOfRevolution::IsUPeriodic() const
 
 Standard_Real Adaptor3d_SurfaceOfRevolution::UPeriod() const
 {
-  return 2*PI;
+  return 2*M_PI;
 }
 
 //=======================================================================
@@ -493,7 +493,7 @@ gp_Vec Adaptor3d_SurfaceOfRevolution::DN(const Standard_Real    U,
     }
     else {
       Standard_Real DNR = DNv * myAxeRev.XDirection();
-      gp_Vec DNu = ( myAxeRev.XDirection()).Rotated( myAxis, U + NU*PI/2);
+      gp_Vec DNu = ( myAxeRev.XDirection()).Rotated( myAxis, U + NU*M_PI/2);
       return ( DNR * DNu);
     }
   }   

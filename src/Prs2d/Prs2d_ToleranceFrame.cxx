@@ -49,7 +49,7 @@ Prs2d_ToleranceFrame::Prs2d_ToleranceFrame( const Handle(Graphic2d_GraphicObject
     gp_Pnt2d Pnt0 = PntP.Translated( theV1 );
     gp_Vec2d theVecG( Pnt0, gp_Pnt2d( Pnt0.X() + 1.0, Pnt0.Y() ) );
     theVecG.Rotate( myAngle );
-    gp_Vec2d theVecV = theVecG.Rotated( Standard_PI / 2 );
+    gp_Vec2d theVecV = theVecG.Rotated( M_PI / 2 );
     theVecG.Normalize();
     theVecV.Normalize();
 
@@ -187,7 +187,7 @@ void Prs2d_ToleranceFrame::Draw( const Handle(Graphic2d_Drawer)& aDrawer ) {
       theVecT.Normalize();
       gp_Vec2d theVecG( Pnt0, gp_Pnt2d( Pnt0.X() + 1.0, Pnt0.Y() ) );
       theVecG.Rotate( myAngle );
-      gp_Vec2d theVecV = theVecG.Rotated( Standard_PI / 2 );
+      gp_Vec2d theVecV = theVecG.Rotated( M_PI / 2 );
       theVecG.Normalize();
       theVecV.Normalize();
 

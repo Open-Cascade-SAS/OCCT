@@ -315,7 +315,7 @@ void AppParCurves_Variational::Init()
                                             Vt2d=TabV2d.Value(jp2d);
                                             Vt2d.Normalize();
                                             Vc2d=TabV2dcurv.Value(jp2d);
-                                            if (Abs(Abs(Vc2d.Angle(Vt2d)) - PI/2.) > Precision::Angular())
+                                            if (Abs(Abs(Vc2d.Angle(Vt2d)) - M_PI/2.) > Precision::Angular())
                                                  Standard_ConstructionError::Raise();
                                             myTabConstraints->SetValue(jndex++,Vt2d.X());
                                             myTabConstraints->SetValue(jndex++,Vt2d.Y());
@@ -373,7 +373,7 @@ void AppParCurves_Variational::Init()
                                             Vt2d=TabV2d.Value(jp2d);
                                             Vt2d.Normalize();
                                             Vc2d=TabV2dcurv.Value(jp2d);
-                                            if (Abs(Abs(Vc2d.Angle(Vt2d)) - PI/2.) > Precision::Angular())
+                                            if (Abs(Abs(Vc2d.Angle(Vt2d)) - M_PI/2.) > Precision::Angular())
                                                  Standard_ConstructionError::Raise();
                                             myTabConstraints->SetValue(jndex++,Vt2d.X());
                                             myTabConstraints->SetValue(jndex++,Vt2d.Y());

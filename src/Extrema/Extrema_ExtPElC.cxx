@@ -73,7 +73,7 @@ Function:
 Method:
   Pass 3 stages:
   1- Projection of point P in the plane of the circle,
-  2- Calculation of u solutions in [0.,2.*PI]:
+  2- Calculation of u solutions in [0.,2.*M_PI]:
       Let Pp, the projected point and 
            O, the center of the circle;
      2 cases:
@@ -81,8 +81,8 @@ Method:
        IsDone() renvoie Standard_False.
      - otherwise, 2 points are solutions for the complete circle:
        . Us1 = angle(OPp,OX) corresponds to the minimum,
-       . let Us2 = ( Us1 + PI if Us1 < PI,
-                    ( Us1 - PI otherwise;
+       . let Us2 = ( Us1 + M_PI if Us1 < M_PI,
+                    ( Us1 - M_PI otherwise;
          Us2 corresponds to the maximum.
   3- Calculate the extrema in [Uinf,Usup].
 -----------------------------------------------------------------------------*/
@@ -102,8 +102,8 @@ Method:
   gp_Vec OPp (O,Pp);
   if (OPp.Magnitude() < Tol) { return; }
   Standard_Real Usol[2];
-  Usol[0] = C.XAxis().Direction().AngleWithRef(OPp,Axe); // -PI<U1<PI
-  Usol[1] = Usol[0] + PI;
+  Usol[0] = C.XAxis().Direction().AngleWithRef(OPp,Axe); // -M_PI<U1<M_PI
+  Usol[1] = Usol[0] + M_PI;
 
   Standard_Real myuinf = Uinf;
   //modified by NIZNHY-PKV Fri Apr 20 15:03:28 2001 f
@@ -115,10 +115,10 @@ Method:
     TolU= Tol/aR;
   }
   //modified by NIZNHY-PKV Fri Apr 20 15:03:32 2001 t
-  ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, TolU, myuinf, Usol[0]);
-  ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, TolU, myuinf, Usol[1]);
-  if (((Usol[0]-2*PI-Uinf) < TolU) && ((Usol[0]-2*PI-Uinf) > -TolU)) Usol[0] = Uinf;
-  if (((Usol[1]-2*PI-Uinf) < TolU) && ((Usol[1]-2*PI-Uinf) > -TolU)) Usol[1] = Uinf;
+  ElCLib::AdjustPeriodic(Uinf, Uinf+2*M_PI, TolU, myuinf, Usol[0]);
+  ElCLib::AdjustPeriodic(Uinf, Uinf+2*M_PI, TolU, myuinf, Usol[1]);
+  if (((Usol[0]-2*M_PI-Uinf) < TolU) && ((Usol[0]-2*M_PI-Uinf) > -TolU)) Usol[0] = Uinf;
+  if (((Usol[1]-2*M_PI-Uinf) < TolU) && ((Usol[1]-2*M_PI-Uinf) > -TolU)) Usol[1] = Uinf;
 
 
 // 3- Calculate extrema in [Umin,Umax] ...

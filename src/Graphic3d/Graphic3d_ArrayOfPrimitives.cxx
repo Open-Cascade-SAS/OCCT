@@ -419,7 +419,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
                   myPrimitiveArray->vertices[i3].xyz[1],
                   myPrimitiveArray->vertices[i3].xyz[2]);
         gp_Vec v21(p1,p2),v31(p1,p3),fn = v21.Crossed(v31);
-        if( aNormal.IsOpposite(fn,Standard_PI/4.) ) {
+        if( aNormal.IsOpposite(fn, M_PI / 4.) ) {
           Standard_Integer e; char v;
           for( i=0,j=k-1 ; i<k/2 ; i++,j-- ) {
             e = myPrimitiveArray->edges[n+i];
@@ -436,7 +436,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
               y = myPrimitiveArray->vnormals[e].xyz[1];
               z = myPrimitiveArray->vnormals[e].xyz[2];
               gp_Vec vn(x,y,z);
-              if( aNormal.IsOpposite(vn,Standard_PI/4.) ) {
+              if( aNormal.IsOpposite(vn, M_PI / 4.) ) {
                 myPrimitiveArray->vnormals[e].xyz[0] = -x;
                 myPrimitiveArray->vnormals[e].xyz[1] = -y;
                 myPrimitiveArray->vnormals[e].xyz[2] = -z;
@@ -462,7 +462,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
                   myPrimitiveArray->vertices[n+2].xyz[1],
                   myPrimitiveArray->vertices[n+2].xyz[2]);
       gp_Vec v21(p1,p2),v31(p1,p3),fn = v21.Crossed(v31);
-      if( aNormal.IsOpposite(fn,Standard_PI/4.) ) {
+      if( aNormal.IsOpposite(fn, M_PI / 4.) ) {
         for( i=0,j=k-1 ; i<k/2 ; i++,j-- ) {
           x = myPrimitiveArray->vertices[n+i].xyz[0];
           y = myPrimitiveArray->vertices[n+i].xyz[1];
@@ -488,7 +488,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
             y = myPrimitiveArray->vnormals[n+i].xyz[1];
             z = myPrimitiveArray->vnormals[n+i].xyz[2];
             gp_Vec vn(x,y,z);
-            if( aNormal.IsOpposite(vn,Standard_PI/4.) ) {
+            if( aNormal.IsOpposite(vn, M_PI / 4.) ) {
               myPrimitiveArray->vnormals[n+i].xyz[0] = -x;
               myPrimitiveArray->vnormals[n+i].xyz[1] = -y;
               myPrimitiveArray->vnormals[n+i].xyz[2] = -z;

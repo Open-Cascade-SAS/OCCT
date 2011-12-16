@@ -147,7 +147,7 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
 //  A sphere is drawn
   V3d::CircleInPlane(gsymbol,Xi,Yi,Zi,VX,VY,VZ,Rayon/40.);
   for( j=1 ; j<=3 ; j++ ) {
-    Beta = j * Standard_PI/4.;
+    Beta = j * M_PI / 4.;
     CosBeta = Cos(Beta);
     SinBeta = Sin(Beta);
     Coef = 1. - CosBeta;
@@ -178,7 +178,7 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
   Line(0).SetCoord(Xi,Yi,Zi);
   Line(1).SetCoord(X,Y,Z);
   gsymbol->Polyline(Line);
-  V3d::ArrowOfRadius(gsymbol,X,Y,Z,DX,DY,DZ,Standard_PI/15.,Rayon/20.);
+  V3d::ArrowOfRadius(gsymbol, X, Y, Z, DX, DY, DZ, M_PI / 15., Rayon / 20.);
 }
 
 void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,

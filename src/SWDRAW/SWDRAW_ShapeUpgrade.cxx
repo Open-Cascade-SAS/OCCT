@@ -447,7 +447,7 @@ static Standard_Integer DT_SplitAngle(Draw_Interpretor& di,
     if ( maxangle <1 ) maxangle = 1;
   }
   
-  ShapeUpgrade_ShapeDivideAngle tool(maxangle*PI/180,inputShape);
+  ShapeUpgrade_ShapeDivideAngle tool(maxangle*M_PI/180,inputShape);
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 

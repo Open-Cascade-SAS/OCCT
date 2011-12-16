@@ -15,8 +15,8 @@ Prs3d_Drawer::Prs3d_Drawer(): myNbPoints(30),myIsoOnPlane(Standard_False),
  myMaximalParameterValue(500000.),
  myDeviationCoefficient(0.001),
  myHLRDeviationCoefficient(0.02),
- myDeviationAngle(12*PI/180),
- myHLRAngle(20*PI/180),
+ myDeviationAngle(12*M_PI/180),
+ myHLRAngle(20*M_PI/180),
  myLineDrawArrow(Standard_False),
  myDrawHiddenLine(Standard_False)
 {

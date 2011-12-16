@@ -58,7 +58,7 @@ static Standard_Integer DEP(Draw_Interpretor& theCommands,
     TopoDS_Shape aLocalShape(DBRep::Get(a[8*ii+6],TopAbs_FACE));
     F = TopoDS::Face(aLocalShape);
 //    F = TopoDS::Face(DBRep::Get(a[8*ii+6],TopAbs_FACE));
-    Angle = atof(a[8*ii+7])*PI/180.;
+    Angle = atof(a[8*ii+7])*M_PI/180.;
     Pax.SetCoord(atof(a[8*ii+8]),atof(a[8*ii+9]),atof(a[8*ii+10]));
     Dax.SetCoord(atof(a[8*ii+11]),atof(a[8*ii+12]),atof(a[8*ii+13]));
     drft.Add(F,Dirextract,Angle,gp_Pln(Pax,Dax));
@@ -122,7 +122,7 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
 //#else
     Flag = (Standard_Boolean ) atof(a[9*ii+7]);
 //#endif
-    Angle = atof(a[9*ii+8])*PI/180.;
+    Angle = atof(a[9*ii+8])*M_PI/180.;
     Pax.SetCoord(atof(a[9*ii+9]),atof(a[9*ii+10]),atof(a[9*ii+11]));
     Dax.SetCoord(atof(a[9*ii+12]),atof(a[9*ii+13]),atof(a[9*ii+14]));
     drft.Add(F,Dirextract,Angle,gp_Pln(Pax,Dax), Flag);

@@ -146,13 +146,13 @@ void Graphic2d_HidingGraphicObject::Draw (const Handle(Graphic2d_Drawer)& aDrawe
                 if( type == Aspect_TOD_RELATIVE) {
                   precis = radius * coef;
                 }
-                Standard_ShortReal value = Standard_ShortReal(Standard_PI/4.);
+                Standard_ShortReal value = Standard_ShortReal(M_PI / 4.);
                 if( radius > precis )
                   value = Standard_ShortReal(Max( 0.0044 ,
                                 Min (0.7854 , 2. * ACos(1.-precis/radius))));
                 Standard_Integer n = Min(MAX_POINTS,
-                                Standard_Integer(2.*Standard_PI/value)+2);
-                Standard_ShortReal da = Standard_ShortReal(2.*Standard_PI/n);
+                                Standard_Integer(2. * M_PI / value)+2);
+                Standard_ShortReal da = Standard_ShortReal(2. * M_PI / n);
                 Standard_ShortReal cosin = Standard_ShortReal(Cos(da));
                 Standard_ShortReal x1 = radius;
                 Standard_ShortReal y1 = 0.;

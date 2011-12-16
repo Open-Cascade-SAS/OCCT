@@ -288,9 +288,9 @@ gp_Vec GeomPlate_BuildAveragePlane::DefPlan(const Standard_Integer NOption)
 	  }
 	gp_Vec OZ1 = A;
 	Standard_Real theAngle = OZ.Angle( OZ1 );
-	if (theAngle > PI/2)
-	  theAngle = PI - theAngle;
-	if (theAngle > PI/3)
+	if (theAngle > M_PI/2)
+	  theAngle = M_PI - theAngle;
+	if (theAngle > M_PI/3)
 	  OZ = OZ1;
       }
   }

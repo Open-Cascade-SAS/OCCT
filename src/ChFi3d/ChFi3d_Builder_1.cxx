@@ -700,12 +700,12 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	    // there is no need of tolerance
 	    // to make a decision (PRO9486) the regularity is enough.
             // However, the abcense of turn-back is checked (PRO9810)
-	    OnAjoute = ((!rev && av1v2 < PI/2) 
-			||(rev && av1v2 > PI/2));
+	    OnAjoute = ((!rev && av1v2 < M_PI/2) 
+			||(rev && av1v2 > M_PI/2));
             // mate attention to the single case (cf CTS21610_1)
             if (OnAjoute && (degeneOnEc || 
                 TangentOnVertex(LVEc, Ev,myEFMap, ta)) )
-	      OnAjoute=((!rev && av1v2 < ta) || (rev && (PI - av1v2) < ta));
+	      OnAjoute=((!rev && av1v2 < ta) || (rev && (M_PI - av1v2) < ta));
 	  }
 	  if (OnAjoute) {
 	    Fini = Standard_False; // If this can be useful (Cf PRO14713)
@@ -729,7 +729,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	    for (Jt.Initialize(myEFMap(Ev)), Nbface= 0 ;Jt.More();Jt.Next(), 
 		 Nbface++) {}
 	    if (Nbface> 1) CurSt = ChFiDS_BreakPoint;
-	    Fini = ((!rev && av1v2 < ta) || (rev && (PI - av1v2) < ta)); 
+	    Fini = ((!rev && av1v2 < ta) || (rev && (M_PI - av1v2) < ta)); 
 	  }
 	} 
       } 
@@ -772,11 +772,11 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	    Standard_Boolean rev = (Or1 != curor);
             Standard_Boolean OnAjoute =  Standard_False;
 	    if (FaceTangency(Ec,Ev,LVEv)) {
-	      OnAjoute = ((!rev && av1v2 < PI/2) 
-			||(rev && av1v2 > PI/2));
+	      OnAjoute = ((!rev && av1v2 < M_PI/2) 
+			||(rev && av1v2 > M_PI/2));
             if (OnAjoute && (degeneOnEc || 
                 TangentOnVertex(FVEc, Ev,myEFMap, ta)) )
-	      OnAjoute=((!rev && av1v2 < ta) || (rev && (PI-av1v2) < ta));
+	      OnAjoute=((!rev && av1v2 < ta) || (rev && (M_PI-av1v2) < ta));
 	    }
 	    if  (OnAjoute) {
 	      Ec = Ev; 
@@ -791,7 +791,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	      for(Jt.Initialize(myEFMap(Ev)),Nbface= 0 ;Jt.More();Jt.Next(), 
 		  Nbface++) {}
 	      if (Nbface> 1) CurSt = ChFiDS_BreakPoint;
-	      Fini = ((!rev && av1v2 < ta) || (rev && (PI - av1v2) < ta));
+	      Fini = ((!rev && av1v2 < ta) || (rev && (M_PI - av1v2) < ta));
 	    }
 	  } 
 	} 

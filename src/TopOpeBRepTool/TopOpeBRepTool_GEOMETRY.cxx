@@ -78,7 +78,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_onapex(const gp_Pnt2d& p2d,const Handl
     isapex = (dist < tol);
   }
   if (ST == GeomAbs_Sphere) {
-    Standard_Real pisur2 = PI*.5;
+    Standard_Real pisur2 = M_PI*.5;
 #ifdef DEB
     Standard_Real u =
 #endif
@@ -134,8 +134,8 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d,const Handle(Geom_Surfac
       }
     }
     if (ST == GeomAbs_Sphere) {
-//      Standard_Real deuxpi = 2*PI;
-      Standard_Real pisur2 = PI*.5;
+//      Standard_Real deuxpi = 2*M_PI;
+      Standard_Real pisur2 = M_PI*.5;
       Standard_Real u = p2d.X(),v = p2d.Y();
 //      Standard_Boolean u0  =(Abs(u) < toluv);
 //      Standard_Boolean u2pi=(Abs(u-deuxpi) < toluv);

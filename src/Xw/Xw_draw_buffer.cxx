@@ -1639,9 +1639,9 @@ float a,cosa,sina ;
 		pltextlist->upoints[i].y = (short int )( yp + YROTATE(x,y) );
 	        a = pltextlist->rangles[i] + angle ;
         	if( a > 0. ) {
-            	  while( a > 2.*PI ) a -= 2.*PI ;
+            	  while( a > 2.*M_PI ) a -= 2.*M_PI ;
         	} else if( a < 0. ) {
-            	  while( a < -2.*PI ) a += 2.*PI ;
+            	  while( a < -2.*M_PI ) a += 2.*M_PI ;
         	}
 		pltextlist->uangles[i] = a ;
 		pltextlist->uscalex[i] = pltextlist->rscalex[i] ;
@@ -1661,9 +1661,9 @@ float a,cosa,sina ;
 		pptextlist->upoints[i].y = (short int )( yp + YROTATE(x,y) );
 	        a = pptextlist->rangles[i] + angle ;
         	if( a > 0. ) {
-            	  while( a > 2.*PI ) a -= 2.*PI ;
+            	  while( a > 2.*M_PI ) a -= 2.*M_PI ;
         	} else if( a < 0. ) {
-            	  while( a < -2.*PI ) a += 2.*PI ;
+            	  while( a < -2.*M_PI ) a += 2.*M_PI ;
         	}
 		pptextlist->uangles[i] = a ;
 		pptextlist->uscalex[i] = pptextlist->rscalex[i] ;

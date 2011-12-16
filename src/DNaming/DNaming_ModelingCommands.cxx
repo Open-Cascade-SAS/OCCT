@@ -1103,7 +1103,7 @@ static Standard_Integer DNaming_PRotateLine(Draw_Interpretor& di,
 
     Standard_Real anAngle = 0.;
     anAngle =  atof(a[4]);
-    Standard_Real aK = 2*PI/360;
+    Standard_Real aK = 2*M_PI/360;
     anAngle = anAngle * aK;
     DNaming::GetReal(aFun,PTRANSF_ANG)->Set(anAngle);
 
@@ -1265,7 +1265,7 @@ static Standard_Integer DNaming_AddRevol (Draw_Interpretor& theDI,
 
   if(theNb > 4 ) {  
     Standard_Real angle = atof(theArg[4]);
-    Standard_Real aK = 2*PI/360;
+    Standard_Real aK = 2*M_PI/360;
     angle = angle * aK;
     DNaming::GetReal(aFun,REVOL_ANGLE)->Set(angle);
     if( theNb == 6) {

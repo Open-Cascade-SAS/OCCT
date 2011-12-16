@@ -155,7 +155,7 @@ void Geom_SurfaceOfRevolution::UReverse () {
 
 Standard_Real Geom_SurfaceOfRevolution::UReversedParameter (const Standard_Real U) const {
 
-  return ( 2.*PI - U);
+  return ( 2.*M_PI - U);
 }
 
 
@@ -322,7 +322,7 @@ void Geom_SurfaceOfRevolution::Bounds ( Standard_Real& U1,
 				        Standard_Real& V2 ) const {
 
   U1 = 0.0; 
-  U2 = 2.0 * PI; 
+  U2 = 2.0 * M_PI; 
   V1 = basisCurve->FirstParameter();  
   V2 = basisCurve->LastParameter();
 }

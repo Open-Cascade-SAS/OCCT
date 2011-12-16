@@ -84,13 +84,13 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
     radius = C.Radius();
     P1 = OC.Translated(radius*V);
     U1 = ElCLib::Parameter(C, P1);
-    U2 = U1 + PI;
+    U2 = U1 + M_PI;
     P2 = OC.Translated(-radius*V);
     Standard_Real myuinf = Uinf;
-    ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, Precision::PConfusion(), myuinf, U1);
-    ElCLib::AdjustPeriodic(Uinf, Uinf+2*PI, Precision::PConfusion(), myuinf, U2);
-    if (((U1-2*PI-Uinf) < Tol) && ((U1-2*PI-Uinf) > -Tol)) U1 = Uinf;
-    if (((U2-2*PI-Uinf) < Tol) && ((U2-2*PI-Uinf) > -Tol)) U2 = Uinf;
+    ElCLib::AdjustPeriodic(Uinf, Uinf+2*M_PI, Precision::PConfusion(), myuinf, U1);
+    ElCLib::AdjustPeriodic(Uinf, Uinf+2*M_PI, Precision::PConfusion(), myuinf, U2);
+    if (((U1-2*M_PI-Uinf) < Tol) && ((U1-2*M_PI-Uinf) > -Tol)) U1 = Uinf;
+    if (((U2-2*M_PI-Uinf) < Tol) && ((U2-2*M_PI-Uinf) > -Tol)) U2 = Uinf;
 
     if (((Uinf-U1) < Tol) && ((U1-Usup) < Tol)) {
       Extrema_POnCurv2d MyPOnCurve(U1, P1);

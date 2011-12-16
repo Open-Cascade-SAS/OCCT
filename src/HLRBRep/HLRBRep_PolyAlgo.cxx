@@ -439,7 +439,7 @@ static Standard_Integer IndexPlusOnePerCentThree [] = { 1 , 2 , 0 };
 
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo () :
 myDebug     (Standard_False),
-myAngle     (5 * PI / 180.),
+myAngle     (5 * M_PI / 180.),
 myTolSta    (0.1),
 myTolEnd    (0.9),
 myTolAngular(0.001)
@@ -475,7 +475,7 @@ HLRBRep_PolyAlgo::HLRBRep_PolyAlgo (const Handle(HLRBRep_PolyAlgo)& A)
 
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo (const TopoDS_Shape& S) :
 myDebug     (Standard_False),
-myAngle     (5 * PI / 180.),
+myAngle     (5 * M_PI / 180.),
 myTolSta    (0.1),
 myTolEnd    (0.9),
 myTolAngular(0.001)

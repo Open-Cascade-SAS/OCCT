@@ -240,9 +240,9 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
   case GeomAbs_Sphere: 
     {
       if (Abs(UMin) < Precision::Angular() &&
-	  Abs(UMax - 2.*PI) < Precision::Angular() &&
-	  Abs(VMin + PI/2.) < Precision::Angular() &&
-	  Abs(VMax - PI/2.) < Precision::Angular()) // a whole sphere
+	  Abs(UMax - 2.*M_PI) < Precision::Angular() &&
+	  Abs(VMin + M_PI/2.) < Precision::Angular() &&
+	  Abs(VMax - M_PI/2.) < Precision::Angular()) // a whole sphere
 	BndLib::Add(S.Sphere(),Tol,B);
       else
 	BndLib::Add(S.Sphere(),UMin,UMax,VMin,VMax,Tol,B);

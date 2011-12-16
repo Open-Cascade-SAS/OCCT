@@ -48,7 +48,7 @@
 #include <Aspect_Window.hxx>
 
 //-Declarations
-#define DEUXPI (2.*Standard_PI)
+#define DEUXPI (2. * M_PI)
 
 //-Constructors
 
@@ -87,7 +87,7 @@ void V3d_Camera::SetAngle(const Standard_Real Angle) {
 
 void V3d_Camera::SetAperture(const Standard_Real Angle) {
 
-  Viewer_BadValue_Raise_if( Angle <= 0. || Angle >= Standard_PI ,"V3d_Camera::SetAperture, bad angle");
+  Viewer_BadValue_Raise_if( Angle <= 0. || Angle >= M_PI ,"V3d_Camera::SetAperture, bad angle");
   MyAperture = Angle ;
 }
 
@@ -200,7 +200,7 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
   Standard_Real Xc1,Yc1,Zc1,Xc2,Yc2,Zc2,Xi,Yi,Zi,Xj,Yj,Zj;
   Standard_Real Xn,Yn,Zn,X,Y,Z,Norme;
   Standard_Real cosinus,sinus;
-  Standard_Real Alpha = Standard_PI/4.;
+  Standard_Real Alpha = M_PI / 4.;
   Standard_Integer NbPoints = 4, i;
   Graphic3d_Array1OfVertex VN1(1,NbPoints+1);
   Graphic3d_Array1OfVertex VN2(1,NbPoints+1);
@@ -236,8 +236,8 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
 //      Scheme of the case
   for (i = 1 ; i <= NbPoints ; i++) {
 
-    cosinus = Cos ( Alpha + (i - 1) *  Standard_PI/2. );   
-    sinus   = Sin ( Alpha + (i - 1) *  Standard_PI/2. );   
+    cosinus = Cos ( Alpha + (i - 1) *  M_PI / 2. );   
+    sinus   = Sin ( Alpha + (i - 1) *  M_PI/2. );   
     
     //          First base square
     X = Xc1 + (cosinus * Xi + sinus * Xj) * Lng / 2.;
@@ -263,8 +263,8 @@ void V3d_Camera::Symbol (const Handle(Graphic3d_Group)& gsymbol,
 //      Scheme of the objective
   for (i = 1 ; i <= NbPoints ; i++) {
     
-    cosinus = Cos ( Alpha + (i - 1) *  Standard_PI/2. );   
-    sinus   = Sin ( Alpha + (i - 1) *  Standard_PI/2. );   
+    cosinus = Cos ( Alpha + (i - 1) *  M_PI / 2. );   
+    sinus   = Sin ( Alpha + (i - 1) *  M_PI / 2. );   
 
     //          Premier carre de base
     X = Xc2 + (cosinus * Xi + sinus * Xj) * Lng / 6.;
@@ -387,8 +387,8 @@ void V3d_Camera::Display( const Handle(V3d_View)& aView,
       gnopick->Polyline(PRadius);
       V3d::ArrowOfRadius(gExtArrow,X-(X-X0)/10.,
 			 Y-(Y-Y0)/10.,
-			     Z-(Z-Z0)/10.,X-X0,Y-Y0,Z-Z0,Standard_PI/15.,Rayon/20.);
-      V3d::ArrowOfRadius(gIntArrow,X0,Y0,Z0,X0-X,Y0-Y,Z0-Z,Standard_PI/15.,
+			     Z-(Z-Z0)/10., X-X0, Y-Y0, Z-Z0, M_PI / 15., Rayon / 20.);
+      V3d::ArrowOfRadius(gIntArrow, X0, Y0, Z0, X0-X, Y0-Y, Z0-Z, M_PI / 15.,
 			 Rayon/20.);
       TCollection_AsciiString ValOfRadius(Rayon);
       PText.SetCoord( (X0+X)/2., (Y0+Y)/2. , (Z0+Z)/2. );
@@ -643,7 +643,7 @@ void V3d_Camera::AerialPilot( const Handle(V3d_View)& aView,
   if ( Ypix != IPY ) {
     aView->Size(Width,Height);
     IHeight = aView->Convert(Height);
-    Beta  = ((IPY - Ypix)*Standard_PI)/(IHeight*2.);
+    Beta  = ((IPY - Ypix) * M_PI) / (IHeight * 2.);
     aView->Proj(VX,VY,VZ);
     aView->Up(DXH,DYH,DZH);
     A = VY*DZH - VZ*DYH;
@@ -676,7 +676,7 @@ void V3d_Camera::AerialPilot( const Handle(V3d_View)& aView,
 //      Find the rolling determined by Xpix 
   if ( Xpix != IPX ) {
     IWidth = aView->Convert(Width);
-    Beta  = ((IPX - Xpix)*Standard_PI)/(IWidth*2.);
+    Beta  = ((IPX - Xpix) * M_PI) / (IWidth * 2.);
     MyAngle = MyAngle + Beta;
   }
 }
@@ -706,7 +706,7 @@ void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
   if ( Ypix != IPY ) {
     aView->Size(Width,Height);
     IHeight = aView->Convert(Height);
-    Beta  = ((IPY - Ypix)*Standard_PI)/(IHeight*2.);
+    Beta  = ((IPY - Ypix) * M_PI) / (IHeight * 2.);
     aView->Proj(VX,VY,VZ);
     aView->Up(DXH,DYH,DZH);
     A = VY*DZH - VZ*DYH;
@@ -739,7 +739,7 @@ void V3d_Camera::EarthPilot( const Handle(V3d_View)& aView,
 //      an axis // a vector above passing through the eye
   if ( Xpix != IPX ) {
     IWidth = aView->Convert(Width);
-    Beta  = ((IPX - Xpix)*Standard_PI)/(IWidth*2.);
+    Beta  = ((IPX - Xpix) * M_PI) / (IWidth * 2.);
     aView->Up(A,B,C);
     Dist = Sqrt( A*A + B*B + C*C);
     A = A/Dist; B = B/Dist; C = C/Dist;

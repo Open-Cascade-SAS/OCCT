@@ -250,7 +250,7 @@ static int VTrihedron (Draw_Interpretor& di, Standard_Integer argc, const char**
   gp_Dir TheZVector(coord[3],coord[4],coord[5]);
   gp_Dir TheXVector(coord[6],coord[7],coord[8]);
 
-  if ( !TheZVector.IsNormal(TheXVector,PI/180)) {di<<argv[0]<<" VectorX is not normal to VectorZ"<<"\n"; return 1;}
+  if ( !TheZVector.IsNormal(TheXVector,M_PI/180)) {di<<argv[0]<<" VectorX is not normal to VectorZ"<<"\n"; return 1;}
 
   Handle(Geom_Axis2Placement) OrigineAndAxii=new Geom_Axis2Placement(ThePoint,TheZVector,TheXVector);
 
@@ -1427,7 +1427,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         if (mySurface.GetType()==GeomAbs_Plane ) {
           gp_Pln myPlane=mySurface.Plane();
           // On effectue une rotation d'1/2 tour autour de l'axe de rotation
-          myPlane.Rotate(myRotAxis , PI/2 );
+          myPlane.Rotate(myRotAxis , M_PI/2 );
 
           Handle(Geom_Plane) theGeomPlane=new Geom_Plane (myPlane );
           // construit un plan parallele a theGeomPlane contenant l'edgeA (De centre le milieu de l'edgeA)
@@ -1489,7 +1489,7 @@ static int VPlaneBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
         if (mySurface.GetType()==GeomAbs_Plane ) {
           gp_Pln myPlane=mySurface.Plane();
           // On effectue une rotation d'1/2 tour autour de l'axe de rotation
-          myPlane.Rotate(myRotAxis , PI/2  );
+          myPlane.Rotate(myRotAxis , M_PI/2  );
           Handle(Geom_Plane) theGeomPlane=new Geom_Plane (myPlane );
           // construit un plan parallele a theGeomPlane contenant l'edgeA (De centre le milieu de l'edgeA)
           gp_Pnt theMiddle ((Ba.X()+Bb.X() )/2 , (Ba.Y()+Bb.Y() )/2 , (Ba.Z()+Bb.Z() )/2 );
@@ -2494,15 +2494,15 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
 
   // Check data, determine increments, and convert to radians
   startTheta = (localStartTheta < localEndTheta ? localStartTheta : localEndTheta);
-  startTheta *= Standard_PI  / 180.0;
+  startTheta *= M_PI  / 180.0;
   endTheta = (localEndTheta > localStartTheta ? localEndTheta : localStartTheta);
-  endTheta *= Standard_PI  / 180.0;
+  endTheta *= M_PI  / 180.0;
 
 
   startPhi = ( mStartPhi <  mEndPhi ?  mStartPhi :  mEndPhi);
-  startPhi *= Standard_PI  / 180.0;
+  startPhi *= M_PI  / 180.0;
   endPhi = ( mEndPhi >  mStartPhi ?  mEndPhi :  mStartPhi);
-  endPhi *= Standard_PI  / 180.0;
+  endPhi *= M_PI  / 180.0;
 
   phiResolution =  mPhiResolution - numPoles;
   deltaPhi = (endPhi - startPhi) / ( mPhiResolution - 1);
@@ -2562,7 +2562,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
 
   number_point = 3;
   for ( i=0; i < localThetaResolution; i++){
-    theta = localStartTheta * Standard_PI / 180.0 + i*deltaTheta;
+    theta = localStartTheta * M_PI / 180.0 + i*deltaTheta;
     for ( j = jStart; j < jEnd; j++){
         phi = startPhi + j*deltaPhi;
         radius =  mRadius * sin((double)phi);

@@ -98,7 +98,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
   dint1 = ns1.Crossed(tgE1);
   dint2 = ns2.Crossed(tgE2);
   Standard_Real ang = ns1.CrossMagnitude(ns2);
-  if(ang > 0.0001*PI){
+  if(ang > 0.0001*M_PI){
     Standard_Real scal = ns2.Dot(dint1);
     if ( scal <= 0. ){
       ns2.Reverse();
@@ -129,7 +129,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
       dint1 = ns1.Crossed(tgE1);
       dint2 = ns2.Crossed(tgE2);
       ang = ns1.CrossMagnitude(ns2);
-      if(ang > 0.0001*PI){
+      if(ang > 0.0001*M_PI){
         Standard_Real scal = ns2.Dot(dint1);
         if ( scal <= 0. ){
           ns2.Reverse();

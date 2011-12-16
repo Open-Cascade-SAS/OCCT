@@ -200,7 +200,7 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     //                - one of two curves is concave.
     //                - the curves have a common point at the beginning and/or the end
     //                - the angle of opening at the common point between two curves
-    //                  values PI.
+    //                  values M_PI.
     // the extension at the beginning  is taken into account if the origin is found above.
     // ie : the origin is not the in the polygon.
     //-----------------------------------------------------------------------------

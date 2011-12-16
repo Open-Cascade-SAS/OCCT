@@ -74,13 +74,13 @@ static Standard_Boolean Controle(const TColgp_Array1OfPnt& Poles,
       gp_Dir du(DU);
       Standard_Real Angle1 = du.Angle(DX);
       Standard_Real Angle2 = du.Angle(DY);
-      if (Angle1 > PI/2) Angle1 = PI-Angle1;
-      if (Angle2 > PI/2) Angle2 = PI-Angle2;
+      if (Angle1 > M_PI/2) Angle1 = M_PI-Angle1;
+      if (Angle2 > M_PI/2) Angle2 = M_PI-Angle2;
       if (Angle2 < Angle1) {
 	du = DY; DY = DX; DX = du;
       }
-      if (DX.Angle(DU) > PI/2) DX.Reverse();
-      if (DY.Angle(DV) > PI/2) DY.Reverse();      
+      if (DX.Angle(DU) > M_PI/2) DX.Reverse();
+      if (DY.Angle(DV) > M_PI/2) DY.Reverse();      
 
       gp_Ax3 axe(Bary, DX^DY, DX);
       Plan.SetPosition(axe);
@@ -227,8 +227,8 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
       Dn = DU^DV;
       if (Dn.Magnitude() > 1.e-7) {
 	Standard_Real angle = Dir.Angle(Dn);
-	if (angle > PI/2) {
-	  angle = PI - angle;
+	if (angle > M_PI/2) {
+	  angle = M_PI - angle;
 	  Dir.Reverse();
 	}
 	Essai = (angle < 0.1);

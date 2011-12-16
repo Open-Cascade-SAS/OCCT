@@ -756,8 +756,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	Standard_Real eps = 1.e-14;
 	if(!aPlDir.IsEqual(aCirDir, eps)) {
 	  Standard_Integer aNbP = 11;
-	  Standard_Real dt = 2.*PI / (aNbP - 1), t;
-	  for(t = 0.; t < 2.*PI; t += dt) {
+	  Standard_Real dt = 2.*M_PI / (aNbP - 1), t;
+	  for(t = 0.; t < 2.*M_PI; t += dt) {
 	    Standard_Real d = aPln.Distance(ElCLib::Value(t, aCir)); 
 	    if(myTolReached3d < d) myTolReached3d = d;
 	  }
@@ -1134,7 +1134,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     TColStd_SequenceOfReal aSeqFprm,  aSeqLprm;
     
     aNul=0.;
-    aPeriod=PI+PI;
+    aPeriod=M_PI+M_PI;
 
     for (i=1; i<=aNbParts; i++) {
       myLConstruct.Part(i, fprm, lprm);
@@ -1201,7 +1201,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       lprm=aSeqLprm(i);
       //
       Standard_Real aRealEpsilon=RealEpsilon();
-      if (Abs(fprm) > aRealEpsilon || Abs(lprm-2.*PI) > aRealEpsilon) {
+      if (Abs(fprm) > aRealEpsilon || Abs(lprm-2.*M_PI) > aRealEpsilon) {
 	//==============================================
 	////
 	IntTools_Curve aCurve;
@@ -1248,14 +1248,14 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	}
 	mySeqOfCurve.Append(aCurve);
 	  //==============================================	
-      } //if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*PI) > RealEpsilon())
+      } //if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*M_PI) > RealEpsilon())
 
       else {
 	//  on regarde si on garde
 	//
 	if (aNbParts==1) {
-// 	  if (Abs(fprm) < RealEpsilon() &&  Abs(lprm-2.*PI) < RealEpsilon()) {
-	  if (Abs(fprm) <= aRealEpsilon && Abs(lprm-2.*PI) <= aRealEpsilon) {
+// 	  if (Abs(fprm) < RealEpsilon() &&  Abs(lprm-2.*M_PI) < RealEpsilon()) {
+	  if (Abs(fprm) <= aRealEpsilon && Abs(lprm-2.*M_PI) <= aRealEpsilon) {
 	    IntTools_Curve aCurve;
 	    Handle(Geom_TrimmedCurve) aTC3D=new Geom_TrimmedCurve(newc,fprm,lprm);
 	    aCurve.SetCurve(aTC3D);
@@ -1296,7 +1296,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	//
 	Standard_Real aTwoPIdiv17, u1, v1, u2, v2, Tol;
 
-	aTwoPIdiv17=2.*PI/17.;
+	aTwoPIdiv17=2.*M_PI/17.;
 
 	for (j=0; j<=17; j++) {
 	  gp_Pnt ptref (newc->Value (j*aTwoPIdiv17));
@@ -3125,7 +3125,7 @@ Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_HSurface)& theSur
 
     GeomAdaptor_Curve aC1( new Geom_Circle(aCircle1) );
     GeomAdaptor_Curve aC2( new Geom_Circle(aCircle2) );
-    Extrema_ExtCC anExtrema(aC1, aC2, 0, 2.*Standard_PI, 0, 2.*Standard_PI, 
+    Extrema_ExtCC anExtrema(aC1, aC2, 0, 2. * M_PI, 0, 2. * M_PI, 
 			    Precision::PConfusion(), Precision::PConfusion());
     	
     if ( anExtrema.IsDone() ) {
@@ -3170,7 +3170,7 @@ Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_HSurface)& theSur
 	  aSeqResultRad.Append( aCriteria );
 
 	  // torus is u and v periodic
-	  const Standard_Real twoPI = Standard_PI + Standard_PI;
+	  const Standard_Real twoPI = M_PI + M_PI;
 	  Standard_Real arr1tmp[2] = {pr1.X(), pr1.Y()};
 	  Standard_Real arr2tmp[2] = {pr2.X(), pr2.Y()};
 
@@ -3622,7 +3622,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 		else {
 		  Standard_Real anAngle = aNewVec.Angle(aVecOld);
 
-		  if((fabs(anAngle) < (Standard_PI * 0.25)) && (aNewVec.Dot(aVecOld) > 0.)) {
+		  if((fabs(anAngle) < (M_PI * 0.25)) && (aNewVec.Dot(aVecOld) > 0.)) {
 
 		    if(bCheckAngle1) {
 		      Standard_Real U1, U2, V1, V2;

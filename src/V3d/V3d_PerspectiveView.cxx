@@ -64,7 +64,7 @@ void V3d_PerspectiveView::SetAngle(const Standard_Real Angle) {
   
   Standard_Real focale,Umin,Vmin,Umax,Vmax,Dxv,Dyv,Rap,Xrp,Yrp;     
 
-  Viewer_BadValue_Raise_if ( Angle <= 0. || Angle >= Standard_PI, "V3d_PerspectiveView::SetAngle, bad angle");
+  Viewer_BadValue_Raise_if ( Angle <= 0. || Angle >= M_PI, "V3d_PerspectiveView::SetAngle, bad angle");
 
   MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax) ;
   Dxv = Abs(Umax - Umin)/2. ; Dyv = Abs(Vmax - Vmin)/2.;
@@ -89,7 +89,7 @@ Standard_Real V3d_PerspectiveView::Angle()const  {
   
 //  Graphic3d_Vertex Prp ;
   Standard_Real focale,Umin,Vmin,Umax,Vmax,Dxv,Dyv ;     
-  Standard_Real angle = Standard_PI ;
+  Standard_Real angle = M_PI ;
   
   MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax) ;
   focale = Focale() ;
@@ -111,7 +111,7 @@ void V3d_PerspectiveView::SetPerspective(const Standard_Real Angle, const Standa
   Standard_Real Umin,Vmin,Umax,Vmax,Xrp,Yrp,Zrp,du,dv;
 
   Viewer_BadValue_Raise_if ( ZNear <= 0. || ZFar <= 0. || ZNear >= ZFar, "V3d_PerspectiveView::SetPerspective, bad distances");
-  Viewer_BadValue_Raise_if ( Angle <= 0. || Angle >= Standard_PI, "V3d_PerspectiveView::SetAngle, bad angle");
+  Viewer_BadValue_Raise_if ( Angle <= 0. || Angle >= M_PI, "V3d_PerspectiveView::SetAngle, bad angle");
 
   Graphic3d_Vertex PRP = MyViewMapping.ProjectionReferencePoint() ;
   Xrp = Yrp = Zrp = 0.;

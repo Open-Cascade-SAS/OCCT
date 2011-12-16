@@ -19,7 +19,7 @@ inline void Prs2d_Length::CalcTxtPos(const Standard_Boolean theFromAbs) {
   
    theVecI = theVec*(theDist/2-theTextLen/2+myTextPosH);
    tmpVec  = theVec*(theDist/2+myTextPosH);
-   theVecJ = theVec.Rotated(PI/2)*myTextPosV;
+   theVecJ = theVec.Rotated(M_PI/2)*myTextPosV;
    
    theOrigine=thePnt1;
    theOrigine.Translate(tmpVec);

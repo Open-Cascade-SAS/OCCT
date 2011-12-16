@@ -126,8 +126,8 @@ void Aspect_RectangularGrid::Init () {
 //  b1 = Sin (myFirstAngle + RotationAngle() );
 //  c1 = XOrigin() * b1 - YOrigin() * a1;
 //
-//  a2 = Cos (mySecondAngle + RotationAngle() + Standard_PI/2.); 
-//  b2 = Sin (mySecondAngle + RotationAngle() + Standard_PI/2.);
+//  a2 = Cos (mySecondAngle + RotationAngle() + M_PI / 2.); 
+//  b2 = Sin (mySecondAngle + RotationAngle() + M_PI / 2.);
 //  c2 = XOrigin() * b2 - YOrigin() * a2;
 
 #ifdef CSR577
@@ -142,7 +142,7 @@ void Aspect_RectangularGrid::Init () {
   }
 
   if ( angle2 != 0. ) {
-    angle2 += Standard_PI/2.;
+    angle2 += M_PI / 2.;
     a2 = -Sin (angle2); 
     b2 = Cos (angle2);
     c2 = XOrigin() * b2 - YOrigin() * a2;
@@ -154,8 +154,8 @@ void Aspect_RectangularGrid::Init () {
   b1 = Cos (myFirstAngle + RotationAngle());
   c1 = XOrigin() * b1 - YOrigin() * a1;
 
-  a2 = -Sin (mySecondAngle + RotationAngle() + Standard_PI/2.); 
-  b2 = Cos (mySecondAngle + RotationAngle() + Standard_PI/2.);
+  a2 = -Sin (mySecondAngle + RotationAngle() + M_PI / 2.); 
+  b2 = Cos (mySecondAngle + RotationAngle() + M_PI / 2.);
   c2 = XOrigin() * b2 - YOrigin() * a2;
 #endif
 //-zov
@@ -163,7 +163,7 @@ void Aspect_RectangularGrid::Init () {
 
 Standard_Boolean Aspect_RectangularGrid::CheckAngle(const Standard_Real alpha,
                                             const Standard_Real beta) const {
-  return (Abs( Sin(alpha) * Cos(beta+Standard_PI/2.) - Cos(alpha) * Sin(beta+Standard_PI/2.)) != 0) ;
+  return (Abs( Sin(alpha) * Cos(beta + M_PI / 2.) - Cos(alpha) * Sin(beta + M_PI / 2.)) != 0) ;
 }
 
 

@@ -17,7 +17,7 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen (const gp_Circ2d& C,
 						      const Standard_Real Tol) {
   if(!D1.IsClosed()) {
     IntRes2d_Domain D(D1);
-    D.SetEquivalentParameters(D1.FirstParameter(),D1.FirstParameter()+PI+PI);
+    D.SetEquivalentParameters(D1.FirstParameter(),D1.FirstParameter()+M_PI+M_PI);
     Perform(IntCurve_IConicTool(C),D,PCurve,D2,TolConf,Tol);
     //-- Standard_ConstructionError::Raise("Domaine incorrect");
   }
@@ -34,7 +34,7 @@ IntCurve_IntConicCurveGen::IntCurve_IntConicCurveGen (const gp_Elips2d& E,
 						      const Standard_Real Tol) {
   if(!D1.IsClosed()) {
     IntRes2d_Domain D(D1);
-    D.SetEquivalentParameters(D1.FirstParameter(),D1.FirstParameter()+PI+PI);
+    D.SetEquivalentParameters(D1.FirstParameter(),D1.FirstParameter()+M_PI+M_PI);
     Perform(IntCurve_IConicTool(E),D,PCurve,D2,TolConf,Tol);
     //-- Standard_ConstructionError::Raise("Domaine incorrect");
   }

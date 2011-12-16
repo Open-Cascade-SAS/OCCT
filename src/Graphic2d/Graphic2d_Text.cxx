@@ -43,8 +43,8 @@ Graphic2d_Text::Graphic2d_Text
 
       SetFamily(Graphic2d_TOP_TEXT);
 
-      while (myAngle < 0.) myAngle += Standard_ShortReal(2.*Standard_PI);
-      while (myAngle >= 2.*Standard_PI) myAngle -= Standard_ShortReal(2.*Standard_PI);
+      while (myAngle < 0.) myAngle += Standard_ShortReal(2. * M_PI);
+      while (myAngle >= 2. * M_PI) myAngle -= Standard_ShortReal(2. * M_PI);
 
 #ifndef PERF
       this->ComputeMinMax();
@@ -68,8 +68,8 @@ void Graphic2d_Text::SetFontIndex (const Standard_Integer anIndex) {
 void Graphic2d_Text::SetSlant (const Quantity_PlaneAngle aSlant) {
 
 	mySlant = Standard_ShortReal(aSlant);
-        while (mySlant < 0.) mySlant += Standard_ShortReal(2.*Standard_PI);
-        while (mySlant >= 2.*Standard_PI) mySlant -= Standard_ShortReal(2.*Standard_PI);
+        while (mySlant < 0.) mySlant += Standard_ShortReal(2. * M_PI);
+        while (mySlant >= 2. * M_PI) mySlant -= Standard_ShortReal(2. * M_PI);
 #ifdef PERF
 	myMinX = myMinY = ShortRealLast ();
 	myMaxX = myMaxY = ShortRealFirst ();

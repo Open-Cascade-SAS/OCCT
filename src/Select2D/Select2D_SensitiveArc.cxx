@@ -34,7 +34,7 @@ myangle(Angle),
 mynbpt(NbPoints)
 
 {
-  if(myangle<=Precision::Confusion()) myangle=2*PI;
+  if(myangle<=Precision::Confusion()) myangle=2*M_PI;
 }
 
 

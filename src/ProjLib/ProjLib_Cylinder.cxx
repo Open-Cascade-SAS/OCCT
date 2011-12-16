@@ -122,7 +122,7 @@ void  ProjLib_Cylinder::Project(const gp_Lin& L)
 
   gp_Pnt2d P2d = EvalPnt2d(L.Location(),myCylinder);
   if ( P2d.X() < 0.) {
-    P2d.SetX(P2d.X()+2*PI);
+    P2d.SetX(P2d.X()+2*M_PI);
   }
   Standard_Real Signe 
     = L.Direction().Dot(myCylinder.Position().Direction());

@@ -393,7 +393,7 @@ Handle(Geom_BSplineCurve)  GeomConvert::CurveToBSplineCurve
       else if ( Parameterisation == Convert_QuasiAngular) {
 	Convert_EllipseToBSplineCurve Convert (E2d,
 					       0.0e0,
-					       2.0e0 * PI,
+					       2.0e0 * M_PI,
 					       Parameterisation);
 
 	TheCurve = BSplineCurveBuilder (TheConic, Convert);
@@ -417,7 +417,7 @@ Handle(Geom_BSplineCurve)  GeomConvert::CurveToBSplineCurve
       else if ( Parameterisation == Convert_QuasiAngular) {
 	Convert_CircleToBSplineCurve Convert (C2d,
 					      0.0e0,
-					      2.0e0 * PI,
+					      2.0e0 * M_PI,
 					      Parameterisation);
 	
 	TheCurve = BSplineCurveBuilder (TheConic, Convert);				     

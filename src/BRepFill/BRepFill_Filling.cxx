@@ -396,7 +396,7 @@ void BRepFill_Filling::FindExtremitiesOfHoles( TopTools_MapOfShape& WireMap, TCo
 #else
       Standard_Boolean IsLast ;
 #endif
-      Standard_Real MinAngle = PI;
+      Standard_Real MinAngle = M_PI;
       
       for (MapIt.Initialize( WireMap ); MapIt.More(); MapIt.Next())
 	{

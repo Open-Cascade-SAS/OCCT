@@ -264,8 +264,8 @@ static void InGoodPeriod(const Standard_Real Prec,
   Inf(1) =  myGuide->FirstParameter() - Delta/10;
   Sup(1) =  myGuide->LastParameter() + Delta/10; 
 
-  Inf(2) = -PI;
-  Sup(2) = 3*PI;
+  Inf(2) = -M_PI;
+  Sup(2) = 3*M_PI;
  
   Delta =  Ul - Uf;
   Inf(3) = Uf - Delta/10;
@@ -371,11 +371,11 @@ static void InGoodPeriod(const Standard_Real Prec,
       // d'angle le plus proche de P
       PInt = Int.Point(1);
       a1 = PInt.U();
-      InGoodPeriod (CurAngle, 2*PI, a1);
+      InGoodPeriod (CurAngle, 2*M_PI, a1);
       Standard_Real Dmin = Abs(a1-CurAngle);
       for (Standard_Integer jj=2;jj<=Int.NbPoints();jj++) {
 	a2 = Int.Point(jj).U();
-	InGoodPeriod (CurAngle, 2*PI, a2);
+	InGoodPeriod (CurAngle, 2*M_PI, a2);
 	if (Abs(a2-CurAngle) < Dmin) {
 	  PInt = Int.Point(jj);
 	  Dmin = Abs(a2-CurAngle);
@@ -406,12 +406,12 @@ static void InGoodPeriod(const Standard_Real Prec,
     Angle = PInt.U();
     if (ii > 1) {
       Diff = Angle - OldAngle;
-	if (Abs(Diff) > PI) {
-	  InGoodPeriod (OldAngle, 2*PI, Angle);
+	if (Abs(Diff) > M_PI) {
+	  InGoodPeriod (OldAngle, 2*M_PI, Angle);
 	  Diff = Angle - OldAngle;
 	}
 #if DEB
-      if (Abs(Diff) > PI/4) {
+      if (Abs(Diff) > M_PI/4) {
 	cout << "Diff d'angle trop grand !!" << endl;
       } 
 #endif
@@ -1419,7 +1419,7 @@ void GeomFill_LocationGuide::InitX(const Standard_Real Param) const
     X(1) = ElCLib::InPeriod(X(1), myGuide->FirstParameter(), 
 			          myGuide->LastParameter());
   }
-  X(2) = ElCLib::InPeriod(X(2), 0, 2*PI);
+  X(2) = ElCLib::InPeriod(X(2), 0, 2*M_PI);
   if (mySec->IsUPeriodic()) {
     X(3) = ElCLib::InPeriod(X(3), Uf, Ul);
   } 

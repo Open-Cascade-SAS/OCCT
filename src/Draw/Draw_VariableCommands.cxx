@@ -1193,7 +1193,7 @@ void  Draw::VariableCommands(Draw_Interpretor& theCommands)
   theAxes2d->Protected(Standard_True);
 
   n = "pi";
-  Draw::Set(n,PI);
+  Draw::Set(n,M_PI);
   Draw::Get(n)->Protected(Standard_True);
 
   n = "pinf";

@@ -3,8 +3,8 @@
 #define PRIMITIVE_PXX_INCLUDED
 
 #define NEW_ANGLE(a)  { \
-	int quot = (int) (a/(2.*Standard_PI)); \
-	if (Abs(quot) >= 1) a = a - 2.*Standard_PI*quot; \
+	int quot = (int) (a/(2. * M_PI)); \
+	if (Abs(quot) >= 1) a = a - 2. * M_PI * quot; \
 }
 
 #define REALEPSILON()  (0.0001)
@@ -20,17 +20,17 @@ double a; \
 		if (y < 0.) \
 			if (-y <= REALEPSILON ()) y = 0.; \
 		if (x == 0.) { \
-			if (y > 0.) z = Standard_PI/2.; \
-			else z = - Standard_PI/2.; \
+			if (y > 0.) z = M_PI / 2.; \
+			else z = - M_PI / 2.; \
 		} \
 		if (y == 0.) { \
 			if (x > 0.) z = 0.; \
-			else z = Standard_PI; \
+			else z = M_PI; \
 		} \
 		if ((x < 0.) && (y > 0.)) { \
 			a = acos (x); \
-			if ((a >= Standard_PI/2.-REALEPSILON ()) && \
-			    (a <= Standard_PI+REALEPSILON ())) \
+			if ((a >= M_PI / 2.-REALEPSILON ()) && \
+			    (a <= M_PI + REALEPSILON ())) \
 				z = a; \
 			else \
 				z = - a; \
@@ -38,7 +38,7 @@ double a; \
 		if ((x >= 0.) && (y > 0.)) { \
 			a = acos (x); \
 			if ((a >= 0.) && \
-			    (a <= Standard_PI/2.+REALEPSILON ())) \
+			    (a <= M_PI / 2. + REALEPSILON ())) \
 				z = a; \
 			else \
 				z = - a; \
@@ -50,7 +50,7 @@ double a; \
 		if ((x > 0.) && (y < 0.)) { \
 			a = acos (x); \
 			if ((a >= 0.) && \
-			    (a <= Standard_PI/2.+REALEPSILON ())) \
+			    (a <= M_PI / 2. + REALEPSILON ())) \
 				z = - a; \
 			else \
 				z = a; \

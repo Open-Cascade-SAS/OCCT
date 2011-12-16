@@ -1022,7 +1022,7 @@ static void GetApproxNormalToFaceOnEdgeEx(const TopoDS_Edge& aE,
   {
     Standard_Real d12, d1, anAlfa12, anAlfa1, aTwoPI;
     
-    aTwoPI=Standard_PI+Standard_PI;
+    aTwoPI = M_PI + M_PI;
     
     gp_Vec aVx1(aPx, aPx1);
     gp_Dir aDBx1 (aVx1);

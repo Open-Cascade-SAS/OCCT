@@ -387,9 +387,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   gp_Vec ldv( axec.Direction() );
   gp_Vec npv( normp );
   Standard_Real dA = Abs( ldv.Angle( npv ) );
-  if( dA > (PI/4.) )
+  if( dA > (M_PI/4.) )
     {
-      Standard_Real dang = Abs( ldv.Angle( npv ) ) - PI/2.;
+      Standard_Real dang = Abs( ldv.Angle( npv ) ) - M_PI/2.;
       Standard_Real dangle = Abs( dang );
       if( dangle > Tolang )
 	{
@@ -947,7 +947,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       
       Standard_Real A=DirCyl1.Angle(DirCyl2);
       Standard_Real B;
-      B=Abs(Sin(0.5*(PI-A)));
+      B=Abs(Sin(0.5*(M_PI-A)));
       A=Abs(Sin(0.5*A));
       
       if(A==0.0 || B==0.0) {
@@ -1308,7 +1308,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     // Preliminary analysis. Determination of iRet
     //
     iRet=0;
-    aHalfPI=0.5*PI;
+    aHalfPI=0.5*M_PI;
     aD1=1.;
     aPA1.SetCoord(aD1, 0.);
     aP0.SetCoord(0., 0.);
@@ -1317,7 +1317,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     aAx2=Con2.Axis();
     aGamma=aAx1.Angle(aAx2);
     if (aGamma>aHalfPI){
-      aGamma=PI-aGamma;
+      aGamma=M_PI-aGamma;
     }
     aCosGamma=Cos(aGamma);
     aSinGamma=Sin(aGamma);
@@ -1485,8 +1485,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 
 
     //Other generatrixes of cones laying in maximal plane
-    gp_Lin aGen1 = aGen.Rotated(Con1.Axis(), Standard_PI); 
-    gp_Lin aGen2 = aGen.Rotated(Con2.Axis(), Standard_PI); 
+    gp_Lin aGen1 = aGen.Rotated(Con1.Axis(), M_PI); 
+    gp_Lin aGen2 = aGen.Rotated(Con2.Axis(), M_PI); 
     //
     //Intersection point of generatrixes
     gp_Dir aN; //solution plane normal

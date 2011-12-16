@@ -41,7 +41,7 @@ void Prs3d_AnglePresentation::Draw (
   Standard_Real x1,y1,z1,x2,y2,z2;
   AttachmentPoint2.Coord(x1,y1,z1);
   AttachmentPoint3.Coord(x2,y2,z2);
-  Standard_Integer nbp = Max (4 , Standard_Integer (50. * alpha / PI));
+  Standard_Integer nbp = Max (4 , Standard_Integer (50. * alpha / M_PI));
   Standard_Real dteta = alpha/(nbp-1);
   Standard_Real x,y,z;
   gp_Vec u;

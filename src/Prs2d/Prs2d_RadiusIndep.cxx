@@ -113,7 +113,7 @@ Prs2d_RadiusIndep::Prs2d_RadiusIndep( const Handle(Graphic2d_GraphicObject) & aG
    if ( myX2 > myMaxX ) myMaxX = myX2;
    if ( myY2 > myMaxY ) myMaxY = myY2;
    
-   Standard_Real ArrANG = Standard_PI/6., theArrLN  = aRad/5., theANG;
+   Standard_Real ArrANG = M_PI / 6., theArrLN  = aRad/5., theANG;
    gp_Pnt2d theOrig( 0., 0. ), P2, P3;
    gp_Vec2d VX( 1., 0. );
  

@@ -109,7 +109,7 @@
   }
   //==================================================================================
   //OCC431(apo): modified ->
-  static Standard_Real CosRef2D =  Cos(PI/9.0),  AngRef2D = PI/2.0; 
+  static Standard_Real CosRef2D =  Cos(M_PI/9.0),  AngRef2D = M_PI/2.0; 
 
   static Standard_Real /*tolArea = 100.0,*/ d = 7.0;
   Standard_Real tolArea = 100.0;

@@ -227,7 +227,7 @@ static Standard_Boolean ComputeTangencyPoint(const Handle(Geom_Curve)& GC1,
 	      ElCLib::D1(par_inter,ellipse->Elips(),P2,aVector2);
 	    }
 //	  if ( aVector1.IsParallel(aVector2, 100*Precision::Angular()) ) break;
-	  if ( aVector1.IsParallel(aVector2, Standard_PI/360.0) ) break; // 0.5 graduce
+	  if ( aVector1.IsParallel(aVector2, M_PI / 360.0) ) break; // 0.5 graduce
 	}
     }
   aPoint = PC1;

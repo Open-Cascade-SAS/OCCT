@@ -1548,12 +1548,12 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 	  if (!ok2) return;
 	  
 	  Standard_Real sum = matfs+matfor;
-	  Standard_Boolean sumisPI = (Abs(sum-PI) < tola1);
-	  Standard_Boolean fsinfPI  = (matfs < PI);
-	  Standard_Boolean forinfPI = (matfor < PI);
+	  Standard_Boolean sumisPI = (Abs(sum-M_PI) < tola1);
+	  Standard_Boolean fsinfPI  = (matfs < M_PI);
+	  Standard_Boolean forinfPI = (matfor < M_PI);
 	  if      (sumisPI)  b = Standard_False;
-	  else if (sum < PI) b = Standard_True;
-	  else { //sum > PI
+	  else if (sum < M_PI) b = Standard_True;
+	  else { //sum > M_PI
 	    if (fsinfPI && forinfPI) b = Standard_False;
 	    else { // (!fsinfPI) || (!forinfPI)
 	      Standard_Boolean sammat = (Abs(matfs-matfor)<tola1);

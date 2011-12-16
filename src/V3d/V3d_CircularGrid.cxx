@@ -240,7 +240,7 @@ Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d ();
 Standard_Real r;
 Standard_Real aStep = RadiusStep ();
 Standard_Real aDivision = DivisionNumber ();
-Standard_Real alpha = Standard_PI / aDivision;
+Standard_Real alpha = M_PI / aDivision;
 
 Standard_Integer Division = (Standard_Integer )( (aDivision >= DIVISION ? aDivision : DIVISION));
 Graphic3d_Array1OfVertex Cercle (0, 2*Division);
@@ -302,7 +302,7 @@ Standard_Boolean MakeCercles = Standard_False;
 		myGroup2->SetGroupPrimitivesAspect (LineAttrib);
 #endif
 		myGroup2->BeginPrimitives ();
-			alpha = Standard_PI / Division;
+			alpha = M_PI / Division;
 			for (r=aStep; r<=myRadius; r+=aStep) {
 				for (i=0; i<=2*Division; i++) {
 					xl = Cos (alpha*i)*r;
@@ -341,7 +341,7 @@ Handle(Graphic3d_AspectMarker3d) MarkerAttrib = new Graphic3d_AspectMarker3d ();
 Standard_Real r;
 Standard_Real aStep = RadiusStep ();
 Standard_Real aDivision = DivisionNumber ();
-Standard_Real alpha = Standard_PI / aDivision;
+Standard_Real alpha = M_PI / aDivision;
 
 Graphic3d_Array1OfVertex Cercle (0,(Standard_Integer )(2*aDivision));
 Standard_Real xl, yl, zl = myOffSet;

@@ -26,9 +26,11 @@
 //--------------------------------------------------------
 #include <math.h>
 #include <stdlib.h>
+#ifndef __MATH_WNT_H
+# include <Standard_math.hxx>
+#endif  /* __MATH_WNT_H */
 #include <Standard_Stream.hxx>
 #include <PlotMgt_fill.hxx>
-#define Standard_PI (3.14159)
 #define maxDouble ((double)1.E+30)
 //--------------------------------------------------------
 
@@ -109,12 +111,12 @@ double fsqrt(double a)
 // Determine is angle a is between b and b+c (c>0)
 int mpo_inside(double a, double b, double c)
 {
-  while (b<0) {b += 2*Standard_PI;}; b -= 2*Standard_PI*ftrunc(b/(2*Standard_PI));
-  c -= 2*Standard_PI*ftrunc(c/(2*Standard_PI));
-  while (a<0) {a+=2*Standard_PI;}; a -= 2*Standard_PI*ftrunc(a/(2*Standard_PI));
-//  while(c<0) {c+=2*Standard_PI;}; c-=2*Standard_PI*ftrunc(c/(2*Standard_PI));
+  while (b<0) {b += 2*M_PI;}; b -= 2*M_PI*ftrunc(b/(2*M_PI));
+  c -= 2*M_PI*ftrunc(c/(2*M_PI));
+  while (a<0) {a+=2*M_PI;}; a -= 2*M_PI*ftrunc(a/(2*M_PI));
+//  while(c<0) {c+=2*M_PI;}; c-=2*M_PI*ftrunc(c/(2*M_PI));
   if ((a > b) && (a < b+c)) return 1;
-  else if ((2*Standard_PI+a > b) && (2*Standard_PI+a < b+c)) return 1;
+  else if ((2*M_PI+a > b) && (2*M_PI+a < b+c)) return 1;
   return 0;
 }
 
@@ -122,7 +124,7 @@ int __InitFillArc(double X,  double Y, double a, double b, double alpha,
                   double beta, double gamma, double delta, double step)
 {
   int i ;
-  alpha -= 2*Standard_PI*ftrunc(alpha/(2*Standard_PI)); beta -= 2*Standard_PI*ftrunc(beta/(2*Standard_PI));
+  alpha -= 2*M_PI*ftrunc(alpha/(2*M_PI)); beta -= 2*M_PI*ftrunc(beta/(2*M_PI));
   if (beta < 0.0) 
     {
       alpha += beta; beta = -beta;
@@ -137,16 +139,16 @@ int __InitFillArc(double X,  double Y, double a, double b, double alpha,
   int size = int( ftrunc(2*Ys/step) + 1 );
 //  cout << "Ysize = " << Ys << endl << flush;
 //  cout << "Size  = " << size << endl << flush;
-//  cout << "Alpha = " << alpha*180/Standard_PI << endl << flush;
-//  cout << "Beta  = " << beta*180/Standard_PI << endl << flush;
+//  cout << "Alpha = " << alpha*180/M_PI << endl << flush;
+//  cout << "Beta  = " << beta*180/M_PI << endl << flush;
   mpo_lines = (mpo_one_line*)malloc(sizeof(mpo_one_line)*size);
   for ( i = 0; i < size; i++)
     {
       double Yt = Ys - i*step;
       (mpo_lines+i)->X1 = (-C2*Yt - fsqrt(C2*C2*Yt*Yt - C1*(C3*Yt*Yt - a*a*b*b)))/C1;
       (mpo_lines+i)->X2 = (-C2*Yt + fsqrt(C2*C2*Yt*Yt - C1*(C3*Yt*Yt - a*a*b*b)))/C1;
-//    cout << "alpha = " << alpha*180/Standard_PI << "    alpha+beta = " << (alpha+beta)*180/Standard_PI << endl << flush;
-//    cout << "" << fatan2(Yt, (mpo_lines+i)->X2)*180/Standard_PI << "     type " << (mpo_lines+i)->type << endl << flush;;
+//    cout << "alpha = " << alpha*180/M_PI << "    alpha+beta = " << (alpha+beta)*180/M_PI << endl << flush;
+//    cout << "" << fatan2(Yt, (mpo_lines+i)->X2)*180/M_PI << "     type " << (mpo_lines+i)->type << endl << flush;;
 //    cout << "Xleft = " << (mpo_lines+i)->X1 << "     Xright = " << (mpo_lines+i)->X2 << endl << flush;
 //    cout << "C2*C2 - C1*(C3*Yt*Yt - a*a*b*b) = " << C2*C2 - C1*(C3*Yt*Yt - a*a*b*b) << endl << flush;
 //    cout << "C1*(C3*Yt*Yt - a*a*b*b) = " << C1*(C3*Yt*Yt - a*a*b*b) << endl << flush;

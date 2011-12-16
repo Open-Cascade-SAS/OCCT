@@ -3,7 +3,7 @@
 #include <Prs3d_ArrowAspect.ixx>
 
 Prs3d_ArrowAspect::Prs3d_ArrowAspect () 
-     : myAngle(PI/180.*10), myLength(1.) {
+     : myAngle(M_PI/180.*10), myLength(1.) {
 #ifdef IMP120100
   myArrowAspect = 
 	new Graphic3d_AspectLine3d (
@@ -24,7 +24,7 @@ Prs3d_ArrowAspect::Prs3d_ArrowAspect (const Quantity_PlaneAngle anAngle,
 
 void Prs3d_ArrowAspect::SetAngle ( const Quantity_PlaneAngle anAngle) {
   Prs3d_InvalidAngle_Raise_if ( anAngle <= 0.  ||
-                              anAngle >= PI /2. , "");
+                              anAngle >= M_PI /2. , "");
   myAngle = anAngle;
 }
 Quantity_PlaneAngle Prs3d_ArrowAspect::Angle () const

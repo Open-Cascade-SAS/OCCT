@@ -29,8 +29,20 @@ __Standard_API double __cdecl acosh ( double );
 __Standard_API double __cdecl asinh ( double );
 __Standard_API double __cdecl atanh ( double );
 
-# define M_SQRT1_2  7.0710678118654752440E-1
+# ifdef M_SQRT1_2
+#  undef M_SQRT1_2
+# endif
+# define M_SQRT1_2  0.707106781186547524401
+
+# ifdef M_PI_2
+#  undef M_PI_2
+# endif 
 # define M_PI_2     1.57079632679489661923
+
+# ifdef M_PI
+#  undef M_PI
+# endif
+# define M_PI       3.14159265358979323846
 
 # endif  /* __MATH_WNT_H */
 

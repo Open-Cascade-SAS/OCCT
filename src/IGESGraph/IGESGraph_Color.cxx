@@ -47,7 +47,7 @@
     void IGESGraph_Color::HLSPercentage
   (Standard_Real& Hue, Standard_Real& Lightness, Standard_Real& Saturation) const
 {
-  Hue        = ((1.0 / (2.0 * PI)) *
+  Hue        = ((1.0 / (2.0 * M_PI)) *
 		(ATan(((2 * theRed) - theGreen - theBlue) /
 		      (Sqrt(3) * (theGreen - theBlue)))));
   Lightness  = ((1.0 / 3.0) * (theRed + theGreen + theBlue));

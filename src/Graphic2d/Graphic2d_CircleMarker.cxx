@@ -24,7 +24,7 @@ Graphic2d_CircleMarker::Graphic2d_CircleMarker (
 	 myY (Standard_ShortReal (Y)),
 	 myRadius (Standard_ShortReal (Radius)),
 	 myFirstAngle (0.0),
-	 mySecondAngle (Standard_ShortReal (2.*Standard_PI)) {
+	 mySecondAngle (Standard_ShortReal (2. * M_PI)) {
 
 	if (myRadius <= RealEpsilon ())
 		Graphic2d_CircleDefinitionError::Raise ("The radius = 0.");

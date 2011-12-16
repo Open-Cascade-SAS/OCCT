@@ -24,7 +24,7 @@
 BRepPrim_Torus::BRepPrim_Torus(const gp_Ax2& Position, 
 			       const Standard_Real Major, 
 			       const Standard_Real Minor) :
-       BRepPrim_Revolution(Position,0,2*PI),
+       BRepPrim_Revolution(Position,0,2*M_PI),
        myMajor(Major),
        myMinor(Minor)
 {
@@ -38,7 +38,7 @@ BRepPrim_Torus::BRepPrim_Torus(const gp_Ax2& Position,
 
 BRepPrim_Torus::BRepPrim_Torus(const Standard_Real Major, 
 			       const Standard_Real Minor) :
-       BRepPrim_Revolution(gp::XOY(),0,2*PI),
+       BRepPrim_Revolution(gp::XOY(),0,2*M_PI),
        myMajor(Major),
        myMinor(Minor)
 {
@@ -54,7 +54,7 @@ BRepPrim_Torus::BRepPrim_Torus(const gp_Pnt& Center,
 			       const Standard_Real Major, 
 			       const Standard_Real Minor) :
        BRepPrim_Revolution(gp_Ax2(Center,gp_Dir(0,0,1),gp_Dir(1,0,0)),
-			   0,2*PI),
+			   0,2*M_PI),
        myMajor(Major),
        myMinor(Minor)
 {

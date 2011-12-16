@@ -499,7 +499,7 @@ Standard_Integer Visual3d_Light::Identification () const {
 
 Standard_Boolean Visual3d_Light::IsValid (const Standard_Real AAngle) {
 
-	return ( (AAngle <  Standard_PI) && (AAngle >= 0.0) );
+	return ( (AAngle <  M_PI) && (AAngle >= 0.0) );
 
 }
 

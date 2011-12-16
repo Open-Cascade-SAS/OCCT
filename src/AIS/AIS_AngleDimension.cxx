@@ -592,7 +592,7 @@ void AIS_AngleDimension::ComputeConeAngle(const Handle(Prs3d_Presentation)& aPre
     aCurve =   aSurf->VIso(midV);
     myCircle = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
 
-    myPosition = ElCLib::Value(Standard_PI/2.0, myCircle);
+    myPosition = ElCLib::Value(M_PI / 2.0, myCircle);
     myAutomaticPosition = Standard_False;
   }
   else {
@@ -678,7 +678,7 @@ void AIS_AngleDimension::ComputeTwoCurvilinearFacesAngle(const Handle(Prs3d_Pres
 #endif
       
 
-  if (myVal <= Precision::Angular() || Abs( PI-myVal ) <= Precision::Angular())
+  if (myVal <= Precision::Angular() || Abs( M_PI-myVal ) <= Precision::Angular())
     DsgPrs_AnglePresentation::Add(aPresentation,
 				  myDrawer,
 				  myVal,
@@ -931,7 +931,7 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
     Standard_Boolean In1(Standard_False);
     Standard_Boolean In2(Standard_False);
     if ( !(Abs(d1.Angle(d2) - Abs(myVal)) <= Precision::Confusion())
-	 &&  (Abs(myVal) <  PI) ) {
+	 &&  (Abs(myVal) <  M_PI) ) {
       Standard_Real parcent1 = ElCLib::Parameter(l1->Lin(), myCenter);
       Standard_Real par11 = ElCLib::Parameter(l1->Lin(), ptat11);
       Standard_Real par12 = ElCLib::Parameter(l1->Lin(), ptat12);
@@ -961,7 +961,7 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
   gp_Lin gpl2 = l2->Lin();
   theaxis = gp_Lin(myCenter,myFDir^mySDir);
 
-  if (myVal >  PI) {
+  if (myVal >  M_PI) {
     theaxis.Reverse();
   }
   
@@ -1022,7 +1022,7 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
 	mySAttach = ElCLib::Value(par_p2_attach,gpl2);
       }
     }
-    if ( myVal < PI) curpos.SetXYZ(.5*(myFAttach.XYZ()+mySAttach.XYZ())); 
+    if ( myVal < M_PI) curpos.SetXYZ(.5*(myFAttach.XYZ()+mySAttach.XYZ())); 
     else {
       curpos.SetXYZ(.5*(myFAttach.XYZ()+mySAttach.XYZ())); 
       gp_Vec transl(curpos, myCenter);
@@ -1074,9 +1074,9 @@ void AIS_AngleDimension::ComputeTwoEdgesNotNullAngle(const Handle(Prs3d_Presenta
     Standard_Real udeb = uc1;
     Standard_Real ufin = uc2;
     if (uco > ufin) {
-      if (Abs(myVal)<PI) {
+      if (Abs(myVal)<M_PI) {
 	// test if uco is in the opposite sector 
-	if (uco > udeb+PI && uco < ufin+PI){
+	if (uco > udeb+M_PI && uco < ufin+M_PI){
 	  dist = -dist;
 	}
       }
@@ -1493,7 +1493,7 @@ void AIS_AngleDimension::Compute3DSelection( const Handle( SelectMgr_Selection )
   Standard_Real FirstParAngleCirc, LastParAngleCirc, FirstParAttachCirc, LastParAttachCirc;
   gp_Pnt EndOfArrow1, EndOfArrow2, ProjAttachPoint2;
   gp_Dir DirOfArrow1, DirOfArrow2;
-  gp_Dir axisdir = (myVal <= Precision::Angular() || Abs( PI-myVal ) <= Precision::Angular())?
+  gp_Dir axisdir = (myVal <= Precision::Angular() || Abs( M_PI-myVal ) <= Precision::Angular())?
                     myPlane->Pln().Axis().Direction() : (myFDir ^ mySDir);
   Standard_Boolean isPlane = (myFirstSurfType == AIS_KOS_Plane)? Standard_True : Standard_False;
 
@@ -1527,7 +1527,7 @@ void AIS_AngleDimension::Compute3DSelection( const Handle( SelectMgr_Selection )
   Handle( Select3D_SensitiveCurve ) SensCurve;
 
   // Angle's arc or line
-  if (myVal > Precision::Angular() && Abs( PI-myVal ) > Precision::Angular())
+  if (myVal > Precision::Angular() && Abs( M_PI-myVal ) > Precision::Angular())
     {
       curve = new Geom_TrimmedCurve( new Geom_Circle( AngleCirc ), FirstParAngleCirc, LastParAngleCirc );
       SensCurve = new Select3D_SensitiveCurve( own, curve );
@@ -1611,12 +1611,12 @@ void AIS_AngleDimension::Compute2DSelection(const Handle(SelectMgr_Selection)& a
   gp_Lin l2(cu2.Line());
 
   // it is patch!
-  if (Abs( myVal ) <= Precision::Angular() || Abs( PI - myVal ) <= Precision::Angular())
+  if (Abs( myVal ) <= Precision::Angular() || Abs( M_PI - myVal ) <= Precision::Angular())
 /*
   //---------------------------------------------------------
-  //    Cas de droites paralleles ( <=> angle nul a PI pres)
+  //    Cas de droites paralleles ( <=> angle nul a M_PI pres)
   if ((Abs(l1.Angle(l2)) < Precision::Angular()) ||
-      (Abs((l1.Angle(l2) - PI)) < Precision::Angular()) )
+      (Abs((l1.Angle(l2) - M_PI)) < Precision::Angular()) )
 */
     {
        
@@ -1677,19 +1677,19 @@ void AIS_AngleDimension::Compute2DSelection(const Handle(SelectMgr_Selection)& a
       Standard_Real ufin = uc2;
       
       if (uco > ufin) {
-	if (Abs(myVal)<PI) {
+	if (Abs(myVal)<M_PI) {
 	  // test if uco is in the opposing sector 
-	  if (uco > udeb+PI && uco < ufin+PI){
-	    udeb = udeb + PI;
-	  ufin = ufin + PI;
+	  if (uco > udeb+M_PI && uco < ufin+M_PI){
+	    udeb = udeb + M_PI;
+	  ufin = ufin + M_PI;
 	    uc1  = udeb;
 	    uc2  = ufin;
 	  }
       }
       }  
       if (uco > ufin) {
-	if ((uco-uc2) < (uc1-uco+(2*PI))) ufin = uco;
-	else udeb = uco - 2*PI;
+	if ((uco-uc2) < (uc1-uco+(2*M_PI))) ufin = uco;
+	else udeb = uco - 2*M_PI;
       }
       p1   = ElCLib::Value(udeb,cer);
       p2   = ElCLib::Value(ufin,cer);
@@ -1770,11 +1770,11 @@ void AIS_AngleDimension::ComputeNull2DSelection(
   Standard_Real ufin = uc2;
 
   if (uco > ufin) {
-    if (Abs(myVal)<PI) {
+    if (Abs(myVal)<M_PI) {
       // test if uco is in the opposing sector 
-      if (uco > udeb+PI && uco < ufin+PI){
-	udeb = udeb + PI;
-	ufin = ufin + PI;
+      if (uco > udeb+M_PI && uco < ufin+M_PI){
+	udeb = udeb + M_PI;
+	ufin = ufin + M_PI;
 	uc1  = udeb;
 	uc2  = ufin;
       }
@@ -1782,11 +1782,11 @@ void AIS_AngleDimension::ComputeNull2DSelection(
   }
 
   if (uco > ufin) {
-    if ((uco-uc2) < (uc1-uco+(2*PI))) {
+    if ((uco-uc2) < (uc1-uco+(2*M_PI))) {
       ufin = uco;
     }
     else {
-      udeb = uco - 2*PI;
+      udeb = uco - 2*M_PI;
     }
   }
 
@@ -1929,7 +1929,7 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
     aCurve =   aSurf->VIso(midV);
     myCircle = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
 
-    myPosition = ElCLib::Value(Standard_PI / 2.0, myCircle);
+    myPosition = ElCLib::Value(M_PI / 2.0, myCircle);
     myAutomaticPosition = Standard_False;
   }
   else {
@@ -1966,7 +1966,7 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
 
   aPnt = Apex;
   gp_Pnt P1 = ElCLib::Value(0., myCircle);
-  gp_Pnt P2 = ElCLib::Value(Standard_PI, myCircle);
+  gp_Pnt P2 = ElCLib::Value(M_PI, myCircle);
 
   gce_MakePln mkPln(P1, P2,  aPnt);   // create a plane whitch defines plane for projection aPosition on it
 
@@ -1994,8 +1994,8 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
   Standard_Real AttParam = ElCLib::Parameter(aCircle2, AttachmentPnt);
   Standard_Real OppParam = ElCLib::Parameter(aCircle2, OppositePnt);
   
-  while ( AttParam >= 2*Standard_PI ) AttParam -= 2*Standard_PI;
-  while ( OppParam >= 2*Standard_PI ) OppParam -= 2*Standard_PI;
+  while ( AttParam >= 2 * M_PI ) AttParam -= 2 * M_PI;
+  while ( OppParam >= 2 * M_PI ) OppParam -= 2 * M_PI;
 
   if( myPosition.Distance( myCircle.Location() ) <= myCircle.Radius() )
     if( 2 * myCircle.Radius() > aCircle2.Radius() * 0.4 ) IsArrowOut = Standard_False;  //four times more than an arrow size
@@ -2006,10 +2006,10 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
   param = ElCLib::Parameter(aCircle2, tmpPnt);
 
   if(IsArrowOut) {
-    angle = OppParam - AttParam + Standard_PI/6; //An angle between AttParam and OppParam + 30 degrees
-    param = AttParam - Standard_PI/12;      //out parts of dimension line are 15 degrees
+    angle = OppParam - AttParam + M_PI / 6; //An angle between AttParam and OppParam + 30 degrees
+    param = AttParam - M_PI / 12;      //out parts of dimension line are 15 degrees
     
-    while ( angle > 2*Standard_PI ) angle -= 2*Standard_PI;
+    while ( angle > 2 * M_PI ) angle -= 2 * M_PI;
     for( i = 0; i <= 11; i++ ) {       //calculating of arc             
       aPnt = ElCLib::Value(param + angle/11 * i, aCircle2);
       aPnt.Coord(X, Y, Z);
@@ -2020,7 +2020,7 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
   else {
     angle = OppParam - AttParam;
     param = AttParam;
-    while ( angle > 2*Standard_PI ) angle -= 2*Standard_PI;
+    while ( angle > 2 * M_PI ) angle -= 2 * M_PI;
     for( i = 0; i <= 11; i++ ) {       //calculating of arc             
       aPnt = ElCLib::Value(param + angle/11 * i, aCircle2);
       aPnt.Coord(X, Y, Z);

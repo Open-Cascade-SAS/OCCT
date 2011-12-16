@@ -352,24 +352,24 @@ void Recadre(const Standard_Boolean ,
   switch(typeS1)
   {
     case GeomAbs_Torus:
-      while(V1<(V1p-1.5*PI)) V1+=PI+PI;
-      while(V1>(V1p+1.5*PI)) V1-=PI+PI;
+      while(V1<(V1p-1.5*M_PI)) V1+=M_PI+M_PI;
+      while(V1>(V1p+1.5*M_PI)) V1-=M_PI+M_PI;
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
-      while(U1<(U1p-1.5*PI)) U1+=PI+PI;
-      while(U1>(U1p+1.5*PI)) U1-=PI+PI;
+      while(U1<(U1p-1.5*M_PI)) U1+=M_PI+M_PI;
+      while(U1>(U1p+1.5*M_PI)) U1-=M_PI+M_PI;
   }
   switch(typeS2)
   { 
     case GeomAbs_Torus:
-      while(V2<(V2p-1.5*PI)) V2+=PI+PI;
-      while(V2>(V2p+1.5*PI)) V2-=PI+PI;
+      while(V2<(V2p-1.5*M_PI)) V2+=M_PI+M_PI;
+      while(V2>(V2p+1.5*M_PI)) V2-=M_PI+M_PI;
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
-      while(U2<(U2p-1.5*PI)) U2+=PI+PI;
-      while(U2>(U2p+1.5*PI)) U2-=PI+PI;
+      while(U2<(U2p-1.5*M_PI)) U2+=M_PI+M_PI;
+      while(U2>(U2p+1.5*M_PI)) U2-=M_PI+M_PI;
   }
   pt.SetParameters(U1,V1,U2,V2);
 }
@@ -629,26 +629,26 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	    Standard_Real aCf, aTwoPI;
 	    //
 	    aCf=0.;
-	    aTwoPI=PI+PI;
-	    if ((U1-AnU1) >  1.5*PI) { 
-	      while ((U1-AnU1) > (1.5*PI+aCf*aTwoPI)) {
+	    aTwoPI=M_PI+M_PI;
+	    if ((U1-AnU1) >  1.5*M_PI) { 
+	      while ((U1-AnU1) > (1.5*M_PI+aCf*aTwoPI)) {
 		aCf=aCf+1.;
 	      }
 	      U1=U1-aCf*aTwoPI;
 	    } 
 	    //
 	    else {
-	      while ((U1-AnU1) < (-1.5*PI-aCf*aTwoPI)) {
+	      while ((U1-AnU1) < (-1.5*M_PI-aCf*aTwoPI)) {
 		aCf=aCf+1.;
 	      }
 	      U1=U1+aCf*aTwoPI;
 	    }
 	    // was:
-	    //if ((U1-AnU1) >  1.5*PI) { 
-	    //  U1-=PI+PI;
+	    //if ((U1-AnU1) >  1.5*M_PI) { 
+	    //  U1-=M_PI+M_PI;
 	    //}
-	    //else if ((U1-AnU1) < -1.5*PI) { 
-	    //  U1+=PI+PI; 
+	    //else if ((U1-AnU1) < -1.5*M_PI) { 
+	    //  U1+=M_PI+M_PI; 
 	    //}
 	    //modified by NIZNHY-PKV Fri Mar 28 15:06:11 2008t
 	  }
@@ -662,15 +662,15 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	    case GeomAbs_Cone:
 	    case GeomAbs_Sphere:
 	    case GeomAbs_Torus:
-	      while(U2<(AnU2-1.5*PI)) U2+=PI+PI;
-	      while(U2>(AnU2+1.5*PI)) U2-=PI+PI;
+	      while(U2<(AnU2-1.5*M_PI)) U2+=M_PI+M_PI;
+	      while(U2>(AnU2+1.5*M_PI)) U2-=M_PI+M_PI;
 	      break;
 	    default: 
 	      break;
 	    }
 	    if(typeS2==GeomAbs_Torus) { 
-	      while(V2<(AnV2-1.5*PI)) V2+=PI+PI;
-	      while(V2>(AnV2+1.5*PI)) V2-=PI+PI;
+	      while(V2<(AnV2-1.5*M_PI)) V2+=M_PI+M_PI;
+	      while(V2>(AnV2+1.5*M_PI)) V2-=M_PI+M_PI;
 	    }
 	    thelin->SetUV(k,Standard_True,U2,V2);
 	  }
@@ -683,15 +683,15 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	    case GeomAbs_Cone:
 	    case GeomAbs_Sphere:
 	    case GeomAbs_Torus:
-	      while(U2<(AnU2-1.5*PI)) U2+=PI+PI;
-	      while(U2>(AnU2+1.5*PI)) U2-=PI+PI;
+	      while(U2<(AnU2-1.5*M_PI)) U2+=M_PI+M_PI;
+	      while(U2>(AnU2+1.5*M_PI)) U2-=M_PI+M_PI;
 	      break;
 	    default: 
 	      break;
 	    }
 	    if(typeS2==GeomAbs_Torus) { 
-	      while(V2<(AnV2-1.5*PI)) V2+=PI+PI;
-	      while(V2>(AnV2+1.5*PI)) V2-=PI+PI;
+	      while(V2<(AnV2-1.5*M_PI)) V2+=M_PI+M_PI;
+	      while(V2>(AnV2+1.5*M_PI)) V2-=M_PI+M_PI;
 	    }
 	    thelin->SetUV(k,Standard_False,U2,V2);
 
@@ -1333,49 +1333,49 @@ static Standard_Real AdjustUFirst(Standard_Real U1,Standard_Real U2)
   Standard_Real u = U1;
 
   // case: no adjustment
-  if( U1 > 0. && U1 < (2.*PI) )
+  if( U1 > 0. && U1 < (2.*M_PI) )
     return u;
 
   // case: near '0'
   if( U1 == 0. || fabs(U1) <= 1.e-9 ) {
-    if( U2 > 0. && U2 < (2.*PI) )
-      u = ( U2 < ((2.*PI)-U2) ) ? 0. : (2.*PI);
+    if( U2 > 0. && U2 < (2.*M_PI) )
+      u = ( U2 < ((2.*M_PI)-U2) ) ? 0. : (2.*M_PI);
     else {
       Standard_Real uu = U2;
-      if( U2 > (2.*PI) )
-	while( uu > (2.*PI) )
-	  uu -= (2.*PI);
+      if( U2 > (2.*M_PI) )
+	while( uu > (2.*M_PI) )
+	  uu -= (2.*M_PI);
       else 
 	while( uu < 0.)
-	  uu += (2.*PI);
+	  uu += (2.*M_PI);
       
-      u = ( uu < ((2.*PI)-uu) ) ? 0. : (2.*PI);
+      u = ( uu < ((2.*M_PI)-uu) ) ? 0. : (2.*M_PI);
     }
   }
   // case: near '2PI'
-  else if( U1 == (2.*PI) || fabs((2.*PI)-fabs(U1)) <= 1.e-9 ) {
-    if( U2 > 0. && U2 < (2.*PI) )
-      u = ( U2 < ((2.*PI)-U2) ) ? 0. : (2.*PI);
+  else if( U1 == (2.*M_PI) || fabs((2.*M_PI)-fabs(U1)) <= 1.e-9 ) {
+    if( U2 > 0. && U2 < (2.*M_PI) )
+      u = ( U2 < ((2.*M_PI)-U2) ) ? 0. : (2.*M_PI);
     else {
       Standard_Real uu = U2;
-      if( U2 > (2.*PI) )
-	while( uu > (2.*PI) )
-	  uu -= (2.*PI);
+      if( U2 > (2.*M_PI) )
+	while( uu > (2.*M_PI) )
+	  uu -= (2.*M_PI);
       else 
 	while( uu < 0.)
-	  uu += (2.*PI);
+	  uu += (2.*M_PI);
       
-      u = ( uu < ((2.*PI)-uu) ) ? 0. : (2.*PI);
+      u = ( uu < ((2.*M_PI)-uu) ) ? 0. : (2.*M_PI);
     }
   }
   // case: '<0. || >2PI'
   else {
     if(U1 < 0.)
       while(u < 0.)
-	u += 2.*PI;
-    if(U1 > (2.*PI))
-      while(u > (2.*PI))
-	u -= (2.*PI);
+	u += 2.*M_PI;
+    if(U1 > (2.*M_PI))
+      while(u > (2.*M_PI))
+	u -= (2.*M_PI);
   }
 
   return u;
@@ -1387,15 +1387,15 @@ static Standard_Real AdjustUNext(Standard_Real Un,Standard_Real Up)
   Standard_Real u = Un;
   if( Un < 0. )
     while(u < 0.)
-      u += (2.*PI);
-  else if( Un > (2.*PI) )
-    while( u > (2.*PI) )
-      u -= (2.*PI);
+      u += (2.*M_PI);
+  else if( Un > (2.*M_PI) )
+    while( u > (2.*M_PI) )
+      u -= (2.*M_PI);
   else if(Un == 0. || fabs(Un) <= 1.e-9)
-    u = (fabs(Up) < fabs(2.*PI-Up)) ? 0. : (2.*PI);
-  else if(Un == (2.*PI) || fabs(Un-(2.*PI)) <= 1.e-9)
-    u = (fabs(Up) < fabs(2.*PI-Up)) ? 0. : (2.*PI);
-  else //( Un > 0. && Un < (2.*PI) )
+    u = (fabs(Up) < fabs(2.*M_PI-Up)) ? 0. : (2.*M_PI);
+  else if(Un == (2.*M_PI) || fabs(Un-(2.*M_PI)) <= 1.e-9)
+    u = (fabs(Up) < fabs(2.*M_PI-Up)) ? 0. : (2.*M_PI);
+  else //( Un > 0. && Un < (2.*M_PI) )
     return u;
   return u;
 }
@@ -1514,7 +1514,7 @@ static void ForcedPurgePoints(Handle(IntSurf_LineOn2S)& Result,
   }
 
   if(Quad.TypeQuadric() == GeomAbs_Sphere) {
-    Standard_Real Vapx1 = PI/2., Vapx2 = -PI/2.;
+    Standard_Real Vapx1 = M_PI/2., Vapx2 = -M_PI/2.;
     Standard_Real U1 = 0., V1 = 0., U2 = 0., V2 = 0.;
     if(IsReversed) {
       Result->Value(1).ParametersOnS2(U1,V1);
@@ -1588,12 +1588,12 @@ static void SearchVertices(const Handle(IntSurf_LineOn2S)& Line,
 static inline Standard_Boolean IsSeamParameter(const Standard_Real U,
 					       const Standard_Real TOL2D)
 {
-  return (fabs(U) <= TOL2D || fabs(2.*PI - U) <= TOL2D);
+  return (fabs(U) <= TOL2D || fabs(2.*M_PI - U) <= TOL2D);
 }
 
 static inline Standard_Real AdjustU(const Standard_Real U)
 {
-  Standard_Real u = U, DBLPI = 2.*PI;
+  Standard_Real u = U, DBLPI = 2.*M_PI;
   if(u < 0. || u > DBLPI) {
     if(u < 0.)
       while(u < 0.)
@@ -1679,7 +1679,7 @@ static Standard_Boolean InsertSeamVertices(Handle(IntSurf_LineOn2S)&       Line,
 	  else
 	    Line->Value(ipp).ParametersOnS1(U1,V1); // S1 - quadric
 	  Standard_Real u = AdjustUFirst(U,U1);
-	  if(fabs(u-U) >= 1.5*PI) {
+	  if(fabs(u-U) >= 1.5*M_PI) {
 	    Standard_Real U2 = 0., V2 = 0.;
 	    if(IsReversed) {
 	      Line->Value(ip).ParametersOnS1(U2,V2); // prm
@@ -1707,11 +1707,11 @@ static Standard_Boolean InsertSeamVertices(Handle(IntSurf_LineOn2S)&       Line,
 	  }
 	  U1 = AdjustU(U1);
 	  U2 = AdjustU(U2);
-	  Standard_Boolean pnearZero = (fabs(U1) < fabs(2.*PI-U1)) ? Standard_True : Standard_False;
-	  Standard_Boolean cnearZero = (fabs(U) < fabs(2.*PI-U)) ? Standard_True : Standard_False;
+	  Standard_Boolean pnearZero = (fabs(U1) < fabs(2.*M_PI-U1)) ? Standard_True : Standard_False;
+	  Standard_Boolean cnearZero = (fabs(U) < fabs(2.*M_PI-U)) ? Standard_True : Standard_False;
 	  if(pnearZero == cnearZero) {
 	    if(!IsSeamParameter(U2,TOL2D) && !IsSeamParameter(U1,TOL2D)) {
-	      Standard_Real nU = (cnearZero) ? (2.*PI) : 0.;
+	      Standard_Real nU = (cnearZero) ? (2.*M_PI) : 0.;
 	      IntSurf_PntOn2S nP;
 	      nP.SetValue(aP.Value());
 	      Standard_Real U3 = 0., V3 = 0.;
@@ -1733,7 +1733,7 @@ static Standard_Boolean InsertSeamVertices(Handle(IntSurf_LineOn2S)&       Line,
 	  }
 	  else {
 	    if(!IsSeamParameter(U2,TOL2D) && !IsSeamParameter(U1,TOL2D)) {
-	      Standard_Real nU = (cnearZero) ? (2.*PI) : 0.;
+	      Standard_Real nU = (cnearZero) ? (2.*M_PI) : 0.;
 	      IntSurf_PntOn2S nP;
 	      nP.SetValue(aP.Value());
 	      Standard_Real U3 = 0., V3 = 0.;
@@ -1829,10 +1829,10 @@ static void ToSmooth(Handle(IntSurf_LineOn2S)& Line,
   }
 
   if(!doU && Quad.TypeQuadric() == GeomAbs_Sphere) {
-    if(fabs(fabs(U1)-fabs(U2)) > (PI/16.)) doU = Standard_True;
+    if(fabs(fabs(U1)-fabs(U2)) > (M_PI/16.)) doU = Standard_True;
     
-    if(doU && (fabs(U1) <= 1.e-9 || fabs(U1-2.*PI) <= 1.e-9)) {
-      if(fabs(V1-PI/2.) <= 1.e-9 || fabs(V1+PI/2.) <= 1.e-9) {}
+    if(doU && (fabs(U1) <= 1.e-9 || fabs(U1-2.*M_PI) <= 1.e-9)) {
+      if(fabs(V1-M_PI/2.) <= 1.e-9 || fabs(V1+M_PI/2.) <= 1.e-9) {}
       else {
 	doU = Standard_False;
       }
@@ -1843,9 +1843,9 @@ static void ToSmooth(Handle(IntSurf_LineOn2S)& Line,
     Standard_Real Uapx = 0., Vapx = 0.;
     Quad.Parameters(Quad.Cone().Apex(),Uapx,Vapx);
 
-    if(fabs(fabs(U1)-fabs(U2)) > PI/32.) doU = Standard_True;
+    if(fabs(fabs(U1)-fabs(U2)) > M_PI/32.) doU = Standard_True;
 
-    if(doU && (fabs(U1) <= 1.e-9 || fabs(U1-2.*PI) <= 1.e-9)) {
+    if(doU && (fabs(U1) <= 1.e-9 || fabs(U1-2.*M_PI) <= 1.e-9)) {
       if(fabs(V1-Vapx) <= 1.e-9) {}
       else {
 	doU = Standard_False;
@@ -1957,7 +1957,7 @@ static void VerifyVertices(Handle(IntSurf_LineOn2S)& Line,
           FConjugated = 0;
       }
       if(IsSeamParameter(Uv,TOL2D)) {
-        Standard_Real Ucv = (fabs(Uv) < fabs(2.*PI-Uv)) ? (2.*PI) : 0.;
+        Standard_Real Ucv = (fabs(Uv) < fabs(2.*M_PI-Uv)) ? (2.*M_PI) : 0.;
         gp_Pnt2d a2DCV(Ucv,Vv);
         Standard_Real CDist = a2DCV.Distance(a2DPF);
         if(CDist < DistMinF) {
@@ -1990,7 +1990,7 @@ static void VerifyVertices(Handle(IntSurf_LineOn2S)& Line,
           LConjugated = 0;
       }
       if(IsSeamParameter(Uv,TOL2D)) {
-        Standard_Real Ucv = (fabs(Uv) < fabs(2.*PI-Uv)) ? (2.*PI) : 0.;
+        Standard_Real Ucv = (fabs(Uv) < fabs(2.*M_PI-Uv)) ? (2.*M_PI) : 0.;
         gp_Pnt2d a2DCV(Ucv,Vv);
         Standard_Real CDist = a2DCV.Distance(a2DPL);
         if(CDist < DistMinL) {
@@ -2014,7 +2014,7 @@ static void VerifyVertices(Handle(IntSurf_LineOn2S)& Line,
       else
         aV.ParametersOnS1(Uv,Vv);
       if(IsSeamParameter(Uv,TOL2D)) {
-        Standard_Real Ucv = (fabs(Uv) < fabs(2.*PI-Uv)) ? (2.*PI) : 0.;
+        Standard_Real Ucv = (fabs(Uv) < fabs(2.*M_PI-Uv)) ? (2.*M_PI) : 0.;
         Standard_Boolean test = TestMiddleOnPrm(aPF,aV,IsReversed,ArcTol,PDomain);
         if(test) {
           VrtF.SetValue(aV.Value());
@@ -2057,7 +2057,7 @@ static void VerifyVertices(Handle(IntSurf_LineOn2S)& Line,
       else
         aV.ParametersOnS1(Uv,Vv);
       if(IsSeamParameter(Uv,TOL2D)) {
-        Standard_Real Ucv = (fabs(Uv) < fabs(2.*PI-Uv)) ? (2.*PI) : 0.;
+        Standard_Real Ucv = (fabs(Uv) < fabs(2.*M_PI-Uv)) ? (2.*M_PI) : 0.;
         Standard_Boolean test = TestMiddleOnPrm(aPL,aV,IsReversed,ArcTol,PDomain);
         if(test) {
           VrtL.SetValue(aV.Value());
@@ -2334,8 +2334,8 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
 
   Standard_Integer NbPnts = SSLine->NbPoints();
 
-  Standard_Real BSEAM = 1.5*PI; // delta U crossing seam
-  Standard_Real BAPEX = PI/16.;  // delta U crossing apex
+  Standard_Real BSEAM = 1.5*M_PI; // delta U crossing seam
+  Standard_Real BAPEX = M_PI/16.;  // delta U crossing apex
   
   Standard_Integer i = 0, k = 0;
   Standard_Real U1 = 0., U2 = 0., V1 = 0., V2 = 0., AnU1 = 0., AnV1 = 0., DU1 = 0., DV1 = 0.;

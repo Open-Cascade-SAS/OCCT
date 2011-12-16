@@ -240,7 +240,7 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol) {
   for(i=1; i<=nbvtx; i++) { 
     IntPatch_Point& VTX   = svtx.ChangeValue(i); 
     Standard_Real p=VTX.ParameterOnLine();
-    Standard_Real pmpimpi=p-PI-PI;
+    Standard_Real pmpimpi=p-M_PI-M_PI;
     if(pmpimpi >= ParamMinOnLine) { 
       gp_Pnt P1 = Value(pmpimpi);
       Standard_Real d1 = P1.Distance(VTX.Value());
@@ -250,7 +250,7 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol) {
 	svtx.Append(OVTX);
       }
     }
-    pmpimpi=p+PI+PI;
+    pmpimpi=p+M_PI+M_PI;
     if(pmpimpi <= ParamMaxOnLine) { 
       gp_Pnt P1 = Value(pmpimpi);
       Standard_Real d1 = P1.Distance(VTX.Value());

@@ -220,7 +220,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
   if (Sens2==-1)  dir2.Reverse();
   Standard_Real ang1;
   ang1=Abs(dir1.Angle(dir2));
-  if (ang1<PI/180.) {
+  if (ang1<M_PI/180.) {
     PerformMoreThreeCorner(Index,2);
     done=1;
     return;

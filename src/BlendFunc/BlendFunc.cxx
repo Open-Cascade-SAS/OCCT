@@ -41,7 +41,7 @@ void BlendFunc::GetShape (const BlendFunc_SectionShape SShape,
   case BlendFunc_Rational:
     {
       Standard_Integer NbSpan =
-	(Standard_Integer)(Ceiling(3.*Abs(MaxAng)/2./PI));
+	(Standard_Integer)(Ceiling(3.*Abs(MaxAng)/2./M_PI));
       NbPoles = 2*NbSpan+1;
       NbKnots = NbSpan+1;
       Degree = 2;

@@ -389,7 +389,7 @@
 						Standard_Real& Para) const
 {
   Standard_Real theta,z, aTolPrecision=0.0001;
-  Standard_Real PIpPI = Standard_PI+Standard_PI;
+  Standard_Real PIpPI = M_PI + M_PI;
   //
   switch (typequadric) {
 

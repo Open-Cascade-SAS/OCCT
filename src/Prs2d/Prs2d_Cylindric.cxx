@@ -38,7 +38,7 @@ void Prs2d_Cylindric::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
     gp_Vec2d theVec( thePnt1, gp_Pnt2d( X3, Y3 ) );
     theVec /= 2;
     thePnt1.Translate( theVec );
-    Standard_ShortReal theRad = Standard_ShortReal( myLength/2*Sin(Standard_PI / 3) );
+    Standard_ShortReal theRad = Standard_ShortReal( myLength/2*Sin(M_PI / 3) );
     Standard_ShortReal Xc = Standard_ShortReal(thePnt1.X()), 
                        Yc = Standard_ShortReal(thePnt1.Y());
 
@@ -94,7 +94,7 @@ void Prs2d_Cylindric::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
     }
     aDrawer->MapSegmentFromTo( X1, Y1, X2, Y2 );
     aDrawer->MapSegmentFromTo( X4, Y4, X3, Y3 );
-    aDrawer->MapArcFromTo( Xc, Yc, theRad, 0.0, Standard_ShortReal( 2. * Standard_PI ) );
+    aDrawer->MapArcFromTo( Xc, Yc, theRad, 0.0, Standard_ShortReal( 2. * M_PI ) );
   }
 }
 

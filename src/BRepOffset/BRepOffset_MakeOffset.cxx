@@ -1946,7 +1946,7 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 	ElSLib::Parameters( theSphere, fPnt, Uf, Vf );
 	ElSLib::Parameters( theSphere, lPnt, Ul, Vl );
 	if (Abs(Ul) <= Precision::Confusion())
-	  Ul = 2.*PI;
+	  Ul = 2.*M_PI;
 	Handle(Geom_Curve) aCurv = aSphSurf->VIso(Vf);
 	/*
 	if (!isFirstFace)
@@ -2078,11 +2078,11 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     Standard_Real Vfirst, Vlast;
     if (p2d1.Y() > 0.)
       {
-	Vfirst = p2d1.Y(); Vlast = PI/2.;
+	Vfirst = p2d1.Y(); Vlast = M_PI/2.;
       }
     else
       {
-	Vfirst = -PI/2.; Vlast = p2d1.Y();
+	Vfirst = -M_PI/2.; Vlast = p2d1.Y();
       }
     TopoDS_Face NewSphericalFace = BRepLib_MakeFace(aSphSurf, Ufirst, Ulast, Vfirst, Vlast, Precision::Confusion());
     TopoDS_Edge OldEdge;
@@ -2154,12 +2154,12 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 	    apex = OffSurf->Value( Uapex, Vapex );
 
 	  //Making new degenerated edge
-	  Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*PI, Vapex ) );
+	  Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*M_PI, Vapex ) );
 	  TopoDS_Edge NewEdge;
 	  BB.MakeEdge( NewEdge );
 	  NewEdge.Orientation(TopAbs_FORWARD);
 	  BB.UpdateEdge( NewEdge, theLine, Cone, Precision::Confusion() );
-	  BB.Range( NewEdge, 0., 2.*PI );
+	  BB.Range( NewEdge, 0., 2.*M_PI );
 	  BB.SameParameter( NewEdge, Standard_True );
 	  BB.SameRange( NewEdge, Standard_True );
 	  BB.Degenerated( NewEdge, Standard_True );
@@ -2250,12 +2250,12 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 		apex = OffSurf->Value( Uapex, Vapex );
 	      
 	      //Making new degenerated edge
-	      Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*PI, Vapex ) );
+	      Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*M_PI, Vapex ) );
 	      TopoDS_Edge NewEdge;
 	      BB.MakeEdge( NewEdge );
 	      NewEdge.Orientation(TopAbs_FORWARD);
 	      BB.UpdateEdge( NewEdge, theLine, Cone, BRep_Tool::Tolerance( Circ ) );
-	      BB.Range( NewEdge, 0., 2.*PI );
+	      BB.Range( NewEdge, 0., 2.*M_PI );
 	      BB.SameParameter( NewEdge, Standard_True );
 	      BB.SameRange( NewEdge, Standard_True );
 	      BB.Degenerated( NewEdge, Standard_True );
@@ -2358,9 +2358,9 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 		  ElSLib::Parameters( theSphere, OrPnt, Uor, Vor );
 		  TopoDS_Face NewFace;
 		  if (Vor > 0.)
-		    NewFace = BRepLib_MakeFace( theSphere, 0., 2.*PI, Vor, PI/2. );
+		    NewFace = BRepLib_MakeFace( theSphere, 0., 2.*M_PI, Vor, M_PI/2. );
 		  else
-		    NewFace = BRepLib_MakeFace( theSphere, 0., 2.*PI, -PI/2., Vor );
+		    NewFace = BRepLib_MakeFace( theSphere, 0., 2.*M_PI, -M_PI/2., Vor );
 		  
 		  //Updating the bound of NewFace
 		  TopoDS_Edge Bound;
@@ -2436,12 +2436,12 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 		    apex = OffSurf->Value( Uapex, Vapex );
 		  
 		  //Making new degenerated edge
-		  Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*PI, Vapex ) );
+		  Handle(Geom2d_Line) theLine = GCE2d_MakeLine( gp_Pnt2d( 0., Vapex ), gp_Pnt2d( 2.*M_PI, Vapex ) );
 		  TopoDS_Edge NewEdge;
 		  BB.MakeEdge( NewEdge );
 		  NewEdge.Orientation(TopAbs_FORWARD);
 		  BB.UpdateEdge( NewEdge, theLine, Cone, BRep_Tool::Tolerance( Circ ) );
-		  BB.Range( NewEdge, 0., 2.*PI );
+		  BB.Range( NewEdge, 0., 2.*M_PI );
 		  BB.SameParameter( NewEdge, Standard_True );
 		  BB.SameRange( NewEdge, Standard_True );
 		  BB.Degenerated( NewEdge, Standard_True );

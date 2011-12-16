@@ -34,11 +34,7 @@
 #define max(a,b) 	(a<b ? b : a)
 #endif
 
-#ifndef PI
-#define PI 3.14159
-#endif
-
-#define DRAD (PI/180.)
+#define DRAD (M_PI/180.)
 
 #define MAXLINES 256
 #define MAXPOLYS 256

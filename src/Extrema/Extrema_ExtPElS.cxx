@@ -27,8 +27,8 @@ Method:
      There are infinite solutions; IsDone() = Standard_False.
   2- distance(Pp,O) > Tol:
      let V = OP.OZ,
-          U1 = angle(OX,OPp) with 0 < U1 < 2.*PI
-	  U2 = U1 + PI with 0 < U2 < 2.*PI;
+          U1 = angle(OX,OPp) with 0 < U1 < 2.*M_PI
+	  U2 = U1 + M_PI with 0 < U2 < 2.*M_PI;
      then (U1,V) corresponds to the min distance.
      and  (U2,V) corresponds to the max distance.
 -----------------------------------------------------------------------------*/
@@ -51,9 +51,9 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   gp_Vec OPp (O,Pp);
   if (OPp.Magnitude() < Tol) { return; }
   gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
-  Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-PI<U1<PI
-  Standard_Real U2 = U1 + PI;
-  if (U1 < 0.) { U1 += 2. * PI; }
+  Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-M_PI<U1<M_PI
+  Standard_Real U2 = U1 + M_PI;
+  if (U1 < 0.) { U1 += 2. * M_PI; }
 
   gp_Pnt Ps;
   Ps = ElSLib::Value(U1,V,S);
@@ -93,11 +93,11 @@ Method:
         Let Vm = value of v for point M,
              Vp = value of v for point P,
              U1 = angle(OX,OPp) if Vp > Vm )
-	         -angle(OX,OPp) otherwise      ) with 0. < U1 < 2*PI,
-             U2 = U1 + PI with 0. < U2 < 2*PI;
+	         -angle(OX,OPp) otherwise      ) with 0. < U1 < 2*M_PI,
+             U2 = U1 + M_PI with 0. < U2 < 2*M_PI;
         We are in plane PpOZ.
        Let A the angle of the cone,
-             B = angle(MP,MO) with 0. < B < PI,
+             B = angle(MP,MO) with 0. < B < M_PI,
 	     L = longueur(MP),
 	     V1 = (L * cos(B-A)) + Vm,
 	     V2 = (L * cos(B+A)) + Vm;
@@ -150,17 +150,17 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   if (OPp.SquareMagnitude() < Tol * Tol) return;
   Standard_Real B, U1, V1, U2, V2;
   Standard_Boolean Same = DirZ.Dot(MP) >= 0.0;
-  U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-PI<U1<PI
+  U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-M_PI<U1<M_PI
   B = MP.Angle(DirZ);
-  if (!Same) { U1 += PI; }
-  U2 = U1 + PI;
-  if (U1 < 0.) { U1 += 2. * PI; }
-  if (U2 > 2.*PI) { U2 -= 2. * PI; }
+  if (!Same) { U1 += M_PI; }
+  U2 = U1 + M_PI;
+  if (U1 < 0.) { U1 += 2. * M_PI; }
+  if (U2 > 2.*M_PI) { U2 -= 2. * M_PI; }
   B = MP.Angle(DirZ);
   A = Abs(A);
   Standard_Real L = sqrt(L2);
   if (!Same) {
-    B = PI-B;
+    B = M_PI-B;
     V1 = -L*cos(B-A);
     V2 = -L*cos(B+A);
   }
@@ -204,11 +204,11 @@ Method:
      Let Pp be the projection of point P in the plane XOY of the sphere;
      2 cases are considered:
      1- distance(Pp,O) < Tol:
-        2 solutions are: (0,-PI/2.) and (0.,PI/2.)
+        2 solutions are: (0,-M_PI/2.) and (0.,M_PI/2.)
      2- distance(Pp,O) > Tol:
-        Let U1 = angle(OX,OPp) with 0. < U1 < 2.*PI,
-	     U2 = U1 + PI avec 0. < U2 < 2*PI,
-	     V1 = angle(OPp,OP) with -PI/2. < V1 < PI/2. ,
+        Let U1 = angle(OX,OPp) with 0. < U1 < 2.*M_PI,
+	     U2 = U1 + M_PI avec 0. < U2 < 2*M_PI,
+	     V1 = angle(OPp,OP) with -M_PI/2. < V1 < M_PI/2. ,
 	then (U1, V1) corresponds to the min distance
 	and  (U2,-V1) corresponds to the max distance.
 -----------------------------------------------------------------------------*/
@@ -238,14 +238,14 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   if (OPp.SquareMagnitude() < Tol * Tol) {
     U1 = 0.;
     U2 = 0.;
-    if (Zp < 0.) { V = -PI / 2.; }
-    else { V = PI / 2.; }
+    if (Zp < 0.) { V = -M_PI / 2.; }
+    else { V = M_PI / 2.; }
   }
   else {
     gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
     U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ);
-    U2 = U1 + PI;
-    if (U1 < 0.) { U1 += 2. * PI; }
+    U2 = U1 + M_PI;
+    if (U1 < 0.) { U1 += 2. * M_PI; }
     V = OP.Angle(OPp);
     if (Zp < 0.) { V = -V; }
   }
@@ -280,8 +280,8 @@ Function:
      There is an infinite number of solutions; IsDone() = Standard_False.
   2- distance(Pp,O) > Tol:
      One is located in plane PpOZ;
-     Let V1 = angle(OX,OPp) with 0. < V1 < 2.*PI,
-	 V2 = V1 + PI with 0. < V2 < 2.*PI,
+     Let V1 = angle(OX,OPp) with 0. < V1 < 2.*M_PI,
+	 V2 = V1 + M_PI with 0. < V2 < 2.*M_PI,
 	 O1 and O2 centers of circles (O1 on coord. posit.)
          U1 = angle(OPp,O1P),
 	 U2 = angle(OPp,PO2);
@@ -308,8 +308,8 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
  
   gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
   Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ);
-  Standard_Real U2 = U1 + PI;
-  if (U1 < 0.) { U1 += 2. * PI; }
+  Standard_Real U2 = U1 + M_PI;
+  if (U1 < 0.) { U1 += 2. * M_PI; }
   Standard_Real R = sqrt(R2);
   gp_Vec OO1 = OPp.Divided(R).Multiplied(S.MajorRadius());
   gp_Vec OO2 = OO1.Multiplied(-1.);
@@ -321,25 +321,25 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
 
   Standard_Real V1 = OO1.AngleWithRef(gp_Vec(O1,P),OO1.Crossed(OZ));
   Standard_Real V2 = OO2.AngleWithRef(gp_Vec(P,O2),OO2.Crossed(OZ));
-  if (V1 < 0.) { V1 += 2. * PI; }
-  if (V2 < 0.) { V2 += 2. * PI; }
+  if (V1 < 0.) { V1 += 2. * M_PI; }
+  if (V2 < 0.) { V2 += 2. * M_PI; }
 
   gp_Pnt Ps;
   Ps = ElSLib::Value(U1,V1,S);
   mySqDist[0] = Ps.SquareDistance(P);
   myPoint[0] = Extrema_POnSurf(U1,V1,Ps);
 
-  Ps = ElSLib::Value(U1,V1+PI,S);
+  Ps = ElSLib::Value(U1,V1+M_PI,S);
   mySqDist[1] = Ps.SquareDistance(P);
-  myPoint[1] = Extrema_POnSurf(U1,V1+PI,Ps);
+  myPoint[1] = Extrema_POnSurf(U1,V1+M_PI,Ps);
 
   Ps = ElSLib::Value(U2,V2,S);
   mySqDist[2] = Ps.SquareDistance(P);
   myPoint[2] = Extrema_POnSurf(U2,V2,Ps);
 
-  Ps = ElSLib::Value(U2,V2+PI,S);
+  Ps = ElSLib::Value(U2,V2+M_PI,S);
   mySqDist[3] = Ps.SquareDistance(P);
-  myPoint[3] = Extrema_POnSurf(U2,V2+PI,Ps);
+  myPoint[3] = Extrema_POnSurf(U2,V2+M_PI,Ps);
 
   myNbExt = 4;
   myDone = Standard_True;

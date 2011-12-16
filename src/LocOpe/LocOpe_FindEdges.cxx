@@ -116,21 +116,21 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom,
 	  Standard_Real prm1 = ElCLib::Parameter(cit,p1);
 	  Standard_Real Tol2d = Precision::PConfusion();
 	  if (Abs(prm1-ft) <= Tol2d) prm1 = ft;
-	  prm1 = ElCLib::InPeriod(prm1,ft,ft+2.*PI);
+	  prm1 = ElCLib::InPeriod(prm1,ft,ft+2.*M_PI);
 	  ElCLib::D1(prm1,cit,p1,tgt);
 
 	  Standard_Real prm2 = ElCLib::Parameter(cit,p2);
 	  if (tgt.Dot(tgf) > 0.) { // meme sens
 	    while (prm2 <= prm1) {
-	      prm2 += 2.*PI;
+	      prm2 += 2.*M_PI;
 	    }
 	  }
 	  else {
 	    if (Abs(prm1-ft) <= Precision::Angular()) {
-	      prm1 += 2.*PI;
+	      prm1 += 2.*M_PI;
 	    }
 	    while (prm2 >= prm1) {
-	      prm2 -= 2.*PI;
+	      prm2 -= 2.*M_PI;
 	    }
 	  }
 
@@ -168,21 +168,21 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom,
 	  p2 = ElCLib::Value(lf,cif);
 
 	  Standard_Real prm1 = ElCLib::Parameter(cit,p1);
-	  prm1 = ElCLib::InPeriod(prm1,ft,ft+2.*PI);
+	  prm1 = ElCLib::InPeriod(prm1,ft,ft+2.*M_PI);
 	  ElCLib::D1(prm1,cit,p1,tgt);
 
 	  Standard_Real prm2 = ElCLib::Parameter(cit,p2);
 	  if (tgt.Dot(tgf) > 0.) { // meme sens
 	    while (prm2 <= prm1) {
-	      prm2 += 2.*PI;
+	      prm2 += 2.*M_PI;
 	    }
 	  }
 	  else {
 	    if (Abs(prm1-ft) <= Precision::Angular()) {
-	      prm1 += 2.*PI;
+	      prm1 += 2.*M_PI;
 	    }
 	    while (prm2 >= prm1) {
-	      prm2 -= 2.*PI;
+	      prm2 -= 2.*M_PI;
 	    }
 	  }
 

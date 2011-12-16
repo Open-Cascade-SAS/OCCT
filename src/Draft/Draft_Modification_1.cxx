@@ -263,7 +263,7 @@ Standard_Boolean Draft_Modification::InternalAdd(const TopoDS_Face& F,
 	    }
 	  }
 	}
-	NewS = new Geom_RectangularTrimmedSurface(NewS,0.,2.*PI,vmin,vmax);
+	NewS = new Geom_RectangularTrimmedSurface(NewS,0.,2.*M_PI,vmin,vmax);
       }
     }
   }
@@ -513,7 +513,7 @@ Standard_Boolean Draft_Modification::Propagate ()
 	    vmin = vmin - deltav;
 	    vmax = vmax + deltav;
 	    NewS = 
-	      new Geom_RectangularTrimmedSurface(NewS,0.,2.*PI,vmin,vmax);
+	      new Geom_RectangularTrimmedSurface(NewS,0.,2.*M_PI,vmin,vmax);
 	  }
 	}
 	
@@ -779,7 +779,7 @@ void Draft_Modification::Perform ()
 	  vmin = -300;
 	}
 
-	NewS = new Geom_RectangularTrimmedSurface(NewS,0.,1.9*PI,vmin,vmax);
+	NewS = new Geom_RectangularTrimmedSurface(NewS,0.,1.9*M_PI,vmin,vmax);
 	Finf.ChangeGeometry() = NewS;
       }
       itf.Next();
@@ -1096,14 +1096,14 @@ void Draft_Modification::Perform ()
 			GeomAPI_ProjectPointOnSurf projector( Pnt, S1, Precision::Confusion() );
 			Standard_Real U, V;
 			projector.LowerDistanceParameters( U, V );
-			if (Abs(U) <= Precision::Confusion() || Abs(U-2.*PI) <= Precision::Confusion())
+			if (Abs(U) <= Precision::Confusion() || Abs(U-2.*M_PI) <= Precision::Confusion())
 			  Candidates.Append( aCurve );
 			else
 			  {
 			    Pnt = aCurve->Value( aCurve->LastParameter() );
 			    projector.Init( Pnt, S1, Precision::Confusion() );
 			    projector.LowerDistanceParameters( U, V );
-			    if (Abs(U) <= Precision::Confusion() || Abs(U-2.*PI) <= Precision::Confusion())
+			    if (Abs(U) <= Precision::Confusion() || Abs(U-2.*M_PI) <= Precision::Confusion())
 			      {
 				aCurve->Reverse();
 				Candidates.Append( aCurve );
@@ -1943,13 +1943,13 @@ static Standard_Real Parameter(const Handle(Geom_Curve)& C,
   }
   else if (ctyp == STANDARD_TYPE(Geom_Circle)) {
     param = ElCLib::Parameter(Handle(Geom_Circle)::DownCast(cbase)->Circ(),P);
-    if (Abs(2.*PI-param) <=Epsilon(2.*PI)) {
+    if (Abs(2.*M_PI-param) <=Epsilon(2.*M_PI)) {
       param = 0.;
     }
   }
   else if (ctyp == STANDARD_TYPE(Geom_Ellipse)) {
     param = ElCLib::Parameter(Handle(Geom_Ellipse)::DownCast(cbase)->Elips(),P);
-    if (Abs(2.*PI-param) <=Epsilon(2.*PI)) {
+    if (Abs(2.*M_PI-param) <=Epsilon(2.*M_PI)) {
       param = 0.;
     }
   }
@@ -2164,8 +2164,8 @@ static Standard_Boolean FindRotation(const gp_Pln& Pl,
 	  theta = -theta0 -phi;
 	}
 	//  modified by NIZHNY-EAP Tue Nov 16 15:51:38 1999 ___BEGIN___
-	while (Abs(theta)>PI) {
-	  theta = theta + PI*(theta<0 ? 1 : -1);
+	while (Abs(theta)>M_PI) {
+	  theta = theta + M_PI*(theta<0 ? 1 : -1);
 	}
 	//  modified by NIZHNY-EAP Tue Nov 16 15:53:32 1999 ___END___
 	Axe = li.Position();

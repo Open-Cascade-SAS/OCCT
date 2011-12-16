@@ -160,7 +160,7 @@ void StlTransfer::BuildIncrementalMesh (const TopoDS_Shape&  Shape,
 	//	vec.Transform(loc);
 	if (modul1>Precision::Confusion () && modul2>Precision::Confusion ()) {
 	  Standard_Real an = vec.Angle(average);
-	  if ( an > PI/2)  {
+	  if ( an > M_PI/2)  {
 	    A = V3;B=V2;C=V1;
 	  }
 	  else {

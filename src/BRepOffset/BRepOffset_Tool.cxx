@@ -994,7 +994,7 @@ static Standard_Boolean BSplineEdges(const TopoDS_Edge& E1,
 
   if (Der1.Magnitude() <= gp::Resolution() ||
       Der2.Magnitude() <= gp::Resolution())
-    angle = PI/2.;
+    angle = M_PI/2.;
   else
     angle = Der1.Angle(Der2);
 
@@ -1031,7 +1031,7 @@ static Standard_Real AngleWireEdge(const TopoDS_Wire& aWire,
   if (V11.IsSame(CV) && V21.IsSame(CV))
     {
       BSplineEdges( FirstEdge, anEdge, 0, 0, Angle );
-      Angle = PI - Angle;
+      Angle = M_PI - Angle;
     }
   else if (V11.IsSame(CV) && V22.IsSame(CV))
     BSplineEdges( FirstEdge, anEdge, 0, 1, Angle );
@@ -1040,7 +1040,7 @@ static Standard_Real AngleWireEdge(const TopoDS_Wire& aWire,
   else
     {
       BSplineEdges( FirstEdge, anEdge, 1, 1, Angle );
-      Angle = PI - Angle;
+      Angle = M_PI - Angle;
     }
   return Angle;
 }

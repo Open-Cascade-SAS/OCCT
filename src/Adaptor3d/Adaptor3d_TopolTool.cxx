@@ -30,7 +30,7 @@ static void GetConeApexParam(const gp_Cone& C, Standard_Real& U, Standard_Real& 
   else {
     U = atan2(Ploc.Y(),Ploc.X());
   }
-  if      (U < -1.e-16)  U += (PI+PI);
+  if      (U < -1.e-16)  U += (M_PI+M_PI);
   else if (U < 0)        U = 0;
 
   V =  sin(SAngle) * ( Ploc.X() * cos(U) + Ploc.Y() * sin(U) - Radius)

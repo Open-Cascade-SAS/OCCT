@@ -456,7 +456,7 @@ static Standard_Integer encoderegularity (Draw_Interpretor& ,
     BRepLib::EncodeRegularity(sh);
   else {
     Standard_Real Tol = atof(a[2]);
-    Tol *= PI/180.;
+    Tol *= M_PI/180.;
     BRepLib::EncodeRegularity(sh, Tol);
   }
   return 0;

@@ -10,7 +10,7 @@
 #include <ElCLib.ixx>
 #include <gp.hxx>
 
-static Standard_Real PIPI = PI + PI;
+static Standard_Real PIPI = M_PI + M_PI;
 
 //=======================================================================
 //function : InPeriod

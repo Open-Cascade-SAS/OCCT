@@ -318,7 +318,7 @@ void BRepGProp_Face::UKnots(TColStd_Array1OfReal& Knots) const
   case GeomAbs_Cone: 
   case GeomAbs_Sphere: 
   case GeomAbs_Torus:
-    Knots(1) = 0.0;  Knots(2) = PI*2.0/3.0;  Knots(3) = PI*4.0/3.0;  Knots(4) = PI*6.0/3.0;
+    Knots(1) = 0.0;  Knots(2) = M_PI*2.0/3.0;  Knots(3) = M_PI*4.0/3.0;  Knots(4) = M_PI*6.0/3.0;
     break;
   case GeomAbs_BSplineSurface: 
     (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->UKnots(Knots);
@@ -343,10 +343,10 @@ void BRepGProp_Face::VKnots(TColStd_Array1OfReal& Knots) const
     Knots(1) = mySurface.FirstUParameter();  Knots(2) = mySurface.LastUParameter();  
     break;
   case GeomAbs_Sphere: 
-    Knots(1) = -PI/2.0;  Knots(2) = 0.0;  Knots(3) = +PI/2.0;
+    Knots(1) = -M_PI/2.0;  Knots(2) = 0.0;  Knots(3) = +M_PI/2.0;
     break;
   case GeomAbs_Torus:
-    Knots(1) = 0.0;  Knots(2) = PI*2.0/3.0;  Knots(3) = PI*4.0/3.0;  Knots(4) = PI*6.0/3.0;
+    Knots(1) = 0.0;  Knots(2) = M_PI*2.0/3.0;  Knots(3) = M_PI*4.0/3.0;  Knots(4) = M_PI*6.0/3.0;
     break;
   case GeomAbs_BSplineSurface: 
     (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->VKnots(Knots);
@@ -450,7 +450,7 @@ void BRepGProp_Face::LKnots(TColStd_Array1OfReal& Knots) const
     break;
   case GeomAbs_Circle:
   case GeomAbs_Ellipse:
-    Knots(1) = 0.0;  Knots(2) = PI*2.0/3.0;  Knots(3) = PI*4.0/3.0;  Knots(2) = PI*6.0/3.0;
+    Knots(1) = 0.0;  Knots(2) = M_PI*2.0/3.0;  Knots(3) = M_PI*4.0/3.0;  Knots(2) = M_PI*6.0/3.0;
     break;
   case GeomAbs_Parabola:
   case GeomAbs_Hyperbola:

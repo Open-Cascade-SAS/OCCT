@@ -221,13 +221,13 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
   
   if(Rad <= height) Rad = height + 0.01*height;  
   
-  myAngle1 = asin(H1/Rad) + PI/10.;
-  myAngle2 = asin(H2/Rad) + PI/10.;
+  myAngle1 = asin(H1/Rad) + M_PI/10.;
+  myAngle2 = asin(H2/Rad) + M_PI/10.;
   
-  if((myAngle1 - PI/2) > Precision::Confusion())
-    myAngle1 = PI/2;
-  if((myAngle2 - PI/2) > Precision::Confusion())
-    myAngle2 = PI/2;
+  if((myAngle1 - M_PI/2) > Precision::Confusion())
+    myAngle1 = M_PI/2;
+  if((myAngle2 - M_PI/2) > Precision::Confusion())
+    myAngle2 = M_PI/2;
   
   mySkface.Nullify();
   myPbase.Nullify();

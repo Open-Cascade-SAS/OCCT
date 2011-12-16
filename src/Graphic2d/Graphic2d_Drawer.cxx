@@ -868,14 +868,14 @@ void Graphic2d_Drawer::DrawArc(
         Standard_ShortReal mx,my,a1,a2,da;
         mx = Standard_ShortReal(aDeltaX);
         my = Standard_ShortReal(aDeltaY);
-        a1 = (Angle1 >= 0.) ? Angle1 : Angle1 + Standard_ShortReal(2.*Standard_PI);
-        a2 = (Angle2 >= 0.) ? Angle2 : Angle2 + Standard_ShortReal(2.*Standard_PI);
+        a1 = (Angle1 >= 0.) ? Angle1 : Angle1 + Standard_ShortReal(2. * M_PI);
+        a2 = (Angle2 >= 0.) ? Angle2 : Angle2 + Standard_ShortReal(2. * M_PI);
         if( a2 > a1 ) {
           da = a2 - a1;
         } else if( a2 < a1 ) {
-          da = Standard_ShortReal(2.*Standard_PI + a2 - a1);
+          da = Standard_ShortReal(2. * M_PI + a2 - a1);
         } else {
-          a1 = 0.; da = Standard_ShortReal(2.*Standard_PI);
+          a1 = 0.; da = Standard_ShortReal(2. * M_PI);
         }
         
         if( aRadius > 0. ) {    // Try to use hardware first
@@ -959,14 +959,14 @@ void Graphic2d_Drawer::DrawPolyArc(
         Standard_ShortReal mx,my,a1,a2,da;
         mx = Standard_ShortReal(aDeltaX);
         my = Standard_ShortReal(aDeltaY);
-        a1 = (Angle1 >= 0.) ? Angle1 : Angle1 + Standard_ShortReal(2.*Standard_PI);
-        a2 = (Angle2 >= 0.) ? Angle2 : Angle2 + Standard_ShortReal(2.*Standard_PI);
+        a1 = (Angle1 >= 0.) ? Angle1 : Angle1 + Standard_ShortReal(2. * M_PI);
+        a2 = (Angle2 >= 0.) ? Angle2 : Angle2 + Standard_ShortReal(2. * M_PI);
         if( a2 > a1 ) {
           da = a2 - a1;
         } else if( a2 < a1 ) {
-          da = Standard_ShortReal(2.*Standard_PI + a2 - a1);
+          da = Standard_ShortReal(2. * M_PI + a2 - a1);
         } else {
-          a1 = 0.; da = Standard_ShortReal(2.*Standard_PI);
+          a1 = 0.; da = Standard_ShortReal(2. * M_PI);
         }
         
         if( aRadius > 0. ) {    // Try to use hardware first

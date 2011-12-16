@@ -58,7 +58,7 @@ Prs2d_Axis::Prs2d_Axis( const Handle(Graphic2d_GraphicObject)& aGO,
    if ( myX2 > myMaxX ) myMaxX =  myX2;
    if ( myY2 > myMaxY ) myMaxY =  myY2;  
 
-   Standard_Real ArrAngle = PI/180.*anArrAngle, theAngle;
+   Standard_Real ArrAngle = M_PI/180.*anArrAngle, theAngle;
    gp_Pnt2d theOrigine( 0., 0.), P1, P2, P3;
    gp_Vec2d VX( 1., 0. ), VDir;
   
@@ -167,7 +167,7 @@ Prs2d_Axis::Prs2d_Axis( const Handle(Graphic2d_GraphicObject)& aGO,
    if ( myX1 > myMaxX  ) myMaxX = myX1;
    if ( myY1 > myMaxY  ) myMaxY = myY1;
 
-   Standard_Real ArrAngle = PI/180.*anArrAngle, theAngle;
+   Standard_Real ArrAngle = M_PI/180.*anArrAngle, theAngle;
    gp_Pnt2d theOrigine( 0., 0.), P1, P2, P3;
    gp_Vec2d VX( 1., 0. ), VDir;
   
@@ -246,7 +246,7 @@ Prs2d_Axis::Prs2d_Axis( const Handle(Graphic2d_GraphicObject)& aGO,
    if ( myX1 > myMaxX  ) myMaxX = myX1;
    if ( myY1 > myMaxY  ) myMaxY = myY1;
    
-   Standard_Real ArrAngle = PI/180.*anArrAngle, theAngle;
+   Standard_Real ArrAngle = M_PI/180.*anArrAngle, theAngle;
    gp_Pnt2d theOrigine( 0., 0.), P1, P2, P3;
    gp_Vec2d VX( 1., 0. ), VDir;
   

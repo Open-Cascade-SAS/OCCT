@@ -558,13 +558,13 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		    pl = C2d->Value(l);
 		    Standard_Real tttol = Precision::Angular();
 		    while (Min(pf.X(),pl.X()) >= Umaxc-tttol) {
-		      C2d->Translate(gp_Vec2d(-2.*PI,0));
+		      C2d->Translate(gp_Vec2d(-2.*M_PI,0));
 		      pf = C2d->Value(f);
 		      pl = C2d->Value(l);
 		    }
 
 		    while (Max(pf.X(),pl.X()) <= Uminc+tttol) {
-		      C2d->Translate(gp_Vec2d(2.*PI,0));
+		      C2d->Translate(gp_Vec2d(2.*M_PI,0));
 		      pf = C2d->Value(f);
 		      pl = C2d->Value(l);
 		    }
@@ -880,13 +880,13 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		  pl = C2d->Value(l);
 		  Standard_Real tttol = Precision::Angular();
 		  while (Min(pf.X(),pl.X()) >= Umaxc - tttol) {
-		    C2d->Translate(gp_Vec2d(-2.*PI,0));
+		    C2d->Translate(gp_Vec2d(-2.*M_PI,0));
 		    pf = C2d->Value(f);
 		    pl = C2d->Value(l);
 		  }
 		  
 		  while (Max(pf.X(),pl.X()) <= Uminc + tttol) {
-		    C2d->Translate(gp_Vec2d(2.*PI,0));
+		    C2d->Translate(gp_Vec2d(2.*M_PI,0));
 		    pf = C2d->Value(f);
 		    pl = C2d->Value(l);
 		  }
@@ -1251,12 +1251,12 @@ Standard_Real NewParameter(const TopoDS_Edge& Edg,
       if (exp.More()) {
 	Standard_Real prmmax = BRep_Tool::Parameter
 	  (TopoDS::Vertex(exp.Current()),NewEdg);
-	if (Abs(prmmax - prm) <= Epsilon(2.*PI)) {
+	if (Abs(prmmax - prm) <= Epsilon(2.*M_PI)) {
 	  if (orient == TopAbs_REVERSED) {
-	    prm -= 2.*PI;
+	    prm -= 2.*M_PI;
 	  }
 	  else {
-	    prm += 2.*PI;
+	    prm += 2.*M_PI;
 	  }
 	}
       }

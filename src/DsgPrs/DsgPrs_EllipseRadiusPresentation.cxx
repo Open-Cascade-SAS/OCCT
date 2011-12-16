@@ -122,7 +122,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 	parFirst = uLast;
       else
 	parFirst = uFirst;
-      Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / PI));
+      Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / M_PI));
       Graphic3d_Array1OfVertex ApproxArc( 0, NodeNumber-1 );
       Standard_Real delta = Alpha / ( NodeNumber - 1 );
       gp_Pnt CurPnt;
@@ -181,7 +181,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 	parFirst = uLast;
       else
 	parFirst = uFirst;
-      Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / PI));
+      Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / M_PI));
       Graphic3d_Array1OfVertex ApproxArc( 0, NodeNumber-1 );
       Standard_Real delta = Alpha / ( NodeNumber - 1 );
       gp_Pnt CurPnt;

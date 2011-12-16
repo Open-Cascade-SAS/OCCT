@@ -1408,7 +1408,7 @@ void BRepAlgo_DSAccess::PntVtxOnCurve
   if(iMother) igoodC = iMother;
 //#ifndef DEB
   TopOpeBRepDS_PointIterator PII = myHDS->CurvePoints(igoodC);
-  TopOpeBRepDS_PointIterator& PIt = PII; // skl : I change "PI" to "PIt"
+  TopOpeBRepDS_PointIterator& PIt = PII; // skl : I change "M_PI" to "PIt"
 //#else
 //  TopOpeBRepDS_PointIterator& PIt = myHDS->CurvePoints(igoodC);
 //#endif

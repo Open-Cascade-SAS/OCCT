@@ -327,8 +327,8 @@ void IntPatch_GLine::AddVertex (const IntPatch_Point& Pnt)
     if(ArcType()==IntPatch_Circle || ArcType()==IntPatch_Ellipse)
     {
       if(fipt && lapt) {
-        while(par<pf) par+=PI+PI;
-        while(par>pl) par-=PI+PI;
+        while(par<pf) par+=M_PI+M_PI;
+        while(par>pl) par-=M_PI+M_PI;
         if(par<pf) { 
           const Standard_Real PrecisionPConfusion ( Precision::PConfusion()*1000.0 );
           if((pf-par)>PrecisionPConfusion) {
@@ -640,7 +640,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 	      Standard_Real ponline = VTX.ParameterOnLine();
 	      // eap, =>>
 	      Standard_Real newParam = ponline;
-	      const Standard_Real PiPi = PI+PI;
+	      const Standard_Real PiPi = M_PI+M_PI;
 	      Standard_Boolean is2PI = ( Abs(ponline-PiPi) <= PrecisionPConfusion );
 
 	      if (nbvtx > 2 && // do this check if seam edge only gives vertices 
@@ -654,7 +654,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 	      else 
 		newParam -= PiPi;
 // 	      if(  (Abs(ponline)<=PrecisionPConfusion)
-// 		   ||(Abs(ponline-PI-PI) <=PrecisionPConfusion)) 
+// 		   ||(Abs(ponline-M_PI-M_PI) <=PrecisionPConfusion)) 
 	      // eap, <<=
 		Standard_Real u1a,v1a,u2a,v2a,u1b,v1b,u2b,v2b; 
 		VTXM1.Parameters(u1a,v1a,u2a,v2a);
@@ -701,7 +701,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 		    ///////////////////////////////////////////////
 		    // eap, =>>
 // 		      if (Abs(ponline) <= PrecisionPConfusion) { 
-// 		      const Standard_Real PiPi = PI+PI;
+// 		      const Standard_Real PiPi = M_PI+M_PI;
 		      if(newParam >= ParamMinOnLine && newParam <= ParamMaxOnLine
 			 /*PiPi >= ParamMinOnLine && PiPi<=ParamMaxOnLine*/) { 
 			SortAgain = Standard_True;
@@ -743,7 +743,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
 		    ///////////////////////////////////////////////
 		    // eap, =>>
 // 		    if (Abs(ponline) <= PrecisionPConfusion) { 
-// 		      const Standard_Real PiPi = PI+PI;
+// 		      const Standard_Real PiPi = M_PI+M_PI;
 		      if(newParam >= ParamMinOnLine && newParam <= ParamMaxOnLine
 			 /*PiPi >= ParamMinOnLine && PiPi<=ParamMaxOnLine*/) {
 			SortAgain = Standard_True;

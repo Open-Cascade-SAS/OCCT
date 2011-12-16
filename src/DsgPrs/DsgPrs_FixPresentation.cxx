@@ -62,7 +62,7 @@ void DsgPrs_FixPresentation::Add(
   dirac.Normalize();
   gp_Vec norac = dirac.Crossed(gp_Vec(aNormPln));
   gp_Ax1 ax(aPntEnd, aNormPln);
-  norac.Rotate(ax, PI/8);
+  norac.Rotate(ax, M_PI/8);
                                   // vecteur normal au seg. de raccord
   norac*=(symbsize/2);
   gp_Pnt P1 = aPntEnd.Translated(norac);

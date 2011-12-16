@@ -58,8 +58,8 @@ BattenCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   if (! DrawTrSurf::GetPoint2d(cp2, P2) ) return 1;
 
   FairCurve_Batten* Bat = new FairCurve_Batten (P1, P2, h);
-  Bat->SetAngle1(a1*PI/180);
-  Bat->SetAngle2(a2*PI/180);
+  Bat->SetAngle1(a1*M_PI/180);
+  Bat->SetAngle2(a2*M_PI/180);
   
   Ok = Bat->Compute(Iana);
   
@@ -102,8 +102,8 @@ MVCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   if (! DrawTrSurf::GetPoint2d(cp2, P2) ) return 1;
 
   FairCurve_MinimalVariation* MVC = new  FairCurve_MinimalVariation (P1, P2, h);
-  MVC->SetAngle1(a1*PI/180);
-  MVC->SetAngle2(a2*PI/180);
+  MVC->SetAngle1(a1*M_PI/180);
+  MVC->SetAngle2(a2*M_PI/180);
   
   Ok = MVC->Compute(Iana);
   

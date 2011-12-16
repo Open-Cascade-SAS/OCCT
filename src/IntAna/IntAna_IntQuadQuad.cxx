@@ -55,7 +55,7 @@ class TrigonometricRoots {
   Standard_Boolean IsARoot(Standard_Real u) {
     Standard_Integer i;
     Standard_Real aEps=RealEpsilon();
-    Standard_Real PIpPI = Standard_PI+Standard_PI;
+    Standard_Real PIpPI = M_PI + M_PI;
     //
     for(i=0 ; i<NbRoots; ++i) {
       if(Abs(u - Roots[i])<=aEps) {
@@ -103,7 +103,7 @@ TrigonometricRoots::TrigonometricRoots(const Standard_Real CC,
 {
   Standard_Integer i, j, SvNbRoots;
   Standard_Boolean Triee;
-  Standard_Real PIpPI = Standard_PI+Standard_PI;
+  Standard_Real PIpPI = M_PI + M_PI;
   //
   done=Standard_False;
   //
@@ -269,7 +269,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
   Z_NEGATIF=Standard_False;
   //
   Standard_Real Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1, aRealEpsilon, RCyl, R2;
-  Standard_Real PIpPI = Standard_PI+Standard_PI;
+  Standard_Real PIpPI = M_PI + M_PI;
   //
   for(Standard_Integer raz = 0 ; raz < myNbMaxCurves ; raz++) {
     previouscurve[raz] = nextcurve[raz] = 0;
@@ -370,7 +370,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
 	//-- Si Positif  ---> 2 Courbes
 	//-- Sinon       ---> Pas de solution
 	//--------------------------------------------------------------
-	if(MTF.Value(PI) >= -aRealEpsilon) {
+	if(MTF.Value(M_PI) >= -aRealEpsilon) {
 
 	  TheCurve[0].SetCylinderQuadValues(Cyl,Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1,
 					    myEpsilon,0.0,PIpPI,
@@ -404,7 +404,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
 	  //--       entre les 2 racines ( Ici Tout le domaine )
 	  //-- Sinon Seulement un point Tangent
 	  //------------------------------------------------------------
-	  if(MTF.Value(PolDIS.Value(1)+PI) >= -aRealEpsilon ) {
+	  if(MTF.Value(PolDIS.Value(1)+M_PI) >= -aRealEpsilon ) {
 	    //------------------------------------------------------------
 	    //-- On a Un Point de Tangence + Une Courbe Solution
 	    //------------------------------------------------------------
@@ -582,7 +582,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone,
   Standard_Integer i;
   Standard_Real Qxx,Qyy,Qzz,Qxy,Qxz,Qyz,Qx,Qy,Qz,Q1;
   Standard_Real Theta1, Theta2, TgAngle;
-  Standard_Real PIpPI = Standard_PI+Standard_PI;
+  Standard_Real PIpPI = M_PI + M_PI;
   //
   done=Standard_True;
   identical = Standard_False;
@@ -745,7 +745,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone,
   //                     2
   //        f(z,t)=A(t)*z + B(t)*z + C(t)      Discriminant(t) != 0 
   //
-  if(!nbsol && (MTF.Value(PI)<0.) ) {
+  if(!nbsol && (MTF.Value(M_PI)<0.) ) {
     //-- Discriminant signe constant negatif
     return;
   }

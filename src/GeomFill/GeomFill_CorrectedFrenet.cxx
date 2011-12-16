@@ -445,7 +445,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
       currParam = Last;
 
     frenet->D0(currParam, Tangent, Normal, BN);
-    if (prevTangent.Angle(Tangent) < PI/3 || i == 1) {
+    if (prevTangent.Angle(Tangent) < M_PI/3 || i == 1) {
       parameters.Append(currParam);
       //OCC78
       SeqPoles.Append(Param);      
@@ -556,7 +556,7 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent, const
   else
     Normal_rot = Normal;
   Standard_Real angleAT = Normal_rot.Angle(prevNormal);
-  if(angleAT > Precision::Angular() && PI - angleAT > Precision::Angular())
+  if(angleAT > Precision::Angular() && M_PI - angleAT > Precision::Angular())
     if (Normal_rot.Crossed(prevNormal).IsOpposite(prevTangent, Precision::Angular())) 
       angleAT = -angleAT;
   return angleAT;
@@ -566,13 +566,13 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent, const
 // Purpose : This family of functions produce conversion of angle utility
 //===============================================================
 static Standard_Real corrPI_2PI(Standard_Real Ang){
-  return Ang = (Ang >= 0.0? Ang: 2*PI+Ang);
+  return Ang = (Ang >= 0.0? Ang: 2*M_PI+Ang);
 };
 static Standard_Real corr2PI_PI(Standard_Real Ang){
-  return Ang = (Ang < PI? Ang: Ang-2*PI);
+  return Ang = (Ang < M_PI? Ang: Ang-2*M_PI);
 };
 static Standard_Real diffAng(Standard_Real A, Standard_Real Ao){
-  Standard_Real dA = (A-Ao) - Floor((A-Ao)/2.0/PI)*2.0*PI;
+  Standard_Real dA = (A-Ao) - Floor((A-Ao)/2.0/M_PI)*2.0*M_PI;
   return dA = dA >= 0? corr2PI_PI(dA): -corr2PI_PI(-dA);
 };
 //===============================================================
@@ -603,7 +603,7 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
   Standard_Real DAng = CalcAngleAT(Tangent, Normal, HArrTangent->Value(iC), HArrNormal->Value(iC));
   Standard_Real DA = diffAng(DAng,dAng);
   // The correction (there is core of OCC78 bug)
-  if(Abs(DA) > PI/2.0){
+  if(Abs(DA) > M_PI/2.0){
     AngP = AngPo + DAng;
   };
   return AngP;

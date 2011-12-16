@@ -1915,7 +1915,7 @@ static int drawFinishSymbol( Draw_Interpretor& , Standard_Integer argc, const ch
   gp_Pnt2d rightTopPoint(location.X() + length/2, location.Y() + length);
 				
   gp_Trsf2d trsf;
-  trsf.SetRotation(location, angle*PI/180);
+  trsf.SetRotation(location, angle*M_PI/180);
   
   startPoint.Transform(trsf);
   leftTopPoint.Transform(trsf);

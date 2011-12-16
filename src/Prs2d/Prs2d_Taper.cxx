@@ -28,7 +28,7 @@ void Prs2d_Taper::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
 
   if ( IsIn ) {
     DrawLineAttrib( aDrawer );
-    const Standard_Real alpha = Standard_PI / 10;
+    const Standard_Real alpha = M_PI / 10;
 
     Standard_ShortReal X1 = myX - myLength/2, 
                        Y1 = myY,

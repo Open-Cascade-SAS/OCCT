@@ -298,7 +298,7 @@ void WNT_DDriver::BeginDraw()
     Quantity_Length width, height;
     WorkSpace (width, height);
     if (myFlags & FLAG_ROTATE) {
-      a -> myAngle   = Standard_PI / 2;
+      a -> myAngle   = M_PI / 2;
       a -> myPivot.x = Convert (height / 2);
       a -> myPivot.y = Convert (width  / 2);
       a -> myMove.x  =

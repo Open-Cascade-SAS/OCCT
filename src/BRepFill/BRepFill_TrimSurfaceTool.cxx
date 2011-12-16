@@ -166,7 +166,7 @@ static Standard_Real EvalPhase(const TopoDS_Edge& Edge,
   gp_Pnt P = GAS.Value(0., V);
   
   if ( gp_Vec(Axis.Location(), P).Dot(Axis.XDirection()) < 0.) 
-    return PI;
+    return M_PI;
   else
     return 0.;
 }
@@ -339,7 +339,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     case GeomAbs_Cone: {
       //----------------------------------------------------------
       // if myFace1 is not at the same side of the apex as the point
-      // of parameter 0 0 on the cone => phase = PI.
+      // of parameter 0 0 on the cone => phase = M_PI.
       //----------------------------------------------------------
       Axis = GAS.Cone().Position(); 
       Phase = EvalPhase(Edge,Face,GAS,Axis);
@@ -352,7 +352,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     case GeomAbs_SurfaceOfRevolution: {      
       //----------------------------------------------------------
       // if myFace1 is not at the same side of the apex as the point
-      // of parameter 0 0 on the cone => phase = PI.
+      // of parameter 0 0 on the cone => phase = M_PI.
       //----------------------------------------------------------
       Handle(Geom_SurfaceOfRevolution) GSRev = 
 	Handle(Geom_SurfaceOfRevolution)::DownCast(GS);
@@ -373,7 +373,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
     Standard_Real U = Axis.XDirection().
       AngleWithRef(D1,Axis.XDirection()^Axis.YDirection());
     U += Phase;
-    if ( U < 0.) U += 2*PI;
+    if ( U < 0.) U += 2*M_PI;
 
     P = gp_Pnt(Bis->FirstParameter(), U, 0.);
     Seq.Append(P);

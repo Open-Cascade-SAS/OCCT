@@ -270,10 +270,10 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   ElSLib::Parameters(Cyl, Pt ,u, v);
   Standard_Real tol = Precision::PConfusion();
   Standard_Boolean careaboutsens = 0;
-  if(Abs(lu - fu - 2 * PI) < tol) careaboutsens = 1;
+  if(Abs(lu - fu - 2 * M_PI) < tol) careaboutsens = 1;
   if(u >= fu - tol && u < fu) u = fu;
   if(u <= lu + tol && u > lu) u = lu;
-  if(u < fu || u > lu) u = ChFiKPart_InPeriod(u, fu, fu + 2 * PI, tol);
+  if(u < fu || u > lu) u = ChFiKPart_InPeriod(u, fu, fu + 2 * M_PI, tol);
 
   ElSLib::D1(u, v, Cyl, Pt, deru, derv);
   gp_Dir   norcyl = deru.Crossed(derv);

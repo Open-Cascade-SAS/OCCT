@@ -479,7 +479,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   gp_Dir BN(M.Column(2));
   
   Standard_Real ang = myDir.Angle(BN);
-  if (ang > PI/2) D.Reverse();    
+  if (ang > M_PI/2) D.Reverse();    
   Handle(Geom_Line) L = new (Geom_Line) (P, D);
 
   Handle(Geom_Curve) TC = new (Geom_TrimmedCurve) (L, 0, Length);
@@ -534,7 +534,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     V = V1.Crossed(V2);
     if (F.Orientation() == TopAbs_REVERSED) V.Reverse();
     if (V.Magnitude() > 1.e-10) {
-      out = myDir.Angle(V) > PI/2;
+      out = myDir.Angle(V) > M_PI/2;
     }
     if (out == IsInternal) {
       myShell.Reverse();
@@ -705,7 +705,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     }
 
     // Subtract State1
-    if (myDir.Angle(SP.Normal()) < PI/2)  State1 = TopAbs_IN;
+    if (myDir.Angle(SP.Normal()) < M_PI/2)  State1 = TopAbs_IN;
     else  State1 = TopAbs_OUT;
   }
 

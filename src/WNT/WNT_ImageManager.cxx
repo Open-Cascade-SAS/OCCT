@@ -15,7 +15,6 @@
 
 #include <WNT_Bitmap.h>
 
-#define M_PI       3.1415
 #define TRASH_SIZE 8
 
 #define PWND (  ( WNT_WindowPtr )myWindow  )

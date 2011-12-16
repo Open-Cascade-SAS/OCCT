@@ -68,7 +68,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Pnt P1(0, 0, 0);
   gp_Dir D1(0, 0, 30);
   gp_Ax1 A1(P1,D1);
-  Standard_Real angle1 = 360 * PI180;
+  Standard_Real angle1 = 360 * (M_PI / 180.0);
   TopoDS_Shape rs1 = BRepPrimAPI_MakeRevol(F1, A1, angle1);
 
   BRepBuilderAPI_MakePolygon W2;
@@ -86,7 +86,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Pnt P2(0, 0, 0);
   gp_Dir D2(0, 0, 30);
   gp_Ax1 A2(P2,D2);
-  Standard_Real angle2 = 270 * PI180;
+  Standard_Real angle2 = 270 * (M_PI / 180.0);
   TopoDS_Shape rs2 = BRepPrimAPI_MakeRevol(F2, A2, angle2);
 
   BRepBuilderAPI_MakePolygon W3;
@@ -102,7 +102,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Pnt P3(0, 0, 0);
   gp_Dir D3(0, 0, 30);
   gp_Ax1 A3(P3,D3);
-  Standard_Real angle3 = 360 * PI180;
+  Standard_Real angle3 = 360 * (M_PI / 180.0);
   TopoDS_Shape rs3 = BRepPrimAPI_MakeRevol(F3, A3, angle3);
 
   TopoDS_Shape fuse32, fuse321;
@@ -357,7 +357,7 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
       TopoDS_Shape slabShape = slab.Shape();
       if (fabs(draftAngle) > 0.01)
         {
-	  Standard_Real angle = draftAngle*PI180;
+	  Standard_Real angle = draftAngle*(M_PI / 180.0);
 	  BRepOffsetAPI_DraftAngle draftSlab(slabShape);
 
 	  TopoDS_Shape fShape = slab.FirstShape();
@@ -880,7 +880,7 @@ static Standard_Integer OCC826 (Draw_Interpretor& di,Standard_Integer argc, cons
   gp_Pnt P1(0, 0, 0);
   gp_Dir D1(0, 30, 0);
   gp_Ax1 A1(P1,D1);
-  Standard_Real angle1 = 360 * PI180;
+  Standard_Real angle1 = 360 * (M_PI / 180.0);
   TopoDS_Shape rev = BRepPrimAPI_MakeRevol(F1, A1, angle1);
   if (index < argc) DBRep::Set(argv[index++], rev);
 
@@ -954,7 +954,7 @@ static Standard_Integer OCC827 (Draw_Interpretor& di,Standard_Integer argc, cons
   gp_Pnt P1(0, 0, 0);
   gp_Dir D1(0, 0, 30);
   gp_Ax1 A1(P1,D1);
-  Standard_Real angle1 = 360 * PI180;
+  Standard_Real angle1 = 360 * (M_PI / 180.0);
   TopoDS_Shape rev = BRepPrimAPI_MakeRevol(F1, A1, angle1);
   if (index < argc) DBRep::Set(argv[index++], rev);
 

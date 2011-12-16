@@ -447,7 +447,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::Transfer (const Handle(Transfer_
   Standard_Real lFactor = UnitsMethods::GetLengthFactorValue ( Interface_Static::IVal ( "write.step.unit" ) );
   lFactor /= UnitsMethods::GetCasCadeLengthUnit();
   Standard_Integer anglemode = Interface_Static::IVal("step.angleunit.mode");
-  UnitsMethods::InitializeFactors ( lFactor, ( anglemode <= 1 ? 1. : PI/180. ), 1. );
+  UnitsMethods::InitializeFactors ( lFactor, ( anglemode <= 1 ? 1. : M_PI/180. ), 1. );
 
   // create SDR
   STEPConstruct_Part SDRTool;

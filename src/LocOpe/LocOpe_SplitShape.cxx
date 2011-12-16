@@ -1095,7 +1095,7 @@ static void ChoixUV(const TopoDS_Edge& Last,
   Handle(Geom2d_Curve) C2d;
 
   Standard_Integer index = 0, imin=0;
-  Standard_Real  angmax = -PI, dist, ang;
+  Standard_Real  angmax = -M_PI, dist, ang;
 
 
   for (It.Initialize(Poss); It.More(); It.Next()) {
@@ -1139,7 +1139,7 @@ static void ChoixUV(const TopoDS_Edge& Last,
       ang = ref2d.Angle(gp_Dir2d(v2d));
     }
     else {
-      ang = -PI;
+      ang = -M_PI;
     }
 
     //if ((dist < dmin - tol) ||

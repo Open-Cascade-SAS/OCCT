@@ -114,7 +114,7 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
   
   Handle(Geom_Curve) C;
   Handle(Geom2d_Curve) C2d;
-  gp_Pnt2d p2dFil(0.,-PI/2.);
+  gp_Pnt2d p2dFil(0.,-M_PI/2.);
   gp_Lin2d lin2dFil(p2dFil,gp::DX2d());
   Handle(Geom2d_Curve) C2dFil = new Geom2d_Line(lin2dFil);
   toreverse = ( ddz.Dot(dnat1) <= 0. );

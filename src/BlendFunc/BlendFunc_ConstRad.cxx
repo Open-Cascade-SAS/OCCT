@@ -902,11 +902,11 @@ Standard_Boolean BlendFunc_ConstRad::IsSolution(const math_Vector& Sol, const St
  // Reframing on  ]-pi/2, 3pi/2]
     if (Sina <0.) {
       if (Cosa > 0.) Angle = -Angle;
-      else           Angle =  2.*PI - Angle;
+      else           Angle =  2.*M_PI - Angle;
     }
 
 //    cout << "Angle : " <<Angle << endl;
-//    if ((Angle < 0) || (Angle > PI)) {
+//    if ((Angle < 0) || (Angle > M_PI)) {
 //      cout << "t = " << param << endl;
 //    }
 
@@ -1176,7 +1176,7 @@ void BlendFunc_ConstRad::Section(const Standard_Real Param,
   Pdeb = 0.;
   Pfin = ElCLib::Parameter(C,pts2);
   // Test negative and almost null angles : Singular Case
-  if (Pfin>1.5*PI) {
+  if (Pfin>1.5*M_PI) {
     np.Reverse();
     C.SetPosition(gp_Ax2(Center,np,ns1));
     Pfin = ElCLib::Parameter(C,pts2);

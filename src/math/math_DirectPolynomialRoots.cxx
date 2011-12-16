@@ -375,7 +375,7 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real a,
         else {
           Omega = atan(0.5 * Q / sqrt(- Discr));
           Sp3 = sqrt(-P / 3.0);
-          Y1 = -2.0 * Sb * Sp3 * cos(PI / 6.0 - Sb * Omega / 3.0);          
+          Y1 = -2.0 * Sb * Sp3 * cos(M_PI / 6.0 - Sb * Omega / 3.0);          
           TheRoots[0] = - Beta / 3.0 + Y1;
           if(Beta * Q <= 0.0) {
             TheRoots[1] = - Beta / 3.0 + 2.0 * Sp3 * sin(Omega / 3.0);

@@ -363,7 +363,7 @@ void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
   Standard_Real Ang = dsp.Angle(ded);
   Standard_Real dis1 = psp.Distance(ped);
   Standard_Real dis2 = p1.Distance(p2);
-  if(Ang > PI/18.) tron = Standard_True;
+  if(Ang > M_PI/18.) tron = Standard_True;
   if(dis1 >= 0.1*dis2) tron = Standard_True;
   Standard_Integer ivois;
   if(!tron && YaUnVoisin(Spine,iedge,ivois,isfirst)) {

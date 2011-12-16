@@ -97,9 +97,9 @@ static Standard_Real    size    = 100.;
 static Standard_Integer discret = 30;
 static Standard_Boolean disptriangles = Standard_False;
 static Standard_Boolean disppolygons = Standard_False;
-static Standard_Real    anglHLR = 35 * PI / 180;
-static Standard_Real    HAngMin =  1 * PI / 180;
-static Standard_Real    HAngMax = 35 * PI / 180;
+static Standard_Real    anglHLR = 35 * M_PI / 180;
+static Standard_Real    HAngMin =  1 * M_PI / 180;
+static Standard_Real    HAngMax = 35 * M_PI / 180;
 static Standard_Boolean withHLR = Standard_False;
 static Standard_Boolean withRg1 = Standard_True;
 static Standard_Boolean withRgN = Standard_False;
@@ -172,7 +172,7 @@ static Standard_Integer hlr (Draw_Interpretor& di,
       di << "\n";
       if (withHLR) {
 	di << "Angle of discretization : ";
-	di << anglHLR * 180 / PI << " degrees" << "\n";
+	di << anglHLR * 180 / M_PI << " degrees" << "\n";
       }
     }
     else di << " wireframe";
@@ -207,7 +207,7 @@ static Standard_Integer hlr (Draw_Interpretor& di,
     }
     else if (!strcasecmp(a[1],"ang"  )) {
       di << "Angle de discretisation : ";
-      di << anglHLR * 180 / PI << " degres" << "\n";
+      di << anglHLR * 180 / M_PI << " degres" << "\n";
     }
     else return 1;
   }
@@ -218,12 +218,12 @@ static Standard_Integer hlr (Draw_Interpretor& di,
     nFirst = 3;
     if (n == 3) {
       Standard_Real ang = atof(a[2]);
-      anglHLR = ang * PI / 180;
+      anglHLR = ang * M_PI / 180;
       if (anglHLR < HAngMin) anglHLR = HAngMin;
       if (anglHLR > HAngMax) anglHLR = HAngMax;
     }
     di << "Angle of discretization : ";
-    di << anglHLR * 180 / PI << " degrees" << "\n";
+    di << anglHLR * 180 / M_PI << " degrees" << "\n";
   }
 
   if (n >= nFirst + 1) {
@@ -264,7 +264,7 @@ static Standard_Integer hlr (Draw_Interpretor& di,
 	  }
 	  else if (!strcasecmp(a[1],"ang"  )) {
 	    Standard_Real ang = atof(a[2]);
-	    localAng = ang * PI / 180;
+	    localAng = ang * M_PI / 180;
 	  }
 	  else return 1;
 	  S->DisplayHLR(localHLR, localRg1, localRgN, localHid,

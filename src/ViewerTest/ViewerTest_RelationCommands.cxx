@@ -242,7 +242,7 @@ static int VAngleDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const c
     TheAISContext()->CloseLocalContext(myCurrentIndex);
     
     // Construction de l'AIS dimension
-    Handle (AIS_AngleDimension) myAISDim= new AIS_AngleDimension (TopoDS::Edge(ShapeA) ,TopoDS::Edge(ShapeB) ,theGeomPlane ,PI/2.0 ,TheMessage_Str );
+    Handle (AIS_AngleDimension) myAISDim= new AIS_AngleDimension (TopoDS::Edge(ShapeA) ,TopoDS::Edge(ShapeB) ,theGeomPlane ,M_PI/2.0 ,TheMessage_Str );
     GetMapOfAIS().Bind (myAISDim,argv[1]);
     TheAISContext()->Display(myAISDim );
     
@@ -1671,7 +1671,7 @@ static int VPerpendicularBuilder(Draw_Interpretor& di, Standard_Integer argc, co
     // on verifie si les edges sont orthogonaux.
     //gp_Lin theLineA=theCurveA.Line();
     //gp_Lin theLineB=theCurveB.Line();
-    //if (abs(theLineA.Angle(theLineB) ) != PI/2 ) {cout<<"vperpendicular error: Edges are not  othogonals."<<endl;return 1;}
+    //if (abs(theLineA.Angle(theLineB) ) != M_PI/2 ) {cout<<"vperpendicular error: Edges are not  othogonals."<<endl;return 1;}
     
     // On recupere 3 points A,B,C des  curves.
     gp_Pnt A=theCurveA.Value(0.1);

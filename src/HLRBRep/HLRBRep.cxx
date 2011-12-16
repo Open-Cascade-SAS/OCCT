@@ -105,9 +105,9 @@ HLRBRep::PolyHLRAngleAndDeflection (const Standard_Real InAngl,
 				    Standard_Real& OutAngl,
 				    Standard_Real& OutDefl)
 {
-  static Standard_Real HAngMin =  1*PI/180;
-  static Standard_Real HAngLim =  5*PI/180;
-  static Standard_Real HAngMax = 35*PI/180;
+  static Standard_Real HAngMin =  1*M_PI/180;
+  static Standard_Real HAngLim =  5*M_PI/180;
+  static Standard_Real HAngMax = 35*M_PI/180;
 
   OutAngl = InAngl;
   if (OutAngl < HAngMin) OutAngl = HAngMin;

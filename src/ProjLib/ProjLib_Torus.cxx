@@ -125,43 +125,43 @@ void  ProjLib_Torus::Project(const gp_Circ& C)
     Standard_Real V;
 
     if ( Z > 1.) {         
-      V = PI/2.;          // protection stupide 
+      V = M_PI/2.;          // protection stupide 
     }                     // contre les erreurs de calcul
     else if ( Z < -1.) {  // il arrive que Z soit legerement 
-      V = -PI/2;          // superieur a 1.
+      V = -M_PI/2;          // superieur a 1.
     }
     else {
       V = ASin(Z);
     }
 
     if (C.Radius() < myTorus.MajorRadius()) {
-      V = PI - V;
+      V = M_PI - V;
     }
     else if ( V < 0.) {
-      V += 2*PI;
+      V += 2*M_PI;
     }
     P1.SetY(V);
     P2.SetY(V);
     gp_Vec2d V2d ( P1, P2);
     // Normalement Abs( P1.X() - P2.X()) = PI/2
     // Si != PI/2, on a traverse la periode => On reverse la Direction
-    if ( Abs( P1.X() - P2.X()) > PI) V2d.Reverse();
+    if ( Abs( P1.X() - P2.X()) > M_PI) V2d.Reverse();
     
     gp_Dir2d D2( V2d);
     if ( P1.X() < 0) 
-      P1.SetX( 2*PI + P1.X());
+      P1.SetX( 2*M_PI + P1.X());
     myLin = gp_Lin2d( P1, D2);
   }
   else {
     // Iso U  -> U = angle( Xt, OC)
     Standard_Real U = Xt.AngleWithRef( OC, Xt^Yt);
     if ( U < 0.) 
-      U += 2*PI;
+      U += 2*M_PI;
     
     // Origine de la droite
     Standard_Real V1 = OC.AngleWithRef(Xc, OC^Zt);
     if ( V1 < 0.)
-      V1 += 2*PI;
+      V1 += 2*M_PI;
 
     gp_Pnt2d P1( U, V1);
     

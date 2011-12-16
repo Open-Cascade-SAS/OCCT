@@ -14,7 +14,7 @@
 #include <gp_XYZ.hxx>
 #include <gp_Trsf.hxx>
 
-static Standard_Real PIPI = PI + PI;
+static Standard_Real PIPI = M_PI + M_PI;
 
 gp_Pnt ElSLib::PlaneValue (const Standard_Real U,
 			   const Standard_Real V,
@@ -147,7 +147,7 @@ gp_Vec ElSLib::ConeDN (const Standard_Real    U,
 {
    gp_XYZ Xdir = Pos.XDirection().XYZ();
    gp_XYZ Ydir = Pos.YDirection().XYZ(); 
-   Standard_Real Um = U + Nu * M_PI_2;  // PI * 0.5
+   Standard_Real Um = U + Nu * M_PI_2;  // M_PI * 0.5
    Xdir.Multiply(cos(Um));
    Ydir.Multiply(sin(Um));
    Xdir.Add(Ydir);
@@ -1450,7 +1450,7 @@ void ElSLib::TorusParameters(const gp_Ax3& Pos,
     if (AD1 < 0) AD1 = - AD1;
     Standard_Real AD2 = D2;
     if (AD2 < 0) AD2 = - AD2;
-    if (AD2 < AD1) U += PI;
+    if (AD2 < AD1) U += M_PI;
   }
   if      (U < -1.e-16)  U += PIPI;
   else if (U < 0)        U = 0;

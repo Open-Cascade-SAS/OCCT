@@ -41,7 +41,7 @@ void IGESDimen_ToolSectionedArea::ReadOwnParams
   if (PR.DefinedElseSkip())
     PR.ReadReal(PR.Current(), "Angle between line and X axis", tempAngle); //szv#4:S4163:12Mar99 `st=` not needed
   else
-    tempAngle = PI / 4.0;
+    tempAngle = M_PI / 4.0;
 
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of island curves", nbislands);
   if (st && nbislands > 0)

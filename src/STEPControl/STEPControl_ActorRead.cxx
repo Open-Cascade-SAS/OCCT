@@ -1551,7 +1551,7 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
     stat1 = myUnit.ComputeFactors(theGUAC);
     Standard_Integer anglemode = Interface_Static::IVal("step.angleunit.mode");
     Standard_Real angleFactor = ( anglemode == 0 ? myUnit.PlaneAngleFactor() :
-				  anglemode == 1 ? 1. : PI/180. );
+				  anglemode == 1 ? 1. : M_PI/180. );
     UnitsMethods::InitializeFactors(myUnit.LengthFactor(),
 				    angleFactor,
 				    myUnit.SolidAngleFactor());

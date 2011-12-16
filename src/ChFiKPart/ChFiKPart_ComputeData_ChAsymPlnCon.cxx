@@ -128,11 +128,11 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 #endif
 	return Standard_False;
       }
-      SemiAngl = PI / 2. - Angle;      
+      SemiAngl = M_PI / 2. - Angle;      
     }
     else {
       ChamfRad = Spine.Radius() + Dis;
-      SemiAngl = Angle - PI / 2.;
+      SemiAngl = Angle - M_PI / 2.;
     }
 
     if (ouvert) {
@@ -148,7 +148,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     if (ouvert) {
       SemiAngl =  Abs(angCon) + Angle;
 
-      if ( (PI / 2. - SemiAngl) < Precision::Confusion() ) {
+      if ( (M_PI / 2. - SemiAngl) < Precision::Confusion() ) {
 	cout <<"wrong choice of angle for the chamfer"<<endl;
 	return Standard_False;
       }
@@ -328,10 +328,10 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 		Or.Z()+Rad*Dx.Z());
     ElSLib::Parameters(Con,Pt ,u,v);
     Standard_Real tol = Precision::PConfusion();
-    if(u >= 2*PI - tol && u <= 2*PI) u = 0.;
+    if(u >= 2*M_PI - tol && u <= 2*M_PI) u = 0.;
     if(u >= fu - tol && u < fu) u = fu;
     if(u <= lu + tol && u > lu) u = lu;
-    if(u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*PI);
+    if(u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*M_PI);
     ElSLib::D1(u,v,Con,Pt,deru,derv);
     gp_Pnt2d p2dCon(u,v);
     gp_Dir2d d2dCon;
@@ -505,10 +505,10 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 		Or.Z()+Rad*Dx.Z());
     ElSLib::Parameters(Con,Pt ,u,v);
     Standard_Real tol = Precision::PConfusion();
-    if (u >= 2*PI - tol && u <= 2*PI) u = 0.;
+    if (u >= 2*M_PI - tol && u <= 2*M_PI) u = 0.;
     if (u >= fu - tol && u < fu) u = fu;
     if (u <= lu + tol && u > lu) u = lu;
-    if (u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*PI);
+    if (u < fu || u > lu) u = ElCLib::InPeriod(u,fu,fu + 2*M_PI);
     ElSLib::D1(u,v,Con,Pt,deru,derv);
     gp_Pnt2d p2dCon(u,v);
     gp_Dir2d d2dCon;

@@ -1650,7 +1650,7 @@ void AIS_InteractiveContext::SetDeviationAngle(const Standard_Real anAngle)
 
 Standard_Real AIS_InteractiveContext::DeviationAngle() const
 {
-  return PI/180.0e0 ;
+  return M_PI/180.0e0 ;
   //  return myDefaultDrawer->DeviationAngle();
 }
 
@@ -1963,7 +1963,7 @@ void AIS_InteractiveContext::SetColor(const Handle(AIS_InteractiveObject)& anIOb
 //     gp_Dir D =Tr->Component()->XDirection();
 //     gp_Pnt O = Tr->Component()->Location();
 //     gp_Vec V(D);V*=Lx/5.;
-//     T.SetRotation(gp_Ax1(O,D),PI/6.);
+//     T.SetRotation(gp_Ax1(O,D),M_PI/6.);
 //     T.SetTranslationPart(V);
 //     TopLoc_Location L,IncLoc(T);
    
@@ -2128,7 +2128,7 @@ void AIS_InteractiveContext::SetAngleAndDeviation(
 {
 //  cout<<" Angle:"<< anAngle <<endl;
   if(anIObj.IsNull()) return ;
-//   Standard_Real anAngleRad = PI*anAngle/180; test rob...
+//   Standard_Real anAngleRad = M_PI*anAngle/180; test rob...
   if(!anIObj->HasInteractiveContext())
     anIObj->SetContext(this);
 

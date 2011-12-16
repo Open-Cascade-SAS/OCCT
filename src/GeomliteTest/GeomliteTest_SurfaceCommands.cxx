@@ -206,7 +206,7 @@ static Standard_Integer anasurface (Draw_Interpretor& ,
       Standard_Real par2 = atof(a[i+1]);
       
       if (!strcasecmp(a[0],"cone")) {
-	par1 *= PI180;
+	par1 *= (M_PI / 180.0);
 	Handle(Geom_ConicalSurface) C =
 	  new Geom_ConicalSurface(loc,par1,par2);
 	result = C;

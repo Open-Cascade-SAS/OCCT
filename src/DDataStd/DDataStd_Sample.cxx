@@ -79,7 +79,7 @@ static void Sample()
   // Filling array
 
   for(Standard_Integer j = realarray->Lower(); j<= realarray->Upper(); j++) {
-    realarray->SetValue(j, Standard_PI*j); 
+    realarray->SetValue(j, M_PI * j); 
   }
 
   // Getting length of array

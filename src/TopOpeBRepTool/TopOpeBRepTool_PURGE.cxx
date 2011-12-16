@@ -315,7 +315,7 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face& Fin, const
   Standard_Boolean uviso = FUN_tool_IsUViso(PC,isuiso,isviso,d2d,O2d);
   if (!uviso) return Standard_False;
 
-  Standard_Real period = 2*PI;
+  Standard_Real period = 2*M_PI;
   Standard_Real piso = isuiso? O2d.X(): O2d.Y();
   Standard_Real tol2d = 1.e-6;
   Standard_Boolean is0   = Abs(piso) < tol2d;

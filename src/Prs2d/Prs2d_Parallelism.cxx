@@ -27,9 +27,9 @@ void Prs2d_Parallelism::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
 
     Standard_ShortReal X1 = myX - myLength/2, 
                        Y1 = myY - myLength/2, 
-                       X2 = Standard_ShortReal( X1 + myLength * Cos( Standard_PI / 4 ) ),
+                       X2 = Standard_ShortReal( X1 + myLength * Cos( M_PI / 4 ) ),
                        Y2 = myY + myLength/2,
-                       X3 = Standard_ShortReal(myX + myLength* Cos( Standard_PI / 4 ) ),
+                       X3 = Standard_ShortReal(myX + myLength* Cos( M_PI / 4 ) ),
                        Y3 = Y2,
                        X4 = myX,
                        Y4 = Y1;

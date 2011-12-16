@@ -577,8 +577,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 
   alpha = fabs(ParamP1 - ParamPAttach1);
   if(ParamP1 < ParamPAttach1){
-    if(alpha > PI){
-      alpha  = (2*PI) - alpha;
+    if(alpha > M_PI){
+      alpha  = (2*M_PI) - alpha;
       nbp    = (Standard_Integer ) IntegerPart(alpha/(alpha*.02));
       Dalpha = alpha/(nbp - 1);
     }
@@ -588,8 +588,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     }
   }
   else{
-    if(alpha > PI){
-      alpha  = (2*PI) - alpha;
+    if(alpha > M_PI){
+      alpha  = (2*M_PI) - alpha;
       nbp    = (Standard_Integer ) IntegerPart(alpha/(alpha*.02));
       Dalpha = -alpha/(nbp - 1);
     }
@@ -630,8 +630,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   alpha = fabs(ParamP2 - ParamPAttach2);
   if (alpha <= Precision::Confusion()) alpha = 1.e-5;
   if(ParamP2 < ParamPAttach2){
-    if(alpha > PI){
-      alpha  = (2*PI) - alpha;
+    if(alpha > M_PI){
+      alpha  = (2*M_PI) - alpha;
       nbp    = (Standard_Integer ) IntegerPart(alpha/(alpha*.02));
       Dalpha = alpha/(nbp - 1);
     }
@@ -641,8 +641,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     }
   }
   else{
-    if(alpha > PI){
-      alpha  = (2*PI) - alpha;
+    if(alpha > M_PI){
+      alpha  = (2*M_PI) - alpha;
       nbp    = (Standard_Integer ) IntegerPart(alpha/(alpha*.02));
       Dalpha = -alpha/(nbp - 1);
     }

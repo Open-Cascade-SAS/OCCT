@@ -149,7 +149,7 @@ gp_Elips2d Geom2d_Ellipse::Elips2d () const
 
 Standard_Real Geom2d_Ellipse::ReversedParameter( const Standard_Real U) const 
 {
-  return (2. * PI - U);
+  return (2. * M_PI - U);
 }
 
 //=======================================================================
@@ -279,7 +279,7 @@ Standard_Real Geom2d_Ellipse::FirstParameter () const
 
 Standard_Real Geom2d_Ellipse::LastParameter () const     
 {
-  return 2.0 * PI; 
+  return 2.0 * M_PI; 
 }
 
 //=======================================================================

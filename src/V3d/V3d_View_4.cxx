@@ -50,7 +50,7 @@
 #define NO_TRACE_POINTS
 
 #define MYEPSILON1 0.0001		// Comparison with 0.0
-#define MYEPSILON2 Standard_PI / 180.	// Delta between 2 angles
+#define MYEPSILON2 M_PI / 180.	// Delta between 2 angles
 
 #ifdef TRACE_POINTS
 #include <Graphic3d_AspectLine3d.hxx>
@@ -230,7 +230,7 @@ gp_Dir GPN (X2, Y2, Z2);
 
 	// Casw when the plane of the grid and the plane of the view
 	// are perpendicular to MYEPSILON2 close radians
-	if (Abs (VPN.Angle (GPN) - Standard_PI / 2.) < MYEPSILON2) {
+	if (Abs (VPN.Angle (GPN) - M_PI / 2.) < MYEPSILON2) {
 		NewPoint.SetCoord (X1, Y1, Z1);
 #ifdef TRACE_POINTS
 		TextAttrib->SetColor (Quantity_Color (Quantity_NOC_RED));
@@ -378,7 +378,7 @@ Handle(Aspect_CircularGrid) theGrid =
 			*(Handle(Aspect_CircularGrid) *) &MyGrid;
 		RS = theGrid->RadiusStep ();
 		DN = theGrid->DivisionNumber ();
-		Alpha = Standard_PI / Standard_Real (DN);
+		Alpha = M_PI / Standard_Real (DN);
 
 Standard_Real DistOP = Sqrt (XPp*XPp + YPp*YPp);
 
@@ -386,7 +386,7 @@ Standard_Integer i, ICur=0;
 Standard_Real Angle, AngleCur;
 Standard_Real XCurp=0, YCurp=0;
 gp_Dir2d OP (XPp, YPp);
-		AngleCur = 2 * Standard_PI;
+		AngleCur = 2 * M_PI;
 		for (i=1; i<=DN*2; i++) {
 			X1 = XO + Cos (Alpha * i) * RS,
 			Y1 = YO + Sin (Alpha * i) * RS,

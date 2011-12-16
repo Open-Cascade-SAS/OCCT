@@ -61,7 +61,7 @@ Graphic2d_Ellips::Graphic2d_Ellips
       else {
           Standard_ShortReal X1, Y1, X2, Y2;
           Standard_Integer nbpoints = 360; // fobenselitmiter
-          Standard_ShortReal teta = Standard_ShortReal(2 * Standard_PI / nbpoints);
+          Standard_ShortReal teta = Standard_ShortReal(2 * M_PI / nbpoints);
           Standard_ShortReal x1 = Standard_ShortReal(myMajorRadius * Cos (myAngle));
           Standard_ShortReal y1 = Standard_ShortReal(myMajorRadius * Sin (myAngle));
           Standard_ShortReal x2, y2;
@@ -126,10 +126,10 @@ Standard_Boolean IsIn = Standard_False;
       val = Max( 0.0044 , Min (0.7854 , 2. * ACos(1.-Def/myMajorRadius)));
     else
       val = 0.7854;  // = PI/4.
-    Standard_Integer nbpoints = Min(MAXPOINTS,Standard_Integer(2*Standard_PI/val)+2);
+    Standard_Integer nbpoints = Min(MAXPOINTS,Standard_Integer(2 * M_PI / val) + 2);
 
 //    Standard_Integer nbpoints = Max ( 8 ,Standard_Integer ( myMajorRadius / Def));
-    Standard_ShortReal teta = Standard_ShortReal(2*Standard_PI /nbpoints);
+    Standard_ShortReal teta = Standard_ShortReal(2 * M_PI / nbpoints);
     Standard_ShortReal x1 = Standard_ShortReal(myMajorRadius *Cos (myAngle)),
     y1 = Standard_ShortReal(myMajorRadius *Sin (myAngle));
     Standard_ShortReal x2,y2;

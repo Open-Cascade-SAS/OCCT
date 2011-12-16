@@ -60,7 +60,7 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve
     isperiodic = Standard_False;
     Convert_ConicToBSplineCurve::
       BuildCosAndSin(Parameterisation,
-		     0, 2*PI,
+		     0, 2*M_PI,
 		     CosNumeratorPtr,
 		     SinNumeratorPtr,
 		     weights,
@@ -124,7 +124,7 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve
   Standard_Real delta = ULast - UFirst ;
   Standard_Real Eps = Precision::PConfusion();
 
-  if ( (delta > (2*PI + Eps)) || (delta <= 0.0e0) ) {
+  if ( (delta > (2*M_PI + Eps)) || (delta <= 0.0e0) ) {
     Standard_DomainError::Raise( "Convert_CircleToBSplineCurve");
   }
 

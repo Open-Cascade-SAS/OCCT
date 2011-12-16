@@ -395,7 +395,7 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
     //
     aRealEpsilon=RealEpsilon();
     aNul=0.;
-    aPeriod=PI+PI;
+    aPeriod=M_PI+M_PI;
     //
     aNbParts=myLConstruct.NbParts();
     //
@@ -435,12 +435,12 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
 	  slineS2.Append(H1);  
 	}
 	//==============================================	
-      } //if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*PI) > RealEpsilon())
+      } //if (Abs(fprm) > RealEpsilon() || Abs(lprm-2.*M_PI) > RealEpsilon())
       //
       else {//  on regarde si on garde
 	//
 	if (aNbParts==1) {
-	  if (Abs(fprm) < RealEpsilon() &&  Abs(lprm-2.*PI) < RealEpsilon()) {
+	  if (Abs(fprm) < RealEpsilon() &&  Abs(lprm-2.*M_PI) < RealEpsilon()) {
 	    Handle(Geom_TrimmedCurve) aTC3D=new Geom_TrimmedCurve(newc,fprm,lprm);
 	    //
 	    sline.Append(aTC3D);
@@ -476,7 +476,7 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
 	//
 	Standard_Real aTwoPIdiv17, u1, v1, u2, v2, TolX;
 	//
-	aTwoPIdiv17=2.*PI/17.;
+	aTwoPIdiv17=2.*M_PI/17.;
 	//
 	for (j=0; j<=17; j++) {
 	  gp_Pnt ptref (newc->Value (j*aTwoPIdiv17));
@@ -1518,7 +1518,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 		else {
 		  Standard_Real anAngle = aNewVec.Angle(aVecOld);
 
-		  if((fabs(anAngle) < (Standard_PI * 0.25)) && (aNewVec.Dot(aVecOld) > 0.)) {
+		  if((fabs(anAngle) < (M_PI * 0.25)) && (aNewVec.Dot(aVecOld) > 0.)) {
 
 		    if(bCheckAngle1) {
 		      Standard_Real U1, U2, V1, V2;

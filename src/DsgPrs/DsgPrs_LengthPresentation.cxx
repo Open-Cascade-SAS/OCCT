@@ -384,7 +384,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Alpha  = Abs( deltaU );
   if (Alpha > Precision::Angular() && Alpha<Precision::Infinite())
     {
-      NodeNumber = Max( 4 , Standard_Integer (50. * Alpha / PI) );
+      NodeNumber = Max( 4 , Standard_Integer (50. * Alpha / M_PI) );
       Graphic3d_Array1OfVertex ApproxCurve( 1, NodeNumber );
       delta = deltaU / (Standard_Real)( NodeNumber - 1 );
       gp_Pnt CurPnt;
@@ -399,7 +399,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Alpha  = Abs( deltaV );
   if (Alpha > Precision::Angular() && Alpha<Precision::Infinite())
     {
-      NodeNumber = Max( 4 , Standard_Integer (50. * Alpha / PI) );
+      NodeNumber = Max( 4 , Standard_Integer (50. * Alpha / M_PI) );
       Graphic3d_Array1OfVertex ApproxCurve( 1, NodeNumber );
       delta = deltaV / (Standard_Real)( NodeNumber - 1 );
       gp_Pnt CurPnt;

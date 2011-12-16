@@ -31,7 +31,7 @@ GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface
   aPosition = MkAxis.Value();
   aRadius = CS->RefRadius();
   aSemiAngle = CS->SemiAngle();
-  if (aSemiAngle < 0. || aSemiAngle > PI/2.) {
+  if (aSemiAngle < 0. || aSemiAngle > M_PI/2.) {
     Standard_DomainError::Raise("Conicalsurface not STEP conformant");
   }
   

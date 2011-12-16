@@ -172,7 +172,7 @@ static Standard_Boolean splitangle (const Handle(ShapeProcess_Context)& context)
   Handle(ShapeProcess_ShapeContext) ctx = Handle(ShapeProcess_ShapeContext)::DownCast ( context );
   if ( ctx.IsNull() ) return Standard_False;
   
-  ShapeUpgrade_ShapeDivideAngle SDA ( ctx->RealVal ( "Angle", 2*PI ), ctx->Result() );
+  ShapeUpgrade_ShapeDivideAngle SDA ( ctx->RealVal ( "Angle", 2*M_PI ), ctx->Result() );
   SDA.SetMaxTolerance ( ctx->RealVal ( "MaxTolerance", 1. ) );
   
   if ( ! SDA.Perform() && SDA.Status (ShapeExtend_FAIL) ) {

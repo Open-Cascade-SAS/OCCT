@@ -582,7 +582,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface
   //Axis->Init(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(0.0, 0.0, 1.0/GetUnit()));
   //Surf->Init (Axis, Generatrix, U1, U2);
   Axis->Init(gp_XYZ (0, 0, 1. / GetUnit()), gp_XYZ (0, 0, 0));  
-  Surf->Init (Axis, Generatrix, 2 * PI - U2, 2 * PI - U1);
+  Surf->Init (Axis, Generatrix, 2 * M_PI - U2, 2 * M_PI - U1);
 
 
   // creation de la Trsf (#124)
@@ -660,7 +660,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface
   //Axis->Init(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(0.0, 0.0, 1.0/GetUnit()));
   //Surf->Init (Axis, Generatrix, U1, U2);
   Axis->Init(gp_XYZ (0, 0, 1. / GetUnit()), gp_XYZ (0, 0, 0));  
-  Surf->Init (Axis, Generatrix, 2 * PI - U2, 2 * PI - U1);
+  Surf->Init (Axis, Generatrix, 2 * M_PI - U2, 2 * M_PI - U1);
 
 
   // creation de la Trsf (#124)
@@ -735,7 +735,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface
 
   if ( Gen->IsKind(STANDARD_TYPE(IGESGeom_CircularArc))) {
     //#30 rln 19.10.98 Surf->Init (Axis, Gen, U1, U2);
-    Surf->Init (Axis, Gen, 2 * PI - U2, 2 * PI - U1);
+    Surf->Init (Axis, Gen, 2 * M_PI - U2, 2 * M_PI - U1);
     IGESConvGeom_GeomBuilder Build;
     Standard_Real xloc,yloc,zloc;
     start->Sphere().Location().Coord(xloc,yloc,zloc);
@@ -807,7 +807,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface
 
 //:l6 abv: CTS22022: writing full tori:  if ( Gen->IsKind(STANDARD_TYPE(IGESGeom_CircularArc))) {
     //#30 rln 19.10.98 Surf->Init (Axis, Gen, U1, U2);
-    Surf->Init (Axis, Gen, 2 * PI - U2, 2 * PI - U1);
+    Surf->Init (Axis, Gen, 2 * M_PI - U2, 2 * M_PI - U1);
     IGESConvGeom_GeomBuilder Build;
 /* //:l6: useless
     Standard_Real xloc,yloc,zloc;
@@ -994,7 +994,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface
   Axis->Init(gp_XYZ(X1/GetUnit(),Y1/GetUnit(),Z1/GetUnit()),
 	     gp_XYZ( (X1 - X2) / GetUnit(), (Y1 - Y2) / GetUnit(), (Z1 - Z2) / GetUnit()));
 
-  Surf->Init (Axis, Generatrix, 2 * PI - U2, 2 * PI - U1);
+  Surf->Init (Axis, Generatrix, 2 * M_PI - U2, 2 * M_PI - U1);
   res = Surf;
   return res;
 
@@ -1178,7 +1178,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferConicalSurface(const
   Handle(Geom_Direction) rdir = new Geom_Direction(XDir);//XAxe.Direction()); 
   Handle(IGESGeom_Direction) refdir = GV.TransferVector(rdir);
 
-  ConSurf->Init (aLocation, Axis, radius, angle*180./PI, refdir);
+  ConSurf->Init (aLocation, Axis, radius, angle*180./M_PI, refdir);
   res = ConSurf;
   return res;
 }

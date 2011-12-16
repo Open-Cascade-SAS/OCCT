@@ -21,7 +21,7 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Pnt& P1 ,
   GC_MakeCylindricalSurface Cyl(P1,P2,P3);
   TheError = Cyl.Status();
   if (TheError == gce_Done) {
-    TheCyl = new Geom_RectangularTrimmedSurface(Cyl.Value(),0.,2.*PI,0.,
+    TheCyl = new Geom_RectangularTrimmedSurface(Cyl.Value(),0.,2.*M_PI,0.,
 				  P2.Distance(P1),Standard_True,Standard_True);
   }
 }
@@ -35,7 +35,7 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Circ&      Circ   ,
   GC_MakeCylindricalSurface Cyl(Circ);
   TheError = Cyl.Status();
   if (TheError == gce_Done) {
-    TheCyl = new Geom_RectangularTrimmedSurface(Cyl.Value(),0.,2.*PI,0.,
+    TheCyl = new Geom_RectangularTrimmedSurface(Cyl.Value(),0.,2.*M_PI,0.,
 					   Height,Standard_True,Standard_True);
   }
 }
@@ -49,7 +49,7 @@ GC_MakeTrimmedCylinder::GC_MakeTrimmedCylinder(const gp_Ax1&       A1     ,
   GC_MakeCylindricalSurface Cyl(A1,Radius);
   TheError = Cyl.Status();
   if (TheError == gce_Done) {
-    TheCyl = new Geom_RectangularTrimmedSurface(Cyl.Value(),0.,2.*PI,0.,
+    TheCyl = new Geom_RectangularTrimmedSurface(Cyl.Value(),0.,2.*M_PI,0.,
 					Height,Standard_True,Standard_True);
   }
 }

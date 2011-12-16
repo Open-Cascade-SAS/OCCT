@@ -39,7 +39,7 @@ static Standard_Integer BUC60753 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
            
-  Standard_Real Alpha = Standard_PI/10.;
+  Standard_Real Alpha = M_PI/10.;
   Standard_Real CosAlpha = Cos (Alpha);
   Standard_Real SinAlpha = Sin (Alpha);
   Standard_Real MoinsCosAlpha = Cos (-Alpha);

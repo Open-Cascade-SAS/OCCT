@@ -511,11 +511,11 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
   }
   else if (styp == STANDARD_TYPE(Geom_CylindricalSurface)) {
     str = new Geom_RectangularTrimmedSurface
-      (s, 0., 2.*PI, bnd, -bnd, Standard_True, Standard_True);
+      (s, 0., 2.*M_PI, bnd, -bnd, Standard_True, Standard_True);
   }
   else if (styp == STANDARD_TYPE(Geom_ConicalSurface)) {
     str = new Geom_RectangularTrimmedSurface
-      (s, 0., 2.*PI, bnd, -bnd, Standard_True, Standard_True);
+      (s, 0., 2.*M_PI, bnd, -bnd, Standard_True, Standard_True);
   }
   else {
     FUntil.Nullify();

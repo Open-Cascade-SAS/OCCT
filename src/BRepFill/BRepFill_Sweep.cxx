@@ -842,11 +842,11 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   Standard_Boolean ToReverseResult = Standard_False;
   gp_Vec d1u;
   d1u = Surf->DN(0, (f1+l1)/2, 1, 0);
-  if (d1u.Angle(TangentOnPart1) > PI/2) { //Invert everything
+  if (d1u.Angle(TangentOnPart1) > M_PI/2) { //Invert everything
     ToReverseResult = Standard_True;
     /*
     axe.Reverse();
-    Angle = 2*PI - Angle;
+    Angle = 2*M_PI - Angle;
     Rev = new (Geom_SurfaceOfRevolution) (Prof1, axe);
     Surf = new (Geom_RectangularTrimmedSurface) 
            (Rev, 0, Angle, f1, l1);
@@ -1148,7 +1148,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   AS->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
   N2 = D1U^D1V;
   
-  if ( (F1.Orientation() == TopAbs_REVERSED) ^ (N1.Angle(N2)>PI/2) )
+  if ( (F1.Orientation() == TopAbs_REVERSED) ^ (N1.Angle(N2)>M_PI/2) )
     Result.Orientation(TopAbs_REVERSED);
   else  Result.Orientation(TopAbs_FORWARD);
 

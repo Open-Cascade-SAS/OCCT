@@ -114,7 +114,7 @@ void Contap_ContAna::Perform (const gp_Cylinder& C,
 
   Standard_Real Coefcos = D.Dot(C.Position().XDirection());
   Standard_Real Coefsin = D.Dot(C.Position().YDirection());
-  Standard_Real Coefcst = cos(PI*0.5 + Angle);
+  Standard_Real Coefcst = cos(M_PI*0.5 + Angle);
 
   Standard_Real norm1 = Coefcos*Coefcos + Coefsin*Coefsin;
   Standard_Real norm2 = sqrt(norm1);
@@ -266,7 +266,7 @@ void Contap_ContAna::Perform (const gp_Cone& C,
   Standard_Real Coefcos = D.Dot(C.Position().XDirection());
   Standard_Real Coefsin = D.Dot(C.Position().YDirection());
 
-  Standard_Real Coefcst1 = cos(PI*0.5 + Angle);
+  Standard_Real Coefcst1 = cos(M_PI*0.5 + Angle);
 
   Standard_Real norm1 = Coefcos*Coefcos + Coefsin*Coefsin;
   Standard_Real norm2 = Sqrt(norm1);

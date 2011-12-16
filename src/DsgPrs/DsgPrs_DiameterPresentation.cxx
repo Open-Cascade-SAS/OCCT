@@ -114,18 +114,18 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
     if(lpar > fpar)
       return ((para >= fpar) && (para <= lpar));
     else { // fpar > lpar
-      Standard_Real delta = 2*PI-fpar;
+      Standard_Real delta = 2*M_PI-fpar;
       Standard_Real lp, par, fp;
       lp = lpar + delta;
       par = para + delta;
-      while(lp > 2*PI) lp-=2*PI;
-      while(par > 2*PI) par-=2*PI;
+      while(lp > 2*M_PI) lp-=2*M_PI;
+      while(par > 2*M_PI) par-=2*M_PI;
       fp = 0.;
       return ((par >= fp) && (par <= lp));
     }
       
   }
-  if (para >= (fpar+2*PI)) return Standard_True;
+  if (para >= (fpar+2*M_PI)) return Standard_True;
   if (para <= lpar) return Standard_True;
   return Standard_False;
 }
@@ -148,9 +148,9 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 {
   Standard_Real fpara = uFirst;
   Standard_Real lpara = uLast;
-  while (lpara > 2*PI) {
-    fpara -= 2*PI;
-    lpara -= 2*PI;
+  while (lpara > 2*M_PI) {
+    fpara -= 2*M_PI;
+    lpara -= 2*M_PI;
   }
 
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
@@ -167,8 +167,8 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   gp_Pnt SecondPoint = ElCLib::Value(uLast, aCircle);
 
   if ( !DsgPrs_InDomain(fpara,lpara,parEndOfArrow)) {
-    Standard_Real otherpar = parEndOfArrow + PI;// not in domain
-    if (otherpar > 2*PI) otherpar -= 2*PI;
+    Standard_Real otherpar = parEndOfArrow + M_PI;// not in domain
+    if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
     if (DsgPrs_InDomain(fpara,lpara,otherpar)) {
       parEndOfArrow = otherpar; // parameter on circle
       EndOfArrow = ElCLib::Value(parEndOfArrow, aCircle);

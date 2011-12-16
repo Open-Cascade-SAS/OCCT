@@ -1497,7 +1497,7 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
       Result = new Geom_CylindricalSurface( Axis, Radius);
     }
     else if ( Radius <= -Tol ){
-      Axis.Rotate(gp_Ax1(Axis.Location(),Axis.Direction()),PI);
+      Axis.Rotate(gp_Ax1(Axis.Location(),Axis.Direction()),M_PI);
       Result = new Geom_CylindricalSurface( Axis, Abs(Radius));
       Result->UReverse();
     }
@@ -1537,7 +1537,7 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
       Result = new Geom_SphericalSurface(Axis, Radius);
     }
     else if ( Radius <= -Tol ) {
-      Axis.Rotate(gp_Ax1(Axis.Location(),Axis.Direction()),PI);
+      Axis.Rotate(gp_Ax1(Axis.Location(),Axis.Direction()),M_PI);
       Axis.ZReverse();
       Result = new Geom_SphericalSurface(Axis, -Radius);
       Result->UReverse();

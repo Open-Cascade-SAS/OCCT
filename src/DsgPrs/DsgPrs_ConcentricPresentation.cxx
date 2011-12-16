@@ -32,7 +32,7 @@ void DsgPrs_ConcentricPresentation::Add(
   //Creation et discretisation du plus gros cercle
   gp_Circ Circ(gp_Ax2(aCenter,aNorm), aRadius);
   Standard_Integer nbp = 50;
-  Standard_Real dteta = (2 * PI)/nbp;
+  Standard_Real dteta = (2 * M_PI)/nbp;
   Graphic3d_Array1OfVertex V(1,nbp+1);
   gp_Pnt ptcur;
   Standard_Real ucur = 0;

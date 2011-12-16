@@ -374,7 +374,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(1) = Param1;
    Ufirst(2) = Param2;
    Ufirst(3) = Param3;
-   tol(1) = 2.e-15*PI;
+   tol(1) = 2.e-15*M_PI;
    tol(2) = TheCurveTool::EpsX(Cu2,Abs(Tolerance));
    tol(3) = 1.e-15;
    tol(4) = Tol/10.;
@@ -491,9 +491,9 @@ GccIter_Circ2d2TanOn::
    Ufirst(1) = Param1;
    Ufirst(2) = Param2;
    Ufirst(3) = Param3;
-   tol(1) = 2.e-15*PI;
+   tol(1) = 2.e-15*M_PI;
    tol(2) = TheCurveTool::EpsX(Cu2,Abs(Tolerance));
-   tol(3) = 2.e-15*PI;
+   tol(3) = 2.e-15*M_PI;
    tol(4) = Tol/10.;
    gp_Pnt2d point1 = ElCLib::Value(Param1,C1);
    gp_Pnt2d point2 = TheCurveTool::Value(Cu2,Param2);
@@ -607,7 +607,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(3) = Param3;
    tol(1) = 1.e-15;
    tol(2) = TheCurveTool::EpsX(Cu2,Abs(Tolerance));
-   tol(3) = 2.e-15*PI;
+   tol(3) = 2.e-15*M_PI;
    tol(4) = Tol/10.;
    gp_Pnt2d point1 = ElCLib::Value(Param1,L1);
    gp_Pnt2d point2 = TheCurveTool::Value(Cu2,Param2);
@@ -720,7 +720,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(3) = Param3;
    tol(1) = TheCurveTool::EpsX(Cu1,Abs(Tolerance));
    tol(2) = TheCurveTool::EpsX(Cu2,Abs(Tolerance));
-   tol(3) = 2.e-15*PI;
+   tol(3) = 2.e-15*M_PI;
    tol(4) = Tol/10.;
    gp_Pnt2d point1 = TheCurveTool::Value(Cu1,Param1);
    gp_Pnt2d point2 = TheCurveTool::Value(Cu2,Param2);
@@ -826,7 +826,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(1) = Param1;
    Ufirst(2) = Param2;
    tol(1) = TheCurveTool::EpsX(Cu1,Abs(Tolerance));
-   tol(2) = 2.e-15*PI;
+   tol(2) = 2.e-15*M_PI;
    tol(3) = Tol/10.;
    gp_Pnt2d point1 = TheCurveTool::Value(Cu1,Param1);
    gp_Pnt2d point3 = ElCLib::Value(Param2,OnCirc);
@@ -1029,7 +1029,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(1) = Param1;
    Ufirst(2) = Param2;
    Ufirst(3) = ParamOn;
-   tol(1) = 2.e-15*PI;
+   tol(1) = 2.e-15*M_PI;
    tol(2) = TheCurveTool::EpsX(Cu2,Abs(Tolerance));
    tol(3) = TheCurveTool::EpsX(OnCurv,Abs(Tolerance));
    tol(4) = Tol/10.;;

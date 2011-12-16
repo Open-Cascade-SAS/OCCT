@@ -219,9 +219,9 @@
       Xcen = ( cc*ee + f*b) / dn;
       Ycen = (-cc*dd - f*a) / dn;
 
-      Standard_Real teta = PI/2.;
+      Standard_Real teta = M_PI/2.;
       if (Abs(b) > eps) teta = ATan (-a/b);
-      if (fc < 0) teta += PI;
+      if (fc < 0) teta += M_PI;
       Xax  = Cos(teta);
       Yax  = Sin(teta);
 

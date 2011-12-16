@@ -208,7 +208,7 @@ Standard_Real pvn, sca, angle;
 				/* Compute Angle */
 	if (angle > 1.) angle = 1. ;
 	else if ( angle < -1. ) angle = -1. ;
-	angle = asin (angle)/Standard_PI180 ;
+	angle = asin (angle) / (M_PI / 180.0);
 	sca = a1*a2 + b1*b2 + c1*c2 ;
 	if (sca < 0.) angle = 180. - angle ;
 	if ( (angle > 0.) && (angle < 180.) ) {
@@ -216,9 +216,9 @@ Standard_Real pvn, sca, angle;
         if (sca > 0.) angle = 360. - angle ;
 	}
 
-	return (angle*Standard_PI/180.0);
+	return (angle * M_PI / 180.0);
 #else
-	return (Standard_PI/180.0);
+	return (M_PI / 180.0);
 #endif
 
 }

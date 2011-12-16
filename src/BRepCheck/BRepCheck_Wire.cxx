@@ -1549,7 +1549,7 @@ static TopAbs_Orientation GetOrientation(const TopTools_MapOfShape& mapE,
     angle = DerRef.Angle( Der );
     angle *= -1.;
     if (angle < 0.)
-      angle += 2.*PI;
+      angle += 2.*M_PI;
     
     if (F.Orientation() == TopAbs_FORWARD) { 
       if (angle < MinAngle) {

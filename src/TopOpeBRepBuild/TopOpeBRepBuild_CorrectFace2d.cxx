@@ -449,17 +449,17 @@
     Standard_Boolean nonPV = (fabs(V) < 1e-7) ? Standard_True : Standard_False;
 
     if(!nonPU && UP) {
-      Standard_Real dU = fmod(fabs(U), 2*PI);
-      nonPU = (dU > 1e-7 && (2*PI - dU > 1e-7)) ? Standard_True : Standard_False;
+      Standard_Real dU = fmod(fabs(U), 2*M_PI);
+      nonPU = (dU > 1e-7 && (2*M_PI - dU > 1e-7)) ? Standard_True : Standard_False;
     }
     
     if(!nonPV && VP) {
-      Standard_Real dV = fmod(fabs(V), 2*PI);
-      nonPV = (dV > 1e-7 && (2*PI - dV > 1e-7)) ? Standard_True : Standard_False;
+      Standard_Real dV = fmod(fabs(V), 2*M_PI);
+      nonPV = (dV > 1e-7 && (2*M_PI - dV > 1e-7)) ? Standard_True : Standard_False;
     }
 
-//    printf("(fmod(fabs(U), 2*PI) =%lf\n", (fmod(fabs(U), 2*PI)));
-//    printf(" (fmod(fabs(V), 2*PI) > 1e-7)=%lf\n", (fmod(fabs(V), 2*PI)));
+//    printf("(fmod(fabs(U), 2*M_PI) =%lf\n", (fmod(fabs(U), 2*M_PI)));
+//    printf(" (fmod(fabs(V), 2*M_PI) > 1e-7)=%lf\n", (fmod(fabs(V), 2*M_PI)));
     
     if(nonPU && nonPV && !BRep_Tool::Degenerated(anEdge))
       return 1;
@@ -904,7 +904,7 @@
   Standard_Integer b, k;
   gp_Vec2d aTrV;
 
-  TwoPI=2.*PI;
+  TwoPI=2.*M_PI;
 
   BndBoxWire(anOuterWire, B2dOuterWire);
   B2dOuterWire.Get(OuterU1,OuterV1,OuterU2,OuterV2);

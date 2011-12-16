@@ -23,7 +23,7 @@ inline gp_Elips::gp_Elips (const gp_Ax2& A2,
 }
 
 inline Standard_Real gp_Elips::Area() const
-{ return Standard_PI * majorRadius * minorRadius; }
+{ return M_PI * majorRadius * minorRadius; }
 
 inline Standard_Real gp_Elips::MajorRadius() const
 { return majorRadius; }

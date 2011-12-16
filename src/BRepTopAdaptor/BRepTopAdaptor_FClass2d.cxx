@@ -358,19 +358,19 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	 || surf->GetType()==GeomAbs_SurfaceOfRevolution)
 	
 	{
-	  Standard_Real uuu=PI+PI-(Umax-Umin);
+	  Standard_Real uuu=M_PI+M_PI-(Umax-Umin);
 	  if(uuu<0) uuu=0;
 	  U1 = 0.0;  // modified by NIZHNY-OFV  Thu May 31 14:24:10 2001 ---> //Umin-uuu*0.5;
-	  U2 = 2*PI; // modified by NIZHNY-OFV  Thu May 31 14:24:35 2001 ---> //U1+PI+PI;
+	  U2 = 2*M_PI; // modified by NIZHNY-OFV  Thu May 31 14:24:35 2001 ---> //U1+M_PI+M_PI;
 	}
       else { U1=U2=0.0; } 
     
       if(surf->GetType()==GeomAbs_Torus)
 	{ 
-	  Standard_Real uuu=PI+PI-(Vmax-Vmin);
+	  Standard_Real uuu=M_PI+M_PI-(Vmax-Vmin);
 	  if(uuu<0) uuu=0;
 	  V1 = 0.0;  // modified by NIZHNY-OFV  Thu May 31 14:24:55 2001 ---> //Vmin-uuu*0.5;
-	  V2 = 2*PI; // modified by NIZHNY-OFV  Thu May 31 14:24:59 2001 ---> //V1+PI+PI;
+	  V2 = 2*M_PI; // modified by NIZHNY-OFV  Thu May 31 14:24:59 2001 ---> //V1+M_PI+M_PI;
 	}
       else { V1=V2=0.0; }   
     }

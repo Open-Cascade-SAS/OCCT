@@ -79,10 +79,6 @@ from higher API */
 #define NO_PRINT
 #define NO_PRINT_MATRIX
 
-#ifndef M_PI
-# define M_PI          3.14159265358979323846
-#endif
-
 /* on trouve que 10 vues sera suffisant */
 #define GROW_SIZE_NZ_WKS   10
 

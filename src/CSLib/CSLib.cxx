@@ -239,8 +239,8 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
       {  //All lambda i exist
          Standard_Integer SP;
          Standard_Real inf,sup;
-         inf=0.0-Standard_PI;
-         sup=0.0+Standard_PI;
+         inf = 0.0 - M_PI;
+         sup = 0.0 + M_PI;
          Standard_Boolean FU,LU,FV,LV;
 
          //Creation of the domain of definition depending on the position
@@ -249,29 +249,41 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
          LU=(Abs(U-Umax) < Precision::PConfusion() );
          FV=(Abs(V-Vmin) < Precision::PConfusion() );
          LV=(Abs(V-Vmax) < Precision::PConfusion() );
-         if(LU)
+         if (LU)
          {
-            inf=Standard_PI/2;
-            sup=3*inf;
-            if(LV){inf=Standard_PI;}
-            if(FV){sup=Standard_PI;}
+            inf = M_PI / 2;
+            sup = 3 * inf;
+            if (LV)
+            {
+              inf = M_PI;
+            }
+            if (FV)
+            {
+              sup = M_PI;
+            }
          }
-         else if(FU)
+         else if (FU)
          {
-            sup=Standard_PI/2;
-	    inf=-sup;
-	    if(LV){sup=0;}
-	    if(FV){inf=0;}
+            sup = M_PI / 2;
+	    inf = -sup;
+	    if (LV)
+            { 
+              sup = 0;
+            }
+	    if (FV)
+            {
+              inf = 0;
+            }
 	 }
-	 else if(LV)
+	 else if (LV)
 	 {
-	    inf=0.0-Standard_PI;
-	    sup=0;
+	    inf = 0.0 - M_PI;
+	    sup = 0;
          }
-	 else if(FV)
+	 else if (FV)
 	 {
-            inf=0;
-	    sup=Standard_PI;
+            inf = 0;
+	    sup = M_PI;
 	 }
 	 Standard_Boolean CS=0;
 	 Standard_Real Vprec=0,Vsuiv;

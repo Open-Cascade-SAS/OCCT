@@ -84,8 +84,8 @@ Graphic2d_Paragraph::Graphic2d_Paragraph
       myTextHScaleList(),
       myTextWScaleList() {
 
-      while (myAngle < 0.) myAngle += Standard_ShortReal( 2.*Standard_PI );
-      while (myAngle >= 2.*Standard_PI) myAngle -= Standard_ShortReal( 2.*Standard_PI );
+      while (myAngle < 0.) myAngle += Standard_ShortReal( 2. * M_PI );
+      while (myAngle >= 2. * M_PI) myAngle -= Standard_ShortReal( 2. * M_PI );
 
       SetZoomable() ;
       SetSlant() ;
@@ -148,8 +148,8 @@ void Graphic2d_Paragraph::SetCurrentUnderline (const Standard_Boolean isUnderlin
 void Graphic2d_Paragraph::SetSlant (const Quantity_PlaneAngle aSlant) {
 
         mySlant = Standard_ShortReal( aSlant );
-        while (mySlant < 0.) mySlant += Standard_ShortReal( 2.*Standard_PI );
-        while (mySlant >= 2.*Standard_PI) mySlant -= Standard_ShortReal( 2.*Standard_PI );
+        while (mySlant < 0.) mySlant += Standard_ShortReal( 2. * M_PI );
+        while (mySlant >= 2. * M_PI) mySlant -= Standard_ShortReal( 2. * M_PI );
 }
 
 void Graphic2d_Paragraph::SetSpacing (const Quantity_Ratio aSpacing) {

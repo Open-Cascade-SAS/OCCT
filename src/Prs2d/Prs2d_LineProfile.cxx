@@ -44,7 +44,7 @@ void Prs2d_LineProfile::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
 	 Y1 = Standard_ShortReal( b1 );
     }
     
-   aDrawer->MapArcFromTo( X1, Y1, myLength/2, myAngle, Standard_ShortReal( Standard_PI + myAngle ) );
+   aDrawer->MapArcFromTo( X1, Y1, myLength/2, myAngle, Standard_ShortReal( M_PI + myAngle ) );
   }
 }
 

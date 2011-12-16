@@ -20,7 +20,7 @@ Prs2d_Arrow::Prs2d_Arrow( const Handle(Graphic2d_GraphicObject)& aGraphicObject,
      gp_Pnt2d P1( aLocation.Location() );
      gp_Dir2d AxeX( 1., 0. );
      Standard_Real theAngle = AxeX.Angle( aLocation.Direction() );        
-     theAngle += Standard_PI;
+     theAngle += M_PI;
      gp_Pnt2d P2( aLength,  aLength*Tan( anAngle/2. ) );
      gp_Pnt2d P3( aLength, -aLength*Tan( anAngle/2. ) );
      P2.Rotate( theOrigine, theAngle );

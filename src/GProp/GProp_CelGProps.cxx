@@ -120,7 +120,7 @@ void GProp_CelGProps::Perform(const gp_Lin& C,
 GProp_CelGProps::GProp_CelGProps (const gp_Circ& C, const gp_Pnt& CLocation) 
 {
   SetLocation(CLocation);
-  Perform(C,0.,2.*PI);
+  Perform(C,0.,2.*M_PI);
 }
 
 GProp_CelGProps::GProp_CelGProps (const gp_Circ& C, 

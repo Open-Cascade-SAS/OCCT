@@ -689,7 +689,7 @@ Standard_Boolean StdSelect_BRepSelectionTool
         }
         case GeomAbs_Circle:
         {
-          if (2 * PI - Abs (wl - wf) <= Precision::Confusion())
+          if (2 * M_PI - Abs (wl - wf) <= Precision::Confusion())
           {
             if (BS.GetType() == GeomAbs_Cylinder ||
                 BS.GetType() == GeomAbs_Torus ||

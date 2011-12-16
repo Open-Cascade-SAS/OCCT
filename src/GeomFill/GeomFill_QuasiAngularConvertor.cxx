@@ -145,7 +145,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt& FirstPnt,
   beta5 = beta3*beta2;
   beta6 = beta3*beta3; 
  
-  if  ((PI/2 - beta)> NullAngle) {
+  if  ((M_PI/2 - beta)> NullAngle) {
     if (Abs(beta) < NullAngle) {
      Standard_Real cf = 2.0/(3*5*7);
      b = - (0.2+cf*beta2) / (1+ 0.2*beta2);
@@ -273,7 +273,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt& FirstPnt,
   else {
     b = ((Standard_Real) -1)/beta2;
     bpr = (2*betaprim) / beta3;  
-    if  ((PI/2 - beta)> NullAngle) {
+    if  ((M_PI/2 - beta)> NullAngle) {
       tan_b = Tan(beta);
       dtan_b = betaprim * (1 + tan_b*tan_b);
       b2 = tan_b - beta;
@@ -473,7 +473,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt& FirstPnt,
     b = ((Standard_Real) -1)/beta2;
     bpr = (2*betaprim) / beta3;
     bsc = (2*betasecn - 6*betaprim*(betaprim/beta)) / beta3; 
-    if  ((PI/2 - beta)> NullAngle) {
+    if  ((M_PI/2 - beta)> NullAngle) {
       tan_b = Tan(beta);
       dtan_b = betaprim * (1 + tan_b*tan_b);
       d2tan_b = betasecn * (1 + tan_b*tan_b)

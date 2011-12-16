@@ -34,7 +34,7 @@ AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& aComponent):
 AIS_InteractiveObject(PrsMgr_TOP_AllView),
 myComponent(aComponent),
 myUStart(0.),
-myUEnd(2*PI),
+myUEnd(2*M_PI),
 myCircleIsArc(Standard_False)
 {
 }

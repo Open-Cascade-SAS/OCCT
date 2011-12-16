@@ -88,7 +88,7 @@ Primitives_OneAxis::Primitives_OneAxis(const TheBuilder& B,
 				       const Standard_Real VMax) :
        myBuilder(B),
        myAxes(A),
-       myAngle(2*PI),
+       myAngle(2*M_PI),
        myVMin(VMin),
        myVMax(VMax),
        myMeridianOffset(0)
@@ -247,7 +247,7 @@ Standard_Boolean Primitives_OneAxis::HasBottom() const
 
 Standard_Boolean Primitives_OneAxis::HasSides() const
 {
-  return 2*PI - myAngle > Precision::Angular();
+  return 2*M_PI - myAngle > Precision::Angular();
 }
 
 //=======================================================================

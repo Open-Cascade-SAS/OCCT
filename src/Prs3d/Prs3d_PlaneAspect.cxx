@@ -14,7 +14,7 @@ Prs3d_PlaneAspect::Prs3d_PlaneAspect()
   myPlaneYLength= 1.;
   myArrowsLength= 0.02;
   myArrowsSize=0.1;
-  myArrowsAngle=PI/8.;
+  myArrowsAngle=M_PI/8.;
 }
 
 Handle(Prs3d_LineAspect) Prs3d_PlaneAspect::EdgesAspect() const

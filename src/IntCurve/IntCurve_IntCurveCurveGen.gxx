@@ -125,7 +125,7 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve& C1,
     gp_Pnt2d P2(TheCurveTool::Value(C1,lastparameter));
     D1.SetValues(P1,firstparameter  ,TolDomain,
 		 P2,lastparameter   ,TolDomain);
-    D1.SetEquivalentParameters(firstparameter,firstparameter+PI+PI);
+    D1.SetEquivalentParameters(firstparameter,firstparameter+M_PI+M_PI);
     break; 
   }
   default: { 

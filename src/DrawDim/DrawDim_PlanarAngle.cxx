@@ -148,15 +148,15 @@ void DrawDim_PlanarAngle::DrawOn(Draw_Display& dis) const
   }
   if (!parallel && !clockwise) {
     p1 = angle;
-    p2 = PI;
+    p2 = M_PI;
   }
   if (parallel && clockwise) {
-    p1 = PI;
-    p2 = PI+angle;
+    p1 = M_PI;
+    p2 = M_PI+angle;
   }
   if (!parallel && clockwise) {
-    p1 = PI+angle;
-    p2 = 2*PI;
+    p1 = M_PI+angle;
+    p2 = 2*M_PI;
   }
   // affichage
   dis.Draw(circle,p1,p2);

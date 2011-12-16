@@ -2041,7 +2041,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
         trouve=Standard_False;
         ChFi3d_cherche_vertex ( Edge[0],Edge[1],Vcom,trouve);
         if (Vcom.IsSame(Vtx)) ang1=ChFi3d_AngleEdge(Vtx,Edge[0],Edge[1]);
-	if (Abs(ang1-PI)<0.01) {
+	if (Abs(ang1-M_PI)<0.01) {
 	  oneintersection1=Standard_True;
 	  facesau=Face[0];
 	  edgesau=Edge[1];
@@ -2054,7 +2054,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
           trouve=Standard_False;
           ChFi3d_cherche_vertex ( Edge[1],Edge[2],Vcom,trouve);
           if (Vcom.IsSame(Vtx)) ang1=ChFi3d_AngleEdge(Vtx,Edge[1],Edge[2]);
-	  if (Abs(ang1-PI)<0.01) {
+	  if (Abs(ang1-M_PI)<0.01) {
 	    oneintersection2=Standard_True;
 	    facesau=Face[1];
 	    edgesau=Edge[1];
@@ -2414,17 +2414,17 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 //       deb=pfildeb.X();
 //       xx1=pfil1.X();
 //       xx2=pfil2.X();
-//       moins2pi=Abs(deb)< Abs(Abs(deb)-2*PI);
-//       moins2pi1=Abs(xx1)< Abs(Abs(xx1)-2*PI);
-//       moins2pi2=Abs(xx2)< Abs(Abs(xx2)-2*PI);
+//       moins2pi=Abs(deb)< Abs(Abs(deb)-2*M_PI);
+//       moins2pi1=Abs(xx1)< Abs(Abs(xx1)-2*M_PI);
+//       moins2pi2=Abs(xx2)< Abs(Abs(xx2)-2*M_PI);
 //       if (moins2pi1!=moins2pi2) {
 //         if  (moins2pi) {
-//           if (!moins2pi1) xx1=xx1-2*PI;
-//           if (!moins2pi2) xx2=xx2-2*PI;
+//           if (!moins2pi1) xx1=xx1-2*M_PI;
+//           if (!moins2pi2) xx2=xx2-2*M_PI;
 //         }
 //         else {
-//           if (moins2pi1) xx1=xx1+2*PI;
-//           if (moins2pi2) xx2=xx2+2*PI;
+//           if (moins2pi1) xx1=xx1+2*M_PI;
+//           if (moins2pi2) xx2=xx2+2*M_PI;
 //         }
 //       }
 //       pfil1.SetX(xx1);
@@ -2437,17 +2437,17 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 //       deb=ufmin;
 //       xx1=pfac1.X();
 //       xx2=pfac2.X();
-//       moins2pi=Abs(deb)< Abs(Abs(deb)-2*PI);
-//       moins2pi1=Abs(xx1)< Abs(Abs(xx1)-2*PI);
-//       moins2pi2=Abs(xx2)< Abs(Abs(xx2)-2*PI);
+//       moins2pi=Abs(deb)< Abs(Abs(deb)-2*M_PI);
+//       moins2pi1=Abs(xx1)< Abs(Abs(xx1)-2*M_PI);
+//       moins2pi2=Abs(xx2)< Abs(Abs(xx2)-2*M_PI);
 //       if (moins2pi1!=moins2pi2) {
 //         if  (moins2pi) {
-//           if (!moins2pi1) xx1=xx1-2*PI;
-//           if (!moins2pi2) xx2=xx2-2*PI;
+//           if (!moins2pi1) xx1=xx1-2*M_PI;
+//           if (!moins2pi2) xx2=xx2-2*M_PI;
 //         }
 //         else {
-//           if (moins2pi1) xx1=xx1+2*PI;
-//           if (moins2pi2) xx2=xx2+2*PI;
+//           if (moins2pi1) xx1=xx1+2*M_PI;
+//           if (moins2pi2) xx2=xx2+2*M_PI;
 //         }
 //       }
 //       pfac1.SetX(xx1);

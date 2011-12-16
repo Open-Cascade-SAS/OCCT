@@ -975,13 +975,13 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
         inside = (PPU2<param3 && PPU2>param4) || (PPU2<param4 && PPU2>param3);
         //  case of arc of circle passing on the sewing
         if ( ( basisC2->DynamicType() == STANDARD_TYPE(Geom2d_Circle) ) && 
-            ( (2*PI<param3 && 2*PI>param4) || (2*PI<param4 && 2*PI>param3) ) ) {
+            ( (2*M_PI<param3 && 2*M_PI>param4) || (2*M_PI<param4 && 2*M_PI>param3) ) ) {
         //  cas param3<param4
-          inside = (param3<PPU2 && PPU2<2*PI) 
-                     || (0<=PPU2 && PPU2<param4-2*PI);
+          inside = (param3<PPU2 && PPU2<2*M_PI) 
+                     || (0<=PPU2 && PPU2<param4-2*M_PI);
         //  cas param4<param3
-          inside = inside || (param4<PPU2 && PPU2<2*PI) 
-                               || (0<=PPU2 && PPU2<param3-2*PI);
+          inside = inside || (param4<PPU2 && PPU2<2*M_PI) 
+                               || (0<=PPU2 && PPU2<param3-2*M_PI);
         }
 	if ( inside && dist < dist1) {
 	  numsol = nsol;
@@ -1005,12 +1005,12 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     inside = (U2 < param1 && U2 >= param2) || (U2 <= param2 && U2 > param1);
     /////////////////////////////////////////////////////
     if ( (basisC1->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
-      &&  ( (2*PI<param1 && 2*PI>param2) || (2*PI<param2 && 2*PI>param1) ) ) {
+      &&  ( (2*M_PI<param1 && 2*M_PI>param2) || (2*M_PI<param2 && 2*M_PI>param1) ) ) {
       // arc of circle containing the circle origin
       //  case param1<param2
-      inside = (param1<U2 && U2<2*PI) || (0<=U2 && U2<param2-2*PI);
+      inside = (param1<U2 && U2<2*M_PI) || (0<=U2 && U2<param2-2*M_PI);
       //  case param2<param1
-      inside = inside || (param2<U2 && U2<2*PI) || (0<=U2 && U2<param1-2*PI);
+      inside = inside || (param2<U2 && U2<2*M_PI) || (0<=U2 && U2<param1-2*M_PI);
     }
     if (!inside) {
       status = ChFi2d_ComputationError;
@@ -1022,12 +1022,12 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     inside = (Vv2 < param3 && Vv2 >= param4) || (Vv2 <= param4 && Vv2 > param3);
     /////////////////////////////////////////////////////
     if ( (basisC2->DynamicType() == STANDARD_TYPE(Geom2d_Circle))
-      &&  ( (2*PI<param3 && 2*PI>param4) || (2*PI<param4 && 2*PI>param3) ) ) {
+      &&  ( (2*M_PI<param3 && 2*M_PI>param4) || (2*M_PI<param4 && 2*M_PI>param3) ) ) {
     // arc of circle containing the circle origin
       //  cas param3<param4
-      inside = (param3<Vv2 && Vv2<2*PI) || (0<=Vv2 && Vv2<param4-2*PI);
+      inside = (param3<Vv2 && Vv2<2*M_PI) || (0<=Vv2 && Vv2<param4-2*M_PI);
       //  cas param4<param3
-      inside = inside || (param4<Vv2 && Vv2<2*PI) || (0<=Vv2 && Vv2<param3-2*PI);
+      inside = inside || (param4<Vv2 && Vv2<2*M_PI) || (0<=Vv2 && Vv2<param3-2*M_PI);
     }
     if (!inside) {
       status = ChFi2d_ComputationError;
@@ -1098,8 +1098,8 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     } // if (OE1 ...
     Standard_Real cross = vec1*vec;
     Standard_Boolean Sense = cross > 0.;
-    if (U1 > Vv1 && U1 > 2.*PI) {
-      ElCLib::AdjustPeriodic(0.,2.*PI,Precision::Confusion(),U1,Vv1);
+    if (U1 > Vv1 && U1 > 2.*M_PI) {
+      ElCLib::AdjustPeriodic(0.,2.*M_PI,Precision::Confusion(),U1,Vv1);
     } // if (U1 ... 
     if (O1 == TopAbs_FORWARD && OE1 == TopAbs_FORWARD ||
 	O1 == TopAbs_REVERSED && OE1 == TopAbs_REVERSED ) {

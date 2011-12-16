@@ -754,8 +754,8 @@ void Prs2d_Length::GetPntProject( const Standard_Real aLength )
        DirLin2.Normalize();
        DirLin1 *= aLength;
        DirLin2 *= aLength;
-       DirLin1.Rotate( PI/2. );
-       DirLin2.Rotate( -PI/2. );
+       DirLin1.Rotate( M_PI/2. );
+       DirLin2.Rotate( -M_PI/2. );
        aPntProj1 = myPntAttach1.Translated( DirLin1 );
        aPntProj2 = myPntAttach2.Translated( DirLin2 );;
        break;
@@ -771,8 +771,8 @@ void Prs2d_Length::GetPntProject( const Standard_Real aLength )
        DirLin2.Normalize();
        DirLin1 *= aLength;
        DirLin2 *= aLength;
-       DirLin1.Rotate( PI/2. );
-       DirLin2.Rotate( -PI/2. );
+       DirLin1.Rotate( M_PI/2. );
+       DirLin2.Rotate( -M_PI/2. );
        aPntProj1 = myPntAttach1.Translated( DirLin1 );
        aPntProj2 = myPntAttach2.Translated( DirLin2 );;
        break;
@@ -808,7 +808,7 @@ void Prs2d_Length::GetPntProject( const Standard_Real aLength )
 void Prs2d_Length::ComputeArrows( const Standard_Boolean /*isnotPoints*/ ) 
 {
   
-  Standard_Real ArrAngle = PI/180. * ArrowAngle(), theAngle;
+  Standard_Real ArrAngle = M_PI/180. * ArrowAngle(), theAngle;
   gp_Pnt2d aPnt1( myX1, myY1 ), aPnt2( myX2, myY2 );
   gp_Pnt2d theOrigine( 0., 0.), P1, P2, P3;
   gp_Vec2d VX( 1., 0. ), VDir;

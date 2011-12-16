@@ -482,7 +482,7 @@ static Standard_Integer TDraft2d (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
   anAngle = atof(argv[4]);
-  anAngle = 2*PI * anAngle / 360.0;
+  anAngle = 2*M_PI * anAngle / 360.0;
   gp_Pln aPln;
   Handle(Geom_Surface) aSurf;
 //  AIS2D_KindOfSurface aSurfType;

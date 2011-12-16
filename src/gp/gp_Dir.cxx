@@ -18,7 +18,7 @@ Standard_Real gp_Dir::Angle (const gp_Dir& Other) const
     return acos (Cosinus);
   else {
     Standard_Real Sinus = (coord.Crossed (Other.coord)).Modulus ();
-    if(Cosinus < 0.0)  return Standard_PI - asin (Sinus);
+    if(Cosinus < 0.0)  return M_PI - asin (Sinus);
     else               return      asin (Sinus);
   }
 }
@@ -33,7 +33,7 @@ Standard_Real gp_Dir::AngleWithRef (const gp_Dir& Other,
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
     Ang =  acos (Cosinus);
   else {
-    if(Cosinus < 0.0)  Ang = Standard_PI - asin (Sinus);
+    if(Cosinus < 0.0)  Ang = M_PI - asin (Sinus);
     else               Ang =      asin (Sinus);
   }
   if (XYZ.Dot (Vref.coord) >= 0.0)  return  Ang;

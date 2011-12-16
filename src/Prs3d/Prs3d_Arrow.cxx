@@ -51,8 +51,8 @@ void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
 
   for (Standard_Integer i = 1 ; i <= NbPoints ; i++) {
 
-    cosinus = cos ( 2 * PI / NbPoints * (i-1) );   
-    sinus   = sin ( 2 * PI / NbPoints * (i-1) );
+    cosinus = cos ( 2 * M_PI / NbPoints * (i-1) );   
+    sinus   = sin ( 2 * M_PI / NbPoints * (i-1) );
 
     x = xc + (cosinus * xi + sinus * xj) * aLength * Tg;
     y = yc + (cosinus * yi + sinus * yj) * aLength * Tg;

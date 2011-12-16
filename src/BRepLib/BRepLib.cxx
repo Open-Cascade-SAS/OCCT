@@ -1511,7 +1511,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
 
   Standard_Boolean rev1 = (F1.Orientation() == TopAbs_REVERSED);
   Standard_Boolean rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  Standard_Real f,l,eps, angmax = -PI;
+  Standard_Real f,l,eps, angmax = -M_PI;
 #ifndef DEB
   Standard_Real ang =0.;
 #else

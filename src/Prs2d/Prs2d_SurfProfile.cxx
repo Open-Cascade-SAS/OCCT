@@ -66,7 +66,7 @@ void Prs2d_SurfProfile::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
 	 Yc = Standard_ShortReal( b1 );
     }
     aDrawer->MapSegmentFromTo( X1, Y1, X2, Y2 );
-    aDrawer->MapArcFromTo( Xc, Yc, myLength/2, myAngle, Standard_ShortReal( Standard_PI + myAngle ) );
+    aDrawer->MapArcFromTo( Xc, Yc, myLength/2, myAngle, Standard_ShortReal( M_PI + myAngle ) );
   }
 }
 

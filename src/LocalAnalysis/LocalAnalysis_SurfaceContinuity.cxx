@@ -51,10 +51,10 @@ void LocalAnalysis_SurfaceContinuity::SurfC1(  GeomLProp_SLProps& Surf1,
          myLambda1V= norm2v / norm1v;
       else myLambda1V = norm2v / norm1v;
       angu= V1u.Angle(V2u);
-      if (angu>PI/2) myContC1U=PI-angu;
+      if (angu>M_PI/2) myContC1U=M_PI-angu;
       else myContC1U=angu;
       angv= V1v.Angle(V2v);
-      if (angv>PI/2) myContC1V=PI-angv;
+      if (angv>M_PI/2) myContC1V=M_PI-angv;
        else myContC1V=angv;   }
   else {myIsDone = Standard_False;  
         myErrorStatus=LocalAnalysis_NullFirstDerivative;}
@@ -85,7 +85,7 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(  GeomLProp_SLProps& Surf1,
             else {myLambda1U = norm11u / norm12u;
 	          myLambda2U = norm21u / norm22u;}
             ang=V21u.Angle(V22u);
-            if(ang>PI/2) myContC2U=PI-ang;
+            if(ang>M_PI/2) myContC2U=M_PI-ang;
             else myContC2U=ang; }
        else
 	  {  myIsDone=Standard_False;
@@ -112,7 +112,7 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(  GeomLProp_SLProps& Surf1,
           else{ myLambda1V = norm11v / norm12v;
 		myLambda2V = norm21v / norm22v;}
           ang= V21v.Angle(V22v);
-          if (ang>PI/2)  myContC2V=PI-ang;
+          if (ang>M_PI/2)  myContC2V=M_PI-ang;
           else myContC2V=ang;
          }
       else{ myIsDone= Standard_False;
@@ -129,7 +129,7 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(  GeomLProp_SLProps& Surf1,
   { gp_Dir D1 = Surf1.Normal();
     gp_Dir D2 = Surf2.Normal();
     Standard_Real ang=D1.Angle(D2);
-    if (ang>PI/2)  myContG1= PI-ang;
+    if (ang>M_PI/2)  myContG1= M_PI-ang;
     else  myContG1=ang; 
   }
   else{ myIsDone=Standard_False;

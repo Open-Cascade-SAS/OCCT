@@ -1359,7 +1359,7 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
 	  anIsoDir = gp_Dir2d(1, 0);
 
 	if(aTangentZoneDir.SquareMagnitude() > gp::Resolution()) {
-	  Standard_Real piquota = PI*0.25;
+	  Standard_Real piquota = M_PI*0.25;
 
 	  if(fabs(aTangentZoneDir.Angle(anIsoDir)) > piquota) {
 	    Standard_Integer ii = 1, nextii = 2;

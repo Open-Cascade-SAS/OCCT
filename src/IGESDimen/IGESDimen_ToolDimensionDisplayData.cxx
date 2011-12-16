@@ -54,7 +54,7 @@ void  IGESDimen_ToolDimensionDisplayData::ReadOwnParams
   if (PR.DefinedElseSkip())
     PR.ReadReal(PR.Current(),"Witness Line Angle",tempWitLineAng); //szv#4:S4163:12Mar99 `st=` not needed
   else
-    tempWitLineAng = PI / 2;
+    tempWitLineAng = M_PI / 2;
 
   PR.ReadInteger(PR.Current(),"Text Alignment",tempTextAlign); //szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())

@@ -30,7 +30,7 @@ void LocalAnalysis_CurveContinuity::CurvC1(  GeomLProp_CLProps& Curv1,
        { myLambda1 = norm2 / norm1;}   
        else { myLambda1  = norm1 / norm2;} 
        ang= V1.Angle(V2);
-       if (ang>PI/2)   myContC1=PI-ang;
+       if (ang>M_PI/2)   myContC1=M_PI-ang;
        else  myContC1=ang;
    }
    else  {myIsDone= Standard_False;
@@ -62,7 +62,7 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1,
             else {myLambda1  = norm1 / norm2; 
 	          myLambda2 = norm12 / norm22;}
             ang=V12.Angle(V22);
-            if (ang>PI/2)  myContC2=PI-ang;
+            if (ang>M_PI/2)  myContC2=M_PI-ang;
 	    else myContC2=ang; }
     
         else{myIsDone= Standard_False ;
@@ -82,7 +82,7 @@ void LocalAnalysis_CurveContinuity::CurvG1 (   GeomLProp_CLProps& Curv1,
      {   Curv1.Tangent(Tang1);
          Curv2.Tangent(Tang2);
          ang=Tang1.Angle(Tang2);
-         if (ang>PI/2)  myContG1=PI-ang;
+         if (ang>M_PI/2)  myContG1=M_PI-ang;
          else myContG1=ang;
      } 
    else {myIsDone= Standard_False ;
@@ -107,7 +107,7 @@ void LocalAnalysis_CurveContinuity::CurvG2( GeomLProp_CLProps& Curv1,
             Curv1.Normal(D1);
             Curv2.Normal(D2);
             ang =D1.Angle(D2);
-           if (ang>PI/2)  myContG2=PI-ang;
+           if (ang>M_PI/2)  myContG2=M_PI-ang;
            else myContG2=ang;
             myCourbC1= Curv1.Curvature();
             myCourbC2 = Curv2.Curvature();
@@ -197,7 +197,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC0() const
 Standard_Boolean LocalAnalysis_CurveContinuity::IsC1() const  
 {
   if (!myIsDone) { StdFail_NotDone::Raise();}
-  if ( IsC0() && ( (myContC1 <= myepsC1)||(Abs(myContC1-PI)<=myepsC1)))
+  if ( IsC0() && ( (myContC1 <= myepsC1)||(Abs(myContC1-M_PI)<=myepsC1)))
      return Standard_True;
      else return Standard_False;	
 }
@@ -209,7 +209,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const
 
   if (!myIsDone) { StdFail_NotDone::Raise();}
   if ( IsC1())
-    { if ((myContC2 <= myepsC2)||(Abs(myContC2-PI)<=myepsC2))
+    { if ((myContC2 <= myepsC2)||(Abs(myContC2-M_PI)<=myepsC2))
       { epsil1 = 0.5*myepsC1*myepsC1*myLambda1;
         epsil2 = 0.5*myepsC2*myepsC2*myLambda2;
        if ( (Abs(myLambda1*myLambda1-myLambda2)) <= (epsil1*epsil1+epsil2))
@@ -226,7 +226,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsC2() const
 Standard_Boolean LocalAnalysis_CurveContinuity::IsG1() const  
 {
   if (!myIsDone) { StdFail_NotDone::Raise();}
- if ( IsC0() && (( myContG1 <= myepsG1||(Abs(myContG1-PI)<=myepsG1))))
+ if ( IsC0() && (( myContG1 <= myepsG1||(Abs(myContG1-M_PI)<=myepsG1))))
      return Standard_True;
      else return Standard_False;	
 }
@@ -253,7 +253,7 @@ Standard_Boolean LocalAnalysis_CurveContinuity::IsG2()const
   	          else IETA2=1;
        if (IETA1 == IETA2)
      	  { if (IETA1 == 1)
-               { Standard_Real eps= RealPart( (myContG2+myepsG2)/PI) * PI;
+               { Standard_Real eps= RealPart( (myContG2+myepsG2)/M_PI) * M_PI;
                  if (Abs( eps - myepsG2) < myepsG2)
                     {if (myG2Variation < myperce )
 		       return Standard_True;

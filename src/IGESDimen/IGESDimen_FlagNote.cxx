@@ -94,5 +94,5 @@
 
     Standard_Real  IGESDimen_FlagNote::TipLength () const 
 {
-  return (0.5 * (Height()/Tan((35./180.)*PI)));
+  return (0.5 * (Height()/Tan((35./180.)*M_PI)));
 }

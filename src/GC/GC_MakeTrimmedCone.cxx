@@ -34,7 +34,7 @@ GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1 ,
     gp_Pnt P5 = ext1.Point(1).Value();
     gp_Pnt P6 = ext2.Point(1).Value();
     Standard_Real D = P6.Distance(P5)/cos((Cone.Value())->SemiAngle());
-    TheCone=new Geom_RectangularTrimmedSurface(Cone.Value(),0.,2.*PI,0.,D,Standard_True,Standard_True);
+    TheCone=new Geom_RectangularTrimmedSurface(Cone.Value(),0.,2.*M_PI,0.,D,Standard_True,Standard_True);
   }
 }
 
@@ -50,7 +50,7 @@ GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt&       P1 ,
   TheError = Cone.Status();
   if (TheError == gce_Done) {
     Standard_Real D = (P2.Distance(P1))/cos((Cone.Value())->SemiAngle());
-    TheCone=new Geom_RectangularTrimmedSurface(Cone.Value(),0.,2.*PI,0.,D,Standard_True,Standard_True);
+    TheCone=new Geom_RectangularTrimmedSurface(Cone.Value(),0.,2.*M_PI,0.,D,Standard_True,Standard_True);
   }
 }
 

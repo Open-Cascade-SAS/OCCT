@@ -203,7 +203,7 @@ static void ComputeCurve3d(TopoDS_Edge           Edge,
       if ( D.IsParallel(gp::DX2d(),Precision::Angular())) { // Iso V.
 	if ( STy == GeomAbs_Sphere) {
 	  gp_Pnt2d  P    = C.Line().Location();
-	  if ( Abs( Abs(P.Y()) -PI/2. ) < Precision::PConfusion()) {
+	  if ( Abs( Abs(P.Y()) -M_PI/2. ) < Precision::PConfusion()) {
 	    TheBuilder.Degenerated(Edge, Standard_True);
 	  }
 	  else {
@@ -1391,18 +1391,18 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
     //                         V` = +/- PI + 2 k` PI
     gp_Pnt2d P2d = PCurve->Value(f);
     Standard_Boolean IsToAdjust = Standard_False;
-    if ( P2d.Y() < -PI/2.) {
+    if ( P2d.Y() < -M_PI/2.) {
       IsToAdjust = Standard_True;
-      PCurve->Mirror(gp_Ax2d(gp_Pnt2d(0.,-PI/2.),gp::DX2d()));
+      PCurve->Mirror(gp_Ax2d(gp_Pnt2d(0.,-M_PI/2.),gp::DX2d()));
     }
-    else if ( P2d.Y() > PI/2.) {
+    else if ( P2d.Y() > M_PI/2.) {
       IsToAdjust = Standard_True;
-      PCurve->Mirror(gp_Ax2d(gp_Pnt2d(0., PI/2.),gp::DX2d()));
+      PCurve->Mirror(gp_Ax2d(gp_Pnt2d(0., M_PI/2.),gp::DX2d()));
     }
     if ( IsToAdjust) {
       // set the u firstpoint in [0,2*pi]
-      gp_Vec2d Tr( PI, 0.);
-      if ( P2d.X() > PI) Tr.Reverse();
+      gp_Vec2d Tr( M_PI, 0.);
+      if ( P2d.X() > M_PI) Tr.Reverse();
       PCurve->Translate(Tr);
     }
 

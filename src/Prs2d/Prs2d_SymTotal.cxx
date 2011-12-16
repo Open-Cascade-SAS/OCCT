@@ -24,16 +24,16 @@ void Prs2d_SymTotal::Draw( const Handle(Graphic2d_Drawer)& aDrawer )  {
 
   if ( IsIn ) {
     DrawLineAttrib( aDrawer );
-    const Standard_Real alpha = Standard_PI / 12;
+    const Standard_Real alpha = M_PI / 12;
 
     Standard_ShortReal X1 = myX - myLength/2, 
                        Y1 = myY - myLength/2, 
-                       X2 = Standard_ShortReal(X1 + myLength * Cos( Standard_PI / 4 ) ), 
+                       X2 = Standard_ShortReal(X1 + myLength * Cos( M_PI / 4 ) ), 
                        Y2 = myY + myLength/2,
 
                        X5 = myX,
                        Y5 = myY - myLength/2,
-                       X6 = Standard_ShortReal(X5 + myLength * Cos( Standard_PI / 4 ) ), 
+                       X6 = Standard_ShortReal(X5 + myLength * Cos( M_PI / 4 ) ), 
                        Y6 = myY + myLength/2;
     
     gp_Pnt2d P1( X2, Y2 );

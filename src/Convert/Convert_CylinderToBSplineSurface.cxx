@@ -28,7 +28,7 @@ static void ComputePoles( const Standard_Real R,
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
-    nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
+    nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / M_PI) + 1;
   Standard_Real AlfaU = deltaU / ( nbUSpans * 2);
 
   Standard_Real UStart = U1;
@@ -70,7 +70,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface
 {
   Standard_Real deltaU = U2 - U1;
   Standard_DomainError_Raise_if( (Abs(V2-V1) <= Abs(Epsilon(V1))) ||
-				 (deltaU  >  2*PI)                || 
+				 (deltaU  >  2*M_PI)                || 
 				 (deltaU  <  0.  ),
 				 "Convert_CylinderToBSplineSurface");
 
@@ -82,7 +82,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
   Standard_Integer 
-    nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / PI) + 1;
+    nbUSpans = (Standard_Integer)IntegerPart( 1.2 * deltaU / M_PI) + 1;
   Standard_Real AlfaU = deltaU / ( nbUSpans * 2);
 
   nbUPoles = 2 * nbUSpans + 1;
@@ -146,7 +146,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface
 
   Standard_Real R = Cyl.Radius();
   
-  ComputePoles( R, 0., 2.*PI, V1, V2, poles); 
+  ComputePoles( R, 0., 2.*M_PI, V1, V2, poles); 
 
   nbUPoles = 6;
   nbUKnots = 4;
@@ -154,7 +154,7 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface
   nbVKnots = 2;
   
   for ( i = 1; i <= nbUKnots; i++) {
-    uknots(i) = ( i-1) * 2. * PI /3.;
+    uknots(i) = ( i-1) * 2. * M_PI /3.;
     umults(i) = 2;
   }
   vknots(1) = V1;  vmults(1) = 2;

@@ -52,12 +52,12 @@ static Standard_Integer OCC895 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Ax2 axis1 = reverse?
     gp_Ax2(center1, gp::DY(), gp::DZ()) : gp_Ax2(center1, -gp::DY(), gp::DX());
   if (Abs(angle) > gp::Resolution())
-    axis1.Rotate(gp_Ax1(center1, gp::DZ()), angle*PI/180.0);
+    axis1.Rotate(gp_Ax1(center1, gp::DZ()), angle*M_PI/180.0);
 
   gce_MakeCirc makeCirc1(axis1, rad);
   if(!makeCirc1.IsDone()) return 1;
   gp_Circ circ1 = makeCirc1.Value();
-  GC_MakeArcOfCircle makeArc1(circ1, 0, PI/2, Standard_True);
+  GC_MakeArcOfCircle makeArc1(circ1, 0, M_PI/2, Standard_True);
   if(!makeArc1.IsDone()) return 1;
   Handle_Geom_TrimmedCurve arc1 = makeArc1.Value();
 
@@ -77,7 +77,7 @@ static Standard_Integer OCC895 (Draw_Interpretor& di, Standard_Integer argc, con
   gce_MakeCirc makeCirc2(axis2, rad);
   if(!makeCirc2.IsDone()) return 1;
   gp_Circ circ2 = makeCirc2.Value();
-  GC_MakeArcOfCircle makeArc2(circ2, 0, PI/2, Standard_True);
+  GC_MakeArcOfCircle makeArc2(circ2, 0, M_PI/2, Standard_True);
   if(!makeArc2.IsDone()) return 1;
   Handle_Geom_TrimmedCurve arc2 = makeArc2.Value();
 

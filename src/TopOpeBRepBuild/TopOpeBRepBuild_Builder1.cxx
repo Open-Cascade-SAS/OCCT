@@ -1814,10 +1814,10 @@ Standard_Integer TopOpeBRepBuild_Builder1::IsSame2d (const TopTools_SequenceOfSh
 
   Standard_Boolean IsTrFirst = Standard_True;
   if(parOri < f ) { 
-    parOri = 2*PI +  parOri;
+    parOri = 2*M_PI +  parOri;
   }
   if(parOri > l ) {
-    parOri = parOri - 2*PI;
+    parOri = parOri - 2*M_PI;
   }
 
   gp_Pnt2d aUV2; 

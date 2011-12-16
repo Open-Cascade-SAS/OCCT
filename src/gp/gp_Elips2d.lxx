@@ -58,7 +58,7 @@ inline void gp_Elips2d::SetYAxis (const gp_Ax2d& A)
 {  pos.SetYAxis(A); }
 
 inline  Standard_Real gp_Elips2d::Area() const
-{ return Standard_PI * majorRadius * minorRadius; }
+{ return M_PI * majorRadius * minorRadius; }
 
 inline gp_Ax2d gp_Elips2d::Directrix1() const
 {

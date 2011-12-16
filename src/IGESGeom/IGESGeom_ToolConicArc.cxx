@@ -230,10 +230,10 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
       gp_Dir2d d2(ent->EndPoint().X()   - xc, ent->EndPoint().Y()   - yc);
       Standard_Real t1 = d0.Angle(d1);
       Standard_Real t2 = d0.Angle(d2);
-      t1 += (t1  >  0 ? 0 : 2*PI);
-      t2 += (t2  >  0 ? 0 : 2*PI);
-      t2 += (t1 <= t2 ? 0 : 2*PI);
-      if ( !(0 <= t1 && t1 <= 2*PI) || !(0 <= t2-t1 && t2-t1 <= 2*PI) )
+      t1 += (t1  >  0 ? 0 : 2*M_PI);
+      t2 += (t2  >  0 ? 0 : 2*M_PI);
+      t2 += (t1 <= t2 ? 0 : 2*M_PI);
+      if ( !(0 <= t1 && t1 <= 2*M_PI) || !(0 <= t2-t1 && t2-t1 <= 2*M_PI) )
 	ach.AddFail("Parameter Error for Hyperbola");
     }
   else if (ent->FormNumber() == 3)
@@ -245,7 +245,7 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
       gp_Dir2d d2(ent->EndPoint().X()   - xc, ent->EndPoint().Y()   - yc);
       Standard_Real t1 = d0.Angle(d1);
       Standard_Real t2 = d0.Angle(d2);
-      if ( !(-PI/2 < t1 && t1 < PI/2) || !(-PI/2 < t2 && t2 < PI/2) )
+      if ( !(-M_PI/2 < t1 && t1 < M_PI/2) || !(-M_PI/2 < t2 && t2 < M_PI/2) )
 	ach.AddFail("Parameter Error for Parabola");
     }
 */

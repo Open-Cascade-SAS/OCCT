@@ -112,7 +112,7 @@ GeomFill_CircularBlendFunc(const Handle(Adaptor3d_HCurve)& Path,
 
   // Type de convertion ?
   if (Polynomial) myTConv=Convert_Polynomial;
-  else if(maxang > 0.65*PI) 
+  else if(maxang > 0.65*M_PI) 
     myTConv=Convert_QuasiAngular; //car c'est Continue
   else   myTConv = Convert_TgtThetaOver2; 
                   //car c'est le plus performant 

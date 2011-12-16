@@ -631,8 +631,8 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
 
   D0(U + h, T, N, BN);
 
-  if(Tangent.Angle(T) > PI/2) TFlag = -1;
-  if(BiNormal.Angle(BN) > PI/2) BNFlag = -1;  
+  if(Tangent.Angle(T) > M_PI/2) TFlag = -1;
+  if(BiNormal.Angle(BN) > M_PI/2) BNFlag = -1;  
 
   return Standard_True;
 }

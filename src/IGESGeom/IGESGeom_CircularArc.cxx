@@ -99,7 +99,7 @@
   gp_Dir2d dir2(x2-xc, y2-yc);   // After shifting the centre of
   // arc to the origin
   Standard_Real t = dir1.Angle(dir2);
-  return t + (t > 0 ? 0 : 2*PI);
+  return t + (t > 0 ? 0 : 2*M_PI);
 }
 
     gp_Dir IGESGeom_CircularArc::Axis () const

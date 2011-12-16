@@ -1323,7 +1323,7 @@ void Adaptor3d_CurveOnSurface::EvalKPart()
       if ( D.IsParallel(gp::DX2d(),Precision::Angular())) { // Iso V.
 	if ( STy == GeomAbs_Sphere) {
 	  gp_Pnt2d  P    = myCurve->Line().Location();
-	  if ( Abs( Abs(P.Y()) -PI/2. ) >= Precision::PConfusion()) {
+	  if ( Abs( Abs(P.Y()) -M_PI/2. ) >= Precision::PConfusion()) {
 	    myType = GeomAbs_Circle;
 	    gp_Sphere Sph  =  mySurface->Sphere();
 	    gp_Ax3    Axis = Sph.Position();

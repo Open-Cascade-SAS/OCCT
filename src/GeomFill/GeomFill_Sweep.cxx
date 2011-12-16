@@ -596,8 +596,8 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 		IsOpposite(axe.Direction(), 0.1) ) {
 	      Standard_Real f, l;
 	      // L'orientation parametrique est inversee
-	      l = 2*PI - UFirst;
-	      f = 2*PI - ULast;
+	      l = 2*M_PI - UFirst;
+	      f = 2*M_PI - ULast;
 	      UFirst = f;
 	      ULast  = l;
 	      isUReversed = Standard_True;
@@ -665,7 +665,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
      gp_Vec  L(P1, P2), Dir(Centre1,Centre2);
 
      Angle = L.Angle(Dir);
-     if ((Angle > 0.01) && (Angle < PI/2-0.01)) {
+     if ((Angle > 0.01) && (Angle < M_PI/2-0.01)) {
        if (R2<R1) Angle = -Angle;
        SError = error;
        gp_Ax3 Axis(Centre0, Dir, N);
@@ -686,8 +686,8 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
        if (isUReversed ) {
 	 Standard_Real f, l;
 	 // L'orientation parametrique est inversee
-	 l = 2*PI - UFirst;
-	 f = 2*PI - ULast;
+	 l = 2*M_PI - UFirst;
+	 f = 2*M_PI - ULast;
 	 UFirst = f;
 	 ULast  = l;
        } 
@@ -703,7 +703,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
     if (mySec->IsConstant(error)) {
       // La trajectoire
       gp_Pnt Centre;
-      isVPeriodic = (Abs(Last-First -2*PI) < 1.e-15);
+      isVPeriodic = (Abs(Last-First -2*M_PI) < 1.e-15);
       Standard_Real RotRadius;
       gp_Vec DP, DS, DN;
       myLoc->D0(0.1, M, DS);
@@ -784,8 +784,8 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	    if (C.Position().Direction().
 		IsOpposite(AxisOfSphere.YDirection(), 0.1) ) {
 	      // L'orientation parametrique est inversee
-	      l = 2*PI - UFirst;
-	      f = 2*PI - ULast;
+	      l = 2*M_PI - UFirst;
+	      f = 2*M_PI - ULast;
 	      isUReversed = Standard_True;
 	    }
 	    // On calcul le "glissement" parametrique.
@@ -795,7 +795,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	    f -= rot;
 	    l  -= rot;
 
-	    if ( (f >= -PI/2) && (l <= PI/2)) {
+	    if ( (f >= -M_PI/2) && (l <= M_PI/2)) {
 	      Ok = Standard_True;
 	      myExchUV = Standard_True;
 	      UFirst = f;
@@ -823,8 +823,8 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 		IsOpposite(axeiso.Direction(), 0.1) ) {
 	      Standard_Real f, l;
 	      // L'orientation parametrique est inversee
-	      l = 2*PI - UFirst;
-	      f = 2*PI - ULast;
+	      l = 2*M_PI - UFirst;
+	      f = 2*M_PI - ULast;
 	      UFirst = f;
 	      ULast  = l;
 	      isUReversed = Standard_True;
@@ -887,13 +887,13 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	  else {
 	    // On evalue l'angle du cone
 	    Standard_Real Angle = Abs(Dir.Angle(L));
-	    if (Angle > PI/2) Angle = PI -Angle;
+	    if (Angle > M_PI/2) Angle = M_PI -Angle;
             if (reverse) Angle = -Angle;
 	    aux = DS.Dot(DL);
 	    if (aux < 0) {
 	      Angle = - Angle;
 	    }
-	    if (Abs(Abs(Angle) - PI/2) > 0.01) {
+	    if (Abs(Abs(Angle) - M_PI/2) > 0.01) {
 	      // (2.2.b) Cone
 	      // si les 2 droites ne sont pas orthogonales
 	      Standard_Real Radius = CentreOfSurf.Distance(L.Location());

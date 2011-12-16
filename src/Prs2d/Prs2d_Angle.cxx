@@ -38,11 +38,11 @@ Prs2d_Angle::Prs2d_Angle( const Handle(Graphic2d_GraphicObject)& aGO,
   if ( myRad <= ShortRealEpsilon ())
      Graphic2d_CircleDefinitionError::Raise ("The radius = 0." );
 
-  Standard_ShortReal TwoPI = Standard_ShortReal(2.* Standard_PI);
+  Standard_ShortReal TwoPI = Standard_ShortReal(2. * M_PI);
   while( myFAngle < 0. ) myFAngle += TwoPI;
-  while( myFAngle > 2.* Standard_PI ) myFAngle -= TwoPI;
+  while( myFAngle > 2. * M_PI ) myFAngle -= TwoPI;
   while( mySAngle < 0. ) mySAngle += TwoPI;
-  while( mySAngle > 2.* Standard_PI ) mySAngle -= TwoPI;
+  while( mySAngle > 2. * M_PI ) mySAngle -= TwoPI;
   if ( mySAngle < myFAngle ) mySAngle += TwoPI;
 
   if ( ( mySAngle - myFAngle < ShortRealEpsilon() ) || 
@@ -65,7 +65,7 @@ Prs2d_Angle::Prs2d_Angle( const Handle(Graphic2d_GraphicObject)& aGO,
          myMaxY = myMaxY > Ycur ? myMaxY : Ycur;
 
      for ( Acur = 0., Xcur = 1., Ycur = 0.; 
-	   Acur < mySAngle; Acur += Standard_ShortReal(Standard_PI/2.)) {
+	   Acur < mySAngle; Acur += Standard_ShortReal(M_PI / 2.)) {
 	   if ( Acur > myFAngle ) {
            myMinX = ( myMinX < Xcur ? myMinX : Xcur );
            myMaxX = ( myMaxX < Xcur ? Xcur : myMaxX );
@@ -82,7 +82,7 @@ Prs2d_Angle::Prs2d_Angle( const Handle(Graphic2d_GraphicObject)& aGO,
 
   // Arrows
 
-  Standard_Real ArrAngle = PI/180.*anArrAngle;
+  Standard_Real ArrAngle = M_PI/180.*anArrAngle;
      
   gp_Pnt2d theOrigine(0.,0.);
   gp_Pnt2d P1, P2, P3;
@@ -96,7 +96,7 @@ Prs2d_Angle::Prs2d_Angle( const Handle(Graphic2d_GraphicObject)& aGO,
     P2 = gp_Pnt2d( anArrLength,  anArrLength*Tan( ArrAngle/2. ) );
     P3 = gp_Pnt2d( anArrLength, -anArrLength*Tan( ArrAngle/2. ) );
   
-    VDir = V1.Rotated(PI/2);
+    VDir = V1.Rotated(M_PI/2);
     theAngle = VX.Angle( VDir );
     P2.Rotate( theOrigine, theAngle );
     P3.Rotate( theOrigine, theAngle );
@@ -127,7 +127,7 @@ Prs2d_Angle::Prs2d_Angle( const Handle(Graphic2d_GraphicObject)& aGO,
     P2 = gp_Pnt2d( anArrLength,  anArrLength*Tan( ArrAngle/2. ) );
     P3 = gp_Pnt2d( anArrLength, -anArrLength*Tan( ArrAngle/2. ) );
   
-    VDir = V2.Rotated(-PI/2);
+    VDir = V2.Rotated(-M_PI/2);
     theAngle = VX.Angle( VDir );
 
     P2.Rotate( theOrigine, theAngle );
@@ -206,7 +206,7 @@ void Prs2d_Angle::Draw( const Handle(Graphic2d_Drawer)& aDrawer ) {
     gp_Pnt2d pntText = theCent.Translated(textV1);
     Standard_Real txtX, txtY;
     pntText.Coord(txtX, txtY);
-    Standard_ShortReal txtAngle = Standard_ShortReal( theAngle + 3*PI/2);
+    Standard_ShortReal txtAngle = Standard_ShortReal( theAngle + 3*M_PI/2);
     
     Standard_ShortReal ws, hs;
     aDrawer->GetTextSize( myText, ws, hs );
@@ -279,7 +279,7 @@ void Prs2d_Angle::Draw( const Handle(Graphic2d_Drawer)& aDrawer ) {
       ts1 = Standard_ShortReal( A );
       ts2 = Standard_ShortReal( B );
 
-	  if ( Abs(f-e) < Standard_ShortReal(2.*Standard_PI) ) {
+	  if ( Abs(f-e) < Standard_ShortReal(2. * M_PI) ) {
 	    aTrsf.SetValue( 1, 3, 0.0 );
 	    aTrsf.SetValue( 2, 3, 0.0 );
 
@@ -384,7 +384,7 @@ void Prs2d_Angle::DrawElement( const Handle(Graphic2d_Drawer)& aDrawer,
     gp_Pnt2d pntText = theCent.Translated(textV1);
     Standard_Real txtX, txtY;
     pntText.Coord(txtX, txtY);
-    Standard_ShortReal txtAngle = Standard_ShortReal( theAngle + 3*PI/2);*/
+    Standard_ShortReal txtAngle = Standard_ShortReal( theAngle + 3*M_PI/2);*/
     //correct by enk Mon Dec 2 11:39 2002
     
     
@@ -440,7 +440,7 @@ void Prs2d_Angle::DrawElement( const Handle(Graphic2d_Drawer)& aDrawer,
           a = Standard_ShortReal( A ); 
           b = Standard_ShortReal( B );
       
-	      if ( Abs(f-e) < Standard_ShortReal(2.*Standard_PI) ) {
+	      if ( Abs(f-e) < Standard_ShortReal(2. * M_PI) ) {
 	        aTrsf.SetValue( 1, 3, 0.0 );
 	        aTrsf.SetValue( 2, 3, 0.0 );
 	        X1 = Cos(E); 
@@ -617,7 +617,7 @@ Standard_Boolean Prs2d_Angle::Pick( const Standard_ShortReal X,
     gp_Pnt2d pntText = theCent.Translated(textV1);
     Standard_Real txtX, txtY;
     pntText.Coord(txtX, txtY);
-    Standard_ShortReal txtAngle = Standard_ShortReal( theAngle + 3*PI/2);*/
+    Standard_ShortReal txtAngle = Standard_ShortReal( theAngle + 3*M_PI/2);*/
     //correct by enk Mon Dec 2 11:41 2002
 
     /////////////////////////////////////////

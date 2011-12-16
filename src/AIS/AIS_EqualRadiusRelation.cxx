@@ -84,8 +84,8 @@ void AIS_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager3
     }
   else {
     Standard_Real aPar =  ElCLib::Parameter(FirstCirc, myFirstPoint);
-    if (IntegerPart(0.5*LastPar1/PI) != 0 &&  aPar < FirstPar1 )
-      aPar +=2*PI*IntegerPart(0.5*LastPar1/PI);
+    if (IntegerPart(0.5*LastPar1/M_PI) != 0 &&  aPar < FirstPar1 )
+      aPar +=2*M_PI*IntegerPart(0.5*LastPar1/M_PI);
     Standard_Real aRadius = FirstCirc.Radius();
 
     if (Abs(myFirstPoint.Distance(myFirstCenter) - aRadius) >= Precision::Confusion())
@@ -104,8 +104,8 @@ void AIS_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager3
   
     
     aPar =  ElCLib::Parameter(SecondCirc, mySecondPoint);
-    if (IntegerPart(0.5*LastPar2/PI) != 0 &&  aPar < FirstPar2 )
-      aPar +=2*PI*IntegerPart(0.5*LastPar2/PI);
+    if (IntegerPart(0.5*LastPar2/M_PI) != 0 &&  aPar < FirstPar2 )
+      aPar +=2*M_PI*IntegerPart(0.5*LastPar2/M_PI);
     
     aRadius = SecondCirc.Radius();
     if (Abs(mySecondPoint.Distance(mySecondCenter) - aRadius) >= Precision::Confusion())

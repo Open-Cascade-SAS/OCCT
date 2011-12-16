@@ -236,7 +236,7 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
       if ( D.IsParallel(gp::DX2d(),Precision::Angular())) { // Iso V.
 	if ( STy == GeomAbs_Sphere) {
 	  gp_Pnt2d  P    = C.Line().Location();
-	  if ( Abs( Abs(P.Y()) -PI/2. ) < Precision::PConfusion()) {
+	  if ( Abs( Abs(P.Y()) -M_PI/2. ) < Precision::PConfusion()) {
 	    TheBuilder.Degenerated(Edge, Standard_True);
 	  }
 	  else {

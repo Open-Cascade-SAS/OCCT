@@ -112,7 +112,7 @@ Standard_Real Geom_ToroidalSurface::MinorRadius () const {
 
 Standard_Real Geom_ToroidalSurface::UReversedParameter( const Standard_Real U) const {
 
-  return (2.*PI - U);
+  return (2.*M_PI - U);
 }
 
 
@@ -123,7 +123,7 @@ Standard_Real Geom_ToroidalSurface::UReversedParameter( const Standard_Real U) c
 
 Standard_Real Geom_ToroidalSurface::VReversedParameter( const Standard_Real V) const {
 
-  return (2.*PI - V);
+  return (2.*M_PI - V);
 }
 
 
@@ -215,7 +215,7 @@ void Geom_ToroidalSurface::SetTorus (const gp_Torus& T) {
 //=======================================================================
 
 Standard_Real Geom_ToroidalSurface::Area () const {
-  return 4.0 * PI * PI * minorRadius * majorRadius;
+  return 4.0 * M_PI * M_PI * minorRadius * majorRadius;
 }
 
 
@@ -231,8 +231,8 @@ void Geom_ToroidalSurface::Bounds (Standard_Real& U1,
  
   U1 = 0.0;  
   V1 = 0.0;  
-  U2 = 2*PI;  
-  V2 = 2*PI;
+  U2 = 2*M_PI;  
+  V2 = 2*M_PI;
 }
 
 
@@ -366,7 +366,7 @@ Handle(Geom_Curve) Geom_ToroidalSurface::VIso (const Standard_Real V) const
 
 Standard_Real Geom_ToroidalSurface::Volume () const {
 
-  return (PI * minorRadius * minorRadius) * (2.0 * PI * majorRadius);
+  return (M_PI * minorRadius * minorRadius) * (2.0 * M_PI * majorRadius);
 }
 
 

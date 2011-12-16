@@ -338,7 +338,7 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
           proj  = ElCLib::Value(param, aCirc);
         }
 	closed = Standard_True;
-	valclosed = 2.*PI;
+	valclosed = 2.*M_PI;
       }
       break;
     case GeomAbs_Hyperbola:
@@ -364,7 +364,7 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
 	param = ElCLib::Parameter(C3D.Ellipse(), P3D);
 	proj  = ElCLib::Value(param, C3D.Ellipse());
 	closed = Standard_True;
-	valclosed = 2.*PI;
+	valclosed = 2.*M_PI;
 
       }
       break;
@@ -802,8 +802,8 @@ static void AppendControlPoles (TColgp_SequenceOfPnt& seq,
     seq.Append(curve->Value(1));
   } else if ( curve->IsKind(STANDARD_TYPE(Geom_Conic))) {
     seq.Append(curve->Value(0));
-    seq.Append(curve->Value(PI/2));
-    seq.Append(curve->Value(PI));
+    seq.Append(curve->Value(M_PI/2));
+    seq.Append(curve->Value(M_PI));
   } else if ( curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
     //DeclareAndCast(Geom_TrimmedCurve, Trimmed, curve);
     Handle(Geom_TrimmedCurve) Trimmed = *((Handle(Geom_TrimmedCurve) *) &curve);
@@ -1087,7 +1087,7 @@ Standard_Boolean ShapeAnalysis_Curve::GetSamplePoints (const Handle(Geom2d_Curve
     return Standard_True;
   }
   else if(curve->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
-    step = Min ( PI, last-first ) / 19; //:abv 05.06.02 TUBE.stp #19209...: PI/16
+    step = Min ( M_PI, last-first ) / 19; //:abv 05.06.02 TUBE.stp #19209...: M_PI/16
 //     if( step>(last-first) ) {
 //       seq.Append(curve->Value(first));
 //       seq.Append(curve->Value((last+first)/2));

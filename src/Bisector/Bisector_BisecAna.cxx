@@ -491,10 +491,10 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	  bisectorcurve = new Geom2d_Circle(TheSol->Circle());
 	  if (!thesense)
 	    thebisector = new Geom2d_TrimmedCurve
-	      (bisectorcurve,firstparameter-2.0*PI,firstparameter,thesense);
+	      (bisectorcurve,firstparameter-2.0*M_PI,firstparameter,thesense);
 	  else
 	    thebisector = new Geom2d_TrimmedCurve
-	      (bisectorcurve,firstparameter,firstparameter+2.0*PI,thesense);
+	      (bisectorcurve,firstparameter,firstparameter+2.0*M_PI,thesense);
 	}
 	else if (type == GccInt_Hpr) {
 	  bisectorcurve = new Geom2d_Hyperbola(TheSol->Hyperbola());
@@ -509,10 +509,10 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	  bisectorcurve = new Geom2d_Ellipse(TheSol->Ellipse());
 	  if (!thesense)
 	    thebisector = new Geom2d_TrimmedCurve
-	      (bisectorcurve,firstparameter-2.0*PI,firstparameter,thesense);
+	      (bisectorcurve,firstparameter-2.0*M_PI,firstparameter,thesense);
 	  else
 	    thebisector = new Geom2d_TrimmedCurve
-	      (bisectorcurve,firstparameter,firstparameter+2.0*PI,thesense);
+	      (bisectorcurve,firstparameter,firstparameter+2.0*M_PI,thesense);
 	}
       }
     }
@@ -862,13 +862,13 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 	    bisectorcurve = new Geom2d_Circle(TheSol->Circle());
 	    if (!thesense)
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
-						    firstparameter-2.0*PI,
+						    firstparameter-2.0*M_PI,
 						    firstparameter,
 						    thesense);
 	    else
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
 						    firstparameter,
-						    firstparameter+2.0*PI,
+						    firstparameter+2.0*M_PI,
 						    thesense);
 	  }
 	  else if (type == GccInt_Hpr) {
@@ -886,13 +886,13 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 	    bisectorcurve = new Geom2d_Ellipse(TheSol->Ellipse());
 	    if (!thesense)
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
-						    firstparameter-2.0*PI,
+						    firstparameter-2.0*M_PI,
 						    firstparameter,
 						    thesense);
 	    else
 	      thebisector = new Geom2d_TrimmedCurve(bisectorcurve,
 						    firstparameter,
-						    firstparameter+2.0*PI,
+						    firstparameter+2.0*M_PI,
 						    thesense);
 	  }
 	}
@@ -1195,7 +1195,7 @@ void Bisector_BisecAna::SetTrim(const Handle(Geom2d_Curve)& )
 				 thebisector->Value(UB2), UB2, Tolerance);
 
   if (thebisector->BasisCurve()->IsPeriodic()) {
-    DomainBisector.SetEquivalentParameters(0.0,2.*PI);
+    DomainBisector.SetEquivalentParameters(0.0,2.*M_PI);
   }
   FirstPointBisector = thebisector->Value(UB1);
 

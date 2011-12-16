@@ -84,7 +84,7 @@ Geom_CylindricalSurface::Geom_CylindricalSurface ( const Ax3& A3,
 
 Standard_Real Geom_CylindricalSurface::UReversedParameter( const Standard_Real U) const
 {
-  return (2.*PI - U);
+  return (2.*M_PI - U);
 }
 
 //=======================================================================
@@ -164,7 +164,7 @@ void Geom_CylindricalSurface::SetRadius (const Standard_Real R) {
 void Geom_CylindricalSurface::Bounds (Standard_Real& U1, Standard_Real& U2, 
 				      Standard_Real& V1, Standard_Real& V2) const {
 
-   U1 = 0.0;  U2 = 2.0 * PI;
+   U1 = 0.0;  U2 = 2.0 * M_PI;
    V1 = - Precision::Infinite();   V2 = Precision::Infinite();
 }
 

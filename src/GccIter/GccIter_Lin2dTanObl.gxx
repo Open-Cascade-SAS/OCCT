@@ -42,12 +42,12 @@ GccIter_Lin2dTanObl::
    Standard_Real B = Dir.Y();
    gp_Dir2d TheDirection(Dir);
    if (Abs(Angle) > Abs(TolAng)) {
-     if (Abs(Abs(Angle)-PI) <= Abs(TolAng)) {
+     if (Abs(Abs(Angle)-M_PI) <= Abs(TolAng)) {
        Paral2 = Standard_True;
        TheDirection = Dir.Reversed();
      }
-     else if (Abs(Angle-PI/2) <= Abs(TolAng)) { TheDirection=gp_Dir2d(-B,A); }
-     else if (Abs(Angle+PI/2) <= Abs(TolAng)) { TheDirection=gp_Dir2d(B,-A); }
+     else if (Abs(Angle-M_PI/2) <= Abs(TolAng)) { TheDirection=gp_Dir2d(-B,A); }
+     else if (Abs(Angle+M_PI/2) <= Abs(TolAng)) { TheDirection=gp_Dir2d(B,-A); }
      else {
        TheDirection=gp_Dir2d(A*Cos(Angle)-B*Sin(Angle),
 			     A*Sin(Angle)+B*Cos(Angle));

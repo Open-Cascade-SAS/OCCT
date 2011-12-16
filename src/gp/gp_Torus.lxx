@@ -40,7 +40,7 @@ inline void gp_Torus::SetPosition (const gp_Ax3& A3)
 { pos = A3; }
 
 inline Standard_Real gp_Torus::Area () const
-{ return 4.0 * Standard_PI * Standard_PI * minorRadius * majorRadius; }
+{ return 4.0 * M_PI * M_PI * minorRadius * majorRadius; }
 
 inline void gp_Torus::UReverse()
 { pos.YReverse(); }
@@ -67,7 +67,7 @@ inline Standard_Real gp_Torus::MinorRadius () const
 { return minorRadius; }
 
 inline Standard_Real gp_Torus::Volume () const
-{ return (Standard_PI * minorRadius * minorRadius) * (2.0 * Standard_PI * majorRadius); }
+{ return (M_PI * minorRadius * minorRadius) * (2.0 * M_PI * majorRadius); }
 
 inline gp_Ax1 gp_Torus::XAxis () const
 { return gp_Ax1(pos.Location(), pos.XDirection()); }

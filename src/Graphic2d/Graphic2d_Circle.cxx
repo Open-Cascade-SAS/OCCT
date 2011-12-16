@@ -39,7 +39,7 @@ Graphic2d_Circle::Graphic2d_Circle
 
     DoMinMax();
     myFirstAngle = 0.;
-    mySecondAngle = Standard_ShortReal(2.*Standard_PI);
+    mySecondAngle = Standard_ShortReal(2. * M_PI);
     myisArc = Standard_False;
     myNumOfElem = MAXPOINTS + 1;
     myNumOfVert = 3;
@@ -61,13 +61,13 @@ Graphic2d_Circle::Graphic2d_Circle
     myNumOfElem = MAXPOINTS + 1;
     myNumOfVert = 3;
 #ifdef PRO3730
-	Standard_ShortReal TwoPI = Standard_ShortReal(2.*Standard_PI);
+	Standard_ShortReal TwoPI = Standard_ShortReal(2. * M_PI);
 	myFirstAngle	= Standard_ShortReal (Alpha);
     mySecondAngle	= Standard_ShortReal (Beta);
 	while( myFirstAngle < 0. ) myFirstAngle += TwoPI;
-	while( myFirstAngle > 2.*Standard_PI ) myFirstAngle -= TwoPI;
+	while( myFirstAngle > 2. * M_PI ) myFirstAngle -= TwoPI;
 	while( mySecondAngle < 0. ) mySecondAngle += TwoPI;
-	while( mySecondAngle > 2.*Standard_PI ) mySecondAngle -= TwoPI;
+	while( mySecondAngle > 2. * M_PI ) mySecondAngle -= TwoPI;
 	if( mySecondAngle < myFirstAngle ) mySecondAngle += TwoPI;
 	if ( (mySecondAngle - myFirstAngle < ShortRealEpsilon()) || 
 			(mySecondAngle - myFirstAngle >= TwoPI) ) {
@@ -86,7 +86,7 @@ Graphic2d_Circle::Graphic2d_Circle
           myMaxY = myMaxY < Ycur ? Ycur : myMaxY;
 
           for( Acur = 0.,Xcur = 1.,Ycur = 0.; 
-		       Acur < mySecondAngle; Acur += Standard_ShortReal(Standard_PI/2.) ) {
+		       Acur < mySecondAngle; Acur += Standard_ShortReal(M_PI / 2.) ) {
 	        if( Acur > myFirstAngle ) {
               myMinX = ( myMinX < Xcur ? myMinX : Xcur );
               myMaxX = ( myMaxX < Xcur ? Xcur : myMaxX );
@@ -177,7 +177,7 @@ void Graphic2d_Circle::Draw (const Handle(Graphic2d_Drawer)& aDrawer) {
 	   E = Standard_Real (e); F = Standard_Real (f);
 	   aTrsf.Transforms (A, B);
 	   a = Standard_ShortReal (A); b = Standard_ShortReal (B);
-	   if( Abs(f-e) < Standard_ShortReal(2.*Standard_PI) ) {
+	   if( Abs(f-e) < Standard_ShortReal(2. * M_PI) ) {
 	  // To calculate new aperture angles 
 	  // the calculation is done on the trigonometric circle
 	  // and in this case the translation is not taken into account

@@ -56,8 +56,8 @@ Standard_Real gp_Vec2d::Angle (const gp_Vec2d& Other) const
     if (Cosinus > 0.0) return        asin (Sinus);
     else
     { 
-      if (Sinus > 0.0) return   PI - asin (Sinus);
-      else             return - PI - asin (Sinus);
+      if (Sinus > 0.0) return   M_PI - asin (Sinus);
+      else             return - M_PI - asin (Sinus);
     }
   }  
 }

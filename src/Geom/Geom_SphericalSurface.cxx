@@ -80,7 +80,7 @@ Geom_SphericalSurface::Geom_SphericalSurface (const gp_Sphere& S)
 
 Standard_Real Geom_SphericalSurface::UReversedParameter( const Standard_Real U) const
 {
-  return (2.*PI - U);
+  return (2.*M_PI - U);
 }
 
 //=======================================================================
@@ -100,7 +100,7 @@ Standard_Real Geom_SphericalSurface::VReversedParameter( const Standard_Real V) 
 //=======================================================================
 
 Standard_Real Geom_SphericalSurface::Area () const 
-{return 4.0 * PI * radius * radius;}
+{return 4.0 * M_PI * radius * radius;}
 
 //=======================================================================
 //function : Radius
@@ -175,9 +175,9 @@ void Geom_SphericalSurface::Bounds (Standard_Real& U1, Standard_Real& U2,
 				    Standard_Real& V1, Standard_Real& V2) const {
 
   U1 =       0.0;  
-  U2 =  PI * 2.0; 
-  V1 = -PI / 2.0;
-  V2 =  PI / 2.0;
+  U2 =  M_PI * 2.0; 
+  V1 = -M_PI / 2.0;
+  V2 =  M_PI / 2.0;
 }
 
 
@@ -308,7 +308,7 @@ gp_Sphere Geom_SphericalSurface::Sphere () const {
 Handle(Curve) Geom_SphericalSurface::UIso (const Standard_Real U) const 
 {
   Handle(Geom_Circle) GC = new Geom_Circle(ElSLib::SphereUIso(pos,radius,U));
-  Handle(Geom_TrimmedCurve) iso = new Geom_TrimmedCurve(GC,-PI/2.,PI/2);
+  Handle(Geom_TrimmedCurve) iso = new Geom_TrimmedCurve(GC,-M_PI/2.,M_PI/2);
   return iso;
 }
 
@@ -333,7 +333,7 @@ Handle(Curve) Geom_SphericalSurface::VIso (const Standard_Real V) const
 
 Standard_Real Geom_SphericalSurface::Volume () const {
 
-   return (4.0 * PI * radius * radius * radius)/3.0;
+   return (4.0 * M_PI * radius * radius * radius)/3.0;
 }
 
 

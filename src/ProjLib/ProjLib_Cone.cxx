@@ -136,9 +136,9 @@ void  ProjLib_Cone::Project(const gp_Lin& L)
     (ZCone.IsEqual(CPos.Direction(), Precision::Angular())) ? 1 : -1;
   Standard_Integer a2 = 
     (myCone.SemiAngle() > 0) ? 1 : -1;
-  if ( ( a1 * a2) == -1) U -= PI;
+  if ( ( a1 * a2) == -1) U -= M_PI;
 
-  if ( U < 0.) U += 2.*PI;
+  if ( U < 0.) U += 2.*M_PI;
 
   gp_Pnt P;
   gp_Vec Vu, Vv;
@@ -196,7 +196,7 @@ void  ProjLib_Cone::Project(const gp_Circ& C)
   else {
     U = ATan2( y, x);
   }
-  if ( U < 0.) U += 2*PI;
+  if ( U < 0.) U += 2*M_PI;
 
   V = z / Cos(myCone.SemiAngle());
 

@@ -632,11 +632,6 @@ struct flags {
 #define LOG2        0.30103
 #define PARABIT        0x40
 
-#ifndef PI
-#define PI     3.1415926535
-#endif
-
-
 
 /*   All default values set within the control program  */
 /*   with Character encoding defaults    */

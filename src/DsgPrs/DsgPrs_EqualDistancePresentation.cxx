@@ -190,16 +190,16 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
     aPar12 = ElCLib::Parameter(aCirc1, aPoint2);
   }
   else {
-    aPar11 = PI;
-    aPar12 = PI;
+    aPar11 = M_PI;
+    aPar12 = M_PI;
   }
   if (aCirc2.Radius() > Precision::Confusion()){
     aPar21 = ElCLib::Parameter(aCirc2, aPoint3 );
     aPar22 = ElCLib::Parameter(aCirc2, aPoint4);
   }
   else {
-    aPar21 = PI;
-    aPar22 = PI;
+    aPar21 = M_PI;
+    aPar22 = M_PI;
   }
 
   Graphic3d_Array1OfVertex V(1,2);
@@ -209,9 +209,9 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 
   Standard_Integer aNodeNb; 
   Standard_Real aDelta, aCurPar;
-  if(aPar12 < aPar11 ) aPar12 +=2*PI;
+  if(aPar12 < aPar11 ) aPar12 +=2*M_PI;
   if (Abs(aPar12 - aPar11) > Precision::Confusion()) {
-    aNodeNb = Standard_Integer(Max(Abs(aPar12 - aPar11)*50./PI + 0.5, 4.));
+    aNodeNb = Standard_Integer(Max(Abs(aPar12 - aPar11)*50./M_PI + 0.5, 4.));
     Graphic3d_Array1OfVertex ApproxArc1( 1, aNodeNb+1);
     aDelta = (aPar12 - aPar11)/aNodeNb;
     aCurPar= aPar11;
@@ -224,9 +224,9 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 
     Prs3d_Root::CurrentGroup( aPresentation )->Polyline( ApproxArc1 );
   }
-  if (aPar22 < aPar21) aPar22 += 2*PI;
+  if (aPar22 < aPar21) aPar22 += 2*M_PI;
   if ( Abs(aPar22 - aPar21) > Precision::Confusion()){
-    aNodeNb = Standard_Integer(Max(Abs(aPar22 - aPar21)*50./PI + 0.5, 4.));
+    aNodeNb = Standard_Integer(Max(Abs(aPar22 - aPar21)*50./M_PI + 0.5, 4.));
     Graphic3d_Array1OfVertex ApproxArc2( 1, aNodeNb+1);
     aDelta = (aPar22 - aPar21)/aNodeNb;
     aCurPar= aPar21;

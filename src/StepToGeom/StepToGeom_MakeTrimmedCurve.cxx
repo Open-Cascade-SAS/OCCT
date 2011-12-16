@@ -185,12 +185,12 @@ Standard_Boolean StepToGeom_MakeTrimmedCurve::Convert (const Handle(StepGeom_Tri
   }
   else if (theSTEPCurve->IsKind(STANDARD_TYPE(StepGeom_Circle)) ||
            theSTEPCurve->IsKind(STANDARD_TYPE(StepGeom_Ellipse))) {
-//    if (trim1 > 2.1*PI || trim2 > 2.1*PI) fact = PI / 180.;
+//    if (trim1 > 2.1*M_PI || trim2 > 2.1*M_PI) fact = M_PI / 180.;
     fact = UnitsMethods::PlaneAngleFactor();
     //:p3 abv 23 Feb 99: shift on pi/2 on ellipse with R1 < R2
     const Handle(StepGeom_Ellipse) ellipse = Handle(StepGeom_Ellipse)::DownCast(theSTEPCurve);
     if ( !ellipse.IsNull() && ellipse->SemiAxis1() - ellipse->SemiAxis2() < 0. )
-      shift = 0.5 * PI;
+      shift = 0.5 * M_PI;
 
     // skl 04.02.2002 for OCC133: we can not make TrimmedCurve if
     // there is no X-direction in StepGeom_Axis2Placement3d
@@ -207,9 +207,9 @@ Standard_Boolean StepToGeom_MakeTrimmedCurve::Convert (const Handle(StepGeom_Tri
             MasterRep =1;
           else {
             if ( SC->SenseAgreement() ) 
-              CC = new Geom_TrimmedCurve(theCurve, 0., 2.*PI, Standard_True);
+              CC = new Geom_TrimmedCurve(theCurve, 0., 2.*M_PI, Standard_True);
             else 
-              CC = new Geom_TrimmedCurve(theCurve, 2.*PI, 0., Standard_False);
+              CC = new Geom_TrimmedCurve(theCurve, 2.*M_PI, 0., Standard_False);
             return Standard_True;
           }
         }

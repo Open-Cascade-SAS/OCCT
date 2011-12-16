@@ -129,7 +129,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 
   Eps = 1.e-12;
 
-  Depi = PI+PI;
+  Depi = M_PI+M_PI;
   if (InfBound <= RealFirst() && SupBound >= RealLast()) {
     MyBorneInf = 0.0;
     Delta = Depi;
@@ -174,7 +174,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 	}
 
 	Zer(1) = ASin(AA);
-	Zer(2) = PI - Zer(1);
+	Zer(2) = M_PI - Zer(1);
 	NZer = 2;
 	for (i = 1; i <= NZer; i++) {
 	  if (Zer(i) <= -Eps) {
@@ -211,7 +211,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 	}
 	// On rend les solutions entre InfBound et SupBound:
 	// =================================================
-	Zer(i) += IntegerPart(Mod)*2.*PI;
+	Zer(i) += IntegerPart(Mod)*2.*M_PI;
 	X = Zer(i)-MyBorneInf;
 	if ((X >= (-Epsilon(Delta))) && (X <= Delta+ Epsilon(Delta))) {
 	  NbSol++;
@@ -380,7 +380,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
   if(NbSol<4) { 
     Standard_Integer startIndex = NbSol + 1;
     for( Standard_Integer solIt = startIndex; solIt <= 4; solIt++) {
-      Teta = PI + IntegerPart(Mod)*2.0*PI;;
+      Teta = M_PI + IntegerPart(Mod)*2.0*M_PI;;
       X = Teta - MyBorneInf;
       if ((X >= (-Epsilon(Delta))) && (X <= Delta + Epsilon(Delta))) {
 	if (Abs(A-C+E) <= Eps) {

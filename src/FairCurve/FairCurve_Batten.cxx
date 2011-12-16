@@ -145,7 +145,7 @@ Standard_Boolean FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
 {
   Standard_Boolean Ok=Standard_True, End=Standard_False;
   Standard_Real AngleMax = 0.7;      // parameter ruling the function of increment ( 40 degrees )
-  Standard_Real AngleMin = 2*PI/100; // parameter ruling the function of increment 
+  Standard_Real AngleMin = 2*M_PI/100; // parameter ruling the function of increment 
                                      // full passage should not cost more than 100 steps.
   Standard_Real DAngle1, DAngle2,  Ratio, Fraction, Toler;
   Standard_Real OldDist, NewDist;
@@ -451,10 +451,10 @@ Standard_Real FairCurve_Batten::SlidingOfReference(const Standard_Real Dist,
 // case of angle without constraints
  if ( (NewConstraintOrder1 == 0) && (NewConstraintOrder2 == 0)) return Dist;
 
- if (NewConstraintOrder1 == 0) a1 = Abs( Abs(NewAngle2)<PI ? Angle2/2 : PI/2);
+ if (NewConstraintOrder1 == 0) a1 = Abs( Abs(NewAngle2)<M_PI ? Angle2/2 : M_PI/2);
  else a1 = Abs(Angle1);
 
- if (NewConstraintOrder2 == 0) a2 = Abs( Abs(NewAngle1)<PI ? Angle1/2 : PI/2);
+ if (NewConstraintOrder2 == 0) a2 = Abs( Abs(NewAngle1)<M_PI ? Angle1/2 : M_PI/2);
  else a2 = Abs(Angle2);
 
 // case of angle of the same sign 
@@ -466,7 +466,7 @@ Standard_Real FairCurve_Batten::SlidingOfReference(const Standard_Real Dist,
  else {
     Standard_Real Ratio = a1 / ( a1 + a2 );
     Standard_Real AngleMilieu = pow(1-Ratio,2) * a1 + pow(Ratio,2) * a2;
-    if (AngleMilieu > PI/2) AngleMilieu = PI/2;
+    if (AngleMilieu > M_PI/2) AngleMilieu = M_PI/2;
 
     return   Ratio     * Compute(Dist, a1,  AngleMilieu )
            + (1-Ratio) * Compute(Dist, a2,  AngleMilieu );
@@ -496,8 +496,8 @@ Standard_Real FairCurve_Batten::Compute(const Standard_Real Dist,
 // ==================================================================
 {
   if (Angle < Precision::Angular() ) { return Dist; } // length of segment P1P2
-  if (Angle < PI/2) { return Angle*Dist / sin(Angle); } // length of circle P1P2 respecting ANGLE
-  if (Angle > PI) { return Sqrt(Angle*PI) * Dist;}
+  if (Angle < M_PI/2) { return Angle*Dist / sin(Angle); } // length of circle P1P2 respecting ANGLE
+  if (Angle > M_PI) { return Sqrt(Angle*M_PI) * Dist;}
   else  { return Angle * Dist; }                      // linear interpolation
 }
 

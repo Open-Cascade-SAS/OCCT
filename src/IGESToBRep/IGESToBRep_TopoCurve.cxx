@@ -1122,7 +1122,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve
     //(taken from Compute2d3d and Compute2d)
 /*    if (isrev) {
       //#30 rln 19.10.98 transformation of pcurves for IGES Surface of Revolution
-      mycurve2d ->Translate (gp_Vec2d (0, -2 * PI));
+      mycurve2d ->Translate (gp_Vec2d (0, -2 * M_PI));
       mycurve2d->Mirror (gp::OX2d());
       mycurve2d->Mirror (gp_Ax2d (gp::Origin2d(), gp_Dir2d (1.,1.)));
       

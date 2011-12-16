@@ -31,7 +31,7 @@
 #include <ElCLib.hxx>
 
 
-static Standard_Real PIpPI = Standard_PI+Standard_PI;
+static Standard_Real PIpPI = M_PI + M_PI;
 //=============================================================================
 //==                                          E m p t y   C o n s t r u c t o r
 //== 

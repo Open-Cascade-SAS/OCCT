@@ -517,7 +517,7 @@ void BndLib::Add( const gp_Cylinder& S,const Standard_Real UMin,
 void BndLib::Add( const gp_Cylinder& S,const Standard_Real VMin,
 		 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) {
 
-  BndLib::Add(S,0.,2.*PI,VMin,VMax,Tol,B);
+  BndLib::Add(S,0.,2.*M_PI,VMin,VMax,Tol,B);
 }
 
 void BndLib::Add(const gp_Cone& S,const Standard_Real UMin,
@@ -594,7 +594,7 @@ void BndLib::Add(const gp_Cone& S,const Standard_Real UMin,
 void BndLib::Add( const gp_Cone& S,const Standard_Real VMin,
 		 const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) {
 
-  BndLib::Add(S,0.,2.*PI,VMin,VMax,Tol,B);
+  BndLib::Add(S,0.,2.*M_PI,VMin,VMax,Tol,B);
 }
 
 void BndLib::Add(const gp_Sphere& S,const Standard_Real UMin,
@@ -703,12 +703,12 @@ void BndLib::Add(const gp_Torus& S,const Standard_Real UMin,
   Standard_Integer Fi1;
   Standard_Integer Fi2;
   if (VMax<VMin) {
-    Fi1 = (Standard_Integer )( VMax/(PI/4.));
-    Fi2 = (Standard_Integer )( VMin/(PI/4.));
+    Fi1 = (Standard_Integer )( VMax/(M_PI/4.));
+    Fi2 = (Standard_Integer )( VMin/(M_PI/4.));
   }
   else {
-    Fi1 = (Standard_Integer )( VMin/(PI/4.));
-    Fi2 = (Standard_Integer )( VMax/(PI/4.));
+    Fi1 = (Standard_Integer )( VMin/(M_PI/4.));
+    Fi2 = (Standard_Integer )( VMax/(M_PI/4.));
   }
   Fi2++;
   

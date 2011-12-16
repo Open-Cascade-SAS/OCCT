@@ -196,7 +196,7 @@ static Standard_Boolean IsClosedShape(const TopoDS_Shape& theshape,
   if (TotLength > 0.0) {
     gp_Pnt p1 = BRep_Tool::Pnt(TopoDS::Vertex(v1));
     gp_Pnt p2 = BRep_Tool::Pnt(TopoDS::Vertex(v2));
-    return (p1.Distance(p2) < TotLength/(1.2 * PI));
+    return (p1.Distance(p2) < TotLength/(1.2 * M_PI));
   }
   return Standard_False;
 }
@@ -983,7 +983,7 @@ void BRepBuilderAPI_Sewing::EvaluateAngulars(TopTools_SequenceOfShape& sequenceS
       else if ((n.Magnitude()>gp::Resolution()) && (normRef(j).Magnitude()>gp::Resolution())) {
 	nbComputedAngle++;
 	Standard_Real angular = n.Angle(normRef(j));
-	if (angular > PI/2.) angular = PI - angular;
+	if (angular > M_PI/2.) angular = M_PI - angular;
 	cumulateAngular += angular;
       }
     }

@@ -365,7 +365,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferConicArc
 
         t1 = ElCLib::Parameter(circ, startPoint);
         t2 = ElCLib::Parameter(circ, endPoint);
-	if (t1 > t2 && (t1 - t2) > Precision::Confusion()) t2 += 2.*PI;
+	if (t1 > t2 && (t1 - t2) > Precision::Confusion()) t2 += 2.*M_PI;
 	if (Abs(t1 - t2) <= Precision::Confusion())  { // t1 = t2
 	  Message_Msg msg1160("IGES_1160");
 	  SendWarning(st, msg1160);      
@@ -422,7 +422,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferConicArc
       
       t1 = ElCLib::Parameter(elips, startPoint);
       t2 = ElCLib::Parameter(elips, endPoint);
-      if (t2 < t1 && (t1 -t2) > Precision::Confusion()) t2 += 2.*PI;
+      if (t2 < t1 && (t1 -t2) > Precision::Confusion()) t2 += 2.*M_PI;
       if (Abs(t1 - t2) <= Precision::Confusion()) { // t1 = t2   
 	Message_Msg msg1160("IGES_1160");
 	SendWarning(st, msg1160);  
@@ -538,7 +538,7 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dConicArc
         t1 = ElCLib::Parameter(circ, startPoint);
         t2 = ElCLib::Parameter(circ, endPoint);
 	
-	if (t2 < t1 && (t1 -t2) > Precision::PConfusion()) t2 += 2.*PI;
+	if (t2 < t1 && (t1 -t2) > Precision::PConfusion()) t2 += 2.*M_PI;
 	if (Abs(t1 - t2) <= Precision::PConfusion()) { // t1 = t2
 	  Message_Msg msg1160("IGES_1160");
 	  SendWarning(st, msg1160); 
@@ -600,7 +600,7 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dConicArc
       
       t1  = ElCLib::Parameter(elips, startPoint);
       t2  = ElCLib::Parameter(elips, endPoint);
-      if (t2 < t1 && (t1 - t2) > Precision::PConfusion()) t2 += 2.*PI;
+      if (t2 < t1 && (t1 - t2) > Precision::PConfusion()) t2 += 2.*M_PI;
       if (Abs(t1 - t2) <= Precision::PConfusion())  { // t1 = t2   
 	Message_Msg msg1160("IGES_1160");
 	SendWarning(st, msg1160);  
@@ -690,14 +690,14 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferCircularArc
   t1 = ElCLib::Parameter(circ, startPoint);
   t2 = ElCLib::Parameter(circ, endPoint);
 
-  if ( st->IsClosed() && t1>=GetEpsGeom()) t2 = t1 + 2.*PI;
+  if ( st->IsClosed() && t1>=GetEpsGeom()) t2 = t1 + 2.*M_PI;
   if (!st->IsClosed() && fabs(t1 - t2) <=Precision::PConfusion()) {    
     // micro-arc
     // cky 27 Aout 1996 : t2-t1 vaut distance(start,end)/rayon
     t2 = t1 + startPoint.Distance(endPoint)/st->Radius();
   }
   if (!st->IsClosed() || t1>=GetEpsGeom()) {
-    if (t2 < t1) t2 += 2.*PI;
+    if (t2 < t1) t2 += 2.*M_PI;
     res = new Geom_TrimmedCurve(res, t1, t2);
   }
 
@@ -763,14 +763,14 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dCircularArc
   t1 = ElCLib::Parameter(circ, startPoint);
   t2 = ElCLib::Parameter(circ, endPoint);
     
-  if ( st->IsClosed() && t1>=GetEpsGeom()) t2 = t1 + 2.*PI;
+  if ( st->IsClosed() && t1>=GetEpsGeom()) t2 = t1 + 2.*M_PI;
   if (!st->IsClosed() && fabs(t1 -t2) <= Precision::PConfusion()) { 
     // micro-arc
     // cky 27 Aout 1996 : t2-t1 vaut distance(start,end)/rayon
     t2 = t1 + startPoint.Distance(endPoint)/st->Radius();
   }
   if (!st->IsClosed() || t1>= GetEpsGeom()) {
-    if (t2 < t1) t2 += 2.*PI;
+    if (t2 < t1) t2 += 2.*M_PI;
     res     = new Geom2d_TrimmedCurve(res, t1, t2);
   }
   return res;

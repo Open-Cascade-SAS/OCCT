@@ -11,20 +11,6 @@
 #include <Standard_OStream.hxx>
 #endif
 
-#if defined(WNT) && !defined(__CYGWIN32__) && !defined(__MINGW32__)
-Standard_Real PI     = 3.14159265358979324;
-Standard_Real PI180  = 0.017453292519943296;
-
-Standard_Real Standard_PI     = 3.14159265358979324;
-Standard_Real Standard_PI180  = 0.017453292519943296;
-#else
-const Standard_Real PI     = 3.14159265358979324;
-const Standard_Real PI180  = 0.017453292519943296;
-
-const Standard_Real Standard_PI     = 3.14159265358979324;
-const Standard_Real Standard_PI180  = 0.017453292519943296;
-#endif
-
 Handle_Standard_Type& Standard_Real_Type_() 
 {
   static Handle_Standard_Type _aType = 
@@ -93,7 +79,7 @@ Standard_Real ACosApprox (const Standard_Real Value)
     XX = 1.+Value;
     if (XX < RealSmall())
       return 0.;
-    return PI - apx_for_ACosApprox(XX);
+    return M_PI - apx_for_ACosApprox(XX);
   }
   XX = 1.-Value;
   if (XX < RealSmall())
@@ -106,7 +92,7 @@ Standard_Real ACosApprox (const Standard_Real Value)
 //   if (xp < RealSmall() || xn < RealSmall())
 //     return 0.;
 //   if (Value < 0.)
-//     return PI - apx_for_ACosApprox (xn);
+//     return M_PI - apx_for_ACosApprox (xn);
 //   return apx_for_ACosApprox (xp);
 }
 

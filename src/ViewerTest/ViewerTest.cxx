@@ -1950,7 +1950,7 @@ static int VMoveA (Draw_Interpretor& di, Standard_Integer argc, const char** arg
   if (TheAISContext()->HasOpenedContext())
     TheAISContext()->CloseLocalContext();
 
-  Standard_Real Step=2*PI/180;
+  Standard_Real Step=2*M_PI/180;
   Standard_Real Angle=0;
   // R est le rayon de l'hellicoide
   Standard_Real R=50;
@@ -1971,10 +1971,10 @@ static int VMoveA (Draw_Interpretor& di, Standard_Integer argc, const char** arg
   // boucle generant le mouvement
   if(argc==3) {
     di<<" Transformations"<<"\n";
-    for (Standard_Real myAngle=0;Angle<5*2*PI; myAngle++) {
+    for (Standard_Real myAngle=0;Angle<5*2*M_PI; myAngle++) {
 
       Angle=Step*myAngle;
-      gp_Ax3 newBase(gp_Pnt(R*cos(Angle), R*sin(Angle), D*Angle/(2*PI) ), gp_Vec(0,0,1), gp_Vec(1,0,0)  );
+      gp_Ax3 newBase(gp_Pnt(R*cos(Angle), R*sin(Angle), D*Angle/(2*M_PI) ), gp_Vec(0,0,1), gp_Vec(1,0,0)  );
       gp_Trsf myTransfo;
       myTransfo.SetTransformation(newBase.Rotated(gp_Ax1(gp_Pnt(R*cos(Angle),R*sin(Angle),0), gp_Dir(0,0,1)  ),Angle ) );
       TheAISContext()->SetLocation(aIO,myTransfo);
@@ -1993,7 +1993,7 @@ static int VMoveA (Draw_Interpretor& di, Standard_Integer argc, const char** arg
     TopLoc_Location myDeltaDist (myDistTrsf);
     TopLoc_Location myTrueLoc;
 
-    for (Standard_Real myAngle=0;Angle<5*2*PI; myAngle++) {
+    for (Standard_Real myAngle=0;Angle<5*2*M_PI; myAngle++) {
 
       Angle=Step*myAngle;
       myTrueLoc=myTrueLoc*myDeltaAngle*myDeltaDist;
@@ -2053,7 +2053,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
   if (TheAISContext()->HasOpenedContext())
     TheAISContext()->CloseLocalContext();
 
-  Standard_Real Step=4*PI/180;
+  Standard_Real Step=4*M_PI/180;
   Standard_Real Angle=0;
 
   Handle(AIS_InteractiveObject) aIO;
@@ -2076,7 +2076,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
   // Movement par transformation
   if(atoi(argv[2]) ==1) {
     di<<" Calcul par Transformation"<<"\n";
-    for (Standard_Real myAngle=0;Angle<10*2*PI; myAngle++) {
+    for (Standard_Real myAngle=0;Angle<10*2*M_PI; myAngle++) {
 
       Angle=Step*myAngle;
       gp_Trsf myTransfo;
@@ -2093,7 +2093,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
     TopLoc_Location myDeltaAngle (myAngleTrsf);
     TopLoc_Location myTrueLoc;
 
-    for (Standard_Real myAngle=0;Angle<10*2*PI; myAngle++) {
+    for (Standard_Real myAngle=0;Angle<10*2*M_PI; myAngle++) {
 
       Angle=Step*myAngle;
       myTrueLoc=myTrueLoc*myDeltaAngle;
@@ -2174,9 +2174,9 @@ static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char**
   TheAISContext()->Deactivate(myAisPropeller   );
 
   // Boucle de mouvement
-  for (Standard_Real myAngle = 0;angleA<2*PI*10.175 ;myAngle++) {
+  for (Standard_Real myAngle = 0;angleA<2*M_PI*10.175 ;myAngle++) {
 
-    angleA = thread*myAngle*PI/180;
+    angleA = thread*myAngle*M_PI/180;
     X = Sin(angleA)*3/8;
     angleB = atan(X / Sqrt(-X * X + 1));
     Standard_Real decal(25*0.6);
@@ -3678,7 +3678,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
   anAngle = atof(argv[4]);
-  anAngle = 2*PI * anAngle / 360.0;
+  anAngle = 2*M_PI * anAngle / 360.0;
   gp_Pln aPln;
   Handle( Geom_Surface )aSurf;
   AIS_KindOfSurface aSurfType;

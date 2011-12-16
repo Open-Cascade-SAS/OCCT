@@ -34,12 +34,6 @@ xx-xx-xx : xxx ; Creation.
 #include <InterfaceGraphic_tgl_all.hxx>
 #include <InterfaceGraphic_telem.hxx>
 
-
-#ifdef WNT
-// CAL : pas trouve de definition de PI dans les includes WNT
-#define M_PI 3.14159265358979323846
-#endif
-
 #include <GL/gl.h>
 #include <GL/glu.h>
 

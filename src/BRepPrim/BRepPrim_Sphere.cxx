@@ -16,8 +16,8 @@
 
 // parameters on the meridian
 
-#define PMIN (-0.5*PI)
-#define PMAX (0.5*PI)
+#define PMIN (-0.5*M_PI)
+#define PMAX (0.5*M_PI)
 
 //=======================================================================
 //function : BRepPrim_Sphere
@@ -82,7 +82,7 @@ void BRepPrim_Sphere::SetMeridian()
   // Offset the parameters on the meridian
   // to trim the edge in 3pi/2, 5pi/2
 
-  SetMeridianOffset(2*PI);
+  SetMeridianOffset(2*M_PI);
 
   gp_Dir D = Axes().YDirection();
   D.Reverse();

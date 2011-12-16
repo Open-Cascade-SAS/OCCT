@@ -432,7 +432,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     }
       break;
     case GeomAbs_Sphere:      {
-      Ptreference = ElSLib::Value(PI/4.,PI/4.,S1->Sphere());
+      Ptreference = ElSLib::Value(M_PI/4.,M_PI/4.,S1->Sphere());
     }
       break;
     case GeomAbs_Cone:      {
@@ -558,7 +558,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 	quad2.Parameters(P,u2,v2);
 	point.SetValue(P,TolArc,Standard_False);
 	point.SetParameters(u1,v1,u2,v2);
-	point.SetParameter(PI+PI);
+	point.SetParameter(M_PI+M_PI);
 	glin->AddVertex(point);
       }
     }
@@ -581,7 +581,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 	quad2.Parameters(P,u2,v2);
 	point.SetValue(P,TolArc,Standard_False);
 	point.SetParameters(u1,v1,u2,v2);
-	point.SetParameter(PI+PI);
+	point.SetParameter(M_PI+M_PI);
 	glin->AddVertex(point);
       }
     }

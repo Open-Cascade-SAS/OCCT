@@ -38,7 +38,7 @@ static Handle(Image_Image) myImage;
 #define TRANSFORMCOLOR(c) \
   { if (TypeOfCgm == CgmCharEncoding) c = (((c+1) << 2) - 1); }
 
-#define DRAD       (PI/180.)
+#define DRAD       (M_PI/180.)
 #define DEFPLOTTER "DIRECT_CGM"
 
 //-----------------------------------------------------------------
@@ -541,7 +541,7 @@ Standard_Boolean CGM_Driver::PlotArc (const Standard_ShortReal Xpos,
 {
   Standard_ShortReal san = sAngle;
   Standard_ShortReal fan = sAngle + oAngle;
-  if (oAngle >= 2*PI) {
+  if (oAngle >= 2*M_PI) {
     PlotPolyAttrib (myLineColorIndex, -1, Standard_True);
     if (aXradius == aYradius) {
       ptabreal[0] = (float)Xpos; ptabreal[1] = (float)Ypos;
@@ -582,7 +582,7 @@ Standard_Boolean CGM_Driver::PlotPolyArc (const Standard_ShortReal Xpos,
 {
   Standard_ShortReal san = sAngle;
   Standard_ShortReal fan = sAngle + oAngle;
-  if (oAngle >= 2.*PI) {
+  if (oAngle >= 2.*M_PI) {
     if (aXradius == aYradius) {
       ptabreal[0] = (float)Xpos; ptabreal[1] = (float)Ypos;
       ptabreal[2] = (float)aXradius;

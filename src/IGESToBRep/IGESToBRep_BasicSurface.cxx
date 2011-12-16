@@ -345,7 +345,7 @@ Handle(Geom_ConicalSurface) IGESToBRep_BasicSurface::TransferRigthConicalSurface
   Handle(IGESGeom_Point) Point = start->LocationPoint();
   Handle(IGESGeom_Direction) Axis = start->Axis();
   Standard_Real radius = start->Radius();
-  Standard_Real angle  = start->SemiAngle()/180.*PI;
+  Standard_Real angle  = start->SemiAngle()/180.*M_PI;
   
   if (Point.IsNull()) {
     Message_Msg msg174("XSTEP_174");   
@@ -359,7 +359,7 @@ Handle(Geom_ConicalSurface) IGESToBRep_BasicSurface::TransferRigthConicalSurface
     // Direction Reading Error : Null IGESEntity
     return res;
   }
-  if (angle < Precision::Confusion()||angle > PI/2.) {
+  if (angle < Precision::Confusion()||angle > M_PI/2.) {
     return res;
   }
   if (radius < 0) {

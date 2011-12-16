@@ -47,7 +47,7 @@ GeomToStep_MakeRectangularTrimmedSurface::
   // Modification of the Trimming Parameters ?
   // -----------------------------------------
 
-  Standard_Real AngleFact = 180./PI;
+  Standard_Real AngleFact = 180./M_PI;
   Standard_Real uFact = 1.;
   Standard_Real vFact = 1.;
   Standard_Real LengthFact  = UnitsMethods::LengthFactor();

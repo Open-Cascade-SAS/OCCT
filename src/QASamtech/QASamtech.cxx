@@ -634,7 +634,7 @@ static Standard_Integer OCC394 (Draw_Interpretor& di, Standard_Integer argc, con
    Standard_Integer k = 3;
    Standard_Real tol = 100000;
    Standard_Integer mode = 2;
-   Standard_Real tolang = PI/2;
+   Standard_Real tolang = M_PI/2;
    if(argc > k) 
      tol = atof(argv[k++]);
    

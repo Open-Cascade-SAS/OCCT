@@ -120,9 +120,9 @@ void GeomPlate_PlateG1Criterion::Value(AdvApp2Var_Patch& P,
 	v2s.SetCoord(3,Digit[2]);
 
 	v3s=v1s^v2s;
-	if( v3s.Angle(v3h)>(PI/2)) {
-	  if ((PI-v3s.Angle(v3h))>ang) {
-            ang=(PI-v3s.Angle(v3h));
+	if( v3s.Angle(v3h)>(M_PI/2)) {
+	  if ((M_PI-v3s.Angle(v3h))>ang) {
+            ang=(M_PI-v3s.Angle(v3h));
           }
 	}
 	else {

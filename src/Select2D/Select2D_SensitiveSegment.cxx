@@ -45,10 +45,10 @@ Areas(SelectBasics_ListOfBox2d& boxes)
   
   Standard_Real theangle = (VAxx.Angle(MyVec));
   theangle = Abs(theangle);
-  if(theangle>=PI/2.) theangle-=PI/2;
+  if(theangle>=M_PI/2.) theangle-=M_PI/2;
 
   
-  if(theangle>=PI/12. && theangle <=5*PI/12.)
+  if(theangle>=M_PI/12. && theangle <=5*M_PI/12.)
     {
       TColgp_Array1OfPnt2d BoxPoint (1,mymaxrect+1);
       BoxPoint (1) = mystart;BoxPoint(mymaxrect+1)=myend;

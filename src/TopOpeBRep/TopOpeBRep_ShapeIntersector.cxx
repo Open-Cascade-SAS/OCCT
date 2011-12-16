@@ -1113,10 +1113,10 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1,const TopoDS_
 	      Standard_Real maxU = FSurf.LastUParameter();
 	      Standard_Real minV = FSurf.FirstVParameter();
 	      Standard_Real maxV = FSurf.LastVParameter();
-	      Standard_Boolean yesU = ( Abs(minU - 0.) < 1.e-9 && Abs(maxU - 2*PI) < 1.e-9 );
+	      Standard_Boolean yesU = ( Abs(minU - 0.) < 1.e-9 && Abs(maxU - 2*M_PI) < 1.e-9 );
 	      Standard_Boolean yesV = ( FSurf.GetType() == GeomAbs_Sphere ) ?
-		( Abs(minV - (-PI/2.)) < 1.e-9 && Abs(maxV - PI/2.) < 1.e-9 ) :
-		( Abs(minV - 0.) < 1.e-9 && Abs(maxV - 2*PI) < 1.e-9 );
+		( Abs(minV - (-M_PI/2.)) < 1.e-9 && Abs(maxV - M_PI/2.) < 1.e-9 ) :
+		( Abs(minV - 0.) < 1.e-9 && Abs(maxV - 2*M_PI) < 1.e-9 );
 	      SolidIsSphereOrTorus = ( yesU && yesV );
 	    }
 
@@ -1125,8 +1125,8 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1,const TopoDS_
 	      Standard_Boolean areBothPeriodic = ( FSurf.IsUPeriodic() && FSurf.IsVPeriodic() );
 	      if( areBothPeriodic )
 		{
-		  Standard_Boolean yesU = ( Abs(FSurf.UPeriod() - PI) < 1.e-9 || Abs(FSurf.UPeriod() - 2*PI) < 1.e-9 );
-		  Standard_Boolean yesV = ( Abs(FSurf.VPeriod() - PI) < 1.e-9 || Abs(FSurf.VPeriod() - 2*PI) < 1.e-9 );
+		  Standard_Boolean yesU = ( Abs(FSurf.UPeriod() - M_PI) < 1.e-9 || Abs(FSurf.UPeriod() - 2*M_PI) < 1.e-9 );
+		  Standard_Boolean yesV = ( Abs(FSurf.VPeriod() - M_PI) < 1.e-9 || Abs(FSurf.VPeriod() - 2*M_PI) < 1.e-9 );
 		  SolidIsSphereOrTorus = ( yesU && yesV );
 		}
 	    }

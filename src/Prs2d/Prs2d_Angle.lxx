@@ -15,7 +15,7 @@ inline void Prs2d_Angle::CalcTxtPos(const Standard_Boolean theFromAbs) {
     gp_Vec2d textV1 = V1.Rotated( delta/2 );
 
     theVecJ = textV1/myRad;
-    theVecI = textV1.Rotated(-PI/2.)/myRad;
+    theVecI = textV1.Rotated(-M_PI/2.)/myRad;
         
    
     gp_Pnt2d pntText = 

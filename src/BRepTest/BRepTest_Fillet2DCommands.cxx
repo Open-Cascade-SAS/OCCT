@@ -106,7 +106,7 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
 	MF.AddChamfer(E1,E2,p1,p2);
       }
       else {
-	MF.AddChamfer(E1,V,p1,p2*PI180);
+	MF.AddChamfer(E1,V,p1,p2 * (M_PI / 180.0));
       }
     }
 

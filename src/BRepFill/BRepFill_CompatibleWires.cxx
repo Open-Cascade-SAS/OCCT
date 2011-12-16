@@ -554,8 +554,8 @@ static void Transform (const Standard_Boolean WithRotation,
     gp_Ax1 Norm(Pos2,norm2);
     Standard_Real ang = axe1.AngleWithRef(axe2,norm2);
     if (!WithRotation) {
-      if (ang>PI/2) ang = ang - PI;
-      if (ang<-PI/2) ang = ang + PI;
+      if (ang>M_PI/2) ang = ang - M_PI;
+      if (ang<-M_PI/2) ang = ang + M_PI;
     }
     ang *= sign;
     Pnew = Pnew.Rotated (Norm,ang);
@@ -1742,7 +1742,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 	// recherche du vertex correspondant a la projection conique
 	Standard_Real angmin, angV, eta = Precision::Angular();
 	TopoDS_Vertex Vopti;
-	angmin = PI/2;
+	angmin = M_PI/2;
 	distmini = Precision::Infinite();
 	gp_Dir dir0(gp_Vec(Pnew,P.Location()));
 	for (Standard_Integer ii=1;ii<=SeqV.Length();ii++) {
@@ -1755,7 +1755,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 	    gp_Dir dir1(gp_Vec(Pnew,P1));
 	    angV = dir1.Angle(dir0);
 	  }
-	  if (angV>PI/2) angV = PI - angV;
+	  if (angV>M_PI/2) angV = M_PI - angV;
 	  if (angmin>angV+eta) {
 	    distmini = dist;
 	    angmin = angV;
@@ -2009,11 +2009,11 @@ void BRepFill_CompatibleWires::SearchOrigin()
 	norm = vec1 ^ vec2;
 	gp_Ax1 Norm(P.Location(),norm);
 	Standard_Real ang = vec1.AngleWithRef(vec2,norm);
-	if (ang > PI/2.0)
-	  ang = PI - ang;
-	if (ang < -PI/2.0)
-	  ang = -PI - ang;
-	if (Abs(ang-PI/2.0)<Precision::Angular()) {
+	if (ang > M_PI/2.0)
+	  ang = M_PI - ang;
+	if (ang < -M_PI/2.0)
+	  ang = -M_PI - ang;
+	if (Abs(ang-M_PI/2.0)<Precision::Angular()) {
 	  // cas d'ambiguite
 	  gp_Vec Vtrans(P0.Location(),P.Location()),Vsign;
 	  Standard_Real alpha,beta,sign=1;
@@ -2037,7 +2037,7 @@ void BRepFill_CompatibleWires::SearchOrigin()
       };
       gp_Vec VDebFin0(P1o,P2o), VDebFin(P1,P2);
       Standard_Real AStraight = VDebFin0.Angle(VDebFin);
-      parcours = (AStraight < PI/2.0? Standard_True: Standard_False);
+      parcours = (AStraight < M_PI/2.0? Standard_True: Standard_False);
     }
     
     // reconstruction of the wire
