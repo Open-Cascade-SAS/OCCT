@@ -86,10 +86,10 @@ L'arete n0 %d etait petite, supprimee
 Auto-intersection corrigee
 !
 .FixAdvWire.FixIntersection.MSG5
-L'arete %d etait auto-intersectante, corrigee
+L'arete etait auto-intersectante, corrigee
 !
 .FixAdvWire.FixIntersection.MSG10
-Les aretes n0 %d et %d s'intersectaient, corrigees
+Les aretes s'intersectent, corrigees
 !
 .FixAdvWire.FixLacking.MSG0
 Insertion d'arete(s) manquante(s)
@@ -118,11 +118,8 @@ Face creee avec bords naturels
 .FixAdvFace.FixOrientation.MSG5
 Contour sur face inverse
 !
-.FixAdvFace.FixOrientation.MSG10
-Le Contour n0 %d parmi %d de la face a ete inverse
-!
 .FixAdvFace.FixOrientation.MSG11
-Impossible d'orienter les contour n0 %d parmi %d
+Impossible d'orienter le contour
 !
 .FixAdvShell.FixOrientation.MSG20
 Impossible d'orienter les faces dans le shell, creation de plusieurs shells

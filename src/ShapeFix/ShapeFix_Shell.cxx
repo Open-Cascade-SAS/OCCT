@@ -903,7 +903,7 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell& shell,co
     
     done = Standard_True;
     myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL);
-    SendWarning (Message_Msg ("FixAdvShell.FixOrientation.MSG20"));//Faces were incorrectly oriented in the shell, a few shells were created;
+    SendWarning ( Message_Msg ( "FixAdvShell.FixOrientation.MSG20" ) );// Impossible to orient faces in shell, several shells created
     return Standard_True;
   }
   if(aNumMultShell >1) {
@@ -958,10 +958,10 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell& shell,co
     myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2);
     if(!Context().IsNull())
       Context()->Replace(shell, myShape);
-    if( myNbShells == 1)
-    SendWarning (Message_Msg ("FixAdvShell.FixOrientation.MSG0"));//Faces were incorrectly oriented in the shell, corrected
+    if ( myNbShells == 1 )
+      SendWarning ( Message_Msg ( "FixAdvShell.FixOrientation.MSG0" ) );// Faces were incorrectly oriented in the shell, corrected
     else
-      SendWarning (Message_Msg ("FixAdvShell.FixOrientation.MSG30"));//Bad connected shell ,a few shells were created.
+      SendWarning ( Message_Msg ( "FixAdvShell.FixOrientation.MSG30" ) );// Improperly connected shell split into parts
     return Standard_True;
   }
   else return Standard_False;

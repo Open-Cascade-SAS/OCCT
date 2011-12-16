@@ -517,7 +517,8 @@ Standard_Boolean ShapeFix_Face::Perform()
         //fix for loop of wire
         TopTools_SequenceOfShape aLoopWires;
         if(NeedFix ( myFixLoopWiresMode) && FixLoopWire(aLoopWires)) {
-          
+          if (aLoopWires.Length() > 1)
+            SendWarning ( wire, Message_Msg ( "FixAdvFace.FixLoopWire.MSG0" ) );// Wire was splitted on several wires
           myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE7 );
           fixed = Standard_True;
           Standard_Integer k=1;
@@ -776,7 +777,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
     }
 
 //    B.UpdateFace (myFace,myPrecision);
-    SendWarning (Message_Msg ("FixAdvFace.FixOrientation.MSG0"));//Face created with natural bounds
+    SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
     BRepTools::Update(myFace);
     return Standard_True;
   }
@@ -926,7 +927,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
 #ifdef DEBUG
   cout<<"Natural bound on sphere or torus with holes added"<<endl; // mise au point !
 #endif
-  SendWarning (Message_Msg ("FixAdvFace.FixOrientation.MSG0"));//Face created with natural bounds
+  SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
   return Standard_True;
 }
 
@@ -1033,7 +1034,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
         new ShapeExtend_WireData (TopoDS::Wire(ws.Value(1)));
       sbdw->Reverse ( myFace );
       ws.SetValue ( 1, sbdw->Wire() );
-      SendWarning (Message_Msg ("FixAdvFace.FixOrientation.MSG5"));//Wire on face was reversed
+      SendWarning ( sbdw->Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
       done = Standard_True;
 #ifdef DEBUG
       cout<<"Wire reversed"<<endl; // mise au point !
@@ -1179,10 +1180,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       }
 
       if (sta == TopAbs_UNKNOWN) {    // ERREUR
-	Message_Msg MSG ("FixAdvFace.FixOrientation.MSG11"); //Cannot orient wire %d of %d
-	MSG.Arg (i);
-	MSG.Arg (nb);
-	SendWarning (MSG);
+        SendWarning ( aw, Message_Msg ( "FixAdvFace.FixOrientation.MSG11" ) );// Cannot orient wire
       } 
       else {
         MW.Bind(aw,IntWires);
@@ -1193,6 +1191,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);
             ws.SetValue (i,sewd.Wire());
+            SendWarning ( sewd.Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
             aSeqReversed.Append(i);
             done = Standard_True;
             SI.Bind(ws.Value(i),1);
@@ -1223,6 +1222,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);
             ws.SetValue (i,sewd.Wire());
+            SendWarning ( sewd.Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
             aSeqReversed.Append(i);
             done = Standard_True;
             MapWires.Bind(ws.Value(i),IW);
@@ -1235,6 +1235,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);
             ws.SetValue (i,sewd.Wire());
+            SendWarning ( sewd.Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
             aSeqReversed.Append(i);
             done = Standard_True;
           }
@@ -1271,13 +1272,10 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     myFace = TopoDS::Face ( S );
     BRepTools::Update(myFace);
     Standard_Integer k =1;
-    for( ; k <= aSeqReversed.Length();k++) {
-      Message_Msg MSG ("FixAdvFace.FixOrientation.MSG10"); //Wire %d of %d on face was reversed
-      MSG.Arg (aSeqReversed.Value(k));
-      MSG.Arg (nb);
-      SendWarning (MSG);
+    for( ; k <= aSeqReversed.Length(); k++ )
+    {
 #ifdef DEBUG
-	cout<<"Wire no "<<aSeqReversed.Value(k)<<" of "<<nb<<" reversed"<<endl; // mise au point !
+      cout<<"Wire no "<<aSeqReversed.Value(k)<<" of "<<nb<<" reversed"<<endl; // mise au point !
 #endif
     }
       
@@ -1650,7 +1648,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
     BRepTools::Update(myFace); //:p4
   }
 
-  SendWarning (Message_Msg ("FixAdvFace.FixMissingSeam.MSG0"));//Missing seam-edge added
+  SendWarning ( Message_Msg ( "FixAdvFace.FixMissingSeam.MSG0" ) );// Missing seam-edge added
   return Standard_True;
 }
 
@@ -1679,8 +1677,13 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire()
         continue;
     TopoDS_Wire wire = TopoDS::Wire ( wi.Value() );
     Handle(ShapeAnalysis_Wire) saw = new ShapeAnalysis_Wire(wire,myFace,prec);
-    if ( saw->CheckSmallArea(prec) ) nbRemoved++;
-    else {
+    if ( saw->CheckSmallArea(prec) )
+    {
+      SendWarning ( wire, Message_Msg ("FixAdvFace.FixSmallAreaWire.MSG0") );// Null area wire detected, wire skipped
+      nbRemoved++;
+    }
+    else
+    {
       B.Add(face,wire);
       nbWires++;
     }
@@ -1698,7 +1701,6 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire()
 #endif
   if ( ! Context().IsNull() ) Context()->Replace ( myFace, face );
   myFace = face;
-  SendWarning (Message_Msg ("FixAdvFace.FixSmallAreaWire.MSG0"));//Null area wire detected, wire skipped
   return Standard_True;
 }
 //=======================================================================
@@ -1907,12 +1909,10 @@ Standard_Boolean ShapeFix_Face::FixLoopWire(TopTools_SequenceOfShape& aResWires)
   }
   
   Standard_Boolean isDone =(aResWires.Length() && isClosed);
-  if(isDone && aResWires.Length() >1) {
-    
-      Message_Msg MSG ("FixAdvFace.FixLoopWire.MSG0"); //Wire was splitted on %d wires
-      MSG.Arg (aResWires.Length());
+  if(isDone && aResWires.Length() >1)
+  {
 #ifdef DEBUG
-      cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< endl;
+    cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< endl;
 #endif
   }
 

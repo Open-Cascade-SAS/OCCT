@@ -17,6 +17,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Tool.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 
@@ -40,6 +41,8 @@
 #include <Message_ListIteratorOfListOfMsg.hxx>
 #include <Message_Msg.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger.hxx>
+#include <TColStd_DataMapOfAsciiStringInteger.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopAbs_State.hxx>
@@ -395,15 +398,15 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
     if ( argv[i][0] == '-' || argv[i][0] == '+' || argv[i][0] == '*' ) {
       Standard_Integer val = ( argv[i][0] == '-' ? 0 : argv[i][0] == '+' ? 1 : -1 );
       switch ( argv[i][1] ) {
-      case 'l': sfs->FixWireTool()->FixLackingMode()          = val;
-      case 'o': sfs->FixFaceTool()->FixOrientationMode()      = val;
-      case 'h': sfs->FixWireTool()->FixShiftedMode()          = val;
-      case 'm': sfs->FixFaceTool()->FixMissingSeamMode()      = val;
-      case 'd': sfs->FixWireTool()->FixDegeneratedMode()      = val;
-      case 's': sfs->FixWireTool()->FixSmallMode()            = val;
-      case 'i': sfs->FixWireTool()->FixSelfIntersectionMode() = val;
-      case 'n': sfs->FixWireTool()->FixNotchedEdgesMode()     = val;
-      case '?': mess                                          = val;
+      case 'l': sfs->FixWireTool()->FixLackingMode()          = val; break;
+      case 'o': sfs->FixFaceTool()->FixOrientationMode()      = val; break;
+      case 'h': sfs->FixWireTool()->FixShiftedMode()          = val; break;
+      case 'm': sfs->FixFaceTool()->FixMissingSeamMode()      = val; break;
+      case 'd': sfs->FixWireTool()->FixDegeneratedMode()      = val; break;
+      case 's': sfs->FixWireTool()->FixSmallMode()            = val; break;
+      case 'i': sfs->FixWireTool()->FixSelfIntersectionMode() = val; break;
+      case 'n': sfs->FixWireTool()->FixNotchedEdgesMode()     = val; break;
+      case '?': mess                                          = val; break;
       }
       continue;
     }
@@ -444,24 +447,49 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
   sfs->Perform (aProgress);
   DBRep::Set (res,sfs->Shape());
 
-  if ( mess ) {
-    Standard_Integer num = 0;
+  if ( mess ) 
+  {
+    TColStd_DataMapOfAsciiStringInteger aMapOfNumberOfFixes;
+    Standard_SStream aSStream;
+    TopoDS_Compound aCompound;
+    BRep_Builder aBuilder;
+    aBuilder.MakeCompound (aCompound);
     const ShapeExtend_DataMapOfShapeListOfMsg &map = msg->MapShape();
-    for ( ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg it(map); it.More(); it.Next() ) {
-      //cout << it.Key().TShape()->DynamicType()->Name() << " " << *(void**)&it.Key().TShape();
-      Standard_SStream aSStream;
-      aSStream << it.Key().TShape()->DynamicType()->Name() << " " << *(void**)&it.Key().TShape();
-      di << aSStream;
-
-      if ( mess <0 ) {
-        char buff[256];
-        sprintf ( buff, "%s_%d", res, ++num );
-        di << " (saved in DRAW shape " << buff << ")";
-        DBRep::Set (buff,it.Key());
+    // Counting the number of each type of fixes. If the switch '*?' store all modified shapes in compound.
+    for ( ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg it ( map ); it.More(); it.Next() )
+    {
+      for ( Message_ListIteratorOfListOfMsg iter ( it.Value() ); iter.More(); iter.Next() )
+      {
+        if ( aMapOfNumberOfFixes.IsBound ( iter.Value().Value() ) )
+        {
+          aMapOfNumberOfFixes ( iter.Value().Value() )++;
+        }
+        else
+        {
+          aMapOfNumberOfFixes.Bind ( iter.Value().Value(), 1 );
+        }
       }
-      di << ":" << "\n";
-      for (Message_ListIteratorOfListOfMsg iter (it.Value()); iter.More(); iter.Next())
-        di << "  " << TCollection_AsciiString(iter.Value().Value()).ToCString() << "\n";
+      if ( mess < 0 )
+      {
+        aBuilder.Add ( aCompound, it.Key() );
+      }
+    }
+    
+    aSStream << " Fix" << setw (58) << "Count\n";
+    aSStream << " ------------------------------------------------------------\n";
+    for ( TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger anIter ( aMapOfNumberOfFixes ); anIter.More(); anIter.Next() )
+    {
+      aSStream << " " << anIter.Key() << setw ( 60 - anIter.Key().Length() ) << anIter.Value() << "\n";
+    }
+    aSStream << " ------------------------------------------------------------\n";
+    di << aSStream;
+
+    if ( mess < 0 )
+    {
+      char buff[256];
+      sprintf ( buff, "%s_%s", res, "m" );
+      di << " Modified shapes saved in compound: " << buff;
+      DBRep::Set (buff, aCompound);
     }
   }
   

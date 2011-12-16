@@ -94,10 +94,10 @@ Edge %d was small, removed
 Self-intersection corrected
 !
 .FixAdvWire.FixIntersection.MSG5
-Edge %d was self-intersecting, corrected
+Edge was self-intersecting, corrected
 !
 .FixAdvWire.FixIntersection.MSG10
-Edges %d and %d were intersecting, corrected
+Edges were intersecting, corrected
 !
 .FixAdvWire.FixLacking.MSG0
 Lacking edge(s) inserted
@@ -126,11 +126,8 @@ Face created with natural bounds
 .FixAdvFace.FixOrientation.MSG5
 Wire on face was reversed
 !
-.FixAdvFace.FixOrientation.MSG10
-Wire %d of %d on face was reversed
-!
 .FixAdvFace.FixOrientation.MSG11
-Cannot orient wire %d of %d
+Cannot orient wire
 !
 .FixAdvShell.FixOrientation.MSG20
 Impossible to orient faces in shell, several shells created
@@ -148,7 +145,7 @@ Orientation of shell(s) in solid was corrected
 Improperly connected solid split into several parts
 !
 .FixAdvFace.FixLoopWire.MSG0
-Wire was splitted on %d wires
+Wire was splitted on several wires
 !
 .FixAdvFace..MSG5
 !
