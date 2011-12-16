@@ -386,7 +386,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 	  //
 	  aNbP=seqp.Length();
 	  aPPC=Precision::PConfusion();
-	  aHalfPI=0.5*PI;
+	  aHalfPI=0.5*M_PI;
 	  i1=0;
 	  i2=0;
 	  //
@@ -800,28 +800,28 @@ void Recadre(const Handle(GeomAdaptor_HSurface)& myHS1,
     }
   }
   if(myHS1IsUPeriodic) {
-    const Standard_Real lmf = PI+PI; //-- myHS1->UPeriod();
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS1->UPeriod();
     const Standard_Real f = myHS1->FirstUParameter();
     const Standard_Real l = myHS1->LastUParameter();
     while(u1 < f) { u1+=lmf; } 
     while(u1 > l) { u1-=lmf; }
   }
   if(myHS1IsVPeriodic) {
-    const Standard_Real lmf = PI+PI; //-- myHS1->VPeriod(); 
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS1->VPeriod(); 
     const Standard_Real f = myHS1->FirstVParameter();
     const Standard_Real l = myHS1->LastVParameter();
     while(v1 < f) { v1+=lmf; } 
     while(v1 > l) { v1-=lmf; }
   }
   if(myHS2IsUPeriodic) { 
-    const Standard_Real lmf = PI+PI; //-- myHS2->UPeriod();
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS2->UPeriod();
     const Standard_Real f = myHS2->FirstUParameter();
     const Standard_Real l = myHS2->LastUParameter();
     while(u2 < f) { u2+=lmf; } 
     while(u2 > l) { u2-=lmf; }
   }
   if(myHS2IsVPeriodic) { 
-    const Standard_Real lmf = PI+PI; //-- myHS2->VPeriod();
+    const Standard_Real lmf = M_PI+M_PI; //-- myHS2->VPeriod();
     const Standard_Real f = myHS2->FirstVParameter();
     const Standard_Real l = myHS2->LastVParameter();
     while(v2 < f) { v2+=lmf; } 
