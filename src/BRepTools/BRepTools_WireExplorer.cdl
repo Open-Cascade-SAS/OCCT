@@ -37,8 +37,7 @@ is
 ---Purpose: Constructs an empty explorer (which can be initialized using Init)
     
     Create(W : Wire from TopoDS ) returns WireExplorer from BRepTools
-	---Purpose: Initializes an exploration  of the wire <W> face F is used to
- --   involve 2D analysis while exploration). 
+	---Purpose: IInitializes an exploration  of the wire <W>. 
     raises DomainError from Standard;
     
     Create(W : Wire from TopoDS;
