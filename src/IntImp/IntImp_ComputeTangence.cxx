@@ -13,8 +13,10 @@ Standard_EXPORT const IntImp_ConstIsoparametric *ChoixRef = staticChoixRef ;
 
 #include <IntImp_ComputeTangence.hxx>
 
-//Standard_EXPORT IntImp_ConstIsoparametric *ChoixRef = staticChoixRef ;
-
+//=======================================================================
+//function : IntImp_ComputeTangence
+//purpose  : 
+//=======================================================================
 Standard_Boolean IntImp_ComputeTangence(const gp_Vec DPuv[],
 					const Standard_Real EpsUV[],
 					Standard_Real Tgduv[],
@@ -49,40 +51,45 @@ Standard_Boolean IntImp_ComputeTangence(const gp_Vec DPuv[],
 // l intersection 
 
 {
-   Standard_Real NormDuv[4];
-//   Standard_Real Tampon;
-//   Standard_Integer Irang[4],i,j;
+   Standard_Real NormDuv[4], aM2, aTol2;
    Standard_Integer i;
-
-
-   NormDuv[0] = DPuv[0].Magnitude();    
-   if(NormDuv[0]<=1e-16) { 
-     return(Standard_True);
-   } 
-   NormDuv[1] = DPuv[1].Magnitude();
-   if(NormDuv[1]<=1e-16) { 
-     return(Standard_True);
-   } 
-   NormDuv[2] = DPuv[2].Magnitude();
-   if(NormDuv[2]<=1e-16) { 
-     return(Standard_True);
-   } 
-   NormDuv[3] = DPuv[3].Magnitude();
-   if(NormDuv[3]<=1e-16) { 
-     return(Standard_True);
-   } 
-   
-   
-
+   //
+   aTol2=1.e-32;
+   //
+   for (i=0; i<4; ++i) {
+     NormDuv[i] = DPuv[i].SquareMagnitude();    
+     if(NormDuv[i]<=aTol2) { 
+       return Standard_True;
+     } 
+   }
+   //
+   //-------------------------------------------------
    gp_Vec N1 = DPuv[0];
    N1.Cross(DPuv[1]);
-
+   //
+   //modified by NIZNHY-PKV Tue Nov 01 08:37:32 2011f
+   aM2=N1.SquareMagnitude();
+   if (aM2<aTol2) {
+     return Standard_True;
+   }
+   //modified by NIZNHY-PKV Tue Nov 01 08:37:34 2011t
+   N1.Normalize();
+   //-------------------------------------------------
    gp_Vec N2 = DPuv[2];
    N2.Cross(DPuv[3]);
-
-   N1.Normalize();
+   //modified by NIZNHY-PKV Tue Nov 01 08:37:32 2011f
+   aM2=N2.SquareMagnitude();
+   if (aM2<aTol2) {
+     return Standard_True;
+   }
+   //modified by NIZNHY-PKV Tue Nov 01 08:37:34 2011t
    N2.Normalize();
-
+   //
+   //modified by NIZNHY-PKV Tue Nov 01 08:31:25 2011f
+   for (i=0; i<4; ++i) {
+     NormDuv[i]=sqrt(NormDuv[i]);
+   }  
+   //modified by NIZNHY-PKV Tue Nov 01 08:31:29 2011t
    Tgduv[0] = -DPuv[1].Dot(N2);
    Tgduv[1] =  DPuv[0].Dot(N2);
    Tgduv[2] =  DPuv[3].Dot(N1); 

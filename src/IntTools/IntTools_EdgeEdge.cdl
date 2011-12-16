@@ -29,58 +29,70 @@ is
     	--- Empty constructor
 	---
 	
-    SetEdge1         (me:out; anEdge:Edge from TopoDS); 
+    SetEdge1         (me:out;  
+    	    anEdge:Edge from TopoDS); 
    	---Purpose: 
     	--- Sets the first edge
 	---
      
-    SetTolerance1    (me:out; aTolEdge1:Real from Standard);  
+    SetTolerance1    (me:out;  
+    	    aTolEdge1:Real from Standard);  
     	---Purpose: 
     	--- Sets  the  value of tolerance pipe for the first edge
 	---
     
-    SetEdge2         (me:out; anEdge:Edge from TopoDS);
+    SetEdge2         (me:out;  
+    	    anEdge:Edge from TopoDS);
     	---Purpose: 
     	--- Sets the second edge
 	---
     
-    SetTolerance2    (me:out; aTolEdge2:Real from Standard);  
+    SetTolerance2    (me:out;  
+    	    aTolEdge2:Real from Standard);  
     	---Purpose: 
     	--- Sets  the  value of tolerance pipe for the first edge
 	---
         
-    SetDiscretize    (me:out; aDiscret:Integer from Standard);	 
+    SetDiscretize    (me:out;  
+    	    aDiscret:Integer from Standard);	 
     	---Purpose: 
     	--- Sets  the  number of division for the shortest 
 	--- edge among the two.  The  deflection is not taken 
     	--- into  account
 	---
                       
-    SetDeflection    (me:out; aDeflection:Real from Standard);     
+    SetDeflection    (me:out;  
+    	    aDeflection:Real from Standard);     
     	---Purpose: 
     	--- Sets the value of maximum reative deflection between 
     	--- the two nearest points on a curve.
 	---
      
-    SetEpsilonT      (me:out; anEpsT:Real from Standard); 
+    SetEpsilonT      (me:out;  
+    	    anEpsT:Real from Standard); 
     	---Purpose: 
     	--- Sets the criteria of equality of two arguments, 
     	--- i.e.  |t2-t1|<anEpsT will mean that t2=t1
 	---
 
-    SetEpsilonNull   (me:out; anEpsNull:Real from Standard);  
+    SetEpsilonNull   (me:out;  
+    	    anEpsNull:Real from Standard);  
     	---Purpose: 
     	--- Sets the criteria of equality of two functions' values
     	--- i.e.  |f(t2)-f(t1)|<anEpsNull will mean that f(t2)=f(t1)
 	---
      
-    SetRange1        (me:out; aRange:Range from IntTools);
+    SetRange1 (me:out;  
+    	    aRange:Range from IntTools);
 
-    SetRange2        (me:out; aRange:Range from IntTools);	
+    SetRange2 (me:out;  
+    	    aRange:Range from IntTools);	
 
-    SetRange1        (me:out; aFirst, aLast:Real from Standard);	
+    SetRange1 (me:out;  
+    	    aFirst, aLast:Real from Standard);	
 
-    SetRange2        (me:out; aFirst, aLast:Real from Standard);	
+    SetRange2 (me:out;  
+    	    aFirst, aLast:Real from Standard);	
      
     Perform(me:out); 
     	---Purpose: 
@@ -122,10 +134,11 @@ is
     	---C++:  return  const&  	 
 
     -----------------------------------------------------
-    --  Block  of  private methods of  the  algorithm  --
+    --  Block of  protected   methods of  the  algorithm  --
     -----------------------------------------------------     
 
-    CheckData  (me:out)    	    is private; 
+    CheckData  (me:out)    	     
+    	is protected; 
     	---Purpose: 
     	--- Fool-proof chechking the input data.  
     	--- The  following  data is not  available
@@ -133,7 +146,8 @@ is
     	---    *  Egdes,  that don't contain 3d-curve. 
 	---
      
-    Prepare    (me:out)    	    is private; 
+    Prepare    (me:out)  
+    	is protected; 
     	---Purpose: 
     	--- Preparing the main  fields  for  the  algorithm 
     	---    *  From-Curve  (myCFrom,myTminFrom,myTmaxFrom),  	     
@@ -142,30 +156,69 @@ is
     	---    *  myProjectableRanges.
 	---
 
-    IsProjectable         (me; t:Real from Standard)   
-    	returns  Integer from Standard is private; 
+    IsProjectable (me;  
+    	    t:Real from Standard)   
+    	returns  Integer from Standard  
+    	is protected; 
     	---Purpose: 
     	--- Returns the flag 1 if it is possible to project 
     	--- the point from the From-Curve at the  parameter t  
     	--- to the To-Curve.  
     	--- Othrwise it returns  0.
 	---
-     
-    FindProjectableRoot	  (me:out;   
-    	    	    	   t1,t2:Real from Standard; 
-    	    	    	   f1,f2:Integer from Standard; 
-    	    	    	   tRoot:out Real from Standard)  is private;	        
+    FindRangeOnCurve2 (me:out; 
+    	    aCP:out CommonPrt from IntTools)  
+    	returns  Integer from Standard  
+    	is protected;  	  
     	---Purpose: 
-    	--- Find a bound of a projectable range for the From-Curve 
-    	--- using  bisection  method.    
-    	--- t1, t2  - interval for searching along t. 
-    	--- f1, f2  - values of the function IsProjectable()   
-    	--- at t1 and t2. 
+    	--- Find the range on the curve Curve-To that  corresponds 
+    	--- to  the  given  range on the curve Curve-From. 
 	---
-
      
-    DistanceFunction      (me:out;t:Real from Standard)   
-    	returns  Real from Standard  is private; 
+    GetParameterOnCurve2  (me; 
+    	    aT1:Real from Standard;   
+    	    aT2:out  Real from Standard)  
+    	returns  Integer from Standard  
+    	is protected ;     
+    	---Purpose: 
+    	--- Find the  value  of  the  parameter  on  the curve Curve-To 
+    	--- that corresponds  to  the  given  parameter  on the curve  
+    	--- Curve-From.
+	---
+    
+    TreatVertexType(me:out;   
+    	    am1,  am2:Real from Standard; 
+    	    aCP:out CommonPrt from IntTools)   
+    	returns  Integer from Standard  
+    	is protected; 
+
+    IsIntersection (me:out; 
+    	    t1 : Real from Standard;   
+    	    t2 : Real from Standard)   
+    	is  protected ;      
+		    
+	 
+    FindDerivativeRoot (me:out;   
+    	    t,f:CArray1OfReal from IntTools)   
+    	is protected;   
+     
+    FindSimpleRoot (me:out;  
+    	    IP:Integer  from  Standard; 
+    	    ta, tb, fA:Real from Standard) 
+	returns  Real from Standard   
+    	is  protected;   
+    	---Purpose: 
+    	--- Find the Root of the function on given interval  
+    	--- of the argument [ta,tb] using  bisection  method .          	 
+    	--- IP  - a  flag; 
+    	--- =1  -  use DistanceFunction; 
+    	--- =2  -  use DerivativeFunction; 
+	---  
+	
+    DistanceFunction (me:out; 
+    	    t:Real from Standard)   
+    	returns  Real from Standard   
+    	is protected; 
     	---Purpose: 
     	--- Calculates the DistanceFunction D(t). 
     	--- D(t)=D1(t) - myCriteria; 
@@ -176,90 +229,39 @@ is
     	--- myCriteria=myTol1+myTol2. 
 	---
 
-    DerivativeFunction    (me:out;t:Real from Standard)   
-    	returns  Real from Standard  is private; 
+    DerivativeFunction  (me:out; 
+    	    t:Real from Standard)   
+    	returns  Real from Standard   
+    	is protected; 
     	---Purpose: 
     	--- Calculates the first derivative of   
     	--- the DistanceFunction D(t). 
 	---
-     
     
-    FindSimpleRoot        (me:out; IP:Integer  from  Standard; 
-    	    	    	   ta, tb, fA:Real from Standard) 
-	returns  Real from Standard  is  private;   
-    	---Purpose: 
-    	--- Find the Root of the function on given interval  
-    	--- of the argument [ta,tb] using  bisection  method .          	 
-    	--- IP  - a  flag; 
-    	--- =1  -  use DistanceFunction; 
-    	--- =2  -  use DerivativeFunction; 
-	---
-     
-    FindGoldRoot          (me:out;  ta, tb, coeff:Real from Standard) 
-	returns  Real from Standard  is  private;   
-    	---Purpose: 
-    	--- Find the Root of the function on given interval  
-    	--- of the argument [ta,tb] using Fibonacci method . 
-	---
-     
-    FindRangeOnCurve2     (me:out;  
-    	    	    	   aCP:out CommonPrt from IntTools)  
-    	returns  Integer from Standard is private;  	  
-    	---Purpose: 
-    	--- Find the range on the curve Curve-To that  corresponds 
-    	--- to  the  given  range on the curve Curve-From. 
-	---
-     
-    GetParameterOnCurve2  (me; 
-    	    	    	   aT1:Real from Standard;   
-    	    	    	   aT2:out  Real from Standard)  
-    	returns  Integer from Standard is private ;     
-    	---Purpose: 
-    	--- Find the  value  of  the  parameter  on  the curve Curve-To 
-    	--- that corresponds  to  the  given  parameter  on the curve  
-    	--- Curve-From.
-	---
-    
-    TreatVertexType       (me:out;  am1,  am2:Real from Standard; 
-    	    	    	   aCP:out CommonPrt from IntTools)   
-    	returns  Integer from Standard is private; 
-
-    IsIntersection (me:out; 
-    	    	    t1 : Real from Standard;   
-    	    	    t2 : Real from Standard)  is  private ;     
-	 
-    FindDerivativeRoot (me:out;   
-    	    	    	t,f:CArray1OfReal from IntTools)   
-    	is private;   
---
-    RemoveIdenticalRoots(me:out) 
-    	is private;   
-	 
     CheckTouch(me: out; 
-    	    	aCP: CommonPrt from IntTools; 
-    	    	t1 : out Real from Standard;   
-    	    	t2 : out Real from Standard) 
-		returns Boolean from Standard 
-    	is private;   
+    	    aCP: CommonPrt from IntTools; 
+    	    t1 : out Real from Standard;   
+    	    t2 : out Real from Standard) 
+	returns Boolean from Standard 
+    	is protected;   
 	 
     CheckTouchVertex(me;  
-    	    	aCP: CommonPrt from IntTools;
-    	    	t1 : out Real from Standard;   
-    	    	t2 : out Real from Standard) 
-		returns Boolean from Standard 
-    	is private;   
-      
-    CheckInterval(me:out; 
-    	    	t1 : Real from Standard;   
-    	    	t2 : Real from Standard) 
-		returns Boolean from Standard 
-    	is private;  
-	 
+    	    aCP: CommonPrt from IntTools;
+    	    t1 : out Real from Standard;   
+    	    t2 : out Real from Standard) 
+	returns Boolean from Standard 
+    	is protected;   
+
  
     ComputeLineLine(me:out) 
-    	is private;   
-	 
---
+    	is protected;    
+	
+--modified by NIZNHY-PKV Mon Oct 31 12:16:55 2011f     
+    IsSameCurves(me:out) 
+    	returns Boolean from Standard 
+    	is protected;   
+--modified by NIZNHY-PKV Mon Oct 31 12:16:59 2011t	 
+   
 fields 
 --        Data
     myEdge1           :  Edge  from  TopoDS;
@@ -285,26 +287,17 @@ fields
     myTolTo           :  Real from Standard; 
   
     myCriteria        :  Real from Standard; 	   
---        IsDone
+
     myIsDone          :  Boolean from Standard; 
     myErrorStatus     :  Integer from Standard;  
 
----  internal  members     
-    myProjectableRanges: SequenceOfRanges from IntTools;   
-    myFuncArray       :  CArray1OfReal from IntTools; 
-    myArgsArray       :  CArray1OfReal from IntTools; 
-
-    mySequenceOfRoots :  SequenceOfRoots   from IntTools;  
+---  internal  members      
     mySeqOfCommonPrts :  SequenceOfCommonPrts from IntTools;  
-
     myOrder           :  Boolean  from  Standard;  -- 0-strait; 1-reversed 
     myPar1            :  Real     from  Standard; 
-    myParallel        :  Boolean  from  Standard;         	 
-    myAllNullFlag     :  Boolean  from  Standard;         	 
-
+    myParallel        :  Boolean  from  Standard;   
     myRange1          :  Range from IntTools; 
     myRange2          :  Range from IntTools; 
     
 end EdgeEdge;
-
 
