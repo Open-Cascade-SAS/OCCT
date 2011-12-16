@@ -495,7 +495,19 @@ is
     	is protected;  
     	---Purpose: 	     
     	--- Try to put 3D-point <aP> (parameter aT)  on the curve <aBC> 
-    	---
+    	--- 
+ 
+--modified by NIZNHY-PKV Thu Oct 20 07:17:11 2011f 
+    PutClosingPaveOnCurve (me:out; 
+    	    	    aBC :out Curve from BOPTools;	 
+     	    	    aFF :out SSInterference from BOPTools)  
+	is protected; 
+	---Purpose: 	     
+    	--- Put paves on the curve <aBC> in case when <aBC>   
+        --  is closed 3D-curve  
+    	---      
+--modified by NIZNHY-PKV Thu Oct 20 07:17:11 2011t	 
+
     FindPave            (me:out; 
 		    aP  :Pnt from  gp;  
     	    	    aTpV: Real from Standard;  
@@ -560,13 +572,11 @@ is
     RecomputeCommonBlocks(me: in out; nE: Integer from Standard)
     	is private;
 
---modified by NIZNHY-PKV Tue Oct 19 10:28:42 2004f 
     ExtendedTolerance(me:out; 
     	    nV      : Integer from Standard; 
             aTolExt : out Real from Standard) 
 	returns Boolean from Standard 		     
 	is  protected;		     
---modified by NIZNHY-PKV Tue Oct 19 10:28:44 2004t
 
 fields 
  

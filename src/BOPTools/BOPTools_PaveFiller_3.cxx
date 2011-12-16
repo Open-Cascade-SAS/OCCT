@@ -130,7 +130,6 @@ static
 				 BOPTools_PaveFiller& aPF,
 				 TColStd_SequenceOfInteger& aSeqVx,
 				 TColStd_SequenceOfReal& aSeqTolVx);
-//modified by NIZNHY-PKV Wed Aug 31 10:32:52 2011f 
 static
   void ProcessAloneStickVertices(const Standard_Integer nF1,
 				 const Standard_Integer nF2,
@@ -139,7 +138,6 @@ static
 				 BOPTools_PaveFiller& aPF,
 				 TColStd_SequenceOfInteger& aSeqVx,
 				 TColStd_SequenceOfReal& aSeqTolVx);
-//modified by NIZNHY-PKV Wed Aug 31 10:32:59 2011t 
 //wkar OCC334 t
 
 static
@@ -191,13 +189,11 @@ static Standard_Integer RejectBuildingEdge(const IntTools_Curve& theC,
                                            const TopTools_ListOfShape& theL,
                                            Standard_Real&        theTF);
 
-//modified by NIZNHY-PKV Sat Mar 05 12:23:05 2011f
 static
   void CorrectTolR3D(BOPTools_PaveFiller& aPF,
 		     const BOPTools_SSInterference& aFF,
 		     const TColStd_MapOfInteger& aMVStick,
 		     Standard_Real& aTolR3D);
-//modified by NIZNHY-PKV Sat Mar 05 12:23:07 2011t
 
 //=======================================================================
 // function: PerformFF
@@ -206,7 +202,7 @@ static
   void BOPTools_PaveFiller::PerformFF() 
 {
   myIsDone=Standard_False;
-  Standard_Boolean bIsFound;
+  Standard_Boolean bIsFound, bToSplit;
   Standard_Integer n1, n2, anIndexIn=0, nF1, nF2, aNbFFs, aBlockLength;
   BOPTColStd_IndexedDataMapOfIntegerIndexedMapOfInteger aMapWhat, aMapWith;
   //
@@ -221,7 +217,11 @@ static
   if (aNbFFs > aBlockLength) {
     aFFs.SetBlockLength(aNbFFs);
   }
-  //
+  // 
+  //modified by NIZNHY-PKV Thu Oct 20 07:09:57 2011f
+  bToSplit=Standard_False;
+  //modified by NIZNHY-PKV Thu Oct 20 07:09:59 2011t
+
   for (; myDSIt.More(); myDSIt.Next()) {
     Standard_Boolean justaddinterference = Standard_True;
     myDSIt.Current(n1, n2, justaddinterference);
@@ -402,7 +402,10 @@ static
       if (aTolR3D < 1.e-7){
 	aTolR3D=1.e-7;
       } 
-      aFF.PrepareLines3D();
+      //modified by NIZNHY-PKV Thu Oct 20 07:10:38 2011f
+      aFF.PrepareLines3D(bToSplit);
+      //aFF.PrepareLines3D();
+      //modified by NIZNHY-PKV Thu Oct 20 07:10:41 2011t
       //
       anIndexIn=0;
       Standard_Integer aNbCurves, aNbPoints;
@@ -1360,11 +1363,9 @@ static
     aPaveSet.Append(aPaveNew);
     //<-B
     BOPTools_Tools::UpdateVertex (aC, aT, aV);
-    //modified by NIZNHY-PKV Sat Mar 05 13:43:27 2011f
     if(aTolR3D<aTolTresh) {
     aBB.UpdateVertex(aV, aTolR3D);
     }
-    //modified by NIZNHY-PKV Sat Mar 05 13:43:29 2011t
   }
 }
 //
@@ -1455,7 +1456,7 @@ static
     BOPTools_PaveSet aPSF;
     PrepareSetForFace (nF1, nF2, aPSF);
     //
-    //modified by NIZNHY-PKV Sat Mar 05 12:12:05 2011f
+    //f
     {
       Standard_Integer nVX;
       BOPTools_ListIteratorOfListOfPave aItLP;
@@ -1471,7 +1472,7 @@ static
       //
       CorrectTolR3D(*this, aFFi, aMVStick, aTolR3D);
     }
-    //modified by NIZNHY-PKV Sat Mar 05 12:12:07 2011t
+    //t
     //
     BOPTools_SequenceOfCurves& aSCvs=aFFi.Curves();
     aNbCurves=aSCvs.Length();
@@ -1483,7 +1484,7 @@ static
       //
       PutPaveOnCurve (aPSF, aTolR3D, aBC);
     }
-    //modified by NIZNHY-PKV Tue Aug 30 14:54:50 2011f
+    //f
     {
       Standard_Integer aNbVtx, jx;
       Standard_Real aTolVRange;
@@ -1519,7 +1520,7 @@ static
 	}
       }
     }
-    //modified by NIZNHY-PKV Tue Aug 30 14:54:56 2011t
+    //t
     //
     // Put bounding paves on curves
     //Check very specific case of cone-cone intersection (OCC13211)
@@ -1552,14 +1553,23 @@ static
       }
     }
     //
+    //modified by NIZNHY-PKV Thu Oct 20 07:14:32 2011f
+    // Put closing pave if needded
+    for (j=1; j<=aNbCurves; ++j) {
+      BOPTools_Curve& aBC=aSCvs(j);
+      PutClosingPaveOnCurve (aBC, aFFi);
+    }
+    //modified by NIZNHY-PKV Thu Oct 20 07:14:34 2011t
+    //
     // xxx
     for (j=1; j<=aNbCurves; j++) {
       BOPTools_Curve& aBC=aSCvs(j);
       BOPTools_ListOfPave anOldList;
       anOldList = aBC.Set().Set();
 
-      if (aBC.NewPaveBlocks().IsEmpty())
+      if (aBC.NewPaveBlocks().IsEmpty()) {
 	continue;
+      }
       //
       
       BOPTools_CArray1OfESInterference& aESs = myIntrPool->ESInterferences();
@@ -1885,7 +1895,7 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
 			       TColStd_SequenceOfInteger& aSeqVx,
 			       TColStd_SequenceOfReal& aSeqTolVx)
 {
-  Standard_Boolean bFound;
+  Standard_Boolean bFound, bIsClosed;
   Standard_Integer aNbVtx, jx, nV;
   Standard_Real aTolVRange;
   TColStd_IndexedMapOfInteger aMapUnUsed;
@@ -1937,8 +1947,15 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
       aNbSCvs=aSCvs.Length();
       if (aNbSCvs==1) {
 	BOPTools_Curve& aBC=aSCvs(1);
-	const IntTools_Curve& aC=aBC.Curve();
-	Handle (Geom_Curve) aC3D= aC.Curve();
+	const IntTools_Curve& aIC=aBC.Curve();
+	Handle (Geom_Curve) aC3D= aIC.Curve();
+	//modified by NIZNHY-PKV Wed Nov 02 13:33:42 2011f
+	//
+	bIsClosed=IntTools_Tools::IsClosed(aC3D);
+	if (bIsClosed) {
+	  return;
+	}
+	//modified by NIZNHY-PKV Wed Nov 02 13:33:44 2011t
 	GeomAPI_ProjectPointOnCurve& aProjPT=aCtx.ProjPT(aC3D);
 	//
 	for (jx=1; jx<=aNbVtx; ++jx) {
@@ -1962,7 +1979,6 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
     }
   }
 }
-//modified by NIZNHY-PKV Wed Aug 31 10:29:29 2011f
 //=======================================================================
 // function: ProcessAloneStickVertices
 // purpose: 
@@ -2061,7 +2077,6 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
     }//for (jVU=1; jVU=aNbVU; ++jVU) {
   }//if(aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
 }
-//modified by NIZNHY-PKV Wed Aug 31 10:29:37 2011t
 //=======================================================================
 // function: UnUsedMap
 // purpose: 
@@ -3073,32 +3088,68 @@ Standard_Boolean RejectPaveBlock(const IntTools_Curve& theC,
                                  const TopoDS_Vertex&  theV,
                                  Standard_Real&        theRT)
 {
+  Standard_Boolean bIsPeriodic, bClosed, isp, c3d;
+  Standard_Real aPeriod, dt, pf, pl, dp, aTol;
+  Handle(Geom_Curve) aC;
+  //
   theRT = BRep_Tool::Tolerance(theV);
-  Handle(Geom_Curve) aC = theC.Curve();
- 
-  Standard_Real pf = aC->FirstParameter();
-  Standard_Real pl = aC->LastParameter();
-  Standard_Real dp = fabs(pl-pf);
+  aC = theC.Curve();
+  //
+  pf = aC->FirstParameter();
+  pl = aC->LastParameter();
+  dp = fabs(pl-pf);
+  aTol=1.e-9;
+  bIsPeriodic=aC->IsPeriodic();
+  bClosed=IntTools_Tools::IsClosed(aC);
+  //
+  isp=Standard_False;
+  if (bIsPeriodic) {
+    aPeriod=aC->Period();
+    isp=(fabs(aPeriod-dp) <= aTol);
+    dt = fabs(theT2-theT1);
+    isp = (isp ||  fabs(aPeriod-dt) <= aTol);
+  }
+  c3d=(bClosed || isp);
+  //
+  /*
   Standard_Boolean isp = (aC->IsPeriodic() && fabs(aC->Period()-dp) <= 1.e-9);
   Standard_Real dt = fabs(theT2-theT1);
   isp = (isp || (aC->IsPeriodic() && fabs(aC->Period()-dt) <= 1.e-9));
   Standard_Boolean c3d = (aC->IsClosed() || isp);
-  
-  if(c3d)
-    return Standard_False;
-
-  Standard_Real p1 = Max(pf,theT1);
-  Standard_Real p2 = Min(pl,theT2);
+  */
+  if(c3d) {
+    return !c3d;
+  }
+  //
+  Standard_Real p1, p2, tp, d3d2, aRT2;;
+  //
+  p1 = Max(pf,theT1);
+  p2 = Min(pl,theT2);
   if(p2 != p1) {
     if(p2 < p1) {
-      Standard_Real tp = p1; p1 = p2; p2 = tp;
+      tp = p1; 
+      p1 = p2; 
+      p2 = tp;
     }
     gp_Pnt pntf, pntl;
     aC->D0(p1,pntf);
     aC->D0(p2,pntl);
+    //
+    //modified by NIZNHY-PKV Thu Oct 20 09:13:45 2011f
+    //
+    aRT2=theRT*theRT;
+    d3d2 = pntf.SquareDistance(pntl);
+    if(d3d2 > aRT2) {
+      theRT=sqrt(d3d2);
+    }
+    //
+    /*
     Standard_Real d3d = pntf.Distance(pntl);
-    if(d3d > theRT)
+    if(d3d > theRT) {
       theRT = d3d;
+    }
+    */
+    //modified by NIZNHY-PKV Thu Oct 20 09:15:20 2011t
   }
   return Standard_True;
 }
@@ -3328,3 +3379,66 @@ void CorrectTolR3D(BOPTools_PaveFiller& aPF,
     aTolR3D=aTolR;
   }
 }
+//modified by NIZNHY-PKV Thu Oct 20 07:18:39 2011f
+//=======================================================================
+// function: PutClosingPaveOnCurve
+// purpose:
+//=======================================================================
+void BOPTools_PaveFiller::PutClosingPaveOnCurve(BOPTools_Curve& aBC,
+						BOPTools_SSInterference& aFFi)
+{
+  Standard_Boolean bIsClosed, bHasBounds, bAdded;
+  Standard_Integer nVC, j;
+  Standard_Real aT[2], aTolR3D, aTC, dT, aTx;
+  gp_Pnt aP[2] ; 
+  BOPTools_Pave aPVx;
+  BOPTools_ListIteratorOfListOfPave aItLP;
+  //
+  const IntTools_Curve& aIC=aBC.Curve();
+  const Handle (Geom_Curve)& aC3D=aIC.Curve();
+  if(aC3D.IsNull()) {
+    return;
+  }
+  //
+  bIsClosed=IntTools_Tools::IsClosed(aC3D);
+  if (!bIsClosed) {
+    return;
+  }
+  //
+  bHasBounds=aIC.HasBounds ();
+  if (!bHasBounds){
+    return;
+  }
+  // 
+  bAdded=Standard_False;
+  dT=Precision::PConfusion();
+  aTolR3D=aFFi.TolR3D();
+  aIC.Bounds (aT[0], aT[1], aP[0], aP[1]);
+  //
+  BOPTools_PaveSet& aFFiPS=aFFi.NewPaveSet();
+  BOPTools_PaveSet& aCPS=aBC.Set();
+  //
+  const BOPTools_ListOfPave& aLP=aCPS.Set();
+  aItLP.Initialize(aLP);
+  for (; aItLP.More() && !bAdded; aItLP.Next()) {
+    const BOPTools_Pave& aPC=aItLP.Value();
+    nVC=aPC.Index();
+    const TopoDS_Vertex aVC=TopoDS::Vertex(myDS->Shape(nVC));
+    aTC=aPC.Param();
+    //
+    for (j=0; j<2; ++j) {
+      if (fabs(aTC-aT[j]) < dT) {
+	aTx=(!j) ? aT[1] : aT[0];
+	aPVx.SetIndex(nVC);
+	aPVx.SetParam(aTx);
+	//
+	aCPS.Append(aPVx);
+	aFFiPS.Append(aPVx);
+	//
+	bAdded=Standard_True;
+	break;
+      }
+    }
+  }
+}
+//modified by NIZNHY-PKV Thu Oct 20 07:18:42 2011t

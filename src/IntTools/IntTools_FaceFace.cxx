@@ -2709,16 +2709,25 @@ Standard_Boolean IsDegeneratedZone(const gp_Pnt2d& aP2d,
 //           of the points is less than 2.
 //=========================================================================
 Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine) {
-  Handle(IntPatch_WLine) aResult;
-  Handle(IntPatch_WLine) aLocalWLine;
-  Handle(IntPatch_WLine) aTmpWLine = theWLine;
-
-  Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
-  aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+ 
+  //modified by NIZNHY-PKV Tue Nov 29 12:14:07 2011f  
   Standard_Integer i, k, v, nb, nbvtx;
+  Handle(IntPatch_WLine) aResult;
   nbvtx = theWLine->NbVertex();
   nb = theWLine->NbPnts();
-
+  if (nb==2) {
+    const IntSurf_PntOn2S& p1 = theWLine->Point(1);
+    const IntSurf_PntOn2S& p2 = theWLine->Point(2);
+    if(p1.Value().IsEqual(p2.Value(), gp::Resolution())) {
+      return aResult;
+    }
+  }
+  //
+  Handle(IntPatch_WLine) aLocalWLine;
+  Handle(IntPatch_WLine) aTmpWLine = theWLine;
+  Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
+  aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
+  //modified by NIZNHY-PKV Tue Nov 29 12:13:19 2011t
   for(i = 1; i <= nb; i++) {
     aLineOn2S->Add(theWLine->Point(i));
   }
