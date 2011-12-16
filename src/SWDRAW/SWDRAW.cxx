@@ -36,25 +36,6 @@
 
 static int dejadraw = 0;
 
-//=======================================================================
-//function : cpulimit (WNT)
-//purpose  : 
-//=======================================================================
-
-#ifdef WNT
-#include "cpulimit.pc"
-
-static Standard_Integer cpulimit_draw(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n < 2) { di<<"Give a value"<<"\n"; return 1; }
-  int nn = atoi(a[1]);
-  di<<"LIMIT ELASPED TIME = "<<nn<<" seconds"<<"\n";
-  limitelapsed(nn);
-
-  return 0;
-}
-#endif
-
 //#72 rln 09.03.99 Packaging of SWDRAW
 
 //=======================================================================
@@ -209,10 +190,6 @@ void  SWDRAW::Init (Draw_Interpretor& theCommands)
   SWDRAW_ShapeUpgrade::InitCommands (theCommands);
   SWDRAW_ShapeProcess::InitCommands (theCommands);
   SWDRAW_ShapeProcessAPI::InitCommands (theCommands);
-
-#ifdef WNT
-  theCommands.Add("limitelapsed", "nn seconds",__FILE__, cpulimit_draw, "essai");
-#endif
 
   // locations
   theCommands.Add("LocSet", "a [b [c]]: set loc b->a; use no args to get help",__FILE__,LocSet,"essai");

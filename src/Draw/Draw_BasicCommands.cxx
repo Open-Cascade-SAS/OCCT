@@ -58,6 +58,7 @@ static clock_t MDTV_CPU_CURRENT; // cpu time already used at last
 
 #include <Draw_Chronometer.hxx>
 #include <OSD_MAllocHook.hxx>
+#include <OSD_Chronometer.hxx>
 
 #if defined (__hpux) || defined ( HPUX )
 #define RLIM_INFINITY   0x7fffffff
@@ -208,6 +209,31 @@ static Standard_Integer Draw_wait(Draw_Interpretor& , Standard_Integer n, const 
   return 0;
 }
 
+//=======================================================================
+//function : cpulimit
+//purpose  : 
+//=======================================================================
+#ifdef WNT
+static unsigned int __stdcall CpuFunc (void * param)
+{
+  clock_t aCurrent;
+  while (1)
+  {
+    Sleep (5);
+    Standard_Real anUserSeconds, aSystemSeconds;
+    OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
+    aCurrent = clock_t(anUserSeconds + aSystemSeconds);
+    
+    if ((aCurrent - MDTV_CPU_CURRENT) >= MDTV_CPU_LIMIT)
+    {
+      printf ("CpuFunc : Fin sur Cpu Limit \n");
+      ExitProcess (2);
+      return 0;
+    }
+  }
+  return 0;
+}
+#endif
 
 static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -226,25 +252,27 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
 
 #else
 //WNT
-  static int first=1;
-/*
-  unsigned int __stdcall CpuFunc(void * );
-  unsigned ThreadID;
+  static int aFirst = 1;
 
-  if (n <= 1) MDTV_CPU_LIMIT = RLIM_INFINITY;
-  else {
-  
-          MDTV_CPU_LIMIT = atoi(a[1]);
-          MDTV_CPU_CURRENT = clock()/1000;
+  unsigned int __stdcall CpuFunc (void *);
+  unsigned aThreadID;
 
-          if (first) // Launch the thread only at the 1st call.
-          {
-                  first=0 ;
-                  _beginthreadex(NULL,0,CpuFunc,NULL,0,&ThreadID);
-          }
+  if (n <= 1)
+    MDTV_CPU_LIMIT = RLIM_INFINITY;
+  else
+  {
+    MDTV_CPU_LIMIT = atoi (a[1]);
+    Standard_Real anUserSeconds, aSystemSeconds;
+    OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
+    MDTV_CPU_CURRENT = clock_t(anUserSeconds + aSystemSeconds);
+
+    if (aFirst) // Launch the thread only at the 1st call.
+    {
+      aFirst = 0;
+      _beginthreadex (NULL, 0, CpuFunc, NULL, 0, &aThreadID);
+    }
   }
 
-*/
 #endif
 
   return 0;
