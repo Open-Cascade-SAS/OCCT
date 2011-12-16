@@ -85,6 +85,8 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
   progress->Show();
  
   IGESControl_Reader Reader (XSDRAW::Session(),Standard_False);
+  Standard_Boolean aFullMode = Standard_True;
+  Reader.WS()->SetModeStat(aFullMode);
   if (ctl.IsNull())
     ctl=Handle(IGESControl_Controller)::DownCast(XSDRAW::Controller());
 

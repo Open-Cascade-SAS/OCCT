@@ -174,7 +174,10 @@ is
     EndRead (me : in out; amodel : mutable InterfaceModel)  is virtual;
     ---Purpose : Ends file reading after reading all the entities
     --           default is doing nothing; redefinable as necessary
-
+    
+    
+    Clear(me : in out);
+	---Purpose : Clear filelds
 
 fields
 

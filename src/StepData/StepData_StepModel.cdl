@@ -13,7 +13,7 @@ class StepModel  from StepData  inherits InterfaceModel
 
 uses Type, HAsciiString from TCollection,
      Messenger from Message,
-     DataMapOfTransientInteger,
+     HArray1OfInteger from TColStd,
      EntityList, EntityIterator, Check
 
 raises NoSuchObject
@@ -22,9 +22,7 @@ is
 
     Create returns mutable StepModel;
     ---Purpose: Creates an empty STEP model with an empty header.
-    Reservate (me : mutable; nbent : Integer) is redefined;
-    ---Purpose : The standard reservation is completed for the map (id-num)
-
+    
     Entity (me; num : Integer) returns Transient;
     ---Purpose : returns entity given its rank.
     --           Same as InterfaceEntity, but with a shorter name
@@ -87,6 +85,6 @@ is
 fields
 
     theheader : EntityList;
-    theidnums : DataMapOfTransientInteger;
+    theidnums : HArray1OfInteger from TColStd;
 
 end StepModel;

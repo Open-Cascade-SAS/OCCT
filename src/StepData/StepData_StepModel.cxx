@@ -14,26 +14,21 @@
 
 // Entete de fichier : liste d entites
 
-    StepData_StepModel::StepData_StepModel ()  {  }
+StepData_StepModel::StepData_StepModel ()  {  }
 
-    void  StepData_StepModel::Reservate (const Standard_Integer nbent)
-{
-  Interface_InterfaceModel::Reservate(nbent);
-  if (nbent > theidnums.NbBuckets()) theidnums.ReSize (nbent);
-}
 
-    Handle(Standard_Transient) StepData_StepModel::Entity
-      (const Standard_Integer num) const
-      {  return Value(num);  }      // nom plus joli
+Handle(Standard_Transient) StepData_StepModel::Entity
+(const Standard_Integer num) const
+{  return Value(num);  }      // nom plus joli
 
-    void StepData_StepModel::GetFromAnother
-  (const Handle(Interface_InterfaceModel)& other)
+void StepData_StepModel::GetFromAnother
+(const Handle(Interface_InterfaceModel)& other)
 {
   theheader.Clear();
   DeclareAndCast(StepData_StepModel,another,other);
   if (another.IsNull()) return;
   Interface_EntityIterator iter = another->Header();
-//  recopier le header. Attention, header distinct du contenu ...
+  //  recopier le header. Attention, header distinct du contenu ...
   Interface_CopyTool TC (this,StepData::HeaderProtocol());
   for (; iter.More(); iter.Next()) {
     Handle(Standard_Transient) newhead;
@@ -42,35 +37,35 @@
   }
 }
 
-    Handle(Interface_InterfaceModel) StepData_StepModel::NewEmptyModel () const
-      {  return new StepData_StepModel;  }
+Handle(Interface_InterfaceModel) StepData_StepModel::NewEmptyModel () const
+{  return new StepData_StepModel;  }
 
 
-    Interface_EntityIterator StepData_StepModel::Header () const
+Interface_EntityIterator StepData_StepModel::Header () const
 {
   Interface_EntityIterator iter;
   theheader.FillIterator(iter);
   return iter;
 }
 
-    Standard_Boolean StepData_StepModel::HasHeaderEntity
-      (const Handle(Standard_Type)& atype) const
-      {  return (theheader.NbTypedEntities(atype) == 1);  }
+Standard_Boolean StepData_StepModel::HasHeaderEntity
+(const Handle(Standard_Type)& atype) const
+{  return (theheader.NbTypedEntities(atype) == 1);  }
 
-    Handle(Standard_Transient) StepData_StepModel::HeaderEntity
-      (const Handle(Standard_Type)& atype) const
-      {  return theheader.TypedEntity(atype);  }
+Handle(Standard_Transient) StepData_StepModel::HeaderEntity
+(const Handle(Standard_Type)& atype) const
+{  return theheader.TypedEntity(atype);  }
 
 
 //   Remplissage du Header
 
-    void StepData_StepModel::ClearHeader ()
-      {  theheader.Clear();  }
+void StepData_StepModel::ClearHeader ()
+{  theheader.Clear();  }
 
 
-    void StepData_StepModel::AddHeaderEntity
-  (const Handle(Standard_Transient)& ent)
-      {  theheader.Append(ent);  }
+void StepData_StepModel::AddHeaderEntity
+(const Handle(Standard_Transient)& ent)
+{  theheader.Append(ent);  }
 
 
 void StepData_StepModel::VerifyCheck(Handle(Interface_Check)& ach) const
@@ -86,10 +81,10 @@ void StepData_StepModel::VerifyCheck(Handle(Interface_Check)& ach) const
 }
 
 
-    void StepData_StepModel::DumpHeader
-  (const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
+void StepData_StepModel::DumpHeader
+(const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
 {
-//  NB : level n est pas utilise
+  //  NB : level n est pas utilise
 
   Handle(StepData_Protocol) stepro = StepData::HeaderProtocol();
   Standard_Boolean iapro = !stepro.IsNull();
@@ -114,45 +109,50 @@ void StepData_StepModel::VerifyCheck(Handle(Interface_Check)& ach) const
 }
 
 
-    void  StepData_StepModel::ClearLabels ()
-      {  theidnums.Clear();  }
+void  StepData_StepModel::ClearLabels ()
+{  theidnums.Nullify();  }
 
-    void  StepData_StepModel::SetIdentLabel
-  (const Handle(Standard_Transient)& ent, const Standard_Integer ident)
+void  StepData_StepModel::SetIdentLabel
+(const Handle(Standard_Transient)& ent, const Standard_Integer ident)
 {
-  if (Number(ent) == 0) return;
-  if (theidnums.NbBuckets() < NbEntities()) theidnums.ReSize (NbEntities());
-  if (theidnums.IsBound(ent)) theidnums.ChangeFind(ent) = ident;
-  else theidnums.Bind (ent,ident);
+  Standard_Integer num = Number(ent);
+  if (!num) 
+    return;
+  if(theidnums.IsNull())
+  {
+    theidnums = new TColStd_HArray1OfInteger(1, NbEntities());
+    theidnums->Init(0);
+  }
+  theidnums->SetValue(num,ident);
+
 }
 
-    Standard_Integer  StepData_StepModel::IdentLabel
-  (const Handle(Standard_Transient)& ent) const
+Standard_Integer  StepData_StepModel::IdentLabel
+(const Handle(Standard_Transient)& ent) const
 {
-  if (theidnums.IsBound(ent)) return theidnums.Find(ent);
-  return 0;
-}
+  if(theidnums.IsNull())
+    return 0;
+  Standard_Integer num = Number(ent);
+  return (!num ? 0 : theidnums->Value(num));
+ }
 
-    void  StepData_StepModel::PrintLabel
-  (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const
+void  StepData_StepModel::PrintLabel
+(const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const
 {
-  Standard_Integer num = 0 , nid = 0;
-  if (theidnums.IsBound(ent)) nid = theidnums.Find(ent);
-  if (nid <= 0) num = Number(ent);
-
+  Standard_Integer num = (theidnums.IsNull() ? 0 : Number(ent));
+  Standard_Integer  nid = (!num ? 0 : theidnums->Value(num));
   if      (nid > 0) S<<"#"<<nid;
   else if (num > 0) S<<"(#"<<num<<")";
   else              S<<"(#0..)";
 }
 
-    Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel
-  (const Handle(Standard_Transient)& ent) const
+Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel
+(const Handle(Standard_Transient)& ent) const
 {
   Handle(TCollection_HAsciiString) label;
   char text[20];
-  Standard_Integer num = 0 , nid = 0;
-  if (theidnums.IsBound(ent)) nid = theidnums.Find(ent);
-  if (nid <= 0) num = Number(ent);
+  Standard_Integer num = (theidnums.IsNull() ? 0 : Number(ent));
+  Standard_Integer  nid = (!num ? 0 : theidnums->Value(num));
 
   if      (nid > 0) sprintf (text, "#%d",nid);
   else if (num > 0) sprintf (text, "(#%d)",num);

@@ -31,15 +31,16 @@ Interface_ShareTool::Interface_ShareTool (const Handle(Interface_InterfaceModel)
 
 Interface_ShareTool::Interface_ShareTool (const Interface_Graph& agraph)
 {
-  theHGraph = new Interface_HGraph(agraph);
+  theHGraph = new Interface_HGraph(agraph.Model());
 }
 
 Interface_ShareTool::Interface_ShareTool (const Handle(Interface_HGraph)& ahgraph)
-     : theHGraph(ahgraph)
-{}
+{
+  theHGraph = ahgraph;
+}
 
 //    Ajout des "Implied" sur toutes les Entites du Graphe
-void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
+/*void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
 {
   Interface_Graph& thegraph = theHGraph->CGraph();
   Standard_Integer nb = thegraph.Size();
@@ -59,7 +60,7 @@ void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
     }
   }
   if (yena) thegraph.EvalSharings();
-}
+}*/
 
 
     Handle(Interface_InterfaceModel) Interface_ShareTool::Model () const
@@ -75,9 +76,9 @@ void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
   (const Handle(Standard_Transient)& ent) const
 {
   const Interface_Graph& thegraph = theHGraph->Graph();
-  Interface_IntList list =
-    thegraph.SharingNums (thegraph.EntityNumber(ent));
-  return (list.Length() > 0);
+  Handle(TColStd_HSequenceOfTransient) list =
+    thegraph.GetShareds (ent);
+  return (!list.IsNull() && list->Length() > 0);
 }
 
     Interface_EntityIterator  Interface_ShareTool::Shareds
@@ -94,12 +95,14 @@ void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
    const Handle(Standard_Type)& atype) const
 {
   Interface_Graph& thegraph = theHGraph->CGraph();
-  Interface_IntList list =
-    thegraph.SharingNums (thegraph.EntityNumber(ent));
+  Handle(TColStd_HSequenceOfTransient) list = thegraph.GetSharings (ent);
+  if(list.IsNull())
+    return 0;
+
   Standard_Integer result = 0;
-  Standard_Integer n = list.Length();
+  Standard_Integer n = list->Length();
   for (Standard_Integer i = 1; i <= n; i ++) {
-    Handle(Standard_Transient) entsh = thegraph.Entity(list.Value(i));
+    Handle(Standard_Transient) entsh = list->Value(i);
     if (entsh.IsNull()) continue;
     if (entsh->IsKind(atype)) result ++;
   }
@@ -111,13 +114,14 @@ void Interface_ShareTool::AddImplied (const Handle(Interface_GTool)& gtool)
    const Handle(Standard_Type)& atype) const
 {
   Interface_Graph& thegraph = theHGraph->CGraph();
-  Interface_IntList list =
-    thegraph.SharingNums (thegraph.EntityNumber(ent));
+  Handle(TColStd_HSequenceOfTransient) list = thegraph.GetSharings(ent);
+  if(list.IsNull())
+    return 0;
   Handle(Standard_Transient) entresult;
   Standard_Integer result = 0;
-  Standard_Integer n = list.Length();
+  Standard_Integer n = list->Length();
   for (Standard_Integer i = 1; i <= n; i ++) {
-    Handle(Standard_Transient) entsh = thegraph.Entity(list.Value(i));
+    Handle(Standard_Transient) entsh = list->Value(i);
     if (entsh.IsNull()) continue;
     if (entsh->IsKind(atype)) {
       entresult = entsh;

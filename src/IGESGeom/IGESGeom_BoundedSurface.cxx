@@ -39,7 +39,8 @@
 
     Standard_Integer  IGESGeom_BoundedSurface::NbBoundaries () const
 {
-  return theBoundaries->Length();
+  
+  return ( theBoundaries.IsNull() ? 0 : theBoundaries->Length());
 }
 
     Handle(IGESGeom_Boundary)  IGESGeom_BoundedSurface::Boundary

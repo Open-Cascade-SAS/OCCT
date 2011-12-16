@@ -282,32 +282,7 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     binder = TP->MapItem (ne);
     S<<endl;
     TP->StartTrace (binder,ent,0,0);
-/*skl
-    if (!binder.IsNull()) {
-      // infos complementaires : cas et attributs
-      Standard_Integer icas, nbcas = binder->NbCases();
-      if (nbcas > 0) S<<"Recorded Cases : "<<nbcas<<" :";
-      for (icas = 1; icas <= nbcas; icas ++) S<<"  "<<binder->CaseName(icas);
-      if (nbcas > 0) S<<endl;
-      Standard_Integer nbatr = 0;
-      Handle(Dico_DictionaryOfTransient) atrs = binder->AttrList();
-      Dico_IteratorOfDictionaryOfTransient iatr (atrs);
-      for (; iatr.More(); iatr.Next()) {
-	Handle(Standard_Transient) atr = iatr.Value();
-	if (atr.IsNull()) continue;
-	if (nbatr == 0) S<<"-- List of Attributes"<<endl;
-	nbatr ++;
-	S<<iatr.Name()<<" : ";
-	DeclareAndCast(Interface_IntVal,intatr,atr);
-	if (!intatr.IsNull()) S<<"Integer="<<intatr->Value();
-	DeclareAndCast(Geom2d_Point,realtr,atr);
-	if (!realtr.IsNull()) S<<"Real="<<realtr->X();
-	if (intatr.IsNull() && realtr.IsNull()) S<<"Type:"<<atr->DynamicType()->Name();
-	S<<endl;
-      }
-      if (nbatr > 0) S<<"-- Total of Attributes : "<<nbatr<<endl;
-    }
-skl*/
+
   }
 
 //   ***   CHECK (commun READ+WRITE)   ***
@@ -471,8 +446,6 @@ Handle(Standard_Transient)  XSControl_WorkSession::Result
 Standard_Integer  XSControl_WorkSession::TransferReadOne
   (const Handle(Standard_Transient)& ent)
 {
-  //Standard_OStream& sout = Interface_TraceFile::Def();
-  //Standard_Integer level = Interface_TraceFile::DefLevel();
   Handle(Interface_InterfaceModel) model = Model();
   if (ent == model) return TransferReadRoots();
 
@@ -507,8 +480,14 @@ Handle(Interface_InterfaceModel) XSControl_WorkSession::NewModel ()
   Handle(Interface_InterfaceModel) newmod;
   if (theController.IsNull()) return newmod;
   newmod = theController->NewModel();
+  
   SetModel(newmod);
+  if(!MapReader().IsNull())
+    MapReader()->Clear();
+  //clear all contains of WS
+  theTransferRead->Clear(3);
   theTransferWrite->Clear(-1);
+
   return newmod;
 }
 

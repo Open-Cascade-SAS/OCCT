@@ -1,32 +1,35 @@
 #include <Interface_HGraph.ixx>
 
 
-
-    Interface_HGraph::Interface_HGraph (const Interface_Graph& agraph)
+   Interface_HGraph::Interface_HGraph (const Interface_Graph& agraph)
     :  thegraph(agraph)    {  }
-
+   
 
     Interface_HGraph::Interface_HGraph
   (const Handle(Interface_InterfaceModel)& amodel,
-   const Interface_GeneralLib& lib)
-     :  thegraph (amodel,lib)    {  }
+   const Interface_GeneralLib& lib,
+   const Standard_Boolean theModeStat)
+     :  thegraph (amodel,lib,theModeStat)    {  }
 
 
      Interface_HGraph::Interface_HGraph
   (const Handle(Interface_InterfaceModel)& amodel,
-   const Handle(Interface_Protocol)& protocol)
-     :  thegraph (amodel,protocol)    {  }
+   const Handle(Interface_Protocol)& protocol,
+   const Standard_Boolean theModeStat)
+     :  thegraph (amodel,protocol,theModeStat)    {  }
 
 
      Interface_HGraph::Interface_HGraph
   (const Handle(Interface_InterfaceModel)& amodel,
-   const Handle(Interface_GTool)& gtool)
-     :  thegraph (amodel,gtool)    {  }
+   const Handle(Interface_GTool)& gtool,
+   const Standard_Boolean theModeStat)
+     :  thegraph (amodel,gtool,theModeStat)    {  }
 
 
      Interface_HGraph::Interface_HGraph
-  (const Handle(Interface_InterfaceModel)& amodel)
-     :  thegraph (amodel)    {  }
+  (const Handle(Interface_InterfaceModel)& amodel,
+    const Standard_Boolean theModeStat)
+     :  thegraph (amodel,theModeStat)    {  }
 
 
     const Interface_Graph&  Interface_HGraph::Graph () const

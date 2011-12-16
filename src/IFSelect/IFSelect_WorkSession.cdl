@@ -54,6 +54,14 @@ is
     SetShareOut (me : mutable; shareout : mutable ShareOut);
     ---Purpose : Sets a new ShareOut. Fills Items which its content
     --  Warning : data from the former ShareOut are lost
+    
+    SetModeStat(me : mutable; theMode : Boolean);
+    ---Purpose : Set value of mode responsible for precence of selections after loading
+    -- If mode set to true that different selections will be accessible after loading
+    -- else selections will be not accessible after loading( for economy memory in applicatios) 
+    
+    GetModeStat(me)  returns Boolean from Standard;
+    ---Purpose : Return value of mode defining of filling selection during loading
 
 
     SetLibrary (me : mutable; lib : WorkLibrary);
@@ -1146,5 +1154,5 @@ fields
 
     thecopier    : ModelCopier;    -- produces + memorizes transferred data
     theoldel     : InterfaceModel;
-
+	themodelstat : Boolean;
 end WorkSession;

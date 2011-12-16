@@ -78,6 +78,7 @@ IFSelect_WorkSession::IFSelect_WorkSession ()
   thecopier->SetShareOut (theshareout);
   thecheckdone = Standard_False;
   thegtool     = new Interface_GTool;
+  themodelstat = Standard_False;
 }
 
 
@@ -228,7 +229,7 @@ void  IFSelect_WorkSession::SetModel
   if (!thegtool.IsNull()) thegtool->ClearEntities(); //smh#14 FRA62479
 //  themodel->SetProtocol(theprotocol);
   themodel->SetGTool (thegtool);
-  thegtool->Reservate (themodel->NbEntities()+20,Standard_True);
+  
   thegraph.Nullify();
   ComputeGraph();    // fait qqchose si Protocol present. Sinon, ne fait rien
   ClearData(3);      // RAZ CheckList, a refaire
@@ -244,7 +245,6 @@ void  IFSelect_WorkSession::SetModel
 //function : 
 //purpose  : 
 //=======================================================================
-
 Handle(Interface_InterfaceModel)  IFSelect_WorkSession::Model () const 
 {
   return themodel;
@@ -369,8 +369,7 @@ Standard_Integer IFSelect_WorkSession::NumberFromLabel
   }
   if (cnt == 1) return num;
   num = -num;
-//  if (cnt == 0)  cout<<" Label:"<<val<<" -> 0 ent"<<endl;
-//  if (cnt >  0)  cout<<" Label:"<<val<<" ->"<<cnt<<" ent.s, refus"<<endl;
+
   return num;
 }
 
@@ -513,29 +512,35 @@ Standard_Boolean  IFSelect_WorkSession::ComputeGraph
 {
   if (theprotocol.IsNull()) return Standard_False;
   if (themodel.IsNull()) return Standard_False;
-  if (themodel->NbEntities() == 0) return Standard_False;
+  //if (themodel->NbEntities() == 0) return Standard_False;
   if (enforce) thegraph.Nullify();
   if (!thegraph.IsNull()) {
     if (themodel->NbEntities() == thegraph->Graph().Size()) return Standard_True;
     thegraph.Nullify();
   }
+  if (themodel->NbEntities() == 0) return Standard_False;
   //  Il faut calculer le graphe pour de bon
-  thegraph = new Interface_HGraph (themodel,thegtool);
+  thegraph = new Interface_HGraph (themodel,themodelstat);
   Standard_Integer nb = themodel->NbEntities();
-  Standard_Integer i; // svv #1
-  for (i = 1; i <= nb; i ++) thegraph->CGraph().SetStatus(i,0);
-  Interface_BitMap& bm = thegraph->CGraph().CBitMap();
-  bm.AddFlag();
-  bm.SetFlagName (Flag_Incorrect,"Incorrect");
-  
+  if(themodelstat)
+  {
+    Standard_Integer i; // svv #1
+    for (i = 1; i <= nb; i ++) thegraph->CGraph().SetStatus(i,0);
+    Interface_BitMap& bm = thegraph->CGraph().CBitMap();
+    bm.AddFlag();
+    bm.SetFlagName (Flag_Incorrect,"Incorrect");
+  }
   ComputeCheck();
   thecheckdone = Standard_True;
-  
-//  Calcul des categories, a present memorisees dans le modele
-  Interface_Category categ(thegtool);
-  Interface_ShareTool sht(thegraph);
-  for (i = 1; i <= nb; i ++) themodel->SetCategoryNumber
-    (i,categ.CatNum(themodel->Value(i),sht));
+  if(themodelstat)
+  {
+    //  Calcul des categories, a present memorisees dans le modele
+    Interface_Category categ(thegtool);
+    Interface_ShareTool sht(thegraph);
+    Standard_Integer i =1;
+    for ( ; i <= nb; i ++) themodel->SetCategoryNumber
+      (i,categ.CatNum(themodel->Value(i),sht));
+  }
 
   return Standard_True;
 }
@@ -629,20 +634,21 @@ Standard_Boolean IFSelect_WorkSession::ComputeCheck
   Interface_CheckTool cht(thegraph);
   Interface_CheckIterator checklist = cht.VerifyCheckList();
   themodel->FillSemanticChecks(checklist,Standard_False);
-
-//  Et on met a jour le Graphe (BitMap) !  Flag Incorrect (STX + SEM)
-  Interface_BitMap& BM = CG.CBitMap();
-  BM.Init (Standard_False,Flag_Incorrect);
-  Standard_Integer num, nb = CG.Size();
-  for (checklist.Start(); checklist.More(); checklist.Next()) {
-    const Handle(Interface_Check) chk = checklist.Value();
-    if (!chk->HasFailed()) continue;
-    num = checklist.Number();
-    if (num > 0 && num <= nb) BM.SetTrue (num,Flag_Incorrect);
+  if(themodelstat)
+  {
+    //  Et on met a jour le Graphe (BitMap) !  Flag Incorrect (STX + SEM)
+    Interface_BitMap& BM = CG.CBitMap();
+    BM.Init (Standard_False,Flag_Incorrect);
+    Standard_Integer num, nb = CG.Size();
+    for (checklist.Start(); checklist.More(); checklist.Next()) {
+      const Handle(Interface_Check) chk = checklist.Value();
+      if (!chk->HasFailed()) continue;
+      num = checklist.Number();
+      if (num > 0 && num <= nb) BM.SetTrue (num,Flag_Incorrect);
+    }
+    for (num = 1; num <= nb; num ++)
+      if (themodel->IsErrorEntity (num)) BM.SetTrue (num,Flag_Incorrect);
   }
-  for (num = 1; num <= nb; num ++)
-    if (themodel->IsErrorEntity (num)) BM.SetTrue (num,Flag_Incorrect);
-
   return Standard_True;
 }
 
@@ -852,7 +858,6 @@ Standard_Integer IFSelect_WorkSession::AddItem
   if (id > 0) {
     Handle(Standard_Transient)& att = theitems.ChangeFromIndex(id);
     if (att.IsNull()) att = item;
-////    if (theitems.FindFromIndex(id).IsNull()) id0 = theitems.Add(item,item);
   }
   else id = theitems.Add(item,item);
 
@@ -923,17 +928,7 @@ Standard_Boolean IFSelect_WorkSession::SetActive
       return Standard_True;
     }
   }
-/*      UTILISER EXPLICITEMENT  SetAppliedModifier
-  if (item->IsKind(STANDARD_TYPE(IFSelect_GeneralModifier))) {
-    DeclareAndCast(IFSelect_GeneralModifier,modif,item);
-    if (mode) {
-      theshareout->AddModifier(modif,0);
-      return Standard_True;
-    } else {
-      return theshareout->RemoveItem(modif);
-    }
-  }
-*/
+
   return Standard_False;
 }
 
@@ -1362,8 +1357,7 @@ Interface_EntityIterator IFSelect_WorkSession::EvalSelection
   }
 
   if (thegraph.IsNull()) return iter;
-//  if (ItemIdent(sel) != 0) iter = sel->UniqueResult(thegraph->Graph());
-  iter = sel->UniqueResult(thegraph->Graph());
+ iter = sel->UniqueResult(thegraph->Graph());
   return iter;
 }
 
@@ -1444,11 +1438,7 @@ Handle(TColStd_HSequenceOfTransient) IFSelect_WorkSession::SelectionResultFromLi
 //  ssel est la derniere selection auscultee,  deduct son downcast
 //  input son Input (nulle  si sel  pas une deduction)
   deduct = GetCasted(IFSelect_SelectDeduct,ssel);
-/*
-  Handle(IFSelect_SelectPointed) sp = new IFSelect_SelectPointed;
-  sp->AddList(list);
-  deduct->SetInput (sp);
-*/
+
   deduct->Alternate()->SetList (list);
 
 //   On execute puis on nettoie
@@ -2491,7 +2481,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll
   Handle_Interface_Check aMainFail = checks.CCheck(0);
   if (!aMainFail.IsNull() && aMainFail->HasFailed ())
   {
-        return IFSelect_RetStop;
+    return IFSelect_RetStop;
   }
   if (theloaded.Length() == 0) theloaded.AssignCat(filename);
   thecheckrun = checks;
@@ -2828,7 +2818,7 @@ void IFSelect_WorkSession::QueryCheckList (const Interface_CheckIterator& chl)
 //  analyse selon le graphe ... codes : blc = rien
 //  1 W/place  2 F/place  3 Wprop 4Wprop+W/place  5Wprop+F/place
 //  6 Fprop  7 Fprop+W/place  8 Fprop+F/place
-  Interface_IntList list = thegraph->Graph().SharingNums(0);
+  Interface_IntList list;// = thegraph->Graph().SharingNums(0);
 //   deux passes : d abord Warning, puis Fail
   for (i = 1; i <= nb; i ++) {
     char val = thecheckana.Value(i);
@@ -2899,16 +2889,6 @@ Standard_Integer IFSelect_WorkSession::QueryParent
     Standard_Integer stat = QueryParent ( entdad,list->Value(i) );
     if (stat >= 0) return stat+1;
   }
-/*
-  Interface_IntList sharings = thegraph->Graph().SharingNums (nson);
-  Standard_Integer i, nb = sharings.Length();
-  for (i = 1; i <= nb; i ++) {
-    if (sharings.Value(i) == nson) return 1;
-    Standard_Integer stat = QueryParent
-      ( entson,StartingEntity(sharings.Value(i)) );
-    if (stat >= 0) return stat+1;
-  }
-*/
   return -1;  // not yet implemented ...
 }
 
@@ -3602,7 +3582,7 @@ void IFSelect_WorkSession::PrintCheckList
     Interface_CheckIterator chks = checklist;
     Handle(IFSelect_CheckCounter) counter =
       new IFSelect_CheckCounter (mode>1 && mode != IFSelect_CountSummary);
-    counter->Analyse (chks,themodel,Standard_True,failsonly);
+    counter->Analyse (chks,themodel,Standard_False,failsonly);
     counter->PrintList  (sout,themodel,mode);
   }
 }
@@ -3883,4 +3863,14 @@ void IFSelect_WorkSession::ListEntities
     sout<<Standard_Failure::Caught()->GetMessageString();
     sout<<"\n    Abandon"<<endl;
   }
+}
+
+void IFSelect_WorkSession::SetModeStat( Standard_Boolean theStatMode)
+{
+  themodelstat = theStatMode;
+}
+
+Standard_Boolean IFSelect_WorkSession::GetModeStat() const
+{
+  return themodelstat;
 }

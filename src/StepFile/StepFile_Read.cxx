@@ -190,6 +190,7 @@ Standard_Integer StepFile_Read
 
   readtool.PrepareHeader(recoheader);  // Header. reco nul -> pour Protocol
   readtool.Prepare(recodata);          // Data.   reco nul -> pour Protocol
+
 #ifdef CHRONOMESURE
   sout << "      ... Parameters prepared ... "; 
   c.Show(); 
@@ -198,13 +199,16 @@ Standard_Integer StepFile_Read
   readtool.LoadModel(stepmodel);
   if (stepmodel->Protocol().IsNull()) stepmodel->SetProtocol (protocol);
   lir_file_fin(2);
+  
+  readtool.Clear();
+  undirec.Nullify();
 #ifdef CHRONOMESURE
   sout << "      ...   Objets analysed  ... " << endl; 
   c.Show();
   n = stepmodel->NbEntities() ;
   sout << "  STEP Loading done : " << n << " Entities" << endl;
 #endif
-
+  
   stepread_endinput (newin,ficnom);  return 0 ;
 }
 

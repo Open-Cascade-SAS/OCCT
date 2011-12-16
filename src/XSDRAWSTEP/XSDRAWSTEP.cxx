@@ -81,15 +81,16 @@ void XSDRAWSTEP::Init ()
 
 static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_Integer argc, const char** argv) 
 {
-//  On admet le controller AP214 ou une variante
+  //  On admet le controller AP214 ou une variante
   DeclareAndCast(STEPControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("STEP");
+
 
   // Progress indicator
   Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
   progress->SetScale ( 0, 100, 1 );
   progress->Show();
-  
+
   STEPControl_Reader sr (XSDRAW::Session(),Standard_False);
   TCollection_AsciiString fnom,rnom;
   Standard_Boolean modfic = XSDRAW::FileAndVar
@@ -102,6 +103,35 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
   progress->NewScope ( 20, "Loading" ); // On average loading takes 20% 
   progress->Show();
 
+  Standard_Boolean fromtcl = Standard_False;
+  Standard_Boolean aFullMode = 0;
+  Standard_Integer k = 3;
+  if(argc > k )
+  {
+    if(argv[k][0] == 'f' || argv[3][0] == 'F')
+    {
+      aFullMode = Standard_True;
+      k++;
+    }
+    else if(argv[k][0] == 'r' || argv[3][0] == 'R')
+    {
+      aFullMode = Standard_False;
+      k++;
+    }
+    else
+      fromtcl = Standard_True;
+   
+  }
+  if(!fromtcl)
+    fromtcl = argc > k;
+  if(aFullMode)
+    cout<<"Full model for translation with additional info will be used \n"<<flush;
+  else
+    cout<<"Reduced model for translation without additional info will be used \n"<<flush;
+  
+  sr.WS()->SetModeStat(aFullMode);
+
+
   if (modfic) readstat = sr.ReadFile (fnom.ToCString());
   else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
 
@@ -113,9 +143,9 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
     else di<<"No model loaded"<<"\n";
     return 1;
   }
+  
 
-  Standard_Boolean fromtcl = (argc > 3);
-//   nom = "." -> fichier deja lu
+  //   nom = "." -> fichier deja lu
   Standard_Integer i, num, nbs, modepri = 1;
   if (fromtcl) modepri = 4;
   Handle(Message_Messenger) aDIMessenger = 
@@ -125,9 +155,9 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
     if (!fromtcl) {
       di<<"NbRootsForTransfer="<<num<<" :\n";
       for (i = 1; i <= num; i ++) {
-	di<<"Root."<<i<<", Ent. ";
-	sr.Model()->Print(sr.RootForTransfer(i),aDIMessenger);
-	di<<" Type:"<<sr.RootForTransfer(i)->DynamicType()->Name()<<"\n";
+        di<<"Root."<<i<<", Ent. ";
+        sr.Model()->Print(sr.RootForTransfer(i),aDIMessenger);
+        di<<" Type:"<<sr.RootForTransfer(i)->DynamicType()->Name()<<"\n";
       }
 
       cout<<"Mode (0 End, 1 root n0 1, 2 one root/n0, 3 one entity/n0, 4 Selection) : "<<flush;
@@ -138,7 +168,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
     if (modepri <= 2) {
       num = 1;
       if (modepri == 2) {
-	cout<<"Root N0 : "<<flush;  cin>>num;
+        cout<<"Root N0 : "<<flush;  cin>>num;
       }
 
       progress->NewScope ( 80, "Translation" );
@@ -147,12 +177,12 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
 
       if (!sr.TransferRoot (num)) di<<"Transfer root n0 "<<num<<" : no result"<<"\n";
       else {
-	nbs = sr.NbShapes();
-	char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
-	di<<"Transfer root n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
-	TopoDS_Shape sh = sr.Shape(nbs);
-	DBRep::Set (shname,sh);
+        nbs = sr.NbShapes();
+        char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
+        di<<"Transfer root n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
+        di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+        TopoDS_Shape sh = sr.Shape(nbs);
+        DBRep::Set (shname,sh);
       }
 
       sr.WS()->MapReader()->SetProgress ( 0 );
@@ -163,40 +193,40 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
       cout<<"Entity : "<<flush;  num = XSDRAW::GetEntityNumber();
       if (!sr.TransferOne (num)) di<<"Transfer entity n0 "<<num<<" : no result"<<"\n";
       else {
-	nbs = sr.NbShapes();
-	char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),num);
-	di<<"Transfer entity n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
-	TopoDS_Shape sh = sr.Shape(nbs);
-	DBRep::Set (shname,sh);
+        nbs = sr.NbShapes();
+        char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),num);
+        di<<"Transfer entity n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
+        di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+        TopoDS_Shape sh = sr.Shape(nbs);
+        DBRep::Set (shname,sh);
       }
     }
     else if (modepri == 4) {
-//      char snm[100];  Standard_Integer answer = 1;
+      //      char snm[100];  Standard_Integer answer = 1;
       Handle(TColStd_HSequenceOfTransient)  list;
 
-//  Selection, nommee ou via tcl. tcl : raccourcis admis
-//   * donne xst-transferrable-roots
+      //  Selection, nommee ou via tcl. tcl : raccourcis admis
+      //   * donne xst-transferrable-roots
       if (fromtcl) {
-	modepri = 0;    // d ioffice une seule passe
-	if (argv[3][0] == '*' && argv[3][1] == '\0') {
-	  di<<"Transferrable Roots : ";
-	  list = XSDRAW::GetList("xst-transferrable-roots");
+        modepri = 0;    // d ioffice une seule passe
+        if (argv[k][0] == '*' && argv[k][1] == '\0') {
+          di<<"Transferrable Roots : ";
+          list = XSDRAW::GetList("xst-transferrable-roots");
           //list = new TColStd_HSequenceOfTransient;
           //for(Standard_Integer j=1; j<=num; j++)
           //  list->Append(sr.RootForTransfer(j));
-	}
+        }
         else {
-	  di<<"List given by "<<argv[3];
-	  if (argc > 4) di<<" "<<argv[4];
-	  di<<" : ";
-	  list = XSDRAW::GetList (argv[3], ( argc > 4 ? argv[4] : 0 ) );
-	}
-	if (list.IsNull()) { di<<"No list defined. Give a selection name or * for all transferrable roots"<<"\n"; continue; }
+          di<<"List given by "<<argv[k];
+          if (argc > k+1) di<<" "<<argv[k+1];
+          di<<" : ";
+          list = XSDRAW::GetList (argv[k], ( argc > (k+1) ? argv[k+1] : 0 ) );
+        }
+        if (list.IsNull()) { di<<"No list defined. Give a selection name or * for all transferrable roots"<<"\n"; continue; }
       } else {
-	cout<<"Name of Selection :"<<flush;
-	list = XSDRAW::GetList();
-	if (list.IsNull()) { di<<"No list defined"<<"\n"; continue; }
+        cout<<"Name of Selection :"<<flush;
+        list = XSDRAW::GetList();
+        if (list.IsNull()) { di<<"No list defined"<<"\n"; continue; }
       }
 
       Standard_Integer ill, nbl = list->Length();
@@ -209,17 +239,17 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
 
       Message_ProgressSentry PSentry ( progress, "Root", 0, nbl, 1 );
       for (ill = 1; ill <= nbl && PSentry.More(); ill ++, PSentry.Next()) {
-	num = sr.Model()->Number(list->Value(ill));
-	if (num == 0) continue;
-	if (!sr.TransferOne(num)) di<<"Transfer entity n0 "<<num<<" : no result"<<"\n";
-	else {
-	  nbs = sr.NbShapes();
-	  char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
-	  di<<"Transfer entity n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
-	  di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
-	  TopoDS_Shape sh = sr.Shape(nbs);
-	  DBRep::Set (shname,sh);
-	}
+        num = sr.Model()->Number(list->Value(ill));
+        if (num == 0) continue;
+        if (!sr.TransferOne(num)) di<<"Transfer entity n0 "<<num<<" : no result"<<"\n";
+        else {
+          nbs = sr.NbShapes();
+          char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
+          di<<"Transfer entity n0 "<<num<<" OK  -> DRAW Shape: "<<shname<<"\n";
+          di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
+          TopoDS_Shape sh = sr.Shape(nbs);
+          DBRep::Set (shname,sh);
+        }
       }
       sr.WS()->MapReader()->SetProgress ( 0 );
       progress->EndScope();
@@ -512,7 +542,7 @@ void XSDRAWSTEP::InitCommands (Draw_Interpretor& theCommands)
   XSDRAW::LoadDraw(theCommands);
   theCommands.Add("stepwrite" ,    "stepwrite mode[0-4 afsmw] shape",  __FILE__, stepwrite,     g);
   theCommands.Add("testwritestep", "testwritestep filename.stp shape", __FILE__, testwrite,     g);
-  theCommands.Add("stepread",      "stepread  [file]",                 __FILE__, stepread,      g);
+  theCommands.Add("stepread",      "stepread  [file] [f or r (type of model full or reduced)]",__FILE__, stepread,      g);
   theCommands.Add("testreadstep",  "testreadstep [file] [name DRAW]",  __FILE__, testread,      g);
   theCommands.Add("steptrans",     "steptrans shape stepax1 stepax2",  __FILE__, steptrans,     g);
   theCommands.Add("countexpected","TEST",                              __FILE__, countexpected, g);

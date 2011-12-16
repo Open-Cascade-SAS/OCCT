@@ -46,7 +46,7 @@ is
     
     Create (ahgraph : HGraph) returns ShareTool;
 
-    AddImplied (me : in out; gtool : GTool from Interface);
+    --AddImplied (me : in out; gtool : GTool from Interface);
     ---Purpose : Completes the Graph by Adding Implied References. Hence, they
     --           are considered as Sharing References in all the other queries
 

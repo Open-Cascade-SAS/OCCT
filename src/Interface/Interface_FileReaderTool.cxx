@@ -547,5 +547,13 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity
 //purpose  : 
 //=======================================================================
 
-void Interface_FileReaderTool::Destroy(){}
+void Interface_FileReaderTool::Destroy()
+{}
      
+void Interface_FileReaderTool::Clear()
+{
+  theproto.Nullify();
+  thereader.Nullify();
+  themodel.Nullify();
+  thereports.Nullify();
+}

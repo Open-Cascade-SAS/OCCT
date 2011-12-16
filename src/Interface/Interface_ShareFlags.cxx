@@ -46,19 +46,21 @@
 }
 
     Interface_ShareFlags::Interface_ShareFlags (const Interface_Graph& agraph)
-   : theflags (agraph.Model()->NbEntities())
-{
-  themodel = agraph.Model();
-  Standard_Integer nb = themodel->NbEntities();
-  if (nb == 0) return;
-  theroots = new TColStd_HSequenceOfTransient();
-  for (Standard_Integer i = 1; i <= nb; i ++) {
-//    Resultat obtenu depuis le Graph
-    Interface_IntList list = agraph.SharingNums(i);
-    if (list.Length() > 0) theflags.SetTrue(i);
-    else theroots->Append (themodel->Value(i));
-  }
-}
+      : theflags (agraph.Model()->NbEntities())
+    {
+      themodel = agraph.Model();
+      Standard_Integer nb = themodel->NbEntities();
+      if (nb == 0) return;
+      theroots = new TColStd_HSequenceOfTransient();
+      for (Standard_Integer i = 1; i <= nb; i ++) {
+        //    Resultat obtenu depuis le Graph
+        Handle(Standard_Transient) ent = themodel->Value(i);
+        Handle(TColStd_HSequenceOfTransient) list = agraph.GetSharings(ent);
+       
+        if (!list.IsNull() && list->Length() > 0) theflags.SetTrue(i);
+        else theroots->Append (ent);
+      }
+    }
 
 
     void  Interface_ShareFlags::Evaluate

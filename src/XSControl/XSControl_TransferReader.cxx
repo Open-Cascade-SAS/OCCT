@@ -40,19 +40,6 @@
 #include <ShapeFix.hxx>
 #include <stdio.h>
 
-/*
-#ifdef DEB
-static  void monDBPE
-  (const Handle(Message_Messenger)& S, const Handle(Standard_Transient)& ent, const Handle(Standard_Transient)& context)
-{
-  if (ent.IsNull())  {  S<<"(null)";  return;  }
-  DeclareAndCast(Interface_InterfaceModel,model,context);
-  if (model.IsNull())  {  S<<ent->DynamicType()->Name();  return;  }
-  model->Print (ent,S);
-  S<<"	"<<model->TypeName(ent,Standard_False);
-}
-#endif
-*/
 
 //=======================================================================
 //function : XSControl_TransferReader
@@ -121,9 +108,15 @@ void XSControl_TransferReader::SetModel(const Handle(Interface_InterfaceModel)& 
 
 void XSControl_TransferReader::SetGraph(const Handle(Interface_HGraph)& graph)
 {
-  if (graph.IsNull()) return;
+  if (graph.IsNull())
+  {
+    theModel.Nullify();
+  }
+  else
+    theModel = graph->Graph().Model();
+
   theGraph = graph;
-  theModel = graph->Graph().Model();
+  
   if (!theTransfer.IsNull()) theTransfer->SetGraph(graph);
 }
 
@@ -221,7 +214,7 @@ void XSControl_TransferReader::Clear (const Standard_Integer mode)
     theTransfer.Nullify();
     theActor.Nullify();
     theFilename.Clear();
-  }  // theContext.Nullify();
+  }  
 }
 
 
@@ -868,9 +861,7 @@ Standard_Integer XSControl_TransferReader::TransferOne
 
   Handle(Message_Messenger) sout = theTransfer->Messenger();
   Standard_Integer level = theTransfer->TraceLevel();
-
-  //BRepBuilderAPI::Precision (Interface_Static::RVal("read.precision.val")); //szv#11:CASCADE30:01Feb00
-  //Interface_Static::SetRVal("lastpreci",0.0);
+  
 
   Transfer_TransferOutput TP (theTransfer,theModel);
   if (theGraph.IsNull()) theTransfer->SetModel(theModel);
@@ -925,8 +916,6 @@ Standard_Integer XSControl_TransferReader::TransferList
   Handle(Message_Messenger) sout = theTransfer->Messenger();
   Standard_Integer level = theTransfer->TraceLevel();
 
-  //BRepBuilderAPI::Precision (Interface_Static::RVal("read.precision.val")); //szv#11:CASCADE30:01Feb00
-  //Interface_Static::SetRVal("lastpreci",0.0);
   Transfer_TransferOutput TP (theTransfer,theModel);
   if (theGraph.IsNull()) theTransfer->SetModel(theModel);
   else                   theTransfer->SetGraph(theGraph);
@@ -984,8 +973,6 @@ Standard_Integer XSControl_TransferReader::TransferRoots(const Interface_Graph& 
   Handle(Message_Messenger) sout = theTransfer->Messenger();
   Standard_Integer level = theTransfer->TraceLevel();
 
-  //BRepBuilderAPI::Precision (Interface_Static::RVal("read.precision.val")); //szv#11:CASCADE30:01Feb00
-  //Interface_Static::SetRVal("lastpreci",0.0);
   Transfer_TransferOutput TP (theTransfer,theModel);
   if (theGraph.IsNull()) theTransfer->SetModel(theModel);
   else                   theTransfer->SetGraph(theGraph);
@@ -1035,15 +1022,9 @@ void XSControl_TransferReader::TransferClear(const Handle(Standard_Transient)& e
   if (theTransfer.IsNull()) return;
   if (ent == theModel) {  theTransfer->Clear();  return;  }
 
-  ////  if (level > 0) list = TransferredList (list);
-  //  Standard_Integer i, nb = list->Length();
-  //  theTransfer->ComputeScopes();
-  //  for (i = 1; i <= nb; i ++) {
-  //    Handle(Standard_Transient) ent = list->Value(i);
-  //    theTransfer->Unbind (ent);
   theTransfer->RemoveResult (ent,level);
   ClearResult (ent,-1);
-  //  }
+ 
 }
 
 

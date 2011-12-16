@@ -17,14 +17,13 @@
     Interface_GraphContent::Interface_GraphContent
   (const Interface_Graph& agraph, const Handle(Standard_Transient)& ent)
 {
-  Interface_IntList list =
-    agraph.SharedNums(agraph.EntityNumber(ent));
-  Standard_Integer nb = list.Length();
+  Interface_EntityIterator list =  agraph.Shareds(ent);
+  Standard_Integer nb = list.NbEntities();
   if (nb == 0) return;                             // Liste redefinie a VIDE
-  Handle(Interface_InterfaceModel) mod = agraph.Model();
-  for (Standard_Integer i = 1; i <= nb; i ++) {
-    Standard_Integer num = list.Value(i);
-    if (agraph.IsPresent(num)) GetOneItem (agraph.Entity(num));
+  for( ; list.More(); list.Next()) {
+    Handle(Standard_Transient) curent = list.Value();
+    if (agraph.IsPresent(agraph.EntityNumber(curent))) 
+      GetOneItem (curent);
   }
 }
 

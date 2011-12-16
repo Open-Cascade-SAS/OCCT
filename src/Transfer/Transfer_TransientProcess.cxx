@@ -45,6 +45,8 @@ void Transfer_TransientProcess::SetGraph(const Handle(Interface_HGraph)& HG)
   thegraph = HG;
   if (!thegraph.IsNull())
     SetModel(thegraph->Graph().Model());
+  else
+    themodel.Nullify();
 }
 
 

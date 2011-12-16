@@ -25,16 +25,28 @@ uses CString, HSequenceOfAsciiString from TColStd,
 
 is
 
+	Create returns BitMap;
+	---Purpose : Creates a empty BitMap
+	
     Create (nbitems : Integer; resflags : Integer = 0) returns BitMap;
     ---Purpose : Creates a BitMap for <nbitems> items
     --           One flag is defined, n0 0
     --           <resflags> prepares allocation for <resflags> more flags
     --           Flags values start at false
-
+    
+    Initialize(me : in out; nbitems : Integer; resflags : Integer = 0);
+    ---Purpose : Initialize empty bit by <nbitems> items
+    --           One flag is defined, n0 0
+    --           <resflags> prepares allocation for <resflags> more flags
+    --           Flags values start at false
+    
     Create (other : BitMap; copied : Boolean = Standard_False) returns BitMap;
     ---Purpose : Creates a BitMap from another one
     --           if <copied> is True, copies data
     --           else, data are not copied, only the header object is
+    
+    Initialize(me : in out; other : BitMap; copied : Boolean = Standard_False);
+    ---Purpose : Initialize a BitMap from another one
 
     Internals (me; nbitems , nbwords, nbflags : out Integer;
     	       flags : out mutable HArray1OfInteger;
@@ -108,6 +120,9 @@ is
     Init (me; val : Boolean; flag : Integer = 0);
     ---Purpose : Initialises all the values of Flag Number <flag> to a given
     --           value <val>
+    
+    Clear(me: in out);
+    ---Purpose : Clear all field of bit map
 
 fields
 

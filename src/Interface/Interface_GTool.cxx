@@ -67,17 +67,17 @@ Standard_Boolean  Interface_GTool::Select (const Handle(Standard_Transient)& ent
                                            Standard_Integer& CN,
                                            const Standard_Boolean enforce)
 {
-//  const Handle(Standard_Type)& aType = ent->DynamicType();
-  Standard_Integer num = thentmod.FindIndex (ent);
+  const Handle(Standard_Type)& aType = ent->DynamicType();
+  Standard_Integer num = thentmod.FindIndex(aType);// (ent);
   if (num == 0 || enforce) {
     if (thelib.Select (ent,gmod,CN)) {
-      num = thentmod.Add (ent,gmod);
-      thentnum.Bind (ent,CN);
+      num = thentmod.Add (aType,gmod);
+      thentnum.Bind (aType,CN);
       return Standard_True;
     }
     return Standard_False;
   }
-  gmod = Handle(Interface_GeneralModule)::DownCast (thentmod.FindFromIndex(num));
-  CN   = thentnum.Find (ent);
+  gmod = Handle(Interface_GeneralModule)::DownCast (thentmod.FindFromKey(aType));
+  CN   = thentnum.Find (aType);
   return Standard_True;
 }

@@ -13,7 +13,8 @@
   (const Interface_Graph& G) const 
 {
   Interface_EntityIterator iter = RootResult(G);
-  if (HasUniqueResult()) return iter;
+  if (HasUniqueResult() || !G.ModeStat()) 
+    return iter;
   Interface_Graph GG(G);
   GG.GetFromIter(iter,0);
   return Interface_GraphContent(GG);   // EntityIterator specialise (meme taille)
