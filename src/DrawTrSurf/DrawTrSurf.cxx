@@ -43,6 +43,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Trsf2d.hxx>
 #include <Poly.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static Draw_Color       PntColor(Draw_rouge);
 static Draw_Color       CurvColor(Draw_jaune);
@@ -63,11 +64,56 @@ static Standard_Integer DrawMode   = 0;
 static Standard_Integer NbUIsos    = 10;
 static Standard_Integer NbVIsos    = 10;
 
+static TCollection_AsciiString ColorsHint(
+"The possible colors are: \n\
+  white, red, green, blue, cyan,\n\
+  golden, magenta, brown, orange, pink,\n\
+  salmon, violet, yellow, darkgreen, coral");
+
+static TCollection_AsciiString MarkersHint(
+"The possible markers are: \n\
+  square, diamond, x, plus, circle, circle_zoom");
+
+//=======================================================================
+//function : DrawTrSurf_CurveColor
+//purpose  : Sets new color for rendering of curves. Returns the
+//           previous one to keep possibility to restore the initial
+//           state
+//=======================================================================
+
 Standard_EXPORT Draw_Color DrawTrSurf_CurveColor(const Draw_Color col)
 {
   Draw_Color c = CurvColor;
   CurvColor = col;
   return c;
+}
+
+//=======================================================================
+//function : DrawTrSurf_PointColor
+//purpose  : Sets new color for rendering of points. Returns the
+//           previous one to keep possibility to restore the initial
+//           state
+//=======================================================================
+
+Standard_EXPORT Draw_Color DrawTrSurf_PointColor(const Draw_Color col)
+{
+  Draw_Color c = PntColor;
+  PntColor = col;
+  return c;
+}
+
+//=======================================================================
+//function : DrawTrSurf_PointMarker
+//purpose  : Sets new marker for rendering of points. Returns the
+//           previous one to keep possibility to restore the initial
+//           state
+//=======================================================================
+
+Standard_EXPORT Draw_MarkerShape DrawTrSurf_PointMarker(const Draw_MarkerShape marker)
+{
+  Draw_MarkerShape prev = PntShape;
+  PntShape = marker;
+  return prev;
 }
 
 //=======================================================================
@@ -567,7 +613,8 @@ void  DrawTrSurf::Set(const Standard_CString Name,
 //purpose  : Geometry from Geom
 //=======================================================================
 void  DrawTrSurf::Set(const Standard_CString Name, 
-		      const Handle(Geom_Geometry)& G)
+                      const Handle(Geom_Geometry)& G,
+                      const Standard_Boolean isSenseMarker)
 {
   Handle(DrawTrSurf_Drawable) D;
   if (!G.IsNull()) {
@@ -600,7 +647,7 @@ void  DrawTrSurf::Set(const Standard_CString Name,
 
       if (Bez.IsNull() && BS.IsNull()) {
 	Handle(DrawTrSurf_Curve) DC =
-	  new DrawTrSurf_Curve(C,CurvColor,Discret,Deflection,DrawMode);
+	  new DrawTrSurf_Curve(C,CurvColor,Discret,Deflection,DrawMode,isSenseMarker);
 	D = DC;
       }
     }
@@ -664,7 +711,8 @@ void  DrawTrSurf::Set(const Standard_CString Name,
 //purpose  : Curve from Geom2d
 //=======================================================================
 void  DrawTrSurf::Set(const Standard_CString Name, 
-		      const Handle(Geom2d_Curve)& C)
+                      const Handle(Geom2d_Curve)& C,
+                      const Standard_Boolean isSenseMarker)
 {
   Handle(DrawTrSurf_Drawable) D;
   if (!C.IsNull()) {
@@ -694,7 +742,7 @@ void  DrawTrSurf::Set(const Standard_CString Name,
       
       if (Bez.IsNull() && BS.IsNull()) {
 	Handle(DrawTrSurf_Curve2d) DC =
-	  new DrawTrSurf_Curve2d(C,CurvColor,Discret);
+	  new DrawTrSurf_Curve2d(C,CurvColor,Discret,isSenseMarker);
 	D = DC;
       }
     }
@@ -958,71 +1006,98 @@ Handle(Poly_Polygon2D) DrawTrSurf::GetPolygon2D(Standard_CString& Name)
   else
     return D->Polygon2D();
 }
+
+//=======================================================================
+//function : printColor
+//purpose  : 
+//=======================================================================
+
+static void printColor(Draw_Interpretor& di, const Draw_Color& theColor)
+{
+  switch ( theColor.ID() )
+  {
+    case Draw_blanc:   di << "white "            << "\n"; break;
+    case Draw_rouge:   di << "red "              << "\n"; break;
+    case Draw_vert:    di << "green "            << "\n"; break;
+    case Draw_bleu:    di << "blue "             << "\n"; break;
+    case Draw_cyan:    di << "cyan "             << "\n"; break;
+    case Draw_or:      di << "golden "           << "\n"; break;
+    case Draw_magenta: di << "magenta "          << "\n"; break;
+    case Draw_marron:  di << "brown "            << "\n"; break;
+    case Draw_orange:  di << "orange "           << "\n"; break;
+    case Draw_rose:    di << "pink "             << "\n"; break;
+    case Draw_saumon:  di << "salmon "           << "\n"; break;
+    case Draw_violet:  di << "violet "           << "\n"; break;
+    case Draw_jaune:   di << "yellow "           << "\n"; break;
+    case Draw_kaki:    di << "dark-olive green " << "\n"; break;
+    case Draw_corail:  di << "coral "            << "\n"; break;
+  }
+}
+
+//=======================================================================
+//function : recognizeColor
+//purpose  : 
+//=======================================================================
+
+static Draw_Color recognizeColor(const char* theColorStr,
+                                 const Draw_Color& theDefaultColor)
+{
+  Draw_Color aResult = theDefaultColor;
+
+  if ( !strcasecmp(theColorStr,"white") )
+    aResult = Draw_blanc;
+  if ( !strcasecmp(theColorStr, "red") )
+    aResult = Draw_rouge;
+  if ( !strcasecmp(theColorStr, "green") )
+    aResult = Draw_vert;
+  if ( !strcasecmp(theColorStr, "blue") )
+    aResult = Draw_bleu;
+  if ( !strcasecmp(theColorStr, "cyan") )
+    aResult = Draw_cyan;
+  if ( !strcasecmp(theColorStr, "golden") )
+    aResult = Draw_or;
+  if ( !strcasecmp(theColorStr, "magenta") )
+    aResult = Draw_magenta;
+  if ( !strcasecmp(theColorStr, "brown") )
+    aResult = Draw_marron;
+  if ( !strcasecmp(theColorStr, "orange") )
+    aResult = Draw_orange;
+  if ( !strcasecmp(theColorStr, "pink") )
+    aResult = Draw_rose;
+  if ( !strcasecmp(theColorStr, "salmon") )
+    aResult = Draw_saumon;
+  if ( !strcasecmp(theColorStr, "violet") )
+    aResult = Draw_violet;
+  if ( !strcasecmp(theColorStr, "yellow") )
+    aResult = Draw_jaune;
+  if ( !strcasecmp(theColorStr, "darkgreen") )
+    aResult = Draw_kaki;
+  if ( !strcasecmp(theColorStr, "coral") )
+    aResult = Draw_corail;
+
+  return aResult;
+}
+
 //=======================================================================
 //function : setcurvcolor
 //purpose  : 
 //=======================================================================
-static Standard_Integer setcurvcolor(Draw_Interpretor& di, Standard_Integer n, const char** a)
+
+static Standard_Integer setcurvcolor(Draw_Interpretor& di,
+                                     Standard_Integer n, const char** a)
 {
-  Draw_Color col,savecol;
+  Draw_Color col, savecol;
 
   savecol = DrawTrSurf_CurveColor(Draw_Color(Draw_jaune));
   DrawTrSurf_CurveColor(savecol);
 
-  if (n < 2) {
-    switch (savecol.ID()) {
-    case Draw_blanc:   di <<"blanc "   << "\n"; break;
-    case Draw_rouge:   di <<"rouge "   << "\n"; break;
-    case Draw_vert:    di <<"vert "    << "\n"; break;
-    case Draw_bleu:    di <<"bleu "    << "\n"; break;
-    case Draw_cyan:    di <<"cyan "    << "\n"; break;
-    case Draw_or:      di <<"or "      << "\n"; break;
-    case Draw_magenta: di <<"magenta " << "\n"; break;
-    case Draw_marron:  di <<"marron "  << "\n"; break;
-    case Draw_orange:  di <<"orange "  << "\n"; break;
-    case Draw_rose:    di <<"rose "    << "\n"; break;
-    case Draw_saumon:  di <<"saumon "  << "\n"; break;
-    case Draw_violet:  di <<"violet "  << "\n"; break;
-    case Draw_jaune:   di <<"jaune "   << "\n"; break;
-    case Draw_kaki:    di <<"kaki "    << "\n"; break;
-    case Draw_corail:  di <<"corail "  << "\n"; break;
-    }
-
-  } else {
-    col = savecol;
-    if (!strcasecmp(a[1],"blanc"))
-      col = Draw_blanc;
-    if (!strcasecmp(a[1],"rouge"))
-      col = Draw_rouge;
-    if (!strcasecmp(a[1],"vert"))
-      col = Draw_vert;
-    if (!strcasecmp(a[1],"bleu"))
-      col = Draw_bleu;
-    if (!strcasecmp(a[1],"cyan"))
-      col = Draw_cyan;
-    if (!strcasecmp(a[1],"or"))
-      col = Draw_or;
-    if (!strcasecmp(a[1],"magenta"))
-      col = Draw_magenta;
-    if (!strcasecmp(a[1],"marron"))
-      col = Draw_marron;
-    if (!strcasecmp(a[1],"orange"))
-      col = Draw_orange;
-    if (!strcasecmp(a[1],"rose"))
-      col = Draw_rose;
-    if (!strcasecmp(a[1],"saumon"))
-      col = Draw_saumon;
-    if (!strcasecmp(a[1],"violet"))
-      col = Draw_violet;
-    if (!strcasecmp(a[1],"jaune"))
-      col = Draw_jaune;
-    if (!strcasecmp(a[1],"kaki"))
-      col = Draw_kaki;
-    if (!strcasecmp(a[1],"corail"))
-      col = Draw_corail;
-    
+  if (n < 2)
+  {
+    printColor(di, savecol);
+  }
+  else {
+    col = recognizeColor(a[1], savecol);
     DrawTrSurf_CurveColor(col);
-    
   }
   return 0;
 }
@@ -1032,56 +1107,176 @@ static Standard_Integer setcurvcolor(Draw_Interpretor& di, Standard_Integer n, c
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer changecurvcolor(Draw_Interpretor& , Standard_Integer n, const char** a)
+static Standard_Integer changecurvcolor(Draw_Interpretor&,
+                                        Standard_Integer n, const char** a)
 {
-  Draw_Color col,savecol;
+  Draw_Color col, savecol;
 
   savecol = DrawTrSurf_CurveColor(Draw_Color(Draw_jaune));
   DrawTrSurf_CurveColor(savecol);
 
-  if (n < 3) return 1;
+  if ( n < 3 )
+    return 1;
 
-  col = savecol;
-  if (!strcasecmp(a[1],"blanc"))
-    col = Draw_blanc;
-  if (!strcasecmp(a[1],"rouge"))
-    col = Draw_rouge;
-  if (!strcasecmp(a[1],"vert"))
-    col = Draw_vert;
-  if (!strcasecmp(a[1],"bleu"))
-    col = Draw_bleu;
-  if (!strcasecmp(a[1],"cyan"))
-    col = Draw_cyan;
-  if (!strcasecmp(a[1],"or"))
-    col = Draw_or;
-  if (!strcasecmp(a[1],"magenta"))
-    col = Draw_magenta;
-  if (!strcasecmp(a[1],"marron"))
-    col = Draw_marron;
-  if (!strcasecmp(a[1],"orange"))
-    col = Draw_orange;
-  if (!strcasecmp(a[1],"rose"))
-    col = Draw_rose;
-  if (!strcasecmp(a[1],"saumon"))
-    col = Draw_saumon;
-  if (!strcasecmp(a[1],"violet"))
-    col = Draw_violet;
-  if (!strcasecmp(a[1],"jaune"))
-    col = Draw_jaune;
-  if (!strcasecmp(a[1],"kaki"))
-    col = Draw_kaki;
-  if (!strcasecmp(a[1],"corail"))
-    col = Draw_corail;
+  col = recognizeColor(a[1], savecol);
     
-  Handle(DrawTrSurf_Curve) D = 
-    Handle(DrawTrSurf_Curve)::DownCast(Draw::Get(a[2]));
-  if (!D.IsNull()) {
+  Handle(DrawTrSurf_Curve) D = Handle(DrawTrSurf_Curve)::DownCast( Draw::Get(a[2]) );
+  if ( !D.IsNull() )
+  {
     D->SetColor(col);
+    Draw::Repaint();
   }
 
   return 0;
 }
 
+//=======================================================================
+//function : setpointcolor
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer setpointcolor(Draw_Interpretor& di,
+                                      Standard_Integer n, const char** a)
+{
+  Draw_Color col, savecol;
+
+  savecol = DrawTrSurf_PointColor(Draw_Color(Draw_jaune));
+  DrawTrSurf_PointColor(savecol);
+
+  if (n < 2)
+  {
+    printColor(di, savecol);
+  }
+  else {
+    col = recognizeColor(a[1], savecol);
+    DrawTrSurf_PointColor(col);
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : changepointcolor
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer changepointcolor(Draw_Interpretor&,
+                                         Standard_Integer n, const char** a)
+{
+  Draw_Color col, savecol;
+
+  savecol = DrawTrSurf_PointColor(Draw_Color(Draw_jaune));
+  DrawTrSurf_PointColor(savecol);
+
+  if ( n < 3 )
+    return 1;
+
+  col = recognizeColor(a[1], savecol);
+    
+  Handle(DrawTrSurf_Point) D = Handle(DrawTrSurf_Point)::DownCast( Draw::Get(a[2]) );
+  if ( !D.IsNull() )
+  {
+    D->Color(col);
+    Draw::Repaint();
+  }
+
+  return 0;
+}
+
+//=======================================================================
+//function : printMarker
+//purpose  : 
+//=======================================================================
+
+static void printMarker(Draw_Interpretor& di, const Draw_MarkerShape& theMarker)
+{
+  switch ( theMarker )
+  {
+    case Draw_Square:     di << "square "      << "\n"; break;
+    case Draw_Losange:    di << "diamond "     << "\n"; break;
+    case Draw_X:          di << "x "           << "\n"; break;
+    case Draw_Plus:       di << "plus "        << "\n"; break;
+    case Draw_Circle:     di << "circle "      << "\n"; break;
+    case Draw_CircleZoom: di << "circle_zoom " << "\n"; break;
+  }
+}
+
+//=======================================================================
+//function : recognizeMarker
+//purpose  : 
+//=======================================================================
+
+static Draw_MarkerShape recognizeMarker(const char* theMarkerStr,
+                                        const Draw_MarkerShape& theDefaultMarker)
+{
+  Draw_MarkerShape aResult = theDefaultMarker;
+
+  if ( !strcasecmp(theMarkerStr, "square") )
+    aResult = Draw_Square;
+  if ( !strcasecmp(theMarkerStr, "diamond") )
+    aResult = Draw_Losange;
+  if ( !strcasecmp(theMarkerStr, "x") )
+    aResult = Draw_X;
+  if ( !strcasecmp(theMarkerStr, "plus") )
+    aResult = Draw_Plus;
+  if ( !strcasecmp(theMarkerStr, "circle") )
+    aResult = Draw_Circle;
+  if ( !strcasecmp(theMarkerStr, "circle_zoom") )
+    aResult = Draw_CircleZoom;
+
+  return aResult;
+}
+
+//=======================================================================
+//function : setpointmarker
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer setpointmarker(Draw_Interpretor& di,
+                                       Standard_Integer n, const char** a)
+{
+  Draw_MarkerShape mark, savemark;
+
+  savemark = DrawTrSurf_PointMarker(Draw_MarkerShape(Draw_Plus));
+  DrawTrSurf_PointMarker(savemark);
+
+  if ( n < 2 )
+  {
+    printMarker(di, savemark);
+  }
+  else {
+    mark = recognizeMarker(a[1], savemark);
+    DrawTrSurf_PointMarker(mark);
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : changepointmarker
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer changepointmarker(Draw_Interpretor&,
+                                          Standard_Integer n, const char** a)
+{
+  Draw_MarkerShape mark, savemark;
+
+  savemark = DrawTrSurf_PointMarker(Draw_MarkerShape(Draw_Plus));
+  DrawTrSurf_PointMarker(savemark);
+
+  if ( n < 3 )
+    return 1;
+
+  mark = recognizeMarker(a[1], savemark);
+    
+  Handle(DrawTrSurf_Point) D = Handle(DrawTrSurf_Point)::DownCast( Draw::Get(a[2]) );
+  if ( !D.IsNull() )
+  {
+    D->Shape(mark);
+    Draw::Repaint();
+  }
+
+  return 0;
+}
 
 //=======================================================================
 //function : BasicCommands
@@ -1136,12 +1331,39 @@ void  DrawTrSurf::BasicCommands(Draw_Interpretor& theCommands)
 		  "defle [names...] defle",
                   __FILE__,
 		  draw,g);
-  
-  theCommands.Add("setcurvcolor","setcurvcolor [color] : set curve color by default, or print the current curve color if no argument (this does not modify the color of pcurve)",
+
+  theCommands.Add("setcurvcolor",
+                  TCollection_AsciiString("setcurvcolor [color] : set curve color\
+ by default, or print the current curve color if no argument (this does not modify\
+ the color of the curve)\n\n").Cat(ColorsHint).ToCString(),
   		  __FILE__,setcurvcolor,g);
 
-  theCommands.Add("changecurvcolor","changecurvcolor color curve: change color of the curve",
+  theCommands.Add("changecurvcolor",
+                  TCollection_AsciiString("changecurvcolor color curve: change\
+ color of the curve\n\n").Cat(ColorsHint).ToCString(),
   		  __FILE__,changecurvcolor,g);
+
+  theCommands.Add("setpointcolor",
+                  TCollection_AsciiString("setpointcolor [color] : set point color\
+ by default, or print the current point color if no argument (this does not modify\
+ the color of the point)\n\n").Cat(ColorsHint).ToCString(),
+  		  __FILE__,setpointcolor,g);
+
+  theCommands.Add("changepointcolor",
+                  TCollection_AsciiString("changepointcolor color point: change\
+ color of the point\n\n").Cat(ColorsHint).ToCString(),
+  		  __FILE__,changepointcolor,g);
+  
+  theCommands.Add("setpointmarker",
+                  TCollection_AsciiString("setpointmarker [marker] : set point marker\
+ by default, or print the current point marker if no argument (this does not modify\
+ the marker of the point)\n\n").Cat(MarkersHint).ToCString(),
+  		  __FILE__,setpointmarker,g);
+
+  theCommands.Add("changepointmarker",
+                  TCollection_AsciiString("changepointmarker marker point: change\
+ marker of the point\n\n").Cat(MarkersHint).ToCString(),
+  		  __FILE__,changepointmarker,g);
 
   g = "Geometric tranformations";
   

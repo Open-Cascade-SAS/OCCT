@@ -82,13 +82,19 @@ is
 	---Purpose: Sets <G> in the variable <Name>.  Overwrite the
 	--          variable if already set.
     
-    Set(Name : CString; G : Geometry from Geom);
+    Set(Name : CString; G : Geometry from Geom;
+        isSenseMarker : Boolean = Standard_True);
 	---Purpose: Sets <G> in the variable <Name>.  Overwrite the
 	--          variable if already set.
+  --          isSenseMarker indicates whether to render the
+  --          sense glyph (arrow) for curves or not
     
-    Set(Name : CString; C : Curve from Geom2d);
+    Set(Name : CString; C : Curve from Geom2d;
+        isSenseMarker : Boolean = Standard_True);
 	---Purpose: Sets <C> in the variable <Name>.  Overwrite the
 	--          variable if already set.
+  --          isSenseMarker indicates whether to render the
+  --          sense glyph (arrow) for curves or not
     
     Set(Name : CString; T : Triangulation from Poly);
 	---Purpose: Sets <T> in the variable <Name>.  Overwrite the
