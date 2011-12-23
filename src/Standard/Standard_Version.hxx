@@ -24,7 +24,7 @@
 #define OCC_VERSION_MAJOR         6
 #define OCC_VERSION_MINOR         5
 #define OCC_VERSION_MAINTENANCE   2
-//#define OCC_VERSION_DEVELOPMENT // This line must be commented in any final version (release)
+#define OCC_VERSION_DEVELOPMENT // This line must be commented in any final version (release)
 
 // Derived: version as real and string (major.minor)
 #define OCC_VERSION         6.5
