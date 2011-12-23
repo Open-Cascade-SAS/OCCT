@@ -26,6 +26,7 @@ uses
     Face                 from TopoDS,
     Edge                 from TopoDS,
     MapOfShape           from TopTools, 
+    IndexedMapOfShape    from TopTools, 
     ListOfShape          from TopTools,
     MakeLoops            from BRepOffset
 
@@ -123,7 +124,7 @@ is
     ClosingFaces (me)   
     	---Purpose: Returns the list of closing faces stores by AddFace 
 	---C++: return const &
-    returns MapOfShape from TopTools
+    returns IndexedMapOfShape from TopTools
     is static;
 
 ---Category: private methods
@@ -143,12 +144,12 @@ is
     is static private;		    
 		    
     Intersection2D ( me       : in out ;
-                     Modif    : MapOfShape from TopTools;
-		     NewEdges : MapOfShape from TopTools)
+                     Modif    : IndexedMapOfShape from TopTools;
+		     NewEdges : IndexedMapOfShape from TopTools)
     is static private;
     
     MakeLoops ( me    : in out ;
-                Modif : in out MapOfShape from TopTools)
+                Modif : in out IndexedMapOfShape from TopTools)
     is static private;
 
     MakeLoopsOnContext ( me    : in out ;
@@ -156,7 +157,7 @@ is
     is static private;
     
     MakeFaces ( me    : in out ;
-                Modif : in out MapOfShape from TopTools)
+                Modif : in out IndexedMapOfShape from TopTools)
     is static private;
     
     MakeShells (me    : in out )
@@ -200,8 +201,8 @@ fields
      
     myFaceOffset     : DataMapOfShapeReal from TopTools;
     
-    myFaces          : MapOfShape from TopTools;
-    myAnalyse        : Analyse	  from BRepOffset;
+    myFaces          : IndexedMapOfShape from TopTools;
+    myAnalyse        : Analyse	         from BRepOffset;
     
     myOffsetShape    : Shape       from TopoDS;       -- Result
     myInitOffsetFace : Image       from BRepAlgo;

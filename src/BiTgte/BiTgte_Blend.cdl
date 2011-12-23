@@ -328,8 +328,8 @@ fields
     myCreated        : DataMapOfShapeDataMapOfShapeListOfShape from BRepFill;
     myCutEdges       : DataMapOfShapeListOfShape from TopTools;
 
-    myFaces          : MapOfShape           from TopTools;
-    myEdges          : MapOfShape           from TopTools;
+    myFaces          : IndexedMapOfShape           from TopTools;
+    myEdges          : IndexedMapOfShape           from TopTools;
      
     myStopFaces      : MapOfShape           from TopTools;
     myAnalyse        : Analyse	            from BRepOffset;

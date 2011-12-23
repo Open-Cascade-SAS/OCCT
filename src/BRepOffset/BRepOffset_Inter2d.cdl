@@ -15,14 +15,14 @@ uses
     AsDes               from BRepAlgo,
     Offset              from BRepOffset,
     Face                from TopoDS,
-    MapOfShape          from TopTools,
+    IndexedMapOfShape          from TopTools,
     DataMapOfShapeShape from TopTools,
     Real                from Standard
 
 is
     Compute(myclass ; AsDes    : mutable AsDes      from BRepAlgo;
     	    	      F        :         Face       from TopoDS;
-       	    	      NewEdges :         MapOfShape from TopTools;
+       	    	      NewEdges :         IndexedMapOfShape from TopTools;
 		      Tol      :         Real       from Standard);
 		      
       	---Purpose: Computes the intersections between the edges stored

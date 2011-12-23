@@ -145,7 +145,7 @@ static Standard_Boolean IsOnRestriction(const TopoDS_Vertex& V,
 //=======================================================================
 
 static void Add(const TopoDS_Edge&         E,
-		      TopTools_MapOfShape& Map,
+		      TopTools_IndexedMapOfShape& Map,
 		const TopoDS_Shape&        S,
 		const BRepOffset_Offset&   OF,
 		const BRepOffset_Analyse&  Analyse,
@@ -967,7 +967,12 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   for ( ; expf.More(); expf.Next()) {
     const TopoDS_Shape& F = expf.Current();
     if ( myFaces.Contains(F) && Sew->IsModified(F)) {
-      myFaces.Remove(F);
+      //myFaces.Remove(F);
+      TopoDS_Shape LastFace = myFaces(myFaces.Extent());
+      myFaces.RemoveLast();
+      if (myFaces.FindIndex(F) != 0)
+        myFaces.Substitute(myFaces.FindIndex(F), LastFace);
+      ////////////////////
       myFaces.Add(Sew->Modified(F));
     }
   }
@@ -990,7 +995,12 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   for ( ; exp.More(); exp.Next()) {
     const TopoDS_Shape& F = exp.Current();
     if ( myFaces.Contains(F)) {
-      myFaces.Remove(F);
+      //myFaces.Remove(F);
+      TopoDS_Shape LastFace = myFaces(myFaces.Extent());
+      myFaces.RemoveLast();
+      if (myFaces.FindIndex(F) != 0)
+        myFaces.Substitute(myFaces.FindIndex(F), LastFace);
+      ////////////////////
       myFaces.Add(F);
     }
     else if ( myStopFaces.Contains(F)) {
@@ -1474,7 +1484,7 @@ void BiTgte_Blend::ComputeCenters()
 
   BiTgte_DataMapOfShapeBox         MapSBox;
   TopTools_MapOfShape              Done;
-  TopTools_MapIteratorOfMapOfShape it;
+  //TopTools_MapIteratorOfMapOfShape it;
 
   BRep_Builder B;
   TopoDS_Compound Co; // to only know on which edges the tubes are made
@@ -1484,7 +1494,8 @@ void BiTgte_Blend::ComputeCenters()
   // Calculate Sections Face/Face + Propagation
   // ----------------------------------------
   Standard_Boolean JenRajoute = Standard_True;
-
+  Standard_Integer i;
+  
   while ( JenRajoute) {
     JenRajoute = Standard_False;
 
@@ -1498,8 +1509,9 @@ void BiTgte_Blend::ComputeCenters()
       // locate in myFaces the Faces connected to myEdges.
       // -------------------------------------------------
       Fini = Standard_True;
-      for (it.Initialize(myEdges); it.More(); it.Next()) {
-	const TopoDS_Edge& E = TopoDS::Edge(it.Key());
+      //for (it.Initialize(myEdges); it.More(); it.Next()) {
+      for (i = 1; i <= myEdges.Extent(); i++) {
+	const TopoDS_Edge& E = TopoDS::Edge(myEdges(i));
 	if (BRep_Tool::Degenerated(E)) continue;
 
 	const TopTools_ListOfShape& L = myAncestors.FindFromKey(E);
@@ -1523,15 +1535,16 @@ void BiTgte_Blend::ComputeCenters()
       // --------------------------------------------
       // Construction of Offsets of all faces.
       // --------------------------------------------
-      for (it.Initialize(myFaces); it.More(); it.Next()) {
-	const TopoDS_Shape& AS = it.Key();
+      //for (it.Initialize(myFaces); it.More(); it.Next()) {
+      for (i = 1; i <= myFaces.Extent(); i++) {
+	const TopoDS_Shape& AS = myFaces(i);
 	if ( myMapSF.IsBound(AS)) continue;
 
 	BRepOffset_Offset OF1;
 	TopoDS_Face BigF;
 
 	if (AS.ShapeType() == TopAbs_FACE) {
-	  const TopoDS_Face& F = TopoDS::Face(it.Key());
+	  const TopoDS_Face& F = TopoDS::Face(myFaces(i));
 	  if ( TouchedByCork.Contains(F)) {
 	    BRepOffset_Tool::EnLargeFace(F,BigF,Standard_True);
 	    OF1.Init(BigF,myRadius,EdgeTgt);
@@ -1703,10 +1716,10 @@ void BiTgte_Blend::ComputeCenters()
   BRepOffset_Type    OT = BRepOffset_Concave;
   if (myRadius < 0.) OT = BRepOffset_Convex; 
    
-  it.Initialize(myFaces);
   TopTools_ListOfShape LOF;
-  for ( ; it.More(); it.Next()) {
-    const TopoDS_Shape& CurS  = it.Key();
+  //it.Initialize(myFaces);
+  for (i = 1; i <= myFaces.Extent(); i++) {
+    const TopoDS_Shape& CurS  = myFaces(i);
 
     // tube on free border, it is undesirable.
     if ( myStopFaces.Contains(CurS)) continue;
@@ -1882,9 +1895,10 @@ void BiTgte_Blend::ComputeSurfaces()
   BRepOffset_Type    OT = BRepOffset_Concave;
   if (myRadius < 0.) OT = BRepOffset_Convex; 
 
-  TopTools_MapIteratorOfMapOfShape ic(myEdges);
-  for ( ; ic.More(); ic.Next()) {
-    const TopoDS_Edge& CurE = TopoDS::Edge(ic.Key());
+  //TopTools_MapIteratorOfMapOfShape ic(myEdges);
+  Standard_Integer i;
+  for (i = 1; i <= myEdges.Extent(); i++) {
+    const TopoDS_Edge& CurE = TopoDS::Edge(myEdges(i));
 
     const TopTools_ListOfShape& L = myAsDes->Ascendant(CurE);
     if ( L.Extent() != 2) continue;

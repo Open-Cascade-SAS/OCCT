@@ -3949,7 +3949,7 @@ static Standard_Boolean IsInOut (BRepTopAdaptor_FClass2d& FC,
 //=======================================================================
 
 void BRepOffset_Tool::CorrectOrientation(const TopoDS_Shape&        SI,
-					 const TopTools_MapOfShape& NewEdges,
+					 const TopTools_IndexedMapOfShape& NewEdges,
 					 Handle(BRepAlgo_AsDes)&    AsDes,
 					 BRepAlgo_Image&            InitOffset,
 					 const Standard_Real        Offset)

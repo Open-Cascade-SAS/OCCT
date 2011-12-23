@@ -28,6 +28,7 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Extrema_ExtPC.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 
 
@@ -570,8 +571,8 @@ void BRepOffset_Inter3d::ConnexIntByInt
 //=======================================================================
 
 void BRepOffset_Inter3d::ContextIntByInt
-(const TopTools_MapOfShape& ContextFaces, 
- const Standard_Boolean     ExtentContext,
+(const TopTools_IndexedMapOfShape&      ContextFaces, 
+ const Standard_Boolean                 ExtentContext,
  const BRepOffset_DataMapOfShapeOffset& MapSF,
  const BRepOffset_Analyse&              Analyse,
  TopTools_DataMapOfShapeShape&          MES,
@@ -579,7 +580,6 @@ void BRepOffset_Inter3d::ContextIntByInt
  TopTools_ListOfShape&                  Failed)
 {
   TopTools_ListOfShape             LInt1,LInt2;
-  TopTools_MapIteratorOfMapOfShape itCF(ContextFaces);
   TopTools_MapOfShape              MV;
   TopExp_Explorer                  exp;
   TopoDS_Face                      OF,NF,WCF;
@@ -587,8 +587,10 @@ void BRepOffset_Inter3d::ContextIntByInt
   TopoDS_Compound                  C;
   BRep_Builder                     B;
   TopTools_ListIteratorOfListOfShape it;
-  for (; itCF.More(); itCF.Next()) {
-    const TopoDS_Face& CF = TopoDS::Face(itCF.Key());
+  Standard_Integer i;
+  
+  for (i = 1; i <= ContextFaces.Extent(); i++) {
+    const TopoDS_Face& CF = TopoDS::Face(ContextFaces(i));
     myTouched.Add(CF);
     if (ExtentContext) {
       BRepOffset_Tool::EnLargeFace(CF,NF,0,0);
@@ -597,8 +599,8 @@ void BRepOffset_Inter3d::ContextIntByInt
   }
   TopAbs_State Side = TopAbs_OUT;
  
-  for (itCF.Initialize(ContextFaces); itCF.More(); itCF.Next()) {
-    const TopoDS_Face& CF  = TopoDS::Face(itCF.Key());
+  for (i = 1; i <= ContextFaces.Extent(); i++) {
+    const TopoDS_Face& CF  = TopoDS::Face(ContextFaces(i));
     if (ExtentContext) WCF = TopoDS::Face(MES(CF));
     else               WCF = CF;
 
@@ -691,29 +693,29 @@ void BRepOffset_Inter3d::ContextIntByInt
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_Inter3d::ContextIntByArc(const TopTools_MapOfShape& ContextFaces, 
-					 const Standard_Boolean     InSide,
-					 const BRepOffset_Analyse&  Analyse, 
-					 const BRepAlgo_Image&    InitOffsetFace, 
-					       BRepAlgo_Image&    InitOffsetEdge)
+void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& ContextFaces, 
+					 const Standard_Boolean            InSide,
+					 const BRepOffset_Analyse&         Analyse, 
+					 const BRepAlgo_Image&             InitOffsetFace, 
+					       BRepAlgo_Image&             InitOffsetEdge)
 
 { 
   TopTools_ListOfShape                      LInt1,LInt2;
-  TopTools_MapIteratorOfMapOfShape          it(ContextFaces);
   TopTools_MapOfShape                       MV;
   TopExp_Explorer                           exp;
   TopoDS_Face                               OF1,OF2;
   TopoDS_Edge                               OE;
   BRep_Builder                              B;  
   TopoDS_Edge                               NullEdge;
+  Standard_Integer j;
 
-  for (; it.More(); it.Next()) {
-    const TopoDS_Face& CF = TopoDS::Face(it.Key());
+  for (j = 1; j <= ContextFaces.Extent(); j++) {
+    const TopoDS_Face& CF = TopoDS::Face(ContextFaces(j));
     myTouched.Add(CF);
   }
 
-  for (it.Initialize(ContextFaces); it.More(); it.Next()) {
-    const TopoDS_Face& CF = TopoDS::Face(it.Key());
+  for (j = 1; j <= ContextFaces.Extent(); j++) {
+    const TopoDS_Face& CF = TopoDS::Face(ContextFaces(j));
     for (exp.Init(CF.Oriented(TopAbs_FORWARD),TopAbs_EDGE); 
 	 exp.More(); exp.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
@@ -909,7 +911,7 @@ const
 //purpose  : 
 //=======================================================================
 
-TopTools_MapOfShape& BRepOffset_Inter3d::TouchedFaces()
+TopTools_IndexedMapOfShape& BRepOffset_Inter3d::TouchedFaces()
 {
   return myTouched;
 }
@@ -931,7 +933,7 @@ Handle(BRepAlgo_AsDes) BRepOffset_Inter3d::AsDes() const
 //purpose  : 
 //=======================================================================
 
-TopTools_MapOfShape& BRepOffset_Inter3d::NewEdges() 
+TopTools_IndexedMapOfShape& BRepOffset_Inter3d::NewEdges() 
 {
   return myNewEdges;
 }

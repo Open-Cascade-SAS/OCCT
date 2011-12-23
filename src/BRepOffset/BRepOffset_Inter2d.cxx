@@ -144,8 +144,12 @@ static void  Store (const TopoDS_Edge&       E1,
 
     TopoDS_Vertex V    = TopoDS::Vertex(itLV1.Value());
 
-    U1 = BRep_Tool::Parameter(V,E1);
-    U2 = BRep_Tool::Parameter(V,E2);
+    U1 = (BRep_Tool::Degenerated(E1))?
+      BRep_Tool::Parameter(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)), E1) :
+      BRep_Tool::Parameter(V, E1);
+    U2 = (BRep_Tool::Degenerated(E2))?
+      BRep_Tool::Parameter(TopoDS::Vertex(V.Oriented(TopAbs_INTERNAL)), E2) :
+      BRep_Tool::Parameter(V, E2);
     O1 = V.Orientation();
     O2 = itLV2.Value().Orientation();
     P  = BRep_Tool::Pnt(V);
@@ -279,7 +283,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 
   Standard_Real f[3],l[3];
   Standard_Real MilTol2 = 1000*Tol*Tol;
-  Standard_Real TolDub = 1.e-7;  
+  Standard_Real TolDub = 1.e-7;
   Standard_Integer i;
 
   BRep_Tool::Range(E1, f[1], l[1]);
@@ -357,6 +361,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 	  
 	  gp_Pnt P = ResPoints(i); //ponc1.Value();
 	  TopoDS_Vertex aNewVertex = BRepLib_MakeVertex(P);
+          aNewVertex.Orientation(TopAbs_INTERNAL);
 	  B.UpdateVertex( aNewVertex, aT1, E1, Tol );
 	  B.UpdateVertex( aNewVertex, aT2, E2, Tol );
 	  gp_Pnt P1 = CE1.Value(aT1);
@@ -550,7 +555,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 
   Standard_Real f[3],l[3];
   Standard_Real MilTol2 = 1000*Tol*Tol;
-  Standard_Real TolDub = 1.e-7;  
+  Standard_Real TolDub = 1.e-7;
   Standard_Integer i;
 
   //BRep_Tool::Range(E1, f[1], l[1]);
@@ -625,6 +630,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
       
       gp_Pnt P = ResPoints(i); //ponc1.Value();
       TopoDS_Vertex aNewVertex = BRepLib_MakeVertex(P);
+      aNewVertex.Orientation(TopAbs_INTERNAL);
       B.UpdateVertex( aNewVertex, aT1, E1, Tol );
       B.UpdateVertex( aNewVertex, aT2, E2, Tol );
       gp_Pnt P1 = CE1.Value(aT1);
@@ -1163,7 +1169,7 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
 	  if (!Precision::IsInfinite(f) && !Precision::IsInfinite(l))
 	    BRepLib::SameParameter( NE, Precision::Confusion(), Standard_True );
 	}
-      else //no 3d curve
+      else if (!BRep_Tool::Degenerated(E)) //no 3d curve
 	{
 	  MinSurf = Handle(Geom_Surface)::DownCast
 	    (MinSurf->Transformed(MinLoc.Transformation()));
@@ -1394,10 +1400,10 @@ static Standard_Boolean  UpdateVertex(TopoDS_Vertex V,
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_Inter2d::Compute (const Handle(BRepAlgo_AsDes)&   AsDes,
-				  const TopoDS_Face&              F,
-				  const TopTools_MapOfShape&      NewEdges,
-				  const Standard_Real             Tol)
+void BRepOffset_Inter2d::Compute (const Handle(BRepAlgo_AsDes)&     AsDes,
+				  const TopoDS_Face&                F,
+				  const TopTools_IndexedMapOfShape& NewEdges,
+				  const Standard_Real               Tol)
 {
 #ifdef DEB
   NbF2d++;

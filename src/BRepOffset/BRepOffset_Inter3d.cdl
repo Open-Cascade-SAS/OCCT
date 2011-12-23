@@ -18,7 +18,8 @@ uses
     Shape                     from TopoDS,
     Face                      from TopoDS,
     ListOfShape               from TopTools,
-    MapOfShape                from TopTools,
+    --MapOfShape                from TopTools,
+    IndexedMapOfShape         from TopTools,
     DataMapOfShapeShape       from TopTools,
     DataMapOfShapeListOfShape from TopTools,
     Real                      from Standard,
@@ -55,7 +56,7 @@ is
     is static;
      
     ContextIntByInt( me             : in  out;   
-                     ContextFaces   :        MapOfShape           from TopTools; 
+                     ContextFaces   :        IndexedMapOfShape    from TopTools; 
 		     ExtentContext  :        Boolean              from Standard;	
     	             MapSF          :        DataMapOfShapeOffset from BRepOffset;
 		     A              :        Analyse              from BRepOffset;
@@ -65,11 +66,11 @@ is
     is  static; 
      
     ContextIntByArc(me : in out;
-    	      	    ContextFaces   :        MapOfShape from TopTools;
-    	    	    ExtentContext  :        Boolean    from Standard;	
-    	       	    Analyse        :        Analyse    from BRepOffset;
-    	      	    InitOffsetFace :        Image      from BRepAlgo;
-    	       	    InitOffsetEdge : in out Image      from BRepAlgo)
+    	      	    ContextFaces   :        IndexedMapOfShape from TopTools;
+    	    	    ExtentContext  :        Boolean           from Standard;	
+    	       	    Analyse        :        Analyse           from BRepOffset;
+    	      	    InitOffsetFace :        Image             from BRepAlgo;
+    	       	    InitOffsetEdge : in out Image             from BRepAlgo)
     is static;	       	
     
     AddCommonEdges(me : in out; 
@@ -85,14 +86,14 @@ is
     returns Boolean from Standard
     is static;
     
-    TouchedFaces(me : in out) returns MapOfShape from TopTools
+    TouchedFaces(me : in out) returns IndexedMapOfShape from TopTools
 	---C++: return &
     is static;
     
     AsDes(me) returns AsDes from BRepAlgo
     is static;
     
-    NewEdges(me : in out) returns MapOfShape from TopTools
+    NewEdges(me : in out) returns IndexedMapOfShape from TopTools
     	---C++:  return &
     is static;
     
@@ -105,9 +106,9 @@ is
 fields
 
    myAsDes        : AsDes                     from BRepAlgo;
-   myTouched      : MapOfShape                from TopTools;
+   myTouched      : IndexedMapOfShape         from TopTools;
    myDone         : DataMapOfShapeListOfShape from TopTools;
-   myNewEdges     : MapOfShape                from TopTools;
+   myNewEdges     : IndexedMapOfShape         from TopTools;
    mySide         : State                     from TopAbs;
    myTol          : Real                      from Standard;
    
