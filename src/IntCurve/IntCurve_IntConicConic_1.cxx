@@ -21,6 +21,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
+#include <IntRes2d_TypeTrans.hxx>
 
 Standard_Boolean Affichage=Standard_False;
 Standard_Boolean AffichageGraph=Standard_True;
@@ -603,7 +604,7 @@ void DomainIntersection(const IntRes2d_Domain& Domain
   }
   //--- Traitement des cas ou une intersection vraie est dans la tolerance
   //--  d un des bouts
-  if(PosInf==IntRes2d_Head) {
+  /*if(PosInf==IntRes2d_Head) {
     if(Res1sup <= (Res1inf+Domain.FirstTolerance())) {
       Res1sup=Res1inf;
       PosSup=IntRes2d_Head;
@@ -614,7 +615,7 @@ void DomainIntersection(const IntRes2d_Domain& Domain
       Res1inf=Res1sup;
       PosInf=IntRes2d_End;
     }
-  }
+  }*/
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -965,24 +966,132 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
 }
 //----------------------------------------------------------------------
 IntRes2d_Position FindPositionLL(Standard_Real &Param
-				 ,const IntRes2d_Domain& Domain) {
+				 ,const IntRes2d_Domain& Domain) 
+{
+  Standard_Real aDPar = Precision::Infinite();
+  IntRes2d_Position aPos = IntRes2d_Middle; 
+  Standard_Real aResPar = Param;
   if(Domain.HasFirstPoint()) {
-    if(Abs(Param-Domain.FirstParameter())<=Domain.FirstTolerance()) {
-      Param=Domain.FirstParameter();
-      return(IntRes2d_Head);
+    aDPar = Abs(Param-Domain.FirstParameter());
+    if( aDPar <= Domain.FirstTolerance()) {
+      aResPar=Domain.FirstParameter();
+      aPos = IntRes2d_Head;
+     
     }
   }
   if(Domain.HasLastPoint()) {
-    if(Abs(Param-Domain.LastParameter())<=Domain.LastTolerance()) {
-      Param=Domain.LastParameter();
-      return(IntRes2d_End);
+    Standard_Real aD2 = Abs(Param-Domain.LastParameter());
+    if( aD2 <= Domain.LastTolerance() && (aPos == IntRes2d_Middle || aD2 < aDPar )) 
+    {
+      aResPar=Domain.LastParameter();
+      aPos = IntRes2d_End;
     }
   }
-  return(IntRes2d_Middle);
+  Param = aResPar;
+  return aPos;
 }
+//--------------------------------------------------------------------
+//gka 0022833
+// Method to compute of point of intersection for case
+//when specified domain less than specified tolerance for intersection
+static inline void getDomainParametrs(const IntRes2d_Domain& theDomain,
+                                      Standard_Real& theFirst,
+                                      Standard_Real& theLast,
+                                      Standard_Real& theTol1,
+                                      Standard_Real& theTol2)
+{
+  theFirst = (theDomain.HasFirstPoint() ? theDomain.FirstParameter() : -Precision::Infinite());
+  theLast = (theDomain.HasLastPoint() ? theDomain.LastParameter() : Precision::Infinite()); 
+  theTol1 = (theDomain.HasFirstPoint() ? theDomain.FirstTolerance() : 0.);
+  theTol2 = (theDomain.HasLastPoint() ? theDomain.LastTolerance() : 0.);
+}
+
+
+static Standard_Boolean computeIntPoint(const IntRes2d_Domain& theCurDomain,
+                                                         const IntRes2d_Domain& theDomainOther,
+                                                         const gp_Lin2d& theCurLin,
+                                                         const gp_Lin2d& theOtherLin,   
+                                                         Standard_Real theCosT1T2,
+                                                         Standard_Real theParCur, Standard_Real theParOther,
+                                                         Standard_Real& theResInf, Standard_Real& theResSup,
+                                                         Standard_Integer theNum,
+                                                         IntRes2d_TypeTrans theCurTrans,    
+                                                         IntRes2d_IntersectionPoint& theNewPoint)
+{
+  if(fabs(theResSup-theParCur) > fabs(theResInf-theParCur))
+    theResSup = theResInf;
+
+  Standard_Real aRes2 = theParOther + (theResSup - theParCur) * theCosT1T2;
+
+  Standard_Real aFirst2, aLast2, aTol1, aTol2;
+  getDomainParametrs(theDomainOther,aFirst2, aLast2, aTol1, aTol2);
+  if( aRes2  < aFirst2 - aTol1 || aRes2  > aLast2 + aTol2 ) 
+	  return Standard_False;
+	
+  //------ compute parameters of intersection point --
+  IntRes2d_Transition aT1,aT2;
+  IntRes2d_Position aPos1a = FindPositionLL(theResSup,theCurDomain);
+  IntRes2d_Position aPos2a = FindPositionLL(aRes2,theDomainOther);
+  IntRes2d_TypeTrans anOtherTrans = ( theCurTrans == IntRes2d_Out ? 
+      IntRes2d_In : ( theCurTrans == IntRes2d_In ? IntRes2d_Out : IntRes2d_Undecided ) );
+
+  if( theCurTrans != IntRes2d_Undecided )
+  {
+    aT1.SetValue(Standard_False, aPos1a, theCurTrans);
+    aT2.SetValue(Standard_False,  aPos2a, anOtherTrans);
+  }
+  else  
+  { 
+    Standard_Boolean anOpposite = theCosT1T2 < 0.;
+    aT1.SetValue(Standard_False,aPos1a,IntRes2d_Unknown,anOpposite);
+    aT2.SetValue(Standard_False,aPos2a,IntRes2d_Unknown,anOpposite);
+  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //--------------------------------------------------
+  //gka bug 0022833 
+  Standard_Real aResU1 = theParCur;
+  Standard_Real aResU2 = theParOther;
+
+  Standard_Real aFirst1, aLast1;
+  getDomainParametrs(theCurDomain,aFirst1, aLast1, aTol1, aTol2);
+  
+  Standard_Boolean isInside1 = (theParCur >= aFirst1 && theParCur <= aLast1);
+  Standard_Boolean isInside2 = (theParOther >= aFirst2 && theParOther <= aLast2);
+
+  if(!isInside1 || !isInside2)
+  {
+    if(isInside1) 
+    {
+      gp_Pnt2d Pt1=ElCLib::Value(aRes2,theOtherLin);
+      aResU2 = aRes2;
+      Standard_Real aPar1 = ElCLib::Parameter(theCurLin,Pt1);
+      aResU1 =((aPar1 >= aFirst1 && aPar1<= aLast1) ?  aPar1 : theResSup);
+      
+    }
+    else if(isInside2)
+    {
+      gp_Pnt2d aPt1=ElCLib::Value(theResSup,theCurLin);
+      aResU1 = theResSup;
+      Standard_Real aPar2 = ElCLib::Parameter(theOtherLin,aPt1);
+      aResU2= ((aPar2 >= aFirst2 && aPar2<= aLast2) ? aPar2 : aRes2);
+    }
+    else 
+    {
+      aResU1 = theResSup;
+      aResU2= aRes2;
+    }
+  }
+  gp_Pnt2d aPres((ElCLib::Value(aResU1,theCurLin).XY() + ElCLib::Value(aResU2,theOtherLin).XY()) * 0.5 );
+  if(theNum == 1 )
+    theNewPoint.SetValues(aPres, aResU1, aResU2 ,aT1, aT2, Standard_False);
+  else
+    theNewPoint.SetValues(aPres, aResU2, aResU1 ,aT2, aT1, Standard_False);
+  return Standard_True;
+}
+
 //----------------------------------------------------------------------
 void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
-				     ,const IntRes2d_Domain& Domain1
+				      ,const IntRes2d_Domain& Domain1
 				     ,const gp_Lin2d& L2
 				     ,const IntRes2d_Domain& Domain2
 				     ,const Standard_Real,const Standard_Real TolR) {  
@@ -1004,7 +1113,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 
   gp_Vec2d Tan1=L1.Direction();
   gp_Vec2d Tan2=L2.Direction();
-  Standard_Boolean Opposite=(Tan1.Dot(Tan2) < 0.0)? Standard_True : Standard_False;
+ 
+  Standard_Real aCosT1T2 = Tan1.Dot(Tan2);
+  Standard_Boolean Opposite=(aCosT1T2 < 0.0)? Standard_True : Standard_False;
 
   done=Standard_True;
 
@@ -1092,71 +1203,23 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 
 
       if(((Res1sup-Res1inf)<=LongMiniSeg)
-	 || ((Pos1a==Pos1b)&&(Pos1a!=IntRes2d_Middle)))     {
-	//-------------------------------  Un seul Point -------------------
-	//--- lorsque la longueur du segment est inferieure a ??
-	//--- ou si deux points designent le meme bout
-	Standard_Real Res2=Res1sup-U1;
-	Res2=U2 + ((Opposite)? (-Res2) : (Res2));
-	
-	if(Domain2.HasFirstPoint()) 
-	  if(Res2<(Domain2.FirstParameter()-Domain2.FirstTolerance()))
-	    IsInDomain=Standard_False;
-	
-	if(IsInDomain) {
-	  if(Domain2.HasLastPoint()) {
-	    if((Domain2.LastParameter()+Domain2.LastTolerance()) < Res2) 
-	      IsInDomain=Standard_False;
-	  }
-	  if(IsInDomain) { 
-	    //------ Calcul des attributs du point d intersection --
-	    IntRes2d_Transition T1,T2;
-	    Pos1a=FindPositionLL(Res1sup,Domain1);
-	    Pos2a=FindPositionLL(Res2,Domain2);
-	    if(ProdVectTan>=TOLERANCE_ANGULAIRE) {
-	      T1.SetValue(Standard_False,Pos1a,IntRes2d_Out);
-	      T2.SetValue(Standard_False,Pos2a,IntRes2d_In);
-	    }
-	    else {
-	      if(ProdVectTan<=-TOLERANCE_ANGULAIRE) {
-		T1.SetValue(Standard_False,Pos1a,IntRes2d_In);
-		T2.SetValue(Standard_False,Pos2a,IntRes2d_Out);
-	      }
-	      else  { 
-		T1.SetValue(Standard_False,Pos1a,IntRes2d_Unknown,Opposite);
-		T2.SetValue(Standard_False,Pos2a,IntRes2d_Unknown,Opposite);
-	      }
-	    }
-	    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	    gp_Pnt2d Pt1;
-	    if(Pos1a==IntRes2d_Middle) {
-	      Pt1=ElCLib::Value(Res2,L2);
-	      Res1sup=ElCLib::Parameter(L1,Pt1);
-	    }
-	    else {
-	      Pt1=ElCLib::Value(Res1sup,L1);
-	      Res2=ElCLib::Parameter(L2,Pt1);
-	    }
-	    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	     // modified by NIZHNY-4426  Wed Nov 19 11:21:26 2003 .b
-	    gp_Pnt2d IP(U1,U2);
-	    Standard_Real pL1 = ElCLib::Parameter(L1,IP);
-	    Standard_Real pL2 = ElCLib::Parameter(L2,IP);
-	    if((U1inf <= pL1 && pL1 <= U1sup) &&
-	       (U1inf <= pL2 && pL2 <= U1sup) ) {
-	      IntRes2d_IntersectionPoint NewPoint1(IP,pL1,pL2,T1,T2,Standard_False);
-	      Append(NewPoint1);
-	    }
-	    else {
-	    // modified by NIZHNY-4426  Wed Nov 19 11:21:30 2003 .e
-	      IntRes2d_IntersectionPoint NewPoint1(Pt1,Res1sup,Res2,T1,T2,Standard_False);
-	      Append(NewPoint1);
-	    }
-	    //Append(NewPoint1);
-	    //------------------------------------------------------
-	  }
-	}
-      }  //---------------   Fin du cas  :   1 seul point --------------------
+        || ((Pos1a==Pos1b)&&(Pos1a!=IntRes2d_Middle)))     
+      {
+        //-------------------------------  Un seul Point -------------------
+        //--- lorsque la longueur du segment est inferieure a ??
+        //--- ou si deux points designent le meme bout
+        //gka #0022833
+        IntRes2d_TypeTrans aCurTrans = ( ProdVectTan >= TOLERANCE_ANGULAIRE ? 
+             IntRes2d_Out : ( ProdVectTan <= -TOLERANCE_ANGULAIRE ? IntRes2d_In : IntRes2d_Undecided ) );
+
+        IntRes2d_IntersectionPoint NewPoint1;
+        if( computeIntPoint(Domain1, Domain2, L1, L2, aCosT1T2, U1, U2, Res1inf, Res1sup, 1, aCurTrans, NewPoint1 ) )
+          Append(NewPoint1);
+
+        //------------------------------------------------------
+      
+    
+    }  //---------------   Fin du cas  :   1 seul point --------------------
       
       else {
 	//-- Intersection AND Domain1  --------> Segment ---------------------
@@ -1456,29 +1519,15 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 	  //------ (Intersection And Domain1)  AND  Domain2  --> Point ------
 	  //-- Attention Res1sup peut etre  different de  U2
 	  //--   Mais on a Res1sup-Res1inf < Tol 
-	  IntRes2d_Transition T1,T2;
-	  Res1sup=(Opposite)? (U1pU2-Res2inf) : (U1mU2+Res2sup);
-	  
-	  Pos1a=FindPositionLL(Res1sup,Domain1);
-	  Pos2a=FindPositionLL(Res2sup,Domain2);
-	  
-	  //------ Calcul des attributs du point d intersection --
-	  if(ProdVectTan>=TOLERANCE_ANGULAIRE) {
-	    T1.SetValue(Standard_False,Pos1a,IntRes2d_Out);
-	    T2.SetValue(Standard_False,Pos2a,IntRes2d_In);
-	  }
-	  else if(ProdVectTan<=-TOLERANCE_ANGULAIRE) {
-	    T1.SetValue(Standard_False,Pos1a,IntRes2d_In);
-	    T2.SetValue(Standard_False,Pos2a,IntRes2d_Out);
-	  }
-	  else {
-	    T1.SetValue(Standard_False,Pos1a,IntRes2d_Unknown,Opposite);
-	    T2.SetValue(Standard_False,Pos2a,IntRes2d_Unknown,Opposite);
-	  }	  
-	  gp_Pnt2d Pt1=ElCLib::Value(Res2sup,L2);
-	  IntRes2d_IntersectionPoint NewPoint1(Pt1,Res1sup,Res2sup,T1,T2,Standard_False);
-	  Append(NewPoint1);
-	  //------------------------------------------------------
+
+    //gka #0022833
+    IntRes2d_TypeTrans aCurTrans = ( ProdVectTan >= TOLERANCE_ANGULAIRE ? 
+           IntRes2d_In : ( ProdVectTan <= -TOLERANCE_ANGULAIRE ? IntRes2d_Out : IntRes2d_Undecided ) );
+
+    IntRes2d_IntersectionPoint NewPoint1;
+    if( computeIntPoint(Domain2, Domain1, L2, L1, aCosT1T2, U2, U1, Res2inf, Res2sup, 2, aCurTrans, NewPoint1 ) )
+      Append(NewPoint1);
+	
 	}
       }
     }
