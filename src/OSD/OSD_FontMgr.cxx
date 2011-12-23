@@ -14,6 +14,7 @@
 # include <X11/Xlib.h>
 #endif //WNT
 
+#include <OSD_Environment.hxx>
 #include <NCollection_List.hxx>
 #include <TCollection_HAsciiString.hxx>  
 #include <Standard_Stream.hxx>
@@ -106,7 +107,6 @@ OSD_FontMgr::OSD_FontMgr() {
 
 }
 
-
 void OSD_FontMgr::InitFontDataBase() {
 
   MyListOfFonts.Clear();
@@ -114,26 +114,17 @@ void OSD_FontMgr::InitFontDataBase() {
 #ifdef WNT
   //detect font directory
 
-  Standard_Character* windir_var;
-  Standard_Size req_size;   
-  req_size = strlen( getenv("windir") );
-
-  windir_var = new Standard_Character[req_size + 1];
-
-  strcpy( windir_var, getenv("windir") );
-
-  Standard_Character *font_dir = new Standard_Character[ req_size + strlen("\\Fonts\\") + 1 ]  ;  
-
-  if( !strcpy( font_dir, windir_var ) )
-    return  ;   
-  if( !strcat( font_dir, "\\Fonts\\" ) )
-    return ;  
-
-  Handle(TCollection_HAsciiString) HFontDir = new TCollection_HAsciiString(font_dir);
-
-#ifdef TRACE
-  cout << "System font directory: " << font_dir << "\n";
-#endif TRACE
+  OSD_Environment env("windir");
+  TCollection_AsciiString windir_str = env.Value();
+  if ( windir_str.IsEmpty() )
+  {
+	  return;
+  }
+  Handle(TCollection_HAsciiString) HFontDir = new TCollection_HAsciiString( windir_str );
+  HFontDir->AssignCat( "\\Fonts\\" );
+  #ifdef TRACE
+    cout << "System font directory: " << HFontDir->ToCString() << "\n";
+  #endif TRACE
 
   //read registry
   HKEY fonts_hkey;
@@ -200,7 +191,6 @@ void OSD_FontMgr::InitFontDataBase() {
       if ( strchr( (Standard_Character*)buf_data, '\\' ) == NULL ) {
         file_path->Insert( 1, HFontDir );
       }
-      Handle(TCollection_HAsciiString) HFontDir = new TCollection_HAsciiString(font_dir);
 
       if( ( ( file_path->Search(".ttf") > 0 ) || ( file_path->Search(".TTF") > 0 ) ||
             ( file_path->Search(".otf") > 0 ) || ( file_path->Search(".OTF") > 0 ) ||
