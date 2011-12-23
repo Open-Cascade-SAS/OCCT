@@ -1679,6 +1679,29 @@ Standard_Integer  build3d(Draw_Interpretor& di,
   return 0;
 }
 
+//=======================================================================
+//function : reducepcurves
+//purpose  : remove pcurves that are unused in this shape
+//=======================================================================
+
+Standard_Integer reducepcurves(Draw_Interpretor& di, 
+                               Standard_Integer n, const char** a)
+{
+  if (n < 2) return 1;
+
+  Standard_Integer i;
+  for (i = 1; i < n; i++)
+  {
+    TopoDS_Shape aShape = DBRep::Get(a[i]);
+    if (aShape.IsNull())
+      //cout << a[i] << " is not a valid shape" << endl;
+      di << a[i] << " is not a valid shape" << "\n";
+    else
+      BRepTools::RemoveUnusedPCurves(aShape);
+  }
+  
+  return 0;
+}
 
 //=======================================================================
 //function : CurveCommands
@@ -1785,6 +1808,10 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
   theCommands.Add("build3d",
 		  "build3d S [tol]",
 		  build3d, g);
+
+  theCommands.Add("reducepcurves",
+		  "reducepcurves shape1 shape2 ...",
+		  reducepcurves, g);
 
   theCommands.Add("concatwire",
 		  "concatwire result wire [option](G1/C1)",

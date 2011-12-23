@@ -469,9 +469,9 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 				   TolCurv,
 				   MaxDeg,
 				   MaxSegments );
-    TopoDS_Shape aLocalFace(DBRep::Get( a[5], TopAbs_FACE ) );
-    TopoDS_Face InitFace = TopoDS::Face( aLocalFace);
-//  TopoDS_Face InitFace = TopoDS::Face( DBRep::Get( a[5], TopAbs_FACE ) );
+  //TopoDS_Shape aLocalFace(DBRep::Get( a[5], TopAbs_FACE ) );
+  //TopoDS_Face InitFace = TopoDS::Face( aLocalFace);
+  TopoDS_Face InitFace = TopoDS::Face( DBRep::Get(a[5], TopAbs_FACE) );
   if (! InitFace.IsNull())
     MakeFilling.LoadInitSurface( InitFace );
   
@@ -484,14 +484,14 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
     { 
       E.Nullify();
       F.Nullify();
-      TopoDS_Shape aLocalEdge(DBRep::Get( a[i], TopAbs_EDGE ));
-      E = TopoDS::Edge(aLocalEdge);
-//      E = TopoDS::Edge( DBRep::Get( a[i], TopAbs_EDGE ) );
+      //TopoDS_Shape aLocalEdge(DBRep::Get( a[i], TopAbs_EDGE ));
+      //E = TopoDS::Edge(aLocalEdge);
+      E = TopoDS::Edge( DBRep::Get(a[i], TopAbs_EDGE) );
       if (! E.IsNull())
 	i++;
-      aLocalFace =  DBRep::Get( a[i], TopAbs_FACE ) ;
-      F = TopoDS::Face(aLocalFace);
-//      F = TopoDS::Face( DBRep::Get( a[i], TopAbs_FACE ) );
+      //aLocalFace =  DBRep::Get( a[i], TopAbs_FACE ) ;
+      //F = TopoDS::Face(aLocalFace);
+      F = TopoDS::Face( DBRep::Get(a[i], TopAbs_FACE) );
       if (! F.IsNull())
 	i++;
 
@@ -517,18 +517,18 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
     { 
       E.Nullify();
       F.Nullify();
-      TopoDS_Shape aLocalEdge(DBRep::Get( a[i++], TopAbs_EDGE ));
-      E = TopoDS::Edge( aLocalEdge);
-//      E = TopoDS::Edge( DBRep::Get( a[i++], TopAbs_EDGE ) );
+      //TopoDS_Shape aLocalEdge(DBRep::Get( a[i++], TopAbs_EDGE ));
+      //E = TopoDS::Edge( aLocalEdge);
+      E = TopoDS::Edge( DBRep::Get(a[i++], TopAbs_EDGE) );
       if (E.IsNull())
 	{
 	  //cout<<"Wrong parameters"<<endl;
 	  di<<"Wrong parameters"<<"\n";
 	  return 1;
 	}
-      TopoDS_Shape alocalFace(DBRep::Get( a[i], TopAbs_FACE ) );
-      F = TopoDS::Face( aLocalFace);
-//      F = TopoDS::Face( DBRep::Get( a[i], TopAbs_FACE ) );
+      //TopoDS_Shape alocalFace(DBRep::Get( a[i], TopAbs_FACE ) );
+      //F = TopoDS::Face( alocalFace);
+      F = TopoDS::Face( DBRep::Get(a[i], TopAbs_FACE) );
       if (! F.IsNull())
 	i++;
       
@@ -549,9 +549,9 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
       else
 	{
 	  Standard_Real U = atof( a[i++] ), V = atof( a[i++] );
-	  aLocalFace = DBRep::Get( a[i++], TopAbs_FACE );
-	  F = TopoDS::Face( aLocalFace);
-//	  F = TopoDS::Face( DBRep::Get( a[i++], TopAbs_FACE ));
+	  //aLocalFace = DBRep::Get( a[i++], TopAbs_FACE );
+	  //F = TopoDS::Face( aLocalFace);
+	  F = TopoDS::Face( DBRep::Get(a[i++], TopAbs_FACE));
 	  if (F.IsNull()) 
 	    {
 	      //cout<<"Wrong parameters"<<endl;

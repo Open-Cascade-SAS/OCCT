@@ -30,6 +30,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_MapOfTransient.hxx>
 
 #include <gp_Lin2d.hxx>
 #include <ElCLib.hxx>
@@ -747,7 +748,58 @@ void BRepTools::Clean(const TopoDS_Shape& S)
   }
 }
 
+//=======================================================================
+//function : RemoveUnusedPCurves
+//purpose  : 
+//=======================================================================
 
+void BRepTools::RemoveUnusedPCurves(const TopoDS_Shape& S)
+{
+  TColStd_MapOfTransient UsedSurfaces;
+  
+  TopExp_Explorer Explo(S, TopAbs_FACE);
+  for (; Explo.More(); Explo.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face(Explo.Current());
+    TopLoc_Location aLoc;
+    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace, aLoc);
+    UsedSurfaces.Add(aSurf);
+  }
+
+  TopTools_IndexedMapOfShape Emap;
+  TopExp::MapShapes(S, TopAbs_EDGE, Emap);
+
+  Standard_Integer i;
+  for (i = 1; i <= Emap.Extent(); i++)
+  {
+    const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &Emap(i).TShape());
+    BRep_ListOfCurveRepresentation& lcr = TE -> ChangeCurves();
+    BRep_ListIteratorOfListOfCurveRepresentation itrep(lcr );
+    while (itrep.More())
+    {
+      Standard_Boolean ToRemove = Standard_False;
+      
+      Handle(BRep_CurveRepresentation) CurveRep = itrep.Value();
+      if (CurveRep->IsCurveOnSurface())
+      {
+        Handle(Geom_Surface) aSurface = CurveRep->Surface();
+        if (!UsedSurfaces.Contains(aSurface))
+          ToRemove = Standard_True;
+      }
+      else if (CurveRep->IsRegularity())
+      {
+        Handle(Geom_Surface) Surf1 = CurveRep->Surface();
+        Handle(Geom_Surface) Surf2 = CurveRep->Surface2();
+        ToRemove = (!UsedSurfaces.Contains(Surf1) || !UsedSurfaces.Contains(Surf2));
+      }
+      
+      if (ToRemove)
+        lcr.Remove(itrep);
+      else
+        itrep.Next();
+    }
+  }
+}
 
 //=======================================================================
 //function : Triangulation

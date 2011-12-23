@@ -46,6 +46,7 @@ uses
     Face  from TopoDS,
     Pnt   from gp,
     Shape from GeomAbs,
+    ListOfShape from TopTools,
     Filling from BRepFill
 
 raises
@@ -202,6 +203,14 @@ is
     is redefined;
     	--- Purpose: Tests whether computation of the filling plate has been completed.
     
+    Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the list of shapes generated from the
+    	--          shape <S>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools
+    is redefined;     
+   
     G0Error(me) returns Real from Standard;
     	--- Purpose: Returns the maximum distance between the result and
     	-- the constraints. This is set at construction time.

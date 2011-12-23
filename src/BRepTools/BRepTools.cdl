@@ -196,6 +196,9 @@ is
     	--          and removes all polygons on triangulations of the
     	--          edges.
 
+    RemoveUnusedPCurves(S: Shape from TopoDS);
+    	---Purpose: Removes all the pcurves of the edges of <S> that
+    	--          refer to surfaces not belonging to any face of <S>
 
     Triangulation(S: Shape from TopoDS; deflec: Real)
     returns Boolean from Standard;

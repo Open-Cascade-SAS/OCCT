@@ -50,7 +50,9 @@ uses
     SequenceOfEdgeFaceAndOrder from BRepFill,
     SequenceOfFaceAndOrder     from BRepFill,
     SequenceOfPointConstraint  from GeomPlate,
-    MapOfShape  from TopTools,
+    SequenceOfShape from TopTools,
+    ListOfShape  from TopTools,
+    DataMapOfShapeListOfShape from TopTools,
     SequenceOfPnt from TColgp
 
 raises
@@ -176,13 +178,13 @@ is
     ---Purpose: Adds constraints to builder
     is private;
 
-    BuildWires( me; EdgeMap  : in out MapOfShape from TopTools;
-    	    	    WireList : out MapOfShape from TopTools )
+    BuildWires( me : in out; EdgeList  : in out ListOfShape from TopTools;
+    	    	    	     WireList  : out ListOfShape from TopTools )
     ---Purpose: Builds wires of maximum length
     is private;
     
-    FindExtremitiesOfHoles( me; WireMap : in out MapOfShape from TopTools;
-    	    	    	    	PntSeq  : out SequenceOfPnt from TColgp )
+    FindExtremitiesOfHoles( me; WireList : ListOfShape from TopTools;
+    	    	    	    	VerSeq   : out SequenceOfShape from TopTools )
     ---Purpose: Finds extremities of future edges to fix the holes between wires.
     --          Can properly operate only with convex contour
     is private;
@@ -195,6 +197,12 @@ is
     Face(me) returns Face from TopoDS;
     -- returns the resulting face
     
+    Generated (me: in out; S : Shape from TopoDS)
+    	---Purpose: Returns the list of shapes generated from the
+    	--          shape <S>. 
+        ---C++: return const & 
+        ---Level: Public
+    returns ListOfShape from TopTools;
 
     G0Error(me) returns Real from Standard;
     -- returns the max distance between the result and the constraints
@@ -222,6 +230,9 @@ fields
     myConstraints     : SequenceOfEdgeFaceAndOrder from BRepFill;
     myFreeConstraints : SequenceOfFaceAndOrder     from BRepFill;
     myPoints          : SequenceOfPointConstraint  from GeomPlate;
+    
+    myOldNewMap       : DataMapOfShapeListOfShape  from TopTools;
+    myGenerated       : ListOfShape                from TopTools;
     
     myFace            : Face from TopoDS;
     
