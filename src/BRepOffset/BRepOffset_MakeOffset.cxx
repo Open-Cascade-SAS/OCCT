@@ -2827,65 +2827,67 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
 	  Standard_Boolean IsPlanar = Standard_False;
 	  if (BAcurve.GetType() == GeomAbs_Circle &&
 	      BAcurveOE.GetType() == GeomAbs_Circle)
-	    {
-	      gp_Circ aCirc = BAcurve.Circle();
-	      gp_Dir CircAxisDir = aCirc.Axis().Direction();
-	      if (OffsetDir.IsParallel( CircAxisDir, Precision::Confusion() )) //case of cylinder
-		theSurf = GC_MakeCylindricalSurface(aCirc).Value();
-	      else if (Abs(OffsetDir * CircAxisDir) > Precision::PConfusion()) //case of cone
-		{
-		  gp_Circ aCircOE = BAcurveOE.Circle();
-		  gp_Cone theCone = gce_MakeCone(aCirc.Location(), aCircOE.Location(),
-						 aCirc.Radius(), aCircOE.Radius());
-		  gp_Ax3 theAx3(aCirc.Position());
-		  if (CircAxisDir * theCone.Axis().Direction() < 0.)
-		    {
-		      theAx3.ZReverse();
-		      CircAxisDir.Reverse();
-		    }
-		  theCone.SetPosition(theAx3);
-		  theSurf = new Geom_ConicalSurface(theCone);
-		}
-	      if (!theSurf.IsNull())
-		{
-		  TopLoc_Location Loc;
-		  EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.));
-		  BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
-		  Standard_Real Coeff = (OffsetDir * CircAxisDir > 0.)? 1. : -1.;
-		  OELine2d = new Geom2d_Line(gp_Pnt2d(0., OffsetVal*Coeff), gp_Dir2d(1., 0.));
-		  BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
-		  aLine2d  = new Geom2d_Line(gp_Pnt2d(ParV2, 0.), gp_Dir2d(0., Coeff));
-		  aLine2d2 = new Geom2d_Line(gp_Pnt2d(ParV1, 0.), gp_Dir2d(0., Coeff));
-		  if (E3.IsSame(E4))
-		    {
-		      if (Coeff > 0.)
-			BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());
-		      else
-			{
-			  BB.UpdateEdge(E3, aLine2d2, aLine2d, theSurf, Loc, Precision::Confusion());
-			  theWire.Nullify();
-			  BB.MakeWire(theWire);
-			  BB.Add(theWire, anEdge.Oriented(TopAbs_REVERSED));
-			  BB.Add(theWire, E4);
-			  BB.Add(theWire, OE.Oriented(TopAbs_FORWARD));
-			  BB.Add(theWire, E3);
-			  theWire.Closed(Standard_True);
-			}
-		    }
-		  else
-		    {
-		      BB.SameParameter(E3, Standard_False);
-		      BB.SameRange(E3, Standard_False);
-		      BB.SameParameter(E4, Standard_False);
-		      BB.SameRange(E4, Standard_False);
-		      BB.UpdateEdge(E3, aLine2d,  theSurf, Loc, Precision::Confusion());
-		      BB.Range(E3, theSurf, Loc, 0., OffsetVal);
-		      BB.UpdateEdge(E4, aLine2d2, theSurf, Loc, Precision::Confusion());
-		      BB.Range(E4, theSurf, Loc, 0., OffsetVal);
-		    }
-		  NewFace = BRepLib_MakeFace(theSurf, theWire);
-		}
-	    }
+          {
+            gp_Circ aCirc = BAcurve.Circle();
+            gp_Circ aCircOE = BAcurveOE.Circle();
+            gp_Lin anAxisLine(aCirc.Axis());
+            gp_Dir CircAxisDir = aCirc.Axis().Direction();
+            if (aCirc.Axis().IsParallel(aCircOE.Axis(), Precision::Confusion()) &&
+                anAxisLine.Contains(aCircOE.Location(), Precision::Confusion()))
+            { //cylinder or cone
+              if (Abs(aCirc.Radius() - aCircOE.Radius()) <= Precision::Confusion()) //case of cylinder
+                theSurf = GC_MakeCylindricalSurface(aCirc).Value();
+              else //case of cone
+              {
+                gp_Cone theCone = gce_MakeCone(aCirc.Location(), aCircOE.Location(),
+                                               aCirc.Radius(), aCircOE.Radius());
+                gp_Ax3 theAx3(aCirc.Position());
+                if (CircAxisDir * theCone.Axis().Direction() < 0.)
+                {
+                  theAx3.ZReverse();
+                  CircAxisDir.Reverse();
+                }
+                theCone.SetPosition(theAx3);
+                theSurf = new Geom_ConicalSurface(theCone);
+              }
+              TopLoc_Location Loc;
+              EdgeLine2d = new Geom2d_Line(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.));
+              BB.UpdateEdge(anEdge, EdgeLine2d, theSurf, Loc, Precision::Confusion());
+              Standard_Real Coeff = (OffsetDir * CircAxisDir > 0.)? 1. : -1.;
+              OELine2d = new Geom2d_Line(gp_Pnt2d(0., OffsetVal*Coeff), gp_Dir2d(1., 0.));
+              BB.UpdateEdge(OE, OELine2d, theSurf, Loc, Precision::Confusion());
+              aLine2d  = new Geom2d_Line(gp_Pnt2d(ParV2, 0.), gp_Dir2d(0., Coeff));
+              aLine2d2 = new Geom2d_Line(gp_Pnt2d(ParV1, 0.), gp_Dir2d(0., Coeff));
+              if (E3.IsSame(E4))
+              {
+                if (Coeff > 0.)
+                  BB.UpdateEdge(E3, aLine2d, aLine2d2, theSurf, Loc, Precision::Confusion());
+                else
+                {
+                  BB.UpdateEdge(E3, aLine2d2, aLine2d, theSurf, Loc, Precision::Confusion());
+                  theWire.Nullify();
+                  BB.MakeWire(theWire);
+                  BB.Add(theWire, anEdge.Oriented(TopAbs_REVERSED));
+                  BB.Add(theWire, E4);
+                  BB.Add(theWire, OE.Oriented(TopAbs_FORWARD));
+                  BB.Add(theWire, E3);
+                  theWire.Closed(Standard_True);
+                }
+              }
+              else
+              {
+                BB.SameParameter(E3, Standard_False);
+                BB.SameRange(E3, Standard_False);
+                BB.SameParameter(E4, Standard_False);
+                BB.SameRange(E4, Standard_False);
+                BB.UpdateEdge(E3, aLine2d,  theSurf, Loc, Precision::Confusion());
+                BB.Range(E3, theSurf, Loc, 0., OffsetVal);
+                BB.UpdateEdge(E4, aLine2d2, theSurf, Loc, Precision::Confusion());
+                BB.Range(E4, theSurf, Loc, 0., OffsetVal);
+              }
+              NewFace = BRepLib_MakeFace(theSurf, theWire);
+            } //cylinder or cone
+          } //if both edges are arcs of circles
 	  if (NewFace.IsNull())
 	    {
 	      BRepLib_MakeFace MF(theWire, Standard_True); //Only plane
