@@ -67,7 +67,7 @@ template <class TheItemType> class NCollection_Vector
       : NCollection_BaseVector::MemBlock (theFirstInd, theSize, theAlloc)
     {
       myData = myAlloc->Allocate(theSize * sizeof(TheItemType));
-      for (size_t i=0; i < theSize; i++)
+      for (Standard_Integer i=0; i < theSize; i++)
         new (&((TheItemType *) myData)[i]) TheItemType;
     }
     //! Copy constructor
@@ -77,7 +77,7 @@ template <class TheItemType> class NCollection_Vector
     {
       myLength = theOther.Length();
       myData = myAlloc->Allocate(Size() * sizeof(TheItemType));
-      size_t i;
+      Standard_Integer i;
       for (i=0; i < Length(); i++)
         new (&((TheItemType *) myData)[i]) TheItemType(theOther.Value(i));
       for (; i < Size(); i++)
@@ -85,17 +85,17 @@ template <class TheItemType> class NCollection_Vector
     }
     //! Reinit
     virtual void Reinit (const Standard_Integer theFirst,
-                         const size_t           theSize)
+                         const Standard_Integer theSize)
     {
       if (myData) {
-        for (size_t i=0; i < mySize; i++)
+        for (Standard_Integer i=0; i < mySize; i++)
           ((TheItemType *) myData)[i].~TheItemTypeD();
         myAlloc->Free(myData);
         myData = NULL;
       }
       if (theSize > 0) {
         myData = myAlloc->Allocate(theSize * sizeof(TheItemType));
-        for (size_t i=0; i < theSize; i++)
+        for (Standard_Integer i=0; i < theSize; i++)
           new (&((TheItemType *) myData)[i]) TheItemType;
       }
       myFirstInd = theFirst;
@@ -106,7 +106,7 @@ template <class TheItemType> class NCollection_Vector
     virtual ~MemBlock ()
     {
       if (myData) {
-        for (size_t i=0; i < Size(); i++)
+        for (Standard_Integer i=0; i < Size(); i++)
           ((TheItemType *) myData)[i].~TheItemTypeD();
         myAlloc->Free(myData);
         myData = NULL;

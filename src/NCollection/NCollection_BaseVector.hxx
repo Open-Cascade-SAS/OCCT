@@ -45,14 +45,14 @@ class NCollection_BaseVector
       : myAlloc(theAlloc),
         myFirstInd(theFirstInd), myLength(0), mySize(theLength), myData(0L) {}
     virtual void        Reinit     (const Standard_Integer,
-                                    const size_t) {}
+                                    const Standard_Integer) {}
     Standard_Integer    FirstIndex () const     { return myFirstInd; }
-    size_t              Size       () const     { return mySize; }
+    Standard_Integer    Size       () const     { return mySize; }
   public:
     virtual             ~MemBlock () {}
-    void                SetLength  (const size_t theLen)
+    void                SetLength  (const Standard_Integer theLen)
                                                 { myLength = theLen; }
-    size_t              Length     () const     { return myLength; }
+    Standard_Integer    Length     () const     { return myLength; }
     void *              Find       (const Standard_Integer theInd,
                                     const size_t           theSize) const
                                     { return ((char *) myData)+theInd*theSize;}
@@ -60,8 +60,8 @@ class NCollection_BaseVector
                         GetIndexV  (void * theItem, const size_t theSz) const;
   protected:
     Standard_Integer             myFirstInd;
-    size_t                       myLength;
-    size_t                       mySize;
+    Standard_Integer             myLength;
+    Standard_Integer             mySize;
     NCollection_BaseAllocator    * myAlloc;
     void                         * myData;
     friend class NCollection_BaseVector;
@@ -85,10 +85,10 @@ class NCollection_BaseVector
         { return &myVector -> myData[myICurBlock]; }
 
     const NCollection_BaseVector * myVector;   // the Master vector
-    size_t                       myICurBlock;  // # of the current block
-    size_t                       myIEndBlock;
-    size_t                       myCurIndex;   // Index in the current block
-    size_t                       myEndIndex;
+    Standard_Integer             myICurBlock;  // # of the current block
+    Standard_Integer             myIEndBlock;
+    Standard_Integer             myCurIndex;   // Index in the current block
+    Standard_Integer             myEndIndex;
   };
 
  protected:

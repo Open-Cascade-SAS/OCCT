@@ -125,7 +125,7 @@ void * NCollection_BaseVector::ExpandV (const Standard_Integer theIndex)
     MemBlock& aLastBlock = myData [myNBlocks - 1];
     Standard_RangeError_Raise_if (theIndex < aLastBlock.FirstIndex(),
                                   "NColelction_BaseVector::ExpandV");
-    const unsigned int anIndLastBlock = theIndex - aLastBlock.FirstIndex();
+    Standard_Integer anIndLastBlock = theIndex - aLastBlock.FirstIndex();
     //  Is there still room for 1 item in the last array?
     if (anIndLastBlock < aLastBlock.Size()) {
       myLength = aNewLength;
