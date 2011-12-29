@@ -668,14 +668,15 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
         Handle(Geom2d_Curve) C;
         Handle(Geom_Surface) S;
         TopLoc_Location L;
-        Standard_Real first, last;
+        Standard_Real first = 0., last = 0.;
         BRep_Tool::CurveOnSurface ( sbwd->Edge(i), C, S, L, first, last );
-        if ( C.IsNull() )
+        if ( C.IsNull() || Abs (last - first) < Precision::PConfusion())
         {
           SendWarning ( sbwd->Edge ( i ), Message_Msg ( "FixWire.FixCurve3d.Removed" ) );// Incomplete edge (with no pcurves or 3d curve) removed
           sbwd->Remove ( i-- );
           nb--;
           myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );
+          FixConnected (i + 1, Precision());
         }
 	myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL5 );
       }

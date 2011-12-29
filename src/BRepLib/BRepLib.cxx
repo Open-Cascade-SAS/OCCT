@@ -347,7 +347,8 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
     // compute the 3d curve
     gp_Ax2 axes = P->Position().Ax2();
     Handle(Geom_Curve) C3d = GeomLib::To3d(axes,PC);
-
+    if (C3d.IsNull())
+      return Standard_False;
     // update the edge
     Standard_Real First, Last;
 
@@ -419,7 +420,8 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
       //Patch
       //max_deviation = Max(tolerance, max_deviation) ;
       max_deviation = Max( tolerance, Tolerance );
-
+      if (NewCurvePtr.IsNull())
+        return Standard_False;
       Standard_Boolean is_closed ;
       is_closed = AnEdge.Closed() ;
       B.UpdateEdge(TopoDS::Edge(AnEdge),

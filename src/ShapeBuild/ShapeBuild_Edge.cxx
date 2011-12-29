@@ -589,6 +589,8 @@ Standard_Boolean ShapeBuild_Edge::BuildCurve3d (const TopoDS_Edge& edge) const
       Handle(Geom_Curve) c3d;
       Standard_Real f,l;
       c3d = BRep_Tool::Curve(edge,f,l);
+      if (c3d.IsNull())
+        return Standard_False;
       // 15.11.2002 PTV OCC966
       if(!IsPeriodic(c3d)) {
 	Standard_Boolean isLess = Standard_False;
