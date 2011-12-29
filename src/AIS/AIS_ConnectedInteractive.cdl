@@ -15,7 +15,13 @@
     	-- selection or graphic structure. These are deduced
     	-- from your reference object.
     	-- The relation between the connected interactive object
-    	-- and its source is generally one of geometric transformation.
+    	-- and its source is generally one of geometric transformation. 
+        -- AIS_ConnectedInteractive class doesn't support selection
+        -- modes different from 0. Descendants should redefine ComputeSelection()
+        -- method in order to handle other selection modes and generate connected
+        -- sensitive entities properly. Refer to AIS_ConnectedShape class
+        -- for exisiting implementation of a connected interactive object
+        -- for AIS_Shape that supports all standard sub-shape selection modes.
     	-- Warning
     	-- An Interactive entity which is view (or projector)
     	-- dependent requires recalculation of views in hidden
@@ -140,14 +146,9 @@ is
     ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
                                  aMode      : Integer) is redefined virtual private;
 	---Level: Public 
-	---Purpose: Recovers and calculates any sensitive primitive,
-    	-- aSelection, available in Shape mode, specified by
-    	-- aMode. As a rule, these are sensitive faces.
-    	-- This method is defined as virtual. This enables you to
-    	-- implement it in the creation of a new class of
-    	-- Interactive Object. You need to do this and in so
-    	-- doing, redefine this method, if you create a class
-    	-- which enriches the list of signatures and types.
+	---Purpose: Generates sensitive entities by copying 
+        -- them from myReference selection, creates and sets an entity 
+        -- owner for this entities and adds them to aSelection
 
     AcceptShapeDecomposition(me) returns Boolean from Standard is 
     redefined virtual;

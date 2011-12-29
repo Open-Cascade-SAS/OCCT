@@ -36,8 +36,8 @@
 
 Select3D_SensitiveFace::
 Select3D_SensitiveFace(const Handle(SelectBasics_EntityOwner)& OwnerId,
-               const TColgp_Array1OfPnt& ThePoints,
-               const Select3D_TypeOfSensitivity aType):
+                       const TColgp_Array1OfPnt& ThePoints,
+                       const Select3D_TypeOfSensitivity aType):
 Select3D_SensitivePoly(OwnerId, ThePoints),
 mytype (aType),
 myDetectedIndex(-1)
@@ -46,14 +46,14 @@ myDetectedIndex(-1)
 }
 
 //==================================================
-// Function: 
+// Function: Creation
 // Purpose :
 //==================================================
 
 Select3D_SensitiveFace::
 Select3D_SensitiveFace(const Handle(SelectBasics_EntityOwner)& OwnerId,
-               const Handle(TColgp_HArray1OfPnt)& ThePoints,
-               const Select3D_TypeOfSensitivity aType):
+                       const Handle(TColgp_HArray1OfPnt)& ThePoints,
+                       const Select3D_TypeOfSensitivity aType):
 Select3D_SensitivePoly(OwnerId, ThePoints),
 mytype (aType),
 myDetectedIndex(-1)
@@ -62,15 +62,15 @@ myDetectedIndex(-1)
 }
 
 //==================================================
-// Function: 
+// Function: Matches
 // Purpose :
 //==================================================
 
 Standard_Boolean Select3D_SensitiveFace::
 Matches(const Standard_Real X,
-    const Standard_Real Y,
-    const Standard_Real aTol,
-    Standard_Real& DMin)
+        const Standard_Real Y,
+        const Standard_Real aTol,
+        Standard_Real& DMin)
 {
 #ifndef DEB
   Standard_Real DMin2 = 0.;
@@ -78,7 +78,8 @@ Matches(const Standard_Real X,
   Standard_Real DMin2;
 #endif
   Standard_Real Xmin,Ymin,Xmax,Ymax;
-  if(!Bnd_Box2d(mybox2d).IsVoid()){
+  if(!Bnd_Box2d(mybox2d).IsVoid())
+  {
     Bnd_Box2d(mybox2d).Get(Xmin,Ymin,Xmax,Ymax);
     DMin2 = gp_XY(Xmax-Xmin,Ymax-Ymin).SquareModulus();
   }
@@ -90,20 +91,22 @@ Matches(const Standard_Real X,
   gp_XY CDG(0.,0.);
 //  for(Standard_Integer I=1;I<=Nbp-1;I++){
   Standard_Integer I;
-  for(I=1;I<mynbpoints-1;I++){
+  for(I=1;I<mynbpoints-1;I++)
+  {
     CDG+=((Select3D_Pnt2d*)mypolyg2d)[I-1];
   }
   
-  if(mynbpoints>1){
+  if(mynbpoints>1)
+  {
     CDG/= (mynbpoints-1);
   }
   DMin2=Min(DMin2,gp_XY(CDG.X()-X,CDG.Y()-Y).SquareModulus());
   DMin = Sqrt(DMin2);
   
-  
   Standard_Boolean isplane2d(Standard_True);
   
-  for( I=1;I<mynbpoints-1;I++){
+  for( I=1;I<mynbpoints-1;I++)
+  {
     gp_XY V1(((Select3D_Pnt2d*)mypolyg2d)[I]),V(X,Y);
     V1-=((Select3D_Pnt2d*)mypolyg2d)[I-1];
     V-=((Select3D_Pnt2d*)mypolyg2d)[I-1];
@@ -122,17 +125,6 @@ Matches(const Standard_Real X,
   {
     return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
   }
-  //detection d'une auto - intersection dans le polygon 2D; si oui on sort
-//    if (!AutoComputeFlag(myautointer)) {
-//      if(mypolyg2d.Length()>4) {
-//        if (SelectBasics_BasicTool::AutoInter(mypolyg2d)) {
-//      SetAutoInterFlag(myautointer);
-//        }
-//      }
-//      SetAutoComputeFlag(myautointer);
-//    }
-//   if (AutoInterFlag(myautointer)) return Standard_True;
-// //  
 
   //otherwise it is checked if the point is in the face...
   TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
@@ -141,13 +133,14 @@ Matches(const Standard_Real X,
   Standard_Integer TheStat = TheInOutTool.SiDans(gp_Pnt2d(X,Y));
   
   Standard_Boolean res(Standard_False);
-  switch(TheStat){
+  switch(TheStat)
+  {
   case 0:
     res = Standard_True;
   case 1:
     {
-      if(mytype!=Select3D_TOS_BOUNDARY)
-	res = Standard_True;
+      if(mytype!=Select3D_TOS_BOUNDARY) 
+        res = Standard_True;
     }
   }
   if (res)
@@ -164,15 +157,16 @@ Matches(const Standard_Real X,
 
 Standard_Boolean Select3D_SensitiveFace::
 Matches (const Standard_Real XMin,
-     const Standard_Real YMin,
-     const Standard_Real XMax,
-     const Standard_Real YMax,
-     const Standard_Real aTol)
-{ 
+         const Standard_Real YMin,
+         const Standard_Real XMax,
+         const Standard_Real YMax,
+         const Standard_Real aTol)
+{
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
   
-  for(Standard_Integer j=1;j<=mynbpoints-1;j++){
+  for(Standard_Integer j=1;j<=mynbpoints-1;j++)
+  {
     if(BoundBox.IsOut(((Select3D_Pnt2d*)mypolyg2d)[j-1])) return Standard_False;
   }
   return Standard_True;
@@ -185,9 +179,9 @@ Matches (const Standard_Real XMin,
 
 Standard_Boolean Select3D_SensitiveFace::
 Matches (const TColgp_Array1OfPnt2d& aPoly,
-     const Bnd_Box2d& aBox,
-     const Standard_Real aTol)
-{ 
+         const Bnd_Box2d& aBox,
+         const Standard_Real aTol)
+{
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
   Standard_Real Tolu,Tolv;
@@ -195,18 +189,19 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
   Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
-  for(Standard_Integer j=1;j<=mynbpoints;j++){
+  for(Standard_Integer j=1;j<=mynbpoints;j++)
+  {
     Standard_Integer RES = aClassifier2d.SiDans(((Select3D_Pnt2d*)mypolyg2d)[j-1]);
     if(RES!=1) return Standard_False;
   }
   return Standard_True;
 }
 
-
 //=======================================================================
 //function : Dump
 //purpose  : 
 //=======================================================================
+
 void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
 {
   S<<"\tSensitiveFace 3D :"<<endl;;
@@ -216,7 +211,8 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
   if(mytype==Select3D_TOS_BOUNDARY) 
     S<<"\t\tSelection Of Bounding Polyline Only"<<endl;
   
-  if(FullDump){
+  if(FullDump)
+  {
     S<<"\t\tNumber Of Points :"<<mynbpoints<<endl;
     
 //    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
@@ -228,6 +224,7 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
 //function : ComputeDepth
 //purpose  : 
 //=======================================================================
+
 Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
 {
   Standard_Real aDepth = Precision::Infinite();
@@ -243,4 +240,29 @@ Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
     }
   }
   return aDepth;
+}
+
+//=======================================================================
+//function : GetConnected
+//purpose  : 
+//=======================================================================
+
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveFace::GetConnected(const TopLoc_Location &theLocation) 
+{
+  // Create a copy of this 
+  TColgp_Array1OfPnt aPoints(1, mynbpoints);
+  for (Standard_Integer i = 1; i <= mynbpoints; ++i) 
+  {
+    aPoints.SetValue(i, ((Select3D_Pnt*)mypolyg3d)[i-1]);
+  }
+
+  Handle(Select3D_SensitiveEntity) aNewEntity = 
+    new Select3D_SensitiveFace(myOwnerId, aPoints, mytype); 
+
+  if (HasLocation()) 
+    aNewEntity->SetLocation(Location()); 
+
+  aNewEntity->UpdateLocation(theLocation);
+
+  return aNewEntity;
 }

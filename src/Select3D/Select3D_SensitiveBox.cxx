@@ -20,10 +20,9 @@
 //==================================================
 
 Select3D_SensitiveBox::Select3D_SensitiveBox(const Handle(SelectBasics_EntityOwner)& OwnerId,
-					     const Bnd_Box& BBox):
+                                             const Bnd_Box& BBox):
 Select3D_SensitiveEntity(OwnerId),
 mybox3d(BBox){}
-
 
 //==================================================
 // Function: Constructor
@@ -32,28 +31,29 @@ mybox3d(BBox){}
 
 Select3D_SensitiveBox::
 Select3D_SensitiveBox(const Handle(SelectBasics_EntityOwner)& OwnerId,
-		      const Standard_Real XMin,
-		      const Standard_Real YMin,
-		      const Standard_Real ZMin,
-		      const Standard_Real XMax,
-		      const Standard_Real YMax,
-		      const Standard_Real ZMax):
+                      const Standard_Real XMin,
+                      const Standard_Real YMin,
+                      const Standard_Real ZMin,
+                      const Standard_Real XMax,
+                      const Standard_Real YMax,
+                      const Standard_Real ZMax):
 Select3D_SensitiveEntity(OwnerId)
 {
   mybox3d.Update(XMin,YMin,ZMin,XMax,YMax,ZMax);
 }
 
-
 //==================================================
 // Function: Project
 // Purpose :
 //==================================================
+
 void Select3D_SensitiveBox::
 Project(const Handle(Select3D_Projector)& aProj)
 {
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
 
-  if(HasLocation()){
+  if(HasLocation())
+  {
     Bnd_Box B = mybox3d.Transformed(Location().Transformation());
     ProjectBox(aProj,B);
   }
@@ -62,13 +62,13 @@ Project(const Handle(Select3D_Projector)& aProj)
 }
 
 //==================================================
-// Function: 
+// Function: Areas
 // Purpose :
 //==================================================
+
 void Select3D_SensitiveBox::
 Areas(SelectBasics_ListOfBox2d& aSeq)
 {  aSeq.Append(mybox2d);}
-
 
 //=======================================================================
 //function : GetConnected
@@ -84,42 +84,38 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected(const TopLo
   return NiouEnt;
 }
 
-
-
 //==================================================
-// Function: 
+// Function: Matches
 // Purpose :
 //==================================================
 Standard_Boolean Select3D_SensitiveBox::
-Matches(const Standard_Real X,
-	const Standard_Real Y,
-	const Standard_Real aTol,
-	Standard_Real& DMin)
+Matches(const Standard_Real X, 
+        const Standard_Real Y, 
+        const Standard_Real aTol, 
+        Standard_Real& DMin)
 {
   Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
   DMin=0.;
   
   return Standard_True;
-  
 }
 
 //==================================================
-// Function: 
+// Function: Matches
 // Purpose :
 //==================================================
 
 Standard_Boolean Select3D_SensitiveBox::
 Matches (const Standard_Real XMin,
-	 const Standard_Real YMin,
-	 const Standard_Real XMax,
-	 const Standard_Real YMax,
-	 const Standard_Real aTol)
+         const Standard_Real YMin,
+         const Standard_Real XMax,
+         const Standard_Real YMax,
+         const Standard_Real aTol)
 {
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
   return(!BoundBox.IsOut(mybox2d));
 }
-
 
 //=======================================================================
 //function : Matches
@@ -128,12 +124,11 @@ Matches (const Standard_Real XMin,
 
 Standard_Boolean Select3D_SensitiveBox::
 Matches (const TColgp_Array1OfPnt2d& aPoly,
-	 const Bnd_Box2d& aBox,
-	 const Standard_Real aTol)
-{ 
+         const Bnd_Box2d& aBox,
+         const Standard_Real aTol)
+{
   return(!aBox.IsOut(mybox2d));
 }
-
 
 //=======================================================================
 //function : Dump
@@ -152,10 +147,11 @@ void Select3D_SensitiveBox::Dump(Standard_OStream& S,const Standard_Boolean Full
   S<<"\t\t PMin [ "<<XMin<<" , "<<YMin<<" , "<<ZMin<<" ]";
   S<<"\t\t PMax [ "<<XMax<<" , "<<YMax<<" , "<<ZMax<<" ]"<<endl;
 
-  if(FullDump){
+  if(FullDump)
+  {
 //    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
-    Select3D_SensitiveEntity::DumpBox(S,mybox2d);}
-  
+    Select3D_SensitiveEntity::DumpBox(S,mybox2d);
+  }
 }
 
 
@@ -165,7 +161,7 @@ void Select3D_SensitiveBox::Dump(Standard_OStream& S,const Standard_Boolean Full
 //=======================================================================
 
 void Select3D_SensitiveBox::ProjectBox(const Handle(Select3D_Projector)& aPrj,
-				       const Bnd_Box& aBox) 
+                                       const Bnd_Box& aBox) 
 {
   mybox2d.SetVoid();
   gp_Pnt2d curp2d;

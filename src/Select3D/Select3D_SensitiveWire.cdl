@@ -95,7 +95,10 @@ is
     	---Purpose:returns <mymaxrect>
 	    
     
-    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
+
+    Set(me:mutable;TheOwnerId: EntityOwner from SelectBasics) is redefined static; 
+    ---Purpose: Sets the owner for all entities in wire 
         
     SetLastPrj(me:mutable;aPrj: Projector from Select3D) is redefined virtual; 
      

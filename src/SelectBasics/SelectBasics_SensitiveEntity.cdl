@@ -23,7 +23,7 @@ is
     	    	aSensitivityFactor : ShortReal from Standard =1);
     
     
-    Set (me:mutable ; TheOwnerId : EntityOwner) is static;
+    Set (me:mutable ; TheOwnerId : EntityOwner) is virtual;
     ---Level: Public 
     
 

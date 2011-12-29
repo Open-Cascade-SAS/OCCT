@@ -15,39 +15,44 @@
 
 
 //==================================================
-// Function: 
+// Function: Creation
 // Purpose :
 //==================================================
 
 Select3D_SensitiveCurve
 ::Select3D_SensitiveCurve(const Handle(SelectBasics_EntityOwner)& OwnerId,
-              const Handle(Geom_Curve)& C,
-              const Standard_Integer NbPoints):
+                          const Handle(Geom_Curve)& C,
+                          const Standard_Integer NbPoints):
 Select3D_SensitivePoly(OwnerId, NbPoints),
-mylastseg(0)     
+mylastseg(0), 
+myCurve(C)
 {
   LoadPoints(C,NbPoints);
 }
+
 //==================================================
 // Function: Creation
 // Purpose :
 //==================================================
+
 Select3D_SensitiveCurve
 ::Select3D_SensitiveCurve(const Handle(SelectBasics_EntityOwner)& OwnerId,
-              const Handle(TColgp_HArray1OfPnt)& ThePoints):
+                          const Handle(TColgp_HArray1OfPnt)& ThePoints):
 Select3D_SensitivePoly(OwnerId, ThePoints),
-mylastseg(0)     
+mylastseg(0)
 {
 }
+
 //==================================================
 // Function: Creation
 // Purpose :
 //==================================================
+
 Select3D_SensitiveCurve
 ::Select3D_SensitiveCurve(const Handle(SelectBasics_EntityOwner)& OwnerId,
-              const TColgp_Array1OfPnt& ThePoints):
+                          const TColgp_Array1OfPnt& ThePoints):
 Select3D_SensitivePoly(OwnerId, ThePoints),
-mylastseg(0)     
+mylastseg(0)
 {
 }
 
@@ -55,11 +60,12 @@ mylastseg(0)
 // Function: Matches
 // Purpose :
 //==================================================
+
 Standard_Boolean Select3D_SensitiveCurve
 ::Matches(const Standard_Real X,
-      const Standard_Real Y,
-      const Standard_Real aTol,
-      Standard_Real& DMin)
+          const Standard_Real Y,
+          const Standard_Real aTol,
+          Standard_Real& DMin)
 {
   Standard_Integer Rank;
   TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
@@ -73,11 +79,10 @@ Standard_Boolean Select3D_SensitiveCurve
     mylastseg = Rank;
     // compute and validate the depth (::Depth()) along the eyeline
     return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin);
-    
   }
   return Standard_False;
-
 }
+
 //==================================================
 // Function: Matches
 // Purpose : know if a box touches the projected polygon
@@ -86,11 +91,11 @@ Standard_Boolean Select3D_SensitiveCurve
 
 Standard_Boolean Select3D_SensitiveCurve::
 Matches (const Standard_Real XMin,
-     const Standard_Real YMin,
-     const Standard_Real XMax,
-     const Standard_Real YMax,
-     const Standard_Real aTol)
-{  
+         const Standard_Real YMin,
+         const Standard_Real XMax,
+         const Standard_Real YMax,
+         const Standard_Real aTol)
+{
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
   
@@ -108,9 +113,9 @@ Matches (const Standard_Real XMin,
 
 Standard_Boolean Select3D_SensitiveCurve::
 Matches (const TColgp_Array1OfPnt2d& aPoly,
-     const Bnd_Box2d& aBox,
-     const Standard_Real aTol)
-{ 
+         const Bnd_Box2d& aBox,
+         const Standard_Real aTol)
+{
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
   Standard_Real Tolu,Tolv;
@@ -118,17 +123,16 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
   Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
-  for(Standard_Integer j=0;j<mynbpoints;j++){
+  for(Standard_Integer j=0;j<mynbpoints;j++)
+  {
     Standard_Integer RES = aClassifier2d.SiDans(((Select3D_Pnt2d*)mypolyg2d)[j]);
     if(RES!=1) return Standard_False;
   }
   return Standard_True;
 }
 
-
-
 //==================================================
-// Function: 
+// Function: LoadPoints
 // Purpose :
 //==================================================
 
@@ -160,11 +164,13 @@ void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean Fu
 
   S<<"\t\tNumber Of Points :"<<mynbpoints<<endl;
 
-  if(FullDump){
+  if(FullDump)
+  {
 //    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
     Select3D_SensitiveEntity::DumpBox(S,mybox2d);
   }
 }
+
 //=======================================================================
 //function : ComputeDepth
 //purpose  : 
@@ -172,10 +178,43 @@ void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean Fu
 
 Standard_Real Select3D_SensitiveCurve::ComputeDepth(const gp_Lin& EyeLine) const
 {
-
   if(mylastseg==0) return Precision::Infinite(); // non implemente actuellement...
   gp_XYZ TheCDG(((Select3D_Pnt*)mypolyg3d)[mylastseg]);
   TheCDG+=((Select3D_Pnt*)mypolyg3d)[mylastseg+1];
   TheCDG/=2.;
   return ElCLib::Parameter(EyeLine,gp_Pnt(TheCDG));
+}
+
+//=======================================================================
+//function : GetConnected
+//purpose  : 
+//======================================================================= 
+
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected(const TopLoc_Location &theLocation) 
+{
+  // Create a copy of this 
+  Handle(Select3D_SensitiveEntity) aNewEntity;
+  // this was constructed using Handle(Geom_Curve) 
+  if (!myCurve.IsNull()) 
+  {
+    aNewEntity = new Select3D_SensitiveCurve(myOwnerId, myCurve);
+  }
+  // this was constructed using TColgp_HArray1OfPnt
+  else 
+  {
+    Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt(1, mynbpoints);
+    // Fill the array with points from mypolyg3d
+    for (Standard_Integer i = 1; i <= mynbpoints; ++i) 
+    {
+      aPoints->SetValue(i, ((Select3D_Pnt*)mypolyg3d)[i-1]);
+    }
+    aNewEntity = new Select3D_SensitiveCurve(myOwnerId, aPoints);
+  }
+  
+  if (HasLocation()) 
+    aNewEntity->SetLocation(Location()); 
+
+  aNewEntity->UpdateLocation(theLocation);
+
+  return aNewEntity;
 }

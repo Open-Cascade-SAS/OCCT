@@ -21,7 +21,8 @@ uses
     XY               from gp,
     Pnt              from gp,
     TypeOfSensitivity from Select3D,
-    Location          from TopLoc
+    Location          from TopLoc, 
+    SensitiveEntity   from Select3D
 
 is
     Create (OwnerId      : EntityOwner from SelectBasics;
@@ -30,7 +31,7 @@ is
      returns mutable SensitiveTriangle;
     ---Level: Public 
         ---Purpose: Constructs a sensitive triangle object defined by the
-        -- owner OwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity.
+        -- owner OwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity. 
 
     Matches(me  :mutable; 
             X,Y : Real from Standard;
@@ -85,7 +86,13 @@ is
              Dmin    : out Real from Standard) returns Integer from  Standard;
     ---Purpose: Dmin gives the distance between the cdg and aPoint return 
 
-    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
+
+    GetConnected(me: mutable; theLocation : Location from TopLoc) 
+    returns SensitiveEntity from Select3D 
+    is redefined virtual; 
+        ---Level: Public 
+        ---Purpose: Returns the copy of this
 
 
 fields

@@ -39,9 +39,9 @@ void Select3D_SensitiveEntity::Project(const Handle(Select3D_Projector)& aPrj)
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
-						   const Standard_Real Y,
-						   const Standard_Real aTol,
-						   Standard_Real&  DMin)
+                                                   const Standard_Real Y,
+                                                   const Standard_Real aTol,
+                                                   Standard_Real&  DMin)
 {
   if (!mylastprj.IsNull())
   {
@@ -62,10 +62,10 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real XMin,
-						   const Standard_Real YMin,
-						   const Standard_Real XMax,
-						   const Standard_Real YMax,
-						   const Standard_Real aTol)
+                                                   const Standard_Real YMin,
+                                                   const Standard_Real XMax,
+                                                   const Standard_Real YMax,
+                                                   const Standard_Real aTol)
 {
   return Standard_False;
 }
@@ -76,8 +76,8 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real XMin,
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveEntity::Matches(const TColgp_Array1OfPnt2d& aPoly,
-						   const Bnd_Box2d& aBox,
-						   const Standard_Real aTol)
+                                                   const Bnd_Box2d& aBox,
+                                                   const Standard_Real aTol)
 {
   return Standard_False;
 }
@@ -99,13 +99,13 @@ void Select3D_SensitiveEntity::Dump(Standard_OStream& S,const Standard_Boolean F
 
 void Select3D_SensitiveEntity::DumpBox(Standard_OStream& S,const Bnd_Box2d& b2d) 
 {
-  if(!b2d.IsVoid()){
+  if(!b2d.IsVoid())
+  {
     Standard_Real xmin,ymin,xmax,ymax;
     b2d.Get(xmin,ymin,xmax,ymax);
     S<<"\t\t\tBox2d: PMIN ["<<xmin<<" , "<<ymin<<"]"<<endl;
     S<<"\t\t\t       PMAX ["<<xmax<<" , "<<ymax<<"]"<<endl;
   }
-  
 }
 
 //=======================================================================
@@ -136,9 +136,11 @@ void Select3D_SensitiveEntity::UpdateLocation(const TopLoc_Location& aLoc)
   if(aLoc.IsIdentity() || aLoc == Location()) return;
   if(!HasLocation())
     SetLocation(aLoc);
-  else {
+  else 
+  {
     TopLoc_Location compLoc = aLoc * Location();
-    SetLocation(compLoc);}
+    SetLocation(compLoc);
+  }
 }
 
 //=======================================================================
@@ -186,7 +188,7 @@ Standard_Real Select3D_SensitiveEntity::Depth() const
 //=======================================================================
 
 gp_Lin Select3D_SensitiveEntity::GetEyeLine(const Standard_Real X,
-					    const Standard_Real Y) const
+                                            const Standard_Real Y) const
 {
   gp_Lin L;
   if (!mylastprj.IsNull())
@@ -225,7 +227,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveEntity::GetConnected(const To
 }
 
 //=======================================================================
-//function : GetConnected
+//function : SetLastDepth
 //purpose  : 
 //=======================================================================
 void Select3D_SensitiveEntity::SetLastDepth(const Standard_Real aDepth)

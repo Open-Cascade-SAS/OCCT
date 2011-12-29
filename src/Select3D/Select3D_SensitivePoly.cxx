@@ -14,7 +14,7 @@
 
 Select3D_SensitivePoly::
 Select3D_SensitivePoly(const Handle(SelectBasics_EntityOwner)& OwnerId,
-               const TColgp_Array1OfPnt& ThePoints):
+                       const TColgp_Array1OfPnt& ThePoints):
 Select3D_SensitiveEntity(OwnerId)
 {
   mynbpoints = ThePoints.Upper()-ThePoints.Lower()+1;
@@ -25,13 +25,13 @@ Select3D_SensitiveEntity(OwnerId)
 }
 
 //==================================================
-// Function: 
+// Function: Creation
 // Purpose :
 //==================================================
 
 Select3D_SensitivePoly::
 Select3D_SensitivePoly(const Handle(SelectBasics_EntityOwner)& OwnerId,
-               const Handle(TColgp_HArray1OfPnt)& ThePoints):
+                       const Handle(TColgp_HArray1OfPnt)& ThePoints):
 Select3D_SensitiveEntity(OwnerId)
 {
   mynbpoints = ThePoints->Upper()-ThePoints->Lower()+1;
@@ -42,13 +42,13 @@ Select3D_SensitiveEntity(OwnerId)
 }
 
 //==================================================
-// Function: 
+// Function: Creation
 // Purpose :
 //==================================================
 
 Select3D_SensitivePoly::
 Select3D_SensitivePoly(const Handle(SelectBasics_EntityOwner)& OwnerId, 
-             const Standard_Integer NbPoints):
+                       const Standard_Integer NbPoints):
 Select3D_SensitiveEntity(OwnerId)
 {
   mynbpoints = NbPoints;
@@ -57,7 +57,7 @@ Select3D_SensitiveEntity(OwnerId)
 }
 
 //==================================================
-// Function: 
+// Function: Project
 // Purpose :
 //==================================================
 
@@ -85,7 +85,7 @@ void Select3D_SensitivePoly::Project(const Handle(Select3D_Projector)& aProj)
 }
 
 //==================================================
-// Function: 
+// Function: Areas
 // Purpose :
 //==================================================
 void Select3D_SensitivePoly
@@ -95,7 +95,7 @@ void Select3D_SensitivePoly
 }
 
 //==================================================
-// Function: 
+// Function: Destroy
 // Purpose :
 //==================================================
 void Select3D_SensitivePoly::Destroy() 

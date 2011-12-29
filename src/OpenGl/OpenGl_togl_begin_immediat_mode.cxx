@@ -899,7 +899,7 @@ call_togl_draw_structure
         /*ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
       default: {
         key.id = openglWsId;
-        TsmSendMessage (telem, DisplayTraverse, node->elem.data, 0, &key);
+        TsmSendMessage (telem, DisplayTraverse, node->elem.data, 1, &key);
                }
     }
   }

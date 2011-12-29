@@ -24,7 +24,8 @@ uses
     Array1OfPnt2d   from TColgp,
     HArray1OfPnt     from TColgp,
     Box2d           from Bnd,
-    Location                 from TopLoc
+    Location                 from TopLoc, 
+    SensitiveEntity   from Select3D
 is
 
 
@@ -50,7 +51,7 @@ is
         ---Level: Public 
         ---Purpose: Creation of Sensitive Curve from Points.
         --          Warning : This Method should disappear in the next version...
-    
+  
     Matches(me  :mutable; 
             X,Y : Real from Standard;
             aTol: Real from Standard;
@@ -85,9 +86,16 @@ is
         ---Category: Internal Methods
     Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
      
-    LoadPoints(me:mutable;aCurve:Curve from Geom;NbPoints: Integer) is static private;
+    LoadPoints(me:mutable;aCurve:Curve from Geom;NbPoints: Integer) is static private; 
+
+    GetConnected(me: mutable; theLocation : Location from TopLoc) 
+    returns SensitiveEntity from Select3D 
+    is redefined virtual; 
+        ---Level: Public 
+        ---Purpose: Returns the copy of this
 
 fields
     mylastseg : Integer        from Standard;
+    myCurve  : Curve from Geom;
 end SensitiveCurve;
 

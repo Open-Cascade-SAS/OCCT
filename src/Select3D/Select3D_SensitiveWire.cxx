@@ -22,10 +22,9 @@
 // Purpose  :Constructor
 //=====================================================
 
-
 Select3D_SensitiveWire::
 Select3D_SensitiveWire(const Handle(SelectBasics_EntityOwner)& OwnerId,
-			  const Standard_Integer MaxRect):
+                       const Standard_Integer MaxRect):
 Select3D_SensitiveEntity(OwnerId),
 mymaxrect(MaxRect),
 myDetectedIndex(-1)
@@ -35,16 +34,12 @@ myDetectedIndex(-1)
 // Function : Add
 // Purpose  :
 //=====================================================
+
 void Select3D_SensitiveWire
 ::Add(const Handle(Select3D_SensitiveEntity)& aSensitive)
 {
-  if ( !aSensitive .IsNull()) {
-    if(!HasLocation())
-      mysensitive.Append(aSensitive);
-    else
-      mysensitive.Append(aSensitive->GetConnected(Location()));
-
-  }
+  if(!aSensitive.IsNull()) 
+    mysensitive.Append(aSensitive); 
 }
 
 //=======================================================================
@@ -64,14 +59,15 @@ void Select3D_SensitiveWire::SetLocation(const TopLoc_Location& aLoc)
   Select3D_SensitiveEntity::SetLocation(aLoc);
   for(Standard_Integer i=1;i<=mysensitive.Length();i++){
     if(mysensitive(i)->HasLocation()){
-      if(mysensitive(i)->Location()!=aLoc)
-	mysensitive(i)->SetLocation(mysensitive(i)->Location()*aLoc);
+      if(mysensitive(i)->Location()!=aLoc) 
+        mysensitive(i)->SetLocation(mysensitive(i)->Location()*aLoc);
     }
     else
       mysensitive(i)->SetLocation(aLoc);
 
   }
 }
+
 //=======================================================================
 //function : ResetLocation
 //purpose  :
@@ -89,6 +85,7 @@ void Select3D_SensitiveWire::ResetLocation()
   }
   Select3D_SensitiveEntity::ResetLocation();
 }
+
 //=====================================================
 // Function : Project
 // Purpose  :
@@ -96,7 +93,7 @@ void Select3D_SensitiveWire::ResetLocation()
 void Select3D_SensitiveWire
 ::Project(const Handle(Select3D_Projector)& aProj)
 {
-  for ( Standard_Integer i=1; i<=mysensitive.Length(); i++)
+  for(Standard_Integer i=1; i<=mysensitive.Length(); i++)
     mysensitive(i)->Project(aProj);
   Select3D_SensitiveEntity::Project(aProj);
 }
@@ -105,6 +102,7 @@ void Select3D_SensitiveWire
 // Function : Areas
 // Purpose  :
 //=====================================================
+
 void Select3D_SensitiveWire
 ::Areas(SelectBasics_ListOfBox2d& theareas)
 {
@@ -118,7 +116,6 @@ void Select3D_SensitiveWire
     BB.Add(it.Value());
 
   theareas.Append(BB);
-
 }
 
 //=====================================================
@@ -127,20 +124,23 @@ void Select3D_SensitiveWire
 //=====================================================
 Standard_Boolean Select3D_SensitiveWire
 ::Matches(const Standard_Real X,
-	  const Standard_Real Y,
-	  const Standard_Real aTol,
-	  Standard_Real&  DMin)
+          const Standard_Real Y,
+          const Standard_Real aTol,
+          Standard_Real& DMin)
 {
   Standard_Integer i;
   Standard_Real Dcur;
   DMin = Precision::Infinite();
   Standard_Boolean IsTouched = Standard_False;
-  for (i=1; i<=mysensitive.Length(); i++) {
-    if (mysensitive.Value(i)->Matches(X,Y,aTol,Dcur)) {
+  for (i=1; i<=mysensitive.Length(); i++) 
+  {
+    if (mysensitive.Value(i)->Matches(X,Y,aTol,Dcur)) 
+    {
       IsTouched = Standard_True;
-      if(Dcur<=DMin){
-	myDetectedIndex = i;
-	DMin = Dcur;
+      if(Dcur<=DMin)
+      { 
+        myDetectedIndex = i; 
+        DMin = Dcur;
       }
     }
   }
@@ -155,15 +155,17 @@ Standard_Boolean Select3D_SensitiveWire
 // Function : Matches
 // Purpose  :
 //=====================================================
-  Standard_Boolean Select3D_SensitiveWire::
+
+Standard_Boolean Select3D_SensitiveWire::
 Matches (const Standard_Real XMin,
-	 const Standard_Real YMin,
-	 const Standard_Real XMax,
-	 const Standard_Real YMax,
-	 const Standard_Real aTol)
+         const Standard_Real YMin,
+         const Standard_Real XMax,
+         const Standard_Real YMax,
+         const Standard_Real aTol)
 {
   Standard_Integer i;
-  for (i=1; i<=mysensitive.Length(); i++) {
+  for (i=1; i<=mysensitive.Length(); i++) 
+  {
     if (!(mysensitive.Value(i)->Matches(XMin,YMin,XMax,YMax,aTol)))
       return Standard_False;
   }
@@ -177,11 +179,12 @@ Matches (const Standard_Real XMin,
 
 Standard_Boolean Select3D_SensitiveWire::
 Matches (const TColgp_Array1OfPnt2d& aPoly,
-	 const Bnd_Box2d& aBox,
-	 const Standard_Real aTol)
+         const Bnd_Box2d& aBox,
+         const Standard_Real aTol)
 {
   Standard_Integer i;
-  for (i=1; i<=mysensitive.Length(); i++) {
+  for (i=1; i<=mysensitive.Length(); i++) 
+  {
     if (!(mysensitive.Value(i)->Matches(aPoly, aBox, aTol)))
       return Standard_False;
   }
@@ -193,6 +196,7 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 // Function : MaxBoxes
 // Purpose  :
 //=====================================================
+
 Standard_Integer Select3D_SensitiveWire::
 MaxBoxes () const
 {
@@ -203,11 +207,12 @@ MaxBoxes () const
 //function : GetConnected
 //purpose  :
 //=======================================================================
+
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetConnected(const TopLoc_Location& aLoc)
 {
   Handle(Select3D_SensitiveWire) SWIR = new Select3D_SensitiveWire(myOwnerId);
   for(Standard_Integer i=1;i<=mysensitive.Length();i++)
-    SWIR->Add(mysensitive(i));
+    SWIR->Add(mysensitive(i)->GetConnected(aLoc));
 
   if(HasLocation())
     SWIR->SetLocation(Location()*aLoc);
@@ -241,6 +246,7 @@ void Select3D_SensitiveWire::Dump(Standard_OStream& S,const Standard_Boolean Ful
 //function : ComputeDepth
 //purpose  :
 //=======================================================================
+
 Standard_Real Select3D_SensitiveWire::ComputeDepth(const gp_Lin& EyeLine) const
 {
 
@@ -255,6 +261,7 @@ Standard_Real Select3D_SensitiveWire::ComputeDepth(const gp_Lin& EyeLine) const
 //function : SetLastPrj
 //purpose  :
 //=======================================================================
+
 void Select3D_SensitiveWire::SetLastPrj(const Handle(Select3D_Projector)& Prj)
 {
   Select3D_SensitiveEntity::SetLastPrj(Prj);
@@ -267,6 +274,7 @@ void Select3D_SensitiveWire::SetLastPrj(const Handle(Select3D_Projector)& Prj)
 //function : GetEdges
 //purpose  : returns the sensitive edges stored in this wire
 //=======================================================================
+
 void Select3D_SensitiveWire::GetEdges( Select3D_SensitiveEntitySequence& theEdges )
 {
   theEdges.Clear();
@@ -277,6 +285,7 @@ void Select3D_SensitiveWire::GetEdges( Select3D_SensitiveEntitySequence& theEdge
 // Function : GetLastDetected
 // Purpose  :
 //=============================================================================
+
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
 {
   Handle(Select3D_SensitiveEntity) aRes;
@@ -285,4 +294,20 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveWire::GetLastDetected() const
     aRes = mysensitive.Value( myDetectedIndex );
 
   return aRes;
+}
+
+//=======================================================================
+//function : Set
+//purpose  :
+//=======================================================================
+
+void Select3D_SensitiveWire::Set(const Handle_SelectBasics_EntityOwner &TheOwnerId) 
+{
+  Select3D_SensitiveEntity::Set(TheOwnerId);
+
+  // Set TheOwnerId for each element of sensitive wire
+  for (Standard_Integer i = 1; i <= mysensitive.Length(); ++i) 
+  {
+    mysensitive.Value(i)->Set(TheOwnerId);
+  }
 }

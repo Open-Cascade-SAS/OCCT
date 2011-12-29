@@ -20,7 +20,8 @@ uses
     Array1OfPnt2d     from TColgp,
     Box2d             from Bnd,
     TypeOfSensitivity from Select3D,
-    Location          from TopLoc
+    Location          from TopLoc, 
+    SensitiveEntity   from Select3D
 
 is
 
@@ -43,7 +44,7 @@ is
         -- owner OwnerId, the array of points ThePoints, and
         -- the sensitivity type Sensitivity.
         -- The array of points is the outer polygon of the geometric face.
-    
+   
     Matches(me  :mutable; 
             X,Y : Real from Standard;
             aTol: Real from Standard;
@@ -76,7 +77,13 @@ is
     -- in some particular case, a custom sensitive face class can be implemented at application level
     -- that overrides default ComputeDepth() behavior.
 
-    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
+
+    GetConnected(me: mutable; theLocation : Location from TopLoc) 
+    returns SensitiveEntity from Select3D 
+    is redefined virtual; 
+        ---Level: Public 
+        ---Purpose: Returns the copy of this
 
 
 fields

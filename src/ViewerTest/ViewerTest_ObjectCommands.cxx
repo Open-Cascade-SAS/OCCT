@@ -109,7 +109,12 @@
 #include <SelectMgr_Selection.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <TopoDS_Wire.hxx>
+#include <TopoDS_Wire.hxx> 
+
+#include <AIS_ConnectedShape.hxx>
+#include <TopLoc_Location.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
@@ -3485,6 +3490,327 @@ static Standard_Integer VSetLocation (Draw_Interpretor& di,
   return 0;
 }
 
+//===============================================================================================
+//function : VConnect
+//purpose  : Creates and displays AIS_ConnectedInteractive object from input object and location 
+//Draw arg : vconnect name object Xo Yo Zo Xu Xv Xw Zu Zv Zw
+//===============================================================================================
+
+static Standard_Integer VConnect(Draw_Interpretor& di, 
+                                 Standard_Integer argc, 
+                                 const char ** argv) 
+{
+  // Check argumnets 
+  if(argc != 12)
+  {
+    std::cout << "vconnect error: expect 11 argumnets\n"; 
+    return 1; // TCL_ERROR
+  }
+  // Get values 
+  TCollection_AsciiString aName(argv[1]); 
+  TCollection_AsciiString anOriginObjectName(argv[2]); 
+  if(aName.IsEqual(anOriginObjectName))
+  {
+    std::cout << "vconnect error: equal names for connected objects\n"; 
+    return 1; // TCL_ERROR
+  }
+  // Check if the origin shape is not null
+  Handle(AIS_InteractiveObject) anOriginObject;
+  if(GetMapOfAIS().IsBound2(anOriginObjectName))
+  {
+    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(anOriginObjectName);
+    anOriginObject = Handle(AIS_InteractiveObject)::DownCast(anObj);
+    if(anOriginObject.IsNull())
+    {
+      std::cout << "Object " << anOriginObjectName << " is used for non AIS viewer\n!";
+      return 1; // TCL_ERROR
+    }
+  }
+  
+  // Get location data
+  Standard_Real aXo = atof(argv[3]);
+  Standard_Real aYo = atof(argv[4]);
+  Standard_Real aZo = atof(argv[5]);
+  Standard_Real aXu = atof(argv[6]);
+  Standard_Real aXv = atof(argv[7]);
+  Standard_Real aXw = atof(argv[8]);
+  Standard_Real aZu = atof(argv[9]);
+  Standard_Real aZv = atof(argv[10]);
+  Standard_Real aZw = atof(argv[11]);
+
+  // Create transformation
+  gp_Pnt aPoint(aXo, aYo, aZo);
+  gp_Dir anXDir(aXu, aXv, aXw), aZDir(aZu, aZv, aZw);
+  if(!anXDir.IsNormal(aZDir, Precision::Angular()))
+  {
+    std::cout << "vconnect error : XDir expects to be normal to ZDir\n"; 
+    return 1; // TCL_ERROR
+  } 
+  gp_Ax3 anAx3(aPoint, aZDir, anXDir); 
+  gp_Trsf aTrsf; 
+  aTrsf.SetTransformation(anAx3); 
+  TopLoc_Location aLocation(aTrsf);
+
+  // Create connected object
+  Handle(AIS_ConnectedInteractive) aConnectedObject = new AIS_ConnectedInteractive();
+  aConnectedObject->Connect(anOriginObject, aLocation);
+
+  // Check if there is another object with given name
+  // and remove it from context
+  if(GetMapOfAIS().IsBound2(aName))
+  {
+    Handle(AIS_InteractiveObject) anObj = 
+      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(aName));
+    TheAISContext()->Remove(anObj, Standard_False);
+    GetMapOfAIS().UnBind2(aName);
+  }
+
+  // Bind connected object to its name 
+  GetMapOfAIS().Bind(aConnectedObject, aName); 
+
+  // Display connected object
+  TheAISContext()->Display(aConnectedObject);
+
+  return 0;
+}
+
+//===============================================================================================
+//function : VConnectShape
+//purpose  : Creates and displays AIS_ConnectedShape from input shape and location 
+//Draw arg : vconnectsh name shape Xo Yo Zo Xu Xv Xw Zu Zv Zw
+//===============================================================================================
+
+static Standard_Integer VConnectShape(Draw_Interpretor& di, 
+                                      Standard_Integer argc, 
+                                      const char ** argv) 
+{
+  // Check argumnets 
+  if(argc != 12)
+  {
+    std::cout << "vconnectsh error: expect 11 argumnets\n"; 
+    return 1; // TCL_ERROR
+  }
+  // Get values 
+  TCollection_AsciiString aName(argv[1]); 
+  TCollection_AsciiString anOriginShapeName(argv[2]); 
+  if(aName.IsEqual(anOriginShapeName))
+  {
+    std::cout << "vconnectsh error: equal names for connected shapes\n"; 
+    return 1; // TCL_ERROR
+  }
+  // Check if the origin shape is not null
+  Handle(AIS_InteractiveObject) anOriginShape;
+  if(GetMapOfAIS().IsBound2(anOriginShapeName))
+  {
+    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(anOriginShapeName);
+    anOriginShape = Handle(AIS_InteractiveObject)::DownCast(anObj);
+    if(anOriginShape.IsNull())
+    {
+      std::cout << "Shape " << anOriginShapeName << " is used for non AIS viewer\n!";
+      return 1; // TCL_ERROR
+    }
+  }
+
+  // Get location data  
+  Standard_Real aXo = atof(argv[3]);
+  Standard_Real aYo = atof(argv[4]);
+  Standard_Real aZo = atof(argv[5]);
+  Standard_Real aXu = atof(argv[6]);
+  Standard_Real aXv = atof(argv[7]);
+  Standard_Real aXw = atof(argv[8]);
+  Standard_Real aZu = atof(argv[9]);
+  Standard_Real aZv = atof(argv[10]);
+  Standard_Real aZw = atof(argv[11]);
+
+  // Create transformation
+  gp_Pnt aPoint(aXo, aYo, aZo);
+  gp_Dir anXDir(aXu, aXv, aXw), aZDir(aZu, aZv, aZw);
+  if(!anXDir.IsNormal(aZDir, Precision::Angular()))
+  {
+    std::cout << "vconnectsh error : XDir expects to be normal to ZDir\n"; 
+    return 1; // TCL_ERROR
+  } 
+  gp_Ax3 anAx3(aPoint, aZDir, anXDir); 
+  gp_Trsf aTrsf; 
+  aTrsf.SetTransformation(anAx3); 
+  TopLoc_Location aLocation(aTrsf);
+
+  // Create connected shape
+  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anOriginShape);
+  Handle(AIS_ConnectedShape) aConnectedShape = new AIS_ConnectedShape(aShape);
+  aConnectedShape->Connect(anOriginShape, aLocation);
+
+  // Check if there is another object with given name
+  // and remove it from context
+  if(GetMapOfAIS().IsBound2(aName))
+  {
+    Handle(AIS_InteractiveObject) anObj = 
+      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(aName));
+    TheAISContext()->Remove(anObj, Standard_False);
+    GetMapOfAIS().UnBind2(aName);
+  }
+
+  // Bind connected shape to its name 
+  GetMapOfAIS().Bind(aConnectedShape, aName); 
+
+  // Display connected shape
+  TheAISContext()->Display(aConnectedShape);
+
+  return 0;
+}
+
+//===============================================================================================
+//function : VSetSelectionMode
+//purpose  : Sets input selection mode for input object or for all displayed objects 
+//Draw arg : vselmode [object] mode On/Off (1/0)
+//===============================================================================================
+
+// function : InList 
+// purpose  : checks if theMode is already turned on for theObj
+Standard_Boolean InList(Handle(AIS_InteractiveContext) theAISContext, 
+                          Handle(AIS_InteractiveObject) theObj, 
+                          Standard_Integer theMode)
+{
+  TColStd_ListOfInteger anArray; 
+  theAISContext->ActivatedModes(theObj, anArray);
+  TColStd_ListIteratorOfListOfInteger anIt(anArray);
+  for(; anIt.More(); anIt.Next())
+  {
+    if(anIt.Value() == theMode) 
+      return Standard_True;
+  }
+  return Standard_False;
+}
+
+static Standard_Integer VSetSelectionMode(Draw_Interpretor& di, 
+                                          Standard_Integer argc, 
+                                          const char ** argv)
+{
+  // Check errors
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if(anAISContext.IsNull())
+  {
+    std::cout << "Call vinit before!\n";
+    return 1; // TCL_ERROR
+  }
+
+  // Check the arguments 
+  if(argc != 3 && argc != 4)
+  {
+    std::cout << "vselmode error : expects at least 2 arguments\n"; 
+    return 1; // TCL_ERROR
+  }
+
+  Handle(AIS_InteractiveObject) anObj;
+
+  // Set new selection mode for all objects in context
+  if(argc == 3)
+  {
+    // Get arguments 
+    Standard_Integer aMode = atoi(argv[1]);
+    Standard_Boolean isTurnOn = atoi(argv[2]); 
+
+    // Get all displayed objects
+    AIS_ListOfInteractive anObjList;
+    anAISContext->DisplayedObjects(anObjList);
+    AIS_ListIteratorOfListOfInteractive anObjIter;
+
+    if(aMode == 0)
+    {
+      if(anAISContext->HasOpenedContext())
+        anAISContext->CloseLocalContext();
+    }
+
+    // Turn on aMode
+    if(aMode != 0 && isTurnOn)
+    {
+      if(!anAISContext->HasOpenedContext())
+      {
+        anAISContext->OpenLocalContext(); 
+        for(anObjIter.Initialize(anObjList); anObjIter.More(); anObjIter.Next())
+        {
+          anAISContext->Activate(anObjIter.Value(), aMode); 
+        }
+      }
+      else
+      {
+        for(anObjIter.Initialize(anObjList); anObjIter.More(); anObjIter.Next())
+        {
+          anObj = anObjIter.Value();
+          if(!InList(anAISContext, anObj, aMode))
+            anAISContext->Activate(anObj, aMode);
+        }
+      }
+    }
+
+    // Turn off aMode
+    if(aMode != 0 && !isTurnOn)
+    {
+      if(anAISContext->HasOpenedContext())
+      {
+        for(anObjIter.Initialize(anObjList); anObjIter.More(); anObjIter.Next())
+        {
+          anObj = anObjIter.Value();
+          if(InList(anAISContext, anObj, aMode))
+            anAISContext->Deactivate(anObj, aMode);
+        }
+      }
+    }
+  }
+
+  // Set new selection mode for named object 
+  else
+  {
+    // Get argumnets 
+    Standard_Integer aMode = atoi(argv[2]);
+    Standard_Boolean isTurnOn = atoi(argv[3]);
+    TCollection_AsciiString aName(argv[1]); 
+
+    // Check if there is an object with given name in context
+    if(GetMapOfAIS().IsBound2(aName))
+    {
+      anObj = Handle(AIS_InteractiveObject)::
+        DownCast(GetMapOfAIS().Find2(aName));
+      if(anObj.IsNull())
+      {
+        std::cout << "vselmode error : object name is used for non AIS viewer\n"; 
+        return 1; // TCL_ERROR
+      }
+    }
+
+    if(aMode == 0)
+    {
+      if(anAISContext->HasOpenedContext())
+        anAISContext->CloseLocalContext();
+    }
+    // Turn on aMode
+    if(aMode != 0 && isTurnOn) 
+    {
+      if(!anAISContext->HasOpenedContext())
+      {
+        anAISContext->OpenLocalContext(); 
+        anAISContext->Activate(anObj, aMode);
+      }
+      else
+      {
+        if(!InList(anAISContext, anObj, aMode))
+          anAISContext->Activate(anObj, aMode);
+      }
+    }
+
+    // Turn off aMode
+    if(aMode != 0 && !isTurnOn)
+    {
+      if(anAISContext->HasOpenedContext())
+      {
+        if(InList(anAISContext, anObj, aMode))
+          anAISContext->Deactivate(anObj, aMode);
+      }
+    }
+  }
+  return 0;
+}
+
 //=======================================================================
 //function : ObjectsCommands
 //purpose  :
@@ -3569,4 +3895,16 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vdrawparray",
     "vdrawparray : vdrawparray Name TypeOfArray [EnableVbo=1] [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id [edge_hidden = { 'h' }] ]",
     __FILE__,VDrawPArray,group);
+
+  theCommands.Add("vconnect", 
+    "vconnect : name object Xo Yo Zo Xu Xv Xw Zu Zv Zw", 
+    __FILE__, VConnect, group);
+
+  theCommands.Add("vconnectsh", 
+    "vconnectsh : name shape Xo Yo Zo Xu Xv Xw Zu Zv Zw", 
+    __FILE__, VConnectShape, group);
+
+  theCommands.Add("vselmode", 
+    "vselmode : [object] mode On/Off (1/0)", 
+    __FILE__, VSetSelectionMode, group);
 }

@@ -38,7 +38,7 @@ is
         ---Level: Public 
         ---Purpose: Constructs the sensitive circle object defined by the
         -- owner OwnerId, the circle Circle, the Boolean
-        -- FilledCircle and the number of points NbOfPoints.
+        -- FilledCircle and the number of points NbOfPoints. 
 
     Project (me:mutable;aProjector : Projector from Select3D) is redefined virtual;
     ---Level: Public 
@@ -69,4 +69,4 @@ fields
     mypolyg2d       : Address   from Standard is protected;
     mybox2d         : Box2d     from Select3D is protected;
     mynbpoints      : Integer   from Standard is protected;
-end SensitiveFace;
+end SensitivePoly;

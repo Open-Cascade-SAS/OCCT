@@ -25,7 +25,9 @@ uses
     Location        from TopLoc,
     Pnt             from Select3D, 
     Pnt2d           from Select3D, 
-    Projector       from Select3D
+    Projector       from Select3D,
+    SensitiveEntity from Select3D, 
+    Circle          from Geom
 
 is
     Create (OwnerId      : EntityOwner from SelectBasics;
@@ -68,7 +70,7 @@ is
        FilledCircle : Boolean from Standard = Standard_False)
     returns mutable SensitiveCircle;
         ---Purpose: Constructs the sensitive circle object defined by the
-        -- owner OwnerId, the array of points apolyg3d, and the Boolean FilledCircle.
+        -- owner OwnerId, the array of points apolyg3d, and the Boolean FilledCircle. 
         -- If the length of apolyg3d is more then 1, the first point of apolyg3d 
         -- must be equal to the last point of apolyg3d. 
 
@@ -102,7 +104,13 @@ is
     GetPoint3d(me;rank:Integer) returns Pnt from gp;
         ---Level: Internal 
 
-    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual;
+    Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
+
+    GetConnected(me: mutable; theLocation : Location from TopLoc) 
+    returns SensitiveEntity from Select3D 
+    is redefined virtual; 
+        ---Level: Public 
+        ---Purpose: Returns the copy of this. 
 
     Project(me: mutable;aProjector: Projector from Select3D) is redefined virtual;
 
@@ -116,6 +124,9 @@ fields
     myDetectedIndex : Integer from Standard; -- used for depth...
     myCenter2D      : Pnt2d from Select3D; -- used for Matches()
     myCenter3D      : Pnt from Select3D; -- used for Matches()
+    myCircle        : Circle from Geom;
+    mystart         : Real from Standard; -- used for GetConnected() 
+    myend           : Real from Standard; -- used for GetConnected()
     
 end SensitiveCircle;
 

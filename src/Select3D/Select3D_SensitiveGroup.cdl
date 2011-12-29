@@ -130,7 +130,10 @@ is
     	---Purpose: returns the depth of the touched entity
 
     
-    SetLastPrj(me:mutable;aPrj:Projector from Select3D) is redefined virtual; 
+    SetLastPrj(me:mutable;aPrj:Projector from Select3D) is redefined virtual;
+
+    Set(me:mutable;TheOwnerId: EntityOwner from SelectBasics) is redefined static; 
+    ---Purpose: Sets the owner for all entities in group 
      
     GetEntities(me)
     returns ListOfSensitive from Select3D; 

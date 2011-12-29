@@ -62,7 +62,12 @@ is
 
     GetConnected(me:mutable;aLocation: Location from TopLoc)
     returns SensitiveEntity from Select3D is virtual;
-    ---Purpose: Returns the sensitive entity found at the location  aLocation.
+    ---Purpose: Originally this method intended to return sensitive 
+    -- entity with new location aLocation, but currently sensitive 
+    -- entities do not hold a location, instead HasLocation() and 
+    -- Location() methods call corresponding entity owner's methods. 
+    -- Thus all entities returned by GetConnected() share the same 
+    -- location propagated from corresponding selectable object. 
     -- You must redefine this function for any type of
     -- sensitive entity which can accept another connected
     -- sensitive entity.//can be connected to another sensitive entity.

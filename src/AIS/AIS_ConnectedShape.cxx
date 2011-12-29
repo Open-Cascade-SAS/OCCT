@@ -27,6 +27,8 @@
 #include <SelectBasics_EntityOwner.hxx>
 #include <AIS_MultipleConnectedShape.hxx>
 #include <Precision.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 
 //=======================================================================
 //function : AIS_ConnectedShape
@@ -160,26 +162,21 @@ void AIS_ConnectedShape::Compute(const Handle_PrsMgr_PresentationManager2d& aPre
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_ConnectedShape::Compute(const Handle_PrsMgr_PresentationManager3d& /*aPresentationManager3d*/,
-                                 const Handle_Prs3d_Presentation& /*aPresentation*/,
-                                 const int /*anInteger*/)
-{
- Standard_NotImplemented::Raise("AIS_ConnectedShape::Compute(const Handle_PrsMgr_PresentationManager3d&, const Handle_Prs3d_Presentation&, const int)");
-// AIS_ConnectedInteractive::Compute( aPresentationManager3d ,aPresentation,anInteger) ;  not accessible
-}
-
-//=======================================================================
 //function : ComputeSelection 
 //purpose  : Attention fragile...
 //=======================================================================
-
-void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-					   const Standard_Integer             aMode)
+static Standard_Boolean IsEqual( const TopoDS_Shape& theLeft, 
+                                 const TopoDS_Shape& theRight )
 {
+  return theLeft.IsEqual(theRight);
+}
+
+void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, 
+                                           const Standard_Integer aMode)
+{
+  typedef NCollection_List<Handle(Select3D_SensitiveEntity)> SensitiveList;
+  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList > Shapes2EntitiesMap; 
+
   UpdateShape();
   aSelection->Clear();
   // It is checked if there is nothing to do with the reference
@@ -187,79 +184,76 @@ void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aS
   
   if(!myReference->HasSelection(aMode))
     myReference->UpdateSelection(aMode);
-  const Handle(SelectMgr_Selection)& RefSel = myReference->Selection(aMode);
-  if(RefSel->IsEmpty())
-    myReference->UpdateSelection(aMode);
-  if(RefSel->UpdateStatus()==SelectMgr_TOU_Full)
+  const Handle(SelectMgr_Selection)& aRefSel = myReference->Selection(aMode);
+  if(aRefSel->IsEmpty())
     myReference->UpdateSelection(aMode);
 
-  // depending on the type of decomposition, connected primitives are subtracted
-  // it is necessary to follow the order of creation of StdSelect_BRepSelectionTool...
+  if(aRefSel->UpdateStatus()==SelectMgr_TOU_Full)
+    myReference->UpdateSelection(aMode);
   
-  TopAbs_ShapeEnum TheType = AIS_Shape::SelectionType(aMode);
-  Handle(StdSelect_BRepOwner) OWNR;
-  Handle(Select3D_SensitiveEntity) SE,NiouSE;
-  TopLoc_Location BidLoc;
+  Handle(StdSelect_BRepOwner) anOwner;
+  TopLoc_Location aBidLoc;
+  Handle(Select3D_SensitiveEntity) aSE, aNewSE;
+  Shapes2EntitiesMap aShapes2EntitiesMap;
+  SensitiveList aSEList;
+  TopoDS_Shape aSubShape;
 
-  switch(TheType){
-  case TopAbs_VERTEX:
-  case TopAbs_EDGE:
-  case TopAbs_WIRE:
-  case TopAbs_FACE:
-  case TopAbs_SHELL:
+  // Fill in the map of subshapes and corresponding 
+  // sensitive entities associated with aMode 
+  for(aRefSel->Init(); aRefSel->More(); aRefSel->Next())
+  {
+    aSE = Handle(Select3D_SensitiveEntity)::DownCast(aRefSel->Sensitive()); 
+    if(!aSE.IsNull())
     {
-      TopTools_IndexedMapOfShape subshaps;
-      TopExp::MapShapes(myOwnSh,TheType,subshaps);
-
-      RefSel->Init();
-      for(Standard_Integer I=1;
-	  I<=subshaps.Extent()&& RefSel->More();
-	  RefSel->Next(),I++){
-	
-	SE = *((Handle(Select3D_SensitiveEntity)*) &(RefSel->Sensitive()));
-	if(!SE.IsNull()){
-	  OWNR = new StdSelect_BRepOwner(subshaps(I),this,SE->OwnerId()->Priority());
-	  
-	  
-	  if(myLocation.IsIdentity())
-	    NiouSE = SE->GetConnected(BidLoc);
-	  else
-	    NiouSE = SE->GetConnected(myLocation);
-	  NiouSE->Set(OWNR);
-	  aSelection->Add(NiouSE);
-	}
+      anOwner = Handle(StdSelect_BRepOwner)::DownCast(aSE->OwnerId());
+      if(!anOwner.IsNull())
+      {
+        aSubShape = anOwner->Shape(); 
+        if(!aShapes2EntitiesMap.IsBound(aSubShape))
+        {
+          aShapes2EntitiesMap.Bind(aSubShape, aSEList);
+        }
+        aShapes2EntitiesMap(aSubShape).Append(aSE);
       }
-     break;
-    }
-    
-  case TopAbs_SHAPE:
-  default:
-    {
-      // In case if there is only one owner of the set of
-      // sensible primitives...
-      OWNR = new StdSelect_BRepOwner(myOwnSh,this);
-      Standard_Boolean FirstIncr(Standard_True);
-      for(RefSel->Init();RefSel->More();RefSel->Next()){
-	SE = *((Handle(Select3D_SensitiveEntity)*) &(RefSel->Sensitive()));
-	if(FirstIncr){
-	  Standard_Integer Prior = SE->OwnerId()->Priority();
-	  Handle(SelectBasics_EntityOwner)::DownCast(OWNR)->Set(Prior);
-	  FirstIncr = Standard_False;}
-
-	if(myLocation.IsIdentity())
-	  NiouSE = SE->GetConnected(BidLoc);
-	else
-	  NiouSE = SE->GetConnected(myLocation);
-	NiouSE->Set(OWNR);
-	aSelection->Add(NiouSE);
-      }
-      break;
     }
   }
-  StdSelect::SetDrawerForBRepOwner(aSelection,myDrawer);
-  
+
+  // Fill in selection from aShapes2EntitiesMap
+  Shapes2EntitiesMap::Iterator aMapIt(aShapes2EntitiesMap);
+  for(; aMapIt.More(); aMapIt.Next())
+  {
+    aSEList = aMapIt.Value();
+    anOwner = new StdSelect_BRepOwner(aMapIt.Key(), 
+                                      this, 
+                                      aSEList.First()->OwnerId()->Priority(), 
+                                      Standard_True);
+    
+    SensitiveList::Iterator aListIt(aSEList);
+    for(; aListIt.More(); aListIt.Next())
+    {
+      aSE = aListIt.Value();
+      if(myLocation.IsIdentity())
+      {
+        aNewSE = aSE->GetConnected(aBidLoc);
+        aNewSE->Set(anOwner);
+        // In case if aSE caches some location-dependent data 
+        // that must be updated after setting anOwner
+        aNewSE->SetLocation(aBidLoc);
+      }
+      else
+      {
+        aNewSE = aSE->GetConnected(myLocation); 
+        aNewSE->Set(anOwner); 
+        // In case if aSE caches some location-dependent data 
+        // that must be updated after setting anOwner
+        aNewSE->SetLocation(myLocation);
+      }
+      aSelection->Add(aNewSE);
+    }
+  }
+
+  StdSelect::SetDrawerForBRepOwner(aSelection,myDrawer);  
 }
- 
 
 //=======================================================================
 //function : Shape

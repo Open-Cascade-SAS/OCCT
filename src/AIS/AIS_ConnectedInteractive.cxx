@@ -137,39 +137,39 @@ void AIS_ConnectedInteractive::Compute(const Handle_PrsMgr_PresentationManager2d
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================
-void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection)& aSel,
-						const Standard_Integer aMode)
+
+void AIS_ConnectedInteractive::ComputeSelection(const Handle(SelectMgr_Selection)& aSel, 
+                                                const Standard_Integer aMode)
 {
   if(!(HasLocation() ||HasConnection())) return;
   
   aSel->Clear();
   if(!myReference->HasSelection(aMode))
     myReference->UpdateSelection(aMode);
-  
-  
-//  static OSD_Timer KronSel;
-//  cout<<"debut calcul connexion primitives pour le mode "<<aMode<<endl;
-//  KronSel.Reset();
-//  KronSel.Start();
-  
+
   const Handle(SelectMgr_Selection)& TheRefSel = myReference->Selection(aMode);
   Handle(SelectMgr_EntityOwner) OWN = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveEntity) SE3D,SNew;
+  Handle(Select3D_SensitiveEntity) SE3D, SNew;
   
   if(TheRefSel->IsEmpty())
     myReference->UpdateSelection(aMode);
-  for(TheRefSel->Init();TheRefSel->More();TheRefSel->Next()){
-    SE3D = *((Handle(Select3D_SensitiveEntity)*) &(TheRefSel->Sensitive()));
-    if(!SE3D.IsNull()){
+  for(TheRefSel->Init();TheRefSel->More();TheRefSel->Next())
+  {
+    SE3D = Handle(Select3D_SensitiveEntity)::DownCast(TheRefSel->Sensitive());
+    if(!SE3D.IsNull())
+    {
+      // Get the copy of SE3D
       SNew = SE3D->GetConnected(myLocation);
       if(aMode==0)
-	SNew->Set(OWN);
+      {
+        SNew->Set(OWN);
+        // In case if SE3D caches some location-dependent data
+        // that must be updated after setting OWN
+        SNew->SetLocation(myLocation);
+      }
       aSel->Add(SNew);
     }
   }
-//  KronSel.Stop();
-//  cout<<"fin calcul connexion primitives pour le mode "<<aMode<<endl;
-//  KronSel.Show();
 }
 
 void AIS_ConnectedInteractive::UpdateLocation()
