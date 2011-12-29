@@ -579,15 +579,21 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
 
     //check that edges merged valid way (for edges having length less than specified
     //tolerance
-    if(secForward)
+    // Check if edges are closed
+    Standard_Boolean isClosed1 = V11.IsSame(V12);
+    Standard_Boolean isClosed2 = V21.IsSame(V22);
+    if(!isClosed1 && !isClosed2)
     {
-      if( V11.IsSame(V22) || V12.IsSame(V21) )
-        return TopoDS_Edge();
-    }
-    else
-    {
-      if( V11.IsSame(V21) || V12.IsSame(V22) )
-        return TopoDS_Edge();
+      if(secForward )
+      {
+        if( V11.IsSame(V22) || V12.IsSame(V21) )
+          return TopoDS_Edge();
+      }
+      else
+      {
+        if( V11.IsSame(V21) || V12.IsSame(V22) )
+          return TopoDS_Edge();
+      }
     }
 
     //szv: do not reshape here!!!
@@ -601,9 +607,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
     gp_Pnt p21 = BRep_Tool::Pnt(V21); 
     gp_Pnt p22 = BRep_Tool::Pnt(V22);
 
-    // Check if edges are closed
-    Standard_Boolean isClosed1 = V11.IsSame(V12);
-    Standard_Boolean isClosed2 = V21.IsSame(V22);
+    
 
     //Standard_Boolean isRev = Standard_False;
     gp_Pnt pfirst;
