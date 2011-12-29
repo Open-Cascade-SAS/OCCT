@@ -85,21 +85,6 @@ void TObj_Model::CloseDocument (const Handle(TDocStd_Document)& theDoc)
   // Application
   const Handle(TObj_Application) anApplication = GetApplication();
 
-  // cleanup CAF data
-  // PTV 21.11.2006:
-  //WARNING: It could be better to remove all attributes in OCAF document structure
-  // except TDocStd_Owner attribute.
-  // After all other is dead set to empty document to it and remove it from label
-  // ...
-  // But we still have previous implementation:
-  // - owner
-  Handle(TDocStd_Owner) owner;
-  if (theDoc->Main().Root().FindAttribute(TDocStd_Owner::GetID(), owner))
-  {
-    Handle_TDocStd_Document empty;
-    owner->SetDocument(empty);
-  }
-
   // just all other attributes
   theDoc->Main().Root().ForgetAllAttributes(Standard_True);
   anApplication->Close( theDoc );
