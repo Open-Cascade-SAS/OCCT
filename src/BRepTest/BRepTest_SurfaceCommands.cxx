@@ -278,7 +278,8 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
   Standard_Boolean aSameParameterMode = Standard_True;
   Standard_Boolean aFloatingEdgesMode = Standard_False;
   Standard_Boolean aFaceMode = Standard_True;
-  Standard_Real aMinTol = aTol*1e-4;
+  Standard_Boolean aSetMinTol = Standard_False;
+  Standard_Real aMinTol = 0.;
   Standard_Real aMaxTol = Precision::Infinite();
 
   for (Standard_Integer i = 2; i < theArgc; i++)
@@ -293,7 +294,10 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
           if (tolower(theArgv[i][2]) == 'i' && i+1 < theArgc)
           {
             if (atof (theArgv[i+1]))
-              aMinTol = atof (theArgv[i+1]);
+            {
+              aMinTol = atof (theArgv[++i]);
+              aSetMinTol = Standard_True;
+            }
             else
             {
               theDi << "Error! min tolerance can't possess the null value" << "\n";
@@ -303,7 +307,7 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
           if (tolower(theArgv[i][2]) == 'a' && i+1 < theArgc)
           {
             if (atof (theArgv[i+1]))
-              aMaxTol = atof (theArgv[i+1]);
+              aMaxTol = atof (theArgv[++i]);
             else
             {
               theDi << "Error! max tolerance can't possess the null value" << "\n";
@@ -323,15 +327,16 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
     }
     else
     {
-      if (atof (theArgv[i]))
-        aTol = atof (theArgv[i]);
-      else
+      TopoDS_Shape aShape = DBRep::Get (theArgv[i]);
+      if (!aShape.IsNull())
       {
-        TopoDS_Shape aShape = DBRep::Get (theArgv[i]);
-        if (aShape.IsNull())
-          continue;
         aSeq.Append (aShape);
         aPar++;
+      }
+      else
+      {
+        if (atof (theArgv[i]))
+          aTol = atof (theArgv[i]);
       }
     }
   }
@@ -357,6 +362,8 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
     return (1);
   }
     
+  if (!aSetMinTol)
+    aMinTol = aTol*1e-4;
   if (aTol < Precision::Confusion())
     aTol = Precision::Confusion();
   if (aMinTol < Precision::Confusion())
