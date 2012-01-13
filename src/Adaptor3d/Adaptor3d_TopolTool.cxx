@@ -765,7 +765,6 @@ Standard_Boolean Adaptor3d_TopolTool::DomainIsInfinite() {
   if(Precision::IsPositiveInfinite(Vsup)) return(Standard_True);
   return(Standard_False);
 }
-//modified by NIZNHY-PKV Mon Apr 23 16:00:31 2001 f
 //=======================================================================
 //function : Edge
 //purpose  : 
@@ -774,8 +773,6 @@ Standard_Boolean Adaptor3d_TopolTool::DomainIsInfinite() {
 {
   return NULL;
 } 
-//modified by NIZNHY-PKV Mon Apr 23 16:00:35 2001 t
-
 //=======================================================================
 //function : Has3d
 //purpose  : 
@@ -1211,8 +1208,52 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
     myNbSamplesV = myMinPnts;
     aVFlg(j) = Standard_True;
   }
-
- 
+  //
+  //modified by NIZNHY-PKV Fri Dec 16 10:05:01 2011f
+  //
+  Standard_Boolean bFlag;
+  //
+  // U 
+  bFlag=(myNbSamplesU < theNUmin);
+  if (bFlag) {
+    myNbSamplesU=nbsu;
+  }
+  //
+  myUPars = new TColStd_HArray1OfReal(1, myNbSamplesU);
+  //
+  for(j = 0, i = 1; i <= nbsu; ++i) {
+    if (bFlag) {
+       myUPars->SetValue(i,anUPars(i));
+    }
+    else {
+      if(anUFlg(i)) {
+	++j;
+	myUPars->SetValue(j,anUPars(i));
+      }
+    }
+  }
+  //
+  // V 
+  bFlag=(myNbSamplesV < theNVmin);
+  if (bFlag) {
+    myNbSamplesV=nbsv;
+  }
+  //
+  myVPars = new TColStd_HArray1OfReal(1, myNbSamplesV);
+  //
+  for(j = 0, i = 1; i <= nbsv; ++i) {
+    if (bFlag) {
+       myVPars->SetValue(i,aVPars(i));
+    }
+    else {
+      if(aVFlg(i)) {
+	++j;
+	myVPars->SetValue(j,aVPars(i));
+      }
+    }
+  }
+  //
+  /*
   myUPars = new TColStd_HArray1OfReal(1, myNbSamplesU);
   myVPars = new TColStd_HArray1OfReal(1, myNbSamplesV);
 
@@ -1231,10 +1272,15 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
       myVPars->SetValue(j,aVPars(i));
     }
   }
- 
+  */
+  //modified by NIZNHY-PKV Mon Dec 26 12:25:35 2011t
 
 }
 
+//=======================================================================
+//function : IsUniformSampling
+//purpose  : 
+//=======================================================================
 Standard_Boolean Adaptor3d_TopolTool::IsUniformSampling() const
 {
   GeomAbs_SurfaceType typS = myS->GetType();

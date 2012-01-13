@@ -108,11 +108,12 @@
 #include <IntTools_Context.hxx>
 #include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
 
-
-//modified by NIZNHY-PKV Fri Nov 25 12:03:55 2011f
+//modified by NIZNHY-PKV Mon Dec 26 13:37:52 2011f
+static
+  void RefineVector(gp_Vec2d& aV2D);
+//modified by NIZNHY-PKV Mon Dec 26 13:37:54 2011t
 static
   void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
-//modified by NIZNHY-PKV Fri Nov 25 12:03:58 2011t        
 //
 static
   void TolR3d(const TopoDS_Face& ,
@@ -2710,7 +2711,6 @@ Standard_Boolean IsDegeneratedZone(const gp_Pnt2d& aP2d,
 //=========================================================================
 Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine) {
  
-  //modified by NIZNHY-PKV Tue Nov 29 12:14:07 2011f  
   Standard_Integer i, k, v, nb, nbvtx;
   Handle(IntPatch_WLine) aResult;
   nbvtx = theWLine->NbVertex();
@@ -2727,7 +2727,6 @@ Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine
   Handle(IntPatch_WLine) aTmpWLine = theWLine;
   Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
   aLocalWLine = new IntPatch_WLine(aLineOn2S, Standard_False);
-  //modified by NIZNHY-PKV Tue Nov 29 12:13:19 2011t
   for(i = 1; i <= nb; i++) {
     aLineOn2S->Add(theWLine->Point(i));
   }
@@ -2742,10 +2741,7 @@ Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)& theWLine
     nb = aLineOn2S->NbPoints();
     anEndIndex = (anEndIndex > nb) ? nb : anEndIndex;
 
-    //modified by NIZNHY-PKV Fri Nov 25 13:02:40 2011f
     if((aStartIndex > nb) || (anEndIndex <= 1)) {
-    //if((aStartIndex >= nb) || (anEndIndex <= 1)) {
-    //modified by NIZNHY-PKV Fri Nov 25 13:02:47 2011t
       continue;
     }
     k = aStartIndex;
@@ -2901,6 +2897,9 @@ Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
     }
     gp_Vec2d anormvec = aVec;
     anormvec.Normalize();
+    //modified by NIZNHY-PKV Mon Dec 19 11:46:06 2011f
+    RefineVector(anormvec);
+    //modified by NIZNHY-PKV Mon Dec 19 11:46:10 2011t
     Standard_Real adot1 = anormvec.Dot(anOtherVecNormal);
 
     if(fabs(adot1) < Precision::Angular())
@@ -4536,8 +4535,6 @@ Standard_Integer IndexType(const GeomAbs_SurfaceType aType)
   } 
   return aIndex;
 }
-
-//modified by NIZNHY-PKV Fri Nov 25 11:58:12 2011f
 //=======================================================================
 //function : DumpWLine
 //purpose  : 
@@ -4559,4 +4556,36 @@ void DumpWLine(const Handle(IntPatch_WLine)& aWLine)
 	   i, aX, aY, aZ, aU1, aV1, aU2, aV2);
   }
 }
-//modified by NIZNHY-PKV Fri Nov 25 11:58:19 2011t
+//modified by NIZNHY-PKV Wed Dec 14 12:22:48 2011f
+//=======================================================================
+//function : RefineVector
+//purpose  : 
+//=======================================================================
+void RefineVector(gp_Vec2d& aV2D)
+{
+  Standard_Integer k,m;
+  Standard_Real aC[2], aEps, aR1, aR2, aNum;
+  //
+  aEps=RealEpsilon();
+  aR1=1.-aEps;
+  aR2=1.+aEps;
+  //
+  aV2D.Coord(aC[0], aC[1]);
+  //
+  for (k=0; k<2; ++k) {
+    m=(k+1)%2;
+    aNum=fabs(aC[k]);
+    if (aNum>aR1 && aNum<aR2) {
+      if (aC[k]<0.) {
+	aC[k]=-1.;
+      }	  
+      else {
+	aC[k]=1.;
+      }
+      aC[m]=0.;
+      break;
+    }
+  }
+  aV2D.SetCoord(aC[0], aC[1]);
+} 
+//modified by NIZNHY-PKV Wed Dec 14 12:22:50 2011t
