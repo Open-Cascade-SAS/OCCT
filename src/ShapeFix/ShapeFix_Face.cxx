@@ -41,7 +41,10 @@
 #include <BRep_Builder.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 
 #include <Message_Msg.hxx>  
 #include <ShapeBuild_ReShape.hxx>
@@ -51,8 +54,10 @@
 #include <ShapeFix_Edge.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <Bnd_Box2d.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <ShapeAnalysis_Wire.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 
@@ -124,15 +129,16 @@ ShapeFix_Face::ShapeFix_Face(const TopoDS_Face &face)
 
 void ShapeFix_Face::ClearModes()
 {
-  myFixWireMode = -1;
-  myFixOrientationMode = -1;
-  myFixAddNaturalBoundMode = -1;
-  myFixMissingSeamMode = -1;
-  myFixSmallAreaWireMode = -1;
+  myFixWireMode              = -1;
+  myFixOrientationMode       = -1;
+  myFixAddNaturalBoundMode   = -1;
+  myFixMissingSeamMode       = -1;
+  myFixSmallAreaWireMode     = -1;
   myFixIntersectingWiresMode = -1;
-  myFixLoopWiresMode =-1;
-  myFixSplitFaceMode =-1;
-  myAutoCorrectPrecisionMode = 1;
+  myFixLoopWiresMode         = -1;
+  myFixSplitFaceMode         = -1;
+  myAutoCorrectPrecisionMode =  1;
+  myFixPeriodicDegenerated   = -1;
 }
 
 //=======================================================================
@@ -445,6 +451,11 @@ Standard_Boolean ShapeFix_Face::Perform()
   
   myResult = myFace;
   TopoDS_Shape savShape = myFace; //gka BUG 6555
+
+  // Specific case for conic surfaces
+  if ( NeedFix(myFixPeriodicDegenerated) )
+    this->FixPeriodicDegenerated();
+
   // fix missing seam
   if ( NeedFix ( myFixMissingSeamMode ) ) {
     if ( FixMissingSeam() ) {
@@ -2240,4 +2251,230 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
   }
 
   return Standard_False;
+}
+
+//=======================================================================
+//function : IsPeriodicConicalLoop
+//purpose  : Checks whether the passed wire makes up a periodic loop on
+//           passed conical surface
+//=======================================================================
+
+static Standard_Boolean IsPeriodicConicalLoop(const Handle(Geom_ConicalSurface)& theSurf,
+                                              const TopoDS_Wire& theWire,
+                                              const Standard_Real theTolerance,
+                                              Standard_Real& theMinU,
+                                              Standard_Real& theMaxU,
+                                              Standard_Real& theMinV,
+                                              Standard_Real& theMaxV,
+                                              Standard_Boolean& isUDecrease)
+{
+  if ( theSurf.IsNull() )
+    Standard_False;
+
+  ShapeAnalysis_Edge aSAE;
+  TopLoc_Location aLoc;
+
+  Standard_Real aCumulDeltaU = 0.0, aCumulDeltaUAbs = 0.0;
+  Standard_Real aMinU = RealLast();
+  Standard_Real aMinV = aMinU;
+  Standard_Real aMaxU = -aMinU;
+  Standard_Real aMaxV = aMaxU;
+
+  // Iterate over the edges to check whether the wire is periodic on conical surface
+  BRepTools_WireExplorer aWireExp(theWire);
+  for ( ; aWireExp.More(); aWireExp.Next() )
+  {
+    const TopoDS_Edge& aCurrentEdge = aWireExp.Current();
+    Handle(Geom2d_Curve) aC2d;
+    Standard_Real aPFirst, aPLast;
+
+    aSAE.PCurve(aCurrentEdge, theSurf, aLoc, aC2d, aPFirst, aPLast, Standard_True);
+
+    if ( aC2d.IsNull() )
+      return Standard_False;
+
+    gp_Pnt2d aUVFirst = aC2d->Value(aPFirst),
+             aUVLast = aC2d->Value(aPLast);
+
+    Standard_Real aUFirst = aUVFirst.X(), aULast = aUVLast.X();
+    Standard_Real aVFirst = aUVFirst.Y(), aVLast = aUVLast.Y();
+
+    Standard_Real aCurMaxU = Max(aUFirst, aULast),
+                  aCurMinU = Min(aUFirst, aULast);
+    Standard_Real aCurMaxV = Max(aVFirst, aVLast),
+                  aCurMinV = Min(aVFirst, aVLast);
+    
+    if ( aCurMinU < aMinU )
+      aMinU = aCurMinU;
+    if ( aCurMaxU > aMaxU )
+      aMaxU = aCurMaxU;
+    if ( aCurMinV < aMinV )
+      aMinV = aCurMinV;
+    if ( aCurMaxV > aMaxV )
+      aMaxV = aCurMaxV;
+
+    Standard_Real aDeltaU = aULast - aUFirst;
+
+    aCumulDeltaU += aDeltaU;
+    aCumulDeltaUAbs += Abs(aDeltaU);
+  }
+
+  theMinU = aMinU;
+  theMaxU = aMaxU;
+  theMinV = aMinV;
+  theMaxV = aMaxV;
+  isUDecrease = (aCumulDeltaU < 0 ? Standard_True : Standard_False);
+
+  Standard_Boolean is2PIDelta = Abs(aCumulDeltaUAbs - 2*M_PI) <= theTolerance;
+  Standard_Boolean isAroundApex = Abs(theMaxU - theMinU) > 2*M_PI - theTolerance;
+
+  return is2PIDelta && isAroundApex;
+}
+
+//=======================================================================
+//function : FixPeriodicDegenerated
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean ShapeFix_Face::FixPeriodicDegenerated() 
+{
+  /* =====================
+   *  Prepare fix routine
+   * ===================== */
+
+  if ( !Context().IsNull() )
+  {
+    TopoDS_Shape aSh = Context()->Apply(myFace);
+    myFace = TopoDS::Face(aSh);
+  }
+
+  /* ================================================
+   *  Check if fix can be applied on the passed face
+   * ================================================ */
+
+  // Collect all wires owned by the face
+  TopTools_SequenceOfShape aWireSeq;
+  for ( TopoDS_Iterator aWireIt(myFace, Standard_False); aWireIt.More(); aWireIt.Next() )
+  {
+    const TopoDS_Shape& aSubSh = aWireIt.Value();
+    if (  aSubSh.ShapeType() != TopAbs_WIRE || ( aSubSh.Orientation() != TopAbs_FORWARD &&
+                                                 aSubSh.Orientation() != TopAbs_REVERSED ) ) 
+      continue;
+
+    aWireSeq.Append( aWireIt.Value() );
+  }
+
+  // Get number of wires and surface
+  Standard_Integer aNbWires = aWireSeq.Length();
+  Handle(Geom_Surface) aSurface = BRep_Tool::Surface(myFace);
+
+  // Only single wires on conical surfaces are checked
+  if ( aNbWires != 1 || aSurface.IsNull() || 
+       aSurface->DynamicType() != STANDARD_TYPE(Geom_ConicalSurface) )
+    return Standard_False;
+
+  // Get the single wire
+  TopoDS_Wire aSoleWire = TopoDS::Wire( aWireSeq.Value(1) );
+
+  // Check whether this wire is belting the conical surface by period
+  Handle(Geom_ConicalSurface) aConeSurf = Handle(Geom_ConicalSurface)::DownCast(aSurface);
+  Standard_Real aMinLoopU = 0.0, aMaxLoopU = 0.0, aMinLoopV = 0.0, aMaxLoopV = 0.0;
+  Standard_Boolean isUDecrease = Standard_False;
+
+  Standard_Boolean isConicLoop = IsPeriodicConicalLoop(aConeSurf, aSoleWire, Precision(),
+                                                       aMinLoopU, aMaxLoopU,
+                                                       aMinLoopV, aMaxLoopV,
+                                                       isUDecrease);
+
+  if ( !isConicLoop )
+    return Standard_False;
+
+  /* ===============
+   *  Retrieve apex
+   * =============== */
+
+  // Get base circle of the conical surface (the circle it was built from)
+  Handle(Geom_Curve) aConeBaseCrv = aConeSurf->VIso(0.0);
+  Handle(Geom_Circle) aConeBaseCirc = Handle(Geom_Circle)::DownCast(aConeBaseCrv);
+
+  // Retrieve conical props
+  Standard_Real aConeBaseR = aConeBaseCirc->Radius();
+  Standard_Real aSemiAngle = aConeSurf->SemiAngle();
+
+  if ( fabs(aSemiAngle) <= Precision::Confusion() )
+    return Standard_False; // Bad surface
+
+  // Find the V parameter of the apex
+  Standard_Real aConeBaseH = aConeBaseR / Sin(aSemiAngle);
+  Standard_Real anApexV = -aConeBaseH;
+
+  // Get apex vertex
+  TopoDS_Vertex anApex = BRepBuilderAPI_MakeVertex( aConeSurf->Apex() );
+
+  // ====================================
+  //  Build degenerated edge in the apex
+  // ====================================
+        
+  TopoDS_Edge anApexEdge;
+  BRep_Builder aBuilder;
+  aBuilder.MakeEdge(anApexEdge);
+
+  // Check if positional relationship between the initial wire and apex
+  // line in 2D is going to be consistent
+  if ( fabs(anApexV - aMinLoopV) <= Precision() ||
+       fabs(anApexV - aMaxLoopV) <= Precision() ||
+      ( anApexV < aMaxLoopV && anApexV > aMinLoopV ) )
+    return Standard_False;
+
+  Handle(Geom2d_Line) anApexCurve2d;
+
+  // Apex curve below the wire
+  if ( anApexV < aMinLoopV )
+  {
+    anApexCurve2d = new Geom2d_Line( gp_Pnt2d(aMinLoopU, anApexV), gp_Dir2d(1, 0) );
+    if ( !isUDecrease )
+      aSoleWire.Reverse();
+  }
+
+  // Apex curve above the wire
+  if ( anApexV > aMaxLoopV )
+  {
+    anApexCurve2d = new Geom2d_Line( gp_Pnt2d(aMaxLoopU, anApexV), gp_Dir2d(-1, 0) );
+    if ( isUDecrease )
+      aSoleWire.Reverse();
+  }
+
+  // Create degenerated edge & wire for apex
+  aBuilder.UpdateEdge( anApexEdge, anApexCurve2d, myFace, Precision() );
+  aBuilder.Add( anApexEdge, anApex );
+  aBuilder.Add( anApexEdge, anApex.Reversed() );
+  aBuilder.Degenerated(anApexEdge, Standard_True);
+  aBuilder.Range( anApexEdge, 0, fabs(aMaxLoopU - aMinLoopU) );
+  TopoDS_Wire anApexWire = BRepBuilderAPI_MakeWire(anApexEdge);
+
+  // ===============================================================
+  //  Finalize the fix building new face and setting up the results
+  // ===============================================================
+
+  // Collect the resulting set of wires
+  TopTools_SequenceOfShape aNewWireSeq;
+  aNewWireSeq.Append(aSoleWire);
+  aNewWireSeq.Append(anApexWire);
+
+  // Assemble new face
+  TopoDS_Face aNewFace = TopoDS::Face( myFace.EmptyCopied() );
+  aNewFace.Orientation(TopAbs_FORWARD);
+  BRep_Builder aFaceBuilder;
+  for ( Standard_Integer i = 1; i <= aNewWireSeq.Length(); i++ )
+  {
+    TopoDS_Wire aNewWire = TopoDS::Wire( aNewWireSeq.Value(i) );
+    aFaceBuilder.Add(aNewFace, aNewWire);
+  }
+  aNewFace.Orientation( myFace.Orientation() );
+ 
+  // Adjust the resulting state of the healing tool
+  myResult = aNewFace;
+  Context()->Replace(myFace, myResult);
+
+  return Standard_True;
 }
