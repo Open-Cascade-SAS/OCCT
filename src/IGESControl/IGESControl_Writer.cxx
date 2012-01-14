@@ -35,12 +35,13 @@
 IGESControl_Writer::IGESControl_Writer ()
     :  theTP (new Transfer_FinderProcess(10000)) ,
        thedit (IGESSelect_WorkLibrary::DefineProtocol()) ,
-       thecr (0) , thest (Standard_False)
+       thest (Standard_False)
 {
 //  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
   thedit.SetUnitName(Interface_Static::CVal ("write.iges.unit"));
   thedit.ApplyUnit(); 
+  thecr = Interface_Static::IVal ("write.iges.brep.mode");
   themod = thedit.Model();
 }
 
