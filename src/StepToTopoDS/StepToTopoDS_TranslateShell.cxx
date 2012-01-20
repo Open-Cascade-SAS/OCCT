@@ -48,7 +48,10 @@ StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell
 void StepToTopoDS_TranslateShell::Init
 (const Handle(StepShape_ConnectedFaceSet)& CFS, StepToTopoDS_Tool& aTool, StepToTopoDS_NMTool& NMTool)
 {
-
+  //bug15697
+  if(CFS.IsNull())
+    return;
+  
   if (!aTool.IsBound(CFS)) {
 
     BRep_Builder B;
@@ -120,3 +123,4 @@ StepToTopoDS_TranslateShellError StepToTopoDS_TranslateShell::Error() const
 {
   return myError;
 }
+

@@ -58,6 +58,11 @@ IGESCAFControl_Reader::IGESCAFControl_Reader (const Handle(XSControl_WorkSession
 //function : Transfer
 //purpose  : basic working method
 //=======================================================================
+static void checkColorRange (Standard_Real& theCol)
+{
+  if ( theCol < 0. ) theCol = 0.;
+  if ( theCol > 100. ) theCol = 100.;
+}
 
 Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
 {
@@ -126,6 +131,9 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
           else {
             Standard_Real r, g, b;
             color->RGBIntensity ( r, g, b );
+            checkColorRange ( r );
+            checkColorRange ( g );
+            checkColorRange ( b );
             col.SetValues ( 0.01*r, 0.01*g, 0.01*b, Quantity_TOC_RGB );
           }
         }

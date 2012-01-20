@@ -104,8 +104,8 @@ char* nomfic; int lesect[6]; int modefnes;
 
   /* Sending of message : No Terminal Section */
   if (lesect[5] == 0) {
-    IGESFile_Check3 (0,"XSTEP_20");
-    return -1;
+    IGESFile_Check3 (1, "XSTEP_20");
+    //return -1;
   }
   
 
