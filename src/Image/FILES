@@ -1,3 +1,4 @@
+EXTERNLIB
 Image_GImage.gxx
 Image_GPixelField.gxx
 Image_GPixelField.lxx
