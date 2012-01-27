@@ -1236,6 +1236,14 @@ TelClearBackground( Tint  Wsid /* Workstation id */ )
 #endif  
   tsm_bg_gradient gradient;
 
+  // Disable clipping planes
+  GLint ii = 0, max_plane = 0;
+  glGetIntegerv( GL_MAX_CLIP_PLANES, &max_plane );
+  while (ii < max_plane) {
+    const GLint planeid = GL_CLIP_PLANE0 + ii++;
+    if (glIsEnabled(planeid));
+      glDisable(planeid);
+  }
 
   TsmGetWSAttri (Wsid, WSBackground, &key);
   rgb = (Tfloat *)key.pdata;
