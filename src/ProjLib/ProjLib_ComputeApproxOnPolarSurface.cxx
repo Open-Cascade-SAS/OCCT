@@ -303,10 +303,10 @@ class ProjLib_PolarFunction : public AppCont_Function2d
   ~ProjLib_PolarFunction() {}
   
   Standard_Real FirstParameter() const
-    {return (myCurve->FirstParameter()+1.e-9);}
+  {return (myCurve->FirstParameter()/*+1.e-9*/);}
   
   Standard_Real LastParameter() const
-    {return (myCurve->LastParameter()-1.e-9);}
+  {return (myCurve->LastParameter()/*-1.e-9*/);}
   
   gp_Pnt2d Value(const Standard_Real t) const {
     return Function_Value
@@ -1553,8 +1553,8 @@ Handle(Geom2d_BSplineCurve)
     Standard_Integer NbKnots = NbCurves + 1;
     
     // The start and end nodes are not correct : Cf: opening of the interval
-    Knots( 1) -= 1.e-9;
-    Knots(NbKnots) += 1.e-9; 
+    //Knots( 1) -= 1.e-9;
+    //Knots(NbKnots) += 1.e-9; 
     
     
     TColStd_Array1OfInteger   Mults( 1, NbKnots);

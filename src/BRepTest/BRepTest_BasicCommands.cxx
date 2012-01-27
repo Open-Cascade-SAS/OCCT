@@ -761,7 +761,30 @@ static Standard_Integer wexplo (Draw_Interpretor&,
   return 0;
 }
 
+static Standard_Integer scalexyz(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n < 6) return 1;
 
+  TopoDS_Shape aShapeBase = DBRep::Get(a[2]);
+  if (aShapeBase.IsNull()) return 1;
+  
+  Standard_Real aFactorX = atof(a[3]);
+  Standard_Real aFactorY = atof(a[4]);
+  Standard_Real aFactorZ = atof(a[5]);
+
+  gp_GTrsf aGTrsf;
+  gp_Mat rot (aFactorX, 0, 0,
+              0, aFactorY, 0,
+              0, 0, aFactorZ);
+  aGTrsf.SetVectorialPart(rot);
+  BRepBuilderAPI_GTransform aBRepGTrsf (aShapeBase, aGTrsf, Standard_False);
+  if (!aBRepGTrsf.IsDone())
+    Standard_ConstructionError::Raise("Scaling not done");
+  TopoDS_Shape Result = aBRepGTrsf.Shape();
+
+  DBRep::Set(a[1], Result);
+  return 0;  
+}
 
 void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 {
@@ -889,4 +912,9 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("wexplo","wexplo wire [face] create WEDGE_i",
 		  __FILE__,
 		  wexplo,g);
+
+  theCommands.Add("scalexyz",
+                  "scalexyz res shape factor_x factor_y factor_z",
+		  __FILE__,
+		  scalexyz, g);
 }

@@ -117,7 +117,17 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
   //OCC466(apo)->
   U1 = curvU1;  U2 = curvU2;  
   V1 = curvV1;  V2 = curvV2;
-  SS->Bounds(surfU1,surfU2,surfV1,surfV2); 
+  SS->Bounds(surfU1,surfU2,surfV1,surfV2);
+
+  if (Abs(U1 - surfU1) <= TolPar)
+    U1 = surfU1;
+  if (Abs(U2 - surfU2) <= TolPar)
+    U2 = surfU2;
+  if (Abs(V1 - surfV1) <= TolPar)
+    V1 = surfV1;
+  if (Abs(V2 - surfV2) <= TolPar)
+    V2 = surfV2;
+  
   if(!IsUp){
     U1 = Max(surfU1,curvU1);
     U2 = Min(surfU2,curvU2);
@@ -126,7 +136,22 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
     V1 = Max(surfV1,curvV1);
     V2 = Min(surfV2,curvV2);
   }
-  //<-OCC466(apo)  
+  //<-OCC466(apo)
+
+  if (IsUp)
+  {
+    Standard_Real Up = S->UPeriod();
+    if (U2 - U1 > Up)
+      U2 = U1 + Up;
+  }
+  if (IsVp)
+  {
+    Standard_Real Vp = S->VPeriod();
+    if (V2 - V1 > Vp)
+      V2 = V1 + Vp;
+  }
+  
+  /*
   if(IsUp && IsVp) {
     Standard_Real dU = Abs(U2 - U1), dV = Abs(V2 - V1);
     Standard_Real Up = S->UPeriod(), Vp = S->VPeriod();
@@ -165,8 +190,12 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
   if(!IsUp && !IsVp) {
     SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
   }
+  */
 
-  SS->Bounds(surfU1,surfU2,surfV1,surfV2) ; 
+  if (Abs(surfU1-U1) > Tol || Abs(surfU2-U2) > Tol ||
+      Abs(surfV1-V1) > Tol || Abs(surfV2-V2) > Tol)
+    SS = new Geom_RectangularTrimmedSurface(S, U1, U2, V1, V2);
+  SS->Bounds(surfU1,surfU2,surfV1,surfV2); 
 
   S = GeomConvert::SurfaceToBSplineSurface(SS);
   Handle(Geom_BSplineSurface) BS = Handle(Geom_BSplineSurface)::DownCast(S) ;
@@ -325,7 +354,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
   Standard_Boolean isConvert2d = ((!C3d.IsNull() && !C3d->IsKind(STANDARD_TYPE(Geom_BSplineCurve)) &&
     !C3d->IsKind(STANDARD_TYPE(Geom_BezierCurve))) ||
     IsConvert(E));
-  
+
   if(BRep_Tool::Degenerated(E)) {
     //Curve2d = C2d;
     if(!C2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
@@ -387,7 +416,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
 	
       }
       S->Bounds(Uinf, Usup, Vinf, Vsup);
-      Uinf -= 1e-9; Usup += 1e-9; Vinf -= 1e-9; Vsup += 1e-9;
+      //Uinf -= 1e-9; Usup += 1e-9; Vinf -= 1e-9; Vsup += 1e-9;
       u = (Usup - Uinf)*0.1;
       v = (Vsup - Vinf)*0.1;
       if(S->IsUPeriodic()) {
@@ -503,7 +532,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       }
       Standard_Real Uinf, Usup, Vinf, Vsup, u = 0, v = 0;
       S->Bounds(Uinf, Usup, Vinf, Vsup);
-      Uinf -= 1e-9; Usup += 1e-9; Vinf -= 1e-9; Vsup += 1e-9;
+      //Uinf -= 1e-9; Usup += 1e-9; Vinf -= 1e-9; Vsup += 1e-9;
       u = (Usup - Uinf)*0.1;
       v = (Vsup - Vinf)*0.1;
       if(S->IsUPeriodic()) {
