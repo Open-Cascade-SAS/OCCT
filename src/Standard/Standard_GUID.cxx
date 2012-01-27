@@ -210,12 +210,9 @@ Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
   my8b5 ( 0),
   my8b6 ( 0)
 { 
-  static char   tpb[Standard_GUID_SIZE_ALLOC];
-  char *tmpBuffer;
+  char tpb[Standard_GUID_SIZE_ALLOC];
+  char *tmpBuffer = tpb;
   Standard_Integer   i = 0;
-
-  tmpBuffer = tpb;
-
   while(i < Standard_GUID_SIZE) {
     tmpBuffer[i] = (char ) aGuid[i];
     i++;
@@ -326,14 +323,9 @@ void Standard_GUID::ToCString(const Standard_PCharacter aStrGuid) const
 void Standard_GUID::ToExtString(const Standard_PExtCharacter aStrGuid) const
 {
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
-  Standard_PCharacter pStr;
-  Standard_Integer   i;
-  //
-  pStr=sguid;
+  ToCString(sguid);
 
-  ToCString(pStr);
-
-  for(i = 0; i < Standard_GUID_SIZE; i++) {
+  for(Standard_Integer i = 0; i < Standard_GUID_SIZE; i++) {
     aStrGuid[i] = (Standard_ExtCharacter)sguid[i];
   }
 
@@ -398,21 +390,13 @@ void Standard_GUID::Assign(const Standard_GUID& uid)
 void Standard_GUID::ShallowDump(Standard_OStream& aStream) const
 {
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
-  Standard_PCharacter pC;
-  //
-  pC=sguid;
-  ToCString(pC);
-
+  ToCString(sguid);
   aStream << sguid;
 }
 
 Standard_Integer Standard_GUID::HashCode(const Standard_GUID& aGuid,const Standard_Integer Upper)
 {
-  Standard_Integer result;
-  
-  result = aGuid.Hash(Upper);
-
-  return result;
+  return aGuid.Hash(Upper);
 }
 
 Standard_Integer Standard_GUID::Hash(const Standard_Integer Upper) const
@@ -422,15 +406,10 @@ Standard_Integer Standard_GUID::Hash(const Standard_Integer Upper) const
       Raise("Standard_GUID::Hash: Try to apply HashCode method with negative or null argument.");
   }
 
-  Standard_Integer result;
-  static char tmpchar[Standard_GUID_SIZE_ALLOC];
-  Standard_PCharacter pC;
-  pC=tmpchar;
-  ToCString(pC);
+  char sguid[Standard_GUID_SIZE_ALLOC];
+  ToCString(sguid);
 
-  result = ::HashCode(tmpchar,Upper);
-
-  return result;
+  return ::HashCode(sguid,Upper);
 }
 
 Standard_Boolean Standard_GUID::IsEqual(const Standard_GUID& aGuid1,const Standard_GUID& aGuid2)
