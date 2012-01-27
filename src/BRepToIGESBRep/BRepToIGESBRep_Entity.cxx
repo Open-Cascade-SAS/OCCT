@@ -161,6 +161,8 @@ void BRepToIGESBRep_Entity::TransferVertexList()
 {
 
   Standard_Integer nbvertices = myVertices.Extent();
+  if(!nbvertices)
+    return;
   Handle(TColgp_HArray1OfXYZ) vertices= new TColgp_HArray1OfXYZ(1,nbvertices);
   Standard_Real Unit = GetUnit();
   Standard_Real X,Y,Z;
@@ -222,6 +224,8 @@ void BRepToIGESBRep_Entity::TransferEdgeList()
   Handle(IGESSolid_VertexList) myendlist;
 
   Standard_Integer nbedges = myEdges.Extent();
+  if(!nbedges)
+    return;
   Handle(IGESData_HArray1OfIGESEntity) Curves= 
     new IGESData_HArray1OfIGESEntity(1,nbedges);
   Handle(IGESSolid_HArray1OfVertexList) startVertexList = 
@@ -349,6 +353,8 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape
       // error message
     }  
   }
+  if(res.IsNull())
+    return res;
 
   TransferVertexList();
   TransferEdgeList();
@@ -785,7 +791,7 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompSolid (const Topo
   if (nbsolids == 1) {
     myent = ISolid;
   }
-  else {
+  else if(nbsolids > 1 ){
     Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     myent = IGroup;
@@ -880,11 +886,11 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
       Tab->SetValue(itab,item);
     }
   }
-
+  
   if (nbshapes == 1) {
     res = IShape;
   }
-  else {
+  else if(nbshapes > 1) {
     Handle(IGESBasic_Group) IGroup = new IGESBasic_Group;
     IGroup->Init(Tab);
     res = IGroup;

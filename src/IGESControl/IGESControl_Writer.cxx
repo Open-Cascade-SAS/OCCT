@@ -110,6 +110,9 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
   BRepToIGESBRep_Entity B1;  B1.SetTransferProcess(theTP); B1.SetModel(themod);
   if (thecr) ent = B1.TransferShape(Shape);
   else       ent = B0.TransferShape(Shape);
+
+  if(ent.IsNull())
+    return Standard_False;
 //  modified by NIZHNY-EAP Tue Aug 29 11:37:18 2000 ___BEGIN___
   XSAlgo::AlgoContainer()->MergeTransferInfo(theTP, info);
 //  modified by NIZHNY-EAP Tue Aug 29 11:37:25 2000 ___END___
@@ -226,9 +229,12 @@ Standard_Boolean IGESControl_Writer::Write
 {
   if (!S) return Standard_False;
   ComputeModel();
+  Standard_Integer nbEnt = themod->NbEntities();
 #ifdef DEBUG
-  cout<<" IGES Write : "<<themod->NbEntities()<<" ent.s"<< flush;
+  cout<<" IGES Write : "<<nbEnt<<" ent.s"<< flush;
 #endif
+  if(!nbEnt)
+    return Standard_False;
   IGESData_IGESWriter IW (themod);
 //  ne pas oublier le mode fnes ... a transmettre a IW
   IW.SendModel (IGESSelect_WorkLibrary::DefineProtocol());
