@@ -1,8 +1,6 @@
 // File:	XDEDRAW.cxx
 // Created:	Fri Aug  4 14:38:55 2000
 // Author:	Pavel TELKOV
-//		<ptv@zamox.nnov.matra-dtv.fr>
-
 
 #include <XDEDRAW.ixx>
 #include <stdio.h>
@@ -732,6 +730,55 @@ static Standard_Integer getviewName (Draw_Interpretor&  di, Standard_Integer /*a
 
 
 //=======================================================================
+//function : XSetTransparency
+//purpose  :
+//=======================================================================
+static Standard_Integer XSetTransparency (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) {
+    di<<"Use: "<<argv[0]<<" Doc Transparency [label1 label2 ...] "<<"\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) Doc;
+  DDocStd::GetDocument(argv[1], Doc);
+  if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
+
+  const Standard_Real aTransparency = atof(argv[2]);
+
+  // collect sequence of labels
+  Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  TDF_LabelSequence seq;
+  if ( argc > 3 ) {
+    for ( Standard_Integer i=3; i < argc; i++ ) {
+      TDF_Label aLabel;
+      TDF_Tool::Label(Doc->GetData(), argv[i], aLabel);
+      if ( aLabel.IsNull() || ! shapes->IsShape ( aLabel ) ) {
+        di << argv[i] << " is not a valid shape label!";
+        continue;
+      }
+      seq.Append ( aLabel );
+    }
+  }
+  else {
+    shapes->GetFreeShapes ( seq );
+  }
+
+  // find presentations and set transparency
+  for ( Standard_Integer i=1; i <= seq.Length(); i++ ) {
+    Handle(TPrsStd_AISPresentation) prs;
+    if ( ! seq.Value(i).FindAttribute ( TPrsStd_AISPresentation::GetID(), prs ) ) {
+      prs = TPrsStd_AISPresentation::Set(seq.Value(i),XCAFPrs_Driver::GetID());
+      prs->SetMaterial ( Graphic3d_NOM_PLASTIC );
+    }
+    prs->SetTransparency( aTransparency );
+  }
+  TPrsStd_AISViewer::Update(Doc->GetData()->Root());
+  return 0;
+}
+
+
+//=======================================================================
 //function : Init
 //purpose  :
 //=======================================================================
@@ -791,6 +838,9 @@ void XDEDRAW::Init(Draw_Interpretor& di)
 
   di.Add ("XGetViewNameMode", "\t: Print if  mode of displaying names is turn on.",
 		   __FILE__, getviewName, g);
+
+  di.Add ("XSetTransparency", "Doc Transparency [label1 label2 ...]\t: Set transparency for given label(s) or whole doc",
+		   __FILE__, XSetTransparency, g);
 
   // Specialized commands
   XDEDRAW_Shapes::InitCommands ( di );

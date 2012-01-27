@@ -1,7 +1,6 @@
 -- File:	AIS_Shape.cdl
 -- Created:	Fri Dec 20 15:18:05 1996
 -- Author:	Robert COUBLANC
---		<rob@robox.paris1.matra-dtv.fr>
 --   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible Quantity_Color instead
 --				       the restricted NameOfColor.
 --	     Redefines the Color(),Material(),Transparency() methods 
@@ -272,7 +271,7 @@ uses
     	-- -   mode 7 - Compsolid
     	-- -   mode 8 - Compound
 
-   LoadRecomputable(me:mutable;TheMode : Integer from Standard) is static private;
+   LoadRecomputable(me:mutable;TheMode : Integer from Standard) is static protected;
 
     Compute(me                   : mutable;
     	    aProjector           : Projector from Prs3d;

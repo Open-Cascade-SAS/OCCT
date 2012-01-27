@@ -1,7 +1,6 @@
 // File:	ViewerTest.cxx
 // Created:	Wed Jul 23 14:14:01 1997
 // Author:	Henri JEANNIN
-//		<bbl@entrax.paris3.matra-dtv.fr>
 // Modified by  Eric Gouthiere [sep-oct 98] -> add commands for display...
 //
 // Modified by  Robert Coublanc [nov 16-17-18 1998]
@@ -980,20 +979,15 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   Standard_Boolean    ThereIsCurrent;
   Standard_Boolean    ThereIsArgument;
   Standard_Boolean    IsBound = Standard_False ;
-  Standard_Boolean    HaveToSet;
 
-  if (!strcasecmp( argv[0],"vsetcolor")) HaveToSet=Standard_True;
-  else HaveToSet=Standard_False;
+  const Standard_Boolean HaveToSet=(strcasecmp( argv[0],"vsetcolor") == 0);
   if (HaveToSet) {
-    if ( argc<2 || argc > 3 ) { di << argv[0] << " syntax error: Passez 2 ou 3 arguments" << "\n"; return 1; }
-    if ( argc == 2 ) {ThereIsArgument=Standard_False;}
-    else ThereIsArgument=Standard_True;
-
+    if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error: Give 2 or 3 arguments" << "\n"; return 1; }
+    ThereIsArgument = (argc != 2);
   }
   else {
-    if ( argc > 2 ) { di << argv[0] << " syntax error: Passez au plus un argument" << "\n"; return 1; }
-    if(argc==2) ThereIsArgument=Standard_True;
-    else ThereIsArgument=Standard_False;
+    if ( argc > 2 ) { di << argv[0] << " syntax error: Given too many arguments" << "\n"; return 1; }
+    ThereIsArgument = (argc == 2);
   }
 
   if ( !a3DView().IsNull() ) {
@@ -1018,22 +1012,20 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
         Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast (anObj);
 #ifdef DEB
-          //cout  << "HaveToSet "<<HaveToSet <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << endl;
           if (HaveToSet)
             di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
           else
-            di  << "HaveToSet "<< "0" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
+            di  << "HaveToSet 0\n";
 #endif
 
-        if(HaveToSet) {
+        if(HaveToSet)
           TheAISContext()->SetColor(ashape,GetColorFromName(argv[2]) );
-        }
         else
           TheAISContext()->UnsetColor(ashape);
       } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         Handle(NIS_Triangulated) ashape =
           Handle(NIS_Triangulated)::DownCast (anObj);
-        if (ashape.IsNull() == Standard_False)
+        if (!ashape.IsNull())
           ashape->SetColor (GetColorFromName(argv[2]));
       }
     }
@@ -1048,20 +1040,19 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
            TheAISContext() -> MoreCurrent() ;
            TheAISContext() ->NextCurrent() )
       {
-	const Handle(AIS_InteractiveObject) ashape= TheAISContext()->Current();
+        const Handle(AIS_InteractiveObject) ashape= TheAISContext()->Current();
         if (ashape.IsNull())
           continue;
 #ifdef DEB
-	//cout  << "HaveToSet "<<HaveToSet <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << endl;
-	if (HaveToSet)
-	  di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
-	else
-	  di  << "HaveToSet "<< "0" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
+        if (HaveToSet)
+          di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
+        else
+          di  << "HaveToSet 0\n";
 #endif
-	if(HaveToSet)
-	  TheAISContext()->SetColor(ashape,GetColorFromName(argv[1]),Standard_False);
-	else
-	  TheAISContext()->UnsetColor(ashape,Standard_False);
+        if(HaveToSet)
+          TheAISContext()->SetColor(ashape,GetColorFromName(argv[1]),Standard_False);
+        else
+          TheAISContext()->UnsetColor(ashape,Standard_False);
       }
 
       TheAISContext()->UpdateCurrentViewer();
@@ -1074,15 +1065,14 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
     else if (!ThereIsCurrent && !ThereIsArgument){
       ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
       while ( it.More() ) {
-	const Handle(AIS_InteractiveObject) ashape =
+        const Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast(it.Key1());
         if (!ashape.IsNull())
           if(HaveToSet)
-            TheAISContext()->SetColor(ashape,GetColorFromName(argv[1]),
-                                      Standard_False);
+            TheAISContext()->SetColor(ashape,GetColorFromName(argv[1]),Standard_False);
           else
             TheAISContext()->UnsetColor(ashape,Standard_False);
-	it.Next();
+        it.Next();
       }
       TheAISContext()->UpdateCurrentViewer();
     }
@@ -1097,28 +1087,21 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
 //Draw arg : vtransparency [name] TransparencyCoeficient
 //==============================================================================
 
-
 static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
                            const char** argv)
 {
   Standard_Boolean    ThereIsCurrent;
   Standard_Boolean    ThereIsArgument;
   Standard_Boolean    IsBound = Standard_False ;
-  Standard_Boolean    HaveToSet;
-  if (!strcasecmp( argv[0],"vsettransparency"))
-    HaveToSet=Standard_True;
-  else
-    HaveToSet=Standard_False;
 
+  const Standard_Boolean HaveToSet = (strcasecmp( argv[0],"vsettransparency") == 0);
   if (HaveToSet) {
     if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error passez 1 ou 2 arguments" << "\n"; return 1; }
-    if ( argc == 2 ) {ThereIsArgument=Standard_False;}
-    else ThereIsArgument=Standard_True;
+    ThereIsArgument = (argc != 2);
   }
   else{
     if ( argc > 2 ) { di << argv[0] << " syntax error: Passez au plus un argument" << "\n"; return 1; }
-    if(argc==2) ThereIsArgument=Standard_True;
-    else ThereIsArgument=Standard_False;
+    ThereIsArgument = (argc == 2);
   }
 
   if ( !a3DView().IsNull() ) {
@@ -1145,7 +1128,7 @@ static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
           TheAISContext()->SetTransparency(ashape,atof(argv[2]) );
         else
           TheAISContext()->UnsetTransparency(ashape);
-} else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
+      } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_InteractiveObject) ashape =
           Handle(NIS_InteractiveObject)::DownCast(anObj);
         if(HaveToSet)
@@ -1163,12 +1146,11 @@ static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
            TheAISContext() -> MoreCurrent() ;
            TheAISContext() ->NextCurrent() )
       {
-	Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-	if(HaveToSet) {
-	  TheAISContext()->SetTransparency(ashape,atof(argv[1]),Standard_False);
-	}
-	else
-	  TheAISContext()->UnsetTransparency(ashape,Standard_False);
+        Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
+        if(HaveToSet)
+          TheAISContext()->SetTransparency(ashape,atof(argv[1]),Standard_False);
+        else
+          TheAISContext()->UnsetTransparency(ashape,Standard_False);
       }
 
       TheAISContext()->UpdateCurrentViewer();
@@ -1180,15 +1162,14 @@ static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
       ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
         it(GetMapOfAIS());
       while ( it.More() ) {
-	Handle(AIS_InteractiveObject) ashape =
+        Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast(it.Key1());
         if (!ashape.IsNull())
           if(HaveToSet)
-            TheAISContext()->SetTransparency(ashape,atof(argv[1]),
-                                             Standard_False);
+            TheAISContext()->SetTransparency(ashape,atof(argv[1]),Standard_False);
           else
             TheAISContext()->UnsetTransparency(ashape,Standard_False);
-	it.Next();
+        it.Next();
       }
       TheAISContext()->UpdateCurrentViewer();
     }
@@ -1210,19 +1191,14 @@ static int VMaterial (Draw_Interpretor& di, Standard_Integer argc, const char** 
   Standard_Boolean    ThereIsName;
   Standard_Boolean    IsBound = Standard_False ;
 
-  Standard_Boolean    HaveToSet;
-  if (!strcasecmp( argv[0],"vsetmaterial")) HaveToSet=Standard_True;
-  else HaveToSet=Standard_False;
+  const Standard_Boolean HaveToSet = (strcasecmp( argv[0],"vsetmaterial") == 0);
   if (HaveToSet) {
     if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error passez 1 ou 2 arguments" << "\n"; return 1; }
-    if ( argc == 2 ) {ThereIsName=Standard_False;}
-    else ThereIsName=Standard_True;
+    ThereIsName = (argc != 2);
   }
   else {
     if ( argc>2 ) { di << argv[0] << " syntax error passez au plus un argument" << "\n"; return 1; }
-    if (argc==2) ThereIsName=Standard_True;
-    else ThereIsName=Standard_False;
-
+    ThereIsName = (argc == 2);
   }
 
   if ( !a3DView().IsNull() ) {
@@ -1246,8 +1222,7 @@ static int VMaterial (Draw_Interpretor& di, Standard_Integer argc, const char** 
         Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2(name));
       if (!ashape.IsNull())
         if (HaveToSet)
-          TheAISContext()->SetMaterial (ashape,
-                                        GetMaterialFromName (argv[2]) );
+          TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[2]));
         else
           TheAISContext()->UnsetMaterial(ashape);
     }
@@ -1260,12 +1235,11 @@ static int VMaterial (Draw_Interpretor& di, Standard_Integer argc, const char** 
            TheAISContext() -> MoreCurrent() ;
            TheAISContext() ->NextCurrent() )
       {
-	Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-	if (HaveToSet)
-	  TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[1]),
-                                       Standard_False);
-	else
-	  TheAISContext()->UnsetMaterial(ashape,Standard_False);
+        Handle(AIS_InteractiveObject) ashape = TheAISContext()->Current();
+        if (HaveToSet)
+          TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[1]),Standard_False);
+        else
+          TheAISContext()->UnsetMaterial(ashape,Standard_False);
       }
       TheAISContext()->UpdateCurrentViewer();
     }
@@ -1278,15 +1252,14 @@ static int VMaterial (Draw_Interpretor& di, Standard_Integer argc, const char** 
       ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
         it(GetMapOfAIS());
       while ( it.More() ) {
-	Handle(AIS_InteractiveObject) ashape =
+        Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast (it.Key1());
-	if (!ashape.IsNull())
+        if (!ashape.IsNull())
           if (HaveToSet)
-	  TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[1]),
-                                       Standard_False );
+            TheAISContext()->SetMaterial(ashape,GetMaterialFromName(argv[1]),Standard_False);
           else
             TheAISContext()->UnsetMaterial(ashape,Standard_False);
-	it.Next();
+        it.Next();
       }
       TheAISContext()->UpdateCurrentViewer();
     }
@@ -1309,18 +1282,14 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
   Standard_Boolean    ThereIsArgument;
   Standard_Boolean    IsBound = Standard_False ;
 
-  Standard_Boolean    HaveToSet;
-  if (!strcasecmp( argv[0],"vsetwidth")) HaveToSet=Standard_True;
-  else HaveToSet=Standard_False;
+  const Standard_Boolean HaveToSet = (strcasecmp( argv[0],"vsetwidth") == 0);
   if (HaveToSet) {
     if ( argc < 2 || argc > 3 ) { di << argv[0] << " syntax error passez 1 ou 2 arguments" << "\n"; return 1; }
-    if ( argc == 2 ) {ThereIsArgument=Standard_False;}
-    else ThereIsArgument=Standard_True;
+    ThereIsArgument = (argc != 2);
   }
   else {
     if ( argc>2 ) { di << argv[0] << " syntax error passez au plus 1  argument" << "\n"; return 1; }
-   if (argc==2) ThereIsArgument=Standard_True;
-    else ThereIsArgument=Standard_False;
+    ThereIsArgument = (argc == 2);
   }
   if ( !a3DView().IsNull() ) {
     TCollection_AsciiString name;
@@ -1362,12 +1331,11 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
            TheAISContext() -> MoreCurrent() ;
            TheAISContext() ->NextCurrent() )
       {
-	Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-	if (HaveToSet)
-	  TheAISContext()->SetWidth(ashape,atof (argv[1]),Standard_False);
-	else
-	  TheAISContext()->UnsetWidth (ashape,Standard_False);
-
+        Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
+        if (HaveToSet)
+          TheAISContext()->SetWidth(ashape,atof(argv[1]),Standard_False);
+        else
+          TheAISContext()->UnsetWidth(ashape,Standard_False);
       }
       TheAISContext()->UpdateCurrentViewer();
     }
@@ -1382,9 +1350,9 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
        if (!ashape.IsNull())
          if (HaveToSet)
-           TheAISContext()->SetWidth(ashape,atof (argv[1]),Standard_False );
+           TheAISContext()->SetWidth(ashape,atof(argv[1]),Standard_False);
          else
-           TheAISContext()->UnsetWidth (ashape,Standard_False);
+           TheAISContext()->UnsetWidth(ashape,Standard_False);
        it.Next();
      }
      TheAISContext()->UpdateCurrentViewer();
@@ -2231,15 +2199,14 @@ static int VAnimation (Draw_Interpretor& di, Standard_Integer argc, const char**
 //purpose  : Sharpen or roughten the quality of the shading
 //Draw arg : vshading ShapeName 0.1->0.00001  1 deg-> 30 deg
 //==============================================================================
-static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv) {
-  Standard_Boolean HaveToSet;
-//  Standard_Real    myDevAngle;
+static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
+{
   Standard_Real    myDevCoef;
   Handle(AIS_InteractiveObject) TheAisIO;
 
   // Verifications
-  if (!strcasecmp(argv[0],"vsetshading") ) HaveToSet=Standard_True;
-  else HaveToSet=Standard_False;
+  const Standard_Boolean HaveToSet = (strcasecmp(argv[0],"vsetshading") == 0);
+
   if (TheAISContext()->HasOpenedContext())
     TheAISContext()->CloseLocalContext();
 
@@ -2249,22 +2216,16 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
     myDevCoef  =atof(argv[2]);
   }
 
-
   TCollection_AsciiString name=argv[1];
   if (GetMapOfAIS().IsBound2(name ))
-    TheAisIO =
-      Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
+    TheAisIO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
   if (TheAisIO.IsNull())
     TheAisIO=GetAISShapeFromName((const char *)name.ToCString());
 
-  if (HaveToSet) {
+  if (HaveToSet)
     TheAISContext()->SetDeviationCoefficient(TheAisIO,myDevCoef,Standard_True);
-  }
-
-  else {
+  else
     TheAISContext()->SetDeviationCoefficient(TheAisIO,0.0008,Standard_True);
-
-  }
 
   TheAISContext()->Redisplay(TheAisIO);
   return 0;
@@ -2304,39 +2265,32 @@ Standard_Boolean  HaveMode(const Handle(AIS_InteractiveObject)& TheAisIO,const S
 static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 
 {
-  Standard_Boolean HaveToSet;
   Standard_Boolean ThereIsName = Standard_False ;
 
   if(!a3DView().IsNull()){
 
-    if (!strcasecmp(argv[0],"vsetam")) HaveToSet=Standard_True;
-    else HaveToSet=Standard_False;
-
+    const Standard_Boolean HaveToSet = (strcasecmp(argv[0],"vsetam") == 0);
     // verification des arguments
     if (HaveToSet) {
       if (argc<2||argc>3) { di<<" Syntaxe error"<<"\n";return 1;}
-      if (argc==3) ThereIsName=Standard_True;
-      else ThereIsName=Standard_False;
+      ThereIsName = (argc == 3);
     }
     else {
       // vunsetam
       if (argc>1) {di<<" Syntaxe error"<<"\n";return 1;}
       else {
-	di<<" R.A.Z de tous les modes de selecion"<<"\n";
-	di<<" Fermeture du Context local"<<"\n";
+        di<<" R.A.Z de tous les modes de selecion"<<"\n";
+        di<<" Fermeture du Context local"<<"\n";
         if (TheAISContext()->HasOpenedContext())
           TheAISContext()->CloseLocalContext();
       }
-
     }
-
 
     // IL n'y a aps de nom de shape passe en argument
     if (HaveToSet && !ThereIsName){
       Standard_Integer aMode=atoi(argv [1]);
 
       const char *cmode="???";
-
       switch (aMode) {
       case 0: cmode = "Shape"; break;
       case 1: cmode = "Vertex"; break;
@@ -2349,17 +2303,16 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
       }
 
       if( !TheAISContext()->HasOpenedContext() ) {
-	// il n'y a pas de Context local d'ouvert
-	// on en ouvre un et on charge toutes les shapes displayees
-	// on load tous les objets displayees et on Activate les objets de la liste
-	AIS_ListOfInteractive ListOfIO;
-	// on sauve dans une AISListOfInteractive tous les objets currents
-	if (TheAISContext()->NbCurrents()>0 ){
-	  TheAISContext()->UnhilightCurrents(Standard_False);
+        // il n'y a pas de Context local d'ouvert
+        // on en ouvre un et on charge toutes les shapes displayees
+        // on load tous les objets displayees et on Activate les objets de la liste
+        AIS_ListOfInteractive ListOfIO;
+        // on sauve dans une AISListOfInteractive tous les objets currents
+        if (TheAISContext()->NbCurrents()>0 ){
+          TheAISContext()->UnhilightCurrents(Standard_False);
 
-	  for (TheAISContext()->InitCurrent(); TheAISContext()->MoreCurrent(); TheAISContext()->NextCurrent() ){
-	    ListOfIO.Append(TheAISContext()->Current() );
-
+          for (TheAISContext()->InitCurrent(); TheAISContext()->MoreCurrent(); TheAISContext()->NextCurrent() ){
+            ListOfIO.Append(TheAISContext()->Current() );
 	  }
 	}
 
@@ -2543,20 +2496,14 @@ void WhoAmI (const Handle(AIS_InteractiveObject )& theShape ,Draw_Interpretor& d
 //==============================================================================
 static int VState(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  Standard_Boolean ThereIsCurrent=Standard_False;
-  Standard_Boolean ThereIsArguments=Standard_False;
   TheAISContext()->CloseAllContexts();
-  if (argc>=2 ) {
-    ThereIsArguments=Standard_True;
-  }
-  if (TheAISContext()->NbCurrents()>0 ) {
-    ThereIsCurrent=Standard_True;
-  }
+  const Standard_Boolean ThereIsArguments=(argc>=2);
+  const Standard_Boolean ThereIsCurrent=(TheAISContext()->NbCurrents()>0);
   // Debut...
   // ==================
   // Il y a un argument
   // ==================
-  if (ThereIsArguments ) {
+  if (ThereIsArguments) {
     for (int cpt=1;cpt<argc;cpt++) {
       // Verification que lq piece est bien bindee.
       if (GetMapOfAIS().IsBound2(argv[cpt]) ) {

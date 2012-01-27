@@ -1,8 +1,7 @@
--- File:	XCAFPrs.cdl
--- Created:	Fri Aug 11 16:28:46 2000
--- Author:	Andrey BETENEV
---		<abv@doomox.nnov.matra-dtv.fr>
----Copyright:	 Matra Datavision 2000
+-- File:	  XCAFPrs.cdl
+-- Created:	  Fri Aug 11 16:28:46 2000
+-- Author:	  Andrey BETENEV
+---Copyright: Matra Datavision 2000
 
 
 package XCAFPrs 
@@ -17,6 +16,7 @@ uses
     TopLoc,
     TopoDS,
     TopTools,
+    Graphic3d,
     Prs3d,
     PrsMgr,
     TPrsStd,

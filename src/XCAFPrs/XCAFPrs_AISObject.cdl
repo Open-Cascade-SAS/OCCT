@@ -1,8 +1,7 @@
--- File:	XCAFPrs_AISObject.cdl
--- Created:	Fri Aug 11 16:37:11 2000
--- Author:	Andrey BETENEV
---		<abv@doomox.nnov.matra-dtv.fr>
----Copyright:	 Matra Datavision 2000
+-- File:	  XCAFPrs_AISObject.cdl
+-- Created:	  Fri Aug 11 16:37:11 2000
+-- Author:	  Andrey BETENEV
+---Copyright: Matra Datavision 2000
 
 
 class AISObject from XCAFPrs inherits Shape from AIS
@@ -15,6 +14,9 @@ uses
     PresentationManager3d from PrsMgr,
     Presentation from Prs3d,
     Label from TDF,
+    Color from Quantity,
+    NameOfMaterial from Graphic3d,
+    MaterialAspect from Graphic3d,
     Style from XCAFPrs
     
 is
@@ -22,6 +24,20 @@ is
     Create (lab: Label from TDF);
     	---Purpose: Creates an object to visualise the shape label
 
+    SetColor(me:mutable;aColor:Color from Quantity) is redefined virtual;
+
+    UnsetColor(me:mutable) is redefined virtual;
+        
+    SetMaterial(me:mutable;aName:NameOfMaterial from Graphic3d) is redefined virtual;
+
+    SetMaterial(me:mutable;aName:MaterialAspect from Graphic3d) is redefined virtual;
+        
+    UnsetMaterial(me:mutable) is redefined virtual;
+        
+    SetTransparency(me:mutable;aValue : Real from Standard=0.6) is redefined virtual;  
+    
+    UnsetTransparency(me:mutable) is redefined virtual;
+ 
     AddStyledItem (me: mutable; style: Style from XCAFPrs;
                    shape: Shape from TopoDS;
                    aPresentationManager : PresentationManager3d from PrsMgr;

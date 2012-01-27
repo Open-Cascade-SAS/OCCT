@@ -1,7 +1,6 @@
 // File:	AIS_Shape.cxx
 // Created:	Fri Dec 20 17:18:37 1996
 // Author:	Robert COUBLANC
-//		<rob@robox.paris1.matra-dtv.fr>
 
 #define BUC60577	//GG_191099 Draw correct bounding box and Menage ...
 
@@ -543,44 +542,27 @@ Standard_Real AIS_Shape::Transparency() const {
 //=======================================================================
 
 void AIS_Shape::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
+//=======================================================================
+//function : SetColor
+//purpose  : 
+//=======================================================================
+
 void AIS_Shape::SetColor(const Quantity_Color &aCol)
-#endif
 {
-  hasOwnColor = Standard_True;
-#ifdef GER61351
   if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
     myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
-#else
-  myOwnColor  = aCol; 
-  if(!myDrawer->HasShadingAspect()){
-    Handle(Prs3d_ShadingAspect) asp = new Prs3d_ShadingAspect();
-// retrieve the reference materials...
-    if(myDrawer->HasLink()){
-      const Handle(Prs3d_Drawer)& refdr = myDrawer->Link();
-      Graphic3d_MaterialAspect theRefMat = 
-	refdr->ShadingAspect()->Aspect()->FrontMaterial();
-      theRefMat.SetTransparency(myTransparency);
-      asp->SetMaterial(theRefMat);
-    }   
-    
-    myDrawer->SetShadingAspect(asp);
-  } 
-#endif
+  hasOwnColor = Standard_True;
 
-#ifdef GER61351
   myDrawer->ShadingAspect()->SetColor(aCol,myCurrentFacingModel);
-#else
-  myDrawer->ShadingAspect()->SetColor(aCol);
-#endif
+  myDrawer->ShadingAspect()->SetTransparency(myTransparency,myCurrentFacingModel);
   myDrawer->SetShadingAspectGlobal(Standard_False);
-    
-  Standard_Real WW = HasWidth()? Width():AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line);
+
+  const Standard_Real WW = HasWidth()? Width():AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line);
 
   myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
   myDrawer->SetWireAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
@@ -609,6 +591,7 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   LoadRecomputable(0);
   LoadRecomputable(2); 
 }
+
 //=======================================================================
 //function : UnsetColor
 //purpose  : 
@@ -616,23 +599,24 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
 
 void AIS_Shape::UnsetColor()
 {
-  if(!HasColor() ){  myToRecomputeModes.Clear();
-		     return;}
-  
+  if ( !HasColor() )
+  {
+    myToRecomputeModes.Clear();
+    return;
+  }
   hasOwnColor = Standard_False;
 
   Handle(Prs3d_LineAspect) NullAsp;
   Handle(Prs3d_ShadingAspect) NullShA;
   
-  if(!HasWidth()){
+  if(!HasWidth()) {
     myDrawer->SetLineAspect(NullAsp);
     myDrawer->SetWireAspect(NullAsp);
     myDrawer->SetFreeBoundaryAspect(NullAsp);
     myDrawer->SetUnFreeBoundaryAspect(NullAsp);
     myDrawer->SetSeenLineAspect(NullAsp);
   }
-  else{
-#ifdef GER61351
+  else {
     Quantity_Color CC;
     AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
     myDrawer->LineAspect()->SetColor(CC);
@@ -644,42 +628,36 @@ void AIS_Shape::UnsetColor()
     myDrawer->UnFreeBoundaryAspect()->SetColor(CC);
     AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Seen,CC);
     myDrawer->SeenLineAspect()->SetColor(CC);
-#else
-    myDrawer->LineAspect()->SetColor(AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line));
-    myDrawer->WireAspect()->SetColor(AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Wire));
-    myDrawer->FreeBoundaryAspect()->SetColor(AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Free));
-    myDrawer->UnFreeBoundaryAspect()->SetColor(AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_UnFree));
-    myDrawer->SeenLineAspect()->SetColor(AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Seen));
-#endif
   }
-  
-  if(myDrawer->HasShadingAspect()){
+
+  if( HasMaterial() || IsTransparent()) {
+    Graphic3d_MaterialAspect mat = AIS_GraphicTool::GetMaterial(HasMaterial()? myDrawer : myDrawer->Link());
+    if( HasMaterial() ) {
+      Quantity_Color color = myDrawer->Link()->ShadingAspect()->Color(myCurrentFacingModel);
+      mat.SetColor(color);
+    }
+    if( IsTransparent() ) {
+      Standard_Real trans = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+      mat.SetTransparency(trans);
+    }
+    myDrawer->ShadingAspect()->SetMaterial(mat,myCurrentFacingModel);
+  }
+  else {
     myDrawer->SetShadingAspect(NullShA);
-  }    
-  
+  }
+
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
       Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
       Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->Link()->ShadingAspect()->Aspect();
-#ifdef GER61351
-      Quantity_Color CC;
-      AIS_GraphicTool::GetInteriorColor(myDrawer->Link(),CC);
-      a4bis->SetInteriorColor(CC);
-#else
-      Quantity_NameOfColor KOL = AIS_GraphicTool::GetInteriorColor(myDrawer->Link());
-      a4bis->SetInteriorColor(Quantity_Color(KOL));
-#endif
+      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
       G->SetGroupPrimitivesAspect(a4bis);
     }
-}
+  }
   LoadRecomputable(0);
   LoadRecomputable(2);
-  
 }
-
 
 //=======================================================================
 //function : SetWidth
@@ -688,7 +666,7 @@ void AIS_Shape::UnsetColor()
 
 void AIS_Shape::SetWidth(const Standard_Real W)
 {
-  if(HasColor() || HasWidth()){ 
+  if(HasColor() || HasWidth()){
     myDrawer->LineAspect()->SetWidth(W);
     myDrawer->WireAspect()->SetWidth(W);
     myDrawer->FreeBoundaryAspect()->SetWidth(W);
@@ -696,7 +674,6 @@ void AIS_Shape::SetWidth(const Standard_Real W)
     myDrawer->SeenLineAspect()->SetWidth(W);
   }
   else{
-#ifdef GER61351
     Quantity_Color CC;
     AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
     myDrawer->SetLineAspect(new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,W));
@@ -708,27 +685,10 @@ void AIS_Shape::SetWidth(const Standard_Real W)
     myDrawer->SetUnFreeBoundaryAspect(new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,W));
     AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Seen,CC);
     myDrawer->SetSeenLineAspect(new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,W));
-#else
-    Quantity_NameOfColor KOL = AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line);
-    myDrawer->SetLineAspect(new Prs3d_LineAspect(KOL,Aspect_TOL_SOLID,W));
-
-    KOL = AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Wire);
-    myDrawer->SetWireAspect(new Prs3d_LineAspect(KOL,Aspect_TOL_SOLID,W));
-
-    KOL = AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Free);
-    myDrawer->SetFreeBoundaryAspect(new Prs3d_LineAspect(KOL,Aspect_TOL_SOLID,W));
-
-    KOL = AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_UnFree);
-    myDrawer->SetUnFreeBoundaryAspect(new Prs3d_LineAspect(KOL,Aspect_TOL_SOLID,W));
-
-    KOL = AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Seen);
-    myDrawer->SetSeenLineAspect(new Prs3d_LineAspect(KOL,Aspect_TOL_SOLID,W));
-#endif    
   }
   myOwnWidth = W;
   LoadRecomputable(0); // means that it is necessary to recompute only the wireframe....
   LoadRecomputable(2); // and the bounding box...
-  
 }
 
 //=======================================================================
@@ -738,11 +698,15 @@ void AIS_Shape::SetWidth(const Standard_Real W)
 
 void AIS_Shape::UnsetWidth()
 {
-  if(myOwnWidth== 0.0){  myToRecomputeModes.Clear();
-		      return;}
+  if(myOwnWidth == 0.0)
+  {
+    myToRecomputeModes.Clear();
+    return;
+  }
   myOwnWidth=0.0;
+
   Handle(Prs3d_LineAspect) NullAsp;
-  
+
   if(!HasColor()){
     myDrawer->SetLineAspect(NullAsp);
     myDrawer->SetWireAspect(NullAsp);
@@ -760,60 +724,58 @@ void AIS_Shape::UnsetWidth()
   LoadRecomputable(0);
 }
 
-
 //=======================================================================
 //function : SetMaterial
 //purpose  : 
 //=======================================================================
+
 void AIS_Shape::SetMaterial(const Graphic3d_NameOfMaterial aMat)
 {
-#ifdef GER61351
   if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
     myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
-  myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
   hasOwnMaterial = Standard_True;
-#else
-  AIS_InteractiveObject::SetMaterial(aMat);
-#endif
+
+  myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
+  myDrawer->ShadingAspect()->SetTransparency(myTransparency,myCurrentFacingModel);
+
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
       Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
       Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      
       Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
       G->SetGroupPrimitivesAspect(a4bis);
     }
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
-  myToRecomputeModes.Clear();  
+  myToRecomputeModes.Clear();
 }
+
 //=======================================================================
 //function : SetMaterial
 //purpose  : 
 //=======================================================================
+
 void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 {
-#ifdef GER61351
   if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
     myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
-  myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
   hasOwnMaterial = Standard_True;
-#else
-  AIS_InteractiveObject::SetMaterial(aMat);
-#endif  
+
+  myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
+  myDrawer->ShadingAspect()->SetTransparency(myTransparency,myCurrentFacingModel);
+
   if(!GetContext().IsNull()){
-  if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-    Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-    Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-    
-    Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-    P->SetPrimitivesAspect(a4bis);
-    G->SetGroupPrimitivesAspect(a4bis);
+    if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
+      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
+      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
+      P->SetPrimitivesAspect(a4bis);
+      G->SetGroupPrimitivesAspect(a4bis);
+    }
   }
-}
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate  :only viewer update
   myToRecomputeModes.Clear();  
 }
@@ -822,10 +784,11 @@ void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 //function : UnsetMaterial
 //purpose  : 
 //=======================================================================
+
 void AIS_Shape::UnsetMaterial()
 {
-#ifdef GER61351
   if( !HasMaterial() ) return;
+
   if( HasColor() || IsTransparent()) {
     Graphic3d_MaterialAspect mat = AIS_GraphicTool::GetMaterial(myDrawer->Link()); 
     if( HasColor() ) {
@@ -842,15 +805,11 @@ void AIS_Shape::UnsetMaterial()
     myDrawer->SetShadingAspect(SA);
   }
   hasOwnMaterial = Standard_False;
-#else
-  AIS_InteractiveObject::UnsetMaterial();
-#endif
-  if(!GetContext().IsNull()){
 
+  if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
       Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
       Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      
       Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
       G->SetGroupPrimitivesAspect(a4bis);
@@ -858,8 +817,8 @@ void AIS_Shape::UnsetMaterial()
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
   myToRecomputeModes.Clear();  
-  
 }
+
 //=======================================================================
 //function : SetTransparency
 //purpose  : 
@@ -867,20 +826,16 @@ void AIS_Shape::UnsetMaterial()
 
 void AIS_Shape::SetTransparency(const Standard_Real AValue)
 {
-#ifdef GER61351
-  if(!HasColor() && !HasMaterial() ) {
-        myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+  if ( !HasColor() && !HasMaterial() ) {
+    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
   }
   myDrawer->ShadingAspect()->SetTransparency(AValue,myCurrentFacingModel);
   myTransparency = AValue;
-#else
-  AIS_InteractiveObject::SetTransparency(AValue);
-#endif  
+
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
       Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
       Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      
       Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
 #ifdef BUC60918   //force highest priority for transparent objects
@@ -890,33 +845,28 @@ void AIS_Shape::SetTransparency(const Standard_Real AValue)
     }
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
-  myToRecomputeModes.Clear();  
-  
+  myToRecomputeModes.Clear();
 }
 
 //=======================================================================
 //function : UnsetTransparency
 //purpose  : 
 //=======================================================================
+
 void AIS_Shape::UnsetTransparency()
 {
-#ifdef GER61351
-  if(HasColor() || HasMaterial() ) {
+  if( HasColor() || HasMaterial() ) {
     myDrawer->ShadingAspect()->SetTransparency(0.0,myCurrentFacingModel);
   } else {
     Handle(Prs3d_ShadingAspect) SA;
     myDrawer->SetShadingAspect(SA);
   }
   myTransparency = 0.0;
-#else
-  AIS_InteractiveObject::UnsetTransparency();
-#endif
+
   if(!GetContext().IsNull()){
-    
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
       Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
       Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      
       Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
       P->SetPrimitivesAspect(a4bis);
       G->SetGroupPrimitivesAspect(a4bis);
@@ -926,18 +876,20 @@ void AIS_Shape::UnsetTransparency()
     }
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
-  myToRecomputeModes.Clear();  
+  myToRecomputeModes.Clear();
 }
 
+//=======================================================================
+//function : LoadRecomputable
+//purpose  : 
+//=======================================================================
 
 void AIS_Shape::LoadRecomputable(const Standard_Integer TheMode)
 {
-  myRecomputeEveryPrs =Standard_False;
+  myRecomputeEveryPrs = Standard_False;
   if(!IsInList(myToRecomputeModes,TheMode))
     myToRecomputeModes.Append(TheMode);
 }
-
-
 
 //=======================================================================
 //function : BoundingBox
