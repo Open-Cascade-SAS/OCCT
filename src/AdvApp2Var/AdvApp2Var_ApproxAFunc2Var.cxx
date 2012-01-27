@@ -78,7 +78,6 @@ myPrecisionCode(PrecisCode),
 myMaxDegInU(MaxDegInU),
 myMaxDegInV(MaxDegInV),
 myMaxPatches(MaxPatch),
-myEvaluator(Func),
 myDone(Standard_False),
 myHasResult(Standard_False)
 {
@@ -86,7 +85,7 @@ myHasResult(Standard_False)
   myNumSubSpaces[1] = Num2DSS;
   myNumSubSpaces[2] = Num3DSS;
   Init();
-  Perform(UChoice,VChoice,Func);
+  Perform(UChoice, VChoice, Func);
   ConvertBS();
 }
 
@@ -137,7 +136,6 @@ myPrecisionCode(PrecisCode),
 myMaxDegInU(MaxDegInU),
 myMaxDegInV(MaxDegInV),
 myMaxPatches(MaxPatch),
-myEvaluator(Func),
 myDone(Standard_False),
 myHasResult(Standard_False)
 {
@@ -145,7 +143,7 @@ myHasResult(Standard_False)
   myNumSubSpaces[1] = Num2DSS;
   myNumSubSpaces[2] = Num3DSS;
   Init();
-  Perform(UChoice,VChoice,Func,Crit);
+  Perform(UChoice, VChoice, Func, Crit);
   ConvertBS();
 }
 

@@ -11,9 +11,6 @@
 #include <PLib.hxx>
 #include <math_Matrix.hxx>
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-
 //=======================================================================
 //struct : BSplCLib_DataContainer 
 //purpose: Auxiliary structure providing buffers for poles and knots used in
@@ -24,8 +21,9 @@ struct BSplCLib_DataContainer
 {
   BSplCLib_DataContainer(Standard_Integer Degree) 
   {
-    if ( Degree > BSplCLib::MaxDegree() || BSplCLib::MaxDegree() > 25 )
-      Standard_OutOfRange::Raise ("BSplCLib: bspline degree is greater than maximum supported");
+    Standard_OutOfRange_Raise_if (Degree > BSplCLib::MaxDegree() ||
+        BSplCLib::MaxDegree() > 25,
+        "BSplCLib: bspline degree is greater than maximum supported");
   }
 
   Standard_Real poles[(25+1)*(Dimension_gen+1)];
@@ -1412,4 +1410,3 @@ void BSplCLib::FunctionReparameterise
 				   array_of_new_poles[0],
 				   Status) ;
 }
-

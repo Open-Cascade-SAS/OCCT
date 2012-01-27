@@ -4,9 +4,6 @@
 // BSpline Curve in 2d space
 // **************************
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-
 #define Dimension_gen 2
 
 #define Array1OfPoints  TColgp_Array1OfPnt2d
@@ -38,4 +35,3 @@
 #define BSplCLib_DataContainer BSplCLib_DataContainer_2d  
   
 #include <BSplCLib_CurveComputation.gxx>
-

@@ -473,33 +473,45 @@ const Convert_ParameterisationType  Parameterisation)
   return TheCurve;
 }
 
-
-
  //=======================================================================
-//function : law_evaluator
+//class : law_evaluator
 //purpose  : 
 //=======================================================================
 
-static Handle(Geom2d_BSplineCurve) Ancore = NULL ;
+class Geom2dConvert_law_evaluator : public BSplCLib_EvaluatorFunction
+{
 
-static void law_evaluator(const Standard_Integer  DerivativeRequest,
-			  const Standard_Real    *StartEnd,
-			  const Standard_Real     Parameter,
-			  Standard_Real &         Result,
-			  Standard_Integer &      ErrorCode)
-{ErrorCode = 0 ; 
- if (!Ancore.IsNull() && 
-     Parameter >= StartEnd[0] &&
-     Parameter <= StartEnd[1] && 
-     DerivativeRequest == 0){
-   gp_Pnt2d a_point ;
-   Ancore->D0(Parameter,
-	      a_point) ;
-   Result = a_point.Coord(2) ;
- }    
- else 
-   ErrorCode = 1 ;
-}
+public:
+
+  Geom2dConvert_law_evaluator (const Handle(Geom2d_BSplineCurve)& theAncore)
+  : myAncore (theAncore) {}
+
+  virtual void Evaluate (const Standard_Integer theDerivativeRequest,
+                         const Standard_Real*   theStartEnd,
+                         const Standard_Real    theParameter,
+                         Standard_Real&         theResult,
+                         Standard_Integer&      theErrorCode) const
+  {
+    theErrorCode = 0;
+    if (!myAncore.IsNull() && 
+        theParameter >= theStartEnd[0] &&
+        theParameter <= theStartEnd[1] && 
+        theDerivativeRequest == 0)
+    {
+      gp_Pnt2d aPoint;
+      myAncore->D0 (theParameter, aPoint);
+      theResult = aPoint.Coord (2);
+    }
+    else
+      theErrorCode = 1;
+  }
+
+private:
+
+  Handle(Geom2d_BSplineCurve) myAncore;
+
+};
+
 
 //=======================================================================
 //function : MultNumandDenom
@@ -539,7 +551,7 @@ static Handle(Geom2d_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCu
   a->Poles(aPoles);
   a->Multiplicities(aMults);
   BSplCLib::Reparametrize(BS->FirstParameter(),BS->LastParameter(),aKnots);
-  Ancore= new Geom2d_BSplineCurve(aPoles,aKnots,aMults,a->Degree());
+  Handle(Geom2d_BSplineCurve) anAncore = new Geom2d_BSplineCurve (aPoles, aKnots, aMults, a->Degree());
 
   BSplCLib::MergeBSplineKnots(tolerance,start_value,end_value,
 			      a->Degree(),aKnots,aMults,
@@ -555,7 +567,7 @@ static Handle(Geom2d_BSplineCurve) MultNumandDenom(const Handle(Geom2d_BSplineCu
     for (jj=1;jj<=2;jj++)
       BSPoles(ii).SetCoord(jj,BSPoles(ii).Coord(jj)*BSWeights(ii));
 //POP pour NT
-  BSplCLib_EvaluatorFunction ev = law_evaluator;
+  Geom2dConvert_law_evaluator ev (anAncore);
   BSplCLib::FunctionMultiply(ev,
 			     BS->Degree(),
 			     BSFlatKnots,
@@ -899,27 +911,40 @@ static GeomAbs_Shape Continuity(const Handle(Geom2d_Curve)& C1,
 }
 
 //=======================================================================
-//function :reparameterise_evaluator 
+//class :reparameterise_evaluator 
 //purpose  : 
 //=======================================================================
 
-static  Standard_Real  polynomial_coefficient[3] ;
+class Geom2dConvert_reparameterise_evaluator : public BSplCLib_EvaluatorFunction
+{
 
-static void reparameterise_evaluator(
-			  const Standard_Integer  DerivativeRequest,
-//			  const Standard_Real    *StartEnd,
-			  const Standard_Real    *,     
-			  const Standard_Real     Parameter,
-			  Standard_Real &         Result,
-			  Standard_Integer &      ErrorCode) {
-  ErrorCode = 0 ;
- PLib::EvalPolynomial(Parameter,
-		      DerivativeRequest,
-		      2,
-		      1,
-		      polynomial_coefficient[0],
-		      Result) ;
-}
+public:
+
+  Geom2dConvert_reparameterise_evaluator (const Standard_Real thePolynomialCoefficient[3])
+  {
+    memcpy(myPolynomialCoefficient, thePolynomialCoefficient, sizeof(myPolynomialCoefficient));
+  }
+
+  virtual void Evaluate (const Standard_Integer theDerivativeRequest,
+                         const Standard_Real*   /*theStartEnd*/,
+                         const Standard_Real    theParameter,
+                         Standard_Real&         theResult,
+                         Standard_Integer&      theErrorCode) const
+  {
+    theErrorCode = 0;
+    PLib::EvalPolynomial (theParameter,
+                          theDerivativeRequest,
+                          2,
+                          1,
+                          *((Standard_Real* )myPolynomialCoefficient), // function really only read values from this array
+                          theResult);
+  }
+
+private:
+
+  Standard_Real myPolynomialCoefficient[3];
+
+};
 
 //=======================================================================
 //function : ConcatG1
@@ -1001,6 +1026,8 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
  index=0;
  Pretreatment(ArrayOfCurves);
 
+ Standard_Real aPolynomialCoefficient[3];
+
  if ((nb_group==1) && (ClosedFlag)){                       //traitement d'un cas particulier
    indexmin=Indexmin(ArrayOfCurves);
    if (indexmin!=(ArrayOfCurves.Length()-1))
@@ -1025,11 +1052,11 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        umin=Curve1->FirstParameter(),umax=Curve1->LastParameter();
        tmax=2*lambda*(umax-umin)/(1+lambda*lambda2);
        a=(lambda*lambda2-1)/(2*lambda*tmax);
-       polynomial_coefficient[2]=a;              
+       aPolynomialCoefficient[2] = a;              
        b=(1/lambda); 
-       polynomial_coefficient[1]=b;
+       aPolynomialCoefficient[1] = b;
        c=umin;
-       polynomial_coefficient[0]=c;
+       aPolynomialCoefficient[0] = c;
        TColStd_Array1OfReal  Curve1FlatKnots(1,Curve1->NbPoles()+Curve1->Degree()+1);
        TColStd_Array1OfInteger  KnotC1Mults(1,Curve1->NbKnots());
        Curve1->Multiplicities(KnotC1Mults);
@@ -1056,7 +1083,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 for (jj=1;jj<=2;jj++)
 	   Curve1Poles(ii).SetCoord(jj,Curve1Poles(ii).Coord(jj)*Curve1Weights(ii));
 //POP pour NT
-       BSplCLib_EvaluatorFunction ev = reparameterise_evaluator;
+       Geom2dConvert_reparameterise_evaluator ev (aPolynomialCoefficient);
        BSplCLib::FunctionReparameterise(ev,
 					Curve1->Degree(),
 					Curve1FlatKnots,
@@ -1246,6 +1273,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
  Standard_Integer       k=0;
  index=0;
  Pretreatment(ArrayOfCurves);
+ Standard_Real aPolynomialCoefficient[3];
 
  if ((nb_group==1) && (ClosedFlag)){                       //traitement d'un cas particulier
    ArrayOfIndices->SetValue(0,0);
@@ -1280,11 +1308,11 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 umin=Curve1->FirstParameter(),umax=Curve1->LastParameter();
 	 tmax=2*lambda*(umax-umin)/(1+lambda*lambda2);
 	 a=(lambda*lambda2-1)/(2*lambda*tmax);
-	 polynomial_coefficient[2]=a;              
+	 aPolynomialCoefficient[2] = a;
 	 b=(1/lambda); 
-	 polynomial_coefficient[1]=b;
+	 aPolynomialCoefficient[1] = b;
 	 c=umin;
-	 polynomial_coefficient[0]=c;
+	 aPolynomialCoefficient[0] = c;
 	 TColStd_Array1OfReal  Curve1FlatKnots(1,Curve1->NbPoles()+Curve1->Degree()+1);
 	 TColStd_Array1OfInteger  KnotC1Mults(1,Curve1->NbKnots());
 	 Curve1->Multiplicities(KnotC1Mults);
@@ -1311,7 +1339,7 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	   for (jj=1;jj<=2;jj++)
 	     Curve1Poles(ii).SetCoord(jj,Curve1Poles(ii).Coord(jj)*Curve1Weights(ii));
 //POP pour NT
-	 BSplCLib_EvaluatorFunction ev = reparameterise_evaluator;
+	 Geom2dConvert_reparameterise_evaluator ev (aPolynomialCoefficient);
 //	 BSplCLib::FunctionReparameterise(reparameterise_evaluator,
 	 BSplCLib::FunctionReparameterise(ev,
 					  Curve1->Degree(),

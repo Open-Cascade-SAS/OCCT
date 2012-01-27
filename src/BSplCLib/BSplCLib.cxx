@@ -18,11 +18,9 @@
 //                   in TangExtendToConstraint; Continuity can be equal to 0
 //
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-
 #include <BSplCLib.ixx>
 #include <PLib.hxx>
+#include <PLib_LocalArray.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 
@@ -40,51 +38,22 @@ typedef TColStd_Array1OfInteger Array1OfInteger;
 
 class BSplCLib_LocalMatrix : public math_Matrix 
 {
- public: 
+public:
   BSplCLib_LocalMatrix (Standard_Integer DerivativeRequest, Standard_Integer Order)
     : math_Matrix (myBuffer, 1, DerivativeRequest + 1, 1, Order)
   {
-    if ( DerivativeRequest > BSplCLib::MaxDegree() || 
-         Order > BSplCLib::MaxDegree()+1 || 
-         BSplCLib::MaxDegree() > 25 )
-      Standard_OutOfRange::Raise ("BSplCLib: bspline degree is greater than maximum supported");
+    Standard_OutOfRange_Raise_if (DerivativeRequest > BSplCLib::MaxDegree() ||
+        Order > BSplCLib::MaxDegree()+1 || BSplCLib::MaxDegree() > 25,
+        "BSplCLib: bspline degree is greater than maximum supported");
   }
-      
+
  private:
   // local buffer, to be sufficient for addressing by index [Degree+1][Degree+1]
   // (see math_Matrix implementation)
   Standard_Real myBuffer[27*27];
 };
 
-//=======================================================================
-//class : BSplCLib_LocalArray
-//purpose: Auxiliary class optimizing creation of array buffer for
-//         evaluation of bspline (using stack allocation for small arrays)
-//=======================================================================
-
-#define LOCARRAY_BUFFER 1024
-class BSplCLib_LocalArray 
-{
- public: 
-  BSplCLib_LocalArray (Standard_Integer Size)
-    : myPtr(myBuffer)
-  {
-    if ( Size > LOCARRAY_BUFFER )
-      myPtr = (Standard_Real*)Standard::Allocate (Size * sizeof(Standard_Real));
-  }
-
-  ~BSplCLib_LocalArray ()
-  {
-    if ( myPtr != myBuffer )
-      Standard::Free (*(Standard_Address*)&myPtr);
-  }
-
-  Standard_Real& operator [] (int i) { return myPtr[i]; }
-  
- private:
-  Standard_Real myBuffer[LOCARRAY_BUFFER];
-  Standard_Real* myPtr;
-};
+typedef PLib_LocalArray BSplCLib_LocalArray;
 
 //=======================================================================
 //function : Hunt
@@ -4172,13 +4141,13 @@ void BSplCLib::Resolution(      Standard_Real&        Poles,
 // purpose :
 //=======================================================================
 
+// array of flat knots for bezier curve of maximum 25 degree
+static const Standard_Real knots[52] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 const Standard_Real& BSplCLib::FlatBezierKnots (const Standard_Integer Degree)
 {
-  if ( Degree < 1 || Degree > MaxDegree() || MaxDegree() != 25 )
-    Standard_OutOfRange::Raise ("Bezier curve degree greater than maximal supported");
-  
-  // array of flat knots for bezier curve of maximum 25 degree
-  static Standard_Real knots[52] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+  Standard_OutOfRange_Raise_if (Degree < 1 || Degree > MaxDegree() || MaxDegree() != 25,
+    "Bezier curve degree greater than maximal supported");
+
   return knots[25-Degree];
 }

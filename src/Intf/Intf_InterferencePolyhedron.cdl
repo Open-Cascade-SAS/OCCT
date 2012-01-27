@@ -16,6 +16,7 @@ generic class InterferencePolyhedron from Intf
 	--          self interference of a polyhedron.
 
 uses    Pnt               from gp,
+        XYZ               from gp,
     	Box               from Bnd,
     	SectionPoint      from Intf,
     	SeqOfSectionPoint from Intf,
@@ -85,5 +86,17 @@ is
     ---Purpose: Computes the  zone of tangence between the  facet <Tri1> of
     --          <FirstPol> and the facet <Tri2> of <SecondPol>.
 
+    CoupleCharacteristics (me: in out;
+            FirstPol: Polyhedron1;
+            SeconPol: Polyhedron2) is private;
+fields
+    OI       : Integer from Standard[3]; -- index des sommets de l objet
+    TI       : Integer from Standard[3]; -- index des sommets du tool
+    dpOpT    : Real from Standard[3, 3]; -- distance point Objet - point Tool
+    dpOeT    : Real from Standard[3, 3]; -- distance point Objet - edge  Tool
+    deOpT    : Real from Standard[3, 3]; -- distance edge  Objet - point Tool
+    voo      : XYZ from gp[3];           -- vecteur point point Obje
+    vtt      : XYZ from gp[3];           -- vecteur point point Tool
+    Incidence: Real from Standard;       -- angle entre les deux plans
 
 end InterferencePolyhedron;

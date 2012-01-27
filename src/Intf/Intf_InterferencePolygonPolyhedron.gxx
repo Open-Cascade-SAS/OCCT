@@ -17,21 +17,10 @@
 #include <Intf_SeqOfTangentZone.hxx>
 #include <Intf.hxx>
 
-#ifdef DEB
-static  Standard_Integer debug=0;
-#endif
-#if 0
-static  Standard_Real PRCANG=0.1;
-#endif
-
-//#ifndef DEB
-static int Pourcent3[4]={0,1,2,0};
-//#else
-//static  Pourcent3[4]={0,1,2,0};
-//#endif
-
 #include <Extrema_ExtElC.hxx>
 #include <Extrema_POnCurv.hxx>
+
+static const int Pourcent3[4] = {0, 1, 2, 0};
 
 static Standard_Boolean IsInSegment(const gp_Vec& P1P2,
 				    const gp_Vec& P1P,
@@ -57,7 +46,9 @@ static Standard_Boolean IsInSegment(const gp_Vec& P1P2,
 //=======================================================================
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron() 
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  BeginOfClosedPolygon (Standard_False),
+  iLin (0)
 {} 
 
 //=======================================================================
@@ -66,12 +57,11 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron()
 //           and a Polyhedron.
 //=======================================================================
 
-static Standard_Boolean BeginOfClosedPolygon;
-static Standard_Integer iLin;
-
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
   (const Polygon3d& thePolyg, const Polyhedron& thePolyh) 
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  BeginOfClosedPolygon (Standard_False),
+  iLin (0)
 {
   Tolerance=ToolPolygon3d::DeflectionOverEstimation(thePolyg)+
 	    ToolPolyh::DeflectionOverEstimation(thePolyh);
@@ -84,12 +74,12 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 } 
 
 
-
-
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
   (const Polygon3d& thePolyg, const Polyhedron& thePolyh,
    Bnd_BoundSortBox &PolyhGrid) 
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  BeginOfClosedPolygon (Standard_False),
+  iLin (0)
 {
   Tolerance=ToolPolygon3d::DeflectionOverEstimation(thePolyg)+
 	    ToolPolyh::DeflectionOverEstimation(thePolyh);
@@ -109,7 +99,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
   (const gp_Lin& theLin, const Polyhedron& thePolyh) 
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  BeginOfClosedPolygon (Standard_False),
+  iLin (0)
 {
   Tolerance=ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance==0.)
@@ -148,7 +140,9 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 
 Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron 
   (const Intf_Array1OfLin& theLins, const Polyhedron& thePolyh) 
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  BeginOfClosedPolygon (Standard_False),
+  iLin (0)
 {
   Tolerance=ToolPolyh::DeflectionOverEstimation(thePolyh);
   if (Tolerance==0.)
@@ -636,19 +630,6 @@ void Intf_InterferencePolygonPolyhedron::Interference
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //=======================================================================
 //function : Intersect
 //purpose  : Compute the intersection beetween the segment or the line 
@@ -787,22 +768,8 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   Standard_Real dEndTri=(triNor*EndO.XYZ())-triDp; // Distance <EndO> plan
   gp_XYZ segO=EndO.XYZ()-BegO.XYZ();
   segO.Normalize();
-#if 0
-  Standard_Real angl=triNor*segO;
-#endif
   Standard_Boolean NoIntersectionWithTriangle = Standard_False;
   Standard_Boolean PolygonCutsPlane           = Standard_True;
-
-
-#if 0 
-  if (((!Infinite && Abs(dBegTri)<=Tolerance && Abs(dEndTri)<=Tolerance) ||
-      (Infinite && angl<=PRCANG)) || (dBegTri-dEndTri)==0.) {
-    // On est dans la Zone d influence calculer sur quel partie :
-    // !!cout<<" AAAA ";
-    // !!cout<<" Beg End :"<<dBegTri<<" "<<dEndTri<<endl;
-  }
-#endif
-  
 
   Standard_Real param;
   t = dBegTri-dEndTri;
@@ -829,39 +796,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   if(NoIntersectionWithTriangle == Standard_False) { 
     gp_XYZ spLieu=BegO.XYZ()+((EndO.XYZ()-BegO.XYZ())*param);
     Standard_Real dPiE[3], dPtPi[3], sigd;
-#ifndef DEB
-    Standard_Integer is =0;
-#else
-    Standard_Integer is;
-#endif
+    Standard_Integer is = 0;
     Standard_Integer sEdge=-1;
     Standard_Integer sVertex=-1;
-    /* for (is=0; is<3; is++) {       
-       gp_XYZ segT(ToolPolyh::Point(thePolyh, pTri[(is+1)%3]).XYZ()-
-       ToolPolyh::Point(thePolyh, pTri[is]).XYZ());
-       gp_XYZ vecP(spLieu-ToolPolyh::Point(thePolyh, pTri[is]).XYZ());
-       dPtPi[is]=vecP.Modulus();
-       if (dPtPi[is]<=floatgap) {
-       sVertex=is;
-       break;
-       }
-       gp_XYZ segT_x_vecP(segT^vecP);
-       Standard_Real Modulus_segT_x_vecP = segT_x_vecP.Modulus();
-       sigd = segT_x_vecP*triNor;
-       if(sigd>floatgap) 
-       sigd = 1.0;
-       else if(sigd<-floatgap)
-       sigd = -1.0;
-       else {
-       sigd = 0.0;
-       }
-       dPiE[is]=sigd*(Modulus_segT_x_vecP/segT.Modulus());
-       if (Abs(dPiE[is])<=floatgap) {
-       sEdge=is;
-       break;
-       }
-       }
-       */
     Standard_Integer tbreak=0;
     { //-- is = 0
       gp_XYZ segT(ToolPolyh::Point(thePolyh, pTri[1]).XYZ()-
@@ -892,7 +829,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect
 	}
       }
     }
-    
+
     if(tbreak==0) { //-- is = 1 
       gp_XYZ segT(ToolPolyh::Point(thePolyh, pTri[2]).XYZ()-
 		  ToolPolyh::Point(thePolyh, pTri[1]).XYZ());
@@ -1136,11 +1073,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   if(NoIntersectionWithTriangle == Standard_False) { 
     gp_XYZ spLieu=BegO.XYZ()+((EndO.XYZ()-BegO.XYZ())*param);
     Standard_Real dPiE[3], dPtPi[3], sigd;
-#ifndef DEB
-    Standard_Integer is =0;
-#else
-    Standard_Integer is;
-#endif
+    Standard_Integer is = 0;
     Standard_Integer sEdge=-1;
     Standard_Integer sVertex=-1;
     Standard_Integer tbreak=0;
@@ -1370,4 +1303,3 @@ void Intf_InterferencePolygonPolyhedron::Intersect
     }
   } 
 }
-// end of File:	Intf_InterferencePolygonPolyhedron.gxx

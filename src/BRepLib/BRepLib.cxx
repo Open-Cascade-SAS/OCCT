@@ -45,11 +45,11 @@
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TVertex.hxx>
+#include <AdvApprox_ApproxAFunction.hxx>
 #include <Approx_SameParameter.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
@@ -72,6 +72,7 @@
 #include <Geom_BSplineSurface.hxx>
 
 
+// TODO - not thread-safe static variables
 static Standard_Real thePrecision = Precision::Confusion();     
 static Handle(Geom_Plane) thePlane;
 
@@ -753,12 +754,8 @@ static void SetEdgeTol(const TopoDS_Edge& E,
   else
     GP = Handle(Geom_Plane)::DownCast(S);
 
-  static Handle(GeomAdaptor_HCurve) HC;
-  static Handle(GeomAdaptor_HSurface) HS;
-  if (HC.IsNull()) {
-    HC = new GeomAdaptor_HCurve();
-    HS = new GeomAdaptor_HSurface();
-  }
+  Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
+  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
   
   TopLoc_Location LC;
   Standard_Real First, Last;
@@ -942,14 +939,9 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
 
   const Standard_Integer NCONTROL = 22;
 
-  static Handle(GeomAdaptor_HCurve) HC;
-  static Handle(Geom2dAdaptor_HCurve) HC2d;
-  static Handle(GeomAdaptor_HSurface) HS;
-  if(HC.IsNull()){
-    HC = new GeomAdaptor_HCurve();
-    HC2d = new Geom2dAdaptor_HCurve();
-    HS = new GeomAdaptor_HSurface();
-  }
+  Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
+  Handle(Geom2dAdaptor_HCurve) HC2d = new Geom2dAdaptor_HCurve();
+  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
   GeomAdaptor_Curve& GAC = HC->ChangeCurve();
   Geom2dAdaptor_Curve& GAC2d = HC2d->ChangeCurve2d();
   GeomAdaptor_Surface& GAS = HS->ChangeSurface();

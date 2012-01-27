@@ -270,5 +270,7 @@ mysquares:     Boolean                   from Standard;
 myitermax:     Integer                   from Standard;
 myfirstC:      Constraint                from AppParCurves;
 mylastC:       Constraint                from AppParCurves;
+myMultiLineNb: Integer                   from Standard;
+myIsClear    : Boolean                   from Standard;
 
 end ComputeLine;

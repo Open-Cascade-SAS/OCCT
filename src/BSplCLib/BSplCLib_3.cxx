@@ -9,9 +9,6 @@
 // BSpline Curve in 3d space
 // ***************************
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-
 #define Dimension_gen 3
 
 #define Array1OfPoints  TColgp_Array1OfPnt
@@ -47,4 +44,3 @@
 #define BSplCLib_DataContainer BSplCLib_DataContainer_3d
   
 #include <BSplCLib_CurveComputation.gxx>
-  

@@ -1963,29 +1963,41 @@ static Standard_Boolean CanBeTreated(Handle(Geom_BSplineSurface)& BSurf)
 }
 
 //=======================================================================
-//function : law_evaluator
-//purpose  : usefull to estimate the value of a function of 2 variables
+//class   : law_evaluator
+//purpose : usefull to estimate the value of a function of 2 variables
 //=======================================================================
 
-static GeomLib_DenominatorMultiplierPtr MyPtr = NULL ;
+class law_evaluator : public BSplSLib_EvaluatorFunction
+{
 
+public:
 
-static void law_evaluator(const Standard_Integer  DerivativeRequest,
-			  const Standard_Real     UParameter,
-			  const Standard_Real     VParameter,
-			  Standard_Real &         Result,
-			  Standard_Integer &      ErrorCode) {
-  
-  ErrorCode = 0 ; 
-  
-  if ((!(MyPtr == NULL)) &&
-      (DerivativeRequest == 0)) {
-    Result=MyPtr->Value(UParameter,VParameter);
+  law_evaluator (const GeomLib_DenominatorMultiplierPtr theDenominatorPtr)
+  : myDenominator (theDenominatorPtr) {}
+
+  virtual void Evaluate (const Standard_Integer theDerivativeRequest,
+                         const Standard_Real    theUParameter,
+                         const Standard_Real    theVParameter,
+                         Standard_Real&         theResult,
+                         Standard_Integer&      theErrorCode) const
+  {
+    if ((myDenominator != NULL) && (theDerivativeRequest == 0))
+    {
+      theResult = myDenominator->Value (theUParameter, theVParameter);
+      theErrorCode = 0;
+    }
+    else
+    {
+      theErrorCode = 1;
+    }
   }
-  else {
-    ErrorCode = 1 ;
-  }
-}
+
+private:
+
+  GeomLib_DenominatorMultiplierPtr myDenominator;
+
+};
+ 
 //=======================================================================
 //function : CheckIfKnotExists
 //purpose  : true if the knot already exists in the knot sequence
@@ -2128,8 +2140,7 @@ static void FunctionMultiply(Handle(Geom_BSplineSurface)&          BSurf,
  TColStd_Array1OfReal       FlatKnots(1,length);
  BSplCLib::KnotSequence(NewKnots->ChangeArray1(),NewMults->ChangeArray1(),FlatKnots);
 
- GeomLib_DenominatorMultiplier          local_denominator(BSurf,FlatKnots) ;
- MyPtr = &local_denominator ;                 //definition of a(u,v)
+ GeomLib_DenominatorMultiplier aDenominator (BSurf, FlatKnots);
 
  BuildFlatKnot(surface_u_knots,
 	       surface_u_mults,
@@ -2164,7 +2175,7 @@ static void FunctionMultiply(Handle(Geom_BSplineSurface)&          BSurf,
  BSplCLib::KnotSequence(newuknots->ChangeArray1(),newumults->ChangeArray1(),newuflatknots);
  BSplCLib::KnotSequence(newvknots->ChangeArray1(),newvmults->ChangeArray1(),newvflatknots);
 //POP pour WNT
- BSplSLib_EvaluatorFunction ev = law_evaluator;
+ law_evaluator ev (&aDenominator);
 // BSplSLib::FunctionMultiply(law_evaluator,               //multiplication
  BSplSLib::FunctionMultiply(ev,               //multiplication
 			    BSurf->UDegree(),

@@ -382,8 +382,6 @@ gp_Vec CSLib::DNNUV(const Standard_Integer Nu,
 {
   Standard_Integer i,j;
   gp_Vec D(0,0,0),VG,VD,PV;
-  PLib::Binomial(Nu);
-  PLib::Binomial(Nv);
   for(i=0;i<=Nu;i++)
     for(j=0;j<=Nv;j++){
       VG=DerSurf.Value(i+1,j);
@@ -406,8 +404,6 @@ gp_Vec CSLib::DNNUV(const Standard_Integer Nu,
 {
   Standard_Integer i,j;
   gp_Vec D(0,0,0),VG,VD,PV;
-  PLib::Binomial(Nu);
-  PLib::Binomial(Nv);
   for(i=0;i<=Nu;i++)
     for(j=0;j<=Nv;j++){
       VG=DerSurf1.Value(i+1,j);
@@ -441,8 +437,6 @@ DerVecNor.SetValue(0,0,DerNor);
 Dnorm=DerNUV.Value(Iduref,Idvref)*DerVecNor.Value(0,0);
 TabNorm.SetValue(0,0,Dnorm);
 TabScal.SetValue(0,0,0.);
-PLib::Binomial(Kderiv + Iduref);
-PLib::Binomial(Kderiv + Idvref);
 for ( Mderiv = 1;Mderiv <= Kderiv; Mderiv++)
     for ( Pderiv = 0 ; Pderiv <= Mderiv ; Pderiv++)
         {

@@ -1195,7 +1195,7 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
   case GeomAbs_Cone:
     {
       //OCC516(apo)->
-      static Standard_Real correction = 1.E+5*Precision::Angular();
+      const Standard_Real correction = 1.E+5*Precision::Angular();
       gp_Cone cn = TheSurfaceTool::Cone(surface);
       if(Abs(cn.SemiAngle()) < M_PI/2.0 - correction){
 	IntAna_IntConicQuad LinCone(Line,cn);

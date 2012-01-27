@@ -34,10 +34,33 @@
 
 #include <Plate_Plate.hxx>
 
-static Handle(Geom_Surface) fonct = NULL; 
+class GeomPlate_MakeApprox_Eval : public AdvApp2Var_EvaluatorFunc2Var
+{
 
+public:
 
-extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
+  GeomPlate_MakeApprox_Eval (const Handle(Geom_Surface)& theSurf)
+  : mySurf (theSurf) {}
+
+  virtual void Evaluate (Standard_Integer* theDimension,
+                         Standard_Real*    theUStartEnd,
+                         Standard_Real*    theVStartEnd,
+                         Standard_Integer* theFavorIso,
+                         Standard_Real*    theConstParam,
+                         Standard_Integer* theNbParams,
+                         Standard_Real*    theParameters,
+                         Standard_Integer* theUOrder,
+                         Standard_Integer* theVOrder,
+                         Standard_Real*    theResult,
+                         Standard_Integer* theErrorCode) const;
+
+private:
+
+  Handle(Geom_Surface) mySurf; 
+
+};
+
+void GeomPlate_MakeApprox_Eval::Evaluate (Standard_Integer * Dimension,
 		    	        // Dimension
 			        Standard_Real    * UStartEnd,
 				// StartEnd[2] in U
@@ -57,9 +80,9 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
 				// Derivative Request in V
 				Standard_Real    * Result, 
 				// Result[Dimension,N]
-				Standard_Integer * ErrorCode)
+				Standard_Integer * ErrorCode) const
                         	// Error Code
-{ 
+{
   *ErrorCode = 0;
   Standard_Integer idim,jpar;
   Standard_Real Upar,Vpar;
@@ -114,7 +137,7 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
   case 0 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	pnt = fonct->Value(Upar,Vpar);
+	pnt = mySurf->Value (Upar, Vpar);
 	Result[(jpar-1)*(*Dimension)] = pnt.X();
 	Result[1+(jpar-1)*(*Dimension)] = pnt.Y(); 
 	Result[2+(jpar-1)*(*Dimension)] = pnt.Z();
@@ -123,7 +146,7 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
   case 1 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	fonct->D1(Upar, Vpar, pnt, v1, v2);
+	mySurf->D1 (Upar, Vpar, pnt, v1, v2);
         if (*UOrder==1) {
 	  Result[(jpar-1)*(*Dimension)] = v1.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v1.Y(); 
@@ -139,7 +162,7 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
   case 2 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	fonct->D2(Upar, Vpar, pnt, v1, v2, v3, v4, v5);
+	mySurf->D2 (Upar, Vpar, pnt, v1, v2, v3, v4, v5);
         if (*UOrder==2) {
 	  Result[(jpar-1)*(*Dimension)] = v3.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v3.Y(); 
@@ -165,7 +188,7 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
   case 0 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	pnt = fonct->Value(Upar,Vpar);
+	pnt = mySurf->Value (Upar, Vpar);
 	Result[(jpar-1)*(*Dimension)] = pnt.X();
 	Result[1+(jpar-1)*(*Dimension)] = pnt.Y(); 
 	Result[2+(jpar-1)*(*Dimension)] = pnt.Z();
@@ -174,7 +197,7 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
   case 1 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	fonct->D1(Upar, Vpar, pnt, v1, v2);
+	mySurf->D1 (Upar, Vpar, pnt, v1, v2);
         if (*UOrder==1) {
 	  Result[(jpar-1)*(*Dimension)] = v1.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v1.Y(); 
@@ -190,7 +213,7 @@ extern "C" void myPlateSurfEval(Standard_Integer * Dimension,
   case 2 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	fonct->D2(Upar, Vpar, pnt, v1, v2, v3, v4, v5);
+	mySurf->D2 (Upar, Vpar, pnt, v1, v2, v3, v4, v5);
         if (*UOrder==2) {
 	  Result[(jpar-1)*(*Dimension)] = v3.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v3.Y(); 
@@ -228,7 +251,6 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
 					   const Standard_Real EnlargeCoeff)
 {
   myPlate = SurfPlate;
-  fonct = myPlate;
 
   Standard_Real U0=0., U1=0., V0=0., V1=0.;
   myPlate->RealBounds(U0, U1, V0, V1);
@@ -256,7 +278,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   AdvApprox_DichoCutting myDec;
 
 //POP pour WNT
-  AdvApp2Var_EvaluatorFunc2Var ev = myPlateSurfEval;
+  GeomPlate_MakeApprox_Eval ev (myPlate);
   AdvApp2Var_ApproxAFunc2Var AppPlate(nb1, nb2, nb3,
 			              nul1,nul1,eps3D,
 				      nul2,nul2,epsfr,
@@ -293,7 +315,6 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
 					   const Standard_Real EnlargeCoeff)
 {
   myPlate = SurfPlate;
-  fonct = myPlate;
 
   TColgp_SequenceOfXY Seq2d;
   TColgp_SequenceOfXYZ Seq3d;
@@ -311,13 +332,13 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
       gp_Vec v1h,v2h,v3h;
       if (CritOrder==0) {
 //    a l'ordre 0
-	fonct->D0(P2d.X(),P2d.Y(),PP);
+	myPlate->D0 (P2d.X(), P2d.Y(), PP);
 	gp_XYZ P3d(PP.X(),PP.Y(),PP.Z());
 	Seq3d.Append(P3d);
       }
       else {
 //    a l'ordre 1
-	fonct->D1(P2d.X(),P2d.Y(),PP,v1h,v2h);
+	myPlate->D1 (P2d.X(), P2d.Y(), PP, v1h, v2h);
 	v3h=v1h^v2h;
 	gp_XYZ P3d(v3h.X(),v3h.Y(),v3h.Z());
 	Seq3d.Append(P3d);
@@ -367,7 +388,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   if (CritOrder==-1) {
     myPrec = 1;
 // POP pour NT
-    AdvApp2Var_EvaluatorFunc2Var ev = myPlateSurfEval;
+    GeomPlate_MakeApprox_Eval ev (myPlate);
     AdvApp2Var_ApproxAFunc2Var AppPlate(nb1, nb2, nb3,
 					nul1,nul1,eps3D,
 					nul2,nul2,epsfr,
@@ -388,7 +409,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   else if (CritOrder==0) {
     GeomPlate_PlateG0Criterion Crit0(Seq2d,Seq3d,seuil);
 // POP pour NT
-    AdvApp2Var_EvaluatorFunc2Var ev = myPlateSurfEval;
+    GeomPlate_MakeApprox_Eval ev (myPlate);
     AdvApp2Var_ApproxAFunc2Var AppPlate(nb1, nb2, nb3,
 					nul1,nul1,eps3D,
 					nul2,nul2,epsfr,
@@ -411,7 +432,7 @@ GeomPlate_MakeApprox::GeomPlate_MakeApprox(const Handle(GeomPlate_Surface)& Surf
   else if (CritOrder==1) {
     GeomPlate_PlateG1Criterion Crit1(Seq2d,Seq3d,seuil);
 // POP pour NT
-    AdvApp2Var_EvaluatorFunc2Var ev = myPlateSurfEval;
+    GeomPlate_MakeApprox_Eval ev (myPlate);
     AdvApp2Var_ApproxAFunc2Var AppPlate(nb1, nb2, nb3,
 					nul1,nul1,eps3D,
 					nul2,nul2,epsfr,

@@ -255,7 +255,7 @@ int AdvApp2Var_MathBase::mdsptpt_(integer *ndimen,
   /* System generated locals */
   integer i__1;
   doublereal d__1;
-  
+
   /* Local variables */
   static integer i__;
   static doublereal differ[100];
@@ -405,12 +405,10 @@ int AdvApp2Var_MathBase::mmapcmp_(integer *ndim,
   /* System generated locals */
   integer crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, 
   i__2;
-  
+
   /* Local variables */
   static integer ipair, nd, ndegre, impair, ibb, idg;
   //extern  int  mgsomsg_();//mgenmsg_(),
-  
-  
 
 /* ********************************************************************** 
 */
@@ -523,12 +521,11 @@ int mmaper0_(integer *ncofmx,
   /* System generated locals */
   integer crvlgd_dim1, crvlgd_offset, i__1, i__2;
   doublereal d__1;
-  
+
   /* Local variables */
   static integer ncut;
-    static doublereal bidon;
+  static doublereal bidon;
   static integer ii, nd;
-  
 
 /* ***********************************************************************
  */
@@ -608,7 +605,7 @@ int mmaper0_(integer *ncofmx,
 
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvlgd[ii + nd * crvlgd_dim1], abs(d__1)) * 
+	    ycvmax[nd] += (d__1 = crvlgd[ii + nd * crvlgd_dim1], advapp_abs(d__1)) * 
 		    bidon;
 /* L310: */
 	}
@@ -776,7 +773,7 @@ int mmaper2_(integer *ncofmx,
     idec = 3;
 /* Computing MAX */
     i__1 = idec, i__2 = *ncfnew + 1;
-    ncut = max(i__1,i__2);
+    ncut = advapp_max(i__1,i__2);
 
 /* -------------- Removal of coefficients of high degree ----------- 
 */
@@ -789,7 +786,7 @@ int mmaper2_(integer *ncofmx,
 	bidon = xmaxj[ii - idec];
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], abs(d__1)) * 
+	    ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], advapp_abs(d__1)) * 
 		    bidon;
 /* L310: */
 	}
@@ -962,7 +959,7 @@ int mmaper4_(integer *ncofmx,
     idec = 5;
 /* Computing MAX */
     i__1 = idec, i__2 = *ncfnew + 1;
-    ncut = max(i__1,i__2);
+    ncut = advapp_max(i__1,i__2);
 
 /* -------------- Removal of high degree coefficients ----------- 
 */
@@ -975,7 +972,7 @@ int mmaper4_(integer *ncofmx,
 	bidon = xmaxj[ii - idec];
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], abs(d__1)) * 
+	    ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], advapp_abs(d__1)) * 
 		    bidon;
 /* L310: */
 	}
@@ -1139,7 +1136,7 @@ int mmaper6_(integer *ncofmx,
     idec = 7;
 /* Computing MAX */
     i__1 = idec, i__2 = *ncfnew + 1;
-    ncut = max(i__1,i__2);
+    ncut = advapp_max(i__1,i__2);
 
 /* -------------- Removal of high degree coefficients ----------- 
 */
@@ -1152,7 +1149,7 @@ int mmaper6_(integer *ncofmx,
 	bidon = xmaxj[ii - idec];
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], abs(d__1)) * 
+	    ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], advapp_abs(d__1)) * 
 		    bidon;
 /* L310: */
 	}
@@ -1187,10 +1184,9 @@ int AdvApp2Var_MathBase::mmaperx_(integer *ncofmx,
 {
   /* System generated locals */
   integer crvjac_dim1, crvjac_offset;
-  
+
   /* Local variables */
   static integer jord;
- 
 
 /* ********************************************************************** 
 */
@@ -1604,7 +1600,7 @@ int AdvApp2Var_MathBase::mmarcin_(integer *ndimax,
 /* At zero machine it is tested if the output interval is not null */
 
     AdvApp2Var_MathBase::mmveps3_(&eps3);
-    if ((d__1 = *u1 - *u0, abs(d__1)) < eps3) {
+    if ((d__1 = *u1 - *u0, advapp_abs(d__1)) < eps3) {
 	*iercod = 13;
 	goto L9999;
     }
@@ -2393,7 +2389,7 @@ L5000:
 /* ------ Take into account DIF - Test of convergence */
 
 	++iter;
-	dif = (d__1 = sottc - oldso, abs(d__1));
+	dif = (d__1 = sottc - oldso, advapp_abs(d__1));
 
 /* ------ If DIF is OK, leave..., otherwise: */
 
@@ -2578,7 +2574,7 @@ int mmchole_(integer *,//mxcoef,
 /* Computing MAX */
 	    i__2 = i__ - aposit[(i__ << 1) + 1], i__3 = j - aposit[(j << 1) + 
 		    1];
-	    kmin = max(i__2,i__3);
+	    kmin = advapp_max(i__2,i__3);
 	    i__2 = j - 1;
 	    for (k = kmin; k <= i__2; ++k) {
 		somme += chomat[aposit[(i__ << 1) + 2] - (i__ - k)] * chomat[
@@ -5192,12 +5188,12 @@ int mmherm0_(doublereal *debfin,
     --debfin;
 
     /* Function Body */
-    d1 = abs(debfin[1]);
+    d1 = advapp_abs(debfin[1]);
     if (d1 > (float)100.) {
 	goto L9101;
     }
 
-    d2 = abs(debfin[2]);
+    d2 = advapp_abs(debfin[2]);
     if (d2 > (float)100.) {
 	goto L9101;
     }
@@ -5207,7 +5203,7 @@ int mmherm0_(doublereal *debfin,
 	goto L9101;
     }
 
-    d1 = (d__1 = debfin[2] - debfin[1], abs(d__1));
+    d1 = (d__1 = debfin[2] - debfin[1], advapp_abs(d__1));
     if (d1 / d2 < (float).01) {
 	goto L9101;
     }
@@ -5229,7 +5225,7 @@ int mmherm0_(doublereal *debfin,
 
 /*     IS IT ALREADY INITIALIZED ? */
 
-    d1 = abs(debfin[1]) + abs(debfin[2]);
+    d1 = advapp_abs(debfin[1]) + advapp_abs(debfin[2]);
     d1 *= 16111959;
 
     if (debfin[1] != mmcmher_.tdebut) {
@@ -5370,7 +5366,7 @@ L100:
     mmcmher_.tdebut = debfin[1];
     mmcmher_.tfinal = debfin[2];
 
-    d1 = abs(debfin[1]) + abs(debfin[2]);
+    d1 = advapp_abs(debfin[1]) + advapp_abs(debfin[2]);
     mmcmher_.verifi = d1 * 16111959;
 
 
@@ -5563,7 +5559,7 @@ int mmherm1_(doublereal *debfin,
 
 /*     IS-IT CORRECTLY INITIALIZED ? */
 
-    d1 = abs(debfin[1]) + abs(debfin[2]);
+    d1 = advapp_abs(debfin[1]) + advapp_abs(debfin[2]);
     d1 *= 16111959;
 
 /*     OTHERWISE IT IS INITIALIZED */
@@ -6465,7 +6461,7 @@ int mmloncv_(integer *ndimax,
 /* ****** Calculate the optimal degree ** */
 
     kk = *ncoeff / 4 + 1;
-    kk = min(kk,10);
+    kk = advapp_min(kk,10);
 
 /* ****** Return the coefficients for the integral (DEGRE=4*KK) */
 /*       if KK <> KGAR. */
@@ -6739,7 +6735,7 @@ L9900:
 
 /* Computing MAX */
     i__1 = iorjac + 1;
-    nwcof = max(i__1,1);
+    nwcof = advapp_max(i__1,1);
     AdvApp2Var_SysBase::mvriraz_((integer *)&nwcof, 
 	     (char *)wpoly);
     wpoly[0] = 1.;
@@ -8117,7 +8113,7 @@ int mmrslw_(integer *normax,
 	kpiv = 0;
 	i__2 = *nordre;
 	for (jj = kk; jj <= i__2; ++jj) {
-	    akj = (d__1 = abmatr[kk + jj * abmatr_dim1], abs(d__1));
+	    akj = (d__1 = abmatr[kk + jj * abmatr_dim1], advapp_abs(d__1));
 	    if (akj > pivot) {
 		pivot = akj;
 		kpiv = jj;
@@ -8610,11 +8606,11 @@ L1000:
 */
 
 L2000:
-    if ((d__1 = *tparam - tablev[ideb], abs(d__1)) < *epsil) {
+    if ((d__1 = *tparam - tablev[ideb], advapp_abs(d__1)) < *epsil) {
 	*itypen = 1;
 	goto L9999;
     }
-    if ((d__1 = *tparam - tablev[ifin], abs(d__1)) < *epsil) {
+    if ((d__1 = *tparam - tablev[ifin], advapp_abs(d__1)) < *epsil) {
 	*itypen = 2;
 	goto L9999;
     }
@@ -8877,7 +8873,7 @@ int mmtrpj0_(integer *ncofmx,
 	bidon = sqrt(bidon);
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1)) *
+	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) *
 		     bidon;
 /* L310: */
 	}
@@ -9061,7 +9057,7 @@ int mmtrpj2_(integer *ncofmx,
 	bidon = xmaxj[i__ - ncut];
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1)) *
+	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) *
 		     bidon;
 /* L310: */
 	}
@@ -9089,7 +9085,7 @@ L400:
 	    bid = 0.;
 	    i__1 = *ndimen;
 	    for (nd = 1; nd <= i__1; ++nd) {
-		bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1));
+		bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1));
 /* L600: */
 	    }
 	    if (bid > eps1) {
@@ -9266,7 +9262,7 @@ int mmtrpj4_(integer *ncofmx,
 	bidon = xmaxj[i__ - ncut];
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1)) *
+	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) *
 		     bidon;
 /* L310: */
 	}
@@ -9294,7 +9290,7 @@ L400:
 	    bid = 0.;
 	    i__1 = *ndimen;
 	    for (nd = 1; nd <= i__1; ++nd) {
-		bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1));
+		bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1));
 /* L600: */
 	    }
 	    if (bid > eps1) {
@@ -9469,7 +9465,7 @@ int mmtrpj6_(integer *ncofmx,
 	bidon = xmaxj[i__ - ncut];
 	i__2 = *ndimen;
 	for (nd = 1; nd <= i__2; ++nd) {
-	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1)) *
+	    ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) *
 		     bidon;
 /* L310: */
 	}
@@ -9497,7 +9493,7 @@ L400:
 	    bid = 0.;
 	    i__1 = *ndimen;
 	    for (nd = 1; nd <= i__1; ++nd) {
-		bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], abs(d__1));
+		bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1));
 /* L600: */
 	    }
 	    if (bid > eps1) {
@@ -9716,7 +9712,7 @@ L9999:
     i__1 = *ndimen;
     for (ii = 1; ii <= i__1; ++ii) {
 	vecnrm[ii] = vector[ii] / vnorm;
-	if ((d__1 = vecnrm[ii], abs(d__1)) <= eps0) {
+	if ((d__1 = vecnrm[ii], advapp_abs(d__1)) <= eps0) {
 	    ++izero;
 	} else {
 	    iunit = ii;
@@ -11251,7 +11247,7 @@ L9900:
     irmax = 1;
     i__1 = *ndimen;
     for (i__ = 2; i__ <= i__1; ++i__) {
-	if ((d__1 = vecteu[irmax], abs(d__1)) < (d__2 = vecteu[i__], abs(d__2)
+	if ((d__1 = vecteu[irmax], advapp_abs(d__1)) < (d__2 = vecteu[i__], advapp_abs(d__2)
 		)) {
 	    irmax = i__;
 	}
@@ -11260,7 +11256,7 @@ L9900:
 
 /* ___ Calculate the norme */
 
-    if ((d__1 = vecteu[irmax], abs(d__1)) < 1.) {
+    if ((d__1 = vecteu[irmax], advapp_abs(d__1)) < 1.) {
 	xsom = 0.;
 	i__1 = *ndimen;
 	for (i__ = 1; i__ <= i__1; ++i__) {
@@ -11283,7 +11279,7 @@ L9900:
 	    }
 /* L300: */
 	}
-	ret_val = (d__1 = vecteu[irmax], abs(d__1)) * sqrt(xsom);
+	ret_val = (d__1 = vecteu[irmax], advapp_abs(d__1)) * sqrt(xsom);
     }
 
 /* ***********************************************************************

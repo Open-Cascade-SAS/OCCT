@@ -126,11 +126,6 @@ void  Intf_Tool::Lin2dBox(const gp_Lin2d& L2d,
 //function : Hypr2dBox
 //purpose  : 
 //=======================================================================
-static Standard_Integer bord[12];
-static Standard_Real    xint[12];
-static Standard_Real    yint[12];
-static Standard_Real    zint[12];
-static Standard_Real    parint[12];
 
 void  Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, 
 			  const Bnd_Box2d& domain, 

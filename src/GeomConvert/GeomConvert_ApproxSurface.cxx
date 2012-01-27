@@ -8,9 +8,34 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
 
-static Handle(Adaptor3d_HSurface) fonct; 
+class GeomConvert_ApproxSurface_Eval : public AdvApp2Var_EvaluatorFunc2Var
+{
 
-extern "C" void mySurfEval1(Standard_Integer * Dimension,
+public:
+
+  GeomConvert_ApproxSurface_Eval (const Handle(Adaptor3d_HSurface)& theAdaptor)
+  : myAdaptor (theAdaptor) {}
+
+  virtual void Evaluate (Standard_Integer* theDimension,
+                         Standard_Real*    theUStartEnd,
+                         Standard_Real*    theVStartEnd,
+                         Standard_Integer* theFavorIso,
+                         Standard_Real*    theConstParam,
+                         Standard_Integer* theNbParams,
+                         Standard_Real*    theParameters,
+                         Standard_Integer* theUOrder,
+                         Standard_Integer* theVOrder,
+                         Standard_Real*    theResult,
+                         Standard_Integer* theErrorCode) const;
+
+private:
+
+  mutable Handle(Adaptor3d_HSurface) myAdaptor;
+
+};
+
+
+void GeomConvert_ApproxSurface_Eval::Evaluate (Standard_Integer * Dimension,
 			   // Dimension
 			   Standard_Real    * UStartEnd,
 			   // StartEnd[2] in U
@@ -30,7 +55,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
 			   // Derivative Request in V
 			   Standard_Real    * Result, 
 			   // Result[Dimension,N]
-			   Standard_Integer * ErrorCode)
+			   Standard_Integer * ErrorCode) const
                            // Error Code
 { 
   *ErrorCode = 0;
@@ -71,8 +96,8 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
 
 // Initialisation
 
-  fonct = fonct->UTrim(UStartEnd[0], UStartEnd[1], Precision::PConfusion());
-  fonct = fonct->VTrim(VStartEnd[0], VStartEnd[1], Precision::PConfusion());
+  myAdaptor = myAdaptor->UTrim (UStartEnd[0], UStartEnd[1], Precision::PConfusion());
+  myAdaptor = myAdaptor->VTrim (VStartEnd[0], VStartEnd[1], Precision::PConfusion());
 /*
   for (idim=1;idim<=*Dimension;idim++) {
     for (jpar=1;jpar<=*NbParams;jpar++) {
@@ -91,7 +116,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 0 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	pnt = fonct->Value(Upar,Vpar);
+	pnt = myAdaptor->Value (Upar, Vpar);
 	Result[(jpar-1)*(*Dimension)] = pnt.X();
 	Result[1+(jpar-1)*(*Dimension)] = pnt.Y(); 
 	Result[2+(jpar-1)*(*Dimension)] = pnt.Z();
@@ -100,7 +125,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 1 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	fonct->D1(Upar, Vpar, pnt, v1, v2);
+	myAdaptor->D1 (Upar, Vpar, pnt, v1, v2);
         if (*UOrder==1) {
 	  Result[(jpar-1)*(*Dimension)] = v1.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v1.Y(); 
@@ -116,7 +141,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 2 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	fonct->D2(Upar, Vpar, pnt, v1, v2, v3, v4, v5);
+	myAdaptor->D2 (Upar, Vpar, pnt, v1, v2, v3, v4, v5);
         if (*UOrder==2) {
 	  Result[(jpar-1)*(*Dimension)] = v3.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v3.Y(); 
@@ -137,7 +162,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 3 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	fonct->D3(Upar, Vpar, pnt, v1, v2, v3, v4, v5, v6, v7, v8, v9);
+	myAdaptor->D3 (Upar, Vpar, pnt, v1, v2, v3, v4, v5, v6, v7, v8, v9);
         if (*UOrder==2) {
 	  Result[(jpar-1)*(*Dimension)] = v8.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v8.Y(); 
@@ -153,7 +178,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 4 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Vpar = Parameters[jpar-1];
-	vect = fonct->DN(Upar, Vpar, *UOrder, *VOrder);
+	vect = myAdaptor->DN (Upar, Vpar, *UOrder, *VOrder);
 	Result[(jpar-1)*(*Dimension)] = vect.X();
 	Result[1+(jpar-1)*(*Dimension)] = vect.Y(); 
 	Result[2+(jpar-1)*(*Dimension)] = vect.Z();
@@ -167,7 +192,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 0 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	pnt = fonct->Value(Upar,Vpar);
+	pnt = myAdaptor->Value (Upar, Vpar);
 	Result[(jpar-1)*(*Dimension)] = pnt.X();
 	Result[1+(jpar-1)*(*Dimension)] = pnt.Y(); 
 	Result[2+(jpar-1)*(*Dimension)] = pnt.Z();
@@ -176,7 +201,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 1 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	fonct->D1(Upar, Vpar, pnt, v1, v2);
+	myAdaptor->D1 (Upar, Vpar, pnt, v1, v2);
         if (*UOrder==1) {
 	  Result[(jpar-1)*(*Dimension)] = v1.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v1.Y(); 
@@ -192,7 +217,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 2 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	fonct->D2(Upar, Vpar, pnt, v1, v2, v3, v4, v5);
+	myAdaptor->D2 (Upar, Vpar, pnt, v1, v2, v3, v4, v5);
         if (*UOrder==2) {
 	  Result[(jpar-1)*(*Dimension)] = v3.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v3.Y(); 
@@ -213,7 +238,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 3 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	fonct->D3(Upar, Vpar, pnt, v1, v2, v3, v4, v5, v6, v7, v8, v9);
+	myAdaptor->D3 (Upar, Vpar, pnt, v1, v2, v3, v4, v5, v6, v7, v8, v9);
         if (*UOrder==2) {
 	  Result[(jpar-1)*(*Dimension)] = v8.X();
 	  Result[1+(jpar-1)*(*Dimension)] = v8.Y(); 
@@ -229,7 +254,7 @@ extern "C" void mySurfEval1(Standard_Integer * Dimension,
   case 4 :
     for (jpar=1;jpar<=*NbParams;jpar++) {
 	Upar = Parameters[jpar-1];
-	vect = fonct->DN(Upar, Vpar, *UOrder, *VOrder);
+	vect = myAdaptor->DN (Upar, Vpar, *UOrder, *VOrder);
 	Result[(jpar-1)*(*Dimension)] = vect.X();
 	Result[1+(jpar-1)*(*Dimension)] = vect.Y(); 
 	Result[2+(jpar-1)*(*Dimension)] = vect.Z();
@@ -255,9 +280,9 @@ GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Geom_Surface)&
 							   const Standard_Integer MaxSegments,
 							   const Standard_Integer PrecisCode)
 {
-  Standard_Real    U0, U1, V0, V1;
+  Standard_Real U0, U1, V0, V1;
 
-  fonct = new (GeomAdaptor_HSurface)(Surf); // Initialisation de la surface algorithmique
+  Handle(Adaptor3d_HSurface) aSurfAdaptor = new GeomAdaptor_HSurface (Surf);
   Surf->Bounds(U0, U1, V0, V1);
 
 // " Init des nombres de sous-espaces et des tolerances"
@@ -285,27 +310,27 @@ GeomConvert_ApproxSurface::GeomConvert_ApproxSurface(const Handle(Geom_Surface)&
   GeomAbs_IsoType IsoType = GeomAbs_IsoV; 
   Standard_Integer NbDec;
 
-  NbDec = fonct->NbUIntervals(GeomAbs_C2);
+  NbDec = aSurfAdaptor->NbUIntervals(GeomAbs_C2);
   TColStd_Array1OfReal UDec_C2(1, NbDec+1);
-  fonct->UIntervals(UDec_C2, GeomAbs_C2);
-  NbDec = fonct->NbVIntervals(GeomAbs_C2);
+  aSurfAdaptor->UIntervals(UDec_C2, GeomAbs_C2);
+  NbDec = aSurfAdaptor->NbVIntervals(GeomAbs_C2);
   TColStd_Array1OfReal VDec_C2(1, NbDec+1);
-  fonct->VIntervals(VDec_C2, GeomAbs_C2);
+  aSurfAdaptor->VIntervals(VDec_C2, GeomAbs_C2);
 
-  NbDec = fonct->NbUIntervals(GeomAbs_C3);
+  NbDec = aSurfAdaptor->NbUIntervals(GeomAbs_C3);
   TColStd_Array1OfReal UDec_C3(1, NbDec+1);
-  fonct->UIntervals(UDec_C3, GeomAbs_C3);
+  aSurfAdaptor->UIntervals(UDec_C3, GeomAbs_C3);
 
-  NbDec = fonct->NbVIntervals(GeomAbs_C3);
+  NbDec = aSurfAdaptor->NbVIntervals(GeomAbs_C3);
   TColStd_Array1OfReal VDec_C3(1, NbDec+1);
-  fonct->VIntervals(VDec_C3, GeomAbs_C3);
+  aSurfAdaptor->VIntervals(VDec_C3, GeomAbs_C3);
   // Approximation avec decoupe preferentiel 
   // aux lieux de discontinuitees C2
   AdvApprox_PrefAndRec pUDec(UDec_C2,UDec_C3);
   AdvApprox_PrefAndRec pVDec(VDec_C2,VDec_C3);
 
 //POP pour WNT
-  AdvApp2Var_EvaluatorFunc2Var ev = mySurfEval1;
+  GeomConvert_ApproxSurface_Eval ev (aSurfAdaptor);
   AdvApp2Var_ApproxAFunc2Var approx(nb1, nb2, nb3,
 				    nul1,nul1,eps3D,
 				    nul2,nul2,epsfr,

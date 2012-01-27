@@ -9,11 +9,9 @@
 // pmn  07-10-96 : Correction de DN dans le cas rationnal.
 // pmn  06-02-97 : Correction des poids dans RationalDerivative. (PRO700)
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-
 #include <BSplSLib.ixx>
 #include <PLib.hxx>
+#include <PLib_LocalArray.hxx>
 #include <BSplCLib.hxx>
 #include <TColgp_Array2OfXYZ.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
@@ -23,7 +21,7 @@
 #include <math_Matrix.hxx>
 
 // for null derivatives
-static Standard_Real BSplSLib_zero[3] = {0.,0.,0.};
+static Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
 #ifdef WNT
 #define M_SQRT2 1.4142135623730950488016887 
 #endif
@@ -34,14 +32,13 @@ static Standard_Real BSplSLib_zero[3] = {0.,0.,0.};
 //         evaluation of bspline (allocated in the stack)
 //=======================================================================
 
-struct BSplSLib_DataContainer 
+struct BSplSLib_DataContainer
 {
-  BSplSLib_DataContainer (Standard_Integer UDegree, Standard_Integer VDegree) 
+  BSplSLib_DataContainer (Standard_Integer UDegree, Standard_Integer VDegree)
   {
-    if ( UDegree > BSplCLib::MaxDegree() || 
-         VDegree > BSplCLib::MaxDegree() || 
-         BSplCLib::MaxDegree() != 25 )
-      Standard_OutOfRange::Raise ("BSplCLib: bspline degree is greater than maximum supported");
+    Standard_OutOfRange_Raise_if (UDegree > BSplCLib::MaxDegree() ||
+        VDegree > BSplCLib::MaxDegree() || BSplCLib::MaxDegree() > 25,
+        "BSplSLib: bspline degree is greater than maximum supported");
   }
 
   Standard_Real poles[4*(25+1)*(25+1)];
@@ -50,35 +47,7 @@ struct BSplSLib_DataContainer
   Standard_Real ders[48];
 };
 
-//=======================================================================
-//class : BSplSLib_LocalArray
-//purpose: Auxiliary class optimizing creation of array buffer for
-//         evaluation of bspline (using stack allocation for small arrays)
-//=======================================================================
-
-#define LOCARRAY_BUFFER 1024
-class BSplSLib_LocalArray 
-{
- public: 
-  BSplSLib_LocalArray (Standard_Integer Size)
-    : myPtr(myBuffer)
-  {
-    if ( Size > LOCARRAY_BUFFER )
-      myPtr = (Standard_Real*)Standard::Allocate (Size * sizeof(Standard_Real));
-  }
-
-  ~BSplSLib_LocalArray ()
-  {
-    if ( myPtr != myBuffer )
-      Standard::Free (*(Standard_Address*)&myPtr);
-  }
-
-  operator Standard_Real* () { return myPtr; }
-  
- private:
-  Standard_Real myBuffer[LOCARRAY_BUFFER];
-  Standard_Real* myPtr;
-};
+typedef PLib_LocalArray BSplSLib_LocalArray;
 
 //**************************************************************************
 //                     Evaluation methods
@@ -211,8 +180,6 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
 
   iiM1 = - M1;
   iiM3 = - M3;
-  PLib::Binomial(N);
-  PLib::Binomial(M);
 
   for (ii = 0 ; ii <= N  ; ii++) {
     iiM1  += M1;
@@ -3316,7 +3283,7 @@ void BSplSLib::FunctionMultiply
 		      NewDenominator(ii,jj),
 		      NewNumerator(ii,jj)) ;
 	
-	Function(0,
+	Function.Evaluate (0,
 		 UParameters(ii),
 		 VParameters(jj),
 		 result,
@@ -3345,4 +3312,3 @@ void BSplSLib::FunctionMultiply
     Standard_ConstructionError::Raise();
   }
 }
-

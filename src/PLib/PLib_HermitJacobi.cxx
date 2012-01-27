@@ -3,9 +3,9 @@
 // Author:	Sergey SOKOLOV
 //		<ssv@velox.nnov.matra-dtv.fr>
 
-
 #include <PLib_HermitJacobi.ixx>
 #include <PLib.hxx>
+#include <PLib_LocalArray.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
@@ -133,13 +133,11 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
 			      TColStd_Array1OfReal& BasisD2,
 			      TColStd_Array1OfReal& BasisD3)
 {
-// Tableaux en static
-  static Standard_Real jac0[4*20];
-  static Standard_Real jac1[4*20];
-  static Standard_Real jac2[4*20];
-  static Standard_Real jac3[4*20];
-  static Standard_Real wvalues[4];
-
+  PLib_LocalArray jac0 (4 * 20);
+  PLib_LocalArray jac1 (4 * 20);
+  PLib_LocalArray jac2 (4 * 20);
+  PLib_LocalArray jac3 (4 * 20);
+  PLib_LocalArray wvalues (4);
 
   Standard_Integer i, j;
   Standard_Integer NivConstr  = this->NivConstr(),
@@ -293,4 +291,3 @@ void PLib_HermitJacobi::D3(const Standard_Real U,
 {
   D0123(3,U,BasisValue,BasisD1,BasisD2,BasisD3);
 }
-

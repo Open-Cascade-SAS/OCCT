@@ -49,25 +49,7 @@ class ApproxAFunc2Var from AdvApp2Var
     --     and Num3DSS must be equal to 1.     
     --  Warning:
     --     the Function of type EvaluatorFunc2Var from Approx
-    --     must be an extern "C" function
-    --     
-    --     The evaluator Function has the following type :
-    --     typedef  void (* AdvApp2Var_EvaluatorFunc2Var) 
-    --                         (Standard_Integer *,     // Total Dimension
-    --				Standard_Real    *,     // StartEndInU[2]
-    --				Standard_Real    *,     // StartEndInV[2]
-    --				Standard_Integer *,     // 1 for U = cte
-    --				                        // 2 for V = cte
-    --				Standard_Real    *,     // Value of cte
-    --				Standard_Integer *,     // Number N  of parameters
-    --			        Standard_Real    *,     // Tab[N] of parameters at
-    --			                                // which evaluation
-    --				                        // should take place
-    --			        Standard_Integer *,     // U-Derivative Request
-    --			        Standard_Integer *,     // V-Derivative Request
-    --				Standard_Real    *,     // Result[Dimension,N]
-    --			        Standard_Integer *      // Error Code
-    --			        ) ;
+    --     must be a subclass of AdvApp2Var_EvaluatorFunc2Var
     --     
     --	  the result should be formatted in the following way :
     -- <--Num1DSS--> <--2 * Num2DSS--> <--3 * Num3DSS-->
@@ -379,8 +361,6 @@ fields
     myMaxPatches    : Integer ;
     -- maximum of patches allowed 
     -- 
-    myEvaluator      : EvaluatorFunc2Var from AdvApp2Var ;   
-    -- external function
     -- 
     myConditions     : Context from AdvApp2Var;
     myResult         : Network from AdvApp2Var;

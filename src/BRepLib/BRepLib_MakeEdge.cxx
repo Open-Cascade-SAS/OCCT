@@ -100,11 +100,9 @@ static Standard_Boolean Project(const Handle(Geom2d_Curve)& C,
   Standard_Real Eps2 = BRep_Tool::Tolerance(V);
   Eps2 *= Eps2;
   
-  static Handle(Geom2dAdaptor_HCurve) HG2AHC;
-  if ( HG2AHC.IsNull() ) HG2AHC = new Geom2dAdaptor_HCurve();
+  Handle(Geom2dAdaptor_HCurve) HG2AHC = new Geom2dAdaptor_HCurve();
   HG2AHC->Set(C);
-  static Handle(GeomAdaptor_HSurface) HGAHS;
-  if ( HGAHS.IsNull() ) HGAHS = new GeomAdaptor_HSurface();
+  Handle(GeomAdaptor_HSurface) HGAHS = new GeomAdaptor_HSurface();
   HGAHS->Set(S);
   Adaptor3d_CurveOnSurface ACOS(HG2AHC,HGAHS);
 

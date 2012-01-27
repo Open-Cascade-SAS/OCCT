@@ -86,4 +86,10 @@ is
     ---Purpose: Computes the intersection between two segments 
     --          <BegO><EndO> et <BegT><EndT>.
 
+fields
+    oClos, tClos         : Boolean from Standard;
+    iObje1, iObje2, nbso : Integer from Standard;
+    BeginOfNotClosedObje1: Boolean from Standard;
+    BeginOfNotClosedObje2: Boolean from Standard;
+
 end InterferencePolygon2d;

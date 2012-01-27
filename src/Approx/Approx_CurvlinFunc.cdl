@@ -141,7 +141,9 @@ fields
     myLength1:  Real      from  Standard;
     myLength2:  Real      from  Standard;
     myTolLen :  Real      from  Standard;
-     
+    myPrevS  :  Real      from  Standard; -- should be mutable
+    myPrevU  :  Real      from  Standard; -- should be mutable
+
     myUi_1   :  HArray1OfReal  from  TColStd;
     mySi_1   :  HArray1OfReal  from  TColStd;
     myUi_2   :  HArray1OfReal  from  TColStd;

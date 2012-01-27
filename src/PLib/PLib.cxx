@@ -6,10 +6,8 @@
 // Modified: 18/06/1996 by PMN :  NULL reference.
 // Modified: 19/02/1997 by JCT :  EvalPoly2Var added
 
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-
 #include <PLib.ixx>
+#include <PLib_LocalArray.hxx>
 #include <math_Matrix.hxx> 
 #include <math_Gauss.hxx> 
 #include <Standard_ConstructionError.hxx>
@@ -41,70 +39,87 @@
 #include <math_Gauss.hxx>
 #include <math.hxx>
 
-void PLib::InternalBinomial(const Standard_Integer N,
-			    Standard_Integer& maxbinom,
-			    Standard_Address& binom)
+class BinomAllocator
 {
-  if (N > maxbinom) {
-    Standard_Integer i,im1,ip1,id2,md2,md3,j,k;
-    Standard_Integer np1 = N + 1;
-    Standard_Integer** nwbin = new Standard_Integer* [np1];
-    if (maxbinom >= 0) {
+public:
 
-      for (i = 0; i <= maxbinom; i++) nwbin[i] =
-	((Standard_Integer**)binom)[i];
-      delete [] ((Standard_Integer**)binom);
-    }
-    else {
-      maxbinom = 0;
-      nwbin[0] = new Standard_Integer [1];
-      nwbin[0][0] = 1;
-    }
-    binom = nwbin;
-    
-    for (i = maxbinom + 1; i < np1; i++) {
+  //! Main constructor
+  BinomAllocator (const Standard_Integer theMaxBinom)
+  : myBinom (NULL),
+    myMaxBinom (theMaxBinom)
+  {
+    Standard_Integer i, im1, ip1, id2, md2, md3, j, k;
+    Standard_Integer np1 = myMaxBinom + 1;
+    myBinom = new Standard_Integer*[np1];
+    myBinom[0] = new Standard_Integer[1];
+    myBinom[0][0] = 1;
+    for (i = 1; i < np1; ++i)
+    {
       im1 = i - 1;
       ip1 = i + 1;
       id2 = i >> 1;
       md2 = im1 >> 1;
       md3 = ip1 >> 1;
       k   = 0;
-      ((Standard_Integer**)binom)[i] = new Standard_Integer [ip1];
+      myBinom[i] = new Standard_Integer[ip1];
 
-      for (j = 0; j < id2; j++) {
-	((Standard_Integer**)binom)[i][j] =
-	    k + ((Standard_Integer**)binom)[im1][j];
-	k = ((Standard_Integer**)binom)[im1][j];
+      for (j = 0; j < id2; ++j)
+      {
+        myBinom[i][j] = k + myBinom[im1][j];
+        k = myBinom[im1][j];
       }
       j = id2;
       if (j > md2) j = im1 - j;
-      ((Standard_Integer**)binom)[i][id2] =
-	  k + ((Standard_Integer**)binom)[im1][j];
+      myBinom[i][id2] = k + myBinom[im1][j];
 
-      for (j = ip1 - md3; j < ip1; j++) {
-	((Standard_Integer**)binom)[i][j] =
-	  ((Standard_Integer**)binom)[i][i - j];
+      for (j = ip1 - md3; j < ip1; j++)
+      {
+        myBinom[i][j] = myBinom[i][i - j];
       }
     }
-    maxbinom = N;
   }
-}
 
-static Standard_Integer  storage_size = 0 ;
-static Standard_Real *derivative_storage= NULL;
-static Standard_Integer binomial_size = 0;
-static Standard_Real *binomial_array = NULL;
+  //! Destructor
+  ~BinomAllocator()
+  {
+    // free memory
+    for (Standard_Integer i = 0; i <= myMaxBinom; ++i)
+    {
+      delete[] myBinom[i];
+    }
+    delete[] myBinom;
+  }
 
-static void LocalArray(const Standard_Integer newsize,
-		       Standard_Integer& size,
-		       Standard_Real** arr)
+  Standard_Real Value (const Standard_Integer N,
+                       const Standard_Integer P) const
+  {
+    Standard_OutOfRange_Raise_if (N > myMaxBinom,
+      "PLib, BinomAllocator: requested degree is greater than maximum supported");
+    return Standard_Real (myBinom[N][P]);
+  }
+
+private:
+  Standard_Integer**  myBinom;
+  Standard_Integer myMaxBinom;
+
+};
+
+namespace
 {
-  // update a local array
-  if (newsize > size) {
-    if (*arr) delete [] *arr;
-    size = newsize;
-    *arr = new Standard_Real [size];
-  }
+  // we do not call BSplCLib here to avoid Cyclic dependency detection by WOK
+  //static BinomAllocator THE_BINOM (BSplCLib::MaxDegree() + 1);
+  static BinomAllocator THE_BINOM (25 + 1);
+};
+
+//=======================================================================
+//function : Bin
+//purpose  : 
+//=======================================================================
+
+Standard_Real PLib::Bin(const Standard_Integer N,
+                        const Standard_Integer P)
+{
+  return THE_BINOM.Value (N, P);
 }
 
 //=======================================================================
@@ -161,29 +176,20 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
   Standard_Real *RationalArray = &RDers;
   Standard_Real Factor ;
   Standard_Integer ii, Index, OtherIndex, Index1, Index2, jj;
+  PLib_LocalArray binomial_array;
+  PLib_LocalArray derivative_storage;
   if (Dimension == 3) {
     Standard_Integer DeRequest1 = DerivativeRequest + 1;
     Standard_Integer MinDegRequ = DerivativeRequest;
     if (MinDegRequ > Degree) MinDegRequ = Degree;
-    if (DeRequest1 > binomial_size) {
-      if (binomial_size > 0) {
-	delete [] binomial_array;
-      }
-      binomial_array = new Standard_Real [DeRequest1];
-      binomial_size  = DeRequest1;
-    }
+    binomial_array.Allocate (DeRequest1);
     
     for (ii = 0 ; ii < DeRequest1 ; ii++) {
       binomial_array[ii] = 1.0e0 ;
     }
     if (!All) {
       Standard_Integer DimDeRequ1 = (DeRequest1 << 1) + DeRequest1;
-      if (storage_size < DimDeRequ1) {
-        if (storage_size > 0)
-          delete [] derivative_storage ;
-        derivative_storage = new Standard_Real [DimDeRequ1];
-        storage_size = DimDeRequ1;
-      }
+      derivative_storage.Allocate (DimDeRequ1);
       RationalArray = derivative_storage ;
     }
     
@@ -258,25 +264,14 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
     Standard_Integer DeRequest1 = DerivativeRequest + 1;
     Standard_Integer MinDegRequ = DerivativeRequest;
     if (MinDegRequ > Degree) MinDegRequ = Degree;
-    if (DeRequest1 > binomial_size) {
-      if (binomial_size > 0) {
-	delete [] binomial_array;
-      }
-      binomial_array = new Standard_Real [DeRequest1];
-      binomial_size  = DeRequest1;
-    }
+    binomial_array.Allocate (DeRequest1);
     
     for (ii = 0 ; ii < DeRequest1 ; ii++) {
       binomial_array[ii] = 1.0e0 ;
     }
     if (!All) {
       Standard_Integer DimDeRequ1 = Dimension * DeRequest1;
-      if (storage_size < DimDeRequ1) {
-        if (storage_size > 0)
-          delete [] derivative_storage ;
-        derivative_storage = new Standard_Real [DimDeRequ1];
-        storage_size = DimDeRequ1;
-      }
+      derivative_storage.Allocate (DimDeRequ1);
       RationalArray = derivative_storage ;
     }
     
@@ -401,13 +396,8 @@ void  PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
   Standard_Integer ii, Index, Index1, Index2, jj;
   Standard_Integer DeRequest1 = DerivativeRequest + 1;
   
-  if (DeRequest1 > binomial_size) {
-    if (binomial_size > 0) {
-      delete [] binomial_array;
-    }
-    binomial_array = new Standard_Real [DeRequest1];
-    binomial_size  = DeRequest1;
-  }
+  PLib_LocalArray binomial_array (DeRequest1);
+  PLib_LocalArray derivative_storage;
 
   for (ii = 0 ; ii < DeRequest1 ; ii++) {
     binomial_array[ii] = 1.0e0 ;
@@ -1938,9 +1928,8 @@ PLib::EvalLagrange(const Standard_Real                   Parameter,
   ResultArray = &Results ;
   if (local_request >= Degree) {
     local_request = Degree ;
-  }   
-  LocalArray((Degree + 1) * Dimension,
-             storage_divided, &divided_differences_array) ;
+  }
+  PLib_LocalArray divided_differences_array ((Degree + 1) * Dimension);
   //
   //  Build the divided differences array
   //
@@ -2070,8 +2059,7 @@ Standard_Integer PLib::EvalCubicHermite
   if (local_request >= Degree) {
     local_request = Degree ;
   }   
-  LocalArray((Degree + 1) * Dimension,
-             storage_size, &divided_differences_array) ;
+  PLib_LocalArray divided_differences_array ((Degree + 1) * Dimension);
 
   for (ii = 0, jj = 0  ; ii < 2 ; ii++, jj+= 2) {
     ParametersArray[jj] =
@@ -2305,8 +2293,6 @@ void PLib::CoefficientsPoles (const Standard_Integer      dim,
   }
   
   Standard_Real Cnp;
-  PLib::Binomial(reflen - 1);
-
   for (i = 2; i < reflen; i++ ) {
     Cnp = PLib::Bin(reflen - 1, i - 1);
     if (rat) Weights (lowp + i - 1) = WCoefs (lowc + i - 1) / Cnp;
@@ -2478,7 +2464,6 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
   Standard_Integer I1, I2;
   Standard_Integer NPoleu , NPolev;
   gp_XYZ Temp;
-  PLib::Binomial(RowLength - 1);
 
   for (NPoleu = LowerRow; NPoleu <= UpperRow; NPoleu++){
     Poles (NPoleu, LowerCol) =  Coefs (NPoleu, LowerCol);
@@ -2510,7 +2495,6 @@ void PLib::CoefficientsPoles (const TColgp_Array2OfPnt&   Coefs,
       }
     } 
   }
-  PLib::Binomial(ColLength - 1);
   
   for (NPolev = LowerCol; NPolev <= UpperCol; NPolev++){
 

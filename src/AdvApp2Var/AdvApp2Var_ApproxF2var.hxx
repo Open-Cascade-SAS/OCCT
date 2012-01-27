@@ -11,6 +11,7 @@
 
 #include <Standard_Macro.hxx>
 #include <AdvApp2Var_Data_f2c.hxx>
+#include <AdvApp2Var_EvaluatorFunc2Var.hxx>
 //
 class AdvApp2Var_ApproxF2var {
  public:
@@ -19,19 +20,7 @@ Standard_EXPORT static int mma2fnc_(integer *ndimen,
 				    integer *nbsesp, 
 				    integer *ndimse, 
 				    doublereal *uvfonc, 
-				    void(*foncnp) (
-						   int *,
-						   double *,
-						   double *,
-						   int *,
-						   double *,
-						   int *,
-						   double *,
-						   int *,
-						   int *,
-						   double *,
-						   int *
-						   ),  
+				    const AdvApp2Var_EvaluatorFunc2Var& foncnp,
 				    doublereal *tconst, 
 				    integer *isofav, 
 				    integer *nbroot, 
@@ -100,19 +89,7 @@ Standard_EXPORT static int mma2cdi_(integer *ndimen,
 Standard_EXPORT static int mma2ds1_(integer *ndimen, 
 				    doublereal *uintfn, 
 				    doublereal *vintfn,
-				    void (*foncnp) (
-						    int *,
-						    double *,
-						    double *,
-						    int *,
-						    double *,
-						    int *,
-						    double *,
-						    int *,
-						    int *,
-						    double *,
-						    int *
-						    ),  
+				    const AdvApp2Var_EvaluatorFunc2Var& foncnp,
 				    integer *nbpntu, 
 				    integer *nbpntv, 
 				    doublereal *urootb, 

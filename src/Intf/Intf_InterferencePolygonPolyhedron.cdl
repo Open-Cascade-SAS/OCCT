@@ -170,4 +170,8 @@ is
     ---Purpose: Computes the intersection between  the segment <BegO><EndO>
     --          and the triangle <TTri> of <thePolyh>.
 
+fields
+    BeginOfClosedPolygon: Boolean from Standard;
+    iLin                : Integer from Standard;
+
 end InterferencePolygonPolyhedron;

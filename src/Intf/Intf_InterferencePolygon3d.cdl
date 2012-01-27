@@ -129,7 +129,11 @@ is
     --          <BegT><EndT> and points <BegO>,<EndO>.
 
 
-fields  IndexMin    : Integer from Standard;
-    	MinimalDist : Real from Standard;
+fields  IndexMin             : Integer from Standard;
+    	MinimalDist          : Real from Standard;
+        iObje1, iObje2       : Integer from Standard;
+        beginOfNotClosedFirst: Boolean from Standard;
+        beginOfNotClosedSecon: Boolean from Standard;
+
 
 end InterferencePolygon3d;

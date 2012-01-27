@@ -74,18 +74,7 @@ is
       ---Purpose: Get from FP the coordinates of the poles.
 
      Bin(N,P : Integer) returns Real;  
-      ---Purpose: Returns the Binomial Cnp , without testing anything.
-    	---C++: inline
-
-     Binomial(N : Integer);  
-      ---Purpose:  test on N >  maxbinom and build the PASCAL triangle
-      --          on size N if necessary.
-      ---C++: inline
-
-     InternalBinomial(N        : Integer;
-                      maxbinom : out Integer;
-                      binom    : out Address);
-      ---Purpose: only called by Binomial(N,P)
+      ---Purpose: Returns the Binomial Cnp. N should be <= BSplCLib::MaxDegree().
 
      RationalDerivative(Degree    : Integer;
      	    	    	N         : Integer;

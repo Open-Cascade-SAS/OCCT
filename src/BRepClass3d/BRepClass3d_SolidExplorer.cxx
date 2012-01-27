@@ -42,9 +42,6 @@
 #include <BRep_Tool.hxx> 
 #include <BRepClass_FaceClassifier.hxx>
 //<-OCC454(apo)
-static Standard_Integer numedg=0;
-static gp_Vec staticd1u_gp_vec;
-static gp_Vec staticd1v_gp_vec;
 
 //=======================================================================
 //function : FindAPointInTheFace
@@ -56,8 +53,8 @@ static gp_Vec staticd1v_gp_vec;
 Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
 (const TopoDS_Face& _face,
  gp_Pnt& APoint_,
- Standard_Real& param_) 
-{ 
+ Standard_Real& param_)
+{
   Standard_Real u,v;
   Standard_Boolean r = FindAPointInTheFace(_face,APoint_,u,v,param_);
   return r;
@@ -72,97 +69,113 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
 (const TopoDS_Face& _face,
  gp_Pnt& APoint_,
  Standard_Real& u_, Standard_Real& v_,
- Standard_Real& param_) 
-{   
-  TopoDS_Face face=_face;
-  face.Orientation(TopAbs_FORWARD);
-  
-  TopExp_Explorer     faceexplorer;
+ Standard_Real& param_)
+{
+  gp_Vec aVecD1U, aVecD1V;
+  return FindAPointInTheFace (_face, APoint_, u_, v_, param_, aVecD1U, aVecD1V);
+}
+
+//=======================================================================
+//function : FindAPointInTheFace
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
+(const TopoDS_Face& _face,
+ gp_Pnt& APoint_,
+ Standard_Real& u_, Standard_Real& v_,
+ Standard_Real& param_,
+ gp_Vec& theVecD1U,
+ gp_Vec& theVecD1V)
+{
+  TopoDS_Face face = _face;
+  face.Orientation (TopAbs_FORWARD);
+
+  TopExp_Explorer faceexplorer;
   BRepAdaptor_Curve2d c;
   gp_Vec2d T;
   gp_Pnt2d P;
-  //Standard_Boolean Ok = Standard_False;
-  Standard_Integer nedg=1;
+
   for (faceexplorer.Init(face,TopAbs_EDGE); 
        faceexplorer.More(); 
-       faceexplorer.Next()) {
-    if(numedg==0 || nedg++==numedg) { 
-      TopoDS_Edge Edge = TopoDS::Edge(faceexplorer.Current());
-      c.Initialize(Edge,face);
+       faceexplorer.Next())
+  {
+    TopoDS_Edge Edge = TopoDS::Edge (faceexplorer.Current());
+    c.Initialize (Edge, face);
 #ifdef DEB
-      Standard_Integer nbinterval = 
+    Standard_Integer nbinterval = 
 #endif
-	c.NbIntervals(GeomAbs_C1); 
-      c.D1((c.LastParameter() - c.FirstParameter()) * param_ + c.FirstParameter(),P,T);
-      
-      Standard_Real x=T.X();
-      Standard_Real y=T.Y();
-      if(Edge.Orientation() == TopAbs_FORWARD) { 
-	T.SetCoord(-y,x);
-      }
-      else { 
-	T.SetCoord(y,-x);
-      }
-      Standard_Real ParamInit = RealLast();
-      Standard_Real TolInit   = 0.00001;
-      Standard_Boolean APointExist = Standard_False;
-      
-      BRepClass_FacePassiveClassifier FClassifier;
-      
-      T.Normalize();
-      P.SetCoord(P.X()+TolInit*T.X(),P.Y()+TolInit*T.Y());
-      FClassifier.Reset(gp_Lin2d(P,T),ParamInit,RealEpsilon());   //-- Length and Tolerance #######
-      
-      TopExp_Explorer otherfaceexplorer;
-//  Modified by Sergey KHROMOV - Tue Apr  1 11:32:51 2003 Begin
-      Standard_Integer aNbEdges = 0;
-      for (otherfaceexplorer.Init(face,TopAbs_EDGE); 
-	   otherfaceexplorer.More(); 
-	   otherfaceexplorer.Next(), aNbEdges++) {
-//       for (otherfaceexplorer.Init(face,TopAbs_EDGE); 
-// 	   otherfaceexplorer.More(); 
-// 	   otherfaceexplorer.Next()) {
-//  Modified by Sergey KHROMOV - Tue Apr  1 11:32:52 2003 End
-	TopoDS_Edge OtherEdge = TopoDS::Edge(otherfaceexplorer.Current());
-	if((OtherEdge.Orientation() == TopAbs_EXTERNAL ||
-	    OtherEdge == Edge)) { 
-	}
-	else { 
-	  BRepClass_Edge AEdge(OtherEdge,face);
-	  FClassifier.Compare(AEdge,OtherEdge.Orientation());
-	  if(FClassifier.ClosestIntersection()) { 
-	    //-- cout<<" ---> Edge : "<<FClassifier.Parameter()<<endl;
-	    if(ParamInit > FClassifier.Parameter()) { 
-	      ParamInit = FClassifier.Parameter();
-	      APointExist = Standard_True;
-	    }
-	  }
-	}
-      }
-//  Modified by Sergey KHROMOV - Tue Apr  1 11:34:36 2003 Begin
-      if (aNbEdges == 1) {
-	BRepClass_Edge AEdge(Edge,face);
-	FClassifier.Compare(AEdge,Edge.Orientation());
-	if(FClassifier.ClosestIntersection()) { 
-	  if(ParamInit > FClassifier.Parameter()) { 
-	    ParamInit = FClassifier.Parameter();
-	    APointExist = Standard_True;
-	  }
-	}
-      }
-//  Modified by Sergey KHROMOV - Tue Apr  1 11:34:36 2003 End
-      if(APointExist) { 
-	ParamInit*=0.41234;
-	u_ = P.X() + ParamInit* T.X();
-	v_ = P.Y() + ParamInit* T.Y();
-	BRepAdaptor_Surface  s;
-	s.Initialize(face,Standard_False);
-	s.D1(u_,v_,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
-	return(Standard_True);
+    c.NbIntervals(GeomAbs_C1); 
+    c.D1((c.LastParameter() - c.FirstParameter()) * param_ + c.FirstParameter(),P,T);
+
+    Standard_Real x = T.X();
+    Standard_Real y = T.Y();
+    if (Edge.Orientation() == TopAbs_FORWARD)
+    {
+      T.SetCoord (-y,  x);
+    }
+    else
+    {
+      T.SetCoord ( y, -x);
+    }
+    Standard_Real ParamInit = RealLast();
+    Standard_Real TolInit   = 0.00001;
+    Standard_Boolean APointExist = Standard_False;
+
+    BRepClass_FacePassiveClassifier FClassifier;
+
+    T.Normalize();
+    P.SetCoord (P.X() + TolInit * T.X(), P.Y() + TolInit * T.Y());
+    FClassifier.Reset (gp_Lin2d (P, T), ParamInit, RealEpsilon()); //-- Length and Tolerance #######
+
+    TopExp_Explorer otherfaceexplorer;
+    Standard_Integer aNbEdges = 0;
+    for (otherfaceexplorer.Init (face, TopAbs_EDGE);
+         otherfaceexplorer.More(); 
+         otherfaceexplorer.Next(), ++aNbEdges)
+    {
+      TopoDS_Edge OtherEdge = TopoDS::Edge (otherfaceexplorer.Current());
+      if (OtherEdge.Orientation() != TopAbs_EXTERNAL && OtherEdge != Edge)
+      {
+        BRepClass_Edge AEdge (OtherEdge, face);
+        FClassifier.Compare (AEdge, OtherEdge.Orientation());
+        if (FClassifier.ClosestIntersection())
+        {
+          if(ParamInit > FClassifier.Parameter())
+          {
+            ParamInit = FClassifier.Parameter();
+            APointExist = Standard_True;
+          }
+        }
       }
     }
+
+    if (aNbEdges == 1)
+    {
+      BRepClass_Edge AEdge (Edge, face);
+      FClassifier.Compare (AEdge, Edge.Orientation());
+      if (FClassifier.ClosestIntersection())
+      {
+        if (ParamInit > FClassifier.Parameter())
+        {
+          ParamInit = FClassifier.Parameter();
+          APointExist = Standard_True;
+        }
+      }
+    }
+
+    if (APointExist)
+    { 
+      ParamInit *= 0.41234;
+      u_ = P.X() + ParamInit* T.X();
+      v_ = P.Y() + ParamInit* T.Y();
+      BRepAdaptor_Surface s;
+      s.Initialize (face, Standard_False);
+      s.D1 (u_, v_, APoint_, theVecD1U, theVecD1V);
+      return Standard_True;
+    }
   }
-  return(Standard_False);
+  return Standard_False;
 }
 
 //=======================================================================
@@ -180,8 +193,32 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
  const Standard_Real U1,
  const Standard_Real V1,
  const Standard_Real U2,
- const Standard_Real V2 ) const  
-{  
+ const Standard_Real V2) const
+{
+  gp_Vec aVecD1U, aVecD1V;
+  return PointInTheFace (Face, APoint_, u_, v_, param_, IndexPoint, surf,
+                         U1, V1, U2, V2, aVecD1U, aVecD1V);
+}
+
+//=======================================================================
+//function : PointInTheFace
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
+(const TopoDS_Face& Face,
+ gp_Pnt& APoint_,
+ Standard_Real& u_, Standard_Real& v_,
+ Standard_Real& param_,
+ Standard_Integer& IndexPoint,
+ const Handle(BRepAdaptor_HSurface)& surf,
+ const Standard_Real U1,
+ const Standard_Real V1,
+ const Standard_Real U2,
+ const Standard_Real V2,
+ gp_Vec& theVecD1U,
+ gp_Vec& theVecD1V) const
+{
   Standard_Real u,du = (U2-U1)/6.0;
   Standard_Real v,dv = (V2-V1)/6.0;
   if(du<1e-12) du=1e-12;
@@ -202,8 +239,8 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
           if(++NbPntCalc>=IndexPoint) { 
             if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
               u_=u; v_=v;
-              surf->D1(u,v,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
-	      IndexPoint = NbPntCalc;
+              surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
+              IndexPoint = NbPntCalc;
               return(Standard_True);
             }
           }
@@ -215,7 +252,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  if(++NbPntCalc>=IndexPoint) {
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
-	      surf->D1(u,v,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
+	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
 	      IndexPoint = NbPntCalc;
 	      return(Standard_True);
 	    }
@@ -227,7 +264,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  if(++NbPntCalc>=IndexPoint) { 
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
-	      surf->D1(u,v,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
+	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
 	      IndexPoint = NbPntCalc;
 	      return(Standard_True);
 	    }
@@ -239,7 +276,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  if(++NbPntCalc>=IndexPoint) {
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
-	      surf->D1(u,v,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
+	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
 	      IndexPoint = NbPntCalc;
 	      return(Standard_True);
 	    }
@@ -257,7 +294,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 	  if(++NbPntCalc>=IndexPoint) {
 	    if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	      u_=u; v_=v;
-	      surf->D1(u,v,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
+	      surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
 	      IndexPoint = NbPntCalc;
 	      return(Standard_True);
 	    }
@@ -269,7 +306,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
       if(++NbPntCalc>=IndexPoint) {
 	if(TheIntersector.ClassifyUVPoint(gp_Pnt2d(u,v))==TopAbs_IN) { 
 	  u_=u; v_=v;
-	  surf->D1(u,v,APoint_,staticd1u_gp_vec,staticd1v_gp_vec);
+	  surf->D1 (u, v, APoint_, theVecD1U, theVecD1V);
 	  IndexPoint = NbPntCalc;
 	  return(Standard_True);
 	}
@@ -280,8 +317,9 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
   else { 
     //printf("BRepClass3d_SolidExplorer Face not found ds the map \n");
   }
-  return(BRepClass3d_SolidExplorer::FindAPointInTheFace(Face,APoint_,u_,v_,param_));
-  
+
+  return BRepClass3d_SolidExplorer
+    ::FindAPointInTheFace (Face,APoint_, u_, v_, param_, theVecD1U, theVecD1V);
 }
 
 //=======================================================================
@@ -350,10 +388,14 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 							   Standard_Real& _Par) 
 //modified by NIZNHY-PKV Thu Nov 14 14:34:10 2002 t
 {
+  const Standard_Real TolU = Precision::PConfusion();
+  const Standard_Real TolV = TolU;
+
   TopoDS_Face         face;
   TopExp_Explorer     faceexplorer;
   //TopExp_Explorer     edgeexplorer;
   gp_Pnt APoint;
+  gp_Vec aVecD1U, aVecD1V;
   Standard_Real maxscal=0;
   Standard_Boolean ptfound=Standard_False;
   Standard_Real Par;
@@ -404,7 +446,6 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 
 //       if(IsInfiniteUV(U1,V1,U2,V2)){//OCC454(apo)->
       GeomAdaptor_Surface GA(BRep_Tool::Surface(face));
-      static Standard_Real TolU = Precision::PConfusion(), TolV = TolU;
       Extrema_ExtPS Ext(P,GA,TolU,TolV);
       if (Ext.IsDone() && Ext.NbExt() > 0) {
 	// evaluate the lower distance and its index;
@@ -448,7 +489,6 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 	  _Par = V.Magnitude(); 
 	  L = gp_Lin(P,V);
 	  ptfound=Standard_True;
-	  numedg=0;
 	  //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
 	  //return ;
 	  return 0;
@@ -461,36 +501,37 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
       // find point in a face not too far from a projection of P on face
       //  Modified by skv - Tue Sep 16 15:25:00 2003 OCC578 End
 
-      do { 
-	if(PointInTheFace(face,APoint,_u,_v,myParamOnEdge,++IndexPoint,surf,U1,V1,U2,V2)) { 
-	  NbPointsOK++;
-	  gp_Vec V(P,APoint);
-	  Par = V.Magnitude(); 
-	  if(Par > gp::Resolution()) {
-	    gp_Vec Norm=staticd1u_gp_vec.Crossed(staticd1v_gp_vec);
-	    Standard_Real tt = Norm.Magnitude();
-	    tt=Abs(Norm.Dot(V))/(tt*Par);
-	    if(tt>maxscal) { 
-	      maxscal=tt;
-	      L = gp_Lin(P,V);
-	      _Par=Par;
-	      ptfound=Standard_True;
-	      if(maxscal>0.2) { 
-		myParamOnEdge=svmyparam;
-		numedg=0;
-		//modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-		//return ;
-		return 0;
-		//modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t
-	      }
-	    }
-	  }
-	}
+      do {
+        if (PointInTheFace (face, APoint, _u, _v, myParamOnEdge, ++IndexPoint, surf,
+                            U1, V1, U2, V2,
+                            aVecD1U, aVecD1V))
+        {
+          ++NbPointsOK;
+          gp_Vec V (P, APoint);
+          Par = V.Magnitude();
+          if (Par > gp::Resolution())
+          {
+            gp_Vec Norm = aVecD1U.Crossed (aVecD1V);
+            Standard_Real tt = Norm.Magnitude();
+            tt = Abs (Norm.Dot (V)) / (tt * Par);
+            if (tt > maxscal)
+            {
+              maxscal = tt;
+              L = gp_Lin (P, V);
+              _Par = Par;
+              ptfound = Standard_True;
+              if (maxscal>0.2)
+              {
+                myParamOnEdge=svmyparam;
+                return 0;
+              }
+            }
+          }
+        }
       }
       while(IndexPoint<200 && NbPointsOK<16);
 
       myParamOnEdge=svmyparam;
-      numedg=0;
       if(maxscal>0.2) {		  
 	//modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
 	//return ;

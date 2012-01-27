@@ -3016,7 +3016,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 	    mcrgene_.icore[mcrgene_.ncore * 12 - 10];
 /* Computing MAX */
     i__1 = mcrstac_.mbyte[ksys - 1], i__2 = mcrstac_.nbyte[ksys - 1];
-    mcrstac_.mbyte[ksys - 1] = max(i__1,i__2);
+    mcrstac_.mbyte[ksys - 1] = advapp_max(i__1,i__2);
 
     goto L9900;
 

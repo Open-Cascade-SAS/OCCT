@@ -27,7 +27,6 @@ Standard_Boolean CSLib_NormalPolyDef::Value(const Standard_Real X,
   Standard_Real co,si;
   co=cos(X);
   si=sin(X);
-  PLib::Binomial(myK0);
 
   for(Standard_Integer i=0;i<=myK0;i++){
     F=F+PLib::Bin(myK0,i)*pow(co,i)*pow(si,(myK0-i))*myTABli(i);

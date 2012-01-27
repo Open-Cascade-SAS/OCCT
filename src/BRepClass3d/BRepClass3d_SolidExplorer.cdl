@@ -18,6 +18,7 @@ uses
     Pnt          from gp,
     Pnt2d        from gp,    
     Lin          from gp,
+    Vec          from gp,
     Face         from TopoDS,
     Shell        from TopoDS,
     Shape        from TopoDS,
@@ -62,6 +63,13 @@ is
 
     FindAPointInTheFace(myclass; F: Face from TopoDS; 
     	    	    	    	 P: out Pnt from gp;
+    	    	    	    	 u,v: out Real from Standard;
+    	    	    	    	 Param: out Real from Standard;
+    	    	    	    	 theVecD1U, theVecD1V: out Vec from gp)
+    returns Boolean from Standard;
+
+    FindAPointInTheFace(myclass; F: Face from TopoDS; 
+    	    	    	    	 P: out Pnt from gp;
     	    	    	    	 u,v: out Real from Standard)
     returns Boolean from Standard;
 
@@ -82,14 +90,23 @@ is
     	    	    	    Index: out Integer from Standard) 
     returns Boolean from Standard is static ;
 
+    PointInTheFace(me;      F: Face from TopoDS; 
+                            P: out Pnt from gp;
+                            u,v: out Real from Standard;
+                            Param: out Real from Standard;
+                            Index: out Integer from Standard;
+                            surf: HSurface  from BRepAdaptor;
+                            u1,v1,u2,v2: Real from Standard)
+    returns Boolean from Standard is static;
 
     PointInTheFace(me;      F: Face from TopoDS; 
-    			    P: out Pnt from gp;
-    	    	    	    u,v: out Real from Standard;
-    	    	    	    Param: out Real from Standard;
-    	    	    	    Index: out Integer from Standard;
-			    surf: HSurface  from BRepAdaptor;
-    	    	    	    u1,v1,u2,v2: Real from Standard) 
+                            P: out Pnt from gp;
+                            u,v: out Real from Standard;
+                            Param: out Real from Standard;
+                            Index: out Integer from Standard;
+                            surf: HSurface  from BRepAdaptor;
+                            u1,v1,u2,v2: Real from Standard;
+                            theVecD1U, theVecD1V: out Vec from gp)
     returns Boolean from Standard is static ;
     ---Purpose: <Index> gives point index  to  search from and returns
     --          point index of succeseful search

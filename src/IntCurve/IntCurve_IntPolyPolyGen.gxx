@@ -44,7 +44,6 @@
 
 //----------------------------------------------------------------------
 
-static Standard_Boolean AnErrorOccurred=Standard_False;
 
 
 
@@ -77,7 +76,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 				      ,const Standard_Real TheTol)
 {
 
-  AnErrorOccurred = Standard_False;
+  Standard_Boolean AnErrorOccurred = Standard_False;
 
   this->ResetFields();
   DomainOnCurve1=D1;
@@ -248,7 +247,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 				      ,const Standard_Real TheTol)
 {
 
-  AnErrorOccurred = Standard_False;
+  Standard_Boolean AnErrorOccurred = Standard_False;
 
   this->ResetFields();
   DomainOnCurve1=D1;
@@ -354,6 +353,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   gp_Pnt2d P1,P2;
   Standard_Integer nbsamples;
   done = Standard_False;
+  Standard_Boolean AnErrorOccurred = Standard_False;
   
   
   nbsamples = TheCurveTool::NbSamples(C1,D1.FirstParameter(),D1.LastParameter());
@@ -770,6 +770,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   gp_Pnt2d P1,P2;
   Standard_Integer nbsamplesOnC1,nbsamplesOnC2;
   done = Standard_False;
+  Standard_Boolean AnErrorOccurred = Standard_False;
 
   if(NbIter>NBITER_MAX_POLYGON) return;
 

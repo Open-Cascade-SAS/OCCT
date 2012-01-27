@@ -12,11 +12,12 @@
 #include <Precision.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
-static Standard_Integer debug=0;
-
 // Angular precision (sinus) below that value two right segments
 // are considered as having a potential zone of tangency.
-static Standard_Real PRCANG=Precision::Angular();
+namespace
+{
+  static const Standard_Real PRCANG = Precision::Angular();
+};
 
 //=======================================================================
 //function : Intf_InterferencePolygon2d
@@ -24,7 +25,14 @@ static Standard_Real PRCANG=Precision::Angular();
 //=======================================================================
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  oClos (Standard_False),
+  tClos (Standard_False),
+  iObje1 (0),
+  iObje2 (0),
+  nbso (0),
+  BeginOfNotClosedObje1 (Standard_False),
+  BeginOfNotClosedObje2 (Standard_False)
 {}
 
 //=======================================================================
@@ -32,12 +40,16 @@ Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
 //purpose  : Constructor of the interference beetween two Polygon.
 //=======================================================================
 
-static Standard_Boolean oClos, tClos;
-static Standard_Integer iObje1, iObje2, nbso;
-
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d
   (const Polygon2d1& Obje1, const Polygon2d2& Obje2)
-: Intf_Interference(Standard_False)
+: Intf_Interference (Standard_False),
+  oClos (Standard_False),
+  tClos (Standard_False),
+  iObje1 (0),
+  iObje2 (0),
+  nbso (0),
+  BeginOfNotClosedObje1 (Standard_False),
+  BeginOfNotClosedObje2 (Standard_False)
 {
   if (!ToolPolygon2d1::Bounding(Obje1).IsOut
       (ToolPolygon2d2::Bounding(Obje2))) {
@@ -61,7 +73,14 @@ Intf_InterferencePolygon2d::Intf_InterferencePolygon2d
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d
   (const Polygon2d1& Obje)
-: Intf_Interference(Standard_True)
+: Intf_Interference (Standard_True),
+  oClos (Standard_False),
+  tClos (Standard_False),
+  iObje1 (0),
+  iObje2 (0),
+  nbso (0),
+  BeginOfNotClosedObje1 (Standard_False),
+  BeginOfNotClosedObje2 (Standard_False)
 {
   Tolerance=ToolPolygon2d1::DeflectionOverEstimation(Obje)*2;
   if (Tolerance==0.)
@@ -129,8 +148,6 @@ gp_Pnt2d Intf_InterferencePolygon2d::Pnt2dValue
 //function : Interference
 //purpose  : 
 //=======================================================================
-static Standard_Boolean BeginOfNotClosedObje1;
-static Standard_Boolean BeginOfNotClosedObje2;
 
 void Intf_InterferencePolygon2d::Interference
   (const Polygon2d1& Obje1,
@@ -233,12 +250,6 @@ void Intf_InterferencePolygon2d::Clean()
     delta2=pr2ma-pr2mi;
     if (delta1<1. && delta2<1.) Only1Seg=Standard_True;
     if (delta1==0. || delta2==0.) Only1Seg=Standard_True;
-
-    if (debug==1) {
-      cout<<"\n tz("<<ltz<<") Avant retrait First("<<pr1mi<<","<<pr1ma<<") "
-	<<"Second("<<pr2mi<<","<<pr2ma<<")\n";
-      myTZones(ltz-decal).Dump(2);
-    }
 
     for (lpi=1; lpi<=myTZones(ltz-decal).NumberOfPoints(); lpi++) {
       if (PI1.Incidence()<=PRCANG) {tsp=tsps=0;break;}

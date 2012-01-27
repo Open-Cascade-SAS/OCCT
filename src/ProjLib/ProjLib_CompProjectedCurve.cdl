@@ -188,30 +188,31 @@ is
     	--  curve  to  project  and  surface
     returns  Real 
     raises  NoSuchObject;
-    
+
 --  Methods  for  debugging 
     GetSequence(me) returns  HSequenceOfHSequenceOfPnt  from  ProjLib 
      ---C++: return const &
     is static; 
-     
+
     GetType(me) returns CurveType from GeomAbs
 	---Purpose: Returns  the  type of the   curve  in the  current
 	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
 	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
     is redefined  static;
-      
+
 fields
 
-  mySurface     :  HSurface                  from  Adaptor3d; 
-  myCurve       :  HCurve                    from  Adaptor3d; 
-  myNbCurves    :  Integer                   from  Standard; 
-  mySequence    :  HSequenceOfHSequenceOfPnt from  ProjLib; 
+  mySurface     :  HSurface                  from  Adaptor3d;
+  myCurve       :  HCurve                    from  Adaptor3d;
+  myNbCurves    :  Integer                   from  Standard;
+  mySequence    :  HSequenceOfHSequenceOfPnt from  ProjLib;
   myTolU        :  Real                      from  Standard;
-  myTolV        :  Real                      from  Standard; 
-  myMaxDist     :  Real                      from  Standard;  
+  myTolV        :  Real                      from  Standard;
+  myMaxDist     :  Real                      from  Standard;
   myUIso        :  HArray1OfBoolean          from  TColStd;
   myVIso        :  HArray1OfBoolean          from  TColStd;
-  mySnglPnts    :  HArray1OfBoolean          from  TColStd;    
-  myMaxDistance :  HArray1OfReal             from  TColStd; 
-        
+  mySnglPnts    :  HArray1OfBoolean          from  TColStd;
+  myMaxDistance :  HArray1OfReal             from  TColStd;
+  myTabInt      :  HArray1OfReal             from  TColStd; -- this field should be mutable
+
 end CompProjectedCurve;

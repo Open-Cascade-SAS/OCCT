@@ -139,5 +139,6 @@ fields
     ddu : Real[10];
     ddv : Real[10];
     maxConstraintOrder : Integer; 
-    PolynomialPartOnly  :  Boolean;
+    PolynomialPartOnly :  Boolean;
+    Uold, Vold, U2, R, L : Real; -- these fields should be mutable
 end;

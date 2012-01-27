@@ -37,9 +37,9 @@ void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
 					const Standard_Real Tol,
 					const TopoDS_Face& Face) { 
 
-  static IntCurveSurface_HInter            HICS; 
-  static BRepAdaptor_Surface               surface;
-  static BRepClass_FaceClassifier          classifier2d;
+  IntCurveSurface_HInter   HICS; 
+  BRepAdaptor_Surface      surface;
+  BRepClass_FaceClassifier classifier2d;
 
   Handle(Geom_Line) geomline = new Geom_Line(L);
   GeomAdaptor_Curve LL(geomline);

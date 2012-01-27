@@ -104,7 +104,7 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 				      const Standard_Real V0,
 				      const Standard_Real U1,
 				      const Standard_Real V1) { 
-  static Standard_Integer DebugDump = 0;
+  const Standard_Integer DebugDump = 0;
   Standard_Integer i1,i2;
   Standard_Real    U,V;
   Standard_Real    U1mU0sNbdeltaU = (U1-U0)/(Standard_Real)nbdeltaU;
@@ -190,7 +190,7 @@ void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 void IntCurveSurface_Polyhedron::Init(const ThePSurface&     Surface,
 				      const TColStd_Array1OfReal& Upars,
 				      const TColStd_Array1OfReal& Vpars) { 
-  static Standard_Integer DebugDump = 0;
+  const Standard_Integer DebugDump = 0;
   Standard_Integer i1,i2;
   Standard_Real    U,V;
   gp_Pnt TP;

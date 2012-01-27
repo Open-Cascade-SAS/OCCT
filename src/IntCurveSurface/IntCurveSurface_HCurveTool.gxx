@@ -21,7 +21,7 @@ Standard_Integer IntCurveSurface_HCurveTool::NbSamples (const CurveGen& C,
 						       const Standard_Real U0,
 						       const Standard_Real U1) {
   GeomAbs_CurveType typC = C->GetType();
-  static Standard_Real nbsOther = 10.0;
+  const Standard_Real nbsOther = 10.0;
   Standard_Real nbs = nbsOther;
   
   if(typC == GeomAbs_Line) 
@@ -47,7 +47,7 @@ void IntCurveSurface_HCurveTool::SamplePars (const CurveGen& C,
 					     const Standard_Integer NbMin,
 					     Handle(TColStd_HArray1OfReal)& Pars) {
   GeomAbs_CurveType typC = C->GetType();
-  static Standard_Real nbsOther = 10.0;
+  const Standard_Real nbsOther = 10.0;
   Standard_Real nbs = nbsOther;
   
   if(typC == GeomAbs_Line) 

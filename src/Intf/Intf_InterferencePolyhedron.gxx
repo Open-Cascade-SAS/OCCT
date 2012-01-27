@@ -18,9 +18,7 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <Bnd_BoundSortBox.hxx>
 
-//static Pourcent3[9]={0,1,2,0,1,2,0,1,2};
-static int Pourcent3[9]={0,1,2,0,1,2,0,1,2};
-
+static const int Pourcent3[9] = {0, 1, 2, 0, 1, 2, 0, 1, 2};
 
 //=======================================================================
 //function : Intf_InterferencePolyhedron
@@ -35,8 +33,6 @@ Intf_InterferencePolyhedron::Intf_InterferencePolyhedron  ()
 //function : Intf_InterferencePolyhedron
 //purpose  : 
 //=======================================================================
-
-static  Standard_Integer debug=0;
 
 Intf_InterferencePolyhedron::Intf_InterferencePolyhedron 
   (const Polyhedron1& FirstPol, const Polyhedron2& SeconPol)
@@ -108,8 +104,6 @@ void Intf_InterferencePolyhedron::Perform
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer iFirst, iSecon;
-
 void Intf_InterferencePolyhedron::Interference 
   (const Polyhedron1&)
 {}
@@ -120,6 +114,7 @@ void Intf_InterferencePolyhedron::Interference
   Standard_Boolean  gridOnFirst=Standard_True;
   Standard_Integer  NbTrianglesFirstPol  = ToolPolyhe1::NbTriangles(FirstPol);
   Standard_Integer  NbTrianglesSecondPol = ToolPolyhe2::NbTriangles(SeconPol);  
+  Standard_Integer iFirst, iSecon;
 
   //------------------------------------------------------------------------------------------
   //-- the same number of triangles it is necessary to test better on
@@ -195,18 +190,6 @@ void Intf_InterferencePolyhedron::Interference
 //function : Intersect
 //purpose  : Intersection of two triangles issue from two Polyhedron.
 //=======================================================================
-
-void CoupleCharacteristics(const Polyhedron1& FirstPol,
-			   const Polyhedron2& SeconPol);
-
-static Standard_Integer OI[3];      // index des sommets de l objet
-static Standard_Integer TI[3];      // index des sommets du tool
-static Standard_Real dpOpT[3][3];   // distance point Objet - point Tool
-static Standard_Real dpOeT[3][3];   // distance point Objet - edge  Tool
-static Standard_Real deOpT[3][3];   // distance edge  Objet - point Tool
-static gp_XYZ voo[3];               // vecteur point point Obje
-static gp_XYZ vtt[3];               // vecteur point point Tool
-static Standard_Real Incidence;    // angle entre les deux plans
 
 void Intf_InterferencePolyhedron::Intersect 
 (const Standard_Integer Tri1, const Polyhedron1& FirstPol,
@@ -290,12 +273,8 @@ void Intf_InterferencePolyhedron::Intersect
       (Abs(dpOfT[0]+dpOfT[1]+dpOfT[2])!=
        Abs(dpOfT[0])+Abs(dpOfT[1])+Abs(dpOfT[2]))){
 
-    if (TangentZoneValue(TheTZ, FirstPol, Tri1, SeconPol, Tri2)) {
-      if (debug==2) {
-	cout<< "Zone de tangence Couple Tri1, Tri2 : "
-	  << Tri1 << ", " << Tri2 << " : " << endl;
-	TheTZ.Dump(2);
-      }
+    if (TangentZoneValue(TheTZ, FirstPol, Tri1, SeconPol, Tri2))
+    {
       if (!Insert(TheTZ)) myTZones.Append(TheTZ);
     }
   }
@@ -662,10 +641,6 @@ void Intf_InterferencePolyhedron::Intersect
 	    ifin=id[2];     //
 	  }
 	  else {
-	    if(debug==2) { 
-	      cout << "Impossible calculation problem in pointersec!"
-	      << endl;
-	    }
 	    ideb=-999;        // No line of section possible
 	    ifin=-999;
 	  }
@@ -684,10 +659,6 @@ void Intf_InterferencePolyhedron::Intersect
 	    ifin=id[2];     //
 	  }
 	  else {
-	    if(debug==2) { 
-	    cout << "Impossible calculation problem in pointersec !"
-	      << endl;
-	  }
 	    ideb=-999;        // No line of section possible
 	    ifin=-999;
 	  }
@@ -882,9 +853,6 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 	    deOpT[nob][nou]*deOpT[nob][nou2]<0.) {
 
 	  if (nbpInt>=6) {
-	    if(debug==2) { 
-	      cout << "Nombre de P.I. > 6 dans une TZ ! " << endl;
-	    }
 	    break;
 	  }
 	  else {
@@ -926,12 +894,6 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
       }
     }
     if (nbNoInserted>0) {
-      if(debug==2) { 
-	cout << "Insertion impossible ! \n";
-	cout << "  La Zone : \n";
-	TheTZ.Dump(4);
-	cout << "  Le(s) Point(s) : \n";
-      }
       nob=nbNoInserted-1;
       while (nob>=0) {
 	Tpi(piToInsert[nob--]).Dump(4);
@@ -948,8 +910,8 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 //purpose  : 
 //=======================================================================
 
-void CoupleCharacteristics(const Polyhedron1& FirstPol,
-			   const Polyhedron2& SeconPol)
+void Intf_InterferencePolyhedron::CoupleCharacteristics (const Polyhedron1& FirstPol,
+                                                         const Polyhedron2& SeconPol)
 {
   Standard_Integer n1, n2;
   Standard_Real lg;
@@ -994,22 +956,4 @@ void CoupleCharacteristics(const Polyhedron1& FirstPol,
 	deOpT[n1][n2]=dpOpT[n1][n2];
     }
   }
-#if 0 
-  if (debug==1) {
-    cout<<"dpOpT: "<<dpOpT[0][0]<<" , "<<dpOpT[0][1]<<" , "<<dpOpT[0][2]<<"\n";
-    cout<<"     : "<<dpOpT[1][0]<<" , "<<dpOpT[1][1]<<" , "<<dpOpT[1][2]<<"\n";
-    cout<<"     : "<<dpOpT[2][0]<<" , "<<dpOpT[2][1]<<" , "<<dpOpT[2][2]<<"\n";
-    cout << endl;
-    cout<<"dpOeT: "<<dpOeT[0][0]<<" , "<<dpOeT[0][1]<<" , "<<dpOeT[0][2]<<"\n";
-    cout<<"     : "<<dpOeT[1][0]<<" , "<<dpOeT[1][1]<<" , "<<dpOeT[1][2]<<"\n";
-    cout<<"     : "<<dpOeT[2][0]<<" , "<<dpOeT[2][1]<<" , "<<dpOeT[2][2]<<"\n";
-    cout << endl;
-    cout<<"deOpT: "<<deOpT[0][0]<<" , "<<deOpT[0][1]<<" , "<<deOpT[0][2]<<"\n";
-    cout<<"     : "<<deOpT[1][0]<<" , "<<deOpT[1][1]<<" , "<<deOpT[1][2]<<"\n";
-    cout<<"     : "<<deOpT[2][0]<<" , "<<deOpT[2][1]<<" , "<<deOpT[2][2]<<"\n";
-    cout << endl;
-  }
-#endif
 }
-
-// EOF File:	Intf_InterferencePolyhedron.gxx

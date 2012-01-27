@@ -12,8 +12,6 @@
 //purpose  : Initialize for a deferred interference.
 //=======================================================================
 
-static Standard_Integer debug=0;
-
 Intf_Interference::Intf_Interference (const Standard_Boolean Self)
      : SelfIntf(Self)
 {}
@@ -114,20 +112,8 @@ Standard_Boolean Intf_Interference::Insert(const Intf_TangentZone& LaZone)
   Standard_Integer npcz=-1;  // Number of points in the current zone
   Standard_Integer nplz=LaZone.NumberOfPoints(); // in the new zone
 
-  if (debug>0) {
-    cout << "Zone of insertion : \n";
-    LaZone.Dump(2);
-    cout << endl;
-  }
-
 // Loop on TangentZone :
   for (Standard_Integer Iz=1; Iz<=myTZones.Length(); Iz++) {
-
-  if (debug>0) {
-    cout << "Zone  : "<< Iz << "\n";
-    myTZones(Iz).Dump(2);
-    cout << endl;
-  }
 
 // Loop on edges of the TangentZone :
     npcz=myTZones(Iz).NumberOfPoints();
@@ -201,13 +187,6 @@ Standard_Boolean Intf_Interference::Insert(const Intf_TangentZone& LaZone)
     Inserted =Standard_False;
   }
 
-  if (debug>0) {
-    if (Inserted) {
-      cout << "Zone agrandie : "<< lzin <<" \n";
-      myTZones(lzin).Dump(2);
-      cout << endl;
-    }
-  }
   if (Inserted) {
     Intf_TangentZone theNew=myTZones(lzin);
     myTZones.Remove(lzin);
