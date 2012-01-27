@@ -4,8 +4,6 @@
 //		<vro@flox.nnov.matra-dtv.fr>
 // Copyright:	Matra Datavision 2000
 
-const static char sccsid[] = "@(#) 3.0-00-3, 01/10/01@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Modified Load                           ! 8-05-2003! 3.0-00-%L%!

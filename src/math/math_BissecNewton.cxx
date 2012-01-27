@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_BissecNewton.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 #include <math_BissecNewton.ixx>
 #include <math_FunctionWithDerivative.hxx>
 

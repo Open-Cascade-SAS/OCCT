@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_Memory.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 #include <math_Memory.hxx>
 
 void *reverse_move(void *s1, void *s2, int size) {

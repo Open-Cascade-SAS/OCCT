@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_Exponentiate.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_Exponentiate.cxx
 // Created:	Thu May 30 16:44:30 1991

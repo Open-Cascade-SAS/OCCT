@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_RUIterator.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_RUIterator.cxx
 // Created:	Thu Jun 13 17:17:50 1991

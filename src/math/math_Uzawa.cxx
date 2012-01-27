@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_Uzawa.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // File math_Uzawa.cxx
 // lpa le 8/08/91
 

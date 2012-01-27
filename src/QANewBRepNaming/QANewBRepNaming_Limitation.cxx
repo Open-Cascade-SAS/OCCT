@@ -3,8 +3,6 @@
 // Author:	Vladislav ROMASHKO <vro@nnov.matra-dtv.fr>
 // Copyright:	Matra Datavision 2000
 
-const static char sccsid[] = "@(#) QANewBRepNaming_Limitation.cxx 4.0-2, 07/01/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Modify Load                             !21-05-2003! 3.0-00-2!

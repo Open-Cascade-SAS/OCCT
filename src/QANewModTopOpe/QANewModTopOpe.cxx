@@ -3,8 +3,6 @@
 // Author:	Igor FEOKTISTOV <ifv@nnov.matra-dtv.fr>
 // Copyright:	 SAMTECH S.A. 2002
 
-const static char sccsid[] = "%Z% $RCSfile: QANewModTopOpe.cxx,v $ 4.0-%L%, $Date: 2005-12-16 18:19:13 $%Z%";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       pat ! Optimise IsConnected()                  !  04/16/03!    4.0-2!

@@ -3,8 +3,6 @@
 // Author:	Michael SAZONOV <msv@nnov.matra-dtv.fr>
 // Copyright:	 SAMTECH S.A. 2001
 
-const static char sccsid[] = "@(#) QANewModTopOpe_Glue_util.cxx 4.0-1, 04/28/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       msv ! Creation                                !16-01-2001! 3.0-00-2!

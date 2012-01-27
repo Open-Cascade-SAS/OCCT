@@ -3,8 +3,6 @@
 // Author:	Sergey ZARITCHNY <szy@nnov.matra-dtv.fr>
 // Copyright:	 SAMTECH S.A. 2001
 
-const static char sccsid[] = "@(#) 3.0-00-1, 12/07/01@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       mpv ! Same history and divided shapes cases   ! 6-09-2002! 3.0-00-5!

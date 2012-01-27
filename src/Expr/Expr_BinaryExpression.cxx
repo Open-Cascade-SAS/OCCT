@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_BinaryExpression.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_BinaryExpression.cxx
 // Created:	Fri Apr 12 10:41:21 1991

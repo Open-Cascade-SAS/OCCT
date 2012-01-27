@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)ExprIntrp_Analysis.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1992
 // File:	ExprIntrp_Analysis.cxx
 // Created:	Tue Feb 25 17:47:25 1992

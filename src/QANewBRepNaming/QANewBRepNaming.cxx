@@ -3,8 +3,6 @@
 // Author:	Sergey ZARITCHNY <s-zaritchny@opencascade.com>
 // Copyright:	Open CASCADE 2003
 
-const static char sccsid[] = "@(#) 3.0-00-9, 11/27/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Creation                                !20-06-2003! 3.0-00-9!

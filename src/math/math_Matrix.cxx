@@ -1,5 +1,3 @@
-//static const char* sccsid = "@(#)math_Matrix.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
-
 //#ifndef DEB
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange

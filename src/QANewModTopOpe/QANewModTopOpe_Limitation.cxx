@@ -3,8 +3,6 @@
 // Author:	Igor FEOKTISTOV <ifv@nnov.matra-dtv.fr>
 // Copyright:	 SAMTECH S.A. 2000
 
-const static char sccsid[] = "@(#) QANewModTopOpe_Limitation.cxx 4.0-2, 07/01/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       ifv ! Creation                                ! 6-05-2001! 3.0-00-3!

@@ -4,8 +4,6 @@
 --		<vro@flox.nnov.matra-dtv.fr>
 ---Copyright:	 Matra Datavision 2000
 
--- sccsid[] = "@(#) QANewBRepNaming_Limitation.cdl 4.0-2, 07/01/03@(#)";
-
 -- Lastly modified by :
 -- +---------------------------------------------------------------------------+
 -- !       szy ! Modified input parameter type           !18-10-2002! 3.0-00-2!

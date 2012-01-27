@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_BracketMinimum.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 #include <math_BracketMinimum.ixx>
 
 #include <StdFail_NotDone.hxx>   // waiting for NotDone Exception

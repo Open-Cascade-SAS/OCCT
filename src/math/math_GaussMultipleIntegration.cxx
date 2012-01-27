@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_GaussMultipleIntegration.cxx	3.3 95/01/25"; // Do not delete this line. Used by sccs.
 // File math_GaussMultipleIntegration.cxx
 
 

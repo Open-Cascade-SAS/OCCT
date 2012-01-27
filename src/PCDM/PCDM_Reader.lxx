@@ -3,7 +3,6 @@
 // Author:	Sergey ZARITCHNY <szy@opencascade.com>
 // Copyright:	Open CASCADE 2003
 
-// const static char sccsid[] = "%Z% 5.0-20-%L%, $Date: 2003-07-17 20:53:39 $%Z%";
 //=======================================================================
 //function : GetStatus
 //purpose  : 

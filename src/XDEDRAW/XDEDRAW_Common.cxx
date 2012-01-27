@@ -3,8 +3,6 @@
 // Author:	Sergey ZARITCHNY <szy@opencascade.com>
 // Copyright:	Open  CASCADE S.A. 2003
 
-const static char sccsid[] = "@(#) 3.0-00-1, 10/03/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Creation/moved from XDEDRAWEXE          !15-08-2003! 5.1-00-1!

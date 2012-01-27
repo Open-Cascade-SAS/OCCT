@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_FunctionSetRoot.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // pmn 15/05/97 pas de Gauss avec des pivot trop petit. SVD fait mieux 
 // l'affaire + limitation de la longeur du pas + qq comentaire issus d'EUCLID3
 // pmn 10/06/97 refonte totale du traitement des bords + ajustement des init 

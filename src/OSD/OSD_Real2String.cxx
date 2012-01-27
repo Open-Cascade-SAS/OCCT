@@ -2,7 +2,6 @@
 // Created:	Fri Jan 25 12:58:55 2002
 // Author:	doneux <doneux@samcef.com>
 
-const static char sccsid[] = "@(#) OSD_Real2String.cxx    %V%-1, 06/17/02@(#)";
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !   doneux ! Creation                                !  06/17/02!    %V%-1!

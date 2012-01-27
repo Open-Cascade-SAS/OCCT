@@ -1,5 +1,3 @@
-//static const char* sccsid = "@(#)ExprIntrp_yaccintrf.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif

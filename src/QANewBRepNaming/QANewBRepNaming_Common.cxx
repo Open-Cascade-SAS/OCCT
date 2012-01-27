@@ -4,8 +4,6 @@
 //		<szy@opencascade.com
 // Copyright:	Open CASCADE 2003
 
-const static char sccsid[] = "@(#) QANewBRepNaming_Common.cxx 4.0-2, 07/01/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Modified Load                           !30-10-2003!  4.0-2-%L%!

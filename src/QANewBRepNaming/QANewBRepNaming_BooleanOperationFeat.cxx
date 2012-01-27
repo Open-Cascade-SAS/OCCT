@@ -4,8 +4,6 @@
 //		<s-zaritchny@opencascade.com>
 // Copyright:	Open CASCADE 2003
 
-const static char sccsid[] = "@(#) 5.1-01-4, 01/10/01@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Added Workaround                        ! 9-12-2003! 5.1-01-4 !

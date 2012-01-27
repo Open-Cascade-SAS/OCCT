@@ -3,8 +3,6 @@
 // Author:	Sergey KHROMOV <skv@nnov.matra-dtv.fr>
 // Copyright:	 SAMTECH S.A. 2001
 
-const static char sccsid[] = "@(#) QANewModTopOpe_Glue_SDFaces.cxx 4.2-3, 01/07/04@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       pat ! fix for 4086                            !  01/07/04!    4.2-3!

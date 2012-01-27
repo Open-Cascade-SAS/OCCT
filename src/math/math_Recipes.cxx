@@ -1,5 +1,3 @@
-//static const char* sccsid = "@(#)math_Recipes.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
-
 // This preprocessor directive is a kludge to get around
 // a bug in the Sun Workshop 5.0 compiler, it keeps the
 // /usr/include/memory.h file from being #included

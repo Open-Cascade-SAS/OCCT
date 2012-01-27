@@ -4,8 +4,6 @@
 //		<szy@opencascade.com>
 // Copyright:	Open CASCADE 2003
 
-const static char sccsid[] = "@(#) 3.0-00-3, 01/10/01@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Adopted                                 ! 9-06-2003! 3.0-00-%L%!

@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_PolyFunction.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_PolyFunction.cxx
 // Created:	Tue Jul  2 11:11:43 1991

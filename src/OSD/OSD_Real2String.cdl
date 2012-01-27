@@ -2,9 +2,6 @@
 -- Created:	Fri Jan 25 12:55:44 2002
 -- Author:	doneux <doneux@samcef.com>
 
-
--- sccsid[] = "@(#) OSD_Real2String.cdl    %V%-1, 06/17/02@(#)";
-
 class Real2String from OSD 
 
 	---Purpose:  Convertion of CString to Real and reciprocally

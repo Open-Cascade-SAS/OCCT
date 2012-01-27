@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_LessThanOrEqual.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_LessThanOrEqual.cxx
 // Created:	Thu Jun 13 13:51:12 1991

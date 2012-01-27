@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)math_BrentMinimum.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 #include <math_BrentMinimum.ixx>
 #include <math_Function.hxx>
 

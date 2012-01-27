@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_ArcTangent.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_ArcTangent.cxx
 // Created:	Mon May 27 11:44:23 1991

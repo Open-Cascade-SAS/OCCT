@@ -4,8 +4,6 @@
 //		<szy@philipox.nnov.matra-dtv.fr>
 // Copyright:	Matra Datavision 1999
 
-const static char sccsid[] = "@(#) QANewBRepNaming_Loader.cxx 4.0-2, 07/01/03@(#)";
-
 // Lastly modified by :
 // +---------------------------------------------------------------------------+
 // !       szy ! Adopted LoadModifiedShapes to BoolOp    !16-05-2003! 3.0-00-2!

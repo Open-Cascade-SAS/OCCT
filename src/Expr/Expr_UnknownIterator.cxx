@@ -1,4 +1,3 @@
-//static const char* sccsid = "@(#)Expr_UnknownIterator.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // Copyright: 	Matra-Datavision 1991
 // File:	Expr_UnknownIterator.cxx
 // Created:	Wed Sep 18 11:21:49 1991
