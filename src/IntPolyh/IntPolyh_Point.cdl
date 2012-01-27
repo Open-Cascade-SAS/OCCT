@@ -111,12 +111,22 @@ is
     is static;
     
     Dump(me; i: Integer from Standard)
-    is static;
-     	
+    is static; 
+    
+--modified by NIZNHY-PKV Fri Jan 20 12:11:36 2012 f   
+    SetDegenerated(me:out; 
+    	    theFlag:Boolean from Standard);   
+  
+    Degenerated(me) 
+    	returns Boolean from Standard; 
+--modified by NIZNHY-PKV Fri Jan 20 12:12:07 2012t	 
+ 
 fields
-
     x,y,z,u,v : Real from Standard;
-    POC : Integer from Standard;
+    POC : Integer from Standard; 
+    --modified by NIZNHY-PKV Fri Jan 20 12:17:39 2012f
+    myDegenerated : Boolean from Standard; 
+    --modified by NIZNHY-PKV Fri Jan 20 12:17:41 2012t
     
 end Point from IntPolyh;
 
