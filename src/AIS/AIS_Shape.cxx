@@ -2,21 +2,6 @@
 // Created:	Fri Dec 20 17:18:37 1996
 // Author:	Robert COUBLANC
 
-#define BUC60577	//GG_191099 Draw correct bounding box and Menage ...
-
-#define BUC60547        //GG_091299 Enable to show a Shape of type COMPOUND
-
-#define GER61351	//GG_171199     Enable to set an object RGB color
-//	  	instead a restricted object NameOfColor. 
-//	    	Redefines the Color(),Material(),Transparency() methods .
-//	     	enable to get separately the shape attributes.
-
-#define IMP040200	//GG Enable to compute selection after transformation
-
-#define BUC60918	//GG 31/05/01 To avoid transparency bug between 
-//			transparent and non transparent objects, 
-//			increase display priority for transparent objects
-
 #include <AIS_Shape.ixx>
 
 
@@ -52,7 +37,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 
-//#include <StdPrs_WFSectionShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_ShadedShape.hxx>
@@ -76,9 +60,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Select3D_SensitiveBox.hxx>
-#ifdef BUC60547
 #include <TopoDS_Iterator.hxx>
-#endif
 
 static Standard_Boolean myFirstCompute;
 
@@ -110,18 +92,11 @@ void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
   if ( B.IsVoid() )
     return; // nothing to show
 
-#ifdef BUC60577
   Indx [0]=1;Indx [1]=2;Indx [2]=4;Indx [3]=3;
   Indx [4]=5;Indx [5]=6;Indx [6]=8;Indx [7]=7;
   Indx [8]=1;Indx [9]=3;Indx [10]=7;Indx [11]=5;
   Indx [12]=2;Indx [13]=4;Indx [14]=8;Indx [15]=6;
   B.Get(X[0], Y[0], Z[0], X[1], Y[1], Z[1]);
-#else
-  Indx [0]=1;Indx [1]=2;Indx [2]=3;Indx [3]=4;Indx [4]=5;Indx [5]=6;Indx [6]=7;
-  Indx [7]=8;Indx [8]=1;Indx [9]=2;Indx [10]=6;Indx [10]=5;Indx [10]=3;
-  Indx [10]=4;Indx [10]=8;Indx [10]=7;
-  B.Get(X[1], Y[1], Z[1], X[2], Y[2], Z[2]);
-#endif
 
   Graphic3d_Array1OfVertex V(1,8);
   Standard_Integer Rank(0);
@@ -129,17 +104,15 @@ void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
     for(Standard_Integer j=0;j<=1;j++)
       for(Standard_Integer i=0;i<=1;i++)
         V(++Rank) = Graphic3d_Vertex(X[i],Y[j],Z[k]);
-  
-  
+
   Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPrs);
   Quantity_Color Q;
   Aspect_TypeOfLine A;
   Standard_Real W;
   aDrawer->LineAspect()->Aspect()->Values(Q,A,W);
-  
 
   G->SetGroupPrimitivesAspect(new Graphic3d_AspectLine3d(Q,Aspect_TOL_DOTDASH,W));
-  
+
   G->BeginPrimitives();Standard_Integer I,J;
   Graphic3d_Array1OfVertex VVV (1,5);
   for(I=1;I<=4;I++){
@@ -219,17 +192,13 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
   }
   // Shape vide -> Assemblage vide.
   if (myshape.ShapeType() == TopAbs_COMPOUND) {
-#ifdef BUC60547
     TopoDS_Iterator anExplor (myshape);
-#else
-    TopExp_Explorer anExplor (myshape, TopAbs_VERTEX);
-#endif
+
     if (!anExplor.More()) {
       return;
     }
   }
-  
-  
+
   if (IsInfinite()) aPrs->SetInfiniteState(Standard_True); //not taken in account duting FITALL
   switch (aMode) {
   case 0:{
@@ -285,12 +254,10 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
           }
         }
       }
-#ifdef BUC60918
       Standard_Real value = Transparency() ;
       if( value > 0. ) {
         SetTransparency( value );
       }
-#endif
       break;
     }
   case 2:
@@ -299,11 +266,8 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       if (IsInfinite()) StdPrs_WFDeflectionShape::Add(aPrs,myshape,myDrawer);
       else DisplayBox(aPrs,BoundingBox(),myDrawer);
     }
-
-
   } // end switch
   aPrs->ReCompute(); // for hidden line recomputation if necessary...
-  
 }
 
 //=======================================================================
@@ -351,20 +315,17 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
                         const TopoDS_Shape& SH)
 {
   if (SH.ShapeType() == TopAbs_COMPOUND) {
-#ifdef BUC60547
     TopoDS_Iterator anExplor (SH);
-#else
-    TopExp_Explorer anExplor (SH, TopAbs_VERTEX);
-#endif
+
     if (!anExplor.More()) // Shape vide -> Assemblage vide.
       return;
   }
-  
+
   Handle (Prs3d_Drawer) defdrawer = GetContext()->DefaultDrawer();
   if (defdrawer->DrawHiddenLine()) 
     {myDrawer->EnableDrawHiddenLine();}
   else {myDrawer->DisableDrawHiddenLine();}
-  
+
   Aspect_TypeOfDeflection prevdef = defdrawer->TypeOfDeflection();
   defdrawer->SetTypeOfDeflection(Aspect_TOD_RELATIVE);
 
@@ -372,7 +333,6 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
 
   Standard_Real prevangle, newangle ,prevcoeff,newcoeff ; 
   if (OwnHLRDeviationAngle(newangle,prevangle) || OwnHLRDeviationCoefficient(newcoeff, prevcoeff))
-      
     if (Abs (newangle - prevangle) > Precision::Angular() ||
         Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
 #ifdef DEB
@@ -396,7 +356,6 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
     }
   }
 
-  
   defdrawer->SetTypeOfDeflection (prevdef);
 }
 
@@ -470,11 +429,8 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 {
   if(myshape.IsNull()) return;
   if (myshape.ShapeType() == TopAbs_COMPOUND) {
-#ifdef BUC60547
     TopoDS_Iterator anExplor (myshape);
-#else
-    TopExp_Explorer anExplor (myshape, TopAbs_VERTEX);
-#endif
+
     if (!anExplor.More()) // empty Shape -> empty Assembly.
       return;
   }
@@ -482,12 +438,10 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   static TopAbs_ShapeEnum TypOfSel;
   TypOfSel = AIS_Shape::SelectionType(aMode);
   TopoDS_Shape shape = myshape;
-#ifdef IMP040200
   if( HasTransformation() ) {
     Handle(Geom_Transformation) trsf = Transformation();
     shape = shape.Located(TopLoc_Location(trsf->Trsf())*shape.Location());
   }
-#endif
 
 // POP protection against crash in low layers
 
@@ -516,7 +470,6 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   StdSelect::SetDrawerForBRepOwner(aSelection,myDrawer);
 }
 
-#ifdef GER61351
 Quantity_NameOfColor AIS_Shape::Color() const {
 Quantity_Color aColor;
   Color(aColor);
@@ -534,7 +487,6 @@ Graphic3d_NameOfMaterial AIS_Shape::Material() const {
 Standard_Real AIS_Shape::Transparency() const {
   return myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
 }
-#endif
 
 //=======================================================================
 //function : SetColor
@@ -562,6 +514,7 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   myDrawer->ShadingAspect()->SetTransparency(myTransparency,myCurrentFacingModel);
   myDrawer->SetShadingAspectGlobal(Standard_False);
 
+
   const Standard_Real WW = HasWidth()? Width():AIS_GraphicTool::GetLineWidth(myDrawer->Link(),AIS_TOA_Line);
 
   myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
@@ -573,23 +526,27 @@ void AIS_Shape::SetColor(const Quantity_Color &aCol)
   // fast shading modification...
   if(!GetContext().IsNull()){
     if( GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-#ifdef BUC60577
-      P->SetPrimitivesAspect(a4bis);
-      G->SetGroupPrimitivesAspect(a4bis);
-#else
-      a4bis->SetInteriorColor(Quantity_Color(aCol)); // Already done above in SetColor(...)	
+      Handle(Prs3d_Presentation) aPresentation = 
+        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) aCurGroup = Prs3d_Root::CurrentGroup(aPresentation);
+      Handle(Graphic3d_AspectFillArea3d) anAreaAspect = myDrawer->ShadingAspect()->Aspect();
+      Handle(Graphic3d_AspectLine3d) aLineAspect = myDrawer->LineAspect()->Aspect();
 
-      P->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
-      G->SetGroupPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
-#endif
-    }  
+      // Set aspects for presentation and for group
+      aPresentation->SetPrimitivesAspect(anAreaAspect);
+      aPresentation->SetPrimitivesAspect(aLineAspect);
+      // Check if aspect of given type is set for the group, 
+      // because setting aspect for group with no already set aspect
+      // can lead to loss of presentation data
+      if (aCurGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA))
+        aCurGroup->SetGroupPrimitivesAspect(anAreaAspect);
+      if (aCurGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_LINE))
+        aCurGroup->SetGroupPrimitivesAspect(aLineAspect);
+    }
   }
 
   LoadRecomputable(0);
-  LoadRecomputable(2); 
+  LoadRecomputable(2);
 }
 
 //=======================================================================
@@ -648,11 +605,24 @@ void AIS_Shape::UnsetColor()
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-      P->SetPrimitivesAspect(a4bis);
-      G->SetGroupPrimitivesAspect(a4bis);
+      Handle(Prs3d_Presentation) aPresentation = 
+        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+
+      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->Link()->ShadingAspect()->Aspect();
+      Handle(Graphic3d_AspectLine3d) aLineAsp = myDrawer->Link()->LineAspect()->Aspect();
+      Quantity_Color CC;
+      AIS_GraphicTool::GetInteriorColor(myDrawer->Link(),CC);
+      anAreaAsp->SetInteriorColor(CC);
+      aPresentation->SetPrimitivesAspect(anAreaAsp);
+      aPresentation->SetPrimitivesAspect(aLineAsp);
+      // Check if aspect of given type is set for the group, 
+      // because setting aspect for group with no already set aspect
+      // can lead to loss of presentation data
+      if (aGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA))
+        aGroup->SetGroupPrimitivesAspect(anAreaAsp);
+      if (aGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_LINE))
+        aGroup->SetGroupPrimitivesAspect(aLineAsp);
     }
   }
   LoadRecomputable(0);
@@ -731,25 +701,7 @@ void AIS_Shape::UnsetWidth()
 
 void AIS_Shape::SetMaterial(const Graphic3d_NameOfMaterial aMat)
 {
-  if( !HasColor() && !IsTransparent() && !HasMaterial() ) {
-    myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-  }
-  hasOwnMaterial = Standard_True;
-
-  myDrawer->ShadingAspect()->SetMaterial(aMat,myCurrentFacingModel);
-  myDrawer->ShadingAspect()->SetTransparency(myTransparency,myCurrentFacingModel);
-
-  if(!GetContext().IsNull()){
-    if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-      P->SetPrimitivesAspect(a4bis);
-      G->SetGroupPrimitivesAspect(a4bis);
-    }
-  }
-  myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
-  myToRecomputeModes.Clear();
+  SetMaterial(Graphic3d_MaterialAspect(aMat));
 }
 
 //=======================================================================
@@ -769,17 +721,22 @@ void AIS_Shape::SetMaterial(const Graphic3d_MaterialAspect& aMat)
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-      P->SetPrimitivesAspect(a4bis);
-      G->SetGroupPrimitivesAspect(a4bis);
+      Handle(Prs3d_Presentation) aPresentation = 
+        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+    
+      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+      aPresentation->SetPrimitivesAspect(anAreaAsp);
+      // Check if aspect of given type is set for the group, 
+      // because setting aspect for group with no already set aspect
+      // can lead to loss of presentation data
+      if (aGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA))
+        aGroup->SetGroupPrimitivesAspect(anAreaAsp);
     }
+    myRecomputeEveryPrs =Standard_False; // no mode to recalculate  :only viewer update
+    myToRecomputeModes.Clear();
   }
-  myRecomputeEveryPrs =Standard_False; // no mode to recalculate  :only viewer update
-  myToRecomputeModes.Clear();  
 }
-
 //=======================================================================
 //function : UnsetMaterial
 //purpose  : 
@@ -805,14 +762,18 @@ void AIS_Shape::UnsetMaterial()
     myDrawer->SetShadingAspect(SA);
   }
   hasOwnMaterial = Standard_False;
-
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-      P->SetPrimitivesAspect(a4bis);
-      G->SetGroupPrimitivesAspect(a4bis);
+      Handle(Prs3d_Presentation) aPresentation = 
+        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+      aPresentation->SetPrimitivesAspect(anAreaAsp);
+      // Check if aspect of given type is set for the group, 
+      // because setting aspect for group with no already set aspect
+      // can lead to loss of presentation data
+      if (aGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA))
+        aGroup->SetGroupPrimitivesAspect(anAreaAsp);
     }
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
@@ -834,14 +795,18 @@ void AIS_Shape::SetTransparency(const Standard_Real AValue)
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-      P->SetPrimitivesAspect(a4bis);
-#ifdef BUC60918   //force highest priority for transparent objects
-      P->SetDisplayPriority(10);
-#endif
-      G->SetGroupPrimitivesAspect(a4bis);
+      Handle(Prs3d_Presentation) aPresentation = 
+        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+      aPresentation->SetPrimitivesAspect(anAreaAsp);
+      //force highest priority for transparent objects
+      aPresentation->SetDisplayPriority(10);
+      // Check if aspect of given type is set for the group, 
+      // because setting aspect for group with no already set aspect
+      // can lead to loss of presentation data
+      if (aGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA))
+        aGroup->SetGroupPrimitivesAspect(anAreaAsp);
     }
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
@@ -861,18 +826,23 @@ void AIS_Shape::UnsetTransparency()
     Handle(Prs3d_ShadingAspect) SA;
     myDrawer->SetShadingAspect(SA);
   }
+
   myTransparency = 0.0;
 
   if(!GetContext().IsNull()){
     if(GetContext()->MainPrsMgr()->HasPresentation(this,1)){
-      Handle(Prs3d_Presentation) P = GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
-      Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(P);
-      Handle(Graphic3d_AspectFillArea3d) a4bis = myDrawer->ShadingAspect()->Aspect();
-      P->SetPrimitivesAspect(a4bis);
-      G->SetGroupPrimitivesAspect(a4bis);
-#ifdef BUC60918
-      P->ResetDisplayPriority();
-#endif
+      Handle(Prs3d_Presentation) aPresentation = 
+        GetContext()->MainPrsMgr()->CastPresentation(this,1)->Presentation();
+      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+      Handle(Graphic3d_AspectFillArea3d) anAreaAsp = myDrawer->ShadingAspect()->Aspect();
+      aPresentation->SetPrimitivesAspect(anAreaAsp);
+      // Check if aspect of given type is set for the group, 
+      // because setting aspect for group with no already set aspect
+      // can lead to loss of presentation data
+      if (aGroup->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA))
+        aGroup->SetGroupPrimitivesAspect(anAreaAsp);
+
+      aPresentation->ResetDisplayPriority();
     }
   }
   myRecomputeEveryPrs =Standard_False; // no mode to recalculate :only viewer update
@@ -899,20 +869,17 @@ void AIS_Shape::LoadRecomputable(const Standard_Integer TheMode)
 const Bnd_Box& AIS_Shape::BoundingBox()  
 {
   if (myshape.ShapeType() == TopAbs_COMPOUND) {
-#ifdef BUC60547
     TopoDS_Iterator anExplor (myshape);
-#else
-    TopExp_Explorer anExplor (myshape, TopAbs_VERTEX);
-#endif
+
     if (!anExplor.More()) { // empty Shape  -> empty Assembly.
-      myBB.SetVoid();      
+      myBB.SetVoid();
       return myBB;
     }
   }
 
   if(myCompBB) {
     BRepBndLib::AddClose(myshape, myBB);
-    myCompBB = Standard_False;    
+    myCompBB = Standard_False;
   }
   return myBB;
 }
@@ -930,9 +897,7 @@ Standard_Boolean AIS_Shape::SetOwnDeviationCoefficient ()
   Standard_Boolean itSet = myDrawer->IsOwnDeviationCoefficient();
   if(itSet)  myDrawer->SetDeviationCoefficient();
   return itSet;
-
 }
-
 
 //=======================================================================
 //function : SetHLROwnDeviationCoefficient
@@ -1020,7 +985,6 @@ void AIS_Shape::SetAngleAndDeviation ( const Standard_Real  anAngle )
   Standard_Real OutAngl,OutDefl;
   HLRBRep::PolyHLRAngleAndDeflection(anAngle,OutAngl,OutDefl);
   SetOwnDeviationAngle(anAngle) ;
-//  SetOwnDeviationAngle(OutAngl) ;
   SetOwnDeviationCoefficient(OutDefl) ;
   myInitAng = anAngle;
   SetToUpdate(0);

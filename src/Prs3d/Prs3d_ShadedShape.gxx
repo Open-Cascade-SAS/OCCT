@@ -95,7 +95,7 @@ static Standard_Boolean ShadeFromShape(const anyShape&                    aShape
     } else {
       Asp->AllowBackFace();
     }
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(Asp);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetGroupPrimitivesAspect(Asp);
   }
 
 #ifdef G005
