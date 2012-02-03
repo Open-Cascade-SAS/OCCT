@@ -2412,7 +2412,7 @@ Standard_Integer GeomLib::NormEstim(const Handle(Geom_Surface)& S,
     MagnNV = sqrt(MagnNV);
     N.SetXYZ(NV.XYZ()/MagnNV);
 
-    Standard_Real par = .5*(bid2-bid1);
+    Standard_Real par = .5*(bid2+bid1);
 
     if(AlongV) {
       Iso = S->UIso(par);
