@@ -145,6 +145,7 @@
 #include <StepShape_SolidModel.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepShape_GeometricSet.hxx>
+#include <StepBasic_ProductDefinition.hxx>
 
 //#include <BRepTools.hxx>
 
@@ -1888,13 +1889,17 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
   for(Standard_Integer i=1; i<=SeqPDS->Length(); i++) {
     Handle(StepRepr_ProductDefinitionShape) PDS =
       Handle(StepRepr_ProductDefinitionShape)::DownCast(SeqPDS->Value(i));
-    if(PDS.IsNull()) continue;
+    if(PDS.IsNull()) 
+      continue;
+    Handle(StepBasic_ProductDefinition) aProdDef = PDS->Definition().ProductDefinition();
+    if(aProdDef.IsNull())
+      continue;
     Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
     Handle(TCollection_HAsciiString) aDescription = new TCollection_HAsciiString("");
     Handle(TCollection_HAsciiString) aDensName = new TCollection_HAsciiString("");
     Handle(TCollection_HAsciiString) aDensValType = new TCollection_HAsciiString("");
     Standard_Real aDensity=0;
-    Interface_EntityIterator subs = graph.Sharings(PDS);
+    Interface_EntityIterator subs = graph.Sharings( aProdDef);
     for(subs.Start(); subs.More(); subs.Next()) {
       Handle(StepRepr_PropertyDefinition) PropD =
         Handle(StepRepr_PropertyDefinition)::DownCast(subs.Value());

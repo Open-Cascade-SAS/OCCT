@@ -157,7 +157,7 @@
 #include <StepBasic_HArray1OfDerivedUnitElement.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
-
+#include <StepBasic_ProductDefinition.hxx>
 
 //=======================================================================
 //function : GetLabelName
@@ -2365,6 +2365,10 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
       Handle(Standard_Transient) ent = seqRI.Value(1);
       FindPDSforRI(aGraph,ent,PDS,RC);
       if(PDS.IsNull()) continue;
+      Handle(StepBasic_ProductDefinition) aProdDef = 
+        PDS->Definition().ProductDefinition();
+      if(aProdDef.IsNull())
+        continue;
       // write material entities
       TDF_Label MatL = Node->Father()->Label();
       Handle(TCollection_HAsciiString) aName;
@@ -2429,7 +2433,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
       }
       // write chain PDS---(DRI,MRI)
       StepRepr_CharacterizedDefinition CD1;
-      CD1.SetValue(PDS);
+      CD1.SetValue(aProdDef);
       Handle(StepRepr_PropertyDefinition) PropD1 = new StepRepr_PropertyDefinition;
       PropD1->Init(new TCollection_HAsciiString("material property"),Standard_True,
                    new TCollection_HAsciiString("material name"),CD1);
@@ -2441,7 +2445,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteMaterials (const Handle(XSControl_W
       PDR1->Init(RD1,RepDRI);
       Model->AddWithRefs(PDR1);
       StepRepr_CharacterizedDefinition CD2;
-      CD2.SetValue(PDS);
+      CD2.SetValue(aProdDef);
       Handle(StepRepr_PropertyDefinition) PropD2 = new StepRepr_PropertyDefinition;
       PropD2->Init(new TCollection_HAsciiString("material property"),Standard_True,
                    new TCollection_HAsciiString("density"),CD2);
