@@ -1,36 +1,15 @@
+// File:      OpenGl_GraphicDriver_1.cxx
+// Created:   20 October 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GraphicDriver.hxx>
 
-// File   OpenGl_GraphicDriver_1.cxx
-// Created  Mardi 28 janvier 1997
-// Author CAL
-// Modified GG 27/12/02 IMP120302 Add new method Begin(Aspect_Display)
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 
-//-Copyright  MatraDatavision 1997
-
-//-Version  
-
-//-Design Declaration des variables specifiques aux Drivers
-
-//-Warning  Un driver encapsule les Pex et OpenGl drivers
-
-//-References 
-
-//-Language C++ 2.0
-
-//-Declarations
-
-// for the class
-#include <OpenGl_GraphicDriver.jxx>
-
-#include <Aspect_DriverDefinitionError.hxx>
-
-#include <OpenGl_tgl_funcs.hxx>
-
-//-Aliases
-
-//-Global data definitions
-
-//-Methods, in order
+#include <OpenGl_CView.hxx>
+#include <OpenGl_Display.hxx>
 
 //=======================================================================
 //function : Begin
@@ -39,24 +18,17 @@
 
 Standard_Boolean OpenGl_GraphicDriver::Begin (const Standard_CString ADisplay)
 {
-
-
-  Standard_Boolean Result;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_begin");
-    PrintString ("Display", ADisplay);
+  try
+  {
+    openglDisplay = new OpenGl_Display(ADisplay);
+    return Standard_True;
   }
-  Result = call_togl_begin ((Standard_PCharacter)ADisplay);
-  if (MyTraceLevel) {
-    PrintIResult ("call_togl_begin", Result);
+  catch (Standard_Failure)
+  {
   }
-
-  return Result;
-
+  return Standard_False;
 }
 
-//RIC120302
 //=======================================================================
 //function : Begin
 //purpose  : 
@@ -64,34 +36,25 @@ Standard_Boolean OpenGl_GraphicDriver::Begin (const Standard_CString ADisplay)
 
 Standard_Boolean OpenGl_GraphicDriver::Begin (const Aspect_Display ADisplay)
 {
-
-  Standard_Boolean Result;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_begin_display");
+  try
+  {
+    openglDisplay = new OpenGl_Display(ADisplay);
+    return Standard_True;
   }
-  Result = call_togl_begin_display (ADisplay);
-  if (MyTraceLevel) {
-    PrintIResult ("call_togl_begin_display", Result);
+  catch (Standard_Failure)
+  {
   }
-
-  return Result;
-
+  return Standard_False;
 }
-//RIC120302
 
 //=======================================================================
 //function : End
 //purpose  : 
 //=======================================================================
 
-void OpenGl_GraphicDriver::End () {
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_end");
-  }
-  call_togl_end ();
-
+void OpenGl_GraphicDriver::End ()
+{
+  openglDisplay.Nullify();
 }
 
 //=======================================================================
@@ -99,16 +62,15 @@ void OpenGl_GraphicDriver::End () {
 //purpose  : 
 //=======================================================================
 
-void OpenGl_GraphicDriver::BeginAnimation (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_begin_animation");
-    PrintCView (MyCView, 1);
+void OpenGl_GraphicDriver::BeginAnimation (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    const Standard_Boolean UpdateAM = (ACView.IsDegenerates && !ACView.IsDegeneratesPrev) || (!ACView.IsDegenerates && ACView.IsDegeneratesPrev);
+    aCView->WS->BeginAnimation(ACView.IsDegenerates != 0,UpdateAM);
+    ((Graphic3d_CView*)(&ACView))->IsDegeneratesPrev = ACView.IsDegenerates; //szvgl: temporary
   }
-  call_togl_begin_animation (&MyCView);
-
 }
 
 //=======================================================================
@@ -116,14 +78,9 @@ void OpenGl_GraphicDriver::BeginAnimation (const Graphic3d_CView& ACView) {
 //purpose  : 
 //=======================================================================
 
-void OpenGl_GraphicDriver::EndAnimation (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_end_animation");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_end_animation (&MyCView);
-
+void OpenGl_GraphicDriver::EndAnimation (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->EndAnimation();
 }

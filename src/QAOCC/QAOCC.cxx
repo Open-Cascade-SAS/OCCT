@@ -1669,52 +1669,6 @@ static Standard_Integer OCC627 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-#include <QAOCC_OCC749Prs.hxx>
-//=======================================================================
-//function :  OCC749_sav
-//purpose  :
-//=======================================================================
-static Standard_Integer OCC749_sav (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0];
-    return 1;
-  }
-  if(argc != 8) {
-    di << "Usage : " << argv[0] << " Reflection(=0/1) R1 G1 B1 R2 G2 B2" << "\n";
-    return -1;
-  }
-
-  Standard_Integer IntegerReflection = atoi(argv[1]);
-  Standard_Boolean Reflection;
-  if (IntegerReflection == 0) {
-    Reflection = Standard_False;
-  } else {
-    Reflection = Standard_True;
-  }
-  Standard_Integer R1_Integer = atoi(argv[2]);
-  Standard_Integer G1_Integer = atoi(argv[3]);
-  Standard_Integer B1_Integer = atoi(argv[4]);
-  Standard_Integer R2_Integer = atoi(argv[5]);
-  Standard_Integer G2_Integer = atoi(argv[6]);
-  Standard_Integer B2_Integer = atoi(argv[7]);
-  Quantity_Parameter R1 = R1_Integer / 255.;
-  Quantity_Parameter G1 = G1_Integer / 255.;
-  Quantity_Parameter B1 = B1_Integer / 255.;
-  Quantity_Parameter R2 = R2_Integer / 255.;
-  Quantity_Parameter G2 = G2_Integer / 255.;
-  Quantity_Parameter B2 = B2_Integer / 255.;
-
-  Handle(QAOCC_OCC749Prs) anIntearactiveObject =
-    new QAOCC_OCC749Prs(Reflection,
-			Quantity_Color(R1, G1, B1, Quantity_TOC_RGB),
-			Quantity_Color(R2, G2, B2, Quantity_TOC_RGB));
-  myAISContext->Display(anIntearactiveObject);
-  return 0;
-}
-
 #include <Standard_GUID.hxx>
 //=======================================================================
 //function :  OCC669
@@ -5365,7 +5319,6 @@ void QAOCC::Commands(Draw_Interpretor& theCommands) {
   //theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3 [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC578, group);
   theCommands.Add("OCC627", "OCC627", __FILE__, OCC627, group);
-  theCommands.Add("OCC749_sav", "OCC749_sav Reflection(=0/1) R1 G1 B1 R2 G2 B2", __FILE__, OCC749_sav, group);
   theCommands.Add("OCC669", "OCC669 GUID", __FILE__, OCC669, group);
   theCommands.Add("OCC738_ShapeRef", "OCC738_ShapeRef", __FILE__, OCC738_ShapeRef, group);
   theCommands.Add("OCC738_Assembly", "OCC738_Assembly", __FILE__, OCC738_Assembly, group);

@@ -1,13 +1,11 @@
+// File:      OpenGl_FrameBuffer.cxx
+// Author:    Kirill GAVRILOV
+// Copyright: OPEN CASCADE 2011
+
 #include <OpenGl_FrameBuffer.hxx>
 
 #ifdef DEB
   #include <iostream>
-#endif
-
-#ifndef WNT
-  #define glGetProcAddress( x )  glXGetProcAddress( (const GLubyte*) x )
-#else
-  #define glGetProcAddress( x )  wglGetProcAddress( x )
 #endif
 
 static inline bool isOddNumber (const GLsizei theNumber)
@@ -39,43 +37,6 @@ static inline GLsizei getPowerOfTwo (const GLsizei theNumber,
   return theThreshold;
 }
 
-Standard_Boolean OpenGl_FrameBuffer::AreFBOFunctionsValid()
-{
-  return glGenFramebuffersEXT != NULL
-      && glDeleteFramebuffersEXT != NULL
-      && glBindFramebufferEXT != NULL
-      && glFramebufferTexture2DEXT != NULL
-      && glCheckFramebufferStatusEXT != NULL
-      && glGenRenderbuffersEXT != NULL
-      && glBindRenderbufferEXT != NULL
-      && glDeleteRenderbuffersEXT != NULL
-      && glRenderbufferStorageEXT != NULL
-      && glFramebufferRenderbufferEXT != NULL;
-}
-
-Standard_Boolean OpenGl_FrameBuffer::InitFBOFunctions()
-{
-  if (AreFBOFunctionsValid())
-  {
-    return Standard_True;
-  }
-  if (CheckExtension ((char *)"GL_EXT_framebuffer_object", (const char *)glGetString (GL_EXTENSIONS)))
-  {
-    glGenFramebuffersEXT         = (glGenFramebuffersEXT_t)        glGetProcAddress ("glGenFramebuffersEXT");
-    glDeleteFramebuffersEXT      = (glDeleteFramebuffersEXT_t)     glGetProcAddress ("glDeleteFramebuffersEXT");
-    glBindFramebufferEXT         = (glBindFramebufferEXT_t)        glGetProcAddress ("glBindFramebufferEXT");
-    glFramebufferTexture2DEXT    = (glFramebufferTexture2DEXT_t)   glGetProcAddress ("glFramebufferTexture2DEXT");
-    glCheckFramebufferStatusEXT  = (glCheckFramebufferStatusEXT_t) glGetProcAddress ("glCheckFramebufferStatusEXT");
-    glGenRenderbuffersEXT        = (glGenRenderbuffersEXT_t)       glGetProcAddress ("glGenRenderbuffersEXT");
-    glDeleteRenderbuffersEXT     = (glDeleteRenderbuffersEXT_t)    glGetProcAddress ("glDeleteRenderbuffersEXT");
-    glBindRenderbufferEXT        = (glBindRenderbufferEXT_t)       glGetProcAddress ("glBindRenderbufferEXT");
-    glRenderbufferStorageEXT     = (glRenderbufferStorageEXT_t)    glGetProcAddress ("glRenderbufferStorageEXT");
-    glFramebufferRenderbufferEXT = (glFramebufferRenderbufferEXT_t)glGetProcAddress ("glFramebufferRenderbufferEXT");
-    return AreFBOFunctionsValid();
-  }
-  return Standard_False;
-}
-
 OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
 : mySizeX (0),
   mySizeY (0),
@@ -84,26 +45,17 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
   myTextFormat (theTextureFormat),
   myGlTextureId (NO_TEXTURE),
   myGlFBufferId (NO_FRAMEBUFFER),
-  myGlDepthRBId (NO_RENDERBUFFER),
-  glGenFramebuffersEXT (NULL),
-  glDeleteFramebuffersEXT (NULL),
-  glBindFramebufferEXT (NULL),
-  glFramebufferTexture2DEXT (NULL),
-  glCheckFramebufferStatusEXT (NULL),
-  glGenRenderbuffersEXT (NULL),
-  glDeleteRenderbuffersEXT (NULL),
-  glBindRenderbufferEXT (NULL),
-  glRenderbufferStorageEXT (NULL),
-  glFramebufferRenderbufferEXT (NULL)
+  myGlDepthRBId (NO_RENDERBUFFER)
 {
   //
 }
 
-Standard_Boolean OpenGl_FrameBuffer::Init (GLsizei theViewportSizeX,
+Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
+                                           GLsizei theViewportSizeX,
                                            GLsizei theViewportSizeY,
                                            GLboolean toForcePowerOfTwo)
 {
-  if (!InitFBOFunctions())
+  if (theGlContext->extFBO == NULL)
   {
   #ifdef DEB
     std::cerr << "OpenGl_FrameBuffer, FBO extension not supported!\n";
@@ -112,7 +64,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (GLsizei theViewportSizeX,
   }
 
   // clean up previous state
-  Release();
+  Release (theGlContext);
 
   // upscale width/height if numbers are odd
   if (toForcePowerOfTwo)
@@ -133,41 +85,41 @@ Standard_Boolean OpenGl_FrameBuffer::Init (GLsizei theViewportSizeX,
   myVPSizeY = theViewportSizeY;
 
   // Create the texture (will be used as color buffer)
-  if (!InitTrashTexture())
+  if (!InitTrashTexture (theGlContext))
   {
     if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
     {
-      return Init (theViewportSizeX, theViewportSizeY, GL_TRUE);
+      return Init (theGlContext, theViewportSizeX, theViewportSizeY, GL_TRUE);
     }
-    Release();
+    Release (theGlContext);
     return Standard_False;
   }
 
   // Create RenderBuffer (will be used as depth buffer)
-  glGenRenderbuffersEXT (1, &myGlDepthRBId);
-  glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
-  glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
+  theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlDepthRBId);
+  theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
+  theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
 
   // Build FBO and setup it as texture
-  glGenFramebuffersEXT (1, &myGlFBufferId);
-  glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, myGlFBufferId);
+  theGlContext->extFBO->glGenFramebuffersEXT (1, &myGlFBufferId);
+  theGlContext->extFBO->glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, myGlFBufferId);
   glEnable (GL_TEXTURE_2D);
   glBindTexture (GL_TEXTURE_2D, myGlTextureId);
-  glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, myGlTextureId, 0);
-  glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlFBufferId);
-  if (glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
+  theGlContext->extFBO->glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, myGlTextureId, 0);
+  theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlFBufferId);
+  if (theGlContext->extFBO->glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
   {
     if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
     {
-      return Init (theViewportSizeX, theViewportSizeY, GL_TRUE);
+      return Init (theGlContext, theViewportSizeX, theViewportSizeY, GL_TRUE);
     }
-    Release();
+    Release (theGlContext);
     return Standard_False;
   }
 
-  UnbindBuffer();
+  UnbindBuffer (theGlContext);
   UnbindTexture();
-  glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, NO_RENDERBUFFER);
+  theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, NO_RENDERBUFFER);
 
   #ifdef DEB
     std::cerr << "OpenGl_FrameBuffer, created FBO " << mySizeX << "x" << mySizeY
@@ -176,12 +128,19 @@ Standard_Boolean OpenGl_FrameBuffer::Init (GLsizei theViewportSizeX,
   return Standard_True;
 }
 
-void OpenGl_FrameBuffer::Release()
+void OpenGl_FrameBuffer::Release (const Handle(OpenGl_Context)& theGlContext)
 {
   if (IsValidDepthBuffer())
   {
-    glDeleteRenderbuffersEXT (1, &myGlDepthRBId);
-    myGlDepthRBId = NO_RENDERBUFFER;
+    if (!theGlContext.IsNull() && theGlContext->extFBO != NULL)
+    {
+      theGlContext->extFBO->glDeleteRenderbuffersEXT (1, &myGlDepthRBId);
+      myGlDepthRBId = NO_RENDERBUFFER;
+    }
+    else
+    {
+      std::cerr << "OpenGl_FrameBuffer::Release() called with invalid OpenGl_Context!\n";
+    }
   }
   if (IsValidTexture())
   {
@@ -191,8 +150,15 @@ void OpenGl_FrameBuffer::Release()
   mySizeX = mySizeY = myVPSizeX = myVPSizeY = 0;
   if (IsValidFrameBuffer())
   {
-    glDeleteFramebuffersEXT (1, &myGlFBufferId);
-    myGlFBufferId = NO_FRAMEBUFFER;
+    if (!theGlContext.IsNull() && theGlContext->extFBO != NULL)
+    {
+      theGlContext->extFBO->glDeleteFramebuffersEXT (1, &myGlFBufferId);
+      myGlFBufferId = NO_FRAMEBUFFER;
+    }
+    else
+    {
+      std::cerr << "OpenGl_FrameBuffer::Release() called with invalid OpenGl_Context!\n";
+    }
   }
 }
 
@@ -210,7 +176,7 @@ Standard_Boolean OpenGl_FrameBuffer::IsProxySuccess() const
   return aTestParamX != 0 && aTestParamY != 0;
 }
 
-Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture()
+Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture (const Handle(OpenGl_Context)& theGlContext)
 {
   // Check texture size is fit dimension maximum
   GLint aMaxTexDim = 2048;
@@ -234,7 +200,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture()
 
   if (!IsProxySuccess())
   {
-    Release();
+    Release (theGlContext);
     return Standard_False;
   }
 

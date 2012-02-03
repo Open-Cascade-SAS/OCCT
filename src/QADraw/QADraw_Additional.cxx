@@ -31,7 +31,6 @@
 #include <QANIC.hxx>
 #include <QABUC.hxx>
 #include <QAAMINO.hxx>
-#include <QADBMReflex.hxx>
 #include <QAMARTEC.hxx>
 #include <QAQuickPen.hxx>
 #if defined(WOKC40)
@@ -67,7 +66,6 @@ void QADraw::AdditionalCommands(Draw_Interpretor& theCommands)
   QANIC::Commands(theCommands);
   QABUC::Commands(theCommands);
   QAAMINO::Commands(theCommands);
-  QADBMReflex::Commands(theCommands);
   QAMARTEC::Commands(theCommands);
   QAQuickPen::Commands(theCommands);
 #if defined(WOKC40)

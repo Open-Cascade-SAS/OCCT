@@ -1,328 +1,224 @@
+// File:      OpenGl_GraphicDriver_7.cxx
+// Created:   20 October 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE 2011
 
-// File   OpenGl_GraphicDriver_7.cxx
-// Created  Mardi 28 janvier 1997
-// Author CAL
-// Modified     GG 10/11/99 PRO19603 Change the Redraw method (add redraw area capabillity)
-//              EUG 07/10/99 G003 Add DegenerateStructure() and
-//                                    SetBackFacingModel() methods.
+#include <OpenGl_GraphicDriver.hxx>
 
-//-Copyright  MatraDatavision 1997
-
-//-Version
-
-//-Design Declaration des variables specifiques aux Drivers
-
-//-Warning  Un driver encapsule les Pex et OpenGl drivers
-
-//-References
-
-//-Language C++ 2.0
-
-//-Declarations
-
-// for the class
-#include <OpenGl_GraphicDriver.jxx>
-
-#include <Aspect_DriverDefinitionError.hxx>
-#include <InterfaceGraphic_RawBufferData.hxx>
-
-#include <OpenGl_tgl_funcs.hxx>
-#include <OpenGl_tsm_ws.hxx>
-#include <OpenGl_tgl_tox.hxx>
-#include <OpenGl_txgl.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 
-//-Aliases
+#include <OpenGl_Structure.hxx>
+#include <OpenGl_CView.hxx>
+#include <OpenGl_Display.hxx>
 
-//-Global data definitions
+/*----------------------------------------------------------------------*/
 
-//-Methods, in order
-
-void OpenGl_GraphicDriver::ActivateView (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_activateview");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_activateview (&MyCView);
-
+void OpenGl_GraphicDriver::ActivateView (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->SetActiveView(aCView->View);
 }
 
-void OpenGl_GraphicDriver::AntiAliasing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_antialiasing");
-    PrintCView (MyCView, 1);
-    PrintBoolean ("AFlag", AFlag);
-  }
-  call_togl_antialiasing (&MyCView, (AFlag ? 1 : 0));
-
+void OpenGl_GraphicDriver::AntiAliasing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->View->SetAntiAliasing(AFlag);
 }
 
-void OpenGl_GraphicDriver::Background (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_background");
-    PrintCView (MyCView, 1);
+void OpenGl_GraphicDriver::Background (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    aCView->WS->SetBackgroundColor(ACView.DefWindow.Background.r,ACView.DefWindow.Background.g,ACView.DefWindow.Background.b);
+    aCView->WS->Invalidate();
   }
-  call_togl_background (&MyCView);
-
 }
 
-void OpenGl_GraphicDriver::GradientBackground(const Graphic3d_CView& ACView,
+void OpenGl_GraphicDriver::GradientBackground (const Graphic3d_CView& ACView,
                                               const Quantity_Color& AColor1,
                                               const Quantity_Color& AColor2,
-                                              const Aspect_GradientFillMethod AType){
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_gradient_background");
-    PrintCView (MyCView, 1);
-  }
-  Standard_Real R1,G1,B1,R2,G2,B2;
-  AColor1.Values( R1, G1, B1, Quantity_TOC_RGB );
-  AColor2.Values( R2, G2, B2, Quantity_TOC_RGB );
-  TEL_COLOUR tcolor1, tcolor2;
-  tcolor1.rgb[0] = R1;
-  tcolor1.rgb[1] = G1;
-  tcolor1.rgb[2] = B1;
-  tcolor1.rgb[3] = 0;
-  tcolor2.rgb[0] = R2;
-  tcolor2.rgb[1] = G2;
-  tcolor2.rgb[2] = B2;
-  tcolor2.rgb[3] = 0;
-
-  call_togl_gradient_background (MyCView.WsId, AType, &tcolor1, &tcolor2);
-
-}
-
-
-void OpenGl_GraphicDriver::Blink (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_blink");
-    PrintCStructure (MyCStructure, 1);
-    PrintBoolean ("Create", Create);
-  }
-  call_togl_blink (&MyCStructure, (Create ? 1 : 0));
-
-}
-
-void OpenGl_GraphicDriver::BoundaryBox (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_boundarybox");
-    PrintCStructure (MyCStructure, 1);
-    PrintBoolean ("Create", Create);
-  }
-  call_togl_boundarybox (&MyCStructure, (Create ? 1 : 0));
-
-}
-
-void OpenGl_GraphicDriver::HighlightColor (const Graphic3d_CStructure& ACStructure, const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B, const Standard_Boolean Create) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_highlightcolor");
-    PrintCStructure (MyCStructure, 1);
-    PrintShortReal ("R", R);
-    PrintShortReal ("G", G);
-    PrintShortReal ("B", B);
-  }
-  CALL_DEF_COLOR acolor;
-  acolor.r  = R;
-  acolor.g  = G;
-  acolor.b  = B;
-  call_togl_highlightcolor (&MyCStructure, &acolor, (Create ? 1 : 0));
-
-}
-
-void OpenGl_GraphicDriver::NameSetStructure (const Graphic3d_CStructure& ACStructure) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_namesetstructure");
-    PrintCStructure (MyCStructure, 1);
-  }
-  call_togl_namesetstructure (&MyCStructure);
-
-}
-
-void OpenGl_GraphicDriver::ClipLimit (const Graphic3d_CView& ACView, const Standard_Boolean AWait) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_cliplimit");
-    PrintCView (MyCView, 1);
-    PrintBoolean ("AWait", AWait);
-  }
-  call_togl_cliplimit (&MyCView, (AWait ? 1 : 0));
-
-}
-
-void OpenGl_GraphicDriver::DeactivateView (const Graphic3d_CView& ACView) {
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_deactivateview");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_deactivateview (&MyCView);
-
-}
-
-void OpenGl_GraphicDriver::DepthCueing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_depthcueing");
-    PrintCView (MyCView, 1);
-    PrintBoolean ("AFlag", AFlag);
-  }
-  call_togl_depthcueing (&MyCView, (AFlag ? 1 : 0));
-
-}
-
-Standard_Boolean OpenGl_GraphicDriver::ProjectRaster (const Graphic3d_CView& ACView, const Standard_ShortReal AX, const Standard_ShortReal AY, const Standard_ShortReal AZ, Standard_Integer& AU, Standard_Integer& AV) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  Standard_Integer Result;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_project_raster");
-    PrintCView (MyCView, 1);
-  }
-  //if we want project something before to dump it into pixmap
-  if ( ACView.DefBitmap.bitmap ) {
-    Result = call_togl_adopt_to_rect( ACView.ViewId,
-      ACView.DefBitmap.width,
-      ACView.DefBitmap.height );
-    if (MyTraceLevel) {
-      PrintIResult ("call_togl_adopt_to_rect", Result);
-    }
-    if (Result)
-      return Standard_False;
-  }
-
-  Result = call_togl_project_raster (ACView.ViewId, AX, AY, AZ, &AU, &AV);
-  if (MyTraceLevel) {
-    PrintIResult ("call_togl_project_raster", Result);
-  }
-
-  if ( ACView.DefBitmap.bitmap ) {
-    Result = call_togl_adopt_to_rect( ACView.ViewId,
-      ACView.DefWindow.dx,
-      ACView.DefWindow.dy );
-    if (MyTraceLevel) {
-      PrintIResult ("call_togl_adopt_to_rect", Result);
-    }
-    if (Result)
-      return Standard_False;
-  }
-
-  return (Result == 0 ? Standard_True : Standard_False);
-
-}
-
-Standard_Boolean OpenGl_GraphicDriver::UnProjectRaster (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  Standard_Integer Result;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_unproject_raster");
-    PrintCView (MyCView, 1);
-  }
-  Result = call_togl_unproject_raster
-    (ACView.ViewId, Axm, Aym, AXM, AYM, AU, AV, &Ax, &Ay, &Az);
-  if (MyTraceLevel) {
-    PrintIResult ("call_togl_unproject_raster", Result);
-  }
-  return (Result == 0 ? Standard_True : Standard_False);
-
-}
-
-Standard_Boolean OpenGl_GraphicDriver::UnProjectRasterWithRay (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az, Standard_ShortReal& Dx, Standard_ShortReal& Dy, Standard_ShortReal& Dz) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  Standard_Integer Result;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_unproject_raster_with_ray");
-    PrintCView (MyCView, 1);
-  }
-  Result = call_togl_unproject_raster_with_ray
-    (ACView.ViewId, Axm, Aym, AXM, AYM, AU, AV, &Ax, &Ay, &Az, &Dx, &Dy, &Dz);
-  if (MyTraceLevel) {
-    PrintIResult ("call_togl_unproject_raster_with_ray", Result);
-  }
-  return (Result == 0 ? Standard_True : Standard_False);
-
-}
-
-void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_ratio_window");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_ratio_window (&MyCView);
-
-}
-
-void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height) {
-
-  Graphic3d_CView MyCView = ACView;
-  Aspect_CLayer2d MyCUnderLayer = ACUnderLayer;
-  Aspect_CLayer2d MyCOverLayer = ACOverLayer;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_redraw");
-    PrintCView (MyCView, 1);
-  }
-  //PRO19603
-  if( width <= 0 || height <= 0  )
-    call_togl_redraw (&MyCView, &MyCUnderLayer, &MyCOverLayer);
-  else {
-    call_togl_redraw_area (&MyCView, &MyCUnderLayer, &MyCOverLayer,
-      x, y, width, height);
-  }
-  //PRO19603
-}
-
-Graphic3d_PtrFrameBuffer OpenGl_GraphicDriver::FBOCreate (const Graphic3d_CView& theCView,
-                                                          const Standard_Integer theWidth,
-                                                          const Standard_Integer theHeight) {
-  // activate OpenGL context
-  CMN_KEY_DATA aData;
-  if ((TsmGetWSAttri (theCView.WsId, WSWindow, &aData) != TSuccess) ||
-      (TxglWinset (call_thedisplay, (WINDOW) aData.ldata) != TSuccess))
+                                              const Aspect_GradientFillMethod AType)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
   {
-    return NULL;
+    aCView->View->SetBackgroundGradient(AColor1,AColor2,AType);
+    aCView->WS->Invalidate();
   }
+}
+
+void OpenGl_GraphicDriver::Blink (const Graphic3d_CStructure &, const Standard_Boolean)
+{
+  // Do nothing
+}
+
+void OpenGl_GraphicDriver::BoundaryBox (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create)
+{
+  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
+  if (!astructure)
+    return;
+
+  if ( Create )
+    astructure->SetHighlightBox(ACStructure.BoundBox);
+  else
+    astructure->ClearHighlightBox();
+}
+
+void OpenGl_GraphicDriver::HighlightColor (const Graphic3d_CStructure& ACStructure, const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B, const Standard_Boolean Create)
+{
+  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
+  if (!astructure)
+    return;
+
+  if ( Create )
+    astructure->SetHighlightColor(R,G,B);
+  else
+    astructure->ClearHighlightColor();
+}
+
+void OpenGl_GraphicDriver::NameSetStructure (const Graphic3d_CStructure& ACStructure)
+{
+  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
+  if (astructure)
+  {
+    Standard_Integer aStatus = 0;
+    if (ACStructure.highlight) aStatus |= OPENGL_NS_HIGHLIGHT;
+    if (!ACStructure.visible) aStatus |= OPENGL_NS_HIDE;
+    if (ACStructure.pick) aStatus |= OPENGL_NS_PICK;
+    astructure->SetNamedStatus( aStatus );
+  }
+}
+
+void OpenGl_GraphicDriver::ClipLimit (const Graphic3d_CView& ACView, const Standard_Boolean AWait)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    aCView->View->SetClipLimit(ACView);
+    if (!AWait && !ACView.DefBitmap.bitmap)
+    {
+      aCView->WS->Resize(ACView.DefWindow);
+      aCView->WS->Invalidate();
+    }
+  }
+}
+
+void OpenGl_GraphicDriver::DeactivateView (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    const Handle(OpenGl_View) aDummyView;
+    aCView->WS->SetActiveView(aDummyView);
+  }
+}
+
+void OpenGl_GraphicDriver::DepthCueing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->View->SetFog(ACView, AFlag);
+}
+
+Standard_Boolean OpenGl_GraphicDriver::ProjectRaster (const Graphic3d_CView& ACView, const Standard_ShortReal AX, const Standard_ShortReal AY, const Standard_ShortReal AZ, Standard_Integer& AU, Standard_Integer& AV)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (!aCView)
+    return Standard_False;
+
+  Standard_Integer aWidth = aCView->WS->Width();
+  Standard_Integer aHeight = aCView->WS->Height();
+
+  //if we want project something before to dump it into pixmap
+  //For right copution of projection before dumping to pixmap
+  if ( ACView.DefBitmap.bitmap )
+  {
+    aWidth = ACView.DefBitmap.width;
+    aHeight = ACView.DefBitmap.height;
+  }
+
+  Standard_ShortReal xr, yr;
+  if (aCView->View->ProjectObjectToRaster(aWidth, aHeight, AX, AY, AZ, xr, yr))
+  {
+    AU = (Standard_Integer) xr;
+    AV = aHeight - (Standard_Integer) yr;
+    return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+Standard_Boolean OpenGl_GraphicDriver::UnProjectRaster (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (!aCView)
+    return Standard_False;
+
+  const Standard_Integer aWidth = aCView->WS->Width();
+  const Standard_Integer aHeight = aCView->WS->Height();
+
+  /*
+  Patched by P.Dolbey: the window pixel height decreased by one 
+  in order for yr to remain within valid coordinate range [0; Ym -1]
+  where Ym means window pixel height.
+  */
+  return aCView->View->ProjectRasterToObject( aWidth, aHeight, AU, (AYM-1)-Aym-AV, Ax, Ay, Az );
+}
+
+Standard_Boolean OpenGl_GraphicDriver::UnProjectRasterWithRay (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az, Standard_ShortReal& Dx, Standard_ShortReal& Dy, Standard_ShortReal& Dz)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (!aCView)
+    return Standard_False;
+
+  const Standard_Integer aWidth = aCView->WS->Width();
+  const Standard_Integer aHeight = aCView->WS->Height();
+
+  return aCView->View->ProjectRasterToObjectWithRay( aWidth, aHeight, AU, AYM-Aym-AV, Ax, Ay, Az, Dx, Dy, Dz );
+}
+
+void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (!aCView)
+    if( !ACView.DefBitmap.bitmap )
+      aCView->WS->Resize(ACView.DefWindow);
+}
+
+void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    /*if( width <= 0 || height <= 0  )
+      aCView->WS->Redraw(ACView, ACUnderLayer, ACOverLayer);
+    else
+      aCView->WS->RedrawArea(ACView, ACUnderLayer, ACOverLayer, x, y, width, height);*/
+    // Always do full redraw
+    aCView->WS->Redraw(ACView, ACUnderLayer, ACOverLayer);
+  }
+}
+
+Graphic3d_PtrFrameBuffer OpenGl_GraphicDriver::FBOCreate (const Graphic3d_CView& ACView, const Standard_Integer theWidth, const Standard_Integer theHeight)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    return aCView->WS->FBOCreate(theWidth, theHeight);
+  return (Graphic3d_PtrFrameBuffer)NULL;
+}
+
+Graphic3d_PtrFrameBuffer OpenGl_Workspace::FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight)
+{
+  // activate OpenGL context
+  if (!Activate())
+    return NULL;
+
   // create the FBO
   OpenGl_FrameBuffer* aFrameBuffer = new OpenGl_FrameBuffer();
-  if (!aFrameBuffer->Init (theWidth, theHeight))
+  if (!aFrameBuffer->Init (GetGlContext(), theWidth, theHeight))
   {
     delete aFrameBuffer;
     return NULL;
@@ -330,24 +226,28 @@ Graphic3d_PtrFrameBuffer OpenGl_GraphicDriver::FBOCreate (const Graphic3d_CView&
   return (Graphic3d_PtrFrameBuffer )aFrameBuffer;
 }
 
-void OpenGl_GraphicDriver::FBORelease (const Graphic3d_CView& theCView,
-                                       Graphic3d_PtrFrameBuffer& theFBOPtr)
+void OpenGl_GraphicDriver::FBORelease (const Graphic3d_CView& ACView, Graphic3d_PtrFrameBuffer& theFBOPtr)
 {
   if (theFBOPtr == NULL)
-  {
     return;
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    aCView->WS->FBORelease(theFBOPtr);
+    theFBOPtr = NULL;
   }
+}
+
+void OpenGl_Workspace::FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr)
+{
   // activate OpenGL context
-  CMN_KEY_DATA aData;
-  if ((TsmGetWSAttri (theCView.WsId, WSWindow, &aData) != TSuccess) ||
-      (TxglWinset (call_thedisplay, (WINDOW) aData.ldata) != TSuccess))
-  {
+  if (!Activate())
     return;
-  }
+
   // release the object
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theFBOPtr;
+  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer*)theFBOPtr;
+  aFrameBuffer->Release (GetGlContext());
   delete aFrameBuffer;
-  theFBOPtr = NULL;
 }
 
 void OpenGl_GraphicDriver::FBOGetDimensions (const Graphic3d_CView& ,
@@ -386,7 +286,6 @@ void OpenGl_GraphicDriver::FBOChangeViewport (const Graphic3d_CView& ,
   #define GL_BGRA 0x80E1
 #endif
 
-
 static inline GLenum TFormatToGLEnum (const TRawBufferDataFormat theTFormat)
 {
   switch (theTFormat)
@@ -414,8 +313,15 @@ static inline GLenum TTypeToGLEnum (const TRawBufferDataType theTType)
   }
 }
 
-Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView& theCView,
-                                                   Image_CRawBufferData& theBuffer)
+Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView& ACView, Image_CRawBufferData& theBuffer)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    return aCView->WS->BufferDump((OpenGl_FrameBuffer *)ACView.ptrFBO,theBuffer);
+  return Standard_False;
+}
+
+Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer *theFBOPtr, Image_CRawBufferData& theBuffer)
 {
   GLenum aFormat = TFormatToGLEnum (theBuffer.format);
   GLenum aType = TTypeToGLEnum (theBuffer.type);
@@ -429,19 +335,15 @@ Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView& theCVi
   }
 
   // activate OpenGL context
-  CMN_KEY_DATA aData;
-  if ((TsmGetWSAttri (theCView.WsId, WSWindow, &aData) != TSuccess) ||
-      (TxglWinset (call_thedisplay, (WINDOW) aData.ldata) != TSuccess))
-  {
+  if (!Activate())
     return Standard_False;
-  }
 
   // bind FBO if used
-  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
+  OpenGl_FrameBuffer* aFrameBuffer = theFBOPtr;
   GLint aReadBufferPrev = GL_BACK;
   if (aFrameBuffer != NULL && aFrameBuffer->IsValid())
   {
-    aFrameBuffer->BindBuffer();
+    aFrameBuffer->BindBuffer (GetGlContext());
   }
   else
   {
@@ -465,7 +367,7 @@ Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView& theCVi
 
   if (aFrameBuffer != NULL && aFrameBuffer->IsValid())
   {
-    aFrameBuffer->UnbindBuffer();
+    aFrameBuffer->UnbindBuffer (GetGlContext());
   }
   else
   {
@@ -474,169 +376,133 @@ Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView& theCVi
   return Standard_True;
 }
 
-void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& ACView) {
+void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& ACView)
+{
+  if (GetMapOfViews().IsBound (ACView.ViewId))
+    GetMapOfViews().UnBind (ACView.ViewId);
 
-  Graphic3d_CView MyCView = ACView;
+  if (GetMapOfWorkspaces().IsBound (ACView.WsId))
+    GetMapOfWorkspaces().UnBind (ACView.WsId);
 
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_removeview");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_removeview (&MyCView);
-
+  OpenGl_CView *aCView = (OpenGl_CView *)ACView.ptrView;
+  delete aCView;
+  ((Graphic3d_CView *)&ACView)->ptrView = NULL;
 }
 
-void OpenGl_GraphicDriver::SetLight (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_setlight");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_setlight (&MyCView);
-
+void OpenGl_GraphicDriver::SetLight (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->View->SetLights(ACView.Context);
 }
 
-void OpenGl_GraphicDriver::SetPlane (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_setplane");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_setplane (&MyCView);
-
+void OpenGl_GraphicDriver::SetPlane (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->View->SetClippingPlanes(ACView.Context);
 }
 
-void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView) {
-
-  Graphic3d_CView MyCView = ACView;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_setvisualisation");
-    PrintCView (MyCView, 1);
-  }
-  call_togl_setvisualisation (&MyCView);
-
-}
-
-void OpenGl_GraphicDriver::TransformStructure (const Graphic3d_CStructure& ACStructure) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_transformstructure");
-    PrintCStructure (MyCStructure, 1);
-  }
-  call_togl_transformstructure (&MyCStructure);
-
-}
-
-void OpenGl_GraphicDriver :: DegenerateStructure (
-  const Graphic3d_CStructure& ACStructure
-  ) {
-    Graphic3d_CStructure MyCStructure = ACStructure;
-
-    if ( MyTraceLevel ) {
-
-      PrintFunction ( "call_togl_degeneratestructure" );
-      PrintCStructure ( MyCStructure, 1 );
-
-    }  // end if
-
-    call_togl_degeneratestructure ( &MyCStructure );
-  }  // end OpenGl_GraphicDriver :: DegenerateStructure
-
-  void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag) {
-
-    Graphic3d_CView MyCView = ACView;
-
-    if (MyTraceLevel) {
-      PrintFunction ("call_togl_transparency");
-      PrintCView (MyCView, 1);
-      PrintBoolean ("AFlag", AFlag);
-    }
-    call_togl_transparency (MyCView.WsId, MyCView.ViewId, (AFlag ? 1 : 0));
-
-  }
-
-  void OpenGl_GraphicDriver::Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer) {
-
-    Graphic3d_CView MyCView = ACView;
-    Aspect_CLayer2d MyCUnderLayer = ACUnderLayer;
-    Aspect_CLayer2d MyCOverLayer = ACOverLayer;
-
-    if (MyTraceLevel) {
-      PrintFunction ("call_togl_update");
-      PrintCView (MyCView, 1);
-    }
-    call_togl_update (&MyCView, &MyCUnderLayer, &MyCOverLayer);
-
-  }
-
-  Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& ACView) {
-
-    Graphic3d_CView MyCView = ACView;
-    Standard_Integer Result;
-
-    if (MyTraceLevel) {
-      PrintFunction ("call_togl_view");
-      PrintCView (MyCView, 1);
-    }
-    Result = call_togl_view (&MyCView);
-    if (MyTraceLevel) {
-      PrintIResult ("call_togl_view", Result);
-    }
-    return (Result == 1 ? Standard_True : Standard_False);
-
-  }
-
-  void OpenGl_GraphicDriver::ViewMapping (const Graphic3d_CView& ACView, const Standard_Boolean AWait) {
-
-    Graphic3d_CView MyCView = ACView;
-    Standard_Integer Result;
-
-    if (MyTraceLevel) {
-      PrintFunction ("call_togl_viewmapping");
-      PrintCView (MyCView, 1);
-      PrintBoolean ("AWait", AWait);
-    }
-    Result = call_togl_viewmapping (&MyCView, (AWait ? 1 : 0));
-    if (MyTraceLevel) {
-      PrintIResult ("call_togl_viewmapping", Result);
-    }
-
-  }
-
-  void OpenGl_GraphicDriver::ViewOrientation (const Graphic3d_CView& ACView, const Standard_Boolean AWait) {
-
-    Graphic3d_CView MyCView = ACView;
-    Standard_Integer Result;
-
-    if (MyTraceLevel) {
-      PrintFunction ("call_togl_vieworientation");
-      PrintCView (MyCView, 1);
-      PrintBoolean ("AWait", AWait);
-    }
-    Result = call_togl_vieworientation (&MyCView, (AWait ? 1 : 0));
-    if (MyTraceLevel) {
-      PrintIResult ("call_togl_viewmapping", Result);
-    }
-
-  }
-
-  void OpenGl_GraphicDriver :: SetBackFacingModel ( const Graphic3d_CView& aView )
+void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
   {
-    Graphic3d_CView myView = aView;
+    aCView->View->SetVisualisation(ACView.Context);
+    aCView->WS->UseZBuffer() = ( ACView.Context.Visualization == 0? (ACView.Context.ZBufferActivity == 1) : (ACView.Context.ZBufferActivity != 0) );
+  }
+}
 
-    if ( MyTraceLevel ) {
+void OpenGl_GraphicDriver::TransformStructure (const Graphic3d_CStructure& ACStructure)
+{
+  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
+  if (astructure)
+    astructure->SetTransformation(&(ACStructure.Transformation[0][0]));
+}
 
-      PrintFunction ( "call_togl_backfacing" );
-      PrintCView ( myView, 1 );
+void OpenGl_GraphicDriver::DegenerateStructure (const Graphic3d_CStructure& ACStructure)
+{
+  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
+  if (astructure)
+    astructure->SetDegenerateModel( ACStructure.ContextFillArea.DegenerationMode, ACStructure.ContextFillArea.SkipRatio );
+}
 
-    }  // end if
+void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->UseTransparency(AFlag);
+}
 
-    call_togl_backfacing ( &myView );
-  }  // end Graphic3d_GraphicDriver :: SetBackFacingModel
+void OpenGl_GraphicDriver::Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->Update(ACView,ACUnderLayer,ACOverLayer);
+}
+
+Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& ACView)
+{
+  if (openglDisplay.IsNull())
+    return Standard_False;
+
+  if (GetMapOfViews().IsBound (ACView.ViewId))
+    GetMapOfViews().UnBind (ACView.ViewId);
+
+  if (GetMapOfWorkspaces().IsBound (ACView.WsId))
+    GetMapOfWorkspaces().UnBind (ACView.WsId);
+
+  Handle(OpenGl_Workspace) aWS = Handle(OpenGl_Workspace)::DownCast(openglDisplay->GetWindow( ACView.DefWindow.XWindow ));
+  if ( aWS.IsNull() )
+  {
+    aWS = new OpenGl_Workspace( openglDisplay, ACView.DefWindow, ACView.GContext );
+    openglDisplay->SetWindow( ACView.DefWindow.XWindow, aWS );
+  }
+
+  GetMapOfWorkspaces().Bind (ACView.WsId, aWS);
+
+  Handle(OpenGl_View) aView = new OpenGl_View( ACView.Context );
+  GetMapOfViews().Bind (ACView.ViewId, aView);
+
+  OpenGl_CView *aCView = new OpenGl_CView;
+  aCView->View = aView;
+  aCView->WS = aWS;
+  ACView.ptrView = aCView;
+
+  return Standard_True;
+}
+
+void OpenGl_GraphicDriver::ViewMapping (const Graphic3d_CView& ACView, const Standard_Boolean AWait)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    aCView->View->SetMapping(ACView);
+    if (!AWait && !ACView.DefBitmap.bitmap)
+    {
+      aCView->WS->Resize(ACView.DefWindow);
+      aCView->WS->Invalidate();
+    }
+  }
+}
+
+void OpenGl_GraphicDriver::ViewOrientation (const Graphic3d_CView& ACView, const Standard_Boolean AWait)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+  {
+    aCView->View->SetOrientation(ACView);
+    if (!AWait && !ACView.DefBitmap.bitmap)
+    {
+      aCView->WS->Resize(ACView.DefWindow);
+      aCView->WS->Invalidate();
+    }
+  }
+}
+
+void OpenGl_GraphicDriver::SetBackFacingModel (const Graphic3d_CView& ACView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->View->SetBackfacing(ACView.Backfacing);
+}

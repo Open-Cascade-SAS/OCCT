@@ -1,80 +1,67 @@
-// File         OpenGl_GraphicDriver_713.cxx
-// Created      22-10-01
-// Author       SAV
+// File:      OpenGl_GraphicDriver_713.cxx
+// Created:   20 October 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE 2011
 
-// SAV 09/07/02 merged with OpenGl_GraphicDriver_713.cxx created 16/06/2000 by ATS,SPK,GG : G005
-//              implementation of PARRAY method
+#include <OpenGl_GraphicDriver.hxx>
 
-#include <OpenGl_GraphicDriver.jxx>
+#include <OpenGl_Callback.hxx>
+#include <OpenGl_Group.hxx>
+#include <OpenGl_PrimitiveArray.hxx>
 
-#include <Aspect_DriverDefinitionError.hxx>
+#include <OpenGl_CView.hxx>
 
-
-#include <OpenGl_tgl_funcs.hxx>
-#include <OpenGl_telem_util.hxx>
-
-
-#define  BUC61044    /* 25/10/01 SAV ; added functionality to control gl depth testing
-from higher API */
-#define  BUC61045    /* 25/10/01 SAV ; added functionality to control gl lighting 
-from higher API */
-
-
-void OpenGl_GraphicDriver::SetDepthTestEnabled( const Graphic3d_CView& view,
-                                               const Standard_Boolean isEnabled ) const
+void OpenGl_GraphicDriver::SetDepthTestEnabled( const Graphic3d_CView& ACView, const Standard_Boolean isEnabled ) const
 {
-
-#ifdef BUC61044
-  Graphic3d_CView MyCView = view;
-  call_togl_depthtest( &MyCView, isEnabled );
-#endif
-
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->UseDepthTest() = isEnabled;
 }
 
-Standard_Boolean OpenGl_GraphicDriver
-::IsDepthTestEnabled( const Graphic3d_CView& view ) const
+Standard_Boolean OpenGl_GraphicDriver::IsDepthTestEnabled( const Graphic3d_CView& ACView ) const
 {
-#ifdef BUC61044
-  Graphic3d_CView MyCView = view;
-  return call_togl_isdepthtest (&MyCView) != 0;
-#endif
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    return aCView->WS->UseDepthTest();
+  return Standard_False;
 }
 
-void OpenGl_GraphicDriver::ReadDepths( const Graphic3d_CView& view,
-                                       const Standard_Integer x,
-                                       const Standard_Integer y,
-                                       const Standard_Integer width,
-                                       const Standard_Integer height,
-                                       const Standard_Address buffer ) const
+void OpenGl_GraphicDriver::ReadDepths( const Graphic3d_CView& ACView,
+                                      const Standard_Integer x,
+                                      const Standard_Integer y,
+                                      const Standard_Integer width,
+                                      const Standard_Integer height,
+                                      const Standard_Address buffer ) const
 {
-  TelReadDepths (view.WsId, x, y, width, height, (float*) buffer);
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->ReadDepths(x, y, width, height, (float*) buffer);
 }
 
-void OpenGl_GraphicDriver::SetGLLightEnabled( const Graphic3d_CView& view,
-                                             const Standard_Boolean isEnabled ) const
+void OpenGl_GraphicDriver::SetGLLightEnabled( const Graphic3d_CView& ACView, const Standard_Boolean isEnabled ) const
 {
-#ifdef BUC61045
-  Graphic3d_CView MyCView = view;
-  call_togl_gllight( &MyCView, isEnabled );
-#endif
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    aCView->WS->UseGLLight() = isEnabled;
 }
 
-Standard_Boolean OpenGl_GraphicDriver
-::IsGLLightEnabled( const Graphic3d_CView& view ) const
+Standard_Boolean OpenGl_GraphicDriver::IsGLLightEnabled( const Graphic3d_CView& ACView ) const
 {
-#ifdef BUC61045
-  Graphic3d_CView MyCView = view;
-  return call_togl_isgllight (&MyCView) != 0;
-#endif
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    return aCView->WS->UseGLLight();
+  return Standard_False;
 }
 
-void OpenGl_GraphicDriver :: PrimitiveArray( const Graphic3d_CGroup& ACGroup,
-                                             const Graphic3d_PrimitiveArray& parray,
-                                                 const Standard_Boolean EvalMinMax )
+void OpenGl_GraphicDriver::PrimitiveArray( const Graphic3d_CGroup& ACGroup,
+                                          const Graphic3d_PrimitiveArray& parray,
+                                          const Standard_Boolean EvalMinMax )
 {
-  Graphic3d_CGroup MyCGroup = ACGroup;
-
-  if( parray ) call_togl_parray (&MyCGroup,parray);
+  if ( ACGroup.ptrGroup && parray )
+  {
+    OpenGl_PrimitiveArray *aparray = new OpenGl_PrimitiveArray( (CALL_DEF_PARRAY *) parray );
+    ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement( TelParray, aparray );
+  }
 }
 
 //=======================================================================
@@ -85,25 +72,30 @@ void OpenGl_GraphicDriver :: PrimitiveArray( const Graphic3d_CGroup& ACGroup,
 //           Graphic3d_Group only.
 //=======================================================================
 
-void OpenGl_GraphicDriver::RemovePrimitiveArray (const Graphic3d_CGroup&         theCGroup,
-                                                 const Graphic3d_PrimitiveArray& thePArray)
+void OpenGl_GraphicDriver::RemovePrimitiveArray (const Graphic3d_CGroup&         ACGroup,
+                                                const Graphic3d_PrimitiveArray& thePArray)
 {
-  Graphic3d_CGroup MyCGroup = theCGroup;
-  if (thePArray != NULL) call_togl_parray_remove (&MyCGroup, thePArray);
+  if ( ACGroup.ptrGroup && thePArray )
+  {
+    ((OpenGl_Group *)ACGroup.ptrGroup)->RemovePrimitiveArray( (CALL_DEF_PARRAY *) thePArray );
+  }
 }
 
-void OpenGl_GraphicDriver :: UserDraw ( const Graphic3d_CGroup& ACGroup,
-                                        const Graphic3d_CUserDraw& AUserDraw )
-{
-  Graphic3d_CGroup MyCGroup = ACGroup;
-  Graphic3d_CUserDraw MyUserDraw = AUserDraw;
+static OpenGl_UserDrawCallback MyUserDrawCallback = NULL;
 
-  call_togl_userdraw (&MyCGroup,&MyUserDraw);
+OpenGl_UserDrawCallback& UserDrawCallback ()
+{
+  return MyUserDrawCallback;
 }
 
-extern int VBOenabled;
-
-void OpenGl_GraphicDriver :: EnableVBO( const Standard_Boolean flag )
+void OpenGl_GraphicDriver::UserDraw ( const Graphic3d_CGroup& ACGroup,
+                                     const Graphic3d_CUserDraw& AUserDraw )
 {
-  VBOenabled = flag;
+  if (ACGroup.ptrGroup && MyUserDrawCallback)
+  {
+    OpenGl_Element *auserdraw = (*MyUserDrawCallback)(&AUserDraw);
+
+    if (auserdraw != 0)
+      ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement( TelUserdraw, auserdraw );
+  }
 }

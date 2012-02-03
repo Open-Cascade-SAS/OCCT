@@ -14,6 +14,7 @@
 class Standard_Transient;
 class Handle(Standard_Type);
 class Handle(MMgt_TShared);
+class Handle(OpenGl_Context);
 class OpenGl_ResourceCleaner;
 
 //! Class represents basic OpenGl memory resource, which
@@ -34,14 +35,14 @@ public:
   OpenGl_Resource(const OpenGl_Resource& theBase) : myId(theBase.myId) { }
 
   //! Copy operation
-  OpenGl_Resource& operator = (const OpenGl_Resource& theBase)
+  OpenGl_Resource& operator= (const OpenGl_Resource& theBase)
   {
     this->myId = theBase.myId;
     return *this; 
   }
 
   //! Destructor
-  virtual ~OpenGl_Resource() { }
+  virtual ~OpenGl_Resource() {}
 
   //! method clean() is accessible only by OpenGl_ResourceCleaner
   friend class OpenGl_ResourceCleaner;
@@ -50,7 +51,7 @@ protected:
 
   //! Clean procedure, should be called only by OpenGl_ResourceCleaner;
   //! Each type of resource has its own cleaning procedure
-  virtual void Clean() = 0;
+  virtual void Clean (const Handle(OpenGl_Context)& theGlContext) = 0;
 
 protected:
 

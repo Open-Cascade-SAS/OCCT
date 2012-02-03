@@ -13,7 +13,8 @@
 #include <OpenGl_Resource.hxx>
 
 class OpenGl_Resource;
-class Handle_OpenGl_Resource;
+class Handle(OpenGl_Resource);
+class Handle(OpenGl_Context);
 
 typedef NCollection_Queue<Handle_OpenGl_Resource> QueueOfResources;
 typedef NCollection_DataMap<GLCONTEXT, QueueOfResources> DataMapOfContextsResources;
@@ -56,7 +57,7 @@ public:
   //! You should add the cleaner resources by AddResources method;
   //! It is suggested to call this method right before the OpenGl
   //! new frame drawing procedure starts.
-  void Cleanup();
+  void Cleanup (const Handle(OpenGl_Context)& theGlContext);
 
   //! Remove the OpenGl context from the OpenGl_ResourceCleaner control list.
   void RemoveContext(GLCONTEXT theContext);

@@ -30,7 +30,7 @@ protected:
 
   //! Clean procedure for VBO resource;
   //! Should be called by the OpenGl_ResourceCleaner
-  void Clean();
+  virtual void Clean (const Handle(OpenGl_Context)& theGlContext);
 
 };
 

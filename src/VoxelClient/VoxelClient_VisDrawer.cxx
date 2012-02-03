@@ -8,56 +8,104 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <Graphic3d_CUserDraw.hxx>
 
-
-#include <OpenGl_tgl_all.hxx>
-#include <OpenGl_tsm.hxx>
-#include <OpenGl_telem.hxx>
-#include <OpenGl_callback.hxx>
+#include <InterfaceGraphic_telem.hxx>
+#include <OpenGl_Element.hxx>
+#include <OpenGl_Callback.hxx>
+#include <OpenGl_NamedStatus.hxx>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
 
 /**************************************************************************/
-TStatus VisAdd(TSM_ELEM_DATA d, Tint n, cmn_key * k)
+
+class VoxelClient_VisDrawer::VisElement : public OpenGl_Element
 {
-    // Retrieve the userdraw structure
-    Graphic3d_CUserDraw *userdraw = (Graphic3d_CUserDraw *) (k[0]->data.pdata);
+public:
 
-    if(!userdraw)
-        return TFailure;
+  VisElement (Voxel_VisData*);
+  virtual ~VisElement();
 
-    // Retrieve the user structure
-    Voxel_VisData *userdata = (Voxel_VisData *) (userdraw->Data);
+  void EvaluateBounds (Graphic3d_CBounds& theMinMax);
 
-    if(!userdata)
-        return TFailure;
+  void Render (const Handle(OpenGl_Workspace) &theWorkspace) const;
 
-    // Create the handler
-    VoxelClient_VisDrawer *handler = new VoxelClient_VisDrawer(userdata);
+private:
 
-    ((tsm_elem_data) (d.pdata))->pdata = (void *) handler;
+  VoxelClient_VisDrawer* myHandler;
 
-    // Evaluate minmax if needed
-    if(userdraw->Bounds)
-        handler->EvalMinMax(*(userdraw->Bounds));
+public:
 
-    return TSuccess;
+  IMPLEMENT_MEMORY_OPERATORS
+
+};
+
+//=======================================================================
+//function : VisElement
+//purpose  : Constructor
+//=======================================================================
+
+VoxelClient_VisDrawer::VisElement::VisElement (Voxel_VisData* theData)
+{
+  myHandler = new VoxelClient_VisDrawer (theData);
 }
 
-/**************************************************************************/
-TStatus VisDelete(TSM_ELEM_DATA d, Tint n, cmn_key * k)
+//=======================================================================
+//function : ~VisElement
+//purpose  : Destructor
+//=======================================================================
+
+VoxelClient_VisDrawer::VisElement::~VisElement ()
 {
-    delete (VoxelClient_VisDrawer*) (d.pdata);
-    return TSuccess;
+  delete myHandler;
 }
 
-/**************************************************************************/
-TStatus VisDisplay(TSM_ELEM_DATA d, Tint n, cmn_key * k)
-{
-    const Standard_Boolean hl = (n ? (k[0]->id == TOn) : Standard_False);
+//=======================================================================
+//function : EvaluateBounds
+//purpose  :
+//=======================================================================
 
-    ((VoxelClient_VisDrawer *) (d.pdata))->Display(hl);
-    return TSuccess;
+void VoxelClient_VisDrawer::VisElement::EvaluateBounds
+  (Graphic3d_CBounds& theMinMax)
+{
+  myHandler->EvalMinMax (theMinMax);
+}
+
+//=======================================================================
+//function : Render
+//purpose  : display element
+//=======================================================================
+
+void VoxelClient_VisDrawer::VisElement::Render
+  (const Handle (OpenGl_Workspace) &theWorkspace) const
+{
+  const Standard_Boolean aHl = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT);
+  myHandler->Display (aHl);
+}
+
+//=======================================================================
+//function : VisDrawerCallBack
+//purpose  : visdrawer element create callback, adds an element to graphic
+//           driver's structure
+//=======================================================================
+
+static OpenGl_Element* VisDrawerCallBack (const Graphic3d_CUserDraw* theUserDraw)
+{
+  if (theUserDraw == 0)
+    return 0;
+
+  // Retrieve the user structure
+  Voxel_VisData* aUserData = (Voxel_VisData*) (theUserDraw->Data);
+
+  if (aUserData == 0)
+    return 0;
+
+  VoxelClient_VisDrawer::VisElement *aElem = 
+    new VoxelClient_VisDrawer::VisElement (aUserData);
+
+  if (theUserDraw->Bounds != 0)
+    aElem->EvaluateBounds (*(theUserDraw->Bounds));
+
+  return aElem;
 }
 
 /**************************************************************************/
@@ -68,11 +116,9 @@ void VoxelClient_VisDrawer::Init()
     if (!isInitializeded)
     {
         isInitializeded = Standard_True;
-        MtblPtr cb = GetCallbackTable();
 
-        cb[DisplayTraverse] = VisDisplay;
-        cb[Add] = VisAdd;
-        cb[Delete] = VisDelete;
+        OpenGl_UserDrawCallback& aCallback = UserDrawCallback ();
+        aCallback = VisDrawerCallBack;
     }
 }
 

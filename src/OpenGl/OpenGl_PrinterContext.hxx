@@ -15,6 +15,8 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
+#include <OpenGl_Workspace.hxx>
+
 class Standard_Transient;
 class Handle(Standard_Type);
 class Handle(MMgt_TShared);
@@ -107,10 +109,18 @@ private:
   GLCONTEXT            myCtx;
 
   // the printer context could be created only in method call_togl_print
-  friend Standard_Boolean call_togl_print (CALL_DEF_VIEW *, CALL_DEF_LAYER *,
+  /*friend Standard_Boolean call_togl_print (CALL_DEF_VIEW *, CALL_DEF_LAYER *,
                                            CALL_DEF_LAYER *, 
                                            const Aspect_Drawable, const int,
-                                           const char*, const int, const float);
+                                           const char*, const int, const float);*/
+  friend Standard_Boolean OpenGl_Workspace::Print (const Graphic3d_CView& ACView,
+                                                  const Aspect_CLayer2d& ACUnderLayer, 
+                                                  const Aspect_CLayer2d& ACOverLayer,
+                                                  const Aspect_Handle    hPrintDC,
+                                                  const Standard_Boolean showBackground,
+                                                  const Standard_CString filename,
+                                                  const Aspect_PrintAlgo printAlgorithm,
+                                                  const Standard_Real theScaleFactor);
 };
 
 #endif

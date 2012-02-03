@@ -23,18 +23,6 @@
 *                        generation de texture automatique en OBJECT_LINEAR
 *                        rendu avec MODULATE
 *
-* Remarques:
-* ~~~~~~~~~~~
-*  Pour utiliser le binding des textures il faut que les 2 extensions
-*
-* o GL_EXT_texture_object: 
-* - glBindTextureEXT, glGenTexturesEXT, glDeleteTexturesEXT
-*
-* Attention:
-* ~~~~~~~~~~~
-*  Ce package a ete teste sur SGI, OSF, SUN, HP et WNT.
-*
-*
 * Historique des modifications
 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   22-05-97: PCT ; Creation
@@ -60,57 +48,26 @@
 *   22-07-98: FGU ; Ajout fonctions TransferTexture_To_Data() et TransferData_To_Texture()
 *        
 */
-/*----------------------------------------------------------------------*/
-
-#define IMP141100 /*GG_Allocates and free texture block count
-//      correctly
-*/
-
-/*----------------------------------------------------------------------*/
-/*
-* Includes
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <OpenGl_tgl_all.hxx>
-#include <OpenGl_txgl.hxx>
-#include <OpenGl_Extension.hxx>
-#include <OpenGl_ImageBox.hxx>
+#include <OpenGl_Display.hxx>
 #include <OpenGl_TextureBox.hxx>
+#include <OpenGl_ImageBox.hxx>
 #include <OpenGl_Memory.hxx>
 #include <OpenGl_ResourceCleaner.hxx>
 #include <OpenGl_ResourceTexture.hxx>
-
-
-/*----------------------------------------------------------------------*/
-/*
-* Constantes
-*/
-
-#define XPRINT
-#define XEXTENSION
 
 #define GROW_TEXTURES 8
 #define GROW_TEXTURES_DATA 8
 #define GROW_CONTEXT 8
 
-#ifdef __sgi
-#define glGenTextures     glGenTexturesEXT
-#define glDeleteTextures    glDeleteTexturesEXT
-#define glBindTexture     glBindTextureEXT
-#endif /* IRIX */
-
 #ifndef max
-#define max(a,b) ((a) > (b)) ? (a) : (b);
+  #define max(a,b) ((a) > (b)) ? (a) : (b);
 #endif
-
-/*----------------------------------------------------------------------*/
-/*
-* Types definis
-*/
 
 typedef enum {TEXDATA_NONE, TEXDATA_1D, TEXDATA_2D, TEXDATA_2DMM} texDataStatus;
 typedef enum {TEX_NONE, TEX_ALLOCATED} texStatus;
@@ -178,9 +135,6 @@ static GLfloat tgenparams[] = { 0.0 ,1.0 ,0.0 ,0.0};
 
 static GLenum status2type[] = { GL_NONE, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_2D };
 
-static GLboolean    init_extension = GL_FALSE;
-static GLboolean    use_bind_texture = GL_FALSE;
-
 /*----------------------------------------------------------------------*/
 /*
 * Fonctions privees
@@ -231,11 +185,7 @@ static TextureDataID FindFreeTextureData(void)
   for (i=0; i<textures_data_size; i++)
     if (texdata[i].status == TEXDATA_NONE)
     {
-#ifndef IMP141100
-      textures_data_count++;
-#else
-      textures_data_count = max(textures_data_count,i+1);
-#endif
+      textures_data_count = max (textures_data_count, i + 1);
       return i;
     }
 
@@ -271,11 +221,7 @@ static TextureID FindFreeTexture(void)
   for (i=0; i<textures_size; i++)
     if (textab[i].status == TEX_NONE)
     {
-#ifndef IMP141100
-      textures_count++;
-#else
-      textures_count = max(textures_count,i+1);
-#endif
+      textures_count = max (textures_count, i + 1);
       return i;
     }
 
@@ -458,95 +404,38 @@ static void SetTextureParam(TextureID ID)
 /*
 * simulation du glGenTexturesEXT pour un context
 */
-static void MyGenTextureEXT(TextureID ID)
+static void MyGenTextureEXT (TextureID ID)
 {
-#if defined(GL_EXT_texture_object) 
+  int Context = textab[ID].context_count;
+  TextureDataID data = textab[ID].data;
 
-  int Context;
-  TextureDataID data;
-
-  Context = textab[ID].context_count;
-  data = textab[ID].data;
-
-  if (!init_extension)
-  {
-    use_bind_texture = QueryExtension("GL_EXT_texture_object");
-
-    init_extension = GL_TRUE;
-#ifdef EXTENSION
-    printf("GL_EXT_texture_object %d\n", use_bind_texture);
-#endif
-  }
-
-  if (use_bind_texture) 
-  {
-#ifdef PRINT
-    printf("MyGenTextureEXT::gen texture\n");
-#endif
-
-    textab[ID].context[Context]  = GET_GL_CONTEXT();
-    textab[ID].drawable[Context] = GET_GLDEV_CONTEXT();
-    textab[ID].use_bind_texture[Context] = (char)use_bind_texture;
-    glGenTextures(1, &textab[ID].number[Context]);
-    glBindTexture(texdata[data].type, textab[ID].number[Context]);
-    LoadTexture(ID);
-    textab[ID].context_count++;
-  }
-  else
-#endif  /* GL_EXT_texture_object */
-    if (current_texture_data != textab[ID].data)
-      LoadTexture(ID);
+  textab[ID].context[Context]  = GET_GL_CONTEXT();
+  textab[ID].drawable[Context] = GET_GLDEV_CONTEXT();
+  textab[ID].use_bind_texture[Context] = (char )GL_TRUE;
+  glGenTextures (1, &textab[ID].number[Context]);
+  glBindTexture (texdata[data].type, textab[ID].number[Context]);
+  LoadTexture (ID);
+  textab[ID].context_count++;
 }
 
 /*----------------------------------------------------------------------*/
 /*
 * simulation du glBindTextureEXT
 */
-static void MyBindTextureEXT(TextureID ID, int Context)
+static void MyBindTextureEXT (TextureID ID, int Context)
 {
-  /* si l'extension est presente, c'est facile */
-#if defined(GL_EXT_texture_object)
-  TextureDataID data;
-  data = textab[ID].data;
-
+  // si l'extension est presente, c'est facile
+  TextureDataID data = textab[ID].data;
   if (textab[ID].status == TEXDATA_NONE)
     return;
 
-#ifdef PRINT
-  printf("MyBindTextureEXT::ID %d data %d context %d Current %d\n", ID, textab[ID].data, Context, current_texture_data);
-#endif
-
-  if (textab[ID].use_bind_texture[Context])
+  // OCC11904 - make sure that the correct texture is bound before drawing
+  GLenum aParamName = textab[ID].status == TEXDATA_1D ? GL_TEXTURE_BINDING_1D : GL_TEXTURE_BINDING_2D;
+  GLint aCurrTex = -1;
+  glGetIntegerv (aParamName, &aCurrTex);
+  if (textab[ID].number[Context] != aCurrTex)
   {
-    /* OCC11904 - make sure that the correct texture is bound before drawing */
-    GLenum aParamName = textab[ID].status == TEXDATA_1D ? 
-GL_TEXTURE_BINDING_1D : GL_TEXTURE_BINDING_2D;
-    GLint aCurrTex = -1;
-    glGetIntegerv( aParamName, &aCurrTex );
-    if ( textab[ID].number[Context] != aCurrTex )
-    {
-#ifdef PRINT
-      printf("MyBindTextureEXT::bind texture\n");
-#endif
-      glBindTexture( texdata[data].type, textab[ID].number[Context] );
-    }
-  }
-  /* sinon on reset tout */
-  else
-#endif /* GL_EXT_texture_object */
-  {
-    /* OCC11904 - make sure that the correct texture is bound before drawing */
-    GLenum aParamName = textab[ID].status == TEXDATA_1D ? 
-GL_TEXTURE_BINDING_1D : GL_TEXTURE_BINDING_2D;
-    GLint aCurrTex = -1;
-    glGetIntegerv( aParamName, &aCurrTex );
-    if ( textab[ID].number[Context] != aCurrTex )
-    {
-#ifdef PRINT
-      printf("MyBindTextureEXT::chargement sans bind de la texture\n");
-#endif
-      LoadTexture(ID);
-    }
+    glBindTexture (texdata[data].type, textab[ID].number[Context]);
   }
 }
 
@@ -856,11 +745,9 @@ void FreeTexture(TextureID ID)
   TextureDataID data;
   bool notResource = false; // if there old-style texture deletion
 
-#if defined(GL_EXT_texture_object)
   GLCONTEXT cur_context;
   GLDRAWABLE cur_drawable;
   int i;
-#endif /* GL_EXT_texture_object */
 
   if (!IsTextureValid(ID)) return;
 
@@ -868,71 +755,63 @@ void FreeTexture(TextureID ID)
   texdata[data].share_count--;
   if (texdata[data].share_count == 0)
   {      
-    /* liberation des datas de la textures */
+    // liberation des datas de la textures
     free(texdata[data].image);
 
-#if defined(GL_EXT_texture_object)
-    if(use_bind_texture)
+    // liberation de la texture dans tous les contextes
+    cur_drawable = GET_GLDEV_CONTEXT();
+    for (i = 0; i < textab[ID].context_count; ++i)
     {
-      /* liberation de la texture dans tous les contextes */
-      cur_drawable = GET_GLDEV_CONTEXT();
-      for (i=0; i<textab[ID].context_count; i++)
+      cur_context = 0;
+      bool isResource = false; 
+
+      if (textab[ID].use_bind_texture[i])
       {
-#ifdef PRINT
-        printf("FreeTexture::liberation de %d\n", ID);
-#endif
-        cur_context = 0;
-        bool isResource = false; 
-
-        if (textab[ID].use_bind_texture[i])
+        if( !OpenGl_ResourceCleaner::GetInstance()->AddResource(textab[ID].context[i], 
+		      new OpenGl_ResourceTexture(textab[ID].number[i])) )
         {
-          if( !OpenGl_ResourceCleaner::GetInstance()->AddResource(textab[ID].context[i], 
-			      new OpenGl_ResourceTexture(textab[ID].number[i])) )
-          {
-            GL_MAKE_CURRENT(GetCurrentDisplay(),
-              textab[ID].drawable[i],
-              textab[ID].context[i]);
+          GL_MAKE_CURRENT((openglDisplay.IsNull() ? (Display* )NULL : (Display* )openglDisplay->GetDisplay()),
+            textab[ID].drawable[i],
+            textab[ID].context[i]);
 
-            /*This check has been added to avoid exception, 
-            which is raised when trying to delete textures when no rendering context
-            is available*/
-            cur_context = GET_GL_CONTEXT();
-            if( cur_context )
-              glDeleteTextures(1, &textab[ID].number[i]);
-            notResource = true;
-          }
-          else
-            isResource = true;
+          // This check has been added to avoid exception, 
+          // which is raised when trying to delete textures when no rendering context is available
+          cur_context = GET_GL_CONTEXT();
+          if (cur_context)
+            glDeleteTextures (1, &textab[ID].number[i]);
+          notResource = true;
         }
-
-        if( !isResource && cur_context )
-          glFinish();
+        else
+        {
+          isResource = true;
+        }
       }
 
-      if( notResource )
-        GL_MAKE_CURRENT(GetCurrentDisplay(),cur_drawable,cur_context);
+      if( !isResource && cur_context )
+        glFinish();
+    }
 
-      texdata[data].status = TEXDATA_NONE;
-#ifndef IMP141100
-      textures_data_count--;
-#else
-      if( data+1 == textures_data_count ) textures_data_count--;
-#endif
-      free(textab[ID].context);
-      free(textab[ID].drawable);
-      free(textab[ID].use_bind_texture);
-      free(textab[ID].number);
+    if( notResource )
+      GL_MAKE_CURRENT((openglDisplay.IsNull() ? (Display* )NULL : (Display* )openglDisplay->GetDisplay()),
+                      cur_drawable, cur_context);
 
-    } /* use_bind_texture */
-#endif /* GL_EXT_texture_object */    
+    texdata[data].status = TEXDATA_NONE;
+    if (data + 1 == textures_data_count)
+    {
+      --textures_data_count;
+    }
+
+    free(textab[ID].context);
+    free(textab[ID].drawable);
+    free(textab[ID].use_bind_texture);
+    free(textab[ID].number);
   }
 
   textab[ID].status = TEX_NONE;
-#ifndef IMP141100
-  textures_count--;
-#else
-  if( ID+1 == textures_count ) textures_count--;
-#endif
+  if (ID + 1 == textures_count)
+  {
+    --textures_count;
+  }
 
   current_texture_data = TEXTUREDATA_ERROR;
 }

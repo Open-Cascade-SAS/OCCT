@@ -33,11 +33,10 @@ deferred class GraphicDriver from Graphic3d inherits GraphicDriver from Aspect
 
     ---Version:
 
-    ---Purpose: This class allows the definition of a graphic
-    --      driver and encapsulates the Pex driver, the
-    --      OpenGl driver, the Optimizer driver and the Phigs driver.
+    ---Purpose: This class allows the definition of a graphic driver
+    --      (currently only OpenGl driver is used).
 
-    ---Keywords: Pex, OpenGl, Optimizer, Phigs
+    ---Keywords: OpenGl
 
     ---Warning:
     ---References:
@@ -400,7 +399,7 @@ is
 			 AColor2: Color from Quantity;
                          FillStyle : GradientFillMethod from Aspect
                        )
-    is virtual;
+    is deferred;
     ---Purpose: call_togl_gradient_background
 
 
@@ -418,7 +417,7 @@ is
     SetBgGradientStyle( me        : mutable;
                         ACView    : CView from Graphic3d;
                         FillStyle : GradientFillMethod from Aspect )
-    is virtual;
+    is deferred;
 
     ClipLimit ( me      : mutable;
                 ACView  : CView from Graphic3d;
@@ -714,46 +713,6 @@ is
         is deferred;
     ---Purpose: call_togl_quadrangle
 
-    QuadrangleSet ( me          : mutable;
-                    ACGroup     : CGroup from Graphic3d;
-                    ListVertex  : Array1OfVertex from Graphic3d;
-                    ListEdge    : Array1OfEdge from Aspect;
-                    EvalMinMax  : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_polygon_indices
-
-    QuadrangleSet ( me          : mutable;
-                    ACGroup     : CGroup from Graphic3d;
-                    ListVertex  : Array1OfVertexN from Graphic3d;
-                    ListEdge    : Array1OfEdge from Aspect;
-                    EvalMinMax  : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_polygon_indices
-
-    QuadrangleSet ( me          : mutable;
-                    ACGroup     : CGroup from Graphic3d;
-                    ListVertex  : Array1OfVertexNT from Graphic3d;
-                    ListEdge    : Array1OfEdge from Aspect;
-                    EvalMinMax  : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_polygon_indices
-
-    QuadrangleSet ( me          : mutable;
-                    ACGroup     : CGroup from Graphic3d;
-                    ListVertex  : Array1OfVertexC from Graphic3d;
-                    ListEdge    : Array1OfEdge from Aspect;
-                    EvalMinMax  : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_polygon_indices
-
-    QuadrangleSet ( me          : mutable;
-                    ACGroup     : CGroup from Graphic3d;
-                    ListVertex  : Array1OfVertexNC from Graphic3d;
-                    ListEdge    : Array1OfEdge from Aspect;
-                    EvalMinMax  : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_polygon_indices
-
     ----------------------------------------
     -- Category: Methods to create Text
     -- for Purpose : see Graphic3d_Group.cdl
@@ -884,7 +843,7 @@ is
 
     EnableVBO( me       : mutable;
                status   : Boolean from Standard )
-               is virtual;
+               is deferred;
     ---Purpose: enables/disables usage of OpenGL vertex buffer arrays while drawing primitiev arrays
 
     ----------------------------------------
@@ -948,26 +907,6 @@ is
                                    zmax : ShortReal from Standard)
     ---Purpose: call_togl_graduatedtrihedron_minmaxvalues
     is deferred;
-
-    ----------------------------------------
-    -- Category: Internal methods
-    -- for Purpose : see Graphic3d_Group.cdl
-    ----------------------------------------
-
-    Bezier ( me         : mutable;
-             ACGroup    : CGroup from Graphic3d;
-             ListVertex : Array1OfVertex from Graphic3d;
-             EvalMinMax : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_bezier
-
-    Bezier ( me         : mutable;
-             ACGroup    : CGroup from Graphic3d;
-             ListVertex : Array1OfVertex from Graphic3d;
-             ListWeight : Array1OfReal from TColStd;
-             EvalMinMax : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_bezier_weight
 
     ---------------------------
     -- Category: Animation mode
@@ -1202,7 +1141,7 @@ is
                         R       : ShortReal from Standard;
                         G       : ShortReal from Standard;
                         B       : ShortReal from Standard )
-        is virtual;
+        is deferred;
     ---Purpose: call_togl_set_text_attributes
 
     Text ( me       : mutable;

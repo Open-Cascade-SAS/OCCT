@@ -4,8 +4,12 @@
 #include "Voxel_VisData.h"
 #include <Graphic3d_CBounds.hxx>
 
-class VoxelClient_VisDrawer  
+class VoxelClient_VisDrawer
 {
+public:
+
+  class VisElement;
+
 public:
 
     Standard_EXPORT static void Init();

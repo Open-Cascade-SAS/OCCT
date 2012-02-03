@@ -4,42 +4,32 @@
 
 #include <OpenGl_ResourceTexture.hxx>
 #include <OpenGl_tgl_all.hxx>
-#include <OpenGl_Extension.hxx>
-
-#ifdef __sgi
-#define glGenTextures     glGenTexturesEXT
-#define glDeleteTextures  glDeleteTexturesEXT
-#define glBindTexture     glBindTextureEXT
-#endif /* IRIX */
 
 //=======================================================================
 //function : OpenGl_ResourceTexture
 //purpose  : Constructor
 //=======================================================================
-
-OpenGl_ResourceTexture::OpenGl_ResourceTexture(GLuint theId) 
-: OpenGl_Resource(theId)
+OpenGl_ResourceTexture::OpenGl_ResourceTexture (GLuint theId)
+: OpenGl_Resource (theId)
 {
-
+  //
 }
 
 //=======================================================================
 //function : OpenGl_ResourceTexture
 //purpose  : Copy constructor
 //=======================================================================
-
-OpenGl_ResourceTexture::OpenGl_ResourceTexture(const OpenGl_ResourceTexture& theResource) 
-: OpenGl_Resource(theResource)
+OpenGl_ResourceTexture::OpenGl_ResourceTexture (const OpenGl_ResourceTexture& theResource)
+: OpenGl_Resource (theResource)
 {
-
+  //
 }
 
 //=======================================================================
 //function : Clean
 //purpose  : free OpenGl memory allocated for texture resource
 //=======================================================================
-
-void OpenGl_ResourceTexture::Clean()
+void OpenGl_ResourceTexture::Clean (const Handle(OpenGl_Context)& theGlContext)
 {
-  glDeleteTextures(1, &myId);
+  glDeleteTextures (1, &myId);
 }

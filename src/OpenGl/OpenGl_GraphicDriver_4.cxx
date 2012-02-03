@@ -1,142 +1,117 @@
+// File:      OpenGl_GraphicDriver_4.cxx
+// Created:   20 October 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GraphicDriver.hxx>
 
-// File   OpenGl_GraphicDriver_4.cxx
-// Created  Mardi 28 janvier 1997
-// Author CAL
+#include <NCollection_DataMap.hxx>
+#include <OpenGl_Structure.hxx>
+#include <OpenGl_CView.hxx>
 
-//-Copyright  MatraDatavision 1997
+void OpenGl_GraphicDriver::ClearStructure (const Graphic3d_CStructure& theCStructure)
+{
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aStructure == NULL)
+    return;
 
-//-Version  
-
-//-Design Declaration des variables specifiques aux Drivers
-
-//-Warning  Un driver encapsule les Pex et OpenGl drivers
-
-//-References 
-
-//-Language C++ 2.0
-
-//-Declarations
-
-// for the class
-#include <OpenGl_GraphicDriver.jxx>
-
-#include <Aspect_DriverDefinitionError.hxx>
-
-#include <OpenGl_tgl_funcs.hxx>
-
-//-Aliases
-
-//-Global data definitions
-
-//-Methods, in order
-
-void OpenGl_GraphicDriver::ClearStructure (const Graphic3d_CStructure& ACStructure) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_clearstructure");
-    PrintCStructure (MyCStructure, 1);
-  }
-  call_togl_clearstructure (&MyCStructure);
-
+  aStructure->Clear();
+  InvalidateAllWorkspaces();
 }
 
-void OpenGl_GraphicDriver::Connect (const Graphic3d_CStructure& AFather, const Graphic3d_CStructure& ASon) {
+void OpenGl_GraphicDriver::ContextStructure (const Graphic3d_CStructure& theCStructure)
+{
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aStructure == NULL)
+    return;
 
-  Graphic3d_CStructure MyFather = AFather;
-  Graphic3d_CStructure MySon = ASon;
+  aStructure->SetTransformPersistence (theCStructure.TransformPersistence);
 
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_connect");
-    PrintString ("AFather", "");
-    PrintCStructure (MyFather, 1);
-    PrintString ("ASon", "");
-    PrintCStructure (MySon, 1);
-  }
-  call_togl_connect (&MyFather, &MySon);
+  if (theCStructure.ContextLine.IsDef)
+    aStructure->SetAspectLine (theCStructure.ContextLine);
 
+  if (theCStructure.ContextFillArea.IsDef)
+    aStructure->SetAspectFace (theCStructure.ContextFillArea);
+
+  if (theCStructure.ContextMarker.IsDef)
+    aStructure->SetAspectMarker (theCStructure.ContextMarker);
+
+  if (theCStructure.ContextText.IsDef)
+    aStructure->SetAspectText (theCStructure.ContextText);
+
+  InvalidateAllWorkspaces();
 }
 
-void OpenGl_GraphicDriver::ContextStructure (const Graphic3d_CStructure& ACStructure) {
-
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_contextstructure");
-    PrintCStructure (MyCStructure, 1);
-    PrintCStructure (MyCStructure, 2);
-  }
-  call_togl_contextstructure (&MyCStructure);
-
+void OpenGl_GraphicDriver::Connect (const Graphic3d_CStructure& theFather,
+                                    const Graphic3d_CStructure& theSon)
+{
+  OpenGl_Structure* aFather = (OpenGl_Structure* )theFather.ptrStructure;
+  OpenGl_Structure* aSon = (OpenGl_Structure* )theSon.ptrStructure;
+  if (aFather && aSon)
+    aFather->Connect(aSon);
 }
 
-void OpenGl_GraphicDriver::Disconnect (const Graphic3d_CStructure& AFather, const Graphic3d_CStructure& ASon) {
-
-  Graphic3d_CStructure MyFather = AFather;
-  Graphic3d_CStructure MySon = ASon;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_disconnect");
-    PrintString ("AFather", "");
-    PrintCStructure (AFather, 1);
-    PrintString ("ASon", "");
-    PrintCStructure (MySon, 1);
-  }
-  call_togl_disconnect (&MyFather, &MySon);
-
+void OpenGl_GraphicDriver::Disconnect (const Graphic3d_CStructure& theFather,
+                                       const Graphic3d_CStructure& theSon)
+{
+  OpenGl_Structure* aFather = (OpenGl_Structure* )theFather.ptrStructure;
+  OpenGl_Structure* aSon = (OpenGl_Structure* )theSon.ptrStructure;
+  if (aFather && aSon)
+    aFather->Disconnect(aSon);
 }
 
-void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView& ACView, const Graphic3d_CStructure& ACStructure, const Standard_Integer APriority) {
+void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView&      theCView,
+                                             const Graphic3d_CStructure& theCStructure,
+                                             const Standard_Integer      thePriority)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aCView == NULL || aStructure == NULL)
+    return;
 
-  Graphic3d_CView MyCView = ACView;
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_displaystructure");
-    PrintCView (MyCView, 1);
-    PrintCStructure (MyCStructure, 1);
-    PrintInteger ("Priority", APriority);
-  }
-  call_togl_displaystructure (&MyCView, MyCStructure.Id, int (APriority));
-
+  aCView->View->DisplayStructure (aStructure, thePriority);
+  aCView->WS->Invalidate();
 }
 
-void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView& ACView, const Graphic3d_CStructure& ACStructure) {
+void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView&      theCView,
+                                           const Graphic3d_CStructure& theCStructure)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aCView == NULL || aStructure == NULL)
+    return;
 
-  Graphic3d_CView MyCView = ACView;
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_erasestructure");
-    PrintCView (MyCView, 1);
-    PrintCStructure (MyCStructure, 1);
-  }
-  call_togl_erasestructure (MyCView.ViewId, MyCStructure.Id);
-
+  aCView->View->EraseStructure (aStructure);
+  aCView->WS->Invalidate();
 }
 
-void OpenGl_GraphicDriver::RemoveStructure (const Graphic3d_CStructure& ACStructure) {
+void OpenGl_GraphicDriver::RemoveStructure (const Graphic3d_CStructure& theCStructure)
+{
+  if (!GetMapOfStructures().IsBound (theCStructure.Id))
+    return;
 
-  Graphic3d_CStructure MyCStructure = ACStructure;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_removestructure");
-    PrintCStructure (MyCStructure, 1);
-  }
-  call_togl_removestructure (&MyCStructure);
-
+  OpenGl_Structure* aStructure = OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+  OpenGl_GraphicDriver::GetMapOfStructures().UnBind (theCStructure.Id);
+  delete aStructure;
+  InvalidateAllWorkspaces();
 }
 
-void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& ACStructure) {
+void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& theCStructure)
+{
+  RemoveStructure (theCStructure);
 
-  Graphic3d_CStructure MyCStructure = ACStructure;
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_structure");
-    PrintCStructure (MyCStructure, 1);
-  }
-  call_togl_structure (&MyCStructure);
+  OpenGl_Structure* aStructure = new OpenGl_Structure();
 
+  aStructure->SetDegenerateModel (theCStructure.ContextFillArea.DegenerationMode,
+                                  theCStructure.ContextFillArea.SkipRatio);
+
+  Standard_Integer aStatus = 0;
+  if (theCStructure.highlight) aStatus |= OPENGL_NS_HIGHLIGHT;
+  if (!theCStructure.visible)  aStatus |= OPENGL_NS_HIDE;
+  if (theCStructure.pick)      aStatus |= OPENGL_NS_PICK;
+  aStructure->SetNamedStatus (aStatus);
+
+  theCStructure.ptrStructure = aStructure;
+  OpenGl_GraphicDriver::GetMapOfStructures().Bind (theCStructure.Id, aStructure);
+  InvalidateAllWorkspaces();
 }

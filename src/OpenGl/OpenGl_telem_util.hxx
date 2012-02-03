@@ -38,7 +38,7 @@ xx-xx-xx : xxx ; Creation.
 #ifndef WNT
 #include <GL/glx.h>
 #endif
-#include <OpenGl_telem.hxx>
+#include <InterfaceGraphic_telem.hxx>
 
 /*
 * ShortRealLast () = 3.40282346638528860e+38
@@ -130,90 +130,8 @@ Tmatrix3Struct;
   } \
 }
 
-extern Tint TelRemdupnames( Tint*, Tint ); /* list, num */
-#ifdef BUC60823
 extern int TelGetPolygonNormal( tel_point, Tint*, Tint, Tfloat* );
 extern int TelGetNormal( Tfloat*, Tfloat*, Tfloat*, Tfloat* );
-#else
-extern void TelGetNormal( Tfloat*, Tfloat*, Tfloat*, Tfloat* );
-#endif
-/* point1,  point2,  point3,  normal */
-extern Tint TelIsBackFace( Tmatrix3, Tfloat* ); /* normal */
-extern Tint TelIsBackFacePerspective( Tmatrix3, Tfloat*, Tfloat*, Tfloat* ); 
-/* matrix,  point 1, point 2, point 3 */
 extern void TelMultiplymat3( Tmatrix3, Tmatrix3, Tmatrix3 );
-/* mat out, mat in, mat in */
-extern void TelTransposemat3( Tmatrix3 ); /* mat in out */
-extern void TelTranpt3( Tfloat [4], Tfloat [4], Tmatrix3 ); /* out, in, mat */
-
-extern  void  TelInitWS( Tint, Tint, Tint, Tfloat, Tfloat, Tfloat );
-/* ws, width, height, bgcolr, bgcolg, bgcolb */
-extern  void  TelSwapBuffers( Tint );
-extern  void  TelCopyBuffers( Tint, GLenum, GLenum,
-                             Tfloat, Tfloat, Tfloat, Tfloat, Tfloat, Tfloat, Tint );
-extern  TStatus TelProjectionRaster( Tint ws, Tfloat x, Tfloat y, Tfloat z,
-                                    Tfloat *xr, Tfloat *yr);
-extern  TStatus TelUnProjectionRaster( Tint ws, Tint xr, Tint yr,
-                                      Tfloat *x, Tfloat *y, Tfloat *z);
-TStatus
-TelUnProjectionRasterWithRay(Tint ws, Tint xr, Tint yr, Tfloat *x, Tfloat *y, Tfloat *z,
-                             Tfloat *dx, Tfloat *dy, Tfloat *dz);
-extern  Tint  TelBackBufferRestored(void);
-extern  void  TelSetBackBufferRestored( Tint );
-extern  void  TelEnable( Tint );
-extern  void  TelDisable( Tint );
-extern  void  TelFlush( Tint );
-
-extern void TelSetFrontFaceAttri(
-                                 Tint,          /* interior_style */
-                                 Tint,          /* back_interior_style */
-                                 Tint,          /* interior_index */
-                                 Tint,          /* back_interior_index */
-                                 Tint,          /* front_shading_method */
-                                 Tint,          /* back_shading_method */
-                                 Tint,          /* front_lighting_model */
-                                 Tint,          /* back_lighting_model */
-                                 tel_surf_prop, /* surf_prop */
-                                 tel_surf_prop, /* back_surf_prop */
-                                 tel_colour,    /* interior_colour */
-                                 tel_colour    /* back_interior_colour */
-                                 );
-extern void TelSetBackFaceAttri(
-                                Tint,          /* interior_style */
-                                Tint,          /* back_interior_style */
-                                Tint,          /* interior_index */
-                                Tint,          /* back_interior_index */
-                                Tint,          /* front_shading_method */
-                                Tint,          /* back_shading_method */
-                                Tint,          /* front_lighting_model */
-                                Tint,          /* back_lighting_model */
-                                tel_surf_prop, /* surf_prop */
-                                tel_surf_prop, /* back_surf_prop */
-                                tel_colour,    /* interior_colour */
-                                tel_colour    /* back_interior_colour */
-                                );
-
-extern  void  TelReadImage(Tint , GLenum , Tint , Tint , Tint , Tint , unsigned int *);
-extern  void  TelDrawImage(Tint , GLenum , Tint , Tint , Tint , Tint , unsigned int *);
-extern  void  TelReadDepths(Tint , Tint , Tint , Tint , Tint , float *);
-
-extern  void TelMakeFrontBufCurrent(Tint );
-extern  void TelMakeBackBufCurrent(Tint );
-#ifdef IMP190100
-extern  void TelMakeFrontAndBackBufCurrent(Tint );
-#endif
-
-#ifndef WNT
-extern  void TelSetPixmapDBParams(Display *dpy,
-                                  Window window,
-                                  int width, int height, int depth, GC gc,
-                                  Pixmap pixmap,
-                                  GLXPixmap glxpixmap,
-                                  GLXContext ctx);
-extern  GLXPixmap TelGetGLXPixmap(void);
-extern  void TelSetPixmapDB(int flag);
-extern  int TelTestPixmapDB(void);
-extern  void TelDrawBuffer(GLenum buf);
-#endif  /* WNT*/
 
 #endif

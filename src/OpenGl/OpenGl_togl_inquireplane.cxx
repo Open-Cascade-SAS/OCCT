@@ -7,7 +7,6 @@
 #endif
 
 #include <OpenGl_tgl_all.hxx>
-#include <OpenGl_tgl.hxx>
 
 int EXPORT
 call_togl_inquireplane ()
@@ -19,7 +18,6 @@ call_togl_inquireplane ()
     maxplanes -= 2;   /* NOTE the 2 first planes are reserved for ZClipping */
     if( maxplanes < 0 ) 
       maxplanes = 0;
-    call_facilities_list.MaxPlanes = maxplanes;
 #endif
   }
 #ifdef DEBUG

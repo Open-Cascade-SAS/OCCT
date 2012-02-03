@@ -2,7 +2,7 @@
 /* Includes                                                             */
 /************************************************************************/
 
-#include <OpenGl_GraphicDriver.jxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Localizer.hxx>
 
 #ifdef HAVE_GL2PS

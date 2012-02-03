@@ -1,22 +1,12 @@
-// File         OpenGl_GraphicDriver_print.c
-// Created      March 2000
-// Author       THA
-// e-mail       t-hartl@muenchen.matra-dtv.fr
+// File:      OpenGl_GraphicDriver_print.cxx
+// Created:   20 October 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE 2011
 
-/************************************************************************/
-/* Includes                                                             */
-/************************************************************************/
+#include <OpenGl_GraphicDriver.hxx>
 
-#include <OpenGl_GraphicDriver.jxx>
-#include <Aspect_DriverDefinitionError.hxx>
 #include <Standard_NotImplemented.hxx>
-
-#include <OpenGl_tgl_funcs.hxx>
-
-
-/************************************************************************/
-/* Print Methods                                                        */
-/************************************************************************/
+#include <OpenGl_CView.hxx>
 
 Standard_Boolean OpenGl_GraphicDriver::Print
   (const Graphic3d_CView& ACView, 
@@ -28,22 +18,12 @@ Standard_Boolean OpenGl_GraphicDriver::Print
    const Aspect_PrintAlgo printAlgorithm,
    const Standard_Real theScaleFactor) const
 {
-
 #ifdef WNT
-  Graphic3d_CView MyCView = ACView;
-  Aspect_CLayer2d MyCUnderLayer = ACUnderLayer;
-  Aspect_CLayer2d MyCOverLayer = ACOverLayer;
-
-  if (MyTraceLevel) {
-    PrintFunction ("call_togl_print");
-    PrintCView (MyCView, 1);
-  }
-  return call_togl_print (&MyCView, &MyCUnderLayer, &MyCOverLayer,
-                          hPrintDC, (int)showBackground, filename,
-                          (int)printAlgorithm, (float)theScaleFactor);
+  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  if (aCView)
+    return aCView->WS->Print(ACView,ACUnderLayer,ACOverLayer,hPrintDC,showBackground,filename,printAlgorithm,theScaleFactor);
 #else
-  Standard_NotImplemented::Raise ("OpenGl_GraphicDriver::Print is implemented "
-    "only on Windows");
-  return Standard_False;
+  Standard_NotImplemented::Raise ("OpenGl_GraphicDriver::Print is implemented only on Windows");
 #endif
+  return Standard_False;
 }

@@ -130,31 +130,31 @@ void OpenGl_ResourceCleaner::ClearShared()
 //purpose  : Clear the unused resources for active OpenGl context
 //=======================================================================
 
-void OpenGl_ResourceCleaner::Cleanup() 
+void OpenGl_ResourceCleaner::Cleanup (const Handle(OpenGl_Context)& theGlContext)
 {
   GLCONTEXT aContext = GET_GL_CONTEXT();
+  if (aContext == NULL)
+    return;
 
-  // if we have active context, we can delete the resources
-  if (aContext != NULL) 
-    // if the context is found in shared list
-    if (mySharedContexts.Contains(aContext)) 
+  // if the context is found in shared list
+  if (mySharedContexts.Contains (aContext)) 
+  {
+    while (mySharedQueue.Size() > 0) 
     {
-      while(mySharedQueue.Size() > 0) 
-      {
-        mySharedQueue.Front()->Clean();  // delete resource memory
-        mySharedQueue.Pop();
-      }
+      mySharedQueue.Front()->Clean (theGlContext); // delete resource memory
+      mySharedQueue.Pop();
     }
-    // if the context is found in non-shared list
-    else if (myInstanceQueue.IsBound(aContext)) 
+  }
+  // if the context is found in non-shared list
+  else if (myInstanceQueue.IsBound (aContext)) 
+  {
+    QueueOfResources* aQueue = &myInstanceQueue.ChangeFind (aContext);
+    while (aQueue->Size() > 0) 
     {
-      QueueOfResources * aQueue = &myInstanceQueue.ChangeFind(aContext);
-      while(aQueue->Size() > 0) 
-      {
-        aQueue->Front()->Clean();          // delete resource memory
-        aQueue->Pop();
-      }
+      aQueue->Front()->Clean (theGlContext); // delete resource memory
+      aQueue->Pop();
     }
+  }
 }
 
 //=======================================================================

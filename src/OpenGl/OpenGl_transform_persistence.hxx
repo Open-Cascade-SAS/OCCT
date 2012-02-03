@@ -11,10 +11,4 @@ enum TP_FLAGS
   TPF_TRIEDRON        = 0x020   
 };
 
-
-extern void  transform_persistence_begin( int, float, float, float );
-
-extern void  transform_persistence_end(void);
-
-
 #endif /*OPENGL_TRANSFORM_PERSISTENCE_H*/

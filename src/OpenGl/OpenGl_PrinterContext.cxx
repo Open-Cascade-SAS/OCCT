@@ -5,7 +5,7 @@
 #include <OpenGl_PrinterContext.hxx>
 
 OpenGl_PrinterContext* OpenGl_PrinterContext::g_PrinterContext = NULL;
-GLCONTEXT              OpenGl_PrinterContext::g_ContextId      = NULL;
+GLCONTEXT             OpenGl_PrinterContext::g_ContextId      = NULL;
 
 //=======================================================================
 //function : OpenGl_PrinterContext

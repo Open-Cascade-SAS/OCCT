@@ -1,29 +1,24 @@
+// File:      OpenGl_GraphicDriver.cxx
+// Created:   20 October 2011
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE 2011
 
-// File         OpenGl_GraphicDriver.cxx
-// Created      Mardi 28 janvier 1997
-// Author       CAL
+#include <OpenGl_GraphicDriver.hxx>
 
-//-Copyright    MatraDatavision 1997
+#include <OpenGl_View.hxx>
+#include <OpenGl_Workspace.hxx>
 
-//-Version      
+IMPLEMENT_STANDARD_HANDLE(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
-//-Design       Declaration des variables specifiques aux Drivers
-
-//-Warning      Un driver encapsule les Pex, Phigs et OpenGl drivers
-
-//-References   
-
-//-Language     C++ 2.0
-
-//-Declarations
-
-// for the class
-#include <OpenGl_GraphicDriver.ixx>
-#include <OpenGl_Extension.hxx>
-
-//-Aliases
-
-//-Global data definitions
+namespace
+{
+  // Global maps - shared by whole TKOpenGl module. To be removed.
+  static NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      TheMapOfView (1, NCollection_BaseAllocator::CommonBaseAllocator());
+  static NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> TheMapOfWS   (1, NCollection_BaseAllocator::CommonBaseAllocator());
+  static NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        TheMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator());
+  static Standard_Boolean TheToUseVbo = Standard_True;
+};
 
 // Pour eviter de "mangler" MetaGraphicDriverFactory, le nom de la
 // fonction qui cree un Graphic3d_GraphicDriver.
@@ -32,41 +27,62 @@
 // classe Graphic3d_GraphicDevice
 extern "C" {
 #ifdef WNT /* disable MS VC++ warning on C-style function returning C++ object */
-#pragma warning(push)
-#pragma warning(disable:4190)
+  #pragma warning(push)
+  #pragma warning(disable:4190)
 #endif
-  Standard_EXPORT Handle(Graphic3d_GraphicDriver) MetaGraphicDriverFactory
-    (const Standard_CString AShrName);
-  Standard_EXPORT Handle(Graphic3d_GraphicDriver) MetaGraphicDriverFactory
-    (const Standard_CString AShrName) {
-      Handle(OpenGl_GraphicDriver)  aOpenDriver = new OpenGl_GraphicDriver (AShrName);
-      return aOpenDriver;
-      //              return new OpenGl_GraphicDriver (AShrName);
-    }
+  Standard_EXPORT Handle(Graphic3d_GraphicDriver) MetaGraphicDriverFactory (const Standard_CString AShrName)
+  {
+    Handle(OpenGl_GraphicDriver) aOpenDriver = new OpenGl_GraphicDriver (AShrName);
+    return aOpenDriver;
+  }
 #ifdef WNT
-#pragma warning(pop)
+  #pragma warning(pop)
 #endif
 }
 
-//-Constructors
-
-OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString AShrName):Graphic3d_GraphicDriver (AShrName) 
+OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString theShrName)
+: Graphic3d_GraphicDriver (theShrName)
 {
+  //
 }
-
-//-Methods, in order
 
 Standard_ShortReal OpenGl_GraphicDriver::DefaultTextHeight() const
 {
   return 16.;
 }
 
-GLboolean OpenGl_QueryExtensionGLX (const char *extName)
+NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>& OpenGl_GraphicDriver::GetMapOfViews()
 {
-  return QueryExtensionGLX(const_cast<char *>(extName));
+  return TheMapOfView;
 }
 
-GLboolean OpenGl_QueryExtension    (const char *extName)
+NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>& OpenGl_GraphicDriver::GetMapOfWorkspaces()
 {
-  return QueryExtension(const_cast<char *>(extName));
+  return TheMapOfWS;
+}
+
+NCollection_DataMap<Standard_Integer, OpenGl_Structure*>& OpenGl_GraphicDriver::GetMapOfStructures()
+{
+  return TheMapOfStructure;
+}
+
+//TsmInitUpdateState
+void OpenGl_GraphicDriver::InvalidateAllWorkspaces()
+{
+  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIt (OpenGl_GraphicDriver::GetMapOfWorkspaces());
+       anIt.More(); anIt.Next())
+  {
+    anIt.ChangeValue()->Invalidate();
+    anIt.ChangeValue()->EraseAnimation();
+  }
+}
+
+Standard_Boolean OpenGl_GraphicDriver::ToUseVBO()
+{
+  return TheToUseVbo;
+}
+
+void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
+{
+  TheToUseVbo = theToTurnOn;
 }
