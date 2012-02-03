@@ -30,6 +30,13 @@ is
 	--	    of the graphic library.
 	--  Warning: Raises if something wrong.
 	raises GraphicDeviceDefinitionError from Aspect;
+ 
+	Create ( graphicLib : CString from Standard )
+		returns mutable WNTGraphicDevice from Graphic3d
+	---Purpose: Creates a class instance and provide initialization
+	--	    of the graphic library defined by "graphicLib".
+	--  Warning: Raises if something wrong.
+	raises GraphicDeviceDefinitionError from Aspect;
    
 	Destroy ( me : mutable )
 		is redefined static;
@@ -46,6 +53,12 @@ is
 		is private;
 	---Level: Internal
 	---Purpose: Sets the GraphicDriver.
+
+	SetGraphicDriver ( me	: mutable;
+					   graphicLib : CString from Standard )
+		is private;
+	---Level: Internal
+	---Purpose: Sets the GraphicDriver defined by "graphicLib".
 
 fields
 

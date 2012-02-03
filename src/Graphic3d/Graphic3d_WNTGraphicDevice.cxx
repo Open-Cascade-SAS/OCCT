@@ -1,98 +1,106 @@
-/*
-10-09-00  : GG  ; NEW OpenGl driver loading specification
-when nothing is defined the driver TKOpenGl.dll
-is loaded from the current PATH.
-*/
+// File:      Graphic3d_WNTGraphicDevice.cxx
 
-#define XDESTROY
+#if (defined(_WIN32) || defined(__WIN32__))
 
 #include <stdlib.h>
 
-
-#ifdef WNT
-# include <Graphic3d_WNTGraphicDevice.ixx>
-# include <InterfaceGraphic_wntio.hxx>
+#include <Graphic3d_WNTGraphicDevice.ixx>
+#include <InterfaceGraphic_wntio.hxx>
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
 
-
-typedef Handle_Graphic3d_GraphicDriver ( *GET_DRIVER_PROC ) ( const char* );
-
-Graphic3d_WNTGraphicDevice::Graphic3d_WNTGraphicDevice (): WNT_GraphicDevice (Standard_True) {
-
-  SetGraphicDriver ();
-
-  if (! MyGraphicDriver->Begin (""))
-    Aspect_GraphicDeviceDefinitionError::Raise
-    ("Cannot connect to graphic library");
-
-}
-
-void Graphic3d_WNTGraphicDevice::Destroy () {
-
-#ifdef DESTROY
-  cout << "Graphic3d_WNTGraphicDevice::Destroy ()\n";
-#endif
-
-  MyGraphicDriver->End ();
-
-}
-
-Handle(Aspect_GraphicDriver) Graphic3d_WNTGraphicDevice::GraphicDriver () const {
-
-  return MyGraphicDriver;
-
-}
-
-void Graphic3d_WNTGraphicDevice::SetGraphicDriver () 
+// =======================================================================
+// function : Graphic3d_WNTGraphicDevice
+// purpose  :
+// =======================================================================
+Graphic3d_WNTGraphicDevice::Graphic3d_WNTGraphicDevice()
+: WNT_GraphicDevice (Standard_True)
 {
+  SetGraphicDriver();
+  if (!MyGraphicDriver->Begin (""))
+    Aspect_GraphicDeviceDefinitionError::Raise ("Cannot connect to graphic library");
 
-  Standard_Boolean Result;
-  OSD_Function new_GLGraphicDriver;
-  Standard_CString TheShr = getenv("CSF_GraphicShr");
-  if ( ! TheShr || ( strlen( TheShr ) == 0 ) )
-    TheShr = "TKOpenGl.dll";
+}
 
-  MySharedLibrary.SetName ( TheShr );
-  Result = MySharedLibrary.DlOpen (OSD_RTLD_LAZY);
+// =======================================================================
+// function : Graphic3d_WNTGraphicDevice
+// purpose  :
+// =======================================================================
+Graphic3d_WNTGraphicDevice::Graphic3d_WNTGraphicDevice (const Standard_CString theGraphicLib)
+: WNT_GraphicDevice (Standard_True)
+{
+  SetGraphicDriver (theGraphicLib);
+  if (!MyGraphicDriver->Begin (""))
+    Aspect_GraphicDeviceDefinitionError::Raise ("Cannot connect to graphic library");
+}
 
-  if (! Result) {
-    Aspect_GraphicDeviceDefinitionError::Raise
-      (MySharedLibrary.DlError ());
+// =======================================================================
+// function : Destroy
+// purpose  :
+// =======================================================================
+void Graphic3d_WNTGraphicDevice::Destroy()
+{
+  MyGraphicDriver->End();
+}
+
+// =======================================================================
+// function : GraphicDriver
+// purpose  :
+// =======================================================================
+Handle(Aspect_GraphicDriver) Graphic3d_WNTGraphicDevice::GraphicDriver() const
+{
+  return MyGraphicDriver;
+}
+
+// =======================================================================
+// function : SetGraphicDriver
+// purpose  :
+// =======================================================================
+void Graphic3d_WNTGraphicDevice::SetGraphicDriver() 
+{
+  Standard_CString aLibPath = getenv ("CSF_GraphicShr");
+  if (aLibPath == NULL || strlen (aLibPath) == 0)
+    aLibPath = "TKOpenGl.dll";
+
+  SetGraphicDriver (aLibPath);
+}
+
+// =======================================================================
+// function : SetGraphicDriver
+// purpose  :
+// =======================================================================
+void Graphic3d_WNTGraphicDevice::SetGraphicDriver (const Standard_CString theGraphicLib)
+{
+  MyGraphicDriver.Nullify();
+
+  // load the library
+  MySharedLibrary.SetName (theGraphicLib);
+  if (!MySharedLibrary.DlOpen (OSD_RTLD_LAZY))
+  {
+    Aspect_GraphicDeviceDefinitionError::Raise (MySharedLibrary.DlError());
   }
-  else {
-    // Management of traces
-    OSD_Environment beurk("CSF_GraphicTrace");
-    TCollection_AsciiString val = beurk.Value();
-    if (val.Length() > 0 )
-      cout << "Information : " << TheShr << " loaded\n" << flush;
 
-    new_GLGraphicDriver =
-      MySharedLibrary.DlSymb ("MetaGraphicDriverFactory");
-    if (! new_GLGraphicDriver) {
-      Aspect_GraphicDeviceDefinitionError::Raise
-        (MySharedLibrary.DlError ());
-    }
-    else {
-      // Sequence :
-      // new_GLGraphicDriver is OSD_Function :
-      // typedef int (* OSD_Function)(...);
-      // wherefrom a good cast in GraphicDriver.
-      //Handle( Graphic3d_GraphicDriver ) ADriver = new Graphic3d_GraphicDriver ( TheShr );
+  // management of traces
+  OSD_Environment aTraceEnv ("CSF_GraphicTrace");
+  TCollection_AsciiString aTrace = aTraceEnv.Value();
+  if (aTrace.Length() > 0)
+    cout << "Information : " << theGraphicLib << " loaded\n" << flush;
 
-      GET_DRIVER_PROC fp = ( GET_DRIVER_PROC )new_GLGraphicDriver;
-      //ADriver = ( *fp ) ( TheShr );
-      if (!fp)
-        Aspect_GraphicDeviceDefinitionError::Raise
-        (MySharedLibrary.DlError ());
-      MyGraphicDriver = ( *fp ) ( TheShr );
-
-      // Management of traces
-      if ( val.Length() > 0 && val.IsIntegerValue() )
-        MyGraphicDriver->SetTrace(val.IntegerValue());
-    }
+  // retrieve factory function pointer
+  typedef Handle(Graphic3d_GraphicDriver) (*GET_DRIVER_PROC) (const char* );
+  GET_DRIVER_PROC aGraphicDriverConstructor = (GET_DRIVER_PROC )MySharedLibrary.DlSymb ("MetaGraphicDriverFactory");
+  if (aGraphicDriverConstructor == NULL)
+  {
+    Aspect_GraphicDeviceDefinitionError::Raise (MySharedLibrary.DlError());
+    return;
   }
 
+  // create driver instance
+  MyGraphicDriver = aGraphicDriverConstructor (theGraphicLib);
+
+  // management of traces
+  if (aTrace.Length() > 0 && aTrace.IsIntegerValue())
+    MyGraphicDriver->SetTrace (aTrace.IntegerValue());
 }
 
 #endif  // WNT
