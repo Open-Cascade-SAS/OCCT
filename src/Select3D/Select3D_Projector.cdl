@@ -6,6 +6,21 @@
 
 class Projector from Select3D inherits Transient from Standard
     ---Purpose: A framework to define 3D projectors.
+    -- Projector provides services for projecting points from
+    -- world-coordinates to a viewing plane. Projection could be defined by
+    -- corresponding transformation, or coordinate system. The transformation
+    -- could be constructed for a view with transposed view transformation
+    -- matrix ( that represents view-orientation ), including, for perspective
+    -- view, focal distance ( distance from an eye to the view plane ) and
+    -- translational part that represents translation of focal point in
+    -- view-coordinate space. The Select3D_Projector class recognizes the
+    -- predefined set of popular projections: axonometric, top view, front
+    -- view and uses more efficient algorithm for projection computations.
+    -- User-defined transformation could be also defined in constructor.
+    -- Perspective projection consists of two separate parts, that are
+    -- composed together during computation: transformation component and
+    -- focale distance.
+
 uses
     Real    from Standard,
     Boolean from Standard,
@@ -30,33 +45,57 @@ is
     Create returns Projector from Select3D;
 
     Create(CS : Ax2 from gp)
-    ---Purpose: Creates   an axonometric  projector.   <CS> is the
-    --          viewing coordinate system.
+    ---Purpose: Creates an axonometric projector. <CS> represents viewing coordinate 
+    -- system and could be constructed from x direction, view plane normal direction, 
+    -- and view point location in world-coordinate space.
     returns Projector from Select3D;
 
     Create(CS    : Ax2  from gp;
            Focus : Real from Standard)
-    ---Purpose: Creates  a  perspective  projector.   <CS>  is the
-    --          viewing coordinate system.
+    ---Purpose: Creates  a  perspective  projector. <CS> represents viewing
+    -- coordinate system and could be constructed from x direction, 
+    -- view plane normal direction, and focal point location in world-coordinate
+    -- space. <Focus> should represent distance of an eye from view plane
+    -- in world-coordinate space (focal distance).
     returns Projector from Select3D;
 
     Create(T         : Trsf    from gp;
            Persp     : Boolean from Standard;
            Focus     : Real    from Standard)
-    ---Purpose: build a Projector with automatic minmax directions.
-    returns Projector from Select3D;
-
-    Create(T         : Trsf    from gp;
-           Persp     : Boolean from Standard;
-           Focus     : Real    from Standard;
-       v1,v2,v3  : Vec2d   from gp)
-    ---Purpose: build a Projector with given minmax directions.
+    ---Purpose: build a Projector from the given transformation.
+    -- In case, when <T> transformation should represent custom view projection,
+    -- it could be constructed from two separate components: transposed view
+    -- orientation matrix and translation of focal point in view-coordiante
+    -- system. <T> could be built up from x direction, up direction,
+    -- view plane normal direction vectors and translation with SetValues(...)
+    -- method, where first row arguments (a11, a12, a13, a14)  are x, y, z
+    -- component of x direction vector, and x value of reversed translation
+    -- vector. Second row arguments, are x y z for up direction and y value of
+    -- reversed translation, and the third row defined in the same manner.
+    -- This also suits for simple perspective view, where <Focus> is the focale
+    -- distance of an eye from view plane in world-space coordiantes.
+    -- Note, that in that case amount of perspective distortion (perspective
+    -- angle) should be defined through focal distance.
     returns Projector from Select3D;
 
     Create(GT        : GTrsf   from gp;
            Persp     : Boolean from Standard;
            Focus     : Real    from Standard)
-    ---Purpose: build a Projector with automatic minmax directions.
+    ---Purpose: build a Projector from the given transformation.
+    -- In case, when <GT> transformation should represent custom view
+    -- projection, it could be constructed from two separate components:
+    -- transposed view orientation matrix and translation of a focal point
+    -- in view-coordinate system.
+    -- This also suits for perspective view, with <Focus> that could be
+    -- equal to distance from an eye to a view plane in 
+    -- world-coordinates (focal distance).
+    -- The 3x3 transformation matrix is built up from three vectors:
+    -- x direction, up direction and view plane normal vectors, where each
+    -- vector is a matrix row. Then <GT> is constructed from matrix and
+    -- reversed translation with methods SetTranslationPart(..) and
+    -- SetVectorialPart(..).
+    -- Note, that in that case amount of perspective distortion (perspective
+    -- angle) should be defined through focal distance.
     returns Projector from Select3D;
 
     Set (me : mutable;
@@ -65,7 +104,6 @@ is
          Focus     : Real    from Standard)
     is static;
 
-
     SetView(me : mutable; V : View from V3d);
     ---Purpose: Sets the 3D view V used at the time of construction.
 
@@ -73,11 +111,6 @@ is
     ---Purpose: Returns the 3D view used at the time of construction.
     ---C++: return const&
     ---C++: inline
-
-
-    Directions(me; D1 , D2 , D3 : out Vec2d from gp)
-    ---C++: inline
-    is virtual;
 
     Scaled(me : mutable; On : Boolean from Standard = Standard_False)
     ---Purpose: to compute with the given scale and translation.
@@ -138,11 +171,6 @@ is
     ---Purpose: Transform and apply perspective if needed.
     is virtual;
 
-    BoxAdd(me; P :     Pnt2d from gp;
-               B : out Box   from Bnd)
-    ---Purpose: Adds to the box <B> the min-max of the point <P>.
-    is virtual;
-
     Shoot(me; X , Y : Real from Standard)
     returns Lin from gp
     ---Purpose: return a line going through the eye towards the
@@ -166,9 +194,6 @@ is
     ---         projection functionality itself).
     ---         Should be used when call ::Shoot() to compute eyeline.
 
-    SetDirection(me : mutable)
-    is static private;
-
     Transform(me; P : in out Pnt from gp;
                   T : GTrsf from gp)
     ---C++: inline
@@ -187,9 +212,6 @@ fields
     myScaledTrsf : Trsf    from gp is protected;
     myGTrsf      : GTrsf   from gp is protected;
     myInvTrsf    : GTrsf   from gp is protected;
-    myD1         : Vec2d   from gp is protected;
-    myD2         : Vec2d   from gp is protected;
-    myD3         : Vec2d   from gp is protected;
 
     myView       : View    from V3d;
     myDepthMin   : Real    from Standard;
