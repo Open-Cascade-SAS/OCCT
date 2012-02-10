@@ -670,7 +670,9 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       myEdgePro->Init (Face, edge);
       myEdgePro->Compute(preci);
       if (myEdgePro->IsFirstDone() && myEdgePro->IsLastDone()) {
-	B.Range(edge, Face,myEdgePro->FirstParam(), myEdgePro->LastParam());
+        if (Abs (myEdgePro->FirstParam() - myEdgePro->LastParam()) < Precision::PConfusion())
+          continue;
+        B.Range(edge, Face,myEdgePro->FirstParam(), myEdgePro->LastParam());
       }
       else {
         RemoveSinglePCurve(edge, Face);
