@@ -166,14 +166,15 @@ Standard_Boolean Graphic3d_Vector::IsNormalized () const {
 
 Standard_Boolean Graphic3d_Vector::IsParallel (const Graphic3d_Vector& AV1, const Graphic3d_Vector& AV2) {
 
-Standard_Real Result;
+  Standard_Real aDif1 = 0, aDif2 = 0, aDif3 = 0;
 
-	Result	= (AV1.Y () * AV2.Z () - AV1.Z () * AV2.Y ())
-		- (AV1.X () * AV2.Z () - AV1.Z () * AV2.X ())
-		- (AV1.X () * AV2.Y () - AV1.Y () * AV2.X ());
+  aDif1 = AV1.X () * AV2.Y () - AV1.Y () * AV2.X ();
+  aDif2 = AV1.X () * AV2.Z () - AV1.Z () * AV2.X ();
+  aDif3 = AV1.Y () * AV2.Z () - AV1.Z () * AV2.Y ();
 
-	return (Abs (Result) <= Graphic3d_Vector_MyEpsilon);
-
+  return (  (Abs (aDif1) <= Graphic3d_Vector_MyEpsilon) &&
+            (Abs (aDif2) <= Graphic3d_Vector_MyEpsilon) &&
+            (Abs (aDif3) <= Graphic3d_Vector_MyEpsilon)  );
 }
 
 Standard_Real Graphic3d_Vector::NormeOf (const Standard_Real AX, const Standard_Real AY, const Standard_Real AZ) {
