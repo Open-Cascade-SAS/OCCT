@@ -1479,13 +1479,12 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 //   si tout passe (pas de collision), OK. Sinon, autres passes a prevoir
 //   On resoud du meme coup les sous-listes
   Standard_Integer nbdirec = NbRecords() ;
-  Standard_Integer *subn = new Standard_Integer[thelastn+1];
+  TColStd_Array1OfInteger subn(0, thelastn);
 
   Standard_Boolean pbmap = Standard_False;        // au moins un conflit
   Standard_Integer nbmap = 0;
   TColStd_IndexedMapOfInteger imap(thenbents);
-  Standard_Integer *indm;    // Index Map -> Record Number (seulement si map)
-  indm = new Standard_Integer[nbdirec+1];
+  TColStd_Array1OfInteger indm(0, nbdirec);    // Index Map -> Record Number (seulement si map)
 
   Standard_Integer num; // svv Jan11 2000 : porting on DEC
   for (num = 1 ; num <= nbdirec ; num ++) {
@@ -1495,19 +1494,19 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
       Standard_Integer indmap = imap.Add(ident);
       if (indmap <= nbmap) {
 	indmap = imap.FindIndex(ident);    // plus sur
-	indm[indmap] = -1;      // Map -> pb
+	indm(indmap) = -1;      // Map -> pb
 	pbmap = Standard_True;
 //  pbmap signifie qu une autre passe sera necessaire ...
       } else {
 	nbmap = indmap;
-	indm[indmap] = num;      // Map ->ident
+	indm(indmap) = num;      // Map ->ident
       }
     }
   }
 
   for (num = 1 ; num <= nbdirec ; num ++) {
     Standard_Integer ident = theidents(num);
-    if (ident < -2) subn[-(ident+2)] = num;  // toujours a jour ...
+    if (ident < -2) subn(-(ident+2)) = num;  // toujours a jour ...
 
     Standard_Integer nba = NbParams(num) ;
     Standard_Integer nda = (num == 1 ? 0 : ParamFirstRank(num-1));
@@ -1523,12 +1522,12 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	  sout<<"Bad Sub.N0, Record "<<num<<" Param "<<na<<":$"<<numsub<<endl;
 	  continue;
 	}
-        FP.SetEntityNumber(subn[numsub]);
+        FP.SetEntityNumber(subn(numsub));
       } else if (letype == Interface_ParamIdent) {
 	Standard_Integer id = FP.EntityNumber();
 	Standard_Integer indmap = imap.FindIndex(id);
 	if (indmap > 0) {                  // la map a trouve
-	  Standard_Integer num0 = indm[indmap];
+	  Standard_Integer num0 = indm(indmap);
 	  if (num0 > 0) FP.SetEntityNumber(num0);  // ET VOILA, on a resolu
 	  else FP.SetEntityNumber(-id);   // CONFLIT -> faudra resoudre ...
 	} else {                          // NON RESOLU, si pas pbmap, le dire
@@ -1549,17 +1548,16 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
     }          // FIN  Boucle Parametres
   }            // FIN  Boucle Repertoires
 
-  delete [] subn;
   if (!pbmap) {
-    delete [] indm;  return;
+    return;
   }
   sout << " --  2nd pass required --";
 
   Standard_Integer nbseq = thenbents+2*thenbscop;
-  Standard_Integer *inds = new Standard_Integer[nbseq+1];   // n0 Record/Entite
-  Standard_Integer *indi = new Standard_Integer[nbseq+1];   // Idents/scopes
-  Standard_Integer *indr = new Standard_Integer[nbdirec+1]; // inverse de nds
-  Standard_Integer *indx = NULL;                  // pour EXPORT (silya)
+  TColStd_Array1OfInteger inds(0, nbseq);   // n0 Record/Entite
+  TColStd_Array1OfInteger indi(0, nbseq);   // Idents/scopes
+  TColStd_Array1OfInteger indr(0, nbdirec); // inverse de nds
+  Handle(TColStd_HArray1OfInteger) indx;    // pour EXPORT (silya)
 
   imap.Clear();
   Standard_Boolean iamap = withmap;               // (par defaut True)
@@ -1570,9 +1568,9 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
   for (num = 1 ; num <= nbdirec ; num ++) {
     Standard_Integer ident = theidents(num);
     if (ident < -2) {             // SOUS-LISTE (cas le plus courant)
-      indr[num] = nr + 1;         // recherche basee sur nr (objet qui suit)
+      indr(num) = nr + 1;         // recherche basee sur nr (objet qui suit)
     } else if (ident >= 0) {      // Ident normal
-      nr ++;  inds[nr] = num;  indi[nr] = ident; indr[num] = nr;
+      nr ++;  inds(nr) = num;  indi(nr) = ident; indr(num) = nr;
       if (ident > 0) {   // et non (iamap && ident > 0)
 //  Map : si Recouvrement, l inhiber. Sinon, noter index
 	Standard_Integer indmap = imap.Add(ident);
@@ -1589,7 +1587,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 //  ATTENTION, on recherche, non dans tous les records, mais dans les records
 //    CHAINES, cf nr et non num (pas de sous-liste, chainage scope-endscope)
 	    Standard_Integer fromscope  = nr;
-	    Standard_Integer toscope    = indm[indmap];
+	    Standard_Integer toscope    = indm(indmap);
 	    if (toscope < 0) toscope = -toscope;
 	    while (1) {
 	      fromscope --;    // iteration de base
@@ -1597,11 +1595,11 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 		errorscope = Standard_True;  // BANG, on est dessus
 		break;
 	      }
-	      Standard_Integer idtest = indi[fromscope];
+	      Standard_Integer idtest = indi(fromscope);
 	      if (idtest >=  0) continue;  // le suivant (enfin, le precedent)
 	      if (idtest == -1) break;     // pas meme niveau, donc c est OK
 	      if (idtest == -3) {
-		fromscope = inds[fromscope];
+		fromscope = inds(fromscope);
 		if (fromscope < toscope) break;  // on sort, pas en meme niveau
 	      }
 	    }
@@ -1613,40 +1611,40 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	    thecheck->AddFail(ligne,"Ident defined SEVERAL TIMES : #%d");
 	    sout << "StepReaderData:SetEntityNumbers, " << ligne << endl;
 	  }
-	  if (indm[indmap] > 0) indm[indmap] = -indm[indmap];  // Pas pour Map
+	  if (indm(indmap) > 0) indm(indmap) = -indm(indmap);  // Pas pour Map
 //  Cas Normal pour la Map
 	} else {
 	  nbmap = indmap;
-	  indm[indmap] = nr;      // Map ->(indm)->inds
+	  indm(indmap) = nr;      // Map ->(indm)->inds
 	}
       }
     } else if (ident == -1) {     // SCOPE
-      nr ++;  inds[nr] = num;  indi[nr] = -1;    indr[num] = 0;
+      nr ++;  inds(nr) = num;  indi(nr) = -1;    indr(num) = 0;
       scopile.Append(nr) ;
     } else if (ident == -2) {     // ENDSCOPE
       Standard_Integer nscop = scopile.Last() ;     // chainage SCOPE-ENDSCOPE
       scopile.Remove(scopile.Length()) ;
-      nr ++; inds[nr] = nscop; indi[nr] = -3; indr[num] = 0; inds[nscop] = nr;
+      nr ++; inds(nr) = nscop; indi(nr) = -3; indr(num) = 0; inds(nscop) = nr;
       if (NbParams(num) > 0) {
 //  EXPORT : traitement special greffe sur celui de SCOPE (sans le perturber)
-	if (!indx) {
-	  indx = new Standard_Integer[nbseq+1];
-	  for (Standard_Integer ixp = 0; ixp <= nbseq; ixp ++) indx[ixp] = 0;
+	if (indx.IsNull()) {
+    indx = new TColStd_HArray1OfInteger(0, nbseq);
+    for (Standard_Integer ixp = 0; ixp <= nbseq; ixp ++) indx->ChangeValue(ixp) = 0;
 	}
-	indx[nr] = num;  indx[nscop] = num;
+  indx->ChangeValue(nr) = num;  indx->ChangeValue(nscop) = num;
       }
     } else if (ident == 0) {      // HEADER
-      indr[num] = 0;
+      indr(num) = 0;
     }
   }
 
 //  ..    Resolution des EXPORT, silyena et silya besoin    ..
 //  Pour chaque valeur de EXPORT qui n a pas ete resolue par la MAP,
 //  determiner sa position locale par recherche en arriere depuis ENDSCOPE
-  if ((!iamap || pbmap) && indx) {
+  if ((!iamap || pbmap) && !indx.IsNull()) {
     for (nr = 0; nr <= nbseq; nr ++) {
-      if (indx[nr] == 0 && indi[nr] != -3) continue;  // ENDSCOPE + EXPORT
-      num = indx[nr];
+      if (indx->Value(nr) == 0 && indi(nr) != -3) continue;  // ENDSCOPE + EXPORT
+      num = indx->Value(nr);
       Standard_Integer nba = NbParams(num);
       for (Standard_Integer na = 1; na <= nba; na ++) {
 	Interface_FileParameter& FP = ChangeParam (num,na);
@@ -1654,7 +1652,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	Standard_Integer id = - FP.EntityNumber();
 	if (id < 0) continue;    // deja resolu en tete
 /*	if (imap.Contains(id)) {            et voila
-	  FP.SetEntityNumber(indm[imap.FindIndex(id)]);
+	  FP.SetEntityNumber(indm(imap.FindIndex(id)));
 	  continue;
 	}    */
 
@@ -1662,23 +1660,23 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 //  regarder ! (inutile par contre d aller y voir : c est deja fait, car
 //  un EXPORT imbrique a ete traite AVANT celui qui imbrique)
 	Standard_Integer n0 = nr-1 ;
-	if (indi[n0] == -3) n0 --;         // si on suit juste un ENDSCOPE
+	if (indi(n0) == -3) n0 --;         // si on suit juste un ENDSCOPE
 	while (n0  > 0) {
-	  Standard_Integer irec = indi[n0];
+	  Standard_Integer irec = indi(n0);
 	  if (irec == id) {                // trouve
-	    FP.SetEntityNumber(inds[n0]);
+	    FP.SetEntityNumber(inds(n0));
 	    break ;
 	  }
 	  if (irec == -1) break;           // SCOPE : fin de ce SCOPE/ENDSCOPE
 	  if (irec == -3) {
 //  gare a EXPORT : si un EXPORT detient Id, noter son Numero deja calcule
 //  Attention : Id a lire depuis CValue  car EntityNumber deja resolu
-	    Standard_Integer nok = FindEntityNumber (indx[n0],id);
+      Standard_Integer nok = FindEntityNumber (indx->Value(n0),id);
 	    if (nok > 0) {
 	      FP.SetEntityNumber(nok);
 	      break;
 	    }
-	    n0 = inds[n0];   // ENDSCOPE ou EXPORT infructueux : le sauter
+	    n0 = inds(n0);   // ENDSCOPE ou EXPORT infructueux : le sauter
 	  }      // fin traitement sur un ENDSCOPE ou EXPORT
 	  n0 -- ;
 	}        // fin resolution d un Parametre EXPORT
@@ -1696,7 +1694,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
   Standard_Integer nbsubpil = 0;              // ... et tellement plus rapide !
 
   for (num = 1 ; num <= nbdirec ; num ++) {
-    nr = indr[num];
+    nr = indr(num);
     if (nr == 0) continue;  //    pas un objet ou une sous-liste
     Standard_Integer nba = NbParams(num) ;
     for (Standard_Integer na = nba ; na > 0 ; na --) {
@@ -1724,7 +1722,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	  if (pass == 1) {                     // MAP DISPONIBLE
 	    Standard_Integer indmap = imap.FindIndex(id);
 	    if (indmap > 0) {                  // la map a trouve
-	      nok = indm[indmap];
+	      nok = indm(indmap);
 	      if (nok < 0) continue;           // CONFLIT -> faut resoudre ...
 	      break;
 	    }
@@ -1733,20 +1731,20 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 //    1re Passe : REMONTEE -> Debut fichier
 	  if (sens == 0 && nr > 1) {
             n0 = nr-1 ;
-            if (indi[n0] == -3) n0 --;         // si on suit juste un ENDSCOPE
+            if (indi(n0) == -3) n0 --;         // si on suit juste un ENDSCOPE
             while (n0  > 0) {
-              irec = indi[n0];
+              irec = indi(n0);
 	      if (irec == id) {                // trouve
 	        nok = n0 ; break ;
 	      }
 //    ENDSCOPE : Attention a EXPORT sinon sauter
               if (irec == -3) {
-		if (!indx) n0 = inds[n0];
+		if (indx.IsNull()) n0 = inds(n0);
 		else {
 //    EXPORT, il faut regarder
-		  nok = FindEntityNumber (indx[n0],id);
+      nok = FindEntityNumber (indx->Value(n0),id);
 		  if (nok > 0) break;
-		  n0 = inds[n0];               // ENDSCOPE : le sauter
+		  n0 = inds(n0);               // ENDSCOPE : le sauter
 		}
 	      }
               n0 -- ;
@@ -1755,18 +1753,18 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	  } else if (nr < nbseq) {             // descente -> fin fichier
             n0 = nr+1 ;
             while (n0 <= nbseq) {
-              irec = indi[n0];
+              irec = indi(n0);
 	      if (irec == id) {                // trouve
                 nok = n0 ; break ;
 	      }
 //    SCOPE : Attention a EXPORT sinon sauter
               if (irec == -1) {
-		if (!indx) n0 = inds[n0];
+		if (indx.IsNull()) n0 = inds(n0);
 		else {
 //    EXPORT, il faut regarder
-		  nok = FindEntityNumber (indx[n0],id);
+      nok = FindEntityNumber (indx->Value(n0),id);
 		  if (nok > 0) break;
-		  n0 = inds[n0];               // SCOPE : le sauter
+		  n0 = inds(n0);               // SCOPE : le sauter
 		}
 	      }
               n0 ++ ;
@@ -1777,7 +1775,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	}
                                  // ici on a nok, numero trouve
 	if (nok > 0) {
-          Standard_Integer num0 = inds[nok];
+          Standard_Integer num0 = inds(nok);
           FP.SetEntityNumber(num0);  // ET VOILA, on a resolu
 
                                  // pas trouve : le signaler
@@ -1787,7 +1785,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	  Standard_Integer nument = 0;
 	  Standard_Integer n0ent; // svv Jan11 2000 : porting on DEC
 	  for (n0ent = 1; n0ent <= nr; n0ent ++) {
-	    if (indi[n0ent] > 0) nument ++;
+	    if (indi(n0ent) > 0) nument ++;
 	  }
 	  Standard_Integer ident = RecordIdent(num);
 	  if (ident < 0) {
@@ -1810,7 +1808,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
       }
     }
 //  Si ce record est lui-meme une sous-liste, empiler !
-    if (inds[nr] != num) {
+    if (inds(nr) != num) {
       if (nbsubpil >= maxsubpil) {
 	maxsubpil = maxsubpil+30;
 	Handle(TColStd_HArray1OfInteger) newsubpil =
@@ -1823,8 +1821,6 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
       subpile->SetValue(nbsubpil,num);      // Append(num);
     }
   }
-  delete [] inds; delete [] indi; delete [] indr;    //  subpile->Detroy();
-  if (indx) delete [] indx;
 }
 
 
