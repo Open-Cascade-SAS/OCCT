@@ -395,7 +395,9 @@ void ShapeAnalysis_Wire::SetSurface (const Handle(Geom_Surface)& surface,
   
   Standard_Boolean isFail = Standard_False, isDone = Standard_False;
   for(Standard_Integer num1 = 1; num1 < nb-1; num1++) {
-    Standard_Integer fin = (num1 == 1 ? nb-1 : nb);
+    Standard_Integer fin = nb;
+    if (CheckClosed(Precision::Confusion()) && 1 == num1)
+      fin = nb-1;
     for(Standard_Integer num2 = num1+2; num2 <= fin; num2++) 
       if(!boxes(num1).IsOut(boxes(num2))){
 	CheckIntersectingEdges(num1, num2);

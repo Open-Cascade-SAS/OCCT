@@ -42,6 +42,7 @@
 #include <BRepGProp.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <ShapeAnalysis_ShapeContents.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
@@ -54,6 +55,7 @@
 #include <ShapeFix_FreeBounds.hxx>
 
 #include <ShapeExtend_WireData.hxx>
+#include <ShapeAnalysis_Wire.hxx>
 
 static Standard_Integer tolerance
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -830,6 +832,61 @@ static Standard_Integer getareacontour (Draw_Interpretor& di,
   return 0;
 }
 
+
+static Standard_Integer checkselfintersection
+  (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 2) 
+  { 
+      di<<"Call please \"checkselfintersection wire [face]\""<<"\n";  
+      return 1; 
+  }
+
+  // Get wire.
+  const char* arg1 = argv[1];
+  TopoDS_Shape wire = DBRep::Get(arg1);
+  if (wire.IsNull() || wire.ShapeType() != TopAbs_WIRE)
+  { 
+      di<<"A null shape or not a wire is used."<<"\n";  
+      return 2; 
+  }
+
+  // Get face if the user provided us with a face.
+  TopoDS_Shape face;
+  if (argc > 2)
+  {
+      const char* arg2 = argv[2];
+      face = DBRep::Get(arg2);
+      if (face.IsNull() || face.ShapeType() != TopAbs_FACE)
+      { 
+          di<<"A null shape or not a face is used."<<"\n";  
+          return 3; 
+      }
+  }
+
+  // If the face is null, make a plane inside the wire.
+  if (face.IsNull())
+  {
+      BRepBuilderAPI_MakeFace mkFace(TopoDS::Wire(wire), true);
+      if (mkFace.IsDone())
+          face = mkFace.Face();
+      else
+      { 
+          di<<"Can't make a face for the wire. Provide please a face for analysis."<<"\n";  
+          return 4; 
+      }
+  }
+
+  ShapeAnalysis_Wire analyser(TopoDS::Wire(wire), TopoDS::Face(face), Precision::Confusion());
+  Standard_Boolean result = analyser.CheckSelfIntersection();
+
+  if (result == Standard_True)
+      di<<"A self-intersecting wire."<<"\n";
+  else
+      di<<"Not self-intersecting wire."<<"\n";
+  return 0;
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -866,4 +923,5 @@ static Standard_Integer getareacontour (Draw_Interpretor& di,
                   __FILE__, MyVISEDG, groupold);
     
   theCommands.Add("getareacontour","wire ",__FILE__, getareacontour, groupold);
+  theCommands.Add ("checkselfintersection","wire [face]", __FILE__,checkselfintersection,g);
 }
