@@ -44,7 +44,7 @@ static
 						       const Standard_Real aTolTangent,
 						       const Standard_Real aTolR,
 						       TopAbs_State& aSt,
-						       IntTools_Context& )
+						       const Handle(IntTools_Context)& )
 { 
   Standard_Boolean bFlag, bIsAnalytic, bIsDirsCoinside;
   Standard_Real aT1, aTb, aTe;
@@ -92,7 +92,7 @@ static
 						       const Standard_Real aTolTangent,
 						       const Standard_Real aTolR,
 						       TopAbs_State& aSt,
-						       IntTools_Context& aContext)
+						       const Handle(IntTools_Context)& aContext)
 { 
   Standard_Boolean bFlag, bIsAnalytic, bIsDirsCoinside;
   Standard_Real  aT1;
@@ -110,7 +110,7 @@ static
   }
   //
   BOPTools_Tools3D::GetNormalToFaceOnEdge(anEx, aFx, aTx, aDNSx);
-  aContext.ProjectPointOnEdge(aPx, anE1, aT1);
+  aContext->ProjectPointOnEdge(aPx, anE1, aT1);
   BOPTools_Tools3D::GetNormalToFaceOnEdge(anE1, aF1, aT1, aDNS1);
   //
   bIsDirsCoinside=IntTools_Tools::IsDirsCoinside(aDNSx, aDNS1, aTolTangent);

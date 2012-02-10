@@ -55,13 +55,13 @@ is
 
     RemoveSims  (myclass;    
     	    	    aF:  Face from TopoDS; 
-    	    	    aContext:out Context from IntTools); 
+    	    	    aContext: Context from IntTools); 
     	---Purpose: 
     	-- Remove seam edges from face <aF> 
     	--
     RemoveSims  (myclass;    
     	    	    aS:  Shape from TopoDS; 
-    	    	    aContext:out Context from IntTools); 
+    	    	    aContext: Context from IntTools); 
     	---Purpose: 
     	-- Remove seam edges from all faces of shape <aS> 
     	--
@@ -78,7 +78,7 @@ is
     IsSplitToReverse1  (myclass;  
 		    aE1:  Edge from TopoDS; 	     
 		    aE2:  Edge from TopoDS; 
-    	    	    aContext:out Context from IntTools) 
+    	    	    aContext: Context from IntTools) 
     	returns Boolean from Standard;
     	---Purpose:  
     	-- Returns TRUE if direction of the edge  <aE1> is not           	     
@@ -225,7 +225,7 @@ is
     	    	    aE1 :  Edge from TopoDS; 
     	    	    aF1 :  Face from TopoDS; 
     	    	    aST1:out State from TopAbs; 
-    	    	    aContext:out Context from IntTools); 
+    	    	    aContext: Context from IntTools); 
     	---Purpose: 
     	--- Internal usage 
     	---
@@ -308,7 +308,7 @@ is
     		    aP2: Pnt from gp; 
                     aF:  Face from TopoDS;     		    				 
     		    aPx:out Pnt from gp; 
-    	    	    aContext:out  Context from IntTools);  
+    	    	    aContext:  Context from IntTools);  
     	---Purpose: 
     	--- For 3D-point <aP1> find projection point <aPx> on the face <aF>. 
     	--- If the distance  (<aP1>, <aPx>) > TolF => 
@@ -321,7 +321,7 @@ is
     	    	    aF1 :  Face from TopoDS; 
     	    	    aF2 :  Face from TopoDS; 
     	    	    aST:out State from TopAbs; 
-    	    	    aContext:out  Context from IntTools); 
+    	    	    aContext: Context from IntTools); 
     	---Purpose:  
     	--- Compute 3D-state for the point on the split edge <aSp>  
     	--- (with base edge <aE1> and the face <aF1>) comparing with 
@@ -408,7 +408,7 @@ is
 	     aEF1   :Edge from TopoDS; 
 	     aF1    :Face from TopoDS; 	
 	     aF2    :Face from TopoDS; 
-    	     aContext:out  Context from IntTools)
+    	     aContext:  Context from IntTools)
     	returns  State from TopAbs;  
     	---Purpose: 
     	--- Used in touch case          
@@ -419,12 +419,12 @@ is
     	---
     CheckSameDomainFaceInside(myclass; theFace1: Face from TopoDS;
     	    	    	    	       theFace2: Face from TopoDS;
-    	    	    	    	       theContext: in out Context from IntTools)
+    	    	    	    	       theContext: Context from IntTools)
     	returns Boolean from Standard;
 
     ComputeFaceState(myclass; theFace: Face from TopoDS;
     	    	    	      theRef : Solid from TopoDS;
-    	    	    	      theContext: in out Context from IntTools;
+    	    	    	      theContext: Context from IntTools;
 			      theState: out State from TopAbs)
     	returns Boolean from Standard;
 
@@ -437,7 +437,7 @@ is
              	    	       aTolTangent:Real from Standard; 	      
              	    	       aTolRadius :Real from Standard; 	      
     	     	    	       aState  :out State from TopAbs;     	
-    	     	    	       aContext:out Context from IntTools)
+    	     	    	       aContext: Context from IntTools)
     	returns  Boolean from Standard;  
 
     TreatedAsAnalytic (myclass; aFx    :Face from TopoDS; 
@@ -446,7 +446,7 @@ is
     	     	    	    	aTolTangent:Real from Standard; 	      
              	    	    	aTolRadius :Real from Standard;  
     	     	    	    	aState  :out State from TopAbs;     	
-    	     	    	    	aContext:out Context from IntTools)
+    	     	    	    	aContext: Context from IntTools)
     	returns  Boolean from Standard;   
 
     HasAnalyticSurfaceType (myclass; aF: Face from TopoDS)  

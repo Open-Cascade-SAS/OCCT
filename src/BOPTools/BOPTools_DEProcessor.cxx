@@ -293,9 +293,9 @@
 
     if (aTypeReference==TopAbs_SOLID) {
       // ... \ Solid processing 
-      IntTools_Context& aContext=myFiller->ChangeContext();
+      const Handle(IntTools_Context)& aContext=myFiller->Context();
       const TopoDS_Solid& aReferenceSolid=TopoDS::Solid(aReference);
-      BRepClass3d_SolidClassifier& SC=aContext.SolidClassifier(aReferenceSolid);
+      BRepClass3d_SolidClassifier& SC=aContext->SolidClassifier(aReferenceSolid);
       //
       SC.Perform(aPxNear, aTol);
       //
@@ -385,8 +385,8 @@
     Standard_Boolean bIsValidPoint;
     TopAbs_State aState=TopAbs_OUT;
     //
-    IntTools_Context& aContext=myFiller->ChangeContext();
-    bIsValidPoint=aContext.IsValidPointForFace(aPxNear, aFaceReference, 1.e-3);
+    const Handle(IntTools_Context)& aContext=myFiller->Context();
+    bIsValidPoint=aContext->IsValidPointForFace(aPxNear, aFaceReference, 1.e-3);
     //
     if (bIsValidPoint) {
       aState=TopAbs_IN;

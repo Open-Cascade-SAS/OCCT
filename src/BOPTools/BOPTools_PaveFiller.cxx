@@ -151,15 +151,23 @@
 {
   return mySectionAttribute;
 }
-
+//=======================================================================
+// function: SetContext
+// purpose: 
+//=======================================================================
+void BOPTools_PaveFiller::SetContext(const Handle(IntTools_Context)& aContext) 
+{
+  myContext=aContext;
+}
 //=======================================================================
 // function: Context
 // purpose: 
 //=======================================================================
-  const IntTools_Context& BOPTools_PaveFiller::Context() const
+const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 {
   return myContext;
 }
+/*
 //=======================================================================
 // function: ChangeContext
 // purpose: 
@@ -168,7 +176,7 @@
 {
   return myContext;
 }
-
+*/
 //=======================================================================
 // function: Perform
 // purpose: 
@@ -176,6 +184,10 @@
   void BOPTools_PaveFiller::Perform()
 {
   try {
+    //
+    if (myContext.IsNull()) {
+      myContext=new IntTools_Context;
+    }
     //
     // 0. Prepare the IteratorOfCoupleOfShape
     myDSIt.SetDataStructure(myDS);
@@ -248,6 +260,11 @@
 {
   try {
     //
+    if (myContext.IsNull()) {
+      myContext=new IntTools_Context;
+    }
+    //
+    //
     // 0. Prepare the IteratorOfCoupleOfShape
     myDSIt.SetDataStructure(myDS);
     //Fill TableOfIntersectionStatus
@@ -319,6 +336,11 @@
   void BOPTools_PaveFiller::ToCompletePerform()
 {
   try {
+    //
+    if (myContext.IsNull()) {
+      myContext=new IntTools_Context;
+    }
+    //
     PutPavesOnCurves();
 
     MakeSplitEdges ();
@@ -392,7 +414,7 @@
 	  continue;
 	}
 	//
-	aFlag=myContext.ComputeVE (aV1, aE2, aT);
+	aFlag=myContext->ComputeVE (aV1, aE2, aT);
 	//
 	if (!aFlag) {
 	  //
@@ -471,7 +493,7 @@
 	const TopoDS_Vertex& aV1=TopoDS::Vertex(aS1);
 	const TopoDS_Face&   aF2=TopoDS::Face  (aS2);
 	//
-	aFlag=myContext.ComputeVS (aV1, aF2, aU, aV);
+	aFlag=myContext->ComputeVS (aV1, aF2, aU, aV);
 	//
 	if (!aFlag) {
 	  //

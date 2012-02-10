@@ -162,7 +162,7 @@
       aEF.SetDiscretize (aDiscretize);
       aEF.SetDeflection (aDeflection);
       // 
-      aEF.SetContext((IntTools_PContext)&myContext);
+      aEF.SetContext(myContext);
       // 
 
       BRepAdaptor_Curve aCurve(aE);
@@ -350,7 +350,7 @@
 		
 		Standard_Real aTNew;
 		//
-		iFlag=myContext.ComputeVE(aVF, aE, aTNew);
+		iFlag=myContext->ComputeVE(aVF, aE, aTNew);
 		//
 		aT=aTNew;
 		aNewShape=nVF;

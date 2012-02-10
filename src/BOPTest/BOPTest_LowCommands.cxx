@@ -294,7 +294,7 @@ Standard_Integer bremovesim (Draw_Interpretor& di, Standard_Integer n, const cha
 
   const TopoDS_Face& aF=TopoDS::Face(S1);
   //
-  IntTools_Context aCtx;
+  Handle(IntTools_Context) aCtx=new IntTools_Context;
   BOPTools_Tools3D::RemoveSims (aF, aCtx);
   //
   di << " Ok\n";

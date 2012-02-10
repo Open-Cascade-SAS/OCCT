@@ -32,7 +32,8 @@ uses
     IntPatch, 
     IntSurf, 
     BRepClass3d, 
-    TColgp
+    TColgp, 
+    MMgt
 
 is
     	
@@ -59,7 +60,6 @@ is
     class MarkedRangeSet;
     	---Purpose: auxiliary class for range management
 
---modified by NIZHNY-MKK  Wed Oct  5 18:08:38 2005.BEGIN
     class BaseRangeSample;
     	---Purpose: base class for range index management
     
@@ -72,7 +72,6 @@ is
     class CurveRangeLocalizeData;
     
     class SurfaceRangeLocalizeData;
---modified by NIZHNY-MKK  Wed Oct  5 18:08:43 2005.END
    
     class BeanFaceIntersector;
     	---Purpose: class provides computing ranges of parameters
@@ -115,7 +114,7 @@ is
     ---
     ---                          P  o  i  n  t  e  r  s  	        
     --- 
-    pointer PContext to Context from IntTools;  
+    --pointer PContext to Context from IntTools;  
     ---
     ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
     ---   

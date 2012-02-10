@@ -5,7 +5,8 @@
 ---Copyright:	 Matra Datavision 2002
 
 
-class Context from IntTools 
+class Context from IntTools  
+    inherits TShared from MMgt
 
 	---Purpose:  
         --- The class is to provide direct access 
@@ -38,13 +39,12 @@ uses
 
 is 
     Create   
-    	returns Context from IntTools; 
-    	---C++: alias "Standard_EXPORT virtual ~IntTools_Context();" 
+    	returns mutable Context from IntTools; 
+    ---C++: alias "Standard_EXPORT virtual ~IntTools_Context();"
 	---Purpose:
 	--- Empty constructor
-	---
-   
-    FClass2d(me: in out; 
+	
+    FClass2d(me: mutable; 
     	    aF: Face from TopoDS) 
     	returns FClass2d from IntTools; 
     	---C++: return & 
@@ -53,7 +53,7 @@ is
 	--- for given face
 	---
      
-    ProjPS (me: in out; 
+    ProjPS (me: mutable; 
     	    aF: Face from TopoDS) 
     	returns ProjectPointOnSurf from GeomAPI;
     	---C++: return &  
@@ -62,7 +62,7 @@ is
 	--- for given face
 	---
      
-    ProjPC (me: in out; 
+    ProjPC (me: mutable; 
     	    aE: Edge from TopoDS) 
     	returns ProjectPointOnCurve from GeomAPI;
     	---C++: return &
@@ -71,7 +71,7 @@ is
 	--- for given edge
 	---
 
-    ProjPT (me: in out; 
+    ProjPT (me: mutable; 
     	    aC: Curve from Geom) 
     	returns ProjectPointOnCurve from GeomAPI;
     	---C++: return &
@@ -80,7 +80,7 @@ is
 	--- for given curve
 	---
 
-    SurfaceData(me: in out; 
+    SurfaceData(me: mutable; 
 		aF: Face from TopoDS)
 	returns SurfaceRangeLocalizeData from IntTools;
     	---C++: return &
@@ -89,7 +89,7 @@ is
 	--- for given face
 
 
-    SolidClassifier(me: in out;  
+    SolidClassifier(me: mutable;  
     	    	    aSolid: Solid from TopoDS) 
 	returns SolidClassifier from BRepClass3d; 
     	---C++: return &   
@@ -100,7 +100,7 @@ is
 
     ---         API  Block
     ---
-    ComputeVE  (me:out;  
+    ComputeVE  (me:mutable;  
     	    	aV   : Vertex from  TopoDS; 
     	    	aE   : Edge   from  TopoDS; 
                 aT   :out Real from Standard) 
@@ -117,8 +117,7 @@ is
 	--- 3. projection algorithm failed (-3)
 	---
 	
-    --modified by NIZNHY-PKV Tue Feb  2 08:20:43 2010f
-    ComputeVE  (me:out;  
+    ComputeVE  (me:mutable;  
     	    	aV   : Vertex from  TopoDS; 
     	    	aE   : Edge   from  TopoDS; 
                 aT   :out Real from Standard; 
@@ -142,9 +141,8 @@ is
         ---  	 vertex tolerance should be modified or not 
         --- aDist - the	value of the distance between the vertex  
     	---      and the edge  
-    --modified by NIZNHY-PKV Tue Feb  2 08:20:55 2010t 
     
-    ComputeVS  (me:out;  
+    ComputeVS  (me:mutable;  
     	    	aV  :     Vertex from  TopoDS; 
     	    	aF  :     Face   from  TopoDS; 
                 U   : out Real from Standard; 
@@ -161,7 +159,7 @@ is
 	--- 3. projection point out or on the boundaries of face (-3)
 	--- 
 	 
-    StatePointFace(me:out;    
+    StatePointFace(me:mutable;    
     	       	   aF   :  Face   from  TopoDS;
     	    	   aP2D :  Pnt2d  from  gp) 
 	returns State from TopAbs; 
@@ -170,7 +168,7 @@ is
 	--- relative to face aF
 	---
 	 
-    IsPointInFace(me:out;    
+    IsPointInFace(me:mutable;    
     	    	  aF   :  Face   from  TopoDS;
     	    	  aP2D :  Pnt2d  from  gp) 
 	returns Boolean from Standard;
@@ -180,7 +178,7 @@ is
 	--- otherwise returns false
 	---
     
-    IsPointInOnFace(me:out;     
+    IsPointInOnFace(me:mutable;     
     	    	    aF   :  Face   from  TopoDS;
     	    	    aP2D :  Pnt2d  from  gp) 
 	returns Boolean from Standard;
@@ -189,7 +187,7 @@ is
 	--- inside or on the boundaries of aF
 	---
 	 
-    IsValidPointForFace(me:out;
+    IsValidPointForFace(me:mutable                            ;
     	    	     	aP3D :  Pnt   from  gp; 
     	    	     	aF   :  Face  from TopoDS; 
     	    	     	aTol :  Real from Standard) 
@@ -201,7 +199,7 @@ is
 	--- of the face aF
 	---
 
-    IsValidPointForFaces(me:out;
+    IsValidPointForFaces(me:mutable;
     	    	     	 aP3D :  Pnt   from  gp; 
     	    	     	 aF1  :  Face  from TopoDS; 
     	    	     	 aF2  :  Face  from TopoDS;
@@ -212,7 +210,7 @@ is
 	--- for both face aF1 and aF2
 	---
 	 
-    IsValidBlockForFace (me:out;  
+    IsValidBlockForFace (me:mutable;  
 		     	 aT1  :  Real  from Standard;      
 		     	 aT2  :  Real  from Standard;      
     	    	     	 aIC  :  Curve from IntTools; 
@@ -225,7 +223,7 @@ is
 	--- parameters aT1 and aT2
 	---
 
-    IsValidBlockForFaces (me:out;  
+    IsValidBlockForFaces (me:mutable;  
 		     	  aT1  :  Real  from Standard;      
 		     	  aT2  :  Real  from Standard;      
     	    	     	  aIC  :  Curve from IntTools; 
@@ -238,7 +236,7 @@ is
 	--- for both faces aF1 and aF2
 	---
 	 
-    IsVertexOnLine(me:out;  
+    IsVertexOnLine(me:mutable;  
     	    	   aV   :  Vertex from  TopoDS;  
     	    	   aIC  :  Curve from IntTools;  
     	    	   aTolC:  Real  from Standard; 
@@ -253,7 +251,7 @@ is
 	--- returns false (in this case aT isn't significant)
 	--- 
 	
-     IsVertexOnLine(me:out;  
+     IsVertexOnLine(me:mutable;  
     	    	   aV   :  Vertex from  TopoDS; 
     	    	   aTolV:  Real  from Standard;  
     	    	   aIC  :  Curve from IntTools;  
@@ -269,7 +267,7 @@ is
 	--- returns false (in this case aT isn't significant)
 	--- 
 
-     ProjectPointOnEdge (me:out;  
+     ProjectPointOnEdge (me:mutable;  
 		   	 aP   : Pnt  from  gp;       
    	    	     	 aE   : Edge from  TopoDS; 	           
    	    	     	 aT   :out Real from  Standard) 

@@ -298,7 +298,7 @@ Standard_Boolean BOP_SolidSolid::ComputeStateByInsidePoints(const Standard_Integ
 	Standard_Integer nF2 = aFF.OppositeIndex(nF1);
 	const TopoDS_Face& aF2 = TopoDS::Face(aDS.Shape(nF2));
 
-	if(BOPTools_Tools3D::CheckSameDomainFaceInside(aFace, aF2, pPaveFiller->ChangeContext())) {
+	if(BOPTools_Tools3D::CheckSameDomainFaceInside(aFace, aF2, pPaveFiller->Context())) {
 	  theState = TopAbs_ON;
 	  return Standard_True;
 	}
@@ -322,7 +322,7 @@ Standard_Boolean BOP_SolidSolid::ComputeStateByInsidePoints(const Standard_Integ
     }
   }
 
-  if(!BOPTools_Tools3D::ComputeFaceState(aFace, aRefSolid, pPaveFiller->ChangeContext(), aState)) {
+  if(!BOPTools_Tools3D::ComputeFaceState(aFace, aRefSolid, pPaveFiller->Context(), aState)) {
     return Standard_False;
   }
   theState = aState;
@@ -598,7 +598,7 @@ Standard_Boolean ComputeStateForAnalyticalSurfaces(const Standard_Integer theFac
 
 	    bAnalytic = BOPTools_Tools3D::TreatedAsAnalytic(aF2, aSp, aFace, 
 							    aTolTangent, aTolR, 
-							    aStPF, pPaveFiller->ChangeContext());
+							    aStPF, pPaveFiller->Context());
 	    if(bAnalytic) {
 	      aState = aStPF;
 	      bFound = Standard_True;

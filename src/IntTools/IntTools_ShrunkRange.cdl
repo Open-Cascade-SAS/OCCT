@@ -18,8 +18,7 @@ uses
     Vertex from TopoDS, 
     Range from IntTools, 
     Box from Bnd, 
-    Context from IntTools, 
-    PContext from IntTools 
+    Context from IntTools 
 
 --raises
 
@@ -38,7 +37,19 @@ is
 	returns ShrunkRange from IntTools;
 	---Purpose:
 	---
-        
+    SetContext(me:out; 
+    	  aContext : Context from IntTools); 
+    ---Purpose:
+	--- Sets the intersecton context
+	--- 
+    Context(me) 
+    	returns Context from IntTools; 
+    ---C++:  return const &   
+     ---Purpose:
+	--- Gets the intersecton context
+	---
+ 
+ 
     SetShrunkRange(me:out;  aR:Range from IntTools);
     	---Purpose:
 	--- Sets an shrunk range
@@ -104,8 +115,8 @@ fields
     myRange       :  Range from IntTools; 
     myShrunkRange :  Range from IntTools; 
     myBndBox      :  Box from Bnd;  
-    myCtx         :  PContext from IntTools;
-    myIsDone          :  Boolean from Standard; 
-    myErrorStatus     :  Integer from Standard;   
+    myContext     :  Context from IntTools;
+    myIsDone      :  Boolean from Standard; 
+    myErrorStatus :  Integer from Standard;   
      
 end ShrunkRange;

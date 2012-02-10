@@ -130,7 +130,7 @@ is
     IsBlockInOnFace(myclass;   
     	    	     aPB : PaveBlock from BOPTools; 
 		     aF  : Face from TopoDS;  
-    	    	     aContext:out Context from IntTools)  
+    	    	     aContext: Context from IntTools)  
     	    returns Boolean from Standard;  	     
     	---Purpose:  
     	--- Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e 

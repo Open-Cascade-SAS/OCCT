@@ -204,12 +204,12 @@
       gp_Pnt aP3d = aSurf->Value(aParU, aParV);
 
       const TopoDS_Solid          &aRefSolid = TopoDS::Solid(aRef);
-      IntTools_Context            &aContext  = myFiller->ChangeContext();
-      BRepClass3d_SolidClassifier &aSC       = 
-	                               aContext.SolidClassifier(aRefSolid);
-  //
+      const Handle(IntTools_Context)& aContext  = myFiller->Context();
+      BRepClass3d_SolidClassifier &aSC = 
+	aContext->SolidClassifier(aRefSolid);
+      //
       aSC.Perform(aP3d, 1e-7);
-  //
+      //
       aSt = aSC.State();
     }
   }
@@ -264,8 +264,8 @@
   }
   //
   const TopoDS_Solid& aRefSolid=TopoDS::Solid(Ref);
-  IntTools_Context& aContext=myFiller->ChangeContext();
-  BRepClass3d_SolidClassifier& aSC=aContext.SolidClassifier(aRefSolid);
+  const Handle(IntTools_Context)& aContext=myFiller->Context();
+  BRepClass3d_SolidClassifier& aSC=aContext->SolidClassifier(aRefSolid);
   //
   aSC.Perform(aP3d, 1e-7);
   //

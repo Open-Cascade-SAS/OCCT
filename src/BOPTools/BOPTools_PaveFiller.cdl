@@ -115,16 +115,21 @@ is
     --- 
     ---	  Selectors   
     ---   
-    ---   
+    --- 
+    SetContext(me:out; 
+    	    aContext:  Context from IntTools); 
+    	---Purpose:
+    	--- Sets the intersecton context                 
+    	---   
     Context(me) 
     	 returns Context from IntTools; 
     	---C++:return const &	
     	---Purpose:
     	--- Selector                
     	---
-    ChangeContext(me:out) 
-    	 returns Context from IntTools;  
-    	---C++:return &	
+--    ChangeContext(me:out) 
+--    	 returns Context from IntTools;  
+    	--  C++:return &	
     	---Purpose:
     	--- Selector                
     	---

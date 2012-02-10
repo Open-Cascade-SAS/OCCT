@@ -24,8 +24,9 @@ uses
     FClass2d             from IntTools, 
     SequenceOfRoots      from IntTools,
     SequenceOfCommonPrts from IntTools, 
-    PContext             from IntTools,
-    Range                from IntTools
+    Context              from IntTools,
+    Range                from IntTools 
+    
 --raises
 
 is
@@ -87,11 +88,19 @@ is
 	--- The algorithm processes edge inside these boundaries.
 	---
      
-    SetContext      (me: in out; theContext: PContext from IntTools);
+    SetContext (me: in out;  
+    	    theContext: Context from IntTools);
     	---Purpose:
-	--- Set container of projection algorithms
+	--- Sets the intersecton context 
 	---
-
+ 
+    Context (me) 
+	returns  Context from IntTools; 
+    ---C++:return const & 	
+    	---Purpose:
+	--- Gets the intersecton context 
+	---
+ 
     Perform         (me:out);
     	---Purpose:
 	--- Launches the process
@@ -241,7 +250,7 @@ fields
     myErrorStatus     :  Integer from Standard;    
     
 ---  internal  members     
-    myContext         : PContext from IntTools;
+    myContext         :  Context from IntTools;
     myProjectableRanges: SequenceOfRanges from IntTools;    
     myFClass2d         : FClass2d from IntTools; 
     myFuncArray       :  CArray1OfReal from IntTools; 

@@ -817,10 +817,16 @@ Standard_Boolean TestShapeType(const TopoDS_Shape & TheShape)
 // static function: CheckEdge
 // purpose:
 // ----------------------------------------------------------------------
-Standard_Boolean CheckEdge(const TopoDS_Edge& theEdge) {
-  IntTools_Context aContext;
+Standard_Boolean CheckEdge(const TopoDS_Edge& theEdge) 
+{
+  Handle(IntTools_Context) aContext;
   TopoDS_Vertex aV1, aV2;
+  //
+  //modified by NIZNHY-PKV Tue Jan 31 15:07:13 2012f
+  aContext=new IntTools_Context;
+  ////modified by NIZNHY-PKV Tue Jan 31 15:07:16 2012t
   TopExp::Vertices(theEdge, aV1, aV2);
+
 
   if(aV1.IsNull() || aV2.IsNull() || BRep_Tool::Degenerated(theEdge))
     return Standard_True;

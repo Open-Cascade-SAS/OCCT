@@ -81,10 +81,12 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   const TopoDS_Face& aF2=TopoDS::Face(S2);
 
   Standard_Boolean aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
+  Standard_Boolean bToSplit;
   Standard_Integer i, aNbCurves;
   Standard_Real anAppTol, aTolR;
   TCollection_AsciiString aNm("c_");
-
+  //
+  bToSplit=Standard_False;
   aToApproxC3d=Standard_True;
   aToApproxC2dOnS1=Standard_False;
   aToApproxC2dOnS2=Standard_False;
@@ -107,7 +109,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
     return 1;
   }
 
-  aFF.PrepareLines3D();
+  aFF.PrepareLines3D(bToSplit);
   const IntTools_SequenceOfCurves& aSCs=aFF.Lines();
 
   //

@@ -60,6 +60,7 @@
 #include <BooleanOperations_AncestorsSeqAndSuccessorsSeq.hxx>
 
 #include <BOPTColStd_Failure.hxx>
+#include <IntTools_Context.hxx>
 
 //=======================================================================
 // function:  BOPTools_Checker::BOPTools_Checker
@@ -149,6 +150,10 @@ void BOPTools_Checker::Perform()
 {
   myCheckResults.Clear();
   try {
+    //
+    if (myContext.IsNull()) {
+      myContext=new IntTools_Context;
+    }
     //
     // 0. Prepare the IteratorOfCoupleOfShape
     myDSIt.SetDataStructure(myDS);
@@ -284,7 +289,7 @@ void BOPTools_Checker::PerformVE()
       continue;
     }
     //
-    aFlag=myContext.ComputeVE (aV1, aE2, aT);
+    aFlag=myContext->ComputeVE (aV1, aE2, aT);
     //
     if (!aFlag) {
       char buf[512];
@@ -345,7 +350,7 @@ void BOPTools_Checker::PerformVF()
       continue;
     }
     //
-    aFlag=myContext.ComputeVS (aV1, aF2, aU, aV);
+    aFlag=myContext->ComputeVS (aV1, aF2, aU, aV);
     //
     if (!aFlag) {
       char buf[512];
@@ -857,7 +862,7 @@ void BOPTools_Checker::PerformEF()
 	    
 	    aC.Bounds(aT1, aT2, aP1, aP2);
 	    //
-	    bValid=myContext.IsValidBlockForFaces(aT1, aT2, aC, aF1, aF2, 1.e-3);
+	    bValid=myContext->IsValidBlockForFaces(aT1, aT2, aC, aF1, aF2, 1.e-3);
 	    //
 	    if (bValid) {
 	      char buf[512];

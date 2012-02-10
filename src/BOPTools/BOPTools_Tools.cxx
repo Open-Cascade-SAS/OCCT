@@ -52,7 +52,7 @@ static
 //=======================================================================
   Standard_Boolean BOPTools_Tools::IsBlockInOnFace (const BOPTools_PaveBlock& aPB1,
 						    const TopoDS_Face& aF,
-						    IntTools_Context& aContext)
+						    const Handle(IntTools_Context)& aContext)
 {
   Standard_Boolean bFlag;
   Standard_Real f1, l1, ULD, VLD;
@@ -74,7 +74,7 @@ static
   // Treatment P11
   BOPTools_Tools::PointOnEdge(aE1, f1, aP11);
   //
-  GeomAPI_ProjectPointOnSurf& aProjector=aContext.ProjPS(aF);
+  GeomAPI_ProjectPointOnSurf& aProjector=aContext->ProjPS(aF);
   aProjector.Perform(aP11);
   //
   bFlag=aProjector.IsDone();
@@ -85,7 +85,7 @@ static
   aProjector.LowerDistanceParameters(ULD, VLD);
   aP2D.SetCoord(ULD, VLD);
   //
-  bFlag=aContext.IsPointInOnFace (aF, aP2D);
+  bFlag=aContext->IsPointInOnFace (aF, aP2D);
   //
   if (!bFlag) {
     return bFlag;
@@ -104,7 +104,7 @@ static
   aProjector.LowerDistanceParameters(ULD, VLD);
   aP2D.SetCoord(ULD, VLD);
   //
-  bFlag=aContext.IsPointInOnFace (aF, aP2D);
+  bFlag=aContext->IsPointInOnFace (aF, aP2D);
   //
   if (!bFlag) {
     return bFlag;
@@ -133,7 +133,7 @@ static
   aProjector.LowerDistanceParameters(ULD, VLD);
   aP2D.SetCoord(ULD, VLD);
   //
-  bFlag=aContext.IsPointInOnFace (aF, aP2D);
+  bFlag=aContext->IsPointInOnFace (aF, aP2D);
   //
   if (!bFlag) {
     return bFlag;

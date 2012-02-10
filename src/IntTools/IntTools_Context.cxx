@@ -39,7 +39,7 @@
 //function : ~
 //purpose  : 
 //=======================================================================
-  IntTools_Context::~IntTools_Context()
+IntTools_Context::~IntTools_Context()
 {
   Standard_Address anAdr;
   Standard_Integer i, aNb;

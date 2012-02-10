@@ -120,7 +120,7 @@ myIsDone(Standard_False)
 {
   myCriteria        = Precision::Confusion();
   myCurveResolution = Precision::PConfusion();
-  myContext = NULL;
+  
 }
 
 // ==================================================================================
@@ -140,7 +140,6 @@ myFaceTolerance(0.),
 myDeflection(0.01),
 myIsDone(Standard_False)
 {
-  myContext = NULL;
   Init(theEdge, theFace);
 }
 
@@ -161,7 +160,6 @@ myVMaxParameter(0.),
 myDeflection(0.01),
 myIsDone(Standard_False)
 {
-  myContext = NULL;
   Init(theCurve, theSurface, theBeanTolerance, theFaceTolerance);
 }
 
@@ -197,7 +195,6 @@ myIsDone(Standard_False)
 
   mySurface = theSurface;
   myTrsfSurface = Handle(Geom_Surface)::DownCast(mySurface.Surface().Surface()->Transformed(mySurface.Trsf()));
-  myContext = NULL;
 }
 
 // ==================================================================================
@@ -219,7 +216,6 @@ void IntTools_BeanFaceIntersector::Init(const TopoDS_Edge& theEdge,
   SetSurfaceParameters(mySurface.FirstUParameter(), mySurface.LastUParameter(), 
 		       mySurface.FirstVParameter(), mySurface.LastVParameter());
   myResults.Clear();
-  myContext = NULL;
 }
 
 // ==================================================================================
@@ -243,7 +239,6 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
   SetSurfaceParameters(mySurface.FirstUParameter(), mySurface.LastUParameter(), 
 		       mySurface.FirstVParameter(), mySurface.LastVParameter());
   myResults.Clear();
-  myContext = NULL;
 }
 
 // ==================================================================================
@@ -264,16 +259,23 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
   Init(theCurve, theSurface, theBeanTolerance, theFaceTolerance);
   SetBeanParameters(theFirstParOnCurve, theLastParOnCurve);
   SetSurfaceParameters(theUMinParameter, theUMaxParameter, theVMinParameter, theVMaxParameter);
-  myContext = NULL;
 }
 
 // ==================================================================================
 // function: SetContext
 // purpose: 
 // ==================================================================================
-void IntTools_BeanFaceIntersector::SetContext(const IntTools_PContext& theContext) 
+void IntTools_BeanFaceIntersector::SetContext(const Handle(IntTools_Context)& theContext) 
 {
   myContext = theContext;
+}
+// ==================================================================================
+// function: Context
+// purpose: 
+// ==================================================================================
+const Handle(IntTools_Context)& IntTools_BeanFaceIntersector::Context()const
+{
+  return myContext;
 }
 
 // ==================================================================================
@@ -314,7 +316,11 @@ void IntTools_BeanFaceIntersector::Perform()
   Standard_Integer aDiscretization = 30; // corresponds to discretization of BSpline usually approximated by 30 points.
   Standard_Real aRelativeDeflection = 0.01;
   myDeflection = aRelativeDeflection;
-
+  //
+  if (myContext.IsNull()) {
+    myContext=new IntTools_Context;
+  }
+  //
   if(myCurve.GetType()==GeomAbs_Line && mySurface.GetType()==GeomAbs_Plane) {
     ComputeLinePlane();
     return;
@@ -455,20 +461,11 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg)
 {
   gp_Pnt aPoint = myCurve.Value(theArg);
 
-  if(myContext == NULL) {
-    myProjector.Init(aPoint, myTrsfSurface, myUMinParameter, myUMaxParameter,
-		     myVMinParameter, myVMaxParameter, 1.e-10);
-    if(myProjector.IsDone() && myProjector.NbPoints() > 0) {
-      return myProjector.LowerDistance();
-    }
-  }
-  else {
-    GeomAPI_ProjectPointOnSurf& aProjector = myContext->ProjPS(mySurface.Face());
-    aProjector.Perform(aPoint);
-    
-    if(aProjector.IsDone() && aProjector.NbPoints() > 0) {
-      return aProjector.LowerDistance();
-    }
+  GeomAPI_ProjectPointOnSurf& aProjector = myContext->ProjPS(mySurface.Face());
+  aProjector.Perform(aPoint);
+  
+  if(aProjector.IsDone() && aProjector.NbPoints() > 0) {
+    return aProjector.LowerDistance();
   }
   // 
   Standard_Real aDistance = RealLast();
@@ -530,27 +527,15 @@ Standard_Real IntTools_BeanFaceIntersector::Distance(const Standard_Real theArg,
   Standard_Real aDistance = RealLast();
   Standard_Boolean projectionfound = Standard_False;
 
-  if(myContext == NULL) {
-    myProjector.Init(aPoint, myTrsfSurface, myUMinParameter, myUMaxParameter,
-		     myVMinParameter, myVMaxParameter, 1.e-10);
-
-    if(myProjector.IsDone() && myProjector.NbPoints() > 0) {
-      myProjector.LowerDistanceParameters(theUParameter, theVParameter);
-      aDistance = myProjector.LowerDistance();
-      projectionfound = Standard_True;
-    }
+  GeomAPI_ProjectPointOnSurf& aProjector = myContext->ProjPS(mySurface.Face());
+  aProjector.Perform(aPoint);
+  
+  if(aProjector.IsDone() && aProjector.NbPoints() > 0) {
+    aProjector.LowerDistanceParameters(theUParameter, theVParameter);
+    aDistance = aProjector.LowerDistance();
+    projectionfound = Standard_True;
   }
-  else {
-    GeomAPI_ProjectPointOnSurf& aProjector = myContext->ProjPS(mySurface.Face());
-    aProjector.Perform(aPoint);
-    
-    if(aProjector.IsDone() && aProjector.NbPoints() > 0) {
-      aProjector.LowerDistanceParameters(theUParameter, theVParameter);
-      aDistance = aProjector.LowerDistance();
-      projectionfound = Standard_True;
-    }
-  }
-
+  
   if(!projectionfound) {
   //
     for(Standard_Integer i = 0; i < 4; i++) {
@@ -1792,7 +1777,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized() {
   Standard_Real dMinU = 10. * Precision::PConfusion();
   Standard_Real dMinV = dMinU;
   IntTools_SurfaceRangeLocalizeData aSurfaceDataInit(3, 3, dMinU, dMinV);
-  IntTools_SurfaceRangeLocalizeData& aSurfaceData = (myContext) ? myContext->SurfaceData(mySurface.Face()) : aSurfaceDataInit;
+  IntTools_SurfaceRangeLocalizeData& aSurfaceData = myContext->SurfaceData(mySurface.Face());
   aSurfaceData.RemoveRangeOutAll();
   aSurfaceData.ClearGrid();
 

@@ -156,7 +156,7 @@ static Standard_Boolean CheckNewVertexAndUpdateData(const TopoDS_Vertex&        
 						    const Standard_Real               theTolerance,
 						    const BOPTools_PInterferencePool& theIntrPool,
 						    const BooleanOperations_PShapesDataStructure& theDS,
-						    IntTools_Context*                 theContext,
+						    const Handle(IntTools_Context)&   theContext,
 						    const BOPTools_PaveSet&           theEdgePaveSet,
 						    const Standard_Boolean            bAddNewVertex,
 						    const Standard_Boolean            bAddOldVertex,
@@ -218,9 +218,7 @@ static
     aFFs.SetBlockLength(aNbFFs);
   }
   // 
-  //modified by NIZNHY-PKV Thu Oct 20 07:09:57 2011f
   bToSplit=Standard_False;
-  //modified by NIZNHY-PKV Thu Oct 20 07:09:59 2011t
 
   for (; myDSIt.More(); myDSIt.Next()) {
     Standard_Boolean justaddinterference = Standard_True;
@@ -272,8 +270,8 @@ static
     TopoDS_Face aF2=TopoDS::Face(myDS->GetShape(nF2));
     //
     IntSurf_ListOfPntOn2S aListOfPnts;
-    GeomAPI_ProjectPointOnSurf& aProj1 = myContext.ProjPS(aF1);
-    GeomAPI_ProjectPointOnSurf& aProj2 = myContext.ProjPS(aF2);
+    GeomAPI_ProjectPointOnSurf& aProj1 = myContext->ProjPS(aF1);
+    GeomAPI_ProjectPointOnSurf& aProj2 = myContext->ProjPS(aF2);
 
     BOPTools_CArray1OfESInterference& aEFs=myIntrPool->ESInterferences();
     TColStd_MapOfInteger aMapEdgeIndex1, aMapEdgeIndex2;
@@ -383,6 +381,9 @@ static
     anApproxTol=1.e-7;
 
     IntTools_FaceFace aFF;
+    //
+    aFF.SetContext(myContext);
+    //
     aFF.SetParameters (bToApproxC3d, 
 		       bToApproxC2dOnS1, 
 		       bToApproxC2dOnS2,
@@ -402,10 +403,7 @@ static
       if (aTolR3D < 1.e-7){
 	aTolR3D=1.e-7;
       } 
-      //modified by NIZNHY-PKV Thu Oct 20 07:10:38 2011f
       aFF.PrepareLines3D(bToSplit);
-      //aFF.PrepareLines3D();
-      //modified by NIZNHY-PKV Thu Oct 20 07:10:41 2011t
       //
       anIndexIn=0;
       Standard_Integer aNbCurves, aNbPoints;
@@ -561,7 +559,7 @@ static
 	// Checking of validity in 2D
 	//
 	Standard_Real aTolerance = (aTolR3D < 1.e-3) ? 1.e-3 : aTolR3D;
-	bValid=myContext.IsValidBlockForFaces(aT1, aT2, aC, aF1, aF2, aTolerance);
+	bValid=myContext->IsValidBlockForFaces(aT1, aT2, aC, aF1, aF2, aTolerance);
 	//
 	if (!bValid) {
 	  continue;
@@ -691,7 +689,7 @@ static
 	Standard_Boolean bVF;
 	Standard_Integer aNewShape;
 	//
-	bVF=myContext.IsValidPointForFaces (aPAlone, aF1, aF2, 1.e-3);
+	bVF=myContext->IsValidPointForFaces (aPAlone, aF1, aF2, 1.e-3);
 	//
 	if (bVF) {
 	  BooleanOperations_AncestorsSeqAndSuccessorsSeq anASSeq;
@@ -772,7 +770,7 @@ static
 
     // VE
     if (!iV) {
-      iVE=myContext.ComputeVE (aV11, aE2, aTE);
+      iVE=myContext->ComputeVE (aV11, aE2, aTE);
       if (!iVE) {
 	iCount++;
 	if (iCount>iCountExt) {
@@ -803,7 +801,7 @@ static
     // VE
     if (!iV) {
       //
-      iVE=myContext.ComputeVE (aV12, aE2, aTE);
+      iVE=myContext->ComputeVE (aV12, aE2, aTE);
       //
       if (!iVE) {
 	iCount++;
@@ -850,7 +848,7 @@ static
   nE2=aPBR.Edge();
   const TopoDS_Edge& aE2=TopoDS::Edge(myDS->GetShape(nE2));
   // VE
-  iVM=myContext.ComputeVE(aVM, aE2, aTmp); 
+  iVM=myContext->ComputeVE(aVM, aE2, aTmp); 
   //
   return iVM;
 }
@@ -887,13 +885,13 @@ static
   TopoDS_Face aF1=TopoDS::Face(myDS->GetShape(nF1));
   TopoDS_Face aF2=TopoDS::Face(myDS->GetShape(nF2));
   //
-  bVF=myContext.IsValidPointForFaces (aP1, aF1, aF2, aTolR3D);
+  bVF=myContext->IsValidPointForFaces (aP1, aF1, aF2, aTolR3D);
   //
   if (bVF) {
     PutBoundPaveOnCurve (aP1, aT1, aBC, aFFi);
   }
   //
-  bVF=myContext.IsValidPointForFaces (aP2, aF1, aF2, aTolR3D);
+  bVF=myContext->IsValidPointForFaces (aP2, aF1, aF2, aTolR3D);
   //
   if (bVF) {
     PutBoundPaveOnCurve (aP2, aT2, aBC, aFFi);
@@ -992,13 +990,13 @@ static
   TopoDS_Face aF1=TopoDS::Face(myDS->GetShape(nF1));
   TopoDS_Face aF2=TopoDS::Face(myDS->GetShape(nF2));
   //
-  bVF=myContext.IsValidPointForFaces (aP1, aF1, aF2, aTolR3D);
+  bVF=myContext->IsValidPointForFaces (aP1, aF1, aF2, aTolR3D);
   //
   if (bVF) {
     PutBoundPaveOnCurveSpec (aP1, aT1, aBC, aFFi);
   }
   //
-  bVF=myContext.IsValidPointForFaces (aP2, aF1, aF2, aTolR3D);
+  bVF=myContext->IsValidPointForFaces (aP2, aF1, aF2, aTolR3D);
   //
   if (bVF) {
     PutBoundPaveOnCurveSpec (aP2, aT2, aBC, aFFi);
@@ -1068,7 +1066,7 @@ static
       if(!aMap.Add(anE)) continue;
 
       anErrStat = 
-	myContext.ComputeVE(aNewVertex, TopoDS::Edge(anE), aPar);
+	myContext->ComputeVE(aNewVertex, TopoDS::Edge(anE), aPar);
       if(anErrStat) continue;
       //
       Standard_Real aT1, aT2;
@@ -1080,7 +1078,7 @@ static
       TopoDS_Vertex aNewVertex1;
       BOPTools_Tools::MakeNewVertex(aP1, aTolV, aNewVertex1);
       anErrStat = 
-	myContext.ComputeVE(aNewVertex1, TopoDS::Edge(anE), aT1);
+	myContext->ComputeVE(aNewVertex1, TopoDS::Edge(anE), aT1);
       if(!anErrStat) continue; //curve and edge seem to be coincide
       
       aWhat = nV;
@@ -1116,7 +1114,7 @@ static
       if(!aMap.Add(anE)) continue;
 
       anErrStat = 
-	myContext.ComputeVE(aNewVertex, TopoDS::Edge(anE), aPar);
+	myContext->ComputeVE(aNewVertex, TopoDS::Edge(anE), aPar);
       if(anErrStat) continue;
       //
       Standard_Real aT1, aT2;
@@ -1128,7 +1126,7 @@ static
       TopoDS_Vertex aNewVertex1;
       BOPTools_Tools::MakeNewVertex(aP1, aTolV, aNewVertex1);
       anErrStat = 
-	myContext.ComputeVE(aNewVertex1, TopoDS::Edge(anE), aT1);
+	myContext->ComputeVE(aNewVertex1, TopoDS::Edge(anE), aT1);
       if(!anErrStat) continue; //curve and edge seem to be coincide
       
       aWhat = nV;
@@ -1355,7 +1353,7 @@ static
   //
   aTolVExt=BRep_Tool::Tolerance(aV);
   ExtendedTolerance(nV, aTolVExt);
-  bIsVertexOnLine=myContext.IsVertexOnLine(aV, aTolVExt, aC, aTolR3D, aT);
+  bIsVertexOnLine=myContext->IsVertexOnLine(aV, aTolVExt, aC, aTolR3D, aT);
   //
   if (bIsVertexOnLine) {
     BOPTools_Pave aPaveNew(nV, aT, BooleanOperations_SurfaceSurface);
@@ -1553,13 +1551,11 @@ static
       }
     }
     //
-    //modified by NIZNHY-PKV Thu Oct 20 07:14:32 2011f
     // Put closing pave if needded
     for (j=1; j<=aNbCurves; ++j) {
       BOPTools_Curve& aBC=aSCvs(j);
       PutClosingPaveOnCurve (aBC, aFFi);
     }
-    //modified by NIZNHY-PKV Thu Oct 20 07:14:34 2011t
     //
     // xxx
     for (j=1; j<=aNbCurves; j++) {
@@ -1942,21 +1938,19 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
     UnUsedMap(aSCvs, aPSF, aMapUnUsed);
     aNbVtx=aMapUnUsed.Extent();
     if (aNbVtx) {
-      IntTools_Context& aCtx=aPF.ChangeContext();
+      const Handle(IntTools_Context)& aCtx=aPF.Context();
       //
       aNbSCvs=aSCvs.Length();
       if (aNbSCvs==1) {
 	BOPTools_Curve& aBC=aSCvs(1);
 	const IntTools_Curve& aIC=aBC.Curve();
 	Handle (Geom_Curve) aC3D= aIC.Curve();
-	//modified by NIZNHY-PKV Wed Nov 02 13:33:42 2011f
 	//
 	bIsClosed=IntTools_Tools::IsClosed(aC3D);
 	if (bIsClosed) {
 	  return;
 	}
-	//modified by NIZNHY-PKV Wed Nov 02 13:33:44 2011t
-	GeomAPI_ProjectPointOnCurve& aProjPT=aCtx.ProjPT(aC3D);
+	GeomAPI_ProjectPointOnCurve& aProjPT=aCtx->ProjPT(aC3D);
 	//
 	for (jx=1; jx<=aNbVtx; ++jx) {
 	  nV=aMapUnUsed(jx);
@@ -2384,8 +2378,8 @@ Standard_Boolean IsPairFound(const Standard_Integer nF1,
 	  TopoDS_Face anOtherFace = TopoDS::Face(atmpShape);
 	  gp_Pnt aP3d = aCurve->Value(t2);
 
-	  if(myContext.IsPointInOnFace(TopoDS::Face(aFace), aP2dOnFace) &&
-	     myContext.IsValidPointForFace(aP3d, anOtherFace, BRep_Tool::Tolerance(anEdge))) {
+	  if(myContext->IsPointInOnFace(TopoDS::Face(aFace), aP2dOnFace) &&
+	     myContext->IsValidPointForFace(aP3d, anOtherFace, BRep_Tool::Tolerance(anEdge))) {
 	    BOPTools_Pave aPave1;
 	    aPave1.SetParam(t1);
 	    aPave1.SetIndex(-1);
@@ -2441,7 +2435,7 @@ Standard_Boolean IsPairFound(const Standard_Integer nF1,
 	TopoDS_Shape aOppFace = myDS->Shape(nFOpposite);
 
 	if(!bHasCBOnFace && !bFaceCBFound &&
-	   myContext.IsValidPointForFace(aPMid, TopoDS::Face(aOppFace), 
+	   myContext->IsValidPointForFace(aPMid, TopoDS::Face(aOppFace), 
 					 BRep_Tool::Tolerance(anEdge) +
 					 BRep_Tool::Tolerance(TopoDS::Face(aOppFace)))) {
 	  bFaceCBFound = Standard_True;
@@ -2457,7 +2451,7 @@ Standard_Boolean IsPairFound(const Standard_Integer nF1,
 	    TopoDS_Shape aTmpEdge = anExpE.Current();
 	    Standard_Real aParameter = 0.;
 
-	    if(myContext.ComputeVE(aVMid, TopoDS::Edge(aTmpEdge), aParameter) == 0) {
+	    if(myContext->ComputeVE(aVMid, TopoDS::Edge(aTmpEdge), aParameter) == 0) {
 	      bEdgeCBFound = Standard_True;
 	      break;
 	    }
@@ -2516,7 +2510,7 @@ Standard_Boolean IsPairFound(const Standard_Integer nF1,
 	  Standard_Boolean bAddNewVertextmp = bAddNewVertex, bAddOldVertextmp = bAddOldVertex;
 
 	  if(!CheckNewVertexAndUpdateData(aNewVertex, aPaveOnEdge.Param(), anEdge, aPaveOnCurve.Param(), 
-					  nF1, nF2, theTolerance, myIntrPool, myDS, &myContext, aPS, 
+					  nF1, nF2, theTolerance, myIntrPool, myDS, myContext, aPS, 
 					  bAddNewVertextmp, bAddOldVertextmp, theBC, aPaveToPut, 
 					  bAddNewVertex, bAddOldVertex)) {
 	    bAddNewVertex = Standard_False;
@@ -2653,7 +2647,7 @@ Standard_Boolean IsPairFound(const Standard_Integer nF1,
 	    TopoDS_Edge anOppEdge = TopoDS::Edge(myDS->Shape(anOppIndex));
 	    Standard_Real aOppParameter = 0.;
 
-	    if(myContext.ComputeVE(aNewVertex, anOppEdge, aOppParameter) == 0) {
+	    if(myContext->ComputeVE(aNewVertex, anOppEdge, aOppParameter) == 0) {
 	    
 	      if((aOppParameter > aRange.First()) && (aOppParameter < aRange.Last())) {
 		// put pave on same domain edge. begin
@@ -2766,7 +2760,7 @@ Standard_Boolean IsPairFound(const Standard_Integer nF1,
 	      BRep_Builder aBB;
 	      aBB.MakeVertex(aTestpVertex, aMidPnt, BRep_Tool::Tolerance(anEdge));
 
-	      if(myContext.ComputeVE(aTestpVertex, aOppEdge, aProjPar) == 0) {
+	      if(myContext->ComputeVE(aTestpVertex, aOppEdge, aProjPar) == 0) {
 		if(aProjPar > aCurRange2.First() && aProjPar < aCurRange2.Last()) {
 		  if(!bReverse)
 		    aNewCB.SetPaveBlock2(aPBCurrent2);
@@ -2834,7 +2828,7 @@ Standard_Boolean CheckNewVertexAndUpdateData(const TopoDS_Vertex&              t
 					     const Standard_Real               theTolerance,
 					     const BOPTools_PInterferencePool& theIntrPool,
 					     const BooleanOperations_PShapesDataStructure& theDS,
-					     IntTools_Context*                 theContext,
+					     const Handle(IntTools_Context)&   theContext,
 					     const BOPTools_PaveSet&           theEdgePaveSet,
 					     const Standard_Boolean            bAddNewVertex,
 					     const Standard_Boolean            bAddOldVertex,
@@ -2884,7 +2878,7 @@ Standard_Boolean CheckNewVertexAndUpdateData(const TopoDS_Vertex&              t
       Standard_Boolean bUpdateVertex = Standard_True;
 
       if(ptest1.Distance(ptest2) > (BRep_Tool::Tolerance(aVertex) + BRep_Tool::Tolerance(theEdge))) {
-	IntTools_ShrunkRange aSR (theEdge, aV1, aV2, aRange, *theContext);
+	IntTools_ShrunkRange aSR (theEdge, aV1, aV2, aRange, theContext);
 	bUpdateVertex = !aSR.IsDone() || (aSR.ErrorStatus() != 0);
       }
 
@@ -3135,21 +3129,11 @@ Standard_Boolean RejectPaveBlock(const IntTools_Curve& theC,
     aC->D0(p1,pntf);
     aC->D0(p2,pntl);
     //
-    //modified by NIZNHY-PKV Thu Oct 20 09:13:45 2011f
-    //
     aRT2=theRT*theRT;
     d3d2 = pntf.SquareDistance(pntl);
     if(d3d2 > aRT2) {
       theRT=sqrt(d3d2);
     }
-    //
-    /*
-    Standard_Real d3d = pntf.Distance(pntl);
-    if(d3d > theRT) {
-      theRT = d3d;
-    }
-    */
-    //modified by NIZNHY-PKV Thu Oct 20 09:15:20 2011t
   }
   return Standard_True;
 }
@@ -3306,7 +3290,7 @@ void CorrectTolR3D(BOPTools_PaveFiller& aPF,
   TopoDS_Face aF[2];
   //
   BooleanOperations_PShapesDataStructure myDS=aPF.DS();
-  IntTools_Context& myContext=aPF.ChangeContext();
+  const Handle(IntTools_Context)& myContext=aPF.Context();
   //
   aTolTresh=0.0005;
   aAmin=0.012;// 0.7-7 deg
@@ -3347,7 +3331,7 @@ void CorrectTolR3D(BOPTools_PaveFiller& aPF,
   aC3D->D0(aT, aP);
   //
   for (i=0; i<2; ++i) {
-    GeomAPI_ProjectPointOnSurf& aPPS=myContext.ProjPS(aF[i]);
+    GeomAPI_ProjectPointOnSurf& aPPS=myContext->ProjPS(aF[i]);
     aPPS.Perform(aP);
     aPPS.LowerDistanceParameters(aU, aV);
     BOPTools_Tools3D::GetNormalToSurface(aS[i], aU, aV, aDN[i]);
@@ -3379,7 +3363,6 @@ void CorrectTolR3D(BOPTools_PaveFiller& aPF,
     aTolR3D=aTolR;
   }
 }
-//modified by NIZNHY-PKV Thu Oct 20 07:18:39 2011f
 //=======================================================================
 // function: PutClosingPaveOnCurve
 // purpose:
@@ -3441,4 +3424,3 @@ void BOPTools_PaveFiller::PutClosingPaveOnCurve(BOPTools_Curve& aBC,
     }
   }
 }
-//modified by NIZNHY-PKV Thu Oct 20 07:18:42 2011t

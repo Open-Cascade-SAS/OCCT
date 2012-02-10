@@ -19,7 +19,7 @@ uses
     SequenceOfRoots    from IntTools,
     MarkedRangeSet     from IntTools,
     SequenceOfRanges   from IntTools,
-    PContext           from IntTools,
+    Context            from IntTools,
     ExtCS              from Extrema,
     ProjectPointOnSurf from GeomAPI,
     Edge               from TopoDS,
@@ -113,11 +113,17 @@ is
 	--- optimization purposes
 	---
 
-    SetContext(me: in out; theContext: PContext from IntTools);
+    SetContext(me: in out;  
+    	    theContext: Context from IntTools);
     	---Purpose:
-	--- Sets the context
+	--- Sets the intersecton context
 	---
-
+    Context(me) 
+    	returns Context from IntTools; 
+    ---C++:  return const & 	
+    ---Purpose:
+	--- Gets the intersecton context
+	---	  
     SetBeanParameters(me: in out;theFirstParOnCurve : Real from Standard;
 	    	    	    	 theLastParOnCurve  : Real from Standard);
     	---Purpose: 
@@ -227,7 +233,7 @@ fields
     myProjector      : ProjectPointOnSurf from GeomAPI;
     myRangeManager   : MarkedRangeSet from IntTools;
     myDeflection     : Real from Standard;
-    myContext        : PContext from IntTools;
+    myContext        : Context from IntTools;
     
     -- results
     myResults        : SequenceOfRanges from IntTools;

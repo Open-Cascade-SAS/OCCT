@@ -50,7 +50,7 @@
 static Standard_Boolean IsValidSeam(const TopoDS_Edge& aE,
 				    const TopoDS_Face& aF,
 				    const Standard_Real aT,
-				    IntTools_Context& aContext);
+				    const Handle(IntTools_Context)& aContext);
 
 static void CorrespondantSeam(const TopoDS_Edge& aSpE1Seam11,
 			      const Standard_Real aT1,
@@ -68,7 +68,7 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
 			  const TopoDS_Face& aF2FWD,
 			  const Standard_Boolean bIsTakenSp1,
 			  BOP_WireEdgeSet& aWES,
-			  IntTools_Context& aContext);
+			  const Handle(IntTools_Context)& aContext);
 
 
 //=======================================================================
@@ -428,8 +428,8 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
 	nSp2=aPB2.Edge();
 	const TopoDS_Edge& anE2=TopoDS::Edge(aDS.GetShape(nE2));
 	//
-	IntTools_Context& aContext=pPaveFiller->ChangeContext();
-	aFlag=aContext.ProjectPointOnEdge(aPx1, anE2, aTs);
+	const Handle(IntTools_Context)& aContext=pPaveFiller->Context();
+	aFlag=aContext->ProjectPointOnEdge(aPx1, anE2, aTs);
 	//
 	if (!aFlag) {
 	  BOPTColStd_Dump::PrintMessage(" BOP_SDFWESFiller::PrepareOnParts() failed\n");
@@ -688,7 +688,7 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
   BOPTools_CommonBlockPool& aCBPool=pPaveFiller->ChangeCommonBlockPool();
   BOP_WireEdgeSet& aWES=*myWES;
   //
-  IntTools_Context& aContext=pPaveFiller->ChangeContext();
+  const Handle(IntTools_Context)& aContext=pPaveFiller->Context();
   //
   Standard_Integer nE1, nE2, aNbSpON, nSp1, aBid, nSpTaken, nSp2, iRankF1, iRankF2;
   Standard_Real aT1, aT2, aU, aV, aScPr;
@@ -1076,7 +1076,7 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
   //
   const BOPTools_ListOfPaveBlock& aSplitEdges=aSplitShapesPool(aDS.RefEdge(nED));
   //
-  IntTools_Context& aContext=pPaveFiller->ChangeContext();
+  const Handle(IntTools_Context)& aContext=pPaveFiller->Context();
   const TopoDS_Edge& aDE=TopoDS::Edge(aDS.Shape(nED));
   const TopoDS_Face& aDF=TopoDS::Face(aDS.Shape(nFD));
   const TopoDS_Face& aFaceReference=TopoDS::Face(aDS.Shape(nF2));
@@ -1113,7 +1113,7 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
     //
     aState=TopAbs_OUT;
     //
-    bIsValidPoint=aContext.IsValidPointForFace(aPxNear, aFaceReference, 1.e-3);
+    bIsValidPoint=aContext->IsValidPointForFace(aPxNear, aFaceReference, 1.e-3);
     //
     if (bIsValidPoint) {
       aState=TopAbs_IN;
@@ -1170,7 +1170,7 @@ void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
 		   
 		   const Standard_Boolean bIsTakenSp1,
 		   BOP_WireEdgeSet& aWES,
-		   IntTools_Context& aContext)
+		   const Handle(IntTools_Context)& aContext)
 {
   Standard_Boolean bIsValidSeam11, bIsValidSeam12, 
                    bIsValidSeam21, bIsValidSeam22;
@@ -1261,7 +1261,7 @@ void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
   Standard_Boolean IsValidSeam(const TopoDS_Edge& aE,
 			       const TopoDS_Face& aF,
 			       const Standard_Real aT,
-			       IntTools_Context& aContext)
+			       const Handle(IntTools_Context)& aContext)
 {
   Standard_Boolean bIsPointInOnFace;
   gp_Pnt2d aPx2DNear;
@@ -1269,7 +1269,7 @@ void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
 
   BOPTools_Tools3D::PointNearEdge(aE, aF, aT, aPx2DNear, aPxNear);
   //
-  bIsPointInOnFace=aContext.IsPointInOnFace(aF, aPx2DNear);
+  bIsPointInOnFace=aContext->IsPointInOnFace(aF, aPx2DNear);
   return bIsPointInOnFace;
 }
 //=======================================================================

@@ -191,7 +191,7 @@ Standard_Boolean BOP_ShellSolid::SplitFace(const Standard_Integer theFaceIndex,
 	    TopoDS_Edge aSpF2 = TopoDS::Edge(aSp2);
 	  
 	    Standard_Boolean bToReverse=
-	      BOPTools_Tools3D::IsSplitToReverse1 (aSpF1, aSpF2, pPaveFiller->ChangeContext());
+	      BOPTools_Tools3D::IsSplitToReverse1 (aSpF1, aSpF2, pPaveFiller->Context());
 
 	    if (bToReverse) {
 	      aSpF2.Reverse();
