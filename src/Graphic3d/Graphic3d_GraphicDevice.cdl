@@ -20,7 +20,8 @@ uses
 	GraphicDriver	from Aspect,
 	Display		from Aspect,
 	GraphicDriver	from Graphic3d,
-	TypeOfMapping	from Xw
+	TypeOfMapping	from Xw,
+	AsciiString     from TCollection
 
 raises
 
@@ -62,14 +63,14 @@ is
 	---Level: Internal
 	---Purpose: Sets the GraphicDriver.
 
-	ShrIsDefined ( me;
-		       aShr	: out CString from Standard )
-		returns Boolean from Standard
+	ShrEnvString ( me )
+		returns AsciiString from TCollection
 		is private;
 	---Level: Internal
-	---Purpose: Returns Standard_True if the shared library
-	--	    is defined by the environment.
-	--	    (variables : CSF_GraphicShr, CSF_Graphic3dLib, GRAPHICHOME)
+	---Purpose: Returns the environment string for loading shared graphics library.
+	--	    The string can be defined in environment by corresponding variables,
+	--      or default value will be used for loading from system library path
+	--	    Environment variables : CSF_GraphicShr
 
 fields
 

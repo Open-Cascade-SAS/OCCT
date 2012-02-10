@@ -89,15 +89,16 @@ extern console_semaphore_value volatile console_semaphore;
 extern char console_command[1000];
 #endif
 
-static void ReadInitFile(char* filename)
+static void ReadInitFile (const TCollection_AsciiString& theFileName)
 {
+  TCollection_AsciiString aPath = theFileName;
 #ifdef WNT
   if (!Draw_Batch) {
     try {
       OCC_CATCH_SIGNALS
-      for(Standard_Integer i = 0; filename[i] != 0; i++)
-	if(filename[i] == '\\') filename[i] = '/';
-      sprintf(console_command,"source \"%s\"",filename);
+      aPath.ChangeAll ('\\', '/');
+
+      sprintf(console_command, "source \"%s\"", aPath.ToCString());
       console_semaphore = HAS_CONSOLE_COMMAND;
       while (console_semaphore == HAS_CONSOLE_COMMAND)
         Sleep(10);
@@ -108,9 +109,9 @@ static void ReadInitFile(char* filename)
     }
   } else {
 #endif
-    char* com = new char [strlen(filename)+strlen("source ")+2];
-    sprintf(com,"source %s",filename);
-    Draw_Interprete(com);
+    char* com = new char [aPath.Length() + strlen ("source ") + 2];
+    sprintf (com, "source %s", aPath.ToCString());
+    Draw_Interprete (com);
     delete [] com;
 #ifdef WNT
   }
@@ -159,7 +160,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // analyze arguments
   // *****************************************************************
   Draw_Batch = Standard_False;
-  char* runfile = NULL;
+  TCollection_AsciiString aRunFile;
   Standard_Integer i;
   Standard_Boolean isInteractiveForced = Standard_False;
 #ifndef WNT
@@ -181,7 +182,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     } else if (strcasecmp(argv[i],"-f") == 0) { // -f option should be LAST!
       Draw_VirtualWindows = !isInteractiveForced;
       if (++i < argc) {
-        runfile = argv[i];
+        aRunFile = TCollection_AsciiString (argv[i]);
       }
       break;
     }
@@ -199,7 +200,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
       Draw_VirtualWindows = !isInteractiveForced;
       p = strtok(NULL," \t");
       if (p != NULL) {
-        runfile = p;
+        aRunFile = TCollection_AsciiString (p);
       }
       break;
     }
@@ -261,35 +262,32 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // read init files
   // *****************************************************************
   // default
-  char* dflt = getenv("DRAWDEFAULT");
-  if (dflt == NULL)
+
+  if (getenv ("DRAWDEFAULT") == NULL)
   {
-    char* casroot = getenv("CASROOT");
-    if (casroot == NULL)
+    if (getenv ("CASROOT") == NULL)
     {
 #ifdef WNT
-	  ReadInitFile("ddefault");
+      ReadInitFile ("ddefault");
 #else
-	  cout << " the CASROOT variable is mandatory to Run OpenCascade "<< endl;
-	  cout << "No default file" << endl;
+      cout << " the CASROOT variable is mandatory to Run OpenCascade "<< endl;
+      cout << "No default file" << endl;
 #endif
     }
     else
     {
-      char* thedefault =  (char *) malloc (128);
-      thedefault[0] = '\0';
-      strcat(thedefault,casroot);
-      strcat (thedefault,"/src/DrawResources/DrawDefault");
-      ReadInitFile(thedefault);
+      TCollection_AsciiString aDefStr (getenv ("CASROOT"));
+      aDefStr += "/src/DrawResources/DrawDefault";
+      ReadInitFile (aDefStr);
     }
   }
   else
   {
-    ReadInitFile(dflt);
+    ReadInitFile (getenv ("DRAWDEFAULT"));
   }
 
   // pure batch
-  if (runfile) {
+  if (!aRunFile.IsEmpty()) {
     // do not map raise the windows, so test programs are discrete
 #ifndef WNT
     Draw_LowWindows = Standard_True;
@@ -300,7 +298,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     Draw_LowWindows = Standard_False;
 #endif
 
-    ReadInitFile(runfile);
+    ReadInitFile (aRunFile);
     // provide a clean exit, this is usefull for some analysis tools
 #ifndef WNT
     return;
