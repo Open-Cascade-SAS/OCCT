@@ -761,7 +761,7 @@ void  BRepLib_MakeEdge::Init(const Handle(Geom_Curve)& CC,
   Standard_Real p2 = pp2;
   Standard_Real cf = C->FirstParameter();
   Standard_Real cl = C->LastParameter();
-  Standard_Real epsilon = Precision::Confusion();
+  Standard_Real epsilon = Precision::PConfusion();
   Standard_Boolean periodic = C->IsPeriodic();
 
 
@@ -1030,7 +1030,7 @@ void  BRepLib_MakeEdge::Init(const Handle(Geom2d_Curve)& CC,
   Standard_Real p2 = pp2;
   Standard_Real cf = C->FirstParameter();
   Standard_Real cl = C->LastParameter();
-  Standard_Real epsilon = Precision::Confusion();
+  Standard_Real epsilon = Precision::PConfusion();
   Standard_Boolean periodic = C->IsPeriodic();
 
 
