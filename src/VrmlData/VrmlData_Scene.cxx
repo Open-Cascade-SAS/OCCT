@@ -458,8 +458,13 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode
       aNode = new VrmlData_Color          (* this, strName);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Cone"))
       aNode = new VrmlData_Cone           (* this, strName);
-    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Coordinate"))
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Coordinate")) {
       aNode = new VrmlData_Coordinate     (* this, strName);
+      
+      // Check for "Coordinate3"
+      if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "3"))
+        theBuffer.LinePtr++;
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Cylinder"))
       aNode = new VrmlData_Cylinder       (* this, strName);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Group"))
@@ -469,6 +474,12 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode
       aNode = new VrmlData_Group          (* this, strName,
                                            Standard_True);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Inline"))
+      aNode = new VrmlData_Group          (* this, strName,
+                                           Standard_False);
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Separator"))
+      aNode = new VrmlData_Group          (* this, strName,
+                                           Standard_False);
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Switch"))
       aNode = new VrmlData_Group          (* this, strName,
                                            Standard_False);
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "ImageTexture"))
@@ -531,9 +542,6 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode
     if (theType.IsNull() == Standard_False)
       if (aNode->IsKind(theType) == Standard_False)
         aStatus = VrmlData_VrmlFormatError;
-#ifdef _DEBUG
-    aNode->myLineCount = theBuffer.LineCount;
-#endif
   }
   if (aStatus == VrmlData_StatusOK)
     if (theBuffer.LinePtr[0] == '{') {
@@ -599,23 +607,24 @@ void VrmlData_Scene::createShape
           isSingleShape = Standard_False;
         const Handle(TopoDS_TShape) aTShape = aNodeGeom->TShape();
         aSingleShape.TShape(aTShape);
-        if (aSingleShape.IsNull() == Standard_False)
+        if (aSingleShape.IsNull() == Standard_False) {
           aBuilder.Add (outShape, aSingleShape);
-        if (pMapShapeApp != 0L) {
-          const Handle(VrmlData_Appearance)& anAppearance =
-            aNodeShape->Appearance();
-          if (anAppearance.IsNull() == Standard_False) {
-            // Check if the current topology is a single face
-            if (aTShape->IsKind(STANDARD_TYPE(TopoDS_TFace)))
-              pMapShapeApp->Bind(aTShape, anAppearance);
-            else {
-              // This is not a face, explode it in faces and bind each face
-              TopoDS_Shape aCurShape;
-              aCurShape.TShape(aTShape);
-              TopExp_Explorer anExp(aCurShape, TopAbs_FACE);
-              for (; anExp.More(); anExp.Next()) {
-                const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-                pMapShapeApp->Bind(aFace.TShape(), anAppearance);
+          if (pMapShapeApp != 0L) {
+            const Handle(VrmlData_Appearance)& anAppearance =
+              aNodeShape->Appearance();
+            if (anAppearance.IsNull() == Standard_False) {
+              // Check if the current topology is a single face
+              if (aTShape->IsKind(STANDARD_TYPE(TopoDS_TFace)))
+                pMapShapeApp->Bind(aTShape, anAppearance);
+              else {
+                // This is not a face, explode it in faces and bind each face
+                TopoDS_Shape aCurShape;
+                aCurShape.TShape(aTShape);
+                TopExp_Explorer anExp(aCurShape, TopAbs_FACE);
+                for (; anExp.More(); anExp.Next()) {
+                  const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
+                  pMapShapeApp->Bind(aFace.TShape(), anAppearance);
+                }
               }
             }
           }

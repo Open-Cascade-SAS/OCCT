@@ -102,87 +102,88 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
         mapNodeId.Bind (arrIndice[2], 0);
     }
     const Standard_Integer nbNodes (mapNodeId.Extent());
-    const Standard_Integer nNodesTri
-      (myNormalPerVertex && myArrNormalInd==0L ? nbNodes : nTri * 3);
-    // Create the CasCade triangulation
-    //Handle(BRep_Triangulation) aTriangulation =
-      //new BRep_Triangulation (nbNodes, nTri,
-                              //myNormalPerVertex && myArrNormalInd==0L);
+    if (!nbNodes)
+    {
+        myIsModified = Standard_False;
+        myTShape.Nullify();
+        return myTShape;
+    }
+
     Handle(Poly_Triangulation) aTriangulation =
-      new Poly_Triangulation (nNodesTri, nTri, Standard_False);
+      new Poly_Triangulation (nbNodes, nTri, Standard_False);
     Handle(BRep_TFace) aFace = new BRep_TFace();
     aFace->Triangulation (aTriangulation);
     myTShape = aFace;
 
-    TColgp_Array1OfPnt& aNodes = aTriangulation->ChangeNodes();
-    Poly_Array1OfTriangle& aTriangles = aTriangulation->ChangeTriangles();
-    const Handle(TShort_HArray1OfShortReal) aNormals =
-      new TShort_HArray1OfShortReal(1, 3*nNodesTri);
-    aTriangulation->SetNormals(aNormals);
-    nTri = 0;
-
     // Copy the triangulation vertices
-    // This is only the case when normals are defined by node so each
-    // node can be shared by several triangles
-    if (nNodesTri == nbNodes)
-    {
-      NCollection_DataMap <int, int>::Iterator anIterN(mapNodeId);
-      for (i = 1; anIterN.More(); anIterN.Next()) {
-        const int aKey = anIterN.Key();
-        const gp_XYZ& aNodePnt = arrNodes[aKey];
-        aNodes(i) = gp_Pnt (aNodePnt);
-        anIterN.ChangeValue() = i++;
-      }
-      // Fill the array of triangles
-      for (i = 0; i < (int)myNbPolygons; i++) {
-        const Standard_Integer * arrIndice;
-        if (Polygon(i, arrIndice) == 3)
-          if (arrIndice[0] >= 0) // check to avoid previously skipped faces
-            aTriangles(++nTri).Set (mapNodeId(arrIndice[0]),
-                                    mapNodeId(arrIndice[1]),
-                                    mapNodeId(arrIndice[2]));
-      }
-      // Normals should be defined; if they are not, compute them
-      if (myNormals.IsNull()) {
-        //aTriangulation->ComputeNormals();
-        Poly::ComputeNormals(aTriangulation);
-      } else {
-        // Copy the normals-per-vertex.
-        NCollection_DataMap <int, int>::Iterator anIterNN (mapNodeId);
-        for (; anIterNN.More(); anIterNN.Next()) {
-          const Standard_Integer ind = (anIterNN.Value() - 1) * 3 + 1;
-          const gp_XYZ& aNormal = myNormals->Normal(anIterNN.Key());
-          aNormals->SetValue(ind + 0, Standard_ShortReal(aNormal.X()));
-          aNormals->SetValue(ind + 1, Standard_ShortReal(aNormal.Y()));
-          aNormals->SetValue(ind + 2, Standard_ShortReal(aNormal.Z()));
-        }
-      }
+    TColgp_Array1OfPnt& aNodes = aTriangulation->ChangeNodes();
+    NCollection_DataMap <int, int>::Iterator anIterN(mapNodeId);
+    for (i = 1; anIterN.More(); anIterN.Next()) {
+      const int aKey = anIterN.Key();
+      const gp_XYZ& aNodePnt = arrNodes[aKey];
+      aNodes(i) = gp_Pnt (aNodePnt);
+      anIterN.ChangeValue() = i++;
+    }
+
+    // Copy the triangles. Only the triangle-type polygons are supported.
+    // In this loop we also get rid of any possible degenerated triangles.
+    Poly_Array1OfTriangle& aTriangles = aTriangulation->ChangeTriangles();
+    nTri = 0;
+    for (i = 0; i < (int)myNbPolygons; i++) {
+      const Standard_Integer * arrIndice;
+      if (Polygon (i, arrIndice) == 3)
+        if (arrIndice[0] >= 0)  // check to avoid previously skipped faces
+          aTriangles(++nTri).Set (mapNodeId(arrIndice[0]),
+                                  mapNodeId(arrIndice[1]),
+                                  mapNodeId(arrIndice[2]));
+    }
+
+    // Normals should be defined; if they are not, compute them
+    if (myNormals.IsNull ()) {
+      //aTriangulation->ComputeNormals();
+      Poly::ComputeNormals(aTriangulation);
     }
     else {
-      // Copy the triangles. Only the triangle-type polygons are supported.
-      // In this loop we also get rid of any possible degenerated triangles.
-      for (i = 0; i < (int)myNbPolygons; i++) {
-        const Standard_Integer * arrIndice;
-        if (Polygon(i, arrIndice) == 3)
-          if (arrIndice[0] >= 0) { // check to avoid previously skipped faces
-            // normals by triangle - each node belongs to a perticular triangle
-            nTri++;
-            aTriangles(nTri).Set (nTri*3 - 2, nTri*3 - 1, nTri*3);
-            aNodes(nTri*3 - 2) = arrNodes[arrIndice[0]];
-            aNodes(nTri*3 - 1) = arrNodes[arrIndice[1]];
-            aNodes(nTri*3 - 0) = arrNodes[arrIndice[2]];
-            if (IndiceNormals(i, arrIndice) == 3) {
-              for (Standard_Integer j = 0; j < 3; j++) {
-                const Standard_Integer ind = ((nTri-1)*3 + j) * 3;
-                const gp_XYZ& aNormal = myNormals->Normal(arrIndice[j]);
-                aNormals->SetValue(ind + 1, Standard_ShortReal(aNormal.X()));
-                aNormals->SetValue(ind + 2, Standard_ShortReal(aNormal.Y()));
-                aNormals->SetValue(ind + 3, Standard_ShortReal(aNormal.Z()));
-              }
-            }
+      // Copy the normals. Currently only normals-per-vertex are supported.
+      Handle(TShort_HArray1OfShortReal) Normals =
+        new TShort_HArray1OfShortReal (1, 3*nbNodes);
+      if (myNormalPerVertex) {
+        if (myArrNormalInd == 0L) {
+          NCollection_DataMap <int, int>::Iterator anIterNN (mapNodeId);
+          for (; anIterNN.More (); anIterNN.Next ()) {
+            Standard_Integer anIdx = (anIterNN.Value() - 1) * 3 + 1;
+            const gp_XYZ& aNormal = myNormals->Normal (anIterNN.Key ());
+            Normals->SetValue (anIdx + 0, Standard_ShortReal (aNormal.X ()));
+            Normals->SetValue (anIdx + 1, Standard_ShortReal (aNormal.Y ()));
+            Normals->SetValue (anIdx + 2, Standard_ShortReal (aNormal.Z ()));
           }
+        } else {
+          nTri = 0;
+          for (i = 0; i < (int)myNbPolygons; i++) {
+            const Standard_Integer * arrIndice;
+            if (Polygon(i, arrIndice) == 3)
+              if (arrIndice[0] >= 0)  // check to avoid previously skipped faces
+                if (IndiceNormals(i, arrIndice) == 3) {
+                  Standard_Integer anInd = (++nTri - 1) * 3 + 1;
+                  for (Standard_Integer j = 0; j < 3; j++) {
+                    const gp_XYZ& aNormal = myNormals->Normal (arrIndice[j]);
+                    Normals->SetValue (anInd + 0 + j*3,
+                                       Standard_ShortReal (aNormal.X ()));
+                    Normals->SetValue (anInd + 1 + j*3,
+                                       Standard_ShortReal (aNormal.Y ()));
+                    Normals->SetValue (anInd + 2 + j*3,
+                                       Standard_ShortReal (aNormal.Z ()));
+                  }
+                }
+          }
+        }
+      } else {
+        //TODO ..
       }
+      aTriangulation->SetNormals(Normals);
     }
+
+    myIsModified = Standard_False;
   }
   return myTShape;
 }

@@ -193,6 +193,58 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
         if (isBracketed == Standard_False)
           break;
       }
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Separator") ||
+             VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Switch")) {
+      Standard_Boolean isBracketed (Standard_False);
+      // Read the opening bracket for the list of children
+      if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        break;
+      
+      if (theBuffer.LinePtr[0] == '{') {
+        theBuffer.LinePtr++;
+        if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+          break;
+        isBracketed = Standard_True;
+      }
+
+      // Read the child nodes
+      Handle(VrmlData_Node) aChildNode;
+      while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
+        // read the end-of-list bracket
+        if (isBracketed && theBuffer.LinePtr[0] == '}') {
+          theBuffer.LinePtr++;
+          break;
+        }
+	
+        // otherwise read a node
+        if (!OK(aStatus, ReadNode (theBuffer, aChildNode)))
+          break;
+	
+        AddNode (aChildNode);
+        if (isBracketed == Standard_False)
+          break;
+      }
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "ShapeHints")) {
+      // Skip this tag
+      if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        break;
+      
+      if (theBuffer.LinePtr[0] == '{') {
+        theBuffer.LinePtr++;
+        if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+          break;
+	
+        while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
+          // read the end-of-list bracket
+          if (theBuffer.LinePtr[0] == '}') {
+            theBuffer.LinePtr++;
+            break;
+          }
+          theBuffer.LinePtr++;
+        }
+      }
     } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "center"))
       if (myIsTransform)
         aStatus = Scene().ReadXYZ (theBuffer, aCenter,
