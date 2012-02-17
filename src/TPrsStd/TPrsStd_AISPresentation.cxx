@@ -1031,12 +1031,12 @@ void TPrsStd_AISPresentation::AISErase (const Standard_Boolean remove)
       }
     }
     else {
-     if( remove )
+     if( remove ) {
       if( !ownctx.IsNull() ) {
 	ownctx->Remove (myAIS,Standard_False);
 	myAIS->SetToUpdate();
       }
-     else 
+     } else
       if( !ownctx.IsNull() ) ownctx->Erase (myAIS,Standard_False); 
     }
   }

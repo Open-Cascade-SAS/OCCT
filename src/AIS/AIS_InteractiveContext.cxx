@@ -2763,13 +2763,10 @@ void AIS_InteractiveContext::ClearGlobal(const Handle(AIS_InteractiveObject)& an
       myAISDetectedSeq.Remove( i );
   }
 
-  if(myWasLastMain && !myLastinMain.IsNull())
-    if(myLastinMain == anIObj)
-      myLastinMain.Nullify();
-  else 
-    if(!myWasLastMain && !myLastinColl.IsNull())
-      if(myLastinColl == anIObj)
-        myLastinColl.Nullify();
+  if(myLastinMain == anIObj)
+    myLastinMain.Nullify();
+  if(myLastinColl == anIObj)
+    myLastinColl.Nullify();
 
   if(myLastPicked == anIObj)
     myLastPicked.Nullify();

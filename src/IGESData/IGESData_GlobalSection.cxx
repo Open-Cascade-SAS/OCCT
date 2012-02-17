@@ -124,28 +124,6 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
 
   Standard_Integer nbp = params->NbParams();
 
-  // Sending of message : Incorrect number of parameters (following the IGES version)
-  // Version less than 5.3 
-  if  (theIGESVersion < 11) 
-    if ((nbp < 24) || (nbp > 25)) {
-       // 24 or 25 parameters are expected (parameter 25 is not required)
-      Message_Msg Msg39 ("XSTEP_39");
-      Msg39.Arg(24);
-      Msg39.Arg(25);
-      if (nbp < 24) ach->SendFail(Msg39);
-      else          ach->SendWarning(Msg39);
-    }
-
-  // Version 5.3 
-  else if ((nbp < 25) || (nbp > 26)) {
-    // 25 or 26 parameters are expected (parameter 25 is not required)
-    Message_Msg Msg39 ("XSTEP_39");
-    Msg39.Arg(25);
-    Msg39.Arg(26);
-    if (nbp < 25) ach->SendFail(Msg39);
-    else          ach->SendWarning(Msg39);
-  }
-
   for (Standard_Integer i = 1; i <= nbp; i ++) {
     Standard_Integer intval = 0;  Standard_Real realval = 0.0;
     Handle(TCollection_HAsciiString) strval;  // doit repartir a null
@@ -226,6 +204,29 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
       case 26 : theAppliProtocol                 = strval;    break;
       default : break;
     }
+  }
+
+  // Sending of message : Incorrect number of parameters (following the IGES version)
+  // Version less than 5.3 
+  if  (theIGESVersion < 11)
+  {
+    if ((nbp < 24) || (nbp > 25)) {
+       // 24 or 25 parameters are expected (parameter 25 is not required)
+      Message_Msg Msg39 ("XSTEP_39");
+      Msg39.Arg(24);
+      Msg39.Arg(25);
+      if (nbp < 24) ach->SendFail(Msg39);
+      else          ach->SendWarning(Msg39);
+    }
+  }
+  // Version 5.3 
+  else if ((nbp < 25) || (nbp > 26)) {
+    // 25 or 26 parameters are expected (parameter 25 is not required)
+    Message_Msg Msg39 ("XSTEP_39");
+    Msg39.Arg(25);
+    Msg39.Arg(26);
+    if (nbp < 25) ach->SendFail(Msg39);
+    else          ach->SendWarning(Msg39);
   }
   
   //:45 by abv 11.12.97: if UnitFlag is not defined in the file, 

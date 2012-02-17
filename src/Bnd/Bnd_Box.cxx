@@ -577,18 +577,21 @@ void Bnd_Box::Add (const gp_Dir& D)
 {
   Standard_Real DX,DY,DZ;
   D.Coord(DX,DY,DZ);
-  if (Abs(DX) > gp::Resolution()) {
-    if (DX > 0) OpenXmax();
-    else        OpenXmin();
-  }
-  if (Abs(DY) > gp::Resolution()) {
-    if (DY > 0) OpenYmax();
-    else        OpenYmin();
-  }
-  if (Abs(DZ) > gp::Resolution()) {
-    if (DZ > 0) OpenZmax();
-    else        OpenZmin();
-  }
+
+  if (DX < -RealEpsilon()) 
+    OpenXmin();
+  else if (DX > RealEpsilon()) 
+    OpenXmax();
+
+  if (DY < -RealEpsilon())
+    OpenYmin();
+  else if (DY > RealEpsilon())
+    OpenYmax();
+
+  if (DZ < -RealEpsilon())
+    OpenZmin();
+  else if (DZ > RealEpsilon())
+    OpenZmax();
 }
 
 //=======================================================================

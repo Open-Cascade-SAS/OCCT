@@ -341,23 +341,6 @@ void AIS2D_InteractiveContext::Erase(
    
 }
 
-void AIS2D_InteractiveContext::EraseMode(
-	           const Handle(AIS2D_InteractiveObject)& anIObj,
-			   const Standard_Integer aMode,
-			   const Standard_Boolean /*UpdateVwr*/ ) {
-
-  if ( anIObj.IsNull() ) return;
-
-  if ( !myObjects.IsBound( anIObj ) ) return;
-  
-  if ( anIObj->HasDisplayMode() ) 
-    if ( anIObj->DisplayMode() == aMode ) return;
-  else if ( myDisplayMode == aMode) return;
-  Handle(AIS2D_GlobalStatus) GStatus = myObjects( anIObj );
-  if ( GStatus->GraphicStatus() != AIS2D_DS_Displayed ) return;
-  if ( GStatus->IsDModeIn( aMode ) ) {}
-}
-
 void AIS2D_InteractiveContext::EraseAll (const Standard_Boolean /*PutInCollector*/, 
                                          const Standard_Boolean UpdateVwr)
 {

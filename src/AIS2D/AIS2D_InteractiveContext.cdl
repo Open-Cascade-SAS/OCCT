@@ -108,7 +108,7 @@ is
   --          will be hilighted when detected by the selector.
   --          ex : be able to select center of a line without
   --               displaying all centers before selection process
-	 
+
   Erase( me             : mutable; 
          anIObj         : InteractiveObject from AIS2D;
 	     UpdateVwr      : Boolean from Standard = Standard_True;
@@ -118,14 +118,6 @@ is
   --          or failing that, in other local contexts which allow erasing.
   --          If <PutInCollector> is false, the object is erased but 
   --          not put in the Collector.
-     	  		  
-  EraseMode( me             : mutable;
-             anIObj         : InteractiveObject from AIS2D;
-	         aMode          : Integer from Standard;
-	         UpdateVwr      : Boolean from Standard = Standard_True);
-  ---Purpose: Selects an erase mode. Used only if more than one
-  -- mode is displayed in the main viewer. If aMode is
-  -- the Prs used by default, no erase mode is selected.
 
   EraseAll( me             : mutable;
             PutInCollector : Boolean from Standard = Standard_True;
