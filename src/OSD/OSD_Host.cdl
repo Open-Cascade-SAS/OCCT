@@ -41,10 +41,6 @@ raises ConstructionError, NullObject, OSDError
     ---Purpose: Returns Internet address of current host.
     ---Level: Advanced
 
-  EthernetAddress (me : in out) returns AsciiString is static;
-    ---Purpose: Returns Ethernet address of current host.
-    ---Level: Advanced
-
   MachineType (me : in out) returns OEMType is static;
     ---Purpose: Returns type of current machine.
     ---Level: Advanced

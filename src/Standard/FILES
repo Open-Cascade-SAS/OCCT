@@ -29,7 +29,6 @@ Standard_ExtCharacter.cxx
 Standard_ExtCharacter.hxx
 Standard_ExtString.cxx
 Standard_ExtString.hxx
-Standard_Geteth.cxx
 Standard_HashCode.cxx
 Standard_IStream.cxx
 Standard_IStream.hxx

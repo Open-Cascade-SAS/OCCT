@@ -165,34 +165,6 @@ TCollection_AsciiString OSD_Host::InternetAddress(){
  return(result);
 }
 
-
-// =========================================================================
-// Adresse ethernet: Disponible uniquement (et de facon fiable) sur ========
-// DIGITAL (DEC OSF1) et SILICON (IRIX) ====================================
-// =========================================================================
-
-#if defined(__osf__) || defined(DECOSF1)
-#include "ethernet.h-dec"
-#elif defined(__sgi) || defined(IRIX)
-#include "ethernet.h-sgi"
-#else
- static TCollection_AsciiString Ethernet(){
- struct utsname info; 
- uname(&info);
- char noaddress[100];
- strcat(noaddress,"NO-ETHERNET-ADDRESS-AVAILABLE-ON-");
- TCollection_AsciiString result(strcat(noaddress,info.sysname));
- return (result);
-}
-#endif
-
-// =========================================================================
-TCollection_AsciiString OSD_Host::EthernetAddress(){
- TCollection_AsciiString result;
- result = Ethernet();
- return (result);
-}
-
 // =========================================================================
 OSD_OEMType OSD_Host::MachineType(){
 struct utsname info; 
@@ -250,7 +222,6 @@ static BOOL                    fInit = FALSE;
 static TCollection_AsciiString hostName;
 static TCollection_AsciiString version;
 static TCollection_AsciiString interAddr;
-static TCollection_AsciiString etherAddr;
 static Standard_Integer        memSize;
 
 OSD_Host :: OSD_Host () {
@@ -358,12 +329,6 @@ TCollection_AsciiString OSD_Host :: InternetAddress () {
  return interAddr;
 
 }  // end OSD_Host :: InternetAddress
-
-TCollection_AsciiString OSD_Host :: EthernetAddress () {
-
- return etherAddr;
-
-}  // end EthernatAddress
 
 OSD_OEMType OSD_Host :: MachineType () {
 
