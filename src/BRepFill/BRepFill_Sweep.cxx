@@ -568,11 +568,8 @@ static void BuildFace(const Handle(Geom_Surface)& S,
 
   WW = B.Wire();
 #if DRAW
-  if (Affich) {
-    char* name;
-    sprintf(name,"wire-on-face");
-    DBRep::Set(name, WW);
-  }
+  if (Affich)
+    DBRep::Set("wire-on-face", WW);
 #endif
   
 // Construction of the face.
