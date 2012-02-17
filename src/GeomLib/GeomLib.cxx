@@ -1455,8 +1455,10 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
   }     
 
 
-  Standard_Boolean rational = ( InU && BS->IsURational() ) 
-                                  || ( !InU && BS->IsVRational() ) ;
+// IFV Fix OCC bug 0022694 - wrong result extrapolating rational surfaces
+//   Standard_Boolean rational = ( InU && BS->IsURational() ) 
+//                                   || ( !InU && BS->IsVRational() ) ;
+  Standard_Boolean rational = (BS->IsURational() ||  BS->IsVRational());
   Standard_Boolean NullWeight;
    Standard_Real EpsW = 10*Precision::PConfusion();
   Standard_Integer gap = 3;
