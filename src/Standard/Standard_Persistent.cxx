@@ -96,14 +96,6 @@ Standard_Boolean Standard_Persistent::IsKind (const Handle(Standard_Type)& aType
 //  return  (aType == STANDARD_TYPE(Standard_Persistent));
 }
 
-//============================================================================
-Standard_Integer Standard_Persistent::HashCode(const Standard_Integer Lim)const
-{
-  Handle(Standard_Persistent) me = this;
-  return ::HashCode(me, Lim);
-}
-
-
 void Standard_Persistent::ShallowDump(Standard_OStream& AStream) const
 {
   Handle(Standard_Persistent) me = this;

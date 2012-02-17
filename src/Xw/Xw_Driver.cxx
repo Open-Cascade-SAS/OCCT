@@ -865,7 +865,7 @@ Standard_Boolean setattrib = Standard_False;
 Standard_Boolean Xw_Driver::IsKnownImage(const Handle(Standard_Transient)& anImage) {
 
         MyImage = Xw_get_image_handle( MyExtendedDrawable, 
-                                (void*)(anImage->HashCode(IntegerLast())) ) ;
+                                (void*)(::HashCode (anImage, IntegerLast())) ) ;
 
         if( MyImage ) return (Standard_True) ;
         else return Standard_False;
@@ -899,7 +899,7 @@ float zoom;
 void Xw_Driver::ClearImage (const Handle(Standard_Transient)& anImage) {
 
         MyImage = Xw_get_image_handle( MyExtendedDrawable, 
-                                (void*) (anImage->HashCode(IntegerLast())) ) ;
+                                (void*) (::HashCode (anImage, IntegerLast())) ) ;
 
         if( MyImage ) {
             status = Xw_close_image (MyImage);
@@ -921,7 +921,7 @@ XW_EXT_IMAGEDATA *pimage;
 void Xw_Driver::DrawImage (const Handle(Standard_Transient)& anImage, const Standard_ShortReal aX, const Standard_ShortReal aY) {
 
         MyImage = Xw_get_image_handle( MyExtendedDrawable, 
-                                (void*) (anImage->HashCode(IntegerLast())) ) ;
+                                (void*) (::HashCode (anImage, IntegerLast())) ) ;
 
         if( MyImage ) {
             status = Xw_draw_image (MyExtendedDrawable, MyImage, aX, aY);
@@ -973,7 +973,7 @@ GRAPHIC2D_PIXEL pixel;
         if ((aWidth > 0) && (aHeight > 0)) {
             if( !MyImage ) {
                 MyImage = Xw_open_image (MyExtendedDrawable,
-                        (void*) (anImage->HashCode(IntegerLast())),
+                                (void*) (::HashCode (anImage, IntegerLast())),
                                 int (aWidth),int (aHeight));
             }
             if( !MyImage ) {
@@ -1092,7 +1092,7 @@ GRAPHIC2D_PIXEL pixel;
         if ((aWidth > 0) && (aHeight > 0) && (anIndexOfLine == 0)) {
             if( !MyImage ) {    
                 MyImage = Xw_open_image (MyExtendedDrawable,
-                        (void*) (anImage->HashCode(IntegerLast())),
+                                (void*) (::HashCode (anImage, IntegerLast())),
                                 int (aWidth),int (aHeight));
             }
         }

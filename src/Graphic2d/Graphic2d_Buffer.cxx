@@ -311,7 +311,7 @@ printf(" Graphic2d_Buffer::ReLoad(%d)\n",ResetPosition);
 #endif
 	if( !myDriver.IsNull() ) {
 
-	    myBufferId = this->HashCode(IntegerLast());
+	    myBufferId = ::HashCode ((Standard_Address)this, IntegerLast());
 
 	    // Maximum depth of primitive lines
 	    // contained in the buffer is required

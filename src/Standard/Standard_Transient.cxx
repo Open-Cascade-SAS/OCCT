@@ -55,13 +55,6 @@ Standard_Boolean Standard_Transient::IsKind (const Standard_CString theTypeName)
   return DynamicType()->SubType ( theTypeName );
 }
 
-//============================================================================
-Standard_Integer Standard_Transient::HashCode(const Standard_Integer Lim) const
-{
-  return ::HashCode(this, Lim);
-}
-
-
 void Standard_Transient::ShallowDump(Standard_OStream& theStream) const
 {
   theStream << "class " << DynamicType()->Name() << " at " << this << endl;

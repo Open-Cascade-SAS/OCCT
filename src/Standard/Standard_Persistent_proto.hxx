@@ -58,7 +58,6 @@ public:
   Standard_EXPORT virtual const Handle_Standard_Type& DynamicType() const;
   Standard_EXPORT         Standard_Boolean            IsKind(const Handle_Standard_Type&)const;
   Standard_EXPORT         Standard_Boolean            IsInstance(const Handle_Standard_Type&)const;  
-  Standard_EXPORT virtual Standard_Integer            HashCode(const Standard_Integer Upper) const;
   Standard_EXPORT virtual void                        ShallowDump(Standard_OStream& ) const;
 };
 

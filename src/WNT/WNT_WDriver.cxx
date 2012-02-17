@@ -387,14 +387,10 @@ void WNT_WDriver :: SetMarkerAttrib (
 
 Standard_Boolean WNT_WDriver :: IsKnownImage (
                                  const Handle( Standard_Transient )& anImage
-                                ) {
-
- return myWNTWindow -> myImages -> Index (
-                                    anImage -> HashCode(
-                                                IntegerLast ()
-                                               )
+                                )
+{
+ return myWNTWindow -> myImages -> Index ( ::HashCode (anImage, IntegerLast())
                                    ) ? Standard_True : Standard_False;
-
 }  // end WNT_WDriver :: IsKnownImage
 
 Standard_Boolean WNT_WDriver :: SizeOfImageFile (
@@ -417,9 +413,7 @@ Standard_Boolean WNT_WDriver :: SizeOfImageFile (
 void WNT_WDriver :: ClearImage (  const Handle( Standard_Transient )& anImageId  ) {
 
  Standard_Integer i = myWNTWindow -> myImages -> Index (
-                                                  anImageId -> HashCode (
-                                                                IntegerLast ()
-                                                               )
+                                                   ::HashCode (anImageId, IntegerLast())
                                                  );
 
  if ( i ) myWNTWindow -> myImages -> Discard ( i );
@@ -441,9 +435,7 @@ void WNT_WDriver :: DrawImage (
                     ) {
 
  Standard_Integer i = myWNTWindow -> myImages -> Index (
-                                                  anImageId -> HashCode (
-                                                                IntegerLast ()
-                                                               )
+                                                  ::HashCode (anImageId, IntegerLast())
                                                  );
 
  if ( i ) A -> Image (
@@ -512,7 +504,7 @@ void WNT_WDriver :: FillAndDrawImage (
     hpo = SelectPalette (  hdcMem, ( HPALETTE )gDev -> HPalette (), FALSE  );
 
     i = myWNTWindow -> myImages -> Index (
-                                    h = anImageId -> HashCode (  IntegerLast ()  )
+                                     h = ::HashCode (anImageId, IntegerLast())
                                    );
 
     if ( i == 0 ) i = myWNTWindow -> myImages -> Open ( hdc, Width, Height, h );
@@ -586,7 +578,7 @@ void WNT_WDriver :: FillAndDrawImage (
     hpo = SelectPalette (  hdcMem, ( HPALETTE )gDev -> HPalette (), FALSE  );
 
     i = myWNTWindow -> myImages -> Index (
-                                    h = anImageId -> HashCode (  IntegerLast ()  )
+                                     h = ::HashCode (anImageId, IntegerLast())
                                    );
 
     if ( i == 0 ) i = myWNTWindow -> myImages -> Open ( hdc, Width, Height, h );

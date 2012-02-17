@@ -52,10 +52,6 @@ class Standard_Transient
     //! Memory deallocator for transient classes
     Standard_EXPORT virtual void Delete() const;
 
-    //! Returns a hash code value for this object. 
-    //! The value is in the range 1..Upper.
-    Standard_EXPORT virtual Standard_Integer HashCode(const Standard_Integer Upper) const;
-
     Standard_EXPORT virtual void ShallowDump(Standard_OStream& ) const;
     
     //! Returns a type information object about this object.

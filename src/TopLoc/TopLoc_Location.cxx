@@ -200,7 +200,7 @@ Standard_Integer TopLoc_Location::HashCode(const Standard_Integer upper) const
   TopLoc_SListOfItemLocation items = myItems;
   while (items.More()) {
     depth += 3;
-    unsigned int i = items.Value().myDatum->HashCode(upper);
+    unsigned int i = ::HashCode (items.Value().myDatum, upper);
     unsigned int j = ( (i + items.Value().myPower) <<depth);
     j = j>>(32-depth) | j<<depth;
     h ^= j;
