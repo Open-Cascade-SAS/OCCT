@@ -120,5 +120,5 @@
 
     Standard_Boolean IGESGeom_CircularArc::IsClosed () const
 {
-  return ((theStart.X() == theEnd.X()) && (theStart.Y() == theEnd.Y()));
+  return (Abs (theStart.X() - theEnd.X()) < Precision::PConfusion() && Abs (theStart.Y() - theEnd.Y()) < Precision::PConfusion());
 }
