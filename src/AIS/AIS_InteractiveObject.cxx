@@ -57,16 +57,20 @@ SelectMgr_SelectableObject(aTypeOfPresentation3d),
 myDrawer(new AIS_Drawer()),
 myTransparency(0.),
 myOwnColor(Quantity_NOC_WHITE),
+myOwnMaterial(Graphic3d_NOM_DEFAULT),
 myHilightMode(-1),
 myOwnWidth(0.0),
 myInfiniteState(Standard_False),
 hasOwnColor(Standard_False),
 hasOwnMaterial(Standard_False),
+myCurrentFacingModel(Aspect_TOFM_BOTH_SIDE),
 myRecomputeEveryPrs(Standard_True),
+myCTXPtr(NULL),
 mySelPriority(-1),
 myDisplayMode (-1),
 mySelectionMode(0),
-mystate(0)
+mystate(0),
+myHasTransformation(Standard_False)
 {
   Handle (AIS_InteractiveContext) Bid;
   myCTXPtr = Bid.operator->();
