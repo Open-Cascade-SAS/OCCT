@@ -477,22 +477,7 @@ void  DNaming::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("InitialShape","InitialShape df shape res",        __FILE__,Initialshape,    g);
   theCommands.Add("CurrentShape","Currentshape df entry [drawname]", __FILE__,Currentshape,    g);
   theCommands.Add("GetShape",    "GetShape df entry [drawname]",     __FILE__,Getshape ,       g);  
-  theCommands.Add("Collect",     "Collect  df entry [onlymodif 0/1]",__FILE__,Collect ,       g);  
-  theCommands.Add ("GeneratedShape",
-		   "Generatedshape df shape Generationentry [drawname]",
-		   __FILE__,Generatedshape,g);
-  theCommands.Add("ImportShape",
-		  "ImportShape Doc Shape [Name]",
-		  __FILE__, DNaming_ImportShape, g);  
+  theCommands.Add("Collect",     "Collect  df entry [onlymodif 0/1]",__FILE__,Collect ,        g);  
+  theCommands.Add ("GeneratedShape", "Generatedshape df shape Generationentry [drawname]", __FILE__,Generatedshape,g);
+  theCommands.Add("ImportShape", "ImportShape Doc Entry Shape [Name]",__FILE__,DNaming_ImportShape, g);  
 }
-
-
-
-
-
-
-
-
-
-
-
