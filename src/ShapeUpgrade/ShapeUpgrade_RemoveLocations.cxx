@@ -118,7 +118,7 @@ static Standard_Boolean RebuildShape(const TopoDS_Edge& theEdge, TopoDS_Edge& th
           c2d1= BRep_Tool::CurveOnSurface(tmpE,theFace,First2d,Last2d);
           TopAbs_Orientation OrEdge = theNewEdge.Orientation();
           
-          if(theNewFace.Orientation() == TopAbs_REVERSED)
+          if(theFace.Orientation() == TopAbs_REVERSED)
             OrEdge = ( OrEdge == TopAbs_FORWARD ? TopAbs_REVERSED : TopAbs_FORWARD);
           
           if(OrEdge == TopAbs_FORWARD)

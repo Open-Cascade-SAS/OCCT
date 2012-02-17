@@ -65,6 +65,9 @@
 #include <ShapeCustom.hxx>
 #include <ShapeUpgrade_ShapeDivideClosed.hxx>
 #include <ShapeUpgrade_RemoveInternalWires.hxx>
+#include <ShapeUpgrade_RemoveLocations.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+
 // the plane (equation z=0) shared by PlaneDividedFaceContinuity and PlaneGridShell
 //static Handle(Geom_Plane) ThePlane= new Geom_Plane(0,0,1,0);
 
@@ -447,7 +450,7 @@ static Standard_Integer DT_SplitAngle(Draw_Interpretor& di,
     if ( maxangle <1 ) maxangle = 1;
   }
   
-  ShapeUpgrade_ShapeDivideAngle tool(maxangle*M_PI/180,inputShape);
+  ShapeUpgrade_ShapeDivideAngle tool(maxangle * M_PI/180,inputShape);
   tool.Perform();
   TopoDS_Shape res = tool.Result();
 
@@ -1403,6 +1406,49 @@ static Standard_Integer removeinternalwires (Draw_Interpretor& di,
   return 0;
 }
 
+static Standard_Integer removeloc (Draw_Interpretor& di, 
+                                   Standard_Integer argc, 
+                                   const char** argv)
+{
+  if (argc<3) {
+    di << "bad number of arguments. Should be:  removeloc res shape" <<"\n";
+    return 1;
+  }
+  
+  TopoDS_Shape aShape = DBRep::Get(argv[2]);
+  if(aShape.IsNull())
+    return 1;
+  ShapeUpgrade_RemoveLocations aRemLoc;
+  aRemLoc.Remove(aShape);
+  TopoDS_Shape aNewShape = aRemLoc.GetResult();
+  
+  DBRep::Set(argv[1],aNewShape);
+  return 0;
+}
+static Standard_Integer copytranslate(Draw_Interpretor& di, 
+                                   Standard_Integer argc, 
+                                   const char** argv)
+{
+  if (argc<6) {
+    di << "bad number of arguments. Should be:  removeloc res shape dx dyy dz" <<"\n";
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get(argv[2]);
+  if(aShape.IsNull())
+    return 1;
+  Standard_Real aDx = atof(argv[3]);
+  Standard_Real aDy = atof(argv[4]);
+  Standard_Real aDz = atof(argv[5]);
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
+  BRepBuilderAPI_Transform builderTransform(aTrsf);
+  builderTransform.Perform (aShape, true); 
+  TopoDS_Shape aNewShape = builderTransform.Shape();
+  DBRep::Set(argv[1],aNewShape);
+  return 0;
+  
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -1497,4 +1543,7 @@ static Standard_Integer removeinternalwires (Draw_Interpretor& di,
   
   theCommands.Add ("RemoveIntWires","result minarea wholeshape [faces or wires] [moderemoveface ]",
                    __FILE__,removeinternalwires,g);
+  
+  theCommands.Add ("removeloc","result shape",__FILE__,removeloc,g);
+  theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
 }
