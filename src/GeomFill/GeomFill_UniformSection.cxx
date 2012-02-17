@@ -46,10 +46,9 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
 
 #if DRAW
  if (Affich) {
-   char*  name = new char[100];
+   char name[256];
    sprintf(name,"UnifSect_%d",++NumSec);
    DrawTrSurf::Set(name, myCurve);
-   delete name;
  }
 #endif
 }
