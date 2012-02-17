@@ -14,6 +14,7 @@
 #include <gp_Pnt.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <BRep_Tool.hxx>
+#include <Precision.hxx>
 
 //=======================================================================
 //function : Reject
@@ -43,7 +44,11 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::
   Standard_Boolean IsAccept = Standard_False;
   if (myList.Contains(theObj))
     return Standard_False;
-  
+  enum
+  {
+    First = 1,
+    Last = 2
+  };
    
   TopoDS_Wire W = TopoDS::Wire (mySeq->Value (theObj));
   TopoDS_Vertex V1,V2;                         
@@ -52,21 +57,25 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::
     if (myLVertex.IsSame(V1)){      
       myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1);
       IsAccept = Standard_True;
+      myArrIndices(Last) = theObj;
     }
     else {
       if (myLVertex.IsSame(V2)){
         myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2);
         IsAccept = Standard_True;
+        myArrIndices(Last) = theObj;
       }
       else {
         if (myFVertex.IsSame(V2)){
           myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE3);
           IsAccept = Standard_True;
+          myArrIndices(First) = theObj;
         }
         else {
           if (myFVertex.IsSame(V1)){
             myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE4);
             IsAccept = Standard_True;
+            myArrIndices(First) = theObj;
           }
           else myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
 
@@ -77,7 +86,8 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::
     
     if (IsAccept){
       SetNb(theObj);
-      myStop = Standard_True;
+      if(myArrIndices(Last))
+        myStop = Standard_True;
       return Standard_True;
     }
     else myStop = Standard_False;
@@ -102,32 +112,39 @@ Standard_Boolean ShapeAnalysis_BoxBndTreeSelector::
     if (min3d > myMin3d)
       return Standard_False;
 
+    Standard_Integer minInd = (dm1 > dm2 ?  First : Last );
+    Standard_Integer maxInd = (dm1 > dm2 ? Last : First);
+    myArrIndices(minInd) = theObj;
+    if((min3d - myMin3d) > RealSmall())
+      myArrIndices(maxInd) = 0;
+      
     myMin3d = min3d;
     if (min3d > myTol)
     {
        myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
        return Standard_False;
     }
-   
-    SetNb(theObj);
     
-    if (min3d == 0)
+    Standard_Integer anObj = (myArrIndices(Last) ? myArrIndices(Last) : myArrIndices(First));
+    SetNb(anObj);
+    
+    if (min3d == 0 && minInd == Last)
       myStop = Standard_True;
-    
+   
     if (dm1 > dm2) 
     {
       dm1 = dm2; 
       result = res2 + 2;
     }
-    
-   
-    switch (result) {
+    if(anObj == theObj)
+    {
+      switch (result) {
         case 0: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1); break; 
         case 1: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2);  break;
         case 2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE3);  break;
         case 3: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE4);  break;
       }
-    
+    }
       return Standard_True;
     
   }  

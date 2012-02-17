@@ -48,6 +48,11 @@
 #include <TopAbs_State.hxx>
 
 #include <Draw_ProgressIndicator.hxx>
+#include <ShapeAnalysis_FreeBounds.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <BRep_Builder.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopExp.hxx>
 
 #ifdef AIX
 #include <strings.h>
@@ -672,6 +677,69 @@ static Standard_Integer checkfclass2d(Draw_Interpretor& di, Standard_Integer n, 
   return 0;
 }
 
+static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if( n < 3) {
+    di<<"Invalid number of arguments. Should be : result shape [toler shared]"<<"\n";
+    return 1;
+  }
+  TopoDS_Shape aSh1 = DBRep::Get(a[2]);
+  if(aSh1.IsNull()) {
+    di<<"Shape is null"<<"\n";
+    return 1;
+  }
+  Standard_Real aTol = Precision::Confusion();
+  if( n > 3)
+    aTol = atof(a[3]);
+  
+  Standard_Boolean shared = Standard_True;
+  if( n > 4)
+    shared = (atoi(a[4]) == 1);
+  TopExp_Explorer aExpE(aSh1,TopAbs_EDGE);
+  Handle(TopTools_HSequenceOfShape) aSeqEdges = new TopTools_HSequenceOfShape;
+  Handle(TopTools_HSequenceOfShape) aSeqWires = new TopTools_HSequenceOfShape;
+  TopTools_IndexedMapOfShape aMapEdges;
+  for( ; aExpE.More(); aExpE.Next())
+  {
+    aSeqEdges->Append(aExpE.Current());
+    aMapEdges.Add(aExpE.Current());
+  }
+  
+  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(aSeqEdges,aTol,shared,aSeqWires );
+  TopoDS_Compound aComp;
+  BRep_Builder aB;
+  aB.MakeCompound(aComp);
+  Standard_Integer i = 1;
+  for( ; i <= aSeqWires->Length() ; i++)
+  {
+    TopoDS_Shape aW = aSeqWires->Value(i);
+    di<<"Wire - "<<i<<" : "<<"\n";
+    
+    TopExp_Explorer aExp1(aW, TopAbs_EDGE);
+    for( ; aExp1.More(); aExp1.Next())
+    {
+      if(shared)
+      {
+        Standard_Integer ind = aMapEdges.FindIndex(aExp1.Current());
+        di<<ind<<" ";
+      }
+       else
+      {
+        TopoDS_Vertex aV1, aV2;
+        TopExp::Vertices(TopoDS::Edge(aExp1.Current()), aV1,aV2);
+        gp_Pnt aP = BRep_Tool::Pnt(aV1);
+        di<<aP.X()<<" "<<aP.Y()<<" "<<aP.Z()<<"\n";
+      }
+    }
+   
+    di<<"\n";
+    aB.Add( aComp,aSeqWires->Value(i));
+  }
+  DBRep::Set(a[1],aComp);
+  return 0;
+  
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -706,5 +774,8 @@ static Standard_Integer checkfclass2d(Draw_Interpretor& di, Standard_Integer n, 
 		   __FILE__,checkoverlapedges,g);
   theCommands.Add ("checkfclass2d","face ucoord vcoord",
 		   __FILE__,checkfclass2d,g);
+  theCommands.Add ("connectedges","res shape [toler shared]",
+		   __FILE__,connectedges,g);
+  
 }
 

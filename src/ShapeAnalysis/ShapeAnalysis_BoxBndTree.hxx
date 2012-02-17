@@ -16,6 +16,7 @@
 #include <ShapeExtend_Status.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TColStd_MapOfInteger.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 typedef NCollection_UBTree <Standard_Integer , Bnd_Box> ShapeAnalysis_BoxBndTree;
 
@@ -26,12 +27,18 @@ class ShapeAnalysis_BoxBndTreeSelector
   ShapeAnalysis_BoxBndTreeSelector
     (Handle (TopTools_HArray1OfShape) theSeq,
      Standard_Boolean theShared)
-    :  mySeq(theSeq), myShared(theShared), myNb(0), myTol(1e-7), myMin3d(1e-7),
-      myStatus(ShapeExtend::EncodeStatus (ShapeExtend_OK)){}
+    :  mySeq(theSeq), myShared(theShared), myNb(0), myTol(1e-7), myMin3d(1e-7),myArrIndices(1,2),
+      myStatus(ShapeExtend::EncodeStatus (ShapeExtend_OK))
+      {
+        myArrIndices.Init(0);
+      }
   
   void DefineBoxes (const Bnd_Box& theFBox, const Bnd_Box& theLBox)
     { myFBox = theFBox;
-      myLBox = theLBox; }
+      myLBox = theLBox; 
+      myArrIndices.Init(0);
+       
+  }
   
   void DefineVertexes (TopoDS_Vertex theVf, TopoDS_Vertex theVl)
     { myFVertex = theVf;
@@ -87,6 +94,7 @@ class ShapeAnalysis_BoxBndTreeSelector
   TColStd_MapOfInteger                 myList;
   Standard_Real                        myTol;
   Standard_Real                        myMin3d;
+  TColStd_Array1OfInteger              myArrIndices;
 };
 
 #endif
