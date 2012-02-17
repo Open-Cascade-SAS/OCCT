@@ -946,7 +946,7 @@ D = -[Px,Py,Pz] dot |Nx|
 
 */
 
-  glPushAttrib( GL_FOG_BIT | GL_LIGHTING_BIT );
+  glPushAttrib( GL_FOG_BIT | GL_LIGHTING_BIT | GL_ENABLE_BIT );
 
   // Apply Fog
   if ( myFog.IsOn )
@@ -1184,7 +1184,7 @@ D = -[Px,Py,Pz] dot |Nx|
   if (!myGraduatedTrihedron.IsNull())
     myGraduatedTrihedron->Render(AWorkspace);
 
-  glPopAttrib(); // GL_FOG_BIT | GL_LIGHTING_BIT
+  glPopAttrib(); // GL_FOG_BIT | GL_LIGHTING_BIT | GL_ENABLE_BIT
 
   // Restore face culling
   if ( myBackfacing )

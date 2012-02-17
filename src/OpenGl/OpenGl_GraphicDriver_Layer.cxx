@@ -248,7 +248,7 @@ void OpenGl_GraphicDriver::SetTextAttributes (const Standard_CString Font, const
   {
     CALL_DEF_CONTEXTTEXT aContextText = myDefaultContextText;
 
-    aContextText.Font = (char*)Font;
+    aContextText.Font = Font;
     aContextText.DisplayType = AType;
     aContextText.Color.r = R;
     aContextText.Color.g = G;

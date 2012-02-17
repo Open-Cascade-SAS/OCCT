@@ -310,9 +310,9 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
   if ( renderMode == GL_FEEDBACK ) 
   {
 #ifdef HAVE_GL2PS
-    export_h = (GLdouble)fnt->FaceSize() / export_h;
+    export_h = (float)fnt->FaceSize() / export_h;
     glPopMatrix();
-    ExportText( str, is2d, x, y, z, aspect, param, export_h );
+    ExportText( str, is2d, x, y, z, aspect, param, (short)export_h );
 #endif
   }
   else
@@ -328,7 +328,7 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
 static const int alignmentforgl2ps[3][3] = { {5,2,8}, {4,1,7}, {6,3,9} };
 
 void OpenGl_Display::ExportText (const wchar_t* text, const int is2d, const float x, const float y, const float z,
-                                const OpenGl_AspectText *aspect, const OpenGl_TextParam *param, const float height)
+                                const OpenGl_AspectText *aspect, const OpenGl_TextParam *param, const short height)
 {
 #ifdef HAVE_GL2PS
 

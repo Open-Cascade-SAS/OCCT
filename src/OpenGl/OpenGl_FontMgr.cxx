@@ -338,8 +338,8 @@ void OpenGl_FontMgr::render_text( const Standard_Integer id, const wchar_t* text
         glDisable(GL_DEPTH_TEST);
     }
 
-    GLint* param = new GLint;    
-    glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, param);
+    GLint param;
+    glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &param);
 
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
     glAlphaFunc(GL_GEQUAL, 0.285f);    
@@ -347,14 +347,12 @@ void OpenGl_FontMgr::render_text( const Standard_Integer id, const wchar_t* text
     OGLFont_Cache cache = _FontCache.Find( id );
     cache.Font->Render( text );
 
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, *param);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, param);
 
     if( !enableTexture )
       glDisable(GL_TEXTURE_2D);
     if( !enableDepthTest )
       glDisable(GL_DEPTH_TEST);
-
-    delete param;
 
     glPopAttrib();
     glMatrixMode( GL_MODELVIEW );

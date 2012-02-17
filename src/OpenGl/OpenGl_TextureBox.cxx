@@ -424,13 +424,13 @@ static void MyGenTextureEXT (TextureID ID)
 */
 static void MyBindTextureEXT (TextureID ID, int Context)
 {
-  // si l'extension est presente, c'est facile
   TextureDataID data = textab[ID].data;
-  if (textab[ID].status == TEXDATA_NONE)
+  if (texdata[data].status == TEXDATA_NONE)
     return;
 
-  // OCC11904 - make sure that the correct texture is bound before drawing
-  GLenum aParamName = textab[ID].status == TEXDATA_1D ? GL_TEXTURE_BINDING_1D : GL_TEXTURE_BINDING_2D;
+  GLenum aParamName = texdata[data].status == TEXDATA_1D ? 
+	GL_TEXTURE_BINDING_1D : GL_TEXTURE_BINDING_2D;
+
   GLint aCurrTex = -1;
   glGetIntegerv (aParamName, &aCurrTex);
   if (textab[ID].number[Context] != aCurrTex)

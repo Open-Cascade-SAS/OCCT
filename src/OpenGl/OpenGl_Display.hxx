@@ -116,7 +116,7 @@ class OpenGl_Display : public MMgt_TShared
 
   void Init ();
 
-  void ExportText (const wchar_t *text, const int is2d, const float x, const float y, const float z, const OpenGl_AspectText *aspect, const OpenGl_TextParam *param, const float height);
+  void ExportText (const wchar_t *text, const int is2d, const float x, const float y, const float z, const OpenGl_AspectText *aspect, const OpenGl_TextParam *param, const short height);
 
 #ifdef HAVE_GL2PS
   static void getGL2PSFontName(const char *src_font, char *ps_font);

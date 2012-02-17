@@ -482,7 +482,7 @@ Standard_Boolean OpenGl_Workspace::Print
         {
           if (hViewBitmap)
             DeleteObject (hViewBitmap);
-          aFrameBuffer->Release ();
+          aFrameBuffer->Release (GetGlContext());
           hViewBitmap = NULL;
         }
         else

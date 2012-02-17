@@ -487,7 +487,7 @@ typedef struct {
 
         int IsSet;
 
-        char*  Font;
+        const char* Font;
 
         float Space;
 
