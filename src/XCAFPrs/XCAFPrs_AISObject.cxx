@@ -160,62 +160,6 @@ void XCAFPrs_AISObject::UnsetTransparency()
 }
 
 //=======================================================================
-//function : DisplayBox
-//purpose  : 
-//=======================================================================
-
-static void DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
-                       const Bnd_Box& B,
-                       const Handle(Prs3d_Drawer)& aDrawer)
-{
-  Standard_Real X[2],Y[2],Z[2];
-  Standard_Integer Indx [16] ;
-  if ( B.IsVoid() )
-    return;
-  
-#ifdef BUC60577
-  Indx [0]=1;Indx [1]=2;Indx [2]=4;Indx [3]=3;
-  Indx [4]=5;Indx [5]=6;Indx [6]=8;Indx [7]=7;
-  Indx [8]=1;Indx [9]=3;Indx [10]=7;Indx [11]=5;
-  Indx [12]=2;Indx [13]=4;Indx [14]=8;Indx [15]=6;
-  B.Get(X[0], Y[0], Z[0], X[1], Y[1], Z[1]);
-#else
-  Indx [0]=1;Indx [1]=2;Indx [2]=3;Indx [3]=4;Indx [4]=5;Indx [5]=6;Indx [6]=7;
-  Indx [7]=8;Indx [8]=1;Indx [9]=2;Indx [10]=6;Indx [10]=5;Indx [10]=3;
-  Indx [10]=4;Indx [10]=8;Indx [10]=7;
-  B.Get(X[1], Y[1], Z[1], X[2], Y[2], Z[2]);
-#endif
-
-  Graphic3d_Array1OfVertex V(1,8);
-  Standard_Integer Rank(0);
-  for(Standard_Integer k=0;k<=1;k++)
-    for(Standard_Integer j=0;j<=1;j++)
-      for(Standard_Integer i=0;i<=1;i++)
-	V(++Rank) = Graphic3d_Vertex(X[i],Y[j],Z[k]);
-  
-  
-  Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPrs);
-  Quantity_Color Q;
-  Aspect_TypeOfLine A;
-  Standard_Real W;
-  aDrawer->LineAspect()->Aspect()->Values(Q,A,W);
-  
-
-  G->SetGroupPrimitivesAspect(new Graphic3d_AspectLine3d(Q,Aspect_TOL_DOTDASH,W));
-  
-  G->BeginPrimitives();Standard_Integer I,J;
-  Graphic3d_Array1OfVertex VVV (1,5);
-  for(I=1;I<=4;I++){
-    for(J=1;J<=4;J++){
-      VVV.SetValue(J,V(Indx[J+4*I-5]));
-    }
-    VVV.SetValue(5,VVV(1));
-    G->Polyline(VVV);
-  }
-  G->EndPrimitives();
-}
-
-//=======================================================================
 //function : AddStyledItem
 //purpose  : 
 //=======================================================================
