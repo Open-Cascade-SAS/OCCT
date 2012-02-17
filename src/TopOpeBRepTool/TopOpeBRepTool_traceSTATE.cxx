@@ -32,9 +32,9 @@ Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL3DPR()
 Standard_EXPORT void TopOpeBRepTool_SettraceCL2DDR
   (const Standard_Boolean b, Standard_Integer narg, char** a) 
 { TopOpeBRepTool_CL2DDR.Set(b,narg,a); }
-Standard_EXPORT Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL2DDR(const TopAbs_State S) 
+Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL2DDR(const TopAbs_State S) 
 { return TopOpeBRepTool_CL2DDR.Get(S); }
-Standard_EXPORT Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL2DDR()
+Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCL2DDR()
 { return TopOpeBRepTool_CL2DDR.Get(); }
 
 Standard_EXPORT void TopOpeBRepTool_SettraceCL2DPR
