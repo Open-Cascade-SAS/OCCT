@@ -468,7 +468,6 @@ Standard_ShortReal RB = 0 ;
 switch (AName) {
 
 	case Quantity_NOC_BLACK :
-		R1 = R2 = R3 = 0.0;
 		RR = R1 = 0.000000; RG = R2 = 0.000000; RB = R3 = 0.000000;
 	break;
 	case Quantity_NOC_MATRAGRAY :
