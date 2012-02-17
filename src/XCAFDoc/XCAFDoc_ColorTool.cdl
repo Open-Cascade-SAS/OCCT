@@ -84,7 +84,12 @@ is
 		  type : ColorType from XCAFDoc);
     	---Purpose: Sets a link with GUID defined by <type> (see 
     	--          XCAFDoc::ColorRefGUID()) from label <L> to color
-    	--          defined by <colorL>
+    	--          defined by <colorL>. Color of shape is defined following way
+    	--          in dependance with type of color.
+    	--          If type of color is XCAFDoc_ColorGen - then this color 
+    	--          defines default color for surfaces and curves.
+    	--          If for shape color with types XCAFDoc_ColorSurf or XCAFDoc_ColorCurv is specified
+    	--          then such color overrides generic color.  
     
     SetColor (me; L: Label from TDF;
 		  Color: Color from Quantity;

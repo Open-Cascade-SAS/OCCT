@@ -1039,13 +1039,14 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
         }
       }
       if ( CTool->GetColor ( lab, XCAFDoc_ColorGen, C ) ) {
-	style.SetColorCurv ( C );
-	style.SetColorSurf ( C );
+        style.SetColorCurv ( C );
+        style.SetColorSurf ( C );
       }
       if ( CTool->GetColor ( lab, XCAFDoc_ColorSurf, C ) )
-	style.SetColorSurf ( C );
+        style.SetColorSurf ( C );
       if ( CTool->GetColor ( lab, XCAFDoc_ColorCurv, C ) )
-	style.SetColorCurv ( C );
+        style.SetColorCurv ( C );
+      
       // commented, cause we are need to take reference from 
 //       if ( isComponent && lab == L && !isVisible)
 //         if ( !style.IsSetColorSurf() && !style.IsSetColorCurv() ) {

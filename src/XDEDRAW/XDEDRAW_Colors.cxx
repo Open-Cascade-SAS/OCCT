@@ -360,7 +360,8 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
   
   Standard_CString g = "XDE color's commands";
   
-  di.Add ("XSetColor","Doc {Label|Shape} R G B \t: Set color [R G B] to shape given by Label",
+  di.Add ("XSetColor","Doc {Label|Shape} R G B [c|s]\t: Set color [R G B] to shape given by Label, "
+                      "type of color 's' - for surface, 'c' - for curve (default generic)",
 		   __FILE__, setColor, g);
 
   di.Add ("XGetColor","Doc label \t: Return color defined on label in colortable",
