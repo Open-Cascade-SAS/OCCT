@@ -157,7 +157,7 @@ Message_Msg& Message_Msg::Arg (const Standard_CString theString)
   char * sStringBuffer = new char [Max (strlen(theString)+1, 1024)];
   sprintf (sStringBuffer, aFormat.ToCString(), theString);
   TCollection_ExtendedString aStr ( sStringBuffer );
-  delete sStringBuffer;
+  delete [] sStringBuffer;
   sStringBuffer = 0;
 
   // replace the format placeholder by the actual string
