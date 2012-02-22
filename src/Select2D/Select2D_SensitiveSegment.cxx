@@ -112,7 +112,7 @@ Matches (const Standard_Real XMin,
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-TheTol,YMin-TheTol,XMax+TheTol,YMax+TheTol);
   
-  if (BoundBox.IsOut(mystart)&&BoundBox.IsOut(myend)) return Standard_False;
+  if (BoundBox.IsOut(mystart)||BoundBox.IsOut(myend)) return Standard_False;
   return Standard_True;
 }
 
