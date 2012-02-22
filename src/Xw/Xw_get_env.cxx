@@ -58,29 +58,3 @@ if( Xw_get_trace() > 1 ) {
 
 	return (XW_SUCCESS);
 }
-
-#ifdef XW_PROTOTYPE
-XW_STATUS Xw_put_env (char* symbol,char* value)
-#else
-XW_STATUS Xw_put_env (symbol,value)
-char *symbol,*value ;
-#endif /*XW_PROTOTYPE*/
-{
-char *string ;
-
-	if( !strlen(symbol) ) return (XW_ERROR) ;
-
-	string = (char*) malloc(strlen(symbol) + strlen(value) + 4) ;
-
-	sprintf(string,"%s=%s",symbol,value) ;
-
-	if( putenv(string) ) return (XW_ERROR) ;
-
-#ifdef  TRACE_PUT_ENV
-if( Xw_get_trace() > 1 ) {
-    printf (" Xw_put_env('%s','%s')\n",symbol,value) ;
-}
-#endif
-
-	return (XW_SUCCESS);
-}

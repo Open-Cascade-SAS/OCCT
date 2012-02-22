@@ -1960,11 +1960,4 @@ extern "C" {
 #endif
         );
 
-        XW_STATUS Xw_put_env(
-#ifdef XW_PROTOTYPE         
-                char* symbol,
-                char* value
-#endif
-        );
-
 #endif /*XW_CEXTERN*/
