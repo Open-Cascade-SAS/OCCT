@@ -219,24 +219,6 @@ void StdSelect_BRepSelectionTool
       break;
     }
     case TopAbs_SHELL:
-    {
-      Handle(Select3D_SensitiveGroup) aSensitiveGroup = new Select3D_SensitiveGroup (theOwner);
-      Select3D_ListOfSensitive aSensitiveList;
-      TopTools_IndexedMapOfShape aSubfacesMap;
-      TopExp::MapShapes (theShape, TopAbs_FACE, aSubfacesMap);
-      for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
-      {
-        GetSensitiveForFace (TopoDS::Face (aSubfacesMap (aShIndex)), theOwner,
-                             aSensitiveList,
-                             isAutoTriangulation, theNbPOnEdge, theMaxParam);
-      }
-      if (!aSensitiveList.IsEmpty())
-      {
-        aSensitiveGroup->Add (aSensitiveList);
-        theSelection->Add (aSensitiveGroup);
-      }
-      break;
-    }
     case TopAbs_SOLID:
     case TopAbs_COMPSOLID:
     {
