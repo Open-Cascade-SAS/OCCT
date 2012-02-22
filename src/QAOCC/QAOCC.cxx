@@ -5175,6 +5175,36 @@ Standard_Integer OCC22744 (Draw_Interpretor& di, Standard_Integer argc, const ch
 
 }
 
+Standard_Integer OCC22558 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+    if (argc != 10) {
+	di << "Wrong number of arguments" << argv[0] << "\n";
+	return 1;
+    }
+    
+    Standard_Real X_vec = atof(argv[1]);
+    Standard_Real Y_vec = atof(argv[2]);
+    Standard_Real Z_vec = atof(argv[3]);
+    
+    Standard_Real X_dir = atof(argv[4]);
+    Standard_Real Y_dir = atof(argv[5]);
+    Standard_Real Z_dir = atof(argv[6]);
+    
+    Standard_Real X_pnt = atof(argv[7]);
+    Standard_Real Y_pnt = atof(argv[8]);
+    Standard_Real Z_pnt = atof(argv[9]);
+    
+    gp_Dir toSym(X_vec, Y_vec, Z_vec);
+    gp_Dir dir(X_dir, Y_dir, Z_dir);
+    gp_Pnt loc(X_pnt, Y_pnt, Z_pnt);
+    gp_Ax2 symObj(loc,dir);
+    toSym.Mirror(symObj);
+    
+    di << "The result " << toSym.X() << " " << toSym.Y() << " " << toSym.Z() << "\n"; 
+    return 0;
+}
+    
+
 Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
 	
@@ -5393,5 +5423,6 @@ void QAOCC::Commands(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
   theCommands.Add("bcarray", "bcarray", __FILE__, bcarray, group);
   theCommands.Add("OCC22762", "OCC22762 x1 y1 z1 x2 y2 z3", __FILE__, OCC22762, group);
+  theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
   return;
 }
