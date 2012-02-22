@@ -24,6 +24,5 @@
 #define OPENGL_NS_FORBIDSETTEX (1<<14)
 #define OPENGL_NS_FLIST        (1<<15)
 #define OPENGL_NS_WHITEBACK    (1<<16)
-#define OPENGL_NS_ISBITMAP     (1<<17)
 
 #endif //_OpenGl_NamedStatus_Header

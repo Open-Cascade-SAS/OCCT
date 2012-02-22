@@ -1194,20 +1194,18 @@ D = -[Px,Py,Pz] dot |Nx|
       glEnable   ( GL_CULL_FACE );
       glCullFace ( GL_BACK      );
     }
-	else
+    else
       glDisable ( GL_CULL_FACE );
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // Step 6: Draw overlayer
-  // Redrawing to bitmap or window?
-  const int amode = (AWorkspace->NamedStatus & OPENGL_NS_ISBITMAP)? OCC_REDRAW_BITMAP : OCC_REDRAW_WINDOW;
-
-  AWorkspace->DisplayCallback(ACView,(amode | OCC_PRE_OVERLAY));
+  const int aMode = 0;
+  AWorkspace->DisplayCallback (ACView, (aMode | OCC_PRE_OVERLAY));
 
   RedrawLayer2d(AWorkspace, ACView, ACOverLayer);
 
-  AWorkspace->DisplayCallback(ACView,amode);
+  AWorkspace->DisplayCallback (ACView, aMode);
 
   // Restore clipping planes
   for ( ptrPlane = oldPlanes, planeid = GL_CLIP_PLANE0; planeid < lastid; planeid++, ptrPlane++ )
@@ -1215,7 +1213,7 @@ D = -[Px,Py,Pz] dot |Nx|
     glClipPlane( planeid, ptrPlane->Equation );
     if ( ptrPlane->isEnabled )
       glEnable( planeid );
-	else
+    else
       glDisable( planeid );
   }
   delete[] oldPlanes;
@@ -1278,15 +1276,8 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
    || ACLayer.ptrLayer == NULL
    || ACLayer.ptrLayer->listIndex == 0) return;
 
-  GLsizei dispWidth, dispHeight;
-  if ( ACView.DefBitmap.bitmap ) {
-    dispWidth = ACView.DefBitmap.width;
-    dispHeight = ACView.DefBitmap.height;
-  }
-  else {
-    dispWidth = (GLsizei) ACLayer.viewport[0];
-    dispHeight = (GLsizei) ACLayer.viewport[1];
-  }
+  GLsizei dispWidth  = (GLsizei )ACLayer.viewport[0];
+  GLsizei dispHeight = (GLsizei )ACLayer.viewport[1];
 
   const GLboolean isl = glIsEnabled(GL_LIGHTING); /*OCC6247*/
   if (isl)

@@ -278,7 +278,6 @@ Standard_Real um, vm, uM, vM;
         MyCView.Backfacing        = 0;
 #endif  // G003
 
-        MyCView.DefBitmap.bitmap = 0;
         MyCView.ptrUnderLayer = 0;
         MyCView.ptrOverLayer = 0;
         MyCView.GContext = 0;
@@ -421,7 +420,6 @@ Standard_Real um, vm, uM, vM;
         ComputedModeIsActive      = Standard_False;
 #endif  // G003
 
-        MyCView.DefBitmap.bitmap = 0;
         MyCView.ptrUnderLayer = 0;
         MyCView.ptrOverLayer = 0;
         MyCView.GContext = 0;

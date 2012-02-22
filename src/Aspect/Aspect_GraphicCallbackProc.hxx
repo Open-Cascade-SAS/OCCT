@@ -11,10 +11,6 @@
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>
 
-#define OCC_REDRAW_WINDOW 1
-#define OCC_REDRAW_WINDOWAREA 2
-#define OCC_REDRAW_BITMAP 3
-
 // The flags below provide additional information to define the moment when
 // callback was invoked in redraw procedure. These flags are bitwise OR'ed
 // with the "reason" value of callback:

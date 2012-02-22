@@ -90,14 +90,4 @@ typedef struct {
 
 } CALL_DEF_LAYER;
 
-typedef struct {
-  int     width;
-  int     height;
-#ifdef IMP100701
-  int     depth;
-#endif
-  Aspect_Drawable bitmap;
-  Aspect_RenderingContext bitmapContext;
-} CALL_DEF_BITMAP;
-
 #endif /* InterfaceGraphic_AspectHeader */

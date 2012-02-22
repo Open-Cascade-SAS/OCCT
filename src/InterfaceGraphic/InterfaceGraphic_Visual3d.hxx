@@ -209,8 +209,6 @@ typedef struct {
 
 	CALL_DEF_WINDOW DefWindow;
 
-	CALL_DEF_BITMAP DefBitmap;
-
 	void *ptrUnderLayer;
 	void *ptrOverLayer;
 

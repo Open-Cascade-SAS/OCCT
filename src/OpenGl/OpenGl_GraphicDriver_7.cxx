@@ -98,7 +98,7 @@ void OpenGl_GraphicDriver::ClipLimit (const Graphic3d_CView& ACView, const Stand
   if (aCView)
   {
     aCView->View->SetClipLimit(ACView);
-    if (!AWait && !ACView.DefBitmap.bitmap)
+    if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);
       aCView->WS->Invalidate();
@@ -131,15 +131,6 @@ Standard_Boolean OpenGl_GraphicDriver::ProjectRaster (const Graphic3d_CView& ACV
 
   Standard_Integer aWidth = aCView->WS->Width();
   Standard_Integer aHeight = aCView->WS->Height();
-
-  //if we want project something before to dump it into pixmap
-  //For right copution of projection before dumping to pixmap
-  if ( ACView.DefBitmap.bitmap )
-  {
-    aWidth = ACView.DefBitmap.width;
-    aHeight = ACView.DefBitmap.height;
-  }
-
   Standard_ShortReal xr, yr;
   if (aCView->View->ProjectObjectToRaster(aWidth, aHeight, AX, AY, AZ, xr, yr))
   {
@@ -180,12 +171,11 @@ Standard_Boolean OpenGl_GraphicDriver::UnProjectRasterWithRay (const Graphic3d_C
   return aCView->View->ProjectRasterToObjectWithRay( aWidth, aHeight, AU, AYM-Aym-AV, Ax, Ay, Az, Dx, Dy, Dz );
 }
 
-void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& ACView)
+void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& theCView)
 {
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (!aCView)
-    if( !ACView.DefBitmap.bitmap )
-      aCView->WS->Resize(ACView.DefWindow);
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL)
+    aCView->WS->Resize (theCView.DefWindow);
 }
 
 void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height)
@@ -478,7 +468,7 @@ void OpenGl_GraphicDriver::ViewMapping (const Graphic3d_CView& ACView, const Sta
   if (aCView)
   {
     aCView->View->SetMapping(ACView);
-    if (!AWait && !ACView.DefBitmap.bitmap)
+    if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);
       aCView->WS->Invalidate();
@@ -492,7 +482,7 @@ void OpenGl_GraphicDriver::ViewOrientation (const Graphic3d_CView& ACView, const
   if (aCView)
   {
     aCView->View->SetOrientation(ACView);
-    if (!AWait && !ACView.DefBitmap.bitmap)
+    if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);
       aCView->WS->Invalidate();

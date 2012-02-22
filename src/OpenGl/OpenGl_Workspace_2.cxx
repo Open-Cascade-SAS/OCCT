@@ -566,7 +566,6 @@ Standard_Boolean OpenGl_Workspace::Print
   bool isDone = true;
 
   // Set up status for printing
-  NamedStatus |= OPENGL_NS_ISBITMAP;
   if (!showBackground)
     NamedStatus |= OPENGL_NS_WHITEBACK;
 
@@ -750,7 +749,7 @@ Standard_Boolean OpenGl_Workspace::Print
 #endif
 
   // Reset status after printing
-  NamedStatus &= ~(OPENGL_NS_WHITEBACK | OPENGL_NS_ISBITMAP);
+  NamedStatus &= ~OPENGL_NS_WHITEBACK;
 
   return (Standard_Boolean) isDone;
 
