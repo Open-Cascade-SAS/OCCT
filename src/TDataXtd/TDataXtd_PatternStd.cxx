@@ -188,8 +188,8 @@ void TDataXtd_PatternStd::NbInstances1(const Handle(TDataStd_Integer)& NbInstanc
 void TDataXtd_PatternStd::NbInstances2(const Handle(TDataStd_Integer)& NbInstances2) 
 {
   // OCC2932 correction
-  if(!myNb1.IsNull())
-    if(myNb1->Get() == NbInstances2->Get())
+  if(!myNb2.IsNull())
+    if(myNb2->Get() == NbInstances2->Get())
       return;
 
   Backup();
