@@ -9,6 +9,8 @@ class SensitiveFace from Select3D
 inherits SensitivePoly from Select3D
 
     ---Purpose: Sensitive Entity to make a face selectable.
+    -- In some cases this class can raise Standard_ConstructionError and 
+    -- Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
 
 uses
     EntityOwner       from SelectBasics,
@@ -22,6 +24,10 @@ uses
     TypeOfSensitivity from Select3D,
     Location          from TopLoc, 
     SensitiveEntity   from Select3D
+
+raises
+    ConstructionError from Standard,
+    OutOfRange from Standard
 
 is
 

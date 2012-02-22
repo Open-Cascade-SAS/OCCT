@@ -80,5 +80,6 @@ is
     imported Pnt;
     imported Pnt2d;
     imported Box2d;
+    imported PointData;
 
 end Select3D;

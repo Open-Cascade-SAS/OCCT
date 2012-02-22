@@ -11,6 +11,8 @@ class SensitiveCurve   from Select3D
 inherits SensitivePoly from Select3D
 
     ---Purpose: A framework to define a sensitive 3D curve.
+    -- In some cases this class can raise Standard_ConstructionError and 
+    -- Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
 
 uses
     Pnt             from gp,
@@ -26,6 +28,10 @@ uses
     Box2d           from Bnd,
     Location                 from TopLoc, 
     SensitiveEntity   from Select3D
+
+raises
+    ConstructionError from Standard,
+    OutOfRange from Standard
 is
 
 

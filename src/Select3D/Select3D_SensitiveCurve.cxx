@@ -68,7 +68,7 @@ Standard_Boolean Select3D_SensitiveCurve
           Standard_Real& DMin)
 {
   Standard_Integer Rank;
-  TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
+  TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mypolyg.Size());
   Points2D(aArrayOf2dPnt);
   if (SelectBasics_BasicTool::MatchPolyg2d (aArrayOf2dPnt,
                                             X, Y,
@@ -99,9 +99,10 @@ Matches (const Standard_Real XMin,
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
   
-  for(Standard_Integer j=0; j<mynbpoints; j++)
+  for(Standard_Integer anIndex=0; anIndex<mypolyg.Size(); ++anIndex)
     {
-      if(BoundBox.IsOut(((Select3D_Pnt2d*)mypolyg2d)[j])) return Standard_False;
+      if(BoundBox.IsOut(mypolyg.Pnt2d(anIndex)))
+        return Standard_False;
     }
   return Standard_True;
 }
@@ -123,10 +124,11 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
   Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
-  for(Standard_Integer j=0;j<mynbpoints;j++)
+  for(Standard_Integer anIndex=0;anIndex<mypolyg.Size();++anIndex)
   {
-    Standard_Integer RES = aClassifier2d.SiDans(((Select3D_Pnt2d*)mypolyg2d)[j]);
-    if(RES!=1) return Standard_False;
+    Standard_Integer RES = aClassifier2d.SiDans(mypolyg.Pnt2d(anIndex));
+    if(RES!=1)
+      return Standard_False;
   }
   return Standard_True;
 }
@@ -144,11 +146,11 @@ void Select3D_SensitiveCurve
 
   Standard_Real Step = (aCurve->LastParameter()- aCurve->FirstParameter())/(NbP-1);
   Standard_Real Curparam = aCurve->FirstParameter();
-  for(Standard_Integer i=0;i<mynbpoints;i++)
-    {
-      ((Select3D_Pnt*)mypolyg3d)[i] = aCurve->Value(Curparam);
-      Curparam+=Step;
-    }
+  for(Standard_Integer anIndex=0;anIndex<mypolyg.Size();++anIndex)
+  {
+    mypolyg.SetPnt(anIndex, aCurve->Value(Curparam));
+    Curparam+=Step;
+  }
 }
 
 //=======================================================================
@@ -159,14 +161,13 @@ void Select3D_SensitiveCurve
 void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const 
 {
   S<<"\tSensitiveCurve 3D :"<<endl;
-  if(HasLocation())
+  if (HasLocation())
     S<<"\t\tExisting Location"<<endl;
 
-  S<<"\t\tNumber Of Points :"<<mynbpoints<<endl;
+  S<<"\t\tNumber Of Points :"<<mypolyg.Size()<<endl;
 
   if(FullDump)
   {
-//    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
     Select3D_SensitiveEntity::DumpBox(S,mybox2d);
   }
 }
@@ -178,11 +179,27 @@ void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean Fu
 
 Standard_Real Select3D_SensitiveCurve::ComputeDepth(const gp_Lin& EyeLine) const
 {
-  if(mylastseg==0) return Precision::Infinite(); // non implemente actuellement...
-  gp_XYZ TheCDG(((Select3D_Pnt*)mypolyg3d)[mylastseg]);
-  TheCDG+=((Select3D_Pnt*)mypolyg3d)[mylastseg+1];
-  TheCDG/=2.;
-  return ElCLib::Parameter(EyeLine,gp_Pnt(TheCDG));
+  Standard_Real aDepth = Precision::Infinite();
+
+  // Not implemented
+  if(mylastseg==0)
+    return aDepth;
+
+  gp_XYZ aCDG;
+  // In case if mylastseg and mylastseg+1 are not valid
+  // the depth will be infinite
+  if (mylastseg < mypolyg.Size())
+  {
+    aCDG = mypolyg.Pnt(mylastseg);
+    if (mylastseg+1 < mypolyg.Size())
+    {
+      aCDG += mypolyg.Pnt(mylastseg+1);
+      aCDG /= 2.;
+    }
+    aDepth = ElCLib::Parameter(EyeLine,gp_Pnt(aCDG));
+  }
+
+  return aDepth;
 }
 
 //=======================================================================
@@ -202,13 +219,14 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected(const Top
   // this was constructed using TColgp_HArray1OfPnt
   else 
   {
-    Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt(1, mynbpoints);
+    Standard_Integer aSize = mypolyg.Size();
+    Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt(1, aSize);
     // Fill the array with points from mypolyg3d
-    for (Standard_Integer i = 1; i <= mynbpoints; ++i) 
+    for (Standard_Integer anIndex = 1; anIndex <= aSize; ++anIndex) 
     {
-      aPoints->SetValue(i, ((Select3D_Pnt*)mypolyg3d)[i-1]);
+      aPoints->SetValue(anIndex, mypolyg.Pnt(anIndex-1));
     }
-    aNewEntity = new Select3D_SensitiveCurve(myOwnerId, aPoints);
+     aNewEntity = new Select3D_SensitiveCurve(myOwnerId, aPoints);
   }
   
   if (HasLocation()) 

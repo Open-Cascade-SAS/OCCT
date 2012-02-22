@@ -2,3 +2,4 @@ Select3D_Pnt.hxx
 Select3D_Pnt2d.hxx
 Select3D_Box2d.hxx
 Select3D_Macro.hxx
+Select3D_PointData.hxx

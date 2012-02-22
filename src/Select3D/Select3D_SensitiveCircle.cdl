@@ -10,6 +10,8 @@ class SensitiveCircle from Select3D
 inherits SensitivePoly from Select3D
 
     ---Purpose: A framework to define sensitive 3D arcs and circles. 
+    -- In some cases this class can raise Standard_ConstructionError and 
+    -- Standard_OutOfRange exceptions. For more details see Select3D_SensitivePoly.
 uses
     Pnt             from gp,
     Pnt2d           from gp,
@@ -28,6 +30,10 @@ uses
     Projector       from Select3D,
     SensitiveEntity from Select3D, 
     Circle          from Geom
+
+raises
+    ConstructionError from Standard,
+    OutOfRange from Standard
 
 is
     Create (OwnerId      : EntityOwner from SelectBasics;
@@ -114,7 +120,7 @@ is
 
     Project(me: mutable;aProjector: Projector from Select3D) is redefined virtual;
 
-    ComputeCenter3D(me: mutable); 
+    ComputeCenter3D(me: mutable) is private; 
         ---Level: Internal 
         ---Purpose: Computes myCenter3D as the barycenter of points from mypolyg3d
 

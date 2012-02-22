@@ -2,6 +2,9 @@ deferred class SensitivePoly from Select3D
 inherits SensitiveEntity from Select3D
 
     ---Purpose: Sensitive Entity to make a face selectable.
+    -- In some cases this class can raise Standard_ConstructionError and 
+    -- Standard_OutOfRange exceptions from its member Select3D_PointData 
+    -- mypolyg.
 
 uses
     EntityOwner       from SelectBasics,
@@ -9,8 +12,13 @@ uses
     ListOfBox2d       from SelectBasics,
     Array1OfPnt       from TColgp,
     HArray1OfPnt      from TColgp,
-    Array1OfPnt2d   from TColgp,
-    Box2d             from Select3D
+    Array1OfPnt2d     from TColgp,
+    Box2d             from Select3D,
+    PointData         from Select3D
+
+raises    
+    ConstructionError from Standard,
+    OutOfRange        from Standard
 
 is
 
@@ -58,15 +66,8 @@ is
     ---Purpose: Returns the 2D points of the array used at construction time.
     ---C++: inline
 
-
-    Destroy(me: mutable);
-    ---C++: alias ~
-
-
 fields
  
-    mypolyg3d       : Address   from Standard is protected;
-    mypolyg2d       : Address   from Standard is protected;
     mybox2d         : Box2d     from Select3D is protected;
-    mynbpoints      : Integer   from Standard is protected;
+    mypolyg         : PointData from Select3D is protected;
 end SensitivePoly;

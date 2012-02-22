@@ -88,28 +88,27 @@ Matches(const Standard_Real X,
   // then min. distance of the polyhedron or cdg...
 
   Standard_Real aTol2 = aTol*aTol;
-  gp_XY CDG(0.,0.);
-//  for(Standard_Integer I=1;I<=Nbp-1;I++){
-  Standard_Integer I;
-  for(I=1;I<mynbpoints-1;I++)
+  Standard_Integer aSize = mypolyg.Size(), anIndex;
+  gp_XY CDG;
+  for(anIndex=0;anIndex<aSize;++anIndex)
   {
-    CDG+=((Select3D_Pnt2d*)mypolyg2d)[I-1];
+    CDG+=mypolyg.Pnt2d(anIndex);
   }
-  
-  if(mynbpoints>1)
+
+  if(aSize>1)
   {
-    CDG/= (mynbpoints-1);
+    CDG/=(aSize-1);
   }
   DMin2=Min(DMin2,gp_XY(CDG.X()-X,CDG.Y()-Y).SquareModulus());
   DMin = Sqrt(DMin2);
-  
+
   Standard_Boolean isplane2d(Standard_True);
-  
-  for( I=1;I<mynbpoints-1;I++)
+
+  for(anIndex=1;anIndex<aSize;++anIndex)
   {
-    gp_XY V1(((Select3D_Pnt2d*)mypolyg2d)[I]),V(X,Y);
-    V1-=((Select3D_Pnt2d*)mypolyg2d)[I-1];
-    V-=((Select3D_Pnt2d*)mypolyg2d)[I-1];
+    gp_XY V1(mypolyg.Pnt2d(anIndex)),V(X,Y);
+    V1-=mypolyg.Pnt2d(anIndex-1);
+    V-=mypolyg.Pnt2d(anIndex-1);
     Standard_Real Vector = V1^V;
     Standard_Real V1V1 = V1.SquareModulus();
     DMin2 = 
@@ -117,7 +116,8 @@ Matches(const Standard_Real X,
     Min(DMin2,V.SquareModulus()): // if the segment is too small...
       Min(DMin2,Vector*Vector/V1V1);
     //cdg ...
-    gp_XY PlaneTest(CDG);PlaneTest-=((Select3D_Pnt2d*)mypolyg2d)[I-1];
+    gp_XY PlaneTest(CDG);
+    PlaneTest-=mypolyg.Pnt2d(anIndex-1);
     Standard_Real valtst = PlaneTest^V1;
     if(isplane2d && Abs(valtst)>aTol) isplane2d=Standard_False;
   }
@@ -127,11 +127,11 @@ Matches(const Standard_Real X,
   }
 
   //otherwise it is checked if the point is in the face...
-  TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mynbpoints);
+  TColgp_Array1OfPnt2d aArrayOf2dPnt(1, aSize);
   Points2D(aArrayOf2dPnt);
   CSLib_Class2d TheInOutTool(aArrayOf2dPnt,aTol,aTol,Xmin,Ymin,Xmax,Ymax);
   Standard_Integer TheStat = TheInOutTool.SiDans(gp_Pnt2d(X,Y));
-  
+
   Standard_Boolean res(Standard_False);
   switch(TheStat)
   {
@@ -139,7 +139,7 @@ Matches(const Standard_Real X,
     res = Standard_True;
   case 1:
     {
-      if(mytype!=Select3D_TOS_BOUNDARY) 
+      if(mytype!=Select3D_TOS_BOUNDARY)
         res = Standard_True;
     }
   }
@@ -164,10 +164,11 @@ Matches (const Standard_Real XMin,
 {
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
-  
-  for(Standard_Integer j=1;j<=mynbpoints-1;j++)
+
+  for(Standard_Integer anIndex=0;anIndex<mypolyg.Size();++anIndex)
   {
-    if(BoundBox.IsOut(((Select3D_Pnt2d*)mypolyg2d)[j-1])) return Standard_False;
+    if(BoundBox.IsOut(mypolyg.Pnt2d(anIndex)))
+      return Standard_False;
   }
   return Standard_True;
 }
@@ -189,10 +190,12 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
   Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
-  for(Standard_Integer j=1;j<=mynbpoints;j++)
+  gp_Pnt2d aPnt2d;
+  for(Standard_Integer anIndex=0;anIndex<mypolyg.Size();++anIndex)
   {
-    Standard_Integer RES = aClassifier2d.SiDans(((Select3D_Pnt2d*)mypolyg2d)[j-1]);
-    if(RES!=1) return Standard_False;
+    Standard_Integer RES = aClassifier2d.SiDans(mypolyg.Pnt2d(anIndex));
+    if(RES!=1)
+      return Standard_False;
   }
   return Standard_True;
 }
@@ -213,9 +216,7 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
   
   if(FullDump)
   {
-    S<<"\t\tNumber Of Points :"<<mynbpoints<<endl;
-    
-//    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
+    S<<"\t\tNumber Of Points :"<<mypolyg.Size()<<endl;
     Select3D_SensitiveEntity::DumpBox(S,mybox2d);
   }
 }
@@ -228,12 +229,14 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
 Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
 {
   Standard_Real aDepth = Precision::Infinite();
+
   Standard_Real aDepthMin = !mylastprj.IsNull() ? mylastprj->DepthMin() : -Precision::Infinite();
   Standard_Real aDepthMax = !mylastprj.IsNull() ? mylastprj->DepthMax() :  Precision::Infinite();
   Standard_Real aDepthTest;
-  for (Standard_Integer i = 0; i < mynbpoints - 1; i++)
+
+  for (Standard_Integer anIndex = 0; anIndex < mypolyg.Size()-1; ++anIndex)
   {
-    aDepthTest = ElCLib::Parameter (EyeLine, ((Select3D_Pnt* )mypolyg3d)[i]);
+    aDepthTest = ElCLib::Parameter (EyeLine, mypolyg.Pnt(anIndex));
     if (aDepthTest < aDepth && (aDepthTest > aDepthMin) && (aDepthTest < aDepthMax))
     {
       aDepth = aDepthTest;
@@ -249,18 +252,19 @@ Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
 
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveFace::GetConnected(const TopLoc_Location &theLocation) 
 {
-  // Create a copy of this 
-  TColgp_Array1OfPnt aPoints(1, mynbpoints);
-  for (Standard_Integer i = 1; i <= mynbpoints; ++i) 
+  // Create a copy of this
+  Standard_Integer aSize = mypolyg.Size();
+  TColgp_Array1OfPnt aPoints(1, aSize);
+  for (Standard_Integer anIndex = 1; anIndex <= aSize; ++anIndex)
   {
-    aPoints.SetValue(i, ((Select3D_Pnt*)mypolyg3d)[i-1]);
+    aPoints.SetValue(anIndex, mypolyg.Pnt(anIndex-1));
   }
 
-  Handle(Select3D_SensitiveEntity) aNewEntity = 
-    new Select3D_SensitiveFace(myOwnerId, aPoints, mytype); 
+  Handle(Select3D_SensitiveEntity) aNewEntity =
+    new Select3D_SensitiveFace(myOwnerId, aPoints, mytype);
 
-  if (HasLocation()) 
-    aNewEntity->SetLocation(Location()); 
+  if (HasLocation())
+    aNewEntity->SetLocation(Location());
 
   aNewEntity->UpdateLocation(theLocation);
 
