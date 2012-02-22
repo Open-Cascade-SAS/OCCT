@@ -144,7 +144,7 @@ static Standard_Integer CopyDF (Draw_Interpretor& /*di*/,
 
 
   Handle(TDF_DataSet) DataSet = new TDF_DataSet;
-  DataSet->AddRoot(Label1);
+  DataSet->AddLabel(Label1);
   TDF_ClosureTool::Closure(DataSet);
   Handle(TDF_RelocationTable) Reloc = new TDF_RelocationTable();
   Reloc->SetRelocation(Label1,Label2);
