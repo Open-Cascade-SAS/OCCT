@@ -46,7 +46,6 @@
 
 #include <BRep_Tool.hxx>
 
-#include <assert.h>
 #include <TopExp_Explorer.hxx>
 
 #include <QADNaming.hxx>

@@ -1,4 +1,3 @@
-#include "assert.h"
 #include <AIS2D_ProjShape.ixx>
 #include <TopExp_Explorer.hxx>	 
 #include <TopoDS.hxx>
@@ -16,6 +15,7 @@
 #include <HLRBRep_HLRToShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopLoc_Location.hxx>
+#include <Standard_Assert.hxx>
 
 #include <V2d_Viewer.hxx>
 
@@ -297,14 +297,12 @@ void AIS2D_ProjShape::DrawCurves( const TopoDS_Shape& aShape,
   while ( theExp.More() ) {
 
     const TopoDS_Edge& CurrentEdge = TopoDS::Edge( theExp.Current() );
-    assert(CurrentEdge.Location().IsIdentity());
     BRep_Tool::CurveOnSurface( CurrentEdge, aCurve, aSurface, theLoc, f, l );
-    assert(theLoc.IsIdentity());
+    Standard_ASSERT (theLoc.IsIdentity(), "Unexpected edge with non-identity location", continue);
+    Standard_ASSERT (! aCurve.IsNull(), "Null PCurve", continue);
     Handle(Geom2d_TrimmedCurve) theCurve = new Geom2d_TrimmedCurve(aCurve,f,l);
-    assert( ! theCurve.IsNull() );
-	aSofC->Add(theCurve);
+    aSofC->Add(theCurve);
     theExp.Next();
-
   }
 }
 

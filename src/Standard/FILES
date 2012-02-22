@@ -72,3 +72,4 @@ Standard_Atomic.hxx
 Standard_DefineException.hxx
 Standard_MMgrTBBalloc.cxx
 Standard_MMgrTBBalloc.hxx
+Standard_Assert.hxx

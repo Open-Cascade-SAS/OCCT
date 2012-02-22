@@ -56,7 +56,7 @@
 #include <Geom_Curve.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <assert.h>
+#include <Standard_Assert.hxx>
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 
@@ -266,7 +266,7 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
     if (vw1.IsSame(ve1) || vw1.IsSame(ve2))
       vlast = vw1;
     else {
-      assert(vw2.IsSame(ve1) || vw2.IsSame(ve2));
+      Standard_ASSERT_RAISE(vw2.IsSame(ve1) || vw2.IsSame(ve2), "Disconnected vertices");
       vlast = vw2;
     }
   }
@@ -292,8 +292,8 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
 	}
       else
 	{
-          assert(ve2.IsSame(vlast));
-          assert ( wire_exp.Orientation( ) == TopAbs_REVERSED );
+          Standard_ASSERT_RAISE(ve2.IsSame(vlast), "Not the same vertex");
+          Standard_ASSERT_RAISE(wire_exp.Orientation() == TopAbs_REVERSED, "Wire should be REVERSED");
           acurve = BRep_Tool::Curve( edge, ufirst, ulast );
           newufirst = acurve->ReversedParameter( ufirst );
           newulast  = acurve->ReversedParameter( ulast );

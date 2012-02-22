@@ -48,7 +48,7 @@
 #include <QANewModTopOpe_Limitation.hxx>
 #include <QANewModTopOpe_Intersection.hxx>
 
-#include <assert.h>
+#include <Standard_Assert.hxx>
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -107,7 +107,7 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
     di <<  "BRepAlgoAPI_Fuse"  << "\n";
     BRepAlgoAPI_Fuse mkFuse(S1, S2);
 
-    assert(mkFuse.IsDone());
+    Standard_ASSERT_RAISE(mkFuse.IsDone(), "Fuse failed");
     QANewBRepNaming_Fuse nameBool(L);
     nameBool.Load(mkFuse);
     break;
@@ -116,7 +116,7 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
     di <<  "BRepAlgoAPI_Cut"  << "\n";
     BRepAlgoAPI_Cut mkCut(S1, S2);
 
-    assert(mkCut.IsDone());
+    Standard_ASSERT_RAISE(mkCut.IsDone(), "Cut failed");
     QANewBRepNaming_Cut nameBool(L);
     nameBool.Load(mkCut);
     break; 
@@ -125,14 +125,14 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
     di <<  "BRepAlgoAPI_Common"  << "\n";
     BRepAlgoAPI_Common mkCommon(S1, S2);
 
-    assert(mkCommon.IsDone());
+    Standard_ASSERT_RAISE(mkCommon.IsDone(), "Common failed");
     QANewBRepNaming_Common nameBool(L);
     nameBool.Load(mkCommon);
     break;
   }
   case 4: {
     QANewModTopOpe_Intersection mkSection(S1, S2);
-    assert(mkSection.IsDone());
+    Standard_ASSERT_RAISE(mkSection.IsDone(), "Section failed");
     QANewBRepNaming_Intersection nameBool(L);
     nameBool.Load(mkSection);
     break;
@@ -145,7 +145,7 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
 //     if (Orientation = 0) mkLimit.CutForward();
 //     else if (Orientation = 1) mkLimit.CutReversed();
 //     else if (Orientation = 2) mkLimit.CutBothSides();
-    assert(mkLimit.IsDone());
+    Standard_ASSERT_RAISE(mkLimit.IsDone(),"Limit failed");
     QANewBRepNaming_Limitation nameBool(L);
     nameBool.Load(mkLimit);
     break;
@@ -182,7 +182,7 @@ static Standard_Integer QANewDBRepNaming_NameFuse (Draw_Interpretor& di,
   di <<  "BRepAlgoAPI_Fuse"  << "\n";
   BRepAlgoAPI_Fuse mkFuse(S1, S2);
 
-  assert(mkFuse.IsDone());
+  Standard_ASSERT_RAISE(mkFuse.IsDone(), "Fuse failed");
   nameBool.Load(mkFuse);
   return 0;
 }    
@@ -219,7 +219,7 @@ static Standard_Integer QANewDBRepNaming_NameCut (Draw_Interpretor& di,
 // DBRep::Set("Shape1", mkCut.Shape1());
 // DBRep::Set("Shape2", mkCut.Shape2());
 // BRepTools::Write(mkCut.Shape1(), "/dn04/OS/SAMTECH/env/S1.brep");
-  assert(mkCut.IsDone());
+  Standard_ASSERT_RAISE(mkCut.IsDone(), "Cut failed");
   nameBool.Load(mkCut);
 // BRepTools::Write(mkCut.Shape1(), "/dn04/OS/SAMTECH/env/S2.brep");
   return 0;
@@ -250,7 +250,7 @@ static Standard_Integer QANewDBRepNaming_NameCommon (Draw_Interpretor& di,
   di <<  "BRepAlgoAPI_Common"  << "\n";
   BRepAlgoAPI_Common mkCommon(S1, S2);
 
-  assert(mkCommon.IsDone());
+  Standard_ASSERT_RAISE(mkCommon.IsDone(), "Common failed");
   nameBool.Load(mkCommon);
   return 0;
 }    
@@ -277,7 +277,7 @@ static Standard_Integer QANewDBRepNaming_NameIntersection (Draw_Interpretor& di,
   const TopoDS_Shape& S2 = DBRep::Get(arg[4]);
   QANewBRepNaming_Intersection nameBool(L);
   QANewModTopOpe_Intersection mkIntersection(S1, S2);
-  assert(mkIntersection.IsDone());
+  Standard_ASSERT_RAISE(mkIntersection.IsDone(), "Section failed");
   nameBool.Load(mkIntersection);
   return 0;
 }    
@@ -313,7 +313,7 @@ static Standard_Integer QANewDBRepNaming_NameLimit (Draw_Interpretor& di,
  //  if (Orientation == 0) mkLimit.CutForward();
 //   else if (Orientation == 1) mkLimit.CutReversed();
 //   else if (Orientation == 2) mkLimit.CutBothSides();
-  assert(mkLimit.IsDone());
+  Standard_ASSERT_RAISE(mkLimit.IsDone(), "Limit failed");
   nameBool.Load(mkLimit);
   return 0;
 }    
