@@ -985,6 +985,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 	              dv = Min (myVDelt, SurfAdapt.VResolution (preci));
         myExtSrf = mySurf;
 	Standard_Real Tol = Precision::PConfusion();
+        myExtPS.SetFlag (Extrema_ExtFlag_MIN);
 	myExtPS.Initialize ( myExtSrf, uf-du, ul+du, vf-dv, vl+dv, Tol, Tol );
 	myExtOK = Standard_True;
       }

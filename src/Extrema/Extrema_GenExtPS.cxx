@@ -416,9 +416,6 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& P, const math_Vector& UV, cons
 
   Standard_Integer aNbMaxIter = 100;
 
-  if (myF.HasDegIso())
-    aNbMaxIter = 150;
-
   gp_Pnt PStart = myS->Value(UV(1), UV(2));
   Standard_Real DistStart = P.SquareDistance(PStart);
   Standard_Real DistSol = DistStart;

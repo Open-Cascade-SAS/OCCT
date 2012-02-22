@@ -10,8 +10,28 @@
 private class FuncExtPS from Extrema
 
  inherits FunctionSetWithDerivatives from math
-    ---Purpose: Function to find the extrema of the 
-    --          distance between a point and a surface.
+    ---Purpose: 
+    --
+    -- Functional for search of extremum of the distance between point P and 
+    -- surface S, starting from approximate solution (u0, v0).
+    --          
+    -- The class inherits math_FunctionSetWithDerivatives and thus is intended
+    -- for use in math_FunctionSetRoot algorithm .
+    --          
+    -- Denoting derivatives of the surface S(u,v) by u and v, respectively, as 
+    -- Su and Sv, the two functions to be nullified are:
+    --          
+    -- F1(u,v) = (S - P) * Su
+    -- F2(u,v) = (S - P) * Sv
+    --          
+    -- The derivatives of the functional are:
+    --          
+    -- Duf1(u,v) = Su^2    + (S-P) * Suu;
+    -- Dvf1(u,v) = Su * Sv + (S-P) * Suv
+    -- Duf2(u,v) = Sv * Su + (S-P) * Suv = Dvf1
+    -- Dvf2(u,v) = Sv^2    + (S-P) * Svv
+    --
+    -- Here * denotes scalar product, and ^2 is square power. 
 
 uses    POnSurf           from Extrema,
 	SequenceOfPOnSurf from Extrema,
@@ -74,13 +94,6 @@ is
     	raises  OutOfRange;
 	    	-- if N < 1 or N > NbExt(me).
 
--- Modified by skv - Thu Sep 30 15:19:59 2004 OCC593 Begin
-    HasDegIso(me) returns Boolean from Standard;
--- Modified by skv - Thu Sep 30 15:19:59 2004 OCC593 End
-
-    Bidon(me) returns SurfacePtr from Adaptor3d
-    is static private;
- 
 fields
     myP    : Pnt from gp;
     myS    : SurfacePtr from Adaptor3d;
@@ -93,7 +106,5 @@ fields
     myPoint: SequenceOfPOnSurf from Extrema;
     myPinit: Boolean;
     mySinit: Boolean;
-    myUIsoIsDeg: Boolean;
-    myVIsoIsDeg: Boolean;
 
 end FuncExtPS;
