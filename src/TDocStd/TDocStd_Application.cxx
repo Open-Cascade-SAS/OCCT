@@ -158,15 +158,26 @@ void TDocStd_Application::Close(const Handle(TDocStd_Document)& aDoc)
 
 Standard_Integer TDocStd_Application::IsInSession (const TCollection_ExtendedString& path) const
 {
-  Standard_Integer nbdoc = NbDocuments();
-  Handle(TDocStd_Document) D;
-  for (Standard_Integer i = 1; i <= nbdoc; i++) {
-    GetDocument(i,D);
-    if (D->IsSaved()) {
-      if (path == D->GetPath()) return i;
+    TCollection_ExtendedString unifiedPath(path);
+    unifiedPath.ChangeAll('/', '|');
+    unifiedPath.ChangeAll('\\', '|');
+
+    Standard_Integer nbdoc = NbDocuments();
+    Handle(TDocStd_Document) D;
+    for (Standard_Integer i = 1; i <= nbdoc; i++) 
+    {
+        GetDocument(i,D);
+        if (D->IsSaved()) 
+        {
+            TCollection_ExtendedString unifiedDocPath(D->GetPath());
+            unifiedDocPath.ChangeAll('/', '|');
+            unifiedDocPath.ChangeAll('\\', '|');
+
+            if (unifiedPath == unifiedDocPath) 
+                return i;
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
 //=======================================================================
