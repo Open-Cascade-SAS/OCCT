@@ -696,10 +696,13 @@ void V3d_View::SetBgGradientColors( const Quantity_NameOfColor Color1,
 /*----------------------------------------------------------------------*/
 
 void V3d_View::SetBgGradientStyle( const Aspect_GradientFillMethod FillStyle,
-                                   const Standard_Boolean update) const
+                                   const Standard_Boolean update)
 {
+  Quantity_Color Color1, Color2;
+  MyGradientBackground.Colors( Color1, Color2 );
+  MyGradientBackground.SetColors( Color1, Color2, FillStyle );
   if( MyView->IsDefined() )
-    MyView->SetBgGradientStyle( FillStyle , update ) ;
+    MyView->SetBgGradientStyle( FillStyle, update ) ;
 }
 
 /*----------------------------------------------------------------------*/

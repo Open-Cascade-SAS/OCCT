@@ -1376,6 +1376,7 @@ static int VSetBg(Draw_Interpretor& di, Standard_Integer argc, const char** argv
   if (argc < 2 || argc > 3)
   {
     di << "Usage : " << argv[0] << " imagefile [filltype] : Load image as background" << "\n";
+    di << "filltype can be one of CENTERED, TILED, STRETCH, NONE" << "\n";
     return 1;
   }
 
@@ -1404,6 +1405,49 @@ static int VSetBg(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
   V3dView->SetBackgroundImage(argv[1], aFillType, Standard_True);
+
+  return 0;
+}
+
+//==============================================================================
+//function : VSetBgMode
+//purpose  : Change background image fill type
+//==============================================================================
+
+static int VSetBgMode(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 2)
+  {
+    di << "Usage : " << argv[0] << " filltype : Change background image mode" << "\n";
+    di << "filltype must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) AISContext = ViewerTest::GetAISContext();
+  if(AISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+
+  Aspect_FillMethod aFillType;
+  if (argc == 2)
+  {
+    const char* szType = argv[1];
+    if      (strcmp(szType, "NONE"    ) == 0) aFillType = Aspect_FM_NONE;
+    else if (strcmp(szType, "CENTERED") == 0) aFillType = Aspect_FM_CENTERED;
+    else if (strcmp(szType, "TILED"   ) == 0) aFillType = Aspect_FM_TILED;
+    else if (strcmp(szType, "STRETCH" ) == 0) aFillType = Aspect_FM_STRETCH;
+    else
+    {
+      di << "Wrong fill type : " << szType << "\n";
+      di << "Must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+      return 1;
+    }
+  }
+
+  Handle(V3d_View) V3dView = ViewerTest::CurrentView();
+  V3dView->SetBgImageStyle(aFillType, Standard_True);
 
   return 0;
 }
@@ -1455,6 +1499,81 @@ static int VSetGradientBg(Draw_Interpretor& di, Standard_Integer argc, const cha
 
     Handle(V3d_View) V3dView = ViewerTest::CurrentView();
     V3dView->SetBgGradientColors( aColor1, aColor2, aMethod, 1);
+  }
+
+  return 0;
+}
+
+//==============================================================================
+//function : VSetGradientBgMode
+//purpose  : Change gradient background fill style
+//==============================================================================
+static int VSetGradientBgMode(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 2 )
+  {
+    di << "Usage : " << argv[0] << " Type : Change gradient background fill type" << "\n";
+    di << "Type must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2" << "\n";
+    di << "                    5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4" << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) AISContext = ViewerTest::GetAISContext();
+  if(AISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if (argc == 2)
+  {
+    int aType = atoi(argv[1]);
+    if( aType < 0 || aType > 8 )
+    {
+      di << "Wrong fill type " << "\n";
+      di << "Must be one of 0 = NONE, 1 = HOR, 2 = VER, 3 = DIAG1, 4 = DIAG2" << "\n";
+      di << "               5 = CORNER1, 6 = CORNER2, 7 = CORNER3, 8 = CORNER4" << "\n";
+      return 1;
+    }
+
+    Aspect_GradientFillMethod aMethod = Aspect_GradientFillMethod(aType);
+
+    Handle(V3d_View) V3dView = ViewerTest::CurrentView();
+    V3dView->SetBgGradientStyle( aMethod, 1 );
+  }
+
+  return 0;
+}
+
+//==============================================================================
+//function : VSetColorBg
+//purpose  : Set color background
+//==============================================================================
+static int VSetColorBg(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 4 )
+  {
+    di << "Usage : " << argv[0] << " R G B : Set color background" << "\n";
+    di << "R,G,B = [0..255]" << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) AISContext = ViewerTest::GetAISContext();
+  if(AISContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if (argc == 4)
+  {
+
+    Standard_Real R = atof(argv[1])/255.;
+    Standard_Real G = atof(argv[2])/255.;
+    Standard_Real B = atof(argv[3])/255.;
+    Quantity_Color aColor(R,G,B,Quantity_TOC_RGB);
+
+    Handle(V3d_View) V3dView = ViewerTest::CurrentView();
+    V3dView->SetBackgroundColor( aColor );
+    V3dView->Update();
   }
 
   return 0;
@@ -1980,9 +2099,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vsetbg",
     "vsetbg          : vsetbg imagefile [filltype] : Load image as background",
     __FILE__,VSetBg,group);
+  theCommands.Add("vsetbgmode",
+    "vsetbgmode      : vsetbgmode filltype : Change background image fill type",
+    __FILE__,VSetBgMode,group);
   theCommands.Add("vsetgradientbg",
-    "vsetgradientbg          : vsetgradientbg r1 g1 b1 r2 g2 b2 filltype : Mount gradient background",
+    "vsetgradientbg  : vsetgradientbg r1 g1 b1 r2 g2 b2 filltype : Mount gradient background",
     __FILE__,VSetGradientBg,group);
+  theCommands.Add("vsetgrbgmode",
+    "vsetgrbgmode    : vsetgrbgmode filltype : Change gradient background fill type",
+    __FILE__,VSetGradientBgMode,group);
+  theCommands.Add("vsetcolorbg",
+    "vsetcolorbg     : vsetcolorbg r g b : Set background color",
+    __FILE__,VSetColorBg,group);
   theCommands.Add("vscale",
     "vscale          : vscale X Y Z",
     __FILE__,VScale,group);

@@ -279,7 +279,8 @@ is
         ---Level: Public
         ---Purpose: Defines the gradient background colours of the view
         --          by supplying :
-        --          the colour objects.
+        --          two colour objects,
+        --          and fill method (horizontal by default)
 
         SetBgGradientColors ( me : mutable ;
                               Color1 : NameOfColor;
@@ -289,9 +290,10 @@ is
         ---Level: Public
         ---Purpose: Defines the gradient background colours of the view
         --          by supplying :
-        --          the colour names in the form Quantity_NOC_xxxx .
+        --          two colour names in the form Quantity_NOC_xxxx,
+        --          and fill method (horizontal by default)
 
-        SetBgGradientStyle( me      ;
+        SetBgGradientStyle( me : mutable ;
                             AMethod : GradientFillMethod from Aspect = Aspect_GFM_HOR;
                             update  : Boolean from Standard = Standard_False);
         ---Level: Public
@@ -300,9 +302,16 @@ is
         SetBackgroundImage( me : mutable; FileName  : CString from Standard;
               FillStyle : FillMethod from Aspect = Aspect_FM_CENTERED;
                   update    : Boolean from Standard = Standard_False );
+        ---Level: Public
+        ---Purpose: Defines the background texture of the view
+        ---         by supplying :
+        ---         texture image file name,
+        ---         and fill method (centered by default)
 
         SetBgImageStyle( me : mutable; FillStyle : FillMethod from Aspect;
                                    update    : Boolean from Standard = Standard_False );
+        ---Level: Public
+        ---Purpose: Defines the textured background fill method of the view
 
         SetAxis ( me : mutable; X,Y,Z : Coordinate ;
                                 Vx,Vy,Vz : Parameter )
