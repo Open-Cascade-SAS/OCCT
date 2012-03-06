@@ -89,14 +89,27 @@ void StdSelect_BRepOwner::Hilight(const Handle(PrsMgr_PresentationManager)& PM,
         myPrsSh.Nullify();
     }
 
+    // generate new presentable shape
     if(myPrsSh.IsNull())
       myPrsSh = new StdSelect_Shape (myShape);
-  }  
 
-  if(myPrsSh.IsNull())
-    PM->Highlight(Selectable(),M);
+    // highlight and set layer
+    PM->Highlight (myPrsSh, M);
+    Handle(SelectMgr_SelectableObject) aSel = Selectable();
+    if (!aSel.IsNull())
+    {
+      Standard_Integer aLayer = aSel->GetZLayer (PM);
+      if (aLayer >= 0)
+        PM->SetZLayer (myPrsSh, aLayer);
+    }
+  }  
   else
-    PM->Highlight(myPrsSh,M);
+  {
+    if(myPrsSh.IsNull())
+      PM->Highlight(Selectable(),M);
+    else
+      PM->Highlight(myPrsSh,M);
+  }
 }
 
 void StdSelect_BRepOwner::Hilight()
@@ -122,20 +135,36 @@ void StdSelect_BRepOwner::HilightWithColor(const Handle(PrsMgr_PresentationManag
         myPrsSh.Nullify();
     }
 
-    if(myPrsSh.IsNull()){
-      if(HasLocation()){
-	TopLoc_Location lbid = Location() * myShape.Location();
-	TopoDS_Shape ShBis = myShape.Located(lbid);
-	myPrsSh = new StdSelect_Shape(ShBis);
+    // generate new presentable shape
+    if(myPrsSh.IsNull())
+    {
+      if(HasLocation())
+      {
+        TopLoc_Location lbid = Location() * myShape.Location();
+        TopoDS_Shape ShBis = myShape.Located(lbid);
+        myPrsSh = new StdSelect_Shape(ShBis);
       }
       else
-	myPrsSh = new StdSelect_Shape(myShape);
+        myPrsSh = new StdSelect_Shape(myShape);
+    }
+
+    // highlight with color and set layer
+    PM->Color (myPrsSh, aCol, M);
+    Handle(SelectMgr_SelectableObject) aSel = Selectable();
+    if (!aSel.IsNull())
+    {
+      Standard_Integer aLayer = aSel->GetZLayer (PM);
+      if (aLayer >= 0)
+        PM->SetZLayer (myPrsSh, aLayer);
     }
   }
-  if(myPrsSh.IsNull())
-    PM->Color(Selectable(),aCol,M);
   else
-    PM->Color(myPrsSh,aCol,M);
+  {
+    if(myPrsSh.IsNull())
+      PM->Color(Selectable(),aCol,M);
+    else
+      PM->Color(myPrsSh,aCol,M);
+  }
 }
 
 void StdSelect_BRepOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& PM,
@@ -173,8 +202,8 @@ void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
   // set the update flag and then recompute myPrsSh on hilighting
   if (!myPrsSh.IsNull())
     myPrsSh->SetToUpdate();
- 
 }
+
 void StdSelect_BRepOwner::ResetLocation()
 {
   SelectMgr_EntityOwner::ResetLocation();
@@ -183,5 +212,16 @@ void StdSelect_BRepOwner::ResetLocation()
   // set the update flag and then recompute myPrsSh on hilighting
   if (!myPrsSh.IsNull())
     myPrsSh->SetToUpdate();
+}
 
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+void StdSelect_BRepOwner::SetZLayer 
+  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+   const Standard_Integer theLayerId)
+{
+  if (!myPrsSh.IsNull())
+    thePrsMgr->SetZLayer (myPrsSh, theLayerId);
 }

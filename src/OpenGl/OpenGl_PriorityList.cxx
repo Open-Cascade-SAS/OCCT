@@ -20,7 +20,7 @@ void OpenGl_PriorityList::Add (const OpenGl_Structure *AStructure,const Standard
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_PriorityList::Remove (const OpenGl_Structure *AStructure)
+Standard_Integer OpenGl_PriorityList::Remove (const OpenGl_Structure *AStructure)
 {
   const Standard_Integer aNbPr = myArray.Length();
   Standard_Integer i = 0;
@@ -34,10 +34,12 @@ void OpenGl_PriorityList::Remove (const OpenGl_Structure *AStructure)
       {
         aSeq.Remove(its);
         myNbStructures--;
-        return;
+        return i;
       }
     }
   }
+
+  return -1;
 }
 
 /*----------------------------------------------------------------------*/
@@ -54,4 +56,37 @@ void OpenGl_PriorityList::Render (const Handle(OpenGl_Workspace) &AWorkspace) co
   }
 }
 
-/*----------------------------------------------------------------------*/
+//=======================================================================
+//function : Append
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean OpenGl_PriorityList::Append (const OpenGl_PriorityList& theOther)
+{
+  // the source priority list shouldn't have more priorities
+  const Standard_Integer aNbPriorities = theOther.NbPriorities ();
+  if (aNbPriorities > NbPriorities ())
+    return Standard_False;
+
+  // add all structures to destination priority list
+  Standard_Integer aIdx = 0;
+  OpenGl_SequenceOfStructure::Iterator anIts;
+  for (; aIdx < aNbPriorities; aIdx++)
+  {
+    const OpenGl_SequenceOfStructure& aSeq = theOther.myArray (aIdx);
+    for (anIts.Init (aSeq); anIts.More (); anIts.Next ())
+      Add (anIts.Value (), aIdx);
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : NbPriorities
+//purpose  : 
+//=======================================================================
+
+Standard_Integer OpenGl_PriorityList::NbPriorities() const
+{
+  return myArray.Length();
+}

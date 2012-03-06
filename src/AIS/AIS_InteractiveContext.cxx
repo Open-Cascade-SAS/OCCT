@@ -3147,3 +3147,54 @@ Standard_Boolean AIS_InteractiveContext::GetAutoActivateSelection() const
 {
   return myIsAutoActivateSelMode;
 }
+
+//=======================================================================
+//function : SetZLayer
+//purpose  : 
+//=======================================================================
+
+void AIS_InteractiveContext::SetZLayer (const Handle(AIS_InteractiveObject)& theIObj,
+                                        const Standard_Integer theLayerId)
+{
+  if (theIObj.IsNull ())
+    return;
+
+  if (myObjects.IsBound (theIObj))
+  {
+    switch (myObjects (theIObj)->GraphicStatus ())
+    {
+      case AIS_DS_Displayed:
+      {
+        theIObj->SetZLayer (myMainPM, theLayerId);
+        break;
+      }
+      case AIS_DS_Erased:
+      {
+        theIObj->SetZLayer (myCollectorPM, theLayerId);
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  else if (HasOpenedContext ())
+  {
+    myLocalContexts (myCurLocalIndex)->SetZLayer (theIObj, theLayerId);
+  }
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  : 
+//=======================================================================
+
+Standard_Integer AIS_InteractiveContext::GetZLayer (const Handle(AIS_InteractiveObject)& theIObj) const
+{
+  if (theIObj.IsNull ())
+    return -1;
+
+  if (myObjects.IsBound (theIObj))
+    return theIObj->GetZLayer (myMainPM);
+
+  return myLocalContexts (myCurLocalIndex)->GetZLayer (theIObj);
+}

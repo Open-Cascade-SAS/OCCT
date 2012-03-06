@@ -204,6 +204,12 @@ void PrsMgr_PresentationManager::AddPresentation
     Handle(PrsMgr_Presentation) P = newPresentation(aPresentableObject);
     aPresentableObject->Presentations().Append(PrsMgr_ModedPresentation(P,aMode));
     aPresentableObject->Fill(this,P,aMode);
+
+    // set layer index accordingly to object's presentations
+    Standard_Integer aZLayerId = GetZLayer (aPresentableObject);
+    if (aZLayerId >= 0)
+      P->SetZLayer (aZLayerId);
+
     P->SetUpdateStatus(Standard_False);
 }
 
@@ -222,3 +228,39 @@ void PrsMgr_PresentationManager::RemovePresentation(const Handle(PrsMgr_Presenta
   }
 }
 
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+
+void PrsMgr_PresentationManager::SetZLayer 
+  (const Handle(PrsMgr_PresentableObject)& thePresentableObject,
+   const Standard_Integer theLayerId)
+{
+  PrsMgr_Presentations& aPresentations = thePresentableObject->Presentations();
+  for (Standard_Integer aIdx = 1; aIdx <= aPresentations.Length (); aIdx++)
+  {
+    Handle(PrsMgr_Presentation) aPrs = aPresentations (aIdx).Presentation ();
+    if (aPrs->PresentationManager () == this)
+      aPrs->SetZLayer (theLayerId);
+  }
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Integer PrsMgr_PresentationManager::GetZLayer 
+  (const Handle(PrsMgr_PresentableObject)& thePresentableObject) const
+{
+  PrsMgr_Presentations& aPresentations = thePresentableObject->Presentations();
+  for (Standard_Integer aIdx = 1; aIdx <= aPresentations.Length (); aIdx++)
+  {
+    Handle(PrsMgr_Presentation) aPrs = aPresentations (aIdx).Presentation ();
+    if (aPrs->PresentationManager () == this)
+      return aPrs->GetZLayer ();
+  }
+  
+  return -1;
+}

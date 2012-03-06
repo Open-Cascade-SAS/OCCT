@@ -308,3 +308,23 @@ void PrsMgr_Presentation3d::Destroy () {
     myStructure->Clear();
   myStructure.Nullify();
 }
+
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+
+void PrsMgr_Presentation3d::SetZLayer (Standard_Integer theLayerId)
+{
+  myStructure->SetZLayer (theLayerId);
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :  
+//=======================================================================
+
+Standard_Integer PrsMgr_Presentation3d::GetZLayer () const
+{
+  return myStructure->GetZLayer ();
+}

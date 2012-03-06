@@ -134,6 +134,12 @@ is
     SetLocation(me:mutable; aLoc : Location from TopLoc) is redefined;
     ResetLocation(me:mutable) is redefined;
 
+    SetZLayer ( me         : mutable;
+                thePrsMgr  : PresentationManager from PrsMgr;
+                theLayerId : Integer from Standard )
+      is redefined virtual;
+    ---Purpose: Set Z layer ID and update all presentations.
+
 fields
     myPrsSh   		: Shape   from StdSelect; 
     myCurMode 		: Integer from Standard;

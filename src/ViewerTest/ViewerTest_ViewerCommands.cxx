@@ -26,6 +26,7 @@
 #include <Draw_Appli.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Image_PixMap.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 #ifndef WNT
 #include <Graphic3d_GraphicDevice.hxx>
@@ -2060,6 +2061,86 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
 #endif
 }
 
+//==============================================================================
+//function : VZLayer
+//purpose  : Test z layer operations for v3d viewer
+//==============================================================================
+static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext ();
+  if (aContextAIS.IsNull())
+  {
+    di << "Call vinit before!\n";
+    return 1;
+  }
+  else if (argc < 2)
+  {
+    di << "Use: vzlayer " << argv[0];
+    di << " add/del/get [id]\n";
+    di << " add - add new z layer to viewer and print its id\n";
+    di << " del - del z layer by its id\n";
+    di << " get - print sequence of z layers in increasing order of their overlay level\n";
+    di << "id - the layer identificator value defined when removing z layer\n";
+    return 1;
+  }
+
+  const Handle(V3d_Viewer)& aViewer = aContextAIS->CurrentViewer();
+  if (aViewer.IsNull())
+  {
+    di << "No active viewer!\n";
+    return 1;
+  }
+
+  // perform operation
+  TCollection_AsciiString anOp = TCollection_AsciiString (argv[1]);
+  if (anOp == "add")
+  {
+    Standard_Integer aNewId;
+    if (!aViewer->AddZLayer (aNewId))
+    {
+      di << "Impossible to add new z layer!\n";
+      return 1;
+    }
+
+    di << "New z layer added with index: " << aNewId << "\n";
+  }
+  else if (anOp == "del")
+  {
+    if (argc < 3)
+    {
+      di << "Please also provide as argument id of z layer to remove\n";
+      return 1;
+    }
+
+    Standard_Integer aDelId = atoi (argv[2]);
+    if (!aViewer->RemoveZLayer (aDelId))
+    {
+      di << "Impossible to remove the z layer or invalid id!\n";
+      return 1;
+    }
+
+    di << "Z layer " << aDelId << " has been removed\n";
+  }
+  else if (anOp == "get")
+  {
+    TColStd_SequenceOfInteger anIds;
+    aViewer->GetAllZLayers (anIds);
+    for (Standard_Integer aSeqIdx = 1; aSeqIdx <= anIds.Length(); aSeqIdx++)
+    {
+      di << anIds.Value (aSeqIdx) << " ";
+    }
+
+    di << "\n";
+  }
+  else
+  {
+    di << "Invalid operation, please use { add / del / get }\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -2140,5 +2221,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vprintview" ,
     "vprintview : width height filename [algo=0] : Test print algorithm: algo = 0 - stretch, algo = 1 - tile",
     __FILE__,VPrintView,group);
-
+  theCommands.Add("vzlayer",
+    "vzlayer : add/del/get [id] : Z layer operations in v3d viewer: add new z layer, delete z layer, get z layer ids",
+    __FILE__,VZLayer,group);
 }

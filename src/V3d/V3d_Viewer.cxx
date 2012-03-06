@@ -366,3 +366,33 @@ void V3d_Viewer::DelPlane( const Handle(V3d_Plane)& ThePlane ) {
   
   MyDefinedPlanes.Remove(ThePlane);
 }
+
+//=======================================================================
+//function : AddZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Boolean V3d_Viewer::AddZLayer (Standard_Integer& theLayerId)
+{
+  return MyViewer->AddZLayer (theLayerId);
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean V3d_Viewer::RemoveZLayer (const Standard_Integer theLayerId)
+{
+  return MyViewer->RemoveZLayer (theLayerId);
+}
+
+//=======================================================================
+//function : GetAllZLayers
+//purpose  :
+//=======================================================================
+
+void V3d_Viewer::GetAllZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
+{
+  MyViewer->GetAllZLayers (theLayerSeq);
+}

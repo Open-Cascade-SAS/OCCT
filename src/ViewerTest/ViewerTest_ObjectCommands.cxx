@@ -4199,6 +4199,71 @@ static Standard_Integer VSegment (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : VObjZLayer
+//purpose  : Set or get z layer id for presentable object
+//=======================================================================
+
+static Standard_Integer VObjZLayer (Draw_Interpretor& di,
+                                    Standard_Integer argc,
+                                    const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    di << argv[0] << "Call 'vinit' before!\n";
+    return 1;
+  }
+
+  // get operation
+  TCollection_AsciiString aOperation;
+  if (argc >= 2)
+    aOperation = TCollection_AsciiString (argv [1]);
+
+  // check for correct arguments
+  if (!(argc == 4 && aOperation.IsEqual ("set")) &&
+      !(argc == 3 && aOperation.IsEqual ("get")))
+  {
+    di << "Usage : " << argv[0] << " set/get object [layerid]\n";
+    di << " set - set layer id for interactive object, layerid - z layer id\n";
+    di << " get - get layer id of interactive object\n";
+    di << " argument layerid should be passed for set operation only\n";
+    return 1;
+  }
+
+  // find object
+  TCollection_AsciiString aName (argv[2]);
+  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  if (!aMap.IsBound2 (aName))
+  {
+    di << "Use 'vdisplay' before" << "\n";
+    return 1;
+  }
+
+  // find interactive object
+  Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aName);
+  Handle(AIS_InteractiveObject) anInterObj =
+    Handle(AIS_InteractiveObject)::DownCast (anObj);
+  if (anInterObj.IsNull())
+  {
+    di << "Not an AIS interactive object!\n";
+    return 1;
+  }
+
+  // process operation
+  if (aOperation.IsEqual ("set"))
+  {
+    Standard_Integer aLayerId = atoi (argv [3]);
+    aContext->SetZLayer (anInterObj, aLayerId);
+  }
+  else if (aOperation.IsEqual ("get"))
+  {
+    di << "Z layer id: " << aContext->GetZLayer (anInterObj);
+  }
+  
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -4302,4 +4367,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vsegment",
     "vsegment Name PointName PointName", 
     __FILE__, VSegment,group);
+
+  theCommands.Add("vobjzlayer",
+    "vobjzlayer : set/get object [layerid] - set or get z layer id for the interactive object",
+    __FILE__, VObjZLayer, group);
 }

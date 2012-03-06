@@ -234,8 +234,22 @@ is
     
    UpdateLocation(me:mutable;P : mutable Presentation from Prs3d) is virtual;
     
+   SetZLayer ( me         : mutable;
+               thePrsMgr  : PresentationManager from PrsMgr;
+               theLayerId : Integer from Standard )
+     is virtual;
+   ---Purpose: Set Z layer ID and update all presentations of
+   -- the presentable object. The layer can be set only for displayed object.
+   -- If all object presentations are removed, the layer ID will be set to 
+   -- default value when computing presentation. The layers mechanism allows
+   -- drawing objects in higher layers in overlay of objects in lower layers.
     
-    
+   GetZLayer ( me;
+               thePrsMgr  : PresentationManager from PrsMgr )
+     returns Integer from Standard is static;
+   ---Purpose: Get ID of Z layer. If no presentations of object is displayed,
+   -- and layer ID is unavailable, the -1 value is returned.
+ 
 fields
     myPresentations: Presentations from PrsMgr is protected;
     myTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr is protected;

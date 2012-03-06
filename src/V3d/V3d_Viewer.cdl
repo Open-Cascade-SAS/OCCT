@@ -43,6 +43,7 @@ uses
         Plane from V3d,
         ListOfTransient from V3d,
         ListIteratorOfListOfTransient from TColStd,
+        SequenceOfInteger from TColStd,
         TypeOfView from V3d,
         Vector from Graphic3d,
         ViewManager from Visual3d,
@@ -655,6 +656,31 @@ is
                         aPoint: Vertex from Graphic3d) is private;
         ---Purpose:
         -- Display grid echo at requested point in the view.
+
+        AddZLayer ( me : mutable;
+                    theLayerId : in out Integer from Standard )
+           returns Boolean from Standard is static;
+        ---Purpose: Add a new top-level Z layer to all managed views and get
+        -- its ID as <theLayerId> value. The Z layers are controlled entirely
+        -- by viewer, it is not possible to add a layer to a
+        -- particular view. The method returns Standard_False if the layer can
+        -- not be created. The layer mechanism allows to display structures
+        -- in higher layers in overlay of structures in lower layers.
+
+        RemoveZLayer ( me : mutable;
+                       theLayerId : Integer from Standard )
+           returns Boolean from Standard is static;
+        ---Purpose: Remove Z layer with ID <theLayerId>. Method returns
+        -- Standard_False if the layer can not be removed or doesn't exists.
+        -- By default, there are always default bottom-level layer that can't
+        -- be removed.
+
+        GetAllZLayers ( me;
+                        theLayerSeq : out SequenceOfInteger from TColStd )
+           is static;
+        ---Purpose: Return all Z layer ids in sequence ordered by overlay level
+        -- from lowest layer to highest ( foreground ). The first layer ID
+        -- in sequence is the default layer that can't be removed.
 
 fields
 

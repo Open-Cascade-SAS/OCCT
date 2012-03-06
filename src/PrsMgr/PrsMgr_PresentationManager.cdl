@@ -79,6 +79,19 @@ is
 	-- aPresentableObject in this framework with the
 	-- display mode aMode.
     
+    SetZLayer ( me                   : mutable;
+                thePresentableObject : PresentableObject from PrsMgr;
+                theLayerId           : Integer from Standard )
+      is static;
+    ---Purpose: Set Z layer ID for all presentations of the object.
+
+    GetZLayer ( me;
+                thePresentableObject : PresentableObject from PrsMgr )
+      returns Integer from Standard is static;
+    ---Purpose: Get Z layer ID assigned to all presentations of the object.
+    -- Method returns -1 value if object has no presentations and is
+    -- impossible to get layer index.
+    
     IsDisplayed(me;aPresentableObject: PresentableObject from PrsMgr;
                 aMode: Integer from Standard = 0) 
         ---Purpose: Returns true if the presentation of the presentable

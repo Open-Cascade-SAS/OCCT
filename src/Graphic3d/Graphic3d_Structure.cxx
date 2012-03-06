@@ -2553,3 +2553,27 @@ Standard_Address Graphic3d_Structure::CStructure () const {
   return Standard_Address (&MyCStructure);
 
 }
+
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+
+void Graphic3d_Structure::SetZLayer (const Standard_Integer theLayerId)
+{
+  // if the structure is not displayed, unable to change its display layer
+  if (IsDeleted ())
+    return;
+
+  MyStructureManager->ChangeZLayer (this, theLayerId);
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Integer Graphic3d_Structure::GetZLayer () const
+{
+  return MyStructureManager->GetZLayer (this);
+}

@@ -26,9 +26,8 @@
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 
 #include <OpenGl_telem_view.hxx>
-
+#include <OpenGl_LayerList.hxx>
 #include <OpenGl_Light.hxx>
-#include <OpenGl_PriorityList.hxx>
 
 #include <Handle_OpenGl_Trihedron.hxx>
 #include <Handle_OpenGl_GraduatedTrihedron.hxx>
@@ -135,8 +134,27 @@ class OpenGl_View : public MMgt_TShared
   const TEL_TRANSFORM_PERSISTENCE * BeginTransformPersistence ( const TEL_TRANSFORM_PERSISTENCE *ATransPers );
   void EndTransformPersistence ();
 
-  void DisplayStructure (const OpenGl_Structure *AStructure, const Standard_Integer APriority) { myStructures.Add(AStructure,APriority); }
-  void EraseStructure (const OpenGl_Structure *AStructure) { myStructures.Remove(AStructure); }
+  //! Add structure to display list with specified priority.
+  //! The structure will be added to associated with it z layer.
+  //! If the z layer is not presented in the view, the structure will
+  //! be displayed in default bottom-level z layer.
+  void DisplayStructure (const OpenGl_Structure *theStructure,
+                         const Standard_Integer  thePriority);
+
+  //! Erase structure from display list.
+  void EraseStructure (const OpenGl_Structure *theStructure);
+
+  //! Insert a new top-level z layer with ID <theLayerId>
+  void AddZLayer (const Standard_Integer theLayerId);
+
+  //! Remove a z layer with ID <theLayerId>
+  void RemoveZLayer (const Standard_Integer theLayerId);
+
+  //! Display structure in z layer with ID <theNewLayerId>
+  //! If the layer with ID <theNewLayerId> is not presented in the view,
+  //! the structure will be displayed in default bottom-level layer.
+  void ChangeZLayer (const OpenGl_Structure *theStructure,
+                     const Standard_Integer  theNewLayerId);
 
   void CreateBackgroundTexture (const Standard_CString AFileName, const Aspect_FillMethod AFillStyle);
   void SetBackgroundTextureStyle (const Aspect_FillMethod FillStyle);
@@ -197,7 +215,7 @@ class OpenGl_View : public MMgt_TShared
 
   //View_LABDepthCueing - fixed index used
 
-  OpenGl_PriorityList myStructures;
+  OpenGl_LayerList myZLayers;
 
   int myAnimationListIndex;
   Standard_Boolean myAnimationListReady;

@@ -1287,6 +1287,52 @@ is
         -- <theCGroup>. This method is internal and should be used
         -- by Graphic3d_Group only.
 
+    AddZLayer( me         : mutable;
+               theCView   : CView from Graphic3d;
+               theLayerId : Integer from Standard )
+        is deferred;
+        ---Purpose: Add a new top-level z layer with ID <theLayerId> for
+        -- the view. Z layers allow drawing structures in higher layers
+        -- in foreground of structures in lower layers. To add a structure
+        -- to desired layer on display it is necessary to set the layer
+        -- ID for the structure.
+
+    RemoveZLayer( me         : mutable;
+                  theCView   : CView from Graphic3d;
+                  theLayerId : Integer from Standard )
+        is deferred;
+        ---Purpose: Remove Z layer from the specified view. All structures
+        -- displayed at the moment in layer will be displayed in default layer
+        -- ( the bottom-level z layer ). To unset layer ID from associated
+        -- structures use method UnsetZLayer (...).
+
+    UnsetZLayer( me         : mutable;
+                 theLayerId : Integer from Standard ) 
+        is deferred;
+        ---Purpose: Unset Z layer ID for all structures. The structure
+        -- indexes will be set to default layer ( the bottom-level z layer
+        -- with ID = 0 ).
+
+    ChangeZLayer( me            : mutable;
+                  theCStructure : CStructure from Graphic3d;
+                  theLayerId    : Integer from Standard )
+        is deferred;
+        ---Purpose: Change Z layer of a structure. The new z layer ID will
+        -- be used to define the associated layer for structure on display.
+
+    ChangeZLayer( me            : mutable;
+                  theCStructure : CStructure from Graphic3d;
+                  theCView      : CView from Graphic3d;
+                  theNewLayerId : Integer from Standard )
+        is deferred;
+        ---Purpose: Change Z layer of a structure already presented in view.
+
+    GetZLayer( me;
+               theCStructure : CStructure from Graphic3d )
+        returns Integer from Standard is deferred;
+        ---Purpose: Get Z layer ID of structure. If the structure doesn't
+        -- exists in graphic driver, the method returns -1.
+
     --------------------------
     -- Category: Class methods
     --------------------------

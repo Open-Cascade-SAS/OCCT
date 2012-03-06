@@ -48,6 +48,15 @@ is
     SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
     is deferred private;
 
+    SetZLayer ( me : mutable;
+                theLayerId : Integer from Standard )
+      is deferred private;
+    ---Purpose: Set Z layer ID for the presentation
+
+    GetZLayer ( me )
+      returns Integer from Standard is deferred private;
+    ---Purpose: Get Z layer ID for the presentation
+
     Clear(me: mutable) 
     is deferred private;
     

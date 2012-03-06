@@ -115,3 +115,74 @@ void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& theCStructure)
   OpenGl_GraphicDriver::GetMapOfStructures().Bind (theCStructure.Id, aStructure);
   InvalidateAllWorkspaces();
 }
+
+//=======================================================================
+//function : ChangeZLayer
+//purpose  :
+//=======================================================================
+
+void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructure,
+                                         const Standard_Integer theLayer)
+{
+  if (!GetMapOfStructures().IsBound (theCStructure.Id))
+    return;
+
+  OpenGl_Structure* aStructure =
+    OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+
+  aStructure->SetZLayer (theLayer);
+}
+
+//=======================================================================
+//function : ChangeZLayer
+//purpose  :
+//=======================================================================
+
+void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructure,
+                                         const Graphic3d_CView& theCView,
+                                         const Standard_Integer theNewLayerId)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
+
+  if (!GetMapOfStructures().IsBound (theCStructure.Id) || !aCView)
+    return;
+
+  OpenGl_Structure* aStructure =
+    OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+
+  aCView->View->ChangeZLayer (aStructure, theNewLayerId);
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Integer OpenGl_GraphicDriver::GetZLayer (const Graphic3d_CStructure& theCStructure) const
+{
+  if (!GetMapOfStructures().IsBound (theCStructure.Id))
+    return -1;
+
+  OpenGl_Structure* aStructure = 
+    OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+
+  return aStructure->GetZLayer();
+}
+
+//=======================================================================
+//function : UnsetZLayer
+//purpose  :
+//=======================================================================
+
+void OpenGl_GraphicDriver::UnsetZLayer (const Standard_Integer theLayerId)
+{
+  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator
+    aStructIt (GetMapOfStructures ());
+  
+  for( ; aStructIt.More (); aStructIt.Next ())
+  {
+    OpenGl_Structure* aStruct = aStructIt.ChangeValue ();
+    if (aStruct->GetZLayer () == theLayerId)
+      aStruct->SetZLayer (0);
+  }
+}

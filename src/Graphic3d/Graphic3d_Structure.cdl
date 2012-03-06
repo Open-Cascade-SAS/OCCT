@@ -241,6 +241,19 @@ is
 	--  Warning: If <me> is displayed then the SetDisplayPriority
 	--	    method erase <me> and display <me> with the
 	--	    previous priority.
+        
+        SetZLayer ( me         : mutable;
+                    theLayerId : Integer from Standard )
+           is static;
+        ---Purpose: Set Z layer ID for the structure. The Z layer mechanism
+        -- allows to display structures presented in higher layers in overlay
+        -- of structures in lower layers by switching off z buffer depth
+        -- test between layers
+
+        GetZLayer ( me )
+          returns Integer from Standard is static;
+        ---Purpose: Get Z layer ID of displayed structure. The method
+        -- returns -1 if the structure has no ID (deleted from graphic driver).
 
 	SetPick ( me		: mutable;
 		  AValue	: Boolean from Standard )

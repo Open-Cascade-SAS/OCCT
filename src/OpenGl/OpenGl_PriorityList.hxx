@@ -23,19 +23,30 @@ class OpenGl_PriorityList
  public:
 
   OpenGl_PriorityList (const Standard_Integer ANbPriorities = 11) : myArray(0,(ANbPriorities-1)), myNbStructures(0) {}
+
   virtual ~OpenGl_PriorityList () {}
 
   void Add (const OpenGl_Structure *AStructure, const Standard_Integer APriority);
-  void Remove (const OpenGl_Structure *AStructure);
+
+  //! Remove structure and returns its priority, if the structure is not found,
+  //! method returns negative value
+  Standard_Integer Remove (const OpenGl_Structure *AStructure);
 
   Standard_Integer NbStructures () const { return myNbStructures; }
 
   void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
 
+  //! Returns the number of available priority levels
+  Standard_Integer NbPriorities() const;
+
+  //! Append priority list of acceptable type (with similar number of priorities
+  //! or less). Returns Standard_False if the list can not be accepted.
+  Standard_Boolean Append (const OpenGl_PriorityList& theOther);
+
  protected:
 
   OpenGl_ArrayOfStructure myArray;
-  Standard_Integer myNbStructures;
+  Standard_Integer        myNbStructures;
 
  public:
   IMPLEMENT_MEMORY_OPERATORS

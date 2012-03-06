@@ -881,7 +881,6 @@ void AIS_LocalContext::SetDisplayPriority(const Handle(AIS_InteractiveObject)& a
   
 }
 
-
 //=======================================================================
 //function : DisplayedObjects
 //purpose  : 
@@ -1220,3 +1219,34 @@ void AIS_LocalContext::SetSensitivity(const Standard_Integer aPrecision) {
   myMainVS->Set(aPrecision);
 }
 #endif
+
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+
+void AIS_LocalContext::SetZLayer (const Handle(AIS_InteractiveObject)& theIObj,
+                                  const Standard_Integer theLayerId)
+{
+  if (!myActiveObjects.IsBound (theIObj)) 
+    return;
+
+  const Handle(AIS_LocalStatus)& aStatus = myActiveObjects (theIObj);
+  if (aStatus->DisplayMode () == -1)
+    return;
+
+  theIObj->SetZLayer (myMainPM, theLayerId);
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  : 
+//=======================================================================
+
+Standard_Integer AIS_LocalContext::GetZLayer (const Handle(AIS_InteractiveObject)& theIObj) const
+{
+  if (!myActiveObjects.IsBound (theIObj)) 
+    return -1;
+
+  return theIObj->GetZLayer (myMainPM);
+}

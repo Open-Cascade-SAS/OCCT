@@ -48,6 +48,7 @@
 #include <Standard_ErrorHandler.hxx>
 
 #include <Aspect.hxx>
+#include <Aspect_IdentDefinitionError.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -81,11 +82,14 @@ MyViewGenId (View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()
 MyZBufferAuto (Standard_False),
 MyTransparency (Standard_False)
 {
+  // default layer is always presented in display layer sequence
+  // it can not be removed
+  myLayerIds.Add (0);
+  myLayerSeq.Append (0);
 
-Handle(Aspect_GraphicDriver) agd = aDevice->GraphicDriver ();
+  Handle(Aspect_GraphicDriver) agd = aDevice->GraphicDriver ();
 
-	MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
-
+  MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
 }
 
 //-Destructors
@@ -1338,4 +1342,121 @@ const Handle(Visual3d_Layer)& Visual3d_ViewManager::OverLayer () const {
 
 	return (MyOverLayer);
 
+}
+
+//=======================================================================
+//function : ChangeZLayer
+//purpose  : 
+//=======================================================================
+
+void Visual3d_ViewManager::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructure,
+                                         const Standard_Integer theLayerId)
+{
+  if (!myLayerIds.Contains (theLayerId))
+    return;
+  
+  // change display layer for structure in all views
+  if (MyDisplayedStructure.Contains (theStructure))
+  {
+    Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
+    for ( ; aViewIt.More (); aViewIt.Next ())
+      (aViewIt.Value ())->ChangeZLayer (theStructure, theLayerId);
+  }
+  
+  // tell graphic driver to update the structure's display layer
+  MyGraphicDriver->ChangeZLayer (
+    (*(Graphic3d_CStructure*)theStructure->CStructure ()), theLayerId);
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Integer Visual3d_ViewManager::GetZLayer (const Handle(Graphic3d_Structure)& theStructure) const
+{
+  Graphic3d_CStructure& aStructure =
+    (*(Graphic3d_CStructure*)theStructure->CStructure ());
+
+  return MyGraphicDriver->GetZLayer (aStructure);
+}
+
+//=======================================================================
+//function : AddZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Boolean Visual3d_ViewManager::AddZLayer (Standard_Integer& theLayerId)
+{
+  try
+  {
+    OCC_CATCH_SIGNALS
+    theLayerId = getZLayerGenId ().Next ();
+    myLayerIds.Add (theLayerId);
+    myLayerSeq.Append (theLayerId);
+  }
+  catch (Aspect_IdentDefinitionError)
+  {
+    // new index can't be generated
+    return Standard_False;
+  }
+
+  // tell all managed views to remove display layers
+  Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
+  for ( ; aViewIt.More (); aViewIt.Next ())
+    (aViewIt.Value ())->AddZLayer (theLayerId);
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Visual3d_ViewManager::RemoveZLayer (const Standard_Integer theLayerId)
+{
+  if (!myLayerIds.Contains (theLayerId) || theLayerId == 0)
+    return Standard_False;
+
+  // tell all managed views to remove display layers
+  Visual3d_SetIteratorOfSetOfView aViewIt(MyDefinedView);
+  for ( ; aViewIt.More (); aViewIt.Next ())
+    (aViewIt.Value ())->RemoveZLayer (theLayerId);
+
+  MyGraphicDriver->UnsetZLayer (theLayerId);
+
+  // remove index
+  for (int aIdx = 1; aIdx <= myLayerSeq.Length (); aIdx++)
+    if (myLayerSeq(aIdx) == theLayerId)
+    {
+      myLayerSeq.Remove (aIdx);
+      break;
+    }
+
+  myLayerIds.Remove (theLayerId);
+  getZLayerGenId ().Free (theLayerId);
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : GetAllZLayers
+//purpose  :
+//=======================================================================
+
+void Visual3d_ViewManager::GetAllZLayers (TColStd_SequenceOfInteger& theLayerSeq) const
+{
+  theLayerSeq.Assign (myLayerSeq);
+}
+
+//=======================================================================
+//function : getZLayerGenId
+//purpose  :
+//=======================================================================
+
+Aspect_GenId& Visual3d_ViewManager::getZLayerGenId ()
+{
+  static Aspect_GenId aGenId (1, IntegerLast());
+  return aGenId;
 }

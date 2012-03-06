@@ -284,6 +284,47 @@ public:
   Standard_EXPORT void FBOGetDimensions(const Graphic3d_CView& view,const Graphic3d_PtrFrameBuffer fboPtr,Standard_Integer& width,Standard_Integer& height,Standard_Integer& widthMax,Standard_Integer& heightMax);
   Standard_EXPORT void FBOChangeViewport(const Graphic3d_CView& view,Graphic3d_PtrFrameBuffer& fboPtr,const Standard_Integer width,const Standard_Integer height);
   Standard_EXPORT Standard_Boolean Export(const Standard_CString theFileName,const Graphic3d_ExportFormat theFormat,const Graphic3d_SortType theSortType,const Standard_Integer theWidth,const Standard_Integer theHeight,const Graphic3d_CView& theView,const Aspect_CLayer2d& theLayerUnder,const Aspect_CLayer2d& theLayerOver,const Standard_Real thePrecision = 0.005,const Standard_Address theProgressBarFunc = NULL,const Standard_Address theProgressObject = NULL);
+  
+  //! Add a new top-level z layer with ID <theLayerId> for <br>
+  //! the view. Z layers allow drawing structures in higher layers <br>
+  //! in foreground of structures in lower layers. To add a structure <br>
+  //! to desired layer on display it is necessary to set the layer <br>
+  //! index for the structure. <br>
+  Standard_EXPORT void AddZLayer(const Graphic3d_CView& theCView,
+                                 const Standard_Integer theLayerId);
+
+  //! Remove Z layer from the specified view. All structures <br>
+  //! displayed at the moment in layer will be displayed in default layer <br>
+  //! ( the bottom-level z layer ). To unset layer index from associated <br>
+  //! structures use method UnsetZLayer (...). <br>
+  Standard_EXPORT void RemoveZLayer(const Graphic3d_CView& theCView,
+                                    const Standard_Integer theLayerId);
+
+  //! Unset Z layer ID for all structures. The structure <br>
+  //! indexes will be set to default layer ( the bottom-level z layer with <br>
+  //! ID = 0 ). <br>
+  Standard_EXPORT void UnsetZLayer(const Standard_Integer theLayerId);
+
+  //! Change Z layer of a structure. The new z layer ID will <br>
+  //! be used to define the associated layer for structure on display. <br>
+  //! It is recommended to take care of redisplaying the structures already <br>
+  //! presented in view with previously set layer index. This is usually <br>
+  //! done by viewer manager. Z layers allow drawing structures in <br>
+  //! higher layers in foreground of structures in lower layers. <br>
+  Standard_EXPORT void ChangeZLayer(const Graphic3d_CStructure& theCStructure,
+                                    const Standard_Integer theLayerId);
+
+  //! Change Z layer of a structure already presented in view. <br>
+  //! It is recommended to update z layer of already <br>
+  //! displayed structures with this method before setting new z layer <br>
+  //! index to the structure. This is usually done by viewer manager. <br>
+  Standard_EXPORT void ChangeZLayer(const Graphic3d_CStructure& theCStructure,
+                                    const Graphic3d_CView& theCView,
+                                    const Standard_Integer theNewLayerId);
+
+  //! Get Z layer ID of the structure. If the structure doesn't exists in <br>
+  //! graphic driver, the method returns -1. <br>
+  Standard_EXPORT Standard_Integer GetZLayer(const Graphic3d_CStructure& theCStructure) const;
 
 public:
 

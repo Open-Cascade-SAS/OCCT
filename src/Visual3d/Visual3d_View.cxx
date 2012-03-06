@@ -4311,3 +4311,35 @@ Standard_Boolean Visual3d_View::Export (const Standard_CString       theFileName
                                   aWidth, aHeight, MyCView, anUnderCLayer, anOverCLayer,
                                   thePrecision, theProgressBarFunc, theProgressObject);
 }
+
+//=======================================================================
+//function : AddZLayer
+//purpose  :
+//=======================================================================
+
+void Visual3d_View::AddZLayer (const Standard_Integer theLayerId)
+{
+  MyGraphicDriver->AddZLayer (MyCView, theLayerId);
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  : 
+//=======================================================================
+
+void Visual3d_View::RemoveZLayer (const Standard_Integer theLayerId)
+{
+  MyGraphicDriver->RemoveZLayer (MyCView, theLayerId);
+}
+
+//=======================================================================
+//function : ChangeZLayer
+//purpose  : 
+//=======================================================================
+
+void Visual3d_View::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructure,
+                                  const Standard_Integer theLayerId)
+{
+  MyGraphicDriver->ChangeZLayer (
+    (*(Graphic3d_CStructure*)theStructure->CStructure()), MyCView, theLayerId);
+}

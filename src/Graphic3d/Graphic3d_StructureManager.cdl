@@ -25,6 +25,7 @@ deferred class StructureManager from Graphic3d inherits TShared
 uses
 
 	Array2OfReal		from TColStd,
+        SequenceOfInteger       from TColStd,
 
 	GenId			from Aspect,
 	GraphicDevice           from Aspect,
@@ -271,6 +272,43 @@ is
 	---Level: Internal
 	---Purpose: Changes the display priority of the structure <AStructure>.
 	---Category: Private methods
+
+        ChangeZLayer ( me           : mutable;
+                       theStructure : Structure from Graphic3d;
+                       theLayerId   : Integer from Standard )
+           is deferred;
+        ---Purpose: Change Z layer for structure. The z layer mechanism allows
+        -- to display structures in higher layers in overlay of structures in
+        -- lower layers.
+
+        GetZLayer ( me;
+                    theStructure : Structure from Graphic3d )
+           returns Integer from Standard is deferred;
+        ---Purpose: Get Z layer ID assigned to structure. If the structure
+        -- has no layer ID (deleted from graphic driver), the method returns -1.
+
+        AddZLayer ( me : mutable;
+                    theLayerId : in out Integer from Standard )
+           returns Boolean from Standard is deferred;
+        ---Purpose: Add a new top-level Z layer and get its ID as
+        -- <theLayerId> value. The method returns Standard_False if the layer
+        -- can not be created. The z layer mechanism allows to display
+        -- structures in higher layers in overlay of structures in lower layers.
+
+        RemoveZLayer ( me : mutable;
+                       theLayerId : Integer from Standard )
+           returns Boolean from Standard is deferred;
+        ---Purpose: Remove Z layer with ID <theLayerId>. Method returns
+        -- Standard_False if the layer can not be removed or doesn't exists.
+        -- By default, there is always a default bottom-level layer that can't
+        -- be removed.
+
+        GetAllZLayers ( me;
+                        theLayerSeq : out SequenceOfInteger from TColStd )
+           is deferred;
+        ---Purpose: Return all Z layer ids in sequence ordered by level
+        -- from lowest layer to highest. The first layer ID in sequence is
+        -- the default layer that can't be removed.
 
 	CurrentId ( myclass )
 		returns Integer from Standard;

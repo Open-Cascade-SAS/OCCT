@@ -496,3 +496,29 @@ void OpenGl_GraphicDriver::SetBackFacingModel (const Graphic3d_CView& ACView)
   if (aCView)
     aCView->View->SetBackfacing(ACView.Backfacing);
 }
+
+//=======================================================================
+//function : AddZLayer
+//purpose  : 
+//=======================================================================
+
+void OpenGl_GraphicDriver::AddZLayer (const Graphic3d_CView& theCView,
+                                      const Standard_Integer theLayerId)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
+  if (aCView)
+    aCView->View->AddZLayer (theLayerId);
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  :
+//=======================================================================
+
+void OpenGl_GraphicDriver::RemoveZLayer (const Graphic3d_CView& theCView,
+                                         const Standard_Integer theLayerId)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView *)theCView.ptrView;
+  if (aCView)
+    aCView->View->RemoveZLayer (theLayerId);
+}

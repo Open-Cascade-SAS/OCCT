@@ -307,3 +307,42 @@ Handle(Prs3d_Presentation) SelectMgr_SelectableObject::GetSelectPresentation( co
   return mySelectionPrs;
 }
 
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+void SelectMgr_SelectableObject::SetZLayer 
+  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+   const Standard_Integer theLayerId)
+{
+  if (thePrsMgr.IsNull())
+    return;
+
+  // update own presentations
+  PrsMgr_PresentableObject::SetZLayer (thePrsMgr, theLayerId);
+
+  // update selection presentations
+  if (!mySelectionPrs.IsNull())
+    mySelectionPrs->SetZLayer (theLayerId);
+
+  if (!myHilightPrs.IsNull())
+    myHilightPrs->SetZLayer (theLayerId);
+
+  // update all entity owner presentations
+  for (Init (); More () ;Next ())
+  {
+    const Handle(SelectMgr_Selection)& aSel = CurrentSelection();
+    for (aSel->Init (); aSel->More (); aSel->Next ())
+    {
+      Handle(Select3D_SensitiveEntity) aEntity = 
+        Handle(Select3D_SensitiveEntity)::DownCast (aSel->Sensitive());
+      if (!aEntity.IsNull())
+      {
+        Handle(SelectMgr_EntityOwner) aOwner = 
+          Handle(SelectMgr_EntityOwner)::DownCast (aEntity->OwnerId());
+        if (!aOwner.IsNull())
+          aOwner->SetZLayer (thePrsMgr, theLayerId);
+      }
+    }
+  }
+}

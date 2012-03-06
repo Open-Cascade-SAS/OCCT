@@ -52,8 +52,14 @@ class OpenGl_Structure : public OpenGl_Element
   void RemoveGroup (const OpenGl_Group *);
   void Clear ();
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  //! Set z layer ID to display the structure in specified layer
+  void SetZLayer (const Standard_Integer theLayerIndex);
 
+  //! Get z layer ID
+  Standard_Integer GetZLayer () const;
+
+  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  
  protected:
 
   //Structure_LABBegin
@@ -70,6 +76,7 @@ class OpenGl_Structure : public OpenGl_Element
   //Structure_LABVisibility
   //Structure_LABPick
   int myNamedStatus; //Structure_LABNameSet
+  int myZLayer;
 
   OpenGl_ListOfStructure myConnected;
 

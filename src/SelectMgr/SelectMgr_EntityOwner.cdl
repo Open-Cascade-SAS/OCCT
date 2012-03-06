@@ -134,6 +134,12 @@ is
     --          Hilight for SelectableObject when the owner is detected. By default 
     --          it always return FALSE.  
     
+    SetZLayer ( me         : mutable;
+                thePrsMgr  : PresentationManager from PrsMgr;
+                theLayerId : Integer from Standard )
+      is virtual;
+    ---Purpose: Set Z layer ID and update all presentations.
+
 fields
 
     mySelectable        : SOPtr;

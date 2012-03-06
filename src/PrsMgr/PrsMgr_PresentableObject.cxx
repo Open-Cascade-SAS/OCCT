@@ -335,3 +335,28 @@ gp_Pnt  PrsMgr_PresentableObject::GetTransformPersistencePoint() const
 {
   return gp_Pnt( myTransformPersistence.Point.x, myTransformPersistence.Point.y, myTransformPersistence.Point.z );
 }
+
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+void PrsMgr_PresentableObject::SetZLayer 
+  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+   const Standard_Integer theLayerId)
+{
+  if (!thePrsMgr.IsNull())
+    thePrsMgr->SetZLayer (this, theLayerId);
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :
+//=======================================================================
+Standard_Integer PrsMgr_PresentableObject::GetZLayer 
+  (const Handle(PrsMgr_PresentationManager)& thePrsMgr) const
+{
+  if (!thePrsMgr.IsNull())
+    return thePrsMgr->GetZLayer (this);
+
+  return -1;
+}

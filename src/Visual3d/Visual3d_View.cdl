@@ -887,6 +887,27 @@ is
 	---Purpose: Changes the display priority of the structure <AStructure>.
 	---Category: Private methods
 
+        AddZLayer ( me         : mutable;
+                    theLayerId : Integer from Standard )
+          is static private;
+        ---Purpose: Add a new top-level Z layer to the view with ID
+        -- <theLayerId>. The z layer mechanism allows to display
+        -- structures in higher layers in overlay of structures in lower layers.
+        -- The layers in a particular view should be managed centrally
+        -- by its view manager so to avoid IDs mismatching and provide correct
+        -- display of graphics in all views.
+
+        RemoveZLayer ( me         : mutable;
+                       theLayerId : Integer from Standard )
+          is static private;
+        ---Purpose: Remove z layer from the view by its ID.
+
+        ChangeZLayer ( me           : mutable;
+                       theStructure : Structure from Graphic3d;
+                       theLayerId   : Integer from Standard )
+           is static private;
+        ---Purpose: Change Z layer of already displayed structure in the view.
+
 	Clear ( me		: mutable;
 		AStructure	: Structure from Graphic3d;
 		WithDestruction	: Boolean from Standard )

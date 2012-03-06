@@ -51,6 +51,14 @@ is
     SetDisplayPriority(me:mutable;aNewPrior:Integer from Standard)
     is redefined static private;
    
+    SetZLayer ( me : mutable;
+                theLayerId : Integer from Standard )
+      is redefined static private;
+    ---Purpose: Set Z layer ID for the presentation
+
+    GetZLayer ( me )
+      returns Integer from Standard is redefined static private;
+    ---Purpose: Get Z layer ID for the presentation
 
     Clear(me:mutable)
     	---Purpose: removes the whole content of the presentation.

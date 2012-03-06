@@ -33,6 +33,7 @@
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_PrinterContext.hxx>
+#include <OpenGl_Structure.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -1231,7 +1232,8 @@ D = -[Px,Py,Pz] dot |Nx|
 //ExecuteViewDisplay
 void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 {
-  if ( myStructures.NbStructures() <= 0 ) return;
+  if ( myZLayers.NbStructures() <= 0 )
+    return;
 
   glPushAttrib ( GL_DEPTH_BUFFER_BIT );
 
@@ -1261,7 +1263,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
     }
   }
 
-  myStructures.Render(AWorkspace);
+  myZLayers.Render (AWorkspace);
 
   //TsmPopAttri(); /* restore previous graphics context; before update lights */
 
@@ -1511,4 +1513,57 @@ void OpenGl_View::SetBackgroundGradientType (const Aspect_GradientFillMethod ATy
   myBgGradient.type = AType;
 }
 
-/*----------------------------------------------------------------------*/
+//=======================================================================
+//function : AddZLayer
+//purpose  : 
+//=======================================================================
+
+void OpenGl_View::AddZLayer (const Standard_Integer theLayerId)
+{
+  myZLayers.AddLayer (theLayerId);
+}
+
+//=======================================================================
+//function : RemoveZLayer
+//purpose  : 
+//=======================================================================
+
+void OpenGl_View::RemoveZLayer (const Standard_Integer theLayerId)
+{
+  myZLayers.RemoveLayer (theLayerId);
+}
+
+//=======================================================================
+//function : DisplayStructure
+//purpose  : 
+//=======================================================================
+
+void OpenGl_View::DisplayStructure (const OpenGl_Structure *theStructure,
+                                    const Standard_Integer  thePriority)
+{
+  Standard_Integer aZLayer = theStructure->GetZLayer ();
+  myZLayers.AddStructure (theStructure, aZLayer, thePriority);
+}
+
+//=======================================================================
+//function : EraseStructure
+//purpose  : 
+//=======================================================================
+
+void OpenGl_View::EraseStructure (const OpenGl_Structure *theStructure)
+{
+  Standard_Integer aZLayer = theStructure->GetZLayer ();
+  myZLayers.RemoveStructure (theStructure, aZLayer);
+}
+
+//=======================================================================
+//function : ChangeZLayer
+//purpose  :
+//=======================================================================
+
+void OpenGl_View::ChangeZLayer (const OpenGl_Structure *theStructure,
+                                const Standard_Integer  theNewLayerId)
+{
+  Standard_Integer anOldLayer = theStructure->GetZLayer ();
+  myZLayers.ChangeLayer (theStructure, anOldLayer, theNewLayerId);
+}

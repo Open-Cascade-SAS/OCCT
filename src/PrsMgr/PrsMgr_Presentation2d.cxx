@@ -78,3 +78,22 @@ Standard_Integer PrsMgr_Presentation2d::Offset () const {
 
 void PrsMgr_Presentation2d::Destroy () {
 }
+
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+
+void PrsMgr_Presentation2d::SetZLayer (Standard_Integer theLayer)
+{
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  :
+//=======================================================================
+
+Standard_Integer PrsMgr_Presentation2d::GetZLayer () const
+{
+  return 0;
+}

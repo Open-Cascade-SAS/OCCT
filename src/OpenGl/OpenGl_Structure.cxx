@@ -36,7 +36,8 @@ OpenGl_Structure::OpenGl_Structure ()
   myAspectText(NULL),
   myHighlightBox(NULL),
   myHighlightColor(NULL),
-  myNamedStatus(0)
+  myNamedStatus(0),
+  myZLayer(0)
 {
 }
 
@@ -445,4 +446,22 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   AWorkspace->NamedStatus = named_status;
 }
 
-/*----------------------------------------------------------------------*/
+//=======================================================================
+//function : SetZLayer
+//purpose  : 
+//=======================================================================
+
+void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
+{
+  myZLayer = theLayerIndex;
+}
+
+//=======================================================================
+//function : GetZLayer
+//purpose  : 
+//=======================================================================
+
+Standard_Integer OpenGl_Structure::GetZLayer () const
+{
+  return myZLayer;
+}

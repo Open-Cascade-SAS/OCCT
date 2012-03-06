@@ -134,3 +134,13 @@ Standard_Boolean SelectMgr_EntityOwner::IsForcedHilight () const
 {
   return Standard_False;
 }
+
+//=======================================================================
+//function : SetZLayer
+//purpose  :
+//=======================================================================
+void SelectMgr_EntityOwner::SetZLayer 
+  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+   const Standard_Integer theLayerId)
+{
+}
