@@ -271,6 +271,8 @@ Handle(Transfer_Binder)  STEPControl_ActorRead::Transfer
     DeclareAndCast( HeaderSection_FileName, aFileNameEntity, anEntIt.Value() );
     if ( !aFileNameEntity.IsNull() ) {
       Handle(TCollection_HAsciiString) aPPVersion = aFileNameEntity->PreprocessorVersion();
+      if(aPPVersion.IsNull())
+        continue;
       #ifdef DEB
       cout << "Preprocessor version detected: " << aPPVersion->ToCString() << endl;
       #endif
