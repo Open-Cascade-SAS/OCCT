@@ -26,7 +26,7 @@
 
 class Handle_Standard_Type;
 
-__Standard_API Handle_Standard_Type& Standard_ExtCharacter_Type_();
+__Standard_API const Handle_Standard_Type& Standard_ExtCharacter_Type_();
 //class Standard_OStream;
 //void ShallowDump (const Standard_ExtCharacter, Standard_OStream& );
 // =====================================

@@ -13,7 +13,7 @@
 //
 // The Initialization of the Standard_Persistent variables
 //
-Handle_Standard_Type& Standard_Persistent_Type_() 
+const Handle_Standard_Type& Standard_Persistent_Type_() 
 {
   static const Handle_Standard_Type _Ancestors[]={NULL};
   static Handle_Standard_Type _aType 

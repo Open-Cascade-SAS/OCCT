@@ -5,7 +5,7 @@
 #include <Standard_OStream.hxx>
 #endif
 
-Handle_Standard_Type& Standard_Address_Type_() 
+const Handle_Standard_Type& Standard_Address_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_Address", sizeof(Standard_Address),0,NULL);

@@ -9,7 +9,7 @@
 
 class Handle_Standard_Type;
 
-__Standard_API Handle_Standard_Type& Standard_IStream_Type_();
+__Standard_API const Handle_Standard_Type& Standard_IStream_Type_();
 
 #define Standard_IStream istream
 

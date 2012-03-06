@@ -19,7 +19,7 @@ Standard_EXPORT void ShallowDump (const Standard_ExtString Value, Standard_OStre
    s << hex << Value << " Standard_ExtString " << endl; 
 }
 
-Handle_Standard_Type& Standard_ExtString_Type_() 
+const Handle_Standard_Type& Standard_ExtString_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_ExtString",sizeof(Standard_ExtString),0,NULL);

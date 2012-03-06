@@ -8,7 +8,7 @@
 #include <Standard_OStream.hxx>
 #endif
 
-Handle_Standard_Type& Standard_Boolean_Type_() 
+const Handle_Standard_Type& Standard_Boolean_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_Boolean",sizeof(Standard_Boolean),0,NULL);

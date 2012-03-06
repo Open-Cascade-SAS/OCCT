@@ -37,7 +37,7 @@ static const Standard_Integer static_MaskEndIntegerString[4] = { 0x00000000 ,
 //============================================================================
 //==== 
 //============================================================================
-Handle_Standard_Type& Standard_CString_Type_() 
+const Handle_Standard_Type& Standard_CString_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_CString",sizeof(Standard_CString),0,NULL);

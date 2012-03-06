@@ -17,7 +17,7 @@
 #include <Standard_OStream.hxx>
 #endif
 
-Handle_Standard_Type& Standard_ExtCharacter_Type_() 
+const Handle_Standard_Type& Standard_ExtCharacter_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_ExtCharacter",sizeof(Standard_ExtCharacter),

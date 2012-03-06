@@ -7,7 +7,7 @@
 // now with these two proto, we don't need the include of Standard_Persistent
 //
 class Handle(Standard_Persistent);
-Handle_Standard_Type &Standard_Persistent_Type_();
+const Handle_Standard_Type &Standard_Persistent_Type_();
 
 //============================================================================
 void ShallowDump(const Handle(Standard_Persistent)& me, Standard_OStream &aOut)

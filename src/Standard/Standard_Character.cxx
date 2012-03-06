@@ -17,7 +17,7 @@
 
 #include <Standard_Type.hxx>
 
-Handle_Standard_Type& Standard_Character_Type_() 
+const Handle_Standard_Type& Standard_Character_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_Character",sizeof(Standard_Character),0,NULL);

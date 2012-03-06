@@ -10,7 +10,7 @@
 #include <Standard_OStream.hxx>
 #endif
 
-Handle_Standard_Type& Standard_ShortReal_Type_() 
+const Handle_Standard_Type& Standard_ShortReal_Type_() 
 {
   static Handle_Standard_Type _aType = 
     new Standard_Type("Standard_ShortReal",sizeof(Standard_ShortReal),0,NULL);

@@ -10,7 +10,7 @@
 
 class Handle_Standard_Type;
 
-__Standard_API Handle_Standard_Type& Standard_OStream_Type_();
+__Standard_API const Handle_Standard_Type& Standard_OStream_Type_();
 
 typedef ostream Standard_OStream;
 

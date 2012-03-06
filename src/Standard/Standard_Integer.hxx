@@ -11,7 +11,7 @@
 
 class Handle_Standard_Type;
 
-__Standard_API Handle_Standard_Type& Standard_Integer_Type_();
+__Standard_API const Handle_Standard_Type& Standard_Integer_Type_();
 // ===============================================
 // Methods from Standard_Entity class which are redefined:  
 //    - Hascode

@@ -20,7 +20,7 @@
 
 class Handle_Standard_Type;
 
-__Standard_API Handle_Standard_Type& Standard_Boolean_Type_();
+__Standard_API const Handle_Standard_Type& Standard_Boolean_Type_();
 //class Standard_OStream;
 //void ShallowDump (const Standard_Boolean, Standard_OStream& );
 // ===============================================

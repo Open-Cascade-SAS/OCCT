@@ -24,7 +24,7 @@
 
 class Handle_Standard_Type;
 
-__Standard_API Handle_Standard_Type& Standard_Address_Type_();
+__Standard_API const Handle_Standard_Type& Standard_Address_Type_();
 //class Standard_OStream;
 //void ShallowDump (const Standard_Address, Standard_OStream& );
 //============================================================================

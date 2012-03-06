@@ -19,7 +19,7 @@ class Standard_Type;
 class Storage_stCONSTclCOM;
 Standard_EXPORT Standard_Address StandardCSFDB_Allocate(const Standard_Size);
 Standard_EXPORT void StandardCSFDB_Free(Standard_Address&);
-Standard_EXPORT Handle_Standard_Type& Standard_Persistent_Type_();
+Standard_EXPORT const Handle_Standard_Type& Standard_Persistent_Type_();
 
 class Standard_Persistent
 {

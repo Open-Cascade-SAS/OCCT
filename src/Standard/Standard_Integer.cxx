@@ -13,7 +13,7 @@
 // ------------------------------------------------------------------
 // CharToInt : Converts a character in an integer value
 // ------------------------------------------------------------------
-Handle_Standard_Type& Standard_Integer_Type_() 
+const Handle_Standard_Type& Standard_Integer_Type_() 
 {
   static Handle_Standard_Type _aType = new 
     Standard_Type("Standard_Integer",sizeof(Standard_Integer),0,NULL);
