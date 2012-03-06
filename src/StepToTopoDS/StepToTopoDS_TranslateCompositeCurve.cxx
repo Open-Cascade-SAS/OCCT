@@ -87,6 +87,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
 							     const Handle(Geom_Surface) &Surf)
 {
   myWire.Nullify();
+  myInfiniteSegment = Standard_False;
   if ( CC.IsNull() ) return Standard_False;
 
   Standard_Boolean SurfMode = ( ! S.IsNull() && ! Surf.IsNull() );
@@ -167,7 +168,15 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
         Handle(Geom_Curve) c3d;
         if (StepToGeom_MakeCurve::Convert(crv,c3d)) {
           BRepBuilderAPI_MakeEdge MkEdge ( c3d, c3d->FirstParameter(), c3d->LastParameter() );
-          if ( MkEdge.IsDone() ) edge = MkEdge.Edge();
+          if (MkEdge.IsDone())
+          {
+            if (Precision::IsNegativeInfinite (c3d->FirstParameter()) || Precision::IsPositiveInfinite (c3d->LastParameter()))
+            {
+              myInfiniteSegment = Standard_True;
+              TP->AddWarning (CC, "Segment with infinite parameters");
+            }
+            edge = MkEdge.Edge();
+          }
         }
       }
       catch(Standard_Failure) {
@@ -187,7 +196,15 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
 	if ( ! c2d.IsNull() ) {
 	  if ( edge.IsNull() ) {
 	    BRepBuilderAPI_MakeEdge MkEdge ( c2d, Surf, c2d->FirstParameter(), c2d->LastParameter() );
-	    if ( MkEdge.IsDone() ) edge = MkEdge.Edge();
+	    if (MkEdge.IsDone())
+	    {
+	      if (Precision::IsNegativeInfinite (c2d->FirstParameter()) || Precision::IsPositiveInfinite (c2d->LastParameter()))
+	      {
+	        myInfiniteSegment = Standard_True;
+	        TP->AddWarning (CC, "Segment with infinite parameters");
+	      }
+	      edge = MkEdge.Edge();
+	    }
 	  }
 	  else {
 	    BRep_Builder B;

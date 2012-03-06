@@ -575,7 +575,7 @@ void GeomSources::gpTest8(CGeometryDoc* aDoc)
 Standard_Real radius = 5;                          
 Handle(Geom2d_Circle) C =                          
     new Geom2d_Circle(gp::OX2d(),radius);          
-Standard_Real param = 1.2*PI;                      
+Standard_Real param = 1.2*M_PI;                      
 Geom2dLProp_CLProps2d CLP                          
     (C,param,2,Precision::PConfusion());           
     gp_Dir2d D;                                    
@@ -630,8 +630,8 @@ Standard_Real radius = 5;
 Handle(Geom2d_Circle) C =                                    
     new Geom2d_Circle(gp::OX2d(),radius);                    
 Geom2dAdaptor_Curve GAC (C);                                 
-Standard_Real startparam = 10*PI180;                                
-Standard_Real abscissa = 45*PI180;                                  
+Standard_Real startparam = 10*M_PI/180;                                
+Standard_Real abscissa = 45*M_PI/180;                                  
 gp_Pnt2d P1;
 C->D0(startparam,P1);                                                
 // abscissa is the distance along the curve from startparam  
@@ -1190,7 +1190,7 @@ Standard_Real ang = D1.Angle(D2);                \n\
     cout<<" D1.Angle(D2) : "<<ang<<endl;
 
     TCollection_AsciiString Message2 (ang);
-	TCollection_AsciiString Message3 (ang/PI180);
+	TCollection_AsciiString Message3 (ang/M_PI/180);
 	
 	Message += " ang =  "; 
 	Message += Message2; 
@@ -1475,8 +1475,8 @@ gp_Pnt2d P1(-184, 101);
 gp_Pnt2d P2(20 ,84);                        
 Standard_Real aheight = 1;                  
 FairCurve_Batten B (P1,P2,aheight);         
-B.SetAngle1(22*PI180);                      
-B.SetAngle2(44*PI180);                      
+B.SetAngle1(22*M_PI/180);                      
+B.SetAngle2(44*M_PI/180);                      
 FairCurve_AnalysisCode anAnalysisCode;      
 B.Compute(anAnalysisCode);                  
 Handle(Geom2d_BSplineCurve) C = B.Curve();  
@@ -1512,8 +1512,8 @@ gp_Pnt2d P1(-184, 41);
 gp_Pnt2d P2(20 ,24);                            
 Standard_Real aheight = 1;                      
 FairCurve_MinimalVariation MV (P1,P2,aheight);  
-MV.SetAngle1(22*PI180);                         
-MV.SetAngle2(44*PI180);                         
+MV.SetAngle1(22*M_PI/180);                         
+MV.SetAngle2(44*M_PI/180);                         
                                                 
 FairCurve_AnalysisCode anAnalysisCode;          
 MV.Compute(anAnalysisCode);                     
@@ -2316,7 +2316,7 @@ Standard_Real major = 12;
 Standard_Real minor = 4;                                                
 gp_Ax2d axis = gp::OX2d();                                              
 gp_Elips2d EE(axis,major,minor);;                                           
-Handle(Geom2d_TrimmedCurve) arc = GCE2d_MakeArcOfEllipse(EE,0.0,PI/4);  
+Handle(Geom2d_TrimmedCurve) arc = GCE2d_MakeArcOfEllipse(EE,0.0,M_PI/4);  
                                                                         
 //==============================================================
     TCollection_AsciiString Message (" \
@@ -2337,7 +2337,7 @@ Handle(Geom2d_TrimmedCurve) arc = GCE2d_MakeArcOfEllipse(EE,0.0,PI/4);  \n\
     aDoc->GetISessionContext()->Display(aCurve, Standard_False);
     Handle(ISession2D_Curve) aCurve2 = new ISession2D_Curve(arc);
     aDoc->GetISessionContext()->Display(aCurve2, Standard_False);
-	TCollection_AsciiString Message2 (PI);
+	TCollection_AsciiString Message2 (M_PI);
     Message += " PI = ";Message+= Message2;
     PostProcess(aDoc,ID_BUTTON_Test_32,TheDisplayType,Message.ToCString());
 }
@@ -2656,7 +2656,7 @@ Standard_Real radius = 3;
 Handle(Geom_Circle) circle =                                                        
     GC_MakeCircle(centre,axispoint,radius);                                         
                                                                                     
-Handle(Geom_Geometry) aRotatedEntity  = circle->Rotated(gp::OZ(),PI/4);             
+Handle(Geom_Geometry) aRotatedEntity  = circle->Rotated(gp::OZ(),M_PI/4);             
 Standard_CString aRotatedEntityTypeName = aRotatedEntity->DynamicType()->Name();        
                                                                                     
 Handle(Geom_Geometry) aMirroredEntity = aRotatedEntity->Mirrored(gp::ZOX());        
@@ -2724,7 +2724,7 @@ Standard_Real value = matrix.Determinant();                                     
     DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(aScaledEntity), Quantity_NOC_GREEN,false);
     DisplayCurve(aDoc,Handle(Geom_Curve)::DownCast(aTranslatedEntity),Quantity_NOC_WHITE,false);
 
-	TCollection_AsciiString Message0 (PI);	
+	TCollection_AsciiString Message0 (M_PI);	
     Message += " PI = ";
 	Message+= Message0; 
 	Message += "\n";

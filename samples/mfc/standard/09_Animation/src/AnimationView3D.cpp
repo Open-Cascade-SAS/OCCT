@@ -104,7 +104,7 @@ CAnimationView3D::CAnimationView3D()
 
     // will be set in OnInitial update, but, for more security :
 	m_FlySens = 500. ;
-	m_TurnSens = Standard_PI / 40. ;
+	m_TurnSens = M_PI / 40. ;
 }
 
 CAnimationView3D::~CAnimationView3D()
@@ -951,7 +951,7 @@ void CAnimationView3D::SetFocal(double dFocus,double dAngle)
         myView->SetImmediateUpdate ( Standard_False ) ;
  		myView->SetAt  ( m_Atx  , m_Aty  , m_Atz  ) ;
 		m_dAngle = dAngle ;
-		dAngle = dAngle * Standard_PI / 180. ;
+		dAngle = dAngle * M_PI / 180. ;
         myPView->SetAngle ( dAngle ) ;
 		dAngle = myPView->Angle () ;
 
@@ -969,7 +969,7 @@ void CAnimationView3D::ReloadData()
 	myView->Eye ( m_Eyex , m_Eyey , m_Eyez ) ;
 
 	dTwist = myView->Twist () ;
-	dTwist = dTwist * 180. / Standard_PI ;
+	dTwist = dTwist * 180. / M_PI ;
 
 	sprintf_s ( szMsg , "%lf" , m_Atx ) ;
 	(m_Tune.GetDlgItem ( IDC_XAT ))->SetWindowText ( szMsg ) ;
@@ -995,7 +995,7 @@ void CAnimationView3D::ReloadData()
 
     m_Focus = sqrt ( dx * dx + dy * dy + dz * dz ) ;
 	m_dAngle = myPView->Angle () ;
-	m_dAngle = m_dAngle * 180. / Standard_PI ;
+	m_dAngle = m_dAngle * 180. / M_PI ;
 
 	m_Tune.m_dAngle = m_dAngle ;
 	m_Tune.m_dFocus = m_Focus  ;

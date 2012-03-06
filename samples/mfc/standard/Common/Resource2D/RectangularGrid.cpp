@@ -58,7 +58,7 @@ void CRectangularGrid::UpdateDialogData()
   YOrigin = m_YOrigin ;
   XStep   = m_XStep   ;
   YStep   = m_YStep   ;
-  RotationAngle= m_RotationAngle*PI180 ;
+  RotationAngle= m_RotationAngle*M_PI/180 ;
   myViewer->SetRectangularGridValues(XOrigin, YOrigin, XStep, YStep, RotationAngle );
 }
 

@@ -551,6 +551,11 @@ Standard_Boolean ShapeAnalysis_Wire::CheckOrder(ShapeAnalysis_WireOrder& sawo,
     if ( mode3d ) {
       TopoDS_Vertex V1 = EA.FirstVertex (E); 
       TopoDS_Vertex V2 = EA.LastVertex  (E); 
+      if (V1.IsNull() || V2.IsNull())
+      {
+        myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+        return Standard_False;
+      }
       gp_Pnt p1 = BRep_Tool::Pnt (V1);
       gp_Pnt p2 = BRep_Tool::Pnt (V2);
       sawo.Add (p1.XYZ(),p2.XYZ());
@@ -600,6 +605,11 @@ Standard_Boolean ShapeAnalysis_Wire::CheckConnected (const Standard_Integer num,
   ShapeAnalysis_Edge sae;
   TopoDS_Vertex V1 = sae.LastVertex (E1);
   TopoDS_Vertex V2 = sae.FirstVertex (E2);
+  if (V1.IsNull() || V2.IsNull())
+  {
+    myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+    return Standard_False;
+  }
   if (V1.IsSame(V2)) return Standard_False;
 
   gp_Pnt p1 = BRep_Tool::Pnt (V1);

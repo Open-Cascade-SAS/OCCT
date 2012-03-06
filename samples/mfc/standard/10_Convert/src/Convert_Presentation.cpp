@@ -318,7 +318,7 @@ void Convert_Presentation::sampleCylindricalSurface()
   // only finit surfaces can be converted to BSpline surfaces, 
   // cylindrical surface is infinite, it must be trimmed
   Handle(Geom_RectangularTrimmedSurface) aSurface = 
-    new Geom_RectangularTrimmedSurface(aCylSurface, 0, 2*PI, -1000, 1000, Standard_True, Standard_True);
+    new Geom_RectangularTrimmedSurface(aCylSurface, 0, 2*M_PI, -1000, 1000, Standard_True, Standard_True);
   
   drawSurfaceAndItsBSpline(aSurface, aName, aText);
 }
@@ -426,12 +426,12 @@ void Convert_Presentation::sampleConicalSurface()
   // creating an axis parallel to Z axis 
   gp_Ax3 anAx(gp_Pnt(0,0,0), gp_Dir(0,0,1)); 
   // creating a conical surface with base radius = 10 and angle = 20 deg
-  Handle(Geom_ConicalSurface) aConicalSurface = new Geom_ConicalSurface(anAx,PI/9., 10);
+  Handle(Geom_ConicalSurface) aConicalSurface = new Geom_ConicalSurface(anAx,M_PI/9., 10);
 
   // only finit surfaces can be converted to BSpline surfaces, 
   // conical surface is infinite, it must be trimmed
   Handle(Geom_RectangularTrimmedSurface) aSurface = 
-    new Geom_RectangularTrimmedSurface(aConicalSurface, 0, 2*PI, -1000, 1000, Standard_True, Standard_True);
+    new Geom_RectangularTrimmedSurface(aConicalSurface, 0, 2*M_PI, -1000, 1000, Standard_True, Standard_True);
 
   drawSurfaceAndItsBSpline(aSurface, aName, aText);
 }

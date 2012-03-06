@@ -68,7 +68,7 @@ void CCircularGrid::UpdateDialogData()
   YOrigin          = m_YOrigin ;
   RadiusStep       = m_RadiusStep   ;
   DivisionNumber   = m_DivisionNumber   ;
-  RotationAngle    = m_RotationAngle*PI180 ;
+  RotationAngle    = m_RotationAngle*M_PI/180 ;
   myViewer->SetCircularGridValues(XOrigin, YOrigin, RadiusStep, DivisionNumber, RotationAngle );
 
 }

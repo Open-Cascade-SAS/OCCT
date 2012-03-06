@@ -57,8 +57,13 @@ is
         ---Purpose: Returns result of last translation or null wire if failed.
 	---C++: return const &
 
+    IsInfiniteSegment (me) returns Boolean;
+        ---Purpose: Returns True if composite_curve contains a segment with infinite parameters.
+        ---C++: inline 
+
 fields
 
     myWire: Wire from TopoDS;
+    myInfiniteSegment: Boolean;
 
 end TranslateCompositeCurve;

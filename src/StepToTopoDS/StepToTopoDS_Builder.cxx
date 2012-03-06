@@ -52,6 +52,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopExp_Explorer.hxx>
 
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <StepShape_ConnectedEdgeSet.hxx>
@@ -736,7 +737,21 @@ void StepToTopoDS_Builder::Init
 	TrCC.SetPrecision(preci);
 	TrCC.SetMaxTol(maxtol);
 	TrCC.Init( CC, TP );
-	if ( TrCC.IsDone() ) res = TrCC.Value();
+	if ( TrCC.IsDone() ) 
+	{
+	  if (TrCC.IsInfiniteSegment())
+	  {
+	    BRep_Builder aB;
+	    TopoDS_Compound aComp;
+	    aB.MakeCompound(aComp);
+	    TopExp_Explorer anExp;
+	    for (anExp.Init (TrCC.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
+	      aB.Add (aComp, anExp.Current());
+	    res = aComp;
+	  }
+	  else
+	    res = TrCC.Value();
+	}
       }
       else { // try other curves
 	Handle(Geom_Curve) aGeomCrv;

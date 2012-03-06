@@ -1,0 +1,16 @@
+// File:        StepToTopoDS_TranslateCompositeCurve.lxx
+// Created:     Jan 16 12:08:12 2012
+// Author:      ANNA MASALSKAYA
+// Copyright:   Open CASCADE SAS 2012
+
+#include <StepToTopoDS_TranslateCompositeCurve.hxx>
+
+//=======================================================================
+//function : IsInfiniteSegment
+//purpose  :
+//=======================================================================
+
+inline Standard_Boolean StepToTopoDS_TranslateCompositeCurve::IsInfiniteSegment() const
+{
+  return myInfiniteSegment;
+}

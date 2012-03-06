@@ -192,7 +192,7 @@ void CModelingDoc::OnRotate()
 	Handle(Geom_Axis1Placement) Gax1 = new Geom_Axis1Placement(axe);
 	Handle (AIS_Axis) ax1 = new AIS_Axis(Gax1);
 	myAISContext->Display(ax1,Standard_False);
-	theTransformation.SetRotation(axe,30*PI/180);
+	theTransformation.SetRotation(axe,30*M_PI/180);
 	BRepBuilderAPI_Transform myBRepTransformation(S,theTransformation);
 	TopoDS_Shape S2 = myBRepTransformation.Shape();
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
@@ -434,7 +434,7 @@ void CModelingDoc::OnCylinder()
 	myAISContext->Display(aCyl1,Standard_False);
 	TopoDS_Shape C2 = BRepPrimAPI_MakeCylinder (gp_Ax2(gp_Pnt(200.,200.,0.),
 												   gp_Dir(0.,0.,1.)),
-											40.,110.,210.*PI180);
+											40.,110.,210.*M_PI/180);
 	Handle(AIS_Shape) aCyl2 = new AIS_Shape(C2);
 	myAISContext->SetMaterial(aCyl2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(aCyl2,Quantity_NOC_MATRABLUE,Standard_False); 	
@@ -467,7 +467,7 @@ void CModelingDoc::OnCone()
 	myAISContext->Display(ais1,Standard_False);
 	TopoDS_Shape C2 = BRepPrimAPI_MakeCone(gp_Ax2(gp_Pnt(100.,100.,0.),
 												   gp_Dir(0.,0.,1.)),
-											60.,0.,150.,210.*PI180);
+											60.,0.,150.,210.*M_PI/180);
 	Handle(AIS_Shape) ais2 = new AIS_Shape(C2);
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->SetColor(ais2,Quantity_NOC_GREEN,Standard_False); 
@@ -498,19 +498,19 @@ void CModelingDoc::OnSphere()
 	myAISContext->SetColor(ais1,Quantity_NOC_AZURE,Standard_False); 
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais1,Standard_False);
-	TopoDS_Shape S2 = BRepPrimAPI_MakeSphere(100.,120.*PI180);
+	TopoDS_Shape S2 = BRepPrimAPI_MakeSphere(100.,120.*M_PI/180);
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
 	myAISContext->SetColor(ais2,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais2,Standard_False);
 	TopoDS_Shape S3 = BRepPrimAPI_MakeSphere(gp_Pnt(200.,250.,0.),100.,
-										 -60.*PI180, 60.*PI180);
+										 -60.*M_PI/180, 60.*M_PI/180);
 	Handle(AIS_Shape) ais3 = new AIS_Shape(S3);
 	myAISContext->SetColor(ais3,Quantity_NOC_RED,Standard_False); 
 	myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais3,Standard_False);
 	TopoDS_Shape S4 = BRepPrimAPI_MakeSphere(gp_Pnt(0.,0.,-300.),150.,
-										 -45.*PI180, 45.*PI180, 45.*PI180);
+										 -45.*M_PI/180, 45.*M_PI/180, 45.*M_PI/180);
 	Handle(AIS_Shape) ais4 = new AIS_Shape(S4);
 	myAISContext->SetColor(ais4,Quantity_NOC_MATRABLUE,Standard_False); 
 	myAISContext->SetMaterial(ais4,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -544,13 +544,13 @@ void CModelingDoc::OnTorus()
 	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais1,Standard_False);
 	TopoDS_Shape S2 = BRepPrimAPI_MakeTorus(gp_Ax2(gp_Pnt(100.,100.,0.),gp_Dir(1.,1.,1.)),
-										50.,20.,210.*PI180);
+										50.,20.,210.*M_PI/180);
 	Handle(AIS_Shape) ais2 = new AIS_Shape(S2);
 	myAISContext->SetColor(ais2,Quantity_NOC_GREEN,Standard_False); 
 	myAISContext->SetMaterial(ais2,Graphic3d_NOM_PLASTIC,Standard_False);    
 	myAISContext->Display(ais2,Standard_False);
 	TopoDS_Shape S3 = BRepPrimAPI_MakeTorus(gp_Ax2(gp_Pnt(-200.,-150.,-100),gp_Dir(0.,1.,0.)),
-										60.,20.,-45.*PI180,45.*PI180,90.*PI180);
+										60.,20.,-45.*M_PI/180,45.*M_PI/180,90.*M_PI/180);
 	Handle(AIS_Shape) ais3= new AIS_Shape(S3);
 	myAISContext->SetColor(ais3,Quantity_NOC_CORAL,Standard_False); 
 	myAISContext->SetMaterial(ais3,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -721,7 +721,7 @@ void CModelingDoc::OnRevol()
 	Handle(Geom_Axis1Placement) Gax3 = new Geom_Axis1Placement(axe);
 	Handle (AIS_Axis) ax3 = new AIS_Axis(Gax3);
 	myAISContext->Display(ax3,Standard_False);
-	TopoDS_Shape S3 = BRepPrimAPI_MakeRevol(W,axe, 210.*PI180);
+	TopoDS_Shape S3 = BRepPrimAPI_MakeRevol(W,axe, 210.*M_PI/180);
 	Handle(AIS_Shape) ais5 = new AIS_Shape(W);
 	myAISContext->Display(ais5,Standard_False);
 	Handle(AIS_Shape) ais6 = new AIS_Shape(S3);
@@ -737,7 +737,7 @@ void CModelingDoc::OnRevol()
 	Handle(Geom_Axis1Placement) Gax4 = new Geom_Axis1Placement(axe);
 	Handle (AIS_Axis) ax4 = new AIS_Axis(Gax4);
 	myAISContext->Display(ax4,Standard_False);
-	TopoDS_Shape S4 = BRepPrimAPI_MakeRevol(F,axe, 90.*PI180);
+	TopoDS_Shape S4 = BRepPrimAPI_MakeRevol(F,axe, 90.*M_PI/180);
 	Handle(AIS_Shape) ais8 = new AIS_Shape(S4);
 	myAISContext->SetColor(ais8,Quantity_NOC_MATRABLUE,Standard_False); 
 	myAISContext->SetMaterial(ais8,Graphic3d_NOM_PLASTIC,Standard_False);    
@@ -1043,7 +1043,7 @@ void CModelingDoc::OnDraft()
 		gp_Pln apln = surf->Pln();
 		gp_Dir dirF = apln.Axis().Direction();
 		if (dirF.IsNormal(gp_Dir(0.,0.,1.),Precision::Angular()))
-			adraft.Add(F, gp_Dir(0.,0.,1.), 15.*PI180, gp_Pln(gp::XOY()));
+			adraft.Add(F, gp_Dir(0.,0.,1.), 15.*M_PI/180, gp_Pln(gp::XOY()));
 	}
 	ais1->Set(adraft.Shape());
 	myAISContext->Redisplay(ais1,Standard_False);
@@ -1536,7 +1536,7 @@ BRepFilletAPI_MakeFillet fillet(theCylinder);
 TColgp_Array1OfPnt2d TabPoint2(1,20);
 
 for (Standard_Integer i=0; i<=19; i++) {
-	gp_Pnt2d Point2d(i*2*PI/19,60*cos(i*PI/19-PI/2)+10);
+	gp_Pnt2d Point2d(i*2*M_PI/19,60*cos(i*M_PI/19-M_PI/2)+10);
 	TabPoint2.SetValue(i+1,Point2d);
 }
 
@@ -1938,14 +1938,14 @@ void CModelingDoc::OnDprismLocal()
 	gp_Circ2d c(gp_Ax2d(gp_Pnt2d(200.,130.),gp_Dir2d(1.,0.)),50.);
 	BRepBuilderAPI_MakeWire MW;
 	Handle(Geom2d_Curve) aline = new Geom2d_Circle(c);
-	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,PI));
-	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,PI,2.*PI));
+	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,0.,M_PI));
+	MW.Add(BRepBuilderAPI_MakeEdge(aline,surf,M_PI,2.*M_PI));
 	BRepBuilderAPI_MakeFace MKF;
 	MKF.Init(surf,Standard_False, Precision::Confusion());
 	MKF.Add(MW.Wire());
 	TopoDS_Face FP = MKF.Face();
 	BRepLib::BuildCurves3d(FP);
-	BRepFeat_MakeDPrism MKDP(S,FP,F,10*PI180,1,Standard_True);
+	BRepFeat_MakeDPrism MKDP(S,FP,F,10*M_PI/180,1,Standard_True);
 	MKDP.Perform(200);
 	TopoDS_Shape res1 = MKDP.Shape();
 
@@ -2734,7 +2734,7 @@ void CModelingDoc::OnEdge()
 //////////////The red edge
 
 	gp_Elips Elips(gp_Ax2(gp_Pnt(10,0,0),gp_Dir(1,1,1)),60,30);
-	RedEdge = BRepBuilderAPI_MakeEdge(Elips,0,PI/2);
+	RedEdge = BRepBuilderAPI_MakeEdge(Elips,0,M_PI/2);
 
 /////////////The green edge and the both extreme vertex
 
@@ -2865,14 +2865,14 @@ void CModelingDoc::OnWire()
 ////////////The red wire is build from a single edge
 
 	gp_Elips Elips(gp_Ax2(gp_Pnt(250,0,0),gp_Dir(1,1,1)),160,90);
-	Edge1 = BRepBuilderAPI_MakeEdge(Elips,0,PI/2);
+	Edge1 = BRepBuilderAPI_MakeEdge(Elips,0,M_PI/2);
 
 	RedWire = BRepBuilderAPI_MakeWire(Edge1);
 
 ///////////the yellow wire is build from an existing wire and an edge
 	
 	gp_Circ circle(gp_Ax2(gp_Pnt(-300,0,0),gp_Dir(1,0,0)),80);
-	Edge2 = BRepBuilderAPI_MakeEdge(circle,0,PI);
+	Edge2 = BRepBuilderAPI_MakeEdge(circle,0,M_PI);
 
 	ExistingWire = BRepBuilderAPI_MakeWire(Edge2);
 
@@ -2888,7 +2888,7 @@ void CModelingDoc::OnWire()
 //////////we use the methods Add, Edge and Vertex from BRepBuilderAPI_MakeWire.
 
 	gp_Circ circle2(gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0,1,0)),200);
-	Edge4 = BRepBuilderAPI_MakeEdge(circle2,0,PI);
+	Edge4 = BRepBuilderAPI_MakeEdge(circle2,0,M_PI);
 
 	ExistingWire2 = BRepBuilderAPI_MakeWire(Edge4);
 
@@ -3043,7 +3043,7 @@ void CModelingDoc::OnFace()
 ////////////////////
 
 	gp_Circ circle(gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1,0,0)),80);
-	Edge1 = BRepBuilderAPI_MakeEdge(circle,0,PI);
+	Edge1 = BRepBuilderAPI_MakeEdge(circle,0,M_PI);
 
 	Edge2 = BRepBuilderAPI_MakeEdge(gp_Pnt(0,0,-80),gp_Pnt(0,-10,40));
 	Edge3 = BRepBuilderAPI_MakeEdge(gp_Pnt(0,-10,40),gp_Pnt(0,0,80));
@@ -3658,7 +3658,7 @@ void CModelingDoc::OnBuilder()
 	B.Add(EX01,V101);
 	//Parameters
 	B.UpdateVertex(V001,0,EX01,precision);
-	B.UpdateVertex(V101,PI,EX01,precision);
+	B.UpdateVertex(V101,M_PI,EX01,precision);
 
 	//Edge EX11
 	C = new Geom_Circle(gp_Ax2(gp_Pnt(100,150,100),gp_Dir(0,1,0),gp_Dir(-1,0,0)),100);
@@ -3669,7 +3669,7 @@ void CModelingDoc::OnBuilder()
 	B.Add(EX11,V111);
 	//Parameters
 	B.UpdateVertex(V011,0,EX11,precision);
-	B.UpdateVertex(V111,PI,EX11,precision);
+	B.UpdateVertex(V111,M_PI,EX11,precision);
 
 	//Build wire and faces
 	//Faces normals are along the axis X,Y,Z
@@ -3766,7 +3766,7 @@ void CModelingDoc::OnBuilder()
 	C2d = new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(100,100),gp_Dir2d(0,-1)),100);
 	B.UpdateEdge(EX01,C2d,FYMAX,precision);
 	B.UpdateVertex(V001,0,EX01,FYMAX,precision);
-	B.UpdateVertex(V101,PI,EX01,FYMAX,precision);
+	B.UpdateVertex(V101,M_PI,EX01,FYMAX,precision);
 
 	EZ10.Orientation(TopAbs_REVERSED);
 	B.Add(W,EZ10);
@@ -3803,7 +3803,7 @@ void CModelingDoc::OnBuilder()
 	C2d = new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(100,100),gp_Dir2d(0,-1)),100);
 	B.UpdateEdge(EX11,C2d,FYMIN,precision);
 	B.UpdateVertex(V011,0,EX11,FYMIN,precision);
-	B.UpdateVertex(V111,PI,EX11,FYMIN,precision);
+	B.UpdateVertex(V111,M_PI,EX11,FYMIN,precision);
 
 	EZ11.Orientation(TopAbs_REVERSED);
 	B.Add(W,EZ11);
@@ -3865,12 +3865,12 @@ void CModelingDoc::OnBuilder()
 	L2d = new Geom2d_Line(gp_Ax2d(gp_Pnt2d(0,0),gp_Dir2d(1,0)));
 	B.UpdateEdge(EX01,L2d,FZMIN,precision);
 	B.UpdateVertex(V001,0,EX01,FZMIN,precision);
-	B.UpdateVertex(V101,PI,EX01,FZMIN,precision);
+	B.UpdateVertex(V101,M_PI,EX01,FZMIN,precision);
 
 	EY11.Orientation(TopAbs_FORWARD);
 	B.Add(W,EY11);
 	//pcurve
-	L2d = new Geom2d_Line(gp_Pnt2d(PI,0),gp_Dir2d(0,1));
+	L2d = new Geom2d_Line(gp_Pnt2d(M_PI,0),gp_Dir2d(0,1));
 	B.UpdateEdge(EY11,L2d,FZMIN,precision);
 
 	EX11.Orientation(TopAbs_REVERSED);
@@ -3878,7 +3878,7 @@ void CModelingDoc::OnBuilder()
 	//pcurve
 	L2d = new Geom2d_Line(gp_Ax2d(gp_Pnt2d(0,150),gp_Dir2d(1,0)));
 	B.UpdateEdge(EX11,L2d,FZMIN,precision);
-	B.UpdateVertex(V111,PI,EX11,FZMIN,precision);
+	B.UpdateVertex(V111,M_PI,EX11,FZMIN,precision);
 	B.UpdateVertex(V011,0,EX11,FZMIN,precision);
 
 	EY01.Orientation(TopAbs_REVERSED);

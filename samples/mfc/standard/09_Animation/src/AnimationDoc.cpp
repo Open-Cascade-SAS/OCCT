@@ -284,7 +284,7 @@ void CAnimationDoc::OnMyTimer()
 
 	myAngle++;
 
-	angleA = thread*myAngle*PI/180;
+	angleA = thread*myAngle*M_PI/180;
 	X = Sin(angleA)*3/8;
 	angleB = atan(X / Sqrt(-X * X + 1));
 	Standard_Real decal(25*0.6);

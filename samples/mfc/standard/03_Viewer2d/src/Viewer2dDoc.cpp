@@ -115,7 +115,7 @@ void CViewer2dDoc::OnBUTTONTestText()
         new Sample2D_Text(Text,
                        0,15*(j-15),      //  anX  , anY 
                        Aspect_TOT_SOLID,//  aType  
-                       20.0*PI180 ,            //  anAngle  
+                       20.0*M_PI/180 ,            //  anAngle  
                        0.0 ,            //  aSlant  
                        color++,               //  aColorIndex  
                        0,               //  aFontIndex  
@@ -247,7 +247,7 @@ void CViewer2dDoc::OnBUTTONTestMarkers()
           new Sample2D_Markers(EntryNumber, // generic marker index
                                10*i,10,// display point
                                5,5, // size
-                               20*PI180); // angle in radian
+                               20*M_PI/180); // angle in radian
         myAISInteractiveContext2D->Display(Marker,            // object
                                            Standard_False);  // Redraw
       }
@@ -269,7 +269,7 @@ void CViewer2dDoc::OnBUTTONTestMarkers()
         new Sample2D_Markers(20,20, // reference point
                              0,0,  // display point
                              3,2,    // major, minor radius
-                             20*PI180); // angle
+                             20*M_PI/180); // angle
       myAISInteractiveContext2D->Display(Marker,            // object
                                          Standard_False);  // Redraw
     }
@@ -650,7 +650,7 @@ void CViewer2dDoc::OnBUTTONTestRect()
    Handle (Sample2D_Rectangle) aRectangle = new Sample2D_Rectangle(
 	                                         0,0,       // display point
                                              50,80,     // size
-                                             20*PI180); // angle in radian
+                                             20*M_PI/180); // angle in radian
 
    aRectangle->SetHighlightMode(AIS2D_TOD_OBJECT);
    myAISInteractiveContext2D->Display(aRectangle, Standard_False);  // Display rectangle
@@ -660,7 +660,7 @@ void CViewer2dDoc::OnBUTTONTestRect()
    Handle (Sample2D_Rectangle) aRectangle2 = new Sample2D_Rectangle(
 	                                       80,0,       // display point
                                            50,90,     // size
-                                           20*PI180); // angle in radian
+                                           20*M_PI/180); // angle in radian
 
    aRectangle2->SetHighlightMode(AIS2D_TOD_ELEMENT);
    myAISInteractiveContext2D->Display(aRectangle2);  // Display rectangle
