@@ -50,18 +50,18 @@ HLRBRep_Curve::Parameter2d (const Standard_Real P3d) const
   // Res -> --------------------------------------------
   //        (-myOF + myOZ) (-myOF + myOZ + P3d myVZ)
 
-  if (myType == GeomAbs_Line) {
-    if (((HLRAlgo_Projector*) myProj)->Perspective()) {
-      const Standard_Real FmOZ = myOF - myOZ;
-      return myOF * P3d * (myVX * FmOZ + myOX * myVZ) / (FmOZ * (FmOZ - P3d * myVZ));
-    }
-    return P3d * myVX;
-  }
+  switch (myType)
+  {
+    case GeomAbs_Line:
+      if (((HLRAlgo_Projector*) myProj)->Perspective()) {
+        const Standard_Real FmOZ = myOF - myOZ;
+        return myOF * P3d * (myVX * FmOZ + myOX * myVZ) / (FmOZ * (FmOZ - P3d * myVZ));
+      }
+      return P3d * myVX;
 
-  else if (myType == GeomAbs_Ellipse) {
-    return P3d + myOX;
+    case GeomAbs_Ellipse:
+      return P3d + myOX;
   }
-
   return P3d;
 }
 

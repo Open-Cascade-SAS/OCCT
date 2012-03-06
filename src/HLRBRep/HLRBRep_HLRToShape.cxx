@@ -180,34 +180,40 @@ HLRBRep_HLRToShape::DrawEdge (const Standard_Boolean visible,
 			      TopoDS_Shape& Result,
 			      Standard_Boolean& added) const
 {
-  Standard_Boolean todraw;
+  Standard_Boolean todraw = Standard_False;
   if      (inFace)   todraw = Standard_True;
   else if (typ == 3) todraw = ed.Rg1Line() && !ed.RgNLine();
   else if (typ == 4) todraw = ed.RgNLine();
   else               todraw =!ed.Rg1Line();
+
   if (todraw) {
     Standard_Real sta,end;
     Standard_ShortReal tolsta,tolend;
     BRep_Builder B;
+    TopoDS_Edge E;
     HLRAlgo_EdgeIterator It;
-    if (visible) {
-      
-      for (It.InitVisible(ed.Status());
-	   It.MoreVisible();
-	   It.NextVisible()) {
-	It.Visible(sta,tolsta,end,tolend);
-	B.Add(Result,HLRBRep::MakeEdge(ed.Geometry(),sta,end));
-	added = Standard_True;
+    if (visible)
+    {
+      for (It.InitVisible(ed.Status()); It.MoreVisible(); It.NextVisible()) {
+        It.Visible(sta,tolsta,end,tolend);
+        E = HLRBRep::MakeEdge(ed.Geometry(),sta,end);
+        if (!E.IsNull())
+        {
+          B.Add(Result,E);
+          added = Standard_True;
+        }
       }
     }
-    else {
-      
-      for (It.InitHidden(ed.Status());
-	   It.MoreHidden();
-	   It.NextHidden()) {
-	It.Hidden(sta,tolsta,end,tolend);
-	B.Add(Result,HLRBRep::MakeEdge(ed.Geometry(),sta,end));
-	added = Standard_True;
+    else
+    {
+      for (It.InitHidden(ed.Status()); It.MoreHidden(); It.NextHidden()) {
+        It.Hidden(sta,tolsta,end,tolend);
+        E = HLRBRep::MakeEdge(ed.Geometry(),sta,end);
+        if (!E.IsNull())
+        {
+          B.Add(Result,E);
+          added = Standard_True;
+        }
       }
     }
   }
