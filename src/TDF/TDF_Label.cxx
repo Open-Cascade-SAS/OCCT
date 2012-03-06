@@ -308,11 +308,6 @@ void TDF_Label::EntryDump(Standard_OStream& anOS) const
   }
 }
 
-#ifdef WNT
-// Disable the warning: "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 //=======================================================================
 //function : FindOrAddChild
 //purpose  : Finds or adds a label child having <aTag> as tag.
@@ -372,10 +367,6 @@ TDF_LabelNode* TDF_Label::FindOrAddChild
 
   return childLabelNode;
 }
-
-#ifdef WNT
-#pragma warning (default:4291)
-#endif
 
 //=======================================================================
 //function : InternalDump

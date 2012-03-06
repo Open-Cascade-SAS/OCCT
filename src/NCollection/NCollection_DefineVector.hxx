@@ -11,11 +11,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Vector.hxx>
 
-#ifdef WNT
-// Disable the warning: "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 //  Class NCollection_Vector (dynamic array of objects)
 //
 // This class is similar to NCollection_Array1  though the indices always start

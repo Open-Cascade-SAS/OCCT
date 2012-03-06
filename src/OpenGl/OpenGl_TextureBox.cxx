@@ -85,7 +85,7 @@ struct texData
   texDataStatus status;
   GLint type;
   int share_count;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };  
 
 
@@ -110,7 +110,7 @@ struct texDraw
   GLfloat transx, transy;
   GLfloat angle;
 
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 

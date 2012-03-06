@@ -1,6 +1,9 @@
 #ifndef _Standard_Transient_proto_HeaderFile
 #define _Standard_Transient_proto_HeaderFile
 
+#ifndef _Standard_DefineAlloc_HeaderFile
+#include <Standard_DefineAlloc.hxx>
+#endif
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
 #endif
@@ -21,21 +24,8 @@ class Standard_Transient
     friend class Handle(Standard_Transient);
 
  public:
-    //! Operator new for placement in pre-allocated memory
-    void* operator new(size_t,void* anAddress) 
-      {
-        return anAddress;
-      }
-    //! Operator new for memory allocation uses Open CASCADE memory manager
-    void* operator new(size_t size) 
-      { 
-        return Standard::Allocate(size); 
-      }
-    //! Operator delete symmetric to operator new
-    void  operator delete(void *anAddress) 
-      { 
-        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
-      }
+    
+    DEFINE_STANDARD_ALLOC
 
     //! Empty constructor
     Standard_Transient() : count(0) {}

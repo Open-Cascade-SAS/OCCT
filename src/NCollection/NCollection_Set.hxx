@@ -12,11 +12,6 @@
 #include <NCollection_TListNode.hxx>
 #include <NCollection_TListIterator.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:      A set is an  unordered  collection  of items without
  *               duplications. To test for duplications the operators == and !=
@@ -219,9 +214,5 @@ template <class TheItemType> class NCollection_Set
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (default:4291)
-#endif
 
 #endif

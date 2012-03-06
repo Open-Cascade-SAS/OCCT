@@ -19,11 +19,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Stack.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // **************************************** Template for  Stack  class ********
 
 #define DEFINE_STACK(_ClassName_, _BaseCollection_, TheItemType)               \

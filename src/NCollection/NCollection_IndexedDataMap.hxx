@@ -18,12 +18,6 @@
 #include <Standard_OutOfRange.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:     An indexed map is used  to store keys and to  bind
  *              an index to them.  Each  new key stored in the map
@@ -127,10 +121,6 @@ template < class TheKeyType,
 #endif
       return myMap->ChangeFromIndex(myIndex);
     }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
     
   private:
     NCollection_IndexedDataMap * myMap;   //!< Pointer to the map being iterated
@@ -504,9 +494,5 @@ template < class TheKeyType,
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

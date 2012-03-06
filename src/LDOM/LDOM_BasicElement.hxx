@@ -17,19 +17,12 @@ class LDOM_NodeList;
 class LDOM_Element;
 class LDOM_BasicAttribute;
 
-#ifdef WNT
-// Disable the warning: "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 //  Class LDOM_BasicElement
 //
 
 class LDOM_BasicElement : public LDOM_BasicNode
 {
  public:
-  void * operator new (size_t, void * anAddress) { return anAddress; }
  
   // ---------- PUBLIC METHODS ----------
 
@@ -127,9 +120,5 @@ class LDOM_BasicElement : public LDOM_BasicNode
   unsigned long         myAttributeMask;
   LDOM_BasicNode        * myFirstChild;
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

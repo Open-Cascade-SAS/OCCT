@@ -18,11 +18,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Set.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // **************************************** Template for   Set   class ********
 
 #define DEFINE_SET(_ClassName_, _BaseCollection_, TheItemType)                 \

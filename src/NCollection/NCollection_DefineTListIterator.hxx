@@ -14,11 +14,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_TListIterator.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // ********************************** Implementation of the Iterator interface
 #define DEFINE_TLISTITERATOR(_ClassName_, _BaseCollection_, TheItemType)       \
         typedef NCollection_TListIterator<TheItemType > _ClassName_;

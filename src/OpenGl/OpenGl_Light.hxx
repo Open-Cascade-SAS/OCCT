@@ -22,7 +22,7 @@ struct OpenGl_Light
   Tfloat      shine;
   Tfloat      atten[2];
   Tfloat      angle;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 typedef NCollection_List<OpenGl_Light> OpenGl_ListOfLight;

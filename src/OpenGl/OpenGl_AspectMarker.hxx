@@ -33,7 +33,7 @@ class OpenGl_AspectMarker : public OpenGl_Element
   float               myScale;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_AspectMarker_Header

@@ -15,12 +15,6 @@
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
 * Purpose:     The DataMap is a Map to store keys with associated
 *              Items. See Map  from NCollection for  a discussion
@@ -119,10 +113,6 @@ template < class TheKeyType,
 #endif
       return ((DataMapNode *) myNode)->Key();
     }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
   };
 
  public:
@@ -341,10 +331,6 @@ template < class TheKeyType,
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif
 

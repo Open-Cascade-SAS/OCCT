@@ -34,7 +34,7 @@ class OpenGl_AspectLine : public OpenGl_Element
   float             myWidth;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_AspectLine_Header

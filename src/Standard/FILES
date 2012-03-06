@@ -62,7 +62,6 @@ Standard_values.h
 Standard_DefineHandle.hxx
 Standard_UUID.cxx
 Standard_UUID.hxx
-StandardCSFDB.cxx
 Standard_Version.hxx
 Standard_Mutex.hxx
 Standard_Mutex.cxx
@@ -73,3 +72,4 @@ Standard_DefineException.hxx
 Standard_MMgrTBBalloc.cxx
 Standard_MMgrTBBalloc.hxx
 Standard_Assert.hxx
+Standard_DefineAlloc.hxx

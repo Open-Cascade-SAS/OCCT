@@ -40,7 +40,7 @@ struct OPENGL_MARKER_DATA
   unsigned int Width;
   unsigned int Height;
   unsigned char* Array;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 typedef NCollection_DataMap<int,OPENGL_MARKER_DATA> OpenGl_MapOfUserMarker;
@@ -150,7 +150,7 @@ class OpenGl_Display : public MMgt_TShared
   Standard_Integer myFontSize;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 extern Handle(OpenGl_Display) openglDisplay;

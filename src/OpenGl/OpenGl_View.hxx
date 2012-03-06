@@ -61,7 +61,7 @@ struct OPENGL_EXTRA_REP
 struct OPENGL_CLIP_REP
 {
   Standard_Real equation[4];
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 struct OPENGL_ZCLIP
@@ -226,7 +226,7 @@ class OpenGl_View : public MMgt_TShared
   Standard_Boolean myResetFLIST;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_View_Header

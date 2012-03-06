@@ -49,7 +49,7 @@ class OpenGl_AspectText : public OpenGl_Element
   TEL_COLOUR               mySubtitleColor;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_AspectText_Header

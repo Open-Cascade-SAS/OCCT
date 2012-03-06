@@ -10,12 +10,6 @@
 #include <NIS_InteractiveObject.hxx>
 #include <Quantity_Color.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 class Handle_NIS_TriangulatedDrawer;
 class NCollection_BaseAllocator;
 class Handle_NCollection_BaseAllocator;
@@ -465,24 +459,13 @@ class NIS_Triangulated : public NIS_InteractiveObject
    */
   Standard_EXPORT virtual void Delete () const; 
 
-  /**
-   * Operator new for memory allocation uses Open CASCADE memory manager
-   */
-  void* operator new    (size_t size)
-  {
-    return Standard::Allocate(size);
-  }
-
  protected:
 
   /**
    * Allocator-based operator new for dynamic allocations in method Clone()
    */
-  void* operator new    (Standard_Size theSz,
-                         const Handle(NCollection_BaseAllocator)& theAllocator)
-  {
-    return theAllocator->Allocate(theSz);
-  }
+  DEFINE_STANDARD_ALLOC
+  DEFINE_NCOLLECTION_ALLOC
 
   /**
    * Create a 3D bounding box of the object.
@@ -535,9 +518,5 @@ DEFINE_STANDARD_RTTI (NIS_Triangulated)
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (NIS_Triangulated, NIS_InteractiveObject)
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

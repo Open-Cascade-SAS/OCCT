@@ -13,12 +13,6 @@
 #include <Standard_NoSuchObject.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:      Simple list to link  items together keeping the first 
  *               and the last one.
@@ -290,9 +284,5 @@ template <class TheItemType> class NCollection_List
     }
   }
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

@@ -26,16 +26,5 @@ typedef size_t Standard_Size;
 typedef const char*  Standard_CString;
 typedef const short* Standard_ExtString;
 
-// declare operator new in global scope for old sun compiler
-#ifndef WORKAROUND_SUNPRO_NEW_PLACEMENT
-#define WORKAROUND_SUNPRO_NEW_PLACEMENT
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x420)
-inline void* operator new(size_t,void* anAddress) 
-{
-  return anAddress;
-}
-#endif
-#endif
-
 #endif
 

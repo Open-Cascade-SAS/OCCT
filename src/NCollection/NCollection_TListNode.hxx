@@ -8,12 +8,7 @@
 
 #include <NCollection_ListNode.hxx>
 #include <NCollection_BaseAllocator.hxx>
-
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
+#include <NCollection_DefineAlloc.hxx>
 
 /**
  * Purpose:     Abstract list node class. Used by BaseList
@@ -32,9 +27,8 @@ template <class TheItemType> class NCollection_TListNode
   //! Variable value access
   TheItemType& ChangeValue () { return myValue; }
   //! Memory allocation
-  void* operator new(size_t theSize,
-                     const Handle(NCollection_BaseAllocator)& theAllocator) 
-  { return theAllocator->Allocate(theSize); }
+  DEFINE_STANDARD_ALLOC
+  DEFINE_NCOLLECTION_ALLOC
   //! Static deleter to be passed to BaseList
   static void delNode (NCollection_ListNode * theNode, 
                        Handle(NCollection_BaseAllocator)& theAl)
@@ -48,9 +42,5 @@ template <class TheItemType> class NCollection_TListNode
   TheItemType    myValue; //!< The item stored in the node
   
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

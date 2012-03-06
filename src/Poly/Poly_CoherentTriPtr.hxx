@@ -8,12 +8,13 @@
 #define Poly_CoherentTriPtr_HeaderFile
 
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 class Poly_CoherentTriangle;
 
 #ifdef WNT
 #pragma warning (push)
-#pragma warning(disable:4355 4291) //'this' : used in base member initializer list
+#pragma warning(disable:4355) //'this' : used in base member initializer list
 #endif
 
 /**
@@ -78,11 +79,7 @@ class Poly_CoherentTriPtr
   /**
    * Operator new for dynamic allocations
    */
-  void* operator new    (Standard_Size theSize,
-                         const Handle(NCollection_BaseAllocator)& theAllocator)
-  {
-    return theAllocator->Allocate(theSize);
-  }
+  DEFINE_NCOLLECTION_ALLOC
 
   /**
    * Query the stored pointer to Triangle.

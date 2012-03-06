@@ -22,13 +22,7 @@ struct polyedge {
     Standard_Integer nd;    // the second node of the edge
     Standard_Integer nt[2]; // the two adjacent triangles
     Standard_Integer nn[2]; // the two adjacent nodes
-    void* operator new(size_t aSize) 
-      {return (void*)(Standard::Allocate(aSize));}
-//    void  operator delete(void* aNode, size_t aSize) {
-    void  operator delete(void* aNode) {
-      Standard_Address anAdress = (Standard_Address)aNode;
-      Standard::Free(anAdress);
-    }
+    DEFINE_STANDARD_ALLOC
   };
 
 Poly_Connect::Poly_Connect(const Handle(Poly_Triangulation)& T) :

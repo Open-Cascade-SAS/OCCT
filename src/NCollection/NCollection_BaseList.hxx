@@ -20,11 +20,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <NCollection_ListNode.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 typedef void (* NCollection_DelListNode) 
      (NCollection_ListNode*, Handle(NCollection_BaseAllocator)& theAl);
 

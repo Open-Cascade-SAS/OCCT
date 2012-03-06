@@ -7,6 +7,7 @@
 #ifndef TColStd_PackedMapOfInteger_HeaderFile
 #define TColStd_PackedMapOfInteger_HeaderFile
 
+#include <Standard_DefineAlloc.hxx>
 #include <TCollection_BasicMap.hxx>
 
 /**
@@ -19,10 +20,7 @@ class TColStd_PackedMapOfInteger : private TCollection_BasicMap
  public:
   // operators new and delete must be defined explicitly 
   // since inherited ones are not accessible
-  void* operator new(size_t size) 
-  { return TCollection_BasicMap::operator new(size); }
-  void  operator delete(void *anAddress) 
-  { TCollection_BasicMap::operator delete (anAddress); }
+  DEFINE_STANDARD_ALLOC
   
  public:
   // ---------- PUBLIC METHODS ----------

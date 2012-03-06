@@ -52,16 +52,11 @@ typedef NCollection_DataMap <TCollection_AsciiString,
 
 #endif
 
-extern Standard_Address StandardCSFDB_Reallocate
-                         (Standard_Address&,
-                          const Standard_Size,
-                          const Standard_Size);
-
 // IMPLEMENTATION BucketOfPersistent
 //
 Storage_Bucket::~Storage_Bucket()
 {
-  StandardCSFDB_Free((Standard_Address&)mySpace);
+  Standard::Free((Standard_Address&)mySpace);
   mySpace = 0L;
   mySpaceSize = 0;
   Clear();
@@ -110,7 +105,7 @@ Storage_BucketOfPersistent::Storage_BucketOfPersistent
 : myNumberOfBucket(1),myNumberOfBucketAllocated(theBucketNumber),myBucketSize
                          (theBucketSize)
 {
-  myBuckets =  (Storage_Bucket**)StandardCSFDB_Allocate
+  myBuckets =  (Storage_Bucket**)Standard::Allocate
                          (sizeof(Storage_Bucket*) * theBucketNumber);
   myBuckets[0] = new Storage_Bucket(myBucketSize);
   myCurrentBucket = myBuckets[0];
@@ -141,7 +136,7 @@ Storage_BucketOfPersistent::~Storage_BucketOfPersistent()
 {
   Clear();
   delete myBuckets[0];
-  StandardCSFDB_Free((Standard_Address&)myBuckets);
+  Standard::Free((Standard_Address&)myBuckets);
   myBuckets = 0L;
 }
 
@@ -182,7 +177,7 @@ void Storage_BucketOfPersistent::Append(const Handle(Standard_Persistent)& sp)
 
   if (myNumberOfBucket > myNumberOfBucketAllocated) {
     Standard_Size e = sizeof(Storage_Bucket*) * myNumberOfBucketAllocated;
-    myBuckets =  (Storage_Bucket**)StandardCSFDB_Reallocate((Standard_Address&)myBuckets,e,e * 2);
+    myBuckets =  (Storage_Bucket**)Standard::Reallocate((Standard_Address&)myBuckets, e * 2);
     myNumberOfBucketAllocated *= 2;
   }
 

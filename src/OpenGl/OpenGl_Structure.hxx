@@ -83,7 +83,7 @@ class OpenGl_Structure : public OpenGl_Element
   OpenGl_ListOfGroup myGroups;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Structure_Header

@@ -8,12 +8,6 @@
 
 #include <NCollection_SparseArrayBase.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
 * Dynamically resizable sparse array of objects
 *
@@ -265,10 +259,6 @@ private:
   }
 
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif
 

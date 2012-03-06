@@ -12,11 +12,6 @@
 #include <Standard_NoSuchObject.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:     An SList is a LISP like list of Items.
  *              An SList is :
@@ -76,15 +71,10 @@ template <class TheItemType> class NCollection_SList
       myTail->Clear();
       myTail->myAllocator->Free(myTail);
     }
-    //! Operator new for allocating nodes
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
-    //! news to avoid warnings on hiding  - not for use
-    void* operator new(size_t theSize) 
-    { return Standard::Allocate(theSize); }
-    void* operator new(size_t /*theSize*/, void* theAddress) 
-    { return theAddress; }
+
+    DEFINE_STANDARD_ALLOC
+    DEFINE_NCOLLECTION_ALLOC
+
   private:
     // ---------- PRIVATE FIELDS ------------
     Standard_Integer    myCount; //!< Reference count
@@ -117,11 +107,6 @@ template <class TheItemType> class NCollection_SList
     if (myNode)
       myNode->myCount++;
   }
-
-  //! Operator new for creating 'iterator'
-  void* operator new(size_t theSize,
-                     const Handle(NCollection_BaseAllocator)& theAllocator) 
-  { return theAllocator->Allocate(theSize); }
 
   //! Clear the items out
   void Clear (void)
@@ -286,9 +271,5 @@ template <class TheItemType> class NCollection_SList
 
   friend class SListNode;
 };
-
-#ifdef WNT
-#pragma warning (default:4291)
-#endif
 
 #endif

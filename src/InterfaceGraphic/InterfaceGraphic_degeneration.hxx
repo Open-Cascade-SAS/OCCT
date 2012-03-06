@@ -14,7 +14,7 @@ struct _degeneration
 {
   int   mode;
   float skipRatio;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 typedef _degeneration  DEGENERATION;
 typedef _degeneration* PDEGENERATION;
@@ -28,7 +28,7 @@ struct _ds_internal
   int                 model;
   float               skipRatio;
   unsigned char*      bDraw;
-  IMPLEMENT_MEMORY_OPERATORS  
+  DEFINE_STANDARD_ALLOC
 };
 typedef _ds_internal  DS_INTERNAL;
 typedef _ds_internal* PDS_INTERNAL;

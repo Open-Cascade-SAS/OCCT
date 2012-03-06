@@ -4,6 +4,9 @@
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
 #endif
+#ifndef _Standard_DefineAlloc_HeaderFile
+#include <Standard_DefineAlloc.hxx>
+#endif
 #ifndef _Standard_PrimitiveTypes_HeaderFile
 #include <Standard_PrimitiveTypes.hxx>
 #endif
@@ -17,8 +20,6 @@ class Handle_Standard_Type;
 class Standard_Type;
 
 class Storage_stCONSTclCOM;
-Standard_EXPORT Standard_Address StandardCSFDB_Allocate(const Standard_Size);
-Standard_EXPORT void StandardCSFDB_Free(Standard_Address&);
 Standard_EXPORT const Handle_Standard_Type& Standard_Persistent_Type_();
 
 class Standard_Persistent
@@ -31,20 +32,9 @@ private:
   Standard_Integer _typenum;
   Standard_Integer _refnum;
 public:
-  // MEMORY MANAGER
-  //
-  void*   operator new (size_t s) {
-    return StandardCSFDB_Allocate(s);
-  }
+  
+  DEFINE_STANDARD_ALLOC
 
-  void    operator delete (void* p) {
-    StandardCSFDB_Free(p);
-  }
-
-  void* operator new(size_t,void* anAddress) {
-    return anAddress;
-  }
- 
   Standard_EXPORT virtual Handle_Standard_Persistent This() const;
   Standard_EXPORT virtual Handle_Standard_Persistent ShallowCopy () const;
   Standard_EXPORT virtual void Delete() const;

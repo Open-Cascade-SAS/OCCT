@@ -16,11 +16,6 @@
 
 #include <NCollection_List.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // **************************************** Template for  List   class ********
 
 #define DEFINE_LIST(_ClassName_, _BaseCollection_, TheItemType)                \

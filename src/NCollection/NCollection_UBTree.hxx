@@ -7,12 +7,7 @@
 #define NCollection_UBTree_HeaderFile
 
 #include <NCollection_BaseAllocator.hxx>
-
-#ifdef WNT
-// Disable the warning: "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
+#include <NCollection_DefineAlloc.hxx>
 
 /**
  * The algorithm of unbalanced binary tree of overlapped bounding boxes.
@@ -117,6 +112,10 @@ template <class TheObjType, class TheBndType> class NCollection_UBTree
   class TreeNode
   {
   public:
+    DEFINE_STANDARD_ALLOC
+    DEFINE_NCOLLECTION_ALLOC
+
+  public:
     TreeNode (const TheObjType& theObj, const TheBndType& theBnd)
       : myBnd(theBnd), myObject(theObj), myChildren(0), myParent(0) {}
 
@@ -194,20 +193,6 @@ template <class TheObjType, class TheBndType> class NCollection_UBTree
 
 //  ~TreeNode () { if (myChildren) delete [] myChildren; }
     ~TreeNode () { myChildren = 0L; }
-
-    /**
-     * Allocator of a tree node.
-     */
-    void * operator new (size_t theSize,
-                         const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
-
-    /**
-     * Allocator of a tree node.
-     */
-    void * operator new (size_t,
-                         void * theMem) 
-    { return theMem; }
 
     /**
      * Deleter of tree node. The whole hierarchy of its children also deleted.
@@ -499,9 +484,5 @@ DEFINE_STANDARD_HANDLE (_HUBTREE, _HPARENT)
 #define IMPLEMENT_HUBTREE(_HUBTREE, _HPARENT)                           \
 IMPLEMENT_STANDARD_HANDLE (_HUBTREE, _HPARENT)                          \
 IMPLEMENT_STANDARD_RTTIEXT(_HUBTREE, _HPARENT)
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

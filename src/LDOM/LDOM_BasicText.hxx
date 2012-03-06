@@ -15,19 +15,12 @@ class LDOM_CharacterData;
 class LDOMParser;
 class LDOM_BasicElement;
 
-#ifdef WNT
-// Disable the warning: "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 //  Class LDOM_BasicText
 //
 
 class LDOM_BasicText : public LDOM_BasicNode
 {
  public:
-  void * operator new (size_t, void * anAddress) { return anAddress; }
 
   // ---------- PUBLIC METHODS ----------
 
@@ -68,9 +61,5 @@ class LDOM_BasicText : public LDOM_BasicNode
 
   LDOMBasicString       myValue;
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

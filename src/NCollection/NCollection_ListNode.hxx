@@ -8,11 +8,6 @@
 
 #include <NCollection_BaseAllocator.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:     This class is used to  represent a node  in the BaseList and
  *              BaseMap. 

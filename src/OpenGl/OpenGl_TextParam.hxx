@@ -15,7 +15,7 @@ struct OpenGl_TextParam
   int                               Height;
   Graphic3d_HorizontalTextAlignment HAlign;
   Graphic3d_VerticalTextAlignment   VAlign;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_TextParam_Header

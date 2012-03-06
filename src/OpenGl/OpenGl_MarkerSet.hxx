@@ -27,7 +27,7 @@ class OpenGl_MarkerSet : public OpenGl_Element
   TEL_POINT *myPoints;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_MarkerSet_Header

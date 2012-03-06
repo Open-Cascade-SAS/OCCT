@@ -13,11 +13,6 @@
 #include <Standard_NoSuchObject.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:      A queue is  a structure where Items are  added  at
  *               the end  and removed from   the  front. The  first
@@ -134,9 +129,5 @@ template <class TheItemType> class NCollection_Queue
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (default:4291)
-#endif
 
 #endif

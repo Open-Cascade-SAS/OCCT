@@ -15,7 +15,7 @@ struct OpenGl_CView
 {
   Handle_OpenGl_Workspace WS;
   Handle_OpenGl_View      View;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_CView_Header

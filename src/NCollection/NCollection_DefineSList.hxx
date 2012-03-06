@@ -43,11 +43,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_SList.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // **************************************** Template for  SList  class ********
 
 #define DEFINE_SLIST(_ClassName_, _BaseCollection_, TheItemType)               \

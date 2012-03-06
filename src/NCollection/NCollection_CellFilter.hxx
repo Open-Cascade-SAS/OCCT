@@ -11,12 +11,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_BaseAllocator.hxx>
-
-// work-around for obsolete SUN WorkShop 5.3 compiler 
-// which does not recognize typename keyword
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530) && ! defined(typename)
-#define typename
-#endif
+#include <NCollection_TypeDef.hxx>
 
 //! Auxiliary enumeration serving as responce from method Inspect
 enum NCollection_CellFilter_Action 
@@ -109,8 +104,8 @@ template <class Inspector>
 class NCollection_CellFilter
 {  
 public:
-  typedef typename Inspector::Target Target;
-  typedef typename Inspector::Point  Point;
+  typedef TYPENAME Inspector::Target Target;
+  typedef TYPENAME Inspector::Point  Point;
 
 public:
 

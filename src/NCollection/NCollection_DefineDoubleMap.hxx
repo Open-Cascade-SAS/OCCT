@@ -16,11 +16,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // *********************************************** Class DoubleMap ************
 
 #define DEFINE_DOUBLEMAP(_ClassName_, _BaseCollection_, TheKey1Type, TheKey2Type) \

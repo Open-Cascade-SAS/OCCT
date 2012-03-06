@@ -14,12 +14,6 @@
 #include <Standard_OutOfRange.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning: "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
 * Class NCollection_Vector (dynamic array of objects)
 *
@@ -54,8 +48,9 @@ template <class TheItemType> class NCollection_Vector
   //! Nested class MemBlock
   class MemBlock : public NCollection_BaseVector::MemBlock
   {
-  public:
-    void * operator new (size_t, void * theAddress) { return theAddress; }
+   public:
+    DEFINE_STANDARD_ALLOC
+
     //! Empty constructor
     MemBlock (NCollection_BaseAllocator* theAlloc)
       : NCollection_BaseVector::MemBlock(0,0,theAlloc)
@@ -156,10 +151,6 @@ template <class TheItemType> class NCollection_Vector
     //! Variable value access
     virtual TheItemType& ChangeValue (void) const       {
       return ((MemBlock *) CurBlockV()) -> ChangeValue(myCurIndex); }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
   }; // End of the nested class Iterator
 
   // ----------------------------------------------------------------------
@@ -305,9 +296,5 @@ template <class TheItemType> class NCollection_Vector
 
   friend class Iterator;
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

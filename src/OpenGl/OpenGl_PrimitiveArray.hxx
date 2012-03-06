@@ -79,7 +79,7 @@ protected:
 
 public:
 
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 
 };
 

@@ -26,11 +26,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_DataMap.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // *********************************************** Class DataMap *************
 
 #define DEFINE_DATAMAP(_ClassName_, _BaseCollection_, TheKeyType, TheItemType) \

@@ -25,7 +25,7 @@ struct TEL_TMESH_DATA
   tel_colour vcolours;   /* length = num_facets + 2 */
   tel_point  vnormals;   /* length = num_facets + 2 */
   tel_texture_coord vtexturecoord; /* Texture coordinates */
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 class OpenGl_TriangleStrip : public OpenGl_Element
@@ -58,7 +58,7 @@ class OpenGl_TriangleStrip : public OpenGl_Element
   DS_INTERNAL *myDS;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_TriangleStrip_Header

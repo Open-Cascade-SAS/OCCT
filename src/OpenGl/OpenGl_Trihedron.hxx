@@ -49,7 +49,7 @@ class OpenGl_Trihedron : public MMgt_TShared
   OpenGl_AspectText myAspectText;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_Trihedron_Header

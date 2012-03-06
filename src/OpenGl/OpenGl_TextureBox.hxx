@@ -48,6 +48,7 @@
 */
 
 #include <OpenGl_tgl_all.hxx>
+#include <Standard_DefineAlloc.hxx>
 
 #include <GL/gl.h>
 
@@ -76,7 +77,7 @@ struct _TextureData
   GLfloat scalex,  scaley;
   GLfloat transx, transy;
   GLfloat angle;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 typedef _TextureData TextureData;
 

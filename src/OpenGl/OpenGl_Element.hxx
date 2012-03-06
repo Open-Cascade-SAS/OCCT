@@ -17,7 +17,7 @@ class OpenGl_Element
   virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const = 0;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Element_Header

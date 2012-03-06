@@ -27,11 +27,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // *********************************************** Class IndexedDataMap ******
 
 #define DEFINE_INDEXEDDATAMAP(_ClassName_, _BaseCollection_, TheKeyType, TheItemType) \

@@ -15,12 +15,6 @@
 
 #include <NCollection_BaseCollection.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 // *********************************************** Template for Array1 class
 
 /**
@@ -86,10 +80,6 @@ template <class TheItemType> class NCollection_Array1
     //! Variable value access
     virtual TheItemType& ChangeValue (void) const 
     { return myArray->ChangeValue(myCurrent); }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
   private:
     Standard_Integer    myCurrent; //!< Index of the current item
     NCollection_Array1* myArray;   //!< Pointer to the array being iterated
@@ -276,9 +266,5 @@ template <class TheItemType> class NCollection_Array1
   Standard_Boolean     myDeletable; //!< Flag showing who allocated the array
   TheItemType*         myData;      //!< Pointer to '0'th array item
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

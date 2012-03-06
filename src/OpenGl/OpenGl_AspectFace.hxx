@@ -24,7 +24,7 @@ struct OPENGL_SURF_PROP
   int          isphysic;
   unsigned int color_mask;
   TEL_COLOUR speccol, difcol, ambcol, emscol, matcol;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 struct TEL_CONTEXT_FACE
@@ -39,7 +39,7 @@ struct TEL_CONTEXT_FACE
   int                  doTextureMap;
   int                  TexId;
   TEL_POFFSET_PARAM PolygonOffset;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #include <OpenGl_Element.hxx>
@@ -67,7 +67,7 @@ class OpenGl_AspectFace : public OpenGl_Element
   OpenGl_AspectLine  myAspectEdge;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_AspectFace_Header

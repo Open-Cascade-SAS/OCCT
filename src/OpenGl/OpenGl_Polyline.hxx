@@ -32,7 +32,7 @@ class OpenGl_Polyline : public OpenGl_Element
   tel_colour myColors;        // Vertex color values for each vertex
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Polyline_Header

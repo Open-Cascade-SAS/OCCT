@@ -8,7 +8,7 @@
 #include <Poly_CoherentTriangle.hxx>
 
 #ifdef WNT
-#pragma warning(disable:4291 4996)
+#pragma warning(disable:4996)
 #endif
 
 //=======================================================================

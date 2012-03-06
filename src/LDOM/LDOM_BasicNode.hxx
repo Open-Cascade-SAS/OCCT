@@ -19,6 +19,9 @@ class LDOMParser;
 class LDOM_BasicNode 
 {
  public:
+  DEFINE_STANDARD_ALLOC
+
+ public:
 
   Standard_Boolean  isNull    () const {return myNodeType ==LDOM_Node::UNKNOWN;}
 

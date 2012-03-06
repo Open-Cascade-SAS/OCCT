@@ -15,8 +15,8 @@
 #include <Bnd_B3f.hxx>
 
 #ifdef WNT
-// Disable the warning "operator new unmatched by delete"
 #pragma warning (push)
+// Disable warning 4480: nonstandard extension used: specifying underlying type for enum 'enum'
 #pragma warning (disable:4480)
 #endif
 

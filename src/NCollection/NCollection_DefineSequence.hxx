@@ -15,11 +15,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Sequence.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // **************************************** Template for Sequence class ********
 
 #define DEFINE_SEQUENCE(_ClassName_, _BaseCollection_, TheItemType)            \

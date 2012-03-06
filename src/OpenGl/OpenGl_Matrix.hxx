@@ -11,7 +11,7 @@
 struct OpenGl_Matrix
 {
   float mat[4][4];
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 Standard_EXPORT void OpenGl_Multiplymat3 (OpenGl_Matrix *c, const OpenGl_Matrix *a, const OpenGl_Matrix *b);

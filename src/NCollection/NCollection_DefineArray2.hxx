@@ -23,11 +23,6 @@
 #include <NCollection_DefineBaseCollection.hxx>
 #include <NCollection_Array2.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // *********************************************** Template for Array2 class
 
 #define DEFINE_ARRAY2(_ClassName_, _BaseCollection_, TheItemType)              \

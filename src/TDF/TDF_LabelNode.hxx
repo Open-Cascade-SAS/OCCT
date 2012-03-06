@@ -109,6 +109,12 @@ class TDF_LabelNode {
   void * operator new (size_t aSize,
                        const Handle(NCollection_IncAllocator)& anAlloc)
         { return anAlloc -> Allocate (aSize); }
+#if !defined(__BORLANDC__) && (!defined(__SUNPRO_CC) || (__SUNPRO_CC > 0x530))
+  void  operator delete (void* theAddress,
+                         const Handle(NCollection_IncAllocator)& anAlloc)
+  {
+  }
+#endif 
   void  operator delete(void *) { }
         // nothing to do in operator delete since IncAllocator does not need it
   // Public Friends

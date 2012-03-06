@@ -33,7 +33,7 @@ struct TEL_INDEXPOLY_DATA
   tel_colour vcolours;       /* Vertex colour values */
   tel_point  vnormals;       /* Vertex normals */
   tel_texture_coord vtexturecoord; /* Texture Coordinates */
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 class OpenGl_Mesh : public OpenGl_Element
@@ -72,7 +72,7 @@ class OpenGl_Mesh : public OpenGl_Element
   DS_INTERNAL *myDS;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Mesh_Header

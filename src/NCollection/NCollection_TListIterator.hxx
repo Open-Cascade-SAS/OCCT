@@ -10,12 +10,6 @@
 #include <NCollection_BaseList.hxx>
 #include <NCollection_TListNode.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:     This Iterator class iterates on BaseList of TListNode and is 
  *              instantiated in List/Set/Queue/Stack
@@ -54,14 +48,6 @@ template <class TheItemType> class NCollection_TListIterator
   //! Variable Value access
   virtual TheItemType& ChangeValue (void) const
   { return ((NCollection_TListNode<TheItemType> *)myCurrent)->ChangeValue(); }
-  //! Operator new for allocating iterators
-  void* operator new(size_t theSize,
-                     const Handle(NCollection_BaseAllocator)& theAllocator) 
-  { return theAllocator->Allocate(theSize); }
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

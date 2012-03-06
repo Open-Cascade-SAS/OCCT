@@ -15,11 +15,6 @@
 #include <Standard_NoSuchObject.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:      A stack is a structure where item can be added and
  *               removed from the top. Like a stack of plates  in a
@@ -134,9 +129,5 @@ template <class TheItemType> class NCollection_Stack
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (default:4291)
-#endif
 
 #endif

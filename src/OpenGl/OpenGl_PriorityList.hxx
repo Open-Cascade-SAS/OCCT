@@ -49,7 +49,7 @@ class OpenGl_PriorityList
   Standard_Integer        myNbStructures;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_PriorityList_Header

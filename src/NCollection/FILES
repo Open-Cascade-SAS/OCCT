@@ -79,6 +79,6 @@ NCollection_Comparator.hxx
 NCollection_QuickSort.hxx
 
 NCollection_Haft.h
-
-
 NCollection_DefaultHasher.hxx
+NCollection_DefineAlloc.hxx
+

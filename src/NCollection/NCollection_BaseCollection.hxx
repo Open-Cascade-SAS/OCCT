@@ -7,6 +7,7 @@
 #define NCollection_BaseCollection_HeaderFile
 
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 /**
 * Purpose:     NCollection_BaseCollection  is the base  abstract  class for 
@@ -45,6 +46,9 @@ template<class TheItemType> class NCollection_BaseCollection
     virtual const TheItemType& Value(void) const=0;
     //! Value change access
     virtual TheItemType& ChangeValue(void) const=0;
+  public:
+    DEFINE_STANDARD_ALLOC
+    DEFINE_NCOLLECTION_ALLOC
   protected:
     //! Empty constructor
     Iterator (void) {}

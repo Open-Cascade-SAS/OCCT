@@ -35,7 +35,7 @@ class OpenGl_Text : public OpenGl_Element
   const wchar_t  *myString;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Text_Header

@@ -59,7 +59,7 @@ struct OPENGL_CLIP_PLANE
 {
   GLboolean isEnabled;
   GLdouble Equation[4];
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 /*----------------------------------------------------------------------*/

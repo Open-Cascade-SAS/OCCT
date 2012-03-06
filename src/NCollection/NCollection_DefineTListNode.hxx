@@ -12,11 +12,6 @@
 
 #include <NCollection_TListNode.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // ******************************* Class defining list node - for internal use
 #define DEFINE_TLISTNODE(_ClassName_, _BaseCollection_, TheItemType)           \
         typedef NCollection_TListNode<TheItemType > _ClassName_;

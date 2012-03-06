@@ -99,7 +99,7 @@ protected:
 public:
 
   DEFINE_STANDARD_RTTI(OpenGl_Window) // Type definition
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 
 };
 

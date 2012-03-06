@@ -24,7 +24,7 @@ class OpenGl_Marker : public OpenGl_Element
   TEL_POINT myPoint;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Marker_Header

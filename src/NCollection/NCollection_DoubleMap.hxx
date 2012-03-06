@@ -17,12 +17,6 @@
 
 #include <NCollection_DefaultHasher.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
 * Purpose:     The DoubleMap  is used to  bind  pairs (Key1,Key2)
 *              and retrieve them in linear time.
@@ -128,10 +122,6 @@ template < class TheKey1Type,
       Standard_ImmutableObject::Raise("NCollection_DoubleMap::Iterator::ChangeValue");
       return * (TheKey2Type *) NULL; // For compiler
     }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
   };
 
  public:
@@ -475,9 +465,5 @@ template < class TheKey1Type,
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

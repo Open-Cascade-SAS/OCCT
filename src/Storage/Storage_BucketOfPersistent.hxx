@@ -25,12 +25,12 @@ class Storage_Bucket {
 public:
   Storage_Bucket() : mySpace(0L), mySpaceSize(200000), myCurrentSpace(-1)
     {
-      mySpace = (Standard_Persistent**)StandardCSFDB_Allocate(sizeof(Standard_Persistent*) * mySpaceSize);
+      mySpace = (Standard_Persistent**)Standard::Allocate(sizeof(Standard_Persistent*) * mySpaceSize);
     }
 
   Storage_Bucket(const Standard_Integer theSpaceSize) :  mySpace(0L), mySpaceSize(theSpaceSize), myCurrentSpace(-1)
     {
-      mySpace = (Standard_Persistent**)StandardCSFDB_Allocate(sizeof(Standard_Persistent*) * mySpaceSize);
+      mySpace = (Standard_Persistent**)Standard::Allocate(sizeof(Standard_Persistent*) * mySpaceSize);
     }
 
   void Clear();

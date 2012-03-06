@@ -22,7 +22,7 @@ struct OpenGl_ElementNode
   TelType type;
   OpenGl_Element *elem;
   OpenGl_ElementNode *next;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 class OpenGl_Group : public OpenGl_Element
@@ -53,7 +53,7 @@ class OpenGl_Group : public OpenGl_Element
   OpenGl_ElementNode *myFirst, *myLast;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_Group_Header

@@ -8,6 +8,9 @@
 #ifndef _Handle_Standard_Persistent_HeaderFile
 #define _Handle_Standard_Persistent_HeaderFile
 
+#ifndef _Standard_DefineAlloc_HeaderFile
+#include <Standard_DefineAlloc.hxx>
+#endif
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
 #endif
@@ -38,8 +41,6 @@ class Handle_Standard_Persistent;
 
 Standard_EXPORT Standard_Integer HashCode(const Handle(Standard_Persistent)& ,
                                           const Standard_Integer);
-Standard_EXPORT Standard_Address StandardCSFDB_Allocate(const Standard_Size);
-Standard_EXPORT void StandardCSFDB_Free(Standard_Address&);
 
 class Handle(Standard_Persistent)
  {
@@ -69,18 +70,7 @@ class Handle(Standard_Persistent)
 
    public:
 
-    void* operator new(size_t,void* anAddress) 
-      {
-        return anAddress;
-      }
-    void* operator new(size_t size) 
-      { 
-        return StandardCSFDB_Allocate(size); 
-      }
-    void  operator delete(void *anAddress) 
-      { 
-        if (anAddress) StandardCSFDB_Free(anAddress); 
-      }
+    DEFINE_STANDARD_ALLOC
 
     Handle(Standard_Persistent)()
       {

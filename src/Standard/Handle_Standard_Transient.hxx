@@ -3,6 +3,9 @@
 #ifndef _Standard_HeaderFile
 #include <Standard.hxx>
 #endif
+#ifndef _Standard_DefineAlloc_HeaderFile
+#include <Standard_DefineAlloc.hxx>
+#endif
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
 #endif
@@ -207,21 +210,8 @@ private:
   Standard_EXPORT void EndScope();
 
 public:
-  // Redefined operators new and delete ensure that handles are 
-  // allocated using OCC memory manager
 
-  void* operator new(size_t,void* anAddress) 
-  {
-    return anAddress;
-  }
-  void* operator new(size_t size) 
-  { 
-    return Standard::Allocate(size); 
-  }
-  void  operator delete(void *anAddress, size_t ) 
-  { 
-    if (anAddress) Standard::Free(anAddress); 
-  }
+  DEFINE_STANDARD_ALLOC
 
 private:
   // Field

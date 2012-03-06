@@ -30,7 +30,7 @@ struct TEL_POLYGON_DATA
   tel_point  vnormals;    /* Vertex normals */
   tel_texture_coord vtexturecoord; /* Texture Coordinates */
   OPENGL_DISPLAY_PGN *dsply;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 class OpenGl_Polygon : public OpenGl_Element
@@ -56,7 +56,7 @@ class OpenGl_Polygon : public OpenGl_Element
   TEL_POLYGON_DATA myData;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //OpenGl_Polygon_Header

@@ -18,12 +18,6 @@
 #include <Standard_NoSuchObject.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:     Single hashed Map. This  Map is used  to store and
  *              retrieve keys in linear time.
@@ -116,10 +110,6 @@ template < class TheKeyType,
 #endif
       return ((MapNode *) myNode)->Value();
     }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator)
-    { return theAllocator->Allocate(theSize); }
   };
 
  public:
@@ -317,9 +307,5 @@ template < class TheKeyType,
   { return *(new (this->IterAllocator()) Iterator(*this)); }
 
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

@@ -15,11 +15,6 @@
 
 #include <NCollection_BaseCollection.hxx>
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (disable:4291)
-#endif
-
 // *********************************************** Template for Array2 class
 /**
 * Purpose:   The class Array2 represents bi-dimensional arrays 
@@ -70,10 +65,6 @@ template <class TheItemType> class NCollection_Array2
     //! Variable value access
     virtual TheItemType& ChangeValue (void) const
     { return myArray->myStart[myCurrent]; }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
   private:
     Standard_Integer    myCurrent;  //!< Index of the current item
     Standard_Integer    mySize;     //!< Total amount of items
@@ -315,9 +306,5 @@ template <class TheItemType> class NCollection_Array2
  friend class Iterator;
 
 };
-
-#ifdef WNT
-#pragma warning (default:4291)
-#endif
 
 #endif

@@ -14,12 +14,6 @@
 #include <Standard_NoSuchObject.hxx>
 #endif
 
-#ifdef WNT
-// Disable the warning "operator new unmatched by delete"
-#pragma warning (push)
-#pragma warning (disable:4291)
-#endif
-
 /**
  * Purpose:     Definition of a sequence of elements indexed by
  *              an Integer in range of 1..n
@@ -43,9 +37,8 @@ template <class TheItemType> class NCollection_Sequence
     //! Variable value access
     TheItemType&       ChangeValue () { return myValue; }
     //! Memory allocation
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
+    DEFINE_STANDARD_ALLOC
+    DEFINE_NCOLLECTION_ALLOC
 
   private:
     TheItemType    myValue;
@@ -82,10 +75,6 @@ template <class TheItemType> class NCollection_Sequence
     //! Variable value access
     virtual TheItemType& ChangeValue (void) const
     { return ((Node *)myCurrent)->ChangeValue(); }
-    //! Operator new for allocating iterators
-    void* operator new(size_t theSize,
-                       const Handle(NCollection_BaseAllocator)& theAllocator) 
-    { return theAllocator->Allocate(theSize); }
   }; // End of nested class Iterator
 
  public:
@@ -314,9 +303,5 @@ template <class TheItemType> class NCollection_Sequence
   friend class Iterator;
 
 };
-
-#ifdef WNT
-#pragma warning (pop)
-#endif
 
 #endif

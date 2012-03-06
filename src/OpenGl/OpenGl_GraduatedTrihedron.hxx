@@ -58,7 +58,7 @@ class OpenGl_GraduatedTrihedron : public MMgt_TShared
   void* myPtrVisual3dView;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_GraduatedTrihedron_Header

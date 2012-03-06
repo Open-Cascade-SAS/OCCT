@@ -27,7 +27,7 @@ struct EXTRA_VERTEX
 {
   GLfloat vert[3];
   int ind;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 typedef EXTRA_VERTEX* extra_vertex;
 
@@ -36,7 +36,7 @@ struct SEQ_
   Tint ts_num, ts_alloc;
   void **tmesh_sequence;
   GLenum triangle_type; /* FSXXX OPTI */
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 struct OPENGL_DISPLAY_PGN
@@ -44,7 +44,7 @@ struct OPENGL_DISPLAY_PGN
   Tint num_of_seq;
   Tint num_alloc;
   SEQ_ *seq;
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 static void bgntriangulate( const TEL_POLYGON_DATA *, void (APIENTRY*)() );

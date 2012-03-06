@@ -77,23 +77,7 @@ public:
   Standard_Boolean IsValidInTrans(Standard_Integer Trans);
 
   // Memory management
-  void* operator new(size_t aSize) {
-    return Standard::Allocate(aSize);
-  }
-
-/* attempt to eliminate compiler warning  
-  void* operator new(size_t, void* aNode) {
-    return aNode;
-  }
-  
-  void  operator delete(void* aNode) {
-    Standard::Free(aNode);
-  }
-*/
-  
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode);
-  }
+  DEFINE_STANDARD_ALLOC
   
   TNaming_PtrRefShape  myOld;
   TNaming_PtrRefShape  myNew;

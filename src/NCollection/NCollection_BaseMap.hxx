@@ -16,11 +16,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_ListNode.hxx>
 
-//#ifdef WNT
-//// Disable the warning "operator new unmatched by delete"
-//#pragma warning (disable:4291)
-//#endif
-
 typedef void (* NCollection_DelMapNode) 
      (NCollection_ListNode*, Handle(NCollection_BaseAllocator)& theAl);
 
