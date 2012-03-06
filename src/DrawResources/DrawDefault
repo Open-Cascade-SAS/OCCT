@@ -35,7 +35,8 @@ if { [file exist  $dir] } {
       wm iconbitmap . -default [file join $dir lamp.ico]
     }
   }
-  if [file readable DrawAppliInit] {
-    source DrawAppliInit
+
+  if { [ file readable [ file join $dir DrawAppliInit ] ] } {
+    source [file join $dir DrawAppliInit ]
   }
 } 
