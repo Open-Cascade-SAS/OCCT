@@ -563,8 +563,6 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
         // Faire choix en U,V...
         TopoDS_Shape aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
         
-        toll = Max(BAS.UResolution(toll), BAS.VResolution(toll));
-        
         ChoixUV(LastEdge, TopoDS::Face(aLocalFace), PossE,
                 itm, plast, dlast, toll);
         //	ChoixUV(LastEdge,
@@ -1082,9 +1080,11 @@ static void ChoixUV(const TopoDS_Edge& Last,
   //  gp_Pnt2d p2d,psav;
   gp_Pnt2d p2d;
   gp_Vec2d v2d;
+  gp_Pnt aPCur, aPlst;
 
   BRepAdaptor_Surface surf(F,Standard_False); // no restriction
   //  Standard_Real tol = Precision::PConfusion() //BRep_Tool::Tolerance(Last));
+  surf.D0 (plst.X(), plst.Y(), aPlst);
 
   Standard_Real tol;
 
@@ -1113,27 +1113,12 @@ static void ChoixUV(const TopoDS_Edge& Last,
       vtx = TopExp::LastVertex(TopoDS::Edge(It.Key()));
     }
 
-    if (surf.IsUPeriodic())
-      if ((fabs(p2d.Y() - plst.Y()) <= toll) || 
-        ((surf.IsVPeriodic())             && 
-        (fabs(fabs(p2d.Y() - plst.Y()) - surf.VPeriod()) <= toll)))
-        if (fabs(p2d.X() - plst.X() - surf.UPeriod()) <= toll)
-          p2d.SetX(p2d.X() - surf.UPeriod());
-        else if (fabs(plst.X() - p2d.X() - surf.UPeriod()) <= toll)
-          p2d.SetX(p2d.X() + surf.UPeriod());
-
-    if (surf.IsVPeriodic())
-      if (fabs(p2d.X() - plst.X()) <= toll)
-        if (fabs(p2d.Y() - plst.Y() - surf.VPeriod()) <= toll)
-          p2d.SetY(p2d.Y() - surf.VPeriod());
-        else if (fabs(plst.Y() - p2d.Y() - surf.VPeriod()) <= toll)
-          p2d.SetY(p2d.Y() + surf.VPeriod());
+    surf.D0 (p2d.X(), p2d.Y(), aPCur);
 
     tol = BRep_Tool::Tolerance(vtx);
-    tol = Max(surf.UResolution(tol), surf.VResolution(tol));
     tol = Max(toll, tol); tol *= tol;
 
-    dist = p2d.SquareDistance(plst);
+    dist = aPCur.SquareDistance(aPlst);
 
     if (!Last.IsSame(It.Key())) {
       ang = ref2d.Angle(gp_Dir2d(v2d));
