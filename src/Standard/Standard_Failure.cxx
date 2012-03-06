@@ -138,8 +138,8 @@ void Standard_Failure::Reraise (const Standard_SStream& AReason)
 void Standard_Failure::Reraise () 
 {
 #ifdef NO_CXX_EXCEPTION
-  Standard_ErrorHandler::Error(this) ;
-  Standard_ErrorHandler::Abort();
+  Standard_ErrorHandler::Error (this);
+  Standard_ErrorHandler::Abort (this);
 #else
   RaisedError = this;
   Throw();
@@ -149,8 +149,8 @@ void Standard_Failure::Reraise ()
 void Standard_Failure::Jump() const 
 {
 #if defined (NO_CXX_EXCEPTION) || defined (OCC_CONVERT_SIGNALS)
-  Standard_ErrorHandler::Error(this) ;
-  Standard_ErrorHandler::Abort();
+  Standard_ErrorHandler::Error (this);
+  Standard_ErrorHandler::Abort (this);
 #else
   RaisedError = this;
   Throw();

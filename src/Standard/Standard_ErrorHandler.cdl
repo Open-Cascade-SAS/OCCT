@@ -37,15 +37,15 @@ is
     	---C++: inline
     	---C++: return &
     	---Level: Advanced
-    
-    Abort(myclass) is private;
-    	---Purpose: A exception is raised but it is not yet caught. 
-    	--          So Abort the current function and transmit the exception 
-        --          to "calling routines".
-	-- Warning: If no catch is prepared for this exception, it displays the
-    	--          exception name and calls "exit(1)".
-    	---Level: Internal
-       
+
+    Abort(myclass; theError : Failure) is private;
+    ---Purpose: A exception is raised but it is not yet caught.
+    --          So Abort the current function and transmit the exception
+    --          to "calling routines".
+    -- Warning: If no catch is prepared for this exception, it displays the
+    --          exception name and calls "exit(1)".
+    ---Level: Internal
+
     Error(me) returns Failure;
     	---Purpose: Returns the current Error.
 

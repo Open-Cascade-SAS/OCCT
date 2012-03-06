@@ -66,9 +66,10 @@ Standard_ErrorHandler::Standard_ErrorHandler () :
 void Standard_ErrorHandler::Destroy()
 {
   Unlink();
-  if(myStatus==Standard_HandlerJumped) {
-    //jumped, but not caut
-    Abort();
+  if (myStatus == Standard_HandlerJumped)
+  {
+    // jumped, but not caught
+    Abort (myCaughtError);
   }
 }
 
@@ -138,21 +139,18 @@ Standard_Boolean Standard_ErrorHandler::IsInTryBlock()
 //====    Abort if there is a non null 'Error'
 //============================================================================
 
-void Standard_ErrorHandler::Abort ()
+void Standard_ErrorHandler::Abort (const Handle(Standard_Failure)& theError)
 {
   Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, Standard_True);
-    
+
   //==== Check if can do the "longjmp" =======================================
   if(anActive == NULL || anActive->myLabel == NULL) {
     cerr << "*** Abort *** an exception was raised, but no catch was found." << endl;
-    Handle(Standard_Failure) anErr = 
-      ( anActive != NULL && ! anActive->myCaughtError.IsNull() ?
-        anActive->myCaughtError : Standard_Failure::Caught() );
-    if ( ! anErr.IsNull() )
-      cerr << "\t... The exception is:" << anErr->GetMessageString() << endl;
+    if (!theError.IsNull())
+      cerr << "\t... The exception is:" << theError->GetMessageString() << endl;
     exit(1);
   }
-  
+
   anActive->myStatus = Standard_HandlerJumped;
   longjmp(anActive->myLabel, Standard_True);
 }
@@ -196,15 +194,14 @@ Handle(Standard_Failure) Standard_ErrorHandler::Error() const
 }
 
 
-void Standard_ErrorHandler::Error(const Handle(Standard_Failure)& aError)
+void Standard_ErrorHandler::Error (const Handle(Standard_Failure)& theError)
 {
-  Standard_ErrorHandler* anActive = FindHandler(Standard_HandlerVoid, Standard_False);
-  if(anActive==0)
-    Abort();
-  
-  anActive->myCaughtError = aError;
-}
+  Standard_ErrorHandler* anActive = FindHandler (Standard_HandlerVoid, Standard_False);
+  if (anActive == NULL)
+    Abort (theError);
 
+  anActive->myCaughtError = theError;
+}
 
 
 Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_HandlerStatus theStatus,
