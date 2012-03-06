@@ -9,6 +9,9 @@
 #include <NCollection_BaseCollection.hxx>
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_TListNode.hxx>
+
+#include <NCollection_DefaultHasher.hxx>
+
 #include <Standard_ImmutableObject.hxx>
 
 #if !defined No_Exception && !defined No_Standard_NoSuchObject
@@ -48,12 +51,15 @@
  *              method. This should be  consider only for  crucial
  *              optimisation issues.
  */            
-template <class TheKeyType> class NCollection_Map 
+
+template < class TheKeyType, 
+           class Hasher = NCollection_DefaultHasher<TheKeyType> > class NCollection_Map 
   : public NCollection_BaseCollection<TheKeyType>,
     public NCollection_BaseMap
 {
   //!   Adaptation of the TListNode to the map notations
  public:
+
   class MapNode : public NCollection_TListNode<TheKeyType>
   {
   public:
@@ -182,7 +188,7 @@ template <class TheKeyType> class NCollection_Map
             p = olddata[i];
             while (p) 
             {
-              k = HashCode(p->Key(),newBuck);
+              k = Hasher::HashCode(p->Key(),newBuck);
               q = (MapNode*) p->Next();
               p->Next() = newdata[k];
               newdata[k] = p;
@@ -204,11 +210,11 @@ template <class TheKeyType> class NCollection_Map
     if (Resizable()) 
       ReSize(Extent());
     MapNode** data = (MapNode**)myData1;
-    Standard_Integer k = HashCode(K,NbBuckets());
+    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
     MapNode* p = data[k];
     while (p) 
     {
-      if (IsEqual(p->Key(),K))
+      if (Hasher::IsEqual(p->Key(),K))
         return Standard_False;
       p = (MapNode *) p->Next();
     }
@@ -224,11 +230,11 @@ template <class TheKeyType> class NCollection_Map
     if (Resizable()) 
       ReSize(Extent());
     MapNode** data = (MapNode**)myData1;
-    Standard_Integer k = HashCode(K,NbBuckets());
+    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
     MapNode* p = data[k];
     while (p) 
     {
-      if (IsEqual(p->Key(),K))
+      if (Hasher::IsEqual(p->Key(),K))
         return p->Key();
       p = (MapNode *) p->Next();
     }
@@ -243,10 +249,10 @@ template <class TheKeyType> class NCollection_Map
     if (IsEmpty()) 
       return Standard_False;
     MapNode** data = (MapNode**) myData1;
-    MapNode*  p = data[HashCode(K,NbBuckets())];
+    MapNode*  p = data[Hasher::HashCode(K,NbBuckets())];
     while (p) 
     {
-      if (IsEqual(p->Key(),K)) 
+      if (Hasher::IsEqual(p->Key(),K)) 
         return Standard_True;
       p = (MapNode *) p->Next();
     }
@@ -259,12 +265,12 @@ template <class TheKeyType> class NCollection_Map
     if (IsEmpty()) 
       return Standard_False;
     MapNode** data = (MapNode**) myData1;
-    Standard_Integer k = HashCode(K,NbBuckets());
+    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
     MapNode* p = data[k];
     MapNode* q = NULL;
     while (p) 
     {
-      if (IsEqual(p->Key(),K)) 
+      if (Hasher::IsEqual(p->Key(),K)) 
       {
         Decrement();
         if (q) 

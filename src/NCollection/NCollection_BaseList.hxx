@@ -49,6 +49,11 @@ class NCollection_BaseList
       myCurrent  = theList.myFirst;
       myPrevious = NULL;
     }
+    // ******** Initialisation
+    void Initialize (const NCollection_BaseList& theList)
+    {
+      Init(theList);
+    }
     // ******** More
     Standard_Boolean More (void) const
     { return (myCurrent!=NULL); }

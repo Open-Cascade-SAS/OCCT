@@ -10,6 +10,8 @@
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_TListNode.hxx>
 
+#include <NCollection_DefaultHasher.hxx>
+
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_NoSuchObject.hxx>
 
@@ -36,7 +38,11 @@
 *              can  be done only  if aKey was previously bound to
 *              an item in the map.
 */              
-template <class TheKeyType, class TheItemType> class NCollection_DataMap 
+
+template < class TheKeyType, 
+           class TheItemType, 
+           class Hasher = NCollection_DefaultHasher<TheKeyType> >  class NCollection_DataMap 
+  
   : public NCollection_BaseCollection<TheItemType>,
     public NCollection_BaseMap
 {
@@ -179,7 +185,7 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
             p = olddata[i];
             while (p) 
             {
-              k = HashCode(p->Key(),newBuck);
+              k = Hasher::HashCode(p->Key(),newBuck);
               q = (DataMapNode*) p->Next();
               p->Next() = newdata[k];
               newdata[k] = p;
@@ -201,11 +207,11 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
     if (Resizable()) 
       ReSize(Extent());
     DataMapNode** data = (DataMapNode**)myData1;
-    Standard_Integer k = HashCode (theKey, NbBuckets());
+    Standard_Integer k = Hasher::HashCode (theKey, NbBuckets());
     DataMapNode* p = data[k];
     while (p) 
     {
-      if (IsEqual(p->Key(), theKey))
+      if (Hasher::IsEqual(p->Key(), theKey))
       {
         p->ChangeValue() = theItem;
         return Standard_False;
@@ -223,10 +229,10 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
     if (IsEmpty()) 
       return Standard_False;
     DataMapNode** data = (DataMapNode**) myData1;
-    DataMapNode* p = data[HashCode(K,NbBuckets())];
+    DataMapNode* p = data[Hasher::HashCode(K,NbBuckets())];
     while (p) 
     {
-      if (IsEqual(p->Key(),K)) 
+      if (Hasher::IsEqual(p->Key(),K)) 
         return Standard_True;
       p = (DataMapNode *) p->Next();
     }
@@ -239,12 +245,12 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
     if (IsEmpty()) 
       return Standard_False;
     DataMapNode** data = (DataMapNode**) myData1;
-    Standard_Integer k = HashCode(K,NbBuckets());
+    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
     DataMapNode* p = data[k];
     DataMapNode* q = NULL;
     while (p) 
     {
-      if (IsEqual(p->Key(),K)) 
+      if (Hasher::IsEqual(p->Key(),K)) 
       {
         Decrement();
         if (q) 
@@ -268,10 +274,10 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
     if (IsEmpty())
       Standard_NoSuchObject::Raise ("NCollection_DataMap::Find");
 #endif
-    DataMapNode* p = (DataMapNode*) myData1[HashCode(theKey,NbBuckets())];
+    DataMapNode* p = (DataMapNode*) myData1[Hasher::HashCode(theKey,NbBuckets())];
     while (p) 
     {
-      if (IsEqual(p->Key(),theKey)) 
+      if (Hasher::IsEqual(p->Key(),theKey)) 
         return p->Value();
       p = (DataMapNode*) p->Next();
     }
@@ -290,10 +296,10 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
     if (IsEmpty())
       Standard_NoSuchObject::Raise ("NCollection_DataMap::Find");
 #endif
-    DataMapNode*  p = (DataMapNode*) myData1[HashCode(theKey,NbBuckets())];
+    DataMapNode*  p = (DataMapNode*) myData1[Hasher::HashCode(theKey,NbBuckets())];
     while (p) 
     {
-      if (IsEqual(p->Key(),theKey)) 
+      if (Hasher::IsEqual(p->Key(),theKey)) 
         return p->ChangeValue();
       p = (DataMapNode*) p->Next();
     }
@@ -341,3 +347,4 @@ template <class TheKeyType, class TheItemType> class NCollection_DataMap
 #endif
 
 #endif
+
