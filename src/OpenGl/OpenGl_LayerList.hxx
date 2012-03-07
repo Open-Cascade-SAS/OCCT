@@ -79,7 +79,7 @@ class OpenGl_LayerList
   Standard_Integer        myNbStructures;
 
  public:
-  IMPLEMENT_MEMORY_OPERATORS
+  DEFINE_STANDARD_ALLOC
 };
 
 #endif //_OpenGl_LayerList_Header
