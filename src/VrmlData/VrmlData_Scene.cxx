@@ -433,7 +433,6 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode
   VrmlData_ErrorStatus    aStatus;
   Handle(VrmlData_Node)   aNode;
   TCollection_AsciiString aName;
-  Standard_Boolean        isReused (Standard_False);
 
   // Read the DEF token to assign the node name
   if (VrmlData_Node::OK(aStatus, ReadLine(theBuffer)))

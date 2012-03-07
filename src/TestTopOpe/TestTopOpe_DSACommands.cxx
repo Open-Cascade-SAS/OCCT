@@ -103,14 +103,7 @@ Standard_Integer DSACCESSCOMMANDS(Draw_Interpretor& interpretor,Standard_Integer
       for(i = 1;i<=nbsh;i++) {
 	TopTools_ListOfShape& los = DS.ChangeShapeSameDomain(i);
 	j = los.Extent();
-#ifdef DEB
-	Standard_Integer iref =
-#endif
-                                DS.SameDomainRef(i);
-#ifdef DEB
-	Standard_Integer iind =
-#endif
-                                DS.SameDomainInd(i);
+
 	TopTools_ListIteratorOfListOfShape li(los);
 	for(; li.More(); li.Next()) {
 #ifdef DEB

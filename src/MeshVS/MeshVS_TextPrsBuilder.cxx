@@ -162,7 +162,6 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Aspect_TypeOfDisplayText ADisplayType     = Aspect_TODT_NORMAL;
   TCollection_AsciiString  AFontString;
   Standard_Integer         ADispInt;
-  Standard_Boolean         ATexFont;
   // Bold font is used by default for better text readability
   OSD_FontAspect           AFontAspectType  = OSD_FA_Bold;
   Standard_Integer         AAspect; 

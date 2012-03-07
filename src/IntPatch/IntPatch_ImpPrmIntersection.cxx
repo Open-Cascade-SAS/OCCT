@@ -2337,7 +2337,7 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
   Standard_Real BSEAM = 1.5*M_PI; // delta U crossing seam
   Standard_Real BAPEX = M_PI/16.;  // delta U crossing apex
   
-  Standard_Integer i = 0, k = 0;
+  Standard_Integer k = 0;
   Standard_Real U1 = 0., U2 = 0., V1 = 0., V2 = 0., AnU1 = 0., AnV1 = 0., DU1 = 0., DV1 = 0.;
   Standard_Integer Findex = 1, Lindex = NbPnts, Bindex = 0;
 

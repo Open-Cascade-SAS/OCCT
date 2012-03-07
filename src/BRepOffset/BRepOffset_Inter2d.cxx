@@ -1117,8 +1117,6 @@ static void ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const Standard_Real
       MinLoc = E.Location() * MinLoc;
       if (!C3d.IsNull())
 	{
-	  Standard_Real FirstPar = C3d->FirstParameter();
-	  Standard_Real LastPar  = C3d->LastParameter();
 	  if (MinPC->IsClosed())
 	    {
 	      f = FirstParOnPC;

@@ -191,12 +191,6 @@ void Geom2d_OffsetCurve::D1 (const Standard_Real U, Pnt2d& P, Vec2d& V1) const {
 
    // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
 
-
-#ifdef DEB
-  GeomAbs_Shape Continuity = basisCurve->Continuity();
-#else
-  basisCurve->Continuity();
-#endif
   Vec2d V2;
   basisCurve->D2 (U, P, V1, V2);
   Standard_Integer Index = 2;
@@ -248,11 +242,6 @@ void Geom2d_OffsetCurve::D2 (const Standard_Real U,
    // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
    //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
 
-#ifdef DEB
-  GeomAbs_Shape Continuity = basisCurve->Continuity();
-#else
-  basisCurve->Continuity();
-#endif
   Vec2d V3;
   basisCurve->D3 (U, P, V1, V2, V3);
   Standard_Integer Index = 2;
@@ -483,12 +472,6 @@ void Geom2d_OffsetCurve::D1 (const Standard_Real U,
 
    // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
 
-#ifdef DEB
-   GeomAbs_Shape Continuity = basisCurve->Continuity();
-#else
-   basisCurve->Continuity();
-#endif
-
    basisCurve->D2 (U, Pbasis, V1basis, V2basis);
    V1 = V1basis;
    Vec2d V2 = V2basis;
@@ -545,12 +528,6 @@ void Geom2d_OffsetCurve::D2 (const Standard_Real U,
 
    // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
    //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
-
-#ifdef DEB
-  GeomAbs_Shape Continuity = basisCurve->Continuity();
-#else
-  basisCurve->Continuity();
-#endif
 
   basisCurve->D3 (U, Pbasis, V1basis, V2basis, V3basis);
   Standard_Integer Index = 2;

@@ -315,10 +315,6 @@ Standard_Real TopOpeBRep_FacesFiller::VPParamOnER(const TopOpeBRep_VPointInter& 
   // If vp(index) is an edge boundary returns the point's parameter.
 
   const TopoDS_Edge& E = TopoDS::Edge(Lrest.Arc());
-#ifdef DEB
-  Standard_Boolean isdg =
-#endif
-             BRep_Tool::Degenerated(E);
   Standard_Boolean isedge1 =  Lrest.ArcIsEdge(1);
   Standard_Boolean isedge2 =  Lrest.ArcIsEdge(2);
   if (isedge1 && vp.IsVertexOnS1()) {

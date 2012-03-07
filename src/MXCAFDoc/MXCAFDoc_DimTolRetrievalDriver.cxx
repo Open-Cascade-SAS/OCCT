@@ -63,10 +63,6 @@ void MXCAFDoc_DimTolRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,
   Handle(PXCAFDoc_DimTol) S = Handle(PXCAFDoc_DimTol)::DownCast (Source);
   Handle(XCAFDoc_DimTol) T = Handle(XCAFDoc_DimTol)::DownCast (Target);
   
-#ifdef DEB
-  PTColStd_PersistentTransientMap& PTMap = 
-#endif
-    RelocTable->OtherTable();
   Handle(TColStd_HArray1OfReal) aVals;
   Handle(PColStd_HArray1OfReal) aPArr = S->GetVal();
   if ( !aPArr.IsNull() )

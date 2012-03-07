@@ -194,9 +194,6 @@ Standard_Real IntPatch_Polyhedron::DeflectionOnTriangle
   gp_XYZ XYZ3=P1.XYZ()-P3.XYZ();
   gp_Vec NormalVector((XYZ1^XYZ2)+(XYZ2^XYZ3)+(XYZ3^XYZ1));
   NormalVector.Normalize();
-#ifdef DEB
-  Standard_Real PolarDistance = NormalVector * P1.XYZ();
-#endif
   //-- Calcul du point u,v  au centre du triangle
   Standard_Real u = (u1+u2+u3)/3.0;
   Standard_Real v = (v1+v2+v3)/3.0;
@@ -317,10 +314,6 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
 						 Standard_Integer&      TriCon,
 						 Standard_Integer&      OtherP)   const {
 
-#ifdef DEB
-  Standard_Integer nbdeltaUp1 = nbdeltaU + 1;
-  Standard_Integer nbdeltaUm2 = nbdeltaU + nbdeltaU;
-#endif
   Standard_Integer Pivotm1    = Pivot-1;
   Standard_Integer nbdeltaVp1 = nbdeltaV+1;
   Standard_Integer nbdeltaVm2 = nbdeltaV + nbdeltaV;

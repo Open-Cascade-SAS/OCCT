@@ -95,7 +95,6 @@ void BinMDataStd_ExtStringArrayDriver::Paste
   const TColStd_Array1OfExtendedString& aSourceArray = anAtt->Array()->Array1();
   const Standard_Integer aFirstInd = aSourceArray.Lower();
   const Standard_Integer aLastInd  = aSourceArray.Upper();
-  const Standard_Integer aLength   = aLastInd - aFirstInd + 1;
   theTarget << aFirstInd << aLastInd;
   for (Standard_Integer i = aFirstInd; i <= aLastInd; i ++)
     theTarget << anAtt->Value( i );

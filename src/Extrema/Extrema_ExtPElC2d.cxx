@@ -144,11 +144,6 @@ void Extrema_ExtPElC2d::Perform (const gp_Pnt2d&     P,
     myDone = Standard_False;
   }
   else {
-#ifdef DEB
-    Standard_Real VMagn = V.Magnitude();
-#else
-    V.Magnitude();
-#endif
     Standard_Real X = V.Dot(gp_Vec2d(E.XAxis().Direction()));
     Standard_Real Y = V.Dot(gp_Vec2d(E.YAxis().Direction()));
 
@@ -195,11 +190,6 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
   Standard_Real R = H.MajorRadius();
   Standard_Real r = H.MinorRadius();
   gp_Vec2d OPp(O,P);
-#ifdef DEB
-  Standard_Real OPpMagn = OPp.Magnitude();
-#else
-  OPp.Magnitude();
-#endif
   Standard_Real Tol2 = Tol * Tol;
   Standard_Real X = OPp.Dot(gp_Vec2d(H.XAxis().Direction()));
   Standard_Real Y = OPp.Dot(gp_Vec2d(H.YAxis().Direction()));
@@ -263,11 +253,6 @@ void Extrema_ExtPElC2d::Perform(const gp_Pnt2d&     P,
   Standard_Real Tol2 = Tol * Tol;
   Standard_Real F = C.Focal();
   gp_Vec2d OPp (O,P);
-#ifdef DEB
-  Standard_Real OPpMagn = OPp.Magnitude();
-#else
-  OPp.Magnitude();
-#endif
   Standard_Real X = OPp.Dot(gp_Vec2d(C.MirrorAxis().Direction()));
   Standard_Real Y = OPp.Dot(gp_Vec2d(C.Axis().YAxis().Direction()));
 

@@ -632,7 +632,6 @@ static Standard_Boolean IsMultipleCase(const TopoDS_Shape&        S,
     isCommon = Standard_True; // statement: this shape (itm.Key()) is common (to be checked below)
     TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape itdm(aDMM);
     for (;itdm.More();itdm.Next()) {
-      const TopoDS_Shape& aKey1 = itdm.Key();
       const TNaming_MapOfShape& aMap = itdm.Value();
       if(!aMap.Contains(itm.Key())) {
 	isCommon = Standard_False;

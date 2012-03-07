@@ -74,7 +74,7 @@ void math_KronrodSingleIntegration::Perform
 			       const Standard_Real     theUpper,
 			       const Standard_Integer  theNbPnts)
 {
-  const Standard_Real aMinVol = Epsilon(1.);
+  //const Standard_Real aMinVol = Epsilon(1.);
   const Standard_Real aPtol = 1.e-9;
   myNbIterReached = 0;
 
@@ -110,7 +110,7 @@ void math_KronrodSingleIntegration::Perform
 
   if(!myIsDone) return;
 
-  Standard_Real anAbsVal = Abs(myValue);
+  //Standard_Real anAbsVal = Abs(myValue);
 
   myAbsolutError = myErrorReached;
 
@@ -267,7 +267,6 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(
 
   Standard_Boolean IsDone;
   
-  Standard_Integer aNGauss = theGaussP.Length();
   Standard_Integer aNKronrod = theKronrodP.Length();
 
   Standard_Real    aGaussVal;

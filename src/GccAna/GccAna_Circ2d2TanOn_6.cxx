@@ -70,11 +70,7 @@ GccAna_Circ2d2TanOn::
   TColStd_Array1OfReal Rradius(1,2);
   gp_Pnt2d center1(C1.Location());
   gp_Pnt2d center2(C2.Location());
-#ifdef DEB
-  Standard_Real distance = center1.Distance(center2);
-#else
-  center1.Distance(center2);
-#endif
+
   Standard_Real R1 = C1.Radius();
   Standard_Real R2 = C2.Radius();
 

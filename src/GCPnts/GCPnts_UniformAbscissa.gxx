@@ -161,10 +161,6 @@ PerformLengthParametrized( Handle(TColStd_HArray1OfReal)& HParameters,
 //  Standard_Real UCurrent;
   Standard_Real Delta, Ui;
   Standard_Real UU2 = Max(U1, U2);
-#ifdef DEB
-  Standard_Real L = 
-#endif
-    CPnts_AbscissaPoint::Length(C, UU1, UU2);
   Standard_Integer   Index ;
 
 // Ratio is defined as dl = Ratio * du

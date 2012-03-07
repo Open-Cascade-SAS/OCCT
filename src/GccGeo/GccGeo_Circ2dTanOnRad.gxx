@@ -447,13 +447,6 @@ GccGeo_Circ2dTanOnRad::
        cote1(1) = Radius;
        cote1(2) = -Radius;
      }
-#ifdef DEB
-     Standard_Real x1dir = dir1.X();
-     Standard_Real y1dir = dir1.Y();
-#else
-     dir1.X();
-     dir1.Y();
-#endif
      TheIntConicCurve Intp;
      for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
        gp_Pnt2d Point(dir1.XY()+cote1(jcote1)*norm1.XY());
@@ -472,11 +465,6 @@ GccGeo_Circ2dTanOnRad::
 	     cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
 //           =======================================================
 	     gp_Dir2d dc1(origin1.XY()-Center.XY());
-#ifdef DEB
-	     Standard_Real sign = dc1.Dot(norm1);
-#else
-             dc1.Dot(norm1);
-#endif
 	     if (!Qualified1.IsUnqualified()) { 
 	       qualifier1(NbrSol) = Qualified1.Qualifier();
 	     }

@@ -138,10 +138,6 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClosedW(const TopoDS_Wire& W)
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itvFine(mapvFine);
   for (; itvFine.More(); itvFine.Next()){
     const TopoDS_Shape& vFine = itvFine.Key();
-#ifdef DEB
-    const TopTools_ListOfShape& edsvFine =
-#endif
-                             itvFine.Value();
     Standard_Boolean vIine = mapvIine.IsBound(vFine);
     if (vIine) {mapvok.Add(vFine); continue;}
     Standard_Boolean vRine = mapvRine.IsBound(vFine);
@@ -153,10 +149,6 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClosedW(const TopoDS_Wire& W)
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itvRine(mapvRine);
   for (; itvRine.More(); itvRine.Next()){
     const TopoDS_Shape& vRine = itvRine.Key();
-#ifdef DEB
-    const TopTools_ListOfShape& edsvRine =
-#endif
-                             itvRine.Value();
     Standard_Boolean vok = mapvok.Contains(vRine);
     if (vok) continue;
     Standard_Boolean vIine = mapvIine.IsBound(vRine);

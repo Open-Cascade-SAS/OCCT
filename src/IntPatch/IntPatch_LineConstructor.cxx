@@ -1395,10 +1395,6 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
   }
   else if (typl != IntPatch_Restriction) { // JAG 01.07.96
     Standard_Real u1,v1,u2,v2;
-#ifdef DEB
-    Standard_Real paramminonvtx=RealLast();
-    Standard_Real parammaxonvtx=-paramminonvtx;
-#endif
     Handle(IntPatch_GLine)& GLine 
       =  *((Handle(IntPatch_GLine) *)&L);
     slin.Clear();

@@ -61,10 +61,6 @@ void MXCAFDoc_DimTolStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 {
   Handle(XCAFDoc_DimTol) S = Handle(XCAFDoc_DimTol)::DownCast (Source);
   Handle(PXCAFDoc_DimTol) T = Handle(PXCAFDoc_DimTol)::DownCast (Target);
-#ifdef DEB
-  PTColStd_TransientPersistentMap& TPMap = 
-#endif
-    RelocTable->OtherTable();
   Handle(TColStd_HArray1OfReal) aHArr = S->GetVal();
   Handle(PColStd_HArray1OfReal) aVals;
   if ( !aHArr.IsNull() )

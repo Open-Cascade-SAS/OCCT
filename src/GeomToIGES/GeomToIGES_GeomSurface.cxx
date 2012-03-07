@@ -785,12 +785,6 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface
   Standard_Real V1 = Vdeb;
   Standard_Real V2 = Vfin;
 
-  // debug mjm du 28/03/96
-#ifdef DEB
-  Standard_Boolean IsDirect = 
-#endif
-    start->Torus().Direct();
-
   // creation de la generatrice : Generatrix (cercle)
   gp_Ax2 Axe = gp_Ax2(gp_Pnt((start->Torus().MajorRadius()), 0., 0.),
 		      -gp::DY(), gp::DX());

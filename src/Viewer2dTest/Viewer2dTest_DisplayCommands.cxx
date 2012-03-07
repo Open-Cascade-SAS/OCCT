@@ -2122,8 +2122,6 @@ static int v2dtable (Draw_Interpretor& , Standard_Integer argc, const char** arg
   
   Standard_Real x1 = 24, y1 = 24;
   Standard_Integer numberOfColumn = 1, numberOfRows = 1;
-  Quantity_PlaneAngle anAngle = 0.0;
-  Quantity_Factor     aScale = 1.0;
    
   if( argc >= 3 )
     x1 = atof( argv[2] );
@@ -2297,11 +2295,11 @@ static int drawLengthDim1( Draw_Interpretor& , Standard_Integer argc, const char
   
   double text_scale = 15;
   double length = 0; 
-  int distance_type = 0; 
-  double arrow_angle = 24;
-  double arrow_length = 24;
-  int arrow_type = 2;
-  int arrow_side = 3;
+  //int distance_type = 0; 
+  //double arrow_angle = 24;
+  //double arrow_length = 24;
+  //int arrow_type = 2;
+  //int arrow_side = 3;
   
   double distance = FirstPt.Distance(LastPt);
   
@@ -2400,7 +2398,6 @@ static int drawRadiusDim( Draw_Interpretor& , Standard_Integer argc, const char*
   gp_Pnt2d anAp2(240, 240);
   gp_Circ2d aCirc(gp_Ax2d(anAp2,gp_Dir2d(0,1)),100.);
   
-  Quantity_Length aRadius = 100;
   TCollection_ExtendedString aText("Rad = 10%");
   
   Handle(Prs2d_Radius) theRadius;			
@@ -2434,7 +2431,6 @@ static int drawSymbDim( Draw_Interpretor& , Standard_Integer argc, const char** 
   gp_Pnt2d anAp2(240, 240);
   gp_Circ2d aCirc(gp_Ax2d(anAp2,gp_Dir2d(0,1)),100.);
   
-  Quantity_Length aRadius = 100;
   TCollection_ExtendedString aText("Rad = 10%");
   
   Handle(AIS2D_InteractiveObject) aIO = new AIS2D_InteractiveObject();

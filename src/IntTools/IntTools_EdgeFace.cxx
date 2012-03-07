@@ -404,7 +404,6 @@ void IntTools_EdgeFace::CheckData()
   Standard_Boolean bFlag;
   Standard_Real Umin, Usup, Vmin, Vsup;
 
-  const Handle(Geom_Surface)& GS=BRep_Tool::Surface(myFace);
   Umin=myS.FirstUParameter();
   Usup=myS.LastUParameter();
   Vmin=myS.FirstVParameter();
@@ -460,8 +459,6 @@ void IntTools_EdgeFace::CheckData()
     aD=aD-myCriteria;
     return aD; 
   }
-  //
-  const Handle(Geom_Surface)& GS=BRep_Tool::Surface(myFace);
   
   Umin=myS.FirstUParameter();
   Usup=myS.LastUParameter();

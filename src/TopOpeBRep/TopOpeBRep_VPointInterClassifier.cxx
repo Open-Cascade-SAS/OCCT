@@ -85,10 +85,6 @@ TopAbs_State TopOpeBRep_VPointInterClassifier::VPointPosition
     return myState;
   }
 
-#ifdef DEB
-  const gp_Pnt& P3D = VP.Value();
-#endif
- 
   TopoDS_Face FF = TopoDS::Face(F);
   TopOpeBRepTool_ShapeTool::AdjustOnPeriodic(FF,u,v);
   gp_Pnt2d p2d(u,v);

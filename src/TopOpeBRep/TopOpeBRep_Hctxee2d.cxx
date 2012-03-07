@@ -113,13 +113,7 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
         Standard_Real toll =
 #endif
                    BRep_Tool::Tolerance(vl);
-#ifdef DEB
-	Standard_Real tol = Max (tolf,toll);
-#endif
 	Standard_Boolean onf = (df < tolf);
-#ifdef DEB
-        Standard_Boolean onl = (dl < toll);
-#endif
 	TopoDS_Vertex v1 = onf ? vf : vl;
 	TopTools_IndexedDataMapOfShapeListOfShape mapVE; TopExp::MapShapesAndAncestors(F1,TopAbs_VERTEX,TopAbs_EDGE,mapVE);
 	const TopTools_ListOfShape& Edsanc = mapVE.FindFromKey(v1);
@@ -161,11 +155,6 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
     }
   }
   
-#ifdef DEB
-  GeomAbs_CurveType myCurveType1 = myCurve1.GetType();
-  GeomAbs_CurveType myCurveType2 = myCurve2.GetType();
-#endif
-
 } // SetEdges
 
 //=======================================================================

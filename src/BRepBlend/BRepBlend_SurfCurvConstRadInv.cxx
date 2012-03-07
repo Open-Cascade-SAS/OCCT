@@ -102,9 +102,6 @@ Standard_Boolean BRepBlend_SurfCurvConstRadInv::Derivatives(const math_Vector& X
   Standard_Real normd1gui = d1gui.Magnitude();
   Standard_Real unsurnormd1gui = 1./normd1gui;
   gp_Vec nplan = d1gui.Multiplied(unsurnormd1gui);
-#ifdef DEB
-  Standard_Real theD = -(nplan.XYZ().Dot(ptgui.XYZ()));
-#endif
   gp_Vec dnplan;
   dnplan.SetLinearForm(-nplan.Dot(d2gui),nplan,d2gui);
   dnplan.Multiply(unsurnormd1gui);

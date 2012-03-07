@@ -94,11 +94,6 @@ GccAna_Circ2dTanOnRad::
              cirsol(NbrSol)=gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
 //           =====================================================
 	     gp_Dir2d dc1(origin1.XY()-Center.XY());
-#ifdef DEB
-	     Standard_Real sign = dc1.Dot(normL1);
-#else
-             dc1.Dot(normL1);
-#endif
 	     if (!Qualified1.IsUnqualified()) { 
 	       qualifier1(NbrSol) = Qualified1.Qualifier();
 	     }

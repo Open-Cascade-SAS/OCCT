@@ -529,12 +529,6 @@ void Geom_OffsetCurve::D1 ( const Standard_Real U,
 
    // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
 
-
-#ifdef DEB
-  GeomAbs_Shape Continuity = basisCurve->Continuity();
-#else
-  basisCurve->Continuity();
-#endif
   basisCurve->D2 (U, PBasis, V1basis, V2basis);
   V1 = V1basis;
   Vec V2 = V2basis;
@@ -589,12 +583,6 @@ void Geom_OffsetCurve::D2 (const Standard_Real U,
 
    // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
    //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
-
-#ifdef DEB
-  GeomAbs_Shape Continuity = basisCurve->Continuity();
-#else
-  basisCurve->Continuity();
-#endif
 
   basisCurve->D3 (U, PBasis, V1basis, V2basis, V3basis);
   Standard_Integer Index = 2;

@@ -1075,9 +1075,9 @@ Standard_Boolean FindLine (gp_Pnt& Psurf,
 	  //-- le point n a pas ete trouve par bete projection.
 	  //-- on essaie l intersection avec la restriction en 2d
 	  Standard_Real theparamonarc = theparameteronarc;
-#ifdef DEB
-	  Standard_Real anpara=para;
-#endif
+//#ifdef DEB
+//	  Standard_Real anpara=para;
+//#endif
 	  gp_Pnt CopiePsurf=Psurf;
 	  Standard_Boolean ok=IntersectionWithAnArc(CopiePsurf,alin,para,thearc,theparamonarc,thepointonarc,QuadSurf,lower,upper,dist);
 

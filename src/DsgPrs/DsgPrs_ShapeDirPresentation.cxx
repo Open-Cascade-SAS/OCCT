@@ -118,10 +118,7 @@ static Standard_Boolean FindPointOnFace(const TopoDS_Face& face, gp_Pnt2d& pt2d)
   // verify that (upar vpar) is a point on the face
 
   BRepClass_FaceClassifier fClass(face, pt2d, gp::Resolution());
-#ifdef DEB
-  TopAbs_State state =
-#endif
-                       fClass.State();
+
   if ((fClass.State() == TopAbs_OUT) || (fClass.State() == TopAbs_UNKNOWN)) {
     // try to find a point on face
     pt2d=points(1);

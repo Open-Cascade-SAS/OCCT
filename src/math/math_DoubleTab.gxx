@@ -89,9 +89,6 @@ math_DoubleTab::math_DoubleTab(const math_DoubleTab& Other) :
 
 void math_DoubleTab::Free()
 {
-  Standard_Integer RowNumber = UppR - LowR + 1;
-  Standard_Integer ColNumber = UppC - LowC + 1;
-
   // free the data
   if(isAllocated) {
     Standard_Address it = (Standard_Address)&Value(LowR,LowC);

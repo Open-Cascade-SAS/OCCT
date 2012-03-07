@@ -387,9 +387,6 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 // bounding box of the stop shape
   Bnd_Box BSurf;//, TheBox;
   Standard_Real Umin, Umax, Vmin, Vmax;
-#ifdef DEB
-  Standard_Real Tol = Precision::Confusion()/10;
-#endif
 //  BRepTools B;
 //  BRep_Tool BT;
   Handle(Geom_Surface) Surf;

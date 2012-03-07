@@ -53,7 +53,6 @@ class ExtremaExtElC_TrigonometricRoots {
   }
   //
   Standard_Boolean IsARoot(Standard_Real u) {
-    Standard_Integer i;
     Standard_Real PIpPI, aEps;
     //
     aEps=RealEpsilon();

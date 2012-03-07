@@ -594,7 +594,6 @@ WNT_ArcNote :: WNT_ArcNote (
 void WNT_ArcNote :: Play ( BOOL fDummy )
 {
   Xform ();
-  HDC hdc = ALLOCATOR -> myHDC;
   SetArcDirection ( ALLOCATOR -> myHDC, myDirect );
   Arc ( ALLOCATOR -> myHDC, myTX - myTXr, myTY - myTYr,
                             myTX + myTXr, myTY + myTYr,
@@ -941,7 +940,6 @@ void WNT_TextNote :: Play ( BOOL fDummy )
 
 void WNT_TextNote :: Xform ( void )
 {
-  HDC hdc = ALLOCATOR -> myHDC;
   WNT_PointNote :: Xform ();
   RMatrix.eDx  =  float ( myTX ); 
   RMatrix.eDy  =  float ( myTY );

@@ -79,9 +79,6 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
       etat1(I) = etat1(I) + 1;
 
     Standard_Integer etat1I=etat1(I);
-#ifdef DEB
-    Standard_Integer multi=0;
-#endif
     //-- cout<<" \n Etat1("<<I<<") = "<<etat1I<<endl;
     if(etat1I==2) {  //-- lbr le 15 fev 99 
       etat1(I)=11;      

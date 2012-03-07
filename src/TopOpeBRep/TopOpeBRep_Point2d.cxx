@@ -90,7 +90,6 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
   
   Standard_Boolean isvertex1 = IsVertex(1); TopoDS_Vertex V1; if (isvertex1) V1 = Vertex(1);
   Standard_Boolean isvertex2 = IsVertex(2); TopoDS_Vertex V2; if (isvertex2) V2 = Vertex(2);
-  Standard_Boolean isvertex = isvertex1 || isvertex2;
 
   Standard_Integer ia1,ia2; SegmentAncestors(ia1,ia2);
   cout<<endl<<"p2d "<<index<<"  k="<<keep<<" pos="<<pos;

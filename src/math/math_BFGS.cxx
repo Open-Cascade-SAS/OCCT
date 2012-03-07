@@ -121,10 +121,6 @@ static Standard_Boolean MinimizeDirection(math_Vector&   P,
      F.Initialize(P, Dir);
 
      Standard_Real dy1, Hnr1, lambda, alfa=0;
-#ifdef DEB
-     Standard_Integer n = 
-#endif
-       Dir.Length();
      dy1 = Gr*Dir;
      if (dy1 != 0) {
        Hnr1 = Dir.Norm2();

@@ -1139,10 +1139,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 
 		  TopoDS_Vertex Vf2,Vl2;
 		  TopExp::Vertices(TopoDS::Edge(Gvf),Vf2,Vl2);
-#ifdef DEB
-		  TopAbs_Orientation ornw =
-#endif
-                                            NewEdg.Orientation();
+
+		  //TopAbs_Orientation ornw = NewEdg.Orientation();
 
 		  // ici bug orientation : voir tspdrft6
 
@@ -1170,10 +1168,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 
 		  TopoDS_Vertex Vf2,Vl2;
 		  TopExp::Vertices(TopoDS::Edge(Gvl),Vf2,Vl2);
-#ifdef DEB
-		  TopAbs_Orientation ornw =
-#endif
-                                            NewEdg.Orientation();
+
+		  //TopAbs_Orientation ornw = NewEdg.Orientation();
 
 		  // ici bug orientation : voir tspdrft6
 

@@ -578,7 +578,6 @@ void Intf_InterferencePolygonPolyhedron::Interference
     while (clt.More()) {
       indTri=clt.Value();
       //  Modified by MKK - Thu Oct  25 12:40:11 2007 Begin
-      Standard_Integer prevSize = mySPoins.Length();
 
       Standard_Integer pTri[3];
       ToolPolyh::Triangle(thePolyh, indTri, pTri[0], pTri[1], pTri[2]);
@@ -1039,7 +1038,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   Standard_Integer pTri[3];
   ToolPolyh::Triangle(thePolyh, TTri, pTri[0], pTri[1], pTri[2]);
   gp_XYZ triNor = TriNormal;                                   // Vecteur normal.
-  Standard_Real triDp = TriDp;                             // Distance polaire.
+  //Standard_Real triDp = TriDp;                             // Distance polaire.
 
 
 //   Standard_Real dBegTri=(triNor*BegO.XYZ())-triDp; // Distance <BegO> plan

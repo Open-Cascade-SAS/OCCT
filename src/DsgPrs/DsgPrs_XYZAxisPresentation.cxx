@@ -71,11 +71,6 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   A(1).SetCoord(xo,yo,zo);
   A(2).SetCoord(x,y,z);
  
-#ifdef DEB
-  Quantity_Length arrowAngle = anArrowAspect->Angle();
-  Quantity_Length textHeight = aTextAspect->Height();
-#endif
-
   G->SetPrimitivesAspect(aLineAspect->Aspect());
   G->Polyline(A);
   G->SetPrimitivesAspect( anArrowAspect->Aspect() );

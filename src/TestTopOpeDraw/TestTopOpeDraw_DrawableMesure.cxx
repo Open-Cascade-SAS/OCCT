@@ -109,10 +109,6 @@ static Standard_CString makename2(const gp_Pnt& P)
 
   C = "";C = C + P.Coord(2);
   TCollection_AsciiString S1 = C.Token(".",1);
-#ifdef DEB
-  Standard_Integer l =
-#endif
-                       S1.Length();
   S1.RightJustify(15, ' ');
   TCollection_AsciiString S2 = C.Token(".",2);
   S2.Trunc(2);

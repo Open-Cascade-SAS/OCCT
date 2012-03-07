@@ -35,7 +35,6 @@ void OpenGl_QuadrangleStrip::draw_qstrip (const Tint front_lighting_model,
   Tint              nf, nv, nr, nc;
   Tint              lighting_model;
 
-  tel_point pfn = myData.fnormals;
   tel_colour pfc = myData.fcolours;
   tel_point pv  = myData.vertices;
   tel_colour pvc = myData.vcolours;
@@ -374,7 +373,6 @@ void OpenGl_QuadrangleStrip::draw_edges (const TEL_COLOUR *edge_colour, const As
   const OpenGl_AspectLine *aspect_line_old = AWorkspace->SetAspectLine( aspect_face->AspectEdge() );
   AWorkspace->AspectLine( Standard_True );
 
-  tel_point pv = myData.vertices;
   Tint nc = myData.num_columns;
   Tint nf = myData.num_rows * myData.num_columns;
 

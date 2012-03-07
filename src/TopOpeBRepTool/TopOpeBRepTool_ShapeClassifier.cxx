@@ -556,10 +556,6 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference
       myP2Ddef = Standard_True;
       TopoDS_Face F = TopoDS::Face(myRef);
       F.Orientation(TopAbs_FORWARD);
-#ifdef DEB
-      Standard_Real tol2d =
-#endif
-                  Precision::PConfusion();
       Standard_Real  TolClass  = 1e-8;
       BRepTopAdaptor_FClass2d FClass2d(F,TolClass);
       myState = FClass2d.Perform(P2D);

@@ -131,10 +131,6 @@ void RWStepShape_RWFaceBound::Check
 	  else {
 	    myShRef = aShto.Sharings(theEL2);
 	    myShRef.SelectType (STANDARD_TYPE(StepShape_FaceBound),Standard_True);
-#ifdef DEB
-	    Standard_Integer nbRef = 
-#endif
-	      myShRef.NbEntities();	
 	    myShRef.Start();
 	    Handle(StepShape_FaceBound) theFB2 =
 	      Handle(StepShape_FaceBound)::DownCast(myShRef.Value());

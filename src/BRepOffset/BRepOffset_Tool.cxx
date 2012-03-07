@@ -185,10 +185,6 @@ TopAbs_Orientation BRepOffset_Tool::OriEdgeInFace (const TopoDS_Edge& E,
 						   const TopoDS_Face& F )
 
 {
-#ifdef DEB
-  TopAbs_Orientation O = 
-#endif
-    F.Orientation();
   TopExp_Explorer Exp;
   Exp.Init(F.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
 

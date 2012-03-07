@@ -429,9 +429,6 @@ math_Vector math_Vector::Multiplied(const math_Matrix& Right)const {
   Standard_DimensionError_Raise_if(Length() != Right.RowNumber(), "");
 
   math_Vector Result(Right.LowerColIndex, Right.UpperColIndex);
-#ifdef DEB
-  Standard_Integer Index = LowerIndex;
-#endif
   for(Standard_Integer J2 = Right.LowerColIndex; 
       J2 <= Right.UpperColIndex; J2++) {
     Array(J2) = 0.0;

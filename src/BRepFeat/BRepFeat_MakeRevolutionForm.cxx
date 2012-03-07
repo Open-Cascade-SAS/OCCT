@@ -437,14 +437,6 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     
     if(Sliding && !PtOnFirstEdge) {
       BRepExtrema_ExtCF ext1(TopoDS::Edge(ee1.Shape()), FirstFace);
-#ifdef DEB
-      Standard_Integer nb = 
-#endif
-                            ext1.NbExt();
-#ifdef DEB
-      Standard_Real dist =
-#endif
-                            ext1.SquareDistance(1);
       if(ext1.NbExt() < 1 || ext1.SquareDistance(1) > Precision::Confusion() * Precision::Confusion()) 
 	Sliding = Standard_False;
     }
@@ -754,10 +746,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 	counter1++;
 	NewListOfEdges.Append(edg);
 	theEdge = eeee;
-#ifdef DEB
-	Standard_Real dist1 = 
-#endif
-	  theLastPnt.Distance(myLastPnt);
+
 	if(dist <= myTol) 
 	  theFEdge = edg;
 	theLastPnt = BRep_Tool::Pnt(TopExp::LastVertex(theEdge,Standard_True));

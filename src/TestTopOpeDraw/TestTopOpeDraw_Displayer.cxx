@@ -467,10 +467,6 @@ void TestTopOpeDraw_SurfaceDisplayer::InitSurfaceDisplayer()
 void TestTopOpeDraw_SurfaceDisplayer::DisplaySurface(const Handle(Geom_Surface& S))
 {
   if (S.IsNull()) return;
-#ifdef DEB
-  Draw_ColorKind isocol =
-#endif
-                          TestTopOpeDraw_TTOT::GeometryColor(TopOpeBRepDS_SURFACE);
   Handle(TestTopOpeDraw_DrawableSUR) D;
   D = new TestTopOpeDraw_DrawableSUR
     (S,mySDIsoColor,mySDBoundColor,mySDNormalColor,

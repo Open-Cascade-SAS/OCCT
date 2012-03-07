@@ -753,11 +753,6 @@ void TPrsStd_ConstraintTools::ComputeAngleForOneFace (const Handle(TDataXtd_Cons
   TCollection_ExtendedString txt;
   TPrsStd_ConstraintTools::ComputeTextAndValue (aConst,val1,txt,Standard_True);  
   
-// Unused :
-#ifdef DEB
-  Standard_Boolean isface(shape.ShapeType()==TopAbs_FACE);
-#endif
-  
   Handle(AIS_AngleDimension) ais;
   TopoDS_Face face;
   if (!anAIS.IsNull()) {
@@ -776,11 +771,6 @@ void TPrsStd_ConstraintTools::ComputeAngleForOneFace (const Handle(TDataXtd_Cons
     face = TopoDS::Face( shape );
     ais =  new AIS_AngleDimension ( face, val1, txt);
   } 
-
-// Unused :
-#ifdef DEB
-  Standard_Integer ExtShape(0);
-#endif
 
   anAIS = ais;
 }
@@ -1149,10 +1139,6 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
   ComputeTextAndValue(aConst,val1,txt,Standard_False);
 
   //  Update de l'AIS
-// Unused :
-#ifdef DEB
-  Standard_Boolean tocreate = Standard_True;
-#endif
   Standard_Boolean isplanar(aConst->IsPlanar());
   if (isplanar) GetGoodShape(shape1);
 
@@ -1233,10 +1219,6 @@ void TPrsStd_ConstraintTools::ComputeMinRadius (const Handle(TDataXtd_Constraint
   ComputeTextAndValue(aConst,val1,txt,Standard_False);
 
   //  Update de l'AIS
-// Unused :
-#ifdef DEB
-  Standard_Boolean tocreate = Standard_True;
-#endif
   Standard_Boolean isplanar(aConst->IsPlanar());
   if (isplanar) GetGoodShape(shape1);
 
@@ -1316,10 +1298,6 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius (const Handle(TDataXtd_Constraint
   ComputeTextAndValue(aConst,val1,txt,Standard_False);
 
   //  Update de l'AIS
-// Unused :
-#ifdef DEB
-  Standard_Boolean tocreate = Standard_True;
-#endif
   Standard_Boolean isplanar(aConst->IsPlanar());
   if (isplanar) GetGoodShape(shape1);
 

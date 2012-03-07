@@ -95,11 +95,7 @@ GccAna_Circ2d3Tan::
 	   gp_Pnt2d Center(Intp.Point(j).Value());
 	   Standard_Real dist1 = L1.Distance(Center);
 	   Standard_Real dist2 = Center.Distance(Point2);
-#ifdef DEB
-	   Standard_Real dist3 = Center.Distance(Point3);
-#else
-           Center.Distance(Point3);
-#endif
+
 	   Standard_Real Radius=0;
 	   Standard_Integer nbsol1 = 0;
 //	   Standard_Integer nbsol2 = 0;

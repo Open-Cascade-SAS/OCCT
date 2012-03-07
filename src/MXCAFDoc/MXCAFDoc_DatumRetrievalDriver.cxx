@@ -61,10 +61,6 @@ void MXCAFDoc_DatumRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,
   Handle(PXCAFDoc_Datum) S = Handle(PXCAFDoc_Datum)::DownCast (Source);
   Handle(XCAFDoc_Datum) T = Handle(XCAFDoc_Datum)::DownCast (Target);
   
-#ifdef DEB
-  PTColStd_PersistentTransientMap& PTMap = 
-#endif
-    RelocTable->OtherTable();
   Handle(TCollection_HAsciiString) aName, aDescr, anId;
   if ( !S->GetName().IsNull() )
     aName = new TCollection_HAsciiString( (S->GetName())->Convert() );

@@ -76,11 +76,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(L1,Cu2,OnLine,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
 //     gp_Vec2d Tan1,Tan2,Nor1,Nor2;
@@ -187,11 +183,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(Cu1,Cu2,OnLine,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Vec2d Tan1,Tan2;
@@ -287,11 +279,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(3) = (point3.Distance(Point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(Cu1,Point2,OnLine,Ufirst(3));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Pnt2d point1,point3;
@@ -384,11 +372,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(C1,Cu2,OnLine,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
 //     gp_Vec2d Tan1,Tan2,Nor1,Nor2;
@@ -501,11 +485,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(C1,Cu2,OnCirc,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
 //     gp_Vec2d Tan1,Tan2,Nor1;
@@ -615,11 +595,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(L1,Cu2,OnCirc,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Pnt2d point1,point2;
@@ -729,11 +705,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(Cu1,Cu2,OnCirc,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
 //     gp_Vec2d Tan1,Tan2,Nor1;
@@ -833,11 +805,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(3) = (point3.Distance(Point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(Cu1,Point2,OnCirc,Ufirst(3));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Pnt2d point1,point3;
@@ -930,11 +898,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(Cu1,Cu2,OnCurv,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Vec2d Tan1,Tan2,Tan3;
@@ -1039,11 +1003,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(C1,Cu2,OnCurv,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Vec2d Tan1,Tan2,Tan3;
@@ -1150,11 +1110,7 @@ GccIter_Circ2d2TanOn::
    Ufirst(4) = (point3.Distance(point2)+point3.Distance(point1))/2.;
    GccIter_FuncTCuCuOnCu Func(L1,Cu2,OnCurv,Ufirst(4));
    math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-   Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
    Func.Value(Ufirst,Umin);
-#endif
    if (Root.IsDone()) {
      Root.Root(Ufirst);
      gp_Vec2d Tan1,Tan2,Tan3;
@@ -1251,11 +1207,7 @@ GccIter_Circ2d2TanOn::
   Ufirst(3) = (point3.Distance(Point2)+point3.Distance(point1))/2.;
   GccIter_FuncTCuCuOnCu Func(Cu1,Point2,OnCurv,Ufirst(3));
   math_FunctionSetRoot Root(Func,Ufirst,tol,Umin,Umax);
-#ifdef DEB
-  Standard_Boolean Ok = Func.Value(Ufirst,Umin);
-#else
   Func.Value(Ufirst,Umin);
-#endif
   if (Root.IsDone()) {
     Root.Root(Ufirst);
 //    gp_Vec2d Tan1,Tan2,Tan3;

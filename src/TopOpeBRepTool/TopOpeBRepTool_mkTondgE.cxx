@@ -149,10 +149,7 @@ Standard_Integer TopOpeBRepTool_mkTondgE::GetAllRest(TopTools_ListOfShape& lEi)
     if (!ok) continue;
 
     Standard_Real parei;
-#ifdef DEB
-    Standard_Boolean oki =
-#endif
-              TopOpeBRepTool_TOOL::ParISO(myuvi,ei,myFi, parei);
+    TopOpeBRepTool_TOOL::ParISO(myuvi,ei,myFi, parei);
     myEpari.Bind(ei,parei);
     lEi.Append(ei);
   }

@@ -958,10 +958,7 @@ Standard_Boolean IFSelect_WorkSession::RemoveName
 {
   Handle(Standard_Transient) item = NamedItem(name);
   if (item.IsNull()) return Standard_False;
-#ifdef DEB
-  Standard_Integer bid = 
-#endif
-    theitems.Add(item,item);    // reste mais sans nom
+  theitems.Add(item,item);    // reste mais sans nom
   return thenames->RemoveItem(name);
 }
 

@@ -55,7 +55,6 @@ void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
     Standard_Boolean isvertexF = FEINT.IsVertex(1,V1);
     TopoDS_Vertex V2;
     Standard_Boolean isvertexE = FEINT.IsVertex(2,V2);
-    Standard_Boolean isvertex = isvertexF || isvertexE;
     
     cout<<endl;
     cout<<"P"<<ip<<" : "; 

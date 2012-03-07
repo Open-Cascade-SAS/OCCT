@@ -757,10 +757,7 @@ static Standard_Integer gcarc (Draw_Interpretor& di,Standard_Integer n, const ch
 	  if (DrawTrSurf::GetPoint(a[5], P3)) {
 //	    if (DrawTrSurf::GetPoint(a[6], P4)) {
 	    if (n>6) {
-#ifdef DEB
-	      Standard_Boolean ip4 =
-#endif
-                                     DrawTrSurf::GetPoint(a[6], P4);
+        DrawTrSurf::GetPoint(a[6], P4);
 	      gp_Vec V1 = gp_Vec(P2,P3);                                                    
 	      Handle(Geom_Curve)thearc = GC_MakeArcOfCircle(P1,V1,P4).Value();
 	      DrawTrSurf::Set(a[1], thearc);

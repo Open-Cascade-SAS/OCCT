@@ -1479,7 +1479,6 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
         Standard_Boolean isInserted = Standard_False;
         Standard_Integer j, ori = (arrForward(i)? 1 : 0);
         for (j = 1; (j <= seqCandidates.Length()) && !isInserted; j++) {
-          Standard_Integer aInd = seqCandidates.Value(j);//debug
           Standard_Real aDelta = arrDistance(i) - arrDistance(seqCandidates.Value(j));
           //if (arrDistance(i) <= arrDistance(seqCandidates.Value(j))) {
           if( aDelta < Precision::Confusion()) {

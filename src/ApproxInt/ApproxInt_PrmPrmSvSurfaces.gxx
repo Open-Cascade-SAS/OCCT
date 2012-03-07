@@ -92,11 +92,7 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute( Standard_Real& u1
   Param(1) = u1; Param(2) = v1;
   Param(3) = u2; Param(4) = v2;
   math_FunctionSetRoot  Rsnld(MyIntersectionOn2S.Function());
-#ifdef DEB
-  IntImp_ConstIsoparametric ChoixIso = MyIntersectionOn2S.Perform(Param,Rsnld);
-#else
   MyIntersectionOn2S.Perform(Param,Rsnld);
-#endif
   if (!MyIntersectionOn2S.IsDone())  { 
     MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
     return(Standard_False);

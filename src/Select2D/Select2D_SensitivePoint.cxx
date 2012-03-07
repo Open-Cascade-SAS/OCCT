@@ -62,9 +62,6 @@ Matches (const Standard_Real XMin,
 	 const Standard_Real YMax,
 	 const Standard_Real aTol)
 {//distance point-Line....
-#ifdef DEB
-  Standard_Real TheTol = HasOwnTolerance()? myOwnTolerance : aTol;
-#endif
   Standard_Real MinDist = gp_Lin2d(gp_Pnt2d(XMin,YMin),
 		     gp_Vec2d(gp_Pnt2d(XMin,YMin),
 			      gp_Pnt2d(XMax,YMax))

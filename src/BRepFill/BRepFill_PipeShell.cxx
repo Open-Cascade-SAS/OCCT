@@ -1043,7 +1043,6 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
   }
 
   for(j = myLocation->NbLaw(); j >= 1; j--) {
-    Standard_Boolean ismodified = Standard_False;
     TopTools_ListOfShape aListOfFace;
 
     if(bPrevModified) {

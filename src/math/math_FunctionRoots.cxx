@@ -980,16 +980,6 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     if(n1>n2) n=n2;
     for(Standard_Integer i=1;i<=n;i++) { 
       Standard_Real t = Sol(i)-StaticSol(i);
-#ifdef NEWSEQ
-# ifdef DEB
-      Standard_Real t1=
-# endif
-                       Sol(i);
-# ifdef DEB
-      Standard_Real t2=
-# endif
-                       StaticSol(i);
-#endif
       if(Abs(t)>NEpsX) { 
 	printf("\n mathFunctionRoots : i:%d/%d  delta: %g",i,n,t);
       }

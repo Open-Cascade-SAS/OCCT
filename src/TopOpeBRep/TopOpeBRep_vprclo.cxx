@@ -151,20 +151,12 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(const TopOpeBRep_VPointInter& V
 //  Standard_Boolean isvertex = VP.IsVertex(ShapeIndex);
   Standard_Boolean isvertex = (PVKind == TopOpeBRepDS_VERTEX);
   Standard_Integer absindex = VP.ShapeIndex(); // 0,1,2,3
-#ifdef DEB
-  Standard_Integer iVP =
-#endif
-            VP.Index();
   Standard_Boolean OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;
   Standard_Boolean on2edges = (absindex == 3);
   Standard_Boolean hasONedge = (VP.State(OOShapeIndex) == TopAbs_ON);
   Standard_Boolean hasOOedge = (on2edges) ? Standard_True : hasONedge;
 
   TopoDS_Face Face = (*this).Face(ShapeIndex);
-#ifdef DEB
-  Standard_Integer iSIFace =
-#endif
-                myDS->Shape(Face);
   TopoDS_Face OOFace = (*this).Face(OOShapeIndex);
   Standard_Integer iOOFace = myDS->Shape(OOFace);
   if (iOOFace == 0) iOOFace = myDS->AddShape(OOFace,OOShapeIndex);
@@ -174,14 +166,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonclosingR(const TopOpeBRep_VPointInter& V
   const TopoDS_Edge& edge = TopoDS::Edge(VP.Edge(ShapeIndex));
   if (myDS->HasShape(edge)) SIedgeIndex = myDS->Shape(edge);
   else                      myDS->AddShape(edge,ShapeIndex);
-#ifdef DEB
-  Standard_Boolean isrest =
-#endif
-               myDS->IsSectionEdge(edge);
-#ifdef DEB
-  Standard_Boolean closing =
-#endif
-                TopOpeBRepTool_ShapeTool::Closed(edge,Face);
+
   Standard_Real paredge = VP.EdgeParameter(ShapeIndex);
   
   // dummy if !<hasOOedge>

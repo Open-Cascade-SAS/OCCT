@@ -475,10 +475,6 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
       TopoDS_Shape aLocalShape = DSS.SupportOnShape2(isol);
       TopoDS_Edge E = TopoDS::Edge(aLocalShape);
 //      TopoDS_Edge E = TopoDS::Edge(DSS.SupportOnShape2(isol));
-#ifdef DEB
-      Standard_Real tol = 
-#endif
-	Precision::PConfusion();
       Standard_Real first,last,param;
       DSS.ParOnEdgeS2(isol,param);
       BRep_Tool::Range(E,first,last);

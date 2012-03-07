@@ -433,7 +433,6 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
   if (BRepCheck_Trace(0) > 1) {
     TopTools_DataMapIteratorOfDataMapOfShapeInteger itt(MapOfShapeOrientation);
     Standard_Integer upper = MapOfShapeOrientation.NbBuckets();
-    Standard_Integer code = 0;
     cout << "La map shape Orientation :" << endl;
     for (; itt.More(); itt.Next()) {
       PrintShape(itt.Key(), upper);

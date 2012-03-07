@@ -796,7 +796,7 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid() {
   Standard_Integer nvertexs = myPrimitiveArray->num_vertexs;
   Standard_Integer nbounds = myPrimitiveArray->num_bounds;
   Standard_Integer nedges = myPrimitiveArray->num_edges;
-  Standard_Integer i,j,k,n;
+  Standard_Integer i,n;
 
 #if TRACE > 0
   Standard_CString name = StringType();

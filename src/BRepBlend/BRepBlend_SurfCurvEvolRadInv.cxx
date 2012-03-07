@@ -100,9 +100,6 @@ const Handle(Adaptor3d_HCurve)& Cg,
   ray=sg1*ray;
   dray=sg1*dray;
   gp_Vec nplan = d1gui.Multiplied(unsurnormd1gui);
-#ifdef DEB
-  Standard_Real theD = -(nplan.XYZ().Dot(ptgui.XYZ()));
-#endif
   gp_Vec dnplan;
   dnplan.SetLinearForm(-nplan.Dot(d2gui),nplan,d2gui);
   dnplan.Multiply(unsurnormd1gui);

@@ -877,9 +877,6 @@ TColStd_Array1OfReal& DWeigths)
   math_Matrix gradsol(1,3,1,3);
   
   Standard_Real prm = P.Parameter(),rayprim;
-#ifdef DEB
-  Standard_Integer NbSpan=(Poles.Length()-1)/2;
-#endif
   Standard_Integer low = Poles.Lower();
   Standard_Integer upp = Poles.Upper();
   Standard_Boolean istgt;

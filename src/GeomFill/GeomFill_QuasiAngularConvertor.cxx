@@ -131,11 +131,6 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt& FirstPnt,
   gp_Mat M(V1.X(), V2.X(), 0, 
 	   V1.Y(), V2.Y(), 0,
 	   V1.Z(), V2.Z(), 0);
-#ifdef DEB
-  Standard_Real r = FirstPnt.Distance(Center);
-#else
-  FirstPnt.Distance(Center);
-#endif
 
   // Calcul des coeffs  -----------
   beta = Angle/4;

@@ -126,8 +126,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
 	  if(Precision::IsInfinite(Abs(cfirst)) || Precision::IsInfinite(Abs(clast))) {
 
 	    Bnd_Box aSurfBox;
-	    BndLib_AddSurface anAddSurf;
-	    anAddSurf.Add(*myS, ufirst, ulast, vfirst, vlast, Precision::Confusion(), aSurfBox);
+      BndLib_AddSurface::Add(*myS, ufirst, ulast, vfirst, vlast, Precision::Confusion(), aSurfBox);
 	    Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
 	    aSurfBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 	    Standard_Real tmin = Precision::Infinite(), tmax = -tmin;

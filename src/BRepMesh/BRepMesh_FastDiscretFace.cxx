@@ -1186,7 +1186,6 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
   //IMPORTANT: Constants used in calculations
   const Standard_Real MinimalArea2d = 1.e-9;
   const Standard_Real MinimalSqLength3d = 1.e-12;
-  const Standard_Real aDef2 = theDefFace*theDefFace;
 
   // Define the number of iterations
   Standard_Integer myNbIterations = 11;
@@ -1212,8 +1211,6 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
   Standard_Boolean caninsert;
 
   Standard_Real sqdefface = theDefFace * theDefFace;
-  Standard_Real ddu = theCaro->UResolution(theDefFace);
-  Standard_Real ddv = theCaro->VResolution(theDefFace);
 
   GeomAbs_SurfaceType thetype = theCaro->GetType();
   Handle(Geom_Surface) BSpl;
@@ -1551,7 +1548,6 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
       
       const BRepMesh_Edge& ve1=myStructure->GetLink(e1);
       const BRepMesh_Edge& ve2=myStructure->GetLink(e2);
-      const BRepMesh_Edge& ve3=myStructure->GetLink(e3);
       
       if (o1) {
         v1=ve1.FirstNode();

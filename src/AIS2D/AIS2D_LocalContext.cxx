@@ -322,11 +322,7 @@ AIS2D_StatusOfDetection AIS2D_LocalContext::MoveTo(
    }
    if ( !myLastPicked.IsNull() )
     if ( !myLastPicked->State() ) {
-#ifdef DEB
-        AIS2D_TypeOfDetection HiMod = myLastPicked->HasHighlightMode() ? 
-             myLastPicked->HighlightMode() : myLastPicked->DefaultHighlightMode();
-#endif
-        myLastPicked->Unhighlight();
+      myLastPicked->Unhighlight();
 	    UpdVwr = Standard_True;
     } // end if the last picked object isn't selected one
  
@@ -379,9 +375,6 @@ AIS2D_StatusOfDetection AIS2D_LocalContext::MoveTo(
         }
         case AIS2D_TOD_VERTEX: {
 	     myLastPickPrim = myLastPicked->Primitive(myLastPicked->PickedIndex());
-#ifdef DEB
-         Standard_Integer pInd = myLastPicked->PickedIndex();
-#endif
          if ( myLastPickPrim != myLastSelPrim ||
             ( myLastPickPrim == myLastSelPrim && 
               myLastPickPrim->PickedIndex() != myLastSelElInd ) ||

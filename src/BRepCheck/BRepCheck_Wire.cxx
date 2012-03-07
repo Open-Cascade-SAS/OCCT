@@ -887,7 +887,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
     //
     if(Inter.IsDone()) { 
       Standard_Integer nbp = Inter.NbPoints();
-      Standard_Integer nbs = Inter.NbSegments();
+      //Standard_Integer nbs = Inter.NbSegments();
       //
       for(Standard_Integer p=1;p<=nbp;p++) {
 	const IntRes2d_IntersectionPoint& IP=Inter.Point(p);

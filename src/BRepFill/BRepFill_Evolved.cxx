@@ -327,10 +327,6 @@ static Standard_Boolean IsPlanar(const TopoDS_Edge& E)
 static Standard_Integer Side(const TopoDS_Wire&  Profil,
 			     const Standard_Real Tol)
 {
-#ifdef DEB
-  Standard_Boolean OnLeft  = Standard_False;
-  Standard_Boolean OnRight = Standard_False;
-#endif
   TopoDS_Vertex    V1,V2;
   // Rem : it is enough to test the first edge of the Wire.
   //       ( Correctly cut in PrepareProfil)
@@ -1834,15 +1830,8 @@ void BRepFill_Evolved::Add(      BRepFill_Evolved& Vevo,
     //          if one remains on the same edge.
     //          if one passes from left to the right they are inverted.
     //------------------------------------------------- -------------
-#ifndef DEB
     Standard_Boolean   Commun = Standard_False;
-#else
-    Standard_Boolean   Commun;
-#endif
-#ifdef DEB
-    TopAbs_Orientation OriSide = 
-#endif
-      Relative(myProfile,Prof,
+    Relative(myProfile,Prof,
 	       TopoDS::Vertex(VV),
 	       Commun);
 
@@ -2933,11 +2922,6 @@ TopAbs_Orientation OriEdgeInFace (const TopoDS_Edge& E,
 				  const TopoDS_Face& F )
 
 {
-#ifdef DEB
-  TopAbs_Orientation O = 
-#endif
-    F.Orientation();
-
   TopExp_Explorer Exp(F.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
 
   for (; Exp.More() ;Exp.Next()) {

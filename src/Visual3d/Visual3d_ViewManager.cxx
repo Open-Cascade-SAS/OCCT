@@ -114,11 +114,6 @@ void Visual3d_ViewManager::Remove () {
 	//
 	// Destroy all defined views
 	//
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 
 #ifdef DESTROY
 	cout << "The Manager " << MyId << " have " << Length << " defined views\n";
@@ -141,11 +136,6 @@ void Visual3d_ViewManager::ChangeDisplayPriority (const Handle(Graphic3d_Structu
 	//
 	// Change structure priority in all defined views
 	//
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -196,8 +186,6 @@ void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStruct
 #endif
   Standard_Integer ViewId = theView->Identification ();
 
-  Standard_Integer indexD = 0;
-
   // Even if physically the structure cannot
   // be displayed (pb of visualisation type)
   // it has status Displayed.
@@ -221,11 +209,6 @@ void Visual3d_ViewManager::ReCompute (const Handle(Graphic3d_Structure)& AStruct
 
 void Visual3d_ViewManager::Clear (const Handle(Graphic3d_Structure)& AStructure, const Standard_Boolean WithDestruction) {
 
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -239,11 +222,6 @@ void Visual3d_ViewManager::Clear (const Handle(Graphic3d_Structure)& AStructure,
 
 void Visual3d_ViewManager::Connect (const Handle(Graphic3d_Structure)& AMother, const Handle(Graphic3d_Structure)& ADaughter) {
 
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -257,11 +235,6 @@ void Visual3d_ViewManager::Connect (const Handle(Graphic3d_Structure)& AMother, 
 
 void Visual3d_ViewManager::Disconnect (const Handle(Graphic3d_Structure)& AMother, const Handle(Graphic3d_Structure)& ADaughter) {
 
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -310,11 +283,6 @@ void Visual3d_ViewManager::Erase (const Handle(Graphic3d_Structure)& AStructure)
 	//
 	// Erase structure in all defined views
 	//
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -348,11 +316,6 @@ void Visual3d_ViewManager::Highlight (const Handle(Graphic3d_Structure)& AStruct
 	//
 	// Highlight in all activated views
 	//
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -366,11 +329,6 @@ void Visual3d_ViewManager::Highlight (const Handle(Graphic3d_Structure)& AStruct
 
 void Visual3d_ViewManager::SetTransform (const Handle(Graphic3d_Structure)& AStructure, const TColStd_Array2OfReal& ATrsf) {
 
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -402,11 +360,6 @@ void Visual3d_ViewManager::UnHighlight (const Handle(Graphic3d_Structure)& AStru
 	//
 	// UnHighlight in all activated views
 	//
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {
@@ -479,11 +432,6 @@ Handle(Visual3d_HSetOfView) Visual3d_ViewManager::ActivatedView () const {
 
 Handle (Visual3d_HSetOfView) SG = new Visual3d_HSetOfView ();
 
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
 
 	while (MyIterator.More ()) {
@@ -577,11 +525,6 @@ Standard_Real Dx, Dy, Ratio;
       Standard_Real APT;
 
       Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-#ifdef DEB
-      Standard_Integer Length = MyDefinedView.Extent ();
-#else
-      MyDefinedView.Extent ();
-#endif
 
       Standard_Integer stop = 0;
 
@@ -1037,12 +980,6 @@ void Visual3d_ViewManager::Activate () {
 	//
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
-
 	while (MyIterator.More ()) {
 		if (! (MyIterator.Value ())->IsActive ())
 			(MyIterator.Value ())->Activate ();
@@ -1058,11 +995,6 @@ void Visual3d_ViewManager::Deactivate () {
 	//
 	// Deactivates all activated views
 	//
-#ifdef DEB
-	Standard_Integer Length = MyDefinedView.Extent ();
-#else
-        MyDefinedView.Extent ();
-#endif
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
  
 	while (MyIterator.More ()) {

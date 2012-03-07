@@ -57,9 +57,5 @@ Standard_Integer MXCAFDoc_VolumeStorageDriver::VersionNumber() const
   Handle(XCAFDoc_Volume) S = Handle(XCAFDoc_Volume)::DownCast (Source);
   Handle(PXCAFDoc_Volume) T = Handle(PXCAFDoc_Volume)::DownCast (Target);
   
-#ifdef DEB
-  PTColStd_TransientPersistentMap& TPMap = 
-#endif
-    RelocTable->OtherTable();
   T->Set(S->Get());
 }

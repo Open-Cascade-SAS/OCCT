@@ -97,9 +97,6 @@
 
     
     F.Value(X, FVal);   
-#ifdef DEB
-    Standard_Real FuncVal= FVal(1)*FVal(1) + FVal(2)*FVal(2);
-#endif
 
     if ((FVal(1)*FVal(1) + FVal(2)*FVal(2)) > FuncTol) myDone = Standard_False;
   }

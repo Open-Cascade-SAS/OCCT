@@ -80,11 +80,8 @@ FEmTool_Assembly::FEmTool_Assembly(const TColStd_Array2OfInteger& Dependence,
 
   TColStd_Array1OfInteger FirstIndexes(1, B.Length()); FirstIndexes.Init(B.Length());
 
-#ifdef DEB
-  Standard_Integer dim, el, nvar, Imax, Imin, I0 = 1 - B.Lower(), i;
-#else
   Standard_Integer dim, el, nvar, Imin, I0 = 1 - B.Lower(), i;
-#endif
+
   Standard_Integer diml = Table->LowerRow(), dimu = Table->UpperRow(),
                    ell = Table->LowerCol(), elu = Table->UpperCol(), nvarl, nvaru;
 
@@ -137,11 +134,9 @@ void FEmTool_Assembly::AddMatrix(const Standard_Integer Element,
 
   Standard_Integer nvarl = T1.Lower(), nvaru = Min(T1.Upper(), nvarl + Mat.RowNumber() - 1);
 
-#ifdef DEB
-  Standard_Integer I, J, I0 = 1 - B.Lower(), i, ii, j, jj, 
-#else
+
   Standard_Integer I, J, I0 = 1 - B.Lower(), i, ii, j,
-#endif
+
                    i0 = Mat.LowerRow() - nvarl, j0 = Mat.LowerCol() - nvarl;
 
   for(i = nvarl; i <= nvaru; i++) {

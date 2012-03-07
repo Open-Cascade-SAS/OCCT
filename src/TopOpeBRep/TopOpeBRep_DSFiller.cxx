@@ -159,10 +159,6 @@ void BREP_correctgbound(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
       if ( GK != TopOpeBRepDS_VERTEX ) continue;
       
       const TopoDS_Shape& v = BDS.Shape(GI);
-#ifdef DEB
-      Standard_Boolean isb =
-#endif
-                SSI->GBound();      
       Standard_Boolean vofe = imev.Contains(v);
       SSI->SetGBound(vofe);
     } // it.More()   
@@ -274,10 +270,7 @@ static
       const TopoDS_Edge& e2 = TopoDS::Edge(BDS.Shape(S1));
       if (!map2.Contains(e2)) continue;
 
-#ifdef DEB
-      Standard_Integer G1 =
-#endif
-               I1->Geometry(); TopOpeBRepDS_Kind GT1 = I1->GeometryType();
+  TopOpeBRepDS_Kind GT1 = I1->GeometryType();
       if (GT1 == TopOpeBRepDS_POINT) {
 	Handle(TopOpeBRepDS_CurvePointInterference) CPI1 = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I1); 
 	Standard_Real par1 = CPI1->Parameter();
@@ -450,14 +443,6 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
     const TopoDS_Shape& gs2 = myShapeIntersector.CurrentGeomShape(2);
     TopAbs_ShapeEnum t1 = gs1.ShapeType();
     TopAbs_ShapeEnum t2 = gs2.ShapeType();
-#ifdef DEB
-    TopAbs_Orientation o1 =
-#endif
-              gs1.Orientation();
-#ifdef DEB
-    TopAbs_Orientation o2 = 
-#endif
-              gs2.Orientation();
     
     // si le couple courant apres un couple facefacesamedomain n'est
     // pas un couple edgeedge ==> facefacesamedomain est deconnecte 
@@ -689,10 +674,6 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(const Handle(TopOpeBRepDS_HData
     TopTools_ListIteratorOfListOfShape itsd(lSsd);
     for (; itsd.More(); itsd.Next()){
       TopoDS_Shape Ssd = itsd.Value(); //xpuxpu
-#ifdef DEB
-      Standard_Integer iSsd =
-#endif
-                 BDS.Shape(Ssd);
       Standard_Integer rkSsd = BDS.AncestorRank(Ssd);
       if (rkSsd == 1) continue;
       
@@ -768,14 +749,6 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
     const TopoDS_Shape& gs2 = myShapeIntersector2d.CurrentGeomShape(2);
     TopAbs_ShapeEnum t1 = gs1.ShapeType();
     TopAbs_ShapeEnum t2 = gs2.ShapeType();
-#ifdef DEB
-    TopAbs_Orientation o1 =
-#endif
-              gs1.Orientation();
-#ifdef DEB
-    TopAbs_Orientation o2 =
-#endif
-              gs2.Orientation();
     
     // si le couple courant apres un couple facefacesamedomain n'est
     // pas un couple edgeedge ==> facefacesamedomain est deconnecte 
@@ -814,10 +787,6 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
     else if ((t1 == TopAbs_EDGE) && (t2 == TopAbs_EDGE)) {
       TopOpeBRep_EdgesIntersector& EE = myShapeIntersector2d.ChangeEdgesIntersector();
       EE.Dimension(2);
-#ifdef DEB
-      Standard_Boolean EEsamedomain =
-#endif
-                         EE.SameDomain();
       myEdgesFiller.Face(1,lFF1);
       myEdgesFiller.Face(2,lFF2);
       myEdgesFiller.Insert(gs1,gs2,EE,HDS);

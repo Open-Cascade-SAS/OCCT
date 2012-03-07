@@ -1827,10 +1827,6 @@ void MakeOffset (const TopoDS_Edge&        E,
     // if the offset is greater otr equal to the radius and the side of the  
     // concavity of the circle => edge null.
     gp_Circ2d C1(AC.Circle());
-#ifdef DEB
-    Standard_Real radius = 
-#endif
-                           C1.Radius();
     gp_Ax22d axes( C1.Axis());
     gp_Dir2d Xd = axes.XDirection();
     gp_Dir2d Yd = axes.YDirection();

@@ -247,8 +247,6 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 				      ,const Standard_Real TheTol)
 {
 
-  Standard_Boolean AnErrorOccurred = Standard_False;
-
   this->ResetFields();
   DomainOnCurve1=D1;
   DomainOnCurve2=D1; 

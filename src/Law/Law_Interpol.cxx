@@ -91,10 +91,6 @@ void Law_Interpol::Set(const TColgp_Array1OfPnt2d& ParAndRad,
 		       const Standard_Boolean Periodic)
 {
   Standard_Integer l = ParAndRad.Lower();
-#ifdef DEB
-  Standard_Integer u = 
-#endif
-    ParAndRad.Upper();
   Standard_Integer nbp = ParAndRad.Length();
 
   Handle(TColStd_HArray1OfReal) par = new TColStd_HArray1OfReal(1,nbp);
@@ -169,10 +165,6 @@ void Law_Interpol::Set(const TColgp_Array1OfPnt2d& ParAndRad,
 		       const Standard_Boolean Periodic)
 {
   Standard_Integer l = ParAndRad.Lower();
-#ifdef DEB
-  Standard_Integer u = 
-#endif
-    ParAndRad.Upper();
   Standard_Integer nbp = ParAndRad.Length();
 
   Handle(TColStd_HArray1OfReal) par = new TColStd_HArray1OfReal(1,nbp);

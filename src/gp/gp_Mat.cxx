@@ -58,7 +58,6 @@ void gp_Mat::SetCols (const gp_XYZ& Col1,
 		      const gp_XYZ& Col2,
 		      const gp_XYZ& Col3)
 {
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
   Mat00 = Col1.X(); Mat10 = Col1.Y(); Mat20 = Col1.Z();
   Mat01 = Col2.X(); Mat11 = Col2.Y(); Mat21 = Col2.Z();
   Mat02 = Col3.X(); Mat12 = Col3.Y(); Mat22 = Col3.Z();

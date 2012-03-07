@@ -125,7 +125,7 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 						      const Handle(TDF_Attribute)& theTarget,
 						      XmlObjMgt_RRelocationTable&  ) const
 {
-  Standard_Integer aFirstInd, aLastInd, aValue, ind;
+  Standard_Integer aFirstInd, aLastInd, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   //DataMapOfStringInteger: Read the FirstIndex; if the attribute is absent initialize to 1

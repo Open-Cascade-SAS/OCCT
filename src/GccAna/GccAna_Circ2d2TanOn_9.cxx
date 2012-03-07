@@ -43,9 +43,6 @@ GccAna_Circ2d2TanOn::
   NbrSol = 0;
   
   gp_Dir2d dirx(1.,0.);
-#ifdef DEB
-  Standard_Real Tol = Abs(Tolerance);
-#endif
   if (!(Qualified1.IsEnclosed() ||
 	Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
       !(Qualified2.IsEnclosed() ||

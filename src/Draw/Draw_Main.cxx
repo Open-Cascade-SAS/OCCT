@@ -107,7 +107,6 @@ Standard_Integer _main_ (int argc, char* argv[], char* envp[], const FDraw_InitA
   Draw_IsConsoleSubsystem = Standard_True;
   //return _WinMain_(::GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOW, fDraw_InitAppli);
   theDraw_InitAppli = fDraw_InitAppli;
-  Standard_Boolean CONSOLE = Standard_True;
   //ParseCommandLine(GetCommandLine());
 
   // MKV 01.02.05

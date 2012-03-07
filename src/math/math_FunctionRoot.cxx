@@ -66,11 +66,7 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
      math_FunctionSetRoot Sol(Ff,V,Tol,NbIterations);
      Done = Sol.IsDone(); 
      if (Done) {
-#ifdef DEB
-       Standard_Integer Ier=F.GetStateNumber();
-#else
        F.GetStateNumber();
-#endif
        TheRoot = Sol.Root()(1);
        TheDerivative = Sol.Derivative()(1,1);
        Ok = F.Value(TheRoot,TheError);
@@ -93,11 +89,7 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
      math_FunctionSetRoot Sol(Ff,V,Tol,Aa,Bb,NbIterations);
      Done = Sol.IsDone();
      if (Done) {
-#ifdef DEB
-       Standard_Integer Ier =F.GetStateNumber();
-#else
        F.GetStateNumber();
-#endif
        TheRoot = Sol.Root()(1);
        TheDerivative = Sol.Derivative()(1,1);
        Ok = F.Value(TheRoot,TheError);

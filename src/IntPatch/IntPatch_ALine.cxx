@@ -488,11 +488,6 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol) {
   nbvtx     = NbVertex();
   if(nbvtx>1) { 
     IntPatch_Point& VTX0   = svtx.ChangeValue(1);
-#ifdef DEB
-    //Standard_Real d;
-    IntPatch_Point& VTX1   = 
-#endif
-      svtx.ChangeValue(2);
     if(   (VTX0.IsOnDomS1() == Standard_False)
        && (VTX0.IsOnDomS2() == Standard_False)) { 
       svtx.Remove(1);
@@ -504,10 +499,6 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol) {
   }
   if(nbvtx>1) { 
     IntPatch_Point& VTX0   = svtx.ChangeValue(nbvtx);
-#ifdef DEB
-    IntPatch_Point& VTX1   = 
-#endif
-      svtx.ChangeValue(nbvtx-1);
     if(   (VTX0.IsOnDomS1() == Standard_False)
        && (VTX0.IsOnDomS2() == Standard_False)) { 
       svtx.Remove(nbvtx);

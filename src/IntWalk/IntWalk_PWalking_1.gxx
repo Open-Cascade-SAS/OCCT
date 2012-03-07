@@ -400,7 +400,6 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 			       const Standard_Real v2max)
 {
   //xf
-  Standard_Integer iCnt=0;
   Standard_Integer i, NbPasOKConseq;
   Standard_Real UFirst1, VFirst1, ULast1, VLast1, UFirst2, VFirst2, ULast2, VLast2;
   Standard_Real pasMaxSV[4], aTmp;

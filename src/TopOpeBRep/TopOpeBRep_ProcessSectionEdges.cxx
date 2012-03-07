@@ -58,10 +58,6 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
     
     if (isrest) {
       const TopoDS_Edge& E = TopoDS::Edge(L.Arc());
-#ifdef DEB
-      Standard_Boolean FIisrest =
-#endif
-                     myFacesIntersector->IsRestriction(E);
       
 #ifdef DEB
       if (trRL) {
@@ -101,7 +97,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine
 (const TopOpeBRep_LineInter& L,const Standard_Boolean checkkeep) const
 { 
 #ifdef DEB
-  Standard_Boolean trc = (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC());
+  //Standard_Boolean trc = (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC());
 #endif
 
   TopOpeBRep_TypeLineCurve t = L.TypeLineCurve();
@@ -340,10 +336,7 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
        itLES.Next(),itLOI.Next()) {
     const TopoDS_Shape& E1 = itLES.Value();
     Standard_Integer rE1 = itLOI.Value();
-#ifdef DEB
-    Standard_Integer iE1 =
-#endif
-              myDS->AddShape(E1,rE1);
+    myDS->AddShape(E1,rE1);
   }
   
   // determination des aretes SameDomain en 3d pur

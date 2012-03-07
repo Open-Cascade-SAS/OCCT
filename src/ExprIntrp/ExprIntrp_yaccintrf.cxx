@@ -84,10 +84,7 @@ extern "C" void ExprIntrp_Derivation()
 {
   ExprIntrp_Recept.PushValue(1);
   char name[100];
-#ifdef DEB
-  Standard_Integer nbcar = 
-#endif
-    ExprIntrp_GetResult(name);
+  ExprIntrp_GetResult(name);
   TCollection_AsciiString thename(name);
   Handle(Expr_NamedExpression) namexp = ExprIntrp_Recept.GetNamed(thename);
   if (namexp.IsNull()) {
@@ -127,10 +124,7 @@ extern "C" void ExprIntrp_StartDifferential()
 extern "C" void ExprIntrp_DiffDegreeVar()
 {
   char name[100];
-#ifdef DEB
-  Standard_Integer nbcar = 
-#endif
-    ExprIntrp_GetResult(name);
+  ExprIntrp_GetResult(name);
 #ifndef WNT 
   if (strncasecmp(name,"X",1)) {
 #else
@@ -154,10 +148,7 @@ extern "C" void ExprIntrp_DiffVar()
 extern "C" void ExprIntrp_DiffDegree()
 {
   char name[100];
-#ifdef DEB
-  Standard_Integer nbcar = 
-#endif
-    ExprIntrp_GetResult(name);
+  ExprIntrp_GetResult(name);
   Standard_Integer deg = atoi(name);
   ExprIntrp_Recept.PushValue(deg);
 }
@@ -165,10 +156,7 @@ extern "C" void ExprIntrp_DiffDegree()
 extern "C" void ExprIntrp_VerDiffDegree()
 {
   char name[100];
-#ifdef DEB
-  Standard_Integer nbcar = 
-#endif
-    ExprIntrp_GetResult(name);
+  ExprIntrp_GetResult(name);
   Standard_Integer deg = atoi(name);
   Standard_Integer thedeg = ExprIntrp_Recept.PopValue();
   if (deg != thedeg) {
@@ -604,10 +592,7 @@ extern "C" void ExprIntrp_EndOfFuncDef()
 extern "C" void ExprIntrp_ConstantIdentifier()
 {
   char name[100];
-#ifdef DEB
-  Standard_Integer nbcar = 
-#endif
-    ExprIntrp_GetResult(name);
+  ExprIntrp_GetResult(name);
   TCollection_AsciiString thename(name);
   ExprIntrp_Recept.PushName(thename);
 }

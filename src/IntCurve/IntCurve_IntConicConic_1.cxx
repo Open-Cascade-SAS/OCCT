@@ -1193,8 +1193,6 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
 
       ProdVectTan=Tan1.Crossed(Tan2);
       
-      Standard_Boolean IsInDomain=Standard_True;
-
       //#####################################################################
       //##  Longueur Minimale d un segment    Sur Courbe 1 
       //##################################################################### 

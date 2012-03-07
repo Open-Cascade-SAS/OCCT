@@ -373,7 +373,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   Standard_Boolean bDegI, bDeg;
   Standard_Integer aNbU, aNbV, iCnt, i, j;
   Standard_Integer aID1, aID2, aJD1, aJD2;
-  Standard_Real aTol, aU, aV, aX, aY, aZ, aDegX, aTol2;
+  Standard_Real aTol, aU, aV, aX, aY, aZ;
   gp_Pnt aP;
   //
   aNbU=(SurfID==1)? NbSamplesU1 : NbSamplesU2;

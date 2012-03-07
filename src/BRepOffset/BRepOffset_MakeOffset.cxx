@@ -1020,9 +1020,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   TopoDS_Shape    NE;
   TopoDS_Edge     TNE;
   TopoDS_Face     NF;
-#ifdef DEB
-  TopAbs_Orientation Or;
-#endif
   
   for (Exp.Init(myShape,TopAbs_FACE) ; Exp.More(); Exp.Next()) {
     const TopoDS_Face& FI = TopoDS::Face(Exp.Current());
@@ -1549,9 +1546,6 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
   BRepOffset_Type    RT = BRepOffset_Concave;
   if (myOffset < 0.) RT = BRepOffset_Convex;
   BRepOffset_DataMapIteratorOfDataMapOfShapeOffset It(MapSF);
-#ifdef DEB
-  Standard_Integer MapSFNb = MapSF.Extent();
-#endif
   for ( ; It.More(); It.Next()) {
     const TopoDS_Shape& SI = It.Key(); 
     const BRepOffset_Offset& SF = It.Value();

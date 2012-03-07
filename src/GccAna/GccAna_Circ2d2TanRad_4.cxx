@@ -53,9 +53,6 @@ GccAna_Circ2d2TanRad::
 {
 
   gp_Dir2d dirx(1.0,0.0);
-#ifdef DEB
-  Standard_Real Tol = Abs(Tolerance);
-#endif
   TColStd_Array1OfReal cote1(1,2);
   TColStd_Array1OfReal cote2(1,2);
   Standard_Integer nbrcote1=0;

@@ -57,9 +57,5 @@ Standard_Integer MXCAFDoc_AreaRetrievalDriver::VersionNumber() const
   Handle(PXCAFDoc_Area) S = Handle(PXCAFDoc_Area)::DownCast (Source);
   Handle(XCAFDoc_Area) T = Handle(XCAFDoc_Area)::DownCast (Target);
   
-#ifdef DEB
-  PTColStd_PersistentTransientMap& PTMap = 
-#endif
-    RelocTable->OtherTable();
   T->Set(S->Get());
 }

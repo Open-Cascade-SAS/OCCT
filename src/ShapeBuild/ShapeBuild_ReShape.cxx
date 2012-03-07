@@ -63,7 +63,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply (const TopoDS_Shape& shape,
     return res;
   }
 
-  TopAbs_ShapeEnum st = shape.ShapeType(), subt;
+  TopAbs_ShapeEnum st = shape.ShapeType();
   if ( st >= until ) return newsh;    // critere d arret
   if(st == TopAbs_VERTEX || st == TopAbs_SHAPE)
     return shape;

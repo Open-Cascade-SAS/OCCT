@@ -562,7 +562,7 @@ Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
 	  fabs( Other.LastParameter()-Last) > aPC);
   if (!proj) {
     Standard_Integer i;
-    Standard_Real Tol2, prm, aD2, dD;
+    Standard_Real Tol2, prm, dD;
     gp_Pnt pref, pother;
     //modified by NIZNHY-PKV Thu May 05 09:06:41 2011f
     //OCC22428

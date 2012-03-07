@@ -38,9 +38,6 @@ void IntWalk_IWalking::MakeWalkingPoint
   if (Case == 1) 
     Psol.SetValue(sp.Point(),reversed, U, V);
   else if (Case == 2) {
-#ifdef DEB
-    Standard_Boolean foo = sp.IsTangent(); 
-#endif
     Psol.SetValue(sp.Point(),reversed, U, V);
   }
   else if (Case == 11 || Case == 12 ) {

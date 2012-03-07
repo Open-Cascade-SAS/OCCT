@@ -224,10 +224,6 @@ void TDF_ComparisonTool::Cut
 {
   if (aDataSet->IsEmpty()) return;
 
-#ifdef DEB
-  TDF_LabelMap&           refLabs =
-#endif
-                                    aDataSet->Labels();
   const TDF_AttributeMap& refAtts = aDataSet->Attributes();
 
   // Removes the attributes.

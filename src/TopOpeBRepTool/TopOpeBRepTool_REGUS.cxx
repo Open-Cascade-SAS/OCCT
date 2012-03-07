@@ -340,10 +340,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::SplitFaces()
     // splitting face :
     const TopoDS_Face& f = TopoDS::Face(exf.Current()); 
     TopTools_ListOfShape lfsp; Standard_Boolean issp = TopOpeBRepTool_REGUS::SplitF(f,lfsp);
-#ifdef DEB
-    Standard_Integer nf =
-#endif
-             lfsp.Extent();
+
     if (!issp) continue;
 
     myFsplits.Bind(f,lfsp);
@@ -599,10 +596,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::NextinBlock()
 	// lofc : the list of faces connexed to e in <myS>
 	// lof  : the list of untouched faces connexed to e in <myS>	
 	const TopTools_ListOfShape& lofc = mymapeFsstatic.Find(e);
-#ifdef DEB
-        Standard_Integer nfc =
-#endif
-                  lofc.Extent();
+
 	itff.Initialize(lofc);
 	TopoDS_Face fref;
 	for (; itff.More(); itff.Next()) {
@@ -689,10 +683,6 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
 #endif
   ffound.Nullify();
   TopoDS_Face fref = TopoDS::Face(myf);
-#ifdef DEB
-  Standard_Integer nf =
-#endif
-           lof.Extent();//deb
 
   // Give us egde <e>, and a reference face <fref> (= <myf>)
   // - parameter on <e> = <pare>.

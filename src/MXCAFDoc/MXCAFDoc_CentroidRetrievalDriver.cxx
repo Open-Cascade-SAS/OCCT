@@ -62,9 +62,5 @@ MXCAFDoc_CentroidRetrievalDriver::MXCAFDoc_CentroidRetrievalDriver(const Handle(
   Handle(PXCAFDoc_Centroid) S = Handle(PXCAFDoc_Centroid)::DownCast (Source);
   Handle(XCAFDoc_Centroid) T = Handle(XCAFDoc_Centroid)::DownCast (Target);
 
-#ifdef DEB  
-  PTColStd_PersistentTransientMap& PTMap = 
-#endif
-    RelocTable->OtherTable();
   T->Set(S->Get());
 }

@@ -629,12 +629,6 @@ static void InGoodPeriod(const Standard_Real Prec,
   gp_Vec T, N, B;
   gp_Pnt P;
   Standard_Boolean Ok;
-#ifdef DEB
-  Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
-#else
-  myCurve->FirstParameter() ;
-#endif
-    
 
   myCurve->D0(Param, P);
   V.SetXYZ(P.XYZ());
@@ -650,12 +644,6 @@ static void InGoodPeriod(const Standard_Real Prec,
   }
   
   if (rotation) {
-#ifdef DEB
-    Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
-#else
-    myCurve->FirstParameter() ;
-#endif
-      
     //initialisation du germe
     InitX(Param);    
     Standard_Integer Iter = 100;
@@ -689,6 +677,7 @@ static void InGoodPeriod(const Standard_Real Prec,
     }
     else {
 #if DEB
+      Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
       cout << "LocationGuide::D0 : No Result !"<<endl;
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif

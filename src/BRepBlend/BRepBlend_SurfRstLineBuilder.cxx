@@ -909,9 +909,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
 						       Handle(Adaptor3d_HVertex)&  Vtx) 
 {
   Standard_Boolean recadre = Standard_False;
-#ifdef DEB
-  Standard_Boolean byinter = (line->NbPoints() != 0);
-#endif
+
   gp_Pnt2d pt2d, lastpt2d;
   Standard_Integer IndexSol, nbarc;
   Standard_Real pmin;

@@ -194,14 +194,7 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
       DBRep::Set(namie.ToCString(),es);
       if (eca) {
 	TCollection_AsciiString s;
-#ifdef DEB
-	Standard_Integer i1 =
-#endif
-                              BDS.Shape(F1);
-#ifdef DEB
-        Standard_Integer i2 =
-#endif
-                              BDS.Shape(F2);
+
 	if (outdraw) {
 	  if (outclear) s = s + "clear; ";
 	  ::CATSHA(s,F1,BDS,"tsee f ","; ");

@@ -915,9 +915,6 @@ Standard_Boolean BRepBlend_RstRstEvolRad::Section(const Blend_Point& P,
   math_Matrix gradsol(1, 2, 1, 2);
   
   Standard_Real prm       = P.Parameter();
-#ifdef DEB
-  Standard_Integer NbSpan = (Poles.Length() - 1) / 2;
-#endif
   Standard_Integer low    = Poles.Lower();
   Standard_Integer upp    = Poles.Upper();
   Standard_Boolean istgt;

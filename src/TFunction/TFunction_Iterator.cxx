@@ -174,7 +174,6 @@ void TFunction_Iterator::Next()
     TFunction_IFunction iFunction(L);
 
     Handle(TFunction_GraphNode) graphNode = iFunction.GetGraphNode();
-    const TColStd_MapOfInteger& prev      = graphNode->GetPrevious();
     const TColStd_MapOfInteger& next      = graphNode->GetNext();
     TFunction_ExecutionStatus   status    = graphNode->GetStatus();
 

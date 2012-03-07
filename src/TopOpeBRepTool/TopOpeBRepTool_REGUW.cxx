@@ -298,10 +298,6 @@ Standard_Boolean TopOpeBRepTool_REGUW::MapS()
   TopExp_Explorer exe(CS, TopAbs_EDGE);
   for (; exe.More(); exe.Next()){
     const TopoDS_Edge& ed = TopoDS::Edge(exe.Current());
-#ifdef DEB
-    TopAbs_Orientation oed =
-#endif
-               ed.Orientation();
 
     Standard_Boolean isdgE = BRep_Tool::Degenerated(ed); 
     Standard_Boolean iscE = TopOpeBRepTool_TOOL::IsClosingE(ed,myCORRISO.S(),Fref()); 
@@ -482,9 +478,9 @@ Standard_Boolean TopOpeBRepTool_REGUW::InitBlock()
   for (; exv.More(); exv.Next()){
     const TopoDS_Shape& vcur = exv.Current();
     TopOpeBRepTool_connexity& cco = mymapvEds.ChangeFromKey(vcur);
-#ifdef DEB
-    Standard_Boolean ok =
-#endif
+//#ifdef DEB
+//    Standard_Boolean ok =
+//#endif
              cco.RemoveItem(myed);
 //    if (!ok) return Standard_False; see for closing vertices
   }
@@ -525,9 +521,6 @@ Standard_Boolean TopOpeBRepTool_REGUW::NearestE(const TopTools_ListOfShape& loe,
   Standard_Real fac = 0.45678;
   Standard_Real tola = Precision::Angular();
   Standard_Integer iv0e1 = (iStep == 1) ? REVERSED : FORWARD;
-#ifdef DEB
-  Standard_Integer iv1e1 = (iStep == 1) ? FORWARD : REVERSED;
-#endif
 
   // initializing 
   TopTools_ListIteratorOfListOfShape ite(loe);
@@ -570,9 +563,6 @@ Standard_Boolean TopOpeBRepTool_REGUW::NearestE(const TopTools_ListOfShape& loe,
     if (trc) cout<<"ang(e"<<FUN_adds(myed)<<",e"<<FUN_adds(ei)<<")="<<angi<<endl;
 #endif
     if (eq) {
-#ifdef DEB
-      Standard_Boolean dummy=Standard_True;//DEB
-#endif
       FUN_Raise(); 
       return Standard_False;
     }
@@ -645,16 +635,12 @@ Standard_Boolean TopOpeBRepTool_REGUW::NextinBlock()
     myed = efound;
   }
 
-#ifdef DEB
-  TopOpeBRepTool_connexity& newco =
-#endif
-                mymapvEds.ChangeFromKey(myv);
   TopExp_Explorer exv(myed, TopAbs_VERTEX);
   for (; exv.More(); exv.Next()){
     TopOpeBRepTool_connexity& cco = mymapvEds.ChangeFromKey(exv.Current());
-#ifdef DEB
-    Standard_Boolean ok =
-#endif
+//#ifdef DEB
+//    Standard_Boolean ok =
+//#endif
              cco.RemoveItem(myed);
 //    if (!ok) {FUN_Raise(); return Standard_False;} closed edges
   }

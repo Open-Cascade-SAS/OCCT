@@ -116,11 +116,7 @@ Standard_IMPORT void FDSSDM_Close();// see TopOpeBRepDS_samdom.cxx
   // define face/face intersection tolerances
   Standard_Boolean forcetoli = Standard_False;
   if (forcetoli) {
-#ifndef DEB
     Standard_Real tolarc=0,toltang=0;
-#else
-    Standard_Real tolarc,toltang;
-#endif
     TopOpeBRep_ShapeIntersector& tobsi = DSFiller.ChangeShapeIntersector();
     TopOpeBRep_FacesIntersector& tobfi = tobsi.ChangeFacesIntersector();
     tobfi.ForceTolerances(tolarc,toltang);

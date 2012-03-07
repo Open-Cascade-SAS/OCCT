@@ -61,10 +61,6 @@ void MXCAFDoc_MaterialRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source
   Handle(PXCAFDoc_Material) S = Handle(PXCAFDoc_Material)::DownCast (Source);
   Handle(XCAFDoc_Material) T = Handle(XCAFDoc_Material)::DownCast (Target);
   
-#ifdef DEB
-  PTColStd_PersistentTransientMap& PTMap = 
-#endif
-    RelocTable->OtherTable();
   Handle(TCollection_HAsciiString) aName, aDescr, aDensName, aDensValType;
   if ( !S->GetName().IsNull() )
     aName = new TCollection_HAsciiString( (S->GetName())->Convert() );

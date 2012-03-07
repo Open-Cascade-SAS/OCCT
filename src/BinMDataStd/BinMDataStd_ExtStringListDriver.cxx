@@ -68,7 +68,6 @@ void BinMDataStd_ExtStringListDriver::Paste(const Handle(TDF_Attribute)& theSour
   Handle(TDataStd_ExtStringList) anAtt = Handle(TDataStd_ExtStringList)::DownCast(theSource);
   const Standard_Integer aFirstInd = 1;
   const Standard_Integer aLastInd  = anAtt->Extent();
-  const Standard_Integer aLength   = aLastInd - aFirstInd + 1;
   theTarget << aFirstInd << aLastInd;
   TDataStd_ListIteratorOfListOfExtendedString itr(anAtt->List());
   for (; itr.More(); itr.Next())

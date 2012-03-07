@@ -152,7 +152,6 @@ Standard_Boolean BlendFunc_RuledInv::Derivatives(const math_Vector& X,
 
   const Standard_Real normtgcur = d1cur.Magnitude();
   const gp_Vec nplan = d1cur.Normalized();
-  const Standard_Real theD = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   gp_Vec dnplan;
   dnplan.SetLinearForm(-nplan.Dot(d2cur),nplan,d2cur);

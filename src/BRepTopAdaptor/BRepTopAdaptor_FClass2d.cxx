@@ -269,7 +269,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	{
 	  //Standard_Real anglep=0,anglem=0;
 	  TColgp_Array1OfPnt2d PClass(1,nbpnts);
-	  Standard_Real angle = 0.0, square = 0.0;
+	  Standard_Real square = 0.0;
 
 	  //-------------------------------------------------------------------
 	  //-- ** The mode of calculation was somewhat changed 

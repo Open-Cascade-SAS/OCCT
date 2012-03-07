@@ -28,7 +28,6 @@ Standard_Integer IntPatch_PrmPrmIntersection_T3Bits::And(IntPatch_PrmPrmIntersec
                                                          Standard_Integer& indice)
 {
   int k=indice>>5;
-  Standard_Integer r=0;
   while(k<Isize)
   {
     Standard_Integer r=((Standard_Integer *) p)[k] & ((Standard_Integer *) Oth.p)[k];

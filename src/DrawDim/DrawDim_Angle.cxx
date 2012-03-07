@@ -168,10 +168,7 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
       gp_Vec curvec (AxePosition, curpt);
       gp_XYZ curXYZ = curvec.XYZ();
       gp_XYZ Norm (curXYZ.Crossed(AxeXYZ));
-#ifdef DEB
-      Standard_Real NormMod =
-#endif
-                              Norm.Modulus();
+
       if (Norm.Modulus() > gp::Resolution()) {
 	Standard_Real curdist = curpos.Distance (curpt);
 	if (curdist < dist) {

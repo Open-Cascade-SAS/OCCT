@@ -70,8 +70,8 @@ void IntPolyh_Intersection::Perform() {
   Standard_Integer nbCouplesStd = 0;
   Standard_Integer nbCouplesAdv = 0;
   
-  GeomAbs_SurfaceType ST1 = mySurf1->GetType();
-  GeomAbs_SurfaceType ST2 = mySurf2->GetType();
+  //GeomAbs_SurfaceType ST1 = mySurf1->GetType();
+  //GeomAbs_SurfaceType ST2 = mySurf2->GetType();
 
 //   if(ST1 == GeomAbs_Torus || ST2 == GeomAbs_Torus)
 //     startFromAdvanced = Standard_True;

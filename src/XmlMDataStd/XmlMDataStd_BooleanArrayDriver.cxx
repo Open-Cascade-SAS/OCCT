@@ -39,7 +39,7 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
 						       const Handle(TDF_Attribute)& theTarget,
 						       XmlObjMgt_RRelocationTable&  ) const
 {
-  Standard_Integer aFirstInd, aLastInd, aValue, ind;
+  Standard_Integer aFirstInd, aLastInd, aValue;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1

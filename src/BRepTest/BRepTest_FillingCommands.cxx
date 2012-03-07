@@ -193,10 +193,6 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
     DBRep::Set(name, E);
     MW.Add(E);
     if (MW.IsDone()==Standard_False) {
-#if DEB
-      BRepBuilderAPI_WireError err =
-#endif
-                                     MW.Error();
       Standard_Failure::Raise("mkWire is over ");
     }
       
@@ -429,10 +425,6 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
     BRepLib::BuildCurve3d(E);
     MW.Add(E);
     if (MW.IsDone()==Standard_False) {
-#ifdef DEB
-      BRepBuilderAPI_WireError err =
-#endif
-                                     MW.Error();
       Standard_Failure::Raise("mkWire is over ");
     }
   }

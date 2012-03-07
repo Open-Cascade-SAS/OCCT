@@ -1129,7 +1129,7 @@ static void GetApproxNormalToFaceOnEdgeEx(const TopoDS_Edge& aE,
 	for( iKey = 1; iKey <= nbKeys; iKey++ ) {
 	  const TopoDS_Vertex& iV = TopoDS::Vertex(mapVE.FindKey(iKey));
 	  if( iV.IsNull() ) continue;
-	  Standard_Real TolV = BRep_Tool::Tolerance(iV);
+	  //Standard_Real TolV = BRep_Tool::Tolerance(iV);
 	  const TopTools_ListOfShape& iLE = mapVE.FindFromIndex(iKey);
 	  Standard_Integer nbE = iLE.Extent();
 	  if( nbE != 2 ) {
@@ -1251,7 +1251,7 @@ static Standard_Boolean PseudoSDFaces(const BRepAdaptor_Surface& BS1,
 
 
   const TopoDS_Face& aF1 = BS1.Face();
-  Standard_Real maxTolE1 = 1.e-7, maxTolV1 = 1.e-7;
+  Standard_Real maxTolE1 = 1.e-7;
   Standard_Integer nbE1 = 0, nbOnE1 = 0;
   for(anExpE.Init(aF1, TopAbs_EDGE); anExpE.More(); anExpE.Next()) {
     const TopoDS_Edge& aE = TopoDS::Edge(anExpE.Current());
@@ -1307,7 +1307,7 @@ static Standard_Boolean PseudoSDFaces(const BRepAdaptor_Surface& BS1,
     return Standard_False;
 
   const TopoDS_Face& aF2 = BS1.Face();
-  Standard_Real maxTolE2 = 1.e-7, maxTolV2 = 1.e-7;
+  Standard_Real maxTolE2 = 1.e-7;
   Standard_Integer nbE2 = 0, nbOnE2 = 0;
   for(anExpE.Init(aF2, TopAbs_EDGE); anExpE.More(); anExpE.Next()) {
     const TopoDS_Edge& aE = TopoDS::Edge(anExpE.Current());

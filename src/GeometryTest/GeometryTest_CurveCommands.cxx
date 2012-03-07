@@ -831,8 +831,7 @@ static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
   theUfMax = 0.;
   theUlMax = 0.;
   theImax = 0;
-  Standard_Real dmax = 0., ufmax = 0., ulmax = 0.;
-  Standard_Integer imax = 0;
+  Standard_Real ufmax = 0., ulmax = 0.;
 
   //take knots
   Standard_Integer nbp = thePnts->NbKnots();
@@ -1234,7 +1233,7 @@ static Standard_Integer mypoints (Draw_Interpretor& di, Standard_Integer /*n*/, 
 
   Draw::Set(a[1], aDrCrv);
 
-  Standard_Real dmax = 0., ufmax = 0., ulmax = 0., uf, ul;
+  Standard_Real dmax = 0., ufmax = 0., ulmax = 0.;
   Standard_Integer imax = 0;
 
   ComputeDeviation(C,aPnts,dmax,ufmax,ulmax,imax);

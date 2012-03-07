@@ -22,10 +22,7 @@ DrawFairCurve_Batten::DrawFairCurve_Batten(const Standard_Address TheBatten)
 void DrawFairCurve_Batten::Compute()
 {
   FairCurve_AnalysisCode Iana;
-#ifdef DEB
-  Standard_Boolean Ok =
-#endif
-                        ((FairCurve_Batten*)MyBatten)->Compute(Iana, 50, 1.0e-2);
+  ((FairCurve_Batten*)MyBatten)->Compute(Iana, 50, 1.0e-2);
   curv = ((FairCurve_Batten*)MyBatten)->Curve();
 }
 void DrawFairCurve_Batten::SetPoint(const Standard_Integer Side, const gp_Pnt2d& Point)

@@ -233,41 +233,10 @@ void IntRes2d_Intersection::Append( const IntRes2d_Intersection& Other
 	const IntRes2d_IntersectionPoint& AnP1=lseg(j).FirstPoint();
 	Standard_Real AnP1PParamOnFirst=AnP1.ParamOnFirst();
 	Standard_Real AnP1PParamOnSecond=AnP1.ParamOnSecond();
-#if DEB
-	const IntRes2d_Transition& AnP1T1=AnP1.TransitionOfFirst();
-#else
-        AnP1.TransitionOfFirst();
-#endif
-#if DEB
-	const IntRes2d_Transition& AnP1T2=AnP1.TransitionOfSecond();
-#else
-        AnP1.TransitionOfSecond();
-#endif
-#if DEB
-	const gp_Pnt2d& AnPt1=AnP1.Value();
-#else
-        AnP1.Value();
-#endif
 	
 	const IntRes2d_IntersectionPoint& AnP2=lseg(j).LastPoint();
 	Standard_Real AnP2PParamOnFirst=AnP2.ParamOnFirst();
 	Standard_Real AnP2PParamOnSecond=AnP2.ParamOnSecond();
-#if DEB
-	const IntRes2d_Transition& AnP2T1=AnP2.TransitionOfFirst();
-#else
-        AnP2.TransitionOfFirst();
-#endif
-#if DEB
-	const IntRes2d_Transition& AnP2T2=AnP2.TransitionOfSecond();
-#else
-        AnP2.TransitionOfSecond();
-#endif
-#if DEB
-	const gp_Pnt2d& AnPt2=AnP2.Value();
-#else
-        AnP2.Value();
-#endif
-
 
 	if(Opposite == lseg(j).IsOpposite()) {
 	  //---------------------------------------------------------------

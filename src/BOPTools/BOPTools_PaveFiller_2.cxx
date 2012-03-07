@@ -252,7 +252,7 @@
   BOPTools_ListIteratorOfListOfCommonBlock anItCB(aLCB);
   for (; anItCB.More(); anItCB.Next()) {
     BOPTools_CommonBlock& aCB=anItCB.Value();
-    BOPTools_PaveBlock& aPB1=aCB.PaveBlock1(nE1);
+    //BOPTools_PaveBlock& aPB1=aCB.PaveBlock1(nE1);
     BOPTools_PaveBlock& aPB2=aCB.PaveBlock2(nE1);
     nE=aPB2.OriginalEdge();
     if (nE==nE2) {

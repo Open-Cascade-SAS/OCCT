@@ -57,9 +57,6 @@ GccAna_Circ2d3Tan::
    TheSame2.Init(0);
    TheSame3.Init(0);
    gp_Dir2d dirx(1.0,0.0);
-#ifdef DEB
-   Standard_Real Tol = Abs(Tolerance);
-#endif
    WellDone = Standard_False;
    NbrSol = 0;
    if (!(Qualified1.IsEnclosed() ||

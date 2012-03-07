@@ -14,7 +14,6 @@ WNT_FontMapEntry :: WNT_FontMapEntry ( const Standard_CString aFontName )
 {
   int   i;
   char* p;
-  BOOL  fUseDefault = FALSE;
 
   char* fName = new char[ strlen ( aFontName ) + 1 ];
 

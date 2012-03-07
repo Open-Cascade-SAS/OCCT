@@ -194,11 +194,6 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
 	  TopoDS_Wire NW;
 	  B.MakeWire(NW);
 	  TopoDS_Iterator ite(W,Standard_False);
-#ifdef DEB
-	  Standard_Real   Tol = BRep_Tool::Tolerance(F);
-#else
-          BRep_Tool::Tolerance(F);
-#endif
 	  Standard_Real   UFirst,ULast;
 	  
 	  // Reconstruction des wires.
@@ -444,8 +439,6 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
               TopoDS_Shape arefShape = SH.Oriented(TopAbs_FORWARD) ;
 	      B.Add  ( arefShape ,Fo.Oriented(NewO));
 	    }
-            Standard_Integer kk =1;
-            Standard_Integer p =0;
 	    // Rebind the free edges of the old shell to the new shell
             //gka BUG 6491
             TopExp_Explorer aexp(SH,TopAbs_EDGE);

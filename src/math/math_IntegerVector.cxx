@@ -328,9 +328,6 @@ math_IntegerVector& math_IntegerVector::Initialized (const math_IntegerVector& O
 
   Standard_DimensionError_Raise_if(Length() != Other.Length(), " ");
 
-#ifdef DEB
-  Standard_Integer I = Other.FirstIndex;
-#endif
   (Other.Array).Copy(Array);
   return *this;
 }

@@ -467,9 +467,6 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
   
   for (; VPI.More(); VPI.Next()) {
     TopOpeBRep_VPointInter& VP = VPI.ChangeCurrentVP();
-#ifdef DEB
-    Standard_Integer VPsi = VP.ShapeIndex();
-#endif
     
     Standard_Boolean isvertex = VP.IsVertex(Esi);
     if ( isvertex ) {

@@ -83,25 +83,12 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
   Standard_Boolean reducesegment = (hs && !esd);
 #endif
 
-#ifdef DEB
-  TopAbs_Orientation E1ori =
-#endif
-               E1.Orientation();
-#ifdef DEB
-  TopAbs_Orientation E2ori =
-#endif
-               E2.Orientation();
-  
   // --- Add <E1,E2> in BDS
   Standard_Integer E1index = myPDS->AddShape(E1,1);
   Standard_Integer E2index = myPDS->AddShape(E2,2);
   
   // --- get list of interferences connected to edges <E1>,<E2>
   TopOpeBRepDS_ListOfInterference& EIL1 = myPDS->ChangeShapeInterferences(E1);
-#ifdef DEB
-  TopOpeBRepDS_ListOfInterference& EIL2 =
-#endif
-                 myPDS->ChangeShapeInterferences(E2);
   
   Handle(TopOpeBRepDS_Interference) EPI;  //edge/point interference
   Handle(TopOpeBRepDS_Interference) EVI;  //edge/vertex interference
@@ -119,9 +106,6 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     Standard_Boolean pointofsegment =
 #endif
                          P2D.IsPointOfSegment();
-#ifdef DEB
-    Standard_Boolean reducesegmentpoint = (reducesegment && pointofsegment);
-#endif
 
 #ifdef DEB
     if (trc) {
@@ -377,10 +361,7 @@ Standard_Boolean TopOpeBRep_EdgesFiller::MakeGeometry(const TopOpeBRep_Point2d& 
   Standard_Boolean isvertex2 = P2D.IsVertex(2);
   if (isvertex1 && isvertex2) {
     Standard_Integer G1 = myPDS->AddShape(P2D.Vertex(1),1);
-#ifdef DEB
-    Standard_Integer G2 =
-#endif
-              myPDS->AddShape(P2D.Vertex(2),2);
+    myPDS->AddShape(P2D.Vertex(2),2);
     G = G1;
     K = TopOpeBRepDS_VERTEX;
   }
@@ -466,15 +447,6 @@ Handle(TopOpeBRepDS_Interference) TopOpeBRep_EdgesFiller::StoreVI(const TopOpeBR
 Standard_Boolean TopOpeBRep_EdgesFiller::ToRecompute(const TopOpeBRep_Point2d& P2D,const Handle(TopOpeBRepDS_Interference)& I,const Standard_Integer IEmother)
 {
   Standard_Boolean b = Standard_True;
-  const TopOpeBRepDS_Transition& T = I->Transition();
-#ifdef DEB
-  TopAbs_State sb =
-#endif
-            T.Before();
-#ifdef DEB
-  TopAbs_State sa =
-#endif
-            T.After();
   Standard_Boolean pointofsegment = P2D.IsPointOfSegment();
   Standard_Boolean esd = myPEI->SameDomain();
   b = b && (pointofsegment && !esd);

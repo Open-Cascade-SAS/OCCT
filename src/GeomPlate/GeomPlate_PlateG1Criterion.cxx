@@ -68,11 +68,6 @@ void GeomPlate_PlateG1Criterion::Value(AdvApp2Var_Patch& P,
   TColStd_Array1OfReal Curve(1, 2*dimension);
   TColStd_Array1OfReal Point(1, 3); 
   Standard_Real * Coeffs =  (Standard_Real *) &Patch.ChangeValue(1);
-#ifdef DEB
-  Standard_Real * Result =  (Standard_Real *) &Curve.ChangeValue(1);
-#else
-  Curve.ChangeValue(1);
-#endif
   Standard_Real * Digit  =  (Standard_Real *) &Point.ChangeValue(1);
   
   Standard_Integer k1, k2, pos, ll=1;

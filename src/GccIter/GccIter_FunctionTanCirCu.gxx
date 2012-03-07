@@ -87,11 +87,6 @@ Standard_Boolean GccIter_FunctionTanCirCu::
   TheCurveTool::D2(Curve,X,Point,Vect1,Vect2);
   Standard_Real NormeD1 = Vect1.SquareMagnitude();
   gp_Vec2d TheDirection(TheCirc.Location(),Point);
-#ifdef DEB
-  Standard_Real squaredir = TheDirection.SquareMagnitude();
-#else
-  TheDirection.SquareMagnitude();
-#endif
   Standard_Real cp1dott = TheDirection.Dot(Vect1);
   Deriv = -2.*(cp1dott/NormeD1)*
     ((TheDirection.Dot(Vect2))-cp1dott*Vect1.Dot(Vect2)/NormeD1);

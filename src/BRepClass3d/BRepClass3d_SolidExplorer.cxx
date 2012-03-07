@@ -102,10 +102,6 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
   {
     TopoDS_Edge Edge = TopoDS::Edge (faceexplorer.Current());
     c.Initialize (Edge, face);
-#ifdef DEB
-    Standard_Integer nbinterval = 
-#endif
-    c.NbIntervals(GeomAbs_C1); 
     c.D1((c.LastParameter() - c.FirstParameter()) * param_ + c.FirstParameter(),P,T);
 
     Standard_Real x = T.X();

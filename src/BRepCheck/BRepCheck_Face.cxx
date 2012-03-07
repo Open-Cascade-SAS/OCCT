@@ -266,10 +266,7 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const Standard_Boolean Update)
     TopoDS_Shape aLocalShape = myShape.EmptyCopied();
     TopoDS_Face newFace = TopoDS::Face(aLocalShape);
 //    TopoDS_Face newFace = TopoDS::Face(myShape.EmptyCopied());
-#ifdef DEB
-    TopAbs_Orientation orWire = 
-#endif
-      wir1.Orientation();
+
     newFace.Orientation(TopAbs_FORWARD);
     B.Add(newFace,wir1);
 

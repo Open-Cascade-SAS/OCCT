@@ -198,10 +198,6 @@ Standard_Integer TopOpeBRepTool_connexity::IsInternal(TopTools_ListOfShape& Item
 
   // all subshapes of INTERNAL(EXTERNAL) are oriented INTERNAL(EXTERNAL)
   TopTools_ListOfShape lINT; lINT.Assign(theItems.Value(INTERNAL));
-#ifdef DEB
-  Standard_Integer n1 =
-#endif
-           lINT.Extent();
   TopTools_ListIteratorOfListOfShape it1(lINT);
   while (it1.More()) {
     const TopoDS_Shape& item1 = it1.Value();
@@ -213,10 +209,6 @@ Standard_Integer TopOpeBRepTool_connexity::IsInternal(TopTools_ListOfShape& Item
   }
 
   TopTools_ListOfShape lEXT; lEXT.Assign(theItems.Value(EXTERNAL));
-#ifdef DEB
-  Standard_Integer n2 =
-#endif
-           lEXT.Extent();
   TopTools_ListIteratorOfListOfShape it2(lEXT);
   while (it2.More()) {
     const TopoDS_Shape& item2 = it2.Value();

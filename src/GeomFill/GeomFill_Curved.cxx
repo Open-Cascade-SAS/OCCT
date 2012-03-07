@@ -268,10 +268,6 @@ void  GeomFill_Curved::Init(const TColgp_Array1OfPnt& P1,
   
   IsRational = Standard_False;
   
-#ifdef DEB
-  Standard_Real NU = NPolU - 1;
-  Standard_Real NV = NPolV - 1;
-#endif
   myPoles = new TColgp_HArray2OfPnt( 1, NPolU, 1, NPolV);
   
   Standard_Integer i,j;

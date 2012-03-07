@@ -2353,11 +2353,6 @@ VerifSurface(const Standard_Integer NbBoucle)
 	new TColStd_HArray1OfReal(1,NbPts_i-1);
       Handle(TColStd_HArray1OfReal) tcourb = 
 	new TColStd_HArray1OfReal(1,NbPts_i-1);
-#ifdef DEB
-      Standard_Integer Cont_i=myLinCont->Value(i)->Order();
-#else
-      myLinCont->Value(i)->Order();
-#endif
 
       EcartContraintesMil (i,tdist,tang,tcourb);
 

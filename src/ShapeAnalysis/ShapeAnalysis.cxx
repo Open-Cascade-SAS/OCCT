@@ -172,7 +172,7 @@ Standard_Real ShapeAnalysis::ContourArea(const TopoDS_Wire& theWire)
                                          //const Handle(ShapeExtend_WireData)& sewd)
                                         
 {
-  Standard_Integer i =1, nbc = 0;
+  Standard_Integer nbc = 0;
   gp_Pnt fuv,luv, uv0;
   //Standard_Real totcross=0;
   gp_XYZ aTotal(0.,0.,0.);

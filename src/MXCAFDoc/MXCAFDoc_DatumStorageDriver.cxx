@@ -59,10 +59,6 @@ void MXCAFDoc_DatumStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 {
   Handle(XCAFDoc_Datum) S = Handle(XCAFDoc_Datum)::DownCast (Source);
   Handle(PXCAFDoc_Datum) T = Handle(PXCAFDoc_Datum)::DownCast (Target);
-#ifdef DEB
-  PTColStd_TransientPersistentMap& TPMap = 
-#endif
-    RelocTable->OtherTable();
   Handle(TCollection_HAsciiString) aNameStr = S->GetName();
   Handle(TCollection_HAsciiString) aDescrStr = S->GetDescription();
   Handle(TCollection_HAsciiString) anIdStr = S->GetIdentification();

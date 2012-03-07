@@ -116,11 +116,6 @@ void StlTransfer::BuildIncrementalMesh (const TopoDS_Shape&  Shape,
     theTriangles.Assign(theTriangulation->Triangles());
     Mesh->AddDomain (Deflection);
     
-#ifdef DEB
-    TopAbs_Orientation orientation = 
-#endif
-      face.Orientation();
-    
     TColgp_Array1OfPnt thePoints(1, theTriangulation->NbNodes());
     thePoints.Assign(theTriangulation->Nodes());
     //compute normal of face

@@ -219,10 +219,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,const TopoDS_Sh
   for (InitLine(); MoreLine(); NextLine()) {
     TopOpeBRep_LineInter& L = CurrentLine();
     if (L.TypeLineCurve() == TopOpeBRep_RESTRICTION) {
-#ifdef DEB
-      Standard_Boolean isedge1 = L.ArcIsEdge(1); //DEB
-      Standard_Boolean isedge2 = L.ArcIsEdge(2); //DEB
-#endif
       const TopoDS_Shape& E = L.Arc();
       myEdgeRestrictionMap.Add(E);
     }
@@ -289,9 +285,9 @@ Standard_Boolean TopOpeBRep_FacesIntersector::SameDomain () const
     Standard_ProgramError::Raise("FacesIntersector : bad SameDomain");
 
   Standard_Boolean sd = myIntersector.TangentFaces();
-#ifdef DEB
-  Standard_Boolean plpl = (mySurfaceType1 == GeomAbs_Plane) && (mySurfaceType2 == GeomAbs_Plane);
-#endif
+
+  //Standard_Boolean plpl = (mySurfaceType1 == GeomAbs_Plane) && (mySurfaceType2 == GeomAbs_Plane);
+
 //  if (!plpl) return Standard_False;
   return sd;
 }
@@ -730,14 +726,6 @@ Handle(IntPatch_RLine) BuildRLineBasedOnWLine(const Handle(IntPatch_WLine)& theW
     return anRLine;
 
   Standard_Boolean IsOnFirst = (theRank == 1);
-#ifdef DEB
-  Standard_Integer ParamMinOnLine = (Standard_Integer) 
-#endif
-    Vtx1.ParameterOnLine();
-#ifdef DEB
-  Standard_Integer ParamMaxOnLine = (Standard_Integer) 
-#endif
-    Vtx2.ParameterOnLine();
 
   Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
   const Handle(IntSurf_LineOn2S)& Lori = theWLine->Curve();

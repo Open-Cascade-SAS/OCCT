@@ -221,9 +221,6 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 
       //IFV for OCC20285
 
-
-      Standard_Real tolustolv=tolu/tolv;
- 
       if ((Abs(Du) < tolu2 && Abs(Dv) < tolv2) ||
 	  (Abs(Dup) < tolu2 && Abs(Dvp) < tolv2)) { 
 	    
@@ -315,10 +312,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 	  if (Arrive) {
 	    static math_Vector bidF(1,1);
 	    static math_Matrix bidD(1,1,1,2);
-#ifdef DEB
-	    Standard_Boolean bidB = 
-#endif
-	      sp.Values(UV,bidF,bidD);
+        sp.Values(UV,bidF,bidD);
 	    break;
 	  }
 	}
@@ -560,10 +554,7 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout
 	UV(2) = V1;
 	static math_Vector bidF(1,1);
 	static math_Matrix bidD(1,1,1,2);
-#ifdef DEB
-	Standard_Boolean bidB = 
-#endif
-	  sp.Values(UV,bidF,bidD);
+    sp.Values(UV,bidF,bidD);
 	break;
       }
     }
@@ -660,10 +651,7 @@ void IntWalk_IWalking::TestArretCadre
 	if (Found) {
 	  static math_Vector bidF(1,1);
 	  static math_Matrix bidD(1,1,1,2);
-#ifdef DEB
-	  Standard_Boolean bidB = 
-#endif
-	    sp.Values(UV,bidF,bidD);
+      sp.Values(UV,bidF,bidD);
 	  Standard_Integer NBP =  Line->NbPoints();
 	  Standard_Integer Indextg;	  
 	  Line->TangentVector(Indextg);
@@ -738,10 +726,7 @@ void IntWalk_IWalking::TestArretCadre
 	Irang = -Irang; // jag 941017
 	static math_Vector bidF(1,1);
 	static math_Matrix bidD(1,1,1,2);
-#ifdef DEB
-	Standard_Boolean bidB = 
-#endif
-	  sp.Values(UV,bidF,bidD);
+    sp.Values(UV,bidF,bidD);
 	return;
       }
     }

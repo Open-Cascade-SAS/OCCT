@@ -910,10 +910,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
       L.AddConstEdges(listofedg);
       L.Perform();
       L.WiresToFaces();
-#ifdef DEB
-      const TopTools_ListOfShape& listofwires =
-#endif
-                                                L.NewWires();
       const TopTools_ListOfShape& listoffaces = L.NewFaces();
       toRemove.Add(fac);
       //      if (!HasWire) {

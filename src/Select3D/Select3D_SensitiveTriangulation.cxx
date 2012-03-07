@@ -623,7 +623,6 @@ DetectedTriangle2d(gp_Pnt2d& P1,
   if(myDetectedTr==-1) 
     return Standard_False; //  currently not implemented...
   const Poly_Array1OfTriangle& triangles = myTriangul->Triangles();
-  const TColgp_Array1OfPnt& Nodes = myTriangul->Nodes();
   Standard_Integer n1,n2,n3;
   triangles( myDetectedTr ).Get(n1,n2,n3);
 

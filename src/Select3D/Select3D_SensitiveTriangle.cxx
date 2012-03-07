@@ -218,8 +218,6 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   gp_XY V02(p2);V02-=p0;
   gp_XY V12(p2);V12-=p1;
 
-  Standard_Real TolTol = aTol*aTol;
-
   // check these particular cases...
   // if one of vectors is almost null (2 points are mixed),
   // leave at once (it is already in the bounding box, which is good...)

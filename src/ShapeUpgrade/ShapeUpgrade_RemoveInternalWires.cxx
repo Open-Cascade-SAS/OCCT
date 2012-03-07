@@ -229,7 +229,6 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces ()
         if(!myRemoveEdges.IsBound(aE) ) {
           const TopTools_ListOfShape& aLface3 = myEdgeFaces.FindFromKey(aE);
           TopTools_ListIteratorOfListOfShape aliter3(aLface3);
-          Standard_Boolean isRemoved = Standard_True;
           for( ; aliter3.More();aliter3.Next()) {
             TopoDS_Shape aF2 = Context()->Apply(aliter3.Value());
             if(aF2.IsNull())

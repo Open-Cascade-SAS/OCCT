@@ -126,10 +126,6 @@ const Bnd_Box& TopOpeBRepTool_HBoxTool::Box(const TopoDS_Shape& S)
     Standard_ProgramError::Raise("HBT::Box1");
   }
 
-#ifdef DEB
-  Standard_Integer im =
-#endif
-           Index(S);
   const Bnd_Box& B = myIMS.FindFromKey(S);
   return B;
 }

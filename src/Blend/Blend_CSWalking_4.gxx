@@ -11,13 +11,8 @@ void Blend_CSWalking::InternalPerform(Blend_CSFunction& Func,
   TopAbs_State situ;
   Standard_Real w,U,V;
   Standard_Integer nbarc;
-#ifndef DEB
   Standard_Integer  Index = 0;
   Standard_Boolean Isvtx = Standard_False;
-#else
-  Standard_Integer  Index;
-  Standard_Boolean Isvtx;
-#endif
   Standard_Integer Nbvar = Func.NbVariables();
   Standard_Boolean Arrive,recad,echecrecad;
   gp_Pnt2d p2d;

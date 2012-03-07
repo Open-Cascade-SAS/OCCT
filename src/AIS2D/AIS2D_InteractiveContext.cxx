@@ -466,10 +466,6 @@ Standard_Integer AIS2D_InteractiveContext::OpenLocalContext( const Standard_Bool
                                                              const Standard_Boolean AcceptEraseOfObj ) {
   if ( !IsCurrent( myLastPicked ) ) 
     if ( !myLastPicked.IsNull() ) {
-#ifdef DEB
-      AIS2D_TypeOfDetection HiMod = myLastPicked -> HasHighlightMode() ? 
-		              myLastPicked->HighlightMode() : myLastPicked->DefaultHighlightMode();
-#endif
       myLastPicked->Unhighlight();
 	 }
   
@@ -528,9 +524,6 @@ void AIS2D_InteractiveContext::CloseLocalContext( const Standard_Integer ind,
    
    if ( GoodIndex == myCurLocalIndex ) {
      myCurLocalIndex = HighestIndex();
-#ifdef DEB
-     const Handle(AIS2D_LocalContext)& LocCtx = myLocalContexts(myCurLocalIndex);
-#endif
    }
    
  }
@@ -1755,10 +1748,6 @@ void AIS2D_InteractiveContext::Highlight( const Handle(AIS2D_InteractiveObject)&
 	 break;
    }
    case AIS2D_DS_Erased:	{
-#ifdef DEB
-     Standard_Integer HiMode = anIObj->HasHighlightMode() ? 
-                      anIObj->HighlightMode() : anIObj->DefaultHighlightMode();
-#endif
      anIObj->Highlight(myCollectorVwr->InitializeColor( mySelectionColor ));
      if ( updateVwr ) myCollectorVwr->Update();
      break;
@@ -1804,7 +1793,6 @@ void AIS2D_InteractiveContext::HighlightWithColor( const Handle(AIS2D_Interactiv
       }
       case AIS2D_DS_Erased: {
 #ifdef DEB
-	    Standard_Integer HiMode = anIObj->HasHighlightMode()? anIObj->HighlightMode():0;
 	    Standard_Integer indCol = myCollectorVwr->InitializeColor( aCol );
 #endif
 		if ( updateVwr) myCollectorVwr->Update();
@@ -2148,10 +2136,7 @@ AIS2D_StatusOfPick AIS2D_InteractiveContext::Select( const Standard_Boolean Upda
 	  myLocalContexts( myCurLocalIndex )->SetSelected( myLastPicked, UpdateVwr );
 	  return AIS2D_SOP_OneSelected;
   }
-#ifdef DEB
-  AIS2D_StatusOfPick PS( AIS2D_SOP_NothingSelected );
-#endif
-  
+
  if ( ! mySeqOfDetIO->IsEmpty() ) {
     Handle(AIS2D_InteractiveObject) theIO;
     Handle(AIS2D_HSequenceOfPrimArchit) thePA;

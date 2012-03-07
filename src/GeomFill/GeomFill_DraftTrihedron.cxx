@@ -17,11 +17,7 @@
 static gp_Vec DDeriv(const gp_Vec& F, const gp_Vec& DF, const gp_Vec& D2F)
 {
   Standard_Real Norma = F.Magnitude();
-#ifdef DEB
-  Standard_Real dot = F.Dot(DF);
-#else
-  F.Dot(DF);
-#endif
+
   gp_Vec Result = (D2F - 2*DF*(F*DF)/(Norma*Norma))/Norma - 
      F*((DF.SquareMagnitude() + F*D2F 
         - 3*(F*DF)*(F*DF)/(Norma*Norma))/(Norma*Norma*Norma));

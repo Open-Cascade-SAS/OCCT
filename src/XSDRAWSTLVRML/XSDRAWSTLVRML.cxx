@@ -198,7 +198,6 @@ static Standard_Integer storevrml
     di << "use: storevrml shape file defl type_of_conversion (0, 1, 2)"    << "\n";
   }
   else {
-    TopAbs_ShapeEnum Types[3] = {TopAbs_FACE, TopAbs_WIRE, TopAbs_EDGE};
     TopoDS_Shape shape = DBRep::Get(argv[1]);
     Standard_Real defl = atof(argv[3]);
     Standard_Integer type = 1;

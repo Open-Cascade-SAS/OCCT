@@ -734,10 +734,7 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
     Standard_Integer iOO = myDS->AddShape(OOE,OOrank);
 
     Standard_Real OOpar; 
-#ifdef DEB
-    Standard_Boolean okOO =
-#endif
-               VP.ParonE(OOE,OOpar);
+    VP.ParonE(OOE,OOpar);
  
     // xpu091198 : 1d interf done in EdgesFiller processing (cto cylcong *)     
     Standard_Boolean sdmeds = FUN_ds_sdm((*myDS),Erest,OOE);
@@ -1186,10 +1183,6 @@ void TopOpeBRep_FacesFiller::StoreCurveInterference(const Handle(TopOpeBRepDS_In
   if ( myDSCIndex == 0 ) {
     TopOpeBRepDS_Curve DSC;
     myDSCIndex = myDS->AddCurve(DSC);
-    
-#ifdef DEB
-    const TopOpeBRepDS_Curve& CCC = myDS->Curve(myDSCIndex);
-#endif
     
 #ifdef DEB
     if (TopOpeBRepDS_GettraceDSF() || TopOpeBRepDS_GettraceDSNC()) 

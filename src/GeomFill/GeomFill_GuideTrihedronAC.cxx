@@ -182,11 +182,6 @@
 
   gp_Vec n(P, PG); // vecteur definissant la normale
   Standard_Real Norm = n.Magnitude(), ndn;
-#ifdef DEB
-  Standard_Real Norm2 = n.SquareMagnitude();
-#else
-  n.SquareMagnitude();
-#endif
   //derivee de n par rapport a Param
   gp_Vec dn, d2n;
   dn.SetLinearForm(dtg_dt, TG, -1, To);

@@ -63,9 +63,6 @@ class MyTrigoFunction: public math_FunctionWithDerivative {
    //-- F= AA*CN*CN+2*BB*CN*SN+CC*CN+DD*SN+EE;
    //-- D = -2*AA*CN*SN+2*BB*(CN*CN-SN*SN)-CC*SN+DD*CN;
    Standard_Real AACN = AA*CN;
-#ifdef DEB
-   Standard_Real BBCN = BB*CN;
-#endif
    Standard_Real BBSN = BB*SN;
 
    F = AACN*CN + BBSN*(CN+CN) + CC*CN + DD*SN + EE;

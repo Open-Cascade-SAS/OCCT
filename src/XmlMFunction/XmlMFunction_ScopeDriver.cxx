@@ -136,7 +136,6 @@ Standard_Boolean XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  th
   LDOM_Node aCurNode = anElement.getFirstChild()/*.getNextSibling().getNextSibling()*/;
   LDOM_Element* aCurElement = (LDOM_Element*)&aCurNode;
   XmlObjMgt_DOMString aValueStr;
-  Standard_Integer i = aFirstInd;
   while (*aCurElement != anElement.getLastChild())
   {
     aValueStr = XmlObjMgt::GetStringValue( *aCurElement );

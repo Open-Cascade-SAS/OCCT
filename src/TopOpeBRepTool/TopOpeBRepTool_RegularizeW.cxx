@@ -626,10 +626,6 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
   // noldW = 1
   // ---------
   if (noldW == 1) {
-#ifdef DEB
-    const TopoDS_Shape& owi =
-#endif  
-                     itm.Key(); // DEB
     const TopTools_ListOfShape& low = itm.Value();
     Standard_Boolean ok = CLASSI.Classilist(low,mapWlow);
     if (!ok) return Standard_False;
@@ -662,10 +658,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
     if (!isb1) continue; 
 
     const TopTools_ListOfShape& lw1 = mapOwNw.Find(Ow1);
-#ifdef DEB
-    Standard_Integer nw1 =
-#endif
-              lw1.Extent();
+
     if (nOw == 1) { 
       // all wires of <mapWs> have been treated, except the last one
       // if (nw1 == 0) mapWlow binds already (Ow1,null); 
@@ -706,10 +699,6 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 		cout<<endl;}
 #endif
       const TopTools_ListOfShape& lw2 = mapOwNw.Find(Ow2);
-#ifdef DEB
-      Standard_Integer nw2 =
-#endif
-                lw2.Extent();
      
       TopTools_ListOfShape lw1r; FUN_addOwlw(Ow1,lw1,lw1r);
       TopTools_ListOfShape lw2r; FUN_addOwlw(Ow2,lw2,lw2r);

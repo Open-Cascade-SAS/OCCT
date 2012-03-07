@@ -121,11 +121,6 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
 
   Standard_Real L2 = MP.SquareMagnitude();
   Standard_Real Vm = -(S.RefRadius() / Sin(A));
-#ifdef DEB
-  Standard_Real Zm = gp_Vec(O, M).Dot(OZ);
-#else
-  gp_Vec(O, M).Dot(OZ);
-#endif
 
 // Case when P is mixed with S ...
   if (L2 < Tol * Tol) {

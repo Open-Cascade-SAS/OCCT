@@ -869,9 +869,6 @@ Standard_Boolean BRepBlend_SurfRstConstRad::Section
   math_Matrix gradsol(1,3,1,3);
   
   Standard_Real prm = P.Parameter();
-#ifdef DEB
-  Standard_Integer NbSpan=(Poles.Length()-1)/2;
-#endif
   Standard_Integer low = Poles.Lower();
   Standard_Integer upp = Poles.Upper();
   Standard_Boolean istgt;

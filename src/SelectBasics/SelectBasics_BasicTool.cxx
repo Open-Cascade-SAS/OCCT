@@ -57,7 +57,6 @@ Standard_Boolean SelectBasics_BasicTool::MatchSegment(const gp_Pnt2d& pBegin,con
 						      const Standard_Real aTol,
 						      Standard_Real& DMin)
 {
-  Standard_Boolean Found= Standard_False;
   const Standard_Real SqTol = aTol * aTol;	
   gp_Vec2d AB, AC, BC; 
   const gp_Pnt2d apoint(X,Y);

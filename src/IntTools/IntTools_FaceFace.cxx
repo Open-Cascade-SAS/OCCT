@@ -751,7 +751,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     //ZZ
     
     {// Check the distances
-      Standard_Boolean bIsDone;
       Standard_Integer i, j, aNbP;
       Standard_Real aT, aT1, aT2, dT, aD2, aD2Max;
       //

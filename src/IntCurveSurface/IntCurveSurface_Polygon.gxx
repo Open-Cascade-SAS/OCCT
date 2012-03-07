@@ -126,7 +126,6 @@ void IntCurveSurface_Polygon::Init(const TheCurve&        C,
 
   //ddout << "IntCurveSurface_Polygon::Init" << endl;
   Standard_Real u=Binf; 
-  Standard_Real u1=Bsup;
   Standard_Integer i=1, i0 = Upars.Lower()-1;
   gp_Pnt P;
 

@@ -77,12 +77,7 @@
   gp_Dir2d dir(OnCirc.Location().XY()-Point2.XY());
   gp_Pnt2d pinterm(Point2.XY()+(distpc+Ron)*dir.XY());
   Standard_Real dist1 = L1.Distance(pinterm);
-  if (Abs(dist1-distpc-Ron) > Tol) {
-#ifdef DEB
-    gp_Pnt2d pinterm(Point2.XY()+(distpc-Ron)*dir.XY()); // Unused ! BUG ???
-    Standard_Real dist1 = L1.Distance(pinterm); // Unused ! BUG ???
-#endif
-  }
+
   if (Abs(dist1-distpc+Ron) <= Tol) {
     dir = gp_Dir2d(-dirL1.Y(),dirL1.X());
     gp_Dir2d direc(originL1.XY()-pinterm.XY());

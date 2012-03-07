@@ -592,10 +592,6 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
     };
     if(HArrPoles->Value(iC) == Param || Param == HArrPoles->Value(iC+1)) return TLaw->Value(Param);
   };
-#ifdef DEB
-  Standard_Real Po = 
-#endif
-    HArrPoles->Value(iC);
   //  Calculate differenciation between apporoximated and local values of AngleAT
   Standard_Real AngP = TLaw->Value(Param), AngPo = HArrAngle->Value(iC), dAng = AngP - AngPo;
   gp_Vec Tangent, Normal, BN;

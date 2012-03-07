@@ -1258,7 +1258,6 @@ Standard_Address WNT_WDriver :: InternalOpenBuffer (
                                 ) {
 
  PW32_Allocator        aNew     = NULL;
- Aspect_TypeOfDrawMode DrawMode = Aspect_TODM_REPLACE;
 
  MyDrawMode = aDrawMode;
  aNew       = _FindAllocator ( myAllocators, aRetainBuffer );

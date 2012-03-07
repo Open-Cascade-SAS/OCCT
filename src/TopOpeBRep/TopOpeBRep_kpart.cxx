@@ -467,9 +467,6 @@ Standard_Boolean FUNBREP_topogline_new
     Standard_ProgramError::Raise("FUNBREP_topogline_new : line is not a GLine");
     return Standard_False;
   }
-#ifdef DEB
-  Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
-#endif	    
 
   Standard_Integer iVP = VP.Index();
   Standard_Integer iINON1,iINONn,nINON; L.VPBounds(iINON1,iINONn,nINON);
@@ -583,10 +580,6 @@ Standard_Boolean FUNBREP_topogline
  Standard_Real& parline,TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
-#ifdef DEB
-  Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
-#endif	    
-
   if (L.TypeLineCurve() == TopOpeBRep_WALKING) {
     Standard_ProgramError::Raise("FUNBREP_topogline : line is not a GLine");
     return Standard_False;

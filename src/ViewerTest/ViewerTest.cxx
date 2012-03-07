@@ -671,12 +671,6 @@ Handle(AIS_InteractiveObject) DetectedFromContext(
       Handle(AIS_InteractiveObject) aisPickedShape =
 	Handle(AIS_InteractiveObject)::DownCast(aContext->DetectedInteractive());
       ret = aisPickedShape;
-#ifdef DEB
-      const char *name =
-#endif
-                   (  GetMapOfAIS().IsBound1(aisPickedShape) )?
-	GetMapOfAIS().Find1(aisPickedShape).ToCString() :
-	 (char *)  "????";
     }
   }
   return ret;
@@ -3184,7 +3178,6 @@ static int VSetTransMode ( Draw_Interpretor& di, Standard_Integer argc, const ch
   }
 
   Standard_Boolean IsBound = GetMapOfAIS().IsBound2(shapeName);
-  Standard_Boolean IsDatum = Standard_False;
   Handle(Standard_Transient) anObj;
   if ( IsBound ) {
     anObj = GetMapOfAIS().Find2(shapeName);
@@ -3241,7 +3234,7 @@ Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char**
   /////////////////////
   TopoDS_Shape aShape =  DBRep::Get(a[1]);
   aContext2D->EraseAll(Standard_True);
-  Standard_Integer aPolyAlgo = 0;
+  //Standard_Integer aPolyAlgo = 0;
   Standard_Boolean IsPoly = Standard_False;
   gp_Ax2 anAx2 = gp::XOY();
 
@@ -3301,7 +3294,7 @@ Standard_Integer phlrtest(Draw_Interpretor&,   Standard_Integer n,   const char*
   /////////////////////
   TopoDS_Shape aShape =  DBRep::Get(a[1]);
   aContext2D->EraseAll(Standard_True);
-  Standard_Integer aPolyAlgo = 0;
+  //Standard_Integer aPolyAlgo = 0;
   Standard_Boolean IsPoly = Standard_True;
   gp_Ax2 anAx2 = gp::XOY();
 

@@ -298,10 +298,7 @@ void Graphic2d_Paragraph::ChangeText (const TCollection_ExtendedString &aText,
                                    const Standard_Integer aRow,
                                    const Standard_Integer aColumn) {
 Standard_Integer i,length = myTextDescriptorList.Length() ;
-#ifdef DEB
-Standard_Integer row = (aRow > 0) ? Min(aRow,MAXROW-1) : MAXROW-1 ;
-Standard_Integer column = (aColumn > 0) ? Min(aColumn,MAXCOLUMN-1) : MAXCOLUMN-1 ;
-#endif
+
 Standard_Integer descriptor = TEXT_DESCRIPTOR(aRow,aColumn,0,0,0,0) ;
 Standard_Integer the_position = TEXT_POSITION(descriptor) ;
 
@@ -533,10 +530,6 @@ Standard_Boolean Graphic2d_Paragraph::Pick (const Standard_ShortReal X,
                                        const Handle(Graphic2d_Drawer)& aDrawer) 
 {
 Standard_Boolean theStatus = Standard_False;
-#ifdef DEB
-Standard_ShortReal scale = 
-#endif
-  (myIsZoomable) ? myScale*aDrawer->Scale() : myScale;
 Standard_ShortReal TX = X, TY = Y;
 
   if (IsInMinMax (X, Y, aPrecision)) {

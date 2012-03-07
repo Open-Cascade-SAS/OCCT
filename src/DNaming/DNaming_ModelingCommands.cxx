@@ -976,8 +976,6 @@ static Standard_Integer DNaming_AddFillet (Draw_Interpretor& theDI,
 
   TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
 
-  Standard_Integer aSurfaceType = 0;
-
   Standard_Real aRadius = atof(theArg[3]);
   DNaming::GetReal(aFun,FILLET_RADIUS)->Set(aRadius);  
 
@@ -1373,7 +1371,7 @@ static Standard_Integer DNaming_SphereRadius (Draw_Interpretor& theDI,
       return 0;
     }
   }
- ERR:
+
   cout << "DNaming_SphRadius : Error" << endl;
   return 1;  
 }
@@ -1644,7 +1642,6 @@ static Standard_Boolean MakeSelection (const Handle(TDataStd_UAttribute)& Obj,
 	TDF_Label aResultLabel =  aFun->Label().FindChild(FUNCTION_RESULT_LABEL, Standard_True); 
 	TDF_Reference::Set(Obj->Label(), aResultLabel ); //result of the object
 	aResultLabel.ForgetAllAttributes(Standard_True);
-	Standard_Boolean aKeepOrientation(Standard_False);
 	Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue( ContextObj);	
 	try{
 	  const TopoDS_Shape& aContext = aNS->Get();
@@ -1703,7 +1700,6 @@ static Standard_Boolean MakeXSelection (const Handle(TDataStd_UAttribute)& Obj,
 	TDF_Reference::Set(Obj->Label(), aResultLabel ); //result of the object
 	aResultLabel.ForgetAllAttributes(Standard_True);
 
-	Standard_Boolean aKeepOrientation(Standard_False);
 	Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue( ContextObj);	
 	try{
 	  const TopoDS_Shape& aContext = aNS->Get();
@@ -1867,7 +1863,6 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 
     if(!aNS.IsNull() && !aNS->IsEmpty()) {
       const TopoDS_Shape&  aRootShape = aNS->Get();
-      TopAbs_ShapeEnum aType = aRootShape.ShapeType();
       //TopTools_MapOfOrientedShape aMap0;
       //MapOfOrientedShapes(aRootShape, aMap0);
       TopTools_ListOfShape aList, aFailedList;
@@ -1971,7 +1966,7 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
       return 0;
     }
   }
- ERR:
+
   cout << "DNaming_TestSingle : Error" << endl;
   return 1;  
 }
@@ -2007,7 +2002,6 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 
     if(!aNS.IsNull() && !aNS->IsEmpty()) {
       const TopoDS_Shape&  aRootShape = aNS->Get();
-      TopAbs_ShapeEnum aType = aRootShape.ShapeType();
       TopTools_MapOfOrientedShape aMap0;
       MapOfOrientedShapes(aRootShape, aMap0);
       TopTools_ListOfShape aList, aFailedList;
@@ -2102,7 +2096,7 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
       return 0;
     }
   }
- ERR:
+
   cout << "DNaming_TestMultiple : Error" << endl;
   return 1;  
 }

@@ -137,10 +137,6 @@ void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
   for (; exp.More(); exp.Next()) {
     const TopoDS_Face& theface = TopoDS::Face(exp.Current());
     IntCurvesFace_Intersector theInt(theface,0.);
-#ifdef DEB
-    TopAbs_Orientation orface =
-#endif
-                                theface.Orientation();
     for (Standard_Integer i = 1; i<=myNbelem; i++) {
 
       HC->ChangeCurve().Load(new Geom_Circle(Scir(i)));
@@ -179,10 +175,6 @@ void LocOpe_CSIntersector::Perform(const TColGeom_SequenceOfCurve& Scur)
   for (; exp.More(); exp.Next()) {
     const TopoDS_Face& theface = TopoDS::Face(exp.Current());
     IntCurvesFace_Intersector theInt(theface,0.);
-#ifdef DEB
-    TopAbs_Orientation orface =
-#endif
-                                theface.Orientation();
     for (Standard_Integer i = 1; i<=myNbelem; i++) {
       if (Scur(i).IsNull()) {
 	continue;
@@ -599,10 +591,6 @@ static void AddPoints(IntCurvesFace_Intersector& theInt,
   Standard_Integer nbpoints = theSeq.Length();
   Standard_Integer newpnt = theInt.NbPnt();
   Standard_Real param,paramu,paramv;
-#ifdef DEB
-  TopAbs_Orientation orface =
-#endif
-                              theface.Orientation();
   for (Standard_Integer j = 1; j<=newpnt; j++) {
     const gp_Pnt& thept = theInt.Pnt(j);
     param = theInt.WParameter(j);

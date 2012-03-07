@@ -77,10 +77,6 @@ void TopOpeBRep_FaceEdgeFiller::Insert
 
   for (; FEINT.MorePoint(); FEINT.NextPoint() ) {
     gp_Pnt2d      pUV; FEINT.UVPoint(pUV);
-#ifdef DEB
-    TopAbs_State  sta =
-#endif
-                        FEINT.State();
     Standard_Real parE = FEINT.Parameter();
 
 #ifdef DEB

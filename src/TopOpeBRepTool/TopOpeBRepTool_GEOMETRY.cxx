@@ -79,10 +79,6 @@ Standard_EXPORT Standard_Boolean FUN_tool_onapex(const gp_Pnt2d& p2d,const Handl
   }
   if (ST == GeomAbs_Sphere) {
     Standard_Real pisur2 = M_PI*.5;
-#ifdef DEB
-    Standard_Real u =
-#endif
-            p2d.X();
     Standard_Real v = p2d.Y();
     Standard_Boolean vpisur2 = (Abs(v-pisur2) < toluv);
     Standard_Boolean vmoinspisur2 = (Abs(v+pisur2) < toluv);
@@ -118,10 +114,6 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d,const Handle(Geom_Surfac
       }
       else if (du < tol) {
 	Standard_Real vf = GS.FirstVParameter();
-#ifdef DEB
-        Standard_Real vl =
-#endif
-                 GS.LastVParameter();
 	Standard_Boolean onvf = Abs(p2d.Y()-vf)<toluv;
 
 	Standard_Real x = p2d.X(); Standard_Real y = p2d.Y();
@@ -217,9 +209,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_line(const Handle(Geom2d_Curve)& pc)
   if (pcb.IsNull()) return Standard_False;
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType typ = GC2d.GetType();
-#ifdef DEB
-  Standard_Boolean isquad = Standard_False;
-#endif
+
   if (typ == GeomAbs_Line) return Standard_True;
 
   return Standard_False ;

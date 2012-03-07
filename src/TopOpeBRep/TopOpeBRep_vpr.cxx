@@ -184,10 +184,6 @@ static void FUN_VPgeometryfound
   
   const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
   if (BDS.HasShape(edge)) {
-#ifdef DEB
-    Standard_Integer iedge =
-#endif
-                BDS.Shape(edge);
     const TopOpeBRepDS_ListOfInterference& EPIL = BDS.ShapeInterferences(edge);
     TopOpeBRepDS_ListIteratorOfListOfInterference itEPIL(EPIL);
     EPIfound = FF.GetGeometry(itEPIL,VP,PVIndex,PVKind);
@@ -233,10 +229,6 @@ static void FUN_VPgeometryfound
     Standard_Real tolOOe = FUN_tool_maxtol(OOedge);
     Standard_Real OOtolp = Precision::Parametric(tolOOe);
     if (BDS.HasShape(OOedge)) {
-#ifdef DEB
-      Standard_Integer iooedge =
-#endif
-                    BDS.Shape(OOedge);
       const TopOpeBRepDS_ListOfInterference& OOEPIL = BDS.ShapeInterferences(OOedge);
       TopOpeBRepDS_ListIteratorOfListOfInterference OOitEPIL(OOEPIL);
       OOEPIfound = FF.GetGeometry(OOitEPIL,VP,PVIndex,PVKind);
@@ -412,9 +404,6 @@ Standard_EXPORT Standard_Boolean FUN_newtransEdge
   Standard_Boolean rest = inERL || isse;
   Standard_Boolean interf2d = EtgOOF && Lonrest && rest;
   Standard_Boolean interf3dtg = EtgOOF && rest && !interf2d; // xpu260898 :cto902D6,(e15,p3,f9)
-#ifdef DEB
-  Standard_Boolean interf3d = !interf2d && !interf3dtg;
-#endif
 
   Standard_Real factor = 1.e-2; 
   TopOpeBRepTool_makeTransition MKT; 
@@ -546,9 +535,6 @@ static void FUN_processCPI
  Standard_Integer& keptVPnbr)
 //-----------------------------------------------------------------------
 {    
-#ifdef DEB
-  Standard_Boolean CPIfound = !Ifound.IsNull();
-#endif
   Standard_Integer OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;
 
   TopOpeBRepDS_Transition ttransLine = transLine;
@@ -990,13 +976,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
     }
   }//myLineINL
 
-#ifdef DEB
-  Standard_Integer SEPI = (EPIfound) ? IEPI->Support() : 0;
-#endif
   TopOpeBRepDS_Kind SKEPI; if(EPIfound) SKEPI=IEPI->SupportType();
-#ifdef DEB
-  Standard_Integer SCPI = (CPIfound) ? ICPI->Support() : 0;
-#endif
   TopOpeBRepDS_Kind SKCPI; if(CPIfound) SKCPI=ICPI->SupportType();
 
   // Gfound = VP corresponds with an existing geometry of ShapeIndex

@@ -77,9 +77,6 @@ Standard_Boolean DDocStd::Find (const Handle(TDocStd_Document)& D,
 				const Standard_Boolean  Complain)
 {
   Label.Nullify();
-#ifdef DEB
-  Standard_Boolean Found;
-#endif
   TDF_Tool::Label(D->GetData(),Entry,Label,Standard_False);
   if (Label.IsNull() && Complain) cout<<"No label for entry "<<Entry<<endl;
   return !Label.IsNull();
@@ -96,9 +93,6 @@ Standard_Boolean DDocStd::Find (const Handle(TDocStd_Document)& D,
 				Handle(TDF_Attribute)&  A,
 				const Standard_Boolean  Complain) 
 {
-#ifdef DEB
-  Standard_Boolean found;
-#endif
   TDF_Label L;
   if (Find(D,Entry,L,Complain)) {
     if (L.FindAttribute(ID,A)) return Standard_True;

@@ -29,7 +29,6 @@ void OpenGl_TriangleStrip::draw_tmesh (const Tint front_lighting_model,
 {
   Tint              i, newList = 0;
 
-  tel_point pfn = myData.fnormals;
   tel_colour pfc = myData.fcolours;
   tel_point pv  = myData.vertices;
   tel_colour pvc = myData.vcolours;

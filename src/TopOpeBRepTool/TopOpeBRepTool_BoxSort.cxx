@@ -290,10 +290,6 @@ const Bnd_Box& TopOpeBRepTool_BoxSort::Box(const TopoDS_Shape& S) const
   }
 
   if ( myHBT->HasBox(S) ) {
-#ifdef DEB
-    Standard_Integer i =
-#endif
-            myHBT->Index(S);
     const Bnd_Box& B = myHBT->Box(S);
     return B;
   }

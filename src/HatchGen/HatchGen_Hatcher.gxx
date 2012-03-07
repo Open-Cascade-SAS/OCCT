@@ -753,10 +753,6 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
   printf("\n       P:%+10.5g  Tg2d:%+10.5g , %+10.5g  N2d:%+10.5g , %+10.5g  Crv:%+10.5g\n\n",
 	 Point.Parameter(),Tangente.X(),Tangente.Y(),Normale.X(),Normale.Y(),Courbure);
 #endif
-#ifdef DEB
-  Standard_Real ParamAtIntersection = 
-#endif
-    Point.Parameter();
   for (Standard_Integer IPntE = 1 ; IPntE <= Point.NbPoints() ; IPntE++) {
 
     const HatchGen_PointOnElement& PntE = Point.Point (IPntE) ;

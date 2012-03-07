@@ -340,10 +340,6 @@ Standard_Boolean AlienImage_X11XWDAlienData::Read( OSD_File& file )
 	    	}
 	}
 
-#ifdef DEB
-	AlienImage_X11XColor *p  = ( AlienImage_X11XColor * )myColors ;
-#endif
-
 #ifdef TRACE
 	if ( Verbose ) 	{ 
 	  AlienImage_X11XColor *p = ( AlienImage_X11XColor * )myColors;

@@ -517,7 +517,6 @@ Standard_Boolean OpenGl_Workspace::Print
 
   // setup printing context and viewport
   GLint aViewPortBack[4]; 
-  GLint aReadBufferPrev = GL_BACK;
   GLint anAlignBack     = 1;
 
   OpenGl_PrinterContext aPrinterContext (myGContext);

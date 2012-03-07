@@ -585,11 +585,6 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       Standard_Boolean mySquare = (methode == 2);
       Standard_Integer degmin = 4;
       Standard_Integer NbIteration = 5;
-#ifdef DEB
-      Standard_Integer NbConst =
-#endif
-                                 NbConstraint(TABofCC->Value(1).Constraint(),
-					      TABofCC->Value(NbPoints).Constraint());
       
       if (Degree < 4) degmin = Max(1, Degree -1);
       degmin = Max(degmin, NbConstraint(TABofCC->Value(1).Constraint(),  

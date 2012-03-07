@@ -484,10 +484,7 @@ static Standard_Boolean TestPassedSolutionWithNegativeState(const TColStd_Sequen
 	if (Arrive) {
 	  static math_Vector bidF(1,1);
 	  static math_Matrix bidD(1,1,1,2);
-#ifdef DEB
-	  Standard_Boolean bidB = 
-#endif
-	    sp.Values(UV,bidF,bidD);
+      sp.Values(UV,bidF,bidD);
 	  break;
 	}
       }

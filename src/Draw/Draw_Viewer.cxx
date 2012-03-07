@@ -498,9 +498,6 @@ void   Draw_Viewer::RotateView  (const Standard_Integer id,
   if (Draw_Batch) return;
   if (myViews[id]) {
     gp_Trsf T = myViews[id]->Matrix;
-#ifdef DEB
-    Standard_Real z = myViews[id]->Zoom;
-#endif
 
     T.Invert();
     gp_Pnt PP(0,0,0);

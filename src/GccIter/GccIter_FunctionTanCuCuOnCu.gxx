@@ -290,11 +290,6 @@ Standard_Boolean GccIter_FunctionTanCuCuOnCu::
 //norme des Tani.
   Standard_Real nnor1 = Tan1.Magnitude();
   Standard_Real nnor2 = Tan2.Magnitude();
-#ifdef DEB
-  Standard_Real nnor3 = Tan3.Magnitude();
-#else
-  Tan3.Magnitude();
-#endif
 // Fonctions Fui.
 // ==============
   Fval(1) = (P3P1.Dot(P3P1)-X(4)*X(4))/(FirstRad*FirstRad);
@@ -323,11 +318,6 @@ Standard_Boolean GccIter_FunctionTanCuCuOnCu::
 //normales au courbes normees Nori et non nromees nori et norme des nori.
   Standard_Real nnor1 = Tan1.Magnitude();
   Standard_Real nnor2 = Tan2.Magnitude();
-#ifdef DEB
-  Standard_Real nnor3 = Tan3.Magnitude();
-#else
-  Tan3.Magnitude();
-#endif
 // Derivees dFui/uj  1 <= ui <= 3 , 1 <= uj <= 3
 // =============================================
   Deriv(1,1) = 2.*Tan1.Dot(P3P1)/(FirstRad*FirstRad);
@@ -374,11 +364,6 @@ Standard_Boolean GccIter_FunctionTanCuCuOnCu::
 //normales au courbes normees Nori et non nromees nori et norme des nori.
   Standard_Real nnor1 = Tan1.Magnitude();
   Standard_Real nnor2 = Tan2.Magnitude();
-#ifdef DEB
-  Standard_Real nnor3 = Tan3.Magnitude();
-#else
-  Tan3.Magnitude();
-#endif
 // Fonctions Fui.
 // ==============
   Fval(1) = (P3P1.Dot(P3P1)-X(4)*X(4))/(FirstRad*FirstRad);

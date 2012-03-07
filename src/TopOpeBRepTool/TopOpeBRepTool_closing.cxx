@@ -76,28 +76,15 @@ Standard_EXPORT Standard_Boolean FUN_tool_correctCLO(TopoDS_Edge& E, const TopoD
 //  Standard_Real f,l,tolpc; Standard_Boolean trim3d = Standard_True; 
 //  Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(E,F,f,l,tolpc,trim3d);  
   Standard_Real f,l,tol; Handle(Geom2d_Curve) PC;
-#ifdef DEB
-  Standard_Boolean hasold =
-#endif
-               FC2D_HasOldCurveOnSurface(E,FFOR,PC);
-#ifdef DEB
-  Standard_Boolean hasnew =
-#endif
-               FC2D_HasNewCurveOnSurface(E,FFOR,PC);
   PC = FC2D_EditableCurveOnSurface(E,FFOR,f,l,tol);  
 
   Standard_Boolean isoU,isoV; gp_Pnt2d o2d; gp_Dir2d d2d; 
-#ifdef DEB
-  Standard_Boolean ISO =
-#endif
-            TopOpeBRepTool_TOOL::UVISO(PC,isoU,isoV,d2d,o2d);
+  TopOpeBRepTool_TOOL::UVISO(PC,isoU,isoV,d2d,o2d);
   Standard_Boolean xiso = (inU && isoU)||((!inU) && isoV);
   if (!xiso) return Standard_False;      
   Standard_Real par = dx*f + (1-dx)*l; gp_Vec2d dxx;
-#ifdef DEB
-  Standard_Boolean ok =
-#endif
-           FUN_tool_getdxx(FFOR,E,par,dxx);
+
+  FUN_tool_getdxx(FFOR,E,par,dxx);
 
   TopExp_Explorer ex(FFOR, TopAbs_EDGE);
   for (; ex.More(); ex.Next()){    
@@ -107,28 +94,14 @@ Standard_EXPORT Standard_Boolean FUN_tool_correctCLO(TopoDS_Edge& E, const TopoD
 
 //    Standard_Real f1,l1; Handle(Geom2d_Curve) PC1 = BRep_Tool::CurveOnSurface(e1,F,f1,l1);  
     Standard_Real f1,l1,tol1; Handle(Geom2d_Curve) PC1;
-#ifdef DEB
-    Standard_Boolean hasold1 =
-#endif
-                  FC2D_HasOldCurveOnSurface(e1,FFOR,PC1);
-#ifdef DEB
-    Standard_Boolean hasnew1 =
-#endif
-                  FC2D_HasNewCurveOnSurface(e1,FFOR,PC1);
     PC1 = FC2D_EditableCurveOnSurface(e1,FFOR,f1,l1,tol1);
 
     Standard_Boolean isoU1,isoV1; gp_Pnt2d o2d1; gp_Dir2d d2d1; 
-#ifdef DEB
-    Standard_Boolean ISO1 =
-#endif
-               TopOpeBRepTool_TOOL::UVISO(PC1,isoU1,isoV1,d2d1,o2d1);
+    TopOpeBRepTool_TOOL::UVISO(PC1,isoU1,isoV1,d2d1,o2d1);
 
     // 2d(e1,FFOR) and 2d(E,FFOR) describe the same side of matter 
     Standard_Real par1 = dx*f1 + (1-dx)*l1; gp_Vec2d dxx1;
-#ifdef DEB
-    Standard_Boolean ok1 =
-#endif
-              FUN_tool_getdxx(FFOR,e1,par1,dxx1);
+    FUN_tool_getdxx(FFOR,e1,par1,dxx1);
     Standard_Real dot = dxx.Dot(dxx1);
     if (dot < 0.) continue;
 

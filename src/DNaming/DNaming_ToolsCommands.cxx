@@ -142,7 +142,6 @@ void DNaming::ToolsCommands (Draw_Interpretor& theCommands)
   if (done) return;
   done = Standard_True;
   const char* g = "Naming data commands " ;
-  const char* g2 = "Naming modeling commands" ;
 
   theCommands.Add ("CopyShape", 
                    "CopyShape (Shape1 [Shape2] ...)",

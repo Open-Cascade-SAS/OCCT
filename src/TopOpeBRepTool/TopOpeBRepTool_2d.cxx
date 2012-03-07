@@ -282,9 +282,6 @@ static void FC2D_translate(Handle(Geom2d_Curve) C2D,
   
   if (isperio && uviso && !EFnull) {
     // C2D prend comme origine dans F l'origine de la pcurve de EF dans F
-#ifdef DEB
-    Standard_Real period = S1->IsUPeriodic() ? S1->UPeriod() : S1->IsVPeriodic() ? S1->VPeriod() : 0.;
-#endif
     TopoDS_Face FFOR = F;
     FFOR.Orientation(TopAbs_FORWARD);
     gp_Pnt2d p1,p2; BRep_Tool::UVPoints(EF,FFOR,p1,p2);

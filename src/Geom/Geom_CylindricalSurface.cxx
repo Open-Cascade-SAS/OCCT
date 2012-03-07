@@ -191,17 +191,6 @@ void Geom_CylindricalSurface::Coefficients (Standard_Real& A1, Standard_Real& A2
   Standard_Real T22 = T.Value (2, 2);
   Standard_Real T23 = T.Value (2, 3);
   Standard_Real T24 = T.Value (2, 4);
-#ifdef DEB
-  Standard_Real T31 = T.Value (3, 1);
-  Standard_Real T32 = T.Value (3, 2);
-  Standard_Real T33 = T.Value (3, 3);
-  Standard_Real T34 = T.Value (3, 4);
-#else
-  T.Value (3, 1);
-  T.Value (3, 2);
-  T.Value (3, 3);
-  T.Value (3, 4);
-#endif
   A1 = T11 * T11 + T21 * T21;
   A2 = T12 * T12 + T22 * T22;
   A3 = T13 * T13 + T23 * T23;

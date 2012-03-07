@@ -420,10 +420,6 @@ Standard_Integer IntCurveSurface_Polyhedron::TriConnex
    Standard_Integer&      TriCon,
    Standard_Integer&      OtherP) const
 {
-#ifdef DEB
-  Standard_Integer nbdeltaUp1 = nbdeltaU + 1;
-  Standard_Integer nbdeltaUm2 = nbdeltaU + nbdeltaU;
-#endif
   Standard_Integer Pivotm1    = Pivot-1;
   Standard_Integer nbdeltaVp1 = nbdeltaV+1;
   Standard_Integer nbdeltaVm2 = nbdeltaV + nbdeltaV;

@@ -304,7 +304,6 @@ void BoundedArc (const TheArc& A,
 	      //Standard_Integer aNbNodes = 23;
 	      Standard_Real    aDelta   = (parap1 - para)/(aNbNodes + 1.);
 	      Standard_Integer ii;
-	      Standard_Real    aMinPar  = Pdeb - 1.;
 	      Standard_Real    aCurPar;
 	      Standard_Real    aCurVal;
 

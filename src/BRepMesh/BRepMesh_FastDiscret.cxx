@@ -318,7 +318,6 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface,
 
   gp_Pnt2d uvFirst, uvLast;
 
-  TopAbs_Orientation orFace = face.Orientation();
   Handle(Poly_Triangulation) T;
   TopLoc_Location loc;
 

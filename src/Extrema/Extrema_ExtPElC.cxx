@@ -278,11 +278,6 @@ Method:
   Standard_Real R = C.MajorRadius();
   Standard_Real r = C.MinorRadius();
   gp_Vec OPp (O,Pp);
-#ifdef DEB
-  Standard_Real OPpMagn = OPp.Magnitude();
-#else
-  OPp.Magnitude();
-#endif
   Standard_Real X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
   Standard_Real Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
 
@@ -371,11 +366,6 @@ Method:
 
   Standard_Real F = C.Focal();
   gp_Vec OPp (O,Pp);
-#ifdef DEB
-  Standard_Real OPpMagn = OPp.Magnitude();
-#else
-  OPp.Magnitude();
-#endif
   Standard_Real X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
 //  Standard_Real Y = Sqrt(OPpMagn*OPpMagn-X*X);
   Standard_Real Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));

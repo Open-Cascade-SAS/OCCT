@@ -947,11 +947,6 @@ static Standard_Integer FUN_putInterfonDegenEd
  TopoDS_Edge& OOEi, Standard_Real& paronOOEi, Standard_Boolean hasOOEi,
  Standard_Boolean& isT2d)
 {  
-#ifdef DEB
-  Standard_Boolean traceDSF = TopOpeBRepDS_GettraceDSF();
-  Standard_Boolean traceDEGEN = TopOpeBRepDS_GettraceDEGEN();
-  Standard_Boolean trace = traceDSF || traceDEGEN;
-#endif
   OOEi.Nullify();
 
   Standard_Boolean on3 = (VP.ShapeIndex() == 3);// <VP> is shared by edge of 1 and edge of 2.

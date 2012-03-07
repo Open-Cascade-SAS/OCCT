@@ -1069,11 +1069,6 @@ void IntCurveSurface_Inter::InternalPerformCurveQuadric(const TheCurve&         
   IntCurveSurface_TheQuadCurvExactInter QuadCurv(surface,curve);  
   if(QuadCurv.IsDone()) { 
     Standard_Integer NbRoots = QuadCurv.NbRoots();
-#ifdef DEB
-    Standard_Integer NbInter = QuadCurv.NbIntervals();
-#else
-    QuadCurv.NbIntervals();
-#endif
     Standard_Real u,v,w;
     for(Standard_Integer i = 1; i<= NbRoots; i++) { 
       w = QuadCurv.Root(i); 
@@ -1127,11 +1122,6 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
     IntCurveSurface_TheQuadCurvExactInter QuadCurv(surface,curve);  
     if(QuadCurv.IsDone()) { 
       Standard_Integer NbRoots = QuadCurv.NbRoots();
-#ifdef DEB
-      Standard_Integer NbInter = QuadCurv.NbIntervals();
-#else
-      QuadCurv.NbIntervals();
-#endif
       Standard_Real u,v,w;
       for(Standard_Integer i = 1; i<= NbRoots; i++) { 
 	w = QuadCurv.Root(i); 

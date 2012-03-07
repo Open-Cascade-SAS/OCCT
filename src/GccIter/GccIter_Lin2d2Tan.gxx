@@ -26,9 +26,9 @@ GccIter_Lin2d2Tan::
      
    par1sol = 0.;
    pararg1 = 0.;
-#ifdef DEB
-   Standard_Real Tol = Abs(Tolang);
-#endif
+
+   //Standard_Real Tol = Abs(Tolang);
+
    WellDone = Standard_False;
    if (Qualified1.IsEnclosed()) { GccEnt_BadQualifier::Raise(); }
    gp_Circ2d C1 = Qualified1.Qualified();

@@ -377,8 +377,6 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
   Standard_Boolean res = myIntersectionDone;
 
 #ifdef DEB
-  Standard_Integer i1 = Index(1);
-  Standard_Integer i2 = Index(2);
   if (TopOpeBRep_GettraceSI() && res) {
     if      ( myFFDone )   cout<<"FF : ";
     else if ( myEEFFDone ) cout<<"    EE : ";
@@ -581,8 +579,6 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
 #ifdef DEB
     SAVFFi1 = myFaceScanner.Index(); SAVFFi2 = myFaceExplorer.Index(); 
     if (TopOpeBRep_GettraceSI()) {
-      Standard_Integer i1 = myFaceScanner.Index();
-      Standard_Integer i2 = myFaceExplorer.Index();
       cout<<"?? FF : ";
       myFaceScanner.DumpCurrent(cout); myFaceExplorer.DumpCurrent(cout);
       cout<<endl;
@@ -716,8 +712,6 @@ void TopOpeBRep_ShapeIntersector::FindEEFFIntersection()
     myEEIntersector.Perform(GS1,GS2);
 
 #ifdef DEB
-    Standard_Integer i1 = Index(1);
-    Standard_Integer i2 = Index(2);
     if (TopOpeBRep_GettraceSI() && myEEIntersector.IsEmpty()) {
       cout<<"    EE : ";
       myEdgeScanner.DumpCurrent(cout);

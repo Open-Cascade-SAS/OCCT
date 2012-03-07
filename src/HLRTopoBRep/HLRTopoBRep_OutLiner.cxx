@@ -91,7 +91,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face& F,
 {
   BRep_Builder B;
   TopExp_Explorer exE, exW;
-  Standard_Boolean splitted = Standard_False;
+  //Standard_Boolean splitted = Standard_False;
 
   TopTools_IndexedDataMapOfShapeListOfShape aVEMap;
   TopExp::MapShapesAndAncestors(F, TopAbs_VERTEX, TopAbs_EDGE, aVEMap);

@@ -61,10 +61,6 @@ void MXCAFDoc_MaterialStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 {
   Handle(XCAFDoc_Material) S = Handle(XCAFDoc_Material)::DownCast (Source);
   Handle(PXCAFDoc_Material) T = Handle(PXCAFDoc_Material)::DownCast (Target);
-#ifdef DEB
-  PTColStd_TransientPersistentMap& TPMap = 
-#endif
-    RelocTable->OtherTable();
   Handle(TCollection_HAsciiString) aNameStr = S->GetName();
   Handle(TCollection_HAsciiString) aDescrStr = S->GetDescription();
   Handle(TCollection_HAsciiString) aDensNameStr = S->GetDensName();

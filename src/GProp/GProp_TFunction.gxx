@@ -75,7 +75,7 @@ Standard_Boolean GProp_TFunction::Value(const Standard_Real  X,
   // Compute the integral from myUMin to aUMax of myUFunction.
   Standard_Integer i;
   Standard_Real    aCoeff        = aV2d.Y();
-  Standard_Integer aNbUIntervals = anUKnots->Length() - 1;
+  //Standard_Integer aNbUIntervals = anUKnots->Length() - 1;
   //Standard_Real    aTol          = myTolerance/aNbUIntervals;
   Standard_Real    aTol          = myTolerance;
 

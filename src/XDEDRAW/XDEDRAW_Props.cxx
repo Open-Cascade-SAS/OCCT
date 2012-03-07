@@ -781,7 +781,6 @@ static Standard_Boolean GetMassProps(const TDF_Label& aLabel, gp_XYZ& theCenterG
       TColStd_Array1OfReal anArrMass(1,comp.Length());
       anArrMass.Init(0.0);
       Standard_Real aTotalMass =0.0;
-      Standard_Boolean isFind = Standard_True;
       Standard_Integer k=1;
       for ( ; k <= comp.Length(); k++ ) {
         TDF_Label lab = comp(k);
