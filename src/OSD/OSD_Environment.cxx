@@ -143,7 +143,17 @@ void OSD_Environment::Build ()
   else {
     // Allocation memoire. Surtout tout la heap!
     index = Ibuffer++;
-    buffer = (char **) realloc ( buffer, Ibuffer * sizeof(char*) );
+    char **aTmp;
+    aTmp = (char **) realloc ( buffer, Ibuffer * sizeof(char*) );
+    if (aTmp)
+    {
+      buffer = aTmp;
+    }
+    else
+    {
+      myError.SetValue(errno, Iam, "Memory realloc failure");
+      return;
+    }
   }
    
   // create a new entry in the buffer and add it to environment
