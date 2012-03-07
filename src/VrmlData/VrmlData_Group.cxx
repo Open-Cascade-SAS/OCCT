@@ -323,19 +323,21 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
             // because each name must remain unique in the global scene.
             if (aNode->Name())
               if (* aNode->Name() != '\0') {
-                char buf[1024];
-                strncpy (buf, aFileName.ToCString(), sizeof(buf));
-                char * ptr = strchr (buf, '.');
-                if (!ptr)
-                  ptr = strchr (buf,'\0');
-                * ptr = '_';
-                strncpy (ptr+1, aNode->Name(), (&buf[sizeof(buf)]-ptr)-2);
-                const size_t len = strlen(buf) + 1;
+                TCollection_AsciiString buf;
+                buf += aFileName;
+                Standard_Integer aCharLocation = buf.Location (1, '.', 1, buf.Length());
+                if (aCharLocation != 0)
+                {
+                  buf.Remove (aCharLocation, buf.Length() - aCharLocation + 1);
+                }
+                buf += '_';
+                buf += aNode->Name();
+                const size_t len = buf.Length();
                 char * aNewName =
                   static_cast<char *> (Scene().Allocator()->Allocate (len));
                 if (aNewName) {
                   aNode->myName = aNewName;
-                  memcpy (aNewName, buf, len);
+                  memcpy (aNewName, buf.ToCString(), len);
                 }
               }
           }

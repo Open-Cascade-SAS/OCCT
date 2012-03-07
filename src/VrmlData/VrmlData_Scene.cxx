@@ -1012,21 +1012,23 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode
           aStatus = theNode->Write (thePrefix);
         else {
           // Name is written under DEF clause
-          char buf[1024], * ptr;
-          if (myNamedNodesOut.Contains (theNode)) {
-            memcpy (buf, "USE ", 4);
-            strncpy (&buf[4], theNode->Name(), sizeof(buf)-5);
-            aStatus = WriteLine (thePrefix, buf);
-          } else {
-            if (thePrefix) {
-              strncpy (buf, thePrefix, sizeof(buf));
-              ptr = strchr (buf, '\0');
-              * ptr++ = ' ';
-            } else
-              ptr = &buf[0];
-            strcpy (ptr, "DEF ");
-            strncpy (ptr+4, theNode->Name(), &buf[sizeof(buf)] - (ptr+5));
-            aStatus = theNode->Write (buf);
+          TCollection_AsciiString buf;
+          if (myNamedNodesOut.Contains (theNode))
+          {
+            buf += "USE ";
+            buf += theNode->Name();
+            aStatus = WriteLine (thePrefix, buf.ToCString());
+          } 
+          else 
+          {
+            if (thePrefix)
+            {
+              buf += thePrefix;
+              buf += ' ';
+            }
+            buf += "DEF ";
+            buf += theNode->Name();
+            aStatus = theNode->Write (buf.ToCString());
             const_cast<VrmlData_MapOfNode&>(myNamedNodesOut).Add (theNode);
           }
         }
