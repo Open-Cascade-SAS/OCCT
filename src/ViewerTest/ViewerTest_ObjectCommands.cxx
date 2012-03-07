@@ -2444,11 +2444,12 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
   if (isMultibyte)
   {
     const char *str = argv[1];
-    while (*str)
+    while ( *str || *(str+1)=='\x0A' || *(str+1)=='\x0B' || *(str+1)=='\x0C' || *(str+1)=='\x0D'
+                 || *(str+1)=='\x07' || *(str+1)=='\x08' || *(str+1)=='\x09' )
     {
       unsigned short c1 = *str++;
       unsigned short c2 = *str++;
-      if (!c1 || !c2) break;
+      if (!c2) break;
       name += (Standard_ExtCharacter)((c1 << 8) | c2);
     }
   }

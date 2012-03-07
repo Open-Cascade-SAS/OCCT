@@ -201,6 +201,277 @@ void OpenGl_Display::StringSize (const wchar_t *str, int &width, int &ascent, in
   }
 }
 
+/*
+  Class       : MultilineTextRenderer
+  Description : Class for constructing text and multi-line text
+*/
+
+class MultilineTextRenderer
+{
+  private:
+
+  Standard_Integer        myLFNum;        // Number of '\n' (Line Feed) '\x00\x0A' 
+  Standard_Integer        myCurrPos;      // Position of the current substring
+  Standard_Integer        myNewStrLen;    // Length of the new string 
+  Standard_Integer        mySubstrNum;    // Number of substrings
+  wchar_t                 *myNewStr;      // New string
+  const wchar_t           *myStrPtr;      // Pointer to the original string
+
+  public:
+
+  // ----------------------------------------------
+  // Function: MultilineTextRenderer
+  // Purpose:  Constructor with initialization
+  // ----------------------------------------------
+  MultilineTextRenderer ( const wchar_t           *theStr,
+                          GLdouble                &theXdis,
+                          GLdouble                &theYdis,
+                          const OpenGl_TextParam  *theParam,
+                          const FTFont            *theFnt,
+                          GLint                   theWidthFont,
+                          GLint                   theAscentFont,
+                          GLint                   theDescentFont ) :
+
+      myLFNum         (0),
+      myCurrPos       (0),
+      myNewStrLen     (0),
+      mySubstrNum     (0),
+      myNewStr        (0),
+      myStrPtr        (&theStr[0])
+  {
+    const Standard_Integer  aStrLen       = wcslen(theStr); // Length of the original string
+    Standard_Integer        aNextCRChar   = 0;  // Character after '\r' (Carriage Return)        '\x00\x0D'
+    Standard_Integer        aHTNum        = 0;  // Number of       '\t' (Horizontal Tabulation)  '\x00\x09'
+    Standard_Integer        aDumpNum      = 0;  // Number of '\a', '\b', '\v' and '\f'
+    Standard_Integer        anAllSpaces   = 0;  // Number of spaces instead of all '\t' characters
+    Standard_Integer        aMaxSubstrLen = 0;  // Length of the largest substring in the new string
+
+    Standard_Integer        aTimeVar      = 0;
+
+    // Calculation index after last '\r' character
+    for ( Standard_Integer anIndex = 0; anIndex < aStrLen; ++anIndex )
+    {
+      if ( theStr[anIndex] == '\r' )  aNextCRChar = anIndex+1;
+    }
+
+    // Calculation numbers of the some control characters
+    for (Standard_Integer anIndex = aNextCRChar; anIndex < aStrLen; anIndex++)
+    {
+      ++aTimeVar;
+      switch ( theStr[anIndex] )
+      {
+      case '\n':
+        ++myLFNum;
+        aTimeVar = 0;
+        break;
+      case '\b':
+      case '\v':
+      case '\f':
+      case '\a':
+        ++aDumpNum;
+        --aTimeVar;
+        break;
+      case '\t':
+        ++aHTNum;
+        anAllSpaces += ( 8 - ( aTimeVar - 1 )%8 );
+        aTimeVar = 0;
+        break;
+      }
+    }
+
+    // Calculation length of the new string
+    myStrPtr += aNextCRChar;
+    myNewStrLen = aStrLen - aNextCRChar + anAllSpaces - aHTNum - aDumpNum;
+
+    myNewStr = new wchar_t[myNewStrLen + 1];
+    myNewStr[myNewStrLen]='\0';
+
+    CalcString (aStrLen, aMaxSubstrLen);
+    CalcHAlign (theXdis, theParam, theWidthFont, aStrLen, aMaxSubstrLen);
+    CalcVAlign (theYdis, theParam, theFnt, theAscentFont, theDescentFont);
+  }
+
+  // ----------------------------------------------
+  // Function: ~MultilineTextRenderer
+  // Purpose:  Default destructor
+  // ----------------------------------------------
+  ~MultilineTextRenderer ()
+  {
+    delete[] myNewStr;
+  }
+
+  // ----------------------------------------------
+  // Function: Next
+  // Purpose:  Calculate position of the next substring
+  // ----------------------------------------------
+  void Next ()
+  {
+    for ( Standard_Integer anIndex = 0; anIndex <= myNewStrLen; ++anIndex )
+    {
+      if ( myNewStr[myCurrPos + anIndex] == '\0' )
+      {
+        ++mySubstrNum;
+        myCurrPos += anIndex + 1;
+        break;
+      }
+    }
+  }
+
+  // ----------------------------------------------
+  // Function: More
+  // Purpose:  Calculate position of the next substring
+  // ----------------------------------------------
+  Standard_Boolean More ()
+  {
+    if ( mySubstrNum <= myLFNum )  return Standard_True;
+    else                           return Standard_False;
+  }
+
+  // ----------------------------------------------
+  // Function: GetValue
+  // Purpose:  Returns current substring
+  // ----------------------------------------------
+  wchar_t* GetValue ()
+  {
+    return ( myNewStr + myCurrPos );
+  }
+
+  private:
+
+  // ----------------------------------------------
+  // Function: CalcString
+  // Purpose:  Calculate new string separated by '\0' without '\n', '\t', '\b', '\v', '\f', '\a'
+  // ----------------------------------------------
+  void CalcString ( const Standard_Integer theStrLen, Standard_Integer &theMaxSubstrLen )
+  {
+    Standard_Integer
+        aHelpIndex  = 0,
+        aTimeVar    = 0,
+        aSpacesNum  = 0;
+
+    for ( Standard_Integer anIndex1 = 0, anIndex2 = 0;
+          (anIndex1 < theStrLen)&&(anIndex2 < myNewStrLen);
+          ++anIndex1, ++anIndex2 )
+    {
+      ++aTimeVar;
+
+      if ( *(myStrPtr + anIndex1) == '\n' ) aTimeVar = 0;
+
+      while ( (*(myStrPtr + anIndex1)=='\b')||(*(myStrPtr + anIndex1)=='\f')
+            ||(*(myStrPtr + anIndex1)=='\v')||(*(myStrPtr + anIndex1)=='\a') )
+      {
+        ++anIndex1;
+      }
+
+      if ( *(myStrPtr + anIndex1) == '\t' )
+      {
+        aSpacesNum = ( 8 - ( aTimeVar - 1 )%8 );
+
+        for ( aHelpIndex = 0; aHelpIndex < aSpacesNum; aHelpIndex++ )
+        {
+          myNewStr[anIndex2 + aHelpIndex] = ' ';
+        }
+        anIndex2 += aHelpIndex - 1;
+        aTimeVar = 0;
+      }
+      else 
+      {
+        myNewStr[anIndex2] = *(myStrPtr + anIndex1);
+      }
+    }
+
+    // After this part of code we will have a string separated by '\0' characters
+    Standard_Integer aHelpLength = 0;
+
+    if( myNewStr )
+    {
+      for( Standard_Integer anIndex = 0; anIndex <= myNewStrLen; ++anIndex )
+      {
+        if ( myNewStr[anIndex] == '\n' )
+        {
+          myNewStr[anIndex] = '\0';
+        }
+
+        // Calculating length of the largest substring of the new string.
+        // It's needed for horizontal alignment
+        if ( myNewStr[anIndex] != '\0' )
+        {
+          ++aHelpLength;
+        }
+        else
+        {
+          if ( aHelpLength > theMaxSubstrLen ) theMaxSubstrLen = aHelpLength;
+
+          aHelpLength = 0;
+        }
+      }
+    }
+  }
+
+  // ----------------------------------------------
+  // Function: CalcVAlign
+  // Purpose:  Calculate vertical alignment for text
+  // ----------------------------------------------
+  void CalcVAlign ( GLdouble                &theYdis,
+                    const OpenGl_TextParam  *theParam,
+                    const FTFont            *theFnt,
+                    GLint                   theAscentFont,
+                    GLint                   theDescentFont )
+  {
+    switch (theParam->VAlign)
+    {
+    case Graphic3d_VTA_BOTTOM:
+      theYdis = (GLdouble)(myLFNum * theFnt->FaceSize());
+      break;
+    case Graphic3d_VTA_CENTER:
+      if ( (myLFNum%2) == 0 )   // An odd number of strings
+      {
+        theYdis = (GLdouble)((myLFNum/2.0) * theFnt->FaceSize()) + theDescentFont; 
+      }
+      else                      // An even number of strings
+      {
+        theYdis = (GLdouble)((myLFNum - 1)/2.0 * theFnt->FaceSize()) - theDescentFont/2.0;
+      }
+      break;
+    case Graphic3d_VTA_TOP:
+      theYdis = -(GLdouble)theAscentFont - theDescentFont;
+      break;
+    default:
+      theYdis = (GLdouble)(myLFNum * theFnt->FaceSize());
+      break;
+    }
+  }
+
+  // ----------------------------------------------
+  // Function: CalcHAlign
+  // Purpose:  Calculate horizontal alignment for text
+  // ----------------------------------------------
+  void CalcHAlign ( GLdouble                &theXdis,
+                    const OpenGl_TextParam  *theParam,
+                    GLint                   theWidthFont,
+                    const Standard_Integer  theStrLen,
+                    Standard_Integer        theMaxSubstrLen)
+  {
+    GLdouble aWidth = (GLdouble)(theMaxSubstrLen * theWidthFont)/theStrLen;
+
+    switch (theParam->HAlign)
+    {
+    case Graphic3d_HTA_LEFT:
+      theXdis = 0.;
+      break;
+    case Graphic3d_HTA_CENTER:
+      theXdis = -0.5 * (GLdouble)aWidth;
+      break;
+    case Graphic3d_HTA_RIGHT:
+      theXdis = -(GLdouble)aWidth;
+      break;
+    default:
+      theXdis = 0.;
+      break;
+    }
+  }
+};
+
 /*-----------------------------------------------------------------------------*/
 
 void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float x, const float y, const float z,
@@ -217,32 +488,18 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
   int widthFont, ascentFont, descentFont;
   StringSize( str, widthFont, ascentFont, descentFont );
 
-  GLdouble xdis = 0.;
-  switch (param->HAlign)
-  {
-    case Graphic3d_HTA_CENTER:
-      xdis = -0.5 * (GLdouble)widthFont;
-      break;
-    case Graphic3d_HTA_RIGHT:
-      xdis = -(GLdouble)widthFont;
-      break;
-    //case Graphic3d_HTA_LEFT:
-    //default: break;
-  }
-  GLdouble ydis = 0.;
-  switch (param->VAlign)
-  {
-    case Graphic3d_VTA_CENTER:
-      ydis = -0.5 * (GLdouble)ascentFont - descentFont;
-      break;
-    case Graphic3d_VTA_TOP:
-      ydis = -(GLdouble)ascentFont - descentFont;
-      break;
-    //case Graphic3d_VTA_BOTTOM:
-    //default: break;
-  }
+  GLdouble xdis = 0., ydis = 0.;
 
   float export_h = 1.;
+
+  MultilineTextRenderer aRenderer( str,
+                                   xdis,
+                                   ydis,
+                                   param,
+                                   fnt,
+                                   widthFont,
+                                   ascentFont,
+                                   descentFont );
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -301,7 +558,7 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
     }
     else
     {
-      export_h = (float )h;
+      export_h = (float)h;
     }
   }
 
@@ -311,46 +568,33 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
   {
 #ifdef HAVE_GL2PS
     export_h = (float)fnt->FaceSize() / export_h;
-    glPopMatrix();
-    ExportText( str, is2d, x, y, z, aspect, param, (short)export_h );
+    for ( ; aRenderer.More(); aRenderer.Next() )
+    {
+      // x, y, z coordinates are used here as zero values, because position of the text
+      // and alignment is calculated in the code above using glTranslated methods
+      ExportText( aRenderer.GetValue(), is2d, 0, 0, 0, aspect, param, (short)export_h );
+      glTranslated(0, -(GLdouble)fnt->FaceSize(), 0);
+    }
 #endif
   }
   else
   {
-    mgr->render_text( myFont, str, is2d );
-    glPopMatrix();
+    for ( ; aRenderer.More(); aRenderer.Next() )
+    {
+      mgr->render_text( myFont, aRenderer.GetValue(), is2d );
+      glTranslated(0, -(GLdouble)fnt->FaceSize(), 0);
+    }
   }
+  glPopMatrix();
   glPopAttrib();
 }
 
 /*-----------------------------------------------------------------------------*/
 
-static const int alignmentforgl2ps[3][3] = { {5,2,8}, {4,1,7}, {6,3,9} };
-
 void OpenGl_Display::ExportText (const wchar_t* text, const int is2d, const float x, const float y, const float z,
                                 const OpenGl_AspectText *aspect, const OpenGl_TextParam *param, const short height)
 {
 #ifdef HAVE_GL2PS
-
-  int vh = 1;
-  switch (param->HAlign)
-  {
-    case Graphic3d_HTA_CENTER: vh = 2; break;
-    case Graphic3d_HTA_RIGHT: vh = 3; break;
-    //case Graphic3d_HTA_LEFT:
-    //default: break;
-  }
-
-  int vv = 1;
-  switch (param->VAlign)
-  {
-    case Graphic3d_VTA_CENTER: vv = 2; break;
-    case Graphic3d_VTA_TOP: vv = 3; break;
-    //case Graphic3d_VTA_BOTTOM:
-    //default: break;
-  }
-
-  const int alignment = alignmentforgl2ps[vh-1][vv-1];
 
   const char* fontname = aspect->Font();
   float angle = aspect->Angle();
@@ -371,7 +615,11 @@ void OpenGl_Display::ExportText (const wchar_t* text, const int is2d, const floa
   const int len = 4 * (wcslen(text) + 1); //szv: should be more than enough
   char *astr = new char[len];
   wcstombs(astr,text,len);
-  gl2psTextOpt(astr, ps_font, height, alignment, angle);
+
+  // Standard GL2PS's alignment isn't used, because it doesn't work correctly
+  // for all formats, therefore alignment is calculated manually relative
+  // to the bottom-left corner, which corresponds to the GL2PS_TEXT_BL value
+  gl2psTextOpt(astr, ps_font, height, GL2PS_TEXT_BL, angle);
   delete[] astr;
 
 #endif
