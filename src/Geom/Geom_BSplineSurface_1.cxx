@@ -1443,25 +1443,26 @@ void Geom_BSplineSurface::LocateU
   const TColStd_Array1OfReal & Knots = TheKnots->Array1();
   Standard_Real UFirst = Knots (1);
   Standard_Real ULast  = Knots (Knots.Length());
-  if (Abs (NewU - UFirst) <= Abs(ParametricTolerance)) { 
+  Standard_Real PParametricTolerance = Abs(ParametricTolerance);
+  if (Abs (NewU - UFirst) <= PParametricTolerance) { 
     I1 = I2 = 1; 
   }
-  else if (Abs (NewU - ULast) <= Abs(ParametricTolerance)) { 
+  else if (Abs (NewU - ULast) <= PParametricTolerance) { 
     I1 = I2 = Knots.Length();
   }
-  else if (NewU < UFirst - Abs(ParametricTolerance)) {
+  else if (NewU < UFirst) {
     I2 = 1;
     I1 = 0;
   }
-  else if (NewU > ULast + Abs(ParametricTolerance)) {
+  else if (NewU > ULast) {
     I1 = Knots.Length();
     I2 = I1 + 1;
   }
   else {
     I1 = 1;
     BSplCLib::Hunt (Knots, NewU, I1);
-    while ( Abs( Knots(I1+1) - NewU) <= Abs(ParametricTolerance)) I1++;
-    if ( Abs( Knots(I1) - NewU) <= Abs(ParametricTolerance)) {
+    while ( Abs( Knots(I1+1) - NewU) <= PParametricTolerance) I1++;
+    if ( Abs( Knots(I1) - NewU) <= PParametricTolerance) {
       I2 = I1;
     }
     else {
@@ -1492,23 +1493,24 @@ void Geom_BSplineSurface::LocateV
   const TColStd_Array1OfReal & Knots = TheKnots->Array1();
   Standard_Real VFirst = Knots (1);
   Standard_Real VLast  = Knots (Knots.Length());
-  if (Abs (NewV - VFirst) <= Abs(ParametricTolerance)) { I1 = I2 = 1; }
-  else if (Abs (NewV - VLast) <= Abs(ParametricTolerance)) { 
+  Standard_Real PParametricTolerance = Abs(ParametricTolerance);
+  if (Abs (NewV - VFirst) <= PParametricTolerance) { I1 = I2 = 1; }
+  else if (Abs (NewV - VLast) <= PParametricTolerance) { 
     I1 = I2 = Knots.Length();
   }
-  else if (NewV < VFirst - Abs(ParametricTolerance)) {
+  else if (NewV < VFirst - PParametricTolerance) {
     I2 = 1;
     I1 = 0;
   }
-  else if (NewV > VLast + Abs(ParametricTolerance)) {
+  else if (NewV > VLast + PParametricTolerance) {
     I1 = Knots.Length();
     I2 = I1 + 1;
   }
   else {
     I1 = 1;
     BSplCLib::Hunt (Knots, NewV, I1);
-    while ( Abs( Knots(I1+1) - NewV) <= Abs(ParametricTolerance)) I1++;
-    if ( Abs( Knots(I1) - NewV) <= Abs(ParametricTolerance)) {
+    while ( Abs( Knots(I1+1) - NewV) <= PParametricTolerance) I1++;
+    if ( Abs( Knots(I1) - NewV) <= PParametricTolerance) {
       I2 = I1;
     }
     else {

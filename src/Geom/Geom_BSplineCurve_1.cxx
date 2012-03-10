@@ -709,23 +709,24 @@ void Geom_BSplineCurve::LocateU
   
   Standard_Real UFirst = CKnots (1);
   Standard_Real ULast  = CKnots (CKnots.Length());
-  if (Abs (NewU - UFirst) <= Abs(ParametricTolerance)) { I1 = I2 = 1; }
-  else if (Abs (NewU - ULast) <= Abs(ParametricTolerance)) { 
+  Standard_Real PParametricTolerance = Abs(ParametricTolerance);
+  if (Abs (NewU - UFirst) <= PParametricTolerance) { I1 = I2 = 1; }
+  else if (Abs (NewU - ULast) <= PParametricTolerance) { 
     I1 = I2 = CKnots.Length();
   }
-  else if (NewU < UFirst - Abs(ParametricTolerance)) {
+  else if (NewU < UFirst) {
     I2 = 1;
     I1 = 0;
   }
-  else if (NewU > ULast + Abs(ParametricTolerance)) {
+  else if (NewU > ULast) {
     I1 = CKnots.Length();
     I2 = I1 + 1;
   }
   else {
     I1 = 1;
     BSplCLib::Hunt (CKnots, NewU, I1);
-    while ( Abs( CKnots(I1+1) - NewU) <= Abs(ParametricTolerance)) I1++;
-    if ( Abs( CKnots(I1) - NewU) <= Abs(ParametricTolerance)) {
+    while ( Abs( CKnots(I1+1) - NewU) <= PParametricTolerance) I1++;
+    if ( Abs( CKnots(I1) - NewU) <= PParametricTolerance) {
       I2 = I1;
     }
     else {
