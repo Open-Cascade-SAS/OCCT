@@ -312,8 +312,8 @@ void IntTools_BeanFaceIntersector::Perform()
 {
   myIsDone = Standard_False;
   myResults.Clear();
-
-  Standard_Integer aDiscretization = 30; // corresponds to discretization of BSpline usually approximated by 30 points.
+  Standard_Boolean bRet; 
+  Standard_Integer aDiscretization = 30; 
   Standard_Real aRelativeDeflection = 0.01;
   myDeflection = aRelativeDeflection;
   //
@@ -378,7 +378,12 @@ void IntTools_BeanFaceIntersector::Perform()
 
     IntTools_CArray1OfReal aParams;
     
-    if(IntTools::PrepareArgs(myCurve, myLastParameter, myFirstParameter, aDiscretization, aRelativeDeflection, aParams)) {
+    if(IntTools::PrepareArgs(myCurve, 
+			     myLastParameter, 
+			     myFirstParameter, 
+			     aDiscretization, 
+			     aRelativeDeflection, 
+			     aParams)) {
       return;
     }
 
@@ -387,8 +392,9 @@ void IntTools_BeanFaceIntersector::Perform()
     if(myRangeManager.Length()==0) {
       return;
     }
-    
-    if(FastComputeExactIntersection()) {
+    //
+    bRet=FastComputeExactIntersection();
+    if(bRet) {
       IntTools_Range aRange(myFirstParameter, myLastParameter);
       myResults.Append(aRange);
       myIsDone = Standard_True;
@@ -695,99 +701,115 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 // ==================================================================================
 Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection() 
 {
-  Standard_Boolean aresult = Standard_False;
-
-  if((myCurve.GetType() == GeomAbs_BezierCurve) ||
-     (myCurve.GetType() == GeomAbs_BSplineCurve) ||
-     (myCurve.GetType() == GeomAbs_OtherCurve)) {
+  Standard_Boolean aresult;
+  GeomAbs_CurveType aCT;
+  GeomAbs_SurfaceType aST;
+  //
+  aresult = Standard_False;
+  aCT=myCurve.GetType();
+  aST=mySurface.GetType();
+  //
+  if((aCT==GeomAbs_BezierCurve) ||
+     (aCT==GeomAbs_BSplineCurve) ||
+     (aCT==GeomAbs_OtherCurve)) {
     return aresult;
   }
 
-  if(mySurface.GetType() == GeomAbs_Plane) {
+  if(aST==GeomAbs_Plane) {
     gp_Pln surfPlane = mySurface.Plane();
 
-    if(myCurve.GetType() == GeomAbs_Line) {
+    if(aCT==GeomAbs_Line) {
       if((surfPlane.Distance(myCurve.Value(myFirstParameter)) < myCriteria) &&
 	 (surfPlane.Distance(myCurve.Value(myLastParameter)) < myCriteria)) {
 	myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
 	aresult = Standard_True;
       }
     }
-    else {
+    else { // else 1
       gp_Dir aDir;
 
-      switch(myCurve.GetType()) {
-      case GeomAbs_Circle: {
-	aDir = myCurve.Circle().Axis().Direction();
-	break;
+      switch(aCT) {
+        case GeomAbs_Circle: {
+	  aDir = myCurve.Circle().Axis().Direction();
+	  break;
+        }
+	case GeomAbs_Ellipse: {
+	  aDir = myCurve.Ellipse().Axis().Direction();
+	  break;
+        }
+	case GeomAbs_Hyperbola: {
+	  aDir = myCurve.Hyperbola().Axis().Direction();
+	  break;
+        }
+	case GeomAbs_Parabola: {
+	  aDir = myCurve.Parabola().Axis().Direction();
+	  break;
+        }
+	default: {
+	  return aresult;
+        }
       }
-      case GeomAbs_Ellipse: {
-	aDir = myCurve.Ellipse().Axis().Direction();
-	break;
-      }
-      case GeomAbs_Hyperbola: {
-	aDir = myCurve.Hyperbola().Axis().Direction();
-	break;
-      }
-      case GeomAbs_Parabola: {
-	aDir = myCurve.Parabola().Axis().Direction();
-	break;
-      }
-      default: {
-	return aresult;
-      }
-      }
+      //
       Standard_Real anAngle = aDir.Angle(surfPlane.Axis().Direction());
       
       if(anAngle < Precision::Angular()) {
 	Standard_Boolean insertRange = Standard_False;
 	
-	switch(myCurve.GetType()) {
-	case GeomAbs_Circle: {
-	  Standard_Real adist = surfPlane.Distance(myCurve.Circle().Location()) + myCurve.Circle().Radius() * Precision::Angular();
-	  
-	  if(adist < myCriteria) {
-	    insertRange = Standard_True;
+	switch(aCT) {
+	  case GeomAbs_Circle: {
+	    Standard_Real adist = 
+	      surfPlane.Distance(myCurve.Circle().Location()) + 
+		myCurve.Circle().Radius() * Precision::Angular();
+	    
+	    if(adist < myCriteria) {
+	      insertRange = Standard_True;
+	    }
+	    break;
 	  }
-	  break;
-	}
-	case GeomAbs_Ellipse: {
-	  Standard_Real adist = surfPlane.Distance(myCurve.Ellipse().Location()) + myCurve.Ellipse().MajorRadius() * Precision::Angular();
-	  
-	  if(adist < myCriteria) {
-	    insertRange = Standard_True;
+	  case GeomAbs_Ellipse: {
+	    Standard_Real adist = 
+	      surfPlane.Distance(myCurve.Ellipse().Location()) + 
+		myCurve.Ellipse().MajorRadius() * Precision::Angular();
+	    
+	    if(adist < myCriteria) {
+	      insertRange = Standard_True;
+	    }
+	    break;
 	  }
-	  break;
-	}
-	case GeomAbs_Hyperbola:
-	case GeomAbs_Parabola: {
-	  Standard_Real aMaxPar = (Abs(myFirstParameter)  > Abs(myLastParameter)) ? Abs(myFirstParameter) : Abs(myLastParameter);
-	  gp_Pnt aLoc = (myCurve.GetType() == GeomAbs_Parabola) ? myCurve.Parabola().Location() : myCurve.Hyperbola().Location();
-	  Standard_Real adist = aLoc.Distance(myCurve.Value(aMaxPar));
-	  adist = surfPlane.Distance(aLoc) + adist * Precision::Angular();
-	  
-	  if(adist < myCriteria) {
-	    insertRange = Standard_True;
+	  case GeomAbs_Hyperbola:
+	  case GeomAbs_Parabola: {
+	    Standard_Real aMaxPar =
+	      (Abs(myFirstParameter)  > Abs(myLastParameter)) ? 
+		Abs(myFirstParameter) : Abs(myLastParameter);
+	    
+	    gp_Pnt aLoc = (aCT == GeomAbs_Parabola) ? 
+	      myCurve.Parabola().Location() : 
+		myCurve.Hyperbola().Location();
+	    Standard_Real adist = aLoc.Distance(myCurve.Value(aMaxPar));
+	    adist = surfPlane.Distance(aLoc) + adist * Precision::Angular();
+	    
+	    if(adist < myCriteria) {
+	      insertRange = Standard_True;
+	    }
+	    break;
 	  }
-	  break;
+	  default: {
+	    break;
+	  }
 	}
-	default: {
-	  break;
-	}
-	}
-	
+	//
 	if(insertRange) {
 	  myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
 	  aresult = Standard_True;
 	}
-      }
-    }
-  }
-
-  if(myCurve.GetType() == GeomAbs_Circle) {
+      }//if(anAngle < Precision::Angular()) {
+    }//else { // else 1
+  }// if(aST==GeomAbs_Plane) {
+  
+  if(aCT==GeomAbs_Circle) {
     gp_Circ aCircle = myCurve.Circle();
 
-    if(mySurface.GetType() == GeomAbs_Cylinder) {
+    if(aST==GeomAbs_Cylinder) {
       gp_Cylinder aCylinder = mySurface.Cylinder();
       gp_Dir aDir1(aCylinder.Axis().Direction());
       gp_Dir aDir2(aCircle.Axis().Direction());
@@ -805,7 +827,9 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	  Standard_Real acylradius = aCylinder.Radius();
 	  Standard_Real atmpvalue = aCircle.Radius() * sin(Precision::Angular());
 	  Standard_Real aprojectedradius = atmpvalue;
-	  aprojectedradius = sqrt((aCircle.Radius() * aCircle.Radius()) - (aprojectedradius * aprojectedradius));
+	  aprojectedradius = 
+	    sqrt((aCircle.Radius() * aCircle.Radius())
+		 - (aprojectedradius * aprojectedradius));
 	  adiff = aprojectedradius - acylradius;
 	  adist = alocdist + Abs(adiff);
 	  	  
@@ -815,16 +839,17 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	  }
 	}
       }
-    }
+    }// if(aST==GeomAbs_Cylinder)
 
-    if(mySurface.GetType() == GeomAbs_Sphere) {
+    if(aST==GeomAbs_Sphere) {
       gp_Pln aCirclePln(aCircle.Location(), aCircle.Axis().Direction());
       IntAna_QuadQuadGeo anInter(aCirclePln, mySurface.Sphere());
       
       if(anInter.IsDone()) {
 	if(anInter.TypeInter() == IntAna_Circle) {
 	  gp_Circ aCircleToCompare = anInter.Circle(1);
-	  Standard_Real adist = aCircleToCompare.Location().Distance(aCircle.Location());
+	  Standard_Real adist = 
+	    aCircleToCompare.Location().Distance(aCircle.Location());
 	  Standard_Real adiff = aCircle.Radius() - aCircleToCompare.Radius();
 	  adist += Abs(adiff);
 	  
@@ -834,8 +859,65 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	  }
 	}
       }
-    }
+    }// if(aST==GeomAbs_Sphere) {
+  }// if(aCT==GeomAbs_Circle) {
+  //
+  //modified by NIZNHY-PKV Thu Mar 01 11:54:04 2012f
+  if(aST==GeomAbs_Cylinder) {
+    Standard_Real aRC;
+    gp_Cylinder aCyl;
+    //
+    aCyl=mySurface.Cylinder();
+    aRC=aCyl.Radius();
+    const gp_Ax1& aAx1C=aCyl.Axis();
+    const gp_Dir& aDirC=aAx1C.Direction();
+    //
+    if(aCT==GeomAbs_Line) {
+      Standard_Real aCos, aAng2, aTolang2;
+      gp_Lin aLin;
+      //
+      aTolang2=1.e-16;
+      aLin=myCurve.Line();
+      const gp_Dir& aDirL=aLin.Direction();
+      const gp_Pnt& aLocL=aLin.Location();
+      //
+      aCos=aDirC.Dot(aDirL);
+      if(aCos >= 0.) {
+	aAng2 = 2.*(1. - aCos);
+      }
+      else {
+	aAng2 = 2.*(1. + aCos);
+      }
+      //
+      if(aAng2<=aTolang2) {// IsParallel = Standard_True;
+	Standard_Boolean bFlag;
+	Standard_Integer i;
+	Standard_Real aD;
+	gp_Pnt aPL[2];
+	gp_Lin aLC(aAx1C);
+	//
+	aPL[0]=myCurve.Value(myFirstParameter);
+	aPL[1]=myCurve.Value(myLastParameter);
+	//
+	for (i=0; i<2; ++i) {
+	  aD=aLC.Distance(aPL[i]);
+	  aD=fabs(aD-aRC);
+	  bFlag=(aD > myCriteria);
+	  if (bFlag) {
+	    break;
+	  }
+	}
+	//
+	if (!bFlag){
+	  myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
+	  aresult = Standard_True;
+	  return aresult;
+	} 
+      }
+      
+    }//if(aCT==GeomAbs_Line) {
   }
+  //modified by NIZNHY-PKV Thu Mar 01 11:54:06 2012t
   return aresult;
 }
 
