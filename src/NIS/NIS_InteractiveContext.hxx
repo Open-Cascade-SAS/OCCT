@@ -10,7 +10,7 @@
 #include <Handle_NIS_InteractiveObject.hxx>
 #include <Handle_NIS_View.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_SparseArray.hxx>
 #include <NIS_Allocator.hxx>
 #include <NIS_Drawer.hxx>
 #include <NIS_SelectFilter.hxx>
@@ -155,9 +155,8 @@ class NIS_InteractiveContext : public Standard_Transient
   /**
    * Query the InteractiveObject instance by its ID.
    */
-  inline const Handle_NIS_InteractiveObject&
-                       GetObject  (const Standard_Integer theID) const
-  { return myObjects(theID); }
+  Standard_EXPORT const Handle_NIS_InteractiveObject&
+                       GetObject  (const Standard_Integer theID) const;
 
   /**
    * Query the total number of InteractiveObject instances. This number can be
@@ -573,9 +572,14 @@ private:
   Handle_NIS_Allocator                              myAllocator;
 
   /**
+   * The last added object ID.
+   */
+  Standard_Integer                                  myLastObjectId;
+  /**
    * Container of InteractiveObject instances.
    */ 
-  NCollection_Vector <Handle_NIS_InteractiveObject> myObjects;
+  NCollection_SparseArray <Handle_NIS_InteractiveObject>
+                                                    myObjects;
 
   /**
    * List of Views.

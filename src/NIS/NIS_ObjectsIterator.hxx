@@ -7,7 +7,7 @@
 #ifndef NIS_ObjectsIterator_HeaderFile
 #define NIS_ObjectsIterator_HeaderFile
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_SparseArray.hxx>
 #include <Handle_NIS_InteractiveObject.hxx>
 
 class Handle_NIS_InteractiveContext;
@@ -80,7 +80,7 @@ class NIS_ObjectsIterator
  protected:
   // ---------- PROTECTED FIELDS ----------
 
-  NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator myIter;
+  NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator myIter;
 
 };
 

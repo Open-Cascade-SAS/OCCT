@@ -22,12 +22,14 @@ static void markAllDrawersUpdated   (const NCollection_Map<Handle_NIS_Drawer>&);
 
 NIS_InteractiveContext::NIS_InteractiveContext ()
   : myAllocator       (new NIS_Allocator(1024*100)),
+    myLastObjectId    (0),
+    myObjects         (1000),
 //     myDrawers       (101, myAllocator),
     mySelectionMode   (Mode_NoSelection),
     myIsShareDrawList (Standard_True)
 {
   // ID == 0 is invalid so we reserve this item from subsequent allocation.
-  myObjects.Append (NULL);
+  myObjects.SetValue(myLastObjectId, NULL);
 }
 
 //=======================================================================
@@ -105,6 +107,22 @@ void NIS_InteractiveContext::DetachView (const Handle_NIS_View& theView)
         break;
       }
   }
+}
+
+//=======================================================================
+//function : GetObject
+//purpose  : 
+//=======================================================================
+
+const Handle_NIS_InteractiveObject& NIS_InteractiveContext::GetObject
+                   (const Standard_Integer theID) const
+{
+  if (!myObjects.IsBound(theID))
+  {
+    static Handle_NIS_InteractiveObject aNull;
+    return aNull;
+  }
+  return myObjects(theID);
 }
 
 //=======================================================================
@@ -236,7 +254,8 @@ void NIS_InteractiveContext::Remove (const Handle_NIS_InteractiveObject& theObj,
         aDrawer->removeObject(theObj.operator->(), isUpdateViews);
       theObj->myID = 0;
       theObj->myDrawer.Nullify();
-      myObjects(anID).Nullify();
+      myObjects.UnsetValue(anID);
+      myMapNonSelectableObjects.Remove(anID);
     }
   }
 }
@@ -249,7 +268,8 @@ void NIS_InteractiveContext::Remove (const Handle_NIS_InteractiveObject& theObj,
 void NIS_InteractiveContext::DisplayAll ()
 {
   // UnHide all objects in the Context
-  NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator anIter(myObjects);
+  NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+    anIter(myObjects);
   for (; anIter.More(); anIter.Next()) {
     const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
     if (anObj.IsNull() == Standard_False)
@@ -278,7 +298,8 @@ void NIS_InteractiveContext::DisplayAll ()
 void NIS_InteractiveContext::EraseAll ()
 {
   // Hide all objects in the Context
-  NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator anIter(myObjects);
+  NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
+    anIter(myObjects);
   for (; anIter.More(); anIter.Next()) {
     const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
     if (anObj.IsNull() == Standard_False) {
@@ -319,7 +340,8 @@ void NIS_InteractiveContext::EraseAll ()
 void NIS_InteractiveContext::RemoveAll ()
 {
   // Remove objects from the Context
-  NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator anIter(myObjects);
+  NCollection_SparseArray <Handle_NIS_InteractiveObject>::Iterator
+    anIter(myObjects);
   for (; anIter.More(); anIter.Next()) {
     Handle(NIS_InteractiveObject)& anObj = anIter.ChangeValue();
     if (anObj.IsNull() == Standard_False) {
@@ -352,14 +374,13 @@ void NIS_InteractiveContext::RemoveAll ()
   myAllocator->Reset();
   myAllocator->ResetCounters();
 
-  myDrawers.Clear();
-
   // Remove objects from maps
   myMapObjects[0].Clear();
   myMapObjects[1].Clear();
   myMapObjects[2].Clear();
   myMapObjects[3].Clear();
   myMapNonSelectableObjects.Clear();
+  myObjects.Clear();
 }
 
 //=======================================================================
@@ -634,7 +655,7 @@ Standard_Real NIS_InteractiveContext::selectObject
   if (mySelectionMode != Mode_NoSelection || isOnlySel == Standard_False)
   {
     DetectedEnt anEnt;
-    NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator
+    NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
       anIter(myObjects);
     for (; anIter.More(); anIter.Next()) {
       const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
@@ -716,7 +737,7 @@ Standard_Boolean NIS_InteractiveContext::selectObjects
 {
   Standard_Boolean aResult (Standard_False);
   if (mySelectionMode != Mode_NoSelection) {
-    NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator
+    NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
       anIter(myObjects);
     for (; anIter.More(); anIter.Next()) {
       const Handle(NIS_InteractiveObject)& anObj = anIter.Value();
@@ -758,7 +779,7 @@ Standard_Boolean NIS_InteractiveContext::selectObjects
   Standard_Boolean aResult (Standard_False);
 
   if (mySelectionMode != Mode_NoSelection) {
-    NCollection_Vector <Handle_NIS_InteractiveObject>::Iterator
+    NCollection_SparseArray <Handle_NIS_InteractiveObject>::ConstIterator
       anIter(myObjects);
 
     for (; anIter.More(); anIter.Next()) {
@@ -894,8 +915,8 @@ void NIS_InteractiveContext::objectForDisplay
     Handle(NIS_InteractiveObject) anObj;
     theObj->Clone(myAllocator, anObj);
     theObj = anObj;
-    anObj->myID = myObjects.Length();
-    myObjects.Append (anObj);
+    anObj->myID = ++myLastObjectId;
+    myObjects.SetValue (myLastObjectId, anObj);
     myMapObjects[theDrawType].Add(anObj->myID);
     anObj->myDrawType = theDrawType;
   }
@@ -928,7 +949,7 @@ Handle_NIS_Allocator NIS_InteractiveContext::compactObjects()
       // Compact the memory: clone all objects to a new allocator, release
       // the old allocator instance.
       aNewAlloc = new NIS_Allocator;
-      NCollection_Vector<Handle_NIS_InteractiveObject>::Iterator
+      NCollection_SparseArray<Handle_NIS_InteractiveObject>::Iterator
         anIter(myObjects);
       for (; anIter.More(); anIter.Next()) {
         if (anIter.Value().IsNull() == Standard_False) {

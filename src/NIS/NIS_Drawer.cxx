@@ -281,6 +281,8 @@ void NIS_Drawer::removeObject (const NIS_InteractiveObject * theObj,
     SetDynamicHilighted (Standard_False, theObj);
   if (myMapID.IsEmpty()) {
     UpdateExListId(NULL);
+    // Remove the drawer from context.
+    myCtx->myDrawers.Remove(this);
   }
   // Set Updated for the draw type.
   else if (theObj->IsHidden() == Standard_False && isUpdateViews)
