@@ -1,8 +1,7 @@
--- File:	Intf.cdl
--- Created:	Thu May 23 11:21:00 1991
--- Author:	Didier PIFFAULT
---		<dpf@topsn3>
----Copyright:	 Matra Datavision 1991, 1992
+-- File:      Intf.cdl
+-- Created:   Thu May 23 11:21:00 1991
+-- Author:    Didier PIFFAULT
+---Copyright: Matra Datavision 1991, 1992
 
 
 package Intf 
@@ -27,9 +26,9 @@ is
 
 --  Classes input data :
 
-    generic  class ToolPolygon;        -- Signature
-    ---Purpose: Describes the necessary polygon information to compute the
-    --          interferences.
+    deferred class Polygon2d;
+    ---Purpose: Describes the necessary polygon information to compute
+    --          the interferences.
 
     generic  class ToolPolyhedron;     -- Signature
     ---Purpose: Describes the  necessary polyhedron information to compute
@@ -83,7 +82,7 @@ is
 
 
 
-    generic class InterferencePolygon2d;
+    class InterferencePolygon2d;
     ---Purpose: Computes   the  interference between   two polygons in  2d.
     --          Result : points of intersections and zones of tangence.
 

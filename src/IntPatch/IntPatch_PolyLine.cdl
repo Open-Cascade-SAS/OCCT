@@ -32,14 +32,6 @@ is
 
     ResetError(me: in out);
 
-    Bounding (me)  
-    	---C++: return const & 
-    	returns Box2d from Bnd;
-  
-    Error(me) returns Real from Standard;
-                       	    	          
-    Closed(me) returns Boolean from Standard;
-
     NbPoints(me) returns Integer;
   
     Point(me; Index : Integer) 
@@ -48,12 +40,10 @@ is
 
 fields
 
-    box      : Box2d   from Bnd;
     pnt      : Pnt2d   from gp;
     typ      : IType   from IntPatch;
     onfirst  : Boolean from Standard;
     wpoly    : WLine from IntPatch;
     rpoly    : RLine from IntPatch;
-    defle    : Real from Standard;
 
 end PolyLine;

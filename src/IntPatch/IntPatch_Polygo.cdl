@@ -1,38 +1,52 @@
--- File:	IntPatch_Polygo.cdl
--- Created:	Thu May  6 17:49:16 1993
--- Author:	Jacques GOUSSARD
---		<jag@form4>
----Copyright:	 Matra Datavision 1993
+-- File:      IntPatch_Polygo.cdl
+-- Created:   Thu May  6 17:49:16 1993
+-- Author:    Jacques GOUSSARD
+---Copyright: Matra Datavision 1993
 
 
 deferred class Polygo from IntPatch
 
 	---Purpose: 
 
+inherits Polygon2d from Intf
+
 uses Pnt2d from gp,
      Box2d from Bnd
 
+raises OutOfRange from Standard
+
 is
 
-  Delete(me:out) is virtual;
-  ---C++: alias "Standard_EXPORT virtual ~IntPatch_Polygo(){Delete() ; }"
-    
-  Bounding (me)  
-    ---C++: return const & 
-    returns Box2d from Bnd
-    is deferred;
-    
-  Error(me) returns Real from Standard
-    is deferred;
-                         	    	          
-  Closed(me) returns Boolean from Standard
-    is deferred;
+    Initialize (theError : Real from Standard = 0.0)
+        returns Polygo from IntPatch;
 
-  NbPoints(me) returns Integer
-    is deferred;
-    
-  Point(me; Index : Integer)
-    returns Pnt2d from gp
-    is deferred;
-    
+    Error (me) returns Real from Standard;
+    ---C++: inline
+
+    NbPoints (me) returns Integer is deferred;
+
+    Point (me; Index : Integer) returns Pnt2d from gp is deferred;
+
+    DeflectionOverEstimation (me)
+    returns Real from Standard is redefined virtual;
+    ---C++: inline
+    ---Purpose: Returns the tolerance of the polygon.
+
+    NbSegments (me)
+    returns Integer from Standard is redefined virtual;
+    ---C++: inline
+    ---Purpose: Returns the number of Segments in the polyline.
+
+    Segment (me; theIndex : in Integer from Standard;
+                 theBegin, theEnd : in out Pnt2d from gp)
+        raises OutOfRange from Standard is redefined virtual;
+    ---C++: inline
+    ---Purpose: Returns the points of the segment <Index> in the Polygon.
+
+    Dump (me);
+
+fields
+
+    myError : Real from Standard is protected;
+
 end Polygo;

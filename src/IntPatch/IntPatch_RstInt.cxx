@@ -26,7 +26,6 @@
 #include <Precision.hxx>
 
 #include <Adaptor2d_HCurve2d.hxx>
-#include <IntPatch_PolygoTool.hxx>
 #include <IntPatch_WLine.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_HInterTool.hxx>
@@ -572,7 +571,7 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
       }
     }
 
-    Bnd_Box2d BPLin = IntPatch_PolygoTool::Bounding(PLin);
+    Bnd_Box2d BPLin = PLin.Bounding();
 
     if(SurfaceIsPeriodic) { 
       Standard_Real xmin,ymin,xmax,ymax,g;
@@ -642,8 +641,8 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 	static int debug_polygon2d =0;
 	if(debug_polygon2d) { 
 	  cout<<" ***** Numero Restriction : "<<NumeroEdge<<" *****"<<endl;
-	  IntPatch_PolygoTool::Dump(PLin);
-	  IntPatch_PolygoTool::Dump(Brise);
+	  PLin.Dump();
+	  Brise.Dump();
 	}
 	
 	Commun.Perform(PLin,Brise);

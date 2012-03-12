@@ -18,7 +18,7 @@
 //=======================================================================
 
 IntPatch_PolyLine::IntPatch_PolyLine ()
-     : defle(INITDEFLE)
+     : IntPatch_Polygo(INITDEFLE)
 {}
 
 //=======================================================================
@@ -27,7 +27,7 @@ IntPatch_PolyLine::IntPatch_PolyLine ()
 //=======================================================================
 
 IntPatch_PolyLine::IntPatch_PolyLine (const Standard_Real InitDefle)
-     : defle(InitDefle)
+     : IntPatch_Polygo(InitDefle)
 {}
 
 //=======================================================================
@@ -64,9 +64,9 @@ void IntPatch_PolyLine::SetRLine(const Standard_Boolean OnFirst, const Handle(In
 void IntPatch_PolyLine::Prepare()
 {
   Standard_Integer i;
-  box.SetVoid();
+  myBox.SetVoid();
   Standard_Integer n=NbPoints();
-  Standard_Real eps = defle;
+  Standard_Real eps = myError;
 
   gp_Pnt2d P1, P2;
   if (n >= 3) {
@@ -82,7 +82,7 @@ void IntPatch_PolyLine::Prepare()
 	d = V13.CrossMagnitude(V12) / d13;
       else
 	d = eps;
-      if (d > defle) {
+      if (d > myError) {
 	// try to compute deflection more precisely using parabola interpolation
 	gp_XY V23 = P3.XY() - P2.XY();
 	Standard_Real d12 = V12.Modulus(), d23 = V23.Modulus();
@@ -119,13 +119,13 @@ void IntPatch_PolyLine::Prepare()
 	  // select min deflection from linear and parabolic ones
 	  if (d1 < d) d = d1;
 	}
-	if (d > defle) defle=d;
+	if (d > myError) myError=d;
       }
       P1 = P2; P2 = P3;
     }
-    box.Add(P3);
+    myBox.Add(P3);
   }
-  box.Enlarge(defle);  
+  myBox.Enlarge(myError);  
 }
 
 //=======================================================================
@@ -135,38 +135,7 @@ void IntPatch_PolyLine::Prepare()
 
 void IntPatch_PolyLine::ResetError()
 {
-  defle = INITDEFLE;
-}
-
-//=======================================================================
-//function : Bounding
-//purpose  : 
-//=======================================================================
-
-const Bnd_Box2d& IntPatch_PolyLine::Bounding() const 
-{
-  return box;
-}
-
-//=======================================================================
-//function : Error
-//purpose  : 
-//=======================================================================
-
-Standard_Real IntPatch_PolyLine::Error() const
-{
-  // return 0.0000001;
-  return defle;
-}
-
-//=======================================================================
-//function : Closed
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean IntPatch_PolyLine::Closed() const
-{
-  return Standard_False;
+  myError = INITDEFLE;
 }
 
 //=======================================================================

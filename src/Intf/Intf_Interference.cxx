@@ -1,7 +1,6 @@
 // File:        Intf_Interference.cxx
 // Created:     Mon Jun 24 11:52:34 1991
 // Author:      Didier PIFFAULT
-//              <dpf@phobox>
 
 #include <Intf_Interference.ixx>
 #include <gp_Pnt2d.hxx>
@@ -28,69 +27,6 @@ void Intf_Interference::SelfInterference (const Standard_Boolean Self)
   mySPoins.Clear();
   mySLines.Clear();
   myTZones.Clear();
-}
-
-
-//---------------------------------------------------------
-// Return the number of sections points in an interference.
-//---------------------------------------------------------
-Standard_Integer Intf_Interference::NbSectionPoints () const
-{
-  return mySPoins.Length();
-}
-
-//-----------------------------------------------------------
-// Give the section point of range Index in the interference.
-//-----------------------------------------------------------
-const Intf_SectionPoint& Intf_Interference::PntValue 
-  (const Standard_Integer Index) const
-{
-  return mySPoins(Index);
-}
-
-//--------------------------------------------------------
-// Return the number of sections lines in an interference.
-//--------------------------------------------------------
-Standard_Integer Intf_Interference::NbSectionLines () const
-{
-  return mySLines.Length();
-}
-
-//----------------------------------------------------------
-// Give the section line of range Index in the interference.
-//----------------------------------------------------------
-const Intf_SectionLine& Intf_Interference::LineValue 
-  (const Standard_Integer Index) const
-{
-  return mySLines(Index);
-}
-
-
-//---------------------------------------------------------------
-// Return the number of sections TangentZones in an interference.
-//---------------------------------------------------------------
-Standard_Integer Intf_Interference::NbTangentZones () const
-{
-  return myTZones.Length();
-}
-
-//---------------------------------------------------------
-// Give the tangentzone of range Index in the interference.
-//---------------------------------------------------------
-const Intf_TangentZone& Intf_Interference::ZoneValue 
-  (const Standard_Integer Index) const
-{
-  return myTZones(Index);
-}
-
-//=======================================================================
-//function : GetTolerance
-//purpose  : 
-//=======================================================================
-
-Standard_Real Intf_Interference::GetTolerance () const
-{
-  return Tolerance;
 }
 
 

@@ -1,0 +1,15 @@
+// File:      Intf_Polygon2d.lxx
+// Created:   Fri Feb 10 17:49:16 2012
+// Author:    Sergey ZERCHANINOV
+// Copyright: OPEN CASCADE SAS 2012
+
+
+//=======================================================================
+//function : Bounding
+//purpose  : 
+//=======================================================================
+
+inline const Bnd_Box2d& Intf_Polygon2d::Bounding () const
+{
+  return myBox;
+}

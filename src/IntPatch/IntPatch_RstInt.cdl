@@ -9,7 +9,6 @@ class RstInt from IntPatch
     --          cheminement et les arcs de restriction
 
 uses Polygo     from IntPatch,
-     PolygoTool from IntPatch,
      Line       from IntPatch,
      HSurface   from Adaptor3d,
      TopolTool  from Adaptor3d

@@ -1,7 +1,6 @@
 // File:	IntCurve_IntPolyPolyGen.gxx
 // Created:	Tue Oct 13 11:12:26 1992
 // Author:	Laurent BUCHARD
-//		<lbr@sdsun2>
 
 //  Modified by skv - Tue Mar  1 14:22:09 2005 OCC8169
 
@@ -26,6 +25,7 @@
 #include <Intf_SectionPoint.hxx>
 #include <Intf_SectionLine.hxx>
 #include <Intf_TangentZone.hxx>
+#include <Intf_InterferencePolygon2d.hxx>
 
 #include <gp_Vec2d.hxx>
 
@@ -387,7 +387,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     Poly1.SetDeflectionOverEstimation(TolConf);
   }
 
-  IntCurve_InterferencePoly2d InterPP(Poly1);  
+  Intf_InterferencePolygon2d InterPP(Poly1);  
   IntCurve_ExactIntersectionPoint  EIP(C1,C1,TolConf);
   Standard_Real U,V;
   
@@ -843,7 +843,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   if(PtrPoly2->DeflectionOverEstimation() < TolConf) { 
     PtrPoly2->SetDeflectionOverEstimation(TolConf);
   }
-  IntCurve_InterferencePoly2d InterPP(*PtrPoly1,*PtrPoly2);  
+  Intf_InterferencePolygon2d InterPP(*PtrPoly1,*PtrPoly2);  
   IntCurve_ExactIntersectionPoint  EIP(C1,C2,TolConf);
   Standard_Real U,V;
   

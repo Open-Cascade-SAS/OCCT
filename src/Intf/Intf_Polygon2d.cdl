@@ -1,0 +1,43 @@
+-- File:      Intf_Polygon2d.cdl
+-- Created:   Fri Feb 10 17:49:16 2012
+-- Author:    Serey ZERCHANINOV
+---Copyright: OPEN CASCADE SAS 2012
+
+
+deferred class Polygon2d from Intf
+
+	---Purpose: 
+
+uses Pnt2d from gp,
+     Box2d from Bnd
+
+raises OutOfRange from Standard
+
+is
+
+    Bounding (me)
+        returns Box2d from Bnd;
+    ---C++: return const &
+    ---C++: inline
+    ---Purpose: Returns the bounding box of the polygon.
+
+    Closed (me)
+        returns Boolean from Standard is virtual;
+    ---Purpose: Returns True if the polyline is closed.
+
+    DeflectionOverEstimation (me) returns Real from Standard is deferred;
+    ---Purpose: Returns the tolerance of the polygon.
+
+    NbSegments (me) returns Integer from Standard is deferred;
+    ---Purpose: Returns the number of Segments in the polyline.
+
+    Segment (me; theIndex : in Integer from Standard;
+                 theBegin, theEnd : in out Pnt2d from gp)
+        raises OutOfRange from Standard is deferred;
+    ---Purpose: Returns the points of the segment <Index> in the Polygon.
+
+fields
+
+    myBox   : Box2d from Bnd is protected;
+
+end Polygon2d;

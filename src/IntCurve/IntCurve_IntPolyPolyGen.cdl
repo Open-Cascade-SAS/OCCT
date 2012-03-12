@@ -1,7 +1,6 @@
 -- File:	IntPolyPolyGen.cdl
 -- Created:	Mon Oct 19 12:03:29 1992
 -- Author:	Laurent BUCHARD
---		<lbr@sdsun2>
 ---Copyright:	 Matra Datavision 1992
 
 
@@ -22,23 +21,11 @@ uses Domain       from IntRes2d
 
     class ThePolygon2d instantiates Polygon2dGen from IntCurve
     	    	    	    	   (TheCurve,
-				    TheCurveTool);
+                                    TheCurveTool);
 				    
-    class ThePolygon2dTool instantiates ToolPolygon from IntCurve
-                                   (Pnt2d from gp,
-				    ThePolygon2d,
-				    Box2d from Bnd);
-
-    class InterferencePoly2d instantiates InterferencePolygon2d from Intf 
-                                   (ThePolygon2d,
-                                    ThePolygon2dTool,
-    	    	    	    	    ThePolygon2d,
-                                    ThePolygon2dTool);
-
     class TheDistBetweenPCurves instantiates DistBetweenPCurvesGen
     	                           (TheCurve,
-				    TheCurveTool);
-
+                                    TheCurveTool);
 
     class  ExactIntersectionPoint 
 

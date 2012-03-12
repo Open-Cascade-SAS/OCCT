@@ -52,8 +52,6 @@ is
 
         class PolyArc;     -- inherits Polygo from IntPatch
 
-    class PolygoTool;
-
     class RstInt;
 
 
@@ -143,8 +141,7 @@ is
               HSurface     from Adaptor3d,
               HSurfaceTool from Adaptor3d);
 
-    class SearchPnt instantiates InterferencePolygon2d from Intf
-   	    (Polygo, PolygoTool, Polygo, PolygoTool); 
+    alias SearchPnt is InterferencePolygon2d from Intf;
 
     class CSFunction instantiates ZerCOnSSParFunc from IntImp
     	(HSurface from Adaptor3d,

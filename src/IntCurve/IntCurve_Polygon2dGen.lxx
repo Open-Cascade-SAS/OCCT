@@ -1,14 +1,9 @@
 // File:	IntCurve_Polygon2dGen.lxx
 // Created:	Thu 3 Jun 1993
 // Author:	Laurent BUCHARD
-//		<lbr@nonox>
 
 #include <Standard_OutOfRange.hxx>
 
-//======================================================================	   
-inline const Bnd_Box2d& IntCurve_Polygon2dGen::Bounding(void) const {
-  return(TheBnd);
-}
 //======================================================================
 inline Standard_Real IntCurve_Polygon2dGen::DeflectionOverEstimation() const {
   return(TheDeflection);
@@ -16,33 +11,15 @@ inline Standard_Real IntCurve_Polygon2dGen::DeflectionOverEstimation() const {
 inline void IntCurve_Polygon2dGen::SetDeflectionOverEstimation
   (const Standard_Real x) {
   TheDeflection = x;
-  TheBnd.Enlarge(TheDeflection);
+  myBox.Enlarge(TheDeflection);
 }
 //======================================================================
 inline void IntCurve_Polygon2dGen::Closed(const Standard_Boolean flag) {
   ClosedPolygon = flag;
 }
 //======================================================================
-inline Standard_Boolean IntCurve_Polygon2dGen::Closed(void) const {
-  return(Standard_False);    //-- Voir si le cas Closed est traitable
-}
-//======================================================================
 inline Standard_Integer IntCurve_Polygon2dGen::NbSegments(void) const {
   return((ClosedPolygon)? NbPntIn : NbPntIn-1);
-}
-//======================================================================
-inline const gp_Pnt2d& IntCurve_Polygon2dGen::EndOfSeg(const Standard_Integer Index) const {
-  Standard_Integer ind = Index;
-  if (Index >= NbPntIn) {
-    if (!ClosedPolygon)
-      Standard_OutOfRange::Raise("OutOfRange Polygon2d::EndOfSeg !");
-    ind = 0;
-  }
-  return ThePnts(TheIndex(ind+1));
-}
-//======================================================================
-inline const gp_Pnt2d& IntCurve_Polygon2dGen::BeginOfSeg(const Standard_Integer Index) const {
-  return ThePnts(TheIndex(Index));
 }
 //======================================================================
 inline Standard_Real IntCurve_Polygon2dGen::InfParameter() const {

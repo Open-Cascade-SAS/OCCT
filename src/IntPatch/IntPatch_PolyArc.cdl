@@ -31,14 +31,7 @@ is
     	--- This exception is raised if Pfirst=RealFirst or Plast=RealLast or
     	--  NbSample<=1.
 
-
-    Bounding(me)                 
-    	---C++: return const&
-    returns Box2d from Bnd;
- 	    	
-    Error(me)                    returns Real from Standard;
-                      	    	          
-    Closed(me)                   returns Boolean from Standard;
+    Closed(me)                   returns Boolean from Standard is redefined virtual;
 
     NbPoints(me)                 returns Integer;
  
@@ -53,8 +46,6 @@ fields
 
     brise  : Array1OfPnt2d from TColgp;
     param  : Array1OfReal  from TColStd;
-    boite  : Box2d         from Bnd;
-    fleche : Real          from Standard;
     offsetx: Real          from Standard;
     offsety: Real          from Standard;
     ferme  : Boolean       from Standard;
