@@ -237,12 +237,12 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 	  return Standard_False;
 	}
       
-      LDOM_Element* aCurElement;
+      LDOM_Element* aCurElement; 
       if (aCurNode.isNull())
-	aCurNode = anElement.getFirstChild();
-      else 
-	aCurNode = aCurElement->getNextSibling();
-      
+	    aCurNode = anElement.getFirstChild();
+      else    
+        aCurNode    = ((LDOM_Element*)&aCurNode)->getNextSibling();
+          
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValueStr, aKey;
       TDataStd_DataMapOfStringReal aMap;
@@ -311,9 +311,9 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 	}
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	aCurNode = anElement.getFirstChild();
+	    aCurNode = anElement.getFirstChild();
       else 
-	aCurNode = aCurElement->getNextSibling();
+	    aCurNode = ((LDOM_Element*)&aCurNode)->getNextSibling();
       
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValue, aKey;
@@ -383,9 +383,9 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	aCurNode = anElement.getFirstChild();
+	    aCurNode = anElement.getFirstChild();
       else 
-	aCurNode = aCurElement->getNextSibling();
+	    aCurNode = ((LDOM_Element*)&aCurNode)->getNextSibling();
       
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aValueStr, aKey;
@@ -460,9 +460,9 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
 	}
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	aCurNode = anElement.getFirstChild();
+	    aCurNode = anElement.getFirstChild();
       else 
-	aCurNode = aCurElement->getNextSibling();
+	    aCurNode =((LDOM_Element*)&aCurNode)->getNextSibling();
       
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aKey, aValueStr;
@@ -566,9 +566,9 @@ Standard_Boolean XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent& 
       
       LDOM_Element* aCurElement;
       if (aCurNode.isNull())
-	aCurNode = anElement.getFirstChild();
+	    aCurNode = anElement.getFirstChild();
       else 
-	aCurNode = aCurElement->getNextSibling();
+	    aCurNode =((LDOM_Element*)&aCurNode)->getNextSibling();
       
       aCurElement = (LDOM_Element*)&aCurNode;
       TCollection_ExtendedString aKey, aValueStr;
