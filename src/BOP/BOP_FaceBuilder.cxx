@@ -47,35 +47,124 @@
 #include <BOP_ListIteratorOfListOfConnexityBlock.hxx>
 #include <BOP_ConnexityBlock.hxx>
 
-static void DoTopologicalVerification(TopoDS_Face& F);
+//modified by NIZNHY-PKV Wed Feb 29 10:04:56 2012t
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <Geom2dInt_Geom2dCurveTool.hxx>
+
+static
+  Standard_Boolean IsGrowthWire(const TopoDS_Shape& theWire,
+				const TopTools_IndexedMapOfShape& theMHE);
+static
+  Standard_Boolean IsHole(const TopoDS_Shape& aW,
+			  const TopoDS_Shape& aFace);
+static
+  Standard_Boolean IsInside(const TopoDS_Shape& theHole,
+			    const TopoDS_Shape& theF2,
+			    const Handle(IntTools_Context)& theContext);
+//modified by NIZNHY-PKV Wed Feb 29 10:05:21 2012t
+static 
+  void DoTopologicalVerification(TopoDS_Face& F);
 
 //=======================================================================
 //function : BOP_FaceBuilder
 //purpose  : 
 //=======================================================================
-  BOP_FaceBuilder::BOP_FaceBuilder():
+BOP_FaceBuilder::BOP_FaceBuilder():
   myTreatment(0),
-  myManifoldFlag(Standard_True),
+//  myManifoldFlag(Standard_True),
   myTreatSDScales(0)
 {
 }
-
+//=======================================================================
+//function : SetContext
+//purpose  : 
+//=======================================================================
+void BOP_FaceBuilder::SetContext(const Handle(IntTools_Context)& aCtx)
+{
+  myContext=aCtx;
+}
+//=======================================================================
+//function : Context
+//purpose  : 
+//=======================================================================
+const Handle(IntTools_Context)& BOP_FaceBuilder::Context()const
+{
+  return myContext;
+}
+//=======================================================================
+//function : SetTreatment
+//purpose  : 
+//=======================================================================
+void BOP_FaceBuilder::SetTreatment(const Standard_Integer aTreatment)
+{
+  myTreatment=aTreatment;
+}
+//=======================================================================
+//function : Treatment
+//purpose  : 
+//=======================================================================
+Standard_Integer BOP_FaceBuilder::Treatment()const 
+{
+  return myTreatment;
+}
+//=======================================================================
+//function : SetTreatSDScales
+//purpose  : 
+//=======================================================================
+void BOP_FaceBuilder::SetTreatSDScales(const Standard_Integer aTreatment)
+{
+  myTreatSDScales=aTreatment;
+}
+//=======================================================================
+//function : TreatSDScales
+//purpose  : 
+//=======================================================================
+Standard_Integer BOP_FaceBuilder::TreatSDScales()const 
+{
+  return myTreatSDScales;
+}
+//=======================================================================
+//function : WES
+//purpose  : 
+//=======================================================================
+const BOP_WireEdgeSet& BOP_FaceBuilder::WES() const
+{
+  return *myWES;
+}
+//=======================================================================
+//function : NewFaces
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BOP_FaceBuilder::NewFaces() const
+{
+  return myNewFaces;
+}
 //=======================================================================
 //function : Do
 //purpose  : 
 //=======================================================================
-  void BOP_FaceBuilder::Do(const BOP_WireEdgeSet& aWES,
-			   const Standard_Boolean bForceClass) 
+void BOP_FaceBuilder::Do(const BOP_WireEdgeSet& aWES,
+			 const Standard_Boolean bForceClass) 
 {
   myFace=aWES.Face();
   myWES=(BOP_WireEdgeSet*) &aWES;
   //
-  // 
+  //modified by NIZNHY-PKV Wed Feb 29 10:57:31 2012f
+  if (myContext.IsNull()) {
+    myContext=new IntTools_Context;
+  }
+  //modified by NIZNHY-PKV Wed Feb 29 10:57:34 2012t
+  //
   BOP_WESCorrector aWESCor;
   aWESCor.SetWES(aWES);
   aWESCor.Do();
   BOP_WireEdgeSet& aNewWES=aWESCor.NewWES();
   //
+  //modified by NIZNHY-PKV Wed Feb 29 09:28:06 2012f
+  /*
   //Make Loops. Only Loops are allowed after WESCorrector 
   MakeLoops(aNewWES);
   //
@@ -86,7 +175,10 @@ static void DoTopologicalVerification(TopoDS_Face& F);
   myFaceAreaBuilder.InitFaceAreaBuilder(LS, WEC, bForceClass);
 
   BuildNewFaces();
+  */
   
+  PerformAreas(aNewWES);
+  //modified by NIZNHY-PKV Wed Feb 29 09:28:08 2012t
   
   if (myTreatment==0) {
     DoInternalEdges(); 
@@ -103,13 +195,11 @@ static void DoTopologicalVerification(TopoDS_Face& F);
     DoTopologicalVerification(aF);
   }
 }
-
-
 //=======================================================================
 //function : DoInternalEdges
 //purpose  : 
 //=======================================================================
-  void BOP_FaceBuilder::DoInternalEdges()
+void BOP_FaceBuilder::DoInternalEdges()
 {
   Standard_Integer i, aNbE, aNbSE, aNb, aNbF;
   TopTools_IndexedDataMapOfShapeListOfShape aDifferenceMap, aFLEMap;
@@ -133,9 +223,6 @@ static void DoTopologicalVerification(TopoDS_Face& F);
       anEdgesMap.Add(aE);
     }   
   }
-
-  
-
   aNbSE=aStartElementsMap.Extent();
   aNbE=anEdgesMap.Extent();
 
@@ -211,8 +298,11 @@ static void DoTopologicalVerification(TopoDS_Face& F);
       for (; anIt.More(); anIt.Next()) {
 	TopoDS_Face& aF=TopoDS::Face(anIt.Value());
 	//
-	IntTools_Context aCtx;
-	bIsPointInOnFace=aCtx.IsPointInOnFace(aF, aP2D);
+	//modified by NIZNHY-PKV Wed Feb 29 10:59:40 2012f
+	//IntTools_Context aCtx;
+	//bIsPointInOnFace=aCtx.IsPointInOnFace(aF, aP2D);
+	bIsPointInOnFace=myContext->IsPointInOnFace(aF, aP2D);
+	//modified by NIZNHY-PKV Wed Feb 29 10:59:43 2012t
 	//
 	if (bIsPointInOnFace) {
 	  //
@@ -267,332 +357,11 @@ static void DoTopologicalVerification(TopoDS_Face& F);
     //
   }
 }
-
 //=======================================================================
-//function : BuildNewFaces
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::BuildNewFaces() 
-{
-  Standard_Integer nF, nW, nE;
-  Standard_Real    aTol;
-  TopLoc_Location aLoc;
-  TopoDS_Face newFace;
-  TopoDS_Wire newWire;
-  BRep_Builder aBB;
-  Standard_Boolean bValidWire, bValidFace;
-  
-  Handle(Geom_Surface) aSurface=BRep_Tool::Surface(myFace, aLoc);
-  aTol=BRep_Tool::Tolerance(myFace);
-
-  myNewFaces.Clear();
-  myNegatives.Clear();
-
-  nF=InitFace();
-  for (; MoreFace(); NextFace()) {
-    bValidFace=Standard_False;
-    aBB.MakeFace (newFace, aSurface, aLoc, aTol);
-
-    nW=InitWire();
-    for (; MoreWire(); NextWire()) {
-      if (IsOldWire()) {
-	newWire=TopoDS::Wire(OldWire());
-      }
-      else {
-	aBB.MakeWire(newWire);
-	nE=InitEdge();
-	for (; MoreEdge(); NextEdge()) {
-	  const TopoDS_Edge& newEdge=Edge();
-	  aBB.Add(newWire, newEdge);
-	}
-      }
-      
-      bValidWire=BOPTools_Tools3D::IsConvexWire(newWire);
-      if (bValidWire) {
-	bValidFace=Standard_True;
-	aBB.Add(newFace, newWire);
-      }
-
-      else {
-	if (!myManifoldFlag && myTreatment==1) {
-	  myNewFaces.Append (newWire);
-	}
-      }
-    } // end of for (; MoreWire(); NextWire())
-    
-    if (bValidFace) {
-      
-      Standard_Boolean bIsValidIn2D, bNegativeFlag;
-      Standard_Integer iNegativeFlag;
-
-      bIsValidIn2D=BOPTools_Tools3D::IsValidArea (newFace, bNegativeFlag);
-      if(bIsValidIn2D) {
-	myNewFaces.Append (newFace);
-	iNegativeFlag=(Standard_Integer)bNegativeFlag;
-	myNegatives.Append(iNegativeFlag);
-      }
-      
-    }
-  }
-}
-
-//=======================================================================
-//function : MakeLoops
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::MakeLoops(BOP_WireEdgeSet& SS)
-{
-  //BOP_BlockBuilder& BB = myBlockBuilder;
-  BOP_ListOfLoop& LL = myLoopSet.ChangeListOfLoop();
-  
-  // Build blocks on elements of SS [ Ready to remove this invocation]
-  // make list of loop (LL) of the LoopSet
-  // - on shapes of the ShapeSet (SS)
-  // - on blocks of the BlockBuilder (BB)
-  //
-  // Add shapes of SS as shape loops
-  LL.Clear();
-  for(SS.InitShapes();SS.MoreShapes();SS.NextShape()) {
-    const TopoDS_Shape& S = SS.Shape();
-    Handle(BOP_Loop) ShapeLoop = new BOP_Loop(S);
-    LL.Append(ShapeLoop);
-  }
-  
-}
-
-//=======================================================================
-//function : SetTreatment
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::SetTreatment(const Standard_Integer aTreatment)
-{
-  myTreatment=aTreatment;
-}
-
-//=======================================================================
-//function : Treatment
-//purpose  : 
-//=======================================================================
-  Standard_Integer BOP_FaceBuilder::Treatment()const 
-{
-  return myTreatment;
-}
-//=======================================================================
-//function : SetTreatSDScales
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::SetTreatSDScales(const Standard_Integer aTreatment)
-{
-  myTreatSDScales=aTreatment;
-}
-
-//=======================================================================
-//function : TreatSDScales
-//purpose  : 
-//=======================================================================
-  Standard_Integer BOP_FaceBuilder::TreatSDScales()const 
-{
-  return myTreatSDScales;
-}
-//=======================================================================
-//function : SetManifoldFlag
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::SetManifoldFlag(const Standard_Boolean aManifoldFlag)
-{
-  myManifoldFlag=aManifoldFlag;
-}
-
-
-//=======================================================================
-//function : ManifoldFlag
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOP_FaceBuilder::ManifoldFlag()const
-{
-  return myManifoldFlag;
-}
-
-//=======================================================================
-//function : InitFace
-//purpose  : 
-//=======================================================================
-  Standard_Integer BOP_FaceBuilder::InitFace()
-{
-  Standard_Integer n = myFaceAreaBuilder.InitArea();
-  return n;
-}
-//=======================================================================
-//function : MoreFace
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOP_FaceBuilder::MoreFace() const
-{
-  Standard_Boolean b = myFaceAreaBuilder.MoreArea();
-  return b;
-}
-//=======================================================================
-//function : NextFace
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::NextFace()
-{
-  myFaceAreaBuilder.NextArea();
-}
-//=======================================================================
-//function : InitWire
-//purpose  : 
-//=======================================================================
-  Standard_Integer BOP_FaceBuilder::InitWire()
-{
-  Standard_Integer n = myFaceAreaBuilder.InitLoop();
-  return n;
-}
-//=======================================================================
-//function : MoreWire
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOP_FaceBuilder::MoreWire() const
-{
-  Standard_Boolean b = myFaceAreaBuilder.MoreLoop();
-  return b;
-}
-//=======================================================================
-//function : NextWire
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::NextWire()
-{
-  myFaceAreaBuilder.NextLoop();
-}
-//=======================================================================
-//function : IsOldWire
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOP_FaceBuilder::IsOldWire() const
-{
-  const Handle(BOP_Loop)& L = myFaceAreaBuilder.Loop();
-  Standard_Boolean b = L->IsShape();
-  return b;
-}
-//=======================================================================
-//function : OldWire
-//purpose  : 
-//=======================================================================
-  const TopoDS_Shape& BOP_FaceBuilder::OldWire() const
-{
-  const Handle(BOP_Loop)& L = myFaceAreaBuilder.Loop();
-  const TopoDS_Shape& B = L->Shape();
-  return B;
-}
-//=======================================================================
-//function : Wire
-//purpose  : 
-//=======================================================================
-  const TopoDS_Wire& BOP_FaceBuilder::Wire() const
-{
-  return TopoDS::Wire(OldWire());
-}
-
-//=======================================================================
-//function : InitEdge
-//purpose  : 
-//=======================================================================
-  Standard_Integer BOP_FaceBuilder::InitEdge()
-{
-  const Handle(BOP_Loop)& L = myFaceAreaBuilder.Loop();
-  if ( L->IsShape() ){
-    Standard_DomainError::Raise("BOP_FaceBuilder:InitEdge");
-  }
-  else {
-    myBlockIterator = L->BlockIterator();
-    myBlockIterator.Initialize();
-    FindNextValidElement();
-  }
-  Standard_Integer n = myBlockIterator.Extent();
-  return n;
-}
-//=======================================================================
-//function : FindNextValidElement
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::FindNextValidElement()
-{
-  // prerequisites : myBlockIterator.Initialize
-  Standard_Boolean found = Standard_False;
-
-  while ( myBlockIterator.More()) {
-    const Standard_Integer i = myBlockIterator.Value();
-    found = myBlockBuilder.ElementIsValid(i);
-    if (found) break;
-    else myBlockIterator.Next();
-  }
-}
-//=======================================================================
-//function : MoreEdge
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOP_FaceBuilder::MoreEdge() const
-{
-  Standard_Boolean b = myBlockIterator.More();
-  return b;
-}
-//=======================================================================
-//function : NextEdge
-//purpose  : 
-//=======================================================================
-  void BOP_FaceBuilder::NextEdge()
-{
-  myBlockIterator.Next();
-  FindNextValidElement();
-}
-//=======================================================================
-//function : Edge
-//purpose  : 
-//=======================================================================
-  const TopoDS_Edge& BOP_FaceBuilder::Edge() const
-{
-  if (!myBlockIterator.More()) {
-    Standard_Failure::Raise("OutOfRange");
-  }
-  
-  Standard_Integer i = myBlockIterator.Value();
-  
-  Standard_Boolean isvalid = myBlockBuilder.ElementIsValid(i);
- 
-  if (!isvalid) {
-    Standard_Failure::Raise("Edge not Valid");
-  }
-
-  const TopoDS_Shape& E = myBlockBuilder.Element(i);
-  const TopoDS_Edge& anEdge = TopoDS::Edge(E);
-  
-  return anEdge;
-}
-
-//=======================================================================
-//function : WES
-//purpose  : 
-//=======================================================================
-  const BOP_WireEdgeSet& BOP_FaceBuilder::WES() const
-{
-  return *myWES;
-}
-
-//=======================================================================
-//function : NewFaces
-//purpose  : 
-//=======================================================================
-  const TopTools_ListOfShape& BOP_FaceBuilder::NewFaces() const
-{
-  return myNewFaces;
-}
-
-//=======================================================================
-// function: TreatSDScales Jan 15 12:25:34 2002
+// function: TreatSDScales 
 // purpose :  
 //=======================================================================
-  void BOP_FaceBuilder::SDScales()
+void BOP_FaceBuilder::SDScales()
 {
   
   Standard_Integer iNegativeFlag, aNbFR, i, aNbEFOpen, iCnt;
@@ -699,9 +468,244 @@ static void DoTopologicalVerification(TopoDS_Face& F);
     const TopoDS_Face& aF=TopoDS::Face(anIt.Value());
     myNewFaces.Append(aF);
   }
- 
 }
+//modified by NIZNHY-PKV Wed Feb 29 08:57:52 2012f
+//=======================================================================
+//function : PerformAreas
+//purpose  : 
+//=======================================================================
+void BOP_FaceBuilder::PerformAreas(BOP_WireEdgeSet& aWES)
+{
+  Standard_Boolean bIsGrowth, bIsHole;
+  Standard_Real aTol;
+  TopTools_ListOfShape aNewFaces, aHoleWires, aLoops; 
+  TopoDS_Shape anInfinitePointShape;
+  TopTools_DataMapOfShapeShape aInOutMap;
+  TopTools_DataMapOfShapeListOfShape aMSH;
+  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape aItMSH;
+  TopTools_ListIteratorOfListOfShape aIt1, aIt2;
+  TopTools_IndexedMapOfShape aMHE;
+  BRep_Builder aBB;
+  Handle(Geom_Surface) aS;
+  TopLoc_Location aLoc;
+  //
+  aTol=BRep_Tool::Tolerance(myFace);
+  aS=BRep_Tool::Surface(myFace, aLoc);
+  //
+  myNewFaces.Clear();
+  //
+  for(aWES.InitShapes();  aWES.MoreShapes(); aWES.NextShape()) {
+    const TopoDS_Shape& aW=aWES.Shape();
+    aLoops.Append(aW);
+  }
+  //
+  //  Draft faces [aNewFaces]
+  aIt1.Initialize(aLoops);
+  for ( ; aIt1.More(); aIt1.Next()) {
+    const TopoDS_Shape& aWire=aIt1.Value();
+    //
+    bIsGrowth=IsGrowthWire(aWire, aMHE);
+    if (bIsGrowth) {
+      // make a growth face from a wire
+      TopoDS_Face aFace;
+      aBB.MakeFace(aFace, aS, aLoc, aTol);
+      aBB.Add (aFace, aWire);
+      //
+      aNewFaces.Append (aFace);
+    }
+    else{
+      // check if a wire is a hole 
+      bIsHole=IsHole(aWire, myFace);
+      //XX
+      if (bIsHole) {
+        aHoleWires.Append(aWire);
+        TopExp::MapShapes(aWire, TopAbs_EDGE, aMHE);
+      }
+      else {
+        // make a growth face from a wire
+        TopoDS_Face aFace;
+        aBB.MakeFace(aFace, aS, aLoc, aTol);
+        aBB.Add (aFace, aWire);
+        //
+        aNewFaces.Append (aFace);
+      }
+    }
+  }
+  //
+  // 2. Find outer growth shell that is most close to each hole shell
+  aIt2.Initialize(aHoleWires);
+  for (; aIt2.More(); aIt2.Next()) {
+    const TopoDS_Shape& aHole = aIt2.Value();
+    //
+    aIt1.Initialize(aNewFaces);
+    for ( ; aIt1.More(); aIt1.Next()) {
+      const TopoDS_Shape& aF=aIt1.Value();
+      //
+      if (!IsInside(aHole, aF, myContext)){
+        continue;
+      }
+      //
+      if ( aInOutMap.IsBound (aHole)){
+        const TopoDS_Shape& aF2=aInOutMap(aHole);
+        if (IsInside(aF, aF2, myContext)) {
+          aInOutMap.UnBind(aHole);
+          aInOutMap.Bind (aHole, aF);
+        }
+      }
+      else{
+        aInOutMap.Bind (aHole, aF);
+      }
+    }
+    //
+    // Add aHole to a map Face/ListOfHoles [aMSH]
+    if (aInOutMap.IsBound(aHole)){
+      const TopoDS_Shape& aF=aInOutMap(aHole);
+      if (aMSH.IsBound(aF)) {
+        TopTools_ListOfShape& aLH=aMSH.ChangeFind(aF);
+        aLH.Append(aHole);
+      }
+      else {
+        TopTools_ListOfShape aLH;
+        aLH.Append(aHole);
+        aMSH.Bind(aF, aLH);
+      }
+    }
+  }// for (; aIt2.More(); aIt2.Next())
+  //
+  // 3. Add aHoles to Faces
+  aItMSH.Initialize(aMSH);
+  for (; aItMSH.More(); aItMSH.Next()) {
+    TopoDS_Face aF=TopoDS::Face(aItMSH.Key());
+    //
+    const TopTools_ListOfShape& aLH=aItMSH.Value();
+    aIt2.Initialize(aLH);
+    for (; aIt2.More(); aIt2.Next()) {
+      const TopoDS_Shape& aHole = aIt2.Value();
+      aBB.Add (aF, aHole);
+    }
+    //
+    // update classifier 
+    aTol=BRep_Tool::Tolerance(aF);
+    IntTools_FClass2d& aClsf=myContext->FClass2d(aF);
+    aClsf.Init(aF, aTol);
+  }
+  //
+  // These aNewFaces are draft faces that 
+  // do not contain any internal shapes
+  //
+  Standard_Boolean bIsValidIn2D, bNegativeFlag;
+  Standard_Integer iNegativeFlag;
+  //
+  myNewFaces.Clear();
+  myNegatives.Clear();
+  //
+  aIt1.Initialize(aNewFaces);
+  for ( ; aIt1.More(); aIt1.Next()) {
+    const TopoDS_Face& aFx=TopoDS::Face(aIt1.Value());
+    bIsValidIn2D=BOPTools_Tools3D::IsValidArea (aFx, bNegativeFlag);
+    if(bIsValidIn2D) {
+      myNewFaces.Append (aFx);
+      iNegativeFlag=(Standard_Integer)bNegativeFlag;
+      myNegatives.Append(iNegativeFlag);
+    }
+  }
+  //
+}
+//=======================================================================
+//function : IsGrowthWire
+//purpose  : 
+//=======================================================================
+Standard_Boolean IsGrowthWire(const TopoDS_Shape& theWire,
+                              const TopTools_IndexedMapOfShape& theMHE)
+{
+  Standard_Boolean bRet;
+  TopoDS_Iterator aIt;
+  // 
+  bRet=Standard_False;
+  if (theMHE.Extent()) {
+    aIt.Initialize(theWire);
+    for(; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aE=aIt.Value();
+      if (theMHE.Contains(aE)) {
+        return !bRet;
+      }
+    }
+  }
+  return bRet;
+}
+//=======================================================================
+//function : IsHole
+//purpose  : 
+//=======================================================================
+Standard_Boolean IsHole(const TopoDS_Shape& aW,
+			const TopoDS_Shape& aFace)
+{
+  Standard_Boolean bIsHole;
+  Standard_Real aTolF;
+  TopoDS_Shape aFE;
+  TopoDS_Face aFF;
+  BRep_Builder aBB;
+  IntTools_FClass2d aFClass2d;
+  //
+  aFE=aFace.EmptyCopied();
+  aFF=TopoDS::Face(aFE);
+  aFF.Orientation(TopAbs_FORWARD);
+  aBB.Add(aFF, aW);
+  //
+  aTolF=BRep_Tool::Tolerance(aFF);
+  //
+  aFClass2d.Init(aFF, aTolF);
+  //
+  bIsHole=aFClass2d.IsHole();
+  //
+  return bIsHole;
+}
+//=======================================================================
+//function : IsInside
+//purpose  : 
+//=======================================================================
+Standard_Boolean IsInside(const TopoDS_Shape& theHole,
+                          const TopoDS_Shape& theF2,
+                          const Handle(IntTools_Context)& theContext)
+{
+  Standard_Boolean bRet;
+  Standard_Real aT, aU, aV;
+  
+  TopAbs_State aState;
+  TopExp_Explorer aExp;
+  TopTools_IndexedMapOfShape aME2;
+  gp_Pnt2d aP2D;
+  //
+  bRet=Standard_False;
+  aState=TopAbs_UNKNOWN;
+  const TopoDS_Face& aF2=TopoDS::Face(theF2);
+  //
+  TopExp::MapShapes(aF2, TopAbs_EDGE, aME2);
+  //
+  aExp.Init(theHole, TopAbs_EDGE);
+  if (aExp.More()) {
+    const TopoDS_Edge& aE = TopoDS::Edge(aExp.Current());
+    if (aME2.Contains(aE)) {
+      return bRet;
+    }
+    //
+    aT=BOPTools_Tools2D::IntermediatePoint(aE);
+    BOPTools_Tools2D::PointOnSurface(aE, aF2, aT, aU, aV);
+    aP2D.SetCoord(aU, aV);
+    //
+    IntTools_FClass2d& aClsf=theContext->FClass2d(aF2);
+    aState=aClsf.Perform(aP2D);
+    bRet=(aState==TopAbs_IN);
+  }
+  //
+  return bRet;
+}
+//modified by NIZNHY-PKV Wed Feb 29 08:57:55 2012t
 
+//=======================================================================
+//function : DoTopologicalVerification
+//purpose  : 
+//=======================================================================
 void DoTopologicalVerification(TopoDS_Face& F)
 {
   TopTools_IndexedDataMapOfShapeListOfShape mapVE;
@@ -792,15 +796,277 @@ void DoTopologicalVerification(TopoDS_Face& F)
       bb.UpdateVertex(aV,newTol);
       TolV = newTol;
     }
-
-//     Standard_Real dist2d = aPnt2dE1.Distance(aPnt2dE2);
-//     // update veretex tolerance checking distance in 2D
-//     if( dist2d > TolV ) {
-//       Standard_Real delta2d = fabs(dist2d-TolV);
-//       Standard_Real newTolV = TolV + delta2d + 2.e-7;
-//       TopoDS_Vertex & aV = (TopoDS_Vertex &) iV;
-//       BRep_Builder bb;
-//       bb.UpdateVertex(aV,newTolV);
-//     }
   }
 }
+//modified by NIZNHY-PKV Wed Feb 29 10:07:16 2012f
+/*
+//=======================================================================
+//function : MakeLoops
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::MakeLoops(BOP_WireEdgeSet& SS)
+{
+  //BOP_BlockBuilder& BB = myBlockBuilder;
+  BOP_ListOfLoop& LL = myLoopSet.ChangeListOfLoop();
+  
+  // Build blocks on elements of SS [ Ready to remove this invocation]
+  // make list of loop (LL) of the LoopSet
+  // - on shapes of the ShapeSet (SS)
+  // - on blocks of the BlockBuilder (BB)
+  //
+  // Add shapes of SS as shape loops
+  LL.Clear();
+  for(SS.InitShapes();SS.MoreShapes();SS.NextShape()) {
+    const TopoDS_Shape& S = SS.Shape();
+    Handle(BOP_Loop) ShapeLoop = new BOP_Loop(S);
+    LL.Append(ShapeLoop);
+  }
+}
+*/
+/*
+//=======================================================================
+//function : BuildNewFaces
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::BuildNewFaces() 
+{
+  Standard_Integer nF, nW, nE;
+  Standard_Real    aTol;
+  TopLoc_Location aLoc;
+  TopoDS_Face newFace;
+  TopoDS_Wire newWire;
+  BRep_Builder aBB;
+  Standard_Boolean bValidWire, bValidFace;
+  
+  Handle(Geom_Surface) aSurface=BRep_Tool::Surface(myFace, aLoc);
+  aTol=BRep_Tool::Tolerance(myFace);
+
+  myNewFaces.Clear();
+  myNegatives.Clear();
+
+  nF=InitFace();
+  for (; MoreFace(); NextFace()) {
+    bValidFace=Standard_False;
+    aBB.MakeFace (newFace, aSurface, aLoc, aTol);
+
+    nW=InitWire();
+    for (; MoreWire(); NextWire()) {
+      if (IsOldWire()) {
+	newWire=TopoDS::Wire(OldWire());
+      }
+      else {
+	aBB.MakeWire(newWire);
+	nE=InitEdge();
+	for (; MoreEdge(); NextEdge()) {
+	  const TopoDS_Edge& newEdge=Edge();
+	  aBB.Add(newWire, newEdge);
+	}
+      }
+      
+      bValidWire=BOPTools_Tools3D::IsConvexWire(newWire);
+      if (bValidWire) {
+	bValidFace=Standard_True;
+	aBB.Add(newFace, newWire);
+      }
+
+      else {
+	if (!myManifoldFlag && myTreatment==1) {
+	  myNewFaces.Append (newWire);
+	}
+      }
+    } // end of for (; MoreWire(); NextWire())
+    
+    if (bValidFace) {
+      
+      Standard_Boolean bIsValidIn2D, bNegativeFlag;
+      Standard_Integer iNegativeFlag;
+
+      bIsValidIn2D=BOPTools_Tools3D::IsValidArea (newFace, bNegativeFlag);
+      if(bIsValidIn2D) {
+	myNewFaces.Append (newFace);
+	iNegativeFlag=(Standard_Integer)bNegativeFlag;
+	myNegatives.Append(iNegativeFlag);
+      }
+    }
+  }
+}
+*/
+/*
+//=======================================================================
+//function : InitFace
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOP_FaceBuilder::InitFace()
+{
+  Standard_Integer n = myFaceAreaBuilder.InitArea();
+  return n;
+}
+//=======================================================================
+//function : MoreFace
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOP_FaceBuilder::MoreFace() const
+{
+  Standard_Boolean b = myFaceAreaBuilder.MoreArea();
+  return b;
+}
+//=======================================================================
+//function : NextFace
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::NextFace()
+{
+  myFaceAreaBuilder.NextArea();
+}
+
+//=======================================================================
+//function : InitWire
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOP_FaceBuilder::InitWire()
+{
+  Standard_Integer n = myFaceAreaBuilder.InitLoop();
+  return n;
+}
+//=======================================================================
+//function : MoreWire
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOP_FaceBuilder::MoreWire() const
+{
+  Standard_Boolean b = myFaceAreaBuilder.MoreLoop();
+  return b;
+}
+//=======================================================================
+//function : NextWire
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::NextWire()
+{
+  myFaceAreaBuilder.NextLoop();
+}
+//=======================================================================
+//function : IsOldWire
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOP_FaceBuilder::IsOldWire() const
+{
+  const Handle(BOP_Loop)& L = myFaceAreaBuilder.Loop();
+  Standard_Boolean b = L->IsShape();
+  return b;
+}
+//=======================================================================
+//function : OldWire
+//purpose  : 
+//=======================================================================
+  const TopoDS_Shape& BOP_FaceBuilder::OldWire() const
+{
+  const Handle(BOP_Loop)& L = myFaceAreaBuilder.Loop();
+  const TopoDS_Shape& B = L->Shape();
+  return B;
+}
+//=======================================================================
+//function : Wire
+//purpose  : 
+//=======================================================================
+  const TopoDS_Wire& BOP_FaceBuilder::Wire() const
+{
+  return TopoDS::Wire(OldWire());
+}
+*/
+/*
+//=======================================================================
+//function : InitEdge
+//purpose  : 
+//=======================================================================
+  Standard_Integer BOP_FaceBuilder::InitEdge()
+{
+  const Handle(BOP_Loop)& L = myFaceAreaBuilder.Loop();
+  if ( L->IsShape() ){
+    Standard_DomainError::Raise("BOP_FaceBuilder:InitEdge");
+  }
+  else {
+    myBlockIterator = L->BlockIterator();
+    myBlockIterator.Initialize();
+    FindNextValidElement();
+  }
+  Standard_Integer n = myBlockIterator.Extent();
+  return n;
+}
+//=======================================================================
+//function : FindNextValidElement
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::FindNextValidElement()
+{
+  // prerequisites : myBlockIterator.Initialize
+  Standard_Boolean found = Standard_False;
+
+  while ( myBlockIterator.More()) {
+    const Standard_Integer i = myBlockIterator.Value();
+    found = myBlockBuilder.ElementIsValid(i);
+    if (found) break;
+    else myBlockIterator.Next();
+  }
+}
+//=======================================================================
+//function : MoreEdge
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOP_FaceBuilder::MoreEdge() const
+{
+  Standard_Boolean b = myBlockIterator.More();
+  return b;
+}
+//=======================================================================
+//function : NextEdge
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::NextEdge()
+{
+  myBlockIterator.Next();
+  FindNextValidElement();
+}
+//=======================================================================
+//function : Edge
+//purpose  : 
+//=======================================================================
+  const TopoDS_Edge& BOP_FaceBuilder::Edge() const
+{
+  if (!myBlockIterator.More()) {
+    Standard_Failure::Raise("OutOfRange");
+  }
+  
+  Standard_Integer i = myBlockIterator.Value();
+  
+  Standard_Boolean isvalid = myBlockBuilder.ElementIsValid(i);
+ 
+  if (!isvalid) {
+    Standard_Failure::Raise("Edge not Valid");
+  }
+
+  const TopoDS_Shape& E = myBlockBuilder.Element(i);
+  const TopoDS_Edge& anEdge = TopoDS::Edge(E);
+  
+  return anEdge;
+}
+*/
+/*
+//=======================================================================
+//function : SetManifoldFlag
+//purpose  : 
+//=======================================================================
+  void BOP_FaceBuilder::SetManifoldFlag(const Standard_Boolean aManifoldFlag)
+{
+  myManifoldFlag=aManifoldFlag;
+}
+//=======================================================================
+//function : ManifoldFlag
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOP_FaceBuilder::ManifoldFlag()const
+{
+  return myManifoldFlag;
+}
+*/
+//modified by NIZNHY-PKV Wed Feb 29 10:07:05 2012t
