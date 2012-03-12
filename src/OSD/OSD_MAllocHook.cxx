@@ -470,16 +470,14 @@ Standard_Boolean OSD_MAllocHook::CollectBySize::MakeReport(const char* theOutFil
   Standard_Size aTotAlloc = 0;
   for (int i = 0; i < MAX_ALLOC_SIZE; i++)
   {
-    if (myArray[i].nbAlloc > 0)
+    if (myArray[i].nbAlloc > 0 || myArray[i].nbFree > 0)
     {
       Standard_Integer nbLeft = myArray[i].nbAlloc - myArray[i].nbFree;
-      if (nbLeft < 0)
-        nbLeft = 0;
       int aSize = i + 1;
       Standard_Size aSizeAlloc = myArray[i].nbAlloc * aSize;
-      Standard_Size aSizeLeft = nbLeft * aSize;
+      ptrdiff_t     aSizeLeft = nbLeft * aSize;
       Standard_Size aSizePeak = myArray[i].nbLeftPeak * aSize;
-      fprintf(aRepFile, "%10d %10d %10d %10d %10Iu %10Iu %10Iu\n", aSize,
+      fprintf(aRepFile, "%10d %10d %10d %10d %10Iu %10Id %10Iu\n", aSize,
               myArray[i].nbAlloc, nbLeft, myArray[i].nbLeftPeak,
               aSizeAlloc, aSizeLeft, aSizePeak);
       if (aTotAlloc + aSizeAlloc < aTotAlloc) // overflow ?
@@ -488,7 +486,7 @@ Standard_Boolean OSD_MAllocHook::CollectBySize::MakeReport(const char* theOutFil
         aTotAlloc += aSizeAlloc;
     }
   }
-  fprintf(aRepFile, "%10s %10s %10s %10s%c%10Iu %10Iu %10Iu\n", "Total:",
+  fprintf(aRepFile, "%10s %10s %10s %10s%c%10Iu %10Id %10Iu\n", "Total:",
           "", "", "", (aTotAlloc == SIZE_MAX ? '>' : ' '), aTotAlloc,
           myTotalLeftSize, myTotalPeakSize);
   fclose(aRepFile);
@@ -512,13 +510,12 @@ void OSD_MAllocHook::CollectBySize::AllocEvent
   {
     myMutex.Lock();
     int ind = (theSize > MAX_ALLOC_SIZE ? MAX_ALLOC_SIZE-1 : (int)(theSize-1));
-    if (myArray[ind].nbAlloc + 1 > 0)
-      myArray[ind].nbAlloc++;
+    myArray[ind].nbAlloc++;
     myTotalLeftSize += theSize;
     int nbLeft = myArray[ind].nbAlloc - myArray[ind].nbFree;
     if (nbLeft > myArray[ind].nbLeftPeak)
       myArray[ind].nbLeftPeak = nbLeft;
-    if (myTotalLeftSize > myTotalPeakSize)
+    if (myTotalLeftSize > (ptrdiff_t)myTotalPeakSize)
       myTotalPeakSize = myTotalLeftSize;
     myMutex.Unlock();
   }
@@ -534,12 +531,11 @@ void OSD_MAllocHook::CollectBySize::FreeEvent
                     size_t      theSize,
                     long        /*theRequestNum*/)
 {
-  if (theSize > 0 && myTotalLeftSize >= theSize)
+  if (theSize > 0)
   {
     myMutex.Lock();
     int ind = (theSize > MAX_ALLOC_SIZE ? MAX_ALLOC_SIZE-1 : (int)(theSize-1));
-    if (myArray[ind].nbFree + 1 > 0)
-      myArray[ind].nbFree++;
+    myArray[ind].nbFree++;
     myTotalLeftSize -= theSize;
     myMutex.Unlock();
   }

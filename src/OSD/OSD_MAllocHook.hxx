@@ -128,7 +128,7 @@ public:
 
     Standard_Mutex myMutex;
     Numbers*       myArray;
-    size_t         myTotalLeftSize;
+    ptrdiff_t      myTotalLeftSize;
     size_t         myTotalPeakSize;
     size_t         myBreakSize;
   };
