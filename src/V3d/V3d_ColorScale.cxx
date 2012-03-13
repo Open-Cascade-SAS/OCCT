@@ -84,7 +84,7 @@ void V3d_ColorScale::PaintText( const TCollection_ExtendedString& aText,
     return;
 
   theLayer->SetColor( aColor );
-  theLayer->SetTextAttributes( Graphic3d_NOF_ASCII_MONO, Aspect_TODT_SUBTITLE, aColor );
+  theLayer->SetTextAttributes( Graphic3d_NOF_ASCII_MONO, Aspect_TODT_NORMAL, aColor );
   TCollection_AsciiString theText( aText.ToExtString(), '?' );
   Standard_Integer aTextH = GetTextHeight();
   Standard_Integer aWidth, anAscent, aDescent;

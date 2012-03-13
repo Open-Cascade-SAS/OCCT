@@ -17,6 +17,8 @@
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
 #include <Visual3d_View.hxx>
+#include <Visual3d_ViewManager.hxx>
+#include <V3d_LayerMgr.hxx>
 #include <NIS_View.hxx>
 #include <NIS_Triangulated.hxx>
 #include <NIS_InteractiveContext.hxx>
@@ -27,6 +29,12 @@
 #include <Aspect_PrintAlgo.hxx>
 #include <Image_PixMap.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
+
+#ifdef WNT
+#undef DrawText
+#endif
+
+#include <Visual3d_Layer.hxx>
 
 #ifndef WNT
 #include <Graphic3d_GraphicDevice.hxx>
@@ -2141,6 +2149,178 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
   return 0;
 }
 
+DEFINE_STANDARD_HANDLE(V3d_TextItem, Visual3d_LayerItem)
+
+// this class provides a presentation of text item in v3d view under-/overlayer
+class V3d_TextItem : public Visual3d_LayerItem
+{
+public:
+
+  // CASCADE RTTI
+  DEFINE_STANDARD_RTTI(V3d_TextItem)
+
+  // constructor
+  Standard_EXPORT V3d_TextItem(const TCollection_AsciiString& theText,
+                               const Standard_Real theX1,
+                               const Standard_Real theY1,
+                               const Standard_Real theHeight,
+                               const TCollection_AsciiString& theFontName,
+                               const Quantity_Color& theColor,
+                               const Quantity_Color& theSubtitleColor,
+                               const Aspect_TypeOfDisplayText& theTypeOfDisplay,
+                               const Handle(Visual3d_Layer)& theLayer);
+
+  // redraw method
+  Standard_EXPORT void RedrawLayerPrs();
+
+private:
+
+  Standard_Real            myX1;
+  Standard_Real            myY1;
+  Standard_Real            myHeight;
+  TCollection_AsciiString  myText;
+  TCollection_AsciiString  myFontName;
+  Quantity_Color           myColor;
+  Quantity_Color           mySubtitleColor;
+  Aspect_TypeOfDisplayText myType;
+  Handle(Visual3d_Layer)   myLayer;
+
+};
+
+IMPLEMENT_STANDARD_HANDLE(V3d_TextItem, Visual3d_LayerItem)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_TextItem, Visual3d_LayerItem)
+
+// create and add to display the text item
+V3d_TextItem::V3d_TextItem (const TCollection_AsciiString& theText,
+                            const Standard_Real theX1,
+                            const Standard_Real theY1,
+                            const Standard_Real theHeight,
+                            const TCollection_AsciiString& theFontName,
+                            const Quantity_Color& theColor,
+                            const Quantity_Color& theSubtitleColor,
+                            const Aspect_TypeOfDisplayText& theTypeOfDisplay,
+                            const Handle(Visual3d_Layer)& theLayer)
+ : myX1 (theX1), myY1 (theY1),
+   myText (theText),
+   myHeight (theHeight),
+   myLayer (theLayer),
+   myColor (theColor),
+   mySubtitleColor (theSubtitleColor),
+   myType (theTypeOfDisplay),
+   myFontName (theFontName)
+{
+  if (!myLayer.IsNull ())
+    myLayer->AddLayerItem (this);
+}
+
+// render item
+void V3d_TextItem::RedrawLayerPrs ()
+{ 
+  if (myLayer.IsNull ())
+    return;
+
+  myLayer->SetColor (myColor);
+  myLayer->SetTextAttributes (myFontName.ToCString (), myType, mySubtitleColor);
+  myLayer->DrawText (myText.ToCString (), myX1, myY1, myHeight);
+}
+
+//=======================================================================
+//function : VOverlayText
+//purpose  : Test text displaying in view overlay
+//=======================================================================
+static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char**argv)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    di << "No active view. Please call vinit.\n";
+    return 1;
+  }
+  else if (argc < 4 || argc > 13)
+  {
+    di << "Use: " << argv[0];
+    di << " text x y [height] [font_name] [text_color: R G B] [displayType]\n";
+    di << "[background_color: R G B]\n";
+    di << "  height - pixel height of the text (default=10.0)\n";
+    di << "  font_name - name of font (default=courier)\n";
+    di << "  text_color - R G B values of text color (default=255.0 255.0 255.0)\n";
+    di << "  display_type = {normal/subtitle/decal/blend}, (default=normal)\n";
+    di << "  background_color- R G B values used for subtitle and decal text\n";
+    di << "(default=255.0 255.0 255.0)\n";
+    return 1;
+  }
+  
+  TCollection_AsciiString aText (argv[1]);
+  Standard_Real aPosX = atof(argv[2]);
+  Standard_Real aPosY = atof(argv[3]);
+  Standard_Real aHeight = (argc >= 5) ? atof (argv[4]) : 10.0;
+
+  // font name
+  TCollection_AsciiString aFontName = "Courier";
+  if (argc >= 6)
+    aFontName = TCollection_AsciiString (argv[5]);
+
+  // text colors
+  Quantity_Parameter aColorRed   = 1.0;
+  Quantity_Parameter aColorGreen = 1.0;
+  Quantity_Parameter aColorBlue  = 1.0;
+  if (argc >= 9)
+  {
+    aColorRed   = atof (argv[6])/255.;
+    aColorGreen = atof (argv[7])/255.;
+    aColorBlue  = atof (argv[8])/255.;
+  }
+
+  // display type
+  TCollection_AsciiString aDispStr;
+  if (argc >= 10)
+    aDispStr = TCollection_AsciiString (argv[9]);
+
+  Aspect_TypeOfDisplayText aTextType = Aspect_TODT_NORMAL;
+  if (aDispStr.IsEqual ("subtitle"))
+    aTextType = Aspect_TODT_SUBTITLE;
+  else if (aDispStr.IsEqual ("decal"))
+    aTextType = Aspect_TODT_DEKALE;
+  else if (aDispStr.IsEqual ("blend"))
+    aTextType = Aspect_TODT_BLEND;
+
+  // subtitle color
+  Quantity_Parameter aSubRed   = 1.0;
+  Quantity_Parameter aSubGreen = 1.0;
+  Quantity_Parameter aSubBlue  = 1.0;
+  if (argc == 13)
+  {
+    aSubRed   = atof (argv[10])/255.;
+    aSubGreen = atof (argv[11])/255.;
+    aSubBlue  = atof (argv[12])/255.;
+  }
+
+  // check fo current overlay
+  Handle(Visual3d_Layer) anOverlay = aView->Viewer()->Viewer()->OverLayer ();
+  if (anOverlay.IsNull ())
+  {
+    Handle(V3d_LayerMgr) aMgr = new V3d_LayerMgr (aView);
+    anOverlay = aMgr->Overlay ();
+    aView->SetLayerMgr (aMgr);
+  }
+
+  Quantity_Color aTextColor (aColorRed, aColorGreen, 
+    aColorBlue, Quantity_TOC_RGB);
+  Quantity_Color aSubtColor (aSubRed, aSubGreen, 
+    aSubBlue, Quantity_TOC_RGB);
+
+  // add text item
+  Handle(V3d_TextItem) anItem = new V3d_TextItem (aText, aPosX, aPosY,
+    aHeight, aFontName, aTextColor, aSubtColor, aTextType, anOverlay);
+
+  // update view
+  aView->MustBeResized();
+  aView->Redraw();
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -2224,4 +2404,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vzlayer",
     "vzlayer : add/del/get [id] : Z layer operations in v3d viewer: add new z layer, delete z layer, get z layer ids",
     __FILE__,VZLayer,group);
+  theCommands.Add("voverlaytext",
+    "voverlaytext : text x y [height] [font_name] [text_color: R G B] [display_type] [background_color: R G B]"
+    " : height - pixel height of the text (default=10.0)"
+    " : font_name - name of font (default=courier)"
+    " : text_color - three values: RedColor GreenColor BlueColor (default = 255.0 255.0 255.0) "
+    " : display_type = {normal/subtitle/decal/blend}, (default=normal) "
+    " : background_color - three values: RedColor GreenColor BlueColor (default = 255.0 255.0 255.0), the parameter is defined for subtitle and decal display types ",
+    __FILE__,VOverlayText,group);
 }

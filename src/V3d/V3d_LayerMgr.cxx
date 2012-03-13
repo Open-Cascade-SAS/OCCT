@@ -83,7 +83,7 @@ Standard_Boolean V3d_LayerMgr::Begin()
   myOverlay->Clear();
   myOverlay->SetViewport( aW, aH ); //szv:!!!
   myOverlay->Begin();
-  myOverlay->SetTextAttributes( Graphic3d_NOF_ASCII_MONO, Aspect_TODT_SUBTITLE, Quantity_Color() );
+  myOverlay->SetTextAttributes( Graphic3d_NOF_ASCII_MONO, Aspect_TODT_NORMAL, Quantity_Color() );
   myOverlay->SetOrtho( 0, Max( aW, aH ), Max( aW, aH ), 0, Aspect_TOC_TOP_LEFT );
 
   return Standard_True;

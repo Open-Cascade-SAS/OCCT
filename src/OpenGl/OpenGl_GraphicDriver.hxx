@@ -229,6 +229,12 @@ public:
   Standard_EXPORT void SetTransparency (const Standard_ShortReal ATransparency);
   Standard_EXPORT void UnsetTransparency ();
   Standard_EXPORT void SetLineAttributes (const Standard_Integer Type,const Standard_ShortReal Width);
+
+  //! Set text attributes for under-/overlayer. <br>
+  //! <Font> argument defines the name of the font to be used, <br>
+  //! <Type> argument defines the display type of the text, <br>
+  //! <R> <G> <B> values define the color of decal or subtitle background. <br>
+  //! To set the color of the text you can use the SetColor method. <br>
   Standard_EXPORT void SetTextAttributes (const Standard_CString FontName,const Standard_Integer Type,const Standard_ShortReal R,const Standard_ShortReal G,const Standard_ShortReal B);
   Standard_EXPORT void Text (const Standard_CString AText,const Standard_ShortReal X,const Standard_ShortReal Y,const Standard_ShortReal AHeight);
   Standard_EXPORT void TextSize (const Standard_CString AText,const Standard_ShortReal AHeight,Standard_ShortReal& AWidth,Standard_ShortReal& AnAscent,Standard_ShortReal& ADescent) const;

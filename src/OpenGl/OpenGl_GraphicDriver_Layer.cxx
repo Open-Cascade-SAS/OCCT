@@ -243,20 +243,24 @@ void OpenGl_GraphicDriver::SetTextAttributes (const Standard_CString Font, const
 {
   if (!TheLayerProp.ListId || openglDisplay.IsNull()) return;
 
-  if ( strcmp ( TheLayerProp.AspectText.Font(), Font ) != 0 ||
-	   (int)TheLayerProp.AspectText.DisplayType() != AType )
+  // get current subtitle text color
+  const TEL_COLOUR &aSubColor = TheLayerProp.AspectText.SubtitleColor ();
+
+  // update if there are any modifications
+  if (strcmp (TheLayerProp.AspectText.Font(), Font) != 0   ||
+      (int)TheLayerProp.AspectText.DisplayType() != AType  ||
+      aSubColor.rgb[0] != (float)R || 
+      aSubColor.rgb[1] != (float)G ||
+      aSubColor.rgb[2] != (float)B)
   {
     CALL_DEF_CONTEXTTEXT aContextText = myDefaultContextText;
 
     aContextText.Font = Font;
     aContextText.DisplayType = AType;
-    aContextText.Color.r = R;
-    aContextText.Color.g = G;
-    aContextText.Color.b = B;
+    aContextText.ColorSubTitle.r = R;
+    aContextText.ColorSubTitle.g = G;
+    aContextText.ColorSubTitle.b = B;
     TheLayerProp.AspectText.SetContext(aContextText);
-
-    TheLayerProp.FontCurrent = openglDisplay->FindFont(TheLayerProp.AspectText.Font(), TheLayerProp.AspectText.FontAspect(), TheLayerProp.TextParam.Height);
-
     TheLayerProp.FontChanged = Standard_True;
   }
 }
@@ -271,26 +275,143 @@ void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_Sh
   {
     TheLayerProp.TextParam.Height = (int )height;
     TheLayerProp.FontCurrent = openglDisplay->FindFont(TheLayerProp.AspectText.Font(), TheLayerProp.AspectText.FontAspect(), (int )height);
-	TheLayerProp.FontChanged = Standard_False;
+    TheLayerProp.FontChanged = Standard_False;
   }
 
-  TCollection_ExtendedString estr(AText);
-  const Techar *s = (const Techar *)estr.ToExtString();
+  TCollection_ExtendedString aExtStr(AText);
+  const Techar *aTChStr = (const Techar *)aExtStr.ToExtString();
 
   //szv: conversion of Techar to wchar_t
-  wchar_t *s1 = (wchar_t*)s;
+  wchar_t *aWChStr = (wchar_t*)aTChStr;
   if (sizeof(Techar) != sizeof(wchar_t))
   {
-    Tint i = 0; while (s[i++]);
-    s1 = new wchar_t[i];
-    i = 0; while (s1[i++] = (wchar_t)(*s++));
+    Tint i = 0; while (aTChStr[i++]);
+    aWChStr = new wchar_t[i];
+    i = 0; while (aWChStr[i++] = (wchar_t)(*aTChStr++));
   }
 
-  openglDisplay->RenderText(s1, 1, (float)X, (float)Y, 0.F, &TheLayerProp.AspectText, &TheLayerProp.TextParam);
+  const Aspect_TypeOfDisplayText aDispType =
+    TheLayerProp.AspectText.DisplayType();
+
+  // display type of text
+  if (aDispType != Aspect_TODT_NORMAL)
+  {
+    switch (aDispType)
+    {
+      // blend type
+      case Aspect_TODT_BLEND:
+      {
+        glEnable(GL_COLOR_LOGIC_OP);
+        glLogicOp(GL_XOR);
+      }
+      break;
+      
+      // subtitle type
+      case Aspect_TODT_SUBTITLE:
+      {
+        GLint aViewport[4];
+        GLdouble aModelMatrix[16], aProjMatrix[16];
+        glGetIntegerv (GL_VIEWPORT, aViewport);
+        glGetDoublev (GL_MODELVIEW_MATRIX, aModelMatrix);
+        glGetDoublev (GL_PROJECTION_MATRIX, aProjMatrix);
+
+        int aWidth, anAscent, aDescent;
+        openglDisplay->StringSize(aWChStr, aWidth, anAscent, aDescent);
+
+        GLdouble aWinX, aWinY, aWinZ;
+        gluProject ((GLdouble)X, (GLdouble)Y, 0.0, aModelMatrix,
+          aProjMatrix, aViewport, &aWinX, &aWinY, &aWinZ);
+
+        // project coordinates
+        GLdouble aCoordX[4];
+        GLdouble aCoordY[4];
+        GLdouble aCoordZ[4];
+
+        // left bottom corner
+        gluUnProject (aWinX,  aWinY + aDescent, aWinZ, aModelMatrix,
+          aProjMatrix, aViewport, &aCoordX[0], &aCoordY[0], &aCoordZ[0]);
+
+        // right bottom corner        
+        gluUnProject (aWinX + aWidth, aWinY + aDescent, aWinZ, aModelMatrix,
+          aProjMatrix, aViewport, &aCoordX[1], &aCoordY[1], &aCoordZ[1]);
+
+        // right top corner
+        gluUnProject (aWinX + aWidth, aWinY + anAscent, aWinZ, aModelMatrix,
+          aProjMatrix, aViewport, &aCoordX[2], &aCoordY[2], &aCoordZ[2]);
+
+        // left top corner
+        gluUnProject (aWinX, aWinY + anAscent, aWinZ, aModelMatrix, 
+          aProjMatrix, aViewport, &aCoordX[3], &aCoordY[3], &aCoordZ[3]);
+
+        // draw colored plane and reset the color
+        glColor3fv (TheLayerProp.AspectText.SubtitleColor ().rgb);
+        glBegin(GL_POLYGON);
+        glVertex3d(aCoordX[0], aCoordY[0], aCoordZ[0]);
+        glVertex3d(aCoordX[1], aCoordY[1], aCoordZ[1]);
+        glVertex3d(aCoordX[2], aCoordY[2], aCoordZ[2]);
+        glVertex3d(aCoordX[3], aCoordY[3], aCoordZ[3]);
+        glEnd();
+        glColor3fv (TheLayerProp.Color.rgb);
+      }
+      break;
+
+      case Aspect_TODT_DEKALE:
+      {
+        GLint aViewport[4];
+        GLdouble aModelMatrix[16], aProjMatrix[16];
+        glGetIntegerv (GL_VIEWPORT, aViewport);
+        glGetDoublev (GL_MODELVIEW_MATRIX, aModelMatrix);
+        glGetDoublev (GL_PROJECTION_MATRIX, aProjMatrix);
+
+        GLdouble aWinX, aWinY, aWinZ;
+        gluProject ((GLdouble)X, (GLdouble)Y, 0.0, aModelMatrix,
+          aProjMatrix, aViewport, &aWinX, &aWinY, &aWinZ);
+
+        GLdouble aProjX, aProjY, aProjZ;
+
+        gluUnProject (aWinX + 1, aWinY + 1, aWinZ, aModelMatrix,
+          aProjMatrix, aViewport, &aProjX, &aProjY, &aProjZ);
+
+        // draw a decal
+        glColor3fv (TheLayerProp.AspectText.SubtitleColor ().rgb);
+        openglDisplay->RenderText (aWChStr, 1, (float)aProjX, (float)aProjY,
+          (float)aProjZ, &TheLayerProp.AspectText, &TheLayerProp.TextParam);
+
+        gluUnProject (aWinX, aWinY, aWinZ, aModelMatrix, aProjMatrix,
+          aViewport, &aProjX, &aProjY, &aProjZ);
+
+        gluUnProject (aWinX - 1, aWinY - 1, aWinZ, aModelMatrix, aProjMatrix, 
+          aViewport, &aProjX, &aProjY, &aProjZ);
+
+        openglDisplay->RenderText(aWChStr, 1, (float)aProjX, (float)aProjY,
+          (float)aProjZ, &TheLayerProp.AspectText, &TheLayerProp.TextParam);
+
+        gluUnProject (aWinX - 1, aWinY + 1, aWinZ, aModelMatrix, aProjMatrix, 
+          aViewport, &aProjX, &aProjY, &aProjZ);
+
+        openglDisplay->RenderText(aWChStr, 1, (float)aProjX, (float)aProjY,
+          (float)aProjZ, &TheLayerProp.AspectText, &TheLayerProp.TextParam);
+
+        gluUnProject (aWinX + 1, aWinY - 1, aWinZ, aModelMatrix, aProjMatrix,
+          aViewport, &aProjX, &aProjY, &aProjZ);
+
+        openglDisplay->RenderText(aWChStr, 1, (float)aProjX, (float)aProjY,
+          (float)aProjZ, &TheLayerProp.AspectText, &TheLayerProp.TextParam);
+        glColor3fv (TheLayerProp.Color.rgb);
+      }
+      break;
+    }
+  }
+
+  openglDisplay->RenderText(aWChStr, 1, (float)X, (float)Y, 0.F,
+    &TheLayerProp.AspectText, &TheLayerProp.TextParam);
+
+  if (aDispType == Aspect_TODT_BLEND)
+    glDisable(GL_COLOR_LOGIC_OP);
 
   //szv: delete temporary wide string
   if (sizeof(Techar) != sizeof(wchar_t))
-    delete[] s1;
+    delete[] aWChStr;
 }
 
 void OpenGl_GraphicDriver::TextSize (const Standard_CString AText, const Standard_ShortReal AHeight, Standard_ShortReal& AWidth, Standard_ShortReal& AnAscent, Standard_ShortReal& ADescent) const
@@ -303,7 +424,7 @@ void OpenGl_GraphicDriver::TextSize (const Standard_CString AText, const Standar
   {
     TheLayerProp.TextParam.Height = (int )height;
     TheLayerProp.FontCurrent = openglDisplay->FindFont(TheLayerProp.AspectText.Font(), TheLayerProp.AspectText.FontAspect(), (int )height);
-	TheLayerProp.FontChanged = Standard_False;
+    TheLayerProp.FontChanged = Standard_False;
   }
 
   TCollection_ExtendedString estr(AText);

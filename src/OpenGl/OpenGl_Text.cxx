@@ -90,7 +90,6 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 
   AWorkspace->SetTextParam(&myParam);
 
-  GLboolean       blend_state = GL_FALSE; 
   GLdouble        modelMatrix[16], projMatrix[16];
   GLint           viewport[4];
   GLdouble        objrefX, objrefY, objrefZ;
@@ -113,8 +112,6 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     switch (aspect_text->DisplayType())
     {
     case Aspect_TODT_BLEND:
-      blend_state = glIsEnabled(GL_BLEND);
-      if (!blend_state) glEnable(GL_BLEND);
       glEnable(GL_COLOR_LOGIC_OP);
       glLogicOp(GL_XOR);
       break;
@@ -205,7 +202,6 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   if (flag_zbuffer) glEnable(GL_DEPTH_TEST);
   if (aspect_text->DisplayType() == Aspect_TODT_BLEND)
   {
-    if (!blend_state) glDisable(GL_BLEND);
     glDisable(GL_COLOR_LOGIC_OP);
   }
 }

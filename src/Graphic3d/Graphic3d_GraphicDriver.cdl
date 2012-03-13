@@ -1089,7 +1089,11 @@ is
                         G       : ShortReal from Standard;
                         B       : ShortReal from Standard )
         is deferred;
-    ---Purpose: call_togl_set_text_attributes
+    ---Purpose: Set text attributes for under-/overlayer.
+    -- <Font> argument defines the name of the font to be used,
+    -- <Type> argument defines the display type of the text,
+    -- <R> <G> <B> values define the color of decal or subtitle background.
+    -- To set the color of the text you can use the SetColor method.
 
     Text ( me       : mutable;
            AText    : CString from Standard;

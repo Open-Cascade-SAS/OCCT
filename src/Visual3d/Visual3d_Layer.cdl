@@ -228,7 +228,11 @@ is
                        AColor  : Color from Quantity)
     ---Level: Public
     ---Purpose: Modifies the current texts attributes.
-    --  Warning: No default attributes
+    -- <AFont> defines the name of the font to be used.
+    -- <AType> defines the display type of the text.
+    -- <AColor> defines the color of decal or subtitle background.
+    -- To set the color of the text you can use the SetColor method.
+    -- Warning: No default attributes
     raises LayerDefinitionError from Visual3d;
     -- if   Layer is not open.
     
