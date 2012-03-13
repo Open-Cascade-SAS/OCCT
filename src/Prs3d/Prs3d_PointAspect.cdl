@@ -64,8 +64,6 @@ is
     Aspect(me) returns AspectMarker3d from Graphic3d 
     is static;
     
-    Print( me; s: in out OStream from Standard);
-
     GetTextureSize (me:mutable; AWidth     : out Integer from Standard;
 		    	    	    AHeight    : out Integer from Standard);
     	---Level: Public

@@ -49,7 +49,6 @@ is
     
     SetArrowAspect(me: mutable; anAspect: ArrowAspect from Prs3d) is static;
     	---Purpose: Sets how an arrow head which points to an angle will be displayed.
-    Print(me; s: in out OStream from Standard) is static;
 
 fields
 

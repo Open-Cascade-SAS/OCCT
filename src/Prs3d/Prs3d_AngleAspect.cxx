@@ -28,12 +28,3 @@ void Prs3d_AngleAspect::SetTextAspect (
 				  const Handle(Prs3d_TextAspect)& anAspect) {
   myTextAspect = anAspect;
 }
-
-void Prs3d_AngleAspect::Print (Standard_OStream& s) const {
-  
-  s << "AngleAspect: " << endl;
-  s << "                 " ; myLineAspect->Print(s); s << endl;
-  s << "         arrow   " ; myArrowAspect->Print(s); s << endl;
-  s << "                 " ; myTextAspect->Print(s); s << endl;
-}
-

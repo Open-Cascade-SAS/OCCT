@@ -485,9 +485,7 @@ is
 
     SetSectionAspect(me:mutable;anAspect: LineAspect from Prs3d)
     is virtual;
-    	---Purpose: Sets the parameter anAspect for display attributes of sections.    
-    Print (me; s: in out OStream from Standard)
-    is virtual;
+    	---Purpose: Sets the parameter anAspect for display attributes of sections.
     
 fields
             myUIsoAspect: IsoAspect from Prs3d is protected;

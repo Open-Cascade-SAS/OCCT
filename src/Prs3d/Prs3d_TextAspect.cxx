@@ -82,20 +82,3 @@ Graphic3d_TextPath Prs3d_TextAspect::Orientation () const {return myOrientation;
 Handle(Graphic3d_AspectText3d) Prs3d_TextAspect::Aspect() const {
   return myTextAspect;
 }
-
-void Prs3d_TextAspect::Print (Standard_OStream& s) const {
-
-  Quantity_Color C; 
-  Standard_CString F;
-  Standard_Real Ratio;
-  Standard_Real Space;
-
-  myTextAspect->Values(C,F,Ratio,Space);
-
-  Standard_CString FontName;
-
-  strcpy((char*)FontName,(char*)F);
-
-  s << "TextAspect:" << Quantity_Color::StringName(C.Name()) << " Font: " << FontName << " Ratio: " << Ratio << " Space: " << Space;
-
-}

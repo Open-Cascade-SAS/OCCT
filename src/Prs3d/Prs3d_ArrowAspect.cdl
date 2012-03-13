@@ -54,9 +54,6 @@ is
 
     Aspect(me) returns AspectLine3d  from  Graphic3d;
 
-    Print( me; s: in out OStream from Standard)
-    is virtual;
-
 fields
 	    myArrowAspect: AspectLine3d  from  Graphic3d;
 	    myAngle: PlaneAngle from Quantity;

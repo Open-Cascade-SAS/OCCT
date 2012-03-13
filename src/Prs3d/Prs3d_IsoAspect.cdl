@@ -47,8 +47,6 @@ is
     Number (me) returns Integer from Standard 
     	---Purpose: returns the number of U or V isoparametric curves drawn for a single face.
     is static;
-
-    Print(me; s: in out OStream from Standard) is redefined;
     
 fields
 

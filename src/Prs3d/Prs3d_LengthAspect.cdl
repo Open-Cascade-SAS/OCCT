@@ -58,8 +58,7 @@ is
     	---Purpose: Sets the DrawSecondArrow attributes to active.    
     
     DrawSecondArrow(me) returns Boolean from Standard is static;
-    	---Purpose: Returns true if the second arrow can be drawn.   
-    Print(me; s: in out OStream from Standard) is static;
+    	---Purpose: Returns true if the second arrow can be drawn.
    
 fields
 

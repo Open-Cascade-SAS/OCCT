@@ -228,7 +228,6 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
 
 //Display of the position of the light.
 
-  glight->SetPickId(1);
   this->Color(Quantity_TOC_RGB,R1,G1,B1);
   Quantity_Color Col1(R1,G1,B1,Quantity_TOC_RGB);
   Handle(Graphic3d_AspectLine3d) Asp1 = new Graphic3d_AspectLine3d();
@@ -242,7 +241,6 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
     
     Rayon = this->Radius(); 
     aView->Proj(VX,VY,VZ);
-    gsphere->SetPickId(2);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
     
 //Display of the meridian

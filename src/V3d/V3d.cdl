@@ -203,9 +203,6 @@ is
         class SpotLight;
         ---Purpose: Services of spot light sources.
 
-        class Camera;
-        ---Purpose: Services of camera, edition tool of view.
-
         class Plane;
         ---Pupose: Services of any kind of clipping plane.
 

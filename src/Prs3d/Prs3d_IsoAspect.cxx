@@ -25,10 +25,3 @@ void Prs3d_IsoAspect::SetNumber (const Standard_Integer aNumber) {
 }
 
 Standard_Integer Prs3d_IsoAspect::Number () const {return myNumber;}
-
-void Prs3d_IsoAspect::Print(Standard_OStream& s) const {
-
-  s << "IsoAspect: " << myNumber << " ";
-  Prs3d_LineAspect::Print(s);
-
-}

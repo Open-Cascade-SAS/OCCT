@@ -109,14 +109,6 @@ void Graphic3d_Group::Labels (Standard_Integer& LB, Standard_Integer& LE) const 
 
 }
 
-void Graphic3d_Group::Exploration () const {
-
-  if (IsDeleted ()) return;
-
-  MyGraphicDriver->DumpGroup (MyCGroup);
-
-}
-
 void Graphic3d_Group::Update () const {
 
   if (IsDeleted ()) return;

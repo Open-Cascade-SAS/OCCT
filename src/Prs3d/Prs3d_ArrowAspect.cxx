@@ -41,12 +41,6 @@ Quantity_Length Prs3d_ArrowAspect::Length () const
 return myLength;
 }
 
-void Prs3d_ArrowAspect::Print (Standard_OStream& s) const {
-
-  s << "ArrowAspect: Length: " << myLength << " Angle: " << myAngle;
-
-}
-
 #ifdef IMP120100
 void Prs3d_ArrowAspect::SetColor(const Quantity_Color &aColor) {
   myArrowAspect->SetColor(aColor);

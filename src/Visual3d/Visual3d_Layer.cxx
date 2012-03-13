@@ -15,6 +15,7 @@ Novembre 1998 : CAL : Creation.
 #include <Visual3d_Layer.ixx>
 
 #include <Graphic3d_GraphicDevice.hxx>
+#include <Graphic3d_TypeOfPrimitive.hxx>
 #include <Visual3d_ViewManager.hxx>
 
 //-Aliases

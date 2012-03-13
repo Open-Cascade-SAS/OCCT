@@ -1875,39 +1875,6 @@ Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager () cons
 
 }
 
-Graphic3d_TypeOfPrimitive Graphic3d_Structure::Type (const Standard_Integer ElementNumber) const {
-
-  if (IsDeleted ()) return (Graphic3d_TOP_UNDEFINED);
-
-  Graphic3d_TypeOfPrimitive Result;
-
-  Result  = MyGraphicDriver->ElementType
-    (MyCStructure, ElementNumber);
-
-  return (Result);
-
-}
-
-Standard_Boolean Graphic3d_Structure::Exploration (const Standard_Integer ElementNumber, Graphic3d_VertexNC& AVertex, Graphic3d_Vector& AVector) const {
-
-  Standard_Boolean Result = Standard_False;
-
-  if (IsDeleted ()) return (Result);
-
-  Result  = MyGraphicDriver->ElementExploration
-    (MyCStructure, ElementNumber, AVertex, AVector);
-
-  return (Result);
-
-}
-
-void Graphic3d_Structure::Exploration () const {
-
-  if (IsDeleted ()) return;
-
-  MyGraphicDriver->DumpStructure (MyCStructure);
-
-}
 
 void Graphic3d_Structure::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
 

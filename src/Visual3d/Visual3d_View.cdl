@@ -962,12 +962,6 @@ is
 	---Purpose: Erases the structure <AStructure> from the view <me>.
 	---Category: Private methods
 
-	Exploration ( me )
-		is static;
-	---Level: Internal
-	---Purpose: Prints informations about the view <me>.
-	---Category: Private methods
-
 	Highlight ( me			: mutable;
 		    AStructure		: Structure from Graphic3d;
 		    AMethod		: TypeOfHighlightMethod from Aspect )

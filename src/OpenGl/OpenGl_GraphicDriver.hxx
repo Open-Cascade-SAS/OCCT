@@ -130,14 +130,6 @@ public: // Methods for graphical structures
 
 public:
 
-  Standard_EXPORT void DumpGroup (const Graphic3d_CGroup& theCGroup);
-  Standard_EXPORT void DumpStructure (const Graphic3d_CStructure& theCStructure);
-  Standard_EXPORT void DumpView (const Graphic3d_CView& theCView);
-  Standard_EXPORT Standard_Boolean ElementExploration (const Graphic3d_CStructure& ACStructure, const Standard_Integer ElementNumber, Graphic3d_VertexNC& AVertex, Graphic3d_Vector& AVector);
-  Standard_EXPORT Graphic3d_TypeOfPrimitive ElementType (const Graphic3d_CStructure& ACStructure, const Standard_Integer ElementNumber);
-  Standard_EXPORT void InitPick ();
-  Standard_EXPORT void Pick (Graphic3d_CPick& ACPick);
-  Standard_EXPORT void PickId (const Graphic3d_CGroup& ACGroup);
   Standard_EXPORT void ActivateView (const Graphic3d_CView& ACView);
   Standard_EXPORT void AntiAliasing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT void Background (const Graphic3d_CView& ACView);

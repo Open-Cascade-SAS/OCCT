@@ -108,7 +108,6 @@ void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& theCStructure)
   Standard_Integer aStatus = 0;
   if (theCStructure.highlight) aStatus |= OPENGL_NS_HIGHLIGHT;
   if (!theCStructure.visible)  aStatus |= OPENGL_NS_HIDE;
-  if (theCStructure.pick)      aStatus |= OPENGL_NS_PICK;
   aStructure->SetNamedStatus (aStatus);
 
   theCStructure.ptrStructure = aStructure;

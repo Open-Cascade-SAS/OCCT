@@ -65,10 +65,7 @@ is
     is static;
     	--- Purpose: Returns the line aspect. This is defined as the set of
     	-- color, type and thickness attributes.
-        
-    Print( me; s: in out OStream from Standard)
-    is virtual;
-    
+            
 fields
 
     myAspect: AspectLine3d from Graphic3d;

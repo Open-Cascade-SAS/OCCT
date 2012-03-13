@@ -222,17 +222,6 @@ is
 	--	recently displayed.                    --
 	-------------------------------------------------
 
-	Pick (  me	: mutable;
-		CTX	: ContextPick from Visual3d;
-		AWindow	: Window from Aspect;
-		AX, AY	: Integer from Standard )
-		returns PickDescriptor from Visual3d
-		is static;
-	---Level: Public
-	---Purpose: Returns a graphic pick with the pick context <CTX>
-	--	    at the coordinates <AX>, <AY> in the window <AWindow>.
-	---Category: Inquire methods
-
 	------------------------------
 	-- Category: Redefined methods
 	------------------------------

@@ -79,26 +79,3 @@ Quantity_Length Prs3d_DatumAspect::ThirdAxisLength () const {
   return myThirdAxisLength;
 
 }
-
-void Prs3d_DatumAspect::Print (Standard_OStream& s) const {
-
-  s << "DatumAspect: " << endl;
-  s << "        FirstAxis:  length "  << myFirstAxisLength  << "  ";
-  myFirstAxisAspect->Print(s);
-  s << endl;
-  s << "        SecondAxis: length "  << mySecondAxisLength << "  ";
-  mySecondAxisAspect->Print(s);
-  s << endl;
-  s << "        ThirdAxis:  length "  << myThirdAxisLength  << "  ";
-  myThirdAxisAspect->Print(s);
-  s << endl;
-  if (myDrawFirstAndSecondAxis)
-    s << "      Draws first and second axis";
-  else
-    s << "      Does not draw first and second axis";
-  
-  if (myDrawThirdAxis)
-    s << "      Draws third axis";
-  else
-    s << "      Does not draw third axis";
-}

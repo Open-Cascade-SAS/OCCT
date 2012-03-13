@@ -91,8 +91,7 @@ is
         -- -   color
         -- -   font
         -- -   height/width ratio, that is, the expansion factor, and
-        -- -   space between characters.    
-    Print( me; s: in out OStream from Standard);
+        -- -   space between characters.
     
 fields
     myTextAspect: AspectText3d  from  Graphic3d; 

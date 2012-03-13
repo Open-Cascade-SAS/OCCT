@@ -224,7 +224,6 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
   
 // Display of the position of the light.
 
-  glight->SetPickId(1);
   this->Color(Quantity_TOC_RGB,R1,G1,B1);
   Quantity_Color Col1(R1,G1,B1,Quantity_TOC_RGB);
   Handle(Graphic3d_AspectLine3d) Asp1 = new Graphic3d_AspectLine3d();
@@ -238,15 +237,11 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
       
     Rayon = this->Radius();
     aView->Proj(VX,VY,VZ);
-    gsphere->SetPickId(2);
     V3d::CircleInPlane(gsphere,X0,Y0,Z0,VX,VY,VZ,Rayon);
 
 // Display of the radius of the sphere (line + text)
 
     if (Pres == V3d_COMPLETE) {
-      gradius->SetPickId(3);
-      gExtArrow->SetPickId(4);
-      gIntArrow->SetPickId(5);
       PRadius(0).SetCoord(X0,Y0,Z0);
       this->Position(X,Y,Z);
       PRadius(1).SetCoord(X,Y,Z);

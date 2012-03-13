@@ -40,28 +40,3 @@ void Prs3d_LineAspect::SetWidth(const Standard_Real aWidth){
 Handle (Graphic3d_AspectLine3d) Prs3d_LineAspect::Aspect () const {
   return myAspect;
 }
-
-void Prs3d_LineAspect::Print (Standard_OStream& s) const {
-
-  Quantity_Color C;
-  Aspect_TypeOfLine T;
-  Standard_Real W;
-  myAspect->Values(C,T,W);
-  switch (T) {
-  case Aspect_TOL_SOLID:
-    s << "LineAspect: " << Quantity_Color::StringName(C.Name()) << "  SOLID  " << W;
-    break;
-  case Aspect_TOL_DASH:
-    s << "LineAspect: " << Quantity_Color::StringName(C.Name()) << "  DASH  " << W;
-    break;
-  case Aspect_TOL_DOT:
-    s << "LineAspect: " << Quantity_Color::StringName(C.Name()) << "  DOT  " << W;
-    break;
-  case Aspect_TOL_DOTDASH:
-    s << "LineAspect: " << Quantity_Color::StringName(C.Name()) << "  DOTDASH  " << W;
-    break;
-  case Aspect_TOL_USERDEFINED:
-    s << "LineAspect: " << Quantity_Color::StringName(C.Name()) << "  USERDEFINED  " << W;
-    break;
-  }
-}

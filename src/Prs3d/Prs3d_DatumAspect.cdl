@@ -43,8 +43,7 @@ is
     	---Purpose: Returns the length of the displayed second axis.    
     
     ThirdAxisLength(me) returns Length from Quantity;
-    	---Purpose: Returns the length of the displayed third axis.    
-    Print(me; s: in out OStream from Standard) is static;
+    	---Purpose: Returns the length of the displayed third axis.
     
 fields
 

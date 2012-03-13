@@ -87,7 +87,6 @@ void OpenGl_GraphicDriver::NameSetStructure (const Graphic3d_CStructure& ACStruc
     Standard_Integer aStatus = 0;
     if (ACStructure.highlight) aStatus |= OPENGL_NS_HIGHLIGHT;
     if (!ACStructure.visible) aStatus |= OPENGL_NS_HIDE;
-    if (ACStructure.pick) aStatus |= OPENGL_NS_PICK;
     astructure->SetNamedStatus( aStatus );
   }
 }

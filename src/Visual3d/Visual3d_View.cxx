@@ -2964,13 +2964,6 @@ Standard_Integer Visual3d_View::Identification () const {
 
 }
 
-void Visual3d_View::Exploration () const {
-
-        if (IsDeleted ()) return;
-
-        MyGraphicDriver->DumpView (MyCView);
-
-}
 
 Standard_Boolean Visual3d_View::ZBufferIsActivated () const {
 

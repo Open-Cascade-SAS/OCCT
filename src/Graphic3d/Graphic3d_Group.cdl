@@ -233,34 +233,6 @@
         --      group <me>.
         ---Category: Methods to modify the class definition
     
-        --------------------------------------------------
-        -- Category: Methods to manage the pick identifier
-        --------------------------------------------------
-    
-        PickId ( me )
-            returns Integer from Standard
-            is static;
-        ---Level: Public
-        ---Purpose: Returns the pick identifier of the group <me>.
-        --  Category: Methods to manage the pick identifier
-        --  Warning: Returns 0 if the pick identifier is not defined.
-    
-        RemovePickId ( me   : mutable )
-            is static;
-        ---Level: Public
-        ---Purpose: Removes the pick identifier of the group <me>.
-        --  Category: Methods to manage the pick identifier
-        --  Warning: Now the Pick Identifier is null.
-    
-        SetPickId ( me  : mutable;
-                    Id  : Integer from Standard )
-        ---Level: Public
-        ---Purpose: Places a pick identifier in the group <me>.
-        --  Category: Methods to manage the pick identifier
-        --  Warning: A Pick Identifier is an integer greater than zero.
-        ---     Raises PickIdDefinitionError if <Id> is a negative value.
-        raises PickIdDefinitionError from Graphic3d is static;
-    
         -------------------------------------
         -- Category: Methods to create Marker
         -------------------------------------
@@ -975,13 +947,7 @@
         ----------------------------
         -- Category: Private methods
         ----------------------------
-    
-        Exploration ( me )
-            is static;
-        ---Level: Internal
-        ---Purpose: Prints informations about the group <me>.
-        ---Category: Private methods
-    
+        
         Labels ( me;
              LB, LE : in out Integer from Standard )
             is static private;

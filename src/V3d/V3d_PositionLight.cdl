@@ -96,16 +96,6 @@ is
         ---Category: Inquire methods
         ---------------------------------------------------
 
-        Pick ( me; aView: View from V3d; Xpix, Ypix: Integer from Standard)
-	returns TypeOfPickLight from V3d is virtual;
-	---Level: Public
-	---Purpose: Returns the type of pick element.
-	--          "POSITIONLIGHT"  : Representation of position light.
-	--          "SPACELIGHT"     : Representation of lighting space. 
-	--          "RADIUSLIGHT"    : Representation of lighting space radius.
-	--          "NOTHING"        : Any component of light.
-	--          Determinate which type of tracking apply.
-
         Radius (me ) returns Parameter is static;
 	---Level: Public
 	---Purpose: Returns the radius of the picking sphere.

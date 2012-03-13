@@ -51,12 +51,3 @@ void Prs3d_LengthAspect::SetDrawSecondArrow (const Standard_Boolean draw) {
 Standard_Boolean Prs3d_LengthAspect::DrawSecondArrow () const {
   return myDrawSecondArrow;
 }
-
-void Prs3d_LengthAspect::Print (Standard_OStream& s) const {
-  
-  s << "LengthAspect: " << endl;
-  s << "                 " ; myLineAspect->Print(s); s << endl;
-  s << "   First arrow   " ; myArrow1Aspect->Print(s); s << endl;
-  s << "   Second arrow  " ; myArrow2Aspect->Print(s); s << endl;
-  s << "                 " ; myTextAspect->Print(s); s << endl;
-}

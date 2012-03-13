@@ -414,90 +414,7 @@ is
 	--	    Polygons, Triangles or Quadrangles.
 	---Category: Inquire methods
 
-	Exploration ( me;
-		      ElementNumber	: Integer from Standard;
-		      AVertex		: out VertexNC from Graphic3d;
-		      AVector		: out Vector from Graphic3d )
-		returns Boolean from Standard
-		is static;
-	---Level: Internal
-	---Purpose: Explores a structure element of <me>.
-	--	    Returns Standard_True if the exploration succeded and
-	--	    Standard_False if the exploration is done or if the
-	--	    specified structure element is not in the structure.
-	--	    <AVertex> contains the coordinates, the normal and
-	--	    the color of the vertex found in the structure element.
-	--	    <AVector> contains the normal of the face.
-	--  Warning: - The structure element number is given by
-	--	    Visual3d_ViewManager::Pick method.
-	--	    - The primitive type is given by
-	--	    Graphic3d_Structure::Type method.
-	--	    - The normal is (0.0, 0.0, 0.0) when the normal is not
-	--	    specified in the structure element.
-	--	    - The color is (0.0, 0.0, 0.0) when the color is not
-	--	    specified in the structure element.
-	--	    - To initialize the exploration, you have to call the
-	--	    Graphic3d_Structure::Type method before this method.
-	--
-	-- Programming example :
-	--
-	-- // Define a graphic device
-	-- Handle(Graphic3d_GraphicDevice) GD =
-	--			new Graphic3d_GraphicDevice ("dummy:0.0");
-	--
-	-- // Define a view manager
-	-- Handle(Visual3d_ViewManager) VM = new Visual3d_ViewManager (GD);
-	--
-	-- // Define a view
-	-- Handle(Visual3d_View) V = new Visual3d_View (VM);
-	--
-	-- // Define a window
-	-- Handle(Aspect_Window) W = new Aspect_Window
-	--	(GD, "Graphic View 1", 0.695, 0.695, 0.600, 0.600,
-	--		Xw_WQ_3DQUALITY, Quantity_NOC_MATRAGRAY);
-	--
-	-- // Define a context pick
-	-- Visual3d_ContextPick CTXP;
-	--
-	-- // Activate the view
-	-- V->SetWindow (W);
-	-- V->Activate ();
-	--
-	-- // Create a structure
-	-- Handle(Graphic3d_Structure) S = new Graphic3d_Structure (V);
-	-- Handle(Graphic3d_Group) G = new Graphic3d_Group (S);
-	--
-	-- // Create a polygon
-	-- G->Polygon (PtsArray);
-	--
-	-- // Display the structure
-	-- S->Display ();
-	--
-	-- // Pick
-	-- Visual3d_PickDescriptor PDes (CTXP);
-	-- PDes.Clear ();
-	-- PDes = V->Pick (CTXP, W, x, y);
-	--
-	-- // Explore the top structure
-	-- Standard_Boolean Next = Standard_True;
-	-- Graphic3d_Vertex AVertex;
-	-- Graphic3d_Vector AVector;
-	-- if ((PDes.TopStructure ())->Type () == Graphic3d_TOP_POLYGON)
-	--	while (Next) {
-	--	     Next = S->Exploration (PDes.TopElementNumber (),
-	--					AVertex, AVector);
-	--	     if (Next) {
-	--	        cout << "Point " << AVertex.X () << " , "
-	--	        << AVertex.Y () << " , " << AVertex.Z () << "\n";
-	--	        if (! AVector.LengthZero ())
-	--		     cout << "Normal " << AVector.X () << " , "
-	--		     << AVector.Y () << " , " << AVector.Z () << "\n";
-	--	        cout << flush;
-	--	     }
-	--	}
-	--
-	---Category: Inquire methods
-
+	
 	FillArea3dAspect ( me )
 		returns AspectFillArea3d from Graphic3d
 		is static;
@@ -639,20 +556,6 @@ is
 		is static;
 	---Level: Public
 	---Purpose: Returns the values of the current default attributes.
-	---Category: Inquire methods
-
-	Type ( me;
-	       ElementNumber	: Integer from Standard )
-		returns TypeOfPrimitive from Graphic3d
-		is static;
-	---Level: Public
-	---Purpose: Returns the primitive type stored in the structure
-	--	    element <ElementNumber>.
-	--	    Initialises the exploration of this primitive.
-	--	    If the structure element is not a primitive, returns
-	--	    Graphic3d_TOP_UNDEFINED.
-	--  Warning: The structure element number is given by
-	--	    Visual3d_ViewManager::Pick method.
 	---Category: Inquire methods
 
 	Visual ( me )
@@ -898,12 +801,6 @@ is
 	--	    which contains facet.
 	--	    Polygons, Triangles or Quadrangles.
 	--	    <ADelta> = +1 or -1
-	---Category: Private methods
-
-	Exploration ( me )
-		is static;
-	---Level: Internal
-	---Purpose: Prints informations about the structure <me>.
 	---Category: Private methods
 
 	GraphicClear ( me	: mutable;
