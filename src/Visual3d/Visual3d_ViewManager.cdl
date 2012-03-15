@@ -302,6 +302,13 @@ is
         -- from lowest layer to highest ( foreground ). The first layer ID
         -- in sequence is the default layer that can't be removed.
 
+        InstallZLayers ( me;
+                         theView : View from Visual3d )
+           is private;
+        ---Purpose: Install z layers managed by the view manager into the
+        -- controlled view. This method used on the view initialization to
+        -- make the layer lists consistent.
+
         getZLayerGenId ( myclass )
         ---Purpose: Returns global instance of z layer ids generator.
         ---C++: return &

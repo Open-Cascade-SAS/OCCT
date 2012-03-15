@@ -1248,3 +1248,26 @@ Aspect_GenId& Visual3d_ViewManager::getZLayerGenId ()
   static Aspect_GenId aGenId (1, IntegerLast());
   return aGenId;
 }
+
+//=======================================================================
+//function : InstallZLayers
+//purpose  :
+//=======================================================================
+
+void Visual3d_ViewManager::InstallZLayers(const Handle(Visual3d_View)& theView) const
+{
+  if (!MyDefinedView.Contains (theView))
+    return;
+  
+  // erase and insert layers iteratively to provide the same layer order as
+  // in the view manager's sequence. This approach bases on the layer insertion
+  // order: the new layers are always appended to the end of the list
+  // inside of view, while layer remove operation doesn't affect the order.
+  // Starting from second layer : no need to change the default z layer.
+  for (Standard_Integer aSeqIdx = 2; aSeqIdx <= myLayerSeq.Length (); aSeqIdx++)
+  {
+    Standard_Integer aLayerID = myLayerSeq.Value (aSeqIdx);
+    theView->RemoveZLayer (aLayerID);
+    theView->AddZLayer (aLayerID);
+  }
+}

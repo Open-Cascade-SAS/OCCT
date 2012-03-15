@@ -509,6 +509,9 @@ const Handle(WNT_Window) theWindow = *(Handle(WNT_Window) *) &AWindow;
         MyGraphicDriver->ClipLimit (MyCView, AWait);
         MyGraphicDriver->Environment(MyCView);
 
+        // Make view manager z layer list consistent with the view's list.
+        MyViewManager->InstallZLayers (this);
+
         // Update planses of model clipping
         UpdatePlanes ();
 

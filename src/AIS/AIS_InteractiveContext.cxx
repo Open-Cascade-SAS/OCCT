@@ -3194,7 +3194,13 @@ Standard_Integer AIS_InteractiveContext::GetZLayer (const Handle(AIS_Interactive
     return -1;
 
   if (myObjects.IsBound (theIObj))
+  {
     return theIObj->GetZLayer (myMainPM);
+  }
+  else if (HasOpenedContext ())
+  {
+    return myLocalContexts (myCurLocalIndex)->GetZLayer (theIObj);
+  }
 
-  return myLocalContexts (myCurLocalIndex)->GetZLayer (theIObj);
+  return -1;
 }
