@@ -5,7 +5,7 @@
 #ifndef _OPENGL_RESOURCECLEANER_H
 #define _OPENGL_RESOURCECLEANER_H
 
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 #include <NCollection_Queue.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>

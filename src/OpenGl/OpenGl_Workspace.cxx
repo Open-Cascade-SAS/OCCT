@@ -3,6 +3,8 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <InterfaceGraphic.hxx>
 
 #include <OpenGl_Workspace.hxx>
@@ -12,7 +14,6 @@
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
 
-#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_TextureBox.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Workspace,OpenGl_Window)

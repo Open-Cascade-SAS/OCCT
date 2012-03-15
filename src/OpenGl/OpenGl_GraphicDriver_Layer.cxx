@@ -3,11 +3,11 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_GraphicDriver.hxx>
 
 #include <OSD_FontAspect.hxx>
-
-#include <OpenGl_tgl_all.hxx>
 
 #include <OpenGl_Display.hxx>
 #include <OpenGl_AspectText.hxx>

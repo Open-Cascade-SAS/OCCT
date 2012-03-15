@@ -3,14 +3,11 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#define QTOCC_PATCH   /* Active QtOPENCASCADE patches */
-
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h> /* pour M_PI */
 
 #include <OpenGl_TextureBox.hxx>
 
@@ -20,36 +17,14 @@
 
 #include <OpenGl_transform_persistence.hxx>
 
-#ifdef HAVE_GL2PS
-#include <gl2ps.h>
-#endif
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Trihedron.hxx>
 
+#include <GL/glu.h> // gluNewQuadric()
+
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Trihedron,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Trihedron,MMgt_TShared)
-
-/*----------------------------------------------------------------------*/
-/*
-* Constantes
-*/ 
-
-#define NO_DEBUG
-#define NO_PRINT
-#define NO_PRINT_MATRIX
-
-#ifndef M_PI
-# define M_PI          3.14159265358979323846
-#endif
 
 static const CALL_DEF_CONTEXTLINE myDefaultContextLine =
 {
@@ -173,7 +148,7 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
   */
   const OpenGl_AspectLine *AspectLine = AWorkspace->AspectLine( Standard_True );
 
-#ifdef QTOCC_PATCH /* Fotis Sioutis 2007-11-14 15:06 
+  /* Fotis Sioutis 2007-11-14 15:06 
   I have also seen in previous posts that the view trihedron in V3d_WIREFRAME mode 
   changes colors depending on the state of the view. This behaviour can be easily 
   corrected by altering call_triedron_redraw function in OpenGl_triedron.c of TKOpengl.
@@ -182,7 +157,6 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
   Below is the code portion with the modification.I don't know if this is considered to 
   be a bug but anyway i believe it might help some of you out there.*/
   glDisable(GL_LIGHTING);
-#endif
 
   /* Position de l'origine */
   const GLdouble TriedronOrigin[3] = { 0.0, 0.0, 0.0 };
@@ -308,25 +282,11 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   glGetDoublev( GL_PROJECTION_MATRIX, (GLdouble *) projMatrix );
 
   /* Check position in the ViewPort */
-#ifdef QTOCC_PATCH /* PCD 29/09/2008 */
+  /* PCD 29/09/2008 */
   /* Simple code modification recommended by Fotis Sioutis and Peter Dolbey  */
   /* to remove the irritating default behaviour of triedrons using V3d_ZBUFFER   */
   /* which causes the glyph to jump around the screen when the origin moves offscreen. */
   GLboolean isWithinView = GL_FALSE;
-#else
-  /* Original code */
-  GLint   aViewPort[4];  /* to store view port coordinates */
-  glGetIntegerv(GL_VIEWPORT, aViewPort);
-  GLdouble aWinCoord[3];
-  /* Position de l'origine */
-  const GLdouble TriedronOrigin[3] = { 0.0, 0.0, 0.0 };
-  gluProject(TriedronOrigin[0], TriedronOrigin[1], TriedronOrigin[2],
-             (GLdouble *)modelMatrix, (GLdouble *)projMatrix, aViewPort,
-             &aWinCoord[0], &aWinCoord[1], &aWinCoord[2]);
-
-  GLboolean isWithinView = !((aWinCoord[0]<aViewPort[0]) || (aWinCoord[0]>aViewPort[2]) ||
-                             (aWinCoord[1]<aViewPort[1]) || (aWinCoord[1]>aViewPort[3]));
-#endif
 
   /* la taille des axes est 1 proportion (fixee a l'init du triedre) */
   /* de la dimension la plus petite de la window.                    */ 
@@ -393,19 +353,12 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
 
   const GLboolean aIsDepthEnabled = glIsEnabled(GL_DEPTH_TEST);
 
-#ifndef BUG
-
   GLboolean aIsDepthMaskEnabled;
-#ifdef QTOCC_PATCH  /*PCD 02/07/07   */
+  /*PCD 02/07/07   */
   /* GL_DEPTH_WRITEMASK is not a valid argument to glIsEnabled, the  */
   /* original code is shown to be broken when run under an OpenGL debugger  */
   /* like GLIntercept. This is the correct way to retrieve the mask value.  */
   glGetBooleanv(GL_DEPTH_WRITEMASK, &aIsDepthMaskEnabled); 
-#else
-  aIsDepthMaskEnabled = glIsEnabled(GL_DEPTH_WRITEMASK);
-#endif
-
-#endif 
 
   const GLdouble aCylinderLength = L * CYLINDER_LENGTH;
   const GLdouble aCylinderDiametr = L * myDiameter;
@@ -442,7 +395,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   glCullFace(GL_BACK);
   glEnable(GL_CULL_FACE);
 
-#ifdef QTOCC_PATCH /*Fotis Sioutis | 2008-01-21 10:55
+  /*Fotis Sioutis | 2008-01-21 10:55
   In the function call_zbuffer_triedron_redraw of TKOpengl, 
   the z buffered trihedron changes colors in case there 
   is an object in the scene that has an explicit material 
@@ -464,29 +417,20 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, aNULLColor);
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, aNULLColor);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.f);
-#endif
 
   glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
   glEnable(GL_COLOR_MATERIAL);
 
   if (!aIsDepthEnabled)  {
     glEnable(GL_DEPTH_TEST);
-#ifndef BUG
     glClear(GL_DEPTH_BUFFER_BIT);
-#endif
   }
-#ifdef BUG
-  if (!(aIsDepthEnabled && isWithinView))
-    glClear(GL_DEPTH_BUFFER_BIT);
-#endif
 
-#ifndef BUG
   if (!aIsDepthMaskEnabled)  {
     /* This is how the depthmask needs to be re-enabled...*/
     glDepthMask(GL_TRUE);
     /* ...and not this stuff below */
   }
-#endif
 
   /* Position des Axes */
   GLdouble TriedronAxeX[3] = { 1.0, 0.0, 0.0 };
@@ -498,70 +442,10 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
 
   glMatrixMode(GL_MODELVIEW);
 
-#ifdef QTOCC_PATCH /* PCD 17/06/07  */
+  /* PCD 17/06/07  */
   GLint df;
   glGetIntegerv (GL_DEPTH_FUNC, &df); 
-#else
-  /*
-#define COLOR_REDUCE      0.3f
-#ifdef BUG
-#define ALPHA_REDUCE      0.4f
-#else
-#define ALPHA_REDUCE      1.0f
-#endif
-  //szv:if (isWithinView) {
-  glDepthFunc(GL_GREATER);
-  glPushMatrix();
-  glPushMatrix();
-  glPushMatrix();
 
-  glColor4f(aLineColor.rgb[0]*COLOR_REDUCE, 
-            aLineColor.rgb[1]*COLOR_REDUCE, 
-            aLineColor.rgb[2]*COLOR_REDUCE,
-            ALPHA_REDUCE);
-  glCallList(startList+2);
-
-  // Z axis
-  glColor4f(myZColor.rgb[0]*COLOR_REDUCE, 
-            myZColor.rgb[1]*COLOR_REDUCE, 
-            myZColor.rgb[2]*COLOR_REDUCE,
-            ALPHA_REDUCE);
-  glCallList(startList);
-  glTranslated(0, 0, L * CYLINDER_LENGTH);
-  glCallList(startList + 3);
-  glCallList(startList + 1);
-  glPopMatrix();    
-
-  // X axis
-  glRotated(90.0, TriedronAxeY[0], TriedronAxeY[1], TriedronAxeY[2]);
-  glColor4f(myXColor.rgb[0]*COLOR_REDUCE,
-            myXColor.rgb[1]*COLOR_REDUCE, 
-            myXColor.rgb[2]*COLOR_REDUCE,
-            ALPHA_REDUCE);
-  glCallList(startList);
-  glTranslated(0, 0, L * CYLINDER_LENGTH);
-  glCallList(startList + 3);
-  glCallList(startList + 1);
-  glPopMatrix();    
-
-  // Y axis
-  glRotated(-90.0, TriedronAxeX[0], TriedronAxeX[1], TriedronAxeX[2]);
-  glColor4f(myYColor.rgb[0]*COLOR_REDUCE, 
-            myYColor.rgb[1]*COLOR_REDUCE, 
-            myYColor.rgb[2]*COLOR_REDUCE,
-            ALPHA_REDUCE);
-  glCallList(startList);
-  glTranslated(0, 0, L * CYLINDER_LENGTH);
-  glCallList(startList + 3);
-  glCallList(startList + 1);
-  glPopMatrix();
-
-  glDepthFunc(GL_LESS);
-  //szv:}
-  */
-#endif
-
-#ifdef QTOCC_PATCH
   int i;
   for (i = 0; i < 2; i++) /* PCD 11/02/08 Two pass method */
   {
@@ -573,7 +457,6 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     {
       glDepthFunc(GL_LEQUAL); 
     }
-#endif
 
     glPushMatrix();
     glPushMatrix();
@@ -607,33 +490,22 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     glCallList(startList + 3);
     glCallList(startList + 1);
     glPopMatrix();
-
-#ifdef QTOCC_PATCH
   }
-#endif
 
   if (!aIsDepthEnabled) 
     glDisable(GL_DEPTH_TEST);
-#ifndef BUG
+
   if (!aIsDepthMaskEnabled)
-
-#ifdef QTOCC_PATCH /*PCD 02/07/07   */
     glDepthMask(GL_FALSE);
-#else
-    glDisable(GL_DEPTH_WRITEMASK);
-#endif
 
-#endif
   glDisable(GL_CULL_FACE);
   glDisable(GL_COLOR_MATERIAL);
 
   gluDeleteQuadric(aQuadric);
   glColor3fv (aLineColor.rgb);
 
-#ifdef QTOCC_PATCH /* PCD 11/02/08 */
   /* Always write the text */
   glDepthFunc(GL_ALWAYS); 
-#endif
 
   glPopAttrib();
 
@@ -656,10 +528,8 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   AWorkspace->RenderText (L"Y", 0, float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon));
   AWorkspace->RenderText (L"Z", 0, float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon));
 
-#ifdef QTOCC_PATCH
   /*PCD 17/06/07    */
   glDepthFunc(df);
-#endif
 
   if (!isWithinView) { /* restore matrix */
     glMatrixMode (GL_PROJECTION);

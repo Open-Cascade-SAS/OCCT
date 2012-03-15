@@ -1,7 +1,7 @@
 #ifndef OPENGL_MEMORY_H
 #define OPENGL_MEMORY_H
 
-#include <OpenGl_tgl_all.hxx>
+#include <Standard.hxx>
 
 template <class XType> XType *cmn_resizemem( XType *ptr, Tint size )
 {

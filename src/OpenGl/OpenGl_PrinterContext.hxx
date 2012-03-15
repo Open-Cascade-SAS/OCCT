@@ -5,11 +5,12 @@
 #ifndef _OPENGL_PRINTERCONTEXT_H
 #define _OPENGL_PRINTERCONTEXT_H
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <MMgt_TShared.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <Handle_MMgt_TShared.hxx>
-#include <OpenGl_tgl_all.hxx>
 #include <NCollection_DataMap.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>

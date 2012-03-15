@@ -3,19 +3,20 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_View.hxx>
 
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Display.hxx>
-
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
 
 #include <OpenGl_Display.hxx>
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 
 #include <OpenGl_transform_persistence.hxx>
+
+#include <GL/glu.h> // gluUnProject()
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_View,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,MMgt_TShared)

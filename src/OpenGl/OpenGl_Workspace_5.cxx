@@ -3,6 +3,8 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_Workspace.hxx>
 
 #include <OpenGl_AspectLine.hxx>
@@ -20,13 +22,8 @@
   #endif
 #endif
 
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
-
 #include <OpenGl_TextureBox.hxx>
-
 #include <Aspect_PolygonOffsetMode.hxx>
-
 #include <OpenGl_View.hxx>
 
 /*----------------------------------------------------------------------*/

@@ -3,41 +3,18 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#define BUC60863  /*GG_100401 After any view update, made identical 
-//      the front and back buffer to avoid ghost drawing.
-//      Minimize flicking.
-*/
-
-#define IMP150501       /*GG_150501 CADPAK_V2 Enable/Disable Zbuffer  
-NOTE that the previous and unused "double-buffer"
-arg is changed to "zbuffer" and enable/disable
-to use the OpenGl zbuffer capabilities during immediat
-drawing 
-*/
-
-#define IMP260601 /*GG Enable correct backing store between 2 different views.
-*/
-
-/*----------------------------------------------------------------------*/
-
-#define RIC120302       /* GG Enable to use the application display
-//                      callback at end of traversal
-*/
-
-/*
-* Includes
-*/
 #include <math.h>
 #include <stdio.h>
 
-#ifdef HAVE_GL2PS
-  #include <gl2ps.h>
-#endif
-
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_telem_util.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Structure.hxx>
+
+#ifdef HAVE_GL2PS
+  #include <gl2ps.h>
+#endif
 
 /*----------------------------------------------------------------------*/
 /*

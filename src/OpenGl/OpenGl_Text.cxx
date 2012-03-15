@@ -3,19 +3,13 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Text.hxx>
-
-#if (!defined(_WIN32) && !defined(__WIN32__))
-  #include <X11/Xlib.h>
-#endif
-
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
-
 #include <OpenGl_Memory.hxx>
-
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Structure.hxx>
+
+#include <GL/glu.h> // gluUnProject()
 
 /*----------------------------------------------------------------------*/
 

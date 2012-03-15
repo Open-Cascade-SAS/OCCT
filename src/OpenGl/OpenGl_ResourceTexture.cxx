@@ -2,8 +2,8 @@
 // Created:   18.03.11 9:40:00
 // Author:    Anton POLETAEV
 
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_ResourceTexture.hxx>
-#include <OpenGl_tgl_all.hxx>
 
 //=======================================================================
 //function : OpenGl_ResourceTexture

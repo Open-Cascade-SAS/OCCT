@@ -6,6 +6,7 @@
 #define OPENGL_FRAME_BUFFER_H
 
 #include <OpenGl_Context.hxx>
+#include <OpenGl_ExtFBO.hxx>
 
 #include <Standard_Boolean.hxx>
 #include <InterfaceGraphic.hxx>

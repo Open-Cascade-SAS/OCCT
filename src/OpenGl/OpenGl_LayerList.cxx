@@ -3,8 +3,9 @@
 // Author:    Anton POLETAEV
 // Copyright: OPEN CASCADE 2012
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_LayerList.hxx>
-#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_Structure.hxx>
 
 #include <InterfaceGraphic_Graphic3d.hxx>

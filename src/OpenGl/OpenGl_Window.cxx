@@ -15,6 +15,8 @@
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <GL/glu.h> // gluOrtho2D()
+
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
 

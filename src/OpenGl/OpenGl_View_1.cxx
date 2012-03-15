@@ -3,15 +3,17 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_View.hxx>
 
 #include <Visual3d_Layer.hxx>
 
-#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_tgl_funcs.hxx>
-
 #include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_Workspace.hxx>
+
+#include <GL/glu.h> // gluProject(), gluUnProject()
 
 /*----------------------------------------------------------------------*/
 

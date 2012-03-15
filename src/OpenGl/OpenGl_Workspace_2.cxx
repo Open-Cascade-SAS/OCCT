@@ -3,14 +3,10 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#define RIC120302       /* GG Enable to use the application display
-//                      callback at end of traversal
-*/
+#include <OpenGl_GlCore11.hxx>
 
-#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <string.h>
 #include <OpenGl_telem_util.hxx>
 
 #ifdef HAVE_FREEIMAGE
@@ -27,6 +23,8 @@
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Display.hxx>
+
+#include <GL/glu.h> // gluOrtho2D()
 
 //10-05-96 : CAL ; Ajout d'un nouveau delta dans les copies de pixels (voir CALL_DEF_DELTA)
 #define CALL_DEF_DELTA 10

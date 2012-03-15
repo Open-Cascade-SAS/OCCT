@@ -3,19 +3,18 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
+
+#include <GL/glu.h> // gluUnProject()
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

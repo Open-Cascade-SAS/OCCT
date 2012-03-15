@@ -53,7 +53,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Display.hxx>
 #include <OpenGl_TextureBox.hxx>
 #include <OpenGl_ImageBox.hxx>
@@ -61,13 +61,11 @@
 #include <OpenGl_ResourceCleaner.hxx>
 #include <OpenGl_ResourceTexture.hxx>
 
+#include <GL/glu.h> // gluBuild2DMipmaps()
+
 #define GROW_TEXTURES 8
 #define GROW_TEXTURES_DATA 8
 #define GROW_CONTEXT 8
-
-#ifndef max
-  #define max(a,b) ((a) > (b)) ? (a) : (b);
-#endif
 
 typedef enum {TEXDATA_NONE, TEXDATA_1D, TEXDATA_2D, TEXDATA_2DMM} texDataStatus;
 typedef enum {TEX_NONE, TEX_ALLOCATED} texStatus;
@@ -185,7 +183,7 @@ static TextureDataID FindFreeTextureData(void)
   for (i=0; i<textures_data_size; i++)
     if (texdata[i].status == TEXDATA_NONE)
     {
-      textures_data_count = max (textures_data_count, i + 1);
+      textures_data_count = Max (textures_data_count, i + 1);
       return i;
     }
 
@@ -221,7 +219,7 @@ static TextureID FindFreeTexture(void)
   for (i=0; i<textures_size; i++)
     if (textab[i].status == TEX_NONE)
     {
-      textures_count = max (textures_count, i + 1);
+      textures_count = Max (textures_count, i + 1);
       return i;
     }
 
@@ -924,7 +922,7 @@ void SetTextureRepeat(TextureID ID)
 /*----------------------------------------------------------------------*/
 
 /* gestion de la facon d'appliquer la texture */
-void SetModeObject(TextureID ID, GLfloat sparams[4], GLfloat tparams[4])
+void SetModeObject(TextureID ID, const GLfloat sparams[4], const GLfloat tparams[4])
 {
   if (!IsTextureValid(ID)) return;
 
@@ -949,7 +947,7 @@ void SetModeSphere(TextureID ID)
 
 /*----------------------------------------------------------------------*/
 
-void SetModeEye(TextureID ID, GLfloat sparams[4], GLfloat tparams[4])
+void SetModeEye(TextureID ID, const GLfloat sparams[4], const GLfloat tparams[4])
 {  
   if (!IsTextureValid(ID)) return;
 

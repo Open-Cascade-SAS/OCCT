@@ -3,7 +3,9 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_ArbVBO.hxx>
+#include <OpenGl_Context.hxx>
+
 #include <OpenGl_PrimitiveArray.hxx>
 
 #include <OpenGl_AspectFace.hxx>
@@ -93,8 +95,8 @@ void OpenGl_PrimitiveArray::clearMemoryGL (const Handle(OpenGl_Context)& theGlCo
   {
     theGlContext->arbVBO->glDeleteBuffersARB (1, &myPArray->bufferVBO[VBOVtexels]);
   }
-  theGlContext->arbVBO->glBindBufferARB (GL_ARRAY_BUFFER_ARB, 0); 
-  theGlContext->arbVBO->glBindBufferARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, 0); 
+  theGlContext->arbVBO->glBindBufferARB (GL_ARRAY_BUFFER_ARB, 0);
+  theGlContext->arbVBO->glBindBufferARB (GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
 }
 
 // =======================================================================
@@ -127,8 +129,8 @@ Standard_Boolean OpenGl_PrimitiveArray::BuildVBO (const Handle(OpenGl_Workspace)
   {
     size_reqd = myPArray->num_edges * sizeof(Tint);
     aGlContext->arbVBO->glGenBuffersARB (1, &myPArray->bufferVBO[VBOEdges]);   
-    aGlContext->arbVBO->glBindBufferARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, myPArray->bufferVBO[VBOEdges]);
-    aGlContext->arbVBO->glBufferDataARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, size_reqd, myPArray->edges, GL_STATIC_DRAW_ARB);
+    aGlContext->arbVBO->glBindBufferARB (GL_ELEMENT_ARRAY_BUFFER_ARB, myPArray->bufferVBO[VBOEdges]);
+    aGlContext->arbVBO->glBufferDataARB (GL_ELEMENT_ARRAY_BUFFER_ARB, size_reqd, myPArray->edges, GL_STATIC_DRAW_ARB);
     if (!checkSizeForGraphicMemory (aGlContext))
       return Standard_False;
   }
@@ -403,7 +405,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
     {
       if (myPArray->num_edges > 0 && myPArray->bufferVBO[VBOEdges] != 0)
       {
-        aGlContext->arbVBO->glBindBufferARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, myPArray->bufferVBO[VBOEdges]); // for edge indices
+        aGlContext->arbVBO->glBindBufferARB (GL_ELEMENT_ARRAY_BUFFER_ARB, myPArray->bufferVBO[VBOEdges]); // for edge indices
         if (myPArray->num_bounds > 0)
         {
           // draw primitives by vertex count with the indicies
@@ -435,7 +437,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
 
       // bind with 0
       aGlContext->arbVBO->glBindBufferARB (GL_ARRAY_BUFFER_ARB, 0); 
-      aGlContext->arbVBO->glBindBufferARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, 0); 
+      aGlContext->arbVBO->glBindBufferARB (GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     } 
     else
     {
@@ -571,7 +573,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
     glColor3fv (theEdgeColour->rgb);
     if (myPArray->num_edges > 0 && myPArray->bufferVBO[VBOEdges])
     {
-      aGlContext->arbVBO->glBindBufferARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, myPArray->bufferVBO[VBOEdges]);
+      aGlContext->arbVBO->glBindBufferARB (GL_ELEMENT_ARRAY_BUFFER_ARB, myPArray->bufferVBO[VBOEdges]);
 
       // draw primitives by vertex count with the indicies
       if (myPArray->num_bounds > 0)
@@ -605,7 +607,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
     // unbind buffers
     glDisableClientState (GL_VERTEX_ARRAY);
     aGlContext->arbVBO->glBindBufferARB (GL_ARRAY_BUFFER_ARB, 0);
-    aGlContext->arbVBO->glBindBufferARB (GL_ELEMENTS_ARRAY_BUFFER_ARB, 0);
+    aGlContext->arbVBO->glBindBufferARB (GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
   }
   else
   {

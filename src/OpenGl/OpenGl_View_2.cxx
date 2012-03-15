@@ -3,28 +3,16 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#define G003    /* EUG 20-09-99 ; Animation management
-*/
-
-/*----------------------------------------------------------------------*/
-/*
-* Includes
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_tgl_funcs.hxx>
 #include <OpenGl_TextureBox.hxx>
 
 #include <AlienImage.hxx>
 #include <Image_Image.hxx>
 #include <Visual3d_Layer.hxx>
-
-#if defined(WNT)
-#include <GL/glu.h>
-#endif
 
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Display.hxx>
@@ -35,16 +23,9 @@
 #include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_Structure.hxx>
 
-/*----------------------------------------------------------------------*/
-/*
-* Constantes
-*/
+#include <GL/glu.h> // gluBuild2DMipmaps()
 
 #define EPSI 0.0001
-
-#ifndef M_PI
-# define M_PI          3.14159265358979323846
-#endif
 
 static const GLfloat default_amb[4] = { 0.F, 0.F, 0.F, 1.F };
 static const GLfloat default_sptdir[3] = { 0.F, 0.F, -1.F };

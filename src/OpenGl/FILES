@@ -94,7 +94,6 @@ OpenGl_AVIWriter.cxx
 OpenGl_tsm.hxx
 OpenGl_telem_view.cxx
 OpenGl_telem_view.hxx
-OpenGl_tgl_all.hxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_TextureBox.cxx
@@ -115,12 +114,17 @@ OpenGl_transform_persistence.hxx
 OpenGl_FontMgr.hxx
 OpenGl_FontMgr.cxx
 OpenGl_tgl_funcs.hxx
-OpenGl_togl_texture.cxx
-OpenGl_togl_inquireplane.cxx
 Handle_OpenGl_Context.hxx
 OpenGl_Context.hxx
 OpenGl_Context.cxx
 OpenGl_ArbVBO.hxx
 OpenGl_ExtFBO.hxx
+glext.h
+OpenGl_GlCore11.hxx
+OpenGl_GlCore12.hxx
+OpenGl_GlCore13.hxx
+OpenGl_GlCore14.hxx
+OpenGl_GlCore15.hxx
+OpenGl_GlCore20.hxx
 OpenGl_LayerList.cxx
 OpenGl_LayerList.hxx

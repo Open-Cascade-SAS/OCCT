@@ -42,21 +42,8 @@
 #ifndef _OPENGL_TEXTUREBOX_H_
 #define _OPENGL_TEXTUREBOX_H_
 
-/*----------------------------------------------------------------------*/
-/*
-* Includes
-*/
-
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 #include <Standard_DefineAlloc.hxx>
-
-#include <GL/gl.h>
-
-
-/*----------------------------------------------------------------------*/
-/*
-* Constantes
-*/
 
 typedef int TextureID;
 #define TEXTUREBOX_ERROR ((TextureID)-1)
@@ -80,11 +67,6 @@ struct _TextureData
   DEFINE_STANDARD_ALLOC
 };
 typedef _TextureData TextureData;
-
-/*----------------------------------------------------------------------*/
-/*
-* Prototypes
-*/
 
 /* 
 * Gestion des textures
@@ -122,9 +104,9 @@ void SetTextureDecal(TextureID ID);
 void SetTextureClamp(TextureID ID);
 void SetTextureRepeat(TextureID ID);
 
-void SetModeObject(TextureID ID, GLfloat sparams[4], GLfloat tparams[4]);
+void SetModeObject(TextureID ID, const GLfloat sparams[4], const GLfloat tparams[4]);
 void SetModeSphere(TextureID ID);
-void SetModeEye(TextureID ID, GLfloat sparams[4], GLfloat tparams[4]);
+void SetModeEye(TextureID ID, const GLfloat sparams[4], const GLfloat tparams[4]);
 void SetModeManual(TextureID ID);
 
 void SetRenderNearest(TextureID ID);

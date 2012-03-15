@@ -195,19 +195,18 @@ Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfText
           *MyData++ = 0xFF;
         }  
 
-
         switch (Type)
         {
         case Graphic3d_TOT_1D:
-          TexId = call_togl_create_texture(0, aGlWidth, aGlHeight, MyImageData, (Standard_PCharacter)fileName);
+          TexId = GetTextureData1D (fileName, aGlWidth, aGlHeight, MyImageData);
           break;
 
         case Graphic3d_TOT_2D:
-          TexId = call_togl_create_texture(1, aGlWidth, aGlHeight, MyImageData, (Standard_PCharacter)fileName);
+          TexId = GetTextureData2D (fileName, aGlWidth, aGlHeight, MyImageData);
           break;
 
         case Graphic3d_TOT_2D_MIPMAP:
-          TexId = call_togl_create_texture(2, aGlWidth, aGlHeight, MyImageData, (Standard_PCharacter)fileName);
+          TexId = GetTextureData2DMipMap (fileName, aGlWidth, aGlHeight, MyImageData);
           break;
 
         default:
@@ -219,13 +218,50 @@ Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfText
 
 }
 
-void OpenGl_GraphicDriver::DestroyTexture(const Standard_Integer TexId) const
+void OpenGl_GraphicDriver::DestroyTexture (const Standard_Integer theTexId) const
 {
-  call_togl_destroy_texture(TexId);
+  FreeTexture (theTexId);
 }
 
-
-void OpenGl_GraphicDriver::ModifyTexture(const Standard_Integer TexId,const Graphic3d_CInitTexture& AValue) const
+void OpenGl_GraphicDriver::ModifyTexture (const Standard_Integer        theTexId,
+                                          const Graphic3d_CInitTexture& theInfo) const
 {
-  call_togl_modify_texture(TexId, (CALL_DEF_INIT_TEXTURE *)&AValue);
+  if (theInfo.doModulate)
+    SetTextureModulate (theTexId);
+  else
+    SetTextureDecal (theTexId);
+
+  if (theInfo.doRepeat)
+    SetTextureRepeat (theTexId);
+  else
+    SetTextureClamp (theTexId);
+
+  switch (theInfo.Mode)
+  {
+    case 0:
+      SetModeObject (theTexId, theInfo.sparams, theInfo.tparams);
+      break;
+
+    case 1:
+      SetModeSphere (theTexId);
+      break;
+
+    case 2:
+      SetModeEye (theTexId, theInfo.sparams, theInfo.tparams);
+      break;
+
+    case 3:
+      SetModeManual (theTexId);
+      break;        
+  }
+
+  if (theInfo.doLinear)
+    SetRenderLinear (theTexId);
+  else
+    SetRenderNearest (theTexId);
+
+  SetTexturePosition (theTexId,
+                      theInfo.sx, theInfo.sy,
+                      theInfo.tx, theInfo.ty,
+                      theInfo.angle);
 }

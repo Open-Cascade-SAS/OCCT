@@ -3,13 +3,12 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_GraphicDriver.hxx>
 
 #include <OpenGl_Display.hxx>
 #include <OpenGl_CView.hxx>
-
-#include <OpenGl_tgl_all.hxx>
-#include <OpenGl_tgl_funcs.hxx>
 
 Standard_Integer OpenGl_GraphicDriver::InquireLightLimit ()
 {
@@ -35,6 +34,14 @@ Standard_Boolean OpenGl_GraphicDriver::InquireTextureAvailable ()
 
 Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit ()
 {
-  return call_togl_inquireplane();
+  GLint aMaxPlanes = 0;
+  if (GET_GL_CONTEXT())
+  {
+    glGetIntegerv (GL_MAX_CLIP_PLANES, &aMaxPlanes);
+    aMaxPlanes -= 2; // NOTE the 2 first planes are reserved for ZClipping
+    if (aMaxPlanes < 0)
+      aMaxPlanes = 0;
+  }
+  return aMaxPlanes;
 }
 

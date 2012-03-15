@@ -5,10 +5,10 @@
 #ifndef _OPENGL_RESOURCE_H
 #define _OPENGL_RESOURCE_H
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_ResourceCleaner.hxx>
 #include <MMgt_TShared.hxx>
-#include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
 #include <Handle_MMgt_TShared.hxx>
 
 class Standard_Transient;

@@ -4,6 +4,7 @@
 
 #include <OpenGl_ResourceVBO.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_ArbVBO.hxx>
 
 //=======================================================================
 //function : OpenGl_ResourceVBO

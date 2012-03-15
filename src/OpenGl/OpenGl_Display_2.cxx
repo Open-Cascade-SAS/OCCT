@@ -3,19 +3,13 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_Display.hxx>
 
 #ifdef HAVE_GL2PS
-#include <gl2ps.h>
+  #include <gl2ps.h>
 #endif
-
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
-
-/*----------------------------------------------------------------------*/
-/*
-* Constantes
-*/
 
 #define  DOT_LS            0xCCCC
 #define  DASH_DOT_LS       0xFF18

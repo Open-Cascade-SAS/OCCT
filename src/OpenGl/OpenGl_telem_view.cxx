@@ -6,7 +6,7 @@ File OpenGl_telem_view :
 
 ************************************************************************/
 
-#include <OpenGl_tgl_all.hxx>
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_telem_view.hxx>
 #include <OpenGl_telem_util.hxx>
 #include <OpenGl_Display.hxx>

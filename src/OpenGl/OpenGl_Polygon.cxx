@@ -3,11 +3,10 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#include <OpenGl_Context.hxx>
+#include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_Polygon.hxx>
 
-#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_telem_util.hxx>
 #include <OpenGl_TextureBox.hxx>
 #include <OpenGl_Memory.hxx>

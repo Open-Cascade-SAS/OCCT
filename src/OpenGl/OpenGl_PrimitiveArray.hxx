@@ -6,7 +6,7 @@
 #ifndef OpenGl_PrimitiveArray_Header
 #define OpenGl_PrimitiveArray_Header
 
-#include <OpenGl_Context.hxx>
+#include <OpenGl_GlCore11.hxx>
 
 #include <InterfaceGraphic_telem.hxx>
 #include <Aspect_InteriorStyle.hxx>
@@ -14,6 +14,7 @@
 #include <OpenGl_Element.hxx>
 
 struct OPENGL_SURF_PROP;
+class Handle(OpenGl_Context);
 
 class OpenGl_PrimitiveArray : public OpenGl_Element
 {

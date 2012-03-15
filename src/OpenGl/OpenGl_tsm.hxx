@@ -25,9 +25,6 @@ et TelBackInteriorShadingMethod
 #ifndef  OPENGL_TSM_H
 #define  OPENGL_TSM_H
 
-#define G003  /* EUG 21-09-99 Degeneration management
-*/
-
 #define OCC1188 /* SAV 23/12/02 Added structure to control background texture
 + enum to control texture fill method
 */
@@ -94,9 +91,7 @@ typedef  enum
   TelTextStyle,
   TelTextDisplayType, 
   TelTextColourSubTitle, 
-#ifdef G003
   TelDegenerationMode,
-#endif  /* G003 */
   TelTextZoomable,//Text Zoomable attributes
   TelTextAngle,//Text Angle attributes
   TelTextFontAspect,//Text Font Aspect attributes 

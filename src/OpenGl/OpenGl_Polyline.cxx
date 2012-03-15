@@ -3,10 +3,9 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
-#include <OpenGl_Polyline.hxx>
+#include <OpenGl_GlCore11.hxx>
 
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
+#include <OpenGl_Polyline.hxx>
 
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Structure.hxx>

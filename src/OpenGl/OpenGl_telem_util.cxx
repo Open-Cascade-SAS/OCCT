@@ -48,35 +48,8 @@ when a face has confused or aligned points.
 
 ************************************************************************/
 
-#define IMP190100 /*GG To avoid too many REDRAW in immediat mode,
-//      Add TelMakeFrontAndBackBufCurrent() function
-*/
-#define QTOCC_PATCH
+#include <OpenGl_GlCore11.hxx>
 
-/*----------------------------------------------------------------------*/
-/*
-* Includes
-*/
-
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifndef WNT
-# include <X11/Xlib.h>
-#else
-# define STRICT
-# include <windows.h>
-#endif  /* WNT */
-
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-#ifndef WNT
-#include <GL/glx.h>
-#endif /* WNT */
-
-#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_telem_util.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>

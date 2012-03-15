@@ -5,15 +5,6 @@
 
 #include <OpenGl_Workspace.hxx>
 
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
-
-#include <InterfaceGraphic_Labels.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
-#include <InterfaceGraphic_Visual3d.hxx>
-
-/*----------------------------------------------------------------------*/
-
 //call_togl_begin_animation
 void OpenGl_Workspace::BeginAnimation (const Standard_Boolean UseDegeneration, const Standard_Boolean UpdateAM)
 {

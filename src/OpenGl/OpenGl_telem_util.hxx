@@ -23,22 +23,8 @@ xx-xx-xx : xxx ; Creation.
 #ifndef  OPENGL_TELEM_UTIL_H
 #define  OPENGL_TELEM_UTIL_H
 
-#ifndef IMP190100
-#define IMP190100       /*GG To avoid too many REDRAW in immediat mode,
-//                      Add TelMakeFrontAndBackBufCurrent() function
-*/
-#endif
-
-#define BUC60823    /* GG 05/03/01 Avoid to crash in normal computation
-//        between confused points
-*/
-
-#include <math.h>
-#include <GL/gl.h>
-#ifndef WNT
-#include <GL/glx.h>
-#endif
 #include <InterfaceGraphic_telem.hxx>
+#include <cmath>
 
 /*
 * ShortRealLast () = 3.40282346638528860e+38
@@ -78,17 +64,12 @@ xx-xx-xx : xxx ; Creation.
 #define  vecmg2(a)       (square((a)[0])+square((a)[1])+square((a)[2]))
 
 /* magnitude */
-#define  vecmag(a)       (sqrt((double)vecmg2(a)))
+#define  vecmag(a)       (std::sqrt((double)vecmg2(a)))
 
 /* normalize */
-#ifdef BUC60823
 #define  vecnrmd(a,d)    ( d = (Tfloat)vecmag(a), \
   ( d > 1e-10 ? (a[0] /= d, a[1] /= d, a[2] /= d, d) : (Tfloat)0. ) )
 #define  vecnrm(a)       { Tfloat d; vecnrmd(a,d); }
-#else
-#define  vecnrm(a)       { Tfloat d; d = ( Tfloat )vecmag(a); \
-  (a)[0] /= d; (a)[1] /= d; (a)[2] /= d; }
-#endif
 
 /* angle between two vectors */
 #define  vecang(a,b,d)   { d = (Tfloat)(vecmag(a)*vecmag(b)); \

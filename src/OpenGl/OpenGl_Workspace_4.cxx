@@ -3,12 +3,11 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #if (defined(_WIN32) || defined(__WIN32__))
   #include <OpenGl_AVIWriter.hxx>
-#else
-  #define CALL_DEF_STRING_LENGTH 132
 #endif
-#include <OpenGl_tgl_all.hxx>
 
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_ResourceCleaner.hxx>

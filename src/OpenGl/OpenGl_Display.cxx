@@ -3,16 +3,19 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <OpenGl_Display.hxx>
 
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
-
 #include <OpenGl_Light.hxx>
+
+#if (!defined(_WIN32) && !defined(__WIN32__))
+  #include <X11/Xlib.h> // XOpenDisplay()
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Display,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Display,MMgt_TShared)

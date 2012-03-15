@@ -11,8 +11,7 @@
 * Includes
 */ 
 
-#include <OpenGl_tgl_all.hxx>
-#include <GL/gl.h>
+#include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_Mesh.hxx>
 
