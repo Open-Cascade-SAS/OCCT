@@ -28,14 +28,19 @@
 #include <TDF_Data.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDF_AttributeIterator.hxx>
+#include <TDF_Reference.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDataStd_UAttribute.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_Comment.hxx>
+#include <TDataStd_AsciiString.hxx>
 #include <TNaming_NamedShape.hxx>
+#include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_RealArray.hxx>
+#include <TDataStd_ByteArray.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_NamedShapeDriver.hxx>
 #include <TPrsStd_AISViewer.hxx>
@@ -527,7 +532,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
 
   const Handle(TDF_Attribute)& att = itr.Value();
   if ( att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)) ) {
-    Standard_CString type;
+    Standard_CString type = "";
     if ( att->ID() == XCAFDoc::ShapeRefGUID() ) type = "Shape Instance Link";
     else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorGen) ) type = "Generic Color Link";
     else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorSurf) ) type = "Surface Color Link";
@@ -535,7 +540,6 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     else if ( att->ID() == XCAFDoc::DimTolRefGUID() ) type = "DGT Link";
     else if ( att->ID() == XCAFDoc::DatumRefGUID() ) type = "Datum Link";
     else if ( att->ID() == XCAFDoc::MaterialRefGUID() ) type = "Material Link";
-    else return 0;
     Handle(TDataStd_TreeNode) TN = Handle(TDataStd_TreeNode)::DownCast(att);
     TCollection_AsciiString ref;
     if ( TN->HasFather() ) {
@@ -546,13 +550,19 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
       di << type << " <== (" << ref.ToCString();
       Handle(TDataStd_TreeNode) child = TN->First();
       while ( ! child.IsNull() ) {
-	TDF_Tool::Entry ( child->Label(), ref );
-	if ( child != TN->First() ) di << ", ";
-	di << ref.ToCString();
-	child = child->Next();
+        TDF_Tool::Entry ( child->Label(), ref );
+        if ( child != TN->First() ) di << ", ";
+        di << ref.ToCString();
+        child = child->Next();
       }
       di << ")";
     }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDF_Reference)) ) {
+    Handle(TDF_Reference) val = Handle(TDF_Reference)::DownCast ( att );
+    TCollection_AsciiString ref;
+    TDF_Tool::Entry ( val->Get(), ref );
+    di << "==> " << ref.ToCString();
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_Integer)) ) {
     Handle(TDataStd_Integer) val = Handle(TDataStd_Integer)::DownCast ( att );
@@ -563,6 +573,51 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     Handle(TDataStd_Real) val = Handle(TDataStd_Real)::DownCast ( att );
     TCollection_AsciiString str ( val->Get() );
     di << str.ToCString();
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_Name)) ) {
+    Handle(TDataStd_Name) val = Handle(TDataStd_Name)::DownCast ( att );
+    TCollection_AsciiString str ( val->Get(), '?' );
+    di << str.ToCString();
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_Comment)) ) {
+    Handle(TDataStd_Comment) val = Handle(TDataStd_Comment)::DownCast ( att );
+    TCollection_AsciiString str ( val->Get(), '?' );
+    di << str.ToCString();
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_AsciiString)) ) {
+    Handle(TDataStd_AsciiString) val = Handle(TDataStd_AsciiString)::DownCast ( att );
+    TCollection_AsciiString str ( val->Get(), '?' );
+    di << str.ToCString();
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_IntegerArray)) ) {
+    Handle(TDataStd_IntegerArray) val = Handle(TDataStd_IntegerArray)::DownCast ( att );
+    for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ ) {
+      if ( j > val->Lower() ) di << ", ";
+      TCollection_AsciiString str ( val->Value(j) );
+      di << str.ToCString();
+    }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_RealArray)) ) {
+    Handle(TDataStd_RealArray) val = Handle(TDataStd_RealArray)::DownCast ( att );
+    for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ ) {
+      if ( j > val->Lower() ) di << ", ";
+      TCollection_AsciiString str ( val->Value(j) );
+      di << str.ToCString();
+    }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_ByteArray)) ) {
+    Handle(TDataStd_ByteArray) val = Handle(TDataStd_ByteArray)::DownCast ( att );
+    for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ ) {
+      if ( j > val->Lower() ) di << ", ";
+      TCollection_AsciiString str ( val->Value(j) );
+      di << str.ToCString();
+    }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TNaming_NamedShape)) ) {
+    Handle(TNaming_NamedShape) val = Handle(TNaming_NamedShape)::DownCast ( att );
+    TopoDS_Shape S = val->Get();
+    di << S.TShape()->DynamicType()->Name();
+    if ( ! S.Location().IsIdentity() ) di << "(located)";
   }
   else if ( att->IsKind(STANDARD_TYPE(XCAFDoc_Volume)) ) {
     Handle(XCAFDoc_Volume) val = Handle(XCAFDoc_Volume)::DownCast ( att );
@@ -584,25 +639,6 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     di <<" , ";
     di << myCentroid.Z();
     di << ")";
-  }
-  else if ( att->IsKind(STANDARD_TYPE(TDataStd_Name)) ) {
-    Handle(TDataStd_Name) val = Handle(TDataStd_Name)::DownCast ( att );
-    TCollection_AsciiString str ( val->Get(), '?' );
-    di << str.ToCString();
-  }
-  else if ( att->IsKind(STANDARD_TYPE(TDataStd_RealArray)) ) {
-    Handle(TDataStd_RealArray) val = Handle(TDataStd_RealArray)::DownCast ( att );
-    for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ ) {
-      if ( j > val->Lower() ) di << ", ";
-      TCollection_AsciiString str ( val->Value(j) );
-      di << str.ToCString();
-    }
-  }
-  else if ( att->IsKind(STANDARD_TYPE(TNaming_NamedShape)) ) {
-    Handle(TNaming_NamedShape) val = Handle(TNaming_NamedShape)::DownCast ( att );
-    TopoDS_Shape S = val->Get();
-    di << S.TShape()->DynamicType()->Name();
-    if ( ! S.Location().IsIdentity() ) di << "(located)";
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_UAttribute)) ) {
     if ( att->ID() == XCAFDoc::AssemblyGUID() ) di << "is assembly";

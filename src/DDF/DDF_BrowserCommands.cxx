@@ -1,7 +1,6 @@
 // File:	DDF_BrowserCommands.cxx
 //      	-----------------------
 // Author:	DAUTRY Philippe
-//		<fid@fox.paris1.matra-dtv.fr>
 // Copyright:	Matra Datavision 1997
 
 // Version:	0.0
@@ -38,8 +37,8 @@
 //=======================================================================
 
 static Standard_Integer DFBrowse (Draw_Interpretor& di, 
-				  Standard_Integer  n, 
-				  const char**            a)
+                                  Standard_Integer  n, 
+                                  const char**      a)
 {
   if (n<2) return 1;
   
@@ -47,11 +46,10 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
   if (!DDF::GetDF (a[1], DF)) return 1;
 
   Handle(DDF_Browser) NewDDFBrowser = new DDF_Browser(DF);
-  char *name = new char[50];
-  if (n == 3) sprintf(name,"browser_%s",a[2]);
-  else        sprintf(name,"browser_%s",a[1]);
+  TCollection_AsciiString name("browser_");
+  name += ((n == 3)? a[2] : a[1]);
+  Draw::Set (name.ToCString(), NewDDFBrowser);
 
-  Draw::Set (name, NewDDFBrowser);
   TCollection_AsciiString inst1("dftree ");
   inst1.AssignCat(name);
   di.Eval(inst1.ToCString());
@@ -67,8 +65,8 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DFOpenLabel (Draw_Interpretor& di, 
-				   Standard_Integer  n, 
-				   const char**            a)
+                                     Standard_Integer  n, 
+                                     const char**      a)
 {
   if (n < 2) return 1;
   
@@ -78,14 +76,8 @@ static Standard_Integer DFOpenLabel (Draw_Interpretor& di,
   TDF_Label lab;
   if (n == 3) TDF_Tool::Label(browser->Data(),a[2],lab);
 
-  if (lab.IsNull()) {
-    TCollection_AsciiString list = browser->OpenRoot();
-    di<<list.ToCString();
-  }
-  else {
-    TCollection_AsciiString list = browser->OpenLabel(lab);
-    di<<list.ToCString();
-  }
+  TCollection_AsciiString list(lab.IsNull()? browser->OpenRoot() : browser->OpenLabel(lab));
+  di<<list.ToCString();
   return 0;
 }
 
@@ -98,8 +90,8 @@ static Standard_Integer DFOpenLabel (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DFOpenAttributeList(Draw_Interpretor& di,
-					    Standard_Integer n,
-					    const char** a)
+                                            Standard_Integer  n,
+                                            const char**      a)
 {
   if (n < 3) return 1;
   
@@ -109,11 +101,10 @@ static Standard_Integer DFOpenAttributeList(Draw_Interpretor& di,
   TDF_Label lab;
   TDF_Tool::Label(browser->Data(),a[2],lab);
 
-  if (lab.IsNull()) {
+  if (lab.IsNull())
     return 1;
-  }
 
-  TCollection_AsciiString list = browser->OpenAttributeList(lab);
+  TCollection_AsciiString list(browser->OpenAttributeList(lab));
   di << list.ToCString();
   return 0;
 }
@@ -128,26 +119,22 @@ static Standard_Integer DFOpenAttributeList(Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DFOpenAttribute (Draw_Interpretor& di, 
-					 Standard_Integer  n, 
-					 const char**      a)
+                                         Standard_Integer  n, 
+                                         const char**      a)
 {
   if (n < 3) return 1;
   
   Handle(DDF_Browser) browser =
     Handle(DDF_Browser)::DownCast (Draw::Get(a[1], Standard_True)); 
 
-  Standard_Integer index = atoi(a[2]);
-
+  const Standard_Integer index = atoi(a[2]);
   TCollection_AsciiString list = browser->OpenAttribute(index);
-
   di<<list.ToCString();
   return 0;
 }
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 
 
 //=======================================================================
@@ -157,7 +144,6 @@ static Standard_Integer DFOpenAttribute (Draw_Interpretor& di,
 
 void DDF::BrowserCommands (Draw_Interpretor& theCommands) 
 {
-/*
   static Standard_Boolean done = Standard_False;
   if (done) return;
   done = Standard_True;
@@ -189,5 +175,4 @@ void DDF::BrowserCommands (Draw_Interpretor& theCommands)
      "DON'T USE THIS COMMAND RESERVED TO THE BROWSER!\nReturns information about an attribute, a df or a label: DFDisplayInfo {#} | {browsername [label]}",
      __FILE__, DFDisplayInfo, g);
 #endif
-*/
 }

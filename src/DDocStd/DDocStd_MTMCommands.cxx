@@ -16,11 +16,16 @@
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_Comment.hxx>
+#include <TDataStd_AsciiString.hxx>
+#include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_RealArray.hxx>
+#include <TDataStd_ByteArray.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TDataStd_UAttribute.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Draw_Interpretor.hxx>
+#include <TDF_Reference.hxx>
 
 //=======================================================================
 //function : mtmCreate
@@ -207,24 +212,18 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   if ( ! itr.More() ) { di << "ERROR: Attribute #" << num << " not found" << "\n"; return 0; }
     
   const Handle(TDF_Attribute)& att = itr.Value();
-  if ( att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)) ) 
+  if ( att->IsKind(STANDARD_TYPE(TDataStd_TreeNode)) )
   {
-    Standard_CString type = "";
-//    if ( att->ID() == XCAFDoc::ShapeRefGUID() ) type = "Shape Instance Link";
-//    else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorGen) ) type = "Generic Color Link";    
-//    else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorSurf) ) type = "Surface Color Link";    
-//    else if ( att->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorCurv) ) type = "Curve Color Link";    
-//    else return 0;
     Handle(TDataStd_TreeNode) TN = Handle(TDataStd_TreeNode)::DownCast(att);
     TCollection_AsciiString ref;
     if ( TN->HasFather() ) 
     {
       TDF_Tool::Entry ( TN->Father()->Label(), ref );
-      di << type << " ==> " << ref.ToCString();
+      di << " ==> " << ref.ToCString();
     }
     else 
     {
-      di << type << " <== (" << ref.ToCString();
+      di << " <== (" << ref.ToCString();
       Handle(TDataStd_TreeNode) child = TN->First();
       while ( ! child.IsNull() ) 
       {
@@ -235,6 +234,13 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
       }
       di << ")";
     }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDF_Reference)) )
+  {
+    Handle(TDF_Reference) val = Handle(TDF_Reference)::DownCast ( att );
+    TCollection_AsciiString ref;
+    TDF_Tool::Entry ( val->Get(), ref );
+    di << "==> " << ref.ToCString();
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_Integer)) ) 
   {
@@ -248,13 +254,35 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     TCollection_AsciiString str ( val->Get() );
     di << str.ToCString();
   }
-  else if ( att->IsKind(STANDARD_TYPE(TDataStd_Name)) ) 
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_Name)) )
   {
     Handle(TDataStd_Name) val = Handle(TDataStd_Name)::DownCast ( att );
     TCollection_AsciiString str ( val->Get(), '?' );
     di << str.ToCString();
   }
-  else if ( att->IsKind(STANDARD_TYPE(TDataStd_RealArray)) ) 
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_Comment)) )
+  {
+    Handle(TDataStd_Comment) val = Handle(TDataStd_Comment)::DownCast ( att );
+    TCollection_AsciiString str ( val->Get(), '?' );
+    di << str.ToCString();
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_AsciiString)) )
+  {
+    Handle(TDataStd_AsciiString) val = Handle(TDataStd_AsciiString)::DownCast ( att );
+    TCollection_AsciiString str ( val->Get(), '?' );
+    di << str.ToCString();
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_IntegerArray)) )
+  {
+    Handle(TDataStd_IntegerArray) val = Handle(TDataStd_IntegerArray)::DownCast ( att );
+    for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ )
+    {
+      if ( j > val->Lower() ) di << ", ";
+      TCollection_AsciiString str ( val->Value(j) );
+      di << str.ToCString();
+    }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_RealArray)) )
   {
     Handle(TDataStd_RealArray) val = Handle(TDataStd_RealArray)::DownCast ( att );
     for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ ) 
@@ -264,7 +292,17 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
       di << str.ToCString();
     }
   }
-  else if ( att->IsKind(STANDARD_TYPE(TNaming_NamedShape)) ) 
+  else if ( att->IsKind(STANDARD_TYPE(TDataStd_ByteArray)) )
+  {
+    Handle(TDataStd_ByteArray) val = Handle(TDataStd_ByteArray)::DownCast ( att );
+    for ( Standard_Integer j=val->Lower(); j <= val->Upper(); j++ ) 
+    {
+      if ( j > val->Lower() ) di << ", ";
+      TCollection_AsciiString str ( val->Value(j) );
+      di << str.ToCString();
+    }
+  }
+  else if ( att->IsKind(STANDARD_TYPE(TNaming_NamedShape)) )
   {
     Handle(TNaming_NamedShape) val = Handle(TNaming_NamedShape)::DownCast ( att );
     TopoDS_Shape S = val->Get();
