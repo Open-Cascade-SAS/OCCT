@@ -674,7 +674,7 @@ void BSplCLib::Reparametrize
       //for CheckCurveData
       Standard_Real Eps = Epsilon( Abs(Knots(i-1)) );
       if (Knots(i) - Knots(i-1) <= Eps)
-	Knots(i) += 1.1*Eps;
+	Knots(i) = NextAfter (Knots(i-1) + Eps, RealLast());
 
       K1 = K2;
     }
