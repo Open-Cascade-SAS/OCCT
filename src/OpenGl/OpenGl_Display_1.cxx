@@ -3,13 +3,14 @@
 // Author:    Sergey ZERCHANINOV
 // Copyright: OPEN CASCADE 2011
 
+#include <OpenGl_tgl_all.hxx>
 #include <OpenGl_Display.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <OpenGl_FontMgr.hxx>
-
+#include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_AspectText.hxx>
 
 #ifdef HAVE_GL2PS
@@ -554,6 +555,22 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
 
     if( !aspect->IsZoomable() )
     {
+#ifdef WNT
+      // if the context has assigned printer context, use it's parameters
+      OpenGl_PrinterContext* aPrinterContext = 
+        OpenGl_PrinterContext::GetPrinterContext( GET_GL_CONTEXT() );
+      if( aPrinterContext )
+      {
+        // get printing scaling in x and y dimensions
+        GLfloat aTextScalex = 1, aTextScaley = 1;
+        aPrinterContext->GetScale( aTextScalex, aTextScaley );
+        
+        // text should be scaled in all directions with same
+        // factor to save its proportions, so use height (y) scaling
+        // as it is better for keeping text/3d graphics proportions
+        glScalef( aTextScaley, aTextScaley, aTextScaley );
+      }
+#endif
       glScaled( h, h, h );
     }
     else

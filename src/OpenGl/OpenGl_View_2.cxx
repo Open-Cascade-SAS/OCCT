@@ -1173,6 +1173,12 @@ D = -[Px,Py,Pz] dot |Nx|
   if (!myGraduatedTrihedron.IsNull())
     myGraduatedTrihedron->Render(AWorkspace);
 
+  // The applied aspects should be reset to make it possible to
+  // update gl state and bring it into line with currently set
+  // aspects by reapplying them. Reset should be done, because
+  // the glPopAttrib() will return original gl state while the
+  // internal TKOpenGl state stills unchanged.
+  AWorkspace->ResetAppliedAspect();
   glPopAttrib(); // GL_FOG_BIT | GL_LIGHTING_BIT | GL_ENABLE_BIT
 
   // Restore face culling

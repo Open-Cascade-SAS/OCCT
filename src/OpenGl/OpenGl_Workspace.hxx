@@ -146,6 +146,9 @@ public:
   const OpenGl_AspectMarker* AspectMarker (const Standard_Boolean theWithApply);
   const OpenGl_AspectText*   AspectText   (const Standard_Boolean theWithApply);
 
+  //! Clear the applied aspect state.
+  void ResetAppliedAspect();
+
   //// RELATED TO FONTS ////
 
   int FindFont (const char*          theFontName,
