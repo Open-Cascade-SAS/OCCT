@@ -48,6 +48,8 @@ when a face has confused or aligned points.
 
 ************************************************************************/
 
+#include <stdio.h>
+
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_telem_util.hxx>
