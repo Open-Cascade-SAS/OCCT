@@ -260,6 +260,8 @@ void Draw_Interpretor::Add(const Standard_CString n,
  
   Tcl_SetVar2(myInterp,"Draw_Files",pN,a_string,TCL_GLOBAL_ONLY);
 
+  delete [] a_string;
+
 }
 
 
