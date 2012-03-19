@@ -216,7 +216,22 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& F,
     }
     P.SetCoord(u0,v0) ; Baux.Add(P);
     P.SetCoord(u1,v1) ; Baux.Add(P);
-    B.Add(Baux);
+
+    Bnd_Box2d FinalBox;
+    Standard_Real aXmin, aYmin, aXmax, aYmax;
+    Baux.Get(aXmin, aYmin, aXmax, aYmax);
+    Standard_Real Tol2d = Precision::PConfusion();
+    if (Abs(aXmin - Umin) <= Tol2d)
+      aXmin = Umin;
+    if (Abs(aYmin - Vmin) <= Tol2d)
+      aYmin = Vmin;
+    if (Abs(aXmax - Umax) <= Tol2d)
+      aXmax = Umax;
+    if (Abs(aYmax - Vmax) <= Tol2d)
+      aYmax = Vmax;
+    FinalBox.Update(aXmin, aYmin, aXmax, aYmax);
+    
+    B.Add(FinalBox);
   }
 }
 
