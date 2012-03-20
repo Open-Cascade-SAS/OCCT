@@ -29,6 +29,11 @@
 #include <Aspect_PrintAlgo.hxx>
 #include <Image_PixMap.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
+#include <Visual3d_Layer.hxx>
+#include <Visual3d_LayerItem.hxx>
+#include <V3d_LayerMgr.hxx>
+#include <V3d_LayerMgrPointer.hxx>
+#include <Aspect_TypeOfLine.hxx>
 
 #ifdef WNT
 #undef DrawText
@@ -2224,6 +2229,167 @@ void V3d_TextItem::RedrawLayerPrs ()
   myLayer->DrawText (myText.ToCString (), myX1, myY1, myHeight);
 }
 
+DEFINE_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)
+
+// The Visual3d_LayerItem line item for "vlayerline" command
+// it provides a presentation of line with user-defined 
+// linewidth, linetype and transparency.
+class V3d_LineItem : public Visual3d_LayerItem 
+{
+public:
+  // CASCADE RTTI
+  DEFINE_STANDARD_RTTI(V3d_LineItem) 
+  
+  // constructor
+  Standard_EXPORT V3d_LineItem(Standard_Real X1, Standard_Real Y1,
+                               Standard_Real X2, Standard_Real Y2,
+                               V3d_LayerMgrPointer theLayerMgr,
+                               Aspect_TypeOfLine theType = Aspect_TOL_SOLID,
+                               Standard_Real theWidth    = 0.5,
+                               Standard_Real theTransp   = 1.0);
+
+  // redraw method
+  Standard_EXPORT   void RedrawLayerPrs();
+
+private:
+
+  Standard_Real       myX1, myY1, myX2, myY2;
+  Standard_Real       myWidth;
+  Standard_Real       myTransparency;
+  Aspect_TypeOfLine   myType;
+  V3d_LayerMgrPointer myLayerMgr;
+};
+
+IMPLEMENT_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_LineItem, Visual3d_LayerItem)
+
+// default constructor for line item
+V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1, 
+                           Standard_Real X2, Standard_Real Y2,
+                           V3d_LayerMgrPointer theLayerMgr,
+                           Aspect_TypeOfLine theType,
+                           Standard_Real theWidth,
+                           Standard_Real theTransp) :
+  myX1(X1), myY1(Y1), myX2(X2), myY2(Y2), myLayerMgr(theLayerMgr),
+  myType(theType), myWidth(theWidth), myTransparency(theTransp)
+{
+  if (myLayerMgr && myLayerMgr->Overlay())
+    myLayerMgr->Overlay()->AddLayerItem (this);
+}
+
+// render line
+void V3d_LineItem::RedrawLayerPrs ()
+{
+  Handle (Visual3d_Layer) aOverlay;
+ 
+  if (myLayerMgr)
+    aOverlay = myLayerMgr->Overlay();
+
+  if (!aOverlay.IsNull())
+  {
+    Quantity_Color aColor(1.0, 0, 0, Quantity_TOC_RGB);
+    aOverlay->SetColor(aColor);
+    aOverlay->SetTransparency((Standard_ShortReal)myTransparency);
+    aOverlay->SetLineAttributes((Aspect_TypeOfLine)myType, myWidth);
+    aOverlay->BeginPolyline();
+    aOverlay->AddVertex(myX1, myY1);
+    aOverlay->AddVertex(myX2, myY2);
+    aOverlay->ClosePrimitive();
+  }
+}
+
+//=============================================================================
+//function : VLayerLine
+//purpose  : Draws line in the v3d view layer with given attributes: linetype,
+//         : linewidth, transparency coefficient
+//============================================================================
+static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    di << "Call vinit before!\n";
+    return 1;
+  }
+  else if (argc < 5)
+  {
+    di << "Use: " << argv[0];
+    di << " x1 y1 x2 y2 [linewidth = 0.5] [linetype = 0] [transparency = 1]\n";
+    di << " linetype : { 0 | 1 | 2 | 3 } \n";
+    di << "              0 - solid  \n";
+    di << "              1 - dashed \n";
+    di << "              2 - dot    \n";
+    di << "              3 - dashdot\n";
+    di << " transparency : { 0.0 - 1.0 } \n";
+    di << "                  0.0 - transparent\n";
+    di << "                  1.0 - visible    \n";
+    return 1;
+  }
+
+  // get the input params
+  Standard_Real X1 = atof(argv[1]);
+  Standard_Real Y1 = atof(argv[2]);
+  Standard_Real X2 = atof(argv[3]);
+  Standard_Real Y2 = atof(argv[4]);
+
+  Standard_Real    aWidth = 0.5;
+  Standard_Integer aType  = 0;
+  Standard_Real    aTransparency = 1.0;
+
+  // has width
+  if (argc > 5)
+    aWidth = atof(argv[5]);
+
+  // has type
+  if (argc > 6)
+     aType = (Standard_Integer) atoi(argv[6]);
+
+  // has transparency
+  if (argc > 7)
+  {
+    aTransparency = atof(argv[7]);
+    if (aTransparency < 0 || aTransparency > 1.0) 
+      aTransparency = 1.0;
+  }
+
+  // select appropriate line type
+  Aspect_TypeOfLine aLineType;
+  switch (aType)
+  {
+    case 1:
+      aLineType = Aspect_TOL_DASH;
+    break;
+
+    case 2:
+      aLineType = Aspect_TOL_DOT;
+    break;
+
+    case 3:
+      aLineType = Aspect_TOL_DOTDASH;
+    break;
+
+    default:
+      aLineType = Aspect_TOL_SOLID;
+  }
+
+  // replace layer manager
+  Handle(V3d_LayerMgr) aMgr = new V3d_LayerMgr(aView);
+  aView->SetLayerMgr(aMgr);
+
+  // add line item
+  Handle (V3d_LineItem) anItem = new V3d_LineItem(X1, Y1, X2, Y2, 
+                                                  aMgr.operator->(),
+                                                  aLineType, aWidth, 
+                                                  aTransparency);
+
+  // update view
+  aView->MustBeResized();
+  aView->Redraw();
+
+  return 0;
+}
+
 //=======================================================================
 //function : VOverlayText
 //purpose  : Test text displaying in view overlay
@@ -2412,4 +2578,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : display_type = {normal/subtitle/decal/blend}, (default=normal) "
     " : background_color - three values: RedColor GreenColor BlueColor (default = 255.0 255.0 255.0), the parameter is defined for subtitle and decal display types ",
     __FILE__,VOverlayText,group);
+  theCommands.Add("vlayerline",
+    "vlayerline : vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]",
+    __FILE__,VLayerLine,group);
 }
