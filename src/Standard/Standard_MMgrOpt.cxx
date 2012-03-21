@@ -718,6 +718,12 @@ void Standard_MMgrOpt::FreePools()
 Standard_Address Standard_MMgrOpt::Reallocate(Standard_Address&   theStorage,
                                               const Standard_Size theNewSize)
 {
+  // if theStorage == NULL, just allocate new memory block
+  if (!theStorage)
+  {
+    return Allocate(theNewSize);
+  }
+  
   Standard_Size * aBlock = GET_BLOCK(theStorage);
   Standard_Address newStorage = NULL;
 
