@@ -29,7 +29,6 @@
 #include <Aspect_PrintAlgo.hxx>
 #include <Image_PixMap.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Visual3d_Layer.hxx>
 #include <Visual3d_LayerItem.hxx>
 #include <V3d_LayerMgr.hxx>
 #include <V3d_LayerMgrPointer.hxx>
