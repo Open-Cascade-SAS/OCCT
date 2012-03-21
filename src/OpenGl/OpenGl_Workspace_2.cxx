@@ -731,9 +731,14 @@ Standard_Boolean OpenGl_Workspace::Print
   glViewport (aViewPortBack[0], aViewPortBack[1], 
               aViewPortBack[2], aViewPortBack[3]);
   if (aPrevBuffer)
+  {
     aPrevBuffer->ChangeViewport (aPrevBufferX, aPrevBufferY);
+  }
   else
+  {
+    aFrameBuffer->Release (GetGlContext ());
     delete aFrameBuffer;
+  }
 
   // delete resources
 #ifndef HAVE_FREEIMAGE

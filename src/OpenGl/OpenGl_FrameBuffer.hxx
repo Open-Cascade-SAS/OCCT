@@ -136,7 +136,7 @@ private:
 
   Standard_Boolean IsValidDepthBuffer() const
   {
-    return myGlTextureId != NO_RENDERBUFFER;
+    return myGlDepthRBId != NO_RENDERBUFFER;
   }
 
 private:
