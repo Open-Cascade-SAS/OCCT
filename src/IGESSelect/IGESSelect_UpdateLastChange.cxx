@@ -1,3 +1,20 @@
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
 #include <IGESSelect_UpdateLastChange.ixx>
 #include <OSD_Process.hxx>
@@ -8,7 +25,7 @@
 
 
 
-    IGESSelect_UpdateLastChange::IGESSelect_UpdateLastChange ()
+IGESSelect_UpdateLastChange::IGESSelect_UpdateLastChange ()
     : IGESSelect_ModelModifier (Standard_False)    {  }
 
     void  IGESSelect_UpdateLastChange::Performing

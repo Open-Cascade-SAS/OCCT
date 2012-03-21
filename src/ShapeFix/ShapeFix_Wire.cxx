@@ -1,3 +1,20 @@
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //:j6 abv 7 Dec 98: ProSTEP TR10 r0601_id.stp #57676 & #58586: 
 //    in FixIntersectingEdges, do not cut edges because of influence on adjacent faces
 // pdn 17.12.98: shifting whole wire in FixShifted
@@ -94,7 +111,7 @@
 #include <ShapeAnalysis_TransferParametersProj.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_OffsetCurve.hxx>
-  
+
 #include <TColStd_HSequenceOfReal.hxx>
 #include <Handle_Geom2dAdaptor_HCurve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
@@ -110,7 +127,7 @@
 //#######################################################################
 //  Constructors, initializations, modes, querying
 //#######################################################################
-  
+
 //=======================================================================
 //function : ShapeFix_Wire
 //purpose  : 

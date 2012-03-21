@@ -1,10 +1,26 @@
-// File:	GeomLib.cxx
-// Created:	Wed Jul  7 15:32:09 1993
-// Author:	Jean Claude VAUTHIER
+// Created on: 1993-07-07
+// Created by: Jean Claude VAUTHIER
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
-// Copyright:    Matra Datavision	
+
 // Version:	
-// History:	pmn 24/09/96 Ajout du prolongement de courbe.
+//pmn 24/09/96 Ajout du prolongement de courbe.
 //              jct 15/04/97 Ajout du prolongement de surface.
 //              jct 24/04/97 simplification ou suppression de calculs
 //                           inutiles dans ExtendSurfByLength

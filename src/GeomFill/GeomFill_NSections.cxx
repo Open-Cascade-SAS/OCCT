@@ -1,16 +1,28 @@
+// Created on: 1998-12-14
+// Created by: Joelle CHAUVET
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
-// File:        GeomFill_NSections.cxx
-// Created:     Mon Dec 14 15:38:23 1998
-// Author:      Joelle CHAUVET
-//              <jct@sgi64>
+
 // Modified:    Fri Jan  8 15:47:20 1999
-// Author:      Joelle CHAUVET
-//              <jct@sgi64>
 //              enfin un calcul exact pour D1 et D2
 //              le calcul par differ. finies est garde dans verifD1 et verifD2
 // Modified:    Mon Jan 18 11:06:46 1999
-// Author:      Joelle CHAUVET
-//              <jct@sgi64>
 //              mise au point de D1, D2 et IsConstant
 
 #include <stdio.h>

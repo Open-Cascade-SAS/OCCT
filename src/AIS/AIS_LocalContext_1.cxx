@@ -1,8 +1,23 @@
-// Copyright: 	Matra-Datavision 1996
-// File:	AIS_LocalContext_1.cxx
-// Created:	Wed Oct 30 11:09:05 1996
-// Author:	Robert COUBLANC
-//		<rob>
+// Created on: 1996-10-30
+// Created by: Robert COUBLANC
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified by rob Thu Apr 02 1998 
 //              - use of optimisation in SelectMgr_ViewerSelector
 //              -> Best management in detected entities...
@@ -43,7 +58,7 @@
 //			if the current highlight mode is not 0.
 
 #define BUC60953        //SAV_060701 For Select optimization. Selection by rectangle case.
-                        // for single selection no optimization done.
+// for single selection no optimization done.
 
 #define IMP120701	//SZV made a shape valid for selection
 //			when required.
@@ -55,10 +70,10 @@
 #define OCC138          //VTN Avoding infinit loop in AddOrRemoveSelected method.
 
 #define OCC189          //SAV: 18/03/02 AIS_Selection::Objects() returns ListOfTransient
-                        // instead of array.
-  
+// instead of array.
+
 #define USE_MAP         //san : 18/04/03 USE_MAP - additional datamap is used to speed up access 
-                        //to certain owners in AIS_Selection::myresult list  
+//to certain owners in AIS_Selection::myresult list  
 
 #define IMP120402	// GG : Add protection in manual detection methods 
 //			after deselecting any item using ShiftSelect action. 

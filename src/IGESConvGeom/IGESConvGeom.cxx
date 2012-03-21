@@ -1,8 +1,23 @@
-// Copyright: 	Matra-Datavision 1994
-// File:	IGESConvGeom.cxx
-// Created:	Thu Sep  1 16:00:17 1994
-// Author:	Christian CAILLET
-//		<cky>
+// Created on: 1994-09-01
+// Created by: Christian CAILLET
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // modif du 31/01/97 : mjm
 // on commence par les SplineCurves.
 // modif du 17/03/97 : mjm
@@ -24,7 +39,7 @@
 
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-  
+
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>

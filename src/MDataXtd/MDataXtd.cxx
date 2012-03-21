@@ -1,10 +1,26 @@
-// File:	MDataStd.cxx
+// Created by: DAUTRY Philippe
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //      	------------
-// Author:	DAUTRY Philippe
-// Copyright:	Matra Datavision 1997
 // modified     Sergey Zaritchny
 // Version:	0.0
-// History:	Version	Date		Purpose
+//Version	Date		Purpose
 //		0.0	Aug  4 1997	Creation
 
 
@@ -13,9 +29,7 @@
 #include <MDF_ASDriverTable.hxx>
 #include <MDF_ARDriverTable.hxx>
 #include <CDM_MessageDriver.hxx>
-//
 // Storage
-//
 #include <MDataXtd_ShapeStorageDriver.hxx>
 #include <MDataXtd_PointStorageDriver.hxx>
 #include <MDataXtd_AxisStorageDriver.hxx>
@@ -25,9 +39,7 @@
 #include <MDataXtd_PlacementStorageDriver.hxx>
 #include <MDataXtd_PatternStdStorageDriver.hxx>
 
-//
 // Retrieval
-//
 #include <MDataXtd_ShapeRetrievalDriver.hxx>
 #include <MDataXtd_PointRetrievalDriver.hxx>
 #include <MDataXtd_AxisRetrievalDriver.hxx>
@@ -37,9 +49,7 @@
 #include <MDataXtd_PlacementRetrievalDriver.hxx>
 #include <MDataXtd_PatternStdRetrievalDriver.hxx>
 
-//
 // enums
-//
 #include <TDataStd_RealEnum.hxx>
 #include <TDataXtd_ConstraintEnum.hxx>
 #include <TDataXtd_GeometryEnum.hxx>

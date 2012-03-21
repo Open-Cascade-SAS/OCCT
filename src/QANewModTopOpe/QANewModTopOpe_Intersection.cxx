@@ -1,15 +1,21 @@
-// File:	QANewModTopOpe_Intersection.cxx
-// Created:	Mon Dec 25 11:14:00 2000
-// Author:	Igor FEOKTISTOV <ifv@nnov.matra-dtv.fr>
-// Copyright:	 SAMTECH S.A. 2000
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       ifv ! Creation                                !25-12-2000! 3.0-00-2!
-// !       skv ! Adaptation to OCC version 5.0           ! 6-05-2003! 3.0-00-2!
-// !       mkk ! History correction                      !19-05-2003! 3.0-00-2!
-// +---------------------------------------------------------------------------+
-
+// Created on: 2000-12-25
+// Created by: Igor FEOKTISTOV
+// Copyright (c) 2000-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewModTopOpe_Intersection.ixx>
 #include <TopoDS.hxx>
@@ -360,22 +366,3 @@ Standard_Boolean QANewModTopOpe_Intersection::HasDeleted() const
   }
   return Standard_False;
 }
-
-
-
-// @@SDM: begin
-
-// Copyright SAMTECH ..........................................Version    3.0-00
-// Lastly modified by : mkk                                    Date : 19-05-2003
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       ifv ! Creation                                !25-12-2000! 3.0-00-2!
-// !       skv ! Adaptation to OCC version 5.0           ! 6-05-2003! 3.0-00-2!
-// !       mkk ! History correction                      !19-05-2003! 3.0-00-2!
-// !  vladimir ! adaptation to CAS 5.0                   !  07/01/03!    4.0-2!
-// +---------------------------------------------------------------------------+
-//
-// @@SDM: end

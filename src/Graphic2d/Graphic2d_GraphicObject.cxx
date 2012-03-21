@@ -1,9 +1,25 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
 //
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // S3593    //GG_270298
 //              Avoid calling IsKind() which is expensive.
 //		Add field myIsUpToDate informing if the object is updated.
 //		Add field myIsTransformed informing if the object is transformed.
-//
 
 #define G002	    //GG_140400
 //		Add empty constructor and SetView() method.
@@ -15,7 +31,7 @@
 #define OCC154 // jfa 06.03.2002 // to erase instead of removing
 
 #define OCC402   //SAV  14/11/01 Added PickByCircle(). Draw() was modified to be able
-                 //              to draw selected elements of SetOfMarker.
+//              to draw selected elements of SetOfMarker.
 
 #define OCC627   //SAV 16/08/02 new flag added to control visual object state
 

@@ -1,7 +1,23 @@
-// File:	GeomPlate_Surface.cxx
-// Created:	Thu Nov 21 13:47:59 1996
-// Author:	Joelle CHAUVET
-//		<jct@sgi38>
+// Created on: 1996-11-21
+// Created by: Joelle CHAUVET
+// Copyright (c) 1996-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified:	Wed Mar  5 09:45:42 1997
 //    by:	Joelle CHAUVET
 //              G1134 : new methods RealBounds and Constraints
@@ -9,7 +25,7 @@
 //    by:	Jerome LEMONIER
 //              Correction de la methode D2 (faute de frappe dans le code)
 //              Correction de la methode D1 (D0 inutile)
- 
+
 
 #include <GeomPlate_Surface.ixx>
 #include <gp_XY.hxx>

@@ -1,3 +1,21 @@
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // pmn 15/05/97 pas de Gauss avec des pivot trop petit. SVD fait mieux 
 // l'affaire + limitation de la longeur du pas + qq comentaire issus d'EUCLID3
 // pmn 10/06/97 refonte totale du traitement des bords + ajustement des init 
@@ -27,10 +45,8 @@
 //===========================================================================
 // - A partir d une solution de depart, recherche d une direction.( Newton la 
 // plupart du temps, gradient si Newton echoue.
-//
 // - Recadrage au niveau des bornes avec recalcul de la direction si une
 // inconnue a une valeur imposee.
-//
 // -Si On ne sort pas des bornes
 //   Tant que (On ne progresse pas assez ou on ne change pas de direction) 
 //    . Si (Progression encore possible) 
@@ -41,7 +57,6 @@
 //      Sinon 
 //        Si on depasse le minimum
 //          On fait une interpolation parabolique.
-//        
 // - Si on a progresse sur F
 //     On fait les tests d'arret
 //   Sinon

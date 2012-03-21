@@ -1,14 +1,29 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
 //
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // ARCH		//GG_240298
 //		Nouvelle methode privee ResetIndex() qui sert de relais
 //		a SetIndex() permettant de reinitialiser l'index
 //		courant d'exploration des primitives.
-//
 //		//GG_200898
 //		Nouvelle methode privee ComputeMinMax() qui peut etre redefinie
 //		dans chaque primitive de maniere a recalculer les minmax
 //		au moment ou l'on en a besoin.
-//
 // S3593	//GG_270298
 //		Nouvelle methodes privees SetFamily() appellee par
 //		Line(),Marker(),Text(),Image() et Family()
@@ -16,13 +31,11 @@
 //		Voir son utilisation dans Graphic2d_GraphicObject.
 //		Optimisation de la methode MinMax qui retourne maintenant
 //		un BOOLEAN pour signale que la primitive est vide.
-//
 // G002     //GG_140400
 //              Add SetPickedIndex() method
 //		Add DrawElement() and DrawVertex() methods
 //		Add IsOn() method
 //		Add Highlight(),Unhighlight() IsHighlighted() method.
-//
 
 #include <Graphic2d_Primitive.ixx>
 #include <Graphic2d_View.hxx>

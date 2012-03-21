@@ -1,8 +1,24 @@
-// File:        AIS_InteractiveContext.cxx
-// Created:     Fri Jan 17 13:36:48 1997
-// Author:      Robert COUBLANC
+// Created on: 1997-01-17
+// Created by: Robert COUBLANC
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified by  XAB & Serguei Dec 97 (angle &deviation coeffts)
-//              <rob@robox.paris1.matra-dtv.fr>
 
 #define BUC60577        //GG_101099     Enable to compute correctly
 //                      transparency with more than one object in the view.
@@ -26,11 +42,11 @@
 #define OCC172          //SAV clear static map before destroying context.
 
 #define OCC204          //SAV 26/02/02 : pass <updateviewer> flag to 
-                        // AddOrRemoveCurrentObject method from ClearGlobal.
+// AddOrRemoveCurrentObject method from ClearGlobal.
 
 #define OCC4373         //SAN 10/11/03 : improve display mode management in
-                        // Display( IO, updateviewer ) and 
-                        // SetDisplayMode( IO, mode, updateviewer ) methods
+// Display( IO, updateviewer ) and 
+// SetDisplayMode( IO, mode, updateviewer ) methods
 
 #include <AIS_InteractiveContext.ixx>
 

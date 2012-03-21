@@ -1,5 +1,21 @@
-// File		Graphic3d_Graoup_13.cxx
-// Created	16/06/2000 : ATS,SPK,GG : G005: Calculate bounding box coordinates for ARRAY primitives
+// Created on: 2000-06-16
+// Copyright (c) 2000-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 
 #include <Graphic3d_Group.jxx>
 #include <Graphic3d_Group.pxx>
@@ -105,14 +121,12 @@ void Graphic3d_Group :: UserDraw ( const Standard_Address AnObject,
 {
 	if (IsDeleted ()) return;
 
-	// SAMTECH contribution 5 July 2007 -- BEGIN
 	// Without this modification, the group assumes the primitive contains
 	// no polygons and does not require the Z-buffer for display.
 	if (!MyContainsFacet && ContainsFacet) {
 	  MyStructure->GroupsWithFacet (+1);
 	  MyContainsFacet = Standard_True;
 	}
-	// SAMTECH contribution 5 July 2007 -- END
 
 	MyIsEmpty	= Standard_False;
 

@@ -1,8 +1,23 @@
-// File:	IGESToBRep.cxx
-// Created:	Tue Mar 22 16:47:32 1994
-// Author:	GUYOT and UNTEREINER
-//		<fun@ecolox>
-//-Copyright:	 Matra Datavision 1994
+// Created on: 1994-03-22
+// Created by: GUYOT and UNTEREINER
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // 21.12.98 rln, gka S4054
 // 06.01.99 pdn  transmission from ShapeTool_MakeWire back to BRepAPI_MakeWire
 // 19.03.99 abv  //:q5: code improvement, unnecessary includes removed
@@ -61,7 +76,7 @@
 
 #include <TopLoc_Location.hxx>
 #include <Interface_Macros.hxx>
-  
+
 /* Just used for WriteShape */
 
 #include <stdio.h>

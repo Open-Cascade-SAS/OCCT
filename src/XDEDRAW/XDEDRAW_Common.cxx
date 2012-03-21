@@ -1,13 +1,21 @@
-// File:	XDEDRAW_Common.cxx
-// Created:	Fri Aug 15 12:19:56 2003
-// Author:	Sergey ZARITCHNY <szy@opencascade.com>
-// Copyright:	Open  CASCADE S.A. 2003
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       szy ! Creation/moved from XDEDRAWEXE          !15-08-2003! 5.1-00-1!
-// +---------------------------------------------------------------------------+
-
+// Created on: 2003-08-15
+// Created by: Sergey ZARITCHNY
+// Copyright (c) 2003-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <XDEDRAW_Common.ixx>
 #include <TCollection_ExtendedString.hxx>
@@ -450,17 +458,3 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di) {
   di.Add("XFromShape", "shape: do fromshape command for all the files",__FILE__, FromShape, g);
 
 }
-
-// @@SDM: begin
-
-// Copyright Open CASCADE .....................................Version    5.1-00
-// Lastly modified by : szy                                    Date : 15-08-2003
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       szy ! Creation/moved from XDEDRAWEXE          !15-08-2003! 5.1-00-1!
-// +---------------------------------------------------------------------------+
-
-// @@SDM: end

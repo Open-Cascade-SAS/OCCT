@@ -1,6 +1,23 @@
-// File:	StepToGeom_MakeSurface.cxx
-// Created:	Mon Jul  5 09:56:37 1993
-// Author:	Martine LANGLOIS
+// Created on: 1993-07-05
+// Created by: Martine LANGLOIS
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //:n7 abv 15.02.99: S4132: adding translation of surface_replica
 //:p0 abv 19.02.99: management of 'done' flag improved
 //:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
@@ -25,7 +42,7 @@
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
 #include <StepToGeom_MakeTransformation3d.hxx>
 #include <UnitsMethods.hxx>
-  
+
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <TopoDS_Face.hxx>
 #include <ShapeAlgo.hxx>

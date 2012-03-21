@@ -1,10 +1,24 @@
-// File:	Geom_BSplineCurve.cxx
-// Created:	Tue Mar  9 19:30:47 1993
-// Author:	JCV
-//		<fid@phylox>
-// Copyright:	Matra Datavision 1993
+// Created on: 1993-03-09
+// Created by: JCV
+// Copyright (c) 1993-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
-//File Geom_BSplineCurve.cxx jcv - Avril 1991 
+
 //Avril 1991 : constructeurs + methodes de lecture.
 //Mai 1991   : revue des specifs + debut de realisation des classes tool =>
 //             implementation des methodes Set et calcul du point courant.
@@ -14,7 +28,6 @@
 
 //RLE Aug 1993  Remove Swaps, Remove typedefs, Update BSplCLib
 //              debug periodic, IncreaseDegree
-//
 // 21-Mar-95 : xab implemented cache
 // 14-Mar-96 : xab implemented MovePointAndTangent 
 // 13-Oct-96 : pmn Bug dans SetPeriodic (PRO6088) et Segment (PRO6250)

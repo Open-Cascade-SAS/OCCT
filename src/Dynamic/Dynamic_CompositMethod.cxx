@@ -1,7 +1,23 @@
-// File:	Dynamic_CompositMethod.cxx
-// Created:	Fri Aug 26 11:35:39 1994
-// Author:	Gilles DEBARBOUILLE
-//		<gde@watson>
+// Created on: 1994-08-26
+// Created by: Gilles DEBARBOUILLE
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // CRD : 15/04/97 : Passage WOK++ : Remplacement de TYPE par STANDARD_TYPE
 
 #include <Dynamic_CompositMethod.ixx>

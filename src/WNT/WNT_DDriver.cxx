@@ -1,6 +1,23 @@
-// File:        WNT_DDriver.cxx
-// Created:     Mon Mar 17 17:28:42 1997
-// Author:      EugenyPLOTNIKOV
+// Created on: 1997-03-17
+// Created by: EugenyPLOTNIKOV
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified:    MAR-98 MAY-98 (EUG & DCB) - study S3553
 // DCB: 15-05-98 Changing the parent of WNT_DDriver from Aspect_Driver
 //               to Aspect_PlotterDriver
@@ -13,7 +30,6 @@
 //              the EMF file description according to documentation:
 //              <APP_Name\0Picture_Name\0\0> - see CreateEnhMetaFile() API.
 //              It is possible now to create two files: EMF and PRN.
-// Copyright:   Matra Datavision 1993
 
 // include windows.h first to have all definitions available
 #include <windows.h>

@@ -1,7 +1,22 @@
-// File:      LDOM_OSStream.hxx
-// Created:   01.10.01 10:56:06
-// Author:    Julia DOROVSKIKH
-// Copyright: Open Cascade 2001
+// Created on: 2001-10-01
+// Created by: Julia DOROVSKIKH
+// Copyright (c) 2001-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 
 #ifndef LDOM_OSStream_HeaderFile
 #define LDOM_OSStream_HeaderFile
@@ -9,15 +24,12 @@
 //  This implementation allows to increase performance
 //        of outputting data into a string
 //        avoiding reallocation of buffer.
-//
 //  class LDOM_OSStream implements output into a sequence of
 //             strings and getting the result as a string.
 //        It inherits Standard_OStream (ostream).
 //        Beside methods of ostream, it also has additional
 //        useful methods: str(), Length() and Clear().
-//
 //  struct LDOM_StringElem is one element of internal sequence
-//
 //  class LDOM_SBuffer inherits streambuf and
 //             redefines some virtual methods of it
 //             (overflow() and xsputn())

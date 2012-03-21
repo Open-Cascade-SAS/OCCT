@@ -1,7 +1,24 @@
+-- Created on: 1993-03-31
+-- Created by: NW,JPB,CAL
+-- Copyright (c) 1993-1999 Matra Datavision
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
 --
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
 -- Package  :   Graphic3d
--- Author   :   NW,JPB,CAL
--- Created  :   Jeudi 22 Aout 1991
 -- Updated  :   Vendredi 2 Octobre 1992
 --          Mercredi 31 Mars 1993
 --          Mercredi 19 Janvier 1994
@@ -23,25 +40,10 @@
 --              and derivated used for model presentation.
 --                       Required: enumeration TypeOfPrimitive;
 --                  imported PrimitiveArray; class PrimitiveList.
---
 --      17-12-01 : GG ; IMP171201 : Add material name UserDefined
 --              Thanks to Stephane ROUTELOUS
 --              20-01-2009 : ABD Integration support of system fonts (using FTGL and FreeType)
---
--- Copyright    :   MatraDatavision 1991,1992,1993,1994
---
 -- Objective    :   Specifications definitives
---
---
--- Date     :   Mercredi 31 mars 1993
---
---
--- File:    Graphic3d.cdl
--- Created: Jeudi 22 Aout 1991
--- Author:  NW,JPB,CAL
---
----Copyright:   MatraDatavision 1991,1992,1993
---
 
 package Graphic3d
 

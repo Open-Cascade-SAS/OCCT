@@ -1,13 +1,21 @@
-// File:	QANewBRepNaming_Gluing.cxx
-// Created:	Mon Nov 26 15:35:30 2001
-// Author:	Sergey ZARITCHNY <szy@nnov.matra-dtv.fr>
-// Copyright:	 SAMTECH S.A. 2001
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       mpv ! Same history and divided shapes cases   ! 6-09-2002! 3.0-00-5!
-// +---------------------------------------------------------------------------+
-
+// Created on: 2001-11-26
+// Created by: Sergey ZARITCHNY <szy@nnov.matra-dtv.fr>
+// Copyright (c) 2001-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewBRepNaming_Gluing.ixx>
 
@@ -515,19 +523,3 @@ void QANewBRepNaming_Gluing::LoadContent(QANewModTopOpe_Glue& MS) const {
     }
   } 
 }
-
-// @@SDM: begin
-
-// Copyright SAMTECH ..........................................Version    3.0-00
-// Lastly modified by : mpv                                    Date :  6-09-2002
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       szy ! Creation                                !26-11-2001! 3.0-00-1!
-// !       mpv ! Specific gluing operation naming        ! 1-02-2002! 3.0-00-2!
-// !       mpv ! Same history and divided shapes cases   ! 6-09-2002! 3.0-00-5!
-// +---------------------------------------------------------------------------+
-
-// @@SDM: end

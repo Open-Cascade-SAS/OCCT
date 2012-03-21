@@ -1,13 +1,21 @@
-// File:	QANewBRepNaming_Limitation.cxx
-// Created:	Tue Dec 26 14:27:46 2000
-// Author:	Vladislav ROMASHKO <vro@nnov.matra-dtv.fr>
-// Copyright:	Matra Datavision 2000
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       szy ! Modify Load                             !21-05-2003! 3.0-00-2!
-// +---------------------------------------------------------------------------+
-
+// Created on: 2000-12-26
+// Created by: Vladislav ROMASHKO <vro@nnov.matra-dtv.fr>
+// Copyright (c) 2000-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewBRepNaming_Limitation.ixx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -213,22 +221,3 @@ void QANewBRepNaming_Limitation::LoadContent(QANewModTopOpe_Limitation& MS) cons
     }
   } 
 } 
-
-
-// @@SDM: begin
-
-// Lastly modified by : vro                                    Date : 26-12-2000
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       vro ! Creation                                !26-12-2000! 3.0-00-1!
-// !       vro ! Result control                          !07-03-2001! 3.0-00-1!
-// !       vro ! Result may be null                      !19-03-2001! 3.0-00-1!
-// !       szy ! Modified input parameter type of Load   !18-10-2002! 3.0-00-5!
-// !       szy ! Modify Load                             !21-05-2003! 3.0-00-2!
-// !  vladimir ! adaptation to CAS 5.0                   !  07/01/03!    4.0-2!
-// +---------------------------------------------------------------------------+
-//
-// @@SDM: end

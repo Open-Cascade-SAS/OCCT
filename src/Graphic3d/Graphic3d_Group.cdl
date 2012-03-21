@@ -1,16 +1,29 @@
-    --
-    -- File:    Graphic3d_Group.cdl
-    -- Created: Vendredi 6 Septembre 1991
-    -- Author:  NW,JPB,CAL
-    --      27/09/97 ; PCT : add manual control of  textures
-    --              11/97 ; CAL : ajout polyline par 2 points
-    --      16/06/2000 : ATS: Study G005 - Group store presentations of it's objects in field
-    --                        MyListOfPArray to avoid deletion of handle-manipulating 
-    --                        primitives.
-    --
-    ---Copyright:   MatraDatavision 1991,1992,1993,1994
-    --
-    class Group from Graphic3d inherits TShared
+-- Created on: 1991-09-06
+-- Created by: NW,JPB,CAL
+-- Copyright (c) 1991-1999 Matra Datavision
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+--      27/09/97 ; PCT : add manual control of  textures
+--              11/97 ; CAL : ajout polyline par 2 points
+--      16/06/2000 : ATS: Study G005 - Group store presentations of it's objects in field
+--                        MyListOfPArray to avoid deletion of handle-manipulating 
+--                        primitives.
+class Group from Graphic3d inherits TShared
     
         ---Version:
 
@@ -828,18 +841,16 @@
         ---Level: Public
     ---Purpose: Remove all array of primitives 
     
-        UserDraw ( me           : mutable;
-                   AnObject     : Address from Standard; 
-                   EvalMinMax   : Boolean from Standard = Standard_True; 
-    -- SAMTECH contribution 5 July 2007 -- BEGIN
-           ContainsFacet: Boolean from Standard = Standard_False
-    -- SAMTECH contribution 5 July 2007 -- END 
-        )
-        ---Level: Public
-        ---Purpose: Creates an UserDraw primitive
-        --  Category: Methods to create UserDraw
-        --  Warning: Raises GroupDefinitionError if ...
-        raises GroupDefinitionError from Graphic3d is static;
+    UserDraw ( me           : mutable;
+               AnObject     : Address from Standard; 
+               EvalMinMax   : Boolean from Standard = Standard_True; 
+               ContainsFacet: Boolean from Standard = Standard_False
+    )
+    ---Level: Public
+    ---Purpose: Creates an UserDraw primitive
+    --  Category: Methods to create UserDraw
+    --  Warning: Raises GroupDefinitionError if ...
+    raises GroupDefinitionError from Graphic3d is static;
 
         ----------------------------
         -- Category: Inquire methods

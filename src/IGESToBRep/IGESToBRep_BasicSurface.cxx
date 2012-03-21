@@ -1,5 +1,21 @@
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //=======================================================================
-//file    : IGESToBRep_BasicCurve
 //modified: 
 //:k0 abv 16.12.98: eliminating existing code
 // 21.12.98 rln, gka S4054
@@ -25,7 +41,7 @@
 #include <IGESGeom_BSplineSurface.hxx>
 
 #include <IGESConvGeom.hxx>
-    
+
 #include <Interface_Macros.hxx>  
 
 #include <gp_GTrsf.hxx>
@@ -39,13 +55,13 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>  
 #include <TColStd_SequenceOfInteger.hxx>  
-  
+
 //:36
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Precision.hxx>
-  
- //S3767
+
+//S3767
 #include <Message_Msg.hxx>
 #include <IGESData_IGESModel.hxx> 
 //S4181

@@ -1,27 +1,38 @@
-// File:	ChFi3d_Builder_CnCrn.cxx
-// Created:	03-01-97 
-// Author:      MPS  
+// Created on: 1997-03-01
+// Created by: MPS  
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified by  MPS (14-04-97)  traitement des cas  ou il n'y a pas
 //                              d'intersection entre les stripes 
 //  Modified by  MPS (16-06-97) : on tient compte du fait que GeomPlate
 //                                rend les courbes 2d dans meme ordre que les
 //                                courbes frontieres passees en entree   
 //  Modified by JLR (20-08-97) mise en place des nouveaux constructeurs de GeomPlate
-//
 //  Modified by MPS (03-11-97) on ne cree pas un  batten lorsque le rapport
 //  entre les deux resolutions sur la surface est trop grand (PRO10649)  
-//
 //  Modified by MPS (05-12-97) on ne tient pas compte des aretes degenerees
 //                             lors du calcul du nombre d'aretes.
-//
 //  Modified by JCT (08-12-97) traitement des aretes vives consecutives ou non
 //                             (grille EDC412 sauf D2, L1, L2, L3)
-//
 //  Modified by JCT (11-12-97) pb osf avec indpoint + orientation de plate
 //                             ( --> D2, L1, L2, L3 valides mais laids)
-//  
 //  Modified by MPS (24-02-98)  traitement des aretes de regularite 
-//
 //  Modified by MPS (01-06-98)  traitement des aretes de couture 
 //  Modified by MPS (01-12-98)  traitement des bords libres 
 //  Modified by MPS (01-02-99)  traitement des aretes de regularite 

@@ -1,41 +1,99 @@
+/*
+ Copyright (c) 1998-1999 Matra Datavision
+ Copyright (c) 1999-2012 OPEN CASCADE SAS
+
+ The content of this file is subject to the Open CASCADE Technology Public
+ License Version 6.5 (the "License"). You may not use the content of this file
+ except in compliance with the License. Please obtain a copy of the License
+ at http://www.opencascade.org and read it completely before using this file.
+
+ The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+ main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+
+ The Original Code and all software distributed under the License is
+ distributed on an "AS IS" basis, without warranty of any kind, and the
+ Initial Developer hereby disclaims all such warranties, including without
+ limitation, any warranties of merchantability, fitness for a particular
+ purpose or non-infringement. Please see the License for the specific terms
+ and conditions governing the rights and limitations under the License.
+
+*/
+
 /**********************************************************
-*    RBA                  12/10/88
-*    ---                  --------
-*
-*  Fichier  : OSD_FFI.C    (SUN/UNIX)
-*  Titre    : osd_ffi_(dir, name, tab_res, max, l_dir, l_name, l_tab)
-*             char *dir, *nmae, *tab-res;
-*             int *max;
-*             int l_dir, l_name, l_tab;
-*  Retour:
-*            Nombre de fichier trouve (1 ou plus)
-*            0    sinon.
-*
-*  Role     : Trouver tous les fichier qui ont le meme nom que 'name' sachant
-*             que 'name' peut etre un nom de fichier comportant le caractere
-*             joker '*'.
-*  Exemple  :
-*             Appel en Fortran
-*
-*             integer nb_fichier, osd_ffi
-*             character*80 dir, name
-*             character*80 tab_res(100)
-*             ....
-*             ....
-*             name = 'TOTO*.*'
-*             ....
-*             nb_fichier = osd_ffi(dir, name, tab_res, 100)
-*
-*  Modifs : - sga 28/04/92 correction bug closedir
-*           - asi 11/04/90 correction de strcmp_joker
-*           - fsa 26/04/90 ajout du tri du tableau tab_res
-*             par ordre aphabethique
-*           - asi 06/09/90 ajout de la directorie aux noms de fichier
-*             retourne
-*           - J.P. TIRAULT le 3-Avril-1992 : Faire le close du directory
-*             apres l'avoir ouvert.
-*
-************************************************************/
+*/ 
+/**    RBA                  12/10/88
+*/ 
+/**    ---                  --------
+*/ 
+/**
+*/ 
+/**  Fichier  : OSD_FFI.C    (SUN/UNIX)
+*/ 
+/**  Titre    : osd_ffi_(dir, name, tab_res, max, l_dir, l_name, l_tab)
+*/ 
+/**             char *dir, *nmae, *tab-res;
+*/ 
+/**             int *max;
+*/ 
+/**             int l_dir, l_name, l_tab;
+*/ 
+/**  Retour:
+*/ 
+/**            Nombre de fichier trouve (1 ou plus)
+*/ 
+/**            0    sinon.
+*/ 
+/**
+*/ 
+/**  Role     : Trouver tous les fichier qui ont le meme nom que 'name' sachant
+*/ 
+/**             que 'name' peut etre un nom de fichier comportant le caractere
+*/ 
+/**             joker '*'.
+*/ 
+/**  Exemple  :
+*/ 
+/**             Appel en Fortran
+*/ 
+/**
+*/ 
+/**             integer nb_fichier, osd_ffi
+*/ 
+/**             character*80 dir, name
+*/ 
+/**             character*80 tab_res(100)
+*/ 
+/**             ....
+*/ 
+/**             ....
+*/ 
+/**             name = 'TOTO*.*'
+*/ 
+/**             ....
+*/ 
+/**             nb_fichier = osd_ffi(dir, name, tab_res, 100)
+*/ 
+/**
+*/ 
+/**  Modifs : - sga 28/04/92 correction bug closedir
+*/ 
+/**           - asi 11/04/90 correction de strcmp_joker
+*/ 
+/**           - fsa 26/04/90 ajout du tri du tableau tab_res
+*/ 
+/**             par ordre aphabethique
+*/ 
+/**           - asi 06/09/90 ajout de la directorie aux noms de fichier
+*/ 
+/**             retourne
+*/ 
+/**           - J.P. TIRAULT le 3-Avril-1992 : Faire le close du directory
+*/ 
+/**             apres l'avoir ouvert.
+*/ 
+/**
+*/ 
+/*************************************************************/ 
 #if defined(_MSC_VER) && !defined(WNT)
 #error "Wrong compiler options has been detected. Add /DWNT option for proper compilation!!!!!"
 #endif

@@ -1,10 +1,25 @@
-// File:	BSplCLib.cxx
-// Created:	Fri Aug  9 16:32:46 1991
-// Author:      JCV
+// Created on: 1991-08-09
+// Created by: JCV
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
-//
+
 // Modified RLE 9 Sep 1993
-//
 // pmn : modified 28-01-97  : fixed a mistake in LocateParameter (PRO6973)
 // pmn : modified 4-11-96   : fixed a mistake in BuildKnots (PRO6124)
 // pmn : modified 28-Jun-96 : fixed a mistake in AntiBoorScheme
@@ -16,7 +31,6 @@
 // jct : 15-Apr-97 : added TangExtendToConstraint
 // jct : 24-Apr-97 : correction on computation of Tbord and NewFlatKnots
 //                   in TangExtendToConstraint; Continuity can be equal to 0
-//
 
 #include <BSplCLib.ixx>
 #include <PLib.hxx>

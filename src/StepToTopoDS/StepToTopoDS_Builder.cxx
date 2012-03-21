@@ -1,13 +1,29 @@
-// File:	StepToTopoDS_Builder.cxx
-// Created:	Tue Jan  3 11:26:22 1995
-// Author:	Frederic MAUPAS
-//		<fma@stylox>
+// Created on: 1995-01-03
+// Created by: Frederic MAUPAS
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //:i6 abv 17 Sep 98: ProSTEP TR9 r0601-ct.stp: to be able read GeometricSet
 //gka 11.01.99 file PRO7755.stp #2018: work-around error in BRepLib_MakeFace
 //:n4 abv 12.02.99: S4132: treatment of GEOMETRIC_SETs implemented
 //:o7 abv 18.02.99: bm1_sy_fuel.stp #1427(items 1,2) protection against null entity
 //abv,gka 05.04.99 S4136: parameter names changed; avoid extra call to FixSameParameter
-  
+
 #include <stdio.h>
 #include <StepToTopoDS_Builder.ixx>
 #include <Standard_ErrorHandler.hxx>

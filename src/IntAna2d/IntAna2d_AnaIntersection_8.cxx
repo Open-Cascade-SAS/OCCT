@@ -1,24 +1,42 @@
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //============================================ IntAna2d_AnaIntersection_8.cxx
 //============================================================================
 #include <IntAna2d_AnaIntersection.jxx>
 
 #include <IntAna2d_Outils.hxx>
 
-      // -----------------------------------------------------------------
-      // ------ Verification de la validite des points obtenus  ----------
-      // --- Methode a implementer dans les autres routines si on constate
-      // --- des problemes d'instabilite numerique sur
-      // ---      * la construction des polynomes en t (t:parametre)
-      // ---      * la resolution du polynome
-      // ---      * le retour : parametre t -> point d'intersection
-      // --- Probleme : A partir de quelle Tolerance un point n'est
-      // ---            plus un point de la courbe. (f(x,y)=1e-10 ??)
-      // ---            ne donne pas d'info. sur la dist. du pt a la courbe
-      // -----------------------------------------------------------------
-      // ------ Methode non implementee pour les autres Intersections
-      // --- Si un probleme est constate : Dupliquer le code entre les
-      // --- commentaires VERIF-VALID
-      // -----------------------------------------------------------------
+// -----------------------------------------------------------------
+// ------ Verification de la validite des points obtenus  ----------
+// --- Methode a implementer dans les autres routines si on constate
+// --- des problemes d'instabilite numerique sur
+// ---      * la construction des polynomes en t (t:parametre)
+// ---      * la resolution du polynome
+// ---      * le retour : parametre t -> point d'intersection
+// --- Probleme : A partir de quelle Tolerance un point n'est
+// ---            plus un point de la courbe. (f(x,y)=1e-10 ??)
+// ---            ne donne pas d'info. sur la dist. du pt a la courbe
+// -----------------------------------------------------------------
+// ------ Methode non implementee pour les autres Intersections
+// --- Si un probleme est constate : Dupliquer le code entre les
+// --- commentaires VERIF-VALID
+// -----------------------------------------------------------------
 
 void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H,
 				       const IntAna2d_Conic& Conic)

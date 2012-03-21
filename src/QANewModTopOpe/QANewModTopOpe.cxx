@@ -1,13 +1,21 @@
-// File:	QANewModTopOpe.cxx
-// Created:	Mon Jan  28 14:24:19 2002
-// Author:	Igor FEOKTISTOV <ifv@nnov.matra-dtv.fr>
-// Copyright:	 SAMTECH S.A. 2002
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       pat ! Optimise IsConnected()                  !  04/16/03!    4.0-2!
-// +---------------------------------------------------------------------------+
-
+// Created on: 2002-01-28
+// Created by: Igor FEOKTISTOV
+// Copyright (c) 2002-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewModTopOpe.ixx>
 #include <TopAbs.hxx>
@@ -658,20 +666,3 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
   return aRes;
 
 }
-
-
-// @@SDM: begin
-
-// Copyright SAMTECH ..........................................Version    3.0-00
-// Lastly modified by : pat                                    Date :   04/16/03
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       ifv ! Creation                                !28-01-2002! 3.0-00-1!
-// !      ivan ! print de trace                          !  01/21/03!    4.0-1!
-// !       pat ! Optimise IsConnected()                  !  04/16/03!    4.0-2!
-// +---------------------------------------------------------------------------+
-
-// @@SDM: end

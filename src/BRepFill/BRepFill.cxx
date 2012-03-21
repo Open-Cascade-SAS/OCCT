@@ -1,39 +1,41 @@
-// File:	BRepFill.cxx
-// Created:	Thu Mar  3 11:18:14 1994
-// Author:	Bruno DUMORTIER
-//		<dub@fuegox>
+// Created on: 1994-03-03
+// Created by: Joelle CHAUVET
+// Copyright (c) 1994-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified:	Mon Jan 12 10:50:10 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              automatic management of origin and orientation
 //              with method Organize
 // Modified:	Mon Feb 23 09:28:46 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              method Organize with option of projection for closed wires
 //              new method SameNumber with option to report cuts
 //              + utilities ComputeACR and InsertACR
 //              + processing of the case of last point section 
 // Modified:	Thu Apr 30 15:24:17 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              separation closed / open sections + debug 
 //              Organize becomes ComputeOrigin and SearchOrigin 
 // Modified:	Tue Jul 21 16:48:35 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              limited case for Pnext of a twist (BUC60281) 
 // Modified:	Thu Jul 23 11:38:36 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              calculate the angle of rotation in SearchOrigin 
 // Modified:	Fri Jul 31 15:14:19 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              IntersectOnWire + MapVLV
 // Modified:	Mon Oct 12 09:42:33 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              number of edges in EdgesFromVertex (CTS21570) 
 
 #include <BRepFill.ixx>

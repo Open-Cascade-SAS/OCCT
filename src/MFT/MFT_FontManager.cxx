@@ -1,8 +1,23 @@
+// Created on: 1997-03-07
+// Created by: Gerard GRAS 
+// Copyright (c) 1997-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
 //
-//-- File:        MFT_FontManager.cxx
-//-- Created:     Fri Mar 7 11:10:20 1997
-//-- Author:      Gerard GRAS 
-//--              <gg@photox> 
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 //-- Update:	  gg 19-01-98
 //--	reason :
 //		Suppress global static class variables from this class
@@ -21,25 +36,18 @@
 //                g++(Linux) : no matching function(OSD_Path()(),char[6])
 
 //		FMN 11-01-99
-//
-//---Copyright:    Matra Datavision 1993
-//
 //---Comments :
 //			MFT File format
 //			---------------
-//
 // An xxx.mft file contains an HEADER of size 512 bytes (first record),
 //			    a CHAR ENTRIES VECTOR of size 512 or 65536 int
 //						        (second record)
 //			    a COMMAND SECTION of size 512 * N (next records)
 //			    according to the MFT_COMMANDBUFFERSIZE parameter.
-//
 // The xxx.mft name of the file depends directly of the xxx alias name of the
 // font (i.e: Helvetica-Bold.mft)
-//
 //			Header format			(Record 0)
 //			#############
-//
 //  abs byte location	component	type		comments
 //  -----------------	---------	----		--------
 //  0			signature 	uint		MFT file signature.
@@ -55,26 +63,20 @@
 //  72			italicAngle	int		Font Italic Angle
 //  76			dummy		char array	adjustable dummy
 //  ??  		fontName	char array	Full font name.
-//
 //			Char entries vector format	(Record 1)
 //			##########################
-//
 //  abs byte location	component	type		comments
 //  -----------------	---------	----		--------
 //  512			fcommand 	int array	First command descriptor vector address.
-//
 //			Command section format		(record 2 at ....)
 //			######################
-//
 //  abs byte location	component	type		comments
 //  -----------------	---------	----		--------
 //  2100 or 262656 	command header 	bit field	First command descriptor
 //     ...		
 //  EOF			End of file			Free space address
-//
 //			Command format		
 //			##############
-//
 //  rel byte location	component	type		comments
 //  -----------------	---------	----		--------
 //  0 			value1_type 	bit field:2	1:int,2:float,3:string	
@@ -87,11 +89,9 @@
 //  1 			value8_type 	bit field:2	1:int,2:float,3:string	
 //  2 			length 		bit field:8	max 8	
 //  3 			type 		bit field:8	MFT_TypeOfCommand
-//
 //  4			value1		card32		int,float or string value
 // ...
 //  4+4*(N-1)  		valueN		card32
-//
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

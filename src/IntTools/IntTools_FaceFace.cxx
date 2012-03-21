@@ -1,7 +1,22 @@
-// File:      IntTools_FaceFace.cxx
-// Created:   Thu Nov 23 14:52:53 2000
-// Author:    Michael KLOKOV
-// Copyright: OPEN CASCADE 2000
+// Created on: 2000-11-23
+// Created by: Michael KLOKOV
+// Copyright (c) 2000-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 
 
 #include <IntTools_FaceFace.ixx>
@@ -88,7 +103,6 @@
 #include <GeomProjLib.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-//
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopExp_Explorer.hxx>

@@ -1,6 +1,22 @@
-// File         Graphic3d_Structure.cxx
-// Created      Mars 1992
-// Author       NW,JPB,CAL
+// Created by: NW,JPB,CAL
+// Copyright (c) 1991-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified      1/08/97 ; PCT : ajout texture mapping
 //              20/08/97 ; PCT : ajout transparence pour texture
 //              11/97 ; CAL : gestion du GraphicClear
@@ -10,24 +26,19 @@
 //              Ajout de la methode IsTransformed dans une Structure.
 //                      (Permet la transmission de cette Trsf vers
 //                      la structure COMPUTED si necessaire)
-//
 //              Ajout de la methode IsRotated dans une Structure.
 //                      (Permet de connaitre le type de transformation
 //                      pour declencher le calcul des parties cachees
 //                      de maniere plus sioux)
-//
 //              Ajout de 3 nouvelles methodes Compute virtual dans Structure.
 //                      (Permet des Compute un peu plus specialises)
-//
 //              Ajout des 2 methodes sur Owner dans Structure.
 //                      (evite de calculer 2 fois les parties cachees
 //                      pour 2 representations differentes affichees
 //                      d'un meme Presentable Object (Owner))
-//
 //              Ajout des 2 methodes sur HLRValidation dans Structure.
 //                      (permet de valider ou d'invalider le calcul des
 //                      parties cachees sur certaines representations)
-//
 //              Ajout de la transmission de la transformation d'une structure
 //              vers sa COMPUTED.
 //              24/2/98 ; CAL : Modification de la gestion des champs
@@ -52,8 +63,6 @@
 #define OCC1174 // SAV 08/01/03 Added back face interior color controling
 
 
-//
-//-Copyright    MatraDatavision 1991,1992,1993,1994,1995
 
 //-Version
 

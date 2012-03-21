@@ -1,30 +1,35 @@
--- File:	BRepOffsetAPI_ThruSections.cdl
--- Created:	Mon Jul 17 16:24:52 1995
--- Author:	Jing Cheng MEI
---		<mei@junon>
+-- Created on: 1995-07-17
+-- Created by: Jing-Cheng MEI
+-- Copyright (c) 1995-1999 Matra Datavision
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
 -- Modified:	Mon Jan 12 10:46:37 1998
--- Author:	Joelle CHAUVET
---		<jct@sgi64>
 --		new method ArrangeWires
 -- Modified:	Mon Jan 19 10:11:49 1998
--- Author:	Joelle CHAUVET
---		<jct@sgi64>
 --		new methods CreateKPart and DetectKPart
 -- Modified:	Mon Feb 23 09:28:33 1998
--- Author:	Joelle CHAUVET
---		<jct@sgi64>
 --		modification of ArrangeWires
 --		for sections with different number of elements
 -- Modified:	Mon Apr  6 16:24:40 1998
--- Author:	Joelle CHAUVET
---		<jct@sgi64>
 --		CreateKPart and DetectKPart moved in BRepFill
 -- Modified:	Wed Jul  1 14:33:22 1998
--- Author:	Jing-Cheng MEI
---              <mei@pinochiox>
 --              Add history
 --		CreateKPart and DetectKPart moved in BRepFill
----Copyright:	 Matra Datavision 1995
 
 
 

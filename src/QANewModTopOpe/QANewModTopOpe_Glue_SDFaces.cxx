@@ -1,14 +1,21 @@
-// File:	QANewModTopOpe_Glue_solid.cxx
-// Created:	Sat May  5 09:55:59 2001
-// Author:	Sergey KHROMOV <skv@nnov.matra-dtv.fr>
-// Copyright:	 SAMTECH S.A. 2001
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       pat ! fix for 4086                            !  01/07/04!    4.2-3!
-// !       skv ! Adaptation to OCC version 5.0           ! 6-05-2003! 3.0-00-2!
-// +---------------------------------------------------------------------------+
-
+// Created on: 2001-05-05
+// Created by: Sergey KHROMOV
+// Copyright (c) 2001-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewModTopOpe_Glue.ixx>
 #include <TopExp_Explorer.hxx>
@@ -599,20 +606,3 @@ QANewModTopOpe_Glue::PerformSDFaces()
   return;
 
 }
-
-// @@SDM: begin
-
-// Copyright SAMTECH ..........................................Version    3.0-00
-// Lastly modified by : pat                                    Date :   01/07/04
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       skv ! Creation                                ! 5-05-2001! 3.0-00-3!
-// !       skv ! Adaptation to OCC version 5.0           ! 6-05-2003! 3.0-00-2!
-// !  vladimir ! adaptation to CAS 5.0                   !  07/01/03!    4.0-2!
-// !       pat ! fix for 4086                            !  01/07/04!    4.2-3!
-// +---------------------------------------------------------------------------+
-//
-// @@SDM: end

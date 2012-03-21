@@ -1,14 +1,38 @@
-/*======================================================================
-File    :       Perf.c
-Purpose :       Set of functions to measure the CPU user time
-Author  :       Michael SAZONOV <msv@nnov.matra-dtv.fr>
-Created :       10/08/2000
-History :	25/09/2001 : AGV : (const char *) in prototypes;
-                09/11/2001 : AGV : Add functions perf_*_imeter for performance
-                                   Add function perf_tick_meter
-                14/05/2002 : AGV : Portability UNIX/Windows
-======================================================================*/
+/*
+ Created on: 2000-08-10
+ Created by: Michael SAZONOV
+ Copyright (c) 2000-2012 OPEN CASCADE SAS
 
+ The content of this file is subject to the Open CASCADE Technology Public
+ License Version 6.5 (the "License"). You may not use the content of this file
+ except in compliance with the License. Please obtain a copy of the License
+ at http://www.opencascade.org and read it completely before using this file.
+
+ The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+ main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+
+ The Original Code and all software distributed under the License is
+ distributed on an "AS IS" basis, without warranty of any kind, and the
+ Initial Developer hereby disclaims all such warranties, including without
+ limitation, any warranties of merchantability, fitness for a particular
+ purpose or non-infringement. Please see the License for the specific terms
+ and conditions governing the rights and limitations under the License.
+
+*/ 
+
+/*======================================================================
+*/ 
+/*Purpose :       Set of functions to measure the CPU user time
+*/ 
+/*25/09/2001 : AGV : (const char *) in prototypes;
+*/ 
+/*09/11/2001 : AGV : Add functions perf_*_imeter for performance
+*/ 
+/*Add function perf_tick_meter
+*/ 
+/*14/05/2002 : AGV : Portability UNIX/Windows
+*/ 
+/*======================================================================*/ 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

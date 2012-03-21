@@ -1,3 +1,20 @@
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 #include <ShapeUpgrade_RemoveLocations.ixx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopLoc_Location.hxx>
@@ -17,7 +34,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp_Trsf.hxx>
-  
+
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_GCurve.hxx>
@@ -28,7 +45,7 @@
 //#include <ShapeUpgrade_DataMapOfShapeListOfTransient.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <Geom_Plane.hxx>
-  
+
 //=======================================================================
 //function : ShapeUpgrade_RemoveLocations
 //purpose  : 

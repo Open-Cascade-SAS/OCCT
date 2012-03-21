@@ -1,13 +1,21 @@
-// File:	QANewBRepNaming_Fuse.cdl
-// Created:	Tue Oct 31 14:38:18 2000
-// Author:	Sergey ZARITCHNY
-//		<szy@opencascade.com>
-// Copyright:	Open CASCADE 2003
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       szy ! Adopted                                 ! 9-06-2003! 3.0-00-%L%!
-// +---------------------------------------------------------------------------+
+// Created on: 2000-10-31
+// Created by: Sergey ZARITCHNY
+// Copyright (c) 2000-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewBRepNaming_Fuse.ixx>
 #include <TNaming_Builder.hxx>
@@ -69,20 +77,3 @@ void QANewBRepNaming_Fuse::Load(BRepAlgoAPI_BooleanOperation& MS) const {
   // Naming of the content of the result:
   LoadContent(MS);
 }
-
-// @@SDM: begin
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       vro ! Creation                                !31-10-2000!3.0-00-3!
-// !       vro ! Redesign                                !13-12-2000! 3.0-00-3!
-// !       vro ! Result may be null                      !19-03-2001! 3.0-00-3!
-// !       szy ! Modified Load                           ! 8-05-2003! 3.0-00-%L%!
-// !       szy ! Redesigned Load                         !21-05-2003! 3.0-00-%L%!
-// !       szy ! Adopted                                 ! 9-06-2003! 3.0-00-%L%!
-// +---------------------------------------------------------------------------+
-// Lastly modified by : szy                                    Date :  9-06-2003
-
-// @@SDM: end

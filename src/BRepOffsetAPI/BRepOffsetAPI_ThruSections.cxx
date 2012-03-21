@@ -1,55 +1,51 @@
-// File:	BRepOffsetAPI_ThruSections.cxx
-// Created:	Tue Jul 18 16:18:09 1995
-// Author:	Jing Cheng MEI
-//		<mei@junon>
+// Created on: 1995-07-18
+// Created by: Joelle CHAUVET
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 // Modified:	Mon Jan 12 10:50:10 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              gestion automatique de l'origine et de l'orientation
 //              avec la methode ArrangeWires
 // Modified:	Mon Jan 19 10:11:56 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              traitement des cas particuliers cylindre, cone, plan 
 //              (methodes DetectKPart et CreateKPart)
 // Modified:	Mon Feb 23 09:28:46 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              traitement des sections avec nombre d'elements different
 //              + quelques ameliorations pour les cas particuliers
 //              + cas de la derniere section ponctuelle
 // Modified:	Mon Apr  6 15:47:44 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              traitement des cas particuliers deplace dans BRepFill 
 // Modified:	Thu Apr 30 15:24:17 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              separation sections fermees / sections ouvertes + debug 
 // Modified:	Fri Jul 10 11:23:35 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              surface de CreateSmoothed par concatenation,approximation
 //              et segmentation (PRO13924, CTS21295)
 // Modified:	Tue Jul 21 16:48:35 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              pb de ratio (BUC60281) 
 // Modified:	Thu Jul 23 11:38:36 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              sections bouclantes
 // Modified:	Fri Aug 28 10:13:44 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              traitement des sections ponctuelles
 //              dans l'historique (cf. loft06 et loft09)
 //              et dans le cas des solides
 // Modified:	Tue Nov  3 10:06:15 1998
-// Author:	Joelle CHAUVET
-//		<jct@sgi64>
 //              utilisation de BRepFill_CompatibleWires
- 
+
 
 #include <BRepOffsetAPI_ThruSections.ixx>
 

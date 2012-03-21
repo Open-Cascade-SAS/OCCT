@@ -1,13 +1,21 @@
-// File:	QANewBRepNaming_Cut.cxx
-// Created:	Tue Oct 31 14:42:07 2000
-// Author:	Sergey ZARITCHNY
-//		<s-zaritchny@opencascade.com>
-// Copyright:	Open CASCADE 2003
-
-// Lastly modified by :
-// +---------------------------------------------------------------------------+
-// !       szy ! Added workaround                        ! 9-12-2003! 5.1-01-4 !
-// +---------------------------------------------------------------------------+
+// Created on: 2000-10-31
+// Created by: Sergey ZARITCHNY
+// Copyright (c) 2000-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <QANewBRepNaming_Cut.ixx>
 #include <TopoDS_Iterator.hxx>
@@ -16,7 +24,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-//
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_Builder.hxx>
@@ -163,21 +170,3 @@ void QANewBRepNaming_Cut::Load(BRepAlgoAPI_BooleanOperation& MS) const {
   // Naming of the content:
   if (ShapeType(ObjSh) == TopAbs_SOLID) LoadContent(MS);
 }
-
-// @@SDM: begin
-
-// File history synopsis (creation,modification,correction)
-// +---------------------------------------------------------------------------+
-// ! Developer !              Comments                   !   Date   ! Version  !
-// +-----------!-----------------------------------------!----------!----------+
-// !       vro ! Creation                                !31-10-2000!3.0-00-3!
-// !       vro ! Redesign                                !13-12-2000! 3.0-00-3!
-// !       vro ! Result control                          !07-03-2001! 3.0-00-3!
-// !       vro ! Result may be null                      !19-03-2001! 3.0-00-3!
-// !       szy ! Modified Load                           ! 8-05-2003! 3.0-00-1!
-// !       szy ! Modified Load                           !21-05-2003! 3.0-00-1!
-// !       szy ! Added workaround                        ! 9-12-2003! 5.1-01-4!
-// +---------------------------------------------------------------------------+
-// Lastly modified by : szy                                    Date :  9-12-2003
-
-// @@SDM: end

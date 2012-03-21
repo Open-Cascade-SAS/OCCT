@@ -1,14 +1,31 @@
+// Copyright (c) 1998-1999 Matra Datavision
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
 #include <AIS_Selection.ixx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 
 #define BUC60953   // SAV_050701 : the array of selected objects has always the same length
-                   // independently of number of objects selected. Thus, if there were selected
-                   // more than MaxSizeOfResult objects we have got an exception.
-                   // 
-                   // Moreover, Select method was optimized a little bit.
-                   // Now it checks the state of incoming owner. If the state is 0
-                   // there is no searching for object in <myresult> array.
+// independently of number of objects selected. Thus, if there were selected
+// more than MaxSizeOfResult objects we have got an exception.
+// Moreover, Select method was optimized a little bit.
+// Now it checks the state of incoming owner. If the state is 0
+// there is no searching for object in <myresult> array.
 
 #define OCC138
 
@@ -17,7 +34,7 @@
 #define OCC1039    //SAV: 25/11/02 clearing selected objects if any on the AIS_Selection remove.
 
 #define USE_MAP    //san : 18/04/03 USE_MAP - additional datamap is used to speed up access 
-                   //to certain owners in <myresult> list
+//to certain owners in <myresult> list
 
 #ifdef BUC60953
 #include <SelectMgr_EntityOwner.hxx>
