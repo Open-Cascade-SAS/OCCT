@@ -82,7 +82,7 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   Standard_Real aParam, aU1, aV1, aU2, aV2;
   gp_Pnt A,B;
   gp_Dir aDN1, aDN2;
-  TopoDS_Face aF, aF1, aF2;
+  TopoDS_Face aF1, aF2;
   //
   nump = 0;
   aParam = 0.5;
@@ -90,7 +90,7 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   myState=2; 
   for(aSE.InitShell(); aSE.MoreShell() && nump<2;  aSE.NextShell()) { 
     for(aSE.InitFace();	aSE.MoreFace()  && nump<2; ) {
-      aF =*((TopoDS_Face*)&aSE.CurrentFace());
+      TopoDS_Face aF = aSE.CurrentFace();
       aSE.NextFace();
       if(!nump) { 
 	nump++;
