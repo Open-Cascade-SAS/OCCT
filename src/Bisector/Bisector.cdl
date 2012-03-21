@@ -30,7 +30,6 @@ uses
      TCollection,
      TColStd,	
      TColgp,
-     TopAbs,	     
      Geom2d,
      GeomAbs,
      gp,

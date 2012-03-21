@@ -134,7 +134,6 @@ uses
     MMgt,
     TColStd,
     GeomAbs,
-    TopAbs,
     TColgp,
     gp,
     Geom2d,
