@@ -39,10 +39,9 @@
 #include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
 
-//modified by NIZNHY-PKV Wed Sep 21 08:02:16 2011f
 static
   void RefineDir(gp_Dir& aDir);
-//modified by NIZNHY-PKV Wed Sep 21 08:02:20 2011t
+
 //=======================================================================
 //class    : ExtremaExtElC_TrigonometricRoots
 //purpose  : 
@@ -155,15 +154,14 @@ ExtremaExtElC_TrigonometricRoots::
 	    Roots[i]=Roots[i]-aTwoPI;
 	  }
 	}
+	//
 	//-- La recherche directe donne n importe quoi. 
-	// modified by OCC  Tue Oct  3 18:41:27 2006.BEGIN
 	aMaxCoef = Max(CC,SC);
 	aMaxCoef = Max(aMaxCoef,C);
 	aMaxCoef = Max(aMaxCoef,S);
 	aMaxCoef = Max(aMaxCoef,Cte);
 	aPrecision = Max(1.e-8, 1.e-12*aMaxCoef);
-	// modified by OCC  Tue Oct  3 18:41:33 2006.END
-
+	
 	SvNbRoots=NbRoots;
 	for(i=0; i<SvNbRoots; ++i) {
 	  Standard_Real y;
@@ -318,41 +316,38 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1,
 //=======================================================================
 //function : Extrema_ExtElC
 //purpose  : 
+// Find extreme distances between straight line C1 and circle C2.
+//
+//Method:
+//   Let P1=C1(u1) and P2=C2(u2) be two solution points
+//        D the direction of straight line C1
+//	T tangent at point P2;
+//  Then, ( P1P2.D = 0. (1)
+//         ( P1P2.T = 0. (2)
+//  Let O1 and O2 be the origins of C1 and C2;
+//  Then, (1) <=> (O1P2-u1*D).D = 0.         as O1P1 = u1*D
+//	     <=> u1 = O1P2.D                as D.D = 1.
+//         (2) <=> P1O2.T = 0.                as O2P2.T = 0.
+//             <=> ((P2O1.D)D+O1O2).T = 0.    as P1O1 = -u1*D = (P2O1.D)D
+//	     <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
+//	     <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
+//  We are in the reference of the circle; let:
+//         Cos = Cos(u2) and Sin = Sin(u2),
+//         P2 (R*Cos,R*Sin,0.),
+//         T (-R*Sin,R*Cos,0.),
+//	 D (Dx,Dy,Dz),
+//	 V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
+//  Then, the equation by Cos and Sin is as follows:
+//    -(2*R*R*Dx*Dy)   * Cos**2  +       A1
+//   R*R*(Dx**2-Dy**2) * Cos*Sin +    2* A2
+//         R*Vy        * Cos     +       A3
+//	-R*Vx        * Sin     +       A4
+//      R*R*Dx*Dy                = 0.    A5
+//Use the algorithm math_TrigonometricFunctionRoots to solve this equation.
 //=======================================================================
 Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1, 
 				const gp_Circ& C2,
 				const Standard_Real)
-/*-----------------------------------------------------------------------------
-Fonction:
-   Find extreme distances between straight line C1 and circle C2.
-
-Method:
-   Let P1=C1(u1) and P2=C2(u2) be two solution points
-        D the direction of straight line C1
-	T tangent at point P2;
-  Then, ( P1P2.D = 0. (1)
-         ( P1P2.T = 0. (2)
-  Let O1 and O2 be the origins of C1 and C2;
-  Then, (1) <=> (O1P2-u1*D).D = 0.         as O1P1 = u1*D
-	     <=> u1 = O1P2.D                as D.D = 1.
-         (2) <=> P1O2.T = 0.                as O2P2.T = 0.
-             <=> ((P2O1.D)D+O1O2).T = 0.    as P1O1 = -u1*D = (P2O1.D)D
-	     <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
-	     <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
-  We are in the reference of the circle; let:
-         Cos = Cos(u2) and Sin = Sin(u2),
-         P2 (R*Cos,R*Sin,0.),
-         T (-R*Sin,R*Cos,0.),
-	 D (Dx,Dy,Dz),
-	 V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
-  Then, the equation by Cos and Sin is as follows:
-    -(2*R*R*Dx*Dy)   * Cos**2  +       A1
-   R*R*(Dx**2-Dy**2) * Cos*Sin +    2* A2
-         R*Vy        * Cos     +       A3
-	-R*Vx        * Sin     +       A4
-      R*R*Dx*Dy                = 0.    A5
-    Use the algorithm math_TrigonometricFunctionRoots to solve this equation.
------------------------------------------------------------------------------*/
 {
   Standard_Real Dx,Dy,Dz,aRO2O1, aTolRO2O1;
   Standard_Real R, A1, A2, A3, A4, A5, aTol;
@@ -362,7 +357,7 @@ Method:
   myDone = Standard_False;
   myNbExt = 0;
 
-// Calculate T1 in the reference of the circle ...
+  // Calculate T1 in the reference of the circle ...
   D = C1.Direction();
   D1 = D;
   x2 = C2.XAxis().Direction();
@@ -373,17 +368,14 @@ Method:
   Dz = D.Dot(z2);
   //
   D.SetCoord(Dx, Dy, Dz);
-  //modified by NIZNHY-PKV Wed Sep 21 08:02:46 2011f
   RefineDir(D);
   D.Coord(Dx, Dy, Dz);
-  //modified by NIZNHY-PKV Wed Sep 21 08:02:48 2011t
   //
   // Calcul de V dans le repere du cercle:
   gp_Pnt O1 = C1.Location();
   gp_Pnt O2 = C2.Location();
   gp_Vec O2O1 (O2,O1);
   //
-  //modified by NIZNHY-PKV Wed Sep 21 07:45:39 2011f
   aTolRO2O1=gp::Resolution();
   aRO2O1=O2O1.Magnitude();
   if (aRO2O1 > aTolRO2O1) {
@@ -397,13 +389,11 @@ Method:
   else {
     O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
   }
-  //O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
-  //modified by NIZNHY-PKV Wed Sep 21 07:45:42 2011t
   //
   gp_XYZ Vxyz = (D.XYZ()*(O2O1.Dot(D)))-O2O1.XYZ();
-
-// Calculate the coefficients of the equation by Cos and Sin ...
-  aTol=1.e-12;
+  //
+  //modified by NIZNHY-PKV Tue Mar 20 10:36:38 2012
+  /*
   R = C2.Radius();
   A5 = R*R*Dx*Dy;
   A1 = -2.*A5;
@@ -411,6 +401,9 @@ Method:
   A3 = R*Vxyz.Y();
   A4 = -R*Vxyz.X();
   //
+  aTol=1.e-12;
+  //
+  /*
   if(fabs(A5) <= aTol) {
     A5 = 0.;
   }
@@ -426,8 +419,36 @@ Method:
   if(fabs(A4) <= aTol) {
     A4 = 0.;
   }
+  */
   //
-  ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,M_PI+M_PI);
+  aTol=1.e-12;
+  // Calculate the coefficients of the equation by Cos and Sin ...
+  // [divided by R]
+  R = C2.Radius();
+  A5 = R*Dx*Dy;
+  A1 = -2.*A5;
+  A2 = 0.5*R*(Dx*Dx-Dy*Dy);// /2.;
+  A3 = Vxyz.Y();
+  A4 = -Vxyz.X();
+  //
+  if (A1>=-aTol && A1<=aTol) {
+    A1 = 0.;
+  }
+  if (A2>=-aTol && A2<=aTol) {
+    A2 = 0.;
+  }
+  if (A3>=-aTol && A3<=aTol) {
+    A3 = 0.;
+  }
+  if (A4>=-aTol && A4<=aTol) {
+    A4 = 0.;
+  }
+  if (A5>=-aTol && A5<=aTol) {
+    A5 = 0.;
+  }
+  //modified by NIZNHY-PKV Tue Mar 20 10:36:40 2012t
+  //
+  ExtremaExtElC_TrigonometricRoots Sol(A1, A2, A3, A4, A5, 0., M_PI+M_PI);
   if (!Sol.IsDone()) { 
     return; 
   }
@@ -437,7 +458,7 @@ Method:
     myDone = Standard_True;
     return; 
   }
-// Storage of solutions ...
+  // Storage of solutions ...
   Standard_Integer NoSol, NbSol;
   Standard_Real U1,U2;
   gp_Pnt P1,P2;
@@ -449,8 +470,12 @@ Method:
     U1 = (gp_Vec(O1,P2)).Dot(D1);
     P1 = ElCLib::Value(U1,C1);
     mySqDist[myNbExt] = P1.SquareDistance(P2);
-    myPoint[myNbExt][0] = Extrema_POnCurv(U1,P1);
-    myPoint[myNbExt][1] = Extrema_POnCurv(U2,P2);
+    //modified by NIZNHY-PKV Wed Mar 21 08:11:33 2012f
+    //myPoint[myNbExt][0] = Extrema_POnCurv(U1,P1);
+    //myPoint[myNbExt][1] = Extrema_POnCurv(U2,P2);
+    myPoint[myNbExt][0].SetValues(U1,P1);
+    myPoint[myNbExt][1].SetValues(U2,P2);
+    //modified by NIZNHY-PKV Wed Mar 21 08:11:36 2012t
     myNbExt++;
   }
   myDone = Standard_True;
@@ -527,7 +552,6 @@ Method:
   Standard_Real A3 = MinR*Vxyz.Y();
   Standard_Real A4 = -MajR*Vxyz.X();
   //
-  //modified by NIZNHY-PKV Thu Feb 03 14:51:04 2011f
   Standard_Real aEps=1.e-12;
   //
   if(fabs(A5) <= aEps) A5 = 0.;
@@ -535,7 +559,6 @@ Method:
   if(fabs(A2) <= aEps) A2 = 0.;
   if(fabs(A3) <= aEps) A3 = 0.;
   if(fabs(A4) <= aEps) A4 = 0.;
-  //modified by NIZNHY-PKV Thu Feb 03 14:51:08 2011t
   //
   ExtremaExtElC_TrigonometricRoots Sol(A1,A2,A3,A4,A5,0.,M_PI+M_PI);
   if (!Sol.IsDone()) { return; }
@@ -1034,7 +1057,8 @@ void Extrema_ExtElC::Points (const Standard_Integer N,
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];
 }
-//modified by NIZNHY-PKV Wed Sep 21 07:59:19 2011f
+
+
 //=======================================================================
 //function : RefineDir
 //purpose  : 
@@ -1064,4 +1088,3 @@ void RefineDir(gp_Dir& aDir)
     }
   }
 }
-//modified by NIZNHY-PKV Wed Sep 21 07:59:26 2011t
