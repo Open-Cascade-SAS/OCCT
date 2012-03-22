@@ -23,6 +23,9 @@
 
 #include <stdlib.h>
 
+#include <TColStd_ListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+
 static Standard_Byte gbits[8] = {1, 2, 4, 8, 16, 32, 64, 128};
 static Standard_Byte gnbits[8] = {255-1, 255-2, 255-4, 255-8, 255-16, 255-32, 255-64, 255-128};
 static iXYZ xyz;
@@ -270,6 +273,7 @@ void Voxel_OctBoolDS::OptimizeMemory()
     return;
 
   Standard_Byte value;
+  TColStd_ListOfInteger ixs, iys, izs, values;
   iXYZBool::Iterator itr(*((iXYZBool*)mySubVoxels));
   for (; itr.More(); itr.Next())
   {
@@ -277,9 +281,23 @@ void Voxel_OctBoolDS::OptimizeMemory()
     if (value == 0 || value == 255)
     {
       xyz = itr.Key();
-      Set(xyz.ix, xyz.iy, xyz.iz, value ? Standard_True : Standard_False);
-      UnSplit(xyz.ix, xyz.iy, xyz.iz);
+      ixs.Append(xyz.ix);
+      iys.Append(xyz.iy);
+      izs.Append(xyz.iz);
+      values.Append((Standard_Integer)value);
     }
+  }
+
+  TColStd_ListIteratorOfListOfInteger itrix(ixs), itriy(iys), itriz(izs), itrvalues(values);
+  for (; itrix.More(); itrix.Next(), itriy.Next(), itriz.Next(), itrvalues.Next())
+  {
+      const Standard_Integer ix = itrix.Value();
+      const Standard_Integer iy = itriy.Value();
+      const Standard_Integer iz = itriz.Value();
+      const Standard_Integer value = itrvalues.Value();
+
+      Set(ix, iy, iz, (value ? Standard_True : Standard_False));
+      UnSplit(ix, iy, iz);
   }
 
   // If the map is empty, release it.
