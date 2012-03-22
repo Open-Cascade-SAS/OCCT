@@ -56,7 +56,7 @@ public:
       : node1(0), node2(0), flags(0) {}
 
     Link(Standard_Integer theNode1, Standard_Integer theNode2)
-      : node1(theNode1), node2(theNode2), flags(0) {}
+      : node1(theNode1), node2(theNode2), flags(1) {}
 
     void Reverse()
     {
