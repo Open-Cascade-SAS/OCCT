@@ -18,7 +18,7 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#include <OpenGl_tgl_all.hxx>
+#include <InterfaceGraphic.hxx>
 #include <OpenGl_Display.hxx>
 
 #include <TCollection_AsciiString.hxx>
