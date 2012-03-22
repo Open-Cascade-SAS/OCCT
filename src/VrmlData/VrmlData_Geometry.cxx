@@ -589,12 +589,10 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read
               break;
             if (theBuffer.LinePtr[0] == ',') {
               theBuffer.LinePtr++;
-              continue;
-            } else if (theBuffer.LinePtr[0] == ']') // closing bracket
+            } else if (theBuffer.LinePtr[0] == ']') { // closing bracket
               theBuffer.LinePtr++;
-            else
-              aStatus = VrmlData_VrmlFormatError;
-            break;
+              break;
+            }
           }
         }
     if (OK(aStatus) && OK(aStatus, readBrace (theBuffer))) {
