@@ -85,7 +85,7 @@ EvalViewMappingMatrix( tel_view_mapping mapping /* View Mapping */,
   }
 
   /* prp between front and back planes */
-  if (!openglDisplay.IsNull() || !openglDisplay->Walkthrough())
+  if (openglDisplay.IsNull() || !openglDisplay->Walkthrough())
   {
     if( mapping->prp[2] < mapping->fpd &&
       mapping->prp[2] > mapping->bpd )

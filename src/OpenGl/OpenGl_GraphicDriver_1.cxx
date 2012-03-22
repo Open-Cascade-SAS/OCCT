@@ -69,7 +69,10 @@ Standard_Boolean OpenGl_GraphicDriver::Begin (const Aspect_Display ADisplay)
 
 void OpenGl_GraphicDriver::End ()
 {
-  openglDisplay.Nullify();
+  // This is unsafe to realease global object here
+  // because noone guaranteed that only one instance of OpenGl_GraphicDriver is used!
+  // So we disable this destructor here until openglDisplay not moved to  OpenGl_GraphicDriver class definition.
+  ///openglDisplay.Nullify();
 }
 
 //=======================================================================
