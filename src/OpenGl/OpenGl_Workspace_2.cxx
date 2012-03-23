@@ -24,6 +24,10 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <OpenGl_telem_util.hxx>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #ifdef HAVE_FREEIMAGE
   #include <NCollection_Handle.hxx>
   #include <FreeImagePlus.h>

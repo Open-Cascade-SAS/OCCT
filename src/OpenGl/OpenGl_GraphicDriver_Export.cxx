@@ -22,6 +22,10 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Localizer.hxx>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #ifdef HAVE_GL2PS
 #include <gl2ps.h>
 #endif

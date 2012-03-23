@@ -27,6 +27,10 @@
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Structure.hxx>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #ifdef HAVE_GL2PS
   #include <gl2ps.h>
 #endif
