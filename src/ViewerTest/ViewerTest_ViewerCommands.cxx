@@ -1627,7 +1627,7 @@ static int VScale(Draw_Interpretor& di, Standard_Integer argc, const char** argv
 }
 //==============================================================================
 //function : VTestZBuffTrihedron
-//purpose  : Displays a V3d_ZBUFFER'ed trihedron at the bottom left corner of the view
+//purpose  : Displays a V3d_ZBUFFER'ed or V3d_WIREFRAME'd trihedron
 //==============================================================================
 
 static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -1635,10 +1635,84 @@ static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
   if ( V3dView.IsNull() ) return 1;
 
-  // Set up default trihedron parameters
   V3dView->ZBufferTriedronSetup();
-  V3dView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
+
+  if ( argc == 1 ) {
+    // Set up default trihedron parameters
+    V3dView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
+  } else
+  if ( argc == 7 )
+  {
+    Aspect_TypeOfTriedronPosition aPosition = Aspect_TOTP_LEFT_LOWER;
+    const char* aPosType = argv[1];
+
+    if ( strcmp(aPosType, "center") == 0 )
+    {
+      aPosition = Aspect_TOTP_CENTER;
+    } else
+    if (strcmp(aPosType, "left_lower") == 0)
+    {
+      aPosition = Aspect_TOTP_LEFT_LOWER;
+    } else
+    if (strcmp(aPosType, "left_upper") == 0)
+    {
+      aPosition = Aspect_TOTP_LEFT_UPPER;
+    } else
+    if (strcmp(aPosType, "right_lower") == 0)
+    {
+      aPosition = Aspect_TOTP_RIGHT_LOWER;
+    } else
+    if (strcmp(aPosType, "right_upper") == 0)
+    {
+      aPosition = Aspect_TOTP_RIGHT_UPPER;
+    } else
+    {
+      di << argv[1] << " Invalid type of alignment"  << "\n";
+      di << "Must be one of [ center, left_lower,"   << "\n";
+      di << "left_upper, right_lower, right_upper ]" << "\n";
+      return 1;
+    }
+
+    Standard_Real R = atof(argv[2])/255.;
+    Standard_Real G = atof(argv[3])/255.;
+    Standard_Real B = atof(argv[4])/255.;
+    Quantity_Color aColor(R, G, B, Quantity_TOC_RGB);
+
+    Standard_Real aScale = atof(argv[5]);
+
+    if( aScale <= 0.0 )
+    {
+      di << argv[5] << " Invalid value. Must be > 0" << "\n";
+      return 1;
+    }
+
+    V3d_TypeOfVisualization aPresentation = V3d_ZBUFFER;
+    const char* aPresType = argv[6];
+
+    if ( strcmp(aPresType, "wireframe") == 0 )
+    {
+      aPresentation = V3d_WIREFRAME;
+    } else
+    if (strcmp(aPresType, "zbuffer") == 0)
+    {
+      aPresentation = V3d_ZBUFFER;
+    } else
+    {
+      di << argv[6] << " Invalid type of visualization" << "\n";
+      di << "Must be one of [ wireframe, zbuffer ]"     << "\n";
+      return 1;
+    }
+
+    V3dView->TriedronDisplay( aPosition, aColor.Name(), aScale, aPresentation );
+
+  } else
+  {
+    di << argv[0] << " Invalid number of arguments" << "\n";
+    return 1;
+  }
+
   V3dView->ZFitAll();
+
   return 0;
 }
 
@@ -2557,7 +2631,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vscale          : vscale X Y Z",
     __FILE__,VScale,group);
   theCommands.Add("vzbufftrihedron",
-    "vzbufftrihedron : Displays a V3d_ZBUFFER'ed trihedron at the bottom left corner of the view",
+    "vzbufftrihedron [center|left_lower|left_upper|right_lower|right_upper"
+    " textR=255 textG=255 textB=255 scale=0.1 wireframe|zbuffer]"
+    " : Displays a V3d_ZBUFFER'ed or V3d_WIREFRAME'd trihedron",
     __FILE__,VTestZBuffTrihedron,group);
   theCommands.Add("vrotate",
     "vrotate         : vrotate AX AY AZ [X Y Z]",
