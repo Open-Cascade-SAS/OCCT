@@ -38,7 +38,8 @@ uses
 
 is
     BuildIncrementalMesh (Shape      : in      Shape from TopoDS; 
-    	       	    	  Deflection : in      Real  from Standard; 
+    	       	    	  Deflection : in      Real  from Standard;
+    	       	    	  InParallel : in      Boolean from Standard;
     	       	          Mesh       : Mesh  from StlMesh)
      raises ConstructionError;
 end StlTransfer;

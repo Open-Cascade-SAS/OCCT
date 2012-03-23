@@ -54,17 +54,17 @@ Standard_Boolean& StlAPI_Writer::ASCIIMode()
   return theASCIIMode;
 }
 
-void StlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFileName) 
+void StlAPI_Writer::Write(const TopoDS_Shape& theShape, const Standard_CString theFileName, const Standard_Boolean theInParallel) 
 {
-  OSD_Path aFile(aFileName);
+  OSD_Path aFile(theFileName);
   if (theRelativeMode) {
     Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     Bnd_Box Total;
-    BRepBndLib::Add(aShape, Total);
+    BRepBndLib::Add(theShape, Total);
     Total.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
     theDeflection = MAX3(aXmax-aXmin , aYmax-aYmin , aZmax-aZmin)*theCoefficient;
   }
-  StlTransfer::BuildIncrementalMesh(aShape, theDeflection, theStlMesh);
+  StlTransfer::BuildIncrementalMesh(theShape, theDeflection, theInParallel, theStlMesh);
   // Write the built mesh
   if (theASCIIMode) {
     RWStl::WriteAscii(theStlMesh, aFile);

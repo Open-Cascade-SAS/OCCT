@@ -189,13 +189,28 @@ static Standard_Integer planesection(Draw_Interpretor&, Standard_Integer nbarg, 
 
 static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer nbarg, const char** argv)
 {
-  if (nbarg < 3) return 1;
+  if (nbarg < 3) {
+    di << " use incmesh shape deflection [inParallel (0/1) : 0 by default]\n";
+    return 0;
+  }
 
-  Standard_Real d = atof(argv[2]);
-  TopoDS_Shape S = DBRep::Get(argv[1]);
-  if (S.IsNull()) return 1;
+  TopoDS_Shape aShape = DBRep::Get(argv[1]);
+  if (aShape.IsNull()) {
+    di << " null shapes is not allowed here\n";
+    return 0;
+  }
+  Standard_Real aDeflection = atof(argv[2]);
 
-  BRepMesh_IncrementalMesh MESH(S,d);
+  Standard_Boolean isInParallel = Standard_False;
+  if (nbarg == 4) {
+	isInParallel = atoi(argv[3]) == 1;
+  }
+  di << "Incremental Mesh, multi-threading "
+    << (isInParallel ? "ON\n" : "OFF\n");
+  
+  Standard::SetReentrant(isInParallel);
+
+  BRepMesh_IncrementalMesh MESH(aShape, aDeflection, Standard_False, 0.5, isInParallel);
   Standard_Integer statusFlags = MESH.GetStatusFlags();  
 
   di << "Meshing statuses: ";
@@ -1597,7 +1612,7 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("shpsec","shpsec result shape shape",__FILE__, shapesection, g);
   theCommands.Add("plnsec","plnsec result shape plane",__FILE__, planesection, g);
-  theCommands.Add("incmesh","incmesh shape deflection",__FILE__, incrementalmesh, g);
+  theCommands.Add("incmesh","incmesh shape deflection [inParallel (0/1) : 0 by default]",__FILE__, incrementalmesh, g);
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
   theCommands.Add("fastdiscret","fastdiscret shape deflection [shared [nbiter]]",__FILE__, fastdiscret, g);
   theCommands.Add("mesh","mesh result Shape deflection [save partage]",__FILE__, triangule, g);

@@ -36,7 +36,7 @@
 #include <CSLib.hxx>
 #include <gp_Dir.hxx>
 #include <gp_XYZ.hxx>
-#include <BRepMesh.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <TopAbs.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
@@ -113,15 +113,16 @@ static void Normal(const TopoDS_Face&  aFace,
   
 }
 void StlTransfer::BuildIncrementalMesh (const TopoDS_Shape&  Shape,
-					const Standard_Real  Deflection,
-					const Handle(StlMesh_Mesh)& Mesh)
+										const Standard_Real  Deflection,
+										const Standard_Boolean  InParallel,
+										const Handle(StlMesh_Mesh)& Mesh)
 {
   if (Deflection <= Precision::Confusion ()) {
     Standard_ConstructionError::Raise ("StlTransfer::BuildIncrementalMesh");
     }
   
   Standard_Integer NbVertices, NbTriangles;
-  BRepMesh::Mesh (Shape, Deflection);
+  BRepMesh_IncrementalMesh aMesher(Shape, Deflection, Standard_False, 0.5, InParallel);
   for (TopExp_Explorer itf(Shape,TopAbs_FACE); itf.More(); itf.Next()) {
     TopoDS_Face face = TopoDS::Face(itf.Current());
     TopLoc_Location Loc, loc;

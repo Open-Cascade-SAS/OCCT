@@ -44,10 +44,11 @@ is
         returns IncrementalMesh from BRepMesh;
     ---C++: alias "Standard_EXPORT virtual ~BRepMesh_IncrementalMesh();"
 
-    Create (S       : Shape   from TopoDS;
-            D       : Real    from Standard;
-            Relatif : Boolean from Standard = Standard_False;
-            Ang     : Real    from Standard = 0.5)
+    Create (S          : Shape   from TopoDS;
+            D          : Real    from Standard;
+            Relatif    : Boolean from Standard = Standard_False;
+            Ang        : Real    from Standard = 0.5;
+            InParallel : Boolean from Standard = Standard_False)
         returns IncrementalMesh from BRepMesh;
     ---Purpose: If the  boolean    <Relatif>   is  True,    the
     --          deflection used   for the polygonalisation   of

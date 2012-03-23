@@ -86,9 +86,10 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh (const TopoDS_Shape& theShape,
                                                     const Standard_Real theDeflection,
                                                     const Standard_Boolean theRelative,
-                                                    const Standard_Real theAngle)
+                                                    const Standard_Real theAngle,
+													const Standard_Boolean theInParallel)
 : myRelative (theRelative),
-  myInParallel (Standard_False),
+  myInParallel (theInParallel),
   myModified (Standard_False),
   myStatus (0)
 {
