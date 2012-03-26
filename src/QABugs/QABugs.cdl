@@ -1,0 +1,55 @@
+-- Created on: 2012-03-23
+-- Created by: DBV
+-- Copyright (c) 2002-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+package QABugs
+uses
+    Draw,
+    TCollection, 
+    gp, 
+    PrsMgr, 
+    Prs3d,
+    Quantity,
+    SelectMgr,
+    AIS
+is 
+    class  MyText;
+    class  PresentableObject;
+    
+    Commands(DI : in out Interpretor from Draw);
+    Commands_1(DI : in out Interpretor from Draw);
+    Commands_2(DI : in out Interpretor from Draw);
+    Commands_3(DI : in out Interpretor from Draw);
+    Commands_4(DI : in out Interpretor from Draw);
+    Commands_5(DI : in out Interpretor from Draw);
+    Commands_6(DI : in out Interpretor from Draw);
+    Commands_7(DI : in out Interpretor from Draw);
+    Commands_8(DI : in out Interpretor from Draw);
+    Commands_9(DI : in out Interpretor from Draw);
+    Commands_10(DI : in out Interpretor from Draw);
+    Commands_11(DI : in out Interpretor from Draw);
+    Commands_12(DI : in out Interpretor from Draw);
+    Commands_13(DI : in out Interpretor from Draw);
+    Commands_14(DI : in out Interpretor from Draw);
+    Commands_15(DI : in out Interpretor from Draw);
+    Commands_16(DI : in out Interpretor from Draw);
+    Commands_17(DI : in out Interpretor from Draw);
+    Commands_18(DI : in out Interpretor from Draw);
+    Commands_19(DI : in out Interpretor from Draw);
+end;

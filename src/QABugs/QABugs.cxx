@@ -1,5 +1,5 @@
-// Created on: 2002-03-12
-// Created by: QA Admin
+// Created on: 2012-03-23
+// Created by: DBV
 // Copyright (c) 2002-2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
@@ -18,36 +18,28 @@
 // and conditions governing the rights and limitations under the License.
 
 
-
 #include <QABugs.hxx>
-#include <QADraw.hxx>
-#include <QADNaming.hxx>
-//#if defined(WOKC40)
-//#include <QADBRepNaming.hxx>
-//#else
-#include <QANewDBRepNaming.hxx>
-//#endif
 
-#if defined(WOKC40)
-#include <QAViewer2dTest.hxx>
-#endif
-#include <QANCollection.hxx>
-
-void QADraw::AdditionalCommands(Draw_Interpretor& theCommands)
-{
-  QABugs::Commands(theCommands);
-
-  QADNaming::AllCommands(theCommands);
-//#if defined(WOKC40)
-//  QADBRepNaming::AllCommands(theCommands);
-//#else
-  QANewDBRepNaming::AllCommands(theCommands);
-//#endif
-
-#if defined(WOKC40)
-  QAViewer2dTest::Commands(theCommands);
-#endif
-  QANCollection::Commands(theCommands);
+void QABugs::Commands(Draw_Interpretor& theCommands) {
+  QABugs::Commands_1(theCommands);
+  QABugs::Commands_2(theCommands);
+  QABugs::Commands_3(theCommands);
+  QABugs::Commands_4(theCommands);
+  QABugs::Commands_5(theCommands);
+  QABugs::Commands_6(theCommands);
+  QABugs::Commands_7(theCommands);
+  QABugs::Commands_8(theCommands);
+  QABugs::Commands_9(theCommands);
+  QABugs::Commands_10(theCommands);
+  QABugs::Commands_11(theCommands);
+  QABugs::Commands_12(theCommands);
+  QABugs::Commands_13(theCommands);
+  QABugs::Commands_14(theCommands);
+  QABugs::Commands_15(theCommands);
+  QABugs::Commands_16(theCommands);
+  QABugs::Commands_17(theCommands);
+  QABugs::Commands_18(theCommands);
+  QABugs::Commands_19(theCommands);
 
   return;
 }
