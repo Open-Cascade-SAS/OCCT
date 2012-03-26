@@ -755,6 +755,63 @@ static int VDebug(Draw_Interpretor& di, Standard_Integer , const char** )
 }
 
 //==============================================================================
+//function : VSelPrecision
+//purpose  : To set the selection precision mode and tolerance value
+//Draw arg : Selection precision mode (0 for window, 1 for view) and tolerance
+//           value (integer number of pixel for window mode, double value of
+//           sensitivity for view mode). Without arguments the function just
+//           prints the current precision mode and the corresponding tolerance.
+//==============================================================================
+static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if( argc > 3 )
+  {
+    di << "Use: " << argv[0] << " [precision_mode [tolerance_value]]\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if( aContext.IsNull() )
+    return 1;
+
+  if( argc == 1 )
+  {
+    StdSelect_SensitivityMode aMode = aContext->SensitivityMode();
+    if( aMode == StdSelect_SM_WINDOW )
+    {
+      Standard_Integer aPixelTolerance = aContext->PixelTolerance();
+      di << "Precision mode  : 0 (window)\n";
+      di << "Pixel tolerance : " << aPixelTolerance << "\n";
+    }
+    else if( aMode == StdSelect_SM_VIEW )
+    {
+      Standard_Real aSensitivity = aContext->Sensitivity();
+      di << "Precision mode : 1 (view)\n";
+      di << "Sensitivity    : " << aSensitivity << "\n";
+    }
+  }
+  else if( argc > 1 )
+  {
+    StdSelect_SensitivityMode aMode = ( StdSelect_SensitivityMode )atoi( argv[1] );
+    aContext->SetSensitivityMode( aMode );
+    if( argc > 2 )
+    {
+      if( aMode == StdSelect_SM_WINDOW )
+      {
+        Standard_Integer aPixelTolerance = atoi( argv[2] );
+        aContext->SetPixelTolerance( aPixelTolerance );
+      }
+      else if( aMode == StdSelect_SM_VIEW )
+      {
+        Standard_Real aSensitivity = atof( argv[2] );
+        aContext->SetSensitivity( aSensitivity );
+      }
+    }
+  }
+  return 0;
+}
+
+//==============================================================================
 //function : VDump
 //purpose  : To dump the active view snapshot to image file
 //Draw arg : Picture file name with extension corresponding to desired format
@@ -3481,6 +3538,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vsensera",
 		  "vardisp           : erase  active entities",
 		  __FILE__,VClearSensi,group);
+
+  theCommands.Add("vselprecision",
+		  "vselprecision : vselprecision [precision_mode [tolerance_value]]",
+		  __FILE__,VSelPrecision,group);
 
   theCommands.Add("vperf",
 		  "vperf: vperf  ShapeName 1/0(Transfo/Location) 1/0(Primitives sensibles ON/OFF)",

@@ -154,6 +154,11 @@ is
     	---Purpose: changes the Sensitivity of picking
     	--          Input value is Real.
 
+    Sensitivity (me) returns Real from Standard;
+    	---Level: Public 
+    	---Purpose: returns the Sensitivity of picking
+    	---C++: inline
+
     SetClipping(me:mutable ; Xc,Yc,Height,Width:Real) is static;
     	---Level: Public 
    	---Purpose: sets the clipping limits of dynamic picking

@@ -114,6 +114,7 @@ uses
     SelectionManager      from SelectMgr,
     PresentationManager3d from PrsMgr,
     ViewerSelector3d      from StdSelect,
+    SensitivityMode       from StdSelect,
     MapOfInteractive      from AIS,
     InteractiveObject     from AIS,
     DisplayMode           from AIS,
@@ -525,6 +526,17 @@ is
 -- Removes selection mode from Interactive Objects.
 -- aMode provides the selection mode index of the entity aniobj.
     
+    SetSensitivityMode(me    : mutable;
+                       aMode : SensitivityMode from StdSelect) is static;
+    ---Level: Public
+    ---Purpose: Sets the selection sensitivity mode. SM_WINDOW mode
+    -- uses the specified pixel tolerance to compute the sensitivity
+    -- value, SM_VIEW mode allows to define the sensitivity manually.
+
+    SensitivityMode(me) returns SensitivityMode from StdSelect;
+    ---Level: Public
+    ---Purpose: Returns the selection sensitivity mode.
+
     SetSensitivity(me:mutable;
 			aPrecision: Real from Standard);
     ---Level: Public
@@ -537,13 +549,21 @@ is
 --   When a local context is open, the defined sensitivity applies to
 -- this local context instead of the main context.
 
-    SetSensitivity(me:mutable;
+    Sensitivity (me) returns Real from Standard;
+    ---Level: Public 
+    ---Purpose: Returns the selection sensitivity value.
+
+    SetPixelTolerance(me:mutable;
 			aPrecision: Integer from Standard = 4);
     ---Level: Public
     ---Purpose: Define the current selection pixel sensitivity
     --		for this context or local context if any one is activated.
     --  Warning: When a local context is open the sensitivity is apply on it 
     --          instead on the main context.
+
+    PixelTolerance(me) returns Integer from Standard;
+    ---Level: Public 
+    ---Purpose: Returns the pixel tolerance.
 
 		   ---Category: put locations on objects....
 		   --           

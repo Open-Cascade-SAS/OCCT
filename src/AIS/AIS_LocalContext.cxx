@@ -1224,17 +1224,35 @@ Standard_Boolean AIS_LocalContext::EndImmediateDraw(const Handle(V3d_View)& aVie
 Standard_Boolean AIS_LocalContext::IsImmediateModeOn() const
 {return myMainPM->IsImmediateModeOn();}
 
-#ifdef BUC60688
+void AIS_LocalContext::SetSensitivityMode(const StdSelect_SensitivityMode aMode) {
+
+  myMainVS->SetSensitivityMode(aMode);
+}
+
+StdSelect_SensitivityMode AIS_LocalContext::SensitivityMode() const {
+
+  return myMainVS->SensitivityMode();
+}
+
 void AIS_LocalContext::SetSensitivity(const Standard_Real aPrecision) {
 
   myMainVS->SetSensitivity(aPrecision);
 }
 
-void AIS_LocalContext::SetSensitivity(const Standard_Integer aPrecision) {
+Standard_Real AIS_LocalContext::Sensitivity() const {
 
-  myMainVS->Set(aPrecision);
+  return myMainVS->Sensitivity();
 }
-#endif
+
+void AIS_LocalContext::SetPixelTolerance(const Standard_Integer aPrecision) {
+
+  myMainVS->SetPixelTolerance(aPrecision);
+}
+
+Standard_Integer AIS_LocalContext::PixelTolerance() const {
+
+  return myMainVS->PixelTolerance();
+}
 
 //=======================================================================
 //function : SetZLayer

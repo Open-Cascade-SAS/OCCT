@@ -19,6 +19,11 @@
 #define OCC9026     //AEL Additional method to optimize performance
 //of the FindSelectedOwnerFromShape() method.
 
+inline Standard_Real SelectMgr_ViewerSelector::Sensitivity() const
+{
+  return mytolerance;
+}
+
 inline void SelectMgr_ViewerSelector::Init() 
 {
   myCurRank = 1;

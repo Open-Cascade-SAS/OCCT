@@ -16,6 +16,16 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+inline StdSelect_SensitivityMode StdSelect_ViewerSelector3d::SensitivityMode() const
+{
+  return mysensmode;
+}
+
+inline Standard_Integer StdSelect_ViewerSelector3d::PixelTolerance() const
+{
+  return mypixtol;
+}
+
 inline const Handle(Select3D_Projector)& StdSelect_ViewerSelector3d::Projector() const
 {
   return myprj;

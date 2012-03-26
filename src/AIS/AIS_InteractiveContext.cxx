@@ -188,12 +188,7 @@ myIsAutoActivateSelMode( Standard_True )
 {
   InitAttributes();
   mgrSelector->Add(myCollectorSel);
-#ifdef BUC60688
-  SetSensitivity();
-#else
-  myCollectorSel->Set(4);
-#endif
-
+  SetPixelTolerance();
 }
 
 void AIS_InteractiveContext::Delete() const
@@ -2977,7 +2972,33 @@ void AIS_InteractiveContext::UnsetSelectionMode(const Handle_AIS_InteractiveObje
 {
 }
 
-#ifdef BUC60688
+//=======================================================================
+//function : SetSensitivityMode
+//purpose  : 
+//=======================================================================
+
+void AIS_InteractiveContext::SetSensitivityMode(const StdSelect_SensitivityMode aMode) {
+
+  if( HasOpenedContext() )
+        myLocalContexts(myCurLocalIndex)->SetSensitivityMode(aMode);
+  else {
+    myMainSel->SetSensitivityMode(aMode);
+    if( !myCollectorSel.IsNull() ) myCollectorSel->SetSensitivityMode(aMode);
+  }
+}
+
+//=======================================================================
+//function : SensitivityMode
+//purpose  : 
+//=======================================================================
+
+StdSelect_SensitivityMode AIS_InteractiveContext::SensitivityMode() const {
+
+  if( HasOpenedContext() )
+        return myLocalContexts(myCurLocalIndex)->SensitivityMode();
+  return myMainSel->SensitivityMode();
+}
+
 //=======================================================================
 //function : SetSensitivity
 //purpose  : 
@@ -2994,20 +3015,43 @@ void AIS_InteractiveContext::SetSensitivity(const Standard_Real aPrecision) {
 }
 
 //=======================================================================
-//function : SetSensitivity
+//function : Sensitivity
 //purpose  : 
 //=======================================================================
 
-void AIS_InteractiveContext::SetSensitivity(const Standard_Integer aPrecision) {
+Standard_Real AIS_InteractiveContext::Sensitivity() const {
 
   if( HasOpenedContext() )
-        myLocalContexts(myCurLocalIndex)->SetSensitivity(aPrecision);
+        return myLocalContexts(myCurLocalIndex)->Sensitivity();
+  return myMainSel->Sensitivity();
+}
+
+//=======================================================================
+//function : SetPixelTolerance
+//purpose  : 
+//=======================================================================
+
+void AIS_InteractiveContext::SetPixelTolerance(const Standard_Integer aPrecision) {
+
+  if( HasOpenedContext() )
+        myLocalContexts(myCurLocalIndex)->SetPixelTolerance(aPrecision);
   else {
-    myMainSel->Set(aPrecision);
-    if( !myCollectorSel.IsNull() ) myCollectorSel->Set(aPrecision);
+    myMainSel->SetPixelTolerance(aPrecision);
+    if( !myCollectorSel.IsNull() ) myCollectorSel->SetPixelTolerance(aPrecision);
   }
 }
-#endif
+
+//=======================================================================
+//function : PixelTolerance
+//purpose  : 
+//=======================================================================
+
+Standard_Integer AIS_InteractiveContext::PixelTolerance() const {
+
+  if( HasOpenedContext() )
+        return myLocalContexts(myCurLocalIndex)->PixelTolerance();
+  return myMainSel->PixelTolerance();
+}
 
 //=======================================================================
 //function : IsInLocal
@@ -3063,11 +3107,7 @@ void AIS_InteractiveContext::InitAttributes()
   HLA->SetTypeOfLine(Aspect_TOL_DASH);
 
   // tolerance to 4 pixels...
-#ifdef BUC60688
-  SetSensitivity();
-#else
-  myMainSel->Set(4);
-#endif
+  SetPixelTolerance();
 
   // Customizing the drawer for trihedrons and planes...
 

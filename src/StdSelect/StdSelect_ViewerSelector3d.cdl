@@ -34,7 +34,8 @@ uses
     Group     from Graphic3d,
     Structure from Graphic3d,
     Array1OfReal    from TColStd, 
-    Array1OfPnt2d from TColgp
+    Array1OfPnt2d from TColgp,
+    SensitivityMode from StdSelect
 
 is
 
@@ -50,11 +51,27 @@ is
     	--          in the active view ; to be done before the selection action...
 
 
-    Set(me:mutable; aSensitivity : Integer) is static;
-    	---Purpose: Sets the sensitivity aSensitivity.
     Set(me:mutable; aProj: Projector from Select3D) is static;
     	---Purpose: Sets the new projector aProj to replace the one used at construction time.
     
+
+    SetSensitivityMode(me    : mutable;
+                       aMode : SensitivityMode from StdSelect) is static;
+        ---Purpose: Sets the selection sensitivity mode. SM_WINDOW mode
+        -- uses the specified pixel tolerance to compute the sensitivity
+        -- value, SM_VIEW mode allows to define the sensitivity manually.
+
+    SensitivityMode(me) returns SensitivityMode from StdSelect;
+        ---C++: inline
+        ---Purpose: Returns the selection sensitivity mode.
+
+    SetPixelTolerance(me         : mutable;
+                      aTolerance : Integer) is static;
+    	---Purpose: Sets the pixel tolerance aTolerance.
+
+    PixelTolerance(me) returns Integer from Standard;
+        ---C++: inline
+        ---Purpose: Returns the pixel tolerance.
 
 
     Pick (me           : mutable;XPix,YPix:Integer;
@@ -147,6 +164,7 @@ fields
     mycenter      : Real from Standard[2];
     myprevcenter  : Real from Standard[2];
     mylastzoom    : Real from Standard;
+    mysensmode    : SensitivityMode from StdSelect;
     mypixtol      : Integer ;
     myupdatetol   : Boolean;
     

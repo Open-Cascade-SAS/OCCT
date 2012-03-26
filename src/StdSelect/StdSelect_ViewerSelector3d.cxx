@@ -101,6 +101,7 @@ StdSelect_ViewerSelector3d
 ::StdSelect_ViewerSelector3d():
 myprj(new Select3D_Projector()),
 mylastzoom(0.0),
+mysensmode(StdSelect_SM_WINDOW),
 mypixtol(2),
 myupdatetol(Standard_True)
 {
@@ -118,6 +119,7 @@ StdSelect_ViewerSelector3d
 ::StdSelect_ViewerSelector3d(const Handle(Select3D_Projector)& aProj):
 myprj(aProj),
 mylastzoom(0.0),
+mysensmode(StdSelect_SM_WINDOW),
 mypixtol(2),
 myupdatetol(Standard_True)
 {
@@ -149,25 +151,37 @@ void StdSelect_ViewerSelector3d::Convert(const Handle(SelectMgr_Selection)& aSel
 //==================================================
 
 void StdSelect_ViewerSelector3d
-::Set(const Standard_Integer PixelTolerance)
-{
-  if(mypixtol!=PixelTolerance)
-  {
-    mypixtol   =  PixelTolerance;
-    myupdatetol = Standard_True;
-  }
-}
-
-//==================================================
-// Function: Set
-// Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d
 ::Set(const Handle(Select3D_Projector)& aProj)
 {
   myprj = aProj;
   toupdate=Standard_True;
+}
+
+//==================================================
+// Function: SetSensitivityMode
+// Purpose :
+//==================================================
+
+void StdSelect_ViewerSelector3d
+::SetSensitivityMode(const StdSelect_SensitivityMode aMode)
+{
+  mysensmode = aMode;
+  toupdate = Standard_True;
+}
+
+//==================================================
+// Function: SetPixelTolerance
+// Purpose :
+//==================================================
+
+void StdSelect_ViewerSelector3d
+::SetPixelTolerance(const Standard_Integer aTolerance)
+{
+  if(mypixtol!=aTolerance)
+  {
+    mypixtol    = aTolerance;
+    myupdatetol = Standard_True;
+  }
 }
 
 //==================================================
@@ -247,7 +261,7 @@ void StdSelect_ViewerSelector3d
        const Standard_Integer YPMax,
        const Handle(V3d_View)& aView)
 {
-  if (myupdatetol)
+  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
     SetSensitivity (aView->Convert (mypixtol));
     myupdatetol = Standard_False;
@@ -276,7 +290,7 @@ void StdSelect_ViewerSelector3d
 ::Pick(const TColgp_Array1OfPnt2d& aPolyline,
        const Handle(V3d_View)& aView)
 {
-  if (myupdatetol)
+  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
     SetSensitivity (aView->Convert (mypixtol));
     myupdatetol = Standard_False;
@@ -317,7 +331,7 @@ void StdSelect_ViewerSelector3d
 void StdSelect_ViewerSelector3d::
 DisplayAreas(const Handle(V3d_View)& aView)
 {
-  if (myupdatetol)
+  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
     SetSensitivity (aView->Convert (mypixtol));
 		myupdatetol = Standard_False;
@@ -500,7 +514,7 @@ UpdateProj(const Handle(V3d_View)& aView)
     mylastzoom = aView->Scale();
   }
 
-  if (myupdatetol)
+  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
     SetSensitivity (aView->Convert (mypixtol));
     myupdatetol = Standard_False;
@@ -519,7 +533,7 @@ UpdateProj(const Handle(V3d_View)& aView)
 //=============================
 void StdSelect_ViewerSelector3d::DisplaySensitive(const Handle(V3d_View)& aViou)
 {
-  if (myupdatetol)
+  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
     SetSensitivity (aViou->Convert (mypixtol));
 		myupdatetol = Standard_False;

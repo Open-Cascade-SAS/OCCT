@@ -90,6 +90,11 @@ is
     	---Purpose: Provides values for different types of edges. These
     	-- values are used to filter edges in frameworks
     	-- inheriting StdSelect_EdgeFilter.
+    
+    enumeration SensitivityMode is SM_WINDOW, SM_VIEW;
+    	---Purpose: Selection sensitivity mode. SM_WINDOW mode uses the
+    	-- specified pixel tolerance to compute the sensitivity value,
+    	-- SM_VIEW mode allows to define the sensitivity manually.
 
 
     class ViewerSelector3d;

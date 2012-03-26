@@ -72,6 +72,7 @@ uses
     ListOfFilter              from SelectMgr,
     BRepOwner                 from StdSelect,
     ViewerSelector3d          from StdSelect,
+    SensitivityMode           from StdSelect,
     InteractiveContext        from AIS,
     ClearMode                 from AIS,
     InteractiveObject         from AIS,
@@ -443,17 +444,36 @@ is
                 HiCol     : out NameOfColor from Quantity)
     returns Boolean from Standard;
     
+    SetSensitivityMode(me    : mutable;
+                       aMode : SensitivityMode from StdSelect) is static;
+    ---Level: Public
+    ---Purpose: Sets the selection sensitivity mode. SM_WINDOW mode
+    -- uses the specified pixel tolerance to compute the sensitivity
+    -- value, SM_VIEW mode allows to define the sensitivity manually.
+
+    SensitivityMode(me) returns SensitivityMode from StdSelect;
+    ---Level: Public
+    ---Purpose: Returns the selection sensitivity mode.
+
     SetSensitivity(me:mutable;
                         aPrecision: Real from Standard);
     ---Level: Public
     ---Purpose: Define the current selection sensitivity for
     --          this local context according to the view size.
     
-    SetSensitivity(me:mutable;
+    Sensitivity (me) returns Real from Standard;
+    ---Level: Public 
+    ---Purpose: Returns the selection sensitivity value.
+
+    SetPixelTolerance(me:mutable;
                         aPrecision: Integer from Standard = 2);
     ---Level: Public
     ---Purpose: Define the current selection sensitivity for
     --          this local context according to the view size.
+
+    PixelTolerance(me) returns Integer from Standard;
+    ---Level: Public 
+    ---Purpose: Returns the pixel tolerance.
 
                         ---Category: IMMEDIATE MODE
 
