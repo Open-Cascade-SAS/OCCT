@@ -18,8 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 //----------------------------------------------------------------------
 //-- Purposse: Geometric Intersection between two Natural Quadric 
 //--          If the intersection is not a conic, 
@@ -1173,12 +1171,10 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     tg2 = -tg2;
   }
   //
-  //modified by NIZNHY-PKV Thu Dec  1 16:49:47 2005f
   aTol2=Tol*Tol;
   aPApex1=Con1.Apex();
   aPApex2=Con2.Apex();
   aDA1A2=aPApex1.SquareDistance(aPApex2);
-  //modified by NIZNHY-PKV Wed Nov 30 10:17:05 2005t
   //
   AxeOperator A1A2(Con1.Axis(),Con2.Axis());
   //
@@ -1302,11 +1298,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       }
     }
   }// else if((Abs(tg1-tg2)<EPSILON_ANGLE_CONE) && (A1A2.Parallel()))
-  //modified by NIZNHY-PKV Wed Nov 30 10:12:39 2005f
   // 3
   else if (aDA1A2<aTol2) {
-    //
-    // by NIZNHY-PKV Thu Dec 1 2005
     //
     // When apices are coinsided there can be 3 possible cases
     // 3.1 - empty solution (iRet=0)
@@ -1367,8 +1360,10 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     //
     if (aRD2>(aR2+Tol)) {
       iRet=0;
-      //printf(" * iRet=0 => IntAna_Empty\n");
       typeres=IntAna_Empty; //nothing
+      //modified by NIZNHY-PKV Fri Mar 23 08:12:23 2012f
+      return;
+      //modified by NIZNHY-PKV Fri Mar 23 08:12:29 2012t
     }
     //
     iRet=1; //touch case => 1 line
@@ -1435,11 +1430,6 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       pt1=aQApex1;
       gp_Vec aVX(aQApex1, aQX);
       dir1=gp_Dir(aVX);
-      /*
-      printf(" line L1 %lf %lf %lf %lf %lf %lf\n", 
-	     pt1.X(), pt1.Y(), pt1.Z(),
-	     dir1.X(), dir1.Y(), dir1.Z());
-	     */
     }
     
     else {//iRet=2 
@@ -1456,18 +1446,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       dir1=gp_Dir(aVX1);
       gp_Vec aVX2(aQApex1, aQX2);
       dir2=gp_Dir(aVX2);
-      /*
-      printf(" line L1 %lf %lf %lf %lf %lf %lf\n", 
-	     pt1.X(), pt1.Y(), pt1.Z(),
-	     dir1.X(), dir1.Y(), dir1.Z());
-      printf(" line L2 %lf %lf %lf %lf %lf %lf\n", 
-	     pt2.X(), pt2.Y(), pt2.Z(),
-	     dir2.X(), dir2.Y(), dir2.Z());
-	     */
     }
   } //else if (aDA1A2<aTol2) {
-  //modified by NIZNHY-PKV Wed Nov 30 10:12:41 2005t
-  //modified by NIZNHY-IFV Fry Sep 01 15:46:41 2006f
   //Case when cones have common generatrix
   else if(A1A2.Intersect()) {
     //Check if apex of one cone belongs another one
@@ -1587,8 +1567,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       }
     }
   }
-  //modified by NIZNHY-IFV Fry Sep 01 15:46:41 2006t
-  // else if(A1A2.Intersect() {
+  
   else {
     typeres=IntAna_NoGeometricSolution; 
   }
@@ -1934,22 +1913,18 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 		   ,param2,param2bis));
   }
 }
-
 //=======================================================================
 //function : HasCommonGen
 //purpose  : 
 //=======================================================================
-
 Standard_Boolean IntAna_QuadQuadGeo::HasCommonGen() const
 {
   return myCommonGen;
 }
-
 //=======================================================================
 //function : PChar
 //purpose  : 
 //=======================================================================
-
 const gp_Pnt& IntAna_QuadQuadGeo::PChar() const
 {
   return myPChar;
