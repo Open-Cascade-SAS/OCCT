@@ -275,7 +275,7 @@ int AdvApp2Var_MathBase::mdsptpt_(integer *ndimen,
   static integer i__;
   static doublereal differ[100];
   static integer  ier;
-  long int iofset, j;
+  intptr_t iofset, j;
 
 /* ********************************************************************** 
 */
@@ -1401,9 +1401,9 @@ int AdvApp2Var_MathBase::mmaperx_(integer *ncofmx,
 */
     if (*ndimen == *ndimax && *upara0 == 0. && *upara1 == 1.) {
 	nboct = (*ndimax << 3) * *ncoeff;
-	AdvApp2Var_SysBase::mcrfill_((integer *)&nboct,
-		 (char *)&crvold[crvold_offset], 
-		 (char *)&crvnew[crvnew_offset]);
+	AdvApp2Var_SysBase::mcrfill_(&nboct,
+		 &crvold[crvold_offset], 
+		 &crvnew[crvnew_offset]);
 	goto L9999;
     }
 /* ********************************************************************** 
@@ -1854,8 +1854,8 @@ int mmatvec_(integer *nligne,
 /*                    Processing */
 /* ***********************************************************************
  */
-    AdvApp2Var_SysBase::mvriraz_((integer *)nligne, 
-	     (char *)&vecout[1]);
+    AdvApp2Var_SysBase::mvriraz_(nligne, 
+	     &vecout[1]);
     i__1 = *nligne;
     for (i__ = *deblig; i__ <= i__1; ++i__) {
 	somme = 0.;
@@ -3425,8 +3425,8 @@ int mmdrvcb_(integer *ideriv,
 	goto L200;
     }
     iptpnt = *ndim * *ideriv;
-    AdvApp2Var_SysBase::mvriraz_((integer *)&iptpnt, 
-	     (char *)&tabpnt[tabpnt_dim1 + 1]);
+    AdvApp2Var_SysBase::mvriraz_(&iptpnt, 
+	     &tabpnt[tabpnt_dim1 + 1]);
 L200:
 
 /* ------------------------ Calculation of parameter TPARAM ------------------ 
@@ -4066,12 +4066,12 @@ int mmextrl_(integer *ndegre,
 //function : AdvApp2Var_MathBase::mmfmca8_
 //purpose  : 
 //=======================================================================
-int AdvApp2Var_MathBase::mmfmca8_(integer *ndimen,
-				  integer *ncoefu,
-				  integer *ncoefv,
-				  integer *ndimax, 
-				  integer *ncfumx, 
-				  integer *,//ncfvmx, 
+int AdvApp2Var_MathBase::mmfmca8_(const integer *ndimen,
+				  const integer *ncoefu,
+				  const integer *ncoefv,
+				  const integer *ndimax, 
+				  const integer *ncfumx, 
+				  const integer *,//ncfvmx, 
 				  doublereal *tabini,
 				  doublereal *tabres)
 
@@ -4174,9 +4174,9 @@ L1000:
     }
     ilong = (*ndimen << 3) * *ncoefu;
     for (k = *ncoefv; k >= 1; --k) {
-	AdvApp2Var_SysBase::mcrfill_((integer *)&ilong, 
-		 (char *)&tabini[(k * tabini_dim2 + 1) * tabini_dim1 + 1], 
-		 (char *)&tabres[(k * tabres_dim2 + 1) * tabres_dim1 + 1]);
+	AdvApp2Var_SysBase::mcrfill_(&ilong, 
+		 &tabini[(k * tabini_dim2 + 1) * tabini_dim1 + 1], 
+		 &tabres[(k * tabres_dim2 + 1) * tabres_dim1 + 1]);
 /* L500: */
     }
     goto L9999;
@@ -4186,9 +4186,9 @@ L1000:
 
 L2000:
     ilong = (*ndimen << 3) * *ncoefu * *ncoefv;
-    AdvApp2Var_SysBase::mcrfill_((integer *)&ilong, 
-	     (char *)&tabini[tabini_offset], 
-	     (char *)&tabres[tabres_offset]);
+    AdvApp2Var_SysBase::mcrfill_(&ilong, 
+	     &tabini[tabini_offset], 
+	     &tabres[tabres_offset]);
     goto L9999;
 
 /* ---------------------------- The end --------------------------------- 
@@ -4318,9 +4318,9 @@ L1000:
     ilong = (*ndimen << 3) * *ncoefu;
     i__1 = *ncoefv;
     for (k = 1; k <= i__1; ++k) {
-	AdvApp2Var_SysBase::mcrfill_((integer *)&ilong, 
-		 (char *)&tabini[(k * tabini_dim2 + 1) * tabini_dim1 + 1], 
-		 (char *)&tabres[(k * tabres_dim2 + 1) * tabres_dim1 + 1]);
+	AdvApp2Var_SysBase::mcrfill_(&ilong, 
+		 &tabini[(k * tabini_dim2 + 1) * tabini_dim1 + 1], 
+		 &tabres[(k * tabres_dim2 + 1) * tabres_dim1 + 1]);
 /* L500: */
     }
     goto L9999;
@@ -4330,9 +4330,9 @@ L1000:
 
 L2000:
     ilong = (*ndimen << 3) * *ncoefu * *ncoefv;
-    AdvApp2Var_SysBase::mcrfill_((integer *)&ilong,
-	     (char *)&tabini[tabini_offset], 
-	     (char *)&tabres[tabres_offset]);
+    AdvApp2Var_SysBase::mcrfill_(&ilong,
+	     &tabini[tabini_offset], 
+	     &tabres[tabres_offset]);
     goto L9999;
 
 /* ---------------------------- The end --------------------------------- 
@@ -4367,7 +4367,7 @@ int AdvApp2Var_MathBase::mmfmcar_(integer *ndimen,
     /* Local variables */
     static doublereal tbaux[1];
     static integer ksize, numax, kk;
-    static long int iofst;
+    static intptr_t iofst;
     static integer ibb, ier;
 
 /* ***********************************************************************
@@ -4467,9 +4467,9 @@ int AdvApp2Var_MathBase::mmfmcar_(integer *ndimen,
 
     if (*upara1 == 0. && *upara2 == 1. && *vpara1 == 0. && *vpara2 == 1.) {
 	ksize = (*ndimen << 3) * *ncofmx * *ncoefv;
-	AdvApp2Var_SysBase::mcrfill_((integer *)&ksize, 
-		 (char *)&patold[patold_offset], 
-		 (char *)&patnew[patnew_offset]);
+	AdvApp2Var_SysBase::mcrfill_(&ksize, 
+		 &patold[patold_offset], 
+		 &patnew[patnew_offset]);
 	goto L9999;
     }
 
@@ -4678,14 +4678,14 @@ V*/
     if (*ndimen == 1 && *ncf1mx == *ncf2mx) {
 	nboct = *ncf2mx << 3;
 	if (*isenmsc == 1) {
-	    AdvApp2Var_SysBase::mcrfill_((integer *)&nboct, 
-		     (char *)&courb1[courb1_offset], 
-		     (char *)&courb2[courb2_offset]);
+	    AdvApp2Var_SysBase::mcrfill_(&nboct, 
+		     &courb1[courb1_offset], 
+		     &courb2[courb2_offset]);
 	}
 	if (*isenmsc == -1) {
-	    AdvApp2Var_SysBase::mcrfill_((integer *)&nboct, 
-		     (char *)&courb2[courb2_offset], 
-		     (char *)&courb1[courb1_offset]);
+	    AdvApp2Var_SysBase::mcrfill_(&nboct, 
+		     &courb2[courb2_offset], 
+		     &courb1[courb1_offset]);
 	}
 	*iercod = -3136;
 	goto L9999;
@@ -4756,7 +4756,7 @@ int AdvApp2Var_MathBase::mmfmtb1_(integer *maxsz1,
     /* Local variables */
     static doublereal work[1];
     static integer ilong, isize, ii, jj, ier;
-    static long int iofst,iipt, jjpt;
+    static intptr_t iofst,iipt, jjpt;
 
 
 /************************************************************************
@@ -4844,9 +4844,9 @@ int AdvApp2Var_MathBase::mmfmtb1_(integer *maxsz1,
 /* L100: */
     }
     ilong = isize << 3;
-    AdvApp2Var_SysBase::mcrfill_((integer *)&ilong, 
-	     (char *)&work[iofst], 
-	     (char *)&table2[table2_offset]);
+    AdvApp2Var_SysBase::mcrfill_(&ilong, 
+	     &work[iofst], 
+	     &table2[table2_offset]);
 
 /* -------------- The number of elements of TABLE2 is returned ------------ 
 */
@@ -5018,8 +5018,8 @@ int AdvApp2Var_MathBase::mmgaus1_(integer *ndimf,
     --saux1;
 
     /* Function Body */
-    AdvApp2Var_SysBase::mvriraz_((integer *)ndimf, 
-	     (char *)&somme[1]);
+    AdvApp2Var_SysBase::mvriraz_(ndimf, 
+	     &somme[1]);
     *iercod = 0;
 
 /* ****** Loading of coefficients U and H ** */
@@ -5269,8 +5269,8 @@ L100:
 /*     Init. matrix identity : */
 
     ncmat = 36;
-    AdvApp2Var_SysBase::mvriraz_((integer *)&ncmat, 
-	     (char *)miden);
+    AdvApp2Var_SysBase::mvriraz_(&ncmat, 
+	     miden);
 
     for (ii = 1; ii <= 6; ++ii) {
 	miden[ii + ii * 6 - 7] = 1.;
@@ -5281,7 +5281,7 @@ L100:
 
 /*     Init to 0 of table CMHERM */
 
-    AdvApp2Var_SysBase::mvriraz_((integer *)&c__576, (char *)mmcmher_.cmherm);
+    AdvApp2Var_SysBase::mvriraz_(&c__576, mmcmher_.cmherm);
 
 /*     Calculation by solution of linear systems */
 
@@ -5799,7 +5799,7 @@ int AdvApp2Var_MathBase::mmhjcan_(integer *ndimen,
 /*     CONVERSION OF THE COEFFICIENTS OF THE PART OF THE CURVE EXPRESSED */
 /*     IN HERMIT BASE, INTO THE CANONIC BASE */
 
-	    AdvApp2Var_SysBase::mvriraz_((integer *)&ncoeff, (char *)taux1);
+	    AdvApp2Var_SysBase::mvriraz_(&ncoeff, taux1);
 
 	    i__3 = aux2;
 	    for (k = 1; k <= i__3; ++k) {
@@ -6042,17 +6042,17 @@ L70:
     nlgn = *nbrlgn - inser;
     if (nlgn > 0) {
 	noct = (*ncolmx << 3) * nlgn;
-	AdvApp2Var_SysBase::mcrfill_((integer *)&noct, 
-		 (char *)&tabtri[inser * tabtri_dim1 + 1], 
-		 (char *)&tabtri[(inser + 1)* tabtri_dim1 + 1]);
+	AdvApp2Var_SysBase::mcrfill_(&noct, 
+		 &tabtri[inser * tabtri_dim1 + 1], 
+		 &tabtri[(inser + 1)* tabtri_dim1 + 1]);
     }
 
 /* --- Copy line */
 
     noct = *nbrcol << 3;
-    AdvApp2Var_SysBase::mcrfill_((integer *)&noct, 
-	     (char *)&ajoute[1], 
-	     (char *)&tabtri[inser * tabtri_dim1 + 1]);
+    AdvApp2Var_SysBase::mcrfill_(&noct, 
+	     &ajoute[1], 
+	     &tabtri[inser * tabtri_dim1 + 1]);
 
     goto L9999;
 
@@ -6081,7 +6081,7 @@ L9999:
 //function : AdvApp2Var_MathBase::mmjacan_
 //purpose  : 
 //=======================================================================
- int AdvApp2Var_MathBase::mmjacan_(integer *ideriv, 
+ int AdvApp2Var_MathBase::mmjacan_(const integer *ideriv, 
 			    integer *ndeg, 
 			    doublereal *poljac, 
 			    doublereal *polcan)
@@ -6224,10 +6224,10 @@ L9999:
 //function : AdvApp2Var_MathBase::mmjaccv_
 //purpose  : 
 //=======================================================================
- int AdvApp2Var_MathBase::mmjaccv_(integer *ncoef, 
-			    integer *ndim, 
-			    integer *ider, 
-			    doublereal *crvlgd,
+ int AdvApp2Var_MathBase::mmjaccv_(const integer *ncoef, 
+			    const integer *ndim, 
+			    const integer *ider, 
+			    const doublereal *crvlgd,
 			    doublereal *polaux,
 			    doublereal *crvcan)
 
@@ -6751,8 +6751,8 @@ L9900:
 /* Computing MAX */
     i__1 = iorjac + 1;
     nwcof = advapp_max(i__1,1);
-    AdvApp2Var_SysBase::mvriraz_((integer *)&nwcof, 
-	     (char *)wpoly);
+    AdvApp2Var_SysBase::mvriraz_(&nwcof, 
+	     wpoly);
     wpoly[0] = 1.;
     if (*iordre == 2) {
 	wpoly[2] = -3.;
@@ -6945,8 +6945,8 @@ L9999:
 
     /* Function Body */
     isize = *ndim << 3;
-    AdvApp2Var_SysBase::miraz_((integer *)&isize, 
-	   (char *)&pntcrb[1]);
+    AdvApp2Var_SysBase::miraz_(&isize, 
+	   &pntcrb[1]);
 
     if (*ncoeff <= 0) {
 	goto L9999;
@@ -7500,11 +7500,11 @@ L9999:
     static logical ldbg;
     static doublereal mcho[100];
     static integer jmin, jmax, i__, j, k, l;
-    static long int iofv1, iofv2, iofv3, iofv4;
+    static intptr_t iofv1, iofv2, iofv3, iofv4;
     static doublereal v1[100], v2[100], v3[100], v4[100];
     static integer deblig, dimhch;
     static doublereal hchole[100];
-    static long int iofmch, iofmam, iofhch;
+    static intptr_t iofmch, iofmam, iofhch;
     static doublereal matsym[100];
     static integer ier;
     static integer aux;
@@ -7695,9 +7695,9 @@ L9999:
 
 	i__1 = *gdimen;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    AdvApp2Var_SysBase::mvriraz_((integer *)hdimen, (char *)&v1[iofv1]);
-	    AdvApp2Var_SysBase::mvriraz_((integer *)hdimen, (char *)&v3[iofv3]);
-	    AdvApp2Var_SysBase::mvriraz_((integer *)gdimen, (char *)&v4[iofv4]);
+	    AdvApp2Var_SysBase::mvriraz_(hdimen, &v1[iofv1]);
+	    AdvApp2Var_SysBase::mvriraz_(hdimen, &v3[iofv3]);
+	    AdvApp2Var_SysBase::mvriraz_(gdimen, &v4[iofv4]);
 	    jmin = gposit[i__ * 3 + 3];
 	    jmax = gposit[i__ * 3 + 1] + gposit[i__ * 3 + 3] - 1;
 	    aux = gposit[i__ * 3 + 2] - gposit[i__ * 3 + 1] - jmin + 1;
@@ -7733,7 +7733,7 @@ L9999:
 /*     WITH L=V4 */
 
 
-	AdvApp2Var_SysBase::mvriraz_((integer *)gdimen, (char *)&v4[iofv4]);
+	AdvApp2Var_SysBase::mvriraz_(gdimen, &v4[iofv4]);
 	AdvApp2Var_SysBase::macrar8_(mnstoc, &c__100, mcho, &iofmch, &ier);
 	if (ier > 0) {
 	    goto L9102;
@@ -7754,7 +7754,7 @@ L9999:
 */
 /*                                                      = V1 */
 
-	AdvApp2Var_SysBase::mvriraz_((integer *)hdimen, (char *)&v1[iofv1]);
+	AdvApp2Var_SysBase::mvriraz_(hdimen, &v1[iofv1]);
 	mmtmave_(gdimen, hdimen, &gposit[4], gnstoc, &matsyg[1], &v4[iofv4], &
 		v1[iofv1], &ier);
 	if (ier > 0) {
@@ -8478,9 +8478,9 @@ L9999:
 
     ilong = nsur2 << 3;
     ideb = nsur2 * (nsur2 - 1) / 2 + 1;
-    AdvApp2Var_SysBase::mcrfill_((integer *)&ilong, 
-	     (char *)&mlgdrtl_.rootab[ideb + nmod2 * 465 - 1], 
-	     (char *)&rtlegd[1]);
+    AdvApp2Var_SysBase::mcrfill_(&ilong, 
+	     &mlgdrtl_.rootab[ideb + nmod2 * 465 - 1], 
+	     &rtlegd[1]);
 
 /* ----------------------------- The end -------------------------------- 
 */
@@ -9713,7 +9713,7 @@ L9999:
 
     vnorm = AdvApp2Var_MathBase::mzsnorm_(ndimen, &vector[1]);
     if (vnorm <= eps0) {
-	AdvApp2Var_SysBase::mvriraz_((integer *)ndimen, (char *)&vecnrm[1]);
+	AdvApp2Var_SysBase::mvriraz_(ndimen, &vecnrm[1]);
 	*iercod = 101;
 	goto L9999;
     }

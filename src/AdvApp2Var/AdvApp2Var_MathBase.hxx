@@ -124,12 +124,12 @@ class AdvApp2Var_MathBase {
 
   Standard_EXPORT static int mmeps1_(doublereal *epsilo);
 
-  Standard_EXPORT static int mmfmca8_(integer *ndimen,
-				      integer *ncoefu,
-				      integer *ncoefv,
-				      integer *ndimax, 
-				      integer *ncfumx, 
-				      integer *ncfvmx, 
+  Standard_EXPORT static int mmfmca8_(const integer *ndimen,
+				      const integer *ncoefu,
+				      const integer *ncoefv,
+				      const integer *ndimax, 
+				      const integer *ncfumx, 
+				      const integer *ncfvmx, 
 				      doublereal *tabini,
 				      doublereal *tabres);
 
@@ -190,10 +190,10 @@ class AdvApp2Var_MathBase {
 				      doublereal *epseg, 
 				      integer *iercod);
 
-  Standard_EXPORT static int mmjaccv_(integer *ncoef, 
-				      integer *ndim, 
-				      integer *ider, 
-				      doublereal *crvlgd,
+  Standard_EXPORT static int mmjaccv_(const integer *ncoef, 
+				      const integer *ndim, 
+				      const integer *ider, 
+				      const doublereal *crvlgd,
 				      doublereal *polaux,
 				      doublereal *crvcan);
 
@@ -292,7 +292,7 @@ class AdvApp2Var_MathBase {
 				      doublereal *curveo, 
 				      doublereal *curve);
 
-  Standard_EXPORT static int mmjacan_(integer *ideriv, 
+  Standard_EXPORT static int mmjacan_(const integer *ideriv, 
 				      integer *ndeg, 
 				      doublereal *poljac, 
 				      doublereal *polcan);

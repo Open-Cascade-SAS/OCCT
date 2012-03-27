@@ -21,6 +21,11 @@
 
 #include <Standard_Macro.hxx>
 #include <AdvApp2Var_Data_f2c.hxx>
+#if _MSC_VER
+#include <stddef.h>
+#else
+#include <stdint.h>
+#endif
 
 class AdvApp2Var_SysBase {
  public: 
@@ -32,18 +37,18 @@ class AdvApp2Var_SysBase {
   //
   Standard_EXPORT static int mcrdelt_(integer *iunit, 
 				      integer *isize, 
-				      doublereal *t, 
-				      long int *iofset, 
+				      void *t, 
+				      intptr_t *iofset, 
 				      integer *iercod);
 
   Standard_EXPORT static int mcrfill_(integer *size, 
-				      char *tin, 
-				      char *tout);
+				      void *tin, 
+				      void *tout);
 
   Standard_EXPORT static int mcrrqst_(integer *iunit, 
 				      integer *isize, 
-				      doublereal *t, 
-				      long int *iofset, 
+				      void *t, 
+				      intptr_t *iofset, 
 				      integer *iercod);
   Standard_EXPORT static integer mnfndeb_();
 
@@ -57,23 +62,23 @@ class AdvApp2Var_SysBase {
   Standard_EXPORT static int macrai4_(integer *nbelem, 
 				      integer *maxelm, 
 				      integer *itablo,
-				      long int *iofset,
+				      intptr_t *iofset,
 				      integer *iercod);
   Standard_EXPORT static int macrar8_(integer *nbelem, 
 				      integer *maxelm,
 				      doublereal *xtablo, 
-				      long int *iofset, 
+				      intptr_t *iofset, 
 				      integer *iercod);
   Standard_EXPORT static int macrdi4_(integer *nbelem, 
 				      integer *maxelm, 
 				      integer *itablo, 
-				      long int *iofset, 
+				      intptr_t *iofset, 
 				      integer *iercod);
 
   Standard_EXPORT static int macrdr8_(integer *nbelem,
 				      integer *maxelm, 
 				      doublereal *xtablo, 
-				      long int *iofset, 
+				      intptr_t *iofset, 
 				      integer *iercod);
   Standard_EXPORT static int maermsg_(const char *cnompg, 
 				      integer *icoder, 
@@ -88,7 +93,7 @@ class AdvApp2Var_SysBase {
   Standard_EXPORT static int mgsomsg_(const char *nomprg, 
 				      ftnlen nomprg_len);
   Standard_EXPORT static void miraz_(integer *taille,
-				     char *adt);
+				     void *adt);
   Standard_EXPORT static int msifill_(integer *nbintg, 
 				      integer *ivecin,
 				      integer *ivecou);
@@ -98,7 +103,7 @@ class AdvApp2Var_SysBase {
   Standard_EXPORT static int mswrdbg_(const char *ctexte, 
 				      ftnlen ctexte_len);
   Standard_EXPORT static void mvriraz_(integer *taille,
-				       char *adt);
+				       void*adt);
   
 };
 

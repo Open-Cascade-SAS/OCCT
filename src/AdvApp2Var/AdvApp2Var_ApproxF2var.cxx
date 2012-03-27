@@ -798,7 +798,7 @@ int mma1fdi_(integer *ndimen,
 /* ---------------------- Legendre polynom of degree NBROOT ------------------- 
 */
 
-    foncnp.Evaluate (ndimen,
+    (*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (ndimen, 
 	      &uvfonc[3], 
 	      &uvfonc[5], 
 	      isofav, 
@@ -870,8 +870,9 @@ int mma1fdi_(integer *ndimen,
 	    bid1 = (uvfonc[6] - uvfonc[5]) / 2.;
 	    i__1 = *iordre;
 	    for (iderv = 1; iderv <= i__1; ++iderv) {
-		foncnp.Evaluate (ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst,
-			&nbp, ttable, &ideru, &iderv, &contr1[(iderv + 1) * 
+		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+			nbp, ttable, &ideru, &iderv, &contr1[(iderv + 1) * 
 			contr1_dim1 + 1], iercod);
 		if (*iercod > 0) {
 		    goto L9999;
@@ -880,8 +881,9 @@ int mma1fdi_(integer *ndimen,
 	    }
 	    i__1 = *iordre;
 	    for (iderv = 1; iderv <= i__1; ++iderv) {
-		foncnp.Evaluate (ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst,
-			&nbp, &ttable[*nbroot + 1], &ideru, &iderv, &contr2[(
+		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+			nbp, &ttable[*nbroot + 1], &ideru, &iderv, &contr2[(
 			iderv + 1) * contr2_dim1 + 1], iercod);
 		if (*iercod > 0) {
 		    goto L9999;
@@ -894,8 +896,9 @@ int mma1fdi_(integer *ndimen,
 	    bid1 = (uvfonc[4] - uvfonc[3]) / 2.;
 	    i__1 = *iordre;
 	    for (ideru = 1; ideru <= i__1; ++ideru) {
-		foncnp.Evaluate (ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst,
-			&nbp, ttable, &ideru, &iderv, &contr1[(ideru + 1) * 
+		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+			nbp, ttable, &ideru, &iderv, &contr1[(ideru + 1) * 
 			contr1_dim1 + 1], iercod);
 		if (*iercod > 0) {
 		    goto L9999;
@@ -904,8 +907,9 @@ int mma1fdi_(integer *ndimen,
 	    }
 	    i__1 = *iordre;
 	    for (ideru = 1; ideru <= i__1; ++ideru) {
-		foncnp.Evaluate (ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst,
-			&nbp, &ttable[*nbroot + 1], &ideru, &iderv, &contr2[(
+		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+			nbp, &ttable[*nbroot + 1], &ideru, &iderv, &contr2[(
 			ideru + 1) * contr2_dim1 + 1], iercod);
 		if (*iercod > 0) {
 		    goto L9999;
@@ -1090,7 +1094,7 @@ int mma1fer_(integer *,//ndimen,
 		i__2 = ndses;
 		for (kk = 1; kk <= i__2; ++kk) {
 		  AdvApp2Var_SysBase::mvriraz_(&nbr0, 
-			     (char *)&crvjac[ncfnw + (idim + kk - 1) * crvjac_dim1]);
+			     &crvjac[ncfnw + (idim + kk - 1) * crvjac_dim1]);
 /* L200: */
 		}
 	    }
@@ -2235,14 +2239,14 @@ int AdvApp2Var_ApproxF2var::mma2can_(const integer *ncfmxu,
 	    pataux[1], &patcan[patcan_offset]);
 
 /* --> Write all in a greater table */
-    AdvApp2Var_MathBase::mmfmca8_((integer *)ncoefu, 
-	     (integer *)ncoefv, 
-	     (integer *)ndimen, 
-	     (integer *)ncfmxu, 
-	     (integer *)ncfmxv, 
-	     (integer *)ndimen, 
-	     (doublereal *)&patcan[patcan_offset], 
-	     (doublereal *)&patcan[patcan_offset]);
+    AdvApp2Var_MathBase::mmfmca8_(ncoefu, 
+	     ncoefv, 
+	     ndimen, 
+	     ncfmxu, 
+	     ncfmxv, 
+	     ndimen, 
+	     &patcan[patcan_offset], 
+	     &patcan[patcan_offset]);
 
 /* --> Complete with zeros the resulting table. */
     ilon1 = *ncfmxu - *ncoefu;
@@ -2253,13 +2257,13 @@ int AdvApp2Var_ApproxF2var::mma2can_(const integer *ncfmxu,
 	    i__2 = *ncoefv;
 	    for (ii = 1; ii <= i__2; ++ii) {
 		AdvApp2Var_SysBase::mvriraz_(&ilon1, 
-			 (char *)&patcan[*ncoefu + 1 + (ii + nd * patcan_dim2) * patcan_dim1]);
+			 &patcan[*ncoefu + 1 + (ii + nd * patcan_dim2) * patcan_dim1]);
 /* L110: */
 	    }
 	}
 	if (ilon2 > 0) {
 	    AdvApp2Var_SysBase::mvriraz_(&ilon2, 
-		     (char *)&patcan[(*ncoefv + 1 + nd * patcan_dim2) * patcan_dim1 + 1]);
+		     &patcan[(*ncoefv + 1 + nd * patcan_dim2) * patcan_dim1 + 1]);
 	}
 /* L100: */
     }
@@ -3316,12 +3320,12 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 
     /* Local variables */
     static integer ilong;
-    static long int iofwr;
+    static intptr_t iofwr;
     static doublereal wrkar[1];
     static integer iszwr;
     static integer ibb, ier;
     static integer isz1, isz2, isz3, isz4;
-    static long int ipt1, ipt2, ipt3, ipt4;
+    static intptr_t ipt1, ipt2, ipt3, ipt4;
 
 
 
@@ -3486,11 +3490,11 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 */
 
     ilong = (*nbpntu / 2 + 1) * (*nbpntv / 2 + 1) * *ndimen;
-    AdvApp2Var_SysBase::mvriraz_(&ilong, (char *)&sosotb[sosotb_offset]);
-    AdvApp2Var_SysBase::mvriraz_(&ilong, (char *)&diditb[diditb_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&ilong, &sosotb[sosotb_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&ilong, &diditb[diditb_offset]);
     ilong = *nbpntu / 2 * (*nbpntv / 2) * *ndimen;
-    AdvApp2Var_SysBase::mvriraz_(&ilong, (char *)&soditb[soditb_offset]);
-    AdvApp2Var_SysBase::mvriraz_(&ilong, (char *)&disotb[disotb_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&ilong, &soditb[soditb_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&ilong, &disotb[disotb_offset]);
     if (*iordru == -1 && *iordrv == -1) {
 	goto L9999;
     }
@@ -3629,12 +3633,12 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(integer *numdec,
 
     /* Local variables */
     static logical ldbg;
-    static long int iofwr;
+    static intptr_t iofwr;
     static doublereal wrkar[1];
     static integer iszwr;
     static integer ier;
     static integer isz1, isz2, isz3, isz4, isz5, isz6, isz7;
-    static long int ipt1, ipt2, ipt3, ipt4, ipt5, ipt6, ipt7;
+    static intptr_t ipt1, ipt2, ipt3, ipt4, ipt5, ipt6, ipt7;
 
 
 
@@ -4117,12 +4121,12 @@ int mma2ce2_(integer *numdec,
     *ndegpu = *ndminu;
     *ndegpv = *ndminv;
 /* --> For the moment, max errors are null */
-    AdvApp2Var_SysBase::mvriraz_(nbsesp, (char *)&errmax[1]);
+    AdvApp2Var_SysBase::mvriraz_(nbsesp, &errmax[1]);
     nd = *ndimen << 2;
-    AdvApp2Var_SysBase::mvriraz_(&nd, (char *)&vecerr[vecerr_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&nd, &vecerr[vecerr_offset]);
 /* --> and the square, too. */
     nd = (*ndjacu + 1) * (*ndjacv + 1) * *ndimen;
-    AdvApp2Var_SysBase::mvriraz_(&nd, (char *)&patjac[patjac_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&nd, &patjac[patjac_offset]);
 
     i2rdu = (*iordru + 1) << 1;
     i2rdv = (*iordrv + 1) << 1;
@@ -5601,8 +5605,9 @@ int mma2ds2_(integer *ndimen,
     i__1 = nvroo;
     for (iv = 1; iv <= i__1; ++iv) {
 	tcons = blinv + alinv * vrootb[iv];
-	foncnp.Evaluate (ndimen, dbfn1, dbfn2, iiuouv, &tcons, nbpntu,
-		&ttable[1], &c__0, &c__0, &fpntab[fpntab_offset], iercod);
+	(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+        ndimen, dbfn1, dbfn2, iiuouv, &tcons, nbpntu, &
+		ttable[1], &c__0, &c__0, &fpntab[fpntab_offset], iercod);
 	if (*iercod > 0) {
 	    goto L9999;
 	}
@@ -5642,8 +5647,9 @@ int mma2ds2_(integer *ndimen,
 
     if (*nbpntv % 2 != 0) {
 	tcons = blinv;
-	foncnp.Evaluate (ndimen, dbfn1, dbfn2, iiuouv, &tcons, nbpntu,
-		&ttable[1], &c__0, &c__0, &fpntab[fpntab_offset], iercod);
+	(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+        ndimen, dbfn1, dbfn2, iiuouv, &tcons, nbpntu, &
+		ttable[1], &c__0, &c__0, &fpntab[fpntab_offset], iercod);
 	if (*iercod > 0) {
 	    goto L9999;
 	}
@@ -5672,8 +5678,9 @@ int mma2ds2_(integer *ndimen,
     i__1 = nvroo;
     for (iv = 1; iv <= i__1; ++iv) {
 	tcons = alinv * vrootb[(*nbpntv + 1) / 2 + iv] + blinv;
-	foncnp.Evaluate (ndimen, dbfn1, dbfn2, iiuouv, &tcons, nbpntu,
-		&ttable[1], &c__0, &c__0, &fpntab[fpntab_offset], iercod);
+	(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
+        ndimen, dbfn1, dbfn2, iiuouv, &tcons, nbpntu, &
+		ttable[1], &c__0, &c__0, &fpntab[fpntab_offset], iercod);
 	if (*iercod > 0) {
 	    goto L9999;
 	}
@@ -6165,7 +6172,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
 	    ndwrk;
     static doublereal wrkar[1];
     static integer nupil;
-    static long int iofwr;
+    static intptr_t iofwr;
     static doublereal uvpav[4]	/* was [2][2] */;
     static integer nd, ii;
     static integer ibb;
@@ -6174,7 +6181,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
   static integer ncb1;
     static doublereal eps3;
     static integer isz1, isz2, isz3, isz4, isz5;
-    static long int ipt1, ipt2, ipt3, ipt4, ipt5,iptt, jptt;
+    static intptr_t ipt1, ipt2, ipt3, ipt4, ipt5,iptt, jptt;
 
 /* ********************************************************************** 
 */
@@ -6376,7 +6383,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
 */
 
     ilong = *ndimen * *ncflim * *nbcrmx;
-    AdvApp2Var_SysBase::mvriraz_(&ilong, (char *)&courbe[courbe_offset]);
+    AdvApp2Var_SysBase::mvriraz_(&ilong, &courbe[courbe_offset]);
 
 /* ********************************************************************** 
 */
@@ -6577,7 +6584,7 @@ L1000:
 				      &wrkar[ipt2]);
 	/*pkv t*/
 	ilong = *ndimen * *ncflim;
-	AdvApp2Var_SysBase::mvriraz_(&ilong, (char*)&wrkar[ipt5]);
+	AdvApp2Var_SysBase::mvriraz_(&ilong, &wrkar[ipt5]);
 /* -> Passage to canonic base (-1,1) (result in WRKAR(IPT5)). 
 */
 	ndgre = ncoeff[ncb1] - 1;
@@ -6633,7 +6640,7 @@ L1000:
 	ideb = *nbcrbe + 1;
 	ideb1 = ideb + 1;
 	ilong = (nupil - *nbcrbe) << 3;
-	AdvApp2Var_SysBase::mcrfill_(&ilong, (char *)&tabdec[ideb],(char *)&tabdec[ideb1]);
+	AdvApp2Var_SysBase::mcrfill_(&ilong, &tabdec[ideb],&tabdec[ideb1]);
 	tabdec[ideb] = tmil;
 	++nupil;
     }
@@ -7908,8 +7915,8 @@ L1000:
     for (kjac = 0; kjac <= i__1; ++kjac) {
 	iptt = iptdb + kjac * (*nbpnts / 2) + 1;
 	AdvApp2Var_SysBase::mcrfill_(&ilong, 
-		 (char *)&mmapgss_.gslxjs[iptt - 1], 
-		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
+		 &mmapgss_.gslxjs[iptt - 1], 
+		 &cgauss[kjac * cgauss_dim1 + 1]);
 /* L100: */
     }
 /* --> Case when the number of points is uneven. */
@@ -7939,8 +7946,8 @@ L2000:
     for (kjac = 0; kjac <= i__1; ++kjac) {
 	iptt = iptdb + kjac * (*nbpnts / 2) + 1;
 	AdvApp2Var_SysBase::mcrfill_(&ilong, 
-		 (char *)&mmapgs0_.gslxj0[iptt - 1], 
-		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
+		 &mmapgs0_.gslxj0[iptt - 1], 
+		 &cgauss[kjac * cgauss_dim1 + 1]);
 /* L200: */
     }
 /* --> Case when the number of points is uneven. */
@@ -7970,8 +7977,8 @@ L3000:
     for (kjac = 0; kjac <= i__1; ++kjac) {
 	iptt = iptdb + kjac * (*nbpnts / 2) + 1;
 	AdvApp2Var_SysBase::mcrfill_(&ilong, 
-		 (char *)&mmapgs1_.gslxj1[iptt - 1], 
-		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
+		 &mmapgs1_.gslxj1[iptt - 1], 
+		 &cgauss[kjac * cgauss_dim1 + 1]);
 /* L300: */
     }
 /* --> Case when the number of points is uneven. */
@@ -8001,8 +8008,8 @@ L4000:
     for (kjac = 0; kjac <= i__1; ++kjac) {
 	iptt = iptdb + kjac * (*nbpnts / 2) + 1;
 	AdvApp2Var_SysBase::mcrfill_(&ilong, 
-		 (char *)&mmapgs2_.gslxj2[iptt - 1], 
-		 (char *)&cgauss[kjac * cgauss_dim1 + 1]);
+		 &mmapgs2_.gslxj2[iptt - 1], 
+		 &cgauss[kjac * cgauss_dim1 + 1]);
 /* L400: */
     }
 /* --> Cas of uneven number of points. */
@@ -8138,12 +8145,12 @@ int mmjacpt_(const integer *ndimen,
 /*   Passage into canonical by u. */
 
     kdim = *ndimen * *ncoefv;
-    AdvApp2Var_MathBase::mmjaccv_((integer *)ncoefu, 
-	     (integer *)&kdim, 
-	     (integer *)iordru, 
-	     (doublereal *)&ptclgd[ptclgd_offset], 
-	     (doublereal *)&ptcaux[ptcaux_offset], 
-	     (doublereal *)&ptccan[ptccan_offset]);
+    AdvApp2Var_MathBase::mmjaccv_(ncoefu, 
+	     &kdim, 
+	     iordru, 
+	     &ptclgd[ptclgd_offset], 
+	     &ptcaux[ptcaux_offset], 
+	     &ptccan[ptccan_offset]);
 
 /*   Swapping of u and v. */
 
@@ -8166,12 +8173,12 @@ int mmjacpt_(const integer *ndimen,
 /*   Passage into canonical by v. */
 
     kdim = *ndimen * *ncoefu;
-    AdvApp2Var_MathBase::mmjaccv_((integer *)ncoefv, 
-	     (integer *)&kdim, 
-	     (integer *)iordrv, 
-	     (doublereal *)&ptcaux[((ptcaux_dim3 + 1) * ptcaux_dim2 + 1) * ptcaux_dim1 + 1], 
-	     (doublereal *)&ptccan[ptccan_offset], 
-	     (doublereal *)&ptcaux[(((ptcaux_dim3 << 1) + 1) * ptcaux_dim2 + 1) * ptcaux_dim1 + 1]);
+    AdvApp2Var_MathBase::mmjaccv_(ncoefv, 
+	     &kdim, 
+	     iordrv, 
+	     &ptcaux[((ptcaux_dim3 + 1) * ptcaux_dim2 + 1) * ptcaux_dim1 + 1], 
+	     &ptccan[ptccan_offset], 
+	     &ptcaux[(((ptcaux_dim3 << 1) + 1) * ptcaux_dim2 + 1) * ptcaux_dim1 + 1]);
 
 /*  Swapping of u and v. */
 

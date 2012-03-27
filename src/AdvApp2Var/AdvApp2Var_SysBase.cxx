@@ -22,6 +22,7 @@
 #include <AdvApp2Var_Data_f2c.hxx>
 #include <AdvApp2Var_SysBase.hxx>
 #include <AdvApp2Var_Data.hxx>
+#include <Standard.hxx>
 
 
 static 
@@ -37,15 +38,15 @@ static
 int macrchk_();
 
 static
-int macrclw_(long int *iadfld, 
-	     long int *iadflf, 
-	     integer  *nalloc);
-static
-int macrerr_(long int *iad,
+int macrclw_(intptr_t *iadfld, 
+	     intptr_t *iadflf, 
 	     integer *nalloc);
 static
-int macrgfl_(long int *iadfld, 
-	     long int *iadflf, 
+int macrerr_(intptr_t *iad,
+	     intptr_t *nalloc);
+static
+int macrgfl_(intptr_t *iadfld, 
+	     intptr_t *iadflf, 
 	     integer  *iphase, 
 	     integer  *iznuti);
 static
@@ -58,8 +59,8 @@ int macrmsg_(const char *crout,
 	     ftnlen ct_len);
 
 static
-int macrstw_(integer *iadfld, 
-	     integer *iadflf, 
+int macrstw_(intptr_t *iadfld, 
+	     intptr_t *iadflf, 
 	     integer *nalloc);
 
 static
@@ -107,30 +108,30 @@ int matrsym_(const char *cnmsym,
 static
 int mcrcomm_(integer *kop, 
 	     integer *noct, 
-	     long int *iadr, 
+	     intptr_t *iadr, 
 	     integer *ier);
 
 static
 int mcrfree_(integer *ibyte,
-	     uinteger *iadr,
+	     void* *iadr,
 	     integer *ier);
 
 static
 int mcrgetv_(integer *sz,
-	     uinteger *iad,
+	     void* *iad,
 	     integer *ier);
 
 static
 int mcrlist_(integer *ier);
 
 static
-int mcrlocv_(long int t,
-	     long int *l);
+int mcrlocv_(void* t,
+	     intptr_t *l);
 
 
 /* Structures */
 static struct {
-    long int icore[12000];	
+    intptr_t icore[12000];	
     integer ncore, lprot;
 } mcrgene_;
 
@@ -241,7 +242,7 @@ int AdvApp2Var_SysBase::macinit_(integer *imode,
 int AdvApp2Var_SysBase::macrai4_(integer *nbelem, 
 				 integer *maxelm, 
 				 integer *itablo,
-				 long int *iofset,
+				 intptr_t *iofset,
 				 integer *iercod)
 
 {
@@ -298,7 +299,7 @@ int AdvApp2Var_SysBase::macrai4_(integer *nbelem,
   iunit = sizeof(integer);    
   /* Function Body */
   if (*nbelem > *maxelm) {
-    AdvApp2Var_SysBase::mcrrqst_(&iunit, nbelem, (doublereal *)&itablo[1], iofset, iercod);
+    AdvApp2Var_SysBase::mcrrqst_(&iunit, nbelem, &itablo[1], iofset, iercod);
   } else {
     *iercod = 0;
     *iofset = 0;
@@ -313,7 +314,7 @@ int AdvApp2Var_SysBase::macrai4_(integer *nbelem,
 int AdvApp2Var_SysBase::macrar8_(integer *nbelem, 
 				 integer *maxelm,
 				 doublereal *xtablo, 
-				 long int *iofset, 
+				 intptr_t *iofset, 
 				 integer *iercod)
 
 {
@@ -398,9 +399,9 @@ int macrchk_()
   
   /* Local variables */
   static integer  i__, j;
-  static long int ioff;
+  static intptr_t ioff;
   static doublereal t[1];
-  static integer loc;
+  static intptr_t loc;
   
 /* ***********************************************************************
  */
@@ -485,8 +486,7 @@ int macrchk_()
  */
 
 /* CALCULATE ADDRESS OF T */
-  mcrlocv_((long int)t, (long int *)&loc);
-  
+  mcrlocv_(t, &loc);  
   /* CONTROL OF FLAGS IN THE TABLE */
   i__1 = mcrgene_.ncore;
   for (i__ = 1; i__ <= i__1; ++i__) {
@@ -502,8 +502,8 @@ int macrchk_()
 	  /* MSG : '*** ERREUR  : REMOVAL FROM MEMORY OF ADDRESS
 	     E:',ICORE(J,I) */
 	  /*       AND OF RANK ICORE(12,I) */
-	  macrerr_((long int *)&mcrgene_.icore[j + i__ * 12 - 13], 
-		   (integer *)&mcrgene_.icore[i__ * 12 - 1]);
+	  macrerr_(&mcrgene_.icore[j + i__ * 12 - 13], 
+		   &mcrgene_.icore[i__ * 12 - 1]);          
 	  
 	  /* BACK-PARCING IN PHASE OF PRODUCTION */
 	  maostrb_();
@@ -527,8 +527,8 @@ int macrchk_()
 //function : macrclw_
 //purpose  : 
 //=======================================================================
-int macrclw_(long int *,//iadfld, 
-	     long int *,//iadflf, 
+int macrclw_(intptr_t *,//iadfld, 
+	     intptr_t *,//iadflf, 
 	     integer  *)//nalloc)
 
 {
@@ -542,7 +542,7 @@ int macrclw_(long int *,//iadfld,
 int AdvApp2Var_SysBase::macrdi4_(integer *nbelem, 
 				 integer *,//maxelm, 
 				 integer *itablo, 
-				 long int *iofset, /* Offset long (pmn) */
+				 intptr_t *iofset, /* Offset long (pmn) */
 				 integer *iercod)
 
 {
@@ -594,7 +594,7 @@ int AdvApp2Var_SysBase::macrdi4_(integer *nbelem,
   if (*iofset != 0) {
     AdvApp2Var_SysBase::mcrdelt_(&iunit, 
 				 nbelem, 
-				 (doublereal *)&itablo[1], 
+				 &itablo[1], 
 				 iofset, 
 				 iercod);
   } else {
@@ -610,7 +610,7 @@ int AdvApp2Var_SysBase::macrdi4_(integer *nbelem,
 int AdvApp2Var_SysBase::macrdr8_(integer *nbelem,
 				 integer *,//maxelm, 
 				 doublereal *xtablo, 
-				 long int *iofset, 
+				 intptr_t *iofset, 
 				 integer *iercod)
 
 {
@@ -674,8 +674,8 @@ int AdvApp2Var_SysBase::macrdr8_(integer *nbelem,
 //function : macrerr_
 //purpose  : 
 //=======================================================================
-int macrerr_(long int *,//iad,
-	     integer *)//nalloc)
+int macrerr_(intptr_t *,//iad,
+	     intptr_t *)//nalloc)
 
 {
   //static integer c__1 = 1;
@@ -735,8 +735,8 @@ int macrerr_(long int *,//iad,
 //function : macrgfl_
 //purpose  : 
 //=======================================================================
-int macrgfl_(long int *iadfld, 
-	     long int *iadflf, 
+int macrgfl_(intptr_t *iadfld, 
+	     intptr_t *iadflf, 
 	     integer  *iphase, 
 	     integer  *iznuti)
 
@@ -749,7 +749,7 @@ int macrgfl_(long int *iadfld,
   static integer ibid, ienr;
   static doublereal t[1];
   static integer novfl;
-  static long int ioff,iadrfl, iadt;
+  static intptr_t ioff,iadrfl, iadt;
   
   
   /* ***********************************************************************
@@ -845,7 +845,7 @@ int macrgfl_(long int *iadfld,
   }
   
   /*  CALCULATE THE ADDRESS OF T */
-  mcrlocv_((long int)t, (long int *)&iadt);
+  mcrlocv_(t, &iadt);
   
   /* CALCULATE THE OFFSET */
   ioff = (*iadfld - iadt) / 8;
@@ -1167,8 +1167,8 @@ t !! ')", 80L, 54L);
 //function : macrstw_
 //purpose  : 
 //=======================================================================
-int macrstw_(integer *,//iadfld, 
-	     integer *,//iadflf, 
+int macrstw_(intptr_t *,//iadfld, 
+	     intptr_t *,//iadflf, 
 	     integer *)//nalloc)
 
 {
@@ -1434,14 +1434,14 @@ int AdvApp2Var_SysBase::maitbr8_(integer *itaill,
     if (nbfois >= 1) {
       i__1 = nbfois;
       for (nufois = 1; nufois <= i__1; ++nufois) {
-	AdvApp2Var_SysBase::mcrfill_(&c__504, (char *)buff0, (char *)&xtab[(nufois - 1) * 63 + 1]);
+	AdvApp2Var_SysBase::mcrfill_(&c__504, buff0, &xtab[(nufois - 1) * 63 + 1]);
 	/* L1000: */
       }
     }
     
     if (nreste >= 1) {
       i__1 = nreste << 3;
-      AdvApp2Var_SysBase::mcrfill_(&i__1, (char *)buff0, (char *)&xtab[noffst + 1]);
+      AdvApp2Var_SysBase::mcrfill_(&i__1, buff0, &xtab[noffst + 1]);
     }
   } else {
     for (i__ = 1; i__ <= 63; ++i__) {
@@ -1451,14 +1451,14 @@ int AdvApp2Var_SysBase::maitbr8_(integer *itaill,
     if (nbfois >= 1) {
       i__1 = nbfois;
       for (nufois = 1; nufois <= i__1; ++nufois) {
-	AdvApp2Var_SysBase::mcrfill_(&c__504, (char *)buffx, (char *)&xtab[(nufois - 1) * 63 + 1]);
+	AdvApp2Var_SysBase::mcrfill_(&c__504, buffx, &xtab[(nufois - 1) * 63 + 1]);
 	/* L3000: */
       }
     }
     
     if (nreste >= 1) {
       i__1 = nreste << 3;
-      AdvApp2Var_SysBase::mcrfill_(&i__1, (char *)buffx, (char *)&xtab[noffst + 1]);
+      AdvApp2Var_SysBase::mcrfill_(&i__1, buffx, &xtab[noffst + 1]);
     }
   }
   
@@ -1837,12 +1837,12 @@ int maoverf_(integer *nbentr,
   /* Exception */
   if (*nbentr < 63) {
     nrest = *nbentr << 3;
-    AdvApp2Var_SysBase::mcrfill_(&nrest, (char *)buff, (char *)&dtable[1]);
+    AdvApp2Var_SysBase::mcrfill_(&nrest, buff, &dtable[1]);
   } else {
     
     /* Start & initialization */
     ioct = 504;
-    AdvApp2Var_SysBase::mcrfill_(&ioct, (char *)buff, (char *)&dtable[1]);
+    AdvApp2Var_SysBase::mcrfill_(&ioct, buff, &dtable[1]);
     indic = 63;
     
     /* Loop. The upper limit is the integer value of the logarithm of base 2
@@ -1852,7 +1852,7 @@ int maoverf_(integer *nbentr,
       ;
     for (ibid = 1; ibid <= i__1; ++ibid) {
       
-      AdvApp2Var_SysBase::mcrfill_(&ioct, (char *)&dtable[1], (char *)&dtable[indic + 1]);
+      AdvApp2Var_SysBase::mcrfill_(&ioct, &dtable[1], &dtable[indic + 1]);
       ioct += ioct;
       indic += indic;
       
@@ -1862,7 +1862,7 @@ int maoverf_(integer *nbentr,
     nrest = ( *nbentr - indic ) << 3;
     
     if (nrest > 0) {
-      AdvApp2Var_SysBase::mcrfill_(&nrest, (char *)&dtable[1], (char *)&dtable[indic + 1]);
+      AdvApp2Var_SysBase::mcrfill_(&nrest, &dtable[1], &dtable[indic + 1]);
     }
     
   }
@@ -1993,7 +1993,7 @@ int matrsym_(const char *cnmsym,
 //=======================================================================
 int mcrcomm_(integer *kop, 
 	     integer *noct, 
-	     long int *iadr, 
+	     intptr_t *iadr, 
 	     integer *ier)
 
 {
@@ -2005,10 +2005,11 @@ int mcrcomm_(integer *kop,
   integer i__1, i__2;
   
   /* Local variables */
-  static integer ideb;
+  static intptr_t ideb;
   static doublereal dtab[32000];
-  static long int itab[160]	/* was [4][40] */;
-  static integer ipre, i__, j, k;
+  static intptr_t itab[160]	/* was [4][40] */;
+  static intptr_t ipre;
+  static integer i__, j, k;
   
 
 /************************************************************************
@@ -2116,7 +2117,7 @@ int mcrcomm_(integer *kop,
 	itab[(i__ << 2) - 4] = *noct / 8 + 1;
 	itab[(i__ << 2) - 3] = ipre;
 	itab[(i__ << 2) - 2] = *noct;
-	mcrlocv_((long int)&dtab[ipre - 1], (long int *)iadr);
+	mcrlocv_(&dtab[ipre - 1], iadr);
 	itab[(i__ << 2) - 1] = *iadr;
 	goto L9900;
       }
@@ -2171,8 +2172,8 @@ int mcrcomm_(integer *kop,
 //=======================================================================
 int AdvApp2Var_SysBase::mcrdelt_(integer *iunit, 
 				 integer *isize, 
-				 doublereal *t, 
-				 long int *iofset, 
+				 void *t, 
+				 intptr_t *iofset, 
 				 integer *iercod)
 
 {
@@ -2180,7 +2181,7 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
   static doublereal xbid;
   static integer noct, iver, ksys, i__, n, nrang, 
   ibyte, ier;
-  static long int iadfd,  iadff, iaddr, loc; /* Long adDresses*/
+  static intptr_t iadfd,  iadff, iaddr, loc; /* Les adrresses en long*/
   static integer kop;
   
 /* ***********************************************************************
@@ -2304,16 +2305,13 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
 /*     NBYTE : TOTAL NUMBER OF OCTETS OF ALLOCATIONS */
 /*     MBYTE : MAX NUMBER OF OCTETS */
 
-    /* Parameter adjustments */
-    --t;
-
     /* Function Body */
     *iercod = 0;
 
 /* SEARCH IN MCRGENE */
 
     n = 0;
-    mcrlocv_((long int)&t[1], (long int *)&loc);
+    mcrlocv_(t, &loc);
 
     for (i__ = mcrgene_.ncore; i__ >= 1; --i__) {
 	if (*iunit == mcrgene_.icore[i__ * 12 - 11] && *isize == 
@@ -2334,12 +2332,12 @@ L1100:
 
 /* ALLOCATION RECOGNIZED : RETURN OTHER INFOS */
 
-    ksys = mcrgene_.icore[n * 12 - 7];
-    ibyte = mcrgene_.icore[n * 12 - 6];
+    ksys = static_cast<integer> (mcrgene_.icore[n * 12 - 7]);
+    ibyte = static_cast<integer> (mcrgene_.icore[n * 12 - 6]);
     iaddr = mcrgene_.icore[n * 12 - 5];
     iadfd = mcrgene_.icore[n * 12 - 3];
     iadff = mcrgene_.icore[n * 12 - 2];
-    nrang = mcrgene_.icore[n * 12 - 1];
+    nrang = static_cast<integer> (mcrgene_.icore[n * 12 - 1]);
 
 /*     Control of flags */
 
@@ -2357,7 +2355,7 @@ L1100:
 	}
     } else {
 /* DE-ALLOCATION SYSTEM */
-	mcrfree_((integer *)&ibyte, (uinteger *)&iaddr, (integer *)&ier);
+	mcrfree_(&ibyte, reinterpret_cast<void**> (&iaddr), &ier);
 	if (ier != 0) {
 	    goto L9002;
 	}
@@ -2374,21 +2372,27 @@ L1100:
 	i__ = 2;
     }
     ++mcrstac_.ndelt[i__ - 1];
-    mcrstac_.nbyte[i__ - 1] -= mcrgene_.icore[n * 12 - 11] * 
-	    mcrgene_.icore[n * 12 - 10];
+    mcrstac_.nbyte[i__ - 1] -= static_cast<integer> (mcrgene_.icore[n * 12 - 11] * 
+	    mcrgene_.icore[n * 12 - 10]);
 
 /* REMOVAL OF PARAMETERS IN MCRGENE */
     if (n < 1000) {
 /*	noct = (mcrgene_1.ncore - n) * 48; */
-        noct = (mcrgene_.ncore - n) * 12 * sizeof(long int);
-	AdvApp2Var_SysBase::mcrfill_((integer *)&noct, 
-				     (char *)&mcrgene_.icore[(n + 1) * 12 - 12], 
-				     (char *)&mcrgene_.icore[n * 12 - 12]);
+        noct = (mcrgene_.ncore - n) * 12 * sizeof(mcrgene_.icore[0]);
+	AdvApp2Var_SysBase::mcrfill_(&noct, 
+				     &mcrgene_.icore[(n + 1) * 12 - 12], 
+				     &mcrgene_.icore[n * 12 - 12]);
     }
     --mcrgene_.ncore;
 
 /* *** Set to overflow of IOFSET */
-    *iofset = 2147483647;
+    {
+       /* nested scope needed to avoid gcc compilation error crossing
+          initialization with goto*/
+       /* assign max positive integer to *iofset */
+       const size_t shift = sizeof (*iofset) * 8 - 1;
+       *iofset = (uintptr_t(1) << shift) - 1 /*2147483647 for 32bit*/;
+    }
     goto L9900;
 
 /* ----------------------------------------------------------------------*
@@ -2464,25 +2468,24 @@ C**********************************************************************
 //purpose  : 
 //=======================================================================
 int AdvApp2Var_SysBase::mcrfill_(integer *size, 
-				 char *tin, 
-				 char *tout)
+				 void *tin, 
+				 void *tout)
 
 {
- 
-  if (mcrfill_ABS(tout-tin) >= *size)
+  register char *jmin=static_cast<char*> (tin);
+  register char *jmout=static_cast<char*> (tout);
+  if (mcrfill_ABS(jmout-jmin) >= *size)
     memcpy( tout, tin, *size);
   else if (tin > tout)
     {
       register integer n = *size;
-      register char *jmin=tin;
-      register char *jmout=tout;
       while (n-- > 0) *jmout++ = *jmin++;
     }
   else
     {
       register integer n = *size;
-      register char *jmin=tin+n;
-      register char *jmout=tout+n;
+      jmin+=n;
+      jmout+=n;
       while (n-- > 0) *--jmout = *--jmin;
     }
   return 0;
@@ -2517,13 +2520,14 @@ int AdvApp2Var_SysBase::mcrfill_(integer *size,
 //purpose  : 
 //=======================================================================
 int mcrfree_(integer *,//ibyte,
-	     uinteger *iadr,
+	     void* *iadr,
 	     integer *ier)
 
 {
   *ier=0;
-  free((void*)*iadr);
-  if ( !*iadr ) *ier = 1;
+  Standard::Free(*iadr);
+  //Standard::Free always nullifies address, so check becomes incorrect
+  //if ( !*iadr ) *ier = 1;
   return 0;
 }
 
@@ -2559,13 +2563,13 @@ int mcrfree_(integer *,//ibyte,
 //purpose  : 
 //=======================================================================
 int mcrgetv_(integer *sz,
-	     uinteger *iad,
+	     void* *iad,
 	     integer *ier)                                            
 
 {
   
   *ier = 0;
-  *iad = (uinteger)malloc(*sz);
+  *iad = Standard::Allocate(*sz);
   if ( !*iad ) *ier = 1;
   return 0;
 }
@@ -2701,7 +2705,7 @@ int mcrlist_(integer *ier)
     i__1 = mcrgene_.ncore;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	nufmt = 2;
-	ifmt = mcrgene_.icore[i__ * 12 - 11] * mcrgene_.icore[i__ * 12 - 10]
+	ifmt = static_cast<integer> (mcrgene_.icore[i__ * 12 - 11] * mcrgene_.icore[i__ * 12 - 10])
 		;
 	macrmsg_(subrou, &nufmt, &ifmt, &dfmt, cfmt, 7L, 1L);
 	ntotal += ifmt;
@@ -2720,11 +2724,11 @@ int mcrlist_(integer *ier)
 //function : mcrlocv_
 //purpose  : 
 //=======================================================================
-int mcrlocv_(long int t,
-	     long int *l)
+int mcrlocv_(void* t,
+	     intptr_t *l)
 
 {
-  *l = t;
+  *l = reinterpret_cast<intptr_t> (t);
   return 0 ;
 }
 
@@ -2734,8 +2738,8 @@ int mcrlocv_(long int t,
 //=======================================================================
 int AdvApp2Var_SysBase::mcrrqst_(integer *iunit, 
 				 integer *isize, 
-				 doublereal *t, 
-				 long int *iofset, 
+				 void *t, 
+				 intptr_t *iofset, 
 				 integer *iercod)
 
 {
@@ -2747,7 +2751,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
   static integer ifmt, iver;
   static char subr[7];
   static integer ksys , ibyte, irest, isyst, ier;
-  static long int iadfd, iadff, iaddr,lofset, loc;
+  static intptr_t iadfd, iadff, iaddr,lofset, loc;
   static integer izu;
 
   
@@ -2897,9 +2901,6 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /* ----------------------------------------------------------------------*
  */
 
-    /* Parameter adjustments */
-    --t;
-
     /* Function Body */
     *iercod = 0;
 
@@ -2940,7 +2941,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /*     . add delta for alinement with the base */
 /*     . round to multiple of 8 above */
 
-  mcrlocv_((long int)&t[1], (long int *)&loc);
+  mcrlocv_(t, &loc);
     izu = ibyte + loc % *iunit;
     irest = izu % 8;
     if (irest != 0) {
@@ -2972,7 +2973,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /*      ELSE */
 /*        ALLOCATION SYSTEME */
     ksys = 2;
-    mcrgetv_((integer *)&ibyte, (uinteger *)&iaddr, (integer *)&ier);
+    mcrgetv_(&ibyte, reinterpret_cast<void**> (&iaddr), &ier);
     if (ier != 0) {
 	goto L9003;
     }
@@ -3021,13 +3022,13 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 
 /* CALL ALLOWING AUTOIMPLEMENTATION OF THE SET WATCH BY THE DEBUGGER */
 
-    macrstw_((integer *)&iadfd, (integer *)&iadff, (integer *)&mcrgene_.ncore);
+    macrstw_(&iadfd, &iadff, &mcrgene_.ncore);
 
 /* STATISTICS */
 
     ++mcrstac_.nrqst[ksys - 1];
-    mcrstac_.nbyte[ksys - 1] += mcrgene_.icore[mcrgene_.ncore * 12 - 11] * 
-	    mcrgene_.icore[mcrgene_.ncore * 12 - 10];
+    mcrstac_.nbyte[ksys - 1] += static_cast<integer> (mcrgene_.icore[mcrgene_.ncore * 12 - 11] * 
+	    mcrgene_.icore[mcrgene_.ncore * 12 - 10]);
 /* Computing MAX */
     i__1 = mcrstac_.mbyte[ksys - 1], i__2 = mcrstac_.nbyte[ksys - 1];
     mcrstac_.mbyte[ksys - 1] = advapp_max(i__1,i__2);
@@ -3137,7 +3138,7 @@ C***********************************************************************
 //purpose  : 
 //=======================================================================
 void AdvApp2Var_SysBase::miraz_(integer *taille,
-				char *adt)
+				void *adt)
 
 {
   integer offset;
@@ -3217,7 +3218,7 @@ int AdvApp2Var_SysBase::msifill_(integer *nbintg,
 
     /* Function Body */
     nocte =  *nbintg * sizeof(integer);
-    AdvApp2Var_SysBase::mcrfill_((integer *)&nocte, (char *)&ivecin[1], (char *)&ivecou[1]);
+    AdvApp2Var_SysBase::mcrfill_(&nocte, &ivecin[1], &ivecou[1]);
  return 0 ;
 } /* msifill_ */
 
@@ -3272,8 +3273,8 @@ int AdvApp2Var_SysBase::msrfill_(integer *nbreel,
     --vecent;
 
     /* Function Body */
-    nocte = *nbreel << 3;
-    AdvApp2Var_SysBase::mcrfill_((integer *)&nocte, (char *)&vecent[1], (char *)&vecsor[1]);
+    nocte = *nbreel * sizeof (doublereal);
+    AdvApp2Var_SysBase::mcrfill_(&nocte, &vecent[1], &vecsor[1]);
  return 0 ;
 } /* msrfill_ */
 
@@ -3442,7 +3443,7 @@ C***********************************************************************
 //purpose  : 
 //=======================================================================
 void AdvApp2Var_SysBase::mvriraz_(integer *taille,
-				  char *adt)
+				  void *adt)
 
 {
   integer offset;
