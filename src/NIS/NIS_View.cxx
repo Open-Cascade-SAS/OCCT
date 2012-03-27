@@ -550,6 +550,11 @@ void  NIS_View::Select (const NCollection_List<gp_XY> &thePolygon,
 
   // Compute transformation.
   const gp_XYZ anXdir (gp_XYZ(anX, anY, aZ) - anEye.XYZ());
+  if (anXdir.Modulus() <= gp::Resolution())
+  {
+    return;
+  }
+
   const gp_Ax3 anAx3 (anEye, aProj, anXdir);
   gp_Trsf aTrf;
   aTrf.SetTransformation (anAx3);
