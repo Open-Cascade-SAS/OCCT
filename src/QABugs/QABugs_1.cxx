@@ -502,9 +502,11 @@ static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, co
   TopoDS_Shape aTBox1 = aTBox;
   aTBox1.Orientation(TopAbs_REVERSED);
   aTestLabel.ForgetAllAttributes();
-  aBuilder.Generated( aTBox1);
 
-  aTBox = aBuilder.NamedShape()->Get();
+  TNaming_Builder aBuilder2(aTestLabel);
+  aBuilder2.Generated( aTBox1);
+
+  aTBox = aBuilder2.NamedShape()->Get();
   if(aTBox.Orientation() != TopAbs_REVERSED) {
     di << "1" << "\n";
   } else {
