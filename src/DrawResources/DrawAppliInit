@@ -1,0 +1,18 @@
+global tcl_platform
+
+if {[array get env QA_DUMP] != "" && $env(QA_DUMP) == "1"} {
+    set env(CSF_DrawPluginQADefaults) $env(CASROOT)/src/DrawResources/.
+    ###catch {pload ALL}
+    catch {pload FULL}
+    #catch {pload -DrawPluginProducts ALL}
+    catch {pload -DrawPluginProducts OMF CANONICALRECOGNITION EMESH PARASOLID DXF SAT }
+    catch {pload QAcommands}
+
+    ###foreach h [array names Draw_Groups] {
+    ###	foreach f $Draw_Groups($h) {
+    ###		QARebuild $f
+    ###	}
+    ###}
+
+catch {source $env(CSF_DrawPluginQADefaults)/QARebuildCommands}
+}

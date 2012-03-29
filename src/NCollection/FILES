@@ -61,8 +61,6 @@ NCollection_BaseVector.cxx
 NCollection_Vector.hxx
 NCollection_DefineVector.hxx
 NCollection_StdBase.hxx
-templates2macros.sh
-NCollection.mdl.gz
 
 NCollection_EBTree.hxx
 NCollection_UBTree.hxx

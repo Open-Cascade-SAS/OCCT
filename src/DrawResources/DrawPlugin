@@ -47,3 +47,4 @@ XSDRAW             : TKXSDRAW
 XDEDRAW            : TKXDEDRAW
 TOBJ               : TKTObjDRAW
 DFBROWSER          : TKDFBrowser
+QAcommands         : TKQADraw

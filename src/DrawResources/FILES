@@ -37,3 +37,6 @@ srcinc:::wing.brep
 srcinc:::VisualizationDemo.tcl
 srcinc:::OCAFDemo.tcl
 srcinc:::TKTopTest.tcl
+srcinc:::dftree.tcl
+srcinc:::QARebuildCommands
+srcinc:::DrawAppliInit
