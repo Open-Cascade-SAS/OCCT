@@ -550,6 +550,48 @@ static Standard_Integer dumpassembly
   return 0;
 }
 
+static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+{
+
+  if(  argc < 2)
+  {
+    cout<<"Error: Invalid number of parameters. Should be: getfileunits name_file"<<endl;
+    return 1;
+  }
+  STEPControl_Reader aStepReader;
+  
+  IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
+  readstat = aStepReader.ReadFile (argv[1]);
+ 
+  if (readstat != IFSelect_RetDone) {
+    
+    di<<"No model loaded"<<"\n";
+    return 1;
+  }
+
+  TColStd_SequenceOfAsciiString anUnitLengthNames;
+  TColStd_SequenceOfAsciiString anUnitAngleNames;
+  TColStd_SequenceOfAsciiString anUnitSolidAngleNames;
+  aStepReader.FileUnits( anUnitLengthNames,anUnitAngleNames,anUnitSolidAngleNames);
+                                   
+  Standard_Integer i =1, nb = anUnitLengthNames.Length();
+  di<<"=====================================================\n";
+  di<<"LENTH Unit"<<"\n";
+  for( ; i <= anUnitLengthNames.Length() ; i++)
+    di<<anUnitLengthNames(i).ToCString()<<"\n";
+  
+  di<<"=====================================================\n";
+  di<<"Angle Unit"<<"\n";
+  for( i =1 ; i <= anUnitAngleNames.Length() ; i++)
+    di<<anUnitAngleNames(i).ToCString()<<"\n";
+
+  di<<"=====================================================\n";
+  di<<"Solid Angle Unit"<<"\n";
+  for( i =1 ; i <= anUnitSolidAngleNames.Length() ; i++)
+    di<<anUnitSolidAngleNames(i).ToCString()<<"\n";
+  
+  return 0;
+}
 //  ########  COMMANDE stepwrite : teste le Writer  #########
 
 void XSDRAWSTEP::InitCommands (Draw_Interpretor& theCommands)
@@ -565,4 +607,5 @@ void XSDRAWSTEP::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add("countexpected","TEST",                              __FILE__, countexpected, g);
   theCommands.Add("dumpassembly", "TEST",                              __FILE__, dumpassembly,  g);
   theCommands.Add("readstep",      "readstep  [file]",                 __FILE__, readstep,      g);
+  theCommands.Add("stepfileunits" , "stepfileunits name_file", __FILE__, stepfileunits,      g);
 }

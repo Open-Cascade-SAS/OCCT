@@ -63,8 +63,12 @@ uses
     CString, OStream, Transient, SequenceOfTransient from TColStd,
     StepModel from StepData, WorkSession from XSControl,
     ReturnStatus from IFSelect, PrintCount from IFSelect,
-    Shape from TopoDS, SequenceOfShape from TopTools
-
+    Shape from TopoDS, SequenceOfShape from TopTools,
+    SequenceOfAsciiString from TColStd,
+    Array1OfAsciiString from TColStd,
+    Array1OfReal from TColStd,
+    SequenceOfAsciiString from TColStd,
+    RepresentationContext from StepRepr
 is
 
     Create returns Reader;
@@ -88,5 +92,17 @@ is
     NbRootsForTransfer (me : in out) returns Integer is redefined;
     ---Purpose : Determines the list of root entities from Model which are candidate for
     --           a transfer to a Shape (type of entities is PRODUCT)
-
+    
+    FileUnits(me : in out; theUnitLengthNames : in out SequenceOfAsciiString from TColStd;
+    	    	  theUnitAngleNames : in out SequenceOfAsciiString from TColStd;
+    	    	  theUnitSolidAngleNames : in out SequenceOfAsciiString from TColStd );
+     ---Purpose : Returns sequence of all unit names for shape representations 
+     --           found in file
+     
+    findUnits(me : in out ; theReprContext : RepresentationContext from StepRepr;
+     	theNameUnits : in out Array1OfAsciiString from TColStd;
+     	theFactorUnits : in out Array1OfReal from TColStd) returns Boolean is private;
+     ---Purpose : Returns  units for length , angle and solidangle for shape representations 
+    
+    
 end Reader;

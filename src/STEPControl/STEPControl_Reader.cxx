@@ -44,7 +44,35 @@
 #include <StepRepr_MappedItem.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-
+#include <TColStd_MapOfAsciiString.hxx>
+#include <StepBasic_SiUnitName.hxx>
+#include <StepBasic_SiPrefix.hxx>
+#include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
+#include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
+#include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
+#include <StepBasic_HArray1OfNamedUnit.hxx>
+#include <StepBasic_NamedUnit.hxx>
+#include <StepBasic_ConversionBasedUnit.hxx>
+#include <StepBasic_SiUnitAndLengthUnit.hxx>
+#include <StepBasic_SiUnitAndLengthUnit.hxx>
+#include <StepBasic_SolidAngleUnit.hxx>
+#include <StepBasic_MeasureWithUnit.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
+#include <StepBasic_SolidAngleMeasureWithUnit.hxx>
+#include <STEPConstruct_UnitContext.hxx>
+#include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
+#include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <StepData_StepModel.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
+#include <StepRepr_RepresentationContext.hxx>
+#include <TColStd_Array1OfAsciiString.hxx>
+#include <TColStd_Array1OfReal.hxx>
+  
 //=======================================================================
 //function : STEPControl_Reader
 //purpose  : 
@@ -275,3 +303,256 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
   return theroots.Length();
 }
 
+//=======================================================================
+//function : FileUnits
+//purpose  : 
+//=======================================================================
+
+void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLengthNames,
+                                   TColStd_SequenceOfAsciiString& theUnitAngleNames,
+                                   TColStd_SequenceOfAsciiString& theUnitSolidAngleNames) 
+{
+  Standard_Integer nbroots = NbRootsForTransfer();
+  if(!nbroots)
+    return;
+  enum
+  {
+    LENGTH = 0,
+    ANLGE =  1,
+    SOLID_ANGLE = 2
+  };
+  const Interface_Graph& graph = WS()->Graph();
+  TColStd_MapOfAsciiString aMapUnits[3];
+
+  Standard_Integer i =1;
+  for( ; i <= nbroots; i++)
+  {
+    Handle(Standard_Transient) anEnt = theroots(i);
+    Standard_Integer num   = graph.EntityNumber(anEnt);
+    if(!num )
+      continue;
+    Handle(StepBasic_ProductDefinition) aProdDef = 
+      Handle(StepBasic_ProductDefinition)::DownCast(anEnt);
+    Handle(StepShape_ShapeDefinitionRepresentation) aShapeDefRepr;
+    if(!aProdDef.IsNull())
+    {
+      Interface_EntityIterator subsPD = graph.Sharings(aProdDef);
+      for(subsPD.Start(); subsPD.More() && aShapeDefRepr.IsNull(); subsPD.Next()) 
+      {
+        Handle(StepRepr_ProductDefinitionShape) aProdDefShape =
+          Handle(StepRepr_ProductDefinitionShape)::DownCast(subsPD.Value());
+        if(aProdDefShape.IsNull())
+          continue;
+        Interface_EntityIterator subsSR = graph.Sharings(aProdDefShape);
+        Handle(StepShape_ShapeRepresentation) SR;
+        for(subsSR.Start(); subsSR.More() && aShapeDefRepr.IsNull(); subsSR.Next())
+        {
+          Handle(StepShape_ShapeDefinitionRepresentation) aCurShapeDefRepr =
+            Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subsSR.Value());
+          if(aCurShapeDefRepr.IsNull()) 
+            continue;
+          Handle(StepRepr_Representation) aUseRepr = aCurShapeDefRepr->UsedRepresentation();
+          if(aUseRepr.IsNull())
+            continue;
+          Handle(StepShape_ShapeRepresentation) aShapeRepr = 
+            Handle(StepShape_ShapeRepresentation)::DownCast(aUseRepr);
+          if(aShapeRepr.IsNull()) 
+            continue;
+          aShapeDefRepr = aCurShapeDefRepr;
+
+        }
+
+
+      }
+
+    }
+    else
+      aShapeDefRepr = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(anEnt);
+    if(!aShapeDefRepr.IsNull())
+    {
+      Handle(StepShape_ShapeRepresentation) aShapeRepr =
+        Handle(StepShape_ShapeRepresentation)::DownCast(aShapeDefRepr->UsedRepresentation());
+      Handle(StepRepr_RepresentationContext) aRepCont = aShapeRepr->ContextOfItems();
+      if (aRepCont.IsNull())
+        continue;
+      TColStd_Array1OfAsciiString aNameUnits(1,3);
+      TColStd_Array1OfReal aFactorUnits(1,3);
+      if(findUnits(aRepCont,aNameUnits,aFactorUnits))
+      {
+        Standard_Integer k = LENGTH;
+        for ( ; k <= SOLID_ANGLE ; k++)
+        {
+          if(!aMapUnits[k].Contains(aNameUnits(k+1)))
+          {
+            aMapUnits[k].Add(aNameUnits(k+1));
+            TColStd_SequenceOfAsciiString& anUnitSeq = (k == LENGTH ? 
+                theUnitLengthNames : ( k == ANLGE ? theUnitAngleNames : theUnitSolidAngleNames ));
+            anUnitSeq.Append(aNameUnits(k+1));
+          }
+        }
+      }
+
+    }
+
+  }
+  //for case when units was not found through PDF or SDR
+  if(theUnitLengthNames.IsEmpty())
+  {
+    Handle(Interface_InterfaceModel) aModel = WS()->Model();
+    if(aModel.IsNull())
+      return;
+    Standard_Integer i = 1, nb = aModel->NbEntities();
+    for( ; i <= nb; i++)
+    {
+      Handle(Standard_Transient) anEnt = aModel->Value(i);
+      Handle(StepRepr_RepresentationContext) aRepCont = Handle(StepRepr_RepresentationContext)::DownCast(anEnt);
+      if (aRepCont.IsNull())
+        continue;
+      TColStd_Array1OfAsciiString aNameUnits(1,3);
+      TColStd_Array1OfReal aFactorUnits(1,3);
+      if(findUnits(aRepCont,aNameUnits,aFactorUnits))
+      {
+        Standard_Integer k = LENGTH;
+        for ( ; k <= SOLID_ANGLE ; k++)
+        {
+          if(!aMapUnits[k].Contains(aNameUnits(k+1)))
+          {
+            aMapUnits[k].Add(aNameUnits(k+1));
+            TColStd_SequenceOfAsciiString& anUnitSeq = (k == LENGTH ? 
+               theUnitLengthNames : ( k == ANLGE ? theUnitAngleNames : theUnitSolidAngleNames ));
+            anUnitSeq.Append(aNameUnits(k+1));
+          }
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : getSiName
+//purpose  : 
+//=======================================================================
+
+inline static TCollection_AsciiString getSiName(StepBasic_SiUnitName theName,
+                                                StepBasic_SiPrefix thePrefix)
+{
+ 
+  TCollection_AsciiString aName;
+  switch (thePrefix) {
+    case StepBasic_spExa:   aName += "exa"; break;
+    case StepBasic_spPeta: aName += "peta"; break;
+    case StepBasic_spTera: aName += "tera"; break;
+    case StepBasic_spGiga: aName += "giga"; break;
+    case StepBasic_spMega:  aName += "mega"; break;
+    case StepBasic_spHecto: aName += "hecto"; break;
+    case StepBasic_spDeca:  aName += "deca"; break;
+    case StepBasic_spDeci:  aName += "deci"; break;
+	
+    case StepBasic_spPico:  aName += "pico"; break;
+    case StepBasic_spFemto: aName += "femto"; break;
+    case StepBasic_spAtto:  aName += "atto"; break;
+    
+    case StepBasic_spKilo : aName += "kilo"; break;
+    case StepBasic_spCenti :aName += "centi"; break;
+    case StepBasic_spMilli :aName += "milli"; break;
+    case StepBasic_spMicro :aName += "micro"; break;
+    case StepBasic_spNano :aName += "nano"; break;
+    default: break;
+    };
+  
+  switch(theName) {
+    case StepBasic_sunMetre : aName += "metre"; break;
+    case StepBasic_sunRadian : aName += "radian"; break;
+    case StepBasic_sunSteradian : aName += "steradian"; break; 
+    default: break;
+  };
+  return aName;
+}
+
+//=======================================================================
+//function : findUnits
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean STEPControl_Reader::findUnits(
+       const Handle(StepRepr_RepresentationContext)& theRepCont,
+       TColStd_Array1OfAsciiString& theNameUnits,
+       TColStd_Array1OfReal& theFactorUnits)
+{
+   Handle(StepRepr_GlobalUnitAssignedContext) aContext;
+  Handle(StepRepr_GlobalUncertaintyAssignedContext) aTol;
+
+  if (theRepCont->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext))) {
+    aContext = Handle(StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext)::
+      DownCast(theRepCont)->GlobalUnitAssignedContext();
+  }
+
+ 
+  if (theRepCont->IsKind(STANDARD_TYPE(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx))) {
+    aContext = Handle(StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx)::
+      DownCast(theRepCont)->GlobalUnitAssignedContext();
+   
+  }
+  if(aContext.IsNull())
+    return Standard_False;
+  // Start Computation
+  Handle(StepBasic_HArray1OfNamedUnit) anUnits = aContext->Units();
+  Standard_Integer nbU = aContext->NbUnits();
+  Standard_Integer nbFind = 0;
+  for (Standard_Integer i = 1; i <= nbU; i++) {
+    Handle(StepBasic_NamedUnit) aNamedUnit = aContext->UnitsValue(i);
+    Handle(StepBasic_ConversionBasedUnit) aConvUnit =
+      Handle(StepBasic_ConversionBasedUnit)::DownCast(aNamedUnit);
+    Standard_Integer anInd = 0;
+    TCollection_AsciiString aName;
+    Standard_Real anUnitFact = 0;
+    if( !aConvUnit.IsNull() )
+    {
+      Handle(StepBasic_MeasureWithUnit) aMeasWithUnit = 
+        aConvUnit->ConversionFactor();
+      
+       if(aMeasWithUnit.IsNull())
+         continue;
+       
+       if( aMeasWithUnit->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)) )
+         anInd = 1;
+       else if( aMeasWithUnit->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) )
+         anInd = 2;
+       else if( aMeasWithUnit->IsKind(STANDARD_TYPE(StepBasic_SolidAngleMeasureWithUnit)) )
+         anInd = 3;
+      if(!anInd)
+        continue;
+      aName = aConvUnit->Name()->String(); 
+      anUnitFact = aMeasWithUnit->ValueComponent();
+    }
+    else
+    {
+      Handle(StepBasic_SiUnit) aSiUnit = Handle(StepBasic_SiUnit)::DownCast(aNamedUnit);
+      if( aSiUnit.IsNull())
+        continue;
+      if(aSiUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)))
+        anInd =1;
+      else if(aSiUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndPlaneAngleUnit)))
+        anInd = 2;
+      else if(aSiUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndSolidAngleUnit)))
+        anInd = 3;
+      if( !anInd )
+         continue;
+      anUnitFact = (!aSiUnit->HasPrefix()  ? 
+                    1. : STEPConstruct_UnitContext::ConvertSiPrefix(aSiUnit->Prefix()));
+      aName = getSiName(aSiUnit->Name(), aSiUnit->Prefix());
+      
+           
+    }
+    if( !anInd )
+      continue;
+ 
+   theNameUnits.SetValue(anInd, aName);
+   theFactorUnits.SetValue(anInd, anUnitFact);
+    nbFind++;
+       
+   }
+    
+  return (nbFind);
+}
+                                   
