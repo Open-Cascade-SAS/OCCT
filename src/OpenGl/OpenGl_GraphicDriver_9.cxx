@@ -171,7 +171,7 @@ Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfText
   TexUpperBounds->SetValue(1, ((Standard_Real) (MyPic->Width())/((Standard_Real) aGlWidth)));
   TexUpperBounds->SetValue(2, ((Standard_Real) (MyPic->Height())/((Standard_Real) aGlHeight)));
 
-  unsigned char *MyImageData = (unsigned char *)malloc(aGlWidth*aGlHeight*4);
+  unsigned char *MyImageData = new unsigned char[aGlWidth*aGlHeight*4];
   unsigned char *MyData = MyImageData;
   int TexId;
   int i,j;
@@ -228,7 +228,7 @@ Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfText
           TexId = -1;
         }
 
-        free(MyImageData);
+        delete [] MyImageData;
         return TexId;
 
 }

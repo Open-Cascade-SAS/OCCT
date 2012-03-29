@@ -25,7 +25,6 @@
 
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_GraphicDriver.hxx>
-#include <OpenGl_Memory.hxx>
 #include <OpenGl_ResourceCleaner.hxx>
 #include <OpenGl_ResourceVBO.hxx>
 #include <OpenGl_Structure.hxx>

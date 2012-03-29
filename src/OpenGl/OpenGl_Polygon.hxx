@@ -28,7 +28,9 @@
 
 #include <OpenGl_Element.hxx>
 
-struct OPENGL_DISPLAY_PGN;
+#include <NCollection_Vector.hxx>
+
+struct SEQ_;
 
 struct TEL_POLYGON_DATA
 {
@@ -44,7 +46,7 @@ struct TEL_POLYGON_DATA
   tel_colour vcolours;    /* Vertex colour values */
   tel_point  vnormals;    /* Vertex normals */
   tel_texture_coord vtexturecoord; /* Texture Coordinates */
-  OPENGL_DISPLAY_PGN *dsply;
+  NCollection_Vector<SEQ_> *dsply;
   DEFINE_STANDARD_ALLOC
 };
 

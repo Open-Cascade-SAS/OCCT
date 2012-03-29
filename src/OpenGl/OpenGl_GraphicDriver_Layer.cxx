@@ -98,7 +98,7 @@ void InitLayerProp (const int AListId)
 
 void OpenGl_GraphicDriver::Layer (Aspect_CLayer2d& ACLayer)
 {
-  ACLayer.ptrLayer = (call_def_ptrLayer) malloc (sizeof (CALL_DEF_PTRLAYER));
+  ACLayer.ptrLayer = new CALL_DEF_PTRLAYER();
   ACLayer.ptrLayer->listIndex = glGenLists(1);
 }
 

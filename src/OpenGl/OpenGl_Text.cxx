@@ -20,7 +20,6 @@
 
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Text.hxx>
-#include <OpenGl_Memory.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Structure.hxx>
 

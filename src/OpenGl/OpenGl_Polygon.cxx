@@ -24,7 +24,6 @@
 
 #include <OpenGl_telem_util.hxx>
 #include <OpenGl_TextureBox.hxx>
-#include <OpenGl_Memory.hxx>
 
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Structure.hxx>
@@ -47,17 +46,8 @@ typedef EXTRA_VERTEX* extra_vertex;
 
 struct SEQ_
 {
-  Tint ts_num, ts_alloc;
-  void **tmesh_sequence;
+  NCollection_Vector<void *> tmesh_sequence;
   GLenum triangle_type; /* FSXXX OPTI */
-  DEFINE_STANDARD_ALLOC
-};
-
-struct OPENGL_DISPLAY_PGN
-{
-  Tint num_of_seq;
-  Tint num_alloc;
-  SEQ_ *seq;
   DEFINE_STANDARD_ALLOC
 };
 
@@ -160,45 +150,22 @@ void OpenGl_Polygon::draw_polygon (const Handle(OpenGl_Workspace) &AWorkspace, T
 
 /* JWR - allow varying the size */
 
-#define INCREMENT    8
-
-static int seq_increment = INCREMENT;
-
 static const TEL_POLYGON_DATA *DaTa;
 static GLUtesselator *tripak = 0;
 
 STATIC void APIENTRY
 out_bgntmesh( GLenum triangle_type )
 {
-  OPENGL_DISPLAY_PGN *dis = DaTa->dsply;
+  NCollection_Vector<SEQ_> *dis = DaTa->dsply;
 
-  dis->num_of_seq++;
-  if( dis->num_alloc < dis->num_of_seq )
-  {
-    dis->num_alloc += seq_increment;
-
-    if( dis->seq == 0 )
-    {
-      dis->seq = new SEQ_[dis->num_alloc];
-    }
-    else
-    {
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-      dis->seq = (SEQ_*)realloc( dis->seq, dis->num_alloc*sizeof(SEQ_) );
-#else
-      dis->seq = cmn_resizemem<SEQ_>( dis->seq, dis->num_alloc );
-#endif
-    }
-  }
-  dis->seq[ dis->num_of_seq - 1 ].ts_num = 0;
-  dis->seq[ dis->num_of_seq - 1 ].ts_alloc = 0;
-  dis->seq[ dis->num_of_seq - 1 ].tmesh_sequence = 0;
-
+  SEQ_ aSeq;
 #ifdef JWR_DEC_TRIFAN_BUG
-  dis->seq[ dis->num_of_seq - 1 ].triangle_type = GL_POLYGON;
+  aSeq.triangle_type = GL_POLYGON;
+  dis->Append(aSeq);
   glBegin(GL_POLYGON);
 #else
-  dis->seq[ dis->num_of_seq - 1 ].triangle_type = triangle_type;
+  aSeq.triangle_type = triangle_type;
+  dis->Append(aSeq);
   glBegin(triangle_type);
 #endif
 }
@@ -208,28 +175,9 @@ out_bgntmesh( GLenum triangle_type )
 STATIC void APIENTRY
 out_vert1( void *data )
 {
-  SEQ_ *s = &( DaTa->dsply->seq[ DaTa->dsply->num_of_seq - 1 ] );
+  SEQ_ &s = DaTa->dsply->ChangeValue(DaTa->dsply->Length() - 1);
 
-  s->ts_num++;
-  if( s->ts_alloc < s->ts_num )
-  {
-    s->ts_alloc += seq_increment;
-
-    if( s->tmesh_sequence == 0 )
-    {
-      s->tmesh_sequence = new void*[s->ts_alloc];
-    }
-    else
-    {
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-      s->tmesh_sequence = (void**)realloc( s->tmesh_sequence, s->ts_alloc*sizeof(void*));
-#else
-      s->tmesh_sequence = cmn_resizemem<void*>( s->tmesh_sequence, s->ts_alloc);
-#endif
-    }
-  }
-  s->tmesh_sequence[ s->ts_num - 1 ] = data;
-
+  s.tmesh_sequence.Append(data);
 
   if ( data < (void *)0xffff ) {
     long a = (long)data;
@@ -249,27 +197,9 @@ out_vert1( void *data )
 STATIC void APIENTRY
 out_vert2( void *data )
 {
-  SEQ_ *s = &( DaTa->dsply->seq[ DaTa->dsply->num_of_seq - 1 ] );
+  SEQ_ &s = DaTa->dsply->ChangeValue(DaTa->dsply->Length() - 1);
 
-  s->ts_num++;
-  if( s->ts_alloc < s->ts_num )
-  {
-    s->ts_alloc += seq_increment;
-
-    if( s->tmesh_sequence == 0 )
-    {
-      s->tmesh_sequence = new void*[s->ts_alloc];
-    }
-    else
-    {
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-      s->tmesh_sequence = (void**)( s->tmesh_sequence, s->ts_alloc*sizeof(void*) );
-#else
-      s->tmesh_sequence = cmn_resizemem<void*>( s->tmesh_sequence, s->ts_alloc );
-#endif
-    }
-  }
-  s->tmesh_sequence[ s->ts_num - 1 ] = data;
+  s.tmesh_sequence.Append(data);
 
   if ( data < (void *)0xffff ) {
     long a = (long)data;
@@ -290,27 +220,9 @@ out_vert2( void *data )
 STATIC void APIENTRY
 out_vert3( void *data )
 {
-  SEQ_ *s = &( DaTa->dsply->seq[ DaTa->dsply->num_of_seq - 1 ] );
+  SEQ_ &s = DaTa->dsply->ChangeValue(DaTa->dsply->Length() - 1);
 
-  s->ts_num++;
-  if( s->ts_alloc < s->ts_num )
-  {
-    s->ts_alloc += seq_increment;
-
-    if( s->tmesh_sequence == 0 )
-    {
-      s->tmesh_sequence = new void*[s->ts_alloc];
-    }
-    else
-    {
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-      s->tmesh_sequence = (void**)realloc( s->tmesh_sequence, s->ts_alloc*sizeof(void*) );
-#else
-      s->tmesh_sequence = cmn_resizemem<void*>( s->tmesh_sequence, s->ts_alloc );
-#endif
-    }
-  }
-  s->tmesh_sequence[ s->ts_num - 1 ] = data;
+  s.tmesh_sequence.Append(data);
 
   if ( data <= (void *)0xffff ) {
     long a = (long)data;
@@ -331,7 +243,7 @@ out_vert3( void *data )
 STATIC void APIENTRY
 mycombine( GLdouble coords[3], int *data, GLfloat w[4], void **dataout)
 {
-  extra_vertex new_vertex =  (extra_vertex) malloc(sizeof(EXTRA_VERTEX));
+  extra_vertex new_vertex = new EXTRA_VERTEX();
 
   new_vertex->vert[0] = ( float )coords[0];
   new_vertex->vert[1] = ( float )coords[1];
@@ -520,22 +432,22 @@ void OpenGl_Polygon::draw_tmesh ( Tint v ) const
   SEQ_     *s;
   extra_vertex b;
 
-  OPENGL_DISPLAY_PGN *dis = myData.dsply;
-  for( i = 0; i < dis->num_of_seq; i++ )
+  NCollection_Vector<SEQ_> *dis = myData.dsply;
+  for( i = 0; i < dis->Length(); i++ )
   {
-    s = &(dis->seq[i]);
+    s = &(dis->ChangeValue(i));
 
     glBegin(s->triangle_type);
     switch( v )
     {
     case 1:
       {
-        for( j = 0, k = 0; j < s->ts_num; j++ )
+        for( j = 0, k = 0; j < s->tmesh_sequence.Length(); j++ )
         {
-          if ( s->tmesh_sequence[j] < (void *)0xffff )
-            glVertex3fv( myData.vertices[ (long)s->tmesh_sequence[ j ] ].xyz );
+          if ( s->tmesh_sequence(j) < (void *)0xffff )
+            glVertex3fv( myData.vertices[ (long)s->tmesh_sequence.Value(j) ].xyz );
           else {
-            extra_vertex b = (extra_vertex)s->tmesh_sequence[j];
+            b = (extra_vertex) s->tmesh_sequence(j);
             glVertex3fv( b->vert );
           }
 
@@ -544,13 +456,13 @@ void OpenGl_Polygon::draw_tmesh ( Tint v ) const
       }
     case 2:
       {
-        for( j = 0, k = 0; j < s->ts_num; j++ )
+        for( j = 0, k = 0; j < s->tmesh_sequence.Length(); j++ )
         {
-          if ( s->tmesh_sequence[j] < (void *)0xffff ) {
-            glColor3fv( myData.vcolours[ (long) s->tmesh_sequence[ j ] ].rgb );
-            glVertex3fv( myData.vertices[ (long) s->tmesh_sequence[ j ] ].xyz );
+          if ( s->tmesh_sequence(j) < (void *)0xffff ) {
+            glColor3fv( myData.vcolours[ (long) s->tmesh_sequence(j) ].rgb );
+            glVertex3fv( myData.vertices[ (long) s->tmesh_sequence(j) ].xyz );
           } else {
-            b = (extra_vertex) s->tmesh_sequence[j];
+            b = (extra_vertex) s->tmesh_sequence(j);
             glColor3fv( myData.vcolours[(b->ind)].rgb);
             glVertex3fv( b->vert );
           }
@@ -559,13 +471,13 @@ void OpenGl_Polygon::draw_tmesh ( Tint v ) const
       }
     case 3:
       {
-        for( j = 0, k = 0; j < s->ts_num; j++ )
+        for( j = 0, k = 0; j < s->tmesh_sequence.Length(); j++ )
         {
-          if ( s->tmesh_sequence[j] < (void *)0xffff ) {
-            glNormal3fv( myData.vnormals[ (long) s->tmesh_sequence[ j ] ].xyz);
-            glVertex3fv( myData.vertices[ (long) s->tmesh_sequence[ j ] ].xyz);
+          if ( s->tmesh_sequence(j) < (void *)0xffff ) {
+            glNormal3fv( myData.vnormals[ (long) s->tmesh_sequence(j) ].xyz);
+            glVertex3fv( myData.vertices[ (long) s->tmesh_sequence(j) ].xyz);
           } else {
-            b = (extra_vertex) s->tmesh_sequence[j];
+            b = (extra_vertex) s->tmesh_sequence(j);
             glNormal3fv( myData.vnormals[(b->ind)].xyz);
             glVertex3fv( b->vert );
           }
@@ -625,10 +537,7 @@ OpenGl_Polygon::OpenGl_Polygon (const Graphic3d_Array1OfVertex& AListVertex,
   }
 #endif
 
-  myData.dsply = new OPENGL_DISPLAY_PGN();
-  myData.dsply->num_of_seq = 0;
-  myData.dsply->num_alloc = 0;
-  myData.dsply->seq = NULL;
+  myData.dsply = new NCollection_Vector<SEQ_>();
 }
 
 /*----------------------------------------------------------------------*/
@@ -650,17 +559,15 @@ OpenGl_Polygon::~OpenGl_Polygon ()
   {
     Tint i, j;
 
-    for( i = 0; i <  myData.dsply->num_of_seq; i++ )
+    for( i = 0; i <  myData.dsply->Length(); i++ )
     {
-      if(myData.dsply->seq[i].tmesh_sequence) {
-        for ( j = 0; j < myData.dsply->seq[i].ts_num ; j++ ) {
-          if ( myData.dsply->seq[i].tmesh_sequence[j] >= (void *)0xffff )
-            free(myData.dsply->seq[i].tmesh_sequence[j]);
-        }
+      for ( j = 0; j < myData.dsply->Value(i).tmesh_sequence.Length() ; j++ )
+      {
+        if ( myData.dsply->Value(i).tmesh_sequence(j) >= (void *)0xffff )
+          delete myData.dsply->Value(i).tmesh_sequence(j);
       }
-      delete[] myData.dsply->seq[i].tmesh_sequence;
     }
-    delete[] myData.dsply->seq;
+
     delete myData.dsply;
   }
 }

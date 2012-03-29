@@ -119,7 +119,7 @@ static ImageRec *ImageOpen(char *fileName)
     swapFlag = 0;
   }
 
-  image = (ImageRec *)malloc(sizeof(ImageRec));
+  image = new ImageRec();
   if (image == NULL) {
     fprintf(stderr, "Out of memory!\n");
     exit(1);
@@ -135,10 +135,10 @@ static ImageRec *ImageOpen(char *fileName)
     ConvertShort(&image->imagic, 6);
   }
 
-  image->tmp = (unsigned char *)malloc(image->xsize*256);
-  image->tmpR = (unsigned char *)malloc(image->xsize*256);
-  image->tmpG = (unsigned char *)malloc(image->xsize*256);
-  image->tmpB = (unsigned char *)malloc(image->xsize*256);
+  image->tmp = new unsigned char[image->xsize*256];
+  image->tmpR = new unsigned char[image->xsize*256];
+  image->tmpG = new unsigned char[image->xsize*256];
+  image->tmpB = new unsigned char[image->xsize*256];
   if (image->tmp == NULL || image->tmpR == NULL || image->tmpG == NULL ||
     image->tmpB == NULL) {
       fprintf(stderr, "Out of memory!\n");
@@ -147,8 +147,8 @@ static ImageRec *ImageOpen(char *fileName)
 
     if ((image->type & 0xFF00) == 0x0100) {
       x = image->ysize * image->zsize * sizeof(unsigned);
-      image->rowStart = (unsigned *)malloc(x);
-      image->rowSize = (int *)malloc(x);
+      image->rowStart = new unsigned[x];
+      image->rowSize = new int[x];
       if (image->rowStart == NULL || image->rowSize == NULL) {
         fprintf(stderr, "Out of memory!\n");
         exit(1);
@@ -169,11 +169,13 @@ static ImageRec *ImageOpen(char *fileName)
 static void
 ImageClose(ImageRec *image) {
   fclose(image->file);
-  free(image->tmp);
-  free(image->tmpR);
-  free(image->tmpG);
-  free(image->tmpB);
-  free(image);
+  delete [] image->tmp;
+  delete [] image->tmpR;
+  delete [] image->tmpG;
+  delete [] image->tmpB;
+  delete [] image->rowStart;
+  delete [] image->rowSize;
+  delete image;
 }
 /*----------------------------------------------------------------------*/
 
@@ -229,11 +231,11 @@ void ReadScaledImage(char *file, int xsize, int ysize, char *buf, unsigned short
   *zsize = image->zsize;
 
   /* Allocation memoire */
-  rbuf=(unsigned char *)malloc(image->xsize * sizeof(unsigned char));
+  rbuf = new unsigned char[image->xsize];
 
   if (image->zsize > 2) {
-    gbuf = (unsigned char *) malloc (image->xsize * sizeof(unsigned char));
-    bbuf = (unsigned char *) malloc (image->xsize * sizeof(unsigned char));
+    gbuf = new unsigned char[image->xsize];
+    bbuf = new unsigned char[image->xsize];
   }
 
   /* Lecture image rang apres rang */    
@@ -266,10 +268,10 @@ void ReadScaledImage(char *file, int xsize, int ysize, char *buf, unsigned short
   }
 
   /* delete image buffers */
-  free(rbuf);
+  delete [] rbuf;
   if (*zsize > 2) {
-    free(gbuf);
-    free(bbuf);
+    delete [] gbuf;
+    delete [] bbuf;
   }
 
   ImageClose(image);    
@@ -337,11 +339,11 @@ read_texture(char *name, int *width, int *height, int *components) {
   (*width)=image->xsize;
   (*height)=image->ysize;
   (*components)=image->zsize;
-  base = (unsigned *)malloc(image->xsize*image->ysize*sizeof(unsigned));
-  rbuf = (unsigned char *)malloc(image->xsize*sizeof(unsigned char));
-  gbuf = (unsigned char *)malloc(image->xsize*sizeof(unsigned char));
-  bbuf = (unsigned char *)malloc(image->xsize*sizeof(unsigned char));
-  abuf = (unsigned char *)malloc(image->xsize*sizeof(unsigned char));
+  base = new unsigned[image->xsize*image->ysize];
+  rbuf = new unsigned char[image->xsize];
+  gbuf = new unsigned char[image->xsize];
+  bbuf = new unsigned char[image->xsize];
+  abuf = new unsigned char[image->xsize];
   if(!base || !rbuf || !gbuf || !bbuf)
     return NULL;
   lptr = base;
@@ -366,10 +368,10 @@ read_texture(char *name, int *width, int *height, int *components) {
     }
   }
   ImageClose(image);
-  free(rbuf);
-  free(gbuf);
-  free(bbuf);
-  free(abuf);
+  delete [] rbuf;
+  delete [] gbuf;
+  delete [] bbuf;
+  delete [] abuf;
 
   return (unsigned *) base;
 }

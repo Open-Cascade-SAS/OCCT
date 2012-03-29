@@ -100,7 +100,6 @@ OpenGl_TextureBox.cxx
 OpenGl_TextureBox.hxx
 OpenGl_ImageBox.cxx
 OpenGl_ImageBox.hxx
-OpenGl_Memory.hxx
 OpenGl_Resource.hxx
 OpenGl_ResourceVBO.hxx
 OpenGl_ResourceVBO.cxx
