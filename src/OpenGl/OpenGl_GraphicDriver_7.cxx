@@ -48,7 +48,6 @@ void OpenGl_GraphicDriver::Background (const Graphic3d_CView& ACView)
   if (aCView)
   {
     aCView->WS->SetBackgroundColor(ACView.DefWindow.Background.r,ACView.DefWindow.Background.g,ACView.DefWindow.Background.b);
-    aCView->WS->Invalidate();
   }
 }
 
@@ -61,7 +60,6 @@ void OpenGl_GraphicDriver::GradientBackground (const Graphic3d_CView& ACView,
   if (aCView)
   {
     aCView->View->SetBackgroundGradient(AColor1,AColor2,AType);
-    aCView->WS->Invalidate();
   }
 }
 
@@ -115,7 +113,6 @@ void OpenGl_GraphicDriver::ClipLimit (const Graphic3d_CView& ACView, const Stand
     if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);
-      aCView->WS->Invalidate();
     }
   }
 }
@@ -485,7 +482,6 @@ void OpenGl_GraphicDriver::ViewMapping (const Graphic3d_CView& ACView, const Sta
     if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);
-      aCView->WS->Invalidate();
     }
   }
 }
@@ -499,7 +495,6 @@ void OpenGl_GraphicDriver::ViewOrientation (const Graphic3d_CView& ACView, const
     if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);
-      aCView->WS->Invalidate();
     }
   }
 }

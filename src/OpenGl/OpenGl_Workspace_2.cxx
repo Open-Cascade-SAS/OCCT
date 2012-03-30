@@ -849,8 +849,6 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
   }
   else
     glFlush();
-
-  myIsUpdated = Standard_True;
 }
 
 /*----------------------------------------------------------------------*/

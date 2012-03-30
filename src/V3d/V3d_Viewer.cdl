@@ -154,9 +154,7 @@ is
 
         Update (me:mutable ) is redefined static;
         ---Level: Public
-        ---Purpose: Updates the display of all the views of a viewer.
-        --            Must be called when the views must be updated
-        --            simultaneously while the Update mode is deferred (WAIT).
+        ---Purpose: Deprecated, Redraw() should be used instead.
 
         UpdateLights (me: mutable);
         ---Level: Public

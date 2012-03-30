@@ -213,9 +213,7 @@ is
 
         Update ( me ) is redefined static;
         ---Level: Public
-        ---Purpose: Updates the display of the view.
-        --          Must be called to update the view
-        --          when the update mode is deferred (WAIT) .
+        ---Purpose: Deprecated, Redraw() should be used instead.
 
         Redraw ( me );
         ---Level: Public

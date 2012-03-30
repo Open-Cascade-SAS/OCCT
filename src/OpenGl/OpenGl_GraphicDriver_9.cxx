@@ -66,7 +66,6 @@ void OpenGl_GraphicDriver::TriedronDisplay (
   if (aCView)
   {
     aCView->View->TriedronDisplay(APosition, AColor, AScale, AsWireframe);
-    aCView->WS->Invalidate();
   }
 }
 
@@ -76,7 +75,6 @@ void OpenGl_GraphicDriver::TriedronErase (const Graphic3d_CView& ACView)
   if (aCView)
   {
     aCView->View->TriedronErase();
-    aCView->WS->Invalidate();
   }
 }
 
@@ -93,7 +91,6 @@ void OpenGl_GraphicDriver::BackgroundImage( const Standard_CString FileName,
   if (aCView)
   {
     aCView->View->CreateBackgroundTexture( FileName, FillStyle );
-    aCView->WS->Invalidate();
   }
 }
 
@@ -104,7 +101,6 @@ void OpenGl_GraphicDriver::SetBgImageStyle( const Graphic3d_CView& ACView,
   if (aCView)
   {
     aCView->View->SetBackgroundTextureStyle( FillStyle );
-    aCView->WS->Invalidate();
   }
 }
 
@@ -114,7 +110,6 @@ void OpenGl_GraphicDriver::SetBgGradientStyle(const Graphic3d_CView& ACView,cons
   if (aCView)
   {
     aCView->View->SetBackgroundGradientType(FillType);
-    aCView->WS->Invalidate();
   }
 }
 
@@ -124,7 +119,6 @@ void OpenGl_GraphicDriver::GraduatedTrihedronDisplay(const Graphic3d_CView& ACVi
   if (aCView)
   {
     aCView->View->GraduatedTrihedronDisplay(cubic);
-    aCView->WS->Invalidate();
   }
 }
 
@@ -134,7 +128,6 @@ void OpenGl_GraphicDriver::GraduatedTrihedronErase(const Graphic3d_CView& ACView
   if (aCView)
   {
     aCView->View->GraduatedTrihedronErase();
-    aCView->WS->Invalidate();
   }
 }
 

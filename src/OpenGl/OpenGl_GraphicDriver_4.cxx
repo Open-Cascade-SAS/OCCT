@@ -85,7 +85,6 @@ void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView&      theCVie
     return;
 
   aCView->View->DisplayStructure (aStructure, thePriority);
-  aCView->WS->Invalidate();
 }
 
 void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView&      theCView,
@@ -97,7 +96,6 @@ void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView&      theCView,
     return;
 
   aCView->View->EraseStructure (aStructure);
-  aCView->WS->Invalidate();
 }
 
 void OpenGl_GraphicDriver::RemoveStructure (const Graphic3d_CStructure& theCStructure)

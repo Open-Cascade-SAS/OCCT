@@ -65,7 +65,6 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                                     const CALL_DEF_WINDOW&        theCWindow,
                                     Aspect_RenderingContext       theGContext)
 : OpenGl_Window (theDisplay, theCWindow, theGContext),
-  myIsUpdated (Standard_False),
   myTransientList (0),
   myIsTransientOpen (Standard_False),
   myRetainMode (Standard_False),
@@ -158,6 +157,5 @@ void OpenGl_Workspace::UseTransparency (const Standard_Boolean theFlag)
   {
     myUseTransparency = theFlag;
     EraseAnimation();
-    myIsUpdated = Standard_False;
   }
 }

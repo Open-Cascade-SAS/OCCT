@@ -43,7 +43,6 @@ void OpenGl_Workspace::EndAnimation ()
   if( (NamedStatus & OPENGL_NS_ANIMATION) == 0 ) return;
 
   NamedStatus &= ~(OPENGL_NS_ANIMATION | OPENGL_NS_DEGENERATION | OPENGL_NS_UPDATEAM);
-  myIsUpdated = Standard_False;
 }
 
 /*----------------------------------------------------------------------*/

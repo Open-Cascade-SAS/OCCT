@@ -338,7 +338,7 @@ private:
   //! Access the global map of structures.
   static NCollection_DataMap<Standard_Integer, OpenGl_Structure*>& GetMapOfStructures();
 
-  //! Invalidates all workspaces - thus they will be redrawn on next update call.
+  //! Deprecated.
   static void InvalidateAllWorkspaces();
 
 public:

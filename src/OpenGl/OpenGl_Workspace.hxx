@@ -76,13 +76,12 @@ public:
                const Aspect_CLayer2d& theCUnderLayer,
                const Aspect_CLayer2d& theCOverLayer);
 
-  //! Redraw window only if needed.
+  //! Deprecated. Simply calls Redraw().
   void Update (const Graphic3d_CView& theCView,
                const Aspect_CLayer2d& theCUnderLayer,
                const Aspect_CLayer2d& theCOverLayer)
   {
-    if (!myIsUpdated)
-      Redraw (theCView, theCUnderLayer, theCOverLayer);
+    Redraw (theCView, theCUnderLayer, theCOverLayer);
   }
 
   //! Special method to perform printing.
@@ -128,9 +127,6 @@ public:
   Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
   void FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr);
   Standard_Boolean BufferDump (OpenGl_FrameBuffer *theFBOPtr, Image_CRawBufferData& theBuffer);
-
-  //! Mark this window to be redrawn on next update.
-  void Invalidate() { myIsUpdated = Standard_False; }
 
   void UseTransparency (const Standard_Boolean theFlag);
   Standard_Boolean& UseZBuffer()   { return myUseZBuffer; }
@@ -205,7 +201,6 @@ protected:
 protected:
 
   Handle(OpenGl_View) myView;            // WSViews - now just one view is supported
-  Standard_Boolean    myIsUpdated;       // WSUpdateState
   Tint                myTransientList;   // WSTransient
   Standard_Boolean    myIsTransientOpen; // transientOpen
   Tint                myRetainMode;      // WSRetainMode

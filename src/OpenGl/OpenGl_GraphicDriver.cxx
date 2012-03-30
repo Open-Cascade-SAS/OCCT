@@ -82,12 +82,12 @@ NCollection_DataMap<Standard_Integer, OpenGl_Structure*>& OpenGl_GraphicDriver::
 }
 
 //TsmInitUpdateState
+// Deprecated, need to decide what to do with EraseAnimation() call
 void OpenGl_GraphicDriver::InvalidateAllWorkspaces()
 {
   for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIt (OpenGl_GraphicDriver::GetMapOfWorkspaces());
        anIt.More(); anIt.Next())
   {
-    anIt.ChangeValue()->Invalidate();
     anIt.ChangeValue()->EraseAnimation();
   }
 }
