@@ -26,88 +26,66 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Aspect_Array1OfEdge.hxx>
-#include <Graphic3d_VertexC.hxx>
-#include <Graphic3d_VertexNC.hxx>
-#include <Graphic3d_Array1OfVertexC.hxx>
-#include <Graphic3d_Array1OfVertexNC.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <AIS_Drawer.hxx>
 
-QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
-     :AIS_InteractiveObject(aTypeOfPresentation3d)
+QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentation3d theTypeOfPresentation3d)
+     :AIS_InteractiveObject(theTypeOfPresentation3d)
 {
 }
 
-void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-				const Handle(Prs3d_Presentation)& aPresentation,
-				const Standard_Integer aMode )
+void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
+				const Handle(Prs3d_Presentation)& thePrs,
+				const Standard_Integer theMode)
 {
-  Handle(Graphic3d_Structure) theStructure = Handle(Graphic3d_Structure)::DownCast(aPresentation);
-  Handle(Graphic3d_Group) theGroup= new  Graphic3d_Group(theStructure);
-  Handle_Prs3d_ShadingAspect theAspect = myDrawer->ShadingAspect();
-  Graphic3d_MaterialAspect mat = theAspect->Aspect()->FrontMaterial();
-  mat.SetReflectionModeOff(Graphic3d_TOR_AMBIENT);
-  mat.SetReflectionModeOff(Graphic3d_TOR_DIFFUSE);
-  mat.SetReflectionModeOff(Graphic3d_TOR_SPECULAR);
-  mat.SetReflectionModeOff(Graphic3d_TOR_EMISSION);
-  theAspect->SetMaterial(mat);
-  theGroup->SetPrimitivesAspect(theAspect->Aspect());
-  
-  Aspect_Array1OfEdge aListEdge(1, 3);
-  aListEdge.SetValue(1, Aspect_Edge(1, 2, Aspect_TOE_VISIBLE));
-  aListEdge.SetValue(2, Aspect_Edge(2, 3, Aspect_TOE_VISIBLE));
-  aListEdge.SetValue(3, Aspect_Edge(3, 1, Aspect_TOE_VISIBLE));
-  theGroup->BeginPrimitives();
+  Handle(Graphic3d_Structure) aStructure = Handle(Graphic3d_Structure)::DownCast (thePrs);
+  Handle(Graphic3d_Group) aGroup = new Graphic3d_Group (aStructure);
+  Handle_Prs3d_ShadingAspect anAspect = myDrawer->ShadingAspect();
+  Graphic3d_MaterialAspect aMat = anAspect->Aspect()->FrontMaterial();
+  aMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
+  aMat.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
+  aMat.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+  aMat.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
+  anAspect->SetMaterial (aMat);
+  aGroup->SetPrimitivesAspect (anAspect->Aspect());
 
-  switch (aMode) 
+  Handle(Graphic3d_ArrayOfTriangles) aPrims
+    = new Graphic3d_ArrayOfTriangles (6, 0,
+                                      theMode == 1,   // normals
+                                      Standard_True); // color per vertex
+  switch (theMode)
+  {
+    case 0:
     {
-    case 0://using VertexC
-      {
-	Graphic3d_Array1OfVertexC theArray1(1, 3);
+      aPrims->AddVertex (gp_Pnt (0.0,  0.0,  0.0), Quantity_Color (Quantity_NOC_RED));
+      aPrims->AddVertex (gp_Pnt (0.0,  5.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
+      aPrims->AddVertex (gp_Pnt (5.0,  0.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
 
-	theArray1.SetValue(1, Graphic3d_VertexC(0,0,0,Quantity_NOC_RED));
-	theArray1.SetValue(2, Graphic3d_VertexC(0,5,1,Quantity_NOC_BLUE1));
-	theArray1.SetValue(3, Graphic3d_VertexC(5,0,1,Quantity_NOC_YELLOW));
-	theGroup->TriangleSet(theArray1, aListEdge);
-	
-	theArray1.SetValue(1, Graphic3d_VertexC(0,5,1,Quantity_NOC_BLUE1));
-	theArray1.SetValue(2, Graphic3d_VertexC(5,5,-1,Quantity_NOC_GREEN));
-	theArray1.SetValue(3, Graphic3d_VertexC(5,0,1,Quantity_NOC_YELLOW));
-	theGroup->TriangleSet(theArray1, aListEdge);
-      }
-      break;
-    case 1://using VertexNC
-      {
-	Graphic3d_Array1OfVertexNC theArray1(1, 3);
-	
-	theArray1.SetValue(1, Graphic3d_VertexNC(5,0,0, //coord
-						 0,0,1, //normal
-						 Quantity_NOC_RED));
-	theArray1.SetValue(2, Graphic3d_VertexNC(5,5,1, //coord
-						 1,1,1, //normal
-						 Quantity_NOC_BLUE1));
-	theArray1.SetValue(3, Graphic3d_VertexNC(10,0,1, //coord
-						 0,1,1,  //normal
-						 Quantity_NOC_YELLOW));
-	theGroup->TriangleSet(theArray1, aListEdge);
-	
-	theArray1.SetValue(1, Graphic3d_VertexNC(5,5,1, //coord
-						 1,1,1, //normal
-						 Quantity_NOC_BLUE1));
-	theArray1.SetValue(2, Graphic3d_VertexNC(10,5,-1, //coord
-						 0,0,-1,  //normal
-						 Quantity_NOC_GREEN));
-	theArray1.SetValue(3, Graphic3d_VertexNC(10,0,1, //coord
-						 0,1,1,  //normal
-						 Quantity_NOC_YELLOW));
-	theGroup->TriangleSet(theArray1, aListEdge);
-      }
+      aPrims->AddVertex (gp_Pnt (0.0,  5.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
+      aPrims->AddVertex (gp_Pnt (5.0,  5.0, -1.0), Quantity_Color (Quantity_NOC_GREEN));
+      aPrims->AddVertex (gp_Pnt (5.0,  0.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
       break;
     }
-  theGroup->EndPrimitives();
-  
+    case 1:
+    {
+      aPrims->AddVertex (gp_Pnt ( 5.0, 0.0,  0.0), gp_Dir (0.0, 0.0,  1.0), Quantity_Color (Quantity_NOC_RED));
+      aPrims->AddVertex (gp_Pnt ( 5.0, 5.0,  1.0), gp_Dir (1.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
+      aPrims->AddVertex (gp_Pnt (10.0, 0.0,  1.0), gp_Dir (0.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
+
+      aPrims->AddVertex (gp_Pnt ( 5.0, 5.0,  1.0), gp_Dir (1.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_BLUE1));
+      aPrims->AddVertex (gp_Pnt (10.0, 5.0, -1.0), gp_Dir (0.0, 0.0, -1.0), Quantity_Color (Quantity_NOC_GREEN));
+      aPrims->AddVertex (gp_Pnt (10.0, 0.0,  1.0), gp_Dir (0.0, 1.0,  1.0), Quantity_Color (Quantity_NOC_YELLOW));
+    }
+    break;
+  }
+
+  aGroup->BeginPrimitives();
+  aGroup->AddPrimitiveArray (aPrims);
+  aGroup->EndPrimitives();
 }
 
-void QABugs_PresentableObject::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-					 const Standard_Integer aMode) {
+void QABugs_PresentableObject::ComputeSelection(const Handle(SelectMgr_Selection)& ,
+					 const Standard_Integer ) {
 }

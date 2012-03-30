@@ -60,6 +60,7 @@ is
    class HLRToolShape;
    --class ToolSectionShape;
    class ToolShadedShape;
+   class ShadedShape;
    
    
    class Point 
@@ -96,9 +97,6 @@ is
 
    class ShadedSurface;
    	---Purpose: computes the shading presentation of surfaces.
-
-   class ShadedPoleSurface;
-
 
    -----------------------------------------------
    --- deflection drawing classes :
@@ -140,15 +138,6 @@ is
 	  Curve             from StdPrs,
     	  Vertex            from StdPrs);
 
-
-    class ShadedShape instantiates ShadedShape from Prs3d
-    	  (Shape           from TopoDS,
-	   Face            from TopoDS,
-	   Triangle        from BRepMesh,
-	   Edge            from BRepMesh,
-    	   ToolShadedShape from StdPrs);
-	       	   
-	       
     class HLRShape instantiates HLRShape from Prs3d 
     	  (Shape           from TopoDS,
            HLRToolShape    from StdPrs,

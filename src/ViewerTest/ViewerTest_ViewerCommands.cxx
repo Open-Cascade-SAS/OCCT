@@ -29,6 +29,7 @@
 #include <windows.h>
 #endif
 
+#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
@@ -2576,6 +2577,111 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
   return 0;
 }
 
+//==============================================================================
+//function : VGrid
+//purpose  :
+//==============================================================================
+
+static int VGrid (Draw_Interpretor& theDI,
+                  Standard_Integer  theArgNb,
+                  const char**      theArgVec)
+{
+  // get the active view
+  Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
+  if (aView.IsNull() || aViewer.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  Aspect_GridType     aType = aViewer->GridType();
+  Aspect_GridDrawMode aMode = aViewer->GridDrawMode();
+
+  Standard_Integer anIter = 1;
+  for (; anIter < theArgNb; ++anIter)
+  {
+    const char* aValue = theArgVec[anIter];
+    if (*aValue == 'r')
+    {
+      aType = Aspect_GT_Rectangular;
+    }
+    else if (*aValue == 'c')
+    {
+      aType = Aspect_GT_Circular;
+    }
+    else if (*aValue == 'l')
+    {
+      aMode = Aspect_GDM_Lines;
+    }
+    else if (*aValue == 'p')
+    {
+      aMode = Aspect_GDM_Points;
+    }
+    else if (strcmp (aValue, "off" ) == 0)
+    {
+      aViewer->DeactivateGrid();
+      return 0;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  Standard_Integer aTail = (theArgNb - anIter);
+  if (aTail == 0)
+  {
+    aViewer->ActivateGrid (aType, aMode);
+    return 0;
+  }
+  else if (aTail != 2 && aTail != 5)
+  {
+    std::cerr << "Incorrect arguments number! Usage:\n"
+              << "vgrid [off] [Mode={r|c}] [Type={l|p}] [OriginX OriginY [StepX/StepRadius StepY/DivNb RotAngle]]\n";
+    return 1;
+  }
+
+  Quantity_Length anOriginX, anOriginY;
+  Quantity_PlaneAngle aRotAngle;
+  if (aType == Aspect_GT_Rectangular)
+  {
+    Quantity_Length aRStepX, aRStepY;
+    aViewer->RectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
+
+    anOriginX = atof (theArgVec[anIter++]);
+    anOriginY = atof (theArgVec[anIter++]);
+    if (aTail == 5)
+    {
+      aRStepX   = atof (theArgVec[anIter++]);
+      aRStepY   = atof (theArgVec[anIter++]);
+      aRotAngle = atof (theArgVec[anIter++]);
+    }
+    aViewer->SetRectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
+    aViewer->ActivateGrid (aType, aMode);
+  }
+  else if (aType == Aspect_GT_Circular)
+  {
+    Quantity_Length aRadiusStep;
+    Standard_Integer aDivisionNumber;
+    aViewer->CircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
+
+    anOriginX = atof (theArgVec[anIter++]);
+    anOriginY = atof (theArgVec[anIter++]);
+    if (aTail == 5)
+    {
+      aRadiusStep     = atof (theArgVec[anIter++]);
+      aDivisionNumber = atof (theArgVec[anIter++]);
+      aRotAngle       = atof (theArgVec[anIter++]);
+    }
+
+    aViewer->SetCircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
+    aViewer->ActivateGrid (aType, aMode);
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -2672,4 +2778,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vlayerline",
     "vlayerline : vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]",
     __FILE__,VLayerLine,group);
+  theCommands.Add ("vgrid",
+    "vgrid [off] [Mode={r|c}] [Type={l|p}] [OriginX OriginY [StepX/StepRadius StepY/DivNb RotAngle]]"
+    " : Mode - rectangular or circular"
+    " : Type - lines or points",
+    __FILE__, VGrid, group);
 }

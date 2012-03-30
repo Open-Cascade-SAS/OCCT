@@ -21,6 +21,10 @@
 #ifndef _OpenGl_Context_H__
 #define _OpenGl_Context_H__
 
+#include <Aspect_Handle.hxx>
+#include <Aspect_Drawable.hxx>
+#include <Aspect_Display.hxx>
+#include <Aspect_RenderingContext.hxx>
 #include <Standard_Transient.hxx>
 #include <Handle_OpenGl_Context.hxx>
 
@@ -80,8 +84,18 @@ public:
   //! GL context should be active!
   Standard_EXPORT void Init();
 
+#if (defined(_WIN32) || defined(__WIN32__))
+  Standard_EXPORT void Init (const Aspect_Handle           theWindow,
+                             const Aspect_Handle           theWindowDC,
+                             const Aspect_RenderingContext theGContext);
+#else
+  Standard_EXPORT void Init (const Aspect_Drawable         theWindow,
+                             const Aspect_Display          theDisplay,
+                             const Aspect_RenderingContext theGContext);
+#endif
+
   //! Check if theExtName extension is supported by active GL context.
-  Standard_EXPORT static Standard_Boolean CheckExtension (const char* theExtName);
+  Standard_EXPORT Standard_Boolean CheckExtension (const char* theExtName) const;
 
   //! Auxiliary template to retrieve GL function pointer.
   //! Pointer to function retrieved from library is statically casted
@@ -95,9 +109,9 @@ public:
     return (theFuncPtr != NULL);
   }
 
-  //! @return true if detected GL version is higher or equal to requested one.
-  inline Standard_Boolean IsGlUpperEqual (const Standard_Integer theVerMajor,
-                                          const Standard_Integer theVerMinor)
+  //! @return true if detected GL version is greater or equal to requested one.
+  inline Standard_Boolean IsGlGreaterEqual (const Standard_Integer theVerMajor,
+                                            const Standard_Integer theVerMinor)
   {
     return (myGlVerMajor >  theVerMajor)
         || (myGlVerMajor == theVerMajor && myGlVerMinor >= theVerMinor);
@@ -105,6 +119,10 @@ public:
 
   //! Clean up errors stack for this GL context (glGetError() in loop).
   Standard_EXPORT void ResetErrors();
+
+  //! Activates current context.
+  //! Class should be initialized with appropriate info.
+  Standard_EXPORT Standard_Boolean MakeCurrent();
 
 private:
 
@@ -131,6 +149,16 @@ public: // extensions
   OpenGl_ExtFBO*   extFBO;
 
 private:
+
+#if (defined(_WIN32) || defined(__WIN32__))
+  Aspect_Handle           myWindow;   //!< window handle (owner of GL context) : HWND
+  Aspect_Handle           myWindowDC; //!< Device Descriptor handle : HDC
+  Aspect_RenderingContext myGContext; //!< Rendering Context handle : HGLRC
+#else
+  Aspect_Drawable         myWindow;   //!< window handle (owner of GL context) : GLXDrawable
+  Aspect_Display          myDisplay;  //!< connection to the X-server : Display*
+  Aspect_RenderingContext myGContext; //!< X-GLX rendering context : GLXContext
+#endif
 
   void*            myGlLibHandle;   //!< optional handle to GL library
   OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0

@@ -1,0 +1,36 @@
+-- File:      StdPrs_ShadedShape.cdl
+-- Created:   23 Sep 1993
+-- Author:    Jean Louis FRENKEL
+---Copyright: Matra Datavision 1993
+
+class ShadedShape from StdPrs
+
+inherits Root from Prs3d
+  --- Purpose: unknown.
+
+uses
+
+  Presentation from Prs3d,
+  Drawer       from Prs3d,
+  Shape        from TopoDS,
+  Pnt2d        from gp
+
+is
+
+  Add (myclass;
+       thePresentation : Presentation from Prs3d;
+       theShape        : Shape        from TopoDS;
+       theDrawer       : Drawer       from Prs3d);
+  ---Purpose: Shades <theShape>.
+
+  Add (myclass;
+       thePresentation : Presentation from Prs3d;
+       theShape        : Shape        from TopoDS;
+       theDrawer       : Drawer       from Prs3d;
+       theHasTexels    : Boolean      from Standard;
+       theUVOrigin     : Pnt2d        from gp;
+       theUVRepeat     : Pnt2d        from gp;
+       theUVScale      : Pnt2d        from gp);
+  ---Purpose: Shades <theShape> with texture coordinates.
+
+end ShadedShape;

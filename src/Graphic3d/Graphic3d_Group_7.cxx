@@ -39,100 +39,74 @@
 #include <Graphic3d_Group.jxx>
 #include <Graphic3d_Group.pxx>
 
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_VertexC.hxx>
+#include <gp_Pnt.hxx>
 
-//-Methods, in order
+void Graphic3d_Group::Polyline (const Graphic3d_Array1OfVertex& theListVertex,
+                                const Standard_Boolean          theToEvalMinMax)
+{
+	if (IsDeleted())
+  {
+    return;
+  }
 
-void Graphic3d_Group::Polyline (const Graphic3d_Array1OfVertex& ListVertex, const Standard_Boolean EvalMinMax) {
+  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines (theListVertex.Length());
 
-	if (IsDeleted ()) return;
+  Standard_Real aX, aY, aZ;
+  Standard_Integer aVertLower = theListVertex.Lower();
+  Standard_Integer aVertUpper = theListVertex.Upper();
+  for (Standard_Integer aVertIter = aVertLower; aVertIter <= aVertUpper; ++aVertIter)
+  {
+    const Graphic3d_Vertex& aVert = theListVertex (aVertIter);
+    aVert.Coord (aX, aY, aZ);
+    aPrims->AddVertex (aX, aY, aZ);
+  }
 
-	MyIsEmpty	= Standard_False;
-
-	// Min-Max Update
-	if (EvalMinMax) {
-		Standard_Real X, Y, Z;
-		Standard_Integer i, j;
-		Standard_Integer Lower	= ListVertex.Lower ();
-		Standard_Integer Upper	= ListVertex.Upper ();
-		// Parcours des sommets
-		for (j=0, i=Lower; i<=Upper; i++, j++) {
-			ListVertex (i).Coord (X, Y, Z);
-			if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
-			if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
-			if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
-			if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
-			if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
-			if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
-		}
-	}
-
-	MyGraphicDriver->Polyline (MyCGroup, ListVertex, EvalMinMax);
-
-	Update ();
-
+  AddPrimitiveArray (aPrims, theToEvalMinMax);
 }
 
-void Graphic3d_Group::Polyline (const Graphic3d_Array1OfVertexC& ListVertex, const Standard_Boolean EvalMinMax) {
+void Graphic3d_Group::Polyline (const Graphic3d_Array1OfVertexC& theListVertex,
+                                const Standard_Boolean           theToEvalMinMax)
+{
+	if (IsDeleted())
+  {
+    return;
+  }
 
-	if (IsDeleted ()) return;
+  Handle(Graphic3d_ArrayOfPrimitives) aPrims
+    = new Graphic3d_ArrayOfPolylines (theListVertex.Length(), 0, 0, Standard_True); // color per vertex
 
-	MyIsEmpty	= Standard_False;
+  Standard_Real aX, aY, aZ;
+  Standard_Integer aVertLower = theListVertex.Lower();
+  Standard_Integer aVertUpper = theListVertex.Upper();
+  for (Standard_Integer aVertIter = aVertLower; aVertIter <= aVertUpper; ++aVertIter)
+  {
+    const Graphic3d_VertexC& aVert = theListVertex (aVertIter);
+    aVert.Coord (aX, aY, aZ);
+    aPrims->AddVertex (gp_Pnt (aX, aY, aZ), aVert.Color());
+  }
 
-	// Min-Max Update
-	if (EvalMinMax) {
-		Standard_Real X, Y, Z;
-		Standard_Integer i, j;
-		Standard_Integer Lower	= ListVertex.Lower ();
-		Standard_Integer Upper	= ListVertex.Upper ();
-		// Parcours des sommets
-		for (j=0, i=Lower; i<=Upper; i++, j++) {
-			ListVertex (i).Coord (X, Y, Z);
-			if (X < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X);
-			if (Y < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y);
-			if (Z < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z);
-			if (X > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X);
-			if (Y > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y);
-			if (Z > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z);
-		}
-	}
-
-	MyGraphicDriver->Polyline (MyCGroup, ListVertex, EvalMinMax);
-
-	Update ();
-
+  AddPrimitiveArray (aPrims, theToEvalMinMax);
 }
 
-void Graphic3d_Group::Polyline (const Graphic3d_Vertex& APT1, const Graphic3d_Vertex& APT2, const Standard_Boolean EvalMinMax) {
+void Graphic3d_Group::Polyline (const Graphic3d_Vertex& thePnt1,
+                                const Graphic3d_Vertex& thePnt2,
+                                const Standard_Boolean  theToEvalMinMax)
+{
+	if (IsDeleted())
+  {
+    return;
+  }
 
-	if (IsDeleted ()) return;
+  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines (2);
 
-	MyIsEmpty	= Standard_False;
+  Standard_Real aX, aY, aZ;
+	thePnt1.Coord (aX, aY, aZ);
+  aPrims->AddVertex (aX, aY, aZ);
 
-Standard_Real X1, Y1, Z1;
-Standard_Real X2, Y2, Z2;
+  thePnt2.Coord (aX, aY, aZ);
+  aPrims->AddVertex (aX, aY, aZ);
 
-	APT1.Coord (X1, Y1, Z1);
-	APT2.Coord (X2, Y2, Z2);
-
-	// Min-Max Update
-	if (EvalMinMax) {
-		if (X1 < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X1);
-		if (Y1 < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y1);
-		if (Z1 < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z1);
-		if (X1 > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X1);
-		if (Y1 > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y1);
-		if (Z1 > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z1);
-		if (X2 < MyBounds.XMin) MyBounds.XMin	= Standard_ShortReal (X2);
-		if (Y2 < MyBounds.YMin) MyBounds.YMin	= Standard_ShortReal (Y2);
-		if (Z2 < MyBounds.ZMin) MyBounds.ZMin	= Standard_ShortReal (Z2);
-		if (X2 > MyBounds.XMax) MyBounds.XMax	= Standard_ShortReal (X2);
-		if (Y2 > MyBounds.YMax) MyBounds.YMax	= Standard_ShortReal (Y2);
-		if (Z2 > MyBounds.ZMax) MyBounds.ZMax	= Standard_ShortReal (Z2);
-	}
-
-	MyGraphicDriver->Polyline (MyCGroup, X1, Y1, Z1, X2, Y2, Z2, EvalMinMax);
-
-	Update ();
-
+  AddPrimitiveArray (aPrims, theToEvalMinMax);
 }

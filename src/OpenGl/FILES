@@ -12,10 +12,7 @@ OpenGl_GraphicDriver_8.cxx
 OpenGl_GraphicDriver_9.cxx
 OpenGl_GraphicDriver_703.cxx
 OpenGl_GraphicDriver_705.cxx
-OpenGl_GraphicDriver_707.cxx
-OpenGl_GraphicDriver_709.cxx
 OpenGl_GraphicDriver_710.cxx
-OpenGl_GraphicDriver_711.cxx
 OpenGl_GraphicDriver_713.cxx
 OpenGl_GraphicDriver_Layer.cxx
 OpenGl_GraphicDriver_print.cxx
@@ -43,12 +40,6 @@ OpenGl_MarkerSet.hxx
 OpenGl_MarkerSet.cxx
 OpenGl_Polygon.hxx
 OpenGl_Polygon.cxx
-OpenGl_QuadrangleStrip.hxx
-OpenGl_QuadrangleStrip.cxx
-OpenGl_TriangleStrip.hxx
-OpenGl_TriangleStrip.cxx
-OpenGl_Mesh.hxx
-OpenGl_Mesh.cxx
 OpenGl_PrimitiveArray.hxx
 OpenGl_PrimitiveArray.cxx
 Handle_OpenGl_Workspace.hxx

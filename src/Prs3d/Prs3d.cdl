@@ -160,9 +160,6 @@ is
 
         generic class SectionShapeTool;	
 	
-	generic class ShadedShape;
-	
-	
        	---Category: Basis construction elements.
         generic class Vector;
 	generic class Datum;

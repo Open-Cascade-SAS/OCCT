@@ -531,7 +531,10 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
         //  either disable VBO or turn off edge visibilty in the current 
         //  primitive array and create a separate primitive array (segments) 
         //  and put edges to be drawn into it.
-        DrawEdges (theEdgeFlag ? theEdgeColour : theInteriorColour, theWorkspace);
+        if (myDrawMode > GL_LINE_STRIP)
+        {
+          DrawEdges (theEdgeFlag ? theEdgeColour : theInteriorColour, theWorkspace);
+        }
         break;
       // DegenerateModel(as Lines, Points, BBoxs) are used only without VBO
       case 2: // XXX_TDM_WIREFRAME

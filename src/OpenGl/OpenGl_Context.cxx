@@ -28,6 +28,8 @@
 #include <OpenGl_ExtFBO.hxx>
 #include <OpenGl_GlCore20.hxx>
 
+#include <Standard_ProgramError.hxx>
+
 #if (defined(_WIN32) || defined(__WIN32__))
   //
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
@@ -86,6 +88,33 @@ OpenGl_Context::~OpenGl_Context()
 }
 
 // =======================================================================
+// function : MakeCurrent
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::MakeCurrent()
+{
+#if (defined(_WIN32) || defined(__WIN32__))
+  if (myWindowDC == NULL || myGContext == NULL ||
+      !wglMakeCurrent ((HDC )myWindowDC, (HGLRC )myGContext))
+  {
+    //GLenum anErrCode = glGetError();
+    //const GLubyte* anErrorString = gluErrorString (anErrCode);
+    //std::cerr << "wglMakeCurrent() failed: " << anErrCode << " " << anErrorString << "\n";
+    return Standard_False;
+  }
+#else
+  if (myDisplay == NULL || myWindow == 0 || myGContext == 0 ||
+      !glXMakeCurrent ((Display* )myDisplay, (GLXDrawable )myWindow, (GLXContext )myGContext))
+  {
+    // if there is no current context it might be impossible to use glGetError() correctly
+    //std::cerr << "glXMakeCurrent() failed!\n";
+    return Standard_False;
+  }
+#endif
+  return Standard_True;
+}
+
+// =======================================================================
 // function : findProc
 // purpose  :
 // =======================================================================
@@ -104,7 +133,7 @@ void* OpenGl_Context::findProc (const char* theFuncName)
 // function : CheckExtension
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName)
+Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
 {
   if (theExtName  == NULL)
   {
@@ -115,7 +144,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName)
 
   // available since OpenGL 3.0
   // and the ONLY way to check extensions with OpenGL 3.1+ core profile
-  /**if (IsGlUpperEqual (3, 0))
+  /**if (IsGlGreaterEqual (3, 0))
   {
     GLint anExtNb = 0;
     glGetIntegerv (GL_NUM_EXTENSIONS, &anExtNb);
@@ -161,11 +190,50 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName)
 // =======================================================================
 void OpenGl_Context::Init()
 {
-  if (!myIsInitialized)
+  if (myIsInitialized)
   {
-    init();
-    myIsInitialized = Standard_True;
+    return;
   }
+
+#if (defined(_WIN32) || defined(__WIN32__))
+  myWindowDC = (Aspect_Handle )wglGetCurrentDC();
+  myGContext = (Aspect_RenderingContext )wglGetCurrentContext();
+#else
+  myDisplay  = (Aspect_Display )glXGetCurrentDisplay();
+  myGContext = (Aspect_RenderingContext )glXGetCurrentContext();
+  myWindow   = (Aspect_Drawable )glXGetCurrentDrawable();
+#endif
+
+  init();
+  myIsInitialized = Standard_True;
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+#if (defined(_WIN32) || defined(__WIN32__))
+void OpenGl_Context::Init (const Aspect_Handle           theWindow,
+                           const Aspect_Handle           theWindowDC,
+                           const Aspect_RenderingContext theGContext)
+#else
+void OpenGl_Context::Init (const Aspect_Drawable         theWindow,
+                           const Aspect_Display          theDisplay,
+                           const Aspect_RenderingContext theGContext)
+#endif
+{
+  Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called only once!");
+
+  myWindow   = theWindow;
+  myGContext = theGContext;
+#if (defined(_WIN32) || defined(__WIN32__))
+  myWindowDC = theWindowDC;
+#else
+  myDisplay  = theDisplay;
+#endif
+
+  init();
+  myIsInitialized = Standard_True;
 }
 
 // =======================================================================
@@ -303,7 +371,7 @@ void OpenGl_Context::init()
   memset (myGlCore20, 0, sizeof(OpenGl_GlCore20)); // nullify whole structure
 
   // initialize OpenGL 1.2 core functionality
-  if (IsGlUpperEqual (1, 2))
+  if (IsGlGreaterEqual (1, 2))
   {
     if (!FindProcShort (myGlCore20, glBlendColor)
      || !FindProcShort (myGlCore20, glBlendEquation)
@@ -318,7 +386,7 @@ void OpenGl_Context::init()
   }
 
   // initialize OpenGL 1.3 core functionality
-  if (IsGlUpperEqual (1, 3))
+  if (IsGlGreaterEqual (1, 3))
   {
     if (!FindProcShort (myGlCore20, glActiveTexture)
      || !FindProcShort (myGlCore20, glSampleCoverage)
@@ -375,7 +443,7 @@ void OpenGl_Context::init()
   }
 
   // initialize OpenGL 1.4 core functionality
-  if (IsGlUpperEqual (1, 4))
+  if (IsGlGreaterEqual (1, 4))
   {
     if (!FindProcShort (myGlCore20, glBlendFuncSeparate)
      || !FindProcShort (myGlCore20, glMultiDrawArrays)
@@ -393,7 +461,7 @@ void OpenGl_Context::init()
   }
 
   // initialize OpenGL 1.5 core functionality
-  if (IsGlUpperEqual (1, 5))
+  if (IsGlGreaterEqual (1, 5))
   {
     if (!FindProcShort (myGlCore20, glGenQueries)
      || !FindProcShort (myGlCore20, glDeleteQueries)
@@ -424,7 +492,7 @@ void OpenGl_Context::init()
   }
 
   // initialize OpenGL 2.0 core functionality
-  if (IsGlUpperEqual (2, 0))
+  if (IsGlGreaterEqual (2, 0))
   {
     if (!FindProcShort (myGlCore20, glBlendEquationSeparate)
      || !FindProcShort (myGlCore20, glDrawBuffers)
@@ -529,7 +597,7 @@ void OpenGl_Context::init()
     }
   }
 
-  if (IsGlUpperEqual (2, 0))
+  if (IsGlGreaterEqual (2, 0))
   {
     core12 = myGlCore20;
     core13 = myGlCore20;
