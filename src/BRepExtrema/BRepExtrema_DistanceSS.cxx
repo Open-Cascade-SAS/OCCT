@@ -842,7 +842,7 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Face& S1, const TopoDS_Vertex&
       if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin-myDstRef) < myEps))
       {
         Standard_Real U,V;
-        gp_Pnt Pt,P1=BRep_Tool::Pnt(S2);
+        gp_Pnt Pt,P2=BRep_Tool::Pnt(S2);
         BRepClass_FaceClassifier classifier;
         const Standard_Real tol = BRep_Tool::Tolerance(S1);
  
@@ -862,8 +862,8 @@ void BRepExtrema_DistanceSS::Perform(const TopoDS_Face& S1, const TopoDS_Vertex&
                 if (myDstRef > Dstmin)
                   myDstRef=Dstmin;
                 myModif=Standard_True;
-                const BRepExtrema_SolutionElem Sol1(Dstmin,P1,BRepExtrema_IsInFace,S1,U,V);
-                const BRepExtrema_SolutionElem Sol2(Dstmin,Pt,BRepExtrema_IsVertex,S2);
+                const BRepExtrema_SolutionElem Sol1(Dstmin,Pt,BRepExtrema_IsInFace,S1,U,V);
+                const BRepExtrema_SolutionElem Sol2(Dstmin,P2,BRepExtrema_IsVertex,S2);
                 SeqSolShape1.Append(Sol1);
                 SeqSolShape2.Append(Sol2);		  
               }
