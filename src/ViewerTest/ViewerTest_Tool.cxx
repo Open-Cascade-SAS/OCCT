@@ -107,42 +107,29 @@ Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
 //purpose  : 
 //=======================================================================
 
-Handle(V3d_Viewer)  ViewerTest_Tool::MakeViewer (const Standard_CString title)
+Handle(V3d_Viewer) ViewerTest_Tool::MakeViewer (const Standard_CString theTitle)
 {
-
-  Handle(Aspect_Window) window;
-
 #ifdef WNT
-
-  window = new WNT_Window (GetDevice(), 
-			   title, 
-			   Handle(WNT_WClass)::DownCast (ViewerTest::WClass()), 
-			   WS_OVERLAPPEDWINDOW,
-			   0,460,409,409,
-			   Quantity_NOC_BLACK);
-  window->Map();
-
-#else 
-  window = new Xw_Window(GetDevice(), 
-			 title,
-		         0,460,409,409,
-			 Xw_WQ_3DQUALITY,
-			 Quantity_NOC_BLACK);
+  Handle(Aspect_Window) window = new WNT_Window (GetDevice(), theTitle,
+                                                 Handle(WNT_WClass)::DownCast (ViewerTest::WClass()),
+                                                 WS_OVERLAPPEDWINDOW, 0, 460, 409, 409, Quantity_NOC_BLACK);
+#else
+  Handle(Aspect_Window) window = new Xw_Window (GetDevice(), theTitle,
+                                                0, 460, 409, 409, Xw_WQ_3DQUALITY, Quantity_NOC_BLACK);
 #endif
   window->SetVirtual (Draw_VirtualWindows);
+  window->Map();
 
   // Viewer
-
   Handle(Aspect_GraphicDevice) theDevice = GetDevice();
   TCollection_ExtendedString NameOfWindow("Visu3D");
   Handle(V3d_Viewer) a3DViewer = new V3d_Viewer(theDevice,NameOfWindow.ToExtString());
 
-
-  a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);  
+  a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
   a3DViewer->SetDefaultLights();
-  a3DViewer->SetLightOn();  
-  
-  // View 
+  a3DViewer->SetLightOn();
+
+  // View
   Handle (V3d_View) V = a3DViewer->CreateView();
   V->SetDegenerateModeOn();
   V->SetWindow(window);
