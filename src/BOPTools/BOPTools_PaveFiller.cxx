@@ -101,7 +101,7 @@ BOPTools_PaveFiller::BOPTools_PaveFiller()
 // function: BOPTools_PavePoolFiller::BOPTools_PavePoolFiller
 // purpose: 
 //=======================================================================
-  BOPTools_PaveFiller::BOPTools_PaveFiller(const BOPTools_InterferencePool& aPool)
+BOPTools_PaveFiller::BOPTools_PaveFiller(const BOPTools_InterferencePool& aPool)
 {
   myIsDone=Standard_False;
   void* p=(void*) &aPool;
@@ -115,9 +115,9 @@ BOPTools_PaveFiller::BOPTools_PaveFiller()
 // function: Constructor
 // purpose: 
 //=======================================================================
-  BOPTools_PaveFiller::BOPTools_PaveFiller
-      (const BOPTools_InterferencePool&        theIP,
-       const BOPTools_SSIntersectionAttribute& theSectionAttribute)
+BOPTools_PaveFiller::BOPTools_PaveFiller
+  (const BOPTools_InterferencePool&        theIP,
+   const BOPTools_SSIntersectionAttribute& theSectionAttribute)
 {
   myIsDone=Standard_False;
   myIntrPool = (BOPTools_PInterferencePool) &theIP;
@@ -131,7 +131,7 @@ BOPTools_PaveFiller::BOPTools_PaveFiller()
 // function: SetInterferencePool
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::SetInterferencePool(const BOPTools_InterferencePool& aPool)
+void BOPTools_PaveFiller::SetInterferencePool(const BOPTools_InterferencePool& aPool)
 {
   myIsDone=Standard_False;
   void* p=(void*) &aPool;
@@ -145,7 +145,7 @@ BOPTools_PaveFiller::BOPTools_PaveFiller()
 // function: Destroy
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::Destroy()
+void BOPTools_PaveFiller::Destroy()
 {
 }
 
@@ -153,7 +153,7 @@ BOPTools_PaveFiller::BOPTools_PaveFiller()
 // function: SetSectionAttribute
 // purpose: 
 //=======================================================================
-   void BOPTools_PaveFiller::SetSectionAttribute
+void BOPTools_PaveFiller::SetSectionAttribute
     (const BOPTools_SSIntersectionAttribute& anAtt) 
 {
   mySectionAttribute=anAtt;
@@ -162,7 +162,8 @@ BOPTools_PaveFiller::BOPTools_PaveFiller()
 // function: SectionAttribute
 // purpose: 
 //=======================================================================
-  const BOPTools_SSIntersectionAttribute& BOPTools_PaveFiller::SectionAttribute() const
+const BOPTools_SSIntersectionAttribute& 
+  BOPTools_PaveFiller::SectionAttribute() const
 {
   return mySectionAttribute;
 }
@@ -182,21 +183,11 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 {
   return myContext;
 }
-/*
-//=======================================================================
-// function: ChangeContext
-// purpose: 
-//=======================================================================
-  IntTools_Context& BOPTools_PaveFiller::ChangeContext() 
-{
-  return myContext;
-}
-*/
 //=======================================================================
 // function: Perform
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::Perform()
+void BOPTools_PaveFiller::Perform()
 {
   try {
     //
@@ -270,8 +261,9 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PartialPerform
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PartialPerform(const TColStd_SetOfInteger& anObjSubSet,
-					   const TColStd_SetOfInteger& aToolSubSet)
+void BOPTools_PaveFiller::PartialPerform
+  (const TColStd_SetOfInteger& anObjSubSet,
+   const TColStd_SetOfInteger& aToolSubSet)
 {
   try {
     //
@@ -348,7 +340,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: ToCompletePerform
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::ToCompletePerform()
+void BOPTools_PaveFiller::ToCompletePerform()
 {
   try {
     //
@@ -377,7 +369,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PerformVE
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PerformVE() 
+void BOPTools_PaveFiller::PerformVE() 
 {
   myIsDone=Standard_False;
   
@@ -461,7 +453,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PerformVF
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PerformVF() 
+void BOPTools_PaveFiller::PerformVF() 
 {
   myIsDone=Standard_False;
   
@@ -534,7 +526,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PerformEE
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PerformEE() 
+void BOPTools_PaveFiller::PerformEE() 
 {
   myIsDone=Standard_False;
   
@@ -579,9 +571,10 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
     //
     Standard_Real aTolE1, aTolE2, aDeflection=0.01;
     Standard_Integer aDiscretize=30;
-
-    const TopoDS_Edge& aE1=TopoDS::Edge(myDS->GetShape(nE1));
-    const TopoDS_Edge& aE2=TopoDS::Edge(myDS->GetShape(nE2));
+    TopoDS_Edge aE1, aE2;
+    //
+    aE1=TopoDS::Edge(myDS->GetShape(nE1));
+    aE2=TopoDS::Edge(myDS->GetShape(nE2));
     //
     if (BRep_Tool::Degenerated(aE1)){
       continue;
@@ -840,8 +833,6 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 		anIndexIn=aEEs.Append(anInterf);
 		myIntrPool->AddInterference (aWhat, aWith, BooleanOperations_EdgeEdge, anIndexIn);
 		//
-		//modified by NIZNHY-PKV Fri May 26 15:48:21 2006f
-		//BOPTools_CommonBlock aCB(aPB1, aPB2);
 		BOPTools_CommonBlock aCB;
 		if (aTolE1>=aTolE2) {
 		  aCB.SetPaveBlock1(aPB1);
@@ -851,7 +842,6 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 		  aCB.SetPaveBlock1(aPB2);
 		  aCB.SetPaveBlock2(aPB1);
 		}
-		//modified by NIZNHY-PKV Fri May 26 15:48:24 2006t
 		BOPTools_ListOfCommonBlock& aLCB1=myCommonBlockPool(myDS->RefEdge(aWhat));
 		aLCB1.Append(aCB);
 		BOPTools_ListOfCommonBlock& aLCB2=myCommonBlockPool(myDS->RefEdge(aWith));
@@ -876,7 +866,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: MakeSplitEdges
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::MakeSplitEdges()
+void BOPTools_PaveFiller::MakeSplitEdges()
 {
   myIsDone=Standard_False;
 
@@ -1011,8 +1001,8 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PreparePaveBlocks
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PreparePaveBlocks(const TopAbs_ShapeEnum aType1, 
-					      const TopAbs_ShapeEnum aType2)
+void BOPTools_PaveFiller::PreparePaveBlocks(const TopAbs_ShapeEnum aType1, 
+					    const TopAbs_ShapeEnum aType2)
 {
   myIsDone=Standard_False;
 
@@ -1075,7 +1065,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PreparePaveBlocks
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PreparePaveBlocks(const Standard_Integer nE)
+void BOPTools_PaveFiller::PreparePaveBlocks(const Standard_Integer nE)
 {
   myIsDone=Standard_False;
   
@@ -1251,9 +1241,9 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: CorrectShrunkRanges
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::CorrectShrunkRanges(const Standard_Integer aSide,
-						const BOPTools_Pave& aPave,
-						IntTools_ShrunkRange& aShrunkRange)
+void BOPTools_PaveFiller::CorrectShrunkRanges(const Standard_Integer aSide,
+					      const BOPTools_Pave& aPave,
+					      IntTools_ShrunkRange& aShrunkRange)
 {
   BooleanOperations_KindOfInterference aType;
   
@@ -1287,16 +1277,17 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
   }
   
 
-  Standard_Real aCoeff=1.05, tV, tNV;
+  Standard_Real aCoeff=1.05, tV, tNV, t2, t1;
   tV=aPave.Param();
   if (aSide==0) { // Left
     if (aCPRange.Last() > aSR.First()) {
       tNV=aCPRange.Last();
       tNV=tV+aCoeff*(tNV-tV);
       aNewRange.SetFirst(tNV);
-      aNewRange.SetLast (aSR.Last());
-
-      if(aNewRange.First() > aNewRange.Last()) {
+      t2=aSR.Last();
+      aNewRange.SetLast (t2);
+      if(tNV < t2) {
+      //if(aNewRange.First() > aNewRange.Last()) {
 	aShrunkRange.SetShrunkRange(aNewRange);
       }
     }
@@ -1305,10 +1296,11 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
     if (aCPRange.First() < aSR.Last()) {
       tNV=aCPRange.First();
       tNV=tV-aCoeff*(tV-tNV);
-      aNewRange.SetFirst(aSR.First());
+      t1=aSR.First();
+      aNewRange.SetFirst(t1);
       aNewRange.SetLast (tNV);
-
-      if(aNewRange.First() < aNewRange.Last()) {
+      if(tNV > t1) {
+      //if(aNewRange.First() < aNewRange.Last()) {
 	aShrunkRange.SetShrunkRange(aNewRange);
       }
     }
@@ -1319,7 +1311,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: RefinePavePool
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::RefinePavePool()
+void BOPTools_PaveFiller::RefinePavePool()
 {
   Standard_Integer  i, aNbNew;
 
@@ -1354,7 +1346,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PrepareEdges
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PrepareEdges() 
+void BOPTools_PaveFiller::PrepareEdges() 
 {
   Standard_Integer  i, nV, ii, aNBSuc, ip;
   Standard_Real aT;
@@ -1378,7 +1370,6 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
       // these vertices formally (to obtain  Shrunk  Ranges for e.g). 
       // In reality this vertex(-es) does not belong to the INF Edge.
       // It just has reference in the DS.
-      //                            PKV Tue Apr 23 10:21:45 2002                 
       {
 	Standard_Real aT1, aT2, aTolE;
 	Standard_Boolean bInf1, bInf2;
@@ -1437,7 +1428,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PerformVV
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PerformVV() 
+void BOPTools_PaveFiller::PerformVV() 
 {
   myIsDone=Standard_False;
  
@@ -1499,7 +1490,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PerformNewVertices
 // purpose: 
 //=======================================================================
-  void BOPTools_PaveFiller::PerformNewVertices() 
+void BOPTools_PaveFiller::PerformNewVertices() 
 {
   myIsDone=Standard_False;
 
@@ -1536,7 +1527,8 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: FindSDVertex
 // purpose: 
 //=======================================================================
-  Standard_Integer BOPTools_PaveFiller::FindSDVertex(const Standard_Integer nV)const
+Standard_Integer BOPTools_PaveFiller::FindSDVertex
+  (const Standard_Integer nV)const
 {
   Standard_Integer i, aNb, anIndex1, anIndex2, aNewShape=0;
 
@@ -1559,8 +1551,9 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:IsSuccesstorsComputed
 // purpose: 
 //=======================================================================
-  Standard_Boolean BOPTools_PaveFiller::IsSuccesstorsComputed(const Standard_Integer aN1,
-							      const Standard_Integer aN2)const
+Standard_Boolean BOPTools_PaveFiller::IsSuccesstorsComputed
+  (const Standard_Integer aN1,
+   const Standard_Integer aN2)const
 {
   Standard_Integer nSuc, n1, n2;
 
@@ -1614,8 +1607,8 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 //function : SortTypes
 //purpose  : 
 //=======================================================================
-  void BOPTools_PaveFiller::SortTypes(Standard_Integer& theWhat,
-				      Standard_Integer& theWith)const 
+void BOPTools_PaveFiller::SortTypes(Standard_Integer& theWhat,
+				    Standard_Integer& theWith)const 
 { 
   Standard_Boolean aReverseFlag=Standard_True;
 
@@ -1646,7 +1639,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:IsDone
 // purpose: 
 //=======================================================================
-  Standard_Boolean BOPTools_PaveFiller::IsDone() const
+Standard_Boolean BOPTools_PaveFiller::IsDone() const
 {
   return myIsDone;
 }
@@ -1655,7 +1648,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: PavePool
 // purpose: 
 //=======================================================================
-  const BOPTools_PavePool& BOPTools_PaveFiller::PavePool() const
+const BOPTools_PavePool& BOPTools_PaveFiller::PavePool() const
 {
   return myPavePool;
 }
@@ -1663,7 +1656,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function: ChangePavePool
 // purpose: 
 //=======================================================================
-  BOPTools_PavePool& BOPTools_PaveFiller::ChangePavePool()
+BOPTools_PavePool& BOPTools_PaveFiller::ChangePavePool()
 {
   return myPavePool;
 }
@@ -1672,7 +1665,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  CommonBlockPool
 // purpose: 
 //=======================================================================
-  const BOPTools_CommonBlockPool& BOPTools_PaveFiller::CommonBlockPool() const
+const BOPTools_CommonBlockPool& BOPTools_PaveFiller::CommonBlockPool() const
 {
   return myCommonBlockPool;
 }
@@ -1680,7 +1673,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  ChangeCommonBlockPool
 // purpose: 
 //=======================================================================
-  BOPTools_CommonBlockPool& BOPTools_PaveFiller::ChangeCommonBlockPool()
+BOPTools_CommonBlockPool& BOPTools_PaveFiller::ChangeCommonBlockPool()
 {
   return myCommonBlockPool;
 }
@@ -1688,7 +1681,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  SplitShapesPool
 // purpose: 
 //=======================================================================
-  const BOPTools_SplitShapesPool& BOPTools_PaveFiller::SplitShapesPool() const
+const BOPTools_SplitShapesPool& BOPTools_PaveFiller::SplitShapesPool() const
 {
   return mySplitShapesPool;
 }
@@ -1697,7 +1690,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  ChangeSplitShapesPool
 // purpose: 
 //=======================================================================
-  BOPTools_SplitShapesPool& BOPTools_PaveFiller::ChangeSplitShapesPool()
+BOPTools_SplitShapesPool& BOPTools_PaveFiller::ChangeSplitShapesPool()
 {
   return mySplitShapesPool;
 }
@@ -1705,7 +1698,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  DS
 // purpose: 
 //=======================================================================
-  BooleanOperations_PShapesDataStructure BOPTools_PaveFiller::DS()
+BooleanOperations_PShapesDataStructure BOPTools_PaveFiller::DS()
 {
   return myDS;
 }
@@ -1713,7 +1706,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  InterfPool
 // purpose: 
 //=======================================================================
-  BOPTools_PInterferencePool BOPTools_PaveFiller::InterfPool()
+BOPTools_PInterferencePool BOPTools_PaveFiller::InterfPool()
 {
   return myIntrPool;
 }
@@ -1723,8 +1716,8 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  IteratorOfCoupleOfShape
 // purpose: 
 //=======================================================================
-  const BOPTools_IteratorOfCoupleOfShape& 
-                     BOPTools_PaveFiller::IteratorOfCoupleOfShape() const
+const BOPTools_IteratorOfCoupleOfShape& 
+  BOPTools_PaveFiller::IteratorOfCoupleOfShape() const
 {
   return myDSIt;
 }
@@ -1733,7 +1726,7 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  ExpectedPoolLength
 // purpose: 
 //=======================================================================
-   Standard_Integer BOPTools_PaveFiller::ExpectedPoolLength()const
+Standard_Integer BOPTools_PaveFiller::ExpectedPoolLength()const
 {
   Standard_Integer aNbIIs;
   Standard_Real aCfPredict=.5;
@@ -1754,9 +1747,9 @@ const Handle(IntTools_Context)& BOPTools_PaveFiller::Context() const
 // function:  IsBlocksCoinside
 // purpose: 
 //=======================================================================
-  Standard_Boolean 
-    BOPTools_PaveFiller::IsBlocksCoinside(const BOPTools_PaveBlock& aPB1,
-					  const BOPTools_PaveBlock& aPB2) const
+Standard_Boolean 
+  BOPTools_PaveFiller::IsBlocksCoinside(const BOPTools_PaveBlock& aPB1,
+					const BOPTools_PaveBlock& aPB2) const
 {
   Standard_Boolean bRetFlag=Standard_True;
   Standard_Real aTolV11, aTolV12, aTolV21, aTolV22;
