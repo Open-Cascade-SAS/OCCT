@@ -605,13 +605,13 @@ Standard_Boolean OpenGl_Workspace::Print
     if (width > aFrameWidth && height > aFrameHeight)
     {
       SetStretchBltMode (hPrnDC, STRETCH_HALFTONE);
-      isDone = StretchBlt (hPrnDC, aDevOffx, aDevOffy, width, height,
-                           hMemDC, 0, 0, aFrameWidth, aFrameHeight, SRCCOPY);
+      isDone = (StretchBlt (hPrnDC, aDevOffx, aDevOffy, width, height,
+                            hMemDC, 0, 0, aFrameWidth, aFrameHeight, SRCCOPY) != 0); // to avoid warning C4800
     }
     else
     {
-      isDone = BitBlt (hPrnDC, aDevOffx, aDevOffy, width, height,
-                       hMemDC, 0, 0, SRCCOPY);
+      isDone = (BitBlt (hPrnDC, aDevOffx, aDevOffy, width, height,
+                        hMemDC, 0, 0, SRCCOPY) != 0); // to avoid warning C4800
     }
 #endif
   }
@@ -706,8 +706,8 @@ Standard_Boolean OpenGl_Workspace::Print
         isDone = imagePasteDC (hPrnDC, aViewImage, aSubLeft, aSubTop,
                                aRight-aLeft, aBottom-aTop, aLeft, aTop);
 #else
-        isDone = BitBlt (hPrnDC, aSubLeft, aSubTop, aRight-aLeft, aBottom-aTop,
-                         hMemDC, aLeft, aTop, SRCCOPY);
+        isDone = (BitBlt (hPrnDC, aSubLeft, aSubTop, aRight-aLeft, aBottom-aTop,
+                          hMemDC, aLeft, aTop, SRCCOPY) != 0); // to avoid warning C4800
 #endif
 
         // stop operation if errors
