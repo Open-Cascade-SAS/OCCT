@@ -1455,6 +1455,8 @@ void OpenGl_View::CreateBackgroundTexture (const Standard_CString AFileName, con
         *pdata++ = (GLubyte)( 255 * color.Blue() );
       }
 
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
     GLuint texture = 0;
     glGenTextures( 1, &texture );
     glBindTexture( GL_TEXTURE_2D, texture );
