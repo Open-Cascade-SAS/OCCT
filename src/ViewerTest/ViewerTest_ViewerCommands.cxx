@@ -30,6 +30,7 @@
 #endif
 
 #include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
@@ -45,6 +46,7 @@
 #include <Draw_Appli.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Image_PixMap.hxx>
+#include <OSD_Timer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Visual3d_LayerItem.hxx>
 #include <V3d_LayerMgr.hxx>
@@ -1885,7 +1887,7 @@ static int VColorScale (Draw_Interpretor& di, Standard_Integer argc, const char 
   Standard_Real minRange = 0. , maxRange = 100. ;
 
   Standard_Integer numIntervals = 10 ;
-  Standard_Real textHeight = 16. ;
+  Standard_Integer textHeight = 16;
   Aspect_TypeOfColorScalePosition position = Aspect_TOCSP_RIGHT;
   Standard_Real X = 0., Y = 0. ;
 
@@ -1898,7 +1900,7 @@ static int VColorScale (Draw_Interpretor& di, Standard_Integer argc, const char 
        numIntervals = atoi( argv[3] );
      }
      if ( argc > 4 )
-       textHeight = atof( argv[4] );
+       textHeight = atoi( argv[4] );
      if ( argc > 5 )
        position = (Aspect_TypeOfColorScalePosition)atoi( argv[5] );
      if ( argc > 7 )
@@ -2671,7 +2673,7 @@ static int VGrid (Draw_Interpretor& theDI,
     if (aTail == 5)
     {
       aRadiusStep     = atof (theArgVec[anIter++]);
-      aDivisionNumber = atof (theArgVec[anIter++]);
+      aDivisionNumber = atoi (theArgVec[anIter++]);
       aRotAngle       = atof (theArgVec[anIter++]);
     }
 
@@ -2679,6 +2681,94 @@ static int VGrid (Draw_Interpretor& theDI,
     aViewer->ActivateGrid (aType, aMode);
   }
 
+  return 0;
+}
+
+//==============================================================================
+//function : VFps
+//purpose  :
+//==============================================================================
+
+static int VFps (Draw_Interpretor& theDI,
+                 Standard_Integer  theArgNb,
+                 const char**      theArgVec)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  Standard_Integer aFramesNb = (theArgNb > 1) ? atoi(theArgVec[1]) : 100;
+  if (aFramesNb <= 0)
+  {
+    std::cerr << "Incorrect arguments!\n";
+    return 1;
+  }
+
+  // the time is meaningless for first call
+  // due to async OpenGl rendering
+  aView->Redraw();
+
+  // redraw view in loop to estimate average values
+  OSD_Timer aTimer;
+  aTimer.Start();
+  for (Standard_Integer anInter = 0; anInter < aFramesNb; ++anInter)
+  {
+    aView->Redraw();
+  }
+  aTimer.Stop();
+  Standard_Real aCpu;
+  const Standard_Real aTime = aTimer.ElapsedTime();
+  aTimer.OSD_Chronometer::Show (aCpu);
+
+  const Standard_Real aFpsAver = Standard_Real(aFramesNb) / aTime;
+  const Standard_Real aCpuAver = aCpu / Standard_Real(aFramesNb);
+
+  // return statistics
+  theDI << "FPS: " << aFpsAver << "\n"
+        << "CPU: " << (1000.0 * aCpuAver) << " msec\n";
+
+  return 0;
+}
+
+
+//==============================================================================
+//function : VVbo
+//purpose  :
+//==============================================================================
+
+static int VVbo (Draw_Interpretor& theDI,
+                 Standard_Integer  theArgNb,
+                 const char**      theArgVec)
+{
+  // get the context
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  Handle(Graphic3d_GraphicDriver) aDriver =
+         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  if (aDriver.IsNull())
+  {
+    std::cerr << "Graphic driver not available.\n";
+    return 1;
+  }
+
+  if (theArgNb < 2)
+  {
+    //theDI << "VBO: " << aDriver->ToUseVBO() << "\n";
+    //return 0;
+    std::cerr << "Wrong number of arguments.\n";
+    return 1;
+  }
+
+  aDriver->EnableVBO (atoi(theArgVec[1]) != 0);
   return 0;
 }
 
@@ -2783,4 +2873,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " : Mode - rectangular or circular"
     " : Type - lines or points",
     __FILE__, VGrid, group);
+  theCommands.Add ("vfps",
+    "vfps [framesNb=100] : estimate average frame rate for active view",
+    __FILE__, VFps, group);
+  theCommands.Add ("vvbo",
+    "vvbo {0|1} : turn VBO usage On/Off; affects only newly displayed objects",
+    __FILE__, VVbo, group);
 }

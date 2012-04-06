@@ -66,7 +66,7 @@ is
   ---Purpose: returns both the elapsed time(seconds,minutes,hours) 
   --          and CPU  time.
   ---Level: Public
-    
+
   Stop (me : in out) is redefined;
   ---Purpose: Stops the Timer.
   ---Level: Public
@@ -74,6 +74,10 @@ is
   Start (me : in out) is redefined;
   ---Purpose: Starts (after Create or Reset) or restarts (after Stop)
   --          the Timer.
+  ---Level: Public
+
+  ElapsedTime (me : in out) returns Real;
+  ---Purpose: Returns elapsed time in seconds.
   ---Level: Public
 
 fields

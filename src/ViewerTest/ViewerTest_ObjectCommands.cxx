@@ -2775,36 +2775,10 @@ static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char*
   Standard_Real aCenterY = (argc > 5) ? atof (argv[4]) : 0.0;
   Standard_Real aCenterZ = (argc > 5) ? atof (argv[5]) : 0.0;
   Standard_Real aRadius =  (argc > 6) ? atof (argv[6]) : 100.0;
-  Standard_Boolean isVBOEnabled = (argc > 7) ? atoi (argv[7]) : Standard_True;
-  Standard_Integer aRedrawsNb =   (argc > 8) ? atoi (argv[8]) : 1;
-  Standard_Boolean toShowEdges =  (argc > 9) ? atoi (argv[9]) : Standard_False;
-
-  if (aRedrawsNb <= 0)
-  {
-    aRedrawsNb = 1;
-  }
+  Standard_Boolean toShowEdges =  (argc > 7) ? atoi (argv[7]) : Standard_False;
 
   // remove AIS object with given name from map
-  if (GetMapOfAIS().IsBound2 (aShapeName))
-  {
-    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aShapeName);
-    Handle(AIS_InteractiveObject) anInterObj = Handle(AIS_InteractiveObject)::DownCast (anObj);
-    if (anInterObj.IsNull())
-    {
-      std::cout << "Shape name was used for non AIS viewer\n!";
-      return 1;
-    }
-    aContextAIS->Remove (anInterObj, Standard_False);
-    GetMapOfAIS().UnBind2 (aShapeName);
-  }
-
-  // enable/disable VBO
-  Handle(Graphic3d_GraphicDriver) aDriver =
-         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
-  if (!aDriver.IsNull())
-  {
-    aDriver->EnableVBO (isVBOEnabled);
-  }
+  VDisplayAISObject (aShapeName, Handle(AIS_InteractiveObject)());
 
   std::cout << "Compute Triangulation...\n";
   Handle(AIS_Triangulation) aShape
@@ -2813,9 +2787,6 @@ static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char*
                                                   aRadius));
   Standard_Integer aNumberPoints    = aShape->GetTriangulation()->Nodes().Length();
   Standard_Integer aNumberTriangles = aShape->GetTriangulation()->Triangles().Length();
-
-  // register the object in map
-  GetMapOfAIS().Bind (aShape, aShapeName);
 
   // stupid initialization of Green color in RGBA space as integer
   // probably wrong for big-endian CPUs
@@ -2879,41 +2850,7 @@ static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char*
   aShAsp->SetAspect (anAspect);
   aShape->Attributes()->SetShadingAspect (aShAsp);
 
-  aContextAIS->Display (aShape, Standard_False);
-
-  // Two viewer updates are needed in order to measure time spent on
-  // loading triangulation to graphic card memory + redrawing (1st update) and
-  // time spent on redrawing itself (2nd and all further updates)
-  OSD_Chronometer aTimer;
-  Standard_Real aUserSeconds, aSystemSeconds;
-  aTimer.Start();
-  const Handle(V3d_Viewer)& aViewer = aContextAIS->CurrentViewer();
-  for (Standard_Integer anInteration = 0; anInteration < aRedrawsNb; ++anInteration)
-  {
-    for (aViewer->InitActiveViews(); aViewer->MoreActiveViews(); aViewer->NextActiveViews())
-    {
-      if (anInteration == 0)
-      {
-        aViewer->ActiveView()->Update();
-      }
-      else
-      {
-        aViewer->ActiveView()->Redraw();
-      }
-    }
-  }
-  aTimer.Show (aUserSeconds, aSystemSeconds);
-  aTimer.Stop();
-  std::cout << "Number of scene redrawings: " << aRedrawsNb << "\n"
-            << "CPU user time: "
-            << std::setiosflags(std::ios::fixed) << std::setprecision(16) << 1000.0 * aUserSeconds
-            << " msec\n"
-            << "CPU system time: "
-            << std::setiosflags(std::ios::fixed) << std::setprecision(16) << 1000.0 * aSystemSeconds
-            << " msec\n"
-            << "CPU average time of scene redrawing: "
-            << std::setiosflags(std::ios::fixed) << std::setprecision(16) << 1000.0 * (aUserSeconds / (Standard_Real )aRedrawsNb)
-            << " msec\n";
+  VDisplayAISObject (aShapeName, aShape);
   return 0;
 }
 
@@ -4343,7 +4280,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VDrawText,group);
 
   theCommands.Add("vdrawsphere",
-    "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToEnableVBO=1] [NumberOfViewerUpdate=1] [ToShowEdges=0]\n",
+    "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0]\n",
     __FILE__,VDrawSphere,group);
 
   theCommands.Add("vclipplane",

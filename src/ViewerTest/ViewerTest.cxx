@@ -310,6 +310,12 @@ Standard_EXPORT Standard_Boolean VDisplayAISObject (const TCollection_AsciiStrin
     aMap.UnBind2 (theName);
   }
 
+  if (theAISObj.IsNull())
+  {
+    // object with specified name already unbound
+    return Standard_True;
+  }
+
   // unbind AIS object if was bound with another name
   aMap.UnBind1 (theAISObj);
 

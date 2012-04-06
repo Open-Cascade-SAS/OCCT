@@ -131,6 +131,22 @@ void OSD_Timer::Show ()
   Show (cout);
 }
 
+//=======================================================================
+//function : ElapsedTime
+//purpose  :
+//=======================================================================
+
+Standard_Real OSD_Timer::ElapsedTime()
+{
+  if (!Stopped)
+  {
+    // update cumulative time
+    Stop();
+    Start();
+  }
+
+  return TimeCumul;
+}
 
 //=======================================================================
 //function : Show
