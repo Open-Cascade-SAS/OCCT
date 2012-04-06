@@ -29,3 +29,13 @@ inline Standard_Boolean LocOpe_WiresOnShape::IsDone() const
 {
   return myDone;
 }
+
+//=======================================================================
+//function : IsFaceWithSection
+//purpose  : 
+//=======================================================================
+
+inline Standard_Boolean LocOpe_WiresOnShape::IsFaceWithSection(const TopoDS_Shape& aFace) const
+{
+  return (myFacesWithSection.Contains(aFace));
+}

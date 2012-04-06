@@ -43,6 +43,7 @@ uses Spliter           from LocOpe,
      Face              from TopoDS,
      Wire              from TopoDS,
      Edge              from TopoDS,
+     Compound          from TopoDS,
      Vertex            from TopoDS,
      ListOfShape       from TopTools,
      ShapeModification from BRepBuilderAPI
@@ -94,6 +95,20 @@ is
 
 	is static;
     
+    Add(me: in out; Comp: Compound from TopoDS;
+    	            F: Face from TopoDS)
+	---Purpose: Adds the compound <Comp> on the face <F>. The
+	--          compound <Comp> must consist of edges lying on the
+	--          face <F>. If edges are geometrically connected,
+	--          they must be connected topologically, i.e. they
+	--          must share common vertices.
+    	--          
+    	-- Raises NoSuchObject  if <F> does not belong to the original shape.
+    	---C++: inline
+    	raises NoSuchObject from Standard,
+	       ConstructionError from Standard
+
+	is static;
 
 
     Add(me: in out; E  : Edge from TopoDS;

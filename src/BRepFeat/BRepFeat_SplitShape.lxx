@@ -84,6 +84,17 @@ inline void BRepFeat_SplitShape::Add(const TopoDS_Edge& E,
   myWOnShape->Bind(E,F);
 }
 
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_SplitShape::Add(const TopoDS_Compound& Comp,
+				     const TopoDS_Face& F)
+{
+  myWOnShape->Bind(Comp,F);
+}
+
 
 //=======================================================================
 //function : Add

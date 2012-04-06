@@ -28,11 +28,13 @@ class WiresOnShape from LocOpe inherits ProjectedWires from LocOpe
 uses Shape               from TopoDS,
      Face                from TopoDS,
      Wire                from TopoDS,
+     Compound            from TopoDS,
      Edge                from TopoDS,
      Vertex              from TopoDS,
      DataMapOfShapeShape from TopTools,
 --     DataMapIteratorOfDataMapOfShapeShape from TopTools
-     IndexedDataMapOfShapeShape from TopTools
+     IndexedDataMapOfShapeShape from TopTools,
+     MapOfShape          from TopTools
 
 
 is
@@ -52,6 +54,10 @@ is
 		     
 	is static;
 
+    Bind(me: mutable; Comp: Compound from TopoDS;
+                      F:    Face from TopoDS)
+		     
+	is static;
 
     Bind(me: mutable; E: Edge from TopoDS;
                       F: Face from TopoDS)
@@ -129,12 +135,19 @@ is
 	--          Else returns <Standard_False>.
 	returns Boolean from Standard
 	;
+	
+    IsFaceWithSection(me; aFace : Shape from TopoDS)
+	---Purpose: tells is the face to be split by section or not
+	---C++: inline
+	returns Boolean from Standard
+	;
 
 
 fields
 
     myShape : Shape                      from TopoDS;
     myMapEF : IndexedDataMapOfShapeShape from TopTools;
+    myFacesWithSection : MapOfShape      from TopTools;
     myMap   : DataMapOfShapeShape        from TopTools;
     myDone  : Boolean                    from Standard;
     myIndex : Integer                    from Standard;

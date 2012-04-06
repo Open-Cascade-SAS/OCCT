@@ -745,12 +745,12 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
 	  return 1; // on n`a rien recupere
 	}
 	TopAbs_ShapeEnum wtyp = W.ShapeType();
-	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && pick) {
+	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && wtyp != TopAbs_COMPOUND && pick) {
 	  Standard_Real u,v;
 	  DBRep_DrawableShape::LastPick(W,u,v);
 	  wtyp = W.ShapeType();
 	}
-	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE) {
+	if (wtyp != TopAbs_WIRE && wtyp != TopAbs_EDGE && wtyp != TopAbs_COMPOUND) {
 	  EF = DBRep::Get(a[i]);
 	  break;
 	}
@@ -761,9 +761,12 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
 	  if (wtyp == TopAbs_WIRE) {
 	    Spls.Add(TopoDS::Wire(W),TopoDS::Face(EF));
 	  }
-	  else {
+	  else if (wtyp == TopAbs_EDGE) {
 	    Spls.Add(TopoDS::Edge(W),TopoDS::Face(EF));
 	  }
+          else {
+	    Spls.Add(TopoDS::Compound(W),TopoDS::Face(EF));
+          }
 	}
 	i++;
       }
@@ -2255,7 +2258,7 @@ void BRepTest::FeatureCommands (Draw_Interpretor& theCommands)
 
 
   theCommands.Add("splitshape",
-		  "splitshape result shape face wire/edge [wire/edge ...][face wire/edge [wire/edge...] ...] [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]",
+		  "splitshape result shape face wire/edge/compound [wire/edge/compound ...][face wire/edge/compound [wire/edge/compound...] ...] [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]",
 		  __FILE__,SPLS,g);
 
 

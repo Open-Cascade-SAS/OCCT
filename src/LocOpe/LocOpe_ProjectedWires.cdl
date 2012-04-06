@@ -27,7 +27,8 @@ deferred class ProjectedWires from LocOpe inherits TShared from MMgt
 uses Face   from TopoDS,
      Wire   from TopoDS,
      Edge   from TopoDS,
-     Vertex from TopoDS
+     Vertex from TopoDS,
+     Shape  from TopoDS
 
 is
 
@@ -84,5 +85,9 @@ is
 	returns Boolean from Standard
 	is deferred;
 
+    IsFaceWithSection(me; aFace : Shape from TopoDS)
+	---Purpose: tells is the face to be split by section or not
+	returns Boolean from Standard
+	is deferred;
 
 end ProjectedWires;

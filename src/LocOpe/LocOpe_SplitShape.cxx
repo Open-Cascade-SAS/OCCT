@@ -27,14 +27,19 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
+#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <BRepLib_MakeFace.hxx>
+#include <BRepLib_MakeWire.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
 #include <BRep_Builder.hxx>
 
 #include <BRepClass_FaceExplorer.hxx>
@@ -66,6 +71,11 @@ static void ChoixUV(const TopoDS_Edge&,
                     gp_Pnt2d&,
                     gp_Vec2d&,
                     const Standard_Real tol);
+
+static TopoDS_Shape ChooseDirection(const TopoDS_Shape&,
+                                    const TopoDS_Vertex&,
+                                    const TopoDS_Face&,
+                                    const TopTools_ListOfShape&);
 
 inline Standard_Boolean SameUV(const gp_Pnt2d& P1, const gp_Pnt2d& P2, 
                                const BRepAdaptor_Surface& theBAS)//const Standard_Real tol)
@@ -220,6 +230,303 @@ void LocOpe_SplitShape::Add(const TopoDS_Vertex& V,
   }
 }
 
+//=======================================================================
+//function : Add
+//purpose  : adds the list of wires on the face <F>
+//=======================================================================
+
+void LocOpe_SplitShape::Add(const TopTools_ListOfShape& Lwires,
+                            const TopoDS_Face& F)
+{
+
+  if (myDone) {
+    Standard_ConstructionError::Raise();
+  }
+
+  TopTools_ListOfShape& lf = myMap(F);
+  if (lf.IsEmpty()) {
+    Rebuild(F);
+  }
+
+  // On cherche la face descendante de F qui continent le wire
+  lf = myMap(F);
+  TopTools_ListIteratorOfListOfShape itl(lf);
+  TopoDS_Vertex Vfirst,Vlast;
+
+  BRepTools::Update(F);
+
+  for (; itl.More(); itl.Next())
+  {
+    const TopoDS_Face& fac = TopoDS::Face(itl.Value());
+    Standard_Boolean AllWiresInside = Standard_True;
+    TopTools_ListIteratorOfListOfShape itwires(Lwires);
+    for (; itwires.More(); itwires.Next())
+    {
+      const TopoDS_Wire& aWire = TopoDS::Wire(itwires.Value());
+      if (!IsInside(fac, aWire))
+      {
+        AllWiresInside = Standard_False;
+        break;
+      }
+    }
+    if (AllWiresInside)
+      break;
+  }
+  if (!itl.More()) {
+    Standard_ConstructionError::Raise();
+  }
+
+  TopoDS_Face FaceRef = TopoDS::Face(itl.Value());
+  FaceRef.Orientation(TopAbs_FORWARD);
+  lf.Remove(itl);
+
+  TopTools_ListOfShape NewWires;
+
+  TopTools_DataMapOfShapeInteger SectionsTimes;
+  for (itl.Initialize(Lwires); itl.More(); itl.Next())
+    SectionsTimes.Bind(itl.Value(), 2);
+  
+  TopTools_ListOfShape BreakVertices;
+  TopTools_ListOfShape BreakOnWires;
+
+  TopTools_DataMapOfShapeShape VerWireMap;
+  Standard_Integer i;
+  TopExp_Explorer ExploF, ExploW;
+  for (itl.Initialize(Lwires); itl.More(); itl.Next())
+  {
+    const TopoDS_Wire& aSection = TopoDS::Wire(itl.Value());
+    TopoDS_Vertex Ver [2];
+    TopExp::Vertices(aSection, Ver[0], Ver[1]);
+    for (i = 0; i < 2; i++)
+    {
+      if (VerWireMap.IsBound(Ver[i]))
+        continue;
+      for (ExploF.Init(FaceRef, TopAbs_WIRE); ExploF.More(); ExploF.Next())
+      {
+        const TopoDS_Shape& aWire = ExploF.Current();
+        TopoDS_Shape aVer;
+        for (ExploW.Init(aWire, TopAbs_VERTEX); ExploW.More(); ExploW.Next())
+        {
+          aVer = ExploW.Current();
+          if (aVer.IsSame(Ver[i]))
+            break;
+        }
+        if (aVer.IsSame(Ver[i]))
+        {
+          VerWireMap.Bind(aVer, aWire);
+          break;
+        }
+      }
+    }
+  }  
+  
+  TopTools_DataMapOfShapeListOfShape VerSecMap;
+  for (itl.Initialize(Lwires); itl.More(); itl.Next())
+  {
+    const TopoDS_Wire& aWire = TopoDS::Wire(itl.Value());
+    TopoDS_Vertex V1, V2;
+    TopExp::Vertices(aWire, V1, V2);
+    TopTools_ListOfShape LW1, LW2;
+    if (!VerSecMap.IsBound(V1))
+      VerSecMap.Bind(V1, LW1);
+    VerSecMap(V1).Append(aWire);
+    if (!VerSecMap.IsBound(V2))
+      VerSecMap.Bind(V2, LW2);
+    VerSecMap(V2).Append(aWire);
+  }
+
+  //TopTools_IndexedDataMapOfShapeShape InnerTouchingWiresOnVertex;
+  
+  TopoDS_Wire outerW = BRepTools::OuterWire(FaceRef);
+  TopoDS_Wire CurWire = outerW;
+  BRepLib_MakeWire *MW;
+  MW = new BRepLib_MakeWire();
+  BRepTools_WireExplorer wexp(CurWire, FaceRef);
+  for (;;)
+  {
+    TopoDS_Vertex theStartVertex = wexp.CurrentVertex(), CurVertex;
+    TopoDS_Edge CurEdge = wexp.Current();
+    TopoDS_Edge LastEdge = CurEdge;
+    MW->Add(CurEdge);
+    TopoDS_Wire aSectionWire;
+    TopoDS_Vertex aBreakVertex;
+    wexp.Next();
+    if (!wexp.More())
+      wexp.Init(CurWire, FaceRef);
+    for (;;)
+    {
+      if (MW->Wire().Closed())
+        break;
+      CurVertex = wexp.CurrentVertex();
+      if (VerSecMap.IsBound(CurVertex))
+      {
+        TopoDS_Shape aLocalWire = ChooseDirection(LastEdge, CurVertex, FaceRef, VerSecMap(CurVertex));
+        aSectionWire = TopoDS::Wire(aLocalWire);
+        break;
+      }
+      CurEdge = wexp.Current();
+      MW->Add(CurEdge);
+      LastEdge = CurEdge;
+      wexp.Next();
+      if (!wexp.More())
+        wexp.Init(CurWire, FaceRef);
+    }
+    if (MW->Wire().Closed())
+    {
+      NewWires.Append(MW->Wire());
+      theStartVertex = TopoDS::Vertex(BreakVertices.First());
+      BreakVertices.RemoveFirst();
+      CurWire = TopoDS::Wire(BreakOnWires.First());
+      BreakOnWires.RemoveFirst();
+      wexp.Init(CurWire, FaceRef);
+      while (!wexp.CurrentVertex().IsSame(theStartVertex))
+        wexp.Next();
+      MW = new BRepLib_MakeWire();
+      continue;
+    }
+    aBreakVertex = CurVertex;
+    BreakVertices.Append(aBreakVertex);
+    BreakOnWires.Append(CurWire);
+    for (;;)
+    {
+      MW->Add(aSectionWire);
+      (SectionsTimes(aSectionWire))--;
+      if (SectionsTimes(aSectionWire) == 0)
+        SectionsTimes.UnBind(aSectionWire);
+      if (MW->Wire().Closed())
+      {
+        NewWires.Append(MW->Wire());
+        if (SectionsTimes.IsEmpty())
+          break;
+        theStartVertex = TopoDS::Vertex(BreakVertices.First());
+        BreakVertices.RemoveFirst();
+        CurWire = TopoDS::Wire(BreakOnWires.First());
+        BreakOnWires.RemoveFirst();
+        wexp.Init(CurWire, FaceRef);
+        while (!wexp.CurrentVertex().IsSame(theStartVertex))
+          wexp.Next();
+        MW = new BRepLib_MakeWire();
+        break;
+      }
+      else
+      {
+        TopoDS_Vertex V1, V2, aStartVertex;
+        TopExp::Vertices(aSectionWire, V1, V2);
+        aStartVertex = (V1.IsSame(aBreakVertex))? V2 : V1;
+        CurWire = TopoDS::Wire(VerWireMap(aStartVertex));
+        
+        wexp.Init(CurWire, FaceRef);
+        while (!wexp.CurrentVertex().IsSame(aStartVertex))
+          wexp.Next();
+            
+        const TopTools_ListOfShape& Lsections = VerSecMap(aStartVertex);
+        if (Lsections.Extent() == 1)
+          break;
+        
+        //else: choose the way
+        TopoDS_Wire NextSectionWire =
+          TopoDS::Wire((aSectionWire.IsSame(Lsections.First()))? Lsections.Last() : Lsections.First());
+        
+        Standard_Integer Times = 0;
+        TopTools_DataMapIteratorOfDataMapOfShapeShape itVW(VerWireMap);
+        for (; itVW.More(); itVW.Next())
+          if (itVW.Value().IsSame(CurWire))
+            Times++;
+        if (Times == 1) //it is inner touching wire
+        {
+          //InnerTouchingWiresOnVertex.Bind(aWire, aStartVertex);
+        }
+        else
+          {
+            //we have to choose the direction
+            TopoDS_Edge aStartEdge = wexp.Current();
+            TopTools_ListOfShape Ldirs;
+            Ldirs.Append(aStartEdge);
+            Ldirs.Append(NextSectionWire);
+            TopoDS_Shape theDirection = ChooseDirection(aSectionWire, aStartVertex, FaceRef, Ldirs);
+            if (theDirection.IsSame(aStartEdge))
+              break;
+          }
+        aSectionWire = NextSectionWire;
+        aBreakVertex = aStartVertex;
+      } //end of else (MW is not closed)
+    } //end of for (;;) (loop on section wires)
+    if (SectionsTimes.IsEmpty())
+      break;
+  } //end of global for (;;)
+
+  TopTools_ListOfShape NewFaces;
+  BRep_Builder BB;
+  for (itl.Initialize(NewWires); itl.More(); itl.Next())
+  {
+    TopoDS_Shape aLocalFace = FaceRef.EmptyCopied();
+    TopoDS_Face aNewFace = TopoDS::Face(aLocalFace);
+    aNewFace.Orientation(TopAbs_FORWARD);
+    BB.Add(aNewFace, itl.Value());
+    NewFaces.Append(aNewFace);
+  }
+
+  //Inserting holes
+  TopTools_ListOfShape Holes;
+  for (ExploF.Init(FaceRef, TopAbs_WIRE); ExploF.More(); ExploF.Next())
+  {
+    const TopoDS_Shape& aWire = ExploF.Current();
+    ExploW.Init(aWire, TopAbs_EDGE);
+    TopoDS_Shape anEdge = ExploW.Current();
+    Standard_Boolean found = Standard_False;
+    for (itl.Initialize(NewWires); itl.More(); itl.Next())
+    {
+      const TopoDS_Shape& aNewWire = itl.Value();
+      for (ExploW.Init(aNewWire, TopAbs_EDGE); ExploW.More(); ExploW.Next())
+      {
+        if (anEdge.IsSame(ExploW.Current()))
+        {
+          found = Standard_True;
+          break;
+        }
+      }
+      if (found)
+        break;
+    }
+    if (!found)
+      Holes.Append(aWire);
+  }
+  TopTools_ListIteratorOfListOfShape itlNewF;
+  for (itl.Initialize(Holes); itl.More(); itl.Next())
+  {
+    const TopoDS_Wire& aHole = TopoDS::Wire(itl.Value());
+    for (itlNewF.Initialize(NewFaces); itlNewF.More(); itlNewF.Next())
+    {
+      TopoDS_Face& aNewFace = TopoDS::Face(itlNewF.Value());
+      if (IsInside(aNewFace, aHole))
+      {
+        BB.Add(aNewFace, aHole);
+        break;
+      }
+    }
+  }
+
+  //Update "myMap"
+  lf.Append(NewFaces);
+
+  //Update of descendants of wires
+  for (ExploF.Init(F, TopAbs_WIRE); ExploF.More(); ExploF.Next())
+  {
+    TopTools_ListOfShape& ls = myMap(ExploF.Current());
+    ls.Clear();
+  }
+  ///////////////////
+  
+  // JAG 10.11.95 Codage des regularites
+  for (itl.Initialize(Lwires); itl.More(); itl.Next())
+    for (ExploW.Init(itl.Value(), TopAbs_EDGE); ExploW.More(); ExploW.Next())
+    {
+      const TopoDS_Edge& edg = TopoDS::Edge(ExploW.Current());
+      if (!BRep_Tool::HasContinuity(edg,F,F)) {
+        BB.Continuity(edg,F,F,GeomAbs_CN);
+      }
+    }
+}
 
 
 //=======================================================================
@@ -1047,7 +1354,7 @@ static Standard_Boolean IsInside(const TopoDS_Face& F,
     //  BRepClass_FaceClassifier classif(F,pt2d,Precision::PConfusion());
     //  return (classif.State() != TopAbs_OUT);
     BRepTopAdaptor_FClass2d classif(F,Precision::PConfusion());
-    Standard_Boolean stat = classif.Perform(pt2d);
+    TopAbs_State stat = classif.Perform(pt2d);
     //  return (classif.Perform(pt2d) != TopAbs_OUT);
     if(stat == TopAbs_OUT) return Standard_False;
 
@@ -1168,4 +1475,89 @@ static void ChoixUV(const TopoDS_Edge& Last,
     index++;
   }
 
+}
+
+//=======================================================================
+//function : ChooseDirection
+//purpose  : 
+//=======================================================================
+
+static TopoDS_Shape ChooseDirection(const TopoDS_Shape& RefDir,
+                                    const TopoDS_Vertex& RefVertex,
+                                    const TopoDS_Face& theFace,
+                                    const TopTools_ListOfShape& Ldirs)
+{
+  TopExp_Explorer Explo(RefDir, TopAbs_EDGE);
+  TopoDS_Edge RefEdge;
+  TopoDS_Vertex V1, V2;
+  TopAbs_Orientation anOr;
+  for (; Explo.More(); Explo.Next())
+  {
+    RefEdge = TopoDS::Edge(Explo.Current());
+    TopExp::Vertices(RefEdge, V1, V2);
+    if (V1.IsSame(RefVertex))
+    {
+      anOr = TopAbs_REVERSED;
+      break;
+    }
+    else if (V2.IsSame(RefVertex))
+    {
+      anOr = TopAbs_FORWARD;
+      break;
+    }
+  }
+  
+  Standard_Real RefFirst, RefLast;
+  Handle(Geom2d_Curve) RefCurve = BRep_Tool::CurveOnSurface(RefEdge, theFace, RefFirst, RefLast);
+  gp_Pnt2d RefPnt;
+  gp_Vec2d RefVec;
+
+  //Standard_Real RefPar = (RefEdge.Orientation() == TopAbs_FORWARD)? RefLast : RefFirst;
+  Standard_Real RefPar = (anOr == TopAbs_FORWARD)? RefLast : RefFirst;
+  RefCurve->D1(RefPar, RefPnt, RefVec);
+  if (anOr == TopAbs_FORWARD)
+    RefVec.Reverse();
+
+  Handle(Geom2d_Curve) aCurve;
+  Standard_Real aFirst, aLast, aPar;
+  gp_Vec2d aVec;
+  Standard_Real MinAngle = RealLast(), anAngle;
+  TopoDS_Shape TargetDir;
+  TopTools_ListIteratorOfListOfShape itl(Ldirs);
+  for (; itl.More(); itl.Next())
+  {
+    const TopoDS_Shape& aShape = itl.Value();
+    TopoDS_Edge anEdge;
+    for (Explo.Init(aShape, TopAbs_EDGE); Explo.More(); Explo.Next())
+    {
+      anEdge = TopoDS::Edge(Explo.Current());
+      TopExp::Vertices(anEdge, V1, V2);
+      if (V1.IsSame(RefVertex))
+      {
+        anOr = TopAbs_FORWARD;
+        break;
+      }
+      else if (V2.IsSame(RefVertex))
+      {
+        anOr = TopAbs_REVERSED;
+        break;
+      }
+    }
+    aCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, aFirst, aLast);
+    aPar = (anOr == TopAbs_FORWARD)? aFirst : aLast;
+    aCurve->D1(aPar, RefPnt, aVec);
+    if (anOr == TopAbs_REVERSED)
+      aVec.Reverse();
+    anAngle = aVec.Angle(RefVec);
+    if (anAngle < 0.)
+      anAngle += 2.*M_PI;
+
+    if (anAngle < MinAngle)
+    {
+      MinAngle = anAngle;
+      TargetDir = aShape;
+    }
+  }
+
+  return TargetDir;
 }

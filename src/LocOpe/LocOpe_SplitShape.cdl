@@ -92,6 +92,14 @@ is
 	       -- wire(s) of a sub-face of <F>
 	is static;
     
+    Add(me: in out; Lwires: ListOfShape from TopTools;
+    	            F: Face from TopoDS)
+	---Purpose: Adds the list of wires <Lwires> on the face <F>.
+    	raises NoSuchObject from Standard,
+	       -- if <F> does not belong to the original shape.
+	       ConstructionError from Standard
+	is static;
+    
 
     Shape(me)
 	---Purpose: Returns the "original" shape.

@@ -148,6 +148,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_ProjectedWires)& PW)
   TopoDS_Edge Ed;
   Standard_Real prm;
 
+  TopTools_MapOfShape theFacesWithSection;
   for (PW->InitEdgeIterator(); PW->MoreEdge(); PW->NextEdge()) {
     const TopoDS_Edge& edg = PW->Edge();
     for (exp.Init(edg,TopAbs_VERTEX); exp.More(); exp.Next()) {
@@ -169,8 +170,11 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_ProjectedWires)& PW)
     }
     else {
       TopoDS_Face fac = PW->OnFace();
-      if(!myMap.IsBound(fac)) continue; 
+      if(!myMap.IsBound(fac)) continue;
+      Standard_Boolean IsFaceWithSec = PW->IsFaceWithSection(fac);
       fac = TopoDS::Face(myMap(fac).First());
+      if (IsFaceWithSec)
+        theFacesWithSection.Add(fac);
       if (!mapFE.Contains(fac)) {
         TopTools_ListOfShape thelist;
 	mapFE.Add(fac, thelist);
@@ -189,9 +193,11 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_ProjectedWires)& PW)
 //     RebuildWires(ledges);
     RebuildWires(ledges, PW);
 //  Modified by skv - Mon May 31 12:32:54 2004 OCC5865 End
-    for (itl.Initialize(ledges); itl.More(); itl.Next()) {
-      theCFace.Add(TopoDS::Wire(itl.Value()),fac);
-    }
+    if (theFacesWithSection.Contains(fac))
+      theCFace.Add(ledges, fac);
+    else
+      for (itl.Initialize(ledges); itl.More(); itl.Next())
+        theCFace.Add(TopoDS::Wire(itl.Value()),fac);
   }
 
 
