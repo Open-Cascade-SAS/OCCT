@@ -30,6 +30,8 @@
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
 #include <gp_Vec.hxx>
+#include <IntAna_Quadric.hxx>
+#include <IntAna_IntConicQuad.hxx>
 
 
 Extrema_ExtElCS::Extrema_ExtElCS() 
@@ -82,65 +84,96 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
   myIsPar = Standard_False;
 
   gp_Ax3 Pos = S.Position();
-#ifdef DEB
-  gp_Pnt O = Pos.Location();
-#else
-  Pos.Location();
-#endif
+  gp_Pnt Origin = Pos.Location();
+  gp_Pnt LineOrig = C.Location();
+
   Standard_Real radius = S.Radius();
   Extrema_ExtElC Extrem(gp_Lin(Pos.Axis()), C, Precision::Angular());
   if (Extrem.IsParallel()) {
     mySqDist = new TColStd_HArray1OfReal(1, 1);
-    Standard_Real aDist = sqrt (Extrem.SquareDistance(1)) - radius;
+    myPoint1 = new Extrema_HArray1OfPOnCurv(1, 1);
+    myPoint2 = new Extrema_HArray1OfPOnSurf(1, 1);
+    Standard_Real aDist = sqrt(Extrem.SquareDistance(1)) - radius;
     mySqDist->SetValue(1, aDist * aDist);
+    Standard_Real u, v, w;
+    gp_Vec aVec(LineOrig, Origin);
+    gp_Vec aDirVec(C.Direction());
+    w = aVec*aDirVec;
+    gp_Pnt LinPoint = LineOrig.Translated(w * aDirVec);
+    Extrema_POnCurv PonC(w, LinPoint);
+    myPoint1->SetValue(1, PonC);
+    gp_Pnt CylPoint;
+    gp_Vec OrigToLine(Origin, LinPoint);
+    if (OrigToLine.Magnitude() <= gp::Resolution())
+    {
+      u = 0.;
+      v = 0.;
+      CylPoint = ElSLib::Value(u, v, S);
+    }
+    else
+    {
+      OrigToLine.Normalize();
+      CylPoint = Origin.Translated(radius * OrigToLine);
+      ElSLib::CylinderParameters(Pos, radius, CylPoint, u, v);
+    }
+    Extrema_POnSurf PonS(u, v, CylPoint);
+    myPoint2->SetValue(1, PonS);
     myDone = Standard_True;
     myIsPar = Standard_True;
   }
   else {
     Standard_Integer i;
-    if (Extrem.IsDone()) {
-      Extrema_POnCurv myPOnC1, myPOnC2;
-      Extrem.Points(1, myPOnC1, myPOnC2);
-      gp_Pnt PC = myPOnC2.Value();
+    
+    Extrema_POnCurv myPOnC1, myPOnC2;
+    Extrem.Points(1, myPOnC1, myPOnC2);
+    gp_Pnt PonAxis = myPOnC1.Value();
+    gp_Pnt PC = myPOnC2.Value();
 
-      if ((gp_Lin(Pos.Axis())).Contains(PC, Precision::Confusion())) {
-	gp_Dir D = C.Direction();
-	gp_Vec Dp(-D.Dot(Pos.YDirection()), D.Dot(Pos.XDirection()), 0.0);
-	Standard_Real U, V;
-	gp_Pnt P1(PC.Translated(radius*Dp));
-	gp_Pnt P2(PC.Translated(-radius*Dp));
-	
-	myNbExt = 2;
-	mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
-	myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
-	myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
-	ElSLib::CylinderParameters(Pos, radius, P1, U, V);
-	Extrema_POnSurf P1S(U, V, P1);
-	ElSLib::CylinderParameters(Pos, radius, P2, U, V);
-	Extrema_POnSurf P2S(U, V, P2);
-	mySqDist->SetValue(1, PC.SquareDistance(P1));
-	mySqDist->SetValue(2, PC.SquareDistance(P2));
-	myPoint1->SetValue(1, myPOnC2);
-	myPoint1->SetValue(2, myPOnC2);
-	myPoint2->SetValue(1, P1S);
-	myPoint2->SetValue(2, P2S);
+    // line is tangent or outside of the cylunder -- single solution
+    if (radius - PonAxis.Distance(PC) < Precision::PConfusion())
+    {
+      Extrema_ExtPElS ExPS(PC, S, Precision::Confusion());
+      if (ExPS.IsDone()) {
+        myNbExt = ExPS.NbExt();
+        mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+        myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+        myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+        for (i = 1; i <= myNbExt; i++) {
+          myPoint1->SetValue(i, myPOnC2);
+          myPoint2->SetValue(i, ExPS.Point(i));
+          mySqDist->SetValue(i,(myPOnC2.Value()).SquareDistance(ExPS.Point(i).Value()));
+        }
       }
-      else {
-	Extrema_ExtPElS ExPS(myPOnC2.Value(), S, Precision::Confusion());
-	if (ExPS.IsDone()) {
-	  myNbExt = ExPS.NbExt();
-	  mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
-	  myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
-	  myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
-	  for (i = 1; i <= myNbExt; i++) {
-	    myPoint1->SetValue(i, myPOnC2);
-	    myPoint2->SetValue(i, ExPS.Point(i));
-	    mySqDist->SetValue(i,(myPOnC2.Value()).SquareDistance(ExPS.Point(i).Value()));
-	  }
-	}
-      }
-      myDone = Standard_True;
     }
+    // line intersects the cylinder
+    else
+    {
+      IntAna_Quadric theQuadric(S);
+      IntAna_IntConicQuad Inters(C, theQuadric);
+      if (Inters.IsDone())
+      {
+        myNbExt = Inters.NbPoints();
+        if (myNbExt > 0)
+        {
+          mySqDist = new TColStd_HArray1OfReal(1, myNbExt);
+          myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
+          myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
+          Standard_Real u, v, w;
+          for (i = 1; i <= myNbExt; i++)
+          {
+            mySqDist->SetValue(i, 0.);
+            gp_Pnt P_int = Inters.Point(i);
+            w = Inters.ParamOnConic(i);
+            Extrema_POnCurv PonC(w, P_int);
+            myPoint1->SetValue(i, PonC);
+            ElSLib::CylinderParameters(Pos, radius, P_int, u, v);
+            Extrema_POnSurf PonS(u, v, P_int);
+            myPoint2->SetValue(i, PonS);
+          }
+        }
+      }
+    }
+    myDone = Standard_True;
   }
 
 }
