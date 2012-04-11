@@ -9,6 +9,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 
 #include "ColoredMeshDlg.h"
 
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <BRepMesh.hxx>
@@ -313,6 +314,8 @@ void User_Cylinder::Compute(const Handle_PrsMgr_PresentationManager3d& aPresenta
 				}
 			}	
 
+			Handle(Graphic3d_ArrayOfTriangles) aOP = new Graphic3d_ArrayOfTriangles(3 * nnn, 0, Standard_True, Standard_True);
+
 			for (nt = 1; nt <= nnn; nt++)					
 			{
 #ifdef DEBUG
@@ -325,50 +328,27 @@ void User_Cylinder::Compute(const Handle_PrsMgr_PresentationManager3d& aPresenta
 
 				if (TriangleIsValid (Nodes(n1),Nodes(n2),Nodes(n3)) )
 				{	// Associates a vertexNT to each node
-					Graphic3d_Array1OfVertexNC Points(1,3);
-					Aspect_Array1OfEdge aretes(1,3);
+					
+					TColgp_Array1OfPnt Points(1,3);
 
-		
-					mygroup->BeginPrimitives();
-					{
-						gp_Pnt p = Nodes(n1).Transformed(myLocation.Transformation());
-						gp_Pnt q = Nodes(n2).Transformed(myLocation.Transformation());
-						gp_Pnt r = Nodes(n3).Transformed(myLocation.Transformation());
+					gp_Pnt p = Nodes(n1).Transformed(myLocation.Transformation());
+					gp_Pnt q = Nodes(n2).Transformed(myLocation.Transformation());
+					gp_Pnt r = Nodes(n3).Transformed(myLocation.Transformation());
 
-						Points(1).SetCoord(p.X(), p.Y(), p.Z());
-						Points(2).SetCoord(q.X(), q.Y(), q.Z());
-						Points(3).SetCoord(r.X(), r.Y(), r.Z());
+					Points(1).SetCoord(p.X(), p.Y(), p.Z());
+					Points(2).SetCoord(q.X(), q.Y(), q.Z());
+					Points(3).SetCoord(r.X(), r.Y(), r.Z());
 
-				
-						Points(1).SetNormal(myNormal(n1).X(), myNormal(n1).Y(), myNormal(n1).Z());
-						Points(2).SetNormal(myNormal(n2).X(), myNormal(n2).Y(), myNormal(n2).Z());
-						Points(3).SetNormal(myNormal(n3).X(), myNormal(n3).Y(), myNormal(n3).Z());
-//ICI!!!
-/*						
-						Points(1).SetColor(Color(p,abs(int(B.Z())),abs(int(H.Z())),Dlg.Colorization));
-						Points(2).SetColor(Color(q,abs(int(B.Z())),abs(int(H.Z())),Dlg.Colorization));
-						Points(3).SetColor(Color(r,abs(int(B.Z())),abs(int(H.Z())),Dlg.Colorization));
-*/
-						Points(1).SetColor(Color(p,B.Z(),H.Z(),Dlg.Colorization));
-						Points(2).SetColor(Color(q,B.Z(),H.Z(),Dlg.Colorization));
-						Points(3).SetColor(Color(r,B.Z(),H.Z(),Dlg.Colorization));
-
-				
-			/*	Points(1).SetColor(Altitude(p,abs(B.Z()),abs(H.Z())));
-				Points(2).SetColor(Altitude(q,abs(B.Z()),abs(H.Z())));
-				Points(3).SetColor(Altitude(r,abs(B.Z()),abs(H.Z())));*/
-
-
-						aretes(1).SetValues(1, 2, Aspect_TOE_INVISIBLE);
-						aretes(2).SetValues(2, 3, Aspect_TOE_INVISIBLE);
-						aretes(3).SetValues(3, 1, Aspect_TOE_INVISIBLE);
-					}
-					mygroup->EndPrimitives();
-					mygroup->TriangleSet(Points, aretes, Standard_True);
-
-
+					aOP->AddVertex(Points(1), myNormal(n1), Color(p,B.Z(),H.Z(),Dlg.Colorization));
+					aOP->AddVertex(Points(2), myNormal(n2), Color(q,B.Z(),H.Z(),Dlg.Colorization));
+					aOP->AddVertex(Points(3), myNormal(n3), Color(r,B.Z(),H.Z(),Dlg.Colorization));
 				} // end of "if the triangle is valid
 			} // end of the "parcours" of the triangles
+
+			mygroup->BeginPrimitives();
+			mygroup->AddPrimitiveArray(aOP);
+			mygroup->EndPrimitives();
+
 			mygroup->SetGroupPrimitivesAspect(myAspect);
 		}// end of the exploration of the shape in faces
 
