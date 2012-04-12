@@ -41,9 +41,11 @@
 // current TKOpenGl implementation is incompatible with native OpenGL on MacOS X
 #define MACOSX_USE_GLX
 
+// exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
+#define GL_GLEXT_LEGACY
+
 // include main OpenGL header provided with system
 #if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  #define GL_GLEXT_LEGACY // exclude modern definitions
   #include <OpenGL/OpenGL.h>
 #else
   #include <GL/gl.h>
