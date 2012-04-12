@@ -17,12 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//      	-----------------------
-
-// Version:	0.0
-//Version	Date		Purpose
-//		0.0	Oct  3 1997	Creation
-
 #include <stdio.h>
 
 #include <DDF.hxx>
@@ -41,6 +35,8 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <OSD_File.hxx>
+
 #ifdef WNT
 #include <stdio.h>
 #endif
@@ -56,19 +52,44 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
                                   Standard_Integer  n, 
                                   const char**      a)
 {
-  if (n<2) return 1;
+  if (n<2)
+  {
+    cout << "Use: " << a[0] << " document [brower_name]" << endl;
+    return 1;
+  }
   
   Handle(TDF_Data) DF;
-  if (!DDF::GetDF (a[1], DF)) return 1;
+  if (!DDF::GetDF (a[1], DF)) 
+  {
+    cout << "Error: document " << a[1] << " is not found" << endl;
+    return 1;
+  }
 
   Handle(DDF_Browser) NewDDFBrowser = new DDF_Browser(DF);
   TCollection_AsciiString name("browser_");
   name += ((n == 3)? a[2] : a[1]);
   Draw::Set (name.ToCString(), NewDDFBrowser);
 
-  TCollection_AsciiString inst1("dftree ");
-  inst1.AssignCat(name);
-  di.Eval(inst1.ToCString());
+  // Load Tcl Script
+  TCollection_AsciiString aTclScript (getenv ("CSF_DrawPluginDefaults"));
+  aTclScript.AssignCat ( "/dftree.tcl" );
+  OSD_File aTclScriptFile (aTclScript);
+  if (aTclScriptFile.Exists()) {
+#ifdef DEB
+    cout << "Load " << aTclScript << endl;
+#endif
+    di.EvalFile( aTclScript.ToCString() );
+  }
+  else
+  {
+    cout << "Error: Could not load script " << aTclScript << endl;
+    cout << "Check environment variable CSF_DrawPluginDefaults" << endl;
+  }
+
+  // Call command dftree defined in dftree.tcl
+  TCollection_AsciiString aCommand = "dftree ";
+  aCommand.AssignCat(name);
+  di.Eval(aCommand.ToCString());
   return 0;
 }
 
