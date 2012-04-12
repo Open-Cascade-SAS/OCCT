@@ -17,14 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//              --------------
-
-// Version:     0.0
-//Version Date            Purpose
-//              0.0     Feb  6 1997     Creation
-
-
-
 #include <TDF_Label.ixx>
 
 #include <TDF_Attribute.hxx>
@@ -364,10 +356,8 @@ TDF_LabelNode* TDF_Label::FindOrAddChild
   }
   else if (create) {
     // Creates the label to be inserted always before currentLnp.
-    const Handle(NCollection_IncAllocator)& anIncAllocator =
-      (const Handle(NCollection_IncAllocator)&)
-        myLabelNode ->Data() -> LabelNodeAllocator();
-    childLabelNode =  new (anIncAllocator) TDF_LabelNode (aTag, myLabelNode);
+    const TDF_HAllocator& anAllocator = myLabelNode->Data()->LabelNodeAllocator();
+    childLabelNode =  new (anAllocator) TDF_LabelNode (aTag, myLabelNode);
     childLabelNode->myBrother = currentLnp; // May be NULL.
     childLabelNode->Imported(IsImported());
     //Inserts the label:

@@ -18,9 +18,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _NCollection_DefineAlloc_HeaderFile
 # define _NCollection_DefineAlloc_HeaderFile
+
+#include <NCollection_BaseAllocator.hxx>
 
 // Macro to overload placement new and delete operators for NCollection allocators.
 // For Borland C and old SUN compilers do not define placement delete

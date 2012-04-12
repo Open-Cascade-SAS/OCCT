@@ -17,21 +17,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//              ------------------
-
-// Version:     0.0
-//Version Date            Purpose
-//              0.0     Feb  6 1997     Creation
-
-//#include <TDF_Data.hxx>
-
 #ifndef TDF_LabelNode_HeaderFile
 #define TDF_LabelNode_HeaderFile
 
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_LabelNodePtr.hxx>
-#include <NCollection_IncAllocator.hxx>
+#include <TDF_HAllocator.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 class TDF_Attribute;
 class TDF_AttributeIterator;
@@ -114,24 +107,17 @@ class TDF_LabelNode {
   inline Standard_Boolean MayBeModified() const
     { return ((myFlags & TDF_LabelNodeMayModMsk) != 0); };
 
-  // Constructor
-  TDF_LabelNode(TDF_Data* Data); // Useful for root node.
-  
-  // Destructor
-  ~TDF_LabelNode();
+  private :
 
   // Memory management
-  void * operator new (size_t aSize,
-                       const Handle(NCollection_IncAllocator)& anAlloc)
-        { return anAlloc -> Allocate (aSize); }
-#if !defined(__BORLANDC__) && (!defined(__SUNPRO_CC) || (__SUNPRO_CC > 0x530))
-  void  operator delete (void* theAddress,
-                         const Handle(NCollection_IncAllocator)& anAlloc)
-  {
-  }
-#endif 
-  void  operator delete(void *) { }
-        // nothing to do in operator delete since IncAllocator does not need it
+  DEFINE_NCOLLECTION_ALLOC
+
+  // Constructor
+  TDF_LabelNode(TDF_Data* Data);
+  
+  // Destructor and deallocator
+  void Destroy (const TDF_HAllocator& theAllocator);
+
   // Public Friends
   // --------------------------------------------------------------------------
 
@@ -139,8 +125,6 @@ class TDF_LabelNode {
   friend class TDF_Label;
 
   private :
-
-  void* operator new(size_t);
 
   // Private Methods
   // --------------------------------------------------------------------------

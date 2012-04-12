@@ -17,14 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//              -------------
-
-// Version:     0.0
-//Version Date            Purpose
-//              0.0     Feb  6 1997     Creation
-
-
-
 #include <TDF_Data.ixx>
 
 #include <TCollection_AsciiString.hxx>
@@ -47,6 +39,8 @@
 
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NullObject.hxx>
+
+#include <NCollection_IncAllocator.hxx>
 
 #undef DEB_DELTA_CREATION
 #undef TDF_DATA_COMMIT_OPTIMIZED
@@ -116,7 +110,8 @@ myAllowModification     (Standard_True)
 void TDF_Data::Destroy()
 {
   AbortUntilTransaction(1);
-  delete myRoot;
+  myRoot->Destroy (myLabelNodeAllocator);
+  myRoot = NULL;
 }
 
 

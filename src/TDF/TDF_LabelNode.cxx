@@ -17,14 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//              ------------------
-
-// Version:     0.0
-//Version Date            Purpose
-//              0.0     Feb  6 1997     Creation
-//              MSV 21.03.2003: protect against stack overflow in destructor
-
-
 #include <TDF_LabelNode.hxx>
 
 #include <TDF_Data.hxx>
@@ -88,21 +80,25 @@ TDF_LabelNode::TDF_LabelNode
 }
 
 //=======================================================================
-//function : ~TDF_LabelNode
+//function : Destroy
 //purpose  : 
 //=======================================================================
 
-TDF_LabelNode::~TDF_LabelNode()
+void TDF_LabelNode::Destroy (const TDF_HAllocator& theAllocator)
 {
   // MSV 21.03.2003: do not delete brother, rather delete all children in a loop
   //                 to avoid stack overflow
   while (myFirstChild != NULL) {
     TDF_LabelNode* aSecondChild = myFirstChild->Brother();
-    delete myFirstChild;
+    myFirstChild->Destroy (theAllocator);
     myFirstChild = aSecondChild;
   }
   myFirstAttribute.Nullify();
-  myLastFoundChild = NULL;      //jfa 10.01.2003
+  myFather = myBrother = myFirstChild = myLastFoundChild = NULL;
+  myTag = myFlags = 0;
+
+  // deallocate memory (does nothing for IncAllocator)
+  theAllocator->Free (this);
 }
 
 //=======================================================================
