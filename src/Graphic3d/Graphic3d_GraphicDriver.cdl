@@ -62,6 +62,7 @@ uses
     Array1OfReal        from TColStd,
     Array2OfReal        from TColStd,
 
+    AsciiString         from TCollection,
     ExtendedString      from TCollection,
 
     NameOfColor         from Quantity,
@@ -624,6 +625,11 @@ is
                status   : Boolean from Standard )
                is deferred;
     ---Purpose: enables/disables usage of OpenGL vertex buffer arrays while drawing primitiev arrays
+
+    MemoryInfo (me;
+                theFreeBytes : out Size from Standard;
+                theInfo      : out AsciiString from TCollection) returns Boolean from Standard is deferred;
+    ---Purpose: Returns information about GPU memory usage.
 
     ----------------------------------------
     ---Category: Methods to create Triedron

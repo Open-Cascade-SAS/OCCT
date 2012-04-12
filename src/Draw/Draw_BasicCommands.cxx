@@ -29,6 +29,7 @@
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <OSD_MemInfo.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -419,6 +420,58 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
   return 0;
 }
 
+//==============================================================================
+//function : dmeminfo
+//purpose  :
+//==============================================================================
+
+static int dmeminfo (Draw_Interpretor& theDI,
+                     Standard_Integer  theArgNb,
+                     const char**      theArgVec)
+{
+  OSD_MemInfo aMemInfo;
+  if (theArgNb <= 1)
+  {
+    theDI << aMemInfo.ToString();
+    return 0;
+  }
+
+  for (Standard_Integer anIter = 1; anIter < theArgNb; ++anIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anIter]);
+    anArg.LowerCase();
+    if (anArg == "virt" || anArg == "v")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemVirtual)) << " ";
+    }
+    else if (anArg == "wset" || anArg == "w")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemWorkingSet)) << " ";
+    }
+    else if (anArg == "wsetpeak")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemWorkingSetPeak)) << " ";
+    }
+    else if (anArg == "swap")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemSwapUsage)) << " ";
+    }
+    else if (anArg == "swappeak")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemSwapUsagePeak)) << " ";
+    }
+    else if (anArg == "private")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemPrivate)) << " ";
+    }
+    else
+    {
+      std::cerr << "Unknown argument '" << theArgVec[anIter] << "'!\n";
+    }
+  }
+  theDI << "\n";
+  return 0;
+}
 
 void Draw::BasicCommands(Draw_Interpretor& theCommands)
 {
@@ -443,4 +496,8 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("mallochook",
                   "debug memory allocation/deallocation, w/o args for help",
                   __FILE__, mallochook, g);
+  theCommands.Add ("meminfo",
+    "meminfo [virt|v] [wset|w] [wsetpeak] [swap] [swappeak] [private]"
+    " : memory counters for this process",
+	  __FILE__, dmeminfo, g);
 }

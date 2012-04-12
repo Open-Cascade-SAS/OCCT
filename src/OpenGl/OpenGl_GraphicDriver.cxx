@@ -20,6 +20,7 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 
+#include <OpenGl_Context.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -55,34 +56,56 @@ extern "C" {
 #endif
 }
 
+// =======================================================================
+// function : OpenGl_GraphicDriver
+// purpose  :
+// =======================================================================
 OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString theShrName)
 : Graphic3d_GraphicDriver (theShrName)
 {
   //
 }
 
+// =======================================================================
+// function : DefaultTextHeight
+// purpose  :
+// =======================================================================
 Standard_ShortReal OpenGl_GraphicDriver::DefaultTextHeight() const
 {
   return 16.;
 }
 
+// =======================================================================
+// function : GetMapOfViews
+// purpose  :
+// =======================================================================
 NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>& OpenGl_GraphicDriver::GetMapOfViews()
 {
   return TheMapOfView;
 }
 
+// =======================================================================
+// function : GetMapOfWorkspaces
+// purpose  :
+// =======================================================================
 NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>& OpenGl_GraphicDriver::GetMapOfWorkspaces()
 {
   return TheMapOfWS;
 }
 
+// =======================================================================
+// function : GetMapOfStructures
+// purpose  :
+// =======================================================================
 NCollection_DataMap<Standard_Integer, OpenGl_Structure*>& OpenGl_GraphicDriver::GetMapOfStructures()
 {
   return TheMapOfStructure;
 }
 
-//TsmInitUpdateState
-// Deprecated, need to decide what to do with EraseAnimation() call
+// =======================================================================
+// function : InvalidateAllWorkspaces
+// purpose  : ex-TsmInitUpdateState, deprecated, need to decide what to do with EraseAnimation() call
+// =======================================================================
 void OpenGl_GraphicDriver::InvalidateAllWorkspaces()
 {
   for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIt (OpenGl_GraphicDriver::GetMapOfWorkspaces());
@@ -92,12 +115,38 @@ void OpenGl_GraphicDriver::InvalidateAllWorkspaces()
   }
 }
 
+// =======================================================================
+// function : ToUseVBO
+// purpose  :
+// =======================================================================
 Standard_Boolean OpenGl_GraphicDriver::ToUseVBO()
 {
   return TheToUseVbo;
 }
 
+// =======================================================================
+// function : EnableVBO
+// purpose  :
+// =======================================================================
 void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
 {
   TheToUseVbo = theToTurnOn;
+}
+
+// =======================================================================
+// function : MemoryInfo
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::MemoryInfo (Standard_Size&           theFreeBytes,
+                                                   TCollection_AsciiString& theInfo) const
+{
+  // this is extra work (for OpenGl_Context initialization)...
+  OpenGl_Context aGlCtx;
+  if (!aGlCtx.Init())
+  {
+    return Standard_False;
+  }
+  theFreeBytes = aGlCtx.AvailableMemory();
+  theInfo      = aGlCtx.MemoryInfo();
+  return !theInfo.IsEmpty();
 }

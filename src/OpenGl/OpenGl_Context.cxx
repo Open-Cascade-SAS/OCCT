@@ -38,6 +38,18 @@
   #include <GL/glx.h> // glXGetProcAddress()
 #endif
 
+// GL_NVX_gpu_memory_info
+#ifndef GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX
+  enum
+  {
+    GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX         = 0x9047,
+    GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX   = 0x9048,
+    GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX = 0x9049,
+    GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX           = 0x904A,
+    GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX           = 0x904B
+  };
+#endif
+
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Context, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
 
@@ -56,6 +68,8 @@ OpenGl_Context::OpenGl_Context()
   core20 (NULL),
   arbVBO (NULL),
   extFBO (NULL),
+  atiMem (Standard_False),
+  nvxMem (Standard_False),
   myGlLibHandle (NULL),
   myGlCore20 (NULL),
   myGlVerMajor (0),
@@ -189,11 +203,11 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
 // function : Init
 // purpose  :
 // =======================================================================
-void OpenGl_Context::Init()
+Standard_Boolean OpenGl_Context::Init()
 {
   if (myIsInitialized)
   {
-    return;
+    return Standard_True;
   }
 
 #if (defined(_WIN32) || defined(__WIN32__))
@@ -204,9 +218,14 @@ void OpenGl_Context::Init()
   myGContext = (Aspect_RenderingContext )glXGetCurrentContext();
   myWindow   = (Aspect_Drawable )glXGetCurrentDrawable();
 #endif
+  if (myGContext == NULL)
+  {
+    return Standard_False;
+  }
 
   init();
   myIsInitialized = Standard_True;
+  return Standard_True;
 }
 
 // =======================================================================
@@ -214,13 +233,13 @@ void OpenGl_Context::Init()
 // purpose  :
 // =======================================================================
 #if (defined(_WIN32) || defined(__WIN32__))
-void OpenGl_Context::Init (const Aspect_Handle           theWindow,
-                           const Aspect_Handle           theWindowDC,
-                           const Aspect_RenderingContext theGContext)
+Standard_Boolean OpenGl_Context::Init (const Aspect_Handle           theWindow,
+                                       const Aspect_Handle           theWindowDC,
+                                       const Aspect_RenderingContext theGContext)
 #else
-void OpenGl_Context::Init (const Aspect_Drawable         theWindow,
-                           const Aspect_Display          theDisplay,
-                           const Aspect_RenderingContext theGContext)
+Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
+                                       const Aspect_Display          theDisplay,
+                                       const Aspect_RenderingContext theGContext)
 #endif
 {
   Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called only once!");
@@ -232,9 +251,14 @@ void OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 #else
   myDisplay  = theDisplay;
 #endif
+  if (myGContext == NULL)
+  {
+    return Standard_False;
+  }
 
   init();
   myIsInitialized = Standard_True;
+  return Standard_True;
 }
 
 // =======================================================================
@@ -331,6 +355,9 @@ void OpenGl_Context::init()
 {
   // read version
   readGlVersion();
+
+  atiMem = CheckExtension ("GL_ATI_meminfo");
+  nvxMem = CheckExtension ("GL_NVX_gpu_memory_info");
 
   // initialize VBO extension (ARB)
   if (CheckExtension ("GL_ARB_vertex_buffer_object"))
@@ -607,7 +634,6 @@ void OpenGl_Context::init()
     core20 = myGlCore20;
   }
 }
-
 // =======================================================================
 // function : IsFeedback
 // purpose  :
@@ -624,4 +650,78 @@ Standard_Boolean OpenGl_Context::IsFeedback() const
 void OpenGl_Context::SetFeedback (const Standard_Boolean theFeedbackOn)
 {
   myIsFeedback = theFeedbackOn;
+}
+
+// =======================================================================
+// function : MemoryInfo
+// purpose  :
+// =======================================================================
+Standard_Size OpenGl_Context::AvailableMemory() const
+{
+  if (atiMem)
+  {
+    // this is actually information for VBO pool
+    // however because pools are mostly shared
+    // it can be used for total GPU memory estimations
+    GLint aMemInfo[4];
+    aMemInfo[0] = 0;
+    glGetIntegerv (GL_VBO_FREE_MEMORY_ATI, aMemInfo);
+    // returned value is in KiB, however this maybe changed in future
+    return Standard_Size(aMemInfo[0]) * 1024;
+  }
+  else if (nvxMem)
+  {
+    // current available dedicated video memory (in KiB), currently unused GPU memory
+    GLint aMemInfo = 0;
+    glGetIntegerv (GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &aMemInfo);
+    return Standard_Size(aMemInfo) * 1024;
+  }
+  return 0;
+}
+
+// =======================================================================
+// function : MemoryInfo
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_Context::MemoryInfo() const
+{
+  TCollection_AsciiString anInfo;
+  if (atiMem)
+  {
+    GLint aValues[4];
+    memset (aValues, 0, sizeof(aValues));
+    glGetIntegerv (GL_VBO_FREE_MEMORY_ATI, aValues);
+
+    // total memory free in the pool
+    anInfo += TCollection_AsciiString ("  GPU free memory:    ") + (aValues[0] / 1024) + " MiB\n";
+
+    // largest available free block in the pool
+    anInfo += TCollection_AsciiString ("  Largest free block: ") + (aValues[1] / 1024) + " MiB\n";
+    if (aValues[2] != aValues[0])
+    {
+      // total auxiliary memory free
+      anInfo += TCollection_AsciiString ("  Free memory:        ") + (aValues[2] / 1024) + " MiB\n";
+    }
+  }
+  else if (nvxMem)
+  {
+    //current available dedicated video memory (in KiB), currently unused GPU memory
+    GLint aValue = 0;
+    glGetIntegerv (GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &aValue);
+    anInfo += TCollection_AsciiString ("  GPU free memory:    ") + (aValue / 1024) + " MiB\n";
+
+    // dedicated video memory, total size (in KiB) of the GPU memory
+    GLint aDedicated = 0;
+    glGetIntegerv (GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &aDedicated);
+    anInfo += TCollection_AsciiString ("  GPU memory:         ") + (aDedicated / 1024) + " MiB\n";
+
+    // total available memory, total size (in KiB) of the memory available for allocations
+    glGetIntegerv (GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &aValue);
+    if (aValue != aDedicated)
+    {
+      // different only for special configurations
+      anInfo += TCollection_AsciiString ("  Total memory:       ") + (aValue / 1024) + " MiB\n";
+    }
+  }
+  return anInfo;
 }

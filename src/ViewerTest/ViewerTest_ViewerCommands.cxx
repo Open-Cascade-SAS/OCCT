@@ -2772,6 +2772,51 @@ static int VVbo (Draw_Interpretor& theDI,
   return 0;
 }
 
+//==============================================================================
+//function : VMemGpu
+//purpose  :
+//==============================================================================
+
+static int VMemGpu (Draw_Interpretor& theDI,
+                    Standard_Integer  theArgNb,
+                    const char**      theArgVec)
+{
+  // get the context
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  Handle(Graphic3d_GraphicDriver) aDriver =
+         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  if (aDriver.IsNull())
+  {
+    std::cerr << "Graphic driver not available.\n";
+    return 1;
+  }
+
+  Standard_Size aFreeBytes = 0;
+  TCollection_AsciiString anInfo;
+  if (!aDriver->MemoryInfo (aFreeBytes, anInfo))
+  {
+    std::cerr << "Information not available.\n";
+    return 1;
+  }
+
+  if (theArgNb > 1 && *theArgVec[1] == 'f')
+  {
+    theDI << Standard_Real (aFreeBytes);
+  }
+  else
+  {
+    theDI << anInfo;
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -2879,4 +2924,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vvbo",
     "vvbo {0|1} : turn VBO usage On/Off; affects only newly displayed objects",
     __FILE__, VVbo, group);
+  theCommands.Add ("vmemgpu",
+    "vmemgpu [f]: print system-dependent GPU memory information if available;"
+    " with f option returns free memory in bytes",
+    __FILE__, VMemGpu, group);
 }

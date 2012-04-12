@@ -327,6 +327,11 @@ public:
   //! Warning! This method should be called only before any primitives are displayed in GL scene!
   Standard_EXPORT void EnableVBO (const Standard_Boolean theToTurnOn);
 
+  //! Returns information about GPU memory usage.
+  //! Please read OpenGl_Context::MemoryInfo() for more description.
+  Standard_EXPORT Standard_Boolean MemoryInfo (Standard_Size&           theFreeBytes,
+                                               TCollection_AsciiString& theInfo) const;
+
 private:
 
   //! Access the global map of views.

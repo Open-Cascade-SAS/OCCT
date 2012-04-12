@@ -26,6 +26,7 @@
 #include <Aspect_Display.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <Handle_OpenGl_Context.hxx>
 
 //! Forward declarations
@@ -82,16 +83,16 @@ public:
 
   //! Initialize available extensions.
   //! GL context should be active!
-  Standard_EXPORT void Init();
+  Standard_EXPORT Standard_Boolean Init();
 
 #if (defined(_WIN32) || defined(__WIN32__))
-  Standard_EXPORT void Init (const Aspect_Handle           theWindow,
-                             const Aspect_Handle           theWindowDC,
-                             const Aspect_RenderingContext theGContext);
+  Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
+                                         const Aspect_Handle           theWindowDC,
+                                         const Aspect_RenderingContext theGContext);
 #else
-  Standard_EXPORT void Init (const Aspect_Drawable         theWindow,
-                             const Aspect_Display          theDisplay,
-                             const Aspect_RenderingContext theGContext);
+  Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theWindow,
+                                         const Aspect_Display          theDisplay,
+                                         const Aspect_RenderingContext theGContext);
 #endif
 
   //! Check if theExtName extension is supported by active GL context.
@@ -130,6 +131,18 @@ public:
   //! Setup feedback mode cached state
   Standard_EXPORT void SetFeedback (const Standard_Boolean theFeedbackOn);
 
+  //! This function retrieves information from GL about free GPU memory that is:
+  //!  - OS-dependent. On some OS it is per-process and on others - for entire system.
+  //!  - Vendor-dependent. Currently available only on NVIDIA and AMD/ATi drivers only.
+  //!  - Numbers meaning may vary.
+  //! You should use this info only for diagnostics purposes.
+  //! @return free GPU dedicated memory in bytes.
+  Standard_EXPORT Standard_Size AvailableMemory() const;
+
+  //! This function retrieves information from GL about GPU memory
+  //! and contains more vendor-specific values than AvailableMemory().
+  Standard_EXPORT TCollection_AsciiString MemoryInfo() const;
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -151,8 +164,10 @@ public: // core profiles
 
 public: // extensions
 
-  OpenGl_ArbVBO*   arbVBO;
-  OpenGl_ExtFBO*   extFBO;
+  OpenGl_ArbVBO*   arbVBO; //!< GL_ARB_vertex_buffer_object
+  OpenGl_ExtFBO*   extFBO; //!< GL_EXT_framebuffer_object
+  Standard_Boolean atiMem; //!< GL_ATI_meminfo
+  Standard_Boolean nvxMem; //!< GL_NVX_gpu_memory_info
 
 private:
 
@@ -171,7 +186,7 @@ private:
   Standard_Integer myGlVerMajor;    //!< cached GL version major number
   Standard_Integer myGlVerMinor;    //!< cached GL version minor number
   Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode
-  Standard_Boolean myIsInitialized; //!< flag to indicate initialization state
+  Standard_Boolean myIsInitialized; //!< flag indicates initialization state
 
 public:
 
