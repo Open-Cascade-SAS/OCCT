@@ -1,6 +1,6 @@
-// Created on: 2011-03-18
-// Created by: Anton POLETAEV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created on: 2012-04-04
+// Created by: Sergey ANIKIN
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,40 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-#ifndef _OPENGL_RESOURCEVBO_H
-#define _OPENGL_RESOURCEVBO_H
-
 #include <OpenGl_Resource.hxx>
-#include <Standard.hxx>
 
-class OpenGl_Resource;
-
-//! OpenGl_ResourceVBO represents the Vertex Buffer
-//! Object resource (VBO) for OpenGl_ResourceCleaner
-class OpenGl_ResourceVBO : public OpenGl_Resource 
-{
-
-public:
-
-  //! Constructor
-  OpenGl_ResourceVBO(GLuint theId) : OpenGl_Resource (theId) {}
-
-  //! Destructor
-  virtual ~OpenGl_ResourceVBO() { }
-
-protected:
-
-  //! Clean procedure for VBO resource;
-  //! Should be called by the OpenGl_ResourceCleaner
-  Standard_EXPORT virtual void Clean (const Handle(OpenGl_Context)& theGlContext);
-
-public:
-
-  DEFINE_STANDARD_RTTI(OpenGl_ResourceVBO) // Type definition
-
-};
-
-DEFINE_STANDARD_HANDLE(OpenGl_ResourceVBO,OpenGl_Resource)
-
-#endif
+IMPLEMENT_STANDARD_HANDLE (OpenGl_Resource, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Resource, MMgt_TShared)

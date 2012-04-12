@@ -57,7 +57,7 @@ public:
   //! Tell the OpenGl_ResourceCleaner to clean up the OpenGl memory resource
   //! which has been created by the specified OpenGl context;
   //! The context should be in the OpenGl_ResourceCleaner control list.
-  Standard_Boolean AddResource(GLCONTEXT theContext, Handle_OpenGl_Resource theResource);
+  Standard_EXPORT Standard_Boolean AddResource(GLCONTEXT theContext, const Handle(OpenGl_Resource)& theResource);
 
   //! Cancel clean procedure for all the resources added to the OpenGl_ResourceCleaner.
   void Clear();
@@ -83,7 +83,7 @@ public:
   GLCONTEXT GetSharedContext() const;
 
   //! Get the global instance of OpenGl_ResourceCleaner
-  static OpenGl_ResourceCleaner* GetInstance();
+  Standard_EXPORT static OpenGl_ResourceCleaner* GetInstance();
 
 private:
 

@@ -5,3 +5,4 @@ ViewerTest_RelationCommands.cxx
 ViewerTest_ObjectCommands.cxx
 ViewerTest_FilletCommands.cxx
 ViewerTest_VoxelCommands.cxx
+ViewerTest_OpenGlCommands.cxx

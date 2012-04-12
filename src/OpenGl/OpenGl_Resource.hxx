@@ -47,16 +47,6 @@ public:
   //! Constructor 
   OpenGl_Resource(GLuint theId) : myId(theId) { }
 
-  //! Copy constructor
-  OpenGl_Resource(const OpenGl_Resource& theBase) : myId(theBase.myId) { }
-
-  //! Copy operation
-  OpenGl_Resource& operator= (const OpenGl_Resource& theBase)
-  {
-    this->myId = theBase.myId;
-    return *this; 
-  }
-
   //! Destructor
   virtual ~OpenGl_Resource() {}
 
@@ -72,6 +62,10 @@ protected:
 protected:
 
   GLuint myId; // Id of OpenGl memory resource
+
+public:
+
+  DEFINE_STANDARD_RTTI(OpenGl_Resource) // Type definition
 
 };
 

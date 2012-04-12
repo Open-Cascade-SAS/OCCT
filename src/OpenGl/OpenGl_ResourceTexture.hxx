@@ -34,20 +34,23 @@ class OpenGl_ResourceTexture : public OpenGl_Resource
 public:
 
   //! Constructor
-  OpenGl_ResourceTexture(GLuint theId);
-
-  //! Copy constructor
-  OpenGl_ResourceTexture(const OpenGl_ResourceTexture& theResource);
+  OpenGl_ResourceTexture(GLuint theId) : OpenGl_Resource (theId) {}
 
   //! Destructor
-  ~OpenGl_ResourceTexture() { }
+  virtual ~OpenGl_ResourceTexture() { }
 
 protected:
 
   //! Clean procedure for texture resource;
   //! Should be called by the OpenGl_ResourceCleaner
-  virtual void Clean (const Handle(OpenGl_Context)& theGlContext);
+  Standard_EXPORT virtual void Clean (const Handle(OpenGl_Context)& theGlContext);
+
+public:
+
+  DEFINE_STANDARD_RTTI(OpenGl_ResourceTexture) // Type definition
 
 };
+
+DEFINE_STANDARD_HANDLE(OpenGl_ResourceTexture,OpenGl_Resource)
 
 #endif

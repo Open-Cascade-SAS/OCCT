@@ -152,10 +152,11 @@ public:
 
   void SetTextParam (const OpenGl_TextParam* theParam) { TextParam_set = theParam; }
 
-  const OpenGl_AspectLine*   AspectLine   (const Standard_Boolean theWithApply);
-  const OpenGl_AspectFace*   AspectFace   (const Standard_Boolean theWithApply);
-  const OpenGl_AspectMarker* AspectMarker (const Standard_Boolean theWithApply);
-  const OpenGl_AspectText*   AspectText   (const Standard_Boolean theWithApply);
+  //// THESE METHODS ARE EXPORTED AS THEY PROVIDE STATE INFO TO USERDRAW
+  Standard_EXPORT const OpenGl_AspectLine*   AspectLine   (const Standard_Boolean theWithApply);
+  Standard_EXPORT const OpenGl_AspectFace*   AspectFace   (const Standard_Boolean theWithApply);
+  Standard_EXPORT const OpenGl_AspectMarker* AspectMarker (const Standard_Boolean theWithApply);
+  Standard_EXPORT const OpenGl_AspectText*   AspectText   (const Standard_Boolean theWithApply);
 
   //! Clear the applied aspect state.
   void ResetAppliedAspect();

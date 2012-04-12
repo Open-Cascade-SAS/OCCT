@@ -125,6 +125,7 @@ is
     ObjectCommands(theCommands :in out Interpretor from Draw);
     FilletCommands(theCommands :in out Interpretor from Draw);
     VoxelCommands(theCommands :in out Interpretor from Draw);
+    OpenGlCommands(theCommands :in out Interpretor from Draw);
 
     GetMousePosition(xpix,ypix: out Integer from Standard);
 

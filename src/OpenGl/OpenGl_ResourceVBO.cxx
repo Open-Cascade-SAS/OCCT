@@ -22,25 +22,8 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ArbVBO.hxx>
 
-//=======================================================================
-//function : OpenGl_ResourceVBO
-//purpose  : Constructor
-//=======================================================================
-OpenGl_ResourceVBO::OpenGl_ResourceVBO (GLuint theId)
-: OpenGl_Resource (theId)
-{
-  //
-}
-
-//=======================================================================
-//function : OpenGl_ResourceVBO
-//purpose  : Copy constructor
-//=======================================================================
-OpenGl_ResourceVBO::OpenGl_ResourceVBO (const OpenGl_ResourceVBO& theResource)
-: OpenGl_Resource (theResource)
-{
-  //
-}
+IMPLEMENT_STANDARD_HANDLE (OpenGl_ResourceVBO, OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ResourceVBO, OpenGl_Resource)
 
 //=======================================================================
 //function : Clean

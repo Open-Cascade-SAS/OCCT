@@ -72,7 +72,7 @@ void OpenGl_ResourceCleaner::AppendContext(GLCONTEXT theContext, Standard_Boolea
 //           memory resource
 //=======================================================================
 
-Standard_Boolean OpenGl_ResourceCleaner::AddResource(GLCONTEXT theContext, Handle_OpenGl_Resource theResource) 
+Standard_Boolean OpenGl_ResourceCleaner::AddResource(GLCONTEXT theContext, const Handle(OpenGl_Resource)& theResource) 
 {
   // if context found in the shared list
   if (mySharedContexts.Contains(theContext)) 

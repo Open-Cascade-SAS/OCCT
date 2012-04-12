@@ -21,25 +21,8 @@
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_ResourceTexture.hxx>
 
-//=======================================================================
-//function : OpenGl_ResourceTexture
-//purpose  : Constructor
-//=======================================================================
-OpenGl_ResourceTexture::OpenGl_ResourceTexture (GLuint theId)
-: OpenGl_Resource (theId)
-{
-  //
-}
-
-//=======================================================================
-//function : OpenGl_ResourceTexture
-//purpose  : Copy constructor
-//=======================================================================
-OpenGl_ResourceTexture::OpenGl_ResourceTexture (const OpenGl_ResourceTexture& theResource)
-: OpenGl_Resource (theResource)
-{
-  //
-}
+IMPLEMENT_STANDARD_HANDLE (OpenGl_ResourceTexture, OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ResourceTexture, OpenGl_Resource)
 
 //=======================================================================
 //function : Clean
