@@ -60,6 +60,7 @@ OpenGl_Context::OpenGl_Context()
   myGlCore20 (NULL),
   myGlVerMajor (0),
   myGlVerMinor (0),
+  myIsFeedback (Standard_False),
   myIsInitialized (Standard_False)
 {
 #if defined(MAC_OS_X_VERSION_10_3) && !defined(MACOSX_USE_GLX)
@@ -605,4 +606,22 @@ void OpenGl_Context::init()
     core15 = myGlCore20;
     core20 = myGlCore20;
   }
+}
+
+// =======================================================================
+// function : IsFeedback
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::IsFeedback() const
+{
+  return myIsFeedback;
+}
+
+// =======================================================================
+// function : SetFeedback
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetFeedback (const Standard_Boolean theFeedbackOn)
+{
+  myIsFeedback = theFeedbackOn;
 }

@@ -280,7 +280,6 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
 
   Tint i,n;
   Tint transp = 0;
-  GLint renderMode;
   // Following pointers have been provided for performance improvement
   tel_colour pfc = myPArray->fcolours;
   Tint* pvc = myPArray->vcolours;
@@ -349,11 +348,9 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
     else
       glEnable (GL_LIGHTING);
 
-    glGetIntegerv (GL_RENDER_MODE, &renderMode);
-
     if (myPArray->num_vertexs > 0
      && myPArray->flagBufferVBO != VBO_OK
-     && renderMode != GL_FEEDBACK)
+     && !aGlContext->IsFeedback())
     {
       if (myPArray->vertices != NULL)
       {
@@ -462,7 +459,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
           for (i = n = 0; i < myPArray->num_bounds; ++i)
           {
             if (pfc != NULL) glColor3fv (pfc[i].rgb);
-            DrawElements (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+            DrawElements (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                           myPArray->bounds[i], (GLenum* )&myPArray->edges[n]);
             n += myPArray->bounds[i];
           }
@@ -475,7 +472,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
             {
               glColor3fv (pfc[i].rgb);
             }
-            DrawArrays (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+            DrawArrays (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                         n, myPArray->bounds[i]);
             n += myPArray->bounds[i];
           }
@@ -483,12 +480,12 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
       }
       else if (myPArray->num_edges > 0)
       {
-        DrawElements (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+        DrawElements (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                       myPArray->num_edges, (GLenum* )myPArray->edges);
       }
       else
       {
-        DrawArrays (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+        DrawArrays (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                     0, myPArray->num_vertexs);
       }
     }
@@ -577,7 +574,6 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
   }
 
   Tint i, j, n;
-  GLint renderMode;
 
   // OCC22236 NOTE: draw edges for all situations:
   // 1) draw elements with GL_LINE style as edges from myPArray->bufferVBO[VBOEdges] indicies array
@@ -630,7 +626,6 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
   {
     glEnableClientState (GL_VERTEX_ARRAY);
     glVertexPointer (3, GL_FLOAT, 0, myPArray->vertices); // array of vertices
-    glGetIntegerv (GL_RENDER_MODE, &renderMode);
 
     glColor3fv (theEdgeColour->rgb);
     if (myPArray->num_bounds > 0)
@@ -651,7 +646,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
           }
           else
           {
-            DrawElements (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+            DrawElements (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                           myPArray->bounds[i], (GLenum* )&myPArray->edges[n]);
           }
           n += myPArray->bounds[i];
@@ -661,7 +656,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
       {
         for (i = n = 0 ; i < myPArray->num_bounds; ++i)
         {
-          DrawArrays (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+          DrawArrays (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                       n, myPArray->bounds[i]);
           n += myPArray->bounds[i];
         }
@@ -681,13 +676,13 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
       }
       else
       {
-        DrawElements (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+        DrawElements (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                       myPArray->num_edges, (GLenum* )myPArray->edges);
       }
     }
     else
     {
-      DrawArrays (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+      DrawArrays (theWorkspace, myPArray, aGlContext->IsFeedback(), myDrawMode,
                   0, myPArray->num_vertexs);
     }
   }
@@ -1519,6 +1514,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsLines (const TEL_COLOUR*           
   else
   {
     int i,n;
+    Standard_Boolean isFeedback = theWorkspace->GetGlContext()->IsFeedback();
     glPushAttrib (GL_POLYGON_BIT);
     glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 
@@ -1540,16 +1536,13 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsLines (const TEL_COLOUR*           
 
     glVertexPointer (3, GL_FLOAT, 0, myPArray->vertices); // array of vertices
 
-    GLint renderMode;
-    glGetIntegerv (GL_RENDER_MODE, &renderMode);
-
     if (myPArray->num_bounds > 0)
     {
       if (myPArray->num_edges > 0)
       {
         for (i = n = 0; i < myPArray->num_bounds; ++i)
         {
-          DrawElements (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+          DrawElements (theWorkspace, myPArray, isFeedback, myDrawMode,
                         myPArray->bounds[i], (GLenum* )&myPArray->edges[n]);
           n += myPArray->bounds[i];
         }
@@ -1558,7 +1551,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsLines (const TEL_COLOUR*           
       {
         for (i = n = 0; i < myPArray->num_bounds; ++i)
         {
-          DrawArrays (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+          DrawArrays (theWorkspace, myPArray, isFeedback, myDrawMode,
                       n, myPArray->bounds[i]);
           n += myPArray->bounds[i];
         }
@@ -1566,12 +1559,12 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsLines (const TEL_COLOUR*           
     }
     else if (myPArray->num_edges > 0)
     {
-      DrawElements (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+      DrawElements (theWorkspace, myPArray, isFeedback, myDrawMode,
                     myPArray->num_edges, (GLenum* )myPArray->edges);
     }
     else
     {
-      DrawArrays (theWorkspace, myPArray, (renderMode == GL_FEEDBACK), myDrawMode,
+      DrawArrays (theWorkspace, myPArray, isFeedback, myDrawMode,
                   0, myPArray->num_vertexs);
     }
 

@@ -19,6 +19,7 @@
 
 
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_Context.hxx>
 
 #include <OpenGl_Marker.hxx>
 
@@ -91,9 +92,8 @@ void OpenGl_Marker::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
           glCallLists( strlen( str ), GL_UNSIGNED_BYTE, (const GLubyte *)str );
         }
       }
-      GLint mode;
-      glGetIntegerv( GL_RENDER_MODE, &mode );
-      if( mode==GL_FEEDBACK )
+
+      if (AWorkspace->GetGlContext()->IsFeedback())
       {
         glBegin( GL_POINTS );
         glVertex3fv( myPoint.xyz );

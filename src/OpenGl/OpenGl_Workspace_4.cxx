@@ -40,16 +40,22 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     return;
 
   // release pending GL resources
-  OpenGl_ResourceCleaner::GetInstance()->Cleanup (GetGlContext());
+  Handle(OpenGl_Context) aGlCtx = GetGlContext();
+  OpenGl_ResourceCleaner::GetInstance()->Cleanup (aGlCtx);
 
-  Tint toSwap = 1; // swap buffers
+  // cache render mode state
+  GLint aRendMode = GL_RENDER;
+  glGetIntegerv (GL_RENDER_MODE, &aRendMode);
+  aGlCtx->SetFeedback (aRendMode == GL_FEEDBACK);
+
+  Tint toSwap = (aRendMode == GL_RENDER); // swap buffers
   GLint aViewPortBack[4];
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
   if (aFrameBuffer != NULL)
   {
     glGetIntegerv (GL_VIEWPORT, aViewPortBack);
     aFrameBuffer->SetupViewport();
-    aFrameBuffer->BindBuffer (GetGlContext());
+    aFrameBuffer->BindBuffer (aGlCtx);
     toSwap = 0; // no need to swap buffers
   }
 
@@ -58,7 +64,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 
   if (aFrameBuffer != NULL)
   {
-    aFrameBuffer->UnbindBuffer (GetGlContext());
+    aFrameBuffer->UnbindBuffer (aGlCtx);
     // move back original viewport
     glViewport (aViewPortBack[0], aViewPortBack[1], aViewPortBack[2], aViewPortBack[3]);
   }
@@ -80,4 +86,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     delete[] aDumpData;
   }
 #endif
+
+  // reset render mode state
+  aGlCtx->SetFeedback (Standard_False);
 }

@@ -19,6 +19,7 @@
 
 
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_Context.hxx>
 
 #include <OpenGl_MarkerSet.hxx>
 
@@ -127,9 +128,8 @@ void OpenGl_MarkerSet::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
           }
         }
       }
-      GLint mode;
-      glGetIntegerv( GL_RENDER_MODE, &mode );
-      if( mode==GL_FEEDBACK )
+
+      if (AWorkspace->GetGlContext()->IsFeedback())
       {
         glBegin( GL_POINTS );
         for( i = 0, ptr = myPoints; i < myNbPoints; i++, ptr++ )

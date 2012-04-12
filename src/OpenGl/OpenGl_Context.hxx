@@ -124,6 +124,12 @@ public:
   //! Class should be initialized with appropriate info.
   Standard_EXPORT Standard_Boolean MakeCurrent();
 
+  //! Return true if active mode is GL_FEEDBACK (cached state)
+  Standard_EXPORT Standard_Boolean IsFeedback() const;
+
+  //! Setup feedback mode cached state
+  Standard_EXPORT void SetFeedback (const Standard_Boolean theFeedbackOn);
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -164,6 +170,7 @@ private:
   OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0
   Standard_Integer myGlVerMajor;    //!< cached GL version major number
   Standard_Integer myGlVerMinor;    //!< cached GL version minor number
+  Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode
   Standard_Boolean myIsInitialized; //!< flag to indicate initialization state
 
 public:
