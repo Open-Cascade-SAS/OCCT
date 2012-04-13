@@ -65,15 +65,22 @@ void OSD_MemInfo::Update()
 
   // use Psapi library
   HANDLE aProcess = GetCurrentProcess();
+#if (_WIN32_WINNT >= 0x0501)
   PROCESS_MEMORY_COUNTERS_EX aProcMemCnts;
+#else
+  PROCESS_MEMORY_COUNTERS    aProcMemCnts;
+#endif
   if (GetProcessMemoryInfo (aProcess, (PROCESS_MEMORY_COUNTERS* )&aProcMemCnts, sizeof(aProcMemCnts)))
   {
+  #if (_WIN32_WINNT >= 0x0501)
     myCounters[MemPrivate]        = aProcMemCnts.PrivateUsage;
+  #endif
     myCounters[MemWorkingSet]     = aProcMemCnts.WorkingSetSize;
     myCounters[MemWorkingSetPeak] = aProcMemCnts.PeakWorkingSetSize;
     myCounters[MemSwapUsage]      = aProcMemCnts.PagefileUsage;
     myCounters[MemSwapUsagePeak]  = aProcMemCnts.PeakPagefileUsage;
   }
+ 
 #elif (defined(__linux__) || defined(__linux))
   // use procfs on Linux
   char aBuff[4096];
