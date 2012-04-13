@@ -206,10 +206,10 @@ Standard_Boolean MeshVS_DataSource::GetNormalsByElement(const Standard_Integer I
     } // switch ( Type )
   } // if ( !allNormals )
 
-  if ( res )
+  if ( res || allNormals )
     Normals = aNormals;
 
-  return res;
+  return ( res || allNormals );
 }
 
 //================================================================
