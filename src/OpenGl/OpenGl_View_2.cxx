@@ -819,6 +819,13 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
         }
       }
 
+      // OCCT issue 0023000: Improve the way the gradient and textured
+      // background is managed in 3d viewer (note 0020339)
+      // Setting this coefficient to -1.F allows to tile textures relatively
+      // to the top-left corner of the view (value 1.F corresponds to the
+      // initial behaviour - tiling from the bottom-left corner)
+      GLfloat aCoef = -1.F;
+
       glEnable( GL_TEXTURE_2D ); //push GL_ENABLE_BIT
       glBindTexture( GL_TEXTURE_2D, myBgTexture.TexId ); //push GL_TEXTURE_BIT
 
@@ -827,11 +834,14 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
       glColor3fv( AWorkspace->BackgroundColor().rgb );
       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); //push GL_TEXTURE_BIT
 
+      // Note that texture is mapped using GL_REPEAT wrapping mode so integer part
+      // is simply ignored, and negative multiplier is here for convenience only
+      // and does not result e.g. in texture mirroring
       glBegin( GL_QUADS );
-      glTexCoord2f(0.F, 0.F); glVertex2f( -x_offset, -y_offset );
-      glTexCoord2f(texX_range, 0.F); glVertex2f( x_offset, -y_offset );
-      glTexCoord2f(texX_range, texY_range); glVertex2f( x_offset, y_offset );
-      glTexCoord2f(0.F, texY_range); glVertex2f( -x_offset, y_offset );
+      glTexCoord2f(0.F, 0.F); glVertex2f( -x_offset, -aCoef * y_offset );
+      glTexCoord2f(texX_range, 0.F); glVertex2f( x_offset, -aCoef * y_offset );
+      glTexCoord2f(texX_range, aCoef * texY_range); glVertex2f( x_offset, aCoef * y_offset );
+      glTexCoord2f(0.F, aCoef * texY_range); glVertex2f( -x_offset, aCoef * y_offset );
       glEnd();
     }
 
