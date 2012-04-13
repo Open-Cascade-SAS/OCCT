@@ -50,6 +50,11 @@ proc Visualization:alias { } {
 proc Visualization:depends { } {
     return [list ModelingAlgorithms]
 }
+
+proc Visualization:acdepends { } {
+    return [list X11 GL FREETYPE FTGL]
+}
+
 ;#
 ;# Pre-requis pour la compilation ( -I ... )
 ;# Returns a list of directory that should be used in -I directives

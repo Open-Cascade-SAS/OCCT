@@ -38,7 +38,7 @@ proc ModelingData:name { } {
     return ModelingData
 }
 proc ModelingData:alias { } {
-    return MDT
+    return DATA
 }
 proc ModelingData:depends { } {
     return [list FoundationClasses]

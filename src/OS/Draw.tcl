@@ -19,7 +19,7 @@
 ;# Liste des toolkits WOK sous forme de full path
 ;# 
 proc Draw:toolkits { } {
-    return [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW]
+    return [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW TKQADraw]
 }
 ;#
 ;# Autres UDs a prendre. Listes de triplets
@@ -43,12 +43,15 @@ proc Draw:name { } {
     return Draw
 }
 proc Draw:alias { } {
-    return DWT
+    return DRAW
 }
 proc Draw:depends { } {
     return [list DataExchange]
 }
 
+proc Draw:acdepends { } {
+    return [list TCLTK]
+}
 
 ;#
 ;# Pre-requis pour la compilation ( -I ... )

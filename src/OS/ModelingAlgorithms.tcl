@@ -46,7 +46,7 @@ proc ModelingAlgorithms:name { } {
     return ModelingAlgorithms
 }
 proc ModelingAlgorithms:alias { } {
-    return MLG
+    return ALGO
 }
 proc ModelingAlgorithms:depends { } {
     return [list ModelingData]
