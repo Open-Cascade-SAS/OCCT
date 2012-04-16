@@ -56,7 +56,11 @@ Standard_IMPORT Draw_Viewer dout;
 
 static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if ( n < 5) return 1;
+  if ( n < 5)
+  {
+    cout << " Use proj curve/surf x y z [extrema algo: g(grad)/t(tree)]" << endl;
+    return 1;
+  }
 
   gp_Pnt P(atof(a[2]),atof(a[3]),atof(a[4]));
 
@@ -64,6 +68,9 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
 
   Handle(Geom_Curve) GC = DrawTrSurf::GetCurve(a[1]);
   Handle(Geom_Surface) GS;
+  Extrema_ExtAlgo aProjAlgo = Extrema_ExtAlgo_Grad;
+  if (n == 6 && a[5][0] == 't')
+    aProjAlgo = Extrema_ExtAlgo_Tree;
 
   if (GC.IsNull())  {
     GS = DrawTrSurf::GetSurface(a[1]);
@@ -72,7 +79,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
     Standard_Real U1, U2, V1, V2;
     GS->Bounds(U1,U2,V1,V2);
 
-    GeomAPI_ProjectPointOnSurf proj(P,GS,U1,U2,V1,V2);
+    GeomAPI_ProjectPointOnSurf proj(P,GS,U1,U2,V1,V2,aProjAlgo);
     Standard_Real UU,VV;
     for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++) {
       gp_Pnt P1 = proj.Point(i);
@@ -492,7 +499,7 @@ void GeometryTest::APICommands(Draw_Interpretor& theCommands)
 
   g = "GEOMETRY curves and surfaces analysis";
 
-  theCommands.Add("proj", "proj curve/surf x y z",__FILE__, proj);
+  theCommands.Add("proj", "proj curve/surf x y z [extrema algo: g(grad)/t(tree)]",__FILE__, proj);
 
   g = "GEOMETRY approximations";
 

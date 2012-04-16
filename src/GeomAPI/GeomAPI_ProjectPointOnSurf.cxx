@@ -39,9 +39,10 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 //purpose  : 
 //=======================================================================
   GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf (const gp_Pnt&               P, 
-							  const Handle(Geom_Surface)& Surface)
+							  const Handle(Geom_Surface)& Surface,
+							  const Extrema_ExtAlgo   theProjAlgo)
 { 
-  Init (P, Surface); 
+  Init (P, Surface, theProjAlgo); 
 }
 //=======================================================================
 //function : GeomAPI_ProjectPointOnSurf
@@ -49,9 +50,10 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 //=======================================================================
   GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf (const gp_Pnt&               P, 
 							  const Handle(Geom_Surface)& Surface,
-							  const Standard_Real         Tolerance)
+							  const Standard_Real         Tolerance,
+							  const Extrema_ExtAlgo       theProjAlgo)
 { 
-  Init (P, Surface, Tolerance); 
+  Init (P, Surface, Tolerance, theProjAlgo); 
 }
 //=======================================================================
 //function : GeomAPI_ProjectPointOnSurf
@@ -62,10 +64,11 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 							 const Standard_Real         Umin,
 							 const Standard_Real         Usup,
 							 const Standard_Real         Vmin,
-							 const Standard_Real         Vsup)
+							 const Standard_Real         Vsup,
+							 const Extrema_ExtAlgo       theProjAlgo)
 
 { 
-  Init (P, Surface, Umin, Usup, Vmin, Vsup); 
+  Init (P, Surface, Umin, Usup, Vmin, Vsup, theProjAlgo); 
 }
 //=======================================================================
 //function : GeomAPI_ProjectPointOnSurf
@@ -77,10 +80,11 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 							   const Standard_Real         Usup,
 							   const Standard_Real         Vmin,
 							   const Standard_Real         Vsup,
-							   const Standard_Real         Tolerance)
+							   const Standard_Real         Tolerance,
+							   const Extrema_ExtAlgo       theProjAlgo)
 
 { 
-  Init (P, Surface, Umin, Usup, Vmin, Vsup, Tolerance); 
+  Init (P, Surface, Umin, Usup, Vmin, Vsup, Tolerance, theProjAlgo); 
 }
 //=======================================================================
 //function : Init
@@ -109,10 +113,11 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 //purpose  : 
 //=======================================================================
   void GeomAPI_ProjectPointOnSurf::Init (const gp_Pnt&               P,
-					 const Handle(Geom_Surface)& Surface)
+					 const Handle(Geom_Surface)& Surface,
+					 const Extrema_ExtAlgo   theProjAlgo)
 
 { 
-  Init (P, Surface, Precision::Confusion()); 
+  Init (P, Surface, Precision::Confusion(), theProjAlgo); 
 }
 //=======================================================================
 //function : Init
@@ -120,7 +125,8 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 //=======================================================================
   void GeomAPI_ProjectPointOnSurf::Init(const gp_Pnt&               P,
 					const Handle(Geom_Surface)& Surface,
-					const Standard_Real         Tolerance)
+					const Standard_Real         Tolerance,
+					const Extrema_ExtAlgo       theProjAlgo)
 
 {
   //modified by NIZNHY-PKV Thu Apr  4 10:37:55 2002 f
@@ -133,6 +139,7 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
   myGeomAdaptor.Load(Surface, Umin, Usup, Vmin, Vsup);
   //
   //myExtPS = Extrema_ExtPS();
+  myExtPS.SetAlgo(theProjAlgo);
   myExtPS.Initialize(myGeomAdaptor, Umin, Usup, Vmin, Vsup, Tolerance, Tolerance);
   myExtPS.Perform(P);
   //XXXmyExtPS = Extrema_ExtPS (P, myGeomAdaptor, Tolerance, Tolerance);
@@ -152,7 +159,8 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 					 const Standard_Real         Umin,
 					 const Standard_Real         Usup,
 					 const Standard_Real         Vmin,
-					 const Standard_Real         Vsup )
+					 const Standard_Real         Vsup,
+					 const Extrema_ExtAlgo       theProjAlgo)
 {
   Standard_Real Tolerance = Precision::PConfusion();
   //modified by NIZNHY-PKV Thu Apr  4 10:38:23 2002 f
@@ -160,6 +168,7 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
   //myExtPS = Extrema_ExtPS (P, TheSurface, Tol, Tol);
   myGeomAdaptor.Load(Surface, Umin,Usup,Vmin,Vsup);
   //myExtPS = Extrema_ExtPS();
+  myExtPS.SetAlgo(theProjAlgo);
   myExtPS.Initialize(myGeomAdaptor, Umin, Usup, Vmin, Vsup, Tolerance, Tolerance);
   myExtPS.Perform(P);
   //XXX myExtPS = Extrema_ExtPS (P, myGeomAdaptor, Tol, Tol);
@@ -177,13 +186,15 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 					 const Standard_Real         Usup,
 					 const Standard_Real         Vmin,
 					 const Standard_Real         Vsup,
-					 const Standard_Real         Tolerance)
+					 const Standard_Real         Tolerance,
+					 const Extrema_ExtAlgo       theProjAlgo)
 {
   //modified by NIZNHY-PKV Thu Apr  4 10:39:10 2002 f
   //GeomAdaptor_Surface TheSurface (Surface,Umin,Usup,Vmin,Vsup);
   //myExtPS = Extrema_ExtPS (P, TheSurface, Tolerance, Tolerance);
   myGeomAdaptor.Load(Surface, Umin,Usup,Vmin,Vsup);
   //myExtPS = Extrema_ExtPS();
+  myExtPS.SetAlgo(theProjAlgo);
   myExtPS.Initialize(myGeomAdaptor, Umin, Usup, Vmin, Vsup, Tolerance, Tolerance);
   myExtPS.Perform(P);
   //XXX myExtPS = Extrema_ExtPS (P, myGeomAdaptor, Tolerance, Tolerance);
@@ -198,7 +209,8 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 					 const Standard_Real       Umin,
 					 const Standard_Real       Usup,
 					 const Standard_Real       Vmin,
-					 const Standard_Real       Vsup )
+					 const Standard_Real       Vsup,
+					 const Extrema_ExtAlgo     theProjAlgo)
 {
   Standard_Real Tolerance = Precision::PConfusion();
   //modified by NIZNHY-PKV Thu Apr  4 10:41:50 2002 f
@@ -208,6 +220,7 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
   //myExtPS = Extrema_ExtPS();
   //modified by NIZNHY-PKV Thu Apr  4 10:42:32 2002 f
   //myExtPS.Initialize(TheSurface, Umin, Usup, Vmin, Vsup, Tol, Tol);
+  myExtPS.SetAlgo(theProjAlgo);
   myExtPS.Initialize(myGeomAdaptor, Umin, Usup, Vmin, Vsup, Tolerance, Tolerance);
   //modified by NIZNHY-PKV Thu Apr  4 10:42:39 2002 t
   myIsDone = Standard_False;
@@ -221,7 +234,8 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
 					 const Standard_Real         Usup,
 					 const Standard_Real         Vmin,
 					 const Standard_Real         Vsup, 
-					 const Standard_Real         Tolerance)
+					 const Standard_Real         Tolerance,
+					 const Extrema_ExtAlgo       theProjAlgo)
 {
   //modified by NIZNHY-PKV Thu Apr  4 10:43:00 2002 f
   //GeomAdaptor_Surface TheSurface (Surface,Umin,Usup,Vmin,Vsup);
@@ -230,6 +244,7 @@ GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf()
   //myExtPS = Extrema_ExtPS();
   //modified by NIZNHY-PKV Thu Apr  4 10:43:18 2002 f
   //myExtPS.Initialize(TheSurface, Umin, Usup, Vmin, Vsup, Tolerance, Tolerance);
+  myExtPS.SetAlgo(theProjAlgo);
   myExtPS.Initialize(myGeomAdaptor, Umin, Usup, Vmin, Vsup, Tolerance, Tolerance);
   //modified by NIZNHY-PKV Thu Apr  4 10:43:26 2002 t
   myIsDone = Standard_False;

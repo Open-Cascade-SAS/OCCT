@@ -30,6 +30,7 @@ class ProjectPointOnSurf from GeomAPI
 uses
     Surface   from Geom,
     ExtPS     from Extrema,
+    ExtAlgo from Extrema,
     Pnt       from gp,
     Length    from Quantity,
     Parameter from Quantity,
@@ -50,7 +51,8 @@ is
     
     
     Create(P          : Pnt     from gp;
-    	   Surface    : Surface from Geom)
+    	   Surface    : Surface from Geom;
+    	   Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
         ---Purpose: Create the projection  of a point <P> on a surface
         --          <Surface> 
 	---Level: Public          
@@ -58,7 +60,8 @@ is
 
     Create(P          : Pnt     from gp;
     	   Surface    : Surface from Geom;
-    	   Tolerance  : Real    from Standard)
+    	   Tolerance  : Real    from Standard;
+    	   Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
         ---Purpose: Create the projection  of a point <P> on a surface
         --          <Surface> 
 	---Level: Public          
@@ -74,13 +77,15 @@ is
     	   Surface    : Surface   from Geom;
     	   Umin, Usup, 
     	   Vmin, Vsup : Parameter from Quantity;
-           Tolerance  : Real      from Standard)
+           Tolerance  : Real      from Standard;
+    	   Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     returns ProjectPointOnSurf from GeomAPI;
 
     Create(P          : Pnt       from gp;
     	   Surface    : Surface   from Geom;
     	   Umin, Usup, 
-    	   Vmin, Vsup : Parameter from Quantity)
+    	   Vmin, Vsup : Parameter from Quantity;
+    	   Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     returns ProjectPointOnSurf from GeomAPI;
 
 
@@ -91,12 +96,14 @@ is
     Init(me : in out;
     	 P          : Pnt     from gp;
 	 Surface    : Surface from Geom;
-    	 Tolerance  : Real    from Standard)
+    	 Tolerance  : Real    from Standard;
+    	 Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     is static;
 
     Init(me : in out;
     	 P          : Pnt     from gp;
-	 Surface    : Surface from Geom)
+	 Surface    : Surface from Geom;
+	 Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     is static;
 
 
@@ -110,7 +117,8 @@ is
 	 Surface    : Surface   from Geom;
     	 Umin, Usup, 
     	 Vmin, Vsup : Parameter from Quantity;
-    	 Tolerance  : Real    from Standard)
+    	 Tolerance  : Real    from Standard;
+    	 Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
 	---Level: Public          
     is static;
 
@@ -118,7 +126,8 @@ is
     	 P          : Pnt       from gp;
 	 Surface    : Surface   from Geom;
     	 Umin, Usup, 
-    	 Vmin, Vsup : Parameter from Quantity)
+    	 Vmin, Vsup : Parameter from Quantity;
+    	 Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     is static;
 
 
@@ -131,13 +140,15 @@ is
 	 Surface    : Surface   from Geom;
     	 Umin, Usup, 
     	 Vmin, Vsup : Parameter from Quantity;
-	 Tolerance  : Real      from Standard)
+	 Tolerance  : Real      from Standard;
+	 Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     is static;
 
     Init(me : in out;
 	 Surface    : Surface   from Geom;
     	 Umin, Usup, 
-    	 Vmin, Vsup : Parameter from Quantity)
+    	 Vmin, Vsup : Parameter from Quantity;
+    	 Algo : ExtAlgo from Extrema = Extrema_ExtAlgo_Grad)
     is static;
 
 
