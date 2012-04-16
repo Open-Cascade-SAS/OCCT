@@ -1661,8 +1661,8 @@ void AIS_InteractiveContext::SetDeviationAngle(const Standard_Real anAngle)
 
 Standard_Real AIS_InteractiveContext::DeviationAngle() const
 {
-  return M_PI/180.0e0 ;
-  //  return myDefaultDrawer->DeviationAngle();
+  //return M_PI/180.0e0 ;
+    return myDefaultDrawer->DeviationAngle();
 }
 
 //=======================================================================
