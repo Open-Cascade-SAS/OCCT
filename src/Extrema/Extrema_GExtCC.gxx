@@ -245,14 +245,9 @@ void Extrema_GExtCC::Perform()
     Standard_Boolean bIsDone;
     Extrema_ExtElC CCXtrem ((*((Curve1*)myC[0])).Circle(), (*((Curve2*)myC[1])).Circle());
     bIsDone = CCXtrem.IsDone();
-    //modified by NIZNHY-PKV Fri Nov 21 10:48:14 2008f
     if(bIsDone) {
       Results(CCXtrem, U11, U12, U21, U22);
     }
-    //if(CCXtrem.IsParallel()) {
-      //Results(CCXtrem, U11, U12, U21, U22);
-    //}
-    //modified by NIZNHY-PKV Fri Nov 21 10:48:23 2008t
     else {
       Standard_Integer i;
       Standard_Integer aNbS = 32; //default number of sample points per interval (why 32?)
@@ -325,7 +320,17 @@ void Extrema_GExtCC::Perform()
 	aNbS[1] = (Standard_Integer) (aNbS[1] * LL[1]/LL[0]/2. );
       }
     }
-
+    //modified by NIZNHY-PKV Tue Apr 17 10:01:32 2012f
+    Standard_Integer aNbSTresh;
+    //
+    aNbSTresh=10000;
+    //
+    for (i = 0; i < 2; ++i) {
+      if (aNbS[i]>aNbSTresh) {
+	aNbS[i]=aNbSTresh;
+      }
+    }
+    //modified by NIZNHY-PKV Tue Apr 17 10:01:34 2012t
     for (i = 0; i < 2; i++) {
       TColStd_ListOfTransient& aCacheList = myCacheLists[i];
       if (aCacheList.IsEmpty()) {
