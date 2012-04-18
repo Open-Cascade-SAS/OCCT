@@ -4216,6 +4216,88 @@ static Standard_Integer VObjZLayer (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : VPolygonOffset
+//purpose  : Set or get polygon offset parameters
+//=======================================================================
+static Standard_Integer VPolygonOffset(Draw_Interpretor& di,
+                                       Standard_Integer argc,
+                                       const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cout << argv[0] << " Call 'vinit' before!\n";
+    return 1;
+  }
+
+  if (argc > 2 && argc != 5)
+  {
+    std::cout << "Usage : " << argv[0] << " [object [mode factor units]] - sets/gets polygon offset parameters for an object,"
+      "without arguments prints the default values" << std::endl;
+    return 1;
+  }
+
+  // find object
+  Handle(AIS_InteractiveObject) anInterObj;
+  if (argc >= 2)
+  {
+    TCollection_AsciiString aName (argv[1]);
+    ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+    if (!aMap.IsBound2 (aName))
+    {
+      std::cout << "Use 'vdisplay' before" << std::endl;
+      return 1;
+    }
+
+    // find interactive object
+    Handle(Standard_Transient) anObj = GetMapOfAIS().Find2 (aName);
+    anInterObj = Handle(AIS_InteractiveObject)::DownCast (anObj);
+    if (anInterObj.IsNull())
+    {
+      std::cout << "Not an AIS interactive object!" << std::endl;
+      return 1;
+    }
+  }
+
+  Standard_Integer aMode;
+  Standard_Real    aFactor, aUnits;
+  if (argc == 5)
+  {
+    aMode   = atoi(argv[2]);
+    aFactor = atof(argv[3]);
+    aUnits  = atof(argv[4]);
+
+    anInterObj->SetPolygonOffsets(aMode, aFactor, aUnits);
+    aContext->UpdateCurrentViewer();
+    return 0;
+  }
+  else if (argc == 2)
+  {
+    if (anInterObj->HasPolygonOffsets())
+    {
+      anInterObj->PolygonOffsets(aMode, aFactor, aUnits);
+      std::cout << "Current polygon offset parameters for " << argv[1] << ":" << std::endl;
+      std::cout << "\tMode: "   << aMode   << std::endl;
+      std::cout << "\tFactor: " << aFactor << std::endl;
+      std::cout << "\tUnits: "  << aUnits  << std::endl;
+      return 0;
+    }
+    else
+    {
+      std::cout << "Specific polygon offset parameters are not set for " << argv[1] << std::endl;
+    }
+  }
+
+  std::cout << "Default polygon offset parameters:" << std::endl;
+  aContext->DefaultDrawer()->ShadingAspect()->Aspect()->PolygonOffsets(aMode, aFactor, aUnits);
+  std::cout << "\tMode: "   << aMode   << std::endl;
+  std::cout << "\tFactor: " << aFactor << std::endl;
+  std::cout << "\tUnits: "  << aUnits  << std::endl;
+
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -4323,4 +4405,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vobjzlayer",
     "vobjzlayer : set/get object [layerid] - set or get z layer id for the interactive object",
     __FILE__, VObjZLayer, group);
+  
+  theCommands.Add("vpolygonoffset",
+    "vpolygonoffset : [object [mode factor units]] - sets/gets polygon offset parameters for an object, without arguments prints the default values",
+    __FILE__, VPolygonOffset, group);
 }

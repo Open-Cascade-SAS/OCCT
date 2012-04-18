@@ -57,6 +57,9 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <AIS_GraphicTool.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 
@@ -762,8 +765,26 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer aMode,
       Handle(PrsMgr_Presentation3d)::DownCast( myPresentations(i).Presentation() );
     if ( !aPrs3d.IsNull() ) {
       aStruct = Handle(Graphic3d_Structure)::DownCast( aPrs3d->Presentation() );
-      if( !aStruct.IsNull() )
+      if( !aStruct.IsNull() ) {
         aStruct->SetPrimitivesAspect( myDrawer->ShadingAspect()->Aspect() );
+        // Workaround for issue 23115: Need to update also groups, because their
+        // face aspect ALWAYS overrides the structure's.
+        const Graphic3d_SequenceOfGroup& aGroups = aStruct->Groups();
+        Standard_Integer aGroupIndex = 1, aGroupNb = aGroups.Length();
+        for ( ; aGroupIndex <= aGroupNb; aGroupIndex++ ) {
+          Handle(Graphic3d_Group) aGrp = aGroups.Value(aGroupIndex);
+          if ( !aGrp.IsNull() && aGrp->IsGroupPrimitivesAspectSet(Graphic3d_ASPECT_FILL_AREA) ) {
+            Handle(Graphic3d_AspectFillArea3d) aFaceAsp = new Graphic3d_AspectFillArea3d();
+            Handle(Graphic3d_AspectLine3d) aLineAsp = new Graphic3d_AspectLine3d();
+            Handle(Graphic3d_AspectMarker3d) aPntAsp = new Graphic3d_AspectMarker3d();
+            Handle(Graphic3d_AspectText3d) aTextAsp = new Graphic3d_AspectText3d();
+            // TODO: Add methods for retrieving individual aspects from Graphic3d_Group
+            aGrp->GroupPrimitivesAspect(aLineAsp, aTextAsp, aPntAsp, aFaceAsp);
+            aFaceAsp->SetPolygonOffsets(aMode, aFactor, aUnits);
+            aGrp->SetGroupPrimitivesAspect(aFaceAsp);
+          }
+        }
+      }
     }
   }
 }
