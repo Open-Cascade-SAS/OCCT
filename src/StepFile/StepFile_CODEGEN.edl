@@ -14,35 +14,21 @@
 -- Initial Developer hereby disclaims all such warranties, including without
 -- limitation, any warranties of merchantability, fitness for a particular
 -- purpose or non-infringement. Please see the License for the specific terms
--- and conditions governing the rights and limitations under the License.
-
+-- and conditions governing the rights and limitations under the
+-- License.
 
 @ifnotdefined ( %StepFile_CODEGEN_EDL) then
-@set %StepFile_CODEGEN_EDL = "";
+  @set %StepFile_CODEGEN_EDL = "";
 
---- Insert your stuff Here
-@if ( %Station != "wnt" ) then
-@template CODEGEN_LEX_OptLine  (%CODEGEN_FlexBisHome) is
-$%CODEGEN_FlexBisHome/flex -P<Module>  -L -8 <LexFile>
-@end;
+  -- same as basic template but without -f flags
+  @template CODEGEN_LEX_OptLine (%CODEGEN_LEX_CmdPath) is
+    $%CODEGEN_LEX_CmdPath -P <Module> -L -8 <LexFile>
+  @end;
 
-@template CODEGEN_LEX_CmdLine  ( %CODEGEN_FlexBisHome, %Source, %BaseName, %OutputDir ) is
-$cd %OutputDir
-$%CODEGEN_FlexBisHome/flex -P%BaseName  -L -8 %Source
-@end;
-@else
-
-@template CODEGEN_LEX_OptLine  (%CODEGEN_LEX_CmdPath) is
-$%CODEGEN_LEX_CmdPath -P <Module>  -L -8 <LexFile>
-@end;
-
-@set %CODEGEN_LEX_CmdPath = "%WOKHOME%/lib/wnt/flex";
-
-@template CODEGEN_LEX_CmdLine  ( %CODEGEN_LEX_CmdPath, %Source, %BaseName, %OutputDir ) is
-$cd %OutputDir;
-$%CODEGEN_LEX_CmdPath -P%BaseName -L -8 %Source
-@end;
-
-@endif;
+  -- same as basic template but without -f flags
+  @template CODEGEN_LEX_CmdLine (%CODEGEN_LEX_CmdPath, %Source, %BaseName, %OutputDir) is
+    $cd %OutputDir;
+    $%CODEGEN_LEX_CmdPath -P%BaseName -L -8 %Source
+  @end;
 
 @endif;
