@@ -25,7 +25,7 @@ proc FoundationClasses:toolkits { } {
 ;# Autres UDs a prendre.
 ;#
 proc FoundationClasses:ressources { } {
-        return [list [list both r UnitsAPI {} ] [list both r OS {} ]] \
+        return [list [list both r OS {} ]] \
 }
 ;
 ;#
@@ -111,4 +111,8 @@ proc FoundationClasses:LinksoWith { } {
 ;#
 proc FoundationClasses:Export { } {
     return [list source runtime wokadm api]
+}
+
+proc FoundationClasses:install { } {
+        return [list UnitsAPI]
 }
