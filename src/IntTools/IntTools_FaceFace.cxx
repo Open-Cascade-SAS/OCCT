@@ -297,7 +297,6 @@ static
   Standard_Integer IndexType(const GeomAbs_SurfaceType aType);
 
 //
-//modified by NIZNHY-PKV Tue Jan 31 08:02:24 2012f
 static
   Standard_Real MaxSquareDistance (const Standard_Real aT,
 				   const Handle(Geom_Curve)& aC3D,
@@ -308,7 +307,6 @@ static
 				   const TopoDS_Face& aF1,
 				   const TopoDS_Face& aF2,
 				   const Handle(IntTools_Context)& aCtx);
-//modified by NIZNHY-PKV Tue Jan 31 08:02:28 2012t
 //
 //=======================================================================
 //function : 
@@ -790,12 +788,11 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	aT1=aBC->FirstParameter();
 	aT2=aBC->LastParameter();
 	//
-	dT=(aT2-aT1)/(aNbP-1);
-	for (j=0; j<aNbP; ++j) {
+	aNbP--;
+	dT=(aT2-aT1)/aNbP;
+	//modified by NIZNHY-PKV Tue Apr 17 14:36:33 2012f
+	for (j=1; j<aNbP; ++j) {
 	  aT=aT1+j*dT;
-	  if (j==aNbP-1) {
-	    aT=aT2;
-	  }
 	  aD2=MaxSquareDistance(aT, aC3D, aC2D1, aC2D2,
 				myHS1, myHS2, myFace1, myFace2, myContext);
 	  if (aD2>aD2Max) {
@@ -1676,13 +1673,9 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	else {
 	  Standard_Integer iDegMax, iDegMin, iNbIter;
 	  //
-	  //modified by NIZNHY-PKV Mon Jan 30 14:19:32 2012f
 	  ApproxParameters(myHS1, myHS2, iDegMin, iDegMax, iNbIter);
 	  theapp3d.SetParameters(myTolApprox, tol2d, iDegMin, iDegMax, iNbIter, Standard_True, aParType);
 	  //
-	  // ApproxParameters(myHS1, myHS2, iDegMin, iDegMax);
-	  // theapp3d.SetParameters(myTolApprox, tol2d, iDegMin, iDegMax, 0, Standard_True, aParType);
-	  //modified by NIZNHY-PKV Mon Jan 30 14:19:35 2012t
 	}
       }
       //
@@ -2570,7 +2563,7 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 // The block is dedicated to determine whether WLine [ifprm, ilprm]
 // crosses the degenerated zone on each given surface or not.
 // If Yes -> We will not use info about surfaces during approximation
-// because inside degenerated zone of the surface the approx. alogo.
+// because inside degenerated zone of the surface the approx. algo.
 // uses wrong values of normal, etc., and resulting curve will have
 // oscillations that we would not like to have. 
 //                                               PKV Tue Feb 12 2002  
@@ -4497,11 +4490,9 @@ void ApproxParameters(const Handle(GeomAdaptor_HSurface)& aHS1,
       iDegMax=6;
     }
   }
-  //modified by NIZNHY-PKV Mon Jan 30 14:20:08 2012f
   if (aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Cylinder) {
-    iNbIter=1; //ZZ
+    iNbIter=1; 
   }
-  //modified by NIZNHY-PKV Mon Jan 30 14:20:10 2012t
 }
 //=======================================================================
 //function : Tolerances
@@ -4660,7 +4651,6 @@ void RefineVector(gp_Vec2d& aV2D)
   }
   aV2D.SetCoord(aC[0], aC[1]);
 } 
-//modified by NIZNHY-PKV Tue Jan 31 07:38:19 2012f
 //=======================================================================
 //function : MaxSquareDistance
 //purpose  : 
@@ -4719,4 +4709,3 @@ Standard_Real MaxSquareDistance (const Standard_Real aT,
   //
   return aD2Max;
 }
-//modified by NIZNHY-PKV Tue Jan 31 07:38:21 2012t
