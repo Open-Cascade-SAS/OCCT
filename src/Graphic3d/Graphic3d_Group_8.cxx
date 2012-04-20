@@ -266,13 +266,15 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
 
   /*** Texture map ***/
   Handle(Graphic3d_TextureMap) GroupTextureMap = CTX->TextureMap();
-  if (! GroupTextureMap.IsNull() )
+  if (! GroupTextureMap.IsNull() ) {
     MyCGroup.ContextFillArea.Texture.TexId = GroupTextureMap->TextureId();
-  else
+    MyCGroup.ContextFillArea.Texture.doTextureMap =
+      CTX->TextureMapState () ? 1 : 0;
+  }
+  else {
     MyCGroup.ContextFillArea.Texture.TexId = -1;
-
-  MyCGroup.ContextFillArea.Texture.doTextureMap =
-    CTX->TextureMapState () ? 1 : 0;
+    MyCGroup.ContextFillArea.Texture.doTextureMap = 0;
+  }
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
   Standard_Integer aPolyMode;

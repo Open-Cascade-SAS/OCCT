@@ -781,6 +781,7 @@ void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer aMode,
             // TODO: Add methods for retrieving individual aspects from Graphic3d_Group
             aGrp->GroupPrimitivesAspect(aLineAsp, aTextAsp, aPntAsp, aFaceAsp);
             aFaceAsp->SetPolygonOffsets(aMode, aFactor, aUnits);
+            // TODO: Issue 23118 - This line kills texture data in the group...
             aGrp->SetGroupPrimitivesAspect(aFaceAsp);
           }
         }
@@ -811,39 +812,5 @@ void AIS_InteractiveObject::PolygonOffsets(Standard_Integer& aMode,
 {
   if( HasPolygonOffsets() )
     myDrawer->ShadingAspect()->Aspect()->PolygonOffsets( aMode, aFactor, aUnits );
-}
-
-void AIS_InteractiveObject::Fill(const Handle(PrsMgr_PresentationManager)& aPresentationManager,
-                                 const Handle(PrsMgr_Presentation)& aPresentation,
-                                 const Standard_Integer aMode)
-{
-  PrsMgr_PresentableObject::Fill(aPresentationManager, aPresentation, aMode);
-
-  // Update polygon offsets for <aPresentation> using <myDrawer> data
-  if ( !myDrawer->ShadingAspect().IsNull() )
-  {
-    Standard_Integer aMode1 = Aspect_POM_Fill;
-    Standard_Real aFactor = 1., aUnits = 0.;
-    myDrawer->ShadingAspect()->Aspect()->PolygonOffsets( aMode1, aFactor, aUnits );
-
-    // Here we force this object to have default polygon offsets , if they are not 
-    // turned on for this object explicitly
-    if ( ( aMode1 & Aspect_POM_None ) == Aspect_POM_None )
-    {
-      aMode1 = Aspect_POM_Fill;
-      aFactor = 1.;
-      aUnits = 0.;
-      myDrawer->ShadingAspect()->Aspect()->SetPolygonOffsets( aMode1, aFactor, aUnits );
-    }
-  }
-
-  Handle(PrsMgr_Presentation3d) aPrs3d =
-    Handle(PrsMgr_Presentation3d)::DownCast( aPresentation );
-  if ( !aPrs3d.IsNull() ) {
-    Handle(Graphic3d_Structure) aStruct = 
-      Handle(Graphic3d_Structure)::DownCast( aPrs3d->Presentation() );
-    if( !aStruct.IsNull() )
-      aStruct->SetPrimitivesAspect( myDrawer->ShadingAspect()->Aspect() );
-  }
 }
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 

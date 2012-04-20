@@ -86,7 +86,7 @@ DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFac
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   // By default, aspect do not change current polygon offset parameters
-  MyPolygonOffsetMode   = Aspect_POM_None;
+  MyPolygonOffsetMode   = Aspect_POM_Fill;
   MyPolygonOffsetFactor = 1.;
   MyPolygonOffsetUnits  = 0.;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
@@ -104,7 +104,7 @@ Aspect_AspectFillArea (InteriorStyle, InteriorColor, EdgeColor, EdgeLineType, Ed
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
   // By default, aspect do not change current polygon offset parameters
-  MyPolygonOffsetMode   = Aspect_POM_None;
+  MyPolygonOffsetMode   = Aspect_POM_Fill;
   MyPolygonOffsetFactor = 1.;
   MyPolygonOffsetUnits  = 0.;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 

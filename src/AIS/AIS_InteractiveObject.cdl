@@ -527,15 +527,6 @@ is
     	---C++: return const&
     SetRecomputeOk(me:mutable) is private;
 
-    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
-    Fill(me: mutable; 
-         aPresentationManager: PresentationManager from PrsMgr;
-         aPresentation: mutable Presentation from PrsMgr;
-         aMode: Integer from Standard = 0)
-    is redefined protected;
-    -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
-
-
     State(me:mutable;theState: Integer from Standard) ;
     	---C++: inline
     State(me) returns Integer from Standard ;

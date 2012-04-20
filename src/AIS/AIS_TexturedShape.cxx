@@ -328,6 +328,15 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       {
         Handle(Prs3d_ShadingAspect) aPrs3d_ShadingAspect = new Prs3d_ShadingAspect();
         myAspect = aPrs3d_ShadingAspect->Aspect();
+
+        // Issue 23115: copy polygon offset settings passed through myDrawer
+        if (HasPolygonOffsets())
+        {
+          Standard_Integer aMode;
+          Standard_Real aFactor, aUnits;
+          PolygonOffsets(aMode, aFactor, aUnits);
+          myAspect->SetPolygonOffsets(aMode, aFactor, aUnits);
+        }
       }
       if (!DoMapTexture)
       {
