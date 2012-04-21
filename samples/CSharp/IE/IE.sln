@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IE", "IE.csproj", "{B9914BB3-B886-4B41-B48D-350EBEBEFD1F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OCC", "..\OCC\OCC.vcproj", "{DCB139CF-2190-412E-B72F-8B080CC01422}"

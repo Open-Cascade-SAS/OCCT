@@ -1,19 +1,11 @@
-@echo off
+call ../../../env.bat %1 %2 %3
+call %~dp0env.bat
 
-call "%~dp0env.bat"
-
-if not exist win32\vc8\obj goto QTSET 
-
-if not exist "%QTDIR%" goto QTSET
-
-goto QT
-
-:QTSET
-
-set QTDIR=%ROOT%\3rdparty\win32\qt
-set PATH=%QTDIR%;%PATH%
-
-:QT
+IF not "%CASDEB%" EQU "" (
+SET BIN_DIR=win%ARCH%\%VCVER%\bind
+) ELSE (
+SET BIN_DIR=win%ARCH%\%VCVER%\bin
+)
 
 if not exist "%BIN_DIR%\IESample.exe" goto ERR_EXE
 

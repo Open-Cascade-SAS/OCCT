@@ -1,11 +1,16 @@
 @ECHO OFF
 
-call %~dp0..\..\..\ros\env.bat
-
+IF not "%CASDEB%" EQU "" (
+SET BIN_DIR=Debug
+) ELSE (
 SET BIN_DIR=Release
-SET CSF_GraphicShr=OpenGl\Release\VoxelOpenGl.dll
+)
 
-SET PATH=OpenGl\Release;%QTDIR%\bin;%QTDIR%;%PATH%
+SET PATH=%~dp0%BIN_DIR%;%PATH%
+
+SET CSF_GraphicShr=OpenGl\%BIN_DIR%\VoxelOpenGl.dll
+
+SET PATH=%~dp0OpenGl\%BIN_DIR%;%PATH%
 
 SET CSF_TEX_FONT=2
 SET MMGT_REENTRANT=1

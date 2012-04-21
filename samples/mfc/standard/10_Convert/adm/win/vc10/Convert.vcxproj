@@ -66,17 +66,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../$(OS_TYPE)\$(VCVER)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\$(OS_TYPE)\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../win$(ARCH)\$(VCVER)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\win$(ARCH)\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../$(OS_TYPE)\$(VCVER)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\$(OS_TYPE)\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../win$(ARCH)\$(VCVER)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\win$(ARCH)\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../$(OS_TYPE)\$(VCVER)\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\$(OS_TYPE)\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../win$(ARCH)\$(VCVER)\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\win$(ARCH)\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../$(OS_TYPE)\$(VCVER)\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\$(OS_TYPE)\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../win$(ARCH)\$(VCVER)\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\win$(ARCH)\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,14 +85,14 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\obj/Convert.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\obj/Convert.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)\inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;WNT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -100,10 +100,10 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\obj/Convert.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\obj/Convert.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -114,11 +114,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Convert.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bin/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\lib;..\..\..\..\$(OS_TYPE)\$(VCVER)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>.\$(OS_TYPE)\obj\$(TargetFileName).intermediate.manifest</ManifestFile>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Convert.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>.\win$(ARCH)\obj\$(TargetFileName).intermediate.manifest</ManifestFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bin/Convert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>false</OptimizeReferences>
       <TargetMachine>MachineX86</TargetMachine>
@@ -130,14 +130,14 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\obj/Convert.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\obj/Convert.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)\inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;WNT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -145,10 +145,10 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\obj/Convert.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\obj/Convert.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -159,11 +159,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Convert.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bin/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\lib;..\..\..\..\$(OS_TYPE)\$(VCVER)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>.\$(OS_TYPE)\obj\$(TargetFileName).intermediate.manifest</ManifestFile>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Convert.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>.\win$(ARCH)\obj\$(TargetFileName).intermediate.manifest</ManifestFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bin/Convert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>false</OptimizeReferences>
       <TargetMachine>MachineX64</TargetMachine>
@@ -175,23 +175,23 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\objd/Convert.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\objd/Convert.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)\inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\objd/Convert.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\objd/Convert.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\objd/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -203,12 +203,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Convert.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bind/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\libd;..\..\..\..\$(OS_TYPE)\$(VCVER)\libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>.\$(OS_TYPE)\objd\$(TargetFileName).intermediate.manifest</ManifestFile>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\libd;$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>.\win$(ARCH)\objd\$(TargetFileName).intermediate.manifest</ManifestFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Convert.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bind/Convert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -219,23 +219,23 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\objd/Convert.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\objd/Convert.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CASROOT)\inc;../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../;../../../../Common;../../../src/WNT;../../../src;../../../src/ISession;$(CSF_OPT_INC);../../../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\objd/Convert.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\objd/Convert.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\objd/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -247,12 +247,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Convert.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bind/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\libd;..\..\..\..\$(OS_TYPE)\$(VCVER)\libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>.\$(OS_TYPE)\objd\$(TargetFileName).intermediate.manifest</ManifestFile>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>.\win$(ARCH)\objd\$(TargetFileName).intermediate.manifest</ManifestFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Convert.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bind/Convert.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>

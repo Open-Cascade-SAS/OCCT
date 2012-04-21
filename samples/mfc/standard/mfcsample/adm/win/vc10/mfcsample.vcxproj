@@ -66,17 +66,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../$(OS_TYPE)\$(VCVER)\libd\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\$(OS_TYPE)\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../win$(ARCH)\$(VCVER)\libd\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\win$(ARCH)\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../$(OS_TYPE)\$(VCVER)\libd\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\$(OS_TYPE)\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../win$(ARCH)\$(VCVER)\libd\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\win$(ARCH)\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../$(OS_TYPE)\$(VCVER)\lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\$(OS_TYPE)\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../win$(ARCH)\$(VCVER)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\win$(ARCH)\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../$(OS_TYPE)\$(VCVER)\lib\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\$(OS_TYPE)\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../win$(ARCH)\$(VCVER)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\win$(ARCH)\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -85,22 +85,22 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\objd/mfcsample.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\objd/mfcsample.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(CASROOT)\inc;..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CSF_OPT_INC);..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;WNT;_AFXEXT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\objd/mfcsample.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\objd/mfcsample.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\objd/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -112,11 +112,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV2d.lib;TKV3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\libd/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\libd/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\libd/mfcsample.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\libd/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
       </ImportLibrary>
@@ -129,22 +129,22 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\objd/mfcsample.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\objd/mfcsample.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(CASROOT)\inc;..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CSF_OPT_INC);..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN64;_WINDOWS;WNT;_AFXEXT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\objd/mfcsample.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\objd/mfcsample.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\objd/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -156,11 +156,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV2d.lib;TKV3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\libd/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\libd/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\libd/mfcsample.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\libd/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
       </ImportLibrary>
@@ -173,24 +173,24 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\obj/mfcsample.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\obj/mfcsample.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(CASROOT)\inc;..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CSF_OPT_INC);..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_AFXEXT;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\obj/mfcsample.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\obj/mfcsample.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -201,10 +201,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV2d.lib;TKV3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\lib/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\lib/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\lib/mfcsample.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\lib/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
       </ImportLibrary>
@@ -217,24 +217,24 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\obj/mfcsample.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\obj/mfcsample.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(CASROOT)\inc;..\..\..\..\Common;..\..\..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CSF_OPT_INC);..\..\..\..\Common;..\..\..\..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN64;_WINDOWS;_AFXEXT;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\obj/mfcsample.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\obj/mfcsample.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -247,10 +247,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV2d.lib;TKV3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\lib/mfcsample.dll</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\lib/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\lib/mfcsample.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\lib/mfcsample.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
       </ImportLibrary>

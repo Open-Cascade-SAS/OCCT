@@ -28,7 +28,7 @@
     |				   needed in every OCC sample. >    
     |
     |
-    |-- env.bat       		This file is called from Run_MSVC.bat.
+    |-- env.bat       		This file is called from msvc.bat.
 
 				   
 2. Launching Open CASCADE Technology samples:
@@ -36,22 +36,22 @@
 
 To run the Open CASCADE Technology samples:
     
-   > execute Run.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug] [SampleName]
+   > execute run.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug] [SampleName]
 
 To run the Animation sample:
 
-   > execute Run.bat vc8 win32 Debug Animation
+   > execute run.bat vc8 win32 Debug Animation
 
 3. Modifying and rebuilding samples:
 --------------------------------------------
 
 You can modify, compile and launch all sample projects in MS Visual C++ at once:
   
-    > execute Run_MSVC.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug]
+    > execute msvc.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug]
 
 To run all sample projects in MS Visual C++ at once: 
     
-    > execute Run_MSVC.bat vc8 win32 Debug
+    > execute msvc.bat vc8 win32 Debug
 
 
 Note: make sure your PATH environment variable contains a directory, 

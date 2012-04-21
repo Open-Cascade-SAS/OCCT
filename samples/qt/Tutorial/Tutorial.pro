@@ -6,8 +6,9 @@ TARGET = Tutorial
 HEADERS = src/*.h
 SOURCES = src/*.cxx
 
-INCLUDEPATH = $(CASROOT) $(CASROOT)/inc $(CASROOT)/src/WOKTclLib $(QTDIR)/include/QtCore \
-              $(QTDIR)/include/QtGui $(QTDIR)/include
+INCLUDES = $$(CSF_OPT_INC)
+PATHS = $$split(INCLUDES,";")
+for(path, PATHS):INCLUDEPATH += $${path}
 
 TS_FILES = ./src/Common-icon.ts \
            ./src/Common-string.ts \
@@ -43,110 +44,99 @@ win32 {
     CONFIG(debug, debug|release) {
 	DEFINES += _DEBUG
 	!contains(QMAKE_HOST.arch, x86_64) {
+		LIBS = -L$(CSF_OPT_LIB32D)
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
 		DESTDIR = ./win32/vc7/bind
 		OBJECTS_DIR = ./win32/vc7/objd
 		MOC_DIR = ./win32/vc7/srcd
-		LIBS = -L$(CASROOT)/win32/vc7/libd
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
 		DESTDIR = ./win32/vc8/bind
 		OBJECTS_DIR = ./win32/vc8/objd
 		MOC_DIR = ./win32/vc8/srcd
-		LIBS = -L$(CASROOT)/win32/vc8/libd
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
 		DESTDIR = ./win32/vc9/bind
 		OBJECTS_DIR = ./win32/vc9/objd
 		MOC_DIR = ./win32/vc9/srcd
-		LIBS = -L$(CASROOT)/win32/vc9/libd
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
 		DESTDIR = ./win32/vc10/bind
 		OBJECTS_DIR = ./win32/vc10/objd
 		MOC_DIR = ./win32/vc10/srcd
-		LIBS = -L$(CASROOT)/win32/vc10/libd
 	    }
 	} else {
+		LIBS = -L$(CSF_OPT_LIB64D)
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
 		DESTDIR = ./win64/vc8/bind
 		OBJECTS_DIR = ./win64/vc8/objd
 		MOC_DIR = ./win64/vc8/srcd
-		LIBS = -L$(CASROOT)/win64/vc8/libd
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
 		DESTDIR = ./win64/vc9/bind
 		OBJECTS_DIR = ./win64/vc9/objd
 		MOC_DIR = ./win64/vc9/srcd
-		LIBS = -L$(CASROOT)/win64/vc9/libd
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
 		DESTDIR = ./win64/vc10/bind
 		OBJECTS_DIR = ./win64/vc10/objd
 		MOC_DIR = ./win64/vc10/srcd
-		LIBS = -L$(CASROOT)/win64/vc10/libd
 	    }
 	}
     } else {
 	DEFINES += NDEBUG
 	!contains(QMAKE_HOST.arch, x86_64) {
+		LIBS = -L$(CSF_OPT_LIB32)
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
 		DESTDIR = ./win32/vc7/bin
 		OBJECTS_DIR = ./win32/vc7/obj
 		MOC_DIR = ./win32/vc7/src
-		LIBS = -L$(CASROOT)/win32/vc7/lib
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
 		DESTDIR = ./win32/vc8/bin
 		OBJECTS_DIR = ./win32/vc8/obj
 		MOC_DIR = ./win32/vc8/src
-		LIBS = -L$(CASROOT)/win32/vc8/lib
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
 		DESTDIR = ./win32/vc9/bin
 		OBJECTS_DIR = ./win32/vc9/obj
 		MOC_DIR = ./win32/vc9/src
-		LIBS = -L$(CASROOT)/win32/vc9/lib
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
 		DESTDIR = ./win32/vc10/bin
 		OBJECTS_DIR = ./win32/vc10/obj
 		MOC_DIR = ./win32/vc10/src
-		LIBS = -L$(CASROOT)/win32/vc10/lib
 	    }
 	} else {
+		LIBS = -L$(CSF_OPT_LIB64)
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
 		DESTDIR = ./win64/vc8/bin
 		OBJECTS_DIR = ./win64/vc8/obj
 		MOC_DIR = ./win64/vc8/src
-		LIBS = -L$(CASROOT)/win64/vc8/lib
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
 		DESTDIR = ./win64/vc9/bin
 		OBJECTS_DIR = ./win64/vc9/obj
 		MOC_DIR = ./win64/vc9/src
-		LIBS = -L$(CASROOT)/win64/vc9/lib
 	    }
 	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
 		DESTDIR = ./win64/vc10/bin
 		OBJECTS_DIR = ./win64/vc10/obj
 		MOC_DIR = ./win64/vc10/src
-		LIBS = -L$(CASROOT)/win64/vc10/lib
 	    }
 	}
     }
     DEFINES +=WNT WIN32 NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
 
-LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKV2d \
-        -lTKBRep -lTKIGES -lTKSTL -lTKVRML -lTKSTEP -lTKSTEPAttr -lTKSTEP209 \
-        -lTKSTEPBase -lTKShapeSchema -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \
-        -lTKXSBase -lTKPShape -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
-        -lTKCDF -lTKBool -lTKBO -lTKFillet -lTKOffset \
-	-L$(QTDIR)/lib -lQtCore -lQtGui
+LIBS += TKernel.lib PTKernel.lib TKMath.lib TKService.lib TKV3d.lib TKV2d.lib \
+        TKBRep.lib TKIGES.lib TKSTL.lib TKVRML.lib TKSTEP.lib TKSTEPAttr.lib TKSTEP209.lib \
+        TKSTEPBase.lib TKShapeSchema.lib TKGeomBase.lib TKGeomAlgo.lib TKG3d.lib TKG2d.lib \
+        TKXSBase.lib TKPShape.lib TKShHealing.lib TKHLR.lib TKTopAlgo.lib TKMesh.lib TKPrim.lib \
+        TKCDF.lib TKBool.lib TKBO.lib TKFillet.lib TKOffset.lib \
 
 lrelease.name = LRELASE ${QMAKE_FILE_IN}
-lrelease.commands = $(QTDIR)/bin/lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm
+lrelease.commands = lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm
 lrelease.output = ./res/${QMAKE_FILE_BASE}.qm
 lrelease.input = TS_FILES
 lrelease.clean = ./res/${QMAKE_FILE_BASE}.qm

@@ -256,16 +256,14 @@ aShape = Transformer.Shape();
   // display original shape in shaded display mode
   Handle_AIS_Shape aShapeIO = drawShape(aShape, Graphic3d_NOM_BRASS, Standard_False);
   getAISContext()->SetDisplayMode(aShapeIO, AIS_Shaded, Standard_False);
+  // Set increased polygon offset for the main shape to avoid depth collision with textured faces
+  aShapeIO->SetPolygonOffsets(Aspect_POM_Fill, 1.5, 0.5);
   DISP(aShapeIO);
 
   Handle_AIS_TexturedShape aTFace1 = Texturize(aFaces(16), "carrelage1.gif", 1, 1, 3, 2);
-  //offset visual shape to avoid overlapping
-  aTFace1->SetPolygonOffsets(Aspect_POM_Fill, 0.99, -2.0);
   DISP(aTFace1);
 
   Handle_AIS_TexturedShape aTFace2 = Texturize(aFaces(21), "carrelage1.gif", 1, 1, 3, 2);
-  //offset a visual shape to avoid overlapping
-  aTFace2->SetPolygonOffsets(Aspect_POM_Fill, 0.99, -2.0);
   DISP(aTFace2);
 
   getViewer()->Update();

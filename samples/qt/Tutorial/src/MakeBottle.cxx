@@ -166,21 +166,21 @@ MakeBottle(const Standard_Real myWidth , const Standard_Real myHeight ,
 	Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(neckAx2 , myNeckRadius * 1.05);
 
 	//Threading : Define 2D Curves
-	gp_Pnt2d aPnt(2. * PI , myNeckHeight / 2.);
-  gp_Dir2d aDir(2. * PI , myNeckHeight / 4.);
+	gp_Pnt2d aPnt(2. * M_PI , myNeckHeight / 2.);
+  gp_Dir2d aDir(2. * M_PI , myNeckHeight / 4.);
   gp_Ax2d aAx2d(aPnt , aDir);
 
-	Standard_Real aMajor = 2. * PI;
+	Standard_Real aMajor = 2. * M_PI;
   Standard_Real aMinor = myNeckHeight / 10;
 
   Handle(Geom2d_Ellipse) anEllipse1 = new Geom2d_Ellipse(aAx2d , aMajor , aMinor);
   Handle(Geom2d_Ellipse) anEllipse2 = new Geom2d_Ellipse(aAx2d , aMajor , aMinor / 4);
 
-	Handle(Geom2d_TrimmedCurve) aArc1 = new Geom2d_TrimmedCurve(anEllipse1 , 0 , PI);
-	Handle(Geom2d_TrimmedCurve) aArc2 = new Geom2d_TrimmedCurve(anEllipse2 , 0 , PI);
+	Handle(Geom2d_TrimmedCurve) aArc1 = new Geom2d_TrimmedCurve(anEllipse1 , 0 , M_PI);
+	Handle(Geom2d_TrimmedCurve) aArc2 = new Geom2d_TrimmedCurve(anEllipse2 , 0 , M_PI);
 
 	gp_Pnt2d anEllipsePnt1 = anEllipse1->Value(0);
-	gp_Pnt2d anEllipsePnt2 = anEllipse1->Value(PI);
+	gp_Pnt2d anEllipsePnt2 = anEllipse1->Value(M_PI);
 	
 	Handle(Geom2d_TrimmedCurve) aSegment = GCE2d_MakeSegment(anEllipsePnt1 , anEllipsePnt2);
 

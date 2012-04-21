@@ -66,17 +66,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../$(OS_TYPE)\$(VCVER)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\$(OS_TYPE)\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../win$(ARCH)\$(VCVER)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\win$(ARCH)\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../$(OS_TYPE)\$(VCVER)\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\$(OS_TYPE)\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../win$(ARCH)\$(VCVER)\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\win$(ARCH)\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../$(OS_TYPE)\$(VCVER)\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\$(OS_TYPE)\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../win$(ARCH)\$(VCVER)\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\win$(ARCH)\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../$(OS_TYPE)\$(VCVER)\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\$(OS_TYPE)\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../win$(ARCH)\$(VCVER)\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\win$(ARCH)\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,24 +85,24 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\obj/Geometry.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\obj/Geometry.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;$(CASROOT)\inc;..\..\..\src\ISession2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;..\..\..\src\ISession2d;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;WNT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\obj/Geometry.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\obj/Geometry.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -113,11 +113,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Geometry.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bin/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\lib;..\..\..\..\$(OS_TYPE)\$(VCVER)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Geometry.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bin/Geometry.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -128,24 +128,24 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\obj/Geometry.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\obj/Geometry.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;$(CASROOT)\inc;..\..\..\src\ISession2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;..\..\..\src\ISession2d;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN64;_WINDOWS;WNT;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\obj/Geometry.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\obj/Geometry.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -156,11 +156,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Geometry.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bin/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\lib;..\..\..\..\$(OS_TYPE)\$(VCVER)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bin/Geometry.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bin/Geometry.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -171,22 +171,22 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\objd/Geometry.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\objd/Geometry.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;$(CASROOT)\inc;..\..\..\src\ISession2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;..\..\..\src\ISession2d;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\objd/Geometry.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\objd/Geometry.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\objd/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -199,12 +199,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Geometry.exe</OutputFile>
+      <OutputFile>../../../../win$(ARCH)\$(VCVER)\bind/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\libd;..\..\..\..\$(OS_TYPE)\$(VCVER)\libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\libd;$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Geometry.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bind/Geometry.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -215,22 +215,22 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\$(OS_TYPE)\objd/Geometry.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win$(ARCH)\objd/Geometry.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;$(CASROOT)\inc;..\..\..\src\ISession2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src;.;..\..\..\..\Common;..\..\..\src\ISession2d;$(CSF_OPT_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;WINVER=0x0500;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\$(OS_TYPE)\objd/Geometry.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\$(OS_TYPE)\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\$(OS_TYPE)\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\$(OS_TYPE)\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win$(ARCH)\objd/Geometry.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win$(ARCH)\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win$(ARCH)\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win$(ARCH)\objd/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -243,12 +243,12 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;TKMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../..\$(OS_TYPE)\$(VCVER)\bind/Geometry.exe</OutputFile>
+      <OutputFile>../../../..\win$(ARCH)\$(VCVER)\bind/Geometry.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(CASROOT)\$(OS_TYPE)\$(VCVER)\libd;..\..\..\..\$(OS_TYPE)\$(VCVER)\libd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win$(ARCH)\$(VCVER)\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../$(OS_TYPE)\$(VCVER)\bind/Geometry.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win$(ARCH)\$(VCVER)\bind/Geometry.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>

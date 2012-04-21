@@ -1810,7 +1810,7 @@ void Application::displayWaves()
             di *= -1;
             i += di;
         }
-        double rad = -PI / 2.0 + double(i) / (double) nbx * PI;
+        double rad = -M_PI / 2.0 + double(i) / (double) nbx * M_PI;
         double c = cos(rad);
         xvalues[ix] = 15.0 * c;
         if (xvalues[ix] == 0)
