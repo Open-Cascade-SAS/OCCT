@@ -6,9 +6,6 @@ TARGET = Tutorial
 HEADERS = src/*.h
 SOURCES = src/*.cxx
 
-INCLUDES = $$(CSF_OPT_INC)
-PATHS = $$split(INCLUDES,";")
-for(path, PATHS):INCLUDEPATH += $${path}
 
 TS_FILES = ./src/Common-icon.ts \
            ./src/Common-string.ts \
@@ -18,6 +15,13 @@ TS_FILES = ./src/Common-icon.ts \
 DEFINES = CSFDB
 
 unix {
+    INCLUDES = $$(CSF_OPT_INC)
+    PATHS = $$split(INCLUDES,":")
+    for(path, PATHS):INCLUDEPATH += $${path}
+    LIBLIST = $$(LD_LIBRARY_PATH)
+    LIBPATHS = $$split(LIBLIST,":")
+    for(lib, LIBPATHS):LIBS += -L$${lib}
+    
     CONFIG(debug, debug|release) {
 	DESTDIR = ./Linux/bind
 	OBJECTS_DIR = ./Linux/objd
@@ -29,18 +33,16 @@ unix {
     }
     INCLUDEPATH += $$QMAKE_INCDIR_X11 $$QMAKE_INCDIR_OPENGL $$QMAKE_INCDIR_THREAD
     DEFINES += LIN LININTEL OCC_CONVERT_SIGNALS HAVE_CONFIG_H HAVE_WOK_CONFIG_H
-    LIBS = -L$(CASROOT)/Linux/lib -L$$QMAKE_LIBDIR_X11 $$QMAKE_LIBS_X11 -L$$QMAKE_LIBDIR_OPENGL $$QMAKE_LIBS_OPENGL $$QMAKE_LIBS_THREAD
-    FREEIMAGE_DIR = $$(FREEIMAGEDIR)
-    exists($$FREEIMAGE_DIR) {
-	LIBS += -L$(FREEIMAGEDIR)/lib -lfreeimageplus
-    }
-    TBB_LIB = $$(TBBLIB)
-    exists($$TBB_LIB) {
-	LIBS += -L$(TBBLIB) -ltbb -ltbbmalloc
-    }
+    LIBS += -L$$QMAKE_LIBDIR_X11 $$QMAKE_LIBS_X11 -L$$QMAKE_LIBDIR_OPENGL $$QMAKE_LIBS_OPENGL $$QMAKE_LIBS_THREAD
+	LIBS += -lfreeimageplus
+	LIBS += -ltbb -ltbbmalloc
 }
 
 win32 {
+    INCLUDES = $$(CSF_OPT_INC)
+    PATHS = $$split(INCLUDES,";")
+    for(path, PATHS):INCLUDEPATH += $${path}
+
     CONFIG(debug, debug|release) {
 	DEFINES += _DEBUG
 	!contains(QMAKE_HOST.arch, x86_64) {
@@ -129,11 +131,11 @@ win32 {
     DEFINES +=WNT WIN32 NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
 
-LIBS += TKernel.lib PTKernel.lib TKMath.lib TKService.lib TKV3d.lib TKV2d.lib \
-        TKBRep.lib TKIGES.lib TKSTL.lib TKVRML.lib TKSTEP.lib TKSTEPAttr.lib TKSTEP209.lib \
-        TKSTEPBase.lib TKShapeSchema.lib TKGeomBase.lib TKGeomAlgo.lib TKG3d.lib TKG2d.lib \
-        TKXSBase.lib TKPShape.lib TKShHealing.lib TKHLR.lib TKTopAlgo.lib TKMesh.lib TKPrim.lib \
-        TKCDF.lib TKBool.lib TKBO.lib TKFillet.lib TKOffset.lib \
+LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKV2d \
+        -lTKBRep -lTKIGES -lTKSTL -lTKVRML -lTKSTEP -lTKSTEPAttr -lTKSTEP209 \
+        -lTKSTEPBase -lTKShapeSchema -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \
+        -lTKXSBase -lTKPShape -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
+        -lTKCDF -lTKBool -lTKBO -lTKFillet -lTKOffset \
 
 lrelease.name = LRELASE ${QMAKE_FILE_IN}
 lrelease.commands = lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm

@@ -1,53 +1,53 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "01_Geometry\adm\win\%VCVER%\Geometry.vcproj", "{31E8199C-C981-4B7F-9CC2-B8502565B581}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "01_Geometry\adm\win\vc9\Geometry.vcproj", "{31E8199C-C981-4B7F-9CC2-B8502565B581}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modeling", "02_Modeling\adm\win\%VCVER%\Modeling.vcproj", "{B10FC678-B9AF-4B05-B3DC-8F790C610CC3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modeling", "02_Modeling\adm\win\vc9\Modeling.vcproj", "{B10FC678-B9AF-4B05-B3DC-8F790C610CC3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer2d", "03_Viewer2d\adm\win\%VCVER%\Viewer2d.vcproj", "{6B905DC2-4E72-4EDA-99C2-7473634690FE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer2d", "03_Viewer2d\adm\win\vc9\Viewer2d.vcproj", "{6B905DC2-4E72-4EDA-99C2-7473634690FE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer3d", "04_Viewer3d\adm\win\%VCVER%\Viewer3d.vcproj", "{949DFBDF-9007-4C88-8925-43209C36A5D6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer3d", "04_Viewer3d\adm\win\vc9\Viewer3d.vcproj", "{949DFBDF-9007-4C88-8925-43209C36A5D6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExport", "05_ImportExport\adm\win\%VCVER%\ImportExport.vcproj", "{1C9A05AE-AF5A-4ACE-9A72-83436D77504C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExport", "05_ImportExport\adm\win\vc9\ImportExport.vcproj", "{1C9A05AE-AF5A-4ACE-9A72-83436D77504C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ocaf", "06_Ocaf\adm\win\%VCVER%\Ocaf.vcproj", "{B3C10EF6-42C7-4DB8-A49C-7E38255D5B1B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ocaf", "06_Ocaf\adm\win\vc9\Ocaf.vcproj", "{B3C10EF6-42C7-4DB8-A49C-7E38255D5B1B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Triangulation", "07_Triangulation\adm\win\%VCVER%\Triangulation.vcproj", "{B50C10C8-5260-498B-A80F-48FFB4534360}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Triangulation", "07_Triangulation\adm\win\vc9\Triangulation.vcproj", "{B50C10C8-5260-498B-A80F-48FFB4534360}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HLR", "08_HLR\adm\win\%VCVER%\HLR.vcproj", "{76045260-8DA6-4A3E-B220-F5B1B4ADE192}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HLR", "08_HLR\adm\win\vc9\HLR.vcproj", "{76045260-8DA6-4A3E-B220-F5B1B4ADE192}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Animation", "09_Animation\adm\win\%VCVER%\Animation.vcproj", "{92492ACB-1F57-40BB-818F-33AD1C20273A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Animation", "09_Animation\adm\win\vc9\Animation.vcproj", "{92492ACB-1F57-40BB-818F-33AD1C20273A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mfcsample", "mfcsample\adm\win\%VCVER%\mfcsample.vcproj", "{2D6CBBE8-6965-4016-B503-0D715AE26691}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mfcsample", "mfcsample\adm\win\vc9\mfcsample.vcproj", "{2D6CBBE8-6965-4016-B503-0D715AE26691}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Convert", "10_Convert\adm\win\%VCVER%\Convert.vcproj", "{C527B648-F98D-42E5-9F59-251FD95D15A0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Convert", "10_Convert\adm\win\vc9\Convert.vcproj", "{C527B648-F98D-42E5-9F59-251FD95D15A0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2D6CBBE8-6965-4016-B503-0D715AE26691} = {2D6CBBE8-6965-4016-B503-0D715AE26691}
 	EndProjectSection

@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../../../..\win$(ARCH)\$(VCVER)\bin"
-			IntermediateDirectory=".\win$(ARCH)\obj"
+			OutputDirectory="../../../..\win32\vc8\bin"
+			IntermediateDirectory=".\win32\obj"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -46,7 +46,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\win$(ARCH)\obj/Triangulation.tlb"
+				TypeLibraryName=".\win32\obj/Triangulation.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -60,10 +60,10 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\win$(ARCH)\obj/Triangulation.pch"
-				AssemblerListingLocation=".\win$(ARCH)\obj/"
-				ObjectFile=".\win$(ARCH)\obj/"
-				ProgramDataBaseFileName=".\win$(ARCH)\obj/"
+				PrecompiledHeaderFile=".\win32\obj/Triangulation.pch"
+				AssemblerListingLocation=".\win32\obj/"
+				ObjectFile=".\win32\obj/"
+				ProgramDataBaseFileName=".\win32\obj/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -82,11 +82,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBRep.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKXSBase.lib TKShapeSchema.lib TKBO.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib mfcsample.lib"
-				OutputFile="../../../..\win$(ARCH)\$(VCVER)\bin/Triangulation.exe"
+				OutputFile="../../../..\win32\vc8\bin/Triangulation.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\..\\win$(ARCH)\$(VCVER)\lib,$(CSF_OPT_LIB32)"
-				ProgramDatabaseFile="../../../..\win$(ARCH)\$(VCVER)\bin/Triangulation.pdb"
+				AdditionalLibraryDirectories="..\..\..\..\\win32\vc8\lib,$(CSF_OPT_LIB32)"
+				ProgramDatabaseFile="../../../..\win32\vc8\bin/Triangulation.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
@@ -117,8 +117,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="../../../..\win$(ARCH)\$(VCVER)\bin"
-			IntermediateDirectory=".\win$(ARCH)\obj"
+			OutputDirectory="../../../..\x64\vc8\bin"
+			IntermediateDirectory=".\x64\obj"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -143,7 +143,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\win$(ARCH)\obj/Triangulation.tlb"
+				TypeLibraryName=".\x64\obj/Triangulation.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -157,10 +157,10 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\win$(ARCH)\obj/Triangulation.pch"
-				AssemblerListingLocation=".\win$(ARCH)\obj/"
-				ObjectFile=".\win$(ARCH)\obj/"
-				ProgramDataBaseFileName=".\win$(ARCH)\obj/"
+				PrecompiledHeaderFile=".\x64\obj/Triangulation.pch"
+				AssemblerListingLocation=".\x64\obj/"
+				ObjectFile=".\x64\obj/"
+				ProgramDataBaseFileName=".\x64\obj/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -179,11 +179,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBRep.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKXSBase.lib TKShapeSchema.lib TKBO.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib mfcsample.lib"
-				OutputFile="../../../..\win$(ARCH)\$(VCVER)\bin/Triangulation.exe"
+				OutputFile="../../../..\x64\vc8\bin/Triangulation.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\..\\win$(ARCH)\$(VCVER)\lib,$(CSF_OPT_LIB64)"
-				ProgramDatabaseFile="../../../..\win$(ARCH)\$(VCVER)\bin/Triangulation.pdb"
+				AdditionalLibraryDirectories="..\..\..\..\\x64\vc8\lib,$(CSF_OPT_LIB64)"
+				ProgramDatabaseFile="../../../..\x64\vc8\bin/Triangulation.pdb"
 				SubSystem="2"
 				TargetMachine="17"
 			/>
@@ -214,8 +214,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../../..\win$(ARCH)\$(VCVER)\bind"
-			IntermediateDirectory=".\win$(ARCH)\objd"
+			OutputDirectory="../../../..\win32\vc8\bind"
+			IntermediateDirectory=".\win32\objd"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -240,7 +240,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\win$(ARCH)\objd/Triangulation.tlb"
+				TypeLibraryName=".\win32\objd/Triangulation.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -252,10 +252,10 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\win$(ARCH)\objd/Triangulation.pch"
-				AssemblerListingLocation=".\win$(ARCH)\objd/"
-				ObjectFile=".\win$(ARCH)\objd/"
-				ProgramDataBaseFileName=".\win$(ARCH)\objd/"
+				PrecompiledHeaderFile=".\win32\objd/Triangulation.pch"
+				AssemblerListingLocation=".\win32\objd/"
+				ObjectFile=".\win32\objd/"
+				ProgramDataBaseFileName=".\win32\objd/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -275,12 +275,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBRep.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKXSBase.lib TKShapeSchema.lib TKBO.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib mfcsample.lib"
-				OutputFile="../../../..\win$(ARCH)\$(VCVER)\bind/Triangulation.exe"
+				OutputFile="../../../..\win32\vc8\bind/Triangulation.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\..\\win$(ARCH)\$(VCVER)\libd,$(CSF_OPT_LIB32D)"
+				AdditionalLibraryDirectories="..\..\..\..\\win32\vc8\libd,$(CSF_OPT_LIB32D)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../..\win$(ARCH)\$(VCVER)\bind/Triangulation.pdb"
+				ProgramDatabaseFile="../../../..\win32\vc8\bind/Triangulation.pdb"
 				SubSystem="2"
 				TargetMachine="1"
 			/>
@@ -311,8 +311,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="../../../..\win$(ARCH)\$(VCVER)\bind"
-			IntermediateDirectory=".\win$(ARCH)\objd"
+			OutputDirectory="../../../..\x64\vc8\bind"
+			IntermediateDirectory=".\x64\objd"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -337,7 +337,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\win$(ARCH)\objd/Triangulation.tlb"
+				TypeLibraryName=".\x64\objd/Triangulation.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -349,10 +349,10 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\win$(ARCH)\objd/Triangulation.pch"
-				AssemblerListingLocation=".\win$(ARCH)\objd/"
-				ObjectFile=".\win$(ARCH)\objd/"
-				ProgramDataBaseFileName=".\win$(ARCH)\objd/"
+				PrecompiledHeaderFile=".\x64\objd/Triangulation.pch"
+				AssemblerListingLocation=".\x64\objd/"
+				ObjectFile=".\x64\objd/"
+				ProgramDataBaseFileName=".\x64\objd/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -372,12 +372,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKVrml.lib TKStl.lib TKBRep.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKXSBase.lib TKShapeSchema.lib TKBO.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV2d.lib TKV3d.lib mfcsample.lib"
-				OutputFile="../../../..\win$(ARCH)\$(VCVER)\bind/Triangulation.exe"
+				OutputFile="../../../..\x64\vc8\bind/Triangulation.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\..\\win$(ARCH)\$(VCVER)\libd,$(CSF_OPT_LIB64D)"
+				AdditionalLibraryDirectories="..\..\..\..\\x64\vc8\libd,$(CSF_OPT_LIB64D)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../..\win$(ARCH)\$(VCVER)\bind/Triangulation.pdb"
+				ProgramDatabaseFile="../../../..\x64\vc8\bind/Triangulation.pdb"
 				SubSystem="2"
 				TargetMachine="17"
 			/>
