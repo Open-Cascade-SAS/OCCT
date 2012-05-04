@@ -303,7 +303,7 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
 	    sup = M_PI;
 	 }
 	 Standard_Boolean CS=0;
-	 Standard_Real Vprec=0,Vsuiv;
+	 Standard_Real Vprec = 0., Vsuiv = 0.;
 	 //Creation of the polynom
 	 CSLib_NormalPolyDef  Poly(Order,Ratio);
 	 //Find zeros of SAPS
@@ -311,9 +311,7 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
 			           Precision::Confusion(),
                                    Precision::Confusion());
 	 //If there are zeros
-	 if(FindRoots.IsDone())
-	 {
-	    if(FindRoots.NbSolutions()>0)
+	 if (FindRoots.IsDone() && FindRoots.NbSolutions() > 0)
 	    {
                //ranking by increasing order of roots of SAPS in Sol0
 
@@ -357,14 +355,14 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
                    }
                }
             }
-            else
+         else
             {
                //SAPS has no root, so forcedly do not change the sign
                CS=Standard_False;
                Poly.Value(inf,Vsuiv);
             }
-            //fin if(MFR.NbSolutions()>0)
-         }//fin if(MFR>IsDone())
+         //fin if(MFR.IsDone() && MFR.NbSolutions()>0)
+
          if(CS)
          //Polynom changes the sign
             SP=0;
