@@ -129,8 +129,8 @@ uses  Array1OfInteger      from TColStd,
       Vec2d                from gp,
       BSplKnotDistribution from GeomAbs,
       Geometry             from Geom2d,
-      Shape                from GeomAbs
-
+      Shape                from GeomAbs,
+      Mutex                from Standard
 
 raises ConstructionError   from Standard,
        DimensionError      from Standard,
@@ -1043,5 +1043,8 @@ fields
   -- usefull to evaluate the parametric resolution
   maxderivinv   : Real from Standard;
   maxderivinvok : Boolean from Standard;
+
+  myMutex       : Mutex from Standard;
+  -- protected bspline-cache
 
 end;

@@ -48,6 +48,7 @@
 #include <Standard_DimensionError.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_Mutex.hxx>
 
 #define  POLES    (poles->Array2())
 #define  WEIGHTS  (weights->Array2())
@@ -111,21 +112,19 @@ Standard_Boolean Geom_BSplineSurface::IsCNv
 //purpose  : 
 //=======================================================================
 
-void Geom_BSplineSurface::D0 (const Standard_Real U, 
-			      const Standard_Real V, 
-			            gp_Pnt&       P ) const 
+void Geom_BSplineSurface::D0(const Standard_Real U,
+                             const Standard_Real V,
+                             gp_Pnt& P) const 
 {
-  Standard_Real  new_u = U,
-                 new_v = V ;
-  PeriodicNormalization(new_u,
-			new_v) ;
-  if (!IsCacheValid(new_u,
-                    new_v))
-    {
-     Geom_BSplineSurface * my_surface = (Geom_BSplineSurface *) this ;
-     my_surface->ValidateCache(new_u,
-			       new_v) ;
-   }
+  Standard_Real  new_u(U), new_v(V);
+  PeriodicNormalization(new_u, new_v);
+
+  Geom_BSplineSurface* MySurface = (Geom_BSplineSurface *) this;
+  Standard_Mutex::Sentry aSentry(MySurface->myMutex);
+
+  if(!IsCacheValid(new_u, new_v))
+     MySurface->ValidateCache(new_u, new_v);
+
  Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
                uspanlenght_11 = ucachespanlenght/2,
                vparameter_11 = (2*vcacheparameter + vcachespanlenght)/2,
@@ -164,23 +163,20 @@ void Geom_BSplineSurface::D0 (const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-void Geom_BSplineSurface::D1 (const Standard_Real U, 
-			      const Standard_Real V, 
-			            gp_Pnt&       P,
-			            gp_Vec&       D1U,
-			            gp_Vec&       D1V) const
+void Geom_BSplineSurface::D1(const Standard_Real U,
+                             const Standard_Real V,
+                             gp_Pnt& P,
+                             gp_Vec& D1U,
+                             gp_Vec& D1V) const
 {
-  Standard_Real  new_u = U,
-                 new_v = V ;
-  PeriodicNormalization(new_u,
-			new_v) ;
-  if (!IsCacheValid(new_u,
-                    new_v))
-    {
-     Geom_BSplineSurface * my_surface = (Geom_BSplineSurface *) this ;
-     my_surface->ValidateCache(new_u,
-			       new_v) ;
-   }
+  Standard_Real  new_u(U), new_v(V);
+  PeriodicNormalization(new_u, new_v);
+
+  Geom_BSplineSurface* MySurface = (Geom_BSplineSurface *) this;
+  Standard_Mutex::Sentry aSentry(MySurface->myMutex);
+
+  if(!IsCacheValid(new_u, new_v))
+     MySurface->ValidateCache(new_u, new_v);
 
   Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
                 uspanlenght_11 = ucachespanlenght/2,
@@ -235,18 +231,14 @@ void Geom_BSplineSurface::D2 (const Standard_Real U,
 			            gp_Vec&       D2V,
 			            gp_Vec&       D2UV) const
 {
+  Standard_Real  new_u(U), new_v(V);
+  PeriodicNormalization(new_u, new_v);
 
-    Standard_Real  new_u = U,
-                   new_v = V ;
-  PeriodicNormalization(new_u,
-			new_v) ;
-  if (!IsCacheValid(new_u,
-                    new_v))
-    {
-     Geom_BSplineSurface * my_surface = (Geom_BSplineSurface *) this ;
-     my_surface->ValidateCache(new_u,
-			       new_v) ;
-   }
+  Geom_BSplineSurface* MySurface = (Geom_BSplineSurface *) this;
+  Standard_Mutex::Sentry aSentry(MySurface->myMutex);
+
+  if(!IsCacheValid(new_u, new_v))
+     MySurface->ValidateCache(new_u, new_v);
 
   Standard_Real uparameter_11 = (2*ucacheparameter + ucachespanlenght)/2,
                 uspanlenght_11 = ucachespanlenght/2,

@@ -35,6 +35,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_RangeError.hxx>
+#include <Standard_Mutex.hxx>
 
 #define  POLES    (poles->Array1())
 #define  KNOTS    (knots->Array1())
@@ -109,14 +110,17 @@ Standard_Integer Geom2d_BSplineCurve::Degree () const
 void Geom2d_BSplineCurve::D0 ( const Standard_Real U, 
 			      gp_Pnt2d& P) const
 {
-  Standard_Real  NewU = U ;
-  PeriodicNormalization(NewU) ;
-  if (!IsCacheValid(NewU)) {
-    Geom2d_BSplineCurve  * MyCurve = (Geom2d_BSplineCurve *) this ;
-    MyCurve->ValidateCache(NewU) ;
-  }
+  Standard_Real NewU(U);
+  PeriodicNormalization(NewU);
+
+  Geom2d_BSplineCurve* MyCurve = (Geom2d_BSplineCurve *) this;
+  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
+
+  if (!IsCacheValid(NewU))
+    MyCurve->ValidateCache(NewU);
   
-  if ( rational ) {
+  if(rational)
+  {
     BSplCLib::CacheD0(NewU,
 		      deg,
 		      parametercache,
@@ -146,14 +150,17 @@ void Geom2d_BSplineCurve::D1 (const Standard_Real U,
 			      gp_Pnt2d& P,
 			      gp_Vec2d& V1) const
 {
-  Standard_Real  NewU = U ;
-  PeriodicNormalization(NewU) ;
-  if (!IsCacheValid(NewU)) {
-    Geom2d_BSplineCurve  * MyCurve = (Geom2d_BSplineCurve *) this ;
-    MyCurve->ValidateCache(NewU) ;
-  }
+  Standard_Real NewU(U);
+  PeriodicNormalization(NewU);
 
-  if ( rational ) {
+  Geom2d_BSplineCurve* MyCurve = (Geom2d_BSplineCurve *) this;
+  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
+
+  if (!IsCacheValid(NewU))
+    MyCurve->ValidateCache(NewU);
+  
+  if(rational)
+  {
     BSplCLib::CacheD1(NewU,
 		      deg,
 		      parametercache,
@@ -185,14 +192,17 @@ void Geom2d_BSplineCurve::D2 (const Standard_Real U ,
 			      gp_Vec2d& V1,
 			      gp_Vec2d& V2 ) const
 {
-  Standard_Real  NewU = U ;
-  PeriodicNormalization(NewU) ;
-  if (!IsCacheValid(NewU)) {
-    Geom2d_BSplineCurve  * MyCurve = (Geom2d_BSplineCurve *) this ;
-    MyCurve->ValidateCache(NewU) ;
-  }
+  Standard_Real NewU(U);
+  PeriodicNormalization(NewU);
+
+  Geom2d_BSplineCurve* MyCurve = (Geom2d_BSplineCurve *) this;
+  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
+
+  if (!IsCacheValid(NewU))
+    MyCurve->ValidateCache(NewU);
   
-  if ( rational ) {
+  if(rational)
+  {
     BSplCLib::CacheD2(NewU,
 		      deg,
 		      parametercache,
@@ -227,14 +237,17 @@ void Geom2d_BSplineCurve::D3  (const Standard_Real U ,
 			       gp_Vec2d& V2,
 			       gp_Vec2d& V3 ) const
 {
-  Standard_Real  NewU = U ;
-  PeriodicNormalization(NewU) ;
-  if (!IsCacheValid(NewU)) {
-    Geom2d_BSplineCurve  * MyCurve = (Geom2d_BSplineCurve *) this ;
-    MyCurve->ValidateCache(NewU) ;
-  }
+  Standard_Real NewU(U);
+  PeriodicNormalization(NewU);
 
-  if ( rational ) {
+  Geom2d_BSplineCurve* MyCurve = (Geom2d_BSplineCurve *) this;
+  Standard_Mutex::Sentry aSentry(MyCurve->myMutex);
+
+  if (!IsCacheValid(NewU))
+    MyCurve->ValidateCache(NewU);
+  
+  if(rational)
+  {
     BSplCLib::CacheD3(NewU,
 		      deg,
 		      parametercache,

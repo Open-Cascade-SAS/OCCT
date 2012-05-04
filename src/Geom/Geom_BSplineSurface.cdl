@@ -153,8 +153,8 @@ uses  Array1OfInteger      from TColStd,
       BSplKnotDistribution from GeomAbs,
       Curve                from Geom,
       Geometry             from Geom,
-      Shape                from GeomAbs
-
+      Shape                from GeomAbs,
+      Mutex                from Standard
 
 raises ConstructionError   from Standard,
        DimensionError      from Standard,
@@ -1486,5 +1486,8 @@ fields
     umaxderivinv  : Real from Standard;
     vmaxderivinv  : Real from Standard;
     maxderivinvok : Boolean from Standard;
+
+    myMutex       : Mutex from Standard;
+    -- protected bsplinesurface-cache
 
 end;
