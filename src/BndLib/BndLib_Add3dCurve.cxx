@@ -146,12 +146,15 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
 	//// modified by jgv, 24.10.01 for BUC61031 ////
 	if (Bsaux->IsPeriodic())
 	  ElCLib::AdjustPeriodic( Bsaux->FirstParameter(), Bsaux->LastParameter(), Precision::PConfusion(), u1, u2 );
-	////////////////////////////////////////////////
-	//  modified by NIZHNY-EAP Fri Dec  3 14:29:14 1999 ___BEGIN___
-	// To avoid exeption in Segment
-	if(Bsaux->FirstParameter() > U1) u1 = Bsaux->FirstParameter();
-	if(Bsaux->LastParameter()  < U2 ) u2  = Bsaux->LastParameter();
-	//  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
+    else
+    {
+	  ////////////////////////////////////////////////
+	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:14 1999 ___BEGIN___
+	  // To avoid exeption in Segment
+	  if(Bsaux->FirstParameter() > U1) u1 = Bsaux->FirstParameter();
+	  if(Bsaux->LastParameter()  < U2 ) u2  = Bsaux->LastParameter();
+	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
+    }
 	Bsaux->Segment(u1, u2);
 	Bs = Bsaux;
       }

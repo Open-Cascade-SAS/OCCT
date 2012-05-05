@@ -104,6 +104,8 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       Standard_Boolean IntIsNotValid;
       n = TheCurveTool::NbIntervals(*((TheCurve*)myC), GeomAbs_C2);
       TColStd_Array1OfReal theInter(1, n+1);
+      Standard_Boolean isPeriodic = TheCurveTool::IsPeriodic(*((TheCurve*)myC));
+      Standard_Real aPeriodicShift = 0.;
       TheCurveTool::Intervals(*((TheCurve*)myC), theInter, GeomAbs_C2);
       mysample = Max(mysample/n, 17);
       TheVector V1;
@@ -111,34 +113,40 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       Standard_Real s1 = 0.0 ;
       Standard_Real s2 = 0.0;      
       for (i = 1; i <= n; i++) {
-	myintuinf = theInter(i);
-	myintusup = theInter(i+1);
+        myintuinf = theInter(i);
+        myintusup = theInter(i+1);
+        
+        Standard_Real anInfToCheck = myintuinf;
+        Standard_Real aSupToCheck = myintusup;
+        
+        if (isPeriodic) {
+          Standard_Real aPeriod = TheCurveTool::Period(*((TheCurve*)myC));
+          anInfToCheck = ElCLib::InPeriod(myintuinf, myuinf, myuinf+aPeriod);
+          aSupToCheck = myintusup+(anInfToCheck-myintuinf);
+        }    
+        IntIsNotValid = (myuinf > aSupToCheck) || (myusup < anInfToCheck);
 
-	IntIsNotValid = (myuinf > myintusup) || 
-	                (myusup < myintuinf);
+        if(IntIsNotValid) continue;
 
-	if(IntIsNotValid) continue;
+        if (myuinf >= anInfToCheck) anInfToCheck = myuinf;
+        if (myusup <= aSupToCheck) aSupToCheck = myusup;
+        if((aSupToCheck - anInfToCheck) <= mytolu) continue;
 
-	if (myuinf >= myintuinf) myintuinf = myuinf;
-	if (myusup <= myintusup) myintusup = myusup;
-
-	if((myintusup - myintuinf) <= mytolu) continue;
-
-	if (i != 1) {
-	  TheCurveTool::D1(*((TheCurve*)myC), myintuinf, PP, V1);
-	  s1 = (TheVector(P, PP))*V1;
-	  if (s1*s2 < 0.0) {
-	    mySqDist.Append(PP.SquareDistance(P));
-	    myismin.Append((s1 < 0.0));
-	    mypoint.Append(ThePOnC(myintuinf, PP));
-	  }
-	}
-	if (i != n) {
-	  TheCurveTool::D1(*((TheCurve*)myC), myintusup, PP, V1);
-	  s2 = (TheVector(P, PP))*V1;
-	}
-	IntervalPerform(P);
-	IntExtIsDone = IntExtIsDone || mydone;
+        if (i != 1) {
+          TheCurveTool::D1(*((TheCurve*)myC), myintuinf, PP, V1);
+          s1 = (TheVector(P, PP))*V1;
+          if (s1*s2 < 0.0) {
+            mySqDist.Append(PP.SquareDistance(P));
+            myismin.Append((s1 < 0.0));
+            mypoint.Append(ThePOnC(myintuinf, PP));
+          }
+        }
+        if (i != n) {
+          TheCurveTool::D1(*((TheCurve*)myC), myintusup, PP, V1);
+          s2 = (TheVector(P, PP))*V1;
+        }
+        IntervalPerform(P);
+        IntExtIsDone = IntExtIsDone || mydone;
       }
       mydone = IntExtIsDone;
       return;
@@ -154,17 +162,16 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       ThePOnC PC = myExtPElC.Point(i);
       U = PC.Parameter();
       if (TheCurveTool::IsPeriodic(*((TheCurve*)myC))) {
-	U = ElCLib::InPeriod(U, myuinf, myuinf+TheCurveTool::Period(*((TheCurve*)myC)));
+	    U = ElCLib::InPeriod(U, myuinf, myuinf+TheCurveTool::Period(*((TheCurve*)myC)));
       }
       if ((U >= myuinf-mytolu) && (U <= myusup+mytolu)){
-	PC.SetValues(U, myExtPElC.Point(i).Value());
-	mySqDist.Append(myExtPElC.SquareDistance(i));
-	myismin.Append(myExtPElC.IsMin(i));
-	mypoint.Append(PC);
+        PC.SetValues(U, myExtPElC.Point(i).Value());
+        mySqDist.Append(myExtPElC.SquareDistance(i));
+        myismin.Append(myExtPElC.IsMin(i));
+        mypoint.Append(PC);
       }
     }
-  }
-  
+  } 
 }
 
 
@@ -211,13 +218,13 @@ void Extrema_GExtPC::IntervalPerform(const ThePoint& P)
       ThePOnC PC = myExtPC.Point(i);
       U = PC.Parameter();
       if (TheCurveTool::IsPeriodic(*((TheCurve*)myC))) {
-	U = ElCLib::InPeriod(U, myuinf, myuinf+TheCurveTool::Period(*((TheCurve*)myC)));
+        U = ElCLib::InPeriod(U, myuinf, myuinf+TheCurveTool::Period(*((TheCurve*)myC)));
       }
       if ((U >= myuinf - mytolu) && (U <= myusup + mytolu)) {
-	PC.SetValues(U, PC.Value());
-	mySqDist.Append(myExtPC.SquareDistance(i));
-	myismin.Append(myExtPC.IsMin(i));
-	mypoint.Append(PC);
+        PC.SetValues(U, PC.Value());
+        mySqDist.Append(myExtPC.SquareDistance(i));
+        myismin.Append(myExtPC.IsMin(i));
+        mypoint.Append(PC);
       }
     }
   }
