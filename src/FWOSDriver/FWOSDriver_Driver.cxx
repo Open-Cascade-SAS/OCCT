@@ -30,6 +30,10 @@
 #endif  // WNT
 
 
+//==============================================================================
+//function : PutSlash
+//purpose  :
+//==============================================================================
 static void PutSlash (TCollection_ExtendedString& anXSTRING) {
 #ifdef WNT
   anXSTRING+="\\";
@@ -38,10 +42,20 @@ static void PutSlash (TCollection_ExtendedString& anXSTRING) {
 #endif  // WNT
 }
 
+//==============================================================================
+//function : FWOSDriver_Driver
+//purpose  :
+//==============================================================================
 FWOSDriver_Driver::FWOSDriver_Driver() {}
 
-
-Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) {
+//==============================================================================
+//function : Find
+//purpose  :
+//==============================================================================
+Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFolder,
+                                         const TCollection_ExtendedString& aName,
+                                         const TCollection_ExtendedString& aVersion)
+{
 
   OSD_Path thePath=UTL::Path(aFolder);
   OSD_Directory theDirectory(thePath);
@@ -56,9 +70,14 @@ Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFold
   return Standard_False;
 }
 
-Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) {
-
-
+//==============================================================================
+//function : HasReadPermission
+//purpose  :
+//==============================================================================
+Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_ExtendedString& aFolder,
+                                                      const TCollection_ExtendedString& aName,
+                                                      const TCollection_ExtendedString& aVersion)
+{
   OSD_SingleProtection theProtection=OSD_File(UTL::Path(Concatenate(aFolder,aName))).Protection().User();
   switch (theProtection) {
     case OSD_None:
@@ -78,31 +97,62 @@ Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_Extended
   return Standard_False;
 }
 
-Handle(CDM_MetaData) FWOSDriver_Driver::MetaData(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) {
+//==============================================================================
+//function : MetaData
+//purpose  :
+//==============================================================================
+Handle(CDM_MetaData) FWOSDriver_Driver::MetaData(const TCollection_ExtendedString& aFolder,
+                                                 const TCollection_ExtendedString& aName,
+                                                 const TCollection_ExtendedString& aVersion)
+{
   TCollection_ExtendedString p = Concatenate(aFolder,aName);
   return CDM_MetaData::LookUp(aFolder,aName,p,p,UTL::IsReadOnly(p));
 }
 
-Handle(CDM_MetaData) FWOSDriver_Driver::CreateMetaData(const Handle(CDM_Document)& aDocument,const TCollection_ExtendedString& aFileName) {
-  return CDM_MetaData::LookUp(aDocument->RequestedFolder(),aDocument->RequestedName(),Concatenate(aDocument->RequestedFolder(),aDocument->RequestedName()),aFileName,UTL::IsReadOnly(aFileName));
+//==============================================================================
+//function : CreateMetaData
+//purpose  :
+//==============================================================================
+Handle(CDM_MetaData) FWOSDriver_Driver::CreateMetaData(const Handle(CDM_Document)& aDocument,
+                                                       const TCollection_ExtendedString& aFileName)
+{
+  return CDM_MetaData::LookUp(aDocument->RequestedFolder(),aDocument->RequestedName(),
+                              Concatenate(aDocument->RequestedFolder(),aDocument->RequestedName()),
+                              aFileName,UTL::IsReadOnly(aFileName));
 }
-TCollection_ExtendedString FWOSDriver_Driver::BuildFileName(const Handle(CDM_Document)& aDocument) {
+
+//==============================================================================
+//function : BuildFileName
+//purpose  :
+//==============================================================================
+TCollection_ExtendedString FWOSDriver_Driver::BuildFileName(const Handle(CDM_Document)& aDocument)
+{
 
   TCollection_ExtendedString retstr = TCollection_ExtendedString(aDocument->RequestedFolder());
   PutSlash(retstr);
   retstr += aDocument->RequestedName();
   return retstr;
 }
-Standard_Boolean FWOSDriver_Driver::FindFolder(const TCollection_ExtendedString& aFolder) {
+
+//==============================================================================
+//function : FindFolder
+//purpose  :
+//==============================================================================
+Standard_Boolean FWOSDriver_Driver::FindFolder(const TCollection_ExtendedString& aFolder)
+{
   
   OSD_Path thePath=UTL::Path(aFolder);
   OSD_Directory theDirectory(thePath);
   return theDirectory.Exists();
 }
 
-
-
-TCollection_ExtendedString FWOSDriver_Driver::Concatenate(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName) {
+//==============================================================================
+//function : Concatenate
+//purpose  :
+//==============================================================================
+TCollection_ExtendedString FWOSDriver_Driver::Concatenate(const TCollection_ExtendedString& aFolder,
+                                                          const TCollection_ExtendedString& aName)
+{
   TCollection_ExtendedString ff(aFolder);
   ff = "";
   ff += aFolder;
@@ -111,7 +161,12 @@ TCollection_ExtendedString FWOSDriver_Driver::Concatenate(const TCollection_Exte
   return ff;
 }
 
-TCollection_ExtendedString FWOSDriver_Driver::DefaultFolder() {
+//==============================================================================
+//function : DefaultFolder
+//purpose  :
+//==============================================================================
+TCollection_ExtendedString FWOSDriver_Driver::DefaultFolder()
+{
   TCollection_ExtendedString theDefaultFolder;
   if (theDefaultFolder.Length() == 0) {
     
@@ -123,7 +178,8 @@ TCollection_ExtendedString FWOSDriver_Driver::DefaultFolder() {
     }
     else {
       theDefaultFolder=UTL::xgetenv("TEMP");
-      if(theDefaultFolder.Length()==0) Standard_Failure::Raise("cannot determine default folder; HOMEDRIVE and TEMP are undefined");
+      if(theDefaultFolder.Length()==0)
+        Standard_Failure::Raise("cannot determine default folder; HOMEDRIVE and TEMP are undefined");
     }
 #else
     TCollection_ExtendedString home=UTL::xgetenv("HOME");
@@ -136,7 +192,12 @@ TCollection_ExtendedString FWOSDriver_Driver::DefaultFolder() {
   return theDefaultFolder;
 }
 
-Handle(CDM_MetaData) FWOSDriver_Driver::BuildMetaData(const TCollection_ExtendedString& aFileName) {
+//==============================================================================
+//function : BuildMetaData
+//purpose  :
+//==============================================================================
+Handle(CDM_MetaData) FWOSDriver_Driver::BuildMetaData(const TCollection_ExtendedString& aFileName)
+{
 
   OSD_Path p = UTL::Path(aFileName);
   
@@ -148,22 +209,49 @@ Handle(CDM_MetaData) FWOSDriver_Driver::BuildMetaData(const TCollection_Extended
   return CDM_MetaData::LookUp(f,n,aFileName,aFileName,UTL::IsReadOnly(aFileName));
 }
 
-TCollection_ExtendedString FWOSDriver_Driver::SetName(const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aName)  {
+//==============================================================================
+//function : SetName
+//purpose  :
+//==============================================================================
+TCollection_ExtendedString FWOSDriver_Driver::SetName(const Handle(CDM_Document)& aDocument,
+                                                      const TCollection_ExtendedString& aName)
+{
   
-  TCollection_ExtendedString xn(aName);
-  
-  TCollection_ExtendedString n(xn);
-  // file name may have spaces
-  //n.RemoveAll(' ');
+  TCollection_ExtendedString xn(aName), n(aName);
+
+#ifdef WNT
+  //windows is not case sensitive
+  Standard_ExtCharacter   echar;
+  //make the extension lower case
+  for(int i = 1; i <= xn.Length(); i++)
+  {
+	echar = xn.Value(i);
+	echar = towlower(echar);
+	xn.SetValue(i, echar);
+  }
+#endif
   
   TCollection_ExtendedString e (aDocument->FileExtension());
+  TCollection_ExtendedString xe(e);
   if (e.Length() > 0) {
+#ifdef WNT
+    //windows is not case sensitive
+    Standard_ExtCharacter   echar;
+    //make the extension lower case
+    for(int i = 1; i <= xe.Length(); i++)
+    {
+	  echar = xe.Value(i);
+	  echar = towlower(echar);
+	  xe.SetValue(i, echar);
+    }
+#endif
+    xe.Insert(1, '.');
     e.Insert(1, '.');
-    Standard_Integer ln = n.Length();
-    Standard_Integer le = e.Length();
+    Standard_Integer ln = xn.Length();
+    Standard_Integer le = xe.Length();
     Standard_Boolean ExtensionIsAlreadyThere = Standard_False;
     if(ln>=le) {
-      Standard_Integer ind=n.SearchFromEnd(e);
+      Standard_Integer ind=xn.SearchFromEnd(xe);
       ExtensionIsAlreadyThere = ind+le-1==ln;
     }
     if(!ExtensionIsAlreadyThere) n+=e;
