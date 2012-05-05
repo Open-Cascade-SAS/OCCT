@@ -36,7 +36,8 @@ uses  	POnSurf       from Extrema,
 	ExtAlgo from Extrema,
 	HArray1OfSphere from Bnd,
 	Vector        from math,
-	HArray2OfPnt from TColgp
+	HArray2OfPnt from TColgp,
+	HArray1OfReal from TColStd
 
 raises  NotDone      from StdFail,
     	OutOfRange   from Standard,
@@ -137,8 +138,15 @@ is
     BuildTree(me : in out)
     is static private;
     
-    FindSolution(me: in out; P : Pnt from gp; UV : Vector from math; PasU, PasV : Real; f : ExtFlag from Extrema)
+    FindSolution(me: in out; P : Pnt from gp; UV : Vector from math; theNoU, theNoV : Integer; f : ExtFlag from Extrema)
     is static private;
+    
+    GetGridPoints(me: in out;  theSurf: Surface from Adaptor3d) is private;
+    	---Purpose: Selection of points to build grid, depending on the type of surface
+    
+    BuildGrid(me: in out) is private;
+    	---Purpose: Creation of grid of parametric points
+  
 
 fields
     myDone    : Boolean;
@@ -158,5 +166,7 @@ fields
     myS       : SurfacePtr from Adaptor3d;
     myFlag    : ExtFlag from Extrema;
     myAlgo    : ExtAlgo from Extrema;
+    myUParams : HArray1OfReal from TColStd;
+    myVParams : HArray1OfReal from TColStd;
 
 end GenExtPS;

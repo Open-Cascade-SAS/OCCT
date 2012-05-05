@@ -747,7 +747,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // s'il on est dejas sur la solution, il faut leurer ce test pour eviter
   // de faire une seconde iteration...
   Save(0) = Max (F2, EpsSqrt);
-
+  Standard_Real aTol_Func = Epsilon(F2);
   FSR_DEBUG("=== Mode Debug de Function Set Root" << endl)
   FSR_DEBUG("    F2 Initial = " << F2)
 
@@ -1038,12 +1038,18 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     //fin du test solution
    
     // Analyse de la progression...
-    if (F2 < PreviousMinimum) { 
+    //comparison of current minimum and previous minimum
+    if ((F2 - PreviousMinimum) <= aTol_Func){ 
       if (Kount > 5) {
 	// L'historique est il bon ?
 	if (F2 >= 0.95*Save(Kount - 5)) {
 	  if (!ChangeDirection) ChangeDirection = Standard_True;
-	  else return; //  si un gain inf a 5% on sort
+	  else 
+    {
+      Done = Standard_True;
+      State = F.GetStateNumber();
+      return; //  si un gain inf a 5% on sort
+    }
 	}
 	else ChangeDirection = Standard_False; //Si oui on recommence
       }
@@ -1084,9 +1090,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	  return;
 	}
       }
-      else return; // y a plus d'issues
+      else 
+      {
+        
+        State = F.GetStateNumber();
+        return; // y a plus d'issues
+      }
     }
   }
+  State = F.GetStateNumber();
 }
 
 

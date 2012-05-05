@@ -60,41 +60,43 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
     Standard_Real Step,D1NormMax;
     if (IT == GeomAbs_IsoV) 
     {
-      Step = (U2 - U1)/10;
-      if(Step < Precision::PConfusion()) {
-        return Standard_False;
-      }
-      if(Step < Precision::PConfusion()) {
-        return Standard_False;
-      }
-      D1NormMax=0.;
-      for (T=U1;T<=U2;T=T+Step) 
+      if( !Precision::IsInfinite(U1) &&  !Precision::IsInfinite(U2) )
       {
-        S.D1(T,Param,P,D1U,D1V);
-        D1NormMax=Max(D1NormMax,D1U.Magnitude());
-      }
+        Step = (U2 - U1)/10;
+        if(Step < Precision::PConfusion()) {
+          return Standard_False;
+        }
+        D1NormMax=0.;
 
-      if (D1NormMax >TolMax || D1NormMax < TolMin ) 
-           Along = Standard_False;
+        for (T=U1;T<=U2;T=T+Step) 
+        {
+          S.D1(T,Param,P,D1U,D1V);
+          D1NormMax=Max(D1NormMax,D1U.Magnitude());
+        }
+
+        if (D1NormMax >TolMax || D1NormMax < TolMin ) 
+          Along = Standard_False;
+      }
     }
     else 
     {
-      Step = (V2 - V1)/10;
-      if(Step < Precision::PConfusion()) {
-        return Standard_False;
-      }
-      if(Step < Precision::PConfusion()) {
-        return Standard_False;
-      }
-      D1NormMax=0.;
-      for (T=V1;T<=V2;T=T+Step) 
+      if( !Precision::IsInfinite(V1) &&  !Precision::IsInfinite(V2) )
       {
-	S.D1(Param,T,P,D1U,D1V);
-        D1NormMax=Max(D1NormMax,D1V.Magnitude());
+        Step = (V2 - V1)/10;
+        if(Step < Precision::PConfusion()) {
+          return Standard_False;
+        }
+        D1NormMax=0.;
+        for (T=V1;T<=V2;T=T+Step) 
+        {
+          S.D1(Param,T,P,D1U,D1V);
+          D1NormMax=Max(D1NormMax,D1V.Magnitude());
+        }
+
+        if (D1NormMax >TolMax || D1NormMax < TolMin ) 
+          Along = Standard_False;
       }
 
-      if (D1NormMax >TolMax || D1NormMax < TolMin ) 
-           Along = Standard_False;
 
 
     }
@@ -240,14 +242,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& P)
   myPoints.Clear();
   mySqDist.Clear();
   Standard_Integer i;
-  P11 = myS->Value(myuinf, myvinf);
-  P12 = myS->Value(myuinf, myvsup);
-  P21 = myS->Value(myusup, myvinf);
-  P22 = myS->Value(myusup, myvsup);
-  d11 = P.SquareDistance(P11);
-  d12 = P.SquareDistance(P12);
-  d21 = P.SquareDistance(P21);
-  d22 = P.SquareDistance(P22);
+  
   
   switch(mytype) {
     

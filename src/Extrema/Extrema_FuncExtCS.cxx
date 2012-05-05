@@ -23,6 +23,7 @@
 #include <Extrema_FuncExtCS.ixx>
 #include <gp_Vec.hxx>
 #include <Standard_TypeMismatch.hxx>
+#include <Precision.hxx>
 
 /*-----------------------------------------------------------------------------
  Fonction permettant de rechercher une distance extremale entre une courbe C 
@@ -209,7 +210,17 @@ Standard_Integer Extrema_FuncExtCS::GetStateNumber()
   Value(UVSol, Sol);
   cout <<"F(1)= "<<Sol(1)<<" F(2)= "<<Sol(2)<<" F(3)= "<<Sol(3)<<endl;
 #endif
-
+  //comparison of solution with previous solutions
+  Standard_Real tol2d = Precision::PConfusion() * Precision::PConfusion();
+  Standard_Integer i = 1, nbSol = mySqDist.Length();
+  for( ; i <=  nbSol; i++)
+  {
+    Standard_Real aU = myPoint1(i).Parameter();
+    if( (myU - aU) * (myU - aU) <= tol2d )
+      break;
+  }
+  if (i <= nbSol)
+    return 0;
   mySqDist.Append(myP1.SquareDistance(myP2));
   myPoint1.Append(Extrema_POnCurv(myt,myP1));
   myPoint2.Append(Extrema_POnSurf(myU,myV,myP2));

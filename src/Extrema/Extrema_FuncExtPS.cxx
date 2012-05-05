@@ -130,6 +130,19 @@ Standard_Boolean Extrema_FuncExtPS::Values (const math_Vector& UV,
 Standard_Integer Extrema_FuncExtPS::GetStateNumber ()
 {
   if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
+  //comparison of solution with previous solutions
+  Standard_Integer i = 1, nbSol = mySqDist.Length();
+  Standard_Real tol2d = Precision::PConfusion() * Precision::PConfusion();
+   
+  for( ; i <=  nbSol; i++)
+  {
+    Standard_Real aU, aV;
+	myPoint(i).Parameter(aU, aV);
+	if( ((myU - aU ) * (myU - aU ) + (myV - aV ) * (myV - aV )) <= tol2d )
+      break;
+  }
+  if( i <= nbSol)
+	  return 0;
   mySqDist.Append(myPs.SquareDistance(myP));
   myPoint.Append(Extrema_POnSurf(myU,myV,myPs));
   return 0;
