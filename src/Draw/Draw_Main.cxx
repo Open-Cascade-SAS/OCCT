@@ -86,7 +86,7 @@ static char* ColorNames[MAXCOLOR] = {
 static   Standard_Boolean XLoop;
 
 // extern Standard_IMPORT Standard_Boolean Draw_Interprete(char* command); //for C21
-Standard_IMPORT Standard_Boolean Draw_Interprete(char* command); //for C30
+Standard_IMPORT Standard_Boolean Draw_Interprete(const char* command); //for C30
 // true if complete command
 
 // necessary for WNT in C21 only

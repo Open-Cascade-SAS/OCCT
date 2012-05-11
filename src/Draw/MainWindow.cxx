@@ -31,7 +31,7 @@
 #include <Draw_Window.hxx>
 #include <CommandWindow.h>
 
-Standard_Boolean Draw_Interprete(char* command); // Implemented in Draw.cxx
+Standard_Boolean Draw_Interprete(const char* command); // Implemented in Draw.cxx
 extern Standard_Boolean Draw_IsConsoleSubsystem;
 
 //extern "C" int  compat_unlink(const char *fname); // Implemente dans TCL

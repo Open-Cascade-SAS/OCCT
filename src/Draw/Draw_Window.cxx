@@ -37,7 +37,7 @@
 #include <Image_PixMap.hxx>
 
 extern Draw_Interpretor theCommands;
-Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
+extern Standard_Boolean Draw_VirtualWindows;
 static Tcl_Interp *interp;        /* Interpreter for this application. */
 
 /*
@@ -180,7 +180,6 @@ Display*         Draw_WindowDisplay = NULL;
 Standard_Integer Draw_WindowScreen = 0;
 Colormap         Draw_WindowColorMap;
 Standard_Boolean Draw_BlackBackGround = Standard_True;
-Standard_Boolean Draw_LowWindows = Standard_False;
 
 
 // Initialization of static variables of Draw_Window
@@ -572,13 +571,6 @@ void Draw_Window::DisplayWindow()
   {
     return;
   }
-  else if (Draw_LowWindows)
-  {
-    // the window <win> will be displayed so that not to be hidden
-    // by any other window (on top)
-    XMapWindow(Draw_WindowDisplay, win);
-    XLowerWindow(Draw_WindowDisplay, win);
-  }
   else
   {
     XMapRaised(Draw_WindowDisplay, win);
@@ -954,9 +946,9 @@ static void ProcessEvents(ClientData,int)
 //======================================================
 
 
-static Standard_Boolean(*Interprete) (char*);
+static Standard_Boolean(*Interprete) (const char*);
 
-void Run_Appli(Standard_Boolean (*interprete) (char*))
+void Run_Appli(Standard_Boolean (*interprete) (const char*))
 {
   Tcl_Channel outChannel, inChannel ;
   Interprete = interprete;
@@ -2028,7 +2020,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
   return Standard_True;
 }
 
-Standard_Boolean Draw_Interprete (char*);
+Standard_Boolean Draw_Interprete (const char*);
 
 /*--------------------------------------------------------*\
 |  readStdinThreadFunc

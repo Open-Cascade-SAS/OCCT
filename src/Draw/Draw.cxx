@@ -54,6 +54,7 @@
 #include <gp_Pnt2d.hxx>
 
 #include <Standard_Stream.hxx>
+#include <Standard_Version.hxx>
 
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
@@ -67,9 +68,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_ErrorHandler.hxx>
 extern Standard_Boolean Draw_ParseFailed;
-#ifndef WNT
-extern Standard_Boolean Draw_LowWindows;
-#endif
 
 Standard_EXPORT Draw_Viewer dout;
 Standard_EXPORT Draw_Interpretor theCommands;
@@ -92,10 +90,8 @@ static   Standard_Boolean XLoop;
 
 static Handle(Draw_ProgressIndicator) PInd = NULL;
 
-Standard_EXPORT Standard_Boolean Draw_Interprete(char* command);
+Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
 // true if complete command
-
-//#ifndef WNT
 
 // *******************************************************************
 // read an init file
@@ -111,10 +107,9 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
 #ifdef WNT
   if (!Draw_Batch) {
     try {
-      OCC_CATCH_SIGNALS
       aPath.ChangeAll ('\\', '/');
 
-      sprintf(console_command, "source \"%s\"", aPath.ToCString());
+      sprintf(console_command, "source \"%.980s\"", aPath.ToCString());
       console_semaphore = HAS_CONSOLE_COMMAND;
       while (console_semaphore == HAS_CONSOLE_COMMAND)
         Sleep(10);
@@ -133,7 +128,6 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
   }
 #endif
 }
-//#endif
 
 //=======================================================================
 //function :
@@ -176,56 +170,78 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // analyze arguments
   // *****************************************************************
   Draw_Batch = Standard_False;
-  TCollection_AsciiString aRunFile;
+  TCollection_AsciiString aRunFile, aCommand;
   Standard_Integer i;
   Standard_Boolean isInteractiveForced = Standard_False;
-#ifndef WNT
-  for (i = 0; i < argc; i++) {
-    if (strcasecmp(argv[i],"-b") == 0)
-      Draw_Batch = Standard_True;
-# ifndef __sgi
-    else if (strcasecmp(argv[i],"-l") == 0) {
-      Draw_LowWindows = Standard_True;
+
+#ifdef WNT
+  // On NT command line arguments are in the lpzline and not in argv
+  int argc = 0;
+  const int MAXARGS = 1024;
+  const char* argv[MAXARGS];
+  for (const char* p = strtok(lpszLine, " \t"); p != NULL; p = strtok(NULL, " \t")) {
+    argv[argc++] = p;
+  }
+#endif
+
+  // parse command line
+  for (i = 1; i < argc; i++) {
+    if (strcasecmp (argv[i], "-h") == 0 || strcasecmp (argv[i], "--help") == 0)
+    {
+      cout << "Open CASCADE " << OCC_VERSION_STRING_EXT << " DRAW Test Harness" << endl << endl;
+      cout << "Options: " << endl;
+      cout << "  -b: batch mode (no GUI, no viewers)" << endl;
+      cout << "  -v: no GUI, use virtual (off-screen) windows for viewers" << endl;
+      cout << "  -i: interactive mode" << endl;
+      cout << "  -f file: execute script from file" << endl;
+      cout << "  -c command args...: execute command (with optional arguments)" << endl << endl;
+      cout << "Options -b, -v, and -i are mutually exclusive." << endl;
+      cout << "If -c or -f are given, -v is default; otherwise default is -i." << endl;
+      cout << "Options -c and -f are alternatives and should be at the end " << endl;
+      cout << "of the command line. " << endl;
+      cout << "Option -c can accept set of commands separated by ';'." << endl;
+      return;
     }
-# endif
-    else if (strcasecmp(argv[i],"-v") == 0) {
+    else if (strcasecmp (argv[i], "-b") == 0)
+      Draw_Batch = Standard_True;
+    else if (strcasecmp (argv[i], "-v") == 0) {
       // force virtual windows
       Draw_VirtualWindows = Standard_True;
-    } else if (strcasecmp(argv[i],"-i") == 0) {
+    } else if (strcasecmp (argv[i], "-i") == 0) {
       // force interactive
       Draw_VirtualWindows = Standard_False;
       isInteractiveForced = Standard_True;
-    } else if (strcasecmp(argv[i],"-f") == 0) { // -f option should be LAST!
+    } else if (strcasecmp (argv[i], "-f") == 0) { // -f option should be LAST!
       Draw_VirtualWindows = !isInteractiveForced;
       if (++i < argc) {
         aRunFile = TCollection_AsciiString (argv[i]);
       }
       break;
-    }
-  }
-#else
-  // On NT command line arguments are in the lpzline and not in argv
-  for (char* p = strtok(lpszLine, " \t"); p != NULL; p = strtok(NULL, " \t")) {
-    if (strcasecmp(p, "-v") == 0) {
-      Draw_VirtualWindows = Standard_True;
-    } else if (strcasecmp(p, "-i") == 0) {
-      // force interactive
-      Draw_VirtualWindows = Standard_False;
-      isInteractiveForced = Standard_True;
-    } else if (strcasecmp(p, "-f") == 0) { // -f option should be LAST!
+    } else if (strcasecmp (argv[i], "-c") == 0) { // -c option should be LAST!
       Draw_VirtualWindows = !isInteractiveForced;
-      p = strtok(NULL," \t");
-      if (p != NULL) {
-        aRunFile = TCollection_AsciiString (p);
+      if (++i < argc) {
+        aCommand = TCollection_AsciiString (argv[i]);
+      }
+      while (++i < argc) {
+        aCommand.AssignCat (" ");
+        aCommand.AssignCat (argv[i]);
       }
       break;
+    } else {
+      cout << "Error: unsupported option " << argv[i] << endl;
     }
   }
-#endif
+
   // *****************************************************************
   // set signals
   // *****************************************************************
   OSD::SetSignal();
+
+#ifdef _WIN32
+  // in interactive mode, force Windows to report dll loading problems interactively
+  if ( ! Draw_VirtualWindows && ! Draw_Batch )
+    ::SetErrorMode (0);
+#endif
 
   // *****************************************************************
   // init X window and create display
@@ -236,12 +252,12 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
 
   if (!Draw_Batch)
 #ifdef WNT
-	Draw_Batch=!Init_Appli(hInst, hPrevInst, nShow, hWnd);
+    Draw_Batch=!Init_Appli(hInst, hPrevInst, nShow, hWnd);
 #else
     Draw_Batch=!Init_Appli();
 #endif
   else
-    cout << "batch mode" << endl;
+    cout << "DRAW is running in batch mode" << endl;
 
   XLoop = !Draw_Batch;
   if (XLoop) {
@@ -302,24 +318,27 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
     ReadInitFile (getenv ("DRAWDEFAULT"));
   }
 
-  // pure batch
+  // read commands from file
   if (!aRunFile.IsEmpty()) {
-    // do not map raise the windows, so test programs are discrete
-#ifndef WNT
-    Draw_LowWindows = Standard_True;
-#endif
-  // comme on ne peut pas photographier les fenetres trop discretes sur sgi
-  // on se met en vedette !! (pmn 20/02/97)
-#ifdef __sgi
-    Draw_LowWindows = Standard_False;
-#endif
-
     ReadInitFile (aRunFile);
-    // provide a clean exit, this is usefull for some analysis tools
+    // provide a clean exit, this is useful for some analysis tools
+    if ( ! isInteractiveForced )
 #ifndef WNT
-    return;
+      return;
 #else
-    ExitProcess(0);
+      ExitProcess(0);
+#endif
+  }
+
+  // execute command from command line
+  if (!aCommand.IsEmpty()) {
+    Draw_Interprete (aCommand.ToCString());
+    // provide a clean exit, this is useful for some analysis tools
+    if ( ! isInteractiveForced )
+#ifndef WNT
+      return;
+#else
+      ExitProcess(0);
 #endif
   }
 
@@ -328,7 +347,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // *****************************************************************
   if (XLoop) {
 #ifdef WNT
-	Run_Appli(hWnd);
+    Run_Appli(hWnd);
 #else
     Run_Appli(Draw_Interprete);
 #endif
@@ -356,7 +375,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
 void (*Draw_BeforeCommand)() = NULL;
 void (*Draw_AfterCommand)(Standard_Integer) = NULL;
 
-Standard_Boolean Draw_Interprete(char* com)
+Standard_Boolean Draw_Interprete(const char* com)
 {
 
   static Standard_Boolean first = Standard_True;

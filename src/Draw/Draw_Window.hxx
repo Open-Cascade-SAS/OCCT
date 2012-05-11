@@ -169,7 +169,7 @@ class Draw_Window
 //           and return True if the command is complete
 //======================================================
 
-void Run_Appli(Standard_Boolean (*inteprete) (char*));
+void Run_Appli(Standard_Boolean (*inteprete) (const char*));
 
 //======================================================
 // funtion : Init_Appli
