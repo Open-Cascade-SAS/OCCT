@@ -355,7 +355,7 @@ static Standard_Boolean stepstrcmp(const Standard_CString type,
 //  Attention : False pour dire OK, True sinon (car remplace strcmp)
   Standard_Integer i,j = 0; Standard_Boolean res = Standard_False;
   for (i = 0; name[i] != '\0' && type[i] != '\0' && !res ; i ++) {
-    if (name[i] == ' ') { j = i; break; }
+    if (name[i] == ' ' && type[i] == '\0') { j = i; break; }
     if (type[i] != name[i]) res = Standard_True;
   }
   if (!res || (j == 0)) return res;
