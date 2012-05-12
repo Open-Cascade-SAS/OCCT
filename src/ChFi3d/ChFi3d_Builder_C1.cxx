@@ -378,6 +378,27 @@ static Standard_Boolean Update(Handle(Adaptor3d_HSurface)& face,
     pared = ponc1.Parameter();
     parltg = ponc2.Parameter();
     if ((parltg > f) && (parltg < l)) {
+      ////modified by jgv, 10.05.2012 for the bug 23139////
+      Handle(Geom2d_Curve) PConF = fi.PCurveOnFace();
+      if (!PConF.IsNull())
+      {
+        Handle(Geom2d_TrimmedCurve) aTrCurve = Handle(Geom2d_TrimmedCurve)::DownCast(PConF);
+        if (!aTrCurve.IsNull())
+          PConF = aTrCurve->BasisCurve();
+        if (isfirst)
+        {
+          Standard_Real fpar = PConF->FirstParameter();
+          if (parltg < fpar)
+            parltg = fpar;
+        }
+        else
+        {
+          Standard_Real lpar = PConF->LastParameter();
+          if (parltg > lpar)
+            parltg = lpar;
+        }
+      }
+      /////////////////////////////////////////////////////
       fi.SetParameter(parltg,isfirst);
       cp.SetArc(cp.Tolerance(),cp.Arc(),pared,cp.TransitionOnArc());
       return Standard_True;
