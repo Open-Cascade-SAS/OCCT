@@ -761,9 +761,6 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
       if ( style != aHSeqOfInvisStyle->Value( si ) )
         continue;
       // found that current style is invisible.
-#ifdef DEB
-      cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name() << ") is invisible" << endl;
-#endif
       IsVisible = Standard_False;
       break;
     }
@@ -832,12 +829,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors (const Handle(XSControl_WorkS
     if (isSkipSHUOstyle)
       continue; // skip styled item which refer to SHUO
     
-    if ( S.IsNull() ) {
-#ifdef DEB
-      cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name() << ") is not mapped to shape" << endl;
-#endif
+    if ( S.IsNull() )
       continue;
-    }
     
     if ( ! SurfCol.IsNull() ) {
       Quantity_Color col;
