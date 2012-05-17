@@ -24,6 +24,7 @@
 
 #include <TColStd_Array1OfReal.hxx>
 #include <math_FunctionSetRoot.hxx>
+#include <Precision.hxx>
 
 #define Debug(expr)  cout<<" expr :"<<expr;
 #define MySurf1 MyIntersectionOn2S.Function().AuxillarSurface1()
@@ -173,6 +174,11 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute( Standard_Real& u1
   TgTU = Tg.Dot(TU);
   TgTV = Tg.Dot(TV);
   DIS  = TUTU * TVTV - TUTV * TUTV;
+  if(fabs(DIS)<Precision::Angular()) { 
+    MyIsTangent=Standard_False;
+    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+    return(Standard_False); 
+  }
   
   DeltaU = (TgTU * TVTV - TgTV * TUTV ) / DIS ; 
   DeltaV = (TgTV * TUTU - TgTU * TUTV ) / DIS ;
@@ -190,6 +196,11 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute( Standard_Real& u1
   TgTU = Tg.Dot(TU);
   TgTV = Tg.Dot(TV);
   DIS  = TUTU * TVTV - TUTV * TUTV;
+  if(fabs(DIS)<Precision::Angular()) { 
+    MyIsTangent=Standard_False;
+    MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
+    return(Standard_False); 
+  }
 
   DeltaU = (TgTU * TVTV - TgTV * TUTV ) / DIS ; 
   DeltaV = (TgTV * TUTU - TgTU * TUTV ) / DIS ;
