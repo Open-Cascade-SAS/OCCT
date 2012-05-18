@@ -50,6 +50,12 @@
 
 #include <BOPTools_Tools2D.hxx>
 
+static Standard_Boolean CheckPointInside(BRepClass3d_SolidClassifier& aSolidClassifier,
+                                         const gp_Pnt& aP3d,
+                                         const Standard_Real aTolerance,
+                                         const Handle(IntTools_Context)& theContext,
+                                         TopAbs_State& aState,
+                                         Standard_Boolean& bFoundInFacePoint);
 
 //=======================================================================
 //function : GetApproxNormalToFaceOnEdge
@@ -909,43 +915,54 @@ Standard_Boolean BOPTools_Tools3D::ComputeFaceState(const TopoDS_Face&  theFace,
       Standard_Real V = (vmin + vmax) * 0.5;
 
       for(j = 1; !bFoundValidPoint && (j <= nbpoints); j++, V+=adeltav) {
-	gp_Pnt2d aPoint(U,V);
-
-	if(theContext->IsPointInOnFace(theFace, aPoint)) {
-	  bFoundInFacePoint = Standard_True;
-	  gp_Pnt aP3d = aSurface->Value(U, V);
-    
-	  aSolidClassifier.Perform(aP3d, aTolerance);
-	  aState = aSolidClassifier.State();
-
-	  if(aState != TopAbs_ON) {
-
-	    if(!aSolidClassifier.Rejected()) {
-	      TopoDS_Face aFace2 = aSolidClassifier.Face();
-
-	      if(!aFace2.IsNull()) {
-		GeomAPI_ProjectPointOnSurf& aProjector = theContext->ProjPS(aFace2);
-		aProjector.Perform(aP3d);
-
-		if(aProjector.IsDone()) {
-		  Standard_Real U2 = 0., V2 = 0.;
-		  aProjector.LowerDistanceParameters(U2, V2);
-		  gp_Pnt2d aPoint2(U2, V2);
-
-		  if(aProjector.LowerDistance() < aTolerance) {
-		    if(theContext->IsPointInFace(aFace2, aPoint2)) 
-		      aState = TopAbs_ON;
-		  }
-		}
-		bFoundValidPoint = Standard_True;
-		break;
-	      }
-	    }
-	    else {
-	      bFoundInFacePoint = Standard_False;
-	    }
-	  }
-	}
+        gp_Pnt2d aPoint(U,V);
+        
+        if(theContext->IsPointInOnFace(theFace, aPoint)) {
+          bFoundInFacePoint = Standard_True;
+          gp_Pnt aP3d = aSurface->Value(U, V);
+          
+          bFoundValidPoint = CheckPointInside(aSolidClassifier, aP3d, aTolerance, theContext,
+                                              aState, bFoundInFacePoint);
+          if (bFoundValidPoint) {
+            break;
+          }
+        }
+      }
+    }
+  }
+  //emv for salome bug 23160
+  if(!bFoundInFacePoint) {
+    TopExp_Explorer aExp;
+    Standard_Real aT1, aT2, aT, aDt2D;
+    gp_Pnt aPx, aP3d;
+    gp_Pnt2d aPoint;
+    aExp.Init(theFace, TopAbs_EDGE);
+    for(; aExp.More(); aExp.Next()) {
+      const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
+      if (aE.Orientation()==TopAbs_INTERNAL) {
+        continue;
+      }
+      //
+      if (BRep_Tool::Degenerated(aE)){
+        continue;
+      }
+      //
+      //get point inside face
+      Handle(Geom_Curve)aC3D = BRep_Tool::Curve(aE, aT1, aT2);
+      aT=BOPTools_Tools2D::IntermediatePoint(aT1, aT2);
+      aC3D->D0(aT, aPx);
+      aDt2D = BOPTools_Tools3D::MinStepIn2d();
+      aDt2D += 2*BRep_Tool::Tolerance(aE);
+      BOPTools_Tools3D::PointNearEdge (aE, theFace, aT, aDt2D, aPoint, aP3d);
+      //
+      if (theContext->IsPointInOnFace(theFace, aPoint)) {
+        bFoundInFacePoint = Standard_True;
+        
+        bFoundValidPoint = CheckPointInside(aSolidClassifier, aP3d, aTolerance, theContext,
+                                            aState, bFoundInFacePoint);
+        if (bFoundValidPoint) {
+          break;
+        }
       }
     }
   }
@@ -957,6 +974,7 @@ Standard_Boolean BOPTools_Tools3D::ComputeFaceState(const TopoDS_Face&  theFace,
 
   return Standard_True;
 }
+
 //modified by NIZNHY-PKV Thu Sep 22 10:55:14 2011f
 // ===========================================================================================
 // function: CheckSameDomainFaceInside
@@ -1022,3 +1040,52 @@ Standard_Boolean BOPTools_Tools3D::CheckSameDomainFaceInside(const TopoDS_Face& 
   return bFoundON;
 }
 //modified by NIZNHY-PKV Thu Sep 22 10:55:19 2011t
+
+// ===========================================================================================
+// function: CheckPointInside
+// purpose: 
+// ===========================================================================================
+Standard_Boolean CheckPointInside(BRepClass3d_SolidClassifier& aSolidClassifier,
+                                  const gp_Pnt& aP3d,
+                                  const Standard_Real aTolerance,
+                                  const Handle(IntTools_Context)& theContext,
+                                  TopAbs_State& aState,
+                                  Standard_Boolean& bFoundInFacePoint) 
+{
+  Standard_Boolean bFoundValidPoint;
+
+  bFoundValidPoint = Standard_False;
+
+  aSolidClassifier.Perform(aP3d, aTolerance);
+  aState = aSolidClassifier.State();
+  
+  if(aState != TopAbs_ON) {
+    
+    if(!aSolidClassifier.Rejected()) {
+      TopoDS_Face aFace2 = aSolidClassifier.Face();
+      
+      if(!aFace2.IsNull()) {
+        GeomAPI_ProjectPointOnSurf& aProjector = theContext->ProjPS(aFace2);
+        aProjector.Perform(aP3d);
+        
+        if(aProjector.IsDone()) {
+          Standard_Real U2 = 0., V2 = 0.;
+          aProjector.LowerDistanceParameters(U2, V2);
+          gp_Pnt2d aPoint2(U2, V2);
+          
+          if(aProjector.LowerDistance() < aTolerance) {
+            if(theContext->IsPointInFace(aFace2, aPoint2)) {
+              aState = TopAbs_ON;
+            }
+          }
+        }
+        bFoundValidPoint = Standard_True;
+      }
+    }
+    else {
+      bFoundInFacePoint = Standard_False;
+    }
+  }
+
+  return bFoundValidPoint;
+}
