@@ -15,38 +15,27 @@
 # purpose or non-infringement. Please see the License for the specific terms
 # and conditions governing the rights and limitations under the License.
 
-
-set stationname $tcl_platform(platform)
-if { ${stationname} == "windows" } {
-   proc winfo { aTest aWindow } { return False }
-}
-
-
+# Command to log a message to both command-line and dialog window
 proc sage { a} {
-    global stationname 
-    if { ${stationname} != "windows" } {
-	
-	if { ![winfo exists .h ] } {
-	    toplevel .h -bg azure3
-	    wm title .h "INFO TEST HARNESS"
-	    wm geometry .h +320+20
-	    
-	} 
-	if { [winfo exists .h.m ] } {
-	    set astring [.h.m cget  -text]
-	    set newstring "${astring} \n $a"
-	    .h.m configure -text $newstring 
-	    puts $a
-	} else {
-	    message .h.m -justify left -bg azure2 -width 13c -relief ridge -bd 4\
-		    -text $a
-	    puts $a
-	} 
-	pack .h.m
-	update
-   }
+    if { ![winfo exists .h ] } {
+        toplevel .h -bg azure3
+        wm title .h "INFO TEST HARNESS"
+        wm geometry .h +320+20
+    } 
+    if { [winfo exists .h.m ] } {
+        set astring [.h.m cget  -text]
+        set newstring "${astring} \n $a"
+        .h.m configure -text $newstring 
+        puts $a
+    } else {
+        message .h.m -justify left -bg azure2 -width 13c -relief ridge -bd 4 -text $a
+        puts $a
+    } 
+    pack .h.m
+    update
 }
 
+pload MODELING
 
 smallview
 if { [winfo exists .h ] } {
@@ -130,4 +119,3 @@ donl r
 hlr nohid r
 hlr hlr r
 sage "Demo completed"
-
