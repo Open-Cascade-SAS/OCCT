@@ -19,6 +19,7 @@
 
 #include <BndLib_Add2dCurve.ixx>
 #include <BndLib.hxx>
+#include <ElCLib.hxx>
 #include <GeomAbs_CurveType.hxx>
 
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -121,15 +122,18 @@ void BndLib_Add2dCurve::Add( const Adaptor2d_Curve2d& C,
 
 
 	Handle(Geom2d_Geometry) G = Bs->Copy();
-
 	const Handle(Geom2d_BSplineCurve)& Bsaux = (*((Handle(Geom2d_BSplineCurve)*)&G));
-//  modified by NIZHNY-EAP Fri Dec  3 14:29:14 1999 ___BEGIN___
-	// To avoid exeption in Segment
 	Standard_Real u1 = U1, u2 = U2;
-	if(Bsaux->FirstParameter() > U1) u1 = Bsaux->FirstParameter();
-	if(Bsaux->LastParameter()  < U2 ) u2  = Bsaux->LastParameter();
-//  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
-
+	if (Bsaux->IsPeriodic())
+	  ElCLib::AdjustPeriodic( Bsaux->FirstParameter(), Bsaux->LastParameter(), Precision::PConfusion(), u1, u2 );
+	else {
+	  ////////////////////////////////////////////////
+	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:14 1999 ___BEGIN___
+	  // To avoid exeption in Segment
+	  if(Bsaux->FirstParameter() > U1) u1 = Bsaux->FirstParameter();
+	  if(Bsaux->LastParameter()  < U2 ) u2  = Bsaux->LastParameter();
+	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___
+	}
 	Bsaux->Segment(u1, u2);
 	for (Standard_Integer i = 1; i <= Bsaux->NbPoles(); i++) {
 	  B.Add(Bsaux->Pole(i));
