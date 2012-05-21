@@ -1,4 +1,3 @@
-srcinc:::demo.tcl
 srcinc:::BuildWorkbench.tcl
 srcinc:::Tests.tcl
 srcinc:::Consultation.tcl
@@ -27,15 +26,8 @@ srcinc:::DrawDefault
 srcinc:::TestDraw.cxx
 srcinc:::Filtre.c
 srcinc:::DIFF.c
-srcinc:::demo
-srcinc:::demo.bat
 srcinc:::lamp.ico
 srcinc:::DrawPlugin
-srcinc:::ModelingDemo.tcl
-srcinc:::DataExchangeDemo.tcl
-srcinc:::wing.brep
-srcinc:::VisualizationDemo.tcl
-srcinc:::OCAFDemo.tcl
 srcinc:::TKTopTest.tcl
 srcinc:::dftree.tcl
 srcinc:::QARebuildCommands
