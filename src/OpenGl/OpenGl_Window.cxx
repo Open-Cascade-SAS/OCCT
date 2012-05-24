@@ -400,8 +400,12 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   myWindow = aParent;
 #endif
 
+#if (defined(_WIN32) || defined(__WIN32__))
+  myGlContext->Init (myWindow, myWindowDC, myGContext);
+#else
+  myGlContext->Init (myWindow, myDisplay->GetDisplay(), myGContext);
+#endif
   Init();
-  myGlContext->Init();
 }
 
 // =======================================================================
@@ -463,28 +467,7 @@ OpenGl_Window::~OpenGl_Window()
 // =======================================================================
 Standard_Boolean OpenGl_Window::Activate()
 {
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
-  if (aDisp == NULL)
-    return Standard_False;
-
-#if (defined(_WIN32) || defined(__WIN32__))
-  if (!wglMakeCurrent (myWindowDC, myGContext))
-  {
-    //GLenum errorcode = glGetError();
-    //const GLubyte *errorstring = gluErrorString(errorcode);
-    //printf("wglMakeCurrent failed: %d %s\n", errorcode, errorstring);
-    return Standard_False;
-  }
-#else
-  if (!glXMakeCurrent (aDisp, myWindow, myGContext))
-  {
-    // if there is no current context it might be impossible to use glGetError correctly
-    //printf("glXMakeCurrent failed!\n");
-    return Standard_False;
-  }
-#endif
-
-  return Standard_True;
+  return myGlContext->MakeCurrent();
 }
 
 // =======================================================================

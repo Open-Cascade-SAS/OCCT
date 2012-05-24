@@ -121,6 +121,11 @@ public:
   //! Clean up errors stack for this GL context (glGetError() in loop).
   Standard_EXPORT void ResetErrors();
 
+  //! This method uses system-dependent API to retrieve information
+  //! about GL context bound to the current thread.
+  //! @return true if current thread is bound to this GL context
+  Standard_EXPORT Standard_Boolean IsCurrent() const;
+
   //! Activates current context.
   //! Class should be initialized with appropriate info.
   Standard_EXPORT Standard_Boolean MakeCurrent();

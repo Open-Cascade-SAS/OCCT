@@ -103,23 +103,75 @@ OpenGl_Context::~OpenGl_Context()
 }
 
 // =======================================================================
+// function : IsCurrent
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::IsCurrent() const
+{
+#if (defined(_WIN32) || defined(__WIN32__))
+  if (myWindowDC == NULL || myGContext == NULL)
+  {
+    return Standard_False;
+  }
+  return (( (HDC )myWindowDC == wglGetCurrentDC())
+      && ((HGLRC )myGContext == wglGetCurrentContext()));
+#else
+  if (myDisplay == NULL || myWindow == 0 || myGContext == 0)
+  {
+    return Standard_False;
+  }
+
+  return (   ((Display* )myDisplay  == glXGetCurrentDisplay())
+       &&  ((GLXContext )myGContext == glXGetCurrentContext())
+       && ((GLXDrawable )myWindow   == glXGetCurrentDrawable()));
+#endif
+}
+
+// =======================================================================
 // function : MakeCurrent
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_Context::MakeCurrent()
 {
 #if (defined(_WIN32) || defined(__WIN32__))
-  if (myWindowDC == NULL || myGContext == NULL ||
-      !wglMakeCurrent ((HDC )myWindowDC, (HGLRC )myGContext))
+  if (myWindowDC == NULL || myGContext == NULL)
   {
-    //GLenum anErrCode = glGetError();
-    //const GLubyte* anErrorString = gluErrorString (anErrCode);
-    //std::cerr << "wglMakeCurrent() failed: " << anErrCode << " " << anErrorString << "\n";
+    Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
+    return Standard_False;
+  }
+
+  // technically it should be safe to activate already bound GL context
+  // however some drivers (Intel etc.) may FAIL doing this for unknown reason
+  if (IsCurrent())
+  {
+    return Standard_True;
+  }
+  else if (wglMakeCurrent ((HDC )myWindowDC, (HGLRC )myGContext) != TRUE)
+  {
+    // notice that glGetError() couldn't be used here!
+    wchar_t* aMsgBuff = NULL;
+    DWORD anErrorCode = GetLastError();
+    FormatMessageW (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL, anErrorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (wchar_t* )&aMsgBuff, 0, NULL);
+    if (aMsgBuff != NULL)
+    {
+      std::wcerr << L"OpenGL interface: wglMakeCurrent() failed. " << aMsgBuff << L" (" << int(anErrorCode) << L")\n";
+      LocalFree (aMsgBuff);
+    }
+    else
+    {
+      std::wcerr << L"OpenGL interface: wglMakeCurrent() failed with #" << int(anErrorCode) << L" error code\n";
+    }
     return Standard_False;
   }
 #else
-  if (myDisplay == NULL || myWindow == 0 || myGContext == 0 ||
-      !glXMakeCurrent ((Display* )myDisplay, (GLXDrawable )myWindow, (GLXContext )myGContext))
+  if (myDisplay == NULL || myWindow == 0 || myGContext == 0)
+  {
+    Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
+    return Standard_False;
+  }
+
+  if (!glXMakeCurrent ((Display* )myDisplay, (GLXDrawable )myWindow, (GLXContext )myGContext))
   {
     // if there is no current context it might be impossible to use glGetError() correctly
     //std::cerr << "glXMakeCurrent() failed!\n";
@@ -251,7 +303,7 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 #else
   myDisplay  = theDisplay;
 #endif
-  if (myGContext == NULL)
+  if (myGContext == NULL || !MakeCurrent())
   {
     return Standard_False;
   }

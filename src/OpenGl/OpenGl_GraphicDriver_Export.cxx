@@ -20,6 +20,8 @@
 /************************************************************************/
 
 #include <OpenGl_GraphicDriver.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_CView.hxx>
 #include <OSD_Localizer.hxx>
 
 #ifdef HAVE_CONFIG_H
@@ -49,6 +51,14 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
                                                const Standard_Address /*theProgressObject*/)
 {
 #ifdef HAVE_GL2PS
+  // gl2psBeginPage() will call OpenGL functions
+  // so we should activate correct GL context before redraw scene call
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theView.ptrView;
+  if (aCView == NULL || !aCView->WS->GetGlContext()->MakeCurrent())
+  {
+    return Standard_False;
+  }
+
   Standard_Integer aFormat = -1;
   Standard_Integer aSortType = Graphic3d_ST_BSP_Tree;
   switch (theFormat)
