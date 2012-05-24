@@ -1644,6 +1644,14 @@ gp_Circ  ElSLib::SphereVIso(const gp_Ax3& Pos,
   Ve.Multiply(Radius * sin(V));
   axes.Translate(Ve);
   Standard_Real radius = Radius * cos(V);
+  // #23170: if V is even slightly (e.g. by double epsilon) greater than PI/2,
+  // radius will become negative and constructor of gp_Circ will raise exception.
+  // Lets try to create correct isoline even on analytical continuation for |V| > PI/2...
+  if (radius < 0.)
+  {
+    axes.SetDirection (-axes.Direction());
+    radius = -radius;
+  }
   gp_Circ Circ(axes,radius);
   return Circ;
 }
