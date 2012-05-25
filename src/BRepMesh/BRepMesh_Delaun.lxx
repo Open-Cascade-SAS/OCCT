@@ -25,19 +25,19 @@
 inline const BRepMesh_Vertex& BRepMesh_Delaun::GetVertex
 (const Standard_Integer vIndex) const
 {
-  return MeshData->GetNode(vIndex);
+  return myMeshData->GetNode(vIndex);
 }
 
 
 inline const BRepMesh_Edge& BRepMesh_Delaun::GetEdge
 (const Standard_Integer eIndex) const
 {
-  return MeshData->GetLink(eIndex);
+  return myMeshData->GetLink(eIndex);
 }
 
 
 inline const BRepMesh_Triangle& BRepMesh_Delaun::GetTriangle
 (const Standard_Integer tIndex) const
 {
-  return MeshData->GetElement(tIndex);
+  return myMeshData->GetElement(tIndex);
 }

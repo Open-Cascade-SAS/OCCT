@@ -28,6 +28,7 @@ class Delaun from BRepMesh
 
   uses    Integer from Standard,
           SequenceOfInteger from TColStd,
+          MapOfInteger from TColStd,
           Array1OfInteger from TColStd,
           Box2d from Bnd,
           CircleTool from BRepMesh,
@@ -209,16 +210,51 @@ class Delaun from BRepMesh
                 --vertex        : in Vertex from BRepMesh; 
                 ---Purpose: Creates the triangles on new nodes
               is private;
+	      
+            IntSegSeg     (me        : in out;
+                           theEdge1  : in Edge from BRepMesh;
+                           theEdge2  : in Edge from BRepMesh)    
+            ---Purpose: Check intersection between the two segments.
+            returns Boolean is private;
+            
+            KillInternalTriangles(me: in out;
+                                  theEdgeId       : Integer from Standard;
+                                  theIgnoredEdges : in MapOfInteger from TColStd;
+                                  theLoopEdges    : out MapOfIntegerInteger from BRepMesh)
+              ---Purpose: Removes triangles within polygon
+              is private;
+              
+            CleanupMesh(me: in out)
+              ---Purpose: Cleanup mesh from the free triangles
+              is private;
+              
+            RemovePivotTriangles(me: in out;
+                                 theEdgeInfo      : Integer from Standard;
+                                 thePivotNode     : Integer from Standard;
+                                 theInfectedEdges : out MapOfInteger from TColStd;
+                                 theLoopEdges     : out MapOfIntegerInteger from BRepMesh;
+                                 isFirstPass      : Boolean from Standard)
+              ---Purpose: Removes triangles around the given pivot node
+              is private;
+              
+            CleanupPolygon(me: in out;
+                           thePolygon       : in SequenceOfInteger from TColStd;
+                           theInfectedEdges : out MapOfInteger from TColStd;
+                           theLoopEdges     : out MapOfIntegerInteger from BRepMesh)
+              ---Purpose: Remove internal triangles from the given polygon
+              is private;
 
 
-            fields  MeshData               : DataStructureOfDelaun from BRepMesh;
-                    PositiveOrientation    : Boolean from Standard;
-                    tCircles               : CircleTool from BRepMesh;
-                    supVert1               : Integer from Standard;
-                    supVert2               : Integer from Standard;
-                    supVert3               : Integer from Standard;
-                    supTrian               : Triangle from BRepMesh;
-                    mapEdges               : MapOfInteger from BRepMesh;
+
+
+            fields  myMeshData               : DataStructureOfDelaun from BRepMesh;
+                    myPositiveOrientation    : Boolean from Standard;
+                    myCircles                : CircleTool from BRepMesh;
+                    mySupVert1               : Integer from Standard;
+                    mySupVert2               : Integer from Standard;
+                    mySupVert3               : Integer from Standard;
+                    mySupTrian               : Triangle from BRepMesh;
+                    myMapEdges               : MapOfInteger from BRepMesh;
 
 
 end Delaun;
