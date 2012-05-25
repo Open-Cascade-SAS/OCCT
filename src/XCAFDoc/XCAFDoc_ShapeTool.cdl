@@ -239,8 +239,12 @@ is
     	---Purpose: Adds a new top-level (creates and returns a new label)
 	--          For internal use. Used by public method AddShape.
 
-    RemoveShape (me; L: Label from TDF) returns Boolean;
+    RemoveShape (me; L: Label from TDF;
+                 removeCompletely: Boolean = Standard_True)
+    returns Boolean;
     	---Purpose: Removes shape (whole label and all its sublabels)
+    --          If removeCompletely is true, removes complete shape
+	--          If removeCompletely is false, removes instance(location) only
 	--          Returns False (and does nothing) if shape is not free
 	--          or is not top-level shape
     

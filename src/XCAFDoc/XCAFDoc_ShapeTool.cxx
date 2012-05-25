@@ -607,10 +607,27 @@ TDF_Label XCAFDoc_ShapeTool::AddShape (const TopoDS_Shape& theShape,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean XCAFDoc_ShapeTool::RemoveShape (const TDF_Label& L) const
+Standard_Boolean XCAFDoc_ShapeTool::RemoveShape (const TDF_Label& L,
+                                                 const Standard_Boolean removeCompletely) const
 {
   if ( ! IsTopLevel ( L ) || ! IsFree ( L ) ) return Standard_False;
+
+  Handle(TDataStd_TreeNode) aNode;
+  TDF_Label aLabel;
+  if (removeCompletely &&
+      L.FindAttribute (XCAFDoc::ShapeRefGUID(), aNode) &&
+      aNode->HasFather() &&
+      L.IsAttribute (XCAFDoc_Location::GetID()))
+  {
+    aLabel = aNode->Father()->Label();
+  }
+
   L.ForgetAllAttributes (Standard_True);
+
+  if (removeCompletely && !aLabel.IsNull())
+  {
+    return RemoveShape(aLabel);
+  }
   return Standard_True;
 }
 
