@@ -135,7 +135,7 @@ LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKV2d \
         -lTKXSBase -lTKPShape -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
         -lTKCDF -lTKBool -lTKBO -lTKFillet -lTKOffset \
 
-lrelease.name = LRELASE ${QMAKE_FILE_IN}
+lrelease.name = LRELEASE ${QMAKE_FILE_IN}
 lrelease.commands = lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm
 lrelease.output = ./res/${QMAKE_FILE_BASE}.qm
 lrelease.input = TS_FILES
