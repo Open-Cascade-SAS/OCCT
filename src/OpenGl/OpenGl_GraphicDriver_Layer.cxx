@@ -127,9 +127,6 @@ void OpenGl_GraphicDriver::BeginLayer (const Aspect_CLayer2d& ACLayer)
   InitLayerProp(ptrLayer->listIndex);
   if (!TheLayerProp.ListId) return;
 
-  glEnable(GL_TEXTURE_2D);
-  //GLboolean stat = glIsEnabled( GL_TEXTURE_2D );
-
   glNewList (TheLayerProp.ListId, GL_COMPILE);
   TheLayerIsOpen = Standard_True;
 }

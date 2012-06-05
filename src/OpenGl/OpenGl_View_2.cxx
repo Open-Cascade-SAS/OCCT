@@ -1300,13 +1300,6 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
   GLsizei dispWidth  = (GLsizei )ACLayer.viewport[0];
   GLsizei dispHeight = (GLsizei )ACLayer.viewport[1];
 
-  const GLboolean isl = glIsEnabled(GL_LIGHTING); /*OCC6247*/
-  if (isl)
-    glDisable(GL_LIGHTING); /*OCC6247*/
-
-  /*
-  * On positionne la projection
-  */
   glMatrixMode( GL_MODELVIEW );
   glPushMatrix ();
   glLoadIdentity ();
@@ -1332,7 +1325,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
     ratio = ACView.DefWindow.dx/ACView.DefWindow.dy;
 
   float delta;
-  if (ratio >= 1.0) { /* fenetre horizontale */
+  if (ratio >= 1.0) {
     delta = (float )((top - bottom)/2.0);
     switch (attach) {
       case 0: /* Aspect_TOC_BOTTOM_LEFT */
@@ -1349,7 +1342,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
         break;
     }
   }
-  else { /* fenetre verticale */
+  else {
     delta = (float )((right - left)/2.0);
     switch (attach) {
       case 0: /* Aspect_TOC_BOTTOM_LEFT */
@@ -1396,13 +1389,16 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
 
   glOrtho (left, right, bottom, top, -1.0, 1.0);
 
-  /*
-  * On trace la display-list associee au layer.
-  */
   glPushAttrib (
     GL_LIGHTING_BIT | GL_LINE_BIT | GL_POLYGON_BIT |
     GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT );
+
   glDisable (GL_DEPTH_TEST);
+  glDisable (GL_TEXTURE_1D);
+  glDisable (GL_TEXTURE_2D);
+  glDisable (GL_LIGHTING);
+
+  // TODO: Obsolete code, the display list is always empty now, to be removed
   glCallList (ACLayer.ptrLayer->listIndex);
 
   //calling dynamic render of LayerItems
@@ -1415,25 +1411,16 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
 
   glPopAttrib ();
 
-  /*
-  * On retire la projection
-  */
   glMatrixMode (GL_PROJECTION);
   glPopMatrix ();
 
   glMatrixMode( GL_MODELVIEW );
   glPopMatrix ();
 
-  /*
-  * Restauration du Viewport en cas de modification
-  */
   if (!ACLayer.sizeDependent)
     glViewport (0, 0, (GLsizei) ACView.DefWindow.dx, (GLsizei) ACView.DefWindow.dy);
 
   glFlush ();
-
-  if (isl)
-    glEnable(GL_LIGHTING); /*OCC6247*/
 }
 
 /*----------------------------------------------------------------------*/
