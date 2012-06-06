@@ -94,18 +94,17 @@ static Standard_Integer writestl
 	<< " shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]" << "\n";
   } else {
     TopoDS_Shape aShape = DBRep::Get(argv[1]);
-    Standard_Boolean anASCIIMode = Standard_False;
+    Standard_Boolean isASCIIMode = Standard_False;
 	Standard_Boolean isInParallel = Standard_False;
-    if (argc==4) {
-      Standard_Integer mode = atoi(argv[3]);
-      if (mode==0) anASCIIMode = Standard_True;
+    if (argc > 3) {
+      isASCIIMode = (atoi(argv[3]) == 0);
+      if (argc > 4) {
+        isInParallel = (atoi(argv[4]) == 1);
+        Standard::SetReentrant(isInParallel);
+      }
     }
-	if (argc==5) {
-      isInParallel = atoi(argv[4]) == 1;
-      Standard::SetReentrant(isInParallel);
-    }
-	StlAPI_Writer aWriter;
-    aWriter.ASCIIMode() = anASCIIMode;
+    StlAPI_Writer aWriter;
+    aWriter.ASCIIMode() = isASCIIMode;
     aWriter.Write (aShape, argv[2], isInParallel);
   }
   return 0;
