@@ -108,6 +108,16 @@ inline Standard_Integer& ShapeFix_Face::AutoCorrectPrecisionMode()
 }
 
 //=======================================================================
+//function : FixPeriodicDegeneratedMode
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer& ShapeFix_Face::FixPeriodicDegeneratedMode()
+{
+  return myFixPeriodicDegenerated;
+}
+
+//=======================================================================
 //function : Face
 //purpose  : 
 //=======================================================================
