@@ -160,7 +160,8 @@ Faces were incorrectly oriented in the shell, corrected
 .FixAdvShell.FixOrientation.MSG5
 Faces were incorrectly oriented in the shell, not corrected
 !
-.FixAdvShell..MSG0
+.FixAdvShell.FixClosedFlag.MSG0
+Shell has incorrect flag isClosed
 !
 .FixAdvShell..MSG5
 !

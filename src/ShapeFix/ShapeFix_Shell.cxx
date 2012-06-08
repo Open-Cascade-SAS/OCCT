@@ -46,6 +46,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 
+#include <ShapeAnalysis_Shell.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeBuild_ReShape.hxx> 
 #include <Message_Msg.hxx>
@@ -148,6 +149,25 @@ Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)
   TopoDS_Shape newsh = Context()->Apply(myShell);
   if ( NeedFix ( myFixOrientationMode) )
     FixFaceOrientation(TopoDS::Shell(newsh));
+
+  TopoDS_Shape aNewsh = Context()->Apply (newsh);
+  ShapeAnalysis_Shell aSas;
+  for (TopExp_Explorer aShellExp (aNewsh, TopAbs_SHELL); aShellExp.More(); aShellExp.Next())
+  {
+    TopoDS_Shell aCurShell = TopoDS::Shell (aShellExp.Current());
+    if (aCurShell.Closed())
+    {
+      aSas.LoadShells (aCurShell);
+      aSas.CheckOrientedShells (aCurShell, Standard_True);
+      if (aSas.HasFreeEdges())
+      {
+        aCurShell.Closed (Standard_False);
+        SendWarning (Message_Msg ("FixAdvShell.FixClosedFlag.MSG0"));//Shell has incorrect flag isClosed
+      }
+      aSas.Clear();
+	}
+  }
+
   if ( status )
     myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
   if(Status(ShapeExtend_DONE2))
