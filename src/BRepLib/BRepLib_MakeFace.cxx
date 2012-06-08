@@ -254,7 +254,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
 
 {
   // Find a surface through the wire
-  BRepLib_FindSurface FS(W, -1, OnlyPlane);
+  BRepLib_FindSurface FS(W, -1, OnlyPlane, /*OnlyClosed=*/Standard_True);
   if (!FS.Found()) {
     myError = BRepLib_NotPlanar;
     return;

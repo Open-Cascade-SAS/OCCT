@@ -60,23 +60,31 @@ is
     
     Create (S         : Shape   from TopoDS; 
     	    Tol       : Real    from Standard = -1;
-    	    OnlyPlane : Boolean from Standard = Standard_False)
+    	    OnlyPlane : Boolean from Standard = Standard_False;
+            OnlyClosed: Boolean from Standard = Standard_False)
 	---Purpose: Computes the Surface from the edges of  <S> with the
 	--          given tolerance.
 	--          if <OnlyPlane> is true, the computed surface will be
 	--          a plane. If it is not possible to find a plane, the
 	--          flag NotDone will be set.
+	--          If <OnlyClosed> is true,  then  S  sould be a wire
+	--          and the existing surface,  on  which wire S is not
+	--          closed in 2D, will be ignored.
     returns FindSurface from BRepLib;
     
     Init (me : in out; 
           S         : Shape   from TopoDS; 
     	  Tol       : Real    from Standard = -1;
-    	  OnlyPlane : Boolean from Standard = Standard_False)
+    	  OnlyPlane : Boolean from Standard = Standard_False;
+          OnlyClosed: Boolean from Standard = Standard_False)
 	---Purpose: Computes the Surface from the edges of  <S> with the
 	--          given tolerance.
 	--          if <OnlyPlane> is true, the computed surface will be
 	--          a plane. If it is not possible to find a plane, the
 	--          flag NotDone will be set.
+	--          If <OnlyClosed> is true,  then  S  sould be a wire
+	--          and the existing surface,  on  which wire S is not
+	--          closed in 2D, will be ignored.
     is static;
 
     Found(me) returns Boolean

@@ -40,15 +40,23 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <Geom_Plane.hxx>
 
-#include <TopoDS.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BRep_Tool.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS.hxx>
 
 #include <GeomLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Standard_ErrorHandler.hxx>
 
 //=======================================================================
 //function : Controle
@@ -72,6 +80,83 @@ static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
 }
 
 //=======================================================================
+//function : Is2DConnected
+//purpose  : Return true if the last vertex of theEdge1 coincides with
+//           the first vertex of theEdge2 in parametric space of theFace
+//=======================================================================
+
+inline static Standard_Boolean Is2DConnected( const TopoDS_Edge& theEdge1,
+                                              const TopoDS_Edge& theEdge2,
+                                              const TopoDS_Face& theFace )
+{
+  Standard_Real f,l;
+  Handle(Geom2d_Curve) aCurve;
+  gp_Pnt2d p1, p2;
+
+  // get 2D points
+  aCurve   = BRep_Tool::CurveOnSurface( theEdge1, theFace,f,l );
+  p1       = aCurve->Value( theEdge1.Orientation() == TopAbs_FORWARD ? l : f );
+  aCurve   = BRep_Tool::CurveOnSurface( theEdge2,  theFace,f,l );
+  p2       = aCurve->Value(  theEdge2.Orientation() == TopAbs_FORWARD ? f : l );
+
+  // compare 2D points
+  BRepAdaptor_Surface aSurface( theFace );
+  TopoDS_Vertex    aV = TopExp::FirstVertex( theEdge2, /*CumOri=*/Standard_True );
+  Standard_Real tol3D = BRep_Tool::Tolerance( aV );
+  Standard_Real tol2D = aSurface.UResolution( tol3D ) + aSurface.VResolution( tol3D );
+  Standard_Real dist2 = p1.SquareDistance( p2 );
+  return dist2 < tol2D * tol2D;
+}
+
+//=======================================================================
+//function : Is2DClosed
+//purpose  : Return true if edges of theShape form a closed wire in
+//           parametric space of theSurface
+//=======================================================================
+
+static Standard_Boolean Is2DClosed( const TopoDS_Shape&         theShape,
+                                    const Handle(Geom_Surface)& theSurface)
+{
+  try
+  {
+    // get a wire theShape 
+    TopExp_Explorer aWireExp( theShape, TopAbs_WIRE );
+    if ( !aWireExp.More() )
+      return Standard_False;
+    TopoDS_Wire aWire = TopoDS::Wire( aWireExp.Current() );
+    // a tmp face
+    TopoDS_Face aTmpFace = BRepLib_MakeFace( theSurface, Precision::PConfusion() );
+
+    // check topological closeness using wire explorer, if the wire is not closed
+    // the 1st and the last vertices of wire are different
+    BRepTools_WireExplorer aWireExplorer( aWire, aTmpFace );
+    if ( !aWireExplorer.More())
+      return Standard_False;
+    // remember the 1st and the last edges of aWire
+    TopoDS_Edge aFisrtEdge = aWireExplorer.Current(), aLastEdge = aFisrtEdge;
+    // check if edges connected topologically (that is assured by BRepTools_WireExplorer)
+    // are connected in 2D
+    TopoDS_Edge aPrevEdge = aFisrtEdge;
+    for ( aWireExplorer.Next(); aWireExplorer.More(); aWireExplorer.Next() )
+    {
+      aLastEdge = aWireExplorer.Current();
+      if ( !Is2DConnected( aPrevEdge, aLastEdge, aTmpFace ))
+        return false;
+      aPrevEdge = aLastEdge;
+    }
+    // wire is closed if ( 1st vertex of aFisrtEdge ) ==
+    // ( last vertex of aLastEdge ) in 2D
+    TopoDS_Vertex aV1 = TopExp::FirstVertex( aFisrtEdge, /*CumOri=*/Standard_True );
+    TopoDS_Vertex aV2 = TopExp::LastVertex( aLastEdge, /*CumOri=*/Standard_True );
+    return ( aV1.IsSame( aV2 ) && Is2DConnected( aLastEdge, aFisrtEdge, aTmpFace ));
+  }
+  catch ( Standard_Failure )
+  {
+    return Standard_False;
+  }
+}
+
+//=======================================================================
 //function : BRepLib_FindSurface
 //purpose  : 
 //=======================================================================
@@ -84,9 +169,10 @@ BRepLib_FindSurface::BRepLib_FindSurface()
 //=======================================================================
 BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape&    S, 
 					 const Standard_Real    Tol,
-					 const Standard_Boolean OnlyPlane)
+					 const Standard_Boolean OnlyPlane,
+                                         const Standard_Boolean OnlyClosed)
 {
-  Init(S,Tol,OnlyPlane);
+  Init(S,Tol,OnlyPlane,OnlyClosed);
 }
 //=======================================================================
 //function : Init
@@ -94,7 +180,8 @@ BRepLib_FindSurface::BRepLib_FindSurface(const TopoDS_Shape&    S,
 //=======================================================================
 void BRepLib_FindSurface::Init(const TopoDS_Shape&    S, 
 			       const Standard_Real    Tol,
-			       const Standard_Boolean OnlyPlane)
+			       const Standard_Boolean OnlyPlane,
+                               const Standard_Boolean OnlyClosed)
 {
   myTolerance = Tol;
   myTolReached = 0.;
@@ -154,9 +241,17 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
     // if OnlyPlane, eval if mySurface is a plane.
     if ( OnlyPlane && !mySurface.IsNull() ) 
+    {
+      if ( mySurface->IsKind( STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+        mySurface = Handle(Geom_RectangularTrimmedSurface)::DownCast(mySurface)->BasisSurface();
       mySurface = Handle(Geom_Plane)::DownCast(mySurface);
+    }
 
-    if (!mySurface.IsNull()) break;
+    if (!mySurface.IsNull())
+      // if S is e.g. the bottom face of a cylinder, mySurface can be the
+      // lateral (cylindrical) face of the cylinder; reject an improper mySurface
+      if ( !OnlyClosed || Is2DClosed( S, mySurface ))
+        break;
   }
 
   if (!mySurface.IsNull()) {
