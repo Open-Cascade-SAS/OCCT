@@ -45,7 +45,7 @@ inline Standard_Integer GetCapacity (const Standard_Integer theIncrement)
 /**
  *  Class NCollection_BaseVector - base for generic vector
  */
-class NCollection_BaseVector 
+class NCollection_BaseVector
 {
  public:
   // ------------ Class MemBlock ------------
@@ -53,12 +53,18 @@ class NCollection_BaseVector
   protected:
     MemBlock (NCollection_BaseAllocator* theAlloc)
       : myAlloc(theAlloc),
-        myFirstInd(0), myLength(0), mySize(0), myData(0L) {}
+        myData(NULL),
+        myFirstInd(0),
+        myLength(0),
+        mySize(0) {}
     MemBlock (const Standard_Integer theFirstInd,
               const Standard_Integer theLength,
               NCollection_BaseAllocator* theAlloc)
       : myAlloc(theAlloc),
-        myFirstInd(theFirstInd), myLength(0), mySize(theLength), myData(0L) {}
+        myData(NULL),
+        myFirstInd(theFirstInd),
+        myLength(0),
+        mySize(theLength) {}
     virtual void        Reinit     (const Standard_Integer,
                                     const Standard_Integer) {}
     Standard_Integer    FirstIndex () const     { return myFirstInd; }
@@ -74,11 +80,11 @@ class NCollection_BaseVector
     Standard_EXPORT Standard_Integer
                         GetIndexV  (void * theItem, const size_t theSz) const;
   protected:
+    NCollection_BaseAllocator*   myAlloc;
+    void*                        myData;
     Standard_Integer             myFirstInd;
     Standard_Integer             myLength;
     Standard_Integer             mySize;
-    NCollection_BaseAllocator    * myAlloc;
-    void                         * myData;
     friend class NCollection_BaseVector;
   };
 

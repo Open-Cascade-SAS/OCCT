@@ -23,9 +23,7 @@
 inline IntPatch_Point::IntPatch_Point ()
  : para(0.0), tol(0.0), tgt(Standard_False), mult(Standard_False),
    onS1(Standard_False), vtxonS1(Standard_False), prm1(0.0),
-   onS2(Standard_False), vtxonS2(Standard_False), prm2(0.0),
-   vS1(NULL), vS2(NULL),
-   arcS1(NULL), arcS2(NULL)
+   onS2(Standard_False), vtxonS2(Standard_False), prm2(0.0)
 {
 }
 
@@ -55,7 +53,7 @@ inline void IntPatch_Point::SetParameter (const Standard_Real Para)
 {
   para = Para;
 }
- 
+
 
 inline void IntPatch_Point::SetMultiple (const Standard_Boolean IsMult)
 {
@@ -207,6 +205,6 @@ inline const IntSurf_PntOn2S& IntPatch_Point::PntOn2S() const
 
 inline void IntPatch_Point::Parameters(Standard_Real& U1, Standard_Real& V1,
 				       Standard_Real& U2, Standard_Real& V2) const
-{ 
+{
   pt.Parameters(U1,V1,U2,V2);
 }
