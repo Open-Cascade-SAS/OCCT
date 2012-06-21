@@ -1639,7 +1639,7 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
   if (adeltaK1 > Tolerance) return Standard_False;
   if (adeltaK2  > Tolerance) return Standard_False;
   
-  Standard_Integer sigma = 0, mult, amult, lastmult = 0;
+  Standard_Integer sigma = 0, mult, amult;
   NbKnots = 0;
   Standard_Integer  k  = Knots.Lower() - 1;
   Standard_Integer  ak = AddKnots.Lower();
@@ -1684,18 +1684,15 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
     if (Abs(au - Knots(k)) <= Eps) {
       // identic to existing knot
       mult = Mults(k);
-      lastmult = mult;//gka 
       if (Add) {
 	if (mult + amult > Degree)
 	  amult = Max(0,Degree - mult);
 	sigma += amult;
-        //lastmult = mult + amult;
 	
       }
       else if (amult > mult) {
 	if (amult > Degree) amult = Degree;
 	sigma += amult - mult;
-	//lastmult = amult;//gka modified
       }
       /*
       // on periodic curves if this is the last knot
@@ -1713,7 +1710,6 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
       if (amult > 0) {
 	if (amult > Degree) amult = Degree;
 	NbKnots++;
-	//lastmult = amult;
 	sigma += amult;
       }
     }
@@ -1722,9 +1718,6 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
   }
   
   // count the last knots
-  if (lastmult == 0)// || k < Knots.Upper())
-    lastmult = Mults(Knots.Upper());
-
   while (k < Knots.Upper()) {
     k++;
     NbKnots++;
@@ -1732,7 +1725,12 @@ Standard_Boolean  BSplCLib::PrepareInsertKnots
   }
 
   if (Periodic) {
-    NbPoles = sigma - lastmult;
+    //for periodic B-Spline the requirement is that multiplicites of the first
+    //and last knots must be equal (see Geom_BSplineCurve constructor for
+    //instance);
+    //respectively AddMults() must meet this requirement if AddKnots() contains
+    //knot(s) coincident with first or last
+    NbPoles = sigma - Mults(Knots.Upper());
   }
   else {
     NbPoles = sigma - Degree - 1;
