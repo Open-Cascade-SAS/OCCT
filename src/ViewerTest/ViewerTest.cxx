@@ -855,22 +855,42 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
   Handle(AIS_InteractiveContext) IC;
   Handle(V3d_View) view;
   GetCtxAndView (IC, view);
-  if (!view.IsNull())
+  if (view.IsNull())
   {
-    if (aWidth > 0 && aHeight > 0)
-    {
-      return view->ToPixMap (aWidth, aHeight, aBufferType)->Dump (argv[1]) ? 0 : 1;
-    }
-    else
-    {
-      return view->Dump (argv[1], aBufferType) ? 0 : 1;
-    }
-  }
-  else
-  {
-    di << "Cannot find an active viewer/view" << "\n";
+    di << "Cannot find an active viewer/view\n";
     return 1;
   }
+
+  if (aWidth <= 0 || aHeight <= 0)
+  {
+    if (!view->Dump (argv[1], aBufferType))
+    {
+      di << "Dumping failed!\n";
+      return 1;
+    }
+    return 0;
+  }
+
+  Handle(Image_PixMap) aPixMap = view->ToPixMap (aWidth, aHeight, aBufferType);
+  if (aPixMap.IsNull())
+  {
+    di << "Dumping failed!\n";
+    return 1;
+  }
+
+  Image_CRawBufferData aRawBuffer;
+  aPixMap->AccessBuffer (aRawBuffer);
+  if (aRawBuffer.widthPx != aWidth || aRawBuffer.heightPx != aHeight)
+  {
+    std::cout << "Warning! Dumped dimensions " << aRawBuffer.widthPx << "x" << aRawBuffer.heightPx
+              << " are lesser than requested " << aWidth             << "x" << aHeight << "\n";
+  }
+  if (!aPixMap->Dump (argv[1]))
+  {
+    di << "Saving image failed!\n";
+    return 1;
+  }
+  return 0;
 }
 
 

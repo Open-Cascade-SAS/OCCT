@@ -2817,6 +2817,130 @@ static int VMemGpu (Draw_Interpretor& theDI,
   return 0;
 }
 
+// ==============================================================================
+// function : VReadPixel
+// purpose  :
+// ==============================================================================
+static int VReadPixel (Draw_Interpretor& theDI,
+                       Standard_Integer  theArgNb,
+                       const char**      theArgVec)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+  else if (theArgNb < 3)
+  {
+    std::cerr << "Usage : " << theArgVec[0] << " xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [name]\n";
+    return 1;
+  }
+
+  Image_TypeOfImage aBufferType = Image_TOI_RGBA;
+  Standard_Integer aWidth, aHeight;
+  aView->Window()->Size (aWidth, aHeight);
+  const Standard_Integer anX = atoi (theArgVec[1]);
+  const Standard_Integer anY = atoi (theArgVec[2]);
+  if (anX < 0 || anX >= aWidth || anY < 0 || anY > aHeight)
+  {
+    std::cerr << "Pixel coordinates (" << anX << "; " << anY << ") are out of view (" << aWidth << " x " << aHeight << ")\n";
+    return 1;
+  }
+
+  Standard_Boolean toShowName = Standard_False;
+  Standard_Boolean toShowHls  = Standard_False;
+  for (Standard_Integer anIter = 3; anIter < theArgNb; ++anIter)
+  {
+    TCollection_AsciiString aParam (theArgVec[anIter]);
+    if (TCollection_AsciiString::ISSIMILAR      (aParam, TCollection_AsciiString ("rgb")))
+    {
+      aBufferType = Image_TOI_RGB;
+    }
+    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("hls")))
+    {
+      aBufferType = Image_TOI_RGB;
+      toShowHls   = Standard_True;
+    }
+    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgbf")))
+    {
+      aBufferType = Image_TOI_RGBF;
+    }
+    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgba")))
+    {
+      aBufferType = Image_TOI_RGBA;
+    }
+    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgbaf")))
+    {
+      aBufferType = Image_TOI_RGBAF;
+    }
+    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("depth")))
+    {
+      aBufferType = Image_TOI_FLOAT;
+    }
+    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("name")))
+    {
+      toShowName = Standard_True;
+    }
+  }
+
+  Handle(Image_PixMap) anImage = aView->ToPixMap (aWidth, aHeight, aBufferType);
+  if (anImage.IsNull())
+  {
+    std::cerr << "Image dump failed\n";
+    return 1;
+  }
+
+  Quantity_Parameter anAlpha;
+  Quantity_Color aColor = anImage->PixelColor (anX, anY, anAlpha);
+  if (toShowName)
+  {
+    if (aBufferType == Image_TOI_RGBA
+     || aBufferType == Image_TOI_RGBAF)
+    {
+      theDI << Quantity_Color::StringName (aColor.Name()) << " " << anAlpha << "\n";
+    }
+    else
+    {
+      theDI << Quantity_Color::StringName (aColor.Name()) << "\n";
+    }
+  }
+  else
+  {
+    switch (aBufferType)
+    {
+      default:
+      case Image_TOI_RGB:
+      case Image_TOI_RGBF:
+      {
+        if (toShowHls)
+        {
+          theDI << aColor.Hue() << " " << aColor.Light() << " " << aColor.Saturation() << "\n";
+        }
+        else
+        {
+          theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << "\n";
+        }
+        break;
+      }
+      case Image_TOI_RGBA:
+      case Image_TOI_RGBAF:
+      {
+        theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << " " << anAlpha << "\n";
+        break;
+      }
+      case Image_TOI_FLOAT:
+      {
+        theDI << aColor.Red() << "\n";
+        break;
+      }
+    }
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -2928,4 +3052,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vmemgpu [f]: print system-dependent GPU memory information if available;"
     " with f option returns free memory in bytes",
     __FILE__, VMemGpu, group);
+  theCommands.Add ("vreadpixel",
+    "vreadpixel xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [name]"
+    " : Read pixel value for active view",
+    __FILE__, VReadPixel, group);
 }

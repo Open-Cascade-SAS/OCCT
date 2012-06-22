@@ -3534,15 +3534,16 @@ Handle(Image_PixMap) V3d_View::ToPixMap (const Standard_Integer  theWidth,
   Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
   Graphic3d_PtrFrameBuffer aFBOPtr = NULL;
   Graphic3d_PtrFrameBuffer aPrevFBOPtr = (Graphic3d_PtrFrameBuffer )cView->ptrFBO;
+  Standard_Integer aFBOVPSizeX (theWidth), aFBOVPSizeY (theHeight), aFBOSizeXMax (0), aFBOSizeYMax (0);
   Standard_Integer aPrevFBOVPSizeX (0), aPrevFBOVPSizeY (0), aPrevFBOSizeXMax (0), aPrevFBOSizeYMax (0);
   if (aPrevFBOPtr != NULL)
   {
     MyView->FBOGetDimensions (aPrevFBOPtr,
                               aPrevFBOVPSizeX, aPrevFBOVPSizeY,
                               aPrevFBOSizeXMax, aPrevFBOSizeYMax);
-    if (theWidth <= aPrevFBOSizeXMax && theHeight <= aPrevFBOSizeYMax)
+    if (aFBOVPSizeX <= aPrevFBOSizeXMax && aFBOVPSizeY <= aPrevFBOSizeYMax)
     {
-      MyView->FBOChangeViewport (aPrevFBOPtr, theWidth, theHeight);
+      MyView->FBOChangeViewport (aPrevFBOPtr, aFBOVPSizeX, aFBOVPSizeY);
       aFBOPtr = aPrevFBOPtr;
     }
   }
@@ -3550,7 +3551,17 @@ Handle(Image_PixMap) V3d_View::ToPixMap (const Standard_Integer  theWidth,
   if (aFBOPtr == NULL)
   {
     // Try to create hardware accelerated buffer
-    aFBOPtr = MyView->FBOCreate (theWidth, theHeight);
+    aFBOPtr = MyView->FBOCreate (aFBOVPSizeX, aFBOVPSizeY);
+    if (aFBOPtr != NULL)
+    {
+      MyView->FBOGetDimensions (aFBOPtr,
+                                aFBOVPSizeX,  aFBOVPSizeY,
+                                aFBOSizeXMax, aFBOSizeYMax);
+      // reduce viewport in case of hardware limits
+      if (aFBOVPSizeX > aFBOSizeXMax) aFBOVPSizeX = aFBOSizeXMax;
+      if (aFBOVPSizeY > aFBOSizeYMax) aFBOVPSizeY = aFBOSizeYMax;
+      MyView->FBOChangeViewport (aFBOPtr, aFBOVPSizeX, aFBOVPSizeY);
+    }
   }
   cView->ptrFBO = aFBOPtr;
 
@@ -3564,7 +3575,7 @@ Handle(Image_PixMap) V3d_View::ToPixMap (const Standard_Integer  theWidth,
 
     // technically we can reduce existing viewport...
     // but currently allow only dumping the window itself
-    if (theWidth != aWinWidth || theHeight != aWinHeight)
+    if (aFBOVPSizeX != aWinWidth || aFBOVPSizeY != aWinHeight)
     {
       return Handle(Image_PixMap)();
     }
@@ -3583,10 +3594,10 @@ Handle(Image_PixMap) V3d_View::ToPixMap (const Standard_Integer  theWidth,
     //szv: calculate expansion
     Umin = PUmin; Vmin = PVmin; Umax = PUmax; Vmax = PVmax;
     Standard_Real oldWidth = (PUmax - PUmin), oldHeight = (PVmax - PVmin);
-    Standard_Real newWidth = (oldHeight * theWidth) / theHeight;
+    Standard_Real newWidth = (oldHeight * aFBOVPSizeX) / aFBOVPSizeY;
     if (newWidth < oldWidth)
     {
-      Standard_Real newHeight = (oldWidth * theHeight) / theWidth;
+      Standard_Real newHeight = (oldWidth * aFBOVPSizeY) / aFBOVPSizeX;
       // Expand height
       Standard_Real delta = 0.5 * (newHeight - oldHeight);
       Vmin = PVmin - delta;
@@ -3618,7 +3629,7 @@ Handle(Image_PixMap) V3d_View::ToPixMap (const Standard_Integer  theWidth,
 
   // allocate image buffer for dumping
   Image_CRawBufferData aRawBuffer;
-  Handle(Image_PixMap) anImageBitmap = new Image_PixMap (theWidth, theHeight, theBufferType);
+  Handle(Image_PixMap) anImageBitmap = new Image_PixMap (aFBOVPSizeX, aFBOVPSizeY, theBufferType);
   anImageBitmap->AccessBuffer (aRawBuffer);
   if (!MyView->BufferDump (aRawBuffer))
   {

@@ -120,9 +120,11 @@
     }
 
     Quantity_Color getPixelColor (const Standard_Integer theCol,
-                                  const Standard_Integer theRow) const
+                                  const Standard_Integer theRow,
+                                  Quantity_Parameter&    theAlpha) const
     {
       RGBQuad_t* aPixel = (RGBQuad_t* )&getScanLine (theRow)[theCol * myBytesPerPixel];
+      theAlpha = (myBytesPerPixel > 3) ? (Standard_Real (aPixel->rgbReserved) / 255.0) : 1.0;
       return Quantity_Color (Standard_Real (aPixel->rgbRed)   / 255.0,
                              Standard_Real (aPixel->rgbGreen) / 255.0,
                              Standard_Real (aPixel->rgbBlue)  / 255.0,
@@ -414,13 +416,30 @@ void Image_PixMap::AccessBuffer (Image_CRawBufferData& theBuffer) const
 #endif
 }
 
+// =======================================================================
+// function : PixelColor
+// purpose  :
+// =======================================================================
 Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                                          const Standard_Integer theY) const
 {
+  Quantity_Parameter aDummy;
+  return PixelColor (theX, theY, aDummy);
+}
+
+// =======================================================================
+// function : PixelColor
+// purpose  :
+// =======================================================================
+Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
+                                         const Standard_Integer theY,
+                                         Quantity_Parameter&    theAlpha) const
+{
   Standard_Integer aScanlineId = myImage->getHeight() - theY - 1;
-  if (theX < 0 || theX >= (unsigned int)myImage->getWidth() ||
-      theY < 0 || theY >= (unsigned int)myImage->getHeight())
+  if (theX < 0 || (unsigned int )theX >= (unsigned int )myImage->getWidth() ||
+      theY < 0 || (unsigned int )theY >= (unsigned int )myImage->getHeight())
   {
+    theAlpha = 0.0; // transparent
     return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
   }
 #ifdef HAVE_FREEIMAGE
@@ -428,6 +447,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
   {
     RGBQUAD aValue; memset (&aValue, 0, sizeof(aValue));
     myImage->getPixelColor (theX, aScanlineId, &aValue);
+    theAlpha = (myImage->getColorType() == FIC_RGBALPHA) ? (Standard_Real (aValue.rgbReserved) / 255.0) : 1.0;
     return Quantity_Color (Standard_Real (aValue.rgbRed)   / 255.0,
                            Standard_Real (aValue.rgbGreen) / 255.0,
                            Standard_Real (aValue.rgbBlue)  / 255.0,
@@ -441,12 +461,14 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
       {
         float* aScanLine = (float* )myImage->getScanLine (aScanlineId);
         Quantity_Parameter aValue = Quantity_Parameter (aScanLine[theX]);
+        theAlpha = 1.0; // opaque
         return Quantity_Color (aValue, aValue, aValue, Quantity_TOC_RGB);
       }
       case FIT_RGBF:
       {
         FIRGBF* aScanLine = (FIRGBF* )myImage->getScanLine (aScanlineId);
         FIRGBF* aPixel = &aScanLine[theX];
+        theAlpha = 1.0; // opaque
         return Quantity_Color (Quantity_Parameter (aPixel->red),
                                Quantity_Parameter (aPixel->green),
                                Quantity_Parameter (aPixel->blue),
@@ -456,6 +478,7 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
       {
         FIRGBAF* aScanLine = (FIRGBAF* )myImage->getScanLine (aScanlineId);
         FIRGBAF* aPixel = &aScanLine[theX];
+        theAlpha = aPixel->alpha;
         return Quantity_Color (Quantity_Parameter (aPixel->red),
                                Quantity_Parameter (aPixel->green),
                                Quantity_Parameter (aPixel->blue),
@@ -464,11 +487,12 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
       default:
       {
         // not supported image type
+        theAlpha = 0.0; // transparent
         return Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB);
       }
     }
   }
 #else
-  return myImage->getPixelColor (theX, aScanlineId);
+  return myImage->getPixelColor (theX, aScanlineId, theAlpha);
 #endif
 }

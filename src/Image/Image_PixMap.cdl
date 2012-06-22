@@ -34,7 +34,8 @@ uses
     TypeOfImage    from Image,
     HPrivateImage  from Image,
     CRawBufferData from Image,
-    Color          from Quantity
+    Color          from Quantity,
+    Parameter      from Quantity
 
 raises
     PixmapDefinitionError  from Aspect,
@@ -128,6 +129,19 @@ is
     -- Note that this function convert input theY coordinate
     -- to count off from top of an image (while in memory it stored
     -- upside-down).
+
+    PixelColor ( me         : in;
+                 theX, theY : in  Integer   from Standard;
+                 theAlpha   : out Parameter from Quantity )
+    returns Color from Quantity;
+    ---Purpose:
+    -- Returns the pixel color. This function is relatively slow,
+    -- use AccessBuffer() instead for stream operations.
+    -- theAlpha argument is set to color intensity (0 - transparent, 1 - opaque)
+    -- Note that this function convert input theY coordinate
+    -- to count off from top of an image (while in memory it stored
+    -- upside-down).
+
 fields
     myImage : HPrivateImage from Image is protected;
 end PixMap;
