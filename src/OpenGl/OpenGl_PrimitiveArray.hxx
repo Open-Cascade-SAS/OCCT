@@ -34,6 +34,13 @@ class Handle(OpenGl_Context);
 class OpenGl_PrimitiveArray : public OpenGl_Element
 {
 public:
+  // OpenGL does not provie a constant for "none" draw mode.
+  // So we define our own one that does not conflict with GL constants
+  // and untilizes common GL invalid value
+  enum
+  {
+    DRAW_MODE_NONE = -1
+  };
 
   //! Default constructor
   OpenGl_PrimitiveArray (CALL_DEF_PARRAY* thePArray);
@@ -91,7 +98,7 @@ private:
 protected:
 
   mutable CALL_DEF_PARRAY* myPArray;
-  GLenum                   myDrawMode;
+  GLint                    myDrawMode;
 
 public:
 

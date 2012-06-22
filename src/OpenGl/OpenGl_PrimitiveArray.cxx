@@ -1644,7 +1644,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsBBoxs (const TEL_COLOUR* theEdgeCol
 // =======================================================================
 OpenGl_PrimitiveArray::OpenGl_PrimitiveArray (CALL_DEF_PARRAY* thePArray)
 : myPArray (thePArray),
-  myDrawMode (GL_NONE)
+  myDrawMode (DRAW_MODE_NONE)
 {
   switch (myPArray->type)
   {
@@ -1714,7 +1714,7 @@ OpenGl_PrimitiveArray::~OpenGl_PrimitiveArray ()
 // =======================================================================
 void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  if (myPArray == NULL || myDrawMode == GL_NONE)
+  if (myPArray == NULL || myDrawMode == DRAW_MODE_NONE)
     return;
 
   // create VBOs on first render call
