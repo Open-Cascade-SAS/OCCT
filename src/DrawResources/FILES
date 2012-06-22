@@ -31,4 +31,3 @@ srcinc:::DrawPlugin
 srcinc:::TKTopTest.tcl
 srcinc:::dftree.tcl
 srcinc:::QARebuildCommands
-srcinc:::DrawAppliInit

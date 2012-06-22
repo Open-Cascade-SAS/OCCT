@@ -1,9 +1,14 @@
-set tcl_interactive 1
-set tcl_precision 17
+# This script is to be executed automatically at DRAWEXE start.
+#
+# For that to happen, either environment DRAWDEFAULT should be set pointing
+# to this file, or CASROOT variable should be set, so that the script is
+# found as $CASROOT/src/DrawResources/DrawDefault
 
-if [info exists library] {
-  source [file join $library init.tcl]
-}
+# indicate that DRAW is interactive environment
+set tcl_interactive 1
+
+# define location of standard DRAW scripts; normally it is 
+# $CASROOT/src/DrawResources
 set dir ""
 if { [info exists env(DRAWHOME) ] } { 
   set dir $env(DRAWHOME)  
@@ -11,22 +16,20 @@ if { [info exists env(DRAWHOME) ] } {
   if { [info exists env(CASROOT) ] } {
     set dir [file join $env(CASROOT) src DrawResources]
   } else {
-    puts " CASROOT is Mandatory to Run OpenCascade"
+    puts "Warning: CASROOT is not defined, some features may not load correctly"
+    set dir [file dirname [info script]]
   }
 }
 
-# san - 02/08/2002 - In Tcl8.3 it is no longer necessary to load Tix explicitly on WNT
-#if { [info exists env(STATION)] } {
-#  if { $env(STATION) == "wnt" } {
-#    load tix8183.dll Tix
-#  }
-#}
+# load standard DRAW scripts
+if { [file isdirectory $dir] } { 
+  foreach script {StandardCommands.tcl Geometry.tcl StandardViews.tcl} {
+    if [file exist [file join $dir $script]] {
+      source [file join $dir $script]
+    }
+  }
 
-if { [file exist  $dir] } { 
-  source [file join $dir StandardCommands.tcl]
-  source [file join $dir StandardViews.tcl]
-  source [file join $dir Geometry.tcl]
-
+  # and TK extensions
   set stationname $tcl_platform(platform)
   if [info exists tk_version] {
     source [file join $dir DrawTK.tcl]
@@ -35,8 +38,29 @@ if { [file exist  $dir] } {
       wm iconbitmap . -default [file join $dir lamp.ico]
     }
   }
+}
 
-  if { [ file readable [ file join $dir DrawAppliInit ] ] } {
-    source [file join $dir DrawAppliInit ]
+# load application-defined initialization script, which is expected to 
+# be found either in the file pointed by environment variable CSF_DrawAppliInit,
+# or in the file DrawAppliInit in the current directory
+set draw_appli_init_file DrawAppliInit
+if { [info exists env(CSF_DrawAppliInit)] } {
+  set draw_appli_init_file $env(CSF_DrawAppliInit)
+} 
+if { [file readable $draw_appli_init_file] } {
+  if { [catch {source $draw_appli_init_file} res] } {
+    puts "Warning: problem while loading file $draw_appli_init_file: $res"
   }
 } 
+
+# Temporary: load specific QA commands and handlers
+if {[array get env QA_DUMP] != "" && $env(QA_DUMP) == "1"} {
+    set env(CSF_DrawPluginQADefaults) $env(CASROOT)/src/DrawResources/.
+    catch {pload FULL}
+    catch {pload -DrawPluginProducts OMF CANONICALRECOGNITION EMESH PARASOLID DXF SAT }
+    catch {pload QAcommands}
+    catch {source $env(CSF_DrawPluginQADefaults)/QARebuildCommands}
+}
+
+# silent return from the script
+return
