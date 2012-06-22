@@ -1492,6 +1492,11 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
       else
 	for (j = 1; j <= theLength; j++)
 	  {
+            // get a vector to superpose SeqVertices(j) on PrevSeq(1)
+            const TopoDS_Vertex& Vprev = TopoDS::Vertex( PrevSeq(1) );
+            const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(j) );
+            gp_Vec curToPrevVec( BRep_Tool::Pnt(V), BRep_Tool::Pnt(Vprev) );
+
 	    //Forward
 	    Standard_Real SumDist = 0.;
 	    for (k = j, n = 1; k <= theLength; k++, n++)
@@ -1499,7 +1504,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& Vprev = TopoDS::Vertex( PrevSeq(n) );
 		gp_Pnt Pprev = BRep_Tool::Pnt(Vprev);
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
-		gp_Pnt P = BRep_Tool::Pnt(V);
+		gp_Pnt P = BRep_Tool::Pnt(V).XYZ() + curToPrevVec.XYZ();
 		SumDist += Pprev.Distance(P);
                 if (NbSamples > 0)
                 {
@@ -1518,7 +1523,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
                       (Ecurve.FirstParameter() + nbs*SampleOnCur) :
                       (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur);
                     gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
-                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur).XYZ() + curToPrevVec.XYZ();
                     SumDist += PonPrev.Distance(PonCur);
                   }
                 }
@@ -1528,7 +1533,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& Vprev = TopoDS::Vertex( PrevSeq(n) );
 		gp_Pnt Pprev = BRep_Tool::Pnt(Vprev);
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
-		gp_Pnt P = BRep_Tool::Pnt(V);
+		gp_Pnt P = BRep_Tool::Pnt(V).XYZ() + curToPrevVec.XYZ();
 		SumDist += Pprev.Distance(P);
                 if (NbSamples > 0)
                 {
@@ -1547,7 +1552,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
                       (Ecurve.FirstParameter() + nbs*SampleOnCur) :
                       (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur);
                     gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
-                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur).XYZ() + curToPrevVec.XYZ();
                     SumDist += PonPrev.Distance(PonCur);
                   }
                 }
@@ -1566,7 +1571,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& Vprev = TopoDS::Vertex( PrevSeq(n) );
 		gp_Pnt Pprev = BRep_Tool::Pnt(Vprev);
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
-		gp_Pnt P = BRep_Tool::Pnt(V);
+		gp_Pnt P = BRep_Tool::Pnt(V).XYZ() + curToPrevVec.XYZ();
 		SumDist += Pprev.Distance(P);
                 if (NbSamples > 0)
                 {
@@ -1588,7 +1593,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
                       (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur) :
                       (Ecurve.FirstParameter() + nbs*SampleOnCur);
                     gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
-                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur).XYZ() + curToPrevVec.XYZ();
                     SumDist += PonPrev.Distance(PonCur);
                   }
                 }
@@ -1598,7 +1603,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
 		const TopoDS_Vertex& Vprev = TopoDS::Vertex( PrevSeq(n) );
 		gp_Pnt Pprev = BRep_Tool::Pnt(Vprev);
 		const TopoDS_Vertex& V = TopoDS::Vertex( SeqVertices(k) );
-		gp_Pnt P = BRep_Tool::Pnt(V);
+		gp_Pnt P = BRep_Tool::Pnt(V).XYZ() + curToPrevVec.XYZ();
 		SumDist += Pprev.Distance(P);
                 if (NbSamples > 0)
                 {
@@ -1617,7 +1622,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
                       (Ecurve.FirstParameter() + (NbSamples-nbs)*SampleOnCur) :
                       (Ecurve.FirstParameter() + nbs*SampleOnCur);
                     gp_Pnt PonPrev = PrevEcurve.Value(ParOnPrev);
-                    gp_Pnt PonCur = Ecurve.Value(ParOnCur);
+                    gp_Pnt PonCur = Ecurve.Value(ParOnCur).XYZ() + curToPrevVec.XYZ();
                     SumDist += PonPrev.Distance(PonCur);
                   }
                 }
