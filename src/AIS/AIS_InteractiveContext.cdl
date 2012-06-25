@@ -761,8 +761,8 @@ is
     SetPolygonOffsets ( me : mutable;
 		anObj        : InteractiveObject from AIS;
 		aMode        : Integer from Standard;
-		aFactor      : Real from Standard = 1.0;
-		aUnits       : Real from Standard = 0.0;
+		aFactor      : ShortReal from Standard = 1.0;
+		aUnits       : ShortReal from Standard = 0.0;
     	updateviewer : Boolean from Standard = Standard_True ) is static;
     ---Purpose: Sets up polygon offsets for the given AIS_InteractiveObject.
     --          It simply calls anObj->SetPolygonOffsets() 
@@ -779,8 +779,8 @@ is
     PolygonOffsets ( me;
 		anObj   : InteractiveObject from AIS;
 		aMode   : out Integer from Standard;
-		aFactor : out Real from Standard;
-		aUnits  : out Real from Standard ) is static;
+		aFactor : out ShortReal from Standard;
+		aUnits  : out ShortReal from Standard ) is static;
     ---Level: Public
     ---Purpose: Retrieves current polygon offsets settings for <anObj>.
     ---Category: Inquire methods

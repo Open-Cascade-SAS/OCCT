@@ -616,8 +616,8 @@ is
     -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
     SetPolygonOffsets ( me : mutable;
                 aMode   : Integer from Standard;
-                aFactor : Real from Standard = 1.0;
-                aUnits  : Real from Standard = 0.0 ) is virtual;
+                aFactor : ShortReal from Standard = 1.0;
+                aUnits  : ShortReal from Standard = 0.0 ) is virtual;
     	---Level: Public
     	---Purpose: Sets up polygon offsets for this object.
     	--          It modifies all existing presentations of <anObj> (if any),
@@ -655,8 +655,8 @@ is
 
     PolygonOffsets ( me;
                 aMode   : out Integer from Standard;
-                aFactor : out Real from Standard;
-                aUnits  : out Real from Standard ) is virtual;
+                aFactor : out ShortReal from Standard;
+                aUnits  : out ShortReal from Standard ) is virtual;
     	---Level: Public
     	---Purpose: Retrieves current polygon offsets settings from <myDrawer>.
     	---Category: Inquire methods

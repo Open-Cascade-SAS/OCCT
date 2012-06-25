@@ -34,7 +34,7 @@ Standard_Integer NCollection_BaseVector::MemBlock::GetIndexV
                    (void * theItem, const size_t theItemSize) const
 {
   const ptrdiff_t anOffset = (char *) theItem - (char *) myData;
-  const Standard_Integer anIndex = anOffset / theItemSize;
+  const Standard_Integer anIndex = (Standard_Integer) (anOffset / theItemSize);
 #ifdef DEB
   if (anOffset < 0 || anOffset != Standard_Integer (anIndex * theItemSize)
       || anIndex > Standard_Integer (myLength))

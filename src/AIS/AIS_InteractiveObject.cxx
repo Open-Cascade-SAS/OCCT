@@ -749,9 +749,9 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& anAspect,
 //function : SetPolygonOffsets 
 //purpose  : 
 //======================================================================= 
-void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer aMode,
-                                              const Standard_Real    aFactor,
-                                              const Standard_Real    aUnits) 
+void AIS_InteractiveObject::SetPolygonOffsets(const Standard_Integer    aMode,
+                                              const Standard_ShortReal  aFactor,
+                                              const Standard_ShortReal  aUnits) 
 {
   if ( !HasPolygonOffsets() )
     myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
@@ -806,9 +806,9 @@ Standard_Boolean AIS_InteractiveObject::HasPolygonOffsets() const
 //function : PolygonOffsets 
 //purpose  : 
 //=======================================================================
-void AIS_InteractiveObject::PolygonOffsets(Standard_Integer& aMode,
-                                           Standard_Real&    aFactor,
-                                           Standard_Real&    aUnits) const 
+void AIS_InteractiveObject::PolygonOffsets(Standard_Integer&    aMode,
+                                           Standard_ShortReal&  aFactor,
+                                           Standard_ShortReal&  aUnits) const 
 {
   if( HasPolygonOffsets() )
     myDrawer->ShadingAspect()->Aspect()->PolygonOffsets( aMode, aFactor, aUnits );

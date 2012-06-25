@@ -59,7 +59,8 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
   char *Oper = oper ;
   char *Coeff = coeff ;
 #endif
-  Standard_Integer fr,i;
+  Standard_Integer fr;
+  Standard_Size i;
   Standard_Real value;
   Handle(Units_Token) token;
   struct stat buf;
@@ -85,7 +86,7 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
   //for(i=0; i<=255; i++)line[i]=0;
 
   while(file.getline(line,255)) {
-    int len = strlen( line ) ;
+    Standard_Size len = strlen( line ) ;
     if(len == 1) continue; //skl - ???
     for ( i = 0 ; i < 30 ; i++ ) {
       if ( i < len )

@@ -510,7 +510,7 @@ void StepData_StepWriter::SendComment(const Handle(TCollection_HAsciiString)& te
 void StepData_StepWriter::SendComment (const Standard_CString text)
 {
   if (!thecomm) Interface_InterfaceMismatch::Raise("StepWriter : Comment");
-  AddString(text,strlen(text));
+  AddString(text,(Standard_Integer) strlen(text));
 }
 
 
@@ -725,7 +725,7 @@ void StepData_StepWriter::OpenSub ()
 void StepData_StepWriter::OpenTypedSub (const Standard_CString subtype)
 {
   AddParam();
-  if (subtype[0] != '\0') AddString (subtype,strlen(subtype));
+  if (subtype[0] != '\0') AddString (subtype,(Standard_Integer) strlen(subtype));
   AddString(textlist);
   thefirst = Standard_True;
   thelevel ++;
@@ -767,7 +767,7 @@ void StepData_StepWriter::Send (const Standard_Integer val)
   char lval[12];
   AddParam();
   sprintf(lval,"%d",val);
-  AddString(lval,strlen(lval));
+  AddString(lval,(Standard_Integer) strlen(lval));
 }
 
 
@@ -926,7 +926,7 @@ void StepData_StepWriter::Send (const Handle(Standard_Transient)& val)
     if (thelabmode < 2 || idnum == idtrue) sprintf(lident,"#%d",idnum);
     else sprintf(lident,"%d:#%d",idnum,idtrue);
     AddParam();
-    AddString(lident,strlen(lident));
+    AddString(lident,(Standard_Integer) strlen(lident));
   }
 }
 
@@ -979,7 +979,7 @@ void StepData_StepWriter::SendString (const TCollection_AsciiString& val)
 void StepData_StepWriter::SendString (const Standard_CString val)
 {
   AddParam();
-  AddString(val,strlen(val));
+  AddString(val,(Standard_Integer) strlen(val));
 }
 
 //  SendEnum : attention, on envoie un intitule d'Enum ... donc entre .  .

@@ -197,7 +197,7 @@ void DrawTrSurf_Point::Dump(Standard_OStream& S) const
   S.precision(15);
 #else
   long form = S.setf(ios::scientific);
-  int  prec = S.precision(15);
+  std::streamsize prec = S.precision(15);
 #endif
   if (is3D)
     S << "Point : " << myPoint.X() << ", " << myPoint.Y() << ", " << myPoint.Z() <<endl;

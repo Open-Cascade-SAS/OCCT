@@ -232,7 +232,7 @@ inline LDOM_XmlWriter& LDOM_XmlWriter::operator <<
     {
       const char * str = aString.GetString();
       if (str) {
-        const Standard_Integer aLen = strlen (str);
+        const Standard_Size aLen = strlen (str);
         if (aLen > 0) fwrite (str, aLen, 1, myFile);
       }
     }
@@ -259,7 +259,7 @@ inline LDOM_XmlWriter& LDOM_XmlWriter::operator <<
 //=======================================================================
 inline LDOM_XmlWriter& LDOM_XmlWriter::operator << (const LXMLCh * aString)
 {
-  unsigned int aLength = strlen (aString);
+  Standard_Size aLength = strlen (aString);
   if (aLength > 0) fwrite ((void *) aString, aLength, 1, myFile);
   return * this;
 }
@@ -288,7 +288,7 @@ void LDOM_XmlWriter::WriteAttribute (const LDOM_Node& theAtt)
   if (aValueStr.Type() == LDOMBasicString::LDOM_Integer) {
     Standard_Integer anIntValue;
     aValueStr.GetInteger (anIntValue);
-    aLength = 20 + strlen (aName);
+    aLength = (Standard_Integer) (20 + strlen (aName));
     if (aLength > myABufferLen) {
       if (myABuffer != NULL) delete [] myABuffer;
       myABuffer    = new char [aLength+1];
@@ -296,7 +296,7 @@ void LDOM_XmlWriter::WriteAttribute (const LDOM_Node& theAtt)
     }
     sprintf (myABuffer, "%c%s%c%c%d%c", chSpace, aName,
              chEqual, chDoubleQuote, anIntValue, chDoubleQuote);
-    aLength = strlen (myABuffer);
+    aLength = (Standard_Integer) strlen (myABuffer);
 
   //    String attribute value
   } else {
@@ -304,10 +304,10 @@ void LDOM_XmlWriter::WriteAttribute (const LDOM_Node& theAtt)
     char        * encStr;
     if (aValueStr.Type() == LDOMBasicString::LDOM_AsciiDocClear) {
       encStr  = (char *) aValue;
-      aLength = 4 + strlen (aValue) + strlen (aName);
+      aLength = (Standard_Integer) (4 + strlen (aValue) + strlen (aName));
     } else {
       encStr = LDOM_CharReference::Encode (aValue, aLength, Standard_True);
-      aLength += 4 + strlen (aName);
+      aLength += (Standard_Integer) (4 + strlen (aName));
     }
     if (aLength > myABufferLen) {
       if (myABuffer != NULL) delete [] myABuffer;

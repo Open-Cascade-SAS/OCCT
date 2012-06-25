@@ -208,7 +208,8 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom_BSplineCurve)&
   if (periodic) OS<<"periodic, ";
   OS<<"degree "<<degree<<", "<<nbpoles<<" poles, "<<nbknots<<" knots"<<endl;
   
-  for (i = 1,OS<<"poles : ",l = strlen("poles : ") + 1,n = nbpoles; 
+  //l = strlen("poles : ") + 1
+  for (i = 1,OS<<"poles : ",l = 9,n = nbpoles; 
        i<=n; 
        i++) {
     if (!compact)      { if (i == 1) lb = 0; else lb = l; }
@@ -228,7 +229,8 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom_BSplineCurve)&
     OS<<endl;
   }
   
-  for (i = 1,OS<<"knots : ",l = strlen("knots : ") + 1,n = nbknots;
+  //l = strlen("knots : ") + 1
+  for (i = 1,OS<<"knots : ",l = 9,n = nbknots;
        i<=n;
        i++) {
     if (!compact)      { if (i == 1) lb = 0; else lb = l; }
@@ -281,7 +283,8 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_BSplineCurve)&
   if (periodic) OS<<"periodic, ";
   OS<<"degree "<<degree<<", "<<nbpoles<<" poles, "<<nbknots<<" knots"<<endl;
   
-  for (i = 1,OS<<"poles : ",l = strlen("poles : ") + 1,n = nbpoles; 
+  //l = strlen("poles : ") + 1
+  for (i = 1,OS<<"poles : ",l = 9,n = nbpoles; 
        i<=n; 
        i++) {
     if (!compact)      { if (i == 1) lb = 0; else lb = l; }
@@ -301,7 +304,8 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_BSplineCurve)&
     OS<<endl;
   }
   
-  for (i = 1,OS<<"knots : ",l = strlen("knots : ") + 1,n = nbknots; 
+  //l = strlen("knots : ") + 1
+  for (i = 1,OS<<"knots : ",l = 9,n = nbknots; 
        i<=n; 
        i++) {
     if (!compact)      { if (i == 1) lb = 0; else lb = l; }

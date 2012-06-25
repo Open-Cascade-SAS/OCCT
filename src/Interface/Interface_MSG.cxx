@@ -43,7 +43,7 @@ static Standard_Boolean theraise  = Standard_False;
 
 static char blank[] =
 "                                                                            ";
-static Standard_Integer maxblank = strlen(blank);
+static Standard_Integer maxblank = (Standard_Integer) strlen(blank);
 
 
 Interface_MSG::Interface_MSG (const Standard_CString key)
@@ -59,7 +59,7 @@ Interface_MSG::Interface_MSG
 {
   char mess[300];
   sprintf (mess, Interface_MSG::Translated(thekey), i1);
-  theval = new char (strlen (mess)+1 );
+  theval = new char[strlen (mess) + 1];
   strcpy (theval,mess);
 }
 
@@ -70,7 +70,7 @@ Interface_MSG::Interface_MSG
 {
   char mess[300];
   sprintf (mess, Interface_MSG::Translated(thekey), i1,i2);
-  theval = new char (strlen (mess)+1 );
+  theval = new char[strlen (mess) + 1];
   strcpy (theval,mess);
 }
 
@@ -82,7 +82,7 @@ Interface_MSG::Interface_MSG
   char mess[300];
   sprintf (mess, Interface_MSG::Translated(thekey),
 	   (intervals < 0 ? r1 : Interface_MSG::Intervalled(r1,intervals)) );
-  theval = new char (strlen (mess)+1 );
+  theval = new char[strlen (mess) + 1];
   strcpy (theval,mess);
 }
 
@@ -93,7 +93,7 @@ Interface_MSG::Interface_MSG
 {
   char mess[300];
   sprintf (mess, Interface_MSG::Translated(thekey), str);
-  theval = new char (strlen (mess)+1 );
+  theval = new char[strlen (mess) + 1];
   strcpy (theval,mess);
 }
 
@@ -105,7 +105,7 @@ Interface_MSG::Interface_MSG
 {
   char mess[300];
   sprintf (mess, Interface_MSG::Translated(thekey), val, str);
-  theval = new char (strlen (mess)+1 );
+  theval = new char[strlen (mess) + 1];
   strcpy (theval,mess);
 }
 
@@ -444,7 +444,7 @@ Standard_CString  Interface_MSG::Blanks (const Standard_Integer val,
 Standard_CString  Interface_MSG::Blanks (const Standard_CString val,
                                          const Standard_Integer max)
 {
-  Standard_Integer lng = strlen(val);
+  Standard_Integer lng = (Standard_Integer) strlen(val);
   if (lng > maxblank || lng > max) return "";
   return &blank [maxblank - max + lng];
 }
@@ -464,7 +464,7 @@ void  Interface_MSG::Print (Standard_OStream& S, const Standard_CString val,
                             const Standard_Integer just)
 {
   if (max > maxblank)  {  Print(S,val,maxblank,just);  return;  }
-  Standard_Integer lng = strlen (val);
+  Standard_Integer lng = (Standard_Integer) strlen (val);
   if (lng > max)  {  S << val;  return;  }
   Standard_Integer m1 = (max-lng) /2;
   Standard_Integer m2 = max-lng - m1;

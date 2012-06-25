@@ -1262,7 +1262,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
-  Standard_Real    aPolyFactor, aPolyUnits;
+  Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
   MyCStructure.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
@@ -1319,7 +1319,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText
   MyCStructure.ContextText.ColorSubTitle.g  = float (Gs);
   MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
-  MyCStructure.ContextText.TextAngle        = ATextAngle;
+  MyCStructure.ContextText.TextAngle        = float (ATextAngle);
   MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;
 
   MyCStructure.ContextText.IsDef          = 1;
@@ -1783,9 +1783,9 @@ void Graphic3d_Structure::SetTransformPersistence( const Graphic3d_TransModeFlag
   if (IsDeleted ()) return;
 
   MyCStructure.TransformPersistence.Flag = AFlag;
-  MyCStructure.TransformPersistence.Point.x = APoint.X();
-  MyCStructure.TransformPersistence.Point.y = APoint.Y();
-  MyCStructure.TransformPersistence.Point.z = APoint.Z();
+  MyCStructure.TransformPersistence.Point.x = float (APoint.X());
+  MyCStructure.TransformPersistence.Point.y = float (APoint.Y());
+  MyCStructure.TransformPersistence.Point.z = float (APoint.Z());
   //MyStructureManager->Update ();
   //Update();
   MyGraphicDriver->ContextStructure( MyCStructure );
@@ -2157,7 +2157,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextText.ColorSubTitle.g  = float (Gs);
   MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
-  MyCStructure.ContextText.TextAngle        = ATextAngle;
+  MyCStructure.ContextText.TextAngle        = float (ATextAngle);
   MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;
 
 
@@ -2339,7 +2339,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
-  Standard_Real    aPolyFactor, aPolyUnits;
+  Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTXF->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
   MyCStructure.ContextFillArea.PolygonOffsetFactor = aPolyFactor;

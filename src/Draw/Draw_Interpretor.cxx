@@ -375,7 +375,7 @@ void Draw_Interpretor::Add(const Standard_CString n,
   if (myInterp==NULL) Init();
 
   CData* C = new CData(f,this);
-  Standard_Integer length, num_slashes,  ii,  jj,  kk;
+  Standard_Size length, num_slashes,  ii,  jj,  kk;
   Tcl_CreateCommand(myInterp,pN,CommandCmd, (ClientData) C, CommandDelete);
 
   // add the help

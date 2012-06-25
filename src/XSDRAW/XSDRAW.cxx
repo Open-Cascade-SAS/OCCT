@@ -241,7 +241,7 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
   if (!first || first[0] == '\0') {
     char ligne[80];  ligne[0] = '\0'; char truc;
 //    cin.clear();  cin.get (ligne,79,'\n');
-    cin >> ligne;  int ln = strlen(ligne);
+    cin >> ligne;  Standard_Size ln = strlen(ligne);
     char *ff = &ligne[0], *ss = NULL;
     cin.get(truc);  if (truc != '\n') { cin>>&ligne[ln+1]; ss = &ligne[ln+1]; }
     return  XSDRAW::GetList (ff,ss);

@@ -69,7 +69,7 @@ static int realstr(Standard_Real V, Standard_CString F)
 // Create : from a CString
 //-----------------------------------------------------------------------
 PCollection_HAsciiString::PCollection_HAsciiString(const Standard_CString S)
-                                               : Data(strlen(S))
+                                               : Data((Standard_Integer) strlen(S))
 {
    for( Standard_Integer i = 0 ; i < Data.Length() ; i++) 
                             Data.SetValue(i, S[i]) ;

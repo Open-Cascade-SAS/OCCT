@@ -159,7 +159,7 @@ Standard_Boolean  StepData_StepDumper::Dump
       for (i = 1; i <= nb; i ++)  {
 	if (ids.Value(i) <= 0 || ids.Value(i) == i) continue;
 	sprintf (unid,"%d:#%d",i,ids.Value(i));
-	nbc = strlen (unid);  nbr = ((80-nbc) %4) +2;
+	nbc = (Standard_Integer) strlen (unid);  nbr = ((80-nbc) %4) +2;
 	nbl +=  nbc;
 	if (nbl+nbr0 > 79) { nbl  = nbc;  S<<endl; }
 	else               { nbl += nbr0; for (; nbr0 > 0; nbr0 --) S << " "; }

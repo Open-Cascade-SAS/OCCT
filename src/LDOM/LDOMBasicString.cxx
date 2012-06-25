@@ -37,7 +37,7 @@ LDOMBasicString::LDOMBasicString (const char * aValue)
     myVal.ptr = NULL;
   } else {
     myType = LDOM_AsciiFree;
-    Standard_Integer aLen = strlen (aValue) + 1;
+    Standard_Size aLen = strlen (aValue) + 1;
     myVal.ptr = new char [aLen];
     memcpy (myVal.ptr, aValue, aLen);
   }
@@ -56,7 +56,7 @@ LDOMBasicString::LDOMBasicString (const char                     * aValue,
     myVal.ptr = NULL;
   } else {
     myType = LDOM_AsciiDoc;
-    Standard_Integer aLen = strlen (aValue) + 1;
+    Standard_Integer aLen = (Standard_Integer) strlen (aValue) + 1;
     myVal.ptr = aDoc -> Allocate (aLen);
     memcpy (myVal.ptr, aValue, aLen);
   }
@@ -93,7 +93,7 @@ LDOMBasicString::LDOMBasicString (const LDOMBasicString& anOther)
   switch (myType) {
   case LDOM_AsciiFree:
     if (anOther.myVal.ptr) {
-      Standard_Integer aLen = strlen ((const char *)anOther.myVal.ptr) + 1;
+      Standard_Size aLen = strlen ((const char *)anOther.myVal.ptr) + 1;
       myVal.ptr = new char [aLen];
       memcpy (myVal.ptr, anOther.myVal.ptr, aLen);
       break;
@@ -149,7 +149,7 @@ LDOMBasicString& LDOMBasicString::operator = (const LDOMBasicString& anOther)
   switch (myType) {
   case LDOM_AsciiFree:
     if (anOther.myVal.ptr) {
-      Standard_Integer aLen = strlen ((const char *)anOther.myVal.ptr) + 1;
+      Standard_Size aLen = strlen ((const char *)anOther.myVal.ptr) + 1;
       myVal.ptr = new char [aLen];
       memcpy (myVal.ptr, anOther.myVal.ptr, aLen);
       break;
@@ -269,7 +269,7 @@ LDOMBasicString::operator TCollection_ExtendedString () const
 
     // convert Unicode to Extended String
     ptr += 2;
-    Standard_Integer aLength = (strlen(ptr) / 4), j = 0;
+    Standard_Size aLength = (strlen(ptr) / 4), j = 0;
     Standard_ExtCharacter * aResult = new Standard_ExtCharacter[aLength--];
     while (aLength--) {
       ptr += 4;

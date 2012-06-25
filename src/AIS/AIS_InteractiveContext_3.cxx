@@ -56,8 +56,8 @@ void AIS_InteractiveContext::DisplayFromCollector(const Handle(AIS_InteractiveOb
 void AIS_InteractiveContext::SetPolygonOffsets(
                              const Handle(AIS_InteractiveObject)& anObj,
                              const Standard_Integer               aMode,
-                             const Standard_Real                  aFactor,
-                             const Standard_Real                  aUnits,
+                             const Standard_ShortReal             aFactor,
+                             const Standard_ShortReal             aUnits,
                              const Standard_Boolean               updateviewer) 
 {
   if ( anObj.IsNull() )
@@ -94,8 +94,8 @@ Standard_Boolean AIS_InteractiveContext::HasPolygonOffsets(const Handle(AIS_Inte
 void AIS_InteractiveContext::PolygonOffsets(
                              const Handle(AIS_InteractiveObject)& anObj,
                              Standard_Integer&                    aMode,
-                             Standard_Real&                       aFactor,
-                             Standard_Real&                       aUnits) const 
+                             Standard_ShortReal&                  aFactor,
+                             Standard_ShortReal&                  aUnits) const 
 {
   if ( HasPolygonOffsets( anObj ) )
     anObj->PolygonOffsets( aMode, aFactor, aUnits );

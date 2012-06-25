@@ -639,7 +639,7 @@ void  GeomTools_SurfaceSet::Dump(Standard_OStream& OS)const
 
 void  GeomTools_SurfaceSet::Write(Standard_OStream& OS)const 
 {
-  int  prec = OS.precision(17);
+  std::streamsize  prec = OS.precision(17);
 
   Standard_Integer i, nbsurf = myMap.Extent();
   OS << "Surfaces "<< nbsurf << "\n";

@@ -259,7 +259,7 @@ class MultilineTextRenderer
       myNewStr        (0),
       myStrPtr        (&theStr[0])
   {
-    const Standard_Integer  aStrLen       = wcslen(theStr); // Length of the original string
+    const Standard_Integer  aStrLen       = (Standard_Integer) wcslen(theStr); // Length of the original string
     Standard_Integer        aNextCRChar   = 0;  // Character after '\r' (Carriage Return)        '\x00\x0D'
     Standard_Integer        aHTNum        = 0;  // Number of       '\t' (Horizontal Tabulation)  '\x00\x09'
     Standard_Integer        aDumpNum      = 0;  // Number of '\a', '\b', '\v' and '\f'

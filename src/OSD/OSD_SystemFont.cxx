@@ -71,7 +71,7 @@ MyFontAspect(OSD_FA_Undefined)
       MyFaceSize = -1;
     else
       //TODO catch exeption
-      MyFaceSize =  str.Token( "-", 7 ).RealValue();
+      MyFaceSize =  str.Token( "-", 7 ).IntegerValue();
 
     //detect aspect
     if ( str.Token("-", 3).IsEqual( "bold" ) )

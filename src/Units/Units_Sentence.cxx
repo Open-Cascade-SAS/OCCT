@@ -31,8 +31,8 @@ static Handle(Units_Token) CreateTokenForNumber(const Standard_CString str)
 {
   TCollection_AsciiString tstr = str[0];
   Standard_Boolean IsPoint = Standard_False;
-  Standard_Integer len = strlen(str);
-  for(Standard_Integer in=1; in < len; in++) {
+  Standard_Size len = strlen(str);
+  for(Standard_Size in=1; in < len; in++) {
     if( str[in]=='0' || str[in]=='1' || str[in]=='2' || str[in]=='3' || 
         str[in]=='4' || str[in]=='5' || str[in]=='6' || str[in]=='7' || 
         str[in]=='8' || str[in]=='9' ) {

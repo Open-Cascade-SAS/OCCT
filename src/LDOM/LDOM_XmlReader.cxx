@@ -138,7 +138,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
 
       // Read the full buffer and reset start and end buffer pointers
         myPtr    = &myBuffer[0];
-        Standard_Integer aNBytes;
+        Standard_Size aNBytes;
         if (myFileDes != FILE_NONVALUE)
           aNBytes = read (myFileDes, &myBuffer[aBytesRest],
                           XML_BUFFER_SIZE - aBytesRest);

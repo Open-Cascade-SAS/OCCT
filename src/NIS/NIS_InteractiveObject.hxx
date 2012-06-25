@@ -388,7 +388,7 @@ class NIS_InteractiveObject : public Standard_Transient
   // ---------- PRIVATE FIELDS ----------
 
   Handle_NIS_Drawer             myDrawer;
-  Standard_Size                 myID;
+  Standard_Integer              myID;
   NIS_Drawer::DrawType          myDrawType      : 3;
   NIS_Drawer::DrawType          myBaseType      : 3;
   Standard_Boolean              myIsHidden      : 1;

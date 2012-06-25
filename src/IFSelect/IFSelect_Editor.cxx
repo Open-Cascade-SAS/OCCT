@@ -41,9 +41,9 @@ IFSelect_Editor::IFSelect_Editor (const Standard_Integer nbval)
   Standard_Integer lng = shn.Length();
   if (lng > 0) thenames->SetItem (shortname,num);
   if (lng > themaxsh) themaxsh = lng;
-  lng = strlen (typval->Name());
+  lng = (Standard_Integer) strlen (typval->Name());
   if (lng > themaxco) themaxco = lng;
-  lng = strlen (typval->Label());
+  lng = (Standard_Integer) strlen (typval->Label());
   if (lng > themaxla) themaxla = lng;
 
   thenames->SetItem (typval->Name(),num);

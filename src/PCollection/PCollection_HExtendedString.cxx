@@ -72,7 +72,7 @@ PCollection_HExtendedString::PCollection_HExtendedString
 // Create : from a CString
 //-----------------------------------------------------------------------
 PCollection_HExtendedString::PCollection_HExtendedString(const Standard_CString S)
-                                               : Data(strlen(S))
+                                               : Data((Standard_Integer) strlen(S))
 {
    for( Standard_Integer i = 0 ; i < Data.Length() ; i++)  {
          Standard_ExtCharacter val = ToExtCharacter(S[i]);

@@ -203,8 +203,8 @@ is
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         SetPolygonOffsets ( me : mutable;
                             aMode   : Integer from Standard;
-                            aFactor : Real from Standard = 1.0;
-                            aUnits  : Real from Standard = 0.0 );
+                            aFactor : ShortReal from Standard = 1.0;
+                            aUnits  : ShortReal from Standard = 0.0 );
         ---Level: Public
         ---Purpose: Sets up OpenGL polygon offsets mechanism.
         --          <aMode> parameter can contain various combinations of 
@@ -291,8 +291,8 @@ is
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         PolygonOffsets ( me;
                          aMode   : out Integer from Standard;
-                         aFactor : out Real from Standard;
-                         aUnits  : out Real from Standard );
+                         aFactor : out ShortReal from Standard;
+                         aUnits  : out ShortReal from Standard );
         ---Level: Public
         ---Purpose: Returns current polygon offsets settings.
         ---Category: Inquire methods    
@@ -342,7 +342,7 @@ fields
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         -- polygon offsets
         MyPolygonOffsetMode     :       Integer from Standard;
-        MyPolygonOffsetFactor   :       Real from Standard;
-        MyPolygonOffsetUnits    :       Real from Standard;
+        MyPolygonOffsetFactor   :       ShortReal from Standard;
+        MyPolygonOffsetUnits    :       ShortReal from Standard;
 
 end AspectFillArea3d;

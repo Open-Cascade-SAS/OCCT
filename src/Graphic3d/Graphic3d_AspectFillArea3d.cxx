@@ -247,17 +247,17 @@ Aspect_TypeOfDegenerateModel Graphic3d_AspectFillArea3d::DegenerateModel(
 }
 
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-void Graphic3d_AspectFillArea3d::SetPolygonOffsets(const Standard_Integer aMode,
-                                                   const Standard_Real    aFactor,
-                                                   const Standard_Real    aUnits) {
+void Graphic3d_AspectFillArea3d::SetPolygonOffsets(const Standard_Integer    aMode,
+                                                   const Standard_ShortReal  aFactor,
+                                                   const Standard_ShortReal  aUnits) {
   MyPolygonOffsetMode   = ( aMode & Aspect_POM_Mask );
   MyPolygonOffsetFactor = aFactor;
   MyPolygonOffsetUnits  = aUnits;
 }
 
-void Graphic3d_AspectFillArea3d::PolygonOffsets(Standard_Integer& aMode,
-                                                Standard_Real&    aFactor,
-                                                Standard_Real&    aUnits) const {
+void Graphic3d_AspectFillArea3d::PolygonOffsets(Standard_Integer&    aMode,
+                                                Standard_ShortReal&  aFactor,
+                                                Standard_ShortReal&  aUnits) const {
   aMode   = MyPolygonOffsetMode;
   aFactor = MyPolygonOffsetFactor;
   aUnits  = MyPolygonOffsetUnits;

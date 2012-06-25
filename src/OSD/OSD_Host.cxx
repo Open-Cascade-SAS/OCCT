@@ -277,7 +277,7 @@ OSD_Host :: OSD_Host () {
 
   if (  !Failed ()  ) {
   
-   memSize = ms.dwAvailPageFile;
+    memSize = (Standard_Integer) ms.dwAvailPageFile;
 
    if (   WSAStartup (  MAKEWORD( 1, 1 ), &wd  )   ) {
    

@@ -391,7 +391,7 @@ Standard_Integer WNT_ImageManager :: StringHashCode (
 
  } u;
 
- n = strlen ( aString );
+ n = (Standard_Integer) strlen ( aString );
 
  if ( n > 0 ) {
 

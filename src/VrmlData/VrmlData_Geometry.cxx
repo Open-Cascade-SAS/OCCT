@@ -640,7 +640,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
     // Match the name with the current word in the stream
     if (theName) {
-      const Standard_Integer aNameLen = strlen(theName);
+      const Standard_Size aNameLen = strlen(theName);
       if (strncmp (theBuffer.LinePtr, theName, aNameLen))
         aStatus = VrmlData_VrmlFormatError;
       else

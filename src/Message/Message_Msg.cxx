@@ -169,7 +169,7 @@ Message_Msg& Message_Msg::Arg (const Standard_CString theString)
     return *this;
 
   // print string according to format
-  char * sStringBuffer = new char [Max (strlen(theString)+1, 1024)];
+  char * sStringBuffer = new char [Max ((Standard_Integer)strlen(theString)+1, 1024)];
   sprintf (sStringBuffer, aFormat.ToCString(), theString);
   TCollection_ExtendedString aStr ( sStringBuffer );
   delete [] sStringBuffer;

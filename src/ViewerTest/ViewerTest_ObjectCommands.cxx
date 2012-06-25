@@ -4260,12 +4260,12 @@ static Standard_Integer VPolygonOffset(Draw_Interpretor& di,
   }
 
   Standard_Integer aMode;
-  Standard_Real    aFactor, aUnits;
+  Standard_ShortReal    aFactor, aUnits;
   if (argc == 5)
   {
     aMode   = atoi(argv[2]);
-    aFactor = atof(argv[3]);
-    aUnits  = atof(argv[4]);
+    aFactor = (Standard_ShortReal) atof(argv[3]);
+    aUnits  = (Standard_ShortReal) atof(argv[4]);
 
     anInterObj->SetPolygonOffsets(aMode, aFactor, aUnits);
     aContext->UpdateCurrentViewer();

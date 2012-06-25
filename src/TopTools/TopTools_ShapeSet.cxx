@@ -458,7 +458,7 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
   // on positionne LC_NUMERIC a "C" (point decimal)
   setlocale(LC_NUMERIC, "C") ;
 
-  int  prec = OS.precision(15);
+  std::streamsize prec = OS.precision(15);
 
   // write the copyright
   if (myFormatNb == 2)
@@ -642,7 +642,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
     //if(pm = strchr(vers,'\r'))
     //  *pm ='\0';
     
-    for (Standard_Integer lv = (strlen(vers)- 1); lv > 1 && (vers[lv] == '\r' || vers[lv] == '\n') ;lv--) 
+    for (Standard_Size lv = (strlen(vers)- 1); lv > 1 && (vers[lv] == '\r' || vers[lv] == '\n') ;lv--) 
       vers[lv] = '\0';
     
   } while ( ! IS.fail() && strcmp(vers,Version) && strcmp(vers,Version2) );

@@ -895,7 +895,7 @@ Standard_Integer XSControl_TransferReader::TransferOne
 	  <<"      Ident : "<<lab->ToCString()
 	  <<  Interface_MSG::Blanks(14 - lab->Length())<<"******\n";
     sout << "******    Type : "<<theModel->TypeName(ent,Standard_False)
-        <<  Interface_MSG::Blanks(44 - strlen(theModel->TypeName(ent,Standard_False)))
+        <<  Interface_MSG::Blanks((Standard_Integer) (44 - strlen(theModel->TypeName(ent,Standard_False))))
 	<<  "******";
     sout<<"\n*******************************************************************\n";
   }

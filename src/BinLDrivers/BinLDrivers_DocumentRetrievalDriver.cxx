@@ -210,7 +210,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
   mySections.Clear();
   myPAtt.Init();
   Handle(TDF_Data) aData = new TDF_Data();
-  Standard_Integer aDocumentPos = -1;
+  streampos aDocumentPos = -1;
 
   // 2b. Read the TOC of Sections
   if (aFileVer >= 3) {
@@ -274,7 +274,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
   } // end of reading Sections or shape section
 
   // Return to read of the Document structure
-  anIS.seekg((streampos) aDocumentPos);
+  anIS.seekg(aDocumentPos);
 
   // read the header (tag) of the root label
   Standard_Integer aTag;

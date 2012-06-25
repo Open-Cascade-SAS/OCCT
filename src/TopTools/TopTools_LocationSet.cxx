@@ -178,7 +178,7 @@ void  TopTools_LocationSet::Dump(Standard_OStream& OS) const
 void  TopTools_LocationSet::Write(Standard_OStream& OS) const 
 {
   
-  int  prec = OS.precision(15);
+  std::streamsize prec = OS.precision(15);
 
   Standard_Integer i, nbLoc = myMap.Extent();
   OS << "Locations " << nbLoc << "\n";

@@ -502,7 +502,7 @@ void  GeomTools_Curve2dSet::Dump(Standard_OStream& OS)const
 
 void  GeomTools_Curve2dSet::Write(Standard_OStream& OS)const 
 {
-  int  prec = OS.precision(17);
+  std::streamsize prec = OS.precision(17);
 
   Standard_Integer i, nbsurf = myMap.Extent();
   OS << "Curve2ds "<< nbsurf << "\n";

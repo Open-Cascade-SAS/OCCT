@@ -196,7 +196,7 @@ CGMObin(FILE *stream, Code c, Long *pi, Float *pr, char *str)
             {
                register Long *pt = pi, i, k;
                Long red, green, blue, nc, ncol;
-               unsigned short run, packed;
+               Long run, packed;
                Long last, lastred, lastgreen, lastblue;
                static Long nx, ny;
                static Prec lprec;

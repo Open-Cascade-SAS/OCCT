@@ -839,7 +839,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex
             aStatus = VrmlData_UnrecoverableError;
           else {
             for (size_t i = 0; i < aNbBlocks; i++)
-              anArray[i] = vecIndice(i);
+              anArray[i] = vecIndice((Standard_Integer)i);
             theNBlocks = aNbBlocks;
             theArray = anArray;
           } 
