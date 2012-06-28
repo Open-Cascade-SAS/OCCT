@@ -211,6 +211,67 @@ static Standard_Integer spy(Draw_Interpretor& di, Standard_Integer n, const char
   return 0;
 }
 
+static Standard_Integer dlog(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 2 && n != 3)
+  {
+    cout << "Enable or disable logging: " << a[0] << " {on|off}" << endl;
+    cout << "Reset log: " << a[0] << " reset" << endl;
+    cout << "Get log content: " << a[0] << " get" << endl;
+    return 1;
+  }
+
+  if (! strcmp (a[1], "on") && n == 2)
+  {
+    di.SetDoLog (Standard_True);
+//    di.Log() << "dlog on" << endl; // for symmetry
+  }
+  else if (! strcmp (a[1], "off") && n == 2)
+  {
+    di.SetDoLog (Standard_False);
+  }
+  else if (! strcmp (a[1], "reset") && n == 2)
+  {
+    di.Log().str("");
+  }
+  else if (! strcmp (a[1], "get") && n == 2)
+  {
+    di << di.Log().str().c_str();
+  }
+  else if (! strcmp (a[1], "add") && n == 3)
+  {
+    di.Log() << a[2] << "\n";
+  }
+  else {
+    cout << "Unrecognized option(s): " << a[1] << endl;
+    return 1;
+  }
+  return 0;
+}
+
+static Standard_Integer decho(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n != 2)
+  {
+    cout << "Enable or disable echoing: " << a[0] << " {on|off}" << endl;
+    return 1;
+  }
+
+  if (! strcmp (a[1], "on"))
+  {
+    di.SetDoEcho (Standard_True);
+  }
+  else if (! strcmp (a[1], "off"))
+  {
+    di.SetDoEcho (Standard_False);
+  }
+  else {
+    cout << "Unrecognized option: " << a[1] << endl;
+    return 1;
+  }
+  return 0;
+}
+
 //=======================================================================
 //function : wait
 //purpose  : 
@@ -479,6 +540,8 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
   if (Done) return;
   Done = Standard_True;
 
+  ios::sync_with_stdio();
+
   const char* g = "DRAW General Commands";
   
   theCommands.Add("batch", "returns 1 in batch mode",
@@ -500,4 +563,11 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
     "meminfo [virt|v] [wset|w] [wsetpeak] [swap] [swappeak] [private]"
     " : memory counters for this process",
 	  __FILE__, dmeminfo, g);
+
+  // Logging commands; note that their names are hard-coded in the code 
+  // of Draw_Interpretor, thus should not be changed without update of that code!
+  theCommands.Add("dlog", "manage logging of commands and output; run without args to get help",
+		  __FILE__,dlog,g);
+  theCommands.Add("decho", "switch on / off echo of commands to cout; run without args to get help",
+		  __FILE__,decho,g);
 }

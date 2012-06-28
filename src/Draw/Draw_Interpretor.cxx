@@ -31,8 +31,22 @@
 #include <TCollection_ExtendedString.hxx>
 
 #include <string.h>
-
 #include <tcl.h>
+
+// for capturing of cout and cerr (dup(), dup2())
+#ifdef _MSC_VER
+#include <io.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#if ! defined(STDOUT_FILENO)
+#define STDOUT_FILENO fileno(stdout)
+#endif
+#if ! defined(STDERR_FILENO)
+#define STDERR_FILENO fileno(stderr)
+#endif
 
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 1)))
 #define TCL_USES_UTF8
@@ -87,6 +101,66 @@ struct CData {
   Draw_Interpretor*    i;
 };
 
+// logging helpers
+namespace {
+  void dumpArgs (Standard_OStream& os, int argc, const char *argv[])
+  {
+    for (int i=0; i < argc; i++)
+      os << argv[i] << " ";
+    os << endl;
+  }
+
+  void flush_standard_streams ()
+  {
+    fflush (stderr);
+    fflush (stdout);
+    cerr << flush;
+    cout << flush;
+  }
+
+  FILE* capture_start (int std_fd, int *save_fd)
+  {
+    (*save_fd) = 0;
+
+    // open temporary files
+    FILE * aTmpFile = tmpfile();
+    int fd_tmp = fileno(aTmpFile);
+
+    if (fd_tmp <0) 
+    {
+      cerr << "Error: cannot create temporary file for capturing console output" << endl;
+      fclose (aTmpFile);
+      return NULL;
+    }
+
+    // remember current file descriptors of standard stream, and replace it by temporary
+    (*save_fd) = dup(std_fd);
+    dup2(fd_tmp, std_fd);
+    return aTmpFile;
+  }
+
+  void capture_end (FILE* tmp_file, int std_fd, int save_fd, Standard_OStream &log, Standard_Boolean doEcho)
+  {
+    // restore normal descriptors of console stream
+    dup2 (save_fd, std_fd);
+    close(save_fd);
+
+    // extract all output and copy it to log and optionally to cout
+    const int BUFSIZE = 2048;
+    char buf[BUFSIZE];
+    rewind(tmp_file);
+    while (fgets (buf, BUFSIZE, tmp_file) != NULL)
+    {
+      log << buf;
+      if (doEcho) 
+        cout << buf;
+    }
+
+    // close temporary file
+    fclose (tmp_file);
+  }
+};
+
 // MKV 29.03.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
 static Standard_Integer CommandCmd 
@@ -101,14 +175,39 @@ static Standard_Integer CommandCmd
   static Standard_Integer code;
   code = TCL_OK;
   CData* C = (CData*) clientData;
+  Draw_Interpretor& di = *(C->i);
 
+  // log command execution, except commands manipulating log itself and echo
+  Standard_Boolean isLogManipulation = (strcmp (argv[0], "dlog") == 0 || 
+                                        strcmp (argv[0], "decho") == 0);
+  Standard_Boolean doLog  = (di.GetDoLog() && ! isLogManipulation);
+  Standard_Boolean doEcho = (di.GetDoEcho() && ! isLogManipulation);
+  if (doLog)
+    dumpArgs (di.Log(), argc, argv);
+  if (doEcho)
+    dumpArgs (cout, argc, argv);
+
+  // flush cerr and cout
+  flush_standard_streams();
+
+  // capture cout and cerr to log
+  FILE * aFile_err = NULL;
+  FILE * aFile_out = NULL;
+  int fd_err_save = 0;
+  int fd_out_save = 0;
+  if (doLog)
+  {
+    aFile_out = capture_start (STDOUT_FILENO, &fd_out_save);
+    aFile_err = capture_start (STDERR_FILENO, &fd_err_save);
+  }
+
+  // run command
   try {
     OCC_CATCH_SIGNALS
 
     // OCC63: Convert strings from UTF-8 to local encoding, normally expected by OCC commands
     TclUTFToLocalStringSentry anArgs ( argc, (const char**)argv );
       
-    Draw_Interpretor& di = *(C->i);
     Standard_Integer fres = C->f ( di, argc, anArgs.GetArgv() );
     if (fres != 0) 
       code = TCL_ERROR;
@@ -147,7 +246,33 @@ static Standard_Integer CommandCmd
 #endif    
     code = TCL_ERROR;
   }
-  
+
+  // flush streams
+  flush_standard_streams();
+
+  // end capturing cout and cerr 
+  if (doLog) 
+  {
+    capture_end (aFile_err, STDERR_FILENO, fd_err_save, di.Log(), doEcho);
+    capture_end (aFile_out, STDOUT_FILENO, fd_out_save, di.Log(), doEcho);
+  }
+
+  // log command result
+  const char* aResultStr = NULL;
+  if (doLog)
+  {
+    aResultStr = Tcl_GetStringResult (interp);
+    if (aResultStr != 0 && aResultStr[0] != '\0' )
+      di.Log() << Tcl_GetStringResult (interp) << endl;
+  }
+  if (doEcho)
+  {
+    if (aResultStr == NULL)
+      aResultStr = Tcl_GetStringResult (interp);
+    if (aResultStr != 0 && aResultStr[0] != '\0' )
+      cout << Tcl_GetStringResult (interp) << endl;
+  }
+
   return code;
 }
 
@@ -164,7 +289,7 @@ static void CommandDelete (ClientData clientData)
 //=======================================================================
 
 Draw_Interpretor::Draw_Interpretor() :
-  isAllocated(Standard_False)
+  isAllocated(Standard_False), myDoLog(Standard_False), myDoEcho(Standard_False)
 {
 // The tcl interpreter is not created immediately as it is kept 
 // by a global variable and created and deleted before the main().
@@ -191,7 +316,9 @@ void Draw_Interpretor::Init()
 
 Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& p) :
   isAllocated(Standard_False),
-  myInterp(p)
+  myInterp(p),
+  myDoLog(Standard_False),
+  myDoEcho(Standard_False)
 {
 }
 
@@ -534,4 +661,34 @@ void Draw_Interpretor::Set(const Draw_PInterp& PIntrp)
     Tcl_DeleteInterp(myInterp);
   isAllocated = Standard_False;
   myInterp = PIntrp;
+}
+
+//=======================================================================
+//function : Logging
+//purpose  : 
+//=======================================================================
+
+void Draw_Interpretor::SetDoLog (Standard_Boolean doLog)
+{
+  myDoLog = doLog;
+}
+
+void Draw_Interpretor::SetDoEcho (Standard_Boolean doEcho)
+{
+  myDoEcho = doEcho;
+}
+
+Standard_Boolean Draw_Interpretor::GetDoLog () const
+{
+  return myDoLog;
+}
+
+Standard_Boolean Draw_Interpretor::GetDoEcho () const
+{
+  return myDoEcho;
+}
+
+Standard_SStream& Draw_Interpretor::Log ()
+{
+  return myLog;
 }

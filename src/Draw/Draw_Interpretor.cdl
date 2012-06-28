@@ -27,6 +27,7 @@ class Interpretor from Draw
 
 uses
 
+        SStream         from Standard,
 	PInterp         from Draw,
 	CommandFunction from Draw,
 	AsciiString     from TCollection,
@@ -143,10 +144,37 @@ is
     Set(me : in out; anInterp : PInterp from Draw);
     
     Interp (me) returns PInterp from Draw;
+
+    SetDoLog (me: in out; doLog: Boolean);
+    ---Purpose: Enables or disables logging of all commands and their
+    -- results
+    ---Level: Advanced
+
+    SetDoEcho (me: in out; doEcho: Boolean);
+    ---Purpose: Enables or disables eachoing of all commands and their
+    -- results to cout
+    ---Level: Advanced
+
+    GetDoLog (me) returns Boolean;
+    ---Purpose: Returns true if logging of commands is enabled
+    ---Level: Advanced
+
+    GetDoEcho (me) returns Boolean;
+    ---Purpose: Returns true if echoing of commands is enabled
+    ---Level: Advanced
+
+    Log (me: in out) returns SStream;
+    ---Purpose: Returns log stream
+    ---Level: Advanced
+    ---C++: return &
 	
  fields
  
     isAllocated : Boolean from Standard;
     myInterp    : PInterp from Draw;
+
+    myDoLog: Boolean;
+    myDoEcho: Boolean;
+    myLog: SStream from Standard;
 
 end Interpretor;
