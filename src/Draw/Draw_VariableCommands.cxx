@@ -55,6 +55,7 @@ extern Draw_Viewer dout;
 #include <tcl.h>
 #include <errno.h>
 
+#include <OSD_Environment.hxx>
 
 Standard_Boolean Draw_ParseFailed;
 
@@ -589,6 +590,46 @@ static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char
     Draw::Set(a[i],val);
   }
   di << val;
+  return 0;
+}
+
+//=======================================================================
+//function : dsetenv
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer dsetenv(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 2) {
+    cout << "Use: " << argv[0] << " {varname} [value]" << endl;
+    return 1;
+  }
+
+  OSD_Environment env (argv[1]);
+  if (argc > 2 && argv[2][0] != '\0')
+  {
+    env.SetValue (argv[2]);
+    env.Build();
+  }
+  else
+    env.Remove();
+  return env.Failed();
+}
+
+//=======================================================================
+//function : dgetenv
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer dgetenv(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 2) {
+    cout << "Use: " << argv[0] << " {varname}" << endl;
+    return 1;
+  }
+
+  const char* val = getenv (argv[1]);
+  di << ( val ? val : "" );
   return 0;
 }
 
@@ -1268,6 +1309,10 @@ void  Draw::VariableCommands(Draw_Interpretor& theCommands)
   //theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,copy,g);
   theCommands.Add("renamevar","renamevar name1 toname1 name2 toname2 ...",__FILE__,copy,g);
   theCommands.Add("dset","var1 value1 vr2 value2 ...",__FILE__,set,g);
+
+  // commands to access C environment variables; see Mantis issue #23197
+  theCommands.Add("dgetenv","var : get value of environment variable in C subsystem",__FILE__,dgetenv,g);
+  theCommands.Add("dsetenv","var [value] : set (unset if value is empty) environment variable in C subsystem",__FILE__,dsetenv,g);
 
   theCommands.Add("pick","pick id X Y Z b [nowait]",__FILE__,pick,g);
   theCommands.Add("lastrep","lastrep id X Y [Z] b, return name",__FILE__,lastrep,g);

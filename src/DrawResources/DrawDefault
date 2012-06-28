@@ -62,5 +62,31 @@ if {[array get env QA_DUMP] != "" && $env(QA_DUMP) == "1"} {
     catch {source $env(CSF_DrawPluginQADefaults)/QARebuildCommands}
 }
 
+# on Windows, set special handler to update automatically environment variables
+# in C subsystem when Tcl environment changes (see Mantis issue #23197)
+if { $tcl_platform(platform) == "windows" && ! [catch {dgetenv PATH} res] } {
+    proc _update_c_env {envenv var op} { 
+        global env
+        if { $op == "unset" } {
+            if { $var != "" } {
+                dsetenv $var
+            } else {
+	        #"array get env varname" command calls _update_c_env with op="unset" and var=""
+		#It leads to detach of trace from env array
+                trace add variable env array _update_c_env
+                trace add variable env read  _update_c_env
+                trace add variable env write _update_c_env
+                trace add variable env unset _update_c_env
+            }
+        } elseif { $op == "write" } {
+            dsetenv $var $env($var)
+        } elseif { $op == "read" } {
+            return dgetenv $var
+        }
+    }
+    #Execute "trace add ..." block from _update_c_env proc
+    _update_c_env env "" "unset"
+}
+
 # silent return from the script
 return
