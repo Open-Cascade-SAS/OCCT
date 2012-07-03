@@ -457,6 +457,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPr
     //i++;
 #endif
     if (! s.IsVisible() ) continue;
+    Prs3d_Root::NewGroup(aPrs);
     AddStyledItem ( s, it.Value(), aPresentationManager, aPrs, aMode );
   }
   
