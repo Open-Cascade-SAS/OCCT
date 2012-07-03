@@ -3,6 +3,7 @@
 /.adm
 /sun
 /lin
+/mac
 /ao1
 /sil
 /wnt
@@ -15,3 +16,5 @@
 # /adm/
 /adm/win32
 /adm/win64
+/adm/mac
+/adm/lin
