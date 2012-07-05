@@ -619,25 +619,25 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 	V1 = S.FirstVParameter();
 	V2 = S.LastVParameter();
 
-	if(IsoIsDeg(S, U1, GeomAbs_IsoU, 0., 1.e-9) ) {
+	if(IsoIsDeg(S, U1, GeomAbs_IsoU, 0., myTolerance) ) {
 	  //Surface has pole at U = Umin
 	  gp_Pnt Pole = mySurface->Value(U1, V1);
 	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
 	}
 
-	if(IsoIsDeg(S, U2, GeomAbs_IsoU, 0., 1.e-9) ) {
+	if(IsoIsDeg(S, U2, GeomAbs_IsoU, 0., myTolerance) ) {
 	  //Surface has pole at U = Umax
 	  gp_Pnt Pole = mySurface->Value(U2, V1);
 	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
 	}
 	  
-	if(IsoIsDeg(S, V1, GeomAbs_IsoV, 0., 1.e-9) ) {
+	if(IsoIsDeg(S, V1, GeomAbs_IsoV, 0., myTolerance) ) {
 	  //Surface has pole at V = Vmin
 	  gp_Pnt Pole = mySurface->Value(U1, V1);
 	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
 	}
 
-	if(IsoIsDeg(S, V2, GeomAbs_IsoV, 0., 1.e-9) ) {
+	if(IsoIsDeg(S, V2, GeomAbs_IsoV, 0., myTolerance) ) {
 	  //Surface has pole at V = Vmax
 	  gp_Pnt Pole = mySurface->Value(U1, V2);
 	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
