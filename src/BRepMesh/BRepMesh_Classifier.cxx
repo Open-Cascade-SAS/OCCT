@@ -57,43 +57,38 @@
 #include <BRepMesh_Array1OfBiPoint.hxx>
 #include <BRepMesh_PairOfPolygon.hxx>
 
-#ifdef DEB_MESH
-static Standard_Integer debwire;
-static Standard_Integer debedge;
-static Standard_Integer debclass = 0;
-#endif
-static const Standard_Real MIN_DIST = 2.E-5; //EPA: real mesh is created in the grid 10E5x10E5, so intersection should be cheched
-                                             //     with double of discretization.
 static const Standard_Real PARALL_COND = Sin(M_PI/3.0);
-static const Standard_Real RESOLUTION = 1.0E-16; //OCC319
+static const Standard_Real RESOLUTION = 1.0E-16;
 
+// Real mesh is created in the grid 10E5x10E5, so intersection
+// should be cheched with double of discretization.
+static const Standard_Real MIN_DIST = 2.E-5;
 
 //=======================================================================
 //function : IsLine
 //purpose  : 
 //=======================================================================
-
-static Standard_Boolean IsLine(const Handle(Geom2d_Curve)& C2d)
+static Standard_Boolean IsLine(const Handle(Geom2d_Curve)& theCurve2d)
 {
   Standard_Boolean IsALine = Standard_False;
-  if ( C2d->IsKind(STANDARD_TYPE(Geom2d_Line)) )
+  if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_Line) ) )
   {
     IsALine = Standard_True;
   }
-  else if ( C2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) )
+  else if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_BSplineCurve) ) )
   {
-    Handle(Geom2d_BSplineCurve) BS = *((Handle(Geom2d_BSplineCurve)*)&C2d);
-    IsALine = (BS->NbPoles() == 2);
+    Handle(Geom2d_BSplineCurve) aBSpline = *((Handle(Geom2d_BSplineCurve)*)&theCurve2d);
+    IsALine = (aBSpline->NbPoles() == 2);
   }
-  else if ( C2d->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)) )
+  else if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_BezierCurve) ) )
   {
-    Handle(Geom2d_BezierCurve) Bz = *((Handle(Geom2d_BezierCurve)*)&C2d);
-    IsALine = (Bz->NbPoles() == 2);
+    Handle(Geom2d_BezierCurve) aBezier = *((Handle(Geom2d_BezierCurve)*)&theCurve2d);
+    IsALine = (aBezier->NbPoles() == 2);
   }
-  else if ( C2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)) )
+  else if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_TrimmedCurve) ) )
   {
-    Handle(Geom2d_TrimmedCurve) Curv = *((Handle(Geom2d_TrimmedCurve)*)&C2d);
-    IsALine = IsLine(Curv->BasisCurve());
+    Handle(Geom2d_TrimmedCurve) aTrimmedCurve = *((Handle(Geom2d_TrimmedCurve)*)&theCurve2d);
+    IsALine = IsLine(aTrimmedCurve->BasisCurve());
   }
   return IsALine;
 }
@@ -102,59 +97,60 @@ static Standard_Boolean IsLine(const Handle(Geom2d_Curve)& C2d)
 //function : AnalizeWire
 //purpose  : 
 //=======================================================================
-
 void BRepMesh_Classifier::AnalizeWire (const TColgp_SequenceOfPnt2d&  theSeqPnt2d,
-                                       const Standard_Real Umin,  const Standard_Real Umax,
-                                       const Standard_Real Vmin,  const Standard_Real Vmax)
+                                       const Standard_Real theUmin,  const Standard_Real theUmax,
+                                       const Standard_Real theVmin,  const Standard_Real theVmax)
 {
-  const Standard_Integer nbpnts = theSeqPnt2d.Length();
-  if (nbpnts < 2) return;
+  const Standard_Integer aNbPnts = theSeqPnt2d.Length();
+  if (aNbPnts < 2)
+    return;
 
   // Accumulate angle
-  TColgp_Array1OfPnt2d PClass(1,nbpnts);
-  Standard_Integer i, ii;
-  Standard_Real theangle = 0.0;
+  TColgp_Array1OfPnt2d aPClass(1, aNbPnts);
+  Standard_Real anAngle = 0.0;
   gp_Pnt2d p1 = theSeqPnt2d(1), p2 = theSeqPnt2d(2), p3;
-  PClass(1) = p1;
-  PClass(2) = p2;
-  for (i = 1; i <= nbpnts; i++)
+  aPClass(1) = p1;
+  aPClass(2) = p2;
+  for (Standard_Integer i = 1; i <= aNbPnts; i++)
   { 
-    ii = i + 2;
-    if (ii > nbpnts)
+    Standard_Integer ii = i + 2;
+    if (ii > aNbPnts)
     {
-      p3 = PClass(ii-nbpnts);
+      p3 = aPClass(ii - aNbPnts);
     }
     else
     {
       p3 = theSeqPnt2d.Value(ii);
-      PClass(ii) = p3;
+      aPClass(ii) = p3;
     }
+
     gp_Vec2d A(p1,p2), B(p2,p3);
     if (A.SquareMagnitude() > 1.e-16 && B.SquareMagnitude() > 1.e-16)
     {
-      const Standard_Real a = A.Angle(B);
-      const Standard_Real aa = Abs(a);
+      const Standard_Real aCurAngle    = A.Angle(B);
+      const Standard_Real aCurAngleAbs = Abs(aCurAngle);
       // Check if vectors are opposite
-      if (aa > Precision::Angular() && (M_PI - aa) > Precision::Angular())
+      if (aCurAngleAbs > Precision::Angular() && (M_PI - aCurAngleAbs) > Precision::Angular())
       {
-        theangle += a;
+        anAngle += aCurAngle;
         p1 = p2;
       }
     }
     p2 = p3;
   }
   // Check for zero angle - treat self intersecting wire as outer
-  if (Abs(theangle) < Precision::Angular()) theangle = 0.0;
+  if (Abs(anAngle) < Precision::Angular())
+    anAngle = 0.0;
 
-  TabClass.Append((void *)new CSLib_Class2d(PClass,Toluv,Toluv,Umin,Vmin,Umax,Vmax));
-  TabOrien.Append((theangle < 0.0) ? 0 : 1);
+  myTabClass.Append( (void *)new CSLib_Class2d(aPClass, myTolUV, myTolUV,
+                                               theUmin, theVmin, theUmax, theVmax) );
+  myTabOrient.Append( ((anAngle < 0.0) ? 0 : 1) );
 }
 
 //=======================================================================
 //function : triangle2Area
 //purpose  : calculating area under triangle
 //=======================================================================
-
 inline static Standard_Real triangle2Area(const gp_XY& p1, const gp_XY& p2)
 {
   return p1.Crossed(p2);
@@ -164,7 +160,6 @@ inline static Standard_Real triangle2Area(const gp_XY& p1, const gp_XY& p2)
 //function : getSegmentParams
 //purpose  : extracting segment attributes 
 //=======================================================================
-
 static Standard_Real getSegmentParams(const BRepMesh_Array1OfBiPoint& theBiPoints,
                                       const Standard_Integer Index,
                                       Standard_Real& x11,
@@ -192,19 +187,18 @@ static Standard_Real getSegmentParams(const BRepMesh_Array1OfBiPoint& theBiPoint
 //purpose  : finding intersection.
 //           If the intersection is found return Standard_True
 //=======================================================================
-
-static Standard_Boolean checkWiresIntersection(const Standard_Integer            theFirstWireId,
-                                              const Standard_Integer            theSecondWireId,
-                                              Standard_Integer* const           theFirstOuterSegmentId,
-                                              Standard_Integer                  theLastOuterSegmentId,
-                                              const TColStd_SequenceOfInteger&  theWireLength,
-                                              const BRepMesh_Array1OfBiPoint&   theBiPoints,
-                                              const Standard_Boolean            findNextIntersection   = Standard_False,
-                                              const Standard_Boolean            isFirstSegment         = Standard_False,
-                                              Standard_Integer* const           theFirstInnerSegmentId = 0)
+static Standard_Boolean checkWiresIntersection(const Standard_Integer           theFirstWireId,
+                                               const Standard_Integer           theSecondWireId,
+                                               Standard_Integer* const          theFirstOuterSegmentId,
+                                               Standard_Integer                 theLastOuterSegmentId,
+                                               const TColStd_SequenceOfInteger& theWireLength,
+                                               const BRepMesh_Array1OfBiPoint&  theBiPoints,
+                                               const Standard_Boolean           findNextIntersection   = Standard_False,
+                                               const Standard_Boolean           isFirstSegment         = Standard_False,
+                                               Standard_Integer* const          theFirstInnerSegmentId = 0)
 {
   Standard_Real A1, B1, C1, A2, B2, C2, AB, BC, CA, xc, yc;
-  Standard_Real  mu1, d, mu2;
+  Standard_Real mu1, d, mu2;
   Standard_Integer ik = *theFirstOuterSegmentId, jk;
   Standard_Real x11, x12, y11, y12, x21, x22, y21, y22;
 
@@ -212,9 +206,7 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
   Standard_Integer ikEnd = theLastOuterSegmentId;
   Standard_Boolean isFirst = Standard_True;
   if ( findNextIntersection )
-  {
     isFirst = isFirstSegment;
-  }
 
   // Calculate bounds for second wire
   Standard_Integer jkStart = 0, jkEnd = 0;
@@ -244,24 +236,19 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
 
     //for theFirstWireId == theSecondWireId the algorithm check current wire on selfintersection
     if ( findNextIntersection && theFirstInnerSegmentId && isFirst)
-    {
       jk = *theFirstInnerSegmentId;
-    }
     else if (theSecondWireId == theFirstWireId)
-    {
       jk = ik + 2;
-    }
     else
-    {
       jk = jkStart;
-    }
 
     // Explore second wire
     Standard_Boolean aFirstPass = Standard_True;
     for (; jk <= jkEnd; jk++)
     {
       // don't check end's segment of the wire on selfrestriction
-      if ( theSecondWireId == theFirstWireId && isFirst && jk == ikEnd ) continue;
+      if ( theSecondWireId == theFirstWireId && isFirst && jk == ikEnd )
+        continue;
 
       mu2 = getSegmentParams(theBiPoints, jk, x21, y21, x22, y22, A2, B2, C2);
       gp_XY p2(x21, y21), p3(x22, y22);
@@ -273,7 +260,7 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
       Standard_Real dTol = MIN_DIST*MIN_DIST;
       if(theFirstWireId != theSecondWireId       && // if compared wires are different &&
          AB*AB > PARALL_COND*PARALL_COND*mu1*mu2 && // angle between two segments greater then PARALL_COND &&
-         d*d   < dTol*mu1 &&             // distance between vertex of the segment and other one's less then MIN_DIST
+         d*d   < dTol*mu1 &&                        // distance between vertex of the segment and other one's less then MIN_DIST
          (x22-x11)*(x22-x12) < 0.0 && (y22-y11)*(y22-y12) < 0.0)
       {
         // if we finding the second intersection we must return Standard_False for setting
@@ -286,9 +273,8 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
       }
 
       if( aFirstPass )
-      {
         aFirstTriangleArea = triangle2Area(aStartPoint, p2);
-      }
+      
       Standard_Real aTmpArea = triangle2Area(p2, p3);
 
       //look for intersection of two linear segments
@@ -386,17 +372,13 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
         }
       }
       if ( aFirstPass )
-      {
         aFirstPass = Standard_False;
-      }
 
       aLoopArea += aTmpArea;
     }
     
     if ( isFirst )
-    {
       isFirst = Standard_False;
-    }
   }
   return Standard_False;
 }
@@ -406,48 +388,32 @@ static Standard_Boolean checkWiresIntersection(const Standard_Integer           
 //function : BRepMesh_Classifier
 //purpose  : 
 //=======================================================================
-
-BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& aFace,
-                                         const Standard_Real TolUV,
-                                         const BRepMesh_DataMapOfShapePairOfPolygon& edges,
-                                         const TColStd_IndexedMapOfInteger& themap,
-                                         const Handle(BRepMesh_DataStructureOfDelaun)& Str,
-                                         const Standard_Real Umin,
-                                         const Standard_Real Umax,
-                                         const Standard_Real Vmin,
-                                         const Standard_Real Vmax):
-                                         Toluv(TolUV), Face(aFace),
-                                         myState(BRepMesh_NoError)
+BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& theFace,
+                                         const Standard_Real theTolUV,
+                                         const BRepMesh_DataMapOfShapePairOfPolygon& theEdges,
+                                         const TColStd_IndexedMapOfInteger& theMap,
+                                         const Handle(BRepMesh_DataStructureOfDelaun)& theStructure,
+                                         const Standard_Real theUmin,
+                                         const Standard_Real theUmax,
+                                         const Standard_Real theVmin,
+                                         const Standard_Real theVmax)
+: myTolUV( theTolUV ),
+  myFace ( theFace ),
+  myState( BRepMesh_NoError )
 {
   //-- impasse sur les surfs definies sur plus d une periode
-
   //-- once definition
-  Face.Orientation(TopAbs_FORWARD);
-
-  TopoDS_Edge  edge;
-  BRepTools_WireExplorer WireExplorer;
-  //TopExp_Explorer FaceExplorer;
-  TopoDS_Iterator FaceExplorer;
-
-  TColgp_SequenceOfPnt2d aWirePoints, aWire;
+  myFace.Orientation(TopAbs_FORWARD);
+  
+  TColgp_SequenceOfPnt2d    aWirePoints, aWire;
   TColStd_SequenceOfInteger aWireLength;
 
-
-  //-- twice definitions
-  TopAbs_Orientation anOr = TopAbs_FORWARD;
-  Standard_Boolean falsewire = Standard_False;
-  Standard_Integer i, index, firstindex = 0, lastindex = 0, nbedges = 0;
-#ifdef DEB_MESH
-  debwire = 0;
-#endif
-
-  for(FaceExplorer.Initialize(Face); FaceExplorer.More(); FaceExplorer.Next())
+  TopoDS_Iterator aFaceExplorer;
+  for(aFaceExplorer.Initialize(myFace); aFaceExplorer.More(); aFaceExplorer.Next())
   {
-    if( FaceExplorer.Value().ShapeType()!= TopAbs_WIRE)
+    if(aFaceExplorer.Value().ShapeType() != TopAbs_WIRE)
       continue;
-#ifdef DEB_MESH
-    if (debclass) { debwire++;  cout <<endl;  cout << "#wire no "<<debwire; debedge = 0;}
-#endif
+
     // For each wire we create a data map, linking vertices (only
     // the ends of edges) with their positions in the sequence of
     // all 2d points from this wire.
@@ -456,156 +422,158 @@ BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& aFace,
     // Actually, we must unbind the vertices belonging to the
     // loop from the map, but since they can't appear twice on the
     // valid wire, leave them for a little speed up.
-    nbedges = 0;
-    TColgp_SequenceOfPnt2d SeqPnt2d;
-    TColStd_DataMapOfIntegerInteger NodeInSeq;
+    Standard_Integer aNbEdges = 0;
+    Standard_Integer aFirstIndex = 0, aLastIndex = 0;
+    Standard_Boolean isFalseWire = Standard_False;
+
+    TColgp_SequenceOfPnt2d aSeqPnt2d;
+    TColStd_DataMapOfIntegerInteger aNodeInSeq;
+
     // Start traversing the wire
-    for (WireExplorer.Init(TopoDS::Wire(FaceExplorer.Value()),Face); WireExplorer.More(); WireExplorer.Next())
+    BRepTools_WireExplorer aWireExplorer;
+    for (aWireExplorer.Init(TopoDS::Wire( aFaceExplorer.Value() ), myFace); aWireExplorer.More(); aWireExplorer.Next())
     {
-      edge = WireExplorer.Current();
-#ifdef DEB_MESH
-      if (debclass) { debedge++; cout << endl; cout << "#edge no "<<debedge <<endl;}
-#endif
-      anOr = edge.Orientation();
-      if (anOr != TopAbs_FORWARD && anOr != TopAbs_REVERSED) continue;
-      if (edges.IsBound(edge))
+      TopoDS_Edge        anEdge   = aWireExplorer.Current();
+      TopAbs_Orientation anOrient = anEdge.Orientation();
+      if (anOrient != TopAbs_FORWARD && anOrient != TopAbs_REVERSED)
+        continue;
+
+      if (theEdges.IsBound(anEdge))
       {
         // Retrieve polygon
-        // Define the direction for adding points to SeqPnt2d
-        Standard_Integer iFirst,iLast,iIncr;
-        const BRepMesh_PairOfPolygon& pair = edges.Find(edge);
-        Handle(Poly_PolygonOnTriangulation) NOD;
-        if (anOr == TopAbs_FORWARD)
+        // Define the direction for adding points to aSeqPnt2d
+        Standard_Integer aIdxFirst, aIdxLast, aIdxIncr;
+
+        const BRepMesh_PairOfPolygon& aPair = theEdges.Find(anEdge);
+        Handle(Poly_PolygonOnTriangulation) aNOD;
+        if (anOrient == TopAbs_FORWARD)
         {
-          NOD = pair.First();
-          iFirst = 1;
-          iLast  = NOD->NbNodes();
-          iIncr  = 1;
+          aNOD = aPair.First();
+          aIdxFirst = 1;
+          aIdxLast  = aNOD->NbNodes();
+          aIdxIncr  = 1;
         }
         else
         {
-          NOD = pair.Last();
-          iFirst = NOD->NbNodes();
-          iLast  = 1;
-          iIncr  = -1;
+          aNOD = aPair.Last();
+          aIdxFirst = aNOD->NbNodes();
+          aIdxLast  = 1;
+          aIdxIncr  = -1;
         }
-        const TColStd_Array1OfInteger& indices = NOD->Nodes();
+        const TColStd_Array1OfInteger& anIndices = aNOD->Nodes();
 
-        // indexFirst and indexLast are the indices of first and last
+        // anIndexFirst and anIndexLast are the indices of first and last
         // vertices of the edge in IndexedMap <Str>
-        const Standard_Integer indexFirst = themap.FindKey(indices(iFirst));
-        const Standard_Integer indexLast = themap.FindKey(indices(iLast));
+        const Standard_Integer anIndexFirst = theMap.FindKey( anIndices(aIdxFirst) );
+        const Standard_Integer anIndexLast  = theMap.FindKey( anIndices(aIdxLast) );
 
-        // Skip degenerated edge : OCC481(apo)
-        if (indexLast == indexFirst && (iLast-iFirst) == iIncr) continue;
-
-        // If there's a gap between edges -> raise <falsewire> flag
-        if (nbedges)
+        if (anIndexLast == anIndexFirst && (aIdxLast - aIdxFirst) == aIdxIncr)
         {
-          if (indexFirst != lastindex)
+          // case of continuous set of degenerated edges
+          aLastIndex = anIndexLast;
+          continue;
+        }
+
+        // If there's a gap between edges -> raise <isFalseWire> flag
+        if (aNbEdges)
+        {
+          if (anIndexFirst != aLastIndex)
           {
-            falsewire = Standard_True;
+            isFalseWire = Standard_True;
             break;
           }
         }
-        else firstindex = indexFirst;
-              lastindex = indexLast;
+        else
+          aFirstIndex = anIndexFirst;
+
+        aLastIndex = anIndexLast;
 
         // Record first vertex (to detect loops)
-        NodeInSeq.Bind(indexFirst,SeqPnt2d.Length()+1);
+        aNodeInSeq.Bind(anIndexFirst, (aSeqPnt2d.Length() + 1));
 
         // Add vertices in sequence
-        for (i = iFirst; i != iLast; i += iIncr)
+        for (Standard_Integer i = aIdxFirst; i != aIdxLast; i += aIdxIncr)
         {
-          index = (i == iFirst)? indexFirst : themap.FindKey(indices(i));
+          Standard_Integer anIndex = ((i == aIdxFirst) ? anIndexFirst : theMap.FindKey( anIndices(i) ));
 
-          gp_Pnt2d vp(Str->GetNode(index).Coord());
-          SeqPnt2d.Append(vp);
-#ifdef DEB_MESH
-          if (debclass) cout<<"point p"<<index<<" "<<vp.X()<<" "<< vp.Y()<<endl;
-#endif
+          gp_Pnt2d aPnt( theStructure->GetNode(anIndex).Coord() );
+          aSeqPnt2d.Append(aPnt);
         }
 
         // Now, is there a loop?
-        if (NodeInSeq.IsBound(indexLast))
+        if (aNodeInSeq.IsBound(anIndexLast))
         {
           // Yes, treat it separately as a hole
           // 1. Divide points into main wire and a loop
-          const Standard_Integer iWireStart = NodeInSeq(indexLast);
-          if(iWireStart < SeqPnt2d.Length()) {
-            SeqPnt2d.Split(iWireStart, aWire);
-            //OCC319->  the operation will be done later
+          const Standard_Integer aIdxWireStart = aNodeInSeq(anIndexLast);
+          if(aIdxWireStart < aSeqPnt2d.Length())
+          {
+            aSeqPnt2d.Split(aIdxWireStart, aWire);
             // 2. Proceed the loop
             //AnalizeWire(aLoop, Umin, Umax, Vmin, Vmax, aWirePoints, aWireLength, NbBiPoint);
-            aWireLength.Append(aWire.Length());
-            aWirePoints.Append(aWire);
-            //<-OCC319
+            aWireLength.Append( aWire.Length() );
+            aWirePoints.Append( aWire );
           }
         }
-        nbedges++;
+        aNbEdges++;
       }
     }
 
-    if (nbedges)
+    if (aNbEdges)
     {
       // Isn't it open?
-      if (falsewire || (firstindex != lastindex) || SeqPnt2d.Length() > 1)
+      if (isFalseWire || (aFirstIndex != aLastIndex) || aSeqPnt2d.Length() > 1)
       {
         myState = BRepMesh_OpenWire;
         return;
       }
     }
-    else
-    {
-#ifdef DEB_MESH
-      cout <<"Warning : empty wire" <<endl;
-#endif
-    }
   }
 
-  const Standard_Integer nbwires = aWireLength.Length();
-  Standard_Integer NbBiPoint = aWirePoints.Length();
-  BRepMesh_Array1OfBiPoint BiPoints(0,NbBiPoint);
-
-  BRepMesh_BiPoint *BP;
-  Standard_Real *Coordinates1;
-  Standard_Real x1, y1, x2, y2, xstart, ystart;
-  Standard_Integer j, l = 1;
-  BP = &(BiPoints.ChangeValue(1));
+  const Standard_Integer aNbWires = aWireLength.Length();
+  Standard_Integer aNbBiPoint = aWirePoints.Length();
+  BRepMesh_Array1OfBiPoint aBiPoints(0, aNbBiPoint);
+  BRepMesh_BiPoint *aBiPoint = &(aBiPoints.ChangeValue(1));
 
   // Fill array of segments (bi-points)
-  for (i = 1; i <= nbwires; i++)
+  Standard_Integer k = 1;
+  for (Standard_Integer i = 1; i <= aNbWires; i++)
   {
-    const Standard_Integer len = aWireLength(i) + 1;
-    for (j = 1; j <= len; j++)
+    Standard_Real x1, y1, x2, y2, aXstart, aYstart;
+    const Standard_Integer aLen = aWireLength(i) + 1;
+    for (Standard_Integer j = 1; j <= aLen; j++)
     {
       // Obtain last point of the segment
-      if (j == len)
+      if (j == aLen)
       {
-        x2 = xstart;
-        y2 = ystart;
+        x2 = aXstart;
+        y2 = aYstart;
       }
       else
       {
-        const gp_Pnt2d& PT = aWirePoints(l); l++;
-        x2 = PT.X();
-        y2 = PT.Y();
+        const gp_Pnt2d& aPnt = aWirePoints(k);
+        k++;
+
+        x2 = aPnt.X();
+        y2 = aPnt.Y();
       }
       // Build segment (bi-point)
       if (j == 1)
       {
-        xstart = x2;
-        ystart = y2;
+        aXstart = x2;
+        aYstart = y2;
       }
       else
       {
-        Coordinates1 = ((Standard_Real*)(BP->Coordinates())); BP++;
-        Coordinates1[0] = x1;
-        Coordinates1[1] = y1;
-        Coordinates1[2] = x2;
-        Coordinates1[3] = y2;
-        Coordinates1[4] = x2 - x1;
-        Coordinates1[5] = y2 - y1;
+        Standard_Real *aCoordinates1 = ((Standard_Real*)(aBiPoint->Coordinates()));
+        aBiPoint++;
+
+        aCoordinates1[0] = x1;
+        aCoordinates1[1] = y1;
+        aCoordinates1[2] = x2;
+        aCoordinates1[3] = y2;
+        aCoordinates1[4] = x2 - x1;
+        aCoordinates1[5] = y2 - y1;
       }
       x1 = x2;
       y1 = y2;
@@ -614,26 +582,29 @@ BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& aFace,
 
   // Search the intersection
   // Explore first wire
-  Standard_Integer ik, ikEnd = 0;
-  for(i = 1; i <= nbwires; i++)
+  Standard_Integer ikEnd = 0;
+  for(Standard_Integer i = 1; i <= aNbWires; i++)
   {
-    ik = ikEnd + 1;  ikEnd += aWireLength(i);
+    Standard_Integer ik = ikEnd + 1;
+    ikEnd += aWireLength(i);
+
     // Explore second wire
-    for (j = i; j <= nbwires; j++)
+    for (Standard_Integer j = i; j <= aNbWires; j++)
     {
-      if ( checkWiresIntersection(i, j, &ik, ikEnd, aWireLength, BiPoints) )
+      if ( checkWiresIntersection(i, j, &ik, ikEnd, aWireLength, aBiPoints) )
       {
-        myState = BRepMesh_SelfIntersectingWire; return;
+        myState = BRepMesh_SelfIntersectingWire;
+        return;
       }
     }
   }
 
   // Find holes
-  for (i = nbwires; i >= 1; i--)
+  for (Standard_Integer i = aNbWires; i >= 1; i--)
   {
-    NbBiPoint = aWirePoints.Length() - aWireLength(i) + 1;
-    aWirePoints.Split(NbBiPoint, aWire);
-    AnalizeWire(aWire, Umin, Umax, Vmin, Vmax);
+    aNbBiPoint = aWirePoints.Length() - aWireLength(i) + 1;
+    aWirePoints.Split(aNbBiPoint, aWire);
+    AnalizeWire(aWire, theUmin, theUmax, theVmin, theVmax);
   }
 }
 
@@ -642,26 +613,24 @@ BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& aFace,
 //function : Perform
 //purpose  : 
 //=======================================================================
-
-TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& aPoint) const
+TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& thePoint) const
 {
   Standard_Boolean isOut = Standard_False;
-
-  Standard_Integer cur, i, nb = TabClass.Length();
+  Standard_Integer aNb   = myTabClass.Length();
   
-  for (i = 1; i <= nb; i++)
+  for (Standard_Integer i = 1; i <= aNb; i++)
   {
-    cur = ((CSLib_Class2d*)TabClass(i))->SiDans(aPoint);
-    if (cur == 0)
+    Standard_Integer aCur = ((CSLib_Class2d*)myTabClass(i))->SiDans(thePoint);
+    if (aCur == 0)
     {
       // Point is ON, but mark it as OUT
       isOut = Standard_True;
     }
     else
-    {
-      isOut = TabOrien(i)? (cur == -1) : (cur == 1);
-    }
-    if (isOut) return TopAbs_OUT;
+      isOut = myTabOrient(i)? (aCur == -1) : (aCur == 1);
+    
+    if (isOut)
+      return TopAbs_OUT;
   }
 
   return TopAbs_IN;
@@ -672,16 +641,15 @@ TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& aPoint) const
 //function : Destroy
 //purpose  : 
 //=======================================================================
-
 void BRepMesh_Classifier::Destroy()
 {
-  Standard_Integer i, nb = TabClass.Length();
-  for (i = 1; i <= nb; i++)
+  Standard_Integer aNb = myTabClass.Length();
+  for (Standard_Integer i = 1; i <= aNb; i++)
   {
-    if (TabClass(i))
+    if (myTabClass(i))
     {
-      delete ((CSLib_Class2d*)TabClass(i));
-      TabClass(i) = NULL;
+      delete ((CSLib_Class2d*)myTabClass(i));
+      myTabClass(i) = NULL;
     }
   }
 }

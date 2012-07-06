@@ -38,16 +38,16 @@ uses
 
 is 
     
-    Create   (F      : Face                          from TopoDS; 
-    	      Tol    : Real                          from Standard;
-    	      edges  : DataMapOfShapePairOfPolygon   from BRepMesh;
-       	      themap : IndexedMapOfInteger           from TColStd;
-    	      Str    : DataStructureOfDelaun         from BRepMesh;
-    	      Umin, Umax, Vmin, Vmax: Real           from Standard)
+    Create   (theFace      : Face                          from TopoDS; 
+              theTolUV     : Real                          from Standard;
+              theEdges     : DataMapOfShapePairOfPolygon   from BRepMesh;
+              theMap       : IndexedMapOfInteger           from TColStd;
+              theStructure : DataStructureOfDelaun         from BRepMesh;
+              theUmin, theUmax, theVmin, theVmax : Real    from Standard)
     returns Classifier from BRepMesh;
 
 
-    Perform(me; Puv: Pnt2d from gp)
+    Perform(me; thePoint: Pnt2d from gp)
     returns State from TopAbs;
 
 
@@ -57,11 +57,12 @@ is
 
 
     Destroy(me: in out);
-    	---C++: alias ~
+        ---C++: alias ~
 
 
-    AnalizeWire (me: in out; theSeqPnt2d : in SequenceOfPnt2d from TColgp;
-		             Umin, Umax, Vmin, Vmax: in Real from Standard)
+    AnalizeWire (me          : in out;
+                 theSeqPnt2d : in SequenceOfPnt2d from TColgp;
+                 theUmin, theUmax, theVmin, theVmax: in Real from Standard)
     is private;
     -- Private method called from constructor after some (piece of) wire 
     -- has been explored and put into <theSeqPnt2d>. 
@@ -69,14 +70,10 @@ is
     
 fields 
 
-    TabClass    : SeqOfPtr          from BRepTopAdaptor;
-    TabOrien    : SequenceOfInteger from TColStd;
-    Toluv       : Real              from Standard;
-    Face        : Face              from TopoDS;
-    U1          : Real              from Standard;
-    V1          : Real              from Standard;    
-    U2          : Real              from Standard;
-    V2          : Real              from Standard;
+    myTabClass  : SeqOfPtr          from BRepTopAdaptor;
+    myTabOrient : SequenceOfInteger from TColStd;
+    myTolUV     : Real              from Standard;
+    myFace      : Face              from TopoDS;
     myState     : Status            from BRepMesh;
 
 end Classifier from BRepMesh;
