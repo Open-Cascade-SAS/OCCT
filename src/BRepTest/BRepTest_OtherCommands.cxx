@@ -23,7 +23,32 @@
 
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
-#include <BRep_Builder.hxx>
+#include <DrawTrSurf.hxx>
+
+#include <string.h>
+#include <stdio.h>
+
+#include <Standard_ErrorHandler.hxx>
+#include <Precision.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Ax1.hxx>
+
+#include <ElCLib.hxx>
+
+#include <TColgp_SequenceOfPnt.hxx>
+
+#include <GeomAbs_JoinType.hxx>
+#include <Geom_Line.hxx>
+
+#include <IntCurvesFace_Intersector.hxx>
+
+#include <TopAbs.hxx>
+#include <TopAbs_Orientation.hxx>
+
+#include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
@@ -33,29 +58,82 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TCollection_AsciiString.hxx>
-
-#include <BRepIntCurveSurface_Inter.hxx>
-#include <Geom_Line.hxx>
-#include <DrawTrSurf.hxx>
-
-#include <string.h>
-
 #include <TopoDS_Iterator.hxx>
+
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+
 #include <TopExp_Explorer.hxx>
+
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#include <Standard_ErrorHandler.hxx>
+#include <LocOpe_CSIntersector.hxx>
+#include <LocOpe_SequenceOfLin.hxx>
+#include <LocOpe_PntFace.hxx>
+#include <BRepFeat_MakeDPrism.hxx>
 
-//#ifdef WNT
-#include <stdio.h>
-//#endif
+#include <BRepTools.hxx>
+#include <BRepIntCurveSurface_Inter.hxx>
+#include <BRepOffset.hxx>
+#include <BRepOffset_MakeOffset.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+
+static 
+  void SampleEdges (const TopoDS_Shape&   theShape, 
+		    TColgp_SequenceOfPnt& theSeq);
+static 
+  TopoDS_Face NextFaceForPrism (const TopoDS_Shape& shape, 
+				const TopoDS_Shape& basis,
+				const gp_Ax1&       ax1);
+static
+  void PrintState (Draw_Interpretor& aDI, 
+		   const TopAbs_State& aState);
+//
+static Standard_Integer emptyshape(Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer subshape  (Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer brepintcs (Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer MakeBoss  (Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer MakeShell (Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer xbounds   (Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer xclassify (Draw_Interpretor&, Standard_Integer, const char** );
 
 //=======================================================================
-// shape : shape name V/E/W/F/SH/SO/CS/C
+//function : OtherCommands
+//purpose  : 
 //=======================================================================
+void  BRepTest::OtherCommands(Draw_Interpretor& theCommands)
+{
+  static Standard_Boolean done = Standard_False;
+  if (done) return;
+  done = Standard_True;
 
-static Standard_Integer emptyshape(Draw_Interpretor& , Standard_Integer n, const char** a)
+  const char* g = "TOPOLOGY other commands";
+
+  theCommands.Add("shape",
+		  "shape name V/E/W/F/Sh/So/CS/C; make a empty shape",__FILE__,emptyshape,g);
+
+  theCommands.Add("subshape",
+		  "subshape name V/E/W/F/Sh/So/CS/C index; get subsshape <index> of given type"
+		  ,__FILE__,subshape,g);
+
+  theCommands.Add("BRepIntCS",
+		  "Calcul d'intersection entre face et curve : BRepIntCS curve shape"
+		  ,__FILE__,brepintcs,g);
+
+  theCommands.Add("makeboss",  "create a boss on the shape myS", __FILE__, MakeBoss, g);
+  theCommands.Add("mksh", "create a shell on Shape", __FILE__, MakeShell, g);
+  theCommands.Add("xbounds",  "xbounds face", __FILE__, xbounds, g);
+  theCommands.Add("xclassify",  "use xclassify Solid [Tolerance=1.e-7]", __FILE__, xclassify, g);
+  
+
+}
+//=======================================================================
+//function : emptyshape
+//purpose  : shape : shape name V/E/W/F/SH/SO/CS/C
+//=======================================================================
+Standard_Integer emptyshape(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
   if (n <= 1) return 1;
 
@@ -101,10 +179,10 @@ static Standard_Integer emptyshape(Draw_Interpretor& , Standard_Integer n, const
 }
 
 //=======================================================================
-// subshape
+//function : subshape
+//purpose  : 
 //=======================================================================
-
-static Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char** a)
+Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n <= 2) return 1;
 
@@ -195,12 +273,11 @@ static Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const
   }
   return 0;
 }
-
 //=======================================================================
-// subshape
+//function : brepintcs
+//purpose  : 
 //=======================================================================
-
-static Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const char** a)
+Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
   if (n <= 2) return 1;
   TopoDS_Shape S = DBRep::Get(a[n-1]);
@@ -247,40 +324,12 @@ static Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const 
   //POP pour NT
   return 0;
 }
-
-
-
-#include <TopoDS.hxx>
-#include <TopAbs.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <Precision.hxx>
-#include <IntCurvesFace_Intersector.hxx>
-#include <ElCLib.hxx>
-#include <BRepFeat_MakeDPrism.hxx>
-#include <BRepTools.hxx>
-#include <TopoDS.hxx>
-//#include <SaveShape.hxx>
-#include <gp_Ax1.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_SequenceOfLin.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <LocOpe_PntFace.hxx>
-
-static void SampleEdges (const TopoDS_Shape&   theShape, TColgp_SequenceOfPnt& theSeq);
-static TopoDS_Face NextFaceForPrism (const TopoDS_Shape& shape, 
-				     const TopoDS_Shape& basis,
-				     const gp_Ax1&       ax1);
-
 //=======================================================================
-// intgo
+//function : MakeBoss
+//purpose  : 
 //=======================================================================
-static Standard_Integer MakeBoss(Draw_Interpretor& , Standard_Integer , const char** a)
+Standard_Integer MakeBoss(Draw_Interpretor& , Standard_Integer , const char** a)
 {
-
-
   TopoDS_Shape myS = DBRep::Get( a[2] );
 
   TopoDS_Shape myBasis = DBRep::Get( a[3] ) ;
@@ -306,18 +355,11 @@ static Standard_Integer MakeBoss(Draw_Interpretor& , Standard_Integer , const ch
 
   return 0;
 }
-
-#include <BRepOffset_MakeOffset.hxx>
-#include <BRepOffset.hxx>
-//#include <SaveShape.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <GeomAbs_JoinType.hxx>
-
 //=======================================================================
-// Create a shell
+//function : MakeShell
+//purpose  : 
 //=======================================================================
-static Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const char** a)
+Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const char** a)
 {
 
   TopoDS_Shape aShape = DBRep::Get( a[1] ); 
@@ -342,7 +384,6 @@ static Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const c
   }
   return 0;
 }
-
 //=======================================================================
 //function : xbounds
 //purpose  : 
@@ -387,53 +428,78 @@ Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** 
   //
   return 0;
 }
-
 //=======================================================================
-//function : OtherCommands
+//function : xclassify
 //purpose  : 
 //=======================================================================
-
-void  BRepTest::OtherCommands(Draw_Interpretor& theCommands)
+Standard_Integer xclassify (Draw_Interpretor& aDI, Standard_Integer n, const char** a)
 {
-  static Standard_Boolean done = Standard_False;
-  if (done) return;
-  done = Standard_True;
-
-  const char* g = "TOPOLOGY other commands";
-
-  theCommands.Add("shape",
-		  "shape name V/E/W/F/Sh/So/CS/C; make a empty shape",__FILE__,emptyshape,g);
-
-  theCommands.Add("subshape",
-		  "subshape name V/E/W/F/Sh/So/CS/C index; get subsshape <index> of given type"
-		  ,__FILE__,subshape,g);
-
-  theCommands.Add("BRepIntCS",
-		  "Calcul d'intersection entre face et curve : BRepIntCS curve shape"
-		  ,__FILE__,brepintcs,g);
-
-  theCommands.Add("makeboss",
-		  "create a boss on the shape myS", __FILE__, MakeBoss, g);
-
-  theCommands.Add("mksh",
-		  "create a shell on Shape", __FILE__, MakeShell, g);
-
-
-  theCommands.Add("xbounds",
-		  "xbounds face", __FILE__, xbounds, g);
-
+  char sbf[512];	
+  
+  if (n < 2) {
+    aDI<<" use xclassify Solid [Tolerance=1.e-7]\n";
+    return 1;
+  }
+  
+  TopoDS_Shape aS = DBRep::Get(a[1]);
+  if (aS.IsNull()) {
+    aDI<<" Null Shape is not allowed here\n";
+    return 0;
+  }
+  
+  if (aS.ShapeType()!=TopAbs_SOLID) {
+    aDI<< " Shape type must be SOLID\n";
+    return 0;
+  }
+  //
+  Standard_Real aTol=1.e-7;
+  TopAbs_State aState = TopAbs_UNKNOWN;
+  //
+  aTol=1.e-7; 
+  if (n==3) {
+    aTol=atof(a[2]);
+  }
+  //
+  BRepClass3d_SolidClassifier aSC(aS);
+  aSC.PerformInfinitePoint(aTol);
+  
+  aState = aSC.State();
+  PrintState(aDI, aState);
+  //
+  return 0;
 }
-
-
-
+//=======================================================================
+//function : PrintState
+//purpose  : 
+//=======================================================================
+void PrintState (Draw_Interpretor& aDI, 
+		 const TopAbs_State& aState)
+{
+  aDI<<"state is: ";
+  switch (aState) {
+  case TopAbs_IN:
+    aDI<<"IN\n"; 
+    break;
+  case TopAbs_OUT:
+    aDI<<"OUT\n";		
+    break;
+  case TopAbs_ON:	 
+    aDI<<"ON\n";	
+    break;
+  case TopAbs_UNKNOWN:
+  default:
+    aDI<<"UNKNOWN\n";		
+    break;
+  }
+}
 //=======================================================================
 //function : NextFaceForPrism
 //purpose  : Search a face from <shape> which intersects with a line of
 //           direction <ax1> and location a point of <basis>.
 //=======================================================================
-static TopoDS_Face NextFaceForPrism (const TopoDS_Shape& shape, 
-				     const TopoDS_Shape& basis,
-				     const gp_Ax1&       ax1)
+TopoDS_Face NextFaceForPrism (const TopoDS_Shape& shape, 
+			      const TopoDS_Shape& basis,
+			      const gp_Ax1&       ax1)
 {
   TopoDS_Face nextFace;
 
@@ -465,14 +531,13 @@ static TopoDS_Face NextFaceForPrism (const TopoDS_Shape& shape,
   return nextFace;
 }
 
-#include <BRep_Tool.hxx>
 
 //=======================================================================
 //function : SampleEdges
 //purpose  : Sampling of <theShape>.
 //design   : Collect the vertices and points on the edges
 //=======================================================================
-static void SampleEdges (const TopoDS_Shape&   theShape, TColgp_SequenceOfPnt& theSeq)
+void SampleEdges (const TopoDS_Shape&   theShape, TColgp_SequenceOfPnt& theSeq)
 {
 
   theSeq.Clear();
