@@ -39,6 +39,7 @@ uses    Boolean                   from Standard,
         DataMapOfVertexInteger    from BRepMesh,
         DataMapOfIntegerListOfXY  from BRepMesh,
         DataMapOfShapeReal        from TopTools,
+        MutexForShapeProvider     from TopTools,
         ListOfVertex              from BRepMesh,
         ClassifierPtr             from BRepMesh,
         Triangle                  from BRepMesh,
@@ -54,7 +55,6 @@ uses    Boolean                   from Standard,
         Triangulation             from Poly,
         Location                  from TopLoc
 
-
 is 
 
         Create (theAngle      : Real    from Standard;
@@ -67,7 +67,8 @@ is
         Add  (me       : mutable;
               theFace     : Face from TopoDS;
               theAttrib   : FaceAttribute from BRepMesh;
-              theMapDefle : DataMapOfShapeReal from TopTools)
+              theMapDefle : DataMapOfShapeReal from TopTools;
+              theMutexProvider : MutexForShapeProvider from TopTools)
           is static;
 
       
@@ -116,7 +117,8 @@ is
 
         AddInShape (me: mutable;
                     theFace   : Face     from TopoDS;
-                    theDefFace: Real     from Standard)
+                    theDefFace: Real     from Standard;
+                    theMutexProvider: MutexForShapeProvider from TopTools)
           is static private;
 
 

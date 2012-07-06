@@ -67,8 +67,9 @@ uses    Boolean                   from Standard,
         MapOfInteger              from BRepMesh,
         BaseAllocator             from BRepMesh,
         DataMapOfFaceAttribute    from BRepMesh,
-        IndexedDataMapOfShapeListOfShape from TopTools
-
+        IndexedDataMapOfShapeListOfShape from TopTools,
+        MutexForShapeProvider     from TopTools,
+        ShapeEnum                 from TopAbs
 
 is
 
@@ -193,6 +194,17 @@ is
             returns Boolean from Standard;
         ---Purpose:
         -- Returns the multi-threading usage flag.
+        
+        CreateMutexesForSubShapes(me               : mutable;
+                                  theShape : Shape      from TopoDS;
+                                  theType  : ShapeEnum  from TopAbs);
+         ---Purpose:
+         -- Creates mutexes for each sub-shape of type theType in theShape.
+         -- Used to avoid data races.
+                            
+        RemoveAllMutexes(me: mutable);
+        ---Purpose:
+        -- Removes all created mutexes
 
 -- Output :
 
@@ -338,5 +350,6 @@ fields
       myMapdefle     : DataMapOfShapeReal            from TopTools;
       myNottriangulated : ListOfShape                from TopTools;
       myAllocator    : BaseAllocator                 from BRepMesh;
+      myMutexProvider: MutexForShapeProvider         from TopTools;
 
 end FastDiscret;

@@ -108,7 +108,8 @@ BRepMesh_FastDiscretFace::BRepMesh_FastDiscretFace
 
 void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace,
                                    const Handle(BRepMesh_FaceAttribute)& theAttrib,
-                                   const TopTools_DataMapOfShapeReal&    theMapDefle)
+                                   const TopTools_DataMapOfShapeReal&    theMapDefle,
+                                   const TopTools_MutexForShapeProvider& theMutexProvider)
 {
 #ifndef DEB_MESH
   try
@@ -324,7 +325,7 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     }
     myStructure->ReplaceNodes(aMoveNodes);
   
-    AddInShape(face, (aDef < 0.0)? theAttrib->GetDefFace() : aDef);
+    AddInShape(face, (aDef < 0.0)? theAttrib->GetDefFace() : aDef, theMutexProvider);
 #ifndef DEB_MESH
   }
   catch(Standard_Failure)
@@ -1522,12 +1523,15 @@ Standard_Real BRepMesh_FastDiscretFace::Control(const Handle(BRepAdaptor_HSurfac
   return Sqrt(maxdef);
 }
 
+static Standard_Mutex DummyMutex;
+
 //=======================================================================
 //function : AddInShape
 //purpose  : 
 //=======================================================================
 void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
-                                          const Standard_Real theDefFace)
+                                          const Standard_Real theDefFace,
+                                          const TopTools_MutexForShapeProvider& theMutexProvider)
 {
 //  gp_Pnt Pt;
   BRep_Builder B;
@@ -1624,6 +1628,12 @@ void BRepMesh_FastDiscretFace::AddInShape(const TopoDS_Face&  theFace,
       const BRepMesh_PairOfPolygon& pair = It.Value();
       const Handle(Poly_PolygonOnTriangulation)& NOD1 = pair.First();
       const Handle(Poly_PolygonOnTriangulation)& NOD2 = pair.Last();
+
+      // lock mutex to prevent parallel change of the same data
+      Standard_Mutex* aMutex = theMutexProvider.GetMutex(It.Key());
+      Standard_Mutex::SentryNested (aMutex == NULL ? DummyMutex : *aMutex,
+                                    aMutex != NULL);
+
       if ( NOD1 == NOD2 ) {
         B.UpdateEdge(TopoDS::Edge(It.Key()), NullPoly, TOld,loc);
         B.UpdateEdge(TopoDS::Edge(It.Key()), NOD1, T, loc);

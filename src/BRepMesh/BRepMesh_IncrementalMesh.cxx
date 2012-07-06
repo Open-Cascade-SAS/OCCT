@@ -40,6 +40,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopAbs.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopTools_MutexForShapeProvider.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TopoDS_Shape.hxx>
@@ -260,6 +261,7 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
   if (myInParallel)
   {
   #ifdef HAVE_TBB
+    myMesh->CreateMutexesForSubShapes(S, TopAbs_EDGE);
     // mesh faces in parallel threads using TBB
     tbb::parallel_for_each (aFaces.begin(), aFaces.end(), *myMesh.operator->());
   #else
@@ -267,6 +269,7 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Shape& S)
     for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
       myMesh->Process (*it);
   #endif
+    myMesh->RemoveAllMutexes();
   }
   else
   {

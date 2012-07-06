@@ -258,6 +258,7 @@ void BRepMesh_FastDiscret::Perform(const TopoDS_Shape& theShape)
   if (myInParallel)
   {
   #ifdef HAVE_TBB
+    CreateMutexesForSubShapes(theShape, TopAbs_EDGE);
     // mesh faces in parallel threads using TBB
     tbb::parallel_for_each (aFaces.begin(), aFaces.end(), *this);
   #else
@@ -265,6 +266,7 @@ void BRepMesh_FastDiscret::Perform(const TopoDS_Shape& theShape)
     for (std::vector<TopoDS_Face>::iterator it(aFaces.begin()); it != aFaces.end(); it++)
       Process (*it);
   #endif
+    RemoveAllMutexes();
   }
   else
   {
@@ -286,7 +288,7 @@ void BRepMesh_FastDiscret::Process(const TopoDS_Face& theFace) const
   if ( GetFaceAttribute (theFace, fattribute) ) 
   {
     BRepMesh_FastDiscretFace aTool (GetAngle(), WithShare());
-    aTool.Add (theFace, fattribute, GetMapOfDefEdge());
+    aTool.Add (theFace, fattribute, GetMapOfDefEdge(), myMutexProvider);
   }
   //cout << "END   face " << theFace.TShape().operator->() << endl << flush;
 }
@@ -1686,4 +1688,23 @@ void BRepMesh_FastDiscret::RemoveFaceAttribute(const TopoDS_Face& theFace)
 {
   if(myMapattrib.IsBound(theFace))
     myMapattrib.UnBind(theFace);
+}
+
+//=======================================================================
+//function : CreateMutexesForSubShapes
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscret::CreateMutexesForSubShapes(const TopoDS_Shape& theShape,
+                                                     const TopAbs_ShapeEnum theType)
+{
+  myMutexProvider.CreateMutexesForSubShapes(theShape, theType);
+}
+
+//=======================================================================
+//function : RemoveAllMutexes
+//purpose  : 
+//=======================================================================
+void BRepMesh_FastDiscret::RemoveAllMutexes()
+{
+  myMutexProvider.RemoveAllMutexes();
 }

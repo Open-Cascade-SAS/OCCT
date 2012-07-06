@@ -213,7 +213,9 @@ is
 	
     --
     --     Package methods
-    --     
+    --   
+
+    imported MutexForShapeProvider;
     
     Dump(Sh : Shape from TopoDS; S : in out OStream);
 	  ---Purpose: Dumps the topological structure  of <Sh>  on the

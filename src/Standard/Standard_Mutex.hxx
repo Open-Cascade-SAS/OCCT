@@ -198,6 +198,11 @@ private:
   //! Callback method to unlock the mutex if OCC exception or signal is raised
   virtual void DestroyCallback ();
   
+  //! This method should not be called (prohibited).
+  Standard_Mutex (const Standard_Mutex &);
+  //! This method should not be called (prohibited).
+  Standard_Mutex& operator = (const Standard_Mutex &);
+  
 private:
 #ifdef WNT
   CRITICAL_SECTION myMutex;
