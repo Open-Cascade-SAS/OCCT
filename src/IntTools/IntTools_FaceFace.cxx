@@ -308,6 +308,19 @@ static
 				   const TopoDS_Face& aF2,
 				   const Handle(IntTools_Context)& aCtx);
 //
+static
+  Standard_Real FindMaxSquareDistance (const Standard_Real aA,
+				       const Standard_Real aB,
+				       const Standard_Real aEps,
+				       const Handle(Geom_Curve)& aC3D,
+				       const Handle(Geom2d_Curve)& aC2D1,
+				       const Handle(Geom2d_Curve)& aC2D2,
+				       const Handle(GeomAdaptor_HSurface) myHS1,
+				       const Handle(GeomAdaptor_HSurface) myHS2,
+				       const TopoDS_Face& aF1,
+				       const TopoDS_Face& aF2,
+				       const Handle(IntTools_Context)& aCtx);
+
 //=======================================================================
 //function : 
 //purpose  : 
@@ -731,6 +744,10 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   GeomAbs_SurfaceType aType1, aType2;
   //
   aNbLin=myIntersector.NbLines();
+  if (!aNbLin) {
+    return;
+  }
+  //
   aType1=myHS1->Surface().GetType();
   aType2=myHS2->Surface().GetType();
   //
@@ -761,13 +778,11 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       }
     }
     //ZZ
-    
-    {// Check the distances
-      Standard_Integer i, j, aNbP;
-      Standard_Real aT, aT1, aT2, dT, aD2, aD2Max;
+    if (aNbLin) {// Check the distances
+      Standard_Integer i, aNbP, j ;
+      Standard_Real aT, aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
       //
       aD2Max=0.;
-      aNbP=11;
       aNbLin=mySeqOfCurve.Length();
       //
       for (i=1; i<=aNbLin; ++i) {
@@ -788,22 +803,22 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	aT1=aBC->FirstParameter();
 	aT2=aBC->LastParameter();
 	//
-	aNbP--;
+	aEps=0.01*(aT2-aT1);
+	aNbP=10;
 	dT=(aT2-aT1)/aNbP;
-	//modified by NIZNHY-PKV Tue Apr 17 14:36:33 2012f
 	for (j=1; j<aNbP; ++j) {
-	  aT=aT1+j*dT;
-	  aD2=MaxSquareDistance(aT, aC3D, aC2D1, aC2D2,
-				myHS1, myHS2, myFace1, myFace2, myContext);
+	  aT11=aT1+j*dT;
+	  aT12=aT11+dT;
+	  aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
+				    myHS1, myHS2, myFace1, myFace2, myContext);
 	  if (aD2>aD2Max) {
 	    aD2Max=aD2;
 	  }
-	}//for (j=0; j<aNbP; ++j) {
+	}
       }//for (i=1; i<=aNbLin; ++i) {
       //
       myTolReached3d=sqrt(aD2Max);
-    }
-  
+    }// if (aNbLin) 
   }// if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
   //
   //904/G3 f
@@ -955,6 +970,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	  aD2max=aD2;
 	}
       }//for (j=0; j<aNbP; ++j) {
+     
     }//for (i=1; i<=aNbLin; ++i) {
     //
     aD2=myTolReached3d*myTolReached3d;
@@ -4650,7 +4666,63 @@ void RefineVector(gp_Vec2d& aV2D)
     }
   }
   aV2D.SetCoord(aC[0], aC[1]);
-} 
+}
+//=======================================================================
+//function : FindMaxSquareDistance
+//purpose  : 
+//=======================================================================
+Standard_Real FindMaxSquareDistance (const Standard_Real aT1,
+				     const Standard_Real aT2,
+				     const Standard_Real aEps,
+				     const Handle(Geom_Curve)& aC3D,
+				     const Handle(Geom2d_Curve)& aC2D1,
+				     const Handle(Geom2d_Curve)& aC2D2,
+				     const Handle(GeomAdaptor_HSurface) myHS1,
+				     const Handle(GeomAdaptor_HSurface) myHS2,
+				     const TopoDS_Face& myFace1,
+				     const TopoDS_Face& myFace2,
+				     const Handle(IntTools_Context)& myContext)
+{
+  Standard_Real aA, aB, aCf, aX1, aX2, aF1, aF2, aX, aF;
+  //
+  aCf=1.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.));
+  aA=aT1;
+  aB=aT2;
+  aX1=aB-(aB-aA)/aCf;  
+  aF1=MaxSquareDistance(aX1, 
+			aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+  aX2=aA+(aB-aA)/aCf;
+  aF2=MaxSquareDistance(aX2, 
+			aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+  //
+  while(1) {
+    //
+    if (fabs(aA-aB)<aEps) {
+      aX=0.5*(aA+aB);
+      aF=MaxSquareDistance(aX, 
+			aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+      break;
+    }
+    if (aF1<aF2){
+      aA=aX1;
+      aX1=aX2;
+      aF1=aF2;
+      aX2=aA+(aB-aA)/aCf;
+      aF2=MaxSquareDistance(aX2, 
+			    aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+      
+    }
+    else {
+      aB=aX2;
+      aX2=aX1;
+      aF2=aF1;
+      aX1=aB-(aB-aA)/aCf; 
+      aF1=MaxSquareDistance(aX1, 
+			    aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
+    }
+  }
+  return aF;
+}
 //=======================================================================
 //function : MaxSquareDistance
 //purpose  : 
