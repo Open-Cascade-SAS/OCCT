@@ -1928,7 +1928,10 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
             Handle(StepRepr_DescriptiveRepresentationItem) DRI =
               Handle(StepRepr_DescriptiveRepresentationItem)::DownCast(RI);
             aName = DRI->Name();
+            
             aDescription = DRI->Description();
+            if(aName.IsNull())
+              aName = aDescription;
           }
           if(RI->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem))) {
             // try to find density for material
@@ -1960,7 +1963,9 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
         }
       }
     }
-    if( aName->Length()==0 ) continue;
+   
+    if( aName.IsNull() || aName->Length()==0 ) 
+      continue;
     // find shape label amd create Material link
     TopoDS_Shape aSh;
     Handle(StepShape_SolidModel) SM = FindSolidForPDS(PDS,graph);
