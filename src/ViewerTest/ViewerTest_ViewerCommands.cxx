@@ -654,20 +654,31 @@ void ViewerTest::GetMousePosition(Standard_Integer& Xpix,Standard_Integer& Ypix)
 }
 
 //==============================================================================
+//function : ViewProject: implements VAxo, VTop, VLeft, ...
+//purpose  : Switches to an axonometric, top, left and other views
+//==============================================================================
+
+static int ViewProject(Draw_Interpretor& di, const V3d_TypeOfOrientation ori)
+{
+  if ( ViewerTest::CurrentView().IsNull() ) 
+  {
+    di<<"Call vinit before this command, please"<<"\n";
+    return 1;
+  }
+
+  ViewerTest::CurrentView()->SetProj(ori);
+  return 0;
+}
+
+//==============================================================================
 //function : VAxo
 //purpose  : Switch to an Axonometric view
 //Draw arg : No args
 //==============================================================================
 
 static int VAxo(Draw_Interpretor& di, Standard_Integer , const char** )
-{ if ( ViewerTest::CurrentView().IsNull() ) {
-  di<<"La commande vinit n'a pas ete appele avant"<<"\n";
-  //  VInit(di, argc, argv);
-}
-
-ViewerTest::CurrentView()->SetProj(V3d_XposYnegZpos);
-
-return 0;
+{
+  return ViewProject(di, V3d_XposYnegZpos);
 }
 
 //==============================================================================
@@ -678,16 +689,62 @@ return 0;
 
 static int VTop(Draw_Interpretor& di, Standard_Integer , const char** )
 {
+  return ViewProject(di, V3d_Zpos);
+}
 
-  if ( ViewerTest::CurrentView().IsNull() ) {
-    di<<"La commande vinit n'a pas ete appele avant"<<"\n";
+//==============================================================================
+//function : VBottom
+//purpose  : Switch to a Bottom View
+//Draw arg : No args
+//==============================================================================
 
-    //  VInit(di, , argv);
-  }
+static int VBottom(Draw_Interpretor& di, Standard_Integer , const char** )
+{
+  return ViewProject(di, V3d_Zneg);
+}
 
-  ViewerTest::CurrentView()->SetProj(V3d_Zpos);
-  return 0;
+//==============================================================================
+//function : VLeft
+//purpose  : Switch to a Left View
+//Draw arg : No args
+//==============================================================================
 
+static int VLeft(Draw_Interpretor& di, Standard_Integer , const char** )
+{
+  return ViewProject(di, V3d_Ypos);
+}
+
+//==============================================================================
+//function : VRight
+//purpose  : Switch to a Right View
+//Draw arg : No args
+//==============================================================================
+
+static int VRight(Draw_Interpretor& di, Standard_Integer , const char** )
+{
+  return ViewProject(di, V3d_Yneg);
+}
+
+//==============================================================================
+//function : VFront
+//purpose  : Switch to a Front View
+//Draw arg : No args
+//==============================================================================
+
+static int VFront(Draw_Interpretor& di, Standard_Integer , const char** )
+{
+  return ViewProject(di, V3d_Xpos);
+}
+
+//==============================================================================
+//function : VBack
+//purpose  : Switch to a Back View
+//Draw arg : No args
+//==============================================================================
+
+static int VBack(Draw_Interpretor& di, Standard_Integer , const char** )
+{
+  return ViewProject(di, V3d_Xneg);
 }
 
 //==============================================================================
@@ -2960,11 +3017,26 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vhelp            : display help on the viewer commands",
     __FILE__,VHelp,group);
   theCommands.Add("vtop" ,
-    "vtop or <T>         : Top view" ,
+    "vtop or <T>      : Top view" ,
     __FILE__,VTop,group);
+  theCommands.Add("vbottom" ,
+    "vbottom          : Bottom view" ,
+    __FILE__,VBottom,group);
+  theCommands.Add("vleft" ,
+    "vleft            : Left view" ,
+    __FILE__,VLeft,group);
+  theCommands.Add("vright" ,
+    "vright           : Right view" ,
+    __FILE__,VRight,group);
   theCommands.Add("vaxo" ,
     " vaxo or <A>     : Axonometric view ",
     __FILE__,VAxo,group);
+  theCommands.Add("vfront" ,
+    "vfront           : Front view" ,
+    __FILE__,VFront,group);
+  theCommands.Add("vback" ,
+    "vback            : Back view" ,
+    __FILE__,VBack,group);
   theCommands.Add("vpick" ,
     "vpick           : vpick X Y Z [shape subshape] ( all variables as string )",
     VPick,group);
