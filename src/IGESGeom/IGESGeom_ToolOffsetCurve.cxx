@@ -331,7 +331,7 @@ void IGESGeom_ToolOffsetCurve::OwnCheck(const Handle(IGESGeom_OffsetCurve)& ent,
     ach.SendFail("Offset Function Parameter != 1-2 or 3 (rq : for X-Y or Z)");
 */
   if (ot !=1 && //:l9 abv 15.01.99: CTS22023 and TEC0278: only if ot is function
-      (ent->TaperedOffsetType() < 1) || (ent->TaperedOffsetType() > 2)) {
+      ((ent->TaperedOffsetType() < 1) || (ent->TaperedOffsetType() > 2))) {
     Message_Msg Msg114("XSTEP_114");
     ach->SendFail(Msg114);
   }
