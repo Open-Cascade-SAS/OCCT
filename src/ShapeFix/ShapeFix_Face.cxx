@@ -2286,7 +2286,7 @@ static Standard_Boolean IsPeriodicConicalLoop(const Handle(Geom_ConicalSurface)&
                                               Standard_Boolean& isUDecrease)
 {
   if ( theSurf.IsNull() )
-    Standard_False;
+    return Standard_False;
 
   ShapeAnalysis_Edge aSAE;
   TopLoc_Location aLoc;
