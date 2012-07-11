@@ -150,9 +150,8 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
   TopExp::MapShapes(aSelectedShape, allSubShapes);
 //  cout<<"SELECTION ..."<<endl;
 //  cout << "i = " << allSubShapes.Extent() << endl;
-  Standard_Integer count = 0, j, i;
+  Standard_Integer count = 0, i;
   char aDrawName[80] = "Select";
-  char aDrawNumber[10];
 
   for (i = 1; i <= allSubShapes.Extent(); i++) {
     const TDF_Label& aSubLabel = L.FindChild(i);

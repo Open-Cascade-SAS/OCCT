@@ -5310,7 +5310,7 @@ Standard_Integer bcarray (Draw_Interpretor& di, Standard_Integer argc, const cha
     return 1;
   }
 
-  Standard_Integer i, aNb, aBL;
+  Standard_Integer i, aBL;
   BOPTColStd_CArray1OfInteger aC;
   //
   aBL=100000;

@@ -780,7 +780,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     //ZZ
     if (aNbLin) {// Check the distances
       Standard_Integer i, aNbP, j ;
-      Standard_Real aT, aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
+      Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
       //
       aD2Max=0.;
       aNbLin=mySeqOfCurve.Length();
