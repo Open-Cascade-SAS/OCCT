@@ -28,6 +28,8 @@
 #elif (defined(__APPLE__))
   #include <mach/task.h>
   #include <mach/mach.h>
+#else
+  #include <unistd.h>
 #endif
 
 #include <string>
@@ -80,7 +82,7 @@ void OSD_MemInfo::Update()
     myCounters[MemSwapUsage]      = aProcMemCnts.PagefileUsage;
     myCounters[MemSwapUsagePeak]  = aProcMemCnts.PeakPagefileUsage;
   }
- 
+
 #elif (defined(__linux__) || defined(__linux))
   // use procfs on Linux
   char aBuff[4096];
