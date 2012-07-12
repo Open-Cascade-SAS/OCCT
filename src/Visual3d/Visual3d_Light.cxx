@@ -140,11 +140,11 @@ MyType (Visual3d_TOLS_POSITIONAL) {
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
-	if ( (Fact1 < 0.0) && (Fact1 > 1.0) )
+	if ( (Fact1 < 0.0) || (Fact1 > 1.0) )
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
-	if ( (Fact2 < 0.0) && (Fact2 > 1.0) )
+	if ( (Fact2 < 0.0) || (Fact2 > 1.0) )
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
@@ -186,11 +186,11 @@ MyType (Visual3d_TOLS_SPOT) {
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
-	if ( (Fact1 < 0.0) && (Fact1 > 1.0) )
+	if ( (Fact1 < 0.0) || (Fact1 > 1.0) )
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
-	if ( (Fact2 < 0.0) && (Fact2 > 1.0) )
+	if ( (Fact2 < 0.0) || (Fact2 > 1.0) )
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
@@ -378,7 +378,7 @@ void Visual3d_Light::SetAngle (const Standard_Real AngleCone) {
 
 void Visual3d_Light::SetAttenuation1 (const Standard_Real Fact1) {
 
-	if ( (Fact1 < 0.0) && (Fact1 > 1.0) )
+	if ( (Fact1 < 0.0) || (Fact1 > 1.0) )
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
@@ -399,7 +399,7 @@ void Visual3d_Light::SetAttenuation1 (const Standard_Real Fact1) {
 
 void Visual3d_Light::SetAttenuation2 (const Standard_Real Fact2) {
 
-	if ( (Fact2 < 0.0) && (Fact2 > 1.0) )
+	if ( (Fact2 < 0.0) || (Fact2 > 1.0) )
 		Visual3d_LightDefinitionError::Raise
 			("Bad value for LightAttenuation");
 
