@@ -382,7 +382,7 @@ void CGM_Driver::InitializeWidthMap (const Handle(Aspect_WidthMap)& aWidthMap)
   if (WIDTHMAP)
     delete[] WIDTHMAP;
   WIDTHMAP = new float[Size];
-  memset (WIDTHMAP, 0, sizeof(WIDTHMAP));
+  memset (WIDTHMAP, 0, Size * sizeof(float));
   for (Standard_Integer i=1; i<= Size; i++) {
     Standard_Real w = aWidthMap->Entry(i).Width();
     WIDTHMAP[aWidthMap->Entry(i).Index()] = (float)w;
