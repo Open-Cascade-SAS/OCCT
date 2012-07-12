@@ -1237,11 +1237,13 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   Ex.Init(FP, TopAbs_VERTEX); 
   TopoDS_Vertex v1 = TopoDS::Vertex(Ex.Current()); 
   fillet.AddFillet(v1, 20); 
-  printf("\nError is %d ", fillet.Status()); 
+  di << "\n" << "Error is " << fillet.Status() << "\n";
+//  printf("\nError is %d ", fillet.Status()); 
   Ex.Next(); 
   TopoDS_Vertex V2 = TopoDS::Vertex(Ex.Current()); 
   fillet.AddFillet(V2, 20); 
-  printf("\nError is %d ", fillet.Status());
+  di << "\n" << "Error is " << fillet.Status() << "\n";
+//  printf("\nError is %d ", fillet.Status());
   fillet.Build(); 
   FP1 = fillet.Shape(); 
   ais2 = new AIS_Shape( FP1 ); 
