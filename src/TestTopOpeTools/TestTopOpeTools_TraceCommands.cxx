@@ -319,7 +319,7 @@ Standard_Integer dstrace(Draw_Interpretor& di, Standard_Integer n , const char**
   pa[1] = (char *)a1.ToCString();
   for (Standard_Integer i=1;i<n;i++) pa[i+1] = a[i];
   TestTopOpeTools_SetTrace(di,npa,pa);
-  if (pa) delete [] pa;
+  if (pa) free(pa);
   return 0;
 }
 

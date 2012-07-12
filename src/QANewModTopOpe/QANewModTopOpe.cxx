@@ -659,7 +659,7 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
     if(aNotChanged) break;
     if(aRes) break;
   }
-  delete aMat;
+  delete [] aMat;
 
   //  cout << "QANewModTopOpe::IsConnected END: aRes="<<aRes   << ";ncount="<<ncount<<endl;
   cout << "QANewModTopOpe::IsConnected END: aRes="<<aRes <<endl;

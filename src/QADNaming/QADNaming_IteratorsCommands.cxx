@@ -158,7 +158,7 @@ static Standard_Integer GetAllNewShapes (Draw_Interpretor& di,
 	    sprintf(aSubName,"%s_%d",aName,a);
 	  } else aSubName = NULL;
 	  aResult+=GetAllNew(anIter.NewShape(),aLabel,aSubName,0);
-	  if (aSubName != NULL) delete(aSubName);
+	  if (aSubName != NULL) delete [] aSubName;
 	}
       }
     } else { // shape
