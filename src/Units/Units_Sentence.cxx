@@ -58,7 +58,8 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
 			       const Standard_CString astring)
 {
   Standard_Integer index;
-  Standard_Integer i,k,l,limchain;
+  Standard_Integer k,l;
+  Standard_Size i,limchain;
   char chain[255];
   Handle(Units_Token) token;
   Handle(Units_Token) referencetoken;

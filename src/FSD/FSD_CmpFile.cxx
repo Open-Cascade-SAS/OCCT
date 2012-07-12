@@ -68,7 +68,7 @@ Storage_Error FSD_CmpFile::IsGoodFileType(const TCollection_AsciiString& aName)
 
   if (s == Storage_VSOk) {
     TCollection_AsciiString l;
-    Standard_Integer        len = strlen(FSD_CmpFile::MagicNumber());
+    Standard_Size        len = strlen(FSD_CmpFile::MagicNumber());
 
     f.ReadChar(l,len);
 
@@ -215,7 +215,7 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
     Buffer[0] = '\0';
     //myStream.get(Buffer,8192,'\n');
     myStream.getline(Buffer,8192,'\n');
-    for (Standard_Integer lv = (strlen(Buffer)- 1); lv > 1 && (Buffer[lv] == '\r' || Buffer[lv] == '\n') ;lv--) {
+    for (Standard_Size lv = (strlen(Buffer)- 1); lv > 1 && (Buffer[lv] == '\r' || Buffer[lv] == '\n') ;lv--) {
       Buffer[lv] = '\0';
     }  
     
@@ -332,10 +332,10 @@ void FSD_CmpFile::ReadExtendedLine(TCollection_ExtendedString& buffer)
 //purpose  : read <rsize> character from the current position.
 //=======================================================================
 
-void FSD_CmpFile::ReadChar(TCollection_AsciiString& buffer, const Standard_Integer rsize)
+void FSD_CmpFile::ReadChar(TCollection_AsciiString& buffer, const Standard_Size rsize)
 {
   char             c;
-  Standard_Integer ccount = 0;
+  Standard_Size ccount = 0;
 
   buffer.Clear();
 
@@ -363,7 +363,7 @@ void FSD_CmpFile::ReadString(TCollection_AsciiString& buffer)
     Buffer[0] = '\0';
     //myStream.get(Buffer,8192,'\n');
     myStream.getline(Buffer,8192,'\n');
-    for (Standard_Integer lv = (strlen(Buffer)- 1); lv > 1 && (Buffer[lv] == '\r' || Buffer[lv] == '\n') ;lv--) {
+    for (Standard_Size lv = (strlen(Buffer)- 1); lv > 1 && (Buffer[lv] == '\r' || Buffer[lv] == '\n') ;lv--) {
       Buffer[lv] = '\0';
     }  
     bpos = Buffer;
@@ -792,7 +792,7 @@ Storage_Error FSD_CmpFile::BeginReadInfoSection()
 {
   Storage_Error s;
   TCollection_AsciiString l;
-  Standard_Integer        len = strlen(FSD_CmpFile::MagicNumber());
+  Standard_Size        len = strlen(FSD_CmpFile::MagicNumber());
 
   ReadChar(l,len);
   

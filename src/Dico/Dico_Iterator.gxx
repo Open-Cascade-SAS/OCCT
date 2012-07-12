@@ -38,7 +38,8 @@ Dico_Iterator::Dico_Iterator (const Handle(Dico_Dictionary)& acell)
     thebase = acell;
   } else {
     thename = basename;
-    Standard_Integer reslev,stat;
+    Standard_Integer stat;
+    Standard_Size reslev;
     acell->SearchCell(basename.ToCString(),basename.Length(),basename.Value(1),
 		      1, thebase,reslev,stat);
     if (stat != 0 || reslev != 0) thebase.Nullify();    // loupe
@@ -57,7 +58,8 @@ Dico_Iterator::Dico_Iterator (const Handle(Dico_Dictionary)& acell)
     thebase = acell;
   } else {
     thename.AssignCat(basename);
-    Standard_Integer reslev,stat;
+    Standard_Integer stat;
+    Standard_Size reslev;
     acell->SearchCell (basename,thename.Length(),basename[0],1,
   thebase,reslev,stat);
     if (stat != 0 || reslev != 0) thebase.Nullify();    // loupe

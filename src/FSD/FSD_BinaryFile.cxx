@@ -61,7 +61,7 @@ Storage_Error FSD_BinaryFile::IsGoodFileType(const TCollection_AsciiString& aNam
 
   if (s == Storage_VSOk) {
     TCollection_AsciiString l;
-    Standard_Integer        len = strlen(FSD_BinaryFile::MagicNumber());
+    Standard_Size        len = strlen(FSD_BinaryFile::MagicNumber());
 
     f.ReadChar(l,len);
 
@@ -156,10 +156,10 @@ const Standard_CString FSD_BinaryFile::MagicNumber()
 //purpose  : read <rsize> character from the current position.
 //=======================================================================
 
-void FSD_BinaryFile::ReadChar(TCollection_AsciiString& buffer, const Standard_Integer rsize)
+void FSD_BinaryFile::ReadChar(TCollection_AsciiString& buffer, const Standard_Size rsize)
 {
   char             c;
-  Standard_Integer ccount = 0;
+  Standard_Size ccount = 0;
 
   buffer.Clear();
 
@@ -487,7 +487,7 @@ Storage_Error FSD_BinaryFile::BeginReadInfoSection()
 {
   Storage_Error s = Storage_VSOk;
   TCollection_AsciiString l;
-  Standard_Integer        len = strlen(FSD_BinaryFile::MagicNumber());
+  Standard_Size        len = strlen(FSD_BinaryFile::MagicNumber());
 
   ReadChar(l,len);
 

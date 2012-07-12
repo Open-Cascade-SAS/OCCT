@@ -53,7 +53,8 @@ Dico_Dictionary::Dico_Dictionary ()
   (const Standard_CString name, const Standard_Boolean exact) const
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
   if (stat != 0 || reslev != 0) return Standard_False;
   if (acell->HasIt()) return Standard_True;
@@ -65,7 +66,8 @@ Dico_Dictionary::Dico_Dictionary ()
   (const TCollection_AsciiString& name, const Standard_Boolean exact) const
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
   if (stat != 0 || reslev != 0) return Standard_False;
   if (acell->HasIt()) return Standard_True;
@@ -79,7 +81,8 @@ Dico_Dictionary::Dico_Dictionary ()
   (const Standard_CString name, const Standard_Boolean exact) const
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
   if (stat != 0 || reslev != 0)
     Standard_NoSuchObject::Raise("Dictionary : Item");
@@ -93,7 +96,8 @@ Dico_Dictionary::Dico_Dictionary ()
   (const TCollection_AsciiString& name, const Standard_Boolean exact) const
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
   if (stat != 0 || reslev != 0)
     Standard_NoSuchObject::Raise("Dictionary : Item");
@@ -110,7 +114,8 @@ Dico_Dictionary::Dico_Dictionary ()
    TheItem& anitem, const Standard_Boolean exact) const
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
   if (stat != 0 || reslev != 0) return Standard_False;
   if (acell->HasIt())    {  anitem = acell->It();  return Standard_True;  }
@@ -124,7 +129,8 @@ Dico_Dictionary::Dico_Dictionary ()
    TheItem& anitem, const Standard_Boolean exact) const
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
   if (stat != 0 || reslev != 0) return Standard_False;
   if (acell->HasIt())    {  anitem = acell->It();  return Standard_True;  }
@@ -140,8 +146,9 @@ Dico_Dictionary::Dico_Dictionary ()
    const TheItem& anitem, const Standard_Boolean exact)
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
-  Standard_Integer namlen = strlen(name);
+  Standard_Integer stat;
+  Standard_Size reslev;
+  Standard_Size namlen = strlen(name);
   SearchCell (name,namlen,name[0],1, acell,reslev,stat);
   if (!exact && !acell->HasIt())
     {  if (acell->Complete(acell)) { acell->SetIt(anitem); return; }  }
@@ -156,7 +163,8 @@ Dico_Dictionary::Dico_Dictionary ()
    const TheItem& anitem, const Standard_Boolean exact)
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   Standard_CString namval = name.ToCString();
   Standard_Integer namlen = name.Length();
   SearchCell (namval,namlen,name.Value(1),1, acell,reslev,stat);
@@ -175,8 +183,9 @@ Dico_Dictionary::Dico_Dictionary ()
    Standard_Boolean& isvalued, const Standard_Boolean exact)
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
-  Standard_Integer namlen = strlen(name);
+  Standard_Integer stat;
+  Standard_Size reslev;
+  Standard_Size namlen = strlen(name);
   SearchCell (name,namlen,name[0],1, acell,reslev,stat);
   if (stat == 0 && reslev == 0) {
     isvalued = acell->HasIt();    // ancien statut
@@ -200,7 +209,8 @@ Dico_Dictionary::Dico_Dictionary ()
    Standard_Boolean& isvalued, const Standard_Boolean exact)
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   Standard_Integer namlen = name.Length();
   Standard_CString namval = name.ToCString();
   SearchCell (namval,namlen,name.Value(1),1, acell,reslev,stat);
@@ -227,7 +237,8 @@ Dico_Dictionary::Dico_Dictionary ()
    const Standard_Boolean cln, const Standard_Boolean exact)
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name,strlen(name),name[0],1, acell,reslev,stat);
 //  if (stat != 0) { cout<<"Dictionary : RemoveItem not found"<<endl; return; }
   if (stat != 0) return Standard_False;
@@ -243,7 +254,8 @@ Dico_Dictionary::Dico_Dictionary ()
    const Standard_Boolean cln, const Standard_Boolean exact)
 {
   Handle(Dico_Dictionary) acell;
-  Standard_Integer reslev,stat;
+  Standard_Integer stat;
+  Standard_Size reslev;
   SearchCell (name.ToCString(),name.Length(),name.Value(1),1, acell,reslev,stat);
 //  if (stat != 0) { cout<<"Dictionary : RemoveItem not found"<<endl; return; }
   if (stat != 0) return Standard_False;
@@ -338,17 +350,18 @@ Dico_Dictionary::Dico_Dictionary ()
 //  ....                            SearchCell                            ....
 
     void Dico_Dictionary::SearchCell
-      (const Standard_CString name,  const Standard_Integer lmax,
-       const Standard_Character car, const Standard_Integer level,
+      (const Standard_CString name,  const Standard_Size lmax,
+       const Standard_Character car, const Standard_Size level,
        Handle(Dico_Dictionary)& acell,
-       Standard_Integer& reslev,     Standard_Integer& stat) const
+       Standard_Size& reslev,     Standard_Integer& stat) const
 {
   reslev = lmax - level;
   if      (car > thecars[0]) {
     if (thecars[3] == '\0')     {  acell = this;  stat   =  1;    return;  }
     else {                                      // ici, HasNext
       if (thecars[3] > car)     {  acell = this;  stat   =  1;    return;  }
-      Standard_Integer lev2,stat2;
+      Standard_Integer stat2;
+      Standard_Size lev2;
       thenext->SearchCell (name,lmax,car,level,acell,lev2,stat2);
       if (stat2 < 0)            {  acell = this;  stat   =  1;    return;  }
       else                      {  stat = stat2;  reslev = lev2;  return;  }
@@ -360,7 +373,8 @@ Dico_Dictionary::Dico_Dictionary ()
     else {
       Standard_Character carsub = name[level];  // caractere no (level+1);
       if (thecars[2] > carsub)  {  acell = this;  stat   =  0;    return;  }
-      Standard_Integer lev2,stat2;
+      Standard_Integer stat2;
+      Standard_Size lev2;
       thesub->SearchCell (name,lmax,carsub,level+1,acell,lev2,stat2);
       if (stat2 < 0)            {  acell = this;  stat   =  0;    return;  }
       else                      {  stat = stat2;  reslev = lev2;  return;  }
@@ -373,11 +387,11 @@ Dico_Dictionary::Dico_Dictionary ()
 //  ....                            NewCell                            ....
 
     void Dico_Dictionary::NewCell
-  (const Standard_CString name, const Standard_Integer namlen,
+  (const Standard_CString name, const Standard_Size namlen,
    Handle(Dico_Dictionary)& acell,
-   const Standard_Integer reslev, const Standard_Integer stat)
+   const Standard_Size reslev, const Standard_Integer stat)
 {
-  Standard_Integer level = namlen - reslev;
+  Standard_Size level = namlen - reslev;
   if (stat > 0) {    // Creer une cellule next
     Handle(Dico_Dictionary) newcell = new Dico_Dictionary;
     newcell->SetChar( name[level-1] );      // caractere no level
@@ -386,7 +400,7 @@ Dico_Dictionary::Dico_Dictionary ()
     acell = newcell;
   }
 //  A present, voir les sous-niveaux
-  for (Standard_Integer i = level+1; i <= namlen; i ++) {
+  for (Standard_Size i = level+1; i <= namlen; i ++) {
     Handle(Dico_Dictionary) newcell = new Dico_Dictionary;
     newcell->SetChar(name[i-1]);
     if (acell->HasSub()) newcell->SetNext(acell->Sub());

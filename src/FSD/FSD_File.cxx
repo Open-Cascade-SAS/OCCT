@@ -50,7 +50,7 @@ Storage_Error FSD_File::IsGoodFileType(const TCollection_AsciiString& aName)
 
   if (s == Storage_VSOk) {
     TCollection_AsciiString l;
-    Standard_Integer        len = strlen(FSD_File::MagicNumber());
+    Standard_Size        len = strlen(FSD_File::MagicNumber());
 
     f.ReadChar(l,len);
 
@@ -267,10 +267,10 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
 //purpose  : read <rsize> character from the current position.
 //=======================================================================
 
-void FSD_File::ReadChar(TCollection_AsciiString& buffer, const Standard_Integer rsize)
+void FSD_File::ReadChar(TCollection_AsciiString& buffer, const Standard_Size rsize)
 {
   char             c;
-  Standard_Integer ccount = 0;
+  Standard_Size ccount = 0;
 
   buffer.Clear();
 
@@ -707,7 +707,7 @@ Storage_Error FSD_File::BeginReadInfoSection()
 {
   Storage_Error s;
   TCollection_AsciiString l;
-  Standard_Integer        len = strlen(FSD_File::MagicNumber());
+  Standard_Size        len = strlen(FSD_File::MagicNumber());
 
   ReadChar(l,len);
   

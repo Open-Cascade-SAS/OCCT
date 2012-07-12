@@ -33,7 +33,7 @@ generic class Dictionary  from Dico  (TheItem as any)  inherits TShared
     --           size of TheItem class if it is not identified by Handle) : if
     --           this size is big, it can cause problems of memory spending
 
-uses OStream, Integer, Boolean, Character, AsciiString --, Iterator
+uses Size, OStream, Integer, Boolean, Character, AsciiString --, Iterator
 
 raises NoSuchObject
 
@@ -275,14 +275,14 @@ is
     SetNext (me : mutable; acell : mutable Dictionary)  is static private;
     ---Purpose : Defines next cell
 
-    SearchCell (me; name : CString; lmax : Integer;
-    	        car : Character; level : Integer;
-    	    	acell : out mutable Dictionary; reslev : out Integer;
+    SearchCell (me; name : CString; lmax : Size;
+    	        car : Character; level : Size;
+    	    	acell : out mutable Dictionary; reslev : out Size;
     	        stat : out Integer)  is static private;
     ---Purpose : Internal method used to get an entry from a given name
 
-    NewCell (me : mutable; name : CString; namlen : Integer;
-    	     acell : in out mutable Dictionary; reslev,stat : Integer)
+    NewCell (me : mutable; name : CString; namlen : Size;
+    	     acell : in out mutable Dictionary; reslev : Size; stat : Integer)
 	     is static private;
     ---Purpose : Internal method used to create a new entry for a name
 

@@ -328,7 +328,7 @@ is
     WriteExtendedLine(me : in out; buffer : ExtendedString from TCollection) is protected;
     ---Purpose: write from the current position to the end of line.
 
-    ReadChar(me : in out; buffer : in out AsciiString from TCollection; rsize : Integer from Standard) is protected;
+    ReadChar(me : in out; buffer : in out AsciiString from TCollection; rsize : Size from Standard) is protected;
     ---Purpose: read <rsize> character from the current position.
 
     ReadString(me : in out; buffer : in out AsciiString from TCollection) is protected;

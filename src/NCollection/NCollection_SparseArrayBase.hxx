@@ -42,7 +42,7 @@ public:
   Standard_EXPORT void Clear ();
 
   //! Returns number of currently contained items
-  Standard_Integer Size () const { return mySize; }
+  Standard_Size Size () const { return mySize; }
 
   //! Check whether the value at given index is set
   Standard_EXPORT Standard_Boolean HasValue (const Standard_Integer theIndex) const;
