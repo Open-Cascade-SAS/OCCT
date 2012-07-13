@@ -100,10 +100,10 @@ Standard_Boolean OSD_Real2String::CStringToReal(const Standard_CString theString
 
 
   const char *str = theString;
+  char buff[1024];
   if (myReadDecimalPoint) {
       if (myReadDecimalPoint != myLocalDecimalPoint) {
-	  const char * p;
-          char buff[1024]; 
+	  const char * p; 
 	  // replace the decimal point by the local one
           if(myReadDecimalPoint != myLocalDecimalPoint && 
              (p = strchr(theString,myReadDecimalPoint))&& ((p-theString) < 1000) )
