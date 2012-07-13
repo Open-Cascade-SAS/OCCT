@@ -179,8 +179,13 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
 {
   static Standard_Boolean isFirst = Standard_True;
 
-  Standard_Integer aPxLeft   = 0;
-  Standard_Integer aPxTop    = 460;
+  // Default position and dimension of the viewer window.
+  // Note that left top corner is set to be sufficiently small to have 
+  // window fit in the small screens (actual for remote desktops, see #23003).
+  // The position corresponds to the window's client area, thus some 
+  // gap is added for window frame to be visible.
+  Standard_Integer aPxLeft   = 20;
+  Standard_Integer aPxTop    = 40;
   Standard_Integer aPxWidth  = 409;
   Standard_Integer aPxHeight = 409;
   if (thePxWidth != 0 && thePxHeight != 0)
