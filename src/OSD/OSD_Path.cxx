@@ -1052,10 +1052,10 @@ OSD_Path ::  OSD_Path (
  static char __ext [ _MAX_EXT ];
 
  memset(__drive, 0,_MAX_DRIVE);
- memset(__dir, 0,_MAX_DRIVE);
- memset(__trek, 0,_MAX_DRIVE);
- memset(__fname, 0,_MAX_DRIVE);
- memset(__ext, 0,_MAX_DRIVE);
+ memset(__dir, 0,_MAX_DIR);
+ memset(__trek, 0,_MAX_DIR);
+ memset(__fname, 0,_MAX_FNAME);
+ memset(__ext, 0,_MAX_EXT);
  Standard_Character      chr;
 
  TEST_RAISE(  aSysType, TEXT( "OSD_Path" )  );
