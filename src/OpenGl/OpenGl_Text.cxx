@@ -214,4 +214,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   }
 }
 
-/*----------------------------------------------------------------------*/
+void OpenGl_Text::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}

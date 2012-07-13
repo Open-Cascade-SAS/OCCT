@@ -17,51 +17,45 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _OpenGl_Resource_H__
+#define _OpenGl_Resource_H__
 
-#ifndef _OPENGL_RESOURCE_H
-#define _OPENGL_RESOURCE_H
-
-#include <OpenGl_GlCore11.hxx>
-
-#include <OpenGl_ResourceCleaner.hxx>
-#include <MMgt_TShared.hxx>
-#include <Handle_MMgt_TShared.hxx>
+#include <Standard_Transient.hxx>
+#include <Handle_Standard_Transient.hxx>
 
 class Standard_Transient;
 class Handle(Standard_Type);
-class Handle(MMgt_TShared);
-class Handle(OpenGl_Context);
-class OpenGl_ResourceCleaner;
+class OpenGl_Context;
 
-//! Class represents basic OpenGl memory resource, which
-//! could be removed only if appropriate context is avaliable;
-//! The cleaning procedure is done by OpenGl_ResourceCleaner
-class OpenGl_Resource : public MMgt_TShared
+//! Interface for OpenGl resource with following meaning:
+//!  - object can be constructed at any time;
+//!  - should be explicitly Initialized within active OpenGL context;
+//!  - should be explicitly Released    within active OpenGL context (virtual Release() method);
+//!  - can be destroyed at any time.
+//! Destruction of object with unreleased GPU resources will cause leaks
+//! which will be ignored in release mode and will immediately stop program execution in debug mode using assert.
+class OpenGl_Resource : public Standard_Transient
 {
 
 public:
 
-  //! Constructor
-  OpenGl_Resource() : myId(0) { }
- 
-  //! Constructor 
-  OpenGl_Resource(GLuint theId) : myId(theId) { }
+  //! Empty constructor
+  Standard_EXPORT OpenGl_Resource();
 
-  //! Destructor
-  virtual ~OpenGl_Resource() {}
+  //! Destructor. Inheritors should call Clean (NULL) within it.
+  Standard_EXPORT virtual ~OpenGl_Resource();
 
-  //! method clean() is accessible only by OpenGl_ResourceCleaner
-  friend class OpenGl_ResourceCleaner;
+  //! Release GPU resources.
+  //! Notice that implementation should be SAFE for several consecutive calls
+  //! (thus should invalidate internal structures / ids to avoid multiple-free errors).
+  //! @param theGlCtx - bound GL context, shouldn't be NULL.
+  Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx) = 0;
 
-protected:
+private:
 
-  //! Clean procedure, should be called only by OpenGl_ResourceCleaner;
-  //! Each type of resource has its own cleaning procedure
-  virtual void Clean (const Handle(OpenGl_Context)& theGlContext) = 0;
-
-protected:
-
-  GLuint myId; // Id of OpenGl memory resource
+  //! Copy should be performed only within Handles!
+  OpenGl_Resource            (const OpenGl_Resource& );
+  OpenGl_Resource& operator= (const OpenGl_Resource& );
 
 public:
 
@@ -69,6 +63,6 @@ public:
 
 };
 
-DEFINE_STANDARD_HANDLE(OpenGl_Resource,MMgt_TShared)
+DEFINE_STANDARD_HANDLE(OpenGl_Resource, Standard_Transient)
 
-#endif
+#endif // _OpenGl_Resource_H__

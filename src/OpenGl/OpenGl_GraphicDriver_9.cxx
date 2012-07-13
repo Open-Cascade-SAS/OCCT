@@ -228,7 +228,7 @@ Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfText
 
 void OpenGl_GraphicDriver::DestroyTexture (const Standard_Integer theTexId) const
 {
-  FreeTexture (theTexId);
+  FreeTexture (GetSharedContext(), theTexId);
 }
 
 void OpenGl_GraphicDriver::ModifyTexture (const Standard_Integer        theTexId,

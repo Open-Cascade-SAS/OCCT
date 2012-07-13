@@ -34,16 +34,17 @@ class OpenGl_ResourceTexture : public OpenGl_Resource
 public:
 
   //! Constructor
-  OpenGl_ResourceTexture(GLuint theId) : OpenGl_Resource (theId) {}
+  Standard_EXPORT OpenGl_ResourceTexture (const GLuint theId);
 
   //! Destructor
-  virtual ~OpenGl_ResourceTexture() { }
+  Standard_EXPORT virtual ~OpenGl_ResourceTexture();
+
+  //! Destroy object - will release GPU memory if any.
+  Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx);
 
 protected:
 
-  //! Clean procedure for texture resource;
-  //! Should be called by the OpenGl_ResourceCleaner
-  Standard_EXPORT virtual void Clean (const Handle(OpenGl_Context)& theGlContext);
+  GLuint myTextureId; //!< Texture name (index)
 
 public:
 

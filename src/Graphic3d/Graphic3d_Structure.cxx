@@ -232,13 +232,6 @@ void Graphic3d_Structure::Clear (const Standard_Boolean WithDestruction)
   MyCStructure.ContainsFacet = 0;
 
   // clean groups in graphics driver at first
-  if (WithDestruction)
-  {
-    // clean and empty each group
-    Standard_Integer Length = MyGroups.Length();
-    for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
-      MyGroups.ChangeValue (aGrId)->Clear();
-  }
   GraphicClear (WithDestruction);
 
   // only then remove group references
@@ -722,31 +715,31 @@ Standard_Boolean Graphic3d_Structure::IsInfinite () const {
 
 }
 
-void Graphic3d_Structure::GraphicClear (const Standard_Boolean WithDestruction) {
+void Graphic3d_Structure::GraphicClear (const Standard_Boolean WithDestruction)
+{
+  // clean and empty each group
+  Standard_Integer Length = MyGroups.Length();
+  for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
+  {
+    MyGroups.ChangeValue (aGrId)->Clear();
+  }
 
   if (WithDestruction)
+  {
     /*
-    * Dans ce cas l'appelant dans faire :
     * void Prs3d_Presentation::Clear () {
     *   Graphic3d_Structure::Clear ();
     *   myCurrentGroup = new Graphic3d_Group (this);
     * }
     */
+    while (!MyGroups.IsEmpty())
+    {
+      Handle(Graphic3d_Group) aGroup = MyGroups.First();
+      aGroup->Remove();
+    }
+
     MyGraphicDriver->ClearStructure (MyCStructure);
-  else {
-    /*
-    * Dans ce cas l'appelant dans faire :
-    * void Prs3d_Presentation::Clear () {
-    *   Graphic3d_Structure::Clear ();
-    *   // myCurrentGroup = new Graphic3d_Group (this);
-    * }
-    */
-    Standard_Integer Length = MyGroups.Length ();
-
-    for (Standard_Integer i=1; i<=Length; i++)
-      (MyGroups.Value (i))->Clear ();
   }
-
 }
 
 void Graphic3d_Structure::GraphicConnect (const Handle(Graphic3d_Structure)& ADaughter) {

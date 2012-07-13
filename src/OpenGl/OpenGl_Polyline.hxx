@@ -30,20 +30,27 @@
 
 class OpenGl_Polyline : public OpenGl_Element
 {
- public:
+
+public:
 
   OpenGl_Polyline (const Graphic3d_Array1OfVertex& AListVertex);
-  virtual ~OpenGl_Polyline ();
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
- protected:
+protected:
+
+  virtual ~OpenGl_Polyline();
+
+protected:
 
   Tint       myNbVertices;    // Number of vertices in vertices array
   tel_point  myVertices;      // Vertices array of length myNbVertices
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //OpenGl_Polyline_Header

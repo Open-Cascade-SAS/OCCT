@@ -20,7 +20,6 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 
-#include <OpenGl_Callback.hxx>
 #include <OpenGl_Group.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 
@@ -87,30 +86,25 @@ void OpenGl_GraphicDriver::PrimitiveArray( const Graphic3d_CGroup& ACGroup,
 //           Graphic3d_Group only.
 //=======================================================================
 
-void OpenGl_GraphicDriver::RemovePrimitiveArray (const Graphic3d_CGroup&         ACGroup,
-                                                const Graphic3d_PrimitiveArray& thePArray)
+void OpenGl_GraphicDriver::RemovePrimitiveArray (const Graphic3d_CGroup&         theCGroup,
+                                                 const Graphic3d_PrimitiveArray& thePArray)
 {
-  if ( ACGroup.ptrGroup && thePArray )
+  if (theCGroup.ptrGroup && thePArray)
   {
-    ((OpenGl_Group *)ACGroup.ptrGroup)->RemovePrimitiveArray( (CALL_DEF_PARRAY *) thePArray );
+    ((OpenGl_Group* )theCGroup.ptrGroup)->RemovePrimitiveArray (GetSharedContext(), thePArray);
   }
 }
 
-static OpenGl_UserDrawCallback MyUserDrawCallback = NULL;
-
-OpenGl_UserDrawCallback& UserDrawCallback ()
+void OpenGl_GraphicDriver::UserDraw (const Graphic3d_CGroup&    theCGroup,
+                                     const Graphic3d_CUserDraw& theUserDraw)
 {
-  return MyUserDrawCallback;
-}
-
-void OpenGl_GraphicDriver::UserDraw ( const Graphic3d_CGroup& ACGroup,
-                                     const Graphic3d_CUserDraw& AUserDraw )
-{
-  if (ACGroup.ptrGroup && MyUserDrawCallback)
+  if (theCGroup.ptrGroup != NULL
+   && myUserDrawCallback != NULL)
   {
-    OpenGl_Element *auserdraw = (*MyUserDrawCallback)(&AUserDraw);
-
-    if (auserdraw != 0)
-      ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement( TelUserdraw, auserdraw );
+    OpenGl_Element* aUserDraw = myUserDrawCallback(&theUserDraw);
+    if (aUserDraw != NULL)
+    {
+      ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelUserdraw, aUserDraw);
+    }
   }
 }

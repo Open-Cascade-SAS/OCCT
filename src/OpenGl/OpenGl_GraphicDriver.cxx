@@ -29,11 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 namespace
 {
-  // Global maps - shared by whole TKOpenGl module. To be removed.
-  static NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      TheMapOfView (1, NCollection_BaseAllocator::CommonBaseAllocator());
-  static NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> TheMapOfWS   (1, NCollection_BaseAllocator::CommonBaseAllocator());
-  static NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        TheMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator());
+  // Global switch - shared by whole TKOpenGl module. To be removed.
   static Standard_Boolean TheToUseVbo = Standard_True;
+
+  static const Handle(OpenGl_Context) TheNullGlCtx;
 };
 
 // Pour eviter de "mangler" MetaGraphicDriverFactory, le nom de la
@@ -42,16 +41,16 @@ namespace
 // classe OSD_SharedLibrary dans la methode SetGraphicDriver de la
 // classe Graphic3d_GraphicDevice
 extern "C" {
-#ifdef WNT /* disable MS VC++ warning on C-style function returning C++ object */
+#if defined(_MSC_VER) // disable MS VC++ warning on C-style function returning C++ object
   #pragma warning(push)
   #pragma warning(disable:4190)
 #endif
-  Standard_EXPORT Handle(Graphic3d_GraphicDriver) MetaGraphicDriverFactory (const Standard_CString AShrName)
+  Standard_EXPORT Handle(Graphic3d_GraphicDriver) MetaGraphicDriverFactory (const Standard_CString theShrName)
   {
-    Handle(OpenGl_GraphicDriver) aOpenDriver = new OpenGl_GraphicDriver (AShrName);
-    return aOpenDriver;
+    Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver (theShrName);
+    return aDriver;
   }
-#ifdef WNT
+#if defined(_MSC_VER)
   #pragma warning(pop)
 #endif
 }
@@ -61,9 +60,22 @@ extern "C" {
 // purpose  :
 // =======================================================================
 OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString theShrName)
-: Graphic3d_GraphicDriver (theShrName)
+: Graphic3d_GraphicDriver (theShrName),
+  myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
+  myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
+  myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
+  myUserDrawCallback (NULL)
 {
   //
+}
+
+// =======================================================================
+// function : UserDrawCallback
+// purpose  :
+// =======================================================================
+OpenGl_GraphicDriver::OpenGl_UserDrawCallback_t& OpenGl_GraphicDriver::UserDrawCallback()
+{
+  return myUserDrawCallback;
 }
 
 // =======================================================================
@@ -76,39 +88,12 @@ Standard_ShortReal OpenGl_GraphicDriver::DefaultTextHeight() const
 }
 
 // =======================================================================
-// function : GetMapOfViews
-// purpose  :
-// =======================================================================
-NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>& OpenGl_GraphicDriver::GetMapOfViews()
-{
-  return TheMapOfView;
-}
-
-// =======================================================================
-// function : GetMapOfWorkspaces
-// purpose  :
-// =======================================================================
-NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>& OpenGl_GraphicDriver::GetMapOfWorkspaces()
-{
-  return TheMapOfWS;
-}
-
-// =======================================================================
-// function : GetMapOfStructures
-// purpose  :
-// =======================================================================
-NCollection_DataMap<Standard_Integer, OpenGl_Structure*>& OpenGl_GraphicDriver::GetMapOfStructures()
-{
-  return TheMapOfStructure;
-}
-
-// =======================================================================
 // function : InvalidateAllWorkspaces
 // purpose  : ex-TsmInitUpdateState, deprecated, need to decide what to do with EraseAnimation() call
 // =======================================================================
 void OpenGl_GraphicDriver::InvalidateAllWorkspaces()
 {
-  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIt (OpenGl_GraphicDriver::GetMapOfWorkspaces());
+  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIt (myMapOfWS);
        anIt.More(); anIt.Next())
   {
     anIt.ChangeValue()->EraseAnimation();
@@ -131,6 +116,21 @@ Standard_Boolean OpenGl_GraphicDriver::ToUseVBO()
 void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
 {
   TheToUseVbo = theToTurnOn;
+}
+
+// =======================================================================
+// function : GetSharedContext
+// purpose  :
+// =======================================================================
+const Handle(OpenGl_Context)& OpenGl_GraphicDriver::GetSharedContext() const
+{
+  if (myMapOfWS.IsEmpty())
+  {
+    return TheNullGlCtx;
+  }
+
+  NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIter (myMapOfWS);
+  return anIter.Value()->GetGlContext();
 }
 
 // =======================================================================

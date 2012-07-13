@@ -68,28 +68,33 @@ void OpenGl_GraphicDriver::Blink (const Graphic3d_CStructure &, const Standard_B
   // Do nothing
 }
 
-void OpenGl_GraphicDriver::BoundaryBox (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create)
+void OpenGl_GraphicDriver::BoundaryBox (const Graphic3d_CStructure& theCStructure,
+                                        const Standard_Boolean      toCreate)
 {
-  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
-  if (!astructure)
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aStructure == NULL)
     return;
 
-  if ( Create )
-    astructure->SetHighlightBox(ACStructure.BoundBox);
+  if (toCreate)
+    aStructure->SetHighlightBox (GetSharedContext(), theCStructure.BoundBox);
   else
-    astructure->ClearHighlightBox();
+    aStructure->ClearHighlightBox (GetSharedContext());
 }
 
-void OpenGl_GraphicDriver::HighlightColor (const Graphic3d_CStructure& ACStructure, const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B, const Standard_Boolean Create)
+void OpenGl_GraphicDriver::HighlightColor (const Graphic3d_CStructure& theCStructure,
+                                           const Standard_ShortReal R,
+                                           const Standard_ShortReal G,
+                                           const Standard_ShortReal B,
+                                           const Standard_Boolean   toCreate)
 {
-  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
-  if (!astructure)
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aStructure == NULL)
     return;
 
-  if ( Create )
-    astructure->SetHighlightColor(R,G,B);
+  if (toCreate)
+    aStructure->SetHighlightColor (GetSharedContext(), R, G, B);
   else
-    astructure->ClearHighlightColor();
+    aStructure->ClearHighlightColor (GetSharedContext());
 }
 
 void OpenGl_GraphicDriver::NameSetStructure (const Graphic3d_CStructure& ACStructure)
@@ -379,11 +384,11 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer *theFBOPtr, Im
 
 void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& ACView)
 {
-  if (GetMapOfViews().IsBound (ACView.ViewId))
-    GetMapOfViews().UnBind (ACView.ViewId);
+  if (myMapOfView.IsBound (ACView.ViewId))
+    myMapOfView.UnBind (ACView.ViewId);
 
-  if (GetMapOfWorkspaces().IsBound (ACView.WsId))
-    GetMapOfWorkspaces().UnBind (ACView.WsId);
+  if (myMapOfWS.IsBound (ACView.WsId))
+    myMapOfWS.UnBind (ACView.WsId);
 
   OpenGl_CView *aCView = (OpenGl_CView *)ACView.ptrView;
   delete aCView;
@@ -442,33 +447,34 @@ void OpenGl_GraphicDriver::Update (const Graphic3d_CView& ACView, const Aspect_C
     aCView->WS->Update(ACView,ACUnderLayer,ACOverLayer);
 }
 
-Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& ACView)
+Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
 {
   if (openglDisplay.IsNull())
     return Standard_False;
 
-  if (GetMapOfViews().IsBound (ACView.ViewId))
-    GetMapOfViews().UnBind (ACView.ViewId);
+  if (myMapOfView.IsBound (theCView.ViewId))
+    myMapOfView.UnBind (theCView.ViewId);
 
-  if (GetMapOfWorkspaces().IsBound (ACView.WsId))
-    GetMapOfWorkspaces().UnBind (ACView.WsId);
+  if (myMapOfWS.IsBound (theCView.WsId))
+    myMapOfWS.UnBind (theCView.WsId);
 
-  Handle(OpenGl_Workspace) aWS = Handle(OpenGl_Workspace)::DownCast(openglDisplay->GetWindow( ACView.DefWindow.XWindow ));
-  if ( aWS.IsNull() )
+  Handle(OpenGl_Workspace) aWS = Handle(OpenGl_Workspace)::DownCast(openglDisplay->GetWindow (theCView.DefWindow.XWindow));
+  if (aWS.IsNull())
   {
-    aWS = new OpenGl_Workspace( openglDisplay, ACView.DefWindow, ACView.GContext );
-    openglDisplay->SetWindow( ACView.DefWindow.XWindow, aWS );
+    Handle(OpenGl_Context) aShareCtx = GetSharedContext();
+    aWS = new OpenGl_Workspace (openglDisplay, theCView.DefWindow, theCView.GContext, aShareCtx);
+    openglDisplay->SetWindow (theCView.DefWindow.XWindow, aWS);
   }
 
-  GetMapOfWorkspaces().Bind (ACView.WsId, aWS);
+  myMapOfWS.Bind (theCView.WsId, aWS);
 
-  Handle(OpenGl_View) aView = new OpenGl_View( ACView.Context );
-  GetMapOfViews().Bind (ACView.ViewId, aView);
+  Handle(OpenGl_View) aView = new OpenGl_View (theCView.Context);
+  myMapOfView.Bind (theCView.ViewId, aView);
 
-  OpenGl_CView *aCView = new OpenGl_CView;
+  OpenGl_CView* aCView = new OpenGl_CView();
   aCView->View = aView;
   aCView->WS = aWS;
-  ACView.ptrView = aCView;
+  theCView.ptrView = aCView;
 
   return Standard_True;
 }

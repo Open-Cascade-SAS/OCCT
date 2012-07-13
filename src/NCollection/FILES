@@ -80,3 +80,6 @@ NCollection_Haft.h
 NCollection_DefaultHasher.hxx
 NCollection_DefineAlloc.hxx
 
+NCollection_Vec2.hxx
+NCollection_Vec3.hxx
+NCollection_Vec4.hxx

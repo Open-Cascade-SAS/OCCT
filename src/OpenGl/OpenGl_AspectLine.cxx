@@ -52,9 +52,12 @@ void OpenGl_AspectLine::SetContext (const CALL_DEF_CONTEXTLINE &AContext)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_AspectLine::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_AspectLine::Render (const Handle(OpenGl_Workspace) &theWorkspace) const
 {
-  AWorkspace->SetAspectLine(this);
+  theWorkspace->SetAspectLine (this);
 }
 
-/*----------------------------------------------------------------------*/
+void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}

@@ -137,9 +137,15 @@ void Visual3d_ViewManager::Remove () {
 	cout << "The Manager " << MyId << " have " << Length << " defined views\n";
 	cout << flush;
 #endif
- 
-	MyDefinedView.Clear ();
 
+  // clear all structures whilst views are alive for correct GPU memory management
+  MyDisplayedStructure.Clear();
+  MyHighlightedStructure.Clear();
+  MyVisibleStructure.Clear();
+  MyPickStructure.Clear();
+
+  // clear list of managed views
+  MyDefinedView.Clear();
 }
 
 void Visual3d_ViewManager::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AStructure, const Standard_Integer OldPriority, const Standard_Integer NewPriority) {

@@ -30,7 +30,7 @@ void OpenGl_GraphicDriver::ClearGroup (const Graphic3d_CGroup& theCGroup)
   if (theCGroup.ptrGroup == NULL)
     return;
 
-  ((OpenGl_Group* )theCGroup.ptrGroup)->Clear();
+  ((OpenGl_Group* )theCGroup.ptrGroup)->Release (GetSharedContext());
   InvalidateAllWorkspaces();
 }
 
@@ -107,7 +107,7 @@ void OpenGl_GraphicDriver::RemoveGroup (const Graphic3d_CGroup& theCGroup)
   if (aStructure == NULL)
     return;
 
-  aStructure->RemoveGroup ((const OpenGl_Group* )theCGroup.ptrGroup);
+  aStructure->RemoveGroup (GetSharedContext(), (const OpenGl_Group* )theCGroup.ptrGroup);
   InvalidateAllWorkspaces();
 }
 

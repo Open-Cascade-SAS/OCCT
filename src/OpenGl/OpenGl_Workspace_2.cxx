@@ -534,9 +534,9 @@ Standard_Boolean OpenGl_Workspace::Print
 
   // setup printing context and viewport
   GLint aViewPortBack[4]; 
-  GLint anAlignBack     = 1;
+  GLint anAlignBack = 1;
 
-  OpenGl_PrinterContext aPrinterContext (myGContext);
+  OpenGl_PrinterContext aPrinterContext (GetGContext());
   aPrinterContext.SetLayerViewport ((GLsizei)aFrameWidth,
                                     (GLsizei)aFrameHeight);
   glGetIntegerv (GL_VIEWPORT, aViewPortBack);
@@ -814,7 +814,7 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
       glDisable(GL_DEPTH_TEST);
 
     glClearDepth(1.0);
-	toClear |= GL_DEPTH_BUFFER_BIT;
+    toClear |= GL_DEPTH_BUFFER_BIT;
   }
   else
   {
@@ -825,7 +825,7 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
   {
     // Set background to white
     glClearColor (1.F, 1.F, 1.F, 1.F);
-	toClear |= GL_DEPTH_BUFFER_BIT;
+    toClear |= GL_DEPTH_BUFFER_BIT;
   }
   else
   {
@@ -839,12 +839,7 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
   // Swap the buffers
   if ( aswap )
   {
-#ifndef WNT
-    glXSwapBuffers ((Display*)myDisplay->GetDisplay (), myWindow );
-#else
-    SwapBuffers ( wglGetCurrentDC () );
-    glFlush();
-#endif  /* WNT */
+    GetGlContext()->SwapBuffers();
     myBackBufferRestored = Standard_False;
   }
   else
@@ -960,20 +955,20 @@ void OpenGl_Workspace::CopyBuffers (Tint vid, int FrontToBack, Tfloat xm, Tfloat
 /*----------------------------------------------------------------------*/
 
 //call_subr_displayCB
-void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& ACView, int reason)
+void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
+                                        int theReason)
 {
-  if( ACView.GDisplayCB )
+  if (theCView.GDisplayCB == NULL)
   {
-    Aspect_GraphicCallbackStruct callData;
-    callData.reason = reason;
-    callData.display = (DISPLAY*)myDisplay->GetDisplay();
-    callData.window = (WINDOW)myWindow;
-    callData.wsID = ACView.WsId;
-    callData.viewID = ACView.ViewId;
-    callData.gcontext = myGContext;
-
-    int status = (*ACView.GDisplayCB)( ACView.DefWindow.XWindow, ACView.GClientData, &callData );
+    return;
   }
+
+  Aspect_GraphicCallbackStruct aCallData;
+  aCallData.reason    = theReason;
+  aCallData.glContext = GetGlContext();
+  aCallData.wsID      = theCView.WsId;
+  aCallData.viewID    = theCView.ViewId;
+  theCView.GDisplayCB (theCView.DefWindow.XWindow, theCView.GClientData, &aCallData);
 }
 
 /*----------------------------------------------------------------------*/

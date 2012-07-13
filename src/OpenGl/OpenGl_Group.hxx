@@ -42,9 +42,10 @@ struct OpenGl_ElementNode
 
 class OpenGl_Group : public OpenGl_Element
 {
- public:
-  OpenGl_Group ();
-  virtual ~OpenGl_Group();
+
+public:
+
+  OpenGl_Group();
 
   void SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext, const Standard_Boolean IsGlobal = Standard_True);
   void SetAspectFace (const CALL_DEF_CONTEXTFILLAREA &AContext, const Standard_Boolean IsGlobal = Standard_True);
@@ -52,23 +53,31 @@ class OpenGl_Group : public OpenGl_Element
   void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext, const Standard_Boolean IsGlobal = Standard_True);
 
   void AddElement (const TelType, OpenGl_Element * );
-  void Clear ();
 
-  void RemovePrimitiveArray (CALL_DEF_PARRAY *APArray);
+  void RemovePrimitiveArray (const Handle(OpenGl_Context)& theGlCtx,
+                             CALL_DEF_PARRAY*              thePArray);
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
 
- protected:
+protected:
 
-  OpenGl_AspectLine *myAspectLine;
-  OpenGl_AspectFace *myAspectFace;
-  OpenGl_AspectMarker *myAspectMarker;
-  OpenGl_AspectText *myAspectText;
+  virtual ~OpenGl_Group();
 
-  OpenGl_ElementNode *myFirst, *myLast;
+protected:
 
- public:
+  OpenGl_AspectLine*   myAspectLine;
+  OpenGl_AspectFace*   myAspectFace;
+  OpenGl_AspectMarker* myAspectMarker;
+  OpenGl_AspectText*   myAspectText;
+
+  OpenGl_ElementNode*  myFirst;
+  OpenGl_ElementNode*  myLast;
+
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //_OpenGl_Group_Header

@@ -140,4 +140,7 @@ void OpenGl_MarkerSet::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   }
 }
 
-/*----------------------------------------------------------------------*/
+void OpenGl_MarkerSet::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}

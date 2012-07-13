@@ -25,14 +25,38 @@
 
 class OpenGl_Element
 {
- public:
-  OpenGl_Element () {}
-  virtual ~OpenGl_Element () {}
+public:
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const = 0;
+  OpenGl_Element() {}
 
- public:
+  virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const = 0;
+
+  //! Release GPU resources.
+  virtual void Release (const Handle(OpenGl_Context)& theContext) = 0;
+
+  template <typename theResource_t>
+  static void Destroy (const Handle(OpenGl_Context)& theContext,
+                       theResource_t*&               theElement)
+  {
+    if (theElement == NULL)
+    {
+      return;
+    }
+
+    theElement->Release (theContext);
+    OpenGl_Element* anElement = theElement;
+    delete anElement;
+    theElement = NULL;
+  }
+
+protected:
+
+  virtual ~OpenGl_Element() {}
+
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //OpenGl_Element_Header

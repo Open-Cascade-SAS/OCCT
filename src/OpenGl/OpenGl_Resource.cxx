@@ -19,5 +19,8 @@
 
 #include <OpenGl_Resource.hxx>
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Resource, MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Resource, MMgt_TShared)
+IMPLEMENT_STANDARD_HANDLE (OpenGl_Resource, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Resource, Standard_Transient)
+
+OpenGl_Resource::OpenGl_Resource() {}
+OpenGl_Resource::~OpenGl_Resource() {}

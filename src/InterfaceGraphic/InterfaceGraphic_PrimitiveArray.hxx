@@ -50,16 +50,6 @@ typedef enum {
   TelTriangleFansArrayType
 } TelPrimitivesArrayType;
 
-typedef enum 
-{
-  VBOEdges, 
-  VBOVertices, 
-  VBOVcolours, 
-  VBOVnormals, 
-  VBOVtexels,
-  VBOMaxType
-} VBODataType;
-
 typedef struct {
   TelPrimitivesArrayType type;                    /* Array type */
   Tint                   format;                  /* Array datas format */
@@ -75,17 +65,6 @@ typedef struct {
   tel_texture_coord      vtexels;                 /* Texture Coordinates */
   Tchar                 *edge_vis;                /* Edge visibility flag*/
   Tchar                 *keys;                    /* Vertex keys*/
-  Tuint                  bufferVBO[VBOMaxType];   /* VBO IDs for *edges, vertices, vcolours, vnormals, vtexels.
-                                                     default = -1. VBO - Vertex Buffer Object */
-  Tint                   flagBufferVBO;           /* this flag is responded for bufferVBO load status.
-                                                     -1 - Not Initial BufferVBO. Default mean.
-                                                      0 - Error by allocated memory in Graphic Device.
-                                                      Not Initial BufferVBO.
-                                                      1 - Initial BufferVBO */
-  Tint                   VBOEnabled;              /* -1 - it is not known VBO status
-                                                      0 - draw object without VBO
-                                                      1 - draw object with VBO */
-  Standard_Address       contextId;               /* remember context for VBO */
 } CALL_DEF_PARRAY;
 
 #endif /* _InterfaceGraphic_PrimitiveArray_header_file_ */

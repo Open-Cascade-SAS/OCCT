@@ -30,10 +30,11 @@
 
 class OpenGl_AspectText : public OpenGl_Element
 {
- public:
 
-  OpenGl_AspectText ();
-  virtual ~OpenGl_AspectText ();
+public:
+
+  OpenGl_AspectText();
+  virtual ~OpenGl_AspectText();
 
   void SetContext (const CALL_DEF_CONTEXTTEXT &AContext);
 
@@ -46,11 +47,14 @@ class OpenGl_AspectText : public OpenGl_Element
   Aspect_TypeOfDisplayText DisplayType() const { return myDisplayType; }
   const TEL_COLOUR &       SubtitleColor() const { return mySubtitleColor; }
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
- protected:
+protected:
 
   void SetFontName (const char *AFont);
+
+protected:
 
   int                      myZoomable;
   float                    myAngle;
@@ -63,8 +67,10 @@ class OpenGl_AspectText : public OpenGl_Element
   Aspect_TypeOfDisplayText myDisplayType;
   TEL_COLOUR               mySubtitleColor;
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //OpenGl_AspectText_Header

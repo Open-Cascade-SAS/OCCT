@@ -234,16 +234,14 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
     a3DCollector = new V3d_Viewer(GetG3dDevice(), NameOfWindow.ToExtString());
     a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
     a3DCollector->SetDefaultBackgroundColor(Quantity_NOC_STEELBLUE);
-    Handle(NIS_View) aView =
-      Handle(NIS_View)::DownCast(ViewerTest::CurrentView());
-    if ( aView.IsNull() ) {
-      //       Handle (V3d_View) V = a3DViewer->CreateView();
+    Handle(NIS_View) aView = Handle(NIS_View)::DownCast(ViewerTest::CurrentView());
+    if (aView.IsNull())
+    {
+      //Handle(V3d_View) a3DViewCol = a3DViewer->CreateView();
       aView = new NIS_View (a3DViewer, VT_GetWindow());
       ViewerTest::CurrentView(aView);
       TheNISContext()->AttachView (aView);
     }
-    Handle(V3d_View) a3DViewCol;
-    if ( a3DViewCol.IsNull() ) a3DViewCol    = a3DViewer->CreateView();
 
     // AIS setup
     if ( ViewerTest::GetAISContext().IsNull() ) {

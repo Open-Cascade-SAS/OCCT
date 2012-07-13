@@ -15,18 +15,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/*============================================================================*/
-/*==== Titre: Aspect_GraphicCallbackProc.hxx                                               */
-/*==== Role : The header file of primitive type "GraphicCallbackProc" from package        */
-/*==== "V3d"                                                           */
-/*==== Implementation:  This is a primitive type implemented with typedef     */
-/*============================================================================*/
-
 #ifndef _Aspect_GraphicCallbackProc_HeaderFile
 #define _Aspect_GraphicCallbackProc_HeaderFile
+
 #include <Aspect_Display.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>
+#include <Handle_Standard_Transient.hxx>
 
 // The flags below provide additional information to define the moment when
 // callback was invoked in redraw procedure. These flags are bitwise OR'ed
@@ -42,29 +37,20 @@
 // mask for all additional callbacks that invoked in process of redrawing
 #define OCC_REDRAW_ADDITIONAL_CALLBACKS ( OCC_PRE_REDRAW | OCC_PRE_OVERLAY )
 
- typedef struct {
-   int reason;
-   int wsID;
-   int viewID;
-   Aspect_Display display;
-   Aspect_Drawable window;
-   Aspect_RenderingContext gcontext;
- } Aspect_GraphicCallbackStruct;
+typedef struct
+{
+  int reason;
+  int wsID;
+  int viewID;
+  Handle(Standard_Transient) glContext;
+} Aspect_GraphicCallbackStruct;
 
- typedef int (*Aspect_GraphicCallbackProc)(
-    Aspect_Drawable   	/* Window ID */,
-    void*           	/* user data */, 
-    Aspect_GraphicCallbackStruct*  /* call data */ 
- );
+// Prototype for callback function to perform custom drawing within the same window and GL context.
+typedef int (*Aspect_GraphicCallbackProc) (Aspect_Drawable               theWindowID,
+                                           void*                         theUserData,
+                                           Aspect_GraphicCallbackStruct* theCallData);
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-
-#include <Standard_Macro.hxx>
 class Handle(Standard_Type);
 const Handle(Standard_Type)& STANDARD_TYPE(Aspect_GraphicCallbackProc);
-
-/*============================================================================*/
-#endif
 
 #endif /* _Aspect_GraphicCallbackProc_HeaderFile */

@@ -36,7 +36,7 @@ OpenGl_Group::OpenGl_Group ()
 
 OpenGl_Group::~OpenGl_Group()
 {
-  Clear();
+  Release (Handle(OpenGl_Context)());
 }
 
 /*----------------------------------------------------------------------*/
@@ -130,63 +130,25 @@ void OpenGl_Group::AddElement (const TelType AType, OpenGl_Element *AElem )
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Group::Clear ()
-{
-  if (myAspectLine)
-  {
-    // Delete line context
-    delete myAspectLine;
-    myAspectLine = NULL;
-  }
-  if (myAspectFace)
-  {
-    // Delete face context
-    delete myAspectFace;
-    myAspectFace = NULL;
-  }
-  if (myAspectMarker)
-  {
-    // Delete marker context
-    delete myAspectMarker;
-    myAspectMarker = NULL;
-  }
-  if (myAspectText)
-  {
-    // Delete text context
-    delete myAspectText;
-    myAspectText = NULL;
-  }
-  // Delete elements
-  while (myFirst)
-  {
-    OpenGl_ElementNode *next = myFirst->next;
-    delete myFirst->elem;
-    delete myFirst;
-    myFirst = next;
-  }
-  myLast = NULL;
-}
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_Group::RemovePrimitiveArray (CALL_DEF_PARRAY *APArray)
+void OpenGl_Group::RemovePrimitiveArray (const Handle(OpenGl_Context)& theGlCtx,
+                                         CALL_DEF_PARRAY*              thePArray)
 {
   OpenGl_ElementNode *prevnode = NULL, *node = myFirst;
-  while (node)
+  while (node != NULL)
   {
     if (node->type == TelParray)
     {
-      CALL_DEF_PARRAY *aCurPArray = ((const OpenGl_PrimitiveArray *)node->elem)->PArray();
+      CALL_DEF_PARRAY* aCurPArray = ((const OpenGl_PrimitiveArray* )node->elem)->PArray();
 
       // validate for correct pointer
-      if (aCurPArray->num_bounds  == APArray->num_bounds  && 
-          aCurPArray->num_edges   == APArray->num_edges   &&
-          aCurPArray->num_vertexs == APArray->num_vertexs &&
-          aCurPArray->type        == APArray->type)
+      if (aCurPArray->num_bounds  == thePArray->num_bounds  && 
+          aCurPArray->num_edges   == thePArray->num_edges   &&
+          aCurPArray->num_vertexs == thePArray->num_vertexs &&
+          aCurPArray->type        == thePArray->type)
       {
-        (prevnode? prevnode->next : myFirst) = node->next;
+        (prevnode ? prevnode->next : myFirst) = node->next;
         if (!myFirst) myLast = NULL;
-        delete node->elem;
+        OpenGl_Element::Destroy (theGlCtx, node->elem);
         delete node;
         break;
       }
@@ -294,4 +256,20 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   AWorkspace->SetAspectText(aspect_text);
 }
 
-/*----------------------------------------------------------------------*/
+void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)
+{
+  // Delete elements
+  while (myFirst != NULL)
+  {
+    OpenGl_ElementNode* aNext = myFirst->next;
+    OpenGl_Element::Destroy (theGlCtx, myFirst->elem);
+    delete myFirst;
+    myFirst = aNext;
+  }
+  myLast = NULL;
+
+  OpenGl_Element::Destroy (theGlCtx, myAspectLine);
+  OpenGl_Element::Destroy (theGlCtx, myAspectFace);
+  OpenGl_Element::Destroy (theGlCtx, myAspectMarker);
+  OpenGl_Element::Destroy (theGlCtx, myAspectText);
+}

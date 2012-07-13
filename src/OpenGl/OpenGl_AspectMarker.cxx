@@ -44,9 +44,12 @@ void OpenGl_AspectMarker::SetContext (const CALL_DEF_CONTEXTMARKER &AContext)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_AspectMarker::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_AspectMarker::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  AWorkspace->SetAspectMarker(this);
+  theWorkspace->SetAspectMarker(this);
 }
 
-/*----------------------------------------------------------------------*/
+void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}

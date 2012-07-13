@@ -102,7 +102,9 @@ TextureID GetTextureData1D(char *FileName, const GLint width, const GLint height
 TextureID GetTextureData2D(char *FileName, const GLint width, const GLint height, const void *data);
 TextureID GetTextureData2DMipMap(char *FileName, const GLint width, const GLint height, const void *data);
 
-void FreeTexture(TextureID ID);
+class Handle(OpenGl_Context);
+void FreeTexture (const Handle(OpenGl_Context)& theContext,
+                  TextureID                     ID);
 
 void SetCurrentTexture(TextureID ID);
 GLboolean IsTextureValid(TextureID ID);
@@ -139,7 +141,6 @@ void SetTexturePosition(TextureID ID,
 void SetTextureDefaultParams(TextureID ID);
 
 void TransferTexture_To_Data(TextureID, TextureData *);
-void TransferData_To_Texture(TextureData*, TextureID*);
 
 /*----------------------------------------------------------------------*/
 

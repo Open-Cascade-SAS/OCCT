@@ -63,8 +63,9 @@ namespace
 // =======================================================================
 OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                                     const CALL_DEF_WINDOW&        theCWindow,
-                                    Aspect_RenderingContext       theGContext)
-: OpenGl_Window (theDisplay, theCWindow, theGContext),
+                                    Aspect_RenderingContext       theGContext,
+                                    const Handle(OpenGl_Context)& theShareCtx)
+: OpenGl_Window (theDisplay, theCWindow, theGContext, theShareCtx),
   myTransientList (0),
   myIsTransientOpen (Standard_False),
   myRetainMode (Standard_False),

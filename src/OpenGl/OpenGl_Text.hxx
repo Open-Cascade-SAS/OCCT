@@ -32,25 +32,32 @@
 
 class OpenGl_Text : public OpenGl_Element
 {
- public:
+
+public:
 
   OpenGl_Text (const TCollection_ExtendedString& AText,
               const Graphic3d_Vertex& APoint,
               const Standard_Real AHeight,
               const Graphic3d_HorizontalTextAlignment AHta,
               const Graphic3d_VerticalTextAlignment AVta);
-  virtual ~OpenGl_Text ();
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
- protected:
+protected:
+
+  virtual ~OpenGl_Text();
+
+protected:
 
   OpenGl_TextParam myParam;
   TEL_POINT       myAttachPnt;
   const wchar_t  *myString;
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //OpenGl_Text_Header

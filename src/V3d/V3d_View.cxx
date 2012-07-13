@@ -560,14 +560,12 @@ void V3d_View::SetWindow(const Handle(Aspect_Window)&      aWindow,
 
 /*----------------------------------------------------------------------*/
 
-void V3d_View::Remove() const  {
-
-  MyViewer->DelView(this) ;
-  MyView->Remove() ;
-#ifdef IMP260303
-  MyWindow.Nullify();
-#endif
-
+void V3d_View::Remove() const
+{
+  MyViewer->DelView (this);
+  MyView->Remove();
+  Handle(Aspect_Window)& aWin = const_cast<Handle(Aspect_Window)&> (MyWindow);
+  aWin.Nullify();
 }
 
 /*----------------------------------------------------------------------*/

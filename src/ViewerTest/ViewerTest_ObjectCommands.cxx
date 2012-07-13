@@ -3251,10 +3251,10 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   }
   else if (argc < 3)
   {
-    di << "Use: " << argv[0] << " Name TypeOfArray [EnableVBO={0 | 1}]"
+    di << "Use: " << argv[0] << " Name TypeOfArray"
        << " [vertex] ... [bounds] ... [edges]\n"
        << "  TypeOfArray={ points | segments | polylines | triangles |\n"
-       << "                trianglefan | trianglestrips | quads |\n"
+       << "                trianglefans | trianglestrips | quads |\n"
        << "                quadstrips | polygons }\n"
        << "  vertex={ 'v' x y z [normal={ 'n' nx ny nz }] [color={ 'c' r g b }]"
        << " [texel={ 't' tx ty }] } \n"
@@ -3264,20 +3264,16 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   }
 
   // read the arguments
-  TCollection_AsciiString aName (argv[1]);
-  TCollection_AsciiString anArrayType (argv[2]);
-  
-  // is argument list has an vbo flag
-  Standard_Boolean hasFlagVbo = Standard_False;
-  if (isdigit (argv[3][0]) && atoi (argv[3]) >= 0 && atoi (argv[3]) <= 1)
-    hasFlagVbo = Standard_True;
+  Standard_Integer aArgIndex = 1;
+  TCollection_AsciiString aName (argv[aArgIndex++]);
+  TCollection_AsciiString anArrayType (argv[aArgIndex++]);
+  const Standard_Integer anArgsFrom = aArgIndex;
 
   // parse number of verticies, bounds, edges
   Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
   Standard_Boolean hasVColors, hasBColors, hasNormals, hasInfos, hasTexels;
   hasVColors = hasNormals = hasBColors = hasInfos = hasTexels = Standard_False;
 
-  Standard_Integer aArgIndex = (hasFlagVbo) ? 4 : 3;
   TCollection_AsciiString aCommand;
   while (aArgIndex < argc)
   {
@@ -3375,7 +3371,7 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   }
 
   // parse an array of primitives
-  aArgIndex = (hasFlagVbo) ? 4 : 3;
+  aArgIndex = anArgsFrom;
   while (aArgIndex < argc)
   {
     aCommand = argv[aArgIndex];
@@ -3436,17 +3432,6 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
     // unknown command
     else
       aArgIndex++;
-  }
-
-  if (hasFlagVbo)
-  {
-    // enable / disable vbo
-    Handle(Graphic3d_GraphicDriver) aDriver =
-      Handle(Graphic3d_GraphicDriver)::DownCast (
-                      aContextAIS->CurrentViewer()->Device()->GraphicDriver());
-
-    if (!aDriver.IsNull())
-      aDriver->EnableVBO ((Standard_Boolean) atoi (argv[3]));
   }
 
   // create primitives array object
@@ -4379,7 +4364,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VComputeHLR, group);
 
   theCommands.Add("vdrawparray",
-    "vdrawparray : vdrawparray Name TypeOfArray [EnableVbo=1] [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id [edge_hidden = { 'h' }] ]",
+    "vdrawparray : vdrawparray Name TypeOfArray [vertex = { 'v' x y z [vertex_normal = { 'n' x y z }] [vertex_color = { 'c' r g b }] ] ... [bound = { 'b' vertex_count [bound_color = { 'c' r g b }] ] ... [edge = { 'e' vertex_id [edge_hidden = { 'h' }] ]",
     __FILE__,VDrawPArray,group);
 
   theCommands.Add("vconnect", 

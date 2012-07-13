@@ -27,9 +27,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static Standard_Integer enableArray = 1;
-static Standard_Boolean interleavedArray = Standard_False;
-
 Graphic3d_ArrayOfPrimitives :: Graphic3d_ArrayOfPrimitives (
                         const Graphic3d_TypeOfPrimitiveArray aType,
                         const Standard_Integer maxVertexs,
@@ -99,14 +96,6 @@ Graphic3d_ArrayOfPrimitives :: Graphic3d_ArrayOfPrimitives (
   myPrimitiveArray->num_bounds    = 0;
   myPrimitiveArray->num_vertexs   = 0;
   myPrimitiveArray->num_edges     = 0;
-  myPrimitiveArray->VBOEnabled    = -1;
-  myPrimitiveArray->flagBufferVBO = -1;
-  myPrimitiveArray->contextId     = 0;
-
-  for( int i =0 ; i < VBOMaxType ; i++){
-    myPrimitiveArray->bufferVBO[i] = 0;
-  }
-
 }
 
 void Graphic3d_ArrayOfPrimitives::Destroy (  ){
@@ -159,40 +148,15 @@ void Graphic3d_ArrayOfPrimitives::Destroy (  ){
 }
 
 void Graphic3d_ArrayOfPrimitives::Enable() {
-  enableArray = 1;
+  ///
 }
 
 void Graphic3d_ArrayOfPrimitives::Disable() {
-  enableArray = -1;
+  ///
 }
 
 Standard_Boolean Graphic3d_ArrayOfPrimitives::IsEnable() {
-
-  if( enableArray == 0 ) {
-    OSD_Environment csf(TCollection_AsciiString("CSF_USE_ARRAY_OF_PRIMITIVES"));
-    TCollection_AsciiString value = csf.Value();
-    enableArray = -1;
-    if( value.Length() > 0 ) {
-      if( value.IsIntegerValue() ) {
-        enableArray = value.IntegerValue();
-        if( enableArray > 1 ) {
-          enableArray = 1;
-        } else interleavedArray = Standard_False;
-      }
-    }
-#if TRACE > 0
-    if( enableArray > 0 ) {
-      if( interleavedArray ) 
-        cout << " ! ENABLE to use Interleaved arrays of primitives" << endl;
-      else
-        cout << " ! ENABLE to use Single arrays of primitives" << endl;
-    } else
-      cout << " ! DISABLE to use arrays of primitives" << endl;
-#endif
-  }
-  if( enableArray > 0 ) return Standard_True;
-
-  return Standard_False;
+  return Standard_True;
 }
 
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(

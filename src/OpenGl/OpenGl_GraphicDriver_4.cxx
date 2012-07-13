@@ -30,7 +30,7 @@ void OpenGl_GraphicDriver::ClearStructure (const Graphic3d_CStructure& theCStruc
   if (aStructure == NULL)
     return;
 
-  aStructure->Clear();
+  aStructure->Clear (GetSharedContext());
   InvalidateAllWorkspaces();
 }
 
@@ -100,12 +100,12 @@ void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView&      theCView,
 
 void OpenGl_GraphicDriver::RemoveStructure (const Graphic3d_CStructure& theCStructure)
 {
-  if (!GetMapOfStructures().IsBound (theCStructure.Id))
+  if (!myMapOfStructure.IsBound (theCStructure.Id))
     return;
 
-  OpenGl_Structure* aStructure = OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
-  OpenGl_GraphicDriver::GetMapOfStructures().UnBind (theCStructure.Id);
-  delete aStructure;
+  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
+  myMapOfStructure.UnBind (theCStructure.Id);
+  OpenGl_Element::Destroy (GetSharedContext(), aStructure);
   InvalidateAllWorkspaces();
 }
 
@@ -124,7 +124,7 @@ void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& theCStructure)
   aStructure->SetNamedStatus (aStatus);
 
   theCStructure.ptrStructure = aStructure;
-  OpenGl_GraphicDriver::GetMapOfStructures().Bind (theCStructure.Id, aStructure);
+  myMapOfStructure.Bind (theCStructure.Id, aStructure);
   InvalidateAllWorkspaces();
 }
 
@@ -136,11 +136,10 @@ void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& theCStructure)
 void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructure,
                                          const Standard_Integer theLayer)
 {
-  if (!GetMapOfStructures().IsBound (theCStructure.Id))
+  if (!myMapOfStructure.IsBound (theCStructure.Id))
     return;
 
-  OpenGl_Structure* aStructure =
-    OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
 
   aStructure->SetZLayer (theLayer);
 }
@@ -156,11 +155,10 @@ void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructu
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
 
-  if (!GetMapOfStructures().IsBound (theCStructure.Id) || !aCView)
+  if (!myMapOfStructure.IsBound (theCStructure.Id) || !aCView)
     return;
 
-  OpenGl_Structure* aStructure =
-    OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
 
   aCView->View->ChangeZLayer (aStructure, theNewLayerId);
 }
@@ -172,11 +170,10 @@ void OpenGl_GraphicDriver::ChangeZLayer (const Graphic3d_CStructure& theCStructu
 
 Standard_Integer OpenGl_GraphicDriver::GetZLayer (const Graphic3d_CStructure& theCStructure) const
 {
-  if (!GetMapOfStructures().IsBound (theCStructure.Id))
+  if (!myMapOfStructure.IsBound (theCStructure.Id))
     return -1;
 
-  OpenGl_Structure* aStructure = 
-    OpenGl_GraphicDriver::GetMapOfStructures().Find (theCStructure.Id);
+  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
 
   return aStructure->GetZLayer();
 }
@@ -188,9 +185,7 @@ Standard_Integer OpenGl_GraphicDriver::GetZLayer (const Graphic3d_CStructure& th
 
 void OpenGl_GraphicDriver::UnsetZLayer (const Standard_Integer theLayerId)
 {
-  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator
-    aStructIt (GetMapOfStructures ());
-  
+  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
   for( ; aStructIt.More (); aStructIt.Next ())
   {
     OpenGl_Structure* aStruct = aStructIt.ChangeValue ();

@@ -52,15 +52,18 @@ struct TEL_POLYGON_DATA
 
 class OpenGl_Polygon : public OpenGl_Element
 {
- public:
+
+public:
 
   OpenGl_Polygon (const Graphic3d_Array1OfVertex& AListVertex,
                  const Graphic3d_TypeOfPolygon AType);
-  virtual ~OpenGl_Polygon ();
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
- protected:
+protected:
+
+  virtual ~OpenGl_Polygon();
 
   void draw_polygon_concav (const Handle(OpenGl_Workspace) &AWorkspace, Tint) const;
 
@@ -72,8 +75,10 @@ class OpenGl_Polygon : public OpenGl_Element
 
   TEL_POLYGON_DATA myData;
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //OpenGl_Polygon_Header

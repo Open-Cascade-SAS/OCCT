@@ -32,7 +32,6 @@ class OpenGl_AspectLine : public OpenGl_Element
 
   OpenGl_AspectLine ();
   OpenGl_AspectLine (const OpenGl_AspectLine &AnOther);
-  virtual ~OpenGl_AspectLine () {}
 
   void SetContext (const CALL_DEF_CONTEXTLINE &AContext);
 
@@ -40,7 +39,8 @@ class OpenGl_AspectLine : public OpenGl_Element
   Aspect_TypeOfLine  Type() const { return myType; }
   float              Width() const { return myWidth; }
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
  protected:
 

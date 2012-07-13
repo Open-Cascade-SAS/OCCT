@@ -72,9 +72,14 @@ void OpenGl_AspectText::SetContext (const CALL_DEF_CONTEXTTEXT &AContext)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_AspectText::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_AspectText::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  AWorkspace->SetAspectText(this);
+  theWorkspace->SetAspectText (this);
+}
+
+void OpenGl_AspectText::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
 }
 
 /*----------------------------------------------------------------------*/

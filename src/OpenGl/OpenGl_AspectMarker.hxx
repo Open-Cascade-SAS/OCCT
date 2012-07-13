@@ -31,7 +31,6 @@ class OpenGl_AspectMarker : public OpenGl_Element
  public:
 
   OpenGl_AspectMarker ();
-  virtual ~OpenGl_AspectMarker () {}
 
   void SetContext (const CALL_DEF_CONTEXTMARKER &AContext);
 
@@ -39,7 +38,8 @@ class OpenGl_AspectMarker : public OpenGl_Element
   Aspect_TypeOfMarker Type() const { return myType; }
   float               Scale() const { return myScale; }
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
  protected:
 

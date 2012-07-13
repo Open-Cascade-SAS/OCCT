@@ -1,6 +1,5 @@
-// Created on: 2011-07-13
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,39 +16,26 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <OpenGl_IndexBuffer.hxx>
 
-#ifndef OpenGl_MarkerSet_Header
-#define OpenGl_MarkerSet_Header
+#include <OpenGl_Context.hxx>
+#include <Standard_Assert.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
+IMPLEMENT_STANDARD_HANDLE (OpenGl_IndexBuffer, OpenGl_VertexBuffer)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_VertexBuffer)
 
-#include <OpenGl_Element.hxx>
+// =======================================================================
+// function : OpenGl_IndexBuffer
+// purpose  :
+// =======================================================================
+OpenGl_IndexBuffer::OpenGl_IndexBuffer()
+: OpenGl_VertexBuffer() {}
 
-#include <Graphic3d_Vertex.hxx>
-
-class OpenGl_MarkerSet : public OpenGl_Element
+// =======================================================================
+// function : GetTarget
+// purpose  :
+// =======================================================================
+GLenum OpenGl_IndexBuffer::GetTarget() const
 {
-
-public:
-
-  OpenGl_MarkerSet (const Standard_Integer ANbPoints, const Graphic3d_Vertex *APoints);
-
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
-
-protected:
-
-  virtual ~OpenGl_MarkerSet();
-
-protected:
-
-  Tint       myNbPoints;
-  TEL_POINT* myPoints;
-
-public:
-
-  DEFINE_STANDARD_ALLOC
-
-};
-
-#endif //OpenGl_MarkerSet_Header
+  return GL_ELEMENT_ARRAY_BUFFER;
+}

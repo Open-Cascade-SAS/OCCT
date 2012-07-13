@@ -74,8 +74,8 @@
 #include <OpenGl_Display.hxx>
 #include <OpenGl_TextureBox.hxx>
 #include <OpenGl_ImageBox.hxx>
-#include <OpenGl_ResourceCleaner.hxx>
 #include <OpenGl_ResourceTexture.hxx>
+#include <OpenGl_Context.hxx>
 
 #include <GL/glu.h> // gluBuild2DMipmaps()
 
@@ -105,7 +105,6 @@ struct contextData
   GLuint number;
   GLDRAWABLE drawable;
   GLCONTEXT context;
-  char use_bind_texture;
 };
 
 struct texDraw
@@ -388,7 +387,6 @@ static void MyGenTextureEXT (TextureID ID)
 
   aContextData.context = GET_GL_CONTEXT();
   aContextData.drawable = GET_GLDEV_CONTEXT();
-  aContextData.use_bind_texture = (char )GL_TRUE;
   glGenTextures (1, &aContextData.number);
   textab(ID).contextdata.Append(aContextData);
   glBindTexture (texdata(data).type, aContextData.number);
@@ -667,60 +665,27 @@ void SetCurrentTexture(TextureID ID)
 
 /*----------------------------------------------------------------------*/
 
-void FreeTexture(TextureID ID)
+void FreeTexture (const Handle(OpenGl_Context)& theContext,
+                  TextureID                     ID)
 {
-  TextureDataID data;
-  bool notResource = false; // if there old-style texture deletion
+  if (!IsTextureValid (ID))
+  {
+    return;
+  }
 
-  GLCONTEXT cur_context;
-  GLDRAWABLE cur_drawable;
-  int i;
-
-  if (!IsTextureValid(ID)) return;
-
-  data = textab(ID).data;
+  TextureDataID data = textab(ID).data;
   texdata(data).share_count--;
   if (texdata(data).share_count == 0)
-  {      
-    // liberation des datas de la textures
-   delete [] texdata(data).image;
+  {
+    // release texture data
+    delete [] texdata(data).image;
 
     // liberation de la texture dans tous les contextes
-    cur_drawable = GET_GLDEV_CONTEXT();
-    for (i = 0; i < textab(ID).contextdata.Length(); ++i)
+    for (int i = 0; i < textab(ID).contextdata.Length(); ++i)
     {
-      cur_context = 0;
-      bool isResource = false; 
-
-      if (textab(ID).contextdata(i).use_bind_texture)
-      {
-        if( !OpenGl_ResourceCleaner::GetInstance()->AddResource(textab(ID).contextdata(i).context, 
-            new OpenGl_ResourceTexture(textab(ID).contextdata(i).number)) )
-        {
-          GL_MAKE_CURRENT((openglDisplay.IsNull() ? (Display* )NULL : (Display* )openglDisplay->GetDisplay()),
-            textab(ID).contextdata(i).drawable,
-            textab(ID).contextdata(i).context);
-
-          // This check has been added to avoid exception, 
-          // which is raised when trying to delete textures when no rendering context is available
-          cur_context = GET_GL_CONTEXT();
-          if (cur_context)
-            glDeleteTextures (1, &textab(ID).contextdata(i).number);
-          notResource = true;
-        }
-        else
-        {
-          isResource = true;
-        }
-      }
-
-      if( !isResource && cur_context )
-        glFinish();
+      Handle(OpenGl_ResourceTexture) aResource = new OpenGl_ResourceTexture (textab(ID).contextdata(i).number);
+      theContext->DelayedRelease (aResource);
     }
-
-    if( notResource )
-      GL_MAKE_CURRENT((openglDisplay.IsNull() ? (Display* )NULL : (Display* )openglDisplay->GetDisplay()),
-                      cur_drawable, cur_context);
 
     texdata(data).status = TEXDATA_NONE;
 
@@ -961,34 +926,4 @@ void TransferTexture_To_Data(TextureID ID, TextureData *TransfDt)
   TransfDt->angle = textab(ID).angle;            
   memcpy(TransfDt->plane1,  textab(ID).Plane1, sizeof(SizeType));
   memcpy(TransfDt->plane2,  textab(ID).Plane2, sizeof(SizeType));                
-}
-
-/*----------------------------------------------------------------------*/
-/* Transfere de donnee de la structure TransferData aux donnees internes */
-void TransferData_To_Texture(TextureData *TransfDt, TextureID *newID)
-{                            
-  TextureID ID;
-
-  /* Affectations */
-  FreeTexture(*newID);     
-  ID = GetTexture2DMipMap(TransfDt->path);  
-
-  if(IsTextureValid(ID))
-  {
-    /* Affectation de l id courant */
-    *newID = ID;
-
-    /* Donnees concernant les caracteristiques de la texture */ 
-    strcpy(texdata(textab(ID).data).imageFileName, TransfDt->path);       
-    textab(ID).Gen    = TransfDt->gen;
-    textab(ID).Wrap   = TransfDt->wrap;
-    textab(ID).Light  = TransfDt->render;
-    textab(ID).scalex = TransfDt->scalex;
-    textab(ID).scaley = TransfDt->scaley; 
-    textab(ID).transx = TransfDt->transx;
-    textab(ID).transy = TransfDt->transy;
-    textab(ID).angle  = TransfDt->angle;
-    memcpy(textab(ID).Plane1,  TransfDt->plane1, sizeof(SizeType));
-    memcpy(textab(ID).Plane2,  TransfDt->plane2, sizeof(SizeType)); 
-  }               
 }

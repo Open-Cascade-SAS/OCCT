@@ -24,8 +24,6 @@
 
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Display.hxx>
-#include <OpenGl_ResourceCleaner.hxx>
-#include <OpenGl_ResourceTexture.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -39,12 +37,6 @@ namespace
 {
   static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
 
-  static GLCONTEXT ThePreviousCtx = 0; // to share GL resources
-#if (!defined(_WIN32) && !defined(__WIN32__))
-  static GLXContext TheDeadGlxCtx; // Context to be destroyed
-  static Display*   TheDeadGlxDpy; // Display associated with TheDeadGlxCtx
-#endif
-  
 #if (defined(_WIN32) || defined(__WIN32__))
   static int find_pixel_format (HDC hDC, PIXELFORMATDESCRIPTOR* pfd, const Standard_Boolean dbuff)
   {
@@ -105,14 +97,12 @@ namespace
 // =======================================================================
 OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
                               const CALL_DEF_WINDOW&        theCWindow,
-                              Aspect_RenderingContext       theGContext)
+                              Aspect_RenderingContext       theGContext,
+                              const Handle(OpenGl_Context)& theShareCtx)
 : myDisplay (theDisplay),
-  myWindow (0),
-  myGContext ((GLCONTEXT )theGContext),
   myGlContext (new OpenGl_Context()),
   myOwnGContext (theGContext == 0),
 #if (defined(_WIN32) || defined(__WIN32__))
-  myWindowDC (0),
   mySysPalInUse (FALSE),
 #endif
   myWidth ((Standard_Integer )theCWindow.dx),
@@ -125,10 +115,77 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   myBgColor.rgb[1] = theCWindow.Background.g;
   myBgColor.rgb[2] = theCWindow.Background.b;
 
-  WINDOW aParent = (WINDOW )theCWindow.XWindow;
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
+#if (defined(_WIN32) || defined(__WIN32__))
+  HWND  aWindow   = (HWND )theCWindow.XWindow;
+  HDC   aWindowDC = GetDC (aWindow);
+  HGLRC aGContext = (HGLRC )theGContext;
 
-#if (!defined(_WIN32) && !defined(__WIN32__))
+  PIXELFORMATDESCRIPTOR pfd;
+  int iPixelFormat = find_pixel_format (aWindowDC, &pfd, myDisplay->DBuffer());
+  if (iPixelFormat == 0)
+  {
+    ReleaseDC (aWindow, aWindowDC);
+
+    TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: ChoosePixelFormat failed. Error code: ");
+    aMsg += (int )GetLastError();
+    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+    return;
+  }
+
+  if (pfd.dwFlags & PFD_NEED_PALETTE)
+  {
+    WINDOW_DATA* wd = (WINDOW_DATA* )GetWindowLongPtr (aWindow, GWLP_USERDATA);
+
+    mySysPalInUse = (pfd.dwFlags & PFD_NEED_SYSTEM_PALETTE) ? TRUE : FALSE;
+    InterfaceGraphic_RealizePalette (aWindowDC, wd->hPal, FALSE, mySysPalInUse);
+  }
+
+  if (myDither)
+    myDither = (pfd.cColorBits <= 8);
+
+  if (myBackDither)
+    myBackDither = (pfd.cColorBits <= 8);
+
+  if (!SetPixelFormat (aWindowDC, iPixelFormat, &pfd))
+  {
+    ReleaseDC (aWindow, aWindowDC);
+
+    TCollection_AsciiString aMsg("OpenGl_Window::CreateWindow: SetPixelFormat failed. Error code: ");
+    aMsg += (int )GetLastError();
+    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+    return;
+  }
+
+  if (aGContext == NULL)
+  {
+    aGContext = wglCreateContext (aWindowDC);
+    if (aGContext == NULL)
+    {
+      ReleaseDC (aWindow, aWindowDC);
+
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: wglCreateContext failed. Error code: ");
+      aMsg += (int )GetLastError();
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
+    }
+  }
+
+  // all GL context within one OpenGl_GraphicDriver should be shared!
+  if (!theShareCtx.IsNull() && wglShareLists ((HGLRC )theShareCtx->myGContext, aGContext) != TRUE)
+  {
+    TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: wglShareLists failed. Error code: ");
+    aMsg += (int )GetLastError();
+    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+    return;
+  }
+
+  myGlContext->Init ((Aspect_Handle )aWindow, (Aspect_Handle )aWindowDC, (Aspect_RenderingContext )aGContext);
+#else
+  WINDOW aParent = (WINDOW )theCWindow.XWindow;
+  WINDOW aWindow = 0;
+  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
+  GLXContext aGContext = (GLXContext )theGContext;
+
   XWindowAttributes wattr;
   XGetWindowAttributes (aDisp, aParent, &wattr);
   const int scr = DefaultScreen (aDisp);
@@ -143,8 +200,6 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     aVis = XGetVisualInfo (aDisp, aVisInfoMask, &aVisInfo, &aNbItems);
   }
 
-  WINDOW win;
-
   if (!myOwnGContext)
   {
     if (aVis != NULL)
@@ -153,12 +208,10 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       return;
     }
 
-    win = aParent;
+    aWindow = aParent;
   }
   else
   {
-    GLCONTEXT ctx;
-
   #if defined(__linux) || defined(Linux)
     if (aVis != NULL)
     {
@@ -216,35 +269,21 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       }
     }
 
-    if (TheDeadGlxCtx)
+    if (!theShareCtx.IsNull())
     {
-      // recover display lists from TheDeadGlxCtx, then destroy it
-      ctx = glXCreateContext (aDisp, aVis, TheDeadGlxCtx, GL_TRUE);
-
-      OpenGl_ResourceCleaner::GetInstance()->RemoveContext (TheDeadGlxCtx);
-      glXDestroyContext (TheDeadGlxDpy, TheDeadGlxCtx);
-
-      TheDeadGlxCtx = 0;
-    }
-    else if (ThePreviousCtx == 0)
-    {
-      ctx = glXCreateContext (aDisp, aVis, NULL, GL_TRUE);
+      // ctx est une copie du previous
+      aGContext = glXCreateContext (aDisp, aVis, (GLXContext )theShareCtx->myGContext, GL_TRUE);
     }
     else
     {
-      // ctx est une copie du previous
-      ctx = glXCreateContext (aDisp, aVis, ThePreviousCtx, GL_TRUE);
+      aGContext = glXCreateContext (aDisp, aVis, NULL, GL_TRUE);
     }
 
-    if (!ctx)
+    if (!aGContext)
     {
       Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: glXCreateContext failed.");
       return;
     }
-
-    OpenGl_ResourceCleaner::GetInstance()->AppendContext (ctx, true);
-
-    ThePreviousCtx = ctx;
 
     Colormap cmap = XCreateColormap (aDisp, aParent, aVis->visual, AllocNone);
 
@@ -263,25 +302,23 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
 
     if (aVis->visualid == wattr.visual->visualid)
     {
-      win = aParent;
+      aWindow = aParent;
     }
     else
     {
       unsigned long mask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
-      win = XCreateWindow (aDisp, aParent, 0, 0, myWidth, myHeight, 0/*bw*/, aVis->depth, InputOutput, aVis->visual, mask, &cwa);
+      aWindow = XCreateWindow (aDisp, aParent, 0, 0, myWidth, myHeight, 0/*bw*/, aVis->depth, InputOutput, aVis->visual, mask, &cwa);
     }
 
-    XSetWindowBackground (aDisp, win, cwa.background_pixel);
-    XClearWindow (aDisp, win);
+    XSetWindowBackground (aDisp, aWindow, cwa.background_pixel);
+    XClearWindow (aDisp, aWindow);
 
-    if (win != aParent)
+    if (aWindow != aParent)
     {
       XEvent anEvent;
-      XMapWindow (aDisp, win);
-      XIfEvent (aDisp, &anEvent, WaitForNotify, (char* )win);
+      XMapWindow (aDisp, aWindow);
+      XIfEvent (aDisp, &anEvent, WaitForNotify, (char* )aWindow);
     }
-
-    myGContext = ctx;
   }
 
   /*
@@ -297,114 +334,21 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   * (Carte Impact avec GLX_RED_SIZE a 5 par exemple)
   */
 
-  int value;
-  glXGetConfig (aDisp, aVis, GLX_RED_SIZE, &value);
+  int aValue;
+  glXGetConfig (aDisp, aVis, GLX_RED_SIZE, &aValue);
 
   if (myDither)
-    myDither = (value < 8);
+    myDither = (aValue < 8);
 
   if (myBackDither)
     myBackDither = (aVis->depth <= 8);
 
   XFree ((char* )aVis);
 
-  myWindow = win;
-
-#else
-
-  myWindowDC = GetDC (aParent);
-
-  PIXELFORMATDESCRIPTOR pfd;
-  int iPixelFormat = find_pixel_format (myWindowDC, &pfd, myDisplay->DBuffer());
-  if (iPixelFormat == 0)
-  {
-    ReleaseDC (aParent, myWindowDC);
-    myWindowDC = 0;
-
-    TCollection_AsciiString msg ("OpenGl_Window::CreateWindow: ChoosePixelFormat failed. Error code: ");
-    msg += (int )GetLastError();
-    Aspect_GraphicDeviceDefinitionError::Raise (msg.ToCString());
-    return;
-  }
-
-  if (pfd.dwFlags & PFD_NEED_PALETTE)
-  {
-    WINDOW_DATA* wd = (WINDOW_DATA* )GetWindowLongPtr (aParent, GWLP_USERDATA);
-
-    mySysPalInUse = (pfd.dwFlags & PFD_NEED_SYSTEM_PALETTE) ? TRUE : FALSE;
-    InterfaceGraphic_RealizePalette (myWindowDC, wd->hPal, FALSE, mySysPalInUse);
-  }
-
-  if (myDither)
-    myDither = (pfd.cColorBits <= 8);
-
-  if (myBackDither)
-    myBackDither = (pfd.cColorBits <= 8);
-
-  if (!SetPixelFormat (myWindowDC, iPixelFormat, &pfd))
-  {
-    ReleaseDC (aParent, myWindowDC);
-    myWindowDC = NULL;
-
-    TCollection_AsciiString msg("OpenGl_Window::CreateWindow: SetPixelFormat failed. Error code: ");
-    msg += (int)GetLastError();
-    Aspect_GraphicDeviceDefinitionError::Raise (msg.ToCString());
-    return;
-  }
-
-  if (!myOwnGContext)
-  {
-    ThePreviousCtx = myGContext;
-  }
-  else
-  {
-    myGContext = wglCreateContext (myWindowDC);
-    if (myGContext == NULL)
-    {
-      ReleaseDC (aParent, myWindowDC);
-      myWindowDC = NULL;
-
-      TCollection_AsciiString msg ("OpenGl_Window::CreateWindow: wglCreateContext failed. Error code: ");
-      msg += (int )GetLastError();
-      Aspect_GraphicDeviceDefinitionError::Raise (msg.ToCString());
-      return;
-    }
-
-    Standard_Boolean isShared = Standard_True;
-    if (ThePreviousCtx == NULL)
-    {
-      ThePreviousCtx = myGContext;
-    }
-    else
-    {
-      // if we already have some shared context
-      GLCONTEXT shareCtx = OpenGl_ResourceCleaner::GetInstance()->GetSharedContext();
-      if (shareCtx != NULL)
-      {
-        // try to share context with one from resource cleaner list
-        isShared = (Standard_Boolean )wglShareLists (shareCtx, myGContext);
-      }
-      else
-      {
-        isShared = (Standard_Boolean )wglShareLists (ThePreviousCtx, myGContext);
-        // add shared ThePreviousCtx to a control list if it's not there
-        if (isShared)
-          OpenGl_ResourceCleaner::GetInstance()->AppendContext (ThePreviousCtx, isShared);
-      }
-    }
-
-    // add the context to OpenGl_ResourceCleaner control list
-    OpenGl_ResourceCleaner::GetInstance()->AppendContext (myGContext, isShared);
-  }
-
-  myWindow = aParent;
+  myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )myDisplay->GetDisplay(), (Aspect_RenderingContext )aGContext);
 #endif
+  myGlContext->Share (theShareCtx);
 
-#if (defined(_WIN32) || defined(__WIN32__))
-  myGlContext->Init (myWindow, myWindowDC, myGContext);
-#else
-  myGlContext->Init (myWindow, myDisplay->GetDisplay(), myGContext);
-#endif
   Init();
 }
 
@@ -414,49 +358,31 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
 // =======================================================================
 OpenGl_Window::~OpenGl_Window()
 {
-  DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
-  if (aDisp == NULL || !myOwnGContext)
-    return;
-
 #if (defined(_WIN32) || defined(__WIN32__))
-  OpenGl_ResourceCleaner::GetInstance()->RemoveContext (myGContext);
+  HWND  aWindow   = (HWND  )myGlContext->myWindow;
+  HDC   aWindowDC = (HDC   )myGlContext->myWindowDC;
+  HGLRC aGContext = (HGLRC )myGlContext->myGContext;
+  myGlContext.Nullify();
 
-  if (wglGetCurrentContext() != NULL)
-    wglDeleteContext (myGContext);
-  ReleaseDC (myWindow, myWindowDC);
-
-  if (myDisplay->myMapOfWindows.Size() == 0)
-    ThePreviousCtx = 0;
-#else
-  // FSXXX sync necessary if non-direct rendering
-  glXWaitGL();
-
-  if (ThePreviousCtx == myGContext)
+  if (myOwnGContext)
   {
-    ThePreviousCtx = NULL;
-    if (myDisplay->myMapOfWindows.Size() > 0)
+    if (wglGetCurrentContext() != NULL)
     {
-      NCollection_DataMap<Standard_Integer, Handle(OpenGl_Window)>::Iterator it (myDisplay->myMapOfWindows);
-      ThePreviousCtx = it.Value()->myGContext;
+      wglDeleteContext (aGContext);
     }
-
-    // if this is the last remaining context, do not destroy it yet, to avoid
-    // losing any shared display lists (fonts...)
-    if (ThePreviousCtx)
-    {
-      OpenGl_ResourceCleaner::GetInstance()->RemoveContext(myGContext);
-      glXDestroyContext(aDisp, myGContext);
-    }
-    else
-    {
-      TheDeadGlxCtx = myGContext;
-      TheDeadGlxDpy = aDisp;
-    }
+    ReleaseDC (aWindow, aWindowDC);
   }
-  else
+#else
+  GLXDrawable aWindow   = (GLXDrawable )myGlContext->myWindow;
+  Display*    aDisplay  = (Display*    )myGlContext->myDisplay;
+  GLXContext  aGContext = (GLXContext  )myGlContext->myGContext;
+  myGlContext.Nullify();
+
+  if (aDisplay != NULL && myOwnGContext)
   {
-    OpenGl_ResourceCleaner::GetInstance()->RemoveContext (myGContext);
-    glXDestroyContext (aDisp, myGContext);
+    // FSXXX sync necessary if non-direct rendering
+    glXWaitGL();
+    glXDestroyContext (aDisplay, aGContext);
   }
 #endif
 }
@@ -488,7 +414,7 @@ void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
   myHeight = (Standard_Integer )theCWindow.dy;
 
 #if (!defined(_WIN32) && !defined(__WIN32__))
-  XResizeWindow (aDisp, myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
+  XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
   XSync (aDisp, False);
 #endif
 
@@ -542,7 +468,7 @@ void OpenGl_Window::Init()
 
 #if (defined(_WIN32) || defined(__WIN32__))
   RECT cr;
-  GetClientRect (myWindow, &cr);
+  GetClientRect ((HWND )myGlContext->myWindow, &cr);
   myWidth  = cr.right - cr.left;
   myHeight = cr.bottom - cr.top;
 #else
@@ -552,7 +478,7 @@ void OpenGl_Window::Init()
   unsigned int aNewWidth  = 0;
   unsigned int aNewHeight = 0;
   DISPLAY* aDisp = (DISPLAY* )myDisplay->GetDisplay();
-  XGetGeometry (aDisp, myWindow, &aRootWin, &aDummy, &aDummy, &aNewWidth, &aNewHeight, &aDummyU, &aDummyU);
+  XGetGeometry (aDisp, myGlContext->myWindow, &aRootWin, &aDummy, &aDummy, &aNewWidth, &aNewHeight, &aDummyU, &aDummyU);
   myWidth  = aNewWidth;
   myHeight = aNewHeight;
 #endif
@@ -681,4 +607,13 @@ void OpenGl_Window::MakeBackBufCurrent() const
 void OpenGl_Window::MakeFrontAndBackBufCurrent() const
 {
   glDrawBuffer (GL_FRONT_AND_BACK);
+}
+
+// =======================================================================
+// function : GetGContext
+// purpose  :
+// =======================================================================
+GLCONTEXT OpenGl_Window::GetGContext() const
+{
+  return (GLCONTEXT )myGlContext->myGContext;
 }

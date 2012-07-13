@@ -19,16 +19,40 @@
 
 
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_Context.hxx>
 #include <OpenGl_ResourceTexture.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (OpenGl_ResourceTexture, OpenGl_Resource)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ResourceTexture, OpenGl_Resource)
 
 //=======================================================================
-//function : Clean
+//function : OpenGl_ResourceTexture
+//purpose  :
+//=======================================================================
+OpenGl_ResourceTexture::OpenGl_ResourceTexture (const GLuint theId)
+: myTextureId (theId)
+{
+  //
+}
+
+//=======================================================================
+//function : ~OpenGl_ResourceTexture
+//purpose  :
+//=======================================================================
+OpenGl_ResourceTexture::~OpenGl_ResourceTexture()
+{
+  Release (NULL);
+}
+
+//=======================================================================
+//function : Release
 //purpose  : free OpenGl memory allocated for texture resource
 //=======================================================================
-void OpenGl_ResourceTexture::Clean (const Handle(OpenGl_Context)& theGlContext)
+void OpenGl_ResourceTexture::Release (const OpenGl_Context* theGlCtx)
 {
-  glDeleteTextures (1, &myId);
+  if (myTextureId != 0 && theGlCtx != NULL)
+  {
+    glDeleteTextures (1, &myTextureId);
+    myTextureId = 0;
+  }
 }

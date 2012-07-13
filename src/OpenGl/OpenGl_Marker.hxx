@@ -30,9 +30,9 @@ class OpenGl_Marker : public OpenGl_Element
  public:
 
   OpenGl_Marker (const TEL_POINT &APoint) : myPoint(APoint) {}
-  virtual ~OpenGl_Marker () {}
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
  protected:
 

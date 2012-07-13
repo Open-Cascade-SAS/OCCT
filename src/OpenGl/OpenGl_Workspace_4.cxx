@@ -25,7 +25,6 @@
 #endif
 
 #include <OpenGl_FrameBuffer.hxx>
-#include <OpenGl_ResourceCleaner.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
@@ -41,7 +40,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 
   // release pending GL resources
   Handle(OpenGl_Context) aGlCtx = GetGlContext();
-  OpenGl_ResourceCleaner::GetInstance()->Cleanup (aGlCtx);
+  aGlCtx->ReleaseDelayed();
 
   // cache render mode state
   GLint aRendMode = GL_RENDER;

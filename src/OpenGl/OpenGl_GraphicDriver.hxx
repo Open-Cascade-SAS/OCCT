@@ -23,6 +23,7 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Handle_OpenGl_GraphicDriver.hxx>
+#include <OpenGl_Context.hxx>
 
 #include <Standard_CString.hxx>
 
@@ -84,6 +85,7 @@ class AlienImage_AlienImage;
 class TColStd_HArray1OfReal;
 class Handle(OpenGl_View);
 class Handle(OpenGl_Workspace);
+class OpenGl_Element;
 class OpenGl_Structure;
 
 //! This class defines an OpenGl graphic driver <br>
@@ -332,23 +334,32 @@ public:
   Standard_EXPORT Standard_Boolean MemoryInfo (Standard_Size&           theFreeBytes,
                                                TCollection_AsciiString& theInfo) const;
 
+  //! UserDraw function prototype
+  typedef OpenGl_Element* (*OpenGl_UserDrawCallback_t )(const CALL_DEF_USERDRAW* );
+
+  //! Method to setup UserDraw callback
+  Standard_EXPORT OpenGl_UserDrawCallback_t& UserDrawCallback();
+
 private:
 
-  //! Access the global map of views.
-  static NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>& GetMapOfViews();
-
-  //! Access the global map of workspaces.
-  static NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>& GetMapOfWorkspaces();
-
-  //! Access the global map of structures.
-  static NCollection_DataMap<Standard_Integer, OpenGl_Structure*>& GetMapOfStructures();
+  //! Method to retrieve valid GL context.
+  //! Could return NULL-handle if no window created by this driver.
+  Standard_EXPORT const Handle(OpenGl_Context)& GetSharedContext() const;
 
   //! Deprecated.
-  static void InvalidateAllWorkspaces();
+  void InvalidateAllWorkspaces();
 
 public:
 
   DEFINE_STANDARD_RTTI(OpenGl_GraphicDriver)
+
+private:
+
+  NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      myMapOfView;
+  NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> myMapOfWS;
+  NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
+  OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
+
 };
 
 #endif //_OpenGl_GraphicDriver_HeaderFile

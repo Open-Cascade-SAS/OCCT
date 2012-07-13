@@ -42,6 +42,11 @@ OpenGl_Polyline::~OpenGl_Polyline()
   delete[] myVertices;
 }
 
+void OpenGl_Polyline::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}
+
 /*----------------------------------------------------------------------*/
 
 void OpenGl_Polyline::Render (const Handle(OpenGl_Workspace)& theWorkspace) const

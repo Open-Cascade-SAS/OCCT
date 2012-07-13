@@ -224,9 +224,12 @@ void OpenGl_AspectFace::SetContext (const CALL_DEF_CONTEXTFILLAREA &AContext)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_AspectFace::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_AspectFace::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  AWorkspace->SetAspectFace(this);
+  theWorkspace->SetAspectFace (this);
 }
 
-/*----------------------------------------------------------------------*/
+void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}

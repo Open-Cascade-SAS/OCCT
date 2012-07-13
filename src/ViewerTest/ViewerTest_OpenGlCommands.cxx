@@ -23,6 +23,8 @@
 
 #include <ViewerTest.hxx>
 
+#include <Aspect_GraphicDevice.hxx>
+#include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
@@ -32,20 +34,18 @@
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
-#include <OpenGl_Callback.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_ExtFBO.hxx>
 #include <OpenGl_GlCore20.hxx>
-#include <OpenGl_ResourceCleaner.hxx>
-#include <OpenGl_ResourceTexture.hxx>
-#include <OpenGl_ResourceVBO.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
+#include <V3d_Viewer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d_View.hxx>
 
@@ -98,6 +98,11 @@ public:
     {
       if (!myIObj.IsNull())
         myIObj->Render(theWorkspace);
+    }
+
+    virtual void Release (const Handle(OpenGl_Context)& theGlCtx)
+    {
+      //
     }
 
   public:
@@ -175,21 +180,7 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
     *(theWorkspace->HighlightColor) : aLA->Color();
 
   // To test OpenGl_Window
-  Handle(OpenGl_Context) aCtx = theWorkspace->GetGlContext();
-  GLCONTEXT aGlContext = theWorkspace->GetGContext();
-
-  // To link against OpenGl_Context and extensions
-  GLuint aVboId = -1, aTexId = -1;
-  if (aCtx->arbVBO)
-    aCtx->arbVBO->glGenBuffersARB(1, &aVboId);
-  glGenTextures(1, &aTexId);
-
-  // To link against OpenGl_ResourceCleaner, OpenGl_ResourceVBO, OpenGl_ResourceTexture
-  OpenGl_ResourceCleaner* aResCleaner = OpenGl_ResourceCleaner::GetInstance();
-  if (aVboId != (GLuint)-1)
-    aResCleaner->AddResource(aGlContext, new OpenGl_ResourceVBO(aVboId));
-  if (aTexId != (GLuint)-1)
-    aResCleaner->AddResource(aGlContext, new OpenGl_ResourceTexture(aTexId));
+  //Handle(OpenGl_Context) aCtx = theWorkspace->GetGlContext();
 
   // Finally draw something to make sure UserDraw really works
   glPushAttrib(GL_ENABLE_BIT);
@@ -228,6 +219,13 @@ static Standard_Integer VUserDraw (Draw_Interpretor& di,
     return 1;
   }
 
+  Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContext->CurrentViewer()->Device()->GraphicDriver());
+  if (aDriver.IsNull())
+  {
+    std::cerr << "Graphic driver not available.\n";
+    return 1;
+  }
+
   if (argc > 2)
   {
     di << argv[0] << "Wrong number of arguments, only the object name expected\n";
@@ -238,7 +236,7 @@ static Standard_Integer VUserDraw (Draw_Interpretor& di,
   VDisplayAISObject(aName, Handle(AIS_InteractiveObject)());
 
   // register the custom element factory function
-  ::UserDrawCallback() = VUserDrawCallback;
+  aDriver->UserDrawCallback() = VUserDrawCallback;
 
   Handle(VUserDrawObj) anIObj = new VUserDrawObj();
   VDisplayAISObject(aName, anIObj);

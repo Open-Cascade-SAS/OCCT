@@ -64,7 +64,6 @@ class OpenGl_AspectFace : public OpenGl_Element
  public:
 
   OpenGl_AspectFace ();
-  virtual ~OpenGl_AspectFace () {}
 
   void SetContext (const CALL_DEF_CONTEXTFILLAREA &AContext);
 
@@ -74,7 +73,8 @@ class OpenGl_AspectFace : public OpenGl_Element
   const TEL_CONTEXT_FACE & Context() const { return myContext; }
   const OpenGl_AspectLine * AspectEdge() const { return &myAspectEdge; }
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
  protected:
 

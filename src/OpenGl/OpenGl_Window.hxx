@@ -40,7 +40,8 @@ public:
   //! Main constructor - prepare GL context for specified window.
   OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
                  const CALL_DEF_WINDOW&        theCWindow,
-                 Aspect_RenderingContext       theGContext);
+                 Aspect_RenderingContext       theGContext,
+                 const Handle(OpenGl_Context)& theShareCtx);
 
   //! Destructor
   virtual ~OpenGl_Window();
@@ -70,8 +71,8 @@ public:
 
   const Handle(OpenGl_Context)& GetGlContext() const { return myGlContext; }
 
-  WINDOW    GetWindow()   const { return myWindow; }
-  GLCONTEXT GetGContext() const { return myGContext; }
+  //! This method will be removed in future version!
+  GLCONTEXT GetGContext() const;
 
 protected:
 
@@ -96,12 +97,9 @@ protected:
 protected:
 
   Handle(OpenGl_Display) myDisplay;
-  WINDOW                 myWindow;      //!< native window handle, system-specific
   Handle(OpenGl_Context) myGlContext;
-  GLCONTEXT              myGContext;    //!< native GL context bound to this window, system-specific
   Standard_Boolean       myOwnGContext; //!< set to TRUE if GL context was not created by this class
 #if (defined(_WIN32) || defined(__WIN32__))
-  HDC                    myWindowDC;
   BOOL                   mySysPalInUse;
 #endif
 

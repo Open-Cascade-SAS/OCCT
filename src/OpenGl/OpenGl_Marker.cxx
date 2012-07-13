@@ -29,6 +29,11 @@
 
 /*----------------------------------------------------------------------*/
 
+void OpenGl_Marker::Release (const Handle(OpenGl_Context)& theContext)
+{
+  //
+}
+
 void OpenGl_Marker::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 {
   const OpenGl_AspectMarker *aspect_marker = AWorkspace->AspectMarker( Standard_True );

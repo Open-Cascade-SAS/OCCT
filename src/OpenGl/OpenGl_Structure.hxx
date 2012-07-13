@@ -37,9 +37,10 @@ typedef NCollection_List<const OpenGl_Group *> OpenGl_ListOfGroup;
 
 class OpenGl_Structure : public OpenGl_Element
 {
- public:
-  OpenGl_Structure ();
-  virtual ~OpenGl_Structure ();
+
+public:
+
+  OpenGl_Structure();
 
   void SetTransformation (const float *AMatrix);
 
@@ -52,20 +53,27 @@ class OpenGl_Structure : public OpenGl_Element
   void SetAspectMarker (const CALL_DEF_CONTEXTMARKER &AContext);
   void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext);
 
-  void SetHighlightBox (const CALL_DEF_BOUNDBOX &ABoundBox);
-  void ClearHighlightBox ();
+  void SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
+                        const CALL_DEF_BOUNDBOX&      theBoundBox);
 
-  void SetHighlightColor (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B);
-  void ClearHighlightColor ();
+  void ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
+
+  void SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
+                          const Standard_ShortReal R,
+                          const Standard_ShortReal G,
+                          const Standard_ShortReal B);
+
+  void ClearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
 
   void SetNamedStatus (const Standard_Integer aStatus) { myNamedStatus = aStatus; }
 
   void Connect (const OpenGl_Structure *astructure);
   void Disconnect (const OpenGl_Structure *astructure);
 
-  OpenGl_Group * AddGroup ();
-  void RemoveGroup (const OpenGl_Group *);
-  void Clear ();
+  OpenGl_Group* AddGroup();
+  void RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
+                    const OpenGl_Group*           theGroup);
+  void Clear (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Set z layer ID to display the structure in specified layer
   void SetZLayer (const Standard_Integer theLayerIndex);
@@ -73,32 +81,38 @@ class OpenGl_Structure : public OpenGl_Element
   //! Get z layer ID
   Standard_Integer GetZLayer () const;
 
-  virtual void Render (const Handle(OpenGl_Workspace) &AWorkspace) const;
-  
- protected:
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
+
+protected:
+
+  virtual ~OpenGl_Structure();
+
+protected:
 
   //Structure_LABBegin
-  OpenGl_Matrix *myTransformation;
-  TEL_TRANSFORM_PERSISTENCE *myTransPers;
-  DEGENERATION *myDegenerateModel;
-  OpenGl_AspectLine *myAspectLine;
-  OpenGl_AspectFace *myAspectFace;
-  OpenGl_AspectMarker *myAspectMarker;
-  OpenGl_AspectText *myAspectText;
+  OpenGl_Matrix*             myTransformation;
+  TEL_TRANSFORM_PERSISTENCE* myTransPers;
+  DEGENERATION*              myDegenerateModel;
+  OpenGl_AspectLine*         myAspectLine;
+  OpenGl_AspectFace*         myAspectFace;
+  OpenGl_AspectMarker*       myAspectMarker;
+  OpenGl_AspectText*         myAspectText;
   //Structure_LABHighlight
-  OpenGl_Group *myHighlightBox;
-  TEL_COLOUR *myHighlightColor;
+  OpenGl_Group*              myHighlightBox;
+  TEL_COLOUR*                myHighlightColor;
   //Structure_LABVisibility
   //Structure_LABPick
-  int myNamedStatus; //Structure_LABNameSet
-  int myZLayer;
+  int                        myNamedStatus; //Structure_LABNameSet
+  int                        myZLayer;
 
-  OpenGl_ListOfStructure myConnected;
+  OpenGl_ListOfStructure     myConnected;
+  OpenGl_ListOfGroup         myGroups;
 
-  OpenGl_ListOfGroup myGroups;
+public:
 
- public:
   DEFINE_STANDARD_ALLOC
+
 };
 
 #endif //OpenGl_Structure_Header

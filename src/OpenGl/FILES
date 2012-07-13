@@ -67,7 +67,6 @@ OpenGl_Matrix.cxx
 OpenGl_CView.hxx
 OpenGl_NamedStatus.hxx
 OpenGl_TextParam.hxx
-OpenGl_Callback.hxx
 OpenGl_PrinterContext.hxx
 OpenGl_PrinterContext.cxx
 Handle_OpenGl_Display.hxx
@@ -93,12 +92,8 @@ OpenGl_ImageBox.cxx
 OpenGl_ImageBox.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
-OpenGl_ResourceVBO.hxx
-OpenGl_ResourceVBO.cxx
 OpenGl_ResourceTexture.hxx
 OpenGl_ResourceTexture.cxx
-OpenGl_ResourceCleaner.hxx
-OpenGl_ResourceCleaner.cxx
 OpenGl_telem_util.hxx
 OpenGl_telem_util.cxx
 OpenGl_transform_persistence.hxx
@@ -108,6 +103,8 @@ OpenGl_tgl_funcs.hxx
 Handle_OpenGl_Context.hxx
 OpenGl_Context.hxx
 OpenGl_Context.cxx
+OpenGl_ArbIns.hxx
+OpenGl_ArbTBO.hxx
 OpenGl_ArbVBO.hxx
 OpenGl_ExtFBO.hxx
 glext.h
@@ -119,3 +116,10 @@ OpenGl_GlCore15.hxx
 OpenGl_GlCore20.hxx
 OpenGl_LayerList.cxx
 OpenGl_LayerList.hxx
+OpenGl_IndexBuffer.hxx
+OpenGl_IndexBuffer.cxx
+OpenGl_TextureBufferArb.hxx
+OpenGl_TextureBufferArb.cxx
+OpenGl_VertexBuffer.hxx
+OpenGl_VertexBuffer.cxx
+OpenGl_VertexBufferEditor.hxx

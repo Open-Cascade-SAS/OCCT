@@ -32,6 +32,7 @@
 #include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <ViewerTest.hxx>
+#include <ViewerTest_EventManager.hxx>
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -570,25 +571,30 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
     HLR = 1;
   }
 
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-
+  Handle(V3d_View) anOldView = ViewerTest::CurrentView();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  if(atoi(argv[2])) {
-    aViewer->SetDefaultSurfaceDetail(V3d_TEX_ALL);
+  if (atoi (argv[2]))
+  {
+    aViewer->SetDefaultSurfaceDetail (V3d_TEX_ALL);
   }
-  aViewer->SetDefaultTypeOfView(V3d_PERSPECTIVE);
+  aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
 
-  Handle(Aspect_Window) asp = aView->Window();
-  aViewer->SetViewOff(aView);
-  aView->Remove();
+  Handle(Aspect_Window) asp = anOldView->Window();
+  aViewer->SetViewOff (anOldView);
+  anOldView->Remove();
+  anOldView.Nullify();
 
   Handle(V3d_View) aNewView = aViewer->CreateView();
-  ViewerTest::CurrentView(aNewView);
+  ViewerTest::CurrentView (aNewView);
 
-  aNewView->SetWindow(asp);
+  aNewView->SetWindow (asp);
   if (!asp->IsMapped()) asp->Map();
 
   aNewView->Update();
+
+  // replace view in event manager
+  ViewerTest::UnsetEventManager();
+  ViewerTest::SetEventManager (new ViewerTest_EventManager (aNewView, ViewerTest::GetAISContext()));
 
   if (HLR == 1) {
     di << "HLR" << "\n";
@@ -2001,7 +2007,7 @@ static Standard_Integer OCC1642 (Draw_Interpretor& di, Standard_Integer argc, co
   DBRep::Set(argv[4],face);
 
   advWA->SetFace(face);
-  float precision_to_ana = 0.0001;
+  Standard_Real precision_to_ana = 0.0001;
   advWA->SetPrecision(precision_to_ana);
 
   TopTools_IndexedMapOfShape M;
