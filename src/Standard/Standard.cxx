@@ -108,7 +108,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
 
 Standard_MMgrFactory::~Standard_MMgrFactory()
 {
-  if ( ! myFMMgr ) {
+  if (  myFMMgr ) {
     myFMMgr->Purge(Standard_True);
 //  delete myFMMgr;
 //  myFMMgr = 0;  
