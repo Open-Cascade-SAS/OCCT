@@ -2425,7 +2425,7 @@ V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1,
   myX1(X1), myY1(Y1), myX2(X2), myY2(Y2), myLayerMgr(theLayerMgr),
   myType(theType), myWidth(theWidth), myTransparency(theTransp)
 {
-  if (myLayerMgr && myLayerMgr->Overlay())
+  if (myLayerMgr && !myLayerMgr->Overlay().IsNull())
     myLayerMgr->Overlay()->AddLayerItem (this);
 }
 

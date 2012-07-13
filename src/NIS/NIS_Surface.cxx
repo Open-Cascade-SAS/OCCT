@@ -486,7 +486,7 @@ void  NIS_Surface::SetDisplayMode (const NIS_Surface::DisplayMode theMode)
       isUpdate = Standard_True;
     }
   }
-  if (isUpdate && GetDrawer()) {
+  if (isUpdate && !GetDrawer().IsNull()) {
     const Handle(NIS_SurfaceDrawer) aDrawer =
       static_cast<NIS_SurfaceDrawer *>(DefaultDrawer(0L));
     aDrawer->Assign (GetDrawer());
