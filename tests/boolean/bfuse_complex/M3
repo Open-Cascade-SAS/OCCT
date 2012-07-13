@@ -1,0 +1,9 @@
+# Original bug : cts21244
+# Date : 16July98
+
+restore cts21244a.rle a 
+restore cts21244b.rle b
+
+bfuse result a b
+
+set square 184913

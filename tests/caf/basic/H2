@@ -1,0 +1,87 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Axis
+#
+# Testing command:   SetAxis
+# Testing command:   GetAxis
+#
+
+puts "caf001-H2"
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+line aLine1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aDumpLine1 [dump aLine1]
+
+# [llength ${aDumpLine1}] = 14
+# Format of ${aDumpLine1}:
+# *********** Dump of aLine1 *************
+# Line
+#   Origin :10, 20, 30 
+#   Axis   :0.267261241912424, 0.534522483824849, 0.801783725737273 
+
+set anOriginX_Line1 [lindex [split [lindex ${aDumpLine1} 7] ${aTokList}] 1]
+set anOriginY_Line1 [lindex [split [lindex ${aDumpLine1} 8] ${aTokList}] 0]
+set anOriginZ_Line1 [lindex [split [lindex ${aDumpLine1} 9] ${aTokList}] 0]
+set anAxisDX_Line1 [lindex [split [lindex ${aDumpLine1} 11] ${aTokList}] 1]
+set anAxisDY_Line1 [lindex [split [lindex ${aDumpLine1} 12] ${aTokList}] 0]
+set anAxisDZ_Line1 [lindex [split [lindex ${aDumpLine1} 13] ${aTokList}] 0]
+
+set aLabel 0:2
+SetAxis D ${aLabel} aLine1
+
+# Close/Open the transaction
+NewCommand D
+
+# Set a new value of the attribute
+set aSetX2 -10
+set aSetY2 -20
+set aSetZ2 -30
+set aSetDX2 -100
+set aSetDY2 200
+set aSetDZ2 300
+line aLine2 ${aSetX2} ${aSetY2} ${aSetZ2} ${aSetDX2} ${aSetDY2} ${aSetDZ2}
+SetAxis D ${aLabel} aLine2
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Get a value of the attribute
+GetAxis D ${aLabel} anAxis2
+
+set aDumpAxis2 [dump anAxis2]
+set anOriginX_Axis2 [lindex [split [lindex ${aDumpAxis2} 7] ${aTokList}] 1]
+set anOriginY_Axis2 [lindex [split [lindex ${aDumpAxis2} 8] ${aTokList}] 0]
+set anOriginZ_Axis2 [lindex [split [lindex ${aDumpAxis2} 9] ${aTokList}] 0]
+set anAxisDX_Axis2 [lindex [split [lindex ${aDumpAxis2} 11] ${aTokList}] 1]
+set anAxisDY_Axis2 [lindex [split [lindex ${aDumpAxis2} 12] ${aTokList}] 0]
+set anAxisDZ_Axis2 [lindex [split [lindex ${aDumpAxis2} 13] ${aTokList}] 0]
+
+if { ${anOriginX_Line1} != ${anOriginX_Axis2} || 
+     ${anOriginY_Line1} != ${anOriginY_Axis2} || 
+     ${anOriginZ_Line1} != ${anOriginZ_Axis2} || 
+     ${anAxisDX_Line1} != ${anAxisDX_Axis2} || 
+     ${anAxisDY_Line1} != ${anAxisDY_Axis2} || 
+     ${anAxisDZ_Line1} != ${anAxisDZ_Axis2} } {
+	puts "anOriginX_Line1=${anOriginX_Line1} anOriginX_Axis2=${anOriginX_Axis2}"
+	puts "anOriginY_Line1=${anOriginY_Line1} anOriginY_Axis2=${anOriginY_Axis2}"
+	puts "anOriginZ_Line1=${anOriginZ_Line1} anOriginZ_Axis2=${anOriginZ_Axis2}"
+	puts "anAxisDX_Line1=${anAxisDX_Line1} anAxisDX_Axis2=${anAxisDX_Axis2}"
+	puts "anAxisDY_Line1=${anAxisDY_Line1} anAxisDY_Axis2=${anAxisDY_Axis2}"
+	puts "anAxisDZ_Line1=${anAxisDZ_Line1} anAxisDZ_Axis2=${anAxisDZ_Axis2}"
+	puts "Set a value of TDataStd_Axis attribute: Error"
+	return
+}
+puts "Set a value of TDataStd_Axis attribute: OK"

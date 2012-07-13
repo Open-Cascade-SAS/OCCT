@@ -1,0 +1,10 @@
+box b 10 10 10 
+copy b c
+pcylinder s 2 4
+ttranslate s 5 5 -2
+bcut rr c s
+explode rr so
+
+bfuse result rr_1 c
+
+set square 600

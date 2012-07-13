@@ -1,0 +1,5 @@
+psphere s 1
+box b 1 1 1
+bcut result s b
+
+set square 13.3518

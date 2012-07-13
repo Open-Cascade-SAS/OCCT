@@ -1,0 +1,13 @@
+# Original bug : pro10095
+# Date : 19Mai98
+
+restore pro10095a.rle a
+restore pro10095b.rle b
+
+shape fso so
+add b fso
+
+bop a fso
+bopsection result
+
+set length 1244.52

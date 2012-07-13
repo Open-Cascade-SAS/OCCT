@@ -1,0 +1,8 @@
+box b 10 10 10
+explode b w
+
+mkplane result b_1
+
+set MaxFTol 1e-6
+set MaxETol 1e-6
+set MaxVTol 1e-6

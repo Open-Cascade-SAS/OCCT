@@ -1,0 +1,10 @@
+## pro16343
+## datadir /dp_25/IBug/pro/16343
+
+restore fus-object1.brep a
+restore fus-object2.brep b
+
+bop a b
+bopsection result
+
+set length 120.859

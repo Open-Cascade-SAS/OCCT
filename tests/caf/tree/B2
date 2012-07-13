@@ -1,0 +1,42 @@
+#INTERFACE CAF
+# Tree construction attributes
+#
+# Testing attribute: TDataStd_Directory
+#
+# Testing command:   AddDirectory
+#
+
+puts "caf005-B2"
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+NewDirectory D ${aLabel1}
+set aName1 Label1
+SetName D ${aLabel1} ${aName1}
+set aSubDirectory [AddDirectory D ${aLabel1}]
+set aName2 SubDirectory1
+set aLabel2 [lindex ${aSubDirectory} 0]
+SetName D ${aLabel2} ${aName2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aGetName2 [GetName D ${aLabel2}]
+if { ${aName2}!=${aGetName2} } {
+	puts "aName2=${aName2} aGetName2=${aGetName2}"
+	puts "Add TDataStd_Directory attribute: Error"
+	return
+}
+puts "Add TDataStd_Directory attribute: OK"

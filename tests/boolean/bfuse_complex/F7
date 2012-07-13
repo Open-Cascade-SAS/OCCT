@@ -1,0 +1,12 @@
+# Original bug :pro14621
+
+restore pro14621c.rle  base
+restore pro14621d.rle  prism
+
+bcut res1 prism base
+
+explode res1
+
+bfuse result base res1_1
+
+set square 143829

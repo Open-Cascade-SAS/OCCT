@@ -1,0 +1,12 @@
+# Original bug :PRO16389
+# Date : 09 Nov 98
+puts "PRO16389"
+puts "Cut"
+puts ""
+
+restore pro16389a.rle base
+restore pro16389b.rle prism
+
+bcut result base prism
+
+set square 312467

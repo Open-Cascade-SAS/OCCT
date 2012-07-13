@@ -1,0 +1,9 @@
+puts "TODO #22911 ALL: Error : The bopfuse can not be build"
+
+restore BUC60931.brep sh
+explode sh
+
+bop sh_2 sh_1
+bopfuse result
+
+set square 0

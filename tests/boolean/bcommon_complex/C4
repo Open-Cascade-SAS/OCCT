@@ -1,0 +1,10 @@
+# Original bug : cts20460
+# Date : 13Mai98
+# A8.gif
+
+restore cts20460a.rle a
+restore cts20460b.rle b
+
+bcommon result a b 
+
+set square 25468.7

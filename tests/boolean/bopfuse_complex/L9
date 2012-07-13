@@ -1,0 +1,13 @@
+#jmu
+puts "CTS22187"
+puts ""
+puts ""
+#axo
+
+restore cts22187a.brep o1
+restore cts22187b.brep o2
+
+bop o1 o2
+bopfuse result
+
+set square 67333.1

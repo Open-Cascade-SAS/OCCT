@@ -1,0 +1,8 @@
+restore g1 b1
+restore g2 b2
+
+bop b1 b2
+bopsection result
+
+
+set length 189.813

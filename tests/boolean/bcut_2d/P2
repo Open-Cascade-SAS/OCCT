@@ -1,0 +1,6 @@
+restore case_9_wire.brep a
+restore case_9_wire3.brep b
+bcut result b a
+set length 1000.74
+set nbsh_v 6
+set nbsh_e 5

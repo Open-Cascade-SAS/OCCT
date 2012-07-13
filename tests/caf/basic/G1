@@ -1,0 +1,65 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Point
+#
+# Testing command:   SetPoint
+# Testing command:   GetPoint
+#
+
+puts "caf001-G1"
+
+set aTokList { :,}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+point aPoint1 ${aSetX1} ${aSetY1} ${aSetZ1}
+
+set aDumpPoint1 [dump aPoint1]
+
+# [llength ${aDumpPoint1}] = 10
+# Format of ${aDumpPoint1}:
+# *********** Dump of aPoint1 *************
+# Point : 1.000000000000000e+01, 2.000000000000000e+01, 3.000000000000000e+01
+
+set X_Point1 [lindex [split [lindex ${aDumpPoint1} 7] ${aTokList}] 0]
+set Y_Point1 [lindex [split [lindex ${aDumpPoint1} 8] ${aTokList}] 0]
+set Z_Point1 [lindex [split [lindex ${aDumpPoint1} 9] ${aTokList}] 0]
+
+set aLabel 0:2
+SetPoint D ${aLabel} aPoint1
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+GetPoint D ${aLabel} aPoint2
+
+set aDumpPoint2 [dump aPoint2]
+set X_Point2 [lindex [split [lindex ${aDumpPoint2} 7] ${aTokList}] 0]
+set Y_Point2 [lindex [split [lindex ${aDumpPoint2} 8] ${aTokList}] 0]
+set Z_Point2 [lindex [split [lindex ${aDumpPoint2} 9] ${aTokList}] 0]
+
+if { ${X_Point1} != ${X_Point2} || 
+     ${Y_Point1} != ${Y_Point2} || 
+     ${Z_Point1} != ${Z_Point2} } {
+	puts "X_Point1=${X_Point1} X_Point2=${X_Point2}"
+	puts "Y_Point1=${Y_Point1} Y_Point2=${Y_Point2}"
+	puts "Z_Point1=${Z_Point1} Z_Point2=${Z_Point2}"
+	puts "Add Point attribute: Error"
+	return
+}
+puts "Add Point attribute: OK"

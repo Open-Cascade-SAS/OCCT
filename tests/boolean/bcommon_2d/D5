@@ -1,0 +1,6 @@
+restore case_3_solid.brep a
+restore case_3_wire2.brep b
+bcommon result b a
+set length 345.975
+set nbsh_v 14
+set nbsh_e 13

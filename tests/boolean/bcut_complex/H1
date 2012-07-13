@@ -1,0 +1,9 @@
+# Original bug : ger60224
+# Date :
+
+restore ger60224c.rle base
+restore ger60224d.rle prism
+
+bcut result base prism
+
+set square 60037.4

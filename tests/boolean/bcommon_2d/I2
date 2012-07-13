@@ -1,0 +1,6 @@
+restore case_5_shell.brep a
+restore case_5_edge1.brep b
+bcommon result b a
+set length 887.185
+set nbsh_v 2
+set nbsh_e 1

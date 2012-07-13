@@ -1,0 +1,6 @@
+restore cts21302a.rle a
+restore cts21302b.rle b
+
+bcut result a b
+
+set square 330507

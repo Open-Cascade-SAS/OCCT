@@ -1,0 +1,5 @@
+set chamf_shape 001_F
+set chamf_edge_face  [list "   1    2" "   3    3"]
+set chamf_dist_angle [list "0.12   30" "0.12   30"]
+set chamf_dist_dist  [list " 0.1 0.06" " 0.1 0.06"]
+set chamf_equal_dist [list "0.1      " "0.1      "]

@@ -1,0 +1,11 @@
+########## ger61235 ###############
+puts "GER61235"
+puts "intersect"
+puts ""
+
+restore ger61235a.brep tool 
+restore ger61235b.brep object 
+
+bsection result object tool 
+
+set length 16.4762

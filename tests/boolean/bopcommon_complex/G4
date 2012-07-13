@@ -1,0 +1,7 @@
+restore a102 a
+restore b102 b
+
+bop a b
+bopcommon result
+
+set square 15000

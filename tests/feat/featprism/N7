@@ -1,0 +1,18 @@
+# Original bug : cts20449
+# Date : 25 Nov 98
+
+restore cts20449_base.brep base
+restore cts20449_face.brep cont
+
+explode base face
+copy base_5 funtil
+
+mksurface p5 base_5
+mkface f5 p5
+
+featprism base cont cont -1 0 0 1 1
+featperform prism result f5
+
+# Prendre option face Until + support
+
+set square 4.89101e+06

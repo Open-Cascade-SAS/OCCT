@@ -1,0 +1,8 @@
+#buc60326
+
+restore 1.brep a
+restore 2.brep b
+
+bfuse result a b
+
+set square 21190.7

@@ -1,0 +1,9 @@
+# Original bug : cts20176
+# Date : 16July98
+
+restore cts20176a.rle a 
+restore cts20176b.rle b
+
+bfuse result a b
+
+set square 70265.2

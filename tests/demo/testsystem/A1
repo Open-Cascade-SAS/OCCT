@@ -1,0 +1,17 @@
+# Test procedure locate_data_file
+
+# Successful search
+puts "Data file 1 found in [locate_data_file file1.empty]"
+puts "Data file 2 found in [locate_data_file file2.empty]"
+puts "Data file 3 found in [locate_data_file file3.empty]"
+
+# Failed search
+if [catch {locate_data_file file4.empty}] {
+    puts "Data file file4.empty not found, that is OK"
+} else {
+    error "Data file file4.empty is found, while it should not be"
+}
+
+puts "Data file 5 found in [locate_data_file file5.empty]"
+
+puts "TEST COMPLETED"

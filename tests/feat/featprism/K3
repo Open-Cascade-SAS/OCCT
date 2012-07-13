@@ -1,0 +1,10 @@
+# Original bug : cts20148
+# Date : 8April98
+
+restore cts20148_base.rle base
+restore cts20148_face.rle cont
+
+featprism base cont cont 0 -1 0 0 1 
+featperform prism result
+
+set square 68758

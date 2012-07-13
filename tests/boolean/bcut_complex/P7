@@ -1,0 +1,8 @@
+## FRA61291
+
+restore part.brep a
+restore tool.brep b
+
+bcut result a b
+
+set square 1507.32

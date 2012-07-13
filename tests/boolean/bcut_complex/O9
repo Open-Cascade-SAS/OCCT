@@ -1,0 +1,8 @@
+# cts20549
+
+restore prisme.rle a
+restore revol.rle b
+
+bfuse result a b
+
+set square 22561.3

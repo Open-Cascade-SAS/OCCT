@@ -1,0 +1,18 @@
+# Original bug : cts20975
+# Date : 18Juin98
+
+restore cts20975a.rle a
+restore cts20975b.rle b
+
+bopaddpcs a
+
+btolx a
+
+bopaddpcs b
+
+btolx b
+
+bop a b
+bopcut result
+
+set square 5609.09

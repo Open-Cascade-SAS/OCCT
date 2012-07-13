@@ -1,0 +1,16 @@
+# Original bug : cts20088
+# Date : 25 Nov 98
+
+restore cts20088_base.brep base
+restore cts20088_face.brep cont
+
+explode base face
+copy base_54 ffrom
+copy base_55 funtil
+
+ttranslate cont 0 0 -0.1
+
+featprism base cont cont 1 0 0 1 1
+featperform prism result ffrom funtil
+
+set square 4796.46

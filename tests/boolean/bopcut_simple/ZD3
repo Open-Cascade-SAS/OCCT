@@ -1,0 +1,8 @@
+pcylinder b1 1 2
+pcylinder b2 0.5 3
+ttranslate b2 0 0 -1
+
+bop b1 b2
+bopcut result
+
+set square 23.5619

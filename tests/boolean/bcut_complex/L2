@@ -1,0 +1,10 @@
+# Original bug : cts20867
+# Date : 4June98
+
+restore cts20867-part.rle a
+restore cts20867-tool.rle b
+
+bcut result a b
+
+
+set square 2221.48

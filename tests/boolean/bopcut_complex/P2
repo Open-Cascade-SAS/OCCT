@@ -1,0 +1,8 @@
+restore sg1 b1
+restore sg2 b2
+
+bop b1 b2
+bopcut result
+
+
+set square 4886.92

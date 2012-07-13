@@ -1,0 +1,73 @@
+#Drivers' nick-names:
+#Box|Sph|Cyl|Cut|Fuse|Prism|SecRevol|FulRevol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
+# order of functions recomputation should be defined out of the tool (by end user)
+
+AddDriver D Box Attach PTxyz PTALine PRLine PMirr Sph Prism FulRevol SecRevol
+#1 - create box using more flexible set of commands
+NewCommand D
+isos 12
+set B2 [AddObject D];			## add object
+set F2 [AddFunction D $B2 Box];		## add function
+BoxDX D $B2 190;			## set argumets of this function
+BoxDY D $B2 290
+BoxDZ D $B2 390
+InitLogBook D;				## initialize (clean) internal maps of labels
+ComputeFun D $F2;			## compute the function
+GetShape D $F2:2 Box2;			## check result
+fit
+whatis Box2
+GetReference D $B2;			## referes to result NS
+
+
+#2 Prism 1
+NewCommand D
+explode Box2 F
+set Bas1 [AttachShape D Box2_1 ${B2} ${B2} 0]
+set Prism1 [AddPrism D $Bas1 300 0]
+ComputeFun D $Prism1:1
+GetShape D $Prism1:1:2 Pr1
+
+PrismHeight D $Prism1 500
+ComputeFun D $Prism1:1
+GetShape D $Prism1:1:2 Pr1
+fit
+
+
+#3 Prism 2
+NewCommand D
+explode Pr1 F
+set Bas2 [AttachShape D Pr1_1 ${Prism1} ${Prism1} 0]
+set Prism2 [AddPrism D $Bas2 500 0]
+ComputeFun D $Prism2:1
+GetShape D $Prism2:1:2 Pr2
+
+#4 => fuse
+NewCommand D
+AddDriver D Fuse
+set FS1 [AddFuse D $Prism1 $Prism2]
+ComputeFun D $FS1
+GetShape D $FS1:2 Pr1
+
+
+
+#5
+NewCommand D 
+set SL [TestSingleSelection D $Prism1 0]
+set SL2 [TestMultipleSelection D $Prism1 0]
+# both have failed units!!!
+
+NewCommand D
+BoxDZ D $B2 420
+
+#6 order of recomputation
+NewCommand D
+InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
+ComputeFun D $F2;	
+ComputeFun D $Bas1:1
+ComputeFun D $Prism1:1
+ComputeFun D $Bas2:1
+ComputeFun D $Prism2:1
+ComputeFun D $FS1
+
+SolveFlatFrom D $SL
+NewCommand D

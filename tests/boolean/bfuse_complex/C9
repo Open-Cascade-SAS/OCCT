@@ -1,0 +1,10 @@
+# Original bug : cts16184
+# Date : 11mar98
+
+restore cts16184a.shape a
+restore cts16184b.shape b
+
+bfuse result a b
+
+
+set square 0.0892544

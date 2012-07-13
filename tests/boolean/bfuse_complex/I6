@@ -1,0 +1,12 @@
+# Original bug : cts20551
+# Date : 13Mai98
+# D2
+
+restore cts20551a.rle a
+restore cts20551b.rle b
+
+bfuse result a b
+
+
+
+set square 452089

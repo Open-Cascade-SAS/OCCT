@@ -1,0 +1,7 @@
+restore OCC100_sp.brep a
+restore OCC100_cyl.brep b
+
+bop a b
+bopcommon result
+
+set square 13.9381

@@ -1,0 +1,10 @@
+puts "BUC60092"
+puts "cut"
+puts ""
+
+restore buc60092a.rle a
+restore buc60092b.rle b
+
+bcut result a b
+
+set square 88508.3

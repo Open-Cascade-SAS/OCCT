@@ -1,0 +1,9 @@
+# Original bug : pro12875
+# Date : 12June98
+
+restore pro12875a.rle a 
+restore pro12875b.rle b
+updatetolerance a 1
+bfuse result a b
+
+set square 788417

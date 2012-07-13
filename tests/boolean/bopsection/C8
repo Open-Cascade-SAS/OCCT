@@ -1,0 +1,9 @@
+## cts20528
+
+restore outil_pkv.brep a
+restore piece.brep b
+
+bop a b
+bopsection result
+
+set length 382.621

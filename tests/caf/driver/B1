@@ -1,0 +1,165 @@
+AddDriver D Box Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
+
+#1 Create Box
+NewCommand D
+set B2 [AddObject D];			## add object
+set F2 [AddFunction D $B2 Box];		## add function
+BoxDX D $B2 190;			## set argumets of this function
+BoxDY D $B2 290
+BoxDZ D $B2 390
+InitLogBook D;				## initialize (clean) internal maps of labels
+ComputeFun D $F2;			## compute the function
+GetShape D $F2:2 Box2;			## check result
+whatis Box2
+GetReference D $B2
+
+#2 Create Cylinder
+NewCommand D
+explode Box2 F
+explode Box2_1 E
+set Sel1 [AttachShape D Box2_1_1 ${B2} ${B2} 1]; ## set attachment
+## AddDriver D Attach Cyl
+set Cyl [AddCyl D 50 515 ${Sel1}]
+ComputeFun D $Cyl:1
+GetShape D $Cyl:1:2 CylS
+
+#3 Translate Cylinder
+NewCommand D
+set FTr1 [PTranslateDXYZ D $Cyl 100 0 0]
+ComputeFun D $FTr1
+GetShape D $Cyl:2:2 CylS
+
+#4 Cut Box Cyl
+NewCommand D
+set CS [AddCut D $B2 $Cyl]
+ComputeFun D $CS
+erase
+GetShape D $CS:2 S
+don S
+NewCommand D
+
+#5 set attachments - vertexes
+explode S V
+set SPnt1 [AttachShape D S_1 ${B2} ${B2} 0]; ## set attachment
+set SPnt2 [AttachShape D S_2 ${B2} ${B2} 0]; ## set attachment
+#set SPnt5 [AttachShape D S_5 ${B2} ${B2} 0]; ## set attachment
+#set SPnt6 [AttachShape D S_6 ${B2} ${B2} 0]; ## set attachment
+#set SPnt7 [AttachShape D S_7 ${B2} ${B2} 0]; ## set attachment
+set SPnt9 [AttachShape D S_9 ${B2} ${B2} 0]; ## set attachment
+set SPnt11 [AttachShape D S_11 ${B2} ${B2} 0]; ## set attachment
+#set SPnt12 [AttachShape D S_12 ${B2} ${B2} 0]; ## set attachment
+
+#6 create 8 Spheres
+set Sph1 [AddSphere D $SPnt1 15]
+ComputeFun D $Sph1:1
+GetShape D $Sph1:1:2 Sp1
+
+set Sph2 [AddSphere D $SPnt2 15]
+ComputeFun D $Sph2:1
+GetShape D $Sph2:1:2 Sp2
+
+#set Sph5 [AddSphere D $SPnt5 15]
+#ComputeFun D $Sph5:1
+#GetShape D $Sph5:1:2 Sp5
+
+#set Sph6 [AddSphere D $SPnt6 15]
+#ComputeFun D $Sph6:1
+#GetShape D $Sph6:1:2 Sp6
+
+#set Sph7 [AddSphere D $SPnt7 15]
+#ComputeFun D $Sph7:1
+#GetShape D $Sph7:1:2 Sp7
+
+set Sph9 [AddSphere D $SPnt9 15]
+ComputeFun D $Sph9:1
+GetShape D $Sph9:1:2 Sp9
+
+set Sph11 [AddSphere D $SPnt11 15]
+ComputeFun D $Sph11:1
+GetShape D $Sph11:1:2 Sp11
+
+#set Sph12 [AddSphere D $SPnt12 15]
+#ComputeFun D $Sph12:1
+#GetShape D $Sph12:1:2 Sp12
+
+explode Box2 E
+set Sel61 [AttachShape D Box2_1 ${B2} ${B2} 0];
+set FR1 [PRotateRoundLine D $Sph1 $Sel61 120]
+ComputeFun D $FR1 
+GetShape D $FR1:2 Sp1
+
+set Sel62 [AttachShape D Box2_1 ${B2} ${B2} 0];
+set FR2 [PRotateRoundLine D $Sph2 $Sel62 120]
+ComputeFun D $FR2
+GetShape D $FR2:2 Sp2
+
+#7 Fuse spheres
+set FS1 [AddFuse D $B2 $Sph1]
+ComputeFun D $FS1
+GetShape D $FS1:2 S
+
+set FS2 [AddFuse D $B2 $Sph2]
+ComputeFun D $FS2
+GetShape D $FS2:2 S
+
+#set FS5 [AddFuse D $B2 $Sph5]
+#ComputeFun D $FS5            
+## <=== it gives NOT VALID shape
+#GetShape D $FS5:2 S
+
+set FS9 [AddFuse D $B2 $Sph9]
+ComputeFun D $FS9
+GetShape D $FS9:2 S
+
+set FS11 [AddFuse D $B2 $Sph11]
+ComputeFun D $FS11
+GetShape D $FS11:2 S
+
+
+#5 test Naming
+set SL [TestSingleSelection D $B2 0]    
+set SL2 [TestMultipleSelection D $B2 0]
+
+#6 Modification
+NewCommand D
+BoxDX D $B2 250
+BoxDZ D $B2 310
+
+#7 recompute
+NewCommand D
+InitLogBook D
+ComputeFun D $F2
+ComputeFun D $Sel1:1
+ComputeFun D $Cyl:1
+ComputeFun D $FTr1
+ComputeFun D $CS
+ComputeFun D $SPnt1:1
+ComputeFun D $SPnt2:1
+#ComputeFun D $SPnt5:1
+#ComputeFun D $SPnt6:1
+#ComputeFun D $SPnt7:1
+ComputeFun D $SPnt9:1
+ComputeFun D $SPnt11:1
+#ComputeFun D $SPnt12:1
+ComputeFun D $Sph1:1
+ComputeFun D $Sph2:1
+ComputeFun D $Sel61:1
+ComputeFun D $FR1 
+ComputeFun D $Sel62:1
+ComputeFun D $FR2 
+#ComputeFun D $Sph5:1 ## because 5,6,7,12 gives NOT VALID result
+#ComputeFun D $Sph6:1
+#ComputeFun D $Sph7:1
+ComputeFun D $Sph9:1
+ComputeFun D $Sph11:1
+#ComputeFun D $Sph12:1
+ComputeFun D $FS1
+ComputeFun D $FS2
+ComputeFun D $FS9
+ComputeFun D $FS11
+erase
+GetShape D $FS11:2 S
+
+SolveFlatFrom D $SL
+NewCommand D
+

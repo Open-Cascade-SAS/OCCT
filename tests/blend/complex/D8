@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : J1
+## Comment : from ID150018
+## ====================================
+
+restore id150018.rle a
+nexplode a e
+blend result a 30 a_20
+
+set square 336159

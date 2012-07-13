@@ -1,0 +1,7 @@
+restore case_9_wire.brep a
+restore case_9_edge1.brep b
+bop a b
+bopcommon result
+set length 143.787
+set nbsh_v 2
+set nbsh_e 1

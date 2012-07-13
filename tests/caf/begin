@@ -1,0 +1,23 @@
+# File : begin
+
+if { [info exists WorkDirectory] == 0 } {
+   set WorkDirectory "/tmp"
+   if { [array get env TEMP] != "" } {
+      set WorkDirectory "$env(TEMP)"
+   }
+}
+
+if { [array get Draw_Groups "DF basic commands"] == "" } {
+	pload DCAF
+}
+
+chrono qat start
+# Create a new document and set UndoLimit
+NewDocument D MDTV-Standard
+
+#NewDocument D
+cpulimit 300
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D

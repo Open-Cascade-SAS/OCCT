@@ -1,0 +1,91 @@
+puts "============"
+puts "OCC21091"
+puts "OCC21450"
+puts "============"
+puts ""
+#vdrawtext: vdrawtext name X Y Z R G B hor_align ver_align angle zoomable height Aspect FONT
+#------------------------------------------------------
+# X\Y\Z - Position Of Text
+#------------------------------------------------------
+# R\G\B - Color Of Text
+#------------------------------------------------------
+# hor_align 0 to 3
+# HorizontalTextAlignment is 	HTA_LEFT	0
+#				HTA_CENTER	1
+#				HTA_RIGHT	2
+#
+# ver_align 0 to 4
+# VerticalTextAlignment is	VTA_BOTTOM      0
+#				VTA_CENTER      1
+#		      		VTA_TOP         2   
+#------------------------------------------------------
+# angle - angle turn of text. this variable in degrees
+#------------------------------------------------------
+# zoomable - if this variable "0" text not zoomable
+#	     if this variable "1" text zoomable	as object in DrawCommands  
+#------------------------------------------------------
+# height - Font Height
+#------------------------------------------------------
+# Aspect - Aspect Font 0 to 4
+# If in list of textfont, not find font with necessary aspect, will be used default font "Courier" with  OSD_FA_Regular aspect
+# FontAspect is FA_Undefined, FA_Regular, FA_Bold, FA_Italic, FA_BoldItalic
+#                   - 0 -	- 1 -	   - 2 -     - 3 -         - 4 -      
+#------------------------------------------------------
+# FONT - font name of font
+# If in list of textfont, not find font with necessary Name, will be used default font "Courier"
+#
+
+vtrihedron trihedr
+
+vpoint p1  100  100 -400
+vpoint p2  000  000 -400
+vpoint p3 -100 -100 -400
+vdrawtext OpenCascade  100  100 -400 000 255 255 0 0 000 1 50 1 Times-Roman 
+vdrawtext OpenCascade  000  000 -400 000 255 255 1 0 000 1 50 1 Times-Roman
+vdrawtext OpenCascade -100 -100 -400 000 255 255 2 0 000 1 50 1 Times-Roman     
+
+vpoint p4  100  100 -500
+vpoint p5  000  000 -500
+vpoint p6 -100 -100 -500 
+vdrawtext OpenCascade  100  100 -500 255 000 000 0 2 000 1 50 1 Times-Roman 
+vdrawtext OpenCascade  000  000 -500 255 000 000 1 2 000 1 50 1 Times-Roman 
+vdrawtext OpenCascade -100 -100 -500 255 000 000 2 2 000 1 50 1 Times-Roman  
+
+vpoint p7  100  100 -450
+vpoint p8  000  000 -450
+vpoint p9 -100 -100 -450 
+vdrawtext OpenCascade  100  100 -450 005 255 000 0 1 000 1 50 1 Times-Roman 
+vdrawtext OpenCascade  000  000 -450 005 255 000 1 1 000 1 50 1 Times-Roman 
+vdrawtext OpenCascade -100 -100 -450 005 255 000 2 1 000 1 50 1 Times-Roman  
+
+
+vdrawtext _.Left._ 200 200 200 255 255 255 0 0 000 1 50 1 Times-Roman 
+vdrawtext _.Left._ 200 200 200 255 255 000 0 0 090 1 50 1 Times-Roman 
+
+vdrawtext _.Right._ 200 200 200 255 000 255 2 2 000 1 50 1 Times-Roman 
+vdrawtext _.Right._ 200 200 200 255 155 150 2 2 090 1 50 1 Times-Roman 
+
+vdrawtext _.0123456789._ 200 200 200 000 000 255 1 1 045 1 50 1 Times-Roman 
+vdrawtext _.0123456789._ 200 200 200 255 000 000 1 1 -45 1 50 1 Times-Roman 
+
+vdrawtext _.~!@#$%^&*:?|+-._ -200 000 400 255 000 000 0 0 0 1 50 1 Times-Roman 
+
+box atextbox -100 -100 -100 -200 -200 -200
+vdisplay atextbox
+
+vdrawtext OpenCascade -300 -300 -300 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OpenCascade -300 -300 -100 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OpenCascade -100 -100 -300 000 255 000 0 0 000 0 15 1 Courier 
+vdrawtext OpenCascade -100 -100 -100 000 255 000 0 0 000 0 15 1 Courier 
+
+vdrawtext OpenCascade -300 -100 -300 000 255 000 0 0 000 0 15 1 Courier
+vdrawtext OpenCascade -100 -300 -300 000 255 000 0 0 000 0 15 1 Courier
+vdrawtext OpenCascade -300 -100 -100 000 255 000 0 0 000 0 15 1 Courier
+vdrawtext OpenCascade -100 -300 -100 000 255 000 0 0 000 0 15 1 Courier 
+
+vdrawtext OpenCascade -200 -200 100 255 000 255 0 0 010 0 15 1 Times-Roman 
+vdrawtext OpenCascade -200 -200 150 000 255 255 0 0 010 0 15 1 Arbat 
+vdrawtext OpenCascade -200 -200 200 255 255 000 0 0 010 0 15 3 Elephant
+vdrawtext OpenCascade -200 -200 250 000 255 005 0 0 010 0 15 4 RockWell
+vdrawtext OpenCascade -200 -200 300 255 000 005 0 0 010 0 15 1 Webdings
+vdrawtext OpenCascade -200 -200 350 255 000 205 0 0 010 0 15 1 Arial

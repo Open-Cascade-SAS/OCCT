@@ -1,0 +1,7 @@
+restore OCC337.brep sh
+explode sh
+
+bop sh_1 sh_2
+bopfuse result
+
+set square 35009.9

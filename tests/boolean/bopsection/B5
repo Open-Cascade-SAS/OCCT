@@ -1,0 +1,10 @@
+# Original bug : cts20280
+# Date : 4June98
+
+restore cts20280a.rle a
+restore cts20280b.rle b
+
+bop a b 
+bopsection result
+
+set length 546.82

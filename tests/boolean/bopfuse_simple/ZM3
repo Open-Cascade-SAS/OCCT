@@ -1,0 +1,7 @@
+pcone b1 8 4 8
+pcone b2 2 1 8
+
+bop b1 b2
+bopfuse result
+
+set square 588.519

@@ -1,0 +1,7 @@
+restore a197 a
+restore b197 b
+
+bop a b
+boptuc result
+
+set square empty

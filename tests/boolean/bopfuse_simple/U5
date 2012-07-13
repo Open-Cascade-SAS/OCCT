@@ -1,0 +1,7 @@
+pcylinder b1 1 2
+box b2 0 -1.1 0 1 2.2 2
+
+bop b1 b2
+bopfuse result
+
+set square 22.6248

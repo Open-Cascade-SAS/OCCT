@@ -1,0 +1,10 @@
+restore E_long.rle E
+nexplode E f
+
+profile cont S E_10 F 0 -100 X 50 Y -100 X -50
+mksurface s E_5
+mkface f s
+featdprism E cont E_10 10 0 1
+featperform dprism result f
+
+set square 930999

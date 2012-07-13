@@ -1,0 +1,9 @@
+# Original bug : cts20527
+# Date : 19Mai98
+
+restore cts20527a.rle a
+restore cts20527b.rle b
+
+bsection result a b
+
+set length 935.487

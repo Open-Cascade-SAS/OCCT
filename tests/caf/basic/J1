@@ -1,0 +1,39 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_UAttribute
+#
+# Testing command:   SetUAttribute
+# Testing command:   GetUAttribute
+#
+
+puts "caf001-J1"
+
+# Add an attribute to a data framework
+set aSetAttr1 "c73bd075-22ee-11d2-acde-080009dc4422"
+set aLabel 0:2
+SetUAttribute D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set aGetAttr1 [GetUAttribute D ${aLabel} ${aSetAttr1}]
+if { ${aSetAttr1} != ${aGetAttr1} } {
+	puts "aSetAttr1=${aSetAttr1}"
+	puts "aGetAttr1=${aGetAttr1}"
+	puts "Add TDataStd_UAttribute attribute: Error"
+	return
+}
+puts "Add TDataStd_UAttribute attribute: OK"

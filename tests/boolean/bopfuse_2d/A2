@@ -1,0 +1,7 @@
+restore case_3_wire.brep a
+restore case_3_wire1.brep b
+bop a b
+bopfuse result
+set length 739.311
+set nbsh_v 14
+set nbsh_e 14

@@ -1,0 +1,7 @@
+puts "TODO OCC23068 ALL: Error : The offset is not valid"
+puts "TODO OCC23068 ALL: Error : Square of face result_3 of result shape is negative."
+psphere s 15 270
+
+OFFSETSHAPE 1 {s_2} $calcul $type
+
+set volume 0

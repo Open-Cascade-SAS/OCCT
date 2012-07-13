@@ -1,0 +1,13 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : D2
+## Comment : From CV tests serie page 16/17
+## ===========================================
+
+puts "TODO OCC22739 All:TEST INCOMPLETE"
+
+restore 1_D12.rle s
+explode s E
+blend result s 10 s_5
+
+set square 0

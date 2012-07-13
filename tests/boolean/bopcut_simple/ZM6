@@ -1,0 +1,8 @@
+pcone b1 8 4 8
+pcone b2 2 1 10
+ttranslate b2 0 0 -1
+
+bop b1 b2
+bopcut result
+
+set square 649.15

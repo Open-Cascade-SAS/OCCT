@@ -1,0 +1,15 @@
+# Original bug : ger60224
+# Date : 24June98
+
+restore ger60224a.rle a 
+restore ger60224b.rle w
+
+mkplane w w
+prism p1 w 0 100 0
+prism p2 w 0 -100 0
+
+bfuse b p1 p2
+
+bcut result a b
+
+set square 60037.4

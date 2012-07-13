@@ -1,0 +1,13 @@
+# Original bug : cts20290 : 
+# Date : 12June98
+
+restore cts20290a.rle a 
+restore cts20290b.rle b
+
+#pkv f
+btolx a
+#pkv t
+
+bsection result a b
+
+set length 267.11

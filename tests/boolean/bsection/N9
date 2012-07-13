@@ -1,0 +1,5 @@
+restore fra61083a.rle a
+restore fra61083b.rle b
+bsection result a b
+
+set length 10

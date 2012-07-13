@@ -1,0 +1,35 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISDriver
+#
+
+puts "caf003-L1"
+
+# Create a box
+box aBox 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+set aDriverGUID1 [lindex [AISSet D ${aLabel} NS] 0]
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Get driver GUID
+set aDriverGUID2 [lindex [AISDriver D ${aLabel}] 0]
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${aDriverGUID1} != ${aDriverGUID2} } {
+	puts "aDriverGUID1=${aDriverGUID1} aDriverGUID2=${aDriverGUID2}"
+	puts "Get the driver GUID; AISDriver command: Error"
+        return
+}
+puts "Get the driver GUID; AISDriver command: OK"

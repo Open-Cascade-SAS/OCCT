@@ -1,0 +1,15 @@
+# Original bug : cts 19304
+# Date : 23mar98
+
+restore cts19304a.rle a
+restore cts19304b.rle b
+restore cts19304c.rle c
+
+mkplane af a 
+mkplane bf b
+mkplane cf c
+
+bfuse resafbf af bf
+bfuse result resafbf cf
+
+set square 12677.1

@@ -1,0 +1,9 @@
+# Original bug : ger50084
+# Date : 21 Sept 98
+
+restore ger50084c.rle prism
+restore ger50084d.rle base
+
+bcut result prism base
+
+set square 1290.02

@@ -1,0 +1,8 @@
+box b1 4 4 4
+pcylinder b2 2 4
+ttranslate b2 2 0 0
+
+bop b1 b2
+boptuc result
+
+set square 53.6991

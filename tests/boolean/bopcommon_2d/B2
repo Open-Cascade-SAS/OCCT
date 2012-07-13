@@ -1,0 +1,7 @@
+restore case_2_solid_r.brep a
+restore case_2_edge1.brep b
+bop a b
+bopcommon result
+set length 847.007
+set nbsh_v 14
+set nbsh_e 7

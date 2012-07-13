@@ -1,0 +1,11 @@
+# Original bug : cts21200
+# Date : 16July98
+
+restore cts21200a.rle a 
+restore cts21200b.rle skface
+
+prism b skface 0 0 -230
+
+bcut result a b
+
+set square 759362

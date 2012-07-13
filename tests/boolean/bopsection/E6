@@ -1,0 +1,8 @@
+restore sh2 b1
+restore sh8 b2
+
+bop b1 b2
+bopsection result
+
+
+set length 46.5685

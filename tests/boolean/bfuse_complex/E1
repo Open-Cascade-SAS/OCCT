@@ -1,0 +1,8 @@
+# Original bug FRA11018: 
+# Date : 19mar98
+restore fra11018a.rle a
+restore fra11018b.rle b
+
+bfuse result a b
+
+set square 25189.7

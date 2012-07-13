@@ -1,0 +1,5 @@
+restore pro14151a.rle a
+restore pro14151b.rle b
+bsection result a b
+
+set length 49.9609

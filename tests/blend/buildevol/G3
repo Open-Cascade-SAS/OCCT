@@ -1,0 +1,14 @@
+#box s1 0 0 0 10 10 10
+#box s2 0 0 0 4 4 4
+#ttranslate s2 4 4 10
+#fuse s s1 s2
+#save s A5678.draw 
+
+restore A5678.draw s
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_16 0 0.5*SCALE1 1 1*SCALE1 2 0.5*SCALE1
+buildevol
+
+set square 66266.6

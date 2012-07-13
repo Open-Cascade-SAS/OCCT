@@ -1,0 +1,16 @@
+# Original bug : pro7637 (#3 with restore from Designer shape)
+# Date : 16apr97
+
+dset SCALE 100
+
+## restore the Prismed oblong created in Designer K1-2 (size 200 mm)
+restore pro7637c_prism_oblong_dsg.rle p1
+tscale p1 0 0 0 1*SCALE
+
+## restore the Box created in Designer K1-2 (size 300 mm)
+restore pro7637c_box_dsg.rle p2
+tscale p2 0 0 0 1*SCALE
+
+bfuse result p2 p1
+
+set square 1.85425e+09

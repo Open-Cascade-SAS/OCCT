@@ -1,0 +1,7 @@
+restore sf5 b1
+restore sf3 b2
+
+bop b1 b2
+boptuc result
+
+set square empty

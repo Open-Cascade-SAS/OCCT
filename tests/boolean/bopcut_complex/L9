@@ -1,0 +1,11 @@
+# Original bug : pro13075
+# Date : 19Mai98
+
+restore pro13075a.rle a
+restore pro13075b.rle b
+
+bop a b 
+bopcut result
+
+
+set square 3053.84

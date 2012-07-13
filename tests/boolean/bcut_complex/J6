@@ -1,0 +1,12 @@
+# Original bug : cts20496
+# Date : 13Mai98
+# C9
+
+restore cts20496-part.rle part
+restore cts20496-tool.rle tool
+
+bcut result part tool
+
+
+
+set square 34379.7

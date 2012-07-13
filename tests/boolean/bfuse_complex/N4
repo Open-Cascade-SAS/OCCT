@@ -1,0 +1,11 @@
+# Original bug : pro14892
+# Date : 16July98
+
+restore pro14892a.rle a 
+restore pro14892b.rle aface
+
+prism b aface 0 0 -50
+
+bfuse result a b
+
+set square 601864

@@ -1,0 +1,12 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : C2
+## Comment : from original bug PRO4536
+## ====================================
+
+restore blend04.rle s
+tscale s 0 0 0 1000
+explode s e
+blend result s 5 s_6
+
+set square 35576.2

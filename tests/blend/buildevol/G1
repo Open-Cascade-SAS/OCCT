@@ -1,0 +1,17 @@
+puts "TODO OCC22817 All: exception.+There are no suitable edges"
+puts "TODO OCC22817 All: \\*\\* Exception \\*\\*"
+puts "TODO OCC22817 All: TEST INCOMPLETE"
+
+pcylinder s1 3 10 
+pcylinder s2 4 16 
+trotate s2 0 0 0 1 0 0 80
+ttranslate s2 0 9 -3
+ttranslate s1 s2 5 5 0
+bcut s s1 s2
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_2 0 0.3*SCALE1 1 0.5*SCALE1 2 0.3*SCALE1
+buildevol
+
+set square 0

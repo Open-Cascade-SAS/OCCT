@@ -1,0 +1,9 @@
+# Original bug : hkg60163
+# Date : 18sept98
+
+restore hkg60163c.rle base
+restore hkg60163d.rle prism
+
+bcut result base prism
+
+set square 93761.7

@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : F5
+## Comment : from cts19997
+## ====================================
+
+restore cts19997.rle a
+nexplode a e
+blend result a 2 a_1
+
+set square 314713

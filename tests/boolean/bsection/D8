@@ -1,0 +1,6 @@
+puts "TODO OCC22911 ALL: Error : The bsection is not valid."
+restore a50 a
+restore b50 b
+bsection result a b
+
+set length 0

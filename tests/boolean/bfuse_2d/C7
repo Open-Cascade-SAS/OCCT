@@ -1,0 +1,6 @@
+restore case_9_edge.brep a
+restore case_9_edge5.brep b
+bfuse result a b
+set length 963.678
+set nbsh_v 4
+set nbsh_e 3

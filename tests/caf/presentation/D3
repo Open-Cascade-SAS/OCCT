@@ -1,0 +1,50 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISMaterial
+# Note:   Visual control of setting material
+#
+
+puts "caf003-D3"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a material of the shape as NOM_JADE
+AISMaterial D ${aLabel} 18
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+puts "The box's material is NOM_JADE"

@@ -1,0 +1,6 @@
+restore f3 b1
+restore f5 b2
+
+bfuse result b1 b2
+
+set square 157.08

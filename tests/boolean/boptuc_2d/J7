@@ -1,0 +1,7 @@
+restore case_6_shell.brep a
+restore case_6_edge3.brep b
+bop a b
+boptuc result
+set length 729.781
+set nbsh_v 6
+set nbsh_e 3

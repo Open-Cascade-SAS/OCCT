@@ -1,0 +1,5 @@
+set TheFileName OCC22095-selectTbb.brep
+set bug_area "OCC22687"
+set rel_tol 1.9
+set bug_freenodes "OCC22687"
+set nbfreenodes(ALL) 2

@@ -1,0 +1,13 @@
+# Original bug : fra60275
+# Date : 4June98
+
+restore fra60275a.rle s
+restore fra60275b.rle c
+tcopy  c w
+mkplane f w
+
+prism pp f 0 0 100
+
+bfuse result s pp
+
+set square 358551

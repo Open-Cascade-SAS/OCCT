@@ -1,0 +1,7 @@
+pcylinder b1 1 2
+box b2 -0.8 -0.8 0 1.8 1.8 1
+
+bop b1 b2
+bopcommon result
+
+set square 11.7384

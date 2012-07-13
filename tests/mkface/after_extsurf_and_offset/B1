@@ -1,0 +1,8 @@
+parabola parabola 0 0 0 30
+extsurf es_parabola parabola 0 0 1
+offset es_parabola_of es_parabola 5
+offset es_parabola_of_of es_parabola_of 5
+mkface result es_parabola_of_of 0 3 0 40
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 1.0000000000000002e-07

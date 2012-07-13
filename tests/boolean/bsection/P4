@@ -1,0 +1,11 @@
+restore intcq004.brep m
+explode m
+# primitives : m_1 m_3 m_4 m_5
+# m_2 : Bloc
+compound m_1 m_3 m_5 c1
+bsection s c1 m_2 -2d -a
+# PB
+bsection s2 m_4 m_2 -2d -a
+compound s s2 result
+
+set length 682.142

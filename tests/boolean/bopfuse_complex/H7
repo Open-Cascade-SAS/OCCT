@@ -1,0 +1,7 @@
+restore a148 a
+restore b148 b
+
+bop a b
+bopfuse result
+
+set square 35342.8

@@ -1,0 +1,13 @@
+# Original bug : cts20493
+# Date : 13Mai98
+# C4
+
+restore cts20493a.rle a
+restore cts20493b.rle b
+
+bfuse result a b
+
+
+
+
+set square 186203

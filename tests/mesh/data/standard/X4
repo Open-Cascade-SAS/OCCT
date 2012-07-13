@@ -1,0 +1,34 @@
+if { [string compare $command "mesh"] == 0 } {
+    set bug_area 23111
+}
+if { [string compare $command "incmesh"] == 0 } {
+    set bug_area 23111
+}
+
+set TheFileName ""
+psphere s 1
+box b 1 1 1
+trotate b 0 0 1 0 1 0 90
+bcut res s b
+
+if { [string compare $command "shading"] == 0 } {
+    puts "TODO #23111 ALL: Error : incorrect node"
+    explode res f
+    vinit
+    vdisplay res
+    vfit
+    vsetdispmode res 1
+    regexp {3D Nodes :\s+((\s+\d+\s+:\s+[-0-9.+eE]+\s+[-0-9.+eE]+\s+[-0-9.+eE]+)+)} [dump res_1] full r
+    puts $full
+    for {set i 0} {$i < [llength $r]} {set i [expr $i + 5]} {
+	set x [lindex $r [expr $i+2]]
+	set y [lindex $r [expr $i+3]]
+	set z [lindex $r [expr $i+4]]
+	if { $x < -0.04 && $y > 0 && $z > 0.9} {
+		puts "Error : incorrect node [lindex $r $i] at $x $y $z"
+		vertex v $x $y $z
+		vdisplay v
+		break
+	}
+    }
+}

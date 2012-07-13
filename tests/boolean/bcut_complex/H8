@@ -1,0 +1,14 @@
+# Original bug : cts20736
+# Date : 28Sept97
+
+restore cts20736a.rle part
+restore cts20736b.rle aface
+
+btolx part
+btolx aface
+
+prism tool aface 0 0 -12
+
+bcut result part tool
+
+set square 36087.8

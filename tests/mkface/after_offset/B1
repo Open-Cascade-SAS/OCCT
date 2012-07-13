@@ -1,0 +1,6 @@
+torus a 0 0 0 0 1 0 30 10
+offset a_of a 5
+offset r a_of 5
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 1.0000000000000002e-07

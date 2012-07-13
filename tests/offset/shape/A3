@@ -1,0 +1,14 @@
+puts "TODO OCC23190 ALL: An exception was caught.*Offset with no C1 Surface"
+puts "TODO OCC23190 ALL: \\*\\* Exception \\*\\*.*Offset with no C1 Surface"
+puts "TODO OCC23068 ALL: TEST INCOMPLETE"
+# Original bug : cts21271
+# Date : 11Sept98
+
+restore cts21271.rle s
+explode s f
+
+## leaving out bottom face s_35
+
+offsetshape result s -1 s_35
+
+set volume 0

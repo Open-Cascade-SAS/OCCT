@@ -1,0 +1,14 @@
+## =========================================
+## Grid    : CCV002
+## Test    : C1
+## Comment : From CV tests serie page 58/59
+## ==========================================
+
+puts "TODO ?OCC22740 ALL:Error\\s*:\\s*The offset is not valid. The volume is"
+puts "TODO ?OCC23068 ALL:Error\\s*:\\s*.*The volume"
+
+restore 2_C1.rle s
+explode s F
+catch {offsetcompshape result s -10 s_8 s_10}
+
+set volume 3.0764e+06

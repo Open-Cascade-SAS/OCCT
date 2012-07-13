@@ -1,0 +1,9 @@
+# Original bug : cts21306
+# Date : 16July98
+
+restore cts21306b.rle b
+restore cts21306c.rle c
+
+bfuse result b c
+
+set square 9411.14

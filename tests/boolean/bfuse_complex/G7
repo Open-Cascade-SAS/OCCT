@@ -1,0 +1,9 @@
+# Original bug : cts20216
+# Date : 13Mai98
+
+restore  cts20216_base.rle  base
+restore  cts20216_outil.rle  outil
+
+bfuse result base outil
+
+set square 2005.99

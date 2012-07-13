@@ -1,0 +1,8 @@
+# test for creation of bottle as in tutorial (script is in samples)
+source $env(CASROOT)/samples/tcl/bottle.tcl
+
+# check result for validity and make a snapshot
+checkshape bottle
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

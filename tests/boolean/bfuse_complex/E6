@@ -1,0 +1,9 @@
+# Original bug : pro10505   
+# Date : 20mar98
+
+restore pro10505a.rle a
+restore pro10505b.rle b
+
+bfuse result a b
+
+set square 302396

@@ -1,0 +1,7 @@
+restore case_1_solid.brep a
+restore case_1_edge3.brep b
+bop a b
+boptuc result
+set length 46.1869
+set nbsh_v 2
+set nbsh_e 1

@@ -1,0 +1,5 @@
+restore GEN745_nofog.rle a
+explode a
+bsection result a_1 a_2 -2d -a
+
+set length 96.7669

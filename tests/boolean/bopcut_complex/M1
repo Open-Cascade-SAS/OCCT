@@ -1,0 +1,11 @@
+# Original bug : pro13495
+# Date : 19Mai98
+
+restore pro13495a.rle a
+restore pro13495b.rle b
+
+bop a b
+bopcut result
+
+
+set square 63800.8

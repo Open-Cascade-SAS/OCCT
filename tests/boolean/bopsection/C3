@@ -1,0 +1,9 @@
+#cts21527
+
+restore bad_cut_outil.brep a
+restore bad_cut_part.brep b
+
+bop b a
+bopsection result
+
+set length 20.7531

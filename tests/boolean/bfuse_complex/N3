@@ -1,0 +1,11 @@
+# Original bug : pro14785
+# Date : 21July98
+
+restore pro14785a.rle a 
+restore pro14785b.rle b
+restore pro14785c.rle c
+
+bfuse res a b
+bfuse result res c
+
+set square 533100

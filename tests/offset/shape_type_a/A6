@@ -1,0 +1,7 @@
+#old file ofs14
+
+restore bb14 s
+OFFSETSHAPE -0.1 {} $calcul $type
+
+
+set volume 0.285805

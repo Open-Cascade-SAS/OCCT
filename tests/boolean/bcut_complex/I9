@@ -1,0 +1,12 @@
+# Original bug : cts20483
+# Date : 13Mai98
+# B4
+
+restore cts20483-part.rle part
+restore cts20483-tool.rle tool
+
+bcut result part tool
+
+
+
+set square 1539.48

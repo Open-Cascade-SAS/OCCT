@@ -1,0 +1,9 @@
+# Original bug : buc60220 
+# Date : 24June98
+
+restore buc60220a.rle a 
+restore buc60220b.rle b
+
+bcut result a b
+
+set square 90179.6

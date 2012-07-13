@@ -1,0 +1,10 @@
+# Original bug : cts19474
+# Date : 11mar98
+
+restore cts19474part.rle part
+restore cts19474tool.rle tool
+
+bfuse result part tool
+
+
+set square 328.513

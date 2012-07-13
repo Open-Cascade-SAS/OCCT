@@ -1,0 +1,6 @@
+cone a 30 30
+trim a_tr a 0 1 0 30
+trim r a_tr 0 .5 0 10
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 9.9999999999999995e-08

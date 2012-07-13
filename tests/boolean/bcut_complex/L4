@@ -1,0 +1,9 @@
+# Original bug : cts20366
+# Date : 4June98
+
+restore cts20366-part.rle a
+restore cts20366-tool.rle b
+
+bcut result a b
+
+set square 82853.2

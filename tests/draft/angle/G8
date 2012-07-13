@@ -1,0 +1,19 @@
+#F6----------------------------------------------
+puts "TODO OCC22803 All:Error in depouille"
+puts "TODO OCC22803 All:Error : The depouille can not be build"
+polyline p 0 0 3  0 0 0  10 0 0  10 0 3  
+beziercurve bc 4 10 0 3  7 0 2  3 0 3  0 0 3
+mkedge bc bc
+wire p p bc
+mkplane p p
+revol p p 0 0 0 0 0 1 360
+profile pf o 0 -5 1 p 1 -1 0 1 1 0 l 7 t 0 7 \
+t -5 0  
+revol pr pf -1 -7 0 0 0 1 70
+bfuse f p pr
+nexplode f f
+if { [catch { depouille result f 0 0 1 f_4 3 0 0 10 0 0 1 } ] != 0 } {
+  puts "Error in depouille"
+}
+
+set square 0

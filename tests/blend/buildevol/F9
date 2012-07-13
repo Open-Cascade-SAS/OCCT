@@ -1,0 +1,8 @@
+restore 2_O12.draw s
+explode s e
+
+mkevol result s
+updatevol s_5 0 2*SCALE1 1 1*SCALE1 2 2*SCALE1
+buildevol
+
+set square 5.34396e+06

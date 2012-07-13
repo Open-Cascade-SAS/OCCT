@@ -1,0 +1,49 @@
+
+if { [isdraw result] } {
+   regexp {Mass +: +([-0-9.+eE]+)} [vprops s] full sm
+   regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full m
+
+   #check if result is valid
+   puts [checkshape result]
+   if { $m == 0 || $sm == $m } {
+       puts "Error : The offset is not valid. The volume is $m."
+   }
+
+   #check of face's square value
+   foreach ResultFace [ explode result f ]  {
+      regexp {Mass +: +([-0-9.+eE]+)} [sprops $ResultFace] full fmass
+      if { $fmass < 0 } {
+         puts "Error : Square of face $ResultFace of result shape is negative."
+      }
+   }
+   #check for bsection
+   if { [info exists GlobFaces] && [llength $GlobFaces] == 0 } {
+      puts [ bsection re $result $s ]
+      if { [ isdraw re ] } {
+         regexp {Mass +: +([-0-9.+eE]+)} [lprops $re] full remass
+         if { $remass != 0 } {
+            puts "Error: bsection of result and s is not equal zero."
+         }
+      }
+   }
+
+   if { $volume > 0 } {
+      puts "The expected volume is $volume"
+   }
+   #check of change of volume is < 1%
+   if { ($volume > 0 && [expr abs($volume - $m)/$volume] > 0.01) || ($volume == 0 && $m != 0 && $sm != $m) } {
+      puts "Error : The volume of result shape is $m"
+   }
+   if { $m > 0 } {
+      clear
+      smallview
+      donly result
+      fit
+      xwd $imagedir/${test_image}.gif
+   } 
+} else {
+   puts "Error : The offset can not be build."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

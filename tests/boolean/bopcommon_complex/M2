@@ -1,0 +1,7 @@
+restore g1 b1
+restore g2 b2
+
+bop b1 b2
+bopcommon result
+
+set square 2094.4

@@ -1,0 +1,9 @@
+# Original bug : pro8934
+# Date : 19mar98
+
+restore pro8934a.rle a
+restore pro8934b.rle b
+
+bfuse result a b
+
+set square 20480.4

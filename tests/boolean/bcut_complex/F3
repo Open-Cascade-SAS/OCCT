@@ -1,0 +1,9 @@
+# Original bug : cts18140
+# Date : 18mar98
+
+restore cts18140-part.rle part
+restore cts18140-tool.rle tool
+
+bcut result part tool
+
+set square 92062.6

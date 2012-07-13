@@ -1,0 +1,9 @@
+# Original bug : cts20370
+# Date : 4June98
+
+restore cts20370a.rle a
+restore cts20370b.rle b
+
+bfuse result a b
+
+set square 261265

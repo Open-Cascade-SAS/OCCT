@@ -1,0 +1,6 @@
+restore fra61083a.rle a
+restore fra61083b.rle b
+
+bfuse result a b
+
+set square 309.521

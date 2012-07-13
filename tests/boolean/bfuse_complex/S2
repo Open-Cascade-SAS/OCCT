@@ -1,0 +1,19 @@
+puts "hkg60159"
+puts "Fuse"
+puts ""
+dall
+
+restore hkg60159a.brep sh
+restore hkg60159b.brep ct
+
+prism pr ct 0 -30 0
+bcut res pr sh
+
+explode res
+
+bfuse res2 sh res_2
+
+bfuse result sh res_3
+
+
+set square 3734.83

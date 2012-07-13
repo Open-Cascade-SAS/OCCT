@@ -1,0 +1,14 @@
+#clear
+#dall
+restore topo002-o1.brep coque1
+restore topo002-o2.brep coque2
+
+## pkv f
+explode coque1 sh
+explode coque2 sh
+bop coque1_1 coque2_1
+## pkv t
+
+bopfuse result 
+
+set square 3950.89

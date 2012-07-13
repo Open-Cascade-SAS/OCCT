@@ -1,0 +1,8 @@
+## buc60289
+
+restore Face1.rle a
+restore Plan.rle b
+
+bsection result a b
+
+set length 1686.09

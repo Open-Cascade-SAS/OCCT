@@ -1,0 +1,11 @@
+## ====================================
+## Grid	   : CFI900
+## Test    : F3
+## Comment : from pro12920.rle
+## ====================================
+
+restore pro12894.rle a
+explode a e
+blend result a 5 a_89
+
+set square 199407

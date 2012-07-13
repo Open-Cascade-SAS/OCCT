@@ -1,0 +1,13 @@
+# Original bug : cts20454
+# Date : 13Mai98
+# A3.gif
+
+
+restore cts20454a.rle a
+restore cts20454b.rle b
+
+bfuse result a b
+
+
+
+set square 978396

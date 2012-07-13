@@ -1,0 +1,11 @@
+puts "PRO16769"
+puts "Fuse"
+puts ""
+
+restore pro16769a.rle base
+restore pro16769b.rle tool
+
+bfuse result base tool
+fsameparameter result
+
+set square 46778.2

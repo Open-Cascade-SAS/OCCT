@@ -1,0 +1,6 @@
+restore case_9_edge.brep a
+restore case_9_wire2.brep b
+bcut result b a
+set length 1080.64
+set nbsh_v 6
+set nbsh_e 6

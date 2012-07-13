@@ -1,0 +1,8 @@
+cpulimit 3600
+restore BUC60936.brep sh
+explode sh
+
+bop sh_1 sh_2
+bopcommon result
+
+set square 152908

@@ -1,0 +1,26 @@
+# To prevent loops limit to 10 minutes
+cpulimit 600
+
+if { [string compare [datadir] "."] == 0 } {
+   datadir [file dirname [info script]]/data
+}
+
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+	pload TOPTEST
+}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+
+proc OFFSETSHAPE {distance faces  calcul type} {
+    global GlobFaces
+    set GlobFaces $faces
+    uplevel #0 explode s f
+    uplevel #0 offsetparameter 1e-7 $calcul $type
+    uplevel #0 offsetload s $distance $faces
+    uplevel #0 offsetperform result
+}

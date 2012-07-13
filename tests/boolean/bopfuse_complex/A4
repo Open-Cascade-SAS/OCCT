@@ -1,0 +1,12 @@
+puts "================================="
+puts "FUSE of OCC213-2.brep and  OCC213-1.brep"
+puts "Case is duplicate of chl 918 A7, bug OCC213 "
+puts "================================="
+
+restore OCC213-1.brep a
+restore OCC213-2.brep b
+
+bop b a
+bopfuse result
+
+set square 4835.45

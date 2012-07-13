@@ -1,0 +1,9 @@
+# Original bug : cts20138
+# Date : 13Mai98
+
+restore  cts20138_base  base
+restore  cts20138_outil  outil
+
+bcut result base outil
+
+set square 31806.5

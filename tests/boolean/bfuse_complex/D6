@@ -1,0 +1,10 @@
+# Original bug : pro6050
+# Date : 11mar98
+
+restore pro6050a.rle a
+restore pro6050b.rle b
+
+bfuse result a b
+
+
+set square 1.06905e+06

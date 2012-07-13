@@ -1,0 +1,10 @@
+puts "GER60854"
+puts "Section"
+puts ""
+restore ger60854a.rle a
+restore ger60854b.rle b
+
+bsection result a b
+
+
+set length 44.3547

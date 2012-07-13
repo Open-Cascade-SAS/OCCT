@@ -1,0 +1,10 @@
+puts "TODO OCC23068 ALL: Error : The offset is not valid"
+# Original bug : hkg60144
+# Date : 17Juillet98
+
+restore  hkg60144a.rle s
+explode s f
+
+offsetshape result s -5 s_1
+
+set volume 0

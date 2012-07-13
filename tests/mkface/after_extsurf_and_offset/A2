@@ -1,0 +1,8 @@
+line line 0 0 0 0 0 1
+extsurf es_line line 1 0 0
+offset es_line_of es_line 5
+offset es_line_of_of es_line_of 5
+mkface result es_line_of_of 0 20 0 40
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 1.0000000000000002e-07

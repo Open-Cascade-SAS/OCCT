@@ -1,0 +1,8 @@
+restore sh10 b1
+restore shx b2
+
+bop b1 b2
+bopfuse result
+
+
+set square 468.629

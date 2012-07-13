@@ -1,0 +1,12 @@
+# Original bug : cts20537
+# Date : 13Mai98
+# D3
+
+restore cts20537-part.rle part
+restore cts20537-tool.rle tool
+
+bcut result part tool
+
+
+
+set square 161860

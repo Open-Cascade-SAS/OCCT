@@ -1,0 +1,11 @@
+# Original bug : ger60039
+# Date : 11mar98
+
+restore ger60039a.shape a
+fsameparameter a
+restore ger60039b.shape b 
+
+bfuse result a b
+
+
+set square 18154.6

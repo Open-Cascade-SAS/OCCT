@@ -1,0 +1,7 @@
+#cts21588
+restore part_syb.brep a
+restore tool_syb.brep b
+
+bfuse result a b
+
+set square 76217.4

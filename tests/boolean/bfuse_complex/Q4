@@ -1,0 +1,9 @@
+puts "BUC60321"
+puts "Creating fuse is impossible"
+
+restore buc60321a.brep a
+restore buc60321b.brep b
+
+bfuse result a b
+
+set square 21190.7

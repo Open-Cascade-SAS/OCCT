@@ -1,0 +1,11 @@
+puts [DT_ShapeConvert result a 1 1]
+set d [statshape result]
+puts $d
+
+set bspsur 0
+
+set rx [regexp "(\[0-9\]+)\\s+bspsur *: *BSplineSurface" $d full bspsur]
+
+if { $bspsur != 0 } {
+  puts "Error: $bspsur BSplineSurface after DT_ShapeConvert operation."
+}

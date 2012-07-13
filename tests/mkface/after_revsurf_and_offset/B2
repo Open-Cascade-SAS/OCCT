@@ -1,0 +1,7 @@
+beziercurve beziercurve_nr 3 0 0 0 2 2 2 4 5 2
+revsurf rs_beziercurve_nr beziercurve_nr -5 0 0 0 1 0
+offset rs_beziercurve_nr_of rs_beziercurve_nr 1
+mkface result rs_beziercurve_nr_of .3 .5 .3 .5
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 2.3677180258750644e-07
+set MaxVTol 2.4113634024814652e-07

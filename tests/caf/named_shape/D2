@@ -1,0 +1,82 @@
+#INTERFACE CAF
+# NamedShape
+#
+# Testing attribute: TNaming_NamedShape
+#
+# Testing command:   SelectGeometry (FACE)
+#
+
+puts "caf002-D2"
+set QA_DUP 0
+
+set ter _*
+foreach OS [directory [concat aBox1$ter]] {
+	unset $OS
+}
+
+# Create a box
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+# Create a label
+set aLabel 0:3
+Label D ${aLabel}
+
+# Set a shape to the label
+ImportShape D ${aLabel} aBox1
+
+# Close/Open transaction
+NewCommand D
+
+# Select all the sub-shapes of type <aType>
+# aType = FACE
+set aType f
+explode ${aBox1} ${aType}
+
+set i 0
+set iSubLabel 2000
+foreach S [directory [concat $aBox1$ter]] {
+	incr i
+	incr iSubLabel
+	puts "SubShape=$S"
+
+	#Memorize a bounding box of the selected sub-shape
+	set aBoundingBox1 [bounding ${S}]
+	set X1_Box1 [lindex ${aBoundingBox1} 0]
+	set Y1_Box1 [lindex ${aBoundingBox1} 1]
+	set Z1_Box1 [lindex ${aBoundingBox1} 2]
+	set X2_Box1 [lindex ${aBoundingBox1} 3]
+	set Y2_Box1 [lindex ${aBoundingBox1} 4]
+	set Z2_Box1 [lindex ${aBoundingBox1} 5]
+
+	# Select a sub-shape
+	set LABEL [Label D 0:$iSubLabel]
+	SelectGeometry D ${LABEL} ${S} ${aBox1}
+
+	# Solve selected sub-shape
+	SolveSelection D ${LABEL}
+
+	# Get selected (and solved) sub-shape
+	GetShape D ${LABEL} aSubShape
+	
+	# Get bounding box
+	set aBoundingBox2 [bounding aSubShape]
+	set X1_Box2 [lindex ${aBoundingBox2} 0]
+	set Y1_Box2 [lindex ${aBoundingBox2} 1]
+	set Z1_Box2 [lindex ${aBoundingBox2} 2]
+	set X2_Box2 [lindex ${aBoundingBox2} 3]
+	set Y2_Box2 [lindex ${aBoundingBox2} 4]
+	set Z2_Box2 [lindex ${aBoundingBox2} 5]
+	
+	if {${X1_Box1} != ${X1_Box2} || ${Y1_Box1} != ${Y1_Box2} || ${Z1_Box1} != ${Z1_Box2} || ${X2_Box1} != ${X2_Box2} || ${Y2_Box1} != ${Y2_Box2} || ${Z2_Box1} != ${Z2_Box2}} {
+		puts "SelectGeometry command (${i}): Error"
+	}
+}
+
+puts "SelectGeometry command: OK"

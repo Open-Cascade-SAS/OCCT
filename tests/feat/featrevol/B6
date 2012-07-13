@@ -1,0 +1,10 @@
+# Original bug : pro16120
+# Date :  2 Feb 99
+
+restore pro16120_base.brep base
+restore pro16120_face.brep cont
+
+featrevol base cont cont 200 0 200 0 1 0 1 1
+featperformval revol result 280
+
+set square 176160

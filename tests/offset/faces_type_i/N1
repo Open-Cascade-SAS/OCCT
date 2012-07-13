@@ -1,0 +1,19 @@
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+
+puts "TODO OCC23068 $os: Faulty shapes in variables faulty_1 to faulty_2 "
+puts "TODO OCC23068 $os: Error : The offset is not valid"
+puts "TODO OCC23068 $os: Error : Square of face result_5 of result shape is negative."
+puts "TODO OCC23068 $os: Error : Square of face result_6 of result shape is negative."
+
+beziersurf c 3 2 \
+0 0 0 0 5 5 2 14 3 \
+10 -5 -3 13 3 0 12 10 5
+mkface c c
+prism s c 0 0 20
+
+OFFSETSHAPE 1 {s_5 s_6} $calcul $type
+
+set volume 0

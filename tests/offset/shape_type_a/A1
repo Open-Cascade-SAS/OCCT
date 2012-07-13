@@ -1,0 +1,6 @@
+#old file ofc22
+
+restore cc2 s
+OFFSETSHAPE 0.01 {} $calcul $type
+
+set volume 0.0709583

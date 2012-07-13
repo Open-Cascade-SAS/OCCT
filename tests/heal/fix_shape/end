@@ -1,0 +1,2 @@
+puts [fixshape result a 0.001 0.005]
+puts [checkshape result]

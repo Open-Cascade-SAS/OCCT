@@ -1,0 +1,9 @@
+# Original bug : ger60239
+# Date : 23mar98
+
+restore ger60239a.rle a
+restore ger60239b.rle b
+
+bfuse result a b
+
+set square 3468.6

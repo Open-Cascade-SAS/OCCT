@@ -1,0 +1,15 @@
+#pro16252
+puts "PRO16252"
+puts "Fuse"
+puts ""
+
+restore pro16252a.brep a
+restore pro16252b.brep b
+
+fsameparameter b
+maxtolerance a
+maxtolerance b
+
+bfuse result a b
+
+set square 121182

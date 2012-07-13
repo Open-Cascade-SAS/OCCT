@@ -1,0 +1,10 @@
+puts "BUC60462"
+puts "Section"
+puts ""
+
+restore buc60462a.brep a
+restore buc60462b.brep b
+
+bsection result a b
+
+set length 262.122

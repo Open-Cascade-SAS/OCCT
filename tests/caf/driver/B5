@@ -1,0 +1,111 @@
+#1 - create 4 Pnts
+NewCommand D
+AddDriver D PntXYZ PntRLT Line3D Attach;
+set Pnt1 [AddPoint D 0 0 0];		## add point1
+ComputeFun D $Pnt1:1;			## compute function
+GetShape D $Pnt1:1:2 P1;		## check result
+whatis P1
+# referes to result NS
+GetReference D $Pnt1;			## check is reference set 
+
+set Pnt2 [AddPoint D 0 200 0];
+ComputeFun D $Pnt2:1;
+set Pnt3 [AddPoint D 200 200 0];
+ComputeFun D $Pnt3:1;
+set Pnt4 [AddPoint D 200 0 0];
+ComputeFun D $Pnt4:1;
+GetShape D $Pnt2:1:2 P2;
+GetShape D $Pnt3:1:2 P3;
+GetShape D $Pnt4:1:2 P4;
+
+#2 create open Lin1
+#NewCommand D
+#set Lin1 [ AddLine3D D 0 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
+#ComputeFun D $Lin1:1;
+#GetShape D $Lin1:1:2 L1;
+
+#3 create closed Lin3
+NewCommand D
+set Lin2 [ AddLine3D D 1 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
+ComputeFun D $Lin2:1;
+GetShape D $Lin2:1:2 L1;
+
+#4 Prism  (after step #1)
+NewCommand D
+AddDriver D Prism
+set Prism [AddPrism D $Lin2 300 0]
+ComputeFun D $Prism:1
+GetShape D $Prism:1:2 Pr
+GetReference D $Prism;			## check is reference set 
+
+#5 create two prisms
+NewCommand D
+explode Pr F
+set Bas1 [AttachShape D Pr_1 ${Prism} ${Prism} 1]
+set Bas2 [AttachShape D Pr_4 ${Prism} ${Prism} 1]
+
+set Prism2 [AddPrism D $Bas1 300 0]
+ComputeFun D $Prism2:1
+GetShape D $Prism2:1:2 Pr2
+
+
+set Prism3 [AddPrism D $Bas2 500 0]
+ComputeFun D $Prism3:1
+GetShape D $Prism3:1:2 Pr3
+
+#6 => fuse
+NewCommand D
+AddDriver D Fuse Sph Cut
+set FS1 [AddFuse D $Prism $Prism2]
+ComputeFun D $FS1
+GetShape D $FS1:2 Pr
+
+set FS2 [AddFuse D $Prism $Prism3]
+ComputeFun D $FS2
+GetShape D $FS2:2 Pr
+
+set Sph [AddSphere D $Pnt3 150]
+NewCommand D
+ComputeFun D $Sph:1
+GetShape D $Sph:1:2 Sp
+
+#7 Cut sphere
+NewCommand D
+set Cut1 [AddCut D $Prism $Sph]
+ComputeFun D $Cut1
+GetShape D $Cut1:2 Pr
+don Pr
+
+#8 test selection
+NewCommand D
+set SL  [TestSingleSelection   D $Prism 0]
+set SL2 [TestMultipleSelection D $Prism 0]
+
+
+
+#9 modify
+PntOffset D $Pnt1  50 30 skip
+
+#10 recompute
+NewCommand D
+ComputeFun D $Pnt1:1
+ComputeFun D $Lin2:1
+ComputeFun D $Prism:1
+ComputeFun D $Bas1:1
+ComputeFun D $Bas2:1
+ComputeFun D $Prism2:1
+ComputeFun D $Prism3:1
+ComputeFun D $FS1
+ComputeFun D $FS2
+ComputeFun D $Sph:1
+ComputeFun D $Cut1
+erase
+GetShape D $Cut1:2 Pr
+#GetShape D $Prism:1:2 Pr
+#GetShape D $Prism2:1:2 Pr2
+#GetShape D $Prism3:1:2 Pr3
+
+#recomputation of entities of the TestSelection commands
+SolveFlatFrom D $SL
+NewCommand D
+

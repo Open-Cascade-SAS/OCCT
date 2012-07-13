@@ -1,0 +1,9 @@
+# Original bug : cts20150
+# Date : 13Mai98
+
+restore  cts20150_base.rle  base
+restore  cts20150_outil.rle  outil
+
+bcut result base outil
+
+set square 50892.2

@@ -1,0 +1,6 @@
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+	pload TOPTEST
+}
+if { [array get Draw_Groups "ZeViewer"] == "" } {
+	pload AISV
+}

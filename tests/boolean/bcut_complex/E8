@@ -1,0 +1,9 @@
+# Original bug : jap60038
+# Date : 11mar98
+
+restore jap60038-part.rle part
+restore jap60038-tool.rle tool
+
+bcut result part tool
+
+set square 173510

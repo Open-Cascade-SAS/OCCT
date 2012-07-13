@@ -1,0 +1,9 @@
+puts "TODO #22911 ALL: Error : The bopcut is not valid"
+
+restore OCC228.brep sh
+explode sh
+
+bop sh_2 sh_1
+bopcut result
+
+set square 0

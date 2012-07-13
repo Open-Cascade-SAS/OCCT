@@ -1,0 +1,8 @@
+## PRO 16663
+
+restore Shape.brep a
+restore Outil.brep b
+
+bcut result a b
+
+set square 343725

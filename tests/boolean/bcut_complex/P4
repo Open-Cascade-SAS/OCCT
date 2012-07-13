@@ -1,0 +1,7 @@
+# cts21347
+restore part_1.brep a
+restore tool_2.brep b
+
+bcut result a b
+
+set square 1.64215e+06

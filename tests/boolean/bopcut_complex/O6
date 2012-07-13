@@ -1,0 +1,8 @@
+restore sh2 b1
+restore sh8 b2
+
+bop b1 b2
+bopcut result
+
+
+set square 504.289

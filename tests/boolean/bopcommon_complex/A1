@@ -1,0 +1,12 @@
+puts "====================================="
+puts "COMMON of OCC118-1.brep and  OCC118-2.brep"
+puts "====================================="
+
+restore OCC118-1.brep a
+restore OCC118-2.brep b
+
+bop a b
+bopcommon result
+
+
+set square 844.929

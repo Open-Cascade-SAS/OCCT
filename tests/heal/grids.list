@@ -1,0 +1,12 @@
+001 fix_shape
+002 fix_gaps
+003 same_parameter
+004 fix_face_size
+005 direct_faces
+006 drop_small_edges
+007 split_angle
+008 surface_to_bspline
+009 surface_to_bezier
+010 split_continuity
+011 split_closed_faces
+012 elementary_to_revolution

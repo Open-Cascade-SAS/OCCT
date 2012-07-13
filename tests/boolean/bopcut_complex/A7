@@ -1,0 +1,48 @@
+puts "========================"
+puts "  OCC110 "
+puts "Case is duplicate of chl 902 I1, bug BUC60706 "
+puts "(cases D1,D2,..D9)"
+puts "========================"
+
+# XXXXXXXXXXXXXXXXXXXXX  
+#	 D4
+#
+restore buc60706j.brep f
+restore buc60706k.brep w
+
+pipe t w f
+
+restore buc60706l.brep s
+
+bop s t
+bopcut res
+
+tcopy res buc60706o.brep
+
+# XXXXXXXXXXXXXXXXXXXXX  
+#	 D5
+#
+restore buc60706m.brep f
+restore buc60706n.brep w
+pipe t w f
+tcopy buc60706o.brep s
+
+bop s t
+bopcut res
+
+tcopy res buc60706r.brep
+
+# XXXXXXXXXXXXXXXXXXXXX  
+#	 D6
+#
+restore buc60706p.brep f
+
+restore buc60706q.brep w
+pipe t w f
+
+tcopy buc60706r.brep s
+
+bop s t
+bopcut result
+
+set square 860752

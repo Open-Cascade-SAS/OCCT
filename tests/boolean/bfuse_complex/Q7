@@ -1,0 +1,15 @@
+puts "GER60806"
+puts "Fuse doesn't give the waiting result."
+puts ""
+
+restore ger60806a.rle base
+restore ger60806b.rle tool
+
+# ope. top. -> KO
+bcut res1 tool base
+
+explode res1 So
+
+bfuse result base res1_2
+
+set square 181990

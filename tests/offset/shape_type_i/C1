@@ -1,0 +1,5 @@
+ptorus s 20 5 90 
+
+OFFSETSHAPE 1 {} $calcul $type
+
+set volume 3779.35

@@ -1,0 +1,52 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISUnset
+#
+
+puts "caf003-K1"
+
+# Create two boxis
+box aBox1 100 200 300
+set aLabel1 0:2
+SetShape D ${aLabel1} aBox1
+
+box aBox2 50 50 0 100 200 300
+set aLabel2 0:3
+SetShape D ${aLabel2} aBox2
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel1} NS
+AISSet D ${aLabel2} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Set a color of the second shape as NOC_GREEN
+AISColor D ${aLabel2} 229
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel1}
+AISDisplay D ${aLabel2}
+
+# Close/Open transaction
+NewCommand D
+
+# Unset TPrsStd_AISPresentation attribute from ${aLabel1}
+AISUnset D ${aLabel1}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+puts "There are two boxis"

@@ -1,0 +1,11 @@
+## ===========================================
+## Grid    : CCV001
+## Test    : H1
+## Comment : From CV tests serie page 25/26
+## ===========================================
+
+restore 1_H1.rle s
+explode s E
+blend result s 30 s_14
+
+set square 43339.8

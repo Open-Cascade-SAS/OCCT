@@ -1,0 +1,6 @@
+restore projortho007.brep p 
+explode p
+compound p_2 p_3 c
+nproject result c p_1 0.001 2 14 10
+set length 95.8118
+

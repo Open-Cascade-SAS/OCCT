@@ -1,0 +1,10 @@
+# Original bug : pro14240
+# Date : 21 Sept 98
+
+restore pro14240c.rle part
+restore pro14240d.rle tool
+btolx tool
+
+bcut result part tool
+
+set square 2.23524e+06

@@ -1,0 +1,16 @@
+puts "ID160065"
+puts "Fuse"
+puts ""
+
+restore id260065c.rle base
+restore id260065a.rle cont1
+
+prism tool1 cont1 -86.60254 50 0
+
+bcut rcut1 tool1 base
+
+explode rcut1
+
+bfuse result base rcut1_1
+
+set square 13428.1

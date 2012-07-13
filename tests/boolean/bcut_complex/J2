@@ -1,0 +1,13 @@
+# Original bug : cts20504
+# Date : 13Mai98
+# B9.gif
+
+restore cts20504-part.rle part
+restore cts20504-tool.rle tool
+
+bcut result part tool
+
+
+
+
+set square 910888

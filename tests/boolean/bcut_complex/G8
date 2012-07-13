@@ -1,0 +1,11 @@
+# Original bug : ger60598
+# Date : 18Sept98
+
+restore ger60598c.rle base
+restore ger60598d.rle prism
+
+fsameparameter base
+
+bcut result prism base
+
+set square 16596

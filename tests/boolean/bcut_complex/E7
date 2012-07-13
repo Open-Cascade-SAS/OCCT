@@ -1,0 +1,10 @@
+# Original bug : ger60065
+# Date : 11mar98
+
+restore ger60065-part.rle part
+restore ger60065-tool.rle tool
+
+bcut result part tool
+
+
+set square 23168.2

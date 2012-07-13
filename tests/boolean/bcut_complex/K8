@@ -1,0 +1,9 @@
+# Original bug : cts20551
+# Date : 4June98
+
+restore cts20551-part.rle a
+restore cts20551-tool.rle b
+
+bcut result a b
+
+set square 430968

@@ -1,0 +1,8 @@
+restore diamant a
+restore diamantprof b
+restore diamantunt un
+
+featprism a b b 0 0 -1 0 1
+featperform prism result un
+
+set square 6.94655

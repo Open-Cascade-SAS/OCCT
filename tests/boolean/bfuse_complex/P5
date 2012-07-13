@@ -1,0 +1,13 @@
+# Original bug : pro16255
+
+restore part3bis.brep s
+restore part5-noFillet.brep t
+
+#pkv f
+updatetolerance s 1
+updatetolerance t 1
+#pkv t
+
+bfuse result s t
+
+set square 23108.1

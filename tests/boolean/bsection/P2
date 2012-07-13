@@ -1,0 +1,7 @@
+restore intcq002.brep m
+explode m
+# m_1 : Sr Revolution
+# m_2 : Sr Reglee
+bsection result m_1 m_2 -2d -a
+
+set length 126.535

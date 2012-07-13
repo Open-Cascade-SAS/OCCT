@@ -1,0 +1,8 @@
+#buc60381
+
+restore IR2_TuyoPipe20.brep pip 
+restore IR2_sphere1_20.brep sp1 
+
+bfuse result pip sp1
+
+set square 35184.5

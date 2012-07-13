@@ -1,0 +1,93 @@
+#1 - create Box using short-cut
+NewCommand D
+AddDriver D Box;			## add box driver to driver table
+set B1 [AddBox D 130 140 150];		## add box 
+ComputeFun D $B1:1;			## compute box1 function
+GetShape D $B1:1:2 Box1;		## check result
+whatis Box1
+# referes to result NS
+GetReference D $B1;			## check is reference set 
+
+#2 - create box using more flexible set of commands
+NewCommand D
+set B2 [AddObject D];			## add object
+set F2 [AddFunction D $B2 Box];		## add function
+BoxDX D $B2 190;			## set argumets of this function
+BoxDY D $B2 290
+BoxDZ D $B2 390
+InitLogBook D;				## initialize (clean) internal maps of labels
+AddDriver D Box Attach Cyl	
+ComputeFun D $F2;			## compute the function
+GetShape D $F2:2 Box2;			## check result
+whatis Box2
+GetReference D $B2;			## referes to result NS
+
+#3
+NewCommand D
+AddDriver D PTxyz PTALine PRLine
+set FTr1 [PTranslateDXYZ D $B1 110 130 270]
+ComputeFun D $FTr1;                     ## translation function recomputation
+GetShape D $FTr1:2 Box1;	        ## get modified result
+
+#4 => fuse
+AddDriver D Fuse
+set FS [AddFuse D $B2 $B1]
+ComputeFun D $FS
+GetShape D $FS:2 Box2
+
+#5 
+NewCommand D
+explode Box2 F
+explode Box2_1 E
+set Sel1 [AttachShape D Box2_1_1 ${B2} ${B2} 0]; ## set attachment
+AddDriver D Attach Cyl
+set Cyl [AddCyl D 30 315 ${Sel1}]
+ComputeFun D $Cyl:1
+GetShape D $Cyl:1:2 S
+
+#6 => cut
+NewCommand D
+AddDriver D Cut
+set CS [AddCut D $B2 $Cyl]
+ComputeFun D $CS
+GetShape D $CS:2 S
+
+#7 => Fillet
+NewCommand D
+explode S F
+explode S_3 E
+set Sel2 [AttachShape D S_3_6 ${B2} ${B2} 0]; ## set attachment for using in Fillet
+AddDriver D Fillet
+set Fill [AddFillet D $B2 25 $Sel2 0]
+ComputeFun D $Fill
+GetShape D $Fill:2 S
+
+
+#8 test selection
+NewCommand D
+set SL [TestSingleSelection D $B2 0]
+set SL2 [TestMultipleSelection D $B2 0]
+
+#9 modification
+NewCommand D
+BoxDX D $B2 210
+
+#10 recomputation
+NewCommand D
+InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
+ComputeFun D $F2;
+ComputeFun D $B1:1
+ComputeFun D $FTr1
+ComputeFun D $FS	
+ComputeFun D $Sel1:1
+ComputeFun D $Cyl:1
+ComputeFun D $CS
+ComputeFun D $Sel2:1
+ComputeFun D $Fill
+GetShape D $Fill:2 S
+don S
+
+#recomputation of entities of the TestSelection commands
+SolveFlatFrom D $SL
+NewCommand D
+

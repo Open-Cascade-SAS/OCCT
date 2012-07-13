@@ -1,0 +1,16 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : N1
+## Comment : from USA60109
+## ====================================
+
+pcylinder c1 10 20
+pcylinder c2 5 20
+ttranslate c2 5 0 20
+bfuse f c1 c2
+explode f E
+blend result f 1 f_1
+explode result sh
+renamevar result_1 result
+
+set square 2485.86

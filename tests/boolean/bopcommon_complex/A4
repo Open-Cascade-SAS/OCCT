@@ -1,0 +1,12 @@
+puts "================================="
+puts "COMMON of OCC212-2.brep and  OCC212-1.brep"
+puts "Case is duplicate of chl 918 A5, bug OCC212 "
+puts "================================="
+
+restore OCC212-1.brep a
+restore OCC212-2.brep b
+
+bop b a 
+bopcommon result
+
+set square 314.301

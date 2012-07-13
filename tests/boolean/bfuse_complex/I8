@@ -1,0 +1,14 @@
+# Original bug : cts20529
+# Date : 13Mai98
+# D5
+
+restore cts20529a.rle a
+restore cts20529b.rle b
+
+bfuse result a b
+
+
+
+
+
+set square 192383

@@ -1,0 +1,13 @@
+# Original bug : pro15203
+###########################
+restore cq11.brep c1
+explode c1 f
+copy c1_1 c1
+restore cq21.brep c2
+explode c2 f
+copy c2_1 c2
+
+bop c1 c2
+bopsection result
+
+set length 24.3614

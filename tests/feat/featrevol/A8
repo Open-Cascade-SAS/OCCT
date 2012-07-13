@@ -1,0 +1,14 @@
+# Original bug : pro13402
+# Date : 25 Nov 98
+
+restore pro13402_base.brep base
+restore pro13402_face.brep cont
+
+explode base face
+copy base_2 funtil
+vertex v1 200 50 200
+
+featrevol base cont cont 200 50 200 0 1 0 1 1
+featperformval revol result 270 funtil
+
+set square 190754

@@ -1,0 +1,11 @@
+# Original bug : pro11615
+# Date : 25Mai98
+
+restore pro11615a.rle a
+restore pro11615b.rle b
+
+bop a b
+bopfuse result 
+
+
+set square 418.68

@@ -1,0 +1,8 @@
+line line 0 0 0 0 0 1
+extsurf es_line line 1 0 0
+trim es_line_tr es_line 0 30 0 50
+trim es_line_tr_tr es_line_tr 0 20 0 40
+mkface result es_line_tr_tr 0 10 0 30
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 9.9999999999999995e-08

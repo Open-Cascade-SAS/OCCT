@@ -1,0 +1,11 @@
+# Original bug : cts20578
+# Date : 19Mai98
+
+restore cts20578a.rle a
+restore cts20578b.rle b
+
+bop a b 
+bopfuse result
+
+
+set square 759758

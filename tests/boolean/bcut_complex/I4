@@ -1,0 +1,15 @@
+# Original bug : cts20456
+# Date : 13Mai98
+
+restore cts20456a.rle a
+restore cts20456b.rle b
+
+bfuse result a b
+
+box bb 0 0 0 100 100 -200
+
+bcut result result bb
+
+
+
+set square 1.22443e+06

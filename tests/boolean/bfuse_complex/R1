@@ -1,0 +1,19 @@
+puts "ITA60531"
+puts "Fuse"
+puts ""
+
+
+restore ita60531a.rle b
+restore ita60531b.rle f
+
+# Operation booleenne -> shape pas valide
+prism tool f 0 0 1
+
+#pkv f
+btolx b
+btolx tool
+#pkv t
+
+bfuse result b tool
+
+set square 26012

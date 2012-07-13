@@ -1,0 +1,5 @@
+restore a17 a
+restore b17_bsect b
+bsection result a b
+
+set length 10

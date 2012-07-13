@@ -1,0 +1,6 @@
+restore so2 b1
+restore so3 b2
+
+bcut result b2 b1
+
+set square 222.529

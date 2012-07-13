@@ -1,0 +1,71 @@
+#INTERFACE CAF
+puts "================"
+puts "OCC6493"
+puts "================"
+puts ""
+######################################################
+# No binary persistence for TDataStd_ExtStringArray attribute
+######################################################
+
+# Basic attributes
+#
+# Testing attribute: TDataStd_ExtStringArray
+#
+# Testing command:   SetExtStringArray
+# Testing command:   GetExtStringArray
+#
+
+puts "caf001-M1"
+set QA_DUP 0
+
+# Add an attribute to a data framework
+set aFrom1 1
+set aTo1 2
+set aSetAttr11 "TDataStd"
+set aSetAttr12 "ExtStringArray"
+set aLabel 0:2
+set isDelta 0
+SetExtStringArray D ${aLabel} ${isDelta} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12}
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+set IsGood 1
+set aMessage1 "Add TDataStd_ExtStringArray attribute: Error"
+set aGetAttr1 [GetExtStringArray D ${aLabel}]
+set aLen1 [llength ${aGetAttr1}]
+if { ${aLen1} != [expr ${aTo1} - ${aFrom1} + 1] } {
+   set IsGood 0
+   puts "aLen1=${aLen1}"
+   puts ${aMessage1}
+}
+set aGetAttr21 [lindex ${aGetAttr1} 0]
+if { ${aSetAttr11} != ${aGetAttr21} } {
+   set IsGood 0
+   puts "aGetAttr21=${aGetAttr21}"
+   puts ${aMessage1}
+}
+set aGetAttr22 [lindex ${aGetAttr1} 1]
+if { ${aSetAttr12} != ${aGetAttr22} } {
+   set IsGood 0
+   puts "aGetAttr22=${aGetAttr22}"
+   puts ${aMessage1}
+}
+
+if { ${IsGood} == 0} {
+  puts "OCC6493: Error"
+} else {
+  puts "OCC6493: OK"
+}

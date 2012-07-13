@@ -1,0 +1,9 @@
+# Original bug : pro8320
+# Date : 24mar98
+
+restore pro8320-part.rle part
+restore pro8320-tool.rle tool
+
+bcut result part tool
+
+set square 13770

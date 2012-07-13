@@ -1,0 +1,10 @@
+# Original bug : buc40054 - cut
+# Date : 11mar98
+
+box b1 3 3 3 
+box b2 1 1 1 
+ttranslate b2 0 3 0 
+
+bcut result b1 b2
+
+set square 54

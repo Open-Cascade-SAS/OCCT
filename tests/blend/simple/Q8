@@ -1,0 +1,7 @@
+puts "TODO OCC22817 All:TEST INCOMPLETE"
+restore 4_J1(test1).draw s
+tscale s 0 0 0 SCALE
+explode s E
+blend result s 10*SCALE s_12
+
+set square 0

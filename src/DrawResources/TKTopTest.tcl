@@ -16,5 +16,5 @@
 # and conditions governing the rights and limitations under the License.
 
 set Draw_GEOMETRY 1
-source $env(CASROOT)/src/DrawResources/CURVES.tcl
-source $env(CASROOT)/src/DrawResources/SURFACES.tcl
+catch {source $env(CASROOT)/src/DrawResources/CURVES.tcl}
+catch {source $env(CASROOT)/src/DrawResources/SURFACES.tcl}

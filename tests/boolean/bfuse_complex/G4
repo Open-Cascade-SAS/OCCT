@@ -1,0 +1,9 @@
+# Original bug : cts20171
+# Date : 13Mai98
+
+restore  cts20171_base  base
+restore  cts20171_outil  outil
+
+bfuse result base outil
+
+set square 47886.5

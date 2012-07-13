@@ -1,0 +1,10 @@
+# Original bug : cts20974
+# Date : 12June98
+
+restore cts20974a.rle a 
+fsameparameter a
+restore cts20974b.rle b
+
+bfuse result a b
+
+set square 3362.81

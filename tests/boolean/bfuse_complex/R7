@@ -1,0 +1,14 @@
+#pro16261
+puts "PRO16261"
+puts "Fuse"
+puts ""
+
+restore pro16261-1.brep s
+restore pro16261-2.brep t
+
+maxtolerance s
+#face tangente
+
+bfuse result s t
+
+set square 100110

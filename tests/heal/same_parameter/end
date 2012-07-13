@@ -1,0 +1,2 @@
+sameparameter result 0.001
+puts [checkshape result]

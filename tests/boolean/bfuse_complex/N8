@@ -1,0 +1,9 @@
+# Original bug : cts21364
+# Date : 26Aout98
+
+restore cts21364a.rle a 
+restore cts21364b.rle b
+
+bfuse result a b
+
+set square 46682.1

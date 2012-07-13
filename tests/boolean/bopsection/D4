@@ -1,0 +1,16 @@
+## fra60812
+#
+restore Bug3_Tr_obj_1.rle a
+restore Bug3_Tr_outil.rle b
+
+fsameparameter a
+
+#pkv f
+updatetolerance a 1
+updatetolerance b 1
+#pkv t
+
+bop a b
+bopsection result
+
+set length 529.118

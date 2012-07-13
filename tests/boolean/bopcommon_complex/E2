@@ -1,0 +1,7 @@
+restore OCC315-1.brep a
+restore OCC315-2.brep b
+
+bop b a
+bopcommon result
+
+set square 31415.9

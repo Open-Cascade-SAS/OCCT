@@ -1,0 +1,34 @@
+## ==================================
+## File : End file for FEAT grids
+## Date : 01.02.2012
+## ==================================
+
+if { [isdraw result] } {
+   regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+
+   #check if result is valid
+   puts [checkshape result]
+   if { $m == 0 } {
+       puts "Error : The feat is not valid. The square is 0."
+   }
+
+   if { $square > 0 } {
+      puts "The expected square is $square"
+   }
+   #check of change of square is < 1%
+   if { ($square != 0 && [expr abs($square - $m)/$square] > 0.01) || ($square == 0 && $m != 0) } {
+      puts "Error : The square of reult shape is $m"
+   }
+   if { $m > 0 } {
+      clear
+      smallview
+      donly result
+      fit
+      xwd $imagedir/${test_image}.gif
+   } 
+} else {
+   puts "Error : The feat can not be build."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

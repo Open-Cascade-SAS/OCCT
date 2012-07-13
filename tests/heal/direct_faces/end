@@ -1,0 +1,11 @@
+puts [directfaces result a]
+set s [statshape result particul]
+puts $s
+
+set indsur 0
+
+set rx [regexp "(\[0-9\]+)\\s+indsur *: *Indirect Surface" $s full indsur]
+
+if { $indsur != 0 } {
+  puts "Error: $indsur Indirect Surface after directfaces operation."
+}

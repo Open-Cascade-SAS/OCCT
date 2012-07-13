@@ -1,0 +1,7 @@
+restore OCC3-1.brep a
+restore OCC3-2.brep b
+
+bop b a
+bopcut result
+
+set square 3800

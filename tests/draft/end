@@ -1,0 +1,45 @@
+if { [isdraw result] } {
+   regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+
+   #check if result is valid
+   set ch [checkshape result]
+   puts $ch
+   if { $m == 0 } {
+       puts "Error : The depouille is not valid. The square is 0."
+   }
+
+   if { $square > 0 } {
+      puts "The expected square is $square"
+   }
+   #check of change of square is < 1%
+   if { ($square != 0 && [expr abs($square - $m)/$square] > 0.01) || ($square == 0 && $m != 0) } {
+      puts "Error : The square of reult shape is $m"
+   }
+   if { [string compare $ch "This shape seems to be valid"] == 0 } {
+      #check if tolerance is less 1.
+      set tol 10.
+      if { [regexp {Face +:.+Max +([-0-9.+eE]+)} [maxtolerance result] full tol]  == 0 } {
+         #Avoiding maxtolerance bug on Windows
+         if { [array get Draw_Groups "Shape Healing"] == "" } {
+            pload XSDRAW
+         }
+         regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full tol
+      }
+      if { $tol > 1. } {
+         puts "Error: The tolerance of result shape is too big ($tol)."
+      }
+   }
+
+   if { $m > 0 } {
+      clear
+      smallview
+      donly result
+      fit
+      xwd $imagedir/${test_image}.gif
+   }
+} else {
+   puts "Error : The depouille can not be build."
+}
+
+# to end a test script
+puts "TEST COMPLETED"

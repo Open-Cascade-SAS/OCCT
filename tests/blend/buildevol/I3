@@ -1,0 +1,12 @@
+#box b -15 -15 -15 30 30 15
+#pcone c 13 5 20
+#fuse s b c
+
+restore 6_B1234.draw s
+tscale s 0 0 0 SCALE2
+explode s E
+mkevol result s
+updatevol s_7 0 8*SCALE2 1 4*SCALE2 2 10*SCALE2 3 10*SCALE2
+buildevol
+
+set square 4247.04

@@ -1,0 +1,12 @@
+puts "CTS20196"
+puts ""
+
+restore cts20196a.rle base
+restore cts20196b.rle cont
+
+# test ope. top.
+prism prism cont 0 20 0
+
+bcut result base prism
+
+set square 250288

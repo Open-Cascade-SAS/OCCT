@@ -1,0 +1,5 @@
+restore a13 a
+restore b13_bsect b
+bsection result a b
+
+set length 7.47641

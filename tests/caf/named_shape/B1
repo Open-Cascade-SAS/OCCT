@@ -1,0 +1,79 @@
+#INTERFACE CAF
+# NamedShape
+#
+# Testing attribute: TNaming_NamedShape
+#
+# Testing command:   NewShape
+#
+
+puts "caf002-B1"
+
+# Create a box
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aBoundingBox1 [bounding aBox1]
+set X1_Box1 [lindex ${aBoundingBox1} 0]
+set Y1_Box1 [lindex ${aBoundingBox1} 1]
+set Z1_Box1 [lindex ${aBoundingBox1} 2]
+set X2_Box1 [lindex ${aBoundingBox1} 3]
+set Y2_Box1 [lindex ${aBoundingBox1} 4]
+set Z2_Box1 [lindex ${aBoundingBox1} 5]
+
+# Create a label
+set aLabel 0:2
+Label D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a shape to the label
+NewShape D ${aLabel} aBox1
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Get a shape from the label
+catch {GetShape D ${aLabel} aBox2}
+
+# Redo
+Redo D
+
+# Get a shape from the label
+GetShape D ${aLabel} aBox3
+
+set aBoundingBox3 [bounding aBox3]
+set X1_Box3 [lindex ${aBoundingBox3} 0]
+set Y1_Box3 [lindex ${aBoundingBox3} 1]
+set Z1_Box3 [lindex ${aBoundingBox3} 2]
+set X2_Box3 [lindex ${aBoundingBox3} 3]
+set Y2_Box3 [lindex ${aBoundingBox3} 4]
+set Z2_Box3 [lindex ${aBoundingBox3} 5]
+
+if { ${X1_Box1} != ${X1_Box3} || 
+     ${Y1_Box1} != ${Y1_Box3} || 
+     ${Z1_Box1} != ${Z1_Box3} || 
+     ${X2_Box1} != ${X2_Box3} || 
+     ${Y2_Box1} != ${Y2_Box3} || 
+     ${Z2_Box1} != ${Z2_Box3} ||
+     [info exists aBox2] } {
+	puts "X1_Box1=${X1_Box1} X1_Box3=${X1_Box3}"
+	puts "Y1_Box1=${Y1_Box1} Y1_Box3=${Y1_Box3}"
+	puts "Z1_Box1=${Z1_Box1} Z1_Box3=${Z1_Box3}"
+	puts "X2_Box1=${X2_Box1} X2_Box3=${X2_Box3}"
+	puts "Y2_Box1=${Y2_Box1} Y2_Box3=${Y2_Box3}"
+	puts "Z2_Box1=${Z2_Box1} Z2_Box3=${Z2_Box3}"
+	puts "NewShape command: Error"
+	return
+}
+
+puts "NewShape command: OK"

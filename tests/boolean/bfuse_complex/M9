@@ -1,0 +1,9 @@
+# Original bug : hkg60155
+# Date : 16July98
+
+restore hkg60155a.rle a 
+restore hkg60155b.rle b
+
+bfuse result a b
+
+set square 9367.3

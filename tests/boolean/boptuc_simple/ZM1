@@ -1,0 +1,8 @@
+pcone b1 8 4 8
+pcone b2 2 1 2
+ttranslate b2 0 0 8
+
+bop b1 b2
+boptuc result
+
+set square 36.7824

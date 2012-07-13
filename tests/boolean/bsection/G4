@@ -1,0 +1,5 @@
+restore a66 a
+restore b66_bsect b
+bsection result a b
+
+set length 20.2081

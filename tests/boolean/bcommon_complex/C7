@@ -1,0 +1,8 @@
+puts "BUC60290 (the same problem with cut and common)"
+
+restore buc60290a.rle sol1
+restore buc60290b.rle sol2
+
+bcommon result sol2 sol1
+
+set square 644559

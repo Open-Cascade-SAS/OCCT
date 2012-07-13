@@ -1,0 +1,7 @@
+restore a90 a
+restore b90 b
+
+bop a b
+bopcommon result
+
+set square 14142.1

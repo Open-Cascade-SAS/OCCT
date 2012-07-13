@@ -1,0 +1,11 @@
+# Original bug : buc60172
+# Date : 25Mai98
+
+restore buc60172a.rle a
+restore buc60172b.rle b
+
+bop a b
+bopcommon result 
+
+
+set square 90486.2

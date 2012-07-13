@@ -1,0 +1,11 @@
+## ======================================
+## Grid    : CCV001
+## Test    : A2
+## Comment : From CV tests serie page 6
+## ======================================
+
+restore 1_A12.rle s
+explode s E
+blend result s 1 s_6 0.5 s_10
+
+set square 146.393

@@ -1,0 +1,5 @@
+restore a23 a
+restore b23 b
+bsection result a b
+
+set length 51.7591

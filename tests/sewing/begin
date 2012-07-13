@@ -1,0 +1,18 @@
+# To prevent loops limit to 5 minutes
+cpulimit 300
+
+if {[string compare [datadir] "."] == 0} { 
+  datadir [file dirname [info script]]/data
+}
+
+if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
+	pload TOPTEST
+}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}

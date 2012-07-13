@@ -1,0 +1,9 @@
+# Original bug : fra61146
+# Date : 16July98
+
+restore fra61146a.rle a
+restore fra61146b.rle b
+
+bfuse result a b
+
+set square 254248

@@ -1,0 +1,9 @@
+# Original bug : cfe002C5
+# Date : 09 Nov 98
+
+restore boitecfe002.rle base
+restore toolcfe002.rle prism
+
+bcut result base prism
+
+set square 312467

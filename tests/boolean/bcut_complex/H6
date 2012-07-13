@@ -1,0 +1,10 @@
+# Original bug : pro12880
+# Date : 21 Sept 98
+
+restore pro12880c.rle part
+restore pro12880d.rle tool
+
+bcut result part tool
+
+
+set square 200102

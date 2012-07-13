@@ -1,0 +1,14 @@
+# Original bug : cts20445
+# Date : 25 Nov 98
+
+restore cts20445_base.brep base
+restore cts20445_face.brep cont
+
+explode base face
+copy base_7 funtil
+
+## Until TrhuAll = FromEnd
+featprism base cont cont 0 0 1 0 1
+featperform prism result rien funtil
+
+set square 307758

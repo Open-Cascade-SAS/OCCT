@@ -1,0 +1,11 @@
+# Original bug : cts21197
+# Date : 21 sept 98
+
+
+restore cts21197c.rle part
+restore cts21197d.rle tool
+
+bfuse result part tool
+
+
+set square 4569.66

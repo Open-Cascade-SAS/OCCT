@@ -1,0 +1,7 @@
+restore case_3_face.brep a
+restore case_3_edge1.brep b
+bop a b
+boptuc result
+set length empty
+set nbsh_v 0
+set nbsh_e 0

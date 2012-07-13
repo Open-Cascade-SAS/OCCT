@@ -1,0 +1,11 @@
+# ====================================
+## Grid	   : CFI900
+## Test    : H6
+## Comment : from fra60610
+## ====================================
+
+restore fra60610.rle a
+nexplode a e
+blend result a 2 a_69
+
+set square 42249.1

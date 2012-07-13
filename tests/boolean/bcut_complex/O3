@@ -1,0 +1,9 @@
+puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO #22911 ALL: Error : The square of result shape is"
+
+restore topo101-o1.brep obj1
+restore topo101-t1.brep tool1
+
+bcut result obj1 tool1
+
+set square 0

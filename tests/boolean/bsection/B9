@@ -1,0 +1,5 @@
+restore a19 a
+restore b19_bsect b
+bsection result a b
+
+set length 0.392404

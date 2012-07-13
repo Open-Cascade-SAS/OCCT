@@ -1,0 +1,548 @@
+! Resource file for data exchange between EUCLID3, Styler and CATIA V4 via BRep
+!
+! LEVEL: ADVANCED WITH GAPS FIXING
+!
+! For meaning of parameters refer to the end of the file
+!
+! WARNING: Parameters
+!  FromV4.FileName,
+!  ToV4.FileName,
+!  Reject.FileName,
+!  FromV4.TraceFileName,
+!  ToV4.TraceFileName,
+!  FromE3.TraceFileName,
+!  ToE3.TraceFileName
+! can be configured in accordance with local system conventions.
+! By default, they are automatically set in the file .MDTV pointed by variable
+! CSF_MDTVDefaults.
+! They can be redefined using CSF_MDTVSiteDefaults, CSF_MDTVGroupDefaults or
+! CSF_MDTVUserDefaults environment variables to point to the directory where
+! file .MDTV with definitions of these parameters is located.
+
+! ==============================================================================
+!
+! Parameters for CATIA V4
+!
+
+Version						: 1
+!Reject.FileName					: /tmp/reject.brep
+*.TraceLevel                                    : 1
+*.MaxTolerance                                  : 0.1
+*.SegmentSurfaceMode				: 1
+
+! ------------------------------------------------------------------------------
+! Conversion CATIA V4 -> BRep
+
+FromV4.FileName 				: /tmp/FromV4.brep
+FromV4.ConvCurvesToBezier	 		: 1
+FromV4.ConvSurfacesToBezier			: 0
+FromV4.SameParameter                            : 1
+FromV4.TraceFileName				: /tmp/fromcatiav4.log
+FromV4.TraceFileAppend				: 0
+FromV4.TraceLevel				: 2
+FromV4.SharingFaces				: 0
+
+
+! ------------------------------------------------------------------------------
+! Conversion BRep -> CATIA V4
+
+ToV4.FileName					: /tmp/ToV4.brep
+ToV4.CurveMerge					: 1
+ToV4.CreateSkin                                 : 0
+ToV4.ShortEdgeRemove				: 1
+ToV4.ThinFaceRemove				: 1
+ToV4.FillHoles					: 1
+ToV4.Prepare					: 1
+ToV4.TraceFileName				: /tmp/tocatiav4.log
+ToV4.TraceFileAppend				: 0
+ToV4.TraceLevel					: 2
+ToV4.KeepCSGHistory				: 1
+
+! Sequence of operators
+! Two possible alternatives: to convert to CATIA multi-patch or not
+! To avoid construction of CATIA multi-patches use the sequence below
+! ToV4.exec.op : DirectFaces,ElementaryToRevolution,SplitAngle,SameParameter,SplitClosedFaces,SameParameter,FixFaceSize,BSplineRestriction,DropSmallEdges,FixGaps,SameParameter,ToBezier
+
+ToV4.exec.op : DirectFaces,ElementaryToRevolution,SplitAngle,SameParameter,SplitClosedFaces,SameParameter,FixFaceSize,BSplineRestriction,DropSmallEdges,BSplineRestriction,SameParameter
+! complete ToV4.exec.op : see above
+! partial ToV4.exec.op : DirectFaces,ElementaryToRevolution,SplitAngle,SameParameter,SplitClosedFaces,SameParameter,BSplineRestriction,SameParameter,ToCATIAGeom
+
+! Parameters of operators
+
+ToV4.SplitAngle.Angle				: 3.1415928
+ToV4.SplitAngle.MaxTolerance			: 0.1
+ToV4.SplitAngle.SegmentSurfaceMode		: 1
+
+ToV4.SplitClosedFaces.NbSplitPoints             : 1
+ToV4.SplitClosedFaces.CloseTolerance            : 0.05
+ToV4.SplitClosedFaces.MaxTolerance		: 0.1
+ToV4.SplitClosedFaces.SegmentSurfaceMode	: 1
+
+ToV4.FixFaceSize.Tolerance                      : 0.05
+
+ToV4.FixGaps.Tolerance3d                        : 0.05
+ToV4.FixGaps.SurfaceMode                        : 0
+ToV4.FixGaps.SurfaceAddSpans                    : 0
+ToV4.FixGaps.SurfaceContinuity                  : C1
+ToV4.FixGaps.NbIterations                       : 10
+ToV4.FixGaps.Beta		                : 200.0
+ToV4.FixGaps.Coeff1	                        : 0.0
+ToV4.FixGaps.Coeff2	                        : 0.0
+ToV4.FixGaps.Coeff3	                        : 10.0
+ToV4.FixGaps.Coeff4	                        : 0.0
+ToV4.FixGaps.Coeff5	                        : 0.0
+ToV4.FixGaps.Coeff6	                        : 0.0
+ToV4.FixGaps.MaxDeflection                      : 1.0
+
+ToV4.DropSmallEdges.Tolerance3d                 : 0.05
+
+ToV4.SurfaceToBSpline.LinearExtrusionMode	: 1
+ToV4.SurfaceToBSpline.RevolutionMode		: 1
+ToV4.SurfaceToBSpline.OffsetMode		: 1
+
+ToV4.BSplineRestriction.SurfaceMode		: 1
+ToV4.BSplineRestriction.Curve3dMode		: 1
+ToV4.BSplineRestriction.Curve2dMode		: 1
+ToV4.BSplineRestriction.OffsetSurfaceMode	: 1
+ToV4.BSplineRestriction.OffsetCurve3dMode	: 1
+ToV4.BSplineRestriction.OffsetCurve2dMode	: 1
+ToV4.BSplineRestriction.LinearExtrusionMode	: 1
+ToV4.BSplineRestriction.RevolutionMode		: 1
+ToV4.BSplineRestriction.Tolerance3d		: 1e-3
+ToV4.BSplineRestriction.Tolerance2d		: 1e-5
+ToV4.BSplineRestriction.Continuity3d		: C1
+ToV4.BSplineRestriction.Continuity2d		: C1
+ToV4.BSplineRestriction.RequiredDegree		: 15
+ToV4.BSplineRestriction.RequiredNbSegments	: 100
+ToV4.BSplineRestriction.PreferDegree		: 1
+ToV4.BSplineRestriction.RationalToPolynomial	: 1
+ToV4.BSplineRestriction.MaxDegree		: 15
+ToV4.BSplineRestriction.MaxNbSegments		: 10000
+ToV4.BSplineRestriction.SegmentSurfaceMode	: 1
+
+ToV4.ToBezier.EdgeMode				: 0
+ToV4.ToBezier.SurfaceMode			: 1
+ToV4.ToBezier.PlaneMode				: 1
+ToV4.ToBezier.RevolutionMode			: 1
+ToV4.ToBezier.ExtrusionMode			: 1
+ToV4.ToBezier.BSplineMode			: 1
+ToV4.ToBezier.Curve3dMode			: 1
+ToV4.ToBezier.Curve2dMode			: 1
+ToV4.ToBezier.Line3dMode			: 1
+ToV4.ToBezier.Circle3dMode			: 1
+ToV4.ToBezier.Conic3dMode			: 1
+ToV4.ToBezier.MaxTolerance			: 0.1
+ToV4.ToBezier.SegmentSurfaceMode		: 1
+ToV4.ToBezier.MinCurveLength			: 0.05
+
+ToV4.FixShape.Tolerance3d			: 1.e-7
+ToV4.FixShape.MaxTolerance3d			: 1.e-7
+ToV4.FixShape.MinTolerance3d			: 1.e-7
+ToV4.FixShape.FixFreeShellMode			: -1
+ToV4.FixShape.FixFreeFaceMode			: -1
+ToV4.FixShape.FixFreeWireMode			: -1
+ToV4.FixShape.FixSameParameterMode		: -1
+ToV4.FixShape.FixSolidMode			: -1
+ToV4.FixShape.FixShellMode			: -1
+ToV4.FixShape.FixFaceMode			: -1
+ToV4.FixShape.FixWireMode			: -1
+ToV4.FixShape.FixOrientationMode		: -1
+ToV4.FixShape.FixMissingSeamMode		: -1
+ToV4.FixShape.FixSmallAreaWireMode		: -1
+ToV4.FixShape.ModifyTopologyMode		: 0
+ToV4.FixShape.ModifyGeometryMode		: 1
+ToV4.FixShape.ClosedWireMode			: 1
+ToV4.FixShape.PreferencePCurveMode		: 1
+ToV4.FixShape.FixReorderMode			: -1
+ToV4.FixShape.FixSmallMode			: -1
+ToV4.FixShape.FixConnectedMode			: -1
+ToV4.FixShape.FixEdgeCurvesMode			: -1
+ToV4.FixShape.FixDegeneratedMode		: -1
+ToV4.FixShape.FixLackingMode			: -1
+ToV4.FixShape.FixSelfIntersectionMode		: -1
+ToV4.FixShape.FixReversed2dMode			: -1
+ToV4.FixShape.FixRemovePCurveMode		: -1
+ToV4.FixShape.FixRemoveCurve3dMode		: -1
+ToV4.FixShape.FixAddPCurveMode			: -1
+ToV4.FixShape.FixAddCurve3dMode			: -1
+ToV4.FixShape.FixSeamMode			: -1
+ToV4.FixShape.FixShiftedMode			: -1
+ToV4.FixShape.FixEdgeSameParameterMode		: -1
+ToV4.FixShape.FixSelfIntersectingEdgeMode	: -1
+ToV4.FixShape.FixIntersectingEdgesMode		: -1
+ToV4.FixShape.FixNonAdjacentIntersectingEdgesMode : -1
+
+! ==============================================================================
+!
+! Parameters for EUCLID3
+
+
+! ------------------------------------------------------------------------------
+! Conversion EUCLID3 -> BRep
+
+FromE3.TraceFileName				: /tmp/fromeuclid3.log
+FromE3.TraceFileAppend				: 0
+FromE3.TraceLevel				: 2
+FromE3.DropConnectivities			: 0
+FromE3.KeepE3I					: 0
+
+! ------------------------------------------------------------------------------
+! Conversion BRep -> EUCLID3
+
+ToE3.TraceFileName				: /tmp/toeuclid3.log
+ToE3.TraceFileAppend				: 0
+ToE3.TraceLevel					: 2
+ToE3.Prepare					: 1
+ToE3.DropConnectivities				: 0
+
+
+! Sequence of operators
+
+ToE3.exec.op : DirectFaces,ElementaryToRevolution,SplitAngle,SameParameter,SplitClosedFaces,SameParameter,FixFaceSize,BSplineRestriction,DropSmallEdges,FixGaps,BSplineRestriction,SameParameter,ToBezier
+! complete ToE3.exec.op : see above
+! partial ToE3.exec.op : DirectFaces,ElementaryToRevolution,SplitAngle,SameParameter,SplitClosedFaces,SameParameter,BSplineRestriction,SameParameter,ToBezier
+
+! Parameters of operators
+
+ToE3.SplitAngle.Angle				: 1.658
+ToE3.SplitAngle.MaxTolerance			: 0.1
+ToE3.SplitAngle.SegmentSurfaceMode		: 1
+
+ToE3.SplitClosedFaces.NbSplitPoints             : 2	
+ToE3.SplitClosedFaces.CloseTolerance            : 0.05
+ToE3.SplitClosedFaces.MaxTolerance		: 0.1
+ToE3.SplitClosedFaces.SegmentSurfaceMode	: 1
+
+ToE3.FixFaceSize.Tolerance                      : 0.05
+
+ToE3.FixGaps.Tolerance3d                        : 0.05
+ToE3.FixGaps.SurfaceMode                        : 0
+ToE3.FixGaps.SurfaceAddSpans                    : 0
+ToE3.FixGaps.SurfaceContinuity                  : C1
+ToE3.FixGaps.NbIterations                       : 10
+ToE3.FixGaps.Beta		                : 200.0
+ToE3.FixGaps.Coeff1	                        : 0.0
+ToE3.FixGaps.Coeff2	                        : 0.0
+ToE3.FixGaps.Coeff3	                        : 10.0
+ToE3.FixGaps.Coeff4	                        : 0.0
+ToE3.FixGaps.Coeff5	                        : 0.0
+ToE3.FixGaps.Coeff6	                        : 0.0
+ToE3.FixGaps.MaxDeflection                      : 1.0
+
+ToE3.DropSmallEdges.Tolerance3d                 : 0.05
+
+ToE3.BSplineRestriction.SurfaceMode		: 0
+ToE3.BSplineRestriction.Curve3dMode		: 1
+ToE3.BSplineRestriction.Curve2dMode		: 1
+ToE3.BSplineRestriction.OffsetSurfaceMode	: 0
+ToE3.BSplineRestriction.OffsetCurve3dMode	: 1
+ToE3.BSplineRestriction.OffsetCurve2dMode	: 1
+ToE3.BSplineRestriction.LinearExtrusionMode	: 1
+ToE3.BSplineRestriction.RevolutionMode		: 0
+ToE3.BSplineRestriction.Tolerance3d		: 1e-3
+ToE3.BSplineRestriction.Tolerance2d		: 1e-5
+ToE3.BSplineRestriction.Continuity3d		: C1
+ToE3.BSplineRestriction.Continuity2d		: C1
+ToE3.BSplineRestriction.RequiredDegree		: 9
+ToE3.BSplineRestriction.RequiredNbSegments	: 100
+ToE3.BSplineRestriction.PreferDegree		: 1
+ToE3.BSplineRestriction.RationalToPolynomial	: 1
+ToE3.BSplineRestriction.MaxDegree		: 9
+ToE3.BSplineRestriction.MaxNbSegments		: 10000
+ToE3.BSplineRestriction.SegmentSurfaceMode	: 1
+
+ToE3.ToBezier.EdgeMode				: 0
+ToE3.ToBezier.SurfaceMode			: 1
+ToE3.ToBezier.PlaneMode				: 1
+ToE3.ToBezier.RevolutionMode			: 1
+ToE3.ToBezier.ExtrusionMode			: 1
+ToE3.ToBezier.BSplineMode			: 1
+ToE3.ToBezier.Curve3dMode			: 0
+ToE3.ToBezier.Curve2dMode			: 1
+ToE3.ToBezier.Line3dMode			: 0
+ToE3.ToBezier.Circle3dMode			: 0
+ToE3.ToBezier.Conic3dMode			: 1
+ToE3.ToBezier.MaxTolerance			: 0.1
+ToE3.ToBezier.SegmentSurfaceMode		: 1
+ToE3.ToBezier.MinCurveLength			: 0.05
+
+ToE3.FixShape.Tolerance3d			: 1.e-7
+ToE3.FixShape.MaxTolerance3d			: 1.e-7
+ToE3.FixShape.MinTolerance3d			: 1.e-7
+ToE3.FixShape.FixFreeShellMode			: -1
+ToE3.FixShape.FixFreeFaceMode			: -1
+ToE3.FixShape.FixFreeWireMode			: -1
+ToE3.FixShape.FixSameParameterMode		: -1
+ToE3.FixShape.FixSolidMode			: -1
+ToE3.FixShape.FixShellMode			: -1
+ToE3.FixShape.FixFaceMode			: -1
+ToE3.FixShape.FixWireMode			: -1
+ToE3.FixShape.FixOrientationMode		: -1
+ToE3.FixShape.FixMissingSeamMode		: -1
+ToE3.FixShape.FixSmallAreaWireMode		: -1
+ToE3.FixShape.ModifyTopologyMode		: 0
+ToE3.FixShape.ModifyGeometryMode		: 1
+ToE3.FixShape.ClosedWireMode			: 1
+ToE3.FixShape.PreferencePCurveMode		: 1
+ToE3.FixShape.FixReorderMode			: -1
+ToE3.FixShape.FixSmallMode			: -1
+ToE3.FixShape.FixConnectedMode			: -1
+ToE3.FixShape.FixEdgeCurvesMode			: -1
+ToE3.FixShape.FixDegeneratedMode		: -1
+ToE3.FixShape.FixLackingMode			: -1
+ToE3.FixShape.FixSelfIntersectionMode		: -1
+ToE3.FixShape.FixReversed2dMode			: -1
+ToE3.FixShape.FixRemovePCurveMode		: -1
+ToE3.FixShape.FixRemoveCurve3dMode		: -1
+ToE3.FixShape.FixAddPCurveMode			: -1
+ToE3.FixShape.FixAddCurve3dMode			: -1
+ToE3.FixShape.FixSeamMode			: -1
+ToE3.FixShape.FixShiftedMode			: -1
+ToE3.FixShape.FixEdgeSameParameterMode		: -1
+ToE3.FixShape.FixSelfIntersectingEdgeMode	: -1
+ToE3.FixShape.FixIntersectingEdgesMode		: -1
+ToE3.FixShape.FixNonAdjacentIntersectingEdgesMode : -1
+
+! Parameters for ICE
+!
+ICE.DECODAGE_PLANS_3D				:1
+ICE.DIMENS_ENORME_CAR				:100.000000
+ICE.FILTRAGE_MICROCRB				:0
+ICE.DECODAGE_LIGNE_3D				:1
+ICE.EPSILON_FILTRE_2D				:0.000020
+ICE.DECODAGE_CURV_3D				:1
+ICE.MAX_PT/K_UNISURF3				:500
+ICE.DECODAGE_SURF_3D				:1
+ICE.MAX_PT/B_UNISURF3				:500
+ICE.DECODAGE_FACES_3D				:1
+ICE.MAX_BC/K_UNISURF3				:5
+ICE.DECODAGE_CERCL_3D				:1
+ICE.MAX_CRB_RESTRI_U4				:63
+ICE.DECODAGE_VOLUM_3D				:1
+ICE.MAX_SD_POINTS_U4				:30000
+ICE.DECODAGE_MOCKUP3D				:1
+ICE.MAX_SD_LIAISON_U4				:30000
+ICE.DECODAGE_SOLEX_3D				:1
+ICE.MAX_SD_ELEMENT_U4				:30000
+ICE.RECUP_ERR_RESTRIC				:1
+ICE.UNITE_LOGIC_ECRAN				:6
+ICE.RECUP_ERR_APPROXI				:1
+ICE.LONGUEUR_REC_FT17				:3536
+ICE.CLASSE_MAX_ADMISE				:8
+ICE.LONGUEUR_REC_FT16				:16
+ICE.EPSILON_APPROX_3D				:0.010000
+ICE.DESTRUCT_OLD_FILE				:1
+ICE.LISTING_DECODAGE				:0
+ICE.DIMENS_MICRO_SURF				:0.040000
+ICE.METHODE_APPROX				:0
+ICE.FLECHE_DISCRET_2D				:0.000004
+ICE.DIMENS_MICRO_CURV				:0.010000
+ICE.DECODAGE_POINT_3D				:1
+ICE.COEF_FLECHE_3D/2D				:1.000000
+ICE.FILTRAGE_MICROSRF				:1
+ICE.IFL_SEA                                     :-1
+ICE.GENERIC_FILE_NAME                           :toto
+
+
+! ==============================================================================
+!
+! Description of parameters
+
+! Version				: Name of the version
+! *.MaxTolerance                        : Maximal tolerance for comparing curves, points which is 
+!					  used by splitting tools. The tools that are used this 
+!					  parameter are the following: SplitAngle, SplitClosedFaces,
+!					  ToBezier. This value should be the same for all tools in 
+!                                         one sequence. To redefine default value uncomment 
+!                                         appropriate line in each operator.
+! *.SegmentSurfaceMode			: Mode for limiting surface by UV boundaries of face that
+!					  is based on this surface. If flag is 1 the surface is
+!					  limited. This mode is used by splitting tools (SplitAngle, 
+!                                         SplitClosedFaces, ToBezier). This value should be the same
+!					  for all tools in one sequence. To redefine default value
+!					  uncomment appropriate line in each operator.
+! Reject.FileName			: Name of stored BRep file in the case of failure during Paste
+
+! FromV4.FileName			: Name of BRep file for Copy from CATIA 
+! FromV4.ConvCurvesToBezier		: Mode of converting CATIA multi-arc curves, Bezier/B-Spline; forced if FromV4.ConvSurfacesToBezier is 1
+! FromV4.ConvSurfacesToBezier		: Mode of converting CATIA multi-patch surfaces, Bezier/B-Spline
+! FromV4.SameParameter                  : Mode for fixing SameParameter after conversion
+! FromV4.TraceFileName			: Name of trace file for Copy from CATIA
+! FromV4.TraceFileAppend		: Mode of appending trace file for Copy from CATIA, yes/no
+! FromV4.TraceLevel			: Level of detail in messages during Copy from CATIA
+! FromV4.SharingFaces			: Mode of copying free faces if they are shared by skin, yes/no
+
+! ToV4.FileName				: Name of BRep file for Paste to CATIA 
+! ToV4.CurveMerge			: Mode of connection of faces in CATIA, yes/no
+! ToV4.CreateSkin			: Mode for creating skin after pasting a shell, yes/no. In any 
+!					: case faces are translated and connectivities are computed. 
+!					: In case of "yes" skin is created (if possible) on resulting faces.
+! ToV4.ShortEdgeRemove			: Mode of removing small edges, yes/no
+! ToV4.ThinFaceRemove			: Mode of removing small faces, yes/no
+! ToV4.FillHoles			: Mode of inserting an edge in the case of a gap greater than identicalcurve between consecutive edges, yes/no
+! ToV4.Prepare				: Mode of invoking sequence of operators during Paste to CATIA, yes/no
+! ToV4.TraceFileName			: Name of trace file for Paste to CATIA
+! ToV4.TraceFileAppend			: Mode of appending trace file for Paste to CATIA, yes/no
+! ToV4.TraceLevel			: Level of detail in messages during Paste to CATIA
+
+! FromE3.TraceFileName			: Name of trace file for Copy from EUCLID3
+! FromE3.TraceFileAppend		: Mode of appending trace file for Copy from EUCLID3, yes/no
+! FromE3.TraceLevel			: Level of detail in messages during Copy from EUCLID3
+! FromE3.DropConnectivities		: Mode of processing connectivities from EUCLID3, drop incorrect (0)/drop all(1)/drop incorrect and fix(2)
+! FromE3.KeepE3I			: Mode of keeping (1) or removing (0) intermediate E3I file 
+
+! ToE3.TraceFileName			: Name of trace file for Paste to EUCLID3
+! ToE3.TraceFileAppend			: Mode of appending trace file for Paste to EUCLID3, yes/no
+! ToE3.TraceLevel			: Level of detail in messages during Paste to EUCLID3
+! ToE3.Prepare				: Mode of invoking sequence of operators during Paste to EUCLID3, yes/no
+! ToE3.DropConnectivities		: Mode of processing connectivities to EUCLID3, transfer all(0)/drop all (1)
+
+
+! exec.op				: Sequence of operators
+
+! List of operators (sorted in alphabetical order) with their parameters
+
+! BSplineRestriction			: Approximation of general B-Spline and Bezier with particular B-Spline
+! BSplineRestriction.SurfaceMode	: Mode of approximation of surfaces, yes/no
+! BSplineRestriction.Curve3dMode	: Mode of approximation of 3D curves, yes/no 
+! BSplineRestriction.Curve2dMode	: Mode of approximation of 2D curves, yes/no
+! BSplineRestriction.OffsetSurfaceMode  : Mode of conversion of offset surfaces to BSpline surface, yes/no
+!					: Yes - surface is converted to BSpline surface
+!					: No - basis surface is processed but offset surface is kept.
+!					: This mode acts if BSplineRestriction.SurfaceMode is yes.
+! BSplineRestriction.LinearExtrusionMode: Mode of conversion of linear extrusion surfaces to BSpline surface, yes/no
+!					: Yes - surface is converted to BSpline surface
+!					: No - basis curve is processed but extrusion surface is kept.
+!					: This mode acts if BSplineRestriction.SurfaceMode is yes.
+! BSplineRestriction.RevolutionMode     : Mode of conversion surfaces of revolution to BSpline surface, yes/no
+!					: Yes - surface is converted to BSpline surface
+!					: No - basis curve is processed but revolution surface is kept.
+!                                       : This mode acts if BSplineRestriction.SurfaceMode is yes.
+! BSplineRestriction.OffsetCurve3dMode  : Mode of conversion of 3d offset curves to BSpline curves, yes/no
+!					: Yes - curve is converted to BSpline curve
+!					: No - basis curve is processed but offset curve is kept.
+!					: This mode acts if BSplineRestriction.Curve3dMode is yes.
+! BSplineRestriction.OffsetCurve2dMode  : Mode of conversion of 2d offset curves to BSpline curves, yes/no
+!					: Yes - curve is converted to BSpline curve
+!					: No - basis curve is processed but offset curve is kept.
+!					: This mode acts if BSplineRestriction.Curve2dMode is yes.
+! BSplineRestriction.Tolerance3d	: Tolerance of 3D approximation
+! BSplineRestriction.Tolerance2d	: Tolerance of 2D approximation
+! BSplineRestriction.Continuity3d	: Required continuity of 3D geometry
+! BSplineRestriction.Continuity2d	: Required continuity of 2D geometry
+! BSplineRestriction.RequiredDegree	: Required degree of B-Spline 
+! BSplineRestriction.RequiredNbSegments	: Required maximum number of segments of B-Spline
+! BSplineRestriction.PreferDegree	: Preference between requirement to degree and maximum number of segments, true/false
+! BSplineRestriction.RationalToPolynomial: Mode of conversion of rational B-Spline to polynomial, yes/no
+! BSplineRestriction.MaxDegree 		: Maximum allowed degree of B-Spline
+! BSplineRestriction.MaxNbSegments 	: Maximum allowed number of segments in a B-Spline
+
+! DirectFaces				: Conversion of elementary surface in left-handed coordinate system into right-handed
+! no parameters
+
+! ElementaryToRevolution		: Conversion of elementary revolutive surface into general surface of revolution
+! no parameters
+
+! SameParameter				: Conversion of edge to be SameRange and SameParameter
+! SameParameter.Force			: Mode of forced invoking, true/false
+! SameParameter.Tolerance3d		: 3D tolerance
+
+! SplitAngle				: Split revolutive surface (elementary and general) into several surfaces
+! SplitAngle.Angle			: Maximum angle of revolution, radian
+
+! SplitClosedFaces			: Split faces that have seam-edge or geometrically closed on closed surface.
+! SplitClosedFaces.NbSplitPoints        : Number of cuttings (number of resulting faces will be NbSplitPoints+1)
+! SplitClosedFaces.CloseTolerance       : Precision to define geometric closure.
+
+! SplitContinuity			: Correction or split shapes to have speicified continuity
+! SplitContinuity.Tolerance3d		: 3D tolerance for correction of geometry
+! SplitContinuity.SurfaceContinuity	: Required continuity for surfaces
+! SplitContinuity.CurveContinuity	: Required continuity for curves
+
+! SurfaceToBSpline			: Conversion of surface (of types given below) to B-Spline
+!					: Obsolete. It is strongly recommended to 
+!					: use BSplineRestriction
+! SurfaceToBSpline.LinearExtrusionMode	: Mode of conversion of surfaces of linear extrusion, yes/no
+! SurfaceToBSpline.RevolutionMode	: Mode of conversion of surfaces of revolution, yes/no 
+! SurfaceToBSpline.OffsetMode		: Mode of conversion of offset surfaces, yes/no
+
+! ToBezier				: Conversion of geometry into Bezier
+! ToBezier.SurfaceMode			: Mode of conversion of surfaces, yes/no
+! ToBezier.PlaneMode			: Mode of conversion of Planes,yes/no. This mode acts if SurfaceMode is yes.
+! ToBezier.RevolutionMode		: Mode of conversion of Surfaces of Revolution (generatrix to bezier), yes/no.
+!					  This mode acts if SurfaceMode is yes.
+! ToBezier.ExtrusionMode		: Mode of conversion of Surfaces of Extrusion (whole surface not only generatrix), yes/no.
+!					  This mode acts if SurfaceMode is yes.
+! ToBezier.BSplineMode			: Mode of conversion of BSpline Surfaces, yes/no. This mode acts if SurfaceMode is yes.
+! ToBezier.EdgeMode			: Mode of translation edges (0- Free,1 - Shared,2- Both)
+!					: .Default - Free. Acts on translation curves 3d . 
+|					: If it is 0 (Free) that only free edges are taken into
+!					: account for translation 3d curves,
+!					: if it is 1 (Shared) that only shared edges are taken into
+!					: account for translation 3d curves,
+!					: if it is 2 (Both) that all edges are taken into
+!					: account for translation 3d curves,
+! ToBezier.Curve3dMode			: Mode of conversion 3D curves, yes/no
+! ToBezier.Curve2dMode			: Mode of conversion 2D curves, yes/no
+! ToBezier.Line3dMode			: Mode of conversion 3D lines, yes/no
+! ToBezier.Circle3dMode			: Mode of conversion 3D circles, yes/no
+! ToBezier.Conic3dMode			: Mode of conversion 3D conics, yes/no
+! ToBezier.MinCurveLength		: Min length of created curves 3d.( default 0.05)
+
+! ToCATIAGeom				: Conversion of shapes to CATIA multi-arcs and multi-patches
+! no parameters
+
+! FixFaceSize                           : Removing small faces
+! FixFaceSize.Tolerance                 : Tolerance in 3d
+
+! FixGaps                               : Removing gaps between edges in wires and between 3d curves of edges and faces
+! FixGaps.Tolerance3d                   : Tolerance (3d)
+! FixGaps.SurfaceMode                   : Mode of fixing gaps between edges and faces (yes/no)
+! FixGaps.SurfaceAddSpans               : Number of spans to add to the surface in order to fix gaps
+! FixGaps.SurfaceContinuity             : Minimal continuity of resulting surface 
+! FixGaps.NbIterations			: Number of iterations
+! FixGaps.Beta				: Elasticity coefficient for modifying surface [1-1000] 
+! FixGaps.Coeff1..6                     : Energy coefficients for modifying surface [0-10000] 
+! FixGaps.MaxDeflection			: Maximal deflection of surface from old position
+
+! DropSmallEdges                        : Eliminate small edges by removing or merging with neighbour
+! DropSmallEdges.Tolerance3d            : Tolerance (3d)
+
+! FixShape.Tolerance3d			: Tolerance (3d) for fixing of shape.
+! FixShape.MaxTolerance3d		: Maximal possible value of increasing of tolerance during fixing.
+! FixShape.MinTolerance3d		: Minimal value of tolerance.
+! FixShape.FixFreeShellMode		: Mode for fixing free shells in the shape (default - -1, yes - 1 , no - 0).
+! FixShape.FixFreeFaceMode		: Mode for fixing free faces in the shape (default - -1, yes - 1 , no - 0).  
+! FixShape.FixFreeWireMode		: Mode for fixing free wires in the shape (default - -1, yes - 1 , no - 0).
+! FixShape.FixSameParameterMode		: Mode for fixing same parameter on the whole shape (default - -1, yes - 1 , no - 0).
+! FixShape.FixSolidMode			: Mode for fixing solids (default - -1, yes - 1 , no - 0).
+! FixShape.FixShellMode			: Mode for fixing shells (default - -1, yes - 1 , no - 0).
+! FixShape.FixFaceMode			: Mode for fixing faces (default - -1, yes - 1 , no - 0).
+! FixShape.FixWireMode			: Mode for fixing wires (default - -1, yes - 1 , no - 0).
+! FixShape.FixOrientationMode		: Mode for fixing face orientation (default - -1, yes - 1 , no - 0).
+! FixShape.FixMissingSeamMode		: Mode for fixing face missing seam (default - -1, yes - 1 , no - 0).
+! FixShape.FixSmallAreaWireMode		: Mode for fixing small area wires (default - -1, yes - 1 , no - 0).
+! FixShape.ModifyTopologyMode		: Mode allowing of modifing of topology (default - 0, yes - 1 , no - 0).
+! FixShape.ModifyGeometryMode		: Mode allowing of modifing of geometry (default - 1, yes - 1 , no - 0).
+! FixShape.ClosedWireMode		: Mode defining whether the wire is to be closed. (default - 1, yes - 1 , no - 0).
+! FixShape.PreferencePCurveMode		: Mode defining of preference of 2d representation (default - 1, yes - 1 , no - 0). 
+! FixShape.FixReorderMode		: Mode for fixing of order of the edges in the wire (default - -1, yes - 1 , no - 0).
+! FixShape.FixSmallMode			: Mode for removing of the small edges from the wire in the case when 
+!					: ModifyTopologyMode equaled "yes" (default - -1, yes - 1 , no - 0).
+! FixShape.FixConnectedMode		: Mode for fixing of connecting of edges in the wire(default - -1, yes - 1 , no - 0).
+! FixShape.FixEdgeCurvesMode		: Moge for fixing each edge from the wire (default - -1, yes - 1 , no - 0).
+! FixShape.FixDegeneratedMode		: Moge for fixing cases of degenerate pcurve (default - -1, yes - 1 , no - 0).
+! FixShape.FixLackingMode		: Moge for fixing cases of lacking edge (default - -1, yes - 1 , no - 0).
+! FixShape.FixSelfIntersectionMode	: Mode for fixing of cases self-intersection of wire (default - -1, yes - 1 , no - 0).
+! FixShape.FixReversed2dMode		: Mode for fixing cases when pcurve is opposite curve3d (default - -1, yes - 1 , no - 0).
+! FixShape.FixRemovePCurveMode		: Mode for removing of pcurves from edges (default - -1, yes - 1 , no - 0).
+! FixShape.FixRemoveCurve3dMode		: Mode for removing of 3d curves from edges (default - -1, yes - 1 , no - 0).
+! FixShape.FixAddPCurveMode		: Mode for adding pcurves of the edges if missing (default - -1, yes - 1 , no - 0).
+! FixShape.FixAddCurve3dMode		: Mode for adding curves 3d of the edges if missing (default - -1, yes - 1 , no - 0).
+! FixShape.FixSeamMode			: Mode for fixing cases of seam edges.
+! FixShape.FixShiftedMode		: Mode for fixing cases when pcurves can be shifted on period on the closed surface
+!					  (default - -1, yes - 1 , no - 0). 
+! FixShape.FixEdgeSameParameterMode	: Mode for fixing same parameter for each edge (default - -1, yes - 1 , no - 0).
+! FixShape.FixSelfIntersectingEdgeMode	: Mode for fixing cases self-intrsection edge (default - -1, yes - 1 , no - 0).
+! FixShape.FixIntersectingEdgesMode	: Mode for fixing intersection adjacent edges.
+! FixShape.FixNonAdjacentIntersectingEdgesMode : Mode for fixing intersection non-adjacent edges.

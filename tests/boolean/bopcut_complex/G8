@@ -1,0 +1,7 @@
+restore a58 a
+restore b62 b
+
+bop a b
+bopcut result
+
+set square 19602.9

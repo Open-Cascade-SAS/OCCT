@@ -1,0 +1,12 @@
+vexport ${aFile} ${format}
+
+if { [file exists ${aFile}] } {
+    puts "Export to ${format} file was done."
+    set filesize [file size ${aFile}]
+# Check if difference of size is more 5%
+    if { $filesize < $size && [expr 1.*($size - $filesize)/$size] > 0.05 } {
+	puts "Error: Export to ${format} file was done but file has a different size ($filesize instead of $size)."
+    }
+} else {
+    puts " Faulty: Export to${format}  file was not done."
+}

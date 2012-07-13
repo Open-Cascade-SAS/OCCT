@@ -1,0 +1,13 @@
+# Original bug : cts20918
+# Date : 12June98
+
+restore cts20918a.rle a 
+restore cts20918b.rle b
+#pkv f
+updatetolerance a 1
+updatetolerance b 1
+#pkv t
+
+bsection result a b
+
+set length 135.096

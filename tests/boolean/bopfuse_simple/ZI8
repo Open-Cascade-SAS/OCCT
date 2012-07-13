@@ -1,0 +1,8 @@
+pcylinder b1 4 8
+psphere b2 6
+ttranslate b2 0 0 8
+
+bop b1 b2
+bopfuse result
+
+set square 533.72

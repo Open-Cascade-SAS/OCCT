@@ -1,0 +1,95 @@
+#Drivers' nick-names:
+#Box|Sph|Cyl|Cut|Fuse|Prism|Revol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
+# order of functions recomputation should be defined out of the tool (by end user)
+
+#Commands of transformation:
+#PTranslateDXYZ Doc ShapeEntry dx dy dz
+#PTranslateAlongLine Doc ShapeEntry  Line off
+#PRotateRoundLine Doc ShapeEntry Line Angle
+#PMirror Doc ShapeEntry PlaneObj
+
+## Test of transformation functions
+AddDriver D Box Attach PTxyz PTALine PRLine PMirr Sph
+#1 - create box using more flexible set of commands
+NewCommand D
+set B2 [AddObject D];			## add object
+set F2 [AddFunction D $B2 Box];		## add function
+BoxDX D $B2 190;			## set argumets of this function
+BoxDY D $B2 290
+BoxDZ D $B2 390
+InitLogBook D;				## initialize (clean) internal maps of labels
+ComputeFun D $F2;			## compute the function
+GetShape D $F2:2 Box2;			## check result
+whatis Box2
+GetReference D $B2;			## referes to result NS
+
+
+#2
+NewCommand D
+set FTr1 [PTranslateDXYZ D $B2 150 40 90]
+ComputeFun D $FTr1;                     ## function recomputation
+GetShape D $FTr1:2 Box2;	        ## get modified result
+
+#3 
+NewCommand D
+explode Box2 F
+explode Box2_1 E
+set Sel1 [AttachShape D Box2_1_1 ${B2} ${B2} 1]; ## set attachment
+set FTr2 [PTranslateAlongLine D $B2  $Sel1 210]
+ComputeFun D $FTr2
+GetShape D $FTr2:2 Box3
+
+#4
+NewCommand D
+explode Box3 F
+explode Box3_1 E
+set Sel4 [AttachShape D Box3_1_3 ${B2} ${B2} 1];
+set FR1 [PRotateRoundLine D $B2 $Sel4 120]
+ComputeFun D $FR1 
+GetShape D $FR1:2 Box4
+
+#5
+NewCommand D
+explode Box4 F
+set Sel5 [AttachShape D Box4_3 ${B2} ${B2} 1];
+set FM [PMirror D $B2 $Sel5]
+ComputeFun D $FM 
+GetShape D $FM:2 Box5
+
+#6
+NewCommand D
+explode Box5 F
+explode Box5_1 E
+set Sel6 [AttachShape D Box5_1_3 ${B2} ${B2} 1];
+AddDriver D Fillet
+set Fill [AddFillet D $B2 25 $Sel6 0]
+ComputeFun D $Fill
+GetShape D $Fill:2 SF
+
+#7
+NewCommand D 
+set SL [TestSingleSelection D $B2 1]
+set SL2 [TestMultipleSelection D $B2 0]
+
+#7 modification
+NewCommand D
+BoxDX D $B2 290
+
+#8 order of recomputation
+NewCommand D
+InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
+ComputeFun D $F2;	
+ComputeFun D $FTr1;
+ComputeFun D $Sel1:1
+ComputeFun D $FTr2
+ComputeFun D $Sel4:1
+ComputeFun D $FR1 
+ComputeFun D $Sel5:1
+ComputeFun D $FM 
+ComputeFun D $Sel6:1
+ComputeFun D $Fill
+GetShape D $Fill:2 SF-new
+
+SolveFlatFrom D $SL
+
+NewCommand D

@@ -1,0 +1,5 @@
+restore a3 a
+restore b3 b
+bsection result a b
+
+set length 10

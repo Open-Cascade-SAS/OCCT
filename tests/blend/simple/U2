@@ -1,0 +1,16 @@
+#box b -15 -15 -15 15 30 30
+#polyline w 0 0 0 10 -10 0
+#circle p 0 0 0 1 0 0 12
+#mkedge p p
+#wire p p
+#mkplane p p
+#pipe s1 w p
+#fuse s s1 b
+#save s 6_H1234.draw
+
+restore 6_H1234.draw s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 5*SCALE2 s_14
+
+set square 4328.2

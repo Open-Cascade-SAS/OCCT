@@ -1,0 +1,12 @@
+# Original bug : ger60038
+# Date : 25Mai98
+
+restore ger60038.rle a
+
+tcopy a b
+tmirror b 0 0 0 1 0 0
+
+bfuse result a b
+
+
+set square 19185.1

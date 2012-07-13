@@ -1,0 +1,11 @@
+# Original bug : cts20203
+# Date : 13Mai98
+ 
+restore  cts20203_base  base
+restore  cts20203_outil  outil
+
+bcut result base outil
+
+
+
+set square 541032

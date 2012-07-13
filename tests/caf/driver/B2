@@ -1,0 +1,69 @@
+#1 - create Box using short-cut
+NewCommand D
+AddDriver D Box;			## add box driver to driver table
+set B1 [AddBox D 130 140 150];		## add box 
+ComputeFun D $B1:1;			## compute box1 function
+GetShape D $B1:1:2 Box1;		## check result
+whatis Box1
+# referes to result NS
+GetReference D $B1;			## check is reference set 
+
+
+#2 - create 8 spheres
+AddDriver D Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
+NewCommand D
+explode Box1 V
+set SPnt1 [AttachShape D Box1_1 ${B1} ${B1} 0]; ## set attachment
+
+set Sph1 [AddSphere D $SPnt1 250]
+ComputeFun D $Sph1:1
+GetShape D $Sph1:1:2 Sp1
+
+#3
+NewCommand D
+set Sph2 [AddSphere D $SPnt1 30]
+ComputeFun D $Sph2:1
+GetShape D $Sph2:1:2 Sp2
+erase Box1
+
+#4
+NewCommand D
+set FTr2 [PTranslateDXYZ D $Sph2 0 -253 0]
+ComputeFun D $FTr2
+GetShape D $Sph2:2:2 Sp2
+
+
+#5 Fuse spheres
+NewCommand D
+set FS1 [AddFuse D $Sph1 $Sph2]
+ComputeFun D $FS1
+GetShape D $FS1:2 Sp1
+
+#6 test selection
+NewCommand D
+set SL [TestSingleSelection D $Sph1 0]
+## Wires defined as UNION  (seam edge of each sphere) fail ==> linked with degenerated edges problem
+set SL2 [TestMultipleSelection D $Sph1 0]
+
+#7 modification
+NewCommand D
+BoxDZ D $B1 270
+
+#8 recomputation
+NewCommand D
+InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
+ComputeFun D $B1:1
+ComputeFun D $SPnt1:1
+ComputeFun D $Sph1:1
+ComputeFun D $Sph2:1
+
+ComputeFun D $FTr2
+ComputeFun D $FS1
+erase
+GetShape D $FS1:2 Sp1
+
+
+#recomputation of entities of the TestSelection commands
+SolveFlatFrom D $SL
+NewCommand D
+

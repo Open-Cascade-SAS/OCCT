@@ -1,0 +1,9 @@
+# Original bug : fra50089
+# Date : 24mar98
+
+restore fra50089-part.rle part
+restore fra50089-tool.rle tool
+
+bcut result part tool
+
+set square 193593

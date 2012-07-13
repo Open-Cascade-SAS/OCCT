@@ -1,0 +1,124 @@
+#1 - create Box using short-cut
+NewCommand D
+AddDriver D Box;			## add box driver to driver table
+set B1 [AddBox D 130 140 150];		## add box 
+ComputeFun D $B1:1;			## compute box1 function
+GetShape D $B1:1:2 Box1;		## check result
+whatis Box1
+# referes to result NS
+GetReference D $B1;			## check is reference set 
+
+
+#2 - create main sphere
+AddDriver D Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
+NewCommand D
+explode Box1 V
+set SPnt1 [AttachShape D Box1_1 ${B1} ${B1} 0]; ## set attachment
+erase Box1
+
+set Sph0 [AddSphere D $SPnt1 250]
+ComputeFun D $Sph0:1
+GetShape D $Sph0:1:2 Sp0
+
+#3 create Sphere1
+NewCommand D
+set Sph1 [AddSphere D $SPnt1 30]
+ComputeFun D $Sph1:1
+GetShape D $Sph1:1:2 Sp1
+
+NewCommand D
+set FTr1 [PTranslateDXYZ D $Sph1 0 -251 0]
+ComputeFun D $FTr1
+GetShape D $Sph1:2:2 Sp1
+
+#4 create Sphere2
+NewCommand D
+set Sph2 [AddSphere D $SPnt1 30]
+ComputeFun D $Sph2:1
+GetShape D $Sph2:1:2 Sp2
+
+set FTr2 [PTranslateDXYZ D $Sph2 0 251 0]
+ComputeFun D $FTr2
+GetShape D $Sph2:2:2 Sp2
+
+#5 create Sphere3
+NewCommand D
+set Sph3 [AddSphere D $SPnt1 30]
+ComputeFun D $Sph3:1
+GetShape D $Sph3:1:2 Sp3
+
+explode Box1 E
+set Sel3 [AttachShape D Box1_1 ${B1} ${B1} 0];
+set FR3 [PRotateRoundLine D $Sph3 $Sel3 120]
+ComputeFun D $FR3
+GetShape D $FR3:2 Sp3
+
+set FTr3 [PTranslateDXYZ D $Sph3 -251 0 0]
+ComputeFun D $FTr3
+GetShape D $Sph3:3:2 Sp3      
+
+#6 create Sphere4
+NewCommand D
+set Sph4 [AddSphere D $SPnt1 30]
+ComputeFun D $Sph4:1
+GetShape D $Sph4:1:2 Sp4
+
+set FTr4 [PTranslateDXYZ D $Sph4  251 -40 0]
+ComputeFun D $FTr4
+GetShape D $Sph4:2:2 Sp4 
+
+#7 Cut spheres
+set Cut1 [AddCut D $Sph0 $Sph1]
+ComputeFun D $Cut1
+GetShape D $Cut1:2 Sp0
+
+set Cut2 [AddCut D $Sph0 $Sph2]
+ComputeFun D $Cut2
+GetShape D $Cut2:2 Sp0
+
+set Cut3 [AddCut D $Sph0 $Sph3]
+ComputeFun D $Cut3
+GetShape D $Cut3:2 Sp0
+
+set Cut4 [AddCut D $Sph0 $Sph4]
+ComputeFun D $Cut4
+GetShape D $Cut4:2 Sp0
+
+
+#5 test selection
+NewCommand D
+set SL  [TestSingleSelection   D $Sph0 0]
+set SL2 [TestMultipleSelection D $Sph0 0]
+
+#6 modification
+NewCommand D
+BoxDZ D $B1 270
+
+#7 recomputation
+NewCommand D
+InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
+ComputeFun D $B1:1
+ComputeFun D $SPnt1:1
+ComputeFun D $Sph0:1
+ComputeFun D $Sph1:1
+ComputeFun D $FTr1
+ComputeFun D $Sph2:1
+ComputeFun D $FTr2
+ComputeFun D $Sph3:1
+ComputeFun D $Sel3:1
+ComputeFun D $FR3
+ComputeFun D $FTr3
+ComputeFun D $Sph4:1
+ComputeFun D $FTr4
+ComputeFun D $Cut1
+ComputeFun D $Cut2
+ComputeFun D $Cut3
+ComputeFun D $Cut4
+erase
+GetShape D $Cut4:2 Sp0
+
+
+#recomputation of entities of the TestSelection commands
+SolveFlatFrom D $SL
+NewCommand D
+

@@ -1,0 +1,79 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Shape
+#
+# Testing command:   SetShape
+# Testing command:   GetShape
+#
+
+puts "caf001-K2"
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aBoundingBox1 [bounding aBox1]
+set X1_Box1 [lindex ${aBoundingBox1} 0]
+set Y1_Box1 [lindex ${aBoundingBox1} 1]
+set Z1_Box1 [lindex ${aBoundingBox1} 2]
+set X2_Box1 [lindex ${aBoundingBox1} 3]
+set Y2_Box1 [lindex ${aBoundingBox1} 4]
+set Z2_Box1 [lindex ${aBoundingBox1} 5]
+
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Close/Open the transaction
+NewCommand D
+
+# Set a new value of the attribute
+set aSetX2 -10
+set aSetY2 -20
+set aSetZ2 -30
+set aSetDX2 100
+set aSetDY2 200
+set aSetDZ2 300
+box aBox3 ${aSetX2} ${aSetY2} ${aSetZ2} ${aSetDX2} ${aSetDY2} ${aSetDZ2}
+
+SetShape D ${aLabel} aBox3
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Get a value of the attribute
+GetShape D ${aLabel} aBox4
+
+set aBoundingBox4 [bounding aBox4]
+set X1_Box4 [lindex ${aBoundingBox4} 0]
+set Y1_Box4 [lindex ${aBoundingBox4} 1]
+set Z1_Box4 [lindex ${aBoundingBox4} 2]
+set X2_Box4 [lindex ${aBoundingBox4} 3]
+set Y2_Box4 [lindex ${aBoundingBox4} 4]
+set Z2_Box4 [lindex ${aBoundingBox4} 5]
+
+if { ${X1_Box1} != ${X1_Box4} || 
+     ${Y1_Box1} != ${Y1_Box4} || 
+     ${Z1_Box1} != ${Z1_Box4} || 
+     ${X2_Box1} != ${X2_Box4} || 
+     ${Y2_Box1} != ${Y2_Box4} || 
+     ${Z2_Box1} != ${Z2_Box4} } {
+	puts "X1_Box1=${X1_Box1} X1_Box4=${X1_Box4}"
+	puts "Y1_Box1=${Y1_Box1} Y1_Box4=${Y1_Box4}"
+	puts "Z1_Box1=${Z1_Box1} Z1_Box4=${Z1_Box4}"
+	puts "X2_Box1=${X2_Box1} X2_Box4=${X2_Box4}"
+	puts "Y2_Box1=${Y2_Box1} Y2_Box4=${Y2_Box4}"
+	puts "Z2_Box1=${Z2_Box1} Z2_Box4=${Z2_Box4}"
+	puts "Set a value of TDataStd_Shape attribute: Error"
+	return
+}
+puts "Set a value of TDataStd_Shape attribute: OK"

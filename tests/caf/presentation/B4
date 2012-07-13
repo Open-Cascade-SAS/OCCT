@@ -1,0 +1,63 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISColor
+# Note:   Numerical control of setting color
+#
+
+puts "caf003-B4"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a color of the shape as NOC_GREEN
+set GreenColor 229
+AISColor D ${aLabel} ${GreenColor}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+# Check the color
+#set aColor [lindex [AISColor D ${aLabel}] 0]
+set tmpLine [AISColor D ${aLabel}]
+set tmpLength [llength ${tmpLine}]
+set aColor [lindex ${tmpLine} [expr ${tmpLength} - 1]]
+
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${aColor} != ${GreenColor} } {
+	puts "GreenColor=${GreenColor}"
+	puts "aColor=${aColor}"
+	puts "The box's color is not NOC_GREEN; AISColor command: Error"
+        return
+}
+puts "The box's color is NOC_GREEN; AISColor command: OK"

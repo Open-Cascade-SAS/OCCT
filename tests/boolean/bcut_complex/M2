@@ -1,0 +1,9 @@
+# Original bug : fra61199
+# Date : 29June98
+cpulimit 3000
+restore fra61199a.rle a 
+restore fra61199b.rle b
+
+bcut result a b
+
+set square 1.21952e+06

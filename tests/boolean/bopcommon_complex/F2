@@ -1,0 +1,7 @@
+restore buc60996.brep sh
+explode sh
+
+bop sh_1 sh_2
+bopcommon result
+
+set square 33561.9

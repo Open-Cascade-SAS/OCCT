@@ -1,0 +1,12 @@
+# Original bug : cts20455
+# Date : 13Mai98
+# A6.gif
+
+restore cts20455-part.rle part
+restore cts20455-tool.rle tool
+
+bcut result part tool
+
+
+
+set square 26347.6

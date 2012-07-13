@@ -1,0 +1,10 @@
+# Original bug : pro13495
+# Date : 19Mai98
+
+restore pro13495a.rle a
+restore pro13495b.rle b
+
+bop a b
+bopsection result
+
+set length 280.243

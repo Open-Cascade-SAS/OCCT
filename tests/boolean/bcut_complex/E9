@@ -1,0 +1,9 @@
+# Original bug : pro6066
+# Date : 11mar98
+
+restore pro6066-part.rle part
+restore pro6066-tool.rle tool
+
+bcut result part tool
+
+set square 570249

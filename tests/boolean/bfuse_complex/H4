@@ -1,0 +1,12 @@
+# Original bug : cts20458
+# Date : 13Mai98
+# B1.gif
+
+restore cts20458a.rle a
+restore cts20458b.rle b
+
+bfuse result a b
+
+
+
+set square 94390.1

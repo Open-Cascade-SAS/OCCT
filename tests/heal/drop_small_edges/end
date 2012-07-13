@@ -1,0 +1,4 @@
+puts [fixsmall result a 1]
+if { [isdraw result] } {
+  puts [checkshape result]
+}

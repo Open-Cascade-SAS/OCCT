@@ -1,0 +1,16 @@
+# Original bug : pro7637 (#2 with restore)
+# Date : 16apr97
+
+dset SCALE 100
+
+## restore the Prismed oblong (size 200 mm)
+restore pro7637_prism_oblong.rle p1
+tscale p1 0 0 0 1*SCALE
+
+## Box creation (size 300 mm)
+restore pro7637_box.rle p2
+tscale p2 0 0 0 1*SCALE
+
+bfuse result p2 p1
+
+set square 1.85425e+09

@@ -1,0 +1,3 @@
+set command incmesh
+set group advanced
+set parallel 0

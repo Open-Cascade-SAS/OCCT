@@ -1,0 +1,10 @@
+# Original bug : cts20072
+# Date : 24mar98
+
+restore cts20072_base.rle base
+restore cts20072_face.rle cont
+
+featprism base cont cont 0 0 1 1 1
+featperformval prism result 100
+
+set square 280367

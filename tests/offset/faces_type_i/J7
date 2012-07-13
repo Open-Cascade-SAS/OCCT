@@ -1,0 +1,9 @@
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_3 "
+puts "TODO OCC23068 ALL: Error : Square of face result_4 of result shape is negative."
+puts "TODO OCC23068 ALL: Error : The volume of result shape "
+pcone s 9 4 15 270
+
+OFFSETSHAPE 1 {s_2 s_3} $calcul $type
+
+#set volume 994.314
+set volume 0

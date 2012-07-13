@@ -1,0 +1,10 @@
+# Original bug : pro15323
+# Date : 21Sept98
+
+restore pro15323c.rle part
+restore pro15323d.rle tool
+
+bcut result part tool
+
+
+set square 43877.8

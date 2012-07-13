@@ -1,0 +1,5 @@
+restore cts21302a.rle a
+restore cts21302b.rle b
+bsection result a b
+
+set length 79.1327

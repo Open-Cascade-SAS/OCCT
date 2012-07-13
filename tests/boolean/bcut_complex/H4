@@ -1,0 +1,9 @@
+# Original bug : pro12953
+# Date :  4mai98
+
+restore pro12953-part.rle part
+restore pro12953-tool.rle tool
+
+bcut result part tool
+
+set square 78.7758

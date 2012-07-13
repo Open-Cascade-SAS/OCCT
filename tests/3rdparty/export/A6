@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC21091"
+puts "OCC21450"
+puts "============"
+puts ""
+
+vtrihedron trihedron
+
+vpoint p1 -300 -300 -300
+vdrawtext OpenCascade -300 -300 -300 000 255 000 0 0 000 0 15 1 Courier 
+vpoint p2 -300 -300 -100
+vdrawtext OpenCascade -300 -300 -100 000 255 000 0 0 000 0 15 1 Courier 
+vpoint p3 -100 -100 -300
+vdrawtext OpenCascade -100 -100 -300 000 255 000 0 0 000 0 15 1 Courier 
+vpoint p4 -100 -100 -100
+vdrawtext OpenCascade -100 -100 -100 000 255 000 0 0 000 0 15 1 Courier 
+
+
+vpoint p5 -300 -100 -300
+vdrawtext OpenCascade -300 -100 -300 000 255 000 0 0 000 0 15 1 Courier
+vpoint p6 -100 -300 -300
+vdrawtext OpenCascade -100 -300 -300 000 255 000 0 0 000 0 15 1 Courier
+vpoint p7 -300 -100 -100
+vdrawtext OpenCascade -300 -100 -100 000 255 000 0 0 000 0 15 1 Courier
+vpoint p8 -100 -300 -100
+vdrawtext OpenCascade -100 -300 -100 000 255 000 0 0 000 0 15 1 Courier 
+
+vaxis ax1 100 100 100 100 100 0
+
+box a 110 110 110 200 200 200
+vdisplay a
+
+set aFile $WorkDirectory/ExportToSVG.svg
+
+set format SVG
+
+set size 14042

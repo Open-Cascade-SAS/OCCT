@@ -1,0 +1,13 @@
+restore af b1
+restore bf b2
+
+bop b1 b2
+bopfuse result
+
+restore cf b3
+
+bop result b3
+bopfuse result
+
+
+set square 12677.1

@@ -1,0 +1,7 @@
+restore case_4_solid.brep a
+restore case_4_wire4.brep b
+bop a b
+bopcommon result
+set length 633.071
+set nbsh_v 9
+set nbsh_e 7

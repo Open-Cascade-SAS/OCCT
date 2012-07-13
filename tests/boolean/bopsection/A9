@@ -1,0 +1,10 @@
+# Original bug : buc60172
+# Date : 25Mai98
+
+restore buc60172a.rle a
+restore buc60172b.rle b
+
+bop a b
+bopsection result
+
+set length 878.56

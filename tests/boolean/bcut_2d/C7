@@ -1,0 +1,8 @@
+restore case_2_face_r.brep a
+restore case_2_edge1.brep b
+bcut result b a
+#set length 2058.17
+set length 1211.16
+set nbsh_v 14
+set nbsh_e 7
+

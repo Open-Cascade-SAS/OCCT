@@ -1,0 +1,9 @@
+# Original bug : pro8951
+# Date : 17sept98
+
+restore pro8951c.rle base
+restore pro8951d.rle prism
+
+bcut result base prism
+
+set square 298872

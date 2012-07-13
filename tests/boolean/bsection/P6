@@ -1,0 +1,7 @@
+restore intcq102.brep m
+explode m
+# m_1 : Prisme
+# m_2 : Contre-depouille
+bsection result m_1 m_2 -2d -a
+
+set length 574.782

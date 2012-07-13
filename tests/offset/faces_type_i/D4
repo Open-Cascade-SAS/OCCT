@@ -1,0 +1,8 @@
+puts "TODO OCC23068 ALL: An exception was caught"
+puts "TODO OCC23068 ALL: \\*\\* Exception \\*\\*"
+puts "TODO OCC23068 ALL: TEST INCOMPLETE"
+ptorus s 10 10 0 45
+
+OFFSETSHAPE 1 {s_2} $calcul $type
+
+set volume 0

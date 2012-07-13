@@ -1,0 +1,9 @@
+puts "CTS22135"
+puts "Generation of micro-edges during section."
+puts ""
+restore cts21135a.brep o
+restore cts21135b.brep t
+bop o t
+bopsection result
+
+set length 144.712

@@ -1,0 +1,8 @@
+# bug cts 20221 et cts20222
+
+restore  cts20222_base.rle  base
+restore  cts20222_outil.rle  outil
+
+bfuse result base outil
+
+set square 3342.49

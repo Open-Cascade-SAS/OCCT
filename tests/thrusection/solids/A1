@@ -1,0 +1,8 @@
+restore cts21295_1.brep f1
+restore cts21295_2.brep f2
+restore cts21295_3.brep f3
+explode f1 w
+explode f2 w
+explode f3 w
+thrusections result 1 0 f1_1 f2_1 f3_1
+set square 49757.1

@@ -1,0 +1,18 @@
+# Original bug : cts20369
+# Date : 17Juillet98
+
+restore cts20369a.rle base0
+restore cts20369b.rle cont0
+restore cts20369c.rle cont
+
+# OK
+featprism base0 cont0 cont0 0 1 0 0 1
+featperform prism base
+
+nexplode base face
+copy base_6 funtil
+
+featprism base cont cont -1 0 0 0 1
+featperform prism result funtil
+
+set square 266058

@@ -1,0 +1,16 @@
+#jmu
+#pro18457
+#cascade 2.1
+puts "PRO18457"
+puts "Fuse"
+puts ""
+
+puts "TODO #22911 ALL: Error : The bfuse can not be build"
+
+restore pro18457a.rle f1
+restore pro18457b.rle f2
+
+bfuse restore f1 f2
+
+
+set square 0

@@ -1,0 +1,6 @@
+restore case_2_shell_r.brep a
+restore case_2_wire2.brep b
+bcommon result b a
+set length empty
+set nbsh_v 0
+set nbsh_e 0

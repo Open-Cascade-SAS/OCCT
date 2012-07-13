@@ -1,0 +1,13 @@
+puts "TODO OCC23068 Mandriva2010: Error: bsection of result and s is not equal zero"
+puts "TODO OCC23068 Mandriva2010: Error : The volume of result shape "
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi/2
+trotate w1 0 0 0 1 0 0 90
+polyline w2 0 0 10 0 0 -10 25 0 -10 15 0 0
+wire w w1 w2
+mkplane w w
+revol s w 0 0 0 0 0 1 360
+
+OFFSETSHAPE -1 {} $calcul $type
+
+set volume 13139

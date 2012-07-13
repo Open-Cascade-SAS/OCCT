@@ -1,0 +1,65 @@
+AddDriver D Box Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
+
+#1 Create Box
+NewCommand D
+set B2 [AddObject D];			## add object
+set F2 [AddFunction D $B2 Box];		## add function
+BoxDX D $B2 190;			## set argumets of this function
+BoxDY D $B2 290
+BoxDZ D $B2 390
+InitLogBook D;				## initialize (clean) internal maps of labels
+ComputeFun D $F2;			## compute the function
+GetShape D $F2:2 Box2;			## check result
+whatis Box2
+GetReference D $B2
+
+#2 Create Cylinder
+NewCommand D
+explode Box2 F
+explode Box2_1 E
+set Sel1 [AttachShape D Box2_1_1 ${B2} ${B2} 1]; ## set attachment
+## AddDriver D Attach Cyl
+set Cyl [AddCyl D 70 275 ${Sel1}]
+ComputeFun D $Cyl:1
+GetShape D $Cyl:1:2 CylS
+
+#3 Transalte Cylinder
+NewCommand D
+set FTr1 [PTranslateDXYZ D $Cyl 100 0 0]
+ComputeFun D $FTr1
+GetShape D $Cyl:2:2 CylS
+
+#4 Cut Box Cylinder
+NewCommand D
+set CS [AddCut D $B2 $Cyl]
+ComputeFun D $CS
+erase
+GetShape D $CS:2 S
+don S
+NewCommand D
+
+#5 test Naming
+set SL [TestSingleSelection D $B2 0]
+# 28 selections fail  (total 124 selections)
+# it seems gives FilterByNeighbours gives Compound  (edges:  2*2, vertexes: 4, but duplicated -4*2 + 2*2 + 4*2 + 2*2 => 24)
+# Naming should be corrected to process the case : to be returned Compound without failure!)
+
+#6 Modification
+NewCommand D
+BoxDX D $B2 220
+
+#7 recompute
+NewCommand D
+InitLogBook D
+ComputeFun D $F2
+ComputeFun D $Sel1:1
+ComputeFun D $Cyl:1
+ComputeFun D $FTr1
+ComputeFun D $CS
+erase
+GetShape D $CS:2 S
+don S
+SolveFlatFrom D $SL
+NewCommand D
+
+

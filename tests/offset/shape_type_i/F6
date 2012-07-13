@@ -1,0 +1,8 @@
+puts "TODO OCC23068 ALL: Error : The offset is not valid"
+cpulimit 500
+
+pcone s 9 4 15 270
+
+OFFSETSHAPE 1 {} $calcul $type
+
+set volume 0

@@ -1,0 +1,10 @@
+# Original bug : usa60111
+# Date : 18Mai98
+
+pcylinder c1 10 20
+pcylinder c2 5 20
+ttranslate c2 5 0 10
+
+bsection result c1 c2
+
+set length 41.4159

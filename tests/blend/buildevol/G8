@@ -1,0 +1,14 @@
+#box s1 0 0 0 10 10 10
+#pcylinder s2 2.5 5 270
+#ttranslate s2 6 5 10
+#fuse s s1 s2
+#save s D5678.draw 
+
+restore D5678.draw s
+tscale s 0 0 0 SCALE1
+explode s e
+mkevol result s
+updatevol s_14 0 0.5*SCALE1 1 1*SCALE1 2 0.5*SCALE1
+buildevol
+
+set square 68102.2

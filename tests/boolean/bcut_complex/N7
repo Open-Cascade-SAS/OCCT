@@ -1,0 +1,9 @@
+# Original bug : pro14974
+# Date : 26Aout98
+
+restore pro14974a.rle a 
+restore pro14974b.rle b
+
+bcut result a b
+
+set square 633961

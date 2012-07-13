@@ -1,0 +1,6 @@
+restore f3 b1
+restore f4 b2
+
+bcommon result b1 b2
+
+set square 78.5398

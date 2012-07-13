@@ -1,0 +1,11 @@
+puts "GER60854"
+puts "Cut"
+puts ""
+
+restore ger60854a.rle a
+restore ger60854b.rle b
+
+explode a sh
+bcut result a_1 b
+
+set square 3780.29

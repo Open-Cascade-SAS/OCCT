@@ -5,7 +5,6 @@ srcinc:::CURVES.tcl
 srcinc:::Documentation.tcl
 srcinc:::DrawTK.tcl
 srcinc:::Geometry.tcl
-srcinc:::WOKcomplement.tcl
 srcinc:::InitEnvironment.tcl
 srcinc:::PROFIL.tcl
 srcinc:::StandardCommands.tcl
@@ -31,3 +30,4 @@ srcinc:::DrawPlugin
 srcinc:::TKTopTest.tcl
 srcinc:::dftree.tcl
 srcinc:::QARebuildCommands
+srcinc:::TestCommands.tcl

@@ -1,0 +1,9 @@
+# Original bug : cts20088
+# Date : 24June98
+
+restore cts20088a.rle a 
+restore cts20088b.rle b
+
+bcut result a b
+
+set square 1.37605e+06

@@ -1,0 +1,16 @@
+# pro15545
+puts "PRO15545"
+puts "Section"
+puts ""
+
+restore pro15545a.brep c1
+explode c1 sh
+renamevar c1_1 c1
+
+restore pro15545b.brep c2 
+explode c2 sh
+renamevar c2_1 c2
+
+bsection result c1 c2
+
+set length 550.64

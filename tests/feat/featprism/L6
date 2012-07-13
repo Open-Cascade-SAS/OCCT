@@ -1,0 +1,27 @@
+# Original bug : cts21322
+# Date : 16 Sept 98
+
+restore contour.rle cont
+mkplane cont cont
+
+puts "*"
+
+puts "TODO OCC22810 ALL:Error in featperform"
+puts "TODO OCC22810 ALL:Error : The feat can not be build"
+
+restore cts21322_base.rle base
+restore cts21322_face.rle wire
+
+explode base face
+copy base_6 fsketch
+
+splitshape cont1 fsketch fsketch wire
+explode cont1
+bcut cont fsketch cont1_1
+
+featprism base cont fsketch 1 0 0 0 1
+if { [catch { featperform prism result } ] != 0 } {
+  puts "Error in featperform"
+}
+
+set square 0

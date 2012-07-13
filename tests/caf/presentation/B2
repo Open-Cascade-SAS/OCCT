@@ -1,0 +1,59 @@
+#INTERFACE CAF
+# Presentation attributes
+#
+# Testing attribute: TPrsStd_AISPresentation
+#
+# Testing command:   AISColor
+# Testing command:   AISHasOwnColor
+# Note:   AISColor-command: set AISColor  and set AISHasOwnColor = true ( int 1 )
+#
+
+puts "caf003-B2"
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+# Set a color of the shape as NOC_GREEN
+set GreenColor 229
+AISColor D ${aLabel} ${GreenColor}
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+# Check own color
+set HasOwnColor [AISHasOwnColor D ${aLabel}]
+
+puts "It is not necessary to have the photo for this case."
+
+if { ${HasOwnColor} == 0 } {
+	puts "HasOwnColor=${HasOwnColor}"
+	puts "There is not own color; AISHasOwnColor command: Error"
+        return
+}
+puts "There is own color; AISHasOwnColor command: OK"

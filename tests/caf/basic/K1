@@ -1,0 +1,73 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Shape
+#
+# Testing command:   SetShape
+# Testing command:   GetShape
+#
+
+puts "caf001-K1"
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aBoundingBox1 [bounding aBox1]
+set X1_Box1 [lindex ${aBoundingBox1} 0]
+set Y1_Box1 [lindex ${aBoundingBox1} 1]
+set Z1_Box1 [lindex ${aBoundingBox1} 2]
+set X2_Box1 [lindex ${aBoundingBox1} 3]
+set Y2_Box1 [lindex ${aBoundingBox1} 4]
+set Z2_Box1 [lindex ${aBoundingBox1} 5]
+
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Close/Open the transaction
+NewCommand D
+
+# Forget the attribute
+ForgetAll D ${aLabel}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo-Redo-Undo
+Undo D
+Redo D
+Undo D
+
+# Get a value of the attribute
+GetShape D ${aLabel} aBox2
+
+set aBoundingBox2 [bounding aBox2]
+set X1_Box2 [lindex ${aBoundingBox2} 0]
+set Y1_Box2 [lindex ${aBoundingBox2} 1]
+set Z1_Box2 [lindex ${aBoundingBox2} 2]
+set X2_Box2 [lindex ${aBoundingBox2} 3]
+set Y2_Box2 [lindex ${aBoundingBox2} 4]
+set Z2_Box2 [lindex ${aBoundingBox2} 5]
+
+if { ${X1_Box1} != ${X1_Box2} || 
+     ${Y1_Box1} != ${Y1_Box2} || 
+     ${Z1_Box1} != ${Z1_Box2} || 
+     ${X2_Box1} != ${X2_Box2} || 
+     ${Y2_Box1} != ${Y2_Box2} || 
+     ${Z2_Box1} != ${Z2_Box2} } {
+	puts "X1_Box1=${X1_Box1} X1_Box2=${X1_Box2}"
+	puts "Y1_Box1=${Y1_Box1} Y1_Box2=${Y1_Box2}"
+	puts "Z1_Box1=${Z1_Box1} Z1_Box2=${Z1_Box2}"
+	puts "X2_Box1=${X2_Box1} X2_Box2=${X2_Box2}"
+	puts "Y2_Box1=${Y2_Box1} Y2_Box2=${Y2_Box2}"
+	puts "Z2_Box1=${Z2_Box1} Z2_Box2=${Z2_Box2}"
+	puts "Add TDataStd_Shape attribute: Error"
+	return
+}
+puts "Add TDataStd_Shape attribute: OK"

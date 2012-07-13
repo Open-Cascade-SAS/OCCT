@@ -1,0 +1,12 @@
+puts "TODO OCC23190 ALL: An exception was caugh.*Offset with no C1 Surface"
+puts "TODO OCC23190 ALL: \\*\\* Exception \\*\\*.*Offset with no C1 Surface"
+puts "TODO OCC23068 ALL: TEST INCOMPLETE"
+# Original bug : hkg60144/pro15325
+# Date : 17Juillet98
+
+restore  hkg60144b.rle s
+explode s f
+
+offsetshape result s -5 s_1
+
+set volume 0

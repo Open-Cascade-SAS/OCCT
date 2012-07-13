@@ -1,0 +1,6 @@
+restore c2.brep c
+restore box.brep b
+
+bfuse result c b
+
+set square 131766

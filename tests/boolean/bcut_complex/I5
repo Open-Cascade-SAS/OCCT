@@ -1,0 +1,12 @@
+# Original bug : cts20462
+# Date : 13Mai98
+# A5.gif
+
+restore cts20462-part.rle part
+restore cts20462-tool.rle tool
+
+bcut result part tool
+
+
+
+set square 25298.7

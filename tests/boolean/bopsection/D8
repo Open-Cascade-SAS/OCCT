@@ -1,0 +1,18 @@
+#PRO12675
+puts "PRO12675"
+puts "Cut"
+puts ""
+
+# mod by pkv f
+restore pro12675a.brep obj
+restore pro12675b.brep out 
+#
+# mod by pkv f
+
+btolx obj
+btolx out
+
+bop obj out
+bopsection result
+
+set length 1022.03

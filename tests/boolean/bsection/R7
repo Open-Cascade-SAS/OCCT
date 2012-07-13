@@ -1,0 +1,10 @@
+puts "BUC60092"
+puts "section"
+puts ""
+
+restore buc60092a.rle a
+restore buc60092b.rle b
+
+bsection result a b
+
+set length 162.012

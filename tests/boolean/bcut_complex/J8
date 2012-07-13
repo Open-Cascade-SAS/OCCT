@@ -1,0 +1,14 @@
+# Original bug : pro14235
+# Date : 11June98
+# D6
+
+restore pro14235a.rle a
+restore pro14235b.rle b
+
+bcut result a b
+
+
+
+
+
+set square 426392

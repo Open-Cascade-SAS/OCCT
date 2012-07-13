@@ -1,0 +1,13 @@
+# Original bug : ger60806
+# Date : 12 Oct 98
+
+restore ger60806_base.rle base
+restore ger60806_face.rle cont
+
+explode base face
+copy base_10 funtil
+
+featprism base cont cont 0 -1 0 1 1
+featperform prism result funtil
+
+set square 181990

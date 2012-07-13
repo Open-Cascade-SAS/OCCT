@@ -1,0 +1,9 @@
+# Original bug : cts20549
+# Date : 19Mai98
+
+restore cts20549a.rle a
+restore cts20549b.rle b
+
+bsection result a b
+
+set length 381.332

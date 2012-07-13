@@ -1,0 +1,37 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attribute: TDataStd_Integer
+#
+# Testing command:   SetInteger
+# Testing command:   GetInteger
+#
+
+puts "caf001-A2"
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aLabel 0:2
+SetInteger D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Set a new value of the attribute
+set aSetAttr2 200
+SetInteger D ${aLabel} ${aSetAttr2}
+
+# Close/Open the transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Get a value of the attribute
+set aGetAttr2 [GetInteger D ${aLabel}]
+if { ${aSetAttr1}!=${aGetAttr2} } {
+	puts "aSetAttr1=${aSetAttr1} aGetAttr2=${aGetAttr2}"
+	puts "Set a value of TDataStd_Integer attribute: Error"
+	return
+}
+puts "Set a value of TDataStd_Integer attribute: OK"

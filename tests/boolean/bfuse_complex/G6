@@ -1,0 +1,7 @@
+
+restore  cts20205-base.rle  base
+restore  cts20205-outil.rle  outil
+
+bfuse result base outil
+
+set square 542196

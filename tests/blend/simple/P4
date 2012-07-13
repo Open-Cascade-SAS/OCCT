@@ -1,0 +1,13 @@
+#pcylinder s1 5 15
+#pcylinder s2 5 10 
+#ttranslate s2 3 0 6
+#ttranslate s1 s2 5 5 0
+#cut s s1 s2
+#save s I1234.draw 
+
+restore I1234.draw s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 0.5*SCALE1 s_3
+
+set square 61058.6

@@ -1,0 +1,9 @@
+# Original bug : pro12559
+# Date : 19mar98
+
+restore pro12559a.rle a
+restore pro12559b.rle b
+
+bfuse result a b
+
+set square 132237

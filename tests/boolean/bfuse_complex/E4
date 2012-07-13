@@ -1,0 +1,9 @@
+# Original bug : pro14260
+# Date : 21 Sept 98
+
+restore pro14260c.rle c
+restore pro14260d.rle d
+
+bfuse result c d
+
+set square 46305.1

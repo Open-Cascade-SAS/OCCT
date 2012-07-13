@@ -1,0 +1,6 @@
+psphere s 1
+box b 1 1 1
+trotate b 0 0 1 0 1 0 90
+bfuse result b s
+
+set square 14.6393

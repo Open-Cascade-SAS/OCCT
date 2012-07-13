@@ -1,0 +1,8 @@
+# Original bug : pro12896
+
+restore shape1.rle a
+restore outil1.rle b
+
+bfuse result a b
+
+set square 202328

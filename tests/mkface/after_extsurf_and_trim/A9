@@ -1,0 +1,7 @@
+parabola parabola 0 0 0 30
+extsurf es_parabola parabola 0 0 1
+trim es_parabola_tr es_parabola 0 50 0 50
+mkface result es_parabola_tr 0 30 0 30
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 9.9999999999999995e-08

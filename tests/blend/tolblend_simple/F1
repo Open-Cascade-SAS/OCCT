@@ -1,0 +1,8 @@
+restore 13_A12.draw s
+tscale s 0 0 0 SCALE1
+explode s E
+blend result s 0.5*SCALE1 s_2 1*SCALE1 s_5  0.5*SCALE1 s_8 
+explode result Sh
+tcopy result_1 result
+
+set square 5074.03

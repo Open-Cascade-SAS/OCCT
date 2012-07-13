@@ -1,0 +1,12 @@
+# Original bug : pro8951
+# Date : 19mar98
+
+restore pro8951a.rle base
+restore pro8951b.rle wire
+
+mkplane cont wire
+
+featprism base cont cont 0 -1 0 0 1
+featperform prism result
+
+set square 298872

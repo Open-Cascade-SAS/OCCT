@@ -1,0 +1,4 @@
+restore C13 w1
+restore C6 w2
+thrusections result 0 0 w1 w2
+set square 972.397

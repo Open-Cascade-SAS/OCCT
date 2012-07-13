@@ -1,0 +1,10 @@
+# Original bug : cts17786 
+# Date : 25Mai98
+
+restore cts17786a.rle a
+restore cts17786b.rle b
+
+bop a b
+bopsection result
+
+set length 0.0976741

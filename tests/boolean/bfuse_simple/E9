@@ -1,0 +1,29 @@
+# Permuation of all forms of construction
+# when fUsing a box and a prism
+
+
+
+box ba 3 3 0 5 7 4
+
+# prism from back
+
+vertex v1 3 3 0
+vertex v2 4 3 0
+vertex v3 4 3 1
+vertex v4 3 3 1
+
+edge ea v1 v2
+edge eb v2 v3
+edge ec v3 v4
+edge ed v4 v1
+
+wire w ea eb ec ed
+mkplane f w
+
+prism bb f 0 -1 0
+
+bfuse result ba bb
+
+
+
+set square 170

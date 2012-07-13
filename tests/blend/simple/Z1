@@ -1,0 +1,14 @@
+# Original bug : usa60109
+# Date : 30mar98
+
+pcylinder c1 10 20
+pcylinder c2 5 20
+ttranslate c2 5 0 20
+
+bfuse f c1 c2
+
+explode f E
+
+blend result f 1 f_1
+
+set square 2485.86

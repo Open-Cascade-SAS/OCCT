@@ -1,0 +1,5 @@
+restore a58_bsect a
+restore b58_bsect b
+bsection result a b
+
+set length 3.46962

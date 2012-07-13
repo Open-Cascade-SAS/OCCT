@@ -1,0 +1,9 @@
+# Original bug : cts20204
+# Date : 13Mai98
+
+restore  cts20204_base  base
+restore  cts20204_outil  outil
+
+bfuse result base outil
+
+set square 541480

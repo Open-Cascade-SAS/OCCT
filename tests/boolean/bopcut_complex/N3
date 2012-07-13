@@ -1,0 +1,9 @@
+#pro16955
+
+restore m2_o
+restore m2_t
+
+bop m2_o m2_t
+bopcut result
+
+set square 266.995

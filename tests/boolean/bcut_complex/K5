@@ -1,0 +1,13 @@
+# Original bug : cts20370
+# Date : 19Mai98
+
+restore cts20370-part.rle part
+restore cts20370-tool.rle tool
+
+bsection sec part tool
+checkshape -top sec
+
+bcut result part tool
+checkshape -top result
+
+set square 273365

@@ -1,0 +1,17 @@
+## ======================================
+## Grid    : CCV002
+## Test    : D1
+## Comment : From CV tests serie page 60
+## ======================================
+
+puts "*"
+puts "TODO OCC22740 ALL: An exception was caught"
+puts "TODO OCC22740 ALL: \\*\\* Exception \\*\\*"
+puts "TODO OCC22740 ALL: Error : The offset can not be build"
+
+restore 2_D1.rle s
+explode s F
+catch {offsetcompshape result s -2 s_17}
+
+#real volume of result shape is unknow yet
+set volume 0

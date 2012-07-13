@@ -1,0 +1,16 @@
+# Original bug : pro15203
+# Date : 26Aout98
+
+# part 1 of 4
+
+restore pro15203a.rle a 
+restore pro15203c.rle c 
+
+#pkv f
+explode a f
+explode c f
+
+bfuse result a_1 c_1
+#pkv t
+
+set square 570.047

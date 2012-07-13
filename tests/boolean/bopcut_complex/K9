@@ -1,0 +1,7 @@
+restore a193 a
+restore b193 b
+
+bop a b
+bopcut result
+
+set square 10000

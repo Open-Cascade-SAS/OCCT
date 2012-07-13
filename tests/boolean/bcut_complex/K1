@@ -1,0 +1,11 @@
+# Original bug : cts20496
+# Date : 13Mai98
+# D8
+
+restore cts20496c.rle part
+restore cts20496d.rle tool
+
+bcut result part tool
+
+
+set square 229719

@@ -1,0 +1,6 @@
+#old file ofs16
+
+restore vevopar s
+OFFSETSHAPE -0.1 {} $calcul $type
+
+set volume 0.650881

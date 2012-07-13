@@ -1,0 +1,16 @@
+cpulimit 1000
+
+restore lh3d_px2.brep a
+compound result
+set i 1
+repeat 199 {
+  plane p_$i 0 $i*100 0  0 1 0
+  mkface f_$i p_$i
+  bsection s_$i a f_$i -2d -a
+  compound result s_$i result
+  set dist [expr $i * 100]
+  puts "OK Section:$dist"
+  incr i
+}
+
+set length 2.7724e+07

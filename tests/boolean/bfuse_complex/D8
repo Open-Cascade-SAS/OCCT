@@ -1,0 +1,10 @@
+# Original bug : pro11172
+# Date : 11mar98
+
+restore pro11172a.rle a
+restore pro11172b.rle b
+
+bfuse result a b 
+
+
+set square 681699

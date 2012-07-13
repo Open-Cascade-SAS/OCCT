@@ -1,0 +1,8 @@
+restore sh2 b1
+restore sh3 b2
+
+bop b1 b2
+bopfuse result
+
+
+set square 1000

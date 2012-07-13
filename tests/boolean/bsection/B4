@@ -1,0 +1,5 @@
+restore a14 a
+restore b14 b
+bsection result a b
+
+set length 10.6749

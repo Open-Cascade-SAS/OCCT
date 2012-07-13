@@ -1,0 +1,27 @@
+## pro15946
+puts "PRO15946"
+puts "Fuse"
+puts ""
+restore pro15946c.rle c
+restore pro15946d.rle d
+
+explode c so
+
+fsameparameter c_3
+fsameparameter d
+
+maxtolerance c_3
+maxtolerance d
+
+bop c_3 d
+
+bopsection result
+
+
+
+
+
+
+
+
+set length 116.349

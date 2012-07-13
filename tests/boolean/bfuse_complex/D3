@@ -1,0 +1,11 @@
+# Original bug : ger60041
+# Date : 11mar98 
+
+restore ger60041a.rle a
+fsameparameter a
+restore ger60041b.rle b
+
+bfuse result a b 
+
+
+set square 17651.7

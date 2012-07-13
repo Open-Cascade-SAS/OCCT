@@ -1,0 +1,17 @@
+# Original bug : cts18078
+# Date : 24mar98
+
+restore cts18078-part.rle part
+
+## Note that shape 'part' needed 
+## to be reparametrised
+fsameparameter part
+## Seems no longer to be necessary
+
+restore cts18078-tool.rle tool
+
+bcut result part tool
+
+
+
+set square 147330

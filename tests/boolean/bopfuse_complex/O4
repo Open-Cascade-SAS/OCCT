@@ -1,0 +1,8 @@
+restore sf5 b1
+restore sf55 b2
+
+bop b1 b2
+bopfuse result
+
+
+set square 87964.6

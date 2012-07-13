@@ -1,0 +1,12 @@
+puts "================================="
+puts "CUT of OCC212-2.brep and  OCC212-1.brep"
+puts "================================="
+
+restore OCC212-1.brep a
+restore OCC212-2.brep b
+
+bop b a 
+bopcut result
+
+
+set square 39685.7

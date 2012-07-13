@@ -1,0 +1,8 @@
+## cts20077
+
+restore shapetocut sh
+restore prismtocut  pr
+
+bcut result sh pr
+
+set square 4909.72

@@ -1,0 +1,8 @@
+#ger60239
+
+restore solid_2.brep c
+restore solid_5.brep d
+
+bfuse result c d
+
+set square 3468.6

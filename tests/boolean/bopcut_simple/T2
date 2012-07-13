@@ -1,0 +1,9 @@
+pcylinder b1 1 2
+dset r sqrt(3)/2
+box b2 -r -1 0 2*r 2 2
+trotate b2 0 0 0 0 0 1 30
+
+bop b1 b2
+bopcut result
+
+set square 8.55113

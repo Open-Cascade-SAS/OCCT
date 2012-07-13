@@ -1,0 +1,25 @@
+#
+# *10603
+#
+#Create 3 torus
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+if {[string compare $os "Debian50-64"] != 0 && [string compare $os "Debian60-64"] != 0 && [string compare $os "Mandriva2010-64"] != 0} {
+  puts "TODO #22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
+}
+
+ptorus a0 100 20
+tcopy a0 a1
+tcopy a0 a2
+trotate a1 0 0 0 1 0 0 90
+trotate a2 0 0 0 0 1 0 90
+
+bop a0 a1
+bopfuse x1
+
+bop x1 a2
+bopfuse result
+
+set square 197700

@@ -1,0 +1,9 @@
+# Original bug : cts20370
+# Date : 19Mai98
+
+restore cts20370-part.rle part
+restore cts20370-tool.rle tool
+
+bsection result part tool
+
+set length 1113.89

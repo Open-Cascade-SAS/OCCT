@@ -1,0 +1,5 @@
+restore GEN525_3367_1.rle a
+explode a
+bsection result a_1 a_2 -2d -a
+
+set length 356.984

@@ -1,0 +1,15 @@
+# Original bug : cts20722
+# Date : 21August98
+
+restore cts20722a.rle base
+restore cts20722b.rle cont
+restore cts20722c.rle funtil
+
+explode cont face
+#explode base face
+#copy base_14 funtil
+
+featprism base cont_1 cont_1 0 0 1 0 1
+featperform prism result funtil
+
+set square 31415

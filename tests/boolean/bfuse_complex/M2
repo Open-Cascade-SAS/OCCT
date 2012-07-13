@@ -1,0 +1,11 @@
+# Original bug : cts21240
+# Date : 16July98
+
+restore cts21240a.rle a 
+restore cts21240b.rle skface
+
+prism b skface 0 0 1 10
+
+bfuse result a b
+
+set square 19213.9

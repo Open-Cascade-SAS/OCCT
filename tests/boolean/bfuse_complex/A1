@@ -1,0 +1,6 @@
+restore cts20976a.rle a
+restore cts20976b.rle b
+
+bfuse result a b
+
+set square 43552.5

@@ -1,0 +1,9 @@
+restore E_long.rle E
+nexplode E f
+
+profile cont S E_10 F 150 -100 X 50 Y -100 X -50
+nexplode cont E
+featdprism E cont E_10 10 1 1
+featperformval dprism result 150
+
+set square 958920

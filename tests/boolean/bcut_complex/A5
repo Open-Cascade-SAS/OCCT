@@ -1,0 +1,6 @@
+restore f7 b1
+restore f3 b2
+
+bcut result b1 b2
+
+set square 15.0891

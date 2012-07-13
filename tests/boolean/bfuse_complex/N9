@@ -1,0 +1,9 @@
+# Original bug : pro15150
+# Date : 26Aout98
+
+restore pro15150a.rle a 
+restore pro15150b.rle b
+
+bfuse result a b
+
+set square 259563

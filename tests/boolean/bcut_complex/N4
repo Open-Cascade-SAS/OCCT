@@ -1,0 +1,9 @@
+# Original bug : cts20875
+# Date : 20July98
+
+restore cts20875-part.rle part
+restore cts20875-tool.rle tool
+
+bcut result part tool
+
+set square 848.269

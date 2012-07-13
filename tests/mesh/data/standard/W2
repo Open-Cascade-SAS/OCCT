@@ -1,0 +1,3 @@
+set TheFileName shading_wrongshape_022.brep
+set bug_withouttri "OCC22687"
+set nbwithouttri(All) 2

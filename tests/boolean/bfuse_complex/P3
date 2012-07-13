@@ -1,0 +1,12 @@
+# Original bug : pro15203
+###########################
+restore cq12.brep c1
+explode c1 f
+copy c1_1 c1
+restore cq22.brep c2
+explode c2 f
+copy c2_1 c2
+
+bfuse result c1 c2
+
+set square 570.047

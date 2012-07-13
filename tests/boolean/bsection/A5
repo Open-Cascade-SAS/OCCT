@@ -1,0 +1,5 @@
+restore a4 a
+restore b4 b
+bsection result a b
+
+set length 125.664

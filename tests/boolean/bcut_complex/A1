@@ -1,0 +1,9 @@
+restore cts20355a.rle a
+restore cts20355b.rle b
+restore cts20355c.rle c
+
+bcut rab a b
+
+bcut result rab c
+
+set square 272.503

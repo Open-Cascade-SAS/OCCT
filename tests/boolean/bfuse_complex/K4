@@ -1,0 +1,13 @@
+# Original bug : pro13494
+# Date : 4June98
+
+restore pro13494a.rle a 
+restore pro13494b.rle b
+
+# pkv f
+explode a so
+#bfuse result a b
+bfuse result a_1 b
+# pkv t
+
+set square 65482.8

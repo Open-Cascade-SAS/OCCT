@@ -1,0 +1,10 @@
+# Original bug : fra60810
+# Date : 30mar98
+
+restore fra60810-part.rle part
+restore fra60810-tool.rle tool
+
+bcut result part tool
+
+
+set square 30948.9

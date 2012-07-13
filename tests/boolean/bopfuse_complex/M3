@@ -1,0 +1,19 @@
+puts "PRO15203"
+puts "Fuse"
+puts ""
+
+restore pro15203_11.brep c1
+restore pro15203_21.brep c2
+
+########################mod by pkv f
+explode c1 f
+copy c1_1 c1
+explode c2 f
+copy c2_1 c2
+########################mod by pkv t
+
+bop c1 c2
+bopfuse result
+
+
+set square 570.047

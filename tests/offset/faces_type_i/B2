@@ -1,0 +1,10 @@
+#instability
+puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO ?OCC23068 ALL:Error\\s*:\\s*.*The volume"
+
+pcone s 5 0 12 90
+trotate s 0 0 0 0 0 1 90
+
+OFFSETSHAPE 1 {s_4 s_3} $calcul $type
+
+set volume 0

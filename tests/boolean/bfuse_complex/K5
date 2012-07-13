@@ -1,0 +1,9 @@
+# Original bug : buc60116
+# Date : 12June98
+
+restore buc60116a.rle a 
+restore buc60116b.rle b
+
+bfuse result a b
+
+set square 224496

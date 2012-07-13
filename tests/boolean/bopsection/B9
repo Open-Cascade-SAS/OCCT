@@ -1,0 +1,9 @@
+restore topo100.brep m
+
+explode m
+renamevar m_3 coque
+
+bop coque m_2
+bopsection result
+
+set length 83.7197

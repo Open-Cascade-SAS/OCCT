@@ -1,0 +1,37 @@
+set TheFileName shading_wrongshape_009.brep
+set bug_area "OCC22687"
+set rel_tol 10.7
+set bug_withouttri "OCC22687"
+set bug_freelinks "OCC22687"
+set bug_freenodes "OCC22687"
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+if { [string compare $command "shading"] == 0 } {
+   set nbt 14
+   set nbn 83
+   if {
+          [string compare $os "Mandriva2008"] == 0
+       || [string compare $os "Debian40"] == 0
+      } {
+      set nbl 19
+   } else {
+      set nbl 17
+   }
+} else {
+   if {
+          [string compare $os "Mandriva2010"] == 0
+      } {
+      set nbt 14
+      set nbn 83
+      set nbl 19
+   } else {
+      set nbt 15
+      set nbn 60
+      set nbl 2
+   }
+}
+set nbwithouttri($os) $nbt
+set nbfree($os) $nbl
+set nbfreenodes($os) $nbn

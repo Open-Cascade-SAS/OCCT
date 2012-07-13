@@ -1,0 +1,8 @@
+restore g1 b1
+restore g2 b2
+
+bop b1 b2
+bopfuse result
+
+
+set square 11868.2

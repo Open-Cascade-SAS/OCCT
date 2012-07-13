@@ -1,0 +1,12 @@
+# Original bug : pro5557
+# Date : 10mar97
+
+restore pro5557_revol.shape revol1
+restore pro5557_bsurf.shape bsurf2
+#normals bsurf2 0.27
+point pnt1 0 -0.3 0
+halfspace space2 bsurf2 0 -0.3 0
+
+bcut result revol1 space2
+
+set square 0.402138

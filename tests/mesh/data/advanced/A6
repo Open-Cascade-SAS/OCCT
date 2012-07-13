@@ -1,0 +1,5 @@
+set TheFileName OCC21961-shd002A8-f204.brep
+set bug_area "OCC22687"
+set rel_tol 100
+set bug_withouttri "OCC22687"
+set nbwithouttri(All) 1

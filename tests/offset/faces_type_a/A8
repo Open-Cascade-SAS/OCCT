@@ -1,0 +1,6 @@
+#old file ofsb15
+
+restore bb15 s
+OFFSETSHAPE -0.1 {s_8 s_7} $calcul $type
+
+set volume 4.50601

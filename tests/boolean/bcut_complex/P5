@@ -1,0 +1,9 @@
+## cts21576
+
+restore shape_1.brep a
+restore outil_1.brep b
+
+bcut result a b
+
+
+set square 4041.96

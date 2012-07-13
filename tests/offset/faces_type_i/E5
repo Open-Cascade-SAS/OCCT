@@ -1,0 +1,6 @@
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_2 "
+ptorus s 20 5  270
+
+OFFSETSHAPE 1 {s_2 s_3} $calcul $type
+
+set volume -3702.54

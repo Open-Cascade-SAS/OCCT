@@ -1,0 +1,13 @@
+# cts20088
+
+restore shape_pkv.rle base
+restore contour_pkv.rle cont
+
+explode base face
+copy base_54 ffrom
+copy base_55 funtil
+
+featprism base cont cont 1 0 0 1 1
+featperform prism result ffrom funtil
+
+set square 7152.2

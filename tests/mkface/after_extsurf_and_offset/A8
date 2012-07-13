@@ -1,0 +1,8 @@
+hyperbola hyperbola 0 0 0 30 10
+extsurf es_hyperbola hyperbola 0 0 1
+offset es_hyperbola_of es_hyperbola 5
+offset es_hyperbola_of_of es_hyperbola_of 5
+mkface result es_hyperbola_of_of 0 3 0 40
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.953938903335782e-07
+set MaxVTol 9.9539389033357862e-07

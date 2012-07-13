@@ -1,0 +1,6 @@
+restore case_6_shell.brep a
+restore case_6_edge1.brep b
+bcut result b a
+set length 819.435
+set nbsh_v 8
+set nbsh_e 4

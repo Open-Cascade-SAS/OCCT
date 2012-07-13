@@ -1,0 +1,13 @@
+# Original bug : cts20456
+# Date : 25sept98
+# D7
+
+restore cts20456c.rle c
+restore cts20456d.rle d
+
+bcut result c d
+
+
+
+
+set square 344545

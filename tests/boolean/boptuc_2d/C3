@@ -1,0 +1,8 @@
+restore case_2_shell_r.brep a
+restore case_2_wire3.brep b
+bop a b
+boptuc result
+#set length 3176.78
+set length 2329.96
+set nbsh_v 11
+set nbsh_e 8

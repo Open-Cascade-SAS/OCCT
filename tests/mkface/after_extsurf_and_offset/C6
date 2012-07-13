@@ -1,0 +1,7 @@
+beziercurve beziercurve_nr 3 0 0 0 2 2 2 4 5 2
+extsurf es_beziercurve_nr beziercurve_nr 0 0 1
+offset es_beziercurve_nr_of es_beziercurve_nr 1
+puts "TODO #23133 ALL: Error : Incorrect input parameters are not processed correctly"
+if { [catch { mkface result es_beziercurve_nr_of 0 3 0 30 } out] == 0 } {
+  puts "Error : Incorrect input parameters are not processed correctly."
+}

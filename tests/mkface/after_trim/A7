@@ -1,0 +1,5 @@
+sphere a 30
+trim r a 0 1 0 1
+set MaxFTol 9.9999999999999995e-08
+set MaxETol 9.9999999999999995e-08
+set MaxVTol 9.9999999999999995e-08

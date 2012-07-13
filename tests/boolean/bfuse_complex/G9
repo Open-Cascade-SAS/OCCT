@@ -1,0 +1,15 @@
+# Original bug : cts20452
+# Date : 13Mai98
+# A1.gi
+
+restore  cts20452a.rle a
+restore  cts20452b.rle b
+
+
+bfuse result a b
+
+
+
+
+
+set square 538530

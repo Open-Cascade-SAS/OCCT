@@ -1,0 +1,10 @@
+# Original bug : pro12880
+# Date : 10 Sept 98
+
+restore pro12880_base.rle base
+restore pro12880_face.rle cont
+
+featprism base cont cont 0 1 0 1 1
+featperformval prism result 100
+
+set square 210704

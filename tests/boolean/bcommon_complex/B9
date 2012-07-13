@@ -1,0 +1,6 @@
+restore so2 b1
+restore so6 b2
+
+bcommon result b1 b2
+
+set square 315.548

@@ -1,0 +1,11 @@
+#box b -10 -10 -10 20 20 20
+#pcylinder c 8 15
+#ttranslate c 0 0 10
+#fuse s b c
+
+restore 6_A1234.draw s
+tscale s 0 0 0 SCALE2
+explode s E
+blend result s 3*SCALE2 s_4
+
+set square 3125.03

@@ -1,0 +1,5 @@
+set TheFileName shading_131.brep
+set bug_area "OCC22687"
+set rel_tol 1.34
+set bug_withouttri "OCC22687"
+set nbwithouttri(ALL) 1

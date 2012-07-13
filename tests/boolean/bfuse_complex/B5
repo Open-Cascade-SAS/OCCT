@@ -1,0 +1,6 @@
+restore so1 b1
+restore so4 b2
+
+bfuse result b1 b2
+
+set square 942.478

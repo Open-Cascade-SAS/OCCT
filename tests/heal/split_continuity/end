@@ -1,0 +1,11 @@
+puts [DT_ShapeDivide result a 0.01]
+set d [statshape result]
+puts $d
+
+set c0curv 0
+
+set rx [regexp "(\[0-9\]+)\\s+c0curv *: *Curve Only C0" $d full c0curv]
+
+if { $c0curv != 0 } {
+  puts "Error: $c0curv Curve Only C0 after DT_ShapeDivide operation."
+}

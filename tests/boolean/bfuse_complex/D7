@@ -1,0 +1,9 @@
+# Original bug : pro6965
+# Date : 11mar98
+
+restore pro6965a.rle a
+restore pro6965b.rle b
+
+bfuse result a b 
+
+set square 406922

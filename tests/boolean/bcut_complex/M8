@@ -1,0 +1,9 @@
+# Original bug : cts21296
+# Date : 16July98
+
+restore cts21296a.rle a 
+restore cts21296b.rle b
+
+bcut result a b
+
+set square 330624

@@ -1,0 +1,12 @@
+#box s1 0 0 0 10 10 10
+#box s2 0 0 0 4 4 4
+#ttranslate s2 4 4 10
+#fuse s s1 s2
+#save s A5678.draw 
+
+restore A5678.draw s
+tscale s 0 0 0 SCALE1
+explode s e
+blend result s 0.5*SCALE1 s_1 0.5*SCALE1 s_20 0.5*SCALE1 s_15 0.5*SCALE1 s_24
+
+set square 66070.8

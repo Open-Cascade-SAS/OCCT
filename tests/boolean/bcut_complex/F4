@@ -1,0 +1,9 @@
+# Original bug : pro11730
+# Date : 19mar98
+
+restore pro11730_part.rle part
+restore pro11730_tool.rle tool
+
+bcut result part tool
+
+set square 275.753

@@ -1,0 +1,121 @@
+#Drivers' nick-names:
+#Box|Sph|Cyl|Cut|Fuse|Prism|SecRevol|FulRevol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
+# order of functions recomputation should be defined out of the tool (by end user)
+
+#Commands of transformation:
+#PTranslateDXYZ Doc ShapeEntry dx dy dz
+#PTranslateAlongLine Doc ShapeEntry  Line off
+#PRotateRoundLine Doc ShapeEntry Line Angle
+#PMirror Doc ShapeEntry PlaneObj
+
+## Test of transformation functions
+AddDriver D Box Attach PTxyz PTALine PRLine PMirr Sph Prism FulRevol SecRevol
+#1 - create box using more flexible set of commands
+NewCommand D
+isos 12
+set B2 [AddObject D];			## add object
+set F2 [AddFunction D $B2 Box];		## add function
+BoxDX D $B2 190;			## set argumets of this function
+BoxDY D $B2 290
+BoxDZ D $B2 390
+InitLogBook D;				## initialize (clean) internal maps of labels
+ComputeFun D $F2;			## compute the function
+GetShape D $F2:2 Box2;			## check result
+fit
+whatis Box2
+GetReference D $B2;			## referes to result NS
+
+
+#2 Prism  (after step #1)
+explode Box2 F
+set Sel1 [AttachShape D Box2_1 ${B2} ${B2} 0]
+set Prism [AddPrism D $Sel1 300 0]
+ComputeFun D $Prism:1
+GetShape D $Prism:1:2 Pr
+
+PrismHeight D $Prism 500
+ComputeFun D $Prism:1
+GetShape D $Prism:1:2 Pr
+fit
+
+
+#3 Revol Full
+explode Box2 F
+explode Box2_3 E
+set SBas1 [AttachShape D Box2_3 ${B2} ${B2} 0]
+set SAx1 [AttachShape D Box2_3_3 ${B2} ${B2} 0]
+set FRev [AddRevol D $SBas1  $SAx1]
+ComputeFun D $FRev:1
+GetShape D $FRev:1:2 R1           
+
+#5
+NewCommand D
+set FTr1 [PTranslateDXYZ D $FRev -250 0 0]
+ComputeFun D $FTr1;                     ## function recomputation
+GetShape D $FTr1:2 R1;	        ## get modified result
+
+#6 => fuse
+AddDriver D Fuse
+set FS1 [AddFuse D $Prism $FRev]
+ComputeFun D $FS1
+GetShape D $FS1:2 Pr
+
+
+
+#7 Revol Sectioned
+GetShape D $F2:2 Box2;
+explode Box2 F
+explode Box2_2 E
+set SBas2 [AttachShape D Box2_2 ${B2} ${B2} 0]
+set SAx2 [AttachShape D Box2_2_3 ${B2} ${B2} 0]
+set SRev [AddRevol D $SBas2  $SAx2 120 0]
+ComputeFun D $SRev:1
+GetShape D $SRev:1:2 R2
+
+#8
+set FS2 [AddFuse D $B2 $SRev]
+ComputeFun D $FS2
+GetShape D $FS2:2 Box2
+
+#9
+set FS3 [AddFuse D $B2 $Prism]
+ComputeFun D $FS3
+GetShape D $FS3:2 Box2
+
+#7
+NewCommand D 
+set SL [TestSingleSelection D $B2 0]
+set SL2 [TestMultipleSelection D $B2 0]
+# both have failed units!!!
+
+NewCommand D
+BoxDZ D $B2 420
+
+#8 order of recomputation
+NewCommand D
+InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
+ComputeFun D $F2;	
+ComputeFun D $Sel1:1
+ComputeFun D $Prism:1
+ComputeFun D $SBas1:1
+ComputeFun D $SAx1:1
+ComputeFun D $FRev:1
+ComputeFun D $FTr1
+ComputeFun D $FS1
+ComputeFun D $SBas2:1
+ComputeFun D $SAx2:1
+ComputeFun D $SRev:1
+ComputeFun D $FS2
+ComputeFun D $FS3
+GetShape D $FS3:2 Box2
+
+
+SolveFlatFrom D $SL
+NewCommand D
+
+#11 Sphere    
+#explode Box2 V
+#set SPnt1 [AttachShape D Box2_1 ${B2} ${B2}]
+#set Sph1 [AddSphere D $SPnt1 30]
+#ComputeFun D $Sph1:1
+#GetShape D $Sph1:1:2 Sph

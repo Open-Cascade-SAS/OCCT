@@ -1,0 +1,12 @@
+# Original bug : cts21182
+# Date : 16July98
+
+restore cts21182a.rle a 
+restore cts21182b.rle skface
+
+# Cut
+revol b skface 0 0 0 0 0 1 360
+
+bcut result a b
+
+set square 172676

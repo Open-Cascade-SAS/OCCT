@@ -1,0 +1,9 @@
+# Original bug : pro12896
+# Date : 30mar98
+
+restore pro12896a.rle a
+restore pro12896b.rle b
+
+bfuse result a b
+
+set square 202328

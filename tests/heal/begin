@@ -1,0 +1,21 @@
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload TOPTEST
+}
+if { [array get Draw_Groups "Shape Healing"] == "" } {
+    pload XSDRAW
+}
+# To prevent loops limit to 5 minutes
+cpulimit 300
+
+if {[string compare [datadir] "."] == 0} { 
+   datadir [file dirname [info script]]/data
+}
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+
