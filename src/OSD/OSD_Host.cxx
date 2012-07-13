@@ -258,7 +258,7 @@ OSD_Host :: OSD_Host () {
   nSize                         = MAX_COMPUTERNAME_LENGTH + 1;
   osVerInfo.dwOSVersionInfoSize = sizeof ( OSVERSIONINFO );
 
-  ZeroMemory (  szHostName, sizeof ( hostName )  );
+  ZeroMemory (  szHostName, sizeof ( Standard_Character ) *  (MAX_COMPUTERNAME_LENGTH + 1) );
 
   if (  !GetVersionEx ( &osVerInfo )  ) {
 
