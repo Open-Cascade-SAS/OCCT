@@ -2214,7 +2214,7 @@ void CalculPtsInterTriEdgeCoplanaires(const Standard_Integer TriSurfID,
     }
   
     if (NbPoints!=0) {
-      if (Abs(PEP1.U()-PEP1.U())<MyConfusionPrecision
+      if (Abs(PEP1.U()-PEP2.U())<MyConfusionPrecision
           &&(Abs(PEP1.V()-PEP2.V())<MyConfusionPrecision) ) NbPoints=1;
       
       SP1.SetXYZ(PEP1.X(),PEP1.Y(),PEP1.Z());
