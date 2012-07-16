@@ -461,23 +461,6 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
     U0 = TheSurfaceTool::FirstUParameter(surface);
     U1 = TheSurfaceTool::LastUParameter(surface); 
 
-    //-- ofv: begin
-    Standard_Boolean doTrim = DoTrim(curve,surface);
-    if(doTrim) {
-      TColgp_Array2OfPnt aPS(1,50,1,50);
-      Bnd_Box SB;
-      Standard_Real g = 1.e-7;
-      DoSurface(surface,U0,U1,V0,V1,aPS,SB,g);
-      Bnd_Box CB;
-      DoCurve(curve,CB);
-      CB.Enlarge(g);
-      TColStd_Array1OfReal X(1,2), Y(1,2), Z(1,2);
-      DoCommonBox(SB,CB,X,Y,Z);
-      TColStd_Array1OfReal B(1,4);
-      DoNewBounds(surface,U0,U1,V0,V1,aPS,X,Y,Z,B);
-      U0 = B(1); U1 = B(2); V0 = B(3); V1 = B(4);
-    }
-    //-- ofv: end
 
 #if 0
     //-- jgv patch (from)
