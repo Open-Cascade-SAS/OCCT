@@ -296,7 +296,7 @@ Standard_Boolean GeomLib_Tool::Parameter(const Handle(Geom_Curve)& Curve,
     }
   // process parametrical curves
   else if( KindOfCurve == STANDARD_TYPE (Geom_BSplineCurve) ||
-	   KindOfCurve == STANDARD_TYPE (Geom_BSplineCurve) ||
+	   KindOfCurve == STANDARD_TYPE (Geom_BezierCurve) ||
 	   KindOfCurve == STANDARD_TYPE (Geom_TrimmedCurve) ||
 	   KindOfCurve == STANDARD_TYPE (Geom_OffsetCurve) )
     {
@@ -546,7 +546,7 @@ Standard_Boolean GeomLib_Tool::Parameter(const Handle(Geom2d_Curve)& Curve,
     }
   // process parametrical curves
   else if( KindOfCurve == STANDARD_TYPE (Geom2d_BSplineCurve) ||
-	   KindOfCurve == STANDARD_TYPE (Geom2d_BSplineCurve) ||
+	   KindOfCurve == STANDARD_TYPE (Geom2d_BezierCurve) ||
 	   KindOfCurve == STANDARD_TYPE (Geom2d_TrimmedCurve) ||
 	   KindOfCurve == STANDARD_TYPE (Geom2d_OffsetCurve) )
     {
