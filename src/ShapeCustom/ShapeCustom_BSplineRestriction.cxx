@@ -729,7 +729,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
 
     if(myDeg) {
       if(MaxSeg < myParameters->GMaxSeg()){ 
-        if(aCV != 0 || aCV != 0) {
+        if(aCV != 0 || aCU != 0) {
           if(aCV > 0) aCV--;
           if(aCU > 0) aCU--;
         }
