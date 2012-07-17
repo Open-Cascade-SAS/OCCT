@@ -369,7 +369,7 @@ void ShapeUpgrade_WireDivide::Perform ()
 	    theSplit2dTool->SetSplitValues (theKnots2d);
 	  theSplit2dTool->Perform (Standard_True);
 	  Handle(TColStd_HSequenceOfReal) revKnots2d = theSplit2dTool->SplitValues();
-	  if(revKnots2d->Length()!=revKnots2d->Length()) {
+	  if(revKnots2d->Length()!=theKnots2d->Length()) {
 	    isSeam = Standard_False;
 #ifdef DEB
 	    cout << "Error: ShapeUpgrade_WireDivide: seam has different splitting values on pcurvesd" << endl;
