@@ -38,7 +38,7 @@ public:
   BRepMesh_PairOfIndex(const BRepMesh_PairOfIndex& theOther)
   {
     myIndx1 = theOther.myIndx1;
-    myIndx1 = theOther.myIndx2;
+    myIndx2 = theOther.myIndx2;
   }
 
   //! Clear indices
