@@ -172,7 +172,7 @@ TopoDS_Edge ChFi2d_Builder::AddChamfer(const TopoDS_Edge& E,
   } //  if (IsAChamfer ...
 
   if (!IsLineOrCircle(adjEdge1,newFace) 
-      || !IsLineOrCircle(adjEdge1,newFace) ) {
+      || !IsLineOrCircle(adjEdge2,newFace) ) {
     status = ChFi2d_NotAuthorized;
     return aChamfer;
   } //  if (!IsLineOrCircle ...
