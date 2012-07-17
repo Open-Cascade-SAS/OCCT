@@ -2042,7 +2042,7 @@ void ProcessAloneStickVertices(const Standard_Integer nF1,
 	const IntTools_Curve& aIC=aBC.Curve();
 	//Handle(Geom_Curve) aC3D=aIC.Curve(); //DEB
 	aTypeC=aIC.Type();
-	if (!(aTypeC==GeomAbs_BezierCurve || GeomAbs_BSplineCurve)) {
+	if (!(aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve)) {
 	  continue;
 	}
 	//
