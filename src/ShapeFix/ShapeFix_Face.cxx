@@ -588,7 +588,7 @@ Standard_Boolean ShapeFix_Face::Perform()
           B.Add (tmpFace,iter.Value());
           continue;
         }
-        if(iter.Value().Orientation() != TopAbs_FORWARD || 
+        if(iter.Value().Orientation() != TopAbs_FORWARD && 
            iter.Value().Orientation() != TopAbs_REVERSED) {
           B.Add (tmpFace,TopoDS::Wire(iter.Value()));
           continue;
@@ -1701,7 +1701,7 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire()
   Standard_Real prec = ::Precision::PConfusion()*100;
   for (TopoDS_Iterator wi (myFace, Standard_False); wi.More(); wi.Next()) {
     if(wi.Value().ShapeType() != TopAbs_WIRE && 
-       (wi.Value().Orientation() != TopAbs_FORWARD || wi.Value().Orientation() != TopAbs_REVERSED))
+       (wi.Value().Orientation() != TopAbs_FORWARD && wi.Value().Orientation() != TopAbs_REVERSED))
         continue;
     TopoDS_Wire wire = TopoDS::Wire ( wi.Value() );
     Handle(ShapeAnalysis_Wire) saw = new ShapeAnalysis_Wire(wire,myFace,prec);
