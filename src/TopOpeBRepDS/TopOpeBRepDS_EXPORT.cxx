@@ -1820,7 +1820,7 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
                FUN_selectSKinterference(loicopy,TopOpeBRepDS_FACE,l1);
       TopOpeBRepDS_ListOfInterference lFOR; Standard_Integer nFOR = FUN_selectTRAORIinterference(l1,TopAbs_FORWARD,lFOR);
       TopOpeBRepDS_ListOfInterference lREV; Standard_Integer nREV = FUN_selectTRAORIinterference(l1,TopAbs_REVERSED,lREV);
-      if ((nFOR = 0) || (nREV == 0)) continue;
+      if ((nFOR == 0) || (nREV == 0)) continue;
 
       TopOpeBRepDS_ListOfInterference lnewI; Standard_Integer iFS=0;
       TopOpeBRepDS_ListIteratorOfListOfInterference it(lFOR);
