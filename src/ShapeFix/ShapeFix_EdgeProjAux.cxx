@@ -280,7 +280,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
   cf = theCurve2d->FirstParameter();
   cl = theCurve2d->LastParameter();
   //pdn cutting pcurve by suface bounds
-  if (Precision::IsInfinite(cf)||Precision::IsInfinite(cf)) {
+  if (Precision::IsInfinite(cf)||Precision::IsInfinite(cl)) {
     if(theCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line))) {
       Standard_Real uf,ul,vf,vl;
       theSurface->Bounds(uf,ul,vf,vl);
