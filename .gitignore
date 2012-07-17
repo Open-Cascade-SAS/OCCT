@@ -1,5 +1,5 @@
 
-# /
+# standard directories for derived files in CASROOT
 /.adm
 /sun
 /lin
@@ -13,8 +13,33 @@
 /win32
 /win64
 
-# /adm/
-/adm/win32
-/adm/win64
+# project files and artifacts
+/adm/msvc
+/adm/wnt/cbp
 /adm/mac
-/adm/lin
+/adm/make
+*.vcproj*user
+*.ncb
+*.suo
+
+# test results
+/results*
+
+# Emacs backup files
+*~
+
+#Generated files
+*.in
+/*.am
+/*.m4
+/*.ac
+/*.sh
+/*.bat
+/autom4te.cache
+/build_configure
+/configure
+/make
+/config.*
+/Makefile
+/libtool
+/stamp*
