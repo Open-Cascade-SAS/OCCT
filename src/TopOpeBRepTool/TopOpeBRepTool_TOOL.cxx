@@ -327,7 +327,7 @@ Standard_Integer TopOpeBRepTool_TOOL::OnBoundary(const Standard_Real par, const 
   
   Standard_Boolean onf = Abs(par-first)<tolp;
   Standard_Boolean onl = Abs(par-last)<tolp;
-  Standard_Boolean onfl =  (onf || onf);
+  Standard_Boolean onfl =  (onf || onl);
   if (onfl && closed) return CLOSING;
   if (onf) return FORWARD;
   if (onl) return REVERSED;
