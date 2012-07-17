@@ -422,6 +422,7 @@
     break;
 
   default:
+    return Standard_False;
     break;
   }
   //
