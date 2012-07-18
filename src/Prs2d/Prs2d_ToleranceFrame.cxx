@@ -192,7 +192,7 @@ void Prs2d_ToleranceFrame::Draw( const Handle(Graphic2d_Drawer)& aDrawer ) {
     
     //------------additional text's cells
 
-    if ( myTolTxt.Length() || myTxt1.Length() || myTxt1.Length() ) {
+    if ( myTolTxt.Length() || myTxt1.Length() || myTxt2.Length() ) {
       gp_Pnt2d PntP( myX, myY );
       gp_Vec2d theV1( gp_Pnt2d( myX, myY - myHeight/2 ), PntP );
       theV1.Rotate( myAngle );
