@@ -460,8 +460,8 @@ void GGraphic2d_SetOfCurves::Save(Aspect_FStream& aFStream) const
 	theBC->Poles( tpoles );
 	*aFStream << "Geom2d_BezierCurve" << endl;
 
-	for ( i = 1; i <= nbPoles; i++ ) 
-	  *aFStream << tpoles(i).X() << ' ' << tpoles(i).Y() << endl;
+	for ( Standard_Integer k = 1; k <= nbPoles; k++ ) 
+	  *aFStream << tpoles(k).X() << ' ' << tpoles(k).Y() << endl;
 
 	} else if ( myCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) ) {
 	Handle(Geom2d_BSplineCurve) theBSC = Handle(Geom2d_BSplineCurve)::DownCast(myCurve);
