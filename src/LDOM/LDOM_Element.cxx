@@ -79,12 +79,12 @@ LDOM_Attr LDOM_Element::getAttributeNode (const LDOMString& aName) const
     if (aNode && aNode -> getNodeType () != LDOM_Node::ATTRIBUTE_NODE)
       while (1) {
         const LDOM_BasicNode * aSibling = aNode -> GetSibling();
+        if (aSibling == NULL)
+          return LDOM_Attr ();
         if (aSibling -> getNodeType () == LDOM_Node::ATTRIBUTE_NODE) {
           (const LDOM_BasicNode *&) myLastChild = aSibling;
           break;
         }
-        if (aSibling == NULL)
-          return LDOM_Attr ();
         aNode = aSibling;
       }
   }
