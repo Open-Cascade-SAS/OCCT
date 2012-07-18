@@ -236,7 +236,7 @@ void AIS_InteractiveContext::UpdateCurrentViewer()
 
 void AIS_InteractiveContext::OpenCollector()
 {
-  myIsCollClosed =Standard_True;
+  myIsCollClosed = Standard_False;
   // to be completed....
 }
 
