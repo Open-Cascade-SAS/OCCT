@@ -153,7 +153,7 @@ void AIS_ConcentricRelation::ComputeTwoVerticesConcentric(const Handle(Prs3d_Pre
   myPnt = myCenter.Translated(vectrans.Multiplied(myRad));
   DsgPrs_ConcentricPresentation::Add(aPresentation,myDrawer,myCenter,myRad,myDir,myPnt);
   if (!isOnPlanVertex1) AIS::ComputeProjVertexPresentation(aPresentation,myDrawer,V1,P1);
-  if (!isOnPlanVertex1) AIS::ComputeProjVertexPresentation(aPresentation,myDrawer,V2,P2);
+  if (!isOnPlanVertex2) AIS::ComputeProjVertexPresentation(aPresentation,myDrawer,V2,P2);
 }
 
 //=======================================================================
