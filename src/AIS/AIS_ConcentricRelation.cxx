@@ -110,8 +110,8 @@ void AIS_ConcentricRelation::ComputeEdgeVertexConcentric(const Handle(Prs3d_Pres
     V = TopoDS::Vertex(mySShape);
   }
   else {
-    E = TopoDS::Edge(myFShape);
-    V = TopoDS::Vertex(mySShape);
+    E = TopoDS::Edge(mySShape);
+    V = TopoDS::Vertex(myFShape);
   }
   gp_Pnt p1,p2;
   Handle(Geom_Curve) C;
