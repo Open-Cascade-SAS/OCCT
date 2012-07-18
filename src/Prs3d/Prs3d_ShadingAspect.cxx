@@ -220,8 +220,10 @@ Standard_Real aValue(0.);
     case Aspect_TOFM_BOTH_SIDE:
     case Aspect_TOFM_FRONT_SIDE:
 	aValue = myAspect->FrontMaterial().Transparency();
+	break;
     case Aspect_TOFM_BACK_SIDE:
 	aValue = myAspect->BackMaterial().Transparency();
+	break;
   }
   return aValue;
 }
