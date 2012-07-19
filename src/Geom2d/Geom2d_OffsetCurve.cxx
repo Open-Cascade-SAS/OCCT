@@ -83,7 +83,7 @@ Geom2d_OffsetCurve::Geom2d_OffsetCurve (const Handle(Curve)& C,
 : offsetValue (Offset) 
 {
   if (C->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve)) {
-    Handle(OffsetCurve) OC = Handle(OffsetCurve)::DownCast(C->Copy());
+    Handle(OffsetCurve) OC = Handle(OffsetCurve)::DownCast(C);
     if ((OC->BasisCurve())->Continuity() == GeomAbs_C0)  
       Standard_ConstructionError::Raise();
 
