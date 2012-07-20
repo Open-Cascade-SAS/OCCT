@@ -60,9 +60,9 @@ void RWStepShape_RWAngularSize::ReadStep (const Handle(StepData_StepReaderData)&
   StepShape_AngleRelator aAngleSelection = StepShape_Small;
   if (data->ParamType (num, 3) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 3);
-    if      (strcmp(text, ".EQUAL.")) aAngleSelection = StepShape_Equal;
-    else if (strcmp(text, ".LARGE.")) aAngleSelection = StepShape_Large;
-    else if (strcmp(text, ".SMALL.")) aAngleSelection = StepShape_Small;
+    if      (strcmp(text, ".EQUAL.") == 0) aAngleSelection = StepShape_Equal;
+    else if (strcmp(text, ".LARGE.") == 0) aAngleSelection = StepShape_Large;
+    else if (strcmp(text, ".SMALL.") == 0) aAngleSelection = StepShape_Small;
     else ach->AddFail("Parameter #3 (angle_selection) has not allowed value");
   }
   else ach->AddFail("Parameter #3 (angle_selection) is not enumeration");
