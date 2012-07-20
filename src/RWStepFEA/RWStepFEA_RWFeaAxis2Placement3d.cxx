@@ -78,9 +78,9 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep (const Handle(StepData_StepReader
   StepFEA_CoordinateSystemType aSystemType;
   if (data->ParamType (num, 5) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 5);
-    if      (strcmp(text, ".CARTESIAN.")) aSystemType = StepFEA_Cartesian;
-    else if (strcmp(text, ".CYLINDRICAL.")) aSystemType = StepFEA_Cylindrical;
-    else if (strcmp(text, ".SPHERICAL.")) aSystemType = StepFEA_Spherical;
+    if      (strcmp(text, ".CARTESIAN.") == 0) aSystemType = StepFEA_Cartesian;
+    else if (strcmp(text, ".CYLINDRICAL.") == 0) aSystemType = StepFEA_Cylindrical;
+    else if (strcmp(text, ".SPHERICAL.") == 0) aSystemType = StepFEA_Spherical;
     else ach->AddFail("Parameter #5 (system_type) has not allowed value");
   }
   else ach->AddFail("Parameter #5 (system_type) is not enumeration");
