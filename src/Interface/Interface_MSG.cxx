@@ -142,7 +142,7 @@ Standard_Integer  Interface_MSG::Read (Standard_IStream& S)
     if (buf[0] == '\0') continue;
     if (buf[0] == '@') {
       nb ++;
-      for (i = 1; i <= 200; i ++) {
+      for (i = 1; i <= 199; i ++) {
 	key[i-1] = buf[i];
 	if (buf[i] == '\0') break;
       }
