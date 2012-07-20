@@ -84,7 +84,8 @@ is
                 theSurf    : HSurface      from BRepAdaptor;
                 theTrigu   : Triangulation from Poly;
                 theDefEdge : Real          from Standard;
-                theLoc     : Location      from TopLoc)
+                theLoc     : Location      from TopLoc;
+                theMutexProvider: MutexForShapeProvider from TopTools)
           returns Boolean from Standard is protected;
         
  

@@ -19,7 +19,9 @@
 
 #include <TopTools_MutexForShapeProvider.hxx>
 
+#include <Standard_Mutex.hxx>
 #include <TopoDS_Iterator.hxx>
+
 
 // macro to compare two types of shapes
 #define SAMETYPE(x,y) ((x) == (y))
@@ -73,10 +75,10 @@ void TopTools_MutexForShapeProvider::CreateMutexesForSubShapes(const TopoDS_Shap
 //=======================================================================
 void TopTools_MutexForShapeProvider::CreateMutexForShape(const TopoDS_Shape& theShape)
 {
-  if (!myMap.IsBound(theShape))
+  if (!myMap.IsBound(theShape.TShape()))
   {
     Standard_Mutex* aMutex = new Standard_Mutex();
-    myMap.Bind(theShape, aMutex);
+    myMap.Bind(theShape.TShape(), aMutex);
   }
 }
 
@@ -86,9 +88,9 @@ void TopTools_MutexForShapeProvider::CreateMutexForShape(const TopoDS_Shape& the
 //=======================================================================
 Standard_Mutex* TopTools_MutexForShapeProvider::GetMutex(const TopoDS_Shape& theShape) const
 {
-  if (myMap.IsBound(theShape))
+  if (myMap.IsBound(theShape.TShape()))
   {
-    Standard_Mutex* aMutex = myMap.Find(theShape);
+    Standard_Mutex* aMutex = myMap.Find(theShape.TShape());
     return aMutex;
   }
   else
@@ -103,7 +105,7 @@ Standard_Mutex* TopTools_MutexForShapeProvider::GetMutex(const TopoDS_Shape& the
 //=======================================================================
 void TopTools_MutexForShapeProvider::RemoveAllMutexes()
 {
-  for (NCollection_DataMap<TopoDS_Shape, Standard_Mutex *, TopTools_ShapeMapHasher>::Iterator anIter;
+  for (NCollection_DataMap<TopoDS_Shape, Standard_Mutex *>::Iterator anIter;
          anIter.More(); anIter.Next())
   {
     delete anIter.Value();

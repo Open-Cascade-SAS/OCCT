@@ -21,17 +21,20 @@
 #ifndef _TopTools_MutexForShapeProvider_HeaderFile
 #define _TopTools_MutexForShapeProvider_HeaderFile
 
+#include <Handle_TopoDS_TShape.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_Mutex.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 
+class Standard_Mutex;
+class TopoDS_Shape;
 
 //! Class TopTools_MutexForShapeProvider 
 //!   This class is used to create and store mutexes associated with shapes.
 class TopTools_MutexForShapeProvider
 {
+  friend Standard_Boolean IsEqual(const Handle_TopoDS_TShape & theFirstHandle,
+                                  const Handle_TopoDS_TShape & theSecondHandle);
+
 public:
   //! Constructor
   Standard_EXPORT TopTools_MutexForShapeProvider();
@@ -59,8 +62,14 @@ private:
   TopTools_MutexForShapeProvider & operator = (const TopTools_MutexForShapeProvider &);
 
 
-  NCollection_DataMap<TopoDS_Shape, Standard_Mutex *, TopTools_ShapeMapHasher> myMap;
+  NCollection_DataMap<Handle_TopoDS_TShape, Standard_Mutex *> myMap;
 
 };
+
+inline Standard_Boolean IsEqual(const Handle_TopoDS_TShape & theFirstHandle,
+                                const Handle_TopoDS_TShape & theSecondHandle)
+{
+  return (theFirstHandle == theSecondHandle);
+}
 
 #endif
