@@ -36,6 +36,10 @@
 
 #include <Geom2dInt_GInter.hxx>
 
+#include <Extrema_ExtPC2d.hxx>
+#include <IntRes2d_Transition.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
+
 //=======================================================================
 //function : BRepClass_Intersector
 //purpose  : 
@@ -73,6 +77,45 @@ void  BRepClass_Intersector::Perform(const gp_Lin2d& L,
     TopExp::Vertices(EE, Vdeb, Vfin);
     BRepAdaptor_Curve2d C(EE,F);
     Standard_Real deb = C.FirstParameter(), fin = C.LastParameter();
+
+    // Case of "ON": direct check of belonging to edge
+    // taking into account the tolerance
+    Extrema_ExtPC2d theExtPC2d(L.Location(), C);
+    Standard_Real MinDist = RealLast(), aDist;
+    Standard_Integer MinInd = 0, i;
+    if (theExtPC2d.IsDone())
+    {
+      for (i = 1; i <= theExtPC2d.NbExt(); i++)
+      {
+        aDist = theExtPC2d.SquareDistance(i);
+        if (aDist < MinDist)
+        {
+          MinDist = aDist;
+          MinInd = i;
+        }
+      }
+    }
+    if (MinInd)
+      MinDist = sqrt(MinDist);
+    if (MinDist <= Tol)
+    {
+      gp_Pnt2d pnt_exact = (theExtPC2d.Point(MinInd)).Value();
+      Standard_Real par = (theExtPC2d.Point(MinInd)).Parameter();
+      IntRes2d_Transition tr_on_lin(IntRes2d_Head);
+      IntRes2d_Position pos_on_curve = IntRes2d_Middle;
+      if (Abs(par - deb) <= Precision::Confusion())
+        pos_on_curve = IntRes2d_Head;
+      else if (Abs(par - fin) <= Precision::Confusion())
+        pos_on_curve = IntRes2d_End;
+      IntRes2d_Transition tr_on_curve(pos_on_curve);
+      IntRes2d_IntersectionPoint pnt_inter(pnt_exact, 0., par,
+                                           tr_on_lin, tr_on_curve, Standard_False);
+      this->Append(pnt_inter);
+      done = Standard_True;
+      return;
+    }
+    ///////////////
+    
     gp_Pnt2d pdeb,pfin;
     C.D0(deb,pdeb);
     C.D0(fin,pfin);

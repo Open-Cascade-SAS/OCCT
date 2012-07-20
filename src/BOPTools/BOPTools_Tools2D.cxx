@@ -704,6 +704,9 @@ static
   Standard_Real aT, aT1, aT2;
 
   Handle(Geom_Curve)aC1=BRep_Tool::Curve(aE, aT1, aT2);
+  if (aC1.IsNull())
+    BRep_Tool::Range(aE, aT1, aT2);
+  
   aT=BOPTools_Tools2D::IntermediatePoint(aT1, aT2);
   return aT;
 }
