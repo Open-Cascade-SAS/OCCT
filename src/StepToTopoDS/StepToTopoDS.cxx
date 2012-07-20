@@ -88,7 +88,7 @@ Handle(TCollection_HAsciiString) StepToTopoDS::DecodeEdgeError(const StepToTopoD
 	mess = new TCollection_HAsciiString("Translate Edge Done");
 	break;
       }
-    case StepToTopoDS_BuilderOther:
+    case StepToTopoDS_TranslateEdgeOther:
       {
 	mess = new TCollection_HAsciiString("Translate Edge Other");
 	break;
