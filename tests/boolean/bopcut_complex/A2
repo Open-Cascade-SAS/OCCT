@@ -2,8 +2,8 @@ puts "================================"
 puts "CUT of OCC118-2.brep and  OCC118-1.brep"
 puts "================================"
 
-restore OCC118-1.brep a
-restore OCC118-2.brep b
+restore [locate_data_file OCC118-1.brep] a
+restore [locate_data_file OCC118-2.brep] b
 
 bop b a
 bopcut result

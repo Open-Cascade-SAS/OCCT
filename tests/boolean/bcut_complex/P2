@@ -1,7 +1,7 @@
 ## CTS19305
 
-restore a.rle a
-restore b.rle b
+restore [locate_data_file a.rle] a
+restore [locate_data_file b.rle] b
 
 bcut result a b
 

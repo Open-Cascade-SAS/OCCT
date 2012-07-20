@@ -1,1 +1,1 @@
-restore CHE_vevopar.rle a
+restore [locate_data_file CHE_vevopar.rle] a

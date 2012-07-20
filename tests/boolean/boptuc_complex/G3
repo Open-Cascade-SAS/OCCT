@@ -5,7 +5,7 @@ ttranslate c 3 3 6
 
 bfuse rr b c
 
-restore A1_rr_7.brep A1_rr_7
+restore [locate_data_file A1_rr_7.brep] A1_rr_7
 prism p1  A1_rr_7 0 0 -4
 
 explode  rr so

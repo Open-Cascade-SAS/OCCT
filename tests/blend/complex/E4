@@ -4,7 +4,7 @@
 ## Comment : from pro10631
 ## ====================================
 
-restore pro10631.rle a
+restore [locate_data_file pro10631.rle] a
 explode a e
 blend result a 5 a_45
 

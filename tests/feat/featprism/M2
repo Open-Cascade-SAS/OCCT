@@ -1,8 +1,8 @@
 # Original bug : hkg60159
 # Date : 16 Sept 98
 
-restore hkg60159_base.rle base
-restore hkg60159_face.rle cont
+restore [locate_data_file hkg60159_base.rle] base
+restore [locate_data_file hkg60159_face.rle] cont
 
 explode base face
 copy base_5 funtil

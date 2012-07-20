@@ -1,1 +1,1 @@
-restore BUC60393.rle a
+restore [locate_data_file BUC60393.rle] a

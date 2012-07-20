@@ -1,5 +1,5 @@
-restore osa-shape a
-restore osa-contour b
+restore [locate_data_file osa-shape] a
+restore [locate_data_file osa-contour] b
 mkplane f b
 
 featprism a f f 1 0 0 0 1

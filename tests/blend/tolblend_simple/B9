@@ -12,7 +12,7 @@
 #explode s F
 #sewing s s_1 s_4
 
-restore 7_C2.draw s
+restore [locate_data_file 7_C2.draw] s
 tscale s 0 0 0 SCALE1 
 explode s e
 blend result s 15*SCALE1 s_3

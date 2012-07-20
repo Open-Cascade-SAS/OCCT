@@ -1,1 +1,1 @@
-restore CFI_fra60610.rle a
+restore [locate_data_file CFI_fra60610.rle] a

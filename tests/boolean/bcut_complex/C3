@@ -1,5 +1,5 @@
-restore f1 b1
-restore f41 b2
+restore [locate_data_file f1] b1
+restore [locate_data_file f41] b2
 
 bcut result b1 b2
 

@@ -1,9 +1,9 @@
 # Original bug : ger60039
 # Date : 11mar98
 
-restore ger60039a.shape a
+restore [locate_data_file ger60039a.shape] a
 fsameparameter a
-restore ger60039b.shape b 
+restore [locate_data_file ger60039b.shape] b 
 
 bfuse result a b
 

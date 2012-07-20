@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # A2.gif
 
-restore cts20453b.rle b
-restore cts20453a.rle a
+restore [locate_data_file cts20453b.rle] b
+restore [locate_data_file cts20453a.rle] a
 
 bfuse result a b
 

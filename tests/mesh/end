@@ -3,13 +3,13 @@
 if { [string compare ${TheFileName} ""] != 0 } {
     set is_brep [regexp "\.brep" $TheFileName]
     if {$is_brep == 1} {
-        puts [brestore [datadir]/${TheFileName} res]
+        puts [brestore [locate_data_file ${TheFileName}] res]
     } else {
         if { [array get Draw_Groups "DE: STEP"] == "" } {
 	    pload XDE
         }
         
-        stepread [datadir]/${TheFileName} a *
+        stepread [locate_data_file ${TheFileName}] a *
         tpcompound res
     }
 }
@@ -29,17 +29,6 @@ if { [string compare $command "incmesh"] == 0 } {
     set os "ALL"
     if {[array get env os_type] != ""} {
 	set os $env(os_type)
-    }
-    if { $parallel == 1 && [regexp {Windows} $os] == 0 && [string compare $group "standard"] == 0 } {
-        puts "TODO ?#23260 $os: An exception was caught"
-        puts "TODO ?#23260 $os: \\*\\* Exception \\*\\*"
-        puts "TODO ?#23260 $os: TEST INCOMPLETE"
-	if { [string compare $bug_freelinks ""] == 0 } {
-	    puts "TODO ?#23260 $os: Error: Free links:"
-	}
-	if { [string compare $bug_area ""] == 0 } {
-	    puts "TODO ?#23260 $os: Error   : area by triangles differs from true area by"
-	}
     }
     if { $parallel != 1 || [info exists count_parallel] == 0 } {
        set count_parallel 1

@@ -1,6 +1,6 @@
 #old file filtercb
 
-restore filter s
+restore [locate_data_file filter] s
 OFFSETSHAPE -.0015 {s_26 s_27 s_28 s_29} $calcul $type
 
 set volume 6.38048e-05

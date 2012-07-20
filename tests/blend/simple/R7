@@ -1,4 +1,4 @@
-restore 4_T1(shell).draw s
+restore [locate_data_file 4_T1(shell).draw] s
 tscale s 0 0 0 SCALE
 explode s E
 blend result s SCALE*0.001 s_2  SCALE*0.001 s_4  SCALE*0.001 s_1  SCALE*0.001 s_3  \

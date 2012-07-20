@@ -1,1 +1,1 @@
-restore CFE_diamant.rle a
+restore [locate_data_file CFE_diamant.rle] a

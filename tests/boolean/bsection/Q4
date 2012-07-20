@@ -1,8 +1,8 @@
 # Original bug : cts20370
 # Date : 19Mai98
 
-restore cts20370-part.rle part
-restore cts20370-tool.rle tool
+restore [locate_data_file cts20370-part.rle] part
+restore [locate_data_file cts20370-tool.rle] tool
 
 bsection result part tool
 

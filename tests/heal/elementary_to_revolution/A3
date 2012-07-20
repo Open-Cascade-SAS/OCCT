@@ -1,2 +1,2 @@
-restore sphereETR.rle a
+restore [locate_data_file sphereETR.rle] a
 set nb_revol 1

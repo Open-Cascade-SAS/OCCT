@@ -4,7 +4,7 @@
 ## Comment : from ID150018
 ## ====================================
 
-restore id150018.rle a
+restore [locate_data_file id150018.rle] a
 nexplode a e
 blend result a 30 a_20
 

@@ -1,5 +1,5 @@
-restore sf5 b1
-restore sf3 b2
+restore [locate_data_file sf5] b1
+restore [locate_data_file sf3] b2
 
 bop b1 b2
 bopcut result

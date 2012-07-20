@@ -1,8 +1,8 @@
 # Original bug : pro8951
 # Date : 19mar98
 
-restore pro8951a.rle base
-restore pro8951b.rle wire
+restore [locate_data_file pro8951a.rle] base
+restore [locate_data_file pro8951b.rle] wire
 
 mkplane cont wire
 

@@ -1,5 +1,5 @@
-restore pro14150a.rle a
-restore pro14150b.rle b
+restore [locate_data_file pro14150a.rle] a
+restore [locate_data_file pro14150b.rle] b
 bsection result a b -2d
 
 set length 267.619

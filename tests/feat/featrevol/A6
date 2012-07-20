@@ -1,8 +1,8 @@
 # Original bug : pro15515
 # Date : 12 Oct 98
 
-restore pro15515_base.rle base
-restore pro15515_face.rle cont
+restore [locate_data_file pro15515_base.rle] base
+restore [locate_data_file pro15515_face.rle] cont
 
 explode base face
 copy base_4 ffrom

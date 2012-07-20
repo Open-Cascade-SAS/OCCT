@@ -1,7 +1,7 @@
 # Original bug : hkg60206
 # Date : 26Aout98
 
-restore hkg60206.rle  a
+restore [locate_data_file hkg60206.rle]  a
 explode a f
 explode a_3 e
 

@@ -1,5 +1,5 @@
 #old file ofc25
-restore bb60 s
+restore [locate_data_file bb60] s
 OFFSETSHAPE 0.37 {} $calcul $type
 
 set volume 30.1125

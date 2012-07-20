@@ -1,1 +1,1 @@
-restore CIN900_fra61hls.rle a
+restore [locate_data_file CIN900_fra61hls.rle] a

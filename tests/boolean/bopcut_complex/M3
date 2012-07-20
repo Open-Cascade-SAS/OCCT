@@ -1,8 +1,8 @@
 # Original bug : cts20354
 # Date : 4June98
 
-restore cts20354-part.rle a
-restore cts20354-tool.rle b
+restore [locate_data_file cts20354-part.rle] a
+restore [locate_data_file cts20354-tool.rle] b
 
 bop a b 
 bopcut result

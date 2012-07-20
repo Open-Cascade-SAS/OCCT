@@ -2,8 +2,8 @@
 # Date : 21 sept 98
 
 
-restore cts21197c.rle part
-restore cts21197d.rle tool
+restore [locate_data_file cts21197c.rle] part
+restore [locate_data_file cts21197d.rle] tool
 
 bfuse result part tool
 

@@ -6,7 +6,7 @@
 #pcylinder s4 3 20 
 #fuse s s4 s3
 
-restore 6_I56.draw s
+restore [locate_data_file 6_I56.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 mkevol result s

@@ -3,7 +3,7 @@
 
 puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
 
-restore cts20194_base.brep base
+restore [locate_data_file cts20194_base.brep] base
 
 explode base face
 

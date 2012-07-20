@@ -1,1 +1,1 @@
-restore CCH_coco3.rle a
+restore [locate_data_file CCH_coco3.rle] a

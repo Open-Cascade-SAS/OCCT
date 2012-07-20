@@ -1,1 +1,1 @@
-restore CCH_indushem.rle a
+restore [locate_data_file CCH_indushem.rle] a

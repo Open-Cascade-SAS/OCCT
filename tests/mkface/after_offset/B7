@@ -1,4 +1,4 @@
-restore bs_s_np_r a
+restore [locate_data_file bs_s_np_r] a
 offset a_of a 3
 offset r a_of 3
 set MaxFTol 9.9999999999999995e-08

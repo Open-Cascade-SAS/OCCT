@@ -1,7 +1,3 @@
-if { [string compare [datadir] "."] == 0 } {
-   datadir "[file dirname [info script]]/data"
-}
-
 set Deflection 0.1
 set percent_max 5.
 

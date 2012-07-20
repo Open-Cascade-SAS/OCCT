@@ -1,1 +1,1 @@
-restore CFI_b5678fif.rle a
+restore [locate_data_file CFI_b5678fif.rle] a

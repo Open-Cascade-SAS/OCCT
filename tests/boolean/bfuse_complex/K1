@@ -1,8 +1,8 @@
 # Original bug : cts20370
 # Date : 4June98
 
-restore cts20370a.rle a
-restore cts20370b.rle b
+restore [locate_data_file cts20370a.rle] a
+restore [locate_data_file cts20370b.rle] b
 
 bfuse result a b
 

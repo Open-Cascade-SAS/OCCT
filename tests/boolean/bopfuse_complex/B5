@@ -1,7 +1,7 @@
 puts "TODO #22911 ALL: Error : The bopfuse can not be build"
 
-restore OCC100_sp.brep a
-restore OCC100_cyl.brep b
+restore [locate_data_file OCC100_sp.brep] a
+restore [locate_data_file OCC100_cyl.brep] b
 
 bop b a
 bopfuse result

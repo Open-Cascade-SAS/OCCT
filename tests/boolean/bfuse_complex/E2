@@ -1,9 +1,9 @@
 # Original bug : cts60005
 # Date : 19mar98
 
-restore cts60005a.rle a
+restore [locate_data_file cts60005a.rle] a
 fsameparameter a
-restore cts60005b.rle b
+restore [locate_data_file cts60005b.rle] b
 
 bfuse result a b
 

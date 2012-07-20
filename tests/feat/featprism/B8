@@ -1,5 +1,5 @@
-restore cylindre.rle cyl
-restore contour.rle cont
+restore [locate_data_file cylindre.rle] cyl
+restore [locate_data_file contour.rle] cont
 mkplane cont cont
 nexplode cyl F
 

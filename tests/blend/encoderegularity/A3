@@ -1,4 +1,4 @@
-restore conge004.brep m
+restore [locate_data_file conge004.brep] m
 explode m E
 encoderegularity m 3
 blend result m 10 m_5 10 m_6 \

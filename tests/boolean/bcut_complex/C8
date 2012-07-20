@@ -1,7 +1,7 @@
 puts "TODO #22911 ALL: Error : The bcut is not valid. The square is 0"
 
-restore so1 b1
-restore so2 b2
+restore [locate_data_file so1] b1
+restore [locate_data_file so2] b2
 
 bcut result b2 b1
 

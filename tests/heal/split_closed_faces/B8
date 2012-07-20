@@ -1,1 +1,1 @@
-restore CFI_n12__fiw.rle a
+restore [locate_data_file CFI_n12__fiw.rle] a

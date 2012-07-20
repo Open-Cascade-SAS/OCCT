@@ -1,8 +1,8 @@
 # Original bug : pro8951
 # Date : 17sept98
 
-restore pro8951c.rle base
-restore pro8951d.rle prism
+restore [locate_data_file pro8951c.rle] base
+restore [locate_data_file pro8951d.rle] prism
 
 bcut result base prism
 

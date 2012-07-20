@@ -1,8 +1,8 @@
 # Original bug : cts20124
 # Date : 24mar98
 
-restore cts20124a.rle a
-restore cts20124b.rle b
+restore [locate_data_file cts20124a.rle] a
+restore [locate_data_file cts20124b.rle] b
 
 bfuse result a b
 

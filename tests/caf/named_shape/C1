@@ -40,7 +40,7 @@ SetShape D ${aLabel} aBox1
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf002-C1.std
+set aFile ${imagedir}/caf002-C1.std
 file delete ${aFile}
 SaveAs D ${aFile}
 #catch {exec chmod 777 ${aFile}}

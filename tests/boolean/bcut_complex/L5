@@ -1,8 +1,8 @@
 # Original bug : fra60977
 # Date : 4June98
 
-restore fra60977a.rle a 
-restore fra60977b.rle b
+restore [locate_data_file fra60977a.rle] a 
+restore [locate_data_file fra60977b.rle] b
 
 prism b b 0 0 -50
 

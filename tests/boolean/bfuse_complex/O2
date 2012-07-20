@@ -3,8 +3,8 @@
 
 # part 2 of 4
 
-restore pro15203a.rle a 
-restore pro15203d.rle d 
+restore [locate_data_file pro15203a.rle] a 
+restore [locate_data_file pro15203d.rle] d 
 
 #pkv f
 explode a f

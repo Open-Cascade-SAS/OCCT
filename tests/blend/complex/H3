@@ -9,7 +9,7 @@ puts "TODO OCC22817 All:TEST INCOMPLETE"
 # - Il y des faces singulieres
 # - Il y des aretes partielement tangentes
 # - Et plein d'aretes de cassures de l'ordre de 1 ou 0.1 degree
-restore cts16288.rle m
+restore [locate_data_file cts16288.rle] m
 # Pour avoir un resultat valide, il faut un model valide
 fsameparameter m 0.001
 # Probleme de construction du model => 5 degree c'est tangent!

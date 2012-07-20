@@ -1,8 +1,8 @@
 # Original bug : cts21180
 # Date : 21 Sept 98
 
-restore cts21180c.rle part
-restore cts21180d.rle tool
+restore [locate_data_file cts21180c.rle] part
+restore [locate_data_file cts21180d.rle] tool
 updatetolerance tool 1
 
 bfuse result part tool

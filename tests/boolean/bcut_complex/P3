@@ -1,7 +1,7 @@
 ## cts20077
 
-restore shapetocut sh
-restore prismtocut  pr
+restore [locate_data_file shapetocut] sh
+restore [locate_data_file prismtocut]  pr
 
 bcut result sh pr
 

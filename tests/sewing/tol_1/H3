@@ -1,1 +1,1 @@
-restore CFI_6_d56fgy.rle a
+restore [locate_data_file CFI_6_d56fgy.rle] a

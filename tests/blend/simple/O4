@@ -6,7 +6,7 @@
 #cut s s1 s2
 #save s G1234.draw 
 
-restore G1234.draw s
+restore [locate_data_file G1234.draw] s
 tscale s 0 0 0 SCALE1
 explode s e
 blend result s 0.5*SCALE1 s_6 0.5*SCALE1 s_5 0.5*SCALE1 s_11

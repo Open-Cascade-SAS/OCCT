@@ -1,6 +1,6 @@
-restore shape.rle s
+restore [locate_data_file shape.rle] s
 explode s f
-restore wire.rle w
+restore [locate_data_file wire.rle] w
 mkplane w w
 
 featprism s w w 0 1 0 1 1

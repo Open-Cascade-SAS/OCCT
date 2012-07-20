@@ -3,7 +3,7 @@
 
 puts "TODO OCC22803 All:Error: The tolerance of result shape is too big"
 
-restore pro12877_base.brep base
+restore [locate_data_file pro12877_base.brep] base
 
 nexplode base face
 

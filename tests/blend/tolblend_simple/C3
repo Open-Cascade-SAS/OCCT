@@ -5,7 +5,7 @@
 #explode p F
 #glue s c p c_3 p_2
 
-restore 7_F1.draw s
+restore [locate_data_file 7_F1.draw] s
 tscale  s 0 0 0 SCALE1 
 explode s e
 blend result s 5*SCALE1 s_2

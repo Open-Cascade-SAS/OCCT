@@ -3,8 +3,8 @@ puts "GER61235"
 puts "intersect"
 puts ""
 
-restore ger61235a.brep tool 
-restore ger61235b.brep object 
+restore [locate_data_file ger61235a.brep] tool 
+restore [locate_data_file ger61235b.brep] object 
 
 bsection result object tool 
 

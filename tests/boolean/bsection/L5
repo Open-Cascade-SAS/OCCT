@@ -1,4 +1,4 @@
-restore GEN746.rle a
+restore [locate_data_file GEN746.rle] a
 explode a
 bsection result a_1 a_2 -2d -a
 

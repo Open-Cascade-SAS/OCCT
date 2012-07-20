@@ -2,8 +2,8 @@ puts "PRO16769"
 puts "Fuse"
 puts ""
 
-restore pro16769a.rle base
-restore pro16769b.rle tool
+restore [locate_data_file pro16769a.rle] base
+restore [locate_data_file pro16769b.rle] tool
 
 bfuse result base tool
 fsameparameter result

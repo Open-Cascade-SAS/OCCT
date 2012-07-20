@@ -1,5 +1,5 @@
-restore C4 w1
-restore C11 w2
+restore [locate_data_file C4] w1
+restore [locate_data_file C11] w2
 ttranslate w2 0 0 40
 thrusections result 0 0 w1 w2
 set square 2020.65

@@ -2,8 +2,8 @@ puts "================================="
 puts "COMMON of OCC213-2.brep and  OCC213-1.brep"
 puts "================================="
 
-restore OCC213-1.brep a
-restore OCC213-2.brep b
+restore [locate_data_file OCC213-1.brep] a
+restore [locate_data_file OCC213-2.brep] b
 
 bop b a 
 bopcommon result

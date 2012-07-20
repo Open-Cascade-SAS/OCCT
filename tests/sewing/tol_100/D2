@@ -1,1 +1,1 @@
-restore CFI_pro14714.rle a
+restore [locate_data_file CFI_pro14714.rle] a

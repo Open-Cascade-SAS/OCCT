@@ -1,8 +1,8 @@
 # Original bug : cts20769
 # Date : 4June98
 
-restore cts20769a.rle a
-restore cts20769b.rle b
+restore [locate_data_file cts20769a.rle] a
+restore [locate_data_file cts20769b.rle] b
 
 bop a b
 bopsection result

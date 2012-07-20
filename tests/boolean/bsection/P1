@@ -1,4 +1,4 @@
-restore intcq001.brep m
+restore [locate_data_file intcq001.brep] m
 explode m
 compound m_1 m_3 c1
 compound m_2 m_4 c2

@@ -2,8 +2,8 @@
 # Date : 15 Oct 98
 
 # face non tangente
-restore id260065_base.rle base
-restore id260065_face2.rle cont
+restore [locate_data_file id260065_base.rle] base
+restore [locate_data_file id260065_face2.rle] cont
 
 explode base face
 copy base_26 funtil

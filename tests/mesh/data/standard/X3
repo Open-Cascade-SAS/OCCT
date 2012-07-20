@@ -1,5 +1,5 @@
 set TheFileName ""
 
-restore OCC358a.brep f
-restore OCC358b.brep w
+restore [locate_data_file OCC358a.brep] f
+restore [locate_data_file OCC358b.brep] w
 pipe res w f

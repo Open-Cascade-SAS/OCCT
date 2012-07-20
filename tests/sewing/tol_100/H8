@@ -1,2 +1,2 @@
-restore CIN001_a45.rle a
+restore [locate_data_file CIN001_a45.rle] a
 set nb_f 4

@@ -3,9 +3,6 @@
 ## Date : 01.02.2012
 ## ==================================
 
-if { [string compare [datadir] "."] == 0 } {
-   datadir [file dirname [info script]]/data
-}
 if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
    pload TOPTEST
 }

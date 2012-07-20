@@ -13,7 +13,7 @@
 #explode s F
 #glue s c s c_3 s_2
 
-restore 6_E56.draw s
+restore [locate_data_file 6_E56.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 mkevol result s

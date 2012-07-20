@@ -1,4 +1,4 @@
-restore projortho002.brep p 
+restore [locate_data_file projortho002.brep] p 
 explode p
 compound p_2 p_3 s 
 nproject result s p_1 0.001 2 14 10

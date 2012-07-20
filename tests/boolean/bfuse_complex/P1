@@ -2,8 +2,8 @@
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO #22911 ALL: Error : The square of result shape is"
 
-restore cts17861a.rle a
-restore cts17861b.rle b
+restore [locate_data_file cts17861a.rle] a
+restore [locate_data_file cts17861b.rle] b
 
 fsameparameter a
 fsameparameter b

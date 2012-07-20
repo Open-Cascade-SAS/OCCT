@@ -1,8 +1,7 @@
 ## pro16343
-## datadir /dp_25/IBug/pro/16343
 
-restore fus-object1.brep a
-restore fus-object2.brep b
+restore [locate_data_file fus-object1.brep] a
+restore [locate_data_file fus-object2.brep] b
 
 bop a b
 bopsection result

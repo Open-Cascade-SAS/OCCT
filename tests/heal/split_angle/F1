@@ -1,1 +1,1 @@
-restore sh.rle a
+restore [locate_data_file sh.rle] a

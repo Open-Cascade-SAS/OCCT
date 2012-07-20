@@ -1,1 +1,1 @@
-restore CFE900_uki60gfk.rle a
+restore [locate_data_file CFE900_uki60gfk.rle] a

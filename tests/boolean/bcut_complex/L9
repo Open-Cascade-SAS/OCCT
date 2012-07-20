@@ -1,8 +1,8 @@
 # Original bug : cts20088
 # Date : 24June98
 
-restore cts20088a.rle a 
-restore cts20088b.rle b
+restore [locate_data_file cts20088a.rle] a 
+restore [locate_data_file cts20088b.rle] b
 
 bcut result a b
 

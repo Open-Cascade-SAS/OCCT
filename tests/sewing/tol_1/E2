@@ -1,1 +1,1 @@
-restore CFE_osa_sgad.rle a
+restore [locate_data_file CFE_osa_sgad.rle] a

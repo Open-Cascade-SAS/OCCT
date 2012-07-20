@@ -1,8 +1,8 @@
 # Original bug : cts20203
 # Date : 13Mai98
  
-restore  cts20203_base  base
-restore  cts20203_outil  outil
+restore [locate_data_file cts20203_base]  base
+restore [locate_data_file cts20203_outil]  outil
 
 bcut result base outil
 

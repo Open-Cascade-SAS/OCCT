@@ -3,8 +3,8 @@ puts "Fuse"
 puts ""
 
 
-restore ita60531a.rle b
-restore ita60531b.rle f
+restore [locate_data_file ita60531a.rle] b
+restore [locate_data_file ita60531b.rle] f
 
 # Operation booleenne -> shape pas valide
 prism tool f 0 0 1

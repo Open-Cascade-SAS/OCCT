@@ -1,5 +1,5 @@
-restore sg1 b1
-restore sg2 b2
+restore [locate_data_file sg1] b1
+restore [locate_data_file sg2] b2
 
 bop b1 b2
 boptuc result

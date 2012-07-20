@@ -3,8 +3,8 @@
 
 puts "TODO OCC23099 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
 
-restore pro12696a.rle a
-restore pro12696b.rle b
+restore [locate_data_file pro12696a.rle] a
+restore [locate_data_file pro12696b.rle] b
 
 bfuse result a b
 

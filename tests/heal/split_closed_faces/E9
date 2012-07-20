@@ -1,1 +1,1 @@
-restore RevolutionFG.rle a
+restore [locate_data_file RevolutionFG.rle] a

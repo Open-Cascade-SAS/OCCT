@@ -1,8 +1,8 @@
 # Original bug : ksi0014
 # Date : 11mar98
 
-restore ksi0014a.rle a
-restore ksi0014b.rle b
+restore [locate_data_file ksi0014a.rle] a
+restore [locate_data_file ksi0014b.rle] b
 
 bfuse result a b
 

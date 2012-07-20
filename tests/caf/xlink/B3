@@ -55,7 +55,7 @@ CopyWithLink Doc1 ${aLabel2} Doc1 ${aLabel1}
 NewCommand Doc1
 
 # Save the document
-set aFile ${WorkDirectory}/caf004-B3.std
+set aFile ${imagedir}/caf004-B3.std
 file delete ${aFile}
 SaveAs Doc1 ${aFile}
 if { ![file exists ${aFile}] } {

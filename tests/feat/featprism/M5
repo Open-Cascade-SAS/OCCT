@@ -2,8 +2,8 @@
 # bis cts20212
 # Date : 22 Sept 98
 
-restore cts20872_base.rle base
-restore cts20872_face.rle cont
+restore [locate_data_file cts20872_base.rle] base
+restore [locate_data_file cts20872_face.rle] cont
 
 explode base face
 copy base_12 funtil

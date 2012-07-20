@@ -1,1 +1,1 @@
-restore CTO900_buc60219b.rle a
+restore [locate_data_file CTO900_buc60219b.rle] a

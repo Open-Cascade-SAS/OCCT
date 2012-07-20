@@ -5,12 +5,12 @@ puts "PRO18457"
 puts "Fuse"
 puts ""
 
-puts "TODO #22911 ALL: Error : The bfuse can not be build"
+puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO #22911 ALL: Error : The square of result shape is"
 
-restore pro18457a.rle f1
-restore pro18457b.rle f2
+restore [locate_data_file pro18457a.rle] f1
+restore [locate_data_file pro18457b.rle] f2
 
-bfuse restore f1 f2
-
+bfuse result f1 f2
 
 set square 0

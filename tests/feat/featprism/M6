@@ -1,8 +1,8 @@
 # Original bug : ger60806
 # Date : 12 Oct 98
 
-restore ger60806_base.rle base
-restore ger60806_face.rle cont
+restore [locate_data_file ger60806_base.rle] base
+restore [locate_data_file ger60806_face.rle] cont
 
 explode base face
 copy base_10 funtil

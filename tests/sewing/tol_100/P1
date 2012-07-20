@@ -1,1 +1,1 @@
-restore CTO900_ger60043-part.rle a
+restore [locate_data_file CTO900_ger60043-part.rle] a

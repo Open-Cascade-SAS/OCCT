@@ -1,2 +1,2 @@
-restore DSE3.rle a
+restore [locate_data_file DSE3.rle] a
 set nb_revol 4

@@ -1,5 +1,5 @@
-restore cts20976a.rle a
-restore cts20976b.rle b
+restore [locate_data_file cts20976a.rle] a
+restore [locate_data_file cts20976b.rle] b
 bsection result a b
 
 set length 119.639

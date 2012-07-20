@@ -1,6 +1,6 @@
 #old file ofs16 part two 
 
-restore vevopar s
+restore [locate_data_file vevopar] s
 OFFSETSHAPE 0.1 {} $calcul $type
 
 set volume 1.89228

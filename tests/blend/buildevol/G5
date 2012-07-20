@@ -5,7 +5,7 @@
 #fuse s s1 s2
 #save s B5678.draw 
 
-restore B5678.draw s
+restore [locate_data_file B5678.draw] s
 tscale s 0 0 0 SCALE1
 explode s e
 mkevol result s

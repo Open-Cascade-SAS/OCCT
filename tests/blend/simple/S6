@@ -2,7 +2,7 @@
 #psphere s 13 0 90 
 #fuse s s b
 
-restore 6_C1234.draw s
+restore [locate_data_file 6_C1234.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 blend result s 3*SCALE2 s_7

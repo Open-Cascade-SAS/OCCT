@@ -1,6 +1,6 @@
 puts "TODO OCC23126 ALL: Faulty shapes in variables faulty_1 to faulty_3"
-restore cts21570_1.rle w1
-restore cts21570_2.rle w2
+restore [locate_data_file cts21570_1.rle] w1
+restore [locate_data_file cts21570_2.rle] w2
 orientation w1 F
 orientation w2 R
 orientation w1 R

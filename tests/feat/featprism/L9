@@ -1,8 +1,8 @@
 # Original bug : pro14240
 # Date : 16 Sept 98
 
-restore pro14240_base.rle base
-restore pro14240_face.rle cont
+restore [locate_data_file pro14240_base.rle] base
+restore [locate_data_file pro14240_face.rle] cont
 
 featprism base cont cont 0 0 1 0 1
 featperformval prism result 100

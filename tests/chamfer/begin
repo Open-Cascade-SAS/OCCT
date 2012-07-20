@@ -7,11 +7,6 @@ if { [array get Draw_Groups "TOPOLOGY Fillet construction commands"] == "" } {
 	pload TOPTEST
 }
 
-# set location for data
-if { [string compare [datadir] "."] == 0 } {
-     datadir [file dirname [info script]]/data
-}
-
 # This procedure tries to load an EDGE (one point) or EDGE (two points)
 proc get_element { type args } {
 # First point

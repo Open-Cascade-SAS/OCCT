@@ -1,2 +1,2 @@
-restore CHE_filter.rle a
+restore [locate_data_file CHE_filter.rle] a
 set nb_f 16

@@ -1,1 +1,1 @@
-restore CFE_diamagaa.rle a
+restore [locate_data_file CFE_diamagaa.rle] a

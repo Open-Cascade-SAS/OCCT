@@ -1,8 +1,8 @@
 # Original bug : cts19485
 # Date : 19mar98
 
-restore cts19485-part.rle part
-restore cts19485-tool.rle tool
+restore [locate_data_file cts19485-part.rle] part
+restore [locate_data_file cts19485-tool.rle] tool
 
 bcut result part tool
 

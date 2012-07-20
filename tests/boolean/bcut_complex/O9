@@ -1,7 +1,7 @@
 # cts20549
 
-restore prisme.rle a
-restore revol.rle b
+restore [locate_data_file prisme.rle] a
+restore [locate_data_file revol.rle] b
 
 bfuse result a b
 

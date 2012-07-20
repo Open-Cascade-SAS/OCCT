@@ -1,1 +1,1 @@
-restore CFE903_pro16ggz.rle a
+restore [locate_data_file CFE903_pro16ggz.rle] a

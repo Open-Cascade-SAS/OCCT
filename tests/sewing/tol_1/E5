@@ -1,1 +1,1 @@
-restore CFI901_congefkd.rle a
+restore [locate_data_file CFI901_congefkd.rle] a

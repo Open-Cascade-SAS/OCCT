@@ -1,4 +1,4 @@
-restore topo001.brep m
+restore [locate_data_file topo001.brep] m
 
 explode m
 compound m_2 m_3 m_4 m_5 c1

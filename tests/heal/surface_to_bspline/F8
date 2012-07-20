@@ -1,1 +1,1 @@
-restore bowl_noremove.brep a
+restore [locate_data_file bowl_noremove.brep] a

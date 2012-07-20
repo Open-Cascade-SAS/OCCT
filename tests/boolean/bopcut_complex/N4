@@ -1,7 +1,7 @@
 ## fra60812
 #
-restore Bug3_Tr_obj_1.rle a
-restore Bug3_Tr_outil.rle b
+restore [locate_data_file Bug3_Tr_obj_1.rle] a
+restore [locate_data_file Bug3_Tr_outil.rle] b
 
 fsameparameter a
 

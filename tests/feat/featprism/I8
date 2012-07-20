@@ -1,5 +1,5 @@
-restore cylindre2.rle cyl
-restore contour2.rle cont
+restore [locate_data_file cylindre2.rle] cyl
+restore [locate_data_file contour2.rle] cont
 
 explode cyl face
 copy cyl_3 funtil

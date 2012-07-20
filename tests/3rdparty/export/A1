@@ -8,11 +8,11 @@ if { [array get Draw_Groups "XSTEP-STL/VRML"] == "" } {
     pload XSDRAW
 }
 
-meshfromstl m [datadir]/shape.stl
+meshfromstl m [locate_data_file shape.stl]
 
 meshdispmode m 34
 
-set aFile $WorkDirectory/shape.pdf
+set aFile $imagedir/shape.pdf
 
 set format PDF
 

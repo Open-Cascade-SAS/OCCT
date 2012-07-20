@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # C1
 
-restore cts20505-part.rle part
-restore cts20505-tool.rle tool
+restore [locate_data_file cts20505-part.rle] part
+restore [locate_data_file cts20505-tool.rle] tool
 
 bcut result part tool
 

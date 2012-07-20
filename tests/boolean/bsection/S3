@@ -3,8 +3,8 @@ puts "PRO12675"
 puts "Section"
 puts ""
 
-restore pro12675a.brep obj
-restore pro12675b.brep out 
+restore [locate_data_file pro12675a.brep] obj
+restore [locate_data_file pro12675b.brep] out 
 updatetolerance obj 1
 updatetolerance out 1
 

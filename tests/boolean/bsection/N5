@@ -1,6 +1,6 @@
 cpulimit 900
 
-restore lh3d_px2.brep a
+restore [locate_data_file lh3d_px2.brep] a
 set i 1
 compound result
 repeat 155 {

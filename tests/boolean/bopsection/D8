@@ -4,8 +4,8 @@ puts "Cut"
 puts ""
 
 # mod by pkv f
-restore pro12675a.brep obj
-restore pro12675b.brep out 
+restore [locate_data_file pro12675a.brep] obj
+restore [locate_data_file pro12675b.brep] out 
 #
 # mod by pkv f
 

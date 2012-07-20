@@ -4,7 +4,7 @@
 ## Comment : from pro7788
 ## ====================================
 
-restore pro7788.rle a
+restore [locate_data_file pro7788.rle] a
 explode a e
 blend result a 20 a_8 20 a_11 20 a_1 20 a_12
 

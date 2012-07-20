@@ -1,1 +1,1 @@
-restore aaa.rle a
+restore [locate_data_file aaa.rle] a

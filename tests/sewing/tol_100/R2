@@ -1,1 +1,1 @@
-restore CTO900_pro5640b.rle a
+restore [locate_data_file CTO900_pro5640b.rle] a

@@ -1,8 +1,8 @@
 # Original bug : pro12859
 # Date : 24June98
 
-restore pro12859a.rle a 
-restore pro12859b.rle b
+restore [locate_data_file pro12859a.rle] a 
+restore [locate_data_file pro12859b.rle] b
 
 bfuse result a b
 

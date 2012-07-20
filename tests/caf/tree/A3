@@ -25,7 +25,7 @@ SetName D ${aChild1} ${aName11}
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf005-A3.std
+set aFile ${imagedir}/caf005-A3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

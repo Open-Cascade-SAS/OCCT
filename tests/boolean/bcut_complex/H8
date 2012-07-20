@@ -1,8 +1,8 @@
 # Original bug : cts20736
 # Date : 28Sept97
 
-restore cts20736a.rle part
-restore cts20736b.rle aface
+restore [locate_data_file cts20736a.rle] part
+restore [locate_data_file cts20736b.rle] aface
 
 btolx part
 btolx aface

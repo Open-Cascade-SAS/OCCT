@@ -1,1 +1,1 @@
-restore CTO900_pro7637c_result_dsg.rle a
+restore [locate_data_file CTO900_pro7637c_result_dsg.rle] a

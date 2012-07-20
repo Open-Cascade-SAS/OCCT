@@ -1,8 +1,8 @@
 # Original bug : cts20871
 # Date : 26 Oct 98
 
-restore cts20871_base.rle base
-restore cts20871_face.rle cont
+restore [locate_data_file cts20871_base.rle] base
+restore [locate_data_file cts20871_face.rle] cont
 
 explode base face
 copy base_5 funtil

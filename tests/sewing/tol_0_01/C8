@@ -1,1 +1,1 @@
-restore CCH_adapthfd.rle a
+restore [locate_data_file CCH_adapthfd.rle] a

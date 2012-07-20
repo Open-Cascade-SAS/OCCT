@@ -28,7 +28,7 @@ SetReference D ${aLabel4} ${aReference1}
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf001-L3.std
+set aFile ${imagedir}/caf001-L3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

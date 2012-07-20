@@ -1,1 +1,1 @@
-restore CFE_shapegae.rle a
+restore [locate_data_file CFE_shapegae.rle] a

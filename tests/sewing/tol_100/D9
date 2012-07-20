@@ -1,1 +1,1 @@
-restore CTO900_pro11292f.rle a
+restore [locate_data_file CTO900_pro11292f.rle] a

@@ -1,1 +1,1 @@
-restore CCV_1_m12gsp.rle a
+restore [locate_data_file CCV_1_m12gsp.rle] a

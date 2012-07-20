@@ -1,1 +1,1 @@
-restore CHE_bb17.rle a
+restore [locate_data_file CHE_bb17.rle] a

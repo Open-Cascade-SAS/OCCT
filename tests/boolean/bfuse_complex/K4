@@ -1,8 +1,8 @@
 # Original bug : pro13494
 # Date : 4June98
 
-restore pro13494a.rle a 
-restore pro13494b.rle b
+restore [locate_data_file pro13494a.rle] a 
+restore [locate_data_file pro13494b.rle] b
 
 # pkv f
 explode a so

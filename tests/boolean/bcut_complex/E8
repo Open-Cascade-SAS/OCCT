@@ -1,8 +1,8 @@
 # Original bug : jap60038
 # Date : 11mar98
 
-restore jap60038-part.rle part
-restore jap60038-tool.rle tool
+restore [locate_data_file jap60038-part.rle] part
+restore [locate_data_file jap60038-tool.rle] tool
 
 bcut result part tool
 

@@ -1,8 +1,8 @@
 # Original bug : cts20339
 # Date : 19Mai98
 
-restore cts20339a.rle a
-restore cts20339b.rle b
+restore [locate_data_file cts20339a.rle] a
+restore [locate_data_file cts20339b.rle] b
 
 bsection result a b
 

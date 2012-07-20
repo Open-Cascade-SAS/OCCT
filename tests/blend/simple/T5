@@ -7,7 +7,7 @@
 #fuse s f b
 #save s 6_F1234.draw
 
-restore 6_F1234.draw s
+restore [locate_data_file 6_F1234.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 blend result s 4*SCALE2 s_14

@@ -1,1 +1,1 @@
-restore CFE900_id160gdu.rle a
+restore [locate_data_file CFE900_id160gdu.rle] a

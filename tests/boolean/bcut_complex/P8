@@ -1,8 +1,8 @@
 # Original bug : cfe002C5
 # Date : 09 Nov 98
 
-restore boitecfe002.rle base
-restore toolcfe002.rle prism
+restore [locate_data_file boitecfe002.rle] base
+restore [locate_data_file toolcfe002.rle] prism
 
 bcut result base prism
 

@@ -1,4 +1,4 @@
-restore intcq105.brep m
+restore [locate_data_file intcq105.brep] m
 explode m
 # m_1 : Carreau Support
 # m_2 : Bossage

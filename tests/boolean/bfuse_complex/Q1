@@ -1,7 +1,7 @@
 #ger60239
 
-restore solid_2.brep c
-restore solid_5.brep d
+restore [locate_data_file solid_2.brep] c
+restore [locate_data_file solid_5.brep] d
 
 bfuse result c d
 

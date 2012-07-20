@@ -1,2 +1,2 @@
-restore torusETR.rle a
+restore [locate_data_file torusETR.rle] a
 set nb_revol 1

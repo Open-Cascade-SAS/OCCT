@@ -1,8 +1,8 @@
 # Original bug : cts20456
 # Date : 13Mai98
 
-restore cts20456a.rle a
-restore cts20456b.rle b
+restore [locate_data_file cts20456a.rle] a
+restore [locate_data_file cts20456b.rle] b
 
 bfuse result a b
 

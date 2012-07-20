@@ -1,1 +1,1 @@
-restore CFE903_cts21ggs.rle a
+restore [locate_data_file CFE903_cts21ggs.rle] a

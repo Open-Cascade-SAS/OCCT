@@ -1,10 +1,6 @@
 # To prevent loops limit to 5 minutes
 cpulimit 300
 
-if {[string compare [datadir] "."] == 0} { 
-  datadir [file dirname [info script]]/data
-}
-
 if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
 	pload TOPTEST
 }

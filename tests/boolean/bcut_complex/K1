@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # D8
 
-restore cts20496c.rle part
-restore cts20496d.rle tool
+restore [locate_data_file cts20496c.rle] part
+restore [locate_data_file cts20496d.rle] tool
 
 bcut result part tool
 

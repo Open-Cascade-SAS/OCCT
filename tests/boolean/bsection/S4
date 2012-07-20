@@ -3,11 +3,11 @@ puts "PRO15545"
 puts "Section"
 puts ""
 
-restore pro15545a.brep c1
+restore [locate_data_file pro15545a.brep] c1
 explode c1 sh
 renamevar c1_1 c1
 
-restore pro15545b.brep c2 
+restore [locate_data_file pro15545b.brep] c2 
 explode c2 sh
 renamevar c2_1 c2
 

@@ -2,8 +2,8 @@
 # Date : 07mar97
 
 ## this saved protusion has length of 0.3 Meter (300 mm)
-restore pro6066a.shape prot1
-restore pro6066b.shape box2
+restore [locate_data_file pro6066a.shape] prot1
+restore [locate_data_file pro6066b.shape] box2
 
 bcut result prot1 box2
 

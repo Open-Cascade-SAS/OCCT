@@ -1,4 +1,4 @@
-restore conge003.brep m
+restore [locate_data_file conge003.brep] m
 explode m E
 # Pas Prendre :
 # m_3 m_4 m_5 m_13 m_14 m_15 m_16 m_17 m_18 m_19 

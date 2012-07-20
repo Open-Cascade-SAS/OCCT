@@ -1,1 +1,1 @@
-restore CFI_c1234fig.rle a
+restore [locate_data_file CFI_c1234fig.rle] a

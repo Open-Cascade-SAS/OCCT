@@ -4,8 +4,8 @@
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO #22911 ALL: Error : The square of result shape is"
 
-restore buc60127-part.rle part
-restore buc60127-tool.rle tool
+restore [locate_data_file buc60127-part.rle] part
+restore [locate_data_file buc60127-tool.rle] tool
 
 bcut result part tool
 

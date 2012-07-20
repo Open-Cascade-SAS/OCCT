@@ -1,1 +1,1 @@
-restore CTO902_cts20527-tool.rle a
+restore [locate_data_file CTO902_cts20527-tool.rle] a

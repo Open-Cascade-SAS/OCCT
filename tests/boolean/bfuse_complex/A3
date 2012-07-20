@@ -1,5 +1,5 @@
-restore cts21184a.rle a
-restore cts21184b.rle b
+restore [locate_data_file cts21184a.rle] a
+restore [locate_data_file cts21184b.rle] b
 
 bfuse result a b
 

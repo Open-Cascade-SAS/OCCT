@@ -1,1 +1,1 @@
-restore ec281.brep a
+restore [locate_data_file ec281.brep] a

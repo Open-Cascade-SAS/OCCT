@@ -1,7 +1,7 @@
 # Original bug : pro13573
 # Date : 25 Nov 98
 
-restore pro13573_base.brep base
+restore [locate_data_file pro13573_base.brep] base
 profile cont p 1 0 0 0 1 0 F 0 200 x -100 y -150 x 100
 
 nexplode base face

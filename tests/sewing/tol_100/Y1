@@ -1,1 +1,1 @@
-restore CTO904_hkg60155a.rle a
+restore [locate_data_file CTO904_hkg60155a.rle] a

@@ -1,5 +1,5 @@
-restore c2.brep c
-restore box.brep b
+restore [locate_data_file c2.brep] c
+restore [locate_data_file box.brep] b
 
 bfuse result c b
 

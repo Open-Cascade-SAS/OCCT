@@ -1,7 +1,7 @@
 ## FRA61291
 
-restore part.brep a
-restore tool.brep b
+restore [locate_data_file part.brep] a
+restore [locate_data_file tool.brep] b
 
 bcut result a b
 

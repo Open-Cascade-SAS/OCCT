@@ -4,7 +4,7 @@
 ## Comment : from pro9523
 ## ====================================
 
-restore pro9523.rle a
+restore [locate_data_file pro9523.rle] a
 nexplode a e
 blend result a 2.5 a_4
 

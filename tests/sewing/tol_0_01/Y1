@@ -1,1 +1,1 @@
-restore CFI_11_d2ffd.rle a
+restore [locate_data_file CFI_11_d2ffd.rle] a

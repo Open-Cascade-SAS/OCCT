@@ -18,7 +18,7 @@ SetName D ${aLabel1} ${aName1}
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf001-B3.std
+set aFile ${imagedir}/caf001-B3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

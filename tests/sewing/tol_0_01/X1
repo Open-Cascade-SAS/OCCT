@@ -1,1 +1,1 @@
-restore CFI901_congefjy.rle a
+restore [locate_data_file CFI901_congefjy.rle] a

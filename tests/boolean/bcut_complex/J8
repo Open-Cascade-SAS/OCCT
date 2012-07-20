@@ -2,8 +2,8 @@
 # Date : 11June98
 # D6
 
-restore pro14235a.rle a
-restore pro14235b.rle b
+restore [locate_data_file pro14235a.rle] a
+restore [locate_data_file pro14235b.rle] b
 
 bcut result a b
 

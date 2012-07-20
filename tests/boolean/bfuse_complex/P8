@@ -1,8 +1,8 @@
 ## cts21139
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
-restore shape.brep a
-restore tool_1.brep b
+restore [locate_data_file shape.brep] a
+restore [locate_data_file tool_1.brep] b
 
 bfuse result a b
 

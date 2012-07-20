@@ -1,8 +1,8 @@
 # Original bug : pro13402
 # Date : 25 Nov 98
 
-restore pro13402_base.brep base
-restore pro13402_face.brep cont
+restore [locate_data_file pro13402_base.brep] base
+restore [locate_data_file pro13402_face.brep] cont
 
 explode base face
 copy base_2 funtil

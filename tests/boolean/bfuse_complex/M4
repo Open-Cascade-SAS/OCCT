@@ -1,8 +1,8 @@
 # Original bug : cts21251
 # Date : 16July98
 
-restore cts21251a.rle a 
-restore cts21251b.rle skface
+restore [locate_data_file cts21251a.rle] a 
+restore [locate_data_file cts21251b.rle] skface
 
 revol b skface 0 0 0 0 -1 0 360
 

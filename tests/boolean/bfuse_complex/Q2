@@ -1,7 +1,7 @@
 # pro10658
 
-restore pro10658a.rle a
-restore pro10658b.rle b
+restore [locate_data_file pro10658a.rle] a
+restore [locate_data_file pro10658b.rle] b
 
 bfuse result a b
 

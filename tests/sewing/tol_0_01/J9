@@ -1,1 +1,1 @@
-restore CCV_2_h1_gta.rle a
+restore [locate_data_file CCV_2_h1_gta.rle] a

@@ -1,5 +1,5 @@
-restore a197 a
-restore b197 b
+restore [locate_data_file a197] a
+restore [locate_data_file b197] b
 
 bop a b
 bopfuse result

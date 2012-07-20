@@ -3,8 +3,8 @@ puts "Fuse"
 puts ""
 
 
-restore uki60919a.brep base
-restore uki60919b.brep cont
+restore [locate_data_file uki60919a.brep] base
+restore [locate_data_file uki60919b.brep] cont
 
 prism pr cont 0 0 -200
 

@@ -33,7 +33,7 @@ SetNode Doc ${aLabel_Root}
 NewCommand Doc
 
 # Save the document
-set aFile ${WorkDirectory}/OCC1228-[file tail [info script]].cbf
+set aFile ${imagedir}/OCC1228-[file tail [info script]].cbf
 file delete ${aFile}
 catch {SaveAs Doc ${aFile}}
 if { ![file exists ${aFile}] } {

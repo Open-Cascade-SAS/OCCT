@@ -1,6 +1,6 @@
-restore cts21295_1.brep f1
-restore cts21295_2.brep f2
-restore cts21295_3.brep f3
+restore [locate_data_file cts21295_1.brep] f1
+restore [locate_data_file cts21295_2.brep] f2
+restore [locate_data_file cts21295_3.brep] f3
 explode f1 w
 explode f2 w
 explode f3 w

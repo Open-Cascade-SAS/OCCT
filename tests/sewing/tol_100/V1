@@ -1,1 +1,1 @@
-restore CTO901_cts20171_outil.rle a
+restore [locate_data_file CTO901_cts20171_outil.rle] a

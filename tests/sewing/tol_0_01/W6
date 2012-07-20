@@ -1,1 +1,1 @@
-restore CFE_e_lonfzx.rle a
+restore [locate_data_file CFE_e_lonfzx.rle] a

@@ -1,8 +1,8 @@
 # Original bug : pro13075
 # Date : 19Mai98
 
-restore pro13075a.rle a
-restore pro13075b.rle b
+restore [locate_data_file pro13075a.rle] a
+restore [locate_data_file pro13075b.rle] b
 
 bop a b 
 bopsection result

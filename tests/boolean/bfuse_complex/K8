@@ -1,8 +1,8 @@
 # Original bug : pro12875
 # Date : 12June98
 
-restore pro12875a.rle a 
-restore pro12875b.rle b
+restore [locate_data_file pro12875a.rle] a 
+restore [locate_data_file pro12875b.rle] b
 updatetolerance a 1
 bfuse result a b
 

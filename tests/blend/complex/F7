@@ -4,7 +4,7 @@
 ## Comment : from pro13225
 ## ====================================
 
-restore pro13225.rle a
+restore [locate_data_file pro13225.rle] a
 explode a e
 blend result a 10 a_3 10 a_8 10 a_7 10 a_6
 

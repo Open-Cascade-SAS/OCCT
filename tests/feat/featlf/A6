@@ -1,8 +1,8 @@
 # Original bug : cts20638
 # Date : 04 Nov 98
 
-restore cts20638_base.rle base
-restore cts20638_wire.rle wire
+restore [locate_data_file cts20638_base.rle] base
+restore [locate_data_file cts20638_wire.rle] wire
 
 mkplane p wire
 mksurface plan p

@@ -1,8 +1,8 @@
 # Original bug : cts21044
 # Date : 24June98
 
-restore cts21044a.rle a 
-restore cts21044b.rle b
+restore [locate_data_file cts21044a.rle] a 
+restore [locate_data_file cts21044b.rle] b
 
 bfuse result a b
 

@@ -1,4 +1,4 @@
-restore intcq101.brep m
+restore [locate_data_file intcq101.brep] m
 explode m f
 # m_1
 bsection result m_1 m_2 -2d -a

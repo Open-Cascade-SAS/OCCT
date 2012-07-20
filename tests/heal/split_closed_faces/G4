@@ -1,1 +1,1 @@
-restore sew2.brep a
+restore [locate_data_file sew2.brep] a

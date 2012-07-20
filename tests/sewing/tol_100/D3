@@ -1,2 +1,2 @@
-restore CFI_pro15441.rle a
+restore [locate_data_file CFI_pro15441.rle] a
 set nb_f ""

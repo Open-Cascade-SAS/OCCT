@@ -1,1 +1,1 @@
-restore CFE900_cts21gev.rle a
+restore [locate_data_file CFE900_cts21gev.rle] a

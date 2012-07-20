@@ -1,5 +1,5 @@
-restore case_3_wire.brep a
-restore case_3_wire2.brep b
+restore [locate_data_file case_3_wire.brep] a
+restore [locate_data_file case_3_wire2.brep] b
 bfuse result a b
 set length 739.311
 set nbsh_v 20

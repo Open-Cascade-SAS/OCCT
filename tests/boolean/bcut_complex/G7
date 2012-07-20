@@ -1,8 +1,8 @@
 # Original bug : fra60810
 # Date : 30mar98
 
-restore fra60810-part.rle part
-restore fra60810-tool.rle tool
+restore [locate_data_file fra60810-part.rle] part
+restore [locate_data_file fra60810-tool.rle] tool
 
 bcut result part tool
 

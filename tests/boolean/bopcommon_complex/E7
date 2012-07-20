@@ -1,4 +1,4 @@
-restore BUC60939.brep sh
+restore [locate_data_file BUC60939.brep] sh
 explode sh
 
 bop sh_1 sh_2

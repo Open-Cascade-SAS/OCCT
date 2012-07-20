@@ -1,8 +1,8 @@
 # Original bug : pro15323
 # Date : 21Sept98
 
-restore pro15323c.rle part
-restore pro15323d.rle tool
+restore [locate_data_file pro15323c.rle] part
+restore [locate_data_file pro15323d.rle] tool
 
 bcut result part tool
 

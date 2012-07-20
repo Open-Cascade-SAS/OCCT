@@ -4,11 +4,11 @@
 dset SCALE 100
 
 ## restore the revol created in Designer ED2FCS (size ? mm)
-restore cts40185_top.rle p1
+restore [locate_data_file cts40185_top.rle] p1
 tscale p1 0 0 0 1*SCALE
 
 ## restore the prismed oblong (size ? mm)
-restore cts40185_ailette.rle p2
+restore [locate_data_file cts40185_ailette.rle] p2
 tscale p2 0 0 0 1*SCALE
 
 bfuse result p2 p1

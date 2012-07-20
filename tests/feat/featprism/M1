@@ -1,8 +1,8 @@
 # Original bug : ger50084
 # Date : 15 Sept 98
 
-restore ger50084_base.rle base
-restore ger50084_face.rle wire
+restore [locate_data_file ger50084_base.rle] base
+restore [locate_data_file ger50084_face.rle] wire
 
 ## contour est un wire -> on en fait une face
 mkplane cont wire

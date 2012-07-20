@@ -1,1 +1,1 @@
-restore CFI_buc60fjt.rle a
+restore [locate_data_file CFI_buc60fjt.rle] a

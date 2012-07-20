@@ -8,7 +8,7 @@
 #fuse s f1 c
 #donly s
 
-restore 6_A56.draw s
+restore [locate_data_file 6_A56.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 mkevol result s

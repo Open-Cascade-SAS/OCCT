@@ -23,7 +23,7 @@ SetRealArray D ${aLabel} ${isDelta} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSetAttr12
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf001-C3.std
+set aFile ${imagedir}/caf001-C3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

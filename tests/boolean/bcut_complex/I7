@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # A7.gif
 
-restore cts20459-part.rle part
-restore cts20459-tool.rle tool
+restore [locate_data_file cts20459-part.rle] part
+restore [locate_data_file cts20459-tool.rle] tool
 
 bcut result part tool
 

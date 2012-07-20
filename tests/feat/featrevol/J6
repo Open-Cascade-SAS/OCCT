@@ -1,5 +1,5 @@
-restore revshape.rle base
-restore revcontour.rle cont
+restore [locate_data_file revshape.rle] base
+restore [locate_data_file revcontour.rle] cont
 
 explode base face
 copy base_4 ffrom

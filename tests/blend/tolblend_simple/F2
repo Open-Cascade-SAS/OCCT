@@ -1,4 +1,4 @@
-restore 13_A12.draw s
+restore [locate_data_file 13_A12.draw] s
 tscale s 0 0 0 SCALE1
 explode s E
 blend result s   1*SCALE1 s_5 1*SCALE1 s_8

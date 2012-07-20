@@ -1,4 +1,4 @@
-restore GEN745_nofog.rle a
+restore [locate_data_file GEN745_nofog.rle] a
 explode a
 bsection result a_1 a_2 -2d -a
 

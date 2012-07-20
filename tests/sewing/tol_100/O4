@@ -1,1 +1,1 @@
-restore CTO900_ger50084c.rle a
+restore [locate_data_file CTO900_ger50084c.rle] a

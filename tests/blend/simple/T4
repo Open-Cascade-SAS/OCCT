@@ -12,7 +12,7 @@
 #glue s c r c_3 r_2
 #save s 6_E56.draw
 
-restore 6_E56.draw s
+restore [locate_data_file 6_E56.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 blend result s 8*SCALE2 s_7

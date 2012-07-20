@@ -1,2 +1,2 @@
-restore CIN901_intcqhmj.rle a
+restore [locate_data_file CIN901_intcqhmj.rle] a
 set nb_f ""

@@ -15,6 +15,8 @@
 # purpose or non-infringement. Please see the License for the specific terms
 # and conditions governing the rights and limitations under the License.
 
+if { [info commands addmenu] == "" } { return }
+
 proc dialanasurf {command sname args} {
     set com "dialbox $command name $sname origin {0 0 0} normal {0 0 1} xdir {1 0 0} "
     foreach l $args {append com " $l"}

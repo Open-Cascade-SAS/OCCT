@@ -1,8 +1,8 @@
 # Original bug : cts20148
 # Date : 19Mai98
 
-restore cts20148a.rle a
-restore cts20148b.rle b
+restore [locate_data_file cts20148a.rle] a
+restore [locate_data_file cts20148b.rle] b
 
 bop a b
 bopsection result

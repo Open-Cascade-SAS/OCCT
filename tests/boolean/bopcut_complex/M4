@@ -1,8 +1,8 @@
 # Original bug : cts20975
 # Date : 18Juin98
 
-restore cts20975a.rle a
-restore cts20975b.rle b
+restore [locate_data_file cts20975a.rle] a
+restore [locate_data_file cts20975b.rle] b
 
 bopaddpcs a
 

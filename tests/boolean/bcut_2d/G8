@@ -1,5 +1,5 @@
-restore case_4_shell.brep a
-restore case_4_edge1.brep b
+restore [locate_data_file case_4_shell.brep] a
+restore [locate_data_file case_4_edge1.brep] b
 bcut result b a
 set length 616.124
 set nbsh_v 8

@@ -1,7 +1,7 @@
 # Original bug : cts21322
 # Date : 16 Sept 98
 
-restore contour.rle cont
+restore [locate_data_file contour.rle] cont
 mkplane cont cont
 
 puts "*"
@@ -9,8 +9,8 @@ puts "*"
 puts "TODO OCC22810 ALL:Error in featperform"
 puts "TODO OCC22810 ALL:Error : The feat can not be build"
 
-restore cts21322_base.rle base
-restore cts21322_face.rle wire
+restore [locate_data_file cts21322_base.rle] base
+restore [locate_data_file cts21322_face.rle] wire
 
 explode base face
 copy base_6 fsketch

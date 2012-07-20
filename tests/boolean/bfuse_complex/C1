@@ -1,5 +1,5 @@
-restore so3 b1
-restore so7 b2
+restore [locate_data_file so3] b1
+restore [locate_data_file so7] b2
 
 bfuse result b1 b2
 

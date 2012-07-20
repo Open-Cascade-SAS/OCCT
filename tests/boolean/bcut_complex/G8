@@ -1,8 +1,8 @@
 # Original bug : ger60598
 # Date : 18Sept98
 
-restore ger60598c.rle base
-restore ger60598d.rle prism
+restore [locate_data_file ger60598c.rle] base
+restore [locate_data_file ger60598d.rle] prism
 
 fsameparameter base
 

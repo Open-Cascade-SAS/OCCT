@@ -4,7 +4,7 @@
 ## Comment : from pro12404
 ## ====================================
 
-restore pro12404.rle a
+restore [locate_data_file pro12404.rle] a
 explode a e
 blend result a 10 a_8 10 a_13
 

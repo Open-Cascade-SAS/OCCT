@@ -1,7 +1,7 @@
 # Original bug :pro14621
 
-restore pro14621c.rle  base
-restore pro14621d.rle  prism
+restore [locate_data_file pro14621c.rle]  base
+restore [locate_data_file pro14621d.rle]  prism
 
 bcut res1 prism base
 

@@ -1,2 +1,2 @@
-restore coneETR.rle a
+restore [locate_data_file coneETR.rle] a
 set nb_revol 1

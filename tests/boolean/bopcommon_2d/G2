@@ -1,5 +1,5 @@
-restore case_4_solid.brep a
-restore case_4_wire3.brep b
+restore [locate_data_file case_4_solid.brep] a
+restore [locate_data_file case_4_wire3.brep] b
 bop a b
 bopcommon result
 set length 633.071

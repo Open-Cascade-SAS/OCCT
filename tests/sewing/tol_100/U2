@@ -1,1 +1,1 @@
-restore support-fixed.rle a
+restore [locate_data_file support-fixed.rle] a

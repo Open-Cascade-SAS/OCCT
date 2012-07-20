@@ -3,8 +3,8 @@ puts "Fuse"
 puts ""
 dall
 
-restore hkg60159a.brep sh
-restore hkg60159b.brep ct
+restore [locate_data_file hkg60159a.brep] sh
+restore [locate_data_file hkg60159b.brep] ct
 
 prism pr ct 0 -30 0
 bcut res pr sh

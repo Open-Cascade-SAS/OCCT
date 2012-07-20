@@ -2,8 +2,8 @@
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO #22911 ALL: Error : The square of result shape is"
 
-restore  Bug3_Tr_obj.rle a
-restore  Bug4_Tr_outil.rle b
+restore [locate_data_file Bug3_Tr_obj.rle] a
+restore [locate_data_file Bug4_Tr_outil.rle] b
 
 bcut result a b
 

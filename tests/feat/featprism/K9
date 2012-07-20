@@ -1,8 +1,8 @@
 # Original bug : cts18754
 # Date : 20 Mar 98
 
-restore cts18754-part.rle base
-restore cts18754-tool.rle wire
+restore [locate_data_file cts18754-part.rle] base
+restore [locate_data_file cts18754-tool.rle] wire
 
 mkplane cont wire
 

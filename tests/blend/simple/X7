@@ -4,7 +4,7 @@
 ## Comment : From CV tests serie page 34/35
 ## ===========================================
 
-restore 1_K1.rle s
+restore [locate_data_file 1_K1.rle] s
 explode s E
 blend result s 10 s_23
 

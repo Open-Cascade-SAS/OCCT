@@ -1,6 +1,6 @@
 # cts21347
-restore part_1.brep a
-restore tool_2.brep b
+restore [locate_data_file part_1.brep] a
+restore [locate_data_file tool_2.brep] b
 
 bcut result a b
 

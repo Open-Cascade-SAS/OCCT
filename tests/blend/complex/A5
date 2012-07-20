@@ -4,7 +4,7 @@
 ## Comment : from original bug PRO4536
 ## ====================================
 
-restore blend04.rle s
+restore [locate_data_file blend04.rle] s
 tscale s 0 0 0 1000
 explode s e
 blend result s 5 s_3

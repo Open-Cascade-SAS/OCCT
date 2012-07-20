@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # D3
 
-restore cts20537-part.rle part
-restore cts20537-tool.rle tool
+restore [locate_data_file cts20537-part.rle] part
+restore [locate_data_file cts20537-tool.rle] tool
 
 bcut result part tool
 

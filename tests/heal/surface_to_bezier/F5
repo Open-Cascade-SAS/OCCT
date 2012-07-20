@@ -1,1 +1,1 @@
-restore ma-test5.rle a
+restore [locate_data_file ma-test5.rle] a

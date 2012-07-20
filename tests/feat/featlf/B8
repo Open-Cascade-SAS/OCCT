@@ -1,8 +1,8 @@
 # Original bug : cts21832
 # Date : 26 Nov 98
 
-restore cts21832_base.brep base
-restore cts21832_cont.brep cont
+restore [locate_data_file cts21832_base.brep] base
+restore [locate_data_file cts21832_cont.brep] cont
 
 explode cont wire
 copy cont_1 wire

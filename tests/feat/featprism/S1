@@ -1,7 +1,7 @@
 # cts20088
 
-restore shape_pkv.rle base
-restore contour_pkv.rle cont
+restore [locate_data_file shape_pkv.rle] base
+restore [locate_data_file contour_pkv.rle] cont
 
 explode base face
 copy base_54 ffrom

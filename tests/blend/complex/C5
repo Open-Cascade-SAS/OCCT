@@ -4,9 +4,9 @@
 ## Comment : from pro6309
 ## ====================================
 
-restore pro6309a.rle a
+restore [locate_data_file pro6309a.rle] a
 tscale a 0 0 0 1000
-restore pro6309b.rle b
+restore [locate_data_file pro6309b.rle] b
 tscale b 0 0 0 1000
 #restore pro6309c.rle c
 #restore pro6309d.rle d

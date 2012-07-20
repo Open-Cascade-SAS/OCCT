@@ -1,7 +1,7 @@
 #pro16303
 
-restore b1
-restore b2
+restore [locate_data_file b1] b1
+restore [locate_data_file b2] b2
 
 bop b1 b2
 bopfuse result

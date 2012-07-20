@@ -1,8 +1,8 @@
 # Original bug : cts20960
 # Date : 16July98
 
-restore cts20960a.rle a 
-restore cts20960b.rle b
+restore [locate_data_file cts20960a.rle] a 
+restore [locate_data_file cts20960b.rle] b
 
 bfuse result a b
 

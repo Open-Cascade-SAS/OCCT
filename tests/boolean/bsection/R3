@@ -1,7 +1,7 @@
 ## buc60289
 
-restore Face1.rle a
-restore Plan.rle b
+restore [locate_data_file Face1.rle] a
+restore [locate_data_file Plan.rle] b
 
 bsection result a b
 

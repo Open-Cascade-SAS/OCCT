@@ -1,10 +1,10 @@
-restore af b1
-restore bf b2
+restore [locate_data_file af] b1
+restore [locate_data_file bf] b2
 
 bop b1 b2
 bopfuse result
 
-restore cf b3
+restore [locate_data_file cf] b3
 
 bop result b3
 bopfuse result

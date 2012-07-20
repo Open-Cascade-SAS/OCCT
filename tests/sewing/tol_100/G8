@@ -1,1 +1,1 @@
-restore CHE_cc1.rle a
+restore [locate_data_file CHE_cc1.rle] a

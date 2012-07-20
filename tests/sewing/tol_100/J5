@@ -1,2 +1,2 @@
-restore CIN902_intcqhmr.rle a
+restore [locate_data_file CIN902_intcqhmr.rle] a
 puts "TODO ?#23150 ALL: Error : Number of faulties is"

@@ -1,4 +1,4 @@
-restore BUGDATA_2381.rle a
+restore [locate_data_file BUGDATA_2381.rle] a
 explode a
 bsection result a_1 a_2 -2d -a
 

@@ -5,7 +5,7 @@
 #fuse s s1 s2
 #save s F5678.draw 
 
-restore F5678.draw s
+restore [locate_data_file F5678.draw] s
 tscale s 0 0 0 SCALE1
 explode s e
 blend result s 0.5*SCALE1 s_7 0.5*SCALE1 s_6 0.5*SCALE1 s_14

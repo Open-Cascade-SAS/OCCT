@@ -35,7 +35,7 @@ SetPoint D ${aLabel} aPoint1
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf001-G3.std
+set aFile ${imagedir}/caf001-G3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

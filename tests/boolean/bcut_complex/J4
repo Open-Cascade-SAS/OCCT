@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # C7
 
-restore cts20498-part.rle part
-restore cts20498-tool.rle tool
+restore [locate_data_file cts20498-part.rle] part
+restore [locate_data_file cts20498-tool.rle] tool
 
 bcut result part tool
 

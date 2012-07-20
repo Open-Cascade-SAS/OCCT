@@ -1,8 +1,8 @@
 # Original bug : fra60275
 # Date : 4June98
 
-restore fra60275a.rle s
-restore fra60275b.rle c
+restore [locate_data_file fra60275a.rle] s
+restore [locate_data_file fra60275b.rle] c
 tcopy  c w
 mkplane f w
 

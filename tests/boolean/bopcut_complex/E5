@@ -1,6 +1,6 @@
 puts "TODO #22911 ALL: Error : The bopcut can not be build"
 
-restore BUC60928.brep sh
+restore [locate_data_file BUC60928.brep] sh
 explode sh
 
 bop sh_1 sh_2

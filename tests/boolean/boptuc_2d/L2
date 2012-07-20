@@ -1,5 +1,5 @@
-restore case_7_solid.brep a
-restore case_7_wire3.brep b
+restore [locate_data_file case_7_solid.brep] a
+restore [locate_data_file case_7_wire3.brep] b
 bop a b
 boptuc result
 set length 2033.56

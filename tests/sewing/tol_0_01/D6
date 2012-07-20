@@ -1,1 +1,1 @@
-restore CCH_blendhdw.rle a
+restore [locate_data_file CCH_blendhdw.rle] a

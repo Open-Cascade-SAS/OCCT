@@ -1,1 +1,1 @@
-restore rotor.brep a
+restore [locate_data_file rotor.brep] a

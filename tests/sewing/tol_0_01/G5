@@ -1,1 +1,1 @@
-restore CCH_shell.rle a
+restore [locate_data_file CCH_shell.rle] a

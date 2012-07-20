@@ -1,1 +1,1 @@
-restore CCH_001_lhdm.rle a
+restore [locate_data_file CCH_001_lhdm.rle] a

@@ -1,8 +1,8 @@
 # Original bug : pro15049
 # Date : 26Aout98
 
-restore pro15049a.rle a
-restore pro15049b.rle b
+restore [locate_data_file pro15049a.rle] a
+restore [locate_data_file pro15049b.rle] b
 
 bfuse result a b
 

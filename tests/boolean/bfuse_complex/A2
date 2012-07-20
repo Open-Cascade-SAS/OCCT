@@ -1,5 +1,5 @@
-restore fra61083a.rle a
-restore fra61083b.rle b
+restore [locate_data_file fra61083a.rle] a
+restore [locate_data_file fra61083b.rle] b
 
 bfuse result a b
 

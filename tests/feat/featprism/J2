@@ -4,9 +4,9 @@
 cpulimit 1300
 #increased from default by aki 26.08.04
 
-restore ger50084_baseX.rle base
+restore [locate_data_file ger50084_baseX.rle] base
 fsameparameter base
-restore ger50084_face.rle wire
+restore [locate_data_file ger50084_face.rle] wire
 
 ## contour est un wire -> on en fait une face
 mkplane cont wire

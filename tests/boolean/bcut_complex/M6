@@ -1,8 +1,8 @@
 # Original bug : cts21210
 # Date : 16July98
 
-restore cts21210a.rle a 
-restore cts21210b.rle b
+restore [locate_data_file cts21210a.rle] a 
+restore [locate_data_file cts21210b.rle] b
 
 bcut result a b
 

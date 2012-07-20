@@ -1,4 +1,4 @@
-restore lh3d_px1.brep a
+restore [locate_data_file lh3d_px1.brep] a
 
 #removing intersection of faces a_3 and a_220
 

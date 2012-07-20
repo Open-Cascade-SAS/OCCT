@@ -1,7 +1,7 @@
 # Original bug : pro10095
 
-restore pro10095a.rle a
-restore pro10095b.rle b
+restore [locate_data_file pro10095a.rle] a
+restore [locate_data_file pro10095b.rle] b
 
 shape fso so
 add b fso

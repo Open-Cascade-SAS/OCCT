@@ -7,7 +7,7 @@
 #pipe s1 w p
 #fuse s s1 b
 
-restore 6_H1234.draw s
+restore [locate_data_file 6_H1234.draw] s
 explode s E
 mkevol result s
 updatevol s_3 0 2*SCALE2 1 5*SCALE2 2 2*SCALE2

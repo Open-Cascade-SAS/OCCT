@@ -1,6 +1,6 @@
 ## pro16001
 
-restore PbHLR.brep a
+restore [locate_data_file PbHLR.brep] a
 checkshape a
 
 hlr hlr a

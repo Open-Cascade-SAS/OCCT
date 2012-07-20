@@ -1,8 +1,8 @@
 # Original bug : cts20482
 # Date : 19Mai98
 
-restore cts20482-part.rle part
-restore cts20482-tool2.rle tool2
+restore [locate_data_file cts20482-part.rle] part
+restore [locate_data_file cts20482-tool2.rle] tool2
 
 bsection result part tool2
 

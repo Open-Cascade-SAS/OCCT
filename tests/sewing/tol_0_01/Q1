@@ -1,1 +1,1 @@
-restore CIN001_b70.rle a
+restore [locate_data_file CIN001_b70.rle] a

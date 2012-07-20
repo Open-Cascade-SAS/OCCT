@@ -1,4 +1,4 @@
-restore intcq002.brep m
+restore [locate_data_file intcq002.brep] m
 explode m
 # m_1 : Sr Revolution
 # m_2 : Sr Reglee

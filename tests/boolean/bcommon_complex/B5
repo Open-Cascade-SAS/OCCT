@@ -1,5 +1,5 @@
-restore so4 b1
-restore so2 b2
+restore [locate_data_file so4] b1
+restore [locate_data_file so2] b2
 
 bcommon result b1 b2
 

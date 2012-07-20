@@ -2,8 +2,8 @@
 puts "PRO15946"
 puts "Fuse"
 puts ""
-restore pro15946c.rle c
-restore pro15946d.rle d
+restore [locate_data_file pro15946c.rle] c
+restore [locate_data_file pro15946d.rle] d
 
 explode c so
 

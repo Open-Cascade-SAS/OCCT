@@ -1,7 +1,7 @@
 # Original bug : pro16447
 # Date : 26 Nov 98
 
-restore pro16447_base.brep base
+restore [locate_data_file pro16447_base.brep] base
 
 explode base face
 

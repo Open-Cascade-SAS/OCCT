@@ -1,4 +1,4 @@
-restore $chamf_shape sh
+restore [locate_data_file $chamf_shape] sh
 if { [dval SCALE] != 0 } {
    tscale sh 0 0 0 SCALE
 }

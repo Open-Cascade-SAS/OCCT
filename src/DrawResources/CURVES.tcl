@@ -15,6 +15,8 @@
 # purpose or non-infringement. Please see the License for the specific terms
 # and conditions governing the rights and limitations under the License.
 
+if { [info commands addmenu] == "" } { return }
+
 addmenu Curves "Line"    {
     dialbox line name l origin {0 0 0} direction {1 0 0}
 }

@@ -3,8 +3,8 @@ puts "COMMON of OCC212-1.brep and  OCC212-2.brep"
 puts "Case is duplicate of chl 918 A4, bug OCC212 "
 puts "================================="
 
-restore OCC212-1.brep a
-restore OCC212-2.brep b
+restore [locate_data_file OCC212-1.brep] a
+restore [locate_data_file OCC212-2.brep] b
 
 bop a b
 bopcommon result

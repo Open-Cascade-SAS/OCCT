@@ -1,6 +1,6 @@
 #old file ofs14 part 2
 
-restore bb14 s
+restore [locate_data_file bb14] s
 OFFSETSHAPE 0.1 {} $calcul $type
 
 

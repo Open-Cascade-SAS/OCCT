@@ -1,1 +1,1 @@
-restore CFI_hlacgfjh.rle a
+restore [locate_data_file CFI_hlacgfjh.rle] a

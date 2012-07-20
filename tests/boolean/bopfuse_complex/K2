@@ -1,8 +1,8 @@
 # Original bug : pro11615
 # Date : 25Mai98
 
-restore pro11615a.rle a
-restore pro11615b.rle b
+restore [locate_data_file pro11615a.rle] a
+restore [locate_data_file pro11615b.rle] b
 
 bop a b
 bopfuse result 

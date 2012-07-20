@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # A9.gif
 
-restore cts20457a.rle a
-restore cts20457b.rle b
+restore [locate_data_file cts20457a.rle] a
+restore [locate_data_file cts20457b.rle] b
 
 bfuse result a b
 

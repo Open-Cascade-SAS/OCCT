@@ -1,5 +1,5 @@
-restore a126 a
-restore b126 b
+restore [locate_data_file a126] a
+restore [locate_data_file b126] b
 
 bop a b
 bopcommon result

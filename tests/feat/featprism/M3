@@ -2,7 +2,7 @@
 # bis pro15024
 # Date : 17 Sept 98
 
-restore E_long.rle E
+restore [locate_data_file E_long.rle] E
 
 nexplode E face
 profile cont S E_10 F 50 -100 X 50 Y -100 X -50

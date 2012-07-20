@@ -3,7 +3,7 @@
 #ttranslate c 0 0 10
 #fuse s b c
 
-restore 6_A1234.draw s
+restore [locate_data_file 6_A1234.draw] s
 tscale s 0 0 0 SCALE2
 explode s E
 mkevol result s

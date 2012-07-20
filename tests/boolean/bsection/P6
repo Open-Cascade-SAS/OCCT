@@ -1,4 +1,4 @@
-restore intcq102.brep m
+restore [locate_data_file intcq102.brep] m
 explode m
 # m_1 : Prisme
 # m_2 : Contre-depouille

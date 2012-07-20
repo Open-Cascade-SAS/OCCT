@@ -38,7 +38,7 @@ SetExtStringArray Doc ${aLabel} ${isDelta} ${aFrom1} ${aTo1} ${aSetAttr11} ${aSe
 NewCommand Doc
 
 # Save the document
-set aFile ${WorkDirectory}/OCC6493-[file tail [info script]].cbf
+set aFile ${imagedir}/OCC6493-[file tail [info script]].cbf
 file delete ${aFile}
 catch {SaveAs Doc ${aFile}}
 if { ![file exists ${aFile}] } {

@@ -4,7 +4,7 @@
 ## Comment : from original bug PRO4495
 ## ====================================
 
-restore indus05.rle s
+restore [locate_data_file indus05.rle] s
 tscale s 0 0 0 1000
 explode s e
 blend result s 2 s_26

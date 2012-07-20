@@ -1,8 +1,8 @@
 # Original bug : pro15772
 # Date : 30 Nov 98
 
-restore pro15772_cont.brep cont
-restore pro15772_cont1.brep cont1
+restore [locate_data_file pro15772_cont.brep] cont
+restore [locate_data_file pro15772_cont1.brep] cont1
 box boite 0 0 0 200 100 200
 
 explode cont edge

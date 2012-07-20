@@ -1,8 +1,8 @@
 # Original bug : cts20525
 # Date : 24June98
 
-restore cts20525a.rle a 
-restore cts200525b.rle b
+restore [locate_data_file cts20525a.rle] a 
+restore [locate_data_file cts200525b.rle] b
 
 bfuse result a b
 

@@ -1,8 +1,8 @@
 # Original bug : pro14260
 # Date : 21 Sept 98
 
-restore pro14260c.rle c
-restore pro14260d.rle d
+restore [locate_data_file pro14260c.rle] c
+restore [locate_data_file pro14260d.rle] d
 
 bfuse result c d
 

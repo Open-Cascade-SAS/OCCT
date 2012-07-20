@@ -1,2 +1,2 @@
 puts "TODO OCC23127 ALL: Error : result shape is not done"
-restore DSE3.rle a
+restore [locate_data_file DSE3.rle] a

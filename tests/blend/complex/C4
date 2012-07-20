@@ -4,7 +4,7 @@
 ## Comment : from pro5545
 ## ====================================
 
-restore pro5545.rle a
+restore [locate_data_file pro5545.rle] a
 encoderegularity a 1
 tscale a 0 0 0 1000
 nexplode a e

@@ -1,7 +1,7 @@
 # Original bug : pro16255
 
-restore part3bis.brep s
-restore part5-noFillet.brep t
+restore [locate_data_file part3bis.brep] s
+restore [locate_data_file part5-noFillet.brep] t
 
 #pkv f
 updatetolerance s 1

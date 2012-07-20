@@ -1,1 +1,1 @@
-restore CFE_e_coufzw.rle a
+restore [locate_data_file CFE_e_coufzw.rle] a

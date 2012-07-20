@@ -1,8 +1,8 @@
 # Original bug : pro6066
 # Date : 11mar98
 
-restore pro6066-part.rle part
-restore pro6066-tool.rle tool
+restore [locate_data_file pro6066-part.rle] part
+restore [locate_data_file pro6066-tool.rle] tool
 
 bcut result part tool
 

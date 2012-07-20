@@ -1,1 +1,1 @@
-restore Fourche7corrige.brep a
+restore [locate_data_file Fourche7corrige.brep] a

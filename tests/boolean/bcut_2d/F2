@@ -1,5 +1,5 @@
-restore case_3_wire.brep a
-restore case_3_edge1.brep b
+restore [locate_data_file case_3_wire.brep] a
+restore [locate_data_file case_3_edge1.brep] b
 bcut result b a
 set length empty
 set nbsh_v 0

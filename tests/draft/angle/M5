@@ -1,7 +1,7 @@
 # Original bug : cts20610
 # Date : 21 Dec 98
 
-restore cts20610_base.brep base
+restore [locate_data_file cts20610_base.brep] base
 
 explode base face
 

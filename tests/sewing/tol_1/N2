@@ -1,1 +1,1 @@
-restore CFI_indusfjm.rle a
+restore [locate_data_file CFI_indusfjm.rle] a

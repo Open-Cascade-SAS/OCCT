@@ -1,8 +1,8 @@
 # Original bug : pro10494
 # Date : 24mar98
 
-restore pro10494b.rle b
-restore pro10494c.rle c
+restore [locate_data_file pro10494b.rle] b
+restore [locate_data_file pro10494c.rle] c
 
 bfuse result b c
 

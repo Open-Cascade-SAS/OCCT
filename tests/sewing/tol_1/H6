@@ -1,1 +1,1 @@
-restore CFI_6_f12fhb.rle a
+restore [locate_data_file CFI_6_f12fhb.rle] a

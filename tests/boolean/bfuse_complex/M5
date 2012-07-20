@@ -1,9 +1,9 @@
 # Original bug : cts21306
 # Date : 16July98
 
-restore cts21306a.rle a 
-restore cts21306b.rle b
-restore cts21306c.rle c
+restore [locate_data_file cts21306a.rle] a 
+restore [locate_data_file cts21306b.rle] b
+restore [locate_data_file cts21306c.rle] c
 
 bfuse rab a b
 

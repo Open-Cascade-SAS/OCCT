@@ -1,8 +1,8 @@
 # Original bug : usa60180
 # Date : 16July98
 
-restore usa60180a.rle a 
-restore usa60180b.rle b
+restore [locate_data_file usa60180a.rle] a 
+restore [locate_data_file usa60180b.rle] b
 
 bcut result a b
 

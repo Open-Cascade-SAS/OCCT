@@ -3,8 +3,8 @@ puts "PRO16252"
 puts "Fuse"
 puts ""
 
-restore pro16252a.brep a
-restore pro16252b.brep b
+restore [locate_data_file pro16252a.brep] a
+restore [locate_data_file pro16252b.brep] b
 
 fsameparameter b
 maxtolerance a

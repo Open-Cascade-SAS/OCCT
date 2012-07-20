@@ -1,1 +1,1 @@
-restore CCV_2_f1_gsy.rle a
+restore [locate_data_file CCV_2_f1_gsy.rle] a

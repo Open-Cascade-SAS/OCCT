@@ -6,8 +6,8 @@ puts "TODO OCC22810 All:Error in featperform"
 puts "TODO OCC22810 All:Error in fsameparameter"
 puts "TODO OCC22810 All:Error : The feat can not be build"
 
-restore hkg60163_base.rle base
-restore hkg60163_face.rle cont1
+restore [locate_data_file hkg60163_base.rle] base
+restore [locate_data_file hkg60163_face.rle] cont1
 
 ## thickness 2mm
 mkoffset off cont1 1 2

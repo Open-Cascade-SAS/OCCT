@@ -1,5 +1,5 @@
-restore a3 a
-restore b3 b
+restore [locate_data_file a3] a
+restore [locate_data_file b3] b
 bsection result a b
 
 set length 10

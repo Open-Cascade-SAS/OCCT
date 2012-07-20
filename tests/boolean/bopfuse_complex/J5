@@ -1,10 +1,10 @@
-restore a346 a
-restore b346 b
+restore [locate_data_file a346] a
+restore [locate_data_file b346] b
 
 bop a b
 bopfuse r
 
-restore b347 b
+restore [locate_data_file b347] b
 
 bop r b
 bopfuse result

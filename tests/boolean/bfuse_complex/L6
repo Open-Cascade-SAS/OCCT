@@ -1,8 +1,8 @@
 # Original bug : cts20907
 # Date : 24June98
 
-restore cts20907a.rle a 
-restore cts20907b.rle b
+restore [locate_data_file cts20907a.rle] a 
+restore [locate_data_file cts20907b.rle] b
 
 bfuse result a b
 

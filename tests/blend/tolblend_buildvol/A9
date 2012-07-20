@@ -1,6 +1,6 @@
 #pcone s 10 5 20
 
-restore 7_F2.draw s
+restore [locate_data_file 7_F2.draw] s
 tscale s 0 0 0 SCALE1
 explode s E
 mkevol result s

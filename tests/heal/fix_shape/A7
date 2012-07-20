@@ -1,1 +1,1 @@
-restore CFE903_ger60ggw.rle a
+restore [locate_data_file CFE903_ger60ggw.rle] a

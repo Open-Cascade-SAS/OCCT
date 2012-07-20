@@ -1,5 +1,5 @@
-restore a41 a
-restore b41 b
+restore [locate_data_file a41] a
+restore [locate_data_file b41] b
 bsection result a b
 
 set length 19.9279

@@ -1,8 +1,8 @@
 # Original bug : cts19573
 # Date : 26 Nov 98
 
-restore cts19573_base.brep base
-restore cts19573_wire.brep wire
+restore [locate_data_file cts19573_base.brep] base
+restore [locate_data_file cts19573_wire.brep] wire
 
 vertex v1 0 -500 120
 plane plan 0 -500 120 1 0 0 

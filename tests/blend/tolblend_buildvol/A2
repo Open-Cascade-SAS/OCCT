@@ -2,7 +2,7 @@
 #explode s f
 #sewing s s_1 s_3
 
-restore 7_B2.draw s
+restore [locate_data_file 7_B2.draw] s
 tscale  s 0 0 0 SCALE1
 explode s E
 mkevol P s

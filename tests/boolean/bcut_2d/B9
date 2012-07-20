@@ -1,5 +1,5 @@
-restore case_2_solid_r.brep a
-restore case_2_wire4.brep b
+restore [locate_data_file case_2_solid_r.brep] a
+restore [locate_data_file case_2_wire4.brep] b
 bcut result b a
 set length 2408.18
 set nbsh_v 11

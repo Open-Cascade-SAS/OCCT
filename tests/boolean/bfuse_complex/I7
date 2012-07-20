@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # D4
 
-restore cts20535a.rle a
-restore cts20535b.rle b
+restore [locate_data_file cts20535a.rle] a
+restore [locate_data_file cts20535b.rle] b
 
 bfuse result a b
 

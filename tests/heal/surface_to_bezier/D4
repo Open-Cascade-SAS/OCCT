@@ -1,1 +1,1 @@
-restore CHE900_cts21271.rle a
+restore [locate_data_file CHE900_cts21271.rle] a

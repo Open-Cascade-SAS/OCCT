@@ -4,7 +4,7 @@
 ## Comment : from pro8783
 ## ====================================
 
-restore pro8783.rle a
+restore [locate_data_file pro8783.rle] a
 explode a e
 mkevol result a
 updatevol a_4 0 15 0.5 9 1 5

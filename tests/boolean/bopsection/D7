@@ -1,8 +1,8 @@
 puts "GER60861"
 puts "Section"
 puts ""
-restore ger60861a.brep a
-restore ger60861b.brep b
+restore [locate_data_file ger60861a.brep] a
+restore [locate_data_file ger60861b.brep] b
 
 explode a sh
 explode b sh

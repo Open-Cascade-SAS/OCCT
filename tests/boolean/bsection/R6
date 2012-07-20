@@ -2,14 +2,14 @@ puts " BUC60068 "
 puts "If scales by 1000, time to compute is 10 times greater "
 ##
 ## mod pkv from
-restore buc60068a.rle a
-restore buc60068b.rle b
-restore buc60068a.rle c
-restore buc60068b.rle d
-restore buc60068a.rle e
-restore buc60068b.rle f
-restore buc60068a.rle g
-restore buc60068b.rle h
+restore [locate_data_file buc60068a.rle] a
+restore [locate_data_file buc60068b.rle] b
+restore [locate_data_file buc60068a.rle] c
+restore [locate_data_file buc60068b.rle] d
+restore [locate_data_file buc60068a.rle] e
+restore [locate_data_file buc60068b.rle] f
+restore [locate_data_file buc60068a.rle] g
+restore [locate_data_file buc60068b.rle] h
 ## mod pkv from
 ##
 
@@ -36,15 +36,15 @@ dchrono m start
 bsection resgh g h
 dchrono m stop
 
-regexp {Elapsed time: ([0-9]+) Hours ([0-9]+) Minutes ([0-9]|.+) Seconds} [dchrono j show] full Jhours Jminutes Jseconds
-regexp {Elapsed time: ([0-9]+) Hours ([0-9]+) Minutes ([0-9]|.+) Seconds} [dchrono k show] full Khours Kminutes Kseconds
-regexp {Elapsed time: ([0-9]+) Hours ([0-9]+) Minutes ([0-9]|.+) Seconds} [dchrono l show] full Lhours Lminutes Lseconds
-regexp {Elapsed time: ([0-9]+) Hours ([0-9]+) Minutes ([0-9]|.+) Seconds} [dchrono m show] full Mhours Mminutes Mseconds
+regexp {CPU user time: ([0-9|.]+) seconds} [dchrono j show] full Jseconds
+regexp {CPU user time: ([0-9|.]+) seconds} [dchrono k show] full Kseconds
+regexp {CPU user time: ([0-9|.]+) seconds} [dchrono l show] full Lseconds
+regexp {CPU user time: ([0-9|.]+) seconds} [dchrono m show] full Mseconds
 
-set Jtime [expr ($Jhours*60*60 + $Jminutes*60 + $Jseconds)*2]
-set Ktime [expr $Khours*60*60 + $Kminutes*60 + $Kseconds]
-set Ltime [expr $Lhours*60*60 + $Lminutes*60 + $Lseconds]
-set Mtime [expr $Mhours*60*60 + $Mminutes*60 + $Mseconds]
+set Jtime [expr $Jseconds * 1.1]
+set Ktime $Kseconds
+set Ltime $Lseconds
+set Mtime $Mseconds
 
 if { $Jtime < $Ktime || $Jtime < $Ltime || $Jtime < $Mtime} {
    puts "Error: incorrect performance of bsection operation:"

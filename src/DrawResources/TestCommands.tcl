@@ -324,10 +324,15 @@ proc testgrid {logdir args} {
 	# final 'exit' is needed when running on Linux under VirtualGl
 	puts $fd_cmd "exit"
 	close $fd_cmd
-	set command "exec DRAWEXE -f $logdir/$group/$grid/${casename}.tcl"
+
+        # commant to run DRAW with a command file;
+        # note that empty string is passed as standard input to avoid possible 
+        # hang-ups due to waiting for stdin of the launching process
+	set command "exec <<{} DRAWEXE -f $logdir/$group/$grid/${casename}.tcl"
+
 	# alternative method to run without temporary file; disabled as it needs too many backslashes
 #	else {
-#	    set command "exec DRAWEXE -c $imgdir_cmd\\\; set test_image $casename\\\; \
+#	    set command "exec <<\"\" DRAWEXE -c $imgdir_cmd\\\; set test_image $casename\\\; \
 #		         _run_test $dir $group $grid $casefile\\\; \
 #		         puts \\\[dlog get\\\]\\\; exit"
 #	}
@@ -506,24 +511,11 @@ proc _run_test {scriptsdir group gridname casefile} {
 	}
     }
 
-    # set datadir for this test case
-    if { [info exists env(CSF_TestDataPath)] } {
-	foreach ddir [regsub -all ";" [regsub "\\\\" $env(CSF_TestDataPath) "/"] " "] {
-	    if { [file isdirectory $ddir/$group] } {
-		set save_datadir [datadir]
-		datadir $ddir/$group
-		break
-	    }
-	}
-    }
-    if { ! [info exists save_datadir] } {
-	puts "Warning: no data directory found for group $group in path defined by CSF_TestDataPath"
-	set save_datadir [datadir]
-    }
-
     # evaluate test case 
     if [catch {
 	uplevel set casename [file tail $casefile]
+	uplevel set groupname $group
+	uplevel set gridname $gridname
 
         if { [file exists $scriptsdir/$group/begin] } {
 	    puts "Executing $scriptsdir/$group/begin..."; flush stdout
@@ -549,14 +541,15 @@ proc _run_test {scriptsdir group gridname casefile} {
 	puts "Tcl Exception: $res"
     }
 
-    datadir $save_datadir
-
     # stop logging
     if { $dlog_exists } {
 	rename puts {}
 	rename puts-saved puts
 	dlog off
     }
+
+    # stop cpulimit killer if armed by the test
+    cpulimit
 
     # add timing info
     uplevel dchrono _timer stop
@@ -1154,41 +1147,43 @@ proc _path_separator {} {
 #   environment variable CSF_TestDataPath
 # If file is not found, raises Tcl error.
 proc locate_data_file {filename} {
-    global env
+    global env groupname gridname casename
 
     set scriptfile [info script]
     if { $scriptfile == "" } {
 	error "Error: This procedure (locate_data_file) is for use only in test scripts!"
     }
 
-    # look in subdirectories 'data' of grid and group directories
-    set scriptdir [file normalize [file dirname $scriptfile]]
-    if { [file tail $scriptdir] == "data" } {
-	if [file exists $scriptdir/$filename] {
-	    return $scriptdir/$filename
+    # check sub-directories data of the test case grid directory
+    # the current test case in paths indicated by CSF_TestScriptsPath
+    if { [info exists groupname] && [info exists gridname] && 
+         [info exists env(CSF_TestScriptsPath)] } {
+	foreach dir [_split_path $env(CSF_TestScriptsPath)] {
+	    if { [file exists $dir/$groupname/$gridname/data/$filename] } {
+		return [file normalize $dir/$groupname/$gridname/data/$filename]
+	    }
+	    if { [file exists $dir/$groupname/data/$filename] } {
+		return [file normalize $dir/$groupname/data/$filename]
+	    }
 	}
-    } else {
-	if [file exists $scriptdir/data/$filename] {
-	    return [file normalize $scriptdir/data/$filename]
-	}
-    }
-    if [file exists $scriptdir/../data/$filename] {
-	return [file normalize $scriptdir/../data/$filename]
     }
 
     # check sub-directories corresponding to group and grid of
     # the current test case in paths indicated by CSF_TestDataPath
-    if [info exists env(CSF_TestDataPath)] {
-	set grid [file tail $scriptdir]
-	set group [file tail [file dirname $scriptdir]]
+    if { [info exists groupname] && [info exists env(CSF_TestDataPath)] } {
 	foreach dir [_split_path $env(CSF_TestDataPath)] {
-	    if [file exists $dir/$group/$grid/$filename] {
-		return [file normalize $dir/$group/$grid/$filename]
+	    if { [info exists gridname] && [file exists $dir/$groupname/$gridname/$filename] } {
+		return [file normalize $dir/$groupname/$gridname/$filename]
 	    }
-	    if [file exists $dir/$group/$filename] {
-		return [file normalize $dir/$group/$filename]
+	    if { [file exists $dir/$groupname/$filename] } {
+		return [file normalize $dir/$groupname/$filename]
 	    }
 	}
+    }
+
+    # check datadir
+    if { [file exists [uplevel datadir]/$filename] } {
+	return [uplevel datadir]/$filename
     }
 
     # raise error

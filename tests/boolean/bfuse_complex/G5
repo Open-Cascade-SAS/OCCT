@@ -1,8 +1,8 @@
 # Original bug : cts20204
 # Date : 13Mai98
 
-restore  cts20204_base  base
-restore  cts20204_outil  outil
+restore [locate_data_file cts20204_base]  base
+restore [locate_data_file cts20204_outil]  outil
 
 bfuse result base outil
 

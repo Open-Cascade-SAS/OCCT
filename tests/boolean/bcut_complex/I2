@@ -1,8 +1,8 @@
 # Original bug : cts20138
 # Date : 13Mai98
 
-restore  cts20138_base  base
-restore  cts20138_outil  outil
+restore [locate_data_file cts20138_base]  base
+restore [locate_data_file cts20138_outil]  outil
 
 bcut result base outil
 

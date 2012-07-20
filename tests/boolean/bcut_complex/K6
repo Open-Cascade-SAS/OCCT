@@ -1,8 +1,8 @@
 # Original bug : cts20397
 # Date : 19Mai98
 
-restore cts20397-part.rle part
-restore cts20397-tool.rle tool
+restore [locate_data_file cts20397-part.rle] part
+restore [locate_data_file cts20397-tool.rle] tool
 
 bcut result part tool
 

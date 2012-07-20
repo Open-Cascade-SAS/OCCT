@@ -1,1 +1,1 @@
-restore CFI_8_e1_fhw.rle a
+restore [locate_data_file CFI_8_e1_fhw.rle] a

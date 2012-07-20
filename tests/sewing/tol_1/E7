@@ -1,1 +1,1 @@
-restore CFI_11_a2fex.rle a
+restore [locate_data_file CFI_11_a2fex.rle] a

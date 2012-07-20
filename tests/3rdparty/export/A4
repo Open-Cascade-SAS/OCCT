@@ -30,7 +30,7 @@ vaxis ax1 100 100 100 100 100 0
 box a 110 110 110 200 200 200
 vdisplay a
 
-set aFile $WorkDirectory/ExportToEPS.eps
+set aFile $imagedir/ExportToEPS.eps
 
 set format EPS
 

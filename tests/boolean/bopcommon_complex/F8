@@ -1,5 +1,5 @@
-restore a58 a
-restore b60 b
+restore [locate_data_file a58] a
+restore [locate_data_file b60] b
 
 bop a b
 bopcommon result

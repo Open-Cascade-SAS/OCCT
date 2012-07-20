@@ -1,5 +1,5 @@
-restore f2 b1
-restore f5 b2
+restore [locate_data_file f2] b1
+restore [locate_data_file f5] b2
 
 bcommon result b1 b2
 

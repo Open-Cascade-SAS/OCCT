@@ -2,8 +2,8 @@ puts "ID160065"
 puts "Fuse"
 puts ""
 
-restore id260065c.rle base
-restore id260065a.rle cont1
+restore [locate_data_file id260065c.rle] base
+restore [locate_data_file id260065a.rle] cont1
 
 prism tool1 cont1 -86.60254 50 0
 

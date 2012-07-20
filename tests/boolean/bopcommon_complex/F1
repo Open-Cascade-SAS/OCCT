@@ -1,4 +1,4 @@
-restore OCC337.brep sh
+restore [locate_data_file OCC337.brep] sh
 explode sh
 
 bop sh_2 sh_1

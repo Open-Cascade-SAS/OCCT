@@ -1,7 +1,7 @@
 # Original bug : cts21804
 # Date : 26 Nov 98
 
-restore cts21804_base.brep base
+restore [locate_data_file cts21804_base.brep] base
 
 nexplode base face
 

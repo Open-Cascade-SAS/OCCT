@@ -1,6 +1,6 @@
 
-restore  cts20205-base.rle  base
-restore  cts20205-outil.rle  outil
+restore [locate_data_file cts20205-base.rle]  base
+restore [locate_data_file cts20205-outil.rle]  outil
 
 bfuse result base outil
 

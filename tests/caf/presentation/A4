@@ -23,7 +23,7 @@ AISSet D ${aLabel} NS
 AISDisplay D ${aLabel}
 
 # Save the document
-set aFile ${WorkDirectory}/caf003-A4.std
+set aFile ${imagedir}/caf003-A4.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

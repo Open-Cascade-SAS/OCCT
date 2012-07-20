@@ -1,5 +1,5 @@
-restore case_8_solid_repaired.brep a
-restore case_8_wire2.brep b
+restore [locate_data_file case_8_solid_repaired.brep] a
+restore [locate_data_file case_8_wire2.brep] b
 bcommon result b a
 set length 49.966
 set nbsh_v 4

@@ -9,7 +9,7 @@
 #trotate s 0 0 0 0 0 1 -25
 #save s 5_I12.draw 
 
-restore 5_I12.draw  s
+restore [locate_data_file 5_I12.draw]  s
 tscale s 0 0 0 SCALE1 
 explode s E
 blend result s 0.5*SCALE1 s_11 0.5*SCALE1 s_12 0.5*SCALE1 s_2 0.5*SCALE1 s_3 0.5*SCALE1 s_9  0.5*SCALE1 s_10

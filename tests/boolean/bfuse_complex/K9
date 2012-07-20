@@ -1,8 +1,8 @@
 # Original bug : pro13555
 # Date : 12June98
 
-restore pro13555a.rle a 
-restore pro13555b.rle b
+restore [locate_data_file pro13555a.rle] a 
+restore [locate_data_file pro13555b.rle] b
 
 bfuse result a b
 

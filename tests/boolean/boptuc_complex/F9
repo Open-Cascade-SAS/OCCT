@@ -1,5 +1,5 @@
-restore a206 a
-restore b206 b
+restore [locate_data_file a206] a
+restore [locate_data_file b206] b
 
 bop a b
 boptuc result

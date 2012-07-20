@@ -2,8 +2,8 @@ puts "CTS20769"
 puts "Creating fuse is impossible"
 puts ""
 
-restore cts20769a.brep a
-restore cts20769b.brep b
+restore [locate_data_file cts20769a.brep] a
+restore [locate_data_file cts20769b.brep] b
 
 bfuse result a b
 

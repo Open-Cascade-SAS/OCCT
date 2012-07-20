@@ -5,7 +5,7 @@
 ## ===========================================
 
 # Is this test 02 or 03 ?
-restore 1_O123.rle tmp
+restore [locate_data_file 1_O123.rle] tmp
 explode tmp E
 blend s tmp 5 tmp_5
 explode s E

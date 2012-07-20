@@ -1,9 +1,9 @@
 # Original bug : cts 19304
 # Date : 23mar98
 
-restore cts19304a.rle a
-restore cts19304b.rle b
-restore cts19304c.rle c
+restore [locate_data_file cts19304a.rle] a
+restore [locate_data_file cts19304b.rle] b
+restore [locate_data_file cts19304c.rle] c
 
 mkplane af a 
 mkplane bf b

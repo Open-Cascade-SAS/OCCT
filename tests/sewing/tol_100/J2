@@ -1,2 +1,2 @@
-restore CIN902_intcqhmo.rle a
+restore [locate_data_file CIN902_intcqhmo.rle] a
 set nb_f ""

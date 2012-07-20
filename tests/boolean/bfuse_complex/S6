@@ -1,7 +1,7 @@
 # Original bug : pro12896
 
-restore shape1.rle a
-restore outil1.rle b
+restore [locate_data_file shape1.rle] a
+restore [locate_data_file outil1.rle] b
 
 bfuse result a b
 

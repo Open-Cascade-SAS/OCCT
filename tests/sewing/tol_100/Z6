@@ -1,1 +1,1 @@
-restore CTO904_pro12875b.rle a
+restore [locate_data_file CTO904_pro12875b.rle] a

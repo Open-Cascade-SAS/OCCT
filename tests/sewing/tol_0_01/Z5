@@ -1,1 +1,1 @@
-restore CFI_5_e12fgj.rle a
+restore [locate_data_file CFI_5_e12fgj.rle] a

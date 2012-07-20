@@ -1,1 +1,1 @@
-restore CHE900_hkg60iob.rle a
+restore [locate_data_file CHE900_hkg60iob.rle] a

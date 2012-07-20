@@ -5,7 +5,7 @@
 ## ====================================
 puts "TODO OCC22817 All:Faulty shapes in variables faulty_1 to faulty_8"
 
-restore  pro13892.rle a
+restore [locate_data_file pro13892.rle] a
 explode a e
 blend result a 15 a_60
 

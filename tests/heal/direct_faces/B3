@@ -1,1 +1,1 @@
-restore DF3.rle a
+restore [locate_data_file DF3.rle] a

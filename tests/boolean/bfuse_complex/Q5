@@ -2,8 +2,8 @@ puts "BUC60382"
 puts "Problem with fuse operation "
 puts ""
 
-restore IR2_TuyoPipeBSpline_20_draw2.brep a
-restore IR2_sphere2_20.brep b 
+restore [locate_data_file IR2_TuyoPipeBSpline_20_draw2.brep] a
+restore [locate_data_file IR2_sphere2_20.brep] b 
 
 bfuse result a b
 

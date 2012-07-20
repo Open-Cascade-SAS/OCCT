@@ -1,1 +1,1 @@
-restore CFI_cts21020.rle a
+restore [locate_data_file CFI_cts21020.rle] a

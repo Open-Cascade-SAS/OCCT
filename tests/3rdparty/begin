@@ -1,7 +1,3 @@
-if { [string compare [datadir] "."] == 0 } {
-   datadir [file dirname [info script]]/data
-}
-
 cpulimit 1000
 
 if { [array get Draw_Groups "Primitive building commands"] == "" } {
@@ -19,12 +15,4 @@ if { [info exists test_image ] == 0 } {
    set test_image photo
 }
 
-if { [info exists WorkDirectory] == 0 } {
-    set WorkDirectory "/tmp"
-    if { [array get env TEMP] != "" } {
-	set WorkDirectory "$env(TEMP)"
-    }
-}
-                    
 vinit
-        

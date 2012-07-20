@@ -1,1 +1,1 @@
-restore CTO904_cts21210a.rle a
+restore [locate_data_file CTO904_cts21210a.rle] a

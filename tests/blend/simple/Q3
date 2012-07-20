@@ -1,5 +1,5 @@
 puts "TODO OCC22817 All: TEST INCOMPLETE"
-restore 4_E1(test16).draw s
+restore [locate_data_file 4_E1(test16).draw] s
 tscale s 0 0 0 SCALE
 explode s E
 blend result s 1*SCALE s_5

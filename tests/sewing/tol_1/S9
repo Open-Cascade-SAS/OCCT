@@ -1,1 +1,1 @@
-restore CIN001_a24.rle a
+restore [locate_data_file CIN001_a24.rle] a

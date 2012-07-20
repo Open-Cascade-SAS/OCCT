@@ -1,8 +1,8 @@
 # Original bug : fra61199
 # Date : 29June98
 cpulimit 3000
-restore fra61199a.rle a 
-restore fra61199b.rle b
+restore [locate_data_file fra61199a.rle] a 
+restore [locate_data_file fra61199b.rle] b
 
 bcut result a b
 

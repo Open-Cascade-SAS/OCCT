@@ -1,1 +1,1 @@
-restore CCH_hlacghea.rle a
+restore [locate_data_file CCH_hlacghea.rle] a

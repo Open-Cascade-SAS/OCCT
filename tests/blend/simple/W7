@@ -6,7 +6,7 @@
 
 puts "TODO OCC22739 All:TEST INCOMPLETE"
 
-restore 1_D12.rle s
+restore [locate_data_file 1_D12.rle] s
 explode s E
 blend result s 10 s_5
 

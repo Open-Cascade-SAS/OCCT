@@ -1,2 +1,2 @@
-restore cylinderETR.rle a
+restore [locate_data_file cylinderETR.rle] a
 set nb_revol 1

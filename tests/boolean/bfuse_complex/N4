@@ -1,8 +1,8 @@
 # Original bug : pro14892
 # Date : 16July98
 
-restore pro14892a.rle a 
-restore pro14892b.rle aface
+restore [locate_data_file pro14892a.rle] a 
+restore [locate_data_file pro14892b.rle] aface
 
 prism b aface 0 0 -50
 

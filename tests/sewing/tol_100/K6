@@ -1,1 +1,1 @@
-restore CTO900_cts19474part.rle a
+restore [locate_data_file CTO900_cts19474part.rle] a

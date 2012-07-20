@@ -1,8 +1,8 @@
 # Original bug : pro13495
 # Date : 4June98
 
-restore pro13495a.rle a 
-restore pro13495b.rle b
+restore [locate_data_file pro13495a.rle] a 
+restore [locate_data_file pro13495b.rle] b
 
 bcut result a b
 

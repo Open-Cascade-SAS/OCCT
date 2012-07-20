@@ -1,8 +1,8 @@
 # Original bug : hkg60156
 # Date : 16July98
 
-restore hkg60156a.rle a 
-restore hkg60156b.rle b
+restore [locate_data_file hkg60156a.rle] a 
+restore [locate_data_file hkg60156b.rle] b
 
 bcut result a b
 

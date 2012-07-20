@@ -1,8 +1,8 @@
 # Original bug : cts20870
 # Date : 25 Nov 98
 
-restore cts20870_base.brep base
-restore cts20870_face.brep cont
+restore [locate_data_file cts20870_base.brep] base
+restore [locate_data_file cts20870_face.brep] cont
 
 explode base face
 copy base_6 funtil

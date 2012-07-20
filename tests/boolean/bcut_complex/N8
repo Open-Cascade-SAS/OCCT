@@ -1,8 +1,8 @@
 # Original bug : pro14957
 # Date : 26Aout98
 
-restore pro14957a.rle a 
-restore pro14957b.rle b
+restore [locate_data_file pro14957a.rle] a 
+restore [locate_data_file pro14957b.rle] b
 
 explode a so
 

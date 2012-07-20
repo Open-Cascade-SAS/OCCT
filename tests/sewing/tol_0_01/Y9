@@ -1,1 +1,1 @@
-restore CFI_4_h1_ffu.rle a
+restore [locate_data_file CFI_4_h1_ffu.rle] a

@@ -19,7 +19,7 @@ SetComment D ${aLabel} ${aSetAttr1}
 NewCommand D
 
 # Save the document
-set aFile ${WorkDirectory}/caf001-F3.std
+set aFile ${imagedir}/caf001-F3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {

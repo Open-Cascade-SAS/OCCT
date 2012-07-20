@@ -1,8 +1,8 @@
 # Original bug : ger60224
 # Date : 23mar98
 
-restore ger60224-part.rle base
-restore ger60224-tool.rle wire
+restore [locate_data_file ger60224-part.rle] base
+restore [locate_data_file ger60224-tool.rle] wire
 
 mkplane cont wire
 

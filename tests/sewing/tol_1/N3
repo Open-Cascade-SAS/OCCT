@@ -1,1 +1,1 @@
-restore CFI_jap50078.rle a
+restore [locate_data_file CFI_jap50078.rle] a

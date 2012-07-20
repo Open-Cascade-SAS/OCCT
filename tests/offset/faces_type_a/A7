@@ -1,6 +1,6 @@
 #old file ofsb2
 
-restore bb2 s
+restore [locate_data_file bb2] s
 OFFSETSHAPE -0.1 {s_8} $calcul $type
 
 set volume 0.982069

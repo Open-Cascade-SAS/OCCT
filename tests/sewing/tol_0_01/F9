@@ -1,1 +1,1 @@
-restore CCH_jyl1.rle a
+restore [locate_data_file CCH_jyl1.rle] a

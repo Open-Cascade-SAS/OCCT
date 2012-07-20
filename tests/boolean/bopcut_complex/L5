@@ -1,5 +1,5 @@
-restore a342 a
-restore b342 b
+restore [locate_data_file a342] a
+restore [locate_data_file b342] b
 
 bop a b
 bopcut result

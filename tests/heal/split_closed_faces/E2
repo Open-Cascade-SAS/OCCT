@@ -1,1 +1,1 @@
-restore DSEwithTol1.rle a
+restore [locate_data_file DSEwithTol1.rle] a

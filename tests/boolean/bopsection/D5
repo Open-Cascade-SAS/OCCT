@@ -1,8 +1,8 @@
 puts "CTS22135"
 puts "Generation of micro-edges during section."
 puts ""
-restore cts21135a.brep o
-restore cts21135b.brep t
+restore [locate_data_file cts21135a.brep] o
+restore [locate_data_file cts21135b.brep] t
 bop o t
 bopsection result
 

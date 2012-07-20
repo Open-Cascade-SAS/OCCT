@@ -1,5 +1,5 @@
-restore so2 b1
-restore so7 b2
+restore [locate_data_file so2] b1
+restore [locate_data_file so7] b2
 
 bcut result b1 b2
 

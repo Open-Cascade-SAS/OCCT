@@ -1,1 +1,1 @@
-restore CFE900_pro13gfc.rle a
+restore [locate_data_file CFE900_pro13gfc.rle] a

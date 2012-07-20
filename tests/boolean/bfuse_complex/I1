@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # C3
 
-restore cts20492a.rle a
-restore cts20492b.rle b
+restore [locate_data_file cts20492a.rle] a
+restore [locate_data_file cts20492b.rle] b
 
 bfuse result a b
 

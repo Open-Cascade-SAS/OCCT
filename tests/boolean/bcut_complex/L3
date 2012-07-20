@@ -1,8 +1,8 @@
 # Original bug : cts20869
 # Date : 4June98
 
-restore cts20869-part.rle a
-restore cts20869-tool.rle b
+restore [locate_data_file cts20869-part.rle] a
+restore [locate_data_file cts20869-tool.rle] b
 
 bcut result a b
 

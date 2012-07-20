@@ -11,7 +11,7 @@ if {
     || [string compare $os "Mandriva2010"   ] == 0
     || [string compare $os "Mandriva2010-64"] == 0
     || [string compare $os "SUSE10-64"] == 0
-    || [regexp {Windows} $os] == 1
+    || [regexp -nocase {Windows} $os] == 1
    } {
   puts "TODO OCC23068 $os: An exception was caught"
   puts "TODO OCC23068 $os: \\*\\* Exception \\*\\*"

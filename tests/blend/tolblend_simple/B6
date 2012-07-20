@@ -1,4 +1,4 @@
-restore blend05.draw s
+restore [locate_data_file blend05.draw] s
 tscale  s 0 0 0 SCALE 
 explode s e
 blend result s 0.015*SCALE s_2 0.015*SCALE s_22
