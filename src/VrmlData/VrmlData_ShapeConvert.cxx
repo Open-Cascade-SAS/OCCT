@@ -257,9 +257,9 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
                   TColgp_Array1OfPnt arrNodes(1, nbNodes);
                   TColStd_Array1OfReal arrUVNodes(1, nbNodes);
 
-                  for(i = 1; i <= nbNodes; i++) {
-                    arrUVNodes(i) = aPrs->Value(aPrs->Lower() + i - 1);
-                    arrNodes(i) = aCurve.Value(arrUVNodes(i));
+                  for(Standard_Integer j = 1; j <= nbNodes; j++) {
+                    arrUVNodes(j) = aPrs->Value(aPrs->Lower() + j - 1);
+                    arrNodes(j) = aCurve.Value(arrUVNodes(j));
                   }
                   aPol = new Poly_Polygon3D(arrNodes, arrUVNodes);
                   aPol->Deflection (aPT->Deflection());
@@ -276,9 +276,9 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
                 
                   TColgp_Array1OfPnt arrNodes(1, nbNodes);
                   TColStd_Array1OfReal arrUVNodes(1, nbNodes);
-                  for (i = 1; i <= nbNodes; i++) {
-                    arrNodes(i) = TD.Value(i);
-                    arrUVNodes(i) = TD.Parameter(i);
+                  for (Standard_Integer j = 1; j <= nbNodes; j++) {
+                    arrNodes(j) = TD.Value(j);
+                    arrUVNodes(j) = TD.Parameter(j);
                   }
                   aPol = new Poly_Polygon3D(arrNodes, arrUVNodes);
                   aPol->Deflection (aDeflection);
