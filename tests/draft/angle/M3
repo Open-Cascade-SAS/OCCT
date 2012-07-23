@@ -1,11 +1,6 @@
 # Original bug : cts21900
 # Date : 02 Dec 98
 
-puts "TODO OCC22803 All:An exception was caught"
-puts "TODO OCC22803 All:\\*\\* Exception \\*\\*"
-puts "TODO OCC22803 All:Error in depouille"
-puts "TODO OCC22803 All:Error : The depouille can not be build"
-
 restore [locate_data_file cts21900_base.brep] base
 
 explode base face
@@ -13,4 +8,4 @@ explode base face
 if { [catch { depouille result base 0 0 1 base_16 3 200 -15.1180845742047 30 0 0 1 base_18 3 200 -15.1180845742047 30 0 0 1 } ] != 0 } {
   puts "Error in depouille"
 }
-set square 0
+set square 74960.8

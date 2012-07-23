@@ -36,7 +36,7 @@ if { [string compare $command "mesh"] == 0 } {
       set nb 56
    }
    if {[string compare $os "Debian40"] == 0} {
-      set nb 61
+      set nb {51|61}
    }
 }
 set bug_cross "OCC22687"

@@ -41,7 +41,8 @@ regexp {CPU user time: ([0-9|.]+) seconds} [dchrono k show] full Kseconds
 regexp {CPU user time: ([0-9|.]+) seconds} [dchrono l show] full Lseconds
 regexp {CPU user time: ([0-9|.]+) seconds} [dchrono m show] full Mseconds
 
-set Jtime [expr $Jseconds * 1.1]
+#sometimes CPU user time may be 0
+set Jtime [expr ($Jseconds * 1.1) + 0.2]
 set Ktime $Kseconds
 set Ltime $Lseconds
 set Mtime $Mseconds
