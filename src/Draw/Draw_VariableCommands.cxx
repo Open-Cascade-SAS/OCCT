@@ -1036,7 +1036,7 @@ static Standard_Real ParseValue(char*& name)
 	  // count arguments
 	  Standard_Integer argc = 1;
 	  char* q = p;
-	  while ((*q == ' ') && (*q == '\t')) q++;
+	  while ((*q == ' ') || (*q == '\t')) q++;
 	  if (*q == '(') {
 	    Standard_Integer pc = 1;
 	    argc = 2;
