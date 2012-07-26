@@ -1103,7 +1103,7 @@ static void SortEdges5 (const TopTools_Array1OfShape& theArS, const TColgp_Array
   else {aDP = aDP3; aCP = theArP.Value(i4);} //i4, i5 - group of 2 edges at the bottom
   if(!IsDirectionPositive(theAx, aDP, aCP)) {//first must be positive direction
     Standard_Integer aN;
-    if(aTop = 2) {
+    if(aTop == 2) {
     // change i1 <=> i2
       aN = i2; i2 = i1;
       i1 = aN;
@@ -1126,7 +1126,7 @@ static void SortEdges5 (const TopTools_Array1OfShape& theArS, const TColgp_Array
 
   if(!IsDirectionPositive(theAx, aDP, aCP)) {//first must be positive direction
     Standard_Integer aN;
-    if(aTop = 2) {
+    if(aTop == 2) {
     // change i3 <=> i5
       aN = i5; i5 = i3;
       i3 = aN;

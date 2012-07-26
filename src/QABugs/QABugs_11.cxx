@@ -724,7 +724,7 @@ static Standard_Integer OCC297 (Draw_Interpretor& di,Standard_Integer /*argc*/, 
 static Standard_Integer OCC305 (Draw_Interpretor& di,Standard_Integer argc, const char ** argv )
 
 {
-  if (argc =! 2)
+  if (argc != 2)
   {
     di <<"Usage : " << argv[0] << " file"<<"\n";
     return 1;
@@ -1895,7 +1895,7 @@ static Standard_Integer OCC909 (Draw_Interpretor& di, Standard_Integer argc, con
 //=======================================================================
 static Standard_Integer OCC921 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  if (argc =! 2)
+  if (argc != 2)
   {
     di <<"Usage : " << argv[0] << " face"<<"\n";
     return 1;
@@ -1918,7 +1918,7 @@ static Standard_Integer OCC921 (Draw_Interpretor& di, Standard_Integer argc, con
 //=======================================================================
 static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  if (argc =! 2)
+  if (argc != 2)
   {
     di <<"Usage : " << argv[0] << " expression"<<"\n";
     return 1;
