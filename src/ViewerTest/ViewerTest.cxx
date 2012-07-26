@@ -134,7 +134,6 @@ static Graphic3d_NameOfMaterial GetMaterialFromName( const char *name )
   else if ( !strcasecmp(name,"STONE" ) ) 	 mat = Graphic3d_NOM_STONE;
   else if ( !strcasecmp(name,"CHROME" ) )	 mat = Graphic3d_NOM_CHROME;
   else if ( !strcasecmp(name,"ALUMINIUM" ) )     mat = Graphic3d_NOM_ALUMINIUM;
-  else if ( !strcasecmp(name,"STONE" ) )	 mat = Graphic3d_NOM_STONE;
   else if ( !strcasecmp(name,"NEON_PHC" ) )	 mat = Graphic3d_NOM_NEON_PHC;
   else if ( !strcasecmp(name,"NEON_GNC" ) )	 mat = Graphic3d_NOM_NEON_GNC;
   else if ( !strcasecmp(name,"PLASTER" ) )	 mat = Graphic3d_NOM_PLASTER;
