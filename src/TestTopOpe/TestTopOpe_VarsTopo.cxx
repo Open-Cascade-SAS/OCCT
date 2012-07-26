@@ -97,7 +97,7 @@ Standard_Boolean VarsTopo::GetClear() const
 
 void VarsTopo::SetOCT(char* noct)
 {
-  if      (noct != NULL) return;
+  if      (noct == NULL) return;
   else if (!strcmp(noct,"-a")) SetOCT(TopOpeBRepTool_APPROX);
   else if (!strcmp(noct,"-p")) SetOCT(TopOpeBRepTool_BSPLINE1);
   else if (!strcmp(noct,"-i")) SetOCT(TopOpeBRepTool_INTERPOL);
