@@ -1508,7 +1508,7 @@ Standard_Integer bopsinf (Draw_Interpretor& di,
   }
   
   if (aS1.ShapeType()!=TopAbs_FACE ||
-      aS1.ShapeType()!=TopAbs_FACE ) {
+      aS2.ShapeType()!=TopAbs_FACE ) {
     //printf(" Shapes #%d #%d are not faces\n", nF1, nF2 );
     di << " Shapes #" << nF1 << " #" << nF2 << " are not faces\n";
     return 0;
@@ -1570,7 +1570,7 @@ Standard_Integer bopsonf (Draw_Interpretor& di,
   }
   
   if (aS1.ShapeType()!=TopAbs_FACE ||
-      aS1.ShapeType()!=TopAbs_FACE ) {
+      aS2.ShapeType()!=TopAbs_FACE ) {
     //printf(" Shapes #%d #%d are not faces\n", nF1, nF2 );
     di << " Shapes #" << nF1 << " #" << nF2 << " are not faces\n";
     return 0;
