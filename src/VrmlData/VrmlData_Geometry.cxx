@@ -69,14 +69,10 @@ IMPLEMENT_STANDARD_RTTIEXT (VrmlData_TextureCoordinate, VrmlData_Node)
 //purpose  : 
 //=======================================================================
 
-const gp_XYZ& VrmlData_ArrayVec3d::Value (const Standard_Integer i) const
+const gp_XYZ& VrmlData_ArrayVec3d::Value (const Standard_Size i) const
 {
-  size_t anIndex = (size_t)i;
-  if  (anIndex < 0 || anIndex >= myLength) {
-    static gp_XYZ anOrigin (0., 0., 0.);
-    return anOrigin;
-  }
-  return myArray[i];
+  static gp_XYZ anOrigin (0., 0., 0.);
+  return i < myLength ? myArray[i] : anOrigin;
 }
 
 //=======================================================================

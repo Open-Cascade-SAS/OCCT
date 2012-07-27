@@ -46,7 +46,7 @@ class VrmlData_ArrayVec3d : public VrmlData_Node
    */
   inline VrmlData_ArrayVec3d (const VrmlData_Scene& theScene,
                               const char            * theName,
-                              const size_t          nVec,
+                              const Standard_Size   nVec,
                               const gp_XYZ          * arrVec)
     : VrmlData_Node     (theScene, theName),
       myArray           (arrVec),
@@ -56,7 +56,7 @@ class VrmlData_ArrayVec3d : public VrmlData_Node
   /**
    * Query the number of vectors
    */
-  inline size_t         Length          () const { return myLength; }
+  inline Standard_Size  Length          () const { return myLength; }
 
   /**
    * Query the array
@@ -74,7 +74,7 @@ class VrmlData_ArrayVec3d : public VrmlData_Node
   /**
    * Set the array data
    */
-  inline void           SetValues (const size_t nValues,
+  inline void           SetValues (const Standard_Size nValues,
                                    const gp_XYZ * arrValues)
   { myLength = nValues; myArray = arrValues; }
 
@@ -116,7 +116,7 @@ class VrmlData_ArrayVec3d : public VrmlData_Node
    * @return
    *   the vector for the index. If index irrelevant, returns (0., 0., 0.)
    */
-  Standard_EXPORT const gp_XYZ& Value (const Standard_Integer i) const;
+  Standard_EXPORT const gp_XYZ& Value (const Standard_Size i) const;
 
  protected:
   // ---------- PROTECTED FIELDS ----------
