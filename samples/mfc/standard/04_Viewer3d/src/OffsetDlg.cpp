@@ -187,12 +187,12 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 void COffsetDlg::UpdateValues()
 {
 	Standard_Integer aOffsetMode;
-	Standard_Real aBoxFactor = 0;
-	Standard_Real aCylFactor = 0;
-	Standard_Real aSphereFactor = 0;
-	Standard_Real aCylUnits = 0;
-	Standard_Real aSphereUnits = 0;
-	Standard_Real aBoxUnits = 0;
+	Standard_ShortReal aBoxFactor = 0;
+	Standard_ShortReal aCylFactor = 0;
+	Standard_ShortReal aSphereFactor = 0;
+	Standard_ShortReal aCylUnits = 0;
+	Standard_ShortReal aSphereUnits = 0;
+	Standard_ShortReal aBoxUnits = 0;
 
 	Handle(AIS_InteractiveContext) aAISContext = myDoc->GetAISContext();
 

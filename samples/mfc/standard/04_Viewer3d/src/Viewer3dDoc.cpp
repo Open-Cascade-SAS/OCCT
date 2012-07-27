@@ -348,10 +348,10 @@ void CViewer3dDoc::OnPolygonOffsets()
 void CViewer3dDoc::OnUpdatePolygonOffsets(CCmdUI* pCmdUI) 
 {
 	Standard_Integer aOffsetMode;
-	Standard_Real aFactor;
-	Standard_Real aCylUnits = 0;
-	Standard_Real aSphereUnits = 0;
-	Standard_Real aBoxUnits = 0;
+	Standard_ShortReal aFactor;
+	Standard_ShortReal aCylUnits = 0;
+	Standard_ShortReal aSphereUnits = 0;
+	Standard_ShortReal aBoxUnits = 0;
 
 	BOOL IsOverlappedCylinderDisplayed = myAISContext->IsDisplayed(myOverlappedCylinder);
 	BOOL IsOverlappedSphereDisplayed = myAISContext->IsDisplayed(myOverlappedSphere);
