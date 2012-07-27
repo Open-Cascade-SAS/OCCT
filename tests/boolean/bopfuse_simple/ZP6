@@ -7,10 +7,11 @@ if {[array get env os_type] != ""} {
   set os $env(os_type)
 }
 if {[string compare $os "Debian50-64"] != 0 && [string compare $os "Debian60-64"] != 0 && [string compare $os "Mandriva2010-64"] != 0} {
-  puts "TODO #22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
-}
-if { [regexp -nocase {Windows} $os] == 1 } {
-  puts "TODO ?#22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
+  set inst ""
+  if { [regexp -nocase {Windows} $os] == 1 } {
+    set inst "?"
+  }
+  puts "TODO ${inst}#22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
 }
 
 ptorus a0 100 20
