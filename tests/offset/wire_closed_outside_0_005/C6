@@ -1,0 +1,20 @@
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+
+if {
+        [string compare $os "Mandriva2010"] != 0
+    &&  [string compare $os "Debian40"    ] != 0
+    &&  [string compare $os "Mandriva2008"] != 0
+   } {
+  puts "TODO OCC23068 $os: Faulty shapes in variables faulty_1 to faulty_2"
+}
+
+restore [locate_data_file offset_wire_037.brep] s
+
+set length 985.83
+set nbsh_v 39
+set nbsh_e 39
+set nbsh_w 1
+

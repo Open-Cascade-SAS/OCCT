@@ -1,0 +1,21 @@
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+
+if {
+        [string compare $os "Mandriva2010"] != 0
+    &&  [string compare $os "Debian40"    ] != 0
+    &&  [string compare $os "Mandriva2008"] != 0
+   } {
+  puts "TODO OCC23068 $os: Error : big tolerance of shape result"
+}
+
+restore [locate_data_file offset_wire_070.brep] s
+
+set length 108307
+set nbsh_v 228
+set nbsh_e 228
+set nbsh_w 1
+

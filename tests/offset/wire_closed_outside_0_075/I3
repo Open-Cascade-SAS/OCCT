@@ -1,0 +1,19 @@
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+
+if {
+        [string compare $os "Windows-32-VC8"] == 0
+   } {
+  puts "TODO ?OCC23068 $os: An exception was caught"
+  puts "TODO ?OCC23068 $os: Error : The offset can not be build."
+}
+
+restore [locate_data_file offset_wire_098.brep] s
+
+set length 332.67
+set nbsh_v 18
+set nbsh_e 18
+set nbsh_w 1
+

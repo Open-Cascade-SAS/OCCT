@@ -4,3 +4,12 @@
 004 shape_type_a
 005 shape_type_i
 006 shape
+007 wire_closed_outside_0_005
+008 wire_closed_outside_0_025
+009 wire_closed_outside_0_075
+010 wire_closed_inside_0_005
+011 wire_closed_inside_0_025
+012 wire_closed_inside_0_075
+013 wire_unclosed_outside_0_005
+014 wire_unclosed_outside_0_025
+015 wire_unclosed_outside_0_075

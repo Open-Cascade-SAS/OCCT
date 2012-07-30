@@ -1,0 +1,20 @@
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+
+if {
+        [string compare $os "Debian40"] != 0
+   } {
+  puts "TODO OCC23068 $os: Error : The offset can not be build."
+  puts "TODO OCC23068 $os: An exception was caught"
+  puts "TODO OCC23068 $os: \\*\\* Exception \\*\\*.*"
+}
+
+restore [locate_data_file offset_wire_075.brep] s
+
+set length 326.251
+set nbsh_v 104
+set nbsh_e 104
+set nbsh_w 1
+

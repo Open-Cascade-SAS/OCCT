@@ -1,0 +1,25 @@
+set os "ALL"
+if {[array get env os_type] != ""} {
+  set os $env(os_type)
+}
+
+if {
+        [string compare $os "Debian40"] == 0
+    ||  [string compare $os "Mandriva2010"] == 0
+    ||  [string compare $os "Mandriva2008"] == 0
+   } {
+  puts "TODO OCC23068 $os: Error : result is not a topological shape"
+  puts "TODO OCC23068 $os: Error : The offset can not be build."
+} else {
+  puts "TODO OCC23068 $os: An exception was caught"
+  puts "TODO OCC23068 $os: Error : The offset can not be build."
+  puts "TODO OCC23068 $os: \\*\\* Exception \\*\\*.*"
+}
+
+restore [locate_data_file offset_wire_043.brep] s
+
+set length 0
+set nbsh_v 0
+set nbsh_e 0
+set nbsh_w 0
+
