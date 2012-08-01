@@ -38,6 +38,7 @@
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_OrientedShapeMapHasher.hxx>
 #include <TopExp.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -182,17 +183,13 @@ void AIS_ConnectedShape::Compute(const Handle_PrsMgr_PresentationManager2d& aPre
 //function : ComputeSelection 
 //purpose  : Attention fragile...
 //=======================================================================
-static Standard_Boolean IsEqual( const TopoDS_Shape& theLeft, 
-                                 const TopoDS_Shape& theRight )
-{
-  return theLeft.IsEqual(theRight);
-}
 
 void AIS_ConnectedShape::ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, 
                                            const Standard_Integer aMode)
 {
   typedef NCollection_List<Handle(Select3D_SensitiveEntity)> SensitiveList;
-  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList > Shapes2EntitiesMap; 
+  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList, TopTools_OrientedShapeMapHasher>
+    Shapes2EntitiesMap;
 
   UpdateShape();
   aSelection->Clear();
