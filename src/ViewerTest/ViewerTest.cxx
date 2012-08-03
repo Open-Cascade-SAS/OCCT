@@ -43,6 +43,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
 #include <AIS.hxx>
+#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
@@ -51,7 +52,10 @@
 #include <AIS_SignatureFilter.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <Aspect_InteriorStyle.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Image_PixMap.hxx>
+#include <Prs3d_ShadingAspect.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -1453,6 +1457,98 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
   }
   return 0;
 }
+
+//==============================================================================
+//function : VInteriorStyle
+//purpose  : sets interior style of the a selected or named or displayed shape
+//Draw arg : vsetinteriorstyle [shape] style
+//==============================================================================
+static void SetInteriorStyle (const Handle(AIS_InteractiveObject)& theIAO,
+                              const Standard_Integer theStyle,
+                              Draw_Interpretor& di)
+{
+  if (theStyle < Aspect_IS_EMPTY || theStyle > Aspect_IS_HIDDENLINE) {
+    di << "Style must be within a range [0 (Aspect_IS_EMPTY), " << Aspect_IS_HIDDENLINE <<
+      " (Aspect_IS_HIDDENLINE)]\n";
+    return;
+  }
+  const Handle(Prs3d_Drawer)& aDrawer = theIAO->Attributes();
+  Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
+  Handle(Graphic3d_AspectFillArea3d) aFillAspect = aShadingAspect->Aspect();
+  Aspect_InteriorStyle aStyle = (Aspect_InteriorStyle) (theStyle);
+  aFillAspect->SetInteriorStyle (aStyle);
+  TheAISContext()->RecomputePrsOnly (theIAO, Standard_False /*update*/, Standard_True /*all modes*/);
+}
+
+static int VInteriorStyle (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 2 || argc > 3) {
+    di << argv[0] << " requires 2 or 3 arguments\n";
+    di << "Usage : " << argv[0] << " [shape] Style : Set interior style" << "\n";
+    di << "Style must match Aspect_InteriorStyle and be one of:\n";
+    di << "         0 = EMPTY, 1 = HOLLOW, 2 = HATCH, 3 = SOLID, 4 = HIDDENLINE\n";
+    return 1;
+  }
+
+  Standard_Boolean    ThereIsCurrent;
+  Standard_Boolean    ThereIsArgument;
+  Standard_Boolean    IsBound = Standard_False ;
+
+  ThereIsArgument = (argc > 2);
+  if ( !a3DView().IsNull() ) {
+    TCollection_AsciiString name;
+    if (ThereIsArgument) {
+      name = argv[1];
+      IsBound= GetMapOfAIS().IsBound2(name);
+    }
+    if (TheAISContext()->HasOpenedContext())
+      TheAISContext()->CloseLocalContext();
+
+    if (TheAISContext() -> NbCurrents() > 0  )
+      ThereIsCurrent =Standard_True;
+    else
+      ThereIsCurrent =Standard_False;
+
+    if ( ThereIsArgument && IsBound ) {
+      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
+      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
+        const Handle(AIS_InteractiveObject) ashape =
+          Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
+        SetInteriorStyle (ashape, atoi (argv[2]), di);
+      }
+    }
+    //=======================================================================
+    // No arguments specified
+    // But there are one or more selected objects
+    //=======================================================================
+    if (ThereIsCurrent && !ThereIsArgument) {
+      for (TheAISContext() -> InitCurrent() ;
+           TheAISContext() -> MoreCurrent() ;
+           TheAISContext() ->NextCurrent() )
+      {
+        Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
+        SetInteriorStyle (ashape, atoi (argv[1]), di);
+      }
+    }
+    //=======================================================================
+    // No arguments specified and there are no selected objects
+    //=======================================================================
+    else if (!ThereIsCurrent && !ThereIsArgument){
+      ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
+       it(GetMapOfAIS());
+      while ( it.More() ) {
+        Handle(AIS_InteractiveObject) ashape =
+          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
+        if (!ashape.IsNull())
+          SetInteriorStyle (ashape, atoi (argv[1]), di);
+        it.Next();
+      }
+    }
+    TheAISContext()->UpdateCurrentViewer();
+  }
+  return 0;
+}
+
 //==============================================================================
 //function : VDonly2
 //author   : ege
@@ -3550,6 +3646,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vunsetwidth",
 		  "vunsetwidth          : vwidth  [name of shape]",
 		  __FILE__,VWidth,group);
+
+  theCommands.Add("vsetinteriorstyle",
+		  "vsetinteriorstyle    : vsetinteriorstyle [name of shape] style",
+		  __FILE__,VInteriorStyle,group);
 
   theCommands.Add("vardis",
 		  "vardis          : display activeareas",
