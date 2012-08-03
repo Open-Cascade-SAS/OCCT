@@ -29,6 +29,7 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <OSD_Path.hxx>
 
 #include <string.h>
 #include <tcl.h>
@@ -375,36 +376,23 @@ void Draw_Interpretor::Add(const Standard_CString n,
   if (myInterp==NULL) Init();
 
   CData* C = new CData(f,this);
-  Standard_Size length, num_slashes,  ii,  jj,  kk;
   Tcl_CreateCommand(myInterp,pN,CommandCmd, (ClientData) C, CommandDelete);
 
   // add the help
   Tcl_SetVar2(myInterp,"Draw_Helps",pN,pHelp,TCL_GLOBAL_ONLY);
   Tcl_SetVar2(myInterp,"Draw_Groups",pGroup,pN,
 	      TCL_GLOBAL_ONLY|TCL_APPEND_VALUE|TCL_LIST_ELEMENT);
-  length = strlen(pFileName) ;
-  char * a_string = 
-    new char[length + 1] ;
-  jj = 0 ;
-  num_slashes = 0 ;
-  ii = length ;
-  while (num_slashes < 3 && ii >= 0) {
-    if (file_name[ii] == '/') {
-      num_slashes += 1 ;
-    }
-    ii -= 1 ; 
-  } 
-  jj = 0 ;
-  for (kk = ii+2 , jj =0 ; kk < length ; kk++) {
-     a_string[jj] = file_name[kk] ;
-     jj += 1 ;
-   }
-  a_string[jj] = '\0' ;
- 
-  Tcl_SetVar2(myInterp,"Draw_Files",pN,a_string,TCL_GLOBAL_ONLY);
 
-  delete [] a_string;
-
+  // add path to source file (keep not more than two last subdirectories)
+  OSD_Path aPath (pFileName);
+  Standard_Integer nbTrek = aPath.TrekLength();
+  for (Standard_Integer i = 2; i < nbTrek; i++)
+    aPath.RemoveATrek (1);
+  aPath.SetDisk("");
+  aPath.SetNode("");
+  TCollection_AsciiString aSrcPath;
+  aPath.SystemName (aSrcPath);
+  Tcl_SetVar2(myInterp,"Draw_Files",pN,aSrcPath.ToCString(),TCL_GLOBAL_ONLY);
 }
 
 

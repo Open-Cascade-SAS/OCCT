@@ -496,8 +496,8 @@ proc _run_test {scriptsdir group gridname casefile} {
 
 	    # log only output to stdout and stderr, not to file!
 	    if {[llength $args] > 1} {
-		set optvarg [lindex $args end-1]
-		if { $optarg == stdout || $optarg == stderr || $optarg == -newline } {
+		set optarg [lindex $args end-1]
+		if { $optarg == "stdout" || $optarg == "stderr" || $optarg == "-newline" } {
 		    dlog add [lindex $args end]
 		}
 	    } else {

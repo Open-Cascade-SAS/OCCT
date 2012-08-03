@@ -1,0 +1,10 @@
+# test for command getsource
+
+# check that path returned for command pload is as expected
+set expected src/Draw/Draw_PloadCommands.cxx
+set path [lindex [getsourcefile pload] 1]
+if { [string compare $path $expected] } {
+    puts "Error: command 'getsourcefile pload' returned '$path' while expected '$expected'"
+}
+
+puts "TEST COMPLETED"
