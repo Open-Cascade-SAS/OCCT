@@ -640,19 +640,3 @@ const OpenGl_AspectText * OpenGl_Workspace::AspectText(const Standard_Boolean Wi
   }
   return AspectText_set;
 }
-
-/*----------------------------------------------------------------------*/
-
-//=======================================================================
-//function : ResetAppliedAspect
-//purpose  : 
-//=======================================================================
-
-void OpenGl_Workspace::ResetAppliedAspect()
-{
-  AspectLine_applied   = NULL;
-  AspectFace_applied   = NULL;
-  AspectMarker_applied = NULL;
-  AspectText_applied   = NULL;
-  TextParam_applied    = NULL;
-}

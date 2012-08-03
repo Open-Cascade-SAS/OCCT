@@ -960,8 +960,6 @@ D = -[Px,Py,Pz] dot |Nx|
 
 */
 
-  glPushAttrib( GL_FOG_BIT | GL_LIGHTING_BIT | GL_ENABLE_BIT );
-
   // Apply Fog
   if ( myFog.IsOn )
   {
@@ -1185,8 +1183,11 @@ D = -[Px,Py,Pz] dot |Nx|
     }
   }
 
-  /* restore previous graphics context; before update lights */
-  //TsmPopAttri();
+  // Resetting GL parameters according to the default aspects
+  // in order to synchronize GL state with the graphic driver state
+  // before drawing auxiliary stuff (trihedrons, overlayer)
+  // and invoking optional callbacks
+  AWorkspace->ResetAppliedAspect();
 
   // Disable current clipping planes
   for ( planeid = GL_CLIP_PLANE0; planeid < lastid; planeid++ )
@@ -1197,14 +1198,6 @@ D = -[Px,Py,Pz] dot |Nx|
     myTrihedron->Render(AWorkspace);
   if (!myGraduatedTrihedron.IsNull())
     myGraduatedTrihedron->Render(AWorkspace);
-
-  // The applied aspects should be reset to make it possible to
-  // update gl state and bring it into line with currently set
-  // aspects by reapplying them. Reset should be done, because
-  // the glPopAttrib() will return original gl state while the
-  // internal TKOpenGl state stills unchanged.
-  AWorkspace->ResetAppliedAspect();
-  glPopAttrib(); // GL_FOG_BIT | GL_LIGHTING_BIT | GL_ENABLE_BIT
 
   // Restore face culling
   if ( myBackfacing )
