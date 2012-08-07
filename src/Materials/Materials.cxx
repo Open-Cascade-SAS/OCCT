@@ -44,7 +44,7 @@ void  DictionaryOfDefinitions(Handle(Materials_MaterialDefinition)&);
 
 void Materials::MaterialFile(const Standard_CString afile)
 {
-  Standard_Integer length = strlen(afile);
+  Standard_Size length = strlen(afile);
   materialfile = new Standard_Character[length+1];
   strcpy(materialfile,afile);
   materialfile[length] = 0;
@@ -57,7 +57,7 @@ void Materials::MaterialFile(const Standard_CString afile)
 
 void Materials::MaterialsFile(const Standard_CString afile)
 {
-  Standard_Integer length = strlen(afile);
+  Standard_Size length = strlen(afile);
   materialsfile = new Standard_Character[length+1];
   strcpy(materialsfile,afile);
   materialsfile[length] = 0;
