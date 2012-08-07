@@ -30,7 +30,7 @@
 
 WNT_FontMapEntry :: WNT_FontMapEntry ( const Standard_CString aFontName )
 {
-  int   i;
+  Standard_Size   i;
   char* p;
 
   char* fName = new char[ strlen ( aFontName ) + 1 ];
