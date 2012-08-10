@@ -928,7 +928,7 @@ Standard_Boolean TestSubShapeType(const TopAbs_ShapeEnum theT1,
       }
     }
     if((aT1==TopAbs_WIRE && aT2==TopAbs_SHELL) ||
-       (aT1==TopAbs_WIRE && aT2==TopAbs_SHELL)) {
+       (aT2==TopAbs_WIRE && aT1==TopAbs_SHELL)) {
       if(!BOP_WireShell::CheckArgTypes(aT1,aT2,theOP)) {
         return Standard_False;
       }
