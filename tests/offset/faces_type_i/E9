@@ -12,7 +12,7 @@ if {[array get env os_type] != ""} {
 ##    || [string compare $os "SUSE10-64"] == 0
 ##    || [regexp {Windows} $os] == 1
 ##   } {
-puts "TODO ?OCC23068 $os: An exception was caught 004FA5DC : StdFail_NotDone: BRep_API: command not done"
+puts "TODO ?OCC23068 $os: An exception was caught"
 puts "TODO ?OCC23068 $os: \\*\\* Exception \\*\\*"
 puts "TODO ?OCC23068 $os: TEST INCOMPLETE"
 ##} else {
