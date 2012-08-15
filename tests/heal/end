@@ -1,5 +1,5 @@
-smallview
 clear
+smallview
 if { [isdraw result] } {
    donly result
 } else {

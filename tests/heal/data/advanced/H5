@@ -1,0 +1,9 @@
+if {[string compare $command "ShapeConvertRev"] == 0 } {
+    puts "TODO OCC23127 ALL: Error : shape result is not correct"
+}
+if {[string compare $command "SplitAngle"] == 0 } {
+    puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_9 "
+}
+restore [locate_data_file ger60598c.rle] a
+
+

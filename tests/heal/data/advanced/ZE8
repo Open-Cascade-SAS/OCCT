@@ -1,0 +1,16 @@
+if {[string compare $command "SplitAngle"] == 0 } {
+    set os "ALL"
+    if {[array get env os_type] != ""} {
+       set os $env(os_type)
+    }
+    if {
+	    [string compare $os "Mandriva2008"] == 0
+       } {
+  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_32"
+    } else {
+  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_30"
+    }
+}
+
+restore [locate_data_file BPLSEITLI.brep] a
+

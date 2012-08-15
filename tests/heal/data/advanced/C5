@@ -1,0 +1,5 @@
+if {[string compare $command "ShapeDivide"] == 0 } {
+    puts "TODO OCC23127 ALL: Error: 12 Curve Only C0 after DT_ShapeDivide operation."
+}
+restore [locate_data_file CTS22023.rle] a
+

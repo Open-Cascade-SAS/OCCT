@@ -1,0 +1,8 @@
+if {[string compare $command "ShapeDivide"] == 0 } {
+    puts "TODO OCC23127 ALL: Error: 12 Curve Only C0 after DT_ShapeDivide operation."
+}
+if {[string compare $command "SplitAngle"] == 0 } {
+    puts "TODO OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_2 "
+}
+restore [locate_data_file ma-test9.rle] a
+
