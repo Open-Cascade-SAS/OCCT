@@ -132,7 +132,7 @@ public:
     Standard_EXPORT virtual void AllocEvent(size_t, long);
     Standard_EXPORT virtual void FreeEvent(void*, size_t, long);
 
-  private:
+  public:
     struct Numbers
     {
       int nbAlloc;
@@ -140,11 +140,13 @@ public:
       int nbLeftPeak;
       Numbers() : nbAlloc(0), nbFree(0), nbLeftPeak(0) {}
     };
+    
+    static const size_t myMaxAllocSize; //!< maximum tracked size
 
-    Standard_Mutex myMutex;
-    Numbers*       myArray;
-    ptrdiff_t      myTotalLeftSize;
-    size_t         myTotalPeakSize;
+    Standard_Mutex myMutex;             //!< used for thread-safe access
+    Numbers*       myArray;             //!< indexed from 0 to myMaxAllocSize-1
+    ptrdiff_t      myTotalLeftSize;     //!< currently remained allocated size
+    size_t         myTotalPeakSize;     //!< maxium cumulative allocated size
     size_t         myBreakSize;
   };
 
