@@ -64,7 +64,7 @@ if { [isdraw result] && $mist == 0} {
 	if { [string compare $length "empty"] != 0 } {
 	    puts "The expected length is $length"
 	    #check of change of length is < 1%
-	    if { ($length != 0 && [expr abs($length - $m)/$length] > 0.01) || ($length == 0 && $m != 0) } {
+	    if { ($length != 0 && [expr 1.*abs($length - $m)/$length] > 0.01) || ($length == 0 && $m != 0) } {
 		puts "Error : The length of result shape is $m"
 	    }
 	} else {
@@ -128,7 +128,7 @@ if { [isdraw result] && $mist == 0} {
 	    puts "The expected volume is $volume"
 	}
 	#check of change of volume is < 1%
-	if { ($volume > 0 && [expr abs($volume - $m)/$volume] > 0.01) || ($volume == 0 && $m != 0 && $sm != $m) } {
+	if { ($volume > 0 && [expr 1.*abs($volume - $m)/$volume] > 0.01) || ($volume == 0 && $m != 0 && $sm != $m) } {
 	    puts "Error : The volume of result shape is $m"
 	}
     }

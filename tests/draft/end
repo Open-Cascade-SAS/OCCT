@@ -12,8 +12,8 @@ if { [isdraw result] } {
       puts "The expected square is $square"
    }
    #check of change of square is < 1%
-   if { ($square != 0 && [expr abs($square - $m)/$square] > 0.01) || ($square == 0 && $m != 0) } {
-      puts "Error : The square of reult shape is $m"
+   if { ($square != 0 && [expr 1.*abs($square - $m)/$square] > 0.01) || ($square == 0 && $m != 0) } {
+      puts "Error : The square of result shape is $m"
    }
    if { [string compare $ch "This shape seems to be valid"] == 0 } {
       #check if tolerance is less 1.

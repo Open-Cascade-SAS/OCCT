@@ -28,7 +28,7 @@ if { [isdraw result] } {
       	 puts "The expected $prop is $mass"
       }
       #check of change of square is < 1%
-      if { ($mass != 0 && [expr abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+      if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
       	 puts "Error : The $prop of result shape is $m"
       }
       
