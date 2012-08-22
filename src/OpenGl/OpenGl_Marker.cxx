@@ -52,7 +52,6 @@ void OpenGl_Marker::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     }
     case Aspect_TOM_POINT :
     {
-      glPointSize( aspect_marker->Scale() );
       glBegin( GL_POINTS );
       glVertex3fv( myPoint.xyz );
       glEnd();

@@ -598,10 +598,17 @@ const OpenGl_AspectFace * OpenGl_Workspace::AspectFace(const Standard_Boolean Wi
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_AspectMarker * OpenGl_Workspace::AspectMarker(const Standard_Boolean WithApply)
+const OpenGl_AspectMarker* OpenGl_Workspace::AspectMarker (const Standard_Boolean theToApply)
 {
-  if ( WithApply && (AspectMarker_set != AspectMarker_applied) )
+  if (theToApply && (AspectMarker_set != AspectMarker_applied))
   {
+    if (!AspectMarker_applied || (AspectMarker_set->Scale() != AspectMarker_applied->Scale()))
+    {
+      glPointSize (AspectMarker_set->Scale());
+    #ifdef HAVE_GL2PS
+      gl2psPointSize (AspectMarker_set->Scale());
+    #endif
+    }
     AspectMarker_applied = AspectMarker_set;
   }
   return AspectMarker_set;

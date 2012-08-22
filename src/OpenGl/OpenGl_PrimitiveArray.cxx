@@ -1615,13 +1615,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       break;
   }
 
-  const OpenGl_AspectFace* anAspectFace = theWorkspace->AspectFace (Standard_True);
-  const OpenGl_AspectLine* anAspectLine = theWorkspace->AspectLine (Standard_True);
+  const OpenGl_AspectFace*   anAspectFace   = theWorkspace->AspectFace   (Standard_True);
+  const OpenGl_AspectLine*   anAspectLine   = theWorkspace->AspectLine   (Standard_True);
+  const OpenGl_AspectMarker* anAspectMarker = theWorkspace->AspectMarker (myPArray->type == TelPointsArrayType);
 
   Tint aFrontLightingModel = anAspectFace->Context().IntFront.color_mask;
   const TEL_COLOUR* anInteriorColor = &anAspectFace->Context().IntFront.matcol;
   const TEL_COLOUR* anEdgeColor = &anAspectFace->AspectEdge()->Color();
-  const TEL_COLOUR* aLineColor = &anAspectLine->Color();
+  const TEL_COLOUR* aLineColor = (myPArray->type == TelPointsArrayType) ? &anAspectMarker->Color() : &anAspectLine->Color();
 
   // Use highlight colors
   if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
