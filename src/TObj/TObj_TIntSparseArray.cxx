@@ -82,7 +82,7 @@ Handle(TObj_TIntSparseArray) TObj_TIntSparseArray::Set
 //purpose  : 
 //=======================================================================
 
-void TObj_TIntSparseArray::SetValue (const Standard_Integer theId,
+void TObj_TIntSparseArray::SetValue (const Standard_Size theId,
                                          const Standard_Integer theValue)
 {
   // check that modification is allowed
@@ -128,7 +128,7 @@ void TObj_TIntSparseArray::SetValue (const Standard_Integer theId,
 //purpose  : 
 //=======================================================================
 
-void TObj_TIntSparseArray::UnsetValue (const Standard_Integer theId)
+void TObj_TIntSparseArray::UnsetValue (const Standard_Size theId)
 {
   // check that modification is allowed
   if ( !Label().Data()->IsModificationAllowed() )
@@ -182,7 +182,7 @@ void TObj_TIntSparseArray::Clear ()
       TObj_TIntSparseArray_VecOfData::Iterator anIt (myVector);
       for (; anIt.More(); anIt.Next())
       {
-        Standard_Integer anId = anIt.Key();
+        Standard_Size anId = anIt.Key();
         Standard_Integer aVal = anIt.Value();
         backupValue(anId, aVal, AbsentValue);
       }
@@ -196,7 +196,7 @@ void TObj_TIntSparseArray::Clear ()
 //purpose  :
 //=======================================================================
 
-void TObj_TIntSparseArray::backupValue (const Standard_Integer theId,
+void TObj_TIntSparseArray::backupValue (const Standard_Size theId,
                                             const Standard_Integer theCurrValue,
                                             const Standard_Integer theNewValue)
 {
@@ -257,7 +257,7 @@ void TObj_TIntSparseArray::Restore(const Handle(TDF_Attribute)& theDelta)
     TObj_TIntSparseArray_MapOfData::Iterator anIt (aDelta->myOldMap);
     for (; anIt.More(); anIt.Next())
     {
-      Standard_Integer anId = anIt.Key();
+      Standard_Size anId = anIt.Key();
       Standard_Integer anOld = anIt.Value();
       if (anOld == AbsentValue)
         UnsetValue (anId);

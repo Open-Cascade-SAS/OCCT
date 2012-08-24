@@ -62,7 +62,7 @@ class TObj_TIntSparseArray : public TDF_Attribute
   //! Methods for access to data
 
   //! Returns the number of stored values in the set
-  Standard_EXPORT Standard_Integer Size() const
+  Standard_EXPORT Standard_Size Size() const
   { return myVector.Size(); }
 
   typedef TObj_TIntSparseArray_VecOfData::ConstIterator Iterator;
@@ -71,22 +71,22 @@ class TObj_TIntSparseArray : public TDF_Attribute
   Iterator GetIterator() const { return Iterator(myVector); }
 
   //! Returns true if the value with the given ID is present.
-  Standard_Boolean HasValue (const Standard_Integer theId) const
+  Standard_Boolean HasValue (const Standard_Size theId) const
   { return myVector.HasValue(theId); }
 
   //! Returns the value by its ID.
   //! Raises an exception if no value is stored with this ID
-  Standard_Integer Value (const Standard_Integer theId) const
+  Standard_Integer Value (const Standard_Size theId) const
   { return myVector.Value(theId); }
 
   //! Sets the value with the given ID.
   //! Raises an exception if theId is not positive
-  Standard_EXPORT void SetValue (const Standard_Integer theId,
+  Standard_EXPORT void SetValue (const Standard_Size theId,
                                  const Standard_Integer theValue);
 
   //! Unsets the value with the given ID.
   //! Raises an exception if theId is not positive
-  Standard_EXPORT void UnsetValue(const Standard_Integer theId);
+  Standard_EXPORT void UnsetValue(const Standard_Size theId);
 
   //! Clears the set
   Standard_EXPORT void Clear ();
@@ -142,7 +142,7 @@ class TObj_TIntSparseArray : public TDF_Attribute
   };
 
   //! backup one value
-  void backupValue (const Standard_Integer theId,
+  void backupValue (const Standard_Size theId,
                     const Standard_Integer theCurrValue,
                     const Standard_Integer theNewValue);
 

@@ -45,11 +45,11 @@ public:
   Standard_Size Size () const { return mySize; }
 
   //! Check whether the value at given index is set
-  Standard_EXPORT Standard_Boolean HasValue (const Standard_Integer theIndex) const;
+  Standard_EXPORT Standard_Boolean HasValue (const Standard_Size theIndex) const;
 
   //! Deletes the item from the array; 
   //! returns True if that item was defined
-  Standard_EXPORT Standard_Boolean UnsetValue (const Standard_Integer theIndex);
+  Standard_EXPORT Standard_Boolean UnsetValue (const Standard_Size theIndex);
 
   //!@}
 
@@ -231,7 +231,7 @@ protected:
   }
 
   //! Direct const access to the item
-  Standard_Address getValue (const Standard_Integer theIndex) const
+  Standard_Address getValue (const Standard_Size theIndex) const
   {
     Standard_OutOfRange_Raise_if (!HasValue(theIndex),"NCollection_SparseArray::Value()")
     return Block::ToArray(myData[theIndex/myBlockSize], myBlockSize, myItemSize) + 
@@ -239,12 +239,12 @@ protected:
   }
 
   //! Set a value to the specified item; returns address of the set item
-  Standard_EXPORT Standard_Address setValue (const Standard_Integer theIndex, 
+  Standard_EXPORT Standard_Address setValue (const Standard_Size theIndex, 
                                              const Standard_Address theValue);
 
   //! Modification access to the item; allocates necessary space
   //! and marks the item as defined
-  Standard_EXPORT Standard_Address changeValue (const Standard_Integer theIndex);
+  Standard_EXPORT Standard_Address changeValue (const Standard_Size theIndex);
 
   //! Copy contents of theOther to this; 
   //! assumes that this and theOther have exactly the same type of arguments 

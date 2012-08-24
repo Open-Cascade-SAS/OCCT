@@ -85,31 +85,31 @@ public:
   //!@{
 
   //! Direct const access to the item 
-  const TheItemType& Value (const Standard_Integer theIndex) const 
+  const TheItemType& Value (const Standard_Size theIndex) const 
   {
     return *(const TheItemType*)this->getValue(theIndex);
   }
 
   //! Const access to the item - operator()
-  const TheItemType& operator () (const Standard_Integer theIndex) const
+  const TheItemType& operator () (const Standard_Size theIndex) const
   { 
     return Value (theIndex); 
   }
 
   //! Modification access to the item
-  TheItemType& ChangeValue (const Standard_Integer theIndex) 
+  TheItemType& ChangeValue (const Standard_Size theIndex) 
   {
     return *(TheItemType*)(this->getValue (theIndex));
   }
 
   //! Access to the item - operator()
-  TheItemType& operator () (const Standard_Integer theIndex)
+  TheItemType& operator () (const Standard_Size theIndex)
   { 
     return ChangeValue (theIndex); 
   }
   
   //! Set a value at specified index method
-  TheItemType& SetValue (const Standard_Integer theIndex,
+  TheItemType& SetValue (const Standard_Size theIndex,
                          const TheItemType&     theValue) 
   {
     return *(TheItemType*)this->setValue(theIndex, (Standard_Address)&theValue);
@@ -134,33 +134,33 @@ public:
   }
 
   //! Direct const access to the item 
-  const TheItemType& Find (const Standard_Integer theIndex) const 
+  const TheItemType& Find (const Standard_Size theIndex) const 
   {
     return *(TheItemType*)this->getValue(theIndex);
   }
 
   //! Modification access to the item; allocates space if 
   //! necessary and marks the item as defined
-  TheItemType& ChangeFind (const Standard_Integer theIndex) 
+  TheItemType& ChangeFind (const Standard_Size theIndex) 
   {
     return *(TheItemType*)(this->changeValue (theIndex));
   }
 
   //! Set a value as explicit method
-  TheItemType& Bind (const Standard_Integer theIndex,
+  TheItemType& Bind (const Standard_Size theIndex,
 		     const TheItemType&     theValue) 
   {
     return SetValue(theIndex, theValue);
   }
   
   //! Returns True if the item is defined
-  Standard_Boolean IsBound (const Standard_Integer theIndex) const
+  Standard_Boolean IsBound (const Standard_Size theIndex) const
   {
     return this->HasValue(theIndex);
   }
   
   //! Remove the item from array
-  Standard_Boolean UnBind (const Standard_Integer theIndex) 
+  Standard_Boolean UnBind (const Standard_Size theIndex) 
   {
     return this->UnsetValue(theIndex);
   }
@@ -203,7 +203,7 @@ public:
     }
 
     //! Access current index with 'a-la map' interface
-    Standard_Integer Key (void) const { return Index(); }
+    Standard_Size Key (void) const { return Index(); }
   };
 
   /**

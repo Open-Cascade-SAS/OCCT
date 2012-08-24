@@ -202,12 +202,10 @@ void NCollection_SparseArrayBase::exchange (NCollection_SparseArrayBase& theOthe
 //purpose  : 
 //=======================================================================
 
-Standard_Address NCollection_SparseArrayBase::setValue (const Standard_Integer theIndex,
+Standard_Address NCollection_SparseArrayBase::setValue (const Standard_Size theIndex,
 							const Standard_Address theValue) 
 {
-  Standard_OutOfRange_Raise_if (theIndex<0,"NCollection_SparseArray::SetValue()")
-  Standard_Size anIndex = (Standard_Size)theIndex;
-  Standard_Size iBlock = anIndex / myBlockSize;
+  Standard_Size iBlock = theIndex / myBlockSize;
     
   // resize blocks array if necessary
   if ( iBlock >= myNbBlocks )
@@ -222,7 +220,7 @@ Standard_Address NCollection_SparseArrayBase::setValue (const Standard_Integer t
   Block aBlock (getBlock (anAddr));
 
   // mark item as defined 
-  Standard_Size anInd = anIndex % myBlockSize;
+  Standard_Size anInd = theIndex % myBlockSize;
   Standard_Address anItem = getItem (aBlock, anInd);
 
   // either create an item by copy constructor if it is new, or assign it
@@ -243,14 +241,13 @@ Standard_Address NCollection_SparseArrayBase::setValue (const Standard_Integer t
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean NCollection_SparseArrayBase::HasValue (const Standard_Integer theIndex) const
+Standard_Boolean NCollection_SparseArrayBase::HasValue (const Standard_Size theIndex) const
 {
-  Standard_Size anIndex = (Standard_Size)theIndex;
-  Standard_Size iBlock = anIndex / myBlockSize;
-  if ( theIndex < 0 || iBlock >= myNbBlocks ||
+  Standard_Size iBlock = theIndex / myBlockSize;
+  if ( iBlock >= myNbBlocks ||
        ! myData[iBlock] )
     return Standard_False;
-  return getBlock(myData[iBlock]).IsSet(anIndex % myBlockSize) ? Standard_True : Standard_False;
+  return getBlock(myData[iBlock]).IsSet(theIndex % myBlockSize) ? Standard_True : Standard_False;
 }
 
 //=======================================================================
@@ -258,16 +255,15 @@ Standard_Boolean NCollection_SparseArrayBase::HasValue (const Standard_Integer t
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean NCollection_SparseArrayBase::UnsetValue (const Standard_Integer theIndex)
+Standard_Boolean NCollection_SparseArrayBase::UnsetValue (const Standard_Size theIndex)
 {
   // check that the item is defined
-  Standard_Size anIndex = (Standard_Size)theIndex;
-  Standard_Size iBlock = anIndex / myBlockSize;
-  if ( theIndex < 0 || iBlock >= myNbBlocks || ! myData[iBlock] )
+  Standard_Size iBlock = theIndex / myBlockSize;
+  if ( iBlock >= myNbBlocks || ! myData[iBlock] )
     return Standard_False;
 
   Block aBlock (getBlock(myData[iBlock]));
-  Standard_Size anInd = anIndex % myBlockSize;
+  Standard_Size anInd = theIndex % myBlockSize;
   if ( ! aBlock.Unset(anInd) )
     return Standard_False;
 
