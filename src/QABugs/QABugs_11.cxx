@@ -2211,8 +2211,8 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
     }
   } else {
     //BRepPrimAPI_MakeCylinder o_mc2 (gp_Ax2 (gp_Pnt(978.34936, -50.0, 127.5),gp_Dir(sin(M_PI/3), 0.0, 0.5)), 5, 150);
-    gp_Dir myDir_mc2(-sin(M_PI/3), 0.0, 0.5);
-    gp_Pnt myPnt_mc2(21.65064, -50.0, 127.5);
+    gp_Dir myDir_mc2(sin(M_PI/3), 0.0, 0.5);
+    gp_Pnt myPnt_mc2(978.34936, -50.0, 127.5);
     gp_Ax2 myAx2_mc2(myPnt_mc2, myDir_mc2);
     BRepPrimAPI_MakeCylinder o_mc2 (myAx2_mc2, 5, 150);
 
