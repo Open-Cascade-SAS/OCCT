@@ -93,7 +93,7 @@ void TDF_LabelNode::Destroy (const TDF_HAllocator& theAllocator)
     myFirstChild->Destroy (theAllocator);
     myFirstChild = aSecondChild;
   }
-  myFirstAttribute.Nullify();
+  this->~TDF_LabelNode();
   myFather = myBrother = myFirstChild = myLastFoundChild = NULL;
   myTag = myFlags = 0;
 

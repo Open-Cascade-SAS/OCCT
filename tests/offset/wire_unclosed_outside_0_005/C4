@@ -13,7 +13,7 @@ if {
   puts "TODO OCC23360 $os: \\*\\* Exception \\*\\*.*"
 } elseif { 
         [string compare $os "Mandriva2008"] == 0 
-    ||  [string compare $os "Mandriva2020"] == 0 
+    ||  [string compare $os "Mandriva2010"] == 0 
    } {
   puts "TODO OCC23068 $os: Error : The offset can not be build."
   puts "TODO OCC23068 $os: An exception was caught"
