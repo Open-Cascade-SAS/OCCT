@@ -1,0 +1,30 @@
+# File : begin
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload TOPTEST
+    pload VISUALIZATION
+#    set env(CSF_DrawPluginQADefaults) $env(CASROOT)/src/DrawResources/.
+#    pload QAcommands
+#    pload -DrawPluginQA QAcommands
+}
+
+# to prevent loops limit to 16 minutes
+cpulimit 1000
+
+#set script_dir [file dirname [info script]]/script
+# if { [info exist WorkDirectory] == 0 } {
+#    set WorkDirectory "/tmp"
+#    if { [array get env TEMP] != "" } {
+#	set WorkDirectory "$env(TEMP)"
+#	}
+#    }
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image] == 0 } {
+   set test_image photo
+}
+
+
+
+

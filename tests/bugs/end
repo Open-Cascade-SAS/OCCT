@@ -1,0 +1,22 @@
+if { [isdraw result] } {
+    if { [info exists 2dviewer] } {
+	clear
+	smallview
+	donly result
+	fit
+	xwd $imagedir/${test_image}.gif
+    }
+    if { [info exists 3dviewer] } {
+	vclear
+	vdisplay result
+	vsetdispmode 1
+	vfit
+	vdump $imagedir/${test_image}.gif
+    }
+} else {
+   puts "Error : The command can not be build."
+}
+
+# to end a test script
+puts "TEST COMPLETED"
+

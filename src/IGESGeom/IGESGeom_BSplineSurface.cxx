@@ -115,8 +115,13 @@ IGESGeom_BSplineSurface::IGESGeom_BSplineSurface ()    {  }
   if (flag) return isPolynomial;
   Standard_Integer i,j;
   Standard_Real w0 = theWeights->Value(0,0);
-  for ( j = 0; j < theIndexV; j ++)
-    for (i = 0; i < theIndexU; i ++)
+  /*CR23377
+  * Following fix is needed to address Rational surface with non-unitary weights at last index
+  * Limit for indices are changed from theIndexV-->theIndexV+1 (=NbPolesV())
+  *                                    theIndexU--> theIndexU+1 (=NbPolesU())
+  */
+  for ( j = 0; j < (theIndexV+1); j ++)
+    for (i = 0; i < (theIndexU+1); i ++)
       if (Abs(theWeights->Value(i,j) - w0) > 1.e-10) return Standard_False;
   return Standard_True;
 }
