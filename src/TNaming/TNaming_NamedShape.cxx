@@ -838,49 +838,6 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
 }
 
 //=======================================================================
-//function : Modify
-//purpose  : 
-//=======================================================================
-
-void TNaming_Builder::Replace(const TopoDS_Shape& oldShape,
-			      const TopoDS_Shape& newShape) 
-{ 
-  if (myAtt->myNode == 0L) myAtt->myEvolution = TNaming_REPLACE;
-  else {
-    if (myAtt->myEvolution != TNaming_REPLACE)
-      Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
-  }
-
-  if (oldShape.IsSame(newShape)) {
-#ifdef DEB
-    cout <<"TNaming_Builder::Modify : oldShape IsSame newShape"<<endl;
-#endif
-    return;
-  }
-  TNaming_RefShape* pos;
-  if (!myMap->IsBound(oldShape)) {
-    pos = new TNaming_RefShape(oldShape);
-    myMap->Bind(oldShape,pos);
-  }
-  else
-    pos = myMap->ChangeFind(oldShape);
-  
-  TNaming_RefShape* pns;
-  if (!myMap->IsBound(newShape)) {
-    pns = new TNaming_RefShape(newShape);
-    myMap->Bind(newShape,pns);
-  }
-  else
-    pns = myMap->ChangeFind(newShape);
-  
-  TNaming_Node* pdn = new TNaming_Node(pos,pns);
-  myAtt->Add(pdn);
-  UpdateFirstUseOrNextSameShape (pos,pdn);
-  UpdateFirstUseOrNextSameShape (pns,pdn);
-  
-}
-
-//=======================================================================
 static const TopoDS_Shape& DummyShapeToStoreOrientation (const TopAbs_Orientation Or)
 {
   static TopoDS_Vertex aVForward, aVRev, aVInt, aVExt;
@@ -1720,59 +1677,3 @@ Standard_Integer TNaming_Tool::ValidUntil (const TopoDS_Shape&               S,
   }
   return Until;
 }
- 
-
-//=======================================================================
-//function : OldPaste
-//purpose  : 
-//=======================================================================
-
-void TNaming_NamedShape::OldPaste(const Handle(TDF_Attribute)&       into,
-                                  const Handle(TDF_RelocationTable)& /*Tab*/)
-const
-{ 
-  TDF_Label        Lab = into->Label();
-  if (Lab.IsNull()) {
-    Standard_NullObject::Raise("TNaming_NamedShape::Paste");
-  }
-  //TDF_Insertor Ins(Lab);
-  //TNaming_Builder B(Ins);
-  TNaming_Builder B(Lab);
-
-  TNaming_Iterator It (this);
-  for ( ;It.More() ; It.Next()) {
-    const TopoDS_Shape& OS     = It.OldShape();
-    const TopoDS_Shape& NS     = It.NewShape();
-    TNaming_Evolution   Status = It.Evolution();
-    switch (Status) {
-    case TNaming_PRIMITIVE :
-      {
-	B.Generated(NS);
-	break;
-      }
-    case TNaming_GENERATED :
-      {
-	B.Generated(OS,NS);
-	break;
-      }
-    case TNaming_MODIFY : 
-      {
-	B.Modify(OS,NS);
-	break;
-      }
-    case TNaming_DELETE : 
-      {
-	B.Delete (OS);
-	break;
-      }
-    case TNaming_SELECTED :
-      {
-	B.Select(NS,OS);
-	break;
-      }
-    case TNaming_REPLACE :
-      B.Replace(OS,NS);
-    }
-  }
-}
-

@@ -53,8 +53,13 @@
 #include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
 #include <TopTools_HArray1OfShape.hxx>
+#include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
 // #include <TNaming_NCollections.hxx>
 #include <NCollection_Map.hxx>   
 #include <NCollection_DataMap.hxx>
@@ -926,7 +931,7 @@ static Handle(TNaming_NamedShape) BuildNameInNS (const TDF_Label&               
 
 {
   // il faut determiner un nouveau context et un nouveau Stop.
-  // it is necessary to determine new a context and a new Stop
+  // it is necessary to determine a new context and a new Stop
   TopoDS_Shape SC;
   Handle(TNaming_NamedShape) NewStop = Stop;
   
@@ -1249,8 +1254,11 @@ static void BuildScope (TNaming_Scope&    MDF,
 }
 
 //=======================================================================
+//function : HasAncFace
+//purpose  : Returns True & <Face> if ancestor face is found
+//=======================================================================
 static Standard_Boolean HasAncFace(const TopoDS_Shape& Context, 
-				   const TopoDS_Shape& W, TopoDS_Shape& Face)
+				   const TopoDS_Shape& W, TopoDS_Shape& Face, Standard_Boolean& isOuter)
 { 
   Standard_Boolean hasFace(Standard_False);
   if(W.ShapeType() != TopAbs_WIRE)
@@ -1259,14 +1267,22 @@ static Standard_Boolean HasAncFace(const TopoDS_Shape& Context,
   for(;exp.More(); exp.Next()) {
     for (TopoDS_Iterator it(exp.Current()) ; it.More(); it.Next()) {
       if(it.Value().IsEqual(W)) {// is the Wire ?
-	Face = exp.Current();
-	if(!Face.IsNull()) {
-	  hasFace = Standard_True;
-	  //	  cout << "HasAncFace: TS = " <<theFace.TShape()->This() <<endl;
-	  break;
-	}	
-      }
-    }
+	    Face = exp.Current();
+	    if(!Face.IsNull()) {
+	      hasFace = Standard_True;
+	//	  cout << "HasAncFace: TS = " <<theFace.TShape()->This() <<endl;
+		  const TopoDS_Face aFace(TopoDS::Face(Face));
+		  TopoDS_Wire anOuterW; 
+		  if(TNaming::OuterWire(aFace, anOuterW)) {
+		    if(!anOuterW.IsNull() && anOuterW.IsEqual(W)) 
+			  isOuter = Standard_True;
+		    else 
+			  isOuter = Standard_False;		
+		  }
+	      break;		  		  
+		}
+	  }
+	}
     if(hasFace) break;
   }
   return hasFace;
@@ -1297,45 +1313,53 @@ static Handle(TNaming_NamedShape) BuildNameWire (const TDF_Label&               
 
   TNaming_Name& theName = Naming->ChangeName();  
   TopoDS_Shape aFace;
-  Standard_Boolean hasFace = HasAncFace(Context, Selection, aFace);
-  if(Selection.ShapeType() == TopAbs_WIRE && Context.ShapeType() < Selection.ShapeType() && hasFace) {	
+  Standard_Boolean isOuter(Standard_False);
+  Standard_Boolean hasFace = HasAncFace(Context, Selection, aFace, isOuter);  
+  if(hasFace && Selection.ShapeType() > Context.ShapeType()) {
     theName.Type(TNaming_WIREIN);
-    if(Context.ShapeType() == TopAbs_FACE) {
-      for (TopoDS_Iterator it(Context) ; it.More(); it.Next()) {
-	if(it.Value().IsEqual(Selection)) {
-	  if (TNaming_Selector::IsIdentified (F, Context, NS, Geom)) {		
-	    theName.Append(NS);
-	    found = Standard_True;
-	    break;
+	if(Context.ShapeType() == TopAbs_FACE) {
+		for (TopoDS_Iterator it(Context) ; it.More(); it.Next()) {
+		  if(it.Value().IsEqual(Selection)) {
+	        if (TNaming_Selector::IsIdentified (F, Context, NS, Geom)) {		
+	          theName.Append(NS);
+	          found = Standard_True;
+	          break;
+			}
+		  }
 	  }
-	}
-      }
-      if(!found)
-	return BuildNS (F,Selection, TNaming_UNKNOWN);
-    } else {
-        Standard_Integer indx(0), i(0);
-	for (TopoDS_Iterator it(aFace); it.More(); it.Next()) {
-	  i++;
-	  if(it.Value().IsEqual(Selection)) {
-	    found = Standard_True;
-	    theName.Append(BuildName (Naming->Label(),MDF,aFace,Context,Stop,Geom));
-	    indx = i;
-	  }
-	}
-	if(found) {
-	  const Standard_Integer num(i);
-	  indx = indx | num << 8;
-	  //cout << " final Index = " << indx <<endl;
-	  theName.Index(indx);
-	} else
-	  return BuildNS (F,Selection, TNaming_UNKNOWN);
-      }
-  }
-  else {
+		if(found) {
+		  theName.Append(BuildName (Naming->Label(),MDF,aFace,Context,Stop,Geom));
+		  if(isOuter) {
+		    theName.Index(1);
+		  } else {
+			  theName.Index(-1);
+			  for (TopExp_Explorer exp(Selection,TopAbs_EDGE) ; exp.More(); exp.Next()) {
+			    if(exp.Current().IsNull()) continue;
+			    if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current()))) continue;
+			     theName.Append(TNaming_Naming::Name(Naming->Label(),exp.Current(),Context, Geom, 1, 0));
+			  }
+		  }
+		} else
+	       return BuildNS (F,Selection, TNaming_UNKNOWN);
+
+	} else { // context is not Face
+		theName.Append(BuildName (Naming->Label(),MDF,aFace,Context,Stop,Geom));
+		if(isOuter) {
+		theName.Index(1);
+		} else {
+			for (TopExp_Explorer exp(Selection,TopAbs_EDGE) ; exp.More(); exp.Next()) {
+			  if(exp.Current().IsNull()) continue;
+			  if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current()))) continue;
+			   theName.Append(TNaming_Naming::Name(Naming->Label(),exp.Current(),Context, Geom, 1, 0));
+			}
+		}
+	}//
+  } 
+  else { // => no Face
     theName.Type(TNaming_UNION);
     for (TopExp_Explorer exp(Selection,TopAbs_EDGE) ; exp.More(); exp.Next()) {
-      if(exp.Current().IsNull()) continue;
-      if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current()))) continue;//03.03.2010
+	  if(exp.Current().IsNull()) continue;
+      if (BRep_Tool::Degenerated(TopoDS::Edge(exp.Current()))) continue;
       theName.Append(BuildName (Naming->Label(),MDF,exp.Current(),Context,Stop,Geom));
     }
   }
@@ -1408,11 +1432,13 @@ static Standard_Integer RepeatabilityInContext(const TopoDS_Shape& Selection,
 //    Write(Selection, "Repeat_Selection.brep");
 //    Write(Context, "Repeat_Context.brep");
     if (Context.ShapeType() < Selection.ShapeType()) {
-      for (TopExp_Explorer exp(Context,Selection.ShapeType()); exp.More(); exp.Next()) {
-	if (exp.Current().IsSame(Selection)) 
-	  aNum++;
-      }
-    } 
+	  if(Selection.ShapeType() != TopAbs_SHELL) {
+        for (TopExp_Explorer exp(Context,Selection.ShapeType()); exp.More(); exp.Next()) {
+	      if (exp.Current().IsSame(Selection)) 
+	        aNum++;
+		}
+	  } 
+	}
     else if(Selection.ShapeType() == TopAbs_COMPOUND) {
       TopoDS_Iterator it(Selection);
       for(;it.More();it.Next()) {
@@ -1431,6 +1457,162 @@ static Standard_Integer RepeatabilityInContext(const TopoDS_Shape& Selection,
 #endif 
   return aNum;
 }
+
+//=======================================================================
+//function : HasAncSolid
+//purpose  : Returns true if Sh has ancestor solid in this context
+//=======================================================================
+static Standard_Boolean HasAncSolid(const TopoDS_Shape& Context, 
+				               const TopoDS_Shape& Sh, TopoDS_Shape& Solid, 
+				               Standard_Boolean& isOuter)
+{ 
+  Standard_Boolean hasSolid(Standard_False);
+  if(Sh.ShapeType() != TopAbs_SHELL)
+    return hasSolid;
+  TopExp_Explorer exp(Context, TopAbs_SOLID);
+  for(;exp.More(); exp.Next()) {
+    for (TopoDS_Iterator it(exp.Current()) ; it.More(); it.Next()) {
+      if(it.Value().IsEqual(Sh)) {// is the Solid ?
+	    Solid = exp.Current();
+	    if(!Solid.IsNull()) {
+	      hasSolid = Standard_True;
+		  TopoDS_Shell anOuterShell;		
+		  if(TNaming::OuterShell(TopoDS::Solid(Solid), anOuterShell)) {
+#ifdef MDTV_DEB_TSOL
+	        Write(anOuterShell, "OuterShell.brep");
+#endif
+		    if(!anOuterShell.IsNull() && anOuterShell.IsEqual(Sh))
+			  isOuter = Standard_True;
+		    else 
+			  isOuter = Standard_False;
+		  }
+	      break;
+		}
+	  }
+	}
+    if(hasSolid) break;
+  }
+  return hasSolid;
+}
+//=======================================================================
+//function : BuildNameShell
+//purpose  : Names Shell
+//=======================================================================
+
+static Handle(TNaming_NamedShape) BuildNameShell (const TDF_Label& F,
+						 TNaming_Scope&                    MDF,
+						 const TopoDS_Shape&               Selection,
+						 const TopoDS_Shape&               Context,
+						 const Handle(TNaming_NamedShape)& Stop,
+						 const Standard_Boolean            Geom)
+{  
+  Handle (TNaming_NamedShape) NS;
+  Standard_Boolean found(Standard_False);
+  Handle (TNaming_Naming)  Naming;
+  if(!F.FindAttribute(TNaming_Naming::GetID(), Naming)) {
+    Naming = new TNaming_Naming ();
+    F.AddAttribute (Naming);
+    TNaming_Name& theName = Naming->ChangeName();
+    theName.ShapeType(Selection.ShapeType());
+    theName.Shape(Selection); 
+  } 
+
+  TNaming_Name& theName = Naming->ChangeName(); 
+  TopoDS_Shape aSolid;
+  Standard_Boolean isOuter(Standard_False);
+  Standard_Boolean hasSolid = HasAncSolid(Context, Selection, aSolid, isOuter);  
+  if(hasSolid && Selection.ShapeType() > Context.ShapeType()) {
+    theName.Type(TNaming_SHELLIN);// SHELLIN
+
+	if(Context.ShapeType() == TopAbs_SOLID) {
+		for (TopoDS_Iterator it(Context) ; it.More(); it.Next()) {
+#ifdef MDTV_DEB_TSOL
+          Write(it.Value(), "Shell_inSo.brep");
+#endif
+		if(it.Value().IsEqual(Selection)) {
+	        found = Standard_True;
+	        break;
+		  }
+	  }
+	  if(found) {
+		// solid => aSolid which is also a context
+		  Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(Context,F);
+		  if(!aNS.IsNull())
+			theName.ContextLabel(aNS->Label());	  
+		  theName.Append(aNS);
+		  if(isOuter) {
+		    theName.Index(1);				 
+		  } else { //not OuterShell
+            theName.Index(-1);
+			for (TopExp_Explorer exp(Selection,TopAbs_FACE) ; exp.More(); exp.Next()) {
+			  if(exp.Current().IsNull()) continue;
+			  theName.Append(BuildName (Naming->Label(),MDF,exp.Current(),Context,Stop,Geom));
+			}
+		  }
+	  } else
+		  return BuildNS (F,Selection, TNaming_UNKNOWN);
+	} else { 
+	// context is not SOLID
+		//theName.Append(BuildName (Naming->Label(),MDF,aSolid,Context,Stop,Geom));//###########		
+		if(isOuter) {
+#ifdef MDTV_DEB_TSOL
+          Write(aSolid, "foundSolid.brep");
+#endif
+		  theName.Index(1);
+		  Handle (TNaming_Naming)  NamingSo = TNaming_Naming::Insert(F); 
+		  TNaming_Name&           theNameSo = NamingSo->ChangeName();
+          theNameSo.ShapeType(aSolid.ShapeType());
+          theNameSo.Shape(aSolid);       
+          theNameSo.Type(TNaming_UNION);
+		  Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(Context,F);
+		  if(!aNS.IsNull())
+			theNameSo.ContextLabel(aNS->Label());
+	      for (TopExp_Explorer exp(aSolid,TopAbs_FACE) ; exp.More(); exp.Next()) 
+	        theNameSo.Append(BuildName (NamingSo->Label(),MDF,exp.Current(),Context,Stop,Geom));
+		  NamingSo->GetName().Solve(NamingSo->Label(),MDF.GetValid());
+		  aNS.Nullify();
+		  NamingSo->Label().FindAttribute(TNaming_NamedShape::GetID(),aNS); 
+		  theName.Append(aNS);
+		} else {
+			theName.Index(-1);
+			// - name Solid: theName.Append(BuildName (Naming->Label(),MDF, aSolid,Context,Stop,Geom));
+		    Handle (TNaming_Naming)  NamingSo = TNaming_Naming::Insert(F); 
+		    TNaming_Name&           theNameSo = NamingSo->ChangeName();
+            theNameSo.ShapeType(aSolid.ShapeType());
+            theNameSo.Shape(aSolid);       
+            theNameSo.Type(TNaming_UNION);
+		    Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(Context,F);
+		    if(!aNS.IsNull())
+			  theNameSo.ContextLabel(aNS->Label());
+	        for (TopExp_Explorer exp(aSolid,TopAbs_FACE) ; exp.More(); exp.Next()) 
+	          theNameSo.Append(BuildName (NamingSo->Label(),MDF,exp.Current(),Context,Stop,Geom));			
+			NamingSo->GetName().Solve(NamingSo->Label(),MDF.GetValid());
+			aNS.Nullify();
+			NamingSo->Label().FindAttribute(TNaming_NamedShape::GetID(),aNS); 
+		    theName.Append(aNS);
+
+			for (TopExp_Explorer exp(Selection,TopAbs_FACE) ; exp.More(); exp.Next()) {
+			  if(exp.Current().IsNull()) continue;
+			  theName.Append(BuildName (Naming->Label(),MDF,exp.Current(),Context,Stop,Geom));
+			}
+		}
+	}//
+  } 
+  else { // => no Solid
+    theName.Type(TNaming_UNION);
+	Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(Context,F);
+	if(!aNS.IsNull())
+	  theName.ContextLabel(aNS->Label());
+    for (TopExp_Explorer exp(Selection,TopAbs_FACE) ; exp.More(); exp.Next()) {
+	  if(exp.Current().IsNull()) continue;     
+      theName.Append(BuildName (Naming->Label(),MDF,exp.Current(),Context,Stop,Geom));
+    }
+  }
+  //Naming->GetName().Solve(Naming->Label(),MDF.GetValid());
+  Naming->Label().FindAttribute(TNaming_NamedShape::GetID(),NS);  
+  return NS;
+}
+
 //=======================================================================
 //function : BuildAggregationNam
 //purpose  : 
@@ -1489,6 +1671,8 @@ static void BuildAggregationName (const TDF_Label&                  F,
 	if(aS.ShapeType() == TopAbs_WIRE) {
 	  aNS = BuildNameWire (aNaming->Label(), MDF, aS, Context,Stop,Geom);
 	}
+	 else if(aS.ShapeType() == TopAbs_SHELL) 
+	    aNS = BuildNameShell (aNaming->Label(), MDF, aS, Context,Stop,Geom);
 	else {
 	  for (TopExp_Explorer exp(aS,atomTyp) ; exp.More(); exp.Next()) {
 	    aName.Append(BuildName (aNaming->Label(),MDF,exp.Current(),Context,Stop,Geom));
@@ -1578,7 +1762,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 	      TopoDS_Iterator it(itw.Value());
 	      for(int i=1;it.More();it.Next(),i++) {
 		if(it.Value().IsEqual(S)) {
-		  theName.Index(i);
+		  theName.Index(i);//We use this field to save a Seam Shape Index; Before this field was used for GENERATED only
 		  found = Standard_True;
 #ifdef MDTV_OR
 		  cout << "ORDER = " << i <<endl;
@@ -1704,13 +1888,16 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
       }
     } else {
       if(S.ShapeType() == TopAbs_WIRE)
-	NS = BuildNameWire (Naming->Label(), MDF, S, Context,Stop,Geom);
-      else {
-	theName.Type(TNaming_UNION);
-	for (TopExp_Explorer exp(S,atomType) ; exp.More(); exp.Next()) {
-	  theName.Append(BuildName (Naming->Label(),MDF,exp.Current(),Context,Stop,Geom));
-	}
-      }
+	    NS = BuildNameWire (Naming->Label(), MDF, S, Context,Stop,Geom);
+	  else if(S.ShapeType() == TopAbs_SHELL) {
+		    NS = BuildNameShell (Naming->Label(), MDF, S, Context,Stop,Geom);
+	  }
+	  else {
+	    theName.Type(TNaming_UNION);
+	    for (TopExp_Explorer exp(S,atomType) ; exp.More(); exp.Next()) {
+	    theName.Append(BuildName (Naming->Label(),MDF,exp.Current(),Context,Stop,Geom));
+		}
+	  }
     }
 #else    
     for (TopoDS_Iterator it(S) ; it.More(); it.Next()) {

@@ -78,16 +78,6 @@ is
     	    --  or merged in a Boolean operation.
 	    --          
 	
-	---Category: Load changes
-	--           
-    	Replace (me : in out; oldShape, newShape : Shape from TopoDS);
-	    ---Purpose: Records the shape newShape which is a
-    	    -- modification of the shape oldShape but has a
-    	    -- different geometry as a result of the construction operation.
-    	    -- As an example, consider the case of a face
-    	    -- resulting from construction of a draft in a box or prism.
-	
-
     	---Category: Load Selection.
     	Select (me : in out; aShape, inShape : Shape from TopoDS);
 	    ---Purpose:   Add a  Shape to the current label ,  This Shape is

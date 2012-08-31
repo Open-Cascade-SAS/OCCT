@@ -52,7 +52,8 @@ IMPLEMENT_DOMSTRING (NTSubtractionString,       "subtraction")
 IMPLEMENT_DOMSTRING (NTConstShapeString,        "constshape")
 IMPLEMENT_DOMSTRING (NTFilterByNeighString,     "filterbyneigh")
 IMPLEMENT_DOMSTRING (NTOrientationString,       "orientation")
-IMPLEMENT_DOMSTRING (NTWireInString,             "wirein")
+IMPLEMENT_DOMSTRING (NTWireInString,            "wirein")
+IMPLEMENT_DOMSTRING (NTShellInString,            "shellin")
 
 IMPLEMENT_DOMSTRING (ShCompoundString,          "compound")
 IMPLEMENT_DOMSTRING (ShCompsolidString,         "compsolid")
@@ -329,6 +330,7 @@ static const XmlObjMgt_DOMString& NameTypeToString (const TNaming_NameType theE)
   case TNaming_FILTERBYNEIGHBOURGS : return ::NTFilterByNeighString();
   case TNaming_ORIENTATION         : return ::NTOrientationString();
   case TNaming_WIREIN              : return ::NTWireInString();
+  case TNaming_SHELLIN             : return ::NTShellInString();
   default:
     Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
   }
@@ -397,6 +399,8 @@ static TNaming_NameType NameTypeFromString (const XmlObjMgt_DOMString& theString
       aResult = TNaming_ORIENTATION;
     else if (theString.equals (::NTWireInString()))
       aResult = TNaming_WIREIN;
+    else if (theString.equals (::NTShellInString()))
+      aResult = TNaming_SHELLIN;
     else
       Standard_DomainError::Raise
         ("TNaming_NameType; string value without enum term equivalence");

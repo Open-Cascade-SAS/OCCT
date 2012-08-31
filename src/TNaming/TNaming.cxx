@@ -52,6 +52,9 @@
 #include <TNaming_DataMapOfShapePtrRefShape.hxx>
 #include <TNaming_Tool.hxx>
 
+#include <IntTools_FClass2d.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+
 // CopyShape
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <TNaming_TranslateTool.hxx>
@@ -388,6 +391,7 @@ static void LoadNamedShape (TNaming_Builder& B,
   case TNaming_SELECTED :
     {
       B.Select(NS,OS);
+	  break;
     }
   default:
     break;
@@ -737,6 +741,10 @@ Standard_OStream& TNaming::Print (const TNaming_NameType NAME,  Standard_OStream
     {
       s <<"WIREIN"; break;
     }
+	case TNaming_SHELLIN:
+    {
+      s <<"SHELLIN"; break;
+    }
     default :
       {
 	s <<"UNKNOWN_NameType"; break;
@@ -945,6 +953,95 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection, const 
   return TopoDS_Shape();
 }
 
+//=======================================================================
+//function : OuterWire
+//purpose  : Returns True & <theWire> if Outer wire is found.
+//=======================================================================
+Standard_Boolean TNaming::OuterWire(const TopoDS_Face& theFace, TopoDS_Wire& theWire)
+{ 
+  TopoDS_Face aFx;
+  TopoDS_Wire aWx;
+  BRep_Builder aBB;
+  IntTools_FClass2d aFC;
+  Standard_Boolean bFlag(Standard_False);
+  Standard_Real aTol = BRep_Tool::Tolerance(theFace);
+  TopoDS_Iterator aIt(theFace);
+  for (; aIt.More(); aIt.Next()) {
+    aWx=*((TopoDS_Wire*)&aIt.Value());
+    aFx = theFace;
+    aFx.EmptyCopy();
+    aBB.Add(aFx, aWx);
+    aFC.Init(aFx, aTol);
+    bFlag = aFC.IsHole();
+    if (!bFlag) 
+      break;
+  }
+  theWire=aWx;
+  return !bFlag;// if bFlag == True -  not found
+}
+//=======================================================================
+//function : IsInternal
+//purpose  :
+//=======================================================================
+static Standard_Boolean IsInternal(const TopoDS_Shape& aSx)
+{
+  Standard_Boolean bInternal;
+  TopAbs_Orientation aOr;
+  TopoDS_Iterator aIt;
+  bInternal = Standard_False;
+  aIt.Initialize(aSx);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aSy=aIt.Value();
+    aOr=aSy.Orientation();
+    bInternal = (aOr == TopAbs_INTERNAL || aOr == TopAbs_EXTERNAL);
+    break;
+  }
+  return bInternal;
+}
+//=======================================================================
+//function : OuterShell
+//purpose  : returns True & <theShell>, if Outer shell is found
+//=======================================================================
+Standard_Boolean TNaming::OuterShell(const TopoDS_Solid& theSolid, 
+				             TopoDS_Shell& theShell)
+{
+  TopoDS_Solid aSDx;
+  TopoDS_Shell aSHx;
+  TopAbs_State aState;
+  Standard_Boolean bFound(Standard_False);
+  Standard_Real aTol(1.e-7);
+  //
+  BRep_Builder aBB;
+  BRepClass3d_SolidClassifier aSC;
+  TopoDS_Iterator aIt(theSolid);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aSx = aIt.Value();
+
+    if (aSx.ShapeType() != TopAbs_SHELL)
+      continue;
+    if (IsInternal(aSx)) 
+      continue;
+    //
+    aSHx = *((TopoDS_Shell*)&aSx);
+    //
+    aSDx = theSolid;
+    aSDx.EmptyCopy();
+    //
+    aBB.Add(aSDx, aSHx);
+    //
+    aSC.Load(aSDx);
+    //BRepClass3d_SolidClassifier& aSC=aCtx.SolidClassifier(aSDx);
+    aSC.PerformInfinitePoint(aTol);
+    aState = aSC.State();
+    if(aState == TopAbs_OUT) {
+      bFound = Standard_True;
+      break;
+    }
+  }
+  theShell = aSHx;
+
+  return bFound;
+}
 
 
 

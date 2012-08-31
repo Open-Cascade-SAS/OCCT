@@ -56,6 +56,7 @@ static Standard_Character NameTypeToChar(const TNaming_NameType theNameType)
     case TNaming_FILTERBYNEIGHBOURGS : return 'F';
     case TNaming_ORIENTATION  : return 'O'; 
     case TNaming_WIREIN       : return 'W';
+    case TNaming_SHELLIN      : return 'H';
   default:
     Standard_DomainError::Raise("TNaming_NameType:: Name Type Unknown");
   }
@@ -77,6 +78,7 @@ static TNaming_NameType CharTypeToName(const Standard_Character theCharType)
     case 'F'  : return TNaming_FILTERBYNEIGHBOURGS;
     case 'O'  : return TNaming_ORIENTATION;
     case 'W'  : return TNaming_WIREIN;
+    case 'H'  : return TNaming_SHELLIN;
   default:
     Standard_DomainError::Raise("TNaming_NameType:: Name Type Unknown");
   }

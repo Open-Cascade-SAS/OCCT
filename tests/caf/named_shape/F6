@@ -95,7 +95,7 @@ set SL2 [TestMultipleSelection D $Prism 0]
 
 #12 modify
 NewCommand D
-PntOffset D $Pnt1  40 25 skip
+PntOffset D $Pnt1  20 25 skip
 
 #13 recompute
 NewCommand D

@@ -78,6 +78,7 @@ static  Standard_Integer NameTypeToInteger (const TNaming_NameType I)
     case  TNaming_FILTERBYNEIGHBOURGS : return 8;
     case  TNaming_ORIENTATION         : return 9;
     case  TNaming_WIREIN              : return 10;
+    case  TNaming_SHELLIN             : return 11;
       default :
 	Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
     }

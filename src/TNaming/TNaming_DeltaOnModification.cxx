@@ -102,11 +102,6 @@ static void LoadNamedShape (TNaming_Builder& B,
       B.Select(NS,OS);
       break;
     }
-  case TNaming_REPLACE :
-    {
-      B.Replace(OS,NS);
-      break;
-    }
   }
 }
 

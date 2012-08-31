@@ -150,7 +150,8 @@ void MNaming_NamedShapeRetrievalDriver::Paste (
       Bld.Select(NewShape, OldShape); break;
     }
     case TNaming_REPLACE      :{
-      Bld.Replace(OldShape,NewShape); break;
+      //Bld.Replace(OldShape,NewShape); break;
+      Bld.Modify(OldShape,NewShape); break;// for compatibility only
     }  
       default :
 	Standard_DomainError::Raise("TNaming_Evolution; enum term unknown");

@@ -35,6 +35,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
 
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
@@ -83,6 +84,8 @@
 //#define  MDTV_DEB_MODUN
 //#define MDTV_DEB_FNB
 //#define  MDTV_DEB_WIN
+//#define MDTV_DEB_ARG
+//#define MDTV_DEB_SHELL
 #ifdef MDTV_DEB
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
@@ -113,7 +116,6 @@ void PrintEntries(const TDF_LabelMap& map)
     }
 }
 
-#include <BRepTools.hxx>
 //=======================================================================
 static void DbgTools_Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
@@ -180,14 +182,14 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
   for (;it.More();it.Next()) {
     const Handle(TNaming_NamedShape)& aNS = it.Value();
     if(aNS.IsNull()) {
-#ifdef MDTV_DEB 
+#ifdef MDTV_DEB_ARG 
       cout << "ValidArgs:: NS (Naming argument) is NULL" <<endl;
 #endif	
       return Standard_False;
     }
     else 
       if(aNS->IsEmpty()) {
-#ifdef MDTV_DEB 
+#ifdef MDTV_DEB_ARG
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(aNS->Label(), entry);
 	cout << "ValidArgs:: Empty NS, Label = " << entry <<endl;
@@ -196,7 +198,7 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
     }
       else  
 	if(!aNS->IsValid()) {
-#ifdef MDTV_DEB 
+#ifdef MDTV_DEB_ARG 
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(aNS->Label(), entry);
 	  cout << "ValidArgs::Not valid NS Label = " << entry <<endl;
@@ -508,9 +510,17 @@ static Standard_Boolean FindModifUntil (TNaming_NewShapeIterator&         it,
 					const TopoDS_Shape&               S,
 					const Handle(TNaming_NamedShape)& Context)
 { 
+#ifdef MDTV_DEB_MODUN
+  if(!Context.IsNull())
+    PrintEntry(Context->Label());
+#endif
   Standard_Boolean found = Standard_False;
   for (; it.More(); it.Next()) {
     if (!it.Shape().IsNull()) {
+#ifdef MDTV_DEB_MODUN
+      if(!it.NamedShape().IsNull())
+        PrintEntry(it.NamedShape()->Label());
+#endif
       if (it.NamedShape() == Context) {
 	MS.Add(S);
 	found = Standard_True;
@@ -557,13 +567,16 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
       Standard_Integer k = 0;
       TCollection_AsciiString aNam1 = aGen1 + i + Und + j + ".brep";
       DbgTools_Write(S, aNam1.ToCString());
+      PrintEntry(aNS->Label());//NSLabel
 #endif   
-      for  (TNaming_Iterator itC (Target); itC.More(); itC.Next()) {  // <- generated
+      TNaming_Iterator itC (Target);
+      for  (; itC.More(); itC.Next()) {  // <- generated
 	const TopoDS_Shape& OS = itC.OldShape();
 #ifdef MDTV_DEB_MODUN
 	k++;
 	TCollection_AsciiString aNam2 = aGen2 + i + Und + j + Und + k + ".brep";
 	DbgTools_Write(OS, aNam2.ToCString());
+	PrintEntry(Target->Label());//Target Label
 #endif 
 	if (OS.IsSame(S)) {
 	  theMS.Add(S);
@@ -1837,78 +1850,283 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 
 //===========================================================================
 //function : WireIN
-//purpose  : to solve  WIREIN name; Index for case if the Face has several wires
+//purpose  : to solve  WIREIN name
 //=======================================================================
 static Standard_Boolean WireIN(const TDF_Label&                L,
 			       const TDF_LabelMap&             Valid,
-			       const TNaming_ListOfNamedShape& Args,
-			       const Standard_Integer          Index)
+			       const TNaming_ListOfNamedShape& Args, 
+				   const Handle(TNaming_NamedShape)& Stop,
+				   Standard_Integer Index)
 {
   Standard_Boolean aResult(Standard_False);
   if(!ValidArgs(Args)) return aResult;
   TopTools_MapOfShape MS; 
   TDF_LabelMap        Forbiden;
-  if (Args.Extent() != 1 ) 
+  if (Args.Extent() < 1 ) 
     Standard_ConstructionError::Raise("TNaming_Name::Solve"); 
-  const Handle(TNaming_NamedShape)& A = Args.Last(); 
+  const Handle(TNaming_NamedShape)& A = Args.First();
   TNaming_NamingTool::CurrentShape (Valid,Forbiden,A,MS);
+  if (MS.Extent() != 1) return aResult;
+  TopTools_MapIteratorOfMapOfShape itM(MS); 
+  const TopoDS_Shape& aCF = itM.Key()   ;
 #ifdef MDTV_DEB_WIN
   cout <<"MS Extent = " <<MS.Extent() <<endl;
+  DbgTools_Write(aCF, "Context_Face.brep");
 #endif
-  Standard_Integer indx(0), num(0);
-  if(Index > 0) {
-    indx = Index & 0x000000FF;
-    num  = (Index & 0x0000FF00) >> 8;
-#ifdef MDTV_DEB_WIN
-    cout <<"Kept indx = " << indx  <<" maxNum" << num << endl;
-#endif      
-  }
   TNaming_Builder B(L);
-  for (TopTools_MapIteratorOfMapOfShape itM(MS); itM.More(); itM.Next()) {
-    const TopoDS_Shape& S = itM.Key()	;
-#ifdef MDTV_DEB_WIN
-    if(!S.IsNull()) {
-      DbgTools_Write(S, "WireIN_S.brep");
-      cout <<"WIREIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
-    }
-#endif
-    Standard_Integer aNum(0), aCase(0);
-    TopoDS_Iterator it2(S);
-    for (;it2.More();it2.Next()) aNum++;      
-    if(Index > 0) {
-      if(num == aNum) aCase = 1;//exact solution
-      else if(aNum == 1)   aCase = 2;// possible merge of initial wires
-      else aCase = 3; // indefinite description ==> compound which can include expected wire
-    }
-    
-    Standard_Integer i(0);
-    for (it2.Initialize(S);it2.More();it2.Next()) {
-#ifdef MDTV_DEB_WIN
-      if(!it2.Value().IsNull()) {
-	DbgTools_Write(it2.Value(), "WireIN_it2Value.brep");
-	cout <<"WIREIN: ShapeType = " << it2.Value().ShapeType() << " TS = " << it2.Value().TShape()->This() <<endl;
-      }
-#endif
-      i++;
-      if(it2.Value().ShapeType() == TopAbs_WIRE) {
-	if(Index > 0 ) { //szy 26/03/10
-	  if(aCase == 1) {
-	    if(i == indx) {
-	      aResult  = Standard_True;
-	      B.Select(it2.Value(),it2.Value());
-	      break;
-	    }
-	  } else {
-	    B.Select(it2.Value(),it2.Value());
-	    aResult = Standard_True;
-	  }
-	}
-	else {
-	  B.Select(it2.Value(),it2.Value());
+  if(Index == 1 ){ //Outer wire case 
+    TopoDS_Wire anOuterWire;
+    TNaming::OuterWire(TopoDS::Face(aCF), anOuterWire);
+	if(!anOuterWire.IsNull()) {
+      B.Select(anOuterWire, anOuterWire);
 	  aResult = Standard_True;
 	}
-      }
+  } else { //has internal wires
+	TNaming_ListOfNamedShape ArgsE;
+    ArgsE.Assign(Args);
+    ArgsE.RemoveFirst();
+	// fill Map with edges 
+    TNaming_ListIteratorOfListOfNamedShape it(ArgsE);
+    TopTools_MapOfShape MS; 
+    TDF_LabelMap        Forbiden;
+  
+    TNaming_NamingTool::BuildDescendants (Stop, Forbiden);//fill Forbidden
+    TNaming_NamingTool::CurrentShape  (Valid, Forbiden,it.Value(),MS); // fill MS with last modifications of the first additional argument
+    TopoDS_Shape  CS = MakeShape(MS);
+
+    TNaming_ShapesSet aSet(CS,TopAbs_EDGE);//fill internal map of shapeset by shapes of the specified type
+#ifdef MDTV_DEB_WIN
+    TCollection_AsciiString entry; 
+    TDF_Tool::Entry(it.Value()->Label(), entry);
+    TCollection_AsciiString Nam("Arg_");
+    TCollection_AsciiString aNam = Nam + entry + "_" + "2.brep";
+    DbgTools_Write(CS, aNam.ToCString());
+    Standard_Integer ii = 2;
+#endif
+    it.Next();
+    for (; it.More(); it.Next()) {
+#ifdef MDTV_DEB_WIN 
+      TDF_Tool::Entry(it.Value()->Label(), entry);
+#endif
+      MS.Clear();
+      TNaming_NamingTool::CurrentShape (Valid, Forbiden,it.Value(),MS);// fill MS with last modifications of the it.Value()
+      CS = MakeShape(MS); 
+      TNaming_ShapesSet OS(CS,TopAbs_EDGE);
+      aSet.Add(OS); //concatenate both shapesets
+ 
+#ifdef MDTV_DEB_WIN
+      ii++;
+      TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
+      DbgTools_Write(CS, aNm.ToCString());
+      cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<endl;
+#endif
+	}
+
+#ifdef MDTV_DEB_WIN
+    cout <<"WIREIN: " << " Internal Map ext = " << aSet.Map().Extent()<<endl;
+    TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
+    for (int i=1;it1.More();it1.Next(),i++) {
+      cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
+		  it1.Key().ShapeType()<<endl;
     }
+    
+    TopExp_Explorer exp(aCF, TopAbs_EDGE);
+    for(int i =1;exp.More();exp.Next(), i++) {
+     cout << "Context_Face("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<endl;
+    }	    
+#endif
+//end for edges
+	
+  for (TopoDS_Iterator itF(aCF); itF.More(); itF.Next()) {// find the expected wire in the face
+    const TopoDS_Shape& S = itF.Value();//wire
+	if(!S.IsNull()) {
+#ifdef MDTV_DEB_WIN    
+      DbgTools_Write(S, "WireIN_S.brep");
+      cout <<"WIREIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
+#endif       
+      if(S.ShapeType() == TopAbs_WIRE) {
+		TopTools_MapOfShape aView;
+		Standard_Integer aNum(0x7FFFFFFF);
+	    for (TopoDS_Iterator it(S);it.More();it.Next())
+          aView.Add(it.Value());// edges of wire of the face in map
+
+        TopTools_MapIteratorOfMapOfShape it (aSet.Map());
+		aNum = aView.Extent();
+		if(aNum == aSet.Map().Extent()) {
+          for (;it.More();it.Next()) {
+			if(aView.Contains(it.Key())) {
+				aNum--;
+			}
+		  }
+		}
+		if(aNum == 0) {
+		  B.Select(S, S);
+	      aResult = Standard_True;
+	      break;
+		}
+	  }
+	}	
+  } //
+
+  if(!aResult) {
+	TopoDS_Wire anOuterWire;
+    TNaming::OuterWire(TopoDS::Face(aCF), anOuterWire);
+	if(!anOuterWire.IsNull()) {
+      for (TopoDS_Iterator itF(aCF); itF.More(); itF.Next()) {
+        const TopoDS_Shape& S = itF.Value();//wire
+	    if(!S.IsNull()&& S.ShapeType() == TopAbs_WIRE) {
+		  if(S.IsEqual(anOuterWire)) continue;
+		  B.Select(S, S);
+		}
+	  }
+	}
+  }
+  }
+  return aResult;
+}
+//===========================================================================
+//function : ShellIN
+//purpose  : to solve  SHELLIN name
+//===========================================================================
+static Standard_Boolean ShellIN(const TDF_Label&                L,
+			       const TDF_LabelMap&             Valid,
+			       const TNaming_ListOfNamedShape& Args, 
+				   const Handle(TNaming_NamedShape)& Stop,
+				   Standard_Integer Index)
+{
+  Standard_Boolean aResult(Standard_False);
+  if(!ValidArgs(Args)) 
+	  return aResult;
+  TopTools_MapOfShape MS; 
+  TDF_LabelMap        Forbiden;
+  if (Args.Extent() < 1 ) 
+    Standard_ConstructionError::Raise("TNaming_Name::Solve"); 
+  const Handle(TNaming_NamedShape)& A = Args.First();
+  TNaming_NamingTool::CurrentShape (Valid,Forbiden,A,MS);
+  if (MS.Extent() != 1) return aResult;
+  TopTools_MapIteratorOfMapOfShape itM(MS); 
+  const TopoDS_Shape& aCSO = itM.Key()   ;
+#ifdef MDTV_DEB_SHELL
+  cout <<"MS Extent = " <<MS.Extent() <<endl;
+  DbgTools_Write(aCSO, "Context_Solid.brep");
+#endif
+  TNaming_Builder B(L);
+  if(Index == 1 ){ //Outer Shell case  
+	TopoDS_Shell anOuterShell;
+	TNaming::OuterShell(TopoDS::Solid(aCSO), anOuterShell);
+	if(!anOuterShell.IsNull()) {
+      B.Select(anOuterShell, anOuterShell);
+	  aResult = Standard_True;
+#ifdef MDTV_DEB_SHELL      
+	  cout << "Outer Shell case" <<endl;
+      PrintEntry(L);
+	  DbgTools_Write(anOuterShell, "ShellOut_S.brep");
+	  it.Initialize(aCSO);
+		for(;it.More();it.Next()){ 
+          DbgTools_Write(it.Value(), "ShOut_S.brep");
+		}
+#endif       
+	}
+  } else { //has internal Shells
+	TNaming_ListOfNamedShape ArgsF;
+    ArgsF.Assign(Args);
+    ArgsF.RemoveFirst();
+	// fill Map with faces 
+    TNaming_ListIteratorOfListOfNamedShape it(ArgsF);
+    TopTools_MapOfShape MS; 
+    TDF_LabelMap        Forbiden;
+  
+    TNaming_NamingTool::BuildDescendants (Stop, Forbiden);//fill Forbidden
+    TNaming_NamingTool::CurrentShape  (Valid, Forbiden,it.Value(),MS); // fill MS with last modifications of the first additional argument
+    TopoDS_Shape  CS = MakeShape(MS);
+
+    TNaming_ShapesSet aSet(CS,TopAbs_FACE);//fill internal map of shapeset by shapes of the specified type
+#ifdef MDTV_DEB_SHELL
+    TCollection_AsciiString entry; 
+    TDF_Tool::Entry(it.Value()->Label(), entry);
+    TCollection_AsciiString Nam("Arg_");
+    TCollection_AsciiString aNam = Nam + entry + "_" + "2.brep";
+    DbgTools_Write(CS, aNam.ToCString());
+    Standard_Integer ii = 2;
+#endif
+    it.Next();
+    for (; it.More(); it.Next()) {
+#ifdef MDTV_DEB_SHELL 
+      TDF_Tool::Entry(it.Value()->Label(), entry);
+#endif
+      MS.Clear();
+      TNaming_NamingTool::CurrentShape (Valid, Forbiden,it.Value(),MS);// fill MS with last modifications of the it.Value()
+      CS = MakeShape(MS); 
+      TNaming_ShapesSet OS(CS,TopAbs_FACE);
+      aSet.Add(OS); //concatenate both shapesets
+ 
+#ifdef MDTV_DEB_SHELL
+      ii++;
+      TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
+      DbgTools_Write(CS, aNm.ToCString());
+      cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<endl;
+#endif
+	}
+
+#ifdef MDTV_DEB_SHELL
+    cout <<"SHELLIN: " << " Internal Map ext = " << aSet.Map().Extent()<<endl;
+    TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
+    for (int i=1;it1.More();it1.Next(),i++) {
+      cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
+		  it1.Key().ShapeType()<<endl;
+    }
+    
+    TopExp_Explorer exp(aCSO, TopAbs_FACE);
+    for(int i = 1;exp.More();exp.Next(), i++) {
+     cout << "Context_Solid("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<endl;
+    }	    
+#endif
+//end for faces
+	
+  for (TopoDS_Iterator itS(aCSO); itS.More(); itS.Next()) {// find the expected shell in the solid
+    const TopoDS_Shape& S = itS.Value();//shell
+	if(!S.IsNull()) {
+#ifdef MDTV_DEB_SHELL    
+      DbgTools_Write(S, "ShellIN_S.brep");
+      cout <<"SHELLIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
+#endif       
+	  if(S.ShapeType() == TopAbs_SHELL) {
+		TopTools_MapOfShape aView;
+		Standard_Integer aNum(0x7FFFFFFF);
+	    for (TopoDS_Iterator it(S);it.More();it.Next())
+          aView.Add(it.Value());// faces of shell of the solid in map
+        
+		aNum = aView.Extent();
+		if(aNum == aSet.Map().Extent()) {
+		  TopTools_MapIteratorOfMapOfShape it (aSet.Map());
+          for (;it.More();it.Next()) {
+			if(aView.Contains(it.Key())) {
+				aNum--;
+			}
+		  }
+		}
+		if(aNum == 0) {
+		  B.Select(S, S);
+	      aResult = Standard_True;
+	      break;
+		}
+	  }
+	}	
+  } //
+
+  if(!aResult) {    
+	TopoDS_Shell anOuterShell; 
+	TNaming::OuterShell(TopoDS::Solid(aCSO), anOuterShell);
+	if(!anOuterShell.IsNull()) {
+      for (TopoDS_Iterator itS(aCSO); itS.More(); itS.Next()) {
+        const TopoDS_Shape& S = itS.Value();//shell
+	    if(!S.IsNull()&& S.ShapeType() == TopAbs_SHELL) {
+		  if(S.IsEqual(anOuterShell)) continue;
+		  B.Select(S, S);
+		}
+	  }
+	}
+  }
   }
   return aResult;
 }
@@ -1944,6 +2162,9 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
 				     const TDF_LabelMap& Valid) const
 {
   Standard_Boolean Done = 0;
+#ifdef MDTV_DEB_WIN
+  PrintEntry(aLab);
+#endif
   try {
   switch (myType) {
   case TNaming_UNKNOWN :
@@ -1998,7 +2219,20 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
     }
   case TNaming_WIREIN: 
     {
-      Done = WireIN (aLab,Valid,myArgs,myIndex);
+#ifdef MDTV_DEB_WIN  
+      cout << "Name::Solve: NameType = " << myType << "  ";
+  PrintEntry(aLab);
+#endif
+      Done = WireIN (aLab,Valid,myArgs,myStop,myIndex);
+      break;
+    }
+case TNaming_SHELLIN: 
+    {
+#ifdef MDTV_DEB_SHELL
+      cout << "Name::Solve: NameType = " << myType << "  ";
+      PrintEntry(aLab);
+#endif
+      Done = ShellIN (aLab,Valid,myArgs,myStop,myIndex);      
       break;
     }
   }

@@ -160,9 +160,9 @@ Standard_Boolean XmlMNaming_NamedShapeDriver::Paste
     case TNaming_SELECTED:
       aBld.Select(aNewShape, anOldShape);
       break;
-    case TNaming_REPLACE:
-      aBld.Replace(anOldShape,aNewShape);
-      break;
+      //    case TNaming_REPLACE:
+      //      aBld.Replace(anOldShape,aNewShape);
+      //      break;
     default:
       Standard_DomainError::Raise("TNaming_Evolution; enum term unknown");
     }
@@ -248,7 +248,7 @@ static const XmlObjMgt_DOMString& EvolutionString(const TNaming_Evolution i)
     case TNaming_MODIFY       : return ::EvolModifyString();
     case TNaming_DELETE       : return ::EvolDeleteString();
     case TNaming_SELECTED     : return ::EvolSelectedString();
-    case TNaming_REPLACE      : return ::EvolReplaceString();
+      //    case TNaming_REPLACE      : return ::EvolReplaceString();
   default:
     Standard_DomainError::Raise("TNaming_Evolution; enum term unknown");
   }
@@ -274,7 +274,7 @@ static TNaming_Evolution EvolutionEnum (const XmlObjMgt_DOMString& theString)
     else if (theString.equals (::EvolSelectedString()))
       aResult = TNaming_SELECTED;
     else if (theString.equals (::EvolReplaceString()))
-      aResult = TNaming_REPLACE;
+      aResult = TNaming_MODIFY; // for compatibility //TNaming_REPLACE;
     else
       Standard_DomainError::Raise
         ("TNaming_Evolution; string value without enum term equivalence");

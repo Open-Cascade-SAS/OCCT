@@ -139,13 +139,6 @@ is
 	--          attribute may be a brand new one or a new version
 	--          of the previous one.   
 
-    
-    OldPaste(me;
-    	  intoAttribute    : mutable Attribute from TDF;
-	  aRelocTationable : mutable RelocationTable from TDF);
-
-
-
     References(me; aDataSet : DataSet from TDF)
     	is redefined;
 	---Purpose: Adds the directly referenced attributes and labels

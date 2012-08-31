@@ -63,7 +63,8 @@ static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
 	aBuilder.Delete(aShape1);
 	break;
       case 'R':
-	aBuilder.Replace(aShape1,aShape2);
+//	aBuilder.Replace(aShape1,aShape2);
+	aBuilder.Modify(aShape1,aShape2);
 	break;
       case 'S':
 	aBuilder.Select(aShape1,aShape2);

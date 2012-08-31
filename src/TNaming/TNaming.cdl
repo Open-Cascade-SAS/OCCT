@@ -209,7 +209,8 @@ is
     	CONSTSHAPE,
 	FILTERBYNEIGHBOURGS, 
 	ORIENTATION, 
-	WIREIN
+	WIREIN,
+	SHELLIN
     end NameType;	    
     
     class Name;
@@ -353,7 +354,17 @@ is
     	             To           : in out Shape  from TopoDS) 
     returns Boolean from Standard;
     ---Purpose: Subtitutes shape in source structure
+              
+      
+    OuterWire(theFace: Face from TopoDS; theWire: out Wire from TopoDS)
+        returns Boolean from Standard;
+    --- Purpose: Returns True if outer wire is found and the found wire in <theWire>.
 
+    OuterShell(theSolid: Solid from TopoDS; theShell: out Shell from TopoDS)
+        returns Boolean from Standard;
+    --- Purpose: Returns True if outer Shell is found and the found shell in <theShell>.
+    
+   
       
     ---Purpose: Print of TNaming enumeration
     --          =============================

@@ -158,7 +158,7 @@ Standard_Integer EvolutionInt(const TNaming_Evolution i)
     case TNaming_MODIFY       : return 2;
     case TNaming_DELETE       : return 3;
     case TNaming_SELECTED     : return 4;
-    case TNaming_REPLACE      : return 5;
+      //case TNaming_REPLACE      : return 5;
   default:
     Standard_DomainError::Raise("TNaming_Evolution; enum term unknown");
   }
