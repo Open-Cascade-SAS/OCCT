@@ -1,0 +1,5 @@
+ReadStep D_First [locate_data_file bm2_sy_lever-A.stp]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL"
+

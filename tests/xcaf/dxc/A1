@@ -1,0 +1,26 @@
+box Shape1 10 10 10
+
+box Shape2 10 10 10 20 20 20 
+
+box Shape3 30 30 30 30 30 30 
+
+
+
+XNewDoc D_First
+
+
+
+XAddShape D_First Shape1
+
+XAddShape D_First Shape2
+
+XAddShape D_First Shape3
+
+
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "ALL CHECKSHAPE"
+

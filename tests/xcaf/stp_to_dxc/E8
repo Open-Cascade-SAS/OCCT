@@ -1,0 +1,5 @@
+ReadStep D_First [locate_data_file trj2_as1-ac-214.stp]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL"
+

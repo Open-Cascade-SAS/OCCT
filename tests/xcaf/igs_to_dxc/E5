@@ -1,0 +1,5 @@
+ReadIges D_First [locate_data_file lh3d_px1-cyl.igs]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL CHECKSHAPE"
+

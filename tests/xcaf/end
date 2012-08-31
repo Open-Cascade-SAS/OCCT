@@ -1,0 +1,937 @@
+puts "Test includes comparing for $CompareDocumentsMode"
+############## INIZIALIZING OF VARIABLES #################################
+# ========== variables for comparison ======================
+# Checkshape
+set Checkshape_Second **
+# Nbshapes
+set nbDocVertex_Second **
+set nbDocEdge_Second **
+set nbDocWire_Second **
+set nbDocFace_Second **
+set nbDocShell_Second **
+set nbDocSolid_Second **
+set nbDocCompsolid_Second **
+set nbDocCompound_Second **
+set nbDocShape_Second **
+# Faces
+set faces_list_Second **
+# Volumes
+set DocLabels_Second **
+set DocVolume_Second **
+set r_Second **
+set nbClosedShells_Second **
+set DocVolume_Second **
+# Colors
+set DocAllColors_Second **
+set DocShapeLabels_Second **
+# Layers
+set DocLayers_Second **
+set DocLayerLabels_Second **
+set DocShapeLabels_Second **
+###################################
+# Checkshape
+set Checkshape_First 0
+# Nbshapes
+set nbDocVertex_First 0
+set nbDocEdge_First 0
+set nbDocWire_First 0
+set nbDocFace_First 0
+set nbDocShell_First 0
+set nbDocSolid_First 0
+set nbDocCompsolid_First 0
+set nbDocCompound_First 0
+set nbDocShape_First 0
+# Faces
+set faces_list_First 0
+# Volumes
+set DocLabels_First 0
+set DocVolume_First 0
+set r_First 0
+set nbClosedShells_First 0
+set DocVolume_First 0
+# Colors
+set DocAllColors_First 0
+set DocShapeLabels_First 0
+# Layers
+set DocLayers_First 0
+set DocLayerLabels_First 0
+set DocShapeLabels_First 0
+
+# If it needs, adding to document D_First "Assembly colors and layers" OR "colors and layers"
+if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
+    if { [info exists D_First] == 0} {
+	puts "Creating new doc"
+	XNewDoc D_First
+    }
+    ### colors' RGB
+    set color1  "1 0 0" ;# RED
+    set color2  "0 1 0" ;# GREEN
+    set color3  "0 0 1" ;# BLUE1
+    set color4  "1 1 0" ;# YELLOW
+    set color1c "0 1 1" ;# CYAN1
+    set color2c "1 0 1" ;# MAGENTA1
+    set color3c "1 1 1" ;# WHITE
+    set color4c "0 0 0" ;# BLACK
+    
+    ### colors' name
+    set color1name  RED
+    set color2name  GREEN
+    set color3name  BLUE1
+    set color4name  YELLOW
+    set color1cname CYAN1
+    set color2cname MAGENTA1
+    set color3cname WHITE
+    set color4cname BLACK
+    
+    ### Add compound in document as ASSEMBLY (default behaviour of XAddShape function)
+    box b1 10 10 10 
+    box b2 10 10 10 20 20 20 
+    compound b1 b2 c
+    XAddShape D_First c 
+    
+    ### Add free shape in document 
+    box b3 30 30 30 30 30 30
+    XAddShape D_First b3
+    ######################### COLORS VERIFYING ##############################
+    ### Add some colors in document
+    eval XAddColor D_First $color1
+    eval XAddColor D_First $color2
+    
+    ### Verify whether the collors are in document
+    if {[eval XFindColor D_First $color1] == "" || [eval XFindColor D_First $color1] == ""} {
+	puts "Error : Color was not added in document or was not found in it after adding"
+	set ErrorCode 2
+    }
+    
+    ### Verify number of colors in document
+    if { [llength [XGetAllColors D_First]] != "2" } {
+	puts "Error : XGetAllColors function returns invalid value"
+	set ErrorCode 2
+    }
+    
+    ### Assign color to shapes (two existing colors and six new colors)
+    # surfaces' colors
+    eval XSetColor D_First b1 $color1 s 
+    eval XSetColor D_First b2 $color2 s
+    eval XSetColor D_First b3 $color3 s
+    eval XSetColor D_First c  $color4 s
+    # curves' colors
+    eval XSetColor D_First b1 $color1c c 
+    eval XSetColor D_First b2 $color2c c
+    eval XSetColor D_First b3 $color3c c
+    eval XSetColor D_First c  $color4c c
+    ### Verify number of colors in document
+    if { [llength [XGetAllColors D_First]] != "8" } {
+	puts "Error : XGetAllColors function returns invalid value after assigning colors to shapes in document"
+	set ErrorCode 2
+    }
+    ### Verify colors of all shapes
+    if {[XGetShapeColor D_First [XFindShape D_First b1] s] != $color1name} {
+	puts "Error : Shape b1 has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First b2] s] != $color2name} {
+	puts "Error : Shape b2 has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First b3] s] != $color3name} {
+	puts "Error : Shape b3 has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First c ] s] != $color4name} {
+	puts "Error : Shape c has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First b1] c] != $color1cname} {
+	puts "Error : Shape b1 has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First b2] c] != $color2cname} {
+	puts "Error : Shape b2 has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First b3] c] != $color3cname} {
+	puts "Error : Shape b3 has invalid color of surface "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First c ] c] != $color4cname} {
+	puts "Error : Shape c has invalid color of surface "
+	set ErrorCode 2
+    }
+    ### Remove some colors from document
+    # Remove colors of b1 surfaces 
+    XRemoveColor D_First [eval XFindColor D_First $color1]
+    # Remove colors of b2 curves 
+    XRemoveColor D_First [eval XFindColor D_First $color2c]
+    ### Verify number of colors in document
+    if { [llength [XGetAllColors D_First]] != "6" } {
+	puts "Error : XGetAllColors function returns invalid value after removing two colors from document"
+	set ErrorCode 2
+    }
+    ### Verify whether b1 and b2 have the removed colors 
+    if {[XGetShapeColor D_First [XFindShape D_First b1] s] != ""} {
+	puts "Error : Color of b1 surface was removed from document however XGetShapeColor function returns value "
+	set ErrorCode 2
+    }
+    if {[XGetShapeColor D_First [XFindShape D_First b2] c] != ""} {
+	puts "Error : Color of b2 curves was removed from document however XGetShapeColor function returns value "
+	set ErrorCode 2
+    }
+    ######################### LAYERS VERIFYING ##############################
+    ### Add three layers in document 
+    XAddLayer D_First L1
+    XAddLayer D_First L2
+    XAddLayer D_First L3
+    ### Verify amount layers in document
+    if { [llength [XGetAllLayers D_First]] != "3" } {
+	puts "Error : Error occurs during adding layers in document "
+	set ErrorCode 2
+    }
+    if { [llength [XGetLayerLabels D_First]] != "3" } {
+	puts "Error : XGetLayerLabels function works incorrectly  "
+	set ErrorCode 2
+    }
+    ### Verify whether the layers was added in document correctly
+    if { [XFindLayer D_First L1] == "" || [XFindLayer D_First L2] == "" || [XFindLayer D_First L3] == "" } {
+	puts "Error : Layers was not added in document correctly "
+	set ErrorCode 2
+    }
+    ### Verify XGetOneLayer function
+    if { [XGetOneLayer D_First [XFindLayer D_First L1]] != "\"L1\"" } {
+	puts "Error : XGetOneLayer function works incorrectly for L1 layer"
+	set ErrorCode 2
+    }
+    if { [XGetOneLayer D_First [XFindLayer D_First L2]] != "\"L2\"" } {
+	puts "Error : XGetOneLayer function works incorrectly for L2 layer"
+	set ErrorCode 2
+    }
+    if { [XGetOneLayer D_First [XFindLayer D_First L3]] != "\"L3\"" } {
+	puts "Error : XGetOneLayer function works incorrectly for L3 layer"
+	set ErrorCode 2
+    }
+    ### Verify removing layer from document 
+    XAddLayer D_First LtoRemove
+    if { [llength [XGetAllLayers D_First]] != "4" } {
+	puts "Error : Error occurs during adding layer in document "
+	set ErrorCode 2
+    }
+    XRemoveLayer D_First LtoRemove
+    if { [llength [XGetAllLayers D_First]] != "3" } {
+	puts "Error : Error occurs during removing layer from document "
+	set ErrorCode 2
+    }
+    ### Verify interconnection layers and shapes
+    XSetLayer D_First b1 L1
+    XSetLayer D_First b2 L2
+    XSetLayer D_First b3 L3
+    XSetLayer D_First c  L3
+    if {[XGetLayers D_First b1] != "\"L1\" "} {
+	puts "Error : Shape b1 is not on layer L1" 
+	set ErrorCode 2
+    }
+    if {[XGetLayers D_First b2] != "\"L2\" "} {
+	puts "Error : Shape b2 is not on layer L2" 
+	set ErrorCode 2
+    }
+    if {[XGetLayers D_First b3] != "\"L3\" "} {
+	puts "Error : Shape b3 is not on layer L3"
+	set ErrorCode 2
+    }
+    if {[XGetLayers D_First c ] != "\"L3\" "} {
+	puts "Error : Compound c is not on layer L3" 
+	set ErrorCode 2
+    }
+    XRemoveColor D_First [eval XFindColor D_First $color4]
+    XRemoveColor D_First [eval XFindColor D_First $color4c]
+    XUnSetLayer D_First c L3
+
+
+#================== COLORS_LAYER ===============
+} elseif { [regexp "COLORS_LAYERS" $AddToDocument] } {
+    if {[info exists D_First] == 0} {
+	XNewDoc D_First
+    }
+    ### colors' RGB
+    set color1  "1 0 0" ;# RED
+    set color2  "0 1 0" ;# GREEN
+    set color3  "0 0 1" ;# BLUE1
+    set color4  "1 1 0" ;# YELLOW
+    set color1c "0 1 1" ;# CYAN1
+    set color2c "1 0 1" ;# MAGENTA1
+    set color3c "1 1 1" ;# WHITE
+    set color4c "0 0 0" ;# BLACK
+    
+    ### colors' name
+    set color1name  RED
+    set color2name  GREEN
+    set color3name  BLUE1
+    set color4name  YELLOW
+    set color1cname CYAN1
+    set color2cname MAGENTA1
+    set color3cname WHITE
+    set color4cname BLACK
+    ######################### COLORS VERIFYING ##############################
+    ### Add some colors in document
+    eval XAddColor D_First $color1
+    eval XAddColor D_First $color2
+    ### Verify whether the collors are in document
+    if {[eval XFindColor D_First $color1] == "" || [eval XFindColor D_First $color1] == ""} {
+	puts "Error : Color was not added in document or was not found in it after adding"
+	set ErrorCode 2
+    }   
+    
+    ### Verify number of colors in document
+    if { [llength [XGetAllColors D_First]] != "2" } {
+	puts "Error : XGetAllColors function returns invalid value"
+	set ErrorCode 2
+    }
+    set list [XGetTopLevelShapes D_First]
+    foreach {i} $list {
+	eval XSetColor D_First $i $color1 s
+	eval XSetColor D_First $i $color1c c
+    }
+    foreach {i} $list {
+	if {[XGetShapeColor D_First $i s] != $color1name} {
+	    puts [format "Error : Shape  located on label %s has invalid color of surface " $i]
+	    set ErrorCode 2
+	}
+	if {[XGetShapeColor D_First $i c] != $color1cname} {
+	    puts [format "Error : Shape  located on label %s has invalid color of curves " $i]
+	    set ErrorCode 2
+	}
+    }
+    ### Remove some colors from document
+    XRemoveColor D_First [eval XFindColor D_First $color1c]
+    ### Verify number of colors in document
+    if { [llength [XGetAllColors D_First]] != "2" } {
+	puts "Error : XGetAllColors function returns invalid value after removing colors from document"
+	set ErrorCode 2
+    }
+    
+    ### Verify shapes have the removed colors of curves
+    foreach {i} $list {
+	if {[XGetShapeColor D_First $i c] != ""} {
+	    puts "Error : Color of curves was removed from document however XGetShapeColor function returns value "
+	    set ErrorCode 2
+	}
+    }
+    ######################### LAYERS VERIFYING ##############################
+    ### Add three layers in document 
+    XAddLayer D_First L1
+    XAddLayer D_First L2
+    XAddLayer D_First L3
+    ### Verify amount layers in document
+    if { [llength [XGetAllLayers D_First]] != "3" } {
+	puts "Error : Error occurs during adding layers in document  "
+	set ErrorCode 2
+    }
+    if { [llength [XGetLayerLabels D_First]] != "3" } {
+	puts "Error : XGetLayerLabels function works incorrectly  "
+	set ErrorCode 2
+    }
+    
+    ### Verify whether the layers was added in document correctly
+    if { [XFindLayer D_First L1] == "" || [XFindLayer D_First L2] == "" || [XFindLayer D_First L3] == "" } {
+	puts "Error : Layers was not added in document correctly "
+	set ErrorCode 2
+    }
+    
+    ### Verify XGetOneLayer function
+    if { [XGetOneLayer D_First [XFindLayer D_First L1]] != "\"L1\"" } {
+	puts "Error : XGetOneLayer function works incorrectly for L1 layer"
+	set ErrorCode 2
+    }
+    if { [XGetOneLayer D_First [XFindLayer D_First L2]] != "\"L2\"" } {
+	puts "Error : XGetOneLayer function works incorrectly for L2 layer"
+	set ErrorCode 2
+    }
+    if { [XGetOneLayer D_First [XFindLayer D_First L3]] != "\"L3\"" } {
+	puts "Error : XGetOneLayer function works incorrectly for L3 layer"
+	set ErrorCode 2
+    }
+    
+    ### Verify removing layer from document 
+    XAddLayer D_First LtoRemove
+    if { [llength [XGetAllLayers D_First]] != "4" } {
+	puts "Error : Error occurs during adding layer in document "
+	set ErrorCode 2
+    }
+    XRemoveLayer D_First LtoRemove
+    if { [llength [XGetAllLayers D_First]] != "3" } {
+	puts "Error : Error occurs during removing layer from document "
+	set ErrorCode 2
+    }
+    ### Verify interconnection layers and shapes
+    set aLen [llength $list]
+    for {set i 0} { $i < $aLen} {incr i} {
+	if { [expr $i / 2 == int ($i/2)] } { 
+	    eval XSetLayer D_First [lindex $list $i] L1 
+	} else { 
+	    eval XSetLayer D_First [lindex $list $i] L2
+	}
+    }
+    for {set i 0} { $i < $aLen} {incr i} {
+	if { [expr $i / 2 == int ($i/2)] } { 
+	    set LLL "\"L1\" "
+	} else {
+	    [set LLL "\"L2\" "]
+	}
+	if {[XGetLayers D_First [lindex $list $i]] != $LLL} {
+	    puts [format "Error : Shape located on label %s  is not on layer %s" [lindex $list $i] $LLL]
+	    set ErrorCode 2
+	}
+    }
+    XRemoveLayer D_First L2
+    XRemoveLayer D_First L3
+    XRemoveColor D_First [eval XFindColor D_First $color2]
+    set list [XGetTopLevelShapes D_First]
+    foreach {i} $list {
+	set str [XLabelInfo D_First $i]
+	if {[regexp "Assembly" $str] || [regexp "This Shape don't used" $str]} {
+	    XUnSetLayer D_First $i L1
+	    XUnsetColor D_First $i c
+	    XUnsetColor D_First $i s
+	}
+    }
+    #erase all unused colors and layers
+    set list [XGetTopLevelShapes D_First]
+    set ColorIsUsed 0
+    set LayerIsUsed 0
+    foreach {i} $list {
+	set l [XGetShapeColor D_First $i c]
+	if {[expr [llength $l] != 0]} {
+	    set ColorIsUsed 1
+	}
+	set l [XGetShapeColor D_First $i s]
+	if {[expr [llength $l] != 0]} {
+	    set ColorIsUsed 1
+	}
+	set l [XGetLayers D_First $i]
+	if {[expr [llength $l] != 0]} {
+	    set LayerIsUsed 1
+	}
+    }
+    if {$ColorIsUsed == 0} {
+	set label [XFindColor D_First 1 0 0 ]
+	XRemoveColor D_First $label
+    }
+    if {$LayerIsUsed == 0} {
+	XRemoveLayer D_First L1
+    }
+} 
+
+# Get information for the first document
+# Get shape for standard analysis
+XGetOneShape res_First D_First
+# Checkshape
+if {[regexp "CHECKSHAPE" $CompareDocumentsMode]} {
+    set Checkshape_First [checkshape res_First]
+}
+# Nbshapes
+if {[regexp "SHAPES" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    set Stat_First [nbshapes res_First]
+    regexp {VERTEX +: +([-0-9.+eE]+)} $Stat_First full nbDocVertex_First
+    regexp {EDGE +: +([-0-9.+eE]+)} $Stat_First full nbDocEdge_First
+    regexp {WIRE +: +([-0-9.+eE]+)} $Stat_First full nbDocWire_First
+    regexp {FACE +: +([-0-9.+eE]+)} $Stat_First full nbDocFace_First
+    regexp {SHELL +: +([-0-9.+eE]+)} $Stat_First full nbDocShell_First
+    regexp {SOLID +: +([-0-9.+eE]+)} $Stat_First full nbDocSolid_First
+    regexp {COMPSOLID +: +([-0-9.+eE]+)} $Stat_First full nbDocCompsolid_First
+    regexp {COMPOUND +: +([-0-9.+eE]+)} $Stat_First full nbDocCompound_First
+    regexp {SHAPE +: +([-0-9.+eE]+)} $Stat_First full nbDocShape_First
+}
+# Faces
+if {[regexp "FACES" $CompareDocumentsMode]} {
+    set type_of [dtyp res_First]
+    if {[regexp "FACE" $type_of] } {
+	set faces_list_First "FACE"
+    } else {
+	set faces_list_First [explode res_First F]
+    }
+}
+# Volumes
+if {[regexp "VOLUME_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    set DocLabels_First [XGetFreeShapes D_First]
+    set DocVolume_First "0"
+    foreach {i} $DocLabels_First {
+	XSetProps D_First $i 1
+	set DocVolume_First [expr $DocVolume_First + abs([XGetVolume D_First $i])]
+    }
+} elseif {[regexp "VOLUME" $CompareDocumentsMode]} {
+    set IsComp 0
+    XGetOneShape Shape_First D_First
+    set type [dtyp Shape_First]
+    puts $type
+    if {[regexp "SOLID" $type]} {
+	set IsComp 1
+    } elseif {[regexp "SHELL" $type] && [regexp "Orientable" $type] && [regexp "Closed" $type]} {
+	set IsComp 1
+    } elseif {[regexp "COMPOUND" $type]} {
+	set list [explode Shape_First So]
+	if {[llength $list] != 0} {
+	    set IsComp 1
+	} 
+	set list [explode Shape_First Sh]
+	if {[llength $list] != 0} {
+	    foreach {i} $list {
+		set type [dtyp $i]
+		if {[regexp "Orientable" $type] && [regexp "Closed" $type]} {
+		    set IsComp 1
+		}
+	    }
+	}
+    }
+    if {[expr $IsComp == 1]} {
+	XGetOneShape Shape_First D_First
+	catch { sewing r  0.00001 Shape_First}
+	set nbClosedShells_First 0
+	# Calculate amount of closed shells in initial shape
+	if {[regexp SHELL [whatis r]]} {
+	    catch { fbclose r 0.001 0.00001 }
+	    catch { if {[llength [explode r_o V]] == 0 && [llength [explode r_c V]] == 0}  {
+		puts "nbClosedShells_First = 1"
+		set nbClosedShells_First 1 } 
+	    }
+	} else {
+	    set shells [explode r Sh]
+	    foreach {i} $shells { 
+		catch { fbclose $i 0.001 0.00001}
+		catch { 
+		    if { [llength [explode $i_o V]] == 0  && [llength [explode $i_c V]] == 0}  { 
+			set nbClosedShells_First [expr $nbClosedShells_First + 1] 
+		    } 
+		}
+	    }
+	}
+	XNewDoc T_First
+	XAddShape T_First r
+	XSetProps T_First 0:1:1:1 1
+	set DocVolume_First [expr abs([XGetVolume T_First 0:1:1:1])]
+    } else {
+	puts "Volume of shape is equal 0"
+	set DocVolume_First 0
+	set nbClosedShells_First 0      
+    }
+}
+# Colors
+if {[regexp "COLORS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    set DocAllColors_First   [lsort [XGetAllColors D_First]]
+    set DocShapeLabels_First  [XGetTopLevelShapes D_First]
+}
+# Layers
+if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode] || [regexp "LAYERS_EXACTLY" $CompareDocumentsMode] } {
+    set DocLayers_First [XGetAllLayers D_First]	
+    set DocLayerLabels_First [XGetLayerLabels D_First]
+    set DocShapeLabels_First [XGetTopLevelShapes D_First]
+}
+################## WRITING FILE ##################"
+###Open temporary file
+if { [string compare ${TypeOfFile} ""] == 0  } {
+    set saving [SaveAs D_First $WorkDirectory/D_First.dxc]
+    set closing [Close D_First]
+    set opening [Open $WorkDirectory/D_First.dxc D_Second]
+} elseif {[string compare ${TypeOfFile} "igs"] == 0 } {
+    set writing [WriteIges D_First $WorkDirectory/D_First.igs]
+    set reading [ReadIges D_Second $WorkDirectory/D_First.igs]
+} elseif {[string compare ${TypeOfFile} "stp"] == 0 } {
+    set writing [WriteStep D_First $WorkDirectory/D_First.stp]
+    set reading [ReadStep D_Second $WorkDirectory/D_First.stp]
+} elseif {[string compare ${TypeOfFile} "brep"] == 0 } {
+    XGetOneShape Shape1 D_First
+    set saving [save Shape1 $WorkDirectory/D_First.brep]
+    restore $WorkDirectory/D_First.brep NewShape1 
+    XNewDoc D_Second
+    XAddShape D_Second NewShape1 
+} else {
+    puts "Error : Wrong value of TypeOfFile"
+    set ErrorCode 2
+}
+
+if { [string compare ${TypeOfFile} ""] == 0  } {
+    catch {[file delete $WorkDirectory/D_First.dxc]}
+} elseif {[string compare ${TypeOfFile} "igs"] == 0 } {
+    catch {[file delete $WorkDirectory/D_First.igs]}    
+} elseif {[string compare ${TypeOfFile} "stp"] == 0} {
+    catch {[file delete $WorkDirectory/D_First.stp]}
+} elseif {[string compare ${TypeOfFile} "brep"] == 0} {
+    catch {[file delete $WorkDirectory/D_First.brep]}
+}
+# Get information
+# Get shape for standard analysis
+XGetOneShape res_Second D_Second
+# Checkshape
+if {[regexp "CHECKSHAPE" $CompareDocumentsMode]} {
+    set Checkshape_Second [checkshape res_Second]
+}
+# Nbshapes
+if {[regexp "SHAPES" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    set Stat_Second [nbshapes res_Second]
+    regexp {VERTEX +: +([-0-9.+eE]+)} $Stat_Second full nbDocVertex_Second
+    regexp {EDGE +: +([-0-9.+eE]+)} $Stat_Second full nbDocEdge_Second
+    regexp {WIRE +: +([-0-9.+eE]+)} $Stat_Second full nbDocWire_Second
+    regexp {FACE +: +([-0-9.+eE]+)} $Stat_Second full nbDocFace_Second
+    regexp {SHELL +: +([-0-9.+eE]+)} $Stat_Second full nbDocShell_Second
+    regexp {SOLID +: +([-0-9.+eE]+)} $Stat_Second full nbDocSolid_Second
+    regexp {COMPSOLID +: +([-0-9.+eE]+)} $Stat_Second full nbDocCompsolid_Second
+    regexp {COMPOUND +: +([-0-9.+eE]+)} $Stat_Second full nbDocCompound_Second
+    regexp {SHAPE +: +([-0-9.+eE]+)} $Stat_Second full nbDocShape_Second
+}
+# Faces
+if {[regexp "FACES" $CompareDocumentsMode]} {
+    set type_of [dtyp res_Second]
+    if {[regexp "FACE" $type_of] } {
+	set faces_list_Second "FACE"
+    } else {
+	set faces_list_Second [explode res_Second F]
+    }
+}
+# Volumes
+if {[regexp "VOLUME_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    set DocLabels_Second [XGetFreeShapes D_Second]
+    set DocVolume_Second "0"
+    foreach {i} $DocLabels_Second {
+	XSetProps D_Second $i 1
+	set DocVolume_Second [expr $DocVolume_Second + abs([XGetVolume D_Second $i])]
+    }
+} elseif {[regexp "VOLUME" $CompareDocumentsMode]} {
+    if {[expr $IsComp == 1]} {
+	# Perform sewing of resulting shape. If amount of closed shells of resulting shape is not equal to amount of 
+	# closed shells of initial shape increace tolerance and perform sewing again
+	set nbClosedShells_Second 0
+	set toler 0.00001
+	set IsSewingPerformedCorrectly 0
+	XGetOneShape Shape_Second D_Second
+	for {set k 0} {$k < 5} {incr k} {
+	    # 1. Perform sewing
+	    puts [format "PERFORM SEWING. TOLERANCE = %f" $toler]
+	    catch { sewing res $toler Shape_Second }
+	    # 2. Calculate amount of closed shells
+	    set nbClosedShells_Second 0
+	    if {[regexp SHELL [whatis res]]} {
+		catch { fbclose res 0.001 $toler }
+		catch { 
+		    if {[llength [explode res_o V]] == 0 && [llength [explode res_c V]] == 0 }  { 
+			set nbClosedShells_Second 1 
+		    } 
+		}
+	    } else {
+		set shells [explode res Sh]
+		foreach i $shells { 
+		    catch { fbclose $i 0.001 0.000001 }
+		    catch { 
+			if {[llength [explode $i_o V]] == 0 && [llength [explode $i_c V]] == 0}  { 
+			    set nbClosedShells_Second [expr $nbClosedShells_Second +1] 
+			}  
+		    }
+		}	
+	    }
+	    # 3. Verify amount of closed shells
+		if { $nbClosedShells_Second >= $nbClosedShells_First} { 
+		    set IsSewingPerformedCorrectly 1 
+		    break
+		}
+	    # 4. Set new tolerance
+	    set toler [expr $toler * 10]
+	}
+	XNewDoc T_Second
+	XAddShape T_Second res;
+	XSetProps T_Second 0:1:1:1 1;
+	set DocVolume_Second [expr abs([XGetVolume T_Second 0:1:1:1])]
+	if { $IsSewingPerformedCorrectly == 0 } {
+	    puts "Error : SEWING IS NOT PERFORMED PROPERLY"
+	}
+    } else {
+	puts "Volume of shape is equal 0"
+	set DocVolume_Second 0
+	set nbClosedShells_Second 0
+    }
+}
+# Colors
+if {[regexp "COLORS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    set DocAllColors_Second   [lsort [XGetAllColors D_Second]]
+    set DocShapeLabels_Second  [XGetTopLevelShapes D_Second]
+}
+# Layers
+if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode] || [regexp "LAYERS_EXACTLY" $CompareDocumentsMode] } {
+    set DocLayers_Second [XGetAllLayers D_Second]	
+    set DocLayerLabels_Second [XGetLayerLabels D_Second]
+    set DocShapeLabels_Second [XGetTopLevelShapes D_Second]
+}
+puts "====================RESULTS OF COMPARISON===================="
+if {[regexp "CHECKSHAPE" $CompareDocumentsMode]} {
+    puts "====================CHECKSHAPE==============="
+    puts "First : $Checkshape_First"
+    puts "Second : $Checkshape_Second"
+    if {[string compare $Checkshape_First $Checkshape_Second] != 0} {
+	puts "Error : checkshape is wrong"
+	set ErrorCode 2
+    }
+}
+if {[regexp "SHAPES" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    puts "====================SHAPES==============="
+    puts "Vertex First: $nbDocVertex_First"
+    puts "Vertex Second: $nbDocVertex_Second"
+    if {[string compare $nbDocVertex_First $nbDocVertex_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Edge First: $nbDocEdge_First"
+    puts "Edge Second: $nbDocEdge_Second"
+    if {[string compare $nbDocEdge_First $nbDocEdge_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Wire First: $nbDocWire_First"
+    puts "Wire Second: $nbDocWire_Second"
+    if {[string compare $nbDocWire_First $nbDocWire_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Face First: $nbDocFace_First"
+    puts "Face Second: $nbDocFace_Second"
+    if {[string compare $nbDocFace_First $nbDocFace_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Shell First: $nbDocShell_First"
+    puts "Shell Second: $nbDocShell_Second"
+    if {[string compare $nbDocShell_First $nbDocShell_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Solid First: $nbDocSolid_First"
+    puts "Solid Second: $nbDocSolid_Second"
+    if {[string compare $nbDocSolid_First $nbDocSolid_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Compsolid First: $nbDocCompsolid_First"
+    puts "Compsolid Second: $nbDocCompsolid_Second"
+    if {[string compare $nbDocCompsolid_First $nbDocCompsolid_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Compound First: $nbDocCompound_First"
+    puts "Compound Second: $nbDocCompound_Second"
+    if {[string compare $nbDocCompound_First $nbDocCompound_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+    puts "Shape First: $nbDocShape_First"
+    puts "Shape Second: $nbDocShape_Second"
+    if {[string compare $nbDocShape_First $nbDocShape_Second] != 0} {
+	puts "Error : nbshapes is wrong"
+	set ErrorCode 2
+    }
+}
+if {[regexp "FACES" $CompareDocumentsMode]} {
+    puts "================FACES==================="
+    puts "Faces First: [llength $faces_list_First]"
+    puts "Faces Second: [llength $faces_list_Second]"
+    if {[llength $faces_list_First] != [llength $faces_list_Second]} {
+	puts "Error : number of faces is wrong"
+	set ErrorCode 2
+    }
+}
+if {[regexp "VOLUME_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    puts "===============VOLUME_EXACTLY===================="
+    puts "DocLabels First: $DocLabels_First"
+    puts "DocLabels Second: $DocLabels_Second"
+    if {[string compare $DocLabels_First $DocLabels_Second] != 0} {
+	puts "Error : DocLabels is wrong"
+	set ErrorCode 2
+    }
+    puts "DocVolume First: $DocVolume_First"
+    puts "DocVolume Second: $DocVolume_Second"
+    if {[string compare $DocVolume_First $DocVolume_Second] != 0} {
+	set MaxVolume [expr  $DocVolume_First> $DocVolume_Second ? $DocVolume_First : $DocVolume_Second]
+	if {[expr $MaxVolume > 0]} {
+	    set diff [ expr abs($DocVolume_First-$DocVolume_Second)/ $MaxVolume * 100 ] 
+	} else {
+	    set diff 0
+	}
+	if {[expr $diff > 5]} {
+	    puts [format "Error : Volumes' difference is %f%s" $diff "%"]
+	    set ErrorCode 2
+	} else {
+	    puts [format "Volumes' difference is %f%s - OK" $diff "%"] 
+	}
+    }
+} elseif {[regexp "VOLUME" $CompareDocumentsMode]} {
+    puts "===============VOLUME===================="
+    puts "DocVolume First: $DocVolume_First"
+    puts "DocVolume Second: $DocVolume_Second"
+    if {[string compare $DocVolume_First $DocVolume_Second] != 0} {
+	set MaxVolume [expr  $DocVolume_First> $DocVolume_Second ? $DocVolume_First : $DocVolume_Second]
+	if {[expr $MaxVolume > 0]} {
+	    set diff [ expr abs($DocVolume_First-$DocVolume_Second)/ $MaxVolume * 100 ] 
+	} else {
+	    set diff 0
+	}
+	if {[expr $diff > 5]} {
+	    puts [format "Error : Volumes' difference is %f%s" $diff "%"]
+	    set ErrorCode 2
+	} else {
+	    puts [format "Volumes' difference is %f%s - OK" $diff "%"] 
+	}
+    }
+    puts "nbClosedShells First: $nbClosedShells_First"
+    puts "nbClosedShells Second: $nbClosedShells_Second"
+    if {[string compare $nbClosedShells_First $nbClosedShells_Second] != 0} {
+	puts "Error : nbClosedShells is wrong"
+	set ErrorCode 2
+    }
+}
+if {[regexp "COLORS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+    puts "==============COLORS====================="
+    puts "DocAllColors First: $DocAllColors_First"
+    puts "DocAllColors Second: $DocAllColors_Second"
+    if {[llength $DocAllColors_Second] == 0 && [llength $DocAllColors_First] != 0} {
+	puts "Warning : There are no colors in D_Second although in D_First they are present"
+	if {[expr $ErrorCode == 0]} { 
+	    set ErrorCode 1 	
+	}
+    }
+    if {[regexp "COLORS_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
+	if {[string compare $DocAllColors_First $DocAllColors_Second] != 0} {
+	    puts "Error : Compared documents have different set of colors"
+	    set ErrorCode 2
+	}
+    }
+    puts "DocShapeLabels First: $DocShapeLabels_First"
+    puts "DocShapeLabels Second: $DocShapeLabels_Second"
+    if {[string compare $DocShapeLabels_First $DocShapeLabels_Second] != 0} {
+    	if {[regexp "ALL" $CompareDocumentsMode]} {
+	    set ErrorCode 2
+	    puts "Error : Compared documents have different number of toplevel shape."
+	} else { 
+	    puts "Warning : Compared documents have different number of toplevel shapes "
+    	    if {[expr $ErrorCode == 0]} { 
+    		set ErrorCode 1
+    	    }
+        }
+    }
+}
+if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode] || [regexp "LAYERS_EXACTLY" $CompareDocumentsMode] } {
+    puts "================LAYERS==================="
+    
+    puts "DocLayers First: $DocLayers_First"
+    puts "DocLayers Second: $DocLayers_Second"
+    if {[string compare $DocLayers_First $DocLayers_Second] != 0} {
+	if {[regexp "LAYERS_EXACTLY" $CompareDocumentsMode]} {
+	    set ErrorCode 2
+	    puts "Error : Compared documents have different set of LAYERS names"
+	} else { 
+	    puts "Warning : Compared documents have different set of LAYERS names"
+	    if {[expr $ErrorCode == 0]} { 
+		set ErrorCode 1 
+	    }
+	}
+    }
+    puts "DocLayerLabels First: $DocLayerLabels_First"
+    puts "DocLayerLabels Second: $DocLayerLabels_Second"
+    if {[string compare $DocLayerLabels_First $DocLayerLabels_Second] != 0} {
+	if {[regexp "LAYERS_EXACTLY" $CompareDocumentsMode]} {
+	    puts [format "Error : Compared documents have different set of LAYERS labels"]
+	    set ErrorCode 2
+	} else {
+	    puts [format "Warning : Compared documents have different set of LAYERS labels"]
+	    if {[expr $ErrorCode == 0]} { 
+		set ErrorCode 1 
+	    }
+	}
+    }
+    puts "DocShapeLabels First: $DocShapeLabels_First"
+    puts "DocShapeLabels Second: $DocShapeLabels_Second"
+    if {[string compare $DocShapeLabels_First $DocShapeLabels_Second] != 0} {
+	if {[regexp "ALL" $CompareDocumentsMode]} {
+	    puts "Error : DocShapeLabels is wrong"
+	    set ErrorCode 2
+	} else {
+	    puts "Warning : DocShapeLabels is wrong"
+	    set ErrorCode 1
+	}
+    }
+    if {[regexp "LAYERS_EXACTLY" $CompareDocumentsMode]} {
+	set DDD $DocLayers_First
+	if {$DocLayers_First > $DocLayers_Second} {
+	    set DDD $DocLayers_Second
+	}
+	foreach {i} $DDD {
+	    set DocLabel_First [XFindLayer D_First $i]
+	    set DocLabel_Second [XFindLayer D_Second $i]
+
+	    if {[string compare $DocLabel_First $DocLabel_Second] != 0} {
+		puts [format "   DocLabel_First(%s) = %s " $i $DocLabel_First]
+		puts [format "  DocLabel_Second(%s) = %s " $i $DocLabel_Second]
+		puts [format "Error : Compared documents have different labels for one layer (%s)" $i]
+		set ErrorCode 2
+	    }
+	}
+	
+	set DocShapeLabels_First [XGetTopLevelShapes D_First]
+	set DocShapeLabels_Second [XGetTopLevelShapes D_Second]
+	
+	set DDD $DocShapeLabels_First
+	if {$DocShapeLabels_First > $DocShapeLabels_Second} {
+	    set DDD $DocShapeLabels_Second
+	}
+	foreach {i} $DDD {
+	    set DocLayer_First [XGetLayers D_First $i]
+	    set DocLayer_Second [XGetLayers D_Second $i]
+
+	    if {[string compare $DocLayer_First $DocLayer_Second] != 0} {
+		set NewLabel "$i:1"
+		set DocLayer_Second [XGetLayers D_Second $NewLabel]
+	    }
+	    
+	    if {[string compare $DocLayer_Second $DocLayer_First] != 0} {
+		puts [format " DocLayer_First(%s) = %s " $i $DocLayer_First]
+		puts [format "DocLayer_Second(%s) = %s " $i $DocLayer_Second]
+		puts [format "DocLayer_Second(%s) = %s " $NewLabel $DocLayer_Second]
+		puts [format "Error : Compared documents have different LAYERS for shape located on %s label" $i]
+    		set ErrorCode 2
+	    }
+	}
+	
+	set DDD $DocLayerLabels_First
+	if {$DocLayerLabels_First > $DocLayerLabels_Second} {
+	    set DDD $DocLayerLabels_Second
+	}
+	foreach {i} $DDD {
+	    set LayerName_First [XGetOneLayer D_First $i]
+	    set LayerName_Second [XGetOneLayer D_Second $i]
+
+	    if {[string compare $LayerName_First $LayerName_Second]!=0} {
+		set NewLabel "$i:1"
+		set LayerName_Second [XGetOneLayer D_Second $NewLabel]
+	    }
+	    if {[string compare $LayerName_Second $LayerName_First]!=0} {
+		puts [format " LayerName_First(%s) = %s " $i $LayerName_First]
+		puts [format "LayerName_Second(%s) = %s " $i $LayerName_Second]
+		puts [format "LayerName_Second(%s) = %s " $NewLabel $LayerName_Second]
+		puts [format "Error : Compared documents have different LAYERS names on %s label" $i]
+		set ErrorCode 2
+	    }
+	}
+    }
+}    
+
+XGetOneShape result D_Second
+if {[isdraw result]} {
+    clear
+    smallview
+    donly result
+    fit
+    xwd $imagedir/photo.gif
+}
+
+if {[expr $ErrorCode == 2]} { 
+    puts "Error : errors occur during test"
+} elseif {[expr $ErrorCode == 1]} { 
+    puts "WARNING OCCURS DURING TEST"
+} elseif {[expr $ErrorCode != 0]} {
+    puts "Error : wrong value of ErrorCode."
+}
+
+puts "TEST COMPLETED"

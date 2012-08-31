@@ -1,0 +1,13 @@
+restore [locate_data_file CTO909_tool.brep] Shape1
+XNewDoc D_First
+
+XAddShape D_First Shape1
+
+set TypeOfFile "stp"
+
+set AddToDocument "COLORS_LAYERS"
+
+set CompareDocumentsMode "FACES VOLUME_EXACTLY COLORS_EXACTLY LAYERS_EXACTLY"
+
+
+

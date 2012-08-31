@@ -1,0 +1,5 @@
+ReadIges D_First [locate_data_file PRO20538-W13.igs]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL CHECKSHAPE"
+

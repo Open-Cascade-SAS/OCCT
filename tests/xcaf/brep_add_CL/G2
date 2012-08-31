@@ -1,0 +1,13 @@
+restore [locate_data_file CTO909_part5-with-fillet.brep] Shape1
+XNewDoc D_First
+
+XAddShape D_First Shape1
+
+set TypeOfFile "brep"
+
+set AddToDocument "COLORS_LAYERS"
+
+set CompareDocumentsMode "SHAPES VOLUME"
+
+
+

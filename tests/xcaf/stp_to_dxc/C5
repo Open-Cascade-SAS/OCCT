@@ -1,0 +1,5 @@
+ReadStep D_First [locate_data_file tr8_ha1_db.stp]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL"
+

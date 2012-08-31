@@ -1,0 +1,4 @@
+ReadIges D_First [locate_data_file BIGES.igs]
+set TypeOfFile ""
+set AddToDocument ""
+set CompareDocumentsMode "ALL CHECKSHAPE"
