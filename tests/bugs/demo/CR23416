@@ -1,0 +1,17 @@
+puts "============"
+puts "CR23416"
+puts "============"
+puts ""
+#######################################################################
+# Regression of current version in compare with occt-653: crash while visualizing the shape
+#######################################################################
+
+isos 2
+smallview
+if [catch { restore [locate_data_file CR23416-ProblemFace.brep] result } res] {
+    puts "Error : crashes during visualization"
+}
+fit
+set only_xwd 1
+
+

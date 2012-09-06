@@ -7,15 +7,19 @@ if { [isdraw result] } {
 	xwd $imagedir/${test_image}.gif
     }
     if { [info exists 3dviewer] } {
+	vinit
 	vclear
 	vdisplay result
 	vsetdispmode 1
 	vfit
 	vdump $imagedir/${test_image}.gif
     }
-} else {
-   puts "Error : The command can not be build."
-}
+    if { [info exist only_xwd] } {
+	xwd $imagedir/${test_image}.gif	
+    }
+#} else {
+#   puts "Error : The command can not be build."
+#}
 
 # to end a test script
 puts "TEST COMPLETED"

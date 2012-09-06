@@ -1,0 +1,66 @@
+# Original bug : 23384
+# Date : 16 Aug 2012
+
+if {[array get env os_type] != ""} {
+    set os $env(os_type)
+}
+XOpen [locate_data_file CR23384-doc_subshapes.dxc] doc
+set info1 [XStat doc]
+regexp {level N 0 +: +([-0-9.+eE]+)} $info1 full l0
+regexp {level N 1 +: +([-0-9.+eE]+)} $info1 full l1
+regexp {level N 2 +: +([-0-9.+eE]+)} $info1 full l2
+regexp {level N 3 +: +([-0-9.+eE]+)} $info1 full l3
+regexp {level N 4 +: +([-0-9.+eE]+)} $info1 full l4
+regexp {level N 5 +: +([-0-9.+eE]+)} $info1 full l5
+regexp {level N 6 +: +([-0-9.+eE]+)} $info1 full l6
+regexp {Total number of labels for shapes in the document += +([-0-9.+eE]+)} $info1 full nb
+regexp {Number of labels with name += +([-0-9.+eE]+)} $info1 full nbname
+
+param write.stepcaf.subshapes.name 1
+if { [string compare $os "windows"] == 0 } {
+    WriteStep doc C:/temp/doc_subshapes.stp
+} else {
+    WriteStep doc /tmp/doc_subshapes.stp
+}
+param read.stepcaf.subshapes.name 1
+if { [string compare $os "windows"] == 0 } {
+    ReadStep after_doc C:/temp/doc_subshapes.stp
+} else {
+    ReadStep after_doc /tmp/doc_subshapes.stp
+}
+
+set info2 [XStat after_doc]
+regexp {level N 0 +: +([-0-9.+eE]+)} $info2 full l0_1
+regexp {level N 1 +: +([-0-9.+eE]+)} $info2 full l1_1
+regexp {level N 2 +: +([-0-9.+eE]+)} $info2 full l2_1
+regexp {level N 3 +: +([-0-9.+eE]+)} $info2 full l3_1
+regexp {level N 4 +: +([-0-9.+eE]+)} $info2 full l4_1
+regexp {level N 5 +: +([-0-9.+eE]+)} $info2 full l5_1
+regexp {level N 6 +: +([-0-9.+eE]+)} $info2 full l6_1
+regexp {Total number of labels for shapes in the document += +([-0-9.+eE]+)} $info2 full nb_1
+regexp {Number of labels with name += +([-0-9.+eE]+)} $info2 full nbname_1
+
+if { ${l0} != ${l0_1} ||
+     ${l1} != ${l1_1} ||
+     ${l2} != ${l2_1} ||
+     ${l3} != ${l3_1} ||
+     ${l4} != ${l4_1} ||
+     ${l5} != ${l5_1} ||
+     ${l6} != ${l6_1} ||
+     ${nb} != ${nb_1} ||
+     ${nbname} != ${nbname_1} } {
+    puts "Error : Document is read/written wrong!"
+    puts "Error : It's $nb indtead of $check_nb!"
+}
+
+
+
+
+
+
+
+
+
+
+
+

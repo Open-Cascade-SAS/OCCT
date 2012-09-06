@@ -2286,7 +2286,8 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   theCommands.Add("QAwzoom","QAwzoom view-id X1 Y1 X2 Y2; zoom on a window",__FILE__,QAwzoom,group);
   theCommands.Add("QAGetCoordinatesWzoom","QAGetCoordinatesWzoom ; Get coordinates for zoom on a window",__FILE__,QAGetCoordinatesWzoom,group);
 
-  theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,QArename,group);
+// adding commands "rename" leads to the fact that QA commands doesn't work properly OCC23410, use function "renamevar"
+// theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,QArename,group);
 
   theCommands.Add ("QANbSelected", "QANbSelected", __FILE__, QANbSelected, group);
 //#if defined(V2D)

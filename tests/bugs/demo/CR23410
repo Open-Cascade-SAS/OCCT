@@ -1,0 +1,34 @@
+puts "============"
+puts "CR23410"
+puts "============"
+puts ""
+#######################################################################
+# QA comamnds don't work properly in new testing system
+#######################################################################
+pload QAcommands
+
+set R_check 0.45098000764846802
+set G_check 1
+set B_check 0.066666000000000003
+set x1 128
+set y1 235
+box result 100 100 100
+vdisplay result
+vsetdispmode 1
+vfit
+vsetcolor result GREEN
+set color [ QAGetPixelColor ${x1} ${y1} ]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { $rd != $R_check || $gr != $G_check || $bl != $B_check} {
+    puts "Error : color are not equal"
+    puts "Error : QA command QAGetPixelColor doesn't work properly"
+}
+set 3dviewer 1
+
+
+
+
+
