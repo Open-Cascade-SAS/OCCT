@@ -50,7 +50,6 @@ if { ${l0} != ${l0_1} ||
      ${nb} != ${nb_1} ||
      ${nbname} != ${nbname_1} } {
     puts "Error : Document is read/written wrong!"
-    puts "Error : It's $nb indtead of $check_nb!"
 }
 
 

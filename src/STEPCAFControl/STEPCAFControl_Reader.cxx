@@ -45,6 +45,7 @@
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepRepr_MeasureRepresentationItem.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
+#include <StepRepr_SequenceOfRepresentationItem.hxx>
 #include <StepVisual_StyledItem.hxx>
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 
@@ -161,9 +162,60 @@
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepShape_GeometricSet.hxx>
 #include <StepBasic_ProductDefinition.hxx>
+#include <NCollection_DataMap.hxx>
+#include <StepShape_ManifoldSolidBrep.hxx>
+#include <Interface_Static.hxx>
+#include <TColStd_MapOfTransient.hxx>
+#include <TColStd_MapIteratorOfMapOfTransient.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <STEPCAFControl_DataMapIteratorOfDataMapOfShapePD.hxx>
+#include <StepShape_ClosedShell.hxx>
+#include <StepShape_HArray1OfFace.hxx>
+#include <StepShape_HArray1OfFaceBound.hxx>
+#include <StepShape_Loop.hxx>
+#include <StepShape_EdgeLoop.hxx>
+#include <StepShape_HArray1OfOrientedEdge.hxx>
+#include <StepShape_HArray1OfShell.hxx>
 
-//#include <BRepTools.hxx>
+#ifdef DEB
+//! Converts address of the passed shape (TShape) to string.
+//! \param theShape [in] Shape to dump.
+//! \return corresponding string.
+TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
+{
+  std::string anAddrStr;
+  std::ostringstream ost;
+  ost << theShape.TShape().Access();
+  anAddrStr = ost.str();
 
+  TCollection_AsciiString aStr =
+    TCollection_AsciiString("[").Cat( anAddrStr.c_str() ).Cat("]");
+
+  return aStr;
+}
+#endif
+
+//=======================================================================
+//function : IsEqual
+//purpose  : global function to check equality of topological shapes
+//=======================================================================
+
+inline Standard_Boolean IsEqual(const TopoDS_Shape& theShape1,
+                                const TopoDS_Shape& theShape2) 
+{
+  return theShape1.IsEqual(theShape2);
+}
+
+//=======================================================================
+//function : AllocateSubLabel
+//purpose  :
+//=======================================================================
+
+static TDF_Label AllocateSubLabel(TDF_Label& theRoot)
+{
+  return TDF_TagSource::NewChild(theRoot);
+}
 
 //=======================================================================
 //function : STEPCAFControl_Reader
@@ -189,7 +241,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader ():
 //=======================================================================
 
 STEPCAFControl_Reader::STEPCAFControl_Reader (const Handle(XSControl_WorkSession)& WS,
-					      const Standard_Boolean scratch) :
+                                              const Standard_Boolean scratch) :
        myColorMode( Standard_True ),
        myNameMode ( Standard_True ),
        myLayerMode( Standard_True ),
@@ -538,8 +590,10 @@ cout<<"filename="<<filename<<endl;
   if(GetMatMode())
     ReadMaterials(reader.WS(),doc,SeqPDS);
 
-  //  cout << "Ready !!" << endl;
-  
+  // Expand resulting CAF structure for sub-shapes (optionally with their
+  // names) if requested
+  ExpandSubShapes(STool, map, ShapePDMap);
+
   return Standard_True;
 }
 
@@ -1986,6 +2040,245 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
   return Standard_True;
 }
 
+//=======================================================================
+//function : SettleShapeData
+//purpose  :
+//=======================================================================
+
+TDF_Label STEPCAFControl_Reader::SettleShapeData(const Handle(StepRepr_RepresentationItem)& theItem,
+                                                 TDF_Label& theLab,
+                                                 const Handle(XCAFDoc_ShapeTool)& theShapeTool,
+                                                 const Handle(Transfer_TransientProcess)& TP) const
+{
+  TDF_Label aResult = theLab;
+
+  Handle(TCollection_HAsciiString) hName = theItem->Name();
+  if ( hName.IsNull() || hName->IsEmpty() )
+    return aResult;
+
+  Handle(Transfer_Binder) aBinder = TP->Find(theItem);
+  if ( aBinder.IsNull() )
+    return aResult;
+
+  TopoDS_Shape aShape = TransferBRep::ShapeResult(aBinder);
+  if ( aShape.IsNull() )
+    return aResult;
+
+  // Allocate sub-Label
+  aResult = AllocateSubLabel(theLab);
+
+  TCollection_AsciiString aName = hName->String();
+  TDataStd_Name::Set(aResult, aName);
+  theShapeTool->SetShape(aResult, aShape);
+
+  return aResult;
+}
+
+//=======================================================================
+//function : ExpandSubShapes
+//purpose  :
+//=======================================================================
+
+void STEPCAFControl_Reader::ExpandSubShapes(const Handle(XCAFDoc_ShapeTool)& ShapeTool,
+                                            const XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap,
+                                            const STEPCAFControl_DataMapOfShapePD& ShapePDMap) const
+{
+  const Handle(Interface_InterfaceModel)& Model = Reader().WS()->Model();
+  const Handle(Transfer_TransientProcess)& TP = Reader().WS()->TransferReader()->TransientProcess();
+  NCollection_DataMap<TopoDS_Shape, Handle(TCollection_HAsciiString)> ShapeNameMap;
+  TColStd_MapOfTransient aRepItems;
+
+  // Read translation control variables
+  Standard_Boolean doReadSNames = (Interface_Static::IVal("read.stepcaf.subshapes.name") > 0);
+
+  if ( !doReadSNames )
+    return;
+
+  const Interface_Graph& Graph = Reader().WS()->Graph();
+
+  for ( STEPCAFControl_DataMapIteratorOfDataMapOfShapePD it(ShapePDMap); it.More(); it.Next() )
+  {
+    const TopoDS_Shape& aRootShape = it.Key();
+    const Handle(StepBasic_ProductDefinition)& aPDef = it.Value();
+    if ( aPDef.IsNull() )
+      continue;
+
+    // Find SDR by Product
+    Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+    Interface_EntityIterator entIt = Graph.TypedSharings( aPDef, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation) );
+    for ( entIt.Start(); entIt.More(); entIt.Next() )
+    {
+      const Handle(Standard_Transient)& aReferer = entIt.Value();
+      aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aReferer);
+      if ( !aSDR.IsNull() )
+        break;
+    }
+
+    if ( aSDR.IsNull() )
+      continue;
+
+    // Access shape representation
+    Handle(StepShape_ShapeRepresentation)
+      aShapeRepr = Handle(StepShape_ShapeRepresentation)::DownCast( aSDR->UsedRepresentation() );
+
+    if ( aShapeRepr.IsNull() )
+      continue;
+
+    // Access representation items
+    Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = aShapeRepr->Items();
+
+    if ( aReprItems.IsNull() )
+      continue;
+
+    if ( !ShapeLabelMap.IsBound(aRootShape) )
+      continue;
+
+    TDF_Label aRootLab = ShapeLabelMap.Find(aRootShape);
+
+    StepRepr_SequenceOfRepresentationItem aMSBSeq;
+    StepRepr_SequenceOfRepresentationItem aSBSMSeq;
+
+    // Iterate over the top level representation items collecting the
+    // topological containers to expand
+    for ( Standard_Integer i = aReprItems->Lower(); i <= aReprItems->Upper(); ++i )
+    {
+      Handle(StepRepr_RepresentationItem) aTRepr = aReprItems->Value(i);
+      if ( aTRepr->IsKind( STANDARD_TYPE(StepShape_ManifoldSolidBrep) ) )
+        aMSBSeq.Append(aTRepr);
+      else if ( aTRepr->IsKind( STANDARD_TYPE(StepShape_ShellBasedSurfaceModel) ) )
+        aSBSMSeq.Append(aTRepr);
+    }
+
+    // Insert intermediate OCAF Labels for SOLIDs in case there are more
+    // than one Manifold Solid BRep in the Shape Representation
+    Standard_Boolean doInsertSolidLab = (aMSBSeq.Length() > 1);
+
+    // Expand Manifold Solid BReps
+    for ( Standard_Integer i = 1; i <= aMSBSeq.Length(); ++i )
+    {
+      const Handle(StepRepr_RepresentationItem)& aManiRepr = aMSBSeq.Value(i);
+
+      // Put additional Label for SOLID
+      TDF_Label aManiLab;
+      if ( doInsertSolidLab )
+        aManiLab = SettleShapeData(aManiRepr, aRootLab, ShapeTool, TP);
+      else
+        aManiLab = aRootLab;
+
+      ExpandManifoldSolidBrep(aManiLab, aMSBSeq.Value(i), TP, ShapeTool);
+    }
+
+    // Expand Shell-Based Surface Models
+    for ( Standard_Integer i = 1; i <= aSBSMSeq.Length(); ++i )
+      ExpandSBSM(aRootLab, aSBSMSeq.Value(i), TP, ShapeTool);
+  }
+}
+
+//=======================================================================
+//function : ExpandManifoldSolidBrep
+//purpose  :
+//=======================================================================
+
+void STEPCAFControl_Reader::ExpandManifoldSolidBrep(TDF_Label& ShapeLab,
+                                                    const Handle(StepRepr_RepresentationItem)& Repr,
+                                                    const Handle(Transfer_TransientProcess)& TP,
+                                                    const Handle(XCAFDoc_ShapeTool)& ShapeTool) const
+{
+  // Access outer shell
+  Handle(StepShape_ManifoldSolidBrep) aMSB = Handle(StepShape_ManifoldSolidBrep)::DownCast(Repr);
+  Handle(StepShape_ClosedShell) aShell = aMSB->Outer();
+
+  // Expand shell contents to CAF tree
+  ExpandShell(aShell, ShapeLab, TP, ShapeTool);
+}
+
+//=======================================================================
+//function : ExpandSBSM
+//purpose  :
+//=======================================================================
+
+void STEPCAFControl_Reader::ExpandSBSM(TDF_Label& ShapeLab,
+                                       const Handle(StepRepr_RepresentationItem)& Repr,
+                                       const Handle(Transfer_TransientProcess)& TP,
+                                       const Handle(XCAFDoc_ShapeTool)& ShapeTool) const
+{
+  Handle(StepShape_ShellBasedSurfaceModel) aSBSM = Handle(StepShape_ShellBasedSurfaceModel)::DownCast(Repr);
+
+  // Access boundary shells
+  Handle(StepShape_HArray1OfShell) aShells = aSBSM->SbsmBoundary();
+  for ( Standard_Integer s = aShells->Lower(); s <= aShells->Upper(); ++s )
+  {
+    const StepShape_Shell& aShell = aShells->Value(s);
+    Handle(StepShape_ConnectedFaceSet) aCFS;
+    Handle(StepShape_OpenShell) anOpenShell = aShell.OpenShell();
+    Handle(StepShape_ClosedShell) aClosedShell = aShell.ClosedShell();
+
+    if ( !anOpenShell.IsNull() )
+      aCFS = anOpenShell;
+    else
+      aCFS = aClosedShell;
+
+    ExpandShell(aCFS, ShapeLab, TP, ShapeTool);
+  }
+}
+
+//=======================================================================
+//function : ExpandShell
+//purpose  :
+//=======================================================================
+
+void STEPCAFControl_Reader::ExpandShell(const Handle(StepShape_ConnectedFaceSet)& Shell,
+                                        TDF_Label& RootLab,
+                                        const Handle(Transfer_TransientProcess)& TP,
+                                        const Handle(XCAFDoc_ShapeTool)& ShapeTool) const
+{
+  // Record CAF data
+  TDF_Label aShellLab = SettleShapeData(Shell, RootLab, ShapeTool, TP);
+
+  // Access faces
+  Handle(StepShape_HArray1OfFace) aFaces = Shell->CfsFaces();
+  for ( Standard_Integer f = aFaces->Lower(); f <= aFaces->Upper(); ++f )
+  {
+    const Handle(StepShape_Face)& aFace = aFaces->Value(f);
+
+    // Record CAF data
+    TDF_Label aFaceLab = SettleShapeData(aFace, aShellLab, ShapeTool, TP);
+
+    // Access face bounds
+    Handle(StepShape_HArray1OfFaceBound) aWires = aFace->Bounds();
+    for ( Standard_Integer w = aWires->Lower(); w <= aWires->Upper(); ++w )
+    {
+      const Handle(StepShape_Loop)& aWire = aWires->Value(w)->Bound();
+
+      // Record CAF data
+      TDF_Label aWireLab = SettleShapeData(aWire, aFaceLab, ShapeTool, TP);
+
+      // Access wire edges
+      // Currently only EDGE LOOPs are considered (!)
+      if ( !aWire->IsInstance( STANDARD_TYPE(StepShape_EdgeLoop) ) )
+        continue;
+
+      // Access edges
+      Handle(StepShape_EdgeLoop) anEdgeLoop = Handle(StepShape_EdgeLoop)::DownCast(aWire);
+      Handle(StepShape_HArray1OfOrientedEdge) anEdges = anEdgeLoop->EdgeList();
+      for ( Standard_Integer e = anEdges->Lower(); e <= anEdges->Upper(); ++e )
+      {
+        Handle(StepShape_Edge) anEdge = anEdges->Value(e)->EdgeElement();
+
+        // Record CAF data
+        TDF_Label anEdgeLab = SettleShapeData(anEdge, aWireLab, ShapeTool, TP);
+
+        // Access vertices
+        Handle(StepShape_Vertex) aV1 = anEdge->EdgeStart();
+        Handle(StepShape_Vertex) aV2 = anEdge->EdgeEnd();
+
+        // Record CAF data
+        SettleShapeData(aV1, anEdgeLab, ShapeTool, TP);
+        SettleShapeData(aV2, anEdgeLab, ShapeTool, TP);
+      }
+    }
+  }
+}
 
 //=======================================================================
 //function : SetColorMode

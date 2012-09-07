@@ -40,6 +40,8 @@
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
 
+#include <STEPCAFControl_Controller.hxx>
+
 #include <TDF_Tool.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_LabelSequence.hxx>
@@ -161,6 +163,48 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+//=======================================================================
+//function : openDoc
+//purpose  :
+//=======================================================================
+static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  Handle(TDocStd_Document) D;
+  Handle(DDocStd_DrawDocument) DD;
+  Handle(TDocStd_Application) A;
+
+  if ( !DDocStd::Find(A) )
+    return 1;
+
+  if ( argc != 3 )
+  {
+    di << "invalid number of arguments. Usage:\t XOpen filename docname" << "\n";
+    return 1;
+  }
+
+  Standard_CString Filename = argv[1];
+  Standard_CString DocName = argv[2];
+
+  if ( DDocStd::GetDocument(DocName, D, Standard_False) )
+  {
+    di << "document with name " << DocName << " already exists" << "\n";
+    return 1;
+  }
+
+  if ( A->Open(Filename, D) != PCDM_RS_OK )
+  {
+    di << "cannot open XDE document" << "\n";
+    return 1;
+  }
+
+  DD = new DDocStd_DrawDocument(D);
+  TDataStd_Name::Set(D->GetData()->Root(), DocName);
+  Draw::Set(DocName, DD);
+
+  di << "document " << DocName << " opened" << "\n";
+
+  return 0;
+}
 
 //=======================================================================
 //function : dump
@@ -841,6 +885,9 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   static Standard_Boolean initactor = Standard_False;
   if (initactor) return;  initactor = Standard_True;
 
+  // Load static variables for STEPCAF (ssv; 16.08.2012)
+  STEPCAFControl_Controller::Init();
+
   // OCAF *** szy: use <pload> command
 
 //  DDF::AllCommands(di);
@@ -866,6 +913,9 @@ void XDEDRAW::Init(Draw_Interpretor& di)
 
   di.Add ("XSave","[Doc Path] \t: Save Doc or first document in session",
 		   __FILE__, saveDoc, g);
+
+  di.Add ("XOpen","Path Doc \t: Open XDE Document with name Doc from Path",
+          __FILE__, openDoc, g);
 
   di.Add ("Xdump","Doc [int deep (0/1)] \t: Print information about tree's structure",
 		   __FILE__, dump, g);

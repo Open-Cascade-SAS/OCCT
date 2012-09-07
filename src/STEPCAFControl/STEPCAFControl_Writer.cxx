@@ -77,6 +77,7 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TDF_Tool.hxx>
 #include <Message_Messenger.hxx>
+#include <TDF_ChildIterator.hxx>
 
 #include <Transfer_Binder.hxx>
 #include <Transfer_TransientListBinder.hxx>
@@ -543,6 +544,45 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
 
   // refresh graph
   writer.WS()->ComputeGraph ( Standard_True );
+
+  /* ================================
+    *  Write names for the sub-shapes
+    * ================================ */
+
+  if ( Interface_Static::IVal("write.stepcaf.subshapes.name") )
+  {
+    Handle(XSControl_TransferWriter) TW = this->ChangeWriter().WS()->TransferWriter();
+    Handle(Transfer_FinderProcess) FP = TW->FinderProcess();
+
+    for ( int i = 1; i <= labels.Length(); i++ )
+    {
+      TDF_Label L = labels.Value(i);
+
+      for ( TDF_ChildIterator it(L, Standard_True); it.More(); it.Next() )
+      {
+        TDF_Label SubL = it.Value();
+
+        // Access name recorded in OCAF TDataStd_Name attribute
+        Handle(TCollection_HAsciiString) hSubName = new TCollection_HAsciiString;
+        if ( !GetLabelName(SubL, hSubName) )
+          continue;
+
+        // Access topological data
+        TopoDS_Shape SubS = XCAFDoc_ShapeTool::GetShape(SubL);
+        if ( SubS.IsNull() )
+          continue;
+
+        // Access the correspondent STEP Representation Item
+        Handle(StepRepr_RepresentationItem) RI;
+        Handle(TransferBRep_ShapeMapper) aShMapper = TransferBRep::ShapeMapper(FP, SubS);
+        if ( !FP->FindTypedTransient(aShMapper, STANDARD_TYPE(StepRepr_RepresentationItem), RI) )
+          continue;
+
+        // Record the name
+        RI->SetName(hSubName);
+      }
+    }
+  }
 
   return Standard_True;
 }
