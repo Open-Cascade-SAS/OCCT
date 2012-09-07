@@ -5330,6 +5330,29 @@ Standard_Integer bcarray (Draw_Interpretor& di, Standard_Integer argc, const cha
   return 0;
 }
 
+#include <ExprIntrp_GenExp.hxx>
+Standard_Integer CR23403 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	
+  if (argc != 2) {
+    di << "Usage : " << argv[0] << " string\n";
+    return 1;
+  }
+
+  Standard_CString aString = argv[1];
+  Handle(ExprIntrp_GenExp) myExpr = ExprIntrp_GenExp::Create();
+  try {
+    OCC_CATCH_SIGNALS
+    myExpr->Process( aString );
+  }
+  catch(Standard_Failure) {
+    Handle(Standard_Failure) aFail = Standard_Failure::Caught();
+    di << "Exception : " << aFail->GetMessageString() << "\n";
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5439,5 +5462,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("bcarray", "bcarray", __FILE__, bcarray, group);
   theCommands.Add("OCC22762", "OCC22762 x1 y1 z1 x2 y2 z3", __FILE__, OCC22762, group);
   theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
+  theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   return;
 }

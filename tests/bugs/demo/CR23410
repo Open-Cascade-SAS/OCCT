@@ -7,9 +7,12 @@ puts ""
 #######################################################################
 pload QAcommands
 
-set R_check 0.45098000764846802
-set G_check 1
-set B_check 0.066666000000000003
+set r_1 0.4
+set r_2 0.5
+set g_1 0.9
+set g_2 1
+set b_1 0
+set b_2 0.1
 set x1 128
 set y1 235
 box result 100 100 100
@@ -22,7 +25,28 @@ regexp {RED +: +([-0-9.+eE]+)} $color full rd
 regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
 regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
 
-if { $rd != $R_check || $gr != $G_check || $bl != $B_check} {
+set red_status 0
+if { $rd < $r_1 || $rd > $r_2 } {
+    set red_status 1
+} else {
+    set red_status 0
+}
+
+set green_status 0
+if { $gr < $g_1 || $gr > $g_2 } {
+    set green_status 1
+} else {
+    set green_status 0
+}
+
+set blue_status 0
+if { $bl < $b_1 || $bl > $b_2 } {
+    set blue_status 1
+} else {
+    set blue_status 0
+}
+
+if { $red_status != 0 || $green_status != 0 || $blue_status != 0 } {
     puts "Error : color are not equal"
     puts "Error : QA command QAGetPixelColor doesn't work properly"
 }

@@ -37,6 +37,7 @@ void ExprIntrp_start_string(char* str)
 void ExprIntrp_stop_string()
 {
   ExprIntrp_delete_buffer(ExprIntrp_bufstring);
+  ExprIntrp_bufstring = (YY_BUFFER_STATE) 0;
 }
 
 int yywrap()
