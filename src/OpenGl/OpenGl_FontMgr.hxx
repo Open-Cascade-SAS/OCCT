@@ -23,7 +23,7 @@
 # include <stdlib.h>
 #endif
 
-#include <FTFont.h>
+#include <FTGL/ftgl.h>
 
 #include <InterfaceGraphic.hxx>
 #include <TCollection_HAsciiString.hxx>

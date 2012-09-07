@@ -16,11 +16,16 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <OpenGl_FontMgr.hxx>
+#include <OpenGl_GlCore11.hxx>
 
-#include <FTGLTextureFont.h>        
-#include <FTLibrary.h>
-#include <FTFace.h>
 #include <Standard_Stream.hxx>
+
+#include <ft2build.h>
+
+#ifdef _MSC_VER
+#pragma comment( lib, "ftgl.lib" )
+#pragma comment( lib, "freetype.lib" )
+#endif
 
 #undef TRACE
 
@@ -82,16 +87,28 @@ void OpenGl_FontMgr::_initializeFontDB()
     OSD_NListOfSystemFont fontList = fntMgr->GetAvalableFonts();
     if ( fontList.Size() != 0 ) {
 
+      // The library used as a tool for checking font aspect since OSD_FontMgr
+      // fails to get aspect for the fonts that have name dependant
+      // on system locale.
+      FT_Library aFtLibrary;
+      FT_Error aLibError = FT_Init_FreeType(&aFtLibrary);
+      
       OSD_NListOfSystemFont::Iterator it(fontList);
       for ( ; it.More(); it.Next() ) {
         OGLFont_SysInfo* info = new OGLFont_SysInfo();
         if ( it.Value()->FontAspect() == OSD_FA_Regular ) {
+          
+          Handle(TCollection_HAsciiString) aFontPath = it.Value()->FontPath();
+            
           //this workaround for fonts with names dependent on system locale.
           //for example: "Times New Roman Fett Kursive" or "Times New Roman Gras Italiqui"
-          FTFace face(it.Value()->FontPath()->ToCString());
+          FT_Face aFontFace;
+          FT_Error aFaceError = FT_New_Face(aFtLibrary,
+                                            aFontPath->ToCString(), 0,
+                                            &aFontFace);
               
-          if ( face.Error() == FT_Err_Ok ) {
-            if ( (*face.Face())->style_flags == 0 ) {
+          if ( aFaceError == FT_Err_Ok ) {
+            if ( aFontFace->style_flags == 0 ) {
               info->SysFont = it.Value();
             }
             else {
@@ -99,24 +116,26 @@ void OpenGl_FontMgr::_initializeFontDB()
 #ifdef TRACE
               cout << "TKOpenGl::initializeFontDB() detected new font!\n"
                 << "\tFont Previous Name: " << it.Value()->FontName()->ToCString() << endl
-                << "\tFont New Name: " << (*face.Face())->family_name << endl
-                << "\tFont Aspect: " << (*face.Face())->style_flags << endl;
+                << "\tFont New Name: " << aFontFace->family_name << endl
+                << "\tFont Aspect: " << aFontFace->style_flags << endl;
 #endif
               OSD_FontAspect aspect = OSD_FA_Regular;
-              if ( (*face.Face())->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD) )
+              if ( aFontFace->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD) )
                 aspect = OSD_FA_BoldItalic;
-              else if ( (*face.Face())->style_flags == FT_STYLE_FLAG_ITALIC )
+              else if ( aFontFace->style_flags == FT_STYLE_FLAG_ITALIC )
                 aspect = OSD_FA_Italic;
-              else if ( (*face.Face())->style_flags == FT_STYLE_FLAG_BOLD )
+              else if ( aFontFace->style_flags == FT_STYLE_FLAG_BOLD )
                 aspect = OSD_FA_Bold;
 
 #ifdef TRACE
               cout << "\tOSD_FontAspect: " << aspect << endl;
 #endif
               Handle(TCollection_HAsciiString) aFontName =
-                new TCollection_HAsciiString( (*face.Face())->family_name );
-              info->SysFont = new OSD_SystemFont( aFontName, aspect, it.Value()->FontPath() );
+                new TCollection_HAsciiString( aFontFace->family_name );
+              info->SysFont = new OSD_SystemFont( aFontName, aspect, aFontPath );
             }
+            
+            FT_Done_Face(aFontFace);
           }
           else
             continue;
@@ -125,6 +144,12 @@ void OpenGl_FontMgr::_initializeFontDB()
         }
         _FontDB.Append(info);
 
+      }
+      
+      // finalize library instance
+      if ( aLibError == FT_Err_Ok )
+      {
+        FT_Done_FreeType(aFtLibrary);
       }
     }
   }
