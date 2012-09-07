@@ -18,6 +18,12 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+inline BRepMesh_Edge::BRepMesh_Edge()
+: myFirstNode(-1),
+  myLastNode(-1),
+  myMovability(BRepMesh_Deleted)
+{
+}
 
 inline Standard_Integer  BRepMesh_Edge::FirstNode()const 
 {

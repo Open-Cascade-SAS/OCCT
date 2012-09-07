@@ -30,7 +30,11 @@ uses    Boolean from Standard,
         DegreeOfFreedom from BRepMesh
 
 
-is          Create         (vDebut    : Integer from Standard;
+is            Create
+              returns Edge from BRepMesh;
+    	          ---C++: inline
+    	          
+              Create       (vDebut    : Integer from Standard;
                             vFin      : Integer from Standard;
                             canMove   : DegreeOfFreedom from BRepMesh)
               ---Purpose: Contructs a link beetween to vertices.
