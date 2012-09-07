@@ -315,8 +315,8 @@ static
 				       const Handle(Geom_Curve)& aC3D,
 				       const Handle(Geom2d_Curve)& aC2D1,
 				       const Handle(Geom2d_Curve)& aC2D2,
-				       const Handle(GeomAdaptor_HSurface) myHS1,
-				       const Handle(GeomAdaptor_HSurface) myHS2,
+				       const Handle(GeomAdaptor_HSurface)& myHS1,
+				       const Handle(GeomAdaptor_HSurface)& myHS2,
 				       const TopoDS_Face& aF1,
 				       const TopoDS_Face& aF2,
 				       const Handle(IntTools_Context)& aCtx);
@@ -783,6 +783,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
       //
       aD2Max=0.;
+      aNbP=10;
       aNbLin=mySeqOfCurve.Length();
       //
       for (i=1; i<=aNbLin; ++i) {
@@ -804,7 +805,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 	aT2=aBC->LastParameter();
 	//
 	aEps=0.01*(aT2-aT1);
-	aNbP=10;
 	dT=(aT2-aT1)/aNbP;
 	for (j=1; j<aNbP; ++j) {
 	  aT11=aT1+j*dT;
@@ -978,6 +978,65 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=sqrt(aD2max);
     }
   }//if((aType1==GeomAbs_SurfaceOfRevolution ...
+  //modified by NIZNHY-PKV Thu Aug 30 13:31:10 2012f
+  else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
+	   (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere)) {
+    Standard_Integer i, j, aNbP;
+    Standard_Real aT, aT1, aT2, dT, aD2max, aD2, aEps, aT11, aT12;
+    //
+    aNbLin=mySeqOfCurve.Length();
+    aD2max=0.;
+    aNbP=10;
+    //
+    for (i=1; i<=aNbLin; ++i) {
+      const IntTools_Curve& aIC=mySeqOfCurve(i);
+      const Handle(Geom_Curve)& aC3D=aIC.Curve();
+      const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
+      const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
+      //
+      const Handle(Geom2d_BSplineCurve)& aBC2D1=
+	Handle(Geom2d_BSplineCurve)::DownCast(aC2D1);
+      const Handle(Geom2d_BSplineCurve)& aBC2D2=
+	Handle(Geom2d_BSplineCurve)::DownCast(aC2D2);
+      //
+      if (aBC2D1.IsNull() && aBC2D2.IsNull()) {
+	return;
+      }
+      //
+      if (!aBC2D1.IsNull()) {
+	aT1=aBC2D1->FirstParameter();
+	aT2=aBC2D1->LastParameter();
+      }
+      else {
+	aT1=aBC2D2->FirstParameter();
+	aT2=aBC2D2->LastParameter();
+      }
+      //
+      aEps=0.01*(aT2-aT1);
+      dT=(aT2-aT1)/(aNbP-1);
+      for (j=0; j<aNbP; ++j) {
+	aT=aT1+j*dT;
+	aT11=aT1+j*dT;
+	aT12=aT11+dT;
+	if (j==aNbP-1) {
+	  aT12=aT2;
+	}
+	//
+	aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
+				  myHS1, myHS2, myFace1, myFace2, myContext);
+	if (aD2>aD2max) {
+	  aD2max=aD2;
+	}
+      }//for (j=0; j<aNbP; ++j) {
+     
+    }//for (i=1; i<=aNbLin; ++i) {
+    //
+    aD2=myTolReached3d*myTolReached3d;
+    if (aD2max > aD2) {
+      myTolReached3d=sqrt(aD2max);
+    }
+  }//else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ...
+  //modified by NIZNHY-PKV Thu Aug 30 13:31:12 2012t
 }
 //=======================================================================
 //function : MakeCurve
@@ -4677,8 +4736,8 @@ Standard_Real FindMaxSquareDistance (const Standard_Real aT1,
 				     const Handle(Geom_Curve)& aC3D,
 				     const Handle(Geom2d_Curve)& aC2D1,
 				     const Handle(Geom2d_Curve)& aC2D2,
-				     const Handle(GeomAdaptor_HSurface) myHS1,
-				     const Handle(GeomAdaptor_HSurface) myHS2,
+				     const Handle(GeomAdaptor_HSurface)& myHS1,
+				     const Handle(GeomAdaptor_HSurface)& myHS2,
 				     const TopoDS_Face& myFace1,
 				     const TopoDS_Face& myFace2,
 				     const Handle(IntTools_Context)& myContext)
