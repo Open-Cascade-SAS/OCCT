@@ -33,22 +33,22 @@ set _test_case_regexp {^CASE\s+([\w.-]+)\s+([\w.-]+)\s+([\w.-]+)\s*:\s*([\w]+)(.
 
 # Basic command to run indicated test case in DRAW
 help test {Run specified test case
-    Use: test group grid casename [verbose_level]
-    Verbose level is 0 by default; can be set to 1 or 2}
-proc test {group grid casename {verbose {}}} {
-    global _tests_verbose
-    if { $verbose != "" } {
-	set _tests_verbose $verbose
-    }
- 
+    Use: test group grid casename [echo=0]
+    - If echo is set to 0 (default), log is stored in memory and only summary
+      is output (the log can be obtained with command \'dlog get\')
+    - If echo is set to 1, all commands and results are echoed immediately,
+      thus log is not saved and summary is not produced}
+proc test {group grid casename {echo 0}} {
     # get test case paths (will raise error if input is invalid)
     _get_test $group $grid $casename dir gridname casefile
 
     # run test
-    uplevel _run_test $dir $group $gridname $casefile
+    uplevel _run_test $dir $group $gridname $casefile $echo
 
     # check log
-    _check_log $dir $group $gridname $casename [dlog get]
+    if { ! $echo } {
+        _check_log $dir $group $gridname $casename [dlog get]
+    }
 
     return
 }
@@ -90,7 +90,7 @@ proc testgrid {logdir args} {
 	    if { $narg < [llength $args] } { 
 		set parallel [expr [lindex $args $narg]]
 	    } else {
-		set paralell 2
+		set parallel 2
 	    }
 	    continue
 	}
@@ -311,8 +311,10 @@ proc testgrid {logdir args} {
 	set fd_cmd [open $logdir/$group/$grid/${casename}.tcl w]
 	puts $fd_cmd "$imgdir_cmd"
 	puts $fd_cmd "set test_image $casename"
-	puts $fd_cmd "_run_test $dir $group $grid $casefile"
+	puts $fd_cmd "_run_test $dir $group $grid $casefile 1"
+
 	# use dlog command to obtain complete output of the test when it is absent (i.e. since OCCT 6.6.0)
+	# note: this is not needed if echo is set to 1 in call to _run_test above
 	if { ! [catch {dlog get}] } {
 	    puts $fd_cmd "puts \[dlog get\]"
 	} else {
@@ -321,6 +323,7 @@ proc testgrid {logdir args} {
 	    set env(QA_DUP) 1
 	    set env(QA_print_command) 1
 	}
+
 	# final 'exit' is needed when running on Linux under VirtualGl
 	puts $fd_cmd "exit"
 	close $fd_cmd
@@ -568,7 +571,7 @@ proc _get_test {group grid casename _dir _gridname _casefile} {
 # Internal procedure to run test case indicated by base directory, 
 # grid and grid names, and test case file path.
 # The log can be obtained by command "dlog get".
-proc _run_test {scriptsdir group gridname casefile} {
+proc _run_test {scriptsdir group gridname casefile echo} {
     global env
 
     # start timer
@@ -579,6 +582,8 @@ proc _run_test {scriptsdir group gridname casefile} {
     set dlog_exists 1
     if { [catch {dlog reset}] } {
 	set dlog_exists 0
+    } elseif { $echo } {
+        decho on
     } else {
 	dlog reset
 	dlog on
@@ -635,9 +640,13 @@ proc _run_test {scriptsdir group gridname casefile} {
 
     # stop logging
     if { $dlog_exists } {
-	rename puts {}
-	rename puts-saved puts
-	dlog off
+        if { $echo } {
+	    decho off
+        } else {
+            rename puts {}
+	    rename puts-saved puts
+	    dlog off
+	}
     }
 
     # stop cpulimit killer if armed by the test
@@ -647,7 +656,7 @@ proc _run_test {scriptsdir group gridname casefile} {
     uplevel dchrono _timer stop
     set time [uplevel dchrono _timer show]
     if [regexp -nocase {CPU user time:[ \t]*([0-9.e-]+)} $time res cpu] {
-	if { $dlog_exists } {
+	if { $dlog_exists && ! $echo } {
 	    dlog add "TOTAL CPU TIME: $cpu sec"
 	} else {
 	    puts "TOTAL CPU TIME: $cpu sec"
