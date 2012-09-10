@@ -47,7 +47,7 @@ class Window from WNT inherits Window from Aspect
     TypeOfResize       from Aspect,
     FillMethod         from Aspect,
     GradientFillMethod from Aspect,
-    PixMap             from Aspect,
+    PixMap             from Image,
     NameOfColor        from Quantity,
     Color              from Quantity,
     Parameter          from Quantity,
@@ -354,8 +354,8 @@ class Window from WNT inherits Window from Aspect
 	--	    or the area is out of the Window.
      raises WindowError from Aspect is virtual;
 
-    ToPixMap ( me )
-    returns PixMap from Aspect
+    ToPixMap ( me ; theImage : in out PixMap from Image )
+    returns Boolean
     ---Level   : Public
     ---Purpose : dump the full contents of the window to a pixmap.
     is virtual;

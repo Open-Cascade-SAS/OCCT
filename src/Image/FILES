@@ -6,5 +6,11 @@ Image_PixelAddress.cxx
 Image_PixelAddress.hxx
 Image.edl
 Image_CMPLRS.edl
-Image_CRawBufferData.hxx
-Image_HPrivateImage.hxx
+Image_PixMap.hxx
+Image_PixMap.cxx
+Image_PixMapData.hxx
+Image_Color.hxx
+Image_AlienPixMap.hxx
+Image_AlienPixMap.cxx
+Image_Diff.hxx
+Image_Diff.cxx

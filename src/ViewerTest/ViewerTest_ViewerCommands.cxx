@@ -45,19 +45,21 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Aspect_PrintAlgo.hxx>
-#include <Image_PixMap.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <OSD_Timer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Visual3d_LayerItem.hxx>
 #include <V3d_LayerMgr.hxx>
 #include <V3d_LayerMgrPointer.hxx>
 #include <Aspect_TypeOfLine.hxx>
+#include <Image_Diff.hxx>
 
 #ifdef WNT
 #undef DrawText
 #endif
 
 #include <Visual3d_Layer.hxx>
+#include <cstdlib>
 
 #ifndef WNT
 #include <Graphic3d_GraphicDevice.hxx>
@@ -2151,10 +2153,8 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
   if (aMode != 0 && aMode != 1)
     aMode = 0;
 
-  Image_CRawBufferData aRawBuffer;
-  HDC anDC = CreateCompatibleDC(0);
-
   // define compatible bitmap
+  HDC anDC = CreateCompatibleDC(0);
   BITMAPINFO aBitmapData;
   memset (&aBitmapData, 0, sizeof (BITMAPINFOHEADER));
   aBitmapData.bmiHeader.biSize          = sizeof (BITMAPINFOHEADER);
@@ -2170,12 +2170,13 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
   aBitmapData.bmiHeader.biSizeImage     = 0;
 
   // Create Device Independent Bitmap
+  void* aBitsOut = NULL;
   HBITMAP aMemoryBitmap = CreateDIBSection (anDC, &aBitmapData, DIB_RGB_COLORS,
-                                            &aRawBuffer.dataPtr, NULL, 0);
+                                            &aBitsOut, NULL, 0);
   HGDIOBJ anOldBitmap   = SelectObject(anDC, aMemoryBitmap);
 
   Standard_Boolean isSaved = Standard_False, isPrinted = Standard_False;
-  if (aRawBuffer.dataPtr != 0)
+  if (aBitsOut != NULL)
   {    
     if (aMode == 0)
       isPrinted = aView->Print(anDC,1,1,0,Aspect_PA_STRETCH);
@@ -2185,11 +2186,13 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
     // succesfully printed into an intermediate buffer
     if (isPrinted)
     {
-      Handle(Image_PixMap) anImageBitmap =
-                         new Image_PixMap ((Standard_PByte)aRawBuffer.dataPtr,
-                                           aWidth, aHeight,
-                                           aWidth*3 + aWidth%4, 24, 0);
-      isSaved = anImageBitmap->Dump(aFileName.ToCString());
+      Image_PixMap aWrapper;
+      aWrapper.InitWrapper (Image_PixMap::ImgBGR, (Standard_Byte* )aBitsOut, aWidth, aHeight, aWidth * 3 + aWidth % 4);
+      aWrapper.SetTopDown (false);
+
+      Image_AlienPixMap anImageBitmap;
+      anImageBitmap.InitCopy (aWrapper);
+      isSaved = anImageBitmap.Save (aFileName);
     }
     else
     {
@@ -2898,7 +2901,9 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Image_TypeOfImage aBufferType = Image_TOI_RGBA;
+  Image_PixMap::ImgFormat aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA;
+  Graphic3d_BufferType    aBufferType = Graphic3d_BT_RGBA;
+
   Standard_Integer aWidth, aHeight;
   aView->Window()->Size (aWidth, aHeight);
   const Standard_Integer anX = atoi (theArgVec[1]);
@@ -2916,28 +2921,34 @@ static int VReadPixel (Draw_Interpretor& theDI,
     TCollection_AsciiString aParam (theArgVec[anIter]);
     if (TCollection_AsciiString::ISSIMILAR      (aParam, TCollection_AsciiString ("rgb")))
     {
-      aBufferType = Image_TOI_RGB;
+      aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGB : Image_PixMap::ImgBGR;
+      aBufferType = Graphic3d_BT_RGB;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("hls")))
     {
-      aBufferType = Image_TOI_RGB;
+      aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGB : Image_PixMap::ImgBGR;
+      aBufferType = Graphic3d_BT_RGB;
       toShowHls   = Standard_True;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgbf")))
     {
-      aBufferType = Image_TOI_RGBF;
+      aFormat     = Image_PixMap::ImgRGBF;
+      aBufferType = Graphic3d_BT_RGB;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgba")))
     {
-      aBufferType = Image_TOI_RGBA;
+      aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA;
+      aBufferType = Graphic3d_BT_RGBA;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgbaf")))
     {
-      aBufferType = Image_TOI_RGBAF;
+      aFormat     = Image_PixMap::ImgRGBAF;
+      aBufferType = Graphic3d_BT_RGBA;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("depth")))
     {
-      aBufferType = Image_TOI_FLOAT;
+      aFormat     = Image_PixMap::ImgGrayF;
+      aBufferType = Graphic3d_BT_Depth;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("name")))
     {
@@ -2945,19 +2956,23 @@ static int VReadPixel (Draw_Interpretor& theDI,
     }
   }
 
-  Handle(Image_PixMap) anImage = aView->ToPixMap (aWidth, aHeight, aBufferType);
-  if (anImage.IsNull())
+  Image_PixMap anImage;
+  if (!anImage.InitTrash (aFormat, aWidth, aHeight))
+  {
+    std::cerr << "Image allocation failed\n";
+    return 1;
+  }
+  else if (!aView->ToPixMap (anImage, aWidth, aHeight, aBufferType))
   {
     std::cerr << "Image dump failed\n";
     return 1;
   }
 
   Quantity_Parameter anAlpha;
-  Quantity_Color aColor = anImage->PixelColor (anX, anY, anAlpha);
+  Quantity_Color aColor = anImage.PixelColor (anX, anY, anAlpha);
   if (toShowName)
   {
-    if (aBufferType == Image_TOI_RGBA
-     || aBufferType == Image_TOI_RGBAF)
+    if (aBufferType == Graphic3d_BT_RGBA)
     {
       theDI << Quantity_Color::StringName (aColor.Name()) << " " << anAlpha << "\n";
     }
@@ -2971,8 +2986,7 @@ static int VReadPixel (Draw_Interpretor& theDI,
     switch (aBufferType)
     {
       default:
-      case Image_TOI_RGB:
-      case Image_TOI_RGBF:
+      case Graphic3d_BT_RGB:
       {
         if (toShowHls)
         {
@@ -2984,18 +2998,68 @@ static int VReadPixel (Draw_Interpretor& theDI,
         }
         break;
       }
-      case Image_TOI_RGBA:
-      case Image_TOI_RGBAF:
+      case Graphic3d_BT_RGBA:
       {
         theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << " " << anAlpha << "\n";
         break;
       }
-      case Image_TOI_FLOAT:
+      case Graphic3d_BT_Depth:
       {
         theDI << aColor.Red() << "\n";
         break;
       }
     }
+  }
+
+  return 0;
+}
+
+//==============================================================================
+//function : VDiffImage
+//purpose  : The draw-command compares two images.
+//==============================================================================
+
+static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb < 6)
+  {
+    theDI << "Not enough arguments.\n";
+    return 1;
+  }
+
+  // image file names
+  const char* anImgPathRef = theArgVec[1];
+  const char* anImgPathNew = theArgVec[2];
+
+  // get string tolerance and check its validity
+  Standard_Real aTolColor = atof (theArgVec[3]);
+  if (aTolColor < 0.0)
+    aTolColor = 0.0;
+  if (aTolColor > 1.0)
+    aTolColor = 1.0;
+
+  Standard_Boolean toBlackWhite     = (atoi (theArgVec[4]) == 1);
+  Standard_Boolean isBorderFilterOn = (atoi (theArgVec[5]) == 1);
+
+  // image file of difference
+  const char* aDiffImagePath = (theArgNb >= 7) ? theArgVec[6] : NULL;
+
+  // compare the images
+  Image_Diff aComparer;
+  if (!aComparer.Init (anImgPathRef, anImgPathNew, toBlackWhite))
+  {
+    return 1;
+  }
+
+  aComparer.SetColorTolerance (aTolColor);
+  aComparer.SetBorderFilterOn (isBorderFilterOn);
+  Standard_Integer aDiffColorsNb = aComparer.Compare();
+  theDI << aDiffColorsNb << "\n";
+
+  // save image of difference
+  if (aDiffImagePath != NULL)
+  {
+    aComparer.SaveDiffImage (aDiffImagePath);
   }
 
   return 0;
@@ -3131,4 +3195,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vreadpixel xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [name]"
     " : Read pixel value for active view",
     __FILE__, VReadPixel, group);
+  theCommands.Add("diffimage",
+    "diffimage     : diffimage imageFile1 imageFile2 toleranceOfColor(0..1) blackWhite(1|0) borderFilter(1|0) [diffImageFile]",
+    __FILE__, VDiffImage, group);
 }

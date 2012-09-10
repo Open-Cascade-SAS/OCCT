@@ -125,7 +125,7 @@ uses
         Plotter                           from Graphic3d,
         Window                            from Aspect,
         PixMap                            from Image,
-        TypeOfImage                       from Image,
+        BufferType                        from Graphic3d,
         Background                        from Aspect,
         GradientBackground                from Aspect,
         PlotterDriver                     from PlotMgt,
@@ -1590,8 +1590,8 @@ is
         ---Purpose: dump the view
 
         Dump ( me: mutable;
-               theFile: CString from Standard;
-               theBufferType : TypeOfImage from Image = Image_TOI_RGB )
+               theFile       : CString from Standard;
+               theBufferType : BufferType from Graphic3d = Graphic3d_BT_RGB )
     returns Boolean from Standard;
         ---Level: Public
         ---Purpose: dump the full contents of the view at the same
@@ -1600,9 +1600,9 @@ is
         --          Returns FALSE when the dump has failed
 
         Dump ( me: mutable;
-               theFile   : CString from Standard;
-               theFormat : FormatOfSheetPaper from Aspect;
-               theBufferType : TypeOfImage from Image = Image_TOI_RGB )
+               theFile       : CString from Standard;
+               theFormat     : FormatOfSheetPaper from Aspect;
+               theBufferType : BufferType from Graphic3d = Graphic3d_BT_RGB )
     returns Boolean from Standard;
         ---Level: Public
         ---Purpose: dump the full contents of the view with a
@@ -1653,16 +1653,18 @@ is
     --  Warning: Works only under Windows.
 
         ToPixMap ( me : mutable;
+                   theImage  : in out PixMap from Image;
                    theWidth  : Integer from Standard;
                    theHeight : Integer from Standard;
-                   theBufferType : TypeOfImage from Image = Image_TOI_RGB;
+                   theBufferType : BufferType from Graphic3d = Graphic3d_BT_RGB;
                    theForceCentered : Boolean from Standard = Standard_True )
-        returns PixMap from Image;
+        returns Boolean from Standard;
         ---Level   : Public
         ---Purpose : dump the full contents of the view
         --        to a pixmap of pixel size <theWidth>*<theHeight> and
         --        buffer type <theBufferType>. If <theForceCentered> is true
         --        view scene will be centered.
+        --       Pixmap will be automatically (re)allocated when needed.
 
     SetProjModel( me : mutable;
         amOdel: TypeOfProjectionModel from V3d = V3d_TPM_SCREEN )

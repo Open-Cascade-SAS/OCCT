@@ -11,7 +11,6 @@ InterfaceGraphic_wntio.hxx
 InterfaceGraphic_cPrintf.cxx
 InterfaceGraphic_Palette.c
 InterfaceGraphic_PrimitiveArray.hxx
-InterfaceGraphic_RawBufferData.hxx
 InterfaceGraphic_telem.hxx
 InterfaceGraphic_degeneration.hxx
 InterfaceGraphic_tgl_all.hxx

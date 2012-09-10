@@ -54,7 +54,7 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Image_PixMap.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 
 #ifdef HAVE_CONFIG_H
@@ -833,22 +833,21 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Image_TypeOfImage aBufferType = Image_TOI_RGB;
-
+  Graphic3d_BufferType aBufferType = Graphic3d_BT_RGB;
   if (argc > 2)
   {
     TCollection_AsciiString aBuffTypeStr (argv[2]);
     if (TCollection_AsciiString::ISSIMILAR (aBuffTypeStr, TCollection_AsciiString ("rgb")))
     {
-      aBufferType = Image_TOI_RGB;
+      aBufferType = Graphic3d_BT_RGB;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aBuffTypeStr, TCollection_AsciiString ("rgba")))
     {
-      aBufferType = Image_TOI_RGBA;
+      aBufferType = Graphic3d_BT_RGBA;
     }
     else if (TCollection_AsciiString::ISSIMILAR (aBuffTypeStr, TCollection_AsciiString ("depth")))
     {
-      aBufferType = Image_TOI_FLOAT;
+      aBufferType = Graphic3d_BT_Depth;
     }
   }
 
@@ -874,21 +873,20 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
     return 0;
   }
 
-  Handle(Image_PixMap) aPixMap = view->ToPixMap (aWidth, aHeight, aBufferType);
-  if (aPixMap.IsNull())
+  Image_AlienPixMap aPixMap;
+  if (!view->ToPixMap (aPixMap, aWidth, aHeight, aBufferType))
   {
     di << "Dumping failed!\n";
     return 1;
   }
 
-  Image_CRawBufferData aRawBuffer;
-  aPixMap->AccessBuffer (aRawBuffer);
-  if (aRawBuffer.widthPx != aWidth || aRawBuffer.heightPx != aHeight)
+  if (aPixMap.SizeX() != Standard_Size(aWidth)
+   || aPixMap.SizeY() != Standard_Size(aHeight))
   {
-    std::cout << "Warning! Dumped dimensions " << aRawBuffer.widthPx << "x" << aRawBuffer.heightPx
-              << " are lesser than requested " << aWidth             << "x" << aHeight << "\n";
+    std::cout << "Warning! Dumped dimensions " << aPixMap.SizeX() << "x" << aPixMap.SizeY()
+              << " are lesser than requested " << aWidth          << "x" << aHeight << "\n";
   }
-  if (!aPixMap->Dump (argv[1]))
+  if (!aPixMap.Save (argv[1]))
   {
     di << "Saving image failed!\n";
     return 1;

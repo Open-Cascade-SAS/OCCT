@@ -28,6 +28,9 @@
 
 #define xTRACE 1
 
+#include <TCollection_AsciiString.hxx>
+#include <Image_AlienPixMap.hxx>
+
 #include <errno.h>
 #include <stdio.h>
 
@@ -35,9 +38,6 @@
 
 #include <Xw_Window.hxx>
 #include <Xw_Extension.h>
-
-#include <TCollection_AsciiString.hxx>
-#include <Image_PixMap.hxx>
 
 XW_STATUS Xw_save_xwd_image ( void*, void*, char* );
 XW_STATUS Xw_save_bmp_image ( void*, void*, char* );
@@ -63,15 +63,15 @@ Standard_Integer Xw_PixMap::PreferedDepth(
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-Xw_PixMap::Xw_PixMap ( const Handle(Aspect_Window)& aWindow,
-                       const Standard_Integer aWidth,
-                       const Standard_Integer anHeight,
-		       const Standard_Integer aDepth ) :
-	Aspect_PixMap(aWidth, anHeight, PreferedDepth(aWindow, aDepth))
+Xw_PixMap::Xw_PixMap (const Handle(Aspect_Window)& theWindow,
+                      const Standard_Integer       theWidth,
+                      const Standard_Integer       theHeight,
+		                  const Standard_Integer       theDepth)
+: myWindow (Handle(Xw_Window)::DownCast(theWindow)),
+  myWidth  (theWidth),
+  myHeight (theHeight),
+  myDepth  (PreferedDepth (theWindow, theDepth))
 {
-
-  myWindow = Handle(Xw_Window)::DownCast(aWindow);
-
   XW_EXT_WINDOW *pwindow = (XW_EXT_WINDOW*) myWindow->ExtendedWindow();
 
   Xw_print_error();
@@ -99,46 +99,54 @@ Xw_PixMap::Destroy ()
   }
 }
 
-
 ////////////////////////////////////////////////////////////
-Standard_Boolean Xw_PixMap::Dump (const Standard_CString theFilename,
-                                  const Standard_Real theGammaValue) const
+Standard_Boolean Xw_PixMap::Dump (const Standard_CString theFileName,
+                                  const Standard_Real    theGammaValue) const
 {
   // the attributes
   XWindowAttributes winAttr;
   XW_EXT_WINDOW *pwindow = (XW_EXT_WINDOW*) myWindow->ExtendedWindow();
   XGetWindowAttributes (_DISPLAY, _WINDOW, &winAttr);
-
-  // find the image
-  XImage* pximage = XGetImage (_DISPLAY, myPixmap,
-                               0, 0, myWidth, myHeight,
-                               AllPlanes, ZPixmap);
-  if (pximage == NULL)
-  {
-    return Standard_False;
-  }
-
-  if (winAttr.visual->c_class == TrueColor)
-  {
-    Standard_Byte* aDataPtr = (Standard_Byte* )pximage->data;
-    Handle(Image_PixMap) anImagePixMap = new Image_PixMap (aDataPtr,
-                                                           pximage->width, pximage->height,
-                                                           pximage->bytes_per_line,
-                                                           pximage->bits_per_pixel,
-                                                           Standard_True);
-    // destroy the image
-    XDestroyImage (pximage);
-
-    // save the image
-    return anImagePixMap->Dump (theFilename, theGammaValue);
-  }
-  else
+  if (winAttr.visual->c_class != TrueColor)
   {
     std::cerr << "Visual Type not supported!";
-    // destroy the image
-    XDestroyImage (pximage);
     return Standard_False;
   }
+
+  Image_AlienPixMap anImage;
+  bool isBigEndian = Image_PixMap::IsBigEndianHost();
+  const Standard_Size aSizeRowBytes = Standard_Size(winAttr.width) * 4;
+  if (!anImage.InitTrash (isBigEndian ? Image_PixMap::ImgRGB32 : Image_PixMap::ImgBGR32,
+                          Standard_Size(winAttr.width), Standard_Size(winAttr.height), aSizeRowBytes))
+  {
+    return Standard_False;
+  }
+  anImage.SetTopDown (true);
+
+  XImage* anXImage = XCreateImage (_DISPLAY, winAttr.visual,
+                                   32, ZPixmap, 0, (char* )anImage.ChangeData(), winAttr.width, winAttr.height, 32, int(aSizeRowBytes));
+  anXImage->bitmap_bit_order = anXImage->byte_order = (isBigEndian ? MSBFirst : LSBFirst);
+  if (XGetSubImage (_DISPLAY, myPixmap,
+                    0, 0, winAttr.width, winAttr.height,
+                    AllPlanes, ZPixmap, anXImage, 0, 0) == NULL)
+  {
+    anXImage->data = NULL;
+    XDestroyImage (anXImage);
+    return Standard_False;
+  }
+
+  // destroy the image
+  anXImage->data = NULL;
+  XDestroyImage (anXImage);
+
+  // save the image
+  if (Abs (theGammaValue - 1.0) > 0.001)
+  {
+    anImage.AdjustGamma (theGammaValue);
+  }
+
+  // save the image
+  return anImage.Save (theFileName);
 }
 
 ////////////////////////////////////////////////////////////

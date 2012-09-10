@@ -88,18 +88,16 @@ is
 				    IndexPixel from Aspect,
 				    IndexPixelMapHasher );
 
-    class PixMap;
-    ---Purpose: Aspect_PixMap implementation.
-
         -----------------------------
 	---Category: Imported types:
         -----------------------------
 
 	imported PixelAddress;
-
-    imported HPrivateImage;
-
-    imported CRawBufferData;
+	imported PixMap;
+	imported AlienPixMap;
+	imported PixMap_Handle;
+	imported AlienPixMap_Handle;
+	imported Diff;
 
         -----------------------------
         ---Category: The Enumerations
@@ -132,12 +130,7 @@ is
     	---Purpose: Type of dithering method.
     
     enumeration TypeOfImage is	TOI_ColorImage,
-                TOI_PseudoColorImage,
-                TOI_RGB,
-                TOI_RGBA,
-                TOI_RGBF,
-                TOI_RGBAF,
-                TOI_FLOAT
+                TOI_PseudoColorImage
     end TypeOfImage ;
 
     Zoom     ( aImage         : mutable Image from Image ;

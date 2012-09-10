@@ -31,7 +31,7 @@
 
 #include <WNT_Window.hxx>
 
-extern int DumpBitmapToFile( Handle(WNT_GraphicDevice)&, HDC, HBITMAP, char* );
+extern int DumpBitmapToFile (HBITMAP, const char* );
 
 #include <WNT_GraphicDevice.hxx>
 
@@ -50,15 +50,16 @@ Standard_Integer WNT_PixMap::PreferedDepth(
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
-WNT_PixMap::WNT_PixMap ( const Handle(Aspect_Window)& aWindow,
-                         const Standard_Integer aWidth,
-                         const Standard_Integer anHeight,
-                         const Standard_Integer aCDepth ) :
-Aspect_PixMap(aWidth, anHeight, PreferedDepth(aWindow, aCDepth))
+WNT_PixMap::WNT_PixMap (const Handle(Aspect_Window)& theWindow,
+                        const Standard_Integer       theWidth,
+                        const Standard_Integer       theHeight,
+                        const Standard_Integer       theDepth)
+: myWND    (theWindow),
+  myWidth  (theWidth),
+  myHeight (theHeight),
+  myDepth  (PreferedDepth (theWindow, theDepth))
 {
-  myWND = aWindow;
-
-  const Handle(WNT_Window)& hWindow = Handle(WNT_Window)::DownCast(aWindow);
+  const Handle(WNT_Window)& hWindow = Handle(WNT_Window)::DownCast(theWindow);
   HDC hdc = GetDC ( (HWND)(hWindow->HWindow()) );
   HDC hdcMem = CreateCompatibleDC ( hdc );
   ReleaseDC ( (HWND)(hWindow->HWindow()), hdc );
@@ -80,8 +81,8 @@ Aspect_PixMap(aWidth, anHeight, PreferedDepth(aWindow, aCDepth))
   ZeroMemory (  pBmi, sizeBmi  );
 
   pBmi->bmiHeader.biSize          = sizeof (BITMAPINFOHEADER); //sizeBmi
-  pBmi->bmiHeader.biWidth         = aWidth;
-  pBmi->bmiHeader.biHeight        = anHeight;
+  pBmi->bmiHeader.biWidth         = myWidth;
+  pBmi->bmiHeader.biHeight        = myHeight;
   pBmi->bmiHeader.biPlanes        = 1;
   pBmi->bmiHeader.biBitCount      = myDepth; //WIL001: was 24
   pBmi->bmiHeader.biCompression   = BI_RGB;
@@ -127,8 +128,8 @@ void WNT_PixMap::Destroy ()
 }
 
 ////////////////////////////////////////////////////////////
-Standard_Boolean WNT_PixMap::Dump ( const Standard_CString aFilename,
-                                   const Standard_Real aGammaValue ) const
+Standard_Boolean WNT_PixMap::Dump (const Standard_CString theFilename,
+                                   const Standard_Real    theGammaValue) const
 {
   // *** gamma correction must be implemented also on WNT system ...
   const Handle(WNT_Window) hWindow = Handle(WNT_Window)::DownCast(myWND);
@@ -138,7 +139,7 @@ Standard_Boolean WNT_PixMap::Dump ( const Standard_CString aFilename,
   if ( dev.IsNull() ) return Standard_False;
   //Aspect_PixmapError::Raise ( "WNT_GraphicDevice is NULL" );
 
-  return DumpBitmapToFile ( dev, (HDC)myDC, (HBITMAP)myBitmap, (Standard_PCharacter)aFilename );
+  return DumpBitmapToFile ((HBITMAP)myBitmap, theFilename);
 }
 
 ////////////////////////////////////////////////////////////

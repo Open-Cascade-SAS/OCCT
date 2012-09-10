@@ -87,8 +87,7 @@ uses
     ColorScale              from Aspect,
     PrintAlgo               from Aspect,
 
-    CRawBufferData          from Image,
-
+    BufferType              from Graphic3d,
     CBitFields8             from Graphic3d,
     CView                   from Graphic3d,
     GraphicDriver           from Graphic3d,
@@ -121,7 +120,9 @@ uses
     FontAspect              from OSD,
     AsciiString             from TCollection,
     ExtendedString          from TCollection,
-    CGraduatedTrihedron     from Graphic3d
+    CGraduatedTrihedron     from Graphic3d,
+
+    PixMap                  from Image
 
 raises
     TransformError          from Visual3d,
@@ -1238,7 +1239,8 @@ is
         ---Purpose: Change offscreen FBO viewport.
 
         BufferDump( me            : mutable;
-                    buffer        : in out CRawBufferData from Image )
+                    theImage      : in out PixMap from Image;
+                    theBufferType : BufferType from Graphic3d )
                    returns Boolean from Standard
         is static;
         ---Level: Public

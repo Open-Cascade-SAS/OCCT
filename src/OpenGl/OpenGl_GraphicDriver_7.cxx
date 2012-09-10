@@ -284,72 +284,88 @@ void OpenGl_GraphicDriver::FBOChangeViewport (const Graphic3d_CView& ,
   aFrameBuffer->ChangeViewport (theWidth, theHeight);
 }
 
-// OpenGL 1.2 stuff
-#ifndef GL_BGR
-  #define GL_BGR  0x80E0
-#endif
-#ifndef GL_BGRA
-  #define GL_BGRA 0x80E1
-#endif
-
-static inline GLenum TFormatToGLEnum (const TRawBufferDataFormat theTFormat)
+inline bool getDataFormat (const Image_PixMap& theData,
+                           GLenum&             thePixelFormat,
+                           GLenum&             theDataType)
 {
-  switch (theTFormat)
+  thePixelFormat = GL_RGB;
+  theDataType    = GL_UNSIGNED_BYTE;
+  switch (theData.Format())
   {
-    case TRGB:   return GL_RGB;
-    case TBGR:   return GL_BGR;
-    case TRGBA:  return GL_RGBA;
-    case TBGRA:  return GL_BGRA;
-    case TDepthComponent: return GL_DEPTH_COMPONENT;
-    case TRed:   return GL_RED;
-    case TGreen: return GL_GREEN;
-    case TBlue:  return GL_BLUE;
-    case TAlpha: return GL_ALPHA;
-    default:     return 0;
+    case Image_PixMap::ImgGray:
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgRGB:
+      thePixelFormat = GL_RGB;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgBGR:
+      thePixelFormat = GL_BGR;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgRGBA:
+    case Image_PixMap::ImgRGB32:
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgBGRA:
+    case Image_PixMap::ImgBGR32:
+      thePixelFormat = GL_BGRA;
+      theDataType    = GL_UNSIGNED_BYTE;
+      return true;
+    case Image_PixMap::ImgGrayF:
+      thePixelFormat = GL_DEPTH_COMPONENT;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgRGBF:
+      thePixelFormat = GL_RGB;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgBGRF:
+      thePixelFormat = GL_BGR;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgRGBAF:
+      thePixelFormat = GL_RGBA;
+      theDataType    = GL_FLOAT;
+      return true;
+    case Image_PixMap::ImgBGRAF:
+      thePixelFormat = GL_BGRA;
+      theDataType    = GL_FLOAT;
+      return true;
+    default:
+      return false;
   }
 }
 
-static inline GLenum TTypeToGLEnum (const TRawBufferDataType theTType)
+Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView&      theCView,
+                                                   Image_PixMap&               theImage,
+                                                   const Graphic3d_BufferType& theBufferType)
 {
-  switch (theTType)
-  {
-    case TUByte: return GL_UNSIGNED_BYTE;
-    case TFloat: return GL_FLOAT;
-    default:     return 0;
-  }
-}
-
-Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView& ACView, Image_CRawBufferData& theBuffer)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    return aCView->WS->BufferDump((OpenGl_FrameBuffer *)ACView.ptrFBO,theBuffer);
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  return (aCView != NULL) && aCView->WS->BufferDump ((OpenGl_FrameBuffer* )theCView.ptrFBO, theImage, theBufferType);
   return Standard_False;
 }
 
-Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer *theFBOPtr, Image_CRawBufferData& theBuffer)
+Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFBOPtr,
+                                               Image_PixMap&               theImage,
+                                               const Graphic3d_BufferType& theBufferType)
 {
-  GLenum aFormat = TFormatToGLEnum (theBuffer.format);
-  GLenum aType = TTypeToGLEnum (theBuffer.type);
-
-  // safe checks
-  if (aFormat == 0 || aType == 0 ||
-      theBuffer.widthPx == 0 || theBuffer.heightPx == 0 ||
-      theBuffer.dataPtr == NULL)
+  GLenum aFormat, aType;
+  if (theImage.IsEmpty()
+   || !getDataFormat (theImage, aFormat, aType)
+   || ((theBufferType == Graphic3d_BT_Depth) && (aFormat != GL_DEPTH_COMPONENT))
+   || !Activate())
   {
     return Standard_False;
   }
 
-  // activate OpenGL context
-  if (!Activate())
-    return Standard_False;
-
   // bind FBO if used
-  OpenGl_FrameBuffer* aFrameBuffer = theFBOPtr;
   GLint aReadBufferPrev = GL_BACK;
-  if (aFrameBuffer != NULL && aFrameBuffer->IsValid())
+  if (theFBOPtr != NULL && theFBOPtr->IsValid())
   {
-    aFrameBuffer->BindBuffer (GetGlContext());
+    theFBOPtr->BindBuffer (GetGlContext());
   }
   else
   {
@@ -361,19 +377,30 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer *theFBOPtr, Im
 
   GLint anAlignBack = 1;
   glGetIntegerv (GL_PACK_ALIGNMENT, &anAlignBack);
-  if (theBuffer.rowAligmentBytes == 0)
-  {
-    theBuffer.rowAligmentBytes = 1;
-  }
-  glPixelStorei (GL_PACK_ALIGNMENT, theBuffer.rowAligmentBytes);
+  GLint anExtraBytes = (GLint )theImage.RowExtraBytes();
+  GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
 
-  // read pixels
-  glReadPixels (0, 0, theBuffer.widthPx, theBuffer.heightPx, aFormat, aType, (GLvoid* )theBuffer.dataPtr);
+  if (anExtraBytes >= anAligment)
+  {
+    // copy row by row
+    for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+    {
+      glReadPixels (0, GLint(aRow), GLsizei (theImage.SizeX()), 1, aFormat, aType, theImage.ChangeRow (aRow));
+    }
+  }
+  else
+  {
+    // read pixels
+    glReadPixels (0, 0, GLsizei (theImage.SizeX()), GLsizei (theImage.SizeY()), aFormat, aType, theImage.ChangeData());
+    theImage.SetTopDown (false); // image bottom-up in OpenGL
+  }
+
   glPixelStorei (GL_PACK_ALIGNMENT, anAlignBack);
 
-  if (aFrameBuffer != NULL && aFrameBuffer->IsValid())
+  if (theFBOPtr != NULL && theFBOPtr->IsValid())
   {
-    aFrameBuffer->UnbindBuffer (GetGlContext());
+    theFBOPtr->UnbindBuffer (GetGlContext());
   }
   else
   {

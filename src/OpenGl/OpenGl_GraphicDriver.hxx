@@ -32,7 +32,6 @@
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Handle_AlienImage_AlienImage.hxx>
-#include <Image_CRawBufferData.hxx>
 
 #include <Aspect_Display.hxx>
 #include <Aspect_GradientFillMethod.hxx>
@@ -69,6 +68,7 @@
 #include <Graphic3d_Array2OfVertex.hxx>
 #include <Graphic3d_Array2OfVertexN.hxx>
 #include <Graphic3d_Array2OfVertexNT.hxx>
+#include <Graphic3d_BufferType.hxx>
 #include <NCollection_DataMap.hxx>
 
 class TColStd_Array1OfInteger;
@@ -82,6 +82,7 @@ class Graphic3d_Vertex;
 class Aspect_Array1OfEdge;
 class TCollection_ExtendedString;
 class AlienImage_AlienImage;
+class Image_PixMap;
 class TColStd_HArray1OfReal;
 class Handle(OpenGl_View);
 class Handle(OpenGl_Workspace);
@@ -262,7 +263,9 @@ public:
   //! Remove offscreen FBO <br>
   Standard_EXPORT void FBORelease (const Graphic3d_CView& view, Graphic3d_PtrFrameBuffer& fboPtr);
   //! Dump active rendering buffer into specified memory buffer. <br>
-  Standard_EXPORT Standard_Boolean BufferDump (const Graphic3d_CView& view, Image_CRawBufferData& buffer);
+  Standard_EXPORT Standard_Boolean BufferDump (const Graphic3d_CView&      theCView,
+                                               Image_PixMap&               theImage,
+                                               const Graphic3d_BufferType& theBufferType);
   Standard_EXPORT void SetGLLightEnabled (const Graphic3d_CView& view,const Standard_Boolean isEnabled) const;
   Standard_EXPORT Standard_Boolean IsGLLightEnabled (const Graphic3d_CView& view) const;
   //! Clear visualization data in graphical driver and stop <br>

@@ -30,7 +30,7 @@ class PixMap from WNT
     ---Keywords: Bitmap, Pixmap
 
 inherits
-    PixMap                from Aspect
+    Transient             from Standard
 
 uses
     Handle                from Aspect,
@@ -99,7 +99,10 @@ is
     returns Integer from Standard is private;
 
 fields
-    myDC       : Handle from Aspect is protected;
-    myBitmap   : Handle from Aspect is protected;
-    myWND      : Window from Aspect;
+    myDC     : Handle from Aspect is protected;
+    myBitmap : Handle from Aspect is protected;
+    myWND    : Window from Aspect;
+    myWidth  : Integer from Standard is protected;
+    myHeight : Integer from Standard is protected;
+    myDepth	 : Integer from Standard is protected;
 end PixMap;

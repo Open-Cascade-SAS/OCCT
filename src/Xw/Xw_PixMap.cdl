@@ -30,7 +30,7 @@ class PixMap from Xw
     ---Keywords: Bitmap, Pixmap, X11
 
 inherits
-    PixMap                from Aspect
+    Transient             from Standard
 uses
     Handle                from Aspect,
     Color                 from Quantity,
@@ -97,4 +97,7 @@ is
 fields
     myPixmap : Handle from Aspect is protected;
     myWindow : Window from Xw;
+    myWidth  : Integer from Standard is protected;
+    myHeight : Integer from Standard is protected;
+    myDepth	 : Integer from Standard is protected;
 end PixMap;

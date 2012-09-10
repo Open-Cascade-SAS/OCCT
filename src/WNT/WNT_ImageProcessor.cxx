@@ -43,7 +43,8 @@
 #include <Quantity_Color.hxx>
 #include <WNT_GraphicDevice.hxx>
 #include <WNT_TypeOfImage.hxx>
-#include <Image_PixMap.hxx>
+#include <Image_AlienPixMap.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //***//
 #define I_SUCCESS Standard_True
@@ -285,64 +286,45 @@ int __WNT_API SaveWindowToFile (
 
 }  // end SaveWindowToFile
 
-int DumpBitmapToFile (Handle(WNT_GraphicDevice)& , HDC ,
-                      HBITMAP theHBitmap,
-                      char* theFileName)
+int DumpBitmapToFile (HBITMAP     theHBitmap,
+                      const char* theFileName)
 {
-  // Copy data from HBITMAP
+  // get informations about the bitmap
   BITMAP aBitmap;
+  if (GetObject (theHBitmap, sizeof(BITMAP), &aBitmap) == 0)
+  {
+    return I_ERROR;
+  }
 
-  // Get informations about the bitmap
-  GetObject (theHBitmap, sizeof(BITMAP), (LPSTR )&aBitmap);
-  Standard_Integer aWidth  = aBitmap.bmWidth;
-  Standard_Integer aHeight = aBitmap.bmHeight;
+  Image_AlienPixMap anImage;
+  const Standard_Size aSizeRowBytes = Standard_Size(aBitmap.bmWidth) * 4;
+  if (!anImage.InitTrash (Image_PixMap::ImgBGR32, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
+  {
+    return I_ERROR;
+  }
+  anImage.SetTopDown (false);
 
   // Setup image data
   BITMAPINFOHEADER aBitmapInfo;
   memset (&aBitmapInfo, 0, sizeof(BITMAPINFOHEADER));
-  aBitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
-  aBitmapInfo.biWidth = aWidth;
-  aBitmapInfo.biHeight = aHeight; // positive means bottom-up!
-  aBitmapInfo.biPlanes = 1;
-  aBitmapInfo.biBitCount = 32;
+  aBitmapInfo.biSize        = sizeof(BITMAPINFOHEADER);
+  aBitmapInfo.biWidth       = aBitmap.bmWidth;
+  aBitmapInfo.biHeight      = aBitmap.bmHeight; // positive means bottom-up!
+  aBitmapInfo.biPlanes      = 1;
+  aBitmapInfo.biBitCount    = 32; // use 32bit for automatic word-alignment per row
   aBitmapInfo.biCompression = BI_RGB;
-
-  Standard_Integer aBytesPerLine = aWidth * 4;
-  Standard_Byte* aDataPtr = new Standard_Byte[aBytesPerLine * aHeight];
 
   // Copy the pixels
   HDC aDC = GetDC (NULL);
-  Standard_Boolean isSuccess
-    = GetDIBits (aDC,             // handle to DC
-                 theHBitmap,      // handle to bitmap
-                 0,               // first scan line to set
-                 aHeight,         // number of scan lines to copy
-                 aDataPtr,        // array for bitmap bits
-                 (LPBITMAPINFO )&aBitmapInfo, // bitmap data info
-                 DIB_RGB_COLORS   // RGB
-                 ) != 0;
+  Standard_Boolean isSuccess = GetDIBits (aDC, theHBitmap,
+                                          0,                           // first scan line to set
+                                          aBitmap.bmHeight,            // number of scan lines to copy
+                                          anImage.ChangeData(),        // array for bitmap bits
+                                          (LPBITMAPINFO )&aBitmapInfo, // bitmap data info
+                                          DIB_RGB_COLORS) != 0;
 
-  if (isSuccess)
-  {
-    Handle(Image_PixMap) anImagePixMap = new Image_PixMap (aDataPtr,
-                                                           aWidth, aHeight,
-                                                           aBytesPerLine,
-                                                           aBitmapInfo.biBitCount,
-                                                           Standard_False); // bottom-up!
-
-    // Release dump memory here
-    delete[] aDataPtr;
-
-    // save the image
-    anImagePixMap->Dump (theFileName);
-  }
-  else
-  {
-    // Release dump memory
-    delete[] aDataPtr;
-  }
   ReleaseDC (NULL, aDC);
-  return isSuccess ? I_SUCCESS : I_ERROR;
+  return (isSuccess && anImage.Save (theFileName)) ? I_SUCCESS : I_ERROR;
 }
 
 //***//
@@ -401,8 +383,7 @@ int SaveBitmapToFile (Handle(WNT_GraphicDevice)& gDev,
       hNewBmp = hBmp;
     }
 
-    retVal = DumpBitmapToFile (gDev, NULL,
-                               hNewBmp, fName);
+    retVal = DumpBitmapToFile (hNewBmp, fName);
   }  // end __try
   __finally {
     if (hNewBmp != NULL && newBmp) DeleteObject (hNewBmp);

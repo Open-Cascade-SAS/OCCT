@@ -71,6 +71,7 @@ uses
     PlaneAngle          from Quantity,
 
     AlienImage          from AlienImage,
+    PixMap              from Image,
 
     Array1OfEdge        from Aspect,
     CLayer2d            from Aspect,
@@ -93,7 +94,7 @@ uses
     CPlane              from Graphic3d,
     CStructure          from Graphic3d,
     CView               from Graphic3d,
-    CRawBufferData      from Image,
+    BufferType          from Graphic3d,
     Structure           from Graphic3d,
     TextPath            from Graphic3d,
     TypeOfComposition   from Graphic3d,
@@ -1008,8 +1009,9 @@ is
     ---Purpose: Change offscreen FBO viewport.
 
         BufferDump( me            : mutable;
-                    view          : CView from Graphic3d;
-                    buffer        : in out CRawBufferData from Image )
+                    theCView      : CView from Graphic3d;
+                    theImage      : in out PixMap from Image;
+                    theBufferType : BufferType from Graphic3d )
                    returns Boolean from Standard
     is deferred;
     ---Purpose: Dump active rendering buffer into specified memory buffer.

@@ -329,6 +329,7 @@ is
     ---------------------------
 
     imported PrimitiveArray;
+    imported BufferType;
 
     imported CBitFields20;
     ---Purpose: Defines the C structure

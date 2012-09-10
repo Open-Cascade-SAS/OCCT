@@ -348,10 +348,6 @@ is
         deferred class Window;
         ---Purpose: Defines a window.
         ---Category: Classes
-
-        deferred class PixMap;
-        ---Purpose: Defines a pixmap(bitmap)
-        ---Category: Classes
         
         deferred class GraphicDevice;
         ---Purpose: Defines a physical graphic device allowing to

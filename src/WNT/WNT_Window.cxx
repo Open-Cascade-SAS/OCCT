@@ -27,7 +27,7 @@
 
 #include <WNT_Window.ixx>
 
-#include <Image_PixMap.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <Aspect_Convert.hxx>
 
 #include <stdio.h>
@@ -733,7 +733,16 @@ void WNT_Window :: RestoreArea (
 Standard_Boolean WNT_Window::Dump (const Standard_CString theFilename,
                                    const Standard_Real theGammaValue) const
 {
-  return ToPixMap()->Dump (theFilename, theGammaValue);
+  Image_AlienPixMap anImg;
+  if (!ToPixMap (anImg) || anImg.IsEmpty())
+  {
+    return Standard_False;
+  }
+  if (Abs (theGammaValue - 1.0) > 0.001)
+  {
+    anImg.AdjustGamma (theGammaValue);
+  }
+  return anImg.Save (theFilename);
 }  // end WNT_Window :: Dump
 //***//
 //*************************** DumpArea ***********************************//
@@ -753,61 +762,50 @@ Standard_Boolean WNT_Window::DumpArea (const Standard_CString theFilename,
 }  // end WNT_Window :: DumpArea
 //***//
 
-static Handle(Image_PixMap) ConvertBitmap (HBITMAP theHBitmap)
+static Standard_Boolean ConvertBitmap (HBITMAP       theHBitmap,
+                                       Image_PixMap& thePixMap)
 {
-  Handle(Image_PixMap) anImagePixMap;
-  // Copy data from HBITMAP
-  BITMAP aBitmap;
-
   // Get informations about the bitmap
-  GetObject (theHBitmap, sizeof(BITMAP), (LPSTR )&aBitmap);
-  Standard_Integer aWidth  = aBitmap.bmWidth;
-  Standard_Integer aHeight = aBitmap.bmHeight;
+  BITMAP aBitmap;
+  if (GetObject (theHBitmap, sizeof(BITMAP), (LPSTR )&aBitmap) == 0)
+  {
+    return Standard_False;
+  }
+
+  const Standard_Size aSizeRowBytes = Standard_Size(aBitmap.bmWidth) * 4;
+  if (!thePixMap.InitTrash (Image_PixMap::ImgBGR32, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
+  {
+    return Standard_False;
+  }
+  thePixMap.SetTopDown (false);
 
   // Setup image data
   BITMAPINFOHEADER aBitmapInfo;
   memset (&aBitmapInfo, 0, sizeof(BITMAPINFOHEADER));
-  aBitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
-  aBitmapInfo.biWidth = aWidth;
-  aBitmapInfo.biHeight = aHeight; // positive means bottom-up!
-  aBitmapInfo.biPlanes = 1;
-  aBitmapInfo.biBitCount = 32;
+  aBitmapInfo.biSize        = sizeof(BITMAPINFOHEADER);
+  aBitmapInfo.biWidth       = aBitmap.bmWidth;
+  aBitmapInfo.biHeight      = aBitmap.bmHeight; // positive means bottom-up!
+  aBitmapInfo.biPlanes      = 1;
+  aBitmapInfo.biBitCount    = 32; // use 32bit for automatic word-alignment per row
   aBitmapInfo.biCompression = BI_RGB;
-
-  Standard_Integer aBytesPerLine = aWidth * 4;
-  Standard_Byte* aDataPtr = new Standard_Byte[aBytesPerLine * aHeight];
 
   // Copy the pixels
   HDC aDC = GetDC (NULL);
-  Standard_Boolean isSuccess
-    = GetDIBits (aDC,             // handle to DC
-                 theHBitmap,      // handle to bitmap
-                 0,               // first scan line to set
-                 aHeight,         // number of scan lines to copy
-                 aDataPtr,        // array for bitmap bits
-                 (LPBITMAPINFO )&aBitmapInfo, // bitmap data info
-                 DIB_RGB_COLORS   // RGB
-                 ) != 0;
-
-  if (isSuccess)
-  {
-    anImagePixMap = new Image_PixMap (aDataPtr,
-                                      aWidth, aHeight,
-                                      aBytesPerLine,
-                                      aBitmapInfo.biBitCount,
-                                      Standard_False); // bottom-up!
-  }
-  // Release dump memory
-  delete[] aDataPtr;
+  Standard_Boolean isSuccess = GetDIBits (aDC, theHBitmap,
+                                          0,                           // first scan line to set
+                                          aBitmap.bmHeight,            // number of scan lines to copy
+                                          thePixMap.ChangeData(),      // array for bitmap bits
+                                          (LPBITMAPINFO )&aBitmapInfo, // bitmap data info
+                                          DIB_RGB_COLORS) != 0;
   ReleaseDC (NULL, aDC);
-  return anImagePixMap;
+  return isSuccess;
 }
 
-Handle(Aspect_PixMap) WNT_Window::ToPixMap() const
+Standard_Boolean WNT_Window::ToPixMap (Image_PixMap& thePixMap) const
 {
   if (myDoubleBuffer && myHPixmap)
   {
-    return ConvertBitmap ((HBITMAP )myHPixmap);
+    return ConvertBitmap ((HBITMAP )myHPixmap, thePixMap);
   }
 
   RECT aRect;
@@ -825,13 +823,13 @@ Handle(Aspect_PixMap) WNT_Window::ToPixMap() const
   HBITMAP anHBitmapOld = (HBITMAP )SelectObject (aMemDC, anHBitmapDump);
   BitBlt (aMemDC, 0, 0, aWidth, aHeight, aSrcDC, 0, 0, SRCCOPY);
 
-  Handle(Image_PixMap) anImagePixMap = ConvertBitmap (anHBitmapDump);
+  Standard_Boolean isSuccess = ConvertBitmap (anHBitmapDump, thePixMap);
 
   // Free objects
   DeleteObject (SelectObject (aMemDC, anHBitmapOld));
   DeleteDC (aMemDC);
 
-  return anImagePixMap;
+  return isSuccess;
 }
 
 //****************************** Load ************************************//

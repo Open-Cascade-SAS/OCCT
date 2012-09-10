@@ -77,7 +77,7 @@
 #include <Xw_Cextern.hxx>
 //}
 #include <Aspect_Convert.hxx>
-#include <Image_PixMap.hxx>
+#include <Image_AlienPixMap.hxx>
 
 #include <Xw_Extension.h>
 
@@ -862,15 +862,14 @@ Standard_Boolean Xw_Window::DumpArea (const Standard_CString theFilename,
   return Standard_Boolean(aStatus);
 }
 
-Handle(Aspect_PixMap) Xw_Window::ToPixMap() const
+Standard_Boolean Xw_Window::ToPixMap (Image_PixMap& thePixMap) const
 {
-  Handle(Image_PixMap) anImagePixMap;
   int aDummy, aWidth, aHeight;
   XW_WINDOWSTATE state = Xw_get_window_position (MyExtendedWindow,
                                                  &aDummy, &aDummy, &aWidth, &aHeight);
   if (state == XW_WS_UNKNOWN)
   {
-    return anImagePixMap;
+    return Standard_False;
   }
 
   XW_EXT_IMAGEDATA* pimage = NULL;
@@ -895,22 +894,27 @@ Handle(Aspect_PixMap) Xw_Window::ToPixMap() const
 
   if (pimage == NULL)
   {
-    return anImagePixMap;
+    return Standard_False;
   }
 
   XImage* pximage = (pimage->zximage) ? pimage->zximage : pimage->pximage;
   XW_EXT_WINDOW* pwindow = (XW_EXT_WINDOW* )MyExtendedWindow;
-  if (pwindow->pcolormap->visual->c_class == TrueColor)
+  if (pwindow->pcolormap->visual->c_class != TrueColor)
   {
-    Standard_Byte* aDataPtr = (Standard_Byte* )pximage->data;
-    anImagePixMap = new Image_PixMap (aDataPtr,
-                                      pximage->width, pximage->height,
-                                      pximage->bytes_per_line,
-                                      pximage->bits_per_pixel,
-                                      Standard_True);
+    return Standard_False;
   }
+
+  const bool isBigEndian = (pximage->byte_order == MSBFirst);
+  Image_PixMap::ImgFormat aFormat = (pximage->bits_per_pixel == 32)
+                                  ? (isBigEndian ? Image_PixMap::ImgRGB32 : Image_PixMap::ImgBGR32)
+                                  : (isBigEndian ? Image_PixMap::ImgRGB   : Image_PixMap::ImgBGR);
+  Image_PixMap aWrapper;
+  aWrapper.InitWrapper (aFormat, (Standard_Byte* )pximage->data, pximage->width, pximage->height, pximage->bytes_per_line);
+  aWrapper.SetTopDown (true);
+
+  Standard_Boolean isSuccess = thePixMap.InitCopy (aWrapper);
   Xw_close_image (pimage);
-  return anImagePixMap;
+  return isSuccess;
 }
 
 Standard_Boolean Xw_Window::Load (const Standard_CString aFilename) const {

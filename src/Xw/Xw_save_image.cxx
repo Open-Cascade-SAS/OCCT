@@ -34,12 +34,13 @@
 # include <config.h>
 #endif
 
+#include <Image_AlienPixMap.hxx>
+#include <TCollection_AsciiString.hxx>
+
 #include <Xw_Extension.h>
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
 #endif
-
-#include <Image_PixMap.hxx>
 
 #ifdef XW_PROTOTYPE
 XW_STATUS Xw_save_image_adv (Display *aDisplay,Window aWindow,XWindowAttributes aWinAttr,XImage *aPximage,Colormap aColormap,int aNcolors,char *filename)
@@ -54,22 +55,22 @@ int ncolors;
 char *filename;
 #endif /*XW_PROTOTYPE*/
 {
-  if (aWinAttr.visual->c_class == TrueColor)
-  {
-    Standard_Byte* aDataPtr = (Standard_Byte* )aPximage->data;
-    Handle(Image_PixMap) anImagePixMap = new Image_PixMap (aDataPtr,
-                                                           aPximage->width, aPximage->height,
-                                                           aPximage->bytes_per_line,
-                                                           aPximage->bits_per_pixel,
-                                                           Standard_True);
-    // save the image
-    return anImagePixMap->Dump (filename) ? XW_SUCCESS : XW_ERROR;
-  }
-  else
+  if (aWinAttr.visual->c_class != TrueColor)
   {
     std::cerr << "Visual Type not supported!";
-    return XW_SUCCESS;
+    return XW_ERROR;
   }
+
+  const bool isBigEndian = (aPximage->byte_order == MSBFirst);
+  Image_PixMap::ImgFormat aFormat = (aPximage->bits_per_pixel == 32)
+                                  ? (isBigEndian ? Image_PixMap::ImgRGB32 : Image_PixMap::ImgBGR32)
+                                  : (isBigEndian ? Image_PixMap::ImgRGB   : Image_PixMap::ImgBGR);
+  Image_PixMap aWrapper;
+  aWrapper.InitWrapper (aFormat, (Standard_Byte* )aPximage->data, aPximage->width, aPximage->height, aPximage->bytes_per_line);
+  aWrapper.SetTopDown (true);
+
+  Image_AlienPixMap anAlienImage;
+  return (anAlienImage.InitCopy (aWrapper) && anAlienImage.Save (filename)) ? XW_SUCCESS : XW_ERROR;
 }
 
 #ifdef XW_PROTOTYPE

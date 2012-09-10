@@ -25,7 +25,7 @@
 #include <QADraw.hxx>
 #include <QADraw_DataMapOfAsciiStringOfAddress.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Image_PixMap.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <V3d_View.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
@@ -426,19 +426,18 @@ static Standard_Integer QAvzfit(Draw_Interpretor& di, Standard_Integer /*argc*/,
   return 0;
 }
 
-Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Handle(Aspect_PixMap) theImage,
+Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Image_PixMap&    theImage,
                                                  const Standard_Integer theCoordinateX,
                                                  const Standard_Integer theCoordinateY,
                                                  const Standard_Integer theRadius)
 {
   Handle(TColStd_HSequenceOfReal) aSeq = new TColStd_HSequenceOfReal();
-  if (theImage.IsNull()) {
+  if (theImage.IsEmpty()) {
     std::cerr << "The image is null.\n";
     return aSeq;
   }
-  Standard_Integer aWidth = 0;
-  Standard_Integer anHeight = 0;
-  theImage->Size (aWidth, anHeight);
+  Standard_Integer aWidth   = (Standard_Integer )theImage.SizeX();
+  Standard_Integer anHeight = (Standard_Integer )theImage.SizeY();
 
   Quantity_Color aColorTmp;
   for (Standard_Integer anXIter = theCoordinateX - theRadius;
@@ -456,7 +455,7 @@ Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Handle(Aspect_PixMap) the
         continue;
       }
       // Image_PixMap stores image upside-down in memory!
-      aColorTmp = theImage->PixelColor (anXIter, anYIter);
+      aColorTmp = theImage.PixelColor (anXIter, anYIter);
       aSeq->Append (aColorTmp.Red());
       aSeq->Append (aColorTmp.Green());
       aSeq->Append (aColorTmp.Blue());
@@ -482,8 +481,8 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& di, Standard_Integ
   Standard_Integer QAAISXWindowSize_X = 0;
   Standard_Integer QAAISXWindowSize_Y = 0;
   QAAISWindow->Size(QAAISXWindowSize_X, QAAISXWindowSize_Y);
-  Standard_ShortReal QAAISCoordinateX = atoi (argv [1]);
-  Standard_ShortReal QAAISCoordinateY = atoi (argv [2]);
+  Standard_ShortReal QAAISCoordinateX = atof (argv [1]);
+  Standard_ShortReal QAAISCoordinateY = atof (argv [2]);
 
   Standard_ShortReal QAAISColorRED_V = 0;
   Standard_ShortReal QAAISColorGRN_V = 0;
@@ -504,9 +503,9 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& di, Standard_Integ
     aRadius=0;
   }
 
-  Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (QAAISView->ToPixMap (QAAISXWindowSize_X, QAAISXWindowSize_Y, Image_TOI_RGB),
-                                                          QAAISCoordinateX, QAAISCoordinateY,
-                                                          aRadius);
+  Image_PixMap anImage;
+  QAAISView->ToPixMap (anImage, QAAISXWindowSize_X, QAAISXWindowSize_Y);
+  Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, QAAISCoordinateX, QAAISCoordinateY, aRadius);
   cout << "Length = " << aSeq->Length() << endl;
 
   Standard_Boolean IsNotEqual = Standard_True;
@@ -696,6 +695,7 @@ static Standard_Integer QAAISGetViewCharac (Draw_Interpretor& di, Standard_Integ
   di << "Proj on X : " << QAAISViewProjX << "; on Y: " << QAAISViewProjY << "; on Z: " << QAAISViewProjZ << "\n";
   di << "Up on X : " << QAAISViewUpX << "; on Y: " << QAAISViewUpY << "; on Z: " << QAAISViewUpZ << "\n";
   di << "At on X : " << QAAISViewAtX << "; on Y: " << QAAISViewAtY << "; on Z: " << QAAISViewAtZ << "\n";
+  return 0;
 }
 
 static Standard_Integer QAAISSetViewCharac (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -737,7 +737,7 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
     di << "Usage : " << argv[0] << " [3d|2d]" << "\n";
     return 1;
   }
-  Handle (Aspect_Window) QAAISWindow;
+  Handle(Xw_Window) QAAISWindow;
 
   Standard_Boolean is3d = 1;
 
@@ -748,7 +748,7 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
       di << "You must initialize AISViewer before this command." << "\n";
       return 1;
     }
-    QAAISWindow = QAAIS_MainView -> V3d_View::Window ();
+    QAAISWindow = Handle(Xw_Window)::DownCast (QAAIS_MainView->V3d_View::Window());
     is3d = 1;
   }
 
@@ -758,7 +758,7 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
       di << "You must initialize AIS 2D Viewer before this command." << "\n";
       return 1;
     }
-    QAAISWindow = V->Driver()->Window();
+    QAAISWindow = Handle(Xw_Window)::DownCast (V->Driver()->Window());
     is3d = 0;
   }
 
@@ -795,19 +795,20 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
   const char **argvvv = (const char **) bufff;
   while ( is3d ? ViewerMainLoop (argccc, argvvv) : ViewerMainLoop2d (argccc, argvvv)) {
     Handle(TColStd_HSequenceOfReal) aSeq;
+    Image_PixMap anImage;
     if(is3d)
     {
       ViewerTest::GetMousePosition (QAAIS_MousePoint_X, QAAIS_MousePoint_Y);
       Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView();
-      aSeq = GetColorOfPixel (QAAIS_MainView->ToPixMap (QAAIS_WindowSize_X, QAAIS_WindowSize_Y, Image_TOI_RGB),
-                              QAAIS_MousePoint_X, QAAIS_MousePoint_Y, 0);
+      QAAIS_MainView->ToPixMap (anImage, QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
     }
     else
     {
       Viewer2dTest::GetMousePosition (QAAIS_MousePoint_X, QAAIS_MousePoint_Y);
-      aSeq = GetColorOfPixel (QAAISWindow->ToPixMap(),
-                              QAAIS_MousePoint_X, QAAIS_MousePoint_Y, 0);
+      QAAISWindow->ToPixMap (anImage);
     }
+    aSeq = GetColorOfPixel (anImage, QAAIS_MousePoint_X, QAAIS_MousePoint_Y, 0);
+
     QAAIS_ColorRED = aSeq->Value(1);
     QAAIS_ColorGRN = aSeq->Value(2);
     QAAIS_ColorBLU = aSeq->Value(3);
@@ -869,8 +870,13 @@ static int QAAISGetPixelColor2d (Draw_Interpretor& di, Standard_Integer argc, co
     di << "You must initialize AIS 2D Viewer before this command." << "\n";
     return 1;
   }
+
   // Get Color
-  Handle(Aspect_Window) QAAISWindow = V->Driver()->Window();
+  #if (defined(_WIN32) || defined(__WIN32__))
+    Handle(WNT_Window) QAAISWindow = Handle(WNT_Window)::DownCast (V->Driver()->Window());
+  #else
+    Handle(Xw_Window)  QAAISWindow = Handle(Xw_Window )::DownCast (V->Driver()->Window());
+  #endif
 
   Standard_ShortReal aCoordinateX = atoi(argv[1]);
   Standard_ShortReal aCoordinateY = atoi(argv[2]);
@@ -895,9 +901,9 @@ static int QAAISGetPixelColor2d (Draw_Interpretor& di, Standard_Integer argc, co
     aRadius=0;
   }
 
-  Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (QAAISWindow->ToPixMap(),
-                                                          aCoordinateX, aCoordinateY,
-                                                          aRadius);
+  Image_PixMap anImage;
+  QAAISWindow->ToPixMap (anImage);
+  Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aCoordinateX, aCoordinateY, aRadius);
 
   Standard_Boolean IsNotEqual = Standard_True;
   Standard_Integer i;
@@ -1041,7 +1047,7 @@ static int V2dPan (Draw_Interpretor& di, int argc, const char ** argv)
     di << "use 'v2dinit' command before " << argv[0] << "\n";
     return -1;
   }
-  Viewer2dTest::CurrentView()->Pan(atof(argv[1]), atof(argv[2]));
+  Viewer2dTest::CurrentView()->Pan(atoi(argv[1]), atoi(argv[2]));
   return 0;
 }
 
@@ -1242,6 +1248,7 @@ static int QA2dGetIndexes (Draw_Interpretor& di, int /*argc*/, const char ** arg
   di << "Available font  indexes are " << aFontMin << " - " << aFontMax << "\n";
   aWindowDriver->ColorBoundIndexs(aColorMin, aColorMax);
   di << "Available color indexes are " << aColorMin << " - " << aColorMax << "\n";
+  return 0;
 }
 
 #if ! defined(WNT)

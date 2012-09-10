@@ -42,7 +42,6 @@ uses
         TypeOfResize       from Aspect,
         FillMethod         from Aspect,
         Handle             from Aspect,
-        PixMap             from Aspect,
         Ratio              from Quantity,
         Parameter          from Quantity,
         NameOfColor        from Quantity,
@@ -207,12 +206,6 @@ is
         ---Trigger: Raises if Window is not defined properly
         --          or the area is out of the Window.
         raises WindowError from Aspect is deferred;
-
-        ToPixMap ( me )
-        returns PixMap from Aspect
-        ---Level   : Public
-        ---Purpose : dump the full contents of the window to a pixmap.
-        is deferred;
 
         Load ( me ; aFilename : CString from Standard) returns Boolean
         ---Level: Advanced

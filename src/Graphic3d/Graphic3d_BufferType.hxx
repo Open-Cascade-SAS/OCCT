@@ -1,4 +1,4 @@
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -15,16 +15,15 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef _Image_CRawBufferData_HeaderFile
-#define _Image_CRawBufferData_HeaderFile
+#ifndef _Graphic3d_BufferType_H__
+#define _Graphic3d_BufferType_H__
 
-#include <InterfaceGraphic_RawBufferData.hxx>
+//! Define buffers available for dump
+typedef enum
+{
+  Graphic3d_BT_RGB,   //!< color buffer without alpha component
+  Graphic3d_BT_RGBA,  //!< color buffer
+  Graphic3d_BT_Depth  //!< depth buffer
+} Graphic3d_BufferType;
 
-typedef TRawBufferData Image_CRawBufferData;
-
-#if defined(__cplusplus) || defined(c_plusplus)
-  #include <Standard_Type.hxx>
-  const Handle(Standard_Type)& TYPE(Image_CRawBufferData);
-#endif
-
-#endif /*_Image_CRawBufferData_HeaderFile*/
+#endif // _Graphic3d_BufferType_H__

@@ -4277,9 +4277,10 @@ void Visual3d_View::FBOChangeViewport(Graphic3d_PtrFrameBuffer& theFBOPtr,
                                      theWidth, theHeight );
 }
 
-Standard_Boolean Visual3d_View::BufferDump (Image_CRawBufferData& theBuffer)
+Standard_Boolean Visual3d_View::BufferDump (Image_PixMap&               theImage,
+                                            const Graphic3d_BufferType& theBufferType)
 {
-  return MyGraphicDriver->BufferDump( MyCView, theBuffer);
+  return MyGraphicDriver->BufferDump (MyCView, theImage, theBufferType);
 }
 
 void Visual3d_View::EnableGLLight( const Standard_Boolean enable ) const
