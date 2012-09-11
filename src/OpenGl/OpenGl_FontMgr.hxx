@@ -23,7 +23,11 @@
 # include <stdlib.h>
 #endif
 
+#ifdef HAVE_FTGL_UPPERCASE
+#include <FTGL.h>
+#else
 #include <FTGL/ftgl.h>
+#endif
 
 #include <InterfaceGraphic.hxx>
 #include <TCollection_HAsciiString.hxx>
