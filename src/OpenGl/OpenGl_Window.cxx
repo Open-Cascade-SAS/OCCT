@@ -212,7 +212,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   }
   else
   {
-  #if defined(__linux) || defined(Linux)
+  #if defined(__linux) || defined(Linux) || defined(__APPLE__)
     if (aVis != NULL)
     {
       // check Visual for OpenGl context's parameters compability
