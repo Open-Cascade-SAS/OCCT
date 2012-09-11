@@ -18,7 +18,7 @@
 ############################################################################
 # This file defines scripts for execution of OCCT tests.
 # It should be loaded automatically when DRAW is started, and provides
-# two top-level commands: 'test' and 'testgrid'.
+# three top-level commands: 'test', 'testgrid', and 'testdiff'.
 # See OCCT Tests User Guide for description of the test system.
 #
 # Note: procedures with names starting with underscore are for internal use 
@@ -32,7 +32,7 @@ set _tests_verbose 0
 set _test_case_regexp {^CASE\s+([\w.-]+)\s+([\w.-]+)\s+([\w.-]+)\s*:\s*([\w]+)(.*)}
 
 # Basic command to run indicated test case in DRAW
-help test       {Run specified test case
+help test {Run specified test case
     Use: test group grid casename [verbose_level]
     Verbose level is 0 by default; can be set to 1 or 2}
 proc test {group grid casename {verbose {}}} {
@@ -54,7 +54,7 @@ proc test {group grid casename {verbose {}}} {
 }
 
 # Basic command to run indicated test case in DRAW
-help testgrid    {Run all tests, or specified group, or one grid
+help testgrid {Run all tests, or specified group, or one grid
     Use: testgrid logdir [group [grid]] [options...]
     Log directory should be empty (or non-existing)
     Allowed options are:
@@ -393,6 +393,98 @@ proc testgrid {logdir args} {
 	}
 	_log_xml_summary $logdir $xmlfile $log 0
 	puts "XML summary is saved to $xmlfile"
+    }
+
+    return
+}
+
+# Procedure to compare results of two runs of test cases
+help testdiff {Compare results of two executions of tests (CPU times, ...)
+    Use: testdiff dir1 dir2 [options...]
+    Where dir1 and dir2 are directories containing logs of two test runs.
+    Allowed options are:
+    -save filename: save resulting log in specified file
+    -subdir name: compare only specified subdirectory (can be nested)
+    -status {same|ok|all}: filter cases for comparing by their status:
+            same - only cases with same status are compared (default)
+            ok   - only cases with OK status in both logs are compared
+            all  - results are compared regardless of status
+    -verbose level: 
+            1 - output only differences 
+            2 - output list of logs and directories present in one of dirs only
+            3 - (default) output progress messages 
+}
+proc testdiff {dir1 dir2 args} {
+    if { "$dir1" == "$dir2" } {
+	error "Input directories are the same"
+    }
+
+    ######################################################
+    # check arguments
+    ######################################################
+
+    # treat options
+    set logfile ""
+    set basename ""
+    set status "same"
+    set verbose 3
+    for {set narg 0} {$narg < [llength $args]} {incr narg} {
+	set arg [lindex $args $narg]
+
+	# log file name
+	if { $arg == "-save" } {
+	    incr narg
+	    if { $narg < [llength $args] } { 
+		set logfile [lindex $args $narg]
+	    } else {
+		error "Error: Option -save must be followed by log file name"
+	    } 
+	    continue
+	}
+
+	# subdirectory to compare
+	if { $arg == "-subdir" } {
+	    incr narg
+	    if { $narg < [llength $args] } { 
+		set basename [lindex $args $narg]
+	    } else {
+		error "Error: Option -subdir must be followed by subdirectory path"
+	    }
+	    continue
+	}
+
+	# status filter
+	if { $arg == "-status" } {
+	    incr narg
+	    if { $narg < [llength $args] } { 
+		set status [lindex $args $narg]
+            } else { set status "" }
+	    if { "$status" != "same" && "$status" != "all" && "$status" != "ok" } {
+		error "Error: Option -status must be followed by one of \"same\", \"all\", or \"ok\""
+	    }
+	    continue
+	}
+
+	# verbose level
+	if { $arg == "-verbose" } {
+	    incr narg
+	    if { $narg < [llength $args] } { 
+		set verbose [expr [lindex $args $narg]]
+	    }
+	    continue
+	}
+
+#	if { [regexp {^-} $arg] } {
+	    error "Error: unsupported option \"$arg\""
+#	}
+    }
+
+    # run diff procedure (recursive)
+    _test_diff $dir1 $dir2 $basename $status $verbose log
+
+    # save result to log file
+    if { "$logfile" != "" } {
+        _log_save $logfile $log
     }
 
     return
@@ -1189,4 +1281,119 @@ proc locate_data_file {filename} {
     # raise error
     error [join [list "Error: file $filename could not be found neither in script" \
 		      "directories nor in paths indicated by CSF_TestDataPath environment variable"] "\n"]
+}
+
+# Procedure to make a diff and common of two lists
+proc _list_diff {list1 list2 _in1 _in2 _common} {
+    upvar $_in1 in1
+    upvar $_in2 in2
+    upvar $_common common
+
+    set in1 {}
+    set in2 {}
+    set common {}
+    foreach item $list1 {
+	if { [lsearch -exact $list2 $item] >= 0 } {
+	    lappend common $item
+        } else {
+	    lappend in1 $item
+	}
+    }
+    foreach item $list2 {
+	if { [lsearch -exact $common $item] < 0 } {
+	    lappend in2 $item
+	}
+    }
+    return
+}
+
+# procedure to load a file to Tcl string
+proc _read_file {filename} {
+    set fd [open $filename r]
+    set result [read -nonewline $fd]
+    close $fd
+    return $result
+}
+
+# Procedure to compare results of two runs of test cases
+proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
+    upvar $_logvar log
+
+    # prepare variable (array) for collecting statistics
+    if { "$_statvar" != "" } {
+        upvar $_statvar stat
+    } else {
+        set stat(cpu1) 0
+        set stat(cpu2) 0
+        set log {}
+    }
+
+    # first check subdirectories
+    set path1 [file join $dir1 $basename]
+    set path2 [file join $dir2 $basename]
+    set list1 [glob -directory $path1 -types d -tails -nocomplain *]
+    set list2 [glob -directory $path2 -types d -tails -nocomplain *]
+    if { [llength $list1] >0 || [llength $list2] > 0 } {
+        _list_diff $list1 $list2 in1 in2 common
+        if { "$verbose" > 1 } {
+            if { [llength $in1] > 0 } { _log_and_puts log "Only in $path1: $in1" }
+            if { [llength $in2] > 0 } { _log_and_puts log "Only in $path2: $in2" }
+        }
+        foreach subdir $common {
+            if { "$verbose" > 2 } {
+	        _log_and_puts log "Checking [file join $basename $subdir]"
+	    }
+	    _test_diff $dir1 $dir2 [file join $basename $subdir] $status $verbose log stat
+        }
+    } else {
+        # check log files (only if directory has no subdirs)
+        set list1 [glob -directory $path1 -types f -tails -nocomplain *.log]
+        set list2 [glob -directory $path2 -types f -tails -nocomplain *.log]
+        _list_diff $list1 $list2 in1 in2 common
+        if { "$verbose" > 1 } {
+            if { [llength $in1] > 0 } { _log_and_puts log "Only in $path1: $in1" }
+            if { [llength $in2] > 0 } { _log_and_puts log "Only in $path2: $in2" }
+        }
+        foreach logfile $common {
+            # load two logs
+	    set log1 [_read_file [file join $dir1 $basename $logfile]]
+	    set log2 [_read_file [file join $dir2 $basename $logfile]]
+
+            # check execution statuses
+            set status1 UNDEFINED
+            set status2 UNDEFINED
+	    if { ! [regexp {CASE [^:]*:\s*([\w]+)} $log1 res1 status1] ||
+	         ! [regexp {CASE [^:]*:\s*([\w]+)} $log2 res2 status2] ||
+	         "$status1" != "$status2" } {
+	        _log_and_puts log "STATUS [split $basename /] [file rootname $logfile]: $status1 / $status2"
+
+                # if test statuses are different, further comparison makes 
+ 		# no sense unless explicitly requested
+		if { "$status" != "all" } {
+                    continue
+		}
+	    }
+	    if { "$status" == "ok" && "$status1" != "OK" } { 
+		continue
+	    }
+
+            # check CPU times
+            set cpu1 UNDEFINED
+            set cpu2 UNDEFINED
+	    if { [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log1 res1 cpu1] &&
+	         [regexp {TOTAL CPU TIME:\s*([\d.]+)} $log2 res1 cpu2] } {
+                set stat(cpu1) [expr $stat(cpu1) + $cpu1]
+                set stat(cpu2) [expr $stat(cpu2) + $cpu2]
+
+                # compare CPU times with 10% precision (but not less 0.5 sec)
+	        if { [expr abs ($cpu1 - $cpu2) > 0.5 + 0.05 * abs ($cpu1 + $cpu2)] } {
+	            _log_and_puts log "CPU [split $basename /] [file rootname $logfile]: $cpu1 / $cpu2"
+                }
+	    }
+	}
+    }
+
+    if { "$_statvar" == "" } {
+        _log_and_puts log "Total CPU difference: $stat(cpu1) / $stat(cpu2)"
+    }
 }
