@@ -527,19 +527,19 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
 ################## WRITING FILE ##################"
 ###Open temporary file
 if { [string compare ${TypeOfFile} ""] == 0  } {
-    set saving [SaveAs D_First $WorkDirectory/D_First.dxc]
+    set saving [SaveAs D_First $WorkDirectory/${casename}_D_First.dxc]
     set closing [Close D_First]
-    set opening [Open $WorkDirectory/D_First.dxc D_Second]
+    set opening [Open $WorkDirectory/${casename}_D_First.dxc D_Second]
 } elseif {[string compare ${TypeOfFile} "igs"] == 0 } {
-    set writing [WriteIges D_First $WorkDirectory/D_First.igs]
-    set reading [ReadIges D_Second $WorkDirectory/D_First.igs]
+    set writing [WriteIges D_First $WorkDirectory/${casename}_D_First.igs]
+    set reading [ReadIges D_Second $WorkDirectory/${casename}_D_First.igs]
 } elseif {[string compare ${TypeOfFile} "stp"] == 0 } {
-    set writing [WriteStep D_First $WorkDirectory/D_First.stp]
-    set reading [ReadStep D_Second $WorkDirectory/D_First.stp]
+    set writing [WriteStep D_First $WorkDirectory/${casename}_D_First.stp]
+    set reading [ReadStep D_Second $WorkDirectory/${casename}_D_First.stp]
 } elseif {[string compare ${TypeOfFile} "brep"] == 0 } {
     XGetOneShape Shape1 D_First
-    set saving [save Shape1 $WorkDirectory/D_First.brep]
-    restore $WorkDirectory/D_First.brep NewShape1 
+    set saving [save Shape1 $WorkDirectory/${casename}_D_First.brep]
+    restore $WorkDirectory/${casename}_D_First.brep NewShape1 
     XNewDoc D_Second
     XAddShape D_Second NewShape1 
 } else {
@@ -548,13 +548,13 @@ if { [string compare ${TypeOfFile} ""] == 0  } {
 }
 
 if { [string compare ${TypeOfFile} ""] == 0  } {
-    catch {[file delete $WorkDirectory/D_First.dxc]}
+    catch {[file delete $WorkDirectory/${casename}_D_First.dxc]}
 } elseif {[string compare ${TypeOfFile} "igs"] == 0 } {
-    catch {[file delete $WorkDirectory/D_First.igs]}    
+    catch {[file delete $WorkDirectory/${casename}_D_First.igs]}    
 } elseif {[string compare ${TypeOfFile} "stp"] == 0} {
-    catch {[file delete $WorkDirectory/D_First.stp]}
+    catch {[file delete $WorkDirectory/${casename}_D_First.stp]}
 } elseif {[string compare ${TypeOfFile} "brep"] == 0} {
-    catch {[file delete $WorkDirectory/D_First.brep]}
+    catch {[file delete $WorkDirectory/${casename}_D_First.brep]}
 }
 # Get information
 # Get shape for standard analysis
@@ -923,7 +923,7 @@ if {[isdraw result]} {
     smallview
     donly result
     fit
-    xwd $imagedir/photo.gif
+    xwd $imagedir/${test_image}.gif
 }
 
 if {[expr $ErrorCode == 2]} { 
