@@ -24,7 +24,7 @@
 #endif
 
 #ifdef HAVE_FTGL_UPPERCASE
-#include <FTGL.h>
+#include <FTGLTextureFont.h>
 #else
 #include <FTGL/ftgl.h>
 #endif
