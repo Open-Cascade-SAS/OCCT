@@ -307,6 +307,11 @@ static
 				   const TopoDS_Face& aF1,
 				   const TopoDS_Face& aF2,
 				   const Handle(IntTools_Context)& aCtx);
+
+static
+  Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
+                               const TopoDS_Face& aFace);
+
 //
 static
   Standard_Real FindMaxSquareDistance (const Standard_Real aA,
@@ -1046,7 +1051,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 				    const Handle(Adaptor3d_TopolTool)& dom1,
 				    const Handle(Adaptor3d_TopolTool)& dom2) 
 {
-  Standard_Boolean bDone, rejectSurface, reApprox, bAvoidLineConstructor;
+  Standard_Boolean bDone, rejectSurface, reApprox, bAvoidLineConstructor,
+                   bPCurvesOk;
   Standard_Boolean ok;
   Standard_Integer i, j, aNbParts;
   Standard_Real fprm, lprm;
@@ -1060,6 +1066,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   //
   rejectSurface = Standard_False;
   reApprox = Standard_False;
+  //
+  bPCurvesOk = Standard_True;
  
  reapprox:;
   
@@ -2006,7 +2014,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 		    goto reapprox;
 		  }
 		}
-		// ###########################################
+                // ###########################################
+                bPCurvesOk = CheckPCurve(BS1, myFace2);
 		aCurve.SetSecondCurve2d(BS1);
 	      }
 	      else {
@@ -2031,7 +2040,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 		    goto reapprox;
 		  }
 		}
-		// ###########################################
+                // ###########################################
+                bPCurvesOk = bPCurvesOk && CheckPCurve(BS2, myFace1);
 		aCurve.SetFirstCurve2d(BS2);
 	      }
 	      else { 
@@ -2040,7 +2050,35 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 		aCurve.SetFirstCurve2d(H1);
 	      }
 	      //
-	      mySeqOfCurve.Append(aCurve);
+              //if points of the pcurves are out of the faces bounds
+              //create 3d and 2d curves without approximation
+              if (!bPCurvesOk) {
+                Handle(Geom2d_BSplineCurve) H1, H2;
+		bPCurvesOk = Standard_True;
+                // 	  
+                Handle(Geom_Curve) aBSp=MakeBSpline(WL,ifprm, ilprm);
+                
+                if(myApprox1) {
+                  H1 = MakeBSpline2d(WL, ifprm, ilprm, Standard_True);
+		  bPCurvesOk = CheckPCurve(H1, myFace1);
+                }
+                
+                if(myApprox2) {
+                  H2 = MakeBSpline2d(WL, ifprm, ilprm, Standard_False);
+		  bPCurvesOk = bPCurvesOk && CheckPCurve(H2, myFace2);
+                }
+                //
+		//if pcurves created without approximation are out of the 
+		//faces bounds, use approximated 3d and 2d curves
+		if (bPCurvesOk) {
+		  IntTools_Curve aIC(aBSp, H1, H2);
+		  mySeqOfCurve.Append(aIC);
+		} else {
+		  mySeqOfCurve.Append(aCurve);
+		}
+              } else {
+                mySeqOfCurve.Append(aCurve);
+              }
 	    }
 	    else { 
 	      const AppParCurves_MultiBSpCurve& mbspc = theapp3d.Value(j);
@@ -4839,4 +4877,59 @@ Standard_Real MaxSquareDistance (const Standard_Real aT,
   }
   //
   return aD2Max;
+}
+
+//=======================================================================
+//function : CheckPCurve
+//purpose  : Checks if points of the pcurve are out of the face bounds.
+//=======================================================================
+  Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
+                               const TopoDS_Face& aFace) 
+{
+  const Standard_Integer NPoints = 23;
+  Standard_Real umin,umax,vmin,vmax;
+
+  BRepTools::UVBounds(aFace, umin, umax, vmin, vmax);
+  Standard_Real tolU = Max ((umax-umin)*0.01, Precision::Confusion());
+  Standard_Real tolV = Max ((vmax-vmin)*0.01, Precision::Confusion());
+  Standard_Real fp = aPC->FirstParameter();
+  Standard_Real lp = aPC->LastParameter();
+  Standard_Real step = (lp-fp)/(NPoints+1);
+
+  // adjust domain for periodic surfaces
+  TopLoc_Location aLoc;
+  Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace, aLoc);
+  if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    aSurf = (Handle(Geom_RectangularTrimmedSurface)::DownCast(aSurf))->BasisSurface();
+
+  gp_Pnt2d pnt = aPC->Value((fp+lp)/2);
+  Standard_Real u,v;
+  pnt.Coord(u,v);
+
+  if (aSurf->IsUPeriodic()) {
+    Standard_Real aPer = aSurf->UPeriod();
+    Standard_Integer nshift = (Standard_Integer) ((u-umin)/aPer);
+    if (u < umin+aPer*nshift) nshift--;
+    umin += aPer*nshift;
+    umax += aPer*nshift;
+  }
+  if (aSurf->IsVPeriodic()) {
+    Standard_Real aPer = aSurf->VPeriod();
+    Standard_Integer nshift = (Standard_Integer) ((v-vmin)/aPer);
+    if (v < vmin+aPer*nshift) nshift--;
+    vmin += aPer*nshift;
+    vmax += aPer*nshift;
+  }
+
+  Standard_Integer i;
+  for (i=1; i <= NPoints; i++) {
+    Standard_Real p = fp + i * step;
+    pnt = aPC->Value(p);
+    pnt.Coord(u,v);
+    if (umin-u > tolU || u-umax > tolU ||
+        vmin-v > tolV || v-vmax > tolV)
+      return Standard_False;
+  }
+  return Standard_True;
+
 }
