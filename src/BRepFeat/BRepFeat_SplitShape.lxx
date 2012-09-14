@@ -60,6 +60,15 @@ inline void BRepFeat_SplitShape::Init(const TopoDS_Shape& S)
   }
 }
 
+//=======================================================================
+//function : SetCheckInterior
+//purpose  : 
+//=======================================================================
+
+inline void BRepFeat_SplitShape::SetCheckInterior(const Standard_Boolean ToCheckInterior)
+{
+  myWOnShape->SetCheckInterior(ToCheckInterior);
+}
 
 //=======================================================================
 //function : Add

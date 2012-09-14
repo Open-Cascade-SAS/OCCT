@@ -48,6 +48,11 @@ is
     
     	is static;
 
+    SetCheckInterior(me: mutable; ToCheckInterior: Boolean from Standard)
+	---Purpose: Set the flag of check internal intersections
+	--          default value is True (to check)
+	---C++: inline      
+    	is static;
 
     Bind(me: mutable; W: Wire from TopoDS;
                       F: Face from TopoDS)
@@ -148,6 +153,7 @@ fields
     myShape : Shape                      from TopoDS;
     myMapEF : IndexedDataMapOfShapeShape from TopTools;
     myFacesWithSection : MapOfShape      from TopTools;
+    myCheckInterior : Boolean            from Standard;
     myMap   : DataMapOfShapeShape        from TopTools;
     myDone  : Boolean                    from Standard;
     myIndex : Integer                    from Standard;

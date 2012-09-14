@@ -90,6 +90,8 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <V3d_View.hxx>
+#include <BRepFeat_SplitShape.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 
 #include <tcl.h>
 
@@ -5280,6 +5282,54 @@ Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
+Standard_Integer OCC23429(Draw_Interpretor& di,
+                          Standard_Integer narg, const char** a)
+{
+  if (narg < 4) return 1;
+  
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull()) return 1;
+  
+  BRepFeat_SplitShape Spls(aShape);
+  Spls.SetCheckInterior(Standard_False);
+
+  TopoDS_Shape aTool = DBRep::Get(a[3]);
+
+  BRepAlgoAPI_Section Builder(aShape, aTool, Standard_False);
+  Builder.ComputePCurveOn1(Standard_True);
+  if (narg == 5)
+    Builder.Approximation(Standard_True); 
+  Builder.Build();
+  TopoDS_Shape aSection = Builder.Shape();
+
+  TopExp_Explorer ExpSec(aSection, TopAbs_EDGE);
+  for (; ExpSec.More(); ExpSec.Next())
+  {
+    TopoDS_Edge anEdge = TopoDS::Edge(ExpSec.Current());
+    Handle(Geom2d_Curve) thePCurve;
+    Handle(Geom_Surface) theSurface;
+    TopLoc_Location theLoc;
+    Standard_Real fpar, lpar;
+    BRep_Tool::CurveOnSurface(anEdge, thePCurve, theSurface, theLoc, fpar, lpar);
+    TopoDS_Face aFace;
+    TopExp_Explorer ExpShape(aShape, TopAbs_FACE);
+    for (; ExpShape.More(); ExpShape.Next())
+    {
+      aFace = TopoDS::Face(ExpShape.Current());
+      TopLoc_Location aLoc;
+      Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace, aLoc);
+      if (aSurface == theSurface && aLoc == theLoc)
+        break;
+    }
+    Spls.Add(anEdge, aFace);
+  }
+
+  TopoDS_Shape Result = Spls.Shape();
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
 #include <BOPTColStd_CArray1OfInteger.hxx>
 //=======================================================================
 //function : DumpArray
@@ -5463,5 +5513,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22762", "OCC22762 x1 y1 z1 x2 y2 z3", __FILE__, OCC22762, group);
   theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
+  theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
   return;
 }

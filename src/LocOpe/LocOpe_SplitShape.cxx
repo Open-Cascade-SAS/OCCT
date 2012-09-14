@@ -818,12 +818,23 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
     }
     aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
     C2d = BRep_Tool::CurveOnSurface(LastEdge, TopoDS::Face(aLocalFace), f, l);
+    Standard_Real dpar = (l - f)*0.01;
  
     if (LastEdge.Orientation() == TopAbs_FORWARD) {
       C2d->D1(l,plast,dlast);
+      if (dlast.Magnitude() < gp::Resolution())
+      {
+        gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
+        dlast.SetXY(plast.XY() - PrevPnt.XY());
+      }
     }
     else {
       C2d->D1(f,plast,dlast);
+      if (dlast.Magnitude() < gp::Resolution())
+      {
+        gp_Pnt2d NextPnt = C2d->Value(f + dpar);
+        dlast.SetXY(NextPnt.XY() - plast.XY());
+      }
       dlast.Reverse();
     }
 
@@ -865,12 +876,23 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
         TopoDS_Shape aLocalFace  = FaceRef.Oriented(wfirst.Orientation());
         C2d = BRep_Tool::CurveOnSurface(TopoDS::Edge(itm.Key()),
                                         TopoDS::Face(aLocalFace), f, l);
+        Standard_Real dpar = (l - f)*0.01;
 
         if (itm.Key().Orientation() == TopAbs_FORWARD) {
           C2d->D1(l,plast,dlast);
+          if (dlast.Magnitude() < gp::Resolution())
+          {
+            gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
+            dlast.SetXY(plast.XY() - PrevPnt.XY());
+          }
         }
         else {
           C2d->D1(f,plast,dlast);
+          if (dlast.Magnitude() < gp::Resolution())
+          {
+            gp_Pnt2d NextPnt = C2d->Value(f + dpar);
+            dlast.SetXY(NextPnt.XY() - plast.XY());
+          }
           dlast.Reverse();
         }
       }
@@ -944,19 +966,12 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
     }
     
     newW1.Oriented(orfila);
-    BRepTopAdaptor_FClass2d classif(newF1,Precision::PConfusion());
-    if (classif.PerformInfinitePoint() == TopAbs_OUT) {
-      BRepTopAdaptor_FClass2d classi(newF2,Precision::PConfusion());
-      if (classi.PerformInfinitePoint() == TopAbs_IN) {
-        TopoDS_Face tempF = newF2;
-        newF2 = newF1;
-        newF1 = tempF;
-        newW2.Oriented(orfila);
-        newW1.Oriented(TopAbs_FORWARD);
-      }
-    }
+    newW2.Oriented(orfila);
+    
     B.Add(newF1,newW1);
+    BRepTools::Write(newF1, "k:/queries/WrongBOP/NewF1.brep");
     B.Add(newF2,newW2);
+    BRepTools::Write(newF2, "k:/queries/WrongBOP/NewF2.brep");
     
     for (exp.ReInit(); exp.More(); exp.Next()) {
       const TopoDS_Wire& wir = TopoDS::Wire(exp.Current());
@@ -1380,6 +1395,7 @@ static void ChoixUV(const TopoDS_Edge& Last,
   gp_Dir2d ref2d(dlst);
 
   Handle(Geom2d_Curve) C2d;
+  Standard_Real dpar;
 
   Standard_Integer index = 0, imin=0;
   Standard_Real  angmax = -M_PI, dist, ang;
@@ -1388,14 +1404,25 @@ static void ChoixUV(const TopoDS_Edge& Last,
   for (It.Initialize(Poss); It.More(); It.Next()) {
     index++;
     C2d = BRep_Tool::CurveOnSurface(TopoDS::Edge(It.Key()),F,f,l);
+    dpar = (l - f)*0.01;
     if (It.Key().Orientation() == TopAbs_FORWARD) {
       //      p2d = C2d->Value(f);
       C2d->D1(f,p2d,v2d);
+      if (v2d.Magnitude() < gp::Resolution())
+      {
+        gp_Pnt2d NextPnt = C2d->Value(f + dpar);
+        v2d.SetXY(NextPnt.XY() - p2d.XY());
+      }
       vtx = TopExp::FirstVertex(TopoDS::Edge(It.Key()));
     }
     else {
       //      p2d = C2d->Value(l);
       C2d->D1(l,p2d,v2d);
+      if (v2d.Magnitude() < gp::Resolution())
+      {
+        gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
+        v2d.SetXY(p2d.XY() - PrevPnt.XY());
+      }
       v2d.Reverse();
       vtx = TopExp::LastVertex(TopoDS::Edge(It.Key()));
     }
@@ -1426,13 +1453,24 @@ static void ChoixUV(const TopoDS_Edge& Last,
   for (index = 1, It.Initialize(Poss); It.More(); It.Next()) {
     if (index == imin) {
       C2d = BRep_Tool::CurveOnSurface(TopoDS::Edge(It.Key()),F,f,l);
+      dpar = (l - f)*0.01;
       if (It.Key().Orientation() == TopAbs_FORWARD) {
         //	plst = C2d->Value(l);
         C2d->D1(l,plst,dlst);
+        if (dlst.Magnitude() < gp::Resolution())
+        {
+          gp_Pnt2d PrevPnt = C2d->Value(l - dpar);
+          dlst.SetXY(plst.XY() - PrevPnt.XY());
+        }
       }
       else {
         //	plst = C2d->Value(f);
         C2d->D1(f,plst,dlst);
+        if (dlst.Magnitude() < gp::Resolution())
+        {
+          gp_Pnt2d NextPnt = C2d->Value(f + dpar);
+          dlst.SetXY(NextPnt.XY() - plst.XY());
+        }
         dlst.Reverse();
       }
       break;

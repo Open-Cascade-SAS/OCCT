@@ -1,0 +1,24 @@
+puts "============"
+puts "CR23429"
+puts "============"
+puts ""
+##########################################################################################################
+# BRepFeat_SplitShape algorithm misses some section edges while building result from customer's shape
+##########################################################################################################
+pload QAcommands
+
+restore [locate_data_file CR23429-Shape1.brep] a
+restore [locate_data_file CR23429-Shape3.brep] b
+
+OCC23429 result a b
+
+set square 1120.52
+
+set 2dviewer 1
+
+
+
+
+
+
+

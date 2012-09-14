@@ -72,6 +72,11 @@ is
 	---C++: inline      
     	is static;
 
+    SetCheckInterior(me: in out; ToCheckInterior: Boolean from Standard)
+	---Purpose: Set the flag of check internal intersections
+	--          default value is True (to check)
+	---C++: inline      
+    	is static;
 
     Add(me: in out; W: Wire from TopoDS;
     	            F: Face from TopoDS)

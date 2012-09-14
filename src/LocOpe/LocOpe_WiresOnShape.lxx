@@ -21,6 +21,16 @@
 
 
 //=======================================================================
+//function : SetCheckInterior
+//purpose  : 
+//=======================================================================
+
+inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean ToCheckInterior)
+{
+  myCheckInterior = Standard_True;
+}
+
+//=======================================================================
 //function : IsDone
 //purpose  : 
 //=======================================================================

@@ -90,7 +90,7 @@ static void FindInternalIntersections(const TopoDS_Edge&,
 //=======================================================================
 
 LocOpe_WiresOnShape::LocOpe_WiresOnShape(const TopoDS_Shape& S):
-   myShape(S),myDone(Standard_False)
+  myShape(S),myCheckInterior(Standard_True),myDone(Standard_False)
 {}
 
 
@@ -103,6 +103,7 @@ LocOpe_WiresOnShape::LocOpe_WiresOnShape(const TopoDS_Shape& S):
 void LocOpe_WiresOnShape::Init(const TopoDS_Shape& S)
 {
    myShape = S;
+   myCheckInterior = Standard_True;
    myDone = Standard_False;
    myMap.Clear();
    myMapEF.Clear();
@@ -240,7 +241,8 @@ void LocOpe_WiresOnShape::BindAll()
     if (aPCurve.IsNull())
       continue;
 
-    FindInternalIntersections(edg, fac, Splits, myMap, theMap);
+    if (myCheckInterior)
+      FindInternalIntersections(edg, fac, Splits, myMap, theMap);
   }
 
   for (Ind = 1; Ind <= Splits.Extent(); Ind++)
