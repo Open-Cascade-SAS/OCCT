@@ -51,8 +51,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Pln.hxx>
 #include <GeomLib_IsPlanarSurface.hxx>
-
-
+#include <NCollection_Handle.hxx>
 #include <ModelDefinitions.hxx>
 
 #ifdef WNT
@@ -340,7 +339,6 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
 						 const Handle(TNaming_NamedShape)& theSourceNS,
 						 const gp_Trsf& theTrsf) const 
 {
-  TNaming_Builder aBuilder (theResultLabel);
   if(theSourceNS.IsNull() || theSourceNS->IsEmpty())
     return;
   const TopoDS_Shape& aSrcShape  = theSourceNS->Get();
@@ -377,6 +375,7 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
   TopoDS_Shape aNewSh;
   if (aTMap.IsBound(aSrcShape)) aNewSh  = aTMap(aSrcShape);
   if(!aNewSh.IsNull()) {
+    TNaming_Builder aBuilder (theResultLabel);
     aBuilder.Modify(aSrcShape, aNewSh);
     aTMap.UnBind(aSrcShape);
   }
@@ -399,66 +398,51 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
     if(it.Value() > aNextTag)
       aNextTag = it.Value();
   }
+  NCollection_Handle<TNaming_Builder> aFBuilder, anEBuilder, aVBuilder;
   TopTools_DataMapIteratorOfDataMapOfShapeShape anIt(aTMap);
-  Standard_Boolean aF, anE, aV;
-  aF = anE = aV = Standard_True;
-  TNaming_Builder* pB1;
-  TNaming_Builder* pB2;
-  TNaming_Builder* pB3;
   for(;anIt.More();anIt.Next()) {
     const TopoDS_Shape& aKey = anIt.Key();
     TopoDS_Shape newShape = anIt.Value();
+    if (SubShapes.IsBound(newShape)) {
+      newShape.Orientation((SubShapes(newShape)).Orientation());
+    }
     if(isPrimitive) {
-      if (SubShapes.IsBound(newShape)) {
-	newShape.Orientation((SubShapes(newShape)).Orientation());
-      }
       if(aTagMap.IsBound(aKey)) {
-	const TDF_Label& aLabel = theResultLabel.FindChild(aTagMap.Find(aKey),  Standard_True);
-	TNaming_Builder aBuilder(aLabel);
-	aBuilder.Modify(aKey, newShape);
+        const TDF_Label& aLabel = theResultLabel.FindChild(aTagMap.Find(aKey),  Standard_True);
+        TNaming_Builder aBuilder(aLabel);
+        aBuilder.Modify(aKey, newShape);
       } else {
-	aNextTag++;
-	const TDF_Label& aLabel = theResultLabel.FindChild(aNextTag,  Standard_True);
-	TNaming_Builder aBuilder(aLabel);
-	aBuilder.Modify(aKey, newShape);
+        aNextTag++;
+        const TDF_Label& aLabel = theResultLabel.FindChild(aNextTag,  Standard_True);
+        TNaming_Builder aBuilder(aLabel);
+        aBuilder.Modify(aKey, newShape);
       }
-    } else {
-    if(aKey.ShapeType() == TopAbs_FACE) {
-      if(aF) {
-	const TDF_Label& aFLabel = theResultLabel.FindChild(FACES_TAG,  Standard_True);
-	TNaming_Builder aFBuilder(aFLabel);
-	pB1 = &aFBuilder;
-	aF = Standard_False; 
+    } 
+    else {
+      if(aKey.ShapeType() == TopAbs_FACE) {
+        if (aFBuilder.IsNull()) 
+        {
+          const TDF_Label& aFLabel = theResultLabel.FindChild(FACES_TAG,  Standard_True);
+          aFBuilder = new TNaming_Builder (aFLabel);
+        }
+        aFBuilder->Modify(anIt.Key(), newShape);
       }
-      if (SubShapes.IsBound(newShape)) {
-	newShape.Orientation((SubShapes(newShape)).Orientation());
+      else if(aKey.ShapeType() == TopAbs_EDGE) {
+        if (anEBuilder.IsNull()) 
+        {
+          const TDF_Label& aELabel = theResultLabel.FindChild(EDGES_TAG,  Standard_True);
+          anEBuilder = new TNaming_Builder (aELabel);
+        }
+        anEBuilder->Modify(anIt.Key(), newShape);
       }
-      pB1->Modify(anIt.Key(), newShape);
+      else if(aKey.ShapeType() == TopAbs_VERTEX) {
+        if (aVBuilder.IsNull())
+        {
+          const TDF_Label& aVLabel = theResultLabel.FindChild(VERTEX_TAG,  Standard_True);
+          aVBuilder = new TNaming_Builder (aVLabel);
+        }
+        aVBuilder->Modify(anIt.Key(), newShape);
+      }
     }
-    else if(aKey.ShapeType() == TopAbs_EDGE) {
-      if(anE) {
-	const TDF_Label& aELabel = theResultLabel.FindChild(EDGES_TAG,  Standard_True);
-	TNaming_Builder anEBuilder(aELabel);
-	pB2 = &anEBuilder;
-	anE = Standard_False; 
-      }
-      if (SubShapes.IsBound(newShape)) {
-	newShape.Orientation((SubShapes(newShape)).Orientation());
-      }
-      pB2->Modify(anIt.Key(), newShape);
-    }
-    else if(aKey.ShapeType() == TopAbs_VERTEX) {
-      if(aV) {
-	const TDF_Label& aVLabel = theResultLabel.FindChild(VERTEX_TAG,  Standard_True);
-	TNaming_Builder aVBuilder(aVLabel);
-	pB3 = &aVBuilder;
-	aV = Standard_False; 
-      }
-      if (SubShapes.IsBound(newShape)) {
-	newShape.Orientation((SubShapes(newShape)).Orientation());
-      }
-      pB3->Modify(anIt.Key(), newShape);
-    }
-  }
   }
 }
