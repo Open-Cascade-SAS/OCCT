@@ -478,7 +478,42 @@ is
     	--          Type of line: Aspect_TOL_SOLID Width: 1.
     is redefined static;
     
+    SetFaceBoundaryDraw (me           : mutable;
+                         theIsEnabled : Boolean from Standard)
+    is redefined static;
+        ---Purpose: Enables or disables drawing of face boundaries for shading presentations.
+        -- The method sets drawing flag owned by the drawer that will be used during
+        -- visualization instead of the one set in link.
+        -- theIsEnabled is a boolean flag indicating whether the face boundaries should be
+        -- drawn or not.
 
+    IsFaceBoundaryDraw (me) returns Boolean from Standard
+    is redefined static;
+        ---Purpose: Checks whether the drawing of face boundaries is enabled or not.
+
+    SetFaceBoundaryAspect (me        : mutable;
+                           theAspect : LineAspect from Prs3d)
+    is redefined static;
+        ---Purpose: Sets line aspect for face boundaries.
+        -- The method sets line aspect owned by the drawer that will be used during
+        -- visualization instead of the one set in link.
+        -- theAspect is the line aspect that determines the look of the face boundaries.
+
+    FaceBoundaryAspect (me : mutable) returns mutable LineAspect from Prs3d
+    is redefined static;
+        ---Purpose: Returns line aspect of face boundaries.
+
+    IsOwnFaceBoundaryDraw (me) returns Boolean from Standard
+    is static;
+        ---Purpose: Returns true if the drawer has its own attribute for 
+        -- "draw face boundaries" flag that overrides the one in the link.
+        ---C++: inline
+
+    IsOwnFaceBoundaryAspect (me) returns Boolean from Standard
+    is static;
+        ---Purpose: Returns true if the drawer has its own attribute for 
+        -- face boundaries aspect that overrides the one in the link.
+        ---C++: inline
 --
 --  Attributes for the presentation of a Datum.
 --  
@@ -593,6 +628,7 @@ fields
     myOwnHLRDeviationAngle           : Real from Standard; 
     myPreviousHLRDeviationAngle      : Real from Standard; 	 	
 
+	myHasOwnFaceBoundaryDraw         : Boolean from Standard;
 end Drawer;
  
 

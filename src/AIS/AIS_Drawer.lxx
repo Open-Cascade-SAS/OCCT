@@ -94,3 +94,8 @@ inline Standard_Boolean AIS_Drawer::HasPlaneAspect ()  const
 inline Standard_Boolean AIS_Drawer::HasLengthAspect ()  const 
 { return !myLengthAspect.IsNull();}
 
+inline Standard_Boolean AIS_Drawer::IsOwnFaceBoundaryDraw () const
+{ return myHasOwnFaceBoundaryDraw; }
+
+inline Standard_Boolean AIS_Drawer::IsOwnFaceBoundaryAspect () const
+{ return !myFaceBoundaryAspect.IsNull (); }

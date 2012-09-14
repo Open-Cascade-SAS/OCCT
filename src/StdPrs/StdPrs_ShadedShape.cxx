@@ -29,6 +29,16 @@
 #include <TopoDS_Face.hxx>
 #include <TColgp_Array1OfDir.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <TopoDS_Compound.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <TopExp.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <Aspect_PolygonOffsetMode.hxx>
 
 #define MAX2(X, Y)	  (Abs(X) > Abs(Y) ? Abs(X) : Abs(Y))
 #define MAX3(X, Y, Z)	(MAX2 (MAX2 (X, Y), Z))
@@ -202,6 +212,130 @@ namespace
     }
     return Standard_True;
   }
+
+  // =======================================================================
+  // function : ComputeFaceBoundaries
+  // purpose  : Compute boundary presentation for faces of the shape.
+  // =======================================================================
+  static void ComputeFaceBoundaries (const TopoDS_Shape& theShape,
+                                     const Handle (Prs3d_Presentation)& thePresentation,
+                                     const Handle (Prs3d_Drawer)& theDrawer)
+  {
+    // collection of all triangulation nodes on edges
+    // for computing boundaries presentation
+    NCollection_List<Handle(TColgp_HArray1OfPnt)> aNodeCollection;
+    Standard_Integer aNodeNumber = 0;
+
+    TopLoc_Location aTrsf;
+
+    // explore all boundary edges
+    TopTools_IndexedDataMapOfShapeListOfShape anEdgesMap;
+    TopExp::MapShapesAndAncestors (
+      theShape, TopAbs_EDGE, TopAbs_FACE, anEdgesMap);
+
+    Standard_Integer anEdgeIdx = 1;
+    for ( ; anEdgeIdx <= anEdgesMap.Extent (); anEdgeIdx++)
+    {
+      // reject free edges
+      const TopTools_ListOfShape& aFaceList = anEdgesMap.FindFromIndex (anEdgeIdx);
+      if (aFaceList.Extent() == 0)
+        continue;
+
+      // take one of the shared edges and get edge triangulation
+      const TopoDS_Face& aFace  = TopoDS::Face (aFaceList.First ());
+      const TopoDS_Edge& anEdge = TopoDS::Edge (anEdgesMap.FindKey (anEdgeIdx));
+
+      Handle(Poly_Triangulation) aTriangulation =
+        BRep_Tool::Triangulation (aFace, aTrsf);
+
+      if (aTriangulation.IsNull ())
+        continue;
+
+      Handle(Poly_PolygonOnTriangulation) anEdgePoly =
+        BRep_Tool::PolygonOnTriangulation (anEdge, aTriangulation, aTrsf);
+
+      if (anEdgePoly.IsNull ())
+        continue;
+
+      // get edge nodes indexes from face triangulation
+      const TColgp_Array1OfPnt& aTriNodes = aTriangulation->Nodes ();
+      const TColStd_Array1OfInteger& anEdgeNodes = anEdgePoly->Nodes ();
+
+      if (anEdgeNodes.Length () < 2)
+        continue;
+
+      // collect the edge nodes
+      Handle(TColgp_HArray1OfPnt) aCollected =
+        new TColgp_HArray1OfPnt (anEdgeNodes.Lower (), anEdgeNodes.Upper ());
+
+      Standard_Integer aNodeIdx = anEdgeNodes.Lower ();
+      for ( ; aNodeIdx <= anEdgeNodes.Upper (); aNodeIdx++)
+      {
+        // node index in face triangulation
+        Standard_Integer aTriIndex = anEdgeNodes.Value (aNodeIdx);
+
+        // get node and apply location transformation to the node
+        gp_Pnt aTriNode = aTriNodes.Value (aTriIndex);
+        if (!aTrsf.IsIdentity ())
+          aTriNode.Transform (aTrsf);
+
+        // add node to the boundary array
+        aCollected->SetValue (aNodeIdx, aTriNode);
+      }
+
+      aNodeNumber += anEdgeNodes.Length ();
+      aNodeCollection.Append (aCollected);
+    }
+
+    // check if it possible to continue building the presentation
+    if (aNodeNumber == 0)
+      return;
+
+    // allocate polyline array for presentation
+    Standard_Integer aSegmentEdgeNb = 
+      (aNodeNumber - aNodeCollection.Extent()) * 2;
+
+    Handle(Graphic3d_ArrayOfSegments) aSegments = 
+      new Graphic3d_ArrayOfSegments (aNodeNumber, aSegmentEdgeNb);
+
+    // build presentation for edge bondaries
+    NCollection_List<Handle(TColgp_HArray1OfPnt)>::Iterator 
+      aCollIt (aNodeCollection);
+
+    // the edge index is increased in each iteration step to
+    // avoid contiguous segments between different face edges.
+    for ( ; aCollIt.More(); aCollIt.Next () )
+    {
+      const Handle(TColgp_HArray1OfPnt)& aNodeArray = aCollIt.Value ();
+
+      Standard_Integer aNodeIdx = aNodeArray->Lower ();
+
+      // add first node (this node is not shared with previous segment).
+      // for each face edge, indices for sharing nodes 
+      // between segments begin from the first added node.
+      Standard_Integer aSegmentEdge = 
+        aSegments->AddVertex (aNodeArray->Value (aNodeIdx));
+
+      // add subsequent nodes and provide edge indexes for sharing
+      // the nodes between the sequential segments.
+      for ( aNodeIdx++; aNodeIdx <= aNodeArray->Upper (); aNodeIdx++ )
+      {
+        aSegments->AddVertex (aNodeArray->Value (aNodeIdx));
+        aSegments->AddEdge (  aSegmentEdge);
+        aSegments->AddEdge (++aSegmentEdge);
+      }
+    }
+
+    // set up aspect and add polyline data
+    Handle(Graphic3d_AspectLine3d) aBoundaryAspect = 
+      theDrawer->FaceBoundaryAspect ()->Aspect ();
+
+    Handle(Graphic3d_Group) aPrsGrp = Prs3d_Root::NewGroup (thePresentation);
+    aPrsGrp->SetGroupPrimitivesAspect (aBoundaryAspect);
+    aPrsGrp->BeginPrimitives ();
+    aPrsGrp->AddPrimitiveArray (aSegments);
+    aPrsGrp->EndPrimitives ();
+  }
 };
 
 // =======================================================================
@@ -285,5 +419,9 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePresentation
 
   ShadeFromShape (theShape, thePresentation, theDrawer,
                   theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
-}
 
+  if (theDrawer->IsFaceBoundaryDraw ())
+  {
+    ComputeFaceBoundaries (theShape, thePresentation, theDrawer);
+  }
+}

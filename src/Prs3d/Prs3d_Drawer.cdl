@@ -502,6 +502,27 @@ is
     is virtual;
     	---Purpose: Sets the parameter anAspect for display attributes of sections.
     
+    SetFaceBoundaryDraw (me           : mutable;
+                         theIsEnabled : Boolean from Standard)
+    is virtual;
+        ---Purpose: Enables or disables face boundary drawing for shading presentations.
+        -- theIsEnabled is a boolean flag indicating whether the face boundaries should be
+        -- drawn or not.
+
+    IsFaceBoundaryDraw (me) returns Boolean from Standard
+    is virtual;
+        ---Purpose: Checks whether the face boundary drawing is enabled or not.
+
+    SetFaceBoundaryAspect (me        : mutable;
+                           theAspect : LineAspect from Prs3d)
+    is virtual;
+        ---Purpose: Sets line aspect for face boundaries.
+        -- theAspect is the line aspect that determines the look of the face boundaries.
+
+    FaceBoundaryAspect (me : mutable) returns mutable LineAspect from Prs3d
+    is virtual;
+        ---Purpose: Returns line aspect of face boundaries.
+
 fields
             myUIsoAspect: IsoAspect from Prs3d is protected;
             myVIsoAspect: IsoAspect from Prs3d is protected;
@@ -541,4 +562,6 @@ fields
 	    myAngleAspect: AngleAspect from Prs3d is protected;
 	    myRadiusAspect: RadiusAspect from Prs3d is protected;
             mySectionAspect: LineAspect from Prs3d is protected;
+        myFaceBoundaryDraw    : Boolean from Standard is protected;
+        myFaceBoundaryAspect  : LineAspect from Prs3d is protected;
 end Drawer;

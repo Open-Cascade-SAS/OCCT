@@ -94,6 +94,11 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Drawer.hxx>
+#include <Aspect_TypeOfLine.hxx>
+#include <Prs3d_LineAspect.hxx>
+
 #define ZVIEW_SIZE 1000000.0
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
@@ -873,6 +878,135 @@ static Standard_Integer XSetTransparency (Draw_Interpretor& di, Standard_Integer
   return 0;
 }
 
+//=======================================================================
+//function : XShowFaceBoundary
+//purpose  : Set face boundaries on/off
+//=======================================================================
+static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
+                                           Standard_Integer argc,
+                                           const char ** argv)
+{
+  if (( argc != 4 && argc < 7 ) || argc > 9)
+  {
+    di << "Usage :\n " << argv[0]
+       << " Doc Label IsOn [R G B [LineWidth [LineStyle]]]\n"
+       << "   Doc       - is the document name. \n"
+       << "   Label     - is the shape label. \n"
+       << "   IsOn      - flag indicating whether the boundaries\n"
+       << "                should be turned on or off (can be set\n"
+       << "                to 0 (off) or 1 (on)).\n"
+       << "   R, G, B   - red, green and blue components of boundary\n"
+       << "                color in range (0 - 255).\n"
+       << "                (default is (0, 0, 0)\n"
+       << "   LineWidth - line width\n"
+       << "                (default is 1)\n"
+       << "   LineStyle - line fill style :\n"
+       << "                 0 - solid  \n"
+       << "                 1 - dashed \n"
+       << "                 2 - dot    \n"
+       << "                 3 - dashdot\n"
+       << "                (default is solid)";
+
+    return 1;
+  }
+
+  // get specified document
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    di << argv[1] << " is not a document" << "\n"; 
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContext;
+  if (!TPrsStd_AISViewer::Find (aDoc->GetData()->Root(), aContext)) 
+  {
+    di << "Cannot find viewer for document " << argv[1] << "\n";
+    return 1;
+  }
+
+  // get shape tool for shape verification
+  Handle(XCAFDoc_ShapeTool) aShapes =
+    XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
+
+  // get label and validate that it is a shape label
+  TDF_Label aLabel;
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull() || !aShapes->IsShape (aLabel))
+  {
+    di << argv[2] << " is not a valid shape label!";
+    return 1;
+  }
+
+  // get presentation from label
+  Handle(TPrsStd_AISPresentation) aPrs;
+  if (!aLabel.FindAttribute (TPrsStd_AISPresentation::GetID (), aPrs))
+  {
+    aPrs = TPrsStd_AISPresentation::Set (aLabel,XCAFPrs_Driver::GetID ());
+  }
+
+  Handle(AIS_InteractiveObject) anInteractive = aPrs->GetAIS ();
+  if (anInteractive.IsNull ())
+  {
+    di << "Can't set drawer attributes.\n"
+          "Interactive object for shape label doesn't exists.";
+    return 1;
+  }
+
+  // get drawer
+  const Handle(AIS_Drawer)& aDrawer = anInteractive->Attributes ();
+
+  // default attributes
+  Quantity_Parameter aRed      = 0.0;
+  Quantity_Parameter aGreen    = 0.0;
+  Quantity_Parameter aBlue     = 0.0;
+  Standard_Real      aWidth    = 1.0;
+  Aspect_TypeOfLine  aLineType = Aspect_TOL_SOLID;
+  
+  // turn boundaries on/off
+  Standard_Boolean isBoundaryDraw = (atoi (argv[3]) == 1);
+  aDrawer->SetFaceBoundaryDraw (isBoundaryDraw);
+  
+  // set boundary color
+  if (argc >= 7)
+  {
+    // Text color
+    aRed   = atof (argv[4])/255.;
+    aGreen = atof (argv[5])/255.;
+    aBlue  = atof (argv[6])/255.;
+  }
+
+  // set line width
+  if (argc >= 8)
+  {
+    aWidth = (Standard_Real)atof (argv[7]);
+  }
+
+  // select appropriate line type
+  if (argc == 9)
+  {
+    switch (atoi (argv[8]))
+    {
+      case 1: aLineType = Aspect_TOL_DASH;    break;
+      case 2: aLineType = Aspect_TOL_DOT;     break;
+      case 3: aLineType = Aspect_TOL_DOTDASH; break;
+      default:
+        aLineType = Aspect_TOL_SOLID;
+    }
+  }
+
+  Quantity_Color aColor (aRed, aGreen, aBlue, Quantity_TOC_RGB);
+
+  Handle(Prs3d_LineAspect) aBoundaryAspect = 
+    new Prs3d_LineAspect (aColor, aLineType, aWidth);
+
+  aDrawer->SetFaceBoundaryAspect (aBoundaryAspect);
+
+  aContext->Redisplay (anInteractive);
+  
+  return 0;
+}
 
 //=======================================================================
 //function : Init
@@ -943,6 +1077,11 @@ void XDEDRAW::Init(Draw_Interpretor& di)
 
   di.Add ("XSetTransparency", "Doc Transparency [label1 label2 ...]\t: Set transparency for given label(s) or whole doc",
 		   __FILE__, XSetTransparency, g);
+
+  di.Add ("XShowFaceBoundary", 
+          "Doc Label IsOn [R G B [LineWidth [LineStyle]]]:"
+          "- turns on/off drawing of face boundaries and defines boundary line style",
+          __FILE__, XShowFaceBoundary, g);
 
   // Specialized commands
   XDEDRAW_Shapes::InitCommands ( di );

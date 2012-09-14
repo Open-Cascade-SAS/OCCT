@@ -1,0 +1,40 @@
+puts "============"
+puts "CR23407"
+puts "============"
+puts ""
+#######################################################################
+# Draw face outlines for XDE objects
+#######################################################################
+pload QAcommands
+pload XDEDRAW
+
+set r_check 1
+set g_check 0
+set b_check 0
+set x1 227
+set y1 143
+
+XNewDoc Doc1
+ReadStep Doc1 [locate_data_file CR23407-screw.step]
+XShow Doc1 0:1:1:1
+XShowFaceBoundary Doc1 0:1:1:1 1 255 0 0 200 1
+vfit
+vsetdispmode 1
+
+set color [ QAGetPixelColor ${x1} ${y1} ]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { $rd != $r_check || $gr != $g_check || $bl != $b_check } {
+    puts "Error : color are not equal"
+    puts "Error : Boundary of face is not changed"
+}
+
+set 3dviewer 1
+
+
+
+
+
+

@@ -26,7 +26,8 @@ myhasOwnDeviationCoefficient(Standard_False),
 myPreviousDeviationCoefficient(0.1),
 myhasOwnHLRDeviationCoefficient (Standard_False),
 myhasOwnDeviationAngle (Standard_False),
-myhasOwnHLRDeviationAngle (Standard_False)
+myhasOwnHLRDeviationAngle (Standard_False),
+myHasOwnFaceBoundaryDraw (Standard_False)
 {
   SetMaximalParameterValue(500000.);
   myLink->SetMaximalParameterValue(500000.);
@@ -262,10 +263,58 @@ void AIS_Drawer::ClearLocalAttributes()
   if(!myRadiusAspect.IsNull())  myRadiusAspect.Nullify();    
   if(!mySectionAspect.IsNull())  mySectionAspect.Nullify();   
   if( myhasOwnHLRDeviationCoefficient )  myhasOwnHLRDeviationCoefficient = Standard_False;   
-  if(myhasOwnHLRDeviationAngle ) myhasOwnHLRDeviationAngle  = Standard_False;   
+  if(myhasOwnHLRDeviationAngle ) myhasOwnHLRDeviationAngle  = Standard_False;
+  if (!myFaceBoundaryAspect.IsNull()) myFaceBoundaryAspect.Nullify();
   
+  myHasOwnFaceBoundaryDraw = Standard_False;
+
   hasLocalAttributes = Standard_False;
 
 }
 
+// =======================================================================
+// function : SetFaceBoundaryDraw
+// purpose  :
+// =======================================================================
+void AIS_Drawer::SetFaceBoundaryDraw (const Standard_Boolean theIsEnabled)
+{
+  myHasOwnFaceBoundaryDraw = Standard_True;
+  myFaceBoundaryDraw       = theIsEnabled;
+}
 
+// =======================================================================
+// function : IsFaceBoundaryDraw
+// purpose  :
+// =======================================================================
+Standard_Boolean AIS_Drawer::IsFaceBoundaryDraw() const
+{
+  if (!IsOwnFaceBoundaryDraw ())
+  {
+    return myLink->IsFaceBoundaryDraw ();
+  }
+
+  return myFaceBoundaryDraw;
+}
+
+// =======================================================================
+// function : SetFaceBoundaryAspect
+// purpose  :
+// =======================================================================
+void AIS_Drawer::SetFaceBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
+{
+  myFaceBoundaryAspect = theAspect;
+}
+
+// =======================================================================
+// function : FaceBoundaryAspect
+// purpose  :
+// =======================================================================
+Handle_Prs3d_LineAspect AIS_Drawer::FaceBoundaryAspect()
+{
+  if (!IsOwnFaceBoundaryAspect ())
+  {
+    return myLink->FaceBoundaryAspect ();
+  }
+
+  return myFaceBoundaryAspect;
+}
