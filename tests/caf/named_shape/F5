@@ -1,11 +1,29 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: F5 (ShapeOrientation is not  used)
+# 1.  Create 4 points: $Pnt1 - $Pnt4
+# 2.  Create closed line $Lin2
+# 3.  Create prism Pr ($Prism)
+# 4.  Create 2 prisms $Prism1, $Prism2
+# 5.  $FS1 = Fuse ($Prism1, $Prism2); $FS2 = Fuse ($Prism1, $Prism3)
+# 6.  Create sphere $Sph
+# 7.  Cut sphere $Cut1 = Cut ($Prism, $Sph)
+# 8.  Make  selections for all sub-shapes
+# 9.  Modify $Pnt1
+# 10. Recompute modeling functions
+# 11. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase 
 Close D 
 unset D
 NewDocument D MDTV-Standard
 isos 12
+
 #1 - create 4 Pnts
 NewCommand D
 AddDriver D PntXYZ PntRLT Line3D Attach;
@@ -26,19 +44,13 @@ GetShape D $Pnt2:1:2 P2;
 GetShape D $Pnt3:1:2 P3;
 GetShape D $Pnt4:1:2 P4;
 
-#2 create open Lin1
-#NewCommand D
-#set Lin1 [ AddLine3D D 0 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
-#ComputeFun D $Lin1:1;
-#GetShape D $Lin1:1:2 L1;
-
-#3 create closed Lin3
+#2 create closed Lin2
 NewCommand D
 set Lin2 [ AddLine3D D 1 $Pnt1 $Pnt2 $Pnt3 $Pnt4]
 ComputeFun D $Lin2:1;
 GetShape D $Lin2:1:2 L1;
 
-#4 Prism  (after step #1)
+#3 Prism 
 NewCommand D
 AddDriver D Prism
 set Prism [AddPrism D $Lin2 300 0]
@@ -46,7 +58,7 @@ ComputeFun D $Prism:1
 GetShape D $Prism:1:2 Pr
 GetReference D $Prism;			## check is reference set 
 
-#5 create two prisms
+#4 create two prisms
 NewCommand D
 explode Pr F
 set Bas1 [AttachShape D Pr_1 ${Prism} ${Prism} 1]
@@ -61,7 +73,7 @@ set Prism3 [AddPrism D $Bas2 500 0]
 ComputeFun D $Prism3:1
 GetShape D $Prism3:1:2 Pr3
 
-#6 => fuse
+#5 => fuse
 NewCommand D
 AddDriver D Fuse Sph Cut
 set FS1 [AddFuse D $Prism $Prism2]
@@ -72,6 +84,7 @@ set FS2 [AddFuse D $Prism $Prism3]
 ComputeFun D $FS2
 GetShape D $FS2:2 Pr
 
+#6
 set Sph [AddSphere D $Pnt3 150]
 NewCommand D
 ComputeFun D $Sph:1
@@ -113,7 +126,7 @@ GetShape D $Cut1:2 Pr
 #GetShape D $Prism2:1:2 Pr2
 #GetShape D $Prism3:1:2 Pr3
 
-#recomputation of entities of the TestSelection commands
+#11 recomputation of entities of the TestSelection commands
 SolveFlatFrom D $SL
 NewCommand D
 

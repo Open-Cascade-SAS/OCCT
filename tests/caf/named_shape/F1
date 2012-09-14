@@ -1,6 +1,25 @@
+# ============= OCAF ============================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: F1 (ShapeOrientation is not used)
+#
+# 1.  Create Box B2
+# 2.  Create cylinder $Cyl
+# 3.  Translate $Cyl along XYZ
+# 4.  $CS = Cut ($B2, $Cyl)
+# 5.  Create 4 points as attachments of box $B2
+# 6.  Create 4 spheres ($Sph1, $Sph2, $Sph9, $Sph11)
+# 7.  Rotate spheres $Sph1, $Sph2 around line
+# 8.  Fuse all spheres with box B2
+# 9.  Make selection for all sub-shapes
+# 10. Modify B2
+# 11. Recompute modeling functions
+# 12. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase 
 Close D 
 unset D
@@ -49,14 +68,11 @@ NewCommand D
 explode S V
 set SPnt1 [AttachShape D S_1 ${B2} ${B2} 0]; ## set attachment
 set SPnt2 [AttachShape D S_2 ${B2} ${B2} 0]; ## set attachment
-#set SPnt5 [AttachShape D S_5 ${B2} ${B2} 0]; ## set attachment
-#set SPnt6 [AttachShape D S_6 ${B2} ${B2} 0]; ## set attachment
-#set SPnt7 [AttachShape D S_7 ${B2} ${B2} 0]; ## set attachment
 set SPnt9 [AttachShape D S_9 ${B2} ${B2} 0]; ## set attachment
 set SPnt11 [AttachShape D S_11 ${B2} ${B2} 0]; ## set attachment
-#set SPnt12 [AttachShape D S_12 ${B2} ${B2} 0]; ## set attachment
 
-#6 create 8 Spheres
+
+#6 create 4 Spheres
 set Sph1 [AddSphere D $SPnt1 15]
 ComputeFun D $Sph1:1
 GetShape D $Sph1:1:2 Sp1
@@ -64,18 +80,6 @@ GetShape D $Sph1:1:2 Sp1
 set Sph2 [AddSphere D $SPnt2 15]
 ComputeFun D $Sph2:1
 GetShape D $Sph2:1:2 Sp2
-
-#set Sph5 [AddSphere D $SPnt5 15]
-#ComputeFun D $Sph5:1
-#GetShape D $Sph5:1:2 Sp5
-
-#set Sph6 [AddSphere D $SPnt6 15]
-#ComputeFun D $Sph6:1
-#GetShape D $Sph6:1:2 Sp6
-
-#set Sph7 [AddSphere D $SPnt7 15]
-#ComputeFun D $Sph7:1
-#GetShape D $Sph7:1:2 Sp7
 
 set Sph9 [AddSphere D $SPnt9 15]
 ComputeFun D $Sph9:1
@@ -85,10 +89,7 @@ set Sph11 [AddSphere D $SPnt11 15]
 ComputeFun D $Sph11:1
 GetShape D $Sph11:1:2 Sp11
 
-#set Sph12 [AddSphere D $SPnt12 15]
-#ComputeFun D $Sph12:1
-#GetShape D $Sph12:1:2 Sp12
-
+#7
 explode Box2 E
 set Sel61 [AttachShape D Box2_1 ${B2} ${B2} 0];
 set FR1 [PRotateRoundLine D $Sph1 $Sel61 120]
@@ -100,7 +101,7 @@ set FR2 [PRotateRoundLine D $Sph2 $Sel62 120]
 ComputeFun D $FR2
 GetShape D $FR2:2 Sp2
 
-#7 Fuse spheres
+#8 Fuse 4 spheres
 set FS1 [AddFuse D $B2 $Sph1]
 ComputeFun D $FS1
 GetShape D $FS1:2 S
@@ -109,10 +110,6 @@ set FS2 [AddFuse D $B2 $Sph2]
 ComputeFun D $FS2
 GetShape D $FS2:2 S
 
-#set FS5 [AddFuse D $B2 $Sph5]
-#ComputeFun D $FS5            
-## <=== it gives NOT VALID shape
-#GetShape D $FS5:2 S
 
 set FS9 [AddFuse D $B2 $Sph9]
 ComputeFun D $FS9
@@ -123,16 +120,16 @@ ComputeFun D $FS11
 GetShape D $FS11:2 S
 
 
-#5 test Naming
+#9 test Naming
 set SL [TestSingleSelection D $B2 0]    
 set SL2 [TestMultipleSelection D $B2 0]
 
-#6 Modification
+#10 Modification
 NewCommand D
 BoxDX D $B2 250
 BoxDZ D $B2 310
 
-#7 recompute
+#11 recompute
 NewCommand D
 InitLogBook D
 ComputeFun D $F2
@@ -167,6 +164,7 @@ ComputeFun D $FS11
 erase
 GetShape D $FS11:2 S
 
+#12
 SolveFlatFrom D $SL
 NewCommand D
 

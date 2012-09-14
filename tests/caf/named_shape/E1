@@ -1,7 +1,21 @@
-isos 12
+# ============= OCAF ============================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: E1 (ShapeOrientation is not used)
+#
+# 1. Create Box B2
+# 2. Create Cylinder Cyl
+# 3. Cut (B2, Cyl)
+# 4. Make Fillet
+# 5. Make selection for all sub-shapes
+# 6. Modify B2
+# 7. Recompute modeling functions
+# 8. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase 
 Close D 
 unset D
@@ -57,7 +71,7 @@ set SL2 [TestMultipleSelection D $B2 0]
 NewCommand D
 BoxDX D $B2 290
 
-# recomputation
+#7 recomputation modeling functions
 NewCommand D
 InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
 ComputeFun D $F2;	
@@ -69,5 +83,6 @@ ComputeFun D $Fill
 GetShape D $Fill:2 S
 don S
 
+#8 Recompute selections
 SolveFlatFrom D $SL
 NewCommand D

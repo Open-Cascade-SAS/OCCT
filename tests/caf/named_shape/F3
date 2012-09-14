@@ -1,6 +1,28 @@
+# ============= OCAF ============================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: F3 (ShapeOrientation is not used)
+#
+# 1.  Create Box $B1
+# 2.  Create sphere $Sph0
+# 3.  Create sphere $Sph1 and move it along XYZ
+# 4.  Create sphere $Sph2 and move it along XYZ
+# 5.  Create sphere $Sph3 and rotate it around line and move after  along XYZ
+# 6.  Create sphere $Sph4 and move it along XYZ
+# 7.  Cut spheres: $Cut1 = Cut($Sph0, $Sph1)
+# 		   $Cut2 = Cut($Sph0, $Sph2)
+#		   $Cut3 = Cut($Sph0, $Sph3)
+#		   $Cut4 = Cut($Sph0, $Sph4)
+# 8.  Make selection for all sub-shapes
+# 9.  Modify B2
+# 10. Recompute modeling functions
+# 11. Recompute selections
+# ===============================================
+
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase 
 Close D 
 unset D
@@ -17,7 +39,7 @@ whatis Box1
 GetReference D $B1;			## check is reference set 
 
 
-#2 - create main sphere
+#2 - create main sphere Sp0
 AddDriver D Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
 NewCommand D
 explode Box1 V
@@ -93,16 +115,16 @@ ComputeFun D $Cut4
 GetShape D $Cut4:2 Sp0
 
 
-#5 test selection
+#8 test selection
 NewCommand D
 set SL  [TestSingleSelection   D $Sph0 0]
 set SL2 [TestMultipleSelection D $Sph0 0]
 
-#6 modification
+#9 modification
 NewCommand D
 BoxDZ D $B1 270
 
-#7 recomputation
+#10 recomputation
 NewCommand D
 InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
 ComputeFun D $B1:1
@@ -126,7 +148,7 @@ erase
 GetShape D $Cut4:2 Sp0
 
 
-#recomputation of entities of the TestSelection commands
+#11 recomputation of entities of the TestSelection commands
 SolveFlatFrom D $SL
 NewCommand D
 

@@ -703,6 +703,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   //DbgTools::DisplayShape(S, F, Quantity_NOC_BLUE1);  
   Write(Context, "FNBS_Context.brep");
   Write(S, "FNBS_S.brep");
+  Write(Neighbourg, "NBS");
 #endif
 #ifdef OCC273
   // mpv : NS and shape must be the same
@@ -841,6 +842,8 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 #ifdef MDTV_DEB_NBS
   cout << "FilterByNBS: ";
   Print_Entry(NF->Label());
+  cout <<"AppendNS = " ;
+  Print_Entry(NS->Label());
 #endif
   //---------------------
   // Naming des voisins.
@@ -856,8 +859,14 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
     const TopoDS_Shape& aS2 = aNS->Get(); 
     if(!aS.IsNull())
       cout << "Shape arg type = " << aS.ShapeType() <<" TSH = " << aS.TShape()->This()<<endl;
-    if(!aS2.IsNull())
+    if(!aS2.IsNull()) {
       cout << "Build shape type = " << aS2.ShapeType() <<" TSH = " << aS2.TShape()->This()<<endl;
+      Write (aS2, "NBS_BuildShape.brep");
+    }
+    if(aNS.IsNull()) {
+     cout <<"AppendNS = " ;
+     Print_Entry(aNS->Label());
+    }
 #endif
 		  
     const TopoDS_Shape aSNS = aNS->Get();  //allow child level

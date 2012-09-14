@@ -36,6 +36,7 @@
 #include <TNaming_Name.hxx>
 #include <TNaming.hxx>
 #include <TNaming_Naming.hxx>
+#include <TNaming_NamingTool.hxx>
 #include <TNaming_MapOfNamedShape.hxx>
 #include <TNaming_MapIteratorOfMapOfNamedShape.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -44,6 +45,7 @@
 #include <TopAbs.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_LabelMap.hxx>
+#include <TDF_MapIteratorOfLabelMap.hxx>
 
 #include <DBRep.hxx>
 #include <Draw_Appli.hxx>
@@ -115,7 +117,7 @@ static void DumpNaming (const Handle(TNaming_Naming)& naming, Draw_Interpretor& 
 static Standard_Integer DNaming_Select (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n > 3) {
-    Standard_Boolean geometry = (strcmp(a[0],"SelectGeometry")); 
+    Standard_Boolean geometry = !(strcmp(a[0],"SelectGeometry")); 
     Handle(TDF_Data) DF;
     if(!DDF::GetDF(a[1], DF))  return 1;
     TDF_Label L;
@@ -137,7 +139,51 @@ static Standard_Integer DNaming_Select (Draw_Interpretor& di, Standard_Integer n
   di << "DNaming_Select : Error" << "\n";
   return 1;
 }
+// #define DEB_SELN 1
+//=======================================================================
+//function : FillValidMap
+//purpose  : 
+//=======================================================================
 
+Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidMap)
+{
+  Standard_Boolean extRefFound = Standard_False;
+  TDF_AttributeMap anExtMap;
+#ifdef DEB_SELN
+	  TCollection_AsciiString entr1;
+      TDF_Tool::Entry(theLabel, entr1);  
+      cout<<"\tNaming Attribute at = "<< entr1 <<endl;
+#endif
+  TDF_ChildIterator itr(theLabel, Standard_True);
+  for ( ;itr.More(); itr.Next()) {
+	  const TDF_Label& aLabel = itr.Value();
+	  Handle(TNaming_Naming) aNaming;
+	  if(!aLabel.IsNull()) 
+		  aLabel.FindAttribute(TNaming_Naming::GetID(), aNaming);
+	  if(aNaming.IsNull()) continue;
+#ifdef DEB_SELN	  
+      TDF_Tool::Entry(aLabel, entr1);  
+      cout<<"\tNaming Attribute at = "<< entr1 <<endl;
+#endif
+	  TDF_Tool::OutReferences(aLabel,anExtMap);
+	  for (TDF_MapIteratorOfAttributeMap attMItr(anExtMap);attMItr.More(); attMItr.Next()) {
+        Handle(TDF_Attribute) att = attMItr.Key();
+#ifdef DEB_SELN
+        TDF_Tool::Entry(att->Label(), entr1);
+	    cout<<"## References attribute dynamic type = "<<att->DynamicType()<<" at Label = "<<entr1 <<endl;
+#endif	
+	    if (att->Label().IsDifferent(aLabel) && !att->Label().IsDescendant(theLabel)) {
+        theValidMap.Add(att->Label());
+		Handle(TNaming_NamedShape) aNS;
+		att->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS);
+		if(!aNS.IsNull())
+		  TNaming_NamingTool::BuildDescendants(aNS, theValidMap);
+        extRefFound = Standard_True;
+	   }     
+	}
+  }
+  return extRefFound;
+}
 
 //=======================================================================
 //function : SolveSelection
@@ -151,23 +197,32 @@ static Standard_Integer DNaming_SolveSelection (Draw_Interpretor& di, Standard_I
     Handle(TDF_Data) DF;
     if(!DDF::GetDF(a[1], DF))  return 1;
     TDF_Label L;
-    DDF::AddLabel(DF,a[2],L);   
-    //Handle(TNaming_Naming) naming;    
-    //if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-    //  cout <<"DNaming_DumpSelection : not a selection" << endl;
-    //  return 1;
-    //}
-    //naming->Solve();
-    //Handle(TNaming_NamedShape) NS;
-    //if  (!L.FindAttribute(TNaming_NamedShape::GetID(),NS)) {  
-    //  cout <<"DNaming_DumpSelection : not done" << endl;
-    //  return 1;
-    //}
+    DDF::AddLabel(DF,a[2],L);
+
+    Handle(TNaming_Naming) naming;    
+    if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
+      cout <<"DNaming__SolveSelection  : not a selection" << endl;
+      return 1;
+    }
+	TDF_LabelMap aValidMap;
+    if(!FillValidMap(L,aValidMap)) 
+		di << "Valid map is empty" << "\n";
+#ifdef DEB_SELN
+	cout<<"== Valid Label map =="<<endl;
+	for (TDF_MapIteratorOfLabelMap mapItr(aValidMap);mapItr.More(); mapItr.Next()) {
+      const TDF_Label& aLab = mapItr.Key();
+
+       TCollection_AsciiString entr1;
+       TDF_Tool::Entry(aLab, entr1);
+	   cout<<"  Label = "<<entr1 <<endl;
+	}
+#endif
+
     TNaming_Selector SL (L);
-    TDF_LabelMap dummy;
-    SL.Solve(dummy);
+    Standard_Boolean isSolved = SL.Solve(aValidMap);
+	if(!isSolved)
+		di << "!!! Solver is failed" <<"\n";
     TopoDS_Shape Res = TNaming_Tool::CurrentShape(SL.NamedShape());
-    //TopoDS_Shape Res = TNaming_Tool::CurrentShape(NS);
     sprintf (name,"%s_%s","new",a[2]);
     Display (name,Res);
     return 0;

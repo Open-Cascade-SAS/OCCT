@@ -1,6 +1,22 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: E8 (ShapeOrientation is not  used)
+# 1. Create box B2
+# 2. Create sectioned revolution R1 ($SRev1)
+# 3. Create sectioned revolution R2 ($SRev2)
+# 4. Create sectioned revolution R3 ($SRev3)
+# 5. ($FS1)R1 = Fuse (R1, R2) 
+# 6. ($FS2)R1 = Fuse (R1, R3) 
+# 7. Make  selections for all sub-shapes
+# 8. Modify B2
+# 9. Recompute modeling functions
+# 10. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase
 Close D
 unset D
@@ -10,14 +26,9 @@ NewDocument D MDTV-Standard
 #Box|Sph|Cyl|Cut|Fuse|Prism|SecRevol|FulRevol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
 # order of functions recomputation should be defined out of the tool (by end user)
 
-#Commands of transformation:
-#PTranslateDXYZ Doc ShapeEntry dx dy dz
-#PTranslateAlongLine Doc ShapeEntry  Line off
-#PRotateRoundLine Doc ShapeEntry Line Angle
-#PMirror Doc ShapeEntry PlaneObj
-
 ## Test of transformation functions
 AddDriver D Box Attach PTxyz PTALine PRLine PMirr Sph Prism FulRevol SecRevol
+
 #1 - create box using more flexible set of commands
 NewCommand D
 isos 12
@@ -62,27 +73,27 @@ set SRev3 [AddRevol D $SBas3  $SAx3 120 0]
 ComputeFun D $SRev3:1
 GetShape D $SRev3:1:2 R2
 
-#8
+#5
 AddDriver D Fuse
 set FS1 [AddFuse D $SRev1 $SRev2]
 ComputeFun D $FS1
 GetShape D $FS1:2 R1
 
-#9
+#6
 set FS2 [AddFuse D $SRev1 $SRev3]
 ComputeFun D $FS2
 GetShape D $FS2:2 R1
 
-#10
+#7
 NewCommand D 
 set SL [TestSingleSelection D $B2 0]
 set SL2 [TestMultipleSelection D $B2 0]
 
-
+#8
 NewCommand D
 BoxDZ D $B2 420
 
-#8 order of recomputation
+#9 order of recomputation
 NewCommand D
 InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
 ComputeFun D $F2;	
@@ -99,6 +110,7 @@ ComputeFun D $FS1
 ComputeFun D $FS2
 GetShape D $FS2:2 R1
 
+#10
 SolveFlatFrom D $SL
 NewCommand D
 

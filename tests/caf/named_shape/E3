@@ -1,10 +1,25 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: E3 (ShapeOrientation is used only for SingleSelection)
+# 1. Create box B2
+# 2. Create box B1
+# 3. Translate B2 along XYZ
+# 4. CS = Cut (B2, B1)
+# 5. Make selection for all sub-shapes
+# 6. Modify B2
+# 7. Recompute modeling functions
+# 8. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase 
 Close D 
 unset D
 NewDocument D MDTV-Standard
+
 AddDriver D Box Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
 #1 Box creation
 NewCommand D
@@ -58,6 +73,8 @@ ComputeFun D $CS
 erase
 GetShape D $CS:2 S
 don S
+
+#8 Recompute selections
 SolveFlatFrom D $SL
 NewCommand D
 

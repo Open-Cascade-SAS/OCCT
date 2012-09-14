@@ -1,6 +1,24 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: E6 (ShapeOrientation is not  used)
+# 1. Create box B1
+# 2. Create box B2
+# 3. Translate B1 along XYZ
+# 4. FS = B2 (B2, B1)
+# 5. Create cylinder Cyl
+# 6. CS = Cut (B1, Cyl)
+# 7. Make fillet
+# 8. Make  selections for all sub-shapes
+# 9. Modify B2
+# 10. Recompute modeling functions
+# 11. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
+
 erase 
 Close D 
 unset D
@@ -95,7 +113,7 @@ ComputeFun D $Fill
 GetShape D $Fill:2 S
 don S
 
-#recomputation of entities of the TestSelection commands
+#11 recomputation of entities of the TestSelection commands
 SolveFlatFrom D $SL
 NewCommand D
 

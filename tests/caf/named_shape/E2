@@ -1,6 +1,21 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: E2 (ShapeOrientation is used only for SingleSelection)
+# 1. Create Box B2
+# 2. Translate B2 along XYZ
+# 3. Translate B2 along Line (edge of B2)
+# 4. Rotate B2 around Line (edge of translated B2)
+# 5. Mirror B2 relative face of just rotated B2
+# 6. Make fillet on B2
+# 7. Make selection for all sub-shapes
+# 8. Recompute modeling functions
+# 9. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase
 Close D
 unset D
@@ -10,14 +25,9 @@ NewDocument D MDTV-Standard
 #Box|Sph|Cyl|Cut|Fuse|Prism|Revol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
 # order of functions recomputation should be defined out of the tool (by end user)
 
-#Commands of transformation:
-#PTranslateDXYZ Doc ShapeEntry dx dy dz
-#PTranslateAlongLine Doc ShapeEntry  Line off
-#PRotateRoundLine Doc ShapeEntry Line Angle
-#PMirror Doc ShapeEntry PlaneObj
-
 ## Test of transformation functions
 AddDriver D Box Attach PTxyz PTALine PRLine PMirr Sph
+
 #1 - create box using more flexible set of commands
 NewCommand D
 set B2 [AddObject D];			## add object
@@ -98,6 +108,7 @@ ComputeFun D $Sel6:1
 ComputeFun D $Fill
 GetShape D $Fill:2 SF-new
 
+#9 Recompute selections
 SolveFlatFrom D $SL
 
 NewCommand D

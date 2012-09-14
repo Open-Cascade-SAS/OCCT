@@ -1,6 +1,20 @@
+# =================== OCAF ======================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: F4 (ShapeOrientation is not  used)
+# 1. Create box $B2
+# 2. Create prism Pr1 ($Prism1)
+# 3. Create prism Pr2 ($Prism2)
+# 4. $FS1 = Fuse ($Prism1, $Prism2)
+# 5. Make  selections for all sub-shapes
+# 6. Modify B2
+# 7. Recompute modeling functions
+# 8. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase
 Close D
 unset D
@@ -9,8 +23,8 @@ NewDocument D MDTV-Standard
 #Drivers' nick-names:
 #Box|Sph|Cyl|Cut|Fuse|Prism|SecRevol|FulRevol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
 # order of functions recomputation should be defined out of the tool (by end user)
-
 AddDriver D Box Attach PTxyz PTALine PRLine PMirr Sph Prism FulRevol SecRevol
+
 #1 - create box using more flexible set of commands
 NewCommand D
 isos 12
@@ -64,10 +78,11 @@ set SL [TestSingleSelection D $Prism1 0]
 set SL2 [TestMultipleSelection D $Prism1 0]
 # both have failed units!!!
 
+#6
 NewCommand D
 BoxDZ D $B2 420
 
-#6 order of recomputation
+#7 order of recomputation
 NewCommand D
 InitLogBook D;		## to be initialized before any recomputation of impacted functions set (if attachments are presented)
 ComputeFun D $F2;	
@@ -77,5 +92,7 @@ ComputeFun D $Bas2:1
 ComputeFun D $Prism2:1
 ComputeFun D $FS1
 
+
+#8
 SolveFlatFrom D $SL
 NewCommand D

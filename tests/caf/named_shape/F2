@@ -1,6 +1,22 @@
+# ============= OCAF ============================
+# Naming
+#
+# Testing purpose: Naming selection mechanism 
+#
+# Test case: F2 (ShapeOrientation is not used)
+#
+# 1. Create Box $B1 (Box1)
+# 2. Create sphere $Sph1
+# 3. Create sphere $Sph2
+# 4. Translate sphere $Sph2 along XYZ
+# 5. Fuse spheres $FS1 = Fuse ($Sph1, $Sph2)
+# 6. Make selection for all sub-shapes
+# 7. Modify B1
+# 8. Recompute modeling functions
+# 9. Recompute selections
+# ===============================================
+
 #pload FULL
-#source dftree.tcl 
-#source DDataStd_TreeBrowser.tcl
 erase 
 Close D 
 unset D
@@ -17,7 +33,7 @@ whatis Box1
 GetReference D $B1;			## check is reference set 
 
 
-#2 - create 8 spheres
+#2 - create sphere1
 AddDriver D Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet
 NewCommand D
 explode Box1 V
@@ -71,7 +87,7 @@ erase
 GetShape D $FS1:2 Sp1
 
 
-#recomputation of entities of the TestSelection commands
+#9 recomputation of entities of the TestSelection commands
 SolveFlatFrom D $SL
 NewCommand D
 

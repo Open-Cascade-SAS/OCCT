@@ -1520,6 +1520,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   i=1;
   aNam = "Boundaries";
 #endif
+  Standard_Boolean isDone = Standard_False;
   if(SCand.Extent() == 1) { // check if a collection is inside
     TopTools_MapIteratorOfMapOfShape it(SCand);
     const TopoDS_Shape& aS = it.Key();
@@ -1593,12 +1594,13 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
     } //2
     if (Keep) {
       B.Select (S,S);
+	  isDone = Standard_True;
 #ifdef MDTV_DEB_FNB
       DbgTools_Write(S,  "FilterByNbs_Sel.brep") ;
 #endif
     }
   } //1
-  return Standard_True;
+  return isDone;
 }
 
 //=======================================================================
