@@ -591,7 +591,6 @@ class Window from WNT inherits Window from Aspect
  friends
 
     class WDriver from WNT,
-    class IconBox from WNT,
-    class PixMap  from WNT
+    class IconBox from WNT
 
 end Window;

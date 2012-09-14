@@ -20,7 +20,6 @@
 
 -- Modifications: DCB at March 1998  Porting MFT for Windows NT (95)
 --                PLOTNIKOV Eugeny at July 1998 (BUC60286)
---                VKH at October 1999 (class PixMap added)
 
 package WNT
 
@@ -74,10 +73,6 @@ package WNT
     class Window;
         ---Purpose:  Creates the Window drawable.
         ---Category: Classes
-
-    class PixMap;
-    ---Purpose: Creates a windows bitmap
-    ---Category: Classes
 
     class WClass;
         ---Purpose:  Creates a Windows NT window class.

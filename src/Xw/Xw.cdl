@@ -56,10 +56,6 @@ is
         ---Purpose: Creates the X Window drawable.
         ---Category: Classes
 
-        class PixMap;
-        ---Purpose: Creates a X pixmap
-        ---Category: Classes
-
         class ColorMap;
         ---Purpose: Creates the X Colormap
         ---Category: Classes

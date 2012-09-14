@@ -677,7 +677,6 @@ fields
 friends
 
     class Driver from Xw,
-    class IconBox from Xw,
-    class PixMap from Xw
+    class IconBox from Xw
 
 end Window ;
