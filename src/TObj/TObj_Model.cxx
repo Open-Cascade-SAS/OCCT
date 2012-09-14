@@ -629,7 +629,7 @@ void TObj_Model::updateBackReferences (const Handle(TObj_Object)& theObject)
   if ( theObject.IsNull() )
     return;
   Handle(TObj_ObjectIterator) aChildren = theObject->GetChildren();
-  for(;aChildren->More() && aChildren->More(); aChildren->Next())
+  for(;aChildren->More(); aChildren->Next())
   {
     Handle(TObj_Object) aChild = aChildren->Value();
     updateBackReferences( aChild );
