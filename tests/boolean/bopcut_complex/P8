@@ -1,0 +1,28 @@
+puts "============"
+puts "CR23389"
+puts "============"
+puts ""
+###################################################################################
+# BRepAlgoAPI_Cut returns invalid solid
+###################################################################################
+
+restore [locate_data_file CR23389-blade3.brep] b
+explode b
+checkshape b_1
+checkshape b_2
+bopcheck b_1
+bopcheck b_2
+bopargcheck b_1 b_2
+
+bop b_1 b_2
+
+bopcut result
+
+set square 53698.1
+
+set 3dviewer 1
+
+
+
+
+
