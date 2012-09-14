@@ -618,28 +618,23 @@ Standard_OStream& TNaming_NamedShape::Dump(Standard_OStream& anOS) const
 
 TNaming_Builder::TNaming_Builder (const TDF_Label& L)
 {
-  Handle(TNaming_UsedShapes) Shapes;
-
   // Find or Build Map;
   const TDF_Label& root = L.Root();
-  if (!root.FindAttribute(TNaming_UsedShapes::GetID(),Shapes)) {
-    Shapes = new TNaming_UsedShapes();
-    root.AddAttribute (Shapes);
+  if (!root.FindAttribute(TNaming_UsedShapes::GetID(),myShapes)) {
+    myShapes = new TNaming_UsedShapes();
+    root.AddAttribute (myShapes);
   }
-  myMap = &(Shapes->myMap);
   
   //Find Or Build Attribute in LIns.
-  Handle(TNaming_NamedShape) Att;
-  if (!L.FindAttribute(TNaming_NamedShape::GetID(),Att)) {
-    Att = new TNaming_NamedShape();  
-    L.AddAttribute(Att);
+  if (!L.FindAttribute(TNaming_NamedShape::GetID(),myAtt)) {
+    myAtt = new TNaming_NamedShape();  
+    L.AddAttribute(myAtt);
   }
   else {
-    Att->Backup();
-    Att->Clear();  
-    Att->myVersion++;
+    myAtt->Backup();
+    myAtt->Clear();  
+    myAtt->myVersion++;
   }
-  myAtt = Att.operator->();
 }
 
 //=======================================================================
@@ -698,12 +693,12 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
   TNaming_RefShape* pos = 0L;
   TNaming_RefShape* pns;
   
-  if (myMap->IsBound(newShape)) {
+  if (myShapes->myMap.IsBound(newShape)) {
 #ifdef DEB
     cout <<"TNaming_Builder::Generate : the shape is already in the attribute"<<endl;
 #endif
-    pns = myMap->ChangeFind(newShape);
-    if (pns->FirstUse()->myAtt  == myAtt) {
+    pns = myShapes->myMap.ChangeFind(newShape);
+    if (pns->FirstUse()->myAtt  == myAtt.operator->()) {
       Standard_ConstructionError::Raise("TNaming_Builder::Generate");
     }
     TNaming_Node* pdn = new TNaming_Node(pos,pns);
@@ -714,7 +709,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
     pns = new TNaming_RefShape(newShape);    
     TNaming_Node*     pdn = new TNaming_Node(pos,pns); 
     pns  ->FirstUse(pdn);
-    myMap->Bind    (newShape , pns);
+    myShapes->myMap.Bind (newShape , pns);
     myAtt->Add(pdn);
   }
 }
@@ -737,14 +732,14 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
   TNaming_RefShape* pns = 0L;
   TNaming_RefShape* pos;
 
-  if (myMap->IsBound(oldShape)) 
-    pos = myMap->ChangeFind(oldShape); 
+  if (myShapes->myMap.IsBound(oldShape)) 
+    pos = myShapes->myMap.ChangeFind(oldShape); 
   else {
 #ifdef DEB
     cout <<"TNaming_Builder::Delete : the shape is not in the data"<<endl;
 #endif
     pos = new TNaming_RefShape(oldShape);  
-    myMap->Bind(oldShape, pos);
+    myShapes->myMap.Bind(oldShape, pos);
   }
   TNaming_Node*     pdn = new TNaming_Node(pos,pns);   
   myAtt->Add(pdn);
@@ -772,20 +767,20 @@ void TNaming_Builder::Generated(const TopoDS_Shape& oldShape,
     return;
   }
   TNaming_RefShape* pos;
-  if (!myMap->IsBound(oldShape)) {
+  if (!myShapes->myMap.IsBound(oldShape)) {
     pos = new TNaming_RefShape(oldShape);
-    myMap->Bind(oldShape,pos);
+    myShapes->myMap.Bind(oldShape,pos);
   }
   else
-    pos = myMap->ChangeFind(oldShape);
+    pos = myShapes->myMap.ChangeFind(oldShape);
   
   TNaming_RefShape* pns;
-  if (!myMap->IsBound(newShape)) {
+  if (!myShapes->myMap.IsBound(newShape)) {
     pns = new TNaming_RefShape(newShape);
-    myMap->Bind(newShape,pns);
+    myShapes->myMap.Bind(newShape,pns);
   }
   else
-    pns = myMap->ChangeFind(newShape);
+    pns = myShapes->myMap.ChangeFind(newShape);
   
   TNaming_Node* pdn = new TNaming_Node(pos,pns);
   myAtt->Add(pdn);
@@ -815,20 +810,20 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
     return;
   }
   TNaming_RefShape* pos;
-  if (!myMap->IsBound(oldShape)) {
+  if (!myShapes->myMap.IsBound(oldShape)) {
     pos = new TNaming_RefShape(oldShape);
-    myMap->Bind(oldShape,pos);
+    myShapes->myMap.Bind(oldShape,pos);
   }
   else
-    pos = myMap->ChangeFind(oldShape);
+    pos = myShapes->myMap.ChangeFind(oldShape);
   
   TNaming_RefShape* pns;
-  if (!myMap->IsBound(newShape)) {
+  if (!myShapes->myMap.IsBound(newShape)) {
     pns = new TNaming_RefShape(newShape);
-    myMap->Bind(newShape,pns);
+    myShapes->myMap.Bind(newShape,pns);
   }
   else
-    pns = myMap->ChangeFind(newShape);
+    pns = myShapes->myMap.ChangeFind(newShape);
   
   TNaming_Node* pdn = new TNaming_Node(pos,pns);
   myAtt->Add(pdn);
@@ -838,45 +833,7 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
 }
 
 //=======================================================================
-static const TopoDS_Shape& DummyShapeToStoreOrientation (const TopAbs_Orientation Or)
-{
-  static TopoDS_Vertex aVForward, aVRev, aVInt, aVExt;
-  switch(Or) {
-  case TopAbs_FORWARD:
-    if(aVForward.IsNull()) {
-      gp_Pnt aPnt(0,0,0);
-      BRepBuilderAPI_MakeVertex aMake(aPnt);
-      aVForward = aMake.Vertex();
-      aVForward.Orientation(TopAbs_FORWARD);
-    }
-    return aVForward;
-  case TopAbs_REVERSED:
-    if(aVRev.IsNull()) {
-      gp_Pnt aPnt(0,0,0);
-      BRepBuilderAPI_MakeVertex aMake(aPnt);
-      aVRev = aMake.Vertex();
-      aVRev.Orientation(TopAbs_REVERSED);
-    }
-    return aVRev;
-  case TopAbs_INTERNAL:
-    if(aVInt.IsNull()) {
-      gp_Pnt aPnt(0,0,0);
-      BRepBuilderAPI_MakeVertex aMake(aPnt);
-      aVInt = aMake.Vertex();
-      aVInt.Orientation(TopAbs_INTERNAL);
-    }
-    return aVInt;
-  case TopAbs_EXTERNAL:
-    if(aVExt.IsNull()) {
-      gp_Pnt aPnt(0,0,0);
-      BRepBuilderAPI_MakeVertex aMake(aPnt);
-      aVExt = aMake.Vertex();
-      aVExt.Orientation(TopAbs_EXTERNAL);
-    }
-    return aVExt;
-  }
-  return aVForward;
-}
+static TopoDS_Vertex theDummyVertex (BRepBuilderAPI_MakeVertex(gp_Pnt(0.,0.,0.)).Vertex());
 
 //=======================================================================
 //function : Select
@@ -893,29 +850,30 @@ void TNaming_Builder::Select (const TopoDS_Shape& S,
 
   TNaming_RefShape* pos;
   if(S.ShapeType() != TopAbs_VERTEX) {
-    const TopoDS_Shape& aV = DummyShapeToStoreOrientation (S.Orientation());
-    if (!myMap->IsBound(aV)) {
+    TopoDS_Shape aV = theDummyVertex;
+    aV.Orientation (S.Orientation());
+    if (!myShapes->myMap.IsBound(aV)) {
       pos = new TNaming_RefShape(aV);
-      myMap->Bind(aV,pos);
+      myShapes->myMap.Bind(aV,pos);
     }
     else
-      pos = myMap->ChangeFind(aV);    
+      pos = myShapes->myMap.ChangeFind(aV);    
   } else {
-    if (!myMap->IsBound(InS)) {
+    if (!myShapes->myMap.IsBound(InS)) {
       pos = new TNaming_RefShape(InS);
-      myMap->Bind(InS,pos);
+      myShapes->myMap.Bind(InS,pos);
     }
     else
-      pos = myMap->ChangeFind(InS);
+      pos = myShapes->myMap.ChangeFind(InS);
   }
 
   TNaming_RefShape* pns;
-  if (!myMap->IsBound(S)) {
+  if (!myShapes->myMap.IsBound(S)) {
     pns = new TNaming_RefShape(S);
-    myMap->Bind(S,pns);
+    myShapes->myMap.Bind(S,pns);
   }
   else
-    pns = myMap->ChangeFind(S);  
+    pns = myShapes->myMap.ChangeFind(S);  
 
   TNaming_Node* pdn = new TNaming_Node(pos,pns);
   myAtt->Add(pdn);

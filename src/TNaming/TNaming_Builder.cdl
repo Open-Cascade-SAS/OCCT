@@ -22,8 +22,7 @@
 
 class Builder from TNaming  
 
-	---Purpose: A tool to create and maintain topological
-    	-- attributes. 
+	---Purpose: A tool to create and maintain topological attributes. 
     	-- Constructor creates an empty
     	-- TNaming_NamedShape attribute at the given
     	-- label. It allows adding "old shape" and "new
@@ -36,9 +35,7 @@ uses
     Label                        from TDF,
     Data                         from TDF, 
     NamedShape                   from TNaming,	
-    PtrNode                      from TNaming,	
-    PtrAttribute                 from TNaming,	
-    PtrDataMapOfShapePtrRefShape from TNaming
+    UsedShapes                   from TNaming
     
 raises
     ConstructionError            from Standard
@@ -88,10 +85,10 @@ is
         ---Category: Querying
 
     	NamedShape(me) returns NamedShape from TNaming;
-	    ---Purpose: Returns the NamedShape which has been build or is under construction.
+	    ---Purpose: Returns the NamedShape which has been built or is under construction.  
 
 fields
-    
-    myMap         : PtrDataMapOfShapePtrRefShape from TNaming; 
-    myAtt         : PtrAttribute                 from TNaming;
+
+    myShapes: UsedShapes from TNaming; 
+    myAtt   : NamedShape from TNaming;
 end Builder;
