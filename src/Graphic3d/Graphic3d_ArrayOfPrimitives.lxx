@@ -98,9 +98,9 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexColor(
   }
 
   if( myPrimitiveArray->vcolours ) {
-    unsigned char red   = (unsigned int)(R * 255.);
-    unsigned char green = (unsigned int)(G * 255.);
-    unsigned char blue  = (unsigned int)(B * 255.);
+    unsigned char red   = (unsigned char)(R <= 0. ? 0. : R >= 1. ? 255. : R * 255.);
+    unsigned char green = (unsigned char)(G <= 0. ? 0. : G >= 1. ? 255. : G * 255.);
+    unsigned char blue  = (unsigned char)(B <= 0. ? 0. : B >= 1. ? 255. : B * 255.);
     unsigned char alpha = 0;
     Standard_Integer outColor ;
     outColor = red;
