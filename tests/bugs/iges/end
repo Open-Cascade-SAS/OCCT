@@ -1,0 +1,9 @@
+if { [info exists CR22888_draw] } {
+#vinit
+#vclear
+#vdisplay result
+#vsetdispmode 1
+#vfit
+    vdump $imagedir/${test_image}.gif
+}
+

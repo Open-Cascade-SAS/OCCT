@@ -1,0 +1,57 @@
+puts "============"
+puts "CR22888"
+puts "============"
+puts ""
+#######################################################################
+# Wrong shape result imported from IGES file
+#######################################################################
+pload QAcommands
+
+set x1 166
+set y1 225
+
+igesread [locate_data_file CR22888-data.igs] a *
+if { [regexp "This shape seems to be valid" [checkshape a]] != 1 } {
+    puts "Error : checkshape is faulty"
+}
+
+explode a f
+vinit
+vsetdispmode 0
+vdisplay a_1
+vfit
+vzfit
+tclean a_1
+set inf_before [trinfo a_1]
+
+vsetdispmode a_1 1
+set inf_after [trinfo a_1]
+regexp { +([-0-9.+eE]+) +triangles} $inf_after full tri_after
+regexp { +([-0-9.+eE]+) +nodes} $inf_after full nod_after
+
+set color [QAGetPixelColor ${x1} ${y1}]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { $rd == 0 || $gr == 0 || $bl == 0 } {
+    puts "Error : Face is not shaded (colors are not equal)"
+}
+
+if { $tri_after <= 0 || $nod_after <= 0 } {
+    puts "Error : Face is not shaded (number of nodes or triangles is wrong)"
+}
+
+set CR22888_draw 1
+
+
+
+
+
+
+
+
+
+
+
+
