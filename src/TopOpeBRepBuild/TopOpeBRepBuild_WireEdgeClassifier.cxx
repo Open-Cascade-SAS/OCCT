@@ -421,8 +421,9 @@ void  TopOpeBRepBuild_WireEdgeClassifier::ResetElement(const TopoDS_Shape& EE)
 //purpose  : 
 //=======================================================================
 
-void TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS_Shape& EE)
+Standard_Boolean TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS_Shape& EE)
 {
+  Standard_Boolean bRet = Standard_True;
   const TopoDS_Edge& E = TopoDS::Edge(EE);
   const TopoDS_Face& F = myBCEdge.Face();
 
@@ -462,6 +463,7 @@ void TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS_Shape& EE)
 #ifdef DEB
 //  TopAbs_State state = myFPC.State();
 #endif
+  return bRet;
 }
 
 

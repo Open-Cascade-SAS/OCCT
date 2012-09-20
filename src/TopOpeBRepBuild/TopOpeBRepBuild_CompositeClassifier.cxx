@@ -94,7 +94,8 @@ TopAbs_State TopOpeBRepBuild_CompositeClassifier::Compare
     TopOpeBRepBuild_BlockIterator Bit2 = L2->BlockIterator();
     for (Bit2.Initialize(); Bit2.More(); Bit2.Next()) {
       const TopoDS_Shape& s2 = MYBB->Element(Bit2);
-      CompareElement(s2);
+      if (!CompareElement(s2)) 
+        break;
     }
     state = State();
   }

@@ -56,9 +56,13 @@ is
     ResetElement(me : in out; E : Shape from TopoDS) is deferred;
     ---Purpose: prepare classification involving element <E>.
     
-    CompareElement(me : in out; E : Shape from TopoDS) is deferred;
-    ---Purpose: Add element <E> in the set of elements used in classification.
-    
+    CompareElement(me : in out; E : Shape from TopoDS)  
+    returns Boolean from Standard 
+    is deferred;
+    ---Purpose: Add element <E> in the set of elements used in classification.  
+    --  Returns FALSE if the element <E> has been already added to the set of elements, 
+    --  otherwise returns TRUE.
+     
     State(me : in out) returns State from TopAbs is deferred;
     ---Purpose: Returns state of classification of 2D point, defined by 
     -- ResetElement, with the current set of elements, defined by Compare.

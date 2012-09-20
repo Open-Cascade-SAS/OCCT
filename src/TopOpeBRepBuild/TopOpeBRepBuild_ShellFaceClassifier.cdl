@@ -65,10 +65,13 @@ is
     ---Purpose: prepare classification involving face <F>
     -- define 3D point (later used in Compare()) on first vertex of face <F>.
     
-    CompareElement(me : in out; F : Shape);
+    CompareElement(me : in out; F : Shape) 
+    returns  Boolean from Standard; 
     ---Purpose: Add the face <F> in the set of faces used in 3D point
-    -- classification.
-    
+    -- classification. Returns FALSE if the face <F> has been already  
+    -- added to the set of faces, otherwise returns TRUE.
+
+ 
     State(me : in out) returns State from TopAbs;
     ---Purpose: Returns state of classification of 3D point, defined by 
     -- ResetElement, with the current set of faces, defined by Compare.

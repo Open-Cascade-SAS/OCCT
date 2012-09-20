@@ -154,12 +154,13 @@ void  TopOpeBRepBuild_ShellFaceClassifier::ResetElement(const TopoDS_Shape& F)
 //purpose  : 
 //=======================================================================
 
-void TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
+Standard_Boolean TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
 {
 #ifdef DEB
 //  const TopAbs_ShapeEnum t = F.ShapeType();
 #endif
-
+  Standard_Boolean bRet = Standard_True;
+  //
   if (myFirstCompare) {
     Standard_Boolean found = myFaceShellMap.IsBound(F);
     if ( !found ) {
@@ -178,6 +179,7 @@ void TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
       // dont F fait partie.
       TopoDS_Shape sbid = myFaceShellMap.Find(F);
       myShell = TopoDS::Shell(sbid);
+      bRet = !bRet;
     }
     myFirstCompare = Standard_False;
   }
@@ -187,7 +189,7 @@ void TopOpeBRepBuild_ShellFaceClassifier::CompareElement(const TopoDS_Shape& F)
     // dont F fait partie
     myBuilder.Add(myShell,F);
   }
-
+  return bRet;
 }
 
 #ifdef DEB

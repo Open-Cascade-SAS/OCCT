@@ -66,7 +66,8 @@ is
     ---Purpose: prepare classification involving edge <E>
     -- define 2D point (later used in Compare()) on first vertex of edge <E>.
     
-    CompareElement(me : in out; E : Shape from TopoDS);
+    CompareElement(me : in out; E : Shape from TopoDS) 
+    returns Boolean from Standard;
     ---Purpose: Add the edge <E> in the set of edges used in 2D point
     -- classification.
     
