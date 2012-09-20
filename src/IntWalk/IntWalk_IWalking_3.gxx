@@ -45,47 +45,47 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 				       TheIWFunction& Func,
 				       Standard_Boolean& Rajout) 
 
-// traitement ligne ouvert.
+// Processing of open line.
 //
-// 1) pour tout point de depart non passant et non tangent et non encore traite
-//    calcul du pas d'avancement = pas en fonction de la fleche et du pas max.
+// 1) for any starting point, which is not passing and not tangent and not yet processed,
+//    calculation of the step of advancement = step depending on the arrow and the maximum step.
 //
-// 2) calcul d'un point approche (ce point est sur la tangente a la section
-// de distance = pas du point interieur)
+// 2) calculate a point of approach (this point is on the tangent to the section
+// of distance = no point in the interior)
 //  
-// 3) tant que {
-//            (l'ensemble des points calcules ne depassent pas un point dans la
-//             liste des points de depart)
-//                              ou                    
-//            (l'ensemble des points ne forme pas une ligne ouverte allant 
-//            d 'une frontiere du domaine a un autre ou d un point de tangence
-//            a une frontiere ou de 2 points de tangence : cas singuliers)
+// 3) conditions  {
+//            (all calculated points do not exceed a point in the
+//             list of starting points)
+//                              or                    
+//            (all points do not form an open line going 
+//            from one border of the domain to the other or from a point tangent 
+//            to border or from 2 tangent points : single cases)
 //  
-//     1) cadrage du point approche sur les frontieres si necessaire (il
-//        y a calcul du pas)
-//     2) calcul du point
-//     3) si point non trouve on divise le pas
-//     4) tests d'arrets    
-//     5) calcul du pas en fonction de la fleche et du pas maxi,
+//     1) framing of approached point on borders if necessary (there is
+//        calculation of step)
+//     2) calculation of the point
+//     3) if the point is not found the step is divided
+//     4) stpo tests    
+//     5) calculation of the step depending on the arrow and the max step,
 //        (TestDeflection)
-//        arret possible.
-//    fin tant que.
+//        stop  possible.
+//    end of conditions.
 
 {
   Standard_Integer I, N;
   static math_Vector BornInf(1,2), BornSup(1,2), UVap(1,2);
   Standard_Real PasC, PasCu, PasCv;
-  Standard_Boolean Arrive; // indique si ligne terminee
-  Standard_Boolean Cadre;  //indique si on est sur frontiere du domaine
-  Standard_Boolean ArretAjout;  //indique si on est sur point ajoute
+  Standard_Boolean Arrive; // shows if the line ends
+  Standard_Boolean Cadre;  // shows if one is on border of the domain
+  Standard_Boolean ArretAjout;  //shows if one is on added point
   IntSurf_PntOn2S Psol;
-  Handle(IntWalk_TheIWLine)  CurrentLine;    // ligne en construction
+  Handle(IntWalk_TheIWLine)  CurrentLine;    // line under construction
   Standard_Boolean Tgtend;
 
   IntWalk_StatusDeflection Status, StatusPrecedent;
   
   Standard_Integer NbDivision; 
-  // nombre de fois que l on a divise le pas pour une section
+  // number of divisions of step for each section
 
   Standard_Integer StepSign;
   
@@ -107,7 +107,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
   // modified by NIZHNY-MKK  Fri Oct 27 12:32:38 2000.END
 
   for (I = 1; I <= nbPath; I++) {
-    //point de depart de cheminement
+    //start point of the progression
     //     if (etat1(I) > 11) {                
     // modified by NIZHNY-MKK  Fri Oct 27 12:33:37 2000.BEGIN
     if ((etat1(I) > 11) || ((etat1(I) < -11) && (movementdirectioninfo(I)!=0))) {
@@ -149,7 +149,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
       etat1(I) = - abs(etat1(I));
       movementdirectioninfo(I) = (movementdirectioninfo(I)==0) ? StepSign : 0;
 //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:56 2001 End
-      // premier pas d avancement
+      // first step of advancement
       Standard_Real d2dx = Abs(previousd2d.X()); 
       Standard_Real d2dy = Abs(previousd2d.Y()); 
       if (d2dx < tolerance(1)) {
@@ -169,10 +169,10 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
       // modified by NIZHNY-MKK  Fri Oct 27 12:39:37 2000
       Standard_Integer IndexOfPathPointDoNotCheck=0;
 
-      while (!Arrive) { //    tant que un des tests d  arret est non verifie
+      while (!Arrive) { //    as one of stop tests is not checked
 
 	Cadre = Cadrage(BornInf,BornSup,UVap,PasC,StepSign);
-	//  Frontiere?
+	//  Border?
 
 #ifdef CHRONO
 	Chronrsnld.Start();
@@ -196,17 +196,17 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	      if (CurrentLine->NbPoints() == 1) break;
 	      Arrive = Standard_True;
 	      CurrentLine->AddStatusLast(Standard_False);
-	      Tgtend = Standard_True; // a voir
+	      Tgtend = Standard_True; // check
               Rajout = Standard_True;
 	      seqAjout.Append(lines.Length() + 1);
 	    }  
 	  }
-	  else { // test arret
+	  else { // test stop
 	    Rsnld.Root(UVap);
 	    Arrive = TestArretPassage(Umult, Vmult, Func, UVap, N);
 	    if (Arrive) {
 	      Cadre = Standard_False;
-	      //au cas ou on aurait cadre et arrive en meme temps
+	      //in case if there is a frame and arrive at the same time
 	    }
 	    else {
 	      if (Rajout) {
@@ -234,7 +234,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	      }
 	      // modified by NIZHNY-MKK  Thu Nov  2 15:09:13 2000.END
 	      if (!ArretAjout && Cadre) {
-		if (CurrentLine->NbPoints() == 1) break; // annuler la ligne
+		if (CurrentLine->NbPoints() == 1) break; // cancel the line
 		TestArretCadre(Umult, Vmult, CurrentLine, Func, UVap, N);
 //		if (N == 0) {
 		if (N <= 0) { // jag 941017
@@ -270,7 +270,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	      }
 	    }
 	    else if (Status == IntWalk_ArretSurPointPrecedent) {
-	      if (CurrentLine->NbPoints() == 1) { //annuler la ligne
+	      if (CurrentLine->NbPoints() == 1) { //cancel the line
 		Arrive = Standard_False;
 		break;
 	      }
@@ -278,37 +278,36 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	      Rajout = Standard_True;
               seqAjout.Append(lines.Length() + 1);
 	      CurrentLine->AddStatusLast(Standard_False);
-	      Tgtend = Standard_True; // a voir
+	      Tgtend = Standard_True; // check
 	    }
 	    else if (Arrive)  {
-	      if (CurrentLine->NbPoints() == 1 &&    // annuler la ligne
+	      if (CurrentLine->NbPoints() == 1 &&    // cancel the line
 		  (N == I || Status == IntWalk_PointConfondu) ) {
-		// si N == I on s est probablement trompe de uv 
-		// principal ou bien le point 
-		// est un point d accumulation
-		// si point confondu les donnees de depart sont mauvaises
+		// if N == I the main uv is probably lost
+		// or the point is a point of accumulation
+		// if point is confused the start data is bad
 		Arrive =  Standard_False;
 		break;
 	      }
-	      // on a necessairement N > 0 jag 940617
-              // point d arret donne en entree 
+	      // necessairily N > 0 jag 940617
+              // point of stop given at input 
 	      PathPnt = Pnts1.Value(N);
 	      
 	      Standard_Integer etat1N=etat1(N);
 	      // modified by NIZHNY-MKK  Thu Nov  2 15:09:51 2000.BEGIN
-	      // 	      if (etat1N < 11) { // point passant qui est un arret  
-	      if (Abs(etat1N) < 11) { // point passant qui est un arret  
+	      // 	      if (etat1N < 11) { // passing point that is a stop  
+	      if (Abs(etat1N) < 11) { // passing point that is a stop    
 		// modified by NIZHNY-MKK  Thu Nov  2 15:12:11 2000.END
 		if (Status == IntWalk_ArretSurPoint) { 
 		  CurrentLine->AddStatusLast(Standard_False);
-		  Tgtend = Standard_True; // a voir
+		  Tgtend = Standard_True; // need check
 		}
 		else { 
 		  Arrive = Standard_False;
 		}
 		CurrentLine->AddIndexPassing(N);
 	      }
-	      else { // point d  arret donne en entree
+	      else { // point of stop given at input
 		if (etat1N == 11) {
 		  Tgtend = Standard_True;
 		}
@@ -348,7 +347,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	    }                           
 	  }
 	}
-	else { // pas de solution numerique
+	else { // no numerical solution
 	  PasC = PasC / 2.;
 	  PasCu = Abs(PasC*previousd2d.X());
 	  PasCv = Abs(PasC*previousd2d.Y());
@@ -356,12 +355,12 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	    if (CurrentLine->NbPoints()==1) break;
 	    Arrive = Standard_True;
 	    CurrentLine->AddStatusLast(Standard_False);
-	    Tgtend = Standard_True; // a voir
+	    Tgtend = Standard_True; // need check
 	    Rajout = Standard_True;
             seqAjout.Append(lines.Length() + 1);
 	  }  
 	}
-      } // fin de la ligne commencee
+      } // end of started line
       
       if (Arrive) {
 	CurrentLine->SetTangencyAtEnd(Tgtend);
@@ -438,8 +437,8 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	}
 	  
       }
-    } //fin de traitement d  un point
-  } //fin de tous les points
+    } //end of point processing
+  } //end of all points
 }
 
 // modified by NIZHNY-MKK  Thu Nov  2 15:07:53 2000.BEGIN
@@ -463,7 +462,7 @@ static Standard_Boolean TestPassedSolutionWithNegativeState(const TColStd_Sequen
   for (i = 1; i <= etat.Length(); i++) {
     if (etat(i) < -11) {
 
- // debug jag voir avec isg
+ // debug jag see with isg
 
       Utest = ustart(i);
       Vtest = vstart(i);

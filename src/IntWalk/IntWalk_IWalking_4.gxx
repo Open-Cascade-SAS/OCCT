@@ -29,41 +29,40 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 					const ThePOLIterator& Pnts2,
 					TheIWFunction& Func,
                                         Standard_Boolean& Rajout ) 
-// *********** traitement ligne fermee **********************
+// *********** Processing of closed line **********************
 //
-// pour tout point interieur non encore traite
-//       calculer le pas d avancement=pas en fonction de la fleche 
-// et du pas max
-//       calculer un point approche (ce point est sur la tangente a la section
-// de distance = pas du point interieur)
-//  tant que 
-//            (l ensemble des points calcules ne forme pas une boucle fermee)  
-//                              ou                    
-//            (l ensemble des points ne forme pas une ligne ouverte allant 
-//            d  une frontiere du domaine a un autre ou d un point de tangence
-//            a une frontiere ou de 2 points de tangence :cas singuliers)
+// for any interior non-processed point 
+//       calculate the step of advancement=step depending on the arrow and max step
+//       calculate a point of approach (this point is on the tangent to the section
+// of distance = no interior point)
+//  conditions 
+//            (all calculated points do not form a closed loop)  
+//                              or                    
+//            (all points do not form an open line going from 
+//            one border of the domain to the other or from a point tangent
+//            to the border or from 2 tangent points : single cases)
 //  
-//     cadrer le point approche sur les frontieres si necessaire
-//     calcul du point
-//     si point non trouve diviser le pas
-//     test d arret    
-//     calcul du pas en fonction de la fleche et du pas maxi(arret possible)
+//     frame the point of approach on borders if necessary
+//     calculate the point
+//     if point not found divide the step
+//     test of stop    
+//     calculate step depending on the arrow and the max step (stop possible)
 //
 // ******************************************************************** 
 {
 
   Standard_Integer I,N;
   static math_Vector BornInf(1,2),BornSup(1,2);
-  static math_Vector Uvap(1,2);// parametres approches courant
-  Standard_Real PasC;  // taux d`avancement sur la tangente
-  Standard_Real PasCu; // pas d avancement courant en U
-  Standard_Real PasCv; // pas d avancement courant en V
-  Standard_Real PasSav; //sauvegarde du premier pas d  avancement
-  Standard_Boolean Arrive;// indique si ligne terminee
-  Standard_Boolean Cadre; //indique si on est sur frontiere du domaine
-  Standard_Boolean ArretAjout; //indique si on est sur un point ajoute
+  static math_Vector Uvap(1,2);// parameters of current approach
+  Standard_Real PasC;  // rate of advancement on the tangent
+  Standard_Real PasCu; // rate of advancement current by U
+  Standard_Real PasCv; // step of advancement current by V
+  Standard_Real PasSav; // save first step of advancement
+  Standard_Boolean Arrive;// show if line ends
+  Standard_Boolean Cadre; // show if on border of the  domains
+  Standard_Boolean ArretAjout; // show if on the added point
   IntSurf_PntOn2S Psol;
-  Handle(IntWalk_TheIWLine)  CurrentLine; //ligne en construction
+  Handle(IntWalk_TheIWLine)  CurrentLine; //line under construction
   ThePointOfPath PathPnt;
   ThePointOfLoop LoopPnt;
 
@@ -72,12 +71,11 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
   Standard_Integer StepSign;
   
   IntWalk_StatusDeflection Status,StatusPrecedent;
-  Standard_Integer NbDivision ;   // nombre de fois que l  on a divise le pas 
-  // lors du calcul d 1 section
+  Standard_Integer NbDivision ;   // number of divisions of step 
+  // during calculation of  1 section
 
   Standard_Integer Ipass ;
-  //indice dans l iterateur des points sur arete du point de 
-  //passage  
+  //index in the iterator of points on edge of point of passage  
 
 
   BornInf(1) = Um;
@@ -89,7 +87,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
   Standard_Integer nbLoop = Pnts2.Length();
   
   for (I = 1;I<=nbLoop;I++) {
-    if (etat2(I) > 12) { // point de demarrage de ligne fermee
+    if (etat2(I) > 12) { // start point of closed line
       
       LoopPnt = Pnts2.Value(I);
       previousPoint.SetValue(ThePointOfLoopTool::Value3d(LoopPnt),reversed,
@@ -107,7 +105,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 
       StepSign = 1;
 
-      // premier pas d avancement
+      // first step of advancement
 
       Standard_Real d2dx = Abs(previousd2d.X()); 
       Standard_Real d2dy = Abs(previousd2d.Y()); 
@@ -127,8 +125,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
       ArretAjout = Standard_False;
       NbDivision = 0;
       StatusPrecedent = IntWalk_OK;
-      while (!Arrive) {  // tant que aucun test d arret verifie
-	Cadre=Cadrage(BornInf,BornSup,Uvap,PasC, StepSign);  // frontiere?
+      while (!Arrive) {  // as no test of stop is passed
+	Cadre=Cadrage(BornInf,BornSup,Uvap,PasC, StepSign);  // border?
 #ifdef CHRONO
 	Chronrsnld.Start();
 #endif
@@ -139,11 +137,11 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	Chronrsnld.Stop();
 #endif
 
-	if (Cadre) { // remise a jour des bornes.
+	if (Cadre) { // update of limits.
 	  BornInf(1) = Um;BornSup(1) = UM;BornInf(2) = Vm;BornSup(2) = VM;
 	}
 	if (Rsnld.IsDone()) {
-	  if (Abs(Func.Root()) > Func.Tolerance()) { // pas de solution a la tolerance
+	  if (Abs(Func.Root()) > Func.Tolerance()) { // no solution for the tolerance
 	    PasC = PasC/2.;
 	    PasCu = Abs(PasC*previousd2d.X());
 	    PasCv = Abs(PasC*previousd2d.Y());
@@ -158,10 +156,10 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	      Tgtend = Standard_True;
 	    }
 	  }
-	  else { // il y a une solution
+	  else { // there is a solution
 	    Rsnld.Root(Uvap);
 	    Arrive = TestArretPassage(Umult,Vmult,Uvap,I,Ipass);
-	    if (Arrive) {//remettre les bons parametres pour le test de fleche.
+	    if (Arrive) {//reset proper parameter to test the arrow.
 	      Psol = CurrentLine->Value(1);
 	      if (!reversed) {
 		Psol.ParametersOnS2(Uvap(1),Uvap(2));
@@ -170,11 +168,11 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		Psol.ParametersOnS1(Uvap(1),Uvap(2));
 	      }
               Cadre=Standard_False; 
-	      //au cas ou on aurait cadre et arrive en meme temps
+	      //in case if there is a frame and arrival at the same time
 	    }
 	    else { // modif jag 940615
 
-	      if (Rajout) {    // test sur les points rajoutes
+	      if (Rajout) {    // test on added points
 		ArretAjout =TestArretAjout(Func,Uvap,N,Psol);
 		if (ArretAjout) {
 		  if (N >0) {
@@ -188,8 +186,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		}
 	      }
 
-	      if (!ArretAjout&& Cadre) {  // test sur les points deja marques
-		if (CurrentLine->NbPoints() == 1)  break; // annuler la ligne
+	      if (!ArretAjout&& Cadre) {  // test on already marked points
+		if (CurrentLine->NbPoints() == 1)  break; // cancel the line
 		TestArretCadre(Umult,Vmult,CurrentLine,Func,Uvap,N);
 //		if (N==0) {
 		if (N <= 0) { // jag 941017
@@ -197,13 +195,13 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		  Tgtend = Func.IsTangent(); // jag 940616
 		  N = -N;
 		}
-		Arrive = (etat2(I) == 12); // la ligne s est ouverte
+		Arrive = (etat2(I) == 12); // the line is open
 	      }
 	    }
 	    Status = TestDeflection(Func, Arrive,Uvap,StatusPrecedent,
 				    NbDivision,PasC,StepSign);
 	    StatusPrecedent = Status; 
-	    if (Status == IntWalk_PasTropGrand) {// division du pas
+	    if (Status == IntWalk_PasTropGrand) {// division of the step
 	      Arrive = Standard_False;
 	      ArretAjout = Standard_False;
 	      Tgtend = Standard_False; // jag 940616
@@ -216,7 +214,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	    }
 	    else if (ArretAjout || Cadre) {
 
-	      if (Arrive) { // la ligne s est ouverte
+	      if (Arrive) { // line s is open
 		CurrentLine->AddStatusLast(Standard_False);
 		if (Status != IntWalk_ArretSurPointPrecedent) {
 		  CurrentLine->AddPoint(Psol);                      
@@ -227,8 +225,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		}
                 
 	      }
-	      else { // a ouvrir
-		etat2(I) = 12; //la declarer ouverte
+	      else { // open
+		etat2(I) = 12; // declare it open
 		Tgtbeg = Tgtend;
 		Tgtend = Standard_False;
 		ArretAjout = Standard_False;
@@ -249,12 +247,12 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	    }
 
 	    else if ( Status == IntWalk_ArretSurPointPrecedent) {
-	      if (CurrentLine->NbPoints() == 1) { //annuler la ligne
+	      if (CurrentLine->NbPoints() == 1) { //cancel the line
 		Arrive = Standard_False;
 		break;
 	      }
-	      if (etat2(I) >12) { //la ligne doit s  ouvrir
-		etat2(I) = 12; //la declarer ouverte
+	      if (etat2(I) >12) { //the line should become open
+		etat2(I) = 12; //declare it open
 		ArretAjout = Standard_False;
 		OpenLine(0,Psol,Pnts1,Func,CurrentLine);
 		StepSign = -1;
@@ -264,7 +262,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		Rajout = Standard_True;
                 seqAjout.Append(-lines.Length()-1);
 	      }
-	      else { // la ligne s est ouverte                 
+	      else { // line s is open                 
 		Arrive =Standard_True;
 		CurrentLine->AddStatusLast(Standard_False);
 		Rajout = Standard_True;
@@ -272,20 +270,20 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	      } 
 	    }
 	    else if (Arrive)  {
-	      if (etat2(I) > 12) {  //ligne fermee bon cas
+	      if (etat2(I) > 12) {  //line closed good case
 		CurrentLine->AddStatusFirstLast(Standard_True,
                                                Standard_False,Standard_False);
 		CurrentLine->AddPoint(CurrentLine->Value(1));              
 	      }
-	      else if (N >0) { //point d arret donne en entree 
+	      else if (N >0) { //point of stop given at input 
 		PathPnt = Pnts1.Value(N);
 		CurrentLine->AddStatusLast(Standard_True,N,PathPnt);
                 AddPointInCurrentLine(N,PathPnt,CurrentLine);
 	      }
 	    }
 	    else if (Status == IntWalk_ArretSurPoint) {
-	      if (etat2(I) >12) { //la ligne doit s  ouvrir
-		etat2(I) = 12; //la declarer ouverte
+	      if (etat2(I) >12) { //line should become open
+		etat2(I) = 12; //declare it open
 		Tgtbeg = Standard_True;
 		Tgtend = Standard_False;
                 N= -lines.Length()-1;
@@ -300,7 +298,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	      }
 	      else { 
 		Arrive = Standard_True;                   
-		if (Ipass!=0) { //point de passage  ,point d arret
+		if (Ipass!=0) { //point of passage, point of stop
 		  PathPnt = Pnts1.Value(Ipass);
 		  CurrentLine->AddStatusLast(Standard_True,Ipass,PathPnt);
                   AddPointInCurrentLine(Ipass,PathPnt,CurrentLine);
@@ -324,13 +322,13 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	    }
 	  }
 	}
-	else { //pas de solution numerique  NotDone
+	else { //no numerical solution NotDone
 	  PasC = PasC/2.;
 	  PasCu = Abs(PasC*previousd2d.X());
 	  PasCv = Abs(PasC*previousd2d.Y());
 
 	  if (PasCu <= tolerance(1) && PasCv <= tolerance(2)) {
-            if (CurrentLine->NbPoints() == 1)  break; // annuler la ligne
+            if (CurrentLine->NbPoints() == 1)  break; // cancel the line
 	    Arrive = Standard_True;
 	    CurrentLine->AddStatusFirstLast(Standard_False,Standard_False,
                                            Standard_False);
@@ -339,16 +337,16 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	    seqAjout.Append(lines.Length()+1);
 	  }  
 	}
-      }// fin de la ligne commencee
+      }// end of started line 
       if (Arrive) {
 	CurrentLine->SetTangencyAtBegining(Tgtbeg);
 	CurrentLine->SetTangencyAtEnd(Tgtend);
 	
 	lines.Append(CurrentLine);
-	etat2(I)=-etat2(I); //marque le point comme traite
+	etat2(I)=-etat2(I); //mark point as processed
       }
-    } //fin de traitement d un point de depart
-  } //fin de tous les points de depart
+    } //end of processing of start point
+  } //end of all start points
 }
 
 

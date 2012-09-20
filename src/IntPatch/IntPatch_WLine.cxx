@@ -565,6 +565,31 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol) {
 	  }
 	}
       }
+
+      //Remove duplicating points
+      if (Substitution)
+      {
+        Standard_Integer ind_point;
+        for(ind_point = 2; (ind_point <= nbponline && nbponline > 2); ind_point++) { 
+          Standard_Real d = (curv->Value(ind_point-1).Value()).SquareDistance((curv->Value(ind_point).Value()));
+          if(d < dmini) { 
+            curv->RemovePoint(ind_point);
+            nbponline--;
+            //----------------------------------------------
+            //-- On recadre les Vertex si besoin 
+            //-- 
+            for(j=1; j<=nbvtx; j++) { 
+              indicevertex = svtx.Value(j).ParameterOnLine();
+              if(indicevertex >= ind_point) {
+                svtx.ChangeValue(j).SetParameter(indicevertex-1.0);
+              }
+            }
+            //modified by NIZNHY-PKV Mon Feb 11 09:28:02 2002 f
+            ind_point--;
+            //modified by NIZNHY-PKV Mon Feb 11 09:28:04 2002 t
+          }
+        }
+      }
       
       //--static int deb6nov98=1;    Ne resout rien (a part partiellement BUC60409)
       //--if(deb6nov98) { 

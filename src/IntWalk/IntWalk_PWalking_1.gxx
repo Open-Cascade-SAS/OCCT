@@ -144,7 +144,7 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
 
 
   if(ThePSurfaceTool::IsUPeriodic(Caro1)==Standard_False) { 
-    UM1+=KELARG*pasuv[0];  Um1-=KELARG*pasuv[0];
+    //UM1+=KELARG*pasuv[0];  Um1-=KELARG*pasuv[0];
   }
   else { 
     Standard_Real t = UM1-Um1; 
@@ -156,7 +156,7 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
   }
       
   if(ThePSurfaceTool::IsVPeriodic(Caro1)==Standard_False) { 
-    VM1+=KELARG*pasuv[1];  Vm1-=KELARG*pasuv[1];
+    //VM1+=KELARG*pasuv[1];  Vm1-=KELARG*pasuv[1];
   }
   else { 
     Standard_Real t = VM1-Vm1; 
@@ -168,7 +168,7 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
   }
    
   if(ThePSurfaceTool::IsUPeriodic(Caro2)==Standard_False) { 
-    UM2+=KELARG*pasuv[2];  Um2-=KELARG*pasuv[2];
+    //UM2+=KELARG*pasuv[2];  Um2-=KELARG*pasuv[2];
   }
   else { 
     Standard_Real t = UM2-Um2; 
@@ -180,7 +180,7 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
   }
    
   if(ThePSurfaceTool::IsVPeriodic(Caro2)==Standard_False) {   
-    VM2+=KELARG*pasuv[3];  Vm2-=KELARG*pasuv[3];
+    //VM2+=KELARG*pasuv[3];  Vm2-=KELARG*pasuv[3];
   }
   else { 
     Standard_Real t = VM2-Vm2; 
