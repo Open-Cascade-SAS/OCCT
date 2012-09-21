@@ -140,11 +140,15 @@ static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   double U,V;
   TopAbs_State state;
   
-  if(argc < 2){
-    printf("Usage: %s  draw_format_face\n [name] [interactive (0|1)]",argv[0]);
+  if (argc == 3) {
+    // BUC60609 shape name
+  } else if ( argc == 5 ) {
+    // BUC60609 shape name U V
+  } else {
+    di << "Usage : "<< argv[0] << " shape name [U V]" << "\n";
     return(-1);
   }
-  
+
   // MKV 30.03.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
   const Standard_Character *DD = Tcl_GetVar(di.Interp(),"Draw_DataDir",TCL_GLOBAL_ONLY);
@@ -185,12 +189,6 @@ static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** a
     DBRep::Set(argv[2],face);
   }
 
-  Standard_Boolean inter=Standard_False ;
-  
-  if(argc > 3){
-    inter= (atof(argv[3]) == 0) ? Standard_False : Standard_True ;
-  }
-
   Standard_Real faceUMin,faceUMax,faceVMin,faceVMax;
   
   BRepTools::UVBounds (face, faceUMin,faceUMax,faceVMin,faceVMax);
@@ -215,62 +213,35 @@ static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   // Hence IT WOULD BE USEFUL IF TopOpeBRep_PointClassifier COULD
   // COPE WITH PERIODIC SURFACES, i.e. U,V +-Period giving same result.
   // *************************************************
-  if(inter && (argc != 6)) {
-//    while(cin){
-      di << "Input U:   " << "\n";
-//      cin >> U;
-//      if(!cin) {
-	delete file1;
-	return(0);
-//      }
-      di << "Input V:   " << "\n";
-//      cin >> V;
-//      if(!cin) {
-	delete file1;
-	return(0);
-//      }
-      
-      uvSurf = gp_Pnt2d(U, V);
-      
-      //gp_Pnt2d uvSurf(0.14,5.1);  // outside!!!
-      //gp_Pnt2d uvSurf2(1.28,5.1); // inside
-    
-      state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-      if(state == TopAbs_IN || state == TopAbs_ON){
-	di << "U=" << U << " V=" << V << "  classified INSIDE" << "\n";
-      }else{
-	di << "U=" << U << " V=" << V << "  classified OUTSIDE" << "\n";
-      }
-//    }
-  } else {
-    if(argc != 6) {
-      uvSurf = gp_Pnt2d(0.14,5.1);
-      state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-      if(state == TopAbs_IN || state == TopAbs_ON){
-	di << "U=" << 0.14 << " V=" << 5.1 << "  classified INSIDE" << "\n";
-      }else{
-	di << "U=" << 0.14 << " V=" << 5.1 << "  classified OUTSIDE" << "\n";
-      }
 
-      uvSurf = gp_Pnt2d(1.28,5.1);
-      state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-      if(state == TopAbs_IN || state == TopAbs_ON){
-	di << "U=" << 1.28 << " V=" << 5.1 << "  classified INSIDE" << "\n";
-      }else{
-	di << "U=" << 1.28 << " V=" << 5.1 << "  classified OUTSIDE" << "\n";
-      }
-    } else {
-      uvSurf = gp_Pnt2d(atof(argv[4]),atof(argv[5]));
-      state = PClass.Classify(face,uvSurf,Precision::PConfusion());
-      if(state == TopAbs_IN || state == TopAbs_ON){
-	di << "U=" << atof(argv[4]) << " V=" << atof(argv[5]) << "  classified INSIDE" << "\n";
-      }else{
-	di << "U=" << atof(argv[4]) << " V=" << atof(argv[5]) << "  classified OUTSIDE" << "\n";
-      }
+  if (argc == 3) {
+    uvSurf = gp_Pnt2d(0.14,5.1);
+    state = PClass.Classify(face,uvSurf,Precision::PConfusion());
+    if(state == TopAbs_IN || state == TopAbs_ON){
+      di << "U=" << 0.14 << " V=" << 5.1 << "  classified INSIDE" << "\n";
+    }else{
+      di << "U=" << 0.14 << " V=" << 5.1 << "  classified OUTSIDE" << "\n";
+    }
+
+    uvSurf = gp_Pnt2d(1.28,5.1);
+    state = PClass.Classify(face,uvSurf,Precision::PConfusion());
+    if(state == TopAbs_IN || state == TopAbs_ON){
+      di << "U=" << 1.28 << " V=" << 5.1 << "  classified INSIDE" << "\n";
+    }else{
+      di << "U=" << 1.28 << " V=" << 5.1 << "  classified OUTSIDE" << "\n";
+    }
+  } else {
+    uvSurf = gp_Pnt2d(atof(argv[3]),atof(argv[4]));
+    state = PClass.Classify(face,uvSurf,Precision::PConfusion());
+    if(state == TopAbs_IN || state == TopAbs_ON){
+      di << "U=" << atof(argv[3]) << " V=" << atof(argv[4]) << "  classified INSIDE" << "\n";
+    }else{
+      di << "U=" << atof(argv[3]) << " V=" << atof(argv[4]) << "  classified OUTSIDE" << "\n";
     }
   }
   return 0;
 }
+
 
 #if ! defined(WNT)
 void stringerror(int state)
@@ -2261,7 +2232,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("BUC60623","BUC60623 result Shape1 Shape2",__FILE__,BUC60623,group);
   theCommands.Add("BUC60569","BUC60569 shape",__FILE__,BUC60569,group);
   theCommands.Add("BUC60614","BUC60614 shape",__FILE__,BUC60614,group);
-  theCommands.Add("BUC60609","BUC60609 shape [name] [interactive (0|1)]",__FILE__,BUC60609,group);
+  theCommands.Add("BUC60609","BUC60609 shape name [U V]",__FILE__,BUC60609,group);
 #if ! defined(WNT)
   theCommands.Add("UKI61075","UKI61075",__FILE__,UKI61075,group);
 #endif
