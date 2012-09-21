@@ -17,19 +17,17 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _OpenGl_Window_Header
 #define _OpenGl_Window_Header
 
-#include <Handle_OpenGl_Window.hxx>
-#include <MMgt_TShared.hxx>
-
-#include <InterfaceGraphic.hxx>
+#include <OpenGl_GlCore11.hxx>
 #include <InterfaceGraphic_Aspect.hxx>
-#include <InterfaceGraphic_telem.hxx>
 
-#include <Handle_OpenGl_Display.hxx>
 #include <Handle_OpenGl_Context.hxx>
+#include <Handle_OpenGl_Display.hxx>
+#include <Handle_OpenGl_Window.hxx>
+
+#include <MMgt_TShared.hxx>
 
 //! This class represents low-level wrapper over window with GL context.
 //! The window itself should be provided to constructor.
