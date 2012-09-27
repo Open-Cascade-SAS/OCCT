@@ -15,21 +15,22 @@ TS_FILES = ./src/Common-icon.ts \
 DEFINES = CSFDB
 
 unix {
+    UNAME = $$system(uname -s)
     INCLUDES = $$(CSF_OPT_INC)
     PATHS = $$split(INCLUDES,":")
     for(path, PATHS):INCLUDEPATH += $${path}
     LIBLIST = $$(LD_LIBRARY_PATH)
     LIBPATHS = $$split(LIBLIST,":")
     for(lib, LIBPATHS):LIBS += -L$${lib}
-    
+
     CONFIG(debug, debug|release) {
-	DESTDIR = ./Linux/bind
-	OBJECTS_DIR = ./Linux/objd
-	MOC_DIR = ./Linux/srcd
+	DESTDIR = ./$$UNAME/bind
+	OBJECTS_DIR = ./$$UNAME/objd
+	MOC_DIR = ./$$UNAME/srcd
     } else {
-	DESTDIR = ./Linux/bin
-	OBJECTS_DIR = ./Linux/obj
-	MOC_DIR = ./Linux/src
+	DESTDIR = ./$$UNAME/bin
+	OBJECTS_DIR = ./$$UNAME/obj
+	MOC_DIR = ./$$UNAME/src
     }
     INCLUDEPATH += $$QMAKE_INCDIR_X11 $$QMAKE_INCDIR_OPENGL $$QMAKE_INCDIR_THREAD
     DEFINES += LIN LININTEL OCC_CONVERT_SIGNALS HAVE_CONFIG_H HAVE_WOK_CONFIG_H

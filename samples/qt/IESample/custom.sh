@@ -1,19 +1,10 @@
 #!/bin/sh
 
-#Define CASROOT and QTDIR variables in order to generate Makefile files by qmake
+#Define CASROOT and QTDIR variables in order to generate Makefile files by qmake.
+#If you are using Mac OS X it is necessary to define WOKHOME as a path to your WOK installation directory.
 
 export CASROOT=""
 
 export QTDIR=""
 
-if test "${CASROOT}" == ""; then
-   echo "Environment variable \"CASROOT\" not defined."
-   exit 1
-fi
-
-if test "${QTDIR}" == ""; then
-   echo "Environment variable \"QTDIR\" not defined."
-   exit 1
-fi
-
-export PATH=${QTDIR}/bin:${PATH}
+export WOKHOME=""
