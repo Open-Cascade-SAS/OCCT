@@ -1,0 +1,15 @@
+puts "============"
+puts "CR23394"
+puts "============"
+puts ""
+##########################################################################################################
+# Problem with BRepOffset_MakeOffset on a cylindrical face
+##########################################################################################################
+
+restore [locate_data_file CR23394-Circular_tube.brep] sh1
+
+thickshell result sh1 5
+
+set square 128648
+
+set 3dviewer 1
