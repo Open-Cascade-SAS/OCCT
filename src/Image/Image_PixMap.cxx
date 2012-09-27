@@ -19,8 +19,12 @@
 
 #include <Image_PixMap.hxx>
 
-#ifndef _MSC_VER
+#ifdef _MSC_VER
+  //
+#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
   #include <mm_malloc.h>
+#else
+  extern "C" int posix_memalign (void** thePtr, size_t theAlign, size_t theBytesCount);
 #endif
 
 template<typename TypePtr>
@@ -29,8 +33,15 @@ inline TypePtr MemAllocAligned (const Standard_Size& theBytesCount,
 {
 #if defined(_MSC_VER)
   return (TypePtr )_aligned_malloc (theBytesCount, theAlign);
-#else
+#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
   return (TypePtr )     _mm_malloc (theBytesCount, theAlign);
+#else
+  void* aPtr;
+  if (posix_memalign (&aPtr, theAlign, theBytesCount))
+  {
+    aPtr = NULL;
+  }
+  return (TypePtr )aPtr;
 #endif
 }
 
@@ -38,8 +49,10 @@ inline void MemFreeAligned (void* thePtrAligned)
 {
 #if defined(_MSC_VER)
   _aligned_free (thePtrAligned);
-#else
+#elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
   _mm_free (thePtrAligned);
+#else
+  free (thePtrAligned);
 #endif
 }
 

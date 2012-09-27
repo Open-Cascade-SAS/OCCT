@@ -52,6 +52,13 @@
 //!     In this case the whole group of pixels is ignored (considered as same).
 //!     Otherwise, the group of pixels may represent a geometrical curve in the viewer 3D
 //!     and should be considered as "different".
+//!
+//! References:
+//!     1. http://pdiff.sourceforge.net/ypg01.pdf
+//!     2. http://pdiff.sourceforge.net/metric.html
+//!     3. http://www.cs.ucf.edu/~sumant/publications/sig99.pdf
+//!     4. http://www.worldscientific.com/worldscibooks/10.1142/2641#t=toc (there is a list of articles and books in PDF format)
+
 class Image_Diff : public Standard_Transient
 {
 

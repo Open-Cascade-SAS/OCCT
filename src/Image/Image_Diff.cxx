@@ -63,6 +63,12 @@ inline void int2Pixel (const Standard_Size theValue,
 
 namespace
 {
+
+  inline ptrdiff_t getAbs (const ptrdiff_t theValue)
+  {
+    return theValue >= 0 ? theValue : -theValue;
+  }
+
   static const Standard_Size NEIGHBOR_PIXELS_NB = 8;
   struct
   {
@@ -82,6 +88,16 @@ namespace
     {
       return ::isBlack (theData.Value (theRowCenter + Standard_Size(row_inc),
                                        theColCenter + Standard_Size(col_inc)));
+    }
+
+    inline bool isValid (const Image_PixMapData<Image_ColorRGB>& theData,
+                         const Standard_Size theRowCenter,
+                         const Standard_Size theColCenter) const
+    {
+      const Standard_Size aRow = theRowCenter + Standard_Size(row_inc);
+      const Standard_Size aCol = theColCenter + Standard_Size(col_inc);
+      return aRow < theData.SizeX()  // this unsigned math checks Standard_Size(-1) at-once
+          && aCol < theData.SizeY();
     }
   }
   static const NEIGHBOR_PIXELS[NEIGHBOR_PIXELS_NB] =
@@ -408,8 +424,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
     {
       const Standard_Size aValue2 = myDiffPixels.Value (aPixelId2);
       int2Pixel (aValue2, aRow2, aCol2);
-      if (std::abs (ptrdiff_t (aCol1 - aCol2)) <= 1 &&
-          std::abs (ptrdiff_t (aRow1 - aRow2)) <= 1)
+      if (getAbs (ptrdiff_t (aCol1 - aCol2)) <= 1 &&
+          getAbs (ptrdiff_t (aRow1 - aRow2)) <= 1)
       {
         // A neighbour is found. Create a new group and add both pixels.
         if (myGroupsOfDiffPixels.IsEmpty())
@@ -463,7 +479,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
       // check all neighbour pixels on presence in the group
       for (Standard_Size aNgbrIter = 0; aNgbrIter < NEIGHBOR_PIXELS_NB; ++aNgbrIter)
       {
-        if (aGroup->Contains (NEIGHBOR_PIXELS[aNgbrIter].pixel2Int (aRow1, aCol1)))
+        if (NEIGHBOR_PIXELS[aNgbrIter].isValid (aDataRef, aRow1, aCol1)
+         && aGroup->Contains (NEIGHBOR_PIXELS[aNgbrIter].pixel2Int (aRow1, aCol1)))
         {
           ++aNeighboursNb;
         }
@@ -485,7 +502,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
       aNeighboursNb = 0;
       for (Standard_Size aNgbrIter = 0; aNgbrIter < NEIGHBOR_PIXELS_NB; ++aNgbrIter)
       {
-        if (!NEIGHBOR_PIXELS[aNgbrIter].isBlack (aDataRef, aRow1, aCol1))
+        if ( NEIGHBOR_PIXELS[aNgbrIter].isValid (aDataRef, aRow1, aCol1)
+         && !NEIGHBOR_PIXELS[aNgbrIter].isBlack (aDataRef, aRow1, aCol1))
         {
           ++aNeighboursNb;
         }
