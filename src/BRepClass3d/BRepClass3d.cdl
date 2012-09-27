@@ -46,22 +46,19 @@ is
        DataMap from TCollection(Shape          from TopoDS,
 	    	    	    	Address        from Standard,
                                 ShapeMapHasher from TopTools);
-				
 
     class SolidExplorer;
         
-    class SolidPassiveClassifier instantiates Classifier3d from TopClass
-    	(Intersector3d  from BRepClass3d);
+    class SolidPassiveClassifier instantiates  
+    	Classifier3d from TopClass  (Intersector3d  from BRepClass3d);
 
-    ---class SClassifier instantiates SolidClassifier from TopClass
-    ---   (SolidExplorer from BRepClass3d,
-    ---	Intersector3d from BRepClass3d);
-     
-    
     class SClassifier;       
 
     class SolidClassifier;
-    
        
+    OuterShell(S : Solid from TopoDS)  
+    	    returns Shell from TopoDS;
+	---Purpose: Returns the outer most shell of <S>. Returns a Null
+	--          shell if <S> has no outer shell. 
        
 end BRepClass3d;

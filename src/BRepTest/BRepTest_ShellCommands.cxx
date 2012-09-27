@@ -37,49 +37,81 @@
 #include <TopAbs.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <BRepClass3d.hxx>
 
+//
+static 
+  Standard_Boolean issame(TopoDS_Face& face, 
+			  TopoDS_Face& newface);
+static 
+  TopoDS_Face findface(TopoDS_Shape& shape, 
+		       TopoDS_Face& face);
+//
+static Standard_Integer shell(Draw_Interpretor&, Standard_Integer, const char** );
+static Standard_Integer outershell(Draw_Interpretor&, Standard_Integer, const char** );
 
-
-
-static Standard_Boolean issame(TopoDS_Face& face, TopoDS_Face& newface)
+//=======================================================================
+//function : ShellCommands
+//purpose  : 
+//=======================================================================
+void BRepTest::ShellCommands(Draw_Interpretor& theCommands)
 {
-  TopExp_Explorer exp(face,TopAbs_VERTEX),newexp(newface,TopAbs_VERTEX);
-  Standard_Integer newcounter=0,counter=0;
-  for (;exp.More();exp.Next())
-    {
-      counter++;
-      gp_Pnt p(BRep_Tool::Pnt(TopoDS::Vertex(exp.Current())));
-      for (;newexp.More();newexp.Next())
-	{
-	  gp_Pnt newp(BRep_Tool::Pnt(TopoDS::Vertex(newexp.Current())));
-	  if (p.IsEqual(newp,1e-7))
-	    {
-	      newcounter++;
-	      break;
-	    };
-	};
-    };
-  if (counter==newcounter)
-    return Standard_True;
-  return Standard_False;
+  static Standard_Boolean loaded = Standard_False;
+  if (loaded) return;
+  loaded = Standard_True;
+
+  const char* g = "Projection of wire commands";
+
+  theCommands.Add("shell","Make shell on bugged object",  __FILE__, shell,g);
+  theCommands.Add("outershell","use outershell r s",  __FILE__, outershell,g);
+
+}
+//modified by NIZNHY-PKV Thu Sep 20 10:44:11 2012f
+//=======================================================================
+//function : outershell
+//purpose  : 
+//=======================================================================
+Standard_Integer outershell(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{  
+  TopoDS_Shape aS;
+  TopoDS_Solid aSd;
+  TopoDS_Shell aSh;
+  //
+  if (n!=3) {
+    di << " use outershell r s\n";
+    return 1;
+  }
+  //
+  aS=DBRep::Get(a[2]);
+  if (aS.IsNull()) {
+    di << " Null shape is not allowed\n";
+    return 1;
+  }
+  if (aS.ShapeType()!=TopAbs_SOLID) {
+    di << " The shape must be a solid\n";
+    return 1;
+  }
+  //
+  aSd=*((TopoDS_Solid*)&aS);
+  //
+  aSh=BRepClass3d::OuterShell(aSd);
+  if (aSh.IsNull()) {
+    di << " not found\n";
+  }
+  else {
+    DBRep::Set(a[1],aSh);
+  }
+  return 0;
 }
 
-static TopoDS_Face findface(TopoDS_Shape& shape, TopoDS_Face& face)
-{
-  TopoDS_Face newface;
-  TopExp_Explorer exp(shape,TopAbs_FACE);
-  for (;exp.More();exp.Next())
-    {
-      newface = TopoDS::Face(exp.Current());
-      if (issame(face,newface))
-	{
-	  break;
-	};
-    };
-  return newface;
-}
-
-static Standard_Integer shell(Draw_Interpretor& di, Standard_Integer n, const char** a)
+//modified by NIZNHY-PKV Thu Sep 20 10:44:17 2012t
+//=======================================================================
+//function : shell
+//purpose  : 
+//=======================================================================
+Standard_Integer shell(Draw_Interpretor& di, Standard_Integer n, const char** a)
 { 
   TopoDS_Shape Shape =  DBRep::Get(a[1]);
   TopTools_ListOfShape ListOfCorks;
@@ -117,18 +149,52 @@ static Standard_Integer shell(Draw_Interpretor& di, Standard_Integer n, const ch
   DBRep::Set("S",MKTS.Shape());
   return 0;
 }
-/*********************************************************************************/
 
-void  BRepTest::ShellCommands(Draw_Interpretor& theCommands)
+
+//=======================================================================
+//function : issame
+//purpose  : 
+//=======================================================================
+Standard_Boolean issame(TopoDS_Face& face, TopoDS_Face& newface)
 {
-  static Standard_Boolean loaded = Standard_False;
-  if (loaded) return;
-  loaded = Standard_True;
-
-  const char* g = "Projection of wire commands";
-
-  theCommands.Add("shell","Make shell on bugged object",
-		  __FILE__,
-		  shell,g);
-
+  TopExp_Explorer exp(face,TopAbs_VERTEX),newexp(newface,TopAbs_VERTEX);
+  Standard_Integer newcounter=0,counter=0;
+  for (;exp.More();exp.Next())
+    {
+      counter++;
+      gp_Pnt p(BRep_Tool::Pnt(TopoDS::Vertex(exp.Current())));
+      for (;newexp.More();newexp.Next())
+	{
+	  gp_Pnt newp(BRep_Tool::Pnt(TopoDS::Vertex(newexp.Current())));
+	  if (p.IsEqual(newp,1e-7))
+	    {
+	      newcounter++;
+	      break;
+	    };
+	};
+    };
+  if (counter==newcounter)
+    return Standard_True;
+  return Standard_False;
 }
+
+//=======================================================================
+//function : findface
+//purpose  : 
+//=======================================================================
+TopoDS_Face findface(TopoDS_Shape& shape, TopoDS_Face& face)
+{
+  TopoDS_Face newface;
+  TopExp_Explorer exp(shape,TopAbs_FACE);
+  for (;exp.More();exp.Next())
+    {
+      newface = TopoDS::Face(exp.Current());
+      if (issame(face,newface))
+	{
+	  break;
+	};
+    };
+  return newface;
+}
+
+
