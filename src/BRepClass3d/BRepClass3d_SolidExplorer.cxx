@@ -338,7 +338,6 @@ Standard_Boolean BRepClass3d_SolidExplorer::PointInTheFace
 //function : LimitInfiniteUV
 //purpose  : Limit infinite parameters
 //=======================================================================
-
 static void LimitInfiniteUV (Standard_Real& U1,
 			     Standard_Real& V1,
 			     Standard_Real& U2,
@@ -355,14 +354,15 @@ static void LimitInfiniteUV (Standard_Real& U1,
   if (infU2) U2 =  1e10;
   if (infV2) V2 =  1e10;
 }
-//  Modified by skv - Tue Sep 16 13:50:38 2003 OCC578 Begin
-//OCC454(apo)->
-// static Standard_Boolean IsInfiniteUV (Standard_Real& U1, Standard_Real& V1, Standard_Real& U2, Standard_Real& V2) {
-//   return (Precision::IsNegativeInfinite(U1) || Precision::IsNegativeInfinite(V1) || 
-// 	  Precision::IsNegativeInfinite(U2) || Precision::IsNegativeInfinite(V2)); 
-// }
-static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
-				      Standard_Real& U2, Standard_Real& V2) {
+//=======================================================================
+//function : IsInfiniteUV
+//purpose  : 
+//=======================================================================
+static Standard_Integer IsInfiniteUV (Standard_Real& U1, 
+				      Standard_Real& V1,
+				      Standard_Real& U2, 
+				      Standard_Real& V2) 
+{
   Standard_Integer aVal = 0;
 
   if (Precision::IsInfinite(U1))
@@ -391,27 +391,20 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 //           The Second Call provide a line to the second face
 //           and so on. 
 //=======================================================================
-//modified by NIZNHY-PKV Thu Nov 14 14:34:05 2002 f
-//void  BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, 
-//					      gp_Lin& L, 
-//					      Standard_Real& _Par)  
-  Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, 
-							   gp_Lin& L, 
-							   Standard_Real& _Par) 
-//modified by NIZNHY-PKV Thu Nov 14 14:34:10 2002 t
+Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, 
+							 gp_Lin& L, 
+							 Standard_Real& _Par) 
 {
   const Standard_Real TolU = Precision::PConfusion();
   const Standard_Real TolV = TolU;
 
   TopoDS_Face         face;
   TopExp_Explorer     faceexplorer;
-  //TopExp_Explorer     edgeexplorer;
   gp_Pnt APoint;
   gp_Vec aVecD1U, aVecD1V;
   Standard_Real maxscal=0;
   Standard_Boolean ptfound=Standard_False;
   Standard_Real Par;
-  //Standard_Integer i=1;
   Standard_Real _u,_v;
   Standard_Integer IndexPoint=0;
   Standard_Integer NbPointsOK=0;
@@ -440,42 +433,44 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
       //
       //avoid process faces from uncorrected shells
       if( Abs (U2 - U1) < 1.e-12 || Abs(V2 - V1) < 1.e-12) {
-	//modified by NIZNHY-PKV Thu Nov 14 15:03:18 2002 f
-	//gp_Vec avoidV(gp_Pnt(0.,0.,0.),gp_Pnt(0.,0.,1.));
-	//gp_Lin avoidL(gp_Pnt(0.,0.,0.),avoidV);
-	//_Par = RealLast();
-	//L = avoidL;
 	return 2;
-	//return ;
-	//modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t
       }
       //
       Standard_Real svmyparam=myParamOnEdge;
       //
-      //  Modified by skv - Tue Sep 16 13:55:27 2003 OCC578 Begin
       // Check if the point is on the face or the face is infinite.
       Standard_Integer anInfFlag = IsInfiniteUV(U1,V1,U2,V2);
 
-//       if(IsInfiniteUV(U1,V1,U2,V2)){//OCC454(apo)->
       GeomAdaptor_Surface GA(BRep_Tool::Surface(face));
-      Extrema_ExtPS Ext(P,GA,TolU,TolV);
+      Extrema_ExtPS Ext(P, GA, TolU, TolV);
+      //
       if (Ext.IsDone() && Ext.NbExt() > 0) {
-	// evaluate the lower distance and its index;
-	Standard_Real  Dist2, Dist2Min = Ext.SquareDistance(1);
-	Standard_Integer  iNear = 1, i = 2, iEnd = Ext.NbExt();
+	Standard_Integer i, iNear,  iEnd;
+	Standard_Real  aUx, aVx, Dist2, Dist2Min;
+	Extrema_POnSurf aPx;
+	//
+	iNear = 1;
+	Dist2Min = Ext.SquareDistance(1);
+	iEnd = Ext.NbExt();
 	for (i = 2; i <= iEnd; i++) {
-	  Dist2 = Ext.SquareDistance(i);
-	  if (Dist2 < Dist2Min) {
-	    Dist2Min = Dist2; iNear = i;
+	  aPx=Ext.Point(i);
+	  aPx.Parameter(aUx, aVx);
+	  if (aUx>=U1 && aUx<=U2 && aVx>=V1 && aVx<=V2) {
+	    Dist2 = Ext.SquareDistance(i);
+	    if (Dist2 < Dist2Min) {
+	      Dist2Min = Dist2; 
+	      iNear = i;
+	    }
 	  }
 	}
-	//modified by NIZNHY-PKV Thu Nov 14 12:31:01 2002 f
+	//
 	Standard_Real aDist2Tresh=1.e-24;
-
+	//
 	if (Dist2Min<aDist2Tresh) {
 	  if (anInfFlag) {
 	    return 1;
-	  } else {
+	  } 
+	  else {
 	    BRepClass_FaceClassifier classifier2d;
 	    Standard_Real            aU;
 	    Standard_Real            aV;
@@ -488,31 +483,25 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 
 	    TopAbs_State aState = classifier2d.State();
 
-	    if (aState == TopAbs_IN || aState == TopAbs_ON)
+	    if (aState == TopAbs_IN || aState == TopAbs_ON) {
 	      return 1;
-	    else
+	    }
+	    else {
 	      return 3; // skv - the point is on surface but outside face.
+	    }
 	  }
 	}
-	//modified by NIZNHY-PKV Thu Nov 14 12:31:03 2002 t
 	if (anInfFlag) {
 	  APoint = (Ext.Point(iNear)).Value();
 	  gp_Vec V(P,APoint);
 	  _Par = V.Magnitude(); 
 	  L = gp_Lin(P,V);
 	  ptfound=Standard_True;
-	  //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-	  //return ;
 	  return 0;
-	  //modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t
 	}
-	//<-OCC454(apo)
-//       }else{
       }
       //The point is not ON the face or surface. The face is restricted.
       // find point in a face not too far from a projection of P on face
-      //  Modified by skv - Tue Sep 16 15:25:00 2003 OCC578 End
-
       do {
         if (PointInTheFace (face, APoint, _u, _v, myParamOnEdge, ++IndexPoint, surf,
                             U1, V1, U2, V2,
@@ -545,10 +534,7 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 
       myParamOnEdge=svmyparam;
       if(maxscal>0.2) {		  
-	//modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-	//return ;
 	return 0;
-	//modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t
       }
 
 
@@ -568,11 +554,7 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 	  Par= 1.0;
 	  _Par=Par;
 	  L  = gp_Lin(P,V);
-	  //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-	  //return ;
 	  return 0;
-	  //modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t
-	  //-- cout<<" FindAPoint **** Pas OK "<<endl;
 	}
       }
     } //-- Exploration of the faces   
@@ -583,17 +565,11 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
 #if DEB
       cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
 #endif  
-      //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-      //return ;
       return 0;
-      //modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t    
     }
 
     if(ptfound) {
-      //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-      //return ;
       return 0;
-      //modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t     
     }
     myFirstFace = 0;
     if(myParamOnEdge==0.512345)  myParamOnEdge = 0.4;
@@ -609,10 +585,7 @@ static Standard_Integer IsInfiniteUV (Standard_Real& U1, Standard_Real& V1,
     
   } //-- do { ...  } 
   while(1); 
-  //modified by NIZNHY-PKV Thu Nov 14 12:25:28 2002 f
-  //return ;
   return 0;
-  //modified by NIZNHY-PKV Thu Nov 14 12:25:33 2002 t 
 }
 
 //  Modified by skv - Thu Sep  4 12:30:14 2003 OCC578 Begin
@@ -919,23 +892,15 @@ Standard_Boolean BRepClass3d_SolidExplorer::RejectFace(const gp_Lin& ) const
 //           one  intersection  with  the  shape  boundary  to
 //           compute  intersections. 
 //=======================================================================
-//modified by NIZNHY-PKV Thu Nov 14 14:40:35 2002 f
-//void  BRepClass3d_SolidExplorer::Segment(const gp_Pnt& P, 
-//					 gp_Lin& L, 
-//					 Standard_Real& Par)  {  
-//  myFirstFace = 0;
-//  OtherSegment(P,L,Par);
-//}
-  Standard_Integer  BRepClass3d_SolidExplorer::Segment(const gp_Pnt& P, 
-						       gp_Lin& L, 
-						       Standard_Real& Par)  
+Standard_Integer  BRepClass3d_SolidExplorer::Segment(const gp_Pnt& P, 
+						     gp_Lin& L, 
+						     Standard_Real& Par)  
 {
   Standard_Integer bRetFlag;
   myFirstFace = 0;
   bRetFlag=OtherSegment(P,L,Par);
   return bRetFlag;
 }
-//modified by NIZNHY-PKV Thu Nov 14 14:41:48 2002 t
 
 //=======================================================================
 //function : Intersector
