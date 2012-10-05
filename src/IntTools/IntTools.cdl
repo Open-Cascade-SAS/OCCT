@@ -47,7 +47,8 @@ uses
     IntSurf, 
     BRepClass3d, 
     TColgp, 
-    MMgt
+    MMgt, 
+    Geom2dHatch
 
 is
     	

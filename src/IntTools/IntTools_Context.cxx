@@ -41,6 +41,14 @@
 #include <Extrema_LocateExtPC.hxx>
 
 #include <Geom2d_Curve.hxx>
+//
+#include <Geom2dHatch_Intersector.hxx>
+#include <BRepTools.hxx>
+#include <TopExp_Explorer.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Precision.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 
 //=======================================================================
 //function : 
@@ -57,6 +65,18 @@ IntTools_Context::~IntTools_Context()
 {
   Standard_Address anAdr;
   Standard_Integer i, aNb;
+  //
+  //modified by NIZNHY-PKV Mon Sep 24 08:01:03 2012f
+  Geom2dHatch_Hatcher* pHatcher;
+  aNb=myHatcherMap.Extent();
+  for (i=1; i<=aNb; ++i) {
+    anAdr=myHatcherMap(i);
+    pHatcher=(Geom2dHatch_Hatcher*)anAdr;
+    delete pHatcher;
+  }
+  myHatcherMap.Clear();
+  //
+  //modified by NIZNHY-PKV Mon Sep 24 08:01:07 2012t
   //
   IntTools_FClass2d* pFClass2d;
   aNb=myFClass2dMap.Extent();
@@ -114,11 +134,78 @@ IntTools_Context::~IntTools_Context()
   }
   myProjSDataMap.Clear();
 }
+//modified by NIZNHY-PKV Mon Sep 24 07:56:45 2012f
+//=======================================================================
+//function : Hatcher
+//purpose  : 
+//=======================================================================
+Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
+{
+  Standard_Address anAdr;
+  Geom2dHatch_Hatcher* pHatcher;
+  //
+  anAdr=myHatcherMap.FindFromKey1(aF);
+  if (!anAdr) {
+    Standard_Real aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
+    Standard_Real aUMin, aUMax, aVMin, aVMax, aU1, aU2, aEpsT;
+    TopAbs_Orientation aOrE;
+    Handle(Geom_Surface) aS;
+    Handle(Geom2d_Curve) aC2D;
+    Handle(Geom2d_TrimmedCurve) aCT2D;
+    TopoDS_Face aFF;
+    TopExp_Explorer aExp;
+    //
+    aTolHatch2D=1.e-8;
+    aTolHatch3D=1.e-8;
+    aTolArcIntr=1.e-10;
+    aTolTangfIntr=1.e-10;
+    aEpsT=Precision::PConfusion();
+    //
+    Geom2dHatch_Intersector aIntr(aTolArcIntr, aTolTangfIntr);
+    pHatcher=new Geom2dHatch_Hatcher(aIntr,
+				     aTolHatch2D, aTolHatch3D,
+				     Standard_True, Standard_False);
+    
+    //
+    aFF=aF;
+    aFF.Orientation(TopAbs_FORWARD);
+    aS=BRep_Tool::Surface(aFF);
+    //BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
+    //
+    aExp.Init (aFF, TopAbs_EDGE);
+    for (; aExp.More() ; aExp.Next()) {
+      const TopoDS_Edge& aE=*((TopoDS_Edge*)&aExp.Current());
+      aOrE=aE.Orientation();
+      //
+      aC2D=BRep_Tool::CurveOnSurface (aE, aFF, aU1, aU2);
+      if (aC2D.IsNull() ) {
+	continue;
+      }
+      if (fabs(aU1-aU2) < aEpsT) {
+	continue;
+      }
+      //
+      aCT2D=new Geom2d_TrimmedCurve(aC2D, aU1, aU2);
+      pHatcher->AddElement(aCT2D, aOrE);
+    }// for (; aExp.More() ; aExp.Next()) {
+    //
+    anAdr=(Standard_Address)pHatcher;
+    myHatcherMap.Add(aFF, anAdr);
+  }// if (!anAdr) {
+  //
+  else {
+    Standard_Address *pAdr=(Standard_Address *)anAdr;
+    pHatcher=(Geom2dHatch_Hatcher*)*pAdr;
+  }
+
+  return *pHatcher;
+}
+//modified by NIZNHY-PKV Mon Sep 24 07:56:45 2012t
 //=======================================================================
 //function : FClass2d
 //purpose  : 
 //=======================================================================
-  IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
+IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
 {
   Standard_Address anAdr;
   IntTools_FClass2d* pFClass2d;
@@ -147,7 +234,7 @@ IntTools_Context::~IntTools_Context()
 //function : ProjPS
 //purpose  : 
 //=======================================================================
-  GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
+GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
 {
   Standard_Address anAdr;
   GeomAPI_ProjectPointOnSurf* pProjPS;
@@ -183,7 +270,7 @@ IntTools_Context::~IntTools_Context()
 //function : ProjPC
 //purpose  : 
 //=======================================================================
-  GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
+GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
 {
   Standard_Address anAdr;
   GeomAPI_ProjectPointOnCurve* pProjPC;
@@ -210,7 +297,7 @@ IntTools_Context::~IntTools_Context()
 //function : ProjPT
 //purpose  : 
 //=======================================================================
-  GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT(const Handle(Geom_Curve)& aC3D)
+GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT(const Handle(Geom_Curve)& aC3D)
 							
 {
   Standard_Address anAdr;
@@ -239,7 +326,7 @@ IntTools_Context::~IntTools_Context()
 //function : SurfaceData
 //purpose  : 
 //=======================================================================
-  IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData(const TopoDS_Face& aF) 
+IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData(const TopoDS_Face& aF) 
 {
   Standard_Address anAdr;
   IntTools_SurfaceRangeLocalizeData* pSData;
@@ -267,7 +354,7 @@ IntTools_Context::~IntTools_Context()
 //function : SolidClassifier
 //purpose  : 
 //=======================================================================
-  BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier(const TopoDS_Solid& aSolid)
+BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier(const TopoDS_Solid& aSolid)
 {
   Standard_Address anAdr;
   BRepClass3d_SolidClassifier* pSC;
@@ -290,9 +377,9 @@ IntTools_Context::~IntTools_Context()
 //function : ComputeVE
 //purpose  : 
 //=======================================================================
-  Standard_Integer IntTools_Context::ComputeVE(const TopoDS_Vertex& aV1, 
-					       const TopoDS_Edge&   aE2,
-					       Standard_Real& aT)
+Standard_Integer IntTools_Context::ComputeVE(const TopoDS_Vertex& aV1, 
+					     const TopoDS_Edge&   aE2,
+					     Standard_Real& aT)
 {
   Standard_Boolean bToUpdate;
   Standard_Integer iFlag;
@@ -306,11 +393,11 @@ IntTools_Context::~IntTools_Context()
 //function : ComputeVE
 //purpose  : 
 //=======================================================================
-  Standard_Integer IntTools_Context::ComputeVE(const TopoDS_Vertex& aV1, 
-					       const TopoDS_Edge&   aE2,
-					       Standard_Real& aT,
-					       Standard_Boolean& bToUpdateVertex, 
-					       Standard_Real& aDist)
+Standard_Integer IntTools_Context::ComputeVE(const TopoDS_Vertex& aV1, 
+					     const TopoDS_Edge&   aE2,
+					     Standard_Real& aT,
+					     Standard_Boolean& bToUpdateVertex, 
+					     Standard_Real& aDist)
 {
   bToUpdateVertex=Standard_False;
   aDist=0.;
@@ -318,12 +405,6 @@ IntTools_Context::~IntTools_Context()
   if (BRep_Tool::Degenerated(aE2)) {
     return -1;
   }
-  //
-  //modified by NIZNHY-PKV Wed Jul 13 08:30:08 2011f
-  //if (!BRep_Tool::IsGeometric(aE2)) { 
-  //  return -2;
-  //}
-  //modified by NIZNHY-PKV Wed Jul 13 08:30:13 2011t
   //
   Standard_Real aTolV1, aTolE2, aTolSum, aTolVx;
   Standard_Integer aNbProj;
@@ -360,10 +441,10 @@ IntTools_Context::~IntTools_Context()
 //function : ComputeVS
 //purpose  : 
 //=======================================================================
-  Standard_Integer IntTools_Context::ComputeVS(const TopoDS_Vertex& aV1, 
-					       const TopoDS_Face&   aF2,
-					       Standard_Real& U,
-					       Standard_Real& V)
+Standard_Integer IntTools_Context::ComputeVS(const TopoDS_Vertex& aV1, 
+					     const TopoDS_Face&   aF2,
+					     Standard_Real& U,
+					     Standard_Real& V)
 {
   Standard_Real aTolV1, aTolF2, aTolSum, aDist;
   gp_Pnt aP;
@@ -404,8 +485,8 @@ IntTools_Context::~IntTools_Context()
 //function : StatePointFace
 //purpose  : 
 //=======================================================================
-  TopAbs_State IntTools_Context::StatePointFace(const TopoDS_Face& aF,
-						const gp_Pnt2d& aP2d)
+TopAbs_State IntTools_Context::StatePointFace(const TopoDS_Face& aF,
+					      const gp_Pnt2d& aP2d)
 {
   TopAbs_State aState;
   IntTools_FClass2d& aClass2d=FClass2d(aF);
@@ -416,8 +497,8 @@ IntTools_Context::~IntTools_Context()
 //function : IsPointInFace
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsPointInFace(const TopoDS_Face& aF,
-						   const gp_Pnt2d& aP2d)
+Standard_Boolean IntTools_Context::IsPointInFace(const TopoDS_Face& aF,
+						 const gp_Pnt2d& aP2d)
 {
   TopAbs_State aState=StatePointFace(aF, aP2d);
   if (aState==TopAbs_OUT || aState==TopAbs_ON) {
@@ -429,8 +510,8 @@ IntTools_Context::~IntTools_Context()
 //function : IsPointInOnFace
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsPointInOnFace(const TopoDS_Face& aF,
-						     const gp_Pnt2d& aP2d)
+Standard_Boolean IntTools_Context::IsPointInOnFace(const TopoDS_Face& aF,
+						   const gp_Pnt2d& aP2d)
 { 
   TopAbs_State aState=StatePointFace(aF, aP2d);
   if (aState==TopAbs_OUT) {
@@ -442,9 +523,9 @@ IntTools_Context::~IntTools_Context()
 //function : IsValidPointForFace
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsValidPointForFace(const gp_Pnt& aP,
-							 const TopoDS_Face& aF,
-							 const Standard_Real aTol) 
+Standard_Boolean IntTools_Context::IsValidPointForFace(const gp_Pnt& aP,
+						       const TopoDS_Face& aF,
+						       const Standard_Real aTol) 
 {
   Standard_Boolean bFlag;
   Standard_Real Umin, myEpsT, U, V;
@@ -472,10 +553,10 @@ IntTools_Context::~IntTools_Context()
 //function : IsValidPointForFaces
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsValidPointForFaces (const gp_Pnt& aP,
-							   const TopoDS_Face& aF1,
-							   const TopoDS_Face& aF2,
-							   const Standard_Real aTol) 
+Standard_Boolean IntTools_Context::IsValidPointForFaces (const gp_Pnt& aP,
+							 const TopoDS_Face& aF1,
+							 const TopoDS_Face& aF2,
+							 const Standard_Real aTol) 
 {
   Standard_Boolean bFlag1, bFlag2;
 
@@ -490,11 +571,11 @@ IntTools_Context::~IntTools_Context()
 //function : IsValidBlockForFace
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsValidBlockForFace (const Standard_Real aT1,
-							  const Standard_Real aT2,
-							  const IntTools_Curve& aC, 
-							  const TopoDS_Face& aF,
-							  const Standard_Real aTol) 
+Standard_Boolean IntTools_Context::IsValidBlockForFace (const Standard_Real aT1,
+							const Standard_Real aT2,
+							const IntTools_Curve& aC, 
+							const TopoDS_Face& aF,
+							const Standard_Real aTol) 
 {
   Standard_Boolean bFlag;
   Standard_Real aTInterm, aFirst, aLast;
@@ -515,12 +596,12 @@ IntTools_Context::~IntTools_Context()
 //function : IsValidBlockForFaces
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsValidBlockForFaces (const Standard_Real aT1,
-							   const Standard_Real aT2,
-							   const IntTools_Curve& aC, 
-							   const TopoDS_Face& aF1,
-							   const TopoDS_Face& aF2,
-							   const Standard_Real aTol) 
+Standard_Boolean IntTools_Context::IsValidBlockForFaces (const Standard_Real aT1,
+							 const Standard_Real aT2,
+							 const IntTools_Curve& aC, 
+							 const TopoDS_Face& aF1,
+							 const TopoDS_Face& aF2,
+							 const Standard_Real aTol) 
 {
   Standard_Boolean bFlag1, bFlag2;
   //
@@ -554,10 +635,10 @@ IntTools_Context::~IntTools_Context()
 //function : IsVertexOnLine
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsVertexOnLine (const TopoDS_Vertex& aV,
-						     const IntTools_Curve& aC, 
-						     const Standard_Real aTolC,
-						     Standard_Real& aT)
+Standard_Boolean IntTools_Context::IsVertexOnLine (const TopoDS_Vertex& aV,
+						   const IntTools_Curve& aC, 
+						   const Standard_Real aTolC,
+						   Standard_Real& aT)
 {
   Standard_Boolean bRet;
   Standard_Real aTolV;
@@ -571,11 +652,11 @@ IntTools_Context::~IntTools_Context()
 //function : IsVertexOnLine
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::IsVertexOnLine (const TopoDS_Vertex& aV,
-						     const Standard_Real aTolV,
-						     const IntTools_Curve& aC, 
-						     const Standard_Real aTolC,
-						     Standard_Real& aT)
+Standard_Boolean IntTools_Context::IsVertexOnLine (const TopoDS_Vertex& aV,
+						   const Standard_Real aTolV,
+						   const IntTools_Curve& aC, 
+						   const Standard_Real aTolC,
+						   Standard_Real& aT)
 {
   Standard_Real aFirst, aLast, aDist, aTolSum;
   Standard_Integer aNbProj;
@@ -696,9 +777,9 @@ IntTools_Context::~IntTools_Context()
 //function : ProjectPointOnEdge
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_Context::ProjectPointOnEdge(const gp_Pnt& aP,
-							const TopoDS_Edge& anEdge,
-							Standard_Real& aT)
+Standard_Boolean IntTools_Context::ProjectPointOnEdge(const gp_Pnt& aP,
+						      const TopoDS_Edge& anEdge,
+						      Standard_Real& aT)
 {
   Standard_Integer aNbPoints;
 

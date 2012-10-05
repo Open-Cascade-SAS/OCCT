@@ -47,7 +47,8 @@ uses
     IndexedDataMapOfTransientAddress from IntTools, 
     FClass2d from IntTools, 
     SurfaceRangeLocalizeData from IntTools,
-    Curve from IntTools 
+    Curve from IntTools, 
+    Hatcher from Geom2dHatch 
     
 --raises
 
@@ -93,7 +94,7 @@ is
 	--- Returns a reference to point projector
 	--- for given curve
 	---
-
+    
     SurfaceData(me: mutable; 
 		aF: Face from TopoDS)
 	returns SurfaceRangeLocalizeData from IntTools;
@@ -111,6 +112,18 @@ is
 	--- Returns a reference to solid classifier
 	--- for given solid
 	---
+    --modified by NIZNHY-PKV Mon Sep 24 07:52:54 2012f 
+    Hatcher(me: mutable;  
+    	aF: Face from TopoDS) 
+    	returns Hatcher from Geom2dHatch;
+    	---C++: return &  
+	---Purpose:
+	--- Returns a reference to 2D hatcher
+	--- for given face
+	--- 
+    --modified by NIZNHY-PKV Mon Sep 24 07:52:54 2012t 
+ 
+ 
 
     ---         API  Block
     ---
@@ -294,12 +307,13 @@ is
 	---
 
 fields 
-    myFClass2dMap :  IndexedDataMapOfShapeAddress     from TopTools; 
-    myProjPSMap   :  IndexedDataMapOfShapeAddress     from TopTools; 
-    myProjPCMap   :  IndexedDataMapOfShapeAddress     from TopTools;    
-    myProjPTMap   :  IndexedDataMapOfTransientAddress from IntTools;    
-    mySClassMap   :  IndexedDataMapOfShapeAddress     from TopTools;
-    myProjSDataMap:  IndexedDataMapOfShapeAddress     from TopTools;
+    myFClass2dMap :  IndexedDataMapOfShapeAddress     from TopTools is protected; 
+    myProjPSMap   :  IndexedDataMapOfShapeAddress     from TopTools is protected; 
+    myProjPCMap   :  IndexedDataMapOfShapeAddress     from TopTools is protected;    
+    myProjPTMap   :  IndexedDataMapOfTransientAddress from IntTools is protected;    
+    mySClassMap   :  IndexedDataMapOfShapeAddress     from TopTools is protected;
+    myProjSDataMap:  IndexedDataMapOfShapeAddress     from TopTools is protected;
+    myHatcherMap   :  IndexedDataMapOfShapeAddress     from TopTools is protected;
      
 end Context;
 
