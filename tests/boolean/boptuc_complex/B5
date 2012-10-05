@@ -4,4 +4,4 @@ restore [locate_data_file b60] b
 bop a b
 boptuc result
 
-set square 12500
+set square 15000

@@ -24,6 +24,8 @@
 #include <TopExp_Explorer.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <Geom_Curve.hxx>
+#include <IntTools_Tools.hxx>
 
 // ==================================================================
 // function: BOP_ShellFaceClassifier::BOP_ShellFaceClassifier
@@ -89,14 +91,36 @@ BOP_ShellFaceClassifier::BOP_ShellFaceClassifier
 // function: ResetElement
 // purpose: 
 // ===============================================================================================
-  void BOP_ShellFaceClassifier::ResetElement(const TopoDS_Shape& theElement) 
+void BOP_ShellFaceClassifier::ResetElement(const TopoDS_Shape& theElement) 
 {
-  const TopAbs_ShapeEnum aShapeType= theElement.ShapeType();
-
+  Standard_Boolean bFound;
+  TopAbs_ShapeEnum aShapeType;
+  TopExp_Explorer anExp;
+  //
+  myFirstCompare=Standard_True;
+  aShapeType=theElement.ShapeType();
+  //
+  bFound=Standard_False;
+  anExp.Init(theElement, TopAbs_EDGE);
+  for(; anExp.More(); anExp.Next()) {
+    const TopoDS_Edge& aE=*((TopoDS_Edge*)&anExp.Current());
+    if (!BRep_Tool::Degenerated(aE)) {
+      Standard_Real aT, aT1, aT2;
+      Handle(Geom_Curve) aC;
+      //
+      aC=BRep_Tool::Curve(aE, aT1, aT2);
+      aT=IntTools_Tools::IntermediatePoint(aT1, aT2);
+      aC->D0(aT, myPoint);
+      bFound=Standard_True;
+      break;
+    }
+  }
+  if (bFound) {
+    return;
+  }
+  //
   // initialize myPoint with first vertex of face <E>
-  myFirstCompare = Standard_True;
-  TopExp_Explorer anExp(theElement, TopAbs_VERTEX);
-
+  anExp.Init(theElement, TopAbs_VERTEX);
   if(anExp.More()) {
     const TopoDS_Vertex& aVertex = TopoDS::Vertex(anExp.Current());
     myPoint = BRep_Tool::Pnt(aVertex);
