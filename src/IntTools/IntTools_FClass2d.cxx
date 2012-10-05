@@ -194,25 +194,24 @@ IntTools_FClass2d::IntTools_FClass2d()
       //
       //-- Verification of cases when forgotten to code degenereted
       if(!degenerated) {
-	Standard_Real aR2;
-	gp_Pnt P3da, P3db;
-	//
-	C3d.Initialize(edge,Face);
-	du=(plbid-pfbid)*0.1;
-	u=pfbid+du;
-	P3da=C3d.Value(u);
-	degenerated=Standard_True;
-	u+=du;
-	do { 
-	  P3db=C3d.Value(u);
-	  aR2=P3da.SquareDistance(P3db);
-	  if(aR2>0.) { 
-	    degenerated=Standard_False;
-	    break;
-	  }
-	  u+=du;
-	}
-	while(u<plbid);
+        // check that whole curve is located in vicinity of its middle point
+        // (within sphere of Precision::Confusion() diameter)
+        C3d.Initialize (edge, Face);
+        gp_Pnt P3da = C3d.Value (0.5 * (pfbid + plbid));
+        du = plbid - pfbid;
+        const int NBSTEPS = 10;
+        Standard_Real aPrec2 = 0.25 * Precision::Confusion() * Precision::Confusion();
+        degenerated = Standard_True;
+        for (Standard_Integer i=0; i <= NBSTEPS; i++)
+        {
+          Standard_Real u = pfbid + i * du / NBSTEPS;
+          gp_Pnt P3db = C3d.Value (u);
+          Standard_Real aR2 = P3da.SquareDistance (P3db);
+          if (aR2 > aPrec2) {
+            degenerated = Standard_False;
+            break;
+          }
+        }
       }//if(!degenerated)
       //-- ----------------------------------------
       Tole = BRep_Tool::Tolerance(edge);
