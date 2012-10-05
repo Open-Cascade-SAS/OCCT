@@ -84,6 +84,11 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
 			  BOP_WireEdgeSet& aWES,
 			  const Handle(IntTools_Context)& aContext);
 
+//modified by NIZNHY-PKV Tue Sep 25 14:26:14 2012f
+static 
+  Standard_Boolean IsClosed(const TopoDS_Edge& aE,
+			    const TopoDS_Face& aF);
+//modified by NIZNHY-PKV Tue Sep 25 14:26:17 2012t
 
 //=======================================================================
 // function: BOP_SDFWESFiller::BOP_SDFWESFiller
@@ -664,7 +669,10 @@ static void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
 	  //
 	  aWES.AddStartElement (aSS);
 	  //
-	  if (BRep_Tool::IsClosed(aSS, aF2FWD)){
+	  //modified by NIZNHY-PKV Tue Sep 25 14:25:13 2012f
+	  if (IsClosed(aSS, aF2FWD)){
+	  //if (BRep_Tool::IsClosed(aSS, aF2FWD)){
+	    //modified by NIZNHY-PKV Tue Sep 25 14:25:35 2012t
 	    TopoDS_Shape EE=aSS.Reversed();
 	    aWES.AddStartElement (EE);
 	  }
@@ -1320,3 +1328,40 @@ void TreatSDSeams (const TopoDS_Edge& aSpE1Seam11,
     aSS=aSpE1Seam21;
   }
 }
+//modified by NIZNHY-PKV Tue Sep 25 14:25:53 2012f
+//=======================================================================
+//function : IsClosed
+//purpose  :
+//=======================================================================
+Standard_Boolean IsClosed(const TopoDS_Edge& aE,
+			  const TopoDS_Face& aF)
+{
+  Standard_Boolean bRet;
+  //
+  bRet=BRep_Tool::IsClosed(aE, aF);
+  if (bRet) {
+    Standard_Integer iCnt;
+    TopoDS_Shape aE1;
+    //
+    bRet=!bRet;
+    iCnt=0;
+    TopExp_Explorer aExp(aF, TopAbs_EDGE);
+    for (; aExp.More(); aExp.Next()) {
+      const TopoDS_Shape& aEx=aExp.Current();
+      //
+      if (aEx.IsSame(aE)) {
+	++iCnt;
+	if (iCnt==1) {
+	  aE1=aEx;
+	}
+	else if (iCnt==2){
+	  aE1.Reverse();
+	  bRet=(aE1==aEx);
+	  break;
+	}
+      }
+    }
+  }
+  return bRet;
+}
+//modified by NIZNHY-PKV Tue Sep 25 14:25:56 2012t
