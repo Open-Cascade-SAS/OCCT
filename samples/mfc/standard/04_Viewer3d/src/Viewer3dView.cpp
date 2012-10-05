@@ -1088,11 +1088,30 @@ GetDocument()->UpdateResultMessageDlg("SetAntialiasingOn/SetAntialiasingOff",Mes
 void CViewer3dView::OnClearLights() 
 {
 //	Setting Off all viewer active lights
+    TColStd_ListOfTransient lights;
 	for(myView->Viewer()->InitActiveLights(); myView->Viewer()->MoreActiveLights(); myView->Viewer()->NextActiveLights())
-		myView->Viewer()->SetLightOff(myView->Viewer()->ActiveLight());
+    {
+        lights.Append(myView->Viewer()->ActiveLight());
+    }
+    TColStd_ListIteratorOfListOfTransient itrLights(lights);
+    for (; itrLights.More(); itrLights.Next())
+    {
+        Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());
+        myView->Viewer()->SetLightOff(light);
+    }
+
 //	Setting Off all view active lights
-	for(myView->InitActiveLights(); myView->MoreActiveLights(); myView->NextActiveLights())
-		myView->SetLightOff(myView->ActiveLight());
+    lights.Clear();
+    for(myView->InitActiveLights(); myView->MoreActiveLights(); myView->NextActiveLights())
+    {
+        lights.Append(myView->ActiveLight());
+    }
+    itrLights.Initialize(lights);
+    for (; itrLights.More(); itrLights.Next())
+    {
+        Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());
+        myView->SetLightOff(light);
+    }
 
 	myView->Viewer()->SetDefaultLights();// Setting the default lights on
 
@@ -1101,10 +1120,31 @@ void CViewer3dView::OnClearLights()
 	myView->Update();
 
 TCollection_AsciiString Message("\
+//	Setting Off all viewer active lights\n\
+TColStd_ListOfTransient lights;\n\
 for(myView->Viewer()->InitActiveLights(); myView->Viewer()->MoreActiveLights(); myView->Viewer()->NextActiveLights())\n\
-	myView->Viewer()->SetLightOff(myView->Viewer()->ActiveLight()); //Setting Off all viewer active lights\n\
+{\n\
+    lights.Append(myView->Viewer()->ActiveLight());\n\
+}\n\
+TColStd_ListIteratorOfListOfTransient itrLights(lights);\n\
+for (; itrLights.More(); itrLights.Next())\n\
+{\n\
+    Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());\n\
+    myView->Viewer()->SetLightOff(light);\n\
+}\n\
+\n\
+//	Setting Off all view active lights\n\
+lights.Clear();\n\
 for(myView->InitActiveLights(); myView->MoreActiveLights(); myView->NextActiveLights())\n\
-	myView->SetLightOff(myView->ActiveLight()); //Setting Off all view active lights\n\
+{\n\
+    lights.Append(myView->ActiveLight());\n\
+}\n\
+itrLights.Initialize(lights);\n\
+for (; itrLights.More(); itrLights.Next())\n\
+{\n\
+    Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());\n\
+    myView->SetLightOff(light);\n\
+}\n\
 \n\
 myView->Viewer()->SetDefaultLights();// Setting the default lights on\n\
   ");

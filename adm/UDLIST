@@ -207,7 +207,6 @@ t TKShHealing
 t TKTopAlgo
 t TKXMesh
 n InterfaceGraphic
-n VoxelClient
 p AIS
 p AIS2D
 p AlienImage

@@ -35,7 +35,6 @@ proc Visualization:ressources { } {
     return [list \
 	   [list both r FontMFT {}] \
 	   [list both r Textures {}] \
-	   [list both n VoxelClient {}] \
 	    ]
 }
 ;#

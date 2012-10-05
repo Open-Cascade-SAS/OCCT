@@ -24,8 +24,6 @@
 #include "Voxel_VisData.h"
 #include <Graphic3d_CBounds.hxx>
 
-class Handle(OpenGl_GraphicDriver);
-
 class VoxelClient_VisDrawer
 {
 public:
@@ -34,7 +32,7 @@ public:
 
 public:
 
-  Standard_EXPORT static void Init (Handle(OpenGl_GraphicDriver)& theDriver);
+    Standard_EXPORT static void Init();
 
 	Standard_EXPORT VoxelClient_VisDrawer(Voxel_VisData* theData);
 	Standard_EXPORT virtual ~VoxelClient_VisDrawer();

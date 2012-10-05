@@ -603,7 +603,8 @@ D->CommitCommand(); \n\
 
 		// Get the TOcafFunction_CutDriver using its Standard_GUID in the TFunction_DriverTable
 		Handle(TOcafFunction_CutDriver) myCutDriver;
-		TFunction_DriverTable::Get()->FindDriver(myDriverID, myCutDriver);
+		if (TFunction_DriverTable::Get()->FindDriver(myDriverID, myCutDriver))
+            myCutDriver->Init(LabObject);
 
 		// Recompute the cut object if it must be (look at the MustExecute function code)
 //		if (myCutDriver->MustExecute(log))
@@ -904,21 +905,21 @@ void COcafDoc::OnFileSaveAs()
 	CString Filter;
 
 	if (TPathName.SearchFromEnd(".xml") > 0){
-		Filter = "OCAFSample(XML) (*.xml)|*.xml|OCAFSample(STA) (*.sta)|*.sta|OCAFSample(Binary) (*.cbf)|*.cbf||";
+		Filter = "OCAFSample(XML) (*.xml)|*.xml|OCAFSample(STD) (*.std)|*.std|OCAFSample(Binary) (*.cbf)|*.cbf||";
 	}
 	else if (TPathName.SearchFromEnd(".cbf") > 0){
-		Filter = "OCAFSample(Binary) (*.cbf)|*.cbf|OCAFSample(STA) (*.sta)|*.sta|OCAFSample(XML) (*.xml)|*.xml||";
+		Filter = "OCAFSample(Binary) (*.cbf)|*.cbf|OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml||";
 	}
 	else{
-		Filter = "OCAFSample(STA) (*.sta)|*.sta|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||";
+		Filter = "OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||";
 	}
 	
 	CFileDialog dlg(FALSE,
-			"sta",
+			"std",
 			GetTitle(),
 			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 			Filter,
-//			"sta Files (*.sta)|*.sta; |All Files (*.*)|*.*||", 
+//			"std Files (*.std)|*.std; |All Files (*.*)|*.*||", 
 			NULL );
 	
 
@@ -930,8 +931,8 @@ void COcafDoc::OnFileSaveAs()
 	CWaitCursor aWaitCursor;
 	CString CSPath = dlg.GetPathName();
 
-//	if((CSPath.Find(CString(".sta")))==-1 )
-//		CSPath = CSPath + ".sta";
+//	if((CSPath.Find(CString(".std")))==-1 )
+//		CSPath = CSPath + ".std";
 
 	cout << "Save As " << CSPath << endl;
 	PathName=CSPath;
@@ -1042,11 +1043,11 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 	}
 
 	CFileDialog dlg(FALSE,
-			"sta",
+			"std",
 			GetTitle(),
 			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-			"OCAFSample(STA) (*.sta)|*.sta|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||",
-//			"sta Files (*.sta)|*.sta; |All Files (*.*)|*.*||", 
+			"OCAFSample(STD) (*.std)|*.std|OCAFSample(XML) (*.xml)|*.xml|OCAFSample(Binary) (*.cbf)|*.cbf||",
+//			"std Files (*.std)|*.std; |All Files (*.*)|*.*||", 
 			NULL );
 
 	if (dlg.DoModal() != IDOK) return;
@@ -1088,8 +1089,8 @@ m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
    }
 
 
-//	if((CSPath.Find(CString(".sta")))==-1 )
-//		CSPath = CSPath + ".sta";
+//	if((CSPath.Find(CString(".std")))==-1 )
+//		CSPath = CSPath + ".std";
 
 //	cout << "Save As " << CSPath << endl;
 //	PathName=CSPath;
