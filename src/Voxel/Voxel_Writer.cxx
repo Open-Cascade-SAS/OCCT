@@ -418,7 +418,7 @@ Standard_Boolean Voxel_Writer::WriteFloatBinaryVoxels(const TCollection_Extended
   if (nb_slices)
   {
     Standard_Integer i1 = 0, i2 = 0;
-    Standard_Real small = Precision::Confusion() * Precision::Confusion();
+    Standard_Real small = Precision::SquareConfusion();
     for (i1 = 0; i1 < nb_slices; i1++)
     {
       if (((Standard_ShortReal**)ds->myData)[i1])

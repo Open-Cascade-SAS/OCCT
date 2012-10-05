@@ -102,7 +102,7 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
           arrNodes[arrIndice[2]] - arrNodes[arrIndice[0]]
         };
         if ((aVec[0] ^ aVec[1]).SquareModulus() >
-            Precision::Confusion()*Precision::Confusion())
+            Precision::SquareConfusion())
           ++nTri;
         else {
           const_cast<Standard_Integer&> (arrIndice[0]) = -1;

@@ -968,7 +968,7 @@ void Draft_Modification::Perform ()
 		      Dist2Min = myExtPC.SquareDistance(1);
 		      locpmin = myExtPC.Point(1).Parameter();
 		    }
-		    if(myExtPC.NbExt() == 2 && Dist2Min > Precision::Confusion() * Precision::Confusion()) {  
+            if(myExtPC.NbExt() == 2 && Dist2Min > Precision::SquareConfusion()) {
 		      //to avoid incorrectly choosing the image 
 		      //of the first vertex of the initial edge
 		      Standard_Real d1_2 = myExtPC.SquareDistance(1);

@@ -322,7 +322,7 @@ void DsgPrs::ComputePlanarFacesLengthPresentation( const Standard_Real FirstArro
   EndOfArrow1 = ElCLib::Value( ElCLib::Parameter( FirstLin, OffsetPoint ), FirstLin );
   EndOfArrow2 = ElCLib::Value( ElCLib::Parameter( SecondLin, OffsetPoint ), SecondLin );
  
-  if (EndOfArrow1.SquareDistance( EndOfArrow2 ) > Precision::Confusion()*Precision::Confusion()) // not null length
+  if (EndOfArrow1.SquareDistance( EndOfArrow2 ) > Precision::SquareConfusion()) // not null length
     {
       gp_Dir LengthDir( gp_Vec( EndOfArrow1, EndOfArrow2 ) );
       if ((FirstArrowLength + SecondArrowLength)*(FirstArrowLength + SecondArrowLength) < 
@@ -359,7 +359,7 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation( const Standard_Real Firs
   GeomAPI_ProjectPointOnCurve ProjectorOnCurve;
   Quantity_Parameter U1, V1, U2, V2;
   Standard_Real LastU, LastV;
-  Standard_Real SquareTolerance = Precision::Confusion()*Precision::Confusion();
+  Standard_Real SquareTolerance = Precision::SquareConfusion();
 
   ProjectorOnSurface.Init( AttachmentPoint1, SecondSurf );
   Standard_Integer Index(1);
@@ -391,7 +391,7 @@ void DsgPrs::ComputeCurvilinearFacesLengthPresentation( const Standard_Real Firs
   else
     DirOfArrow1 = DirAttach;
 
-  if (EndOfArrow2.SquareDistance( AttachmentPoint2 ) > Precision::Confusion()*Precision::Confusion())
+  if (EndOfArrow2.SquareDistance( AttachmentPoint2 ) > Precision::SquareConfusion())
     {
       VCurve = SecondSurf->VIso( V1 );
       ProjectorOnCurve.Init( EndOfArrow2, VCurve );

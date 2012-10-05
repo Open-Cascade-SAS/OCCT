@@ -53,6 +53,16 @@ inline Standard_Real  Precision::Confusion()
 
 
 //=======================================================================
+//function : SquareConfusion
+//purpose  : 
+//=======================================================================
+inline Standard_Real Precision::SquareConfusion()
+{
+  return Confusion() * Confusion();
+}
+
+
+//=======================================================================
 //function : Intersection
 //purpose  : 
 //=======================================================================

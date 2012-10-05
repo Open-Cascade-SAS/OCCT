@@ -88,11 +88,11 @@ static Standard_Boolean HasSingularity(const Adaptor3d_SurfaceOfRevolution& S)
 
   P = C->Value(C->FirstParameter());
 
-  if(L.SquareDistance(P) < Precision::Confusion() * Precision::Confusion()) return Standard_True;
+  if(L.SquareDistance(P) < Precision::SquareConfusion()) return Standard_True;
 
   P = C->Value(C->LastParameter());
 
-  if(L.SquareDistance(P) < Precision::Confusion() * Precision::Confusion()) return Standard_True;
+  if(L.SquareDistance(P) < Precision::SquareConfusion()) return Standard_True;
   
   return Standard_False;
 }

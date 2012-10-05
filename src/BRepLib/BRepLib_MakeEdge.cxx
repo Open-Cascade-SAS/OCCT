@@ -152,7 +152,7 @@ static Standard_Boolean Project(const Handle(Geom2d_Curve)& C,
     
     if (index != 0) {
       Extrema_POnCurv POC = extrema.Point(index);
-      if (P.SquareDistance(POC.Value()) <= Precision::Confusion() * Precision::Confusion()) {
+      if (P.SquareDistance(POC.Value()) <= Precision::SquareConfusion()) {
 	p = POC.Parameter();
 	return Standard_True;
       }

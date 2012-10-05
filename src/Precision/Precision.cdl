@@ -164,6 +164,11 @@ is
     	--   becomes easily measurable, but only within a restricted
     	-- space which contains some small objects of the complete scene.
 	
+    SquareConfusion returns Real from Standard;
+	---Purpose:
+    	-- Returns square of Confusion.
+    	-- Created for speed and convenience.
+
     Intersection returns Real from Standard;
 	---Purpose:Returns the precision value in real space, frequently
     	-- used by intersection algorithms to decide that a solution is reached.

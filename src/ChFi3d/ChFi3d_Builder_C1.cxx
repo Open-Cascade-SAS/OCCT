@@ -910,7 +910,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
             distmin2 = extCC.SquareDistance(i);
             imin = i;
           }
-        if (distmin2 <= Precision::Confusion() * Precision::Confusion())
+        if (distmin2 <= Precision::SquareConfusion())
         {
           Extrema_POnCurv ponc1,ponc2;
           extCC.Points( imin, ponc1, ponc2 );
@@ -4101,7 +4101,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 		dist2min = extCC.SquareDistance(i);
 		imin = i;
 	      }
-	  if (dist2min <= Precision::Confusion() * Precision::Confusion())
+      if (dist2min <= Precision::SquareConfusion())
 	    {
 	      Extrema_POnCurv ponc1,ponc2;
 	      extCC.Points( imin, ponc1, ponc2 );

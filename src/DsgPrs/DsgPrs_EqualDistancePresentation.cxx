@@ -94,7 +94,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
     {
       gp_Vec Vec1( Middle, Point1 );
 
-      if (Vec1.SquareMagnitude() > Precision::Confusion()*Precision::Confusion())
+      if (Vec1.SquareMagnitude() > Precision::SquareConfusion())
 	{
 	  Standard_Real Angle = gp_Vec( Middle, Point1 ).Angle( gp_Vec( Middle, Point3 ) );
 	  gp_Pnt MidPnt = Point1.Rotated( Plane->Pln().Axis(), Angle*0.5 );

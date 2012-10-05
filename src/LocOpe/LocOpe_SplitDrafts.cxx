@@ -1638,7 +1638,7 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
 	}
       }
       
-      if (Dist2Min  <= Precision::Confusion() * Precision::Confusion()) {
+      if (Dist2Min  <= Precision::SquareConfusion()) {
 	prmf = thepmin;
 	myExtPC.Perform(pvl);
 	if (myExtPC.IsDone()) {
@@ -1656,7 +1656,7 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
 	    }
 	  }
 	  
-	  if (Dist2Min  <= Precision::Confusion() * Precision::Confusion()) {
+      if (Dist2Min  <= Precision::SquareConfusion()) {
 	    prml = thepmin;
 	    break;
 	  }

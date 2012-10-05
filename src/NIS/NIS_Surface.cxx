@@ -223,7 +223,7 @@ void NIS_Surface::Init (const TopoDS_Shape& theShape,
     myNEdges = 0;
 
     // The second loop: copy all nodes and triangles face-by-face
-    const Standard_Real eps2 = Precision::Confusion()*Precision::Confusion();
+    const Standard_Real eps2 = Precision::SquareConfusion();
     Standard_Integer nNodes (0), nTriangles (0);
     for (fexp.ReInit(); fexp.More(); fexp.Next())
     {

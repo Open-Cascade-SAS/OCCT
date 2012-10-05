@@ -1433,7 +1433,7 @@ static Standard_Integer compBsplSur (Draw_Interpretor& , Standard_Integer n, con
       gp_Pnt aP1 = GBs1->Value(aU,aV);
       gp_Pnt aP2 = GBs2->Value(aU,aV);
       Standard_Real aDist = aP1.SquareDistance(aP2);
-      if(aDist > Precision::Confusion() * Precision::Confusion())
+      if(aDist > Precision::SquareConfusion())
       {
         nbErr++;
         Standard_Real aD = sqrt(aDist);

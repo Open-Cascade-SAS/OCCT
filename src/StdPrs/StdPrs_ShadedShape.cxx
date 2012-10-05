@@ -89,7 +89,7 @@ namespace
     Standard_Real    aUmin (0.0), aUmax (0.0), aVmin (0.0), aVmax (0.0), dUmax (0.0), dVmax (0.0);
 
     // precision for compare square distances
-    const double aPreci = Precision::Confusion() * Precision::Confusion();
+    const double aPreci = Precision::SquareConfusion();
 
     if (!theDrawer->ShadingAspectGlobal())
     {

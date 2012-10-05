@@ -980,7 +980,7 @@ Standard_Boolean ShapeAnalysis_Curve::IsPlanar (const TColgp_Array1OfPnt& pnts,
       return Standard_True;
     }
     gp_XYZ aVecMul = N1^Normal;
-    return aVecMul.SquareModulus() < Precision::Confusion()*Precision::Confusion();
+    return aVecMul.SquareModulus() < Precision::SquareConfusion();
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {

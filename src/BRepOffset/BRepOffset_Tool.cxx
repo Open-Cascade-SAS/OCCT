@@ -2408,7 +2408,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 			    IndexMin = ind;
 			  }
 		      }
-		    if (Dist2Min <= Precision::Confusion() * Precision::Confusion())
+            if (Dist2Min <= Precision::SquareConfusion())
 		      {
 			YaSol = Standard_True;
 			P2d = P1[i1];
@@ -2435,7 +2435,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 			    IndexMin = ind;
 			  }
 		      }
-		    if (Dist2Min <= Precision::Confusion() * Precision::Confusion())
+            if (Dist2Min <= Precision::SquareConfusion())
 		      {
 			YaSol = Standard_True;
 			P2d = P2[i2];

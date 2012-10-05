@@ -401,7 +401,7 @@ Method:
       Cu = ElCLib::Value(Us,C);
       DejaEnr = Standard_False;
       for (NoExt = 0; NoExt < myNbExt; NoExt++) {
-	if (TbExt[NoExt].SquareDistance(Cu) < Precision::Confusion() * Precision::Confusion()) {
+    if (TbExt[NoExt].SquareDistance(Cu) < Precision::SquareConfusion()) {
 	  DejaEnr = Standard_True;
 	  break;
 	}

@@ -946,7 +946,7 @@ void BRepMesh_FastDiscretFace::InternalVertices(const Handle(BRepAdaptor_HSurfac
     Standard_Real u, v, dist;
 
     // precision for compare square distances
-    double dPreci = Precision::Confusion()*Precision::Confusion();
+    double dPreci = Precision::SquareConfusion();
 
     // Insert V parameters by deflection criterion
     Standard_Integer i,j;

@@ -228,7 +228,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
     fins(i) = myXYZ->Value(2*i);
   }
 
-  Standard_Real tol2 = Precision::Confusion()*Precision::Confusion();
+  Standard_Real tol2 = Precision::SquareConfusion();
   idone(1) = Standard_True;
   gp_Pnt wireFirst = debs(1);
   gp_Pnt wireLast  = fins(1);

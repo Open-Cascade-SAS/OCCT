@@ -698,7 +698,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
 		  C2->D1(first2,P,Vec2);
 		  if ( edge1.Orientation() == TopAbs_REVERSED ) Vec1.Reverse();
 		  if ( edge2.Orientation() == TopAbs_REVERSED ) Vec2.Reverse();
-		  Standard_Real tol2 = Precision::Confusion() * Precision::Confusion();
+          Standard_Real tol2 = Precision::SquareConfusion();
 		  if ( Vec1.SquareMagnitude() < tol2 ||
 		       Vec2.SquareMagnitude() < tol2 ) Ang1 = M_PI/2.;
 		  else Ang1 = Abs(Vec1.Angle(Vec2));
@@ -1138,7 +1138,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
 		  C2->D1(first2,P,Vec2);
 		  if ( edge1.Orientation() == TopAbs_REVERSED ) Vec1.Reverse();
 		  if ( edge2.Orientation() == TopAbs_REVERSED ) Vec2.Reverse();
-		  Standard_Real tol2 = Precision::Confusion() * Precision::Confusion();
+          Standard_Real tol2 = Precision::SquareConfusion();
 		  if ( Vec1.SquareMagnitude() < tol2 ||
 		       Vec2.SquareMagnitude() < tol2 ) Ang1 = M_PI/2.;
 		  else Ang1 = Abs(Vec1.Angle(Vec2));

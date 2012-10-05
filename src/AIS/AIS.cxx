@@ -80,7 +80,7 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 
-const Standard_Real SquareTolerance = Precision::Confusion()*Precision::Confusion();
+const Standard_Real SquareTolerance = Precision::SquareConfusion();
 
 //=======================================================================
 //function : Nearest

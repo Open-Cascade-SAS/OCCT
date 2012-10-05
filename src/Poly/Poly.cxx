@@ -459,7 +459,7 @@ void  Poly::ComputeNormals(const Handle(Poly_Triangulation)& Tri)
   Standard_Real                 aCoord[3];
   Standard_Integer              iNode[3] = {0, 0, 0};
   Standard_Integer              iN, iTri;
-  const Standard_Real eps2 = Precision::Confusion()*Precision::Confusion();
+  const Standard_Real eps2 = Precision::SquareConfusion();
 
   for (iTri = 1; iTri <= arrTri.Length(); iTri++) {
     // Get the nodes of the current triangle

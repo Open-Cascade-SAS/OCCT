@@ -453,12 +453,12 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     
     if(Sliding && !PtOnFirstEdge) {
       BRepExtrema_ExtCF ext1(TopoDS::Edge(ee1.Shape()), FirstFace);
-      if(ext1.NbExt() < 1 || ext1.SquareDistance(1) > Precision::Confusion() * Precision::Confusion()) 
+      if(ext1.NbExt() < 1 || ext1.SquareDistance(1) > Precision::SquareConfusion())
 	Sliding = Standard_False;
     }
     if(Sliding && !PtOnLastEdge) {
       BRepExtrema_ExtCF ext2(ee2, LastFace); // ExtCF : curves and surfaces
-      if(ext2.NbExt() < 1 || ext2.SquareDistance(1) > Precision::Confusion() * Precision::Confusion()) 
+      if(ext2.NbExt() < 1 || ext2.SquareDistance(1) > Precision::SquareConfusion())
 	Sliding = Standard_False;
     }
     if(Sliding && PtOnFirstEdge) {
