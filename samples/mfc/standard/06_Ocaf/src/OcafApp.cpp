@@ -148,9 +148,10 @@ void COcafApp::OnFileOpen()
 	if (aDlg.DoModal() != IDOK) 
         return;
 
-    int strLength = aDlg.GetFileName().GetLength()+1;
+
+    int strLength = aDlg.GetPathName().GetLength()+1;
 	LPTSTR lpszFileName = new TCHAR[strLength];
-	strcpy_s(lpszFileName, strLength, aDlg.GetFileName());
+	strcpy_s(lpszFileName, strLength, aDlg.GetPathName() );
 	
 	OpenDocumentFile(lpszFileName);
 }

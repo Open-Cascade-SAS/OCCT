@@ -80,7 +80,7 @@ FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CTEXT           "Sample SampleName, Open CASCADE Technology OCC_Version",
                     IDC_ABOUTBOX_TITLE,3,8,195,8
-    CTEXT           "Copyright (C) 2001-2011, Open CASCADE S.A.S",
+    CTEXT           "Copyright (C) 2001-2012, Open CASCADE S.A.S",
                     IDC_STATIC,18,99,165,8,SS_CENTERIMAGE
     DEFPUSHBUTTON   "OK",IDOK,56,135,88,14,WS_GROUP
     CTEXT           "http://www.opencascade.com",IDC_STATIC,51,115,98,8,
