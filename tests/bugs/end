@@ -14,6 +14,12 @@ if { [isdraw result] } {
 	vfit
 	vdump $imagedir/${test_image}.gif
     }
+} else {
+    if { [info exists 3dviewer] } {
+	if { ${3dviewer} == 2 } {
+		vdump $imagedir/${test_image}.gif
+	}
+    }
 }
     if { [info exist only_xwd] } {
 	xwd $imagedir/${test_image}.gif	

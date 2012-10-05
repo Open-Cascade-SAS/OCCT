@@ -77,13 +77,15 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
                                                           UseDisplayedObjects,
                                                           AllowShapeDecomposition,
                                                           AcceptEraseOfTemporary);
-  NewLocal->MainSelector()->Set ((myLocalContexts.Extent() > 0)
+  // the AIS_LocalContext bind itself to myLocalContexts
+  // because procedures performed in AIS_LocalContext constructor
+  // already may access myLocalContexts(myCurLocalIndex) (like methods AIS_LocalContext::IsSelected()).
+  //myLocalContexts.Bind (myCurLocalIndex, NewLocal);
+  NewLocal->MainSelector()->Set ((myLocalContexts.Extent() > 1)
     ? myLocalContexts (untilnow)->MainSelector()->Projector()
     : myMainSel->Projector());
 
   NewLocal->MainSelector()->UpdateConversion();
-
-  myLocalContexts.Bind(myCurLocalIndex,NewLocal);
 
 #ifdef DEB
   cout<<"\tOpen Local Context No "<<myCurLocalIndex<<endl;

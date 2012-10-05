@@ -119,6 +119,11 @@ myCurDetected(0)
 ,myAISCurDetected(0)
 #endif
 {
+  // bind self to AIS_InteractiveContext::myLocalContexts. Further, the
+  // constructor executes logic that implies that the context is already
+  // created and mapped.
+  aCtx->myLocalContexts.Bind (Index, this);
+
   myMainPM = aCtx->MainPrsMgr();
   mySelName = AIS_Local_SelName(this, Index);
   AIS_Selection::CreateSelection(mySelName.ToCString());

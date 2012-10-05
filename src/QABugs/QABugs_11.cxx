@@ -5403,6 +5403,59 @@ Standard_Integer CR23403 (Draw_Interpretor& di, Standard_Integer argc, const cha
   return 0;
 }
 
+#include <Quantity_NameOfColor.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  // Check the command arguments
+  if (argc != 2)
+  {
+    di <<"Error: "<<argv[0]<<" - invalid number of arguments"<< "\n";
+    di << "Usage : " << argv[0] << " mode(0/1)\n";
+    return 1; //TCL_ERROR
+  }
+
+  const Standard_Integer aMode = atoi(argv[1]);
+
+  //===================================================================
+
+  Handle(AIS_InteractiveContext) aisContext = ViewerTest::GetAISContext();
+  if (aisContext.IsNull())
+  {
+    di <<"Error: call 'vinit' first"<< "\n";
+    return 1; //TCL_ERROR
+  }
+
+  if (aisContext->HasOpenedContext())
+  {
+    aisContext->CloseAllContexts();
+    aisContext->RemoveAll(false);
+    aisContext->EraseSelected(false, false);
+  }
+  aisContext->EraseAll(false,false);
+  Handle(Geom_Axis2Placement) trihedronAxis = new Geom_Axis2Placement(gp::XOY());
+  Handle(AIS_Trihedron) trihedron = new AIS_Trihedron(trihedronAxis);
+  if (aMode)
+    trihedron->UnsetSelectionMode(); // this line causes an exception on OpenLocalContext
+  trihedron->SetSize(20);
+  trihedron->SetColor(Quantity_NOC_GRAY30);
+  trihedron->SetArrowColor(Quantity_NOC_GRAY30);
+  trihedron->SetTextColor(Quantity_NOC_DARKSLATEBLUE);
+
+  //trihedron->SetColor(Quantity_NameOfColor::Quantity_NOC_GRAY30);
+  //trihedron->SetArrowColor(Quantity_NameOfColor::Quantity_NOC_GRAY30);
+  //trihedron->SetTextColor(Quantity_NameOfColor::Quantity_NOC_DARKSLATEBLUE);
+
+
+  aisContext->Display(trihedron, true);
+  aisContext->OpenLocalContext();
+  //aisContext->ActivateStandardMode(TopAbs_ShapeEnum::TopAbs_EDGE);
+  aisContext->ActivateStandardMode(TopAbs_EDGE);
+  aisContext->SetSensitivity(8);
+
+  return 0; //TCL_OK
+}
+
 void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -5514,5 +5567,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC22558", "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt", __FILE__, OCC22558, group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
+  theCommands.Add("CR23234", "CR23234 mode(0/1)", __FILE__, CR23234, group);
   return;
 }

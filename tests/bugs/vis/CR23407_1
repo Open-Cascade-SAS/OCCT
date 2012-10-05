@@ -31,10 +31,4 @@ if { $rd != $r_check || $gr != $g_check || $bl != $b_check } {
     puts "Error : Boundary of face is not changed"
 }
 
-set 3dviewer 1
-
-
-
-
-
-
+set 3dviewer 2
