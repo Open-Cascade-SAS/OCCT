@@ -4,7 +4,7 @@ puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for sh
 
 puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:7 label"
 
-puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:12 label"
+#puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:12 label"
 
 puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:15 label"
 

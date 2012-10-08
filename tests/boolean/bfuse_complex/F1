@@ -1,7 +1,8 @@
 # Original bug : pro12696
 # Date : 
 
-puts "TODO OCC23099 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
+# CR23404
+#puts "TODO OCC23099 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
 
 restore [locate_data_file pro12696a.rle] a
 restore [locate_data_file pro12696b.rle] b

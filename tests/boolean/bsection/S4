@@ -13,4 +13,6 @@ renamevar c2_1 c2
 
 bsection result c1 c2
 
-set length 550.64
+# CR23404
+#set length 550.64
+set length 575.486

@@ -5,7 +5,8 @@ if {[array get env os_type] != ""} {
 if {[string compare $os "Debian40"] == 0 || [string compare $os "Mandriva2008"] == 0} {
   puts "TODO OCC22817 All: TEST INCOMPLETE"
 } else {
-  puts "TODO OCC22817 All: Faulty shapes in variables faulty_1 to faulty_4"
+  # CR23404
+  #puts "TODO OCC22817 All: Faulty shapes in variables faulty_1 to faulty_4"
 }
 
 ellipse w1 0 0 0 15 10

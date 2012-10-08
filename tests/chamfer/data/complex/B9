@@ -22,7 +22,8 @@ if { [string compare $command chamf_sequence] == 0 } {
       set nf 2
     }
     if { $nf != 0 } {
-      puts "TODO OCC22909 $os:Faulty shapes in variables faulty_1 to faulty_$nf"
+      #puts "TODO OCC22909 $os:Faulty shapes in variables faulty_1 to faulty_$nf"
+      puts "TODO OCC22909 $os:Faulty shapes in variables faulty_1 to faulty_"
     }
   }
 }

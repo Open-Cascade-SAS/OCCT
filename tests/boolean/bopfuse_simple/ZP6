@@ -11,7 +11,8 @@ if {[string compare $os "Debian50-64"] != 0 && [string compare $os "Debian60-64"
   if { [regexp -nocase {Windows} $os] == 1 } {
     set inst "?"
   }
-  puts "TODO ${inst}#22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
+  # CR23404
+  # puts "TODO ${inst}#22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
 }
 
 if {  [string compare $os "CentOS55-64"] == 0
