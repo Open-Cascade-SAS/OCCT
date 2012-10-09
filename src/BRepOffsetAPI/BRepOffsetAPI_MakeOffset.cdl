@@ -40,7 +40,7 @@ uses
     
     
 raises
-    ConstructionError from Standard
+    NotDone from StdFail
     
 is
     Create returns MakeOffset from BRepOffsetAPI;
@@ -80,9 +80,9 @@ is
 	---Purpose:  Computes a parallel to the spine at distance Offset and
     	-- at an altitude Alt from the plane of the spine in relation
     	-- to the normal to the spine.
-    	-- Exceptions: Standard_ConstructionError if the offset is not built.
+    	-- Exceptions: StdFail_NotDone if the offset is not built.
     raises
-    	ConstructionError from Standard
+    	NotDone from StdFail
     is static;
 
 	
