@@ -101,7 +101,7 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
 							      Standard_Integer nb, 
 							      const char ** arg)
 {
-  if (nb != 6 || nb != 7) {
+  if (nb != 6 && nb != 7) {
     di <<  "QANewDBRepNaming_NameBooleanOperationFeat : Error"  << "\n";
     return 1;
   }
