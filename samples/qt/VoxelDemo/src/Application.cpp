@@ -319,7 +319,7 @@ Application::Application()
     myDisplayedZMin = -DBL_MAX;
     myDisplayedZMax =  DBL_MAX;
 
-	VoxelClient_VisDrawer::Init();
+	VoxelClient_VisDrawer::Init(myViewer->getGraphicDriver());
 
     resize( 450, 600 );
 }

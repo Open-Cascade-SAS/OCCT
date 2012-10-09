@@ -27,7 +27,7 @@
 
 #include <InterfaceGraphic_telem.hxx>
 #include <OpenGl_Element.hxx>
-#include <OpenGl_Callback.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_NamedStatus.hxx>
 
 #include <GL/gl.h>
@@ -45,6 +45,11 @@ public:
   void EvaluateBounds (Graphic3d_CBounds& theMinMax);
 
   void Render (const Handle(OpenGl_Workspace) &theWorkspace) const;
+
+  virtual void Release (const Handle(OpenGl_Context)& theContext)
+  {
+    //
+  }
 
 private:
 
@@ -126,16 +131,14 @@ static OpenGl_Element* VisDrawerCallBack (const Graphic3d_CUserDraw* theUserDraw
 }
 
 /**************************************************************************/
-void VoxelClient_VisDrawer::Init()
+void VoxelClient_VisDrawer::Init (Handle(OpenGl_GraphicDriver)& theDriver)
 {
     static Standard_Boolean isInitializeded(Standard_False);
 
     if (!isInitializeded)
     {
         isInitializeded = Standard_True;
-
-        OpenGl_UserDrawCallback& aCallback = UserDrawCallback ();
-        aCallback = VisDrawerCallBack;
+        theDriver->UserDrawCallback() = VisDrawerCallBack;
     }
 }
 

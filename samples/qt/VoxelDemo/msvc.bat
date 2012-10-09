@@ -1,6 +1,4 @@
-set CASROOT=D:\OCC653\ros
-set QTDIR=D:\qt\4.8.2
-set PATH=%QTDIR%\bin;%PATH%
+call ../../../env.bat %1 %2 %3
 
-call %CASROOT%/env.bat %1 %2 %3
-call %CASROOT%/msvc.bat %1 %2 %3 VoxelDemo.sln
+if not ["%CASDEB%"] == [""] call ../../../msvc.bat %VCVER% win%ARCH% %CASDEB% VoxelDemo-%VCVER%.sln
+if ["%CASDEB%"] == [""] call ../../../msvc.bat %VCVER% win%ARCH% "" VoxelDemo-%VCVER%.sln

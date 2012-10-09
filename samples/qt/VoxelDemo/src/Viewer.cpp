@@ -19,9 +19,15 @@ static Handle(Graphic3d_WNTGraphicDevice) device;
 Viewer::Viewer(QWidget* parent):QWidget(parent)
 {
     if(device.IsNull())
+    {
         device = new Graphic3d_WNTGraphicDevice();
+        if (!device->GraphicDriver().IsNull())
+        {
+            myGraphicDriver = Handle(OpenGl_GraphicDriver)::DownCast(device->GraphicDriver());
+        }
+    }
     
-		Handle(V3d_Viewer) aViewer = new V3d_Viewer(device, TCollection_ExtendedString("Visu3D").ToExtString(), "",
+	Handle(V3d_Viewer) aViewer = new V3d_Viewer(device, TCollection_ExtendedString("Visu3D").ToExtString(), "",
                                                 1000, V3d_XposYnegZpos,
                                                 Quantity_NOC_GRAY30, V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
                                                 true, true, V3d_TEX_NONE);

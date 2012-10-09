@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9.00"
 	Name="VoxelDemo"
 	ProjectGUID="{EF9DFAE9-E10E-42D4-87D1-52431728AFDF}"
 	RootNamespace="VoxelDemo"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -40,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(CSF_OPT_INC);.\inc"
+				AdditionalIncludeDirectories=".\inc;$(CSF_OPT_INC)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WNT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -66,6 +67,8 @@
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D)"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -85,9 +88,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -144,6 +144,8 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -163,9 +165,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -218,7 +217,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="moc.exe inc\$(InputFileName) -o moc\moc_$(InputName).cpp"
+						CommandLine="moc.exe inc\$(InputFileName) -o moc\moc_$(InputName).cpp&#x0D;&#x0A;"
 						Outputs="moc\moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -227,7 +226,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="moc.exe inc\$(InputFileName) -o moc\moc_$(InputName).cpp"
+						CommandLine="moc.exe inc\$(InputFileName) -o moc\moc_$(InputName).cpp&#x0D;&#x0A;"
 						Outputs="moc\moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
