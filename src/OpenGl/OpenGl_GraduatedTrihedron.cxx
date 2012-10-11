@@ -135,7 +135,7 @@ static char getFarestCorner(float d000, float d100, float d010, float d001,
     return 8; /* d111 */
 }
 
-static void drawText(const Handle(OpenGl_Workspace) &AWorkspace, const wchar_t* text, const char* font, OSD_FontAspect style, int size, float x, float y, float z)
+static void drawText(const Handle(OpenGl_Workspace) &AWorkspace, const wchar_t* text, const char* font, Font_FontAspect style, int size, float x, float y, float z)
 {
   AWorkspace->FindFont(font, style, size);
   AWorkspace->RenderText(text, 0, x, y, z);

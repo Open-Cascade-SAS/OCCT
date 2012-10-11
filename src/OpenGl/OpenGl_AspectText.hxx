@@ -22,7 +22,7 @@
 #define OpenGl_AspectText_Header
 
 #include <InterfaceGraphic_telem.hxx>
-#include <OSD_FontAspect.hxx>
+#include <Font_FontAspect.hxx>
 #include <Aspect_TypeOfStyleText.hxx>
 #include <Aspect_TypeOfDisplayText.hxx>
 
@@ -40,7 +40,7 @@ public:
 
   int                      IsZoomable() const { return myZoomable; }
   float                    Angle() const { return myAngle; }
-  OSD_FontAspect           FontAspect() const { return myFontAspect; }
+  Font_FontAspect          FontAspect() const { return myFontAspect; }
   const char *             Font() const { return myFont; }
   const TEL_COLOUR &       Color() const { return myColor; }
   Aspect_TypeOfStyleText   StyleType() const { return myStyleType; }
@@ -58,7 +58,7 @@ protected:
 
   int                      myZoomable;
   float                    myAngle;
-  OSD_FontAspect           myFontAspect;
+  Font_FontAspect          myFontAspect;
   const char              *myFont;
   //float                  mySpace;
   //float                  myExpan;

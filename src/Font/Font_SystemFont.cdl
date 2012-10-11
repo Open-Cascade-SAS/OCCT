@@ -17,62 +17,49 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
-
--- Updated:       
-
-
-class SystemFont from OSD inherits TShared from MMgt
-
- ---Purpose: Structure for store of Font System Information
+class SystemFont from Font inherits TShared from MMgt
+---Purpose: Structure for store of Font System Information
 
 uses FontAspect,
      HAsciiString from TCollection
-     
 
 is
- Create returns SystemFont;
-    ---Purpose: Creates empty font object
-    ---Level: Public
+  Create returns SystemFont;
+  ---Purpose: Creates empty font object
+  ---Level: Public
 
- Create (
-         FontName : HAsciiString;
-         Aspect   : FontAspect;
-         FilePath : HAsciiString )  returns SystemFont;
-    ---Purpose: Creates Font object initialized with <FontName> as name
-    ---         <FontAspect>.... TODO
-    ---Level: Public
+  Create (FontName : HAsciiString;
+          Aspect   : FontAspect;
+          FilePath : HAsciiString ) returns SystemFont;
+  ---Purpose: Creates Font object initialized with <FontName> as name
+  ---         <FontAspect>.... TODO
+  ---Level: Public
 
- Create (
-         XLFD     : HAsciiString;
-         FilePath : HAsciiString ) returns SystemFont;
-    ---Purpose: TODO
-    ---Level: Public
+  Create (XLFD     : HAsciiString;
+          FilePath : HAsciiString ) returns SystemFont;
+  ---Purpose: TODO
+  ---Level: Public
  
- FontName (me)
-        returns HAsciiString;
-    --- Purpose: Returns font family name
-    ---Level: Public    
+  FontName (me) returns HAsciiString;
+  --- Purpose: Returns font family name
+  ---Level: Public    
         
- FontPath (me)
-        returns HAsciiString;
-    --- Purpose: Returns font file path
-    --- Level: Public
+  FontPath (me) returns HAsciiString;
+  --- Purpose: Returns font file path
+  --- Level: Public
 
- FontAspect (me)
-        returns FontAspect from OSD;
-    --- Purpose: Returns font aspect
-    --- Level: Public
+  FontAspect (me) returns FontAspect;
+  --- Purpose: Returns font aspect
+  --- Level: Public
     
- FontHeight (me)
-        returns Integer from Standard;
-    --- Purpose: Returns font height
-    --- If returned value is equal -1 it means that font is resizable
-    --- Level: Public
+  FontHeight (me) returns Integer from Standard;
+  --- Purpose: Returns font height
+  --- If returned value is equal -1 it means that font is resizable
+  --- Level: Public
 
- IsValid( me )
-        returns Boolean;
+  IsValid (me) returns Boolean;
 
- fields
+fields
   MyFontName:           HAsciiString;  --Font family name
   MyFontAspect:         FontAspect;    
   MyFaceSize:           Integer;       --height of font

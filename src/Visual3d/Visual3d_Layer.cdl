@@ -47,7 +47,7 @@ uses
     LayerItem               from Visual3d,
     NListOfLayerItem        from Visual3d,
     
-        FontAspect          from OSD
+        FontAspect          from Font
 raises
     LayerDefinitionError    from Visual3d
 

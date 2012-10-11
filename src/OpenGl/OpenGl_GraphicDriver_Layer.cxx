@@ -22,7 +22,7 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 
-#include <OSD_FontAspect.hxx>
+#include <Font_FontAspect.hxx>
 
 #include <OpenGl_Display.hxx>
 #include <OpenGl_AspectText.hxx>
@@ -64,7 +64,7 @@ static const CALL_DEF_CONTEXTTEXT myDefaultContextText =
   { 1.F, 1.F, 1.F }, //ColorSubTitle
   0, //TextZoomable
   0.F, //TextAngle
-  (int)OSD_FA_Regular //TextFontAspect
+  (int)Font_FA_Regular //TextFontAspect
 };
 
 static Standard_Boolean TheLayerIsOpen = Standard_False;

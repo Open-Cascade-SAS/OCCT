@@ -45,7 +45,7 @@ struct FontMapNode
 {
   const char *    EnumName;
   const char *    FontName;
-  OSD_FontAspect  FontAspect;
+  Font_FontAspect FontAspect;
 };
 
 static const FontMapNode myFontMap[] =
@@ -53,30 +53,30 @@ static const FontMapNode myFontMap[] =
 
 #ifdef WNT
 
-  { "Courier"                  , "Courier New"    , OSD_FA_Regular },
-  { "Times-Roman"              , "Times New Roman", OSD_FA_Regular  },
-  { "Times-Bold"               , "Times New Roman", OSD_FA_Bold },
-  { "Times-Italic"             , "Times New Roman", OSD_FA_Italic  },
-  { "Times-BoldItalic"         , "Times New Roman", OSD_FA_BoldItalic  },
-  { "ZapfChancery-MediumItalic", "Script"         , OSD_FA_Regular  },
-  { "Symbol"                   , "Symbol"         , OSD_FA_Regular  },
-  { "ZapfDingbats"             , "WingDings"      , OSD_FA_Regular  },
-  { "Rock"                     , "Arial"          , OSD_FA_Regular  },
-  { "Iris"                     , "Lucida Console" , OSD_FA_Regular  }
+  { "Courier"                  , "Courier New"    , Font_FA_Regular },
+  { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
+  { "Times-Bold"               , "Times New Roman", Font_FA_Bold },
+  { "Times-Italic"             , "Times New Roman", Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Times New Roman", Font_FA_BoldItalic  },
+  { "ZapfChancery-MediumItalic", "Script"         , Font_FA_Regular  },
+  { "Symbol"                   , "Symbol"         , Font_FA_Regular  },
+  { "ZapfDingbats"             , "WingDings"      , Font_FA_Regular  },
+  { "Rock"                     , "Arial"          , Font_FA_Regular  },
+  { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
 
 #else   //X11
 
-  { "Courier"                  , "Courier"      , OSD_FA_Regular },
-  { "Times-Roman"              , "Times"        , OSD_FA_Regular  },
-  { "Times-Bold"               , "Times"        , OSD_FA_Bold },
-  { "Times-Italic"             , "Times"        , OSD_FA_Italic  },
-  { "Times-BoldItalic"         , "Times"        , OSD_FA_BoldItalic  },
-  { "Arial"                    , "Helvetica"    , OSD_FA_Regular  }, 
-  { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , OSD_FA_Regular  },
-  { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , OSD_FA_Regular  },
-  { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , OSD_FA_Regular  },
-  { "Rock"                     , "-sgi-rock-medium-r-normal--*-*-*-*-p-*-iso8859-1"                             , OSD_FA_Regular  },
-  { "Iris"                     , "--iris-medium-r-normal--*-*-*-*-m-*-iso8859-1"                                , OSD_FA_Regular  }
+  { "Courier"                  , "Courier"      , Font_FA_Regular },
+  { "Times-Roman"              , "Times"        , Font_FA_Regular  },
+  { "Times-Bold"               , "Times"        , Font_FA_Bold },
+  { "Times-Italic"             , "Times"        , Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Times"        , Font_FA_BoldItalic  },
+  { "Arial"                    , "Helvetica"    , Font_FA_Regular  }, 
+  { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , Font_FA_Regular  },
+  { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , Font_FA_Regular  },
+  { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , Font_FA_Regular  },
+  { "Rock"                     , "-sgi-rock-medium-r-normal--*-*-*-*-p-*-iso8859-1"                             , Font_FA_Regular  },
+  { "Iris"                     , "--iris-medium-r-normal--*-*-*-*-m-*-iso8859-1"                                , Font_FA_Regular  }
 #endif
 
 };
@@ -154,7 +154,7 @@ void OpenGl_Display::getGL2PSFontName (const char *src_font, char *ps_font)
 
 /*-----------------------------------------------------------------------------*/
 
-int OpenGl_Display::FindFont (const char* AFontName, const OSD_FontAspect AFontAspect,
+int OpenGl_Display::FindFont (const char* AFontName, const Font_FontAspect AFontAspect,
                              const int ABestSize, const float AXScale, const float AYScale)
 {   
   if (!AFontName)
@@ -194,7 +194,7 @@ int OpenGl_Display::FindFont (const char* AFontName, const OSD_FontAspect AFontA
   // The last resort: trying to use ANY font available in the system
   if ( myFont == -1 )
   {
-    myFont = mgr->request_font( family_name, OSD_FA_Undefined, -1 );
+    myFont = mgr->request_font( family_name, Font_FA_Undefined, -1 );
   }
 
   if ( myFont != -1 )

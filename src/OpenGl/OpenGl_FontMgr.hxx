@@ -34,7 +34,7 @@
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Graphic3d_NListOfHAsciiString.hxx>
-#include <OSD_FontMgr.hxx>
+#include <Font_FontMgr.hxx>
 
 void dump_texture();
 
@@ -44,7 +44,7 @@ class OpenGl_FontMgr
   static OpenGl_FontMgr*  instance();
 
   int request_font( const Handle(TCollection_HAsciiString)& fontName,
-                    const OSD_FontAspect                    fontAspect,
+                    const Font_FontAspect                   fontAspect,
                     const Standard_Integer                  fontHeight );
 
   void render_text( const Standard_Integer id,
@@ -78,7 +78,7 @@ private:
   typedef NCollection_List<Standard_Integer> IDList;
 
   struct OGLFont_SysInfo {
-    Handle(OSD_SystemFont)            SysFont;
+    Handle(Font_SystemFont)           SysFont;
     IDList                            GeneratedFonts;
   };
 

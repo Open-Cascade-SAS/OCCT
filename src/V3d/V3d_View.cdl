@@ -149,7 +149,7 @@ uses
         GraphicCallbackProc               from Aspect,
         FillMethod                        from Aspect,
         GradientFillMethod                from Aspect,
-        FontAspect                        from OSD,
+        FontAspect                        from Font,
         AsciiString                       from TCollection,
         ExtendedString                    from TCollection,
         PrintAlgo                         from Aspect
@@ -524,13 +524,13 @@ is
                               -- Name of font for names of axes --
                               fontOfNames : out AsciiString from TCollection;
                               -- Style of names of axes --
-                              styleOfNames : out FontAspect from OSD;
+                              styleOfNames : out FontAspect from Font;
                               -- Size of names of axes --
                               sizeOfNames : out Integer from Standard;
                               -- Name of font for values --
                               fontOfValues : out AsciiString from TCollection;
                               -- Style of values --
-                              styleOfValues : out FontAspect from OSD;
+                              styleOfValues : out FontAspect from Font;
                               -- Size of values --
                               sizeOfValues : out Integer from Standard)
         ---Purpose: Returns data of a graduated trihedron.
@@ -590,13 +590,13 @@ is
                                   -- Name of font for names of axes --
                                   fontOfNames : AsciiString from TCollection = "Arial";
                                   -- Style of names of axes --
-                                  styleOfNames : FontAspect from OSD = OSD_FA_Bold;
+                                  styleOfNames : FontAspect from Font = Font_FA_Bold;
                                   -- Size of names of axes --
                                   sizeOfNames : Integer from Standard = 12;
                                   -- Name of font for values --
                                   fontOfValues : AsciiString from TCollection = "Arial";
                                   -- Style of values --
-                                  styleOfValues : FontAspect from OSD = OSD_FA_Regular;
+                                  styleOfValues : FontAspect from Font = Font_FA_Regular;
                                   -- Size of values --
                                   sizeOfValues : Integer from Standard = 12)
         ---Purpose: Displays a graduated trihedron.

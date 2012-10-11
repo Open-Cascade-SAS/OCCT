@@ -344,7 +344,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectTex
   Quantity_Color AColorSubTitle;
   Standard_Boolean ATextZoomable;
   Standard_Real    ATextAngle;
-  OSD_FontAspect   ATextFontAspect;
+  Font_FontAspect   ATextFontAspect;
 
   CTX->Values (AColor, AFont, AnExpansion, ASpace, AStyle, ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);
   AColor.Values (R, G, B, Quantity_TOC_RGB);
@@ -664,7 +664,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)&
   Quantity_Color AColorSubTitle;  
   Standard_Boolean ATextZoomable;
   Standard_Real ATextAngle;
-  OSD_FontAspect ATextFontAspect;
+  Font_FontAspect ATextFontAspect;
 
   CTX->Values (AColor, AFont, AnExpansion, ASpace, AStyle, ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);
   AColor.Values (R, G, B, Quantity_TOC_RGB);

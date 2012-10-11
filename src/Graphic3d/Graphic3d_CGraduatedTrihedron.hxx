@@ -27,7 +27,7 @@
 #include <Quantity_Color.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <OSD_FontAspect.hxx>
+#include <Font_FontAspect.hxx>
 
 typedef void (*minMaxValuesCallback)(void*);
 class Graphic3d_CGraduatedTrihedron
@@ -65,13 +65,13 @@ class Graphic3d_CGraduatedTrihedron
     /* Font name of names of axes: Courier, Arial, ... */
     TCollection_AsciiString fontOfNames;
     /* Style of names of axes: OSD_FA_Regular, OSD_FA_Bold, ... */
-    OSD_FontAspect styleOfNames;
+    Font_FontAspect styleOfNames;
     /* Size of names of axes: 8, 10, 12, 14, ... */
     Standard_Integer sizeOfNames;
     /* Font name of values: Courier, Arial, ... */
     TCollection_AsciiString fontOfValues;
     /* Style of values: OSD_FA_Regular, OSD_FA_Bold, ... */
-    OSD_FontAspect styleOfValues;
+    Font_FontAspect styleOfValues;
     /* Size of values: 8, 10, 12, 14, ... */
     Standard_Integer sizeOfValues;
 

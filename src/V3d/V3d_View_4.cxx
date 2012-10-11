@@ -562,13 +562,13 @@ void V3d_View::GetGraduatedTrihedron(/* Names of axes */
                                      /* Name of font for names of axes */
                                      TCollection_AsciiString &fontOfNames,
                                      /* Style of names of axes */
-                                     OSD_FontAspect& styleOfNames,
+                                     Font_FontAspect& styleOfNames,
                                      /* Size of names of axes */
                                      Standard_Integer& sizeOfNames,
                                      /* Name of font for values */
                                      TCollection_AsciiString &fontOfValues,
                                      /* Style of values */
-                                     OSD_FontAspect& styleOfValues,
+                                     Font_FontAspect& styleOfValues,
                                      /* Size of values */
                                      Standard_Integer& sizeOfValues) const
 {
@@ -689,13 +689,13 @@ void V3d_View::GraduatedTrihedronDisplay(/* Names of axes */
                                          /* Name of font for names of axes */
                                          const TCollection_AsciiString &fontOfNames,
                                          /* Style of names of axes */
-                                         const OSD_FontAspect styleOfNames,
+                                         const Font_FontAspect styleOfNames,
                                          /* Size of names of axes */
                                          const Standard_Integer sizeOfNames,
                                          /* Name of font for values */
                                          const TCollection_AsciiString &fontOfValues,
                                          /* Style of values */
-                                         const OSD_FontAspect styleOfValues,
+                                         const Font_FontAspect styleOfValues,
                                          /* Size of values */
                                          const Standard_Integer sizeOfValues)
 {

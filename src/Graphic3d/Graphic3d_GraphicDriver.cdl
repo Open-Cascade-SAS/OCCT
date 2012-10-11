@@ -129,7 +129,7 @@ uses
     HArray1OfReal       from TColStd,
     CUserDraw           from Graphic3d,
     NListOfHAsciiString from Graphic3d,
-    FontAspect          from OSD,
+    FontAspect          from Font,
     CGraduatedTrihedron from Graphic3d
 
 raises

@@ -167,11 +167,11 @@ public:
 
   //// RELATED TO FONTS ////
 
-  int FindFont (const char*          theFontName,
-                const OSD_FontAspect theFontAspect,
-                const int            theBestSize = -1,
-                const float          theXScale = 1.0f,
-                const float          theYScale = 1.0f)
+  int FindFont (const char*           theFontName,
+                const Font_FontAspect theFontAspect,
+                const int             theBestSize = -1,
+                const float           theXScale = 1.0f,
+                const float           theYScale = 1.0f)
   {
     return myDisplay->FindFont (theFontName, theFontAspect, theBestSize, theXScale, theYScale);
   }

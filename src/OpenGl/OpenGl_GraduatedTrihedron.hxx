@@ -64,10 +64,10 @@ class OpenGl_GraduatedTrihedron : public MMgt_TShared
   float myYColor[3];
   float myZColor[3];
   const char *myFontOfNames;
-  OSD_FontAspect myStyleOfNames;
+  Font_FontAspect myStyleOfNames;
   int mySizeOfNames;
   const char* myFontOfValues;
-  OSD_FontAspect myStyleOfValues;
+  Font_FontAspect myStyleOfValues;
   int mySizeOfValues;
   minMaxValuesCallback myCbCubicAxes;
   void* myPtrVisual3dView;

@@ -33,7 +33,7 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 
-#include <OSD_FontAspect.hxx>
+#include <Font_FontAspect.hxx>
 
 #include <InterfaceGraphic_telem.hxx>
 
@@ -115,7 +115,7 @@ class OpenGl_Display : public MMgt_TShared
 
   // Fonts
 
-  int FindFont (const char* AFontName, const OSD_FontAspect AFontAspect, const int ABestSize = -1, const float AXScale = 1.F, const float AYScale = 1.F);
+  int FindFont (const char* AFontName, const Font_FontAspect AFontAspect, const int ABestSize = -1, const float AXScale = 1.F, const float AYScale = 1.F);
 
   void StringSize (const wchar_t *text, int &width, int &ascent, int &descent);
 

@@ -59,7 +59,8 @@ uses
     MMgt,
     Xw,
     WNT,
-    OSD
+    OSD,
+    Font
 
 is
 

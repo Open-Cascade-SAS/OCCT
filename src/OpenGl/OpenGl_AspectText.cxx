@@ -27,7 +27,7 @@ static const TEL_COLOUR myDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
 OpenGl_AspectText::OpenGl_AspectText ()
  : myZoomable(0),
    myAngle(0.0F),
-   myFontAspect(OSD_FA_Regular),
+   myFontAspect(Font_FA_Regular),
    myFont(NULL),
    //mySpace(0.3F),
    //myExpan(1.0F),
@@ -53,7 +53,7 @@ void OpenGl_AspectText::SetContext (const CALL_DEF_CONTEXTTEXT &AContext)
 {
   myZoomable = (int) AContext.TextZoomable;
   myAngle = (float) AContext.TextAngle;
-  myFontAspect = (OSD_FontAspect) AContext.TextFontAspect;
+  myFontAspect = (Font_FontAspect) AContext.TextFontAspect;
   //mySpace = (float) AContext.Space;
   //myExpan = (float) AContext.Expan;
   myColor.rgb[0] = (float) AContext.Color.r;

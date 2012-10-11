@@ -40,7 +40,7 @@ uses
     TypeOfStyleText   from Aspect,
     TypeOfDisplayText from Aspect,
     AsciiString       from TCollection,
-    FontAspect        from OSD 
+    FontAspect        from Font 
 
 raises
 
@@ -169,12 +169,12 @@ is
     ---Purpose: Returns Angle of degree
 
     SetTextFontAspect ( me          : mutable;
-                        AFontAspect : FontAspect from OSD );
+                        AFontAspect : FontAspect from Font );
     ---Level: Public
     ---Purpose: Turns usage of Aspect text 
     ---Category: Methods to modify the class definition
 
-    GetTextFontAspect( me ) returns FontAspect from OSD;
+    GetTextFontAspect( me ) returns FontAspect from Font;
     ---Level: Public 
     ---Purpose: Returns text FontAspect
 
@@ -239,7 +239,7 @@ is
              AColorSubTitle     : out Color from Quantity;  
              ATextZoomable      : out Boolean from Standard;
              ATextAngle         : out Real from Standard;
-             ATextFontAspect    : out FontAspect from OSD)
+             ATextFontAspect    : out FontAspect from Font)
             is static;
     ---Level: Public
     ---Purpose: Returns the current values of the group <me>.
@@ -290,6 +290,6 @@ fields
     MyTextAngle :   Real from Standard;
 
     -- the variable turning FontAspect of the text
-    MyTextFontAspect :  FontAspect from OSD;
+    MyTextFontAspect :  FontAspect from Font;
 
 end AspectText3d;

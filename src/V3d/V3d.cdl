@@ -58,7 +58,8 @@ uses
         PlotMgt,
         Image,
         gp,
-        OSD
+        OSD,
+        Font
 
 is
 

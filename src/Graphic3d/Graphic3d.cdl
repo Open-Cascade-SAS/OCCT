@@ -77,7 +77,8 @@ uses
     WNT,
     Image,
     AlienImage,
-    gp
+    gp,
+    Font
 is
 
     -----------------------

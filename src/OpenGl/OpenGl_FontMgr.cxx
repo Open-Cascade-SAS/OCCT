@@ -81,22 +81,22 @@ OpenGl_FontMgr* OpenGl_FontMgr::instance()
 
 void OpenGl_FontMgr::_initializeFontDB()
 {
-  Handle(OSD_FontMgr) fntMgr = OSD_FontMgr::GetInstance();
+  Handle(Font_FontMgr) fntMgr = Font_FontMgr::GetInstance();
   if ( !fntMgr.IsNull() ) {
 
-    OSD_NListOfSystemFont fontList = fntMgr->GetAvalableFonts();
+    Font_NListOfSystemFont fontList = fntMgr->GetAvalableFonts();
     if ( fontList.Size() != 0 ) {
 
-      // The library used as a tool for checking font aspect since OSD_FontMgr
+      // The library used as a tool for checking font aspect since Font_FontMgr
       // fails to get aspect for the fonts that have name dependant
       // on system locale.
       FT_Library aFtLibrary;
       FT_Error aLibError = FT_Init_FreeType(&aFtLibrary);
       
-      OSD_NListOfSystemFont::Iterator it(fontList);
+      Font_NListOfSystemFont::Iterator it(fontList);
       for ( ; it.More(); it.Next() ) {
         OGLFont_SysInfo* info = new OGLFont_SysInfo();
-        if ( it.Value()->FontAspect() == OSD_FA_Regular ) {
+        if ( it.Value()->FontAspect() == Font_FA_Regular ) {
           
           Handle(TCollection_HAsciiString) aFontPath = it.Value()->FontPath();
             
@@ -119,20 +119,20 @@ void OpenGl_FontMgr::_initializeFontDB()
                 << "\tFont New Name: " << aFontFace->family_name << endl
                 << "\tFont Aspect: " << aFontFace->style_flags << endl;
 #endif
-              OSD_FontAspect aspect = OSD_FA_Regular;
+              Font_FontAspect aspect = Font_FA_Regular;
               if ( aFontFace->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD) )
-                aspect = OSD_FA_BoldItalic;
+                aspect = Font_FA_BoldItalic;
               else if ( aFontFace->style_flags == FT_STYLE_FLAG_ITALIC )
-                aspect = OSD_FA_Italic;
+                aspect = Font_FA_Italic;
               else if ( aFontFace->style_flags == FT_STYLE_FLAG_BOLD )
-                aspect = OSD_FA_Bold;
+                aspect = Font_FA_Bold;
 
 #ifdef TRACE
-              cout << "\tOSD_FontAspect: " << aspect << endl;
+              cout << "\tFont_FontAspect: " << aspect << endl;
 #endif
               Handle(TCollection_HAsciiString) aFontName =
                 new TCollection_HAsciiString( aFontFace->family_name );
-              info->SysFont = new OSD_SystemFont( aFontName, aspect, aFontPath );
+              info->SysFont = new Font_SystemFont( aFontName, aspect, aFontPath );
             }
             
             FT_Done_Face(aFontFace);
@@ -174,10 +174,10 @@ bool OpenGl_FontMgr::requestFontList( Graphic3d_NListOfHAsciiString& lst)
 }
 
 // Empty fontName means that ANY family name can be used.
-// fontAspect == OSD_FA_Undefined means ANY font aspect is acceptable.
+// fontAspect == Font_FA_Undefined means ANY font aspect is acceptable.
 // fontheight == -1 means ANY font height is acceptable.
 int OpenGl_FontMgr::request_font( const Handle(TCollection_HAsciiString)& fontName,
-                                 const OSD_FontAspect                    fontAspect,
+                                 const Font_FontAspect                   fontAspect,
                                  const Standard_Integer                  fontHeight )
 {
   Standard_Integer aFontHeight = fontHeight;
@@ -216,7 +216,7 @@ int OpenGl_FontMgr::request_font( const Handle(TCollection_HAsciiString)& fontNa
 #endif
 
       //check for font aspect
-      if (fontAspect != OSD_FA_Undefined && DBit.Value()->SysFont->FontAspect() != fontAspect) {
+      if (fontAspect != Font_FA_Undefined && DBit.Value()->SysFont->FontAspect() != fontAspect) {
 #ifdef TRACE
         cout << "\tAspect of candidate font: " << DBit.Value()->SysFont->FontAspect() << endl;
         cout << "\tAspects are not equal! Continue seaching...\n";
@@ -322,20 +322,20 @@ int OpenGl_FontMgr::request_font( const Handle(TCollection_HAsciiString)& fontNa
 
       switch( fontAspect ) 
       {
-      case OSD_FA_Bold:
-        cout << "OSD_FA_Bold\n";
+      case Font_FA_Bold:
+        cout << "Font_FA_Bold\n";
         break;
-      case OSD_FA_BoldItalic:
-        cout << "OSD_FA_BoldItalic\n";
+      case Font_FA_BoldItalic:
+        cout << "Font_FA_BoldItalic\n";
         break;
-      case OSD_FA_Italic:
-        cout << "OSD_FA_Italic\n";
+      case Font_FA_Italic:
+        cout << "Font_FA_Italic\n";
         break;
-      case OSD_FA_Regular:
-        cout << "OSD_FA_Regular\n";
+      case Font_FA_Regular:
+        cout << "Font_FA_Regular\n";
         break;
       default:
-        cout << "OSD_FA_Undefined\n";
+        cout << "Font_FA_Undefined\n";
         break;
       }
       cout  << "  font height: "<<aFontHeight<<"\n";

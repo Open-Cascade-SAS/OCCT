@@ -1294,7 +1294,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText
   Quantity_Color            AColorSubTitle;
   Standard_Boolean          ATextZoomable;
   Standard_Real             ATextAngle;
-  OSD_FontAspect            ATextFontAspect;
+  Font_FontAspect            ATextFontAspect;
 
   CTX->Values (AColor, AFont, AnExpansion, ASpace, AStyle, ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);
   AColor.Values (R, G, B, Quantity_TOC_RGB);
@@ -2113,7 +2113,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   Quantity_Color            AColorSubTitle;
   Standard_Boolean          ATextZoomable;
   Standard_Real             ATextAngle;
-  OSD_FontAspect            ATextFontAspect;
+  Font_FontAspect            ATextFontAspect;
 
 
   CTXL->Values (AColor, ALType, AWidth);

@@ -200,11 +200,11 @@ Handle( Graphic3d_AspectText3d ) MeshVS_Tool::CreateAspectText3d
   Aspect_TypeOfStyleText    aStyle        = Aspect_TOST_NORMAL;
   Aspect_TypeOfDisplayText  aDispText     = Aspect_TODT_NORMAL;
   TCollection_AsciiString   aFontString   = Graphic3d_NOF_ASCII_MONO;
-  OSD_FontAspect            aFontAspect   = OSD_FA_Regular;
+  Font_FontAspect           aFontAspect   = Font_FA_Regular;
   Standard_Integer          aStyleI       = (Standard_Integer)Aspect_TOST_NORMAL;
   Standard_Integer          aDispTextI    = (Standard_Integer)Aspect_TODT_NORMAL;
   // Bold font is used by default for better text readability
-  Standard_Integer          aFontAspectI  = (Standard_Integer)OSD_FA_Bold;
+  Standard_Integer          aFontAspectI  = (Standard_Integer)Font_FA_Bold;
 
   if ( !theDr->GetColor ( MeshVS_DA_TextColor, aTColor ) && !UseDefaults )
     return anAsp;
@@ -233,7 +233,7 @@ Handle( Graphic3d_AspectText3d ) MeshVS_Tool::CreateAspectText3d
   if ( !theDr->GetInteger ( MeshVS_DA_TextFontAspect, aFontAspectI ) && !UseDefaults )
     return anAsp;
   else 
-    aFontAspect = (OSD_FontAspect) aFontAspectI;
+    aFontAspect = (Font_FontAspect) aFontAspectI;
 
   anAsp = new Graphic3d_AspectText3d ( aTColor, aFont, anExpFactor, aSpace, aStyle, aDispText );
   anAsp->SetTextFontAspect( aFontAspect );

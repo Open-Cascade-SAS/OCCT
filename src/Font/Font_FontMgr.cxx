@@ -17,10 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-// Updated:
-
-#include <OSD_FontMgr.ixx>
+#include <Font_FontMgr.ixx>
 #ifdef WNT
 # include <windows.h>
 # include <stdlib.h>
@@ -48,7 +45,7 @@
 #include <OSD_FileNode.hxx>
 #include <OSD_OpenMode.hxx>
 #include <OSD_Protection.hxx>
-#include <OSD_NListOfSystemFont.hxx>
+#include <Font_NListOfSystemFont.hxx>
 
 const  Standard_Integer font_service_conf_size = 3;
 static Standard_Character font_service_conf[font_service_conf_size][64] = { {"/etc/X11/fs/config"},
@@ -106,23 +103,23 @@ void find_path_with_font_dir( const TCollection_AsciiString& dir,StringList& dir
 #endif //WNT
 
 
-Handle(OSD_FontMgr) OSD_FontMgr::GetInstance() {
+Handle(Font_FontMgr) Font_FontMgr::GetInstance() {
 
-  static Handle(OSD_FontMgr) _mgr;
+  static Handle(Font_FontMgr) _mgr;
   if ( _mgr.IsNull() )
-    _mgr = new OSD_FontMgr();
+    _mgr = new Font_FontMgr();
 
   return _mgr;
 
 }
 
-OSD_FontMgr::OSD_FontMgr() {
+Font_FontMgr::Font_FontMgr() {
 
   InitFontDataBase();
 
 }
 
-void OSD_FontMgr::InitFontDataBase() {
+void Font_FontMgr::InitFontDataBase() {
 
   MyListOfFonts.Clear();
 
@@ -164,7 +161,7 @@ void OSD_FontMgr::InitFontDataBase() {
     DWORD type;
     size_name = 100,
       size_data = 100;
-    OSD_FontAspect aspect;
+    Font_FontAspect aspect;
     if( RegEnumValue( fonts_hkey,
                       id,
                       buf_name,
@@ -188,15 +185,15 @@ void OSD_FontMgr::InitFontDataBase() {
       fname->RightAdjust();
       if ( ( anIndex = fname->SearchFromEnd( new TCollection_HAsciiString("Bold Italic") ) ) > 0 ) {
         aTruncate = ( anIndex > 1 ) && ( fname->Value(anIndex - 1 ) == ' ' );
-        aspect = OSD_FA_BoldItalic;
+        aspect = Font_FA_BoldItalic;
       } else if ( ( anIndex = fname->SearchFromEnd( new TCollection_HAsciiString("Bold") ) ) > 0 ) {
         aTruncate = ( anIndex > 1 ) && ( fname->Value(anIndex - 1 ) == ' ' );
-        aspect = OSD_FA_Bold;
+        aspect = Font_FA_Bold;
       } else if ( ( anIndex = fname->SearchFromEnd( new TCollection_HAsciiString("Italic") ) ) > 0 ) {
         aTruncate = ( anIndex > 1 ) && ( fname->Value(anIndex - 1 ) == ' ' );
-        aspect = OSD_FA_Italic;
+        aspect = Font_FA_Italic;
       } else {
-        aspect = OSD_FA_Regular;
+        aspect = Font_FA_Regular;
       }
       if( aTruncate )
         fname->Trunc( anIndex - 1 );
@@ -210,24 +207,24 @@ void OSD_FontMgr::InitFontDataBase() {
       if( ( ( file_path->Search(".ttf") > 0 ) || ( file_path->Search(".TTF") > 0 ) ||
             ( file_path->Search(".otf") > 0 ) || ( file_path->Search(".OTF") > 0 ) ||
             ( file_path->Search(".ttc") > 0 ) || ( file_path->Search(".TTC") > 0 ) ) ){
-        MyListOfFonts.Append( new OSD_SystemFont( fname, aspect, file_path ) );
+        MyListOfFonts.Append( new Font_SystemFont( fname, aspect, file_path ) );
 #ifdef TRACE
         cout  << "Adding font...\n"
               << "  font name: " << fname->ToCString() << "\n"
               << "  font file: " << file_path->ToCString() << "\n"
               << "  font aspect: ";
         switch( aspect ) {
-        case OSD_FA_Bold:
-          cout << "OSD_FA_Bold\n";
+        case Font_FA_Bold:
+          cout << "Font_FA_Bold\n";
           break;
-        case OSD_FA_BoldItalic:
-          cout << "OSD_FA_BoldItalic\n";
+        case Font_FA_BoldItalic:
+          cout << "Font_FA_BoldItalic\n";
           break;
-        case OSD_FA_Italic:
-          cout << "OSD_FA_Italic\n";
+        case Font_FA_Italic:
+          cout << "Font_FA_Italic\n";
           break;
         default:
-          cout << "OSD_FA_Regular\n";
+          cout << "Font_FA_Regular\n";
           break;
         }
 #endif
@@ -412,7 +409,7 @@ void OSD_FontMgr::InitFontDataBase() {
                 aPath.AssignCat( "/" );
                 aPath.AssignCat( aLine.Token( " ", 1 ) );
               }
-              MyListOfFonts.Append( new OSD_SystemFont( new TCollection_HAsciiString( aXLFD ),
+              MyListOfFonts.Append( new Font_SystemFont( new TCollection_HAsciiString( aXLFD ),
                 new TCollection_HAsciiString( aPath ) ) );
             }
             
@@ -429,7 +426,7 @@ void OSD_FontMgr::InitFontDataBase() {
 #endif
 }
 
-OSD_NListOfSystemFont OSD_FontMgr::GetAvalableFonts() const
+Font_NListOfSystemFont Font_FontMgr::GetAvalableFonts() const
 {
   return MyListOfFonts;
 }

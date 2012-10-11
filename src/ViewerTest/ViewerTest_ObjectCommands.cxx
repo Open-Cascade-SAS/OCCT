@@ -2301,7 +2301,7 @@ public:
       Standard_Real Angle ,
       Standard_Boolean Zoom ,
       Standard_Real  Height,
-      OSD_FontAspect FontAspect,
+      Font_FontAspect FontAspect,
       Standard_CString Font
     );
 
@@ -2325,7 +2325,7 @@ protected:
   Standard_Boolean                    aZoomable;
   Quantity_Color                      aColor;
   Standard_CString                    aFont;
-  OSD_FontAspect                      aFontAspect;
+  Font_FontAspect                     aFontAspect;
   Graphic3d_HorizontalTextAlignment   aHJustification;
   Graphic3d_VerticalTextAlignment     aVJustification;
 };
@@ -2343,7 +2343,7 @@ MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& 
                           Standard_Real     angle       = 0.0 ,
                           Standard_Boolean  zoomable    = Standard_True,
                           Standard_Real     height      = 12.,
-                          OSD_FontAspect    fontAspect  = OSD_FA_Regular,
+                          Font_FontAspect   fontAspect  = Font_FA_Regular,
                           Standard_CString  font        = "Courier")
 {
   aText           = text;
@@ -2443,7 +2443,7 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
   const Standard_Real height = atof(argv[12]);
 
   // Text aspect
-  const OSD_FontAspect aspect = OSD_FontAspect(atoi(argv[13]));
+  const Font_FontAspect aspect = Font_FontAspect(atoi(argv[13]));
 
   // Text font
   TCollection_AsciiString font;

@@ -16,16 +16,11 @@
 // limitation, any warranties of merchantability, fitness for a particular
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
-
-
-#ifndef _OSD_NListOfSystemFont_HeaderFile
-#define _OSD_NListOfSystemFont_HeaderFile
-
+#ifndef _Font_NListOfSystemFont_HeaderFile
+#define _Font_NListOfSystemFont_HeaderFile
 #include <NCollection_DefineList.hxx>
-#include <OSD_SystemFont.hxx>
-
-DEFINE_LIST (OSD_NListOfSystemFont,
+#include <Font_SystemFont.hxx>
+DEFINE_LIST (Font_NListOfSystemFont,
              NCollection_List,
-             Handle(OSD_SystemFont))
-
+             Handle(Font_SystemFont))
 #endif

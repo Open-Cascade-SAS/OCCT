@@ -93,10 +93,6 @@ is
 
  enumeration KindFile is FILE, DIRECTORY, LINK, SOCKET, UNKNOWN;
    ---Purpose: Specifies the type of files.
-   
- --ABD Integration support of system fonts (using FTGL and FreeType)
- enumeration FontAspect is FA_Undefined, FA_Regular, FA_Bold, FA_Italic, FA_BoldItalic;
-   ---Purpose: Specifies aspect of system font.
 
  private enumeration WhoAmI is  WDirectory, WDirectoryIterator, 
              WEnvironment, WFile, WFileNode, WFileIterator, WMailBox, 
@@ -179,13 +175,7 @@ is
      imported ThreadFunction;
          class Thread;
              ---Purpose: A tool to manage threads
-         
-         --ABD Integration support of system fonts (using FTGL and FreeType)
-     imported NListOfSystemFont;
-     class SystemFont;
-     class FontMgr;
 
- 
     class Real2String;
              ---Purpose: Convertion of CString to Real and reciprocally   
 

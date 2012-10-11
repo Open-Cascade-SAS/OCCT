@@ -16,7 +16,6 @@ OSD_signal.cxx
 OSD_signal_WNT.cxx
 OSD_ThreadFunction.hxx
 OSD_PThread.hxx      
-OSD_NListOfSystemFont.hxx
 OSD_Localizer.cxx
 OSD_PerfMeter.c
 OSD_PerfMeter.h

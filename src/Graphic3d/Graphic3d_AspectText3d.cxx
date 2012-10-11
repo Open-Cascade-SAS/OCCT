@@ -83,7 +83,7 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d ():
 MyFont (Graphic3d_NOF_ASCII_MONO), MyColor (Quantity_NOC_YELLOW), MyFactor (1.0), MySpace (0.0), MyStyle (Aspect_TOST_NORMAL), MyDisplayType (Aspect_TODT_NORMAL), MyColorSubTitle (Quantity_NOC_WHITE) {
   MyTextZoomable = Standard_False;
   MyTextAngle = 0.0;
-  MyTextFontAspect = OSD_FA_Regular;
+  MyTextFontAspect = Font_FA_Regular;
 }
 
 Graphic3d_AspectText3d::Graphic3d_AspectText3d (
@@ -96,7 +96,7 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d (
 MyFont(AFont), MyColor (AColor), MyFactor (AFactor), MySpace (ASpace), MyStyle (AStyle), MyDisplayType(ADisplayType), MyColorSubTitle   (Quantity_NOC_WHITE) {
   MyTextZoomable = Standard_False;
   MyTextAngle = 0.0;
-  MyTextFontAspect = OSD_FA_Regular;
+  MyTextFontAspect = Font_FA_Regular;
   if(MyFont.Length() == 0)
     MyFont.AssignCat(Graphic3d_NOF_ASCII_MONO);
 
@@ -181,12 +181,12 @@ Standard_Real Graphic3d_AspectText3d::GetTextAngle() const
   return MyTextAngle;
 }
 
-void Graphic3d_AspectText3d::SetTextFontAspect(const OSD_FontAspect AFontAspect) 
+void Graphic3d_AspectText3d::SetTextFontAspect(const Font_FontAspect AFontAspect) 
 {
   MyTextFontAspect = AFontAspect;
 }
 
-OSD_FontAspect Graphic3d_AspectText3d::GetTextFontAspect() const
+Font_FontAspect Graphic3d_AspectText3d::GetTextFontAspect() const
 {
   return MyTextFontAspect;
 }
@@ -236,7 +236,7 @@ void Graphic3d_AspectText3d::Values ( Quantity_Color& AColor,
                                       Quantity_Color& AColorSubTitle, 
                                       Standard_Boolean& ATextZoomable,
                                       Standard_Real& ATextAngle,
-                                      OSD_FontAspect& ATextFontAspect ) const 
+                                      Font_FontAspect& ATextFontAspect ) const 
 {
 
   AColor          = MyColor;

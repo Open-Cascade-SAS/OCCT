@@ -63,7 +63,7 @@ static const CALL_DEF_CONTEXTTEXT myDefaultContextText =
   { 1.F, 1.F, 1.F }, //ColorSubTitle
   0, //TextZoomable
   0.F, //TextAngle
-  OSD_FA_Regular //TextFontAspect
+  Font_FA_Regular //TextFontAspect
 };
 
 /*----------------------------------------------------------------------*/

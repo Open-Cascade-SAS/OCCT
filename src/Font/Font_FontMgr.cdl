@@ -17,36 +17,28 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
+class FontMgr from Font inherits TShared from MMgt
+---Purpose: Structure for store of Font System Information
 
--- Updated:       
-
-
-class FontMgr from OSD inherits TShared from MMgt
-
- ---Purpose: Structure for store of Font System Information
-
-uses Path,
-     SystemFont,
+uses SystemFont,
      NListOfSystemFont,
+     Path from OSD,
      AsciiString from TCollection
 is
- GetInstance(myclass)
-    returns FontMgr;
-    ---Level: Public
+  GetInstance(myclass) returns FontMgr;
+  ---Level: Public
 
- GetAvalableFonts(me)
-    returns NListOfSystemFont;
+  GetAvalableFonts(me) returns NListOfSystemFont;
 
 --- Private methods
 
- Create returns FontMgr is private;
-    ---Purpose: Creates empty font object
-    ---Level: Private
+  Create returns FontMgr is private;
+  ---Purpose: Creates empty font object
+  ---Level: Private
 
  InitFontDataBase(me:mutable) is private;
 
 fields
-
- MyListOfFonts:         NListOfSystemFont;
+ MyListOfFonts:  NListOfSystemFont;
 
 end FontMgr;

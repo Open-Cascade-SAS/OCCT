@@ -178,7 +178,7 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   TCollection_AsciiString  AFontString;
   Standard_Integer         ADispInt;
   // Bold font is used by default for better text readability
-  OSD_FontAspect           AFontAspectType  = OSD_FA_Bold;
+  Font_FontAspect           AFontAspectType  = Font_FA_Bold;
   Standard_Integer         AAspect; 
   
 
@@ -193,7 +193,7 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   if ( aDrawer->GetInteger ( MeshVS_DA_TextDisplayType, ADispInt ) )
     ADisplayType = (Aspect_TypeOfDisplayText) ADispInt;
   if ( aDrawer->GetInteger ( MeshVS_DA_TextFontAspect, AAspect ) )
-    AFontAspectType = (OSD_FontAspect)AAspect;         
+    AFontAspectType = (Font_FontAspect)AAspect;         
 
   Handle (Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ( AColor, AFont, AExpansionFactor, ASpace,
     ATextStyle, ADisplayType );
