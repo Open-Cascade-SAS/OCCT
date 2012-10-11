@@ -1,1 +1,1 @@
-error /\bFaulty\b/
+FAILED /\bFaulty\b/ bad shape
