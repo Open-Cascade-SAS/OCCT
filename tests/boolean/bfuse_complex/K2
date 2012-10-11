@@ -1,8 +1,8 @@
 # Original bug : cts20578
 # Date : 4June98
 
-restore [locate_data_file cts20578a.rle] a
-restore [locate_data_file cts20578b.rle] b
+restore [locate_data_file CTO904_cts20578a.rle] a
+restore [locate_data_file CTO904_cts20578b.rle] b
 
 bfuse result a b
 

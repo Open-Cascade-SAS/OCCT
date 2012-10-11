@@ -1,7 +1,7 @@
 # Original bug : cts21530
 # Date : 02 Nov 98
 
-restore [locate_data_file cts21530_base.rle] base
+restore [locate_data_file CFE901_cts21gfv.rle] base
 restore [locate_data_file cts21530_wire.rle] wire
 restore [locate_data_file cts21530_plan.rle] plan
 

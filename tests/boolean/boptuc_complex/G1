@@ -1,4 +1,4 @@
-restore [locate_data_file a210] a
+restore [locate_data_file a208] a
 restore [locate_data_file b210] b
 
 bop a b

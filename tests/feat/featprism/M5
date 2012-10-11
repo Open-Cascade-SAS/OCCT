@@ -2,7 +2,7 @@
 # bis cts20212
 # Date : 22 Sept 98
 
-restore [locate_data_file cts20872_base.rle] base
+restore [locate_data_file CFE900_cts20gcu.rle] base
 restore [locate_data_file cts20872_face.rle] cont
 
 explode base face

@@ -4,7 +4,7 @@
 ## Comment : from ger60206
 ## ====================================
 
-restore [locate_data_file ger60206.rle] a
+restore [locate_data_file CFI_ger60206.rle] a
 explode a e
 mkevol result a
 updatevol a_21 0 0.5 1 1

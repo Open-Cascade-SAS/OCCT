@@ -1,7 +1,7 @@
 # Original bug : cts20369
 # Date : 17Juillet98
 
-restore [locate_data_file cts20369a.rle] base0
+restore [locate_data_file CFE900_cts20gat.rle] base0
 restore [locate_data_file cts20369b.rle] cont0
 restore [locate_data_file cts20369c.rle] cont
 

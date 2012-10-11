@@ -1,7 +1,7 @@
 puts "TODO OCC22817 All:An exception was caught"
 puts "TODO OCC22817 All:\\*\\* Exception \\*\\*"
 puts "TODO OCC22817 All:TEST INCOMPLETE"
-restore [locate_data_file 13_C12.draw] s
+restore [locate_data_file CFI_13_c1ffk.rle] s
 tscale s 0 0 0 SCALE1
 explode s E
 blend result s 5*SCALE1 s_9 5*SCALE1 s_10  5*SCALE1 s_2

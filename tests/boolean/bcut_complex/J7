@@ -3,7 +3,7 @@
 # D3
 
 restore [locate_data_file cts20537-part.rle] part
-restore [locate_data_file cts20537-tool.rle] tool
+restore [locate_data_file CTO902_cts20537-tool.rle] tool
 
 bcut result part tool
 

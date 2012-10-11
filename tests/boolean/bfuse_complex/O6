@@ -1,8 +1,8 @@
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 puts "TODO #22911 ALL: Error : The square of result shape is"
 
-restore [locate_data_file topo106-p.brep] poche
-restore [locate_data_file topo106-n.brep] nervure
+restore [locate_data_file CTO908_topo106-p.brep] poche
+restore [locate_data_file CTO908_topo106-n.brep] nervure
 
 bfuse result poche nervure
 

@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # A1.gi
 
-restore [locate_data_file cts20452a.rle] a
-restore [locate_data_file cts20452b.rle] b
+restore [locate_data_file CTO902_cts20452a.rle] a
+restore [locate_data_file CTO902_cts20452b.rle] b
 
 
 bfuse result a b

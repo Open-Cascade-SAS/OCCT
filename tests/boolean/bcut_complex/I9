@@ -3,7 +3,7 @@
 # B4
 
 restore [locate_data_file cts20483-part.rle] part
-restore [locate_data_file cts20483-tool.rle] tool
+restore [locate_data_file CTO902_cts20483-tool.rle] tool
 
 bcut result part tool
 

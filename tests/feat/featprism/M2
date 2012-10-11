@@ -1,7 +1,7 @@
 # Original bug : hkg60159
 # Date : 16 Sept 98
 
-restore [locate_data_file hkg60159_base.rle] base
+restore [locate_data_file CFE900_hkg60gcr.rle] base
 restore [locate_data_file hkg60159_face.rle] cont
 
 explode base face

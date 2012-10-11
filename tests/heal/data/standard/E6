@@ -1,2 +1,1 @@
-restore [locate_data_file _box100mm_dsg3.rle] a
-
+restore [locate_data_file CTO900__box100mm_dsg3.rle] a

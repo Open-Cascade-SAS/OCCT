@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # B9.gif
 
-restore [locate_data_file cts20504-part.rle] part
-restore [locate_data_file cts20504-tool.rle] tool
+restore [locate_data_file CTO902_cts20504-part.rle] part
+restore [locate_data_file CTO902_cts20504-tool.rle] tool
 
 bcut result part tool
 

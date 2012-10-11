@@ -1,7 +1,7 @@
 # Original bug : cts20203
 # Date : 13Mai98
  
-restore [locate_data_file cts20203_base]  base
+restore [locate_data_file CTO901_cts20203_base.rle]  base
 restore [locate_data_file cts20203_outil]  outil
 
 bcut result base outil

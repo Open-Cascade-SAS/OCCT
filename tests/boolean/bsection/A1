@@ -1,5 +1,5 @@
-restore [locate_data_file a63] a
-restore [locate_data_file b63] b
+restore [locate_data_file CIN001_a63.rle] a
+restore [locate_data_file CIN001_b63.rle] b
 #a and b shapes have not intersection according to tolerance
 
 ttranslate a 0 -0.0025400016456842422 0

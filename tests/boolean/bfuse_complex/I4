@@ -3,7 +3,7 @@
 # C6
 
 restore [locate_data_file cts20495a.rle] a
-restore [locate_data_file cts20495b.rle] b
+restore [locate_data_file CTO902_cts20495b.rle] b
 
 bfuse result a b
 

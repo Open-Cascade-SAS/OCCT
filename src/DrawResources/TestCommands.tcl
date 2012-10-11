@@ -1242,10 +1242,7 @@ proc _path_separator {} {
 # Procedure to locate data file for test given its name.
 # The search is performed assuming that the function is called 
 # from the test case script; the search order is:
-# - directory where test script is located
-# - directories ../data and ../../data from the script dir
-# - subdirectories <group>/<grid> and <group> of directories listed in 
-#   environment variable CSF_TestDataPath
+# - subdirectories in environment variable CSF_TestDataPath  
 # If file is not found, raises Tcl error.
 proc locate_data_file {filename} {
     global env groupname gridname casename
@@ -1255,33 +1252,19 @@ proc locate_data_file {filename} {
 	error "Error: This procedure (locate_data_file) is for use only in test scripts!"
     }
 
-    # check sub-directories data of the test case grid directory
-    # the current test case in paths indicated by CSF_TestScriptsPath
-    if { [info exists groupname] && [info exists gridname] && 
-         [info exists env(CSF_TestScriptsPath)] } {
-	foreach dir [_split_path $env(CSF_TestScriptsPath)] {
-	    if { [file exists $dir/$groupname/$gridname/data/$filename] } {
-		return [file normalize $dir/$groupname/$gridname/data/$filename]
-	    }
-	    if { [file exists $dir/$groupname/data/$filename] } {
-		return [file normalize $dir/$groupname/data/$filename]
-	    }
-	}
-    }
-
-    # check sub-directories corresponding to group and grid of
-    # the current test case in paths indicated by CSF_TestDataPath
-    if { [info exists groupname] && [info exists env(CSF_TestDataPath)] } {
+	# check sub-directories in paths indicated by CSF_TestDataPath
+	if { [info exists env(CSF_TestDataPath)] } {
 	foreach dir [_split_path $env(CSF_TestDataPath)] {
-	    if { [info exists gridname] && [file exists $dir/$groupname/$gridname/$filename] } {
-		return [file normalize $dir/$groupname/$gridname/$filename]
-	    }
-	    if { [file exists $dir/$groupname/$filename] } {
-		return [file normalize $dir/$groupname/$filename]
-	    }
+		while {[llength $dir] != 0} { 
+			set dir [lassign $dir name]
+			lappend dir {*}[glob -nocomplain -directory $name -type d *]
+			if { [file exists $name/$filename] } {
+			return [file normalize $name/$filename]
+			}
+		}
 	}
-    }
-
+	}
+	
     # check datadir
     if { [file exists [uplevel datadir]/$filename] } {
 	return [uplevel datadir]/$filename

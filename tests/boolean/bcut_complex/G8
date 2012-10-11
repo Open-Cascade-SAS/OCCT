@@ -1,7 +1,7 @@
 # Original bug : ger60598
 # Date : 18Sept98
 
-restore [locate_data_file ger60598c.rle] base
+restore [locate_data_file CTO900_ger60598c.rle] base
 restore [locate_data_file ger60598d.rle] prism
 
 fsameparameter base

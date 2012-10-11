@@ -1,6 +1,6 @@
 #old file ofcb26
 
-restore [locate_data_file bb26] s
+restore [locate_data_file CHE_bb26.rle] s
 OFFSETSHAPE -0.1 {s_4} $calcul $type
 
 set volume 0.391709

@@ -1,7 +1,7 @@
 # Original bug : cts19474
 # Date : 11mar98
 
-restore [locate_data_file cts19474part.rle] part
+restore [locate_data_file CTO900_cts19474part.rle] part
 restore [locate_data_file cts19474tool.rle] tool
 
 bfuse result part tool

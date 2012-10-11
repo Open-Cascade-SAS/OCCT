@@ -1,4 +1,4 @@
-restore [locate_data_file intcq104.brep] m
+restore [locate_data_file CIN902_intcqhmr.rle] m
 explode m
 # m_1 : Bossage
 # m_2 : Carreau (Enveloppe)

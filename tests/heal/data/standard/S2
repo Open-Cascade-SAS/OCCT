@@ -1,2 +1,2 @@
-restore [locate_data_file pro5640a.shape] a
+restore [locate_data_file CTO900_pro5640a.rle] a
 

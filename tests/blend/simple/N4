@@ -5,7 +5,7 @@
 #fuse s s1 s2
 #save s E5678.draw 
 
-restore [locate_data_file E5678.draw] s
+restore [locate_data_file CFI_e5678fil.rle] s
 tscale s 0 0 0 SCALE1
 explode s e
 blend result s 0.5*SCALE1 s_4 0.5*SCALE1 s_13 0.5*SCALE1 s_2

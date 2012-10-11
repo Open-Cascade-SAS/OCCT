@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # D1
 
-restore [locate_data_file cts20552a.rle] a
-restore [locate_data_file cts20552b.rle] b
+restore [locate_data_file cts20552-part.rle] a
+restore [locate_data_file cts20552-tool.rle] b
 
 
 bfuse result a b

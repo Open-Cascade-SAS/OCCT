@@ -1,6 +1,6 @@
 ## pro16001
 
-restore [locate_data_file PbHLR.brep] a
+restore [locate_data_file CTO909_PbHLR.brep] a
 checkshape a
 
 hlr hlr a

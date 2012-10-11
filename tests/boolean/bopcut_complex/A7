@@ -8,11 +8,11 @@ puts "========================"
 #	 D4
 #
 restore [locate_data_file buc60706j.brep] f
-restore [locate_data_file buc60706k.brep] w
+restore [locate_data_file buc60706b.brep] w
 
 pipe t w f
 
-restore [locate_data_file buc60706l.brep] s
+restore [locate_data_file buc60706c.brep] s
 
 bop s t
 bopcut res
@@ -23,7 +23,7 @@ tcopy res buc60706o.brep
 #	 D5
 #
 restore [locate_data_file buc60706m.brep] f
-restore [locate_data_file buc60706n.brep] w
+restore [locate_data_file buc60706e.brep] w
 pipe t w f
 tcopy buc60706o.brep s
 
@@ -37,7 +37,7 @@ tcopy res buc60706r.brep
 #
 restore [locate_data_file buc60706p.brep] f
 
-restore [locate_data_file buc60706q.brep] w
+restore [locate_data_file buc60706h.brep] w
 pipe t w f
 
 tcopy buc60706r.brep s

@@ -2,7 +2,7 @@
 # Date : 24mar98
 
 restore [locate_data_file pro6110a.rle] a
-restore [locate_data_file pro6110b.rle] b
+restore [locate_data_file CTO900_pro6110b.rle] b
 
 bfuse result a b
 

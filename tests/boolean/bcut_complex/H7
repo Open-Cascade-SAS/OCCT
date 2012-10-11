@@ -1,7 +1,7 @@
 # Original bug : pro14240
 # Date : 21 Sept 98
 
-restore [locate_data_file pro14240c.rle] part
+restore [locate_data_file CTO900_pro14240c.rle] part
 restore [locate_data_file pro14240d.rle] tool
 btolx tool
 

@@ -1,3 +1,4 @@
+puts "TODO OCC23469 ALL: Error on Record "
 ReadStep D_First [locate_data_file trj4_d2-tc-214.stp]
 set TypeOfFile ""
 set AddToDocument ""

@@ -1,7 +1,7 @@
 # Original bug : cts20168
 # Date : 8April98
 
-restore [locate_data_file cts20168_base.rle] base
+restore [locate_data_file CFE900_cts20gaj.rle] base
 restore [locate_data_file cts20168_face.rle] cont
 
 explode base face

@@ -1,7 +1,7 @@
 ## cts20077
 
-restore [locate_data_file shapetocut] sh
-restore [locate_data_file prismtocut]  pr
+restore [locate_data_file CTO904_cts20077a.rle] sh
+restore [locate_data_file cts20077b.rle]  pr
 
 bcut result sh pr
 

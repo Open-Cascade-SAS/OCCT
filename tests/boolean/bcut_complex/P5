@@ -1,7 +1,7 @@
 ## cts21576
 
-restore [locate_data_file shape_1.brep] a
-restore [locate_data_file outil_1.brep] b
+restore [locate_data_file CTO909_shape_1.brep] a
+restore [locate_data_file cts20528-tool.rle] b
 
 bcut result a b
 

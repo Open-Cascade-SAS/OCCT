@@ -2,7 +2,7 @@
 # Date : 09 Nov 98
 
 restore [locate_data_file boitecfe002.rle] base
-restore [locate_data_file toolcfe002.rle] prism
+restore [locate_data_file pro16389b.rle] prism
 
 bcut result base prism
 

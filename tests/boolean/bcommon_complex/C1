@@ -2,10 +2,10 @@
 # Date : 07mar97
 
 ## this saved revol shape has length of 1.2 Meter (1200 mm)
-restore [locate_data_file pro6974.rle] rev1
+restore [locate_data_file CTO900_pro6974.rle] rev1
 
 ## this saved box is at the left of 'rev1', passing by the axis
-restore [locate_data_file pro6974_box.rle] box2
+restore [locate_data_file CTO900_pro6974_box.rle] box2
 
 bcommon result rev1 box2
 

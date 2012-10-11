@@ -4,7 +4,7 @@ puts "TODO OCC23068 ALL: TEST INCOMPLETE"
 # Original bug : cts21271
 # Date : 11Sept98
 
-restore [locate_data_file cts21271.rle] s
+restore [locate_data_file CHE900_cts21271.rle] s
 explode s f
 
 ## leaving out bottom face s_35

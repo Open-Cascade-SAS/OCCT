@@ -3,7 +3,7 @@
 # D7
 
 restore [locate_data_file cts20456c.rle] c
-restore [locate_data_file cts20456d.rle] d
+restore [locate_data_file CTO902_cts20456d.rle] d
 
 bcut result c d
 

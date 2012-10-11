@@ -1,6 +1,6 @@
 #cts21588
-restore [locate_data_file part_syb.brep] a
-restore [locate_data_file tool_syb.brep] b
+restore [locate_data_file CTO909_part_syb.brep] a
+restore [locate_data_file CTO909_tool_syb.brep] b
 
 bfuse result a b
 

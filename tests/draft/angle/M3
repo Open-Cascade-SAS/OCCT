@@ -1,7 +1,7 @@
 # Original bug : cts21900
 # Date : 02 Dec 98
 
-restore [locate_data_file cts21900_base.brep] base
+restore [locate_data_file CFE903_cts21ggv.rle] base
 
 explode base face
 

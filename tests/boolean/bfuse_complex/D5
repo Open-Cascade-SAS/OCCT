@@ -1,7 +1,7 @@
 # Original bug : ksi0014
 # Date : 11mar98
 
-restore [locate_data_file ksi0014a.rle] a
+restore [locate_data_file CTO900_ksi0014a.rle] a
 restore [locate_data_file ksi0014b.rle] b
 
 bfuse result a b

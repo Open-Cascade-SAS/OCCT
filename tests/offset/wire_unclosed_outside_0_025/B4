@@ -1,6 +1,6 @@
 puts "TODO OCC23068 ALL: Error : result is not a topological shape"
 puts "TODO OCC23068 ALL: Error : The offset can not be build."
-restore [locate_data_file offset_wire_035.brep] s
+restore [locate_data_file case_3_wire2.brep] s
 
 set length 0
 set nbsh_v 0

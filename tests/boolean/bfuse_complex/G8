@@ -1,7 +1,7 @@
 # bug cts 20221 et cts20222
 
-restore [locate_data_file cts20222_base.rle]  base
-restore [locate_data_file cts20222_outil.rle]  outil
+restore [locate_data_file CTO901_cts20222_base.rle]  base
+restore [locate_data_file CTO901_cts20222_outil.rle]  outil
 
 bfuse result base outil
 

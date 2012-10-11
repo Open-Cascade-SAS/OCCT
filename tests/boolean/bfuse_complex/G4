@@ -2,7 +2,7 @@
 # Date : 13Mai98
 
 restore [locate_data_file cts20171_base]  base
-restore [locate_data_file cts20171_outil]  outil
+restore [locate_data_file CTO901_cts20171_outil.rle]  outil
 
 bfuse result base outil
 

@@ -1,7 +1,7 @@
 # Original bug : cts21128
 # Date : 21August98
 
-restore [locate_data_file cts21128a.rle] base
+restore [locate_data_file cts21126_base.brep] base
 restore [locate_data_file cts21128b.rle] cont
 
 explode base face

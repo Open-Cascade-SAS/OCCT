@@ -4,7 +4,7 @@
 ## Comment : from pro9169:
 ## ====================================
 
-restore [locate_data_file pro9169.rle] s
+restore [locate_data_file CFI_pro9169.rle] s
 explode s e
 blend result s 1 s_27
 

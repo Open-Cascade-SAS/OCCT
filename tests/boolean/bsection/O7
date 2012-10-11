@@ -1,5 +1,5 @@
-restore [locate_data_file cts21184a.rle] a
-restore [locate_data_file cts21184b.rle] b
+restore [locate_data_file CIN900_cts21hlo.rle] a
+restore [locate_data_file CIN900_cts21hlp.rle] b
 bsection result a b
 
 set length 751.43

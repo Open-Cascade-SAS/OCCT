@@ -3,7 +3,7 @@ puts "Fuse"
 puts ""
 
 
-restore [locate_data_file uki60919a.brep] base
+restore [locate_data_file CFE900_uki60gfk.rle] base
 restore [locate_data_file uki60919b.brep] cont
 
 prism pr cont 0 0 -200

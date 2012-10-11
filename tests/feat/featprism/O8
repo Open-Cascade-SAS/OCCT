@@ -1,7 +1,7 @@
 # Original bug : cts20077
 # Date : 25 Nov 98
 
-restore [locate_data_file cts20077_base.brep] base
+restore [locate_data_file CFE900_cts20geb.rle] base
 restore [locate_data_file cts20077_face.brep] cont
 
 explode base face

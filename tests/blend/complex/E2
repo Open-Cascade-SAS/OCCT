@@ -4,7 +4,7 @@
 ## Comment : from pro8792
 ## ====================================
 
-restore [locate_data_file pro8792.rle] a
+restore [locate_data_file CFI_pro8792.rle] a
 explode a e
 mkevol result a
 updatevol a_20 0 15 0.5 20 1 5

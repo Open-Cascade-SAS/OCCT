@@ -1,7 +1,7 @@
 # Original bug : cts21210
 # Date : 16July98
 
-restore [locate_data_file cts21210a.rle] a 
+restore [locate_data_file CTO904_cts21210a.rle] a 
 restore [locate_data_file cts21210b.rle] b
 
 bcut result a b

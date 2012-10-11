@@ -1,4 +1,4 @@
-set TheFileName OCC22025-s.brep
+set TheFileName bug22025_s.brep
 set bug_area "OCC22687"
 set rel_tol 1.3
 if { [string compare $command "shading"] == 0 } {

@@ -2,7 +2,7 @@
 # Date : 25 Nov 98
 
 restore [locate_data_file cts20088_base.brep] base
-restore [locate_data_file cts20088_face.brep] cont
+restore [locate_data_file contour_pkv.rle] cont
 
 explode base face
 copy base_54 ffrom

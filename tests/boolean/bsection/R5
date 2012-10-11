@@ -1,10 +1,10 @@
 # pro15545
 
-restore [locate_data_file coque1.brep] c1
+restore [locate_data_file CTO909_coque1.brep] c1
 explode c1 sh
 renamevar c1_1 c1
 
-restore [locate_data_file coque2.brep] c2 
+restore [locate_data_file CTO909_coque2.brep] c2 
 explode c2 sh
 renamevar c2_1 c2
 

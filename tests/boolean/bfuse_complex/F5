@@ -1,7 +1,7 @@
 # Original bug : pro10658
 # Date : 24mar98
 
-restore [locate_data_file pro10658a.rle] a
+restore [locate_data_file CTO900_pro10658a.rle] a
 restore [locate_data_file pro10658b.rle] b
 
 bfuse result a b

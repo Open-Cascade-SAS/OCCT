@@ -5,7 +5,7 @@
 #fuse s s1 s2
 #save s 6_I1234.draw 
 
-restore [locate_data_file 6_I1234.draw]  s
+restore [locate_data_file CFI_6_i12fhh.rle]  s
 tscale s 0 0 0 SCALE2
 explode s E
 blend result s 2.5*SCALE2 s_6

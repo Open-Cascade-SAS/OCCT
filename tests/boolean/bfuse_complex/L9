@@ -1,8 +1,8 @@
 # Original bug : cts21199
 # Date : 16July98
 
-restore [locate_data_file cts21199a.rle] a 
-restore [locate_data_file cts21199b.rle] skface
+restore [locate_data_file cts21199_base.rle] a 
+restore [locate_data_file cts21199_face.rle] skface
 
 prism b skface 0 0 -50
 

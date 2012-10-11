@@ -2,8 +2,8 @@
 # Date : 15sept98
 
 
-restore [locate_data_file cts21453a.rle] a
-restore [locate_data_file cts21453b.rle] b
+restore [locate_data_file CTO900_cts21453a.rle] a
+restore [locate_data_file CTO900_cts21453b.rle] b
 
 bcommon result a b
 

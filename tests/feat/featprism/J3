@@ -2,7 +2,7 @@
 # Date : 15 Oct 98
 
 # face non tangente
-restore [locate_data_file id260065_base.rle] base
+restore [locate_data_file CFE900_id260gao.rle] base
 restore [locate_data_file id260065_face2.rle] cont
 
 explode base face

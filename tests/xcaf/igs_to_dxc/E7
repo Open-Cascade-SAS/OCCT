@@ -1,4 +1,4 @@
-ReadIges D_First [locate_data_file ledu.igs]
+ReadIges D_First [locate_data_file BUC40128.igs]
 set TypeOfFile ""
 set AddToDocument ""
 set CompareDocumentsMode "ALL CHECKSHAPE"

@@ -1,7 +1,7 @@
 # Original bug : cts19573
 # Date : 26 Nov 98
 
-restore [locate_data_file cts19573_base.brep] base
+restore [locate_data_file CFE901_cts19gge.rle] base
 restore [locate_data_file cts19573_wire.brep] wire
 
 vertex v1 0 -500 120

@@ -1,7 +1,7 @@
 # Original bug : pro13403
 # Date : 25 Nov 98
 
-restore [locate_data_file pro13403_base.brep] base
+restore [locate_data_file CFE900_pro13gfc.rle] base
 restore [locate_data_file pro13403_face.brep] cont
 
 explode base face

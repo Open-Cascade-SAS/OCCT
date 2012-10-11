@@ -2,9 +2,9 @@
 # Date : 13Mai98
 # B3
 
-restore [locate_data_file cts20482a.rle] a
-restore [locate_data_file cts20482b.rle] b
-restore [locate_data_file cts20482c.rle] c
+restore [locate_data_file CTO902_cts20482a.rle] a
+restore [locate_data_file CTO902_cts20482b.rle] b
+restore [locate_data_file CTO902_cts20482c.rle] c
 
 bfuse result a b
 bfuse result result c

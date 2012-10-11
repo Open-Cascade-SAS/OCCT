@@ -4,7 +4,7 @@
 ## Comment : from pro6309
 ## ====================================
 
-restore [locate_data_file pro6309a.rle] a
+restore [locate_data_file CFI_pro6309a.rle] a
 tscale a 0 0 0 1000
 restore [locate_data_file pro6309b.rle] b
 tscale b 0 0 0 1000

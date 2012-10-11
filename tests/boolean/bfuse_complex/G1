@@ -2,7 +2,7 @@
 # Date : 21 sept 98
 
 
-restore [locate_data_file cts21197c.rle] part
+restore [locate_data_file CTO900_cts21197c.rle] part
 restore [locate_data_file cts21197d.rle] tool
 
 bfuse result part tool

@@ -1,7 +1,7 @@
 # Original bug : cts60033
 # Date : 15 Oct 98
 
-restore [locate_data_file cts60033_base.rle] base
+restore [locate_data_file CFE900_cts60gdk.rle] base
 restore [locate_data_file cts60033_face.rle] cont
 
 featprism base cont cont 0 1 0 1 1

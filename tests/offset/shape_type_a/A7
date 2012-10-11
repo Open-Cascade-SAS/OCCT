@@ -1,6 +1,6 @@
 #old file ofs15
 
-restore [locate_data_file bb15] s
+restore [locate_data_file CHE_bb15.rle] s
 OFFSETSHAPE -0.1 {} $calcul $type
 
 set volume 15.2493

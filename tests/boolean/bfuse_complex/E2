@@ -3,7 +3,7 @@
 
 restore [locate_data_file cts60005a.rle] a
 fsameparameter a
-restore [locate_data_file cts60005b.rle] b
+restore [locate_data_file CTO900_cts60005b.rle] b
 
 bfuse result a b
 

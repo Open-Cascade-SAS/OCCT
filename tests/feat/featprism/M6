@@ -1,7 +1,7 @@
 # Original bug : ger60806
 # Date : 12 Oct 98
 
-restore [locate_data_file ger60806_base.rle] base
+restore [locate_data_file CFE900_ger60gdc.rle] base
 restore [locate_data_file ger60806_face.rle] cont
 
 explode base face

@@ -1,7 +1,7 @@
 # Original bug : fra60618
 # Date : 23 Mar 98
 
-restore [locate_data_file fra60618-part.rle] base
+restore [locate_data_file CTO900_fra60618-part.rle] base
 restore [locate_data_file fra60618-tool.rle] wire
 
 mkplane cont wire

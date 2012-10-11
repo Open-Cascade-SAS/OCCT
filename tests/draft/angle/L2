@@ -1,7 +1,7 @@
 # Original bug : cts21764
 # Date : 23 Nov 98
 
-restore [locate_data_file cts21764_base.brep] base
+restore [locate_data_file CFE903_cts21ggr.rle] base
 
 explode base face
 copy base_14 facdep

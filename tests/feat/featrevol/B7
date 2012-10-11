@@ -1,7 +1,7 @@
 # Original bug : pro16290
 # Date : 12 Nov 98
 
-restore [locate_data_file pro16290_base.rle] base
+restore [locate_data_file CFE900_pro16gdq.rle] base
 restore [locate_data_file pro16290_face.rle] cont
 
 explode base face

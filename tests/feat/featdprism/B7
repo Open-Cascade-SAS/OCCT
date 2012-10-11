@@ -1,7 +1,7 @@
 # Original bug : cts20871
 # Date : 26 Oct 98
 
-restore [locate_data_file cts20871_base.rle] base
+restore [locate_data_file CFE900_cts20gdi.rle] base
 restore [locate_data_file cts20871_face.rle] cont
 
 explode base face

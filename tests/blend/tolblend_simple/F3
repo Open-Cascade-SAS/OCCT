@@ -1,4 +1,4 @@
-restore [locate_data_file 13_B12.draw] s
+restore [locate_data_file CFI_13_b1ffj.rle] s
 tscale s 0 0 0 SCALE1
 explode s E
 blend result s 0.5*SCALE1 s_2 2*SCALE1 s_1  0.5*SCALE1 s_7 

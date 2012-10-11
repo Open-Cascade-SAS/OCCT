@@ -4,11 +4,11 @@
 dset SCALE 100
 
 ## restore the Prismed oblong created in Designer K1-2 (size 200 mm)
-restore [locate_data_file pro7637c_prism_oblong_dsg.rle] p1
+restore [locate_data_file CTO900_pro7637c_prism_oblong_dsg.rle] p1
 tscale p1 0 0 0 1*SCALE
 
 ## restore the Box created in Designer K1-2 (size 300 mm)
-restore [locate_data_file pro7637c_box_dsg.rle] p2
+restore [locate_data_file CTO900_pro7637c_box_dsg.rle] p2
 tscale p2 0 0 0 1*SCALE
 
 bfuse result p2 p1

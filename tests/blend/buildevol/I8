@@ -6,7 +6,7 @@
 #ttranslate c 0 0 -10
 #fuse s f1 c
 
-restore [locate_data_file 6_C56.draw] s
+restore [locate_data_file CFI_6_c56fgw.rle] s
 tscale s 0 0 0 SCALE2
 explode s E
 mkevol result s

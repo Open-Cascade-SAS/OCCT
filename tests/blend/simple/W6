@@ -4,7 +4,7 @@
 ## Comment : From CV tests serie page 15
 ## ===========================================
 
-restore [locate_data_file 1_D12.rle] s
+restore [locate_data_file CCV_1_d12gsg.rle] s
 explode s E
 blend result s 5 s_5
 

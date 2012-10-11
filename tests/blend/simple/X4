@@ -4,7 +4,7 @@
 ## Comment : From CV tests serie page 25/26
 ## ===========================================
 
-restore [locate_data_file 1_H1.rle] s
+restore [locate_data_file CCV_1_h1_gsk.rle] s
 explode s E
 blend result s 30 s_14
 

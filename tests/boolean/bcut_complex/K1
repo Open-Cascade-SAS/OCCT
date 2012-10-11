@@ -2,7 +2,7 @@
 # Date : 13Mai98
 # D8
 
-restore [locate_data_file cts20496c.rle] part
+restore [locate_data_file CTO902_cts20496c.rle] part
 restore [locate_data_file cts20496d.rle] tool
 
 bcut result part tool

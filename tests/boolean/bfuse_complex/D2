@@ -3,7 +3,7 @@
 
 restore [locate_data_file ger60039a.shape] a
 fsameparameter a
-restore [locate_data_file ger60039b.shape] b 
+restore [locate_data_file CTO900_ger60039b.rle] b 
 
 bfuse result a b
 

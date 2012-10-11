@@ -1,8 +1,8 @@
 # Original bug : pro12953
 # Date :  4mai98
 
-restore [locate_data_file pro12953-part.rle] part
-restore [locate_data_file pro12953-tool.rle] tool
+restore [locate_data_file CTO900_pro12953-part.rle] part
+restore [locate_data_file CTO900_pro12953-tool.rle] tool
 
 bcut result part tool
 

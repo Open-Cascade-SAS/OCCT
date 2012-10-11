@@ -1,8 +1,8 @@
 # Original bug : hkg60163
 # Date : 18sept98
 
-restore [locate_data_file hkg60163c.rle] base
-restore [locate_data_file hkg60163d.rle] prism
+restore [locate_data_file CTO900_hkg60163c.rle] base
+restore [locate_data_file CTO900_hkg60163d.rle] prism
 
 bcut result base prism
 

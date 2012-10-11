@@ -6,7 +6,7 @@
 #cut s s1 s2
 #save s L12.draw 
 
-restore [locate_data_file L12.draw] s
+restore [locate_data_file CFI_l12__fiu.rle] s
 tscale s 0 0 0 SCALE1
 explode s e
 blend result s 0.5*SCALE1 s_5

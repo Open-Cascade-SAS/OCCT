@@ -8,7 +8,7 @@ puts "TODO OCC22817 All:TEST INCOMPLETE"
 #fuse s s4 s3
 #save s 6_I56.draw 
 
-restore [locate_data_file 6_I56.draw]  s
+restore [locate_data_file CFI_6_i56fhi.rle]  s
 tscale s 0 0 0 SCALE2
 explode s E
 blend result s 3*SCALE2 s_6

@@ -1,7 +1,7 @@
 # Original bug : cts21616
 # Date : 04 Nov 98
 
-restore [locate_data_file cts21616_base.rle] base
+restore [locate_data_file CFE900_cts21gdm.rle] base
 restore [locate_data_file cts21616_face.rle] cont
 
 # Funtil in Shape -> failure

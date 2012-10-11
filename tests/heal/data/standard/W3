@@ -1,2 +1,2 @@
-restore [locate_data_file cts20204_outil] a
+restore [locate_data_file CTO901_cts20204_outil.rle] a
 

@@ -1,7 +1,7 @@
 # Original bug : cts20722
 # Date : 21August98
 
-restore [locate_data_file cts20722a.rle] base
+restore [locate_data_file CTO900_cts20722c.rle] base
 restore [locate_data_file cts20722b.rle] cont
 restore [locate_data_file cts20722c.rle] funtil
 

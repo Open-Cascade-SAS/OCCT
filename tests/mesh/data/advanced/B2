@@ -1,4 +1,4 @@
-set TheFileName OCC22095.stp
+set TheFileName OCC22145.stp
 set bug_freenodes "OCC22687"
 if { [string compare $command "shading"] == 0 } {
   set nbfreenodes(ALL) 4

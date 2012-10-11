@@ -1,8 +1,8 @@
 # Original bug : ger60224
 # Date : 24June98
 
-restore [locate_data_file ger60224a.rle] a 
-restore [locate_data_file ger60224b.rle] w
+restore [locate_data_file CTO900_ger60224-part.rle] a 
+restore [locate_data_file ger60224-tool.rle] w
 
 mkplane w w
 prism p1 w 0 100 0

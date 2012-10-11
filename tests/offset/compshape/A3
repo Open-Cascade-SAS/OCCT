@@ -7,7 +7,7 @@
 puts "TODO ?OCC22740 ALL:Error\\s*:\\s*The offset is not valid. The volume is"
 puts "TODO ?OCC23068 ALL:Error\\s*:\\s*.*The volume"
 
-restore [locate_data_file 2_C1.rle] s
+restore [locate_data_file CCV_2_c1_gsv.rle] s
 explode s F
 catch {offsetcompshape result s -10 s_8 s_10}
 

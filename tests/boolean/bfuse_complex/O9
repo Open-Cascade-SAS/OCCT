@@ -1,7 +1,7 @@
 #buc60326
 
-restore [locate_data_file 1.brep] a
-restore [locate_data_file 2.brep] b
+restore [locate_data_file CTO909_1.brep] a
+restore [locate_data_file CTO909_2.brep] b
 
 bfuse result a b
 

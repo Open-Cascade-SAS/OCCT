@@ -6,7 +6,7 @@
 #trotate s 0 0 0 1 1 0 -40
 #trotate s 0 0 0 0 0 1 -10
 
-restore [locate_data_file 6_E1234.draw] s
+restore [locate_data_file CFI_6_e12fgz.rle] s
 tscale s 0 0 0 SCALE2
 explode s E
 blend result s 8*SCALE2 s_7

@@ -1,4 +1,4 @@
-set TheFileName 018.brep
+set TheFileName shading_018.brep
 set bug_withouttri "OCC22687"
 set nbwithouttri(ALL) 1
 if { [string compare $command "mesh"] != 0 } {

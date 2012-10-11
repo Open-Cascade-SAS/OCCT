@@ -1,8 +1,8 @@
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 puts "TODO #22911 ALL: Error : The square of result shape is"
 
-restore [locate_data_file topo103-o.brep] obj
-restore [locate_data_file topo103-t.brep] tool
+restore [locate_data_file CTO908_topo103-o.brep] obj
+restore [locate_data_file CTO908_topo103-t.brep] tool
 
 bcut result obj tool
 

@@ -5,7 +5,7 @@
 #cut s s1 s2
 #save s D1234.draw 
 
-restore [locate_data_file D1234.draw] s
+restore [locate_data_file CFI_d1234fii.rle] s
 tscale s 0 0 0 SCALE1
 explode s e
 blend result s 0.5*SCALE1 s_15 0.5*SCALE1 s_14 0.5*SCALE1 s_18

@@ -1,4 +1,4 @@
-restore [locate_data_file conge001.brep] m
+restore [locate_data_file CFI901_congefjw.rle] m
 explode m E
 # Pas m_34 m_35
 encoderegularity m 3

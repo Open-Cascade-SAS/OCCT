@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # A8.gif
 
-restore [locate_data_file cts20460a.rle] a
-restore [locate_data_file cts20460b.rle] b
+restore [locate_data_file CTO902_cts20460a.rle] a
+restore [locate_data_file CTO902_cts20460b.rle] b
 
 bcommon result a b 
 

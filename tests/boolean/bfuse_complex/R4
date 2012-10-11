@@ -3,8 +3,8 @@ puts "PRO16255"
 puts "Fuse"
 puts ""
 
-restore [locate_data_file part3bis.brep] s
-restore [locate_data_file part5-noFillet.brep] t
+restore [locate_data_file CTO909_part3bis.brep] s
+restore [locate_data_file CTO909_part5-noFillet.brep] t
 
 updatetolerance s 1
 updatetolerance t 1

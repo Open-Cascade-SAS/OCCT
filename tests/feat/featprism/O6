@@ -6,7 +6,7 @@
 #miv
 cpulimit 2000
 
-restore [locate_data_file cts20960_base.brep] base
+restore [locate_data_file CFE900_cts20geq.rle] base
 restore [locate_data_file cts20960_face.brep] cont
 
 explode base face

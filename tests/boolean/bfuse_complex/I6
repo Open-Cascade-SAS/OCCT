@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # D2
 
-restore [locate_data_file cts20551a.rle] a
-restore [locate_data_file cts20551b.rle] b
+restore [locate_data_file cts20551-tool.rle] a
+restore [locate_data_file CTO902_cts20551b.rle] b
 
 bfuse result a b
 

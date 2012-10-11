@@ -1,4 +1,4 @@
-restore [locate_data_file 2_O12.draw] s
+restore [locate_data_file CFI_2_o12ffq.rle] s
 explode s e
 
 mkevol result s

@@ -4,7 +4,7 @@
 ## Comment : from pro10129
 ## ====================================
 
-set chamf_shape pro10129.rle
+set chamf_shape CFI_pro10129.rle
 set chamf_edge_face  [list " 69  28"]
 set chamf_dist_angle [list "100  30"]
 set chamf_dist_dist  [list "100 150"]

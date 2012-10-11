@@ -1,5 +1,5 @@
 restore [locate_data_file a26] a
-restore [locate_data_file b26] b
+restore [locate_data_file CIN001_b26.rle] b
 bsection result a b
 
 set length 251.672

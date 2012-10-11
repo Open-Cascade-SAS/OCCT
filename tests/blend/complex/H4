@@ -5,7 +5,7 @@
 ## ====================================
 puts "TODO OCC22817 All:TEST INCOMPLETE"
 
-restore [locate_data_file buc60330.rle] a
+restore [locate_data_file CFI_buc60330.rle] a
 explode a e
 blend result a 10 a_5 10 a_6
 ## ca marche mais pas ceci

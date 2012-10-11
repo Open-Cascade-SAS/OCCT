@@ -4,7 +4,7 @@
 ## Comment : from pro5203
 ## ====================================
 
-restore [locate_data_file pro5203.rle] a
+restore [locate_data_file CFI_pro5203.rle] a
 explode a e
 blend result a 0.001 a_32  0.001 a_190.001 a_31
 

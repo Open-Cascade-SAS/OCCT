@@ -1,6 +1,6 @@
 puts "================================="
 puts "COMMON of OCC212-2.brep and  OCC212-1.brep"
-puts "Case is duplicate of chl 918 A5, bug OCC212 "
+puts "Case is duplicate of chl 918 CIN001_a5.rle, bug OCC212 "
 puts "================================="
 
 restore [locate_data_file OCC212-1.brep] a

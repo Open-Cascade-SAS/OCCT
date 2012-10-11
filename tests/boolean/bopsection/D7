@@ -1,8 +1,8 @@
 puts "GER60861"
 puts "Section"
 puts ""
-restore [locate_data_file ger60861a.brep] a
-restore [locate_data_file ger60861b.brep] b
+restore [locate_data_file CTO909_object.brep] a
+restore [locate_data_file CTO909_tool_4.brep] b
 
 explode a sh
 explode b sh

@@ -1,5 +1,5 @@
 if { [string compare $command "ShapeConvertRev"] == 0 } {
    puts "TODO OCC23127 ALL: Error : The square of result shape is"
 }
-restore [locate_data_file cts20172_base] a
+restore [locate_data_file CTO901_cts20172_base.rle] a
 

@@ -1,5 +1,5 @@
-restore [locate_data_file a45] a
-restore [locate_data_file b45] b
+restore [locate_data_file CIN001_a45.rle] a
+restore [locate_data_file CIN001_b45.rle] b
 bsection result a b
 
 set length 0.374089

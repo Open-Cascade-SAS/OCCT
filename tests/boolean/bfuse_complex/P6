@@ -1,8 +1,8 @@
 # Original bug : pro16255
 
 #pkv f
-restore [locate_data_file part3bis.brep] s
-restore [locate_data_file part5-with-fillet.brep] u
+restore [locate_data_file CTO909_part3bis.brep] s
+restore [locate_data_file CTO909_part5-with-fillet.brep] u
 updatetolerance s 1
 updatetolerance u 1
 #pkv t

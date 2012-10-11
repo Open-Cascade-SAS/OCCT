@@ -9,7 +9,7 @@ puts "*"
 puts "TODO OCC22810 ALL:Error in featperform"
 puts "TODO OCC22810 ALL:Error : The feat can not be build"
 
-restore [locate_data_file cts21322_base.rle] base
+restore [locate_data_file CFE900_cts21gbs.rle] base
 restore [locate_data_file cts21322_face.rle] wire
 
 explode base face

@@ -1,8 +1,8 @@
 # Original bug : pro9476
 # Date : 20mar98
 
-restore [locate_data_file pro9476-part.rle] part
-restore [locate_data_file pro9476-tool.rle] tool
+restore [locate_data_file CTO900_pro9476-part.rle] part
+restore [locate_data_file CTO900_pro9476-tool.rle] tool
 
 bfuse result part tool
 

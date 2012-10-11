@@ -7,7 +7,7 @@ puts ""
 ##########################################################################################################
 pload QAcommands
 
-restore [locate_data_file CR23429-Shape1.brep] a
+restore [locate_data_file OCC23388-Shape1.brep] a
 restore [locate_data_file CR23429-Shape3.brep] b
 
 OCC23429 result a b

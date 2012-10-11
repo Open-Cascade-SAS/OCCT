@@ -1,7 +1,7 @@
 # Original bug : pro15323
 # Date : 21Sept98
 
-restore [locate_data_file pro15323c.rle] part
+restore [locate_data_file CTO900_pro15323c.rle] part
 restore [locate_data_file pro15323d.rle] tool
 
 bcut result part tool

@@ -1,7 +1,7 @@
 # Original bug : cts20875
 # Date : 25 Nov 98
 
-restore [locate_data_file cts20875_base.brep] base
+restore [locate_data_file CFE900_cts20gdx.rle] base
 restore [locate_data_file cts20875_face.brep] cont
 
 ttranslate cont 0 -5.65 0

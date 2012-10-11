@@ -1,7 +1,7 @@
 # Original bug : cts20870
 # Date : 25 Nov 98
 
-restore [locate_data_file cts20870_base.brep] base
+restore [locate_data_file CFE900_cts20gem.rle] base
 restore [locate_data_file cts20870_face.brep] cont
 
 explode base face

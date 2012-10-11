@@ -1,7 +1,7 @@
 # Original bug : cts20445
 # Date : 25 Nov 98
 
-restore [locate_data_file cts20445_base.brep] base
+restore [locate_data_file CFE900_cts20gef.rle] base
 restore [locate_data_file cts20445_face.brep] cont
 
 explode base face

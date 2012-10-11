@@ -4,7 +4,7 @@ puts "TODO OCC23068 ALL: TEST INCOMPLETE"
 # Original bug : hkg60144/pro15325
 # Date : 17Juillet98
 
-restore [locate_data_file hkg60144b.rle] s
+restore [locate_data_file CHE900_hkg60ioc.rle] s
 explode s f
 
 offsetshape result s -5 s_1

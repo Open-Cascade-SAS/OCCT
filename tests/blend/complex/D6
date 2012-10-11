@@ -4,7 +4,7 @@
 ## Comment : from pro10321
 ## ====================================
 
-restore [locate_data_file pro10321.rle] a
+restore [locate_data_file CFI_pro10321.rle] a
 explode a e
 blend result a 59 a_13
 

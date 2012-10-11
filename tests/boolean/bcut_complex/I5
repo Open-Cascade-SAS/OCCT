@@ -2,8 +2,8 @@
 # Date : 13Mai98
 # A5.gif
 
-restore [locate_data_file cts20462-part.rle] part
-restore [locate_data_file cts20462-tool.rle] tool
+restore [locate_data_file CTO902_cts20462-part.rle] part
+restore [locate_data_file CTO902_cts20462-tool.rle] tool
 
 bcut result part tool
 

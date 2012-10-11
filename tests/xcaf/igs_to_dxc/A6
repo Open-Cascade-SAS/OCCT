@@ -1,4 +1,4 @@
-ReadIges D_First [locate_data_file Disk.igs]
+ReadIges D_First [locate_data_file Samtech_Disc.igs]
 set TypeOfFile ""
 set AddToDocument ""
 set CompareDocumentsMode "ALL CHECKSHAPE"

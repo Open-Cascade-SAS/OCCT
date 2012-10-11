@@ -5,7 +5,7 @@
 #cut s s1 s2
 #save s F1234.draw 
 
-restore [locate_data_file F1234.draw] s
+restore [locate_data_file CFI_f1234fim.rle] s
 tscale s 0 0 0 SCALE1
 explode s e
 mkevol result s

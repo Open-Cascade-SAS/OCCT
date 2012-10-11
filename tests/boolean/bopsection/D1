@@ -1,7 +1,7 @@
 ## pro16129
 
 restore [locate_data_file CSRESULT-ORISHAPE.brep] a
-restore [locate_data_file CSRESULT-PRISM.brep] c
+restore [locate_data_file CTO909_CSRESULT-PRISM.brep] c
 
 #pkv f
 btolx a

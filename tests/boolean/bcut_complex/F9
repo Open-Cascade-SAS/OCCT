@@ -1,8 +1,8 @@
 # Original bug : fra60656
 # Date : 23mar98
 
-restore [locate_data_file fra60656-part.rle] part
-restore [locate_data_file fra60656-tool.rle] tool
+restore [locate_data_file CTO900_fra60656-part.rle] part
+restore [locate_data_file CTO900_fra60656-tool.rle] tool
 
 bcut result part tool
 

@@ -4,7 +4,7 @@
 puts "TODO OCC22803 All:Faulty shapes in variables faulty_1 to faulty_2"
 puts "TODO ?OCC22803 ALL: Error : The square of result shape is"
 
-restore [locate_data_file cts20194_base.brep] base
+restore [locate_data_file CFE903_cts20ggq.rle] base
 
 explode base face
 

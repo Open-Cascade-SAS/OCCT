@@ -2,7 +2,7 @@
 # Date : 17Juillet98
 
 restore [locate_data_file cts20924a.rle] base
-restore [locate_data_file cts20924b.rle] cont
+restore [locate_data_file contour2.rle] cont
 
 explode base face
 copy base_3 funtil

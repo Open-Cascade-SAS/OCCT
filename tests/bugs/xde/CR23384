@@ -4,7 +4,7 @@
 if {[array get env os_type] != ""} {
     set os $env(os_type)
 }
-XOpen [locate_data_file CR23384-doc_subshapes.dxc] doc
+XOpen [locate_data_file bug23384-doc_subshapes.dxc] doc
 set info1 [XStat doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info1 full l0
 regexp {level N 1 +: +([-0-9.+eE]+)} $info1 full l1

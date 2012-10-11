@@ -12,7 +12,7 @@
 #trotate s 0 0 0 0 0 1 -20
 #save s 5_E12.draw
 
-restore [locate_data_file 5_E12.draw] s 
+restore [locate_data_file CFI_5_e12fgj.rle] s 
 tscale s 0 0 0 SCALE1
 explode s E
 blend result s 0.5*SCALE1 s_2 0.5*SCALE1 s_3 0.5*SCALE1 s_12  

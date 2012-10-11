@@ -1,4 +1,4 @@
-set chamf_shape ccv
+set chamf_shape 8_J1.draw
 set chamf_edge_face  [list "   3   2" "   9   2"]
 set chamf_dist_angle [list "0.08  60" "0.06  60"]
 set chamf_dist_dist  [list " 0.1 0.2" " 0.1 0.2"]

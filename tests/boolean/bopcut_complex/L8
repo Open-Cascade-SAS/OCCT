@@ -1,8 +1,8 @@
 # Original bug : pro10095
 # Date : 19Mai98
 
-restore [locate_data_file pro10095a.rle] a
-restore [locate_data_file pro10095b.rle] b
+restore [locate_data_file CTO904_pro10095a.rle] a
+restore [locate_data_file CTO904_pro10095b.rle] b
 
 shape fso so
 add b fso

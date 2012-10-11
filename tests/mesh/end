@@ -2,6 +2,9 @@
 
 if { [string compare ${TheFileName} ""] != 0 } {
     set is_brep [regexp "\.brep" $TheFileName]
+	if {$is_brep == 0} {
+		set is_brep [regexp "\.rle" $TheFileName]
+	}
     if {$is_brep == 1} {
         puts [brestore [locate_data_file ${TheFileName}] res]
     } else {

@@ -1,7 +1,7 @@
 # Original bug : ger60040
 # Date : 11mar98 
 
-restore [locate_data_file ger60040-part.rle] part
+restore [locate_data_file CTO900_ger60040-part.rle] part
 restore [locate_data_file ger60040-tool.rle] tool
 
 bcut result part tool

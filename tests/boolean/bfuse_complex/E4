@@ -1,7 +1,7 @@
 # Original bug : pro14260
 # Date : 21 Sept 98
 
-restore [locate_data_file pro14260c.rle] c
+restore [locate_data_file CTO900_pro14260c.rle] c
 restore [locate_data_file pro14260d.rle] d
 
 bfuse result c d
