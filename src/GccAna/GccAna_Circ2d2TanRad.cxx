@@ -471,8 +471,8 @@ GccAna_Circ2d2TanRad::
            WellDone = Standard_True;
            NbrSol = 1;
            if (R1 < R2) { signe = -1; }
-	   else { signe = -1; }
-	   gp_Ax2d axe(gp_Pnt2d(center1.XY()-(Radius+R1)*dir1.XY()),
+	   else { signe = 1; }
+	   gp_Ax2d axe(gp_Pnt2d(center1.XY()+signe*(Radius+R1)*dir1.XY()),
 		       dirx);
 	   cirsol(1) = gp_Circ2d(axe,Radius);
 //         =================================
