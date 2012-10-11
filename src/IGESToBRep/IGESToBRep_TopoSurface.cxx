@@ -1521,12 +1521,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
 	gp_Trsf trans;
 	if (crv->IsKind(STANDARD_TYPE(IGESGeom_CurveOnSurface))) {
 	  DeclareAndCast(IGESGeom_CurveOnSurface, crv142, crv);
-	  if(st->HasBoundingCurveHole()) {    
-	    TopoDS_Shape myshape = TC.TransferCurveOnFace (plane, crv142, trans, TheULength, Standard_False);
-	  }
-	  else {
-	    TopoDS_Shape myshape = TC.TransferCurveOnFace (plane, crv142, trans, TheULength, Standard_False);
-	  }
+	  TopoDS_Shape myshape = TC.TransferCurveOnFace (plane, crv142, trans, TheULength, Standard_False);
+	  
 	  //:3 by ABV 5 Nov 97: set plane to be finite
 	  if ( first ) {
 	    TopExp_Explorer ws ( plane, TopAbs_WIRE ); 
