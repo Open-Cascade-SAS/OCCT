@@ -84,6 +84,14 @@ public:
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
 
+  //! This method releases GL resources without actual elements destruction.
+  //! As result structure could be correctly destroyed layter without GL context
+  //! (after last window was closed for example).
+  //!
+  //! Notice however that reusage of this structure after calling this method is incorrect
+  //! and will lead to broken visualization due to loosed data.
+  void ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx);
+
 protected:
 
   virtual ~OpenGl_Structure();

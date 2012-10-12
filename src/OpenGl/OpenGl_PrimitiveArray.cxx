@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_IndexBuffer.hxx>
 #include <OpenGl_Context.hxx>
 
@@ -1552,7 +1551,10 @@ void OpenGl_PrimitiveArray::Release (const Handle(OpenGl_Context)& theContext)
   {
     if (!myVbos[anIter].IsNull())
     {
-      theContext->DelayedRelease (myVbos[anIter]);
+      if (!theContext.IsNull())
+      {
+        theContext->DelayedRelease (myVbos[anIter]);
+      }
       myVbos[anIter].Nullify();
     }
   }

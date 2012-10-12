@@ -581,14 +581,15 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
 
   Handle(Aspect_Window) asp = anOldView->Window();
   aViewer->SetViewOff (anOldView);
-  anOldView->Remove();
-  anOldView.Nullify();
 
   Handle(V3d_View) aNewView = aViewer->CreateView();
   ViewerTest::CurrentView (aNewView);
 
   aNewView->SetWindow (asp);
   if (!asp->IsMapped()) asp->Map();
+
+  anOldView->Remove();
+  anOldView.Nullify();
 
   aNewView->Update();
 

@@ -409,17 +409,30 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
   return Standard_True;
 }
 
-void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& ACView)
+void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
 {
-  if (myMapOfView.IsBound (ACView.ViewId))
-    myMapOfView.UnBind (ACView.ViewId);
+  Handle(OpenGl_Context) aShareCtx = GetSharedContext();
+  if (myMapOfView.IsBound (theCView.ViewId))
+    myMapOfView.UnBind (theCView.ViewId);
 
-  if (myMapOfWS.IsBound (ACView.WsId))
-    myMapOfWS.UnBind (ACView.WsId);
+  if (myMapOfWS.IsBound (theCView.WsId))
+    myMapOfWS.UnBind (theCView.WsId);
 
-  OpenGl_CView *aCView = (OpenGl_CView *)ACView.ptrView;
+  if (myMapOfWS.IsEmpty() && !myMapOfStructure.IsEmpty())
+  {
+    // The last view removed but some objects still present.
+    // Release GL resources now without object destruction.
+    for (NCollection_DataMap<Standard_Integer, OpenGl_Structure*>::Iterator aStructIt (myMapOfStructure);
+         aStructIt.More (); aStructIt.Next())
+    {
+      OpenGl_Structure* aStruct = aStructIt.ChangeValue();
+      aStruct->ReleaseGlResources (aShareCtx);
+    }
+  }
+
+  OpenGl_CView *aCView = (OpenGl_CView *)theCView.ptrView;
   delete aCView;
-  ((Graphic3d_CView *)&ACView)->ptrView = NULL;
+  ((Graphic3d_CView *)&theCView)->ptrView = NULL;
 }
 
 void OpenGl_GraphicDriver::SetLight (const Graphic3d_CView& ACView)

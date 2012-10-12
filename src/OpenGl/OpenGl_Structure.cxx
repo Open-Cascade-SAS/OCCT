@@ -447,6 +447,42 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
   ClearHighlightColor (theGlCtx);
 }
 
+// =======================================================================
+// function : ReleaseGlResources
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx)
+{
+  for (OpenGl_ListOfGroup::Iterator anIter (myGroups); anIter.More(); anIter.Next())
+  {
+    OpenGl_Group* aGroup = const_cast<OpenGl_Group*& > (anIter.ChangeValue());
+    if (aGroup != NULL)
+    {
+      aGroup->Release (theGlCtx);
+    }
+  }
+  if (myAspectLine != NULL)
+  {
+    myAspectLine->Release (theGlCtx);
+  }
+  if (myAspectFace != NULL)
+  {
+    myAspectFace->Release (theGlCtx);
+  }
+  if (myAspectMarker != NULL)
+  {
+    myAspectMarker->Release (theGlCtx);
+  }
+  if (myAspectText != NULL)
+  {
+    myAspectText->Release (theGlCtx);
+  }
+  if (myHighlightBox != NULL)
+  {
+    myHighlightBox->Release (theGlCtx);
+  }
+}
+
 //=======================================================================
 //function : SetZLayer
 //purpose  : 
