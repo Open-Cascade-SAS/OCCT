@@ -577,18 +577,15 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
   Standard_Integer nbs = aSMap.Extent();
   if(nbs <= 1) return aRes;
 
-  //  math_Matrix aMat(1, nbs, 1, nbs, 0.0);
-  int *aMat = new int[nbs*nbs];
+  math_Matrix aMat(1, nbs, 1, nbs, 0);
   Standard_Integer aMax=nbs*nbs;
-  for(Standard_Integer kk=0;kk<aMax;kk++) aMat[kk]=0;
 
   TopTools_MapIteratorOfMapOfShape anMIter(aSMap);
   Standard_Integer n = 1;
   Standard_Integer connect;
   const TopoDS_Shape& aFirstShape = anMIter.Key();
 
-  //  aMat(n,n) = 1.;
-  aMat[0] = 1;
+  aMat(n,n) = 1;
 
   anExp.Init(aFirstShape, TopAbs_VERTEX);
   for(; anExp.More(); anExp.Next()) {
@@ -599,22 +596,21 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
 
   for(; anMIter.More(); anMIter.Next()) {
     ++n;
-    aMat[(n-1)*nbs+n-1] = 1;
-    // aMat(n,n) = 1.;
+    aMat(n,n) = 1;
 
     const TopoDS_Shape& aShape = anMIter.Key();
 
     anExp.Init(aShape, TopAbs_VERTEX);
     for(; anExp.More(); anExp.Next()) {
-      if(aMap.IsBound(anExp.Current())) {
-	connect = aMap(anExp.Current());
-	//aMat(n, connect) = 1.;
-	//aMat(connect, n) = 1.;
-	aMat[(n-1)*nbs+connect-1] = 1;
-	aMat[(connect-1)*nbs+n-1] = 1;
+      if(aMap.IsBound(anExp.Current()))
+      {
+        connect = aMap(anExp.Current());
+        aMat(n, connect) = 1;
+        aMat(connect, n) = 1;
       }
-      else {
-	aMap.Bind(anExp.Current(), n);
+      else
+      {
+        aMap.Bind(anExp.Current(), n);
       }
     }
   }
@@ -623,45 +619,37 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
   Standard_Integer k,i,ncount=0;
   Standard_Real p; 
   Standard_Boolean aNotChanged;
-  // math_Vector aRow(1, nbs), aCol(1, nbs);
 
-  //	aRow = aMat.Row(1);
-
-  for(k = 1; k <= nbs; k++) {
+  for (k = 1; k <= nbs; k++)
+  {
     aRes = Standard_True;
     aNotChanged = Standard_True;
-    for(n = 1; n <= nbs; n++) {
-      //      if(aMat(1, n) < 1.) {
-      if(aMat[n-1] == 0) {
-	//	aRow = aMat.Row(1);
-	//aCol = aMat.Col(n);
-	p=0.;
-	for(i=1;i<=nbs;i++) {
-	  //ncount++;
-	  //	  if(aMat(1,i) > 0. && aMat(i,n)> 0.) {
-	  if(aMat[i-1] == 1 && aMat[(i-1)*nbs+n-1] == 1) {
-	    p=1.;
-	    break;
-	  }
-	  //	  p+=aMat(1,i)*aMat(i,n);
-	}
-	//p = aRow*aCol;
-	if(p > 0.0) {
-	  //	  aMat(1, n) = 1.0;
-	  //	  aMat(n, 1) = 1.0;
-	  aMat[n-1] = 1;
-	  aMat[(n-1)*nbs+1-1] = 1;
-	  aNotChanged = Standard_False;
-	}
-	aRes = Standard_False;
+    for (n = 1; n <= nbs; n++)
+    {
+      if (aMat(1, n) == 0)
+      {
+        p = 0;
+        for (i = 1; i <= nbs; i++)
+        {
+          if (aMat(1, i) == 1 && aMat(i, n) == 1)
+          {
+            p = 1;
+            break;
+          }
+        }
+        if (p > 0)
+        {
+          aMat(1, n) = 1;
+          aMat(n, 1) = 1;
+          aNotChanged = Standard_False;
+        }
+        aRes = Standard_False;
       }
     }
     if(aNotChanged) break;
     if(aRes) break;
   }
-  delete [] aMat;
 
-  //  cout << "QANewModTopOpe::IsConnected END: aRes="<<aRes   << ";ncount="<<ncount<<endl;
   cout << "QANewModTopOpe::IsConnected END: aRes="<<aRes <<endl;
   return aRes;
 

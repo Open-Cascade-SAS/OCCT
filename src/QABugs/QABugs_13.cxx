@@ -926,9 +926,9 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   di<<"Info: Bounds\n  ("<<Xmin<<","<<Ymin<<","<<Zmin<<")\n  ("<<Xmax<<","<<Ymax<<","<<Zmax<<")"<<"\n";
 
   // grid the bounding box
-  Standard_Integer NumXsubvolumes = (Xmax - Xmin) / mesh_delt; if (NumXsubvolumes <= 0) NumXsubvolumes = 1;
-  Standard_Integer NumYsubvolumes = (Ymax - Ymin) / mesh_delt; if (NumYsubvolumes <= 0) NumYsubvolumes = 1;
-  Standard_Integer NumZsubvolumes = (Zmax - Zmin) / mesh_delt; if (NumZsubvolumes <= 0) NumZsubvolumes = 1;
+  Standard_Integer NumXsubvolumes = (Standard_Integer)((Xmax - Xmin) / mesh_delt); if (NumXsubvolumes <= 0) NumXsubvolumes = 1;
+  Standard_Integer NumYsubvolumes = (Standard_Integer)((Ymax - Ymin) / mesh_delt); if (NumYsubvolumes <= 0) NumYsubvolumes = 1;
+  Standard_Integer NumZsubvolumes = (Standard_Integer)((Zmax - Zmin) / mesh_delt); if (NumZsubvolumes <= 0) NumZsubvolumes = 1;
   const Standard_Real StepX = (Xmax - Xmin) / NumXsubvolumes;
   const Standard_Real StepY = (Ymax - Ymin) / NumYsubvolumes;
   const Standard_Real StepZ = (Zmax - Zmin) / NumZsubvolumes;

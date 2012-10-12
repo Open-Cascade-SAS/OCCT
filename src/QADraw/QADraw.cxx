@@ -481,12 +481,12 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& di, Standard_Integ
   Standard_Integer QAAISXWindowSize_X = 0;
   Standard_Integer QAAISXWindowSize_Y = 0;
   QAAISWindow->Size(QAAISXWindowSize_X, QAAISXWindowSize_Y);
-  Standard_ShortReal QAAISCoordinateX = atof (argv [1]);
-  Standard_ShortReal QAAISCoordinateY = atof (argv [2]);
+  Standard_Integer QAAISCoordinateX = atoi (argv [1]);
+  Standard_Integer QAAISCoordinateY = atoi (argv [2]);
 
-  Standard_ShortReal QAAISColorRED_V = 0;
-  Standard_ShortReal QAAISColorGRN_V = 0;
-  Standard_ShortReal QAAISColorBLU_V = 0;
+  Standard_Real QAAISColorRED_V = 0;
+  Standard_Real QAAISColorGRN_V = 0;
+  Standard_Real QAAISColorBLU_V = 0;
 
   if ( argc == 6 ) {
     QAAISColorRED_V = atof (argv [3]);
@@ -512,9 +512,9 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& di, Standard_Integ
   Standard_Integer i;
   for(i=1; i<=aSeq->Length();i+=3) {
     // mkv 29.04.03
-    Standard_ShortReal QAAISColorRED_R = (((Standard_ShortReal) ((Standard_Integer) (aSeq->Value(i+0) * 1000000))) / 1000000.);
-    Standard_ShortReal QAAISColorGRN_R = (((Standard_ShortReal) ((Standard_Integer) (aSeq->Value(i+1) * 1000000))) / 1000000.);
-    Standard_ShortReal QAAISColorBLU_R = (((Standard_ShortReal) ((Standard_Integer) (aSeq->Value(i+2) * 1000000))) / 1000000.);
+    Standard_Real QAAISColorRED_R = (Floor(aSeq->Value(i+0) * 1000000.)) / 1000000.;
+    Standard_Real QAAISColorGRN_R = (Floor(aSeq->Value(i+1) * 1000000.)) / 1000000.;
+    Standard_Real QAAISColorBLU_R = (Floor(aSeq->Value(i+2) * 1000000.)) / 1000000.;
     // mkv 29.04.03
 
     if ( argc == 3 ) {

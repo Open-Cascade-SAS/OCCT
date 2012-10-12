@@ -135,9 +135,7 @@ static int BUC60614(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 #endif
 
 static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** argv) {
-//  char file1[100];
   gp_Pnt2d uvSurf;
-  double U,V;
   TopAbs_State state;
   
   if (argc == 3) {
@@ -148,22 +146,13 @@ static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** a
     di << "Usage : "<< argv[0] << " shape name [U V]" << "\n";
     return(-1);
   }
-
-  // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-  const Standard_Character *DD = Tcl_GetVar(di.Interp(),"Draw_DataDir",TCL_GLOBAL_ONLY);
-#else
-  Standard_Character *DD = Tcl_GetVar(di.Interp(),"Draw_DataDir",TCL_GLOBAL_ONLY);
-#endif
   
-  Standard_Character  *file1 = new Standard_Character [strlen(DD)+strlen(argv[1])+2];
-  sprintf(file1,"%s/%s",DD,argv[1]);
+  TCollection_AsciiString  aFilePath(argv[1]); 
   
   filebuf fic;
   istream in(&fic);
-  if (!fic.open(file1,ios::in)) {
-    di << "Cannot open file for reading : " << file1 << "\n";
-    delete file1;
+  if (!fic.open(aFilePath.ToCString(),ios::in)) {
+    di << "Cannot open file for reading : " << aFilePath << "\n";
     return(-1);
   }
 
@@ -177,8 +166,7 @@ static int BUC60609(Draw_Interpretor& di, Standard_Integer argc, const char ** a
       S.Read(in);
       S.Read(theShape,in);
     }else{
-      di << "Wrong entity type in " << file1 << "\n";
-      delete file1;
+      di << "Wrong entity type in " << aFilePath << "\n";
       return(-1);
     }
   }
@@ -393,7 +381,7 @@ static int BUC60585(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   istream in(&fic);
   if (!fic.open(filename,ios::in)) {
     di << "Cannot open file for reading : " << filename << "\n";
-    delete filename;
+    delete [] filename;
     return -1;
   }
   
@@ -441,7 +429,7 @@ static int BUC60585(Draw_Interpretor& di, Standard_Integer argc, const char ** a
       Sec.Build();
       if(!Sec.IsDone()){
 	di << "Error performing intersection: not done." << "\n";
-	delete filename;
+	delete [] filename;
 	return -1;
       }
       res = Sec.Shape();
@@ -451,7 +439,7 @@ static int BUC60585(Draw_Interpretor& di, Standard_Integer argc, const char ** a
       Sec.Build();
       if(!Sec.IsDone()){
 	di << "Error performing intersection: not done." << "\n";
-	delete filename;
+	delete [] filename;
 	return -1;
       }
       res = Sec.Shape();
@@ -460,7 +448,7 @@ static int BUC60585(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   }catch(Standard_Failure){
     Handle(Standard_Failure) error = Standard_Failure::Caught();
     di << "Error performing intersection: not done." << "\n";
-    delete filename;
+    delete [] filename;
     return -1;
   }
   
@@ -477,7 +465,7 @@ static int BUC60585(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   
   di << "Done" << "\n";
 
-  delete filename;
+  delete [] filename;
   
   return 0;
 }
@@ -563,8 +551,8 @@ static int BUC60547(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 
   BRepTools::Write(Com,FileName); 
 
-  delete Ch;
-  delete FileName;
+  delete [] Ch;
+  delete [] FileName;
   
   return 0;
 }
@@ -596,7 +584,7 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   TCollection_ExtendedString Ext1("Dim1"); 
   Handle(AIS_LengthDimension) Dim1 = new AIS_LengthDimension(V1,V2,Plane1,atof(a[2]),Ext1); 
   
-  myAIScontext->SetDisplayMode(Dim1, atof(a[1]));
+  myAIScontext->SetDisplayMode(Dim1, atoi(a[1]));
   myAIScontext->Display(Dim1);
   return 0;
 }

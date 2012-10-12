@@ -117,15 +117,20 @@ static Standard_Integer GetOldShapes (Draw_Interpretor& di,
   return 0;
 }
 
-static int GetAllNew(const TopoDS_Shape& theShape, const TDF_Label& theAccess, const char* theName, Standard_Integer theIndex) {
+static int GetAllNew(const TopoDS_Shape& theShape, const TDF_Label& theAccess, 
+                     const TCollection_AsciiString& theName, Standard_Integer theIndex)
+{
   TNaming_NewShapeIterator anIter(theShape,theAccess);
-  char aName[200];
-  for(;anIter.More();anIter.Next()) {
-    if (!anIter.Shape().IsNull()) {
+  TCollection_AsciiString aName;
+  for(;anIter.More();anIter.Next())
+  {
+    if (!anIter.Shape().IsNull())
+    {
       theIndex++;
-      if (theName != NULL) {
-	sprintf(aName,"%s_%d",theName,theIndex);
-	DBRep::Set(aName,anIter.Shape());
+      if (!theName.IsEmpty())
+      {
+        aName = theName + "_" + theIndex;
+        DBRep::Set(aName.ToCString(),anIter.Shape());
       }
       theIndex = GetAllNew(anIter.Shape(),theAccess,theName,theIndex);
     }
@@ -138,7 +143,7 @@ static Standard_Integer GetAllNewShapes (Draw_Interpretor& di,
 					 const char** arg) {
   Standard_Integer aResult = 0;
   if (nb==3 || nb==4) {
-    const char* aName = (nb==4) ? arg[3] : NULL;
+    TCollection_AsciiString aName ((nb==4) ? arg[3] : "");
 
     if (arg[2][0]=='0') { // label
       TDF_Label aLabel;
@@ -152,13 +157,13 @@ static Standard_Integer GetAllNewShapes (Draw_Interpretor& di,
       TNaming_Iterator anIter(aNS);
       for(a=1;anIter.More();anIter.Next(),a++) {
 	if (!anIter.NewShape().IsNull()) {
-	  char* aSubName;
-	  if (aName!=NULL) {
-	    aSubName = new char[200];
-	    sprintf(aSubName,"%s_%d",aName,a);
-	  } else aSubName = NULL;
-	  aResult+=GetAllNew(anIter.NewShape(),aLabel,aSubName,0);
-	  if (aSubName != NULL) delete [] aSubName;
+      TCollection_AsciiString aSubName;
+      if (!aName.IsEmpty())
+      {
+        aSubName += aName + "_";
+        aSubName += a;
+      }
+      aResult+=GetAllNew(anIter.NewShape(),aLabel,aSubName,0);
 	}
       }
     } else { // shape
@@ -178,17 +183,22 @@ static Standard_Integer GetAllNewShapes (Draw_Interpretor& di,
   return 0;
 }
 
-static int GetAllOld(const TopoDS_Shape& theShape, const TDF_Label& theAccess, const char* theName, Standard_Integer theIndex) {
-  char aName[200];
+static int GetAllOld(const TopoDS_Shape& theShape, const TDF_Label& theAccess, 
+                     const TCollection_AsciiString& theName, Standard_Integer theIndex)
+{
+  TCollection_AsciiString aName;
   Handle(TNaming_NamedShape) aNS = TNaming_Tool::NamedShape(theShape,theAccess);
   if (aNS.IsNull()) return theIndex;
   TNaming_Iterator anIter(aNS);
-  for(;anIter.More();anIter.Next()) {
-    if (!anIter.OldShape().IsNull() && !anIter.NewShape().IsNull()) if (anIter.NewShape().IsSame(theShape)) {
+  for(;anIter.More();anIter.Next())
+  {
+    if (!anIter.OldShape().IsNull() && !anIter.NewShape().IsNull()) if (anIter.NewShape().IsSame(theShape))
+    {
       theIndex++;
-      if (theName!=NULL) {
-	sprintf(aName,"%s_%d",theName,theIndex);
-	DBRep::Set(aName,anIter.OldShape());
+      if (!theName.IsEmpty())
+      {
+        aName = theName + "_" + theIndex;
+        DBRep::Set(aName.ToCString(),anIter.OldShape());
       }
       theIndex = GetAllOld(anIter.OldShape(),theAccess,theName,theIndex);
     }
@@ -201,7 +211,7 @@ static Standard_Integer GetAllOldShapes (Draw_Interpretor& di,
 					 const char** arg) {
   Standard_Integer aResult = 0;
   if (nb==3 || nb==4) {
-    const char* aName = (nb==4) ? arg[3] : NULL;
+    TCollection_AsciiString aName((nb==4) ? arg[3] : "");
 
     if (arg[2][0]=='0') { // label
       TDF_Label aLabel;
@@ -215,12 +225,13 @@ static Standard_Integer GetAllOldShapes (Draw_Interpretor& di,
       TNaming_Iterator anIter(aNS);
       for(a=1;anIter.More();anIter.Next(),a++) {
 	if (!anIter.NewShape().IsNull()) {
-	  char* aSubName;
-	  if (aName!=NULL) {
-	    aSubName = new char[200];
-	    sprintf(aSubName,"%s_%d",aName,a);
-	  } else aSubName = NULL;
-	  aResult+=GetAllOld(anIter.NewShape(),aLabel,aSubName,0);
+      TCollection_AsciiString aSubName;
+      if (!aName.IsEmpty())
+      {
+        aSubName += aName + "_";
+        aSubName += a;
+	  }
+      aResult+=GetAllOld(anIter.NewShape(),aLabel,aSubName,0);
 	}
       }
     } else { // shape
