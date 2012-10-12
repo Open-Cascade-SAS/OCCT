@@ -240,24 +240,6 @@ void CircleCircleGeometricIntersection(const gp_Circ2d& C1
       }
     }
     //--------------------------------------------------------------
-    //--    1 seul segment donne par Inter C2 avec C1- ou C1+
-    else if(dO1O2 > AbsR1mR2-Tol) {
-      
-      Standard_Real dx=(R1mTolR1mTol+dO1O2dO1O2-R2R2)/(dO1O2+dO1O2);
-      Standard_Real dy=(R1mTolR1mTol-dx*dx);
-      dy=(dy>=0.0)? Sqrt(dy) : 0.0;
-      dAlpha1=ATan2(dy,dx);
-      
-      dx=(R1pTolR1pTol+dO1O2dO1O2-R2R2)/(dO1O2+dO1O2);
-      dy=(R1pTolR1pTol-dx*dx);
-      dy=(dy>=0.0)? Sqrt(dy) : 0.0;
-      Standard_Real dAlpha2=ATan2(dy,dx);
-      
-      if(dAlpha2>dAlpha1) dAlpha1 = dAlpha2;
-      C1_binf1=-dAlpha1;  C1_bsup1=dAlpha1;
-      nbsol=1;
-    }
-    //--------------------------------------------------------------
     else {
       if((dO1O2 > AbsR1mR2-TolTang) && (AbsR1mR2-TolTang)>0.0) { 
 	C1_binf1=0.0;  
