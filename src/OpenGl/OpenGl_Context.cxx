@@ -28,6 +28,7 @@
 #include <OpenGl_ArbTBO.hxx>
 #include <OpenGl_ArbIns.hxx>
 #include <OpenGl_ExtFBO.hxx>
+#include <OpenGl_ExtGS.hxx>
 #include <OpenGl_GlCore20.hxx>
 
 #include <Standard_ProgramError.hxx>
@@ -77,6 +78,7 @@ OpenGl_Context::OpenGl_Context()
   arbTBO (NULL),
   arbIns (NULL),
   extFBO (NULL),
+  extGS  (NULL),
   atiMem (Standard_False),
   nvxMem (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
@@ -125,6 +127,7 @@ OpenGl_Context::~OpenGl_Context()
   delete myGlCore20;
   delete arbVBO;
   delete extFBO;
+  delete extGS;
 }
 
 // =======================================================================
@@ -527,6 +530,18 @@ void OpenGl_Context::init()
     {
       delete extFBO;
       extFBO = NULL;
+    }
+  }
+
+  // initialize GS extension (EXT)
+  if (CheckExtension ("GL_EXT_geometry_shader4"))
+  {
+    extGS = new OpenGl_ExtGS();
+    memset (extGS, 0, sizeof(OpenGl_ExtGS)); // nullify whole structure
+    if (!FindProcShort (extGS, glProgramParameteriEXT))
+    {
+      delete extGS;
+      extGS = NULL;
     }
   }
 

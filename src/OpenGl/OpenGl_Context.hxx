@@ -44,6 +44,7 @@ struct OpenGl_ArbVBO;
 struct OpenGl_ArbTBO;
 struct OpenGl_ArbIns;
 struct OpenGl_ExtFBO;
+struct OpenGl_ExtGS;
 
 //! This class generalize access to the GL context and available extensions.
 //!
@@ -234,6 +235,7 @@ public: // extensions
   OpenGl_ArbTBO*   arbTBO; //!< GL_ARB_texture_buffer_object
   OpenGl_ArbIns*   arbIns; //!< GL_ARB_draw_instanced
   OpenGl_ExtFBO*   extFBO; //!< GL_EXT_framebuffer_object
+  OpenGl_ExtGS*    extGS;  //!< GL_EXT_geometry_shader4
   Standard_Boolean atiMem; //!< GL_ATI_meminfo
   Standard_Boolean nvxMem; //!< GL_NVX_gpu_memory_info
 
