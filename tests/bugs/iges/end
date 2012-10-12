@@ -4,6 +4,6 @@ if { [info exists CR22888_draw] } {
 #vdisplay result
 #vsetdispmode 1
 #vfit
-    vdump $imagedir/${test_image}.gif
+    vdump $imagedir/${test_image}.png
 }
 

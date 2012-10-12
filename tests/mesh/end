@@ -190,14 +190,14 @@ if { [info exists test_image ] == 0 } {
 }
 
 if { [string compare $command "shading"] == 0 } {
-    vdump $imagedir/${test_image}.gif
+    vdump $imagedir/${test_image}.png
 } else {
     isos 0
     smallview
     donly res
     fit
     triangles res
-    xwd $imagedir/${test_image}.gif
+    xwd $imagedir/${test_image}.png
 }
 
 puts ""

@@ -1,4 +1,4 @@
-vdump $imagedir/${test_image}.gif
+vdump $imagedir/${test_image}.png
 
 puts ""
 puts "TEST COMPLETED" 

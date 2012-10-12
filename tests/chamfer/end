@@ -34,5 +34,5 @@ if { [info exists test_image ] == 0 } {
    set test_image photo
 }
 
-xwd $imagedir/${test_image}.gif
+xwd $imagedir/${test_image}.png
 puts "TEST COMPLETED"

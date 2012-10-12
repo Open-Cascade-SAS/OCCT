@@ -64,7 +64,7 @@ if { [isdraw result] } {
   donly result
   checkshape result
   fit
-  xwd $imagedir/${test_image}.gif
+  xwd $imagedir/${test_image}.png
 } else {
   puts "Error : The sewing can not be build."
 }

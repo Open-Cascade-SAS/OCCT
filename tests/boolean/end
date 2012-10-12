@@ -68,7 +68,7 @@ if { [isdraw result] } {
       donly a b
    }
    fit
-   xwd $imagedir/${test_image}.gif
+   xwd $imagedir/${test_image}.png
 } else {
    puts "Error : The $command can not be build."
 }

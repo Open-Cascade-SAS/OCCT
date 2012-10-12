@@ -6,5 +6,5 @@ if { [isdraw result] } {
    puts "Error : result shape is not done."
 }
 fit
-xwd $imagedir/${test_image}.gif
+xwd $imagedir/${test_image}.png
 puts "TEST COMPLETED"

@@ -19,7 +19,7 @@ if { [isdraw result] } {
       smallview
       donly result
       fit
-      xwd $imagedir/${test_image}.gif
+      xwd $imagedir/${test_image}.png
    } 
 } else {
    puts "Error : The pipe can not be build."

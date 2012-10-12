@@ -923,7 +923,7 @@ if {[isdraw result]} {
     smallview
     donly result
     fit
-    xwd $imagedir/${test_image}.gif
+    xwd $imagedir/${test_image}.png
 }
 
 if {[expr $ErrorCode == 2]} { 

@@ -137,7 +137,7 @@ if { [isdraw result] && $mist == 0} {
 	smallview
 	donly result
 	fit
-	xwd $imagedir/${test_image}.gif
+	xwd $imagedir/${test_image}.png
     } 
 } else {
     puts "Error : The offset can not be build."

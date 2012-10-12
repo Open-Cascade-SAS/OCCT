@@ -4,7 +4,7 @@ if { [isdraw result] } {
 	smallview
 	donly result
 	fit
-	xwd $imagedir/${test_image}.gif
+	xwd $imagedir/${test_image}.png
     }
     if { [info exists 3dviewer] } {
 	vinit
@@ -12,17 +12,17 @@ if { [isdraw result] } {
 	vdisplay result
 	vsetdispmode 1
 	vfit
-	vdump $imagedir/${test_image}.gif
+	vdump $imagedir/${test_image}.png
     }
 } else {
     if { [info exists 3dviewer] } {
 	if { ${3dviewer} == 2 } {
-		vdump $imagedir/${test_image}.gif
+		vdump $imagedir/${test_image}.png
 	}
     }
 }
     if { [info exist only_xwd] } {
-	xwd $imagedir/${test_image}.gif	
+	xwd $imagedir/${test_image}.png	
     }
 #} else {
 #   puts "Error : The command can not be build."

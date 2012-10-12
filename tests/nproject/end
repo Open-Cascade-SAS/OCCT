@@ -30,12 +30,12 @@ if { [isdraw result] } {
       clear
       donly result
       fit
-      xwd $imagedir/${test_image}.gif
+      xwd $imagedir/${test_image}.png
    } else {
       smallview
       clear
       fit
-      xwd $imagedir/${test_image}.gif
+      xwd $imagedir/${test_image}.png
    }
 } else {
    puts "Error : The $command can not be build."
