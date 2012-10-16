@@ -62,10 +62,10 @@ void LocalAnalysis_SurfaceContinuity::SurfC1(  GeomLProp_SLProps& Surf1,
        &&(norm2v>myepsnul))
     { if (norm1u >= norm2u ) 
          myLambda1U= norm2u / norm1u;
-      else myLambda1U = norm2u / norm1u;
+      else myLambda1U = norm1u / norm2u;
       if (norm1v >= norm2v ) 
          myLambda1V= norm2v / norm1v;
-      else myLambda1V = norm2v / norm1v;
+      else myLambda1V = norm1v / norm2v;
       angu= V1u.Angle(V2u);
       if (angu>M_PI/2) myContC1U=M_PI-angu;
       else myContC1U=angu;
