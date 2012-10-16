@@ -2325,7 +2325,6 @@ void BiTgte_Blend::ComputeShape()
   // modify the tubes on edge for partition of edges.
   //
   Standard_Integer NbS = NbSurfaces();
-  NbS = 0;
   for (Standard_Integer i = 1; i <= NbS; i++) {
     const TopoDS_Shape& S1 = SupportShape1(i);
 
