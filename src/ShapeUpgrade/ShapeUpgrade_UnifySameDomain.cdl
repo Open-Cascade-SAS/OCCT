@@ -1,0 +1,63 @@
+-- File:      ShapeUpgrade_UnifySameDomain.cdl
+-- Created:   09.06.12 13:48:36
+-- Author:    jgv@ROLEX
+---Copyright: Open CASCADE 2012
+
+class UnifySameDomain from ShapeUpgrade inherits TShared from MMgt
+
+	---Purpose: Unifies same domain faces and edges of specified shape
+
+uses
+    Shape from TopoDS,
+    ListOfShape from TopTools,
+    ReShape from ShapeBuild
+
+is
+    Create returns UnifySameDomain from ShapeUpgrade;
+    ---Purpose: empty constructor
+
+    Create(aShape: Shape from TopoDS;
+    	   UnifyEdges: Boolean from Standard = Standard_True;
+	   UnifyFaces: Boolean from Standard = Standard_True;
+    	   ConcatBSplines: Boolean from Standard = Standard_False)
+    returns UnifySameDomain from ShapeUpgrade;
+    
+    Initialize(me: mutable; aShape: Shape from TopoDS;
+    	       UnifyEdges: Boolean from Standard = Standard_True;
+	       UnifyFaces: Boolean from Standard = Standard_True;
+    	       ConcatBSplines: Boolean from Standard = Standard_False);
+    
+    Build( me : mutable );
+    	---Purpose: Builds the resulting shape
+    
+    Shape(me) returns Shape from TopoDS;
+    	---C++: return const &
+    	---Purpose: Gives the resulting shape
+    
+    Generated (me; aShape : Shape from TopoDS)
+    returns Shape from TopoDS;
+    
+    UnifyFaces(me: mutable);
+    ---Purpose: this method makes if possible a common face from each
+    --          group of faces lying on coincident surfaces
+
+    UnifyEdges(me: mutable);
+    ---Purpose: this method makes if possible a common edge from each
+    --          group of edges connecting common couple of faces
+
+    UnifyFacesAndEdges(me: mutable);
+    ---Purpose: this method unifies same domain faces and edges
+
+fields
+    
+    myInitShape : Shape from TopoDS;
+    myUnifyFaces : Boolean from Standard;
+    myUnifyEdges : Boolean from Standard;
+    myConcatBSplines : Boolean from Standard;
+    
+    myShape : Shape from TopoDS;
+    
+    myContext   : ReShape from ShapeBuild;
+    --myOldNewMap : DataMapOfShapeShape  from TopTools;
+    
+end UnifySameDomain;

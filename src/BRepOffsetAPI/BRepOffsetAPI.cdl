@@ -98,6 +98,9 @@ is
     class ThruSections;	      ---  inherits  MakeShape  from  BRepBuilderAPI
 
     class NormalProjection ;  ---  inherits  MakeShape  from  BRepBuilderAPI
+
+    class MiddlePath;	      ---  inherits  MakeShape  from  BRepBuilderAPI
+    
     -- 
     --   Plate
     --     

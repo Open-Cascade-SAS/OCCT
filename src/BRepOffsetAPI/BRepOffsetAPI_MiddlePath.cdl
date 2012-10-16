@@ -1,0 +1,53 @@
+-- File:      BRepOffsetAPI_MiddlePath.cdl
+-- Created:   06.08.12 15:56:30
+-- Author:    jgv@ROLEX
+---Copyright: Open CASCADE 2012
+
+class MiddlePath from BRepOffsetAPI inherits MakeShape from BRepBuilderAPI
+
+    	---Purpose: Describes functions to build a middle path of a
+    	--          pipe-like shape
+
+uses
+
+    Shape from TopoDS,
+    Wire  from TopoDS,
+    Edge  from TopoDS,
+    Face  from TopoDS,
+    MapOfShape from TopTools,
+    SequenceOfSequenceOfShape from BRepOffsetAPI
+    
+is
+    --Create(aShape    : Shape from TopoDS;
+    	--   StartWire : Wire from TopoDS)
+    --returns MiddlePath from BRepOffsetAPI;
+    
+    --Create(aShape    : Shape from TopoDS;
+    	--   StartEdge : Edge from TopoDS)
+    --returns MiddlePath from BRepOffsetAPI;
+    
+    Create(aShape     : Shape from TopoDS;
+    	   StartShape : Shape from TopoDS;
+	   EndShape   : Shape from TopoDS)
+    ---Purpose: General constructor.
+    --          StartShape and EndShape may be
+    --          a wire or a face
+    returns MiddlePath from BRepOffsetAPI;
+
+    Build(me: in out)
+    is redefined;
+
+fields
+    
+    myInitialShape : Shape from TopoDS;
+    myStartWire    : Wire  from TopoDS;
+    myEndWire      : Wire  from TopoDS;
+    myClosedSection  : Boolean from Standard;
+    myClosedRing     : Boolean from Standard;
+    
+    myStartWireEdges : MapOfShape from TopTools;
+    myEndWireEdges   : MapOfShape from TopTools;
+    
+    myPaths        : SequenceOfSequenceOfShape from BRepOffsetAPI;
+    
+end MiddlePath;

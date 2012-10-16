@@ -115,6 +115,9 @@ is
     class RemoveInternalWires;
     ---Purpose: Removes all internal wires having area less than specified min area
     
+    class UnifySameDomain;
+    ---Purpose: Unifies same domain faces and edges of specified shape
+    
     C0BSplineToSequenceOfC1BSplineCurve (BS   : BSplineCurve from Geom;
     	    	    	    	         seqBS: out HSequenceOfBoundedCurve from TColGeom)
     returns Boolean;

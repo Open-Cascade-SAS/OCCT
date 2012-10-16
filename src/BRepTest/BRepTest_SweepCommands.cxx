@@ -35,6 +35,7 @@
 #include <BRepOffsetAPI_MakeEvolved.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
+#include <BRepOffsetAPI_MiddlePath.hxx>
 
 #include <BRepLib_MakeWire.hxx>
 #include <TopoDS.hxx>
@@ -773,6 +774,32 @@ static Standard_Integer simulsweep(Draw_Interpretor& di,
 }
 
 //=======================================================================
+//  middlepath
+//=======================================================================
+static Standard_Integer middlepath(Draw_Interpretor& di,
+				   Standard_Integer n, const char** a)
+{
+  if (n < 5) return 1;
+
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull()) return 1;
+
+  TopoDS_Shape StartShape = DBRep::Get(a[3]);
+  if (StartShape.IsNull()) return 1;
+  
+  TopoDS_Shape EndShape   = DBRep::Get(a[4]);
+  if (EndShape.IsNull()) return 1;
+
+  BRepOffsetAPI_MiddlePath Builder(aShape, StartShape, EndShape);
+  Builder.Build();
+
+  TopoDS_Shape Result = Builder.Shape();
+  DBRep::Set(a[1], Result);
+
+  return 0;
+}
+
+//=======================================================================
 //function : SweepCommands
 //purpose  : 
 //=======================================================================
@@ -839,5 +866,8 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
 		  __FILE__,simulsweep,g);
   theCommands.Add("geompipe", "geompipe r spineedge profileedge radius [byACR [byrotate]]"
 		  __FILE__,geompipe,g);
+  
+  theCommands.Add("middlepath", "middlepath res shape startshape endshape",
+		  __FILE__,middlepath,g);
 }
 

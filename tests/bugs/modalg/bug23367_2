@@ -1,0 +1,20 @@
+puts "============"
+puts "CR23367"
+puts "============"
+puts ""
+##########################################################################################################
+# New functionality restoring the middle path of pipe-like shape
+##########################################################################################################
+
+pcylinder a 10 30 180
+explode a f
+donly a a_2 a_3
+fit
+middlepath result a a_2 a_3
+
+set length 30.0036
+
+set 2dviewer 1
+
+
+

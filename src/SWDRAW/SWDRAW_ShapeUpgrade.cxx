@@ -23,6 +23,7 @@
 //pdn,gka 10.06.99 S4189: command DT_ShapeConvertRev added
 
 #include <SWDRAW_ShapeUpgrade.ixx>
+//#include <SWDRAW_ShapeUpgrade.hxx>
 
 #include <DBRep.hxx>
 #include <ShapeUpgrade.hxx>
@@ -82,6 +83,7 @@
 #include <ShapeUpgrade_ShapeDivideClosed.hxx>
 #include <ShapeUpgrade_RemoveInternalWires.hxx>
 #include <ShapeUpgrade_RemoveLocations.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 
 // the plane (equation z=0) shared by PlaneDividedFaceContinuity and PlaneGridShell
@@ -1441,6 +1443,27 @@ static Standard_Integer removeloc (Draw_Interpretor& di,
   DBRep::Set(argv[1],aNewShape);
   return 0;
 }
+
+//=======================================================================
+// unifysamedom
+//=======================================================================
+static Standard_Integer unifysamedom(Draw_Interpretor& , Standard_Integer n, const char** a)
+{
+  if (n < 3)
+    return 1;
+
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+    return 1;
+
+  ShapeUpgrade_UnifySameDomain Unifier(aShape);
+  Unifier.Build();
+  TopoDS_Shape Result = Unifier.Shape();
+
+  DBRep::Set(a[1], Result);
+  return 0;
+}
+
 static Standard_Integer copytranslate(Draw_Interpretor& di, 
                                    Standard_Integer argc, 
                                    const char** argv)
@@ -1561,5 +1584,9 @@ static Standard_Integer copytranslate(Draw_Interpretor& di,
                    __FILE__,removeinternalwires,g);
   
   theCommands.Add ("removeloc","result shape",__FILE__,removeloc,g);
+  
+  theCommands.Add ("unifysamedom",
+                   "unifysamedom result shape",__FILE__,unifysamedom,g);
+  
   theCommands.Add ("copytranslate","result shape dx dy dz",__FILE__,copytranslate,g);
 }

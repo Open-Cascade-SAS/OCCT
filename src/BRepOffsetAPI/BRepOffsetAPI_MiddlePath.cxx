@@ -1,0 +1,962 @@
+// File:      BRepOffsetAPI_MiddlePath.cxx
+// Created:   06.08.12 16:53:16
+// Author:    jgv@ROLEX
+// Copyright: Open CASCADE 2012
+
+#include <BRepOffsetAPI_MiddlePath.ixx>
+#include <BRepOffsetAPI_MiddlePath.hxx>
+
+#include <ShapeUpgrade_UnifySameDomain.hxx>
+
+#include <gp_Lin.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <BRep_Tool.hxx>
+#include <gce_MakeLin.hxx>
+
+#include <BRepLib_MakeWire.hxx>
+
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopExp.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <TopoDS.hxx>
+#include <BRepTools.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <BRep_Builder.hxx>
+#include <Precision.hxx>
+#include <TopExp_Explorer.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <GCE2d_MakeLine.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <BRepLib.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <BRepLib_MakeFace.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_Array1OfVec.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+#include <Geom_Circle.hxx>
+#include <gp_Circ.hxx>
+#include <GC_MakeCircle.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+#include <GeomLib.hxx>
+#include <GeomAPI_Interpolate.hxx>
+
+static Standard_Boolean IsClosed(const TopoDS_Wire& aWire)
+{
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(aWire, V1, V2);
+  return (V1.IsSame(V2));
+}
+
+static Standard_Boolean IsLinear(const TopoDS_Edge& anEdge,
+                                 gp_Lin& aLine)
+{
+  Standard_Real fpar, lpar;
+  Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+  if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+    aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
+
+  gp_Pnt Pnt1, Pnt2;
+  if (aCurve->IsKind(STANDARD_TYPE(Geom_Line)))
+  {
+    aLine = ((Handle(Geom_Line)&) aCurve)->Lin();
+    return Standard_True;
+  }
+  else if (aCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
+  {
+    Handle(Geom_BezierCurve) theBezier = (Handle(Geom_BezierCurve)&) aCurve;
+    if (theBezier->NbPoles() == 2)
+    {
+      Pnt1 = theBezier->Pole(1);
+      Pnt2 = theBezier->Pole(2);
+      aLine = gce_MakeLin(Pnt1, Pnt2);
+      return Standard_True;
+    }
+  }
+  else if (aCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
+  {
+    Handle(Geom_BSplineCurve) theBSpline = (Handle(Geom_BSplineCurve)&) aCurve;
+    if (theBSpline->NbPoles() == 2)
+    {
+      Pnt1 = theBSpline->Pole(1);
+      Pnt2 = theBSpline->Pole(2);
+      aLine = gce_MakeLin(Pnt1, Pnt2);
+      return Standard_True;
+    }
+  }
+
+  return Standard_False;
+}
+
+static GeomAbs_CurveType TypeOfEdge(const TopoDS_Edge& anEdge)
+{
+  gp_Lin aLin;
+  if (IsLinear(anEdge, aLin))
+    return GeomAbs_Line;
+
+  BRepAdaptor_Curve BAcurve(anEdge);
+  return BAcurve.GetType();
+}
+
+static gp_Vec TangentOfEdge(const TopoDS_Shape& aShape,
+                            const Standard_Boolean OnFirst)
+{
+  TopoDS_Edge anEdge = TopoDS::Edge(aShape);
+  TopAbs_Orientation anOr = anEdge.Orientation();
+  
+  Standard_Real fpar, lpar;
+  Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+  Standard_Real thePar;
+  if (OnFirst)
+    thePar = (anOr == TopAbs_FORWARD)? fpar : lpar;
+  else
+    thePar = (anOr == TopAbs_FORWARD)? lpar : fpar;
+
+  gp_Pnt thePoint;
+  gp_Vec theTangent;
+  aCurve->D1(thePar, thePoint, theTangent);
+  if (anOr == TopAbs_REVERSED)
+    theTangent.Reverse();
+
+  return theTangent;
+}
+
+
+static Standard_Boolean IsValidEdge(const TopoDS_Edge& theEdge,
+                                    const TopoDS_Face& theFace)
+{
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(theEdge, V1, V2);
+
+  Standard_Real Tol = Precision::Confusion();
+  Standard_Integer i;
+  
+  TopExp_Explorer Explo(theFace, TopAbs_EDGE);
+  for (; Explo.More(); Explo.Next())
+  {
+    const TopoDS_Shape& anEdge = Explo.Current();
+    BRepExtrema_DistShapeShape DistMini(theEdge, anEdge);
+    if (DistMini.Value() <= Tol)
+    {
+      for (i = 1; i <= DistMini.NbSolution(); i++)
+      {
+        BRepExtrema_SupportType theType = DistMini.SupportTypeShape2(i);
+        if (theType == BRepExtrema_IsOnEdge)
+          return Standard_False;
+        //theType is "IsVertex"
+        TopoDS_Shape aVertex = DistMini.SupportOnShape2(i);
+        if (!(aVertex.IsSame(V1) || aVertex.IsSame(V2)))
+          return Standard_False;
+      }
+    }
+  }
+
+  return Standard_True;
+}
+
+/*
+//=======================================================================
+//function : BRepOffsetAPI_MiddlePath
+//purpose  : Constructor
+//=======================================================================
+
+BRepOffsetAPI_MiddlePath::BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
+                                                   const TopoDS_Wire&  StartWire)
+{
+  myInitialShape = aShape;
+  myStartWire    = StartWire;
+  myClosedSection = myStartWire.Closed();
+}
+
+//=======================================================================
+//function : BRepOffsetAPI_MiddlePath
+//purpose  : Constructor
+//=======================================================================
+
+BRepOffsetAPI_MiddlePath::BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
+                                                   const TopoDS_Edge&  StartEdge)
+{
+  myInitialShape = aShape;
+
+  BRepLib_MakeWire MW(StartEdge);
+  
+  //BB.Add(myStartWire, StartEdge);
+
+  TopTools_IndexedDataMapOfShapeListOfShape EFmap;
+  TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+  TopExp::MapShapesAndAncestors(myInitialShape, TopAbs_EDGE,   TopAbs_FACE, EFmap);
+  TopExp::MapShapesAndAncestors(myInitialShape, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+  
+  //Standard_Boolean Start = Standard_True;
+  //if (Start)
+  //{
+  //TopExp::Vertices(CurEdge, V1, V2);
+  //  StartVertex = V1;
+  //  CurVertex   = V2;
+  //  if (VEmap(CurVertex).Extent() == 2) //end: two free edges
+  //  {
+  //    StartVertex = V2;
+  //    CurVertex   = V1;
+  //    if (VEmap(CurVertex).Extent() == 2) //end: two free edges
+  //      break;
+  //  }
+  //  Start = Standard_False;
+  //  continue;
+  //}
+
+  TopoDS_Vertex StartVertex, CurVertex, V1, V2;
+  TopExp::Vertices(StartEdge, StartVertex, CurVertex);
+  TopoDS_Edge CurEdge = StartEdge;
+  Standard_Integer i;
+  for (i = 1; i <= 2; i++)
+  {
+    for (;;)
+    {
+      const TopTools_ListOfShape& LE = VEmap.FindFromKey(CurVertex);
+      if (LE.Extent() == 2) //end: two free edges or one closed free edge
+        break;
+      TopTools_ListIteratorOfListOfShape itl(LE);
+      TopoDS_Edge anEdge;
+      for (; itl.More(); itl.Next())
+      {
+        anEdge = TopoDS::Edge(itl.Value());
+        if (anEdge.IsSame(CurEdge))
+          continue;
+        if (EFmap.FindFromKey(anEdge).Extent() == 1) //another free edge found
+          break;
+      }
+      //BB.Add(myStartWire, anEdge);
+      MW.Add(anEdge);
+      TopExp::Vertices(anEdge, V1, V2);
+      CurVertex = (V1.IsSame(CurVertex))? V2 : V1;
+      CurEdge = anEdge;
+      if (CurVertex.IsSame(StartVertex))
+        break;
+    }
+    if (CurVertex.IsSame(StartVertex))
+      break;
+    CurVertex = StartVertex;
+    CurEdge = StartEdge;
+  }
+  
+  myStartWire = MW.Wire();
+  myClosedSection = myStartWire.Closed();
+}
+*/
+
+//=======================================================================
+//function : BRepOffsetAPI_MiddlePath
+//purpose  : Constructor
+//=======================================================================
+
+BRepOffsetAPI_MiddlePath::BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
+                                                   const TopoDS_Shape& StartShape,
+                                                   const TopoDS_Shape& EndShape)
+{
+  ShapeUpgrade_UnifySameDomain Unifier(aShape);
+  Unifier.Build();
+  myInitialShape = Unifier.Shape();
+
+  TopoDS_Wire aStartWire, anEndWire;
+  if (StartShape.ShapeType() == TopAbs_FACE)
+  {
+    const TopoDS_Face& StartFace = TopoDS::Face(StartShape);
+    aStartWire = BRepTools::OuterWire(StartFace);
+  }
+  else
+    aStartWire = TopoDS::Wire(StartShape);
+  
+  if (EndShape.ShapeType() == TopAbs_FACE)
+  {
+    const TopoDS_Face& EndFace = TopoDS::Face(EndShape);
+    anEndWire = BRepTools::OuterWire(EndFace);
+  }
+  else
+    anEndWire = TopoDS::Wire(EndShape);
+
+  BRepLib_MakeWire MWstart;
+  //TopTools_MapOfShape MapEdges;
+  BRepTools_WireExplorer wexp(aStartWire);
+  for (; wexp.More(); wexp.Next())
+  {
+    TopoDS_Shape anEdge = wexp.Current();
+    TopoDS_Shape NewEdge = Unifier.Generated(anEdge);
+    if (!NewEdge.IsNull())
+      MWstart.Add(TopoDS::Edge(NewEdge));
+  }
+  myStartWire = MWstart.Wire();
+
+  BRepLib_MakeWire MWend;
+  //MapEdges.Clear();
+  for (wexp.Init(anEndWire); wexp.More(); wexp.Next())
+  {
+    TopoDS_Shape anEdge = wexp.Current();
+    TopoDS_Shape NewEdge = Unifier.Generated(anEdge);
+    if (!NewEdge.IsNull())
+      MWend.Add(TopoDS::Edge(NewEdge));
+  }
+  myEndWire = MWend.Wire();
+
+  myClosedSection = myStartWire.Closed();
+  myClosedRing    = myStartWire.IsSame(myEndWire);
+}
+
+//=======================================================================
+//function : Build
+//purpose  : 
+//=======================================================================
+
+void BRepOffsetAPI_MiddlePath::Build()
+{
+  TopTools_ListIteratorOfListOfShape itl;
+  
+  TopTools_SequenceOfShape StartVertices;
+  TopTools_MapOfShape EndVertices;
+  TopTools_MapOfShape EndEdges;
+  BRepOffsetAPI_SequenceOfSequenceOfShape SectionsEdges;
+  
+  BRepTools_WireExplorer wexp(myStartWire);
+  TopTools_SequenceOfShape EdgeSeq;
+  for (; wexp.More(); wexp.Next())
+  {
+    StartVertices.Append(wexp.CurrentVertex());
+    EdgeSeq.Append(wexp.Current());
+  }
+  if (!myClosedSection)
+    StartVertices.Append(wexp.CurrentVertex());
+  SectionsEdges.Append(EdgeSeq);
+  
+  for (wexp.Init(myEndWire); wexp.More(); wexp.Next())
+  {
+    EndVertices.Add(wexp.CurrentVertex());
+    EndEdges.Add(wexp.Current());
+  }
+  if (!myClosedSection)
+    EndVertices.Add(wexp.CurrentVertex());
+  
+
+  TopoDS_Iterator itw(myStartWire);
+  for (; itw.More(); itw.Next())
+    myStartWireEdges.Add(itw.Value());
+  for (itw.Initialize(myEndWire); itw.More(); itw.Next())
+    myEndWireEdges.Add(itw.Value());
+
+  TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+  TopTools_IndexedDataMapOfShapeListOfShape EFmap;
+  TopExp::MapShapesAndAncestors(myInitialShape, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+  TopExp::MapShapesAndAncestors(myInitialShape, TopAbs_EDGE,   TopAbs_FACE, EFmap);
+
+  TopTools_MapOfShape CurVertices;
+  
+  Standard_Integer i, j, k;
+  TopoDS_Edge anEdge, theEdge;
+  TopoDS_Vertex V1, V2, NextVertex;
+  //Initialization of <myPaths>
+  for (i = 1; i <= StartVertices.Length(); i++)
+  {
+    TopTools_SequenceOfShape Edges;
+    const TopTools_ListOfShape& LE = VEmap.FindFromKey(StartVertices(i));
+    for (itl.Initialize(LE); itl.More(); itl.Next())
+    {
+      anEdge = TopoDS::Edge(itl.Value());
+      if (!myStartWireEdges.Contains(anEdge))
+      {
+        TopExp::Vertices(anEdge, V1, V2, Standard_True);
+        if (V1.IsSame(StartVertices(i)))
+          CurVertices.Add(V2);
+        else
+        {
+          anEdge.Reverse();
+          CurVertices.Add(V1);
+        }
+        Edges.Append(anEdge);
+        break;
+      }
+    }
+    myPaths.Append(Edges);
+  }
+
+  //Filling of "myPaths"
+  //TopTools_MapOfShape StartFacesMap;
+  TopTools_ListOfShape NextVertices;
+  for (;;)
+  {
+    /*
+    StartFacesMap.Clear();
+    for (i = 1; i <= myPaths.Length(); i++)
+    {
+      const TopoDS_Shape& LastEdge = myPaths(i).Last();
+      const TopTools_ListOfShape& LF = EFmap(LastEdge);
+      for (itl.Initialize(LF); itl.More(); itl.Next())
+        StartFacesMap.Add(itl.Value();
+    }
+    */
+    //TopTools_SequenceOfShape NewEdges;
+    for (i = 1; i <= myPaths.Length(); i++)
+    {
+      theEdge = TopoDS::Edge(myPaths(i).Last());
+      TopoDS_Vertex theVertex = TopExp::LastVertex(theEdge, Standard_True);
+      if (EndVertices.Contains(theVertex))
+        continue;
+      const TopTools_ListOfShape& LE = VEmap.FindFromKey(theVertex);
+      Standard_Boolean NextEdgeFound = Standard_False;
+      for (itl.Initialize(LE); itl.More(); itl.Next())
+      {
+        anEdge = TopoDS::Edge(itl.Value());
+        if (anEdge.IsSame(theEdge))
+          continue;
+        TopExp::Vertices(anEdge, V1, V2, Standard_True);
+        if (V1.IsSame(theVertex))
+          NextVertex = V2;
+        else
+        {
+          anEdge.Reverse();
+          NextVertex = V1;
+        }
+        if (!CurVertices.Contains(NextVertex))
+        {
+          NextEdgeFound = Standard_True;
+          break;
+        }
+      }
+      if (NextEdgeFound)
+      {
+        myPaths(i).Append(anEdge);
+        NextVertices.Append(NextVertex);
+      }
+    }
+    if (NextVertices.IsEmpty())
+      break;
+    for (itl.Initialize(NextVertices); itl.More(); itl.Next())
+      CurVertices.Add(itl.Value());
+    NextVertices.Clear();
+  }
+
+  //Building of set of sections
+  Standard_Integer NbE = EdgeSeq.Length();
+  Standard_Integer NbVer = myPaths.Length();
+  if (myClosedSection)
+    NbVer++;
+  i = 1;
+  for (;;)
+  {
+    for (j = 1; j <= EdgeSeq.Length(); j++)
+      EdgeSeq(j).Nullify();
+
+    Standard_Boolean ToInsertVertex = Standard_False;
+    
+    for (j = 2; j <= NbVer; j++)
+    {
+      if (!EdgeSeq(j-1).IsNull())
+        continue;
+      
+      if (ToInsertVertex)
+      {
+        if (myPaths(j-1)(i).ShapeType() == TopAbs_EDGE)
+        {
+          TopoDS_Edge aE1 = TopoDS::Edge(myPaths(j-1)(i));
+          TopoDS_Shape fver = TopExp::FirstVertex(aE1, Standard_True);
+          myPaths(j-1).InsertBefore(i, fver);
+        }
+        if (myPaths((j<=NbE)? j : 1)(i).ShapeType() == TopAbs_EDGE)
+        {
+          TopoDS_Edge aE2 = TopoDS::Edge(myPaths((j<=NbE)? j : 1)(i));
+          TopoDS_Shape fver = TopExp::FirstVertex(aE2, Standard_True);
+          myPaths((j<=NbE)? j : 1).InsertBefore(i, fver);
+        }
+        ToInsertVertex = Standard_False;
+      }
+      
+      TopoDS_Edge E1, E2;
+      if (myPaths(j-1)(i).ShapeType() == TopAbs_EDGE)
+        E1 = TopoDS::Edge(myPaths(j-1)(i));
+      if (myPaths((j<=NbE)? j : 1)(i).ShapeType() == TopAbs_EDGE)
+        E2 = TopoDS::Edge(myPaths((j<=NbE)? j : 1)(i));
+      TopoDS_Edge E12 = TopoDS::Edge(SectionsEdges(i)(j-1));
+      
+      //TopoDS_Vertex PrevVertex = TopoDS::Vertex(VerSeq(j-1));
+      //TopoDS_Vertex CurVertex  = TopoDS::Vertex(VerSeq(j));
+      TopoDS_Vertex PrevVertex = (E1.IsNull())? TopoDS::Vertex(myPaths(j-1)(i))
+        : TopExp::LastVertex(E1, Standard_True);
+      TopoDS_Vertex CurVertex = (E2.IsNull())? TopoDS::Vertex(myPaths((j<=NbE)? j : 1)(i))
+        : TopExp::LastVertex(E2, Standard_True);
+      
+      TopoDS_Edge ProperEdge;
+      const TopTools_ListOfShape& LE = VEmap.FindFromKey(PrevVertex);
+      //Temporary
+      Standard_Integer LenList = LE.Extent();
+      ///////////
+      for (itl.Initialize(LE); itl.More(); itl.Next())
+      {
+        anEdge = TopoDS::Edge(itl.Value());
+        TopExp::Vertices(anEdge, V1, V2);
+        if ((V1.IsSame(PrevVertex) && V2.IsSame(CurVertex) ||
+             V1.IsSame(CurVertex) && V2.IsSame(PrevVertex)) &&
+            !anEdge.IsSame(E1))
+        {
+          ProperEdge = anEdge;
+          break;
+        }
+      }
+      
+      if ((myPaths(j-1)(i)).ShapeType() == TopAbs_VERTEX &&
+          (myPaths((j<=NbE)? j : 1)(i)).ShapeType() == TopAbs_VERTEX)
+      {
+        EdgeSeq(j-1) = ProperEdge;
+        continue;
+      }
+
+      TopoDS_Vertex PrevPrevVer = (E1.IsNull())? PrevVertex
+        : TopExp::FirstVertex(E1, Standard_True);
+      TopoDS_Vertex PrevCurVer  = (E2.IsNull())? CurVertex
+        : TopExp::FirstVertex(E2, Standard_True);
+      if (ProperEdge.IsNull()) //no connection between these two vertices
+      {
+        //ToInsertVertex = Standard_False;
+        const TopoDS_Shape& EE1 = (E1.IsNull())?
+          myPaths(j-1)(i-1) : E1;
+        const TopoDS_Shape& EE2 = (E2.IsNull())?
+          myPaths((j<=NbE)? j : 1)(i-1) : E2;
+        const TopTools_ListOfShape& LF = EFmap.FindFromKey(EE1);
+        TopoDS_Face theFace;
+        for (itl.Initialize(LF); itl.More(); itl.Next())
+        {
+          const TopoDS_Shape& aFace = itl.Value();
+          TopExp_Explorer Explo(aFace, TopAbs_EDGE);
+          for (; Explo.More(); Explo.Next())
+          {
+            if (EE2.IsSame(Explo.Current()))
+            {
+              const TopTools_ListOfShape& LFsec = EFmap.FindFromKey(E12);
+              TopTools_ListIteratorOfListOfShape itlsec(LFsec);
+              for (; itlsec.More(); itlsec.Next())
+                if (aFace.IsSame(itlsec.Value()))
+                {
+                  theFace = TopoDS::Face(aFace);
+                  break;
+                }
+              if (!theFace.IsNull())
+                break;
+            }
+          }
+          if (!theFace.IsNull())
+            break;
+        }
+        TopTools_ListOfShape ListOneFace;
+        ListOneFace.Append(theFace);
+
+        if (E1.IsNull() || E2.IsNull())
+        {
+          if (E1.IsNull())
+            E1 = TopoDS::Edge(myPaths(j-1)(i-1));
+          if (E2.IsNull())
+            E2 = TopoDS::Edge(myPaths((j<=NbE)? j : 1)(i-1));
+          Standard_Real fpar1, lpar1, fpar2, lpar2;
+          Standard_Real FirstPar1, LastPar1, FirstPar2, LastPar2;
+          Handle(Geom2d_Curve) PCurve1 = BRep_Tool::CurveOnSurface(E1, theFace, fpar1, lpar1);
+          Handle(Geom2d_Curve) PCurve2 = BRep_Tool::CurveOnSurface(E2, theFace, fpar2, lpar2);
+          if (E1.Orientation() == TopAbs_FORWARD)
+          { FirstPar1 = fpar1; LastPar1 = lpar1; }
+          else
+          { FirstPar1 = lpar1; LastPar1 = fpar1; }
+          if (E2.Orientation() == TopAbs_FORWARD)
+          { FirstPar2 = fpar2; LastPar2 = lpar2; }
+          else
+          { FirstPar2 = lpar2; LastPar2 = fpar2; }
+          gp_Pnt2d FirstPnt2d = PCurve1->Value(LastPar1);
+          gp_Pnt2d LastPnt2d  = PCurve2->Value(LastPar2);
+          Handle(Geom_Surface) theSurf = BRep_Tool::Surface(theFace);
+          Handle(Geom2d_Line) theLine = GCE2d_MakeLine(FirstPnt2d, LastPnt2d);
+          Standard_Real len_ne = FirstPnt2d.Distance(LastPnt2d);
+          TopoDS_Edge NewEdge = BRepLib_MakeEdge(theLine, theSurf,
+                                                 PrevVertex, CurVertex,
+                                                 0., len_ne);
+          BRepLib::BuildCurve3d(NewEdge);
+          EdgeSeq(j-1) = NewEdge;
+          EFmap.Add(NewEdge, ListOneFace);
+        }
+        else //E1 is edge
+        {
+          //Extract points 2d
+          Standard_Real fpar1, lpar1, fpar2, lpar2;
+          Standard_Real FirstPar1, LastPar1, FirstPar2, LastPar2;
+          Handle(Geom2d_Curve) PCurve1 = BRep_Tool::CurveOnSurface(E1, theFace, fpar1, lpar1);
+          Handle(Geom2d_Curve) PCurve2 = BRep_Tool::CurveOnSurface(E2, theFace, fpar2, lpar2);
+          if (E1.Orientation() == TopAbs_FORWARD)
+          { FirstPar1 = fpar1; LastPar1 = lpar1; }
+          else
+          { FirstPar1 = lpar1; LastPar1 = fpar1; }
+          if (E2.Orientation() == TopAbs_FORWARD)
+          { FirstPar2 = fpar2; LastPar2 = lpar2; }
+          else
+          { FirstPar2 = lpar2; LastPar2 = fpar2; }
+          gp_Pnt2d FirstPnt2d = PCurve1->Value(LastPar1);
+          gp_Pnt2d LastPnt2d  = PCurve2->Value(LastPar2);
+          Handle(Geom_Surface) theSurf = BRep_Tool::Surface(theFace);
+          Handle(Geom2d_Line) theLine = GCE2d_MakeLine(FirstPnt2d, LastPnt2d);
+          Standard_Real len_ne = FirstPnt2d.Distance(LastPnt2d);
+          TopoDS_Edge NewEdge = BRepLib_MakeEdge(theLine, theSurf,
+                                                 PrevVertex, CurVertex,
+                                                 0., len_ne);
+          BRepLib::BuildCurve3d(NewEdge);
+          gp_Pnt2d PrevFirstPnt2d = PCurve1->Value(FirstPar1);
+          gp_Pnt2d PrevLastPnt2d  = PCurve2->Value(FirstPar2);
+          Handle(Geom2d_Line) Line1 = GCE2d_MakeLine(PrevFirstPnt2d, LastPnt2d);
+          Handle(Geom2d_Line) Line2 = GCE2d_MakeLine(FirstPnt2d, PrevLastPnt2d);
+          Standard_Real len_ne1 = PrevFirstPnt2d.Distance(LastPnt2d);
+          TopoDS_Edge NewEdge1 = BRepLib_MakeEdge(Line1, theSurf,
+                                                  PrevPrevVer, CurVertex,
+                                                  0., len_ne1);
+          BRepLib::BuildCurve3d(NewEdge1);
+          Standard_Real len_ne2 = FirstPnt2d.Distance(PrevLastPnt2d);
+          TopoDS_Edge NewEdge2 = BRepLib_MakeEdge(Line2, theSurf,
+                                                  PrevVertex, PrevCurVer,
+                                                  0., len_ne2);
+          BRepLib::BuildCurve3d(NewEdge2);
+          Standard_Boolean good_ne  = IsValidEdge(NewEdge, theFace);
+          Standard_Boolean good_ne1 = IsValidEdge(NewEdge1, theFace);
+          Standard_Boolean good_ne2 = IsValidEdge(NewEdge2, theFace);
+
+          GeomAbs_CurveType type_E1 = TypeOfEdge(E1);
+          GeomAbs_CurveType type_E2 = TypeOfEdge(E2);
+
+          Standard_Integer ChooseEdge = 0;
+          
+          if (!good_ne || type_E1 != type_E2)
+          {
+            if (type_E1 == type_E2) //!good_ne
+            {
+              if (good_ne1)
+                ChooseEdge = 1;
+              else
+                ChooseEdge = 2;
+            }
+            else //types are different
+            {
+              if (type_E1 == GeomAbs_Line)
+                ChooseEdge = 1;
+              else if (type_E2 == GeomAbs_Line)
+                ChooseEdge = 2;
+              else //to be developed later...
+              {}
+            }
+          }
+          
+          if (ChooseEdge == 0)
+          {
+            EdgeSeq(j-1) = NewEdge;
+            EFmap.Add(NewEdge, ListOneFace);
+          }
+          else if (ChooseEdge == 1)
+          {
+            EdgeSeq(j-1) = NewEdge1;
+            EFmap.Add(NewEdge1, ListOneFace);
+            for (k = 1; k < j-1; k++)
+              EdgeSeq(k).Nullify();
+            for (k = 1; k <= j-1; k++)
+            {
+              TopoDS_Edge aLastEdge = TopoDS::Edge(myPaths(k)(i));
+              TopoDS_Shape VertexAsEdge = TopExp::FirstVertex(aLastEdge, Standard_True);
+              myPaths(k).InsertBefore(i, VertexAsEdge);
+            }
+            j = 1;
+          }
+          else if (ChooseEdge == 2)
+          {
+            EdgeSeq(j-1) = NewEdge2;
+            EFmap.Add(NewEdge2, ListOneFace);
+            ToInsertVertex = Standard_True;
+          }
+        } //else //E1 is edge
+      } //if (ProperEdge.IsNull())
+      else //connecting edge exists
+      {
+        /*
+        if (ToInsertVertex)
+        {
+          myPaths(j-1).InsertBefore(i, PrevPrevVer);
+          myPaths((j<=NbE)? j : 1).InsertBefore(i, PrevCurVer);
+          EdgeSeq(j-1) = E12;
+        }
+        else
+        */
+          EdgeSeq(j-1) = ProperEdge;
+      }
+    } //for (j = 2; j <= NbVer; j++)
+    SectionsEdges.Append(EdgeSeq);
+
+    //check for exit from for(;;)
+    Standard_Integer NbEndEdges = 0;
+    for (j = 1; j <= EdgeSeq.Length(); j++)
+      if (EndEdges.Contains(EdgeSeq(j)))
+        NbEndEdges++;
+    if (NbEndEdges == NbE)
+      break;
+    
+    i++;
+  } //for (;;)
+  
+
+  //final phase: building of middle path
+  Standard_Integer NbSecFaces = SectionsEdges.Length();
+  TopTools_Array1OfShape SecFaces(1, NbSecFaces);
+  for (i = 1; i <= NbSecFaces; i++)
+  {
+    BRepLib_MakeWire MW;
+    for (j = 1; j <= NbE; j++)
+    {
+      anEdge = TopoDS::Edge(SectionsEdges(i)(j));
+      MW.Add(anEdge);
+    }
+    if (!myClosedSection)
+    {
+      TopExp::Vertices(MW.Wire(), V1, V2);
+      anEdge = BRepLib_MakeEdge(V2, V1);
+      MW.Add(anEdge);
+    }
+    TopoDS_Wire aWire = MW.Wire();
+    BRepLib_MakeFace MF(aWire, Standard_True); //Only plane
+    if (MF.IsDone())
+      SecFaces(i) = MF.Face();
+    else
+      SecFaces(i) = aWire;
+  }
+
+  TColgp_Array1OfPnt Centers(1, NbSecFaces);
+  for (i = 1; i <= NbSecFaces; i++)
+  {
+    GProp_GProps Properties;
+    if (SecFaces(i).ShapeType() == TopAbs_FACE)
+      BRepGProp::SurfaceProperties(SecFaces(i), Properties);
+    else //wire
+      BRepGProp::LinearProperties(SecFaces(i), Properties);
+      
+    Centers(i) = Properties.CentreOfMass();
+  }
+
+  TopTools_Array1OfShape MidEdges(1, NbSecFaces-1);
+  Standard_Real LinTol = 1.e-5;
+  Standard_Real AngTol = 1.e-7;
+  gp_Pnt Pnt1, Pnt2;
+  for (i = 1; i < NbSecFaces; i++)
+  {
+    GeomAbs_CurveType TypeOfMidEdge = GeomAbs_OtherCurve;
+    for (j = 1; j <= myPaths.Length(); j++)
+    {
+      const TopoDS_Shape& aShape = myPaths(j)(i);
+      if (aShape.ShapeType() == TopAbs_VERTEX)
+      {
+        TypeOfMidEdge = GeomAbs_OtherCurve;
+        break;
+      }
+      anEdge = TopoDS::Edge(aShape);
+      GeomAbs_CurveType aType = TypeOfEdge(anEdge);
+      if (j == 1)
+        TypeOfMidEdge = aType;
+      else
+      {
+        if (aType != TypeOfMidEdge)
+        {
+          TypeOfMidEdge = GeomAbs_OtherCurve;
+          break;
+        }
+      }
+    }
+    if (TypeOfMidEdge == GeomAbs_Line)
+      MidEdges(i) = BRepLib_MakeEdge(Centers(i), Centers(i+1));
+    else if (TypeOfMidEdge == GeomAbs_Circle)
+    {
+      gp_Ax1 theAxis;
+      gp_Dir theDir1, theDir2;
+      Standard_Real theAngle;
+      Standard_Boolean SimilarArcs = Standard_True;
+      for (j = 1; j <= myPaths.Length(); j++)
+      {
+        anEdge = TopoDS::Edge(myPaths(j)(i));
+        Standard_Real fpar, lpar;
+        Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+        if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+          aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
+        Pnt1 = aCurve->Value(fpar);
+        Pnt2 = aCurve->Value(lpar);
+        Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve);
+        gp_Circ aCirc = aCircle->Circ();
+        if (j == 1)
+        {
+          theAxis = aCirc.Axis();
+          theDir1 = gp_Vec(aCirc.Location(), Pnt1);
+          theDir2 = gp_Vec(aCirc.Location(), Pnt2);
+          theAngle = lpar - fpar;
+        }
+        else
+        {
+          gp_Ax1 anAxis = aCirc.Axis();
+          gp_Lin aLin(anAxis);
+          if (!aLin.Contains(theAxis.Location(), LinTol) ||
+              !anAxis.IsParallel(theAxis, AngTol))
+          {
+            SimilarArcs = Standard_False;
+            break;
+          }
+          gp_Dir aDir1 = gp_Vec(aCirc.Location(), Pnt1);
+          gp_Dir aDir2 = gp_Vec(aCirc.Location(), Pnt2);
+          if (!(aDir1.IsEqual(theDir1, AngTol) && aDir2.IsEqual(theDir2, AngTol) ||
+                aDir1.IsEqual(theDir2, AngTol) && aDir2.IsEqual(theDir1, AngTol)))
+          {
+            SimilarArcs = Standard_False;
+            break;
+          }
+        }
+      }
+      if (SimilarArcs)
+      {
+        gp_XYZ AxisLoc = theAxis.Location().XYZ();
+        gp_XYZ AxisDir = theAxis.Direction().XYZ();
+        Standard_Real Parameter = (Centers(i).XYZ() - AxisLoc) * AxisDir;
+        gp_Pnt theCenterOfCirc(AxisLoc + Parameter*AxisDir);
+        
+        gp_Vec Vec1(theCenterOfCirc, Centers(i));
+        gp_Vec Vec2(theCenterOfCirc, Centers(i+1));
+        /*
+        gp_Dir VecProd = Vec1 ^ Vec2;
+        if (theAxis.Direction() * VecProd < 0.)
+          theAxis.Reverse();
+        */
+        
+        Standard_Real anAngle = Vec1.AngleWithRef(Vec2, theAxis.Direction());
+        if (anAngle < 0.)
+          anAngle += 2.*M_PI;
+        if (Abs(anAngle - theAngle) > AngTol)
+          theAxis.Reverse();
+        gp_Ax2 theAx2(theCenterOfCirc, theAxis.Direction(), Vec1);
+        Handle(Geom_Circle) theCircle = GC_MakeCircle(theAx2, Vec1.Magnitude());
+        MidEdges(i) = BRepLib_MakeEdge(theCircle, 0., theAngle);
+      }
+    }
+  }
+
+  //Build missed edges
+  for (i = 1; i < NbSecFaces; i++)
+  {
+    if (MidEdges(i).IsNull())
+    {
+      for (j = i+1; j < NbSecFaces; j++)
+      {
+        if (!MidEdges(j).IsNull())
+          break;
+      }
+      //from i to j-1 all edges are null
+      Handle(TColgp_HArray1OfPnt) thePoints = new TColgp_HArray1OfPnt(1, j-i+1);
+      TColgp_Array1OfVec theTangents(1, j-i+1);
+      Handle(TColStd_HArray1OfBoolean) theFlags = new TColStd_HArray1OfBoolean(1, j-i+1);
+      for (k = i; k <= j; k++)
+        thePoints->SetValue(k-i+1, Centers(k));
+      for (k = i; k <= j; k++)
+      {
+        TColgp_SequenceOfPnt PntSeq;
+        for (Standard_Integer indp = 1; indp <= myPaths.Length(); indp++)
+        {
+          gp_Vec aTangent;
+          if (k == i)
+          {
+            if (myPaths(indp)(k).ShapeType() == TopAbs_VERTEX)
+              continue;
+            aTangent = TangentOfEdge(myPaths(indp)(k), Standard_True); //at begin
+          }
+          else if (k == j)
+          {
+            if (myPaths(indp)(k-1).ShapeType() == TopAbs_VERTEX)
+              continue;
+            aTangent = TangentOfEdge(myPaths(indp)(k-1), Standard_False); //at end
+          }
+          else
+          {
+            if (myPaths(indp)(k-1).ShapeType() == TopAbs_VERTEX ||
+                myPaths(indp)(k).ShapeType() == TopAbs_VERTEX)
+              continue;
+            gp_Vec Tangent1 = TangentOfEdge(myPaths(indp)(k-1), Standard_False); //at end
+            gp_Vec Tangent2 = TangentOfEdge(myPaths(indp)(k), Standard_True); //at begin
+            aTangent = Tangent1 + Tangent2;
+          }
+          aTangent.Normalize();
+          gp_Pnt aPnt(aTangent.XYZ());
+          PntSeq.Append(aPnt);
+        }
+        TColgp_Array1OfPnt PntArray(1, PntSeq.Length());
+        for (Standard_Integer ip = 1; ip <= PntSeq.Length(); ip++)
+          PntArray(ip) = PntSeq(ip);
+        gp_Pnt theBary;
+        gp_Dir xdir, ydir;
+        Standard_Real xgap, ygap, zgap;
+        GeomLib::Inertia(PntArray, theBary, xdir, ydir, xgap, ygap, zgap);
+        gp_Vec theTangent(theBary.XYZ());
+        theTangents(k-i+1) = theTangent;
+      }
+      theFlags->Init(Standard_True);
+
+      GeomAPI_Interpolate Interpol(thePoints, Standard_False, LinTol);
+      Interpol.Load(theTangents, theFlags);
+      Interpol.Perform();
+      if (!Interpol.IsDone())
+      {
+        cout<<endl<<"Interpolation failed"<<endl;
+      }
+      Handle(Geom_Curve) InterCurve = Interpol.Curve();
+      MidEdges(i) = BRepLib_MakeEdge(InterCurve);
+      i = j;
+    }
+  }  
+
+  BRepLib_MakeWire MakeFinalWire;
+  for (i = 1; i < NbSecFaces; i++)
+    if (!MidEdges(i).IsNull())
+      MakeFinalWire.Add(TopoDS::Edge(MidEdges(i)));
+
+  TopoDS_Wire FinalWire = MakeFinalWire.Wire();
+  myShape = MakeFinalWire.Wire();
+  
+  //Temporary
+  /*
+  TopoDS_Compound aCompound, aCmp1, aCmp2;
+  BRep_Builder BB;
+  BB.MakeCompound(aCompound);
+  BB.MakeCompound(aCmp1);
+  BB.MakeCompound(aCmp2);
+  for (i = 1; i <= myPaths.Length(); i++)
+  {
+    TopoDS_Compound aCmp;
+    BB.MakeCompound(aCmp);
+    for (j = 1; j <= myPaths(i).Length(); j++)
+      BB.Add(aCmp, myPaths(i)(j));
+    BB.Add(aCmp1, aCmp);
+  }
+  for (i = 1; i <= SectionsEdges.Length(); i++)
+  {
+    TopoDS_Wire aWire;
+    BB.MakeWire(aWire);
+    for (j = 1; j <= SectionsEdges(i).Length(); j++)
+      BB.Add(aWire, SectionsEdges(i)(j));
+    BB.Add(aCmp2, aWire);
+  }
+  BB.Add(aCompound, aCmp1);
+  BB.Add(aCompound, aCmp2);
+  BB.Add(aCompound, FinalWire);
+         
+  myShape = aCompound;
+  */
+  ////////////
+
+  Done();
+}
