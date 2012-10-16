@@ -357,9 +357,9 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
   Standard_Real TolInit= 1.e-9;
   Standard_Integer nn = 7;
 
-  if(AC1.GetType() != GeomAbs_Circle ||
+  if(AC1.GetType() != GeomAbs_Circle &&
      AC1.GetType() != GeomAbs_Line   ||
-     AC2.GetType() != GeomAbs_Circle ||
+     AC2.GetType() != GeomAbs_Circle &&
      AC2.GetType() != GeomAbs_Line     ) {
 
     TolInit = 1.e-8;
