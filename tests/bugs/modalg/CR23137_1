@@ -6,7 +6,7 @@ puts ""
 # Class BRepAlgoAPI_Cut does not made correct result on attached shapes.
 ##########################################################################################################
 
-restore [locate_data_file CR23137-bspl_cut.brep] b
+restore [locate_data_file bug23137_bspl_cut.brep] b
 explode b
 copy b_1 b1
 copy b_2 b2

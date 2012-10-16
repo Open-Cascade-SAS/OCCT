@@ -10,7 +10,8 @@ puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for sh
 
 puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:18 label"
 
-puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:23 label"
+###don't reproduced IR-2012-10-15-IR-2012-10-12
+###puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:23 label"
 
 puts "TODO OCC23213 ALL: Error : errors occur during test"
 

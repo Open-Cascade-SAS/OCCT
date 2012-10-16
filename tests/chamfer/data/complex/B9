@@ -12,14 +12,15 @@ if { [string compare $command chamf_sequence] == 0 } {
     set os $env(os_type)
   }
   if { [string compare ${os} "Windows-64-VC9"] != 0 && [string compare ${os} "Windows-64-VC10"] != 0} {
-    set nf 1
+    set nf 0
     if { [string compare $group equal_dist] == 0 } {
       if {[string compare $os "Debian40"] == 0 || [string compare $os "Mandriva2008"] == 0 || [string compare $os "Mandriva2010"] == 0} {
         set nf 4
       }
     }
     if { [string compare $group dist_dist] == 0 && [string compare $os "Mandriva2010"] == 0 } {
-      set nf 2
+      ##set nf 2
+      set nf 0
     }
     if { $nf != 0 } {
       #puts "TODO OCC22909 $os:Faulty shapes in variables faulty_1 to faulty_$nf"

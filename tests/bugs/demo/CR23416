@@ -8,10 +8,13 @@ puts ""
 
 isos 2
 smallview
-if [catch { restore [locate_data_file CR23416-ProblemFace.brep] result } res] {
+set info [restore [locate_data_file CR23416-ProblemFace.brep] result]
+set check_error [lsearch $info exception]
+if { $check_error != -1 } {
     puts "Error : crashes during visualization"
 }
 fit
 set only_xwd 1
+
 
 
