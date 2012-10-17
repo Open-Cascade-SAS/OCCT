@@ -174,15 +174,11 @@ static void EvalParameters(const Geom2dAdaptor_Curve& Bis,
 			         TColgp_SequenceOfPnt& Params)
 {
   Geom2dInt_GInter Intersector;
-  Standard_Real Tol = Precision::Intersection();
+  Standard_Real Tol = Precision::Confusion();
 //  Standard_Real TolC = 1.e-9;
 
   Geom2dAdaptor_Curve CBis(Bis);
   Geom2dAdaptor_Curve CAC (AC);
-
-  if(AC.GetType() != GeomAbs_Circle || AC.GetType() != GeomAbs_Line) {
-    Tol *= 100.;
-  } 
 
   //Intersector = Geom2dInt_GInter(CBis, CAC, TolC, Tol);
   Intersector = Geom2dInt_GInter(CAC, CBis, Tol, Tol);
