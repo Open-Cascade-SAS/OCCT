@@ -1,0 +1,10 @@
+parabola result 70 1  0  1 10
+2drotate result 0 0 90
+set viewer "v2d"
+
+set Center_o_1 -0.999999999999996; set Center_o_2 70; 
+set Axis_o_1 -1; set Axis_o_2 6.12303176911189e-17; 
+set XAxis_o_1 -1; set XAxis_o_2 6.12303176911189e-17; 
+set YAxis_o_1 -6.12303176911189e-17; set YAxis_o_2 -1; 
+set LastParam_o_1 10; 
+

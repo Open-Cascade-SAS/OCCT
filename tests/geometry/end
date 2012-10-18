@@ -1,0 +1,106 @@
+proc comparison { x1 x1_o prop } {
+    set precision 0.0000001
+    if { ( abs($x1) > $precision ) || ( abs($x1_o) > $precision ) } {
+	if { ($x1_o != 0 && [expr 1.*abs($x1_o - $x1)/$x1_o] > 0.01) || ($x1_o == 0 && $x1 != 0) } {
+    	    puts "Error : The $prop of result shape is $x1 and expected $prop is $x1_o"
+    	}
+    }
+}
+
+if { [isdraw result] } {
+    if { [info exists type] && [string compare "$type" "infinite"] == 0 && ![info exists length] } {
+	set ddump [dump result]
+	regexp {Axis   *: *([-0-9.+eE]+), *([-0-9.+eE]+),* *([-0-9.+eE]*) *} $ddump full Axis_1 Axis_2 Axis_3 
+	comparison $Axis_1 $Axis_o_1 "Axis_1"
+	comparison $Axis_2 $Axis_o_2 "Axis_2"
+	if { [info exists Axis_o_3] } {
+	    comparison $Axis_3 $Axis_o_3 "Axis_3"
+	}
+	if { [regexp {Line} $ddump] } {
+	    regexp {Origin *: *([-0-9.+eE]+), *([-0-9.+eE]+),* *([-0-9.+eE]*) *} $ddump full Origin_1 Origin_2 Origin_3 
+	    comparison $Origin_1 $Origin_o_1 "Origin_1"
+	    comparison $Origin_2 $Origin_o_2 "Origin_2"
+	    if { [info exists Origin_o_3] } {
+		comparison $Origin_3 $Origin_o_3 "Origin_3"
+	    }
+	} elseif { [regexp {Parabola} $ddump] || [regexp {Hyperbola} $ddump] } { 
+	    regexp {Center *: *([-0-9.+eE]+), *([-0-9.+eE]+),* *([-0-9.+eE]*) *} $ddump full Center_1 Center_2 Center_3 
+	    comparison $Center_1 $Center_o_1 "Center_1"
+	    comparison $Center_2 $Center_o_2 "Center_2"
+	    if { [info exists Center_o_3] } {
+		comparison $Center_3 $Center_o_3 "Center_3"
+	    }
+	    regexp {XAxis  *: *([-0-9.+eE]+), *([-0-9.+eE]+),* *([-0-9.+eE]*) *} $ddump full XAxis_1 XAxis_2 XAxis_3
+	    comparison $XAxis_1 $XAxis_o_1 "XAxis_1"
+	    comparison $XAxis_2 $XAxis_o_2 "XAxis_2"
+	    if { [info exists XAxis_o_3] } {
+		comparison $XAxis_3 $XAxis_o_3 "XAxis_3"
+	    }
+	    regexp {YAxis  *: *([-0-9.+eE]+), *([-0-9.+eE]+),* *([-0-9.+eE]*) *} $ddump full YAxis_1 YAxis_2 YAxis_3
+	    comparison $YAxis_1 $YAxis_o_1 "YAxis_1"
+	    comparison $YAxis_2 $YAxis_o_2 "YAxis_2"
+	    if { [info exists YAxis_o_3] } {
+		comparison $YAxis_3 $YAxis_o_3 "YAxis_3"
+	    }
+	    if { [regexp {Hyperbola} $ddump] } {
+		regexp {Radii  *: *([-0-9.+eE]+), *([-0-9.+eE]+) *} $ddump full LastParam_1 LastParam_2
+	    } else {
+		regexp {Focal  *: *([-0-9.+eE]+) *} $ddump full LastParam_1
+	    }
+	    comparison $LastParam_1 $LastParam_o_1 "LastParam_1"
+	    if { [info exists LastParam_o_2] } {
+	        comparison $LastParam_2 $LastParam_o_2 "LastParam_2"
+	    }
+	} else {
+	    puts "Error : undefined type" 
+	}
+    } else {
+	if { [info exists length] } {
+	    set prop "length"
+	    set mass $length
+	    regexp {The +length +result +is +([-0-9.+eE]+)} [length result] full m
+	} elseif { [info exist square] } {
+	    set prop "square"
+	    set mass $square
+	    regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+	}
+	
+	if { [string compare "$mass" "empty"] != 0 } {
+	    if { $m == 0 } {
+		puts "Error : The $command is not valid. The $prop is 0."
+	    }
+	    if { $mass > 0 } {
+		puts "The expected $prop is $mass"
+	    }
+	    #check of change of length is < 1%
+	    if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+		puts "Error : The $prop of result shape is $m"
+	    }
+	} else {
+	    if { $m != 0 } {
+		puts "Error : The $command is not valid. The $prop is $m"
+	    }
+	}
+    }	
+} else {
+    puts "Error : The $command can not be build."
+}
+
+$viewer
+if { [string compare "$viewer" "v2d"] == 0 } {
+    2dclear
+    donly result
+    2dfit
+} elseif { [string compare "$viewer" "smallview"] == 0 } {
+    clear
+    donly result
+    fit
+} else {
+    puts "Error : wrong value of variable viewer"
+}
+xwd $imagedir/${test_image}.gif
+
+# to end a test script
+puts "TEST COMPLETED"
+
+

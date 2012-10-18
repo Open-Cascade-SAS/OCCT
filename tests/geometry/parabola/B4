@@ -1,0 +1,11 @@
+parabola result 0 0  1 0  30
+reverse result
+set viewer "v2d"
+
+
+set Center_o_1 0; set Center_o_2 0; 
+set Axis_o_1 1; set Axis_o_2 0; 
+set XAxis_o_1 1; set XAxis_o_2 0; 
+set YAxis_o_1 0; set YAxis_o_2 -1; 
+set LastParam_o_1 30; 
+

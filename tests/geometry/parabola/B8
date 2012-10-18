@@ -1,0 +1,13 @@
+parabola  p 7 0 0 1 0.2
+trim p p -1 1
+copy p pr
+2dtranslate pr 0 -4
+reverse pr
+convert result pr
+2dpl 
+2dpl
+2dpu
+2dpu
+set viewer "v2d"
+set length 3.3514748622014476
+

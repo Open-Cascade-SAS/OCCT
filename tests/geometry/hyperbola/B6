@@ -1,0 +1,13 @@
+hyperbola result 0  0 1 0 20 10
+dset ech 1.1
+repeat 20 { 
+	2dpscale result 0 0 0 ech; 
+	copy result .; 
+}
+
+set Center_o_1 0; set Center_o_2 0; 
+set Axis_o_1 1; set Axis_o_2 0; 
+set XAxis_o_1 1; set XAxis_o_2 0; 
+set YAxis_o_1 -0; set YAxis_o_2 1; 
+set LastParam_o_1 134.549998986512; set LastParam_o_2 67.2749994932561; 
+

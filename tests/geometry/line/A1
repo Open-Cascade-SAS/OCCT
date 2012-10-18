@@ -1,0 +1,6 @@
+line result 0 0 1 1
+set viewer "v2d"
+
+set Origin_o_1 0; set Origin_o_2 0; 
+set Axis_o_1 0.707106781186548; set Axis_o_2 0.707106781186548; 
+

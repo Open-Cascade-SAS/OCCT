@@ -1,0 +1,5 @@
+ellipse cer 0 0 0  0 0 1  2 1
+trim cer cer 0 pi
+convert result cer qa
+set length 4.8442241102733714
+

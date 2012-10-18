@@ -1,0 +1,10 @@
+parabola result  0  1  0  1 10
+val2d result -50 50 40
+set viewer "v2d"
+
+set Center_o_1 0; set Center_o_2 1; 
+set Axis_o_1 0; set Axis_o_2 1; 
+set XAxis_o_1 0; set XAxis_o_2 1; 
+set YAxis_o_1 -1; set YAxis_o_2 0; 
+set LastParam_o_1 10; 
+

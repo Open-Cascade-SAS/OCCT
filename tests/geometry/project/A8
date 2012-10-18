@@ -1,0 +1,5 @@
+restore [locate_data_file pro5103_bug-proj6-curve.rle] curv1
+restore [locate_data_file pro5103_bug-proj6-surface.rle] surf1
+project result curv1 surf1 -v 50
+set length 0.0074999999675910405
+

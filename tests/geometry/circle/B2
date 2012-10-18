@@ -1,0 +1,4 @@
+circle result 0 0 1 0 0.2
+set viewer "v2d"
+set length 1.2566370614359172
+

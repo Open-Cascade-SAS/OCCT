@@ -1,0 +1,7 @@
+line result 70 0 0  1 1 0  
+repeat 4 {pl}
+dmode result U
+
+set Origin_o_1 70; set Origin_o_2 0; set Origin_o_3 0; 
+set Axis_o_1 0.707106781186548; set Axis_o_2 0.707106781186548; set Axis_o_3 0; 
+

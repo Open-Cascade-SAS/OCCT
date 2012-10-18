@@ -1,0 +1,6 @@
+circle result 70 0 0  0 0 1   1 0 0   30
+pscale result 0 0 0 5
+repeat 4 {pl}
+dmode result U
+set length 942.47779607693792
+

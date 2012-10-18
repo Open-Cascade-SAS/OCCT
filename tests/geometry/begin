@@ -1,0 +1,95 @@
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload TOPTEST
+    pload AISV
+}
+# To prevent loops limit to 10 minutes
+cpulimit 600
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+
+if { [info exists test_image ] == 0 } {
+   set test_image photo
+}
+
+
+#
+#evaluate n points beetween u1 and u2 on the curve 2d c
+#
+
+proc val2d { c u1 u2 n } {
+
+  dset du ($u2-$u1)/$n
+  upvar $c cc
+
+  set i 1
+			
+  for {dset u $u1} { [dval u] <= $u2} {dset u ($u1+$i*[dval du])} {
+    2dcvalue cc u x y dx dy d2x d2y  ;
+    global p_$i d1_$i d2_$i 
+    point p_$i  x y;
+    puts "u   = [dval u]"
+    puts "p_$i   [dval x  ]  [dval y]"
+    puts "d1_$i  [dval dx ]  [dval dy]";
+    puts "d2_$i  [dval d2x]  [dval d2y]";
+     
+    copy p_$i .	;
+      point d1_$i dx dy
+      point d2_$i d2x d2y
+    incr i 1	
+  }
+}
+
+#
+#evaluate n points beetween u1 and u2 on the curve 3d c
+#
+proc val3d { c u1 u2 n } {
+
+  dset du ($u2-$u1)/$n
+  upvar $c cc
+  
+  set i 1
+		
+  for {dset u $u1} { [dval u] <= $u2} {dset u (u+[dval du])} {
+    cvalue cc u x y z dx dy dz d2x d2y d2z ; 
+    point p_$i  x y z;
+    puts "u   = [dval u]"
+    puts "p_$i  [dval x  ] [dval y  ] [dval z]";
+    puts "d1_$i [dval dx ] [dval dy ] [dval dz]";    
+    puts "d2_$i [dval d2x] [dval d2y] [dval d2z]";	
+    copy p_$i .	;
+      point d1_$i dx  dy  dz
+      point d2_$i d2x d2y d2z
+    incr i	
+  }
+}
+
+proc compare {r1 r2 tol} {
+	if {$r1 - $r2  >= $tol} {
+		puts "Error : evalution" 
+	}
+	if {$r2 - $r1  >= $tol} {
+		puts "Error : evalution" 
+	}
+} 
+
+proc comparepnt2d {p1 p2 tol} {
+	upvar $p1 pp1
+	upvar $p2 pp2
+	coord pp1 x1 y1
+	coord pp2 x2 y2
+	compare [dval x1] [dval x2] $tol
+	compare [dval y1] [dval y2] $tol
+}
+
+proc comparepnt3d {p1 p2 tol} {
+	upvar $p1 pp1
+	upvar $p2 pp2
+	coord pp1 x1 y1 z1
+	coord pp2 x2 y2 z2
+	compare [dval x1] [dval x2] $tol
+	compare [dval y1] [dval y2] $tol
+	compare [dval z1] [dval z2] $tol
+}
+

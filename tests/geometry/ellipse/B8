@@ -1,0 +1,12 @@
+ellipse e  3 0 0 1 1 0.5
+copy e er
+2dtranslate er 0 -4
+reverse er
+convert result er
+2dpl 
+2dpl
+2dpu
+2dpu
+set viewer "v2d"
+set length 4.844224110274018
+

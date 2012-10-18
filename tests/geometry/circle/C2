@@ -1,0 +1,5 @@
+circle result 0 0 1 0 30
+val2d  result 0 [dval 2*pi] 20
+set viewer "v2d"
+set length 188.49555921538757
+

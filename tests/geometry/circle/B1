@@ -1,0 +1,6 @@
+circle c -40 0 1 0 20
+offset result c 10
+2dlmirror result 0 0 0 1
+set viewer "v2d"
+set length 62.831853071795862
+

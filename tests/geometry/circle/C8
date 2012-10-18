@@ -1,0 +1,12 @@
+circle c   0 0 0 1 1
+copy c cr
+2dtranslate cr 0 -4
+reverse cr
+convert result cr
+2dpl 
+2dpl
+2dpu
+2dpu
+set viewer "v2d"
+set length 6.2831853071795853
+

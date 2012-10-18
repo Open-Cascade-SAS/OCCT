@@ -1,0 +1,5 @@
+hyperbola hyper 0 0 0 0 0 1 2 1
+trim hyper hyper -1 1
+convert result hyper
+set length 3.3078924645283738
+

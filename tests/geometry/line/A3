@@ -1,0 +1,5 @@
+line result 0 0 0 1 1 1
+
+set Origin_o_1 0; set Origin_o_2 0; set Origin_o_3 0; 
+set Axis_o_1 0.577350269189626; set Axis_o_2 0.577350269189626; set Axis_o_3 0.577350269189626; 
+

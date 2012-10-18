@@ -1,0 +1,5 @@
+circle c2 -30 -30 1 0 20
+trim result c2 pi 2*pi
+set viewer "v2d"
+set length 62.831853071795862
+

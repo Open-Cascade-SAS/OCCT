@@ -1,0 +1,4 @@
+circle c 0 0 0  0 0 1  1
+convert result c 
+set length 6.2831853071795853
+
