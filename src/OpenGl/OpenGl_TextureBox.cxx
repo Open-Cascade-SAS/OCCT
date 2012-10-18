@@ -63,7 +63,7 @@
 *   17-12-97: FMN ; Probleme sur Optimisation sur MyBindTextureEXT()
 *        Le test sur la texture courante doit tenir compte du contexte.
 *   22-07-98: FGU ; Ajout fonctions TransferTexture_To_Data() et TransferData_To_Texture()
-*        
+*
 */
 
 #include <stdio.h>
@@ -73,7 +73,6 @@
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Display.hxx>
 #include <OpenGl_TextureBox.hxx>
-#include <OpenGl_ImageBox.hxx>
 #include <OpenGl_ResourceTexture.hxx>
 #include <OpenGl_Context.hxx>
 
@@ -84,7 +83,7 @@
 typedef enum {TEXDATA_NONE, TEXDATA_1D, TEXDATA_2D, TEXDATA_2DMM} texDataStatus;
 typedef enum {TEX_NONE, TEX_ALLOCATED} texStatus;
 
-typedef GLfloat SizeType[4]; 
+typedef GLfloat SizeType[4];
 
 typedef int TextureDataID;
 #define TEXTUREDATA_ERROR -1
@@ -98,7 +97,7 @@ struct texData
   GLint type;
   int share_count;
   DEFINE_STANDARD_ALLOC
-};  
+};
 
 struct contextData
 {
@@ -232,7 +231,7 @@ static void LoadTexture(TextureID ID)
   switch (texdata(data).status)
   {
   case TEXDATA_1D:
-    glTexImage1D(GL_TEXTURE_1D, 0, 4, 
+    glTexImage1D(GL_TEXTURE_1D, 0, 4,
       texdata(data).imageWidth, 0,
       GL_RGBA, GL_UNSIGNED_BYTE, texdata(data).image);
     break;
@@ -245,7 +244,7 @@ static void LoadTexture(TextureID ID)
 
   case TEXDATA_2DMM:
     gluBuild2DMipmaps(GL_TEXTURE_2D, 4,
-      texdata(data).imageWidth, 
+      texdata(data).imageWidth,
       texdata(data).imageHeight,
       GL_RGBA, GL_UNSIGNED_BYTE, texdata(data).image);
     break;
@@ -349,7 +348,7 @@ static void SetTextureParam(TextureID ID)
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
     }
-    break;  
+    break;
   default:
     break;
   }
@@ -403,7 +402,7 @@ static void MyBindTextureEXT (TextureID ID, int Context)
   if (texdata(data).status == TEXDATA_NONE)
     return;
 
-  GLenum aParamName = texdata(data).status == TEXDATA_1D ? 
+  GLenum aParamName = texdata(data).status == TEXDATA_1D ?
   GL_TEXTURE_BINDING_1D : GL_TEXTURE_BINDING_2D;
 
   GLint aCurrTex = -1;
@@ -429,62 +428,7 @@ static int InstallTextureInContext(TextureID ID)
   printf("InstallTextureInContext::context ok\n");
 #endif
   return 0;
-}  
-
-/*----------------------------------------------------------------------*/
-static TextureID GetTexture(char *FileName, texDataStatus status)
-{
-  TextureDataID i;
-  TextureID j;
-  int dummy;
-
-  /* essait de trouver la texture */
-  i = FindTextureData(FileName);
-  if (i == TEXTUREDATA_ERROR)
-  {
-#ifdef PRINT
-    printf("GetTexture::la texture %s n'existe pas => chargement\n", FileName);
-#endif
-    /* creation d'une texture */
-    i = FindFreeTextureData();
-    if (i == TEXTUREDATA_ERROR) return TEXTUREBOX_ERROR;
-
-    texdata(i).share_count = 0;
-    strcpy(texdata(i).imageFileName, FileName);
-    texdata(i).image = (GLubyte *)read_texture(FileName, 
-      &texdata(i).imageWidth,
-      &texdata(i).imageHeight,
-      &dummy);
-    if (texdata(i).image == NULL) return TEXTUREBOX_ERROR;
-
-    texdata(i).status = status;            
-    texdata(i).type = status2type[status];
-  }
-
-  j = FindFreeTexture();
-  if (j != TEXTUREBOX_ERROR)
-  {
-#ifdef PRINT
-    printf("GetTexture::installation texture pour obj %d\n", j);
-#endif
-    textab(j).contextdata.Clear();
-    textab(j).data = i;
-    textab(j).status = TEX_ALLOCATED;
-    texdata(i).share_count++;
-
-    SetTextureDefaultParams(j);
-
-#ifdef PRINT
-    printf("GetTexture::texture %s(%d)    texture %d   count=%d\n", texdata(i).imageFileName, i, j, texdata(i).share_count);
-#endif
-  }
-  else
-    if (texdata(i).share_count != 0)
-      delete [] texdata(i).image;  
-
-  return j;
 }
-
 
 /*----------------------------------------------------------------------*/
 static TextureID GetTextureData(char *FileName, texDataStatus status, const GLint width, const GLint height, const void *data)
@@ -512,7 +456,7 @@ static TextureID GetTextureData(char *FileName, texDataStatus status, const GLin
 
     if (texdata(i).image == NULL) return TEXTUREBOX_ERROR;
 
-    texdata(i).status = status;            
+    texdata(i).status = status;
     texdata(i).type = status2type[status];
   }
 
@@ -535,14 +479,14 @@ static TextureID GetTextureData(char *FileName, texDataStatus status, const GLin
   }
   else
     if (texdata(i).share_count != 0)
-      delete [] texdata(i).image;  
+      delete [] texdata(i).image;
 
   return j;
 }
 
 /*----------------------------------------------------------------------*/
 /*
-* Fonctions publiques 
+* Fonctions publiques
 */
 
 
@@ -553,7 +497,7 @@ GLboolean IsTextureValid(TextureID ID)
   if ( (ID < 0) || (ID >= textab.Length()) )
     return GL_FALSE;
 
-  if (textab.Length() > 0) 
+  if (textab.Length() > 0)
   {
     return textab(ID).status == TEX_ALLOCATED;
   }
@@ -561,36 +505,6 @@ GLboolean IsTextureValid(TextureID ID)
   {
     return GL_FALSE;
   }
-}
-
-/*----------------------------------------------------------------------*/
-
-TextureID GetTexture1D(char *FileName)
-{
-#ifdef PRINT
-  printf("GetTexture1D::loading 1d %s   \n", FileName);
-#endif
-  return GetTexture(FileName, TEXDATA_1D);
-}
-
-/*----------------------------------------------------------------------*/
-
-TextureID GetTexture2D(char *FileName)
-{
-#ifdef PRINT
-  printf("GetTexture2D::loading 2d %s   \n", FileName);
-#endif
-  return GetTexture(FileName, TEXDATA_2D);
-}
-
-/*----------------------------------------------------------------------*/
-
-TextureID GetTexture2DMipMap(char *FileName)
-{
-#ifdef PRINT
-  printf("GetTexture2DMipMap::loading 2dmm %s   \n", FileName);
-#endif
-  return GetTexture(FileName, TEXDATA_2DMM);
 }
 
 /*----------------------------------------------------------------------*/
@@ -655,7 +569,7 @@ void SetCurrentTexture(TextureID ID)
 #ifdef PRINT
     printf("SetCurrentTexture: utilisation du bind %d\n", ID);
 #endif
-    MyBindTextureEXT(ID, context); 
+    MyBindTextureEXT(ID, context);
     SetTextureParam(ID);
   }
 
@@ -710,7 +624,7 @@ void EnableTexture(void)
   switch (texdata(current_texture_data).status)
   {
   case TEXDATA_1D:
-    if (textab(current_texture).Gen != GL_NONE) 
+    if (textab(current_texture).Gen != GL_NONE)
       glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_1D);
     break;
@@ -733,15 +647,15 @@ void EnableTexture(void)
 
 void DisableTexture(void)
 {
-  if ( !IsTextureEnabled() ) 
+  if ( !IsTextureEnabled() )
     return;
-  if ( !IsTextureValid( current_texture ) ) 
+  if ( !IsTextureValid( current_texture ) )
     return;
 
   switch (texdata(current_texture_data).status)
   {
   case TEXDATA_1D:
-    if (textab(current_texture).Gen != GL_NONE) 
+    if (textab(current_texture).Gen != GL_NONE)
       glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_1D);
     break;
@@ -835,7 +749,7 @@ void SetModeSphere(TextureID ID)
 /*----------------------------------------------------------------------*/
 
 void SetModeEye(TextureID ID, const GLfloat sparams[4], const GLfloat tparams[4])
-{  
+{
   if (!IsTextureValid(ID)) return;
 
   textab(ID).Gen = GL_EYE_LINEAR;
@@ -918,8 +832,8 @@ void SetTextureDefaultParams(TextureID ID)
 /* Transfere de donnee des donnees internes a la structure TransferData */
 void TransferTexture_To_Data(TextureID ID, TextureData *TransfDt)
 {
-  /* affectations */    
-  strcpy(TransfDt->path, texdata(textab(ID).data).imageFileName);    
+  /* affectations */
+  strcpy(TransfDt->path, texdata(textab(ID).data).imageFileName);
   TransfDt->gen = textab(ID).Gen;
   TransfDt->wrap  = textab(ID).Wrap;
   TransfDt->render  = textab(ID).Light;
@@ -927,7 +841,7 @@ void TransferTexture_To_Data(TextureID ID, TextureData *TransfDt)
   TransfDt->scaley  = textab(ID).scaley;
   TransfDt->transx  = textab(ID).transx;
   TransfDt->transy  = textab(ID).transy;
-  TransfDt->angle = textab(ID).angle;            
+  TransfDt->angle = textab(ID).angle;
   memcpy(TransfDt->plane1,  textab(ID).Plane1, sizeof(SizeType));
-  memcpy(TransfDt->plane2,  textab(ID).Plane2, sizeof(SizeType));                
+  memcpy(TransfDt->plane2,  textab(ID).Plane2, sizeof(SizeType));
 }

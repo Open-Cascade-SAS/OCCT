@@ -71,7 +71,7 @@ typedef int TextureID;
 struct _TextureData
 {
   /* Donnees propre au fichier */
-  char path[256];    
+  char path[256];
 
   /* Donnees propre a la texture */
   GLint gen;
@@ -85,16 +85,11 @@ struct _TextureData
 };
 typedef _TextureData TextureData;
 
-/* 
+/*
 * Gestion des textures
 */
 
-/* Get texture a partir d'un nom de fichier */
-TextureID GetTexture1D(char *FileName);
-TextureID GetTexture2D(char *FileName);
-TextureID GetTexture2DMipMap(char *FileName);
-
-/* Get texture a partir des donnees (format RGBA) GLubyte data[width][height][4] 
+/* Get texture a partir des donnees (format RGBA) GLubyte data[width][height][4]
 * Le nom est utiliser pour la gesiton en interne, il permet d'eviter de charger
 * plusieurs textures avec le meme noms.
 */
@@ -113,8 +108,8 @@ void EnableTexture(void);
 void DisableTexture(void);
 GLboolean IsTextureEnabled(void);
 
-/* 
-* Configuration d'une texture 
+/*
+* Configuration d'une texture
 */
 
 void SetTextureModulate(TextureID ID);

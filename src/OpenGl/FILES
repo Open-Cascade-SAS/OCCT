@@ -88,8 +88,6 @@ OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_TextureBox.cxx
 OpenGl_TextureBox.hxx
-OpenGl_ImageBox.cxx
-OpenGl_ImageBox.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
 OpenGl_ResourceTexture.hxx
