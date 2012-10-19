@@ -1070,7 +1070,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 
   anUFlg(1) = Standard_True;
   anUFlg(nbsu) = Standard_True;
-  myNbSamplesU = 2; 
+  //myNbSamplesU = 2; 
   for(i = 1; i <= nbsv; ++i) {
     t1 = aVPars(i);
     j = 1;
@@ -1113,7 +1113,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 	if(!ok) {
 	  j = k - 1;
 	  anUFlg(j) = Standard_True;
-	  ++myNbSamplesU;
+	  //++myNbSamplesU;
 	  break;
 	}
 	
@@ -1129,6 +1129,12 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 
     }
   }
+
+  myNbSamplesU = 0;
+  for (i = 1; i <= nbsu; i++)
+    if (anUFlg(i) == Standard_True)
+      myNbSamplesU++;
+  
   if(myNbSamplesU < myMinPnts) {
     if(myNbSamplesU == 2) {
       //"uniform" distribution;
@@ -1149,7 +1155,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
       
   aVFlg(1) = Standard_True;
   aVFlg(nbsv) = Standard_True;
-  myNbSamplesV = 2;
+  //myNbSamplesV = 2;
   for(i = 1; i <= nbsu; ++i) {
     t1 = anUPars(i);
     j = 1;
@@ -1191,7 +1197,7 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 	if(!ok) {
 	  j = k - 1;
 	  aVFlg(j) = Standard_True;
-	  ++myNbSamplesV;
+	  //++myNbSamplesV;
 	  break;
 	}
 	
@@ -1207,6 +1213,12 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
 
     }
   }
+
+  myNbSamplesV = 0;
+  for (i = 1; i <= nbsv; i++)
+    if (aVFlg(i) == Standard_True)
+      myNbSamplesV++;
+  
   if(myNbSamplesV < myMinPnts) {
     if(myNbSamplesV == 2) {
       //"uniform" distribution;
