@@ -240,6 +240,13 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
       Standard_Real Umin, Umax, Vmin, Vmax;
       S->Bounds(Umin, Umax, Vmin, Vmax);
       S->D1((Umin+Umax)/2, (Vmin+Vmax)/2, P, DU, DV);
+      if (DU.Magnitude() <= gp::Resolution() ||
+          DV.Magnitude() <= gp::Resolution())
+      {
+        Standard_Real NewU = (Umin+Umax)/2 + (Umax-Umin)*0.1;
+        Standard_Real NewV = (Vmin+Vmax)/2 + (Vmax-Vmin)*0.1;
+        S->D1( NewU, NewV, P, DU, DV );
+      }
       Dn = DU^DV;
       if (Dn.Magnitude() > 1.e-7) {
 	Standard_Real angle = Dir.Angle(Dn);
@@ -274,6 +281,13 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const Handle(Geom_Surface)& S,
 
       S->Bounds(Umin, Umax, Vmin, Vmax);
       S->D1((Umin+Umax)/2, (Vmin+Vmax)/2, P, Du, Dv);
+      if (Du.Magnitude() <= gp::Resolution() ||
+          Dv.Magnitude() <= gp::Resolution())
+      {
+        Standard_Real NewU = (Umin+Umax)/2 + (Umax-Umin)*0.1;
+        Standard_Real NewV = (Vmin+Vmax)/2 + (Vmax-Vmin)*0.1;
+        S->D1( NewU, NewV, P, Du, Dv );
+      }
       Dn = Du^Dv;
       norm = Dn.Magnitude();
       if (norm > 1.e-15) {
