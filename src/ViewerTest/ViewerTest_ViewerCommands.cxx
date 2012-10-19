@@ -345,10 +345,6 @@ static void ProcessKeyPress( char *buf_ret )
     ViewerTest::CurrentView()->SetDegenerateModeOff();
 #endif
   }
-  else if ( !strcasecmp(buf_ret, "D") ) {
-    // Reset
-    aView->Reset();
-  }
   else if ( !strcasecmp(buf_ret, "S") ) {
     // SHADING
     cout << "passage en mode 1 (shading pour les shapes)" << endl;
@@ -372,7 +368,7 @@ static void ProcessKeyPress( char *buf_ret )
     }
   }
   else if ( !strcasecmp(buf_ret, "U") ) {
-    // SHADING
+    // Unset display mode
     cout<<"passage au mode par defaut"<<endl;
 #ifndef OCC120
     ViewerTest::CurrentView()->SetDegenerateModeOn();
@@ -399,15 +395,15 @@ static void ProcessKeyPress( char *buf_ret )
     aView->SetProj(V3d_Zpos);
   }
   else if ( !strcasecmp(buf_ret, "B") ) {
-    // Top
+    // Bottom
     aView->SetProj(V3d_Zneg);
   }
   else if ( !strcasecmp(buf_ret, "L") ) {
-    // Top
+    // Left
     aView->SetProj(V3d_Xneg);
   }
   else if ( !strcasecmp(buf_ret, "R") ) {
-    // Top
+    // Right
     aView->SetProj(V3d_Xpos);
   }
 
@@ -763,13 +759,17 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   di << "========================="<<"\n";
   di << "F : FitAll" << "\n";
   di << "T : TopView" << "\n";
+  di << "B : BottomView" << "\n";
+  di << "R : RightView" << "\n";
+  di << "L : LeftView" << "\n";
   di << "A : AxonometricView" << "\n";
-  di << "R : ResetView" << "\n";
+  di << "D : ResetView" << "\n";
 
   di << "========================="<<"\n";
   di << "S : Shading" << "\n";
   di << "W : Wireframe" << "\n";
   di << "H : HidelLineRemoval" << "\n";
+  di << "U : Unset display mode" << "\n";
 
   di << "========================="<<"\n";
   di << "Selection mode "<<"\n";
@@ -782,9 +782,10 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   di << "6 : Solid" <<"\n";
   di << "7 : Compound" <<"\n";
 
-  di << "=========================="<<"\n";
-  di << "D : Remove Selected Object"<<"\n";
-  di << "=========================="<<"\n";
+  di << "========================="<<"\n";
+  di << "Z : Switch Z clipping On/Off" << "\n";
+  di << ", : Hilight next detected" << "\n";
+  di << ". : Hilight previous detected" << "\n";
 
   return 0;
 }
