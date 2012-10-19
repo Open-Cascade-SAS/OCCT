@@ -38,14 +38,27 @@
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 
-static void LocalPrepareArgs(BRepAdaptor_Curve& theCurve,
-			     const Standard_Real      theFirstParameter,
-			     const Standard_Real      theLastParameter,
-			     Standard_Real&           theDeflection,
-			     IntTools_CArray1OfReal&  theArgs);
+static 
+  void LocalPrepareArgs(BRepAdaptor_Curve& theCurve,
+			const Standard_Real      theFirstParameter,
+			const Standard_Real      theLastParameter,
+			Standard_Real&           theDeflection,
+			IntTools_CArray1OfReal&  theArgs);
 
-static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter, 
-					    IntTools_MarkedRangeSet& theMarkedRange);
+static 
+  Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter, 
+				       IntTools_MarkedRangeSet& theMarkedRange);
+static
+  Standard_Integer CheckCoincidence(const Standard_Real aT11, 
+				    const Standard_Real aT12,
+				    const Handle(Geom_Curve)& aC1,
+				    const Standard_Real aT21, 
+				    const Standard_Real aT22,
+				    const Handle(Geom_Curve)& aC2,
+				    const Standard_Real aCriteria,
+				    const Standard_Real aCurveResolution1,
+				    GeomAPI_ProjectPointOnCurve& aProjector);
+
 
 // ==================================================================================
 // function: IntTools_BeanBeanIntersector
@@ -456,12 +469,30 @@ Standard_Boolean IntTools_BeanBeanIntersector::FastComputeIntersection()
 	  newparfound = Standard_False;
 	}
       }
-      
+      //
       if(!newparfound) {
 	break;
       }
     }// for(i = 0; i < 2; i++) {
   } // if(aCT1==GeomAbs_Circle)
+  //modified by NIZNHY-PKV Mon Oct 08 14:08:19 2012f
+  if (aCT1==GeomAbs_BSplineCurve || aCT1==GeomAbs_BezierCurve) {
+    Standard_Integer iFlag;
+    //
+    iFlag=CheckCoincidence(myFirstParameter1,
+			   myLastParameter1,
+			   myTrsfCurve1,
+			   myFirstParameter2,
+			   myLastParameter2,
+			   myTrsfCurve2,
+			   myCriteria,
+			   myCurveResolution1,
+			   myProjector);
+    if (!iFlag) {
+      aresult=!aresult;
+    }
+  }
+  //modified by NIZNHY-PKV Mon Oct 08 14:08:23 2012t
   return aresult;
 }
 // ==================================================================================
@@ -469,7 +500,7 @@ Standard_Boolean IntTools_BeanBeanIntersector::FastComputeIntersection()
 // purpose: 
 // ==================================================================================
 Standard_Real IntTools_BeanBeanIntersector::Distance(const Standard_Real theArg,
-						     Standard_Real&      theArgOnOtherBean) 
+						     Standard_Real& theArgOnOtherBean) 
 {
   Standard_Real aDistance;
   Standard_Integer aNbPoints;
@@ -478,11 +509,8 @@ Standard_Real IntTools_BeanBeanIntersector::Distance(const Standard_Real theArg,
   aDistance=RealLast();
   //
   aPoint=myCurve1.Value(theArg);
-  //modified by NIZNHY-PKV Thu Jul 01 12:20:52 2010f
   myProjector.Init(myTrsfCurve2, myFirstParameter2, myLastParameter2);
   myProjector.Perform(aPoint);
-  //myProjector.Init(aPoint, myTrsfCurve2, myFirstParameter2, myLastParameter2);
-  //modified by NIZNHY-PKV Thu Jul 01 12:21:05 2010t
   //
   aNbPoints=myProjector.NbPoints();
   if(aNbPoints > 0) {
@@ -1125,7 +1153,6 @@ static void LocalPrepareArgs(BRepAdaptor_Curve& theCurve,
     IntTools::PrepareArgs(theCurve, theLastParameter, theFirstParameter, aDiscretization, aRelativeDeflection, theArgs);
   }
 }
-
 // ---------------------------------------------------------------------------------
 // static function: SetEmptyResultRange
 // purpose:  
@@ -1149,4 +1176,222 @@ static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParamete
   
   return add;
 }
+//modified by NIZNHY-PKV Fri Oct 12 09:34:10 2012f
+static
+ Standard_Integer DistPC(const Standard_Real aT1, 
+			const Handle(Geom_Curve)& aC1,
+			const Standard_Real aCriteria, 
+			GeomAPI_ProjectPointOnCurve& aProjector,
+			Standard_Real& aD, 
+			Standard_Real& aT2);
+ 
 
+static
+ Standard_Integer DistPC(const Standard_Real aT1, 
+			const Handle(Geom_Curve)& aC1,
+			const Standard_Real aCriteria,
+			GeomAPI_ProjectPointOnCurve& aProjector, 
+			Standard_Real& aD, 
+			Standard_Real& aT2,
+			Standard_Real& aDmax,
+			Standard_Real& aTmax);
+
+static
+  Standard_Integer FindMaxDistPC(const Standard_Real aT1A, 
+				 const Standard_Real aT1B,
+				 const Handle(Geom_Curve)& aC1,
+				 const Standard_Real aCriteria,
+				 const Standard_Real aEps1,
+				 GeomAPI_ProjectPointOnCurve& aProjector,
+				 Standard_Real& aDmax, 
+				 Standard_Real& aT1max);
+
+//=======================================================================
+//function : CheckCoincidence
+//purpose  : 
+//=======================================================================
+Standard_Integer CheckCoincidence(const Standard_Real aT11, 
+				  const Standard_Real aT12,
+				  const Handle(Geom_Curve)& aC1,
+				  const Standard_Real aT21, 
+				  const Standard_Real aT22,
+				  const Handle(Geom_Curve)& aC2,
+				  const Standard_Real aCriteria,
+				  const Standard_Real aEps1,
+				  GeomAPI_ProjectPointOnCurve& aProjector)
+{
+  Standard_Integer iErr, aNb1, i, aNbX;
+  Standard_Real dT1, aT1, aT2, aD, aDmax, aTmin, aTmax;
+  Standard_Real aT1A, aT1B, aD1max,aT1max;
+  //
+  iErr=0; // the patches are coincided
+  //
+  //
+  aProjector.Init(aC2, aT21, aT22);
+  //
+  aDmax=-1.;
+  //
+  // 1. Express evaluation
+  //
+  aNb1=10; // Number of intervals on the curve #1
+  dT1=(aT12-aT11)/aNb1;
+  for (i=1; i<aNb1; ++i) {
+    aT1=aT11+i*dT1;
+    //
+    iErr=DistPC(aT1, aC1, aCriteria, aProjector, aD, aT2, aDmax, aTmax);
+    if (iErr) {
+      iErr=1;// a point from aC1 can not be projected on aC2
+      return iErr;
+    }
+    //
+    if (aDmax>aCriteria) {
+      iErr=2; // the distance is too big
+      return iErr;
+    }
+  }
+  //
+  // 2. Deep evaluation
+  aD1max=aDmax;
+  //
+  aNbX=aNb1-1;
+  for (i=1; i<aNbX; ++i) {
+    aT1A=aT11+i*dT1; 
+    aT1B=aT1A+dT1;
+    //
+    iErr=FindMaxDistPC(aT1A, aT1B, aC1, aCriteria, aEps1, aProjector, aD1max, aT1max);
+    if (iErr) {
+      iErr=1;
+      return iErr;
+    }
+  }
+  //
+  return iErr;
+}
+//
+//=======================================================================
+//function : FindMaxDistPC
+//purpose  : 
+//=======================================================================
+Standard_Integer FindMaxDistPC(const Standard_Real aT1A, 
+			       const Standard_Real aT1B,
+			       const Handle(Geom_Curve)& aC1,
+			       const Standard_Real aCriteria,
+			       const Standard_Real aEps1,
+			       GeomAPI_ProjectPointOnCurve& aProjector,
+			       Standard_Real& aDmax, 
+			       Standard_Real& aT1max) 
+{
+  Standard_Integer iErr, iCnt;
+  Standard_Real aGS, aXP, aA, aB, aXL, aYP, aYL, aT2P, aT2L, aX0;
+  //
+  iCnt=0;
+  iErr=0;
+  aDmax=0.;
+  //
+  aGS=0.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.))-1.;
+  aA=aT1A;
+  aB=aT1B;
+  //
+  aXP=aA+(aB-aA)*aGS;
+  aXL=aB-(aB-aA)*aGS;
+  //
+  iErr=DistPC(aXP, aC1, aCriteria, aProjector, aYP, aT2P, aDmax, aT1max);
+  if(iErr){
+    return iErr;
+  }
+  //
+  iErr=DistPC(aXL, aC1, aCriteria, aProjector, aYL, aT2L, aDmax, aT1max);
+  if(iErr){
+    return iErr;
+  }
+  //
+  while(1) {
+    if (aYP>aYL) {
+      aA=aXL;
+      aXL=aXP;
+      aYL=aYP;
+      aXP=aA+(aB-aA)*aGS;
+      iErr=DistPC(aXP, aC1, aCriteria, aProjector, aYP, aT2P, aDmax, aT1max);
+      if(iErr){
+	return iErr;
+      }
+    }
+    else {
+      aB=aXP;
+      aXP=aXL;
+      aYP=aYL;
+      aXL=aB-(aB-aA)*aGS;
+      iErr=DistPC(aXL, aC1, aCriteria, aProjector, aYL, aT2L, aDmax, aT1max);
+      if(iErr){
+	return iErr;
+      }
+    }
+    //
+    if ((aB-aA)<aEps1) {
+      aX0=0.5*(aA+aB);
+      break;
+    }
+  }// while(1) {
+  //
+  return iErr;
+}
+//=======================================================================
+//function : DistPC
+//purpose  : 
+//=======================================================================
+Standard_Integer DistPC(const Standard_Real aT1, 
+			const Handle(Geom_Curve)& aC1,
+			const Standard_Real aCriteria,
+			GeomAPI_ProjectPointOnCurve& aProjector, 
+			Standard_Real& aD, 
+			Standard_Real& aT2,
+			Standard_Real& aDmax,
+			Standard_Real& aTmax)
+{
+  Standard_Integer iErr;
+  //
+  iErr=DistPC(aT1, aC1, aCriteria, aProjector, aD, aT2);
+  if (iErr) {
+    return iErr;
+  }
+  //
+  if (aD>aDmax) {
+    aDmax=aD;
+    aTmax=aT2;
+  }
+  //
+  return iErr;
+}
+//=======================================================================
+//function : DistPC
+//purpose  : 
+//=======================================================================
+Standard_Integer DistPC(const Standard_Real aT1, 
+			const Handle(Geom_Curve)& aC1,
+			const Standard_Real aCriteria, 
+			GeomAPI_ProjectPointOnCurve& aProjector,
+			Standard_Real& aD, 
+			Standard_Real& aT2) 
+{
+  Standard_Integer iErr, aNbP2;
+  gp_Pnt aP1;
+  //
+  iErr=0;
+  aC1->D0(aT1, aP1);
+  //
+  aProjector.Perform(aP1);
+  aNbP2=aProjector.NbPoints();
+  if (!aNbP2) {
+    iErr=1;// the point from aC1 can not be projected on aC2
+    return iErr;
+  }
+  //
+  aD=aProjector.LowerDistance();
+  aT2=aProjector.LowerDistanceParameter();
+  if (aD>aCriteria) {
+    iErr=2;// the distance is too big
+  }
+  //
+  return iErr;
+}
+//modified by NIZNHY-PKV Fri Oct 12 09:34:12 2012t
