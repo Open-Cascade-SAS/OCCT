@@ -85,14 +85,14 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
       else if (!strcmp(a[1],"OUT")) sta = TopAbs_OUT;
       else if (!strcmp(a[1],"ON"))  sta = TopAbs_ON;
       
-      if (sta==TopAbs_IN||sta==TopAbs_OUT||sta == TopAbs_ON) {
+      if (sta != TopAbs_UNKNOWN) {
 	if (na==2) { PBOOP->GetSplit(sta); } // tsp IN/ON/OUT
 	else if ( na > 2 ) {
 	  TopAbs_ShapeEnum typ = TopAbs_SHAPE;
 	  if      (!strcmp(a[2],"e")) typ = TopAbs_EDGE;
 	  else if (!strcmp(a[2],"f")) typ = TopAbs_FACE;
 	  else if (!strcmp(a[2],"s")) typ = TopAbs_SOLID;
-	  if (typ==TopAbs_EDGE||typ==TopAbs_FACE||typ==TopAbs_SOLID) {
+	  if (typ != TopAbs_SHAPE) {
 	    if (na == 3) { 
 	      // tsp IN/ON/OUT e/f/s
 	      PBOOP->GetSplit(typ,sta);
@@ -106,10 +106,6 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 	    // tsp IN/ON/OUT i1 i2 ...
 	    for(i=2;i<na;i++) PBOOP->GetSplit(sta,atoi(a[i])); 
 	  }
-	}
-	else if ( na > 2 ) { 
-	  // tsp IN/ON/OUT i1 i2 ...
-	  for(i=2;i<na;i++) PBOOP->GetSplit(sta,atoi(a[i])); 
 	}
       }
       else { // tsp i1 i2 ...
@@ -132,14 +128,14 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
       else if (!strcmp(a[1],"OUT")) sta = TopAbs_OUT;
       else if (!strcmp(a[1],"ON"))  sta = TopAbs_ON;
       
-      if (sta==TopAbs_IN||sta==TopAbs_OUT||sta == TopAbs_ON) {
+      if (sta != TopAbs_UNKNOWN) {
 	if (na==2) { PBOOP->GetMerged(sta); } // tme IN/ON/OUT
 	else if ( na > 2 ) {
 	  TopAbs_ShapeEnum typ = TopAbs_SHAPE;
 	  if      (!strcmp(a[2],"e")) typ = TopAbs_EDGE;
 	  else if (!strcmp(a[2],"f")) typ = TopAbs_FACE;
 	  else if (!strcmp(a[2],"s")) typ = TopAbs_SOLID;
-	  if (typ==TopAbs_EDGE||typ==TopAbs_FACE||typ==TopAbs_SOLID) {
+	  if (typ != TopAbs_SHAPE) {
 	    if (na == 3) { 
 	      // tme IN/ON/OUT e/f/s
 	      PBOOP->GetMerged(typ,sta);
@@ -153,10 +149,6 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 	    // tme IN/ON/OUT i1 i2 ...
 	    for(i=2;i<na;i++) PBOOP->GetMerged(sta,atoi(a[i])); 
 	  }
-	}
-	else if ( na > 2 ) { 
-	  // tme IN/ON/OUT i1 i2 ...
-	  for(i=2;i<na;i++) PBOOP->GetMerged(sta,atoi(a[i])); 
 	}
       }
       else { // tme i1 i2 ...
