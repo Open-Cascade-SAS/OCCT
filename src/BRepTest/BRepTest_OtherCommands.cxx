@@ -434,8 +434,6 @@ Standard_Integer xbounds(Draw_Interpretor& di, Standard_Integer n, const char** 
 //=======================================================================
 Standard_Integer xclassify (Draw_Interpretor& aDI, Standard_Integer n, const char** a)
 {
-  char sbf[512];	
-  
   if (n < 2) {
     aDI<<" use xclassify Solid [Tolerance=1.e-7]\n";
     return 1;

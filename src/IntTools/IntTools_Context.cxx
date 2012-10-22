@@ -147,7 +147,7 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
   anAdr=myHatcherMap.FindFromKey1(aF);
   if (!anAdr) {
     Standard_Real aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
-    Standard_Real aUMin, aUMax, aVMin, aVMax, aU1, aU2, aEpsT;
+    Standard_Real aU1, aU2, aEpsT;
     TopAbs_Orientation aOrE;
     Handle(Geom_Surface) aS;
     Handle(Geom2d_Curve) aC2D;
@@ -170,8 +170,7 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
     aFF=aF;
     aFF.Orientation(TopAbs_FORWARD);
     aS=BRep_Tool::Surface(aFF);
-    //BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
-    //
+
     aExp.Init (aFF, TopAbs_EDGE);
     for (; aExp.More() ; aExp.Next()) {
       const TopoDS_Edge& aE=*((TopoDS_Edge*)&aExp.Current());

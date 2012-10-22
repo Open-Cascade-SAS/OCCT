@@ -1221,7 +1221,7 @@ Standard_Integer CheckCoincidence(const Standard_Real aT11,
 				  GeomAPI_ProjectPointOnCurve& aProjector)
 {
   Standard_Integer iErr, aNb1, i, aNbX;
-  Standard_Real dT1, aT1, aT2, aD, aDmax, aTmin, aTmax;
+  Standard_Real dT1, aT1, aT2, aD, aDmax, aTmax;
   Standard_Real aT1A, aT1B, aD1max,aT1max;
   //
   iErr=0; // the patches are coincided
