@@ -62,7 +62,11 @@ is
 
 	Initialize ( aDevice	: GraphicDevice from Aspect )
 	---Level: Public
-	---Purpose: Initialise the constructor of the ViewManager.
+	---Purpose: Initialises the ViewManager.
+	--  Currently creating of more than 100 viewer instances 
+	--  is not supported and leads to InitializationError and 
+	--  initialisation failure.
+	--  This limitation might be addressed in some future OCCT releases.   
 	--  Warning: Raises InitialisationError if the initialisation
 	--	    of the ViewManager failed.
 	raises InitialisationError from Graphic3d;

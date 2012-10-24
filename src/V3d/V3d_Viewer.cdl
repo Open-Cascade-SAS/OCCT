@@ -105,6 +105,9 @@ is
         returns mutable Viewer from V3d
         ---Purpose: Create a Viewer on the given device with the given parameters  or
         --          with their default values.
+        --          Currently creating of more than 100 viewer instances 
+	      --          is not supported and leads to an exception.
+	      --          This limitation might be addressed in some future OCCT releases.
         raises BadValue from Viewer ;
         ---Purpose:        If the size of the view is <= 0
         --      if ComputedMode is false, only the degenerate mode will be used.

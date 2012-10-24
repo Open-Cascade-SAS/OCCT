@@ -59,7 +59,10 @@ is
 		returns mutable ViewManager from Visual3d;
 	---Level: Public
 	---Purpose: Creates a 3D visualizer.
-
+	--  Currently creating of more than 100 viewer instances 
+	--  is not supported and leads to InitializationError and 
+	--  initialisation failure.
+	--  This limitation might be addressed in some future OCCT releases. 
 	---------------------------------------------------
 	-- Category: Methods to modify the class definition
 	---------------------------------------------------
