@@ -16,7 +16,7 @@ donly b ww
 fit
 middlepath result b ww ww
 
-set length 1.
+set length 314.159
 
 set 2dviewer 1
 

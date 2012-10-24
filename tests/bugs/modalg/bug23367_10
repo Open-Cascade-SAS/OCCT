@@ -18,7 +18,7 @@ donly a w1 w2
 fit
 middlepath result a w1 w2
 
-set length 1.
+set length 288.824
 
 set 2dviewer 1
 
