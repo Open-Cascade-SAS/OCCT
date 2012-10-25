@@ -18,6 +18,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <Adaptor3d_HVertex.hxx>
 
 inline Standard_Boolean BRepBlend_BlendTool::SingularOnUMin (const Handle(Adaptor3d_HSurface)& )
 {
