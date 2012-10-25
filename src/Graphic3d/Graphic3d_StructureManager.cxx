@@ -93,14 +93,14 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
 
                 Initialisation = Standard_False;
                 /* table to manage IDs of StructureManager */
-                for (i=1; i<=Limit; i++) StructureManager_ArrayId[i]    = 0;
+                for (i=0; i<Limit; i++) StructureManager_ArrayId[i]    = 0;
 
-                StructureManager_CurrentId      = 1;
-                StructureManager_ArrayId[1]     = 1;
+                StructureManager_CurrentId      = 0;
+                StructureManager_ArrayId[0]     = 1;
 
         }
         else {
-                for (i=1; i<=Limit && NotFound; i++)
+                for (i=0; i<Limit && NotFound; i++)
                         if (StructureManager_ArrayId[i] == 0) {
                                 NotFound        = Standard_False;
                                 StructureManager_CurrentId      = i;
@@ -108,14 +108,18 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
                         }
 
                 if (NotFound)
-                        Graphic3d_InitialisationError::Raise
-                                        ("Too many ViewManagers are defined");
+                {
+                  Standard_SStream anErrorDescription;
+                  anErrorDescription<<"You are trying to create too many ViewManagers at the same time!\n"<<
+                    "The number of simultaneously created ViewManagers can't exceed "<<Limit<<".\n";
+                  Graphic3d_InitialisationError::Raise(anErrorDescription);
+                }
         }
 
         Coef            = (Structure_IDMIN+Structure_IDMAX)/Limit;
         Aspect_GenId theGenId(
-          Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId-1)),
-          Standard_Integer (Structure_IDMIN+Coef*StructureManager_CurrentId-1));
+          Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId)),
+          Standard_Integer (Structure_IDMIN+Coef*(StructureManager_CurrentId+1)-1));
         MyStructGenId   = theGenId;
 
         MyId                    = StructureManager_CurrentId;
