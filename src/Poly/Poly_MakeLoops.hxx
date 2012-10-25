@@ -212,7 +212,7 @@ public:
   }
 
   //! Fills in the list of hanging links
-  void GetHangingLinks(ListOfLink& theLinks) const;
+  Standard_EXPORT void GetHangingLinks(ListOfLink& theLinks) const;
 
 protected:
   virtual Standard_Integer chooseLeftWay
