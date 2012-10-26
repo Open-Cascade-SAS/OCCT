@@ -1,0 +1,15 @@
+puts "============"
+puts "CR22871"
+puts "============"
+puts ""
+#######################################################################
+# Step Reader raises exception on invalid entity (null swept curve)
+#######################################################################
+
+set info [stepread [locate_data_file bug22871_null-swept-curve.stp] s *]
+set check [lsearch $info Exception*]
+if { $check != -1 } {
+    puts "Error : Step Reader raises exception"
+}
+
+
