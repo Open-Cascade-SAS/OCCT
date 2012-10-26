@@ -61,6 +61,10 @@
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <BSplCLib.hxx>
 #include <GeomAbs_IsoType.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <ElCLib.hxx>
+#include <GeomLib.hxx>
 
 //=======================================================================
 //function : IsoIsDeg
@@ -362,7 +366,9 @@ static Handle(Geom2d_BSplineCurve) Interpolate(const Handle(TColgp_HArray1OfPnt2
 static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
 		    Standard_Boolean* IsTrimmed,
 		    const Standard_Real dt,
-		    const gp_Pnt& Pole)
+		    const gp_Pnt& Pole,
+                    Standard_Integer* SingularCase,
+                    const Standard_Integer NumberOfSingularCase)
 {
   Standard_Real f = myCurve->FirstParameter();
   Standard_Real l = myCurve->LastParameter();
@@ -373,6 +379,7 @@ static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
     IsTrimmed[0] = Standard_True;
     f = f+dt;
     myCurve = myCurve->Trim(f, l, Precision::Confusion());
+    SingularCase[0] = NumberOfSingularCase;
   }
   
   P = myCurve->Value(l);
@@ -380,6 +387,7 @@ static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
     IsTrimmed[1] = Standard_True;
     l = l-dt;
     myCurve = myCurve->Trim(f, l, Precision::Confusion());
+    SingularCase[1] = NumberOfSingularCase;
   }
 }
 
@@ -394,8 +402,75 @@ static void ExtendC2d(Handle(Geom2d_BSplineCurve)& aRes,
 		      const Standard_Real u1,
 		      const Standard_Real u2,
 		      const Standard_Real v1,
-		      const Standard_Real v2)
+		      const Standard_Real v2,
+                      const Standard_Integer FirstOrLast,
+                      const Standard_Integer NumberOfSingularCase)
 {
+  Standard_Real theParam = (FirstOrLast == 0)? aRes->FirstParameter()
+    : aRes->LastParameter();
+
+  gp_Pnt2d                              aPBnd;
+  gp_Vec2d                              aVBnd;
+  gp_Dir2d                              aDBnd;
+  Handle(Geom2d_TrimmedCurve)           aSegment;
+  Geom2dConvert_CompCurveToBSplineCurve aCompCurve(aRes, Convert_RationalC1);
+  Standard_Real                         aTol = Precision::Confusion();
+
+  aRes->D1(theParam, aPBnd, aVBnd);
+  aDBnd.SetXY(aVBnd.XY());
+  gp_Lin2d aLin(aPBnd, aDBnd); //line in direction of derivative
+
+  gp_Pnt2d thePole;
+  gp_Dir2d theBoundDir;
+  switch (NumberOfSingularCase)
+  {
+  case 1:
+    {
+      thePole.SetCoord(u1, v1);
+      theBoundDir.SetCoord(0., 1.);
+      break;
+    }
+  case 2:
+    {
+      thePole.SetCoord(u2, v1);
+      theBoundDir.SetCoord(0., 1.);
+      break;
+    }
+  case 3:
+    {
+      thePole.SetCoord(u1, v1);
+      theBoundDir.SetCoord(1., 0.);
+      break;
+    }
+  case 4:
+    {
+      thePole.SetCoord(u1, v2);
+      theBoundDir.SetCoord(1., 0.);
+      break;
+    }
+  }
+  gp_Lin2d BoundLin(thePole, theBoundDir); //one of the bounds of rectangle
+
+  Standard_Real U1x = BoundLin.Direction().X();
+  Standard_Real U1y = BoundLin.Direction().Y();
+  Standard_Real U2x = aLin.Direction().X();
+  Standard_Real U2y = aLin.Direction().Y();
+  Standard_Real Uo21x = aLin.Location().X() - BoundLin.Location().X();
+  Standard_Real Uo21y = aLin.Location().Y() - BoundLin.Location().Y();
+  
+  Standard_Real D = U1y*U2x-U1x*U2y;
+  
+  Standard_Real ParOnLin = (Uo21y * U1x - Uo21x * U1y)/D; //parameter of intersection point
+  
+  Handle(Geom2d_Line) aSegLine = new Geom2d_Line(aLin);
+  aSegment = (FirstOrLast == 0)?
+    new Geom2d_TrimmedCurve(aSegLine, ParOnLin, 0.) :
+    new Geom2d_TrimmedCurve(aSegLine, 0., ParOnLin);
+
+  aCompCurve.Add(aSegment, aTol);
+  aRes = aCompCurve.BSplineCurve();
+  
+  /*  
   gp_Pnt2d P0;
   gp_Vec2d V01, V02;
   aRes->D2(t, P0, V01, V02);
@@ -439,7 +514,7 @@ static void ExtendC2d(Handle(Geom2d_BSplineCurve)& aRes,
   aConcat.Add(aC, Precision::PConfusion());
   
   aRes = aConcat.BSplineCurve();
-  
+  */
 }  
 
 //=======================================================================
@@ -551,6 +626,8 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 {
   myTolerance = Max(myTolerance,Precision::PApproximation());
   myCurve = C;
+  Standard_Real FirstPar = C->FirstParameter();
+  Standard_Real LastPar  = C->LastParameter();
   GeomAbs_SurfaceType SType = mySurface->GetType();    
   GeomAbs_CurveType   CType = myCurve->GetType();
 
@@ -606,6 +683,7 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
       {
 	
 	Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
+        Standard_Integer SingularCase[2];
 	Standard_Real f, l, dt;
 	const Standard_Real eps = 0.01;
 	f = myCurve->FirstParameter();
@@ -622,25 +700,25 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 	if(IsoIsDeg(S, U1, GeomAbs_IsoU, 0., myTolerance) ) {
 	  //Surface has pole at U = Umin
 	  gp_Pnt Pole = mySurface->Value(U1, V1);
-	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 1);
 	}
 
 	if(IsoIsDeg(S, U2, GeomAbs_IsoU, 0., myTolerance) ) {
 	  //Surface has pole at U = Umax
 	  gp_Pnt Pole = mySurface->Value(U2, V1);
-	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 2);
 	}
 	  
 	if(IsoIsDeg(S, V1, GeomAbs_IsoV, 0., myTolerance) ) {
 	  //Surface has pole at V = Vmin
 	  gp_Pnt Pole = mySurface->Value(U1, V1);
-	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 3);
 	}
 
 	if(IsoIsDeg(S, V2, GeomAbs_IsoV, 0., myTolerance) ) {
 	  //Surface has pole at V = Vmax
 	  gp_Pnt Pole = mySurface->Value(U1, V2);
-	  TrimC3d(myCurve, IsTrimmed, dt, Pole);
+	  TrimC3d(myCurve, IsTrimmed, dt, Pole, SingularCase, 4);
 	}
 
 	ProjLib_ComputeApproxOnPolarSurface polar(myCurve, 
@@ -653,15 +731,20 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 	  if(IsTrimmed[0]) {
 	    //Add segment before start of curve
 	    f = myCurve->FirstParameter();
-	    ExtendC2d(aRes, f, -dt, U1, U2, V1, V2);
+	    ExtendC2d(aRes, f, -dt, U1, U2, V1, V2, 0, SingularCase[0]);
 	  }
 	  if(IsTrimmed[1]) {
 	    //Add segment after end of curve
 	    l = myCurve->LastParameter();
-	    ExtendC2d(aRes, l, dt, U1, U2, V1, V2);
+	    ExtendC2d(aRes, l, dt, U1, U2, V1, V2, 1, SingularCase[1]);
 	  }
-	}
-	  
+          Handle(Geom2d_Curve) NewCurve2d;
+          GeomLib::SameRange(Precision::PConfusion(), aRes,
+                             aRes->FirstParameter(), aRes->LastParameter(),
+                             FirstPar, LastPar,
+                             NewCurve2d);
+          aRes = Handle(Geom2d_BSplineCurve)::DownCast(NewCurve2d);
+        }
 	myResult.SetBSpline(aRes);
 	myResult.Done();
 	myResult.SetType(GeomAbs_BSplineCurve);
@@ -671,6 +754,7 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
     default:
       {
 	Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
+        Standard_Real Vsingular[2]; //for surfaces of revolution
 	Standard_Real f, l, dt;
 	const Standard_Real eps = 0.01;
 	
@@ -691,6 +775,8 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 	    IsTrimmed[0] = Standard_True;
 	    f = f+dt;
 	    myCurve = myCurve->Trim(f, l, Precision::Confusion());
+            Vsingular[0] = ElCLib::Parameter(L, P);
+            //SingularCase[0] = 3;
 	  }
 
 	  P = myCurve->Value(l);
@@ -698,6 +784,8 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 	    IsTrimmed[1] = Standard_True;
 	    l = l-dt;
 	    myCurve = myCurve->Trim(f, l, Precision::Confusion());
+            Vsingular[1] = ElCLib::Parameter(L, P);
+            //SingularCase[1] = 3;
 	  }
 	}
 
@@ -742,12 +830,18 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 	  
 	  if(IsTrimmed[0]) {
 	    //Add segment before start of curve
-	    ExtendC2d(aRes, f, -dt, u1, u2, v1, v2);
+	    ExtendC2d(aRes, f, -dt, u1, u2, Vsingular[0], v2, 0, 3);
 	  }
 	  if(IsTrimmed[1]) {
 	    //Add segment after end of curve
-	    ExtendC2d(aRes, l, dt, u1, u2, v1, v2);
+	    ExtendC2d(aRes, l, dt, u1, u2, Vsingular[1], v2, 1, 3);
 	  }
+          Handle(Geom2d_Curve) NewCurve2d;
+          GeomLib::SameRange(Precision::PConfusion(), aRes,
+                             aRes->FirstParameter(), aRes->LastParameter(),
+                             FirstPar, LastPar,
+                             NewCurve2d);
+          aRes = Handle(Geom2d_BSplineCurve)::DownCast(NewCurve2d);
 	}
 	  
 	myResult.SetBSpline(aRes);
