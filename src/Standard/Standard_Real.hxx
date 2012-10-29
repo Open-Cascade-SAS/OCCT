@@ -202,7 +202,13 @@ inline Standard_Real     Cosh (const Standard_Real Value)
 
 
 //-------------------------------------------------------------------
-// Epsilon : Returns a real + the smallest real positive value.
+// Epsilon : The function returns absolute value of difference
+//           between 'Value' and other nearest value of
+//           Standard_Real type.
+//           Nearest value is choseen in direction of infinity
+//           the same sign as 'Value'.
+//           If 'Value' is 0 then returns minimal positive value
+//           of Standard_Real type.
 //-------------------------------------------------------------------
 inline Standard_Real     Epsilon (const Standard_Real Value) 
 {
