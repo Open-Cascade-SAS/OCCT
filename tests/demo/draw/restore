@@ -1,0 +1,10 @@
+# check that restore command defines default name for the loaded shape
+# as base name of the file without extension
+
+restore [locate_data_file CCV-POUR-COPIER-COLLER.brep]
+
+if { ! [regexp {is a shape} [whatis CCV-POUR-COPIER-COLLER]] } {
+    puts "Error: no shape with name CCV-POUR-COPIER-COLLER after restore"
+}
+
+puts "TEST COMPLETED"

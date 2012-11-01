@@ -281,7 +281,10 @@ proc save {name {file ""}} {
 help save {save variable [filename]} "DRAW Variables management"
 
 proc restore {file {name ""}} {
-    if {$name == ""} {set name $file}
+    if {$name == ""} {
+        # if name is not given explicitly, use name of the file w/o extension
+        set name [file rootname [file tail $file]]
+    }
     global Draw_DataDir
     uplevel #0 "brestore [file join $Draw_DataDir $file ] $name"
     return $name
