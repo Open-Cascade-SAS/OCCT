@@ -519,11 +519,8 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
 
   Handle(Geom_BSplineSurface) BS;
   if (myRefSurf.IsNull()) {
-    Standard_Boolean s1Point = Standard_False;
-    Standard_Boolean s2Point = Standard_False;
-    Standard_Boolean vClosed = Standard_False;
-    Standard_Real myPres3d = 1.e-06;
 
+    Standard_Real myPres3d = 1.e-06;
     Standard_Integer i,j,jdeb=1,jfin=mySections.Length();
     
     GeomFill_SectionGenerator section;
@@ -533,37 +530,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     Handle(Geom_Curve) curv =  mySections(1);
     Standard_Real first = curv->FirstParameter(),
                    last = curv->LastParameter();
-    
-    if (s1Point) {
-      jdeb++;
-      TColgp_Array1OfPnt Extremities(1,2);
-      Extremities(1) = curv->Value(first);
-      Extremities(2) = curv->Value(last);
-      TColStd_Array1OfReal Bounds(1,2);
-      Bounds(1) = UFirst;
-      Bounds(2) = ULast;
-      Standard_Real Deg = 1;
-      TColStd_Array1OfInteger Mult(1,2);
-      Mult(1) = (Standard_Integer ) Deg+1;
-      Mult(2) = (Standard_Integer ) Deg+1;
-      Handle(Geom_BSplineCurve) BSPoint
-        = new Geom_BSplineCurve(Extremities,Bounds,Mult,(Standard_Integer ) Deg);
-      section.AddCurve(BSPoint);
-    }
-    
-    if (s2Point) {
-      jfin--;
-    }
 
-//    Standard_Boolean urat = Standard_True;
     for (j=jdeb; j<=jfin; j++) {
-      
-      // cas des sections bouclantes
-      if (j==jfin && vClosed) {
-        section.AddCurve(curvBS1);
-      }
-      
-      else {
+
         // read the j-th curve
         curv =  mySections(j);
         curvTrim = new Geom_TrimmedCurve(curv,
@@ -580,19 +549,11 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
         curvBS->Knots(BSK);
         BSplCLib::Reparametrize(UFirst,ULast,BSK);
         curvBS->SetKnots(BSK);
-//      if (!curvBS->IsRational()) urat = Standard_False;
         
-        section.AddCurve(curvBS);
-        
-        // cas des sections bouclantes
-        if (j==jdeb && vClosed) {
-          curvBS1 = curvBS;
-        }
-        
-      }
+        section.AddCurve(curvBS);        
     }
     
-    
+    /*
     if (s2Point) {
       curv =  mySections(jfin+1);
       first =  curv->FirstParameter();
@@ -610,7 +571,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
       Handle(Geom_BSplineCurve) BSPoint
         = new Geom_BSplineCurve(Extremities,Bounds,Mult,(Standard_Integer ) Deg);
       section.AddCurve(BSPoint);
-    }
+    }*/
 
     Standard_Integer Nbcurves = mySections.Length();
     Standard_Integer Nbpar = myParams.Length();
