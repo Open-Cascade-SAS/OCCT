@@ -17,27 +17,26 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
-#ifdef WNT
-#include <windows.h>
+#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
+  #include <windows.h>
+  #include <OpenGl_AVIWriter.hxx>
 #endif
 
 #include <ViewerTest.hxx>
 #include <Draw_Interpretor.hxx>
-#include <OpenGl_AVIWriter.hxx>
 
 static Standard_Integer avi_record(Draw_Interpretor& di,
                                    Standard_Integer argc, const char** argv)
 {
-  Standard_Integer aResult(1);
-  if (argc < 2) {
+  if (argc < 2)
+  {
     cout << "Syntax: " << argv[0] << " file | start | stop | save" << endl;
-  } else {
+    return 1;
+  }
 
-#ifndef WNT
-    cout << "AVI writer is implemented only in Windows version" << endl;
-#else  
+  Standard_Integer aResult = 1;
+#if (defined(_WIN32) || defined(__WIN32__))
+  #ifdef HAVE_VIDEOCAPTURE
     static OpenGl_AVIWriter * pAviWriter = 0L;
 
     if (strncmp(argv[1], "file", 5) == 0) {
@@ -71,8 +70,12 @@ static Standard_Integer avi_record(Draw_Interpretor& di,
       cout << pAviWriter->GetLastErrorMessage() << endl;
       aResult = 0;
     }
+  #else
+    cout << "AVI writer capability was disabled\n";
+  #endif
+#else
+  cout << "AVI writer is implemented only in Windows version\n";
 #endif
-  }
   return aResult;
 }
 
@@ -96,6 +99,3 @@ void ViewerTest::AviCommands(Draw_Interpretor& theCommands)
 		  __FILE__,
 		  &avi_record, group); //Draft_Modification
 }
-
-
-

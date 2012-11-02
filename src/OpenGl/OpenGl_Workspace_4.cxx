@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
   #include <OpenGl_AVIWriter.hxx>
 #endif
 
@@ -68,7 +67,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     glViewport (aViewPortBack[0], aViewPortBack[1], aViewPortBack[2], aViewPortBack[3]);
   }
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
   if (OpenGl_AVIWriter_AllowWriting (theCView.DefWindow.XWindow))
   {
     GLint params[4];
