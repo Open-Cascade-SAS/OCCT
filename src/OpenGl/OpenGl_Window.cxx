@@ -38,49 +38,89 @@ namespace
   static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
 
 #if (defined(_WIN32) || defined(__WIN32__))
-  static int find_pixel_format (HDC hDC, PIXELFORMATDESCRIPTOR* pfd, const Standard_Boolean dbuff)
+  static int find_pixel_format (HDC                    theDevCtx,
+                                PIXELFORMATDESCRIPTOR& thePixelFrmt,
+                                const Standard_Boolean theIsDoubleBuff)
   {
-    PIXELFORMATDESCRIPTOR pfd0;
-    memset (&pfd0, 0, sizeof (PIXELFORMATDESCRIPTOR));
-    pfd0.nSize           = sizeof (PIXELFORMATDESCRIPTOR);
-    pfd0.nVersion        = 1;
-    pfd0.dwFlags         = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | (dbuff ? PFD_DOUBLEBUFFER : PFD_SUPPORT_GDI);
-    pfd0.iPixelType      = PFD_TYPE_RGBA;
-    pfd0.iLayerType      = PFD_MAIN_PLANE;
+    PIXELFORMATDESCRIPTOR aPixelFrmtTmp;
+    memset (&aPixelFrmtTmp, 0, sizeof (PIXELFORMATDESCRIPTOR));
+    aPixelFrmtTmp.nSize      = sizeof (PIXELFORMATDESCRIPTOR);
+    aPixelFrmtTmp.nVersion   = 1;
+    aPixelFrmtTmp.dwFlags    = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | (theIsDoubleBuff ? PFD_DOUBLEBUFFER : PFD_SUPPORT_GDI);
+    aPixelFrmtTmp.iPixelType = PFD_TYPE_RGBA;
+    aPixelFrmtTmp.iLayerType = PFD_MAIN_PLANE;
 
-    int       iPixelFormat = 0;
-    int       iGood = 0;
-    const int cBits[] = { 32, 24 };
-    const int dBits[] = { 32, 24, 16 };
+    const int BUFF_BITS_STENCIL[] = {  8,  1     };
+    const int BUFF_BITS_COLOR[]   = { 32, 24     };
+    const int BUFF_BITS_DEPTH[]   = { 32, 24, 16 };
 
-    int i, j;
-    for (i = 0; i < sizeof(dBits) / sizeof(int); i++)
+    int aGoodBits[] = { 0, 0, 0 };
+    int aPixelFrmtIdLast = 0;
+    int aPixelFrmtIdGood = 0;
+    Standard_Size aStencilIter = 0, aColorIter = 0, aDepthIter = 0;
+    for (aStencilIter = 0; aStencilIter < sizeof(BUFF_BITS_STENCIL) / sizeof(int); ++aStencilIter)
     {
-      pfd0.cDepthBits = dBits[i];
-      iGood = 0;
-      for (j = 0; j < sizeof(cBits) / sizeof(int); j++)
+      aPixelFrmtTmp.cStencilBits = BUFF_BITS_STENCIL[aStencilIter];
+      for (aDepthIter = 0; aDepthIter < sizeof(BUFF_BITS_DEPTH) / sizeof(int); ++aDepthIter)
       {
-        pfd0.cColorBits = cBits[j];
-        iPixelFormat = ChoosePixelFormat (hDC, &pfd0);
-        if (iPixelFormat)
+        aPixelFrmtTmp.cDepthBits = BUFF_BITS_DEPTH[aDepthIter];
+        aPixelFrmtIdGood = 0;
+        for (aColorIter = 0; aColorIter < sizeof(BUFF_BITS_COLOR) / sizeof(int); ++aColorIter)
         {
-          pfd->cDepthBits = 0;
-          pfd->cColorBits = 0;
-          DescribePixelFormat (hDC, iPixelFormat, sizeof (PIXELFORMATDESCRIPTOR), pfd);
-          if (pfd->cColorBits >= cBits[j] && pfd->cDepthBits >= dBits[i])
+          aPixelFrmtTmp.cColorBits = BUFF_BITS_COLOR[aColorIter];
+          aPixelFrmtIdLast = ChoosePixelFormat (theDevCtx, &aPixelFrmtTmp);
+          if (aPixelFrmtIdLast == 0)
+          {
+            continue;
+          }
+
+          thePixelFrmt.cDepthBits   = 0;
+          thePixelFrmt.cColorBits   = 0;
+          thePixelFrmt.cStencilBits = 0;
+          DescribePixelFormat (theDevCtx, aPixelFrmtIdLast, sizeof(PIXELFORMATDESCRIPTOR), &thePixelFrmt);
+          if (thePixelFrmt.cColorBits   >= BUFF_BITS_COLOR[aColorIter]
+           && thePixelFrmt.cDepthBits   >= BUFF_BITS_DEPTH[aDepthIter]
+           && thePixelFrmt.cStencilBits >= BUFF_BITS_STENCIL[aStencilIter])
+          {
             break;
-          if (iGood == 0)
-            iGood = iPixelFormat;
+          }
+          if (thePixelFrmt.cColorBits > aGoodBits[0])
+          {
+            aGoodBits[0] = thePixelFrmt.cColorBits;
+            aGoodBits[1] = thePixelFrmt.cDepthBits;
+            aGoodBits[2] = thePixelFrmt.cStencilBits;
+            aPixelFrmtIdGood = aPixelFrmtIdLast;
+          }
+          else if (thePixelFrmt.cColorBits == aGoodBits[0])
+          {
+            if (thePixelFrmt.cDepthBits > aGoodBits[1])
+            {
+              aGoodBits[1] = thePixelFrmt.cDepthBits;
+              aGoodBits[2] = thePixelFrmt.cStencilBits;
+              aPixelFrmtIdGood = aPixelFrmtIdLast;
+            }
+            else if (thePixelFrmt.cDepthBits == aGoodBits[1])
+            {
+              if(thePixelFrmt.cStencilBits > aGoodBits[2])
+              {
+                aGoodBits[2] = thePixelFrmt.cStencilBits;
+                aPixelFrmtIdGood = aPixelFrmtIdLast;
+              }
+            }
+          }
+        }
+        if (aColorIter < sizeof(BUFF_BITS_COLOR) / sizeof(int))
+        {
+          break;
         }
       }
-      if (j < sizeof(cBits) / sizeof(int))
+      if (aDepthIter < sizeof(BUFF_BITS_DEPTH) / sizeof(int))
+      {
         break;
+      }
     }
 
-    if (iPixelFormat == 0)
-      iPixelFormat = iGood;
-
-    return iPixelFormat;
+    return (aPixelFrmtIdLast == 0) ? aPixelFrmtIdGood : aPixelFrmtIdLast;
   }
 #else
   static Bool WaitForNotify (Display* theDisp, XEvent* theEv, char* theArg)
@@ -120,9 +160,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   HDC   aWindowDC = GetDC (aWindow);
   HGLRC aGContext = (HGLRC )theGContext;
 
-  PIXELFORMATDESCRIPTOR pfd;
-  int iPixelFormat = find_pixel_format (aWindowDC, &pfd, myDisplay->DBuffer());
-  if (iPixelFormat == 0)
+  PIXELFORMATDESCRIPTOR aPixelFrmt;
+  const int aPixelFrmtId = find_pixel_format (aWindowDC, aPixelFrmt, myDisplay->DBuffer());
+  if (aPixelFrmtId == 0)
   {
     ReleaseDC (aWindow, aWindowDC);
 
@@ -132,21 +172,25 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     return;
   }
 
-  if (pfd.dwFlags & PFD_NEED_PALETTE)
+  if (aPixelFrmt.dwFlags & PFD_NEED_PALETTE)
   {
-    WINDOW_DATA* wd = (WINDOW_DATA* )GetWindowLongPtr (aWindow, GWLP_USERDATA);
+    WINDOW_DATA* aWndData = (WINDOW_DATA* )GetWindowLongPtr (aWindow, GWLP_USERDATA);
 
-    mySysPalInUse = (pfd.dwFlags & PFD_NEED_SYSTEM_PALETTE) ? TRUE : FALSE;
-    InterfaceGraphic_RealizePalette (aWindowDC, wd->hPal, FALSE, mySysPalInUse);
+    mySysPalInUse = (aPixelFrmt.dwFlags & PFD_NEED_SYSTEM_PALETTE) ? TRUE : FALSE;
+    InterfaceGraphic_RealizePalette (aWindowDC, aWndData->hPal, FALSE, mySysPalInUse);
   }
 
   if (myDither)
-    myDither = (pfd.cColorBits <= 8);
+  {
+    myDither = (aPixelFrmt.cColorBits <= 8);
+  }
 
   if (myBackDither)
-    myBackDither = (pfd.cColorBits <= 8);
+  {
+    myBackDither = (aPixelFrmt.cColorBits <= 8);
+  }
 
-  if (!SetPixelFormat (aWindowDC, iPixelFormat, &pfd))
+  if (!SetPixelFormat (aWindowDC, aPixelFrmtId, &aPixelFrmt))
   {
     ReleaseDC (aWindow, aWindowDC);
 
@@ -216,7 +260,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     if (aVis != NULL)
     {
       // check Visual for OpenGl context's parameters compability
-      int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, aDepthSize = 0;
+      int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, aDepthSize = 0, aStencilSize = 0;
 
       if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0)
         isGl = 0;
@@ -230,6 +274,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       if (glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
         aDepthSize = 0;
 
+      if (glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize) != 0)
+        aStencilSize = 0;
+
       if (!isGl || !aDepthSize || !isRGBA  || (isDoubleBuffer ? 1 : 0) != (myDisplay->DBuffer()? 1 : 0))
       {
         XFree (aVis);
@@ -241,10 +288,13 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     if (aVis == NULL)
     {
       int anIter = 0;
-      int anAttribs[11];
+      int anAttribs[13];
       anAttribs[anIter++] = GLX_RGBA;
 
       anAttribs[anIter++] = GLX_DEPTH_SIZE;
+      anAttribs[anIter++] = 1;
+
+      anAttribs[anIter++] = GLX_STENCIL_SIZE;
       anAttribs[anIter++] = 1;
 
       anAttribs[anIter++] = GLX_RED_SIZE;
