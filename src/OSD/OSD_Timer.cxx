@@ -73,7 +73,7 @@ static inline Standard_Real GetWallClockTime ()
   LARGE_INTEGER time;
   return isOk && QueryPerformanceCounter (&time) ? 
          (Standard_Real)time.QuadPart / (Standard_Real)freq.QuadPart :
-         0.000001 * GetTickCount();
+         0.001 * GetTickCount();
 }
 
 #endif /* WNT */
