@@ -235,9 +235,11 @@ is
 			     Priority	: Integer from Standard )
 	---Level: Public
 	---Purpose: Modifies the order of displaying the structure.
-	--	    Values are between 0 et 10.
-	--	    The priority 10 being displayed first.
-	--	    The default value is 5
+	--	    Values are between 0 and 10.
+	--      Structures are drawn according to their display priorities
+	--      in ascending order.
+	--	    A structure of priority 10 is displayed the last and appears over the others.
+	--	    The default value is 5.
 	--  Category: Methods to modify the class definition
 	--  Warning: If <me> is displayed then the SetDisplayPriority
 	--	    method erase <me> and display <me> with the

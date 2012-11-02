@@ -967,7 +967,10 @@ is
     SetViewingVolume ( me : mutable ; Left, Right, Bottom, Top, ZNear, ZFar : Real from Standard)
         ---Level: Public
         ---Purpose: Sets Z and XY size of the view according to given values
-    --          with respecting the initial view depth (eye position)
+        --          with respecting the initial view depth (eye position).
+        --          Width/heigth aspect ratio should be preserved by the caller
+        --          of this method similarly to SetSize() to avoid unexpected
+        --          visual results like non-uniform scaling of objects in the view. 
                 raises BadValue from Viewer;
         --              If the ZNear<0, ZFar<0 or ZNear>=Zfar.
 
