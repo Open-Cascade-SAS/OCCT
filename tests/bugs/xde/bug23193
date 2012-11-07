@@ -1,0 +1,51 @@
+puts "============"
+puts "OCC23193"
+puts "============"
+puts ""
+###########################################################################
+# Some triangles are inverted when writing an STL file
+###########################################################################
+pload QAcommands
+
+if {[array get env os_type] != ""} {
+    set os $env(os_type)
+}
+
+if { [string compare $os "windows"] == 0 } {
+    set aFile C:/temp/bug23193_sample.stl
+} else {
+    set aFile /tmp/bug23193_sample.stl
+}
+
+catch {exec rm -f ${aFile}}
+if { [file exists ${aFile}] } {
+   puts "Error : There is old ${aFile} file"
+}
+
+vinit
+stepread [locate_data_file bug23193_sample.stp] a *
+writestl a_1 ${aFile} 0
+catch {exec chmod 777 ${aFile}}
+
+meshfromstl m1 ${aFile}
+meshcolors m1 elem2 1
+QARotateV3dView 4 0 0 1
+vfit
+
+set color [QAGetPixelColor 189 236]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+set a [expr $bl*10]
+set bl_1 [expr round($a)]
+
+if { $rd != 0 || $gr != 0 || $bl_1 != 7 } {
+    puts "Error : Color are not equal. There is missing triangle"
+}
+
+set 3dviewer 2
+
+
+
+
