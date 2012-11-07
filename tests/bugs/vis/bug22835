@@ -1,0 +1,17 @@
+puts "============"
+puts "CR22835"
+puts "============"
+puts ""
+##########################################################################################################
+# IncrementalMesh generates FLT exceptions when running in parallel mode
+##########################################################################################################
+
+mpparallel 1
+restore [locate_data_file bug22835_hello.brep] result
+vinit
+vdisplay result
+vsetdispmode 1
+tclean result
+vdisplay result
+
+set 3dviewer 2
