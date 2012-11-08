@@ -566,51 +566,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     delete [] PtrSegIndex1;
     delete [] PtrSegIndex2;
   }
-  
-  
-  //----------------------------------------------------------------------
-  //-- Traitement des TangentZone
-  //----------------------------------------------------------------------
-  Standard_Integer Nbtz = InterPP.NbTangentZones();
-  Nbtz=0;
-  if(Nbtz) { 
-    Standard_Real ParamInf=D1.FirstParameter();
-    Standard_Real ParamSup=D1.LastParameter();
-    ParamSup=-RealLast();
-    ParamInf=RealLast();
-    for(Standard_Integer tz=1; tz <= Nbtz; tz++) {
-      Standard_Integer NbPnts = InterPP.ZoneValue(tz).NumberOfPoints();
-      //====================================================================
-      //== Recherche du premier et du dernier point dans la zone de tg.
-      //== ATTENTION LA LISTE N EST PAS TRIEE
-      //====================================================================
-      for(Standard_Integer tzz=1; tzz<=NbPnts; tzz++) {
-	const Intf_SectionPoint& SPnt1 = InterPP.ZoneValue(tz).GetPoint(tzz);
-	
-//	Standard_Integer SegIndex,SegIndex1onP1,SegIndex1onP2;
-	Standard_Integer SegIndex1onP1;
-	Intf_PIType Type;
-	Standard_Real ParamOnLine;
-	
-	SPnt1.InfoFirst(Type,SegIndex1onP1,ParamOnLine);
-	if(SegIndex1onP1 >= Poly1.NbSegments()) { SegIndex1onP1--; ParamOnLine = 1.0; }
-	if(SegIndex1onP1 <= 0) { SegIndex1onP1=1; ParamOnLine = 0.0; }
-	Standard_Real Par = Poly1.ApproxParamOnCurve(SegIndex1onP1,ParamOnLine);
-	if(ParamSup<Par) ParamSup=Par;
-	if(ParamInf>Par) ParamInf=Par;
-      }
-    }
-    if(ParamSup > ParamInf) { 
-      //-- printf("\n %g -> %g     %g -> %g ",D1.FirstParameter(),ParamInf,D1.LastParameter(),ParamSup);
-      IntRes2d_Domain RecursD1( TheCurveTool::Value(C1,ParamInf)
-			       ,ParamInf,TolConf
-			       ,TheCurveTool::Value(C1,ParamSup)
-			       ,ParamSup,TolConf);
-      Perform(C1,RecursD1,TolConf,Tol,NbIter+1,ParamSup-ParamInf,0.0);
-    }
-  }
-  //----------------------------------------------------------------------
-  done = Standard_True;
+ done = Standard_True;
 }
 
 
