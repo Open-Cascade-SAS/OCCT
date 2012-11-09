@@ -425,22 +425,68 @@ proc testgrid {args} {
     return
 }
 
+# Procedure to regenerate summary log from logs of test cases
+help testsummarize {
+  Regenerate summary log in the test directory from logs of test cases.
+  This can be necessary if test grids are executed separately (e.g. on
+  different stations) or some grids have been re-executed.
+  Use: testsummarize dir
+}
+proc testsummarize {dir} {
+    global _test_case_regexp
+
+    if { ! [file isdirectory $dir] } {
+	error "Error: \"$dir\" is not a directory"
+    }
+
+    # get summary statements from all test cases in one log
+    set log ""
+
+    # to avoid huge listing of logs, first find all subdirectories and iterate
+    # by them, parsing log files in each subdirectory independently 
+    foreach grid [glob -directory $dir -types d -tails */*] {
+        foreach caselog [glob -nocomplain -directory [file join $dir $grid] -types f -tails *.log] {
+            set file [file join $dir $grid $caselog]
+            set nbfound 0
+            set fd [open $file r]
+	    while { [gets $fd line] >= 0 } {
+	        if { [regexp $_test_case_regexp $line res grp grd cas status message] } {
+                    if { "[file join $grid $caselog]" != "[file join $grp $grd ${cas}.log]" } { 
+                        puts "Error: $file contains status line for another test case ($line)"
+                    }
+	            set log "$log$line\n"
+	            incr nbfound
+	        }
+	    }
+            close $fd
+
+            if { $nbfound != 1 } { 
+                puts "Error: $file contains $nbfound status lines, expected 1"
+            }
+        }
+    }
+
+    _log_summarize $dir $log "Summary regenerated from logs at [clock format [clock seconds]]"
+    return
+}
+
 # Procedure to compare results of two runs of test cases
 help testdiff {
   Compare results of two executions of tests (CPU times, ...)
-  Use: testdiff dir1 dir2 [options...]
+  Use: testdiff dir1 dir2 [groupname [gridname]] [options...]
   Where dir1 and dir2 are directories containing logs of two test runs.
   Allowed options are:
-  -save filename: save resulting log in specified file
-  -subdir name: compare only specified subdirectory (can be nested)
+  -save filename: save resulting log in specified file (default name is
+                  \$dir1/diff-\$dir2.log); HTML log is saved with same name
+                  and extension .html
   -status {same|ok|all}: filter cases for comparing by their status:
           same - only cases with same status are compared (default)
           ok   - only cases with OK status in both logs are compared
           all  - results are compared regardless of status
   -verbose level: 
           1 - output only differences 
-          2 - output list of logs and directories present in one of dirs only
-          3 - (default) output progress messages 
+          2 - output also list of logs and directories present in one of dirs only
+          3 - (default) output also progress messages 
 }
 proc testdiff {dir1 dir2 args} {
     if { "$dir1" == "$dir2" } {
@@ -452,7 +498,7 @@ proc testdiff {dir1 dir2 args} {
     ######################################################
 
     # treat options
-    set logfile ""
+    set logfile [file join $dir1 "diff-[file tail $dir2].log"]
     set basename ""
     set status "same"
     set verbose 3
@@ -462,7 +508,7 @@ proc testdiff {dir1 dir2 args} {
 	# log file name
 	if { $arg == "-save" } {
 	    incr narg
-	    if { $narg < [llength $args] } { 
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
 		set logfile [lindex $args $narg]
 	    } else {
 		error "Error: Option -save must be followed by log file name"
@@ -470,21 +516,10 @@ proc testdiff {dir1 dir2 args} {
 	    continue
 	}
 
-	# subdirectory to compare
-	if { $arg == "-subdir" } {
-	    incr narg
-	    if { $narg < [llength $args] } { 
-		set basename [lindex $args $narg]
-	    } else {
-		error "Error: Option -subdir must be followed by subdirectory path"
-	    }
-	    continue
-	}
-
 	# status filter
 	if { $arg == "-status" } {
 	    incr narg
-	    if { $narg < [llength $args] } { 
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
 		set status [lindex $args $narg]
             } else { set status "" }
 	    if { "$status" != "same" && "$status" != "all" && "$status" != "ok" } {
@@ -496,15 +531,20 @@ proc testdiff {dir1 dir2 args} {
 	# verbose level
 	if { $arg == "-verbose" } {
 	    incr narg
-	    if { $narg < [llength $args] } { 
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
 		set verbose [expr [lindex $args $narg]]
+	    } else {
+		error "Error: Option -verbose must be followed by integer verbose level"
 	    }
 	    continue
 	}
 
-#	if { [regexp {^-} $arg] } {
+	if { [regexp {^-} $arg] } {
 	    error "Error: unsupported option \"$arg\""
-#	}
+	}
+
+        # non-option arguments form a subdirectory path
+	set basename [file join $basename $arg]
     }
 
     # run diff procedure (recursive)
@@ -513,9 +553,55 @@ proc testdiff {dir1 dir2 args} {
     # save result to log file
     if { "$logfile" != "" } {
         _log_save $logfile $log
+        _log_html_diff "[file rootname $logfile].html" $log $dir1 $dir2
+        puts "Log is saved to $logfile (and .html)"
     }
 
     return
+}
+
+# Procedure to locate data file for test given its name.
+# The search is performed assuming that the function is called
+# from the test case script; the search order is:
+# - subdirectory "data" of the test script (grid) folder
+# - subdirectories in environment variable CSF_TestDataPath
+# - subdirectory set by datadir command
+# If file is not found, raises Tcl error.
+proc locate_data_file {filename} {
+    global env groupname gridname casename
+
+    # check if the file is located in the subdirectory data of the script dir
+    set scriptfile [info script]
+    if { $scriptfile != "" } {
+        set path [file join [file dirname $scriptfile] data $filename]
+	if { [file exists $path] } {
+	    return [file normalize $path]
+	}
+    }
+
+    # check sub-directories in paths indicated by CSF_TestDataPath
+    if { [info exists env(CSF_TestDataPath)] } {
+	foreach dir [_split_path $env(CSF_TestDataPath)] {
+	    while {[llength $dir] != 0} { 
+	        set name [lindex $dir 0]
+		set dir [lrange $dir 1 end]
+		eval lappend dir [glob -nocomplain -directory $name -type d *]
+		if { [file exists $name/$filename] } {
+		    return [file normalize $name/$filename]
+		}
+	    }
+	}
+    }
+
+    # check current datadir
+    if { [file exists [uplevel datadir]/$filename] } {
+	return [file normalize [uplevel datadir]/$filename]
+    }
+
+    # raise error
+    error [join [list "Error: file $filename could not be found" \
+		      "(should be in paths indicated by CSF_TestDataPath environment variable, " \
+                      "or in subfolder data in the script directory)"] "\n"]
 }
 
 # Internal procedure to find test case indicated by group, grid, and test case names;
@@ -602,6 +688,7 @@ proc _run_test {scriptsdir group gridname casefile echo} {
     # start timer
     uplevel dchrono _timer reset
     uplevel dchrono _timer start
+    catch {uplevel meminfo w} membase
 
     # enable commands logging; switch to old-style mode if dlog command is not present
     set dlog_exists 1
@@ -677,15 +764,20 @@ proc _run_test {scriptsdir group gridname casefile echo} {
     # stop cpulimit killer if armed by the test
     cpulimit
 
-    # add timing info
+    # add memory and timing info
+    set stats ""
+    if { ! [catch {uplevel meminfo w} memuse] } {
+        set stats "MEMORY DELTA: [expr ($memuse - $membase) / 1024] KiB\n"
+    }
     uplevel dchrono _timer stop
     set time [uplevel dchrono _timer show]
     if [regexp -nocase {CPU user time:[ \t]*([0-9.e-]+)} $time res cpu] {
-	if { $dlog_exists && ! $echo } {
-	    dlog add "TOTAL CPU TIME: $cpu sec"
-	} else {
-	    puts "TOTAL CPU TIME: $cpu sec"
-	}
+	set stats "${stats}TOTAL CPU TIME: $cpu sec\n"
+    }
+    if { $dlog_exists && ! $echo } {
+	dlog add $stats
+    } else {
+	puts $stats
     }
 }
 
@@ -866,6 +958,22 @@ proc _log_save {file log {title {}}} {
     return
 }
 
+# Auxiliary procedure to make a (relative if possible) URL to a file for 
+# inclusion a reference in HTML log
+proc _make_url {htmldir file} {
+    set htmlpath [file split [file normalize $htmldir]]
+    set filepath [file split [file normalize $file]]
+    for {set i 0} {$i < [llength $htmlpath]} {incr i} {
+        if { "[lindex $htmlpath $i]" != "[lindex $filepath $i]" } {
+            if { $i == 0 } { break }
+            return "[string repeat "../" [expr [llength $htmlpath] - $i - 1]][eval file join [lrange $filepath $i end]]"
+        }
+    }
+
+    # if relative path could not be made, return full file URL
+    return "file://[file normalize $file]"
+}
+
 # Auxiliary procedure to save log to file
 proc _log_html {file log {title {}}} {
     # create missing directories as needed
@@ -877,7 +985,7 @@ proc _log_html {file log {title {}}} {
     }
     
     # print header
-    puts $fd "<html><head><title>$title</title><head><body><h1>$title</h1>"
+    puts $fd "<html><head><title>$title</title></head><body><h1>$title</h1>"
 
     # add images if present
     set imgbasename [file rootname [file tail $file]]
@@ -888,23 +996,10 @@ proc _log_html {file log {title {}}} {
     # print log body, trying to add HTML links to script files on lines like
     # "Executing <filename>..."
     puts $fd "<pre>"
-    set logpath [file split [file normalize $file]]
     foreach line [split $log "\n"] {
         if { [regexp {Executing[ \t]+([a-zA-Z0-9._/:-]+[^.])} $line res script] &&
              [file exists $script] } {
-
-            # generate relative path to the script file 
-            set url "file://[file normalize $script]"
-            set scriptpath [file split [file normalize $script]]
-	    for {set i 0} {$i < [llength $logpath]} {incr i} {
-                if { "[lindex $logpath $i]" != "[lindex $scriptpath $i]]" } {
-                    if { $i == 0 } { break }
-                    set url "[string repeat "../" [expr [llength $logpath] - $i - 1]]/[file join [lrange $scriptpath $i end]]"
-                    break
-                }
-            }
-
-            set line [regsub $script $line "<a href=\"$url\">$script</a>"]
+            set line [regsub $script $line "<a href=\"[_make_url $file $script]\">$script</a>"]
         }
         puts $fd $line
     }
@@ -1284,48 +1379,6 @@ proc _path_separator {} {
     }
 }
 
-# Procedure to locate data file for test given its name.
-# The search is performed assuming that the function is called 
-# from the test case script; the search order is:
-# - subdirectories in environment variable CSF_TestDataPath  
-# If file is not found, raises Tcl error.
-proc locate_data_file {filename} {
-    global env groupname gridname casename
-
-    # check if the file is located in the subdirectory data of the script dir
-    set scriptfile [info script]
-    if { $scriptfile != "" } {
-        set path [file join [file dirname $scriptfile] data $filename]
-	if { [file exists $path] } {
-	    return [file normalize $path]
-	}
-    }
-
-    # check sub-directories in paths indicated by CSF_TestDataPath
-    if { [info exists env(CSF_TestDataPath)] } {
-	foreach dir [_split_path $env(CSF_TestDataPath)] {
-	    while {[llength $dir] != 0} { 
-	        set name [lindex $dir 0]
-		set dir [lrange $dir 1 end]
-		eval lappend dir [glob -nocomplain -directory $name -type d *]
-		if { [file exists $name/$filename] } {
-		    return [file normalize $name/$filename]
-		}
-	    }
-	}
-    }
-
-    # check current datadir
-    if { [file exists [uplevel datadir]/$filename] } {
-	return [file normalize [uplevel datadir]/$filename]
-    }
-
-    # raise error
-    error [join [list "Error: file $filename could not be found" \
-		      "(should be in paths indicated by CSF_TestDataPath environment variable, " \
-                      "or in subfolder data in the script directory)"] "\n"]
-}
-
 # Procedure to make a diff and common of two lists
 proc _list_diff {list1 list2 _in1 _in2 _common} {
     upvar $_in1 in1
@@ -1358,9 +1411,17 @@ proc _read_file {filename} {
     return $result
 }
 
+# procedure to construct name for the mage diff file
+proc _diff_img_name {dir1 dir2 casepath imgfile} {
+    return [file join $dir1 $casepath "diff-[file tail $dir2]-$imgfile"]
+}
+
 # Procedure to compare results of two runs of test cases
 proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
     upvar $_logvar log
+
+    # make sure to load diffimage command
+    uplevel pload VISUALIZATION
 
     # prepare variable (array) for collecting statistics
     if { "$_statvar" != "" } {
@@ -1368,6 +1429,8 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
     } else {
         set stat(cpu1) 0
         set stat(cpu2) 0
+        set stat(mem1) 0
+        set stat(mem2) 0
         set log {}
     }
 
@@ -1401,6 +1464,7 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
             # load two logs
 	    set log1 [_read_file [file join $dir1 $basename $logfile]]
 	    set log2 [_read_file [file join $dir2 $basename $logfile]]
+            set casename [file rootname $logfile]
 
             # check execution statuses
             set status1 UNDEFINED
@@ -1408,7 +1472,7 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
 	    if { ! [regexp {CASE [^:]*:\s*([\w]+)} $log1 res1 status1] ||
 	         ! [regexp {CASE [^:]*:\s*([\w]+)} $log2 res2 status2] ||
 	         "$status1" != "$status2" } {
-	        _log_and_puts log "STATUS [split $basename /] [file rootname $logfile]: $status1 / $status2"
+	        _log_and_puts log "STATUS [split $basename /] $casename: $status1 / $status2"
 
                 # if test statuses are different, further comparison makes 
  		# no sense unless explicitly requested
@@ -1430,15 +1494,99 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
 
                 # compare CPU times with 10% precision (but not less 0.5 sec)
 	        if { [expr abs ($cpu1 - $cpu2) > 0.5 + 0.05 * abs ($cpu1 + $cpu2)] } {
-	            _log_and_puts log "CPU [split $basename /] [file rootname $logfile]: $cpu1 / $cpu2"
+	            _log_and_puts log "CPU [split $basename /] $casename: $cpu1 / $cpu2"
                 }
 	    }
+
+            # check memory delta
+            set mem1 UNDEFINED
+            set mem2 UNDEFINED
+	    if { [regexp {MEMORY DELTA:\s*([\d.]+)} $log1 res1 mem1] &&
+	         [regexp {MEMORY DELTA:\s*([\d.]+)} $log2 res1 mem2] } {
+                set stat(mem1) [expr $stat(mem1) + $mem1]
+                set stat(mem2) [expr $stat(mem2) + $mem2]
+
+                # compare memory usage with 10% precision (but not less 16 KiB)
+	        if { [expr abs ($mem1 - $mem2) > 16 + 0.05 * abs ($mem1 + $mem2)] } {
+	            _log_and_puts log "MEMORY [split $basename /] $casename: $mem1 / $mem2"
+                }
+	    }
+
+            # check images
+            set imglist1 [glob -directory $path1 -types f -tails -nocomplain $casename*.{png,gif}]
+            set imglist2 [glob -directory $path2 -types f -tails -nocomplain $casename*.{png,gif}]
+            _list_diff $imglist1 $imglist2 imgin1 imgin2 imgcommon
+            if { "$verbose" > 1 } {
+                if { [llength $imgin1] > 0 } { _log_and_puts log "Only in $path1: $imgin1" }
+                if { [llength $imgin2] > 0 } { _log_and_puts log "Only in $path2: $imgin2" }
+            }
+            foreach imgfile $imgcommon {
+#                if { $verbose > 1 } { _log_and_puts log "Checking [split basename /] $casename: $imgfile" }
+                set diffile [_diff_img_name $dir1 $dir2 $basename $imgfile]
+                if { [catch {diffimage [file join $dir1 $basename $imgfile] \
+                                       [file join $dir2 $basename $imgfile] \
+                                       0 0 0 $diffile} diff] } {
+                    _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
+                    file delete -force $diffile ;# clean possible previous result of diffimage
+                } elseif { $diff != 0 } {
+                    _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs"
+                } else {
+                    file delete -force $diffile ;# clean useless artifact of diffimage
+                }
+            }
 	}
     }
 
     if { "$_statvar" == "" } {
+        _log_and_puts log "Total MEMORY difference: $stat(mem1) / $stat(mem2)"
         _log_and_puts log "Total CPU difference: $stat(cpu1) / $stat(cpu2)"
     }
+}
+
+# Auxiliary procedure to save log of results comparison to file
+proc _log_html_diff {file log dir1 dir2} {
+    # create missing directories as needed
+    catch {file mkdir [file dirname $file]}
+
+    # try to open a file
+    if [catch {set fd [open $file w]} res] {
+	error "Error saving log file $file: $res"
+    }
+    
+    # print header
+    puts $fd "<html><head><title>Diff $dir1 vs. $dir2</title></head><body>"
+    puts $fd "<h1>Comparison of test results: $dir1 vs. $dir2</h1>"
+
+    # print log body, trying to add HTML links to script files on lines like
+    # "Executing <filename>..."
+    puts $fd "<pre>"
+    set logpath [file split [file normalize $file]]
+    foreach line [split $log "\n"] {
+        puts $fd $line
+
+        if { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+)} $line res case img] } {
+            if { [catch {eval file join "" [lrange $case 0 end-1]} gridpath] } {
+               # note: special handler for the case if test grid directoried are compared directly
+               set gridpath ""
+            }
+            set img1 "<img src=\"[_make_url $file [file join $dir1 $gridpath $img]]\">"
+            set img2 "<img src=\"[_make_url $file [file join $dir2 $gridpath $img]]\">"
+
+            set difffile [_diff_img_name $dir1 $dir2 $gridpath $img]
+            if { [file exists $difffile] } {
+                set imgd "<img src=\"[_make_url $file $difffile]\">"
+            } else {
+                set imgd "N/A"
+            }
+
+            puts $fd "<table><tr><th>[file tail $dir1]</th><th>[file tail $dir2]</th><th>Different pixels</th></tr>"
+            puts $fd "<tr><td>$img1</td><td>$img2</td><td>$imgd</td></tr></table>"
+        }
+    }
+    puts $fd "</pre></body></html>"
+
+    close $fd
+    return
 }
 
 # get number of CPUs on the system
