@@ -380,14 +380,8 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
                   //--   Les courbes auto-intersectantes donne souvent des 
                   //--   polygones assez loin de la courbe a parametre ct.
 
-  if(NbIter>0) {
-    if((D1.LastParameter()-D1.FirstParameter())
-       >0.5*(DeltaU)) { 
-      nbsamples=(3*(nbsamples*NbIter)/2);
-    }
-    else { 
+  if(NbIter>0) { 
       nbsamples=(3*(nbsamples*NbIter))/2;
-    }
   }
   IntCurve_ThePolygon2d Poly1(C1,nbsamples,D1,Tol);
   if(!Poly1.AutoIntersectionIsPossible()) { 
@@ -799,10 +793,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     }
   else // NbIter > 0
     {
-      if ((D1.LastParameter()-D1.FirstParameter()) > 0.5*(DeltaU))
-	nbsamplesOnC1=(5*(nbsamplesOnC1*NbIter))/4;
-      else
-	nbsamplesOnC1=(5*(nbsamplesOnC1*NbIter))/4;
+	    nbsamplesOnC1=(5*(nbsamplesOnC1*NbIter))/4;
     }
   /////////////////////////////////////////////
 
@@ -816,10 +807,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     }
   else // NbIter > 0
     {
-      if ((D2.LastParameter()-D2.FirstParameter()) > 0.5*(DeltaV))
-	nbsamplesOnC2=(5*(nbsamplesOnC2*NbIter))/4;
-      else
-	nbsamplesOnC2=(5*(nbsamplesOnC2*NbIter))/4;
+	    nbsamplesOnC2=(5*(nbsamplesOnC2*NbIter))/4;
     }
   /////////////////////////////////////////////
 
