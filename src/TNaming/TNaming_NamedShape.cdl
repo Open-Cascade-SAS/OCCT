@@ -80,6 +80,7 @@ is
 	---C++: inline         
 
     Clear (me : mutable);
+    ---C++: alias ~
 
     ID(me) returns GUID from Standard
     	is redefined static;

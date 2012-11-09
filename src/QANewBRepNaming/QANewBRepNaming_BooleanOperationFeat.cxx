@@ -1565,6 +1565,7 @@ Standard_Boolean QANewBRepNaming_BooleanOperationFeat::IsWRCase2(const BRepAlgoA
       }
     }
   }
+  return Standard_False;
 }
 
 //=======================================================================
