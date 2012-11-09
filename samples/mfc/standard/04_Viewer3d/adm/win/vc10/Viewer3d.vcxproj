@@ -240,7 +240,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../x64\vc10\bin/Viewer3d.exe</OutputFile>
+      <OutputFile>../../../../x64\vc10\bind/Viewer3d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\x64\vc10\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>

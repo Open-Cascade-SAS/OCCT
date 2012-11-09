@@ -684,7 +684,10 @@ void FreeTexture (const Handle(OpenGl_Context)& theContext,
     for (int i = 0; i < textab(ID).contextdata.Length(); ++i)
     {
       Handle(OpenGl_ResourceTexture) aResource = new OpenGl_ResourceTexture (textab(ID).contextdata(i).number);
-      theContext->DelayedRelease (aResource);
+      
+      if (!theContext.IsNull()) {
+        theContext->DelayedRelease (aResource);
+      }
     }
 
     texdata(data).status = TEXDATA_NONE;
