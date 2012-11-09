@@ -327,7 +327,7 @@ void AIS_DiameterDimension::ComputeOneFaceDiameter(
 
   gp_Pln aPln;
   Handle( Geom_Surface ) aBasisSurf;
-  AIS_KindOfSurface aSurfType;
+  AIS_KindOfSurface aSurfType = AIS_KOS_OtherSurface;
   Standard_Real Offset;
   if( myAutomaticPosition )
     AIS::GetPlaneFromFace( TopoDS::Face(  myFShape),
