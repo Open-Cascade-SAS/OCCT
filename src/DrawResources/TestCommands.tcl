@@ -32,15 +32,20 @@ set _tests_verbose 0
 set _test_case_regexp {^CASE\s+([\w.-]+)\s+([\w.-]+)\s+([\w.-]+)\s*:\s*([\w]+)(.*)}
 
 # Basic command to run indicated test case in DRAW
-help test {Run specified test case
-    Use: test group grid casename [echo=0]
-    - If echo is set to 0 (default), log is stored in memory and only summary
-      is output (the log can be obtained with command \'dlog get\')
-    - If echo is set to 1, all commands and results are echoed immediately,
-      thus log is not saved and summary is not produced}
+help test {
+  Run specified test case
+  Use: test group grid casename [echo=0]
+  - If echo is set to 0 (default), log is stored in memory and only summary
+    is output (the log can be obtained with command "dlog get")
+  - If echo is set to 1 or "-echo", all commands and results are echoed 
+    immediately, but log is not saved and summary is not produced
+}
 proc test {group grid casename {echo 0}} {
     # get test case paths (will raise error if input is invalid)
     _get_test $group $grid $casename dir gridname casefile
+
+    # if echo specified as "-echo", convert it to bool
+    if { "$echo" == "-echo" } { set echo t }
 
     # run test
     uplevel _run_test $dir $group $gridname $casefile $echo
@@ -54,16 +59,17 @@ proc test {group grid casename {echo 0}} {
 }
 
 # Basic command to run indicated test case in DRAW
-help testgrid {Run all tests, or specified group, or one grid
-    Use: testgrid logdir [group [grid]] [options...]
-    Log directory should be empty (or non-existing)
-    Allowed options are:
-    -parallel N: run in parallel mode with up to N processes (default 0)
-    -refresh N: save summary logs every N seconds (default 60, minimal 1, 0 to disable)
-    -overwrite: force writing logs in existing non-empty directory
-    -xml filename: write XML report for Jenkins (in JUnit-like format)
+help testgrid {
+  Run all tests, or specified group, or one grid
+  Use: testgrid [group [grid]] [options...]
+  Allowed options are:
+  -parallel N: run N parallel processes (default is number of CPUs, 0 to disable)
+  -refresh N: save summary logs every N seconds (default 60, minimal 1, 0 to disable)
+  -outdir dirname: set log directory (should be empty or non-existing)
+  -overwrite: force writing logs in existing non-empty directory
+  -xml filename: write XML report for Jenkins (in JUnit-like format)
 }
-proc testgrid {logdir args} {
+proc testgrid {args} {
     global env tcl_platform _tests_verbose
 
     ######################################################
@@ -77,8 +83,9 @@ proc testgrid {logdir args} {
     }
 
     # treat options
-    set parallel 0
+    set parallel [_get_nb_cpus]
     set refresh 60
+    set logdir ""
     set overwrite 0
     set xmlfile ""
     for {set narg 0} {$narg < [llength $args]} {incr narg} {
@@ -87,10 +94,10 @@ proc testgrid {logdir args} {
 	# parallel execution
 	if { $arg == "-parallel" } {
 	    incr narg
-	    if { $narg < [llength $args] } { 
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
 		set parallel [expr [lindex $args $narg]]
 	    } else {
-		set parallel 2
+		error "Option -parallel requires argument"
 	    }
 	    continue
 	}
@@ -98,10 +105,21 @@ proc testgrid {logdir args} {
 	# refresh logs time
 	if { $arg == "-refresh" } {
 	    incr narg
-	    if { $narg < [llength $args] } { 
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
 		set refresh [expr [lindex $args $narg]]
 	    } else {
-		set refresh 10
+		error "Option -refresh requires argument"
+	    }
+	    continue
+	}
+
+	# output directory
+	if { $arg == "-outdir" } {
+	    incr narg
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
+		set logdir [lindex $args $narg]
+	    } else {
+		error "Option -outdir requires argument"
 	    }
 	    continue
 	}
@@ -115,7 +133,7 @@ proc testgrid {logdir args} {
 	# refresh logs time
 	if { $arg == "-xml" } {
 	    incr narg
-	    if { $narg < [llength $args] } { 
+	    if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } { 
 		set xmlfile [lindex $args $narg]
 	    }
 	    if { $xmlfile == "" } {
@@ -142,8 +160,14 @@ proc testgrid {logdir args} {
     # check that target log directory is empty or does not exist
     set logdir [file normalize [string trim $logdir]]
     if { $logdir == "" } {
-	# if specified logdir is empty string, generate unique name like "results_2010-12-31T23:59:59"
-	set logdir "results_[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
+	# if specified logdir is empty string, generate unique name like 
+        # results_<branch>_<timestamp>
+        set prefix "results"
+        if { ! [catch {exec git branch} gitout] &&
+             [regexp {[*] ([\w]+)} $gitout res branch] } {
+            set prefix "${prefix}_$branch"
+        }
+	set logdir "${prefix}_[clock format [clock seconds] -format {%Y-%m-%dT%H%M}]"
 	set logdir [file normalize $logdir]
     }
     if { [file isdirectory $logdir] && ! $overwrite && ! [catch {glob -directory $logdir *}] } {
@@ -290,7 +314,7 @@ proc testgrid {logdir args} {
 	    set worker [tpool::create -minworkers $parallel -maxworkers $parallel]
 	    # suspend the pool until all jobs are posted, to prevent blocking of the process
 	    # of starting / processing jobs by running threads
-	    tpool::suspend $worker
+	    catch {tpool::suspend $worker}
 	    if { $_tests_verbose > 0 } { _log_and_puts log "Executing tests in (up to) $parallel threads" }
 	}
     }
@@ -311,7 +335,7 @@ proc testgrid {logdir args} {
 	set fd_cmd [open $logdir/$group/$grid/${casename}.tcl w]
 	puts $fd_cmd "$imgdir_cmd"
 	puts $fd_cmd "set test_image $casename"
-	puts $fd_cmd "_run_test $dir $group $grid $casefile 1"
+	puts $fd_cmd "_run_test $dir $group $grid $casefile t"
 
 	# use dlog command to obtain complete output of the test when it is absent (i.e. since OCCT 6.6.0)
 	# note: this is not needed if echo is set to 1 in call to _run_test above
@@ -361,7 +385,7 @@ proc testgrid {logdir args} {
 
     # get results of started threads
     if { $parallel > 0 } {
-	tpool::resume $worker
+	catch {tpool::resume $worker}
 	while { [llength [array names job_def]] > 0 } {
 	    foreach job [tpool::wait $worker [array names job_def]] {
 		eval _log_test_case \[tpool::get $worker $job\] $job_def($job) log
@@ -402,20 +426,21 @@ proc testgrid {logdir args} {
 }
 
 # Procedure to compare results of two runs of test cases
-help testdiff {Compare results of two executions of tests (CPU times, ...)
-    Use: testdiff dir1 dir2 [options...]
-    Where dir1 and dir2 are directories containing logs of two test runs.
-    Allowed options are:
-    -save filename: save resulting log in specified file
-    -subdir name: compare only specified subdirectory (can be nested)
-    -status {same|ok|all}: filter cases for comparing by their status:
-            same - only cases with same status are compared (default)
-            ok   - only cases with OK status in both logs are compared
-            all  - results are compared regardless of status
-    -verbose level: 
-            1 - output only differences 
-            2 - output list of logs and directories present in one of dirs only
-            3 - (default) output progress messages 
+help testdiff {
+  Compare results of two executions of tests (CPU times, ...)
+  Use: testdiff dir1 dir2 [options...]
+  Where dir1 and dir2 are directories containing logs of two test runs.
+  Allowed options are:
+  -save filename: save resulting log in specified file
+  -subdir name: compare only specified subdirectory (can be nested)
+  -status {same|ok|all}: filter cases for comparing by their status:
+          same - only cases with same status are compared (default)
+          ok   - only cases with OK status in both logs are compared
+          all  - results are compared regardless of status
+  -verbose level: 
+          1 - output only differences 
+          2 - output list of logs and directories present in one of dirs only
+          3 - (default) output progress messages 
 }
 proc testdiff {dir1 dir2 args} {
     if { "$dir1" == "$dir2" } {
@@ -860,9 +885,29 @@ proc _log_html {file log {title {}}} {
 	puts $fd "<p><img src=\"$img\"/><p>"
     }
 
-    # print body, then end and close
+    # print log body, trying to add HTML links to script files on lines like
+    # "Executing <filename>..."
     puts $fd "<pre>"
-    puts $fd $log
+    set logpath [file split [file normalize $file]]
+    foreach line [split $log "\n"] {
+        if { [regexp {Executing[ \t]+([a-zA-Z0-9._/:-]+[^.])} $line res script] &&
+             [file exists $script] } {
+
+            # generate relative path to the script file 
+            set url "file://[file normalize $script]"
+            set scriptpath [file split [file normalize $script]]
+	    for {set i 0} {$i < [llength $logpath]} {incr i} {
+                if { "[lindex $logpath $i]" != "[lindex $scriptpath $i]]" } {
+                    if { $i == 0 } { break }
+                    set url "[string repeat "../" [expr [llength $logpath] - $i - 1]]/[file join [lrange $scriptpath $i end]]"
+                    break
+                }
+            }
+
+            set line [regsub $script $line "<a href=\"$url\">$script</a>"]
+        }
+        puts $fd $line
+    }
     puts $fd "</pre></body></html>"
 
     close $fd
@@ -1247,32 +1292,38 @@ proc _path_separator {} {
 proc locate_data_file {filename} {
     global env groupname gridname casename
 
+    # check if the file is located in the subdirectory data of the script dir
     set scriptfile [info script]
-    if { $scriptfile == "" } {
-	error "Error: This procedure (locate_data_file) is for use only in test scripts!"
+    if { $scriptfile != "" } {
+        set path [file join [file dirname $scriptfile] data $filename]
+	if { [file exists $path] } {
+	    return [file normalize $path]
+	}
     }
 
-	# check sub-directories in paths indicated by CSF_TestDataPath
-	if { [info exists env(CSF_TestDataPath)] } {
+    # check sub-directories in paths indicated by CSF_TestDataPath
+    if { [info exists env(CSF_TestDataPath)] } {
 	foreach dir [_split_path $env(CSF_TestDataPath)] {
-		while {[llength $dir] != 0} { 
-			set dir [lassign $dir name]
-			lappend dir {*}[glob -nocomplain -directory $name -type d *]
-			if { [file exists $name/$filename] } {
-			return [file normalize $name/$filename]
-			}
+	    while {[llength $dir] != 0} { 
+	        set name [lindex $dir 0]
+		set dir [lrange $dir 1 end]
+		eval lappend dir [glob -nocomplain -directory $name -type d *]
+		if { [file exists $name/$filename] } {
+		    return [file normalize $name/$filename]
 		}
+	    }
 	}
-	}
-	
-    # check datadir
+    }
+
+    # check current datadir
     if { [file exists [uplevel datadir]/$filename] } {
-	return [uplevel datadir]/$filename
+	return [file normalize [uplevel datadir]/$filename]
     }
 
     # raise error
-    error [join [list "Error: file $filename could not be found neither in script" \
-		      "directories nor in paths indicated by CSF_TestDataPath environment variable"] "\n"]
+    error [join [list "Error: file $filename could not be found" \
+		      "(should be in paths indicated by CSF_TestDataPath environment variable, " \
+                      "or in subfolder data in the script directory)"] "\n"]
 }
 
 # Procedure to make a diff and common of two lists
@@ -1388,4 +1439,39 @@ proc _test_diff {dir1 dir2 basename status verbose _logvar {_statvar ""}} {
     if { "$_statvar" == "" } {
         _log_and_puts log "Total CPU difference: $stat(cpu1) / $stat(cpu2)"
     }
+}
+
+# get number of CPUs on the system
+proc _get_nb_cpus {} {
+    global tcl_platform env
+
+    if { "$tcl_platform(platform)" == "windows" } {
+        # on Windows, take the value of the environment variable 
+        if { [info exists env(NUMBER_OF_PROCESSORS)] &&
+             ! [catch {expr $env(NUMBER_OF_PROCESSORS) > 0} res] && $res >= 0 } {
+            return $env(NUMBER_OF_PROCESSORS)
+        }
+    } elseif { "$tcl_platform(os)" == "Linux" } {
+        # on Linux, take number of logical processors listed in /proc/cpuinfo
+        if { [catch {open "/proc/cpuinfo" r} fd] } { 
+            return 0 ;# should never happen, but...
+        }
+        set nb 0
+	while { [gets $fd line] >= 0 } {
+	    if { [regexp {^processor[ \t]*:} $line] } {
+	        incr nb
+	    }
+	}
+        close $fd
+        return $nb
+    } elseif { "$tcl_platform(os)" == "Darwin" } {
+        # on MacOS X, call sysctl command
+        if { ! [catch {exec sysctl hw.ncpu} ret] && 
+             [regexp {^hw[.]ncpu[ \t]*:[ \t]*([0-9]+)} $ret res nb] } {
+            return $nb
+        }
+    }
+
+    # if cannot get good value, return 0 as default
+    return 0
 }

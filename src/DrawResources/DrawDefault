@@ -51,6 +51,11 @@ if { [info exists env(CASROOT)] && [file isdirectory $env(CASROOT)/tests] } {
     } else {
         set env(CSF_TestScriptsPath) $env(CSF_TestScriptsPath)[_path_separator]$env(CASROOT)/tests
     }
+    if { ! [info exists env(CSF_TestDataPath)] } {
+        set env(CSF_TestDataPath) $env(CASROOT)/data
+    } else {
+        set env(CSF_TestDataPath) $env(CSF_TestDataPath)[_path_separator]$env(CASROOT)/data
+    }
 }
 
 # load application-defined initialization script, which is expected to 
