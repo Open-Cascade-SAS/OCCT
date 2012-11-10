@@ -19,7 +19,7 @@ set x3 244
 set y3 89
 
 XNewDoc Doc1
-ReadStep Doc1 [locate_data_file CR23407-screw.step]
+ReadStep Doc1 [locate_data_file screw.step]
 XShow Doc1 0:1:1:1
 XShowFaceBoundary Doc1 0:1:1:1 1 255 0 0 10 1
 vfit

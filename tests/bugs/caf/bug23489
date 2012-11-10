@@ -2,10 +2,13 @@
 
 pload OCAF
 
+# take some big file to be loaded
+set file [locate_data_file Bottom.brep]
+
 set listmem {}
 for {set i 1} {$i < 10} {incr i} {
     # load big shape
-    restore [locate_data_file bug23489_Bottom.brep] a
+    restore $file a
 
     # add shape to new OCAF document
     NewDocument D MDTV-Standard

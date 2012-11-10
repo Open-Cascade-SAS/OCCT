@@ -1,4 +1,4 @@
-restore [locate_data_file a27] a
+restore [locate_data_file a47] a
 restore [locate_data_file b27] b
 bsection result a b
 

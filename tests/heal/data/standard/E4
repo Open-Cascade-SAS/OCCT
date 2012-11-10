@@ -1,2 +1,2 @@
-restore [locate_data_file Connection.rle] a
+restore [locate_data_file mal_tige.brep] a
 

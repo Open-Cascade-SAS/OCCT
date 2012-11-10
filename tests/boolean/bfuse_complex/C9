@@ -2,7 +2,7 @@
 # Date : 11mar98
 
 restore [locate_data_file CTO900_cts16184a.rle] a
-restore [locate_data_file cts16184b.shape] b
+restore [locate_data_file cts16184b.brep] b
 
 bfuse result a b
 

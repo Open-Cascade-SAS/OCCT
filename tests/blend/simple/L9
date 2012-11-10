@@ -3,9 +3,9 @@
 #trotate s2 0 0 0 0 0 1 90
 #ttranslate s2 5 -1 0
 #cut s s1 s2
-#save s C1234.draw 
+#save s CFI_c1234fig.rle 
 
-restore [locate_data_file C1234.draw] s
+restore [locate_data_file CFI_c1234fig.rle] s
 tscale s 0 0 0 SCALE1
 explode s e
 blend result s 0.5*SCALE1 s_4 0.5*SCALE1 s_2 0.5*SCALE1 s_12 

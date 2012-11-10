@@ -1,2 +1,2 @@
-restore [locate_data_file topo108.brep] a
+restore [locate_data_file CTO908_topo108.brep] a
 

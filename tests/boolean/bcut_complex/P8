@@ -1,7 +1,7 @@
 # Original bug : cfe002C5
 # Date : 09 Nov 98
 
-restore [locate_data_file boitecfe002.rle] base
+restore [locate_data_file pro16389a.rle] base
 restore [locate_data_file pro16389b.rle] prism
 
 bcut result base prism

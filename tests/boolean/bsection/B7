@@ -1,4 +1,4 @@
-restore [locate_data_file a17] a
+restore [locate_data_file CIN001_a17.rle] a
 restore [locate_data_file b17_bsect] b
 bsection result a b
 

@@ -1,8 +1,8 @@
 # Original bug : pro5557
 # Date : 10mar97
 
-restore [locate_data_file pro5557_revol.shape] revol1
-restore [locate_data_file pro5557_bsurf.shape] bsurf2
+restore [locate_data_file pro5557_revol.brep] revol1
+restore [locate_data_file pro5557_bsurf.brep] bsurf2
 #normals bsurf2 0.27
 point pnt1 0 -0.3 0
 halfspace space2 bsurf2 0 -0.3 0

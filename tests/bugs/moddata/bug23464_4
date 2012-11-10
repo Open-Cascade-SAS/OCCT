@@ -9,8 +9,8 @@ puts ""
 set int_check 3
 set fract_check 1415927
 
-restore [locate_data_file bug23464_c58.brep] c58
-restore [locate_data_file bug23464_s37.brep] s37
+restore [locate_data_file bug23464_c58.draw] c58
+restore [locate_data_file bug23464_s37.draw] s37
 
 project result c58 s37
 set info [length result]

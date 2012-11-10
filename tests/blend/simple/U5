@@ -3,7 +3,7 @@
 #trotate s2 0 0 0 1 0 0 90
 #ttranslate s2 0 7 7
 #fuse s s1 s2
-#save s 6_I1234.draw 
+#save s 6_CFI_i1234fis.rle 
 
 restore [locate_data_file CFI_6_i12fhh.rle]  s
 tscale s 0 0 0 SCALE2

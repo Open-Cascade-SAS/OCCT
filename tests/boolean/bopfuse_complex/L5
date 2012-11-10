@@ -1,9 +1,9 @@
 # Original bug : pro15203
 ###########################
-restore [locate_data_file cq11.brep] c1
+restore [locate_data_file pro15203a.rle] c1
 explode c1 f
 copy c1_1 c1
-restore [locate_data_file cq21.brep] c2
+restore [locate_data_file pro15203c.rle] c2
 explode c2 f
 copy c2_1 c2
 

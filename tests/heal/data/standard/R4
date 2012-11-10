@@ -1,2 +1,2 @@
-restore [locate_data_file pro5363axe.shape] a
+restore [locate_data_file pro5363axe.brep] a
 

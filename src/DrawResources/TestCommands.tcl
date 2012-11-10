@@ -18,7 +18,8 @@
 ############################################################################
 # This file defines scripts for execution of OCCT tests.
 # It should be loaded automatically when DRAW is started, and provides
-# three top-level commands: 'test', 'testgrid', and 'testdiff'.
+# top-level commands starting with 'test'. Type 'help test' to get their
+# synopsys.
 # See OCCT Tests User Guide for description of the test system.
 #
 # Note: procedures with names starting with underscore are for internal use 
@@ -558,6 +559,162 @@ proc testdiff {dir1 dir2 args} {
     }
 
     return
+}
+
+# Procedure to check data file before adding it to repository
+help testfile {
+  Check data file and prepare it for putting to test data files repository.
+  Use: testfile [filelist]
+
+  Will report if:
+  - data file (non-binary) is in DOS encoding (CR/LF)
+  - same data file (with same or another name) already exists in the repository
+  - another file with the same name already exists 
+  Note that names are assumed to be case-insensitive (for Windows).
+
+  Unless the file is already in the repository, tries to load it, reports
+  the recognized file format, file size, number of faces and edges in the 
+  loaded shape (if any), and makes snapshot (in the subdirectory tmp).
+  Finally it advises whether the file should be put to public section of the 
+  repository.
+}
+proc testfile {filelist} {
+    global env
+
+    # check that CSF_TestDataPath is defined
+    if { ! [info exists env(CSF_TestDataPath)] } {
+        error "Environment variable CSF_TestDataPath must be defined!"
+    }
+
+    # build registry of existing data files (name -> path) and (size -> path)
+    puts "Checking available test data files..."
+    foreach dir [_split_path $env(CSF_TestDataPath)] {
+        while {[llength $dir] != 0} {
+            set curr [lindex $dir 0]
+            set dir [lrange $dir 1 end]
+            eval lappend dir [glob -nocomplain -directory $curr -type d *]
+            foreach file [glob -nocomplain -directory $curr -type f *] {
+                set name [file tail $file]
+                set name_lower [string tolower $name]
+
+                # check that the file is not in DOS encoding
+                if { [_check_dos_encoding $file] } {
+                    puts "Warning: file $file is in DOS encoding; was this intended?"
+                }
+                _check_file_format $file
+
+                # check if file with the same name is present twice or more
+                if { [info exists names($name_lower)] } {
+                    puts "Error: more than one file with name $name is present in the repository:"
+                    if { [_diff_files $file $names($name_lower)] } {
+                        puts "(files are different by content)"
+                    } else {
+                        puts "(files are same by content)"
+                    }
+                    puts "--> $file"
+                    puts "--> $names($name_lower)"
+                    continue
+                } 
+                
+                # check if file with the same content exists
+                set size [file size $file]
+                if { [info exists sizes($size)] } {
+                    foreach other $sizes($size) {
+                        if { ! [_diff_files $file $other] } {
+                            puts "Warning: two files with the same content found:"
+                            puts "--> $file"
+                            puts "--> $other"
+                        }
+                    }
+                }
+
+                # add the file to the registry
+                set names($name_lower) $file
+                lappend sizes($size) $file
+	    }
+	}
+    }
+    if { [llength $filelist] <= 0 } { return }
+
+    # check the new files
+    set has_images f
+    puts "Checking new file(s)..."
+    foreach file $filelist {
+        # check for DOS encoding
+        if { [_check_dos_encoding $file] } {
+            puts "$file: Warning: DOS encoding detected"
+        }
+
+        set name [file tail $file]
+        set name_lower [string tolower $name]
+
+        # check for presence of the file with same name
+        if { [info exists names($name_lower)] } {
+            if { [_diff_files $file $names($name_lower)] } {
+                puts "$file: Error: name is already used by existing file\n--> $names($name_lower)"
+            } else {
+                puts "$file: OK: already in the repository \n--> $names($name_lower)"
+                continue
+            }
+        }
+                
+        # check if file with the same content exists
+        set size [file size $file]
+        if { [info exists sizes($size)] } {
+            set found f
+            foreach other $sizes($size) {
+                if { ! [_diff_files $file $other] } {
+                     puts "$file: OK: the same file is already present under name [file tail $other]\n--> $other"
+                     set found t
+                     break
+                }
+            }
+            if { $found } { continue }
+        }
+
+        # try to read the file
+        set format [_check_file_format $file]
+        if { [catch {uplevel load_data_file $file $format a}] } {
+            puts "$file: Error: Cannot read as $format file"
+            continue
+        }
+
+        # get number of faces and edges
+        set edges 0
+        set faces 0
+        set nbs [uplevel nbshapes a]
+        regexp {EDGE[ \t:]*([0-9]+)} $nbs res edges
+        regexp {FACE[ \t:]*([0-9]+)} $nbs res faces
+
+        # classify; first check file size and number of faces and edges
+        if { $size < 95000 && $faces < 20 && $edges < 100 } {
+            set dir public
+        } else {
+            set dir private
+            # check if one of names of that file corresponds to typical name for 
+            # MDTV bugs or has extension .rle, this should be old model
+            if { [regexp -nocase {.*(cts|ats|pro|buc|ger|fra|usa|uki)[0-9]+.*} $name] ||
+                 [regexp -nocase {[.]rle\y} $name] } {
+                set dir old
+            }
+        }
+
+        # add stats
+        puts "$file: $format size=[expr $size / 1024] KiB, nbfaces=$faces, nbedges=$edges -> $dir"
+
+        file mkdir tmp/$dir
+
+        # make snapshot
+        pload AISV
+        uplevel vdisplay a
+        uplevel vfit
+        uplevel vzfit
+        uplevel vdump tmp/$dir/[file rootname [file tail $file]].png
+        set has_images t
+    }
+    if { $has_images } {
+        puts "Snapshots are saved in subdirectory tmp"
+    }
 }
 
 # Procedure to locate data file for test given its name.
@@ -1622,4 +1779,102 @@ proc _get_nb_cpus {} {
 
     # if cannot get good value, return 0 as default
     return 0
+}
+
+# check two files for difference
+proc _diff_files {file1 file2} {
+    set fd1 [open $file1 "r"]
+    set fd2 [open $file2 "r"]
+
+    set differ f
+    while {! $differ} {
+        set nb1 [gets $fd1 line1]
+        set nb2 [gets $fd2 line2]
+        if { $nb1 != $nb2 } { set differ t; break }
+        if { $nb1 < 0 } { break }
+        if { [string compare $line1 $line2] } {
+            set differ t
+        }
+    }
+
+    close $fd1
+    close $fd2
+
+    return $differ
+}
+
+# Check if file is in DOS encoding.
+# This check is done by presence of \r\n combination at the end of the first 
+# line (i.e. prior to any other \n symbol).
+# Note that presence of non-ascii symbols typically used for recognition
+# of binary files is not suitable since some IGES and STEP files contain
+# non-ascii symbols.
+# Special check is added for PNG files which contain \r\n in the beginning.
+proc _check_dos_encoding {file} {
+    set fd [open $file rb]
+    set isdos f
+    if { [gets $fd line] && [regexp {.*\r$} $line] && 
+         ! [regexp {^.PNG} $line] } {
+        set isdos t
+    }
+    close $fd
+    return $isdos
+}
+
+# procedure to recognize format of a data file by its first symbols (for OCCT 
+# BREP and geometry DRAW formats, IGES, and STEP) and extension (all others)
+proc _check_file_format {file} {
+    set fd [open $file rb]
+    set line [read $fd 1024]
+    close $fd
+
+    set warn f
+    set ext [file extension $file]
+    set format unknown
+    if { [regexp {^DBRep_DrawableShape} $line] } {
+        set format BREP
+        if { "$ext" != ".brep" && "$ext" != ".rle" && 
+             "$ext" != ".draw" && "$ext" != "" } {
+            set warn t
+        }
+    } elseif { [regexp {^DrawTrSurf_} $line] } {
+        set format DRAW
+        if { "$ext" != ".rle" && 
+             "$ext" != ".draw" && "$ext" != "" } {
+            set warn t
+        }
+    } elseif { [regexp {^[ \t]*ISO-10303-21} $line] } {
+        set format STEP
+        if { "$ext" != ".step" && "$ext" != ".stp" } {
+            set warn t
+        }
+    } elseif { [regexp {^.\{72\}S[0 ]\{6\}1} $line] } {
+        set format IGES
+        if { "$ext" != ".iges" && "$ext" != ".igs" } {
+            set warn t
+        }
+    } elseif { "$ext" == ".igs" } {
+        set format IGES
+    } elseif { "$ext" == ".stp" } {
+        set format STEP
+    } else {
+        set format [string toupper [string range $ext 1 end]]
+    }
+    
+    if { $warn } {
+        puts "$file: Warning: extension ($ext) does not match format ($format)"
+    }
+
+    return $format
+}
+
+# procedure to load file knowing its format
+proc load_data_file {file format shape} {
+    switch $format {
+    BREP { uplevel restore $file $shape }
+    IGES { pload XSDRAW; uplevel igesbrep $file $shape * }
+    STEP { pload XSDRAW; uplevel stepread $file __a *; uplevel renamevar __a_1 $shape }
+    STL  { pload XSDRAW; uplevel readstl $shape $file }
+    default { error "Cannot read $format file $file" }
+    }
 }

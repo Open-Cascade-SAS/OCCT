@@ -1,1 +1,1 @@
-restore [locate_data_file CFE900_cts20gal.rle] a
+restore [locate_data_file cts20170_base.rle] a

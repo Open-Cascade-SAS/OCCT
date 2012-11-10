@@ -3,9 +3,9 @@
 #ttranslate s2 3 0 6
 #ttranslate s1 s2 5 5 0
 #cut s s1 s2
-#save s I1234.draw 
+#save s CFI_i1234fis.rle 
 
-restore [locate_data_file I1234.draw] s
+restore [locate_data_file CFI_i1234fis.rle] s
 tscale s 0 0 0 SCALE1
 explode s e
 mkevol result s
