@@ -69,14 +69,14 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../../win32\vc10\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\win32\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../x64\vc10\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\x64\obj\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../../../win64\vc10\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\win64\obj\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../../../win32\vc10\bind\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\win32\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../x64\vc10\bind\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\x64\objd\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../../../win64\vc10\bind\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\win64\objd\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,7 +127,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\x64\obj/Viewer3d.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win64\obj/Viewer3d.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -141,10 +141,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\x64\obj/Viewer3d.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\x64\obj/</AssemblerListingLocation>
-      <ObjectFileName>.\x64\obj/</ObjectFileName>
-      <ProgramDataBaseFileName>.\x64\obj/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win64\obj/Viewer3d.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win64\obj/</AssemblerListingLocation>
+      <ObjectFileName>.\win64\obj/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win64\obj/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -155,10 +155,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../x64\vc10\bin/Viewer3d.exe</OutputFile>
+      <OutputFile>../../../../win64\vc10\bin/Viewer3d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\x64\vc10\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>../../../../x64\vc10\bin/Viewer3d.pdb</ProgramDatabaseFile>
+      <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>../../../../win64\vc10\bin/Viewer3d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -212,7 +212,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>.\x64\objd/Viewer3d.tlb</TypeLibraryName>
+      <TypeLibraryName>.\win64\objd/Viewer3d.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -224,10 +224,10 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\x64\objd/Viewer3d.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\x64\objd/</AssemblerListingLocation>
-      <ObjectFileName>.\x64\objd/</ObjectFileName>
-      <ProgramDataBaseFileName>.\x64\objd/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\win64\objd/Viewer3d.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\win64\objd/</AssemblerListingLocation>
+      <ObjectFileName>.\win64\objd/</ObjectFileName>
+      <ProgramDataBaseFileName>.\win64\objd/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -240,11 +240,11 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>TKBRep.lib;FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../x64\vc10\bind/Viewer3d.exe</OutputFile>
+      <OutputFile>../../../../win64\vc10\bind/Viewer3d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\x64\vc10\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\win64\vc10\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../../x64\vc10\bind/Viewer3d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>../../../../win64\vc10\bind/Viewer3d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>

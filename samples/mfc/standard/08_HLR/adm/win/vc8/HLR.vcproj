@@ -117,8 +117,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="../../../..\x64\vc8\bin"
-			IntermediateDirectory=".\x64\obj"
+			OutputDirectory="../../../..\win64\vc8\bin"
+			IntermediateDirectory=".\win64\obj"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -143,7 +143,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\x64\obj/HLR.tlb"
+				TypeLibraryName=".\win64\obj/HLR.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -157,10 +157,10 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\x64\obj/HLR.pch"
-				AssemblerListingLocation=".\x64\obj/"
-				ObjectFile=".\x64\obj/"
-				ProgramDataBaseFileName=".\x64\obj/"
+				PrecompiledHeaderFile=".\win64\obj/HLR.pch"
+				AssemblerListingLocation=".\win64\obj/"
+				ObjectFile=".\win64\obj/"
+				ProgramDataBaseFileName=".\win64\obj/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -179,11 +179,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV2d.lib TKV3d.lib mfcsample.lib"
-				OutputFile="../../../..\x64\vc8\bin/HLR.exe"
+				OutputFile="../../../..\win64\vc8\bin/HLR.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\..\\x64\vc8\lib,$(CSF_OPT_LIB64)"
-				ProgramDatabaseFile="../../../..\x64\vc8\bin/HLR.pdb"
+				AdditionalLibraryDirectories="..\..\..\..\\win64\vc8\lib,$(CSF_OPT_LIB64)"
+				ProgramDatabaseFile="../../../..\win64\vc8\bin/HLR.pdb"
 				SubSystem="2"
 				TargetMachine="17"
 			/>
@@ -311,8 +311,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="../../../..\x64\vc8\bind"
-			IntermediateDirectory=".\x64\objd"
+			OutputDirectory="../../../..\win64\vc8\bind"
+			IntermediateDirectory=".\win64\objd"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
@@ -337,7 +337,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\x64\objd/HLR.tlb"
+				TypeLibraryName=".\win64\objd/HLR.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -349,10 +349,10 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\x64\objd/HLR.pch"
-				AssemblerListingLocation=".\x64\objd/"
-				ObjectFile=".\x64\objd/"
-				ProgramDataBaseFileName=".\x64\objd/"
+				PrecompiledHeaderFile=".\win64\objd/HLR.pch"
+				AssemblerListingLocation=".\win64\objd/"
+				ObjectFile=".\win64\objd/"
+				ProgramDataBaseFileName=".\win64\objd/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -372,12 +372,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKBRep.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKV2d.lib TKV3d.lib mfcsample.lib"
-				OutputFile="../../../..\x64\vc8\bind/HLR.exe"
+				OutputFile="../../../..\win64\vc8\bind/HLR.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\..\\x64\vc8\libd,$(CSF_OPT_LIB64D)"
+				AdditionalLibraryDirectories="..\..\..\..\\win64\vc8\libd,$(CSF_OPT_LIB64D)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../..\x64\vc8\bind/HLR.pdb"
+				ProgramDatabaseFile="../../../..\win64\vc8\bind/HLR.pdb"
 				SubSystem="2"
 				TargetMachine="17"
 			/>

@@ -685,7 +685,8 @@ void FreeTexture (const Handle(OpenGl_Context)& theContext,
     {
       Handle(OpenGl_ResourceTexture) aResource = new OpenGl_ResourceTexture (textab(ID).contextdata(i).number);
       
-      if (!theContext.IsNull()) {
+      if (!theContext.IsNull()) 
+      {
         theContext->DelayedRelease (aResource);
       }
     }
