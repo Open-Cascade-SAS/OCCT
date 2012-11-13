@@ -62,7 +62,14 @@ uses
     Adaptor3d
  
 is 
-
+    imported ArrayOfSectionLines from IntPolyh; 
+    imported ArrayOfCouples from IntPolyh; 
+    imported ArrayOfEdges from IntPolyh; 
+    imported ArrayOfPoints from IntPolyh; 
+    imported ArrayOfStartPoints from IntPolyh; 
+    imported ArrayOfTangentZones from IntPolyh; 
+    imported ArrayOfTriangles from IntPolyh; 
+    
     class Intersection;
 	---Purpose:  the main   algorithm.  Algorythm   outputs are --
 	--            lines  and  points like   discribe   in the last
@@ -77,41 +84,28 @@ is
     class Couple;
 	---Purpose: couple of triangles
 
-    class ArrayOfCouples;	
 
     class Point;
-    
-    class ArrayOfPoints;
-    
     class StartPoint;
-    
-    class ArrayOfStartPoints;
-    
     class SeqOfStartPoints instantiates Sequence from TCollection
         (StartPoint from IntPolyh);
 
     class Edge;
-    
-    class ArrayOfEdges;
+     
 
     class Triangle;
     
-    class ArrayOfTriangles;
    
     class MaillageAffinage;
     	---Purpose: Provide the algorythms used in the package
 
     class SectionLine;
     
-    class ArrayOfSectionLines;
     
 --    class TangentZone; For the moment we use the StartPoint Class
     
-    class ArrayOfTangentZones;
-
-    -- Modified by skv - Thu Sep 25 18:04:05 2003 OCC567 End
     pointer PMaillageAffinage to MaillageAffinage from IntPolyh;
-    -- Modified by skv - Thu Sep 25 18:04:07 2003 OCC567 Begin
+    
 end;
 
 

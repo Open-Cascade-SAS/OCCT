@@ -27,6 +27,7 @@
 #include <IntPolyh_StartPoint.hxx>
 #include <IntPolyh_MaillageAffinage.hxx>
 #include <IntPolyh_Couple.hxx>
+#include <IntPolyh_Triangle.hxx>
 
 #ifdef DEB
   # define MYDEBUG DEB 
@@ -164,8 +165,8 @@ void IntPolyh_Intersection::Perform() {
   } // start from advanced
 
   // accept result
-  nbsectionlines = TSectionLines.NbSectionLines();
-  nbtangentzones = TTangentZones.NbTangentZones();
+  nbsectionlines = TSectionLines.NbItems();
+  nbtangentzones = TTangentZones.NbItems();
 
   // clean up
   if(aPMaillageStd) delete aPMaillageStd;
@@ -293,8 +294,8 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage
 
   // if too many intersections, consider surfaces parallel (eap)
   if(FinTTC > 200 &&
-     (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
-      FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbTriangles()) ) {
+     (FinTTC >= theMaillageS->GetArrayOfTriangles(1).NbItems() ||
+      FinTTC >= theMaillageS->GetArrayOfTriangles(2).NbItems()) ) {
     return Standard_False;
   }
 
@@ -390,7 +391,7 @@ void IntPolyh_Intersection::MergeCouples
   anArrays[3] = &anArrayRR;
 
   for (i = 0; i < 4; i++)
-    aNbCouples[i] = anArrays[i]->NbCouples();
+    aNbCouples[i] = anArrays[i]->NbItems();
 
   Standard_Boolean isChanged = Standard_True;
 
@@ -444,7 +445,7 @@ Standard_Boolean IntPolyh_Intersection::PerformStd(IntPolyh_PMaillageAffinage& M
 						   Standard_Integer&           NbCouples)
 {
   Standard_Boolean isdone = PerformMaillage(MaillageS);
-  NbCouples = (isdone) ? (MaillageS->GetArrayOfCouples().NbCouples()) : 0;
+  NbCouples = (isdone) ? (MaillageS->GetArrayOfCouples().NbItems()) : 0;
   return isdone;
 }
 
@@ -464,10 +465,10 @@ Standard_Boolean IntPolyh_Intersection::PerformAdv(IntPolyh_PMaillageAffinage& M
     isdone = Standard_False; 
 
   if(isdone) {
-    NbCouples = MaillageFF->GetArrayOfCouples().NbCouples() +
-      MaillageFR->GetArrayOfCouples().NbCouples() +
-	MaillageRF->GetArrayOfCouples().NbCouples() +
-	  MaillageRR->GetArrayOfCouples().NbCouples();
+    NbCouples = MaillageFF->GetArrayOfCouples().NbItems() +
+      MaillageFR->GetArrayOfCouples().NbItems() +
+	MaillageRF->GetArrayOfCouples().NbItems() +
+	  MaillageRR->GetArrayOfCouples().NbItems();
 
     if(NbCouples > 0)
       MergeCouples(MaillageFF->GetArrayOfCouples(),MaillageFR->GetArrayOfCouples(),

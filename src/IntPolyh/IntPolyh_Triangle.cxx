@@ -558,12 +558,12 @@ void NewTriangle(const Standard_Integer P1,
 		 IntPolyh_ArrayOfTriangles &TTriangles,
 		 const Handle(Adaptor3d_HSurface)& MySurface,
 		 IntPolyh_ArrayOfPoints &TPoints) {
-  const Standard_Integer FinTT = TTriangles.NbTriangles();
+  const Standard_Integer FinTT = TTriangles.NbItems();
   TTriangles[FinTT].SetFirstPoint(P1);
   TTriangles[FinTT].SetSecondPoint(P2);
   TTriangles[FinTT].SetThirdPoint(P3);
   TTriangles[FinTT].TriangleDeflection(MySurface, TPoints);
-  TTriangles.IncNbTriangles();
+  TTriangles.IncrementNbItems();
 }
 
 //=======================================================================
@@ -577,13 +577,13 @@ void NewEdge(const Standard_Integer P1,
 	     IntPolyh_ArrayOfEdges & TEdges)
 {
 
-  const Standard_Integer FinTE = TEdges.NbEdges();
+  const Standard_Integer FinTE = TEdges.NbItems();
 
   TEdges[FinTE].SetFirstPoint(P1);
   TEdges[FinTE].SetSecondPoint(P2);
   TEdges[FinTE].SetFirstTriangle(T1);
   TEdges[FinTE].SetSecondTriangle(T2);
-  TEdges.IncNbEdges();
+  TEdges.IncrementNbItems();
 }
 
 //=======================================================================
@@ -649,8 +649,8 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
 					 IntPolyh_ArrayOfTriangles &TTriangles,
 					 IntPolyh_ArrayOfEdges & TEdges) {
 
-  Standard_Integer FinTE = TEdges.NbEdges();
-  Standard_Integer FinTT = TTriangles.NbTriangles();
+  Standard_Integer FinTE = TEdges.NbItems();
+  Standard_Integer FinTT = TTriangles.NbItems();
   
   ///Raffinage de la maille et de ses voisines par le milieu du plus grand des cotes
 
@@ -670,7 +670,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
   Standard_Real L31 = P3.SquareDistance(P1);
 
   if ((L12>L23) && (L12>L31)) {
-    const Standard_Integer FinTP = TPoints.NbPoints();
+    const Standard_Integer FinTP = TPoints.NbItems();
     (TPoints[FinTP]).Middle( MySurface,P1, P2);
     
     ///les nouveaux triangles
@@ -758,7 +758,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
   }
   
   else if ((L23>L31) && (L23>L12)){
-    const Standard_Integer FinTP = TPoints.NbPoints();
+    const Standard_Integer FinTP = TPoints.NbItems();
     (TPoints[FinTP]).Middle(MySurface, P2,P3);
 
     ///les nouveaux triangles
@@ -844,7 +844,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
     }
   }
     else {
-    const Standard_Integer FinTP = TPoints.NbPoints();
+    const Standard_Integer FinTP = TPoints.NbItems();
     (TPoints[FinTP]).Middle(MySurface, P3,P1);
 
     Standard_Integer T1,T2,T3,T4;
@@ -934,7 +934,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
   Fleche=-1.0;
   IP=0;
 
-  TPoints.IncNbPoints();
+  TPoints.IncrementNbItems();
 }
 
 //=======================================================================
@@ -948,7 +948,7 @@ void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Integer NbAffina
 						 IntPolyh_ArrayOfTriangles &TTriangles,
 						 IntPolyh_ArrayOfEdges & TEdges) {
 
-  const Standard_Integer FinTTInit = TTriangles.NbTriangles();
+  const Standard_Integer FinTTInit = TTriangles.NbItems();
 
   //On sait qu'il faut affiner au moins une fois
   TTriangles[NumTri].MiddleRefinement(NumTri,MySurface,TPoints,
@@ -1020,16 +1020,16 @@ void IntPolyh_Triangle::MultipleMiddleRefinement2(const Standard_Real CritereAff
 						  IntPolyh_ArrayOfTriangles &TTriangles,
 						  IntPolyh_ArrayOfEdges & TEdges) {
 
-  const Standard_Integer FinTTInit = TTriangles.NbTriangles();
+  const Standard_Integer FinTTInit = TTriangles.NbItems();
   Standard_Integer CritereArret=FinTTInit+250;
 
   //On sait qu'il faut affiner une fois au moins
   MiddleRefinement(NumTri,MySurface,TPoints,
 		   TTriangles,TEdges);
 
-  Standard_Integer FinTT = TTriangles.NbTriangles();// FinTT n'est pas une constante, elle augmente avec l'affinage
+  Standard_Integer FinTT = TTriangles.NbItems();// FinTT n'est pas une constante, elle augmente avec l'affinage
 
-  for(Standard_Integer iii=FinTTInit; iii<(FinTT=TTriangles.NbTriangles()); iii++) {
+  for(Standard_Integer iii=FinTTInit; iii<(FinTT=TTriangles.NbItems()); iii++) {
     IntPolyh_Triangle& TriangleCourant = TTriangles[iii];
     if(TriangleCourant.CompareBoxTriangle(b,TPoints)==0)
       //On n'affine pas le triangle
@@ -1049,7 +1049,7 @@ void IntPolyh_Triangle::MultipleMiddleRefinement2(const Standard_Real CritereAff
 //=======================================================================
 void IntPolyh_Triangle::SetEdgeandOrientation(const Standard_Integer EdgeIndex,
 					      const IntPolyh_ArrayOfEdges &TEdges) {
-  const Standard_Integer FinTE = TEdges.NbEdges();
+  const Standard_Integer FinTE = TEdges.NbItems();
 
   Standard_Integer PE1 =0,PE2 =0;
 
