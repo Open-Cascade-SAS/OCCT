@@ -1,1 +1,4 @@
 FAILED /\bFaulty\b/ bad shape
+IGNORE /Error: Number of intervals are not equal for 2d 3d. Ignored./ Debug mode message from DT_ShapeDivide
+IGNORE /Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity/ DEbug mode message from DT_ToBspl
+IGNORE /Error: ShapeFix_ComposeShell::MakeFacesOnPatch: can[']t dispatch wires/ Debug mode output
