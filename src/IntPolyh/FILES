@@ -1,3 +1,9 @@
 IntPolyh_Intersection_1.cxx
-
-
+IntPolyh_Array.hxx
+IntPolyh_ArrayOfSectionLines.hxx
+IntPolyh_ArrayOfCouples.hxx
+IntPolyh_ArrayOfEdges.hxx
+IntPolyh_ArrayOfPoints.hxx
+IntPolyh_ArrayOfStartPoints.hxx
+IntPolyh_ArrayOfTangentZones.hxx
+IntPolyh_ArrayOfTriangles.hxx

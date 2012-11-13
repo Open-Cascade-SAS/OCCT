@@ -24,6 +24,7 @@
 #include <IntPolyh_MaillageAffinage.hxx>
 #include <IntPolyh_ArrayOfCouples.hxx>
 #include <IntPolyh_Couple.hxx>
+#include <IntPolyh_Triangle.hxx>
 
 Standard_Integer MYPRINT1   = 0;
 
@@ -147,8 +148,8 @@ void IntPolyh_Intersection::Perform(const TColStd_Array1OfReal& Upars1,
   } // start from advanced
 
   // accept result
-  nbsectionlines = TSectionLines.NbSectionLines();
-  nbtangentzones = TTangentZones.NbTangentZones();
+  nbsectionlines = TSectionLines.NbItems();
+  nbtangentzones = TTangentZones.NbItems();
 
   // clean up
   if(aPMaillageStd) delete aPMaillageStd;
@@ -218,8 +219,8 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const Standard_Boolean i
       Standard_Real cosa = Abs(Couples[i].AngleValue());
       if(cosa > eps) ++npara;
     }
-    if(npara >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
-       npara >= theMaillageS->GetArrayOfTriangles(2).NbTriangles() ) {
+    if(npara >= theMaillageS->GetArrayOfTriangles(1).NbItems() ||
+       npara >= theMaillageS->GetArrayOfTriangles(2).NbItems() ) {
       return Standard_False;
     }
   }
@@ -297,8 +298,8 @@ Standard_Boolean IntPolyh_Intersection::PerformMaillage(const TColStd_Array1OfRe
       Standard_Real cosa = Abs(Couples[i].AngleValue());
       if(cosa > eps) ++npara;
     }
-    if(npara >= theMaillageS->GetArrayOfTriangles(1).NbTriangles() ||
-       npara >= theMaillageS->GetArrayOfTriangles(2).NbTriangles() ) {
+    if(npara >= theMaillageS->GetArrayOfTriangles(1).NbItems() ||
+       npara >= theMaillageS->GetArrayOfTriangles(2).NbItems() ) {
       return Standard_False;
     }
   }
@@ -339,10 +340,10 @@ Standard_Boolean IntPolyh_Intersection::PerformAdv(const TColStd_Array1OfReal& U
     isdone = Standard_False; 
 
   if(isdone) {
-    NbCouples = MaillageFF->GetArrayOfCouples().NbCouples() +
-      MaillageFR->GetArrayOfCouples().NbCouples() +
-	MaillageRF->GetArrayOfCouples().NbCouples() +
-	  MaillageRR->GetArrayOfCouples().NbCouples();
+    NbCouples = MaillageFF->GetArrayOfCouples().NbItems() +
+      MaillageFR->GetArrayOfCouples().NbItems() +
+	MaillageRF->GetArrayOfCouples().NbItems() +
+	  MaillageRR->GetArrayOfCouples().NbItems();
 
     if(NbCouples > 0)
       MergeCouples(MaillageFF->GetArrayOfCouples(),MaillageFR->GetArrayOfCouples(),
@@ -364,6 +365,6 @@ Standard_Boolean IntPolyh_Intersection::PerformStd(const TColStd_Array1OfReal& U
 {
   Standard_Boolean isdone = PerformMaillage(Upars1, Vpars1, Upars2, Vpars2, 
 					    MaillageS);
-  NbCouples = (isdone) ? (MaillageS->GetArrayOfCouples().NbCouples()) : 0;
+  NbCouples = (isdone) ? (MaillageS->GetArrayOfCouples().NbItems()) : 0;
   return isdone;
 }
