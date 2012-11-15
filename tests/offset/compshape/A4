@@ -4,14 +4,18 @@
 ## Comment : From CV tests serie page 60
 ## ======================================
 
-puts "*"
-puts "TODO OCC22740 ALL: An exception was caught"
-puts "TODO OCC22740 ALL: \\*\\* Exception \\*\\*"
-puts "TODO OCC22740 ALL: Error : The offset can not be build"
+#puts "*"
+#puts "TODO OCC22740 ALL: An exception was caught"
+#puts "TODO OCC22740 ALL: \\*\\* Exception \\*\\*"
+#puts "TODO OCC22740 ALL: Error : The offset can not be build"
+puts "TODO OCC23524 ALL: Error : The offset is not valid"
 
 restore [locate_data_file CCV_2_d1_gsw.rle] s
 explode s F
 catch {offsetcompshape result s -2 s_17}
 
 #real volume of result shape is unknow yet
-set volume 0
+
+set volume 534256
+
+
