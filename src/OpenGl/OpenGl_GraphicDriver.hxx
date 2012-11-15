@@ -103,7 +103,6 @@ class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT void InquireMat (const Graphic3d_CView& ACView, TColStd_Array2OfReal& AMatO, TColStd_Array2OfReal& AMatM);
   Standard_EXPORT Standard_Integer InquireViewLimit ();
-  Standard_EXPORT Standard_Boolean InquireTextureAvailable ();
   Standard_EXPORT void Blink (const Graphic3d_CStructure& ACStructure,const Standard_Boolean Create);
   Standard_EXPORT void BoundaryBox (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create);
   Standard_EXPORT void HighlightColor (const Graphic3d_CStructure& ACStructure, const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B, const Standard_Boolean Create);
@@ -273,14 +272,17 @@ public:
   //! This method is internal and should be used by Graphic3d_Group only. <br>
   Standard_EXPORT void RemovePrimitiveArray(const Graphic3d_CGroup& theCGroup,const Graphic3d_PrimitiveArray& thePArray);
   Standard_EXPORT Standard_Integer InquirePlaneLimit();
-  Standard_EXPORT Standard_Integer CreateTexture(const Graphic3d_TypeOfTexture Type,const Handle(AlienImage_AlienImage)& Image,const Standard_CString FileName,const Handle(TColStd_HArray1OfReal)& TexUpperBounds) const;
+  Standard_EXPORT Standard_Integer CreateTexture (const Graphic3d_TypeOfTexture        theType,
+                                                  const Image_PixMap&                  theImage,
+                                                  const Standard_CString               theFileName,
+                                                  const Handle(TColStd_HArray1OfReal)& theTexUpperBounds) const;
   Standard_EXPORT void DestroyTexture(const Standard_Integer TexId) const;
   Standard_EXPORT void ModifyTexture(const Standard_Integer TexId,const Graphic3d_CInitTexture& AValue) const;
   Standard_EXPORT Standard_ShortReal DefaultTextHeight() const;
   Standard_EXPORT void FBOGetDimensions(const Graphic3d_CView& view,const Graphic3d_PtrFrameBuffer fboPtr,Standard_Integer& width,Standard_Integer& height,Standard_Integer& widthMax,Standard_Integer& heightMax);
   Standard_EXPORT void FBOChangeViewport(const Graphic3d_CView& view,Graphic3d_PtrFrameBuffer& fboPtr,const Standard_Integer width,const Standard_Integer height);
   Standard_EXPORT Standard_Boolean Export(const Standard_CString theFileName,const Graphic3d_ExportFormat theFormat,const Graphic3d_SortType theSortType,const Standard_Integer theWidth,const Standard_Integer theHeight,const Graphic3d_CView& theView,const Aspect_CLayer2d& theLayerUnder,const Aspect_CLayer2d& theLayerOver,const Standard_Real thePrecision = 0.005,const Standard_Address theProgressBarFunc = NULL,const Standard_Address theProgressObject = NULL);
-  
+
   //! Add a new top-level z layer with ID <theLayerId> for <br>
   //! the view. Z layers allow drawing structures in higher layers <br>
   //! in foreground of structures in lower layers. To add a structure <br>

@@ -188,12 +188,6 @@ is
         is deferred;
     ---Purpose: call_togl_inquireview
 
-    InquireTextureAvailable ( me    : mutable )
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: Returns Standard_True if texture is
-    --      supported by the graphic driver
-
     ------------------------------
     -- Category: Highlight methods
     ------------------------------
@@ -810,12 +804,12 @@ is
     -- Category: Textures methods
     -----------------------------
 
-        CreateTexture ( me;
-                        Type            : TypeOfTexture from Graphic3d;
-                        Image           : AlienImage from AlienImage;
-                        FileName        : CString from Standard;
-                        TexUpperBounds  : HArray1OfReal from TColStd )
-        returns Integer from Standard
+    CreateTexture ( me;
+                    theType           : TypeOfTexture from Graphic3d;
+                    theImage          : PixMap  from Image;
+                    theFileName       : CString from Standard;
+                    theTexUpperBounds : HArray1OfReal from TColStd )
+    returns Integer from Standard
         is deferred;
     ---Purpose:
 

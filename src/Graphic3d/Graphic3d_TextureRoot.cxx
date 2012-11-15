@@ -18,215 +18,142 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-// modified:
-//    8/09/97 : mise en commentaire des tentatives pour charger
-//              autre chose que du RGB. AlienImage buggee ?
-//    5/01/99 : Ajout test sur les objets Path et FileName dans LoadTexture().
-//		Si le path est null on trappe.   
-//   11/06/99 : GG Enable to use GIF and BMP image format
-//   10/01/00 : GG IMP Add Path() and Type() methods.
-//   10/11/00 : GG Add Image() & LoadTexture() methods.
-
-#define IMP140601	//GG Avoid to change the Trek of the current defined path
-//			when the directory string is NULL or empty.
-
-#define xTRACE 1
-
 #include <Graphic3d_TextureRoot.ixx>
 #include <Graphic3d_GraphicDevice.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
-#include <AlienImage_EuclidAlienImage.hxx>
-#include <AlienImage_SGIRGBAlienImage.hxx>
-#include <AlienImage_XAlienImage.hxx>
-#include <AlienImage_GIFAlienImage.hxx>
-#include <AlienImage_BMPAlienImage.hxx>
-#include <AlienImage_AidaAlienImage.hxx>
-#include <AlienImage_SunRFAlienImage.hxx>
-#include <AlienImage_AlienImage.hxx>
+#include <Image_AlienPixMap.hxx>
 
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 #include <stdio.h>
 
-Graphic3d_TextureRoot::Graphic3d_TextureRoot(const Handle(Graphic3d_StructureManager)& SM,const Standard_CString Path,const Standard_CString FileName,const Graphic3d_TypeOfTexture Type) : MyPath(FileName),MyType(Type)
+// =======================================================================
+// function : Graphic3d_TextureRoot
+// purpose  :
+// =======================================================================
+Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Graphic3d_StructureManager)& theSM,
+                                              const Standard_CString                    thePath,
+                                              const Standard_CString                    theFileName,
+                                              const Graphic3d_TypeOfTexture             theType)
+: myGraphicDriver (Handle(Graphic3d_GraphicDriver)::DownCast (theSM->GraphicDevice()->GraphicDriver())),
+  myTexId (-1),
+  myPath (theFileName),
+  myType (theType),
+  myTexUpperBounds (new TColStd_HArray1OfReal (1, 2)) // currently always allocating an array for two texture bounds...
 {
-  // It will be necessary to improve the code below as soon as 3D or 4D textures
-  // are implemented. Currently, always allocating an array for two texture bounds...
-  MyTexUpperBounds = new TColStd_HArray1OfReal(1,2);
-
-#ifdef IMP140601
-  if( Path && (strlen(Path) > 0) )
-#endif
-    MyPath.SetTrek(TCollection_AsciiString( Path ));
-
-  MyGraphicDriver = Handle(Graphic3d_GraphicDriver)::DownCast(SM->GraphicDevice()->GraphicDriver());
-
-  if (MyGraphicDriver->InquireTextureAvailable())
+  if (thePath != NULL && (strlen (thePath) > 0))
   {
-      // chargement de l'image
-//-GG      Handle(AlienImage_AlienImage) MyImage = LoadTexture();
-      if (MyImage.IsNull() && FileName && (strlen(FileName) > 0))
-	MyImage = LoadTexture();
-    
-      if (MyImage.IsNull()) {
-	MyTexId = -1;
-	return;
-      }
-    
-      MyTexId = MyGraphicDriver->CreateTexture(Type, MyImage, FileName, MyTexUpperBounds);
+    myPath.SetTrek (TCollection_AsciiString (thePath));
   }
-#ifdef TRACE
-  printf(" *** Graphic3d_TextureRoot::Create() textId %d\n",MyTexId);
-#endif
+
+  if (theFileName == NULL || (strlen (theFileName) <= 0))
+  {
+    return;
+  }
+
+  TCollection_AsciiString aFilePath;
+  myPath.SystemName (aFilePath);
+  Image_AlienPixMap anImage;
+  if (!anImage.Load (aFilePath))
+  {
+    return;
+  }
+
+  myTexId = myGraphicDriver->CreateTexture (myType, anImage, theFileName, myTexUpperBounds);
+  Update();
 }
 
+// =======================================================================
+// function : Destroy
+// purpose  :
+// =======================================================================
 void Graphic3d_TextureRoot::Destroy() const
 {
-  if (MyTexId >= 0 )  
-	MyGraphicDriver->DestroyTexture(MyTexId);
-#ifdef TRACE
-  printf(" *** Graphic3d_TextureRoot::Destroy() textId %d\n",MyTexId);
-#endif
+  if (IsValid())
+  {
+    myGraphicDriver->DestroyTexture (myTexId);
+  }
 }
 
-
+// =======================================================================
+// function : TextureId
+// purpose  :
+// =======================================================================
 Standard_Integer Graphic3d_TextureRoot::TextureId() const
 {
-  return MyTexId;
+  return myTexId;
 }
 
-
+// =======================================================================
+// function : Update
+// purpose  :
+// =======================================================================
 void Graphic3d_TextureRoot::Update() const
 {
-  if( MyTexId >= 0 ) 
-	MyGraphicDriver->ModifyTexture(MyTexId, MyCInitTexture);
+  if (IsValid())
+  {
+    myGraphicDriver->ModifyTexture (myTexId, MyCInitTexture);
+  }
 }
 
+// =======================================================================
+// function : IsValid
+// purpose  :
+// =======================================================================
+Standard_Boolean Graphic3d_TextureRoot::IsValid() const
+{
+  return myTexId >= 0;
+}
 
+// =======================================================================
+// function : IsDone
+// purpose  :
+// =======================================================================
 Standard_Boolean Graphic3d_TextureRoot::IsDone() const
 {
-  return (MyTexId >= 0) ? Standard_True : Standard_False;
+  return myTexId >= 0;
 }
 
-void Graphic3d_TextureRoot::LoadTexture(const Handle(AlienImage_AlienImage)& anImage) {
-
-  if (MyGraphicDriver->InquireTextureAvailable()) {
-    if( MyTexId >= 0 )  
-	MyGraphicDriver->DestroyTexture(MyTexId);
-    MyImage = anImage;
-    MyTexId = MyGraphicDriver->CreateTexture(MyType, MyImage, "", MyTexUpperBounds);
-    Update(); 
-  }
-}
- 
-Handle(AlienImage_AlienImage) Graphic3d_TextureRoot::LoadTexture() const
+// =======================================================================
+// function : LoadTexture
+// purpose  :
+// =======================================================================
+Standard_Boolean Graphic3d_TextureRoot::LoadTexture (const Image_PixMap& theImage)
 {
-  OSD_Protection Protection( OSD_R, OSD_R, OSD_R, OSD_R ) ; /* Read Only */
-  Handle(AlienImage_AlienImage) TheAlienImage = NULL ;
-
-  OSD_File File(MyPath);
-  File.Open(OSD_ReadOnly, Protection);
-
-  // open file ok ?
-  if ( File.IsOpen() == Standard_False ) {
-    TCollection_AsciiString sysname;
-    MyPath.SystemName(sysname);
-    cout << " *** Can't open texture file '" << sysname << "'" << endl;
-    return TheAlienImage;
+  if (myTexId >= 0)
+  {
+    myGraphicDriver->DestroyTexture (myTexId);
   }
 
-
-  ////////////////////////
-  // file reading       //
-  ////////////////////////
-
-
-  // image X ?
-  ////////////
-  Handle(AlienImage_XAlienImage) XAlienImage = new AlienImage_XAlienImage() ;
-  
-  if (XAlienImage->Read( File )) {
-    File.Close();
-    return XAlienImage;
-  }
-
-  // image GIF ?
-  ////////////
-  Handle(AlienImage_GIFAlienImage) GIFAlienImage = new AlienImage_GIFAlienImage() ;
-  
-  if (GIFAlienImage->Read( File )) {
-    File.Close();
-    return GIFAlienImage;
-  }
-
-  // image BMP ?
-  ////////////
-  Handle(AlienImage_BMPAlienImage) BMPAlienImage = new AlienImage_BMPAlienImage() ;
-  
-  if (BMPAlienImage->Read( File )) {
-    File.Close();
-    return BMPAlienImage;
-  }
-  
-  // SunRaster ?
-  //////////////
-  Handle(AlienImage_SunRFAlienImage) SunRFAlienImage = new AlienImage_SunRFAlienImage() ;
-
-  if (SunRFAlienImage->Read( File )) {
-    File.Close();
-    return SunRFAlienImage;
-  }
-
-  // Aida ?
-  /////////
-  Handle(AlienImage_AidaAlienImage) AidaAlienImage = new AlienImage_AidaAlienImage() ;
-  
-  if (AidaAlienImage->Read( File )) {
-    File.Close();
-    return AidaAlienImage;
-  }
-
-  // Euclid ?
-  ///////////
-  Handle(AlienImage_EuclidAlienImage) EuclidAlienImage = new AlienImage_EuclidAlienImage() ;
-
-  if (EuclidAlienImage->Read( File )) {
-    File.Close();
-    return EuclidAlienImage;
-  }
-
-
-  // SGIRGB ?
-  ///////////
-  Handle(AlienImage_SGIRGBAlienImage) SGIRGBAlienImage = new AlienImage_SGIRGBAlienImage() ;
-
-  if (SGIRGBAlienImage->Read( File )) {
-    File.Close();
-    return SGIRGBAlienImage;
-  }
-
-
-  // raise exception: file type unknown 
-  return TheAlienImage;
+  myTexId = myGraphicDriver->CreateTexture (myType, theImage, "", myTexUpperBounds);
+  Update();
+  return IsValid();
 }
 
-const OSD_Path& Graphic3d_TextureRoot::Path() const {
-
-  return MyPath;
+// =======================================================================
+// function : Path
+// purpose  :
+// =======================================================================
+const OSD_Path& Graphic3d_TextureRoot::Path() const
+{
+  return myPath;
 }
 
-Graphic3d_TypeOfTexture Graphic3d_TextureRoot::Type() const {
-
-  return MyType;
+// =======================================================================
+// function : Type
+// purpose  :
+// =======================================================================
+Graphic3d_TypeOfTexture Graphic3d_TextureRoot::Type() const
+{
+  return myType;
 }
 
-Handle(AlienImage_AlienImage) Graphic3d_TextureRoot::Image() const {
-
-  return MyImage;
-}
-
+// =======================================================================
+// function : GetTexUpperBounds
+// purpose  :
+// =======================================================================
 Handle(TColStd_HArray1OfReal) Graphic3d_TextureRoot::GetTexUpperBounds() const
 {
-  return MyTexUpperBounds;
+  return myTexUpperBounds;
 }

@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_CView.hxx>
 #include <OpenGl_Trihedron.hxx>
@@ -27,7 +26,6 @@
 
 #include <Quantity_NameOfColor.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <AlienImage_AlienImage.hxx>
 #include <Image_Image.hxx>
 
 void OpenGl_GraphicDriver::Environment(const Graphic3d_CView& ACView)
@@ -58,7 +56,7 @@ void OpenGl_GraphicDriver::ZBufferTriedronSetup (
 void OpenGl_GraphicDriver::TriedronDisplay (
   const Graphic3d_CView& ACView,
   const Aspect_TypeOfTriedronPosition APosition,
-  const Quantity_NameOfColor AColor, 
+  const Quantity_NameOfColor AColor,
   const Standard_Real AScale,
   const Standard_Boolean AsWireframe )
 {
@@ -69,7 +67,7 @@ void OpenGl_GraphicDriver::TriedronDisplay (
   }
 }
 
-void OpenGl_GraphicDriver::TriedronErase (const Graphic3d_CView& ACView) 
+void OpenGl_GraphicDriver::TriedronErase (const Graphic3d_CView& ACView)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (aCView)
@@ -83,7 +81,7 @@ void OpenGl_GraphicDriver::TriedronEcho (const Graphic3d_CView& ACView,const Asp
   // Do nothing
 }
 
-void OpenGl_GraphicDriver::BackgroundImage( const Standard_CString FileName, 
+void OpenGl_GraphicDriver::BackgroundImage( const Standard_CString FileName,
                                            const Graphic3d_CView& ACView,
                                            const Aspect_FillMethod FillStyle )
 {
@@ -151,79 +149,81 @@ inline Standard_Integer GetNearestPow2(Standard_Integer theValue)
   return aRes;
 }
 
-Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfTexture Type,
-                                                      const Handle_AlienImage_AlienImage &Image,
-													  const Standard_CString FileName,
-													  const Handle(TColStd_HArray1OfReal)& TexUpperBounds) const
+Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfTexture        theType,
+                                                      const Image_PixMap&                  theImage,
+                                                      const Standard_CString               theFileName,
+                                                      const Handle(TColStd_HArray1OfReal)& theTexUpperBounds) const
 {
-  Handle(Image_Image) MyPic = Image->ToImage();
-
-  Standard_Integer aGlWidth  = (Type == Graphic3d_TOT_2D_MIPMAP) ? MyPic->Width() : GetNearestPow2(MyPic->Width());
-  Standard_Integer aGlHeight = (Type == Graphic3d_TOT_2D_MIPMAP) ? MyPic->Height() : GetNearestPow2(MyPic->Height());
-
-  TexUpperBounds->SetValue(1, ((Standard_Real) (MyPic->Width())/((Standard_Real) aGlWidth)));
-  TexUpperBounds->SetValue(2, ((Standard_Real) (MyPic->Height())/((Standard_Real) aGlHeight)));
-
-  unsigned char *MyImageData = new unsigned char[aGlWidth*aGlHeight*4];
-  unsigned char *MyData = MyImageData;
-  int TexId;
-  int i,j;
-  Quantity_Color MyColor;
-
-  if (MyImageData == NULL)
+  if (theImage.IsEmpty())
+  {
     return -1;
+  }
 
-  static Standard_Integer textureRank=0;  
-  char textureName[16];
-  Standard_PCharacter fileName = textureName; 
-  sprintf(fileName,"Tex%d",++textureRank);
+  Standard_Integer aGlWidth  = (Standard_Integer )theImage.Width();
+  Standard_Integer aGlHeight = (Standard_Integer )theImage.Height();
+  if (theType != Graphic3d_TOT_2D_MIPMAP)
+  {
+    aGlWidth  = GetNearestPow2 (aGlWidth);
+    aGlHeight = GetNearestPow2 (aGlHeight);
+  }
+  theTexUpperBounds->SetValue (1, Standard_Real(theImage.Width())  / Standard_Real(aGlWidth));
+  theTexUpperBounds->SetValue (2, Standard_Real(theImage.Height()) / Standard_Real(aGlHeight));
 
-    for (j = MyPic->Height() - 1; j >= 0; j--)
-      for (i = 0; i < aGlWidth; i++){
-        if (i < MyPic->Width()){
-          MyColor = MyPic->PixelColor(i, j);
-          *MyData++ = (int)(255 * MyColor.Red());
-          *MyData++ = (int)(255 * MyColor.Green());
-          *MyData++ = (int)(255 * MyColor.Blue());
-        }
-        else {
-          *MyData++ = (int)(0);
-          *MyData++ = (int)(0);
-          *MyData++ = (int)(0);
-        }
-        *MyData++ = 0xFF;
-      }
+  Image_PixMap anImage;
+  if (!anImage.InitTrash (Image_PixMap::ImgRGBA, Standard_Size(aGlWidth), Standard_Size(aGlHeight)))
+  {
+    return -1;
+  }
 
-      // Padding the lower part of the texture with black
-      for (j = aGlHeight - 1; j >= MyPic->Height(); j--)
-        for (i = 0; i < aGlWidth; i++){
-          *MyData++ = (int)(0);
-          *MyData++ = (int)(0);
-          *MyData++ = (int)(0);
-          *MyData++ = 0xFF;
-        }  
+  anImage.SetTopDown (false);
+  Image_PixMapData<Image_ColorRGBA>& aDataNew = anImage.EditData<Image_ColorRGBA>();
+  Quantity_Color aSrcColor;
+  for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+  {
+    for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+    {
+      aSrcColor = theImage.PixelColor (aCol, aRow);
+      Image_ColorRGBA& aColor = aDataNew.ChangeValue (aRow, aCol);
+      aColor.r() = int(255.0 * aSrcColor.Red());
+      aColor.g() = int(255.0 * aSrcColor.Green());
+      aColor.b() = int(255.0 * aSrcColor.Blue());
+      aColor.a() = 0xFF;
+    }
 
-        switch (Type)
-        {
-        case Graphic3d_TOT_1D:
-          TexId = GetTextureData1D (fileName, aGlWidth, aGlHeight, MyImageData);
-          break;
+    for (Standard_Size aCol = theImage.SizeX(); aCol < anImage.SizeX(); ++aCol)
+    {
+      Image_ColorRGBA& aColor = aDataNew.ChangeValue (aRow, aCol);
+      aColor.r() = 0x00;
+      aColor.g() = 0x00;
+      aColor.b() = 0x00;
+      aColor.a() = 0xFF;
+    }
+  }
 
-        case Graphic3d_TOT_2D:
-          TexId = GetTextureData2D (fileName, aGlWidth, aGlHeight, MyImageData);
-          break;
+  // Padding the lower part of the texture with black
+  for (Standard_Size aRow = theImage.SizeY(); aRow < anImage.SizeY(); ++aRow)
+  {
+    for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
+    {
+      Image_ColorRGBA& aColor = aDataNew.ChangeValue (aRow, aCol);
+      aColor.r() = 0x00;
+      aColor.g() = 0x00;
+      aColor.b() = 0x00;
+      aColor.a() = 0xFF;
+    }
+  }
 
-        case Graphic3d_TOT_2D_MIPMAP:
-          TexId = GetTextureData2DMipMap (fileName, aGlWidth, aGlHeight, MyImageData);
-          break;
+  static Standard_Integer TheTextureRank = 0;
+  char aTextureStrId[255];
+  sprintf (aTextureStrId, "Tex%d", ++TheTextureRank);
 
-        default:
-          TexId = -1;
-        }
-
-        delete [] MyImageData;
-        return TexId;
-
+  switch (theType)
+  {
+    case Graphic3d_TOT_1D:        return GetTextureData1D       (aTextureStrId, aGlWidth, aGlHeight, anImage.Data());
+    case Graphic3d_TOT_2D:        return GetTextureData2D       (aTextureStrId, aGlWidth, aGlHeight, anImage.Data());
+    case Graphic3d_TOT_2D_MIPMAP: return GetTextureData2DMipMap (aTextureStrId, aGlWidth, aGlHeight, anImage.Data());
+    default:                      return -1;
+  }
 }
 
 void OpenGl_GraphicDriver::DestroyTexture (const Standard_Integer theTexId) const
@@ -260,7 +260,7 @@ void OpenGl_GraphicDriver::ModifyTexture (const Standard_Integer        theTexId
 
     case 3:
       SetModeManual (theTexId);
-      break;        
+      break;
   }
 
   if (theInfo.doLinear)

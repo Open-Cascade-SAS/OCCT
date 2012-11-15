@@ -42,11 +42,6 @@ Standard_Integer OpenGl_GraphicDriver::InquireViewLimit ()
   return (openglDisplay.IsNull()? 0 : openglDisplay->Facilities().MaxViews);
 }
 
-Standard_Boolean OpenGl_GraphicDriver::InquireTextureAvailable ()
-{
-  return Standard_True;
-}
-
 Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit ()
 {
   GLint aMaxPlanes = 0;

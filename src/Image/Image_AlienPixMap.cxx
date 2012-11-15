@@ -182,7 +182,7 @@ bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
 }
 
 // =======================================================================
-// function : Clear
+// function : InitCopy
 // purpose  :
 // =======================================================================
 bool Image_AlienPixMap::InitCopy (const Image_PixMap& theCopy)
@@ -368,7 +368,6 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
 
   // FreeImage doesn't provide flexible format convertion API
   // so we should perform multiple convertions in some cases!
-  Standard_Boolean isCopied = Standard_False;
   FIBITMAP* anImageToDump = myLibImage;
   switch (anImageFormat)
   {

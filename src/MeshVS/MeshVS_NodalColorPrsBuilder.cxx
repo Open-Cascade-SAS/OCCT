@@ -53,9 +53,7 @@
 #include <MeshVS_Buffer.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Image_ColorImage.hxx>
-#include <AlienImage_AlienImage.hxx>
-#include <AlienImage_BMPAlienImage.hxx>
+#include <Image_PixMap.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
 #include <Standard_DefineHandle.hxx>
@@ -72,22 +70,21 @@
 class MeshVS_ImageTexture2D : public Graphic3d_Texture2D
 {
 public:
-  MeshVS_ImageTexture2D( Handle(Graphic3d_StructureManager) theSM, 
-                         const Handle(AlienImage_AlienImage)& theImg );
+  MeshVS_ImageTexture2D (Handle(Graphic3d_StructureManager) theSM,
+                         const Image_PixMap&                theImg);
   virtual ~MeshVS_ImageTexture2D();
 
 public:
   DEFINE_STANDARD_RTTI(MeshVS_ImageTexture2D)
 };
 
-DEFINE_STANDARD_HANDLE(MeshVS_ImageTexture2D,Graphic3d_Texture2D)
-IMPLEMENT_STANDARD_HANDLE(MeshVS_ImageTexture2D,Graphic3d_Texture2D)
+DEFINE_STANDARD_HANDLE    (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
+IMPLEMENT_STANDARD_HANDLE (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ImageTexture2D, Graphic3d_Texture2D)
 
-MeshVS_ImageTexture2D::MeshVS_ImageTexture2D
-                        (Handle(Graphic3d_StructureManager) theSM, 
-                         const Handle(AlienImage_AlienImage)& theImg)
-: Graphic3d_Texture2D( theSM, "", Graphic3d_TOT_2D )
+MeshVS_ImageTexture2D::MeshVS_ImageTexture2D (Handle(Graphic3d_StructureManager) theSM,
+                                              const Image_PixMap&                theImg)
+: Graphic3d_Texture2D (theSM, "", Graphic3d_TOT_2D)
 {
   MyCInitTexture.doModulate = 1;
   MyCInitTexture.doRepeat = 0;
@@ -116,7 +113,7 @@ MeshVS_ImageTexture2D::~MeshVS_ImageTexture2D()
 
 //================================================================
 // Function : getNearestPow2
-// Purpose  : Returns the nearest power of two greater than the 
+// Purpose  : Returns the nearest power of two greater than the
 //            argument value
 //================================================================
 static inline Standard_Integer getNearestPow2( Standard_Integer theValue )
@@ -130,7 +127,7 @@ static inline Standard_Integer getNearestPow2( Standard_Integer theValue )
 
 /*
   Class       : MeshVS_NodalColorPrsBuilder
-  Description : This class provides methods to create presentation of 
+  Description : This class provides methods to create presentation of
                 nodes with assigned color (See hxx for more description )
 */
 
@@ -144,7 +141,7 @@ MeshVS_NodalColorPrsBuilder::MeshVS_NodalColorPrsBuilder ( const Handle(MeshVS_M
                                                            const Standard_Integer Id,
                                                            const MeshVS_BuilderPriority& Priority )
 : MeshVS_PrsBuilder ( Parent, Flags, DS, Id, Priority ),
-  myUseTexture( Standard_False ), 
+  myUseTexture( Standard_False ),
   myInvalidColor( Quantity_NOC_GRAY )
 {
   SetExcluding ( Standard_True );
@@ -177,7 +174,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   if ( !( DisplayMode & GetFlags() ) || !IsElement )
     return;
 
-  if ( myUseTexture && ( !myTextureCoords.Extent() || !myTextureColorMap.Length() ) || 
+  if ( myUseTexture && ( !myTextureCoords.Extent() || !myTextureColorMap.Length() ) ||
        !myUseTexture && !myNodeColorMap.Extent() )
     return;
 
@@ -192,7 +189,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Standard_Boolean IsReflect = Standard_False, IsMeshSmoothShading = Standard_False;
   aDrawer->GetBoolean( MeshVS_DA_ColorReflection, IsReflect );
   aDrawer->GetBoolean( MeshVS_DA_SmoothShading,   IsMeshSmoothShading );
-  
+
   // Following parameter are used for texture presentation only
   int nbColors = 0; // Number of colors from color map
   int nbTextureColors = 0; // Number of colors in texture (it will be pow of 2)
@@ -201,7 +198,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     nbColors = myTextureColorMap.Length();
     nbTextureColors = getNearestPow2( nbColors );
   }
-  
+
   Standard_Integer aSize = anIDs.Extent();
 
   // Calculate maximum possible number of vertices and bounds
@@ -220,7 +217,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   // Draw faces with nodal color
   // OCC20644 Use "plastic" material as it is "non-physic" and so it is easier
   // to get the required colors (see TelUpdateMaterial() function in OpenGl_attri.c)
-  Graphic3d_MaterialAspect aMaterial[ 2 ];          
+  Graphic3d_MaterialAspect aMaterial[ 2 ];
   aMaterial[ 0 ] = Graphic3d_MaterialAspect( Graphic3d_NOM_PLASTIC );
   aMaterial[ 1 ] = Graphic3d_MaterialAspect( Graphic3d_NOM_PLASTIC );
   Standard_Integer i;
@@ -249,17 +246,17 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       aMaterial[i].SetSpecular( 0. );
       aMaterial[i].SetEmissive( 0. );
     }
-  
- } 
+
+ }
 
 
   // Create array of polygons for interior presentation of faces and volumes
   Handle(Graphic3d_ArrayOfPolygons) aCPolyArr = new Graphic3d_ArrayOfPolygons
-    ( aMaxFaceNodes * aSize + PolygonVerticesFor3D, aSize + PolygonBoundsFor3D, 
+    ( aMaxFaceNodes * aSize + PolygonVerticesFor3D, aSize + PolygonBoundsFor3D,
     0, myUseTexture || IsReflect, !myUseTexture, Standard_False, myUseTexture );
 
-  // Create array of polylines for presentation of edges 
-  // (used for optimization insted of SetEdgeOn method call) 
+  // Create array of polylines for presentation of edges
+  // (used for optimization insted of SetEdgeOn method call)
   Handle(Graphic3d_ArrayOfPolylines) aPolyL = new Graphic3d_ArrayOfPolylines
     ( ( aMaxFaceNodes + 1 ) * aSize + PolygonVerticesFor3D, aSize + PolygonBoundsFor3D );
 
@@ -300,7 +297,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
       // Preparing normal(s) to show reflections if requested
       Handle(TColStd_HArray1OfReal) aNormals;
-      Standard_Boolean hasNormals = 
+      Standard_Boolean hasNormals =
         ( IsReflect && aSource->GetNormalsByElement( aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals ) );
 
       if ( aType == MeshVS_ET_Face )
@@ -316,52 +313,52 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
             int anId = aNodes( i );
             double aTexCoord = myTextureCoords( anId );
 
-            // transform texture coordinate in accordance with number of colors specified 
+            // transform texture coordinate in accordance with number of colors specified
             // by upper level and real size of Gl texture
             // The Gl texture has border colors interpolated with the colors from the color map,
-            // thats why we need to shrink texture coordinates around the middle point to 
+            // thats why we need to shrink texture coordinates around the middle point to
             // exclude areas where the map colors are interpolated with the borders color
             double aWrapCoord = 1.0 / (2.0 * nbTextureColors) + aTexCoord * (nbColors - 1.0) / nbTextureColors;
 
             if ( hasNormals )
             {
-              gp_Vec aNorm(aNormals->Value( 3 * i - 2 ), 
-                           aNormals->Value( 3 * i - 1 ), 
+              gp_Vec aNorm(aNormals->Value( 3 * i - 2 ),
+                           aNormals->Value( 3 * i - 1 ),
                            aNormals->Value( 3 * i     ));
               // There are two "rows" of colors: user's invalid color at the top
               // of texture and line of map colors at the bottom of the texture.
               // Since the texture has borders, which are interpolated with the "rows" of colors
               // we should specify the 0.25 offset to get the correct texture color
               aNorm.SquareMagnitude() > aMin ?
-                aCPolyArr->AddVertex(P, gp_Dir( aNorm ), 
-                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) : 
-                aCPolyArr->AddVertex(P, aDefNorm, 
+                aCPolyArr->AddVertex(P, gp_Dir( aNorm ),
+                  gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) :
+                aCPolyArr->AddVertex(P, aDefNorm,
                   gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
             }
             else
-              aCPolyArr->AddVertex( P, aDefNorm, 
+              aCPolyArr->AddVertex( P, aDefNorm,
                 gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
           }
           else
           {
             GetColor ( aNodes( i ), aNColor );
-           
+
             if ( IsReflect )
-            { 
+            {
               // Simulating TelUpdateMaterial() from OpenGl_attri.c
               // to get the same colors in elemental and nodal color prs builders
               aNColor.SetValues(anColorRatio * aNColor.Red(),
                                 anColorRatio * aNColor.Green(),
-                                anColorRatio * aNColor.Blue(), 
+                                anColorRatio * aNColor.Blue(),
                                 Quantity_TOC_RGB);
-              
+
               if ( hasNormals )
               {
-                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ), 
-                  aNormals->Value( 3 * i - 1 ), 
+                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ),
+                  aNormals->Value( 3 * i - 1 ),
                   aNormals->Value( 3 * i     ));
                 aNorm.SquareMagnitude() > aMin ?
-                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ), aNColor ) : 
+                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ), aNColor ) :
                 aCPolyArr->AddVertex(P, aDefNorm       , aNColor );
               }
               else
@@ -385,7 +382,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
         if ( !aSource->Get3DGeom( aKey, NbNodes, aTopo ) )
           continue;
 
-        // iterate through faces of volume 
+        // iterate through faces of volume
         for ( Standard_Integer k = aTopo->Lower(), last = aTopo->Upper(), normIndex = 1; k <= last; k++, normIndex++ )
         {
           const TColStd_SequenceOfInteger& aSeq = aTopo->Value( k );
@@ -397,59 +394,59 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
           for ( Standard_Integer j = 1; j <= m; j++ )
           {
             ind = aSeq.Value( j );
-            P = gp_Pnt( aCoords( 3 * ind + 1 ), 
-                        aCoords( 3 * ind + 2 ), 
+            P = gp_Pnt( aCoords( 3 * ind + 1 ),
+                        aCoords( 3 * ind + 2 ),
                         aCoords( 3 * ind + 3 ) );
             if ( myUseTexture )
             {
               Standard_Integer anId = aNodes( ind + 1 );
               Standard_Real aTexCoord = myTextureCoords( anId );
 
-              // transform texture coordinate in accordance with number of colors specified 
+              // transform texture coordinate in accordance with number of colors specified
               // by upper level and real size of Gl texture
               // The Gl texture has border colors interpolated with the colors from the color map,
-              // thats why we need to shrink texture coordinates around the middle point to 
+              // thats why we need to shrink texture coordinates around the middle point to
               // exclude areas where the map colors are interpolated with the borders color
               double aWrapCoord = 1.0 / (2.0 * nbTextureColors) + aTexCoord * (nbColors - 1.0) / nbTextureColors;
 
               if ( hasNormals )
               {
-                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ), 
-                             aNormals->Value( 3 * i - 1 ), 
+                gp_Vec aNorm(aNormals->Value( 3 * i - 2 ),
+                             aNormals->Value( 3 * i - 1 ),
                              aNormals->Value( 3 * i     ));
                 // There are two "rows" of colors: user's invalid color at the top
                 // of texture and line of map colors at the bottom of the texture.
                 // Since the texture has borders, which are interpolated with the "rows" of colors
                 // we should specify the 0.25 offset to get the correct texture color
                 aNorm.SquareMagnitude() > aMin ?
-                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ), 
-                    gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) : 
-                  aCPolyArr->AddVertex(P, aDefNorm, 
+                  aCPolyArr->AddVertex(P, gp_Dir( aNorm ),
+                    gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) ) :
+                  aCPolyArr->AddVertex(P, aDefNorm,
                     gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
               }
               else
-                aCPolyArr->AddVertex( P, aDefNorm, 
+                aCPolyArr->AddVertex( P, aDefNorm,
                   gp_Pnt2d( aWrapCoord, aTexCoord >= 0 && aTexCoord <= 1 ? 0.75 : 0.25 ) );
             }
             else
             {
               GetColor( aNodes( ind + 1 ), aNColor );
               if  ( IsReflect )
-              { 
+              {
                 // Simulating TelUpdateMaterial() from OpenGl_attri.c
                 // to get the same colors in elemental and nodal color prs builders
                 aNColor.SetValues(anColorRatio * aNColor.Red(),
                                   anColorRatio * aNColor.Green(),
-                                  anColorRatio * aNColor.Blue(), 
+                                  anColorRatio * aNColor.Blue(),
                                   Quantity_TOC_RGB);
-                
+
                 if ( hasNormals )
                 {
-                  gp_Vec aNorm(aNormals->Value( 3 * normIndex - 2 ), 
-                    aNormals->Value( 3 * normIndex - 1 ), 
+                  gp_Vec aNorm(aNormals->Value( 3 * normIndex - 2 ),
+                    aNormals->Value( 3 * normIndex - 1 ),
                     aNormals->Value( 3 * normIndex ));
-                  aNorm.SquareMagnitude() > aMin ? 
-                    aCPolyArr->AddVertex( P, gp_Dir( aNorm ), aNColor ) : 
+                  aNorm.SquareMagnitude() > aMin ?
+                    aCPolyArr->AddVertex( P, gp_Dir( aNorm ), aNColor ) :
                   aCPolyArr->AddVertex( P, aDefNorm       , aNColor );
                 }
                 else
@@ -468,8 +465,8 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
         // if IsExcludingOn then presentation must not be built by other builders
         if ( IsExcludingOn() )
           IDsToExclude.Add( aKey );
-      } 
-    } 
+      }
+    }
   } // for ( ...
 
   Handle(Graphic3d_AspectFillArea3d) anAsp;
@@ -497,7 +494,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     Handle(AIS_Drawer) anAISDrawer =  myParentMesh->Attributes();
     if ( anAISDrawer.IsNull() )
       return;
-    
+
     anAISDrawer->SetShadingAspect( new Prs3d_ShadingAspect() );
     anAsp = anAISDrawer->ShadingAspect()->Aspect();
     if ( anAsp.IsNull() )
@@ -505,13 +502,13 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
     anAsp->SetFrontMaterial( aMaterial[ 0 ] );
     anAsp->SetBackMaterial( aMaterial[ 1 ] );
-  
+
 
     Handle(Graphic3d_Texture2D) aTexture = CreateTexture();
     if ( aTexture.IsNull() )
       return;
 
-    anAsp->SetTextureMapOn();  
+    anAsp->SetTextureMapOn();
     anAsp->SetTextureMap( aTexture );
     anAsp->SetInteriorColor( Quantity_NOC_WHITE );
   }
@@ -520,7 +517,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 //    if ( aDrawer->GetInteger ( MeshVS_DA_InteriorStyle, aStyleInt ) )
 //      aStyle = (Aspect_InteriorStyle)aStyleInt;
 
-    anAsp = new Graphic3d_AspectFillArea3d ( 
+    anAsp = new Graphic3d_AspectFillArea3d (
       Aspect_IS_SOLID, Quantity_NOC_GRAY, anEdgeColor,
       anEdgeType, anEdgeWidth, aMaterial[ 0 ], aMaterial[ 1 ] );
   }
@@ -528,12 +525,12 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   anAsp->SetDistinguishOff();
   anAsp->SetEdgeOff();
 
-  Handle(Graphic3d_AspectLine3d) anLAsp = 
+  Handle(Graphic3d_AspectLine3d) anLAsp =
     new Graphic3d_AspectLine3d( anEdgeColor, anEdgeType, anEdgeWidth );
-  
+
   Prs3d_Root::NewGroup ( Prs );
   Handle(Graphic3d_Group) aGroup1 = Prs3d_Root::CurrentGroup ( Prs );
-  
+
   aGroup1->SetPrimitivesAspect( anAsp );
   aGroup1->BeginPrimitives();
   aGroup1->AddPrimitiveArray( aCPolyArr );
@@ -545,7 +542,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     Handle(Graphic3d_Group) aGroup2 = Prs3d_Root::CurrentGroup ( Prs );
 
     anAsp->SetEdgeOff();
-    anAsp->SetTextureMapOff();  
+    anAsp->SetTextureMapOff();
     aGroup2->SetPrimitivesAspect( anAsp );
     aGroup2->SetPrimitivesAspect( anLAsp );
     aGroup2->BeginPrimitives();
@@ -559,7 +556,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 // Function : SetColors
 // Purpose  :
 //================================================================
-void MeshVS_NodalColorPrsBuilder::SetColors ( 
+void MeshVS_NodalColorPrsBuilder::SetColors (
   const MeshVS_DataMapOfIntegerColor& theColorMap )
 {
   myNodeColorMap = theColorMap;
@@ -634,7 +631,7 @@ Standard_Boolean MeshVS_NodalColorPrsBuilder::IsUseTexture() const
 
 //================================================================
 // Function : SetColorMap
-// Purpose  : Set colors to be used for texrture presentation. 
+// Purpose  : Set colors to be used for texrture presentation.
 //            Generate texture in accordance with given parameters
 //================================================================
 void MeshVS_NodalColorPrsBuilder::SetColorMap( const Aspect_SequenceOfColor& theColors )
@@ -644,7 +641,7 @@ void MeshVS_NodalColorPrsBuilder::SetColorMap( const Aspect_SequenceOfColor& the
 
 //================================================================
 // Function : GetColorMap
-// Purpose  : Return colors used for texrture presentation 
+// Purpose  : Return colors used for texrture presentation
 //================================================================
 const Aspect_SequenceOfColor& MeshVS_NodalColorPrsBuilder::GetColorMap() const
 {
@@ -653,10 +650,10 @@ const Aspect_SequenceOfColor& MeshVS_NodalColorPrsBuilder::GetColorMap() const
 
 //================================================================
 // Function : SetInvalidColor
-// Purpose  : Set color representing invalid texture coordinate 
+// Purpose  : Set color representing invalid texture coordinate
 //            (laying outside range [0, 1])
 //================================================================
-void MeshVS_NodalColorPrsBuilder::SetInvalidColor( 
+void MeshVS_NodalColorPrsBuilder::SetInvalidColor(
   const Quantity_Color& theInvalidColor )
 {
   myInvalidColor = theInvalidColor;
@@ -674,10 +671,10 @@ Quantity_Color MeshVS_NodalColorPrsBuilder::GetInvalidColor() const
 
 //================================================================
 // Function : SetTextureCoords
-// Purpose  : Specify correspondence between node IDs and texture 
+// Purpose  : Specify correspondence between node IDs and texture
 //            coordinates (range [0, 1])
 //================================================================
-void MeshVS_NodalColorPrsBuilder::SetTextureCoords ( 
+void MeshVS_NodalColorPrsBuilder::SetTextureCoords (
   const TColStd_DataMapOfIntegerReal& theMap )
 {
   myTextureCoords = theMap;
@@ -685,8 +682,8 @@ void MeshVS_NodalColorPrsBuilder::SetTextureCoords (
 
 //================================================================
 // Function : GetTextureCoords
-// Purpose  : Get correspondence between node IDs and texture 
-//            coordinates (range [0, 1]) 
+// Purpose  : Get correspondence between node IDs and texture
+//            coordinates (range [0, 1])
 //================================================================
 const TColStd_DataMapOfIntegerReal& MeshVS_NodalColorPrsBuilder::GetTextureCoords() const
 {
@@ -695,8 +692,8 @@ const TColStd_DataMapOfIntegerReal& MeshVS_NodalColorPrsBuilder::GetTextureCoord
 
 //================================================================
 // Function : SetTextureCoord
-// Purpose  : Specify correspondence between node ID and texture 
-//            coordinate (range [0, 1]) 
+// Purpose  : Specify correspondence between node ID and texture
+//            coordinate (range [0, 1])
 //================================================================
 void MeshVS_NodalColorPrsBuilder::SetTextureCoord( const Standard_Integer theID,
                                                    const Standard_Real theCoord )
@@ -706,8 +703,8 @@ void MeshVS_NodalColorPrsBuilder::SetTextureCoord( const Standard_Integer theID,
 
 //================================================================
 // Function : GetTextureCoord
-// Purpose  : Return correspondence between node IDs and texture 
-//            coordinate (range [0, 1]) 
+// Purpose  : Return correspondence between node IDs and texture
+//            coordinate (range [0, 1])
 //================================================================
 Standard_Real MeshVS_NodalColorPrsBuilder::GetTextureCoord( const Standard_Integer theID )
 {
@@ -720,43 +717,65 @@ Standard_Real MeshVS_NodalColorPrsBuilder::GetTextureCoord( const Standard_Integ
 //================================================================
 Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
 {
-  Handle(Graphic3d_Texture2D) aTexture;
-
-  int nbColors = myTextureColorMap.Length();
-  if ( nbColors == 0 )
-    return aTexture;
-
-  Handle(PrsMgr_PresentationManager3d) aPrsMgr = GetPresentationManager();
-  if ( aPrsMgr.IsNull() )
-    return aTexture;
-
-  int nbTextureColors = getNearestPow2( nbColors );
-
-  // Create and fill image with colors
-  Handle(Image_ColorImage) aCImage = 
-    new Image_ColorImage( 0, 0, nbTextureColors, 2 );
-
-  if ( nbColors > 0 )
+  const Standard_Integer aColorsNb = myTextureColorMap.Length();
+  if (aColorsNb == 0)
   {
-    int i;
-    for ( i = 0; i < nbColors; i++ )
-    {
-      aCImage->SetPixel( i, 0, Aspect_ColorPixel( myTextureColorMap( i + 1 ) ) ); 
-      aCImage->SetPixel( i, 1, Aspect_ColorPixel( myInvalidColor ) ); 
-    }
-    Quantity_Color aLastColor = myTextureColorMap( nbColors );
-    for ( i = nbColors; i < nbTextureColors; i++ )
-    {
-      aCImage->SetPixel( i, 0, aLastColor ); 
-      aCImage->SetPixel( i, 1, Aspect_ColorPixel( myInvalidColor ) ); 
-    }
+    return NULL;
   }
 
-  // Convert image to bmp
-  Handle(AlienImage_BMPAlienImage) aTextureImage = new AlienImage_BMPAlienImage();
-  aTextureImage->FromImage( aCImage );  
+  Handle(PrsMgr_PresentationManager3d) aPrsMgr = GetPresentationManager();
+  if (aPrsMgr.IsNull())
+  {
+    return NULL;
+  }
 
-  // Create texture
-  aTexture = new MeshVS_ImageTexture2D( aPrsMgr->StructureManager(), aTextureImage );
-  return aTexture;
+  // create and fill image with colors
+  Image_PixMap anImage;
+  if (!anImage.InitTrash (Image_PixMap::ImgRGBA, Standard_Size(getNearestPow2 (aColorsNb)), 2))
+  {
+    return NULL;
+  }
+
+  anImage.SetTopDown (false);
+  Image_PixMapData<Image_ColorRGBA>& aData = anImage.EditData<Image_ColorRGBA>();
+  for (Standard_Size aCol = 0; aCol < Standard_Size(aColorsNb); ++aCol)
+  {
+    const Quantity_Color& aSrcColor = myTextureColorMap.Value (Standard_Integer(aCol) + 1);
+    Image_ColorRGBA& aColor = aData.ChangeValue (0, aCol);
+    aColor.r() = int(255.0 * aSrcColor.Red());
+    aColor.g() = int(255.0 * aSrcColor.Green());
+    aColor.b() = int(255.0 * aSrcColor.Blue());
+    aColor.a() = 0xFF;
+  }
+
+  // fill padding bytes
+  const Quantity_Color& aLastColorSrc = myTextureColorMap.Last();
+  const Image_ColorRGBA aLastColor =
+  {{
+    int(255.0 * aLastColorSrc.Red()),
+    int(255.0 * aLastColorSrc.Green()),
+    int(255.0 * aLastColorSrc.Blue()),
+    0xFF
+  }};
+
+  // fill second row
+  for (Standard_Size aCol = (Standard_Size )aColorsNb; aCol < anImage.SizeX(); ++aCol)
+  {
+    aData.ChangeValue (0, aCol) = aLastColor;
+  }
+
+  const Image_ColorRGBA anInvalidColor =
+  {{
+    int(255.0 * myInvalidColor.Red()),
+    int(255.0 * myInvalidColor.Green()),
+    int(255.0 * myInvalidColor.Blue()),
+    0xFF
+  }};
+  for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
+  {
+    aData.ChangeValue (1, aCol) = anInvalidColor;
+  }
+
+  // create texture
+  return new MeshVS_ImageTexture2D (aPrsMgr->StructureManager(), anImage);
 }

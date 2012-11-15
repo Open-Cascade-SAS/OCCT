@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -25,8 +24,7 @@
 #include <OpenGl_tgl_funcs.hxx>
 #include <OpenGl_TextureBox.hxx>
 
-#include <AlienImage.hxx>
-#include <Image_Image.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <Visual3d_Layer.hxx>
 
 #include <OpenGl_AspectLine.hxx>
@@ -105,7 +103,7 @@ static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
     * The GL_AMBIENT parameter refers to RGBA intensity of the ambient
     * light.
     */
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, data_amb); 
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, data_amb);
     break;
 
 
@@ -124,7 +122,7 @@ static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
     corresponding light source is a Directional one.
 
     GL_SPOT_CUTOFF a 180 signifie que ce n'est pas un spot.
-    To create a realistic effect,  set the GL_SPECULAR parameter 
+    To create a realistic effect,  set the GL_SPECULAR parameter
     to the same value as the GL_DIFFUSE.
     */
 
@@ -159,7 +157,7 @@ static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
 
     GL_SPOT_CUTOFF a 180 signifie que ce n'est pas un spot.
 
-    To create a realistic effect,  set the GL_SPECULAR parameter 
+    To create a realistic effect,  set the GL_SPECULAR parameter
     to the same value as the GL_DIFFUSE.
     */
 
@@ -181,7 +179,7 @@ static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
     glLightf(*gl_lid, GL_SPOT_CUTOFF, default_sptcutoff);
     glLightf(*gl_lid, GL_CONSTANT_ATTENUATION, data_constantattenuation);
     glLightf(*gl_lid, GL_LINEAR_ATTENUATION, data_linearattenuation);
-    glLightf(*gl_lid, GL_QUADRATIC_ATTENUATION, 0.0); 
+    glLightf(*gl_lid, GL_QUADRATIC_ATTENUATION, 0.0);
     break;
 
 
@@ -208,20 +206,20 @@ static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
 
     glLightfv(*gl_lid, GL_AMBIENT, default_amb);
     glLightfv(*gl_lid, GL_DIFFUSE, data_diffu);
-    glLightfv(*gl_lid, GL_SPECULAR, data_diffu);   
+    glLightfv(*gl_lid, GL_SPECULAR, data_diffu);
 
-    glLightfv(*gl_lid, GL_POSITION, data_pos);      
+    glLightfv(*gl_lid, GL_POSITION, data_pos);
     glLightfv(*gl_lid, GL_SPOT_DIRECTION, data_sptdir);
     glLightf(*gl_lid, GL_SPOT_EXPONENT, data_sptexpo);
     glLightf(*gl_lid, GL_SPOT_CUTOFF, data_sptcutoff);
     glLightf(*gl_lid, GL_CONSTANT_ATTENUATION, data_constantattenuation);
     glLightf(*gl_lid, GL_LINEAR_ATTENUATION, data_linearattenuation);
-    glLightf(*gl_lid, GL_QUADRATIC_ATTENUATION, 0.0); 
+    glLightf(*gl_lid, GL_QUADRATIC_ATTENUATION, 0.0);
     break;
   }
 
-  if (lptr->type != TLightAmbient) 
-  {  
+  if (lptr->type != TLightAmbient)
+  {
     glEnable(*gl_lid);
     (*gl_lid)++;
   }
@@ -255,7 +253,7 @@ static void call_util_mat_mul( matrix3 mat_a, matrix3 mat_b, matrix3 mat_c);
 void call_func_eval_ori_matrix3 (const point3* vrp,        // view reference point
                                  const vec3*   vpn,        // view plane normal
                                  const vec3*   vup,        // view up vector
-                                 int*          err_ind, 
+                                 int*          err_ind,
                                  float         mout[4][4]) // OUT view orientation matrix
 {
 
@@ -369,8 +367,8 @@ void call_func_eval_ori_matrix3 (const point3* vrp,        // view reference poi
 */
 /* OCC18942: obsolete in OCCT6.3, might be removed in further versions! */
 void call_func_eval_map_matrix3(
-                                view_map3 *Map, 
-                                int *err_ind, 
+                                view_map3 *Map,
+                                int *err_ind,
                                 matrix3 mat)
 {
   int i, j;
@@ -395,7 +393,7 @@ void call_func_eval_map_matrix3(
 
   /*
   * Type Parallele
-  */    
+  */
   if (Map->proj_type == TYPE_PARAL)
   {
     float umid, vmid;
@@ -450,7 +448,7 @@ void call_func_eval_map_matrix3(
     call_util_mat_mul( tmat, shmat, tshmat );
     call_util_mat_mul( smat, tshmat, mat );
 
-    return;         
+    return;
 #endif
 
     /* CAL */
@@ -511,12 +509,12 @@ void call_func_eval_map_matrix3(
       aux_mat1[3][2] = Map->proj_vp.z_min;
       call_util_mat_mul (aux_mat2, aux_mat1, mat);
 
-      return;         
-  } 
+      return;
+  }
 
   /*
   * Type Perspective
-  */    
+  */
   else if (Map->proj_type == TYPE_PERSPECT)
   {
     float umid, vmid;
@@ -719,21 +717,21 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
           break;
         case Aspect_GFM_DIAG1:
           corner2 = myBgGradient.color2.rgb;
-          corner4 = myBgGradient.color1.rgb;        
+          corner4 = myBgGradient.color1.rgb;
           dcorner1 [0] = dcorner2[0] = 0.5F * (corner2[0] + corner4[0]);
           dcorner1 [1] = dcorner2[1] = 0.5F * (corner2[1] + corner4[1]);
           dcorner1 [2] = dcorner2[2] = 0.5F * (corner2[2] + corner4[2]);
           corner1 = dcorner1;
-          corner3 = dcorner2;  
+          corner3 = dcorner2;
           break;
         case Aspect_GFM_DIAG2:
-          corner1 = myBgGradient.color2.rgb;  
-          corner3 = myBgGradient.color1.rgb;       
+          corner1 = myBgGradient.color2.rgb;
+          corner3 = myBgGradient.color1.rgb;
           dcorner1 [0] = dcorner2[0] = 0.5F * (corner1[0] + corner3[0]);
           dcorner1 [1] = dcorner2[1] = 0.5F * (corner1[1] + corner3[1]);
           dcorner1 [2] = dcorner2[2] = 0.5F * (corner1[2] + corner3[2]);
           corner2 = dcorner1;
-          corner4 = dcorner2;  
+          corner4 = dcorner2;
           break;
         case Aspect_GFM_CORNER1:
           corner1 = myBgGradient.color2.rgb;
@@ -779,7 +777,7 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
         glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
         glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
         glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
-      }         
+      }
       else //if ( myBgGradient.type == Aspect_GFM_CORNER1 || myBgGradient.type == Aspect_GFM_CORNER3 )
       {
         glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
@@ -889,11 +887,11 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
   //TsmPushAttri(); /* save previous graphics context */
 
   // if the view is scaled normal vectors are scaled to unit length for correct displaying of shaded objects
-  if(myExtra.scaleFactors[0] != 1.F || 
+  if(myExtra.scaleFactors[0] != 1.F ||
      myExtra.scaleFactors[1] != 1.F ||
      myExtra.scaleFactors[2] != 1.F)
     glEnable(GL_NORMALIZE);
-  else if(glIsEnabled(GL_NORMALIZE))  
+  else if(glIsEnabled(GL_NORMALIZE))
     glDisable(GL_NORMALIZE);
 
   // Apply View Projection
@@ -1147,12 +1145,12 @@ D = -[Px,Py,Pz] dot |Nx|
           GLboolean zbuff_w;
           glGetBooleanv(GL_DEPTH_WRITEMASK, &zbuff_w);
           glGetIntegerv(GL_DEPTH_FUNC, &zbuff_f);
-          glGetIntegerv(GL_BLEND_DST, &blend_dst); 
-          glGetIntegerv(GL_BLEND_SRC, &blend_src);    
+          glGetIntegerv(GL_BLEND_DST, &blend_dst);
+          glGetIntegerv(GL_BLEND_SRC, &blend_src);
           GLboolean zbuff_state = glIsEnabled(GL_DEPTH_TEST);
           GLboolean blend_state = glIsEnabled(GL_BLEND);
 
-          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
           glEnable(GL_BLEND);
 
           glDepthFunc(GL_EQUAL);
@@ -1263,7 +1261,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
       glEnable(GL_POINT_SMOOTH);
       glEnable(GL_LINE_SMOOTH);
       if( antiAliasingMode & 2 ) glEnable(GL_POLYGON_SMOOTH);
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_BLEND);
     }
   }
@@ -1378,7 +1376,7 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
     if (anViewportX != 0 && anViewportY != 0)
       glViewport (0, 0, anViewportX, anViewportY);
   }
-#endif 
+#endif
 
   glOrtho (left, right, bottom, top, -1.0, 1.0);
 
@@ -1419,53 +1417,78 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
 /*----------------------------------------------------------------------*/
 
 //call_togl_create_bg_texture
-void OpenGl_View::CreateBackgroundTexture (const Standard_CString AFileName, const Aspect_FillMethod AFillStyle)
+void OpenGl_View::CreateBackgroundTexture (const Standard_CString  theFilePath,
+                                           const Aspect_FillMethod theFillStyle)
 {
-  // Delete existing texture
-  if ( myBgTexture.TexId != 0 )
+  if (myBgTexture.TexId != 0)
   {
-    glDeleteTextures( 1, (GLuint*)&(myBgTexture.TexId) );
+    // delete existing texture
+    glDeleteTextures (1, (GLuint* )&(myBgTexture.TexId));
     myBgTexture.TexId = 0;
   }
 
-  Standard_Integer width, height;
-  Handle(Image_Image) image;
-  if ( AlienImage::LoadImageFile( AFileName, image, width, height ) )
+  // load image from file
+  Image_AlienPixMap anImageLoaded;
+  if (!anImageLoaded.Load (theFilePath))
   {
-    const int nbbytes = width * height * 3;
-    GLubyte *data = new GLubyte[nbbytes];
-    GLubyte *pdata = data;
-    Standard_Integer i, j;
-    for ( j = height - 1; j >= 0; j-- )
-      for ( i = 0; i < width; i++ )
-      {
-        const Quantity_Color &color = image->PixelColor( i, j );
-        *pdata++ = (GLubyte)( 255 * color.Red() );
-        *pdata++ = (GLubyte)( 255 * color.Green() );
-        *pdata++ = (GLubyte)( 255 * color.Blue() );
-      }
-
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-    GLuint texture = 0;
-    glGenTextures( 1, &texture );
-    glBindTexture( GL_TEXTURE_2D, texture );
-
-    /* Create MipMapped Texture */
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-
-    gluBuild2DMipmaps( GL_TEXTURE_2D, 3/*4*/, width, height, GL_RGB, GL_UNSIGNED_BYTE, data );
-
-    delete[] data;
-
-    myBgTexture.TexId = texture;
-    myBgTexture.Width = width;
-    myBgTexture.Height = height;
-    myBgTexture.Style = AFillStyle;
+    return;
   }
+
+  Image_PixMap anImage;
+  if (anImageLoaded.RowExtraBytes() == 0 &&
+      (anImageLoaded.Format() == Image_PixMap::ImgRGB
+    || anImageLoaded.Format() == Image_PixMap::ImgRGB32
+    || anImageLoaded.Format() == Image_PixMap::ImgRGBA))
+  {
+    anImage.InitWrapper (anImageLoaded.Format(), anImageLoaded.ChangeData(),
+                         anImageLoaded.SizeX(), anImageLoaded.SizeY(), anImageLoaded.SizeRowBytes());
+  }
+  else
+  {
+    // convert image to RGB format
+    if (!anImage.InitTrash (Image_PixMap::ImgRGB, anImageLoaded.SizeX(), anImageLoaded.SizeY()))
+    {
+      return;
+    }
+
+    anImage.SetTopDown (false);
+    Image_PixMapData<Image_ColorRGB>& aDataNew = anImage.EditData<Image_ColorRGB>();
+    Quantity_Color aSrcColor;
+    for (Standard_Size aRow = 0; aRow < anImage.SizeY(); ++aRow)
+    {
+      for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
+      {
+        aSrcColor = anImageLoaded.PixelColor (aCol, aRow);
+        Image_ColorRGB& aColor = aDataNew.ChangeValue (aRow, aCol);
+        aColor.r() = int(255.0 * aSrcColor.Red());
+        aColor.g() = int(255.0 * aSrcColor.Green());
+        aColor.b() = int(255.0 * aSrcColor.Blue());
+      }
+    }
+    anImageLoaded.Clear();
+  }
+
+  // create MipMapped texture
+  glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
+  GLuint aTextureId = 0;
+  glGenTextures (1, &aTextureId);
+  glBindTexture (GL_TEXTURE_2D, aTextureId);
+
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_REPEAT);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_REPEAT);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+
+  const GLenum aDataFormat = (anImage.Format() == Image_PixMap::ImgRGB) ? GL_RGB : GL_RGBA;
+  gluBuild2DMipmaps (GL_TEXTURE_2D, 3/*4*/,
+                     GLint(anImage.SizeX()), GLint(anImage.SizeY()),
+                     aDataFormat, GL_UNSIGNED_BYTE, anImage.Data());
+
+  myBgTexture.TexId  = aTextureId;
+  myBgTexture.Width  = (Standard_Integer )anImage.SizeX();
+  myBgTexture.Height = (Standard_Integer )anImage.SizeY();
+  myBgTexture.Style  = theFillStyle;
 }
 
 /*----------------------------------------------------------------------*/
@@ -1509,7 +1532,7 @@ void OpenGl_View::SetBackgroundGradientType (const Aspect_GradientFillMethod ATy
 
 //=======================================================================
 //function : AddZLayer
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void OpenGl_View::AddZLayer (const Standard_Integer theLayerId)
@@ -1519,7 +1542,7 @@ void OpenGl_View::AddZLayer (const Standard_Integer theLayerId)
 
 //=======================================================================
 //function : RemoveZLayer
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void OpenGl_View::RemoveZLayer (const Standard_Integer theLayerId)
@@ -1529,7 +1552,7 @@ void OpenGl_View::RemoveZLayer (const Standard_Integer theLayerId)
 
 //=======================================================================
 //function : DisplayStructure
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void OpenGl_View::DisplayStructure (const OpenGl_Structure *theStructure,
@@ -1541,7 +1564,7 @@ void OpenGl_View::DisplayStructure (const OpenGl_Structure *theStructure,
 
 //=======================================================================
 //function : EraseStructure
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void OpenGl_View::EraseStructure (const OpenGl_Structure *theStructure)
