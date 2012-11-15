@@ -118,29 +118,17 @@ GccAna_Circ2d3Tan::
 //	   Standard_Integer nbsol2 = 0;
 	   Standard_Integer nbsol3 = 0;
 	   Standard_Boolean ok = Standard_False;
-	   if (Qualified1.IsEnclosed()) {
-	     if ((((origin1.X()-Center.X())*(-dir1.Y()))+
-		  ((origin1.Y()-Center.Y())*(dir1.X())))<=0){
-	       ok = Standard_True;
-	       nbsol1 = 1;
-	       Radius = dist1;
-	     }
-	   }
-	   else if (Qualified1.IsOutside()) {
-	     if ((((origin1.X()-Center.X())*(-dir1.Y()))+
-		  ((origin1.Y()-Center.Y())*(dir1.X())))>=0){
-	       ok = Standard_True;
-	       nbsol1 = 1;
-	       Radius = dist1;
-	     }
-	   }
-	   else if (Qualified1.IsUnqualified()) {
-	     ok = Standard_True;
-	     nbsol1 = 1;
-	     Radius = dist1;
-	   }
+     Standard_Real  difference = (((origin1.X()-Center.X())*(-dir1.Y())) + ((origin1.Y()-Center.Y())*(dir1.X())));
+     if ((Qualified1.IsEnclosed() && difference <= 0) ||
+         (Qualified1.IsOutside() && difference >= 0) ||
+         (Qualified1.IsUnqualified()))
+     {
+       ok = Standard_True;
+       nbsol1 = 1;
+       Radius = dist1;
+     }
 	   if (ok) {
-	     if (Abs(dist2-Radius)<=Tol && Abs(dist2-Radius)<=Tol) { 
+	     if (Abs(dist2-Radius)<=Tol) { 
 	       nbsol3 = 1;
 	     }
 	     else { ok = Standard_False; }
