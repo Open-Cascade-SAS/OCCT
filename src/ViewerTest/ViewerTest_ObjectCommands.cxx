@@ -245,56 +245,55 @@ static int VTrihedron2D (Draw_Interpretor& di, Standard_Integer argc, const char
 
 //==============================================================================
 //function : VTriherdron
-//author   : ege
 //purpose  : Create a trihedron. If no arguments are set, the default
 //           trihedron (Oxyz) is created.
 //Draw arg : vtrihedron  name  [Xo] [Yo] [Zo] [Zu] [Zv] [Zw] [Xu] [Xv] [Xw]
 //==============================================================================
 
-static int VTrihedron (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-
+static int VTrihedron (Draw_Interpretor& theDi,
+                       Standard_Integer  theArgsNb,
+                       const char**      theArgVec)
 {
-  // Verification des arguments
-  if ( argc<2 || argc>11) {di<<argv[0]<<" Syntaxe error"<<"\n"; return 1;}
+  if (theArgsNb != 2 && theArgsNb != 5 && theArgsNb != 11)
+  {
+    theDi << theArgVec[0] << " Syntax error\n";
+    return 1;
+  }
 
-  // Declarations et creation des objets par default
-  TCollection_AsciiString     name=argv[1];
+  gp_Pnt anOrigin (0.0, 0.0, 0.0);
+  gp_Dir aDirZ = gp::DZ();
+  gp_Dir aDirX = gp::DX();
+  Standard_Integer anArgIter = 2; // 1st is an IO name
+  if (anArgIter < theArgsNb)
+  {
+    anOrigin.SetX (atof (theArgVec[anArgIter++]));
+    anOrigin.SetY (atof (theArgVec[anArgIter++]));
+    anOrigin.SetZ (atof (theArgVec[anArgIter++]));
+    if (anArgIter < theArgsNb)
+    {
+      Standard_Real aX = atof (theArgVec[anArgIter++]);
+      Standard_Real aY = atof (theArgVec[anArgIter++]);
+      Standard_Real aZ = atof (theArgVec[anArgIter++]);
+      aDirZ.SetCoord (aX, aY, aZ);
 
-  if(argc > 5 && argc!=11)
-  {di<<argv[0]<<" Syntaxe error"<<"\n"; return 1;}
-
-  // Cas ou il y a des arguments
-  Standard_Real coord[9]={0.,0.,0.,0.,0.,1.,1.,0.,0.};
-  if (argc>2){
-    Standard_Integer i ;
-    for( i=0;i<=2;i++)
-      coord[i]= atof(argv[2+i]);
-
-    if(argc>5){
-      for(i=0;i<=2;i++){
-        coord[3+i] = atof(argv[6+i]);
-        coord[6+i] = atof(argv[8+i]);
-      }
+      aX = atof (theArgVec[anArgIter++]);
+      aY = atof (theArgVec[anArgIter++]);
+      aZ = atof (theArgVec[anArgIter++]);
+      aDirX.SetCoord (aX, aY, aZ);
     }
   }
-  gp_Pnt ThePoint(coord[0],coord[1],coord[2]);
-  gp_Dir TheZVector(coord[3],coord[4],coord[5]);
-  gp_Dir TheXVector(coord[6],coord[7],coord[8]);
 
-  if ( !TheZVector.IsNormal(TheXVector,M_PI/180)) {di<<argv[0]<<" VectorX is not normal to VectorZ"<<"\n"; return 1;}
+  if (!aDirZ.IsNormal (aDirX, M_PI / 180.0))
+  {
+    theDi << theArgVec[0] << " - VectorX is not normal to VectorZ\n";
+    return 1;
+  }
 
-  Handle(Geom_Axis2Placement) OrigineAndAxii=new Geom_Axis2Placement(ThePoint,TheZVector,TheXVector);
-
-  // Creation du triedre
-  Handle(AIS_Trihedron) aShape= new AIS_Trihedron(OrigineAndAxii);
-  GetMapOfAIS().Bind(aShape,name);
-  TheAISContext()->Display(aShape);
-
+  Handle(Geom_Axis2Placement) aPlacement = new Geom_Axis2Placement (anOrigin, aDirZ, aDirX);
+  Handle(AIS_Trihedron) aShape = new AIS_Trihedron (aPlacement);
+  VDisplayAISObject (theArgVec[1], aShape);
   return 0;
 }
-
-
-
 
 //==============================================================================
 //function : VSize
