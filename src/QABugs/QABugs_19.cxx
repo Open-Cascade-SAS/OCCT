@@ -30,9 +30,12 @@
 #include <TopoDS_Shape.hxx>
 
 #include <gp_Pnt2d.hxx>
+#include <gp_Ax1.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <DrawTrSurf.hxx>
+
+#include <Precision.hxx>
 
 #include <PCollection_HAsciiString.hxx>
 
@@ -70,11 +73,36 @@ static Standard_Integer OCC142 (Draw_Interpretor& di, Standard_Integer /*argc*/,
   return 0;
 }
 
+static Standard_Integer OCC23361 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
+{
+  gp_Pnt p(0, 0, 2);
+  
+  gp_Trsf t1, t2;
+  t1.SetRotation(gp_Ax1(p, gp_Dir(0, 1, 0)), -0.49328285294022267);
+  t2.SetRotation(gp_Ax1(p, gp_Dir(0, 0, 1)), 0.87538474718473880);
+
+  gp_Trsf tComp = t2 * t1;
+
+  gp_Pnt p1(10, 3, 4);
+  gp_Pnt p2 = p1.Transformed(tComp);
+  gp_Pnt p3 = p1.Transformed(t1);
+  p3.Transform(t2);
+
+  // points must be equal
+  if ( ! p2.IsEqual(p3, Precision::Confusion()) )
+    di << "ERROR OCC23361: equivalent transformations does not produce equal points" << "\n";
+  else 
+    di << "OCC23361: OK" << "\n";
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   char *group = "QABugs";
 
   theCommands.Add ("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
   theCommands.Add ("OCC142", "OCC142", __FILE__, OCC142, group);
+  theCommands.Add ("OCC23361", "OCC23361", __FILE__, OCC23361, group);
 
   return;
 }

@@ -464,7 +464,7 @@ void gp_Trsf::Multiply(const gp_Trsf& T)
     matrix = T.matrix;
   } 
   else if (shape == gp_Rotation && T.shape == gp_Rotation) { 
-    if (loc.X() != 0.0 || loc.Y() != 0.0 || loc.Z() != 0.0) {
+    if (T.loc.X() != 0.0 || T.loc.Y() != 0.0 || T.loc.Z() != 0.0) {
       loc.Add (T.loc.Multiplied (matrix));
     }
     matrix.Multiply(T.matrix);
