@@ -82,12 +82,6 @@
 #include <NIS_Triangulated.hxx>
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
-//=======================================================================
-//function : GetColorFromName
-//purpose  : get the Quantity_NameOfColor from a string
-//=======================================================================
-
-#include <Quantity_NameOfColor.hxx>
 #include <Quantity_Color.hxx>
 #include <Quantity_NameOfColor.hxx>
 
@@ -96,22 +90,23 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 #define DEFAULT_MATERIAL Graphic3d_NOM_BRASS
 
-static Quantity_NameOfColor GetColorFromName( const char *name )
+//=======================================================================
+//function : GetColorFromName
+//purpose  : get the Quantity_NameOfColor from a string
+//=======================================================================
+
+Quantity_NameOfColor ViewerTest::GetColorFromName (const Standard_CString theName)
 {
-  Quantity_NameOfColor ret = DEFAULT_COLOR;
-
-  Standard_Boolean Found = Standard_False;
-  Standard_CString colstring;
-  for(Standard_Integer i=0;i<=514 && !Found;i++)
+  for (Standard_Integer anIter = Quantity_NOC_BLACK; anIter <= Quantity_NOC_WHITE; ++anIter)
+  {
+    Standard_CString aColorName = Quantity_Color::StringName (Quantity_NameOfColor (anIter));
+    if (strcasecmp (theName, aColorName) == 0)
     {
-      colstring = Quantity_Color::StringName(Quantity_NameOfColor(i));
-      if (!strcasecmp(name,colstring)) {
-	ret = (Quantity_NameOfColor)i;
-	Found = Standard_True;
-      }
+      return Quantity_NameOfColor (anIter);
     }
+  }
 
-  return ret;
+  return DEFAULT_COLOR;
 }
 
 //=======================================================================
@@ -1107,20 +1102,20 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
           Handle(AIS_InteractiveObject)::DownCast (anObj);
 #ifdef DEB
           if (HaveToSet)
-            di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
+            di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< ViewerTest::GetColorFromName(argv[2]) << "\n";
           else
             di  << "HaveToSet 0\n";
 #endif
 
         if(HaveToSet)
-          TheAISContext()->SetColor(ashape,GetColorFromName(argv[2]) );
+          TheAISContext()->SetColor(ashape,ViewerTest::GetColorFromName(argv[2]) );
         else
           TheAISContext()->UnsetColor(ashape);
       } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         Handle(NIS_Triangulated) ashape =
           Handle(NIS_Triangulated)::DownCast (anObj);
         if (!ashape.IsNull())
-          ashape->SetColor (GetColorFromName(argv[2]));
+          ashape->SetColor (ViewerTest::GetColorFromName(argv[2]));
       }
     }
 
@@ -1139,12 +1134,12 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
           continue;
 #ifdef DEB
         if (HaveToSet)
-          di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< GetColorFromName(argv[2]) << "\n";
+          di  << "HaveToSet "<< "1" <<" Color Given "<< argv[2] << " Color returned "<< ViewerTest::GetColorFromName(argv[2]) << "\n";
         else
           di  << "HaveToSet 0\n";
 #endif
         if(HaveToSet)
-          TheAISContext()->SetColor(ashape,GetColorFromName(argv[1]),Standard_False);
+          TheAISContext()->SetColor(ashape,ViewerTest::GetColorFromName(argv[1]),Standard_False);
         else
           TheAISContext()->UnsetColor(ashape,Standard_False);
       }
@@ -1163,7 +1158,7 @@ static int VColor2 (Draw_Interpretor& di, Standard_Integer argc, const char** ar
           Handle(AIS_InteractiveObject)::DownCast(it.Key1());
         if (!ashape.IsNull())
           if(HaveToSet)
-            TheAISContext()->SetColor(ashape,GetColorFromName(argv[1]),Standard_False);
+            TheAISContext()->SetColor(ashape,ViewerTest::GetColorFromName(argv[1]),Standard_False);
           else
             TheAISContext()->UnsetColor(ashape,Standard_False);
         it.Next();

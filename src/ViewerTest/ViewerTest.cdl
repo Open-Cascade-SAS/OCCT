@@ -35,7 +35,8 @@ uses
     V3d,
     AIS,
     NIS,
-    MMgt
+    MMgt,
+    Quantity
 
 is
 
@@ -170,6 +171,9 @@ is
     RemoveSelected;
 
     StandardModeActivation(Mode  : Integer from Standard);
+
+    GetColorFromName(name: CString from Standard)
+    returns NameOfColor from Quantity;
 
 
 

@@ -464,79 +464,80 @@ Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Image_PixMap&    theImage
   return aSeq;
 }
 
-static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& theDi,
+                                            Standard_Integer  theArgsNb,
+                                            const char**      theArgs)
 {
-  if ( argc != 3 ) {
-    if ( argc != 6 ) {
-      di << "Usage : " << argv[0] << " coordinate_X coordinate_Y [color_R color_G color_B]" << "\n";
-      return 1;
-    }
-  }
-  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
-  if ( QAAISView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  Handle (Aspect_Window) QAAISWindow = QAAISView->Window ();
-  Standard_Integer QAAISXWindowSize_X = 0;
-  Standard_Integer QAAISXWindowSize_Y = 0;
-  QAAISWindow->Size(QAAISXWindowSize_X, QAAISXWindowSize_Y);
-  Standard_Integer QAAISCoordinateX = atoi (argv [1]);
-  Standard_Integer QAAISCoordinateY = atoi (argv [2]);
-
-  Standard_Real QAAISColorRED_V = 0;
-  Standard_Real QAAISColorGRN_V = 0;
-  Standard_Real QAAISColorBLU_V = 0;
-
-  if ( argc == 6 ) {
-    QAAISColorRED_V = atof (argv [3]);
-    QAAISColorGRN_V = atof (argv [4]);
-    QAAISColorBLU_V = atof (argv [5]);
-
-    di << "Begin aColorRED_User = " << QAAISColorRED_V << "\n";
-    di << "Begin aColorGRN_User = " << QAAISColorRED_V << "\n";
-    di << "Begin aColorBLU_User = " << QAAISColorRED_V << "\n";
+  if (theArgsNb != 3 && theArgsNb != 6)
+  {
+    theDi << "Usage : " << theArgs[0] << " coordinate_X coordinate_Y [color_R color_G color_B]" << "\n";
+    return 1; // TCL_ERROR
   }
 
-  Standard_Integer aRadius = 1;
-  if ( argc == 3 ) {
-    aRadius=0;
+  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
+  if (aView3d.IsNull())
+  {
+    theDi << "You must initialize AISViewer before this command.\n";
+    return 1; // TCL_ERROR
+  }
+
+  const Handle(Aspect_Window) anAISWindow = aView3d->Window();
+  Standard_Integer aWindowSizeX = 0;
+  Standard_Integer aWindowSizeY = 0;
+  anAISWindow->Size (aWindowSizeX, aWindowSizeY);
+
+  Standard_Integer anArgIter = 1;
+  const Standard_Integer aPickCoordX = atoi (theArgs[anArgIter++]);
+  const Standard_Integer aPickCoordY = atoi (theArgs[anArgIter++]);
+  const Standard_Integer aRadius = (theArgsNb == 3) ? 0 : 1;
+
+  Image_ColorRGBF aColorInput = {{ 0.0f, 0.0f, 0.0f }};
+  if (theArgsNb == 6)
+  {
+    aColorInput.r() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+    aColorInput.g() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+    aColorInput.b() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
   }
 
   Image_PixMap anImage;
-  QAAISView->ToPixMap (anImage, QAAISXWindowSize_X, QAAISXWindowSize_Y);
-  Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, QAAISCoordinateX, QAAISCoordinateY, aRadius);
+  aView3d->ToPixMap (anImage, aWindowSizeX, aWindowSizeY);
+  const Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aPickCoordX, aPickCoordY, aRadius);
   cout << "Length = " << aSeq->Length() << endl;
 
-  Standard_Boolean IsNotEqual = Standard_True;
-  Standard_Integer i;
-  for(i=1; i<=aSeq->Length();i+=3) {
-    // mkv 29.04.03
-    Standard_Real QAAISColorRED_R = (Floor(aSeq->Value(i+0) * 1000000.)) / 1000000.;
-    Standard_Real QAAISColorGRN_R = (Floor(aSeq->Value(i+1) * 1000000.)) / 1000000.;
-    Standard_Real QAAISColorBLU_R = (Floor(aSeq->Value(i+2) * 1000000.)) / 1000000.;
-    // mkv 29.04.03
+  Image_ColorRGBF aColorPicked = {{ 0.0f, 0.0f, 0.0f }};
+  Standard_Boolean isNotEqual = Standard_True;
+  for (Standard_Integer i = 1; i <= aSeq->Length(); i += 3)
+  {
+    aColorPicked.r() = (Standard_ShortReal )aSeq->Value (i + 0);
+    aColorPicked.g() = (Standard_ShortReal )aSeq->Value (i + 1);
+    aColorPicked.b() = (Standard_ShortReal )aSeq->Value (i + 2);
 
-    if ( argc == 3 ) {
-      di << "RED : "    << QAAISColorRED_R
-	<< " GREEN : " << QAAISColorGRN_R
-	  << " BLUE : "  << QAAISColorBLU_R
-	    << "\n";
-      IsNotEqual = Standard_False;
-      break;
-    }
-
-    if (   QAAISColorRED_R == QAAISColorRED_V
-	&& QAAISColorGRN_R == QAAISColorGRN_V
-	&& QAAISColorBLU_R == QAAISColorBLU_V
-	) {
-      IsNotEqual = Standard_False;
+    if (theArgsNb == 3 ||
+        ((Abs (aColorPicked.r() - aColorInput.r()) <= Precision::Confusion())
+      && (Abs (aColorPicked.g() - aColorInput.g()) <= Precision::Confusion())
+      && (Abs (aColorPicked.b() - aColorInput.b()) <= Precision::Confusion())))
+    {
+      isNotEqual = Standard_False;
       break;
     }
   }
-  if (IsNotEqual) {
-    di << "Faulty : colors are not equal." << "\n";
-    return 1;
+
+  theDi << "RED :   " << aColorPicked.r() << " "
+        << "GREEN : " << aColorPicked.g() << " "
+        << "BLUE :  " << aColorPicked.b() << "\n";
+
+  if (theArgsNb == 6)
+  {
+    theDi << "User color: \n"
+          << "RED :   " << aColorInput.r() << " "
+          << "GREEN : " << aColorInput.g() << " "
+          << "BLUE :  " << aColorInput.b() << "\n";
+  }
+
+  if (isNotEqual)
+  {
+    theDi << "Faulty : colors are not equal.\n";
+    return 1; // TCL_ERROR
   }
   return 0;
 }

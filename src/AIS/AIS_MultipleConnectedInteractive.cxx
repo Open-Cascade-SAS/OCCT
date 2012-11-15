@@ -130,32 +130,35 @@ void AIS_MultipleConnectedInteractive::DisconnectAll ()
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void AIS_MultipleConnectedInteractive::Compute
-(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, 
- const Handle(Prs3d_Presentation)& aPresentation, 
- const Standard_Integer aMode)
-
+void AIS_MultipleConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+                                                const Handle(Prs3d_Presentation)&           thePrs,
+                                                const Standard_Integer                      theMode)
 {
-  //cout<<"AIS_MultipleConnectedInteractive::Compute"<<endl;
+  thePrs->Clear (Standard_False);
+  thePrs->RemoveAll();
+  if (HasConnection())
+  {
+    for (Standard_Integer aRefIter = 1; aRefIter <= myReferences.Length(); ++aRefIter)
+    {
+      const Handle (AIS_InteractiveObject)& aRef = myReferences.Value (aRefIter);
+      if (!aRef->HasInteractiveContext())
+      {
+        aRef->SetContext (GetContext());
+      }
 
-  aPresentation->Clear(Standard_False);
-  aPresentation->RemoveAll();
-  if(HasConnection()) {
-    for (Standard_Integer I=1 ; I<= myReferences.Length(); I++) {
-      const Handle (AIS_InteractiveObject)& aReference = myReferences.Value (I);
-      aPresentationManager->Connect( this, aReference, aMode, aMode);
-      if(aPresentationManager->Presentation(aReference,aMode)->MustBeUpdated())
-	aPresentationManager->Update(aReference,aMode);
+      thePrsMgr->Connect (this, aRef, theMode, theMode);
+      if (thePrsMgr->Presentation (aRef, theMode)->MustBeUpdated())
+      {
+        thePrsMgr->Update (aRef, theMode);
+      }
     }
   }
 
-  aPresentation->ReCompute();
-
+  thePrs->ReCompute();
 }
-   
+
 //=======================================================================
 //function : Compute
 //purpose  : 
