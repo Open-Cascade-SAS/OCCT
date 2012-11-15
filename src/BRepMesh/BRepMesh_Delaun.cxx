@@ -828,9 +828,9 @@ void BRepMesh_Delaun::RemovePivotTriangles( const Standard_Integer theEdgeInfo,
         {
           if ( e1[i] == anOldEdge )
           {
-            for ( Standard_Integer i = 0; i < 2; ++i )
-            {
-              Standard_Integer aTmpEdgeId = e1[(i + 1) % 3];
+            for ( Standard_Integer j = 0; j < 2; ++j )
+            {              
+              Standard_Integer aTmpEdgeId = e1[(j + i + 1) % 3];
               const BRepMesh_Edge& anEdge = GetEdge( aTmpEdgeId );
               if ( anEdge.FirstNode() == thePivotNode || 
                    anEdge.LastNode()  == thePivotNode )
