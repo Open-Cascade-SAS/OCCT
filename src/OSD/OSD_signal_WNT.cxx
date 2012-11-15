@@ -18,13 +18,6 @@
 
 #include <OSD.ixx>
 
-static Standard_Boolean fSETranslator =
-#ifdef _MSC_VER
-                           Standard_True;
-#else
-                           Standard_False;
-#endif
-
 #ifdef WNT
 
 //---------------------------- Windows NT System --------------------------------
@@ -53,6 +46,7 @@ static Standard_Boolean fSETranslator =
 #include <Standard_DivideByZero.hxx>
 #include <Standard_Overflow.hxx>
 #include <Standard_ProgramError.hxx>
+#include <Standard_Mutex.hxx>
 
 #include <OSD_WNT_1.hxx>
 
@@ -70,14 +64,16 @@ static Standard_Boolean fFltExceptions;
 static Standard_Boolean fDbgLoaded;
 static Standard_Boolean fCtrlBrk;
 
+// used to forbid simultaneous execution of setting / executing handlers
+static Standard_Mutex THE_SIGNAL_MUTEX;
+
 static LONG __fastcall _osd_raise ( DWORD, LPTSTR );
 static BOOL WINAPI     _osd_ctrl_break_handler ( DWORD );
 
 extern "C" Standard_EXPORT LONG _osd_debug   ( void );
-extern "C" Standard_EXPORT void _debug_break ( Standard_PCharacter );
 
 MB_DESC fatalErrorDesc[] = {
-									  
+
                  { MBT_ICON,   ( int )IDI_HAND              },
                  { MBT_BUTTON, IDYES,    TEXT( "Continue" ) },
                  { MBT_BUTTON, IDNO,     TEXT( "Debugger" ) },
@@ -85,104 +81,21 @@ MB_DESC fatalErrorDesc[] = {
 
 };
 
-static LONG CallHandler (DWORD, ptrdiff_t, ptrdiff_t);
-static void SIGWntHandler (int, int);
-
-
 //# define _OSD_FPX ( _EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW | _EM_UNDERFLOW )
 # define _OSD_FPX ( _EM_INVALID | _EM_DENORMAL | _EM_ZERODIVIDE | _EM_OVERFLOW )
 
-//============================================================================
-//==== WntHandler
-//============================================================================
-
-Standard_Integer OSD :: WntHandler ( const Standard_Address exceptionInfo )
-{
-
- LPEXCEPTION_POINTERS lpXP = ( LPEXCEPTION_POINTERS )exceptionInfo;
- DWORD                dwExceptionCode = lpXP -> ExceptionRecord -> ExceptionCode;
-
-// cout << "WntHandler " << dwExceptionCode << " " << lpXP->ExceptionRecord->ExceptionInformation[1]
-//      << " " <<lpXP->ExceptionRecord->ExceptionInformation[0] << endl ;
-
- return CallHandler( dwExceptionCode ,
-                     lpXP -> ExceptionRecord -> ExceptionInformation[ 1 ] ,
-                     lpXP -> ExceptionRecord -> ExceptionInformation[ 0 ] ) ;
-
-}
-
-//============================================================================
-//==== SIGWntHandler
-//============================================================================
-
-static void SIGWntHandler(int signum , int sub_code ) {
-
-#if !defined(__CYGWIN32__) && !defined(__MINGW32__)
-
-//        cout << "SIGWntHandler " << signum << " subcode " << sub_code << endl ;
-	switch( signum ) {
-	case SIGFPE :
-	  if ( signal( signum , ( void (*)(int) ) &SIGWntHandler ) == SIG_ERR )
-            cout << "signal error" << endl ;
-          switch( sub_code ) {
-          case _FPE_INVALID :
-            CallHandler( EXCEPTION_FLT_INVALID_OPERATION ,0,0) ;
-            break ;
-          case _FPE_DENORMAL :
-            CallHandler( EXCEPTION_FLT_DENORMAL_OPERAND ,0,0) ;
-            break ;
-          case _FPE_ZERODIVIDE :
-            CallHandler( EXCEPTION_FLT_DIVIDE_BY_ZERO ,0,0) ;
-            break ;
-          case _FPE_OVERFLOW :
-            CallHandler( EXCEPTION_FLT_OVERFLOW ,0,0) ;
-            break ;
-          case _FPE_UNDERFLOW :
-            CallHandler( EXCEPTION_FLT_UNDERFLOW ,0,0) ;
-            break ;
-          case _FPE_INEXACT :
-            CallHandler( EXCEPTION_FLT_INEXACT_RESULT ,0,0) ;
-            break ;
-          default:
-            cout << "SIGWntHandler(default) -> Standard_NumericError::Raise(\"Floating Point Error\");"
-                 << endl ;
-            Standard_NumericError::Raise("Floating Point Error");
-            break ;
-          }
-          break ;
-	case SIGSEGV :
-	  if ( signal( signum , ( void (*)(int) )  &SIGWntHandler ) == SIG_ERR )
-            cout << "signal error" << endl ;
-          CallHandler( EXCEPTION_ACCESS_VIOLATION ,0,0) ;
-	  break ;
-	case SIGILL :
-	  if ( signal( signum , ( void (*)(int) )  &SIGWntHandler ) == SIG_ERR )
-            cout << "signal error" << endl ;
-          CallHandler( EXCEPTION_ILLEGAL_INSTRUCTION ,0,0) ;
-	  break ;
-        default:
-          cout << "SIGWntHandler unexpected signal : "
-               << signum << endl ;
-          break ;
-	}
-// cout << "return from SIGWntHandler -> DebugBreak " << endl ;
- DebugBreak ();
-
-#endif
-
-}
-
-//============================================================================
-//==== CallHandler 
-//============================================================================
-
-static LONG CallHandler (DWORD dwExceptionCode ,
-			 ptrdiff_t ExceptionInformation1 ,
-			 ptrdiff_t ExceptionInformation0)
+//=======================================================================
+//function : CallHandler
+//purpose  :
+//=======================================================================
+static LONG CallHandler (DWORD dwExceptionCode,
+                         ptrdiff_t ExceptionInformation1,
+                         ptrdiff_t ExceptionInformation0)
 {
 
 #if !defined(__CYGWIN32__) && !defined(__MINGW32__)
 
+ Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
  static TCHAR         buffer[ 2048 ];
  int                  flterr = 0;
 
@@ -318,6 +231,10 @@ static LONG CallHandler (DWORD dwExceptionCode ,
 
 
  if ( idx && fMsgBox && dwExceptionCode != EXCEPTION_NONCONTINUABLE_EXCEPTION ) {
+     // reset FP operations before message box, otherwise it may fail to show up
+    _fpreset();
+    _clearfp();
+
   MessageBeep ( MB_ICONHAND );
   int msgID = MsgBox ( NULL, buffer, TEXT( "Error detected" ), 4, fatalErrorDesc );
 //  cout << "flterr" << flterr << " fFltExceptions " << fFltExceptions << endl ;
@@ -360,23 +277,104 @@ static LONG CallHandler (DWORD dwExceptionCode ,
 //     cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << hex << _controlfp(0,0) << dec << endl ;
    }
  }
-
  return _osd_raise ( dwExceptionCode, buffer );
-
 #else
  return 0;
 #endif
+}
 
-}  // end OSD :: WntHandler
+//=======================================================================
+//function : SIGWntHandler
+//purpose  : Will only be used if user calls ::raise() function with
+//           signal type set in OSD::SetSignal() - SIGSEGV, SIGFPE, SIGILL
+//           (the latter will likely be removed in the future)
+//=======================================================================
+static void SIGWntHandler (int signum, int sub_code)
+{
+#if !defined(__CYGWIN32__) && !defined(__MINGW32__)
+    Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+    switch( signum ) {
+    case SIGFPE :
+      if ( signal( signum , ( void (*)(int) ) &SIGWntHandler ) == SIG_ERR )
+            cout << "signal error" << endl ;
+          switch( sub_code ) {
+          case _FPE_INVALID :
+            CallHandler( EXCEPTION_FLT_INVALID_OPERATION ,0,0) ;
+            break ;
+          case _FPE_DENORMAL :
+            CallHandler( EXCEPTION_FLT_DENORMAL_OPERAND ,0,0) ;
+            break ;
+          case _FPE_ZERODIVIDE :
+            CallHandler( EXCEPTION_FLT_DIVIDE_BY_ZERO ,0,0) ;
+            break ;
+          case _FPE_OVERFLOW :
+            CallHandler( EXCEPTION_FLT_OVERFLOW ,0,0) ;
+            break ;
+          case _FPE_UNDERFLOW :
+            CallHandler( EXCEPTION_FLT_UNDERFLOW ,0,0) ;
+            break ;
+          case _FPE_INEXACT :
+            CallHandler( EXCEPTION_FLT_INEXACT_RESULT ,0,0) ;
+            break ;
+          default:
+            cout << "SIGWntHandler(default) -> Standard_NumericError::Raise(\"Floating Point Error\");"
+                 << endl ;
+            Standard_NumericError::Raise("Floating Point Error");
+            break ;
+          }
+          break ;
+	case SIGSEGV :
+      if ( signal( signum , ( void (*)(int) )  &SIGWntHandler ) == SIG_ERR )
+            cout << "signal error" << endl ;
+          CallHandler( EXCEPTION_ACCESS_VIOLATION ,0,0) ;
+	  break ;
+    case SIGILL :
+      if ( signal( signum , ( void (*)(int) )  &SIGWntHandler ) == SIG_ERR )
+            cout << "signal error" << endl ;
+          CallHandler( EXCEPTION_ILLEGAL_INSTRUCTION ,0,0) ;
+	  break ;
+        default:
+          cout << "SIGWntHandler unexpected signal : "
+               << signum << endl ;
+          break ;
+	}
+ DebugBreak ();
+#endif
+}
+
+//=======================================================================
+//function : WntHandler
+//purpose  : Will be used when user's code is compiled with /EHs
+//           option and unless user sets his own exception handler with 
+//           ::SetUnhandledExceptionFilter().
+//=======================================================================
+Standard_Integer OSD::WntHandler (const Standard_Address theExceptionInfo)
+{
+  LPEXCEPTION_POINTERS lpXP = (LPEXCEPTION_POINTERS )theExceptionInfo;
+  DWORD                dwExceptionCode = lpXP->ExceptionRecord->ExceptionCode;
+
+  return CallHandler (dwExceptionCode,
+                      lpXP->ExceptionRecord->ExceptionInformation[1],
+                      lpXP->ExceptionRecord->ExceptionInformation[0]);
+}
 
 //=======================================================================
 //function : TranslateSE
 //purpose  : Translate Structural Exceptions into C++ exceptions
+//           Will be used when user's code is compiled with /EHa option
 //=======================================================================
-
 #ifdef _MSC_VER
+
+// If this file compiled with the default MSVC options for exception
+// handling (/GX or /EHsc) then the following warning is issued:
+//   warning C4535: calling _set_se_translator() requires /EHa
+// However it is correctly inserted and used when user's code compiled with /EHa.
+// So, here we disable the warning.
+#pragma warning (disable:4535)
+
 static void TranslateSE( unsigned int theCode, EXCEPTION_POINTERS* theExcPtr )
 {
+  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
   ptrdiff_t info1 = 0, info0 = 0;
   if ( theExcPtr ) {
     info1 = theExcPtr->ExceptionRecord->ExceptionInformation[1];
@@ -386,87 +384,60 @@ static void TranslateSE( unsigned int theCode, EXCEPTION_POINTERS* theExcPtr )
 }
 #endif
 
-//============================================================================
-//==== SetSignal 
-//============================================================================
-
-#ifdef _MSC_VER
-// MSV 31.08.2005
-// If we compile this file under MSVC 7.1 with the default options for 
-// exception handling (/GX or /EHsc) then the following warning is issued:
-//   warning C4535: calling _set_se_translator() requires /EHa
-// Till now all worked with the default options, and there was no difference
-// found in exception handling behaviour between /EHa and /EHs options. 
-// So, here we disable the warning, and leave the default compiler options.
-// If some reason appears to turn to /EHa option this pragma can be removed.
-#pragma warning (disable:4535)
-#endif
-
-void OSD :: SetSignal ( const Standard_Boolean aFloatingSignal ) {
-
+//=======================================================================
+//function : SetSignal
+//purpose  :
+//=======================================================================
+void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
+{
 #if !defined(__CYGWIN32__) && !defined(__MINGW32__)
+  Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+  LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFilter;
 
- static int first_time = 1 ;
- LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFilter ;
+  OSD_Environment env (TEXT("CSF_DEBUG_MODE"));
+  TCollection_AsciiString val = env.Value();
+  if (!env.Failed())
+  {
+    cout << "Environment variable CSF_DEBUG_MODE setted.\n";
+    fMsgBox = Standard_True;
+  }
+  else
+  {
+    fMsgBox = Standard_False;
+  }
 
- if ( first_time ) {
-//   OSD_Environment         env (  TEXT( "CSF_EXCEPTION_PROMPT" )  );
-   OSD_Environment         env (  TEXT( "CSF_DEBUG_MODE" )  );
-   TCollection_AsciiString val;
+  // Set exception handler (ignored when running under debugger). It will be used in most cases
+  // when user's code is compiled with /EHs
+  // Replaces the existing top-level exception filter for all existing and all future threads
+  // in the calling process
+  aPreviousFilter = ::SetUnhandledExceptionFilter ((LPTOP_LEVEL_EXCEPTION_FILTER )&OSD::WntHandler);
 
-   val = env.Value ();
+  // Signal handlers will only be used when the method ::raise() will be used
+  // Handlers must be set for every thread
+  if (signal (SIGSEGV, (void (*)(int ) )&SIGWntHandler) == SIG_ERR)
+    cout << "signal(OSD::SetSignal) error\n";
+  if (signal (SIGFPE,  (void (*)(int ) )&SIGWntHandler) == SIG_ERR)
+    cout << "signal(OSD::SetSignal) error\n";
+  if (signal (SIGILL,  (void (*)(int ) )&SIGWntHandler) == SIG_ERR)
+    cout << "signal(OSD::SetSignal) error\n";
 
-   if (  !env.Failed ()  ) {
-     cout << "Environment variable CSF_DEBUG_MODE setted." << endl ;
-     fMsgBox = Standard_True;
-   }
-   else {
-//     cout << "Environment variable CSF_DEBUG_MODE not setted." << endl ;
-     fMsgBox = Standard_False;
-   }
-
-   if (!fSETranslator) {
-     aPreviousFilter =
-       SetUnhandledExceptionFilter ((LPTOP_LEVEL_EXCEPTION_FILTER)&OSD::WntHandler);
-//   cout << "SetUnhandledExceptionFilter previous filer : " << hex << aPreviousFilter << dec << endl ;
-
-     if ( signal( SIGSEGV , ( void (*)(int) ) &SIGWntHandler ) == SIG_ERR )
-       cout << "signal(OSD::SetSignal) error" << endl ;
-     if ( signal( SIGFPE , ( void (*)(int) ) &SIGWntHandler ) == SIG_ERR )
-       cout << "signal(OSD::SetSignal) error" << endl ;
-     if ( signal( SIGILL , ( void (*)(int) ) &SIGWntHandler ) == SIG_ERR )
-       cout << "signal(OSD::SetSignal) error" << endl ;
-   }
-
-   fCtrlBrk = Standard_False;
-   SetConsoleCtrlHandler ( &_osd_ctrl_break_handler, TRUE );
- }
+  // Set Ctrl-C and Ctrl-Break handler
+  fCtrlBrk = Standard_False;
+  SetConsoleCtrlHandler (&_osd_ctrl_break_handler, TRUE);
 
 #ifdef _MSC_VER
- if (fSETranslator) {
-   // use Structural Exception translator (one per thread)
-   _se_translator_function pOldSeFunc = _set_se_translator( TranslateSE );
- }
+  _se_translator_function pOldSeFunc = _set_se_translator (TranslateSE);
 #endif
 
- fFltExceptions = aFloatingSignal;
- if ( aFloatingSignal ) {
-   _controlfp ( 0, _OSD_FPX );          // JR add :
-   if ( first_time ) {
-//     cout << "SetSignal with floating point traps : " << hex << _controlfp(0,0) << dec << endl ;
-     first_time = 0 ;
-   }
- }
- else {
-   _controlfp ( _OSD_FPX , _OSD_FPX );          // JR add :
-   if ( first_time ) {
-//     cout << "SetSignal without floating point traps : " << hex << _controlfp(0,0) << dec << endl ;
-     first_time = 0 ;
-   }
- }
-
+  fFltExceptions = theFloatingSignal;
+  if (theFloatingSignal)
+  {
+    _controlfp (0, _OSD_FPX);        // JR add :
+  }
+  else {
+    _controlfp (_OSD_FPX, _OSD_FPX); // JR add :
+  }
 #endif
-
 }  // end OSD :: SetSignal
 
 //============================================================================
@@ -509,73 +480,64 @@ static BOOL WINAPI _osd_ctrl_break_handler ( DWORD dwCode ) {
 
 static LONG __fastcall _osd_raise ( DWORD dwCode, LPTSTR msg ) 
 {
-  if (  msg[ 0 ] == TEXT( '\x03' )  ) ++msg;
+  if (msg[0] == TEXT('\x03')) ++msg;
 
- switch ( dwCode ) {
-    
-  case EXCEPTION_ACCESS_VIOLATION:
-
-   OSD_Exception_ACCESS_VIOLATION :: Raise ( msg );
-
-  case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
-
-   OSD_Exception_ARRAY_BOUNDS_EXCEEDED :: Raise ( msg );
-
-  case EXCEPTION_DATATYPE_MISALIGNMENT:
-
-   Standard_ProgramError :: Raise ( msg );
-
-  case EXCEPTION_ILLEGAL_INSTRUCTION:
-
-   OSD_Exception_ILLEGAL_INSTRUCTION :: Raise ( msg );
-
-  case EXCEPTION_IN_PAGE_ERROR:
-
-   OSD_Exception_IN_PAGE_ERROR :: Raise ( msg );
-
-  case EXCEPTION_INT_DIVIDE_BY_ZERO:
-
-   Standard_DivideByZero :: Raise ( msg );
-
-  case EXCEPTION_INT_OVERFLOW:
-
-   OSD_Exception_INT_OVERFLOW :: Raise ( msg );
-
-  case EXCEPTION_INVALID_DISPOSITION:
-
-   OSD_Exception_INVALID_DISPOSITION :: Raise ( msg );
-
-  case EXCEPTION_NONCONTINUABLE_EXCEPTION:
-
-   OSD_Exception_NONCONTINUABLE_EXCEPTION :: Raise ( msg );
-
-  case EXCEPTION_PRIV_INSTRUCTION:
-
-   OSD_Exception_PRIV_INSTRUCTION :: Raise ( msg );
-
-  case EXCEPTION_STACK_OVERFLOW:
-
-   OSD_Exception_STACK_OVERFLOW :: Raise ( msg );
-    
-  case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-       Standard_DivideByZero :: Raise ( msg );
-  case EXCEPTION_FLT_STACK_CHECK:
-  case EXCEPTION_FLT_OVERFLOW:
-       Standard_Overflow :: Raise ( msg );
-  case EXCEPTION_FLT_UNDERFLOW:
-       Standard_Underflow :: Raise ( msg );
-  case EXCEPTION_FLT_INVALID_OPERATION:
-  case EXCEPTION_FLT_DENORMAL_OPERAND:
-  case EXCEPTION_FLT_INEXACT_RESULT:
-  case STATUS_FLOAT_MULTIPLE_TRAPS:
-  case STATUS_FLOAT_MULTIPLE_FAULTS:
-       Standard_NumericError :: Raise ( msg );
-  default:
-    break;
- }  // end switch
-
- return EXCEPTION_EXECUTE_HANDLER;
-
+  switch (dwCode)
+  {
+    case EXCEPTION_ACCESS_VIOLATION:
+      OSD_Exception_ACCESS_VIOLATION::Raise (msg);
+      break;
+    case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+      OSD_Exception_ARRAY_BOUNDS_EXCEEDED::Raise (msg);
+      break;
+    case EXCEPTION_DATATYPE_MISALIGNMENT:
+      Standard_ProgramError::Raise (msg);
+      break;
+    case EXCEPTION_ILLEGAL_INSTRUCTION:
+      OSD_Exception_ILLEGAL_INSTRUCTION::Raise (msg);
+      break;
+    case EXCEPTION_IN_PAGE_ERROR:
+      OSD_Exception_IN_PAGE_ERROR::Raise (msg);
+      break;
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
+      Standard_DivideByZero::Raise (msg);
+      break;
+    case EXCEPTION_INT_OVERFLOW:
+      OSD_Exception_INT_OVERFLOW::Raise (msg);
+      break;
+    case EXCEPTION_INVALID_DISPOSITION:
+      OSD_Exception_INVALID_DISPOSITION::Raise (msg);
+      break;
+    case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+      OSD_Exception_NONCONTINUABLE_EXCEPTION::Raise (msg);
+      break;
+    case EXCEPTION_PRIV_INSTRUCTION:
+      OSD_Exception_PRIV_INSTRUCTION::Raise (msg);
+      break;
+    case EXCEPTION_STACK_OVERFLOW:
+      OSD_Exception_STACK_OVERFLOW::Raise (msg);
+      break;
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+      Standard_DivideByZero::Raise (msg);
+      break;
+    case EXCEPTION_FLT_STACK_CHECK:
+    case EXCEPTION_FLT_OVERFLOW:
+      Standard_Overflow::Raise (msg);
+      break;
+    case EXCEPTION_FLT_UNDERFLOW:
+      Standard_Underflow::Raise (msg);
+      break;
+    case EXCEPTION_FLT_INVALID_OPERATION:
+    case EXCEPTION_FLT_DENORMAL_OPERAND:
+    case EXCEPTION_FLT_INEXACT_RESULT:
+    case STATUS_FLOAT_MULTIPLE_TRAPS:
+    case STATUS_FLOAT_MULTIPLE_FAULTS:
+      Standard_NumericError::Raise (msg);
+      break;
+    default:
+      break;
+  }  // end switch
+  return EXCEPTION_EXECUTE_HANDLER;
 }  // end _osd_raise
 
 //============================================================================
@@ -677,34 +639,6 @@ LONG _osd_debug ( void ) {
 #undef __leave
 #endif
 
-//============================================================================
-//==== _debug_break 
-//============================================================================
-
-void _debug_break ( Standard_PCharacter msg ) {
-
- OSD_Environment    env ( "CSF_DEBUG_MODE" );
- Standard_Character buff[ 2048 ];
-
- env.Value ();
-
- if (  env.Failed ()  ) return;
-
- lstrcpy ( buff, msg );
- lstrcat (  buff, _TEXT( "\nExit to debugger ?" )  );
-
- if (  MessageBox (
-        NULL, buff, _TEXT( "DEBUG" ), MB_SYSTEMMODAL | MB_ICONQUESTION | MB_YESNO
-       ) == IDYES
- ) {
- 
-  _osd_debug ();
-  DebugBreak ();
- 
- }  // end if
-
-}  // end _debug_break
-
 // Must be there for compatibility with UNIX system code ----------------------
 
 //void OSD::Handler(const OSD_Signals aSig,
@@ -718,26 +652,3 @@ void OSD::SegvHandler(const OSD_Signals aSig,
                       const Standard_Address scp){}
 
 #endif // WNT
-
-
-//=======================================================================
-//function : UseSETranslator
-//purpose  : Defines whether to use _se_translator_function or
-//           SetUnhandledExceptionFilter and signal to catch system exceptions
-//=======================================================================
-
-void OSD::UseSETranslator( const Standard_Boolean
-#ifdef _MSC_VER
-                          useSE
-#endif
-                          )
-{
-#ifdef _MSC_VER
-  fSETranslator = useSE;
-#endif
-}
-
-Standard_Boolean OSD::UseSETranslator()
-{
-  return fSETranslator;
-}
