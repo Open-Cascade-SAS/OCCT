@@ -37,6 +37,7 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Mutex.hxx>
+#include <Precision.hxx>
 
 #define  POLES    (poles->Array1())
 #define  KNOTS    (knots->Array1())
@@ -826,4 +827,57 @@ void Geom_BSplineCurve::Resolution(const Standard_Real Tolerance3D,
     maxderivinvok = 1;
   }
   UTolerance = Tolerance3D * maxderivinv;
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Geom_BSplineCurve::IsEqual(const Handle(Geom_BSplineCurve)& theOther,
+                                            const Standard_Real thePreci) const
+{
+  if(  knots.IsNull() || poles.IsNull() || mults.IsNull() )
+    return Standard_False;
+  if( deg != theOther->Degree())
+    return Standard_False;
+  if( knots->Length() != theOther->NbKnots() ||
+    poles->Length() !=  theOther->NbPoles())
+    return Standard_False;
+
+  Standard_Integer i = 1;
+   for( i = 1 ; i <= poles->Length(); i++ )
+  {
+    const gp_Pnt& aPole1 = poles->Value(i);
+    const gp_Pnt& aPole2 =theOther->Pole(i);
+    if( fabs( aPole1.X() - aPole2.X() ) > thePreci ||
+      fabs( aPole1.Y() - aPole2.Y() ) > thePreci ||
+      fabs( aPole1.Z() - aPole2.Z() ) > thePreci )
+      return Standard_False;
+  }
+
+  for( ; i <= knots->Length(); i++ )
+  {
+    if( fabs(knots->Value(i) - theOther->Knot(i)) > Precision::Parametric(thePreci) )
+      return Standard_False;
+  }
+  
+  for( i = 1 ; i <= mults->Length(); i++ )
+  {
+    if( mults->Value(i) != theOther->Multiplicity(i) )
+      return Standard_False;
+  }
+
+  if( rational != theOther->IsRational())
+    return Standard_False;
+
+  if(!rational)
+    return Standard_True;
+
+  for( i = 1 ; i <= weights->Length(); i++ )
+  {
+    if( fabs( Standard_Real(weights->Value(i) - theOther->Weight(i))) > Epsilon(weights->Value(i)) )
+      return Standard_False;
+  }
+  return Standard_True;
 }

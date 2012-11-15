@@ -992,6 +992,9 @@ is
     is static private;
 	---Purpose : updates the cache and validates it
 
+  IsEqual(me; theOther : BSplineCurve from Geom; 
+  thePreci : Real from Standard  ) returns Boolean;
+    ---Purpose : Comapare two Bspline curve on identity;
   
 	
 
