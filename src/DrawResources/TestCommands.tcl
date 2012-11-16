@@ -1872,6 +1872,7 @@ proc _check_file_format {file} {
 proc load_data_file {file format shape} {
     switch $format {
     BREP { uplevel restore $file $shape }
+    DRAW { uplevel restore $file $shape }
     IGES { pload XSDRAW; uplevel igesbrep $file $shape * }
     STEP { pload XSDRAW; uplevel stepread $file __a *; uplevel renamevar __a_1 $shape }
     STL  { pload XSDRAW; uplevel readstl $shape $file }
