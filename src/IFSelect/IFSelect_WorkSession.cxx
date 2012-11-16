@@ -2822,7 +2822,7 @@ void IFSelect_WorkSession::QueryCheckList (const Interface_CheckIterator& chl)
 {
   if (!IsLoaded()) return;
   Standard_Integer i,nb = themodel->NbEntities();
-  thecheckana = TCollection_AsciiString (' ',nb+1);
+  thecheckana = TCollection_AsciiString (nb+1,' ');
   for (chl.Start(); chl.More(); chl.Next()) {
     Standard_Integer num = chl.Number();
     const Handle(Interface_Check) ach = chl.Value();

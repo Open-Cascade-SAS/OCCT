@@ -1619,35 +1619,6 @@ Standard_Integer CutEdge (const TopoDS_Edge& E,
   if (CT2d->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Circle)) &&
       ( Abs(f-l) >= M_PI) ) {
     return 0;
-    //---------------------------
-    // Cut closed circle.
-    //---------------------------
-    Standard_Real m = (f + l)*0.5;
-//  Modified by Sergey KHROMOV - Wed Mar  6 17:37:28 2002 Begin
-    gp_Pnt        P = aC->Value(m);
-
-    VL = BRepLib_MakeVertex(P);
-    B.UpdateVertex(VL, aTol);
-//  Modified by Sergey KHROMOV - Wed Mar  6 17:37:30 2002 End
-    TopoDS_Shape aLocalShape = E.EmptyCopied();
-    TopoDS_Edge FE = TopoDS::Edge(aLocalShape);  
-    TopoDS_Edge LE = TopoDS::Edge(aLocalShape);  
-//    TopoDS_Edge FE = TopoDS::Edge(E.EmptyCopied());    
-//    TopoDS_Edge LE = TopoDS::Edge(E.EmptyCopied());
-    FE.Orientation(TopAbs_FORWARD);
-    LE.Orientation(TopAbs_FORWARD);
-    B.Add  (FE,V1);
-    B.Add  (FE,VL.Oriented(TopAbs_REVERSED));
-    B.Range(FE, f, m);    
-    B.Add  (LE,V2);
-    B.Add  (LE,VL.Oriented(TopAbs_FORWARD));
-    B.Range(LE, m, l);
-    Cuts.Append(FE.Oriented(E.Orientation()));
-    Cuts.Append(LE.Oriented(E.Orientation()));
-    //--------
-    // Return.
-    //--------
-    return 2;
   }
 
   //-------------------------

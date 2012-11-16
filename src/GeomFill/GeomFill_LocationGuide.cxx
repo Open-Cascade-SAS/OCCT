@@ -743,7 +743,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 
   if (rotation) {  
     return Standard_False;
-    
+ /*   
 #ifdef DEB
     Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
 #else
@@ -862,7 +862,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	myStatus = GeomFill_ImpossibleContact;
 	return Standard_False;
       }
-
+*/
     }//if_rotation
   
 

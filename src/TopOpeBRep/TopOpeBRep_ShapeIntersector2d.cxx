@@ -258,7 +258,7 @@ void TopOpeBRep_ShapeIntersector2d::FindFFIntersection()
   myFFDone = Standard_False;
 //  myFFSameDomain = Standard_False;
   
-  while ( MoreFFCouple() ) {
+  if ( MoreFFCouple() ) {
     
     // The two candidate intersecting GeomShapes GS1,GS2 and their types t1,t2
     const TopoDS_Shape& GS1 = myFaceScanner.Current();
@@ -277,8 +277,6 @@ void TopOpeBRep_ShapeIntersector2d::FindFFIntersection()
     BS.Box(GS1);
     BS.Box(GS2);
     myFFDone = Standard_True;
-    break;
-    NextFFCouple();
   }
   
   SetIntersectionDone();

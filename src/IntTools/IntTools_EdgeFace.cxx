@@ -898,10 +898,10 @@ void IntTools_EdgeFace::CheckData()
       aCommonPrt.SetVertexParameter1(tm);
       aCommonPrt.SetRange1 (af1, al1);
     }
-    return 0;
+	 return 0;
   }
-
   //
+  /*
   dt=al1-af1;
   if (dt<1.e-5) {
     gp_Pnt aPF, aPL;
@@ -940,6 +940,7 @@ void IntTools_EdgeFace::CheckData()
       aCommonPrt.SetType(TopAbs_EDGE);
     }
   }
+  */
   return 0;
 }
 

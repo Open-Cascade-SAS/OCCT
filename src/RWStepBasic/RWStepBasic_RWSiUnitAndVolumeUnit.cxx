@@ -49,19 +49,29 @@ void RWStepBasic_RWSiUnitAndVolumeUnit::ReadStep(const Handle(StepData_StepReade
     if (data->ParamType(num,1) == Interface_ParamEnum) {
       Standard_CString text = data->ParamCValue(num,1);
       hasAprefix = reader.DecodePrefix(aPrefix,text);
-      if(!hasAprefix)
-	ach->AddFail("Enumeration si_prefix has not an allowed value");
+      if(!hasAprefix){
+	      ach->AddFail("Enumeration si_prefix has not an allowed value");
+        return;
+      }
     }
-    else ach->AddFail("Parameter #2 (prefix) is not an enumeration");
+    else{
+      ach->AddFail("Parameter #2 (prefix) is not an enumeration");
+      return;
+    }
   }
      
   StepBasic_SiUnitName aName;
   if (data->ParamType(num,2) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num,2);
-    if(!reader.DecodeName(aName,text))
+    if(!reader.DecodeName(aName,text)){
       ach->AddFail("Enumeration si_unit_name has not an allowed value");
+      return;
+    }
   }
-  else ach->AddFail("Parameter #3 (name) is not an enumeration");
+  else{
+    ach->AddFail("Parameter #3 (name) is not an enumeration");
+    return;
+  }
   
   data->NamedForComplex("VOLUME_UNIT",num0,num,ach);
   if (!data->CheckNbParams(num,0,ach,"volume_unit")) return;
