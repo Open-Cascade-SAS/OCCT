@@ -22,8 +22,8 @@
 // and is surrounded by #ifdef in MS VC++ 7.1 headers.
 // Thus to use it we need to define appropriate macro saying that we wil
 // run on Windows NT 4.0 at least
-#if defined(WNT) && ! defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0400
+#if ((defined(_WIN32) || defined(__WIN32__)) && !defined(_WIN32_WINNT))
+  #define _WIN32_WINNT 0x0400
 #endif
 
 #include <Standard_Mutex.hxx>
@@ -35,10 +35,14 @@
 
 Standard_Mutex::Standard_Mutex () 
 {
-#ifdef WNT
-  InitializeCriticalSection( &myMutex );
+#if (defined(_WIN32) || defined(__WIN32__))
+  InitializeCriticalSection (&myMutex);
 #else
-  pthread_mutex_init( &myMutex, 0 );
+  pthread_mutexattr_t anAttr;
+  pthread_mutexattr_init (&anAttr);
+  pthread_mutexattr_settype (&anAttr, PTHREAD_MUTEX_RECURSIVE);
+  pthread_mutex_init (&myMutex, &anAttr);
+  pthread_mutexattr_destroy (&anAttr);
 #endif
 }
 
@@ -48,10 +52,10 @@ Standard_Mutex::Standard_Mutex ()
 
 Standard_Mutex::~Standard_Mutex () 
 {
-#ifdef WNT
-  DeleteCriticalSection( &myMutex );
+#if (defined(_WIN32) || defined(__WIN32__))
+  DeleteCriticalSection (&myMutex);
 #else
-  pthread_mutex_destroy( &myMutex );
+  pthread_mutex_destroy (&myMutex);
 #endif
 }
 
@@ -61,10 +65,10 @@ Standard_Mutex::~Standard_Mutex ()
 
 void Standard_Mutex::Lock ()
 {
-#ifdef WNT
-  EnterCriticalSection( &myMutex );
+#if (defined(_WIN32) || defined(__WIN32__))
+  EnterCriticalSection (&myMutex);
 #else
-  pthread_mutex_lock( &myMutex );
+  pthread_mutex_lock (&myMutex);
 #endif
 }
 
@@ -74,10 +78,10 @@ void Standard_Mutex::Lock ()
 
 Standard_Boolean Standard_Mutex::TryLock ()
 {
-#ifdef WNT
-  return ( TryEnterCriticalSection( &myMutex ) != 0 );
+#if (defined(_WIN32) || defined(__WIN32__))
+  return (TryEnterCriticalSection (&myMutex) != 0);
 #else
-  return ( pthread_mutex_trylock( &myMutex ) != EBUSY );
+  return (pthread_mutex_trylock (&myMutex) != EBUSY);
 #endif
 }
 

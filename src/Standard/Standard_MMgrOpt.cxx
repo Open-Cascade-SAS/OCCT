@@ -394,7 +394,7 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
       // and lock the specific mutex used to protect access to small blocks pools;
       // note that this is done by sentry class so as to ensure unlocking in case of 
       // possible exception that may be thrown from AllocMemory()
-      Standard_Mutex::SentryNested aSentry ( myMutexPools, myReentrant );
+      Standard_Mutex::Sentry aSentry (myReentrant ? &myMutexPools : NULL); 
 
       // check for availability of requested space in the current pool
       Standard_Size *aBlock = myNextAddr;
@@ -533,7 +533,7 @@ void Standard_MMgrOpt::Free(Standard_Address& theStorage)
 Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )//isDeleted)
 {
   // Lock access to critical data by mutex
-  Standard_Mutex::SentryNested aSentry (myMutex, myReentrant);
+  Standard_Mutex::Sentry aSentry (myReentrant ? &myMutex : NULL);
 
   // TODO: implement support for isDeleted = True
   
@@ -553,7 +553,7 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )//isDeleted)
   }
 
   // Lock access to critical data by mutex
-  Standard_Mutex::SentryNested aSentry1 ( myMutexPools, myReentrant );
+  Standard_Mutex::Sentry aSentry1 (myReentrant ? &myMutexPools : NULL);
 
   // release memory pools containing no busy memory;
   // for that for each pool count the summary size of blocks
@@ -696,7 +696,7 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )//isDeleted)
 void Standard_MMgrOpt::FreePools()
 {
   // Lock access to critical data by mutex
-  Standard_Mutex::SentryNested aSentry ( myMutexPools, myReentrant );
+  Standard_Mutex::Sentry aSentry (myReentrant ? &myMutexPools : NULL);
     
   // last pool is remembered in myAllocList
   Standard_Size * aFree = myAllocList;

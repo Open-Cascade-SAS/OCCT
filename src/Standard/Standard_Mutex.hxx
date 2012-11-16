@@ -25,13 +25,13 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_ErrorHandlerCallback.hxx>
 
-#ifdef WNT
-#include <windows.h>
+#if (defined(_WIN32) || defined(__WIN32__))
+  #include <windows.h>
 #else
-#include <pthread.h>
-#include <sys/errno.h>
-#include <unistd.h>
-#include <time.h>
+  #include <pthread.h>
+  #include <sys/errno.h>
+  #include <unistd.h>
+  #include <time.h>
 #endif
 
 /** 
@@ -85,92 +85,56 @@ public:
 
     //! Constructor - initializes the sentry object by reference to a
     //! mutex (which must be initialized) and locks the mutex immediately
-    Sentry (Standard_Mutex &theMutex)
-      : myMutex(theMutex)
+    Sentry (Standard_Mutex& theMutex)
+    : myMutex (&theMutex)
     {
-      myMutex.Lock();
-      myMutex.RegisterCallback();
+      Lock();
     }
     
+    //! Constructor - initializes the sentry object by pointer to a
+    //! mutex and locks the mutex if its pointer is not NULL
+    Sentry (Standard_Mutex* theMutex)
+    : myMutex (theMutex)
+    {
+      if (myMutex != NULL)
+      {
+        Lock();
+      }
+    }
     //! Destructor - unlocks the mutex if already locked.
-    ~Sentry () { 
-      myMutex.UnregisterCallback();
-      myMutex.Unlock(); 
+    ~Sentry()
+    {
+      if (myMutex != NULL)
+      {
+        Unlock();
+      }
     }
 
-
   private:
+
+    //! Lock the mutex
+    void Lock()
+    {
+      myMutex->Lock();
+      myMutex->RegisterCallback();
+    }
+
+    //! Unlock the mutex
+    void Unlock()
+    {
+      myMutex->UnregisterCallback();
+      myMutex->Unlock();
+    }
+
     //! This method should not be called (prohibited).
     Sentry (const Sentry &);
     //! This method should not be called (prohibited).
     Sentry& operator = (const Sentry &);
 
   private:
-    Standard_Mutex &myMutex;
+    Standard_Mutex* myMutex;
   };
-  
-  /**
-    * @brief Advanced Sentry class providing convenient interface to 
-    *        manipulate a mutex from one thread.
-    * 
-    * As compared with simple Sentry class, provides possibility to 
-    * lock and unlock mutex at any moment, and perform nested lock/unlock 
-    * actions (using lock counter). However all calls must be from within
-    * the same thread; this is to be ensured by the code using this class.
-    */
-  class SentryNested
-  {
-  public:
-
-    //! Constructor - initializes the sentry object by reference to a
-    //! mutex (which must be initialized). Locks the mutex immediately
-    //! unless Standard_False is given as second argument.
-    SentryNested (Standard_Mutex &theMutex, Standard_Boolean doLock = Standard_True)
-      : myMutex(theMutex), nbLocked(0)
-    {
-      if ( doLock ) Lock();
-    }
-    
-    //! Destructor - unlocks the mutex if already locked.
-    ~SentryNested () 
-    { 
-      if ( nbLocked >0 ) { 
-	nbLocked = 1; 
-	Unlock(); 
-      } 
-    }
-    
-    //! Lock the mutex
-    void Lock () { 
-      if ( ! nbLocked ) {
-	myMutex.Lock(); 
-	myMutex.RegisterCallback();
-      }
-      nbLocked++; 
-    }
-    
-    //! Unlock the mutex
-    void Unlock () { 
-      if ( nbLocked == 1 ) {
-	myMutex.UnregisterCallback();
-	myMutex.Unlock(); 
-      }
-      nbLocked--; 
-    }
-    
-  private:
-    //! This method should not be called (prohibited).
-    SentryNested (const SentryNested &);
-    //! This method should not be called (prohibited).
-    SentryNested& operator = (const SentryNested &);
-
-  private:
-    Standard_Mutex &myMutex;
-    Standard_Boolean nbLocked; //!< Note that we do not protect this field from 
-                               //!< concurrent access, as it should always be accessed
-                               //!< from within one thread, i.e. synchronously
-  };
-  
+   
 public:
   
   //! Constructor: creates a mutex object and initializes it.
@@ -204,7 +168,7 @@ private:
   Standard_Mutex& operator = (const Standard_Mutex &);
   
 private:
-#ifdef WNT
+#if (defined(_WIN32) || defined(__WIN32__))
   CRITICAL_SECTION myMutex;
 #else
   pthread_mutex_t myMutex;
@@ -215,10 +179,10 @@ private:
 // just a shortcut to system function
 inline void Standard_Mutex::Unlock ()
 {
-#ifdef WNT
-  LeaveCriticalSection( &myMutex );
+#if (defined(_WIN32) || defined(__WIN32__))
+  LeaveCriticalSection (&myMutex);
 #else
-  pthread_mutex_unlock( &myMutex );
+  pthread_mutex_unlock (&myMutex);
 #endif
 }
 
