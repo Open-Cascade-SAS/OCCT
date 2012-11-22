@@ -14,6 +14,8 @@
 *.pxx       eol=lf
 *.cdl       eol=lf
 *.edl       eol=lf
+*.yacc      eol=lf
+*.lex       eol=lf
 *.mm        eol=lf
 *.el        eol=lf
 *.sh        eol=lf
