@@ -433,34 +433,35 @@ void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLength
 //purpose  : 
 //=======================================================================
 
-inline static TCollection_AsciiString getSiName(StepBasic_SiUnitName theName,
-                                                StepBasic_SiPrefix thePrefix)
+inline static TCollection_AsciiString getSiName(const Handle(StepBasic_SiUnit)& theUnit)
 {
  
   TCollection_AsciiString aName;
-  switch (thePrefix) {
-    case StepBasic_spExa:   aName += "exa"; break;
-    case StepBasic_spPeta: aName += "peta"; break;
-    case StepBasic_spTera: aName += "tera"; break;
-    case StepBasic_spGiga: aName += "giga"; break;
-    case StepBasic_spMega:  aName += "mega"; break;
-    case StepBasic_spHecto: aName += "hecto"; break;
-    case StepBasic_spDeca:  aName += "deca"; break;
-    case StepBasic_spDeci:  aName += "deci"; break;
-	
-    case StepBasic_spPico:  aName += "pico"; break;
-    case StepBasic_spFemto: aName += "femto"; break;
-    case StepBasic_spAtto:  aName += "atto"; break;
-    
-    case StepBasic_spKilo : aName += "kilo"; break;
-    case StepBasic_spCenti :aName += "centi"; break;
-    case StepBasic_spMilli :aName += "milli"; break;
-    case StepBasic_spMicro :aName += "micro"; break;
-    case StepBasic_spNano :aName += "nano"; break;
-    default: break;
+  if (theUnit->HasPrefix()) {
+    switch (theUnit->Prefix()) {
+      case StepBasic_spExa:   aName += "exa"; break;
+      case StepBasic_spPeta: aName += "peta"; break;
+      case StepBasic_spTera: aName += "tera"; break;
+      case StepBasic_spGiga: aName += "giga"; break;
+      case StepBasic_spMega:  aName += "mega"; break;
+      case StepBasic_spHecto: aName += "hecto"; break;
+      case StepBasic_spDeca:  aName += "deca"; break;
+      case StepBasic_spDeci:  aName += "deci"; break;
+      
+      case StepBasic_spPico:  aName += "pico"; break;
+      case StepBasic_spFemto: aName += "femto"; break;
+      case StepBasic_spAtto:  aName += "atto"; break;
+      
+      case StepBasic_spKilo : aName += "kilo"; break;
+      case StepBasic_spCenti :aName += "centi"; break;
+      case StepBasic_spMilli :aName += "milli"; break;
+      case StepBasic_spMicro :aName += "micro"; break;
+      case StepBasic_spNano :aName += "nano"; break;
+      default: break;
     };
+  }
   
-  switch(theName) {
+  switch(theUnit->Name()) {
     case StepBasic_sunMetre : aName += "metre"; break;
     case StepBasic_sunRadian : aName += "radian"; break;
     case StepBasic_sunSteradian : aName += "steradian"; break; 
@@ -540,7 +541,7 @@ Standard_Boolean STEPControl_Reader::findUnits(
          continue;
       anUnitFact = (!aSiUnit->HasPrefix()  ? 
                     1. : STEPConstruct_UnitContext::ConvertSiPrefix(aSiUnit->Prefix()));
-      aName = getSiName(aSiUnit->Name(), aSiUnit->Prefix());
+      aName = getSiName(aSiUnit);
       
            
     }
