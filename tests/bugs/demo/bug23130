@@ -1,0 +1,66 @@
+puts "============"
+puts "OCC23130"
+puts "============"
+puts ""
+###########################################################################
+# command "maxtolerance" doesn't work on Windows
+###########################################################################
+
+box b 100 100 100
+
+set info [maxtolerance b]
+
+regexp {nbFaces:+([-0-9.+eE]+)} $info full nbF
+regexp {nbEdges:+([-0-9.+eE]+)} $info full nbE
+regexp {nbVtx:+([-0-9.+eE]+)} $info full nbV
+
+regexp {Face +: +Min +([-0-9.+eE]+) +Max +([-0-9.+eE]+) } $info full minF maxF 
+regexp {Edge +: +Min +([-0-9.+eE]+) +Max +([-0-9.+eE]+) } $info full minE maxE 
+regexp {Vertex +: +Min +([-0-9.+eE]+) +Max +([-0-9.+eE]+) } $info full minV maxV 
+
+puts "nbF=${nbF}"
+puts "nbE=${nbE}"
+puts "nbV=${nbV}"
+
+puts "minF=${minF}"
+puts "maxF=${maxF}"
+
+puts "minE=${minE}"
+puts "maxE=${maxE}"
+
+puts "minV=${minV}"
+puts "maxV=${maxV}"
+
+if { ${nbF} != 6} {
+  puts "Error: bad value of nbFaces"
+}
+#
+if { ${nbE} != 12} {
+  puts "Error: bad value of nbEdges"
+}
+#
+if { ${nbV} != 8} {
+  puts "Error: bad value of nbVtx"
+}
+
+set goodTol 1.00000e-07
+set tol 1.00000e-07
+
+if { [expr (abs (${minF} - ${goodTol}) )] > ${tol} } {
+  puts "Error: bad value of minF"
+}
+if { [expr (abs (${maxF} - ${goodTol}) )] > ${tol} } {
+  puts "Error: bad value of maxF"
+}
+if { [expr (abs (${minE} - ${goodTol}) )] > ${tol} } {
+  puts "Error: bad value of minE"
+}
+if { [expr (abs (${maxE} - ${goodTol}) )] > ${tol} } {
+  puts "Error: bad value of maxE"
+}
+if { [expr (abs (${minV} - ${goodTol}) )] > ${tol} } {
+  puts "Error: bad value of minV"
+}
+if { [expr (abs (${maxV} - ${goodTol}) )] > ${tol} } {
+  puts "Error: bad value of maxV"
+}

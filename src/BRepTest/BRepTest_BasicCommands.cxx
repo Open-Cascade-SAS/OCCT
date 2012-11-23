@@ -58,12 +58,6 @@
 #include <Draw_Marker3D.hxx>
 #include <Draw_MarkerShape.hxx>
 
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <BRep_Tool.hxx>
-#include <TopTools_ListOfShape.hxx>
-
 #include <stdio.h>
 
 Standard_IMPORT Draw_Viewer dout;
@@ -545,45 +539,49 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
   Standard_Integer nbF,nbE,nbV;
   TMF=TME=TMV=-RealLast();
   TmF=TmE=TmV=RealLast();
-  nbF=nbE=nbV=0;
+  
+  TopTools_MapOfShape mapS;
+  mapS.Clear();
 
-  TopExp_Explorer ExF;
-  for(ExF.Init(TheShape,TopAbs_FACE);
-      ExF.More();
-      ExF.Next()) { 
-    TopoDS_Face Face=TopoDS::Face(ExF.Current());
+  for(TopExp_Explorer ex(TheShape,TopAbs_FACE);
+      ex.More();
+      ex.Next()) { 
+    TopoDS_Face Face=TopoDS::Face(ex.Current());
     T=BRep_Tool::Tolerance(Face);
     if(T>TMF) TMF=T;
     if(T<TmF) TmF=T;
-    nbF++;
+    mapS.Add(Face);
   }
-  TopExp_Explorer ExE;
-  for(ExE.Init(TheShape,TopAbs_EDGE);
-      ExE.More();
-      ExE.Next()) { 
-    TopoDS_Edge Edge=TopoDS::Edge(ExE.Current());
+  
+  nbF = mapS.Extent();
+  mapS.Clear();
+  
+  for(TopExp_Explorer ex(TheShape,TopAbs_EDGE);
+      ex.More();
+      ex.Next()) { 
+    TopoDS_Edge Edge=TopoDS::Edge(ex.Current());
     T=BRep_Tool::Tolerance(Edge);
     if(T>TME) TME=T;
     if(T<TmE) TmE=T;
-    nbE++;
+    mapS.Add(Edge);
   }
-  TopExp_Explorer ExV;
-  for(ExV.Init(TheShape,TopAbs_VERTEX);
-      ExV.More();
-      ExV.Next()) { 
-    TopoDS_Vertex Vertex=TopoDS::Vertex(ExV.Current());
+
+  nbE = mapS.Extent();
+  mapS.Clear();
+
+  for(TopExp_Explorer ex(TheShape,TopAbs_VERTEX);
+      ex.More();
+      ex.Next()) { 
+    TopoDS_Vertex Vertex=TopoDS::Vertex(ex.Current());
     T=BRep_Tool::Tolerance(Vertex);
     if(T>TMV) TMV=T;
     if(T<TmV) TmV=T;
-    nbV++;
+    mapS.Add(Vertex);
   }
- 
-//    printf("\n## Tolerances sur le shape %s  (nbFaces:%3d  nbEdges:%3d nbVtx:%3d)\n",a[1],nbF,nbE,nbV);
-//    if(TmF<=TMF) printf("\n    Face   : Min %+5.8e    Max  %+5.8e \n ",TmF,TMF);
-//    if(TmE<=TME) printf("\n    Edge   : Min %+5.8e    Max  %+5.8e \n ",TmE,TME);
-//    if(TmV<=TMV) printf("\n    Vertex : Min %+5.8e    Max  %+5.8e \n\n ",TmV,TMV);
 
-#ifndef WNT
+  nbV = mapS.Extent();
+
+//#ifndef WNT
   Standard_SStream sss;
   sss << "\n## Tolerances on the shape " << a[1] << "  (nbFaces:" << nbF
       << "  nbEdges:" << nbE << " nbVtx:" << nbV << ")\n" ;
@@ -593,8 +591,8 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
   if(TmE<=TME) sss << "\n    Edge   : Min " << setw(8) << TmE <<"    Max  " << setw(8) << TME << " \n ";
   if(TmV<=TMV) sss << "\n    Vertex : Min " << setw(8) << TmV <<"    Max  " << setw(8) << TMV << " \n ";
   theCommands << sss;
-#endif
-  return(0);
+  //#endif*/
+  return 0;
 }
 
 
