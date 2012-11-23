@@ -24,7 +24,7 @@
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Builder.hxx>
 #include <TopoDSToStep_Tool.hxx>
-#include <BRepTools.hxx>
+#include <BRepClass3d.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -89,7 +89,7 @@ TopoDSToStep_MakeManifoldSolidBrep::
   TopoDSToStep_MakeManifoldSolidBrep(const TopoDS_Solid& aSolid,
 				     const Handle(Transfer_FinderProcess)& FP)
 {
-  TopoDS_Shell aOuterShell = BRepTools::OuterShell(aSolid);
+  TopoDS_Shell aOuterShell = BRepClass3d::OuterShell(aSolid);
   if (!aOuterShell.IsNull()) {
 
     theManifoldSolidBrep = MakeManifoldSolidBrep(aOuterShell, FP);

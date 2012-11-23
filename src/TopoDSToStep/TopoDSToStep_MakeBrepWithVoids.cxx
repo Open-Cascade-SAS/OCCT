@@ -33,7 +33,7 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
-#include <BRepTools.hxx>
+#include <BRepClass3d.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
@@ -63,7 +63,7 @@ TopoDSToStep_MakeBrepWithVoids::
   Handle(StepShape_OrientedClosedShell)           aOCShell;
   Handle(StepShape_HArray1OfOrientedClosedShell)  aVoids;
 
-  aOutShell = BRepTools::OuterShell(aSolid);
+  aOutShell = BRepClass3d::OuterShell(aSolid);
 
   TopoDSToStep_Builder StepB;
   TopoDSToStep_Tool    aTool;

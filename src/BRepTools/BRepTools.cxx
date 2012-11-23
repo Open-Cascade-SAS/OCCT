@@ -586,22 +586,6 @@ TopoDS_Wire  BRepTools::OuterWire(const TopoDS_Face& F)
   return Wres;
 }
 
-
-//=======================================================================
-//function : OuterShell
-//purpose  : 
-//=======================================================================
-
-TopoDS_Shell  BRepTools::OuterShell(const TopoDS_Solid& S)
-{
-  TopExp_Explorer its(S,TopAbs_SHELL);
-  if (its.More())
-    return TopoDS::Shell(its.Current());
-  else
-    return TopoDS_Shell();
-}
-
-
 //=======================================================================
 //function : Map3DEdges
 //purpose  : 

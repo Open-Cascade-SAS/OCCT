@@ -53,9 +53,6 @@ package BRepTools
 	--          * OuterWire : A method to find the outer wire of a
 	--          face.
 	--          
-	--          * OuterShell : A method to find the outer shell of
-	--          a solid.
-	--          
 	--          * Map3DEdges : A method to map all the 3D Edges of
 	--          a Shape.
 	--          
@@ -233,10 +230,6 @@ is
     OuterWire(F : Face from TopoDS) returns Wire from TopoDS;
 	---Purpose: Returns the outer most wire of <F>. Returns a Null
 	--          wire if <F> has no wires.
-    
-    OuterShell(S : Solid from TopoDS) returns Shell from TopoDS;
-	---Purpose: Returns the outer most shell of <S>. Returns a Null
-	--          wire if <S> has no shells.
     
     Map3DEdges(S    : Shape from TopoDS;
     	       M    : in out IndexedMapOfShape from TopTools);

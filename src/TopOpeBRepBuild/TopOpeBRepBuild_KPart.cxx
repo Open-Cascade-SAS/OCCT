@@ -37,6 +37,7 @@
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
+#include <BRepClass3d.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>
@@ -738,11 +739,11 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
 //modified by NIZHNY-MKK  Fri May 19 16:47:23 2000.END
       sol1 = TopoDS::Solid(exsol1.Current());
       ChangeMerged(sol1,myState1);
-      outsha1 = BRepTools::OuterShell(sol1);
+      outsha1 = BRepClass3d::OuterShell(sol1);
       
       sol2 = TopoDS::Solid(exsol2.Current());
       ChangeMerged(sol2,myState2);
-      outsha2 = BRepTools::OuterShell(sol2);
+      outsha2 = BRepClass3d::OuterShell(sol2);
       
       TopAbs_State stsol1 = KPclasSS(outsha1,sol2);
       TopAbs_State stsol2 = KPclasSS(outsha2,sol1);
@@ -1909,8 +1910,8 @@ static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
   TopoDS_Shell outsha;
   Standard_Integer icla;
   TopoDS_Solid othersol;
-  TopoDS_Shell outsha1 = BRepTools::OuterShell(sol1);
-  TopoDS_Shell outsha2 = BRepTools::OuterShell(sol2);
+  TopoDS_Shell outsha1 = BRepClass3d::OuterShell(sol1);
+  TopoDS_Shell outsha2 = BRepClass3d::OuterShell(sol2);
 
   
   TopoDS_Solid newsol;
@@ -2057,9 +2058,9 @@ static Standard_Boolean disjPerformFuse(const TopTools_IndexedMapOfShape& theMap
 	continue;
       }
       sol2 = TopoDS::Solid(localshape2);
-      outsha2 = BRepTools::OuterShell(sol2);
+      outsha2 = BRepClass3d::OuterShell(sol2);
       
-      outsha1 = BRepTools::OuterShell(acurrentsolid);
+      outsha1 = BRepClass3d::OuterShell(acurrentsolid);
       TopAbs_State stsol1 = aShapeClassifier.StateShapeShape(outsha1,Snull,sol2);
       TopAbs_State stsol2 = aShapeClassifier.StateShapeShape(outsha2,Snull,acurrentsolid);
       Standard_Integer ires=RESUNDEF, icla1=SHEUNDEF, icla2=SHEUNDEF;
@@ -2114,7 +2115,7 @@ static Standard_Boolean disjPerformCommon(const TopTools_IndexedMapOfShape& theM
     if(localshape1.ShapeType()!=TopAbs_SOLID)
       return Standard_False;    
     sol1 = TopoDS::Solid(localshape1);
-    outsha1 = BRepTools::OuterShell(sol1);
+    outsha1 = BRepClass3d::OuterShell(sol1);
 
     for(Standard_Integer j=1; j<=aMapOfSeparatedSolid2.Extent(); j++) {
       const TopoDS_Shape& localshape2 = aMapOfSeparatedSolid2(j);
@@ -2122,7 +2123,7 @@ static Standard_Boolean disjPerformCommon(const TopTools_IndexedMapOfShape& theM
 	return Standard_False;
       
       sol2 = TopoDS::Solid(localshape2);
-      outsha2 = BRepTools::OuterShell(sol2);
+      outsha2 = BRepClass3d::OuterShell(sol2);
       TopAbs_State stsol1 = aShapeClassifier.StateShapeShape(outsha1,Snull,sol2);
       TopAbs_State stsol2 = aShapeClassifier.StateShapeShape(outsha2,Snull,sol1);
       Standard_Integer ires=RESUNDEF, icla1=SHEUNDEF, icla2=SHEUNDEF;
@@ -2201,8 +2202,8 @@ static Standard_Boolean disjPerformCut(const TopTools_IndexedMapOfShape& theMapO
       if(localshape2.ShapeType()!=TopAbs_SOLID)
 	return Standard_False;      
       sol2 = TopoDS::Solid(localshape2);
-      outsha2 = BRepTools::OuterShell(sol2);
-      outsha1 = BRepTools::OuterShell(acurrentsolid);
+      outsha2 = BRepClass3d::OuterShell(sol2);
+      outsha1 = BRepClass3d::OuterShell(acurrentsolid);
       TopAbs_State stsol1 = aShapeClassifier.StateShapeShape(outsha1,Snull,sol2);
       TopAbs_State stsol2 = aShapeClassifier.StateShapeShape(outsha2,Snull,acurrentsolid);
       Standard_Integer ires=RESUNDEF, icla1=SHEUNDEF, icla2=SHEUNDEF;

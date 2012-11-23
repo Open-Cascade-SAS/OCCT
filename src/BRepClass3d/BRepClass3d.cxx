@@ -61,8 +61,25 @@ TopoDS_Shell BRepClass3d::OuterShell(const TopoDS_Solid& aSolid)
   aTol=1.e-7;
   bFound=Standard_False;
   //
-  aIt.Initialize(aSolid);
-  for (; aIt.More(); aIt.Next()) { 
+  // if solid has one shell, it will return, without checking orientation 
+  Standard_Integer aShellCounter = 0;
+  for (aIt.Initialize(aSolid); aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aSx=aIt.Value();
+    if (aSx.ShapeType()==TopAbs_SHELL) {
+      aShell=*((TopoDS_Shell*)&aSx);
+      aShellCounter++;
+      if (aShellCounter >= 2)
+        break;
+    }
+  }
+  if (aShellCounter == 0) {
+    return aDummy;
+  }
+  else if (aShellCounter == 1) {
+    return aShell;
+  }
+  //
+  for (aIt.Initialize(aSolid); aIt.More(); aIt.Next()) { 
     const TopoDS_Shape& aSx=aIt.Value();
     if (aSx.ShapeType()==TopAbs_SHELL) {
       aShell=*((TopoDS_Shell*)&aSx);

@@ -26,7 +26,7 @@
 #include <TopoDSToStep_Builder.hxx>
 #include <TopoDSToStep_Tool.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <BRepTools.hxx>
+#include <BRepClass3d.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -85,7 +85,7 @@ TopoDSToStep_MakeFacetedBrep::
   done = Standard_False;
 
   // Looking for the Outer Shell
-  TopoDS_Shell aOuterShell = BRepTools::OuterShell(aSolid);
+  TopoDS_Shell aOuterShell = BRepClass3d::OuterShell(aSolid);
 
   if (!aOuterShell.IsNull()) {
     if (aOuterShell.Closed()) {
