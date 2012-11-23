@@ -760,6 +760,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
   Handle(TopTools_HSequenceOfShape) RepItemSeq = new TopTools_HSequenceOfShape();
   
   // PTV 16.09.2002 OCC725 separate shape from solo vertices.
+  Standard_Boolean isOnlyVertices = Standard_False;
   if (theShape.ShapeType() == TopAbs_COMPOUND) {
     Standard_Integer countVrtx = 0;
     Standard_Integer countSh = 0;
@@ -784,11 +785,10 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
       theShape = aNewShape;
     if (countVrtx)
       RepItemSeq->Append(aCompOfVrtx);
+    if (countSh == 0) 
+      isOnlyVertices = Standard_True;
   } 
-  else if (theShape.ShapeType() == TopAbs_VERTEX)
-    RepItemSeq->Append(theShape); // to translate one vertex
   
-
   if (theShape.ShapeType() == TopAbs_COMPOUND) {
     TopExp_Explorer SolidExp, ShellExp, FaceExp;
     if (mymode != STEPControl_GeometricCurveSet) {
@@ -807,7 +807,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
       }
     }
     else {
-      RepItemSeq->Append(theShape); //:j1
+      if (!isOnlyVertices) 
+        RepItemSeq->Append(theShape); //:j1
     }
     if(mymode == STEPControl_AsIs) {
       TopExp_Explorer WireExp, EdgeExp;
