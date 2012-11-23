@@ -1,0 +1,58 @@
+puts "============"
+puts "OCC23120"
+puts "============"
+puts ""
+###########################################################################
+# Transform persistence is not restored
+###########################################################################
+
+pload QAcommands
+
+box b1 10 20 30
+box b2 10 20 30
+ttranslate b2 50 50 0
+vinit
+vdisplay b1
+# This line breaks normal rendering
+# of all subsequently displayed presentations
+vsettransmode b1 32 0 0 0 0 0
+# This box is drawn incorrectly due to the bug
+vdisplay b2
+vfit
+vsetdispmode 1
+vzoom 0.5
+vpan 100 0
+
+set x1 300
+set y1 130
+if { [string compare $tcl_platform(os) "Windows NT"] == 0 }  {
+  puts "STATION IS WNT"
+  set r_check 0.77646999999999999
+  set g_check 0.54901900000000003
+  set b_check 0.090195999999999998
+} else {
+  set r_check 0.78039199999999997
+  set g_check 0.55294100000000002
+  set b_check 0.094117000000000006
+}
+
+set color1 [ QAGetPixelColor ${x1} ${y1} ]
+
+regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
+regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
+regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
+
+puts "rd1=$rd1"
+puts "gr1=$gr1"
+puts "bl1=$bl1"
+
+set status1 0
+if { $rd1 != $r_check || $gr1 != $g_check || $bl1 != $b_check } {
+    puts "Error : colors are not equal"
+    puts "Error : Transform persistence is not restored"
+} else {
+    puts "OK : colors are equal"
+    puts "OK : Transform persistence is restored"
+}
+
+set 3dviewer 2

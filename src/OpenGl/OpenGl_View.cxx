@@ -495,13 +495,13 @@ const TEL_TRANSFORM_PERSISTENCE * OpenGl_View::BeginTransformPersistence (const 
 {
   const TEL_TRANSFORM_PERSISTENCE *TransPers_old = myTransPers;
 
+  myTransPers = ATransPers;
+
   if ( ATransPers->mode == 0 )
   {
     EndTransformPersistence();
     return TransPers_old;
   }
-
-  myTransPers = ATransPers;
 
   GLint viewport[4];
   glGetIntegerv (GL_VIEWPORT, viewport);
