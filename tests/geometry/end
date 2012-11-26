@@ -98,7 +98,7 @@ if { [string compare "$viewer" "v2d"] == 0 } {
 } else {
     puts "Error : wrong value of variable viewer"
 }
-xwd $imagedir/${test_image}.gif
+xwd $imagedir/${test_image}.png
 
 # to end a test script
 puts "TEST COMPLETED"
