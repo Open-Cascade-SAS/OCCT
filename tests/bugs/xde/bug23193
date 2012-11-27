@@ -17,7 +17,7 @@ if { [string compare $os "windows"] == 0 } {
     set aFile /tmp/bug23193_sample.stl
 }
 
-catch {exec rm -f ${aFile}}
+file delete ${aFile}
 if { [file exists ${aFile}] } {
    puts "Error : There is old ${aFile} file"
 }
