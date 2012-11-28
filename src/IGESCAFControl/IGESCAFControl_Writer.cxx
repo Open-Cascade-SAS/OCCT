@@ -88,35 +88,13 @@ Standard_Boolean IGESCAFControl_Writer::Transfer (const Handle(TDocStd_Document)
 {  
   // translate free top-level shapes of the DECAF document
   Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( doc->Main() );
-  TDF_LabelSequence shapes;
-  STool->GetFreeShapes ( shapes );
-  if ( shapes.Length() <=0 ) return Standard_False;
-  for ( Standard_Integer i=1; i <= shapes.Length(); i++ ) {
-    TopoDS_Shape shape = STool->GetShape ( shapes.Value(i) );
-    if ( ! shape.IsNull() ) 
-      AddShape ( shape );
-//      IGESControl_Writer::Transfer ( shape );
-  }
-  
-  // write colors
-  if ( GetColorMode() )
-    WriteAttributes ( doc );
+  if ( STool.IsNull() ) return Standard_False;
 
-  // write layers
-  if ( GetLayerMode() )
-    WriteLayers ( doc );
+  TDF_LabelSequence labels;
+  STool->GetFreeShapes ( labels );
+  return Transfer (labels);
+}  
   
-  // write names
-  if ( GetNameMode() )
-    WriteNames( doc );
-  
-  // refresh graph
-//  WS()->ComputeGraph ( Standard_True );
-  ComputeModel();
-  
-  return Standard_True;
-}
-
 //=======================================================================
 //function : Perform
 //purpose  : 
@@ -142,17 +120,47 @@ Standard_Boolean IGESCAFControl_Writer::Perform (const Handle(TDocStd_Document) 
 }
   
 //=======================================================================
+//function : Transfer
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean IGESCAFControl_Writer::Transfer (const TDF_LabelSequence& labels)
+{  
+  if ( labels.Length() <=0 ) return Standard_False;
+  for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
+    TopoDS_Shape shape = XCAFDoc_ShapeTool::GetShape ( labels.Value(i) );
+    if ( ! shape.IsNull() ) 
+      AddShape ( shape );
+//      IGESControl_Writer::Transfer ( shape );
+  }
+  
+  // write colors
+  if ( GetColorMode() )
+    WriteAttributes ( labels );
+
+  // write layers
+  if ( GetLayerMode() )
+    WriteLayers ( labels );
+  
+  // write names
+  if ( GetNameMode() )
+    WriteNames( labels );
+  
+  // refresh graph
+//  WS()->ComputeGraph ( Standard_True );
+  ComputeModel();
+  
+  return Standard_True;
+}
+
+//=======================================================================
 //function : WriteAttributes
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Writer::WriteAttributes (const Handle(TDocStd_Document)& Doc) 
+Standard_Boolean IGESCAFControl_Writer::WriteAttributes (const TDF_LabelSequence& labels) 
 {
-  // Iterate on shapes in the document
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( Doc->Main() );
-
-  TDF_LabelSequence labels;
-  STool->GetFreeShapes ( labels );
+  // Iterate on labels
   if ( labels.Length() <=0 ) return Standard_False;
   for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
     TDF_Label L = labels.Value(i);
@@ -166,7 +174,7 @@ Standard_Boolean IGESCAFControl_Writer::WriteAttributes (const Handle(TDocStd_Do
     // get a target shape and try to find corresponding context
     // (all the colors set under that label will be put into that context)
     TopoDS_Shape S;
-    if ( ! STool->GetShape ( L, S ) ) continue;
+    if ( ! XCAFDoc_ShapeTool::GetShape ( L, S ) ) continue;
         
     // iterate on subshapes and create IGES styles 
     XCAFPrs_DataMapOfStyleTransient colors;
@@ -341,11 +349,12 @@ static void MakeLayers (const Handle(Transfer_FinderProcess) &FP,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Writer::WriteLayers (const Handle(TDocStd_Document)& Doc) 
+Standard_Boolean IGESCAFControl_Writer::WriteLayers (const TDF_LabelSequence& labels) 
 {
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( Doc->Main() );
+  if ( labels.Length() <=0 ) return Standard_False;
+  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( labels(1) );
   if ( STool.IsNull() ) return Standard_False;
-  Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool( Doc->Main() );
+  Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool( labels(1) );
   if ( LTool.IsNull() ) return Standard_False;
   
   Standard_Integer globalIntName = 0;
@@ -395,9 +404,10 @@ Standard_Boolean IGESCAFControl_Writer::WriteLayers (const Handle(TDocStd_Docume
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Writer::WriteNames (const Handle(TDocStd_Document)& Doc) 
+Standard_Boolean IGESCAFControl_Writer::WriteNames (const TDF_LabelSequence& labels) 
 {
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( Doc->Main() );
+  if ( labels.Length() <=0 ) return Standard_False;
+  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool( labels(1) );
   if ( STool.IsNull() ) return Standard_False;
   TDF_ChildIterator labelShIt(STool->BaseLabel() , Standard_True);
   for (; labelShIt.More(); labelShIt.Next() ) {

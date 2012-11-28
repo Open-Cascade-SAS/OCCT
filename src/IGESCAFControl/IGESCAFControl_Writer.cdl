@@ -46,6 +46,7 @@ uses
     MapOfShape from TopTools,
     WorkSession from XSControl,
     Document from TDocStd,
+    LabelSequence from TDF,
     Style from XCAFPrs,
     DataMapOfShapeStyle from XCAFPrs,
     DataMapOfStyleTransient from XCAFPrs
@@ -76,7 +77,12 @@ is
 
     ---Scope: Internal methods
 
-    WriteAttributes (me: in out; doc: Document from TDocStd) 
+    Transfer (me : in out; labels: LabelSequence from TDF)
+    returns Boolean is protected;
+    	---Purpose: Transfers labels to a IGES model
+    	--          Returns True if translation is OK
+
+    WriteAttributes (me: in out; labels: LabelSequence from TDF) 
     returns Boolean is protected;
     	---Purpose: Reads colors from DECAF document and assigns them
 	--          to corresponding IGES entities
@@ -88,12 +94,12 @@ is
 	---Purpose: Recursively iterates on subshapes and assigns colors
 	--          to faces and edges (if set)
 
-    WriteLayers (me: in out; doc: Document from TDocStd) 
+    WriteLayers (me: in out; labels: LabelSequence from TDF) 
     returns Boolean is protected;
     	---Purpose: Reads layers from DECAF document and assigns them
 	--          to corresponding IGES entities
 
-    WriteNames (me: in out; doc: Document from TDocStd)
+    WriteNames (me: in out; labels: LabelSequence from TDF)
     returns Boolean is protected;
     	---Purpose: Recursivile iterates on subshapes and assign names 
     	--          to IGES entity
