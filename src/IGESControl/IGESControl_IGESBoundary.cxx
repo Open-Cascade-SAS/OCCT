@@ -120,6 +120,37 @@ IGESControl_IGESBoundary::IGESControl_IGESBoundary(const IGESToBRep_CurveAndSurf
 }
 
 //=======================================================================
+//function : Connect
+//purpose  : Connects theNextWD to theWD using theSAW. 
+//           First, connects edges of theNextWD by calling ShapeFix_Wire::FixConnected(). This
+//           is necessary when theNextWD was built using multiple curves from the Composite
+//           Curve (as ShapeExtend_WireData::Wire() would otherwise produce a wrong 
+//           disconnected TopoDS_Wire).
+//           FixConnected() will only update the edges resulting from different composite
+//           curve segments. Edges resulting from splitting C0 curve will already be
+//           connected.
+//=======================================================================
+static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
+                                 const Handle(ShapeExtend_WireData)& theWD,
+                                 const Handle(ShapeExtend_WireData)& theNextWD,
+                                 const Standard_Boolean theConnectNextWD,
+                                 const Standard_Real theMaxTol,
+                                 Standard_Real& theDistMin,
+                                 Standard_Boolean& theReverseWD,
+                                 Standard_Boolean& theReverseNextWD)
+{
+    theSAW->Load (theWD);
+    if (theConnectNextWD) {
+      Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;
+      sfw->Load (theNextWD);
+      sfw->ClosedWireMode() = Standard_False; //internal connections are enough
+      sfw->FixConnected();
+    }
+    return ShapeAlgo::AlgoContainer()->ConnectNextWire (theSAW, theNextWD,
+      theMaxTol, theDistMin, theReverseWD, theReverseNextWD);
+}
+
+//=======================================================================
 //function : Transfer
 //purpose  : 
 //=======================================================================
@@ -372,18 +403,12 @@ IGESControl_IGESBoundary::IGESControl_IGESBoundary(const IGESToBRep_CurveAndSurf
   }
   
   if (number > 1) {
-    saw->Load (mysewd);
-    okCurve   = okCurve &&
-      ShapeAlgo::AlgoContainer()->ConnectNextWire (saw, Gsewd, maxtol,
-                                                   distmin, revsewd, revnextsewd);
-    saw3d->Load (mysewd3d);
-    okCurve3d = okCurve3d &&
-      ShapeAlgo::AlgoContainer()->ConnectNextWire (saw3d, Gsewd3d, maxtol,
-                                                   distmin, revsewd, revnextsewd);
-    saw2d->Load (mysewd2d);
-    okCurve2d = okCurve2d &&
-      ShapeAlgo::AlgoContainer()->ConnectNextWire (saw2d, Gsewd2d, maxtol,
-                                                   distmin, revsewd, revnextsewd);
+    okCurve   = okCurve && Connect (saw, mysewd, Gsewd, (len3d > 1) || (len2d > 1), maxtol,
+      distmin, revsewd, revnextsewd);
+    okCurve3d = okCurve3d && Connect (saw3d, mysewd3d, Gsewd3d, len3d > 1, maxtol,
+      distmin, revsewd, revnextsewd);
+    okCurve2d = okCurve2d && Connect (saw2d, mysewd2d, Gsewd2d, len2d > 1, maxtol,
+      distmin, revsewd, revnextsewd);
   }
   else {
     mysewd   = Gsewd;
