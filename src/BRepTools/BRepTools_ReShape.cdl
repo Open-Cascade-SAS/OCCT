@@ -125,8 +125,8 @@ is
 
 fields
 
-    myNMap: DataMapOfShapeShape from TopTools;  -- normal case
-    myRMap: DataMapOfShapeShape from TopTools;  -- REVERSED
+    myNMap: DataMapOfShapeShape from TopTools is protected;  -- normal case
+    myRMap: DataMapOfShapeShape from TopTools is protected;  -- REVERSED
     myStatus: Integer is protected; -- error status
     myConsiderLocation    : Boolean;
     myConsiderOrientation : Boolean;
