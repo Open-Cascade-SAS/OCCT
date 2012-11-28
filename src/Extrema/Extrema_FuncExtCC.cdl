@@ -111,6 +111,8 @@ fields
     myV     : Real;        
     myP1    : Pnt;   -- current point C1(U)
     myP2    : Pnt;   -- current point C2(U)
+    myDu    : Vec;   -- current D1 C1(U)
+    myDv    : Vec;   -- current D1 C2(V)
 
     mySqDist: SequenceOfReal from TColStd;
     myPoints: SeqPOnC;
