@@ -434,9 +434,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPr
   // dispatch (sub)shapes by their styles
   XCAFPrs_DataMapOfStyleShape items;
   XCAFPrs_Style DefStyle;
-  Quantity_Color White ( Quantity_NOC_WHITE );
-  DefStyle.SetColorSurf ( White );
-  DefStyle.SetColorCurv ( White );
+  DefaultStyle (DefStyle);
   XCAFPrs::DispatchStyles ( shape, settings, items, DefStyle );
 #ifdef DEB
   //cout << "Dispatch done" << endl;
@@ -474,4 +472,15 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPr
 #endif
   
   aPrs->ReCompute(); // for hidden line recomputation if necessary...
+}
+
+//=======================================================================
+//function : DefaultStyle
+//purpose  : DefaultStyle() can be redefined by subclasses in order to set custom default style
+//=======================================================================
+void XCAFPrs_AISObject::DefaultStyle (XCAFPrs_Style& aStyle) const
+{
+  static const Quantity_Color White ( Quantity_NOC_WHITE );
+  aStyle.SetColorSurf ( White );
+  aStyle.SetColorCurv ( White );
 }

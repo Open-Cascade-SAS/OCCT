@@ -64,8 +64,15 @@ is
              aPresentationManager : PresentationManager3d from PrsMgr;
              aPresentation        : mutable Presentation from Prs3d;
     	     aMode                : Integer from Standard = 0) 
-    is redefined virtual private;
+    is redefined virtual protected;
     	---Purpose: Redefined method to compute presentation
+
+    DefaultStyle (me;
+                  aStyle: out Style from XCAFPrs)
+    is virtual protected;
+    ---Purpose: Fills out a default style object which is used when styles are
+    --          not explicitly defined in the document.
+    --          By default, the style uses white color for curves and surfaces.
 
 fields
     myLabel : Label from TDF;
