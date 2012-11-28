@@ -118,15 +118,30 @@ is
     	---Purpose: Remove link from label <L> and Layer <aLayer>.
     	--          returns FALSE if no such layer.
 
+    UnSetOneLayer (me; L: Label from TDF;
+		     aLayerL: Label from TDF) returns Boolean;
+    	---Purpose: Remove link from label <L> and Layer <aLayerL>.
+    	--          returns FALSE if <aLayerL> is not a layer label.
+
     IsSet (me; L: Label from TDF;
 	       aLayer : ExtendedString from TCollection) returns Boolean;
     	---Purpose: Returns True if label <L> has a Layer assosiated 
     	--          with the <aLayer>.
     
+    IsSet (me; L: Label from TDF;
+	       aLayerL: Label from TDF) returns Boolean;
+    	---Purpose: Returns True if label <L> has a Layer assosiated 
+    	--          with the <aLayerL> label.
+    
     GetLayers (me: mutable; L: Label from TDF; 
     	    	    	   aLayerS : out HSequenceOfExtendedString from TColStd)
      returns Boolean;
     	---Purpose: Return sequence of strings <aLayerS> that assosiated with label <L>.
+    
+    GetLayers (me: mutable; L: Label from TDF; 
+    	    	    	   aLayerLS : out LabelSequence from TDF)
+     returns Boolean;
+    	---Purpose: Return sequence of labels <aLayerSL> that assosiated with label <L>.
     
     GetLayers (me: mutable; L: Label from TDF) returns HSequenceOfExtendedString from TColStd;
     	---Purpose: Return sequence of strings that assosiated with label <L>.
@@ -174,14 +189,28 @@ is
     	---Purpose: Remove link between shape <Sh> and layer <aLayer>.
 	--          returns FALSE if no such layer <aLayer> or shape <Sh>.
 
+    UnSetOneLayer (me: mutable; Sh: Shape from TopoDS;
+			   aLayerL: Label from TDF) returns Boolean;
+    	---Purpose: Remove link between shape <Sh> and layer <aLayerL>.
+	--          returns FALSE if no such layer <aLayerL> or shape <Sh>.
+
     IsSet (me: mutable; Sh: Shape from TopoDS;
     	    	    	aLayer : ExtendedString from TCollection) returns Boolean;
     	---Purpose: Returns True if shape <Sh> has a Layer assosiated 
     	--          with the <aLayer>.
     
+    IsSet (me: mutable; Sh: Shape from TopoDS;
+    	    	    	aLayerL : Label from TDF) returns Boolean;
+    	---Purpose: Returns True if shape <Sh> has a Layer assosiated 
+    	--          with the <aLayerL>.
+    
     GetLayers (me: mutable; Sh: Shape from TopoDS;
     	    	    	   aLayerS : out HSequenceOfExtendedString from TColStd) returns Boolean;
     	---Purpose: Return sequence of strings <aLayerS> that assosiated with shape <Sh>.
+    
+    GetLayers (me: mutable; Sh: Shape from TopoDS;
+    	    	    	   aLayerLS : out LabelSequence from TDF) returns Boolean;
+    	---Purpose: Return sequence of labels <aLayerLS> that assosiated with shape <Sh>.
     
     GetLayers (me: mutable; Sh: Shape from TopoDS) returns HSequenceOfExtendedString from TColStd;
     	---Purpose: Return sequence of strings that assosiated with shape <Sh>.
