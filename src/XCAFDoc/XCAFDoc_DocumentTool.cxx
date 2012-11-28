@@ -280,3 +280,23 @@ Standard_Boolean XCAFDoc_DocumentTool::IsXCAFDocument(const  Handle(TDocStd_Docu
 {
   return RootLDocLMap.IsBound(D->Main().Root());
 }
+
+
+//=======================================================================
+//function : Destroy
+//purpose  : Removal of the document from RootLDocLMap is necessary. Otherwise
+//           there remains orphan labels and upon creation of a new
+//           label with XCAFDoc_DocumentTool attribute that
+//           orphan is attempted to get used (when hashes match) causing
+//           an exception when trying to access its data framework.
+//=======================================================================
+
+void XCAFDoc_DocumentTool::Destroy()
+{
+  TDF_Label DocL = Label();
+  if ( ! DocL.IsNull() ) {
+    TDF_Label RootL = DocL.Root();
+    if ( RootLDocLMap.IsBound( RootL ) ) 
+      RootLDocLMap.UnBind( RootL );
+  }
+}

@@ -114,4 +114,9 @@ is
     Paste (me; into : mutable Attribute from TDF;
 	       RT   : mutable RelocationTable from TDF);    
     
+    Destroy (me: mutable) is virtual;
+    ---C++    : alias ~
+    ---Purpose: Unregisters the document holding this attribute from an
+    --          internal global map of XDE documents.
+
 end DocumentTool;
