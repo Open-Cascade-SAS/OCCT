@@ -18,7 +18,6 @@
 // and conditions governing the rights and limitations under the License.
 
 
-
 #include <QABugs.hxx>
 
 #include <Draw_Interpretor.hxx>
@@ -38,6 +37,15 @@
 #include <Precision.hxx>
 
 #include <PCollection_HAsciiString.hxx>
+
+#include <cstdio>
+#include <cmath>
+#include <iostream>
+#include <OSD_PerfMeter.hxx>
+#include <OSD_Timer.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepAlgo_Cut.hxx>
 
 //static Standard_Integer OCC230 (Draw_Interpretor& /*di*/, Standard_Integer /*argc*/, const char ** /*argv*/)
 static Standard_Integer OCC230 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -97,12 +105,56 @@ static Standard_Integer OCC23361 (Draw_Interpretor& di, Standard_Integer /*argc*
   return 0;
 }
 
+static Standard_Integer OCC23237 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char** /*argv*/)
+{
+  OSD_PerfMeter aPM("TestMeter",0);
+  OSD_Timer aTM;
+  
+  // run some operation in cycle for about 2 seconds to have good values of times to compare
+  int count = 0;
+  printf("OSD_PerfMeter test.\nRunning Boolean operation on solids in loop.\n");
+  for (; aTM.ElapsedTime() < 2.; count++)
+  {
+    aPM.Start();
+    aTM.Start();
+
+    // do some operation that will take considerable time compared with time or starting / stopping timers
+    BRepPrimAPI_MakeBox aBox (10., 10., 10.);
+    BRepPrimAPI_MakeSphere aSphere (10.);
+    BRepAlgo_Cut (aBox.Shape(), aSphere.Shape());
+
+    aTM.Stop();
+    aPM.Stop();
+  }
+ 
+  int aNbEnters = 0;
+  Standard_Real aPerfMeter_CPUtime = 0., aTimer_ElapsedTime = aTM.ElapsedTime();
+
+  perf_get_meter("TestMeter", &aNbEnters, &aPerfMeter_CPUtime);
+
+  Standard_Real aTimeDiff = (fabs(aTimer_ElapsedTime - aPerfMeter_CPUtime) / aTimer_ElapsedTime);
+
+  printf("\nMeasurement results (%d cycles):\n", count);
+  printf("\nOSD_PerfMeter CPU time: %lf\nOSD_Timer elapsed time: %lf\n", aPerfMeter_CPUtime, aTimer_ElapsedTime);
+  printf("Time delta is: %.3lf %%\n", aTimeDiff * 100);
+
+  if (aTimeDiff > 0.2)
+    di << "OCC23237: Error: too much difference between CPU and elapsed times";
+  else if (aNbEnters != count)
+    di << "OCC23237: Error: counter reported by PerfMeter (" << aNbEnters << ") does not correspond to actual number of cycles";
+  else
+    di << "OCC23237: OK";
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   char *group = "QABugs";
 
   theCommands.Add ("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
   theCommands.Add ("OCC142", "OCC142", __FILE__, OCC142, group);
   theCommands.Add ("OCC23361", "OCC23361", __FILE__, OCC23361, group);
+  theCommands.Add("OCC23237", "OCC23237", __FILE__, OCC23237, group); 
 
   return;
 }

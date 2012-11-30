@@ -23,7 +23,7 @@
 #define QANCollection_PerfArrays_HeaderFile
 
 #define PERF_ENABLE_METERS
-#include <DebugTools.h>
+#include <OSD_PerfMeter.hxx>
 ////////////////////////////////#include <Perf_Meter.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
@@ -108,7 +108,7 @@ void CompArray1 (const Standard_Integer theRep,
       ////////////////////////////////aTOper.Stop();
       PERF_STOP_METER("TCollection_Array1 operator=")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of Array2 type ==========================
@@ -195,7 +195,7 @@ void CompArray2 (const Standard_Integer theRep,
       ////////////////////////////////aTOper.Stop();
       PERF_STOP_METER("TCollection_Array2 operator=")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 

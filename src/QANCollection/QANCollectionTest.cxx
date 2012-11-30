@@ -37,8 +37,7 @@ typedef NCollection_BaseCollection<gp_Pnt> MyBaseCollPnt;
 #endif
 
 #define PERF_ENABLE_METERS
-#include <DebugTools.h>
-//////////////#include <Perf_Meter.hxx>
+#include <OSD_PerfMeter.hxx>
 
 extern Handle(NCollection_BaseAllocator) getAlloc (const int i);
 
@@ -46,6 +45,8 @@ const Standard_Integer REPEAT = 100;
 
 void createArray (TColgp_Array1OfPnt& anArrPnt)
 {
+  OSD_PerfMeter aPerfMeter("Create array");
+
   for (Standard_Integer j = 0; j < 2*REPEAT; j++) {
     PERF_START_METER("Create array")
       for (Standard_Integer i = anArrPnt.Lower(); i <= anArrPnt.Upper(); i++)
@@ -150,5 +151,5 @@ void assignSequence (MySequence& aDest, const MySequence& aSrc)
 
 void printAllMeters ()
 {
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }

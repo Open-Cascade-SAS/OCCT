@@ -15,9 +15,9 @@ OSD_WNT_BREAK.hxx
 OSD_signal.cxx
 OSD_signal_WNT.cxx
 OSD_ThreadFunction.hxx
-OSD_PThread.hxx      
+OSD_PThread.hxx
 OSD_Localizer.cxx
-OSD_PerfMeter.c
+OSD_PerfMeter.cxx
 OSD_PerfMeter.h
 OSD_PerfMeter.hxx
 OSD_MAllocHook.cxx

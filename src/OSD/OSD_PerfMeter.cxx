@@ -38,35 +38,20 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
+#include <OSD_Chronometer.hxx>
 #include <OSD_PerfMeter.h>
 
-/* ------- Definitions for Windows compiler -------- */
-#ifdef WNT
-#define STRICT
-#include <windows.h>
-typedef __int64 PERF_TIME;
-#define PICK_TIME(_utime) {     \
-  FILETIME t1, t2, ktime;       \
-  GetThreadTimes (GetCurrentThread(), &t1, &t2, &ktime, (FILETIME *)&(_utime));\
-}
-#define GET_SECONDS(_utime) (((double)(_utime))/10000000.)
-
-/* ------- POSIX Definitions  ---------------------- */
-#else
-#include <sys/times.h>
-typedef clock_t PERF_TIME;
-#define PICK_TIME(_utime) {     \
-  struct tms tmbuf;             \
-  times (&tmbuf);               \
-  (_utime) = tmbuf.tms_utime;   \
-}
-#define GET_SECONDS(_utime) (((double)(_utime))/CLOCKS_PER_SEC)
-// #define GET_SECONDS(_utime) (((double)(_utime))/CLK_TCK)
-#endif
 
 /*======================================================================
         DEFINITIONS
 ======================================================================*/
+
+typedef Standard_Real PERF_TIME;
+
+#define PICK_TIME(_utime) {     \
+  Standard_Real ktime;          \
+  OSD_Chronometer::GetThreadCPU(_utime, ktime);\
+}
 
 typedef struct {
   char*         name;           /* identifier */
@@ -80,8 +65,8 @@ typedef struct {
 static t_TimeCounter MeterTable[MAX_METERS];
 static int nb_meters = 0;
 
-static int	find_meter	 (const char * const MeterName);
-static int	_perf_init_meter (const char * const MeterName,
+static int  find_meter (const char * const MeterName);
+static int  _perf_init_meter (const char * const MeterName,
                                   const int    doFind);
 
 /*======================================================================
@@ -229,7 +214,7 @@ int perf_get_meter (const char  * const MeterName,
 
   if (ic >= 0) {
     if (nb_enter) *nb_enter = MeterTable[ic].nb_enter;
-    if (seconds)  *seconds  = GET_SECONDS(MeterTable[ic].cumul_time);
+    if (seconds)  *seconds  = MeterTable[ic].cumul_time;
   }
   return ic;
 }
@@ -258,7 +243,7 @@ void perf_print_all_meters (void)
     t_TimeCounter * const ptc = &MeterTable[i++];
 
     if (ptc && ptc->nb_enter) {
-      const double secs = GET_SECONDS(ptc->cumul_time);
+      const double secs = ptc->cumul_time;
 
       if (ptc->start_time)
         printf ("Warning : meter %s has not been stopped\n", ptc->name);
@@ -287,7 +272,7 @@ void perf_close_meter (const char * const MeterName)
     if (ptc->start_time)
       printf ("  ===> Warning : meter %s has not been stopped\n", ptc->name);
     printf ("  ===> [%s] : %d enters, %9.3f seconds\n",
-            ptc->name, ptc->nb_enter, GET_SECONDS(ptc->cumul_time));
+            ptc->name, ptc->nb_enter, ptc->cumul_time);
     ptc->cumul_time = 0;
     ptc->start_time = 0;
     ptc->nb_enter   = 0;
@@ -306,7 +291,7 @@ void perf_close_imeter (const int iMeter)
     if (ptc->start_time)
       printf ("  ===> Warning : meter %s has not been stopped\n", ptc->name);
     printf ("  ===> [%s] : %d enters, %9.3f seconds\n",
-            ptc->name, ptc->nb_enter, GET_SECONDS(ptc->cumul_time));
+            ptc->name, ptc->nb_enter, ptc->cumul_time);
     ptc->cumul_time = 0;
     ptc->start_time = 0;
     ptc->nb_enter   = 0;

@@ -22,7 +22,7 @@
 #include <QANCollection.hxx>
 #include <Draw_Interpretor.hxx>
 
-#include <DebugTools.h>
+#include <OSD_PerfMeter.hxx>
 
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>

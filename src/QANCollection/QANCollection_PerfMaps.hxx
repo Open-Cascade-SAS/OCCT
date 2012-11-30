@@ -118,7 +118,7 @@ void CompMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Map clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of DataMap type ==========================
@@ -213,7 +213,7 @@ void CompDataMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_DataMap clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of DoubleMap type ==========================
@@ -323,7 +323,7 @@ void CompDoubleMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_DoubleMap clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
   if (iFail1 || iFail2)
     cout << "Warning : N map failed " << iFail1 << " times, T map - " << 
       iFail2 << endl;
@@ -420,7 +420,7 @@ void CompIndexedMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_IndexedMap clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of IndexedDataMap type ==========================
@@ -516,7 +516,7 @@ void CompIndexedDataMap (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_IndexedDataMap clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 #endif

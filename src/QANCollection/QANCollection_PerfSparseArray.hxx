@@ -23,7 +23,7 @@
 #define QANCollection_PerfSparseArray_HeaderFile
 
 #define PERF_ENABLE_METERS
-#include <DebugTools.h>
+#include <OSD_PerfMeter.hxx>
 ////////////////////////////////#include <Perf_Meter.hxx>
 #include <NCollection_SparseArray.hxx>
 #include <NCollection_SparseArrayBase.hxx>
@@ -81,7 +81,7 @@ void CompSparseArray (const Standard_Integer theRep, const Standard_Integer theS
       
     }
 
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 #endif

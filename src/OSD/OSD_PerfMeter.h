@@ -84,62 +84,50 @@
 #define PERF_PRINT_ALL
 #endif
 
-#ifndef Standard_EXPORT
-#ifdef WNT
-#define Standard_EXPORT __declspec( dllexport )
-#else
-#define Standard_EXPORT extern
-#endif
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-Standard_EXPORT int     perf_init_meter         (const char * const MeterName);
+Standard_EXPORTEXTERNC int     perf_init_meter         (const char * const MeterName);
 /* Creates new counter (if it is absent) identified by
    MeterName and resets its cumulative value
    Returns  : iMeter if OK, -1 if alloc problem
 */
 
-Standard_EXPORT int     perf_start_meter        (const char * const MeterName);
+Standard_EXPORTEXTERNC int     perf_start_meter        (const char * const MeterName);
 /* Forces meter MeterName to begin to count by remembering
    the current data of timer.
    Creates new meter if there is no such meter
    Returns  : iMeter if OK, -1 if no such meter and cannot create a new one
 */
 
-Standard_EXPORT int     perf_start_imeter       (const int  iMeter);
+Standard_EXPORTEXTERNC int     perf_start_imeter       (const int  iMeter);
 /* Forces meter with number iMeter to begin count by remembering
    the current data of timer.
    Returns  : iMeter if OK, -1 if no such meter
 */
 
-Standard_EXPORT int     perf_stop_meter         (const char * const MeterName);
+Standard_EXPORTEXTERNC int     perf_stop_meter         (const char * const MeterName);
 /* Forces meter MeterName to stop and cumulate the time elapsed since the start
    Returns  : iMeter if OK, -1 if no such meter or it is has not been started
 */
 
-Standard_EXPORT int     perf_stop_imeter        (const int  iMeter);
+Standard_EXPORTEXTERNC int     perf_stop_imeter        (const int  iMeter);
 /* Forces meter with number iMeter to stop and cumulate the time
    elapsed since the start.
    Returns  : iMeter if OK, -1 if no such meter or it is has not been started
 */
 
-Standard_EXPORT int     perf_tick_meter         (const char * const MeterName);
+Standard_EXPORTEXTERNC int     perf_tick_meter         (const char * const MeterName);
 /* Increments the counter of meter MeterName without changing
    its state with respect to measurement of time.
    Creates new meter if there is no such meter
    Returns  : iMeter if OK, -1 if no such meter and cannot create a new one
 */
 
-Standard_EXPORT int     perf_tick_imeter        (const int  iMeter);
+Standard_EXPORTEXTERNC int     perf_tick_imeter        (const int  iMeter);
 /* Increments the counter of meter iMeter without changing
    its state with respect to measurement of time.
    Returns  : iMeter if OK, -1 if no such meter
 */
 
-Standard_EXPORT int     perf_get_meter          (const char * const MeterName,
+Standard_EXPORTEXTERNC int     perf_get_meter          (const char * const MeterName,
                                                  int        * nb_enter,
                                                  double     * seconds);
 /* Tells the time cumulated by meter MeterName and the number
@@ -148,35 +136,31 @@ Standard_EXPORT int     perf_get_meter          (const char * const MeterName,
    Returns  :      iMeter if OK, -1 if no such meter
 */
 
-Standard_EXPORT void    perf_close_meter        (const char * const MeterName);
+Standard_EXPORTEXTERNC void    perf_close_meter        (const char * const MeterName);
 /* Prints on stdout the cumulated time and the number of enters
    for the specified meter
 */
 
-Standard_EXPORT void    perf_close_imeter       (const int iMeter);
+Standard_EXPORTEXTERNC void    perf_close_imeter       (const int iMeter);
 /* Prints on stdout the cumulated time and the number of enters
    for the specified meter
 */
 
-Standard_EXPORT void    perf_print_all_meters   (void);
+Standard_EXPORTEXTERNC void    perf_print_all_meters   (void);
 /* Prints on stdout the cumulated time and the number of
    enters for each alive meter which have the number of enters > 0.
    Resets all meters
 */
 
-Standard_EXPORT void    perf_destroy_all_meters (void);
+Standard_EXPORTEXTERNC void    perf_destroy_all_meters (void);
 /* Deletes all meters and frees memory
 */
 
-extern          void    perf_print_and_destroy (void);
+Standard_EXPORTEXTERNC void    perf_print_and_destroy (void);
 /* ATTENTION !!!
    This func calls both perf_print_all_meters() and perf_destroy_all_meters()
    and is called automatically at the end of a program
    via system call atexit()
 */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

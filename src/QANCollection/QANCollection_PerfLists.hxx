@@ -97,7 +97,7 @@ void CompList (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_List clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of Queue type ==========================
@@ -182,7 +182,7 @@ void CompQueue (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Queue clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of Stack type ==========================
@@ -267,7 +267,7 @@ void CompStack (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Stack clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 
@@ -361,7 +361,7 @@ void CompSet (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Set clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 
@@ -433,7 +433,7 @@ void CompSList (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_SList clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 // ===================== Test perform of Sequence type ==========================
@@ -526,7 +526,7 @@ void CompSequence (const Standard_Integer theRep,
       ////////////////////////////////aTClea.Stop();
       PERF_STOP_METER("TCollection_Sequence clearing")
     }
-  PERF_PRINT_ALL_METERS
+  PERF_PRINT_ALL
 }
 
 #endif
