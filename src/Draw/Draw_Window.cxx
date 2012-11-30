@@ -1065,7 +1065,11 @@ Standard_Boolean Init_Appli()
   Tk_GeometryRequest(mainWindow, 200, 200);
 
   if (Draw_WindowDisplay == NULL) {
-    Draw_WindowDisplay = Tk_Display(mainWindow);
+    Draw_WindowDisplay = XOpenDisplay(NULL);
+    // Replaced Tk_Display(mainWindow) with XOpenDisplay; On Mac OS X Tk_Display
+    // returns a pointer to Display structure defined in system Tcl/Tk libraries.
+    // This structure differs from structure defined in X11 library and
+    // this caused DRAWEXE crash on startup.
   }
   if (Draw_WindowDisplay == NULL) {
     cout << "Cannot open display : "<<XDisplayName(NULL)<<endl;
