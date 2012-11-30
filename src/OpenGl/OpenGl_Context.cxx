@@ -397,10 +397,15 @@ void OpenGl_Context::readGlVersion()
   myGlVerMinor = 0;
 
   // available since OpenGL 3.0
-  GLint aMajor, aMinor;
+  GLint aMajor = 0, aMinor = 0;
   glGetIntegerv (GL_MAJOR_VERSION, &aMajor);
   glGetIntegerv (GL_MINOR_VERSION, &aMinor);
-  if (glGetError() == GL_NO_ERROR)
+  // glGetError() sometimes does not report an error here even if 
+  // GL does not know GL_MAJOR_VERSION and GL_MINOR_VERSION constants.
+  // This happens on some rendereres like e.g. Cygwin MESA.
+  // Thus checking additionally if GL has put anything to
+  // the output variables.
+  if (glGetError() == GL_NO_ERROR && aMajor != 0 && aMinor != 0)
   {
     myGlVerMajor = aMajor;
     myGlVerMinor = aMinor;
@@ -436,18 +441,18 @@ void OpenGl_Context::readGlVersion()
   aMajorStr[aMajIter] = '\0';
 
   // parse string for minor number
-  size_t aMinIter = aMajIter + 1;
+  aVerStr += aMajIter + 1;
+  size_t aMinIter = 0;
   while (aVerStr[aMinIter] >= '0' && aVerStr[aMinIter] <= '9')
   {
     ++aMinIter;
   }
-  size_t aMinLen = aMinIter - aMajIter - 1;
-  if (aMinLen == 0 || aMinLen >= sizeof(aMinorStr))
+  if (aMinIter == 0 || aMinIter >= sizeof(aMinorStr))
   {
     return;
   }
-  memcpy (aMinorStr, aVerStr, aMinLen);
-  aMinorStr[aMinLen] = '\0';
+  memcpy (aMinorStr, aVerStr, aMinIter);
+  aMinorStr[aMinIter] = '\0';
 
   // read numbers
   myGlVerMajor = atoi (aMajorStr);
@@ -548,239 +553,240 @@ void OpenGl_Context::init()
   myGlCore20 = new OpenGl_GlCore20();
   memset (myGlCore20, 0, sizeof(OpenGl_GlCore20)); // nullify whole structure
 
-  // initialize OpenGL 1.2 core functionality
-  if (IsGlGreaterEqual (1, 2))
-  {
-    if (!FindProcShort (myGlCore20, glBlendColor)
-     || !FindProcShort (myGlCore20, glBlendEquation)
-     || !FindProcShort (myGlCore20, glDrawRangeElements)
-     || !FindProcShort (myGlCore20, glTexImage3D)
-     || !FindProcShort (myGlCore20, glTexSubImage3D)
-     || !FindProcShort (myGlCore20, glCopyTexSubImage3D))
-    {
-      myGlVerMajor = 1;
-      myGlVerMinor = 1;
-    }
-  }
+  // Check if OpenGL 1.2 core functionality is actually present
+  Standard_Boolean hasGlCore12 = IsGlGreaterEqual (1, 2)
+    && FindProcShort (myGlCore20, glBlendColor)
+    && FindProcShort (myGlCore20, glBlendEquation)
+    && FindProcShort (myGlCore20, glDrawRangeElements)
+    && FindProcShort (myGlCore20, glTexImage3D)
+    && FindProcShort (myGlCore20, glTexSubImage3D)
+    && FindProcShort (myGlCore20, glCopyTexSubImage3D);
 
-  // initialize OpenGL 1.3 core functionality
-  if (IsGlGreaterEqual (1, 3))
-  {
-    if (!FindProcShort (myGlCore20, glActiveTexture)
-     || !FindProcShort (myGlCore20, glSampleCoverage)
-     || !FindProcShort (myGlCore20, glCompressedTexImage3D)
-     || !FindProcShort (myGlCore20, glCompressedTexImage2D)
-     || !FindProcShort (myGlCore20, glCompressedTexImage1D)
-     || !FindProcShort (myGlCore20, glCompressedTexSubImage3D)
-     || !FindProcShort (myGlCore20, glCompressedTexSubImage2D)
-     || !FindProcShort (myGlCore20, glCompressedTexSubImage1D)
-     || !FindProcShort (myGlCore20, glGetCompressedTexImage)
+  // Check if OpenGL 1.3 core functionality is actually present
+  Standard_Boolean hasGlCore13 = IsGlGreaterEqual (1, 3)
+    && FindProcShort (myGlCore20, glActiveTexture)
+    && FindProcShort (myGlCore20, glSampleCoverage)
+    && FindProcShort (myGlCore20, glCompressedTexImage3D)
+    && FindProcShort (myGlCore20, glCompressedTexImage2D)
+    && FindProcShort (myGlCore20, glCompressedTexImage1D)
+    && FindProcShort (myGlCore20, glCompressedTexSubImage3D)
+    && FindProcShort (myGlCore20, glCompressedTexSubImage2D)
+    && FindProcShort (myGlCore20, glCompressedTexSubImage1D)
+    && FindProcShort (myGlCore20, glGetCompressedTexImage)
      // deprecated
-     || !FindProcShort (myGlCore20, glClientActiveTexture)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1d)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1dv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1f)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1fv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1i)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1iv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1s)
-     || !FindProcShort (myGlCore20, glMultiTexCoord1sv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2d)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2dv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2f)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2fv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2i)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2iv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2s)
-     || !FindProcShort (myGlCore20, glMultiTexCoord2sv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3d)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3dv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3f)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3fv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3i)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3iv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3s)
-     || !FindProcShort (myGlCore20, glMultiTexCoord3sv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4d)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4dv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4f)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4fv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4i)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4iv)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4s)
-     || !FindProcShort (myGlCore20, glMultiTexCoord4sv)
-     || !FindProcShort (myGlCore20, glLoadTransposeMatrixf)
-     || !FindProcShort (myGlCore20, glLoadTransposeMatrixd)
-     || !FindProcShort (myGlCore20, glMultTransposeMatrixf)
-     || !FindProcShort (myGlCore20, glMultTransposeMatrixd))
-    {
-      myGlVerMajor = 1;
-      myGlVerMinor = 2;
-      core12 = myGlCore20;
-    }
-  }
+    && FindProcShort (myGlCore20, glClientActiveTexture)
+    && FindProcShort (myGlCore20, glMultiTexCoord1d)
+    && FindProcShort (myGlCore20, glMultiTexCoord1dv)
+    && FindProcShort (myGlCore20, glMultiTexCoord1f)
+    && FindProcShort (myGlCore20, glMultiTexCoord1fv)
+    && FindProcShort (myGlCore20, glMultiTexCoord1i)
+    && FindProcShort (myGlCore20, glMultiTexCoord1iv)
+    && FindProcShort (myGlCore20, glMultiTexCoord1s)
+    && FindProcShort (myGlCore20, glMultiTexCoord1sv)
+    && FindProcShort (myGlCore20, glMultiTexCoord2d)
+    && FindProcShort (myGlCore20, glMultiTexCoord2dv)
+    && FindProcShort (myGlCore20, glMultiTexCoord2f)
+    && FindProcShort (myGlCore20, glMultiTexCoord2fv)
+    && FindProcShort (myGlCore20, glMultiTexCoord2i)
+    && FindProcShort (myGlCore20, glMultiTexCoord2iv)
+    && FindProcShort (myGlCore20, glMultiTexCoord2s)
+    && FindProcShort (myGlCore20, glMultiTexCoord2sv)
+    && FindProcShort (myGlCore20, glMultiTexCoord3d)
+    && FindProcShort (myGlCore20, glMultiTexCoord3dv)
+    && FindProcShort (myGlCore20, glMultiTexCoord3f)
+    && FindProcShort (myGlCore20, glMultiTexCoord3fv)
+    && FindProcShort (myGlCore20, glMultiTexCoord3i)
+    && FindProcShort (myGlCore20, glMultiTexCoord3iv)
+    && FindProcShort (myGlCore20, glMultiTexCoord3s)
+    && FindProcShort (myGlCore20, glMultiTexCoord3sv)
+    && FindProcShort (myGlCore20, glMultiTexCoord4d)
+    && FindProcShort (myGlCore20, glMultiTexCoord4dv)
+    && FindProcShort (myGlCore20, glMultiTexCoord4f)
+    && FindProcShort (myGlCore20, glMultiTexCoord4fv)
+    && FindProcShort (myGlCore20, glMultiTexCoord4i)
+    && FindProcShort (myGlCore20, glMultiTexCoord4iv)
+    && FindProcShort (myGlCore20, glMultiTexCoord4s)
+    && FindProcShort (myGlCore20, glMultiTexCoord4sv)
+    && FindProcShort (myGlCore20, glLoadTransposeMatrixf)
+    && FindProcShort (myGlCore20, glLoadTransposeMatrixd)
+    && FindProcShort (myGlCore20, glMultTransposeMatrixf)
+    && FindProcShort (myGlCore20, glMultTransposeMatrixd);
+  
+  // Check if OpenGL 1.4 core functionality is actually present
+  Standard_Boolean hasGlCore14 = IsGlGreaterEqual (1, 4)
+    && FindProcShort (myGlCore20, glBlendFuncSeparate)
+    && FindProcShort (myGlCore20, glMultiDrawArrays)
+    && FindProcShort (myGlCore20, glMultiDrawElements)
+    && FindProcShort (myGlCore20, glPointParameterf)
+    && FindProcShort (myGlCore20, glPointParameterfv)
+    && FindProcShort (myGlCore20, glPointParameteri)
+    && FindProcShort (myGlCore20, glPointParameteriv);
 
-  // initialize OpenGL 1.4 core functionality
-  if (IsGlGreaterEqual (1, 4))
+  // Check if OpenGL 1.5 core functionality is actually present
+  Standard_Boolean hasGlCore15 = IsGlGreaterEqual (1, 5)
+    && FindProcShort (myGlCore20, glGenQueries)
+    && FindProcShort (myGlCore20, glDeleteQueries)
+    && FindProcShort (myGlCore20, glIsQuery)
+    && FindProcShort (myGlCore20, glBeginQuery)
+    && FindProcShort (myGlCore20, glEndQuery)
+    && FindProcShort (myGlCore20, glGetQueryiv)
+    && FindProcShort (myGlCore20, glGetQueryObjectiv)
+    && FindProcShort (myGlCore20, glGetQueryObjectuiv)
+    && FindProcShort (myGlCore20, glBindBuffer)
+    && FindProcShort (myGlCore20, glDeleteBuffers)
+    && FindProcShort (myGlCore20, glGenBuffers)
+    && FindProcShort (myGlCore20, glIsBuffer)
+    && FindProcShort (myGlCore20, glBufferData)
+    && FindProcShort (myGlCore20, glBufferSubData)
+    && FindProcShort (myGlCore20, glGetBufferSubData)
+    && FindProcShort (myGlCore20, glMapBuffer)
+    && FindProcShort (myGlCore20, glUnmapBuffer)
+    && FindProcShort (myGlCore20, glGetBufferParameteriv)
+    && FindProcShort (myGlCore20, glGetBufferPointerv);
+
+  // Check if OpenGL 2.0 core functionality is actually present
+  Standard_Boolean hasGlCore20 = IsGlGreaterEqual (2, 0)
+    && FindProcShort (myGlCore20, glBlendEquationSeparate)
+    && FindProcShort (myGlCore20, glDrawBuffers)
+    && FindProcShort (myGlCore20, glStencilOpSeparate)
+    && FindProcShort (myGlCore20, glStencilFuncSeparate)
+    && FindProcShort (myGlCore20, glStencilMaskSeparate)
+    && FindProcShort (myGlCore20, glAttachShader)
+    && FindProcShort (myGlCore20, glBindAttribLocation)
+    && FindProcShort (myGlCore20, glCompileShader)
+    && FindProcShort (myGlCore20, glCreateProgram)
+    && FindProcShort (myGlCore20, glCreateShader)
+    && FindProcShort (myGlCore20, glDeleteProgram)
+    && FindProcShort (myGlCore20, glDeleteShader)
+    && FindProcShort (myGlCore20, glDetachShader)
+    && FindProcShort (myGlCore20, glDisableVertexAttribArray)
+    && FindProcShort (myGlCore20, glEnableVertexAttribArray)
+    && FindProcShort (myGlCore20, glGetActiveAttrib)
+    && FindProcShort (myGlCore20, glGetActiveUniform)
+    && FindProcShort (myGlCore20, glGetAttachedShaders)
+    && FindProcShort (myGlCore20, glGetAttribLocation)
+    && FindProcShort (myGlCore20, glGetProgramiv)
+    && FindProcShort (myGlCore20, glGetProgramInfoLog)
+    && FindProcShort (myGlCore20, glGetShaderiv)
+    && FindProcShort (myGlCore20, glGetShaderInfoLog)
+    && FindProcShort (myGlCore20, glGetShaderSource)
+    && FindProcShort (myGlCore20, glGetUniformLocation)
+    && FindProcShort (myGlCore20, glGetUniformfv)
+    && FindProcShort (myGlCore20, glGetUniformiv)
+    && FindProcShort (myGlCore20, glGetVertexAttribdv)
+    && FindProcShort (myGlCore20, glGetVertexAttribfv)
+    && FindProcShort (myGlCore20, glGetVertexAttribiv)
+    && FindProcShort (myGlCore20, glGetVertexAttribPointerv)
+    && FindProcShort (myGlCore20, glIsProgram)
+    && FindProcShort (myGlCore20, glIsShader)
+    && FindProcShort (myGlCore20, glLinkProgram)
+    && FindProcShort (myGlCore20, glShaderSource)
+    && FindProcShort (myGlCore20, glUseProgram)
+    && FindProcShort (myGlCore20, glUniform1f)
+    && FindProcShort (myGlCore20, glUniform2f)
+    && FindProcShort (myGlCore20, glUniform3f)
+    && FindProcShort (myGlCore20, glUniform4f)
+    && FindProcShort (myGlCore20, glUniform1i)
+    && FindProcShort (myGlCore20, glUniform2i)
+    && FindProcShort (myGlCore20, glUniform3i)
+    && FindProcShort (myGlCore20, glUniform4i)
+    && FindProcShort (myGlCore20, glUniform1fv)
+    && FindProcShort (myGlCore20, glUniform2fv)
+    && FindProcShort (myGlCore20, glUniform3fv)
+    && FindProcShort (myGlCore20, glUniform4fv)
+    && FindProcShort (myGlCore20, glUniform1iv)
+    && FindProcShort (myGlCore20, glUniform2iv)
+    && FindProcShort (myGlCore20, glUniform3iv)
+    && FindProcShort (myGlCore20, glUniform4iv)
+    && FindProcShort (myGlCore20, glUniformMatrix2fv)
+    && FindProcShort (myGlCore20, glUniformMatrix3fv)
+    && FindProcShort (myGlCore20, glUniformMatrix4fv)
+    && FindProcShort (myGlCore20, glValidateProgram)
+    && FindProcShort (myGlCore20, glVertexAttrib1d)
+    && FindProcShort (myGlCore20, glVertexAttrib1dv)
+    && FindProcShort (myGlCore20, glVertexAttrib1f)
+    && FindProcShort (myGlCore20, glVertexAttrib1fv)
+    && FindProcShort (myGlCore20, glVertexAttrib1s)
+    && FindProcShort (myGlCore20, glVertexAttrib1sv)
+    && FindProcShort (myGlCore20, glVertexAttrib2d)
+    && FindProcShort (myGlCore20, glVertexAttrib2dv)
+    && FindProcShort (myGlCore20, glVertexAttrib2f)
+    && FindProcShort (myGlCore20, glVertexAttrib2fv)
+    && FindProcShort (myGlCore20, glVertexAttrib2s)
+    && FindProcShort (myGlCore20, glVertexAttrib2sv)
+    && FindProcShort (myGlCore20, glVertexAttrib3d)
+    && FindProcShort (myGlCore20, glVertexAttrib3dv)
+    && FindProcShort (myGlCore20, glVertexAttrib3f)
+    && FindProcShort (myGlCore20, glVertexAttrib3fv)
+    && FindProcShort (myGlCore20, glVertexAttrib3s)
+    && FindProcShort (myGlCore20, glVertexAttrib3sv)
+    && FindProcShort (myGlCore20, glVertexAttrib4Nbv)
+    && FindProcShort (myGlCore20, glVertexAttrib4Niv)
+    && FindProcShort (myGlCore20, glVertexAttrib4Nsv)
+    && FindProcShort (myGlCore20, glVertexAttrib4Nub)
+    && FindProcShort (myGlCore20, glVertexAttrib4Nubv)
+    && FindProcShort (myGlCore20, glVertexAttrib4Nuiv)
+    && FindProcShort (myGlCore20, glVertexAttrib4Nusv)
+    && FindProcShort (myGlCore20, glVertexAttrib4bv)
+    && FindProcShort (myGlCore20, glVertexAttrib4d)
+    && FindProcShort (myGlCore20, glVertexAttrib4dv)
+    && FindProcShort (myGlCore20, glVertexAttrib4f)
+    && FindProcShort (myGlCore20, glVertexAttrib4fv)
+    && FindProcShort (myGlCore20, glVertexAttrib4iv)
+    && FindProcShort (myGlCore20, glVertexAttrib4s)
+    && FindProcShort (myGlCore20, glVertexAttrib4sv)
+    && FindProcShort (myGlCore20, glVertexAttrib4ubv)
+    && FindProcShort (myGlCore20, glVertexAttrib4uiv)
+    && FindProcShort (myGlCore20, glVertexAttrib4usv)
+    && FindProcShort (myGlCore20, glVertexAttribPointer);
+
+  if (!hasGlCore12)
   {
-    if (!FindProcShort (myGlCore20, glBlendFuncSeparate)
-     || !FindProcShort (myGlCore20, glMultiDrawArrays)
-     || !FindProcShort (myGlCore20, glMultiDrawElements)
-     || !FindProcShort (myGlCore20, glPointParameterf)
-     || !FindProcShort (myGlCore20, glPointParameterfv)
-     || !FindProcShort (myGlCore20, glPointParameteri)
-     || !FindProcShort (myGlCore20, glPointParameteriv))
-    {
-      myGlVerMajor = 1;
-      myGlVerMinor = 3;
-      core12 = myGlCore20;
-      core13 = myGlCore20;
-    }
+    myGlVerMajor = 1;
+    myGlVerMinor = 1;
+    return;
   }
-
-  // initialize OpenGL 1.5 core functionality
-  if (IsGlGreaterEqual (1, 5))
-  {
-    if (!FindProcShort (myGlCore20, glGenQueries)
-     || !FindProcShort (myGlCore20, glDeleteQueries)
-     || !FindProcShort (myGlCore20, glIsQuery)
-     || !FindProcShort (myGlCore20, glBeginQuery)
-     || !FindProcShort (myGlCore20, glEndQuery)
-     || !FindProcShort (myGlCore20, glGetQueryiv)
-     || !FindProcShort (myGlCore20, glGetQueryObjectiv)
-     || !FindProcShort (myGlCore20, glGetQueryObjectuiv)
-     || !FindProcShort (myGlCore20, glBindBuffer)
-     || !FindProcShort (myGlCore20, glDeleteBuffers)
-     || !FindProcShort (myGlCore20, glGenBuffers)
-     || !FindProcShort (myGlCore20, glIsBuffer)
-     || !FindProcShort (myGlCore20, glBufferData)
-     || !FindProcShort (myGlCore20, glBufferSubData)
-     || !FindProcShort (myGlCore20, glGetBufferSubData)
-     || !FindProcShort (myGlCore20, glMapBuffer)
-     || !FindProcShort (myGlCore20, glUnmapBuffer)
-     || !FindProcShort (myGlCore20, glGetBufferParameteriv)
-     || !FindProcShort (myGlCore20, glGetBufferPointerv))
-    {
-      myGlVerMajor = 1;
-      myGlVerMinor = 4;
-      core12 = myGlCore20;
-      core13 = myGlCore20;
-      core14 = myGlCore20;
-    }
-  }
-
-  // initialize OpenGL 2.0 core functionality
-  if (IsGlGreaterEqual (2, 0))
-  {
-    if (!FindProcShort (myGlCore20, glBlendEquationSeparate)
-     || !FindProcShort (myGlCore20, glDrawBuffers)
-     || !FindProcShort (myGlCore20, glStencilOpSeparate)
-     || !FindProcShort (myGlCore20, glStencilFuncSeparate)
-     || !FindProcShort (myGlCore20, glStencilMaskSeparate)
-     || !FindProcShort (myGlCore20, glAttachShader)
-     || !FindProcShort (myGlCore20, glBindAttribLocation)
-     || !FindProcShort (myGlCore20, glCompileShader)
-     || !FindProcShort (myGlCore20, glCreateProgram)
-     || !FindProcShort (myGlCore20, glCreateShader)
-     || !FindProcShort (myGlCore20, glDeleteProgram)
-     || !FindProcShort (myGlCore20, glDeleteShader)
-     || !FindProcShort (myGlCore20, glDetachShader)
-     || !FindProcShort (myGlCore20, glDisableVertexAttribArray)
-     || !FindProcShort (myGlCore20, glEnableVertexAttribArray)
-     || !FindProcShort (myGlCore20, glGetActiveAttrib)
-     || !FindProcShort (myGlCore20, glGetActiveUniform)
-     || !FindProcShort (myGlCore20, glGetAttachedShaders)
-     || !FindProcShort (myGlCore20, glGetAttribLocation)
-     || !FindProcShort (myGlCore20, glGetProgramiv)
-     || !FindProcShort (myGlCore20, glGetProgramInfoLog)
-     || !FindProcShort (myGlCore20, glGetShaderiv)
-     || !FindProcShort (myGlCore20, glGetShaderInfoLog)
-     || !FindProcShort (myGlCore20, glGetShaderSource)
-     || !FindProcShort (myGlCore20, glGetUniformLocation)
-     || !FindProcShort (myGlCore20, glGetUniformfv)
-     || !FindProcShort (myGlCore20, glGetUniformiv)
-     || !FindProcShort (myGlCore20, glGetVertexAttribdv)
-     || !FindProcShort (myGlCore20, glGetVertexAttribfv)
-     || !FindProcShort (myGlCore20, glGetVertexAttribiv)
-     || !FindProcShort (myGlCore20, glGetVertexAttribPointerv)
-     || !FindProcShort (myGlCore20, glIsProgram)
-     || !FindProcShort (myGlCore20, glIsShader)
-     || !FindProcShort (myGlCore20, glLinkProgram)
-     || !FindProcShort (myGlCore20, glShaderSource)
-     || !FindProcShort (myGlCore20, glUseProgram)
-     || !FindProcShort (myGlCore20, glUniform1f)
-     || !FindProcShort (myGlCore20, glUniform2f)
-     || !FindProcShort (myGlCore20, glUniform3f)
-     || !FindProcShort (myGlCore20, glUniform4f)
-     || !FindProcShort (myGlCore20, glUniform1i)
-     || !FindProcShort (myGlCore20, glUniform2i)
-     || !FindProcShort (myGlCore20, glUniform3i)
-     || !FindProcShort (myGlCore20, glUniform4i)
-     || !FindProcShort (myGlCore20, glUniform1fv)
-     || !FindProcShort (myGlCore20, glUniform2fv)
-     || !FindProcShort (myGlCore20, glUniform3fv)
-     || !FindProcShort (myGlCore20, glUniform4fv)
-     || !FindProcShort (myGlCore20, glUniform1iv)
-     || !FindProcShort (myGlCore20, glUniform2iv)
-     || !FindProcShort (myGlCore20, glUniform3iv)
-     || !FindProcShort (myGlCore20, glUniform4iv)
-     || !FindProcShort (myGlCore20, glUniformMatrix2fv)
-     || !FindProcShort (myGlCore20, glUniformMatrix3fv)
-     || !FindProcShort (myGlCore20, glUniformMatrix4fv)
-     || !FindProcShort (myGlCore20, glValidateProgram)
-     || !FindProcShort (myGlCore20, glVertexAttrib1d)
-     || !FindProcShort (myGlCore20, glVertexAttrib1dv)
-     || !FindProcShort (myGlCore20, glVertexAttrib1f)
-     || !FindProcShort (myGlCore20, glVertexAttrib1fv)
-     || !FindProcShort (myGlCore20, glVertexAttrib1s)
-     || !FindProcShort (myGlCore20, glVertexAttrib1sv)
-     || !FindProcShort (myGlCore20, glVertexAttrib2d)
-     || !FindProcShort (myGlCore20, glVertexAttrib2dv)
-     || !FindProcShort (myGlCore20, glVertexAttrib2f)
-     || !FindProcShort (myGlCore20, glVertexAttrib2fv)
-     || !FindProcShort (myGlCore20, glVertexAttrib2s)
-     || !FindProcShort (myGlCore20, glVertexAttrib2sv)
-     || !FindProcShort (myGlCore20, glVertexAttrib3d)
-     || !FindProcShort (myGlCore20, glVertexAttrib3dv)
-     || !FindProcShort (myGlCore20, glVertexAttrib3f)
-     || !FindProcShort (myGlCore20, glVertexAttrib3fv)
-     || !FindProcShort (myGlCore20, glVertexAttrib3s)
-     || !FindProcShort (myGlCore20, glVertexAttrib3sv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Nbv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Niv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Nsv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Nub)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Nubv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Nuiv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4Nusv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4bv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4d)
-     || !FindProcShort (myGlCore20, glVertexAttrib4dv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4f)
-     || !FindProcShort (myGlCore20, glVertexAttrib4fv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4iv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4s)
-     || !FindProcShort (myGlCore20, glVertexAttrib4sv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4ubv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4uiv)
-     || !FindProcShort (myGlCore20, glVertexAttrib4usv)
-     || !FindProcShort (myGlCore20, glVertexAttribPointer))
-    {
-      myGlVerMajor = 1;
-      myGlVerMinor = 5;
-      core12 = myGlCore20;
-      core13 = myGlCore20;
-      core14 = myGlCore20;
-      core15 = myGlCore20;
-    }
-  }
-
-  if (IsGlGreaterEqual (2, 0))
+  else
   {
     core12 = myGlCore20;
+  }
+  if (!hasGlCore13)
+  {
+    myGlVerMajor = 1;
+    myGlVerMinor = 2;
+    return;
+  }
+  else
+  {
     core13 = myGlCore20;
+  }
+  if(!hasGlCore14)
+  {
+    myGlVerMajor = 1;
+    myGlVerMinor = 3;
+    return;
+  }
+  else
+  {
     core14 = myGlCore20;
+  }
+  if(!hasGlCore15)
+  {
+    myGlVerMajor = 1;
+    myGlVerMinor = 4;
+    return;
+  }
+  else
+  {
     core15 = myGlCore20;
+  }
+  if(!hasGlCore20)
+  {
+    myGlVerMajor = 1;
+    myGlVerMinor = 5;
+  }
+  else
+  {
     core20 = myGlCore20;
   }
 }
