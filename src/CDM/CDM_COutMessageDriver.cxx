@@ -48,5 +48,5 @@ void CDM_COutMessageDriver::Write (const Standard_ExtString aString)
 
   //    Output
   cout << anAsciiString << flush;
-  delete anAsciiString;
+  delete [] anAsciiString;
 }
