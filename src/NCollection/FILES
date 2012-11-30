@@ -6,6 +6,8 @@ NCollection_IncAllocator.hxx
 NCollection_IncAllocator.cxx
 NCollection_HeapAllocator.hxx
 NCollection_HeapAllocator.cxx
+NCollection_StdAllocator.hxx
+
 NCollection_ListNode.hxx
 NCollection_BaseList.hxx
 NCollection_BaseList.cxx

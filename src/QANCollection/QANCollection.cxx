@@ -29,5 +29,6 @@ void QANCollection::Commands(Draw_Interpretor& theCommands) {
   QANCollection::Commands1(theCommands);
   QANCollection::Commands2(theCommands);
   QANCollection::Commands3(theCommands);
+  QANCollection::Commands4(theCommands);
   return;
 }
