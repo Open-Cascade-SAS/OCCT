@@ -24,6 +24,7 @@
 #include <Units_Token.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <OSD.hxx>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -49,29 +50,15 @@ Units_Lexicon::Units_Lexicon()
 //purpose  : 
 //=======================================================================
 
+static inline bool strrightadjust (char *str)
+{
+  for (size_t len = strlen(str); len > 0 && IsSpace (str[len-1]); len--)
+    str[len-1] = '\0';
+  return str[0] != '\0';
+}
+
 void Units_Lexicon::Creates(const Standard_CString afilename)
 {
-  char chain[256],line[256];
-  char oper[11],coeff[31];
-#if 0
-  char *Chain = chain ;
-  char *Line = line ;
-  char *Oper = oper ;
-  char *Coeff = coeff ;
-#endif
-  Standard_Integer fr;
-  Standard_Size i;
-  Standard_Real value;
-  Handle(Units_Token) token;
-  struct stat buf;
-
-#if 0
-  chain[255] = '\0' ;
-  oper[10] = '\0' ;
-  coeff[30] = '\0' ;
-#endif
-
-  //for(i=0; i<=255; i++)chain[i]=0;
   ifstream file(afilename, ios::in);
   if(!file) {
     cout<<"unable to open "<<afilename<<" for input"<<endl;
@@ -81,52 +68,42 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
   thefilename = new TCollection_HAsciiString(afilename);
   thesequenceoftokens = new Units_TokensSequence();
 
+  struct stat buf;
   if(!stat(afilename,&buf)) thetime = buf.st_ctime;
 
-  //for(i=0; i<=255; i++)line[i]=0;
+  // read file line-by-line; each line has fixed format:
+  // first 30 symbols for prefix or symbol (e.g. "k" for kilo)
+  // then 10 symbols for operation
+  // then 30 symbols for numeric parameter (e.g. multiplier)
+  // line can be shorter if last fields are empty
+  Handle(Units_Token) token;
+  for (int nline = 0; ; nline++) {
+    char line[256];
+    memset (line, 0, sizeof(line));
+    if (! file.getline (line, 255))
+      break;
 
-  while(file.getline(line,255)) {
-    Standard_Size len = strlen( line ) ;
-    if(len == 1) continue; //skl - ???
-    for ( i = 0 ; i < 30 ; i++ ) {
-      if ( i < len )
-        fr=sscanf(&line[i],"%c",&chain[i]);
-      else
-        chain[i] = 0 ;
-    }
-    for ( i = 0 ; i < 10 ; i++ ) {
-      if ( 30+i < len )
-        fr=sscanf(&line[30+i],"%c",&oper[i]);
-      else
-        oper[i] = 0 ;
-    }
-    for ( i = 0 ; i < 30 ; i++ ) {
-      if ( 40+i < len )
-        fr=sscanf(&line[40+i],"%c",&coeff[i]);
-      else
-        coeff[i] = 0 ;
-    }
-#if 0
-    cout << "Lexiconsscanf(%c          )" << endl << "Chain" << Chain << endl
-         << "Oper" << Oper << endl
-         << "Coeff" << Coeff << endl ;
-#endif
-    i=29;
-    while( i>=0 && ( chain[i] == ' ' || !chain[i] ))
-      chain[i--]=0;
-    if(i<0) continue;
-    i=9;
-    while( i>=0 && ( oper [i] == ' ' || !oper [i] ))
-      oper[i--]=0;
-    i=29;
-    while( i>=0 && ( coeff[i] == ' ' || !coeff[i] ))
-      coeff[i--]=0;
+    // trim trailing white space
+    if (! strrightadjust (line)) // empty line
+      continue;
 
-    if(coeff[0])
-      value = atof(coeff);
-    else
-      value = 0.;
+    // split line to parts
+    char chain[31], oper[11], coeff[31];
+    for (int i=0; i < 31; i++) chain[i] = '\0';
+    for (int i=0; i < 11; i++) oper[i]  = '\0';
+    for (int i=0; i < 31; i++) coeff[i] = '\0';
 
+    sscanf (line, "%30c%10c%30c", chain, oper, coeff);
+
+    // remove trailing spaces and check values
+    if (! strrightadjust (chain))
+      continue;
+    strrightadjust (oper);
+    double value = 0;
+    if (strrightadjust (coeff))
+      OSD::CStringToReal (coeff, value);
+
+    // add token
     if(thesequenceoftokens->IsEmpty()) {
       token = new Units_Token(chain,oper,value);
       thesequenceoftokens->Prepend(token);
@@ -134,9 +111,6 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
     else {
       AddToken(chain,oper,value);
     }
-
-    for(i=0; i<255; i++)
-      line[i]=0;
   }
   file.close();
 }

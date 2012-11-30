@@ -18,11 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-#define PRO13136	//GG_090498
-//			Ne pas utiliser la fonction systeme atof() qui
-//			depend de la localisation
-
 #include <Units_UnitsDictionary.ixx>
 #include <Units.hxx>
 
@@ -59,9 +54,11 @@
 #include <Units_Operators.hxx>
 #include <OSD.hxx>
 
-#ifdef PRO13136		//Temporaire en attendant OSD::CStringToReal()
-static char DecimalPoint = '\0' ;
 
+// GG 09.04.98 PRO13136
+// Ne pas utiliser la fonction systeme atof() qui
+// depend de la localisation
+static char DecimalPoint = '\0';
 static void GetDecimalPoint() {
   Standard_Real f = 1.1 ;
   char str[5] ;
@@ -72,8 +69,6 @@ static void GetDecimalPoint() {
 //#endif
   DecimalPoint = str[1] ;
 }
-#endif
-// Make the RealToCString reciprocal conversion.
 
 //=======================================================================
 //function : Units_UnitsDictionary
@@ -88,47 +83,25 @@ Units_UnitsDictionary::Units_UnitsDictionary()
 //purpose  : 
 //=======================================================================
 
+static inline bool strrightadjust (char *str)
+{
+  for (size_t len = strlen(str); len > 0 && IsSpace (str[len-1]); len--)
+    str[len-1] = '\0';
+  return str[0] != '\0';
+}
+
 void Units_UnitsDictionary::Creates(const Standard_CString afilename)
 {
-  Standard_Boolean ismove,emptyline;
-  Standard_Integer charnumber,unitscomputed;
-  Standard_Integer fr,i,j,k;
-  char MM[11],LL[11],TT[11],II[11],tt[11],NN[11],JJ[11],PP[11],SS[11];
-  Standard_Real M=0,L=0,T=0,I=0,t=0,N=0,J=0,P=0,S=0;
-  char unite[52];
-  char symbol[28],unit2[28];
-  char line[256],convert[256];
-  //char name[81];
-  //char name[80]; //skl
-  char name[41]; // skl for OCC13438
-#if 0
-  char *Unite = unite ;
-  char *Symbol = symbol ;
-  char *Unit2 = unit2 ;
-  char *Line = line ;
-  char *Convert = convert ;
-  char *Name = name ;
-#endif
+  Standard_Boolean ismove;
+  Standard_Integer i, j, k, charnumber, unitscomputed;
   Standard_Real matrix[50][50], coeff=0, move=0;
   Handle(Units_Token) token;
   Handle(Units_UnitsSequence) theunitssequence;
   Handle(Units_Unit) unit;
   Handle(Units_ShiftedUnit) shiftedunit;
-  Handle(Units_Dimensions) dimensions;
   Handle(Units_Quantity) quantity;
   
-  struct stat buf;
-
-  unite[51] = '\0' ;
-  symbol[27] = '\0' ;
-  unit2[27] = '\0' ;
-  line[255] = '\0' ;
-  convert[255] = '\0' ;
-  //name[80]  = '\0' ;
-  name[40]  = '\0' ; // skl for OCC13438
-
   ifstream file(afilename, ios::in);
-
   if(!file) {
     cout<<"unable to open "<<afilename<<" for input"<<endl;
     return;
@@ -136,21 +109,28 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
   
   thefilename = new TCollection_HAsciiString(afilename);
 
+  struct stat buf;
   if(!stat(afilename,&buf)) thetime = (Standard_Integer)buf.st_ctime;
 
   thequantitiessequence = new Units_QuantitiesSequence();
   
+  // read file line by line
   Standard_Integer numberofunits = 0;
-  
   for(;;) {
-    file.getline(line,255);
+    char line[256];
+    memset (line, 0, sizeof(line));
+    file.getline (line,255);
     if (!file)
       break;
-    fr = (Standard_Integer) strlen(line);
-    if(fr <= 1)
-      continue;
-    //if( !file || line[0] == '.') { //skl
+
+    // trim trailing spaces
+    if (! strrightadjust (line))
+      continue; // empty line
+
+    // lines starting with dot separate sections of the file
     if(line[0]=='.') {
+
+      // if some units are collected in previous section, store them
       if(numberofunits) {
         unitscomputed = 0;
         for(i=0; i<=numberofunits; i++)
@@ -189,32 +169,30 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
         }
       }
 	  
-      //if(!file) break; //skl
+      // skip help string and read header
       file.getline(line,255);
       file.getline(line,255);
-      fr = (Standard_Integer) strlen(line);
-	  
-#if 0 // skl for OCC13438
-      //for(i=0; i<80; i++)name[i] = 0;
-      for(i=0; i<41; i++) name[i] = 0;
-      M = L = T = I = t = N = J = P = S = 0.;
-      //fr = sscanf(line,"%80c%d%d%d%d%d%d%d%d%d",
-      fr = sscanf(line,"%40c%f%f%f%f%f%f%f%f%f",
-                  &name,&M,&L,&T,&I,&t,&N,&J,&P,&S);
-      cout << "UnitsDictionarysscanf(%40c)Name" << Name << endl ;
-#else
-      for(i=0; i<11; i++)MM[i] = 0;
-      for(i=0; i<11; i++)LL[i] = 0;
-      for(i=0; i<11; i++)TT[i] = 0;
-      for(i=0; i<11; i++)II[i] = 0;
-      for(i=0; i<11; i++)tt[i] = 0;
-      for(i=0; i<11; i++)NN[i] = 0;
-      for(i=0; i<11; i++)JJ[i] = 0;
-      for(i=0; i<11; i++)PP[i] = 0;
-      for(i=0; i<11; i++)SS[i] = 0;
 
-      fr = sscanf(line,"%40c%10c%10c%10c%10c%10c%10c%10c%10c%10c",
-		  name,MM,LL,TT,II,tt,NN,JJ,PP,SS);
+      // header consists of dimension name (40 symbols) and factors
+      // for basic SI dimensions (mass, length, time, ...)
+      char name[41];
+      char MM[11], LL[11], TT[11], II[11], tt[11], NN[11], JJ[11], PP[11], SS[11];
+      for (i=0; i < 41; i++) name[i] = '\0';
+      for (i=0; i < 11; i++) MM[i] = '\0';
+      for (i=0; i < 11; i++) LL[i] = '\0';
+      for (i=0; i < 11; i++) TT[i] = '\0';
+      for (i=0; i < 11; i++) II[i] = '\0';
+      for (i=0; i < 11; i++) tt[i] = '\0';
+      for (i=0; i < 11; i++) NN[i] = '\0';
+      for (i=0; i < 11; i++) JJ[i] = '\0';
+      for (i=0; i < 11; i++) PP[i] = '\0';
+      for (i=0; i < 11; i++) SS[i] = '\0';
+
+      sscanf (line, "%40c%10c%10c%10c%10c%10c%10c%10c%10c%10c",
+		    name, MM, LL, TT, II, tt, NN, JJ, PP, SS);
+      strrightadjust (name);
+
+      Standard_Real M=0., L=0., T=0., I=0., t=0., N=0., J=0., P=0., S=0.;
       OSD::CStringToReal(MM, M);
       OSD::CStringToReal(LL, L);
       OSD::CStringToReal(TT, T);
@@ -224,15 +202,9 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       OSD::CStringToReal(JJ, J);
       OSD::CStringToReal(PP, P);
       OSD::CStringToReal(SS, S);
-      //for ( i = 0 ; i < 80 ; i++ ) {
-      //  fr = sscanf(&line[i],"%c",&name[i]);
-      //}
-# if 0
-      cout << "UnitsDictionarysscanf(%c  )Name" << Name << endl ;
-# endif
-      //fr = sscanf(&line[80],"%d%d%d%d%d%d%d%d%d",
-      //            &M,&L,&T,&I,&t,&N,&J,&P,&S);
-#endif
+
+      Handle(Units_Dimensions) dimensions = 
+        new Units_Dimensions (M, L, T, I, t, N, J, P, S);
 
 #ifdef DEB
       /*cout << " Name of Dimension : " << name << endl ;
@@ -244,101 +216,41 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
 		   << J << " " << P << " " << S << endl;*/
 #endif
 
-      i = 39;
-      while( i >= 0 && ( name[i] == ' ' || !name[i]))
-        name[i--] = 0;
-      dimensions = new Units_Dimensions(M,L,T,I,t,N,J,P,S);
-      
       numberofunits = 0;
       theunitssequence = new Units_UnitsSequence();
       quantity = new Units_Quantity(name,dimensions,theunitssequence);
       thequantitiessequence->Append(quantity);
-	  
+
+      // clean matrix of units
       for(i=0; i<50; i++) {
         for(j=0; j<50; j++)
           matrix[i][j] = 0.;
       }
+
+      // skip next line (dotted)
       file.getline(line,255);
     }
 
-    else { // line[0] != '.'
-#if 0
-      for(i=0; i<51; i++)
-        unite  [i] = 0;
-      for(i=0; i<27; i++)
-        symbol [i] = 0;
-      for(i=0; i<27; i++)
-        convert[i] = 0;
-      for(i=0; i<27; i++)
-        unit2  [i] = 0;
-      fr = sscanf(line,"%51c%27c%27c%27c",&unite,&symbol,&convert,&unit2);
-      cout << "UnitsDictionarysscanf(%51c%27c%27c%27c)" << endl
-           << "Unite" << Unite << endl << "Symbol" << Symbol << endl
-           << "Convert" << Convert << endl 
-           << "Unit2" << Unit2 << endl ;
-#else
-      Standard_Integer len = (Standard_Integer) strlen( line ) ;
-      for ( i=0 ; i<51 ; i++ ) {
-        if ( i<len )
-          fr = sscanf(&line[i],"%c",&unite[i]);
-        else
-          unite[i] = 0 ;
-      }
-      for ( i=0 ; i<27 ; i++ ) {
-        if ( 51+i < len )
-          fr = sscanf(&line[51+i],"%c",&symbol[i]);
-        else
-          symbol[i] = 0 ;
-      }
-      for ( i=0 ; i<27 ; i++ ) {
-        if ( 78+i < len )
-          fr = sscanf(&line[78+i],"%c",&convert[i]);
-        else
-          convert[i] = 0 ;
-      }
-      for ( i=0 ; i<27 ; i++ ) {
-        if ( 105+i < len )
-          fr = sscanf(&line[105+i],"%c",&unit2[i]);
-        else
-          unit2[i] = 0 ;
-      }
-# if 0
-      cout << "UnitsDictionarysscanf(%c              )" << endl
-           << "Unite" << Unite << endl << "Symbol" << Symbol << endl
-           << "Convert" << Convert << endl 
-           << "Unit2" << Unit2 << endl ;
-# endif
-#endif
+    else {
+      // normal line defining a unit should contain:
+      // - unit name (51 symbol)
+      // - unit notation (27 symbols)
+      // - factor (27 symbols)
+      // - base unit (27 symbols)
+      char unite[52], symbol[28], convert[28], unit2[28];
+      for (i=0; i < 52; i++) unite  [i] = '\0';
+      for (i=0; i < 28; i++) symbol [i] = '\0';
+      for (i=0; i < 28; i++) convert[i] = '\0';
+      for (i=0; i < 28; i++) unit2  [i] = '\0';
 
-      if(fr == -1) continue;
+      sscanf (line, "%51c%27c%27c%27c", unite, symbol, convert, unit2);
 
-      emptyline = Standard_True;
-
-      i = 50;
-      while(i >= 0 && (unite  [i] == ' ' || !unite  [i]))
-        unite  [i--] = 0;
-      if(i >= 0)
-        emptyline = Standard_False;
-
-      i = 26;
-      while(i >= 0 && (symbol [i] == ' ' || !symbol [i]))
-        symbol [i--] = 0;
-      if(i >= 0)
-        emptyline = Standard_False;
-
-      i = 26;
-      while(i >= 0 && (convert[i] == ' ' || !convert[i]))
-        convert[i--] = 0;
-      if(i >= 0)
-        emptyline = Standard_False;
-
-      i = 26;
-      while(i >= 0 && (unit2  [i] == ' ' || !unit2  [i]))
-        unit2  [i--] = 0;
-      if(i >= 0)
-        emptyline = Standard_False;
-
-      if(emptyline) continue;
+      strrightadjust (unite);
+      strrightadjust (symbol);
+      strrightadjust (convert);
+      strrightadjust (unit2);
+      if (! unite[0] && ! symbol[0] && ! convert[0] && ! unit2[0])
+        continue; // empty line
 	  
       if(convert[0] == '[') {
         coeff = 1.;
@@ -380,19 +292,11 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
           coeff = (mathsentence.Evaluate())->Value();
       }
       else if(convert[0]) {
-#ifdef PRO13136
         if(ismove) {
           OSD::CStringToReal(&convert[charnumber], move);
         }
         else
           OSD::CStringToReal(convert, coeff);
-#else
-        if(ismove) {
-          move = atof(&convert[charnumber]);
-        }
-        else
-          coeff = atof(convert);
-#endif
       }
       else {
         coeff = 1.;
