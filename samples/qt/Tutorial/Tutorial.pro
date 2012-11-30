@@ -48,7 +48,7 @@ win32 {
 	DEFINES += _DEBUG
 	!contains(QMAKE_HOST.arch, x86_64) {
 		LIBS = -L$(CSF_OPT_LIB32D)
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
+		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
 		DESTDIR = ./win32/vc7/bind
 		OBJECTS_DIR = ./win32/vc7/objd
 		MOC_DIR = ./win32/vc7/srcd
@@ -68,9 +68,14 @@ win32 {
 		OBJECTS_DIR = ./win32/vc10/objd
 		MOC_DIR = ./win32/vc10/srcd
 	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win32/vc11/bind
+		OBJECTS_DIR = ./win32/vc11/objd
+		MOC_DIR = ./win32/vc11/srcd
+	    }
 	} else {
 		LIBS = -L$(CSF_OPT_LIB64D)
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
+		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
 		DESTDIR = ./win64/vc8/bind
 		OBJECTS_DIR = ./win64/vc8/objd
 		MOC_DIR = ./win64/vc8/srcd
@@ -85,12 +90,17 @@ win32 {
 		OBJECTS_DIR = ./win64/vc10/objd
 		MOC_DIR = ./win64/vc10/srcd
 	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win64/vc11/bind
+		OBJECTS_DIR = ./win64/vc11/objd
+		MOC_DIR = ./win64/vc11/srcd
+	    }
 	}
     } else {
 	DEFINES += NDEBUG
 	!contains(QMAKE_HOST.arch, x86_64) {
 		LIBS = -L$(CSF_OPT_LIB32)
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
+		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
 		DESTDIR = ./win32/vc7/bin
 		OBJECTS_DIR = ./win32/vc7/obj
 		MOC_DIR = ./win32/vc7/src
@@ -110,9 +120,14 @@ win32 {
 		OBJECTS_DIR = ./win32/vc10/obj
 		MOC_DIR = ./win32/vc10/src
 	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win32/vc11/bin
+		OBJECTS_DIR = ./win32/vc11/obj
+		MOC_DIR = ./win32/vc11/src
+	    }
 	} else {
 		LIBS = -L$(CSF_OPT_LIB64)
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
+		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
 		DESTDIR = ./win64/vc8/bin
 		OBJECTS_DIR = ./win64/vc8/obj
 		MOC_DIR = ./win64/vc8/src
@@ -126,6 +141,11 @@ win32 {
 		DESTDIR = ./win64/vc10/bin
 		OBJECTS_DIR = ./win64/vc10/obj
 		MOC_DIR = ./win64/vc10/src
+	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win64/vc11/bin
+		OBJECTS_DIR = ./win64/vc11/obj
+		MOC_DIR = ./win64/vc11/src
 	    }
 	}
     }

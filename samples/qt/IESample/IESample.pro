@@ -66,6 +66,11 @@ win32 {
 		OBJECTS_DIR = ./win32/vc10/objd
 		MOC_DIR = ./win32/vc10/srcd
 	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win32/vc11/bind
+		OBJECTS_DIR = ./win32/vc11/objd
+		MOC_DIR = ./win32/vc11/srcd
+	    }
 	} else {
 		LIBS = -L$(CSF_OPT_LIB64D)
 		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
@@ -82,6 +87,11 @@ win32 {
 		DESTDIR = ./win64/vc10/bind
 		OBJECTS_DIR = ./win64/vc10/objd
 		MOC_DIR = ./win64/vc10/srcd
+	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win64/vc11/bind
+		OBJECTS_DIR = ./win64/vc11/objd
+		MOC_DIR = ./win64/vc11/srcd
 	    }
 	}
     } else {
@@ -108,6 +118,11 @@ win32 {
 		OBJECTS_DIR = ./win32/vc10/obj
 		MOC_DIR = ./win32/vc10/src
 	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win32/vc11/bin
+		OBJECTS_DIR = ./win32/vc11/obj
+		MOC_DIR = ./win32/vc11/src
+	    }
 	} else {
 		LIBS = -L$(CSF_OPT_LIB64)
 		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
@@ -124,6 +139,11 @@ win32 {
 		DESTDIR = ./win64/vc10/bin
 		OBJECTS_DIR = ./win64/vc10/obj
 		MOC_DIR = ./win64/vc10/src
+	    }
+	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
+		DESTDIR = ./win64/vc11/bin
+		OBJECTS_DIR = ./win64/vc11/obj
+		MOC_DIR = ./win64/vc11/src
 	    }
 	}
     }

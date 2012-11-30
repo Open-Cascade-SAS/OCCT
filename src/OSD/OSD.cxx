@@ -115,7 +115,7 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
 #ifdef WNT
 # include <Windows.h>
 #if !defined(__CYGWIN32__) && !defined(__MINGW32__)
-# include <Mapiwin.h>
+//# include <Mapiwin.h>
 #endif
 # define _DEXPLEN	             11
 # define _IEEE		              1
