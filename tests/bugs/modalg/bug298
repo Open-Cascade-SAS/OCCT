@@ -1,0 +1,21 @@
+
+puts "========================"
+puts " OCC298 "
+puts "========================"
+puts ""
+#################################################################
+## Exception during "tcopy" command
+#################################################################
+
+restore [locate_data_file OCC298.brep] result
+puts [checkshape result]
+
+if [catch {tcopy result a } result] {
+  puts "Faulty OCC298: function TCOPY works wrongly"
+} else {
+  puts "OCC298 OK: function TCOPY works properly"
+}
+
+set square 8e+100
+set 2dviewer 0
+

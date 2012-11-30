@@ -1,0 +1,21 @@
+
+puts "========"
+puts "OCC49"
+puts "========"
+
+pload QAcommands
+
+pcylinder c 10 20
+box b 10 10 10
+bcut b_c_cut b c
+checkshape b_c_cut
+
+set result [OCC49 b_c_cut]
+
+if {$result == 1} {
+   puts "Error : OCC49"
+} else {
+   puts "OCC49: OK"
+}
+
+set 2dviewer 0

@@ -1,0 +1,31 @@
+
+puts "========"
+puts "OCC179"
+puts "========"
+puts ""
+###########################################
+## Bug in meshing of the enclosed face 
+###########################################
+
+restore [locate_data_file OCC179.brep] result
+
+tclean result
+isos result 0
+incmesh result 0.01
+triangles result 
+
+set tri 0
+set nod 0
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri == 1874 || $nod == 1861} {
+    puts " OCC179  shading: OK"
+} else {
+    puts " OCC179  shading: Faulty"
+}
+
+set square 12229.8
+set 3dviewer 0

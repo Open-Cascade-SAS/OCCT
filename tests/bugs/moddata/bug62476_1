@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Error : here is shading problem"
+
+puts "============"
+puts "FRA62476"
+puts ""                                                                                  
+puts "=================================="                                                
+puts "It takes visual check for this BUG"                                                
+puts "=================================="                                                
+puts ""
+
+restore [locate_data_file fra62476a.brep] result
+puts [checkshape result]
+
+tclean result
+incmesh result .1
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri != 93 && $nod != 56 } {
+   puts "Error : here is shading problem"
+}
+
+set 3dviewer 0
+
+
+

@@ -1,0 +1,21 @@
+
+puts "========================"
+puts " OCC366 "
+puts "========================"
+puts ""
+##################################################
+## Checkshape says that face is valid but it inludes selfintersecting wire
+##################################################
+
+restore [locate_data_file buc61006.brep] result
+
+decho off
+set che [checkshape result]
+decho on
+
+if { [regexp "Faulty" $che] != 1 } {
+   puts "Error : Checkshape command works wrongly"
+}
+
+set 2dviewer 0
+

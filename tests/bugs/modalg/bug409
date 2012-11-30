@@ -1,0 +1,16 @@
+
+puts "========================"
+puts " OCC409 "
+puts "========================"
+puts ""
+
+restore [locate_data_file f2] b1 
+puts [checkshape b1]
+
+restore [locate_data_file f6] b2
+puts [checkshape b2]
+
+bcommon result b1 b2
+
+set square 45.5929
+set 2dviewer 0

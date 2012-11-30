@@ -1,0 +1,29 @@
+puts "=========="
+puts "PRO19895"
+puts "=========="
+
+#############################################################################
+## There is wrong tolerance after reading of the model in optimaze mode (C30). Retrive entity number 2139 from file
+## "bm4_db_punch_a.stp" and will obtaine tolerance. It is very big and isolains extend from entity. 
+#############################################################################
+
+stepread [locate_data_file bm4_db_punch_a.stp] a *
+
+tpcompound b
+isos b 0
+isos b 3
+tpcompound result
+
+tpdraw 2139
+
+puts [checkshape tp_2139]
+puts [checkshape tp_2139 r]
+
+set MaxTolerance [ lindex [ split [ lindex [tolerance tp_2139] 1 ] = ] 1 ]
+puts "MaxTolerance = $MaxTolerance"
+if { $MaxTolerance > 1 } {
+    puts "Error : Tolerance of shape is more then 1.0"
+}
+
+set 2dviewer 0
+

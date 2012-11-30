@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Faulty : TEST FAILED"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+
+puts "============"
+puts "PRO19653"
+puts "BREPALGO_BOOLEANOPERATION does not return result."
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+restore [locate_data_file pro19653a.brep] a 
+puts [checkshape a]
+restore [locate_data_file pro19653b.brep] b
+puts [checkshape b]
+bsection result a b
+
+explode result e
+checkshape result_1
+explode a e
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result_1] full ll_1
+regexp {Mass +: +([-0-9.+eE]+)} [lprops a_4] full ll_2
+if { $ll_1 != $ll_2 } {
+    puts "Faulty : TEST FAILED"
+} else {
+    puts "PRO19653 OK : BREPALGO_BOOLEANOPERATION returns result"
+}
+
+set length 0
+set 2dviewer 0

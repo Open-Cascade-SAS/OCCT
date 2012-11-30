@@ -1,0 +1,28 @@
+puts "============"
+puts "BUC60861"
+puts "OCC75"
+puts "============"
+puts ""
+puts "case 2"
+###############################
+## Incorrect work of section Shell-Shell. 
+###############################
+
+restore [locate_data_file BUC60861_gap1.brep] ss 
+checkshape ss
+
+plane pl1 25680.2288 21428 9995 1 0 0
+mkface f1 pl1 -1 11 -5 5
+bsection result ss f1 -a
+
+set good_len 10.0009
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full tol
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full len
+if { [expr 1.*abs(${good_len} - $len)] > $tol } {
+   puts "Error : len is bad"
+}
+
+set 2dviewer 0
+
+
+

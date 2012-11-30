@@ -1,0 +1,17 @@
+
+puts "========================"
+puts " OCC474 "
+puts "========================"
+puts ""
+##################################################
+## impossible to put a fillet to none of 5 edges sharing one vertrex
+##################################################
+
+restore [locate_data_file OCC474.brep] s 
+
+explode s e
+
+blend result s 100 s_16
+
+set square 1.54883e+06
+set 3dviewer 1

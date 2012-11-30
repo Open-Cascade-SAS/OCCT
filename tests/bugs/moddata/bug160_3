@@ -1,0 +1,26 @@
+
+puts "========================"
+puts "BUC60775"
+puts "OCC160"
+puts "(FUSE: A and B)"
+puts "========================"
+
+restore [locate_data_file buc60775a.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60775b.brep] b
+puts [checkshape b]
+
+bfuse result a b
+puts [checkshape result]
+
+set nf [llength [explode result f]]
+
+if {$nf < 6} {
+   puts "Error : the resulting shape is unclosed!!!"
+}
+
+set check_square 1
+set square 328116
+set 2dviewer 0
+
+

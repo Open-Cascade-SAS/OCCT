@@ -1,0 +1,31 @@
+
+puts "========================"
+puts "BUC60703"
+puts "================================="
+puts "Action with models with CORRECT tolerance" 
+puts "================================="
+puts ""
+############################################
+## Crash during a fuse whilst two plans are tangent. 
+############################################
+
+restore [locate_data_file buc60703c.brep] a 
+puts [checkshape a]
+
+restore [locate_data_file buc60703e.brep] b
+puts [checkshape b]
+
+
+if [catch {bfuse result a b } catch_result] {
+    puts "Faulty  BUC60703: here is problem with FUSE operation"
+} else {
+    puts "OK BUC60703: function FUSE works ok"		
+    if [catch {checkshape result } catch_result] {
+	puts "WARNING BUC60703 : Function checkshape gives bad result"
+	puts " See also OCC438: 919 D3 and D4"
+    } else {
+	puts "BUC60703  OK in checkshape"
+    }	
+}
+set square 236.72
+set 2dviewer 0

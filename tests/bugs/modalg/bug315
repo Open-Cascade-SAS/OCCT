@@ -1,0 +1,15 @@
+
+puts "================"
+puts "OCC315"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC315-1.brep] f1 
+restore [locate_data_file OCC315-2.brep] f2
+puts [checkshape f1]
+puts [checkshape f2]
+
+bcut result f1 f2
+
+set square 58584.1
+set 2dviewer 0

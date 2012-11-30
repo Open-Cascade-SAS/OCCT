@@ -1,0 +1,28 @@
+
+puts "=========="
+puts "FRA62476"
+puts ""                                                                                  
+puts "=================================="                                                
+puts "It takes visual check for this BUG"                                                
+puts "=================================="                                                
+puts ""
+
+restore [locate_data_file fra62476b.brep] result 
+puts [checkshape result]
+
+tclean result
+incmesh result .1
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri !=239 && $nod != 145 } {
+   puts "Shady FRA62476: here may be shading problem, number tri & nod
+   are changed"
+}
+
+set 3dviewer 0
+
+

@@ -22,7 +22,7 @@ if { [isdraw result] } {
    #if mass (length or square) is empty in test case then result should be an empty shape.
    if { [string compare "$mass" "empty"] != 0 } {
       if { $m == 0 } {
-       	 puts "Error : The $command is not valid. The $prop is 0."
+       	 puts "Error : The command is not valid. The $prop is 0."
       }
       if { $mass > 0 } {
       	 puts "The expected $prop is $mass"
@@ -115,9 +115,9 @@ if { [isdraw result] } {
 
    } else {
       if { $m != 0 } {
-       	 puts "Error : The $command is not valid. The $prop is $m"
+       	 puts "Error : The command is not valid. The $prop is $m"
       }
    }
 } else {
-   puts "Error : The $command can not be build."
+   puts "Error : The command can not be build."
 }

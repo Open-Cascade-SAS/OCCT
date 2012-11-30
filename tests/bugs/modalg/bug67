@@ -1,0 +1,16 @@
+
+puts "================"
+puts "BUC61052"
+puts "OCC67"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC67.brep] sh 
+puts [checkshape sh]
+
+explode sh e
+
+fillet result sh 5 sh_18
+
+set square 64281.8
+set 2dviewer 0

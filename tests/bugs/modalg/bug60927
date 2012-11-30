@@ -1,0 +1,16 @@
+
+puts "============"
+puts "BUC60927"
+puts "============"
+
+restore [locate_data_file BUC60927.brep] a 
+
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+
+bcut result a_2 a_1
+
+set square 94795.3
+set 2dviewer 0
+

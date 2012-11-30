@@ -1,0 +1,15 @@
+
+puts "========"
+puts "BUC61008"
+puts "OCC341"
+puts "========"
+puts ""
+
+restore [locate_data_file buc61008.brep] w 
+puts [checkshape w]
+
+mkplane f w
+prism result f 0 0 100
+
+set square 24991
+set 2dviewer 0

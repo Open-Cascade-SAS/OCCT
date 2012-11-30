@@ -1,0 +1,32 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Tcl Exception: Error: file OCC104-2.brep could not be found"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "================"
+puts "BUC61007"
+puts "OCC104"
+puts "================"
+puts ""
+################################################################
+## These shapes are valid and seems that they have one size, but they volumes of the shapes are
+##  quite different. This looks like a regression in comparing to C31.
+################################################################
+
+cpulimit 3000
+
+restore [locate_data_file OCC104-1.brep] sh1 
+puts [checkshape sh1]
+regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full l1
+
+restore [locate_data_file OCC104-2.brep] sh2
+puts [checkshape sh2]
+regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full l2
+
+set diff [expr abs([expr $l2 - $l1])]
+
+if { $diff > 0.001} {
+   puts "Error : volume of OCC104-1.brep and OCC104-2.brep differ on the value $diff while the shape almost coinsident"
+} else {
+  puts "Volumes of OCC104-1.brep and OCC104-2.brep are right calculated (almost coinsident)"
+}
+

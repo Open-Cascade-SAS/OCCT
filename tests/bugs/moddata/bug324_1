@@ -1,0 +1,16 @@
+
+puts "========================"
+puts "BUC60979"
+puts " OCC324 "
+puts "========================"
+puts ""
+#################################################################
+##  Extrema between trimmed line and circle lead to exception.
+#################################################################
+
+restore [locate_data_file OCC359a.brep] el 
+restore [locate_data_file OCC359b.brep] ec
+
+distmini dd el ec
+
+

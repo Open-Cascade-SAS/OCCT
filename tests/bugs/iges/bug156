@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC156"
+puts "BUC60832"
+puts "SAM392/SAM289"
+puts "========"
+
+#####################################################
+## See also 913 case D1 
+## SAM392, #289: Crash when you want to import the "waaier_para.igs" file
+#####################################################
+
+igesbrep [locate_data_file Samtech_waaier_para.igs] a *
+
+tpcompound result
+
+set 3dviewer 1
+
+

@@ -1,0 +1,19 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "================"
+puts "OCC54"
+puts "================"
+puts ""
+####################################################
+## Exception is raised during command "small" in DRAW on attached shape.
+####################################################
+
+#cpulimit 9000
+# true CPU limit! cpulimit 2000
+cpulimit 100
+restore [locate_data_file OCC54.brep] result
+
+puts [checkshape result]
+
+set 3dviewer 0

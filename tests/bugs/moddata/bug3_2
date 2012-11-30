@@ -1,0 +1,18 @@
+
+puts "================"
+puts "OCC3"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC3-1.brep] a 
+restore [locate_data_file OCC3-2.brep] b
+puts [checkshape a]
+puts [checkshape b]
+
+bfuse result b a
+puts [checkshape result]
+
+set check_square 1
+set square 11400
+set 2dviewer 0
+

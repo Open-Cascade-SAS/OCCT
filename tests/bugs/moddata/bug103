@@ -1,0 +1,17 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+
+puts "================"
+puts "BUC60961"
+puts "OCC103"
+puts "================"
+puts ""
+
+circle c 0 0 10
+to3d c1 c
+
+offset o c -2
+catch {to3d result o}
+
+set 2dviewer 0
+

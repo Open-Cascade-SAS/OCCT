@@ -1,0 +1,43 @@
+puts "TODO OCC12345 ALL: BUC60854: Error"
+
+puts "========"
+puts "BUC60854"
+puts "========"
+
+pload QAcommands
+
+plane test_plane
+mkface test_face test_plane 0 1 0 1
+
+vertex test_vertex_1 0 0.5 0
+vertex test_vertex_2 1 0.5 0
+edge test_edge test_vertex_1 test_vertex_2
+
+splitshape test_shape test_face test_face test_edge
+
+explode test_shape f
+
+renamevar test_shape_1 test_face
+
+vertex test_vertex_3 0.2 0.5 0
+vertex test_vertex_4 0.8 0.5 0
+edge test_edge_1 test_vertex_3 test_vertex_4
+
+vertex test_vertex_5 0 1 0
+edge test_edge_2 test_vertex_5 test_vertex_3
+
+vertex test_vertex_6 1 1 0
+edge test_edge_3 test_vertex_4 test_vertex_6
+
+BUC60854 result test_shape test_face test_edge_2 test_edge_3 @ test_edge test_edge_1
+
+erase test_plane
+
+regexp {FACE +: +([-0-9.+eE]+)} [numshapes result] full FACE_num
+
+if {${FACE_num} != 3} {
+  puts "BUC60854: Error"
+}
+
+set 2dviewer 0
+

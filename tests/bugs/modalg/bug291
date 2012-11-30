@@ -1,0 +1,33 @@
+
+puts "================= OCC291 ==================="
+
+#################################################################
+## Some triangles of shading mesh are outside of shape boundaries. (See attached shape). 
+#################################################################
+
+restore [locate_data_file shading_171.brep] result
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+
+isos result 0
+triangles result
+
+      set tri 0
+      set nod 0
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+#$tri == 395 && $nod == 350,aki251103.
+if { $tri == 382 && $nod == 343 } {
+	puts " Warning:  OCC291  looks like OK, but visual checking is required !"
+} else {
+	puts " Shady OCC291 : nb tri & nod changed"
+}
+
+set square 376.873
+set 3dviewer 2

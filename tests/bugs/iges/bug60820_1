@@ -1,0 +1,22 @@
+puts "========================"
+puts "BUC60820"
+puts "========================"
+
+igesbrep [locate_data_file buc60820.igs] a *
+
+tpcompound result
+
+puts [checkshape result r]
+
+tclean result
+incmesh result 0.1
+triangles result
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri <= 0 || $nod <= 0 } {
+    puts "Error : Problems with shading"
+}
+
+set 2dviewer 0

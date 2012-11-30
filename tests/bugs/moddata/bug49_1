@@ -1,0 +1,18 @@
+
+puts "========"
+puts "OCC49"
+puts "========"
+
+pload QAcommands
+
+pcylinder c 10 20
+
+set result [OCC49 c]
+
+if {$result == 1} {
+   puts "OCC49: OK"
+} else {
+   puts "Error : OCC49"
+}
+
+set 2dviewer 0

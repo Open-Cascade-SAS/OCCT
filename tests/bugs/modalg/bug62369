@@ -1,0 +1,20 @@
+
+puts "==========="
+puts "FRA62369"
+puts "==========="
+
+restore [locate_data_file fra62369a.brep] a 
+puts [checkshape a]
+
+compound result
+
+set i 1
+repeat 100 { 
+    plane p_$i 0 0 200+$i
+    mkface f_$i p_$i
+    bsection s_$i a f_$i -2d -a
+    compound s_$i result result
+    incr i
+}
+set length 3961.04
+set 2dviewer 0

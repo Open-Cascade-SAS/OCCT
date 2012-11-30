@@ -1,0 +1,33 @@
+puts "TODO OCC12345 ALL: Faulty BUC61057: here can be shading problem"
+
+puts "================"
+puts "BUC61057"
+puts "OCC109"
+puts "================"
+puts ""
+##########################################################
+## Visualisation of the attached shape is wrong in the shading mode.
+##########################################################
+
+restore [locate_data_file OCC109.brep] result
+
+puts [checkshape result]
+
+vinit
+tclean result
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri != 294 && $nod != 300 }  {
+    puts "Faulty BUC61057: here can be shading problem"
+} else {
+    puts "Shading of BUC61057 is OK"
+}
+
+set square 33.8757
+set 3dviewer 2

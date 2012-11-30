@@ -1,0 +1,15 @@
+
+puts "==========="
+puts "BUC60652"
+puts "Case 3"
+puts "==========="
+
+pload QAcommands
+
+restore [locate_data_file buc60652c.brep] result 
+puts [checkshape result]
+BUC60652 result
+
+set check_square 1
+set square 77815.1
+set 2dviewer 0

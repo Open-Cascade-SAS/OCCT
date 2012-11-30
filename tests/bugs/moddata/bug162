@@ -1,0 +1,53 @@
+puts "========"
+puts "OCC162"
+puts "========"
+
+pload QAcommands
+pload XDE
+# Gauge for virtual memory
+if ![string compare $tcl_platform(platform) "windows"] {
+    proc VMem { memory } {
+	upvar $memory mem
+	regsub "^.*PeakVirtualSize: *\(\[0-9\]*\) KB.*$" \
+	    [exec tlist [pid]] "\\1" mem
+    }
+} else {
+    proc VMem { memory } {
+	upvar $memory mem
+	set mem [lindex [exec ps -o vsz -p [pid]] 1]
+    }
+}
+
+set Mem0 ""
+set Mem1 ""
+VMem Mem0
+
+# vinit
+restore [locate_data_file OCC162.brep] s 
+# vdisplay s
+
+OCC162 s
+
+VMem Mem1
+puts "...  The peak memory consumed: [expr $Mem1 - $Mem0] KB"
+
+set MemoryLeakage 0
+set i_max 5
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+   OCC162 s
+   VMem Mem2
+   set Delta [expr $Mem2 - $Mem1]
+   set MemoryLeakage [expr $MemoryLeakage + $Delta]
+   puts "       $i delta memory consumed: $Delta KB"
+}
+
+set percent_max 5
+set percent [expr ${MemoryLeakage} / (double(${i_max}) * (${Mem1} - ${Mem0})) * 100.]
+puts "percent = ${percent}"
+
+if {${percent} > ${percent_max}} {
+   puts "OCC162: Error : There is memory leakage during sewing operation"
+} else {
+   puts "OCC162: OK"
+}
+

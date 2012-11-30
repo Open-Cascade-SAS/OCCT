@@ -1,0 +1,26 @@
+puts "========================"
+puts "BUC60820"
+puts "========================"
+
+igesbrep [locate_data_file buc60820.igs] a *
+
+tpcompound result
+puts [checkshape result r]
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nod} $info full nod
+
+
+if { $tri != 1655 || $nod != 1143 } {
+    puts "Shading problem may be, nb tri & nod were changed"
+}
+
+set 2dviewer 0
+

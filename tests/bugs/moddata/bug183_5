@@ -1,0 +1,20 @@
+
+puts "========================"
+puts " OCC183 "
+puts "(case 5)"
+puts "========================"
+puts ""
+
+restore [locate_data_file so4] b1 
+puts [checkshape b1]
+
+restore [locate_data_file so2] b2
+puts [checkshape b2]
+
+bcommon result b1 b2
+puts [checkshape result]
+
+set check_square 1
+set square 198.863
+set 2dviewer 0
+

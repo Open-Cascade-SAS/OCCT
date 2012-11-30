@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "BUC60775"
+puts "OCC160"
+puts "(COMMON: B and A)"
+puts "========================"
+
+restore [locate_data_file buc60775a.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60775b.brep] b
+puts [checkshape b]
+
+bcommon result b a
+puts [checkshape result]
+
+set nf [llength [explode result f]]
+if {$nf < 6} {
+   puts "Error : the resulting shape is unclosed!!!"
+}
+
+set check_square 1
+set square 94067.7
+set 2dviewer 0
+

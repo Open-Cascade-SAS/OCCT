@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC256"
+puts "========"
+
+restore [locate_data_file OCC256.brep] result
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri != 66 && $nod != 66 }  {
+  puts "Error : here is shading problem"
+}
+
+set 3dviewer 0

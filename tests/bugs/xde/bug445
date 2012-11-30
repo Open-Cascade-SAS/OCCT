@@ -1,0 +1,35 @@
+puts "========"
+puts "OCC445"
+puts "========"
+puts ""
+
+restore [locate_data_file OCC501.brep] a
+
+fixshape result a 1e-7
+
+puts [checkshape result]
+set volume 477547
+
+set prop "volume"
+set mass $volume
+regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full m
+
+if { [string compare "$mass" "empty"] != 0 } {
+   if { $m == 0 } {
+      puts "Error : The command is not valid. The $prop is 0."
+   }
+   if { $mass > 0 } {
+      puts "The expected $prop is $mass"
+   }
+   #check of change of volume is < 1%
+   if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+      puts "Error : The $prop of result shape is $m"
+   }
+} else {
+  if { $m != 0 } {
+     puts "Error : The command is not valid. The $prop is $m"
+  }
+}
+
+set 2dviewer 0
+

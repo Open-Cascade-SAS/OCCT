@@ -1,0 +1,18 @@
+puts "============"
+puts "BUC60875"
+puts "OCC78"
+puts "============"
+puts ""
+###############################
+## Pipe is created incorrectly on two wires
+###############################
+
+#datadir /disk4/QA/hotline/GRIDS/chl/data
+restore [locate_data_file BUC60875_wire.brep] w 
+restore [locate_data_file BUC60875_profile.brep] p
+puts [checkshape w]
+puts [checkshape p]
+
+pipe result w p
+set square 10191.8
+set 2dviewer 0

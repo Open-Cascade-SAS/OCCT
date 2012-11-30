@@ -1,0 +1,30 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "========================"                                               
+puts "BUC60823"
+puts "========================"                                                
+
+igesbrep [locate_data_file buc60823.igs] a *
+
+tpcompound result
+puts [checkshape result]
+puts [checkshape result r]
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri != 17618 || $nod != 11153 } {
+    puts "Shading problem may be, nb tri & nod are changed"
+}
+
+set 2dviewer 0
+

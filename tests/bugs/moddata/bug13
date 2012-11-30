@@ -1,0 +1,37 @@
+
+puts "================"
+puts "OCC13"
+puts "================"
+puts ""
+##################################################
+## It is impossible to intersect two surfaces
+##################################################
+
+restore [locate_data_file OCC13-1.draw] su1 
+############### checkshape su1 # is not a topological shape
+restore [locate_data_file OCC13-2.draw] su2
+############### checkshape su2 # is not a topological shape
+
+#Try to intersect two surfaces with tolerance 0.1
+#note that distance between shapes is about 0.005942345501409
+
+catch {intersect res su1 su2 0.1 } result
+set nom 0
+  set j 1
+   repeat 10 {
+    set che [whatis res_$j]
+     set che1 [whatis res_$j]
+      set err [lindex $che [expr [llength $che] - 1]]
+       set err1 [lindex $che1 [expr [llength $che1] - 2]]
+
+          if { $err != "curve" && $err1 != "3d"} {
+          	break
+              } else {
+              set nom [expr $nom + 1]
+              }
+    incr j}
+if { $nom == 0} {
+   puts "Error : Intersection was made WRONGLY"
+}
+
+

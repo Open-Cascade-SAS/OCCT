@@ -1,0 +1,17 @@
+
+puts "================"
+puts "OCC26"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC26.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+
+bfuse result a_2 a_1
+
+set check_square 1
+set square 44819.8
+
+set 2dviewer 0

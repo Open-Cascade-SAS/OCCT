@@ -1,0 +1,16 @@
+puts "========================"
+puts " OCC55 "
+puts "========================"
+########################################
+## After reading from STEP file invalid shape was obtained.
+########################################
+ 
+cpulimit 2000
+
+stepread [locate_data_file OCC55.stp] a *
+
+tpcompound result
+puts [checkshape result]
+
+set 2dviewer 0
+

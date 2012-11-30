@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The command is not valid. The volume is 0."
+puts "TODO OCC12345 ALL: Error : The volume of result shape is 0"
+
+puts "================"
+puts "BUC61023"
+puts "OCC65"
+puts "================"
+puts ""
+###############################################
+## Possibility to make a revolution to have a solid with a volume=0 m3 
+###############################################
+
+restore [locate_data_file OCC65.brep] sh 
+puts [checkshape sh]
+
+revol result sh 0 0 0 0 0 1 360
+
+puts [checkshape result]
+
+set check_square 1
+set volume 10
+set 2dviewer 0
+
+
+

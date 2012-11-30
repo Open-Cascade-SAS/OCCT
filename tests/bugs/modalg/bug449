@@ -1,0 +1,19 @@
+
+puts "========================"
+puts " OCC449 "
+puts "========================"
+puts ""
+#######################
+## Invalid cut result
+#######################
+
+restore [locate_data_file OCC449a.brep] b1 
+puts [checkshape b1]
+
+restore [locate_data_file OCC449b.brep] b2
+puts [checkshape b2]
+
+bcut result b1 b2
+
+set square 43401.5
+set 2dviewer 0

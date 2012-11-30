@@ -1,0 +1,22 @@
+
+puts "================"
+puts "OCC252"
+puts "================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file OCC252.brep] a 
+puts [checkshape a]
+
+explode a w
+
+OCC252 result a_466 a 2
+
+regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full len 
+
+if { ${len} <= 0 } {
+   puts "Error : OCC252"
+}
+
+set 2dviewer 0

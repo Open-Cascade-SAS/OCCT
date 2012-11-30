@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC58"
+puts "========"
+puts ""
+puts "Shape is incorrect after translation"
+puts "case 3 (MACPartSolid.igs)"
+puts ""
+
+cpulimit 3000
+
+igesbrep [locate_data_file OCC58c.igs] a *
+
+tpcompound result
+puts [checkshape result]
+puts [checkshape result r]
+
+set 2dviewer 0
+

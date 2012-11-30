@@ -1,0 +1,18 @@
+
+puts "========================"
+puts "BUC61040"
+puts " OCC374 "
+puts "========================"
+puts ""
+####################################
+##Offset surface from bspline surface is not correct 
+####################################
+restore [locate_data_file OCC374.draw] su 
+
+offset su2 su -1
+
+mkface result su2
+
+set check_square 1
+set square 7181.83
+set 2dviewer 0

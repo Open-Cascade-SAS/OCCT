@@ -1,0 +1,27 @@
+
+puts "================"
+puts "OCC15"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC15.brep] result
+
+puts [checkshape result]
+
+vinit
+tclean result
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+#($tri != 5370,$nod != 2783)($tri != 5356,$nod != 2774)($tri != 5354,$nod != 2773),aki251103
+if { ($tri != 5643 || $nod != 2915) }  {
+   puts "Shady OCC15 : shading problem may be, nb tri & nod were changed"
+}
+
+set 2dviewer 0
+

@@ -1,0 +1,20 @@
+
+puts "========================"
+puts "BUC61049"
+puts " OCC376 "
+puts "========================"
+puts ""
+####################################
+##. Offset can not be created on the attached surface
+####################################
+
+restore [locate_data_file OCC376.rle] s 
+
+offset r s 1
+
+mkface result s
+
+set check_square 1
+set square 1256.64
+set 2dviewer 0
+

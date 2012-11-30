@@ -1,0 +1,20 @@
+
+puts "========="
+puts "BUC61006"                
+puts "========="
+puts ""                                  
+#########################################################
+## Checkshape says that face is valid but it inludes selfintersecting wire. 
+#########################################################
+
+restore [locate_data_file buc61006.brep] result 
+decho off
+set ch [checkshape result]
+decho on
+
+if {![string compare $ch "This shape seems to be valid"]} {
+	puts "Error : the checkshape command returns incorrect result."
+}
+
+set 2dviewer 0
+

@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "================"
+puts "OCC152"
+puts "SAM1178"
+puts "================"
+puts ""
+#################################################################
+## SAM1178(#1871): Bad escaped result after a cut operation on the shape.
+#################################################################
+
+restore [locate_data_file OCC152.brep] sh 
+explode sh
+
+puts [checkshape sh_1]
+puts [checkshape sh_2]
+
+bcut result sh_2 sh_1
+puts [checkshape result]
+
+set check_square 1
+set square 10
+set 2dviewer 0
+

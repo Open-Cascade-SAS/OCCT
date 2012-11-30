@@ -1,0 +1,24 @@
+
+puts "========="
+puts " OCC485 "
+puts "========="
+puts ""
+#######################################
+## Draw hangs up during performing fuse operation
+#######################################
+
+restore [locate_data_file OCC485a.brep] a_1 
+puts [checkshape a_1]
+
+restore [locate_data_file OCC485a.brep] a_2
+puts [checkshape a_2]
+
+if [catch {bfuse result a_1 a_2 } result] {
+    puts "Faulty OCC485: Draw hangs up during performing fuse operation"
+} else {
+    puts "OCC485 OK: function FUSE works without Draw hangs up "
+}
+
+set square 9291.88
+set 2dviewer 0
+

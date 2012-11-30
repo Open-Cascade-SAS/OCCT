@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "========================"
+puts "BUC60755"
+puts "========================"
+
+restore [locate_data_file buc60755a.brep] a 
+puts [checkshape a]
+
+#########################################
+# "tcopy" command of a valid shape give a no-valid shape. 
+#########################################
+
+tcopy a result
+puts [checkshape result]
+
+set check_square 1
+set square 623.832
+set 2dviewer 0
+
+
+
+

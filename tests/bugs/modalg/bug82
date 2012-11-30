@@ -1,0 +1,32 @@
+puts "============"
+puts "BUC60908"
+puts "OCC82"
+puts "============"
+puts ""
+###############################
+## Incomplete section of shell by plane
+###############################
+
+restore [locate_data_file BUC60907_px1.rle] sh 
+puts [checkshape sh]
+
+plane f 0 14.8053 0 0 1 0
+mkface f f
+bsection result sh f
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_verices
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_edges
+
+set nnv [expr $nb_verices-1]
+
+puts "VERTEX : $nb_verices, EDGE : $nb_edges"  
+
+if { $nnv > $nb_edges } {                                         
+    puts "Surplus of vertices, Faulty section"
+} else {
+    puts "Number of vertices correspond edges: OK"
+}
+set length 113.703
+set 2dviewer 0
+

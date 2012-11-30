@@ -1,0 +1,14 @@
+
+puts "========================"
+puts "BUC60729"
+puts "========================"
+
+pload QAcommands
+
+if [catch {BUC60729} ] {
+  puts "BUC60729: Error"
+} else {
+  puts "BUC60729: OK"
+}
+
+set 3dviewer 1

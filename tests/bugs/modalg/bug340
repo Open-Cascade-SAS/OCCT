@@ -1,0 +1,13 @@
+
+puts "========"                                                                 
+puts "BUC61005"                                                                 
+puts "OCC340"
+puts "========"                                                                 
+puts ""                                                                         
+
+restore [locate_data_file buc61005.brep] w 
+puts [checkshape w]
+revol result w 0 0 0 0 0 1 360 1                                                     
+
+set square 55795.4
+set 2dviewer 0

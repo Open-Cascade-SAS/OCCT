@@ -1,0 +1,34 @@
+puts "TODO OCC12345 ALL: Faulty : the distanse is"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+
+puts "================"
+puts "BUC60663"
+puts "OCC144"
+puts "================"
+puts ""
+
+restore [locate_data_file buc60663a.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60663b.brep] b
+puts [checkshape b]
+
+bsection result a b
+
+puts [checksection result]
+
+regexp {(result_[-0-9.+eE]+$)} [explode result v] full ver
+
+explode b e
+explode b_4 v
+distmini d $ver b_5
+
+regexp {([-0-9.+eE]+)} [dump d_val] full dist
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [ maxtolerance $ver ] full toler
+
+if { [expr $dist > $toler] } {
+    puts "Faulty : the distanse is $dist. It is more $toler."
+}
+
+set length 0
+set 2dviewer 0
+

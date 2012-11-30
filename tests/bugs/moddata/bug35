@@ -1,0 +1,20 @@
+
+puts "================"
+puts "OCC35"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC35.brep] result
+decho off
+set info [checkshape result]
+decho on
+
+if { [regexp "Faulty" $info] != 1 } {
+    puts "Command checkshape works wrongly (should be faulty)"
+}
+
+set 2dviewer 0
+
+
+
+ 

@@ -1,0 +1,24 @@
+
+puts "========"
+puts "OCC161"
+puts "========"
+puts ""
+###########################################################
+## The face provided in attachment has single wire that is misoriented, i.e has
+## internal part outside. The checkshape command in DRAW should report that error
+## situation, while it does not.
+###########################################################
+
+restore [locate_data_file OCC161.brep] result
+
+decho off
+set che [checkshape result]
+decho on
+
+if { [regexp {Faulty} $che] != 1 } {
+    puts "Faulty OCC161 : Checkshape command works wrongly"
+} else {
+    puts "OCC161 OK : Checkshape command works properly"
+}
+
+set 2dviewer 0

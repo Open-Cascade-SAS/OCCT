@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "BUC60965"
+puts "========================"
+
+restore [locate_data_file buc60965-c.draw] c 
+restore [locate_data_file buc60965-s.draw] s
+
+project result c s
+
+regexp {The+ length+ result+ is +([-0-9.+eE]+)} [length result] full len
+set y [expr 3.e5+int(1.e5*($len-round($len)))]
+
+if { $y != 314196.0 } {
+   puts "Results is incorrect"
+}
+
+set 2dviewer 0
+
+
+
+
+
+

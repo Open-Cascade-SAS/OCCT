@@ -1,0 +1,17 @@
+
+puts "========================"
+puts " OCC247 "
+puts "========================"
+
+#################################################
+##Using of function "bop" with attached shapes calls exception. 
+#################################################
+restore [locate_data_file OCC247a.brep] a
+restore [locate_data_file case_8_wire3.brep] b
+
+bop a b
+
+
+
+
+ 

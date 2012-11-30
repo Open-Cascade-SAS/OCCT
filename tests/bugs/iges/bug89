@@ -1,0 +1,16 @@
+puts "========================"
+puts "BUC60800 OCC89"
+puts "========================"
+
+#######################################################
+##  Reading of this file crashes  ??? Reading of this file gives invalid shape ??? 
+#######################################################
+
+igesbrep [locate_data_file BUC60800.igs] a *
+
+tpcompound result
+puts [checkshape result]
+puts [checkshape result r]
+
+set 2dviewer 0
+

@@ -1,0 +1,30 @@
+
+puts "========"
+puts "OCC163"
+puts "========"
+puts ""
+###########################################################
+## The result of extrema command is not correct.
+## We have only two "max" extrema, but we should have "min" and "max".
+###########################################################
+
+restore [locate_data_file OCC130.brep] res 
+
+puts [checkshape res]
+
+line l -120 -100 400 0 0 1
+mksurface s res
+
+set che [extrema l s]
+set err [llength $che]
+if { $err < 2} {
+    puts "Error OCC163 (amount): command extrema does NOT work properly"
+}
+
+set dum1 [dump [lindex $che 0]]
+set dum2 [dump [lindex $che 1]]
+
+if { $dum1 == $dum2} {
+    puts "Error OCC163 (dump): command extrema does NOT work properly"
+}
+

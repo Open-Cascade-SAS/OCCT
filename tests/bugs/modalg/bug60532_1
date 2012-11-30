@@ -1,0 +1,24 @@
+#INTERFACE IGES
+puts "==========="
+puts "BUC60532"
+puts "==========="
+
+restore [locate_data_file buc60532a.brep] p 
+puts [checkshape p]
+
+restore [locate_data_file buc60532b.brep] t1
+puts [checkshape t1]
+
+restore [locate_data_file buc60532c.brep] t2
+puts [checkshape t2]
+
+# create halfspace
+halfspace h1 t1 20 20 0
+halfspace h2 t2 20 20 0
+
+# first cut
+bcut result p h1
+
+set square 81.8172
+set 2dviewer 0
+

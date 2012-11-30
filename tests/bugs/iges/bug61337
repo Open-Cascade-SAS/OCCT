@@ -1,0 +1,14 @@
+puts "==========="
+puts "GER61337"
+puts "=================================="
+
+cpulimit 3000
+
+igesbrep [locate_data_file ger61337a.igs] a *
+
+tpcompound result
+puts [checkshape result]
+puts [checkshape result r]
+
+set 2dviewer 0
+

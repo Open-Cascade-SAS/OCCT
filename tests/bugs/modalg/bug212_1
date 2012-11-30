@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC212"
+puts "========"
+################################################
+## Bug in Topological "Common" boolean operation
+################################################
+
+restore [locate_data_file OCC212-1.brep] S1 
+puts [checkshape S1]
+restore [locate_data_file OCC212-2.brep] S2
+puts [checkshape S2]
+
+bcommon result S1 S2
+
+set square 314.301
+set 3dviewer 0
+

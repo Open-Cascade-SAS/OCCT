@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "========================"
+puts " OCC469 "
+puts "========================"
+puts ""
+######################################################
+## It's impossible to fuse the two shapes in the file attached. #2740, SAM1493
+######################################################
+
+restore [locate_data_file OCC469.brep] a 
+explode a
+
+checkshape a_1
+checkshape a_2
+
+bfuse result a_1 a_2
+puts [checkshape result]
+
+set check_square 1
+set square 10
+set 2dviewer 0

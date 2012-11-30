@@ -1,0 +1,22 @@
+
+puts "============"
+puts "BUC60905"
+puts "============"
+puts ""                                                                                                                                                                        
+#########################################################
+## shape contains open shells if sewing would be made with big tolerance invalid shape
+## will be produced, and visualization crashes. 
+#########################################################
+
+restore [locate_data_file BUC60905.brep] a 
+# checkshape a
+
+sewing result 10 a
+
+vinit
+vdisplay result
+
+# checkshape res
+                                                                                                                                                                         
+set square 270868
+set 3dviewer 0

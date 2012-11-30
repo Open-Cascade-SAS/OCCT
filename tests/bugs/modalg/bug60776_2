@@ -1,0 +1,15 @@
+
+puts "========================"
+puts "BUC60776"
+puts "========================"
+
+restore [locate_data_file buc60776c.brep] a
+puts [checkshape a]
+restore [locate_data_file buc60776d.brep] b
+puts [checkshape b]
+bsection result a b
+
+set length 111.405
+
+set 2dviewer 1
+

@@ -1,0 +1,20 @@
+
+puts "================"
+puts "BUC60663"
+puts "BUC60662"
+puts "OCC101"
+puts "================"
+puts ""
+######################################
+##  After restore c shell, section is incomplete
+######################################
+restore [locate_data_file buc60663a.brep] sh1 
+puts [checkshape sh1]
+restore [locate_data_file buc60663b.brep] sh2
+puts [checkshape sh2]
+
+bsection result sh1 sh2
+
+set length 26.2001
+set 2dviewer 0
+

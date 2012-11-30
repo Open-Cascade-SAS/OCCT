@@ -1,0 +1,35 @@
+puts "TODO OCC12345 ALL: Faulty OCC20: here is shading problem"
+
+puts "================"
+puts "OCC20"
+puts "================"
+puts ""
+###############################
+## Face apearence in shading mode is wrong
+###############################
+
+pload QAcommands
+restore [locate_data_file OCC20.brep] result
+
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+
+QASetViewCharac 5.1346924 95.358439 -4.910448 0.23495967 -0.302 0.923899 -0.7304302 0.5722587 0.372815 9.550874 -7.55706 -28.83166
+
+isos result 0
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri != 416 || $nod != 367 }  {
+   puts "Faulty OCC20: here is shading problem"
+}
+
+set 2dviewer 0
+

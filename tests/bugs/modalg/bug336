@@ -1,0 +1,16 @@
+
+puts "============"
+puts "BUC60939"
+puts "OCC336"
+puts "============"
+
+restore [locate_data_file BUC60939.brep] a 
+
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+
+bfuse result a_1 a_2
+
+set square 32903.1
+set 2dviewer 0

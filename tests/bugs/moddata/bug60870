@@ -1,0 +1,35 @@
+
+puts "========"
+puts "BUC60870"
+puts "========"
+
+pload QAcommands
+
+vertex vertex_1 0 0 0
+vertex vertex_2 0 1 0
+vertex vertex_3 0 0.3 1
+
+edge edge_1 vertex_1 vertex_2
+
+set result [BUC60870 test_result edge_1 vertex_3 2.0]
+
+if {[llength ${result}] < 4} {
+  puts "BUC60870: Error; must be 3 solutions"
+} else {
+  set MinimumDistance [dval test_result_val]
+  set TheorMinimumDistance 1.0
+  set percent_max 1.0
+  set percent [expr abs(${MinimumDistance} - ${TheorMinimumDistance}) / ${TheorMinimumDistance} * 100.]
+  if {${percent} > ${percent_max}} {
+    puts "MinimumDistance=${MinimumDistance}"
+    puts "TheorMinimumDistance=${TheorMinimumDistance}"
+    puts "percent=${percent}"
+    puts "percent_max=${percent_max}"
+    puts "BUC60870: Error; bad value of minimum distance"
+  } else {
+    puts "BUC60870: OK"
+  }
+}
+
+set 2dviewer 0
+

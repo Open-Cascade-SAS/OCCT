@@ -1,0 +1,15 @@
+
+puts "========================"
+puts "BUC60704"
+puts "BUC60709"
+puts "========================"
+
+restore [locate_data_file buc60704a.brep] p 
+puts [checkshape p]
+restore [locate_data_file buc60704b.brep] s
+puts [checkshape s]
+
+bfuse result p s
+
+set square 39.0889
+set 2dviewer 0

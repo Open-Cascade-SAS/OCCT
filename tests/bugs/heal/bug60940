@@ -1,0 +1,10 @@
+puts "========================"                                                                                      
+puts "BUC60940"                                                                                                      
+puts "========================"                                                                                      
+
+restore [locate_data_file buc60940.rle] a 
+
+fixshape result a 1e-7 1
+puts [checkshape result]
+
+set 2dviewer 1

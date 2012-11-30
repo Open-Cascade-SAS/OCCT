@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC386"
+puts "========"
+puts ""
+#######################################
+## Crash when reading an IGES file
+#######################################
+
+igesbrep [locate_data_file So5571b.igs] a *
+
+tpcompound result
+puts [checkshape result]
+puts [checkshape result r]
+
+set 2dviewer 0
+

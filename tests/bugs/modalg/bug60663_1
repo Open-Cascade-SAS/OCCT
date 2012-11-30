@@ -1,0 +1,26 @@
+
+puts "====================================="
+puts "BUC60663"
+puts "====================================="
+puts ""
+puts "It takes visual check for this BUG. See V2 point"
+puts "====================================="
+puts ""
+
+restore [locate_data_file buc60663a.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60663b.brep] b
+puts [checkshape b]
+
+bsection result a b
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full num
+if { $num != 2 } {
+    puts " Faulty : Result shape is INcorrect !!! "
+}
+
+
+#fsameparameter res
+
+set length 26.2001
+set 3dviewer 2

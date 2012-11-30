@@ -1,0 +1,17 @@
+
+puts "============"
+puts "BUC60839"
+puts "============"
+puts ""                                                                                                                                                                        
+
+restore [locate_data_file BUC60839-1.brep] a 
+puts [checkshape a]
+restore [locate_data_file BUC60839-2.brep] b
+puts [checkshape b]
+
+puts "Starting fuse operation"
+
+bfuse result a b
+
+set square 27341.6
+set 2dviewer 0

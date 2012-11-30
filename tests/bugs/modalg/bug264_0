@@ -1,0 +1,29 @@
+
+puts "========"
+puts "OCC264"
+puts " (case 0)"
+puts "========"
+
+restore [locate_data_file OCC264_00.rle] result
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vclear
+
+isos result 0
+triangles result
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri != 6 && $nod != 8 }  {
+    puts "Faulty OCC264_0: here is shading problem"
+} else {
+    puts "Shading of OCC264_0 is OK"
+}
+
+set square 1.3135
+set 2dviewer 0

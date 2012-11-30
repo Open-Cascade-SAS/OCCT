@@ -1,0 +1,22 @@
+
+puts "================"
+puts "OCC266"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC266.brep] a 
+puts [checkshape a]
+
+renamevar a edge
+explode edge e
+
+renamevar edge face
+explode face f
+
+chamf result face edge_10 face_3 A 1 45 edge_6 face_3 A 1 45 edge_11 face_3 A 1 45 edge_12 face_3 A 1 45 edge_13 face_3 A 1 45 edge_14 face_3 A 1 45 edge_8 face_3 A 1 45 edge_9 face_3 A 1 45
+puts [checkshape result]
+
+set check_square 1
+set square 48913
+set 2dviewer 0
+

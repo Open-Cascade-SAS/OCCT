@@ -1,0 +1,109 @@
+puts "========"
+puts "BUC60963"
+puts "OCC88"
+puts "========"
+puts ""
+######################################################
+# BUC60963. can not project vertex to face
+######################################################
+
+restore [locate_data_file OCC88.brep] sh 
+
+set che [checkshape sh]
+
+explode sh f
+puts [checkshape sh_1]
+puts [checkshape sh_2]
+
+mksurface surf1 sh_1
+mksurface surf2 sh_2
+puts "Make line from pos(135; 11; 0) with dir (0;0;1) "
+line l 135 11 0 0 0 1
+
+intersect res1 l surf1
+intersect res2 l surf2
+#set first1 [whatis res1]
+#set second1 [whatis res2]
+
+puts "Try to intersect with (135;10.9995;0) (0;0;1)"
+line ll 135 10.9995 0 0 0 1
+intersect res_1 ll surf1
+intersect res_2 ll surf2
+#set first2 [whatis res_1]
+#set second2 [whatis res_2]
+
+proc CalculatePercent {value good_value} {
+    if {${good_value} == 0. && ${value} == 0.} {
+        set percent 0.
+    } else {
+        set percent [expr abs(${value} - ${good_value}) / double(${good_value}) * 100.]
+    }
+    return ${percent}
+}
+
+set IsGood 1
+set percent_max 0.1
+if {[info exists res1] == 0} {
+   puts "Faulty OCC88 (case 2)"
+   set IsGood 0
+}
+if {[info exists res2] == 1} {
+   puts "Faulty OCC88 (case 3)"
+   set IsGood 0
+}
+
+if {[info exists res_1] == 0} {
+   puts "Faulty OCC88 (case 4)"
+   set IsGood 0
+}
+if {[info exists res_2] == 1} {
+   puts "Faulty OCC88 (case 5)"
+   set IsGood 0
+}
+
+if {${IsGood} == 1} {
+   set dump_list1 [split [dump res1] " :,\n"]
+   set x1 [lindex ${dump_list1} 10]
+   set y1 [lindex ${dump_list1} 12]
+   set z1 [lindex ${dump_list1} 14]
+
+   set dump_list2 [split [dump res_1] " :,\n"]
+   set x2 [lindex ${dump_list2} 10]
+   set y2 [lindex ${dump_list2} 12]
+   set z2 [lindex ${dump_list2} 14]
+
+   set x_percent [CalculatePercent ${x1} ${x2}]
+   set y_percent [CalculatePercent ${y1} ${y2}]
+   set z_percent [CalculatePercent ${z1} ${z2}]
+
+   puts "x1 = ${x1}"
+   puts "x2 = ${x2}"
+   puts "x_percent = ${x_percent}\n"
+
+   puts "y1 = ${y1}"
+   puts "y2 = ${y2}"
+   puts "y_percent = ${y_percent}\n"
+
+   puts "z1 = ${z1}"
+   puts "z2 = ${z2}"
+   puts "z_percent = ${z_percent}\n"
+
+   if {${x_percent} > ${percent_max}} {
+      puts "OCC88 Faulty (case 6)"
+      set IsGood 0
+   }
+   if {${y_percent} > ${percent_max}} {
+      puts "OCC88 Faulty (case 7)"
+      set IsGood 0
+   }
+   if {${z_percent} > ${percent_max}} {
+      puts "OCC88 Faulty (case 8)"
+      set IsGood 0
+   }
+}
+
+if {${IsGood} == 1} {
+   puts "OCC88 OK"
+}
+
+

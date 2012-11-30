@@ -1,0 +1,19 @@
+#INTERFACE IGES
+puts "========"
+puts "OCC209"
+puts "========"
+
+##########################################
+## FixMissingSeam leads to lost pcurve on neighbouring face
+##########################################
+
+restore [locate_data_file OCC209.brep] a 
+explode a f
+checkshape a_4
+
+fixshape result a 0.01 0.01
+explode result f
+
+puts [checkshape result_4]
+set 2dviewer 1
+

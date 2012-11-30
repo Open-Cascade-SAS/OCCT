@@ -1,0 +1,72 @@
+puts "========"
+puts "BUC60897"
+puts "========"
+
+pload QAcommands
+
+if [catch { set result [BUC60897] } ] {
+  puts "BUC60897: Error; (case 1)"
+} else {
+  set len [llength ${result}]
+  if {${len} < 21} {
+    puts "length = ${len}"
+    puts "BUC60897: Error; (case 2)"
+  } else {
+    set circle_X [lindex ${result} 3]
+    set circle_Y [lindex ${result} 5]
+    set circle_R [lindex ${result} 7]
+    set tangency1_X [lindex ${result} 11]
+    set tangency1_Y [lindex ${result} 13]
+    set tangency2_X [lindex ${result} 17]
+    set tangency2_Y [lindex ${result} 19]
+
+    set x1 [expr abs(${tangency1_X} - ${circle_X})]
+    set y1 [expr abs(${tangency1_Y} - ${circle_Y})]
+    set R1 [expr sqrt(${x1} * ${x1} + ${y1} * ${y1})]
+
+    set x2 [expr abs(${tangency2_X} - ${circle_X})]
+    set y2 [expr abs(${tangency2_Y} - ${circle_Y})]
+    set R2 [expr sqrt(${x2} * ${x2} + ${y2} * ${y2})]
+
+    set maxdelta 1.0
+    set delta_R1 [expr abs(${R1} - ${circle_R}) / ${circle_R} * 100.]
+    set delta_R2 [expr abs(${R2} - ${circle_R}) / ${circle_R} * 100.]
+
+    if {${delta_R1} > ${maxdelta}} {
+      puts "circle_X = ${circle_X}"
+      puts "circle_Y = ${circle_Y}"
+      puts "circle_R = ${circle_R}"
+      puts "tangency1_X = ${tangency1_X}"
+      puts "tangency1_Y = ${tangency1_Y}"
+      puts "x1 = ${x1}"
+      puts "y1 = ${y1}"
+      puts "R1 = ${R1}"
+      puts "delta_R1 = ${delta_R1}"
+      puts "maxdelta = ${maxdelta}"
+      puts "BUC60897: Error; (case 3)"
+    } else {
+      puts "BUC60897: OK; (case 1)"
+    }
+
+    if {${delta_R2} > ${maxdelta}} {
+      puts "circle_X = ${circle_X}"
+      puts "circle_Y = ${circle_Y}"
+      puts "circle_R = ${circle_R}"
+      puts "tangency2_X = ${tangency2_X}"
+      puts "tangency2_Y = ${tangency2_Y}"
+      puts "x2 = ${x2}"
+      puts "y2 = ${y2}"
+      puts "R2 = ${R2}"
+      puts "delta_R2 = ${delta_R2}"
+      puts "maxdelta = ${maxdelta}"
+      puts "BUC60897: Error; (case 4)"
+    } else {
+      puts "BUC60897: OK; (case 2)"
+    }
+
+  }
+}
+
+set 3dviewer 0
+
+

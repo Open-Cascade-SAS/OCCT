@@ -1,0 +1,33 @@
+ 
+puts "========================"
+puts " OCC481 "
+puts "========================"
+puts ""
+##########################################
+##Attached shape could not be displayed in the Shading mode.
+##########################################
+
+restore [locate_data_file OCC481.rle] result
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+set tri 0
+set nod 0
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri == 72 && $nod == 74 } {
+    puts " OCC481 : OK"
+} else {
+    puts " OCC481 : Faulty"
+}
+
+set square 314.159
+set 3dviewer 1

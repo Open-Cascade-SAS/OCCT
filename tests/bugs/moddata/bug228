@@ -1,0 +1,21 @@
+
+puts "================"
+puts "OCC228"
+puts "================"
+puts ""
+################################################
+## It's impossible to make common of the two shapes in the file attached.
+################################################
+
+cpulimit 4000
+
+restore [locate_data_file OCC228.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+
+bcommon result a_1 a_2
+
+set check_square 1
+set square 66231.3
+set 2dviewer 0

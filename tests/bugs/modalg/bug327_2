@@ -1,0 +1,17 @@
+#INTERFACE IGES
+puts "========================"
+puts " OCC327 "
+puts " case 2 "
+puts "========================"
+
+restore [locate_data_file OCC327b.brep] result
+
+set che [checkshape result r]
+if { [regexp {OK} $che] == 1 } {
+    puts " OCC327  case 2: OK"
+} else {
+    puts " OCC327  case 2: Faulty"
+}
+
+set square 5674.84
+set 2dviewer 0

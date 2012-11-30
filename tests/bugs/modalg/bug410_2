@@ -1,0 +1,18 @@
+
+puts "========================"
+puts " OCC410 "
+puts "(case 2)"
+puts "========================"
+puts ""
+
+restore [locate_data_file f7] b1 
+puts [checkshape b1]
+
+restore [locate_data_file f3] b2
+puts [checkshape b2]
+
+bfuse result b1 b2
+
+set square 172.169
+set 2dviewer 0
+

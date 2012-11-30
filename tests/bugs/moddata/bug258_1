@@ -1,0 +1,27 @@
+
+puts "========================"
+puts " OCC258 "
+puts "(case 1)"
+puts "========================"
+
+restore [locate_data_file shading_143.brep] result
+puts [checkshape result]
+
+tclean result
+isos result 0
+vinit 
+vdisplay result
+vsetdispmode result 1
+vfit
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri < 71 || $nod < 73 }  {
+  puts "Error (case 1) : here is shading problem"
+}
+
+set 3dviewer 0
+

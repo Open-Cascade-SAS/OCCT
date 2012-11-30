@@ -1,0 +1,15 @@
+
+puts "==========="
+puts "  BUC60955"
+puts "==========="
+
+puts "Restoring face from file"
+restore [locate_data_file buc60955.brep] result
+puts [checkshape result]
+
+build3d result
+
+set check_square 1
+set square 8464.65
+set 2dviewer 0
+

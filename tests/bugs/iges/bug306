@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC306"
+puts "================"
+puts ""
+#############################################################################
+##After applying sewing on the model from the file TibTray_Size3.igs (see the attachment) one surface is not shaded.
+#############################################################################
+
+igesbrep [locate_data_file TibTray_Size3.igs] a *
+
+tpcompound a
+tclean a
+
+sewing result a
+
+puts [checkshape result]
+
+vinit
+vsetdispmode result 1
+vdisplay result
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { ($tri != 6409 || $nod != 6195) } {
+    puts "Shading problem may be, nb tri & nod"
+} 
+
+set 3dviewer 1
+
+
+

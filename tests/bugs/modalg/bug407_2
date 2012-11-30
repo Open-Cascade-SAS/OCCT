@@ -1,0 +1,18 @@
+
+puts "========================"
+puts " OCC407 "
+puts "(case 2)"
+puts "========================"
+puts ""
+
+pcylinder b1 1 4
+pcylinder b2 1 4
+trotate b2 0 0 2 1 0 0 90
+trotate b2 0 0 2 0 1 0 60
+
+bcut result b2 b1 
+checkshape -top result
+
+set square 31.4159
+set 2dviewer 0
+

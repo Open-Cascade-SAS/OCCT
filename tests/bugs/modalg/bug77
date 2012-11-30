@@ -1,0 +1,21 @@
+puts "========================"
+puts " BUC60866 "
+puts " OCC77 "
+puts "========================"
+puts ""
+######################################################
+# The BRepFill_Pipe fails
+######################################################
+
+restore [locate_data_file buc60866a.rle] f 
+puts [checkshape f]
+
+restore [locate_data_file buc60866b.rle] w
+puts [checkshape w]
+
+pipe result w f
+
+set square 1.12048e+07
+set 2dviewer 0
+
+

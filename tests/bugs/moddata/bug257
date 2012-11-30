@@ -1,0 +1,49 @@
+puts "TODO OCC12345 ALL: OCC257 - Error : xdelta= 3.6651128509496784"
+puts "TODO OCC12345 ALL: OCC257 - Error : ydelta= 5.840378793387278"
+puts "TODO OCC12345 ALL: OCC257 - Error : zdelta= 1.4898469085120623"
+
+puts "================"
+puts "OCC257"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC257.brep] result 
+puts [checkshape result]
+
+set bb [bounding result]
+
+set list [split ${bb}]
+set listLength [llength ${list}]
+if { ${listLength} < 6 } {
+   puts "Error : listLength = ${listLength}"
+}
+
+set x1 [lindex ${list} 0]
+set y1 [lindex ${list} 1]
+set z1 [lindex ${list} 2]
+set x2 [lindex ${list} 3]
+set y2 [lindex ${list} 4]
+set z2 [lindex ${list} 5]
+
+set len [expr ${x2} - ${x1}]
+set width  [expr ${y2} - ${y1}]
+set height [expr ${z2} - ${z1}]
+
+set R 180
+
+set xdelta [expr abs(${len} - ${R}) / ${R} * 100]
+set ydelta [expr abs(${width}  - ${R}) / ${R} * 100]
+set zdelta [expr abs(${height} - ${R}) / ${R} * 100]
+
+set maxdelta 0.1
+
+if { ${xdelta} > ${maxdelta} } then {puts "OCC257 - Error : xdelta= ${xdelta}"}
+if { ${ydelta} > ${maxdelta} } then {puts "OCC257 - Error : ydelta= ${ydelta}"}
+if { ${zdelta} > ${maxdelta} } then {puts "OCC257 - Error : zdelta= ${zdelta}"}
+
+if { ${xdelta} <= ${maxdelta} && ${ydelta} <= ${maxdelta} && ${zdelta} <= ${maxdelta} } then {
+   puts "OCC257: OK"
+}
+
+set 3dviewer 0
+

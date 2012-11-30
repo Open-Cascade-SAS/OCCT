@@ -1,0 +1,34 @@
+puts "TODO OCC12345 ALL: Error on Record"
+
+puts "========"
+puts "OCC205"
+puts "OCC348"
+puts "BUC61003"
+puts "========"
+######################################
+## puts "Crash on importing STEP file"
+## JC_TOY_CAR.stp
+######################################
+
+cpulimit 4000
+
+vinit
+stepread [locate_data_file BUC61003-3.stp] a *
+
+tpcompound result
+puts [checkshape result]
+
+vdisplay result
+vsetdispmode 1
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri == 0 || $nod == 0 } {
+   puts "Error : here is shading problem"
+}
+
+set 2dviewer 0
+

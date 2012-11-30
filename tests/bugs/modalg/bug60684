@@ -1,0 +1,12 @@
+
+puts "============="
+puts "BUC60684"
+puts "============="
+
+restore [locate_data_file buc60684a.brep] w 
+puts [checkshape w]
+
+prism result w 0 0 10
+
+set square 148.875
+set 2dviewer 0

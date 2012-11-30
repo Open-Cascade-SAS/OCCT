@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: Faulty PRO20333: here is shading problem"
+
+puts "============"
+puts "PRO20333"
+puts ""
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+restore [locate_data_file pro20333a.brep] result
+puts [checkshape result]
+
+tclean result
+isos result 0
+incmesh result .1
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri != 107 || $nod != 109 } {  
+   puts "Faulty PRO20333: here is shading problem"
+}
+
+set 3dviewer 0

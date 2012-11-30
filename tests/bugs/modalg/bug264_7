@@ -1,0 +1,33 @@
+
+puts "========"
+puts "OCC264"
+puts " (case 7)"
+puts "========"
+
+restore [locate_data_file OCC264_07.brep] result
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vclear
+
+isos result 0
+triangles result
+
+#smallview
+#fit
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { ($tri != 114 && $nod != 116) && ($tri != 116 && $nod != 118) }  {
+    puts "Shady OCC264_7: here may be shading problem"
+} else {
+    puts "Shading of OCC264_7 is OK"
+}
+
+set square 150.283
+set 2dviewer 0
+

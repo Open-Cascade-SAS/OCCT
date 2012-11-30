@@ -1,0 +1,23 @@
+
+puts "========================"
+puts " OCC354 "
+puts "(case 2)"
+puts "========================"
+puts ""
+##################################################
+## neither chamfer nor blend is built in similar situation 
+##################################################
+
+restore [locate_data_file OCC354b.brep] a 
+explode a f
+
+explode a_5 e
+
+donl a a_5_6
+
+chamf result a a_5_6 a_5 A 2 45
+puts [checkshape result]
+
+set check_square 1
+set square 589.268
+set 2dviewer 0

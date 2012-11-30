@@ -1,0 +1,16 @@
+puts "================"
+puts "OCC2"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC46.brep] result
+puts [checkshape result]
+
+set l [lindex [statshape result] 5]
+
+if { $l != "EDGE"} then {
+   puts "Error : Output of statshape is incorrect."
+}
+
+set 2dviewer 0
+	

@@ -1,0 +1,23 @@
+#INTERFACE IGES
+puts "================"
+puts "OCC21"
+puts "================"
+puts ""
+
+#test for XSDRAWEXE application#
+#==============================#
+
+pload XDE
+catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
+
+restore [locate_data_file OCC21.brep] sh 
+puts [checkshape sh]
+puts "two faces in the compound share one edge"
+
+DT_SplitAngle result sh 90
+
+puts "in the resulting shape sharing is not preserved"
+
+set square 12154.8
+set 2dviewer 0
+

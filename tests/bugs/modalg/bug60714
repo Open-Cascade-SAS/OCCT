@@ -1,0 +1,23 @@
+
+puts "========================"
+puts "BUC60714"
+puts "========================"
+
+profile f x 30 y 20 x -30
+explode f w 
+vertex v1 0 0 0 
+vertex v2 0 -10 -10
+edge e v1 v2
+
+wire w e
+mksweep f_1
+setsweep -FR
+addsweep w
+
+########
+#does'nt work
+buildsweep result -C -S
+
+set square 1979.9
+set 2dviewer 0
+

@@ -1,0 +1,13 @@
+
+puts "==================="
+puts "BUG60667"
+puts "==================="
+
+restore [locate_data_file buc60667a.brep] result
+fsameparameter result
+puts [checkshape result]
+
+set check_square 1
+set square 6.5285
+set 2dviewer 0
+

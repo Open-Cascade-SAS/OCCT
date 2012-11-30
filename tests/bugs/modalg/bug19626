@@ -1,0 +1,21 @@
+
+puts "============"
+puts "PRO19626"
+puts "============"
+
+restore [locate_data_file pro19626a.brep] a 
+puts [checkshape a]
+restore [locate_data_file pro19626b.brep] b
+puts [checkshape b]
+
+bsection result a b
+regexp { nb alone Vertices : +([-0-9.+eE]+)} [checksection result] full num
+if { $num != 2 } {
+    puts " Faulty PRO19626: Result shape is INcorrect !!! "
+} else {
+    puts "PRO19626 OK : Result shape is CORRECT !!! "
+}
+
+set length 174.597
+set 3dviewer 2
+

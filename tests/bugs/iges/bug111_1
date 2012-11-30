@@ -1,0 +1,14 @@
+puts "========"
+puts "BUC61054"
+puts "OCC111"
+puts "(case 1)"
+puts "========"
+
+igesbrep [locate_data_file OCC111a.igs] a *
+
+tpcompound result
+puts [checkshape result]
+puts [checkshape result r]
+
+set 2dviewer 0
+

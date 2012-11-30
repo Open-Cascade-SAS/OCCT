@@ -1,0 +1,28 @@
+puts "============"
+puts "BUC60907"
+puts "OCC81"
+puts "============"
+puts ""
+###############################
+## Section shell by plane gives overlapped edges
+###############################
+
+restore [locate_data_file BUC60907_px1.rle] sh 
+puts [checkshape sh]
+
+plane f 60 0 0 1 0 0
+mkface f f
+bsection result sh f
+puts "Info: it should be 12 edges"
+
+set nb_info [nbshapes result]
+regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ne
+
+if { $ne != 12 } {                                         
+    puts "Faulty :Number of edges is wrong"                                                                               
+} else {
+    puts "Number of edges is OK"                                                                                                   
+}
+
+set length 33.6353
+set 2dviewer 0

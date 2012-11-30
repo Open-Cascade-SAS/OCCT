@@ -1,0 +1,12 @@
+
+puts "================"
+puts "OCC41"
+puts "================"
+puts ""
+
+puts "Isos lines may be drawn incorrectly"
+psphere result 10 -90
+
+set 2dviewer 0
+
+

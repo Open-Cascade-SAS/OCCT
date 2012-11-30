@@ -1,0 +1,22 @@
+#INTERFACE IGES
+puts "========================"
+puts " OCC302 "
+puts "(case 3)"
+puts "========================"
+puts ""
+#################################################################
+## After performing command "checkshape" to attached face I receive "Bad Orientation of Subshape"
+##  but I believe that orientation of this face is correct.
+#################################################################
+
+restore [locate_data_file OCC302c.brep] result
+
+set che [checkshape result r]
+if { [regexp {OK} $che] !=1 } {
+    puts "Faulty OCC302 (case 3): command  checkshape works wrongly"
+} else {
+    puts "OCC302 OK (case 3) :  command  checkshape works properly"
+}
+
+set square 23240.8
+set 2dviewer 0

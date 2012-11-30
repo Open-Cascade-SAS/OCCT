@@ -1,0 +1,15 @@
+#INTERFACE IGES
+puts "========"
+puts "OCC174"
+puts "========"
+puts ""
+###########################################################################
+## After analyze given face (file ff97.brep) using BRepCheck we recieve problem - "Bad Orientation of Subshape".
+## But we believe that this shape must be OK or we have to recieve more detail another reply from BRepCheck.
+###########################################################################
+
+restore [locate_data_file OCC174.brep] result
+
+set square 376.873
+set 2dviewer 0
+

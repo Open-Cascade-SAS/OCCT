@@ -1,0 +1,23 @@
+
+puts "================"
+puts "OCC116"
+puts "================"
+puts ""
+#############################################
+## Creation of chamfer is impossible on attached shape.(SAM1201)
+#############################################
+
+restore [locate_data_file OCC116.brep] sh 
+puts [checkshape sh]
+ 
+explode sh f
+explode sh_6 e
+
+if [catch {chamf result sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45 } catch_result] {
+  puts "1) Faulty  OCC116: chamfer is NOT created properly"
+ } else {
+  puts "1) CHAMF OCC116 OK"
+}
+
+set square 48357.5
+set 3dviewer 2

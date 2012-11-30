@@ -1,0 +1,26 @@
+
+puts "========"
+puts "OCC227"
+puts "(case 2)"
+puts "========"
+
+##############################################################
+##Incorrect result with missing faces after a fuse operation beetween the box and the wedge.
+###############################################################
+
+restore [locate_data_file OCC227a.brep] a 
+fsameparameter a
+updatetolerance a
+puts [checkshape a]
+
+restore [locate_data_file OCC227b.brep] b
+fsameparameter b
+updatetolerance b
+puts [checkshape b]
+
+bfuse result b a 
+puts [checkshape result]
+
+set check_square 1
+set square 1583.92
+set 2dviewer 0

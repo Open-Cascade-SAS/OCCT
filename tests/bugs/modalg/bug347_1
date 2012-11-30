@@ -1,0 +1,31 @@
+ 
+puts "========================"
+puts " BUC60959 "
+puts " OCC347 "
+puts " (case 1) "
+puts "========================"
+
+restore [locate_data_file OCC347a.brep] result
+puts [checkshape result]
+
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+set 3dviewer 1
+
+set tri 0
+set nod 0
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri == 72 && $nod == 74} {
+    puts " OCC347  case 1: OK"
+} else {
+    puts " OCC347  case 1: Faulty"
+}
+
+set square 314.159
+set 2dviewer 0

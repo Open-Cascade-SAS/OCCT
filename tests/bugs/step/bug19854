@@ -1,0 +1,19 @@
+puts "=========="
+puts "PRO19854"
+puts "=========="
+puts "Incorrect translation of one entity from STEP file in optimaze mode of C30."
+
+stepread [locate_data_file id_turbine-B.stp] a *
+
+puts [checkshape a_1]
+puts [checkshape a_1 r]
+
+renamevar a_1 result
+
+tpdraw 2637
+
+puts [checkshape tp_2637]
+puts [checkshape tp_2637 r]
+
+set 2dviewer 0
+

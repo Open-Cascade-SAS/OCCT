@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC213"
+puts "========"
+################################################
+## Bug in Topological "fuse" boolean operation
+################################################
+
+restore [locate_data_file OCC213-1.brep] S1 
+puts [checkshape S1]
+restore [locate_data_file OCC213-2.brep] S2
+puts [checkshape S2]
+
+bfuse result S2 S1 
+set square 4835.45
+set 3dviewer 0

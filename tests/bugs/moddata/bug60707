@@ -1,0 +1,25 @@
+
+puts "==========="
+puts "BUC60707"
+puts "==========="
+puts ""
+#################################################
+## Fillets created in CasCade version 3 do not display as shaded surfaces. 
+#################################################
+restore [locate_data_file buc60707a.brep] result
+puts [checkshape result]
+
+tclean result
+incmesh result .1
+triangles result
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full Maxtriangl
+
+if { $Maxtriangl < 1 } {
+   puts "Error : inside mesh for shading wasn't build"
+}
+
+set 3dviewer 0
+
+
+

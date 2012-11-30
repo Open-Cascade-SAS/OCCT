@@ -1,0 +1,24 @@
+
+puts "========================"
+puts "  BUC60706 "
+puts " OCC110 "
+puts "(case 1)"
+puts "========================"
+
+restore [locate_data_file buc60706a.brep] f 
+puts [checkshape f]
+
+restore [locate_data_file buc60706b.brep] w
+puts [checkshape w]
+pipe t w f
+
+restore [locate_data_file buc60706c.brep] s
+puts [checkshape s]
+
+bcut result s t
+
+catch {exec rm ${imagedir}/buc60706f.brep}
+save result ${imagedir}/buc60706f.brep
+
+set square 865745
+set 2dviewer 0

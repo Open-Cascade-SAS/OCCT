@@ -1,0 +1,22 @@
+
+puts "================"
+puts "OCC37"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC37.brep] sh 
+explode sh
+puts [checkshape sh_1]
+puts [checkshape sh_2]
+
+bfuse result sh_2 sh_1
+puts [checkshape result]
+
+set check_square 1
+set square 665013
+set 2dviewer 0
+
+
+
+
+

@@ -1,0 +1,26 @@
+
+puts "======== OCC269 ========"
+
+restore [locate_data_file OCC269-4.brep] result
+puts [checkshape result]
+isos result 0
+tclean result
+
+#Creating mesh
+incmesh result 0.01
+
+#View the result of mesh
+triangles result
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+# $tri != 8362 && $nod != 4257
+if { $tri != 7218 && $nod !=  3685 }  {
+  puts "Shady OCC269: shading problem may be, nb tri & nod changed"
+} else {
+  puts "Shading of OCC269 is OK"
+}
+set square 36.4284
+set 2dviewer 0

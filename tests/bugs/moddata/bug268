@@ -1,0 +1,16 @@
+
+puts "========"
+puts "OCC268"
+puts "========"
+puts ""
+###########################################################
+## Using of command "lprops" for shapes that contain degenerated edges call exception.
+###########################################################
+
+restore [locate_data_file OCC268.brep] result 
+puts [checkshape result]
+
+set check_square 1
+set length 56.6039
+set 2dviewer 0
+
