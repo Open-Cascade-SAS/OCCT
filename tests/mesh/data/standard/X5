@@ -1,0 +1,3 @@
+puts "bug23473"
+
+set TheFileName bug23473_Scheibe_1_f867.brep
