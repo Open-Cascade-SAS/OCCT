@@ -1,2 +1,2 @@
 FAILED /\bFaulty\b/ bad shape
-IGNORE /Tcl Exception: No Extreme faces/ featlf A4
+IGNORE /\bNo error\b/ normal message in featprism L6 and featrevol H9

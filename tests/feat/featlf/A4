@@ -1,5 +1,7 @@
 puts "*"
+puts "TODO OCC22810 ALL: Tcl Exception: No Extreme faces"
 puts "TODO OCC22810 All:TEST INCOMPLETE"
+
 box b 1 1 1
 nexplode b f
 profile pp x 0.6 y 0.6 x -0.6 y -0.6
@@ -17,7 +19,7 @@ wire w e1 e2 e3
 
 plane pl 0.8 0.8 1 1 -1 0
 featlf r w pl 0.1 0.1 0 0 0 0 1 1
-if { [catch { featperform lf result } ] != 0 } {
+if { [catch { featperform lf result } ] } {
   puts "Error in featperform"
 }
 

@@ -1,4 +1,4 @@
 SKIPPED /Tcl Exception: Error: file .* could not be found/ data file is missing
 IGNORE /Tcl Exception: [*][*] Exception [*][*]/ duplicate report on exception on Tcl level
 FAILED /\b[Ee]xception\b/ exception
-FAILED /\bError\b/ error
+FAILED /\b[Ee][Rr][Rr][Oo][Rr]\b/ error
