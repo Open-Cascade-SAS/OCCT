@@ -1,6 +1,7 @@
-puts "TODO OCC12345 ALL: An exception was caught"
-puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+# by apn master-master 03.12.2012
+#puts "TODO OCC12345 ALL: An exception was caught"
+#puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+#puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 
 puts "================"
 puts "OCC152"
@@ -21,6 +22,6 @@ bcut result sh_2 sh_1
 puts [checkshape result]
 
 set check_square 1
-set square 10
+set square 34894.3
 set 2dviewer 0
 

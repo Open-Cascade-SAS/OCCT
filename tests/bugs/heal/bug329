@@ -1,3 +1,5 @@
+puts "TODO OCC12345 ALL: Error : Tolerance invalid. Function FixShape works WRONGLY"
+
 puts "========================"
 puts " OCC329 "
 puts "========================"

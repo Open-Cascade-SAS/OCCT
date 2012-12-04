@@ -1,8 +1,9 @@
-puts "TODO OCC12345 ALL: An exception was caught"
-puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+# by apn master-master 03.12.2012
+#puts "TODO OCC12345 ALL: An exception was caught"
+#puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC12345 ALL: Faulty OCC294"
 puts "TODO OCC12345 ALL: Error : OCC294"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+#puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 
 puts "========================"
 puts " BUC60906 "
