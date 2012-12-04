@@ -6,4 +6,6 @@ puts ""
 ## Adding NCollection_StdAllocator
 ###########################################################################
 
+pload QAcommands
+
 QANColStdAllocator1
