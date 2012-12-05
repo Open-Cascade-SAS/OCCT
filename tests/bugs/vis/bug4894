@@ -13,6 +13,7 @@ vdisplay result
 tclean result
 trinfo result
 vsetdispmode 1
+vfit
 set info [trinfo result]
 regexp { +([-0-9.+eE]+) +triangles} $info full tr
 regexp { +([-0-9.+eE]+) +nodes} $info full nd
@@ -21,4 +22,4 @@ if { $tr <= 0 || $nd <= 0 } {
     puts "Error : Problems with shading"
 }
 
-set 3dviewer 2
+set only_screen 1

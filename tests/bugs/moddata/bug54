@@ -1,6 +1,10 @@
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
 puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
-
+if { [string compare $os "windows"] != 0 } {
+    puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+}
 puts "================"
 puts "OCC54"
 puts "================"

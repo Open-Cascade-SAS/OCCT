@@ -12,6 +12,7 @@ tclean result
 vinit
 vdisplay result
 vsetdispmode result 1
+vfit
 
 isos result 0
 triangles result
@@ -30,4 +31,5 @@ if { $tri == 382 && $nod == 343 } {
 }
 
 set square 376.873
-set 3dviewer 2
+set only_screen 1
+

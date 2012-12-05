@@ -3,27 +3,24 @@ puts "TODO OCC12345 ALL: Exception"
 puts "TODO OCC12345 ALL: Faulty BUC60782: mkoffset works wrongly"
 puts "TODO OCC12345 ALL: Error : The square of result shape is"
 
-
-#INTERFACE IGES
 puts "========================"
 puts "BUC60782"
-puts "CASE 3"
+puts "CASE 1"
 puts "========================"
 puts ""
 puts "Results of Geom2d_OffsetCurve are sometimes strange (not correct). "
 puts ""
 
-restore [locate_data_file buc60782c.brep] a 
-
+restore [locate_data_file buc60782a.brep] a 
 set che [checkshape a]
 if { [regexp {Faulty} $che ] == 1 } {
-    puts "Faulty BUC60782 (case 3): Source shape is invalid"
+    puts "Faulty BUC60782 (case 1): Source shape is invalid"
 } else {
-    puts "BUC60782 OK (case 3): Sourse shape is correct"
+    puts "BUC60782 OK (case 1): Sourse shape is correct"
 }
 
 set che [checkshape a rr]
-if { [regexp {OK} $che ] != 1 } {
+if { [regexp {OK} $che ] != 1} {
     puts "Faulty : mistakes are found in SOURCE  shape by checkshape command"
     puts "Body of the script was not executed"
 } else {
@@ -36,5 +33,6 @@ if { [regexp {OK} $che ] != 1 } {
 	tpcompound result
     }
 }
+
 set square 0
 set 2dviewer 0

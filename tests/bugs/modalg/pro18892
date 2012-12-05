@@ -33,4 +33,3 @@ if { [expr $d > $MaxEdgeTolerance] || [expr $d > $MaxVertexTolerance] } {
 }
 
 set length 0
-set 3dviewer 2

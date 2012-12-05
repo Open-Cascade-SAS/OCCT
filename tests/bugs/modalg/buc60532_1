@@ -1,4 +1,3 @@
-#INTERFACE IGES
 puts "==========="
 puts "BUC60532"
 puts "==========="
@@ -21,3 +20,4 @@ bcut result p h1
 
 set square 81.8172
 set 2dviewer 0
+

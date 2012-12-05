@@ -66,4 +66,4 @@ vdisplay result
 vfit
 
 set square 9.80214e+06
-set 3dviewer 2
+set only_screen 1

@@ -1,5 +1,5 @@
 puts "==========="
-puts "  BUC60894"
+puts "BUC60894"
 puts "==========="
 
 cpulimit 3000

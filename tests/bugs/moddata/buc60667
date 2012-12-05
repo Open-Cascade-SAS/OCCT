@@ -1,6 +1,6 @@
 
 puts "==================="
-puts "BUG60667"
+puts "BUC60667"
 puts "==================="
 
 restore [locate_data_file buc60667a.brep] result

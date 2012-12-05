@@ -15,4 +15,5 @@ if { $bndb  > 100.000001 } {
     puts "BUC60849 OK :Bounding box of spherical surface is created properly."
 }
 set square 125663
-set 3dviewer 2
+set 2dviewer 0
+

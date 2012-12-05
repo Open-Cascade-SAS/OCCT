@@ -17,5 +17,6 @@ if { $num != 2 } {
 }
 
 set length 174.597
-set 3dviewer 2
+set 2dviewer 0
+
 

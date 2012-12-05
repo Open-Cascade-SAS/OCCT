@@ -44,7 +44,7 @@ if { $rd != 0 || $gr != 0 || $bl_1 != 7 } {
     puts "Error : Color are not equal. There is missing triangle"
 }
 
-set 3dviewer 2
+set only_screen 1
 
 
 

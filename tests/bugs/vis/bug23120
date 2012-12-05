@@ -67,4 +67,4 @@ if { $rd1 != $r_check || $gr1 != $g_check || $bl1 != $b_check } {
     puts "OK : Transform persistence is restored"
 }
 
-set 3dviewer 2
+set only_screen 1

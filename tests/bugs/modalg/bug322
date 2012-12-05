@@ -27,4 +27,4 @@ QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B
 QAGetPixelColor $x2 $y2 $Yellow_R $Yellow_G $Yellow_B
 
 set square 20000
-set 3dviewer 2
+set only_screen 1

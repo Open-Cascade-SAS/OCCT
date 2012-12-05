@@ -14,4 +14,6 @@ vsetdispmode 1
 tclean result
 vdisplay result
 
-set 3dviewer 2
+set 3dviewer 1
+
+

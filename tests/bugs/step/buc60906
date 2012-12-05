@@ -12,7 +12,7 @@ puts "========================"
 cpulimit 3000
 pload QAcommands
 
-stepread [locate_data_file Samtech_carcasse_gauche_simpl3.stp] a *
+stepread [locate_data_file carcasse_gauche_simpl3.stp] a *
 
 tpcompound com
 

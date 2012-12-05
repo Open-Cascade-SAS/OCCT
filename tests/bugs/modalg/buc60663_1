@@ -23,4 +23,4 @@ if { $num != 2 } {
 #fsameparameter res
 
 set length 26.2001
-set 3dviewer 2
+set 2dviewer 0

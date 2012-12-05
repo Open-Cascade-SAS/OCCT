@@ -14,19 +14,11 @@ if { [isdraw result] } {
 	vfit
 	vdump $imagedir/${test_image}.png
     }
-} else {
-    if { [info exists 3dviewer] } {
-	if { ${3dviewer} == 2 } {
-		vdump $imagedir/${test_image}.png
-	}
-    }
 }
-    if { [info exist only_xwd] } {
-	xwd $imagedir/${test_image}.png	
-    }
-#} else {
-#   puts "Error : The command can not be build."
-#}
+
+if { [info exist only_screen] } {
+    vdump $imagedir/${test_image}.png
+}
 
 # to end a test script
 puts "TEST COMPLETED"

@@ -1,5 +1,5 @@
 puts "==========="
-puts "  BUC60850"
+puts "BUC60850"
 puts "==========="
 
 igesbrep [locate_data_file BUC60850.igs] a *

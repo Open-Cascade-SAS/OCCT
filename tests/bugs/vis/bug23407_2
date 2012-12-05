@@ -6,24 +6,24 @@ puts ""
 # Draw face outlines for XDE objects
 #######################################################################
 pload QAcommands
-pload XDEDRAW
+pload AISV MODELING
 
 set r_check 1
 set g_check 0
 set b_check 0
-set x1 178
-set y1 36
-set x2 224
-set y2 39
-set x3 244
-set y3 89
+set x1 183
+set y1 190
+set x2 292
+set y2 358
+set x3 26
+set y3 265
 
-XNewDoc Doc1
-ReadStep Doc1 [locate_data_file screw.step]
-XShow Doc1 0:1:1:1
-XShowFaceBoundary Doc1 0:1:1:1 1 255 0 0 10 1
-vfit
+box b 10 10 10
+vinit
+vdisplay b
 vsetdispmode 1
+vshowfaceboundary b 1 255 0 0 10 1
+vfit
 
 set color1 [ QAGetPixelColor ${x1} ${y1} ]
 regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
@@ -57,4 +57,4 @@ if { $status1 != 0 && $status2 != 0 && $status3 != 0 } {
     puts "Error : Boundary of face is not changed"
 }
 
-set 3dviewer 2
+set only_screen 1

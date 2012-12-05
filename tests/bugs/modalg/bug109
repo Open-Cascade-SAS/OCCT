@@ -30,4 +30,5 @@ if { $tri != 294 && $nod != 300 }  {
 }
 
 set square 33.8757
-set 3dviewer 2
+set only_screen 1
+

@@ -20,4 +20,5 @@ if [catch {chamf result sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45 } catch_result]
 }
 
 set square 48357.5
-set 3dviewer 2
+set 2dviewer 0
+
