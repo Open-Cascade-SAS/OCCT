@@ -212,7 +212,28 @@ is
 
     	raises ConstructionError from Standard
     	is static private;
- 
+	
+	
+	
+    InternalCompositePerform_noRecurs(me: in out;
+    	    NbInterC1: Integer from Standard;
+	    C1:  TheCurve;
+    	    NumInterC1: Integer from Standard;
+	    Tab1: Array1OfReal from TColStd;
+            D1: Domain from IntRes2d;          
+	    NbInterC2: Integer from Standard;
+	    C2:  TheCurve;
+	    NumInterC2: Integer from Standard;
+	    Tab2: Array1OfReal from TColStd;
+	    D2: Domain from IntRes2d;
+    	    TolConf,Tol: Real from Standard)
+	
+     	---Purpose: Part of InternalCompositePerform function
+     
+     	raises ConstructionError from Standard
+    	is static private;
+    	
+  
 
     InternalCompositePerform(me: in out;
              C1:  TheCurve; D1: Domain from IntRes2d;

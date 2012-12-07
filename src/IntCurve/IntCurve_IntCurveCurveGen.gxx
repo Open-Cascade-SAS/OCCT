@@ -805,6 +805,102 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
   }
 }
 
+void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(
+                                      const Standard_Integer NbInterC1,
+                                      const TheCurve& C1,
+                                      const Standard_Integer NumInterC1,
+                                      const TColStd_Array1OfReal& Tab1,
+                                      const IntRes2d_Domain& D1,
+                                      const Standard_Integer NbInterC2,
+                                      const TheCurve& C2,
+                                      const Standard_Integer NumInterC2,
+                                      const TColStd_Array1OfReal& Tab2,
+                                      const IntRes2d_Domain& D2,
+                                      const Standard_Real TolConf,
+                                      const Standard_Real Tol)
+{
+    
+    
+	if(NumInterC2>NbInterC2)
+    return;
+
+  
+  IntRes2d_Domain DomainC1NumInter;
+  IntRes2d_Domain DomainC2NumInter;
+
+  //----------------------------------------------------------------------
+  //-- Creation du domaine associe a la portion de C1
+  //----------------------------------------------------------------------
+  Standard_Boolean DomainIsOK = Standard_True;
+  Standard_Real ParamInf,ParamSup;
+  
+  if(NbInterC1>1) {
+    TheCurveTool::GetInterval(C1,NumInterC1,Tab1,ParamInf,ParamSup);
+    //--------------------------------------------------------------
+    //-- Verification : Domaine Inclu dans Intervalle de Definition
+    //--------------------------------------------------------------
+
+    Standard_Real u;
+
+    u = D1.FirstParameter();
+    if(ParamInf < u) { ParamInf = u; }
+
+    u = D1.LastParameter();
+    if(ParamSup > u) { ParamSup = u; }
+
+    if((ParamSup - ParamInf) > 1e-10) {
+      DomainC1NumInter.SetValues(TheCurveTool::Value(C1,ParamInf),
+                                 ParamInf,
+                                 D1.FirstTolerance(),
+                                 TheCurveTool::Value(C1,ParamSup),
+                                 ParamSup,
+                                 D1.LastTolerance());
+    } else {
+      DomainIsOK = Standard_False;
+    }
+  } else {
+    DomainC1NumInter = D1;
+  }
+  
+  //----------------------------------------------------------------------
+  //-- Creation du domaine associe a la portion de C2
+  //----------------------------------------------------------------------
+  if(NbInterC2 > 1) {
+    TheCurveTool::GetInterval(C2,NumInterC2,Tab2,ParamInf,ParamSup);
+    //--------------------------------------------------------------
+    //-- Verification : Domaine Inclu dans Intervalle de Definition
+    //--------------------------------------------------------------
+
+    Standard_Real u;
+
+    u = D2.FirstParameter();
+    if(ParamInf < u) { ParamInf = u; }
+    u = D2.LastParameter();
+
+    if(ParamSup > u) { ParamSup = u; }
+
+    if((ParamSup - ParamInf) > 1e-10) { 
+      DomainC2NumInter.SetValues(TheCurveTool::Value(C2,ParamInf),
+                                 ParamInf,
+                                 D2.FirstTolerance(),
+                                 TheCurveTool::Value(C2,ParamSup),
+                                 ParamSup,
+                                 D2.LastTolerance());
+    } else {
+      DomainIsOK = Standard_False;
+    }
+  } else {
+    DomainC2NumInter = D2;
+  }
+
+  if(DomainIsOK) { 
+    InternalPerform(C2,DomainC2NumInter,
+                    C1,DomainC1NumInter,
+                    TolConf,Tol,
+                    Standard_True);
+  }
+}
+
 
 
 
@@ -826,115 +922,39 @@ IntCurve_IntCurveCurveGen::InternalCompositePerform(const TheCurve& C1,
 						    const Standard_Real Tol,
 						    const Standard_Boolean RecursOnC2) {
   
-  Standard_Integer NumInterC2=XXXNumInterC2;
+  Standard_Integer NumInterC2=XXXNumInterC2;    
   Standard_Integer NumInterC1=XXXNumInterC1;
 
 
 //  Standard_Boolean Arret=Standard_False;
 
-  if(NumInterC2<=NbInterC2) {
-    if(RecursOnC2) {
-      for(Standard_Integer i=NumInterC1 ; i<=NbInterC1; i++) {
-	NumInterC1=i;
-	InternalCompositePerform(C2,D2,NumInterC2,NbInterC2,Tab2,
-				 C1,D1,NumInterC1,NbInterC1,Tab1,
-				 TolConf,Tol,
-				 Standard_False);
-      }
-      if(NumInterC2<NbInterC2) {
-	NumInterC2++;
-	NumInterC1=1;
-	InternalCompositePerform(C1,D1,NumInterC1,NbInterC1,Tab1,
-				 C2,D2,NumInterC2,NbInterC2,Tab2,
-				 TolConf,Tol,
-				 Standard_True);
-      }
-    }
-    else {
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //~~~~~~~~~~~~~~~~ I n t e r s e c t i o  n   ~~~~~~~~~~~~~~~~
-      //~~~~~~~~~~~~~~~~      de C2[NumInterC2]     ~~~~~~~~~~~~~~~~
-      //~~~~~~~~~~~~~~~~      et C1[NumInterC1]     ~~~~~~~~~~~~~~~~
-      //~~~~~~~~~~~~~~~~  (pour respecter l ordre)  ~~~~~~~~~~~~~~~~
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
-      IntRes2d_Domain DomainC1NumInter;
-      IntRes2d_Domain DomainC2NumInter;
+  if(NumInterC2>NbInterC2)
+    return;
 
-      //----------------------------------------------------------------------
-      //-- Creation du domaine associe a la portion de C1
-      //----------------------------------------------------------------------
-      Standard_Boolean DomainIsOK = Standard_True;
-      Standard_Real ParamInf,ParamSup;
-      
-      if(NbInterC1>1) {
-	TheCurveTool::GetInterval(C1,NumInterC1,Tab1,ParamInf,ParamSup);
-	//--------------------------------------------------------------
-	//-- Verification : Domaine Inclu dans Intervalle de Definition
-	//--------------------------------------------------------------
-	Standard_Real u;
-	
-	u = D1.FirstParameter();
-	if(ParamInf < u) { ParamInf = u; }
-	  
-	u = D1.LastParameter();
-	if(ParamSup > u) { ParamSup = u; }
-	
-	if((ParamSup - ParamInf) > 1e-10) { 
-	  DomainC1NumInter.SetValues(TheCurveTool::Value(C1,ParamInf),
-				     ParamInf,
-				     D1.FirstTolerance(),
-				     TheCurveTool::Value(C1,ParamSup),
-				     ParamSup,
-				     D1.LastTolerance());
-	}
-	else {
-	  DomainIsOK = Standard_False;
-	}
-      }
-      else {
-	DomainC1NumInter = D1;
-      }
-      
-      //----------------------------------------------------------------------
-      //-- Creation du domaine associe a la portion de C2
-      //----------------------------------------------------------------------
-      if(NbInterC2 > 1) {
-	TheCurveTool::GetInterval(C2,NumInterC2,Tab2,ParamInf,ParamSup);
-	//--------------------------------------------------------------
-	//-- Verification : Domaine Inclu dans Intervalle de Definition
-	//--------------------------------------------------------------
-	Standard_Real u;
-	
-	u = D2.FirstParameter();
-	if(ParamInf < u) { ParamInf = u; }
-	
-	u = D2.LastParameter();
-	if(ParamSup > u) { ParamSup = u; }
-	
-	if((ParamSup - ParamInf) > 1e-10) { 
-	  DomainC2NumInter.SetValues(TheCurveTool::Value(C2,ParamInf),
-				     ParamInf,
-				     D2.FirstTolerance(),
-				     TheCurveTool::Value(C2,ParamSup),
-				     ParamSup,
-				     D2.LastTolerance());
-	}
-	else {
-	  DomainIsOK = Standard_False;
-	}
-      }
-      else {
-	DomainC2NumInter = D2;
-      }
-      
-      if(DomainIsOK) { 
-	InternalPerform(C2,DomainC2NumInter,
-			C1,DomainC1NumInter,
-			TolConf,Tol,
-			Standard_True);
-      }
-    }
+  if(!RecursOnC2){
+    InternalCompositePerform_noRecurs(NbInterC1, C1, NumInterC1, Tab1, D1, NbInterC2, C2, NumInterC2, Tab2, D2, TolConf, Tol);
+    return;
+  }
+
+  for(Standard_Integer i=NumInterC1 ; i<=NbInterC1; i++) {
+    NumInterC1=i;
+    /*
+      InternalCompositePerform(C2,D2,NumInterC2,NbInterC2,Tab2,
+			C1,D1,NumInterC1,NbInterC1,Tab1,
+			TolConf,Tol,Standard_False);
+    */
+
+    InternalCompositePerform_noRecurs(NbInterC2,C2,NumInterC2,Tab2,D2,NbInterC1,C1,NumInterC1,Tab1,D1,TolConf,Tol);
+  }
+
+  if(NumInterC2<NbInterC2) {
+    NumInterC2++;
+    NumInterC1=1;
+
+    InternalCompositePerform(C1,D1,NumInterC1,NbInterC1,Tab1,
+                             C2,D2,NumInterC2,NbInterC2,Tab2,
+                             TolConf,Tol,
+                             Standard_True);
   }
 }
 
