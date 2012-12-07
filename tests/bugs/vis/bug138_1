@@ -1,0 +1,23 @@
+
+puts "========"
+puts "OCC138"
+puts "========"
+puts ""
+#######################################
+## Viewer problem: Selection of objects on global context
+#######################################
+vinit
+set info [OCC138]
+
+set length [llength ${info}]
+if {${length} < 5 } {
+   puts "OCC138: Error (case 1)"
+} else {
+  regexp {No of currents += +([-0-9.+eE]+)} $info full NbCurrents
+  if {${NbCurrents} != 3 } {
+     puts "OCC138: Error (case 2)"
+  }
+}
+
+vfit
+set only_screen 1

@@ -1,0 +1,22 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_8"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "========================"
+puts " OCC472 "
+puts "(case 1)"
+puts "========================"
+puts ""
+#####################################################
+## Bad result of Fuse Operation (Cut&Common - bad too). SAM1470 (#2634) 
+#####################################################
+
+restore [locate_data_file OCC472a.brep] b1 
+puts [checkshape b1]
+
+restore [locate_data_file OCC472b.brep] b2
+puts [checkshape b2]
+
+bcut result b1 b2
+
+set square 0
+set 2dviewer 0

@@ -1,0 +1,10 @@
+puts "================"
+puts "OCC63"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC63_вз.brep] result
+puts [checkshape result]
+
+set 2dviewer 0
+

@@ -1,0 +1,15 @@
+puts "==========="
+puts "OCC355"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D MDTV-Standard
+
+NameCylinder D 0:1 20 100 0 Solid
+NamePrism D 0:2 0:1:2 50 0 0 1
+
+if [catch { CheckNaming D 0:3 1 Label 0:2 1 1 1 } res] {
+  puts "OCC355: Error"
+}
+

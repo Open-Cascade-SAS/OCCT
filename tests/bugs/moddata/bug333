@@ -1,0 +1,37 @@
+puts "================"
+puts "OCC333"
+puts "================"
+puts ""
+#######################################################
+## Superimposed curves during intersection two surfaces 
+#######################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC333a.draw] s12 
+############### checkshape su12 # is not a topological shape
+restore [locate_data_file OCC333b.draw] s11
+############### checkshape su11 # is not a topological shape
+intersect result s12 s11
+explode result e
+clknots result_3
+clknots result_13
+
+mkedge e_1 result_3
+mkedge e_2 result_13
+
+set status [OCC333 e_1 e_2]
+if {[llength ${status}] < 1} {
+    puts "OCC333 ERROR"
+} else {
+    regexp {([-0-9.+eE]+)} ${status} full code
+    if { ${code} == 3 || ${code} == 2} {
+	puts "OCC333 OK  : Intersection command works properly"
+    } else {
+	puts "Faulty OCC333 : Intersection was made WRONGLY"
+    }
+}
+
+donly i_3 i_13
+
+set 2dviewer 0

@@ -1,0 +1,34 @@
+puts "========================"
+puts "BUC61000"
+puts " OCC364 "
+puts "========================"
+puts ""
+##############################################
+## Face is invisible in the shading mode in the 3D View. 
+##############################################
+
+restore [locate_data_file OCC364.brep] result 
+puts [checkshape result]
+
+tclean result
+isos result 0
+vinit 
+vdisplay result
+vsetdispmode result 1
+vfit
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri != 84 || $nod != 84 }  {
+   puts "Faulty OCC364: here is shading problem"
+} else {
+   puts "Shading of  OCC364 is OK"
+}
+
+set only_screen 1
+
+
+

@@ -1,0 +1,21 @@
+
+puts "========================"
+puts " OCC416 "
+puts "CTS19305"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO900_cts19305-part.rle] part 
+puts [checkshape part]
+
+restore [locate_data_file CTO900_cts19305-tool.rle] tool
+puts [checkshape tool]
+
+bcut result part tool
+
+checkshape -top result
+
+set square 76632.9
+set 2dviewer 0
+
+

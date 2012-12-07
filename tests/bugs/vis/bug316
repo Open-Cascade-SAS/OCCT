@@ -1,0 +1,43 @@
+puts "================"
+puts "OCC316"
+puts "================"
+puts ""
+
+########################################################
+## Exception is raised in the SAMTECH Application during visualization. (#2054)
+########################################################
+
+restore [locate_data_file OCC316.brep] result 
+
+decho off
+set che [checkshape result]
+decho on
+
+if { [regexp "Faulty" $che] == 1 } {
+   puts "Warning OCC316: Source shape is NOT correct. It was detected by Checkshape command"
+}
+
+tclean result
+
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri == 212909 && $nod == 158362 } {
+   puts "Warning OCC316: here is shading problem (some faces are lost)"
+} else {
+  if { $tri == 0 || $nod == 0 } {
+  puts " Warning  OCC316: here is shading problem (shading mesh is NOT created)"
+  isos result 0
+  } else {
+    puts "Warning: Shading of OCC316 looks OK, but visual checking is required"
+  }
+}
+
+set only_screen 1
+

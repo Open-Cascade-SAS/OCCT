@@ -1,0 +1,32 @@
+puts "TODO OCC12345 ALL: Faulty BUC60682"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_5"
+
+pload QAcommands
+
+puts "=================="
+puts "BUC60682"
+puts "=================="
+
+restore [locate_data_file buc60682a.brep] shell1 
+restore [locate_data_file buc60682b.brep] shell2
+
+set che [checkshape shell1]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty BUC60682 (shell 1): Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+    renamevar shell1 result
+} else {
+    puts "BUC60682 OK (shell 1): Source shape is valid"
+    set che [checkshape shell2]
+    if { [regexp {Faulty} $che ] == 1 } {
+	puts "Faulty BUC60682 (shell 2): Source shape is invalid. It was detected by Checkshape command"
+        puts "Body of the script was NOT executed"
+	renamevar shell2 result
+    } else {
+	puts "BUC60682 OK (shell 2): Source shape is valid"
+	ksection result shell1 shell2 1000 0.0001 0.00001 0 
+    }
+}
+set square 0
+set 2dviewer 0

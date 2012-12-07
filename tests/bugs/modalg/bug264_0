@@ -26,4 +26,4 @@ if { $tri != 6 && $nod != 8 }  {
 }
 
 set square 1.3135
-set 2dviewer 0
+set 3dviewer 0

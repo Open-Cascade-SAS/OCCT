@@ -1,0 +1,33 @@
+pload QAcommands
+
+puts "================"
+puts "OCC251"
+puts "================"
+puts ""
+###########################################################
+## Section of two faces f1 and f2 depends on order of arguments:  section r1 f1 f2 and
+##  section r2 f2 f1 give different results, one of result is invalid - overlapped edges.
+###########################################################
+
+restore [locate_data_file OCC251.brep] f 
+explode f
+puts [checkshape f_1]
+puts [checkshape f_2]
+
+bsection result f_1 f_2
+explode result
+
+set status [OCC333 result_1 result_2]
+if {[llength ${status}] < 1} {
+    puts "OCC251 ERROR"
+} else {
+    regexp {([-0-9.+eE]+)} $status full code
+    if { ${code} == 3 || ${code} == 2} {
+	puts "OCC251 OK  (case 1) : Section command works properly"
+    } else {
+	puts "Faulty OCC251 (case 1): Section was made WRONGLY"
+    }
+}
+
+set length 1.
+set 2dviewer 0

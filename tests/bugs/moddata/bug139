@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC139"
+puts "================"
+puts ""
+#######################################
+## The intersection must be closed . So the curve is wrong.
+#######################################
+
+restore [locate_data_file OCC139-1.draw] sh1 
+restore [locate_data_file OCC139-2.draw] sh2
+
+if { ![catch {intersect result sh1 sh2} catch_result] } {
+    puts "OCC139 OK : intersection found"
+    regexp { nb alone Vertices : +([-0-9.+eE]+)} [checksection result] full num
+    if { $num != 0 } {
+	puts "Faulty OCC139: Intersection was made WRONGLY. The curve must be closed ."
+    } else {
+	puts "OCC139 OK : Intersection command works properly. The curve is closed"
+    }
+} else {
+    puts "Faulty OCC139 : NO intersection found"
+}
+
+set 2dviewer 0
+

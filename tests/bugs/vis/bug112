@@ -1,0 +1,39 @@
+puts "========"
+puts "BUC60956"
+puts "OCC112"
+puts "========"
+puts ""
+###############################################################
+## When restoring a TopoDS_Shape containing a valid Meshing (computed for display) the
+##  meshing is computed again when displaying it. 
+###############################################################
+
+set rd_ch 78039
+set gr_ch 55294
+set bl_ch 9411
+
+restore [locate_data_file OCC20.brep] result
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+QAUpdateLights
+
+set color [QAGetPixelColor 140 115]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+set rd_int [expr int($rd * 1.e+05)]
+set gr_int [expr int($gr * 1.e+05)]
+set bl_int [expr int($bl * 1.e+05)]
+
+if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+}
+
+set only_screen 1
+
+
+

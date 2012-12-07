@@ -1,0 +1,71 @@
+puts "========"
+puts "OCC319"
+puts "========"
+puts ""
+######################################################
+# Wrong shading on a shape
+######################################################
+
+cpulimit 3500
+
+restore [locate_data_file OCC319.brep] result
+
+decho off
+set res [checkshape result]
+decho on
+set index [lsearch $res Faulty]
+if {$index > -1} {
+   puts "Warning OCC319: here is checkshape problem"
+}
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+
+set scale    16.5593321780929
+set center_X -0.0688543427812931
+set center_Y 11.6346916159369
+set proj_X   0.207536488771439
+set proj_Y   -0.233648166060448
+set proj_Z   0.949914216995239
+set up_X     -0.857990384101868
+set up_Y     0.422952175140381
+set up_Z     0.291485607624054
+set at_X     8.22575855255127
+set at_Y     -2.95449280738831
+set at_Z     3.08669567108154
+
+QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+set IsGood 1
+if { $tri == 0 || $nod == 0 }  {
+  puts "Faulty OCC319: here is shading problem"
+  set IsGood 0
+}
+
+regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full square
+set good_square 8623.6
+set square_percent [expr abs(${square} - ${good_square}) / double(${good_square}) * 100.]
+
+set percent_max 0.1
+
+puts "good_square = ${good_square}"
+puts "square = ${square}"
+puts "square_percent = ${square_percent}"
+
+if {${square_percent} > ${percent_max}} {
+   puts "OCC319 Faulty : here is square problem"
+   set IsGood 0
+}
+
+if {${IsGood} != 1} {
+   puts "Errpr : OCC319"
+}
+
+set only_screen 1

@@ -1,0 +1,14 @@
+puts "========"
+puts "BUC60902"
+puts "========"
+
+pload QAcommands
+
+set info [BUC60902]
+
+if { [regexp "First tangent is OK" $info] != 1 && [regexp "Last tangent is OK" $info] != 1 } {
+	puts "Error : Result is invalid"
+}
+
+
+

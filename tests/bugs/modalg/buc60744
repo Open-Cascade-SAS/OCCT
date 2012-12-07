@@ -1,0 +1,47 @@
+pload QAcommands
+
+puts "========================"
+puts "BUC60744"
+puts "========================"
+puts ""
+
+restore [locate_data_file buc60744a.brep] a 
+restore [locate_data_file buc60744b.brep] b
+
+set che [checkshape a]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty BUC60744 (shape 1): Source shape is invalid. It was detected by Checkshape command"
+    puts "Body of the script was NOT executed"
+    renamevar a result
+} else {
+    puts "BUC60744 OK (shape 1): Source shape is valid"
+
+    set	che [checkshape b]
+    if { [regexp {Faulty} $che ] == 1 } {
+        puts "Faulty BUC60744 (shape 2): Source shape is invalid. It was detected by Checkshape command"
+	puts "Body of the script was NOT executed"
+        renamevar b result
+    } else {
+	puts "BUC60744 OK (shape 2): Source shape is valid"
+
+	ksection result a b 1000 0.0001 0.00001 0
+
+	set ne [llength [explode result e]]
+	set nv [llength [explode result v]]
+
+	if {$ne >= $nv} {
+	    puts [format "Faulty : the number of edges is %s, but the number of vertexes is %s." $ne $nv]
+	}
+    }
+}
+bsection result a b
+
+set ne [llength [explode result e]]
+set nv [llength [explode result v]]
+
+if {$ne >= $nv} {
+    puts [format "Faulty : the number of edges is %s, but the number of vertexes is %s." $ne $nv]
+}
+
+set length 228.386
+set 2dviewer 0

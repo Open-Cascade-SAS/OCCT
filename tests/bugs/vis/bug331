@@ -1,0 +1,39 @@
+ puts "========================"
+puts " OCC331 "
+puts "========================"
+puts ""
+#######################################################
+## Dark spot on a sphere after nurbsconvert
+#######################################################
+
+box b -5 -5 -5 10 10 10 
+psphere s 6 
+
+bfuse res s b 
+
+nurbsconvert result res 
+
+tclean result
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+vfit
+
+set tri 0
+set nod 0
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+puts [format " tri= %s  nod= %s " $tri $nod]
+
+if { $tri != 3808 && $nod != 2188} {
+   puts " OCC331: Looks like OK, but visual checking is required!!!"
+} else {
+   puts " OCC331: Faulty - Dark spot on a sphere after nurbsconvert"
+}
+
+
+set only_screen 1
+
+

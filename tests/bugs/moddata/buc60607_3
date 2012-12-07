@@ -1,0 +1,8 @@
+puts "======================="
+puts "BUC60607"
+puts "It takes visual check for this BUC"
+puts "======================="
+
+point p2 1400 1400
+line l2 3000 1700 1000 1550
+cirtang c3 p2 l2 300

@@ -1,0 +1,22 @@
+puts "========================"
+puts " OCC433 "
+puts "========================"
+puts ""
+#########################################################
+## The attached face gives no errors in checkshape command in dev. However, it looks bad
+#########################################################
+
+restore [locate_data_file OCC433.brep] result
+
+decho off
+set err [checkshape result r]
+decho on
+
+if { [regexp {OK} $err] == 1} {
+    puts " Faulty OCC433: function CHECKSHAPE works wrongly"
+} else {
+    puts " OCC433  OK: function CHECKSHAPE works properly"
+}
+
+set 2dviewer 0
+

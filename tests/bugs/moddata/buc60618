@@ -1,0 +1,59 @@
+puts "=================================="
+puts "BUC60618"
+puts "=================================="
+puts "There was a problem filter of solutions. Several solutions were skipped."
+puts ""
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+set len_ch1 3568
+set len_ch2 9964
+set len_ch3 2082
+set len_ch4 32696
+set len_ch5 1681
+set len_ch6 3097
+set len_ch7 1545
+set len_ch8 772
+
+circle c1 0 0 100 
+circle c2 500 -400 300 
+circle c3 300 200 200 
+cirtang result c1 c2 c3
+
+set info1 [length $result_1]
+set info2 [length $result_2]
+set info3 [length $result_3]
+set info4 [length $result_4]
+set info5 [length $result_5]
+set info6 [length $result_6]
+set info7 [length $result_7]
+set info8 [length $result_8]
+
+regexp {The length result_1 is +([-0-9.+eE]+)} $info1 full len1
+regexp {The length result_2 is +([-0-9.+eE]+)} $info2 full len2
+regexp {The length result_3 is +([-0-9.+eE]+)} $info3 full len3
+regexp {The length result_4 is +([-0-9.+eE]+)} $info4 full len4
+regexp {The length result_5 is +([-0-9.+eE]+)} $info5 full len5
+regexp {The length result_6 is +([-0-9.+eE]+)} $info6 full len6
+regexp {The length result_7 is +([-0-9.+eE]+)} $info7 full len7
+regexp {The length result_8 is +([-0-9.+eE]+)} $info8 full len8
+
+set len_int1 [expr int($len1)]
+set len_int2 [expr int($len2)]
+set len_int3 [expr int($len3)]
+set len_int4 [expr int($len4)]
+set len_int5 [expr int($len5)]
+set len_int6 [expr int($len6)]
+set len_int7 [expr int($len7)]
+set len_int8 [expr int($len8)]
+
+if { ${len_int1} != ${len_ch1} 
+   || ${len_int2} != ${len_ch2}
+   || ${len_int3} != ${len_ch3}
+   || ${len_int4} != ${len_ch4}
+   || ${len_int5} != ${len_ch5}
+   || ${len_int6} != ${len_ch6}
+   || ${len_int7} != ${len_ch7}
+   || ${len_int8} != ${len_ch8} } {
+   puts "Error : Length is invalid"
+}

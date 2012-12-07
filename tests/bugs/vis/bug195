@@ -1,0 +1,38 @@
+
+puts "========"
+puts "OCC195"
+puts "========"
+puts ""
+######################################################
+##puts "Scaling of text font number 23"
+##puts "(visual checking for this case is desirable)"
+######################################################
+
+v2dinit
+
+set Angle 0
+set Font_ind 23
+set k 0
+set i 0
+repeat 5 {
+       set Position_X [expr $i*20]
+       set Position_Y [expr $i*20]
+       set k [expr $k+.5]
+       set Scale $k
+       v2dtext Scale_[string range $k 0 2] $Position_X $Position_Y $Angle $Scale $Font_ind
+       puts "=======> Scale Factor = [string range $k 0 2] Position_X= $Position_Y Position_Y= $Position_Y"
+       puts "   "
+       incr i
+}
+
+set color [QAAISGetPixelColor2d 190 105]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != 1 || ${gr} != 1 || ${bl} != 1 } {
+    puts "Error : colors are not equal"
+    puts "Error : Scaling of text font number 23 was NOT MADE properly"
+}
+
+set only_screen2d 1

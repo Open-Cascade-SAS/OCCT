@@ -1,0 +1,21 @@
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG because it must contains"
+
+puts "========================"
+puts " OCC250 "
+puts "========================"
+
+#################################################
+## puts " BOPFUSE     case_9_wire_a.brep and case_9_wire2.brep"
+#################################################
+ puts " " 
+restore [locate_data_file case_9_wire_a.brep] a
+restore [locate_data_file case_9_wire2.brep] b
+ puts [bop a b]
+ puts [bopfuse result]
+set nb_info [nbshapes result]
+set nb_v_good 9
+set nb_e_good 9
+
+set length 0
+set 2dviewer 0

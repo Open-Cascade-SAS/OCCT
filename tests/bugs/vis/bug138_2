@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC138"
+puts "========"
+
+vinit
+set info [OCC138LC]
+
+set length [llength ${info}]
+if {${length} < 5 } {
+   puts "OCC138: Error (case 1)"
+} else {
+  regexp {No of selected += +([-0-9.+eE]+)} $info full NbCurrents
+  if {${NbCurrents} != 3 } {
+     puts "OCC138: Error (case 2)"
+  }
+}
+
+vfit
+set only_screen 1

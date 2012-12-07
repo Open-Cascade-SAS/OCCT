@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Faulty OCC23 : Checkshape command works wrongly"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+puts "================"
+puts "OCC23"
+puts "================"
+puts ""
+#####################################################################
+## Checkshape gives result that there is a selfintersection on wire, but there are no intersection on it.
+#####################################################################
+
+restore [locate_data_file OCC23.brep] sh 
+
+decho off
+set che [checkshape sh]
+decho on
+
+if { [regexp {Faulty} $che] == 1 } {
+    puts "Faulty OCC23 : Checkshape command works wrongly"
+} else {
+    puts "OCC23 OK : Checkshape command works properly"
+}
+
+explode sh f
+explode sh_2 w
+
+renamevar sh_2_1 result
+
+set length 0
+set 2dviewer 0

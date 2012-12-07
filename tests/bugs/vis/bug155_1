@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC155"
+puts "OCC190"
+puts "========"
+puts ""
+#####################################
+##puts "Creating of Vertexes 2D"
+##puts "(visual checking for this case is desirable)"
+#####################################
+v2dinit
+
+vertex v_v 0 0 0
+vertex v_v1 100 100 0
+v2ddisplay v_v
+v2ddisplay v_v1
+v2dfit
+
+set color [QAAISGetPixelColor2d 405 7]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != 1 || ${gr} != 1 || ${bl} != 0 } {
+    puts "Error : colors are not equal"
+    puts "Error : Vertexes 2D were NOT LOADED properly"
+}
+
+set only_screen2d 1

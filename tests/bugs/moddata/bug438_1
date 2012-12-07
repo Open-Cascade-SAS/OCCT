@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC438"
+puts " (case 1)"
+puts "========"
+
+####################################
+## Exception during checking of shape from OCC428
+####################################
+
+restore [locate_data_file OCC428.brep] result
+
+decho off
+if [catch { checkshape result } catch_result] {
+    set mistake 1
+} else {
+    set mistake 0
+}
+decho on
+
+if { $mistake != 0} {
+    puts "Faulty OCC438 (case 1): here is checking problem"
+} else {
+    puts "OCC438 (case 1) OK"
+}
+
+set 2dviewer 0
+

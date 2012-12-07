@@ -1,0 +1,44 @@
+
+puts "========"
+puts "PRO7934"
+puts "OCC452"
+puts "(case 4)"
+puts "========"
+puts ""
+
+restore [locate_data_file CTO900_pro7934a.rle] a 
+set che [checkshape a]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 7): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 7): Source shape is valid"
+}
+
+restore [locate_data_file CTO900_pro7934b.rle] b
+set che [checkshape b]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 8): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 8): Source shape is valid"
+}
+
+dchrono h2 reset
+dchrono h2 start
+
+bfuse result a b
+#checkshape -top res
+
+dchrono h2 stop
+set q2 [ dchrono h2 show ]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z2
+puts "$z2"
+if { $z2 > 5 } {                             
+    puts "Elapsed time is more then 5 seconds - Faulty"
+} else {
+    puts "Elapsed time is less then 5 seconds - OK"      
+}
+set square 201978
+set 2dviewer 0
+
+
+

@@ -1,0 +1,33 @@
+puts "=================================="
+puts "BUC60622"
+puts "=================================="
+puts "There was an infinity of solutions and also c1, c2 and c3 are solutions"
+puts ""
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+set len_ch1 2513
+set len_ch2 837
+set len_ch3 279
+
+circle c1 500 1800 500 
+circle c2 500 1900 400 
+circle c3 700 1900 200 
+cirtang result c1 c2 c3 
+
+set info1 [length $result_1]
+set info2 [length $result_2]
+set info3 [length $result_3]
+regexp {The length result_1 is +([-0-9.+eE]+)} $info1 full len1
+regexp {The length result_2 is +([-0-9.+eE]+)} $info2 full len2
+regexp {The length result_3 is +([-0-9.+eE]+)} $info3 full len3
+set len_int1 [expr int($len1)]
+set len_int2 [expr int($len2)]
+set len_int3 [expr int($len3)]
+
+if { ${len_int1} != ${len_ch1} 
+   || ${len_int2} != ${len_ch2} 
+   || ${len_int3} != ${len_ch3} } {
+   puts "Error : Length is invalid"
+}

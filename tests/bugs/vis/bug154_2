@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC154"
+puts "========"
+puts ""
+#####################################################
+##puts "Checking of function V2DERASE "
+##puts "(visual checking for this case is desirable)"
+#####################################################
+
+v2dinit
+
+box b 1 1 1 
+v2ddisplay b
+box b1 10 10 10 1 1 1 
+v2ddisplay b1
+v2dfit
+
+v2derase b1
+
+set color [QAAISGetPixelColor2d 370 37]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != 0 || ${gr} != 0 || ${bl} != 0 } {
+    puts "Error : colors are not equal"
+    puts "Object was not erased"
+}
+
+set only_screen2d 1
+

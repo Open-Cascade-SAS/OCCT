@@ -1,0 +1,41 @@
+puts "========"
+puts "OCC280"
+puts "2. Hilighting the object, by moving mouse cursor on it does not hilight the object"
+puts "========"
+
+vinit
+box b 100 900 300
+vdisplay b
+vfit
+
+OCC280 0 0
+
+# selected point
+set x1 218
+set y1 196
+
+set Cyan_R 0
+set Cyan_G 1
+set Cyan_B 1
+
+set Yellow_R 1
+set Yellow_G 1
+set Yellow_B 0
+
+# There is not selection
+puts "There is not selection"
+QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B
+
+# Move a mouse
+puts "Move a mouse"
+QAMoveTo $x1 $y1
+QAMoveTo $x1 $y1
+
+QAUpdateLights
+
+# There is a selection
+puts "There is a selection"
+QAGetPixelColor $x1 $y1 $Cyan_R $Cyan_G $Cyan_B
+
+set only_screen 1
+

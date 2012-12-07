@@ -1,0 +1,15 @@
+puts "=============="
+puts "OCC158"
+puts "=============="
+
+NewDocument D MDTV-Standard
+
+##################################################################
+if { [catch {set res [SaveAs D ${imagedir}/OCC158.std]}] != 0 } {
+  puts "OCC158: Error"
+} else {
+    file delete ${imagedir}/OCC158.std
+}
+
+
+

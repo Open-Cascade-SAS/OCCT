@@ -1,0 +1,46 @@
+puts "========"
+puts "OCC280"
+puts "3. Fitall on perspective view does not fit all properly"
+puts "========"
+
+vinit
+box b 100 900 300
+vdisplay b
+vsetdispmode b 1
+
+OCC280 0 1
+
+set rd_ch 78039
+set gr_ch 55294
+set bl_ch 9411
+
+puts "Before View->FitAll()"
+QAUpdateLights
+set color0 [QAGetPixelColor 10 240]
+regexp {RED +: +([-0-9.+eE]+)} $color0 full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color0 full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color0 full bl
+
+if { ${rd} != 0 || ${gr} != 0 || ${bl} != 0 } {
+    puts "Error : colors are not equal"
+}
+
+vfit
+
+puts "After View->FitAll()"
+QAUpdateLights
+set color1 [QAGetPixelColor 10 240]
+regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
+regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
+regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
+
+set rd_int [expr int($rd1 * 1.e+05)]
+set gr_int [expr int($gr1 * 1.e+05)]
+set bl_int [expr int($bl1 * 1.e+05)]
+
+if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+    puts "Error : Function vfit works wrongly"
+}
+
+set only_screen 1

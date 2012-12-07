@@ -1,0 +1,14 @@
+puts "=========="
+puts "BUC60622"
+puts "=========="
+puts ""
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+circle c1 2900 800 500 
+circle c2 2900 900 400 
+circle c3 2900 1000 300 
+catch {cirtang result c1 c2 c3}
+

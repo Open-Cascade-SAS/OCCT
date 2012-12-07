@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: Error : colors are not equal"
+puts "TODO OCC12345 ALL: Error : 3D Viewer is empty"
+
+puts "================"
+puts "OCC136"
+puts "================"
+
+vinit
+OCC136
+vfit
+set rd_ch 0.8
+set gr_ch 0.8
+set bl_ch 0.8
+
+set color [QAGetPixelColor 211 215]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != ${rd_ch} || ${gr} != ${gr_ch} || ${bl} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+    puts "Error : 3D Viewer is empty"
+}
+
+set only_screen 1
+

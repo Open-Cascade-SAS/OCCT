@@ -1,0 +1,22 @@
+
+puts "========================"
+puts " OCC410 "
+puts "(case 4)"
+puts "========================"
+puts ""
+
+restore [locate_data_file f7] b1 
+puts [checkshape b1]
+
+restore [locate_data_file f3] b2
+puts [checkshape b2]
+
+
+if [catch {bcut result b2 b1 } result] {
+    puts "Faulty OCC410: function CUT works wrongly"
+} else {
+    puts " OCC410 OK: function CUT works properly"
+}
+
+set square 93.6289
+set 2dviewer 0

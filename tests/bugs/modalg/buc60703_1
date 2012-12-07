@@ -1,0 +1,38 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+puts "TODO OCC12345 ALL: Exception"
+puts "TODO OCC12345 ALL: Faulty  BUC60703: here is problem with FUSE operation"
+puts "TODO OCC12345 ALL: Error : The command can not be build."
+
+puts "========================"
+puts "BUC60703"
+puts "================================="
+puts "Action with models with VERY BIG tolerance" 
+puts "================================="
+##########################################
+## Crash during a fuse whilst two plans are tangent. 
+## ( Case has  LIMITATION status currently )
+##########################################
+
+#cpulimit 9000
+
+restore [locate_data_file buc60703a.brep] a 
+# maxtolerance a
+puts [checkshape a]
+restore [locate_data_file buc60703b.brep] b
+# maxtolerance b
+puts [checkshape b]
+
+if [catch {bfuse result a b } catch_result] {
+    puts "Faulty  BUC60703: here is problem with FUSE operation"
+} else {
+    puts "OK OCC348: function FUSE works ok"
+    if [catch {checkshape result } catch_result] {
+	puts "Faulty BUC60703 : here is checking problem."
+    } else {
+	puts "BUC60703  OK"
+    }
+    #  maxtolerance res
+}
+
+set square 0
+set 2dviewer 0

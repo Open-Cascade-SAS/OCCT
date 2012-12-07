@@ -1,0 +1,21 @@
+puts "======================="
+puts "BUC60607"
+puts "It takes visual check for this BUC"
+puts "======================="
+
+set len_ch 2513
+
+point p 1600 300
+line l 0 500 2000 500
+cirtang c p l 400
+
+set info1 [length $c_1]
+set info2 [length $c_2]
+regexp {The length c_1 is +([-0-9.+eE]+)} $info1 full len1
+regexp {The length c_2 is +([-0-9.+eE]+)} $info2 full len2
+set len_int1 [expr int($len1)]
+set len_int2 [expr int($len2)]
+
+if { ${len_int1} != ${len_ch} || ${len_int2} != ${len_ch} } {
+    puts "Error : Length is invalid"
+}

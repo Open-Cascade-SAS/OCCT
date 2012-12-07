@@ -1,0 +1,33 @@
+
+puts "========"
+puts "OCC194"
+puts "(case 1)"
+puts "========"
+puts ""
+###############################################
+##puts "Creating of 2D Rectangular ROTATED Grid WITH Lines"
+##puts "(visual checking for this case is desirable)"
+###############################################
+
+v2dinit
+v2dgrid Rect 500 500 200 200 45 Lines
+
+set rd_ch 49803
+set gr_ch 49803
+set bl_ch 49803
+
+set color [QAAISGetPixelColor2d 25 361]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+set rd_int [expr int($rd * 1.e+05)]
+set gr_int [expr int($gr * 1.e+05)]
+set bl_int [expr int($bl * 1.e+05)]
+
+if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+    puts "Error : 2D Rectangular ROTATED Grid WITH Lines was NOT CREATED properly"
+}
+
+set only_screen2d 1

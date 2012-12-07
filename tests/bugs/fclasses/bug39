@@ -1,0 +1,13 @@
+puts "========"
+puts "OCC39"
+puts "========"
+
+pload QAcommands
+
+if ![string compare $tcl_platform(platform) "windows"] {
+   OCC39 W:\pak.per 0 res
+   puts [checkshape res]
+} else {
+    puts "Thes case for WNT only!"
+}
+

@@ -1,0 +1,37 @@
+
+puts "================"
+puts "OCC146"
+puts "================"
+############################################################################
+##The first click on shape selects it - it is right. But the second one deselects it and the following clicks have no effect.
+############################################################################
+
+v2dinit
+box b_b 10 15 20
+trotate b_b 0 0 0 1 1 1 45
+v2ddisplay b_b
+v2dfit
+
+QASelect2d 155 180
+QASelect2d 155 180
+QASelect2d 155 180
+
+set rd_ch 80000
+set gr_ch 80000
+set bl_ch 80000
+
+set color [QAAISGetPixelColor2d 155 177]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+set rd_int [expr int($rd * 1.e+05)]
+set gr_int [expr int($gr * 1.e+05)]
+set bl_int [expr int($bl * 1.e+05)]
+
+if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+    puts "Error : The second selection of selected object deselects it and the following clicks have no effect"
+}
+
+set only_screen2d 1

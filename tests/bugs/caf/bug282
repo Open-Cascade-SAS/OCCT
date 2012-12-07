@@ -1,0 +1,21 @@
+puts "==========="
+puts "OCC282"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D MDTV-Standard
+
+circle acirc 0 0 0 20
+mkedge anEdge acirc
+wire aWire anEdge
+
+plane pl 0 0 1
+mkface aface pl aWire
+
+NameImportShape D 0:1 aface
+
+if [catch { CheckNaming D 0:2 1 Label 0:1 1 1 1 } res] {
+  puts "OCC282: Error"
+}
+

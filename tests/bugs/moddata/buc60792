@@ -1,0 +1,10 @@
+puts "========================"
+puts "BUC60792"
+puts "========================"
+
+pload QAcommands
+
+vinit
+BUC60792
+
+set 2dviewer 0

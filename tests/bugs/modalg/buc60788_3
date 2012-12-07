@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Faulty : result should be a shell, but not a compound of faces"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "========"
+puts "BUC60788"
+puts "case 2"
+puts "========"
+
+#restore Common_Shell_Case2.brep S1
+#restore Common_Solid_Case2.brep S2
+
+restore [locate_data_file buc60788c.brep] S1 
+puts [checkshape S1]
+restore [locate_data_file buc60787b.brep] S2
+puts [checkshape S1]
+
+bcommon result S1 S2
+
+set nb_info [nbshapes result]
+regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full err
+regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full err1
+
+if { $err != 0 || $err1 != 1} {
+    puts "Faulty : result should be a shell, but not a compound of faces"
+} else {
+    puts "BUC60788 - OK"
+}
+set square 0
+set 2dviewer 0

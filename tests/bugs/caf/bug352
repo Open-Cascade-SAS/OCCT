@@ -1,0 +1,18 @@
+puts "==========="
+puts "OCC352"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D MDTV-Standard
+
+NameBox D 0:1 100 100 100
+box abox 100 100 100
+ttranslate abox 100 0 50
+NameImportShape D 0:2 abox
+
+NameGlue D 0:3 0:1 0:2
+
+if [catch { CheckNaming D 0:4 1 Label 0:3 1 1 1 } res] {
+  puts "OCC352: Error"
+}

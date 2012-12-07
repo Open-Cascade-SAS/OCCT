@@ -1,0 +1,12 @@
+puts "==========="
+puts "BUC60867"
+puts "==========="
+
+pload QAcommands
+
+set ResultError [ BUC60867 [locate_data_file BUC60756_Doc.std] ]
+
+if { [regexp "0" $ResultError] != 1 } {
+    puts "Error : 1"
+}
+

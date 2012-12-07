@@ -1,0 +1,27 @@
+puts "================"
+puts "BUC61018"
+puts "OCC64"
+puts "================"
+puts ""
+
+set rd_ch 0
+set gr_ch 1
+set bl_ch 1
+
+vinit
+vtrihedron tri
+vtri_orig tri
+
+QAMoveTo 205 205
+QAUpdateLights
+
+set color [QAGetPixelColor 205 205]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd_int
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr_int
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl_int
+
+if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+}
+
+set only_screen 1

@@ -1,0 +1,20 @@
+
+puts "============"
+puts "BUC60926"
+puts "============"
+puts ""
+######################################################################
+## Creating a sphere of radius 1 at 0,0,0 and a cone with r1=1 r2=2 height=2 angle=3*PI/2 at 1,1,0 and 
+## then using BRepAlgoAPI_Fuse on the two solids will trigger a segmentation fault. 
+######################################################################
+
+restore [locate_data_file shading_132.brep] a 
+puts [checkshape a]
+
+restore [locate_data_file BUC60926-2.brep] b
+puts [checkshape b]
+
+bfuse result a b
+
+set square 41.7175
+set 2dviewer 0

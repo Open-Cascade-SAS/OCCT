@@ -1,0 +1,28 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_8"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG because it must contains 5 vertexes instead of 6"
+
+puts "========================"
+puts " OCC472 "
+puts "(case 3)"
+puts "========================"
+puts ""
+#####################################################
+## Bad result of Fuse Operation (Cut&Common - bad too). SAM1470 (#2634) 
+#####################################################
+
+restore [locate_data_file OCC472a.brep] b1 
+puts [checkshape b1]
+
+restore [locate_data_file OCC472b.brep] b2
+puts [checkshape b2]
+
+bfuse result b1 b2
+
+set nb_info [nbshapes result]
+set nb_v_good 5
+set nb_e_edge 7
+
+set square 0
+set 2dviewer 0
+

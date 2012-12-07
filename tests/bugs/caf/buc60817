@@ -1,0 +1,16 @@
+puts "==========="
+puts "BUC60817"
+puts "==========="
+
+pload QAcommands
+
+NewDocument D MDTV-Standard
+UndoLimit D 100
+
+NewCommand D
+
+set ResultError [BUC60817 D]
+if { ${ResultError} != 0 } {
+    puts "BUC60817: Error = $ResultError"
+}
+

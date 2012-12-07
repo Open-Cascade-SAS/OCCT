@@ -1,0 +1,20 @@
+
+puts "========================"
+puts " OCC239 "
+puts "========================"
+
+#################################################
+## puts "  BOPTUC      case_2_solid.brep and case_2_wire1.brep"
+#################################################
+ puts " " 
+restore [locate_data_file OCC238a.brep] a
+restore [locate_data_file case_2_wire1.brep] b
+ puts [bop a b]
+ puts [boptuc result]
+ set nb_info [nbshapes result]
+ set nb_v_good 18
+ set nb_e_good 11
+
+set length 2481.26
+set 2dviewer 0
+ 

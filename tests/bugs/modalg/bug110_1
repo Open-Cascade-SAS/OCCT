@@ -1,0 +1,41 @@
+
+puts "========================"
+puts "  BUC60706 "
+puts " OCC110 "
+puts "(cases 1-3)"
+puts "========================"
+
+restore [locate_data_file buc60706a.brep] f 
+puts [checkshape f]
+
+restore [locate_data_file buc60706b.brep] w
+puts [checkshape w]
+pipe t w f
+
+restore [locate_data_file buc60706c.brep] s
+puts [checkshape s]
+
+bcut res_1 s t
+puts [checkshape res_1]
+
+restore [locate_data_file buc60706d.brep] f 
+puts [checkshape f]
+
+restore [locate_data_file buc60706e.brep] w
+puts [checkshape w]
+pipe t w f
+
+bcut res_2 res_1 t
+puts [checkshape res_2]
+
+restore [locate_data_file buc60706g.brep] f 
+puts [checkshape f]
+
+restore [locate_data_file buc60706h.brep] w
+puts [checkshape w]
+pipe t w f
+
+bcut result res_2 t
+
+set square 865172
+set 2dviewer 0

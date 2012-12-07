@@ -1,0 +1,27 @@
+puts "TODO OCC12345 ALL: Error : The command can not be build."
+
+puts "========="
+puts " OCC497 "
+puts "(case 3)"
+puts "========="
+puts ""
+########################################################
+## Result of cut and fuse operation are faulty shapes although arguments are valid.
+########################################################
+
+restore [locate_data_file OCC497e.brep] a_1 
+puts [checkshape a_1]
+
+restore [locate_data_file OCC497f.brep] a_2
+puts [checkshape a_2]
+
+bcut result a_1 a_2
+
+#if { [catch { bcut result a_1 a_2 } catch_result] } {
+#    puts "Faulty OCC497:function CUT works wrongly "
+#} else {
+#    puts "OCC497 : function CUT works without hangs up "
+#}
+
+set square 0
+set 2dviewer 0

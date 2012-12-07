@@ -1,0 +1,14 @@
+puts "============="
+puts "BUC60727"
+puts "============="
+
+pload QAcommands
+
+set start [BUC60727]
+set n [llength $start]
+set end [lindex $start [expr $n-1]]
+
+if { $end != 3} {
+    puts "Faulty : Incorrect converting of the unit"
+}
+

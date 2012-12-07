@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC428"
+puts "SAM1414"
+puts "========"
+
+################################################
+## Exception during vizualization on attached shape in application.
+## Exception is raised in the package StdPrs.
+################################################
+
+restore [locate_data_file OCC428.brep] result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1
+vclear
+
+isos result 0
+triangles result
+vfit
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri == 5496 && $nod == 5406 }  {
+    puts "Warning OCC428: here is shading problem, but source shape is invalid"
+} else {
+     puts "Warning OCC428: Shading of OCC428 was made, source shape is invalid"
+}
+
+set 3dviewer 1
+

@@ -1,0 +1,24 @@
+puts "==========="
+puts "GER61235"
+puts "==========="
+
+restore [locate_data_file ger61235a.brep] tool 
+puts [checkshape tool]
+restore [locate_data_file ger61235b.brep] object 
+puts [checkshape object]
+
+bsection result object tool 
+
+puts "Result of section :"
+puts [checkshape result]
+#To check geometry part 
+mksurface s1 tool 
+mksurface s2 object 
+
+puts "Result of intersect :"
+intersect result s1 s2 
+puts [checksection result]
+
+set 2dviewer 0
+
+

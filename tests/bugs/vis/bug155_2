@@ -1,0 +1,28 @@
+puts "========"
+puts "OCC155"
+puts "OCC191"
+puts "========"
+puts ""
+#####################################
+##puts "Creating of pCone 2D"
+##puts "(visual checking for this case is desirable)"
+#####################################
+
+v2dinit
+
+pcone c_o 15 0 50 360
+v2ddisplay c_o
+v2dfit
+
+set color [QAAISGetPixelColor2d 338 77]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != 1 || ${gr} != 1 || ${bl} != 0 } {
+    puts "Error : colors are not equal"
+    puts "Error : pCone 2D was NOT LOADED properly into viewer"
+}
+
+set only_screen2d 1
+

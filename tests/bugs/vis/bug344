@@ -1,0 +1,35 @@
+puts "================"
+puts "BUC61047"
+puts "OCC344"
+puts "================"
+puts ""
+
+#############################################
+## An exception - <access violation> is raised during visualization.
+#############################################
+
+restore [locate_data_file OCC344.brep] result 
+puts [checkshape result]
+tclean result
+
+vinit
+vdisplay result
+vsetdispmode result 1
+vfit
+vclear
+isos result 0
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri == 9 && $nod == 8 }  {
+   puts "Warning OCC344: here is shading problem"
+} else {
+   puts "Shading of OCC344 looks like OK, but visual checking is required"
+}
+
+set only_screen 1
+
+

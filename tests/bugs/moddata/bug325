@@ -1,0 +1,21 @@
+puts "========================"
+puts " OCC325 "
+puts "========================"
+puts ""
+##################################################
+## Checkshape does not recognize an error in a bad face
+##################################################
+
+restore [locate_data_file OCC325.brep] result
+
+decho off
+set che [checkshape result]
+decho on
+
+if { [regexp {Faulty} $che ] != 1} {
+    puts "Faulty OCC325: Checkshape command works wrongly"
+} else {
+    puts "OCC325 OK : Checkshape command works properly"
+}
+
+set 2dviewer 0

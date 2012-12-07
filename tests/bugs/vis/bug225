@@ -1,0 +1,30 @@
+
+puts "========================"
+puts " OCC225 "
+puts "========================"
+puts ""
+#################################################
+##puts "Checking of function V2DUNSETCOLOR for BOX "
+##puts "(visual checking for this case is desirable)"
+#################################################
+
+v2dinit
+
+box b_b 10 15 20
+v2ddisplay b_b 0 0 0 1 1 1 1 0 0
+v2dfit
+v2dsetcolor b_b BLUE3
+wait 5
+v2dunsetcolor b_b
+
+set color [QAAISGetPixelColor2d 22 230]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != 1 || ${gr} != 1 || ${bl} != 0 } {
+    puts "Error : colors are not equal"
+    puts "Error : function V2DUNSETCOLOR for BOX 2D does NOT WORK properly"
+}
+
+set only_screen2d 1

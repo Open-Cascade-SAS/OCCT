@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Faulty OCC406: Command checkshape works wrongly: Source shape looks invalid"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "========"
+puts "OCC406"
+puts "========"
+puts ""
+#########################################
+## Checkshape says face is Ok, but it looks invalid
+#########################################
+
+restore [locate_data_file OCC406.brep] result
+
+set che [checkshape result]
+
+if { [regexp {Faulty} $che ] != 1 } {
+    puts "Faulty OCC406: Command checkshape works wrongly: Source shape looks invalid"
+} else {
+    puts "OCC406 OK : Source shape is invalid. Command checkshape works properly."
+}
+
+set square 0
+set 2dviewer 0

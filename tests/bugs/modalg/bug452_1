@@ -1,0 +1,30 @@
+
+puts "========"
+puts "OCC452"
+puts "(case 1)"
+puts "========"
+puts ""
+
+pcone pc 10 0 20
+explode pc f
+
+prism pcy pc_2 0 0 10
+
+dchrono h2 reset
+dchrono h2 start
+
+bcut result pc pcy
+
+dchrono h2 stop
+set q2 [ dchrono h2 show ]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z2
+puts "$z2"
+if { $z2 > 3 } {                             
+    puts "Elapsed time is more then 3 seconds - Faulty"
+} else {
+    puts "Elapsed time is less then 3 seconds - OK"      
+}
+
+set square 254.16
+set 2dviewer 0
+

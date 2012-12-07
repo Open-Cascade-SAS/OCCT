@@ -1,0 +1,28 @@
+puts "========="
+puts " OCC504 "
+puts "========="
+puts ""
+###############################
+## AllocMemory while intersection command 
+###############################
+
+restore [locate_data_file OCC504a.draw] su1 
+# checkshape su1
+
+restore [locate_data_file OCC504b.draw] su2
+# checkshape su2
+
+if [catch {intersect result su1 su2} catch_result] {
+    puts "Faulty OCC504 : A solution takes all memory and crach with AllocMemory"
+} else {
+    puts "OCC504 OK: function intersection works ok"
+}
+
+if { [regexp {curve} [whatis result_1]] && [regexp {curve} [whatis result_2]] } {
+    puts "OCC504 OK : Result shape is CORRECT !!! "
+} else {
+    puts " Faulty OCC504: Result shape is INcorrect !!! "
+}
+
+set 2dviewer 0
+

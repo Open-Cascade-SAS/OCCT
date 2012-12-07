@@ -1,0 +1,27 @@
+puts "TODO OCC12345 ALL: Tcl Exception: Error: file BUC60826b.brep could not be found"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "========================"                                                 
+puts "BUC60826"                                                                 
+puts "========================"                                                 
+                                                                      
+#restore Model2-a.brep a
+restore [locate_data_file BUC60826a.brep] a 
+puts [checkshape a]
+
+# restore Model2-b.brep b
+restore [locate_data_file BUC60826b.brep] b
+puts [checkshape b]
+
+bsection result a b
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full num
+
+if { $num != 0 } {
+    puts " Faulty BUC60826 : Result shape is Unclosed !!! "
+} else {
+    puts "BUC60826 OK: Result shape is CORRECT !!! "
+}
+set length 0
+set 2dviewer 0
+

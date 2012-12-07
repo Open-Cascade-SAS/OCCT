@@ -29,5 +29,5 @@ if { ($tri != 114 && $nod != 116) && ($tri != 116 && $nod != 118) }  {
 }
 
 set square 150.283
-set 2dviewer 0
+set 3dviewer 0
 

@@ -1,0 +1,34 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_1"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+pload QAcommands
+
+puts "================"
+puts "OCC307"
+puts "SAM1265"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC307.brep] f 
+
+set che [checkshape f]
+if { [regexp {Faulty} $che] == 1} {
+    puts "Warning OCC307: Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC307 OK: Source shape is valid"
+}
+
+explode f f
+
+renamevar f w
+
+explode w w
+
+OCC307 result1 f_4 w_6 1
+OCC307 result2 f_5 result1 1
+
+puts [checkshape result1]
+renamevar result2 result
+
+set square 0
+set 2dviewer 0

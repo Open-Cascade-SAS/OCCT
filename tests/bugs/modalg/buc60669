@@ -1,0 +1,21 @@
+pload QAcommands
+
+puts "=================="
+puts "BUC60669"
+puts "=================="
+puts ""
+#############################################################
+## An exception was caught OSD_SIGBUS: SIGBUS 'bus error' detected.** 
+## Exception ** OSD_SIGBUS: SIGBUS 'bus error' detected. 
+#############################################################
+
+restore [locate_data_file buc60669a.brep] shell1 
+puts [checkshape shell1]
+restore [locate_data_file buc60669b.brep] shell2
+puts [checkshape shell2]
+
+ksection result shell1 shell2 1000 0.0001 0.00001 0 
+
+#checksection res
+set length 104.754
+set 2dviewer 0

@@ -1,0 +1,18 @@
+
+puts "========================"
+puts "OCC153"
+puts "========================"
+
+##########################################
+####### Draw command v2dsetbg hangs up the application
+##########################################
+
+v2dinit
+set j 1
+repeat 23 {
+        if [catch { v2dsetbg [locate_data_file OCC153.gif] } res] {
+	   puts [format "%s  ) Faulty OCC153: here is problem with v2dsetbg command" $j]
+	} else {
+	  puts [format "%s  )  : OCC153 OK" $j]
+	}
+        incr j} 	 

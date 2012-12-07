@@ -28,4 +28,4 @@ if { $tri != 26 && $nod != 28 }  {
 }
 
 set square 0
-set 2dviewer 0
+set 3dviewer 0

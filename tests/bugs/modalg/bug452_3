@@ -1,0 +1,43 @@
+
+puts "========"
+puts "GER60239"
+puts "OCC452"
+puts "(case 3)"
+puts "========"
+puts ""
+
+restore [locate_data_file CTO900_ger60239a.rle] a 
+set che [checkshape a]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 5): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 5): Source shape is valid"
+}
+
+restore [locate_data_file CTO900_ger60239b.rle] b
+set che [checkshape b]
+if { [regexp {Faulty} $che ] == 1 } {
+    puts "Faulty OCC452 (shape 6): Source shape is invalid. It was detected by Checkshape command"
+} else {
+    puts "OCC452 OK (shape 6): Source shape is valid"
+}
+
+dchrono h2 reset
+dchrono h2 start
+
+bfuse result a b
+#checkshape -top res
+
+dchrono h2 stop
+set q2 [ dchrono h2 show ]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z2
+puts "$z2"
+if { $z2 > 50 } {                             
+    puts "Elapsed time is more then 50 seconds - Faulty"
+} else {
+    puts "Elapsed time is less then 50 seconds - OK"      
+}
+set square 3468.6
+set 2dviewer 0
+
+

@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC253"
+puts "========"
+
+######################################################
+## Exception while segment operation on periodic BSpline curve.
+## More over it seems that command segment in Draw doesnot work.
+######################################################
+
+restore [locate_data_file OCC253.draw] result
+############### checkshape c1 # is not a topological shape
+
+smallview -2D-
+
+#store dump of initial curve 
+set init_dump [dump result]
+
+set ufirst 0.500000000000006
+set ulast 1.00000000015925
+catch { segment result $ufirst $ulast }
+
+#compare dump of initial curve and dump of result one
+set result_dump [dump result]
+if { $init_dump == $result_dump} {
+    puts "Faulty OCC253: command segment does NOT do anything"
+} 
+
+#retrieve amount of knots of result curve from dump
+regexp { +Degree +[-0-9.+eE]+, +[-0-9.+eE]+ +Poles, +([-0-9.+eE]+) +KnotsPoles +:} $result_dump full KnotsNumber
+#create string to be found in result dump
+set trueLastKnot "$KnotsNumber : 1.00000000015925 "
+
+#verify parametrization of result curve
+if { [regexp "1 : 0.500000000000006 " $result_dump] && [regexp $trueLastKnot $result_dump]} {
+    puts " OCC253 is OK: command segment works properly" 
+} else {
+    puts "Faulty OCC253: parametrization of result curve is wrong" 
+}
+
+2dfit
+set 2dviewer 0
+
+

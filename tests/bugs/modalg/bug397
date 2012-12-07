@@ -1,0 +1,43 @@
+puts "========================"
+puts " OCC397 "
+puts "========================"
+
+pload QAcommands
+
+set rd_ch 50588
+set gr_ch 34901
+set bl_ch 5098
+
+restore [locate_data_file OCC397.brep] a 
+puts [checkshape a]
+
+tclean a
+explode a f
+renamevar a_55 result
+
+vinit
+vdisplay result
+vfit
+vsetdispmode result 1
+
+set color [QAGetPixelColor 235 180]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+set rd_int [expr int($rd * 1.e+05)]
+set gr_int [expr int($gr * 1.e+05)]
+set bl_int [expr int($bl * 1.e+05)]
+
+if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
+    puts "Error : colors are not equal"
+    puts "Error : Shading is missing in 3D Viewer"
+}
+
+QASelect 220 170
+QASelect 220 170
+
+set square 92.9029
+set only_screen 1
+
+

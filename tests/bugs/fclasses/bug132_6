@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC132"
+puts "BUC61029"
+puts "BUC61030"
+puts "========"
+
+pload QAcommands
+
+if [catch {OCC132 word1<word2} res] {
+    puts "Error : OCC132"
+}

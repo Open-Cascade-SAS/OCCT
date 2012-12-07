@@ -1,0 +1,36 @@
+puts "TODO OCC12345 ALL: Faulty BUC60898: here is reading problem"
+puts "TODO OCC12345 ALL: Error : The command can not be build."
+
+puts "==========="
+puts "  BUC60898"
+puts "==========="
+puts ""
+
+pload XDE
+catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
+
+if [catch { igesbrep [locate_data_file $filedir/buc60898.igs] a *} result] { 
+## rename to BUC60898.igs
+    puts "Faulty BUC60898: here is reading problem"
+} else {
+    puts "BUC60898 OK"
+    tpcompound a
+
+    if [catch {sewing result 1e-7 a } catch_result] {
+	puts "Faulty  BUC60898: function SEWING gives except"
+    } else {
+	puts " BUC60898 OK: function SEWING works without except"
+    }
+}
+
+#checkshape res
+#set che [checkshape res r]
+#set err [lindex $che [expr [llength $che] - 1]]
+#if { $err != "OK"} {
+#  puts "Faulty : mistakes are found in checked shape by checkshape command"
+#} else {
+#  puts "Checking by checkshape - OK"
+#}
+
+set square 0
+set 2dviewer 0

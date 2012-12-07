@@ -1,0 +1,34 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_4"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "================"
+puts "OCC62"
+puts "BUC61001"
+puts "================"
+
+cpulimit 1400
+restore [locate_data_file OCC62.brep] sh 
+
+explode sh 
+puts [checkshape sh]
+
+bfuse res1 sh_1 sh_3
+puts [checkshape res1]
+
+bfuse res2 res1 sh_2 
+puts [checkshape res2]
+
+bfuse res3 res2 sh_6
+puts [checkshape res3]
+
+bfuse res4 res3 sh_4
+puts [checkshape res4]
+
+bfuse res5 res4 sh_5
+puts [checkshape res5]
+
+renamevar res5 result
+
+set square 0
+set 2dviewer 0
+

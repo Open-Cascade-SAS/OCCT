@@ -1,0 +1,26 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_17"
+puts "TODO OCC12345 ALL: Faulty : mistakes are found in checked shape by checkshape command"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+
+puts "=========="
+puts "BUC60462"
+puts "=========="
+
+restore [locate_data_file buc60462c.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60462d.brep] b
+puts [checkshape b]
+puts "Fuse begin"
+bfuse result a b
+puts "Fuse end"
+
+set che [checkshape result r]
+if { [regexp {OK} $che] != 1 } {
+    puts "Faulty : mistakes are found in checked shape by checkshape command"
+} else {
+    puts "Checking by checkshape - OK"
+}
+
+set square 0
+set 2dviewer 0

@@ -1,0 +1,13 @@
+puts "================="
+puts "OCC361"
+puts "BUC60995"
+puts "================="
+
+pload QAcommands
+
+NewDocument D MDTV-Standard
+
+if { [catch { OCC361 D }] } {
+    puts "OCC361: Error"
+}
+

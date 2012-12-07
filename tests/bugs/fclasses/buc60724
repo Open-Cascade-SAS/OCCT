@@ -1,0 +1,11 @@
+puts "TODO OCC12345 ALL: Faulty : the first string is not zero string :"
+puts "TODO OCC12345 ALL: Faulty : the second string is not zero string :"
+
+puts "=========="
+puts "BUC60724"
+puts "=========="
+
+pload QAcommands
+
+BUC60724
+

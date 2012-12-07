@@ -1,0 +1,23 @@
+puts "TODO OCC12345 ALL: Faulty : Section is incorrect"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+
+puts "============="
+puts "BUC60462"
+puts "============="
+puts "Section"
+puts ""
+
+restore [locate_data_file buc60462a.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60462b.brep] b
+puts [checkshape b]
+bsection result a b
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full cs
+
+if { $cs != 0 } {
+    puts "Faulty : Section is incorrect"
+}
+
+set length 0
+set 2dviewer 0

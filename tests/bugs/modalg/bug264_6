@@ -29,4 +29,4 @@ if { $tri != 18 && $nod != 20 }  {
 }
 
 set square 19.2399
-set 2dviewer 0
+set 3dviewer 0

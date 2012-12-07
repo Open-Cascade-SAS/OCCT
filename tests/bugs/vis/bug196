@@ -1,0 +1,38 @@
+
+puts "========"
+puts "OCC196"
+puts "========"
+puts ""
+################################################
+##puts "Rotation of text font number 23"
+##puts "(visual checking for this case is desirable)"
+################################################
+
+v2dinit
+
+set Scale 1
+set Font_ind 23
+set k -.2
+set j 0 
+repeat 10 {
+       set Position_X [expr $j*15]
+       set Position_Y [expr $j*-15]
+       set k [expr $k+.2]
+       set Angle $k
+       v2dtext Angle_[string range $k 0 2] $Position_X $Position_Y $Angle $Scale $Font_ind
+       puts "=======> Angle = [string range $k 0 4] Position_X= $Position_Y Position_Y= $Position_Y"
+       puts "   "
+       incr j
+}
+
+set color [QAAISGetPixelColor2d 336 347]
+regexp {RED +: +([-0-9.+eE]+)} $color full rd
+regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
+regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+
+if { ${rd} != 1 || ${gr} != 1 || ${bl} != 1 } {
+    puts "Error : colors are not equal"
+    puts "Error : Rotation of text font number 23 was NOT MADE properly"
+}
+
+set only_screen2d 1

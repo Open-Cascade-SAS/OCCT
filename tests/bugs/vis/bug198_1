@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC198"
+puts "========"
+puts ""
+#######################################################
+##puts "Changing of index of text fonts"
+#######################################################
+
+v2dinit
+
+set mistake 0
+set Angle 0
+set Scale 1
+set k -1
+set j 0 
+repeat 10 {
+    set i 0
+    repeat 4 {
+	set Position_X [expr $i*70]
+        set Position_Y [expr $j*15]
+	set k [expr $k+1]
+	if [catch {Font_ind $k } ] {
+	     set mistake 1
+	}
+	incr i
+    }
+    incr j
+}
+
+if {$mistake == 0} {
+    puts "Faulty : Changing of text fonts was NOT MADE properly"
+} else {
+    puts "Changing of text fonts was made properly"
+}
+
+set only_screen2d 1

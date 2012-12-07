@@ -1,0 +1,20 @@
+puts "========"
+puts "BUC60941"
+puts "========"
+puts ""
+############################################################
+## When try to use Geom2dGcc_Circ2d2TanRad with two curves it rise exception. 
+############################################################
+
+circle curve_1 1.79356127430613 -11.9148900515605 12.0491272292007
+
+set poles { { 0 0 1 } { -2.14533906935467 4.92056269221697 1 } { -0.537398638327716 10.0937503357781 1 } { 10.3564232507092 8.73929826869582 1 } { 16.6366922939454 3.11858911810943 1 } { 16.39 -0.262 1 } }
+set knots { { 0 4 } { 8.6971225126475 1 } { 16.903955884905 1 } { 28.0087167558108 4 } }
+
+eval 2dbsplinecurve curve_2 3 [ llength $knots ] [ join $knots ] [ join $poles ]
+
+if [catch {cirtang result curve_1 curve_2 2} catch_result] {
+    puts "Faulty BUC60941: function cirtang works wrongly"
+} else {
+    puts "BUC60941  OK: function cirtang works properly"
+}

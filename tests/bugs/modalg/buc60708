@@ -1,0 +1,24 @@
+
+puts "==========="
+puts "BUC60708"
+puts "==========="
+
+restore [locate_data_file buc60708a.brep] a 
+puts [checkshape a]
+restore [locate_data_file buc60708b.brep] b
+puts [checkshape b]
+
+bcommon result a b
+
+set faces [explode result f]
+set n [llength $faces]
+
+set end [lindex $faces [expr $n-1]]
+
+if {  $end != "result_4" } {
+    puts " Faulty :Common operation was made  wrongly"
+} else {
+    puts " Common operation was made successfully"
+}
+set square 13.4871
+set 2dviewer 0
