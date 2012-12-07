@@ -1,12 +1,4 @@
 set os $env(os_type)
-if { [string compare $os "windows"] == 0 } {
-#     puts "TODO OCC23561 $os: child process exited abnormally"
-} else {
-    puts "TODO OCC23561 ALL: An exception was caught"
-    puts "TODO OCC23561 ALL: Tcl Exception:"
-    puts "TODO OCC23561 ALL: \\*\\* Exception \\*\\*.*"
-}
-puts "TODO OCC23561 ALL: TEST INCOMPLETE"
 
 puts "================"
 puts "OCC23379"

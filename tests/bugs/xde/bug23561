@@ -1,0 +1,18 @@
+# Test writing IGES or STEP file with long path
+
+puts "bug23561"
+
+pload MODELING
+
+# make path to log directory to be at least 200 symbols, 
+# by adding ../xde/ as many times as needed
+set path [file normalize $imagedir]
+set last [file tail $path]
+while { [string length $path] < 200 } {
+    set path "$path/../$last"
+}
+
+# write simple box
+box b 10 10 10
+brepiges b "$path/${casename}.igs"
+stepwrite a b "$path/${casename}.stp"

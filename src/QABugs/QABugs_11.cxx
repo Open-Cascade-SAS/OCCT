@@ -5181,10 +5181,10 @@ Standard_Integer OCC22744 (Draw_Interpretor& di, Standard_Integer argc, const ch
   
   TCollection_ExtendedString anExtString;
   
-  Standard_ExtCharacter aNonAsciiChar = 0xff00;
+  Standard_ExtCharacter aNonAsciiChar = 0x0f00;
   anExtString.Insert(1, aNonAsciiChar);
 
-  di << "Is ASCII: " << ( anExtString.IsAscii() ? "true" : "false" ) << "\n";
+  di << "Is ASCII: " << ( anExtString.IsAscii() ? "true : Error" : "false : OK" ) << "\n";
   NCollection_DataMap<TCollection_ExtendedString, Standard_Integer> aMap;
   aMap.Bind(anExtString, 0);
   

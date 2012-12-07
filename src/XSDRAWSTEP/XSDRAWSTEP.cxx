@@ -435,7 +435,14 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
   sw.WS()->TransferWriter()->FinderProcess()->SetProgress(progress);
 
   Standard_Integer stat = sw.Transfer (shape,mode);
-  di<<"execution status : "<<stat<<"\n";
+  if (stat == IFSelect_RetDone)
+  {
+    di << "Translation: OK\n";
+  } 
+  else 
+  {
+    di << "Error: translation failed, status = " << stat << "\n";
+  }
 
   sw.WS()->TransferWriter()->FinderProcess()->SetProgress(0);
   progress->EndScope();
@@ -450,28 +457,18 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
   if (nbapres <= nbavant) di<<"Beware : No data produced by this transfer"<<"\n";
   if (nbapres == 0) { di<<"No data to write"<<"\n"; return 0; }
 
-  char nomfic[150] ;
-  Standard_Integer modepri = 1;
-
   if (argc <= 3) {
-    cout<<" Mode (0 end, 1 file) :"<<flush;
-    cin >> modepri; di << "Output mode " << modepri << "\n";
+    di<<" Now, to write a file, command : writeall filename"<<"\n";
+    return 0;
   }
-  else modepri = 2;
 
-  if      (modepri == 0) return 0;
-  else if (modepri == 1) {
-    cout << " Output file name :" << flush;  cin  >> nomfic;
-  }
-  else if (modepri == 2) strcpy (nomfic,argv[3]);
-
-  di << " Output on file : " << nomfic << "\n";
+  const char *nomfic = argv[3];
   stat = sw.Write(nomfic);
   switch (stat) {
-    case IFSelect_RetVoid : di<<"No file written"<<"\n"; break;
+  case IFSelect_RetVoid : di<<"Error: No file written"<<"\n"; break;
     case IFSelect_RetDone : di<<"File "<<nomfic<<" written"<<"\n"; break;
     case IFSelect_RetStop : di<<"Error on writing file: no space on disk or destination is write protected"<<"\n"; break;
-    default : di<<"File "<<nomfic<<" written with fail messages"<<"\n"; break;
+    default : di<<"Error: File "<<nomfic<<" written with fail messages"<<"\n"; break;
   }
 
   progress->EndScope();
