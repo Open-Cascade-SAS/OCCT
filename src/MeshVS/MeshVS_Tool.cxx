@@ -22,7 +22,7 @@
 
 #include <MeshVS_DrawerAttribute.hxx>
 #include <Precision.hxx>
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 //================================================================
 // Function : CreateAspectFillArea3d
@@ -196,10 +196,10 @@ Handle( Graphic3d_AspectText3d ) MeshVS_Tool::CreateAspectText3d
   Quantity_Color            aTColor       = Quantity_NOC_YELLOW;
   Standard_Real             anExpFactor   = 1.0,
                             aSpace        = 0.0;
-  Standard_CString          aFont         = Graphic3d_NOF_ASCII_MONO;
+  Standard_CString          aFont         = Font_NOF_ASCII_MONO;
   Aspect_TypeOfStyleText    aStyle        = Aspect_TOST_NORMAL;
   Aspect_TypeOfDisplayText  aDispText     = Aspect_TODT_NORMAL;
-  TCollection_AsciiString   aFontString   = Graphic3d_NOF_ASCII_MONO;
+  TCollection_AsciiString   aFontString   = Font_NOF_ASCII_MONO;
   Font_FontAspect           aFontAspect   = Font_FA_Regular;
   Standard_Integer          aStyleI       = (Standard_Integer)Aspect_TOST_NORMAL;
   Standard_Integer          aDispTextI    = (Standard_Integer)Aspect_TODT_NORMAL;

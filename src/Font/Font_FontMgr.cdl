@@ -18,27 +18,78 @@
 -- and conditions governing the rights and limitations under the License.
 
 class FontMgr from Font inherits TShared from MMgt
----Purpose: Structure for store of Font System Information
+---Purpose: Collects and provides information about available fonts in system.
+---On Windows it gets information about available fonts from registry value
+---"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts". If the description
+---of the font does not contain the full path to it, FontMgr looks for it in the
+---default fonts directory. (WinAPI function GetSystemWindowsDirectory is used
+---to get the path of the shared Windows directory on a multi-user system.)
+---On Linux and Mac OS X platforms for getting the directories with fonts, at first
+---it checks X11 configuration files, which can be located at "/etc/X11/fs/config",
+---"/usr/X11R6/lib/X11/fs/config" or "/usr/X11/lib/X11/fs/config". Then it adds
+---default directories(for Linux: "/usr/share/fonts" and "/usr/local/share/fonts",
+---for Mac OS X: "/System/Library/Fonts" and "/Library/Fonts"). After that FontMgr
+---looks for the "fonts.dir" file in each stored directory. This file contain 
+---fonts description in XLFD (X Logical Font Description) format. 
+---On all platforms (Windows, Linux, Mac OS X) we use FreeType library for getting
+---font name and aspect.
+---On Linux and Mac OS X in cases when the font description obtained from FreeType
+---does not match the description in XLFD, FontMgr stores such fonts as two different
+---fonts (font management feature on Unix systems).
 
-uses SystemFont,
+uses FontAspect,
+     SystemFont,
      NListOfSystemFont,
      Path from OSD,
-     AsciiString from TCollection
+     AsciiString from TCollection,
+     HAsciiString from TCollection,
+     SequenceOfHAsciiString from TColStd
 is
   GetInstance(myclass) returns FontMgr;
   ---Level: Public
 
-  GetAvalableFonts(me) returns NListOfSystemFont;
+  GetAvailableFonts(me) returns NListOfSystemFont;
+  ---C++: return const &
+  
+  GetAvailableFontsNames(me;
+                         theFontsNames: out SequenceOfHAsciiString);
+  ---Purpose: Returns sequence of available fonts names
+  ---Level: Public
+    
+  GetFont (me;
+           theFontName   : HAsciiString;
+           theFontAspect : FontAspect;
+           theFontSize   : Integer) returns SystemFont;
+  ---Purpose: Returns font that match given parameters.
+  ---         If theFontName is empty string returned font can have any FontName.
+  ---         If theFontAspect is Font_FA_Undefined returned font can have any FontAspect.
+  ---         If theFontSize is "-1" returned font can have any FontSize.
+  ---Level: Public
 
---- Private methods
+  FindFont (me;
+            theFontName   : HAsciiString;
+            theFontAspect : FontAspect;
+            theFontSize   : Integer) returns SystemFont;
+  ---Purpose: Tries to find font by given parameters.
+  ---         If the specified font is not found tries to use font names mapping.
+  ---         If the requested family name not found -> search for any font family
+  ---         with given aspect and height. If the font is still not found, returns
+  ---         any font available in the system. Returns NULL in case when the fonts
+  ---         are not found in the system.
+  ---Level: Public
+
+  --- Private methods
 
   Create returns FontMgr is private;
   ---Purpose: Creates empty font object
   ---Level: Private
 
- InitFontDataBase(me:mutable) is private;
+  InitFontDataBase(me:mutable) is private;
+  ---Purpose: Collects available fonts paths.
+  ---Level: Private
 
 fields
- MyListOfFonts:  NListOfSystemFont;
+
+  myListOfFonts : NListOfSystemFont;
 
 end FontMgr;

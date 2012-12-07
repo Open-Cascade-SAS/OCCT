@@ -43,9 +43,9 @@ class OpenGl_FontMgr
  public:
   static OpenGl_FontMgr*  instance();
 
-  int request_font( const Handle(TCollection_HAsciiString)& fontName,
-                    const Font_FontAspect                   fontAspect,
-                    const Standard_Integer                  fontHeight );
+  int request_font (const Handle(TCollection_HAsciiString)& theFontName,
+                    const Font_FontAspect                   theFontAspect,
+                    const Standard_Integer&                 theFontHeight);
 
   void render_text( const Standard_Integer id,
     const wchar_t* text,
@@ -62,8 +62,6 @@ class OpenGl_FontMgr
   //returns width of string
   Standard_ShortReal computeWidth( const Standard_Integer id, const wchar_t *str );
 
-  bool requestFontList( Graphic3d_NListOfHAsciiString& );
-
   void setCurrentScale( const Standard_ShortReal xScale = 1.f,
                         const Standard_ShortReal yScale = 1.f);
 
@@ -77,29 +75,24 @@ private:
 
   typedef NCollection_List<Standard_Integer> IDList;
 
-  struct OGLFont_SysInfo {
-    Handle(Font_SystemFont)           SysFont;
-    IDList                            GeneratedFonts;
-  };
-
   struct OGLFont_Cache {
     FTFont*            Font;
     Standard_Integer   FontHeight;
     GLCONTEXT          GlContext;
   };
 
-  typedef NCollection_List<OGLFont_SysInfo*> FontDataBase;
-  typedef FontDataBase::Iterator             FontDBIt;
-  typedef NCollection_DataMap<Standard_Integer,OGLFont_Cache> FontCache;
-  typedef FontCache::Iterator                                 FCacheIt;
+  typedef NCollection_DataMap<Handle(Font_SystemFont), IDList> FontDataBase;
+  typedef FontDataBase::Iterator                               FontDBIterator;
+  typedef NCollection_DataMap<Standard_Integer, OGLFont_Cache> FontCache;
+  typedef FontCache::Iterator                                  FontCacheIterator;
 
-  FontDataBase            _FontDB;
-  FontCache               _FontCache;
+  FontDataBase            myGeneratedFontDB;
+  FontCache               myGeneratedFontCache;
 
-  Standard_Integer        _CurrentFontId;
+  Standard_Integer        myCurrentFontId;
 
-  Standard_ShortReal      _XCurrentScale,
-                          _YCurrentScale;
+  Standard_ShortReal      myXCurrentScale,
+                          myYCurrentScale;
 };
 
 #endif //OPENGL_FONT_MGR_H

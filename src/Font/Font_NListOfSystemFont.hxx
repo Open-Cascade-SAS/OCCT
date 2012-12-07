@@ -23,4 +23,10 @@
 DEFINE_LIST (Font_NListOfSystemFont,
              NCollection_List,
              Handle(Font_SystemFont))
+
+inline Standard_Boolean IsEqual (const Handle(Font_SystemFont)& theFirstFont,
+                                 const Handle(Font_SystemFont)& theSecondFont)
+{
+  return theFirstFont->IsEqual (theSecondFont);
+}
 #endif

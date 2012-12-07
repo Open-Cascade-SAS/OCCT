@@ -1,8 +1,9 @@
-pload QAcommands
 puts "================"
 puts "OCC322"
 puts "================"
 puts ""
+
+pload QAcommands
 
 restore [locate_data_file OCC322.brep] a 
 puts [checkshape a]
@@ -21,10 +22,11 @@ set x1 204
 set y1 297
 
 set x2 251
-set y2 230
+set y2 232
 
 QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B
 QAGetPixelColor $x2 $y2 $Yellow_R $Yellow_G $Yellow_B
 
 set square 20000
 set only_screen 1
+

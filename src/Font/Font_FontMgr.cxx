@@ -18,417 +18,564 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <Font_FontMgr.ixx>
-#ifdef WNT
-# include <windows.h>
-# include <stdlib.h>
-#else  //WNT
-# include <dirent.h>
-# include <X11/Xlib.h>
-#endif //WNT
 
 #include <OSD_Environment.hxx>
 #include <NCollection_List.hxx>
-#include <TCollection_HAsciiString.hxx>  
+#include <NCollection_Map.hxx>
 #include <Standard_Stream.hxx>
+#include <TCollection_HAsciiString.hxx>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
-#ifndef WNT
-#include <TCollection_AsciiString.hxx>
+struct Font_FontMgr_FontAliasMapNode
+{
+  const char *    EnumName;
+  const char *    FontName;
+  Font_FontAspect FontAspect;
+};
 
-#include <NCollection_DefineList.hxx>
-#include <NCollection_List.hxx>
-
-#include <OSD_Path.hxx>
-#include <OSD_FileIterator.hxx>
-#include <OSD_DirectoryIterator.hxx>
-#include <OSD_File.hxx>
-#include <OSD_FileNode.hxx>
-#include <OSD_OpenMode.hxx>
-#include <OSD_Protection.hxx>
-#include <Font_NListOfSystemFont.hxx>
-
-const  Standard_Integer font_service_conf_size = 3;
-static Standard_Character font_service_conf[font_service_conf_size][64] = { {"/etc/X11/fs/config"},
-                                                                            {"/usr/X11R6/lib/X11/fs/config"},
-                                                                            {"/usr/X11/lib/X11/fs/config"}
-                                                                           };
-
-DEFINE_LIST( StringList, NCollection_List, TCollection_HAsciiString );
-
-void find_path_with_font_dir( const TCollection_AsciiString& dir,StringList& dirs )
-{  
-  if( !dir.IsEmpty() )
-  {
-    TCollection_AsciiString PathName( dir );
-
-    Standard_Integer rem = PathName.Length();
-
-    if ( PathName.SearchFromEnd("/") == rem )
-      PathName.Remove( rem, 1 );
-
-    Standard_Boolean need_to_append = Standard_True;
-       
-    StringList::Iterator it( dirs );
-    for( ; it.More(); it.Next() )
-    {
-      if ( PathName.IsEqual(it.Value().ToCString()) ) {
-        need_to_append = Standard_False;
-        break;
-      }
-    }
-    if ( need_to_append )
-      dirs.Append( PathName );
-
-    OSD_DirectoryIterator osd_dir(PathName,"*");
-    while(osd_dir.More())
-    {
-      OSD_Path path_file;
-      osd_dir.Values().Path( path_file );
-      if( path_file.Name().Length() < 1 )
-      {
-        osd_dir.Next();
-        continue;
-      }
-      
-      TCollection_AsciiString full_path_name = PathName + "/" + path_file.Name();
-      rem = full_path_name.Length();
-      if ( full_path_name.SearchFromEnd("/") == rem )
-        full_path_name.Remove( rem, 1 );
-      find_path_with_font_dir( full_path_name, dirs );
-      osd_dir.Next();
-    }
-  }
-}
-
-#endif //WNT
-
-
-Handle(Font_FontMgr) Font_FontMgr::GetInstance() {
-
-  static Handle(Font_FontMgr) _mgr;
-  if ( _mgr.IsNull() )
-    _mgr = new Font_FontMgr();
-
-  return _mgr;
-
-}
-
-Font_FontMgr::Font_FontMgr() {
-
-  InitFontDataBase();
-
-}
-
-void Font_FontMgr::InitFontDataBase() {
-
-  MyListOfFonts.Clear();
+static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+{
 
 #ifdef WNT
-  //detect font directory
 
-  OSD_Environment env("windir");
-  TCollection_AsciiString windir_str = env.Value();
-  if ( windir_str.IsEmpty() )
+  { "Courier"                  , "Courier New"    , Font_FA_Regular },
+  { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
+  { "Times-Bold"               , "Times New Roman", Font_FA_Bold },
+  { "Times-Italic"             , "Times New Roman", Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Times New Roman", Font_FA_BoldItalic  },
+  { "ZapfChancery-MediumItalic", "Script"         , Font_FA_Regular  },
+  { "Symbol"                   , "Symbol"         , Font_FA_Regular  },
+  { "ZapfDingbats"             , "WingDings"      , Font_FA_Regular  },
+  { "Rock"                     , "Arial"          , Font_FA_Regular  },
+  { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
+
+#else   //X11
+
+  { "Courier"                  , "Courier"      , Font_FA_Regular },
+  { "Times-Roman"              , "Times"        , Font_FA_Regular  },
+  { "Times-Bold"               , "Times"        , Font_FA_Bold },
+  { "Times-Italic"             , "Times"        , Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Times"        , Font_FA_BoldItalic  },
+  { "Arial"                    , "Helvetica"    , Font_FA_Regular  }, 
+  { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , Font_FA_Regular  },
+  { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , Font_FA_Regular  },
+  { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , Font_FA_Regular  },
+  { "Rock"                     , "-sgi-rock-medium-r-normal--*-*-*-*-p-*-iso8859-1"                             , Font_FA_Regular  },
+  { "Iris"                     , "--iris-medium-r-normal--*-*-*-*-m-*-iso8859-1"                                , Font_FA_Regular  }
+#endif
+
+};
+
+#define NUM_FONT_ENTRIES (sizeof(Font_FontMgr_MapOfFontsAliases)/sizeof(Font_FontMgr_FontAliasMapNode))
+
+#if (defined(_WIN32) || defined(__WIN32__))
+
+  #include <windows.h>
+  #include <stdlib.h>
+
+  #ifdef _MSC_VER
+    #pragma comment (lib, "freetype.lib")
+  #endif
+
+  namespace
   {
-	  return;
-  }
-  Handle(TCollection_HAsciiString) HFontDir = new TCollection_HAsciiString( windir_str );
-  HFontDir->AssignCat( "\\Fonts\\" );
-  #ifdef TRACE
-    cout << "System font directory: " << HFontDir->ToCString() << "\n";
-  #endif TRACE
 
-  //read registry
-  HKEY fonts_hkey;
-  if( RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-      TEXT("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"),
-      0,
-      KEY_READ,
-      &fonts_hkey )
-      != ERROR_SUCCESS ) 
+    // list of supported extensions
+    static Standard_CString Font_FontMgr_Extensions[] =
+    {
+      "ttf",
+      "otf",
+      "ttc",
+      NULL
+    };
+
+  };
+
+#else
+
+  #include <OSD_DirectoryIterator.hxx>
+  #include <OSD_Path.hxx>
+  #include <OSD_File.hxx>
+  #include <OSD_OpenMode.hxx>
+  #include <OSD_Protection.hxx>
+
+  namespace
+  {
+
+    // list of supported extensions
+    static Standard_CString Font_FontMgr_Extensions[] =
+    {
+      "ttf",
+      "otf",
+      "ttc",
+      "pfa",
+      "pfb",
+      NULL
+    };
+
+    // X11 configuration file in plain text format (obsolete - doesn't exists in modern distributives)
+    static Standard_CString myFontServiceConf[] = {"/etc/X11/fs/config",
+                                                   "/usr/X11R6/lib/X11/fs/config",
+                                                   "/usr/X11/lib/X11/fs/config",
+                                                   NULL
+                                                  };
+
+  #ifdef __APPLE__
+    // default fonts paths in Mac OS X
+    static Standard_CString myDefaultFontsDirs[] = {"/System/Library/Fonts",
+                                                    "/Library/Fonts",
+                                                    NULL
+                                                   };
+  #else
+    // default fonts paths in most Unix systems (Linux and others)
+    static Standard_CString myDefaultFontsDirs[] = {"/usr/share/fonts",
+                                                    "/usr/local/share/fonts",
+                                                    NULL
+                                                   };
+  #endif
+
+    static void addDirsRecursively (const OSD_Path&                           thePath,
+                                    NCollection_Map<TCollection_AsciiString>& theDirsMap)
+    {
+      TCollection_AsciiString aDirName;
+      thePath.SystemName (aDirName);
+      if (!theDirsMap.Add (aDirName))
+      {
+        return;
+      }
+
+      for (OSD_DirectoryIterator aDirIterator (thePath, "*"); aDirIterator.More(); aDirIterator.Next())
+      {
+        OSD_Path aChildDirPath;
+        aDirIterator.Values().Path (aChildDirPath);
+
+        TCollection_AsciiString aChildDirName;
+        aChildDirPath.SystemName (aChildDirName);
+        if (!aChildDirName.IsEqual (".") && !aChildDirName.IsEqual (".."))
+        {
+          aChildDirName = aDirName + "/" + aChildDirName;
+          OSD_Path aPath (aChildDirName);
+          addDirsRecursively (aPath, theDirsMap);
+        }
+      }
+    }
+
+  };
+
+#endif
+
+// =======================================================================
+// function : checkFont
+// purpose  :
+// =======================================================================
+static Handle(Font_SystemFont) checkFont (FT_Library             theFTLib,
+                                          const Standard_CString theFontPath)
+{
+  FT_Face aFontFace;
+  FT_Error aFaceError = FT_New_Face (theFTLib, theFontPath, 0, &aFontFace);
+  if (aFaceError != FT_Err_Ok)
+  {
+    return NULL;
+  }
+
+  Font_FontAspect anAspect = Font_FA_Regular;
+  if (aFontFace->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD))
+  {
+    anAspect = Font_FA_BoldItalic;
+  }
+  else if (aFontFace->style_flags == FT_STYLE_FLAG_ITALIC)
+  {
+    anAspect = Font_FA_Italic;
+  }
+  else if (aFontFace->style_flags == FT_STYLE_FLAG_BOLD)
+  {
+    anAspect = Font_FA_Bold;
+  }
+
+  Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (aFontFace->family_name);
+  Handle(TCollection_HAsciiString) aFontPath = new TCollection_HAsciiString (theFontPath);
+  Handle(Font_SystemFont) aResult = new Font_SystemFont (aFontName, anAspect, aFontPath);
+
+  FT_Done_Face (aFontFace);
+
+  return aResult;
+}
+
+// =======================================================================
+// function : GetInstance
+// purpose  :
+// =======================================================================
+Handle(Font_FontMgr) Font_FontMgr::GetInstance()
+{
+  static Handle(Font_FontMgr) _mgr;
+  if (_mgr.IsNull())
+  {
+    _mgr = new Font_FontMgr();
+  }
+
+  return _mgr;
+}
+
+// =======================================================================
+// function : Font_FontMgr
+// purpose  :
+// =======================================================================
+Font_FontMgr::Font_FontMgr()
+{
+  InitFontDataBase();
+}
+
+// =======================================================================
+// function : InitFontDataBase
+// purpose  :
+// =======================================================================
+void Font_FontMgr::InitFontDataBase()
+{
+  myListOfFonts.Clear();
+  FT_Library aFtLibrary = NULL;
+
+#if (defined(_WIN32) || defined(__WIN32__))
+
+  // font directory is placed in "C:\Windows\Fonts\"
+  UINT aStrLength = GetSystemWindowsDirectoryA (NULL, 0);
+  if (aStrLength == 0)
   {
     return;
-  }           
-  Standard_Integer           id = 0;
-  Standard_Character         buf_name[100];
-  Standard_Byte buf_data[100];
-  DWORD size_name = 100,
-        size_data = 100;
-
-  while ( true )
-  {
-    //detect file name    
-    DWORD type;
-    size_name = 100,
-      size_data = 100;
-    Font_FontAspect aspect;
-    if( RegEnumValue( fonts_hkey,
-                      id,
-                      buf_name,
-                      &size_name,
-                      NULL,
-                      &type,
-                      buf_data,
-                      &size_data) == ERROR_NO_MORE_ITEMS ) {
-        break;
-      }
-      Handle(TCollection_HAsciiString) fname = 
-        new TCollection_HAsciiString(buf_name);
-      fname->RightAdjust();
-      fname->LeftAdjust();
-      //remove construction like (TrueType....
-      Standard_Integer anIndexTT = fname->SearchFromEnd( new TCollection_HAsciiString( " (" ) );
-      Standard_Boolean aTruncate = Standard_False;
-      if ( anIndexTT > 1 )
-        fname->Trunc( anIndexTT );
-      Standard_Integer anIndex = 0;
-      fname->RightAdjust();
-      if ( ( anIndex = fname->SearchFromEnd( new TCollection_HAsciiString("Bold Italic") ) ) > 0 ) {
-        aTruncate = ( anIndex > 1 ) && ( fname->Value(anIndex - 1 ) == ' ' );
-        aspect = Font_FA_BoldItalic;
-      } else if ( ( anIndex = fname->SearchFromEnd( new TCollection_HAsciiString("Bold") ) ) > 0 ) {
-        aTruncate = ( anIndex > 1 ) && ( fname->Value(anIndex - 1 ) == ' ' );
-        aspect = Font_FA_Bold;
-      } else if ( ( anIndex = fname->SearchFromEnd( new TCollection_HAsciiString("Italic") ) ) > 0 ) {
-        aTruncate = ( anIndex > 1 ) && ( fname->Value(anIndex - 1 ) == ' ' );
-        aspect = Font_FA_Italic;
-      } else {
-        aspect = Font_FA_Regular;
-      }
-      if( aTruncate )
-        fname->Trunc( anIndex - 1 );
-      fname->RightAdjust();
-      Handle(TCollection_HAsciiString) file_path =
-      new TCollection_HAsciiString( (Standard_Character*)buf_data );
-      if ( strchr( (Standard_Character*)buf_data, '\\' ) == NULL ) {
-        file_path->Insert( 1, HFontDir );
-      }
-
-      if( ( ( file_path->Search(".ttf") > 0 ) || ( file_path->Search(".TTF") > 0 ) ||
-            ( file_path->Search(".otf") > 0 ) || ( file_path->Search(".OTF") > 0 ) ||
-            ( file_path->Search(".ttc") > 0 ) || ( file_path->Search(".TTC") > 0 ) ) ){
-        MyListOfFonts.Append( new Font_SystemFont( fname, aspect, file_path ) );
-#ifdef TRACE
-        cout  << "Adding font...\n"
-              << "  font name: " << fname->ToCString() << "\n"
-              << "  font file: " << file_path->ToCString() << "\n"
-              << "  font aspect: ";
-        switch( aspect ) {
-        case Font_FA_Bold:
-          cout << "Font_FA_Bold\n";
-          break;
-        case Font_FA_BoldItalic:
-          cout << "Font_FA_BoldItalic\n";
-          break;
-        case Font_FA_Italic:
-          cout << "Font_FA_Italic\n";
-          break;
-        default:
-          cout << "Font_FA_Regular\n";
-          break;
-        }
-#endif
-      }
-  id++; 
-  }
-  //close registry
-  RegCloseKey( fonts_hkey );
-#endif //WNT
-
-#ifndef WNT
-  StringList dirs;
-  Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString;
-  Display * disp = XOpenDisplay("localhost:0.0");
-
-  if (!disp) 
-  {
-    // let the X server find the available connection
-    disp = XOpenDisplay(":0.0");
-    if (!disp)
-    {
-      cout << "Display is NULL!" << endl;
-      return ;
-    }
   }
 
-  Standard_Integer npaths = 0;
+  char* aWinDir = new char[aStrLength];
+  GetSystemWindowsDirectoryA (aWinDir, aStrLength);
+  Handle(TCollection_HAsciiString) aFontsDir = new TCollection_HAsciiString (aWinDir);
+  aFontsDir->AssignCat ("\\Fonts\\");
+  delete[] aWinDir;
 
-  Standard_Character** fontpath = XGetFontPath(disp, &npaths);
-#ifdef TRACE
-  cout << "NPATHS = " << npaths << endl ;
-#endif
-  for (Standard_Integer i = 0; i < npaths; i++  ) 
-  {  
-#ifdef TRACE         
-    cout << "Font Path: " << fontpath[i] << endl;
-#endif
-    if ( fontpath[i][0] == '/' ) {
-      TCollection_AsciiString aFontPath( fontpath[i] );
-      find_path_with_font_dir( aFontPath, dirs );
-    }
-    else
-    {
-      TCollection_AsciiString aFontPath( fontpath[i] );
-      TCollection_AsciiString aCutFontPath;        
-      Standard_Integer location = -1 ;
-       location = aFontPath.Location( "/",1,aFontPath.Length() );
-      if( location > 0 )
-        aCutFontPath.AssignCat( aFontPath.SubString(location, aFontPath.Length() ) );
-      find_path_with_font_dir( aCutFontPath, dirs ); 
-    }
-  }
-  XFreeFontPath(fontpath);
-
-
-  OSD_OpenMode aMode =  OSD_ReadOnly;
-  OSD_Protection  aProtect( OSD_R, OSD_R, OSD_R, OSD_R );
-
-  for( Standard_Integer j = 0 ; j < font_service_conf_size; j++ )
+  // read fonts list from registry
+  HKEY aFontsKey;
+  if (RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts",
+                     0, KEY_READ, &aFontsKey) != ERROR_SUCCESS)
   {
-    TCollection_AsciiString fileOfFontServiceName( font_service_conf[j] );
-    OSD_File aFile( fileOfFontServiceName );
+    return;
+  }
 
-    if( aFile.Exists() ) 
-      aFile.Open( aMode, aProtect );
-  
-    if( aFile.IsOpen() )//font service
+  NCollection_Map<TCollection_AsciiString> aSupportedExtensions;
+  for (Standard_Integer anIter = 0; Font_FontMgr_Extensions[anIter] != NULL; ++anIter)
+  {
+    Standard_CString anExt = Font_FontMgr_Extensions[anIter];
+    aSupportedExtensions.Add (TCollection_AsciiString (anExt));
+  }
+
+  FT_Init_FreeType (&aFtLibrary);
+  static const DWORD aBufferSize = 256;
+  char aNameBuff[aBufferSize];
+  char aPathBuff[aBufferSize];
+  DWORD aNameSize = aBufferSize;
+  DWORD aPathSize = aBufferSize;
+  for (DWORD anIter = 0;
+       RegEnumValueA (aFontsKey, anIter,
+                      aNameBuff, &aNameSize, NULL, NULL,
+                      (LPBYTE )aPathBuff, &aPathSize) != ERROR_NO_MORE_ITEMS;
+      ++anIter, aNameSize = aBufferSize, aPathSize = aBufferSize)
+  {
+    aPathBuff[(aPathSize < aBufferSize) ? aPathSize : (aBufferSize - 1)] = '\0'; // ensure string is NULL-terminated
+
+    Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (aNameBuff);
+    Handle(TCollection_HAsciiString) aFontPath = new TCollection_HAsciiString (aPathBuff);
+    if (aFontPath->Search ("\\") == -1)
     {
-      Standard_Integer aNByte = 256;
-      Standard_Integer aNbyteRead;
-      TCollection_AsciiString aStr( aNByte );//read string with information
-      TCollection_AsciiString aStrCut( aNByte );//cut of string
-      TCollection_AsciiString endStr;//cutting string
+      aFontPath->Insert (1, aFontsDir); // make absolute path
+    }
 
-      Standard_Boolean read_dirs = Standard_False;
-      Standard_Integer location =- 1; //disposition of necessary literals
-      Standard_Integer begin =- 1; //first left entry in string
-      Standard_Integer end =- 1; //first right entry in string
-      while( !aFile.IsAtEnd() )
+    // check file extension is in list of supported
+    const Standard_Integer anExtensionPosition = aFontPath->SearchFromEnd (".") + 1;
+    if (anExtensionPosition > 0 && anExtensionPosition < aFontPath->Length())
+    {
+      Handle(TCollection_HAsciiString) aFontExtension = aFontPath->SubString (anExtensionPosition, aFontPath->Length());
+      aFontExtension->LowerCase();
+      if (aSupportedExtensions.Contains (aFontExtension->String()))
       {
-        aFile.ReadLine( aStr, aNByte, aNbyteRead );//reading 1 lines(256 bytes) 
-        location = aStr.Location( "catalogue = ", 1, aStr.Length() );
-        if(location == 0)
-          location = aStr.Location( "catalogue=", 1, aStr.Length() );
-        if(location == 0)
-          location = aStr.Location( "catalogue= ", 1, aStr.Length() );
-        if(location == 0)
-          location = aStr.Location( "catalogue = ", 1, aStr.Length() );
-        if( location > 0 )  
+        Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontPath->ToCString());
+        if (!aNewFont.IsNull())
         {
-#ifdef TRACE
-          cout << " Font config find!!" << endl;
-#endif
-          read_dirs = Standard_True;
+          myListOfFonts.Append (aNewFont);
         }
-  
-        if( read_dirs )
-        {  
-          begin = aStr.Location( "/", 1, aStr.Length() );//begin of path name
-          end = aStr.Location( ":", 1, aStr.Length() );//end of path name
-          if( end < 1 )
-            end = aStr.Location( ",", 1, aStr.Length() );//also end of path name
-          end -= 1;
-          if( begin > 0 && end > 0 )
-          {
-            if( ( end - begin ) > 0 )
-              endStr.AssignCat( aStr.SubString ( begin, end ) );//cutting necessary literals for string
-            dirs.Append( TCollection_HAsciiString ( endStr ) );
-            endStr.Clear();
-          }
-          else 
-            if( begin > 0 && end == -1 )
-            { 
-              //if end of string don't have "," or ":"
-              //it is possible last sentence in block of word
-              endStr.AssignCat( aStr.SubString( begin, aStr.Length() - 1 ) );
-              dirs.Append( TCollection_HAsciiString( endStr ) );   
-              endStr.Clear();
-            }
-        } 
- 
       }
-      aFile.Close();
     }
   }
 
-  if( dirs.Size() > 0 )
-  {   
-    //if dirs list contains elements
-    OSD_OpenMode aModeRead =  OSD_ReadOnly;
-    OSD_Protection  aProtectRead( OSD_R, OSD_R , OSD_R , OSD_R );
+  // close registry key
+  RegCloseKey (aFontsKey);
 
-    TCollection_AsciiString fileFontsDir;
-    StringList::Iterator it( dirs ); 
-    for( ; it.More(); it.Next() ) 
-    {     
-      fileFontsDir.AssignCat( it.Value().ToCString() );   
-      fileFontsDir.AssignCat( "/fonts.dir" );//append file name in path way
+#else
 
-      OSD_File readFile( fileFontsDir );  
-      readFile.Open( aModeRead, aProtectRead );
+  NCollection_Map<TCollection_AsciiString> aMapOfFontsDirs;
+  const OSD_Protection aProtectRead (OSD_R, OSD_R, OSD_R, OSD_R);
 
-      Standard_Integer aNbyteRead, aNByte = 256;
-      if( readFile.IsOpen ( ) )
-      {
-        TCollection_AsciiString aLine( aNByte );
-        Standard_Integer countOfString = 0 ;
-        while( ! readFile.IsAtEnd() )//return true if EOF
-        {
-          if( countOfString > 1 )
-          {
-            readFile.ReadLine( aLine , aNByte , aNbyteRead );
-            if( ( ( aLine.Search(".pfa") > 0 ) || ( aLine.Search(".PFA") > 0 ) ||
-                  ( aLine.Search(".pfb") > 0 ) || ( aLine.Search(".PFB") > 0 ) ||
-                  ( aLine.Search(".ttf") > 0 ) || ( aLine.Search(".TTF") > 0 ) ||
-                  ( aLine.Search(".otf") > 0 ) || ( aLine.Search(".OTF") > 0 ) ||
-                  ( aLine.Search(".ttc") > 0 ) || ( aLine.Search(".TTC") > 0 ) )
-                  && ( aLine.Search( "iso8859-1\n" ) > 0 ) )    
-            { 
-
-              // In current implementation use fonts with ISO-8859-1 coding page.
-              // OCCT not give to manage coding page by means of programm interface. 
-              // TODO: make high level interface for 
-              // choosing necessary coding page.  
-              TCollection_AsciiString aXLFD;
-              Standard_Integer leftXLFD = aLine.SearchFromEnd(" ");
-              Standard_Integer rightXLFD = aLine.Length();
-              if( leftXLFD && rightXLFD )
-                aXLFD.AssignCat(aLine.SubString( leftXLFD + 1, rightXLFD ) );
-
-              TCollection_AsciiString aPath;
-              TCollection_AsciiString aTemp( it.Value().ToCString() );
-              if ( aTemp.SearchFromEnd("/") == aTemp.Length() )
-              {
-                //this branch intend to SUN
-                aPath.AssignCat( aTemp.ToCString() );
-                aPath.AssignCat( aLine.Token( " ", 1 ) );
-              }
-              else {
-                //this branch intend to Linux       
-                aPath.AssignCat( aTemp.ToCString( ) );
-                aPath.AssignCat( "/" );
-                aPath.AssignCat( aLine.Token( " ", 1 ) );
-              }
-              MyListOfFonts.Append( new Font_SystemFont( new TCollection_HAsciiString( aXLFD ),
-                new TCollection_HAsciiString( aPath ) ) );
-            }
-            
-          }
-          else
-            readFile.ReadLine( aLine, aNByte, aNbyteRead ); 
-          countOfString++;
-        }
-        readFile.Close();
-      } 
-      fileFontsDir.Clear(); 
+  // read fonts directories from font service config file (obsolete)
+  for (Standard_Integer anIter = 0; myFontServiceConf[anIter] != NULL; ++anIter)
+  {
+    const TCollection_AsciiString aFileOfFontsPath (myFontServiceConf[anIter]);
+    OSD_File aFile (aFileOfFontsPath);
+    if (!aFile.Exists())
+    {
+      continue;
     }
+
+    aFile.Open (OSD_ReadOnly, aProtectRead);
+    if (!aFile.IsOpen())
+    {
+      continue;
+    }
+
+    Standard_Integer aNByte = 256;
+    Standard_Integer aNbyteRead;
+    TCollection_AsciiString aStr; // read string with information
+    while (!aFile.IsAtEnd())
+    {
+      Standard_Integer aLocation = -1;
+      Standard_Integer aPathLocation = -1;
+
+      aFile.ReadLine (aStr, aNByte, aNbyteRead); // reading 1 line (256 bytes)
+      aLocation = aStr.Search ("catalogue=");
+      if (aLocation < 0)
+      {
+        aLocation = aStr.Search ("catalogue =");
+      }
+
+      aPathLocation = aStr.Search ("/");
+      if (aLocation > 0 && aPathLocation > 0)
+      {
+        aStr = aStr.Split (aPathLocation - 1);
+        TCollection_AsciiString aFontPath;
+        Standard_Integer aPathNumber = 1;
+        do
+        {
+          // Getting directory paths, which can be splitted by "," or ":"
+          aFontPath = aStr.Token (":,", aPathNumber);
+          aFontPath.RightAdjust();
+          if (!aFontPath.IsEmpty())
+          {
+            OSD_Path aPath(aFontPath);
+            addDirsRecursively (aPath, aMapOfFontsDirs);
+          }
+          aPathNumber++;
+        }
+        while (!aFontPath.IsEmpty());
+      }
+    }
+    aFile.Close();
+  }
+
+  // append default directories
+  for (Standard_Integer anIter = 0; myDefaultFontsDirs[anIter] != NULL; ++anIter)
+  {
+    Standard_CString anItem = myDefaultFontsDirs[anIter];
+    TCollection_AsciiString aPathStr (anItem);
+    OSD_Path aPath (aPathStr);
+    addDirsRecursively (aPath, aMapOfFontsDirs);
+  }
+
+  NCollection_Map<TCollection_AsciiString> aSupportedExtensions;
+  for (Standard_Integer anIter = 0; Font_FontMgr_Extensions[anIter] != NULL; ++anIter)
+  {
+    Standard_CString anExt = Font_FontMgr_Extensions[anIter];
+    aSupportedExtensions.Add (TCollection_AsciiString (anExt));
+  }
+
+  FT_Init_FreeType (&aFtLibrary);
+  for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
+       anIter.More(); anIter.Next())
+  {
+    OSD_File aReadFile (anIter.Value() + "/fonts.dir");
+    if (!aReadFile.Exists())
+    {
+      continue; // invalid fonts directory
+    }
+
+    aReadFile.Open (OSD_ReadOnly, aProtectRead);
+    if (!aReadFile.IsOpen())
+    {
+      continue; // invalid fonts directory
+    }
+
+    Standard_Integer aNbyteRead, aNByte = 256;
+    TCollection_AsciiString aLine (aNByte);
+    Standard_Boolean isFirstLine = Standard_True;
+    const TCollection_AsciiString anEncoding ("iso8859-1\n");
+    while (!aReadFile.IsAtEnd())
+    {
+      aReadFile.ReadLine (aLine, aNByte, aNbyteRead);
+      if (isFirstLine)
+      {
+        // first line contains the number of fonts in this file
+        // just ignoring it...
+        isFirstLine = Standard_False;
+        continue;
+      }
+
+      Standard_Integer anExtensionPosition = aLine.Search (".") + 1;
+      if (anExtensionPosition == 0)
+      {
+        continue; // can't find extension position in the font description
+      }
+
+      Standard_Integer anEndOfFileName = aLine.Location (" ", anExtensionPosition, aLine.Length()) - 1;
+      if (anEndOfFileName < 0 || anEndOfFileName < anExtensionPosition)
+      {
+        continue; // font description have empty extension
+      }
+
+      TCollection_AsciiString aFontExtension = aLine.SubString (anExtensionPosition, anEndOfFileName);
+      aFontExtension.LowerCase();
+      if (aSupportedExtensions.Contains (aFontExtension) && (aLine.Search (anEncoding) > 0))
+      {
+        // In current implementation use fonts with ISO-8859-1 coding page.
+        // OCCT not give to manage coding page by means of programm interface.
+        // TODO: make high level interface for choosing necessary coding page.
+        Handle(TCollection_HAsciiString) aXLFD =
+          new TCollection_HAsciiString (aLine.SubString (anEndOfFileName + 2, aLine.Length()));
+        Handle(TCollection_HAsciiString) aFontPath =
+          new TCollection_HAsciiString (anIter.Value().ToCString());
+        if (aFontPath->SearchFromEnd ("/") != aFontPath->Length())
+        {
+          aFontPath->AssignCat ("/");
+        }
+        Handle(TCollection_HAsciiString) aFontFileName =
+        new TCollection_HAsciiString (aLine.SubString (1, anEndOfFileName));
+        aFontPath->AssignCat (aFontFileName);
+
+        Handle(Font_SystemFont) aNewFontFromXLFD = new Font_SystemFont (aXLFD, aFontPath);
+        Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontPath->ToCString());
+
+        if (aNewFontFromXLFD->IsValid() && !aNewFont.IsNull() &&
+           !aNewFont->IsEqual (aNewFontFromXLFD))
+        {
+          myListOfFonts.Append (aNewFont);
+          myListOfFonts.Append (aNewFontFromXLFD);
+        }
+        else if (!aNewFont.IsNull())
+        {
+          myListOfFonts.Append (aNewFont);
+        }
+        else if (aNewFontFromXLFD->IsValid())
+        {
+          myListOfFonts.Append (aNewFontFromXLFD);
+        }
+
+      }
+    }
+    aReadFile.Close();
   }
 #endif
+  FT_Done_FreeType (aFtLibrary);
 }
 
-Font_NListOfSystemFont Font_FontMgr::GetAvalableFonts() const
+// =======================================================================
+// function : GetAvailableFonts
+// purpose  :
+// =======================================================================
+const Font_NListOfSystemFont& Font_FontMgr::GetAvailableFonts() const
 {
-  return MyListOfFonts;
+  return myListOfFonts;
 }
 
+void Font_FontMgr::GetAvailableFontsNames (TColStd_SequenceOfHAsciiString& theFontsNames) const
+{
+  theFontsNames.Clear();
+  for (Font_NListOfSystemFont::Iterator anIter(myListOfFonts); anIter.More(); anIter.Next())
+  {
+    theFontsNames.Append (anIter.Value()->FontName());
+  }
+}
 
+Handle(Font_SystemFont) Font_FontMgr::GetFont (const Handle(TCollection_HAsciiString)& theFontName,
+                                               const Font_FontAspect theFontAspect,
+                                               const Standard_Integer theFontSize) const
+{
+  if ( (theFontSize < 2 && theFontSize != -1) || theFontName.IsNull())
+  {
+    return NULL; 
+  }
+
+  Font_NListOfSystemFont::Iterator aFontsIterator (myListOfFonts);
+
+  for (; aFontsIterator.More(); aFontsIterator.Next())
+  {
+    if (!theFontName->IsEmpty() && !aFontsIterator.Value()->FontName()->IsSameString (theFontName, Standard_False))
+    {
+      continue;
+    }
+
+    if (theFontAspect != Font_FA_Undefined && aFontsIterator.Value()->FontAspect() != theFontAspect)
+    {
+      continue;
+    }
+
+    if (theFontSize == -1 || aFontsIterator.Value()->FontHeight() == -1 ||
+        theFontSize == aFontsIterator.Value()->FontHeight())
+    {
+      return aFontsIterator.Value();
+    }
+  }
+
+  return NULL;
+}
+
+Handle(Font_SystemFont) Font_FontMgr::FindFont (const Handle(TCollection_HAsciiString)& theFontName,
+                                                const Font_FontAspect theFontAspect,
+                                                const Standard_Integer theFontSize) const
+{
+  Handle(TCollection_HAsciiString) aFontName   = theFontName;
+  Font_FontAspect                  aFontAspect = theFontAspect;
+  Standard_Integer                 aFontSize = theFontSize;
+
+  Handle(Font_SystemFont) aFont = GetFont (aFontName, aFontAspect, aFontSize);
+
+  if (!aFont.IsNull())
+  {
+    return aFont;
+  }
+
+  // Trying to use font names mapping
+  for (Standard_Integer anIter = 0; anIter < NUM_FONT_ENTRIES; ++anIter)
+  {
+    Handle(TCollection_HAsciiString) aFontAlias =
+      new TCollection_HAsciiString (Font_FontMgr_MapOfFontsAliases[anIter].EnumName);
+
+    if (aFontAlias->IsSameString (aFontName, Standard_False))
+    {
+      aFontName = new TCollection_HAsciiString (Font_FontMgr_MapOfFontsAliases[anIter].FontName);
+      aFontAspect = Font_FontMgr_MapOfFontsAliases[anIter].FontAspect;
+      break;
+    }
+  }
+
+  aFont = GetFont (aFontName, aFontAspect, aFontSize);
+
+  if (!aFont.IsNull())
+  {
+    return aFont;
+  }
+
+  // Requested family name not found -> search for any font family with given aspect and height
+  aFontName = new TCollection_HAsciiString ("");
+  aFont = GetFont (aFontName, aFontAspect, aFontSize);
+
+  if (!aFont.IsNull())
+  {
+    return aFont;
+  }
+
+  // The last resort: trying to use ANY font available in the system
+  aFontAspect = Font_FA_Undefined;
+  aFontSize = -1;
+  aFont = GetFont (aFontName, aFontAspect, aFontSize);
+  
+  if (!aFont.IsNull())
+  {
+    return aFont;
+  }
+
+  return NULL; // Fonts are not found in the system.
+}

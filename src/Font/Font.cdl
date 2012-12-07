@@ -21,7 +21,8 @@ package Font
 uses Standard ,  
      Quantity ,  
      TCollection,
-     OSD
+     OSD,
+     TColStd
 
 is
   enumeration FontAspect is FA_Undefined, FA_Regular, FA_Bold, FA_Italic, FA_BoldItalic;

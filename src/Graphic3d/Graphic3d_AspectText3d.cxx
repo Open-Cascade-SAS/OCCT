@@ -44,7 +44,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <OSD_Environment.hxx>
 
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 //-Aliases
 
@@ -80,7 +80,7 @@
 
 
 Graphic3d_AspectText3d::Graphic3d_AspectText3d ():
-MyFont (Graphic3d_NOF_ASCII_MONO), MyColor (Quantity_NOC_YELLOW), MyFactor (1.0), MySpace (0.0), MyStyle (Aspect_TOST_NORMAL), MyDisplayType (Aspect_TODT_NORMAL), MyColorSubTitle (Quantity_NOC_WHITE) {
+MyFont (Font_NOF_ASCII_MONO), MyColor (Quantity_NOC_YELLOW), MyFactor (1.0), MySpace (0.0), MyStyle (Aspect_TOST_NORMAL), MyDisplayType (Aspect_TODT_NORMAL), MyColorSubTitle (Quantity_NOC_WHITE) {
   MyTextZoomable = Standard_False;
   MyTextAngle = 0.0;
   MyTextFontAspect = Font_FA_Regular;
@@ -98,7 +98,7 @@ MyFont(AFont), MyColor (AColor), MyFactor (AFactor), MySpace (ASpace), MyStyle (
   MyTextAngle = 0.0;
   MyTextFontAspect = Font_FA_Regular;
   if(MyFont.Length() == 0)
-    MyFont.AssignCat(Graphic3d_NOF_ASCII_MONO);
+    MyFont.AssignCat(Font_NOF_ASCII_MONO);
 
   if (AFactor <= 0.0)
     Graphic3d_AspectTextDefinitionError::Raise
@@ -127,7 +127,7 @@ void Graphic3d_AspectText3d::SetFont (const Standard_CString AFont) {
 
   TCollection_AsciiString aTemp("");
   if( !strlen(AFont))
-    aTemp.AssignCat(Graphic3d_NOF_ASCII_MONO);
+    aTemp.AssignCat(Font_NOF_ASCII_MONO);
   else
     aTemp.AssignCat(AFont);
   MyFont = aTemp;  

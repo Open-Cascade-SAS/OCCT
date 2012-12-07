@@ -28,16 +28,17 @@ is
   ---Purpose: Creates empty font object
   ---Level: Public
 
-  Create (FontName : HAsciiString;
-          Aspect   : FontAspect;
-          FilePath : HAsciiString ) returns SystemFont;
+  Create (theFontName   : HAsciiString;
+          theFontAspect : FontAspect;
+          theFilePath   : HAsciiString ) returns SystemFont;
   ---Purpose: Creates Font object initialized with <FontName> as name
   ---         <FontAspect>.... TODO
   ---Level: Public
 
-  Create (XLFD     : HAsciiString;
-          FilePath : HAsciiString ) returns SystemFont;
-  ---Purpose: TODO
+  Create (theXLFD     : HAsciiString;
+          theFilePath : HAsciiString ) returns SystemFont;
+  ---Purpose: Creates Font object and initialize class fields with
+  ---         values taken from XLFD (X Logical Font Description)
   ---Level: Public
  
   FontName (me) returns HAsciiString;
@@ -58,7 +59,12 @@ is
   --- Level: Public
 
   IsValid (me) returns Boolean;
-
+  
+  IsEqual (me;
+           theOtherFont: SystemFont) returns Boolean;
+  --- Purpose: Return true if the FontName, FontAspect and FontSize are the same.
+  --- Level: Public
+  
 fields
   MyFontName:           HAsciiString;  --Font family name
   MyFontAspect:         FontAspect;    

@@ -108,7 +108,7 @@ Standard_EXPORT Viewer2dTest_DoubleMapOfInteractiveAndName& GetMapOfAIS2D();
 #include <GGraphic2d_SetOfCurves.hxx>
 #include <Graphic2d_SetOfSegments.hxx>
 
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*/,const char ** /*argv*/)
 {
@@ -462,13 +462,13 @@ static Standard_Integer BUC60821(Draw_Interpretor& di, Standard_Integer argc,con
     return -1;
   }
 
-  Handle(QABugs_MyText) txt1 = new QABugs_MyText("Gosha1",gp_Pnt(0,0,0),Graphic3d_NOF_ASCII_SIMPLEX,Quantity_NOC_RED,atoi(argv[1]));
+  Handle(QABugs_MyText) txt1 = new QABugs_MyText("Gosha1",gp_Pnt(0,0,0),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_RED,atoi(argv[1]));
   aContext->Display(txt1);
 
-  Handle(QABugs_MyText) txt2 = new QABugs_MyText("Gosha2",gp_Pnt(0,0,100),Graphic3d_NOF_ASCII_SIMPLEX,Quantity_NOC_YELLOW,atoi(argv[2]));
+  Handle(QABugs_MyText) txt2 = new QABugs_MyText("Gosha2",gp_Pnt(0,0,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_YELLOW,atoi(argv[2]));
   aContext->Display(txt2);
 
-  Handle(QABugs_MyText) txt3 = new QABugs_MyText("Gosha3",gp_Pnt(0,100,100),Graphic3d_NOF_ASCII_SIMPLEX,Quantity_NOC_SKYBLUE,atoi(argv[3]));
+  Handle(QABugs_MyText) txt3 = new QABugs_MyText("Gosha3",gp_Pnt(0,100,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_SKYBLUE,atoi(argv[3]));
   aContext->Display(txt3);
 
   return 0;

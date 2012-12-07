@@ -40,7 +40,7 @@
 #include <MeshVS_DrawerAttribute.hxx>
 #include <MeshVS_Buffer.hxx>
 
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 //================================================================
 // Function : Constructor MeshVS_TextPrsBuilder

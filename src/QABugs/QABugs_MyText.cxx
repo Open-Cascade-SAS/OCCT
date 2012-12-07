@@ -28,7 +28,7 @@
 #include <Prs3d_Text.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 /*************************************************************************
 *

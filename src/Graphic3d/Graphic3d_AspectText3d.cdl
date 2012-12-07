@@ -72,7 +72,7 @@ is
     ---Purpose: Creates a context table for text primitives
     --      defined with the specified values.
     --          AFont may be to take means from User(example "Courier New") 
-    --      or Font described in OpenGl_FontName(example Graphic3d_NOF_ASCII_MONO)
+    --      or Font name defined in Font_NameOfFont(example Font_NOF_ASCII_MONO)
     --      or use default font("Courier")
     --
     raises AspectTextDefinitionError from Graphic3d;
@@ -104,7 +104,7 @@ is
     ---Purpose: Modifies the font of <me>.
     ---Category: Methods to modify the class definition
     ---AFont may be to take means from User(example "Courier New") 
-    ---or Font described in OpenGl_FontName(example Graphic3d_NOF_ASCII_MONO)
+    ---or Font name defined in Font_NameOfFont(example Font_NOF_ASCII_MONO)
     ---or use default font("Courier")
 
 

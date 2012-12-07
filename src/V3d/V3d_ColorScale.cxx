@@ -36,7 +36,7 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 V3d_ColorScale::V3d_ColorScale( const Handle(V3d_LayerMgr)& aMgr )
 : Aspect_ColorScale(),
@@ -99,7 +99,7 @@ void V3d_ColorScale::PaintText( const TCollection_ExtendedString& aText,
     return;
 
   theLayer->SetColor( aColor );
-  theLayer->SetTextAttributes( Graphic3d_NOF_ASCII_MONO, Aspect_TODT_NORMAL, aColor );
+  theLayer->SetTextAttributes( Font_NOF_ASCII_MONO, Aspect_TODT_NORMAL, aColor );
   TCollection_AsciiString theText( aText.ToExtString(), '?' );
   Standard_Integer aTextH = GetTextHeight();
   Standard_Integer aWidth, anAscent, aDescent;

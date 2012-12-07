@@ -45,48 +45,46 @@ MyVerification(Standard_True)
 
 }
 
-Font_SystemFont::Font_SystemFont( const Handle(TCollection_HAsciiString)& XLFD,
-                                const Handle(TCollection_HAsciiString)& FilePath) :
-MyFilePath(FilePath),
-MyFontAspect(Font_FA_Undefined)
+Font_SystemFont::Font_SystemFont (const Handle(TCollection_HAsciiString)& theXLFD,
+                                  const Handle(TCollection_HAsciiString)& theFilePath) :
+MyFilePath(theFilePath),
+MyFontAspect(Font_FA_Regular)
 {
   MyVerification = Standard_True;
-  if ( XLFD.IsNull() )
+  if (theXLFD.IsNull())
   {
-    MyVerification=Standard_False;
-    printf("NULL XLFD handler \n");
+    MyVerification = Standard_False; // empty font description handler
   }
-  if ( XLFD->IsEmpty() )
+  if (theXLFD->IsEmpty())
   {
-    MyVerification=Standard_False;
-    printf("EMPTY XLFD handler \n");
+    MyVerification = Standard_False; // empty font description
   }
 
-  if(MyVerification)
+  if (MyVerification)
   {
-    MyFontName = XLFD->Token( "-", 2 );
-    TCollection_AsciiString str( XLFD->ToCString() );
+    MyFontName = theXLFD->Token ("-", 2);
+    TCollection_AsciiString aXLFD (theXLFD->ToCString());
 
-    if ( str.Search( "-0-0-0-0-" ) >=0 )
-      MyFaceSize = -1;
+    // Getting font size for fixed size fonts
+    if (aXLFD.Search ("-0-0-0-0-") >= 0)
+      MyFaceSize = -1; // Scalable font
     else
       //TODO catch exeption
-      MyFaceSize =  str.Token( "-", 7 ).IntegerValue();
+      MyFaceSize = aXLFD.Token ("-", 7).IntegerValue();
 
-    //detect aspect
-    if ( str.Token("-", 3).IsEqual( "bold" ) )
-      MyFontAspect = Font_FA_Bold;
-    else if ( str.Token("-", 3).IsEqual( "medium" ) ||
-      str.Token("-", 3).IsEqual( "normal" ) )
-      MyFontAspect = Font_FA_Regular;
-
-    if ( MyFontAspect != Font_FA_Undefined && 
-      ( str.Token("-",4 ).IsEqual( "i" ) || str.Token("-",4 ).IsEqual( "o" ) ) ) 
+    // Detect font aspect
+    if (aXLFD.Token ("-", 3).IsEqual ("bold") && 
+       (aXLFD.Token ("-", 4).IsEqual ("i") || aXLFD.Token ("-", 4).IsEqual ("o")))
     {
-      if ( MyFontAspect == Font_FA_Bold )
-        MyFontAspect = Font_FA_BoldItalic;
-      else
-        MyFontAspect = Font_FA_Italic;
+      MyFontAspect = Font_FA_BoldItalic;
+    }
+    else if (aXLFD.Token ("-", 3).IsEqual ("bold"))
+    {
+      MyFontAspect = Font_FA_Bold;
+    }
+    else if (aXLFD.Token ("-", 4).IsEqual ("i") || aXLFD.Token ("-", 4).IsEqual ("o"))
+    {
+      MyFontAspect = Font_FA_Italic;
     }
   }
 }
@@ -119,4 +117,24 @@ Font_FontAspect Font_SystemFont::FontAspect() const{
 
 Standard_Integer Font_SystemFont::FontHeight() const {
   return MyFaceSize;
+}
+
+Standard_Boolean Font_SystemFont::IsEqual(const Handle(Font_SystemFont)& theOtherFont) const
+{
+  if (!MyFontName->IsSameString (theOtherFont->FontName(), Standard_False))
+  {
+    return Standard_False;
+  }
+
+  if (MyFontAspect != theOtherFont->FontAspect())
+  {
+    return Standard_False;
+  }
+
+  if (MyFaceSize != theOtherFont->FontHeight())
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
 }

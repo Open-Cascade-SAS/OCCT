@@ -41,48 +41,6 @@
 * Prototypes variables statiques
 */                                                 
 
-struct FontMapNode
-{
-  const char *    EnumName;
-  const char *    FontName;
-  Font_FontAspect FontAspect;
-};
-
-static const FontMapNode myFontMap[] =
-{
-
-#ifdef WNT
-
-  { "Courier"                  , "Courier New"    , Font_FA_Regular },
-  { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
-  { "Times-Bold"               , "Times New Roman", Font_FA_Bold },
-  { "Times-Italic"             , "Times New Roman", Font_FA_Italic  },
-  { "Times-BoldItalic"         , "Times New Roman", Font_FA_BoldItalic  },
-  { "ZapfChancery-MediumItalic", "Script"         , Font_FA_Regular  },
-  { "Symbol"                   , "Symbol"         , Font_FA_Regular  },
-  { "ZapfDingbats"             , "WingDings"      , Font_FA_Regular  },
-  { "Rock"                     , "Arial"          , Font_FA_Regular  },
-  { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
-
-#else   //X11
-
-  { "Courier"                  , "Courier"      , Font_FA_Regular },
-  { "Times-Roman"              , "Times"        , Font_FA_Regular  },
-  { "Times-Bold"               , "Times"        , Font_FA_Bold },
-  { "Times-Italic"             , "Times"        , Font_FA_Italic  },
-  { "Times-BoldItalic"         , "Times"        , Font_FA_BoldItalic  },
-  { "Arial"                    , "Helvetica"    , Font_FA_Regular  }, 
-  { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , Font_FA_Regular  },
-  { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , Font_FA_Regular  },
-  { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , Font_FA_Regular  },
-  { "Rock"                     , "-sgi-rock-medium-r-normal--*-*-*-*-p-*-iso8859-1"                             , Font_FA_Regular  },
-  { "Iris"                     , "--iris-medium-r-normal--*-*-*-*-m-*-iso8859-1"                                , Font_FA_Regular  }
-#endif
-
-};
-
-#define NUM_FONT_ENTRIES (sizeof(myFontMap)/sizeof(FontMapNode))
-
 /*-----------------------------------------------------------------------------*/
 
 /*
@@ -154,51 +112,25 @@ void OpenGl_Display::getGL2PSFontName (const char *src_font, char *ps_font)
 
 /*-----------------------------------------------------------------------------*/
 
-int OpenGl_Display::FindFont (const char* AFontName, const Font_FontAspect AFontAspect,
-                             const int ABestSize, const float AXScale, const float AYScale)
-{   
-  if (!AFontName)
+Standard_Integer OpenGl_Display::FindFont (Standard_CString theFontName,
+                                           const Font_FontAspect theFontAspect,
+                                           const Standard_Integer theBestSize,
+                                           const Standard_ShortReal theXScale,
+                                           const Standard_ShortReal theYScale)
+{
+  if (!theFontName)
     return -1;
 
-  if (ABestSize != -1)
-    myFontSize = ABestSize;
+  if (theBestSize != -1)
+    myFontSize = theBestSize;
 
-  OpenGl_FontMgr* mgr = OpenGl_FontMgr::instance();
+  OpenGl_FontMgr* anOpenGlFontMgr = OpenGl_FontMgr::instance();
 
-  Handle(TCollection_HAsciiString) family_name = new TCollection_HAsciiString(AFontName);
-  myFont = mgr->request_font( family_name, AFontAspect, myFontSize );
+  Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theFontName);
+  myFont = anOpenGlFontMgr->request_font (aFontName, theFontAspect, myFontSize);
 
-  if( myFont == -1 )
-  {
-    //try to use font names mapping
-    FontMapNode newTempFont = myFontMap[0];
-    for ( int i = 0; i < NUM_FONT_ENTRIES; ++i )
-    {
-      if ( TCollection_AsciiString(myFontMap[i].EnumName).IsEqual( family_name->ToCString() ) )
-      {
-        newTempFont = myFontMap[i];
-        break;
-      }
-    }
-    family_name = new TCollection_HAsciiString(newTempFont.FontName);
-    myFont = mgr->request_font( family_name, newTempFont.FontAspect, myFontSize );
-  }
-
-  // Requested family name not found -> serach for any font family with given aspect and height
-  if ( myFont == -1 )
-  {
-    family_name = new TCollection_HAsciiString( "" );
-    myFont = mgr->request_font( family_name, AFontAspect, myFontSize );
-  }
-
-  // The last resort: trying to use ANY font available in the system
-  if ( myFont == -1 )
-  {
-    myFont = mgr->request_font( family_name, Font_FA_Undefined, -1 );
-  }
-
-  if ( myFont != -1 )
-    mgr->setCurrentScale( AXScale, AYScale );
+  if (myFont != -1)
+    anOpenGlFontMgr->setCurrentScale (theXScale, theYScale);
 
   return myFont;
 }

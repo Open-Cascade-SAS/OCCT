@@ -25,7 +25,7 @@
 
 #include <Prs3d_TextAspect.ixx>
 #include <Quantity_Color.hxx>
-#include <Graphic3d_NameOfFont.hxx>
+#include <Font_NameOfFont.hxx>
 
 Prs3d_TextAspect::Prs3d_TextAspect () 
 : myAngle(0.),
@@ -36,7 +36,7 @@ Prs3d_TextAspect::Prs3d_TextAspect ()
 
   myTextAspect = new Graphic3d_AspectText3d (
                                              Quantity_Color(Quantity_NOC_YELLOW),
-                                             Graphic3d_NOF_ASCII_TRIPLEX,
+                                             Font_NOF_ASCII_TRIPLEX,
                                              1.,
                                              0.);
 }
