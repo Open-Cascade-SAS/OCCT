@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC23597"
+puts "================"
+puts ""
+#######################################################################
+# Failed to export ellipse into STEP with units other than mm
+#######################################################################
+
+set filedir ${imagedir}
+
+set TheFileName bug23597_f-ellipse
+if { [file exists ${filedir}/${TheFileName}.stp] } {
+  puts "Error : There is old ${filedir}/${TheFileName}.stp file"
+}
+
+xnorm STEP
+restore [locate_data_file ${TheFileName}.brep] f
+param write.step.unit FT
+newmodel
+stepwrite a f ${filedir}/${TheFileName}.stp
+
+if { ![file exists ${filedir}/${TheFileName}.stp] } {
+  puts "Error : There is not ${filedir}/${TheFileName}.stp file"
+}
+
+catch {exec chmod 777 ${filedir}/${TheFileName}.stp }
+
+file delete ${filedir}/${TheFileName}.stp

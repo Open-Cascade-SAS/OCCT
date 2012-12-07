@@ -155,24 +155,12 @@ Handle(Geom2d_Curve) UnitsMethods::RadianToDegree
   }
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane))) {
     uFact = vFact = LengthFact;
-    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle))) {
-      Handle(Geom2d_Circle) newCircle = 
-	Handle(Geom2d_Circle)::DownCast(aCurve2d);
-      gp_Pnt2d Loc = newCircle->Location();
-      Loc.SetX(Loc.X()*LengthFact);
-      Loc.SetY(Loc.Y()*LengthFact);
-      newCircle->SetRadius(newCircle->Radius()*LengthFact);
-      return newCircle;
-    }
-    else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      Handle(Geom2d_Ellipse) newEllipse = 
-	Handle(Geom2d_Ellipse)::DownCast(aCurve2d);
-      gp_Pnt2d Loc = newEllipse->Location();
-      Loc.SetX(Loc.X()*LengthFact);
-      Loc.SetY(Loc.Y()*LengthFact);
-      newEllipse->SetMajorRadius(newEllipse->MajorRadius()*LengthFact);
-      newEllipse->SetMinorRadius(newEllipse->MinorRadius()*LengthFact);
-      return newEllipse;
+    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
+        aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
+      gp_Trsf2d aT;
+      aT.SetScale (gp::Origin2d(), LengthFact);
+      aCurve2d->Transform (aT);
+      return aCurve2d;
     }
   }
   else {
@@ -200,20 +188,12 @@ Handle(Geom2d_Curve) UnitsMethods::RadianToDegree
     return myNewLine2d;
   }
   else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
-    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle))) {
-      Handle(Geom2d_Circle) aCirc2d = 
-	Handle(Geom2d_Circle)::DownCast(aCurve2d);
+    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
+        aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
       Handle(Geom2d_BSplineCurve) aBSpline2d = 
-	Geom2dConvert::CurveToBSplineCurve(aCirc2d);
+	Geom2dConvert::CurveToBSplineCurve(aCurve2d);
       aCurve2d = aBSpline2d;
     } 
-    else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      Handle(Geom2d_Ellipse) aHel2d = 
-	Handle(Geom2d_Ellipse)::DownCast(aCurve2d);
-      Handle(Geom2d_BSplineCurve) aBSpline2d = 
-	Geom2dConvert::CurveToBSplineCurve(aHel2d);
-      aCurve2d = aBSpline2d;
-    }
     else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
 #ifdef DEBUG
       cout << "PCURVE of Parabola type in U or V Periodic Surface" << endl;
@@ -304,24 +284,12 @@ Handle(Geom2d_Curve) UnitsMethods::DegreeToRadian
   }
   else if (aSurface->IsKind(STANDARD_TYPE(Geom_Plane))) {
     uFact = vFact = LengthFact;
-    if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Circle))) {
-      Handle(Geom2d_Circle) newCircle = 
-	Handle(Geom2d_Circle)::DownCast(aPcurve);
-      gp_Pnt2d Loc = newCircle->Location();
-      Loc.SetX(Loc.X()*LengthFact);
-      Loc.SetY(Loc.Y()*LengthFact);
-      newCircle->SetRadius(newCircle->Radius()*LengthFact);
-      return newCircle;
-    }
-    else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      Handle(Geom2d_Ellipse) newEllipse = 
-	Handle(Geom2d_Ellipse)::DownCast(aPcurve);
-      gp_Pnt2d Loc = newEllipse->Location();
-      Loc.SetX(Loc.X()*LengthFact);
-      Loc.SetY(Loc.Y()*LengthFact);
-      newEllipse->SetMajorRadius(newEllipse->MajorRadius()*LengthFact);
-      newEllipse->SetMinorRadius(newEllipse->MinorRadius()*LengthFact);
-      return newEllipse;
+    if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
+        aPcurve->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
+      gp_Trsf2d aT;
+      aT.SetScale (gp::Origin2d(), LengthFact);
+      aPcurve->Transform (aT);
+      return aPcurve;
     }
   }
   else {
