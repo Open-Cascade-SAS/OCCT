@@ -27,7 +27,15 @@ class TCollection_AsciiString;
 struct FIBITMAP;
 
 //! Image class that support file reading/writing operations using auxiliary image library.
-//! Notice that supported images format could be limited.
+//! Supported image formats:
+//! - *.bmp - bitmap image, lossless format without compression.
+//! - *.ppm - PPM (Portable Pixmap Format), lossless format without compression.
+//! - *.png - PNG (Portable Network Graphics) lossless format with compression.
+//! - *.jpg, *.jpe, *.jpeg - JPEG/JIFF (Joint Photographic Experts Group) lossy format (compressed with quality losses). YUV color space used (automatically converted from/to RGB).
+//! - *.tif, *.tiff - TIFF (Tagged Image File Format).
+//! - *.tga - TGA (Truevision Targa Graphic), lossless format.
+//! - *.gif - GIF (Graphical Interchange Format), lossy format. Color stored using pallete (up to 256 distinct colors).
+//! - *.exr - OpenEXR high dynamic-range format (supports float pixel formats). 
 class Image_AlienPixMap : public Image_PixMap
 {
 

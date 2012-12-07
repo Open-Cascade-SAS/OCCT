@@ -127,7 +127,9 @@ void OCC_2dView::OnInitialUpdate()
 void OCC_2dView::OnFileExportImage()
 {
 CFileDialog dlg(FALSE,_T("*.BMP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-               _T("BMP Files (*.BMP)|*.bmp |GIF Files (*.GIF)|*.gif | XWD Files (*.XWD)|*.xwd||"), 
+               _T("BMP Files (*.BMP)|*.bmp |GIF Files (*.GIF)|*.gif | PNG Files (*.PNG)|*.png"
+                  "|JPEG Files (*.JPEG)|*.jpeg | PPM Files (*.PPM)|*.ppm | TIFF Files (*.TIFF)"
+                  "|*.tiff | TGA Files (*.TGA)|*.tga | EXR Files (*.EXR)|*.exr||"), 
                NULL );
 
 if (dlg.DoModal() == IDOK) 
@@ -136,10 +138,6 @@ if (dlg.DoModal() == IDOK)
  CString filename = dlg.GetPathName();
  Handle(WNT_Window) aWNTWindow=
  Handle(WNT_Window)::DownCast(myV2dView->Driver()->Window());
- CString ext = dlg.GetFileExt();
- if (ext == "bmp")     aWNTWindow->SetOutputFormat ( WNT_TOI_BMP );
- if (ext == "gif")     aWNTWindow->SetOutputFormat ( WNT_TOI_GIF );
- if (ext == "xwd")     aWNTWindow->SetOutputFormat ( WNT_TOI_XWD );
  aWNTWindow->Dump ((Standard_CString)(LPCTSTR)filename);
  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }

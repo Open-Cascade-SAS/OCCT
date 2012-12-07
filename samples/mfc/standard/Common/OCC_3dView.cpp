@@ -155,34 +155,31 @@ OCC_3dBaseDoc* OCC_3dView::GetDocument() // non-debug version is inline
 void OCC_3dView::OnFileExportImage()
 {
   LPCTSTR filter;
-  filter = _T("BMP Files (*.BMP)|*.bmp|GIF Files (*.GIF)|*.gif|XWD Files (*.XWD)|*.xwd|PS Files (*.PS)|*.ps|EPS Files (*.EPS)|*.eps|TEX Files (*.TEX)|*.tex|PDF Files (*.PDF)|*.pdf|SVG Files (*.SVG)|*.svg|PGF Files (*.PGF)|*.pgf||");
+  filter = _T("EXR Files (*.EXR)|*.exr|TGA Files (*.TGA)|*.tga|TIFF Files (*.TIFF)|*.tiff|"
+              "PPM Files (*.PPM)|*.ppm|JPEG Files(*.JPEG)|*.jpeg|PNG Files (*.PNG)|*.png|"
+              "GIF Files (*.GIF)|*.gif|BMP Files (*.BMP)|*.bmp|PS Files (*.PS)|*.ps|"
+              "EPS Files (*.EPS)|*.eps|TEX Files (*.TEX)|*.tex|PDF Files (*.PDF)|*.pdf"
+              "|SVG Files (*.SVG)|*.svg|PGF Files (*.PGF)|*.pgf|EMF Files (*.EMF)|*.emf||");
   CFileDialog dlg(FALSE,_T("*.BMP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
                   filter, 
                   NULL );
 
   if (dlg.DoModal() == IDOK) 
   {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString filename = dlg.GetPathName();
-    char* theFile = new char[filename.GetLength()+1];
-    //_tcscpy(theFile,filename);
-    strcpy_s(theFile,filename.GetLength()+1,filename);
+    CString aFileName = dlg.GetPathName();
     CString ext = dlg.GetFileExt();
-    if (ext == "ps" || ext == "emf")
+    if (!(ext.CompareNoCase("ps")) || !(ext.CompareNoCase("emf"))
+        || !(ext.CompareNoCase("pdf")) || !(ext.CompareNoCase("eps"))
+        || !(ext.CompareNoCase("tex")) || !(ext.CompareNoCase("svg"))
+        || !(ext.CompareNoCase("pgf")))
     {
       Graphic3d_ExportFormat exFormat;
-      if (ext == "ps") exFormat = Graphic3d_EF_PostScript;
+      if (!(ext.CompareNoCase("ps"))) exFormat = Graphic3d_EF_PostScript;
       else             exFormat = Graphic3d_EF_EnhPostScript;
-      myView->View()->Export( theFile, exFormat );
+      myView->View()->Export( aFileName, exFormat );
       return;
     }
-    Handle(Aspect_Window) anAspectWindow = myView->Window();
-    Handle(WNT_Window) aWNTWindow = Handle(WNT_Window)::DownCast(anAspectWindow);
-    if (ext == "bmp")     aWNTWindow->SetOutputFormat ( WNT_TOI_BMP );
-    if (ext == "gif")     aWNTWindow->SetOutputFormat ( WNT_TOI_GIF );
-    if (ext == "xwd")     aWNTWindow->SetOutputFormat ( WNT_TOI_XWD );
-    aWNTWindow->Dump ((Standard_CString)(LPCTSTR)filename);
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+    myView->Dump(aFileName);
   }
 }
 
