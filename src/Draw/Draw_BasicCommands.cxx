@@ -18,10 +18,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <Standard_Macro.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_SStream.hxx>
+#include <Standard_Version.hxx>
 
 #include <Draw.ixx>
 #include <Draw_Appli.hxx>
@@ -30,6 +30,8 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <OSD_MemInfo.hxx>
+#include <OSD.hxx>
+#include <OSD_Exception_CTRL_BREAK.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -269,6 +271,113 @@ static Standard_Integer decho(Draw_Interpretor& di, Standard_Integer n, const ch
     cout << "Unrecognized option: " << a[1] << endl;
     return 1;
   }
+  return 0;
+}
+
+static Standard_Integer dbreak(Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  try {
+    OSD::ControlBreak();
+  }
+  catch (OSD_Exception_CTRL_BREAK) {
+    di << "User pressed Control-Break";
+    return 1; // Tcl exception
+  }
+
+  return 0;
+}
+
+static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  // print OCCT version and OCCTY-specific macros used
+  di << "Open CASCADE Technology " << OCC_VERSION_STRING_EXT << "\n";
+#if defined(DEB) || defined(_DEBUG)
+  di << "Debug mode\n";
+#endif
+#ifdef HAVE_TBB
+  di << "TBB enabled (HAVE_TBB)\n";
+#else 
+  di << "TBB disabled\n";
+#endif
+#ifdef HAVE_GL2PS
+  di << "GL2PS enabled (HAVE_GL2PS)\n";
+#else
+  di << "GL2PS disabled\n";
+#endif
+#ifdef HAVE_FREEIMAGE
+  di << "FreeImage enabled (HAVE_FREEIMAGE)\n";
+#else
+  di << "FreeImage disabled\n";
+#endif
+#ifdef No_Exception
+  di << "Exceptions disabled (No_Exception)\n";
+#else
+  di << "Exceptions enabled\n";
+#endif
+
+  // check compiler, OS, etc. using pre-processor macros provided by compiler
+  // see "Pre-defined C/C++ Compiler Macros" http://sourceforge.net/p/predef/wiki/
+  // note that only modern compilers that are known to be used for OCCT are recognized
+
+  // compiler; note that GCC and MSVC are last as other compilers (e.g. Intel) can also define __GNUC__ and _MSC_VER
+#if defined(__INTEL_COMPILER)
+  di << "Compiler: Intel " << __INTEL_COMPILER << "\n";
+#elif defined(__BORLANDC__)
+  di << "Compiler: Borland C++ (__BORLANDC__ = " << __BORLANDC__ << ")\n";
+#elif defined(__clang__)
+  di << "Compiler: Clang " << __clang_major__ << "." << __clang_minor__ << "." << __clang_patchlevel__ << "\n";
+#elif defined(__SUNPRO_C)
+  di << "Compiler: Sun Studio (__SUNPRO_C = " << __SUNPROC_C << ")\n";
+#elif defined(_MSC_VER)
+  di << "Compiler: MS Visual C++ " << (int)(_MSC_VER/100-6) << "." << (int)((_MSC_VER/10)-60-10*(int)(_MSC_VER/100-6)) << " (_MSC_FULL_VER = " << _MSC_FULL_VER << ")\n";
+#elif defined(__GNUC__)
+  di << "Compiler: GCC " << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__ << "\n";
+#else
+  di << "Compiler: unrecognized\n";
+#endif
+
+  // Cygwin and MinGW specifics
+#if defined(__CYGWIN__)
+  di << "Cygwin\n";
+#endif
+#if defined(__MINGW64__)
+  di << "MinGW 64 " << __MINGW64_MAJOR_VERSION << "." << __MINGW64_MINOR_VERSION << "\n";
+#elif defined(__MINGW32__)
+  di << "MinGW 32 " << __MINGW32_MAJOR_VERSION << "." << __MINGW32_MINOR_VERSION << "\n";
+#endif 
+
+  // architecture
+#if defined(__amd64) || defined(__x86_64) || defined(_M_AMD64)
+  di << "Architecture: AMD64\n";
+#elif defined(__i386) || defined(_M_IX86) || defined(__X86__)|| defined(_X86_)
+  di << "Architecture: Intel x86\n";
+#elif defined(_M_IA64) || defined(__ia64__)
+  di << "Architecture: Intel Itanium (IA 64)\n";
+#elif defined(__sparc__) || defined(__sparc)
+  di << "Architecture: SPARC\n";
+#else
+  di << "Architecture: unrecognized\n";
+#endif
+
+  // OS
+#if defined(_WIN32) || defined(__WINDOWS__) || defined(__WIN32__)
+  di << "OS: Windows\n";
+#elif defined(__APPLE__) || defined(__MACH__)
+  di << "OS: Mac OS X\n";
+#elif defined(__sun) 
+  di << "OS: SUN Solaris\n";
+#elif defined(__ANDROID__) /* must be before Linux */
+  #include <android/api-level.h>
+  di << "OS: Android (__ANDROID_API__ = " << __ANDROID_API__ << ")\n";
+#elif defined(__linux__)
+  di << "OS: Linux\n";
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+  #include <sys/param.h>
+  di << "OS: BSD (BSD = " << BSD << ")\n";
+#else
+  di << "OS: unrecognized\n";
+#endif
+
   return 0;
 }
 
@@ -570,4 +679,9 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,dlog,g);
   theCommands.Add("decho", "switch on / off echo of commands to cout; run without args to get help",
 		  __FILE__,decho,g);
+  
+  theCommands.Add("dbreak", "raises Tcl exception if user has pressed Control-Break key",
+		  __FILE__,dbreak,g);
+  theCommands.Add("dversion", "provides information on OCCT build configuration (version, compiler, OS, C library, etc.)",
+		  __FILE__,dversion,g);
 }

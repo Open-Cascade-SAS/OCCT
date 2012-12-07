@@ -30,6 +30,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Path.hxx>
+#include <OSD.hxx>
 
 #include <string.h>
 #include <tcl.h>
@@ -205,6 +206,9 @@ static Standard_Integer CommandCmd
   // run command
   try {
     OCC_CATCH_SIGNALS
+
+    // get exception if control-break has been pressed 
+    OSD::ControlBreak();
 
     // OCC63: Convert strings from UTF-8 to local encoding, normally expected by OCC commands
     TclUTFToLocalStringSentry anArgs ( argc, (const char**)argv );

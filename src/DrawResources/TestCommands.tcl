@@ -296,8 +296,9 @@ proc testgrid {args} {
     
     # log command arguments and environment
     set log "Command: testgrid $args\nHost: [info hostname]\nStarted on: [clock format [clock seconds] -format {%Y-%m-%d %H:%M:%S}]\n"
+    catch {set log "$log\nDRAW build:\n[dversion]\n" }
     set log "$log\nEnvironment:\n"
-    foreach envar [array names env] {
+    foreach envar [lsort [array names env]] {
 	set log "$log$envar=\"$env($envar)\"\n"
     }
     set log "$log\n"
@@ -321,7 +322,14 @@ proc testgrid {args} {
     }
 
     # start test cases
+    set userbreak 0
     foreach test_def $tests_list {
+        # check for user break
+        if { "[info commands dbreak]" == "dbreak" && [catch dbreak] } {
+            set userbreak 1
+            break
+        }
+
 	set dir       [lindex $test_def 0]
 	set group     [lindex $test_def 1]
 	set grid      [lindex $test_def 2]
@@ -387,11 +395,16 @@ proc testgrid {args} {
     # get results of started threads
     if { $parallel > 0 } {
 	catch {tpool::resume $worker}
-	while { [llength [array names job_def]] > 0 } {
+	while { ! $userbreak && [llength [array names job_def]] > 0 } {
 	    foreach job [tpool::wait $worker [array names job_def]] {
 		eval _log_test_case \[tpool::get $worker $job\] $job_def($job) log
 		unset job_def($job)
 	    }
+
+            # check for user break
+            if { "[info commands dbreak]" == "dbreak" && [catch dbreak] } {
+                set userbreak 1
+            }
 
 	    # update summary log with requested period
 	    if { $logdir != "" && $refresh > 0 && [clock seconds] > $refresh_timer + $refresh } {
@@ -400,11 +413,17 @@ proc testgrid {args} {
 	    }
 	}
 	# release thread pool
+	tpool::cancel $worker [array names job_def]
 	tpool::release $worker
     }
 
     uplevel dchrono _timer stop
     set time [lindex [split [uplevel dchrono _timer show] "\n"] 0]
+
+    if { $userbreak } {
+        puts "*********** Stopped by user break ***********"
+        set time "${time} \nNote: the process is not finished, stopped by user break!"
+    }
 
     ######################################################
     # output summary logs and exit
@@ -1243,7 +1262,8 @@ proc _log_html_summary {logdir log totals regressions improvements total_time} {
 
     # time stamp and elapsed time info
     if { $total_time != "" } { 
-	puts $fd "<p>Generated on [clock format [clock seconds] -format {%Y-%m-%d %H:%M:%S}] on [info hostname] <p> $total_time" 
+	puts $fd "<p>Generated on [clock format [clock seconds] -format {%Y-%m-%d %H:%M:%S}] on [info hostname]\n<p>"
+        puts $fd [join [split $total_time "\n"] "<p>"]
     } else {
 	puts $fd "<p>NOTE: This is intermediate summary; the tests are still running! This page will refresh automatically until tests are finished."
     }

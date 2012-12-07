@@ -37,6 +37,7 @@
 #include <OSD_SIGBUS.hxx>
 #include <OSD_SIGSEGV.hxx>
 #include <OSD_SIGSYS.hxx>
+#include <OSD_Exception_CTRL_BREAK.hxx>
 #include <Standard_NumericError.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_DivideByZero.hxx>
@@ -61,6 +62,9 @@ static pthread_t getOCCThread () {
 #include <fpu_control.h>
 static Standard_Boolean fFltExceptions = Standard_False;
 #endif
+
+// variable signalling that Control-C has been pressed (SIGINT signal)
+static Standard_Boolean fCtrlBrk;
 
 //const OSD_WhoAmI Iam = OSD_WPackage;
 
@@ -486,8 +490,11 @@ void OSD::Handler(const OSD_Signals theSignal,
     break;
 
   case SIGINT:
-    OSD_SIGINT::NewInstance("SIGINT 'interrupt' detected.")->Jump();
-    exit(SIGINT);
+    // For safe handling of Control-C as stop event, arm a variable but do not
+    // generate longjump (we are out of context anyway)
+    fCtrlBrk = Standard_True;
+//    OSD_SIGINT::NewInstance("SIGINT 'interrupt' detected.")->Jump();
+//    exit(SIGINT);
     break;
 
   case SIGQUIT:
@@ -575,6 +582,18 @@ void OSD::Handler(const OSD_Signals theSignal,
 #endif
   default:
     cout << "Unexpected signal " << (Standard_Integer ) theSignal << endl ;
+  }
+}
+
+//============================================================================
+//==== ControlBreak 
+//============================================================================
+
+void OSD :: ControlBreak () 
+{
+  if ( fCtrlBrk ) {
+    fCtrlBrk = Standard_False;
+    OSD_Exception_CTRL_BREAK::Raise ("*** INTERRUPT ***");
   }
 }
 
