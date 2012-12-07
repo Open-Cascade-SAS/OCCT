@@ -478,7 +478,7 @@ help testdiff {
   Where dir1 and dir2 are directories containing logs of two test runs.
   Allowed options are:
   -save filename: save resulting log in specified file (default name is
-                  \$dir1/diff-\$dir2.log); HTML log is saved with same name
+                  <dir1>/diff-<dir2>.log); HTML log is saved with same name
                   and extension .html
   -status {same|ok|all}: filter cases for comparing by their status:
           same - only cases with same status are compared (default)
@@ -574,7 +574,7 @@ help testfile {
 
   Unless the file is already in the repository, tries to load it, reports
   the recognized file format, file size, number of faces and edges in the 
-  loaded shape (if any), and makes snapshot (in the subdirectory tmp).
+  loaded shape (if any), and makes snapshot (in the temporary directory).
   Finally it advises whether the file should be put to public section of the 
   repository.
 }
@@ -702,18 +702,19 @@ proc testfile {filelist} {
         # add stats
         puts "$file: $format size=[expr $size / 1024] KiB, nbfaces=$faces, nbedges=$edges -> $dir"
 
-        file mkdir tmp/$dir
+        set tmpdir [_get_temp_dir]
+        file mkdir $tmpdir/$dir
 
         # make snapshot
         pload AISV
         uplevel vdisplay a
         uplevel vfit
         uplevel vzfit
-        uplevel vdump tmp/$dir/[file rootname [file tail $file]].png
+        uplevel vdump $tmpdir/$dir/[file rootname [file tail $file]].png
         set has_images t
     }
     if { $has_images } {
-        puts "Snapshots are saved in subdirectory tmp"
+        puts "Snapshots are saved in subdirectory [_get_temp_dir]"
     }
 }
 
@@ -879,10 +880,18 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 
     # evaluate test case 
     if [catch {
+        # set variables identifying test case
 	uplevel set casename [file tail $casefile]
 	uplevel set groupname $group
 	uplevel set gridname $gridname
 
+	# set variables for saving of images if not yet set
+	if { ! [uplevel info exists imagedir] } {
+	    uplevel set imagedir [_get_temp_dir]
+	    uplevel set test_image \$casename
+	}
+
+	# execute test scripts 
         if { [file exists $scriptsdir/$group/begin] } {
 	    puts "Executing $scriptsdir/$group/begin..."; flush stdout
 	    uplevel source $scriptsdir/$group/begin
@@ -1878,4 +1887,44 @@ proc load_data_file {file format shape} {
     STL  { pload XSDRAW; uplevel readstl $shape $file }
     default { error "Cannot read $format file $file" }
     }
+}
+
+# procedure to get name of temporary directory,
+# ensuring it is existing and writeable 
+proc _get_temp_dir {} {
+    global env
+
+    # check typical environment variables 
+    foreach var {TempDir Temp Tmp} {
+        # check different case
+        foreach name [list [string toupper $var] $var [string tolower $var]] {
+            if { [info exists env($name)] && [file isdirectory $env($name)] &&
+                 [file writable $env($name)] } {
+                return [regsub -all {\\} $env($name) /]
+            }
+        }
+    }
+
+    # check platform-specific locations
+    set fallback tmp
+    if { "$tcl_platform(platform)" == "windows" } {
+        set paths "c:/TEMP c:/TMP /TEMP /TMP"
+        if { [info exists env(HOMEDRIVE)] && [info exists env(HOMEPATH)] } {
+            set fallback [regsub -all {\\} "$env(HOMEDRIVE)$(HOMEPATH)/tmp" /]
+        }
+    } else {
+        set paths "/tmp /var/tmp /usr/tmp"
+        if { [info exists env(HOME)] } {
+            set fallback "$env(HOME)/tmp"
+        }
+    }
+    foreach dir $paths {
+        if { [file isdirectory $dir] && [file iswritable $dir] } {
+            return $dir
+        }
+    }
+
+    # fallback case: use subdir /tmp of home or current dir
+    file mkdir $fallback
+    return $fallback
 }

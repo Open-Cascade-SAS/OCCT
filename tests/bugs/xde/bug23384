@@ -17,17 +17,12 @@ regexp {Total number of labels for shapes in the document += +([-0-9.+eE]+)} $in
 regexp {Number of labels with name += +([-0-9.+eE]+)} $info1 full nbname
 
 param write.stepcaf.subshapes.name 1
-if { [string compare $os "windows"] == 0 } {
-    WriteStep doc C:/temp/doc_subshapes.stp
-} else {
-    WriteStep doc /tmp/doc_subshapes.stp
-}
+
+    WriteStep doc $imagedir/doc_subshapes.stp
+
 param read.stepcaf.subshapes.name 1
-if { [string compare $os "windows"] == 0 } {
-    ReadStep after_doc C:/temp/doc_subshapes.stp
-} else {
-    ReadStep after_doc /tmp/doc_subshapes.stp
-}
+
+    ReadStep after_doc $imagedir/doc_subshapes.stp
 
 set info2 [XStat after_doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info2 full l0_1

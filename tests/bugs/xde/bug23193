@@ -11,21 +11,11 @@ if {[array get env os_type] != ""} {
     set os $env(os_type)
 }
 
-if { [string compare $os "windows"] == 0 } {
-    set aFile C:/temp/bug23193_sample.stl
-} else {
-    set aFile /tmp/bug23193_sample.stl
-}
-
-file delete ${aFile}
-if { [file exists ${aFile}] } {
-   puts "Error : There is old ${aFile} file"
-}
+set aFile $imagedir/bug23193_sample.stl
 
 vinit
 stepread [locate_data_file bug23193_sample.stp] a *
 writestl a_1 ${aFile} 0
-catch {exec chmod 777 ${aFile}}
 
 meshfromstl m1 ${aFile}
 meshcolors m1 elem2 1
