@@ -16,31 +16,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/*
- * modified 27/08/97 ; PCT : ajout texture mapping
- * modified 08/04/98 ; FGU : ajout parametres d emission (CALL_DEF_MATERIAL)
- * modified 30/11/98 ; FMN : ajout parametres pour les textes visibles
- * modified 24/01/00 ; EUG : G003 add DegenerationMode flag and SkipRatio value in
- *                         CALL_DEF_STRUCTURE.
- * modified 22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
- *
- */
-
-
 #ifndef InterfaceGraphic_Graphic3dHeader
 #define InterfaceGraphic_Graphic3dHeader
 
 #include <InterfaceGraphic_PrimitiveArray.hxx>
-
-#define G003    /*EUG 26-01-00 Degeneration management
-*/
-
-#define OCC1174 /*SAV 08/01/03 CONTEXTFILLAREA extended with back face interior color*/
-
-#define OCC2934 /* SAN 22/01/04 Texture mapped fonts on WNT */
+#include <Standard_Transient.hxx>
 
 #ifdef THIS
-        #undef THIS
+  #undef THIS
 #endif
 
 #define CALL_DEF_STRUCTHIGHLIGHTED      1
@@ -259,7 +242,7 @@ typedef struct {
         int HAlign;
 
         int VAlign;
-	
+
         bool Zoomable;
 
 } CALL_DEF_TEXT;
@@ -378,88 +361,14 @@ typedef struct {
         float Shininess;
 
         float EnvReflexion;
-        
+
         int IsPhysic;
 
         /* Attribut couleur eclairage */
-        CALL_DEF_COLOR ColorAmb, ColorDif, ColorSpec, ColorEms, Color; 
-        
+        CALL_DEF_COLOR ColorAmb, ColorDif, ColorSpec, ColorEms, Color;
+
 
 } CALL_DEF_MATERIAL;
-
-
-/* TEXTURE */
-
-typedef struct
-{
-  int doModulate;
-  int doRepeat;
-  int Mode;
-  int doLinear;
-  float sx, sy;
-  float tx, ty;
-  float angle;
-
-  float sparams[4];
-  float tparams[4];
-
-} CALL_DEF_INIT_TEXTURE;
-
-
-typedef struct
-{
-  int TexId;
-  int doTextureMap;
-
-} CALL_DEF_TEXTURE;
-
-
-
-/* CONTEXTE POLYGONE */
-
-typedef struct {
-
-        int IsDef;
-
-        int IsSet;
-
-        int Style;
-
-        CALL_DEF_COLOR IntColor;
-
-#ifdef OCC1174
-        CALL_DEF_COLOR BackIntColor;
-#endif
-
-        CALL_DEF_COLOR EdgeColor;
-
-        int LineType;
-
-        float Width;
-
-        int Hatch;
-
-        int Distinguish;
-        int BackFace;
-
-        int Edge;
-
-        CALL_DEF_MATERIAL Front;
-        CALL_DEF_MATERIAL Back;
-
-        CALL_DEF_TEXTURE Texture;
-
-#ifdef G003
-        int   DegenerationMode;
-        float SkipRatio;
-#endif
-        /* OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets */
-        int   PolygonOffsetMode;
-        float PolygonOffsetFactor;
-        float PolygonOffsetUnits;
-        /* OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets */
-
-} CALL_DEF_CONTEXTFILLAREA;
 
 
 /* CONTEXTE MARKER */
@@ -494,20 +403,20 @@ typedef struct {
         float Expan;
 
         CALL_DEF_COLOR Color;
-        
+
         int Style;
-        
+
         int DisplayType;
 
         CALL_DEF_COLOR ColorSubTitle;
 
 	int TextZoomable;
-	
+
 	float TextAngle;
 
 	int TextFontAspect;
-	
-	
+
+
 } CALL_DEF_CONTEXTTEXT;
 
 /* Transform persistence struct */
@@ -519,72 +428,6 @@ typedef struct
         CALL_DEF_POINT Point;
 } CALL_DEF_TRANSFORM_PERSISTENCE;
 
-/* STRUCTURE */
-
-typedef struct {
-
-        int Id;
-        void *ptrStructure;
-
-        int Priority;
-        int PreviousPriority;
-        int GroupBegin;
-        int GroupEnd;
-
-        CALL_DEF_CONTEXTLINE ContextLine;
-        CALL_DEF_CONTEXTFILLAREA ContextFillArea;
-        CALL_DEF_CONTEXTMARKER ContextMarker;
-        CALL_DEF_CONTEXTTEXT ContextText;
-
-        CALL_DEF_BOUNDBOX BoundBox;
-
-        float Transformation[4][4];
-        int Composition;
-
-        int ContainsFacet;
-
-        unsigned IsDeleted      :1;
-        unsigned IsOpen         :1;
-        unsigned IsInfinite     :1;
-        unsigned stick          :1;
-        unsigned highlight      :1;
-        unsigned visible        :1;
-        unsigned pick           :1;
-        unsigned HLRValidation  :1;
-        /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-	/*int	       TransformPersistenceFlag;
-        CALL_DEF_POINT TransformPersistencePoint;
-	*/
-        CALL_DEF_TRANSFORM_PERSISTENCE TransformPersistence;
-	/* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-} CALL_DEF_STRUCTURE;
-
-
-/* GROUPE */
-
-typedef struct {
-
-        int LabelBegin;
-        int LabelEnd;
-        void *ptrGroup;
-
-        int StructureEnd;
-
-        CALL_DEF_CONTEXTLINE ContextLine;
-        CALL_DEF_CONTEXTFILLAREA ContextFillArea;
-        CALL_DEF_CONTEXTMARKER ContextMarker;
-        CALL_DEF_CONTEXTTEXT ContextText;
-
-        CALL_DEF_STRUCTURE *Struct;
-
-        CALL_DEF_PICKID PickId;
-
-        unsigned IsDeleted      :1;
-        unsigned IsOpen         :1;
-        /*int	 TransformPersistenceFlag;*/
-
-} CALL_DEF_GROUP;
-
 /* BOUNDING BOX */
 
 typedef struct {
@@ -592,7 +435,7 @@ typedef struct {
         float XMin;
         float YMin;
         float ZMin;
-    
+
         float XMax;
         float YMax;
         float ZMax;

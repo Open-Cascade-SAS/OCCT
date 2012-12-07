@@ -17,11 +17,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef OpenGl_AspectMarker_Header
 #define OpenGl_AspectMarker_Header
 
-#include <InterfaceGraphic_telem.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 
 #include <OpenGl_Element.hxx>

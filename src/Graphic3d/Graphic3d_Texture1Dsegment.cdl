@@ -18,50 +18,46 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
+class Texture1Dsegment from Graphic3d
 
-class  Texture1Dsegment  from  Graphic3d 
-    
-inherits  Texture1D  from  Graphic3d  
+inherits Texture1D from Graphic3d
 
- 
-    ---Purpose:  This class provides the implementation
-    -- of a 1D texture applyable along a segment.
-    -- You might use the SetSegment() method
-    -- to set the way the texture is "streched" on facets. 
+  ---Purpose:  This class provides the implementation
+  -- of a 1D texture applyable along a segment.
+  -- You might use the SetSegment() method
+  -- to set the way the texture is "streched" on facets.
 
+uses
 
-uses 
-    NameOfTexture1D  from  Graphic3d, 
-    StructureManager      from  Graphic3d 
+  NameOfTexture1D from Graphic3d,
+  AsciiString     from TCollection
 
-is 
-    Create(VM  :  StructureManager  from  Graphic3d; 
-    	   FileName  :  CString  from  Standard)  returns  mutable  Texture1Dsegment  from  Graphic3d; 
-    ---Purpose: Creates a texture from a file
+is
 
+  Create (theFileName : AsciiString from TCollection) returns mutable Texture1Dsegment from Graphic3d;
+  ---Purpose: Creates a texture from a file
 
-    Create(VM  :  StructureManager  from  Graphic3d; 
-    	   NOT  :  NameOfTexture1D  from  Graphic3d)  returns  mutable  Texture1Dsegment  from  Graphic3d;  
-    ---Purpose: Creates a texture from a predefined texture name set.
-     
-    SetSegment(me  :  mutable; 
-    	       X1,Y1,Z1  :  ShortReal  from  Standard; 
-	       X2,Y2,Z2  :  ShortReal  from  Standard);
-    ---Purpose: Sets the texture application bounds. Defines the way
-    -- the texture is stretched across facets.
-    -- Default values are <0.0, 0.0, 0.0> , <0.0, 0.0, 1.0>
+  Create (theNOT : NameOfTexture1D from Graphic3d) returns mutable Texture1Dsegment from Graphic3d;
+  ---Purpose: Creates a texture from a predefined texture name set.
 
-  
-    --
-    -- inquire methods
-    --
-    Segment(me;
-            X1,Y1,Z1, X2,Y2,Z2 : out ShortReal from Standard);
-    ---Purpose: Returns the values of the current segment X1, Y1, Z1 , X2, Y2, Z2.
-    
-fields    
-    MyX1,MyY1,MyZ1  :  ShortReal  from  Standard; 
-    MyX2,MyY2,MyZ2  :  ShortReal  from  Standard;
+  SetSegment (me : mutable;
+              theX1, theY1, theZ1 : ShortReal from Standard;
+              theX2, theY2, theZ2 : ShortReal from Standard);
+  ---Purpose: Sets the texture application bounds. Defines the way
+  -- the texture is stretched across facets.
+  -- Default values are <0.0, 0.0, 0.0> , <0.0, 0.0, 1.0>
+
+  --
+  -- inquire methods
+  --
+  Segment (me;
+           theX1, theY1, theZ1 : out ShortReal from Standard;
+           theX2, theY2, theZ2 : out ShortReal from Standard);
+  ---Purpose: Returns the values of the current segment X1, Y1, Z1 , X2, Y2, Z2.
+
+fields
+
+  myX1, myY1, myZ1 : ShortReal from Standard;
+  myX2, myY2, myZ2 : ShortReal from Standard;
       
-end  Texture1Dsegment; 
-
+end  Texture1Dsegment;

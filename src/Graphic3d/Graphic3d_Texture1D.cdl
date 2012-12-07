@@ -18,57 +18,51 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
--- Modified :   GG 10/01/2000 IMP
---              Add NumberOfTextures() and TextureName() methods
---		Add Name(),IsSmoothed() and ISModulate() methods
---		GG IMP140300
---		Add Repeat methods.
+deferred class Texture1D from Graphic3d
 
-deferred  class  Texture1D  from  Graphic3d  
-    
-inherits  TextureMap  from  Graphic3d
+inherits TextureMap from Graphic3d
 
- 
-    ---Purpose:  This is an abstract class for managing 1D textures.
+  ---Purpose: This is an abstract class for managing 1D textures.
 
-uses  
-    TypeOfTexture  from  Graphic3d,
-    NameOfTexture1D  from  Graphic3d, 
-    StructureManager    from  Graphic3d 
+uses
+
+  TypeOfTexture   from Graphic3d,
+  NameOfTexture1D from Graphic3d,
+  AsciiString     from TCollection
 
 raises
-    OutOfRange from Standard
 
-is 
-    Initialize(SM  	:  StructureManager  from  Graphic3d;
-    	       aFileName:  CString  from  Standard; 
-    	       aType    :  TypeOfTexture  from  Graphic3d);
-	        
-    Initialize(SM  	:  StructureManager  from  Graphic3d; 
-	       aName  	:  NameOfTexture1D  from  Graphic3d;
-    	       aType 	:  TypeOfTexture  from  Graphic3d);
-     
+  OutOfRange from Standard
 
-    Name(me) returns NameOfTexture1D from Graphic3d;
-    ---Purpose:
-    -- Returns the name of the predefined textures or NOT_1D_UNKNOWN
-    -- when the name is given as a filename.
-    ---Level: Public
+is
 
-    NumberOfTextures(myclass) returns Integer from Standard;
-    ---Purpose:
-    -- Returns the number of predefined textures.
-    ---Level: Public
+  Initialize (theFileName : AsciiString from TCollection;
+              theType     : TypeOfTexture from Graphic3d);
 
-    TextureName(myclass; aRank: Integer from Standard)
-        returns CString from Standard
-        raises OutOfRange from Standard;
-    ---Purpose:
-    -- Returns the name of the predefined texture of rank <aRank>
-    ---Trigger: when <aRank> is < 1 or > NumberOfTextures.
-    ---Level: Public
+  Initialize (theName : NameOfTexture1D from Graphic3d;
+              theType : TypeOfTexture   from Graphic3d);
+
+  Name (me) returns NameOfTexture1D from Graphic3d;
+  ---Purpose:
+  -- Returns the name of the predefined textures or NOT_1D_UNKNOWN
+  -- when the name is given as a filename.
+  ---Level: Public
+
+  NumberOfTextures (myclass) returns Integer from Standard;
+  ---Purpose:
+  -- Returns the number of predefined textures.
+  ---Level: Public
+
+  TextureName (myclass; aRank: Integer from Standard)
+  returns AsciiString from TCollection
+  raises OutOfRange from Standard;
+  ---Purpose:
+  -- Returns the name of the predefined texture of rank <aRank>
+  ---Trigger: when <aRank> is < 1 or > NumberOfTextures.
+  ---Level: Public
 
 fields
-    myName: NameOfTexture1D from Graphic3d;
 
-end  Texture1D;
+  myName : NameOfTexture1D from Graphic3d;
+
+end Texture1D;

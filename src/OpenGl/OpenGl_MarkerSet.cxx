@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Context.hxx>
 
@@ -26,6 +25,7 @@
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Display.hxx>
+#include <OpenGl_Workspace.hxx>
 
 /*----------------------------------------------------------------------*/
 

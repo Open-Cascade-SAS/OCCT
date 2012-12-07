@@ -25,7 +25,7 @@
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Structure.hxx>
-#include <OpenGl_TextureBox.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <InterfaceGraphic_PrimitiveArray.hxx>
 
@@ -157,10 +157,10 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
     for (i = 0; i < myPArray->num_vertexs; ++i)
     {
       transp = int(theFaceProp->trans * 255.0f);
-    #if defined (sparc) || defined (__sparc__) || defined (__sparc) 
+    #if defined (sparc) || defined (__sparc__) || defined (__sparc)
       pvc[i] = (pvc[i] & 0xffffff00);
       pvc[i] += transp;
-    #else     
+    #else
       pvc[i] = (pvc[i] & 0x00ffffff);
       pvc[i] += transp << 24;
     #endif
@@ -210,7 +210,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
     }
 
     // Sometimes the GL_LIGHTING mode is activated here
-    // without glEnable(GL_LIGHTING) call for an unknown reason, so it is necessary 
+    // without glEnable(GL_LIGHTING) call for an unknown reason, so it is necessary
     // to call glEnable(GL_LIGHTING) to synchronize Light On/Off mechanism*
     if (theLightingModel == 0 || myDrawMode <= GL_LINE_STRIP)
       glDisable (GL_LIGHTING);
@@ -279,7 +279,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
           for (i = 0; i < myPArray->num_bounds; ++i)
           {
             glDrawElements (myDrawMode, myPArray->bounds[i], myVbos[VBOEdges]->GetDataType(), anOffset);
-            anOffset += myPArray->bounds[i]; 
+            anOffset += myPArray->bounds[i];
           }
         }
         else
@@ -318,7 +318,7 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
         glDisable (GL_COLOR_MATERIAL);
         theWorkspace->NamedStatus |= OPENGL_NS_RESMAT; // Reset material
       }
-    } 
+    }
     else
     {
       if (myPArray->num_bounds > 0)
@@ -384,13 +384,13 @@ void OpenGl_PrimitiveArray::DrawArray (Tint theLightingModel,
     switch (theWorkspace->DegenerateModel)
     {
       default: // XXX_TDM_NODE or TINY
-        //  On some NVIDIA graphic cards, using glEdgeFlagPointer() in 
+        //  On some NVIDIA graphic cards, using glEdgeFlagPointer() in
         //  combination with VBO ( edge flag data put into a VBO buffer)
-        //  leads to a crash in a driver. Therefore, edge flags are simply 
-        //  igonored when VBOs are enabled, so all the edges are drawn if 
-        //  edge visibility is turned on. In order to draw edges selectively, 
-        //  either disable VBO or turn off edge visibilty in the current 
-        //  primitive array and create a separate primitive array (segments) 
+        //  leads to a crash in a driver. Therefore, edge flags are simply
+        //  igonored when VBOs are enabled, so all the edges are drawn if
+        //  edge visibility is turned on. In order to draw edges selectively,
+        //  either disable VBO or turn off edge visibilty in the current
+        //  primitive array and create a separate primitive array (segments)
         //  and put edges to be drawn into it.
         if (myDrawMode > GL_LINE_STRIP)
         {
@@ -444,7 +444,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
   /// 2) draw elements from vertice array, when bounds defines count of primitive's verts.
   /// 3) draw primitive's edges by vertexes if no edges and bounds array is specified
   if (toDrawVbo())
-  { 
+  {
     myVbos[VBOVertices]->BindFixed (aGlContext, GL_VERTEX_ARRAY);
     glColor3fv (theEdgeColour->rgb);
     if (!myVbos[VBOEdges].IsNull())
@@ -521,7 +521,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
           n += myPArray->bounds[i];
         }
       }
-    } 
+    }
     else if (myPArray->num_edges > 0)
     {
       if (myPArray->edge_vis)
@@ -558,7 +558,7 @@ void OpenGl_PrimitiveArray::DrawEdges (const TEL_COLOUR*               theEdgeCo
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesPointsAsPoints() const
-{ 
+{
   tel_point pv = myPArray->vertices;
   for (Tint aVertId = 0; aVertId < myPArray->num_vertexs; ++aVertId)
   {
@@ -589,7 +589,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesLinesAsPoints() const
     pt[2] *= 0.5f;
     glVertex3fv (pt);
   }
-}  
+}
 
 // =======================================================================
 // function : DrawDegeneratesTrianglesAsPoints
@@ -648,7 +648,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesTrianglesAsPoints() const
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesTrianglestripsAsPoints() const
-{ 
+{
   Tint      i, j, k, n;
   GLfloat   pt[ 3 ];
   tel_point pv = myPArray->vertices;
@@ -702,7 +702,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesTrianglestripsAsPoints() const
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesPolygonsAsPoints() const
-{ 
+{
   Tint      j, k, n, iv;
   GLfloat   pt[3];
   tel_point pv = myPArray->vertices;
@@ -823,14 +823,14 @@ void OpenGl_PrimitiveArray::DrawDegeneratesQuadranglesAsPoints() const
       glVertex3fv (pt);
     }
   }
-}  
+}
 
 // =======================================================================
 // function : DrawDegeneratesAsPoints
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesQuadranglestripsAsPoints() const
-{ 
+{
   Tint      i, j, k, n;
   GLfloat   pt[3];
   tel_point pv = myPArray->vertices;
@@ -888,7 +888,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsPoints (const TEL_COLOUR* theEdgeCo
   GLboolean zbuff_state = glIsEnabled (GL_DEPTH_TEST);
   glDisable (GL_LIGHTING);
   if (zbuff_state)
-    glDisable (GL_DEPTH_TEST); 
+    glDisable (GL_DEPTH_TEST);
   glColor3fv (theEdgeColour->rgb);
 
   glBegin (GL_POINTS);
@@ -1014,7 +1014,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesLinesAsLines (const float theSkipRati
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesTrianglesAsLines (const float theSkipRatio) const
-{ 
+{
   Tint i, iv;
   tel_point pv = myPArray->vertices;
 
@@ -1032,7 +1032,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesTrianglesAsLines (const float theSkip
     {
       iv = myPArray->edges[j];
       if (myPArray->keys[iv] < 0)
-      { 
+      {
         myPArray->keys[iv] = -myPArray->keys[iv];
         glBegin (GL_LINE_LOOP);
         for (i = 0; i < 3; ++i)
@@ -1067,7 +1067,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesTrianglesAsLines (const float theSkip
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesTrianglestripsAsLines (const float theSkipRatio) const
-{ 
+{
   Tint i, j, k, n, ni;
   tel_point pv = myPArray->vertices;
 
@@ -1126,7 +1126,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesTrianglestripsAsLines (const float th
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesPolygonsAsLines (const float theSkipRatio) const
-{ 
+{
   Tint i, iv;
   tel_point pv = myPArray->vertices;
 
@@ -1203,7 +1203,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesPolygonsAsLines (const float theSkipR
     }
     glEnd();
   }
-}  
+}
 
 // =======================================================================
 // function : DrawDegeneratesQuadranglesAsLines
@@ -1263,7 +1263,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesQuadranglesAsLines (const float theSk
 // purpose  :
 // =======================================================================
 void OpenGl_PrimitiveArray::DrawDegeneratesQuadranglestripsAsLines (const float theSkipRatio) const
-{ 
+{
   Tint i, j, k, n, ni;
   tel_point pv = myPArray->vertices;
 
@@ -1333,7 +1333,7 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsLines (const TEL_COLOUR*           
   glDisable (GL_LIGHTING);
 
   if (zbuff_state)
-    glDisable (GL_DEPTH_TEST); 
+    glDisable (GL_DEPTH_TEST);
 
   glColor3fv (theEdgeColour->rgb);
 
@@ -1433,8 +1433,8 @@ void OpenGl_PrimitiveArray::DrawDegeneratesAsLines (const TEL_COLOUR*           
   }
 
   if (zbuff_state)
-    glEnable(GL_DEPTH_TEST); 
-}  
+    glEnable(GL_DEPTH_TEST);
+}
 
 // =======================================================================
 // function : DrawDegeneratesAsBBoxs
@@ -1567,7 +1567,9 @@ void OpenGl_PrimitiveArray::Release (const Handle(OpenGl_Context)& theContext)
 void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   if (myPArray == NULL || myDrawMode == DRAW_MODE_NONE || myPArray->num_vertexs <= 0)
+  {
     return;
+  }
 
   // create VBOs on first render call
   if (!myIsVboInit && OpenGl_GraphicDriver::ToUseVBO() && theWorkspace->GetGlContext()->core15 != NULL)
@@ -1576,6 +1578,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     myIsVboInit = Standard_True;
   }
 
+  Standard_Boolean toDisableTexture = Standard_False;
   switch (myPArray->type)
   {
     case TelPointsArrayType:
@@ -1589,8 +1592,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
            theWorkspace->DegenerateModel)
       {
         glDisable (GL_DEPTH_TEST);
-        if (theWorkspace->NamedStatus & OPENGL_NS_TEXTURE)
-          DisableTexture();
+        toDisableTexture = (theWorkspace->NamedStatus & OPENGL_NS_TEXTURE);
         theWorkspace->NamedStatus |= OPENGL_NS_WIREFRAME;
       }
       break;
@@ -1606,8 +1608,6 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
           (theWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) != 0 &&
            theWorkspace->DegenerateModel < 2)
       {
-        if (theWorkspace->NamedStatus & OPENGL_NS_TEXTURE)
-          EnableTexture();
         glEnable (GL_DEPTH_TEST);
         theWorkspace->NamedStatus &= ~OPENGL_NS_WIREFRAME;
       }
@@ -1617,39 +1617,38 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       break;
   }
 
+  Handle(OpenGl_Texture) aPrevTexture;
   const OpenGl_AspectFace*   anAspectFace   = theWorkspace->AspectFace   (Standard_True);
   const OpenGl_AspectLine*   anAspectLine   = theWorkspace->AspectLine   (Standard_True);
   const OpenGl_AspectMarker* anAspectMarker = theWorkspace->AspectMarker (myPArray->type == TelPointsArrayType);
+  if (toDisableTexture)
+  {
+    aPrevTexture = theWorkspace->DisableTexture();
+  }
 
-  Tint aFrontLightingModel = anAspectFace->Context().IntFront.color_mask;
-  const TEL_COLOUR* anInteriorColor = &anAspectFace->Context().IntFront.matcol;
+  Tint aFrontLightingModel = anAspectFace->IntFront.color_mask;
+  const TEL_COLOUR* anInteriorColor = &anAspectFace->IntFront.matcol;
   const TEL_COLOUR* anEdgeColor = &anAspectFace->AspectEdge()->Color();
   const TEL_COLOUR* aLineColor = (myPArray->type == TelPointsArrayType) ? &anAspectMarker->Color() : &anAspectLine->Color();
 
   // Use highlight colors
   if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
-  {                         
+  {
     anEdgeColor = anInteriorColor = aLineColor = theWorkspace->HighlightColor;
     aFrontLightingModel = 0;
   }
 
   DrawArray (aFrontLightingModel,
-             anAspectFace->Context().InteriorStyle,
-             anAspectFace->Context().Edge,
+             anAspectFace->InteriorStyle,
+             anAspectFace->Edge,
              anInteriorColor,
              aLineColor,
              anEdgeColor,
-             &anAspectFace->Context().IntFront,
+             &anAspectFace->IntFront,
              theWorkspace);
 
-  switch (myPArray->type)
+  if (!aPrevTexture.IsNull())
   {
-    case TelPointsArrayType:
-    case TelPolylinesArrayType:
-    case TelSegmentsArrayType:
-    {
-      if (theWorkspace->NamedStatus & OPENGL_NS_TEXTURE)
-        EnableTexture();
-    }
+    theWorkspace->EnableTexture (aPrevTexture);
   }
 }

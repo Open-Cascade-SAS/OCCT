@@ -16,24 +16,100 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/*============================================================================*/
-/*==== Titre: Graphic3d_CGroup.hxx					      */
-/*==== Role : The header file of primitive type "CGroup" from Graphic3d       */
-/*====									      */
-/*==== Implementation:  This is a primitive type implemented with typedef     */
-/*============================================================================*/
-
 #ifndef _Graphic3d_CGroup_HeaderFile
 #define _Graphic3d_CGroup_HeaderFile
 
-#include <InterfaceGraphic_Graphic3d.hxx>
-typedef CALL_DEF_GROUP Graphic3d_CGroup;
+#include <InterfaceGraphic_Visual3d.hxx>
+#include <Graphic3d_CTexture.hxx>
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
-#include <Standard_Type.hxx> 
-const Handle(Standard_Type)&  TYPE(Graphic3d_CGroup);
-/*============================================================================*/
+class Graphic3d_CStructure;
 
-#endif
-#endif /*Graphic3d_CGroup_HeaderFile*/
+class CALL_DEF_CONTEXTFILLAREA
+{
+
+public:
+
+  CALL_DEF_CONTEXTFILLAREA()
+  : IsDef (0),
+    IsSet (0),
+    Style (0),
+    LineType (0),
+    Width (0.0f),
+    Hatch (0),
+    Distinguish (0),
+    BackFace (0),
+    Edge (0),
+    DegenerationMode (0),
+    SkipRatio (0.0f),
+    PolygonOffsetMode   (0),
+    PolygonOffsetFactor (0.0f),
+    PolygonOffsetUnits  (0.0f)
+  {
+    //
+  }
+
+public:
+
+  int IsDef;
+
+  int IsSet;
+
+  int Style;
+
+  CALL_DEF_COLOR IntColor;
+  CALL_DEF_COLOR BackIntColor;
+  CALL_DEF_COLOR EdgeColor;
+
+  int LineType;
+
+  float Width;
+
+  int Hatch;
+
+  int Distinguish;
+  int BackFace;
+
+  int Edge;
+
+  CALL_DEF_MATERIAL Front;
+  CALL_DEF_MATERIAL Back;
+
+  Graphic3d_CTexture Texture;
+
+  int   DegenerationMode;
+  float SkipRatio;
+
+  int   PolygonOffsetMode;
+  float PolygonOffsetFactor;
+  float PolygonOffsetUnits;
+
+};
+
+class Graphic3d_CGroup
+{
+
+public:
+
+  int   LabelBegin;
+  int   LabelEnd;
+  void* ptrGroup;
+
+  int   StructureEnd;
+
+  CALL_DEF_CONTEXTLINE     ContextLine;
+  CALL_DEF_CONTEXTFILLAREA ContextFillArea;
+  CALL_DEF_CONTEXTMARKER   ContextMarker;
+  CALL_DEF_CONTEXTTEXT     ContextText;
+
+  Graphic3d_CStructure* Struct;
+
+  CALL_DEF_PICKID PickId;
+
+  unsigned IsDeleted : 1;
+  unsigned IsOpen    : 1;
+
+};
+
+const Handle(Standard_Type)& TYPE(Graphic3d_CGroup);
+
+#endif // Graphic3d_CGroup_HeaderFile

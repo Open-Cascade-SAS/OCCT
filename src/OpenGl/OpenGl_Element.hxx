@@ -21,7 +21,8 @@
 #ifndef OpenGl_Element_Header
 #define OpenGl_Element_Header
 
-#include <OpenGl_Workspace.hxx>
+#include <Handle_OpenGl_Context.hxx>
+#include <Handle_OpenGl_Workspace.hxx>
 
 class OpenGl_Element
 {

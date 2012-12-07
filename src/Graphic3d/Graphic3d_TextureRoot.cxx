@@ -24,44 +24,76 @@
 
 #include <Image_AlienPixMap.hxx>
 
+#include <OSD_Directory.hxx>
+#include <OSD_Environment.hxx>
+#include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
-#include <stdio.h>
+#include <Standard_Atomic.hxx>
+
+namespace
+{
+  static volatile Standard_Integer THE_TEXTURE_COUNTER = 0;
+};
+
+// =======================================================================
+// function : TexturesFolder
+// purpose  :
+// =======================================================================
+TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
+{
+  static Standard_Boolean IsDefined = Standard_False;
+  static TCollection_AsciiString VarName;
+  if (!IsDefined)
+  {
+    IsDefined = Standard_True;
+    OSD_Environment aTexDirEnv ("CSF_MDTVTexturesDirectory");
+    VarName = aTexDirEnv.Value();
+    if (VarName.IsEmpty())
+    {
+      OSD_Environment aCasRootEnv ("CASROOT");
+      VarName = aCasRootEnv.Value();
+      if (!VarName.IsEmpty())
+      {
+        VarName += "/src/Textures";
+      }
+    }
+
+    if (VarName.IsEmpty())
+    {
+      std::cerr << " CSF_MDTVTexturesDirectory and CASROOT not setted\n";
+      std::cerr << " one of these variable are mandatory to use this functionality\n";
+      Standard_Failure::Raise ("CSF_MDTVTexturesDirectory and CASROOT not setted");
+      return VarName;
+    }
+
+    const OSD_Path aDirPath (VarName);
+    OSD_Directory aDir (aDirPath);
+    const TCollection_AsciiString aTexture = VarName + "/2d_MatraDatavision.rgb";
+    OSD_File aTextureFile (aTexture);
+    if (!aDir.Exists() || !aTextureFile.Exists())
+    {
+      std::cerr << " CSF_MDTVTexturesDirectory or CASROOT not correctly setted\n";
+      std::cerr << " not all files are found in : "<< VarName.ToCString() << std::endl;
+      Standard_Failure::Raise ("CSF_MDTVTexturesDirectory or CASROOT not correctly setted");
+      return VarName;
+    }
+  }
+  return VarName;
+}
 
 // =======================================================================
 // function : Graphic3d_TextureRoot
 // purpose  :
 // =======================================================================
-Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Graphic3d_StructureManager)& theSM,
-                                              const Standard_CString                    thePath,
-                                              const Standard_CString                    theFileName,
-                                              const Graphic3d_TypeOfTexture             theType)
-: myGraphicDriver (Handle(Graphic3d_GraphicDriver)::DownCast (theSM->GraphicDevice()->GraphicDriver())),
-  myTexId (-1),
-  myPath (theFileName),
-  myType (theType),
-  myTexUpperBounds (new TColStd_HArray1OfReal (1, 2)) // currently always allocating an array for two texture bounds...
+Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& theFileName,
+                                              const Graphic3d_TypeOfTexture  theType)
+: myParams (new Graphic3d_TextureParams()),
+  myPath   (theFileName),
+  myType   (theType)
 {
-  if (thePath != NULL && (strlen (thePath) > 0))
-  {
-    myPath.SetTrek (TCollection_AsciiString (thePath));
-  }
-
-  if (theFileName == NULL || (strlen (theFileName) <= 0))
-  {
-    return;
-  }
-
-  TCollection_AsciiString aFilePath;
-  myPath.SystemName (aFilePath);
-  Image_AlienPixMap anImage;
-  if (!anImage.Load (aFilePath))
-  {
-    return;
-  }
-
-  myTexId = myGraphicDriver->CreateTexture (myType, anImage, theFileName, myTexUpperBounds);
-  Update();
+  myTexId = TCollection_AsciiString ("Graphic3d_TextureRoot_") //DynamicType()->Name()
+          + TCollection_AsciiString (Standard_Atomic_Increment (&THE_TEXTURE_COUNTER));
 }
 
 // =======================================================================
@@ -70,40 +102,47 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Graphic3d_StructureMa
 // =======================================================================
 void Graphic3d_TextureRoot::Destroy() const
 {
-  if (IsValid())
-  {
-    myGraphicDriver->DestroyTexture (myTexId);
-  }
+  //
 }
 
 // =======================================================================
-// function : TextureId
+// function : GetId
 // purpose  :
 // =======================================================================
-Standard_Integer Graphic3d_TextureRoot::TextureId() const
+TCollection_AsciiString Graphic3d_TextureRoot::GetId() const
 {
   return myTexId;
 }
 
 // =======================================================================
-// function : Update
+// function : GetParams
 // purpose  :
 // =======================================================================
-void Graphic3d_TextureRoot::Update() const
+const Handle(Graphic3d_TextureParams)& Graphic3d_TextureRoot::GetParams() const
 {
-  if (IsValid())
-  {
-    myGraphicDriver->ModifyTexture (myTexId, MyCInitTexture);
-  }
+  return myParams;
 }
 
 // =======================================================================
-// function : IsValid
+// function : GetImage
 // purpose  :
 // =======================================================================
-Standard_Boolean Graphic3d_TextureRoot::IsValid() const
+Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage() const
 {
-  return myTexId >= 0;
+  TCollection_AsciiString aFilePath;
+  myPath.SystemName (aFilePath);
+  if (aFilePath.IsEmpty())
+  {
+    return Handle(Image_PixMap)();
+  }
+
+  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  if (!anImage->Load (aFilePath))
+  {
+    return Handle(Image_PixMap)();
+  }
+
+  return anImage;
 }
 
 // =======================================================================
@@ -112,23 +151,8 @@ Standard_Boolean Graphic3d_TextureRoot::IsValid() const
 // =======================================================================
 Standard_Boolean Graphic3d_TextureRoot::IsDone() const
 {
-  return myTexId >= 0;
-}
-
-// =======================================================================
-// function : LoadTexture
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_TextureRoot::LoadTexture (const Image_PixMap& theImage)
-{
-  if (myTexId >= 0)
-  {
-    myGraphicDriver->DestroyTexture (myTexId);
-  }
-
-  myTexId = myGraphicDriver->CreateTexture (myType, theImage, "", myTexUpperBounds);
-  Update();
-  return IsValid();
+  OSD_File aTextureFile (myPath);
+  return aTextureFile.Exists();
 }
 
 // =======================================================================
@@ -147,13 +171,4 @@ const OSD_Path& Graphic3d_TextureRoot::Path() const
 Graphic3d_TypeOfTexture Graphic3d_TextureRoot::Type() const
 {
   return myType;
-}
-
-// =======================================================================
-// function : GetTexUpperBounds
-// purpose  :
-// =======================================================================
-Handle(TColStd_HArray1OfReal) Graphic3d_TextureRoot::GetTexUpperBounds() const
-{
-  return myTexUpperBounds;
 }

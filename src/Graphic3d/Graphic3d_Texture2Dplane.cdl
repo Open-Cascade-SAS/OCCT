@@ -18,115 +18,103 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
--- Modified :	GG IMP280200 
---			Add Plane(),ScaleT(),ScaleS() methods
+class Texture2Dplane from Graphic3d
 
-class  Texture2Dplane  from  Graphic3d 
- 
-    
-inherits  Texture2D  from  Graphic3d 
+inherits Texture2D from Graphic3d
 
-    ---Purpose: This class allows the management of a 2D texture defined from a plane equation
-    -- Use the SetXXX() methods for positioning the texture as you want.
+  ---Purpose: This class allows the management of a 2D texture defined from a plane equation
+  -- Use the SetXXX() methods for positioning the texture as you want.
 
-uses 
-    NameOfTexture2D  from  Graphic3d, 
-    NameOfTexturePlane  from  Graphic3d, 
-    StructureManager      from  Graphic3d 
+uses
 
+  NameOfTexture2D    from Graphic3d,
+  NameOfTexturePlane from Graphic3d,
+  AsciiString        from TCollection
 
-is 
-    Create(SM  :  StructureManager from  Graphic3d; 
-    	   FileName  :  CString  from  Standard)  returns  mutable  Texture2Dplane  from  Graphic3d; 
-    ---Purpose:  Creates a texture from a file
+is
 
+  Create (theFileName : AsciiString from TCollection) returns mutable Texture2Dplane from Graphic3d;
+  ---Purpose: Creates a texture from a file
 
-    Create(SM  :  StructureManager  from  Graphic3d; 
-    	   NOT  :  NameOfTexture2D  from  Graphic3d)  returns  mutable  Texture2Dplane  from  Graphic3d; 
-    ---Purpose:  Creates a texture from a predefined texture name set.
-     
+  Create (theNOT : NameOfTexture2D from Graphic3d) returns mutable Texture2Dplane from Graphic3d;
+  ---Purpose: Creates a texture from a predefined texture name set.
 
-    SetPlaneS(me  :  mutable;  A,B,C,D  :  ShortReal  from  Standard); 
-    ---Purpose:  Defines the texture projection plane for texture coordinate S
-    -- default is <1.0, 0.0, 0.0, 0.0>
+  SetPlaneS (me : mutable; A, B, C, D : ShortReal from Standard);
+  ---Purpose:  Defines the texture projection plane for texture coordinate S
+  -- default is <1.0, 0.0, 0.0, 0.0>
 
-    SetPlaneT(me :  mutable;  A,B,C,D  :  ShortReal  from  Standard); 
-    ---Purpose: Defines the texture projection plane for texture coordinate T
-    -- default is <0.0, 1.0, 0.0, 0.0>
+  SetPlaneT (me : mutable; A, B, C, D : ShortReal from Standard);
+  ---Purpose: Defines the texture projection plane for texture coordinate T
+  -- default is <0.0, 1.0, 0.0, 0.0>
 
-    SetPlane(me :  mutable;  APlane  :  NameOfTexturePlane  from  Graphic3d);
-    ---Purpose:  Defines the texture projection plane for both S and T texture coordinate
-    -- default is NOTP_XY meaning:
-    --      <1.0, 0.0, 0.0, 0.0> for S
-    -- and  <0.0, 1.0, 0.0, 0.0> for T
-      
-    SetScaleS(me  :  mutable;  val  :  ShortReal  from  Standard); 
-    ---Purpose: Defines the texture scale for the S texture coordinate
-    -- much easier than recomputing the S plane equation
-    -- but the result is the same    
-    -- default to 1.0
+  SetPlane (me : mutable; thePlane : NameOfTexturePlane from Graphic3d);
+  ---Purpose:  Defines the texture projection plane for both S and T texture coordinate
+  -- default is NOTP_XY meaning:
+  --      <1.0, 0.0, 0.0, 0.0> for S
+  -- and  <0.0, 1.0, 0.0, 0.0> for T
 
-    SetScaleT(me  :  mutable;  val  :  ShortReal  from  Standard);  
-    ---Purpose: Defines the texture scale for the T texture coordinate
-    -- much easier than recompution the T plane equation
-    -- but the result is the same
-    -- default to 1.0
-    
-    SetTranslateS(me  :  mutable;  val  :  ShortReal  from  Standard);
-    ---Purpose: Defines the texture translation for the S texture coordinate
-    -- you can obtain the same effect by modifying the S plane
-    -- equation but its not easier.
-    -- default to 0.0
+  SetScaleS (me : mutable; theVal : ShortReal from Standard);
+  ---Purpose: Defines the texture scale for the S texture coordinate
+  -- much easier than recomputing the S plane equation
+  -- but the result is the same
+  -- default to 1.0
 
-    SetTranslateT(me  :  mutable;  val  :  ShortReal  from  Standard); 
-    ---Purpose:  Defines the texture translation for the T texture coordinate
-    -- you can obtain the same effect by modifying the T plane
-    -- equation but its not easier.
-    -- default to 0.0
-     
-    SetRotation(me  :  mutable;  val  :  ShortReal  from  Standard); 
-    ---Purpose: Sets the rotation angle of the whole texture.
-    -- the same result might be achieved by recomputing the
-    -- S and T plane equation but it's not the easiest way...
-    -- the angle is expressed in degres
-    -- default is 0.0
+  SetScaleT (me : mutable; theVal : ShortReal from Standard);
+  ---Purpose: Defines the texture scale for the T texture coordinate
+  -- much easier than recompution the T plane equation
+  -- but the result is the same
+  -- default to 1.0
 
+  SetTranslateS (me : mutable; theVal : ShortReal from Standard);
+  ---Purpose: Defines the texture translation for the S texture coordinate
+  -- you can obtain the same effect by modifying the S plane
+  -- equation but its not easier.
+  -- default to 0.0
 
+  SetTranslateT (me : mutable; theVal : ShortReal from Standard);
+  ---Purpose:  Defines the texture translation for the T texture coordinate
+  -- you can obtain the same effect by modifying the T plane
+  -- equation but its not easier.
+  -- default to 0.0
 
+  SetRotation (me : mutable; theVal : ShortReal from Standard);
+  ---Purpose: Sets the rotation angle of the whole texture.
+  -- the same result might be achieved by recomputing the
+  -- S and T plane equation but it's not the easiest way...
+  -- the angle is expressed in degrees
+  -- default is 0.0
 
-    --
-    -- inquire methods
-    --
+  --
+  -- inquire methods
+  --
 
-    Plane(me) returns NameOfTexturePlane  from  Graphic3d;
-    ---Purpose: Returns the current texture plane name or NOTP_UNKNOWN
-    -- when the plane is user defined.
+  Plane (me) returns NameOfTexturePlane from Graphic3d;
+  ---Purpose: Returns the current texture plane name or NOTP_UNKNOWN
+  -- when the plane is user defined.
 
-    PlaneS(me;  A,B,C,D  :  out  ShortReal  from  Standard);  
-    ---Purpose: Returns the current texture plane S equation
+  PlaneS (me; A, B, C, D : out ShortReal from Standard);
+  ---Purpose: Returns the current texture plane S equation
 
-    PlaneT(me;  A,B,C,D  :  out  ShortReal  from  Standard); 
-   ---Purpose: Returns   the current texture plane T equation
+  PlaneT (me; A, B, C, D : out ShortReal from Standard);
+ ---Purpose: Returns   the current texture plane T equation
 
-    TranslateS(me;  val  :  out  ShortReal  from  Standard); 
-    ---Purpose: Returns  the current texture S translation value
+  TranslateS (me; theVal : out ShortReal from Standard);
+  ---Purpose: Returns  the current texture S translation value
 
-    TranslateT(me;  val  :  out  ShortReal  from  Standard);
-    ---Purpose: Returns the current texture T translation value
+  TranslateT (me; theVal : out ShortReal from Standard);
+  ---Purpose: Returns the current texture T translation value
 
-    ScaleS(me;  val  :  out  ShortReal  from  Standard); 
-    ---Purpose: Returns the current texture S scale value
+  ScaleS (me; theVal : out ShortReal from Standard);
+  ---Purpose: Returns the current texture S scale value
 
-    ScaleT(me;  val  :  out  ShortReal  from  Standard); 
-   ---Purpose: Returns the current texture T scale value
+  ScaleT (me; theVal : out ShortReal from Standard);
+  ---Purpose: Returns the current texture T scale value
 
-    Rotation(me;    val  :  out  ShortReal  from  Standard);
-    ---Purpose: Returns the current texture rotation angle
+  Rotation (me; theVal : out ShortReal from Standard);
+  ---Purpose: Returns the current texture rotation angle
 
 fields
 
-    myPlaneName: NameOfTexturePlane from Graphic3d;
+  myPlaneName : NameOfTexturePlane from Graphic3d;
 
-
-end  Texture2Dplane;
-
+end Texture2Dplane;

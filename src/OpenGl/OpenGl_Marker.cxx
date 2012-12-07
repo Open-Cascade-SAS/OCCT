@@ -26,6 +26,7 @@
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Display.hxx>
+#include <OpenGl_Workspace.hxx>
 
 /*----------------------------------------------------------------------*/
 
@@ -85,7 +86,7 @@ void OpenGl_Marker::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
           break;
         }
         case Aspect_TOM_USERDEFINED :
-        {       
+        {
           glCallList( openglDisplay->GetUserMarkerListIndex( (int)aspect_marker->Scale() ) );
           break;
         }

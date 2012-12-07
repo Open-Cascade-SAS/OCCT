@@ -10,8 +10,6 @@ Graphic3d_CBitFields8.cxx
 Graphic3d_CBitFields8.hxx
 Graphic3d_CBitFields4.cxx
 Graphic3d_CBitFields4.hxx
-Graphic3d_CInitTexture.cxx
-Graphic3d_CInitTexture.hxx
 Graphic3d_CTexture.cxx
 Graphic3d_CTexture.hxx
 Graphic3d_CLight.cxx
@@ -53,3 +51,6 @@ Graphic3d_AspectText3d.cxx
 Graphic3d_WNTGraphicDevice.cxx
 Graphic3d_PtrFrameBuffer.hxx
 Graphic3d_BufferType.hxx
+Graphic3d_Vec2.hxx
+Graphic3d_Vec3.hxx
+Graphic3d_Vec4.hxx

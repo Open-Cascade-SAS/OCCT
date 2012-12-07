@@ -46,11 +46,6 @@
 
 ************************************************************************/
 
-#define IMP190100	//GG 
-//			-> Enable to have overlapped BeginDraw() EndDraw().
-//			-> Don't redraw the scene at ClearDraw()
-//			   but erase only the immediat draw stuff.
-
 // for the class
 #include <Visual3d_TransientManager.ixx>
 #include <Visual3d_ViewPtr.hxx>
@@ -68,18 +63,14 @@
 #define DEBUG_PRO4022
 #define DEBUG_TEMPO_FOR_ROB
 
-enum TypeOfImmediat { 
+enum TypeOfImmediat {
  Immediat_None,
  Immediat_Transient,
  Immediat_Ajout
 };
 
 //-Global data definitions
-#ifdef IMP190100
 static Standard_Integer theDrawingState = 0;
-#else
-static Standard_Boolean theDrawingState = Standard_False;
-#endif
 static Standard_Real theMinX,theMinY,theMinZ,theMaxX,theMaxY,theMaxZ;
 static TypeOfImmediat theImmediatState = Immediat_None;
 static Graphic3d_TypeOfPrimitive theTypeOfPrimitive = Graphic3d_TOP_UNDEFINED;
@@ -91,7 +82,7 @@ return theGraphicDriver;
 #define theGraphicDriver _theGraphicDriver()
 
 static Graphic3d_CView& _theCView() {
-    static Graphic3d_CView theCView; 
+    static Graphic3d_CView theCView;
 return theCView;
 }
 #define theCView _theCView()
@@ -117,17 +108,13 @@ void Visual3d_TransientManager::Destroy () {
 
 Standard_Boolean Visual3d_TransientManager::BeginDraw (const Handle(Visual3d_View)& AView, const Standard_Boolean DoubleBuffer, const Standard_Boolean RetainMode) {
 
-#ifdef IMP190100
 	if (theDrawingState > 0) {
-	  CALL_DEF_VIEW* pview = (CALL_DEF_VIEW*) AView->CView();
+	  Graphic3d_CView* pview = (Graphic3d_CView*) AView->CView();
 	  if( theImmediatState == Immediat_Transient &&
 	      pview->ViewId == theCView.ViewId ) {
 	    theDrawingState++;
 	    return theDrawingState;
 	  } else
-#else
-	if (theDrawingState) {
-#endif
 		Visual3d_TransientDefinitionError::Raise
 			("Drawing in progress !");
 	}
@@ -135,7 +122,7 @@ Standard_Boolean Visual3d_TransientManager::BeginDraw (const Handle(Visual3d_Vie
 Handle(Visual3d_Layer) OverLayer = AView->OverLayer ();
 Handle(Visual3d_Layer) UnderLayer = AView->UnderLayer ();
   OverCLayer.ptrLayer = UnderCLayer.ptrLayer = NULL;
-	theCView	= *(CALL_DEF_VIEW *)AView->CView ();
+  theCView = *(Graphic3d_CView* )AView->CView ();
 
 	if (! UnderLayer.IsNull ()){
 		UnderCLayer = UnderLayer->CLayer();
@@ -153,11 +140,7 @@ Handle(Visual3d_Layer) UnderLayer = AView->UnderLayer ();
 
 	if (theGraphicDriver->BeginImmediatMode
 		(theCView, UnderCLayer, OverCLayer, DoubleBuffer, RetainMode)) {
-#ifdef IMP190100
 		theDrawingState++;
-#else
-		theDrawingState = Standard_True;
-#endif
 		theTypeOfPrimitive = Graphic3d_TOP_UNDEFINED;
 		theImmediatState = Immediat_Transient;
 		// Reset MinMax
@@ -174,19 +157,11 @@ Handle(Visual3d_Layer) UnderLayer = AView->UnderLayer ();
 
 void Visual3d_TransientManager::EndDraw (const Standard_Boolean Synchronize) {
 
-#ifdef IMP190100
 	if( theDrawingState <= 0 )
-#else
-	if( !theDrawingState )
-#endif
 	  Visual3d_TransientDefinitionError::Raise ("Drawing not started !");
 
-#ifdef IMP190100
 	theDrawingState--;
 	if( theDrawingState > 0 ) return;
-#else
-	theDrawingState = Standard_False;
-#endif
 	theImmediatState = Immediat_None;
 
 			// Flush all graphics
@@ -196,17 +171,12 @@ void Visual3d_TransientManager::EndDraw (const Standard_Boolean Synchronize) {
 void Visual3d_TransientManager::ClearDraw (const Handle(Visual3d_View)& AView,
                                            const Standard_Boolean aFlush)
 {
-
-#ifdef IMP190100
 	if (theDrawingState > 0)
-#else
-	if (theDrawingState)
-#endif
 		Visual3d_TransientDefinitionError::Raise
 			("Drawing in progress !");
 
 	// Begin rendering
-	theCView	= *(CALL_DEF_VIEW *)AView->CView ();
+	theCView	= *(Graphic3d_CView* )AView->CView ();
   if (!AView->UnderLayer().IsNull()) {
     UnderCLayer = AView->UnderLayer()->CLayer();
     theCView.ptrUnderLayer = (CALL_DEF_LAYER *) &UnderCLayer;
@@ -220,11 +190,6 @@ void Visual3d_TransientManager::ClearDraw (const Handle(Visual3d_View)& AView,
 	theGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
 
 	theGraphicDriver->ClearImmediatMode (theCView, aFlush);
-
-#ifndef IMP190100	
-	// Reaffichage
-	AView->Redraw ();
-#endif
 }
 
 //
@@ -232,24 +197,19 @@ void Visual3d_TransientManager::ClearDraw (const Handle(Visual3d_View)& AView,
 //
 
 Standard_Boolean Visual3d_TransientManager::BeginAddDraw (const Handle(Visual3d_View)& AView) {
-
-#ifdef IMP190100
 	if (theDrawingState > 0) {
-	  CALL_DEF_VIEW* pview = (CALL_DEF_VIEW*) AView->CView();
+	  Graphic3d_CView* pview = (Graphic3d_CView* )AView->CView();
 	  if( theImmediatState == Immediat_Ajout &&
 	      pview->ViewId == theCView.ViewId ) {
 	    theDrawingState++;
 	    return theDrawingState;
 	  } else
-#else
-	if (theDrawingState) {
-#endif
 		Visual3d_TransientDefinitionError::Raise
 			("Drawing in progress !");
 	}
 
 	// Begin rendering
-	theCView	= *(CALL_DEF_VIEW *)AView->CView ();
+	theCView	= *(Graphic3d_CView* )AView->CView ();
   if (!AView->UnderLayer().IsNull()) {
     UnderCLayer = AView->UnderLayer()->CLayer();
     theCView.ptrUnderLayer = (CALL_DEF_LAYER *) &UnderCLayer;
@@ -263,11 +223,7 @@ Standard_Boolean Visual3d_TransientManager::BeginAddDraw (const Handle(Visual3d_
 	theGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
 
 	if (theGraphicDriver->BeginAddMode (theCView)) {
-#ifdef IMP190100
 		theDrawingState++;
-#else
-		theDrawingState = Standard_True;
-#endif
 		theTypeOfPrimitive = Graphic3d_TOP_UNDEFINED;
 		theImmediatState = Immediat_Ajout;
 		// Reset MinMax
@@ -284,19 +240,11 @@ Standard_Boolean Visual3d_TransientManager::BeginAddDraw (const Handle(Visual3d_
 
 void Visual3d_TransientManager::EndAddDraw () {
 
-#ifdef IMP190100
 	if( theDrawingState <= 0 )
-#else
-	if( !theDrawingState )
-#endif
 	  Visual3d_TransientDefinitionError::Raise ("Drawing not started !");
 
-#ifdef IMP190100
 	theDrawingState--;
 	if( theDrawingState > 0 ) return;
-#else
-	theDrawingState = Standard_False;
-#endif
 	theImmediatState = Immediat_None;
 			// Flush all graphics
 	theGraphicDriver->EndAddMode();
@@ -540,8 +488,7 @@ Standard_ShortReal SRF	= ShortRealFirst ();
 		theGraphicDriver->SetMinMax (x1, y1, z1, x2, y2, z2);
 #endif /* DEBUG_PRO4022 */
 
-		theGraphicDriver->DrawStructure
-			(*(CALL_DEF_STRUCTURE *)AStructure->CStructure ());
+		theGraphicDriver->DrawStructure (*AStructure->CStructure());
 	}
 
 }
@@ -604,7 +551,7 @@ Quantity_Color AColor;
 Aspect_TypeOfMarker AType;
 
 	CTX->Values (AColor,AType,AScale);
- 
+
 }
 
 void Visual3d_TransientManager::SetTransform (const TColStd_Array2OfReal& AMatrix, const Graphic3d_TypeOfComposition AType) {
@@ -625,7 +572,7 @@ Standard_Integer lr, ur, lc, uc;
 	("Visual3d_TransientManager::SetTransform, Bad Transformation matrix !");
 
 	theGraphicDriver->Transform (AMatrix, AType);
- 
+
 }
 
 void Visual3d_TransientManager::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) {

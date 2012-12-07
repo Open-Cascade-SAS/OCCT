@@ -18,56 +18,114 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-// Modified : 	GG 09/11/00 smooth,modulate,repeat texture attributes
-//		must be available both for textures 1D & 2D.
-
-
 #include <Graphic3d_TextureMap.ixx>
+#include <Graphic3d_TextureParams.hxx>
 
-Graphic3d_TextureMap::Graphic3d_TextureMap(const Handle(Graphic3d_StructureManager)& SM,const Standard_CString Path,const Standard_CString FileName,const Graphic3d_TypeOfTexture Type)
-: Graphic3d_TextureRoot(SM, Path, FileName, Type)
+// =======================================================================
+// function : Graphic3d_TextureMap
+// purpose  :
+// =======================================================================
+Graphic3d_TextureMap::Graphic3d_TextureMap (const TCollection_AsciiString& theFileName,
+                                            const Graphic3d_TypeOfTexture  theType)
+: Graphic3d_TextureRoot (theFileName, theType)
 {
 }
 
-void Graphic3d_TextureMap::EnableSmooth() {
-  MyCInitTexture.doLinear = 1;
-  Update();
+// =======================================================================
+// function : EnableSmooth
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::EnableSmooth()
+{
+  myParams->SetFilter (Graphic3d_TOTF_TRILINEAR);
 }
 
-void Graphic3d_TextureMap::DisableSmooth() {
-  MyCInitTexture.doLinear = 0;
-  Update();
+// =======================================================================
+// function : DisableSmooth
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::DisableSmooth()
+{
+  myParams->SetFilter (Graphic3d_TOTF_NEAREST);
 }
 
-Standard_Boolean Graphic3d_TextureMap::IsSmoothed() const {
-  return (MyCInitTexture.doLinear != 0);
+// =======================================================================
+// function : IsSmoothed
+// purpose  :
+// =======================================================================
+Standard_Boolean Graphic3d_TextureMap::IsSmoothed() const
+{
+  return myParams->Filter() != Graphic3d_TOTF_NEAREST;
 }
 
-void Graphic3d_TextureMap::EnableModulate() {
-  MyCInitTexture.doModulate = 1;
-  Update();
+// =======================================================================
+// function : EnableModulate
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::EnableModulate()
+{
+  myParams->SetModulate (Standard_True);
 }
 
-void Graphic3d_TextureMap::DisableModulate() {
-  MyCInitTexture.doModulate = 0;
-  Update();
+// =======================================================================
+// function : DisableModulate
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::DisableModulate()
+{
+  myParams->SetModulate (Standard_False);
 }
 
-Standard_Boolean Graphic3d_TextureMap::IsModulate() const {
-  return (MyCInitTexture.doModulate != 0);
+// =======================================================================
+// function : IsModulate
+// purpose  :
+// =======================================================================
+Standard_Boolean Graphic3d_TextureMap::IsModulate() const
+{
+  return myParams->IsModulate();
 }
 
-void Graphic3d_TextureMap::EnableRepeat() {
-  MyCInitTexture.doRepeat = 1;
-  Update();
+// =======================================================================
+// function : EnableRepeat
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::EnableRepeat()
+{
+  myParams->SetRepeat (Standard_True);
 }
 
-void Graphic3d_TextureMap::DisableRepeat() {
-  MyCInitTexture.doRepeat = 0;
-  Update();
+// =======================================================================
+// function : DisableRepeat
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::DisableRepeat()
+{
+  myParams->SetRepeat (Standard_False);
 }
 
-Standard_Boolean Graphic3d_TextureMap::IsRepeat() const {
-  return (MyCInitTexture.doRepeat != 0);
+// =======================================================================
+// function : IsRepeat
+// purpose  :
+// =======================================================================
+Standard_Boolean Graphic3d_TextureMap::IsRepeat() const
+{
+  return myParams->IsRepeat();
 }
 
+// =======================================================================
+// function : AnisoFilter
+// purpose  :
+// =======================================================================
+Graphic3d_LevelOfTextureAnisotropy Graphic3d_TextureMap::AnisoFilter() const
+{
+  return myParams->AnisoFilter();
+}
+
+// =======================================================================
+// function : SetAnisoFilter
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureMap::SetAnisoFilter (const Graphic3d_LevelOfTextureAnisotropy theLevel)
+{
+  myParams->SetAnisoFilter (theLevel);
+}

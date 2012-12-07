@@ -34,14 +34,13 @@
 /* OCC22218 NOTE: project dependency on gl2ps is specified by macro */
 #ifdef HAVE_GL2PS
   #include <gl2ps.h>
-  /* OCC22216 NOTE: linker dependency can be switched off by undefining macro. 
-     Pragma comment for gl2ps.lib is defined only here. */ 
-  #ifdef _MSC_VER 
+  /* OCC22216 NOTE: linker dependency can be switched off by undefining macro.
+     Pragma comment for gl2ps.lib is defined only here. */
+  #ifdef _MSC_VER
   #pragma comment( lib, "gl2ps.lib" )
   #endif
 #endif
 
-#include <OpenGl_TextureBox.hxx>
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <OpenGl_View.hxx>
 
@@ -51,7 +50,7 @@ static void TelUpdatePolygonOffsets( const TEL_POFFSET_PARAM *pdata )
 {
   if ( ( pdata->mode & Aspect_POM_Fill ) == Aspect_POM_Fill )
     glEnable ( GL_POLYGON_OFFSET_FILL );
-  else 
+  else
     glDisable ( GL_POLYGON_OFFSET_FILL );
 
   if ( ( pdata->mode & Aspect_POM_Line ) == Aspect_POM_Line )
@@ -72,22 +71,14 @@ static void TelUpdatePolygonOffsets( const TEL_POFFSET_PARAM *pdata )
 void OpenGl_Workspace::UpdateMaterial( const int flag )
 {
   // Case of Hiddenline
-  if (AspectFace_set->Context().InteriorStyle == Aspect_IS_HIDDENLINE)
+  if (AspectFace_set->InteriorStyle == Aspect_IS_HIDDENLINE)
   {
-    /* szvgl - IMPORTANT!!! */
-    static TEL_CONTEXT_FACE hl_context_face;
-    static OpenGl_AspectFace hl_aspect_face;
+	myAspectFaceHl = *AspectFace_set; // copy all values including line edge aspect
+    myAspectFaceHl.IntFront.matcol     = BackgroundColor();
+    myAspectFaceHl.IntFront.color_mask = 0;
+    myAspectFaceHl.IntBack.color_mask  = 0;
 
-	hl_context_face = AspectFace_set->Context();
-
-    hl_context_face.IntFront.matcol = BackgroundColor();
-    hl_context_face.IntFront.color_mask = 0;
-    hl_context_face.IntBack.color_mask = 0;
-
-    hl_aspect_face.SetContext(hl_context_face);
-    hl_aspect_face.SetAspectEdge(AspectFace_set->AspectEdge());
-
-	AspectFace_set = &hl_aspect_face;
+	AspectFace_set = &myAspectFaceHl;
     return;
   }
 
@@ -95,12 +86,12 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
   GLenum face = 0;
   if ( flag == TEL_FRONT_MATERIAL )
   {
-    prop = &AspectFace_set->Context().IntFront;
+    prop = &AspectFace_set->IntFront;
     face = GL_FRONT_AND_BACK;
   }
   else
   {
-    prop = &AspectFace_set->Context().IntBack;
+    prop = &AspectFace_set->IntBack;
     face = GL_BACK;
   }
 
@@ -114,11 +105,11 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     if ( myUseTransparency && prop->trans != 1.0F )
     {
       // Render transparent
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable (GL_BLEND);
       glDepthMask (GL_FALSE);
     }
-    else 
+    else
     {
       // Render opaque
       if ( (NamedStatus & OPENGL_NS_ANTIALIASING) == 0 )
@@ -127,7 +118,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
         glDisable (GL_BLEND);
       }
       glDepthMask (GL_TRUE);
-    }       
+    }
   }
 
   static float  mAmb[4];
@@ -140,7 +131,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
 
   // Reset material
   if ( NamedStatus & OPENGL_NS_RESMAT )
-  {   
+  {
     // Ambient component
     if( rm & OPENGL_AMBIENT_MASK )
     {
@@ -177,7 +168,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
 
     if (NamedStatus & OPENGL_NS_2NDPASSDO)
     {
-      mDiff[3] = prop->env_reflexion; 
+      mDiff[3] = prop->env_reflexion;
     }
     else
     {
@@ -194,7 +185,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
       mSpec[0] = prop->spec * c[0];
       mSpec[1] = prop->spec * c[1];
       mSpec[2] = prop->spec * c[2];
-    } 
+    }
     else {
       mSpec[0] = 0.F;
       mSpec[1] = 0.F;
@@ -204,7 +195,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
 
     // Emissive component
     if( rm & OPENGL_EMISSIVE_MASK )
-    {         
+    {
       const float *c = prop->isphysic? prop->emscol.rgb : prop->matcol.rgb;
 
       mEmsv[0] = prop->emsv * c[0];
@@ -228,10 +219,10 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     glMaterialf(face, GL_SHININESS, mShin);
 
     NamedStatus &= ~OPENGL_NS_RESMAT;
-  } 
+  }
 
   // Set Material Optimize
-  else 
+  else
   {
     // Ambient component
     if( rm & OPENGL_AMBIENT_MASK )
@@ -280,7 +271,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
 
         if (NamedStatus & OPENGL_NS_2NDPASSDO)
         {
-          mDiff[3] = prop->env_reflexion; 
+          mDiff[3] = prop->env_reflexion;
         }
         else
         {
@@ -298,7 +289,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
 
       if (NamedStatus & OPENGL_NS_2NDPASSDO)
       {
-        newDiff3 = prop->env_reflexion; 
+        newDiff3 = prop->env_reflexion;
       }
       else
       {
@@ -323,7 +314,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
 
     // Specular component
     if( rm & OPENGL_SPECULAR_MASK )
-    {   
+    {
       const float *c = prop->isphysic? prop->speccol.rgb : defspeccol;
 
       if (mSpec[0] != prop->spec * c[0] ||
@@ -368,8 +359,8 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
         glMaterialfv(face, GL_EMISSION, mEmsv);
       }
     }
-    else 
-    { 
+    else
+    {
       if ( mEmsv[0] != 0.F || mEmsv[1] != 0.F || mEmsv[2] != 0.F )
       {
         mEmsv[0] = 0.F;
@@ -502,97 +493,115 @@ const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean Wi
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_AspectFace * OpenGl_Workspace::AspectFace(const Standard_Boolean WithApply)
+const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean theToApply)
 {
-  if ( WithApply && (AspectFace_set != AspectFace_applied) )
+  if (!theToApply || (AspectFace_set == AspectFace_applied))
   {
-    const Aspect_InteriorStyle intstyle = AspectFace_set->Context().InteriorStyle;
-    if ( !AspectFace_applied || AspectFace_applied->Context().InteriorStyle != intstyle )
+    return AspectFace_set;
+  }
+
+  const Aspect_InteriorStyle anIntstyle = AspectFace_set->InteriorStyle;
+  if (AspectFace_applied == NULL || AspectFace_applied->InteriorStyle != anIntstyle)
+  {
+    switch (anIntstyle)
     {
-      switch( intstyle )
+      case Aspect_IS_EMPTY:
+      case Aspect_IS_HOLLOW:
       {
-        case Aspect_IS_EMPTY:
-        case Aspect_IS_HOLLOW:
-          glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-          break;
-
-        case Aspect_IS_HATCH:
-          glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-		  myDisplay->SetTypeOfHatch(AspectFace_applied? AspectFace_applied->Context().Hatch : TEL_HS_SOLID);
-          break;
-
-        case Aspect_IS_SOLID:
-        case Aspect_IS_HIDDENLINE:
-          glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-          glDisable(GL_POLYGON_STIPPLE);
-          break;
-
-        case 5: //szvgl - no corresponding enumeration item Aspect_IS_POINT
-          glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
-          break;
+        glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+        break;
+      }
+      case Aspect_IS_HATCH:
+      {
+        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+		myDisplay->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch : TEL_HS_SOLID);
+        break;
+      }
+      case Aspect_IS_SOLID:
+      case Aspect_IS_HIDDENLINE:
+      {
+        glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+        glDisable (GL_POLYGON_STIPPLE);
+        break;
+      }
+      case 5: //szvgl - no corresponding enumeration item Aspect_IS_POINT
+      {
+        glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
+        break;
       }
     }
-    if( intstyle == Aspect_IS_HATCH )
+  }
+
+  if (anIntstyle == Aspect_IS_HATCH)
+  {
+    const Tint hatchstyle = AspectFace_set->Hatch;
+    if (AspectFace_applied == NULL || AspectFace_applied->Hatch != hatchstyle)
     {
-      const Tint hatchstyle = AspectFace_set->Context().Hatch;
-      if( !AspectFace_applied || AspectFace_applied->Context().Hatch != hatchstyle )
-      {
-        myDisplay->SetTypeOfHatch(hatchstyle);
-      }
+      myDisplay->SetTypeOfHatch(hatchstyle);
     }
-    if ( !ActiveView()->Backfacing() )
+  }
+
+  if (!ActiveView()->Backfacing())
+  {
+    const Tint aCullingMode = AspectFace_set->CullingMode;
+    if (AspectFace_applied == NULL || AspectFace_applied->CullingMode != aCullingMode)
     {
-      const Tint mode = AspectFace_set->Context().CullingMode;
-      if( !AspectFace_applied || AspectFace_applied->Context().CullingMode != mode )
+      switch ((TelCullMode )aCullingMode)
       {
-        switch( (TelCullMode)mode )
+        case TelCullNone:
         {
-          case  TelCullNone:
-            glDisable(GL_CULL_FACE);
-            break;
-
-          case  TelCullFront:
-            glCullFace(GL_FRONT);
-            glEnable(GL_CULL_FACE);
-            break;
-
-          case  TelCullBack:
-            glCullFace(GL_BACK);
-            glEnable(GL_CULL_FACE);
-            break;
+          glDisable (GL_CULL_FACE);
+          break;
+        }
+        case TelCullFront:
+        {
+          glCullFace (GL_FRONT);
+          glEnable (GL_CULL_FACE);
+          break;
+        }
+        case TelCullBack:
+        {
+          glCullFace (GL_BACK);
+          glEnable (GL_CULL_FACE);
+          break;
         }
       }
     }
+  }
 
-    // Aspect_POM_None means: do not change current settings
-    if ( ( AspectFace_set->Context().PolygonOffset.mode & Aspect_POM_None ) != Aspect_POM_None )
+  // Aspect_POM_None means: do not change current settings
+  if ((AspectFace_set->PolygonOffset.mode & Aspect_POM_None) != Aspect_POM_None)
+  {
+    if (PolygonOffset_applied         == NULL
+     || PolygonOffset_applied->mode   != AspectFace_set->PolygonOffset.mode
+     || PolygonOffset_applied->factor != AspectFace_set->PolygonOffset.factor
+     || PolygonOffset_applied->units  != AspectFace_set->PolygonOffset.units)
     {
-      if ( !PolygonOffset_applied ||
-           PolygonOffset_applied->mode   != AspectFace_set->Context().PolygonOffset.mode ||
-           PolygonOffset_applied->factor != AspectFace_set->Context().PolygonOffset.factor ||
-           PolygonOffset_applied->units  != AspectFace_set->Context().PolygonOffset.units )
-      {
-        PolygonOffset_applied = &AspectFace_set->Context().PolygonOffset;
-        TelUpdatePolygonOffsets( PolygonOffset_applied );
-      }
+      PolygonOffset_applied = &AspectFace_set->PolygonOffset;
+      TelUpdatePolygonOffsets (PolygonOffset_applied);
     }
+  }
 
-    UpdateMaterial( TEL_FRONT_MATERIAL );
-    if (AspectFace_set->Context().DistinguishingMode == TOn)
-      UpdateMaterial( TEL_BACK_MATERIAL );
+  UpdateMaterial (TEL_FRONT_MATERIAL);
+  if (AspectFace_set->DistinguishingMode == TOn)
+  {
+    UpdateMaterial (TEL_BACK_MATERIAL);
+  }
 
-    if ((NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)
+  if ((NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)
+  {
+    if (AspectFace_set->doTextureMap)
+    {
+      EnableTexture (AspectFace_set->TextureRes,
+                     AspectFace_set->TextureParams);
+    }
+    else
     {
       DisableTexture();
-      if (AspectFace_set->Context().doTextureMap)
-      {
-        SetCurrentTexture(AspectFace_set->Context().TexId);
-        EnableTexture();
-      }
     }
-
-    AspectFace_applied = AspectFace_set;
   }
+
+  AspectFace_applied = AspectFace_set;
   return AspectFace_set;
 }
 

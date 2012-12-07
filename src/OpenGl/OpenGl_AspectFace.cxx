@@ -17,219 +17,275 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_AspectFace.hxx>
+#include <OpenGl_Texture.hxx>
+#include <OpenGl_Workspace.hxx>
+#include <OpenGl_Context.hxx>
 
-#include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_PolygonOffsetMode.hxx>
+#include <Graphic3d_CGroup.hxx>
+#include <Graphic3d_TextureMap.hxx>
 
-/*----------------------------------------------------------------------*/
-
-static const TEL_CONTEXT_FACE myDefaultAspectFace =
+namespace
 {
-  Aspect_IS_SOLID,
-  TOn, TEL_HS_SOLID, TOn, TelCullNone,
-  { 0.2F, 0.8F, 0.1F, 0.0F, /* amb, diff, spec, emsv */
-    1.0F, 10.0F, 0.0F, /* trans, shine, env_reflexion */
-    0, /* isphysic */
-    (OPENGL_AMBIENT_MASK | OPENGL_DIFFUSE_MASK | OPENGL_SPECULAR_MASK), /* color_mask */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* ambient color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* diffuse color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* specular color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* emissive color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }} /* material color */
-  },
-  { 0.2F, 0.8F, 0.1F, 0.0F, /* amb, diff, spec, emsv */
-    1.0F, 10.0F, 0.0F, /* trans, shine, env_reflexion */
-    0, /* isphysic */
-    (OPENGL_AMBIENT_MASK | OPENGL_DIFFUSE_MASK | OPENGL_SPECULAR_MASK), /* color_mask */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* ambient color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* diffuse color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* specular color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, /* emissive color */
-    {{ 1.0F, 1.0F, 1.0F, 1.0F }} /* material color */
-  },
-  0, -1, { Aspect_POM_Fill, 1.0F, 0.0F }
+
+  static OPENGL_SURF_PROP THE_DEFAULT_MATERIAL =
+  {
+    0.2F,  0.8F, 0.1F, 0.0F, // amb, diff, spec, emsv
+    1.0F, 10.0F, 0.0F,       // trans, shine, env_reflexion
+    0, // isphysic
+    (OPENGL_AMBIENT_MASK | OPENGL_DIFFUSE_MASK | OPENGL_SPECULAR_MASK), // color_mask
+    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, // ambient color
+    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, // diffuse color
+    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, // specular color
+    {{ 1.0F, 1.0F, 1.0F, 1.0F }}, // emissive color
+    {{ 1.0F, 1.0F, 1.0F, 1.0F }}  // material color
+  };
+
+  static TEL_POFFSET_PARAM THE_DEFAULT_POFFSET = { Aspect_POM_Fill, 1.0F, 0.0F };
+
 };
 
-/*----------------------------------------------------------------------*/
-
-static void ConvertMaterial (const CALL_DEF_MATERIAL &material, OPENGL_SURF_PROP &surface)
+// =======================================================================
+// function : convertMaterial
+// purpose  :
+// =======================================================================
+void OpenGl_AspectFace::convertMaterial (const CALL_DEF_MATERIAL& theMat,
+                                         OPENGL_SURF_PROP&        theSurf)
 {
-  /* Cas par cas pour l evaluation */
-  surface.amb  = material.IsAmbient? material.Ambient : 0.F;
-  surface.diff = material.IsDiffuse? material.Diffuse : 0.F;
-  surface.spec = material.IsSpecular? material.Specular : 0.F;
-  surface.emsv = material.IsEmission? material.Emission : 0.F;
+  theSurf.amb  = theMat.IsAmbient  ? theMat.Ambient  : 0.0f;
+  theSurf.diff = theMat.IsDiffuse  ? theMat.Diffuse  : 0.0f;
+  theSurf.spec = theMat.IsSpecular ? theMat.Specular : 0.0f;
+  theSurf.emsv = theMat.IsEmission ? theMat.Emission : 0.0f;
 
-  /* type de materiel */
-  surface.isphysic = material.IsPhysic? 1 : 0;
+  theSurf.isphysic = theMat.IsPhysic ? 1 : 0; // type of material
 
-  /* Couleur du materiel */
-  surface.color_mask = 0;
-  if ( material.IsAmbient )
-    surface.color_mask |= OPENGL_AMBIENT_MASK;
-  if ( material.IsDiffuse )
-    surface.color_mask |= OPENGL_DIFFUSE_MASK;
-  if ( material.IsSpecular )
-    surface.color_mask |= OPENGL_SPECULAR_MASK;
-  if ( material.IsEmission )
-    surface.color_mask |= OPENGL_EMISSIVE_MASK;
+  // color of material
+  theSurf.color_mask = 0;
+  if (theMat.IsAmbient)
+  {
+    theSurf.color_mask |= OPENGL_AMBIENT_MASK;
+  }
+  if (theMat.IsDiffuse)
+  {
+    theSurf.color_mask |= OPENGL_DIFFUSE_MASK;
+  }
+  if (theMat.IsSpecular)
+  {
+    theSurf.color_mask |= OPENGL_SPECULAR_MASK;
+  }
+  if (theMat.IsEmission)
+  {
+    theSurf.color_mask |= OPENGL_EMISSIVE_MASK;
+  }
 
-  /* Couleur eclairage ambient */
-  surface.ambcol.rgb[0] = material.ColorAmb.r;
-  surface.ambcol.rgb[1] = material.ColorAmb.g;
-  surface.ambcol.rgb[2] = material.ColorAmb.b;
-  surface.ambcol.rgb[3] = 1.F;
+  // ambient color
+  theSurf.ambcol.rgb[0] = theMat.ColorAmb.r;
+  theSurf.ambcol.rgb[1] = theMat.ColorAmb.g;
+  theSurf.ambcol.rgb[2] = theMat.ColorAmb.b;
+  theSurf.ambcol.rgb[3] = 1.0f;
 
-  /* Couleur eclairage diffus */
-  surface.difcol.rgb[0] = material.ColorDif.r;
-  surface.difcol.rgb[1] = material.ColorDif.g;
-  surface.difcol.rgb[2] = material.ColorDif.b;
-  surface.difcol.rgb[3] = 1.F;
+  // diffuse color
+  theSurf.difcol.rgb[0] = theMat.ColorDif.r;
+  theSurf.difcol.rgb[1] = theMat.ColorDif.g;
+  theSurf.difcol.rgb[2] = theMat.ColorDif.b;
+  theSurf.difcol.rgb[3] = 1.0f;
 
-  /* Couleur eclairage speculaire */
-  surface.speccol.rgb[0] = material.ColorSpec.r;
-  surface.speccol.rgb[1] = material.ColorSpec.g;
-  surface.speccol.rgb[2] = material.ColorSpec.b;
-  surface.speccol.rgb[3] = 1.F;
+  // specular color
+  theSurf.speccol.rgb[0] = theMat.ColorSpec.r;
+  theSurf.speccol.rgb[1] = theMat.ColorSpec.g;
+  theSurf.speccol.rgb[2] = theMat.ColorSpec.b;
+  theSurf.speccol.rgb[3] = 1.0f;
 
-  /* Couleur d emission */
-  surface.emscol.rgb[0] = material.ColorEms.r;
-  surface.emscol.rgb[1] = material.ColorEms.g;
-  surface.emscol.rgb[2] = material.ColorEms.b;
-  surface.emscol.rgb[3] = 1.F;
+  // emission color
+  theSurf.emscol.rgb[0] = theMat.ColorEms.r;
+  theSurf.emscol.rgb[1] = theMat.ColorEms.g;
+  theSurf.emscol.rgb[2] = theMat.ColorEms.b;
+  theSurf.emscol.rgb[3] = 1.0f;
 
-  surface.shine = ( float )128 * material.Shininess;
-  surface.env_reflexion = material.EnvReflexion;
+  theSurf.shine = 128.0f * float(theMat.Shininess);
+  theSurf.env_reflexion = theMat.EnvReflexion;
 
-  /* Dans la couche C++ :
-  * prop->trans = 0. => opaque
-  * prop->trans = 1. => transparent
-  * in OpenGl it is opposite.
-  */
-  surface.trans = 1.0F - material.Transparency;
+  // trans = 0. => opaque
+  // trans = 1. => transparent
+  // in OpenGl it is opposite.
+  theSurf.trans = 1.0f - theMat.Transparency;
 }
 
-/*----------------------------------------------------------------------*/
-
-OpenGl_AspectFace::OpenGl_AspectFace ()
- : myContext(myDefaultAspectFace)
-{}
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_AspectFace::SetContext (const CALL_DEF_CONTEXTFILLAREA &AContext)
+// =======================================================================
+// function : OpenGl_AspectFace
+// purpose  :
+// =======================================================================
+OpenGl_AspectFace::OpenGl_AspectFace()
+: InteriorStyle (Aspect_IS_SOLID),
+  Edge (Aspect_IS_SOLID),
+  Hatch (TOn),
+  DistinguishingMode (TEL_HS_SOLID),
+  CullingMode (TelCullNone),
+  doTextureMap (0)
 {
-  //TelInteriorStyle
-  myContext.InteriorStyle = (Aspect_InteriorStyle) AContext.Style;
+  IntFront      = THE_DEFAULT_MATERIAL;
+  IntBack       = THE_DEFAULT_MATERIAL;
+  PolygonOffset = THE_DEFAULT_POFFSET;
+}
 
-  //TelEdgeFlag
-  myContext.Edge = AContext.Edge ? TOn : TOff;
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+void OpenGl_AspectFace::Init (const Handle(OpenGl_Context)&   theContext,
+                              const CALL_DEF_CONTEXTFILLAREA& theAspect)
+{
+  InteriorStyle = (Aspect_InteriorStyle )theAspect.Style;
+  Edge = theAspect.Edge ? TOn : TOff;
 
   //TelInteriorStyleIndex
-  switch( AContext.Hatch )
+  switch (theAspect.Hatch)
   {
-    case 0 : /* Aspect_HS_HORIZONTAL */
-      myContext.Hatch = TEL_HS_HORIZONTAL;
+    case 0: /* Aspect_HS_HORIZONTAL */
+      Hatch = TEL_HS_HORIZONTAL;
       break;
-    case 1 : /* Aspect_HS_HORIZONTAL_WIDE */
-      myContext.Hatch = TEL_HS_HORIZONTAL_SPARSE;
+    case 1: /* Aspect_HS_HORIZONTAL_WIDE */
+      Hatch = TEL_HS_HORIZONTAL_SPARSE;
       break;
-    case 2 : /* Aspect_HS_VERTICAL */
-      myContext.Hatch = TEL_HS_VERTICAL;
+    case 2: /* Aspect_HS_VERTICAL */
+      Hatch = TEL_HS_VERTICAL;
       break;
-    case 3 : /* Aspect_HS_VERTICAL_WIDE */
-      myContext.Hatch = TEL_HS_VERTICAL_SPARSE;
+    case 3: /* Aspect_HS_VERTICAL_WIDE */
+      Hatch = TEL_HS_VERTICAL_SPARSE;
       break;
-    case 4 : /* Aspect_HS_DIAGONAL_45 */
-      myContext.Hatch = TEL_HS_DIAG_45;
+    case 4: /* Aspect_HS_DIAGONAL_45 */
+      Hatch = TEL_HS_DIAG_45;
       break;
-    case 5 : /* Aspect_HS_DIAGONAL_45_WIDE */
-      myContext.Hatch = TEL_HS_DIAG_45_SPARSE;
+    case 5: /* Aspect_HS_DIAGONAL_45_WIDE */
+      Hatch = TEL_HS_DIAG_45_SPARSE;
       break;
-    case 6 : /* Aspect_HS_DIAGONAL_135 */
-      myContext.Hatch = TEL_HS_DIAG_135;
+    case 6: /* Aspect_HS_DIAGONAL_135 */
+      Hatch = TEL_HS_DIAG_135;
       break;
-    case 7 : /* Aspect_HS_DIAGONAL_135_WIDE */
-      myContext.Hatch = TEL_HS_DIAG_135_SPARSE;
+    case 7: /* Aspect_HS_DIAGONAL_135_WIDE */
+      Hatch = TEL_HS_DIAG_135_SPARSE;
       break;
-    case 8 : /* Aspect_HS_GRID */
-      myContext.Hatch = TEL_HS_GRID;
+    case 8: /* Aspect_HS_GRID */
+      Hatch = TEL_HS_GRID;
       break;
-    case 9 : /* Aspect_HS_GRID_WIDE */
-      myContext.Hatch = TEL_HS_GRID_SPARSE;
+    case 9: /* Aspect_HS_GRID_WIDE */
+      Hatch = TEL_HS_GRID_SPARSE;
       break;
-    case 10 : /* Aspect_HS_GRID_DIAGONAL */
-      myContext.Hatch = TEL_HS_CROSS;
+    case 10: /* Aspect_HS_GRID_DIAGONAL */
+      Hatch = TEL_HS_CROSS;
       break;
-    case 11 : /* Aspect_HS_GRID_DIAGONAL_WIDE */
-      myContext.Hatch = TEL_HS_CROSS_SPARSE;
+    case 11: /* Aspect_HS_GRID_DIAGONAL_WIDE */
+      Hatch = TEL_HS_CROSS_SPARSE;
       break;
-    default :
-      myContext.Hatch = 0;
+    default:
+      Hatch = 0;
       break;
   }
 
-  //TelFaceDistinguishingMode
-  myContext.DistinguishingMode = AContext.Distinguish ? TOn : TOff;
+  DistinguishingMode = theAspect.Distinguish ? TOn : TOff;
+  CullingMode = theAspect.BackFace ? TelCullBack : TelCullNone;
 
-  //TelFaceCullingMode
-  myContext.CullingMode = AContext.BackFace ? TelCullBack : TelCullNone;
-
-  //TelSurfaceAreaProperties
-  ConvertMaterial(AContext.Front,myContext.IntFront);
-
-  //TelBackSurfaceAreaProperties
-  ConvertMaterial(AContext.Back,myContext.IntBack);
+  convertMaterial (theAspect.Front, IntFront);
+  convertMaterial (theAspect.Back,  IntBack);
 
   //TelInteriorColour
-  myContext.IntFront.matcol.rgb[0] = (float) AContext.IntColor.r;
-  myContext.IntFront.matcol.rgb[1] = (float) AContext.IntColor.g;
-  myContext.IntFront.matcol.rgb[2] = (float) AContext.IntColor.b;
-  myContext.IntFront.matcol.rgb[3] = 1.f;
+  IntFront.matcol.rgb[0] = (float )theAspect.IntColor.r;
+  IntFront.matcol.rgb[1] = (float )theAspect.IntColor.g;
+  IntFront.matcol.rgb[2] = (float )theAspect.IntColor.b;
+  IntFront.matcol.rgb[3] = 1.0f;
 
   //TelBackInteriorColour
-  myContext.IntBack.matcol.rgb[0] = (float) AContext.BackIntColor.r;
-  myContext.IntBack.matcol.rgb[1] = (float) AContext.BackIntColor.g;
-  myContext.IntBack.matcol.rgb[2] = (float) AContext.BackIntColor.b;
-  myContext.IntBack.matcol.rgb[3] = 1.f;
+  IntBack.matcol.rgb[0] = (float )theAspect.BackIntColor.r;
+  IntBack.matcol.rgb[1] = (float )theAspect.BackIntColor.g;
+  IntBack.matcol.rgb[2] = (float )theAspect.BackIntColor.b;
+  IntBack.matcol.rgb[3] = 1.0f;
 
-  //TelDoTextureMap
-  myContext.doTextureMap = AContext.Texture.doTextureMap;
+  // setup texture
+  doTextureMap = theAspect.Texture.doTextureMap;
+  const Handle(Graphic3d_TextureMap)& aNewTexture = theAspect.Texture.TextureMap;
+  TCollection_AsciiString aNewKey = aNewTexture.IsNull() ? TCollection_AsciiString() : aNewTexture->GetId();
+  TextureParams = aNewTexture.IsNull() ? NULL : aNewTexture->GetParams();
+  if (aNewKey.IsEmpty()
+   || myTextureId != aNewKey)
+  {
+    if (!TextureRes.IsNull())
+    {
+      if (myTextureId.IsEmpty())
+      {
+        theContext->DelayedRelease (TextureRes);
+        TextureRes.Nullify();
+      }
+      else
+      {
+        TextureRes.Nullify(); // we need nullify all handles before ReleaseResource() call
+        theContext->ReleaseResource (myTextureId);
+      }
+    }
+    myTextureId = aNewKey;
 
-  //TelTextureId
-  myContext.TexId = AContext.Texture.TexId;
+    if (!aNewTexture.IsNull())
+    {
+      if (aNewKey.IsEmpty() || !theContext->GetResource<Handle(OpenGl_Texture)> (aNewKey, TextureRes))
+      {
+        TextureRes = new OpenGl_Texture (TextureParams);
+        Handle(Image_PixMap) anImage = aNewTexture->GetImage();
+        if (!anImage.IsNull())
+        {
+          TextureRes->Init (theContext, *anImage.operator->(), aNewTexture->Type());
+        }
+        if (!aNewKey.IsEmpty())
+        {
+          theContext->ShareResource (aNewKey, TextureRes);
+        }
+      }
+    }
+  }
 
   //TelPolygonOffset
-  myContext.PolygonOffset.mode   = (Aspect_PolygonOffsetMode) AContext.PolygonOffsetMode;
-  myContext.PolygonOffset.factor = AContext.PolygonOffsetFactor;
-  myContext.PolygonOffset.units  = AContext.PolygonOffsetUnits;
+  PolygonOffset.mode   = (Aspect_PolygonOffsetMode )theAspect.PolygonOffsetMode;
+  PolygonOffset.factor = theAspect.PolygonOffsetFactor;
+  PolygonOffset.units  = theAspect.PolygonOffsetUnits;
 
   CALL_DEF_CONTEXTLINE anEdgeContext;
-
-  //TelEdgeColour
-  anEdgeContext.Color.r = (float) AContext.EdgeColor.r;
-  anEdgeContext.Color.g = (float) AContext.EdgeColor.g;
-  anEdgeContext.Color.b = (float) AContext.EdgeColor.b;
-
-  //TelEdgeType
-  anEdgeContext.LineType = (Aspect_TypeOfLine) AContext.LineType;
-
-  //TelEdgeWidth
-  anEdgeContext.Width = (float) AContext.Width;
-
-  myAspectEdge.SetContext(anEdgeContext);
+  anEdgeContext.Color.r  = (float )theAspect.EdgeColor.r;
+  anEdgeContext.Color.g  = (float )theAspect.EdgeColor.g;
+  anEdgeContext.Color.b  = (float )theAspect.EdgeColor.b;
+  anEdgeContext.LineType = (Aspect_TypeOfLine )theAspect.LineType;
+  anEdgeContext.Width    = (float )theAspect.Width;
+  myAspectEdge.SetContext (anEdgeContext);
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Render
+// purpose  :
+// =======================================================================
 void OpenGl_AspectFace::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   theWorkspace->SetAspectFace (this);
 }
 
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
 void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
 {
-  //
+  if (!TextureRes.IsNull())
+  {
+    if (!theContext.IsNull())
+    {
+      if (myTextureId.IsEmpty())
+      {
+        theContext->DelayedRelease (TextureRes);
+      }
+      else
+      {
+        TextureRes.Nullify(); // we need nullify all handles before ReleaseResource() call
+        theContext->ReleaseResource (myTextureId);
+      }
+    }
+    TextureRes.Nullify();
+  }
+  myTextureId.Clear();
 }

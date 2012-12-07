@@ -21,11 +21,11 @@
 // modified:     1/07/97 ; PCT : ajout texture mapping
 //              20/07/97 ; PCT : ajout transparence texture
 //              08/04/98 ; FGU : Ajout emission surface
-//              30/11/98 ; FMN : S4069. Textes always visible.   
+//              30/11/98 ; FMN : S4069. Textes always visible.
 //              22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets */
 
 
-//-Version      
+//-Version
 
 //-Design       Declaration des variables specifiques aux groupes
 //              de primitives
@@ -33,7 +33,7 @@
 //-Warning      Un groupe est defini dans une structure
 //              Il s'agit de la plus petite entite editable
 
-//-References   
+//-References
 
 //-Language     C++ 2.0
 
@@ -136,7 +136,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.Back.Emission  =
     float ((CTX->BackMaterial ()).Emissive ());
 
-  // Reflection mode 
+  // Reflection mode
   MyCGroup.ContextFillArea.Back.IsAmbient =
     ( (CTX->BackMaterial ()).ReflectionMode
     (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
@@ -150,13 +150,13 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
     ( (CTX->BackMaterial ()).ReflectionMode
     (Graphic3d_TOR_EMISSION) ? 1 : 0 );
 
-  // Material type                                
+  // Material type
   //JR/Hp
   const Graphic3d_MaterialAspect ama = CTX->BackMaterial () ;
   Standard_Boolean amt = ama.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
   MyCGroup.ContextFillArea.Back.IsPhysic = ( amt ? 1 : 0 );
 
-  // Specular color                                       
+  // Specular color
   MyCGroup.ContextFillArea.Back.ColorSpec.r       =
     float (((CTX->BackMaterial ()).SpecularColor ()).Red ());
   MyCGroup.ContextFillArea.Back.ColorSpec.g       =
@@ -189,7 +189,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.Back.ColorEms.b        =
     float (((CTX->BackMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCGroup.ContextFillArea.Back.EnvReflexion = 
+  MyCGroup.ContextFillArea.Back.EnvReflexion =
     float ((CTX->BackMaterial ()).EnvReflexion());
 
   /*** Front Material ***/
@@ -205,9 +205,9 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.Front.Transparency     =
     float ((CTX->FrontMaterial ()).Transparency ());
   MyCGroup.ContextFillArea.Front.Emission =
-    float ((CTX->FrontMaterial ()).Emissive ());    
+    float ((CTX->FrontMaterial ()).Emissive ());
 
-  // Reflection mode      
+  // Reflection mode
   MyCGroup.ContextFillArea.Front.IsAmbient        =
     ( (CTX->FrontMaterial ()).ReflectionMode
     (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
@@ -227,7 +227,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   Standard_Boolean amty = amas.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
   MyCGroup.ContextFillArea.Front.IsPhysic = ( amty ? 1 : 0 );
 
-  // Specular color                               
+  // Specular color
   MyCGroup.ContextFillArea.Front.ColorSpec.r      =
     float (((CTX->FrontMaterial ()).SpecularColor ()).Red ());
   MyCGroup.ContextFillArea.Front.ColorSpec.g      =
@@ -235,7 +235,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.Front.ColorSpec.b      =
     float (((CTX->FrontMaterial ()).SpecularColor ()).Blue ());
 
-  // Ambient color                                
+  // Ambient color
   MyCGroup.ContextFillArea.Front.ColorAmb.r       =
     float (((CTX->FrontMaterial ()).AmbientColor ()).Red ());
   MyCGroup.ContextFillArea.Front.ColorAmb.g       =
@@ -243,7 +243,7 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.Front.ColorAmb.b       =
     float (((CTX->FrontMaterial ()).AmbientColor ()).Blue ());
 
-  // Diffuse color                                
+  // Diffuse color
   MyCGroup.ContextFillArea.Front.ColorDif.r       =
     float (((CTX->FrontMaterial ()).DiffuseColor ()).Red ());
   MyCGroup.ContextFillArea.Front.ColorDif.g       =
@@ -259,31 +259,23 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.Front.ColorEms.b       =
     float (((CTX->FrontMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCGroup.ContextFillArea.Front.EnvReflexion = 
+  MyCGroup.ContextFillArea.Front.EnvReflexion =
     float ((CTX->FrontMaterial ()).EnvReflexion());
 
   MyCGroup.ContextFillArea.IsDef  = 1; // Definition material ok
 
   /*** Texture map ***/
-  Handle(Graphic3d_TextureMap) GroupTextureMap = CTX->TextureMap();
-  if (! GroupTextureMap.IsNull() ) {
-    MyCGroup.ContextFillArea.Texture.TexId = GroupTextureMap->TextureId();
-    MyCGroup.ContextFillArea.Texture.doTextureMap =
-      CTX->TextureMapState () ? 1 : 0;
-  }
-  else {
-    MyCGroup.ContextFillArea.Texture.TexId = -1;
-    MyCGroup.ContextFillArea.Texture.doTextureMap = 0;
-  }
+  MyCGroup.ContextFillArea.Texture.TextureMap   = CTX->TextureMap();
+  MyCGroup.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1 : 0;
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
   Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCGroup.ContextFillArea.PolygonOffsetMode   = aPolyMode;
   MyCGroup.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
   MyCGroup.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   int noinsert = 1;
   MyGraphicDriver->FaceContextGroup (MyCGroup, noinsert);
@@ -361,8 +353,8 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectTex
   MyCGroup.ContextText.ColorSubTitle.r    = float (Rs);
   MyCGroup.ContextText.ColorSubTitle.g    = float (Gs);
   MyCGroup.ContextText.ColorSubTitle.b    = float (Bs);
-  MyCGroup.ContextText.TextZoomable   = ATextZoomable;   
-  MyCGroup.ContextText.TextAngle    = float (ATextAngle);   
+  MyCGroup.ContextText.TextZoomable   = ATextZoomable;
+  MyCGroup.ContextText.TextAngle    = float (ATextAngle);
   MyCGroup.ContextText.TextFontAspect   = (int)ATextFontAspect;
 
   MyCGroup.ContextText.IsDef      = 1;
@@ -423,7 +415,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.IntColor.r     = float (R);
   MyCGroup.ContextFillArea.IntColor.g     = float (G);
   MyCGroup.ContextFillArea.IntColor.b     = float (B);
-#ifdef OCC1174    
+#ifdef OCC1174
   if ( CTX->Distinguish() )
     BackIntColor.Values( R, G, B, Quantity_TOC_RGB );
 #endif
@@ -458,9 +450,9 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Back.Transparency      =
     float ((CTX->BackMaterial ()).Transparency ());
   MyCGroup.ContextFillArea.Back.Emission  =
-    float ((CTX->BackMaterial ()).Emissive ());     
+    float ((CTX->BackMaterial ()).Emissive ());
 
-  // Reflection mode      
+  // Reflection mode
   MyCGroup.ContextFillArea.Back.IsAmbient =
     ( (CTX->BackMaterial ()).ReflectionMode
     (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
@@ -480,7 +472,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   Standard_Boolean amt = ama.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
   MyCGroup.ContextFillArea.Back.IsPhysic = ( amt ? 1 : 0 );
 
-  // Specular color                               
+  // Specular color
   MyCGroup.ContextFillArea.Back.ColorSpec.r       =
     float (((CTX->BackMaterial ()).SpecularColor ()).Red ());
   MyCGroup.ContextFillArea.Back.ColorSpec.g       =
@@ -488,7 +480,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Back.ColorSpec.b       =
     float (((CTX->BackMaterial ()).SpecularColor ()).Blue ());
 
-  // Ambient color                                
+  // Ambient color
   MyCGroup.ContextFillArea.Back.ColorAmb.r        =
     float (((CTX->BackMaterial ()).AmbientColor ()).Red ());
   MyCGroup.ContextFillArea.Back.ColorAmb.g        =
@@ -496,7 +488,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Back.ColorAmb.b        =
     float (((CTX->BackMaterial ()).AmbientColor ()).Blue ());
 
-  // Diffuse color                                
+  // Diffuse color
   MyCGroup.ContextFillArea.Back.ColorDif.r        =
     float (((CTX->BackMaterial ()).DiffuseColor ()).Red ());
   MyCGroup.ContextFillArea.Back.ColorDif.g        =
@@ -512,7 +504,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Back.ColorEms.b        =
     float (((CTX->BackMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCGroup.ContextFillArea.Back.EnvReflexion = 
+  MyCGroup.ContextFillArea.Back.EnvReflexion =
     float ((CTX->BackMaterial ()).EnvReflexion());
 
   /*** Front Material ***/
@@ -528,9 +520,9 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Front.Transparency     =
     float ((CTX->FrontMaterial ()).Transparency ());
   MyCGroup.ContextFillArea.Front.Emission =
-    float ((CTX->FrontMaterial ()).Emissive ());    
+    float ((CTX->FrontMaterial ()).Emissive ());
 
-  // Reflection mode      
+  // Reflection mode
   MyCGroup.ContextFillArea.Front.IsAmbient        =
     ( (CTX->FrontMaterial ()).ReflectionMode
     (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
@@ -550,7 +542,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   Standard_Boolean amty = amas.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
   MyCGroup.ContextFillArea.Front.IsPhysic = ( amty ? 1 : 0 );
 
-  // Specular color                               
+  // Specular color
   MyCGroup.ContextFillArea.Front.ColorSpec.r      =
     float (((CTX->FrontMaterial ()).SpecularColor ()).Red ());
   MyCGroup.ContextFillArea.Front.ColorSpec.g      =
@@ -558,7 +550,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Front.ColorSpec.b      =
     float (((CTX->FrontMaterial ()).SpecularColor ()).Blue ());
 
-  // Ambient color                                
+  // Ambient color
   MyCGroup.ContextFillArea.Front.ColorAmb.r       =
     float (((CTX->FrontMaterial ()).AmbientColor ()).Red ());
   MyCGroup.ContextFillArea.Front.ColorAmb.g       =
@@ -566,7 +558,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Front.ColorAmb.b       =
     float (((CTX->FrontMaterial ()).AmbientColor ()).Blue ());
 
-  // Diffuse color                                
+  // Diffuse color
   MyCGroup.ContextFillArea.Front.ColorDif.r       =
     float (((CTX->FrontMaterial ()).DiffuseColor ()).Red ());
   MyCGroup.ContextFillArea.Front.ColorDif.g       =
@@ -582,21 +574,15 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.Front.ColorEms.b       =
     float (((CTX->FrontMaterial ()).EmissiveColor ()).Blue ());
 
-  MyCGroup.ContextFillArea.Front.EnvReflexion = 
+  MyCGroup.ContextFillArea.Front.EnvReflexion =
     float ((CTX->FrontMaterial ()).EnvReflexion());
 
   MyCGroup.ContextFillArea.IsDef  = 1; // Material definition ok
 
-  Handle(Graphic3d_TextureMap) GroupTextureMap = CTX->TextureMap();
-  if (! GroupTextureMap.IsNull() )
-    MyCGroup.ContextFillArea.Texture.TexId = GroupTextureMap->TextureId();
-  else
-    MyCGroup.ContextFillArea.Texture.TexId = -1;
+  MyCGroup.ContextFillArea.Texture.TextureMap   = CTX->TextureMap();
+  MyCGroup.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1 : 0;
 
-  MyCGroup.ContextFillArea.Texture.doTextureMap =
-    CTX->TextureMapState () ? 1 : 0;
-
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
   Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
@@ -661,7 +647,7 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)&
   Quantity_Color AColor;
   Aspect_TypeOfStyleText  AStyle;
   Aspect_TypeOfDisplayText ADisplayType;
-  Quantity_Color AColorSubTitle;  
+  Quantity_Color AColorSubTitle;
   Standard_Boolean ATextZoomable;
   Standard_Real ATextAngle;
   Font_FontAspect ATextFontAspect;
@@ -681,9 +667,9 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)&
   MyCGroup.ContextText.ColorSubTitle.r    = float (Rs);
   MyCGroup.ContextText.ColorSubTitle.g    = float (Gs);
   MyCGroup.ContextText.ColorSubTitle.b    = float (Bs);
-  MyCGroup.ContextText.TextZoomable   = ATextZoomable;  
-  MyCGroup.ContextText.TextAngle    = float (ATextAngle);   
-  MyCGroup.ContextText.TextFontAspect   = (int)ATextFontAspect;   
+  MyCGroup.ContextText.TextZoomable   = ATextZoomable;
+  MyCGroup.ContextText.TextAngle    = float (ATextAngle);
+  MyCGroup.ContextText.TextFontAspect   = (int)ATextFontAspect;
   MyCGroup.ContextText.IsDef              = 1;
 
   int noinsert    = 0;
@@ -703,7 +689,7 @@ Standard_Boolean Graphic3d_Group::IsGroupPrimitivesAspectSet (const Graphic3d_Gr
         case Graphic3d_ASPECT_FILL_AREA: return MyCGroup.ContextFillArea.IsSet;
         default: return Standard_False;
     }
-} 
+}
 
 
 void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF) const {
@@ -947,19 +933,21 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
     else
       CTXF->AllowBackFace ();
     // Texture
-    // Pb sur les textures
-    //if (MyCGroup.ContextFillArea.Texture.TexId == -1)
-    //else
+    CTXF->SetTextureMap (MyCGroup.ContextFillArea.Texture.TextureMap);
     if (MyCGroup.ContextFillArea.Texture.doTextureMap == 1)
-      CTXF->SetTextureMapOn ();
+    {
+      CTXF->SetTextureMapOn();
+    }
     else
-      CTXF->SetTextureMapOff ();
+    {
+      CTXF->SetTextureMapOff();
+    }
 
-    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-    CTXF->SetPolygonOffsets(MyCGroup.ContextFillArea.PolygonOffsetMode, 
+    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+    CTXF->SetPolygonOffsets(MyCGroup.ContextFillArea.PolygonOffsetMode,
       MyCGroup.ContextFillArea.PolygonOffsetFactor,
       MyCGroup.ContextFillArea.PolygonOffsetUnits);
-    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   }
   else {
     // Interior
@@ -1097,16 +1085,21 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
     else
       CTXF->AllowBackFace ();
     // Texture
+    CTXF->SetTextureMap (MyCGroup.Struct->ContextFillArea.Texture.TextureMap);
     if (MyCGroup.Struct->ContextFillArea.Texture.doTextureMap == 1)
-      CTXF->SetTextureMapOn ();
+    {
+      CTXF->SetTextureMapOn();
+    }
     else
-      CTXF->SetTextureMapOff ();
+    {
+      CTXF->SetTextureMapOff();
+    }
 
-    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-    CTXF->SetPolygonOffsets(MyCGroup.Struct->ContextFillArea.PolygonOffsetMode, 
+    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+    CTXF->SetPolygonOffsets(MyCGroup.Struct->ContextFillArea.PolygonOffsetMode,
       MyCGroup.Struct->ContextFillArea.PolygonOffsetFactor,
       MyCGroup.Struct->ContextFillArea.PolygonOffsetUnits);
-    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   }
   CTXF->SetInteriorStyle (AStyle);
   CTXF->SetInteriorColor (AnIntColor);

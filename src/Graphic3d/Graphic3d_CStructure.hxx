@@ -16,25 +16,51 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/*============================================================================*/
-/*==== Titre: Graphic3d_CStructure.hxx					      */
-/*==== Role : The header file of primitive type "CStructure" from Graphic3d   */
-/*====									      */
-/*==== Implementation:  This is a primitive type implemented with typedef     */
-/*============================================================================*/
-
 #ifndef _Graphic3d_CStructure_HeaderFile
 #define _Graphic3d_CStructure_HeaderFile
 
-#include <InterfaceGraphic_Graphic3d.hxx>
-typedef CALL_DEF_STRUCTURE Graphic3d_CStructure;
+#include <Graphic3d_CGroup.hxx>
 
-#if defined(__cplusplus) || defined(c_plusplus)
-/*==== Definition de Type ====================================================*/
+class Graphic3d_CStructure
+{
 
-#include <Standard_Type.hxx>
-const Handle(Standard_Type)& TYPE(Graphic3d_CStructure) ;
-/*============================================================================*/
+public:
 
-#endif
-#endif /*Graphic3d_CStructure_HeaderFile*/
+  int   Id;
+  void* ptrStructure;
+
+  int   Priority;
+  int   PreviousPriority;
+  int   GroupBegin;
+  int   GroupEnd;
+
+  CALL_DEF_CONTEXTLINE     ContextLine;
+  CALL_DEF_CONTEXTFILLAREA ContextFillArea;
+  CALL_DEF_CONTEXTMARKER   ContextMarker;
+  CALL_DEF_CONTEXTTEXT     ContextText;
+
+  CALL_DEF_BOUNDBOX BoundBox;
+
+  float Transformation[4][4];
+  int   Composition;
+
+  int   ContainsFacet;
+
+  unsigned IsDeleted     : 1;
+  unsigned IsOpen        : 1;
+  unsigned IsInfinite    : 1;
+  unsigned stick         : 1;
+  unsigned highlight     : 1;
+  unsigned visible       : 1;
+  unsigned pick          : 1;
+  unsigned HLRValidation : 1;
+
+  CALL_DEF_TRANSFORM_PERSISTENCE TransformPersistence;
+
+};
+
+///typedef Graphic3d_CStructure CALL_DEF_STRUCTURE;
+
+const Handle(Standard_Type)& TYPE(Graphic3d_CStructure);
+
+#endif // Graphic3d_CStructure_HeaderFile

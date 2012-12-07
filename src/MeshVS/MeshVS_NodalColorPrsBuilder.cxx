@@ -30,6 +30,7 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_TextureParams.hxx>
 
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Root.hxx>
@@ -69,47 +70,45 @@
 */
 class MeshVS_ImageTexture2D : public Graphic3d_Texture2D
 {
-public:
-  MeshVS_ImageTexture2D (Handle(Graphic3d_StructureManager) theSM,
-                         const Image_PixMap&                theImg);
-  virtual ~MeshVS_ImageTexture2D();
 
 public:
+
+  MeshVS_ImageTexture2D (const Handle(Image_PixMap)& theImg)
+  : Graphic3d_Texture2D ("", Graphic3d_TOT_2D),
+    myImage (theImg)
+  {
+    myParams->SetModulate (Standard_True);
+    myParams->SetFilter   (Graphic3d_TOTF_BILINEAR);
+  }
+
+  virtual ~MeshVS_ImageTexture2D()
+  {
+    //
+  }
+
+  virtual Standard_Boolean IsDone() const
+  {
+    return !myImage.IsNull() && !myImage->IsEmpty();
+  }
+
+  virtual Handle(Image_PixMap) GetImage() const
+  {
+    return myImage;
+  }
+
+private:
+
+  Handle(Image_PixMap) myImage;
+
+public:
+
   DEFINE_STANDARD_RTTI(MeshVS_ImageTexture2D)
+
 };
 
 DEFINE_STANDARD_HANDLE    (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
 IMPLEMENT_STANDARD_HANDLE (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ImageTexture2D, Graphic3d_Texture2D)
-
-MeshVS_ImageTexture2D::MeshVS_ImageTexture2D (Handle(Graphic3d_StructureManager) theSM,
-                                              const Image_PixMap&                theImg)
-: Graphic3d_Texture2D (theSM, "", Graphic3d_TOT_2D)
-{
-  MyCInitTexture.doModulate = 1;
-  MyCInitTexture.doRepeat = 0;
-  MyCInitTexture.Mode = (int)Graphic3d_TOTM_MANUAL;
-  MyCInitTexture.doLinear = 1;
-  MyCInitTexture.sx = 1.0F;
-  MyCInitTexture.sy = 1.0F;
-  MyCInitTexture.tx = 0.0F;
-  MyCInitTexture.ty = 0.0F;
-  MyCInitTexture.angle = 0.0F;
-  MyCInitTexture.sparams[0] = 0.0F;
-  MyCInitTexture.sparams[1] = 0.0F;
-  MyCInitTexture.sparams[2] = 0.0F;
-  MyCInitTexture.sparams[3] = 0.0F;
-  MyCInitTexture.tparams[0] = 0.0F;
-  MyCInitTexture.tparams[1] = 0.0F;
-  MyCInitTexture.tparams[2] = 0.0F;
-  MyCInitTexture.tparams[3] = 0.0F;
-  Update();
-  LoadTexture(theImg);
-}
-
-MeshVS_ImageTexture2D::~MeshVS_ImageTexture2D()
-{
-}
 
 //================================================================
 // Function : getNearestPow2
@@ -723,21 +722,15 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
     return NULL;
   }
 
-  Handle(PrsMgr_PresentationManager3d) aPrsMgr = GetPresentationManager();
-  if (aPrsMgr.IsNull())
-  {
-    return NULL;
-  }
-
   // create and fill image with colors
-  Image_PixMap anImage;
-  if (!anImage.InitTrash (Image_PixMap::ImgRGBA, Standard_Size(getNearestPow2 (aColorsNb)), 2))
+  Handle(Image_PixMap) anImage = new Image_PixMap();
+  if (!anImage->InitTrash (Image_PixMap::ImgRGBA, Standard_Size(getNearestPow2 (aColorsNb)), 2))
   {
     return NULL;
   }
 
-  anImage.SetTopDown (false);
-  Image_PixMapData<Image_ColorRGBA>& aData = anImage.EditData<Image_ColorRGBA>();
+  anImage->SetTopDown (false);
+  Image_PixMapData<Image_ColorRGBA>& aData = anImage->EditData<Image_ColorRGBA>();
   for (Standard_Size aCol = 0; aCol < Standard_Size(aColorsNb); ++aCol)
   {
     const Quantity_Color& aSrcColor = myTextureColorMap.Value (Standard_Integer(aCol) + 1);
@@ -759,7 +752,7 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
   }};
 
   // fill second row
-  for (Standard_Size aCol = (Standard_Size )aColorsNb; aCol < anImage.SizeX(); ++aCol)
+  for (Standard_Size aCol = (Standard_Size )aColorsNb; aCol < anImage->SizeX(); ++aCol)
   {
     aData.ChangeValue (0, aCol) = aLastColor;
   }
@@ -771,11 +764,11 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
     int(255.0 * myInvalidColor.Blue()),
     0xFF
   }};
-  for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
+  for (Standard_Size aCol = 0; aCol < anImage->SizeX(); ++aCol)
   {
     aData.ChangeValue (1, aCol) = anInvalidColor;
   }
 
   // create texture
-  return new MeshVS_ImageTexture2D (aPrsMgr->StructureManager(), anImage);
+  return new MeshVS_ImageTexture2D (anImage);
 }

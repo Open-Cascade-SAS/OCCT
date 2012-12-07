@@ -86,12 +86,11 @@ OpenGl_telem_view.cxx
 OpenGl_telem_view.hxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
-OpenGl_TextureBox.cxx
-OpenGl_TextureBox.hxx
+OpenGl_Texture.cxx
+OpenGl_Texture.hxx
+Handle_OpenGl_Texture.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
-OpenGl_ResourceTexture.hxx
-OpenGl_ResourceTexture.cxx
 OpenGl_telem_util.hxx
 OpenGl_telem_util.cxx
 OpenGl_transform_persistence.hxx

@@ -1,4 +1,4 @@
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -15,13 +15,12 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _Graphic3d_Vec2_HeaderFile
+#define _Graphic3d_Vec2_HeaderFile
 
+#include <NCollection_Vec2.hxx>
+#include <Standard_TypeDef.hxx>
 
-#include <Graphic3d_CInitTexture.hxx>
+typedef NCollection_Vec2<Standard_ShortReal> Graphic3d_Vec2;
 
-const Handle(Standard_Type)& TYPE(Graphic3d_CInitTexture)
-{
-  static Handle(Standard_Type) _atype = 
-    new Standard_Type ("Graphic3d_CInitTexture", sizeof (Graphic3d_CInitTexture));
-  return _atype;
-}
+#endif // _Graphic3d_Vec2_HeaderFile

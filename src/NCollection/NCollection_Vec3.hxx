@@ -25,12 +25,12 @@
 
 //! Auxiliary macros to define couple of similar access components as vector methods
 #define NCOLLECTION_VEC_COMPONENTS_3D(theX, theY, theZ) \
-  const NCollection_Vec3<Element_t> theX##theY##theZ##() const { return NCollection_Vec3<Element_t>(theX##(), theY##(), theZ##()); } \
-  const NCollection_Vec3<Element_t> theX##theZ##theY##() const { return NCollection_Vec3<Element_t>(theX##(), theZ##(), theY##()); } \
-  const NCollection_Vec3<Element_t> theY##theX##theZ##() const { return NCollection_Vec3<Element_t>(theY##(), theX##(), theZ##()); } \
-  const NCollection_Vec3<Element_t> theY##theZ##theX##() const { return NCollection_Vec3<Element_t>(theY##(), theZ##(), theX##()); } \
-  const NCollection_Vec3<Element_t> theZ##theY##theX##() const { return NCollection_Vec3<Element_t>(theZ##(), theY##(), theX##()); } \
-  const NCollection_Vec3<Element_t> theZ##theX##theY##() const { return NCollection_Vec3<Element_t>(theZ##(), theX##(), theY##()); }
+  const NCollection_Vec3<Element_t> theX##theY##theZ() const { return NCollection_Vec3<Element_t>(theX(), theY(), theZ()); } \
+  const NCollection_Vec3<Element_t> theX##theZ##theY() const { return NCollection_Vec3<Element_t>(theX(), theZ(), theY()); } \
+  const NCollection_Vec3<Element_t> theY##theX##theZ() const { return NCollection_Vec3<Element_t>(theY(), theX(), theZ()); } \
+  const NCollection_Vec3<Element_t> theY##theZ##theX() const { return NCollection_Vec3<Element_t>(theY(), theZ(), theX()); } \
+  const NCollection_Vec3<Element_t> theZ##theY##theX() const { return NCollection_Vec3<Element_t>(theZ(), theY(), theX()); } \
+  const NCollection_Vec3<Element_t> theZ##theX##theY() const { return NCollection_Vec3<Element_t>(theZ(), theX(), theY()); }
 
 //! Generic 3-components vector.
 //! To be used as RGB color pixel or XYZ 3D-point.

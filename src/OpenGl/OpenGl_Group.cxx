@@ -17,11 +17,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_Group.hxx>
 
-#include <OpenGl_TextureBox.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_Workspace.hxx>
 
 /*----------------------------------------------------------------------*/
 
@@ -60,19 +59,22 @@ void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theContext,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Group::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theContext,
-                                  const Standard_Boolean theIsGlobal)
+void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
+                                  const CALL_DEF_CONTEXTFILLAREA& theAspect,
+                                  const Standard_Boolean          theIsGlobal)
 {
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectFace == NULL)
+    {
       myAspectFace = new OpenGl_AspectFace();
-    myAspectFace->SetContext (theContext);
+    }
+    myAspectFace->Init (theCtx, theAspect);
   }
   else
   {
     OpenGl_AspectFace* anAspectFace = new OpenGl_AspectFace();
-    anAspectFace->SetContext (theContext);
+    anAspectFace->Init (theCtx, theAspect);
     AddElement (TelNil/*TelAspectFace*/, anAspectFace);
   }
 }
@@ -141,7 +143,7 @@ void OpenGl_Group::RemovePrimitiveArray (const Handle(OpenGl_Context)& theGlCtx,
       CALL_DEF_PARRAY* aCurPArray = ((const OpenGl_PrimitiveArray* )node->elem)->PArray();
 
       // validate for correct pointer
-      if (aCurPArray->num_bounds  == thePArray->num_bounds  && 
+      if (aCurPArray->num_bounds  == thePArray->num_bounds  &&
           aCurPArray->num_edges   == thePArray->num_edges   &&
           aCurPArray->num_vertexs == thePArray->num_vertexs &&
           aCurPArray->type        == thePArray->type)
@@ -160,54 +162,69 @@ void OpenGl_Group::RemovePrimitiveArray (const Handle(OpenGl_Context)& theGlCtx,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Group::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Is rendering in ADD or IMMEDIATE mode?
-  const Standard_Boolean isImmediate = (AWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
+  const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
 
   // Setup aspects
-  const OpenGl_AspectLine *aspect_line = AWorkspace->AspectLine(Standard_False);
-  const OpenGl_AspectFace *aspect_face = AWorkspace->AspectFace(Standard_False);
-  const OpenGl_AspectMarker *aspect_marker = AWorkspace->AspectMarker(Standard_False);
-  const OpenGl_AspectText *aspect_text = AWorkspace->AspectText(Standard_False);
+  const OpenGl_AspectLine*   aBackAspectLine   = theWorkspace->AspectLine   (Standard_False);
+  const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace   (Standard_False);
+  const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker (Standard_False);
+  const OpenGl_AspectText*   aBackAspectText   = theWorkspace->AspectText   (Standard_False);
   if (myAspectLine)
-    AWorkspace->SetAspectLine(myAspectLine);
+  {
+    theWorkspace->SetAspectLine (myAspectLine);
+  }
   if (myAspectFace)
-    AWorkspace->SetAspectFace(myAspectFace);
+  {
+    theWorkspace->SetAspectFace (myAspectFace);
+  }
   if (myAspectMarker)
-    AWorkspace->SetAspectMarker(myAspectMarker);
+  {
+    theWorkspace->SetAspectMarker (myAspectMarker);
+  }
   if (myAspectText)
-    AWorkspace->SetAspectText(myAspectText);
+  {
+    theWorkspace->SetAspectText (myAspectText);
+  }
 
   // Render group elements
-  OpenGl_ElementNode *node = myFirst;
-  while (node)
+  Handle(OpenGl_Texture) aPrevTexture; // temporary disabled texture
+  for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != NULL; aNodeIter = aNodeIter->next)
   {
-    switch (node->type)
+    switch (aNodeIter->type)
     {
       case TelPolyline:
       case TelMarker:
       case TelMarkerSet:
       case TelText:
       {
-        glDisable(GL_LIGHTING);
+        glDisable (GL_LIGHTING);
 
         if (isImmediate)
         {
-          glDepthMask(GL_FALSE);
+          glDepthMask (GL_FALSE);
         }
-        else if ( (AWorkspace->NamedStatus & OPENGL_NS_ANIMATION) != 0 &&
-                  (AWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) == 0 &&
-                   AWorkspace->DegenerateModel != 0 )
+        else if ((theWorkspace->NamedStatus & OPENGL_NS_ANIMATION) != 0 &&
+                 (theWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) == 0 &&
+                  theWorkspace->DegenerateModel != 0)
         {
-          glDisable( GL_DEPTH_TEST );
-          if ( AWorkspace->NamedStatus & OPENGL_NS_TEXTURE ) DisableTexture();
-          AWorkspace->NamedStatus |= OPENGL_NS_WIREFRAME;
+          glDisable (GL_DEPTH_TEST);
+          if (theWorkspace->NamedStatus & OPENGL_NS_TEXTURE)
+          {
+            aPrevTexture = theWorkspace->DisableTexture();
+          }
+          theWorkspace->NamedStatus |= OPENGL_NS_WIREFRAME;
         }
 
-        node->elem->Render( AWorkspace );
+        if (!aPrevTexture.IsNull())
+        {
+          theWorkspace->EnableTexture (aPrevTexture);
+          aPrevTexture.Nullify();
+        }
 
-        if ( !isImmediate && (AWorkspace->NamedStatus & OPENGL_NS_TEXTURE) != 0 ) EnableTexture();
+        aNodeIter->elem->Render (theWorkspace);
         break;
       }
 
@@ -220,40 +237,41 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
         {
           glDepthMask(GL_FALSE);
         }
-        else if ( (AWorkspace->NamedStatus & OPENGL_NS_ANIMATION) != 0 &&
-                  (AWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) != 0 &&
-                  AWorkspace->DegenerateModel < 2 )
+        else if ((theWorkspace->NamedStatus & OPENGL_NS_ANIMATION) != 0 &&
+                 (theWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) != 0 &&
+                  theWorkspace->DegenerateModel < 2)
         {
-          if ( AWorkspace->NamedStatus & OPENGL_NS_TEXTURE ) EnableTexture ();
-
-          glEnable( GL_DEPTH_TEST );
-          AWorkspace->NamedStatus &= ~OPENGL_NS_WIREFRAME;
+          glEnable (GL_DEPTH_TEST);
+          theWorkspace->NamedStatus &= ~OPENGL_NS_WIREFRAME;
         }
 
-        if ( AWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT )
-          AWorkspace->DisablePolygonOffset();
+        if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
+        {
+          theWorkspace->DisablePolygonOffset();
+        }
 
-        node->elem->Render( AWorkspace );
+        aNodeIter->elem->Render (theWorkspace);
 
-        if ( AWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT )
-          AWorkspace->EnablePolygonOffset();
+        if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
+        {
+          theWorkspace->EnablePolygonOffset();
+        }
         break;
       }
 
       default:
       {
-        node->elem->Render( AWorkspace );
+        aNodeIter->elem->Render (theWorkspace);
         break;
       }
     }
-    node = node->next;
   }
 
   // Restore aspects
-  AWorkspace->SetAspectLine(aspect_line);
-  AWorkspace->SetAspectFace(aspect_face);
-  AWorkspace->SetAspectMarker(aspect_marker);
-  AWorkspace->SetAspectText(aspect_text);
+  theWorkspace->SetAspectLine   (aBackAspectLine);
+  theWorkspace->SetAspectFace   (aBackAspectFace);
+  theWorkspace->SetAspectMarker (aBackAspectMarker);
+  theWorkspace->SetAspectText   (aBackAspectText);
 }
 
 void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)

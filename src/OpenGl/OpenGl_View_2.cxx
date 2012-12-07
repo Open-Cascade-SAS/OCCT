@@ -22,7 +22,6 @@
 
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_tgl_funcs.hxx>
-#include <OpenGl_TextureBox.hxx>
 
 #include <Image_AlienPixMap.hxx>
 #include <Visual3d_Layer.hxx>
@@ -1111,18 +1110,17 @@ D = -[Px,Py,Pz] dot |Nx|
     {
       case Visual3d_TOD_NONE:
         AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-        DisableTexture();
+        AWorkspace->DisableTexture();
         // Render the view
         RenderStructs(AWorkspace);
         break;
 
       case Visual3d_TOD_ENVIRONMENT:
         AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-        SetCurrentTexture(myTextureEnv);
-        EnableTexture();
+        AWorkspace->EnableTexture (myTextureEnv);
         // Render the view
         RenderStructs(AWorkspace);
-        DisableTexture();
+        AWorkspace->DisableTexture();
         break;
 
       case Visual3d_TOD_ALL:
@@ -1130,14 +1128,13 @@ D = -[Px,Py,Pz] dot |Nx|
         AWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
         // Render the view
         RenderStructs(AWorkspace);
-        DisableTexture();
+        AWorkspace->DisableTexture();
 
         // Second pass
         if (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
         {
           AWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
-          SetCurrentTexture(myTextureEnv);
-          EnableTexture();
+          AWorkspace->EnableTexture (myTextureEnv);
 
           /* sauvegarde de quelques parametres OpenGL */
           GLint blend_dst, blend_src;
@@ -1161,7 +1158,7 @@ D = -[Px,Py,Pz] dot |Nx|
 
           // Render the view
           RenderStructs(AWorkspace);
-          DisableTexture();
+          AWorkspace->DisableTexture();
 
           /* restauration des parametres OpenGL */
           glBlendFunc(blend_src, blend_dst);

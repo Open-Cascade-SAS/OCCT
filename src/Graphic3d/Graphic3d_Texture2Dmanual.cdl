@@ -18,27 +18,25 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
+class Texture2Dmanual from Graphic3d
 
-class  Texture2Dmanual  from  Graphic3d 
+inherits Texture2D from Graphic3d
 
-    
-inherits  Texture2D  from  Graphic3d  
-    ---Purpose: This class defined a manual texture 2D
-    -- facets MUST define texture coordinate
-    -- if you want to see somethings on.
+  ---Purpose: This class defined a manual texture 2D
+  -- facets MUST define texture coordinate
+  -- if you want to see somethings on.
 
-uses 
-    NameOfTexture2D  from  Graphic3d, 
-    StructureManager      from  Graphic3d 
+uses
 
+  NameOfTexture2D from Graphic3d,
+  AsciiString     from TCollection
 
-is 
-    Create(SM  :  StructureManager  from  Graphic3d; 
-    	   FileName  :  CString  from  Standard)  returns  mutable  Texture2Dmanual  from  Graphic3d;
-    ---Purpose: Creates a texture from a file
-	   
-    Create(SM  :  StructureManager  from  Graphic3d; 
-    	   NOT  :  NameOfTexture2D  from  Graphic3d)  returns  mutable  Texture2Dmanual  from  Graphic3d; 
-    ---Purpose: Creates a texture from a predefined texture name set.
-     
-end  Texture2Dmanual;    
+is
+
+  Create (theFileName : AsciiString from TCollection) returns mutable Texture2Dmanual from Graphic3d;
+  ---Purpose: Creates a texture from a file
+
+  Create (theNOT : NameOfTexture2D from Graphic3d) returns mutable Texture2Dmanual from Graphic3d;
+  ---Purpose: Creates a texture from a predefined texture name set.
+
+end Texture2Dmanual;

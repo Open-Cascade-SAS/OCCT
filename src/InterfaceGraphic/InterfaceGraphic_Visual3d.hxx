@@ -16,40 +16,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef InterfaceGraphic_Visual3dHeader
 #define InterfaceGraphic_Visual3dHeader
 
-	/* CAL 02/08/94
-	 * #include <InterfaceGraphic_X11.hxx>
-	 *   Retrait de InterfaceGraphic_X11.hxx et declaration de Window
-	 * a la mode X11 dans les structures CALL_DEF_VIEW et CALL_DEF_PICK.
-	 *   En effet, un #define Opposite 4 se trouve dans X11/X.h
-	 * et rentre en conflit avec la methode Opposite de math_Matrix.
-	 *
-	 * PCT 05/08/97
-	 * ajout support texture mapping
-	 *
-         * EUG 21/09/99 G003
-         *  degenerated mode support
-            Add fields IsDegenerates,IsDegeneratesPrev,Backfacing
-	    in CALL_DEF_VIEW structure.
-	 * VKH 25/01/00 G004
-	 * Dump a view
-	   Add CALL_DEF_BITMAP reference in CALL_DEF_VIEW
-	 */
-
-#ifndef RIC120302
-#define RIC120302       /*GG Add NEW fields in CALL_DEF_VIEW structure
-//                      to manage graphic context and call back
-*/
-#endif
-
 #include <InterfaceGraphic_Aspect.hxx>
-#ifdef RIC120302
+#include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_GraphicCallbackProc.hxx>
-#endif
+#include <Standard_Transient.hxx>
 
 typedef float CALL_DEF_MATRIX4X4[4][4];
 
@@ -150,80 +124,6 @@ typedef struct {
   float ProjectionMatrix[4][4];
 
 } CALL_DEF_VIEWMAPPING;
-
-
-/* CONTEXT */
-
- typedef struct {
-
-	int Aliasing;
-
-	int BackZClipping;
-	int FrontZClipping;
-
-	int DepthCueing;
-
-	float ZClipFrontPlane;
-	float ZClipBackPlane;
-
-	float DepthFrontPlane;
-	float DepthBackPlane;
-
-	int ZBufferActivity;
-	int Model;
-	int Visualization;
-
-	int NbActiveLight;
-	CALL_DEF_LIGHT *ActiveLight;
-
-	int NbActivePlane;
-	CALL_DEF_PLANE *ActivePlane;
-
-	int TexEnvId;
-	int SurfaceDetail;
-
-} CALL_DEF_VIEWCONTEXT;
-
-
-/* VUE */
-
-typedef struct {
-
-	int WsId;
-	int ViewId;
-	void *ptrView;
-
-	int IsDeleted;
-	int IsOpen;
-
-	int Active;
-
-	CALL_DEF_VIEWORIENTATION Orientation;
-	CALL_DEF_VIEWMAPPING Mapping;
-
-	CALL_DEF_VIEWORIENTATION OrientationReset;
-	CALL_DEF_VIEWMAPPING MappingReset;
-
-	CALL_DEF_VIEWCONTEXT Context;
-
-	CALL_DEF_WINDOW DefWindow;
-
-	void *ptrUnderLayer;
-	void *ptrOverLayer;
-
-        int IsDegenerates;
-        int IsDegeneratesPrev;
-        int Backfacing;
-#ifdef RIC120302
-        Aspect_RenderingContext GContext;
-        Aspect_GraphicCallbackProc GDisplayCB;
-        void* GClientData;
-#endif
-
-  void *ptrFBO;
-
-} CALL_DEF_VIEW;
-
 
 /* REPERAGE */
 

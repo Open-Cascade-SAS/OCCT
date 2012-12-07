@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _OpenGl_Context_H__
 #define _OpenGl_Context_H__
 
@@ -210,6 +209,12 @@ public:
   //! Clean up the delayed release queue.
   Standard_EXPORT void ReleaseDelayed();
 
+  //! @return maximum degree of anisotropy texture filter
+  Standard_EXPORT Standard_Integer MaxDegreeOfAnisotropy() const;
+
+  //! @return value for GL_MAX_TEXTURE_SIZE
+  Standard_EXPORT Standard_Integer MaxTextureSize() const;
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -231,13 +236,16 @@ public: // core profiles
 
 public: // extensions
 
-  OpenGl_ArbVBO*   arbVBO; //!< GL_ARB_vertex_buffer_object
-  OpenGl_ArbTBO*   arbTBO; //!< GL_ARB_texture_buffer_object
-  OpenGl_ArbIns*   arbIns; //!< GL_ARB_draw_instanced
-  OpenGl_ExtFBO*   extFBO; //!< GL_EXT_framebuffer_object
-  OpenGl_ExtGS*    extGS;  //!< GL_EXT_geometry_shader4
-  Standard_Boolean atiMem; //!< GL_ATI_meminfo
-  Standard_Boolean nvxMem; //!< GL_NVX_gpu_memory_info
+  Standard_Boolean arbNPTW; //!< GL_ARB_texture_non_power_of_two
+  OpenGl_ArbVBO*   arbVBO;  //!< GL_ARB_vertex_buffer_object
+  OpenGl_ArbTBO*   arbTBO;  //!< GL_ARB_texture_buffer_object
+  OpenGl_ArbIns*   arbIns;  //!< GL_ARB_draw_instanced
+  OpenGl_ExtFBO*   extFBO;  //!< GL_EXT_framebuffer_object
+  OpenGl_ExtGS*    extGS;   //!< GL_EXT_geometry_shader4
+  Standard_Boolean extBgra; //!< GL_EXT_bgra
+  Standard_Boolean extAnis; //!< GL_EXT_texture_filter_anisotropic
+  Standard_Boolean atiMem;  //!< GL_ATI_meminfo
+  Standard_Boolean nvxMem;  //!< GL_NVX_gpu_memory_info
 
 private: // system-dependent fields
 
@@ -263,6 +271,8 @@ private: // context info
 
   void*            myGlLibHandle;   //!< optional handle to GL library
   OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0
+  Standard_Integer myAnisoMax;      //!< maximum level of anisotropy texture filter
+  Standard_Integer myMaxTexDim;     //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myGlVerMajor;    //!< cached GL version major number
   Standard_Integer myGlVerMinor;    //!< cached GL version minor number
   Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode

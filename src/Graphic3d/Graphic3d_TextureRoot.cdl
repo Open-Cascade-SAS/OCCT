@@ -22,87 +22,93 @@ deferred class TextureRoot from Graphic3d
 
 inherits TShared from MMgt
 
-    ---Purpose: This is the texture root class enable the dialog with the GraphicDriver 
-    -- allows the loading of texture.
+  ---Purpose: This is the texture root class enable the dialog with the GraphicDriver allows the loading of texture.
 
 uses
 
-    CInitTexture     from Graphic3d,
-    GraphicDriver    from Graphic3d,
-    StructureManager from Graphic3d,
-    TypeOfTexture    from Graphic3d,
-    PixMap           from Image,
-    Path             from OSD,
-    HArray1OfReal    from TColStd
+  TextureParams from Graphic3d,
+  TypeOfTexture from Graphic3d,
+  PixMap        from Image,
+  PixMap_Handle from Image,
+  Path          from OSD,
+  AsciiString   from TCollection
 
 is
 
-    Initialize (theSM       :  StructureManager from Graphic3d;
-                thePath     :  CString from Standard;
-                theFileName :  CString from Standard;
-                theType     :  TypeOfTexture from Graphic3d);
-    ---Purpose: Creates a texture from a file	       
-    --  Warning: Note that if <FileName> is NULL the texture must be realized
-    -- using LoadTexture(image) method.
+  Initialize (theFileName : AsciiString from TCollection;
+              theType     : TypeOfTexture from Graphic3d);
+  ---Purpose: Creates a texture from a file
+  --  Warning: Note that if <FileName> is NULL the texture must be realized
+  -- using LoadTexture(image) method.
 
-    Destroy (me);
-    ---C++ : alias ~
+  Destroy (me);
+  ---C++ : alias ~
 
-    --
-    -- public methods
-    --
+  --
+  -- public methods
+  --
 
-    IsDone (me) returns Boolean from Standard;
-    ---Level: public
-    ---Purpose: Checks if a texture class is valid or not
-    -- returns true if the construction of the class is correct
+  IsDone (me) returns Boolean from Standard
+  is virtual;
+  ---Level:   public
+  ---Purpose: Checks if a texture class is valid or not.
+  -- @return true if the construction of the class is correct
 
-    IsValid (me) returns Boolean from Standard;
-    ---Level: public
-    ---Purpose: Checks if a texture class is valid or not
-    -- returns true if the construction of the class is correct
+  Path (me) returns Path from OSD;
+  ---Level:   public
+  ---Purpose:
+  -- Returns the full path of the defined texture.
+  -- It could be empty path if GetImage() is overridden to load image not from file.
+  ---C++: return const &
 
-    Path (me) returns Path from OSD;
-    ---Level: public
-    ---Purpose:
-    -- Returns the full path of the defined texture.
-    ---C++: return const &
+  Type (me) returns TypeOfTexture from Graphic3d;
+  ---Level:   public
+  ---Purpose: @return the texture type.
 
-    Type (me) returns TypeOfTexture from Graphic3d;
-    ---Level: public
-    ---Purpose:
-    -- Returns the texture type.
+  GetId (me) returns AsciiString from TCollection;
+  ---Level:   advanced
+  ---Purpose:
+  -- This ID will be used to manage resource in graphic driver.
+  -- .
+  -- Default implementation generates unique ID although inheritors may re-initialize it.
+  -- .
+  -- Multiple Graphic3d_TextureRoot instancies with same ID
+  -- will be treated as single texture with different parameters
+  -- to optimize memory usage though this will be more natural
+  -- to use same instance of Graphic3d_TextureRoot when possible.
+  -- .
+  -- Notice that inheritor may set this ID to empty string.
+  -- In this case independent graphical resource will be created
+  -- for each instance of Graphic3d_AspectFillArea3d where texture will be used.
+  -- .
+  -- @return texture identifier.
 
-    LoadTexture (me : mutable; theImage : PixMap from Image) returns Boolean from Standard;
-    ---Level: advanced
-    ---Purpose:
-    -- Updates the current texture from a requested image.
+  GetImage (me) returns PixMap_Handle from Image
+  is virtual;
+  ---Level   : Public
+  ---Purpose :
+  -- This method will be called by graphic driver each time when texture resource should be created.
+  -- Default implementation will dynamically load image from specified path within this method
+  -- (and no copy will be preserved in this class instance).
+  -- Inheritors may dynamically generate the image or return cached instance.
+  -- @return the image for texture.
 
-    TextureId (me) returns Integer from Standard;
-    ---Level: advanced
-    ---Purpose:
-    -- returns the Texture ID which references the
-    -- texture to use for drawing. Used by the graphic driver.
+  GetParams (me) returns TextureParams from Graphic3d;
+  ---Level: public
+  ---Purpose: @return low-level texture parameters
+  ---C++: return const &
 
-    GetTexUpperBounds(me) returns HArray1OfReal from TColStd;
-    ---Level: advanced
-    ---Purpose:
-    ---Gets upper bounds of texture coordinates. This is used when sizes
-    ---of texture are not equal to the powers of two
-
-    --
-    -- private methods
-    --
-
-    Update (me) is protected;
+  TexturesFolder (myclass) returns AsciiString from TCollection;
+  ---Level   : Public
+  ---Purpose :
+  -- The path to textures determined from CSF_MDTVTexturesDirectory or CASROOT environment variables.
+  -- @return the root folder with default textures.
 
 fields
 
-    myGraphicDriver  : GraphicDriver from Graphic3d;
-    myTexId          : Integer from Standard;
-    MyCInitTexture   : CInitTexture from Graphic3d is protected;
-    myPath           : Path from OSD;
-    myType           : TypeOfTexture from Graphic3d;
-    myTexUpperBounds : HArray1OfReal from TColStd;
+  myParams : TextureParams from Graphic3d is protected;
+  myTexId  : AsciiString from TCollection is protected;
+  myPath   : Path from OSD is protected;
+  myType   : TypeOfTexture from Graphic3d;
 
 end TextureRoot;

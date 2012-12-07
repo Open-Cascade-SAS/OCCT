@@ -45,7 +45,7 @@ void OpenGl_GraphicDriver::FaceContextGroup (const Graphic3d_CGroup& theCGroup,
   if (!theCGroup.ContextFillArea.IsDef || theCGroup.ptrGroup == NULL)
     return;
 
-  ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectFace (theCGroup.ContextFillArea, theNoInsert);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectFace (GetSharedContext(), theCGroup.ContextFillArea, theNoInsert);
   InvalidateAllWorkspaces();
 }
 
@@ -77,7 +77,7 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
   InvalidateAllWorkspaces();
 }
 
-void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup, 
+void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
                                                const Standard_Integer  theNoInsert,
                                                const Standard_Integer  theMarkWidth,
                                                const Standard_Integer  theMarkHeight,

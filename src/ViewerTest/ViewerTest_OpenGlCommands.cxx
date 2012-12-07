@@ -171,7 +171,6 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   // To test linking against OpenGl_Workspace and all aspect classes
   const OpenGl_AspectLine* aLA = theWorkspace->AspectLine(0);
   const OpenGl_AspectFace* aFA = theWorkspace->AspectFace(0);
-  aFA->Context();
   const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker(0);
   aMA->Type();
   const OpenGl_AspectText* aTA = theWorkspace->AspectText(0);

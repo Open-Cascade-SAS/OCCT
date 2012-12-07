@@ -21,7 +21,7 @@
 //              11/97 ; CAL : retrait DownCast
 
 
-//-Version	
+//-Version
 
 //-Design	Declaration of variables specific to groups
 //		of primitives
@@ -29,7 +29,7 @@
 //-Warning	A group is definedv in a structure
 //		This is the smallest editable entity
 
-//-References	
+//-References
 
 //-Language	C++ 2.0
 
@@ -87,7 +87,7 @@ Standard_Integer TheLabelBegin, TheLabelEnd;
 	MyContainsFacet			= Standard_False,
 	MyIsEmpty			= Standard_True;
 
-	MyCGroup.Struct	= (CALL_DEF_STRUCTURE *) (MyStructure->CStructure ());
+	MyCGroup.Struct	    = MyStructure->CStructure();
 	MyCGroup.Struct->Id	= int (MyStructure->Identification ());
 	MyCGroup.IsDeleted	= 0;
 	MyCGroup.IsOpen		= 0;

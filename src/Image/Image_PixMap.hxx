@@ -21,6 +21,7 @@
 #define _Image_PixMap_H__
 
 #include <Image_PixMapData.hxx>
+#include <Image_PixMap_Handle.hxx>
 #include <Standard_Transient.hxx>
 #include <Quantity_Color.hxx>
 
@@ -288,7 +289,5 @@ public:
   DEFINE_STANDARD_RTTI(Image_PixMap) // Type definition
 
 };
-
-DEFINE_STANDARD_HANDLE(Image_PixMap, Standard_Transient)
 
 #endif // _Image_PixMap_H__

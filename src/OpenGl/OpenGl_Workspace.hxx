@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _OpenGl_Workspace_Header
 #define _OpenGl_Workspace_Header
 
@@ -26,29 +25,32 @@
 
 #include <TColStd_Array2OfReal.hxx>
 #include <Quantity_Color.hxx>
-#include <Graphic3d_TypeOfComposition.hxx>
-
 #include <Graphic3d_CView.hxx>
+#include <Graphic3d_TypeOfComposition.hxx>
+#include <Graphic3d_TypeOfTexture.hxx>
+#include <Graphic3d_PtrFrameBuffer.hxx>
+#include <Graphic3d_BufferType.hxx>
+#include <Handle_Graphic3d_TextureParams.hxx>
+
 #include <Aspect_CLayer2d.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_PrintAlgo.hxx>
-#include <Graphic3d_PtrFrameBuffer.hxx>
-#include <Graphic3d_BufferType.hxx>
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
 #include <OpenGl_tsm.hxx>
 
+#include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Display.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_TextParam.hxx>
 
 #include <Handle_OpenGl_View.hxx>
+#include <Handle_OpenGl_Texture.hxx>
 
 class OpenGl_AspectLine;
-class OpenGl_AspectFace;
 class OpenGl_AspectMarker;
 class OpenGl_AspectText;
 class OpenGl_FrameBuffer;
@@ -88,8 +90,8 @@ public:
 
   //! Special method to perform printing.
   //! System-specific and currently only Win platform implemented.
-  Standard_Boolean Print (const Graphic3d_CView& theCView, 
-                          const Aspect_CLayer2d& theCUnderLayer, 
+  Standard_Boolean Print (const Graphic3d_CView& theCView,
+                          const Aspect_CLayer2d& theCUnderLayer,
                           const Aspect_CLayer2d& theCOverLayer,
                           const Aspect_Handle    theHPrintDC,
                           const Standard_Boolean theToShowBackground,
@@ -101,7 +103,7 @@ public:
 
   // szvgl: defined in OpenGl_Workspace_1.cxx
   void BeginAnimation (const Standard_Boolean theUseDegeneration,
-                       const Standard_Boolean theUpdateAM); 
+                       const Standard_Boolean theUpdateAM);
   void EndAnimation();
   void EraseAnimation();
 
@@ -165,6 +167,10 @@ public:
   //! Clear the applied aspect state.
   void ResetAppliedAspect();
 
+  Standard_EXPORT Handle(OpenGl_Texture) DisableTexture();
+  Standard_EXPORT Handle(OpenGl_Texture) EnableTexture (const Handle(OpenGl_Texture)&          theTexture,
+                                                        const Handle(Graphic3d_TextureParams)& theParams = NULL);
+
   //// RELATED TO FONTS ////
 
   int FindFont (const char*           theFontName,
@@ -198,28 +204,32 @@ protected:
   virtual Standard_Boolean Activate();
 
   // TEMPORARY!!!
-  void Redraw1 (const Graphic3d_CView& theCView, 
-                const Aspect_CLayer2d& theCUnderLayer, 
+  void Redraw1 (const Graphic3d_CView& theCView,
+                const Aspect_CLayer2d& theCUnderLayer,
                 const Aspect_CLayer2d& theCOverLayer,
                 const int theToSwap);
 
-protected:
-
-  Handle(OpenGl_View) myView;            // WSViews - now just one view is supported
-  Tint                myTransientList;   // WSTransient
-  Standard_Boolean    myIsTransientOpen; // transientOpen
-  Tint                myRetainMode;      // WSRetainMode
-
-  Standard_Boolean    myUseTransparency;
-  Standard_Boolean    myUseZBuffer;
-  Standard_Boolean    myUseDepthTest;
-  Standard_Boolean    myUseGLLight;
-  Standard_Boolean    myBackBufferRestored;
-
-  //// RELATED TO STATUS ////
-
   void UpdateMaterial (const int flag);
 
+  void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
+                         const Handle(Graphic3d_TextureParams)& theParams);
+
+protected: //! @name protected fields
+
+  Handle(OpenGl_View)    myView;            // WSViews - now just one view is supported
+  Tint                   myTransientList;   // WSTransient
+  Standard_Boolean       myIsTransientOpen; // transientOpen
+  Tint                   myRetainMode;      // WSRetainMode
+
+  Standard_Boolean       myUseTransparency;
+  Standard_Boolean       myUseZBuffer;
+  Standard_Boolean       myUseDepthTest;
+  Standard_Boolean       myUseGLLight;
+  Standard_Boolean       myBackBufferRestored;
+
+protected: //! @name fields related to status
+
+  Handle(OpenGl_Texture) myTextureBound;    //!< currently bound texture (managed by OpenGl_AspectFace and OpenGl_View environment texture)
   const OpenGl_AspectLine *AspectLine_set, *AspectLine_applied;
   const OpenGl_AspectFace *AspectFace_set, *AspectFace_applied;
   const OpenGl_AspectMarker *AspectMarker_set, *AspectMarker_applied;
@@ -232,11 +242,13 @@ protected:
 
   const TEL_POFFSET_PARAM* PolygonOffset_applied;
 
-public:
+  OpenGl_AspectFace myAspectFaceHl; // Hiddenline aspect
 
-  DEFINE_STANDARD_RTTI(OpenGl_Workspace) // Type definition
+public: //! @name type definition
+
+  DEFINE_STANDARD_RTTI(OpenGl_Workspace)
   DEFINE_STANDARD_ALLOC
 
 };
 
-#endif //_OpenGl_Workspace_Header
+#endif // _OpenGl_Workspace_Header

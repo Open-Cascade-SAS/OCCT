@@ -8,6 +8,7 @@ Image.edl
 Image_CMPLRS.edl
 Image_PixMap.hxx
 Image_PixMap.cxx
+Image_PixMap_Handle.hxx
 Image_PixMapData.hxx
 Image_Color.hxx
 Image_AlienPixMap.hxx

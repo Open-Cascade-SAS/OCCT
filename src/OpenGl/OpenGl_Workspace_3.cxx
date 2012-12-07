@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <math.h>
 #include <stdio.h>
 
@@ -26,6 +25,7 @@
 #include <OpenGl_telem_util.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -44,7 +44,7 @@ static void call_util_transform_pt (float *x, float *y, float *z);
 static void call_util_transpose_mat (float tmat[16], float mat[4][4]);
 
 /*----------------------------------------------------------------------*/
-/* 
+/*
 * Variables statiques
 */
 
@@ -162,7 +162,7 @@ void OpenGl_Workspace::RedrawImmediatMode ()
       /* FMN necessaire pour l'affichage sur WNT */
       glFlush();
       MakeBackBufCurrent();
-    } 
+    }
   }
 }
 
@@ -328,7 +328,7 @@ void OpenGl_Workspace::Move (const Standard_ShortReal X, const Standard_ShortRea
 /*----------------------------------------------------------------------*/
 
 //call_togl_set_linecolor
-void OpenGl_Workspace::SetLineColor (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B) 
+void OpenGl_Workspace::SetLineColor (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B)
 {
   if (NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE))
   {

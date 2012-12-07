@@ -1,6 +1,4 @@
-// Created on: 2011-03-18
-// Created by: Anton POLETAEV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,41 +15,12 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _Graphic3d_Vec3_HeaderFile
+#define _Graphic3d_Vec3_HeaderFile
 
-#ifndef _OPENGL_RESOURCETEXTURE_H
-#define _OPENGL_RESOURCETEXTURE_H
+#include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
 
-#include <OpenGl_Resource.hxx>
-#include <Standard.hxx>
+typedef NCollection_Vec3<Standard_ShortReal> Graphic3d_Vec3;
 
-class OpenGl_Resource;
-
-//! OpenGl_ResourceTexture represents the texture resource
-//! for OpenGl_ResourceCleaner
-class OpenGl_ResourceTexture : public OpenGl_Resource 
-{
-
-public:
-
-  //! Constructor
-  Standard_EXPORT OpenGl_ResourceTexture (const GLuint theId);
-
-  //! Destructor
-  Standard_EXPORT virtual ~OpenGl_ResourceTexture();
-
-  //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (const OpenGl_Context* theGlCtx);
-
-protected:
-
-  GLuint myTextureId; //!< Texture name (index)
-
-public:
-
-  DEFINE_STANDARD_RTTI(OpenGl_ResourceTexture) // Type definition
-
-};
-
-DEFINE_STANDARD_HANDLE(OpenGl_ResourceTexture,OpenGl_Resource)
-
-#endif
+#endif // _Graphic3d_Vec3_HeaderFile

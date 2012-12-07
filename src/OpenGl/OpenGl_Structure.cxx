@@ -112,11 +112,14 @@ void OpenGl_Structure::SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Structure::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA &AContext)
+void OpenGl_Structure::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
+                                      const CALL_DEF_CONTEXTFILLAREA& theAspect)
 {
   if (!myAspectFace)
+  {
     myAspectFace = new OpenGl_AspectFace();
-  myAspectFace->SetContext( AContext );
+  }
+  myAspectFace->Init (theCtx, theAspect);
 }
 
 /*----------------------------------------------------------------------*/
@@ -485,7 +488,7 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
 
 //=======================================================================
 //function : SetZLayer
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
@@ -495,7 +498,7 @@ void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
 
 //=======================================================================
 //function : GetZLayer
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Integer OpenGl_Structure::GetZLayer () const

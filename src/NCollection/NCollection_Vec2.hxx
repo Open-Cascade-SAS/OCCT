@@ -19,11 +19,13 @@
 #ifndef _NCollection_Vec2_H__
 #define _NCollection_Vec2_H__
 
+#include <cmath> // std::sqrt()
+
 //! Auxiliary macros to define couple of similar access components as vector methods.
 //! @return 2 components by their names in specified order
 #define NCOLLECTION_VEC_COMPONENTS_2D(theX, theY) \
-  const NCollection_Vec2<Element_t> theX##theY##() const { return NCollection_Vec2<Element_t>(theX##(), theY##()); } \
-  const NCollection_Vec2<Element_t> theY##theX##() const { return NCollection_Vec2<Element_t>(theY##(), theX##()); }
+  const NCollection_Vec2<Element_t> theX##theY() const { return NCollection_Vec2<Element_t>(theX(), theY()); } \
+  const NCollection_Vec2<Element_t> theY##theX() const { return NCollection_Vec2<Element_t>(theY(), theX()); }
 
 //! Defines the 2D-vector template.
 //! The main target for this class - to handle raw low-level arrays (from/to graphic driver etc.).

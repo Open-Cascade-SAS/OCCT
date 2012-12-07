@@ -74,17 +74,22 @@ OpenGl_Context::OpenGl_Context()
   core14 (NULL),
   core15 (NULL),
   core20 (NULL),
+  arbNPTW(Standard_False),
   arbVBO (NULL),
   arbTBO (NULL),
   arbIns (NULL),
   extFBO (NULL),
   extGS  (NULL),
+  extBgra(Standard_False),
+  extAnis(Standard_False),
   atiMem (Standard_False),
   nvxMem (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
   myReleaseQueue (new OpenGl_ResourcesQueue()),
   myGlLibHandle (NULL),
   myGlCore20 (NULL),
+  myMaxTexDim  (1024),
+  myAnisoMax   (1),
   myGlVerMajor (0),
   myGlVerMinor (0),
   myIsFeedback (Standard_False),
@@ -128,6 +133,24 @@ OpenGl_Context::~OpenGl_Context()
   delete arbVBO;
   delete extFBO;
   delete extGS;
+}
+
+// =======================================================================
+// function : MaxDegreeOfAnisotropy
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Context::MaxDegreeOfAnisotropy() const
+{
+  return myAnisoMax;
+}
+
+// =======================================================================
+// function : MaxTextureSize
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Context::MaxTextureSize() const
+{
+  return myMaxTexDim;
 }
 
 // =======================================================================
@@ -474,8 +497,17 @@ void OpenGl_Context::init()
   // read version
   readGlVersion();
 
-  atiMem = CheckExtension ("GL_ATI_meminfo");
-  nvxMem = CheckExtension ("GL_NVX_gpu_memory_info");
+  arbNPTW = CheckExtension ("GL_ARB_texture_non_power_of_two");
+  extBgra = CheckExtension ("GL_EXT_bgra");
+  extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
+  atiMem  = CheckExtension ("GL_ATI_meminfo");
+  nvxMem  = CheckExtension ("GL_NVX_gpu_memory_info");
+
+  glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
+  if (extAnis)
+  {
+    glGetIntegerv (GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &myAnisoMax);
+  }
 
   // initialize VBO extension (ARB)
   if (CheckExtension ("GL_ARB_vertex_buffer_object"))

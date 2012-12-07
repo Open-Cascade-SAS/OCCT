@@ -18,30 +18,6 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
--- Modified:    01/08/97 ; PCT : ajout texture mapping
---              07/08/97 ; PCT : ajout texture environnante
---              27/08/97 ; PCT : ajout coordonnee texture
---              00/11/97 ; CAL : retrait de la dependance avec math
---              00/11/97 ; CAL : ajout polyline par 2 points
---      16-09-98 ; BGN : Points d'entree du Triedre (S3819, Phase 1)
---              22-09-98 ; BGN : S3989 (anciennement S3819)
---                               TypeOfTriedron* from Aspect(et pas Graphic3d)
---              03-11-98 ; CAL : Introduction de Visual3d_LayerManager.
---              07-10-99 : EUG : Degeneration support (G003)
---               Add DegenerateStructure() and
---                   SetBackFacingModel() methods.
---      10-11-99 ; GG  : PRO19603 Change Redraw( ) method
---      16-06-2000 : ATS,GG : G005 - method PrimitiveArray, which are interface of OpenGl
---                            package, and used to initialize internal fields
---                            of primitives (Convert high level data to internal presentation).
---      17/08/00 ; THA ; Thomas HARTL <t-hartl@muenchen.matra-dtv.fr>
---              -> Add Print methods (works only under Windows).
---      27/03/02 ; GG  ; RIC120302 Add new method Begin(Aspect_Display)
---              28/05/02 ; VSV : New trihedron
---      23/12/02 ; SAV : Added methods to set background image and its
---                       appearence style
---              20/01/09 ; ABD : Integration support of system fonts (using FTGL and FreeType)
-
 deferred class GraphicDriver from Graphic3d inherits GraphicDriver from Aspect
 
     ---Version:
@@ -114,8 +90,6 @@ uses
     Array2OfVertexNC    from Graphic3d,
     VertexNC            from Graphic3d,
     VerticalTextAlignment   from Graphic3d,
-    CInitTexture        from Graphic3d,
-    TypeOfTexture       from Graphic3d,
     VertexNT            from Graphic3d,
     Array1OfVertexNT    from Graphic3d,
     Array2OfVertexNT    from Graphic3d,
@@ -799,30 +773,6 @@ is
                 AType   : TypeOfComposition from Graphic3d )
         is deferred;
     ---Purpose: call_togl_transform
-
-    -----------------------------
-    -- Category: Textures methods
-    -----------------------------
-
-    CreateTexture ( me;
-                    theType           : TypeOfTexture from Graphic3d;
-                    theImage          : PixMap  from Image;
-                    theFileName       : CString from Standard;
-                    theTexUpperBounds : HArray1OfReal from TColStd )
-    returns Integer from Standard
-        is deferred;
-    ---Purpose:
-
-    DestroyTexture ( me;
-                     TexId  : Integer from Standard )
-        is deferred;
-    ---Purpose:
-
-    ModifyTexture ( me;
-                    TexId   : Integer from Standard;
-                    AValue  : CInitTexture from Graphic3d )
-        is deferred;
-    ---Purpose:
 
     -------------------------------
     -- Category: Layer mode methods

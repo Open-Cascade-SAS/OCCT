@@ -21,21 +21,18 @@
 #include <OpenGl_CView.hxx>
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
-#include <OpenGl_TextureBox.hxx>
 #include <OpenGl_tgl_funcs.hxx>
 
-#include <Quantity_NameOfColor.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <Image_Image.hxx>
-
-void OpenGl_GraphicDriver::Environment(const Graphic3d_CView& ACView)
+void OpenGl_GraphicDriver::Environment(const Graphic3d_CView& theCView)
 {
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView == NULL)
   {
-    aCView->View->SetTextureEnv(ACView.Context.TexEnvId);
-    aCView->View->SetSurfaceDetail((Visual3d_TypeOfSurfaceDetail)ACView.Context.SurfaceDetail);
+    return;
   }
+
+  aCView->View->SetTextureEnv    (GetSharedContext(), theCView.Context.TextureEnv);
+  aCView->View->SetSurfaceDetail ((Visual3d_TypeOfSurfaceDetail)theCView.Context.SurfaceDetail);
 }
 
 //
@@ -137,139 +134,4 @@ void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues(const Standard_ShortRe
                                                          const Standard_ShortReal zmax)
 {
   OpenGl_GraduatedTrihedron::SetMinMax(xmin, ymin, zmin, xmax, ymax, zmax);
-}
-
-// Helper function, returns the nearest power of two greater than the argument value
-inline Standard_Integer GetNearestPow2(Standard_Integer theValue)
-{
-  // Precaution against overflow
-  Standard_Integer aHalfMax = IntegerLast() >> 1, aRes = 1;
-  if ( theValue > aHalfMax ) theValue = aHalfMax;
-  while ( aRes < theValue ) aRes <<= 1;
-  return aRes;
-}
-
-Standard_Integer OpenGl_GraphicDriver::CreateTexture (const Graphic3d_TypeOfTexture        theType,
-                                                      const Image_PixMap&                  theImage,
-                                                      const Standard_CString               theFileName,
-                                                      const Handle(TColStd_HArray1OfReal)& theTexUpperBounds) const
-{
-  if (theImage.IsEmpty())
-  {
-    return -1;
-  }
-
-  Standard_Integer aGlWidth  = (Standard_Integer )theImage.Width();
-  Standard_Integer aGlHeight = (Standard_Integer )theImage.Height();
-  if (theType != Graphic3d_TOT_2D_MIPMAP)
-  {
-    aGlWidth  = GetNearestPow2 (aGlWidth);
-    aGlHeight = GetNearestPow2 (aGlHeight);
-  }
-  theTexUpperBounds->SetValue (1, Standard_Real(theImage.Width())  / Standard_Real(aGlWidth));
-  theTexUpperBounds->SetValue (2, Standard_Real(theImage.Height()) / Standard_Real(aGlHeight));
-
-  Image_PixMap anImage;
-  if (!anImage.InitTrash (Image_PixMap::ImgRGBA, Standard_Size(aGlWidth), Standard_Size(aGlHeight)))
-  {
-    return -1;
-  }
-
-  anImage.SetTopDown (false);
-  Image_PixMapData<Image_ColorRGBA>& aDataNew = anImage.EditData<Image_ColorRGBA>();
-  Quantity_Color aSrcColor;
-  for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
-  {
-    for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
-    {
-      aSrcColor = theImage.PixelColor (aCol, aRow);
-      Image_ColorRGBA& aColor = aDataNew.ChangeValue (aRow, aCol);
-      aColor.r() = int(255.0 * aSrcColor.Red());
-      aColor.g() = int(255.0 * aSrcColor.Green());
-      aColor.b() = int(255.0 * aSrcColor.Blue());
-      aColor.a() = 0xFF;
-    }
-
-    for (Standard_Size aCol = theImage.SizeX(); aCol < anImage.SizeX(); ++aCol)
-    {
-      Image_ColorRGBA& aColor = aDataNew.ChangeValue (aRow, aCol);
-      aColor.r() = 0x00;
-      aColor.g() = 0x00;
-      aColor.b() = 0x00;
-      aColor.a() = 0xFF;
-    }
-  }
-
-  // Padding the lower part of the texture with black
-  for (Standard_Size aRow = theImage.SizeY(); aRow < anImage.SizeY(); ++aRow)
-  {
-    for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
-    {
-      Image_ColorRGBA& aColor = aDataNew.ChangeValue (aRow, aCol);
-      aColor.r() = 0x00;
-      aColor.g() = 0x00;
-      aColor.b() = 0x00;
-      aColor.a() = 0xFF;
-    }
-  }
-
-  static Standard_Integer TheTextureRank = 0;
-  char aTextureStrId[255];
-  sprintf (aTextureStrId, "Tex%d", ++TheTextureRank);
-
-  switch (theType)
-  {
-    case Graphic3d_TOT_1D:        return GetTextureData1D       (aTextureStrId, aGlWidth, aGlHeight, anImage.Data());
-    case Graphic3d_TOT_2D:        return GetTextureData2D       (aTextureStrId, aGlWidth, aGlHeight, anImage.Data());
-    case Graphic3d_TOT_2D_MIPMAP: return GetTextureData2DMipMap (aTextureStrId, aGlWidth, aGlHeight, anImage.Data());
-    default:                      return -1;
-  }
-}
-
-void OpenGl_GraphicDriver::DestroyTexture (const Standard_Integer theTexId) const
-{
-  FreeTexture (GetSharedContext(), theTexId);
-}
-
-void OpenGl_GraphicDriver::ModifyTexture (const Standard_Integer        theTexId,
-                                          const Graphic3d_CInitTexture& theInfo) const
-{
-  if (theInfo.doModulate)
-    SetTextureModulate (theTexId);
-  else
-    SetTextureDecal (theTexId);
-
-  if (theInfo.doRepeat)
-    SetTextureRepeat (theTexId);
-  else
-    SetTextureClamp (theTexId);
-
-  switch (theInfo.Mode)
-  {
-    case 0:
-      SetModeObject (theTexId, theInfo.sparams, theInfo.tparams);
-      break;
-
-    case 1:
-      SetModeSphere (theTexId);
-      break;
-
-    case 2:
-      SetModeEye (theTexId, theInfo.sparams, theInfo.tparams);
-      break;
-
-    case 3:
-      SetModeManual (theTexId);
-      break;
-  }
-
-  if (theInfo.doLinear)
-    SetRenderLinear (theTexId);
-  else
-    SetRenderNearest (theTexId);
-
-  SetTexturePosition (theTexId,
-                      theInfo.sx, theInfo.sy,
-                      theInfo.tx, theInfo.ty,
-                      theInfo.angle);
 }

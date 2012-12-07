@@ -17,8 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-#include <OpenGl_GlCore11.hxx>
+#include <OpenGl_GlCore12.hxx>
 
 #include <InterfaceGraphic.hxx>
 
@@ -28,8 +27,11 @@
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
+#include <OpenGl_Context.hxx>
 
-#include <OpenGl_TextureBox.hxx>
+#include <OpenGl_Texture.hxx>
+
+#include <Graphic3d_TextureParams.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Workspace,OpenGl_Window)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,OpenGl_Window)
@@ -55,6 +57,7 @@ namespace
      { 0.0F, 0.0F, 1.0F, 0.0F },
      { 0.0F, 0.0F, 0.0F, 1.0F }}
   };
+
 };
 
 // =======================================================================
@@ -99,7 +102,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
 
   // Eviter d'avoir les faces mal orientees en noir.
   // Pourrait etre utiliser pour detecter les problemes d'orientation
-  glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
+  glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
   // Optimisation pour le Fog et l'antialiasing
   glHint (GL_FOG_HINT,            GL_FASTEST);
@@ -157,7 +160,7 @@ void OpenGl_Workspace::UseTransparency (const Standard_Boolean theFlag)
 //=======================================================================
 void OpenGl_Workspace::ResetAppliedAspect()
 {
-  NamedStatus           = IsTextureEnabled() ? OPENGL_NS_TEXTURE : 0;
+  NamedStatus           = !myTextureBound.IsNull() ? OPENGL_NS_TEXTURE : 0;
   HighlightColor        = &myDefaultHighlightColor;
   AspectLine_set        = &myDefaultAspectLine;
   AspectLine_applied    = NULL;
@@ -175,4 +178,247 @@ void OpenGl_Workspace::ResetAppliedAspect()
   AspectFace(Standard_True);
   AspectMarker(Standard_True);
   AspectText(Standard_True);
+}
+
+// =======================================================================
+// function : DisableTexture
+// purpose  :
+// =======================================================================
+Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
+{
+  if (myTextureBound.IsNull())
+  {
+    return myTextureBound;
+  }
+
+  // reset texture matrix because some code may expect it is identity
+  GLint aMatrixMode = GL_TEXTURE;
+  glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
+  glMatrixMode (GL_TEXTURE);
+  glLoadIdentity();
+  glMatrixMode (aMatrixMode);
+
+  myTextureBound->Unbind (myGlContext);
+  switch (myTextureBound->GetTarget())
+  {
+    case GL_TEXTURE_1D:
+    {
+      if (myTextureBound->GetParams()->GenMode() != GL_NONE)
+      {
+        glDisable (GL_TEXTURE_GEN_S);
+      }
+      glDisable (GL_TEXTURE_1D);
+      break;
+    }
+    case GL_TEXTURE_2D:
+    {
+      if (myTextureBound->GetParams()->GenMode() != GL_NONE)
+      {
+        glDisable (GL_TEXTURE_GEN_S);
+        glDisable (GL_TEXTURE_GEN_T);
+      }
+      glDisable (GL_TEXTURE_2D);
+      break;
+    }
+    default: break;
+  }
+
+  Handle(OpenGl_Texture) aPrevTexture = myTextureBound;
+  myTextureBound.Nullify();
+  return aPrevTexture;
+}
+
+// =======================================================================
+// function : setTextureParams
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                theTexture,
+                                         const Handle(Graphic3d_TextureParams)& theParams)
+{
+  const Handle(Graphic3d_TextureParams)& aParams = theParams.IsNull() ? theTexture->GetParams() : theParams;
+  if (aParams.IsNull())
+  {
+    return;
+  }
+
+  GLint aMatrixMode = GL_TEXTURE;
+  glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
+
+  // setup texture matrix
+  glMatrixMode (GL_TEXTURE);
+  glLoadIdentity();
+  const Graphic3d_Vec2& aScale = aParams->Scale();
+  const Graphic3d_Vec2& aTrans = aParams->Translation();
+  glScalef     ( aScale.x(),  aScale.y(), 1.0f);
+  glTranslatef (-aTrans.x(), -aTrans.y(), 0.0f);
+  glRotatef (-aParams->Rotation(), 0.0f, 0.0f, 1.0f);
+
+  // setup generation of texture coordinates
+  switch (aParams->GenMode())
+  {
+    case Graphic3d_TOTM_OBJECT:
+    {
+      glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+      glTexGenfv (GL_S, GL_OBJECT_PLANE,     aParams->GenPlaneS().GetData());
+      if (theTexture->GetTarget() != GL_TEXTURE_1D)
+      {
+        glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+        glTexGenfv (GL_T, GL_OBJECT_PLANE,     aParams->GenPlaneT().GetData());
+      }
+      break;
+    }
+    case Graphic3d_TOTM_SPHERE:
+    {
+      glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+      if (theTexture->GetTarget() != GL_TEXTURE_1D)
+      {
+        glTexGeni (GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+      }
+      break;
+    }
+    case Graphic3d_TOTM_EYE:
+    {
+      glMatrixMode (GL_MODELVIEW);
+      glPushMatrix();
+      glLoadIdentity();
+
+      glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+      glTexGenfv (GL_S, GL_EYE_PLANE,        aParams->GenPlaneS().GetData());
+
+      if (theTexture->GetTarget() != GL_TEXTURE_1D)
+      {
+        glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+        glTexGenfv (GL_T, GL_EYE_PLANE,        aParams->GenPlaneT().GetData());
+      }
+      glPopMatrix();
+      break;
+    }
+    case Graphic3d_TOTM_MANUAL:
+    default: break;
+  }
+
+  // setup lighting
+  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aParams->IsModulate() ? GL_MODULATE : GL_DECAL);
+
+  // setup texture filtering and wrapping
+  //if (theTexture->GetParams() != theParams)
+  const GLenum aFilter   = (aParams->Filter() == Graphic3d_TOTF_NEAREST) ? GL_NEAREST : GL_LINEAR;
+  const GLenum aWrapMode = aParams->IsRepeat() ? GL_REPEAT : GL_CLAMP;
+  switch (theTexture->GetTarget())
+  {
+    case GL_TEXTURE_1D:
+    {
+      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      break;
+    }
+    case GL_TEXTURE_2D:
+    {
+      GLenum aFilterMin = aFilter;
+      if (theTexture->HasMipmaps())
+      {
+        aFilterMin = GL_NEAREST_MIPMAP_NEAREST;
+        if (aParams->Filter() == Graphic3d_TOTF_BILINEAR)
+        {
+          aFilterMin = GL_LINEAR_MIPMAP_NEAREST;
+        }
+        else if (aParams->Filter() == Graphic3d_TOTF_TRILINEAR)
+        {
+          aFilterMin = GL_LINEAR_MIPMAP_LINEAR;
+        }
+
+        if (myGlContext->extAnis)
+        {
+          // setup degree of anisotropy filter
+          const GLint aMaxDegree = myGlContext->MaxDegreeOfAnisotropy();
+          switch (aParams->AnisoFilter())
+          {
+            case Graphic3d_LOTA_QUALITY:
+            {
+              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aMaxDegree);
+              break;
+            }
+            case Graphic3d_LOTA_MIDDLE:
+            {
+
+              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (aMaxDegree <= 4) ? 2 : (aMaxDegree / 2));
+              break;
+            }
+            case Graphic3d_LOTA_FAST:
+            {
+              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2);
+              break;
+            }
+            case Graphic3d_LOTA_OFF:
+            default:
+            {
+              glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1);
+              break;
+            }
+          }
+        }
+      }
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, aFilterMin);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, aFilter);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     aWrapMode);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     aWrapMode);
+      break;
+    }
+    default: break;
+  }
+
+  switch (theTexture->GetTarget())
+  {
+    case GL_TEXTURE_1D:
+    {
+      if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
+      {
+        glEnable (GL_TEXTURE_GEN_S);
+      }
+      glEnable (GL_TEXTURE_1D);
+      break;
+    }
+    case GL_TEXTURE_2D:
+    {
+      if (aParams->GenMode() != Graphic3d_TOTM_MANUAL)
+      {
+        glEnable (GL_TEXTURE_GEN_S);
+        glEnable (GL_TEXTURE_GEN_T);
+      }
+      glEnable (GL_TEXTURE_2D);
+      break;
+    }
+    default: break;
+  }
+
+  glMatrixMode (aMatrixMode); // turn back active matrix
+  theTexture->SetParams (aParams);
+}
+
+// =======================================================================
+// function : EnableTexture
+// purpose  :
+// =======================================================================
+Handle(OpenGl_Texture) OpenGl_Workspace::EnableTexture (const Handle(OpenGl_Texture)&          theTexture,
+                                                        const Handle(Graphic3d_TextureParams)& theParams)
+{
+  if (theTexture.IsNull() || !theTexture->IsValid())
+  {
+    return DisableTexture();
+  }
+
+  if (myTextureBound.IsNull() && myTextureBound == theTexture)
+  {
+    Handle(OpenGl_Texture) aPrevTexture = myTextureBound;
+    myTextureBound = theTexture;
+    return aPrevTexture;
+  }
+
+  Handle(OpenGl_Texture) aPrevTexture = DisableTexture();
+  myTextureBound = theTexture;
+  myTextureBound->Bind (myGlContext);
+  setTextureParams (myTextureBound, theParams);
+
+  return aPrevTexture;
 }

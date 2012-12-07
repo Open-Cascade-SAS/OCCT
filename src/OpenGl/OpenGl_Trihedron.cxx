@@ -24,8 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <OpenGl_TextureBox.hxx>
-
 #include <InterfaceGraphic_Graphic3d.hxx>  /* pour CALL_DEF_STRUCTURE */
 #include <InterfaceGraphic_Aspect.hxx>  /* pour CALL_DEF_VIEW  */
 #include <InterfaceGraphic_Visual3d.hxx>
@@ -99,7 +97,7 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
   const Standard_Real V = AWorkspace->ActiveView()->Width();
 
   /* la taille des axes est 1 proportion (fixee a l'init du triedre) */
-  /* de la dimension la plus petite de la window.                    */ 
+  /* de la dimension la plus petite de la window.                    */
   const GLdouble L = ( U < V ? U : V ) * myScale;
 
   /*
@@ -158,18 +156,18 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
       break;
   }
 
-  /* 
-  * Creation du triedre 
+  /*
+  * Creation du triedre
   */
   const OpenGl_AspectLine *AspectLine = AWorkspace->AspectLine( Standard_True );
 
-  /* Fotis Sioutis 2007-11-14 15:06 
-  I have also seen in previous posts that the view trihedron in V3d_WIREFRAME mode 
-  changes colors depending on the state of the view. This behaviour can be easily 
+  /* Fotis Sioutis 2007-11-14 15:06
+  I have also seen in previous posts that the view trihedron in V3d_WIREFRAME mode
+  changes colors depending on the state of the view. This behaviour can be easily
   corrected by altering call_triedron_redraw function in OpenGl_triedron.c of TKOpengl.
-  The only change needed is to erase glDisable(GL_LIGHTING) that is called before the 
+  The only change needed is to erase glDisable(GL_LIGHTING) that is called before the
   Axis name drawing and move this function call just before the initial axis drawing.
-  Below is the code portion with the modification.I don't know if this is considered to 
+  Below is the code portion with the modification.I don't know if this is considered to
   be a bug but anyway i believe it might help some of you out there.*/
   glDisable(GL_LIGHTING);
 
@@ -259,10 +257,10 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
     TriedronCoord[1] = rayon * cos(ii * Angle1);
     glVertex3dv( TriedronCoord );
     ii--;
-  }  
+  }
   glEnd();
 
-  /* 
+  /*
   * Noms des axes et de l'origine
   */
   const OpenGl_AspectText *AspectText = AWorkspace->AspectText( Standard_True );
@@ -272,7 +270,7 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
   AWorkspace->RenderText (L"Y", 0, float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon));
   AWorkspace->RenderText (L"Z", 0, float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon));
 
-  /* 
+  /*
   * restauration du contexte des matrices
   */
   glMatrixMode (GL_PROJECTION);
@@ -304,7 +302,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   GLboolean isWithinView = GL_FALSE;
 
   /* la taille des axes est 1 proportion (fixee a l'init du triedre) */
-  /* de la dimension la plus petite de la window.                    */ 
+  /* de la dimension la plus petite de la window.                    */
   GLdouble L = ( U < V ? U : V ) * myScale;
 
   if (!isWithinView)
@@ -332,7 +330,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     */
     switch (myPos)
     {
-      case Aspect_TOTP_LEFT_LOWER : 
+      case Aspect_TOTP_LEFT_LOWER :
         glTranslated( -0.5*U + L , -0.5*V + L , 0. );
         break;
 
@@ -358,7 +356,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   const OpenGl_AspectLine *AspectLine = AWorkspace->AspectLine( Standard_True );
   const TEL_COLOUR &aLineColor = AspectLine->Color();
 
-  /* 
+  /*
   * Creation the trihedron
   */
 #define CYLINDER_LENGTH   0.75f
@@ -373,7 +371,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   /* GL_DEPTH_WRITEMASK is not a valid argument to glIsEnabled, the  */
   /* original code is shown to be broken when run under an OpenGL debugger  */
   /* like GLIntercept. This is the correct way to retrieve the mask value.  */
-  glGetBooleanv(GL_DEPTH_WRITEMASK, &aIsDepthMaskEnabled); 
+  glGetBooleanv(GL_DEPTH_WRITEMASK, &aIsDepthMaskEnabled);
 
   const GLdouble aCylinderLength = L * CYLINDER_LENGTH;
   const GLdouble aCylinderDiametr = L * myDiameter;
@@ -411,21 +409,21 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   glEnable(GL_CULL_FACE);
 
   /*Fotis Sioutis | 2008-01-21 10:55
-  In the function call_zbuffer_triedron_redraw of TKOpengl, 
-  the z buffered trihedron changes colors in case there 
-  is an object in the scene that has an explicit material 
-  attached to it.In the trihedron display loop, 
-  GL_COLOR_MATERIAL is enabled, but only the GL_DIFFUSE 
+  In the function call_zbuffer_triedron_redraw of TKOpengl,
+  the z buffered trihedron changes colors in case there
+  is an object in the scene that has an explicit material
+  attached to it.In the trihedron display loop,
+  GL_COLOR_MATERIAL is enabled, but only the GL_DIFFUSE
   parameter is utilized in glColorMaterial(...).
-  This causes the last ambient,specular and emission values 
+  This causes the last ambient,specular and emission values
   used, to stay at the stack and applied to the trihedron
   (which causes the color change).
-  A fix is proposed , to change GL_DIFFUSE to 
-  GL_AMBIENT_AND_DIFFUSE in glColorMaterial call in 
-  line 946.The above of course will leave unchanged 
+  A fix is proposed , to change GL_DIFFUSE to
+  GL_AMBIENT_AND_DIFFUSE in glColorMaterial call in
+  line 946.The above of course will leave unchanged
   the SPECULAR and EMISSION values.
-  Another proposal which would fix 100% the problem 
-  is to use glMaterial instead of glColor on the trihedron 
+  Another proposal which would fix 100% the problem
+  is to use glMaterial instead of glColor on the trihedron
   drawing loop.               */
   const GLfloat aNULLColor[] = { 0.f, 0.f, 0.f, 0.f }; /* FS 21/01/08 */
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, aNULLColor);
@@ -459,18 +457,18 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
 
   /* PCD 17/06/07  */
   GLint df;
-  glGetIntegerv (GL_DEPTH_FUNC, &df); 
+  glGetIntegerv (GL_DEPTH_FUNC, &df);
 
   int i;
   for (i = 0; i < 2; i++) /* PCD 11/02/08 Two pass method */
   {
     if (i == 0) /*  First pass  */
-    {                          
-      glDepthFunc(GL_ALWAYS); 
+    {
+      glDepthFunc(GL_ALWAYS);
     }
     else
     {
-      glDepthFunc(GL_LEQUAL); 
+      glDepthFunc(GL_LEQUAL);
     }
 
     glPushMatrix();
@@ -486,7 +484,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     glTranslated(0, 0, L * CYLINDER_LENGTH);
     glCallList(startList + 3);
     glCallList(startList + 1);
-    glPopMatrix();    
+    glPopMatrix();
 
     // X axis
     glRotated(90.0, TriedronAxeY[0], TriedronAxeY[1], TriedronAxeY[2]);
@@ -495,7 +493,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     glTranslated(0, 0, L * CYLINDER_LENGTH);
     glCallList(startList + 3);
     glCallList(startList + 1);
-    glPopMatrix();    
+    glPopMatrix();
 
     // Y axis
     glRotated(-90.0, TriedronAxeX[0], TriedronAxeX[1], TriedronAxeX[2]);
@@ -507,7 +505,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     glPopMatrix();
   }
 
-  if (!aIsDepthEnabled) 
+  if (!aIsDepthEnabled)
     glDisable(GL_DEPTH_TEST);
 
   if (!aIsDepthMaskEnabled)
@@ -520,7 +518,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   glColor3fv (aLineColor.rgb);
 
   /* Always write the text */
-  glDepthFunc(GL_ALWAYS); 
+  glDepthFunc(GL_ALWAYS);
 
   glPopAttrib();
 
@@ -529,11 +527,11 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
   const GLdouble rayon = L/30. ; /* rayon de la base du cone */
   //const double Angle = 2. * M_PI/ myNbFacettes;
 
-  glDeleteLists(startList, 4); 
+  glDeleteLists(startList, 4);
 
   glDisable(GL_LIGHTING);
 
-  /* 
+  /*
   * origine names
   */
   const OpenGl_AspectText *AspectText = AWorkspace->AspectText( Standard_True );
@@ -559,7 +557,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
 
 /*----------------------------------------------------------------------*/
 /*
-* Fonctions publiques 
+* Fonctions publiques
 */
 
 
@@ -614,44 +612,51 @@ OpenGl_Trihedron::~OpenGl_Trihedron ()
 /*----------------------------------------------------------------------*/
 
 /*
-* affichage d'un triedre non zoomable dans la wks  awsid 
+* affichage d'un triedre non zoomable dans la wks  awsid
 *
 * Triedre = Objet non Zoomable;
-* on cree cette fonction pour pouvoir travailler par les structures 
+* on cree cette fonction pour pouvoir travailler par les structures
 * utilisees par les fonctions Tsm* et TEL_VIEW_REP
 *
 */
 
 //call_triedron_redraw_from_wsid
-void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectLine *oldAspectLine = AWorkspace->SetAspectLine(&myAspectLine);
-  const OpenGl_AspectText *oldAspectText = AWorkspace->SetAspectText(&myAspectText);
+  const OpenGl_AspectLine* aPrevAspectLine = theWorkspace->SetAspectLine (&myAspectLine);
+  const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectText);
 
   /* check if GL_LIGHTING should be disabled
-  no enabling 'cause it will be done (if necessary: kinda Polygon types ) 
+  no enabling 'cause it will be done (if necessary: kinda Polygon types )
   during redrawing structures
   */
-  if (!AWorkspace->UseGLLight())
-    glDisable( GL_LIGHTING );
+  if (!theWorkspace->UseGLLight())
+  {
+    glDisable (GL_LIGHTING);
+  }
 
-  /* sauvegarde du contexte (on reste dans le buffer courant) */
-  const GLboolean save_texture_state = IsTextureEnabled();
-  DisableTexture();
+  const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
   /* affichage du Triedre Non Zoomable */
-  AWorkspace->ActiveView()->EndTransformPersistence();
+  theWorkspace->ActiveView()->EndTransformPersistence();
 
   if (myIsWireframe)
-    Redraw (AWorkspace);
+  {
+    Redraw (theWorkspace);
+  }
   else
-    RedrawZBuffer (AWorkspace);
+  {
+    RedrawZBuffer (theWorkspace);
+  }
 
-  /* restauration du contexte */
-  if (save_texture_state) EnableTexture();
+  // restore aspects
+  if (!aPrevTexture.IsNull())
+  {
+    theWorkspace->EnableTexture (aPrevTexture);
+  }
 
-  AWorkspace->SetAspectText(oldAspectText);
-  AWorkspace->SetAspectLine(oldAspectLine);
+  theWorkspace->SetAspectText (aPrevAspectText);
+  theWorkspace->SetAspectLine (aPrevAspectLine);
 }
 
 /*----------------------------------------------------------------------*/

@@ -17,16 +17,15 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_Polygon.hxx>
 
 #include <OpenGl_telem_util.hxx>
-#include <OpenGl_TextureBox.hxx>
 
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <GL/glu.h>
 
@@ -113,7 +112,7 @@ void OpenGl_Polygon::draw_polygon (const Handle(OpenGl_Workspace) &AWorkspace, T
         {
           glNormal3fv( pvn[i].xyz );
           glVertex3fv( ptr->xyz );
-        }      
+        }
     }
     else
     {
@@ -140,7 +139,7 @@ void OpenGl_Polygon::draw_polygon (const Handle(OpenGl_Workspace) &AWorkspace, T
         glVertex3fv( ptr->xyz );
       }
     }
-  } 
+  }
   glEnd();
   if( myData.reverse_order ) glFrontFace( GL_CCW );
 
@@ -283,7 +282,7 @@ bgntriangulate(const TEL_POLYGON_DATA *d, void ( APIENTRY * out_ver)() )
   gluTessCallback( tripak, GLU_TESS_END, out_endtmesh );
   gluTessCallback( tripak, GLU_TESS_ERROR, (_GLUfuncptr)(out_error) );
   gluTessCallback( tripak, GLU_TESS_COMBINE, (_GLUfuncptr)(mycombine) );
-#else 
+#else
   gluTessCallback( tripak, GLU_TESS_BEGIN, (void (APIENTRY*)())out_bgntmesh );
   gluTessCallback( tripak, GLU_TESS_VERTEX, (void (APIENTRY*)())out_ver );
   gluTessCallback( tripak, GLU_TESS_END, (void (APIENTRY*)())out_endtmesh );
@@ -360,7 +359,7 @@ void OpenGl_Polygon::draw_polygon_concav (const Handle(OpenGl_Workspace) &AWorks
     {
       xyz[0] = ptr->xyz[0];
       xyz[1] = ptr->xyz[1];
-      xyz[2] = ptr->xyz[2];    
+      xyz[2] = ptr->xyz[2];
 #ifndef WNT
       gluTessVertex( tripak, xyz,(void * ) i );
 #else
@@ -373,8 +372,8 @@ void OpenGl_Polygon::draw_polygon_concav (const Handle(OpenGl_Workspace) &AWorks
     gluTessEndContour( tripak );
     gluTessEndPolygon( tripak );
     endtriangulate();
-  } 
-  else 
+  }
+  else
   {
     if( front_lighting_model )
     {
@@ -391,37 +390,39 @@ void OpenGl_Polygon::draw_polygon_concav (const Handle(OpenGl_Workspace) &AWorks
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Polygon::draw_edges (const TEL_COLOUR *edge_colour, const Aspect_InteriorStyle interior_style, const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_Polygon::draw_edges (const TEL_COLOUR*               theEdgeColor,
+                                 const Aspect_InteriorStyle      theInteriorStyle,
+                                 const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectFace *aspect_face = AWorkspace->AspectFace( Standard_True );
+  const OpenGl_AspectFace* anAspectFace = theWorkspace->AspectFace (Standard_True);
 
-  if ( interior_style != Aspect_IS_HIDDENLINE && aspect_face->Context().Edge == TOff )
+  if (theInteriorStyle != Aspect_IS_HIDDENLINE
+   && anAspectFace->Edge == TOff)
+  {
     return;
+  }
 
-  glDisable(GL_LIGHTING);
-  const GLboolean texture_on = IsTextureEnabled();
-  if (texture_on) DisableTexture();
+  glDisable (GL_LIGHTING);
+  const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
   // Setup line aspect
-  const OpenGl_AspectLine *aspect_line_old = AWorkspace->SetAspectLine( aspect_face->AspectEdge() );
-  AWorkspace->AspectLine( Standard_True );
+  const OpenGl_AspectLine* aPrevAspectLine = theWorkspace->SetAspectLine (anAspectFace->AspectEdge());
+  theWorkspace->AspectLine (Standard_True);
 
-  Tint i;
+  glColor3fv (theEdgeColor->rgb);
+
+  glBegin (GL_LINE_LOOP);
   tel_point ptr = myData.vertices;
-
-  glColor3fv( edge_colour->rgb );
-
-  glBegin(GL_LINE_LOOP);
-  for( i=0; i<myData.num_vertices; i++, ptr++ )
+  for (Tint i = 0; i < myData.num_vertices; i++, ptr++)
   {
-    glVertex3fv( ptr->xyz );
+    glVertex3fv (ptr->xyz);
   }
   glEnd();
 
   // Restore line context
-  AWorkspace->SetAspectLine( aspect_line_old );
+  theWorkspace->SetAspectLine (aPrevAspectLine);
 
-  if (texture_on) EnableTexture();
+  theWorkspace->EnableTexture (aPrevTexture);
 }
 
 /*----------------------------------------------------------------------*/
@@ -578,20 +579,20 @@ void OpenGl_Polygon::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 {
   const OpenGl_AspectFace *aspect_face = AWorkspace->AspectFace( Standard_True );
 
-  Tint front_lighting_model = aspect_face->Context().IntFront.color_mask;
-  const Aspect_InteriorStyle interior_style = aspect_face->Context().InteriorStyle;
-  const TEL_COLOUR *interior_colour = &aspect_face->Context().IntFront.matcol;
+  Tint front_lighting_model = aspect_face->IntFront.color_mask;
+  const Aspect_InteriorStyle interior_style = aspect_face->InteriorStyle;
+  const TEL_COLOUR *interior_colour = &aspect_face->IntFront.matcol;
   const TEL_COLOUR *edge_colour = &aspect_face->AspectEdge()->Color();
 
   // Use highlight colous
   if ( AWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT )
-  {                         
+  {
     edge_colour = interior_colour = AWorkspace->HighlightColor;
     front_lighting_model = 0;
   }
 
   if( interior_style != Aspect_IS_EMPTY && AWorkspace->DegenerateModel < 2 )
-  {          
+  {
     if ( front_lighting_model )
       glEnable(GL_LIGHTING);
     else

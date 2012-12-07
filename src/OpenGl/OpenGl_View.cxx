@@ -21,15 +21,17 @@
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_View.hxx>
-
+#include <OpenGl_Context.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Display.hxx>
 
-#include <OpenGl_Display.hxx>
+#include <OpenGl_Texture.hxx>
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 
 #include <OpenGl_transform_persistence.hxx>
+
+#include <Graphic3d_TextureEnv.hxx>
 
 #include <GL/glu.h> // gluUnProject()
 
@@ -77,8 +79,7 @@ static const TEL_TRANSFORM_PERSISTENCE myDefaultTransPers = { 0, 0.F, 0.F, 0.F }
 /*----------------------------------------------------------------------*/
 
 OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
-: myTextureEnv(0),
-  mySurfaceDetail(Visual3d_TOD_NONE),
+: mySurfaceDetail(Visual3d_TOD_NONE),
   myBackfacing(0),
   myBgTexture(myDefaultBgTexture),
   myBgGradient(myDefaultBgGradient),
@@ -122,11 +123,45 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
 
 OpenGl_View::~OpenGl_View ()
 {
-  if (myAnimationListIndex)
-    glDeleteLists((GLuint)myAnimationListIndex,1);
+  ReleaseGlResources (NULL); // ensure ReleaseGlResources() was called within valid context
+}
 
-  if ( myBgTexture.TexId != 0 )
-    glDeleteTextures( 1, (GLuint*)&(myBgTexture.TexId) );
+void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
+{
+  if (!myTextureEnv.IsNull())
+  {
+    theCtx->DelayedRelease (myTextureEnv);
+    myTextureEnv.Nullify();
+  }
+  if (myBgTexture.TexId != 0)
+  {
+    glDeleteTextures (1, (GLuint*)&(myBgTexture.TexId));
+    myBgTexture.TexId = 0;
+  }
+  if (myAnimationListIndex)
+  {
+    glDeleteLists ((GLuint )myAnimationListIndex, 1);
+    myAnimationListIndex = 0;
+  }
+}
+
+void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
+                                 const Handle(Graphic3d_TextureEnv)& theTexture)
+{
+  if (!myTextureEnv.IsNull())
+  {
+    theCtx->DelayedRelease (myTextureEnv);
+    myTextureEnv.Nullify();
+  }
+
+  if (theTexture.IsNull())
+  {
+    return;
+  }
+
+  myTextureEnv = new OpenGl_Texture (theTexture->GetParams());
+  Handle(Image_PixMap) anImage = theTexture->GetImage();
+  myTextureEnv->Init (theCtx, *anImage.operator->(), theTexture->Type());
 }
 
 /*----------------------------------------------------------------------*/
@@ -214,7 +249,7 @@ void OpenGl_View::SetClippingPlanes (const CALL_DEF_VIEWCONTEXT &AContext)
 {
   // clear clipping planes information
   myClippingPlanes.Clear();
-  // update information 
+  // update information
   int i = 0;
   for (; i < AContext.NbActivePlane; i++)
   {
@@ -253,42 +288,42 @@ void OpenGl_View::SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext)
 /*----------------------------------------------------------------------*/
 
 //call_togl_cliplimit
-void OpenGl_View::SetClipLimit (const CALL_DEF_VIEW &ACView)
+void OpenGl_View::SetClipLimit (const Graphic3d_CView& theCView)
 {
   myZClip.Back.Limit =
-    ( ACView.Context.ZClipBackPlane - ACView.Mapping.BackPlaneDistance ) /
-    ( ACView.Mapping.FrontPlaneDistance - ACView.Mapping.BackPlaneDistance );
+    (theCView.Context.ZClipBackPlane     - theCView.Mapping.BackPlaneDistance) /
+    (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
   myZClip.Front.Limit =
-    ( ACView.Context.ZClipFrontPlane - ACView.Mapping.BackPlaneDistance ) /
-    ( ACView.Mapping.FrontPlaneDistance - ACView.Mapping.BackPlaneDistance );
-  if ( myZClip.Back.Limit < 0.F )
-    myZClip.Back.Limit = 0.F;
-  if ( myZClip.Front.Limit > 1.F )
-    myZClip.Front.Limit = 1.F;
-  if ( myZClip.Back.Limit > myZClip.Front.Limit )
+    (theCView.Context.ZClipFrontPlane    - theCView.Mapping.BackPlaneDistance) /
+    (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
+  if (myZClip.Back.Limit < 0.0f)
+    myZClip.Back.Limit = 0.0f;
+  if (myZClip.Front.Limit > 1.0f)
+    myZClip.Front.Limit = 1.0f;
+  if (myZClip.Back.Limit > myZClip.Front.Limit)
   {
-    myZClip.Back.Limit = 0.F;
-    myZClip.Front.Limit = 1.F;
+    myZClip.Back.Limit  = 0.0f;
+    myZClip.Front.Limit = 1.0f;
   }
 
-  myZClip.Back.IsOn = (ACView.Context.BackZClipping != 0);
-  myZClip.Front.IsOn = (ACView.Context.FrontZClipping != 0);
+  myZClip.Back.IsOn  = (theCView.Context.BackZClipping  != 0);
+  myZClip.Front.IsOn = (theCView.Context.FrontZClipping != 0);
 }
 
 /*----------------------------------------------------------------------*/
 
 //call_togl_viewmapping
-void OpenGl_View::SetMapping (const CALL_DEF_VIEW &ACView)
+void OpenGl_View::SetMapping (const Graphic3d_CView& theCView)
 {
-  const float ratio = ACView.DefWindow.dy / ACView.DefWindow.dx;
-  const float r_ratio = ACView.DefWindow.dx / ACView.DefWindow.dy;
+  const float ratio   = theCView.DefWindow.dy / theCView.DefWindow.dx;
+  const float r_ratio = theCView.DefWindow.dx / theCView.DefWindow.dy;
 
   TEL_VIEW_MAPPING Map;
 
-  Map.window.xmin = ACView.Mapping.WindowLimit.um;
-  Map.window.ymin = ACView.Mapping.WindowLimit.vm;
-  Map.window.xmax = ACView.Mapping.WindowLimit.uM;
-  Map.window.ymax = ACView.Mapping.WindowLimit.vM;
+  Map.window.xmin = theCView.Mapping.WindowLimit.um;
+  Map.window.ymin = theCView.Mapping.WindowLimit.vm;
+  Map.window.xmax = theCView.Mapping.WindowLimit.uM;
+  Map.window.ymax = theCView.Mapping.WindowLimit.vM;
 
   Map.viewport.xmin = 0.F;
   Map.viewport.xmax = ( 1.F < r_ratio ? 1.F : r_ratio );
@@ -297,8 +332,8 @@ void OpenGl_View::SetMapping (const CALL_DEF_VIEW &ACView)
   Map.viewport.zmin = 0.F;
   Map.viewport.zmax = 1.F;
 
-  /* projection type */
-  switch( ACView.Mapping.Projection )
+  // projection type
+  switch (theCView.Mapping.Projection)
   {
     case 0 :
       Map.proj = TelPerspective;
@@ -308,79 +343,81 @@ void OpenGl_View::SetMapping (const CALL_DEF_VIEW &ACView)
       break;
   }
 
-  /* projection reference point */
-  Map.prp[0] = ACView.Mapping.ProjectionReferencePoint.x;
-  Map.prp[1] = ACView.Mapping.ProjectionReferencePoint.y;
-  Map.prp[2] = ACView.Mapping.ProjectionReferencePoint.z;
+  // projection reference point
+  Map.prp[0] = theCView.Mapping.ProjectionReferencePoint.x;
+  Map.prp[1] = theCView.Mapping.ProjectionReferencePoint.y;
+  Map.prp[2] = theCView.Mapping.ProjectionReferencePoint.z;
   if (!openglDisplay.IsNull() && !openglDisplay->Walkthrough())
-    Map.prp[2] += ACView.Mapping.FrontPlaneDistance;
+    Map.prp[2] += theCView.Mapping.FrontPlaneDistance;
 
-  /* view plane distance */
-  Map.vpd = ACView.Mapping.ViewPlaneDistance;
+  // view plane distance
+  Map.vpd = theCView.Mapping.ViewPlaneDistance;
 
-  /* back plane distance */
-  Map.bpd = ACView.Mapping.BackPlaneDistance;
+  // back plane distance
+  Map.bpd = theCView.Mapping.BackPlaneDistance;
 
-  /* front plane distance */
-  Map.fpd = ACView.Mapping.FrontPlaneDistance;
+  // front plane distance
+  Map.fpd = theCView.Mapping.FrontPlaneDistance;
 
   Tint err_ind = 0;
 
-  /* use user-defined matrix */
-  if ( ACView.Mapping.IsCustomMatrix )
+  // use user-defined matrix
+  if (theCView.Mapping.IsCustomMatrix)
   {
     int i, j;
     for( i = 0; i < 4; i++ )
       for( j = 0; j < 4; j++ )
-        myMappingMatrix[i][j] = ACView.Mapping.ProjectionMatrix[i][j];
+        myMappingMatrix[i][j] = theCView.Mapping.ProjectionMatrix[i][j];
   }
-  else 
+  else
     TelEvalViewMappingMatrix( &Map, &err_ind, myMappingMatrix );
 
-  if ( !err_ind )
+  if (!err_ind)
     myExtra.map = Map;
 }
 
 /*----------------------------------------------------------------------*/
 
 //call_togl_vieworientation
-void OpenGl_View::SetOrientation (const CALL_DEF_VIEW &ACView)
+void OpenGl_View::SetOrientation (const Graphic3d_CView& theCView)
 {
   Tfloat Vrp[3];
   Tfloat Vpn[3];
   Tfloat Vup[3];
   Tfloat ScaleFactors[3];
 
-  Vrp[0] = ACView.Orientation.ViewReferencePoint.x;
-  Vrp[1] = ACView.Orientation.ViewReferencePoint.y;
-  Vrp[2] = ACView.Orientation.ViewReferencePoint.z;
+  Vrp[0] = theCView.Orientation.ViewReferencePoint.x;
+  Vrp[1] = theCView.Orientation.ViewReferencePoint.y;
+  Vrp[2] = theCView.Orientation.ViewReferencePoint.z;
 
-  Vpn[0] = ACView.Orientation.ViewReferencePlane.x;
-  Vpn[1] = ACView.Orientation.ViewReferencePlane.y;
-  Vpn[2] = ACView.Orientation.ViewReferencePlane.z;
+  Vpn[0] = theCView.Orientation.ViewReferencePlane.x;
+  Vpn[1] = theCView.Orientation.ViewReferencePlane.y;
+  Vpn[2] = theCView.Orientation.ViewReferencePlane.z;
 
-  Vup[0] = ACView.Orientation.ViewReferenceUp.x;
-  Vup[1] = ACView.Orientation.ViewReferenceUp.y;
-  Vup[2] = ACView.Orientation.ViewReferenceUp.z;
+  Vup[0] = theCView.Orientation.ViewReferenceUp.x;
+  Vup[1] = theCView.Orientation.ViewReferenceUp.y;
+  Vup[2] = theCView.Orientation.ViewReferenceUp.z;
 
-  ScaleFactors[0] = ACView.Orientation.ViewScaleX;
-  ScaleFactors[1] = ACView.Orientation.ViewScaleY;
-  ScaleFactors[2] = ACView.Orientation.ViewScaleZ;
+  ScaleFactors[0] = theCView.Orientation.ViewScaleX;
+  ScaleFactors[1] = theCView.Orientation.ViewScaleY;
+  ScaleFactors[2] = theCView.Orientation.ViewScaleZ;
 
   Tint err_ind = 0;
 
   // use user-defined matrix
-  if ( ACView.Orientation.IsCustomMatrix )
+  if (theCView.Orientation.IsCustomMatrix)
   {
     int i, j;
     for( i = 0; i < 4; i++ )
       for( j = 0; j < 4; j++ )
-        myOrientationMatrix[i][j] = ACView.Orientation.ModelViewMatrix[i][j];
+        myOrientationMatrix[i][j] = theCView.Orientation.ModelViewMatrix[i][j];
   }
   else
-    TelEvalViewOrientationMatrix( Vrp, Vpn, Vup, ScaleFactors, &err_ind, myOrientationMatrix );
+  {
+    TelEvalViewOrientationMatrix (Vrp, Vpn, Vup, ScaleFactors, &err_ind, myOrientationMatrix);
+  }
 
-  if ( !err_ind )
+  if (!err_ind)
   {
     myExtra.vrp[0] = Vrp[0];
     myExtra.vrp[1] = Vrp[1];
@@ -402,9 +439,10 @@ void OpenGl_View::SetOrientation (const CALL_DEF_VIEW &ACView)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::SetFog (const CALL_DEF_VIEW &ACView, const Standard_Boolean AFlag)
+void OpenGl_View::SetFog (const Graphic3d_CView& theCView,
+                          const Standard_Boolean theFlag)
 {
-  if( !AFlag )
+  if (!theFlag)
   {
     myFog.IsOn = Standard_False;
   }
@@ -413,12 +451,12 @@ void OpenGl_View::SetFog (const CALL_DEF_VIEW &ACView, const Standard_Boolean AF
     myFog.IsOn = Standard_True;
 
     myFog.Front =
-      (ACView.Context.DepthFrontPlane - ACView.Mapping.BackPlaneDistance) /
-      (ACView.Mapping.FrontPlaneDistance - ACView.Mapping.BackPlaneDistance);
+      (theCView.Context.DepthFrontPlane    - theCView.Mapping.BackPlaneDistance) /
+      (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
 
     myFog.Back =
-      (ACView.Context.DepthBackPlane - ACView.Mapping.BackPlaneDistance) /
-      (ACView.Mapping.FrontPlaneDistance - ACView.Mapping.BackPlaneDistance);
+      (theCView.Context.DepthBackPlane     - theCView.Mapping.BackPlaneDistance) /
+      (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
 
     if (myFog.Front < 0.F)
       myFog.Front = 0.F;
@@ -436,10 +474,10 @@ void OpenGl_View::SetFog (const CALL_DEF_VIEW &ACView, const Standard_Boolean AF
       myFog.Back = 0.F;
     }
 
-    myFog.Color.rgb[0] = ACView.DefWindow.Background.r;
-    myFog.Color.rgb[1] = ACView.DefWindow.Background.g;
-    myFog.Color.rgb[2] = ACView.DefWindow.Background.b;
-    myFog.Color.rgb[3] = 1.F;
+    myFog.Color.rgb[0] = theCView.DefWindow.Background.r;
+    myFog.Color.rgb[1] = theCView.DefWindow.Background.g;
+    myFog.Color.rgb[2] = theCView.DefWindow.Background.b;
+    myFog.Color.rgb[3] = 1.0f;
   }
 }
 
@@ -486,7 +524,7 @@ void OpenGl_View::EndTransformPersistence ()
     glPopMatrix ();
     myIsTransPers = Standard_False;
   }
-} 
+}
 
 /*----------------------------------------------------------------------*/
 
@@ -586,7 +624,7 @@ const TEL_TRANSFORM_PERSISTENCE * OpenGl_View::BeginTransformPersistence (const 
 
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
-    glTranslated( ATransPers->pointX, ATransPers->pointY, ATransPers->pointZ );        
+    glTranslated( ATransPers->pointX, ATransPers->pointY, ATransPers->pointZ );
   }
 
   if( ATransPers->mode == TPF_TRIEDRON )

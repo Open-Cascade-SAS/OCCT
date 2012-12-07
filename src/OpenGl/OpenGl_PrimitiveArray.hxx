@@ -17,13 +17,12 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef OpenGl_PrimitiveArray_Header
 #define OpenGl_PrimitiveArray_Header
 
 #include <OpenGl_VertexBuffer.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_InteriorStyle.hxx>
 
 #include <OpenGl_Element.hxx>

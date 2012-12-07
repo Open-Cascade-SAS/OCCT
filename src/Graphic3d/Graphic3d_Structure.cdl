@@ -971,16 +971,13 @@ is
 	---Purpose: Updates the c structure associated to <me>.
 	---Category: Private methods
 
-	CStructure ( me	)
-		returns Address from Standard
+	CStructure ( me	: mutable )
+		returns CStructure from Graphic3d
 		is static;
 	---Level: Internal
 	---Purpose: Returns the c structure associated to <me>.
 	---Category: Private methods
-
---
-
---
+	---C++: return *
 
 fields
 

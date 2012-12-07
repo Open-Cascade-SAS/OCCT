@@ -54,6 +54,7 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_TextureRoot.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 
@@ -1786,61 +1787,6 @@ static int VDisplayAll(	Draw_Interpretor& di, Standard_Integer argc, const char*
   return 0;
 }
 
-
-//#######################################################################################################
-
-
-static TCollection_AsciiString GetEnvir (Draw_Interpretor& di) {
-
-  static Standard_Boolean IsDefined=Standard_False ;
-  static TCollection_AsciiString VarName;
-  if ( !IsDefined ) {
-    const char *envir, *casroot ;
-    envir = getenv("CSF_MDTVTexturesDirectory") ;
-
-    Standard_Boolean HasDefinition = Standard_False ;
-    if ( !envir ) {
-      casroot  = getenv("CASROOT");
-      if ( casroot ) {
-	VarName = TCollection_AsciiString  (casroot);
-	VarName += "/src/Textures" ;
-	HasDefinition = Standard_True ;
-      }
-    } else {
-      VarName = TCollection_AsciiString  (envir);
-      HasDefinition = Standard_True ;
-    }
-    if ( HasDefinition ) {
-      OSD_Path aPath ( VarName );
-      OSD_Directory aDir(aPath);
-      if ( aDir.Exists () ) {
-	TCollection_AsciiString aTexture = VarName + "/2d_MatraDatavision.rgb" ;
-	OSD_File TextureFile ( aTexture );
-	if ( !TextureFile.Exists() ) {
-	  di << " CSF_MDTVTexturesDirectory or CASROOT not correctly setted " << "\n";
-	  di << " not all files are found in : "<<VarName.ToCString() << "\n";
-	  Standard_Failure::Raise ( "CSF_MDTVTexturesDirectory or CASROOT not correctly setted " );
-	}
-      } else {
-	di << " CSF_MDTVTexturesDirectory or CASROOT not correctly setted " << "\n";
-	di << " Directory : "<< VarName.ToCString() << " not exist " << "\n";
-	Standard_Failure::Raise ( "CSF_MDTVTexturesDirectory or CASROOT not correctly setted " );
-      }
-      return VarName ;
-    } else {
-      di << " CSF_MDTVTexturesDirectory and CASROOT not setted " << "\n";
-      di << " one of these variable are mandatory to use this fonctionnality" << "\n";
-      Standard_Failure::Raise ( "CSF_MDTVTexturesDirectory and CASROOT not setted " );
-    }
-    IsDefined = Standard_True ;
-  }
-  return VarName ;
-
-}
-
-//#######################################################################################################
-
-
 //#######################################################################################################
 
 //##     VTexture
@@ -1909,8 +1855,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
 	{
 	  if(strcasecmp(argv[2],"?")==0)
 	    {
-	      TCollection_AsciiString monPath = GetEnvir (di) ;
-
+	      TCollection_AsciiString monPath = Graphic3d_TextureRoot::TexturesFolder();
 	      di<<"\n Files in current directory : \n"<<"\n";
 	      TCollection_AsciiString Cmnd ("glob -nocomplain *");
 	      di.Eval(Cmnd.ToCString());

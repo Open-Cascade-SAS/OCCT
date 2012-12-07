@@ -17,11 +17,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Text.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <GL/glu.h> // gluUnProject()
 
@@ -79,7 +79,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 
   // Use highlight colours
   if( AWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT )
-  {                         
+  {
     tcolor = scolor = AWorkspace->HighlightColor;
   }
   else
@@ -128,33 +128,33 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
       int sWidth, sAscent, sDescent;
       AWorkspace->StringSize(myString, sWidth, sAscent, sDescent);
 
-      objrefX = (float)myAttachPnt.xyz[0];   
-      objrefY = (float)myAttachPnt.xyz[1];   
+      objrefX = (float)myAttachPnt.xyz[0];
+      objrefY = (float)myAttachPnt.xyz[1];
       objrefZ = (float)myAttachPnt.xyz[2];
       status = gluProject (objrefX, objrefY, objrefZ, modelMatrix, projMatrix, viewport,
         &winx1, &winy1, &winz1);
 
       winx = winx1;
       winy = winy1-sDescent;
-      winz = winz1+0.00001;     
+      winz = winz1+0.00001;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &objX, &objY, &objZ);
 
       winx = winx1 + sWidth;
       winy = winy1-sDescent;
-      winz = winz1+0.00001; /* il vaut mieux F+B / 1000000 ? */     
+      winz = winz1+0.00001; /* il vaut mieux F+B / 1000000 ? */
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &obj1X, &obj1Y, &obj1Z);
 
       winx = winx1 + sWidth;
       winy = winy1 + sAscent;
-      winz = winz1+0.00001;     
+      winz = winz1+0.00001;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &obj2X, &obj2Y, &obj2Z);
 
       winx = winx1;
       winy = winy1+ sAscent;
-      winz = winz1+0.00001;   
+      winz = winz1+0.00001;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &obj3X, &obj3Y, &obj3Z);
 
@@ -169,15 +169,15 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     }
 
     case Aspect_TODT_DEKALE:
-      objrefX = (float)myAttachPnt.xyz[0];   
-      objrefY = (float)myAttachPnt.xyz[1];   
+      objrefX = (float)myAttachPnt.xyz[0];
+      objrefY = (float)myAttachPnt.xyz[1];
       objrefZ = (float)myAttachPnt.xyz[2];
       status = gluProject (objrefX, objrefY, objrefZ, modelMatrix, projMatrix, viewport,
         &winx1, &winy1, &winz1);
 
       winx = winx1+1;
       winy = winy1+1;
-      winz = winz1+0.00001;     
+      winz = winz1+0.00001;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
         &objX, &objY, &objZ);
 
@@ -192,7 +192,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
       winx = winx1-1;
       winy = winy1+1;
       status = gluUnProject (winx, winy, winz, modelMatrix, projMatrix, viewport,
-        &objX, &objY, &objZ); 
+        &objX, &objY, &objZ);
 
       AWorkspace->RenderText( myString, 0, (float)objX, (float)objY,(float)objZ );
       winx = winx1+1;

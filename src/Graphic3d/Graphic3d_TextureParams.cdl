@@ -1,0 +1,171 @@
+-- Copyright (c) 2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class TextureParams from Graphic3d
+
+inherits Transient from Standard
+
+  ---Purpose: This class describes texture parameters.
+
+uses
+
+  Vec2                     from Graphic3d,
+  Vec4                     from Graphic3d,
+  TypeOfTextureMode        from Graphic3d,
+  TypeOfTextureFilter      from Graphic3d,
+  LevelOfTextureAnisotropy from Graphic3d
+
+is
+
+  Create
+  returns TextureParams from Graphic3d;
+  ---Purpose: Default constructor.
+
+  Destroy (me);
+  ---C++ : alias ~
+
+  --
+  -- public methods
+  --
+
+  IsModulate (me) returns Boolean from Standard;
+  ---Level   : public
+  ---Purpose : @return TRUE if the texture is modulate.
+  -- Default value is FALSE.
+
+  SetModulate (me : mutable;
+               theToModulate : Boolean from Standard);
+  ---Level   : public
+  ---Purpose : @param theToModulate turn modulation on/off.
+
+  IsRepeat (me) returns Boolean from Standard;
+  ---Level   : public
+  ---Purpose : @return TRUE if the texture repeat is enabled.
+  -- Default value is FALSE.
+
+  SetRepeat (me : mutable;
+             theToRepeat : Boolean from Standard);
+  ---Level   : public
+  ---Purpose : @param theToRepeat turn texture repeat mode ON or OFF (clamping).
+
+  Filter (me) returns TypeOfTextureFilter from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return texture interpolation filter.
+  -- Default value is Graphic3d_TOTF_NEAREST.
+
+  SetFilter (me : mutable;
+             theFilter : TypeOfTextureFilter from Graphic3d);
+  ---Level   : public
+  ---Purpose : @param theFilter texture interpolation filter.
+
+  AnisoFilter (me) returns LevelOfTextureAnisotropy from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return level of anisontropy texture filter.
+  -- Default value is Graphic3d_LOTA_OFF.
+
+  SetAnisoFilter (me : mutable;
+                  theLevel : LevelOfTextureAnisotropy from Graphic3d);
+  ---Level   : public
+  ---Purpose : @param theLevel level of anisontropy texture filter.
+
+  Rotation (me) returns ShortReal from Standard;
+  ---Level   : public
+  ---Purpose : @return rotation angle in degrees
+  -- Default value is 0.
+
+  SetRotation (me : mutable;
+               theAngleDegrees : ShortReal from Standard);
+  ---Level   : public
+  ---Purpose : @param theAngleDegrees rotation angle.
+
+  Scale (me) returns Vec2 from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return scale factor
+  -- Default value is no scaling (1.0; 1.0).
+  ---C++     : return const &
+
+  SetScale (me : mutable;
+               theScale : Vec2 from Graphic3d);
+  ---Level   : public
+  ---Purpose : @param theScale scale factor.
+
+  Translation (me) returns Vec2 from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return translation vector
+  -- Default value is no translation (0.0; 0.0).
+  ---C++     : return const &
+
+  SetTranslation (me : mutable;
+                  theVec : Vec2 from Graphic3d);
+  ---Level   : public
+  ---Purpose : @param theVec translation vector.
+
+  GenMode (me) returns TypeOfTextureMode from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return texture coordinates generation mode.
+  -- Default value is Graphic3d_TOTM_MANUAL.
+
+  GenPlaneS (me) returns Vec4 from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return texture coordinates generation plane S.
+  ---C++     : return const &
+
+  GenPlaneT (me) returns Vec4 from Graphic3d;
+  ---Level   : public
+  ---Purpose : @return texture coordinates generation plane T.
+  ---C++     : return const &
+
+  SetGenMode (me : mutable;
+              theMode   : TypeOfTextureMode from Graphic3d;
+              thePlaneS : Vec4 from Graphic3d;
+              thePlaneT : Vec4 from Graphic3d);
+  ---Level   : public
+  ---Purpose : Setup texture coordinates generation mode.
+
+fields
+
+  -- apply lighting on texture or not
+  myToModulate : Boolean from Standard;
+
+  -- texture wrapping mode
+  myToRepeat   : Boolean from Standard;
+
+  -- texture filter
+  myFilter     : TypeOfTextureFilter from Graphic3d;
+
+  -- level of anisontropy texture filter
+  myAnisoLevel : LevelOfTextureAnisotropy from Graphic3d;
+
+  -- texture mapping - rotation angle in degrees around OZ axis
+  myRotAngle   : ShortReal from Standard;
+
+  -- texture coordinate scale factor
+  myScale      : Vec2 from Graphic3d;
+
+  -- texture coordinate translation vector
+  myTranslation: Vec2 from Graphic3d;
+
+  -- texture coordinates generation mode
+  myGenMode    : TypeOfTextureMode from Graphic3d;
+
+  -- plane definition for s(x) coordinate (for Graphic3d_TOTM_EYE and Graphic3d_TOTM_OBJECT generation modes)
+  myGenPlaneS  : Vec4 from Graphic3d;
+
+  -- plane definition for t(y) coordinate (for Graphic3d_TOTM_EYE and Graphic3d_TOTM_OBJECT generation modes)
+  myGenPlaneT  : Vec4 from Graphic3d;
+
+end TextureParams;

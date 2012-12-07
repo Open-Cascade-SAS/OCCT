@@ -18,31 +18,24 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
+class Texture1Dmanual from Graphic3d
 
-class  Texture1Dmanual  from  Graphic3d 
+inherits Texture1D from Graphic3d
 
-inherits  Texture1D  from  Graphic3d  
- 
----Purpose: This class provides the implementation of
--- a manual 1D texture.
--- you MUST provides texture coordinates on
--- your facets if you want to see your
--- texture. 
+---Purpose: This class provides the implementation of a manual 1D texture.
+-- you MUST provides texture coordinates on your facets if you want to see your texture. 
 
+uses
 
-uses 
-    NameOfTexture1D  from  Graphic3d, 
-    StructureManager    from  Graphic3d
+  NameOfTexture1D from Graphic3d,
+  AsciiString     from TCollection
 
-is 
-    Create(SM  :  StructureManager  from  Graphic3d; 
-           FileName  :  CString  from  Standard)  returns  mutable  Texture1Dmanual  from  Graphic3d; 
-    ---Purpose: Creates a texture from the file FileName.
+is
 
+  Create (theFileName : AsciiString from TCollection) returns mutable Texture1Dmanual from Graphic3d;
+  ---Purpose: Creates a texture from the file FileName.
 
-    Create(SM  :  StructureManager  from  Graphic3d; 
-    	   NOT  :  NameOfTexture1D  from  Graphic3d)  returns  mutable  Texture1Dmanual  from  Graphic3d;
-    ---Purpose: Create a texture from a predefined texture name set.
+  Create (theNOT : NameOfTexture1D from Graphic3d) returns mutable Texture1Dmanual from Graphic3d;
+  ---Purpose: Create a texture from a predefined texture name set.
 
-end  Texture1Dmanual; 
-
+end Texture1Dmanual;

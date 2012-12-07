@@ -1,4 +1,4 @@
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -15,30 +15,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef _Graphic3d_CTexture_HeaderFile
-#define _Graphic3d_CTexture_HeaderFile
+#ifndef _Image_PixMap_Handle_H__
+#define _Image_PixMap_Handle_H__
 
-#include <Handle_Graphic3d_TextureMap.hxx>
-#include <Standard_Type.hxx>
+#include <Standard_DefineHandle.hxx>
+#include <Handle_Standard_Transient.hxx>
 
-class Graphic3d_CTexture
-{
+class Image_PixMap;
+DEFINE_STANDARD_HANDLE(Image_PixMap, Standard_Transient)
+typedef Handle(Image_PixMap) Image_PixMap_Handle;
 
-public:
-
-  Graphic3d_CTexture()
-  : doTextureMap (0)
-  {
-    //
-  }
-
-public:
-
-  Handle(Graphic3d_TextureMap) TextureMap;   //!< handle to texture
-  int                          doTextureMap; //!< flag indicates to use texture or not
-
-};
-
-const Handle(Standard_Type)& TYPE(Graphic3d_CTexture);
-
-#endif // Graphic3d_CTexture_HeaderFile
+#endif // _Image_PixMap_Handle_H__

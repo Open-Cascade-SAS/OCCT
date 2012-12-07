@@ -15,7 +15,8 @@
 
 # project files and artifacts
 /adm/msvc
-/adm/wnt/cbp
+/adm/wnt
+/adm/lin
 /adm/mac
 /adm/make
 *.vcproj*user

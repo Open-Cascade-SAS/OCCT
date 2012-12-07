@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef OpenGl_Structure_Header
 #define OpenGl_Structure_Header
 
@@ -32,8 +31,10 @@
 #include <OpenGl_Group.hxx>
 #include <OpenGl_Matrix.hxx>
 
-typedef NCollection_List<const OpenGl_Structure *> OpenGl_ListOfStructure;
-typedef NCollection_List<const OpenGl_Group *> OpenGl_ListOfGroup;
+class OpenGl_Structure;
+
+typedef NCollection_List<const OpenGl_Structure* > OpenGl_ListOfStructure;
+typedef NCollection_List<const OpenGl_Group*     > OpenGl_ListOfGroup;
 
 class OpenGl_Structure : public OpenGl_Element
 {
@@ -49,7 +50,8 @@ public:
   void SetDegenerateModel (const Standard_Integer AMode, const float ASkipRatio);
 
   void SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext);
-  void SetAspectFace (const CALL_DEF_CONTEXTFILLAREA &AContext);
+  void SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
+                      const CALL_DEF_CONTEXTFILLAREA& theAspect);
   void SetAspectMarker (const CALL_DEF_CONTEXTMARKER &AContext);
   void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext);
 

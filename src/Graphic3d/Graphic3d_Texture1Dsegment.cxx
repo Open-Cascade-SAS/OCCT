@@ -18,96 +18,97 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <Graphic3d_Texture1Dsegment.ixx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
+#include <Graphic3d_TextureParams.hxx>
 
-
-Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Handle(Graphic3d_StructureManager)& SM,const Standard_CString FileName)
-: Graphic3d_Texture1D(SM, FileName, Graphic3d_TOT_1D)
+// =======================================================================
+// function : Graphic3d_Texture1Dsegment
+// purpose  :
+// =======================================================================
+Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment (const TCollection_AsciiString& theFileName)
+: Graphic3d_Texture1D (theFileName, Graphic3d_TOT_1D),
+  myX1 (0.0f),
+  myY1 (0.0f),
+  myZ1 (0.0f),
+  myX2 (0.0f),
+  myY2 (0.0f),
+  myZ2 (0.0f)
 {
-  MyCInitTexture.doModulate = 0;
-  MyCInitTexture.doRepeat = 1;
-  MyCInitTexture.Mode = (int)Graphic3d_TOTM_OBJECT;
-  MyCInitTexture.doLinear = 0;
-  MyCInitTexture.sx = 1.0F;
-  MyCInitTexture.sy = 1.0F;
-  MyCInitTexture.tx = 0.0F;
-  MyCInitTexture.ty = 0.0F;
-  MyCInitTexture.angle = 0.0F;
-  MyCInitTexture.sparams[0] = 0.0F;
-  MyCInitTexture.sparams[1] = 0.0F;
-  MyCInitTexture.sparams[2] = 1.0F;
-  MyCInitTexture.sparams[3] = 0.0F;
-  MyCInitTexture.tparams[0] = 0.0F;
-  MyCInitTexture.tparams[1] = 0.0F;
-  MyCInitTexture.tparams[2] = 0.0F;
-  MyCInitTexture.tparams[3] = 0.0F;
-  Update();
+  myParams->SetRepeat (Standard_True);
+  myParams->SetGenMode (Graphic3d_TOTM_OBJECT,
+                        Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f),
+                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-
-Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment(const Handle(Graphic3d_StructureManager)& SM,const Graphic3d_NameOfTexture1D NOT)
-: Graphic3d_Texture1D(SM, NOT, Graphic3d_TOT_1D)
+// =======================================================================
+// function : Graphic3d_Texture1Dsegment
+// purpose  :
+// =======================================================================
+Graphic3d_Texture1Dsegment::Graphic3d_Texture1Dsegment (const Graphic3d_NameOfTexture1D theNOT)
+: Graphic3d_Texture1D (theNOT, Graphic3d_TOT_1D),
+  myX1 (0.0f),
+  myY1 (0.0f),
+  myZ1 (0.0f),
+  myX2 (0.0f),
+  myY2 (0.0f),
+  myZ2 (0.0f)
 {
-  MyCInitTexture.doModulate = 0;
-  MyCInitTexture.doRepeat = 1;
-  MyCInitTexture.Mode = (int)Graphic3d_TOTM_OBJECT;
-  MyCInitTexture.doLinear = 0;
-  MyCInitTexture.sx = 1.0F;
-  MyCInitTexture.sy = 1.0F;
-  MyCInitTexture.tx = 0.0F;
-  MyCInitTexture.ty = 0.0F;
-  MyCInitTexture.angle = 0.0F;
-  MyCInitTexture.sparams[0] = 0.0F;
-  MyCInitTexture.sparams[1] = 0.0F;
-  MyCInitTexture.sparams[2] = 1.0F;
-  MyCInitTexture.sparams[3] = 0.0F;
-  MyCInitTexture.tparams[0] = 0.0F;
-  MyCInitTexture.tparams[1] = 0.0F;
-  MyCInitTexture.tparams[2] = 0.0F;
-  MyCInitTexture.tparams[3] = 0.0F;
-  Update();
+  myParams->SetRepeat (Standard_True);
+  myParams->SetGenMode (Graphic3d_TOTM_OBJECT,
+                        Graphic3d_Vec4 (0.0f, 0.0f, 1.0f, 0.0f),
+                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-
-void Graphic3d_Texture1Dsegment::SetSegment(const Standard_ShortReal X1,const Standard_ShortReal Y1,const Standard_ShortReal Z1,const Standard_ShortReal X2,const Standard_ShortReal Y2,const Standard_ShortReal Z2) 
+// =======================================================================
+// function : SetSegment
+// purpose  :
+// =======================================================================
+void Graphic3d_Texture1Dsegment::SetSegment (const Standard_ShortReal X1,
+                                             const Standard_ShortReal Y1,
+                                             const Standard_ShortReal Z1,
+                                             const Standard_ShortReal X2,
+                                             const Standard_ShortReal Y2,
+                                             const Standard_ShortReal Z2)
 {
-  Standard_ShortReal sq_norme;
+  myX1 = X1;
+  myY1 = Y1;
+  myZ1 = Z1;
+  myX2 = X2;
+  myY2 = Y2;
+  myZ2 = Z2;
+  Graphic3d_Vec4 aPlaneX (X2 - X1, Y2 - Y1, Z2 - Z1, 0.0f);
 
-  MyX1 = X1;
-  MyY1 = Y1;
-  MyZ1 = Z1;
-  MyX2 = X2;
-  MyY2 = Y2;
-  MyZ2 = Z2;
+  Standard_ShortReal aSqNorm = aPlaneX.x() * aPlaneX.x()
+                             + aPlaneX.y() * aPlaneX.y()
+                             + aPlaneX.z() * aPlaneX.z();
+  aPlaneX.x() /= aSqNorm;
+  aPlaneX.y() /= aSqNorm;
+  aPlaneX.z() /= aSqNorm;
+  aPlaneX.w() = -aPlaneX.x() * X1
+                -aPlaneX.y() * Y1
+			    -aPlaneX.z() * Z1;
 
-  MyCInitTexture.sparams[0] = X2-X1;
-  MyCInitTexture.sparams[1] = Y2-Y1;
-  MyCInitTexture.sparams[2] = Z2-Z1;
-  sq_norme = MyCInitTexture.sparams[0]*MyCInitTexture.sparams[0]
-           + MyCInitTexture.sparams[1]*MyCInitTexture.sparams[1]
-           + MyCInitTexture.sparams[2]*MyCInitTexture.sparams[2];
-
-  MyCInitTexture.sparams[0] /= sq_norme;
-  MyCInitTexture.sparams[1] /= sq_norme;
-  MyCInitTexture.sparams[2] /= sq_norme;
-
-  MyCInitTexture.sparams[3] = - MyCInitTexture.sparams[0]*X1
-                              - MyCInitTexture.sparams[1]*Y1
-			      - MyCInitTexture.sparams[2]*Z1;
-  
-  Update();
+  myParams->SetGenMode (Graphic3d_TOTM_OBJECT,
+                        aPlaneX,
+                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-
-
-void Graphic3d_Texture1Dsegment::Segment(Standard_ShortReal& X1,Standard_ShortReal& Y1,Standard_ShortReal& Z1,Standard_ShortReal& X2,Standard_ShortReal& Y2,Standard_ShortReal& Z2) const
+// =======================================================================
+// function : Segment
+// purpose  :
+// =======================================================================
+void Graphic3d_Texture1Dsegment::Segment (Standard_ShortReal& X1,
+                                          Standard_ShortReal& Y1,
+                                          Standard_ShortReal& Z1,
+                                          Standard_ShortReal& X2,
+                                          Standard_ShortReal& Y2,
+                                          Standard_ShortReal& Z2) const
 {
-  X1 = MyX1;
-  Y1 = MyY1;
-  Z1 = MyZ1;
-  X2 = MyX2;
-  Y2 = MyY2;
-  Z2 = MyZ2;
+  X1 = myX1;
+  Y1 = myY1;
+  Z1 = myZ1;
+  X2 = myX2;
+  Y2 = myY2;
+  Z2 = myZ2;
 }

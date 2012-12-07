@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _OpenGl_GraphicDriver_HeaderFile
 #define _OpenGl_GraphicDriver_HeaderFile
 
@@ -32,6 +31,7 @@
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Handle_AlienImage_AlienImage.hxx>
+#include <Handle_OpenGl_View.hxx>
 
 #include <Aspect_Display.hxx>
 #include <Aspect_GradientFillMethod.hxx>
@@ -55,8 +55,6 @@
 #include <Graphic3d_CUserDraw.hxx>
 #include <Graphic3d_CGraduatedTrihedron.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
-#include <Graphic3d_TypeOfTexture.hxx>
-#include <Graphic3d_CInitTexture.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_SortType.hxx>
 #include <Graphic3d_PtrFrameBuffer.hxx>
@@ -84,7 +82,6 @@ class TCollection_ExtendedString;
 class AlienImage_AlienImage;
 class Image_PixMap;
 class TColStd_HArray1OfReal;
-class Handle(OpenGl_View);
 class Handle(OpenGl_Workspace);
 class OpenGl_Element;
 class OpenGl_Structure;
@@ -92,7 +89,7 @@ class OpenGl_Structure;
 //! This class defines an OpenGl graphic driver <br>
 class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
 {
- public:
+public:
 
   //! Constructor
   Standard_EXPORT OpenGl_GraphicDriver (const Standard_CString theShrName);
@@ -272,12 +269,6 @@ public:
   //! This method is internal and should be used by Graphic3d_Group only. <br>
   Standard_EXPORT void RemovePrimitiveArray(const Graphic3d_CGroup& theCGroup,const Graphic3d_PrimitiveArray& thePArray);
   Standard_EXPORT Standard_Integer InquirePlaneLimit();
-  Standard_EXPORT Standard_Integer CreateTexture (const Graphic3d_TypeOfTexture        theType,
-                                                  const Image_PixMap&                  theImage,
-                                                  const Standard_CString               theFileName,
-                                                  const Handle(TColStd_HArray1OfReal)& theTexUpperBounds) const;
-  Standard_EXPORT void DestroyTexture(const Standard_Integer TexId) const;
-  Standard_EXPORT void ModifyTexture(const Standard_Integer TexId,const Graphic3d_CInitTexture& AValue) const;
   Standard_EXPORT Standard_ShortReal DefaultTextHeight() const;
   Standard_EXPORT void FBOGetDimensions(const Graphic3d_CView& view,const Graphic3d_PtrFrameBuffer fboPtr,Standard_Integer& width,Standard_Integer& height,Standard_Integer& widthMax,Standard_Integer& heightMax);
   Standard_EXPORT void FBOChangeViewport(const Graphic3d_CView& view,Graphic3d_PtrFrameBuffer& fboPtr,const Standard_Integer width,const Standard_Integer height);

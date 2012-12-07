@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _OpenGl_Group_Header
 #define _OpenGl_Group_Header
 
@@ -48,7 +47,9 @@ public:
   OpenGl_Group();
 
   void SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext, const Standard_Boolean IsGlobal = Standard_True);
-  void SetAspectFace (const CALL_DEF_CONTEXTFILLAREA &AContext, const Standard_Boolean IsGlobal = Standard_True);
+  void SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
+                      const CALL_DEF_CONTEXTFILLAREA& theAspect,
+                      const Standard_Boolean          IsGlobal = Standard_True);
   void SetAspectMarker (const CALL_DEF_CONTEXTMARKER &AContext, const Standard_Boolean IsGlobal = Standard_True);
   void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext, const Standard_Boolean IsGlobal = Standard_True);
 

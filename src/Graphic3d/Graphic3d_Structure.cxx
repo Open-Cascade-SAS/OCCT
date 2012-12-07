@@ -742,18 +742,14 @@ void Graphic3d_Structure::GraphicClear (const Standard_Boolean WithDestruction)
   }
 }
 
-void Graphic3d_Structure::GraphicConnect (const Handle(Graphic3d_Structure)& ADaughter) {
-
-  MyGraphicDriver->Connect
-    (MyCStructure, *((CALL_DEF_STRUCTURE *)ADaughter->CStructure()));
-
+void Graphic3d_Structure::GraphicConnect (const Handle(Graphic3d_Structure)& theDaughter)
+{
+  MyGraphicDriver->Connect (MyCStructure, theDaughter->MyCStructure);
 }
 
-void Graphic3d_Structure::GraphicDisconnect (const Handle(Graphic3d_Structure)& ADaughter) {
-
-  MyGraphicDriver->Disconnect
-    (MyCStructure, *((CALL_DEF_STRUCTURE *)ADaughter->CStructure()));
-
+void Graphic3d_Structure::GraphicDisconnect (const Handle(Graphic3d_Structure)& theDaughter)
+{
+  MyGraphicDriver->Disconnect (MyCStructure, theDaughter->MyCStructure);
 }
 
 Handle(Graphic3d_AspectLine3d) Graphic3d_Structure::Line3dAspect () const {
@@ -996,13 +992,15 @@ Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
   else
     CTXF->AllowBackFace ();
   // Texture
-  // Pb sur les textures
-  //if (MyCStructure.ContextFillArea.Texture.TexId == -1)
-  //else
+  CTXF->SetTextureMap (MyCStructure.ContextFillArea.Texture.TextureMap);
   if (MyCStructure.ContextFillArea.Texture.doTextureMap == 1)
-    CTXF->SetTextureMapOn ();
+  {
+    CTXF->SetTextureMapOn();
+  }
   else
-    CTXF->SetTextureMapOff ();
+  {
+    CTXF->SetTextureMapOff();
+  }
 #ifdef G003
   Aspect_TypeOfDegenerateModel dMode = Aspect_TypeOfDegenerateModel(
     MyCStructure.ContextFillArea.DegenerationMode);
@@ -1245,13 +1243,8 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
 
   MyCStructure.ContextFillArea.IsDef      = 1; // Definition material ok
 
-  Handle(Graphic3d_TextureMap) TempTextureMap = CTX->TextureMap();
-  if (! TempTextureMap.IsNull() )
-    MyCStructure.ContextFillArea.Texture.TexId = TempTextureMap->TextureId();
-  else
-    MyCStructure.ContextFillArea.Texture.TexId = -1;
-
-  MyCStructure.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1:0;
+  MyCStructure.ContextFillArea.Texture.TextureMap   = CTX->TextureMap();
+  MyCStructure.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1 : 0;
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
@@ -2322,13 +2315,8 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextFillArea.Front.EnvReflexion =
     float ((CTXF->FrontMaterial ()).EnvReflexion());
 
-  Handle(Graphic3d_TextureMap) TempTextureMap = CTXF->TextureMap();
-  if (! TempTextureMap.IsNull() )
-    MyCStructure.ContextFillArea.Texture.TexId = TempTextureMap->TextureId();
-  else
-    MyCStructure.ContextFillArea.Texture.TexId = -1;
-
-  MyCStructure.ContextFillArea.Texture.doTextureMap = CTXF->TextureMapState() ? 1:0;
+  MyCStructure.ContextFillArea.Texture.TextureMap   = CTXF->TextureMap();
+  MyCStructure.ContextFillArea.Texture.doTextureMap = CTXF->TextureMapState() ? 1 : 0;
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
@@ -2517,10 +2505,14 @@ Standard_Boolean Graphic3d_Structure::HLRValidation () const {
 
 }
 
-Standard_Address Graphic3d_Structure::CStructure () const {
+//=======================================================================
+//function : CStructure
+//purpose  :
+//=======================================================================
 
-  return Standard_Address (&MyCStructure);
-
+Graphic3d_CStructure* Graphic3d_Structure::CStructure()
+{
+  return &MyCStructure;
 }
 
 //=======================================================================

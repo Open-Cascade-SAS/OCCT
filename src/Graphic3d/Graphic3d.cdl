@@ -220,6 +220,21 @@ is
     ---Purpose: Type of the texture projection.
     ---Category: Enumerations
 
+    enumeration  TypeOfTextureFilter is TOTF_NEAREST,
+                                        TOTF_BILINEAR,
+                                        TOTF_TRILINEAR;
+    ---Purpose: Type of the texture filter.
+    -- Notice that for textures without mipmaps linear interpolation will be used instead of TOTF_BILINEAR and TOTF_TRILINEAR.
+    ---Category: Enumerations
+
+    enumeration  LevelOfTextureAnisotropy is LOTA_OFF,
+                                             LOTA_FAST,
+                                             LOTA_MIDDLE,
+                                             LOTA_QUALITY;
+    ---Purpose: Level of anisotropy filter.
+    -- Notice that actual quality depends on hardware capabilities!
+    ---Category: Enumerations
+
     enumeration  NameOfTexturePlane  is  NOTP_XY,
                                          NOTP_YZ,
                                          NOTP_ZX,
@@ -384,15 +399,15 @@ is
     ---Purpose: Defines the C structure of a graduated trihedron.
     ---Category: Imported types
 
-    imported CInitTexture;
     imported CTexture;
 
---   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
-        imported CTransPersStruct;
-        imported TransModeFlags;
---   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
+    imported CTransPersStruct;
+    imported TransModeFlags;
 
     primitive PtrFrameBuffer;
+    primitive Vec2;
+    primitive Vec3;
+    primitive Vec4;
 
     --------------------
     -- Category: Classes
@@ -614,12 +629,12 @@ is
     imported NListOfHAsciiString;
     ---Category: Instantiated classes
 
-
-        deferred  class  TextureRoot  from  Graphic3d;
+    deferred  class  TextureRoot  from  Graphic3d;
     deferred  class  TextureMap   from  Graphic3d;
     deferred  class  Texture1D    from  Graphic3d;
     deferred  class  Texture2D    from  Graphic3d;
 
+    class  TextureParams    from  Graphic3d;
     class  TextureEnv       from  Graphic3d;
     class  Texture1Dmanual  from  Graphic3d;
     class  Texture1Dsegment from  Graphic3d;
