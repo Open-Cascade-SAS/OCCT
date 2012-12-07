@@ -33,6 +33,10 @@
 #include <malloc.h>
 #endif
 
+#ifndef OCCT_MMGT_OPT_DEFAULT
+#define OCCT_MMGT_OPT_DEFAULT 0
+#endif
+
 // Global reentrant flag
 static Standard_Boolean Standard_IsReentrant = Standard_True;
 
@@ -60,7 +64,8 @@ Standard_MMgrFactory::Standard_MMgrFactory()
 : myFMMgr (NULL)
 {
   char* aVar;
-  Standard_Integer anAllocId   = (aVar = getenv ("MMGT_OPT"      )) ?  atoi (aVar)       : 0;
+  Standard_Integer anAllocId   = (aVar = getenv ("MMGT_OPT"      )) ?  atoi (aVar)       :
+    (OCCT_MMGT_OPT_DEFAULT);
   Standard_Boolean toClear     = (aVar = getenv ("MMGT_CLEAR"    )) ? (atoi (aVar) != 0) : Standard_True;
 
 
