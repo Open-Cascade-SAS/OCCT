@@ -10,8 +10,10 @@
 /drv
 /inc
 /work
-/win32
-/win64
+
+# standard names of directories for objects and binaries on Windows
+win32
+win64
 
 # project files and artifacts
 /adm/msvc
@@ -19,9 +21,11 @@
 /adm/lin
 /adm/mac
 /adm/make
+/adm/cmake
 *.vcproj*user
 *.ncb
 *.suo
+*.sdf
 
 # test results
 /results*

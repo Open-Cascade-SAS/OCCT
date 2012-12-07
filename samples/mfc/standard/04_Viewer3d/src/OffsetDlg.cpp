@@ -132,6 +132,8 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 	TCollection_AsciiString Message;
 
 	Standard_Boolean OneOrMoreCurrentIsDisplayed=false;
+        Standard_ShortReal aFactor = (Standard_ShortReal)theFactor;
+        Standard_ShortReal aUnits = (Standard_ShortReal)theUnits;
 	
 	for (aAISContext->InitCurrent();aAISContext->MoreCurrent ();aAISContext->NextCurrent ())
 		if (aAISContext->IsDisplayed(aAISContext->Current())) OneOrMoreCurrentIsDisplayed=true;
@@ -139,40 +141,40 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 	if(OneOrMoreCurrentIsDisplayed){
 		if((aAISContext->IsCurrent(aOverlappedBox) || aAISContext->IsCurrent(aBox))
 				&& aAISContext->IsDisplayed(aOverlappedBox)){
-			aOverlappedBox->SetPolygonOffsets(Aspect_POM_Fill,theFactor,theUnits);
+			aOverlappedBox->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = "Box2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
 
 		if((aAISContext->IsCurrent(aOverlappedCylinder) || aAISContext->IsCurrent(aCylinder)) 
 				&& aAISContext->IsDisplayed(aOverlappedCylinder)){
-			aOverlappedCylinder->SetPolygonOffsets(Aspect_POM_Fill,theFactor,theUnits);
+			aOverlappedCylinder->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Cylinder2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
 
 		if((aAISContext->IsCurrent(aOverlappedSphere) || aAISContext->IsCurrent(aSphere))
 				&& aAISContext->IsDisplayed(aOverlappedSphere)){
-			aOverlappedSphere->SetPolygonOffsets(Aspect_POM_Fill,theFactor,theUnits);
+			aOverlappedSphere->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Sphere2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}	
 	}
 	else{
 		if(aAISContext->IsDisplayed(aOverlappedBox)){
-			aOverlappedBox->SetPolygonOffsets(Aspect_POM_Fill,theFactor,theUnits);
+			aOverlappedBox->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Box2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
 
 		if(aAISContext->IsDisplayed(aOverlappedCylinder)){
-			aOverlappedCylinder->SetPolygonOffsets(Aspect_POM_Fill,theFactor,theUnits);
+			aOverlappedCylinder->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Cylinder2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
 
 		if(aAISContext->IsDisplayed(aOverlappedSphere)){
-			aOverlappedSphere->SetPolygonOffsets(Aspect_POM_Fill,theFactor,theUnits);
+			aOverlappedSphere->SetPolygonOffsets(Aspect_POM_Fill,aFactor,aUnits);
 			Message = Message + "Sphere2 -> SetPolygonOffsets(Aspect_POM_Fill, Factor, Units);\n";
 			//myDoc -> AddTextInDialog(Message);
 		}
