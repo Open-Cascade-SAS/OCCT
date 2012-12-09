@@ -25,6 +25,16 @@ if { [info exists test_image] == 0 } {
    set test_image photo
 }
 
+# Procedure to check equality of two reals with tolerance (relative and absolute)
+proc checkreal {name value expected tol_abs tol_rel} {
+    if { abs ($value - $expected) > $tol_abs + $tol_rel * abs ($expected) } {
+        puts "Error: $name = $value is not equal to expected $expected"
+    } else {
+        puts "Check of $name OK: value = $value, expected = $expected"
+    }
+    return
+}
+
 # Procedure to check if sequence of values in listval follows linear trend
 # adding the same delta on each step.
 #

@@ -245,6 +245,8 @@ void QANewBRepNaming_ImportShape::LoadC0Edges(const TopoDS_Shape& S,
     Standard_Boolean aC0 = Standard_False;
     TopoDS_Shape anEdge1 = anEx.Current();
     if (edgeNaborFaces.IsBound(anEdge1)) {
+      TopTools_ListOfShape aEdgesToRemove; // record items to be removed from the map (should be done after iteration)
+      aEdgesToRemove.Append (anEdge1);
       const TopTools_ListOfShape& aList1 = edgeNaborFaces.Find(anEdge1);
       TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itr(edgeNaborFaces);
       for (; itr.More(); itr.Next()) {
@@ -261,11 +263,13 @@ void QANewBRepNaming_ImportShape::LoadC0Edges(const TopoDS_Shape& S,
 	    aC0=Standard_True;
 	    TNaming_Builder bC0Edge(Tagger->NewChild());
 	    bC0Edge.Generated(anEdge2);
-	    edgeNaborFaces.UnBind(anEdge2);
+            aEdgesToRemove.Append (anEdge2);
 	  }
 	}
       }
-      edgeNaborFaces.UnBind(anEdge1);
+      // remove items from the data map
+      for(TopTools_ListIteratorOfListOfShape anIt(aEdgesToRemove); anIt.More(); anIt.Next())
+        edgeNaborFaces.UnBind(anIt.Value());
     }
     if (aC0) {
       TNaming_Builder bC0Edge(Tagger->NewChild());

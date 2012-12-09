@@ -532,7 +532,6 @@ QANewModTopOpe_Glue::PerformSDFaces()
       }
     }
 
-    anIter.Initialize(myMapModif);
     TopTools_MapOfShape aComVerMap;
     TopTools_MapOfShape aLocVerMap;
 
@@ -541,6 +540,8 @@ QANewModTopOpe_Glue::PerformSDFaces()
     anExp1.Init(myS2, TopAbs_VERTEX);
     for(; anExp1.More();  anExp1.Next()) aComVerMap.Add(anExp1.Current());
 
+    TopTools_ListOfShape aShapesToRemove; // record items to be removed from the map (should be done after iteration)
+    anIter.Initialize(myMapModif);
     for(; anIter.More(); anIter.Next()) {
       const TopoDS_Shape& aS = anIter.Key();
       if(aS.ShapeType() == TopAbs_EDGE) {
@@ -574,17 +575,18 @@ QANewModTopOpe_Glue::PerformSDFaces()
 		myMapModif(aS).Remove(anI1);
 	      }
 	      else {
-		myMapModif.UnBind(aS);
+                aShapesToRemove.Append (aS);
 	      }
 	    }
 	  }
 	  if(!anI1.More()) break;
 	}
       }
-      
-//      if(anIter.Value().Extent() == 0) myMapModif.UnBind(aS);
-
     }
+
+    // remove items from the data map
+    for(TopTools_ListIteratorOfListOfShape anIt(aShapesToRemove); anIt.More(); anIt.Next())
+      myMapModif.UnBind(anIt.Value());
 
     // Deleted vertices
     anExp1.Init(myShape, TopAbs_VERTEX);
