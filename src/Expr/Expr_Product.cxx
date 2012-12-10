@@ -158,11 +158,7 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified () const
   Standard_Integer max = NbOperands();
   Handle(Expr_GeneralExpression) op;
   Expr_SequenceOfGeneralExpression newops;
-#ifndef DEB
   Standard_Real vals = 0.;
-#else
-  Standard_Real vals;
-#endif
   Standard_Integer nbvals = 0;
   Standard_Boolean subprod = Standard_False;
   for (i=1; (i<= max) && !subprod; i++) {

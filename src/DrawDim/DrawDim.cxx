@@ -85,10 +85,8 @@ void DrawDim::DrawShapeName (const TopoDS_Shape& ashape,
       position = BRep_Tool::Pnt(TopoDS::Vertex(ashape));
     }
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
   t+=aname; //Name();
   Handle(Draw_Text3D) text = new Draw_Text3D (position,t.ToCString(),Draw_blanc);

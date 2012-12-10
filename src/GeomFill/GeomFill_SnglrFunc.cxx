@@ -45,11 +45,7 @@ void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
 
  Standard_Integer GeomFill_SnglrFunc::NbIntervals(const GeomAbs_Shape S) 
 {
-#ifndef DEB
   GeomAbs_Shape HCS=GeomAbs_C0;
-#else
-  GeomAbs_Shape HCS;
-#endif
   switch(S) {
   case GeomAbs_C0: HCS = GeomAbs_C2; break;
   case GeomAbs_C1: HCS = GeomAbs_C3; break;
@@ -61,11 +57,7 @@ void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
 
  void GeomFill_SnglrFunc::Intervals(TColStd_Array1OfReal& T,const GeomAbs_Shape S) 
 {
-#ifndef DEB
   GeomAbs_Shape HCS=GeomAbs_C0;
-#else
-  GeomAbs_Shape HCS ;
-#endif
   switch(S) {
   case GeomAbs_C0: HCS = GeomAbs_C2; break;
   case GeomAbs_C1: HCS = GeomAbs_C3; break;

@@ -107,10 +107,8 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
     return UFirst - fp;
   case GeomAbs_Circle:
     return C.Circle().Radius()*(UFirst-fp);
-#ifndef DEB
   default:
     break;
-#endif
   }    
   Standard_NotImplemented::Raise("calcul abscisse not processed");
   return 0.;
@@ -135,11 +133,7 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
 
   Handle(ChFiDS_FilSpine)   Spine  = Handle(ChFiDS_FilSpine)::DownCast(Sp);
   Handle(ChFiDS_ChamfSpine) CSpine = Handle(ChFiDS_ChamfSpine)::DownCast(Sp);
-#ifndef DEB
   Standard_Boolean surfok = Standard_False;
-#else
-  Standard_Boolean surfok;
-#endif
   GeomAbs_SurfaceType typ1 = S1->GetType();
   GeomAbs_SurfaceType typ2 = S2->GetType();
   GeomAbs_CurveType   ctyp;

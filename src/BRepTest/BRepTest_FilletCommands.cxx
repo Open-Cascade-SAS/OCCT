@@ -102,10 +102,8 @@ static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, c
          //cout << "C2"<<endl;
          di << "C2"<<"\n";
 	 break;
-#ifndef DEB
        default:
 	 break;
-#endif
        }
     return 0;
   }

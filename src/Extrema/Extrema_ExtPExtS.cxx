@@ -421,10 +421,8 @@ static void PerformExtPElC (Extrema_ExtPElC& E,
   case GeomAbs_Parabola:
     E.Perform(P, C->Parabola(), Tol, -Precision::Infinite(),Precision::Infinite());
     return;
-#ifndef DEB
   default:
     return;
-#endif
   }
 }
 

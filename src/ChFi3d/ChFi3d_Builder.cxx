@@ -275,30 +275,28 @@ void  ChFi3d_Builder::Compute()
   
   //construct fillets on each vertex + feed the Ds
   if (done) {
-   //Standard_Integer nbresult=0;
-//    for (Standard_Integer j=1;j<=myVDataMap.Extent();j++) {
-#ifndef DEB
-    static 
-#endif  //to avoid Linux warning:<< variable `j' might be clobbered by `longjmp' or `vfork' >>
     Standard_Integer j;
-    for (j=1;j<=myVDataMap.Extent();j++) {
-      try {
+    for (j=1;j<=myVDataMap.Extent();j++)
+    {
+      try
+      {
         OCC_CATCH_SIGNALS
-	PerformFilletOnVertex(j);
+        PerformFilletOnVertex(j);
       }
-      catch(Standard_Failure) {
-	Handle(Standard_Failure) exc = Standard_Failure::Caught();
+      catch(Standard_Failure)
+      {
+        Handle(Standard_Failure) exc = Standard_Failure::Caught();
 #ifdef DEB
-	cout <<"EXCEPTION Corner compute " << exc << endl;
+        cout <<"EXCEPTION Corner compute " << exc << endl;
 #endif
-	badvertices.Append(myVDataMap.FindKey(j));
+        badvertices.Append(myVDataMap.FindKey(j));
         hasresult=Standard_False;
-	done = Standard_True;
+        done = Standard_True;
       }
       if (!done) badvertices.Append(myVDataMap.FindKey(j));
       done = Standard_True;
     }
-   if (!hasresult) done = badvertices.IsEmpty();
+    if (!hasresult) done = badvertices.IsEmpty();
   }
   
 
@@ -575,11 +573,7 @@ void ChFi3d_Builder::PerformSingularCorner
   
   Handle(ChFiDS_SurfData) Fd;
   Standard_Integer i, Icurv;
-#ifndef DEB
   Standard_Integer Ivtx = 0;
-#else
-  Standard_Integer Ivtx;
-#endif
   for (It.Initialize(myVDataMap(Index)), i=0; It.More(); It.Next(),i++){
     stripe = It.Value(); 
     // SurfData concerned and its CommonPoints,
@@ -647,11 +641,7 @@ void ChFi3d_Builder::PerformFilletOnVertex
   Standard_Integer i;
   Standard_Boolean nondegenere = Standard_True;
   Standard_Boolean toujoursdegenere = Standard_True; 
-#ifndef DEB
   Standard_Boolean isfirst = Standard_False;
-#else
-  Standard_Boolean isfirst;
-#endif
   for (It.Initialize(myVDataMap(Index)), i=0; It.More(); It.Next(),i++){
     stripe = It.Value(); 
     sp = stripe->Spine();

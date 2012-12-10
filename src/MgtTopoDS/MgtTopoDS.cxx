@@ -138,10 +138,8 @@ Handle(PTopoDS_HShape) MgtTopoDS::Translate
       //TrTool.UpdateCompound(aShape,pHShape);
       TrTool->UpdateShape(aShape,pHShape);
       break;
-#ifndef DEB
     default:
       break;
-#endif
     }
   
     // bind and copy the sub-elements
@@ -269,10 +267,8 @@ void MgtTopoDS::Translate
       //TrTool.UpdateCompound(aHShape,theShape);
       TrTool->UpdateShape(aHShape,theShape);
       break;
-#ifndef DEB
     default:
       break;
-#endif
     }
     
     // bind and copy the sub-elements
@@ -369,10 +365,8 @@ void MgtTopoDS::Translate1
       TrTool->MakeCompound(aPShape);
       TrTool->UpdateShape(aShape,aPShape);
       break;
-#ifndef DEB
     default:
       break;
-#endif
     }
   
     // bind and copy the sub-elements
@@ -490,10 +484,8 @@ void MgtTopoDS::Translate1
       //TrTool.UpdateCompound(aPShape,aShape);
       TrTool->UpdateShape(aPShape,aShape);
       break;
-#ifndef DEB
     default:
       break;
-#endif
     }
     
     // bind and copy the sub-elements

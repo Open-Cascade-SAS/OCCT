@@ -98,10 +98,8 @@ Matches(const Standard_Real X,
   case Select3D_TOS_INTERIOR:
     Res = Status(X,Y,aTol,DMin);
     return (Res==0 || Res == 1);
-#ifndef DEB
   default:
     break;
-#endif
   }
   return Standard_True;
 }

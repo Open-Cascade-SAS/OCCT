@@ -483,11 +483,7 @@ static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf,
                           Handle (Geom2d_Curve)& pcurve)
 {  
   Standard_Boolean isplane;
-#ifndef DEB
   Standard_Boolean anglebig = Standard_False;
-#else
-  Standard_Boolean anglebig;
-#endif
   isplane=ASurf->GetType()==GeomAbs_Plane;
   gp_Dir2d dir1 (xdir, ydir);
   Geom2dLProp_CLProps2d CL1(curv2d1, picicplus, 1, 1.e-4);
@@ -609,11 +605,7 @@ static void OrientationAreteViveConsecutive (const TopoDS_Shape & Fviveicicplus,
                                              TopAbs_Orientation & orien)
 
 { // orinterf is orientation of edge ic corresponding to face Fviveicicplus taken FORWARD
-#ifndef DEB
   TopAbs_Orientation orinterf = TopAbs_FORWARD;
-#else
-  TopAbs_Orientation orinterf;
-#endif
   TopoDS_Face F=TopoDS::Face( Fviveicicplus);
   TopoDS_Edge E=TopoDS::Edge( Eviveic);  
   TopExp_Explorer ex;
@@ -1832,11 +1824,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 // between edges (or stripes ) icmoins and indfin. 
 // Then this courbe3d is projected on all faces (nbface) that
 // separate icmoins and indfin
-#ifndef DEB
   Standard_Integer nbface = 0;
-#else
-  Standard_Integer nbface;
-#endif
   Standard_Real  error;
   TColGeom2d_Array1OfCurve proj2d1(0,size);
   TColGeom2d_Array1OfCurve proj2d2(0,size);
@@ -1997,11 +1985,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   Standard_Boolean intersection=Standard_False, introuve;
   if (nconges==2 && !deuxconges) { 
     gp_Pnt P1,P2,P3,P4;
-#ifndef DEB
     Standard_Integer ic1 = 0,ic2 = 0;
-#else
-    Standard_Integer ic1,ic2;
-#endif
     trouve=Standard_False;
     for (ic=0;ic<nedge&&!trouve;ic++) {
       if (!sharp.Value(ic)){ 
@@ -2685,11 +2669,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	  else  
 	    Arcspine= CD.Value(ic)->Spine()->Edges(nbedge);
 	  Standard_Integer IArcspine = DStr.AddShape(Arcspine);
-#ifndef DEB
 	  TopAbs_Orientation OVtx = TopAbs_FORWARD;
-#else
-	  TopAbs_Orientation OVtx;
-#endif
 	  for(ex.Init(Arcspine.Oriented(TopAbs_FORWARD),TopAbs_VERTEX); 
 	      ex.More(); ex.Next()){
 	    if(V1.IsSame(ex.Current())) {
@@ -2742,11 +2722,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   // the curves from ic to icplus the pcurves of Plate 
   // all have the same orientation  
     Standard_Integer Ishape1,Ishape2; 
-#ifndef DEB
     TopAbs_Orientation trafil1 = TopAbs_FORWARD, trafil2 = TopAbs_FORWARD;
-#else
-    TopAbs_Orientation trafil1,trafil2;
-#endif
     Ishape1 = Fd->IndexOfS1();
     Ishape2 = Fd->IndexOfS2();
     const ChFiDS_FaceInterference& Fi1 = Fd->InterferenceOnS1();

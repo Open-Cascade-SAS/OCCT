@@ -651,11 +651,7 @@ static Standard_Boolean CircleFromPlanarFace(const TopoDS_Face& aFace,
 void AIS_DiameterDimension::ComputeOnePlanarFaceDiameter(const Handle(Prs3d_Presentation)& aPresentation)
 {
   gp_Pnt curPos ;
-#ifndef DEB
   Standard_Real parfirst =0., parend =0.; 
-#else
-  Standard_Real parfirst, parend; 
-#endif
   if (myAutomaticPosition) {
     Handle(Geom_Curve) curv;
     gp_Pnt ptfirst,ptend;

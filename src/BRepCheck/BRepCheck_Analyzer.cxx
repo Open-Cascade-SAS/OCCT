@@ -91,10 +91,8 @@ void BRepCheck_Analyzer::Put(const TopoDS_Shape& S,
     case TopAbs_COMPSOLID:
     case TopAbs_COMPOUND:
       break;
-#ifndef DEB
     default:
       break;
-#endif
     }
     myMap.Bind(S,HR);
     for(TopoDS_Iterator theIterator(S);theIterator.More();theIterator.Next()) {

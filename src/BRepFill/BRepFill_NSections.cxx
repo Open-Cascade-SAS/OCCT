@@ -759,11 +759,7 @@ void BRepFill_NSections::Init(const TColStd_SequenceOfReal & P,
 
  Standard_Integer jj;
  GeomAbs_Shape cont_jj;
-#ifndef DEB
  GeomAbs_Shape cont = GeomAbs_C0; 
-#else
- GeomAbs_Shape cont; 
-#endif
 
  for (jj=1; jj<=myShapes.Length(); jj++) {
 

@@ -451,9 +451,7 @@ GeomAbs_Shape Bisector_BisecCC::Continuity() const
   case GeomAbs_C2 : return GeomAbs_C1;
   case GeomAbs_C3 : return GeomAbs_C2;
   case GeomAbs_CN : return GeomAbs_CN;  
-#ifndef DEB
   default: break;
-#endif
   }
   return GeomAbs_C0;
 }
@@ -497,9 +495,7 @@ GeomAbs_Shape Bisector_BisecCC::IntervalContinuity() const
   case GeomAbs_C2 : return GeomAbs_C1;
   case GeomAbs_C3 : return GeomAbs_C2;
   case GeomAbs_CN : return GeomAbs_CN;  
-#ifndef DEB
   default: break;
-#endif
   }
   return GeomAbs_C0; 
 }
@@ -1125,11 +1121,7 @@ gp_Pnt2d Bisector_BisecCC::Extension (const Standard_Real  U,
   Bisector_PointOnBis PRef;
   gp_Pnt2d            P,P1,P2,PBis;
   gp_Vec2d            T1,Tang;
-#ifndef DEB
   Standard_Real       dU = 0.;
-#else
-  Standard_Real       dU;
-#endif
   Standard_Boolean    ExtensionTangent = Standard_False;
 
   if (myPolygon.Length() == 0) {
@@ -1633,12 +1625,8 @@ Standard_Real Bisector_BisecCC::SearchBound (const Standard_Real U1,
 //=============================================================================
 static Standard_Real ProjOnCurve (const gp_Pnt2d&             P,
 				  const Handle(Geom2d_Curve)& C)
-{ 
-#ifndef DEB
+{
   Standard_Real UOnCurve =0.;
-#else
-  Standard_Real UOnCurve;
-#endif
   gp_Pnt2d      PF,PL;
   gp_Vec2d      TF,TL;
 

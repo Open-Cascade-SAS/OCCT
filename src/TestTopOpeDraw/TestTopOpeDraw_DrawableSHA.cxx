@@ -135,10 +135,8 @@ gp_Pnt TestTopOpeDraw_DrawableSHA::Pnt() const
     P = SU.Value(u,v);
     }
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 
   return P;

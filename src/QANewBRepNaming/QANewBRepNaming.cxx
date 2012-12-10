@@ -102,10 +102,8 @@ void QANewBRepNaming::LoadNamedShape (TNaming_Builder& theBuilder,
     {
       theBuilder.Select(theNS, theOS);
     }
-#ifndef DEB
   default:
     break;
-#endif
   }
 }
 

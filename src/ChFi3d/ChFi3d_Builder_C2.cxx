@@ -402,11 +402,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     // on the opposing face with the surface of the big,
     // and finally intersect the big with the face at end 
     // between this point and the point on arc.
-#ifndef DEB
     Standard_Boolean parcrois = Standard_False ;
-#else
-    Standard_Boolean parcrois;
-#endif
     TopExp_Explorer Expl;
     for(Expl.Init(pivot.Oriented(TopAbs_FORWARD),TopAbs_VERTEX); 
 	Expl.More(); Expl.Next()){

@@ -87,11 +87,7 @@ Matches(const Standard_Real X,
         const Standard_Real aTol,
         Standard_Real& DMin)
 {
-#ifndef DEB
   Standard_Real DMin2 = 0.;
-#else
-  Standard_Real DMin2;
-#endif
   Standard_Real Xmin,Ymin,Xmax,Ymax;
   if(!Bnd_Box2d(mybox2d).IsVoid())
   {

@@ -240,9 +240,7 @@ GeomAbs_Shape Bisector_BisecPC::Continuity() const
   case GeomAbs_C2 : return GeomAbs_C1;
   case GeomAbs_C3 : return GeomAbs_C2;
   case GeomAbs_CN : return GeomAbs_CN;  
-#ifndef DEB
   default: break;
-#endif
   }
   return GeomAbs_C0;
 }
@@ -286,9 +284,7 @@ GeomAbs_Shape Bisector_BisecPC::IntervalContinuity() const
   case GeomAbs_C2 : return GeomAbs_C1;
   case GeomAbs_C3 : return GeomAbs_C2;
   case GeomAbs_CN : return GeomAbs_CN;  
-#ifndef DEB
   default: break;
-#endif
   }
   return GeomAbs_C0; 
 }
@@ -605,11 +601,7 @@ Standard_Real Bisector_BisecPC::SearchBound (const Standard_Real U1,
 					     const Standard_Real U2) const
 {
   Standard_Real Dist1,Dist2,DistMid,U11,U22; 
-#ifndef DEB
   Standard_Real UMid = 0.;
-#else
-  Standard_Real UMid;
-#endif
   Standard_Real Tol      = Precision::PConfusion();
   Standard_Real DistMax2 = distMax*distMax;
   U11 = U1; U22 = U2;
@@ -646,11 +638,7 @@ void Bisector_BisecPC::CuspFilter()
 //=============================================================================
 void Bisector_BisecPC::ComputeIntervals ()
 {
-#ifndef DEB
   Standard_Real U1 =0.,U2 =0.,UProj =0.;
-#else
-  Standard_Real U1,U2,UProj;
-#endif
   Standard_Real UStart,UEnd;
   Standard_Real Dist1,Dist2,DistProj;
   isEmpty        = Standard_False;     
@@ -787,11 +775,7 @@ Standard_Real Bisector_BisecPC::Parameter(const gp_Pnt2d& P) const
       return U + endIntervals.Value(bisInterval);
     }
   }
-#ifndef DEB
   Standard_Real                 UOnCurve = 0.;
-#else
-  Standard_Real                 UOnCurve;
-#endif
   Geom2dAPI_ProjectPointOnCurve Proj(P,curve,
 				     curve->FirstParameter(),curve->LastParameter());
   if (Proj.NbPoints() > 0) {

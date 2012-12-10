@@ -765,11 +765,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
   gp_Pnt2d aPf, aPl;
   Standard_Boolean closed, bval;
   Standard_SStream aMsg;
-#ifndef DEB
   GeomAbs_Shape reg = GeomAbs_C0;
-#else
-  GeomAbs_Shape reg;
-#endif
   try {
     OCC_CATCH_SIGNALS
     switch (T) {

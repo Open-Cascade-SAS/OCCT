@@ -656,11 +656,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   if(checkcurve.IsNull()) checkcurve = new GeomAdaptor_HCurve();
   GeomAdaptor_Curve& chc = checkcurve->ChangeCurve();
   Standard_Real tolget3d, tolget2d, tolaux, tolC1,  tolcheck;
-#ifndef DEB
   Standard_Real  tolC2 = 0.;
-#else
-  Standard_Real  tolC2;
-#endif
   approx.TolReached(tolget3d, tolget2d);
   tolaux = approx.TolCurveOnSurf(1);
   tolC1 = tolget3d + tolaux;
@@ -959,11 +955,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   Standard_Real MS = MaxStep;
   Standard_Integer again = 0;
   Standard_Integer nbptmin = 3; //jlr
-#ifndef DEB
   Standard_Integer Nbpnt = 0;
-#else
-  Standard_Integer Nbpnt;
-#endif
   // the initial solution is reframed if necessary.
   math_Vector ParSol(1,3);
   Standard_Real NewFirst = PFirst;
@@ -1095,11 +1087,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   Standard_Real MS = MaxStep;
   Standard_Integer again = 0;
   Standard_Integer nbptmin = 3; //jlr
-#ifndef DEB
   Standard_Integer Nbpnt = 0;
-#else
-  Standard_Integer Nbpnt;
-#endif
   // the initial solution is reframed if necessary.
   math_Vector ParSol(1,2);
   Standard_Real NewFirst = PFirst;
@@ -1229,11 +1217,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
   
   Standard_Real MS = MaxStep;
   Standard_Integer again = 0;
-#ifndef DEB
   Standard_Integer Nbpnt = 0; 
-#else
-  Standard_Integer Nbpnt; 
-#endif
   // the starting solution is reframed if needed.
   math_Vector ParSol(1,3);
   Standard_Real NewFirst = PFirst;
@@ -1359,11 +1343,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
   
   Standard_Real MS = MaxStep;
   Standard_Integer again = 0;
-#ifndef DEB
   Standard_Integer Nbpnt = 0; 
-#else
-  Standard_Integer Nbpnt; 
-#endif
   // The initial solution is reframed if necessary.
   math_Vector ParSol(1,2);
   Standard_Real NewFirst = PFirst;
@@ -1581,11 +1561,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   //******************************************************************//
   Standard_Integer again = 0;
   Standard_Boolean tchernobyl = 0;
-#ifndef DEB
   Standard_Real u1sov = 0., u2sov = 0.;
-#else
-  Standard_Real u1sov, u2sov;
-#endif
   TopoDS_Face bif;
   //Max step is relevant, but too great, the vector is required to detect
   //the twists.
@@ -2110,11 +2086,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
   }
 
   Standard_Real Targetsov = Target;
-#ifndef DEB
   Standard_Real u1sov = 0., u2sov = 0.; 
-#else
-  Standard_Real u1sov, u2sov; 
-#endif
   // on recadre la solution de depart a la demande.
   math_Vector ParSol(1,4);
   Standard_Real NewFirst = PFirst;

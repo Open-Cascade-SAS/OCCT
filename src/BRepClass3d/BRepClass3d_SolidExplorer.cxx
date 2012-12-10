@@ -909,12 +909,8 @@ Standard_Integer  BRepClass3d_SolidExplorer::Segment(const gp_Pnt& P,
 
 IntCurvesFace_Intersector&  BRepClass3d_SolidExplorer::Intersector(const TopoDS_Face& F) const  { 
   void *ptr = (void*)(myMapOfInter.Find(F));
-#ifndef DEB
   IntCurvesFace_Intersector& curr = (*((IntCurvesFace_Intersector *)ptr));
   return curr;
-#else
-  return(*((IntCurvesFace_Intersector *)ptr));
-#endif
 }
 
 //=======================================================================

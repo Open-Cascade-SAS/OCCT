@@ -181,10 +181,8 @@ void BRepCheck::Print(const BRepCheck_Status stat,
   case BRepCheck_CheckFail:
     OS << "BRepCheck_CheckFail\n";
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 }
 

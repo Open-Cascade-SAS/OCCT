@@ -346,13 +346,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
     yapiv = (pivot.IsSame(CP2.Arc()));
   }
   Handle(BRepAdaptor_HCurve) Hpivot;
-#ifndef DEB
   Standard_Boolean sameparam = Standard_False;
   Standard_Real parCP1 = 0., parCP2 = 0.;
-#else
-  Standard_Boolean sameparam;
-  Standard_Real parCP1, parCP2;
-#endif
   if(yapiv) {
     Hpivot = new BRepAdaptor_HCurve(pivot);
     parCP1 = CP1.ParameterOnArc();
@@ -372,11 +367,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
   BRFaCo.Initialize(FaCo);
   
   TopoDS_Face FF1,FF2,F,FaPiv;
-#ifndef DEB
   TopAbs_Orientation pctrans = TopAbs_FORWARD ;
-#else
-  TopAbs_Orientation pctrans;
-#endif
   Handle(Geom2d_BSplineCurve) PCurveOnPiv;
   FF1 = TopoDS::Face(DStr.Shape(sd1->Index(IFaArc1)));
   FF2 = TopoDS::Face(DStr.Shape(sd2->Index(IFaArc2)));
@@ -728,15 +719,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       }
       Handle(ChFiDS_Stripe) stsam, stdif;
       Handle(ChFiDS_SurfData) sdsam, sddif;
-#ifndef DEB
       Standard_Real uintpcsam = 0., uintpcdif = 0.;
       Standard_Integer ifacosam = 0, ifacodif = 0, ifaopsam = 0, ifaopdif = 0;
       Standard_Boolean isfirstsam = Standard_False, isfirstdif = Standard_False;
-#else
-      Standard_Real uintpcsam, uintpcdif;
-      Standard_Integer ifacosam, ifacodif, ifaopsam, ifaopdif;
-      Standard_Boolean isfirstsam, isfirstdif;
-#endif
       if(Stat1 == ChFiDS_OnSame && Stat2 == ChFiDS_OnDiff){
 	stsam = st1; sdsam = sd1; uintpcsam = UIntPC1; 
 	ifacosam = IFaCo1; ifaopsam = IFaArc1; isfirstsam = isfirst1;

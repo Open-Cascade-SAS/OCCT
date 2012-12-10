@@ -476,10 +476,8 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPrs,
 		      aDrawer->LengthAspect()->Arrow1Aspect()->Angle(),
 		      aDrawer->LengthAspect()->Arrow1Aspect()->Length());
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
   Prs3d_Root::CurrentGroup(aPrs)->EndPrimitives();
   

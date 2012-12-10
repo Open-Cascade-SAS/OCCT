@@ -471,11 +471,7 @@ Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
   // in which case FVoi = FRef is returned (less frequent case).
   TopExp_Explorer Ex;
   Standard_Boolean orset = Standard_False;
-#ifndef DEB
   TopAbs_Orientation orient = TopAbs_FORWARD ;
-#else
-  TopAbs_Orientation orient;
-#endif
   TopoDS_Edge ed;
   for(Ex.Init(FRef,TopAbs_EDGE); Ex.More(); Ex.Next()){
     ed = TopoDS::Edge(Ex.Current());
@@ -810,11 +806,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
   Standard_Real wl = 0.9973 * Spine->LastParameter(nbed) +
     0.0027 * Spine->FirstParameter(nbed);
 
-#ifndef DEB
   Standard_Real TolE = 1.0e-7;
-#else
-  Standard_Real TolE;
-#endif
   BRepAdaptor_Surface AS;  
 
   Standard_Integer nbessai;
@@ -825,11 +817,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
   TopoDS_Edge cured;
   TopoDS_Face f1,f2;
   TopAbs_Orientation Or1,Or2;
-#ifndef DEB
   Standard_Integer Choix = 0;
-#else
-  Standard_Integer Choix;
-#endif
   math_Vector SolDep(1,4);
   Handle(Geom2d_Curve) PC;
   Extrema_ExtPC PExt;
@@ -2006,11 +1994,7 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
     }   
   }
   Standard_Real         MaxStep  = (bidl-bidf)*0.05/nbed;
-#ifndef DEB
   Standard_Real         Firstsov = 0.;
-#else
-  Standard_Real         Firstsov;
-#endif
   Standard_Boolean      intf = 0, intl = 0;
   while(!fini){
     // are these the ends (no extension on periodic).
@@ -2931,11 +2915,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  Standard_Real fp = cursd->FirstSpineParam();
 	  Standard_Real lp = cursd->LastSpineParam();
 	  Standard_Integer j;
-#ifndef DEB
 	  Standard_Integer jf = 0, jl = 0;
-#else
-	  Standard_Integer jf,jl;
-#endif
 	  if(lp < WF+tolesp || fp > WL-tolesp) continue;
 	  for(j = IF; j < IL; j++){
 	    jf = j;

@@ -137,10 +137,8 @@ void OSD_Error::Perror() {
      buffer += "Lock is already blocked by another process";
      extCode = ERR_FDEADLK;
      break;
-#ifndef DEB
     default:
       break;
-#endif
    }
    break;
 #endif
@@ -262,10 +260,8 @@ void OSD_Error::Perror() {
      buffer += "File is locked";
      extCode = ERR_FLOCKED;
      break;
-#ifndef DEB
     default:
      break;
-#endif
    }
    break;
 #endif
@@ -277,10 +273,8 @@ void OSD_Error::Perror() {
      buffer += "File is locked";
      extCode = ERR_FLOCKED;
      break;
-#ifndef DEB
     default:
      break;
-#endif
    }
    break;
 #endif

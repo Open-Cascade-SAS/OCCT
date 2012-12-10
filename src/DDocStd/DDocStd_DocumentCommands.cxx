@@ -323,11 +323,7 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
     // command
     di << "COMMAND       : ";
     if (D->HasOpenCommand()) di << " Is Open";
-#ifndef DEB
     else di << " Is Not Open";
-#else
-    else " Is Not Open"; // ???
-#endif
     // undo
     di << "UNDO          :"; 
     di << " limit :" << D->GetUndoLimit();

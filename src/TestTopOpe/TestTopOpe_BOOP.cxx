@@ -243,11 +243,7 @@ void TestTopOpe_BOOP::Booope(const char* key,const char *namres)
 
   else if (o == BOOP_C12 || o == BOOP_C21 || o == BOOP_COM || o == BOOP_FUS) {
 
-#ifndef DEB
     TopAbs_State t1=TopAbs_UNKNOWN,t2=TopAbs_UNKNOWN;
-#else    
-    TopAbs_State t1,t2;
-#endif
     if      (o == BOOP_C12) { t1 = TopAbs_OUT; t2 = TopAbs_IN;  }
     else if (o == BOOP_C21) { t1 = TopAbs_IN;  t2 = TopAbs_OUT; }
     else if (o == BOOP_COM) { t1 = TopAbs_IN;  t2 = TopAbs_IN;  }

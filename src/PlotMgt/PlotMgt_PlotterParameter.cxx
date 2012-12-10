@@ -408,10 +408,8 @@ void PlotMgt_PlotterParameter::Normalize ()
     case _T_LSTR: {
         ProcessParamVal (NULL, FLAG_DEFVAL, myDefValue);
       } break;
-#ifndef DEB
     default:
       break ;
-#endif
   }
   // Check the configuration
   if (myFlags & FLAG_DEFVAL && myDefValue.IsEmpty())

@@ -97,10 +97,8 @@ static Standard_Integer  NbConstraint(const AppParCurves_Constraint C1,
        N = 3;
        break;
      }     
-#ifndef DEB
    default:
        break;
-#endif
    }
 
    switch (C2) {
@@ -119,10 +117,8 @@ static Standard_Integer  NbConstraint(const AppParCurves_Constraint C1,
        N += 3;
        break;
      }     
-#ifndef DEB
    default:
        break;
-#endif
    }
    return N;
 }

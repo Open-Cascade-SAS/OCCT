@@ -91,11 +91,7 @@ Standard_Integer DetectKPart(const TopoDS_Edge& Edge1,
   // find the particular case
   gp_Pnt pos1, pos;
   Standard_Real  dist;
-#ifndef DEB
   Standard_Real dist1 =0.;
-#else
-  Standard_Real dist1;
-#endif
   gp_Ax1 axe1, axe;
 
   if (degen1) {

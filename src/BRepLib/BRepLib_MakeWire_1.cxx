@@ -80,11 +80,7 @@ void  BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
 	  rlist.Prepend(edVer);
 	  nlist.Prepend(edVer);
 	  if (!mapLocale.Contains(edVer)) {
-#ifndef DEB
 	    Standard_Boolean notYetFound = Standard_True;
-#else
-	    Standard_Boolean notYetFound;
-#endif
 	    Standard_Real gap=BRep_Tool::Tolerance(edVer);
 	    gp_Pnt pVer=BRep_Tool::Pnt(edVer);
 	    for (itMS.Initialize(mapLocale); itMS.More(); itMS.Next()) {
@@ -135,11 +131,7 @@ void  BRepLib_MakeWire::Add(const TopTools_ListOfShape& L)
       TopoDS_Vertex vf, vl;
       TopoDS_Shape theKey;
       Standard_Boolean usedVertex;
-#ifndef DEB
       Standard_Boolean closedEdge = Standard_False;
-#else
-      Standard_Boolean closedEdge;
-#endif
       Standard_Integer vvInd, lastInd;
       do {
 	if (!VL.IsNull() && lesMeres.Contains(VL)) {

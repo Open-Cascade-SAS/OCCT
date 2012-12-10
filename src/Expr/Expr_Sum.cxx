@@ -167,11 +167,7 @@ Handle(Expr_GeneralExpression) Expr_Sum::ShallowSimplified () const
     sumop = new Expr_Sum(newops);
     return sumop->ShallowSimplified();
   }
-#ifndef DEB
   Standard_Real vals = 0.;
-#else
-  Standard_Real vals;
-#endif
   Standard_Boolean noone = Standard_True;
   for (i = 1; i <= max ; i++) {
     op = Operand(i);

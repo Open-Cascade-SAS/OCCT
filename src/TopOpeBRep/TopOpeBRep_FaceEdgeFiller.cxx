@@ -290,11 +290,8 @@ void TopOpeBRep_FaceEdgeFiller::StoreInterference
 //    appendtoG = Standard_True;
 //    BDS.ChangePointInterferences(G).Append(I);
     break;
-#ifndef DEB
   default:
     break;
-#endif
-
   }
 
 #ifdef DEB

@@ -761,11 +761,7 @@ void  ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD ) const
       Standard_Real ang = (u2-u1);
       gp_Cone Co = AS.Cone();
       Standard_Real rad = Co.RefRadius(), sang = Co.SemiAngle();
-//#ifndef DEB
       Standard_Integer n = (Standard_Integer) (36.*ang/M_PI + 1);
-//#else
-//      Standard_Integer n = 36.*ang/M_PI + 1;
-//#endif
       if(n<2) n = 2;
       sec = new ChFiDS_SecHArray1(1, n);
       for (Standard_Integer i = 1; i <= n; i++) {
@@ -1904,11 +1900,7 @@ void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex&          V,
 void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
 				       const ChFiDS_ListOfStripe&  LS)
 {
-#ifndef DEB
   Standard_Integer Sens = 0;
-#else
-  Standard_Integer Sens;
-#endif
   ChFiDS_ListIteratorOfListOfStripe itel(LS);
   Standard_Boolean FF = Standard_True;
   Standard_Boolean isfirst[2];
@@ -2030,11 +2022,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
 void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
 					 const ChFiDS_ListOfStripe& LS)
 {
-#ifndef DEB
   Standard_Integer Sens = 0;
-#else
-  Standard_Integer Sens;
-#endif
   ChFiDS_ListOfStripe check;
   Standard_Boolean isfirst[3];
   Standard_Integer Iedge[3];
@@ -2239,11 +2227,7 @@ void ChFi3d_ChBuilder::ConexFaces (const Handle(ChFiDS_Spine)&  Spine,
 Standard_Integer ChFi3d_ChBuilder::FindChoiceDistAngle(const Standard_Integer Choice,
 						       const Standard_Boolean DisOnF1) const
 {
-#ifndef DEB
   Standard_Integer ch = 0;  
-#else
-  Standard_Integer ch;  
-#endif
   if (!DisOnF1) {
 
     switch (Choice) {

@@ -75,11 +75,7 @@ void MAT2d_MiniPath::Perform
   TColStd_SequenceOfInteger Set2;
   Standard_Real             DistS1S2;
   Standard_Integer          IndiceLine1,IndiceLine2;
-#ifndef DEB
   Standard_Integer          ISuiv =0,MinOnSet1 =0,MinOnSet2 =0;
-#else
-  Standard_Integer          ISuiv,MinOnSet1,MinOnSet2;
-#endif
   //---------------------------------------------------------------------------
   // - 0 Set1 est initialise avec la ligne de depart.
   //     Set2 contient toutes les autres.
@@ -292,17 +288,9 @@ Handle(MAT2d_Connexion) MAT2d_MiniPath::MinimumL1L2
    const Standard_Integer                    IL2) const
 {
   Extrema_POnCurv2d              PointOnCurv1,PointOnCurv2;
-#ifndef DEB
   Standard_Integer               IC1,IC2,IMinC1 =0,IMinC2 =0,i;
-#else
-  Standard_Integer               IC1,IC2,IMinC1,IMinC2,i;
-#endif
   Standard_Real                  DistL1L2_2,DistP1P2_2;
-#ifndef DEB
   Standard_Real                  ParameterOnC1 =0.,ParameterOnC2 =0.;
-#else
-  Standard_Real                  ParameterOnC1,ParameterOnC2;
-#endif
   TColGeom2d_SequenceOfGeometry  L1,L2;
   gp_Pnt2d                       Point1,Point2,P1,P2;
   Handle(Geom2d_Curve)           Item1;

@@ -76,10 +76,8 @@ void LProp_AnalyticCurInf::Perform (const GeomAbs_CurveType  CType,
       Result.AddExtCur(0.0   , Standard_True);
     }
     break; 
-#ifndef DEB
   default:
     break; 
-#endif
   }
 }
 

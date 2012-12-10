@@ -288,10 +288,8 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
           Sel->UpdateStatus(SelectMgr_TOU_None);
           break;
         }
-#ifndef DEB
       default:
         break;
-#endif
       }
 
       curview->Activate(Sel,AutomaticProj);
@@ -328,10 +326,8 @@ Activate(const Handle(SelectMgr_SelectableObject)& anObject,
         anObject->UpdateLocation(Sel);
       break;
     }
-#ifndef DEB
   default:
     break;
-#endif
   }
   Sel->UpdateStatus(SelectMgr_TOU_None);
 
@@ -654,10 +650,8 @@ RecomputeSelection (const Handle(SelectMgr_SelectableObject)& anObject,
     case SelectMgr_TOU_Partial:
       anObject->UpdateLocation(Sel);
       break;
-#ifndef DEB
     default:
       break;
-#endif
           }
           if(Found){
             VS->Convert(Sel);
@@ -692,10 +686,8 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
         anObject->UpdateLocation(Sel);
         wasrecomputed = Standard_True;
         break;
-#ifndef DEB
       default:
         break;
-#endif
       }
       Sel->UpdateStatus(SelectMgr_TOU_None);
     }
@@ -714,10 +706,8 @@ void SelectMgr_SelectionManager::Update(const Handle(SelectMgr_SelectableObject)
     anObject->UpdateLocation(Sel);
     wasrecomputed = Standard_True;
     break;
-#ifndef DEB
   default:
     break;
-#endif
       }
       if(wasrecomputed)
         VS->Convert(Sel);
@@ -758,10 +748,8 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
         anObject->UpdateLocation(Sel);
         wasrecomputed = Standard_True;
         break;
-#ifndef DEB
       default:
         break;
-#endif
       }
       Sel->UpdateStatus(SelectMgr_TOU_None);
     }
@@ -775,10 +763,8 @@ Update(const Handle(SelectMgr_SelectableObject)& anObject,
           anObject->UpdateLocation(Sel);
         wasrecomputed = Standard_True;
         break;
-#ifndef DEB
       default:
         break;
-#endif
       }
       if(wasrecomputed)
         aViewSel->Convert(Sel);

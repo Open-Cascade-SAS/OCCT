@@ -70,10 +70,8 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
 			     ,ThePConic.Param2(),P);
     break;
   }
-#ifndef DEB
   default:
     break;
-#endif
   }
   if(ParamInf!=ParamSup) {
     if(Param<ParamInf) return(ParamInf);
@@ -122,10 +120,8 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
 			     ,ThePConic.Param2(),P);
     break;
   }
-#ifndef DEB
   default:
     break;
-#endif
   }
 
   return(Param);

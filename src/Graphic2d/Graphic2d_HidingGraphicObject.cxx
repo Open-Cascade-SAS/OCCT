@@ -193,10 +193,8 @@ void Graphic2d_HidingGraphicObject::Draw (const Handle(Graphic2d_Drawer)& aDrawe
                 }
 	        break;
 	      }
-#ifndef DEB
 	    default:
 	      break;
-#endif
 	  } else {
 	    myXmin = myYmin = RealLast();
 	    myXmax = myYmax = RealFirst();

@@ -466,12 +466,7 @@ void TopOpeBRepBuild_HBuilder::MakeCurveAncestorMap()
     return;
   mySectEdgeDSCurve.Clear();
   myMakeCurveAncestorIsDone = Standard_True;
-#ifndef DEB  
-//  static const TopOpeBRepDS_DataStructure& DS = DataStructure()->DS();
-  const TopOpeBRepDS_DataStructure& DS = DataStructure()->DS(); // How to do static <--> const
-#else
   const TopOpeBRepDS_DataStructure& DS = DataStructure()->DS();
-#endif
   TopTools_ListIteratorOfListOfShape itloe;
   TopOpeBRepDS_CurveExplorer cex(DS,Standard_True);
 //  Standard_Integer ic, icm;

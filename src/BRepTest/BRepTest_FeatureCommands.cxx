@@ -936,10 +936,8 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
     //case GeomAbs_Intersection: cout << " Intersection"; break;
     case GeomAbs_Arc:          di << " Arc";          break;
     case GeomAbs_Intersection: di << " Intersection"; break;
-#ifndef DEB
     default:
       break ;
-#endif
     }
     //cout << endl;
     di << "\n";

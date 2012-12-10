@@ -339,11 +339,7 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
   Standard_Integer colP = Pivotm1 - ligP * nbdeltaVp1;
 
 // Point sur Edge position in the MaTriangle and edge typ :
-#ifndef DEB
   Standard_Integer ligE = 0, colE = 0, typE = 0;
-#else 
-  Standard_Integer ligE, colE, typE;
-#endif
   if (Pedge!=0) {
     ligE= (Pedge-1)/nbdeltaVp1;
     colE= (Pedge-1) - (ligE * nbdeltaVp1);
@@ -359,13 +355,8 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
   }
 
 // Triangle position General case :
-#ifndef DEB
   Standard_Integer linT = 0, colT = 0;
   Standard_Integer linO = 0, colO = 0;
-#else
-  Standard_Integer linT, colT;
-  Standard_Integer linO, colO;
-#endif
   Standard_Integer t,tt;
   if (Triang!=0) {
     t = (Triang-1)/(nbdeltaVm2);

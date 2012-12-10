@@ -658,11 +658,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 
   Standard_Boolean Fini = Standard_False;
   Standard_Integer Nb;
-#ifndef DEB
   ChFiDS_State CurSt = ChFiDS_Closed;
-#else
-  ChFiDS_State CurSt;
-#endif
   if (VStart.IsSame(LVEc)) {//case if only one edge is closed
     CEc.Initialize(Ec);
     Wl = BRep_Tool::Parameter(VStart,Ec);

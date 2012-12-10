@@ -340,13 +340,8 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::PerformFirstSection
   else {
     sens = -1.;
   }
-#ifndef DEB
   Blend_Status State = Blend_OnRst12;
   Standard_Real trst = 0.;
-#else
-  Blend_Status State;
-  Standard_Real trst;
-#endif  
   Standard_Boolean recadp,recadrst,recads;
   Standard_Real wp,wrst,ws;
   Standard_Real U,V;
@@ -515,21 +510,13 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
   if (sens*(parprec - Bound) >= -tolgui) {
     return;
   }
-#ifndef DEB
   Blend_Status State = Blend_OnRst12;
-#else
-  Blend_Status State;
-#endif
   TopAbs_State situonc,situons;
   Standard_Boolean decroch;
   Standard_Boolean Arrive,recadp,recadrst,recads,echecrecad;
   Standard_Real wp,wrst,ws;
   Standard_Real U,V;
-#ifndef DEB
   Standard_Real  trst = 0.;
-#else
-  Standard_Real  trst;
-#endif
   math_Vector infbound(1,3),supbound(1,3);
   math_Vector parinit(1,3),tolerance(1,3);
   math_Vector solinvp(1,3),solinvrst(1,4),solinvs(1,3);
@@ -894,10 +881,8 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
 	Arrive = Standard_True;
       }
       break;
-#ifndef DEB
     default:
       break;
-#endif
     }
     if (Arrive) {
       if (sens > 0.) {
@@ -1265,11 +1250,7 @@ void BRepBlend_SurfRstLineBuilder::MakeExtremity(BRepBlend_Extremity&           
   else {
     Extrem.SetVertex(Vtx);
     while (Iter->More()) {
-//#ifndef DEB
       Handle(Adaptor2d_HCurve2d) arc = Iter->Value();
-//#else
-//      Handle(Adaptor2d_HCurve2d)& arc = Iter->Value();
-//#endif
       if (arc != Arc) {
 	Iter->Initialize(arc);
 	Iter->InitVertexIterator();
@@ -1316,11 +1297,7 @@ Blend_Status BRepBlend_SurfRstLineBuilder::CheckDeflectionOnSurf(const Blend_Poi
   if(!prevpointistangent){
     prevTg = previousP.TangentOnS();
   }
-#ifndef DEB
   Standard_Real Norme,prevNorme = 0.;
-#else
-  Standard_Real Norme,prevNorme;
-#endif
   gp_Vec Corde(prevP,Psurf);
   Norme = Corde.SquareMagnitude();
 //  if(!curpointistangent) curNorme = Tgsurf.SquareMagnitude();
@@ -1396,11 +1373,7 @@ Blend_Status BRepBlend_SurfRstLineBuilder::CheckDeflectionOnRst(const Blend_Poin
   if(!prevpointistangent){
     prevTg = previousP.TangentOnC();
   }
-#ifndef DEB
   Standard_Real Norme,prevNorme = 0.;
-#else
-  Standard_Real Norme,prevNorme;
-#endif
   gp_Vec Corde(prevP,Psurf);
   Norme = Corde.SquareMagnitude();
 //  if(!curpointistangent) curNorme = Tgsurf.SquareMagnitude();
@@ -1470,11 +1443,7 @@ Blend_Status BRepBlend_SurfRstLineBuilder::TestArret(Blend_SurfRstFunction& Func
   gp_Vec tgs,tgrst;
   gp_Vec2d tg2ds,tg2drst;
   Blend_Status StateS,StateRst;
-#ifndef DEB
   IntSurf_TypeTrans tras = IntSurf_Undecided, trarst = IntSurf_Undecided;
-#else
-  IntSurf_TypeTrans tras,trarst;
-#endif
   Blend_Point curpoint;
 
   if (Func.IsSolution(sol,tolesp)) {

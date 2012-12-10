@@ -458,10 +458,8 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       explode = Standard_True;
       break;
     }
-#ifndef DEB
   default:
     break;
-#endif    
   }
 
   if (explode) {
@@ -644,10 +642,8 @@ Standard_Integer BRepFill_Pipe::FindEdge(const TopoDS_Shape& S,
   case TopAbs_COMPSOLID :
     Standard_DomainError::Raise("BRepFill_Pipe::SOLID or COMPSOLID");
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 
   return result; 
@@ -712,10 +708,8 @@ Standard_Integer BRepFill_Pipe::FindVertex(const TopoDS_Shape& S,
   case TopAbs_COMPSOLID :
     Standard_DomainError::Raise("BRepFill_Pipe::SOLID or COMPSOLID");
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 
   return result; 

@@ -980,10 +980,8 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 			length);
       break;
     }
-#ifndef DEB
   default:
       break;
-#endif
   }
 }
 

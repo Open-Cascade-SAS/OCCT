@@ -1185,11 +1185,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 				       const Handle(Adaptor3d_TopolTool)& myDom2,
 				       const Standard_Real TolArc)  {
 
-#ifndef DEB
   Standard_Integer i=1,nbvtx;
-#else
-  Standard_Integer i,nbvtx;
-#endif
   Standard_Real firstp,lastp;
   Standard_Real Tol = Precision::PConfusion()*100.; // JMB le 13 Jan 2000. Report de la correction du PRO19653
   GeomAbs_SurfaceType typs1 = mySurf1->GetType();

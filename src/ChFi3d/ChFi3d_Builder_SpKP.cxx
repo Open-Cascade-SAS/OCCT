@@ -660,11 +660,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   Standard_Real pitol = Precision::PIntersection();
   
   ChFiKPart_RstMap M1, M2;
-#ifndef DEB
   Standard_Integer iH1 = 0,iH2 = 0;
-#else
-  Standard_Integer iH1,iH2;
-#endif
   Standard_Integer  Nb1 = 1,Nb2 = 1;
   
   // Cutting of tangency lines (hatching).

@@ -914,10 +914,8 @@ void CDM_Document::Close()
     Standard_Failure::Raise("cannot close this document because a document "
                             "referencing it refuses");
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
   if(FromReferencesNumber() != 0) {
     CDM_ListIteratorOfListOfReferences it(myFromReferences);

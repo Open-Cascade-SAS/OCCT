@@ -888,11 +888,7 @@ Standard_Integer tsee(Draw_Interpretor& di,Standard_Integer na_in,const char** a
 // SeeAnyKI
 //-----------------------------------------------------------------------
 Standard_Integer SeeAnyKI(const TopOpeBRepDS_Kind TK,const Standard_Integer I) {
-#ifndef DEB
   TopAbs_ShapeEnum TS = TopAbs_COMPOUND;
-#else
-  TopAbs_ShapeEnum TS;
-#endif
   Standard_Boolean isshape,isgeome; isshape = isgeome = Standard_False;
   isshape = TopOpeBRepDS::IsTopology(TK);
   if (isshape) TS = TopOpeBRepDS::KindToShape(TK);

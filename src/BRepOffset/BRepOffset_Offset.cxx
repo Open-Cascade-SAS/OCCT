@@ -1532,10 +1532,8 @@ TopoDS_Shape BRepOffset_Offset::Generated(const TopoDS_Shape& Shape) const
 	aShape.Reverse();
     }
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 
   return aShape;

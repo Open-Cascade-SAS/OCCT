@@ -106,10 +106,8 @@ void Draw_Display::DrawMarker (const gp_Pnt2d& pt,
     C.SetLocation(pt);
     Draw(C, 0, 2*M_PI, Standard_False);
     break;
-#ifndef DEB
   default:
     break;
-#endif
     
   }
   Draw_Bounds = Standard_True;

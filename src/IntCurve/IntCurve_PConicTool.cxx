@@ -83,10 +83,8 @@ void IntCurve_PConicTool::D1(const IntCurve_PConic& PConic,
     ElCLib::HyperbolaD1(U,PConic.Axis2(),PConic.Param1(),
 		       PConic.Param2(),Pt,Tan);
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 }
 
@@ -121,10 +119,8 @@ void IntCurve_PConicTool::D2(const IntCurve_PConic& PConic,
     ElCLib::HyperbolaD2(U,PConic.Axis2(),PConic.Param1(),
 		       PConic.Param2(),Pt,Tan,Norm);
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 } 
 

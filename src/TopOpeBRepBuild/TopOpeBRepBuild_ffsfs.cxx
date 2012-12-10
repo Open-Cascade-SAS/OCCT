@@ -62,12 +62,8 @@ static Standard_Integer FUN_getAncestorFsp(TopOpeBRepBuild_Builder& B,TopOpeBRep
 
 static Standard_Integer FUN_getAncestorFsp(TopOpeBRepBuild_Builder& B,TopOpeBRepTool_ShapeClassifier& SC,const TopTools_ListOfShape& LF,const TopoDS_Shape& fsp,Standard_Boolean& p3ddef,gp_Pnt& p3d)
 {
-#ifndef DEB
-//  static const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS();
   const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS(); // How to do static <--> const
-#else
-  const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS();
-#endif
+
   TopTools_ListIteratorOfListOfShape itf(LF);
   for (; itf.More(); itf.Next()){
     const TopoDS_Face& f = TopoDS::Face(itf.Value());
@@ -99,11 +95,7 @@ static Standard_Integer FUN_getAncestorFsp(TopOpeBRepBuild_Builder& B,TopOpeBRep
 {
   // IMPORTANT : fsp is split IN/OUT of F1,so it has only one ancestor face
   // LF1 faces sdm with LF2
-#ifndef DEB
   const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS();
-#else
-  const TopOpeBRepDS_DataStructure& BDS = B.DataStructure()->DS();
-#endif
   Standard_Boolean of1,of2; FUNBUILD_ANCESTORRANKGET(B,fsp,of1,of2);	
   Standard_Integer rkfsp = 0;
   if      (of1 && !of2) rkfsp = 1;
@@ -182,12 +174,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(FOR,iF);
   if(tSPS)cout<<endl;
 #endif
-#ifndef DEB
-//  static const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
   const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-#else
-  const TopOpeBRepDS_DataStructure& BDS = myDataStructure->DS();
-#endif
   Standard_Boolean tosplit = GToSplit(FOR,TB1);
   Standard_Boolean tomerge = GToMerge(FOR);
 #ifdef DEB

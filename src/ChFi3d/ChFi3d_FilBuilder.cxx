@@ -171,11 +171,7 @@ void ChFi3d_FilBuilder::SetFilletShape(const ChFi3d_FilletShape FShape)
 
 ChFi3d_FilletShape ChFi3d_FilBuilder::GetFilletShape() const
 {
-#ifndef DEB
   ChFi3d_FilletShape filshape = ChFi3d_Rational; //  need to set default value
-#else
-  ChFi3d_FilletShape filshape;
-#endif
   switch (myShape) {
   case BlendFunc_Rational:
     filshape= ChFi3d_Rational;
@@ -557,11 +553,7 @@ void  ChFi3d_FilBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
       Standard_Real ang = (u2-u1);
       gp_Torus To = AS.Torus();
       Standard_Real majr = To.MajorRadius(), minr = To.MinorRadius();
-//#ifndef DEB
       Standard_Integer n = (Standard_Integer) (36.*ang/M_PI + 1);
-//#else
-//      Standard_Integer n = 36.*ang/M_PI + 1;
-//#endif
       if(n<2) n = 2;
       sec = new ChFiDS_SecHArray1(1, n);
       for (Standard_Integer i = 1; i <= n; i++) {
@@ -580,11 +572,7 @@ void  ChFi3d_FilBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD) const
       Standard_Real ang = (u2-u1);
       gp_Sphere Sp = AS.Sphere();
       Standard_Real rad = Sp.Radius();
-//#ifndef DEB
       Standard_Integer n = (Standard_Integer) (36.*ang/M_PI + 1);
-//#else
-//      Standard_Integer n = 36.*ang/M_PI + 1;
-//#endif
       if(n<2) n = 2;
       sec = new ChFiDS_SecHArray1(1, n);
       for (Standard_Integer i = 1; i <= n; i++) {
@@ -1863,11 +1851,7 @@ void ChFi3d_FilBuilder::ExtentOneCorner(const TopoDS_Vertex& V,
 {
   // review by using the data at end of fillets (point, radius, normal
   // to the faces and tangents of the guideline).
-#ifndef DEB
   Standard_Integer      Sens = 0;
-#else
-  Standard_Integer      Sens;
-#endif
   Standard_Real         Coeff = 0.5;
   Handle(ChFiDS_Spine)  Spine = S->Spine();
   ChFi3d_IndexOfSurfData(V,S,Sens);
@@ -1961,11 +1945,7 @@ void ChFi3d_FilBuilder::ExtentThreeCorner(const TopoDS_Vertex& V,
 {
   // Review by using the data at end of fillets (point, radius, normal
   // to faces and tangents to the guideline.
-#ifndef DEB
   Standard_Integer Sens = 0;
-#else
-  Standard_Integer Sens;
-#endif
   Standard_Real    Coeff = 0.1;
   ChFiDS_ListOfStripe check;
 //  Standard_Boolean FF = Standard_True;

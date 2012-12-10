@@ -492,10 +492,8 @@ static void BuildPCurves (const TopoDS_Edge&  E,
   case GeomAbs_BSplineCurve:
     C2d = Proj.BSpline();
     break;
-#ifndef DEB
   default:
     break;
-#endif
   }
 
   if (AS.IsUPeriodic() || AS.IsVPeriodic()) {
@@ -2201,11 +2199,7 @@ static Standard_Boolean  ProjectVertexOnEdge(TopoDS_Vertex&     V,
 #endif
   BRep_Builder    B;
   Standard_Real   f,l;
-#ifndef DEB
   Standard_Real U = 0.;
-#else
-  Standard_Real U;
-#endif
   TopLoc_Location L;
   Standard_Boolean found = Standard_False;
 
@@ -2360,11 +2354,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 	  return;
 	}
 #endif
-#ifndef DEB
 	Standard_Real    U1 = 0.,U2 = 0.;
-#else
-	Standard_Real    U1,U2;
-#endif
 	gp_Pnt2d         P2d;	
 	if (itry == 1) {
 	  fl1[0] = C1->FirstParameter(); fl1[1] = C1->LastParameter();
@@ -3379,11 +3369,7 @@ static Standard_Boolean TryParameter (const TopoDS_Edge& OE,
   BRepAdaptor_Curve NC(NE);
   Standard_Real Of = OC.FirstParameter(); Standard_Real Ol = OC.LastParameter();
   Standard_Real Nf = NC.FirstParameter(); Standard_Real Nl = NC.LastParameter();
-#ifndef DEB
   Standard_Real U = 0.;
-#else
-  Standard_Real U;
-#endif
   gp_Pnt           P  = BRep_Tool::Pnt(V);
   Standard_Boolean OK = Standard_False;
 

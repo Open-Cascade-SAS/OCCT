@@ -148,11 +148,7 @@ Standard_Boolean  BRepLib::CheckSameRange(const TopoDS_Edge& AnEdge,
     ((*((Handle(BRep_TEdge)*)&AnEdge.TShape()))->ChangeCurves());
   
   Standard_Real first, last;
-#ifndef DEB
   Standard_Real current_first =0., current_last =0. ;
-#else
-  Standard_Real current_first,current_last ;
-#endif
   Handle(BRep_GCurve) geometric_representation_ptr ;
 
   while (IsSameRange && an_Iterator.More()) {
@@ -961,11 +957,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   GeomAdaptor_Curve& GAC = HC->ChangeCurve();
   Geom2dAdaptor_Curve& GAC2d = HC2d->ChangeCurve2d();
   GeomAdaptor_Surface& GAS = HS->ChangeSurface();
-#ifndef DEB
   Standard_Real f3d =0.,l3d =0.;
-#else
-  Standard_Real f3d,l3d;
-#endif
   TopLoc_Location L3d;
   Handle(Geom_Curve) C3d;
 
@@ -1522,11 +1514,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   Standard_Boolean rev1 = (F1.Orientation() == TopAbs_REVERSED);
   Standard_Boolean rev2 = (F2.Orientation() == TopAbs_REVERSED);
   Standard_Real f,l,eps, angmax = -M_PI;
-#ifndef DEB
   Standard_Real ang =0.;
-#else
-  Standard_Real ang;
-#endif
   BRep_Tool::Range(E,f,l);
   Extrema_LocateExtPC ext;
   Standard_Boolean IsInitialized = Standard_False;

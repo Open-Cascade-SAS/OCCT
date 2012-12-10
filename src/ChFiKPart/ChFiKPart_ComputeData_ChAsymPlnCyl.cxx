@@ -392,11 +392,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
   gp_Vec DirSOrC = VecTranslCyl.Normalized();
   Standard_Real cosA1 = DirSOrC.Dot(VecTranslPln.Normalized());
   Standard_Real sinA1 = Sqrt(1. - cosA1 * cosA1);
-#ifndef DEB
   Standard_Real dis1 = 0.;
-#else
-  Standard_Real dis1;
-#endif
   Standard_Real dis2, ray = Cyl.Radius(); 
   Standard_Boolean IsDisOnP = ( (plandab && DisOnP) || (!plandab && !DisOnP) ); 
  

@@ -329,11 +329,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
 				      const Standard_Real              Tol)
 {
   Standard_Real USol,U1,U2,Dist;
-#ifndef DEB
   Standard_Real UMin =0.,UMax =0.;  
-#else
-  Standard_Real UMin,UMax;  
-#endif
   Standard_Real Eps = Precision::PConfusion();
   gp_Pnt2d PSol;
   

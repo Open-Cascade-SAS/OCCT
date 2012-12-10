@@ -684,29 +684,13 @@ static Standard_Boolean IsInside(const TopoDS_Wire& wir,
     }
 
     gp_Pnt2d pt2d(C2d->Value(prm));
-#ifdef DEB
-    TopAbs_State st2=
-#endif
-      FClass2d.Perform(pt2d,Standard_False);
-//--    if(st1!=st2) { 
-//--      static int p=0;
-//--      printf("\n point p%d %g %g \n",++p,pt2d.X(),pt2d.Y());
-//--    }
     
     if(WireBienOriente) { 
-#ifndef DEB
       return(FClass2d.Perform(pt2d,Standard_False) == TopAbs_OUT);     
     }
     else { 
       return(FClass2d.Perform(pt2d,Standard_False) == TopAbs_IN);
     }
-#else
-      return(st2 == TopAbs_OUT);     
-    }
-    else { 
-      return(st2 == TopAbs_IN);
-    }
-#endif
   }
   return Standard_False;
 }

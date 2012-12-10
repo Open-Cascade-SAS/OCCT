@@ -595,11 +595,7 @@ static TopAbs_Orientation Orientation(const TopoDS_Edge& E,
 				      const TopoDS_Face& F,
 				      const TopTools_ListOfShape& L)
 {
-#ifndef DEB
   TopAbs_Orientation Orien = TopAbs_FORWARD;
-#else
-  TopAbs_Orientation Orien;
-#endif
   TopTools_ListIteratorOfListOfShape itld;
   for ( itld.Initialize(L); itld.More(); itld.Next()) {
     if ( itld.Value().IsSame(E)) {

@@ -1374,11 +1374,7 @@ static Standard_Boolean  UpdateVertex(TopoDS_Vertex V,
   BRepAdaptor_Curve NC(NE);
   Standard_Real Of = OC.FirstParameter(); Standard_Real Ol = OC.LastParameter();
   Standard_Real Nf = NC.FirstParameter(); Standard_Real Nl = NC.LastParameter();
-#ifndef DEB
   Standard_Real U = 0.;
-#else
-  Standard_Real U;
-#endif
   Standard_Real ParTol = Precision::PConfusion();
   gp_Pnt           P  = BRep_Tool::Pnt(V);
   Standard_Boolean OK = Standard_False;

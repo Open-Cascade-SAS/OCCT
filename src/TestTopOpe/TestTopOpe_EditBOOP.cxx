@@ -49,10 +49,8 @@ void TestTopOpe_BOOP::SetTol(const TopOpeBRepDS_Kind K,const Standard_Integer in
     Poin.Tolerance(tol);
     break;
   }
-#ifndef DEB
   default:
     break;
-#endif
   }
   TopOpeBRepDS::Print(K, index, cout);
   cout<<endl;

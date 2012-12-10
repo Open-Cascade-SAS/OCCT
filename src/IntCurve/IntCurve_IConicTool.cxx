@@ -328,10 +328,8 @@ Standard_Real IntCurve_IConicTool::FindParameter(const gp_Pnt2d& P) const {
 				     ,P);
     break;
   }
-#ifndef DEB
   default:
     break;
-#endif
   }
   
   return(Param);
