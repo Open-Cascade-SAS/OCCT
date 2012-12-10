@@ -7,15 +7,7 @@ puts ""
 ## Raises exception "Standard_NotImplemented3" in GCPnts_AbscissaPoint on a Geom2d_OffsetCurve 
 ######################################################################
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set len_ch 3.9999999999999993e+100
-} else {
-  set len_ch 4.0000000000000001e+100
-}
-
+set len_expected 4.e100
 line line_2d 0 0 1 1
 
 offset result line_2d 10 1 0
@@ -23,6 +15,4 @@ offset result line_2d 10 1 0
 set info [length $result]
 regexp {The length result is +([-0-9.+eE]+)} $info full len
 
-if { ${len} != ${len_ch} } {
-    puts "Error : Length is invalid"
-}
+checkreal "Length" $len $len_expected 0. 1e-10

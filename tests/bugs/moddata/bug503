@@ -9,7 +9,8 @@ puts ""
 #cpulimit 9000
 
 restore [locate_data_file OCC503.brep] result
-if [catch {sprops result} catch_result] {
+
+if [catch {sprops result 0.001 } catch_result] {
     set mistake 1
 } else {
     set mistake 0
