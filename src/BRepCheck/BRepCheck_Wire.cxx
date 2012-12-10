@@ -548,11 +548,7 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
   theOstat = BRepCheck_NoError;
 
   TopoDS_Vertex VF,VL;
-#ifndef DEB
   TopAbs_Orientation orient, ortmp = TopAbs_FORWARD;
-#else
-  TopAbs_Orientation orient, ortmp;
-#endif
   TopTools_ListOfShape ledge, ListOfPassedEdge;
   TopExp_Explorer exp,vte;
   TopTools_MapOfShape mapS;
@@ -1492,11 +1488,7 @@ static TopAbs_Orientation GetOrientation(const TopTools_MapOfShape& mapE,
   Standard_Real MinAngle, MaxAngle, angle;
   Standard_Real gpResolution=gp::Resolution();
   TopAbs_Orientation aVOrientation, aEdgOrientation;
-#ifndef DEB
   Standard_Real dist2d = 0, p = 0;
-#else
-  Standard_Real dist2d, p;
-#endif
   Standard_Real f, l, parpiv;
   Standard_Real tolv = BRep_Tool::Tolerance(V);
   BRepAdaptor_Surface Ads(F,Standard_False); // no restriction
