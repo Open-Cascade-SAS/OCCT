@@ -1366,7 +1366,7 @@ static Standard_Integer GetArc(IntPatch_SequenceOfLine&           theSlin,
 	    }
 	}
       //  c. all middle gaps
-      Standard_Integer NbChkPnts = theSlin.Length() - 1;
+      Standard_Integer NbChkPnts = WLVertexParameters.Length() / 2 - 1;
       for(i = 1; i <= NbChkPnts; i++)
 	{
 	  if( Abs(WLVertexParameters.Value(i*2+1) - WLVertexParameters.Value(i*2)) > arc->Resolution(MaxVertexTol))
