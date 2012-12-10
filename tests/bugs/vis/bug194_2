@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC194"
 puts "(case 2)"
@@ -11,12 +10,27 @@ puts ""
 
 v2dinit
 v2dgrid Rect 500 500 200 200 45 Points
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+    set x1 20
+    set y1 20
+    set rd_ch 100000
+    set gr_ch 100000
+    set bl_ch 100000
+##    set rd_ch 49411
+##    set gr_ch 49411
+##    set bl_ch 49411
+} else {
+    set x1 20
+    set y1 21
+    set rd_ch 70196
+    set gr_ch 70196
+    set bl_ch 70196
+}
 
-set rd_ch 70196
-set gr_ch 70196
-set bl_ch 70196
-
-set color [QAAISGetPixelColor2d 20 21]
+set color [QAAISGetPixelColor2d ${x1} ${y1}]
 regexp {RED +: +([-0-9.+eE]+)} $color full rd
 regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
 regexp {BLUE +: +([-0-9.+eE]+)} $color full bl

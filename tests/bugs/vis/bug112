@@ -8,9 +8,18 @@ puts ""
 ##  meshing is computed again when displaying it. 
 ###############################################################
 
-set rd_ch 78039
-set gr_ch 55294
-set bl_ch 9411
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set rd_ch 77647
+   set gr_ch 54901
+   set bl_ch 9019
+} else {
+  set rd_ch 78039
+  set gr_ch 55294
+  set bl_ch 9411
+}
 
 restore [locate_data_file OCC20.brep] result
 tclean result

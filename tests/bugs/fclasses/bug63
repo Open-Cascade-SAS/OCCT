@@ -1,10 +1,19 @@
+if {[array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+    puts "TODO OCC23626 ALL: Tcl Exception"
+    puts "TODO OCC23626 ALL: TEST INCOMPLETE"
+}
+
 puts "================"
 puts "OCC63"
 puts "================"
 puts ""
 
-restore [locate_data_file OCC63_×Ú.brep] result
+restore [locate_data_file box__simplifiÃ©e.brep] result
 puts [checkshape result]
 
 set 2dviewer 0
+
 

@@ -1,6 +1,11 @@
-puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_2"
-puts "TODO OCC12345 ALL: Faulty OCC399: Command checkshape works wrongly: Source shape is invalid but this shape must be OK"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+   puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+   puts "TODO OCC12345 ALL: Faulty OCC399: Command checkshape works wrongly: Source shape is invalid but this shape must be OK"
+   puts "TODO OCC12345 ALL: Error : The square of result shape is"
+}
 
 puts "========"
 puts "OCC399"
@@ -19,5 +24,5 @@ if { [regexp {Faulty} $che ] == 1 } {
     puts "OCC399 OK : Source shape is valid. Command checkshape works properly."
 }
 
-set square 0
+set square 4558.53
 set 2dviewer 0

@@ -17,10 +17,18 @@ vdisplay result
 vfit
 vsetdispmode result 1
 
-set rd_ch 100000
-set gr_ch 75686
-set bl_ch 15294
-
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set rd_ch 100000
+   set gr_ch 75294
+   set bl_ch 15294
+} else {
+   set rd_ch 100000
+   set gr_ch 75686
+   set bl_ch 15294
+}
 QAUpdateLights
 set color1 [QAGetPixelColor 175 195]
 regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1

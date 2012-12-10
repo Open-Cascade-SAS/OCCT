@@ -8,6 +8,17 @@ set rd_ch 0
 set gr_ch 1
 set bl_ch 1
 
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+    set x1 204
+    set y1 204
+} else {
+    set x1 205
+    set y1 205
+}
+
 vinit
 vtrihedron tri
 vtri_orig tri
@@ -15,7 +26,7 @@ vtri_orig tri
 QAMoveTo 205 205
 QAUpdateLights
 
-set color [QAGetPixelColor 205 205]
+set color [QAGetPixelColor ${x1} ${y1}]
 regexp {RED +: +([-0-9.+eE]+)} $color full rd_int
 regexp {GREEN +: +([-0-9.+eE]+)} $color full gr_int
 regexp {BLUE +: +([-0-9.+eE]+)} $color full bl_int

@@ -43,12 +43,25 @@ SetShape D 0:1:4 b
 AISSet D 0:1:4 NS
 AISDisplay D 0:1:4
 
-set rd_ch 78039
-set gr_ch 55294
-set bl_ch 9411
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+    set x1 260
+    set y1 170
+    set rd_ch 77647
+    set gr_ch 54901
+    set bl_ch 9019
+} else {
+    set x1 255
+    set y1 105
+    set rd_ch 78039
+    set gr_ch 55294
+    set bl_ch 9411
+}
 
 QAUpdateLights
-set color [QAGetPixelColor 255 105]
+set color [QAGetPixelColor ${x1} ${y1}]
 regexp {RED +: +([-0-9.+eE]+)} $color full rd
 regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
 regexp {BLUE +: +([-0-9.+eE]+)} $color full bl

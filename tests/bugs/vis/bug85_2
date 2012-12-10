@@ -42,15 +42,24 @@ AISSet D 0:1:4 NS
 AISDisplay D 0:1:4
 vfit
 
-set rd_ch1 76862
-set gr_ch1 54117
-set bl_ch1 9019
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+    set x1 231
+    set y1 170
+    set rd_ch1 76078
+    set gr_ch1 53725
+    set bl_ch1 8627
+} else {
+    set x1 263
+    set y1 140
+    set rd_ch1 76862
+    set gr_ch1 54117
+    set bl_ch1 9019
+}
 
-set rd_ch2 76078
-set gr_ch2 53725
-set bl_ch2 9019
-
-set color1 [QAGetPixelColor 263 140]
+set color1 [QAGetPixelColor ${x1} ${y1}]
 regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
 regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
 regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
@@ -59,27 +68,11 @@ set rd_int1 [expr int($rd1 * 1.e+05)]
 set gr_int1 [expr int($gr1 * 1.e+05)]
 set bl_int1 [expr int($bl1 * 1.e+05)]
 
-set color2 [QAGetPixelColor 230 123]
-regexp {RED +: +([-0-9.+eE]+)} $color2 full rd2
-regexp {GREEN +: +([-0-9.+eE]+)} $color2 full gr2
-regexp {BLUE +: +([-0-9.+eE]+)} $color2 full bl2
-
-set rd_int2 [expr int($rd2 * 1.e+05)]
-set gr_int2 [expr int($gr2 * 1.e+05)]
-set bl_int2 [expr int($bl2 * 1.e+05)]
-
-set status 1
 if { ${rd_int1} != ${rd_ch1} || ${gr_int1} != ${gr_ch1} || ${bl_int1} != ${bl_ch1} } {
-   set status 0   
-}
-if { ${rd_int2} != ${rd_ch2} || ${gr_int2} != ${gr_ch2} || ${bl_int2} != ${bl_ch2} } {
-   set status 0   
-}
-
-if { ${status} != 1 } {
    puts "Error : colors are not equal"
 }
 
 set only_screen 1
+
 
 

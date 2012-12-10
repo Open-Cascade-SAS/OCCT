@@ -16,10 +16,20 @@ v2ddisplay b_b 0 0 0 1 1 1 1 0 0
 v2dfit
 QAv2dSetHighlightMode 2
 
-set Position_X1 296
-set Position_Y1 160
-set Position_X2 76
-set Position_Y2 290
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set Position_X1 296
+   set Position_Y1 161
+   set Position_X2 76
+   set Position_Y2 290
+} else {
+  set Position_X1 296
+  set Position_Y1 160
+  set Position_X2 76
+  set Position_Y2 290
+}
 
 set rd_ch 80000
 set gr_ch 80000

@@ -5,9 +5,18 @@ puts "================"
 ## The shading is false: objects seem to be situated in front of the others while they are behind.
 ###############################################################
 
-set rd_ch 43137
-set gr_ch 48235
-set bl_ch 54509
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set rd_ch 43137
+   set gr_ch 48235
+   set bl_ch 54117
+} else {
+   set rd_ch 43137
+   set gr_ch 48235
+   set bl_ch 54509
+}
 
 vinit
 OCC128

@@ -14,9 +14,18 @@ v2dgrid Circ 500 500 250 12 30 Lines
 set Position_X -667.802
 set Position_Y -441.402
 
-set rd_ch 49803
-set gr_ch 49803
-set bl_ch 49803
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set rd_ch 49411
+   set gr_ch 49411
+   set bl_ch 49411
+} else {
+   set rd_ch 49803
+   set gr_ch 49803
+   set bl_ch 49803
+}
 
 set color [QAAISGetPixelColor2d 67 295]
 regexp {RED +: +([-0-9.+eE]+)} $color full rd

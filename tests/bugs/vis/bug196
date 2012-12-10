@@ -25,7 +25,18 @@ repeat 10 {
        incr j
 }
 
-set color [QAAISGetPixelColor2d 336 347]
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set x1 336
+   set y1 348
+} else {
+   set x1 336
+   set y1 347
+}
+
+set color [QAAISGetPixelColor2d ${x1} ${y1}]
 regexp {RED +: +([-0-9.+eE]+)} $color full rd
 regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
 regexp {BLUE +: +([-0-9.+eE]+)} $color full bl

@@ -12,11 +12,23 @@ puts ""
 v2dinit
 v2dgrid Rect 500 500 200 200 45 Lines
 
-set rd_ch 49803
-set gr_ch 49803
-set bl_ch 49803
-
-set color [QAAISGetPixelColor2d 25 361]
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+    set x1 25
+    set y1 360
+    set rd_ch 49411
+    set gr_ch 49411
+    set bl_ch 49411
+} else {
+    set x1 25
+    set y1 361
+    set rd_ch 49803
+    set gr_ch 49803
+    set bl_ch 49803
+}
+set color [QAAISGetPixelColor2d ${x1} ${y1}]
 regexp {RED +: +([-0-9.+eE]+)} $color full rd
 regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
 regexp {BLUE +: +([-0-9.+eE]+)} $color full bl

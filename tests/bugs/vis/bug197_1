@@ -17,19 +17,28 @@ v2ddisplay b_b 0 0 0 1 1 1 1 0 0
 v2dfit
 
 QAv2dSetHighlightMode 1
-
-set Position_X1 169
-set Position_Y1 148
-set Position_X2 184
-set Position_Y2 180
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set Position_X1 184
+   set Position_Y1 181
+   set Position_X2 184
+   set Position_Y2 181
+} else {
+   set Position_X1 169
+   set Position_Y1 148
+   set Position_X2 184
+   set Position_Y2 180
+}
 
 set rd_ch 80000
 set gr_ch 80000
 set bl_ch 80000
 
-QASelect2d $Position_X1 $Position_Y1
+QASelect2d 169 148
 QAMoveTo2d 0 0
-QAShiftSelect2d $Position_X2 $Position_Y2
+QAShiftSelect2d 184 180
 
 set j 1 
 repeat 2 {

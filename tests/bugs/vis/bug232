@@ -58,8 +58,13 @@ catch {QAGetPixelColor $x4 $y4 $Yellow_R $Yellow_G $Yellow_B} result23
 catch {QAGetPixelColor $x5 $y5 $Yellow_R $Yellow_G $Yellow_B} result24
 catch {QAGetPixelColor $x6 $y6 $Yellow_R $Yellow_G $Yellow_B} result25
 
-QAUpdateLights
-catch {QAGetPixelColor $x2 $y2 $Cyan_R $Cyan_G $Cyan_B} result31
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+   QAUpdateLights
+   catch {QAGetPixelColor $x2 $y2 $Cyan_R $Cyan_G $Cyan_B} result31
+}
 
 set IsFaulty 0
 if { [regexp "Faulty" $result11] == 1 } {
@@ -95,8 +100,11 @@ if { [regexp "Faulty" $result24] == 1 } {
 if { [regexp "Faulty" $result25] == 1 } {
    set IsFaulty 1
 }
-if { [regexp "Faulty" $result31] == 1 } {
-   set IsFaulty 1
+
+if { [string compare $os "windows"] != 0 } {
+   if { [regexp "Faulty" $result31] == 1 } {
+      set IsFaulty 1
+   }
 }
 
 if {$IsFaulty != 0} {

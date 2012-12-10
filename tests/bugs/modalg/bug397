@@ -4,9 +4,18 @@ puts "========================"
 
 pload QAcommands
 
-set rd_ch 50588
-set gr_ch 34901
-set bl_ch 5098
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+   set rd_ch 50196
+   set gr_ch 34901
+   set bl_ch 5098
+} else {
+   set rd_ch 50588
+   set gr_ch 34901
+   set bl_ch 5098
+}
 
 restore [locate_data_file OCC397.brep] a 
 puts [checkshape a]

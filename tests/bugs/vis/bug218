@@ -1,3 +1,7 @@
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+
 puts "================"
 puts "OCC218"
 puts "================"
@@ -22,16 +26,29 @@ set at_X     1.04834496974945
 set at_Y     0.741619229316711
 set at_Z     -0.0881031528115273
 
-set rd_ch 97647
-set gr_ch 97647
-set bl_ch 0
+if { [string compare $os "windows"] == 0 } {
+    set rd_ch 90588
+    set gr_ch 90588
+    set bl_ch 0
 
-set BLACK_R 0
-set BLACK_G 0
-set BLACK_B 0
+    set BLACK_R 0
+    set BLACK_G 0
+    set BLACK_B 0
 
-set x1 381
-set y1 27
+    set x1 376
+    set y1 24
+} else {
+    set rd_ch 65098
+    set gr_ch 65098
+    set bl_ch 0
+
+    set BLACK_R 0
+    set BLACK_G 0
+    set BLACK_B 0
+
+    set x1 388
+    set y1 28
+}
 
 QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
@@ -56,3 +73,4 @@ if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
 }
 
 set only_screen 1
+
