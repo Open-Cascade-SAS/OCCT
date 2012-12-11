@@ -408,11 +408,11 @@ Handle(OpenGl_Texture) OpenGl_Workspace::EnableTexture (const Handle(OpenGl_Text
     return DisableTexture();
   }
 
-  if (myTextureBound.IsNull() && myTextureBound == theTexture)
+  if (myTextureBound == theTexture
+   && (theParams.IsNull() || theParams == theTexture->GetParams()))
   {
-    Handle(OpenGl_Texture) aPrevTexture = myTextureBound;
-    myTextureBound = theTexture;
-    return aPrevTexture;
+    // already bound
+    return myTextureBound;
   }
 
   Handle(OpenGl_Texture) aPrevTexture = DisableTexture();
