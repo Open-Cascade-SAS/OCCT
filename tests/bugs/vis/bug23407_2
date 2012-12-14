@@ -8,16 +8,6 @@ puts ""
 pload QAcommands
 pload AISV MODELING
 
-set r_check 1
-set g_check 0
-set b_check 0
-set x1 183
-set y1 190
-set x2 292
-set y2 358
-set x3 26
-set y3 265
-
 box b 10 10 10
 vinit
 vdisplay b
@@ -25,35 +15,30 @@ vsetdispmode 1
 vshowfaceboundary b 1 255 0 0 10 1
 vfit
 
-set color1 [ QAGetPixelColor ${x1} ${y1} ]
-regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
-regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
-regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
-set status1 0
-if { $rd1 != $r_check || $gr1 != $g_check || $bl1 != $b_check } {
-    set status1 1
+set x_coord 183
+set y_coord 190
+
+checkcolor $x_coord $y_coord 1 0 0
+
+if { $stat != 1 } {
+    puts "Error : Boundary of face is not changed"
 }
 
-set color2 [ QAGetPixelColor ${x2} ${y2} ]
-regexp {RED +: +([-0-9.+eE]+)} $color2 full rd2
-regexp {GREEN +: +([-0-9.+eE]+)} $color2 full gr2
-regexp {BLUE +: +([-0-9.+eE]+)} $color2 full bl2
-set status2 0
-if { $rd2 != $r_check || $gr2 != $g_check || $bl2 != $b_check } {
-    set status2 1
+set x_coord 292
+set y_coord 358
+
+checkcolor $x_coord $y_coord 1 0 0
+
+if { $stat != 1 } {
+    puts "Error : Boundary of face is not changed"
 }
 
-set color3 [ QAGetPixelColor ${x3} ${y3} ]
-regexp {RED +: +([-0-9.+eE]+)} $color3 full rd3
-regexp {GREEN +: +([-0-9.+eE]+)} $color3 full gr3
-regexp {BLUE +: +([-0-9.+eE]+)} $color3 full bl3
-set status3 0
-if { $rd3 != $r_check || $gr3 != $g_check || $bl3 != $b_check } {
-    set status3 1
-}
+set x_coord 26
+set y_coord 265
 
-if { $status1 != 0 && $status2 != 0 && $status3 != 0 } {
-    puts "Error : color are not equal"
+checkcolor $x_coord $y_coord 1 0 0
+
+if { $stat != 1 } {
     puts "Error : Boundary of face is not changed"
 }
 

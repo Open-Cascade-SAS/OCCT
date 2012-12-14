@@ -1,0 +1,31 @@
+
+puts "================"
+puts "OCC636"
+puts "================"
+puts ""
+#####################################
+## BRepOffsetAPI_MakePipeShell builds twisted pipe
+#####################################
+
+restore [locate_data_file OCC636a.brep] s 
+puts [checkshape s]
+
+restore [locate_data_file OCC636b.brep] s1 
+puts [checkshape s1]
+
+restore [locate_data_file OCC636c.brep] s2 
+puts [checkshape s2]
+
+mksweep s
+addsweep s1
+addsweep s2
+
+if [catch { buildsweep result } catch_result] {
+    puts "Faulty OCC636: function buildsweep works wrongly"
+} else {
+    puts "OCC636 OK: function buildsweep works properly"
+}
+
+set square 3836.92
+set 2dviewer 0
+

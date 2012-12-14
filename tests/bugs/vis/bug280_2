@@ -11,31 +11,25 @@ vfit
 OCC280 0 0
 
 # selected point
-set x1 218
-set y1 196
-
-set Cyan_R 0
-set Cyan_G 1
-set Cyan_B 1
-
-set Yellow_R 1
-set Yellow_G 1
-set Yellow_B 0
+set x_coord 218
+set y_coord 196
 
 # There is not selection
 puts "There is not selection"
-QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B
+
+checkcolor $x_coord $y_coord 1 1 0
 
 # Move a mouse
 puts "Move a mouse"
-QAMoveTo $x1 $y1
-QAMoveTo $x1 $y1
+QAMoveTo $x_coord $y_coord
+QAMoveTo $x_coord $y_coord
 
 QAUpdateLights
 
 # There is a selection
 puts "There is a selection"
-QAGetPixelColor $x1 $y1 $Cyan_R $Cyan_G $Cyan_B
+
+checkcolor $x_coord $y_coord 0 1 1
 
 set only_screen 1
 

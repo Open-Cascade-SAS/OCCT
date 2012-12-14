@@ -1,0 +1,25 @@
+
+puts "======="
+puts "OCC702"
+puts "SAM1541"
+puts "======="
+puts ""
+########################
+## No possibility to make a prism. 
+########################
+
+restore [locate_data_file OCC702.brep] a 
+
+if [ catch { prism result a 100 100 100 } catch_result ] {
+    puts "Faulty OCC702 (case 1)"
+} else {
+    regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full sq
+    if { $sq <= 0. } {
+	puts "Faulty OCC702 (case 2)"
+    } else {
+	puts "OCC702 OK"
+    }
+}
+
+set square 308957.
+set 2dviewer 0

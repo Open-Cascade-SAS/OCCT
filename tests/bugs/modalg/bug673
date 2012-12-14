@@ -1,0 +1,25 @@
+puts "TODO OCC12345 ALL: Error : The command can not be build"
+puts "TODO OCC12345 ALL: Faulty OCC673: function SPLITSHAPE works wrongly"
+
+puts "================"
+puts "OCC673"
+puts "================"
+puts ""
+#######################################################
+## Exception is raised during splitting face by a wire laying on the face boundary.
+#######################################################
+
+restore [locate_data_file OCC673a.brep] a 
+puts [checkshape a]
+
+restore [locate_data_file OCC673b.brep] b 
+puts [checkshape b]
+
+if [catch {spliteshape result a a b} catch_result] {
+    puts "Faulty OCC673: function SPLITSHAPE works wrongly"
+} else {
+    puts "OCC673 OK : function SPLITSHAPE works OK"
+}
+
+set square 0
+set 2dviewer 0

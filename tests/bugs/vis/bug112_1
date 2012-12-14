@@ -10,7 +10,7 @@ set first [trinfo res]
 tclean res
 
 ######################################################################
-catch {exec rm ${imagedir}/vrem.brep}
+catch {file delete ${imagedir}/vrem.brep}
 save res ${imagedir}/vrem.brep
 
 vinit 

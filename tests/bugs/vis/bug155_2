@@ -14,13 +14,13 @@ pcone c_o 15 0 50 360
 v2ddisplay c_o
 v2dfit
 
-set color [QAAISGetPixelColor2d 338 77]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 338
+set y_coord 77
+set color2d 1
 
-if { ${rd} != 1 || ${gr} != 1 || ${bl} != 0 } {
-    puts "Error : colors are not equal"
+checkcolor $x_coord $y_coord 1 1 0
+
+if { $stat != 1 } {
     puts "Error : pCone 2D was NOT LOADED properly into viewer"
 }
 

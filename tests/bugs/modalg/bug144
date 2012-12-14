@@ -22,7 +22,7 @@ explode b e
 explode b_4 v
 distmini d $ver b_5
 
-regexp {([-0-9.+eE]+)} [dump d_val] full dist
+regexp {([-0-9.+eE]+)$} [dump d_val] full dist
 regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [ maxtolerance $ver ] full toler
 
 if { [expr $dist > $toler] } {

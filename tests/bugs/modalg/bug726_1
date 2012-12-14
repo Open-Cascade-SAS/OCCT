@@ -1,0 +1,21 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "========"
+puts "OCC726"
+puts "SAM1594"
+puts "========"
+puts ""
+######################################
+## Boolean operations are impossible on the attachment.
+######################################
+
+restore [locate_data_file OCC726.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+
+bcommon result a_1 a_2
+
+set square 0
+set 2dviewer 0

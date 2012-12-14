@@ -1,0 +1,24 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "========================"
+puts " OCC602 "
+puts "========================"
+puts ""
+###########################################
+## Exception during filet creation if it cross samedge of cylinder.
+###########################################
+
+restore [locate_data_file OCC602.brep] a 
+puts [checkshape a]
+
+explode a e
+
+if [catch {blend result a 20 a_9 } catch_result] {
+    puts "Faulty OCC602: function BLEND works wrongly"
+} else {
+    puts "OCC602 OK: function BLEND works OK"
+}
+
+set square 0
+set 2dviewer 0

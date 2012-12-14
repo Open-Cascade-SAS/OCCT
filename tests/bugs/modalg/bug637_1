@@ -1,0 +1,29 @@
+
+puts "================"
+puts "OCC637"
+puts "(case 1)"
+puts "================"
+puts ""
+##########################################
+## BRepOffsetAPI_MakePipeShell crashes with fatal exception
+##########################################
+
+restore [locate_data_file OCC637a.brep] s 
+puts [checkshape s]
+
+restore [locate_data_file OCC636c.brep] s1 
+puts [checkshape s1]
+
+restore [locate_data_file OCC637c.brep] s2 
+puts [checkshape s2]
+
+mksweep s
+addsweep s1
+addsweep s2
+
+if [catch { buildsweep result } catch_result] {
+    puts "Faulty OCC637 (case 1): function buildsweep works wrongly"
+} 
+
+set square 1675.58
+set 2dviewer 0

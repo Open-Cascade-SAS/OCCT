@@ -1,0 +1,22 @@
+# Original bug : 
+
+puts "========================"
+puts " OCC419 "
+puts "FRA50047"
+puts "========================"
+puts ""
+
+restore [locate_data_file CTO904_fra50047a.rle] a 
+puts [checkshape a]
+
+restore [locate_data_file fra50047b.rle] b 
+puts [checkshape b]
+
+bsection sec a b
+puts [checkshape -top sec]
+
+bfuse result a b
+puts [checkshape -top result]
+
+set square 508496.
+set 2dviewer 0

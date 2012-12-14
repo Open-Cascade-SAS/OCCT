@@ -1,0 +1,24 @@
+pload QAcommands
+
+puts "============"
+puts "OCC826"
+puts "============"
+puts ""
+###################################
+## BRepAlgoAPI_Fuse fails on revolved and sphere
+###################################
+
+if { [ catch { set info_result [OCC826 a1 a2 result] } ] } {
+    puts "Faulty : an exception was caught"
+} else {
+    if { [lsearch ${info_result} FAILED] > -1} {
+	puts "Faulty : command was FAILED"
+    }
+    set ExplodeList [explode result]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty : Resulting shape is empty COMPOUND"
+    }
+}
+
+set square 272939
+set 2dviewer 0

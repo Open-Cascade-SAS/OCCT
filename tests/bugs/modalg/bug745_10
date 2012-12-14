@@ -1,0 +1,27 @@
+puts "TODO OCC12345 ALL: Faulty OCC745"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+#############################################
+# Negative offset parameter leads to positive offset and vise
+# versa. Result of the offset represent an edge instead of wire.
+#############################################
+
+restore [locate_data_file OCC745_nb1.brep] w 
+mkoffset result w 1 -1
+
+set list [whatis result_1]
+
+if { [regexp {WIRE} $list] == 0 } {
+    puts "Faulty OCC745"
+} else {
+    puts "OCC745 OK"
+}
+
+renamevar result_1 result
+
+set length 0
+set 2dviewer 0

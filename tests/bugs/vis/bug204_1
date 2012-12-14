@@ -1,6 +1,5 @@
-puts "TODO OCC12345 ALL: Error : colors are not equal"
 puts "TODO OCC12345 ALL: Error : 3 boxes missing in the viewer!"
-
+puts "TODO OCC12345 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
 puts "========"
 puts "OCC204"
 puts "========"
@@ -9,21 +8,12 @@ vinit
 OCC204 0
 vfit
 
-set rd_ch 80000
-set gr_ch 80000
-set bl_ch 80000
+set x_coord 150
+set y_coord 200
 
-set color [QAGetPixelColor 150 200]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
 
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
-
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
+if { ${stat} != 1 } {
     puts "Error : 3 boxes missing in the viewer!"
 }
 

@@ -1,4 +1,3 @@
-
 puts "================"
 puts "OCC146"
 puts "================"
@@ -16,33 +15,15 @@ QASelect2d 155 180
 QASelect2d 155 180
 QASelect2d 155 180
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set x1 155
-   set y1 180
-} else {
-   set x1 155
-   set y1 177
-}
+set coord_x 155
+set coord_y 177
+set color2d 1
 
-set rd_ch 80000
-set gr_ch 80000
-set bl_ch 80000
+checkcolor $coord_x $coord_y 0.8 0.8 0.8
 
-set color [QAAISGetPixelColor2d ${x1} ${y1}]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
-
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
-
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : The second selection of selected object deselects it and the following clicks have no effect"
 }
 
 set only_screen2d 1
+

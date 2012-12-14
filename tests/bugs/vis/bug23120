@@ -23,48 +23,14 @@ vsetdispmode 1
 vzoom 0.5
 vpan 100 0
 
-set x1 300
-set y1 130
-if { [string compare $tcl_platform(os) "Windows NT"] == 0 }  {
-  puts "STATION IS WNT"
-  set r_check 0.77646999999999999
-  set g_check 0.54901900000000003
-  set b_check 0.090195999999999998
-} else {
-  set r_check 0.78039199999999997
-  set g_check 0.55294100000000002
-  set b_check 0.094117000000000006
-}
+set x_coord 300
+set y_coord 130
 
-set r_check [expr int($r_check * 1.e5)]
-set g_check [expr int($g_check * 1.e5)]
-set b_check [expr int($b_check * 1.e5)]
+checkcolor $x_coord $y_coord 0.78 0.55 0.9
 
-puts "r_check=$r_check"
-puts "g_check=$g_check"
-puts "b_check=$b_check"
-
-set color1 [ QAGetPixelColor ${x1} ${y1} ]
-
-regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
-regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
-regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
-
-set rd1 [expr int($rd1 * 1.e5)]
-set gr1 [expr int($gr1 * 1.e5)]
-set bl1 [expr int($bl1 * 1.e5)]
-
-puts "rd1=$rd1"
-puts "gr1=$gr1"
-puts "bl1=$bl1"
-
-set status1 0
-if { $rd1 != $r_check || $gr1 != $g_check || $bl1 != $b_check } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : Transform persistence is not restored"
-} else {
-    puts "OK : colors are equal"
-    puts "OK : Transform persistence is restored"
 }
 
 set only_screen 1
+

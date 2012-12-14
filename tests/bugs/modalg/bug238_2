@@ -20,7 +20,7 @@ set nb_e_good 7
 explode result v
 explode a e
 distmini di result_2 a_3 
-regexp {([-0-9.+eE]+)} [dump $di_val] full dis
+regexp {([-0-9.+eE]+)$} [dump $di_val] full dis
 if { [expr $dis > 1.e-5] } {
     puts "Faulty : Result shape is WRONG !!!" 
 } else {

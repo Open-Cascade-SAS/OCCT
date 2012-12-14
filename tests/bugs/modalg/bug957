@@ -1,0 +1,15 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The length of result shape is"
+
+puts "========"
+puts "OCC957"
+puts "========"
+puts ""
+##############################################################
+##Draw function PSPHERE creates incorrect shape (according to CHECKSHAPE function)
+##############################################################
+
+psphere result 10 10 10
+
+set length 0
+set 2dviewer 0

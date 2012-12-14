@@ -1,0 +1,22 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+puts "========"
+puts "OCC774"
+puts "SAM1647"
+puts "(case 2)"
+puts "========"
+puts ""
+#################################
+##
+restore [locate_data_file OCC774.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+
+if { [catch { bcut result a_2 a_1 } status] } {
+    puts "Faulty OCC774 (case 2)"
+}
+
+set square 0
+set 2dviewer 0

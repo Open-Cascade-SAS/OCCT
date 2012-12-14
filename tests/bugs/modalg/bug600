@@ -1,0 +1,19 @@
+puts "TODO ?OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
+
+puts "========================"
+puts " OCC600"
+puts "========================"
+## Result of BOPCOMMON operation is unclosed shape inspite of source solids are valid
+############################################################
+cpulimit 5000
+restore [locate_data_file OCC600_1.brep] a 
+puts [checkshape a]
+restore [locate_data_file OCC600_2.brep] b 
+puts [checkshape b]
+bop b a
+
+bopcommon result
+
+set square 41970.8
+set 2dviewer 0

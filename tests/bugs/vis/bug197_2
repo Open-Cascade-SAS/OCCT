@@ -15,49 +15,28 @@ box b_b 10 15 20
 v2ddisplay b_b 0 0 0 1 1 1 1 0 0
 v2dfit
 QAv2dSetHighlightMode 2
+set color2d 1
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set Position_X1 296
-   set Position_Y1 161
-   set Position_X2 76
-   set Position_Y2 290
-} else {
-  set Position_X1 296
-  set Position_Y1 160
-  set Position_X2 76
-  set Position_Y2 290
-}
-
-set rd_ch 80000
-set gr_ch 80000
-set bl_ch 80000
-
-QASelect2d $Position_X1 $Position_Y1
+QASelect2d 296 160
 QAMoveTo2d 0 0
-QAShiftSelect2d $Position_X2 $Position_Y2
-set j 1 
-repeat 2 {
-       set Position_X [set Position_X$j]
-       set Position_Y [set Position_Y$j]
-       puts " Position_X$j= $Position_X  Position_Y$j= $Position_Y"
+QAShiftSelect2d 76 290
 
-       set color [QAAISGetPixelColor2d ${Position_X} ${Position_Y}]
-       regexp {RED +: +([-0-9.+eE]+)} $color full rd
-       regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-       regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 296
+set y_coord 161
 
-       set rd_int [expr int($rd * 1.e+05)]
-       set gr_int [expr int($gr * 1.e+05)]
-       set bl_int [expr int($bl * 1.e+05)]
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
 
-       if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-           puts "Error : colors are not equal"
-	   puts "Error : (ELEMENT number $j) Multiple Selection: Choosing of viewer MOD for selection of ELEMENT was NOT MADE properly"
-       }
-       incr j
+if { ${stat} != 1 } {
+    puts "Error : (ELEMENT number 1) Multiple Selection: Choosing of viewer MOD for selection of ELEMENT was NOT MADE properly"
+}
+
+set x_coord 76
+set y_coord 290
+
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
+
+if { ${stat} != 1 } {
+    puts "Error : (ELEMENT number 2) Multiple Selection: Choosing of viewer MOD for selection of ELEMENT was NOT MADE properly"
 }
 
 set only_screen2d 1

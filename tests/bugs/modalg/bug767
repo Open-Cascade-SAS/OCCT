@@ -1,0 +1,15 @@
+
+puts "======="
+puts "OCC767"
+puts "======="
+puts ""
+############################################
+## Command sameparametr in DRAW hangs  on attached edge.
+############################################
+
+restore [locate_data_file OCC767.brep] result
+
+sameparameter result
+
+set length 7.6901
+set 2dviewer 0

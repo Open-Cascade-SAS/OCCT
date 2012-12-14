@@ -17,30 +17,14 @@ vdisplay result
 vfit
 vsetdispmode result 1
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set rd_ch 100000
-   set gr_ch 75294
-   set bl_ch 15294
-} else {
-   set rd_ch 100000
-   set gr_ch 75686
-   set bl_ch 15294
-}
+set x_coord 175
+set y_coord 195
+
 QAUpdateLights
-set color1 [QAGetPixelColor 175 195]
-regexp {RED +: +([-0-9.+eE]+)} $color1 full rd1
-regexp {GREEN +: +([-0-9.+eE]+)} $color1 full gr1
-regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
 
-set rd_int [expr int($rd1 * 1.e+05)]
-set gr_int [expr int($gr1 * 1.e+05)]
-set bl_int [expr int($bl1 * 1.e+05)]
+checkcolor $x_coord $y_coord 1 0.75 0.15
 
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : Shading is missing in 3D Viewer"
 }
 
@@ -48,13 +32,11 @@ if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
 vsetmaterial result COPPER
 
 QAUpdateLights
-set color2 [QAGetPixelColor 175 195]
-regexp {RED +: +([-0-9.+eE]+)} $color2 full rd2
-regexp {GREEN +: +([-0-9.+eE]+)} $color2 full gr2
-regexp {BLUE +: +([-0-9.+eE]+)} $color2 full bl2
 
-if { ${rd2} == ${rd1} || ${gr2} == ${gr1} || ${bl2} == ${bl1} } {
-    puts "Error : material of shape was NOT changed"
+checkcolor $x_coord $y_coord 0.77 0.32 0.23
+
+if { $stat != 1 } {
+    puts "Error : material of shape is not COPPER"
 }
 
 set only_screen 1

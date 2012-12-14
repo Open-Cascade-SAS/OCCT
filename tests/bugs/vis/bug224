@@ -14,31 +14,25 @@ set mistake1 0
 v2ddisplay s_p 0 0 0 1 1 1 1 0 0
 v2dfit
 v2dsetwidth s_p VERYTHICK
-set Color_R 1
-set Color_G 1
-set Color_B 0
 
-set color [QAAISGetPixelColor2d 393 210]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 393
+set y_coord 210
+set color2d 1
 
-if { ${rd} != 1 || ${gr} != 1 || ${bl} != 0 } {
-    puts "Error : colors are not equal"
+checkcolor $x_coord $y_coord 1 1 0
+
+if { $stat != 1 } {
     puts "Error : New widht was NOT assigned"
 }
 
 v2dunsetwidth s_p
 
-set color [QAAISGetPixelColor2d 393 210]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+checkcolor $x_coord $y_coord 0 0 0
 
-if { ${rd} != 0 || ${gr} != 0 || ${bl} != 0 } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : Function V2DUNSETWIDTH for shapes does NOT WORK properly"
 }
 
 set only_screen2d 1
+
 

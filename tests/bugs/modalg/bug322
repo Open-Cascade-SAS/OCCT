@@ -14,18 +14,15 @@ vinit
 vdisplay result
 vfit
 
-set Yellow_R 1
-set Yellow_G 1
-set Yellow_B 0
+set x_coord 204
+set y_coord 297
 
-set x1 204
-set y1 297
+checkcolor $x_coord $y_coord 1 1 0
 
-set x2 251
-set y2 232
+set x_coord 251
+set y_coord 232
 
-QAGetPixelColor $x1 $y1 $Yellow_R $Yellow_G $Yellow_B
-QAGetPixelColor $x2 $y2 $Yellow_R $Yellow_G $Yellow_B
+checkcolor $x_coord $y_coord 1 1 0
 
 set square 20000
 set only_screen 1

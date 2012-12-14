@@ -1,0 +1,20 @@
+
+puts "========"
+puts "OCC763"
+puts "========"
+puts ""
+####################################
+## Bad result of fuse operation between two cylinders
+####################################
+
+restore [locate_data_file OCC763_c1.brep] c1 
+puts [checkshape c1]
+restore [locate_data_file OCC763_c2.brep] c2 
+puts [checkshape c2]
+
+bop c1 c2
+bopfuse result
+
+set square 23189.4
+set 2dviewer 0
+

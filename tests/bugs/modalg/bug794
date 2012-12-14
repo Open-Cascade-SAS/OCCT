@@ -1,0 +1,28 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "========="
+puts " OCC794 "
+puts "========="
+puts ""
+#####################################################
+## The offset algorithm produced invalid result when offseting an attached face
+#####################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC794.brep] a 
+
+offsetshape result a 10
+
+set x_coord 120
+set y_coord 150
+
+vinit
+vdisplay result
+vsetdispmode 1
+vfit
+QAUpdateLights
+
+checkcolor $x_coord $y_coord 0.77 0.54 0.09
+
+set square 206399
+set 3dviewer 1

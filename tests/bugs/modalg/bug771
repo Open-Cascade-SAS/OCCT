@@ -1,0 +1,25 @@
+
+puts "========"
+puts "OCC771"
+puts "SAM1639"
+puts "========"
+puts ""
+###########################
+## Impossible fusung 3 shapes attached
+###########################
+
+restore [locate_data_file OCC771.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+puts [checkshape a_3]
+
+bfuse res1 a_1 a_2
+
+puts [checkshape res1]
+
+bfuse result res1 a_3
+
+set square 1306.68
+set 2dviewer 0
+

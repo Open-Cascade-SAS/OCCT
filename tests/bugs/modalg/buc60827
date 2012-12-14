@@ -34,12 +34,12 @@ if { [regexp {Faulty} $che ] == 1 } {
 	    puts "Faulty :The result of section is an empty compound."
 	} else {
 	    distmini d1 res_1 a_1    
-	    regexp {([-0-9.+eE]+)} [dump d1_val] full len1
+	    regexp {([-0-9.+eE]+)$} [dump d1_val] full len1
             if ([expr $len1 > 1e-7]) {                                                       
         	puts "Faulty :The section is incomplite."                                           
 	    } else {                                                                              
 		distmini d2 res_2 a_2
-		regexp {([-0-9.+eE]+)} [dump d2_val] full len2
+		regexp {([-0-9.+eE]+)$} [dump d2_val] full len2
                 if ([expr $len2 > 1e-7]) {
             	    puts "Faulty :The section is incomplite."
 		}

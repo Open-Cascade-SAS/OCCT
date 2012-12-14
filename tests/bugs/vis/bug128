@@ -5,34 +5,14 @@ puts "================"
 ## The shading is false: objects seem to be situated in front of the others while they are behind.
 ###############################################################
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set rd_ch 43137
-   set gr_ch 48235
-   set bl_ch 54117
-} else {
-   set rd_ch 43137
-   set gr_ch 48235
-   set bl_ch 54509
-}
+set x_coord 171
+set y_coord 171
 
 vinit
 OCC128
 QASetViewCharac 4.9487928 89.23589 4.1505 0.7329295 0.59461397 0.33052679 -0.536849 0.2071041 0.81786 71.971878 -17.250309 33.509651
 QAUpdateLights
-set color [QAGetPixelColor 171 171]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
 
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
-
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : The shading is false. Colors are not equal"
-}
+checkcolor $x_coord $y_coord 0.43 0.48 0.54
 
 set only_screen 1

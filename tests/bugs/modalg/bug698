@@ -1,0 +1,16 @@
+
+puts "======= OCC698 ======="
+######################################
+## Cut operation produces bad result on attached shapes
+######################################
+cpulimit 10000
+restore [locate_data_file OCC698_1.brep] b4 
+puts [checkshape b4]
+restore [locate_data_file OCC698_2.brep] b5 
+puts [checkshape b5]
+
+bcut result b5 b4
+
+set square 19048.2
+set 2dviewer 0
+

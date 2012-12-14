@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC215"
 puts "========"
@@ -26,5 +25,10 @@ set at_Z     -12.5332689285278
 
 QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
-QAGetPixelColor 229 94 1 1 0
+set x_coord 229
+set y_coord 94
+
+checkcolor $x_coord $y_coord 1 1 0
+
 set only_screen 1
+

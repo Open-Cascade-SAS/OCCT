@@ -851,7 +851,7 @@ static int V2dSetHighlightMode (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-#ifndef WNT
+//#ifndef WNT
 //==============================================================================
 //function : QAAISGetPixelColor2d
 //purpose  : QAAISGetPixelColor2d coord_X coord_Y Red Green Blue
@@ -935,7 +935,7 @@ static int QAAISGetPixelColor2d (Draw_Interpretor& di, Standard_Integer argc, co
   }
   return 0;
 }
-#endif // !WNT
+//#endif // !WNT
 
 //==============================================================================
 //function : QAMoveTo2d
@@ -2240,11 +2240,11 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   theCommands.Add("QAGetViewCharac", "QAGetViewCharac", __FILE__,QAAISGetViewCharac, group);
   theCommands.Add("QASetViewCharac", "QASetViewCharac scale center_X center_Y proj_X proj_Y proj_Z up_X up_Y up_Z at_X at_Y at_Z", __FILE__,QAAISSetViewCharac, group);
   theCommands.Add("QAGetColorCoord", "QAGetColorCoord [3d|2d]", __FILE__,QAAISGetColorCoord, group);
-#ifndef WNT
+//#ifndef WNT
   theCommands.Add("QAAISGetPixelColor2d",
                   "QAAISGetPixelColor2d coord_X coord_Y [Red Green Blue] : Check a color of pixel",
                   __FILE__, QAAISGetPixelColor2d, group);
-#endif
+//#endif
 
   theCommands.Add("v2dgetgrid",
 		  "v2dgetgrid coord_X coord_Y [grid_X grid_Y] : Get/print coordinates of a grid point near to (coord_X, coord_Y)",

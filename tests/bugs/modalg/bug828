@@ -1,0 +1,28 @@
+pload QAcommands
+
+puts "========"
+puts "OCC828"
+puts "========"
+puts ""
+###############################
+## BRepFilletAPI_MakeFillet fails on prism
+###############################
+
+if { [ catch { set info_result [OCC828 a1] } ] } {
+    puts "Faulty : an exception was caught"
+} else {
+    if { [lsearch ${info_result} FAILED] > -1} {
+	puts "Faulty : command was FAILED"
+    }
+    puts [checkshape a1]
+    explode a1 e
+    blend result a1 10 a1_7 10 a1_6
+
+    set ExplodeList [explode result]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty : Resulting shape is empty COMPOUND"
+    }
+}
+
+set square 17816.2
+set 2dviewer 0

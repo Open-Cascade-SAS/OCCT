@@ -17,15 +17,16 @@ v2dfit
 
 v2derase b1
 
-set color [QAAISGetPixelColor2d 370 37]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 370
+set y_coord 37
+set color2d 1
 
-if { ${rd} != 0 || ${gr} != 0 || ${bl} != 0 } {
-    puts "Error : colors are not equal"
+checkcolor $x_coord $y_coord 0 0 0
+
+if { $stat != 1 } {
     puts "Object was not erased"
 }
 
 set only_screen2d 1
+
 

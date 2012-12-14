@@ -15,54 +15,31 @@ v2dinit
 box b_b 10 15 20
 v2ddisplay b_b 0 0 0 1 1 1 1 0 0
 v2dfit
+set color2d 1
 
 QAv2dSetHighlightMode 1
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set Position_X1 184
-   set Position_Y1 181
-   set Position_X2 184
-   set Position_Y2 181
-} else {
-   set Position_X1 169
-   set Position_Y1 148
-   set Position_X2 184
-   set Position_Y2 180
-}
-
-set rd_ch 80000
-set gr_ch 80000
-set bl_ch 80000
 
 QASelect2d 169 148
 QAMoveTo2d 0 0
 QAShiftSelect2d 184 180
 
-set j 1 
-repeat 2 {
-       set Position_X [set Position_X$j]
-       set Position_Y [set Position_Y$j]
-       puts " Position_X$j= $Position_X  Position_Y$j= $Position_Y"
-       
-       set color [QAAISGetPixelColor2d ${Position_X} ${Position_Y} ]
-       regexp {RED +: +([-0-9.+eE]+)} $color full rd
-       regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-       regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 169
+set y_coord 148
 
-       set rd_int [expr int($rd * 1.e+05)]
-       set gr_int [expr int($gr * 1.e+05)]
-       set bl_int [expr int($bl * 1.e+05)]
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
+if { ${stat} != 1 } {
+    puts "Error : (PRIMITIVE number 1) Multiple Selection: Choosing of viewer MOD for selection of PRIMITIVE was NOT MADE properly"
+}
 
-       if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-       	  puts "Error : colors are not equal"
-	  puts "Error : (PRIMITIVE number $j) Multiple Selection: Choosing of viewer MOD for selection of PRIMITIVE was NOT MADE properly"
-       }
-       
-       incr j
+set x_coord 184
+set y_coord 180
+
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
+if { ${stat} != 1 } {
+    puts "Error : (PRIMITIVE number 2) Multiple Selection: Choosing of viewer MOD for selection of PRIMITIVE was NOT MADE properly"
 }
 
 set only_screen2d 1
+
 
 

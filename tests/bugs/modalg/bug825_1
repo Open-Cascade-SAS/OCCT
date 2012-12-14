@@ -1,0 +1,31 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+
+pload QAcommands
+
+puts "======="
+puts "OCC825"
+puts "======="
+puts ""
+######################################
+## BRepAlgoAPI_Cut fails on sphere and b-spline face
+######################################
+##
+## Note: test for old topology
+##
+################################
+
+if { [ catch { set info_result [OCC825 a1 a2 a3 a4 a5] } ] } {
+    puts "Faulty : an exception was caught"
+} else {
+    puts [checkshape a1]
+    puts [checkshape a2]
+    bcut result a2 a1
+    set ExplodeList [explode result]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty : Resulting shape is empty COMPOUND"
+    }
+}
+
+set square 0
+set 2dviewer 0

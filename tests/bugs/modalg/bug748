@@ -1,0 +1,18 @@
+
+puts "========"
+puts "OCC748"
+puts "========"
+puts ""
+##################################
+## Incorrect work of DRAW-command "common"
+##################################
+
+restore [locate_data_file OCC748_1.brep] s1 
+puts [checkshape s1]
+restore [locate_data_file OCC748_2.brep] s2 
+puts [checkshape s2]
+
+bcommon result s1 s2
+
+set square 628.319
+set 2dviewer 0

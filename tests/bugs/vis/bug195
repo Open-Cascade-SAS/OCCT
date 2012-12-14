@@ -25,13 +25,13 @@ repeat 5 {
        incr i
 }
 
-set color [QAAISGetPixelColor2d 190 105]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 190
+set y_coord 105
+set color2d 1
 
-if { ${rd} != 1 || ${gr} != 1 || ${bl} != 1 } {
-    puts "Error : colors are not equal"
+checkcolor $x_coord $y_coord 1 1 1
+
+if { $stat != 1 } {
     puts "Error : Scaling of text font number 23 was NOT MADE properly"
 }
 

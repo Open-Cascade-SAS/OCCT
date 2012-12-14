@@ -1,0 +1,26 @@
+
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+##################################################
+## This test does not terminate due to infinite loop in bissector calculation
+##################################################
+
+restore [locate_data_file OCC745_2.brep] a 
+puts [checkshape a]
+mkplane pl a
+topoload pl
+drawcont
+smallview -2D-
+2dfit
+
+set min 30
+cpulimit [expr 60 * $min]
+
+mat
+puts "OCC745 OK"
+
+renamevar pl result
+set square 5844.55
+set 2dviewer 0

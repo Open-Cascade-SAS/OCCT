@@ -26,7 +26,7 @@ distmini d v a_8
 set tol [ maxtolerance a_8 ]
 regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol full MaxEdgeTolerance
 regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol full MaxVertexTolerance
-regexp {([-0-9.+eE]+)} [dump d_val] full d
+regexp {([-0-9.+eE]+)$} [dump d_val] full d
 
 if { [expr $d > $MaxEdgeTolerance] || [expr $d > $MaxVertexTolerance] } {
     puts "Faulty : Result is BAD. Distance is more than MaxTolerance"

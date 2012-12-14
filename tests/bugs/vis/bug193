@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC193"
 puts "========"
@@ -14,37 +13,21 @@ v2dgrid Circ 500 500 250 12 30 Lines
 set Position_X -667.802
 set Position_Y -441.402
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set rd_ch 49411
-   set gr_ch 49411
-   set bl_ch 49411
-} else {
-   set rd_ch 49803
-   set gr_ch 49803
-   set bl_ch 49803
-}
+set x_coord 67
+set y_coord 295
+set color2d 1
 
-set color [QAAISGetPixelColor2d 67 295]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+checkcolor $x_coord $y_coord 0.49 0.49 0.49
 
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
-
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : Objects was not displayed"
 }
 
-v2dpickgrid 67 295 x_coord y_coord
+v2dpickgrid 67 295 x_ch y_ch
 
-if { ${x_coord} != ${Position_X} || ${y_coord} != ${Position_Y} } {
+if { ${x_ch} != ${Position_X} || ${y_ch} != ${Position_Y} } {
    puts "Error : Function v2dpickgrid works wrongly"
 }
 
 set only_screen2d 1
+

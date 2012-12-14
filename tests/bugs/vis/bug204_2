@@ -6,22 +6,14 @@ vinit
 OCC204 1
 vfit
 
-set rd_ch 80000
-set gr_ch 80000
-set bl_ch 80000
+set x_coord 150
+set y_coord 200
 
-set color [QAGetPixelColor 150 200]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+checkcolor $x_coord $y_coord 0 0 0
 
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
-
-if { ${rd_int} == ${rd_ch} || ${gr_int} == ${gr_ch} || ${bl_int} == ${bl_ch} } {
-    puts "Error : colors are not equal"
-    puts "Error : There are 3 boxes in the viewer!"
+if { ${stat} != 1 } {
+    puts "Error : There are 3 boxes in the viewer! (should be nothing)"
 }
 
 set only_screen 1
+

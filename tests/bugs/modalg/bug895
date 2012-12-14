@@ -1,0 +1,58 @@
+puts "============"
+puts "OCC895"
+puts "============"
+puts ""
+#########################################################
+## In one case, twisted surface is created.
+## The problem is in incorrect computation of mutual orientations of wire segments.
+#########################################################
+
+pload QAcommands
+
+set scale    73.609
+set center_X 7.93702
+set center_Y 0.264503
+set proj_X   0.523995
+set proj_Y   0.359655
+set proj_Z   0.77206
+set up_X     -0.739036
+set up_Y     -0.258607
+set up_Z     0.622051
+set at_X     9.06773
+set at_Y     -1.93771
+set at_Z     1.45124
+
+set x_coord 210
+set y_coord 210
+
+set status 0
+
+set angle 5
+set reverse 0
+set order 0
+
+if { [ catch { OCC895 result ${angle} ${reverse} ${order} } ] } {
+    puts "Faulty : an exception was caught"
+}
+
+if { ${status} == 0} {
+  vinit
+  vsetdispmode 1
+  vdisplay result
+
+  QASetViewCharac ${scale} ${center_X} ${center_Y} \
+  		  ${proj_X} ${proj_Y} ${proj_Z} \
+    		  ${up_X} ${up_Y} ${up_Z} \
+  		  ${at_X} ${at_Y} ${at_Z}
+
+  QAUpdateLights
+  
+  checkcolor $x_coord $y_coord 0.98 0.72 0.13
+  
+  if { ${stat} != 1 } {
+    puts "Faulty OCC895 (case 2)"
+  }
+}
+
+set square 18.1614
+set 3dviewer 1

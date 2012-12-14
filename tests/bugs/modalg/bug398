@@ -1,0 +1,37 @@
+#INTERFACE IGES
+puts "========"
+puts "OCC398"
+puts "========"
+puts ""
+#############################################################
+## ShapeHealing modification 1:1 increases number of unique shapes in compound structure.
+#############################################################
+
+pload XDE
+catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
+
+restore [locate_data_file OCC398.brep] a 
+#statsh a
+#nbshapes a
+#Statshape should give 3 solids
+#Nbshape should return 1 solid
+
+scaleshape result a 10
+
+#statsh res
+
+
+set nb_info [nbshapes result]
+set nb_sol_good 1
+
+#if { $sol == 1 } {
+#    puts  " OCC398 : scaleshape operation was made properly"
+#} else {
+#    puts "Faulty OCC398: scaleshape operation was made wrongly"
+#}
+
+#Statshape should give 3 solids
+#Nbshape should return 1 solid (3 solids is returned if bug not fixed)
+
+set square 180000.
+set 2dviewer 0

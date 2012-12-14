@@ -1,0 +1,22 @@
+pload QAcommands
+
+puts "========"
+puts "OCC712"
+puts "========"
+puts ""
+############################################################
+## Exeption is raised in DRAW during building draft with help command "depouille"
+## on face in the attached shape.
+## The source code of application is also attached and should be checked.
+############################################################
+
+set draftAngle 15
+set slabThick 30
+
+if [catch {OCC712 ${draftAngle} ${slabThick} } catch_result] {
+    puts "Faulty OCC712"
+} else {
+    puts "OCC712 OK"
+}
+
+set 2dviewer 0

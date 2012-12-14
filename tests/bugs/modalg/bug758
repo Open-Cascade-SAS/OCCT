@@ -1,0 +1,26 @@
+
+puts "========"
+puts "OCC758"
+puts "SAM1613"
+puts "========"
+puts ""
+###################################################
+##It's impossible to cut two little shapes from the big one in the attached file.
+###################################################
+
+restore [locate_data_file OCC758.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+puts [checkshape a_3]
+
+bcut res1 a_1 a_2
+
+puts [checkshape res1]
+
+bcut result res1 a_3
+
+set square 49473.6
+set 2dviewer 0
+
+

@@ -4,20 +4,8 @@ puts "OCC64"
 puts "================"
 puts ""
 
-set rd_ch 0
-set gr_ch 1
-set bl_ch 1
-
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-    set x1 204
-    set y1 204
-} else {
-    set x1 205
-    set y1 205
-}
+set x_coord 205
+set y_coord 205
 
 vinit
 vtrihedron tri
@@ -26,13 +14,6 @@ vtri_orig tri
 QAMoveTo 205 205
 QAUpdateLights
 
-set color [QAGetPixelColor ${x1} ${y1}]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd_int
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr_int
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl_int
-
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
-}
+checkcolor $x_coord $y_coord 0 1 1
 
 set only_screen 1

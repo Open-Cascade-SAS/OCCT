@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC196"
 puts "========"
@@ -25,25 +24,15 @@ repeat 10 {
        incr j
 }
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set x1 336
-   set y1 348
-} else {
-   set x1 336
-   set y1 347
-}
+set x_coord 336
+set y_coord 347
+set color2d 1
 
-set color [QAAISGetPixelColor2d ${x1} ${y1}]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+checkcolor $x_coord $y_coord 1 1 1
 
-if { ${rd} != 1 || ${gr} != 1 || ${bl} != 1 } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : Rotation of text font number 23 was NOT MADE properly"
 }
 
 set only_screen2d 1
+

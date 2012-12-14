@@ -1,4 +1,3 @@
-
 puts "========================"
 puts " OCC225 "
 puts "========================"
@@ -17,14 +16,15 @@ v2dsetcolor b_b BLUE3
 wait 5
 v2dunsetcolor b_b
 
-set color [QAAISGetPixelColor2d 22 230]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 22
+set y_coord 230
+set color2d 1
 
-if { ${rd} != 1 || ${gr} != 1 || ${bl} != 0 } {
-    puts "Error : colors are not equal"
+checkcolor $x_coord $y_coord 1 1 0
+
+if { $stat != 1 } {
     puts "Error : function V2DUNSETCOLOR for BOX 2D does NOT WORK properly"
 }
 
 set only_screen2d 1
+

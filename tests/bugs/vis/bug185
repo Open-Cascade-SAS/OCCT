@@ -13,46 +13,27 @@ vinit
 vdisplay result
 vfit
 
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-   set rd_ch 77647
-   set gr_ch 54901
-   set bl_ch 9019
-} else {
-   set rd_ch 78039
-   set gr_ch 55294
-   set bl_ch 9411
-}
+set x_coord 235
+set y_coord 214
 
 vsetdispmode result 1
 QAUpdateLights
-set color [QAGetPixelColor 235 214]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
 
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
+checkcolor $x_coord $y_coord 0.78 0.55 0.9
 
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : Shading is OFF, but should be ON"
 }
 
 vsetdispmode result 0
 
 QAUpdateLights
-set color0 [QAGetPixelColor 235 214]
-regexp {RED +: +([-0-9.+eE]+)} $color0 full rd0
-regexp {GREEN +: +([-0-9.+eE]+)} $color0 full gr0
-regexp {BLUE +: +([-0-9.+eE]+)} $color0 full bl0
 
-if { ${rd0} != 0 || ${gr0} != 1 || ${bl0} != 0 } {
-    puts "Error : colors are not equal"
+checkcolor $x_coord $y_coord 0 1 0
+
+if { $stat != 1 } {
     puts "Error : Shading is ON, but should be OFF"
 }
 
 set only_screen 1
+

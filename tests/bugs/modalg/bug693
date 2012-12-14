@@ -1,0 +1,79 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The square of result shape is "
+
+puts "================"
+puts "OCC693"
+puts "================"
+puts ""
+###################################################
+## The boolean operations give incorrect result if one of shapes is compound 
+## consisting of several adjoint solids
+####################################################
+
+box h1 234 52 0 41 98 40
+box v1 241 136 20 31 31 15
+box h3 215 120 20 78 15 15
+
+#mu4
+#fit
+
+compound h1 c1
+compound v1 c2
+
+tcopy c1 cc1
+tcopy c2 cc2
+bcommon int1 cc1 cc2
+##########checkshape -top int1
+puts [checkshape -top int1]
+
+tcopy c1 cc1
+tcopy c2 cc2
+bcut cut1 cc1 cc2
+puts [checkshape -top cut1]
+
+tcopy c1 cc1
+tcopy c2 cc2
+bcut cut2 cc2 cc1
+##########checkshape -top cut2
+puts [checkshape -top cut2]
+
+compound int1 cut1 cut2 comp3
+##########checkshape -top comp3
+puts [checkshape -top comp3]
+#donly comp3
+
+tcopy comp3 ccomp3
+tcopy h3 ch3
+bcommon int2 ccomp3 ch3
+##########checkshape -top int2
+puts [checkshape -top int2]
+#donly int2
+
+tcopy comp3 ccomp3
+tcopy h3 ch3
+bcut cut3 ccomp3 ch3
+##########checkshape -top cut3
+puts [checkshape -top cut3]
+#donly cut3
+
+tcopy comp3 ccomp3
+tcopy h3 ch3
+bcut cut4 ch3 ccomp3
+##########checkshape -top cut4
+puts [checkshape -top cut4]
+
+compound int2 cut3 cut4 result
+##########checkshape -top res
+puts [checkshape -top result]
+
+##########set che [checkshape -top res]
+##########
+##########set err [lindex $che [expr [llength $che] - 7]]
+##########if { $err == "Faulty"} {
+##########    puts "Faulty OCC693"
+##########} else {
+##########  puts "OCC693 OK "
+##########}
+
+set square 33196
+set 2dviewer 0

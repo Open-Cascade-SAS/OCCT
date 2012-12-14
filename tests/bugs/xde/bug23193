@@ -7,9 +7,6 @@ puts ""
 ###########################################################################
 pload QAcommands
 
-if {[array get env os_type] != ""} {
-    set os $env(os_type)
-}
 
 set aFile $imagedir/bug23193_sample.stl
 
@@ -22,16 +19,13 @@ meshcolors m1 elem2 1
 QARotateV3dView 4 0 0 1
 vfit
 
-set color [QAGetPixelColor 189 236]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 189
+set y_coord 236
 
-set a [expr $bl*10]
-set bl_1 [expr round($a)]
+checkcolor $x_coord $y_coord 0 0 0.7
 
-if { $rd != 0 || $gr != 0 || $bl_1 != 7 } {
-    puts "Error : Color are not equal. There is missing triangle"
+if { ${stat} != 1 } {
+    puts "Error : There is missing triangle"
 }
 
 set only_screen 1

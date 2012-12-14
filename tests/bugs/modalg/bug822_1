@@ -1,0 +1,25 @@
+pload QAcommands
+
+puts "========"
+puts "OCC822"
+puts "========"
+puts ""
+#####################################
+## BRepMesh_IncrementalMesh fails on some faces
+#####################################
+
+if { [ catch { set info_result [OCC822_1 a1 a2 result] } ] } {
+    puts "Faulty : an exception was caught"
+} else {
+    if { [lsearch ${info_result} FAILED] > -1 } {
+	puts "Faulty : command was FAILED"
+    }
+
+    set ExplodeList [explode result]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty : Resulting shape is empty COMPOUND"
+    }
+}
+
+set square 133931
+set 2dviewer 0

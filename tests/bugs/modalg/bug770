@@ -1,0 +1,26 @@
+puts "TODO ?OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
+
+puts "========"
+puts "OCC770"
+puts "SAM1636"
+puts "========"
+puts ""
+############################
+## Impossible fusing 3 attached shapes
+############################
+
+restore [locate_data_file OCC770.brep] a 
+explode a
+puts [checkshape a_1]
+puts [checkshape a_2]
+puts [checkshape a_3]
+
+bfuse res1 a_1 a_2
+
+puts [checkshape res1]
+
+bfuse result res1 a_3
+
+set square 962546.
+set 2dviewer 0

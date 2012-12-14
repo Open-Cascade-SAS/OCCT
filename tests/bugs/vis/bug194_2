@@ -10,38 +10,16 @@ puts ""
 
 v2dinit
 v2dgrid Rect 500 500 200 200 45 Points
-if { [array get env os_type] != "" } {
-    set os $env(os_type)
-}
-if { [string compare $os "windows"] == 0 } {
-    set x1 20
-    set y1 20
-    set rd_ch 100000
-    set gr_ch 100000
-    set bl_ch 100000
-##    set rd_ch 49411
-##    set gr_ch 49411
-##    set bl_ch 49411
-} else {
-    set x1 20
-    set y1 21
-    set rd_ch 70196
-    set gr_ch 70196
-    set bl_ch 70196
-}
 
-set color [QAAISGetPixelColor2d ${x1} ${y1}]
-regexp {RED +: +([-0-9.+eE]+)} $color full rd
-regexp {GREEN +: +([-0-9.+eE]+)} $color full gr
-regexp {BLUE +: +([-0-9.+eE]+)} $color full bl
+set x_coord 20
+set y_coord 21
+set color2d 1
 
-set rd_int [expr int($rd * 1.e+05)]
-set gr_int [expr int($gr * 1.e+05)]
-set bl_int [expr int($bl * 1.e+05)]
+checkcolor $x_coord $y_coord 0.7 0.7 0.7
 
-if { ${rd_int} != ${rd_ch} || ${gr_int} != ${gr_ch} || ${bl_int} != ${bl_ch} } {
-    puts "Error : colors are not equal"
+if { $stat != 1 } {
     puts "Error : 2D Rectangular ROTATED Grid WITHOUT Lines was NOT CREATED properly"
 }
 
 set only_screen2d 1
+
