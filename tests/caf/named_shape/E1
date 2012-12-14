@@ -18,7 +18,7 @@
 #pload FULL
 erase 
 Close D 
-unset D
+
 NewDocument D MDTV-Standard
 isos 12
 #1 - create box using more flexible set of commands

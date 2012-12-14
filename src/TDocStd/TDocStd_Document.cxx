@@ -74,10 +74,17 @@ Handle(TDocStd_Document) TDocStd_Document::Get (const TDF_Label& acces)
 //function : Destroy
 //purpose  : 
 //=======================================================================
-// void TDocStd_Document::Destroy()
-// {
-//   myUndoTransaction.Commit(); // no needs to store the Undo
-// }
+void TDocStd_Document::Destroy()
+{
+  SetModificationMode(Standard_False);
+  myData->Root().ForgetAllAttributes(Standard_True);
+  myUndoTransaction.Abort();
+  if(!myUndoFILO.IsEmpty())
+    myUndoFILO.Clear();
+  ClearUndos();
+  myData.Nullify();
+  
+}
 
 
 //=======================================================================

@@ -21,7 +21,7 @@
 
 erase 
 Close D 
-unset D
+
 NewDocument D MDTV-Standard
 
 #1 - create Box using short-cut

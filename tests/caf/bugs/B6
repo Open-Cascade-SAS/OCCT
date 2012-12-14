@@ -64,6 +64,7 @@ if { ${IsDone} != 0 } {
 	puts "Get a value of TPrsStd_AISPresentation attribute from restoring document: Error"
 	puts "OCC1228: ERROR (case 2)"
 } else {
+        Close DDoc
 	puts "There is the box in the viewer"
 	puts "OCC1228: OK"
 }

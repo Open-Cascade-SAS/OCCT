@@ -17,7 +17,7 @@
 #pload FULL
 erase 
 Close D 
-unset D
+
 NewDocument D MDTV-Standard
 
 AddDriver D Box Cyl Sph Attach XAttach PTxyz PTALine PRLine PMirr Cut Fuse Prism FulRevol SecRevol Fillet

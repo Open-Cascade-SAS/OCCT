@@ -68,9 +68,10 @@ is
 
     Initialize;
      
-    Destroy(me: mutable) is protected;
-    ---C++: alias ~
 ---Category: virtual methods
+    Destroy(me: mutable) is virtual protected;
+    ---C++: alias ~
+    
 
     Update(me: mutable; aToDocument: Document from CDM; aReferenceIdentifier: Integer from Standard; aModifContext: Address from Standard)
     ---Purpose: The Update  method  will be called  once  for each

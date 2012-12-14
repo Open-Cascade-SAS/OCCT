@@ -49,9 +49,9 @@ uses Data           from TDF,
 
 is
    
-    --Destroy (me : mutable);
-    ---Purpose: Will Abort any execution, and commit the Undo transaction
-    -----C++: alias ~
+    Destroy (me : mutable) is redefined protected;
+    ---Purpose: Will Abort any execution, clear fields
+    ---C++: alias ~
 
     Get (myclass; L : Label from TDF)
     	---Purpose: returns the    document which contains <L>.  raises  an

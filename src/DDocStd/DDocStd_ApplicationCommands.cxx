@@ -297,8 +297,11 @@ static Standard_Integer DDocStd_Close (Draw_Interpretor& di,
     Handle(TDocStd_Application) A;
     if (!DDocStd::Find(A)) return 1;
     A->Close(D); 
+
     Handle(Draw_Drawable3D) DD = Draw::Get(a[1],Standard_False);
     dout.RemoveDrawable (DD);
+    Handle(Draw_Drawable3D) aDNull;
+    Draw::Set(a[1], aDNull);
     return 0;
   }
   di << "DDocStd_Close : Error" << "\n";

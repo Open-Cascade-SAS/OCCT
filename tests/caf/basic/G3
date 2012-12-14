@@ -39,7 +39,7 @@ set aFile ${imagedir}/caf001-G3.std
 file delete ${aFile}
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {
-	puts "There is not ${aFile} file; SaveAs command: Error"
+	puts "There is no file ${aFile}; SaveAs command: Error"
 	return
 }
 #catch {exec chmod 777 ${aFile}}

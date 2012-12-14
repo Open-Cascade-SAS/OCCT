@@ -19,7 +19,7 @@
 #pload FULL
 erase
 Close D
-unset D
+
 NewDocument D MDTV-Standard
 
 #Drivers' nick-names:

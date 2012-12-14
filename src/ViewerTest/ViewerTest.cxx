@@ -334,17 +334,19 @@ static void VwrTst_InitEventMgr(const Handle(NIS_View)& aView,
   theEventMgrs.Prepend(new ViewerTest_EventManager(aView, Ctx));
 }
 
-static Handle(V3d_View)&  a3DView(){
+static Handle(V3d_View)&  a3DView()
+{
   static Handle(V3d_View) Viou;
   return Viou;
 }
+
 
 Standard_EXPORT Handle(AIS_InteractiveContext)& TheAISContext(){
   static Handle(AIS_InteractiveContext) aContext;
   return aContext;
 }
 
-Handle(V3d_View) ViewerTest::CurrentView()
+const Handle(V3d_View)& ViewerTest::CurrentView()
 {
   return a3DView();
 }
@@ -363,7 +365,7 @@ Standard_EXPORT const Handle(NIS_InteractiveContext)& TheNISContext()
   return aContext;
 }
 
-Handle(AIS_InteractiveContext) ViewerTest::GetAISContext()
+const Handle(AIS_InteractiveContext)& ViewerTest::GetAISContext()
 {
   return TheAISContext();
 }
