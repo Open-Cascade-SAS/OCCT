@@ -28,14 +28,11 @@
 
 #define MyViewManager	((Visual3d_ViewManager *) MyPtrViewManager)
 
-#define MyMatOfMapIsModified	MyCBitFields.bool1
-#define MyMatOfMapIsEvaluated	MyCBitFields.bool2
-#define MyMatOfOriIsModified	MyCBitFields.bool3
-#define MyMatOfOriIsEvaluated	MyCBitFields.bool4
-#define DegenerateModeIsActive	MyCBitFields.bool5
-#define AnimationModeIsActive	MyCBitFields.bool6
-#ifdef G003
-#define ComputedModeIsActive    MyCBitFields.bool7
-#endif
+#define MyMatOfMapIsEvaluated   MyCBitFields.bool1
+#define MyMatOfOriIsEvaluated   MyCBitFields.bool2
+#define DegenerateModeIsActive  MyCBitFields.bool3
+#define AnimationModeIsActive   MyCBitFields.bool4
+#define IsInitialized           MyCBitFields.bool5
+#define ComputedModeIsActive    MyCBitFields.bool6
 
 #endif

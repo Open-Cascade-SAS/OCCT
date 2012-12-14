@@ -274,13 +274,13 @@ Standard_Real um, vm, uM, vM;
 
         MyCView.Context.ZBufferActivity = -1;
 
-        MyMatOfMapIsModified    = Standard_True;
-        MyMatOfOriIsModified    = Standard_True;
         MyMatOfMapIsEvaluated   = Standard_False;
         MyMatOfOriIsEvaluated   = Standard_False;
 
         DegenerateModeIsActive  = Standard_False;
         AnimationModeIsActive   = Standard_False;
+
+        IsInitialized = Standard_False;
 #ifdef G003
         MyCView.IsDegenerates     = 0;
         MyCView.IsDegeneratesPrev = 0;
@@ -413,10 +413,10 @@ Standard_Real um, vm, uM, vM;
 
         MyCView.Context.ZBufferActivity = -1;
 
-        MyMatOfMapIsModified    = Standard_True;
-        MyMatOfOriIsModified    = Standard_True;
         MyMatOfMapIsEvaluated   = Standard_False;
         MyMatOfOriIsEvaluated   = Standard_False;
+
+        IsInitialized = Standard_False;
 #ifdef G003
         AnimationModeIsActive     = Standard_False;
         MyCView.IsDegenerates     = 0;
@@ -602,10 +602,10 @@ void Visual3d_View::Remove () {
         MyCView.IsDeleted       = 1;
         MyCView.DefWindow.IsDefined     = 0;
 
-        MyMatOfMapIsModified    = Standard_True;
-        MyMatOfOriIsModified    = Standard_True;
         MyMatOfMapIsEvaluated   = Standard_False;
         MyMatOfOriIsEvaluated   = Standard_False;
+
+        IsInitialized = Standard_False;
 
         MyWindow.Nullify ();
 
@@ -1099,7 +1099,6 @@ Visual3d_ViewOrientation NewViewOrientation;
 
         SetViewOrientation (NewViewOrientation);
 
-        MyMatOfOriIsModified    = Standard_True;
         MyMatOfOriIsEvaluated   = Standard_False;
 
 }
@@ -1115,94 +1114,90 @@ void Visual3d_View::SetViewOrientation (const Visual3d_ViewOrientation& VO) {
         if (IsDeleted ()) return;
 
         MyViewOrientation       = VO;
-
-Standard_Real X, Y, Z;
-
+        
+        Standard_Real X, Y, Z;
         // Tests on modification of parameters.
-Standard_Boolean VUPIsModified  = Standard_False;
-Standard_Boolean VRPIsModified  = Standard_False;
-Standard_Boolean VRUIsModified  = Standard_False;
-Standard_Boolean ScaleIsModified  = Standard_False;
-Standard_Boolean CustomIsModified = Standard_False;
+        Standard_Boolean VUPIsModified  = Standard_False;
+        Standard_Boolean VRPIsModified  = Standard_False;
+        Standard_Boolean VRUIsModified  = Standard_False;
+        Standard_Boolean ScaleIsModified  = Standard_False;
+        Standard_Boolean CustomIsModified = Standard_False;
 
         (MyViewOrientation.ViewReferencePoint ()).Coord (X, Y, Z);
         VUPIsModified =
-            MyCView.Orientation.ViewReferencePoint.x != float (X)
-         || MyCView.Orientation.ViewReferencePoint.y != float (Y)
-         || MyCView.Orientation.ViewReferencePoint.z != float (Z);
+           MyCView.Orientation.ViewReferencePoint.x != float (X)
+        || MyCView.Orientation.ViewReferencePoint.y != float (Y)
+        || MyCView.Orientation.ViewReferencePoint.z != float (Z);
         MyCView.Orientation.ViewReferencePoint.x        = float (X);
         MyCView.Orientation.ViewReferencePoint.y        = float (Y);
         MyCView.Orientation.ViewReferencePoint.z        = float (Z);
 
         (MyViewOrientation.ViewReferencePlane ()).Coord (X, Y, Z);
         VRPIsModified =
-            MyCView.Orientation.ViewReferencePlane.x != float (X)
-         || MyCView.Orientation.ViewReferencePlane.y != float (Y)
-         || MyCView.Orientation.ViewReferencePlane.z != float (Z);
+           MyCView.Orientation.ViewReferencePlane.x != float (X)
+        || MyCView.Orientation.ViewReferencePlane.y != float (Y)
+        || MyCView.Orientation.ViewReferencePlane.z != float (Z);
         MyCView.Orientation.ViewReferencePlane.x        = float (X);
         MyCView.Orientation.ViewReferencePlane.y        = float (Y);
         MyCView.Orientation.ViewReferencePlane.z        = float (Z);
 
         (MyViewOrientation.ViewReferenceUp ()).Coord (X, Y, Z);
         VRUIsModified =
-            MyCView.Orientation.ViewReferenceUp.x != float (X)
-         || MyCView.Orientation.ViewReferenceUp.y != float (Y)
-         || MyCView.Orientation.ViewReferenceUp.z != float (Z);
+           MyCView.Orientation.ViewReferenceUp.x != float (X)
+        || MyCView.Orientation.ViewReferenceUp.y != float (Y)
+        || MyCView.Orientation.ViewReferenceUp.z != float (Z);
         MyCView.Orientation.ViewReferenceUp.x           = float (X);
         MyCView.Orientation.ViewReferenceUp.y           = float (Y);
         MyCView.Orientation.ViewReferenceUp.z           = float (Z);
 
-Standard_Real Sx, Sy, Sz;
-
-        MyViewOrientation.AxialScale(Sx, Sy, Sz);
-	ScaleIsModified =
-            MyCView.Orientation.ViewScaleX != float (X)
-         || MyCView.Orientation.ViewScaleY != float (Y)
-         || MyCView.Orientation.ViewScaleZ != float (Z);
-        MyCView.Orientation.ViewScaleX                  = float (Sx);
-        MyCView.Orientation.ViewScaleY                  = float (Sy);
-        MyCView.Orientation.ViewScaleZ                  = float (Sz);
+        MyViewOrientation.AxialScale(X, Y, Z);
+        ScaleIsModified =
+           MyCView.Orientation.ViewScaleX != float (X)
+        || MyCView.Orientation.ViewScaleY != float (Y)
+        || MyCView.Orientation.ViewScaleZ != float (Z);
+        MyCView.Orientation.ViewScaleX                  = float (X);
+        MyCView.Orientation.ViewScaleY                  = float (Y);
+        MyCView.Orientation.ViewScaleZ                  = float (Z);
 
         CustomIsModified =
-          MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix();
+        MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix();
         MyCView.Orientation.IsCustomMatrix = MyViewOrientation.IsCustomMatrix();
         if ( MyViewOrientation.IsCustomMatrix() ) {
           Standard_Integer i, j;
           for (i = 0; i < 4; i++)
             for (j = 0; j < 4; j++) {
-              if (!CustomIsModified) CustomIsModified =
-                MyCView.Orientation.ModelViewMatrix[i][j] != MyViewOrientation.MyModelViewMatrix->Value(i,j);
-              MyCView.Orientation.ModelViewMatrix[i][j] = MyViewOrientation.MyModelViewMatrix->Value(i,j);
+             if (!CustomIsModified) CustomIsModified =
+               MyCView.Orientation.ModelViewMatrix[i][j] != MyViewOrientation.MyModelViewMatrix->Value(i,j);
             }
         }
 
 #ifdef TRACE_TRSF
-cout << "Visual3d_View::SetViewOrientation\n";
-        if (VUPIsModified || VRPIsModified || VRUIsModified || CustomIsModified)
-                cout <<   "VUPIsModified : " << VUPIsModified
-                     << ", VRPIsModified : " << VRPIsModified
-                     << ", VRUIsModified : " << VRUIsModified
-                     << ", CustomIsModified : " << CustomIsModified << "\n" << flush;
+        cout << "Visual3d_View::SetViewOrientation\n";
+        if (VUPIsModified || VRPIsModified || VRUIsModified || ScaleIsModified || CustomIsModified)
+          cout <<   "VUPIsModified : " << VUPIsModified
+          << ", VRPIsModified : " << VRPIsModified
+          << ", VRUIsModified : " << VRUIsModified
+          << ", CustomIsModified : " << CustomIsModified
+          << ", ScaleIsModified : " << ScaleIsModified << "\n" << flush;
         else
-                cout << "no modification\n" << flush;
+          cout << "no modification\n" << flush;
 #endif
 
         // restart if one of parameters is modified
-        if (VUPIsModified || VRPIsModified || VRUIsModified || ScaleIsModified || CustomIsModified) {
+        if (!IsInitialized || VUPIsModified || VRPIsModified
+            || VRUIsModified || ScaleIsModified || CustomIsModified) {
 
-	  if (VUPIsModified || VRPIsModified || VRUIsModified || CustomIsModified) {
-                MyMatOfOriIsModified    = Standard_True;
-                MyMatOfOriIsEvaluated   = Standard_False;
-	      }
+        MyMatOfOriIsEvaluated = !VUPIsModified && !VRPIsModified
+                              && !VRUIsModified && !ScaleIsModified;
+    
+        if (! IsDefined ()) return;
+        
+        Standard_Boolean AWait = Standard_False;        // => immediate update
+        MyGraphicDriver->ViewOrientation (MyCView, AWait);
+        IsInitialized = Standard_True;
+        Compute ();
 
-                if (! IsDefined ()) return;
-
-Standard_Boolean AWait = Standard_False;        // => immediate update
-                MyGraphicDriver->ViewOrientation (MyCView, AWait);
-
-                Compute ();
-
-                if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
+        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
         }
 
 }
@@ -1231,95 +1226,92 @@ void Visual3d_View::ViewOrientationReset () {
 
         MyViewOrientation       = MyViewOrientationReset;
 
-Standard_Real X, Y, Z;
+        Standard_Real X, Y, Z;
 
         // Tests on modification of parameters.
-Standard_Boolean VUPIsModified  = Standard_False;
-Standard_Boolean VRPIsModified  = Standard_False;
-Standard_Boolean VRUIsModified  = Standard_False;
-Standard_Boolean ScaleIsModified  = Standard_False;
-Standard_Boolean CustomIsModified = Standard_False;
+        Standard_Boolean VUPIsModified  = Standard_False;
+        Standard_Boolean VRPIsModified  = Standard_False;
+        Standard_Boolean VRUIsModified  = Standard_False;
+        Standard_Boolean ScaleIsModified  = Standard_False;
+        Standard_Boolean CustomIsModified = Standard_False;
 
         (MyViewOrientation.ViewReferencePoint ()).Coord (X, Y, Z);
         VUPIsModified =
-            MyCView.Orientation.ViewReferencePoint.x != float (X)
-         || MyCView.Orientation.ViewReferencePoint.y != float (Y)
-         || MyCView.Orientation.ViewReferencePoint.z != float (Z);
+           MyCView.Orientation.ViewReferencePoint.x != float (X)
+        || MyCView.Orientation.ViewReferencePoint.y != float (Y)
+        || MyCView.Orientation.ViewReferencePoint.z != float (Z);
         MyCView.Orientation.ViewReferencePoint.x        = float (X);
         MyCView.Orientation.ViewReferencePoint.y        = float (Y);
         MyCView.Orientation.ViewReferencePoint.z        = float (Z);
 
         (MyViewOrientation.ViewReferencePlane ()).Coord (X, Y, Z);
         VRPIsModified =
-            MyCView.Orientation.ViewReferencePlane.x != float (X)
-         || MyCView.Orientation.ViewReferencePlane.y != float (Y)
-         || MyCView.Orientation.ViewReferencePlane.z != float (Z);
+           MyCView.Orientation.ViewReferencePlane.x != float (X)
+        || MyCView.Orientation.ViewReferencePlane.y != float (Y)
+        || MyCView.Orientation.ViewReferencePlane.z != float (Z);
         MyCView.Orientation.ViewReferencePlane.x        = float (X);
         MyCView.Orientation.ViewReferencePlane.y        = float (Y);
         MyCView.Orientation.ViewReferencePlane.z        = float (Z);
 
         (MyViewOrientation.ViewReferenceUp ()).Coord (X, Y, Z);
         VRUIsModified =
-            MyCView.Orientation.ViewReferenceUp.x != float (X)
-         || MyCView.Orientation.ViewReferenceUp.y != float (Y)
-         || MyCView.Orientation.ViewReferenceUp.z != float (Z);
+           MyCView.Orientation.ViewReferenceUp.x != float (X)
+        || MyCView.Orientation.ViewReferenceUp.y != float (Y)
+        || MyCView.Orientation.ViewReferenceUp.z != float (Z);
         MyCView.Orientation.ViewReferenceUp.x           = float (X);
         MyCView.Orientation.ViewReferenceUp.y           = float (Y);
         MyCView.Orientation.ViewReferenceUp.z           = float (Z);
 
-Standard_Real Sx, Sy, Sz;
-
-        MyViewOrientation.AxialScale(Sx, Sy, Sz);
-	ScaleIsModified =
-            MyCView.Orientation.ViewScaleX != float (X)
-         || MyCView.Orientation.ViewScaleY != float (Y)
-         || MyCView.Orientation.ViewScaleZ != float (Z);
-        MyCView.Orientation.ViewScaleX                  = float (Sx);
-        MyCView.Orientation.ViewScaleY                  = float (Sy);
-        MyCView.Orientation.ViewScaleZ                  = float (Sz);
+        MyViewOrientation.AxialScale(X, Y, Z);
+        ScaleIsModified =
+           MyCView.Orientation.ViewScaleX != float (X)
+        || MyCView.Orientation.ViewScaleY != float (Y)
+        || MyCView.Orientation.ViewScaleZ != float (Z);
+        MyCView.Orientation.ViewScaleX                  = float (X);
+        MyCView.Orientation.ViewScaleY                  = float (Y);
+        MyCView.Orientation.ViewScaleZ                  = float (Z);
 
         CustomIsModified =
-          MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix();
+        MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix();
         MyCView.Orientation.IsCustomMatrix = MyViewOrientation.IsCustomMatrix();
         if ( MyViewOrientation.IsCustomMatrix() ) {
           Standard_Integer i, j;
           for (i = 0; i < 4; i++)
             for (j = 0; j < 4; j++) {
-              if (!CustomIsModified) CustomIsModified =
-                MyCView.Orientation.ModelViewMatrix[i][j] != MyViewOrientation.MyModelViewMatrix->Value(i,j);
-              MyCView.Orientation.ModelViewMatrix[i][j] = MyViewOrientation.MyModelViewMatrix->Value(i,j);
+             if (!CustomIsModified) CustomIsModified =
+               MyCView.Orientation.ModelViewMatrix[i][j] != MyViewOrientation.MyModelViewMatrix->Value(i,j);
             }
         }
 
+
 #ifdef TRACE_TRSF
-cout << "Visual3d_View::ViewOrientationReset\n";
-if (VUPIsModified || VRPIsModified || VRUIsModified || CustomIsModified)
-cout <<   "VUPIsModified : " << VUPIsModified
-     << ", VRPIsModified : " << VRPIsModified
-     << ", VRUIsModified : " << VRUIsModified
-     << ", CustomIsModified : " << CustomIsModified << "\n" << flush;
-else
-cout << "no modification\n" << flush;
+        cout << "Visual3d_View::ViewOrientationReset\n";
+        if (VUPIsModified || VRPIsModified || VRUIsModified || ScaleIsModified || CustomIsModified)
+          cout <<   "VUPIsModified : " << VUPIsModified
+          << ", VRPIsModified : " << VRPIsModified
+          << ", VRUIsModified : " << VRUIsModified
+          << ", CustomIsModified : " << CustomIsModified
+          << ", ScaleIsModified : " << ScaleIsModified << "\n" << flush;
+        else
+          cout << "no modification\n" << flush;
 #endif
 
         // Restart if one of parameters is modified
-        if (VUPIsModified || VRPIsModified || VRUIsModified || CustomIsModified) {
+        if (!IsInitialized || VUPIsModified || VRPIsModified
+            || VRUIsModified || ScaleIsModified || CustomIsModified) {
+              
+        MyMatOfOriIsEvaluated = !VUPIsModified && !VRPIsModified
+                              && !VRUIsModified && !ScaleIsModified;
 
-	  if (VUPIsModified || VRPIsModified || VRUIsModified || CustomIsModified) {
-                MyMatOfOriIsModified    = Standard_True;
-                MyMatOfOriIsEvaluated   = Standard_False;
-	      }
+        if (! IsDefined ()) return;
 
-                if (! IsDefined ()) return;
+        Standard_Boolean AWait = Standard_False;        // => immediate update
+        MyGraphicDriver->ViewOrientation (MyCView, AWait);
+        IsInitialized = Standard_True;
+        Compute ();
 
-Standard_Boolean AWait = Standard_False;        // => immediate update
-                MyGraphicDriver->ViewOrientation (MyCView, AWait);
-
-                Compute ();
-
-                if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
+        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
         }
-
 }
 
 void Visual3d_View::SetViewMapping (const Visual3d_ViewMapping& VM) {
@@ -1360,7 +1352,6 @@ Standard_Real um, vm, uM, vM;
                 MyViewMapping.MyProjectionMatrix->Value(i,j);
         }
 
-        MyMatOfMapIsModified    = Standard_True;
         MyMatOfMapIsEvaluated   = Standard_False;
 
         if (! IsDefined ()) return;
@@ -1429,7 +1420,6 @@ Standard_Real um, vm, uM, vM;
                 MyViewMapping.MyProjectionMatrix->Value(i,j);
         }
 
-        MyMatOfMapIsModified    = Standard_True;
         MyMatOfMapIsEvaluated   = Standard_False;
 
         if (! IsDefined ()) return;
@@ -1896,9 +1886,6 @@ Aspect_CLayer2d UnderCLayer;
         //OSD::SetSignal (Standard_False);
         MyGraphicDriver->Update (MyCView, UnderCLayer, OverCLayer);
         //OSD::SetSignal (Standard_True);
-
-        MyMatOfMapIsModified    = Standard_False;
-        MyMatOfOriIsModified    = Standard_False;
 
 }
 
