@@ -144,7 +144,27 @@ is
            DeltaU :    Real        from Standard;
            DeltaV :    Real        from Standard)
 	   
-           is static protected;    
+           is static protected; 
+           
+       findIntersect( me: in out ;
+           Curve1 :    TheCurve;
+           Domain1:    Domain      from IntRes2d;
+           Curve2 :    TheCurve;
+           Domain2:    Domain      from IntRes2d;
+		   TolConf:    Real        from Standard;
+	       Tol    :    Real        from Standard;
+           NbIter :    Integer     from Standard;
+           DeltaU :    Real        from Standard;
+           DeltaV :    Real        from Standard;
+    	  thePoly1 :  ThePolygon2d  from  IntCurve; 
+	      thePoly2 :  ThePolygon2d  from  IntCurve;
+	      isFullRepresentation : Boolean from Standard)
+	      returns Boolean is private;  
+	      ---Purpose : Method to find intersection between two curves
+	      --         :  returns false for case when some points of polygon
+	      --         : were replaced on line and exact point of intersection was not found
+	      --         : for case when point of intersection was found
+	      --         : during prelimanary search for line (case of bad paramerization of Bspline for example). 
     
 fields    
 

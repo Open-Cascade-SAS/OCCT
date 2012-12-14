@@ -1,0 +1,36 @@
+puts "============"
+puts "CR23587"
+puts "==========="
+puts ""
+###############################################################################
+# Operation "2dintersect "in TestHarness can not find intersection point of two intersecting 2d curves.
+###############################################################################
+
+restore [locate_data_file bug23587_IntEdges.brep] a
+
+explode a 
+
+plane pl1 0 0 0 0 0 1
+trim trpl1 pl1 -1000 1000 -1000 1000
+mkface f1 trpl1
+pcurve c1 a_1 f1
+pcurve c2 a_2 f1
+pcurve c3 a_3 f1
+pcurve c4 a_4 f1
+set inter1 [2dintersect c1 c2 1.e-6]
+set inter2 [2dintersect c3 c2 1.e-6]
+set inter3 [2dintersect c1 c4 1.e-6]
+set inter4 [2dintersect c3 c4 1.e-6]
+set int1 [regexp {Intersection point 1} $inter1]
+set int2 [regexp {Intersection point 1} $inter2]
+set int3 [regexp {Intersection point 1} $inter3]
+set int4 [regexp {Intersection point 1} $inter4]
+
+if { $int1 == 0 || $int2 == 0 || $int3 == 0 || $int4 ==0 } {
+    puts "Error : Intersection is not found"
+} 
+
+av2d
+2dfit
+
+xwd ${imagedir}/${test_image}.png
