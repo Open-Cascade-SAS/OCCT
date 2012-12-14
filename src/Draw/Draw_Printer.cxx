@@ -45,8 +45,9 @@ void Draw_Printer::Send (const TCollection_ExtendedString& theString,
   if ( ! myTcl )
     return;
   (*(Draw_Interpretor*)myTcl) << theString;
-  if ( putEndl )
-    (*(Draw_Interpretor*)myTcl) << '\n';
+  if ( putEndl ){
+    (*(Draw_Interpretor*)myTcl) << "\n";
+  }
 }
 
 //=======================================================================
@@ -61,8 +62,9 @@ void Draw_Printer::Send (const Standard_CString theString,
   if ( ! myTcl )
     return;
   (*(Draw_Interpretor*)myTcl) << theString;
-  if ( putEndl )
-    (*(Draw_Interpretor*)myTcl) << '\n';
+  if ( putEndl ){
+    (*(Draw_Interpretor*)myTcl) << "\n";
+  }
 }
 
 //=======================================================================
@@ -77,6 +79,7 @@ void Draw_Printer::Send (const TCollection_AsciiString& theString,
   if ( ! myTcl )
     return;
   (*(Draw_Interpretor*)myTcl) << theString;
-  if ( putEndl )
-    (*(Draw_Interpretor*)myTcl) << '\n';
+  if ( putEndl ){
+    (*(Draw_Interpretor*)myTcl) << "\n";
+  }
 }

@@ -39,6 +39,8 @@
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_PrinterOStream.hxx>
+#include <Draw_Printer.hxx>
 
 static int deja = 0, dejald = 0;
 //unused variable 
@@ -109,6 +111,11 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
   //     performed not in IFSelect_SessionPilot but in standard Tcl interpretor
   XSDRAW::RemoveCommand("x");
   XSDRAW::RemoveCommand("exit");
+  const Handle(Message_Messenger) &sout = Message::DefaultMessenger();
+  if (!sout.IsNull()){
+    sout->RemovePrinters(STANDARD_TYPE(Message_PrinterOStream));
+    sout->AddPrinter(new Draw_Printer(theCommands));
+  }
 //  if (!getenv("WBHOSTTOP")) XSDRAW::RemoveCommand("xsnew");
   Handle(TColStd_HSequenceOfAsciiString) list =
     IFSelect_Activator::Commands(0);

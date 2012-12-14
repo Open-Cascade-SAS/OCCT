@@ -10,21 +10,15 @@ set l [igesbrep [locate_data_file buc60685a.igs] a xst-transferrable-roots]
 tpcompound result
 puts [checkshape result r]
 
-set start [lindex $l 60]
-set bug_list_numb [ llength $l ]
-set bug_list_elem 0
-while { $bug_list_elem != $bug_list_numb } {
-    if { [ string compare "Nb" [ lindex $l $bug_list_elem ] ] == 0 && [ string compare "entities" [ lindex $l [ expr { $bug_list_elem + 1 } ] ] ] == 0 && [ string compare "selected" [ lindex $l [ expr { $bug_list_elem + 2 } ] ] ] == 0 && [ string compare ":" [ lindex $l [ expr { $bug_list_elem + 3 } ] ] ] == 0 } {
-	set start [ lindex $l [ expr { $bug_list_elem + 4 } ] ]
-	set bug_list_elem [ expr { $bug_list_numb - 1 } ]
-    }
-    set bug_list_elem [ expr { $bug_list_elem + 1 } ]
-}
-
-set n [llength $l]
-set end [lindex $l [expr $n-1]]
-if { $start != $end } {
-    puts "Error : wrong number of translated shapes. It is ${end} instead of ${start}"
+regexp {List given by xst-transferrable-roots : Nb entities selected : +([-0-9+eE]+)} ${l} full start
+regexp {List given by xst-transferrable-roots : Nb entities selected : +([-0-9+eE]+)} ${l} full end
+puts "start = ${start}"
+puts "end = ${end}"
+if { ${start} == ${end} && ${start} == 19 } {
+  puts "BUC60685: OK"
+} else {
+  puts "Faulty : wrong number of translated shapes. It is ${end} instead of ${start}"
+  puts "BUC60685: Faulty"
 }
 
 set 2dviewer 0

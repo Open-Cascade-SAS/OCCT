@@ -31,7 +31,7 @@ package XSDRAW
 
 uses  TCollection, TColStd, TopTools,
       gp, Geom, Geom2d, TopoDS, MoniTool,
-      Interface, Transfer, IFSelect, XSControl, Draw, SWDRAW
+      Interface, Transfer, IFSelect, XSControl, Draw, SWDRAW, Message
 
 is
 
