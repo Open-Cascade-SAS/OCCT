@@ -25,6 +25,10 @@ if { [string compare $command "shading"] == 0 } {
     vinit
     vdisplay res
     vsetdispmode res 1
+    if { [info exists view_mode] } {
+	pload QAcommands
+	QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+    }
     vfit
 }
 
