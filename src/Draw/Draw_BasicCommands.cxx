@@ -25,19 +25,46 @@
 
 #include <Draw.ixx>
 #include <Draw_Appli.hxx>
+#include <Draw_Chronometer.hxx>
 #include <Draw_Printer.hxx>
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+
 #include <OSD_MemInfo.hxx>
+#include <OSD_MAllocHook.hxx>
+#include <OSD_Chronometer.hxx>
 #include <OSD.hxx>
 #include <OSD_Exception_CTRL_BREAK.hxx>
+
+#ifdef _WIN32
+
+#include <windows.h>
+#include <winbase.h>
+#include <process.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <limits>
+
+#define RLIM_INFINITY   0x7fffffff
+
+static clock_t CPU_CURRENT; // cpu time already used at last
+                            // cpulimit call. (sec.) 
+
+#else /* _WIN32 */
+
+#include <sys/resource.h>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
-#if defined(HAVE_TIME_H) || defined(WNT)
+#ifdef HAVE_STRINGS_H
+# include <strings.h>
+#endif
+
+#if defined(HAVE_TIME_H)
 # include <time.h>
 #endif
 
@@ -45,46 +72,20 @@
 # include <signal.h>
 #endif
 
-#ifndef WNT
-# include <sys/resource.h>
-# ifdef HAVE_STRINGS_H
-#  include <strings.h>
-# endif
-#else
-//WNT
-extern Standard_Boolean Draw_Batch;
-#include <windows.h>
-#include <winbase.h>
-#include <process.h>
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef HAVE_LIMITS 
-# include <limits>
-#elif defined (HAVE_LIMITS_H)
-# include <limits.h>
+#ifdef HAVE_SYS_SIGNAL_H
+# include <sys/signal.h>
 #endif
-
-#ifdef WNT
-# include <limits>
-#endif
-
-static clock_t MDTV_CPU_LIMIT;   // Cpu_limit in Sec.
-static clock_t MDTV_CPU_CURRENT; // cpu time already used at last
-                                 // cpulimit call. (sec.) 
-//#define strcasecmp strcmp Already defined
-#define RLIM_INFINITY   0x7fffffff
-#endif
-
-#include <Draw_Chronometer.hxx>
-#include <OSD_MAllocHook.hxx>
-#include <OSD_Chronometer.hxx>
 
 #if defined (__hpux) || defined ( HPUX )
 #define RLIM_INFINITY   0x7fffffff
 #define	RLIMIT_CPU	0
 #endif
 
+#endif /* _WIN32 */
 
+extern Standard_Boolean Draw_Batch;
+
+static clock_t CPU_LIMIT;   // Cpu_limit in Sec.
 
 //=======================================================================
 // chronom
@@ -400,7 +401,7 @@ static Standard_Integer Draw_wait(Draw_Interpretor& , Standard_Integer n, const 
 //function : cpulimit
 //purpose  : 
 //=======================================================================
-#ifdef WNT
+#ifdef _WIN32
 static unsigned int __stdcall CpuFunc (void * param)
 {
   clock_t aCurrent;
@@ -411,47 +412,41 @@ static unsigned int __stdcall CpuFunc (void * param)
     OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
     aCurrent = clock_t(anUserSeconds + aSystemSeconds);
     
-    if ((aCurrent - MDTV_CPU_CURRENT) >= MDTV_CPU_LIMIT)
+    if ((aCurrent - CPU_CURRENT) >= CPU_LIMIT)
     {
-      printf ("CpuFunc : Fin sur Cpu Limit \n");
+      cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
       ExitProcess (2);
       return 0;
     }
   }
   return 0;
 }
+#else
+static void CpuFunc (int)
+{
+  cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
+  exit(2);
+}
 #endif
 
 static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-#ifndef WNT
-  rlimit rlp;
-  rlp.rlim_max = RLIM_INFINITY;
-  if (n <= 1)
-    rlp.rlim_cur = RLIM_INFINITY;
-  else
-    rlp.rlim_cur = atoi(a[1]);
+#ifdef _WIN32
+  // Windows specific code
 
-  int status;
-  status=setrlimit(RLIMIT_CPU,&rlp);
-  if (status !=0)
-    di << "status cpulimit setrlimit : " << status << "\n";
-
-#else
-//WNT
   static int aFirst = 1;
 
   unsigned int __stdcall CpuFunc (void *);
   unsigned aThreadID;
 
   if (n <= 1)
-    MDTV_CPU_LIMIT = RLIM_INFINITY;
+    CPU_LIMIT = RLIM_INFINITY;
   else
   {
-    MDTV_CPU_LIMIT = atoi (a[1]);
+    CPU_LIMIT = atoi (a[1]);
     Standard_Real anUserSeconds, aSystemSeconds;
     OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
-    MDTV_CPU_CURRENT = clock_t(anUserSeconds + aSystemSeconds);
+    CPU_CURRENT = clock_t(anUserSeconds + aSystemSeconds);
 
     if (aFirst) // Launch the thread only at the 1st call.
     {
@@ -459,6 +454,29 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
       _beginthreadex (NULL, 0, CpuFunc, NULL, 0, &aThreadID);
     }
   }
+
+#else 
+
+  // Unix & Linux
+
+  rlimit rlp;
+  rlp.rlim_max = RLIM_INFINITY;
+  if (n <= 1)
+    rlp.rlim_cur = RLIM_INFINITY;
+  else
+    rlp.rlim_cur = atoi(a[1]);
+  CPU_LIMIT = rlp.rlim_cur;
+
+  int status;
+  status=setrlimit(RLIMIT_CPU,&rlp);
+  if (status !=0)
+    di << "status cpulimit setrlimit : " << status << "\n";
+
+  // set signal handler to print a message before death
+  struct sigaction act, oact;
+  memset (&act, 0, sizeof(act));
+  act.sa_handler = CpuFunc;
+  sigaction (SIGXCPU, &act, &oact);
 
 #endif
 
