@@ -49,6 +49,7 @@
 #include <math_Vector.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
+#include <NCollection_Handle.hxx>
 
 //======================================================================
 
@@ -775,11 +776,8 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 				      ,const Standard_Real DeltaU
 				      ,const Standard_Real DeltaV) {
 
-  gp_Vec2d Tan1,Tan2,Norm1,Norm2;
-  gp_Pnt2d P1,P2;
   Standard_Integer nbsamplesOnC1,nbsamplesOnC2;
   done = Standard_False;
-  Standard_Boolean AnErrorOccurred = Standard_False;
 
   if(NbIter>NBITER_MAX_POLYGON) return;
 
@@ -811,29 +809,30 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     }
   /////////////////////////////////////////////
 
-  IntCurve_ThePolygon2d *PtrPoly1,*PtrPoly2;
+  
+  NCollection_Handle<IntCurve_ThePolygon2d> aPoly1 ,aPoly2;
   if(nbsamplesOnC2 > nbsamplesOnC1) { 
-    PtrPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol);  
-    if(PtrPoly1->DeflectionOverEstimation() < TolConf) { 
-      PtrPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);
+    aPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol);  
+    if(aPoly1->DeflectionOverEstimation() < TolConf) { 
+      aPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);
     }
     else { 
-      PtrPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol,PtrPoly1->Bounding());
-      PtrPoly1->SetDeflectionOverEstimation( PtrPoly2->DeflectionOverEstimation()
-					    +PtrPoly1->DeflectionOverEstimation());
-      PtrPoly1->ComputeWithBox(C1,PtrPoly2->Bounding());
+      aPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol,aPoly1->Bounding());
+      aPoly1->SetDeflectionOverEstimation( aPoly2->DeflectionOverEstimation()
+					    + aPoly1->DeflectionOverEstimation());
+      aPoly1->ComputeWithBox(C1,aPoly2->Bounding());
     }
   }
   else { 
-    PtrPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);  
-    if(PtrPoly2->DeflectionOverEstimation() < TolConf) {
-      PtrPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol);
+    aPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);  
+    if(aPoly2->DeflectionOverEstimation() < TolConf) {
+      aPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol);
     }
     else { 
-      PtrPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol,PtrPoly2->Bounding());
-      PtrPoly2->SetDeflectionOverEstimation( PtrPoly2->DeflectionOverEstimation()
-					    +PtrPoly1->DeflectionOverEstimation());
-      PtrPoly2->ComputeWithBox(C2,PtrPoly1->Bounding());
+      aPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol,aPoly2->Bounding());
+      aPoly2->SetDeflectionOverEstimation( aPoly2->DeflectionOverEstimation()
+					    + aPoly1->DeflectionOverEstimation());
+      aPoly2->ComputeWithBox(C2,aPoly1->Bounding());
     }
   }
   //----------------------------------------------------------------------
@@ -842,13 +841,64 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   //-- (Detection des Zones de Tangence)
   //----------------------------------------------------------------------
 
-  if(PtrPoly1->DeflectionOverEstimation() < TolConf) { 
-    PtrPoly1->SetDeflectionOverEstimation(TolConf);
+  if(aPoly1->DeflectionOverEstimation() < TolConf) { 
+    aPoly1->SetDeflectionOverEstimation(TolConf);
   }
-  if(PtrPoly2->DeflectionOverEstimation() < TolConf) { 
-    PtrPoly2->SetDeflectionOverEstimation(TolConf);
+  if(aPoly2->DeflectionOverEstimation() < TolConf) { 
+    aPoly2->SetDeflectionOverEstimation(TolConf);
   }
-  Intf_InterferencePolygon2d InterPP(*PtrPoly1,*PtrPoly2);  
+  //for case when a few polygon points were replaced by line
+  //if exact solution was not found 
+  //then search of precise solution will be repeat 
+  //for polygon conatins all initial points
+  //secondary search will be performed only for case when initial points
+  //were dropped
+  Standard_Boolean isFullRepresentation = ( aPoly1->NbSegments() == nbsamplesOnC1 && 
+	    aPoly2->NbSegments() == nbsamplesOnC2 );
+  
+  if( !findIntersect( C1, D1, C2, D2, TolConf, Tol, NbIter,
+	  DeltaU, DeltaV, *aPoly1, *aPoly2, isFullRepresentation ) && !isFullRepresentation ) 
+  {
+	if(aPoly1->NbSegments() < nbsamplesOnC1)
+	{
+	  aPoly1 = new IntCurve_ThePolygon2d(C1,nbsamplesOnC1,D1,Tol);
+	}
+	if(aPoly2->NbSegments() < nbsamplesOnC2)
+	{
+	  aPoly2 = new IntCurve_ThePolygon2d(C2,nbsamplesOnC2,D2,Tol);
+	}
+	
+	findIntersect( C1, D1, C2, D2, TolConf, Tol, NbIter,
+	  DeltaU, DeltaV, *aPoly1, *aPoly2, 
+	  Standard_True);	
+	
+  }
+ 
+  done = Standard_True;
+}
+
+//======================================================================
+// Purpose :
+//======================================================================
+
+Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect( 
+    const TheCurve& C1,
+	const IntRes2d_Domain& D1,
+	const TheCurve& C2,
+	const IntRes2d_Domain& D2,
+	const Standard_Real TolConf,
+	const Standard_Real Tol,
+	const Standard_Integer NbIter,
+	const Standard_Real DeltaU,
+	const Standard_Real DeltaV,
+	const IntCurve_ThePolygon2d& thePoly1,
+	const IntCurve_ThePolygon2d& thePoly2,
+	Standard_Boolean isFullPolygon )
+{
+
+  gp_Vec2d Tan1,Tan2,Norm1,Norm2;
+  gp_Pnt2d P1,P2;
+  Intf_InterferencePolygon2d InterPP(thePoly1,thePoly2);  
   IntCurve_ExactIntersectionPoint  EIP(C1,C2,TolConf);
   Standard_Real U,V;
   
@@ -856,19 +906,21 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   //-- Traitement des SectionPoint 
   //----------------------------------------------------------------------
   Standard_Integer Nbsp = InterPP.NbSectionPoints();
+    
+  for(Standard_Integer sp=1; sp <= Nbsp; sp++) {
+	const Intf_SectionPoint& SPnt = InterPP.PntValue(sp);
+    Standard_Integer SegIndex1,SegIndex2;
+    Standard_Real    ParamOn1,ParamOn2;
+    Intf_PIType      Type;
 
-  if(Nbsp>=1) {
-    for(Standard_Integer sp=1; sp <= Nbsp; sp++) {
-      const Intf_SectionPoint& SPnt = InterPP.PntValue(sp);
-      Standard_Integer SegIndex1,SegIndex2;
-      Standard_Real    ParamOn1,ParamOn2;
-      Intf_PIType      Type;
-
-      SPnt.InfoFirst(Type,SegIndex1,ParamOn1);
-      SPnt.InfoSecond(Type,SegIndex2,ParamOn2);
-      EIP.Perform(*PtrPoly1,*PtrPoly2,SegIndex1,SegIndex2,ParamOn1,ParamOn2);
-      AnErrorOccurred = EIP.AnErrorOccurred();
-      if(EIP.NbRoots()>=1) { 
+    SPnt.InfoFirst(Type,SegIndex1,ParamOn1);
+    SPnt.InfoSecond(Type,SegIndex2,ParamOn2);
+    EIP.Perform(thePoly1,thePoly2,SegIndex1,SegIndex2,ParamOn1,ParamOn2);
+    //AnErrorOccurred = EIP.AnErrorOccurred();
+    if( !EIP.NbRoots() && !isFullPolygon)
+      return Standard_False;
+      
+     
 	//--------------------------------------------------------------------
 	//-- On verifie que le point trouve est bien une racine
 	//--------------------------------------------------------------------
@@ -925,11 +977,8 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 	  IntRes2d_IntersectionPoint IP(P1,U,V,Trans1,Trans2,Standard_False);
 	  Insert(IP);
 	}
-      } //-- if(EIP.NbRoots()>=1)
-    }
   }
   
-
   //----------------------------------------------------------------------
   //-- Traitement des TangentZone
   //----------------------------------------------------------------------
@@ -962,14 +1011,14 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
       Standard_Real _PolyUInf,_PolyVInf;
 
       SPnt1.InfoFirst(Type,SegIndex1onP1,ParamOnLine);
-      if(SegIndex1onP1 >= PtrPoly1->NbSegments()) { SegIndex1onP1--; ParamOnLine = 1.0; }
+      if(SegIndex1onP1 >= thePoly1.NbSegments()) { SegIndex1onP1--; ParamOnLine = 1.0; }
       if(SegIndex1onP1 <= 0) { SegIndex1onP1=1; ParamOnLine = 0.0; }
-      _PolyUInf = PtrPoly1->ApproxParamOnCurve(SegIndex1onP1,ParamOnLine);
+      _PolyUInf = thePoly1.ApproxParamOnCurve(SegIndex1onP1,ParamOnLine);
       
       SPnt1.InfoSecond(Type,SegIndex1onP2,ParamOnLine);
-      if(SegIndex1onP2 >= PtrPoly2->NbSegments()) { SegIndex1onP2--; ParamOnLine = 1.0; }
+      if(SegIndex1onP2 >= thePoly2.NbSegments()) { SegIndex1onP2--; ParamOnLine = 1.0; }
       if(SegIndex1onP2 <= 0) { SegIndex1onP2=1; ParamOnLine = 0.0; }
-      _PolyVInf = PtrPoly2->ApproxParamOnCurve(SegIndex1onP2,ParamOnLine);
+      _PolyVInf = thePoly2.ApproxParamOnCurve(SegIndex1onP2,ParamOnLine);
       
       //----------------------------------------------------------------------
 
@@ -997,8 +1046,8 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 
     
 
-    if(  (  (PtrPoly1->DeflectionOverEstimation() > TolConf)
-	    ||(PtrPoly2->DeflectionOverEstimation() > TolConf))
+    if(  (  (thePoly1.DeflectionOverEstimation() > TolConf)
+	    ||(thePoly2.DeflectionOverEstimation() > TolConf))
 	 &&(NbIter<NBITER_MAX_POLYGON)) {
       
       IntRes2d_Domain RecursD1( TheCurveTool::Value(C1,ParamInfOnCurve1)
@@ -1009,7 +1058,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 			       ,ParamInfOnCurve2,TolConf
 			       ,TheCurveTool::Value(C2,ParamSupOnCurve2)
 			       ,ParamSupOnCurve2,TolConf);
-      //-- On ne delete pas PtrPoly1(2) ,
+      //-- On ne delete pas thePoly1(2) ,
       //-- ils sont detruits enfin de fct. 
       //-- !! Pas de return intempestif !!
       Perform(C1,RecursD1,C2,RecursD2,Tol,TolConf,NbIter+1,DeltaU,DeltaV);
@@ -1125,9 +1174,6 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
       }
     }
   }
-  //----------------------------------------------------------------------
-  delete PtrPoly1;
-  delete PtrPoly2;
-  done = Standard_True;
+ return Standard_True;
 }
 

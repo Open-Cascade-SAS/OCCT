@@ -278,12 +278,15 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer intersect(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
+static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if( n < 2) 
+  {
+    cout<< "2dintersect curve curve [Tol]"<<endl;
     return 1;
-
-  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
+  }
+  Standard_Integer k = 1;
+  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[k++]);
   if ( C1.IsNull()) 
     return 1;
 
@@ -291,10 +294,16 @@ static Standard_Integer intersect(Draw_Interpretor& /*di*/, Standard_Integer n, 
   Geom2dAPI_InterCurveCurve Intersector;
 
   Handle(Geom2d_Curve) C2;
-  if ( n == 3) {
-    C2 = DrawTrSurf::GetCurve2d(a[2]);
+  if ( k < n ) {
+    C2 = DrawTrSurf::GetCurve2d(a[k++]);
     if ( C2.IsNull())
       return 1;
+  }
+  if(k < n)
+    Tol = atof(a[k]);
+
+  if(!C2.IsNull())
+  {
     Intersector.Init(C1,C2,Tol);
   }
   else {
@@ -305,6 +314,7 @@ static Standard_Integer intersect(Draw_Interpretor& /*di*/, Standard_Integer n, 
 
   for ( i = 1; i <= Intersector.NbPoints(); i++) {
     gp_Pnt2d P = Intersector.Point(i);
+    di<<"Intersection point "<<i<<" : "<<P.X()<<" "<<P.Y()<<"\n";
     Handle(Draw_Marker2D) mark = new Draw_Marker2D( P, Draw_X, Draw_vert); 
     dout << mark;
   }
@@ -312,15 +322,14 @@ static Standard_Integer intersect(Draw_Interpretor& /*di*/, Standard_Integer n, 
 
   Handle(Geom2d_Curve) S1,S2;
   Handle(DrawTrSurf_Curve2d) CD;
-  if ( n == 3) {
-    for ( i = 1; i <= Intersector.NbSegments(); i++) {
-      Intersector.Segment(i,S1,S2);
-      CD = new DrawTrSurf_Curve2d(S1, Draw_bleu, 30);
-      dout << CD;
-      CD = new DrawTrSurf_Curve2d(S2, Draw_violet, 30);
-      dout << CD;
-    }
+  for ( i = 1; i <= Intersector.NbSegments(); i++) {
+    Intersector.Segment(i,S1,S2);
+    CD = new DrawTrSurf_Curve2d(S1, Draw_bleu, 30);
+    dout << CD;
+    CD = new DrawTrSurf_Curve2d(S2, Draw_violet, 30);
+    dout << CD;
   }
+  
   dout.Flush();
 
   return 0;
@@ -353,6 +362,6 @@ void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
 
   g = "GEOMETRY intersections";
 
-  theCommands.Add("2dintersect", "intersect curve curve",__FILE__,
+  theCommands.Add("2dintersect", "intersect curve curve [Tol]",__FILE__,
 		  intersect,g);
 }
