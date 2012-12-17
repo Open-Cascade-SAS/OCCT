@@ -18,11 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-// Updated by DPF Fri Mar 21 18:40:58 1997
-//              Added casting in void to compile
-//              on AO1 int 32 bits -> pointer 64 bits ????
-// Robert Boehne 30 May 2000 : Dec Osf
-
 // include windows.h first to have all definitions available
 #ifdef WNT
 #include <windows.h>
@@ -1474,13 +1469,19 @@ void DrawWindow::Init(Standard_Integer theXLeft, Standard_Integer theYTop,
 
   // include decorations in the window dimensions
   // to reproduce same behaviour of Xlib window.
-  theXLeft   -= GetSystemMetrics(SM_CXSIZEFRAME);
-  theYTop    -= GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CYCAPTION);
-  theWidth   += 2 * GetSystemMetrics(SM_CXSIZEFRAME);
-  theHeight  += 2 * GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CYCAPTION);
+  DWORD aWinStyle   = GetWindowLongPtr (win, GWL_STYLE);
+  DWORD aWinStyleEx = GetWindowLongPtr (win, GWL_EXSTYLE);
+  HMENU aMenu       = GetMenu (win);
 
-  SetPosition (theXLeft, theYTop);
-  SetDimension (theWidth, theHeight);
+  RECT aRect;
+  aRect.top    = theYTop;
+  aRect.bottom = theYTop + theHeight;
+  aRect.left   = theXLeft;
+  aRect.right  = theXLeft + theWidth;
+  AdjustWindowRectEx (&aRect, aWinStyle, aMenu != NULL ? TRUE : FALSE, aWinStyleEx);
+
+  SetPosition  (aRect.left, aRect.top);
+  SetDimension (aRect.right - aRect.left, aRect.bottom - aRect.top);
   // Save the pointer at the instance associated to the window
   SetWindowLong(win, CLIENTWND, (LONG)this);
   HDC hDC = GetDC(win);

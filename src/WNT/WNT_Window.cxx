@@ -119,15 +119,18 @@ WNT_Window::WNT_Window (const Handle(WNT_GraphicDevice)& theDevice,
     dwStyle |= WS_CLIPCHILDREN;
   }
 
-  if (dwStyle & WS_OVERLAPPEDWINDOW)
-  {
-    // include decorations in the window dimensions
-    // to reproduce same behaviour of Xw_Window.
-    aXLeft   -= GetSystemMetrics(SM_CXSIZEFRAME);
-    aYTop    -= GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CYCAPTION);
-    aXRight  += GetSystemMetrics(SM_CXSIZEFRAME);
-    aYBottom += GetSystemMetrics(SM_CYSIZEFRAME);
-  }
+  // include decorations in the window dimensions
+  // to reproduce same behaviour of Xw_Window.
+  RECT aRect;
+  aRect.top    = aYTop;
+  aRect.bottom = aYBottom;
+  aRect.left   = aXLeft;
+  aRect.right  = aXRight;
+  AdjustWindowRect (&aRect, dwStyle, theMenu != NULL ? TRUE : FALSE);
+  aXLeft   = aRect.left;
+  aYTop    = aRect.top;
+  aXRight  = aRect.right;
+  aYBottom = aRect.bottom;
 
   myHWindow = CreateWindow (
               myWClass->Name(),                 // window's class name
@@ -198,15 +201,18 @@ WNT_Window::WNT_Window (const Handle(WNT_GraphicDevice)& theDevice,
     dwStyle |= WS_CLIPCHILDREN;
   }
 
-  if (dwStyle & WS_OVERLAPPEDWINDOW)
-  {
-    // include decorations in the window dimensions
-    // to reproduce same behaviour of Xw_Window.
-    aXLeft   -= GetSystemMetrics(SM_CXSIZEFRAME);
-    aYTop    -= GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CYCAPTION);
-    aXRight  += GetSystemMetrics(SM_CXSIZEFRAME);
-    aYBottom += GetSystemMetrics(SM_CYSIZEFRAME);
-  }
+  // include decorations in the window dimensions
+  // to reproduce same behaviour of Xw_Window.
+  RECT aRect;
+  aRect.top    = aYTop;
+  aRect.bottom = aYBottom;
+  aRect.left   = aXLeft;
+  aRect.right  = aXRight;
+  AdjustWindowRect (&aRect, dwStyle, theMenu != NULL ? TRUE : FALSE);
+  aXLeft   = aRect.left;
+  aYTop    = aRect.top;
+  aXRight  = aRect.right;
+  aYBottom = aRect.bottom;
 
   myHWindow = CreateWindow (
               myWClass->Name(),                 // window's class name
