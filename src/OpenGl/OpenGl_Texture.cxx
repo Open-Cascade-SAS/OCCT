@@ -18,6 +18,7 @@
 
 #include <OpenGl_Texture.hxx>
 
+#include <OpenGl_ExtFBO.hxx>
 #include <OpenGl_Context.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Standard_Assert.hxx>
@@ -357,7 +358,6 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       if (aWidth != aWidthOut || aHeight != aHeightOut)
       {
         // scale texture
-
         if (!aCopy.InitTrash (theImage.Format(), Standard_Size(aWidthOut), Standard_Size(aHeightOut))
           || gluScaleImage (aPixelFormat,
                             aWidth,    aHeight,    aDataType, theImage.Data(),
@@ -398,11 +398,42 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-      bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, aTextureFormat,
-                                          aWidth, aHeight,
-                                          aPixelFormat, aDataType, theImage.Data()) == 0;
-      Unbind (theCtx);
-      return isCreated;
+      if (theCtx->extFBO != NULL
+       && aWidth == aWidthOut && aHeight == aHeightOut)
+      {
+        // use proxy to check texture could be created or not
+        glTexImage2D (GL_PROXY_TEXTURE_2D, 0, aTextureFormat,
+                      aWidthOut, aHeightOut, 0,
+                      aPixelFormat, aDataType, NULL);
+        glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
+        glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
+        if (aTestWidth == 0 || aTestHeight == 0)
+        {
+          // no memory or broken input parameters
+          Unbind (theCtx);
+          return false;
+        }
+
+        // upload main picture
+        glTexImage2D (GL_TEXTURE_2D, 0, aTextureFormat,
+                      aWidthOut, aHeightOut, 0,
+                      aPixelFormat, aDataType, theImage.Data());
+
+        // generate mipmaps
+        //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+        theCtx->extFBO->glGenerateMipmapEXT (GL_TEXTURE_2D);
+
+        Unbind (theCtx);
+        return true;
+      }
+      else
+      {
+        bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, aTextureFormat,
+                                            aWidth, aHeight,
+                                            aPixelFormat, aDataType, theImage.Data()) == 0;
+        Unbind (theCtx);
+        return isCreated;
+      }
     }
     default:
     {

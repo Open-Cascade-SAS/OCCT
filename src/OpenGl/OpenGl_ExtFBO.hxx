@@ -1,6 +1,6 @@
 // Created on: 2012-01-26
 // Created by: Kirill GAVRILOV
-// Copyright (c) 2012-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,7 +16,6 @@
 // limitation, any warranties of merchantability, fitness for a particular
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
-
 
 #ifndef _OpenGl_ExtFBO_H__
 #define _OpenGl_ExtFBO_H__
@@ -37,6 +36,7 @@ struct OpenGl_ExtFBO
   PFNGLBINDRENDERBUFFEREXTPROC        glBindRenderbufferEXT;
   PFNGLRENDERBUFFERSTORAGEEXTPROC     glRenderbufferStorageEXT;
   PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
+  PFNGLGENERATEMIPMAPEXTPROC          glGenerateMipmapEXT;
 
 };
 

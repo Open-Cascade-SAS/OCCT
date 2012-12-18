@@ -575,7 +575,8 @@ void OpenGl_Context::init()
      || !FindProcShort (extFBO, glDeleteRenderbuffersEXT)
      || !FindProcShort (extFBO, glBindRenderbufferEXT)
      || !FindProcShort (extFBO, glRenderbufferStorageEXT)
-     || !FindProcShort (extFBO, glFramebufferRenderbufferEXT))
+     || !FindProcShort (extFBO, glFramebufferRenderbufferEXT)
+     || !FindProcShort (extFBO, glGenerateMipmapEXT))
     {
       delete extFBO;
       extFBO = NULL;
