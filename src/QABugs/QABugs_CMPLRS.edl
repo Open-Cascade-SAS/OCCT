@@ -23,7 +23,7 @@
 
 @uses "CSF.edl";
 @ifdefined( %CSF_TCL_INCLUDE ) then
-@string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE %CMPLRS_CXX_Options ;
+@string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE" -I"%CSF_TBB_INCLUDES %CMPLRS_CXX_Options ;
 @endif;
 
 @endif;

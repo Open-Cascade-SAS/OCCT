@@ -1169,7 +1169,7 @@ static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, cons
 }
 
 void QABugs::Commands_10(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add ("OCC426", "OCC426 shape1 shape2 shape3 shape4 shape5 shape6 [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC426, group);
 

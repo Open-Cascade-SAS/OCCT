@@ -429,7 +429,7 @@ static Standard_Integer OCC404bug (Draw_Interpretor& di, Standard_Integer argc, 
 }
 
 void QABugs::Commands_18(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add("BUC60851", "BUC60851", __FILE__, BUC60851, group);
   theCommands.Add("OCC216", "OCC216", __FILE__, OCC216, group);

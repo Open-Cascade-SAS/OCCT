@@ -145,7 +145,7 @@ static int BUC60627(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 }
 
 void QABugs::Commands_4(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add("BUC60738","BUC60738",__FILE__,BUC60738,group);
   theCommands.Add("BUC60606","BUC60606 name",__FILE__,BUC60606,group);

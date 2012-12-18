@@ -150,7 +150,7 @@ static Standard_Integer OCC137_z (Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 void QABugs::Commands_9(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add ("BUC60857", "BUC60857", __FILE__, BUC60857, group);
   theCommands.Add("OCC137","OCC137 mode [shape]",__FILE__,OCC137,group);

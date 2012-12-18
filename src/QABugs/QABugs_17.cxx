@@ -2252,7 +2252,7 @@ Standard_Integer OCC17480(Draw_Interpretor& di,   Standard_Integer n,   const ch
 }
 
 void QABugs::Commands_17(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add ("BUC60842", "BUC60842", __FILE__, BUC60842, group);
   theCommands.Add ("BUC60843", "BUC60843 result_shape name_of_circle name_of_curve [ par1 [ tol ] ]", __FILE__, BUC60843, group);

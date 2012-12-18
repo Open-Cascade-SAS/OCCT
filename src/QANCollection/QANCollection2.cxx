@@ -288,7 +288,7 @@ static Standard_Integer QANColTestSequence(Draw_Interpretor& di, Standard_Intege
 }
 
 void QANCollection::Commands2(Draw_Interpretor& theCommands) {
-  char *group = "QANCollection";
+  const char *group = "QANCollection";
 
   // from agvCollTest/src/CollectionEXE/FuncTestEXE.cxx
   theCommands.Add("QANColTestArray1",         "QANColTestArray1",         __FILE__, QANColTestArray1,         group);  

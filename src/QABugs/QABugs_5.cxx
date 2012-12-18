@@ -118,7 +118,7 @@ static Standard_Integer OCC5696 (Draw_Interpretor& di, Standard_Integer argc, co
 }
 
 void QABugs::Commands_5(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add ("OCC6001", "OCC6001 name curve/wire surface\n\t\tintersect curve by surface", 
                    __FILE__, OCC6001, group);

@@ -256,7 +256,7 @@ static Standard_Integer QANColCheckSparseArray(Draw_Interpretor& di, Standard_In
 }
 
 void QANCollection::Commands3(Draw_Interpretor& theCommands) {
-  char *group = "QANCollection";
+  const char *group = "QANCollection";
 
   // from agvCollTest/src/CollectionEXE/PerfTestEXE.cxx
   theCommands.Add("QANColPerfArray1",         "QANColPerfArray1 Repeat Size",         __FILE__, QANColPerfArray1,         group);  

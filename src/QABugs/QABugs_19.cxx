@@ -47,7 +47,6 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepAlgo_Cut.hxx>
 
-//static Standard_Integer OCC230 (Draw_Interpretor& /*di*/, Standard_Integer /*argc*/, const char ** /*argv*/)
 static Standard_Integer OCC230 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 4) {
@@ -148,13 +147,82 @@ static Standard_Integer OCC23237 (Draw_Interpretor& di, Standard_Integer /*argc*
   return 0;
 }
 
+#ifdef HAVE_TBB
+
+#include <Standard_Atomic.hxx>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
+
+class IncrementerDecrementer
+{
+public:
+    IncrementerDecrementer (Standard_Integer* theVal, Standard_Boolean thePositive) : myVal (theVal), myPositive (thePositive)
+    {}
+    void operator() (const tbb::blocked_range<size_t>& r) const
+    {
+        if (myPositive)
+            for (size_t i = r.begin(); i != r.end(); ++i)
+                Standard_Atomic_Increment (myVal);
+        else
+            for (size_t i = r.begin(); i != r.end(); ++i)
+                Standard_Atomic_Decrement (myVal);
+    }
+private:
+    Standard_Integer*   myVal;
+    Standard_Boolean   myPositive;
+};
+#endif
+
+#define QCOMPARE(val1, val2) \
+  di << "Checking " #val1 " == " #val2 << \
+        ((val1) == (val2) ? ": OK\n" : ": Error\n")
+
+#ifdef HAVE_TBB
+static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
+{
+  int aSum = 0;
+
+  //check returned value
+  QCOMPARE (Standard_Atomic_Decrement (&aSum), -1);
+  QCOMPARE (Standard_Atomic_Increment (&aSum), 0);
+  QCOMPARE (Standard_Atomic_Increment (&aSum), 1);
+  QCOMPARE (Standard_Atomic_Increment (&aSum), 2);
+//  QCOMPARE (Standard_Atomic_DecrementTest (&aSum), 0);
+//  QCOMPARE (Standard_Atomic_DecrementTest (&aSum), 1);
+
+  //check atomicity 
+  aSum = 0;
+  const int N = 1 << 24; //big enough to ensure concurrency
+
+  //increment
+  tbb::parallel_for (tbb::blocked_range<size_t> (0, N), IncrementerDecrementer (&aSum, true));
+  QCOMPARE (aSum, N);
+
+  //decrement
+  tbb::parallel_for (tbb::blocked_range<size_t> (0, N), IncrementerDecrementer (&aSum, false));
+  QCOMPARE (aSum, 0);
+
+  return 0;
+}
+
+#else /* HAVE_TBB */
+
+static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char **argv)
+{
+  di << "Test skipped: command " << argv[0] << " requires TBB library\n";
+  return 0;
+}
+
+#endif /* HAVE_TBB */
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add ("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
   theCommands.Add ("OCC142", "OCC142", __FILE__, OCC142, group);
   theCommands.Add ("OCC23361", "OCC23361", __FILE__, OCC23361, group);
-  theCommands.Add("OCC23237", "OCC23237", __FILE__, OCC23237, group); 
+  theCommands.Add ("OCC23237", "OCC23237", __FILE__, OCC23237, group); 
+  theCommands.Add ("OCC22980", "OCC22980", __FILE__, OCC22980, group);
 
   return;
 }

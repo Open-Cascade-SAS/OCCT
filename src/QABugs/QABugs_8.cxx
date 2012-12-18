@@ -259,7 +259,7 @@ static Standard_Integer OCC1651 (Draw_Interpretor& di, Standard_Integer argc, co
 }
 
 void QABugs::Commands_8(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   theCommands.Add("BUC60753", "BUC60753 mode ratio", __FILE__, BUC60753, group);
   theCommands.Add("OCC162", "OCC162 name", __FILE__, OCC162, group);

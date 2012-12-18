@@ -200,7 +200,7 @@ static Standard_Integer OCC1048 (Draw_Interpretor& di, Standard_Integer argc, co
 }
 
 void QABugs::Commands_2(Draw_Interpretor& theCommands) {
-  char *group = "QABugs";
+  const char *group = "QABugs";
 
   //theCommands.Add("OCC527", "OCC527 shape", __FILE__, OCC527, group);  
   theCommands.Add("OCC527", "OCC527 shape [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC527, group);  

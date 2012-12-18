@@ -17,29 +17,53 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-//! @file 
-//! Implementation of some atomic operations (elementary operations 
+//! @file
+//! Implementation of some atomic operations (elementary operations
 //! with data that cannot be interrupted by parallel threads in the
 //! multithread process) on various platforms
 //!
-//! By the moment, only operations necessary for reference counter 
+//! By the moment, only operations necessary for reference counter
 //! in Standard_Transient objects are implemented.
-//! 
+//!
 //! This is preffered to use fixed size types "int32_t" / "int64_t" for
 //! correct function declarations however we leave "int" assuming it is 32bits for now.
 
 #ifndef _Standard_Atomic_HeaderFile
 #define _Standard_Atomic_HeaderFile
 
-#include <Standard_Macro.hxx>
+//! Increments atomically integer variable pointed by theValue
+//! and returns resulting incremented value.
+inline int Standard_Atomic_Increment (volatile int* theValue);
 
-#if (defined(_WIN32) || defined(__WIN32__))
-extern "C" {
-  long _InterlockedIncrement(long volatile* lpAddend);
-  long _InterlockedDecrement(long volatile* lpAddend);
+//! Decrements atomically integer variable pointed by theValue
+//! and returns resulting decremented value.
+inline int Standard_Atomic_Decrement (volatile int* theValue);
+
+// Platform-dependent implementation
+#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
+// gcc explicitly defines the macros __GCC_HAVE_SYNC_COMPARE_AND_SWAP_*
+// starting with version 4.4+, although built-in functions
+// are available since 4.1.x. However unless __GCC_HAVE_SYNC_COMPARE_AND_SWAP_*
+// are defined, linking may fail without specifying -march option when
+// building for 32bit architecture on 64bit (using -m32 option). To avoid
+// making -march mandatory, check for __GCC_HAVE_SYNC_COMPARE_AND_SWAP_* is
+// enforced.
+
+int Standard_Atomic_Increment (volatile int* theValue)
+{
+  return __sync_add_and_fetch (theValue, 1);
 }
-#endif
+
+int Standard_Atomic_Decrement (volatile int* theValue)
+{
+  return __sync_sub_and_fetch (theValue, 1);
+}
+
+#elif defined(_WIN32) || defined(__WIN32__)
+extern "C" {
+  long _InterlockedIncrement (volatile long* lpAddend);
+  long _InterlockedDecrement (volatile long* lpAddend);
+}
 
 #if defined(_MSC_VER)
   // force intrinsic instead of WinAPI calls
@@ -47,74 +71,79 @@ extern "C" {
   #pragma intrinsic (_InterlockedDecrement)
 #endif
 
-//! Increments atomically integer variable pointed by theValue
-//! and returns resulting incremented value.
-static int Standard_Atomic_Increment (volatile int* theValue)
+// WinAPI function or MSVC intrinsic
+// Note that we safely cast int* to long*, as they have same size and endian-ness
+
+int Standard_Atomic_Increment (volatile int* theValue)
 {
-#ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
-  // mordern g++ compiler (gcc4.4+)
-  // built-in functions available for appropriate CPUs (at least -march=i486 should be specified on x86 platform)
-  return __sync_add_and_fetch (theValue, 1);
-#elif (defined(_WIN32) || defined(__WIN32__))
-  // WinAPI function or MSVC intrinsic
-  return _InterlockedIncrement(reinterpret_cast<long volatile*>(theValue));
-#elif defined(LIN)
-  // use x86 / x86_64 inline assembly (compatibility with alien compilers / old GCC)
-  int anIncResult;
-  __asm__ __volatile__ (
-  #if defined(_OCC64)
-    "lock xaddl %%ebx, (%%rax) \n\t"
-    "incl %%ebx                \n\t"
-    : "=b" (anIncResult)
-    : "a" (theValue), "b" (1)
-    : "cc", "memory");
-  #else
-    "lock xaddl %%eax, (%%ecx) \n\t"
-    "incl %%eax                \n\t"
-    : "=a" (anIncResult)
-    : "c" (theValue), "a" (1)
-    : "memory");
-  #endif
-  return anIncResult;
-#else
-  //#error "Atomic operation doesn't implemented for current platform!"
-  return ++(*theValue);
-#endif
+  return _InterlockedIncrement (reinterpret_cast<volatile long*>(theValue));
 }
 
-//! Decrements atomically integer variable pointed by theValue
-//! and returns resulting decremented value.
-static int Standard_Atomic_Decrement (volatile int* theValue)
+int Standard_Atomic_Decrement (volatile int* theValue)
 {
-#ifdef __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
-  // mordern g++ compiler (gcc4.4+)
-  // built-in functions available for appropriate CPUs (at least -march=i486 should be specified on x86 platform)
-  return __sync_sub_and_fetch (theValue, 1);
-#elif (defined(_WIN32) || defined(__WIN32__))
-  // WinAPI function or MSVC intrinsic
-  return _InterlockedDecrement(reinterpret_cast<long volatile*>(theValue));
-#elif defined(LIN)
-  // use x86 / x86_64 inline assembly (compatibility with alien compilers / old GCC)
-  int aDecResult;
-  __asm__ __volatile__ (
-  #if defined(_OCC64)
-    "lock xaddl %%ebx, (%%rax) \n\t"
-    "decl %%ebx                \n\t"
-    : "=b" (aDecResult)
-    : "a" (theValue), "b" (-1)
-    : "cc", "memory");
-  #else
-    "lock xaddl %%eax, (%%ecx) \n\t"
-    "decl %%eax                \n\t"
-    : "=a" (aDecResult)
-    : "c" (theValue), "a" (-1)
-    : "memory");
-  #endif
-  return aDecResult;
-#else
-  //#error "Atomic operation doesn't implemented for current platform!"
-  return --(*theValue);
-#endif
+  return _InterlockedDecrement (reinterpret_cast<volatile long*>(theValue));
 }
+
+#elif defined(__APPLE__)
+// use atomic operations provided by MacOS
+
+#include <libkern/OSAtomic.h>
+
+int Standard_Atomic_Increment (volatile int* theValue)
+{
+  return OSAtomicIncrement32Barrier (theValue);
+}
+
+int Standard_Atomic_Decrement (volatile int* theValue)
+{
+  return OSAtomicDecrement32Barrier (theValue);
+}
+
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64))
+// use x86 / x86_64 inline assembly (compatibility with alien compilers / old GCC)
+
+inline int Standard_Atomic_Add (volatile int* theValue, int theVal)
+{
+  // C equivalent:
+  // *theValue += theVal;
+  // return *theValue;
+
+  int previous;
+  __asm__ __volatile__
+  (
+    "lock xadd %0,%1"
+  : "=q"(previous), "=m"(*theValue) //output
+  : "0"(theVal), "m"(*theValue) //input
+  : "memory" //clobbers
+  );
+  return previous + theVal;
+}
+
+int Standard_Atomic_Increment (volatile int* theValue)
+{
+  return Standard_Atomic_Add (theValue, 1);
+}
+
+int Standard_Atomic_Decrement (volatile int* theValue)
+{
+  return Standard_Atomic_Add (theValue, -1);
+}
+
+#else
+
+#ifndef IGNORE_NO_ATOMICS
+  #error "Atomic operation isn't implemented for current platform!"
+#endif
+int Standard_Atomic_Increment (volatile int* theValue)
+{
+  return ++(*theValue);
+}
+
+int Standard_Atomic_Decrement (volatile int* theValue)
+{
+  return --(*theValue);
+}
+
+#endif
 
 #endif //_Standard_Atomic_HeaderFile
