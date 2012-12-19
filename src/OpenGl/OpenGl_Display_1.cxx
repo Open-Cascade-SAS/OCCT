@@ -556,7 +556,7 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
       (GLdouble*)projMatrix,
       (GLint*)viewport,
       &wx, &wy, &wz );
-    glLoadIdentity();
+
     gluUnProject( wx, wy, wz,
       (GLdouble*)identityMatrix, (GLdouble*)projMatrix, (GLint*)viewport,
       &x1, &y1 , &z1 );
@@ -569,9 +569,9 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
 
     h = (y2-y1)/h;
 
-    glTranslated( x1, y1 , z1 );
-    glRotated(aspect->Angle(), 0, 0, 1);
-    glTranslated(xdis, ydis, 0);
+    glLoadIdentity();
+    glTranslated (x1, y1 , z1);
+    glRotated (aspect->Angle(), 0, 0, 1);
 
     if( !aspect->IsZoomable() )
     {
@@ -597,6 +597,8 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
     {
       export_h = (float)h;
     }
+
+    glTranslated (xdis, ydis, 0);
   }
 
   GLint renderMode;
