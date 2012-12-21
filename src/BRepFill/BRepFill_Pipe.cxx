@@ -27,6 +27,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib_MakeVertex.hxx>
+#include <BRepTools_Substitution.hxx>
 
 #include <GeomFill_CorrectedFrenet.hxx>
 #include <GeomFill_CurveAndTrihedron.hxx>
@@ -44,6 +45,9 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopTools_DataMapOfShapeInteger.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
 
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -512,6 +516,9 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 	Handle(TopTools_HArray2OfShape) Aux, Somme;
 	Standard_Integer length;
         Standard_Integer ii, jj, kk;
+        const Standard_Integer aNbFaces    = myFaces->ColLength();
+        const Standard_Integer aNbEdges    = myEdges->ColLength();
+        const Standard_Integer aNbSections = mySections->ColLength();
 
 	Aux = MkSw.SubShape();
 	length = Aux->ColLength() + myFaces->ColLength(); 
@@ -526,7 +533,6 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 	    Somme->SetValue(ii, jj, Aux->Value(kk, jj));
 	}
 	myFaces = Somme;    
-       
 
 	Aux = MkSw.Sections();
 	length = Aux->ColLength() + mySections->ColLength(); 
@@ -554,7 +560,11 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 	       kk <=Aux->ColLength(); kk++, ii++)
 	    Somme->SetValue(ii, jj, Aux->Value(kk, jj));   
 	}
-	myEdges = Somme;	       
+
+	myEdges = Somme;
+
+        // Perform sharing faces
+        result = ShareFaces(result, aNbFaces, aNbEdges, aNbSections);
       }
     }
   }
@@ -770,4 +780,297 @@ void BRepFill_Pipe::DefineRealSegmax()
 
   if (mySegmax < RealSegmax)
     mySegmax = RealSegmax;
+}
+
+//=======================================================================
+//function : ShareFaces
+//purpose  : 
+//=======================================================================
+
+TopoDS_Shape BRepFill_Pipe::ShareFaces
+                (const TopoDS_Shape &theShape,
+                 const Standard_Integer theInitialFacesLen,
+                 const Standard_Integer theInitialEdgesLen,
+                 const Standard_Integer theInitialSectionsLen)
+{
+  TopoDS_Shape aResult = theShape;
+  // Check if there are shapes to be shared.
+  TopTools_DataMapOfShapeInteger aMapBndEdgeIndex;
+  TColStd_DataMapOfIntegerInteger aMapNewOldFIndex;
+  TColStd_DataMapOfIntegerInteger aMapNewOldEIndex;
+  TopTools_MapOfShape aMapUsedVtx;
+  TopExp_Explorer anExp;
+  Standard_Integer i;
+  Standard_Integer ii;
+  Standard_Integer jj;
+  BRep_Builder aBuilder;
+
+  // Check the first and last J index of myFaces.
+  for (i = 1; i <= 2; i++) {
+    // Compute jj index of faces.
+    if (i == 1) {
+      jj = 1;
+    } else {
+      jj == myFaces->RowLength();
+
+      if (jj == 1) {
+        break;
+      }
+    }
+
+    // Fill the map of boundary edges on initial faces.
+    for (ii = 1; ii <= theInitialFacesLen; ii++) {
+      anExp.Init(myFaces->Value(ii, jj), TopAbs_EDGE);
+  
+      for (; anExp.More(); anExp.Next()) {
+        if (aMapBndEdgeIndex.IsBound(anExp.Current())) {
+          // This is not boundary edge. Remove it.
+          aMapBndEdgeIndex.UnBind(anExp.Current());
+        } else {
+          // Add boundary edge.
+          aMapBndEdgeIndex.Bind(anExp.Current(), ii);
+        }
+      }
+    }
+
+    // Check if edges of newly created faces are shared with old ones.
+    for (ii = theInitialFacesLen + 1; ii <= myFaces->ColLength(); ii++) {
+      anExp.Init(myFaces->Value(ii, jj), TopAbs_EDGE);
+  
+      for (; anExp.More(); anExp.Next()) {
+        if (aMapBndEdgeIndex.IsBound(anExp.Current())) {
+          // This row should be replaced.
+          Standard_Integer anOldIndex = aMapBndEdgeIndex.Find(anExp.Current());
+
+          aMapNewOldFIndex.Bind(ii, anOldIndex);
+
+          // Find corresponding new and old edges indices.
+          TopoDS_Vertex aV[2];
+          TopExp::Vertices(TopoDS::Edge(anExp.Current()), aV[0], aV[1]);
+          Standard_Integer ie;
+          Standard_Integer je;
+          Standard_Integer indV;
+
+          // Compute jj index of edges.
+          if (i == 1) {
+            je = 1;
+          } else {
+            je == myEdges->RowLength();
+          }
+
+          Standard_Integer j;
+
+          for (j = 0; j < 2; j++) {
+            if (aMapUsedVtx.Contains(aV[j])) {
+              // This vertex is treated.
+              continue;
+            }
+  
+            // Find old index.
+            Standard_Integer iEOld = -1;
+            TopoDS_Vertex aVE[2];
+       
+            for (ie = 1; ie <= theInitialEdgesLen; ie++) {
+              const TopoDS_Shape &anEdge = myEdges->Value(ie, je);
+       
+              TopExp::Vertices(TopoDS::Edge(anEdge), aVE[0], aVE[1]);
+       
+              if (aV[j].IsSame(aVE[0]) || aV[j].IsSame(aVE[1])) {
+                iEOld = ie;
+                break;
+              }
+            }
+       
+            if (iEOld > 0) {
+              // Find new index.
+              for (ie = theInitialEdgesLen+1; ie <= myEdges->ColLength(); ie++) {
+                const TopoDS_Shape &anEdge = myEdges->Value(ie, je);
+       
+                TopExp::Vertices(TopoDS::Edge(anEdge), aVE[0], aVE[1]);
+       
+                if (aV[j].IsSame(aVE[0]) || aV[j].IsSame(aVE[1])) {
+                  // This row should be replaced.
+                  aMapNewOldEIndex.Bind(ie, iEOld);
+                  aMapUsedVtx.Add(aV[j]);
+                  break;
+                }
+              }
+            }
+          }
+
+          break;
+        }
+      }
+    }
+  }
+
+  if (!aMapNewOldFIndex.IsEmpty()) {
+    TColStd_DataMapIteratorOfDataMapOfIntegerInteger anIter(aMapNewOldFIndex);
+    TopTools_ListOfShape   aListShape;
+    BRepTools_Substitution aSubstitute;
+
+    for (; anIter.More(); anIter.Next()) {
+      const Standard_Integer aNewIndex  = anIter.Key();
+      const Standard_Integer anOldIndex = anIter.Value();
+
+      // Change new faces by old ones.
+      for (jj = 1; jj <= myFaces->RowLength(); jj++) {
+        const TopoDS_Shape &aNewFace  = myFaces->Value(aNewIndex, jj);
+        const TopoDS_Shape &anOldFace = myFaces->Value(anOldIndex, jj);
+
+        if (!aSubstitute.IsCopied(aNewFace)) {
+          aListShape.Append(anOldFace.Oriented(TopAbs_REVERSED));
+          aSubstitute.Substitute(aNewFace, aListShape);
+          aListShape.Clear();
+        }
+      }
+    }
+
+    // Change new edges by old ones.
+    for (anIter.Initialize(aMapNewOldEIndex); anIter.More(); anIter.Next()) {
+      const Standard_Integer aNewIndex  = anIter.Key();
+      const Standard_Integer anOldIndex = anIter.Value();
+
+      for (jj = 1; jj <= myEdges->RowLength(); jj++) {
+        const TopoDS_Shape &aNewEdge  = myEdges->Value(aNewIndex, jj);
+        const TopoDS_Shape &anOldEdge = myEdges->Value(anOldIndex, jj);
+
+        if (!aSubstitute.IsCopied(aNewEdge)) {
+          aListShape.Append(anOldEdge.Oriented(TopAbs_FORWARD));
+          aSubstitute.Substitute(aNewEdge, aListShape);
+          aListShape.Clear();
+
+          // Change new vertices by old ones.
+          TopoDS_Iterator aNewIt(aNewEdge);
+          TopoDS_Iterator anOldIt(anOldEdge);
+
+          for (; aNewIt.More() && anOldIt.More();
+                                  aNewIt.Next(), anOldIt.Next()) {
+            if (!aNewIt.Value().IsSame(anOldIt.Value())) {
+              if (!aSubstitute.IsCopied(aNewIt.Value())) {
+                aListShape.Append(anOldIt.Value().Oriented(TopAbs_FORWARD));
+                aSubstitute.Substitute(aNewIt.Value(), aListShape);
+                aListShape.Clear();
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Perform substitution.
+    aSubstitute.Build(aResult);
+
+    if (aSubstitute.IsCopied(aResult)) {
+      // Get copied shape.
+      const TopTools_ListOfShape& listSh = aSubstitute.Copy(aResult);
+
+      aResult = listSh.First();
+
+      // Update original faces with copied ones.
+      for (ii = theInitialFacesLen + 1; ii <= myFaces->ColLength(); ii++) {
+        for (jj = 1; jj <= myFaces->RowLength(); jj++) {
+          TopoDS_Shape anOldFace = myFaces->Value(ii, jj); // Copy
+
+          if (aSubstitute.IsCopied(anOldFace)) {
+            const TopTools_ListOfShape& aList = aSubstitute.Copy(anOldFace);
+
+            if(!aList.IsEmpty()) {
+              // Store copied face.
+              const TopoDS_Shape &aCopyFace = aList.First();
+              TopAbs_Orientation anOri = anOldFace.Orientation();
+              const Standard_Boolean isShared = aMapNewOldFIndex.IsBound(ii);
+
+              if (isShared) {
+                // Reverse the orientation for shared face.
+                anOri = TopAbs::Reverse(anOri);
+              }
+
+              myFaces->SetValue(ii, jj, aCopyFace.Oriented(anOri));
+
+              // Check if it is necessary to update PCurves on this face.
+              if (!isShared) {
+                TopoDS_Face anOldF = TopoDS::Face(anOldFace);
+                TopoDS_Face aCopyF = TopoDS::Face(aCopyFace);
+
+                anOldF.Orientation(TopAbs_FORWARD);
+                anExp.Init(anOldF, TopAbs_EDGE);
+
+                for (; anExp.More(); anExp.Next()) {
+                  const TopoDS_Shape &anOldEdge = anExp.Current();
+
+                  if (aSubstitute.IsCopied(anOldEdge)) {
+                    const TopTools_ListOfShape& aListE =
+                      aSubstitute.Copy(anOldEdge);
+
+                    if(!aListE.IsEmpty()) {
+                      // This edge is copied. Check if there is a PCurve
+                      // on the face.
+                      TopoDS_Edge aCopyE = TopoDS::Edge(aListE.First());
+                      Standard_Real aFirst;
+                      Standard_Real aLast;
+                      Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface
+                          (aCopyE, aCopyF, aFirst, aLast);
+
+                      if (aPCurve.IsNull()) {
+                        // There is no pcurve copy it from the old edge.
+                        TopoDS_Edge anOldE = TopoDS::Edge(anOldEdge);
+
+                        aPCurve = BRep_Tool::CurveOnSurface
+                          (anOldE, anOldF, aFirst, aLast);
+
+                        if (aPCurve.IsNull() == Standard_False) {
+                          // Update the shared edge with PCurve from new Face.
+                          Standard_Real aTol = Max(BRep_Tool::Tolerance(anOldE),
+                               BRep_Tool::Tolerance(aCopyE));
+
+                          aBuilder.UpdateEdge(aCopyE, aPCurve, aCopyF, aTol);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+	}
+      }
+
+      // Update new edges with shared ones.
+      for (ii = theInitialEdgesLen + 1; ii <= myEdges->ColLength(); ii++) {
+        for (jj = 1; jj <= myEdges->RowLength(); jj++) {
+          const TopoDS_Shape &aLocalShape = myEdges->Value(ii, jj);
+
+          if (aSubstitute.IsCopied(aLocalShape)) {
+            const TopTools_ListOfShape& aList = aSubstitute.Copy(aLocalShape);
+
+            if(!aList.IsEmpty()) {
+              const TopAbs_Orientation anOri = TopAbs_FORWARD;
+
+              myEdges->SetValue(ii, jj, aList.First().Oriented(anOri));
+            }
+          }
+        }
+      }
+
+      // Update new sections with shared ones.
+      for (ii = theInitialSectionsLen+1; ii <= mySections->ColLength(); ii++) {
+        for (jj = 1; jj <= mySections->RowLength(); jj++) {
+          const TopoDS_Shape &aLocalShape = mySections->Value(ii, jj);
+
+          if (aSubstitute.IsCopied(aLocalShape)) {
+            const TopTools_ListOfShape& aList = aSubstitute.Copy(aLocalShape);
+
+            if(!aList.IsEmpty()) {
+              const TopAbs_Orientation anOri = TopAbs_FORWARD;
+
+              mySections->SetValue(ii, jj, aList.First().Oriented(anOri));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return aResult;
 }
