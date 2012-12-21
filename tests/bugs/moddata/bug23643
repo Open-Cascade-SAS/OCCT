@@ -1,0 +1,29 @@
+puts "========================"
+puts "OCC23643"
+puts "========================"
+puts ""
+#######################################################################
+# Intersection algorithm produces B-Spline curve in case of coaxial cones
+#######################################################################
+
+restore [locate_data_file bug23643_qf3.brep] b
+
+explode b
+copy b_1 f1
+copy b_2 f2
+
+mksurface s1 f1
+mksurface s2 f2
+
+trim s1t s1 0 2*pi -18 10
+trim s2t s2 0 2*pi -18 10
+
+intersect result s1t s2t
+
+set log [dump result]
+
+if {[regexp {Trimmed +curve} ${log}]} {
+  puts "Intersection algorithm work OK"
+} else {
+  puts "Error: Intersection algorithm work bad"
+}
