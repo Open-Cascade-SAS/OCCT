@@ -150,6 +150,16 @@ is
     DefineRealSegmax(me : in out)
     is static private; 
     
+    ShareFaces(me: in out; theShape: Shape from TopoDS;
+                           theInitialFacesLen: Integer;
+                           theInitialEdgesLen: Integer;
+                           theInitialSectionsLen: Integer)
+	---Purpose: Performs sharing coincident faces in theShape. Also modifies
+	--          myFaces, mySections and myEdges to contain shared shapes.
+	--          Returns the shared shape. If theShape is not modified this
+	--          method returns it.
+    returns Shape from TopoDS
+    is static private; 
      
 fields
     mySpine   : Wire  from TopoDS;

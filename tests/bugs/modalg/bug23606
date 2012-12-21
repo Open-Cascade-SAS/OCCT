@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC23606"
+puts "============"
+puts ""
+#######################################################################
+# Invalid result of pipe operation
+#######################################################################
+
+restore [locate_data_file bug23606_base.brep] sh
+restore [locate_data_file bug23606_path.brep] w
+pipe result w sh
+set n [llength [explode result f]]
+if { ${n} != 10 } {
+  puts "Error : bad number of faces"
+}
+
+# Service parameters
+set mass -0.1
+set m -0.1
