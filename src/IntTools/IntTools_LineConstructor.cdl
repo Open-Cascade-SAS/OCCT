@@ -83,16 +83,21 @@ is
     	--- for given index of split
 	---
 
-    PeriodicLine(me; L: Line from IntPatch)
-    	is static private;
-
+    ---PeriodicLine(me; L: Line from IntPatch)
+    ---	is protected;
+ 
+    TreatCircle(me:out; 
+    	    aLine : Line from IntPatch; 
+    	    aTol: Real from Standard)
+    	is protected; 
+	
 fields
     
     done  : Boolean        from Standard;
     seqp  : SequenceOfReal from TColStd;
     myDom1: TopolTool      from Adaptor3d;
     myDom2: TopolTool      from Adaptor3d;
-    myHS1 : HSurface        from GeomAdaptor;
-    myHS2 : HSurface        from GeomAdaptor;    
+    myHS1 : HSurface       from GeomAdaptor;
+    myHS2 : HSurface       from GeomAdaptor;    
 
 end LineConstructor;

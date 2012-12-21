@@ -21,7 +21,7 @@
 
 #include <IntAna_ListOfCurve.hxx>
 #include <IntAna_ListIteratorOfListOfCurve.hxx>
-
+//
 static 
   Standard_Boolean ExploreCurve(const gp_Cylinder& aCy,
 				const gp_Cone& aCo,
@@ -324,11 +324,12 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
     {
       gp_Vec Tgt;
       gp_Pnt ptref;
-      IntPatch_Point pmult1;
-      IntPatch_Point pmult2;
+      IntPatch_Point pmult1, pmult2;
+      
       elipsol = inter.Ellipse(1);
-      gp_Pnt pttang1(ElCLib::Value(M_PI*0.5,elipsol));
-      gp_Pnt pttang2(ElCLib::Value(1.5*M_PI,elipsol));
+      
+      gp_Pnt pttang1(ElCLib::Value(0.5*M_PI, elipsol));
+      gp_Pnt pttang2(ElCLib::Value(1.5*M_PI, elipsol));
       
       Multpoint = Standard_True;
       pmult1.SetValue(pttang1,Tol,Standard_True);
@@ -344,8 +345,7 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       Quad1.Parameters(pttang2,oU1,oV1); 
       Quad2.Parameters(pttang2,oU2,oV2);
       pmult2.SetParameters(oU1,oV1,oU2,oV2);
-
-
+      
       // on traite la premiere ellipse
 
       //-- Calcul de la Transition de la ligne 
@@ -365,39 +365,53 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       //-- Transition calculee au point 0 -> Trans2 , Trans1 
       //-- car ici, on devarit calculer en PI
       Handle(IntPatch_GLine) glig = new IntPatch_GLine(elipsol,Standard_False,trans2,trans1);
-      pmult1.SetParameter(M_PI/2.);
+      //
+      {
+	Standard_Real aU1, aV1, aU2, aV2;
+	IntPatch_Point aIP;
+	gp_Pnt aP (ElCLib::Value(0., elipsol));
+	//
+	aIP.SetValue(aP,Tol,Standard_False);
+	aIP.SetMultiple(Standard_False);
+	//
+	Quad1.Parameters(aP, aU1, aV1); 
+	Quad2.Parameters(aP, aU2, aV2);
+	aIP.SetParameters(aU1, aV1, aU2, aV2);
+	//
+	aIP.SetParameter(0.);
+	glig->AddVertex(aIP);
+	glig->SetFirstPoint(1);
+	//
+	aIP.SetParameter(2.*M_PI);
+	glig->AddVertex(aIP);
+	glig->SetLastPoint(2);
+      }
+      //
+      pmult1.SetParameter(0.5*M_PI);
       glig->AddVertex(pmult1);
-      glig->SetFirstPoint(1);
+      //
       pmult2.SetParameter(1.5*M_PI);
       glig->AddVertex(pmult2);
-      glig->SetLastPoint(2);
+     
+      //
       slin.Append(glig);
       
       //-- Transitions calculee au point 0    OK
-      glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
-      pmult2.SetParameter(-M_PI/2.);
-      glig->AddVertex(pmult2);
-      glig->SetFirstPoint(1);
-      glig->AddVertex(pmult1);
-      glig->SetLastPoint(2);
-      slin.Append(glig);
-
-
+      //
       // on traite la deuxieme ellipse
-
       elipsol = inter.Ellipse(2);
 
       Standard_Real param1 = ElCLib::Parameter(elipsol,pttang1);
       Standard_Real param2 = ElCLib::Parameter(elipsol,pttang2);
       Standard_Real parampourtransition;
       if (param1 < param2) {
-	pmult1.SetParameter(M_PI*0.5);
+	pmult1.SetParameter(0.5*M_PI);
 	pmult2.SetParameter(1.5*M_PI);
 	parampourtransition = M_PI;
       }
       else {
-	pmult1.SetParameter(-M_PI*0.5);
-	pmult2.SetParameter(M_PI*0.5);
+	pmult1.SetParameter(1.5*M_PI);
+	pmult2.SetParameter(0.5*M_PI);
 	parampourtransition = 0.0;
       }
       
@@ -417,25 +431,31 @@ Standard_Boolean IntCyCy(const IntSurf_Quadric& Quad1,
       }
       //-- La transition a ete calculee sur un point de cette ligne 
       glig = new IntPatch_GLine(elipsol,Standard_False,trans1,trans2);
-      glig->AddVertex(pmult1);
-      glig->SetFirstPoint(1);
-      glig->AddVertex(pmult2);
-      glig->SetLastPoint(2);
-      slin.Append(glig);
-      
-      if (param1 < param2) {
-	pmult2.SetParameter(-M_PI*0.5);
+      //
+      {
+	Standard_Real aU1, aV1, aU2, aV2;
+	IntPatch_Point aIP;
+	gp_Pnt aP (ElCLib::Value(0., elipsol));
+	//
+	aIP.SetValue(aP,Tol,Standard_False);
+	aIP.SetMultiple(Standard_False);
+	//
+	Quad1.Parameters(aP, aU1, aV1); 
+	Quad2.Parameters(aP, aU2, aV2);
+	aIP.SetParameters(aU1, aV1, aU2, aV2);
+	//
+	aIP.SetParameter(0.);
+	glig->AddVertex(aIP);
+	glig->SetFirstPoint(1);
+	//
+	aIP.SetParameter(2.*M_PI);
+	glig->AddVertex(aIP);
+	glig->SetLastPoint(2);
       }
-      else {
-	pmult1.SetParameter(1.5*M_PI);
-      }
-      
-      //-- Sur l'autre ligne, on invertse la transition
-      glig = new IntPatch_GLine(elipsol,Standard_False,trans2,trans1);
-      glig->AddVertex(pmult2);
-      glig->SetFirstPoint(1);
+      //
       glig->AddVertex(pmult1);
-      glig->SetLastPoint(2);
+      glig->AddVertex(pmult2);
+      //
       slin.Append(glig);
     }
     break;
