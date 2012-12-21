@@ -1,6 +1,9 @@
 # Original bug : id160074
 # Date : 23 Nov 98
 
+puts "*"
+puts "TODO OCC23658 All:Error : The square of result shape is"
+
 restore [locate_data_file CFE900_id160gdu.rle] base
 restore [locate_data_file id160074_face1.brep] cont
 

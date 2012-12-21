@@ -225,43 +225,20 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     return;
   }// else if(typl == IntPatch_Walking)  {
   //
+  //-----------------------------------------------------------
   else if (typl != IntPatch_Restriction)  {
-    Standard_Boolean intrvtested;
-    Standard_Real u1,v1,u2,v2;
-    //
     seqp.Clear();
     //
     Handle(IntPatch_GLine)& GLine =  *((Handle(IntPatch_GLine) *)&L);
-    // reject micro circles, ellipses
-    switch (typl) {
-      case IntPatch_Circle: {
-	Standard_Real aR;
-	gp_Circ aCirc;
-	//
-	aCirc=GLine->Circle();
-	aR=aCirc.Radius();
-	if (aR<Tol) {
-	  done = Standard_True;
-	  return;
-	}
-	break;
-      }
-      case IntPatch_Ellipse: {
-	Standard_Real aR;
-	gp_Elips aEllipse;
-	//
-	aEllipse=GLine->Ellipse();
-	aR=aEllipse.MajorRadius();
-	if (aR<Tol) {
-	  done = Standard_True;
-	  return;
-	}
-	break;
-      }
-      default:
-	break;
+    //
+    if(typl == IntPatch_Circle || typl == IntPatch_Ellipse) { 
+      TreatCircle(L, Tol);
+      done=Standard_True;
+      return;
     }
-    //modified by NIZNHY-PKV Wed Nov 02 11:50:23 2011t
+    //----------------------------
+    Standard_Boolean intrvtested;
+    Standard_Real u1,v1,u2,v2;
     //
     nbvtx = GeomInt_LineTool::NbVertex(L);
     intrvtested = Standard_False;
@@ -272,30 +249,7 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 	intrvtested = Standard_True;
 	const Standard_Real pmid = (firstp+lastp)*0.5;
 	gp_Pnt Pmid;
-	//modified by NIZNHY-PKV Fri Nov 11 10:27:01 2011f
 	GLinePoint(typl, GLine, pmid, Pmid);
-	/*
-        switch (typl) {
-          case IntPatch_Lin:       
-	    Pmid = ElCLib::Value(pmid,GLine->Line()); 
-	    break;
-          case IntPatch_Circle:    
-	    Pmid = ElCLib::Value(pmid,GLine->Circle()); 
-	    break;
-          case IntPatch_Ellipse:   
-	    Pmid = ElCLib::Value(pmid,GLine->Ellipse()); 
-	    break;
-          case IntPatch_Hyperbola: 
-	    Pmid = ElCLib::Value(pmid,GLine->Hyperbola()); 
-	    break;
-          case IntPatch_Parabola:  
-	    Pmid = ElCLib::Value(pmid,GLine->Parabola()); 
-	    break;
-	  default:
-	    break;
-        }
-	*/
-	//modified by NIZNHY-PKV Fri Nov 11 12:25:40 2011t
 	//
 	Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
 	Recadre(myHS1,myHS2,u1,v1,u2,v2);
@@ -310,42 +264,6 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       }
     }
     //
-    if(typl == IntPatch_Circle || typl == IntPatch_Ellipse)    { 
-      firstp = GeomInt_LineTool::Vertex(L,nbvtx).ParameterOnLine();
-      lastp  = M_PI + M_PI + GeomInt_LineTool::Vertex(L,1).ParameterOnLine();
-      const Standard_Real cadrinf = GeomInt_LineTool::FirstParameter(L);
-      const Standard_Real cadrsup = GeomInt_LineTool::LastParameter(L);
-      Standard_Real acadr = (firstp+lastp)*0.5;
-      while(acadr < cadrinf) { 
-	acadr+=M_PI+M_PI; 
-      }
-      while(acadr > cadrsup) { 
-	acadr-=M_PI+M_PI; 
-      } 
-      if(acadr>=cadrinf && acadr<=cadrsup)      { 
-	if(Abs(firstp-lastp)>Precision::PConfusion())        {
-	  intrvtested = Standard_True;
-	  const Standard_Real pmid = (firstp+lastp)*0.5;
-	  gp_Pnt Pmid;
-	  if (typl == IntPatch_Circle) {
-	    Pmid = ElCLib::Value(pmid,GLine->Circle());
-	  }
-	  else {
-	    Pmid = ElCLib::Value(pmid,GLine->Ellipse());
-	  }
-	  Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
-	  Recadre(myHS1,myHS2,u1,v1,u2,v2);
-	  const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-	  if(in1 !=  TopAbs_OUT) { 
-	    const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-	    if(in2 != TopAbs_OUT) { 
-	      seqp.Append(firstp);
-	      seqp.Append(lastp);
-	    }
-	  }
-	}
-      }
-    }      
     if (!intrvtested) {
       // Keep a priori. A point 2d on each
       // surface is required to make the decision. Will be done in the caller
@@ -353,124 +271,9 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       seqp.Append(GeomInt_LineTool::LastParameter(L));
     }
     //
-    // Treatment Circles/Ellipses that are the results of intersection
-    // between Plane / (Cylinder, Sphere).
-    // In these cases the intersection curves can contain 
-    // a lot of 'vertices' on the curve that leads to a lot of parts 
-    // of the curve. Some adjacent parts can be united to the one part.
-    // 
-    Standard_Integer aNbParts;
-    //
-    aNbParts = seqp.Length()/2;
-    if (aNbParts > 1 && (typl == IntPatch_Circle || typl == IntPatch_Ellipse))  {
-      Standard_Boolean bCond, bPCS, bPCS1, bPCS2, bCC;
-      GeomAbs_SurfaceType aST1, aST2;
-      //
-      aST1 = myHS1->Surface().GetType();
-      aST2 = myHS2->Surface().GetType();
-      //
-      bPCS1=((aST1==GeomAbs_Plane) && (aST2==GeomAbs_Cylinder || aST2==GeomAbs_Sphere));
-      bPCS2=((aST2==GeomAbs_Plane) && (aST1==GeomAbs_Cylinder || aST1==GeomAbs_Sphere));
-      bPCS=(bPCS1 || bPCS2);
-      bCC=(aST1==GeomAbs_Cylinder && aST2==GeomAbs_Cylinder);
-      //
-      // ZZ
-      //modified by NIZNHY-PKV Fri Nov 11 10:13:58 2011f
-      Standard_Integer j, i1, i2;
-      Standard_Real aT, aU, aV;
-      Handle(GeomAdaptor_HSurface) aHS;
-      //
-      bCond=Standard_False;
-      //
-      if (bCC) {
-	bCond=Standard_True;
-      }
-      else if (bPCS) {
-	if ((aST1==GeomAbs_Sphere) || (aST2==GeomAbs_Sphere)) {
-	  if (aST1==GeomAbs_Sphere) {
-	    aHS=myHS1;
-	  }
-	  else if (aST2==GeomAbs_Sphere){
-	    aHS=myHS2;
-	  }
-	  //
-	  Standard_Integer aNbP;
-	  Standard_Real aHalfPI, aPPC;
-	  //
-	  bCond=Standard_True;
-	  //
-	  aNbP=seqp.Length();
-	  aPPC=Precision::PConfusion();
-	  aHalfPI=0.5*M_PI;
-	  i1=0;
-	  i2=0;
-	  //
-	  for (i=1; i<=aNbP; ++i) {
-	    gp_Pnt aP;
-	  //
-	    aT=seqp(i);
-	    GLinePoint(typl, GLine, aT, aP);
-	    Parameters(aHS, aP, aU, aV);
-	    if (aV<0.) {
-	      if (fabs(aV+aHalfPI) < aPPC) {
-		++i2;
-	      }
-	    }
-	    else {
-	      if (fabs(aV-aHalfPI) < aPPC) {
-		++i1;
-	      }
-	    }
-	  }
-	  if (i1==2 || i2==2) {
-	    bCond=Standard_False;
-	  }
-	} 
-      }// else if (bPCS1 || bPCS2) {
-      //modified by NIZNHY-PKV Fri Nov 11 10:14:00 2011t
-      //
-      if (bCond){
-	Standard_Integer i2, j2;
-	Standard_Real aFi, aLi, aFj, aLj, aF, aL;
-	TColStd_SequenceOfReal aSeq;
-	//
-	aFi=seqp(1);
-	aSeq.Append(aFi);
-	for (i=1; i<aNbParts; ++i) {
-	  j=i+1;
-	  i2=2*i;
-	  j2=2*j;
-	  //
-	  aFi=seqp(i2-1);
-	  aLi=seqp(i2);
-	  //
-	  aFj=seqp(j2-1);
-	  aLj=seqp(j2);
-	  //
-	  if (fabs (aFj-aLi) < Tol) {
-	    aL=aLj;
-	  }
-	  else {
-	    aL=aLi;
-	    aSeq.Append(aL);
-	    aF=aFj;
-	    aSeq.Append(aF);
-	  }
-	}
-	aSeq.Append(aLj);
-	//
-	seqp.Clear();
-	aNbParts=aSeq.Length();
-	for (i=1; i<=aNbParts; ++i) {
-	  aF=aSeq(i);
-	  seqp.Append(aF);
-	}
-      }
-    }
-    //
     done =Standard_True;
     return;
-  }// else if (typl != IntPatch_Restriction)  { 
+  } // else if (typl != IntPatch_Restriction)  { 
 
   done = Standard_False;
   seqp.Clear();
@@ -688,73 +491,6 @@ void IntTools_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
   }
   done = Standard_True;
 }
-
-
-//=======================================================================
-//function : PeriodicLine
-//purpose  : 
-//=======================================================================
-void IntTools_LineConstructor::PeriodicLine (const Handle(IntPatch_Line)& L) const
-{
-  const IntPatch_IType typl = L->ArcType();
-  if (typl != IntPatch_Circle && typl != IntPatch_Ellipse)
-    return;
-
-  const Standard_Real Tol = Precision::PConfusion();
-  Handle(IntPatch_GLine) glin = Handle(IntPatch_GLine)::DownCast(L);
-  Standard_Integer i,j,nbvtx = glin->NbVertex();
-  for (i=1; i<=nbvtx; i++)
-  {
-    IntPatch_Point thevtx = glin->Vertex(i);
-    const Standard_Real prm = thevtx.ParameterOnLine();
-    Standard_Boolean changevtx = Standard_False;
-    if (thevtx.IsOnDomS1() || thevtx.IsOnDomS2())
-    {
-      for (j=1; j<=nbvtx; j++)
-      {
-        if (j!=i)
-        {
-          const IntPatch_Point& thevtxbis = glin->Vertex(j);
-          const Standard_Real prmbis = thevtxbis.ParameterOnLine();
-          if (Abs(prm-prmbis) <= Tol)
-          {
-            Standard_Real u,v;
-            gp_Pnt2d p2d;
-            if (thevtx.IsOnDomS1() && thevtxbis.IsOnDomS1() &&
-                thevtxbis.TransitionLineArc1().TransitionType()==IntSurf_In)
-            {
-              p2d = thevtx.ArcOnS1()->Value(thevtx.ParameterOnArc1());
-              u = p2d.X(); v = p2d.Y();
-              p2d = thevtxbis.ArcOnS1()->Value(thevtxbis.ParameterOnArc1());
-              if (Abs(u-p2d.X()) > Tol || Abs(v-p2d.Y()) > Tol)
-              {
-                changevtx = Standard_True;
-                break;
-              }
-            }
-            if (thevtx.IsOnDomS2() && thevtxbis.IsOnDomS2() &&
-                thevtxbis.TransitionLineArc2().TransitionType()==IntSurf_In)
-            {
-              p2d = thevtx.ArcOnS2()->Value(thevtx.ParameterOnArc2());
-              u = p2d.X(); v = p2d.Y();
-              p2d = thevtxbis.ArcOnS2()->Value(thevtxbis.ParameterOnArc2());
-              if (Abs(u-p2d.X()) > Tol || Abs(v-p2d.Y()) > Tol)
-              {
-                changevtx = Standard_True;
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
-    if (changevtx) {
-      thevtx.SetParameter(prm + 2.*M_PI);
-      glin->Replace(i,thevtx);
-    }
-  }
-}
-//modified by NIZNHY-PKV Fri Nov 11 10:30:34 2011f
 //=======================================================================
 //function : Recadre
 //purpose  : 
@@ -855,33 +591,9 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
 		Standard_Real& U2,
 		Standard_Real& V2)
 {
-  //modified by NIZNHY-PKV Fri Nov 11 10:07:55 2011f
   Parameters(myHS1, Ptref, U1, V1);
   Parameters(myHS2, Ptref, U2, V2);
-  /*
-  IntSurf_Quadric quad1,quad2;
-  switch (myHS1->Surface().GetType())
-  {
-    case GeomAbs_Plane:    quad1.SetValue(myHS1->Surface().Plane()); break;
-    case GeomAbs_Cylinder: quad1.SetValue(myHS1->Surface().Cylinder()); break;
-    case GeomAbs_Cone:     quad1.SetValue(myHS1->Surface().Cone()); break;
-    case GeomAbs_Sphere:   quad1.SetValue(myHS1->Surface().Sphere()); break;
-    default: Standard_ConstructionError::Raise("IntTools_LineConstructor::Parameters");
-  }
-  switch (myHS2->Surface().GetType())
-  {
-    case GeomAbs_Plane:    quad2.SetValue(myHS2->Surface().Plane()); break;
-    case GeomAbs_Cylinder: quad2.SetValue(myHS2->Surface().Cylinder()); break;
-    case GeomAbs_Cone:     quad2.SetValue(myHS2->Surface().Cone()); break;
-    case GeomAbs_Sphere:   quad2.SetValue(myHS2->Surface().Sphere()); break;
-    default: Standard_ConstructionError::Raise("IntTools_LineConstructor::Parameters");
-  }
-  quad1.Parameters(Ptref,U1,V1);
-  quad2.Parameters(Ptref,U2,V2);
-  */
-  //modified by NIZNHY-PKV Fri Nov 11 10:08:38 2011t
 }
-//modified by NIZNHY-PKV Fri Nov 11 10:06:02 2011f
 //=======================================================================
 //function : Parameter
 //purpose  : 
@@ -941,4 +653,310 @@ void GLinePoint(const IntPatch_IType typl,
     Standard_ConstructionError::Raise("IntTools_LineConstructor::Parameters");
   }
 }
-//modified by NIZNHY-PKV Fri Nov 11 10:06:04 2011t
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//
+//=======================================================================
+//class    : IntTools_RealWithFlag
+//purpose  : 
+//=======================================================================
+class IntTools_RealWithFlag {
+ public:
+  IntTools_RealWithFlag() : 
+    myValue(-99.), myFlag(1) 
+  {
+  };
+  //
+  ~IntTools_RealWithFlag() {
+  };
+  //
+  void SetValue(const Standard_Real aT) {
+    myValue=aT;
+  };
+  //
+  Standard_Real Value() const {
+    return myValue;
+  }
+  //
+  void SetFlag(const Standard_Integer aFlag) {
+    myFlag=aFlag;
+  };
+  //
+  Standard_Integer Flag() const {
+    return myFlag;
+  }
+  //
+  Standard_Boolean operator < (const IntTools_RealWithFlag& aOther) {
+    return myValue<aOther.myValue;
+  }
+  //
+ protected:
+  Standard_Real myValue;
+  Standard_Integer myFlag;
+};
+//------------
+static 
+  void SortShell(const Standard_Integer, 
+		 IntTools_RealWithFlag *); 
+static
+  void RejectDuplicates(Standard_Integer& aNbVtx, 
+			IntTools_RealWithFlag *pVtx, 
+			Standard_Real aTolPrm);
+static
+  void RejectNearBeacons(Standard_Integer& aNbVtx, 
+			 IntTools_RealWithFlag *pVtx, 
+			 Standard_Real aTolPC1,
+			 const GeomAbs_SurfaceType aTS1,
+			 const GeomAbs_SurfaceType aTS2); 
+static
+  Standard_Real AdjustOnPeriod(const Standard_Real aTr,
+			       const Standard_Real aPeriod);
+
+static
+  Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
+				     const IntPatch_IType aType,
+				     const Standard_Real aTol3D);
+//
+//=======================================================================
+//function : TreatCircle
+//purpose  : 
+//=======================================================================
+void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
+					   const Standard_Real aTol)
+{  
+  Standard_Boolean bRejected;
+  IntPatch_IType aType;
+  //
+  aType=aLine->ArcType();
+  Handle(IntPatch_GLine)& aGLine=*((Handle(IntPatch_GLine) *)&aLine);
+  //
+  bRejected=RejectMicroCircle(aGLine, aType, aTol);
+  if (bRejected) {
+    return;
+  }
+  //----------------------------------------
+  Standard_Integer aNbVtx, aNbVtxWas, i;
+  Standard_Real aTolPC, aT, aT1, aT2, aTmid, aTwoPI, aTolPC1;
+  Standard_Real aU1, aV1, aU2, aV2;
+  TopAbs_State aIn1, aIn2;
+  GeomAbs_SurfaceType aTS1, aTS2;
+  gp_Pnt aPmid;
+  gp_Pnt2d aP2D;
+  IntTools_RealWithFlag *pVtx;
+  //-------------------------------------1
+  aTwoPI=M_PI+M_PI;
+  aTolPC=Precision::PConfusion();
+  aNbVtxWas=GeomInt_LineTool::NbVertex(aLine);
+  aNbVtx=aNbVtxWas+2;
+  //-------------------------------------2
+  aTS1=myHS1->GetType();
+  aTS2=myHS2->GetType();
+  //
+  // About the value aTolPC1=1000.*aTolPC,
+  // see IntPatch_GLine.cxx, line:398
+  // for more details;
+  aTolPC1=1000.*aTolPC; 
+  //-------------------------------------
+  //
+  pVtx=new IntTools_RealWithFlag [aNbVtx];
+  //
+  pVtx[0].SetValue(0.);
+  pVtx[1].SetValue(2.*M_PI);
+  //
+  for(i=1; i<=aNbVtxWas; ++i) {
+    aT=GeomInt_LineTool::Vertex(aLine, i).ParameterOnLine();
+    aT=AdjustOnPeriod(aT, aTwoPI);
+    pVtx[i+1].SetValue(aT);
+  }
+  //
+  SortShell(aNbVtx, pVtx);
+  //
+  RejectNearBeacons(aNbVtx, pVtx, aTolPC1, aTS1, aTS2);
+  //
+  RejectDuplicates(aNbVtx, pVtx, aTolPC);
+  //
+  for(i=0; i<aNbVtx-1; ++i) { 
+    aT1=pVtx[i].Value();
+    aT2=pVtx[i+1].Value();
+    aTmid=(aT1+aT2)*0.5;
+    GLinePoint(aType, aGLine, aTmid, aPmid);
+    //
+    Parameters(myHS1, myHS2, aPmid, aU1, aV1, aU2, aV2);
+    Recadre(myHS1, myHS2, aU1, aV1, aU2, aV2);
+    //
+    aP2D.SetCoord(aU1, aV1);
+    aIn1=myDom1->Classify(aP2D, aTol);
+    if(aIn1 !=  TopAbs_OUT) { 
+      aP2D.SetCoord(aU2, aV2);
+      aIn2=myDom2->Classify(aP2D, aTol);
+      if(aIn2 != TopAbs_OUT) { 
+	seqp.Append(aT1);
+	seqp.Append(aT2);
+      }
+    }
+  }
+  //
+  delete [] pVtx;
+}
+//=======================================================================
+//function : RejectNearBeacons
+//purpose  : Reject the thickenings near the beacon points (if exist)
+//           The gifts, made by sweep algo.  
+//           chl/930/B5 B8 C2 C5 E2 E5 E8 F2 G8 H2 H5 H8
+//=======================================================================
+void RejectNearBeacons(Standard_Integer& aNbVtx, 
+		       IntTools_RealWithFlag *pVtx, 
+		       Standard_Real aTolPC1,
+		       const GeomAbs_SurfaceType aTS1,
+		       const GeomAbs_SurfaceType aTS2) 
+{
+  Standard_Integer i, j, iBcn;
+  Standard_Real aT, aBcn[2];
+  //
+  if (aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Cylinder) {
+    aBcn[0]=0.5*M_PI;
+    aBcn[1]=1.5*M_PI;
+    //
+    for (j=0; j<2; ++j) {
+      iBcn=-1;
+      for(i=0; i<aNbVtx; ++i) {
+	aT=pVtx[i].Value();
+	if (aT==aBcn[j]) {
+	  iBcn=i;
+	  break;
+	}
+      }
+      //
+      if (iBcn<0) {
+	// The beacon is not found
+	continue;
+      }
+      //  
+      for(i=0; i<aNbVtx; ++i) {
+	if (i!=iBcn) {
+	  aT=pVtx[i].Value();
+	  if (fabs(aT-aBcn[j]) < aTolPC1) {
+	    pVtx[i].SetFlag(0);
+	  }
+	}
+      }
+    }// for (j=0; j<2; ++j) {
+    //------------------------------------------
+    j=0;
+    for(i=0; i<aNbVtx; ++i) {
+      if (pVtx[i].Flag()) {
+	pVtx[j]=pVtx[i];
+	++j;
+      }
+    }
+    aNbVtx=j;
+  }// if (aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Cylinder) {
+}
+
+//=======================================================================
+//function : RejectDuplicates
+//purpose  : 
+//=======================================================================
+void RejectDuplicates(Standard_Integer& aNbVtx, 
+		      IntTools_RealWithFlag *pVtx, 
+		      Standard_Real aTolPC) 
+{
+  Standard_Integer i, j;
+  Standard_Real dX, aT1, aT2; 
+  //
+  for(i=0; i<aNbVtx-1; ++i) {
+    aT2=pVtx[i+1].Value();
+    aT1=pVtx[i].Value();
+    dX=aT2-aT1;
+    if (dX<aTolPC) {
+      pVtx[i+1].SetFlag(0);
+    }
+  }
+  //
+  j=0;
+  for(i=0; i<aNbVtx; ++i) {
+    if (pVtx[i].Flag()) {
+      pVtx[j]=pVtx[i];
+      ++j;
+    }
+  }
+  aNbVtx=j;
+}
+//=======================================================================
+//function : AdjustOnPeriod
+//purpose  : 
+//=======================================================================
+Standard_Real AdjustOnPeriod(const Standard_Real aTr,
+			     const Standard_Real aPeriod)
+{
+  Standard_Integer k;
+  Standard_Real aT;
+  //
+  aT=aTr;
+  if (aT<0.) {
+    k=-(Standard_Integer)(aT/aPeriod)+1;
+    aT=aT+k*aPeriod;
+  }
+  //
+  if (!(aT>=0. && aT<=aPeriod)) {
+    k=(Standard_Integer)(aT/aPeriod);
+    aT=aT-k*aPeriod;
+  }
+  //
+  return aT;
+}
+//=======================================================================
+//function : RejectMicroCrcles
+//purpose  : 
+//=======================================================================
+Standard_Boolean RejectMicroCircle(const Handle(IntPatch_GLine)& aGLine,
+				   const IntPatch_IType aType,
+				   const Standard_Real aTol3D)
+{
+  Standard_Boolean bRet;
+  Standard_Real aR;
+  //
+  bRet=Standard_False;
+  //
+  if (aType==IntPatch_Circle) {
+    aR=aGLine->Circle().Radius();
+    bRet=(aR<aTol3D);
+  }
+  else if (aType==IntPatch_Ellipse) {
+    aR=aGLine->Ellipse().MajorRadius();
+    bRet=(aR<aTol3D);
+  }
+  return bRet;
+}
+//=======================================================================
+// function: SortShell
+// purpose : 
+//=======================================================================
+void SortShell(const Standard_Integer n, 
+	       IntTools_RealWithFlag *a) 
+{
+  Standard_Integer nd, i, j, l, d=1;
+  IntTools_RealWithFlag x;
+  //
+  while(d<=n) {
+    d*=2;
+  }
+  //
+  while (d) {
+    d=(d-1)/2;
+    //
+    nd=n-d;
+    for (i=0; i<nd; ++i) {
+      j=i;
+    m30:;
+      l=j+d;
+      if (a[l] < a[j]){
+        x=a[j];
+        a[j]=a[l];
+        a[l]=x;
+        j-=d;
+        if (j > -1) goto m30;
+      }//if (a[l] < a[j]){
+    }//for (i=0; i<nd; ++i) 
+  }//while (1)
+}
