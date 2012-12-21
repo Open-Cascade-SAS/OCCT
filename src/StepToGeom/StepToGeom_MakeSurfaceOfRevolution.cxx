@@ -57,7 +57,9 @@ Standard_Boolean StepToGeom_MakeSurfaceOfRevolution::Convert (const Handle(StepG
         if (rl.Distance(pc) < Precision::Confusion()) { //pc lies on A2
           const gp_Dir dirline = A.Direction();
           const gp_Dir norm = conic->Axis().Direction();
-          if( dirline.IsNormal(norm,Precision::Angular()) ) { //A2 lies on plane of circle
+          const gp_Dir xAxis = conic->XAxis().Direction();
+          //checking A2 lies on plane of circle
+          if( dirline.IsNormal(norm,Precision::Angular()) && (dirline.IsParallel(xAxis,Precision::Angular()) || C->IsKind(STANDARD_TYPE(Geom_Circle)))) { 
             //change parametrization for trimming
             gp_Ax2 axnew(pc,norm,dirline.Reversed());
             conic->SetPosition(axnew);

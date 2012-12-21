@@ -1,0 +1,60 @@
+puts "========================"
+puts "OCC23203"
+puts "========================"
+puts ""
+#######################################################################
+# STEP import produces wrong surface of revolution on ellipse
+#######################################################################
+
+ellipse e 0 0 0 0 -1 0 1 0 -1 10 5
+revsurf re e 0 0 0 0 0 1
+mkface f re 0 3 0 1
+newmodel
+
+set aFile ${imagedir}/bug23203.stp
+file delete ${aFile}
+if { [file exists ${aFile}] } {
+   puts "Error : There is old ${aFile} file."
+}
+
+stepwrite 0 f ${aFile}
+stepread ${aFile} res *
+file delete ${aFile}
+
+explode res_1 f
+mksurface ress1 res_1_1
+set log [dump ress1]
+
+if {[regexp {Trimmed +curve} ${log}]} {
+  puts "Error: bad basis curve"
+} else {
+  puts "OK: good basis curve"
+}
+
+regexp {XAxis  :([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} ${log} full XAxis1 XAxis2 XAxis3
+regexp {YAxis  :([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} ${log} full YAxis1 YAxis2 YAxis3
+
+set good_XAxis1 0.707106781186548
+set good_XAxis2 0
+set good_XAxis3 -0.707106781186548
+set good_YAxis1 0.707106781186548
+set good_YAxis2 0
+set good_YAxis3 0.707106781186548
+
+set Precision 1.e6
+
+if {[expr abs(${XAxis1} - ${good_XAxis1})] > ${Precision} ||
+    [expr abs(${XAxis2} - ${good_XAxis2})] > ${Precision} ||
+    [expr abs(${XAxis3} - ${good_XAxis3})] > ${Precision}} {
+  puts "Error : bad XAxis"
+} else {
+  puts "OK : good XAxis"
+}
+
+if {[expr abs(${YAxis1} - ${good_YAxis1})] > ${Precision} ||
+    [expr abs(${YAxis2} - ${good_YAxis2})] > ${Precision} ||
+    [expr abs(${YAxis3} - ${good_YAxis3})] > ${Precision}} {
+  puts "Error : bad YAxis"
+} else {
+  puts "OK : good YAxis"
+}
