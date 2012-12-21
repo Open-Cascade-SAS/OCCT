@@ -5,7 +5,7 @@ puts "========================"
 pload QAcommands
 
 restore [locate_data_file OCC397.brep] a 
-puts [checkshape a]
+checkshape a
 
 tclean a
 explode a f

@@ -5,7 +5,7 @@ puts "=========="
 puts ""
 
 restore [locate_data_file buc60649a.brep] a 
-puts [checkshape a]
+checkshape a
 
 set che [checkshape a rr]
 if { [regexp {OK} $che] != 1 } {

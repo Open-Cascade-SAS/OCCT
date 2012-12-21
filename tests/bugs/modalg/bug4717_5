@@ -1,0 +1,44 @@
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG"
+
+puts "============"
+puts "OCC4717"
+puts "============"
+puts ""
+######################################################
+# A regression of new Boolean Operations
+# (cfi/002/H3)
+######################################################
+
+dset SCALE1 10
+protect SCALE1
+
+box b -20 -20 -20 40 40 20
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 -pi/2 pi/2
+trotate w1 0 0 0 1 0 0 90
+wire w w1
+revol r w 0 0 0 0 0 1 360
+shape s So
+add r s
+trotate s b 0 0 0 1 1 0 -40
+trotate s b 0 0 0 0 0 1 -10
+tscale b 0 0 0 SCALE1
+tscale s 0 0 0 SCALE1
+
+bop s b
+boptuc result
+
+set square 680565
+set nb_info [nbshapes result]
+
+set nb_v_good 11
+set nb_e_good 16
+set nb_w_good 8
+set nb_f_good 7
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 45
+
+set 2dviewer 0

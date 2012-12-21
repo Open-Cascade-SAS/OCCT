@@ -7,10 +7,10 @@ puts ""
 pload QAcommands
 
 restore [locate_data_file buc60868.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 BUC60868 result sh
-puts [checkshape result]
+checkshape result
 
 set len [llength [explode result w]]
 if { $len != 3 } {

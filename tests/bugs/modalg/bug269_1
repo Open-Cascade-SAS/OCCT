@@ -2,7 +2,7 @@
 puts "======== OCC269 ========"
 
 restore [locate_data_file OCC269-1.brep] result
-puts [checkshape result]
+checkshape result
 isos result 0
 tclean result
 

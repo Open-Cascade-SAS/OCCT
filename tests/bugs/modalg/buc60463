@@ -8,9 +8,9 @@ puts "Section"
 puts ""
 cpulimit 1400
 restore [locate_data_file buc60463a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file buc60463b.brep] b
-puts [checkshape b]
+checkshape b
 bsection result a b
 
 regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full cs

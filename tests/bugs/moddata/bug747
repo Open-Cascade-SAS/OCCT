@@ -1,0 +1,20 @@
+
+puts "========"
+puts "OCC747"
+puts "========"
+puts ""
+###############################
+## Exception in DRAW-command "distmini"
+###############################
+
+restore [locate_data_file OCC747_1.brep] s1 
+checkshape s1
+restore [locate_data_file OCC747_2.brep] s2 
+checkshape s2
+
+if { [catch { distmini result s1 s2 } status] } {
+    puts "Faulty OCC747"
+} else {
+    puts "OCC747 OK"
+}
+

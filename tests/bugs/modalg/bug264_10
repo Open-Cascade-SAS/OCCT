@@ -7,7 +7,7 @@ puts " (case 10)"
 puts "========"
 
 restore [locate_data_file OCC264_10.brep] result
-puts [checkshape result]
+checkshape result
 
 tclean result
 vinit

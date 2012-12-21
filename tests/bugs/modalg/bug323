@@ -29,7 +29,7 @@ if { [regexp {Faulty} $che ] == 1 } {
 }
 
 bsection r f_1 f_2
-puts [checkshape r]
+checkshape r
 puts [checksection r]
 
 decho off

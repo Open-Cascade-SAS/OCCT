@@ -7,10 +7,10 @@ puts "The helical pipe is not shaded in AISViewer"
 #####
 
 restore [locate_data_file OCC358a.brep] f 
-puts [checkshape f]
+checkshape f
 
 restore [locate_data_file OCC358b.brep] w
-puts [checkshape w]
+checkshape w
 
 pipe result w f
 

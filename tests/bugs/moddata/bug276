@@ -11,7 +11,7 @@ restore [locate_data_file OCC276.brep] result
 dchrono h2 reset
 dchrono h2 start
 
-puts [checkshape result]
+checkshape result
 
 dchrono h2 stop
 set q2 [ dchrono h2 show ]

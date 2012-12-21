@@ -1,0 +1,9 @@
+puts "==========="
+puts "BUC60818"
+puts "==========="
+
+vinit
+BUC60818
+
+set only_screen 1
+

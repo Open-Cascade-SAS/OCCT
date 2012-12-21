@@ -7,7 +7,7 @@ puts ""
 pload QAcommands
 
 restore [locate_data_file BUC60848.brep] a 
-puts [checkshape a]
+checkshape a
 
 tcopy a res
 

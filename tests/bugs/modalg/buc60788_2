@@ -10,9 +10,9 @@ puts "========"
 #restore Cut_Solid_Case2.brep S2
 
 restore [locate_data_file buc60788e.brep] S1 
-puts [checkshape S1]
+checkshape S1
 restore [locate_data_file buc60787d.brep] S2
-puts [checkshape S2]
+checkshape S2
 
 bcut result S1 S2
 

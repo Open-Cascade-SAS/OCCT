@@ -13,6 +13,6 @@ checkshape a_4
 fixshape result a 0.01 0.01
 explode result f
 
-puts [checkshape result_4]
+checkshape result_4
 set 2dviewer 1
 

@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC725"
+puts "============"
+puts ""
+###########################################################
+## Storing all free vertices of STEP into one SHAPE_DEFINITION_REPRESENTATION
+######################################################################
+
+set file2 ${imagedir}/OCC725.stp
+
+stepread [locate_data_file OCC725.stp] a *
+
+set len [nbshapes a_1]
+regexp {VERTEX +: +([-0-9.+eE]+)} $len full VERTEX1
+
+stepwrite a a_1 $file2
+
+stepread $file2 b *
+
+set len [nbshapes b_1]
+regexp {VERTEX +: +([-0-9.+eE]+)} $len full VERTEX2
+
+if { ${VERTEX1} != ${VERTEX2} } {
+    puts "Faulty OCC725"
+}
+

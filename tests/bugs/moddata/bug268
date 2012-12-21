@@ -8,7 +8,7 @@ puts ""
 ###########################################################
 
 restore [locate_data_file OCC268.brep] result 
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set length 56.6039

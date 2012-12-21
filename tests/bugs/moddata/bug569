@@ -1,0 +1,33 @@
+puts "TODO OCC12345 ALL: Faulty OCC569: function intersection works wrongly with trimmed plane and cone surfaces"
+
+puts "========"
+puts "OCC569"
+puts "========"
+puts ""
+##################################
+## Can not intersect trimmed plane and cone surfaces 
+##################################
+
+restore [locate_data_file OCC569a.draw] s1 
+restore [locate_data_file OCC569b.draw] s2 
+
+if { [catch {intersect result s1 s2 } catch_result] } {
+    puts "Faulty OCC569 exception: function intersection works wrongly with trimmed plane and cone surfaces "
+} else {
+    set nom 0
+    set j 1
+    repeat 10 {
+	set err [lindex [whatis result_$j] 5]
+	if { $err != "curve"} {
+	    break
+	} else {
+	    set nom [expr $nom + 1]
+	}
+	incr j
+    }
+    if { $nom == 0} {
+	puts "Faulty OCC569: function intersection works wrongly with trimmed plane and cone surfaces"
+    } else {
+	puts "OCC569 OK: function intersection works with trimmed plane and cone surfaces"
+    }
+}

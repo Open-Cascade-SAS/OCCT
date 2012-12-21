@@ -8,9 +8,9 @@ puts ""
 #############################################################
 
 restore [locate_data_file pro19422c.brep] shape 
-puts [checkshape shape]
+checkshape shape
 restore [locate_data_file pro19422d.brep] tool
-puts [checkshape tool]
+checkshape tool
 
 bcut result shape tool
 

@@ -9,9 +9,9 @@ puts "It takes visual check for this BUG"
 puts "=================================="
 
 restore [locate_data_file pro19653a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file pro19653b.brep] b
-puts [checkshape b]
+checkshape b
 bsection result a b
 
 explode result e

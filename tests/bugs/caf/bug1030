@@ -1,0 +1,94 @@
+puts "================"
+puts "OCC1030"
+puts "================"
+#
+# Note:   Numerical control of setting color
+#
+
+pload QAcommands
+
+NewDocument D MDTV-Standard
+UndoLimit D 100
+NewCommand D
+
+# Set NamedShape attribute
+box aBox1 100 200 300
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${aLabel} NS
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${aLabel}
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1030_AISColor D ${aLabel}]
+set AISColor1 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Set a color of the shape as NOC_GREEN
+set GreenColor 229
+AISColor D ${aLabel} ${GreenColor}
+
+set list [OCC1030_AISColor D ${aLabel}]
+set AISColor2 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Close/Open transaction
+NewCommand D
+
+# Undo
+Undo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1030_AISColor D ${aLabel}]
+set AISColor3 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Redo
+Redo D
+
+# Update the viewer
+AISRepaint D
+
+set list [OCC1030_AISColor D ${aLabel}]
+set AISColor4 [lindex ${list} [expr [llength ${list}] - 1] ]
+
+# Check the color
+puts "AISColor1 = ${AISColor1}"
+puts "AISColor2 = ${AISColor2}"
+puts "AISColor3 = ${AISColor3}"
+puts "AISColor4 = ${AISColor4}"
+
+set DefaultAISColor 516
+set status 0
+if { ${AISColor1} != ${DefaultAISColor} } {
+	puts "OCC1030_AISColor command: Error (case 1)"
+	set status 1
+}
+
+if { ${AISColor2} != ${GreenColor} } {
+	puts "OCC1030_AISColor command: Error (case 2)"
+	set status 1
+}
+
+if { ${AISColor3} != ${DefaultAISColor} } {
+	puts "OCC1030_AISColor command: Error (case 3)"
+	set status 1
+}
+
+if { ${AISColor4} != ${GreenColor} } {
+	puts "OCC1030_AISColor command: Error (case 4)"
+	set status 1
+}
+
+if { ${status} == 0} {
+	puts "OCC1030_AISColor command: OK"
+}
+
+

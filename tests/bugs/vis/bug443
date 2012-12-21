@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC443"
+puts "========"
+puts ""
+###############################################################
+##"Fit all view" ives not centered picture during fitting the view (SAM024).
+###############################################################
+
+restore [locate_data_file OCC443.brep] result
+
+vinit
+vdisplay result
+vfit
+
+set x_coord 31
+set y_coord 304
+
+QAUpdateLights
+
+checkcolor $x_coord $y_coord 0 0 0
+
+set only_screen 1

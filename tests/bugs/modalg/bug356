@@ -8,7 +8,7 @@ puts ""
 #######################################################
 
 restore [locate_data_file OCC356.brep] result
-puts [checkshape result]
+checkshape result
 
 explode result w
 

@@ -16,10 +16,10 @@ puts "=================================="
 #  The Case chl/902/F3 should be removed or rewritten:
 
 restore [locate_data_file buc60712a.brep] a 
-puts [checkshape a]
+checkshape a
 
 restore [locate_data_file buc60712b.brep] b
-puts [checkshape b]
+checkshape b
 
 # Recompute "a" shape
 explode a f

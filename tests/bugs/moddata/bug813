@@ -1,0 +1,24 @@
+pload QAcommands
+
+puts "========="
+puts " OCC813 "
+puts "========="
+puts ""
+#####################################
+## Geom2dGcc_Lin2d2Tan fails on point and ellipse
+#####################################
+set U 200
+set V 200
+
+set result [OCC813 $U $V]
+
+set nb_sol 0
+
+regexp {nb of solutions = ([-0-9.+eE]+)} $result full nb_sol
+
+if {$nb_sol > 0} {
+    puts "OCC813 OK"
+} else {
+    puts "Faulty OCC813"
+}
+

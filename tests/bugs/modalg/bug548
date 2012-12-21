@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC548"
+puts "OCC628"
+puts "========"
+puts ""
+##################################################################
+# Function BRepTool::IsClosed returns Standard_True although argument is open shell
+# Incorrect work of BRepCheck 
+##################################################################
+
+pload XDE
+catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
+
+restore [locate_data_file CTO908_topo103-t.brep] a 
+
+decho off
+
+checkshape a
+checkshape a b
+
+decho on
+
+fixshape result a 0.001
+
+set che [checkshape result c]
+if { [regexp {problems} $che] } {
+   puts "Faulty OCC628"
+}
+
+set square 119630
+set 2dviewer 2

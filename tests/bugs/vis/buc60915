@@ -1,0 +1,31 @@
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+   puts "TODO OCC12345 ALL: An exception was caught"
+   puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+   puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+}
+
+puts "==========="
+puts "BUC60915"
+puts "==========="
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+vinit
+BUC60915
+
+set x_coord 300
+set y_coord 164
+
+checkcolor $x_coord $y_coord 0.51 0.98 0
+
+if {$stat != 1} {
+   puts "Error : Cannot set the arrow size when using AIS_LengthDimension or AIS_RadiusDimensin."
+}
+
+set only_screen 1
+
+

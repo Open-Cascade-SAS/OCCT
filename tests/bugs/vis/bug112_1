@@ -4,7 +4,7 @@ puts " OCC112 "
 puts "========================"
 
 restore [locate_data_file OCC20.brep] res
-puts [checkshape res]
+checkshape res
 
 set first [trinfo res]
 tclean res

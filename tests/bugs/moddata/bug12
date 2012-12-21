@@ -5,7 +5,7 @@ puts "================"
 puts ""
 
 restore [locate_data_file OCC12.brep] f 
-puts [checkshape f]
+checkshape f
 
 mksurface su f
 clpoles su

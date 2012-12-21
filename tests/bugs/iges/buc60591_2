@@ -13,7 +13,7 @@ igesbrep [locate_data_file buc60591b.igs] a *
 
 tpcompound buc60591b
 
-puts [checkshape buc60591b r]
+checkshape buc60591b r
 
 ######################################################################
 
@@ -30,11 +30,11 @@ dall
 
 igesbrep ${imagedir}/buc60591b_brep.igs b_brep_iges *
 tpcompound buc60591b_brep_iges
-puts [checkshape buc60591b_brep_iges]
+checkshape buc60591b_brep_iges
 
 igesbrep ${imagedir}/buc60591b_iges.igs b_iges *
 tpcompound buc60591b_iges
-puts [checkshape buc60591b_iges]
+checkshape buc60591b_iges
 
 renamevar buc60591b_iges result
 

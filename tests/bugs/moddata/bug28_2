@@ -9,11 +9,11 @@ puts "Bug is limitation on currently version of topology (07.06.2002)."
 cpulimit 1200
 restore [locate_data_file OCC28.brep] a 
 explode a
-puts [checkshape a_1]
-puts [checkshape a_2]
+checkshape a_1
+checkshape a_2
 
 bfuse result a_2 a_1
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 483935

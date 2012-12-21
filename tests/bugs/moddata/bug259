@@ -14,7 +14,7 @@ box b2 -r -r 0 2*r 2*r 2
 trotate b2 0 0 0 0 0 1 135
 
 bfuse result b2 b1
-puts [checkshape -top result]
+checkshape -top result
 
 set check_square 1
 set square 18.8496

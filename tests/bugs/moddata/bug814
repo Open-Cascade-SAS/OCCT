@@ -1,0 +1,23 @@
+pload QAcommands
+
+puts "========="
+puts " OCC814 "
+puts "========="
+puts ""
+####################################
+## Geom2dGcc_Lin2d2Tan fails on circle and ellipse
+####################################
+
+set result [OCC814]
+
+set nb_sol 0
+
+regexp {nb of solutions = ([-0-9.+eE]+)} $result full nb_sol
+
+if {$nb_sol > 0} {
+    puts "OCC814 OK"
+} else {
+    puts "Faulty OCC814"
+}
+
+

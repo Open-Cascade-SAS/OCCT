@@ -10,9 +10,9 @@ puts "====================================="
 puts ""
 
 restore [locate_data_file buc60663a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file buc60663b.brep] b
-puts [checkshape b]
+checkshape b
 
 bsection result a b
 

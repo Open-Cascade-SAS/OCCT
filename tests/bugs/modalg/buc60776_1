@@ -4,9 +4,9 @@ puts "BUC60776"
 puts "========================"
 
 restore [locate_data_file buc60776a.brep] a
-puts [checkshape a]
+checkshape a
 restore [locate_data_file buc60776b.brep] b
-puts [checkshape b]
+checkshape b
 bfuse result a b
 
 set square 60771.3

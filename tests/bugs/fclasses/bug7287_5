@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC7287"
+puts "============"
+puts ""
+######################################################
+# Problem of Memory Leak
+######################################################
+
+#
+# Result is not Null shape
+#
+
+set BugNumber OCC7287
+
+set NCycles 1000
+box b1 10 10 10 100 100 100
+box b2 50 50 50
+bop b1 b2
+
+for {set i 1} {${i} <= ${NCycles}} {incr i } {
+    bopfuse r
+
+    lappend listmem [expr [meminfo w] / 1024]
+    if { [checktrend $listmem 0 1 "Memory leak detected"] } {
+	puts "No memory leak, $i iterations"
+	break
+    }
+}

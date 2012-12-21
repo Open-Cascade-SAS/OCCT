@@ -6,9 +6,9 @@ puts "========================"
 puts ""
 
 restore [locate_data_file pro5557_revol.brep] revol1 
-puts [checkshape revol1]
+checkshape revol1
 restore [locate_data_file pro5557_bsurf.brep] bsurf2
-puts [checkshape bsurf2]
+checkshape bsurf2
 
 zoom 660
 normals bsurf2 0.27

@@ -9,7 +9,7 @@ puts ""
 ##########################
 
 restore [locate_data_file BUC60865_sh6.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 plane pl 1.1 0.99999 1 0 1 0
 mkface f pl

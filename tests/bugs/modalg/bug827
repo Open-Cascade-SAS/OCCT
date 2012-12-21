@@ -22,11 +22,11 @@ if { [ catch { set info_result [OCC827 a1 a2 a3 result1 result2] } ] } {
     if { [lsearch ${info_result} FAILED] > -1} {
 	puts "Faulty OCC827 (case 1)"
     }
-    puts [checkshape a1]
-    puts [checkshape a2]
-    puts [checkshape a3]
-    puts [checkshape result1]
-    puts [checkshape result2]
+    checkshape a1
+    checkshape a2
+    checkshape a3
+    checkshape result1
+    checkshape result2
 
     set ExplodeList [explode result1]
     if {[llength ${ExplodeList}] < 1} {

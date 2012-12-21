@@ -10,7 +10,7 @@ restore [locate_data_file OCC34.brep] sh
 
 fixshape result sh 1.e-7 1
 
-puts [checkshape result]
+checkshape result
 set square 116.889
 
 set prop "square"

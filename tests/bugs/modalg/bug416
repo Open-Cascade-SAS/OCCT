@@ -6,10 +6,10 @@ puts "========================"
 puts ""
 
 restore [locate_data_file CTO900_cts19305-part.rle] part 
-puts [checkshape part]
+checkshape part
 
 restore [locate_data_file CTO900_cts19305-tool.rle] tool
-puts [checkshape tool]
+checkshape tool
 
 bcut result part tool
 

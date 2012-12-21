@@ -7,8 +7,8 @@ stepread [locate_data_file PRO20362.stp] a *
 explode a_1 f
 renamevar a_1 result
 
-puts [checkshape a_1_1]
-puts [checkshape a_1_1 r]
+checkshape a_1_1
+checkshape a_1_1 r
 
 set l [explode a_1_1 e]
 set n [llength $l]
@@ -16,8 +16,8 @@ if { $n != 4 } {
     puts "Error : The amount of edges in FIRST face is more than four"
 }
 
-puts [checkshape a_1_2]
-puts [checkshape a_1_2 r]
+checkshape a_1_2
+checkshape a_1_2 r
 
 set i [explode a_1_2 e]
 set m [llength $i]

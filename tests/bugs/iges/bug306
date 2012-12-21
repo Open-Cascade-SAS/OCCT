@@ -13,7 +13,7 @@ tclean a
 
 sewing result a
 
-puts [checkshape result]
+checkshape result
 
 vinit
 vsetdispmode result 1

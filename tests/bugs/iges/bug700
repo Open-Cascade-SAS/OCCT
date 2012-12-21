@@ -1,0 +1,25 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC12345 ALL: Faulty OCC700"
+
+puts "======="
+puts "OCC700"
+puts "======="
+puts ""
+##########################################################
+## The attached file calnnot be read with OCC4.0, while read successfully with OCC3.0
+##########################################################
+
+if [ catch {igesbrep [locate_data_file OCC700.igs]} res ] {
+    puts "Faulty OCC700"
+} else {
+    set index [lsearch $res Faulty]
+    set index1 [lsearch $res error.]
+    if {$index > -1 || $index1 > -1} {
+	 puts "Faulty OCC700"
+    } else {
+          puts "OCC700 OK"
+    }
+}
+
+

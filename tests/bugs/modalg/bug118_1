@@ -6,9 +6,9 @@ puts "========"
 ########################################################
 
 restore [locate_data_file OCC118-1.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file OCC118-2.brep] b
-puts [checkshape b]
+checkshape b
 
 bfuse result a b
 

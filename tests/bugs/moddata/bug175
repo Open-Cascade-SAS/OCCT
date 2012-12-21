@@ -8,7 +8,7 @@ puts ""
 ###########################################
 
 restore [locate_data_file OCC175.brep] result 
-puts [checkshape result]
+checkshape result
 
 regexp {SHAPE +: +([-0-9.+eE]+)} [nbshapes result] full col1
 

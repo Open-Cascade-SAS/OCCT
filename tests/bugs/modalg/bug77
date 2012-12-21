@@ -8,10 +8,10 @@ puts ""
 ######################################################
 
 restore [locate_data_file buc60866a.rle] f 
-puts [checkshape f]
+checkshape f
 
 restore [locate_data_file buc60866b.rle] w
-puts [checkshape w]
+checkshape w
 
 pipe result w f
 

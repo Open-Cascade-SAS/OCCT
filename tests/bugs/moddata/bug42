@@ -10,14 +10,14 @@ pload XDE
 
 # 1. retriesve shape
 restore [locate_data_file OCC42.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 # 2. perform sewing
 set toler 80
 sewing result $toler sh
 
 # 3. Verify result of sewing
-puts [checkshape result]
+checkshape result
 
 # Retrieve free wires from result shape
 catch { fbclose result $toler $toler } resOfCatch

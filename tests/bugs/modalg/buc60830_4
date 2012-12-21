@@ -4,7 +4,7 @@ puts "BUC60829"
 puts "============="
 
 restore [locate_data_file BUC60830-face2.brep] f
-puts [checkshape f]
+checkshape f
 
 set che [checkshape f rr]
 if { [regexp {OK} $che] != 1 } {

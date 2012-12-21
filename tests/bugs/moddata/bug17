@@ -11,7 +11,7 @@ puts " Solid_14 will be the face which is unvisible during displaying entire sol
 
 restore [locate_data_file OCC17.brep] sh 
 
-puts [checkshape sh]
+checkshape sh
 
 explode sh f
 renamevar sh_14 result

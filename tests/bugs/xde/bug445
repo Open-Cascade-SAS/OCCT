@@ -7,7 +7,7 @@ restore [locate_data_file OCC501.brep] a
 
 fixshape result a 1e-7
 
-puts [checkshape result]
+checkshape result
 set volume 477547
 
 set prop "volume"

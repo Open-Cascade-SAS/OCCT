@@ -13,28 +13,28 @@ puts "Bug regression in BRepOffsetAPI_MakeOffset class (offsetting in OY directi
 puts "========"
 
 restore [locate_data_file offset_wire_019.brep] a 
-puts [checkshape a]
+checkshape a
 
 mkplane f a
-puts [checkshape f]
+checkshape f
 
 set IsGood 1
 if [catch {mkoffset res1 f 1 4.8 } result] {
   set IsGood 0
 } else {
   puts "OCC165 OK (case 1): function MKOFFSET works properly"
-  puts [checkshape res1_1]
+  checkshape res1_1
   mkplane pl1 res1_1
-  puts [checkshape pl1]
+  checkshape pl1
 }
 
 if [catch {mkoffset res2 f 1 -2.9 } result] {
   set IsGood 0
 } else {
   puts "OCC165 OK (case 2): function MKOFFSET works properly"
-  puts [checkshape res2_1]
+  checkshape res2_1
   mkplane pl2 res2_1 
-  puts [checkshape pl2]
+  checkshape pl2
 }
 
 if {$IsGood == 1} {

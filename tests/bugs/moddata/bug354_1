@@ -13,7 +13,7 @@ restore [locate_data_file OCC354a.brep] a
 explode a e
 
 blend result a 2 a_18
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 593.527

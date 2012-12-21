@@ -6,7 +6,7 @@ puts ""
 pload QAcommands
 
 restore [locate_data_file OCC322.brep] a 
-puts [checkshape a]
+checkshape a
 
 sewing result a
 

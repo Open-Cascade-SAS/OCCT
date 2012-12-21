@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC476"
+puts "============"
+puts ""
+######################################################
+# Regression on reading e3i files with respect of OCC30 and OCC40
+######################################################
+
+restore [locate_data_file OCC485b.brep] s1 
+restore [locate_data_file OCC485a.brep] s2 
+
+checkshape s1
+checkshape s2
+
+bop s2 s1
+bopcut result
+
+set nb_info [nbshapes result]
+
+set square 9340.03
+
+set nb_v_good 19
+set nb_e_good 33
+set nb_w_good 14
+set nb_f_good 14
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 83
+
+set 2dviewer 0

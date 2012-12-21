@@ -8,10 +8,10 @@ puts ""
 #######################
 
 restore [locate_data_file OCC449a.brep] b1 
-puts [checkshape b1]
+checkshape b1
 
 restore [locate_data_file OCC449b.brep] b2
-puts [checkshape b2]
+checkshape b2
 
 bcut result b1 b2
 

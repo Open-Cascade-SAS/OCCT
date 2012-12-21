@@ -1,0 +1,23 @@
+puts "==========="
+puts "BUC60821"
+puts "==========="
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+vinit
+
+catch {BUC60821 100 200 300}
+
+set x_coord 206
+set y_coord 195
+
+checkcolor $x_coord $y_coord 0 0 0
+
+if {$stat != 1} {
+   puts "Error : The texts have identical height"
+}
+
+set only_screen 1
+

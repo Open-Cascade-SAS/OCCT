@@ -11,7 +11,7 @@ box b -5 -5 -5 10 10 10
 psphere s 6 
 
 bfuse result s b 
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 618.85

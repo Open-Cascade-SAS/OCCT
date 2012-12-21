@@ -7,10 +7,7 @@ puts ""
 ####################################
 ## BRepAlgoAPI_Fuse fails on cylinder and torus
 ####################################
-##
-## Note: test for old topology
-##
-################################
+
 
 #
 # a1 - Cylinder
@@ -21,27 +18,25 @@ puts ""
 #
 
 if { [ catch { set info_result [OCC827 a1 a2 a3 a4 a5] } ] } {
-    puts "Faulty an exception was caught"
+    puts "Faulty OCC827"
 } else {
-    puts [checkshape a1]
-    puts [checkshape a2]
-    puts [checkshape a3]
-    bfuse result1 a2 a1
-    puts [checkshape result1]
-    set ExplodeList [explode result1]
+    checkshape a1
+    checkshape a2
+    checkshape a3
+    bop a1 a2
+    bopfuse res1
+    checkshape res1
+    set ExplodeList [explode res1]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+	puts "Faulty OCC827 : Resulting shape is empty COMPOUND"
     }
-    bfuse result2 a3 result1
-    puts [checkshape result2]
-
-    set ExplodeList [explode result2]
+    bop res1 a3
+    bopfuse result
+    set ExplodeList [explode result]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+	puts "Faulty OCC827 : Resulting shape is empty COMPOUND"
     }
-    
-    renamevar result2 result
 }
-
 set square 11847.7
 set 2dviewer 0
+

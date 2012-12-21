@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC710"
+puts "========"
+puts ""
+########################################################
+## If the the file pathname is empty, the Standard_Boolean OSD_FileNode::Exists() 
+## raises an exception
+########################################################
+
+pload QAcommands
+
+set Path ""
+
+if [catch {OCC710 ${Path} } result] {
+  puts "Faulty OCC710"
+} else {
+  puts "OCC710 OK"
+}

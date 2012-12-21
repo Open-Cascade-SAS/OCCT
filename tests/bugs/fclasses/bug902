@@ -1,0 +1,33 @@
+puts "TODO OCC12345 ALL: OCC902 Faulty"
+
+puts "======="
+puts "OCC902"
+puts "======="
+puts ""
+###############
+## bad derivative
+###############
+
+pload QAcommands
+
+set arg 5
+set list [OCC902 $arg]
+
+set we_have [lindex $list 8]
+puts "we_have = $we_have"
+
+set must_be_1 "Exp($arg)*$arg"
+puts "must_be_1 = $must_be_1"
+set must_be_2 "$arg*Exp($arg)"
+puts "must_be_2 = $must_be_2"
+
+if  {[string compare $we_have $must_be_1] == 0} {
+  puts "OCC902 OK"
+} else {      
+  if { [string compare $we_have $must_be_2] == 0} { 
+    puts "OCC902 OK"
+  } else {
+    puts "OCC902 Faulty"
+  }	 
+}
+

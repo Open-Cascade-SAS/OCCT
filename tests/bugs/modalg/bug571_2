@@ -9,7 +9,7 @@ puts ""
 ##########################
 
 restore [locate_data_file OCC571.brep] a 
-puts [checkshape a]
+checkshape a
 explode a
 
 if [catch {fillet result a_1 0.03 a_2 } catch_result] {

@@ -1,18 +1,18 @@
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Faulty OCC827"
+
 pload QAcommands
 
-puts "======="
+puts "========"
 puts "OCC827"
-puts "======="
+puts "========"
 puts ""
-####################################
+###################################
 ## BRepAlgoAPI_Fuse fails on cylinder and torus
-####################################
-##
-## Note: test for old topology
-##
-################################
-
-set status 1
+###################################
+## (old topology)
+#####################################
 
 #
 # a1 - Cylinder
@@ -22,29 +22,27 @@ set status 1
 # res2 - Fuse(Torus2 & res1)
 #
 
-if [ catch { set info_result [OCC827 a1 a2 a3 a4 a5] } ] {
-  puts "Faulty OCC827 (case 0)"
+if { [ catch { set info_result [OCC827 a1 a2 a3 res1 res2 0] } ] } {
+    puts "Faulty OCC827"
 } else {
-    puts [checkshape a1]
-    puts [checkshape a2]
-    puts [checkshape a3]
-    bfuse result1 a1 a2
-    puts [checkshape result1]
-    
-    set ExplodeList [explode result1]
-    if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+    if { [regexp {FAILED} $info_result] } {
+	puts "Faulty OCC827"
     }
-    
-    bfuse result2 result1 a3
-    puts [checkshape result2]
+    checkshape a1
+    checkshape a2
+    checkshape a3
+    checkshape res1
 
-    set ExplodeList [explode result2]
+    set ExplodeList [explode res1]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+	puts "Faulty OCC827"
     }
-    renamevar result2 result
+
+    set ExplodeList [explode res2]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty OCC827"
+    }
+    renamevar res2 result
 }
-
-set square 11847.7
-set 2dviewer 0
+set square 0
+set 2dviewer 1

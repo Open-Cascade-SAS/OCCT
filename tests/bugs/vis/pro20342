@@ -1,0 +1,24 @@
+puts "TODO OCC12345 ALL: Tcl Exception: result_1 is not a topological shape!!!"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "============="
+puts "PRO20342"
+puts "============="
+
+##############################################################################
+## Calling of the function "vsetshading" with argument less than 1.0 calls exception "Segmentation Fault". Command
+## works properly in C30. There is line in the file "C40/Gallery/ViewerTest.cxx" in the function "Vshading": 
+##############################################################################
+
+pload XDE
+
+igesbrep [locate_data_file fra62523a.igs] result *
+
+checkshape result_1 r
+
+vinit
+tclean result_1
+vdisplay result_1
+vsetshading result_1 0.1
+vfit
+
+set only_screen 1

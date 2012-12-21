@@ -5,7 +5,7 @@ puts "==================="
 
 restore [locate_data_file buc60667a.brep] result
 fsameparameter result
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 0
 

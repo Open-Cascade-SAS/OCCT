@@ -6,7 +6,7 @@ puts " (case 1) "
 puts "========================"
 
 restore [locate_data_file OCC347a.brep] result
-puts [checkshape result]
+checkshape result
 
 tclean result
 vinit

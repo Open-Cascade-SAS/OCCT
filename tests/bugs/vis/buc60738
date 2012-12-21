@@ -1,0 +1,35 @@
+### by apn (no regresion in CR23352_3
+###if { [array get env os_type] != "" } {
+###    set os $env(os_type)
+###}
+###if { [string compare $os "windows"] == 0 } {
+###    puts "TODO OCC12345 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
+###    puts "TODO OCC12345 ALL: Error : The style of edge is NOT dash"
+###	by apn: Image is not correct on WNT
+###}
+
+puts "========================"
+puts "BUC60738"                
+puts "========================"
+puts ""                                  
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+                        
+vinit
+BUC60738
+vfit
+vsetdispmode 1
+
+QAUpdateLights
+
+set x_coord 261
+set y_coord 314
+
+checkcolor $x_coord $y_coord 0 1 0
+
+if {$stat != 1} {
+   puts "Error : The style of edge is NOT dash"
+}
+
+set only_screen 1

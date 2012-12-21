@@ -7,7 +7,7 @@ puts "=========="
 pload QAcommands
 
 restore [locate_data_file buc60652b.brep] result
-puts [checkshape result]
+checkshape result
 BUC60652 result
 
 set check_square 1

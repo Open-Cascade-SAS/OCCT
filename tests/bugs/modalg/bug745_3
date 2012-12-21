@@ -1,0 +1,29 @@
+
+puts "========"
+puts "OCC745"
+puts "========"
+puts ""
+###########################
+## Incorrect MAT (map of bissectors)
+###########################
+
+puts "#"
+puts "Non stable test case on Linux. MKV. 04.02.2011"
+puts " ( Gif )"
+puts "#"
+
+restore [locate_data_file OCC745_ellipse.brep] w 
+checkshape w
+mkplane result w
+topoload result
+drawcont
+
+smallview -2D-
+2dfit
+
+mat
+#result
+
+set square 8357.41
+set 2dviewer 0
+

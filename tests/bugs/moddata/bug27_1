@@ -9,7 +9,7 @@ checkshape a
 
 explode a e
 blend result a 1 a_5 1 a_6 1 a_7 1 a_8
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 155.846

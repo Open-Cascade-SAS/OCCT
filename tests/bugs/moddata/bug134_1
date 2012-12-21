@@ -9,10 +9,10 @@ puts ""
 ####################################
 
 restore [locate_data_file OCC134-1.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 prism result sh 100 100 100
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 104057

@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC4993"
+puts "============"
+puts ""
+######################################################
+# Problem in boolean fusion
+# (new topology)
+######################################################
+
+restore [locate_data_file OCC4993-s1.brep] s1 
+restore [locate_data_file OCC4993-s2.brep] s2 
+
+checkshape s1
+checkshape s2
+
+bop s1 s2
+bopfuse result
+
+set square 4854.51
+set nb_info [nbshapes result]
+
+set nb_v_good 40
+set nb_e_good 64
+set nb_w_good 24
+set nb_f_good 24
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 155
+
+set 2dviewer 0

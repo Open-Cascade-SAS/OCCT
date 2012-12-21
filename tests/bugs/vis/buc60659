@@ -1,0 +1,16 @@
+
+puts "=========================="
+puts "BUC60659"
+puts "=========================="
+puts ""
+##########################################
+## puts "There was Exception after vsetshading command"
+##########################################
+
+box a 10 30 50 
+vinit
+vdisplay a
+vfit
+vsetshading a 
+
+set only_screen 1

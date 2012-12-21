@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC1048"
+puts "================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file OCC1048.brep] result
+
+set list [OCC1048 result]
+
+set NBTRIANGLES 0
+regexp {Info: +Number +of +triangles += +([-0-9.+eE]+)} $list full NBTRIANGLES
+
+if { ${NBTRIANGLES} > 0 } {
+    puts "OCC1048: OK"
+} else {
+    puts "OCC1048: Error"
+}
+
+set 2dviewer 0
+
+

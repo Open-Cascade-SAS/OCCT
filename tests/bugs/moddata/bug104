@@ -15,11 +15,11 @@ puts ""
 cpulimit 3000
 
 restore [locate_data_file OCC104-1.brep] sh1 
-puts [checkshape sh1]
+checkshape sh1
 regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full l1
 
 restore [locate_data_file OCC104-2.brep] sh2
-puts [checkshape sh2]
+checkshape sh2
 regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full l2
 
 set diff [expr abs([expr $l2 - $l1])]

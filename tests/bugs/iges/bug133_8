@@ -11,8 +11,8 @@ puts ""
 igesbrep [locate_data_file Rich.igs] a *
 
 tpcompound result
-puts [checkshape result]
-puts [checkshape result r]
+checkshape result
+checkshape result r
 
 set 2dviewer 0
 

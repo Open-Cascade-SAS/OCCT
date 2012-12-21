@@ -1,0 +1,17 @@
+puts "============="
+puts "BUC60830"
+puts "BUC60829"
+puts "============="
+
+restore [locate_data_file BUC60830-face1.brep] res 
+checkshape res
+
+topoload res 
+side left 
+mat
+result
+
+side right
+mat
+result
+

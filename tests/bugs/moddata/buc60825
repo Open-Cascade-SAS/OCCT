@@ -7,7 +7,7 @@ pload QAcommands
 line aLine 0 0 0 0 0 1
 mkedge aEdge1 aLine
 restore [locate_data_file buc60825.brep] aEdge2 
-puts [checkshape aEdge2]
+checkshape aEdge2
 
 distmini d aEdge1 aEdge2
 regexp {NB RESULTS +: +([-0-9.+eE]+)} [BUC60825 aEdge1 aEdge2] full ext

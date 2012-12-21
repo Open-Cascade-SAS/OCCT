@@ -1,0 +1,24 @@
+puts "========="
+puts " OCC210 "
+puts "========="
+puts ""
+##################################################
+# Improve FixShape to correct case of touching wires
+##################################################
+
+pload XDE
+
+cpulimit 2500
+
+set BugNumber OCC210
+
+if [catch { stepread [locate_data_file UKI60591.stp] a * } result] {
+    puts "Faulty ${BugNumber}: here is reading problem"
+} else {
+    puts "Reading ${BugNumber} OK"
+    tpcompound r
+    fixshape result r
+    checkshape result
+}
+
+set 2dviewer 0

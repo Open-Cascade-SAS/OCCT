@@ -1,0 +1,27 @@
+puts "TODO OCC12345 ALL: Faulty OCC909"
+
+pload QAcommands
+
+puts "======="
+puts "OCC909"
+puts "======="
+puts ""
+#######################################################
+## BRepTools_WireExplorer give different number of edges in dev and FIXOCC40
+#######################################################
+
+restore [locate_data_file OCC909_f.rle] f 
+restore [locate_data_file OCC909_w.rle] w 
+
+if { [ catch { set result [OCC909 w f] } ] } {
+    puts "Faulty OCC909"
+} else {
+    set count 0
+    regexp {Count = ()} $result full count
+    if {$count != 2} {
+	puts "Faulty OCC909"
+    } else {
+	puts "OCC909 OK"
+    }
+}
+

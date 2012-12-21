@@ -12,9 +12,9 @@ catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
 
 restore [locate_data_file OCC910.rle] a 
 
-puts [checkshape a]
+checkshape a
 explode a w
-puts [checkshape a_7]
+checkshape a_7
 
 set list1 [expwire a_7]
 regexp {TopoDS_Iterator\(EDGE\)  donne ([-0-9.+eE]+) Edges} $list1 full TopoDS_Iterator1

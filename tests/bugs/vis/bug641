@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC641"
+puts "SAM1559"
+puts "================"
+puts ""
+#################################################
+## Exception during attemption to display shape ==>SAM1559 (#2901)
+#################################################
+
+restore [locate_data_file OCC641.brep] a
+
+vinit
+vdisplay a
+vfit
+
+copy a b
+
+if [catch {tmirror result 0 0 0 0 1 0 } res] {
+   puts "Error : function tmirror works wrongly"
+} else {
+   if [catch { vdisplay result } res] {
+      puts "Error : result shape is displaed wrongly"
+   }
+   vfit
+}
+
+set only_screen 1
+

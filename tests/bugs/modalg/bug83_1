@@ -10,8 +10,8 @@ puts ""
 puts "1 case: perform section with plane"
 restore [locate_data_file BUC60912_sec_slow.brep] c 
 explode c
-puts [checkshape c_1]
-puts [checkshape c_2]
+checkshape c_1
+checkshape c_2
 
 renamevar c_1 sh
 renamevar c_2 pr

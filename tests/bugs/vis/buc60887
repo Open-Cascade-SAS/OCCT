@@ -1,0 +1,20 @@
+puts "============"
+puts "BUC60887"
+puts "============"
+puts ""                                                                                                                                                                        
+############################################
+## Shape hangs after command " vdisplay " in the Viewer3d. 
+############################################
+
+restore [locate_data_file BUC60887.brep] result
+
+set nb_info [nbshapes result]
+regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_v
+
+puts [format "Shape res contains %s vertexes" $nb_v]
+if { $nb_v == 0} {
+   puts "Error : Result shape is NULL shape"
+} else {
+  set 3dviewer 1
+}
+

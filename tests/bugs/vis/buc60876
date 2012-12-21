@@ -1,0 +1,21 @@
+puts "========"                                                                                                                                                 
+puts "BUC60876"                                                                                                                                                 
+puts "========"                                                                                                                                                 
+puts ""
+
+pcylinder c 100 300
+vinit
+BUC60876 c
+vfit
+QAMoveTo 200 200
+QAMoveTo 200 200
+
+QAUpdateLights
+
+set x_coord 200
+set y_coord 200
+
+checkcolor $x_coord $y_coord 0 1 1
+
+set only_screen 1
+

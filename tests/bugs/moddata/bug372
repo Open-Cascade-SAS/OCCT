@@ -1,0 +1,31 @@
+pload QAcommands
+
+puts "========================"
+puts "OCC372"
+puts "BUC61036"
+puts "========================"
+puts ""
+###############################################################
+##BRepClass3d_SolidClassifier classify point to solid as OUT, but the point is inside the solid.
+###############################################################
+
+restore [locate_data_file OCC372.brep] b1 
+checkshape b1
+
+point p1 6311.4862583184 -2841.3092756034 16.461053497188
+
+set result [OCC299 b1 p1]
+set ll [llength ${result}]
+if { ${ll} < 4 } then {
+    puts "OCC372: ERROR 1"
+} else {
+    regexp {The point is (.*) shape} ${result} full status
+    if {[string compare ${status} "IN"] == 0} then {
+	puts "status = ${status}"
+	puts "OCC372: OK"
+    } else {
+	puts "status = ${status}"
+	puts "Faulty : OCC372"
+    }
+}
+

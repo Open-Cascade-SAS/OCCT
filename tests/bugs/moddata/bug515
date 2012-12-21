@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC515"
+puts "========"
+puts ""
+################################
+## Wrong projection of the Line on the Cone
+################################
+
+restore [locate_data_file OCC515a.draw] cx 
+restore [locate_data_file OCC515b.draw] s 
+
+if { [catch {project c2d cx s -t 0.0015} ] } { 
+    puts "OCC515 FAULTY"
+}  else {
+    # create dump of resulting curve  
+    set dump [dump c2d]
+    # read dump of old curve 
+    set olddump [read [open [locate_data_file OCC515_DUMP]]]
+    # if the the dumps is equal this bug is still exist
+    if { $dump == $olddump } {
+	puts "OCC515 FAULTY"
+    } else {
+	puts "OCC515 WARNING: Dumps of old and new curve are different, probably bug is still exist"
+    }
+}
+
+

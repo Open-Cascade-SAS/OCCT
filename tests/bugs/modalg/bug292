@@ -9,7 +9,7 @@ puts ""
 #################################################################
 
 restore [locate_data_file OCC292.brep] result
-puts [checkshape result]
+checkshape result
 
 tclean result
 vinit

@@ -4,7 +4,7 @@ puts "BUC60585"
 puts "========================"
 
 restore [locate_data_file buc60585a.brep] s
-puts [checkshape s]
+checkshape s
 plane ps 2036.25  -97.5  -1460.499755859375 0.0  -0.75103523489975432  -0.66026212668838646 1.0 0.0 0.0
 
 psection result s ps

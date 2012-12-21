@@ -7,11 +7,11 @@ puts "================"
 puts ""
 
 restore [locate_data_file shading_177.brep] sh1 
-puts [checkshape sh1]
+checkshape sh1
 regexp {Mass +: +([-0-9.+eE]+)} [vprops sh1] full l1
 
 restore [locate_data_file OCC76-2.brep] sh2
-puts [checkshape sh2]
+checkshape sh2
 regexp {Mass +: +([-0-9.+eE]+)} [vprops sh2] full l2
 
 if { [expr abs([expr $l1 - 3020.94])] > 0.00999} {	

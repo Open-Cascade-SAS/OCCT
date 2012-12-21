@@ -8,7 +8,7 @@ puts ""
 ######################################################
 
 restore [locate_data_file OCC130.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 line l -120 -100 400 0 0 1
 mksurface surf sh

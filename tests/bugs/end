@@ -12,6 +12,7 @@ if { [isdraw result] } {
 	vdisplay result
 	vsetdispmode 1
 	vfit
+	vzfit
 	vdump $imagedir/${test_image}.png
     }
 }

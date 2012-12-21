@@ -7,8 +7,8 @@ puts ""
 
 restore [locate_data_file BUC60974.brep] a 
 explode a
-puts [checkshape a_1]
-puts [checkshape a_2]
+checkshape a_1
+checkshape a_2
 
 bfuse result a_2 a_1
 set square 191388

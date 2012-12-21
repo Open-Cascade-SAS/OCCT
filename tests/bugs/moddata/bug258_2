@@ -5,7 +5,7 @@ puts "(case 2)"
 puts "========================"
 
 restore [locate_data_file shading_144.brep] result
-puts [checkshape result]
+checkshape result
 
 tclean result
 isos result 0

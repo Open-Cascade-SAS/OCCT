@@ -17,8 +17,8 @@ puts ""
 if { [ catch { set info_result [OCC825 a1 a2 a3 a4 a5] } ] } {
     puts "Faulty : an exception was caught"
 } else {
-    puts [checkshape a1]
-    puts [checkshape a3]
+    checkshape a1
+    checkshape a3
 
     bcut result a3 a1
 

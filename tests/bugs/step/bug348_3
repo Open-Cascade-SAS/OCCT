@@ -16,7 +16,7 @@ vinit
 stepread [locate_data_file BUC61003-3.stp] a *
 
 tpcompound result
-puts [checkshape result]
+checkshape result
 
 vdisplay result
 vsetdispmode 1

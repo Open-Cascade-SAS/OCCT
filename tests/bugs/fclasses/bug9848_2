@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC9848"
+puts "============"
+puts ""
+#######################################################################
+# Specififying invalid name of unit produces exception.(for example tonne instead ton)
+#######################################################################
+
+set BugNumber OCC9848
+
+set UnitString "ton/(m*s**2)"
+
+set List ""
+set result ""
+set GoodResult "Token word : (ton)/((m)*((s)**(2)))"
+
+if [catch { set List [unitparsing ${UnitString}] } result] {
+     puts "${BugNumber}: Faulty (1)"
+} else {
+    if {  ${List} == "${GoodResult}\n"} {
+	puts "${BugNumber}: OK"
+    } else {
+        puts "${BugNumber}: Faulty (2)"
+    }
+}

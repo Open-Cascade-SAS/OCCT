@@ -8,7 +8,7 @@ cpulimit 1500
 set l [igesbrep [locate_data_file buc60685a.igs] a xst-transferrable-roots] 
 
 tpcompound result
-puts [checkshape result r]
+checkshape result r
 
 regexp {List given by xst-transferrable-roots : Nb entities selected : +([-0-9+eE]+)} ${l} full start
 regexp {List given by xst-transferrable-roots : Nb entities selected : +([-0-9+eE]+)} ${l} full end

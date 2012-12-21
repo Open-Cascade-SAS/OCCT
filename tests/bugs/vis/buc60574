@@ -1,0 +1,36 @@
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+   puts "TODO OCC12345 ALL: An exception was caught"
+   puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+   puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+}
+
+puts "==========="
+puts "BUC60574"
+puts "==========="
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+
+vinit 
+BUC60574 
+
+QASelect 220 210 
+QASelect 220 210 
+QAUpdateLights
+puts ""
+
+set x_coord 205
+set y_coord 205
+
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
+
+if {$stat != 1} {
+   puts "OK: Plane of trihedron was selected properly "
+}
+
+## modified colors 
+
+set only_screen 1

@@ -64,7 +64,7 @@ puts ""
 catch {pload XDE}
 
 restore [locate_data_file OCC305.brep] a 
-puts [checkshape a]
+checkshape a
 
 if [catch {mkoffset result a 1 0.5 } catch_result] {
     puts "Faulty OCC305 : function MKOFFSET works wrongly"

@@ -1,0 +1,51 @@
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+   puts "TODO OCC12345 ALL: An exception was caught"
+   puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+   puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+}
+
+
+puts "=================================="
+puts "BUC60569"
+puts "OCC597"
+puts "=================================="
+puts ""
+puts "=================================="
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+restore [locate_data_file buc60569a.rle] result
+tclean result
+vinit
+
+checkshape result
+
+BUC60569 result
+vfit
+
+QAMoveTo 250 190
+QASelect 250 190
+QAShiftSelect 180 350
+QAMoveTo 250 190
+QAMoveTo 180 350
+QASelect 390 390
+QAShiftSelect 250 190
+QAShiftSelect 180 350
+QAMoveTo 250 190
+QAMoveTo 180 350
+
+set x_coord 335
+set y_coord 331
+
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
+
+if {$stat != 1} {
+   puts "Error : The right face is NOT highlighted by Move To command."
+}
+
+set only_screen 1
+

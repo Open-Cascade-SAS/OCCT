@@ -5,9 +5,9 @@ puts "======= OCC698 ======="
 ######################################
 cpulimit 10000
 restore [locate_data_file OCC698_1.brep] b4 
-puts [checkshape b4]
+checkshape b4
 restore [locate_data_file OCC698_2.brep] b5 
-puts [checkshape b5]
+checkshape b5
 
 bcut result b5 b4
 

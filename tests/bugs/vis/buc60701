@@ -1,0 +1,11 @@
+
+puts "========================"                                                                                      
+puts "BUC60701"                                                                                                      
+puts "========================"                                                                                      
+                                                                                                           
+box result 10 10 10
+vinit
+vdisplay result
+set 3dviewer 1
+
+###  Photo of V3Dview is less than image in the viewer (only half-part of viewer is present on a photo).

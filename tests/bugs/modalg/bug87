@@ -8,9 +8,9 @@ puts "========================"
 
 puts "Restoring the wires :"
 restore [locate_data_file OCC86a.brep] w1 
-puts [checkshape w1]
+checkshape w1
 restore [locate_data_file OCC86b.brep] w2
-puts [checkshape w2]
+checkshape w2
 
 set first1 [dump w1]
 set second1 [dump w2]

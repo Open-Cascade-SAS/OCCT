@@ -8,9 +8,9 @@ puts ""
 ############################
 
 restore [locate_data_file OCC618a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file OCC618b.brep] b 
-puts [checkshape b]
+checkshape b
 
 if [catch {bop a b} catch_result] {
     puts "Faulty OCC618 : BOP operation was made wrongly"

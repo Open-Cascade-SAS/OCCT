@@ -9,10 +9,10 @@ puts ""
 
 restore [locate_data_file buc60703d.brep] a 
 #maxtolerance a
-puts [checkshape a]
+checkshape a
 restore [locate_data_file buc60703f.brep] b
 #maxtolerance b
-puts [checkshape b]
+checkshape b
 
 if [catch {bfuse result a b } catch_result] {
     puts "Faulty  BUC60703: here is problem with FUSE operation"

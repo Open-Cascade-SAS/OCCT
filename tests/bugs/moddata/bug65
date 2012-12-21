@@ -12,11 +12,11 @@ puts ""
 ###############################################
 
 restore [locate_data_file OCC65.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 revol result sh 0 0 0 0 0 1 360
 
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set volume 10

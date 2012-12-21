@@ -1,0 +1,32 @@
+if { [array get env os_type] != "" } {
+    set os $env(os_type)
+}
+if { [string compare $os "windows"] != 0 } {
+   puts "TODO OCC12345 ALL: An exception was caught"
+   puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+   puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+}
+
+puts "================"
+puts "BUC60632"
+puts "================"
+
+vinit
+BUC60632 0 100
+vfit
+QAMoveTo 313 254
+QAMoveTo 313 254
+puts "Highlighting by 'Move To' command in wireframe mode"
+
+set x_coord 315
+set y_coord 256
+
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+   puts "Error : Highlighting by Move To command in wireframe mode is WRONG."
+}
+
+set only_screen 1
+
+

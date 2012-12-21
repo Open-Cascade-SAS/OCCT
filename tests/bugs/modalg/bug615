@@ -9,7 +9,7 @@ puts ""
 #############################
 
 restore [locate_data_file OCC615.brep] a 
-puts [checkshape a]
+checkshape a
 explode a e
 
 if [catch {blend result a 9 a_15 } catch_result] {

@@ -1,0 +1,24 @@
+pload QAcommands
+
+puts "========"
+puts "OCC867"
+puts "========"
+puts ""
+######################################################
+## When calling method Init() with surface and its boundary parameters are the 
+## arguments and then calling method Perform() it raises an exception.
+######################################################
+
+cylinder c 10 20
+trim c c 0 4 0 2
+point p 30 30 30
+set Umin 0 
+set Usup 3
+set Vmin 0 
+set Vsup 2
+
+if { [ catch {OCC867 p c $Umin $Usup $Vmin $Vsup} catch_result ] } {
+    puts "Faulty OCC867"
+} else {
+    puts "OCC867 OK"
+}

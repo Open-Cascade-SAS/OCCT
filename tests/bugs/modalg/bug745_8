@@ -8,7 +8,7 @@ puts ""
 ###################################################
 
 restore [locate_data_file BUC60830-face2.brep] f 
-puts [checkshape f]
+checkshape f
 
 if { [catch { mkoffset result f 45 -0.042225 } status] } {
     puts "Faulty OCC745"
@@ -26,7 +26,7 @@ if { [catch { mkoffset result f 45 -0.042225 } status] } {
             set num [llength $ll]
             puts [format "Faulty : Result shape result is COMPOUND and contains %s wires" $num]
             foreach {k} $ll {
-                puts [checkshape $k]
+                checkshape $k
                 regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection $k] full cs
                 if { $cs != 0 } {
                     puts [format "Faulty : Result shape is UNclosed wire !!! " $k]

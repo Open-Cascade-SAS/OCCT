@@ -12,8 +12,8 @@ restore [locate_data_file OCC88.brep] sh
 set che [checkshape sh]
 
 explode sh f
-puts [checkshape sh_1]
-puts [checkshape sh_2]
+checkshape sh_1
+checkshape sh_2
 
 mksurface surf1 sh_1
 mksurface surf2 sh_2

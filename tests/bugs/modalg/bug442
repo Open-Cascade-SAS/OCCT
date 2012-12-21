@@ -9,7 +9,7 @@ puts ""
 ########################################################
 
 restore [locate_data_file OCC442.brep] a 
-puts [checkshape a]
+checkshape a
 
 explode a v
 

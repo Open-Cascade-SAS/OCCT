@@ -15,8 +15,8 @@ puts ""
 if { [ catch { set info_result [OCC823 a1 a2 a3] } ] } {
     puts "Faulty : exception was caught"
 } else {
-    puts [checkshape a1]
-    puts [checkshape a2]
+    checkshape a1
+    checkshape a2
     bfuse result a1 a2
 
     set ExplodeList [explode result]

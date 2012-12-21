@@ -1,0 +1,32 @@
+
+puts "========="
+puts " OCC935 "
+puts "(case 2)"
+puts "========="
+puts ""
+###############################
+## instability in checkshape in KAS:dev version.
+###############################
+
+restore [locate_data_file OCC935_2.brep] result
+
+decho off
+set err [checkshape result]
+decho on
+
+set j 1
+repeat 25 {
+    restore [locate_data_file OCC935_2.brep] result 
+    decho off
+    set err1 [checkshape result]
+    decho on
+    if { $err != $err1 } {
+	puts [format " Faulty OCC935 (case 2): function CHECKSHAPE works wrongly on %s time" $j]
+	break
+    } else {
+	puts [format " OCC935 (case 2)  OK: function CHECKSHAPE works properly %s time" $j]
+    }
+    incr j
+}
+
+set 2dviewer 0

@@ -1,0 +1,25 @@
+puts "TODO OCC12345 ALL: Faulty OCC956"
+
+puts "========="
+puts " OCC956 "
+puts "(case 1)"
+puts "========="
+puts ""
+###############################################
+##possible regression in KAS:dev on checkshape. Fails on valid shape
+###############################################
+
+restore [locate_data_file OCC956_1.brep] result
+
+decho off
+set che [checkshape result]
+decho on
+
+if { [regexp {Faulty} $che] } {
+    puts "Faulty OCC956 (case 1): Checkshape says that the shape is incorrect, but it is not truth"
+} else {
+    puts "OCC956 OK (case 1): Checkshape works properly"
+}
+
+set 2dviewer 0
+

@@ -1,0 +1,48 @@
+puts "=================================="
+puts "BUC60661"
+puts "It takes visual check for this BUG"
+puts "=================================="
+puts ""
+
+pload XDE
+
+##################################################################
+##DESCRIPTION: It is impossible to nominate "sheding" mode in 3D-viewer for the some shapes in
+##  C30 (SUN station), which were stored in "IGES" format previousl and then were retrieved again 
+## into "BREP" format. 
+##################################################################
+
+restore [locate_data_file buc60661a.brep] buc60661
+checkshape buc60661
+
+######################################################################
+file delete ${imagedir}/buc60661.igs } 
+brepiges buc60661 ${imagedir}/buc60661.igs
+######################################################################
+
+dall
+
+if [catch { igesbrep ${imagedir}//buc60661.igs a * } res] {
+  puts "Faulty BUC60661: here is reading problem of iges file"
+} else {
+  puts "Reading of iges in BUC60661 is OK"
+}
+
+tpcompound result
+checkshape result
+
+vinit
+tclean result
+vdisplay result
+vsetdispmode result 1
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tri
+regexp { +([-0-9.+eE]+) +nodes} $info full nod
+
+if { $tri == 0 || $nod ==0 }  {
+  puts "Error : here is shading problem"
+}
+
+set 3dviewer 1
+

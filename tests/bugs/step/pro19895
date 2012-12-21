@@ -16,8 +16,8 @@ tpcompound result
 
 tpdraw 2139
 
-puts [checkshape tp_2139]
-puts [checkshape tp_2139 r]
+checkshape tp_2139
+checkshape tp_2139 r
 
 set MaxTolerance [ lindex [ split [ lindex [tolerance tp_2139] 1 ] = ] 1 ]
 puts "MaxTolerance = $MaxTolerance"

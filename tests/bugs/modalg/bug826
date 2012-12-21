@@ -7,16 +7,19 @@ puts ""
 ###################################
 ## BRepAlgoAPI_Fuse fails on revolved and sphere
 ###################################
+## (old topology)
+#####################################
 
 if { [ catch { set info_result [OCC826 a1 a2 result] } ] } {
-    puts "Faulty : an exception was caught"
+    puts "Faulty OCC826"
 } else {
-    if { [lsearch ${info_result} FAILED] > -1} {
-	puts "Faulty : command was FAILED"
+    if { [regexp {FAILED} $info_result] } {
+	puts "Faulty OCC826"
     }
+
     set ExplodeList [explode result]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+	puts "Faulty OCC826"
     }
 }
 

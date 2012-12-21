@@ -11,6 +11,6 @@ restore [locate_data_file OCC210b.brep] a
 
 fixshape result a 0.01 0.01
 
-puts [checkshape result]
+checkshape result
 set 2dviewer 1
 

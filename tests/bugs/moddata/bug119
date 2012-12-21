@@ -17,14 +17,14 @@ if { ${mistake} == 1} {
     puts " 1) OCC119 OK: BLEND was NOT created and suitable except was given."
 } else {
     puts "1) OCC119 OK: function BLEND works without suitable except"
-    puts [checkshape result_1]
+    checkshape result_1
     explode result_1 e
 
     if { [catch {blend result_2 result_1 50 result_1_20 50 result_1_22 50 result_1_10} catch_result] } {
 	puts "2) Faulty  OCC119: BLEND was NOT created"
     } else {
 	puts "2) BLEND OCC199 OK: BLEND was created"
-	puts [checkshape result_2]
+	checkshape result_2
     }
 
     set che [checkshape result_2 r]

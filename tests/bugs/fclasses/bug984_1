@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC984"
+puts "========"
+puts ""
+####################################################
+## LDOM hangs-up attempting to read a file which contains a reference to "*dtd"file
+####################################################
+
+pload DCAF
+set BugNumber OCC984
+cpulimit 60
+
+# Open the document
+if { [catch { Open [locate_data_file OCC984.xml] D } aResult] != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}

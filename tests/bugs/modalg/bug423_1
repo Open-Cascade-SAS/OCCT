@@ -6,10 +6,10 @@ puts "========================"
 puts ""
 
 restore [locate_data_file cylindre.rle] cyl 
-puts [checkshape cyl]
+checkshape cyl
 
 restore [locate_data_file contour.rle] cont 
-puts [checkshape cont]
+checkshape cont
 
 mkplane cont cont
 nexplode cyl F

@@ -1,0 +1,36 @@
+
+puts "========="
+puts " OCC943 "
+puts "(case 2)"
+puts "========="
+puts ""
+#########################################################
+## distinace between projection and initial point in dev version is larger then in C40.
+#########################################################
+
+restore [locate_data_file OCC943_2.draw] su 
+
+set X 5.759527537723098 
+set Y 31.81368637070151
+set Z -0.2989616405627145
+
+vertex v $X $Y $Z
+proj su $X $Y $Z
+
+regexp {Parameters +: +[-0-9.+eE]+ +([-0-9.+eE]+)} [dump ext_1] full resV
+
+cvalue ext_1 $resV cx cy cz
+vertex V cx cy cz
+distmini d V v
+
+regexp {([-0-9.+eE]+)$} [dump d_val] full res
+
+set res_good 1.108e-05
+
+if { $res > $res_good } {
+    puts ""
+    puts "Faulty OCC493 (case 2)"
+} else {
+    puts ""
+    puts " OCC493 (case 2) OK"
+}

@@ -9,8 +9,8 @@ puts ""
 
 restore [locate_data_file BUC60930_splitshape.brep] c 
 explode c
-puts [checkshape c_1]
-puts [checkshape c_2]
+checkshape c_1
+checkshape c_2
 
 renamevar c_1 f
 renamevar c_2 e

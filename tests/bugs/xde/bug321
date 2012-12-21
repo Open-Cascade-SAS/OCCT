@@ -12,8 +12,8 @@ puts ''
 stepread [locate_data_file OCC321.stp] a *
 
 tpcompound a
-puts [checkshape a]
-puts [checkshape a r]
+checkshape a
+checkshape a r
 
 ######################################################################
 catch {exec rm ${imagedir}/OCC321.iges}
@@ -24,7 +24,7 @@ dall
 igesbrep ${imagedir}/OCC321.iges b *
 
 tpcompound result
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 0
 

@@ -10,8 +10,8 @@ param read.step.product.mode OFF
 stepread [locate_data_file BUC60809.stp] a *
 
 tpcompound result
-puts [checkshape result]
-puts [checkshape result r]
+checkshape result
+checkshape result r
 
 set 2dviewer 0
 

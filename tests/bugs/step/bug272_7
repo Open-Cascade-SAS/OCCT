@@ -9,7 +9,7 @@ tpcompound result
 if { [llength [whatis result]] == 3 } {
     puts "Error : There is no result"
 }
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 0
 

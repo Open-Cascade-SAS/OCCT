@@ -1,0 +1,43 @@
+pload QAcommands
+
+puts "======="
+puts "OCC827"
+puts "======="
+puts ""
+####################################
+## BRepAlgoAPI_Fuse fails on cylinder and torus
+####################################
+
+#
+# a1 - Cylinder
+# a2 - Torus1
+# a3 - Torus1
+# res1 - Fuse(Torus1 & Cylinder)
+# res2 - Fuse(Torus2 & res1)
+#
+
+if { [ catch { set info_result [OCC827 a1 a2 a3 a4 a5] } ] } {
+    puts "Faulty OCC827"
+} else {
+    checkshape a1
+    checkshape a2
+    checkshape a3
+    bop a2 a1
+    bopfuse res1
+    checkshape res1
+    set ExplodeList [explode res1]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty OCC827 : Resulting shape is empty COMPOUND"
+    }
+    bop a3 res1
+    bopfuse result
+
+    set ExplodeList [explode result]
+    if {[llength ${ExplodeList}] < 1} {
+	puts "Faulty OCC827 : Resulting shape is empty COMPOUND"
+    }
+}
+
+set square 11847.7
+set 2dviewer 1
+

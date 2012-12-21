@@ -4,7 +4,7 @@ puts "PRO16983"
 puts "============"
 
 restore [locate_data_file pro16983a.brep] B 
-puts [checkshape B]
+checkshape B
 plane p 0 0 0 1 0 0
 vertex v1 0 90.16396 252.4591
 vertex v2 0 252.459 -9.835989

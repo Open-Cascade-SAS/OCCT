@@ -4,9 +4,9 @@ puts "PRO19626"
 puts "============"
 
 restore [locate_data_file pro19626a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file pro19626b.brep] b
-puts [checkshape b]
+checkshape b
 
 bsection result a b
 regexp { nb alone Vertices : +([-0-9.+eE]+)} [checksection result] full num

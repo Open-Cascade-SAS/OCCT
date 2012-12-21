@@ -6,9 +6,9 @@ puts "========================"
 
 puts "Restoring the wires :"
 restore [locate_data_file OCC86a.brep] w1 
-puts [checkshape w1]
+checkshape w1
 restore [locate_data_file OCC86b.brep] w2
-puts [checkshape w2]
+checkshape w2
 
 puts "Do Thrusection by following command: thrusections res 0 0 w1 w2 "
 

@@ -9,7 +9,7 @@ puts ""
 pload XDE
 restore [locate_data_file OCC8.brep] result
 
-puts [checkshape result]
+checkshape result
 
 explode result w
 set info [expwire result_1 sh]

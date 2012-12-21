@@ -8,7 +8,7 @@ puts "It takes visual check for this BUG"
 puts "=================================="
 
 restore [locate_data_file pro20333a.brep] result
-puts [checkshape result]
+checkshape result
 
 tclean result
 isos result 0

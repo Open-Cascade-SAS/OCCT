@@ -10,8 +10,8 @@ puts ""
 restore [locate_data_file buc60728a.brep] s1 
 restore [locate_data_file buc60728b.brep] s2
 build3d s1
-puts [checkshape s1]
-puts [checkshape s2]
+checkshape s1
+checkshape s2
 
 bsection result s1 s2
 

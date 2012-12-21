@@ -6,13 +6,13 @@ puts "========================"
 puts ""
 
 restore [locate_data_file f1] b1 
-puts [checkshape b1]
+checkshape b1
 
 restore [locate_data_file f4] b2
-puts [checkshape b2]
+checkshape b2
 
 bcommon result b1 b2
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 315.159

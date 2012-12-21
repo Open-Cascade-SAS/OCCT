@@ -4,7 +4,7 @@ puts "(case 4)"
 puts "========================"
 
 restore [locate_data_file shading_151.brep] result 
-puts [checkshape result]
+checkshape result
 
 tclean result
 vinit

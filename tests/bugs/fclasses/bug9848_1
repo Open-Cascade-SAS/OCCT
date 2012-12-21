@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC9848"
+puts "============"
+puts ""
+#######################################################################
+# Specififying invalid name of unit produces exception.(for example tonne instead ton)
+#######################################################################
+
+set BugNumber OCC9848
+
+set UnitString "tonne/(mm*s**2)"
+
+set List ""
+set result ""
+
+if [catch { set List [unitparsing ${UnitString}] } result] {
+    if {  ${result} == "can not create a sentence\n"} {
+	puts "${BugNumber}: OK"
+    } else {
+	puts "${BugNumber}: Faulty (2)"
+    }
+} else {
+    puts "${BugNumber}: Faulty (1)"
+}

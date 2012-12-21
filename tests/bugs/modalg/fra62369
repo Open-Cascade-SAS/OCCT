@@ -4,7 +4,7 @@ puts "FRA62369"
 puts "==========="
 
 restore [locate_data_file fra62369a.brep] a 
-puts [checkshape a]
+checkshape a
 
 compound result
 

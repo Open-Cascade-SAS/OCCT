@@ -7,7 +7,7 @@ checkshape a
 
 fixshape result a 1e-7
 
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 1
 

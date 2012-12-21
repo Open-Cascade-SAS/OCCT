@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC738"
+puts "========"
+puts ""
+###################################
+## The GUIDs in XCAFDoc have incorrect format.
+###################################
+
+pload QAcommands
+
+if [catch { OCC738_Assembly }] then {
+  puts "Faulty OCC738"
+} else {
+  puts "OCC738 OK"
+}
+
+

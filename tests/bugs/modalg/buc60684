@@ -4,7 +4,7 @@ puts "BUC60684"
 puts "============="
 
 restore [locate_data_file buc60684a.brep] w 
-puts [checkshape w]
+checkshape w
 
 prism result w 0 0 10
 

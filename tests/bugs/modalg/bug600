@@ -8,9 +8,9 @@ puts "========================"
 ############################################################
 cpulimit 5000
 restore [locate_data_file OCC600_1.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file OCC600_2.brep] b 
-puts [checkshape b]
+checkshape b
 bop b a
 
 bopcommon result

@@ -1,0 +1,37 @@
+puts "============"
+puts "BUC60858"
+puts "============"
+puts ""                                                                                                                                                                        
+######################################################################
+## When I gave command "vdisplay a" , where a is shape restored from attached file.DRAW crashes
+## with segmentation fault. Exception is raised in the file BRepMesh/triangle.cxx.
+######################################################################
+
+restore [locate_data_file BUC60858.brep] result
+
+tclean result
+isos 0
+vinit
+incmesh result 0.01
+vdisplay result
+vfit
+
+vclear
+vdisplay result
+vsetdispmode result 1
+
+isos result 0
+triangles result
+
+set info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $info full tr
+regexp { +([-0-9.+eE]+) +nodes} $info full nd
+
+if { $tr == 0 || $nd == 0 }  {
+   puts "Error : here is shading problem"
+}
+
+set 3dviewer 1
+
+
+

@@ -1,0 +1,28 @@
+pload QAcommands
+
+puts "============"
+puts "OCC817"
+puts "============"
+puts ""
+#############################
+## Bad results of BRepAlgoAPI_Common
+#############################
+
+set InfoList [OCC817 result 15]
+
+set OriginalVolume 0
+regexp {Info: Original volume  = ([-0-9.+eE]+)} $InfoList full OriginalVolume
+
+set AccumulatedMeshedVolume 0
+regexp {Info: Accumulated meshed volume = ([-0-9.+eE]+)} $InfoList full AccumulatedMeshedVolume
+
+set percent_max 0.1
+set percent [expr abs(${AccumulatedMeshedVolume} - ${OriginalVolume}) / (${OriginalVolume}) * 100.]
+
+if {${percent} > ${percent_max}} {
+    puts "OCC817: Error"
+} else {
+    puts "OCC817: OK"
+}
+set 2dviewer 0
+set square 6000

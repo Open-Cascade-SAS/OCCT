@@ -11,8 +11,8 @@ puts ""
 
 restore [locate_data_file OCC251.brep] f 
 explode f
-puts [checkshape f_1]
-puts [checkshape f_2]
+checkshape f_1
+checkshape f_2
 
 bsection result f_2 f_1
 explode result

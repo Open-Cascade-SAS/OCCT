@@ -13,8 +13,8 @@ puts ""
 
 restore [locate_data_file BUC60853_face.brep] face 
 restore [locate_data_file BUC60853_plane.brep] plane
-puts [checkshape face]
-puts [checkshape plane]
+checkshape face
+checkshape plane
 
 bsection result face plane -a
 

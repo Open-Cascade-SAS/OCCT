@@ -4,10 +4,10 @@ puts "Bug regression in BRepOffsetAPI_MakeOffset class (offsetting in OY directi
 puts "========"
 
 restore [locate_data_file offset_wire_019.brep] a 
-puts [checkshape a]
+checkshape a
 
 mkplane f a
-puts [checkshape f]
+checkshape f
 
 set IsGood 1
 if [catch {mkoffset res1 f 1 1 } result] {

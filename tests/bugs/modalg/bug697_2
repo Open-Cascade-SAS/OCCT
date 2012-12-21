@@ -16,8 +16,8 @@ puts "#"
 restore [locate_data_file OCC697_2.brep] b2 
 restore [locate_data_file OCC697_3.brep] b3 
 
-puts [checkshape b2]
-puts [checkshape b3]
+checkshape b2
+checkshape b3
 ##############################################
 if { [catch {bfuse result b2 b3} catch_result] } {
 ##############################################

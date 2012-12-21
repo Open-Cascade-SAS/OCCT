@@ -4,7 +4,7 @@ puts "BUC60769"
 puts "============="
 
 restore [locate_data_file buc60769a.brep] result
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 0
 

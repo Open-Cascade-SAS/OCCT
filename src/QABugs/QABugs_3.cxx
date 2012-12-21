@@ -1364,7 +1364,6 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
   return 0;
 }
 
-#if ! defined(WNT)
 //#include <fstream.h>
 #ifdef HAVE_FSTREAM
 # include <fstream>
@@ -1420,7 +1419,6 @@ static Standard_Integer coordload (Draw_Interpretor& di, Standard_Integer argc, 
   DBRep::Set (argv[1],Face);
   return 0;
 }
-#endif
 
 static Standard_Integer TestMem (Draw_Interpretor& /*di*/,
 				 Standard_Integer /*nb*/, 
@@ -2254,9 +2252,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
 
   theCommands.Add("BUC60856","BUC60856",__FILE__,BUC60856,group);
 
-#if ! defined(WNT)
   theCommands.Add("coordload","load coord from file",__FILE__,coordload);
-#endif
 
   theCommands.Add("TestMem","TestMem",__FILE__,TestMem,group);
   theCommands.Add("BUC60945","BUC60945",__FILE__,TestMem,group);

@@ -6,8 +6,8 @@ puts ""
 restore [locate_data_file OCC122.brep] sh 
 explode sh
 
-puts [checkshape sh_1]
-puts [checkshape sh_2]
+checkshape sh_1
+checkshape sh_2
 
 bcut result sh_1 sh_2
 

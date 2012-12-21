@@ -1,0 +1,16 @@
+puts "============="
+puts "BUC60830"
+puts "BUC60829"
+puts "============="
+
+coordload res [locate_data_file cont2.dat]
+topoload res
+drawcont
+side left
+mat
+result
+side right
+mat
+result
+
+

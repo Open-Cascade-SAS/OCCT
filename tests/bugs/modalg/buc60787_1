@@ -10,9 +10,9 @@ puts "========"
 #restore Common_Solid_Case2.brep S2
 
 restore [locate_data_file buc60787a.brep] S1 
-puts [checkshape S1]
+checkshape S1
 restore [locate_data_file buc60787b.brep] S2
-puts [checkshape S1]
+checkshape S1
 
 bcommon result S1 S2
 

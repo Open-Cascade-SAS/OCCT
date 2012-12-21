@@ -24,11 +24,11 @@ puts ""
 restore [locate_data_file OCC150_compsolid_nofuse.brep] sh 
 explode sh
 
-puts [checkshape sh_1]
-puts [checkshape sh_2]
+checkshape sh_1
+checkshape sh_2
 
 bfuse result sh_2 sh_1
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 700

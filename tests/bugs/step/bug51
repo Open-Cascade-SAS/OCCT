@@ -24,7 +24,7 @@ puts " Read IGES file "
 igesbrep ${imagedir}/box.igs b *
 
 compound a_1 b_1 result
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 0
 

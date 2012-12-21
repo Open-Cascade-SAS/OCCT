@@ -14,7 +14,7 @@ if { [ catch { set info_result [OCC828 a1] } ] } {
     if { [lsearch ${info_result} FAILED] > -1} {
 	puts "Faulty : command was FAILED"
     }
-    puts [checkshape a1]
+    checkshape a1
     explode a1 e
     blend result a1 10 a1_7 10 a1_6
 

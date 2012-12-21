@@ -1,0 +1,14 @@
+puts "========"
+puts "BUC60774"
+puts "========"
+puts ""
+
+vinit
+catch {BUC60774}
+vfit
+
+set only_screen 1
+
+
+
+

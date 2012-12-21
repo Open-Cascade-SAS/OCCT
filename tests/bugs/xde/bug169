@@ -6,7 +6,7 @@ puts ""
 restore [locate_data_file OCC169.brep] a
 
 fixshape result a 1e-7
-puts [checkshape result]
+checkshape result
 
 set square 6.27959
 

@@ -7,20 +7,20 @@ puts ""
 ###############################
 ## BRepAlgoAPI_Fuse fails on two cylinders
 ###############################
+## (old topology)
+#####################################
 
 if { [ catch { set info_result [OCC823 a1 a2 result] } ] } {
-    puts "Faulty : an exception was caught"
+    puts "Faulty OCC823"
 } else {
-
-    if { [lsearch ${info_result} FAILED] > -1} {
-	puts "Faulty : commands was FAILED"
+    if { [regexp {FAILED} $info_result] } {
+	puts "Faulty OCC823"
     }
 
     set ExplodeList [explode result]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty : Resulting shape is empty COMPOUND"
+	puts "Faulty OCC823 : Resulting shape is empty COMPOUND"
     }
 }
-
 set square 23189.5
-set 2dviewer 0
+set 2dviewer 1

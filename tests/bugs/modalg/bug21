@@ -10,7 +10,7 @@ pload XDE
 catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
 
 restore [locate_data_file OCC21.brep] sh 
-puts [checkshape sh]
+checkshape sh
 puts "two faces in the compound share one edge"
 
 DT_SplitAngle result sh 90

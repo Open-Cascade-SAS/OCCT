@@ -1,0 +1,18 @@
+puts "========"
+puts "OCC708"
+puts "OCC1011"
+puts "========"
+puts ""
+#######################################################
+## UnsetTransformation() of the AIS_InteractiveObject crashes an application
+#######################################################
+vinit
+box result 10 10 10
+vdisplay result
+vfit
+
+if [catch { OCC708 result }] {
+  puts "Faulty OCC708"
+}
+
+set only_screen 1

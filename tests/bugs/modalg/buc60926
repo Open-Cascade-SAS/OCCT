@@ -9,10 +9,10 @@ puts ""
 ######################################################################
 
 restore [locate_data_file shading_132.brep] a 
-puts [checkshape a]
+checkshape a
 
 restore [locate_data_file BUC60926-2.brep] b
-puts [checkshape b]
+checkshape b
 
 bfuse result a b
 

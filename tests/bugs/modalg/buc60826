@@ -7,11 +7,11 @@ puts "========================"
                                                                       
 #restore Model2-a.brep a
 restore [locate_data_file BUC60826a.brep] a 
-puts [checkshape a]
+checkshape a
 
 # restore Model2-b.brep b
 restore [locate_data_file BUC60826b.brep] b
-puts [checkshape b]
+checkshape b
 
 bsection result a b
 

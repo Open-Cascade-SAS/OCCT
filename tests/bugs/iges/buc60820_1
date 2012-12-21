@@ -6,7 +6,7 @@ igesbrep [locate_data_file buc60820.igs] a *
 
 tpcompound result
 
-puts [checkshape result r]
+checkshape result r
 
 tclean result
 incmesh result 0.1

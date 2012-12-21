@@ -9,7 +9,7 @@ puts "============="
 #checkshape res
 
 restore [locate_data_file BUC60878-wire1.brep] a 
-puts [checkshape a]
+checkshape a
 
 set che [checkshape a rr]
 if { [regexp {OK} $che] != 1 } {

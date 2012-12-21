@@ -8,13 +8,13 @@ puts ""
 ################################
 
 restore [locate_data_file OCC779_s1.brep] s1 
-puts [checkshape s1]
+checkshape s1
 restore [locate_data_file OCC779_s2.brep] s2 
-puts [checkshape s2]
+checkshape s2
 
 ttranslate s1 0 0 -30
 prism s1p s1 0 0 70
-puts [checkshape s1p]
+checkshape s1p
 
 bcommon result s1p s2
 

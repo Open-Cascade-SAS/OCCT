@@ -8,8 +8,8 @@ puts "================"
 restore [locate_data_file BUC60937.brep] a 
 
 explode a
-puts [checkshape a_1]
-puts [checkshape a_2]
+checkshape a_1
+checkshape a_2
 
 bcommon result a_1 a_2
 

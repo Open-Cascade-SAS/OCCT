@@ -7,9 +7,9 @@ puts ""
 #restore buc60789c.brep S1
 ##by apn
 restore [locate_data_file buc60787b.brep] S1 
-puts [checkshape S1]
+checkshape S1
 restore [locate_data_file buc60789d.brep] S2
-puts [checkshape S2]
+checkshape S2
 
 bcut result S2 S1
 

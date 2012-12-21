@@ -8,13 +8,13 @@ puts ""
 #####################################
 
 restore [locate_data_file OCC636a.brep] s 
-puts [checkshape s]
+checkshape s
 
 restore [locate_data_file OCC636b.brep] s1 
-puts [checkshape s1]
+checkshape s1
 
 restore [locate_data_file OCC636c.brep] s2 
-puts [checkshape s2]
+checkshape s2
 
 mksweep s
 addsweep s1

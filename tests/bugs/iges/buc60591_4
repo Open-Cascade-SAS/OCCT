@@ -11,7 +11,7 @@ puts "consideration of \"buc60591d\" model"
 igesbrep [locate_data_file buc60591d.igs] a *
 
 tpcompound buc60591d
-puts [checkshape buc60591d r]
+checkshape buc60591d r
 
 ######################################################################
 
@@ -28,11 +28,11 @@ dall
 
 igesbrep ${imagedir}/buc60591d_brep.igs d_brep_iges *
 tpcompound buc60591d_brep_iges
-puts [checkshape buc60591d_brep_iges]
+checkshape buc60591d_brep_iges
 
 igesbrep ${imagedir}/buc60591d_iges.igs d_iges *
 tpcompound buc60591d_iges
-puts [checkshape buc60591d_iges]
+checkshape buc60591d_iges
 
 renamevar  buc60591d_iges result
 

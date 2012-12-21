@@ -24,47 +24,47 @@ tcopy c1 cc1
 tcopy c2 cc2
 bcommon int1 cc1 cc2
 ##########checkshape -top int1
-puts [checkshape -top int1]
+checkshape -top int1
 
 tcopy c1 cc1
 tcopy c2 cc2
 bcut cut1 cc1 cc2
-puts [checkshape -top cut1]
+checkshape -top cut1
 
 tcopy c1 cc1
 tcopy c2 cc2
 bcut cut2 cc2 cc1
 ##########checkshape -top cut2
-puts [checkshape -top cut2]
+checkshape -top cut2
 
 compound int1 cut1 cut2 comp3
 ##########checkshape -top comp3
-puts [checkshape -top comp3]
+checkshape -top comp3
 #donly comp3
 
 tcopy comp3 ccomp3
 tcopy h3 ch3
 bcommon int2 ccomp3 ch3
 ##########checkshape -top int2
-puts [checkshape -top int2]
+checkshape -top int2
 #donly int2
 
 tcopy comp3 ccomp3
 tcopy h3 ch3
 bcut cut3 ccomp3 ch3
 ##########checkshape -top cut3
-puts [checkshape -top cut3]
+checkshape -top cut3
 #donly cut3
 
 tcopy comp3 ccomp3
 tcopy h3 ch3
 bcut cut4 ch3 ccomp3
 ##########checkshape -top cut4
-puts [checkshape -top cut4]
+checkshape -top cut4
 
 compound int2 cut3 cut4 result
 ##########checkshape -top res
-puts [checkshape -top result]
+checkshape -top result
 
 ##########set che [checkshape -top res]
 ##########

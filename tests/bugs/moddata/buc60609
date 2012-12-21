@@ -1,0 +1,26 @@
+puts "================"
+puts "BUC60609"
+puts "================"
+
+pload QAcommands
+
+set INF [BUC60609 [locate_data_file buc60609a.brep] a]
+set ll [llength $INF]
+set first [lindex $INF [expr $ll - 5]]
+set second [lindex $INF [expr $ll - 1]]
+
+if {$first != "INSIDE" && $first != "inside"} {
+    puts "Faulty BUC60609 first: $first is not right result. It should be INSIDE"
+} else {
+    puts "BUC60609 first OK:  It is INSIDE"
+}
+
+if {$second != "INSIDE"} {
+    puts "Faulty BUC60609 second: $second is not right result. It should be INSIDE"
+} else {
+    puts "BUC60609 second OK:  It is INSIDE"
+}
+
+renamevar a result
+set 2dviewer 0
+

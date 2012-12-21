@@ -8,13 +8,13 @@ puts ""
 ########################################
 
 restore [locate_data_file OCC616.brep] a 
-puts [checkshape a]
+checkshape a
 
 if { [catch {mkoffset result a 5 -2} catch_result] } {
     puts "Faulty OCC616: function MKOFFSET works with exception"
 } else {
     renamevar result_1 result
-    puts [checkshape result]
+    checkshape result
     puts "OCC616 OK: function MKOFFSET works OK"
 }
 

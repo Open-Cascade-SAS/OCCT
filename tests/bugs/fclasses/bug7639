@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC7639"
+puts "============"
+puts ""
+#######################################################################
+# NCollection_Vector works incorrectly with rare data
+#######################################################################
+
+pload QAcommands
+set BugNumber OCC7639
+
+set List [OCC7639 0 1 2 500 1 2]
+
+set Length [llength $List]
+if { ${Length} != 6} {
+    puts "Faulty (1) ${BugNumber}"
+} else {
+    if { [regexp "1" $List] != 1 } {
+	puts "Faulty (2) ${BugNumber}"
+    }
+    if { [regexp "2" $List] != 1 } {
+	 puts "Faulty (3) ${BugNumber}"
+    }
+    if { [regexp "500" $List] != 1 } {
+	puts "Faulty (4) ${BugNumber}"
+    }
+}

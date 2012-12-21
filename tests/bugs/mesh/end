@@ -17,7 +17,7 @@ if { [string compare ${TheFileName} ""] != 0 } {
     }
 }
 
-puts [checkshape res]
+checkshape res
 
 tclean res
 

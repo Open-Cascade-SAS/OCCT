@@ -5,13 +5,13 @@ puts "==========="
 #cpulim add aki 070704
 cpulimit 1600
 restore [locate_data_file buc60555a.brep] part 
-puts [checkshape part]
+checkshape part
 restore [locate_data_file buc60555b.brep] trTool1
-puts [checkshape trTool1]
+checkshape trTool1
 halfspace hs1 trTool1 20000 10000 0
 bcut cut1 part hs1
 
-puts [checkshape cut1]
+checkshape cut1
 
 tcopy cut1 result
 

@@ -4,7 +4,7 @@ puts "BUC60635"
 puts "============="
 
 restore [locate_data_file buc60635a.brep] a 
-puts [checkshape a]
+checkshape a
 
 mkplane result a
 

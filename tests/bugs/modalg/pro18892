@@ -10,7 +10,7 @@ puts "=========="
 #   TOPOLOGY-M4-6A : 2 
 
 restore [locate_data_file pro18892.rle] a 
-puts [checkshape a]
+checkshape a
 
 explode a
 bsection result a_1 a_2 -2d -a

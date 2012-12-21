@@ -5,10 +5,10 @@ puts "BUC60970"
 puts "========"
 
 restore [locate_data_file buc60970a.brep] a
-puts [checkshape a]
+checkshape a
 ## small/brep/OCC358a.brep - second shape
 restore [locate_data_file OCC358a.brep] b 
-puts [checkshape b]
+checkshape b
 
 if { [catch { pipe result a b } catch_result] } {
     puts "$catch_result"

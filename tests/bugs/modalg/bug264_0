@@ -5,7 +5,7 @@ puts " (case 0)"
 puts "========"
 
 restore [locate_data_file OCC264_00.rle] result
-puts [checkshape result]
+checkshape result
 
 tclean result
 vinit

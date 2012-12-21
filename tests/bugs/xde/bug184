@@ -10,7 +10,7 @@ puts "FaceBrep must be identical FaceIGES!!!"
 puts "========"
 
 restore [locate_data_file OCC184.brep] FaceBrep 
-puts [checkshape FaceBrep]
+checkshape FaceBrep
 
 set dum1 [nbshapes FaceBrep]
 regexp {VERTEX +: +([-0-9.+eE]+)} $dum1 full nb_v1
@@ -32,7 +32,7 @@ catch {exec chmod 777 ${imagedir}/OCC184.igs}
 igesbrep ${imagedir}/OCC184.igs FaceIGES *
 
 sewing result FaceIGES
-puts [checkshape result]
+checkshape result
 
 set dum2 [nbshapes result]
 regexp {VERTEX +: +([-0-9.+eE]+)} $dum2 full nb_v2

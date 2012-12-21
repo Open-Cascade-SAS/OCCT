@@ -1,0 +1,21 @@
+puts "========================"
+puts "OCC611"
+puts "SAM1564"
+puts "(case 1)"
+puts "========================"
+puts ""
+############################
+## No possibility to fuse the shapes. 
+############################
+
+restore [locate_data_file OCC611.brep] a
+explode a
+checkshape a_1
+checkshape a_2
+
+bfuse result a_1 a_2
+checkshape result
+
+set check_square 1
+set square 531.197
+set 2dviewer 0

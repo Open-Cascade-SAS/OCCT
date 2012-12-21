@@ -7,9 +7,9 @@ puts ""
 #restore buc60789a.brep S1
 restore [locate_data_file buc60787b.brep] S1 
 ### (by apn during classification)
-puts [checkshape S1]
+checkshape S1
 restore [locate_data_file buc60789b.brep] S2
-puts [checkshape S2]
+checkshape S2
 
 bcommon result S1 S2
 

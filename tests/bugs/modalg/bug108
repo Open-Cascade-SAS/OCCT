@@ -9,7 +9,7 @@ puts ""
 #####################################################################
 
 restore [locate_data_file bug61037.brep] sh1
-puts [checkshape sh1]
+checkshape sh1
 
 set rr [bounding sh1]
 regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $rr full v1_x v1_y v1_z v2_x v2_y v2_z

@@ -6,12 +6,12 @@ puts "(FUSE: A and B)"
 puts "========================"
 
 restore [locate_data_file buc60775a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file buc60775b.brep] b
-puts [checkshape b]
+checkshape b
 
 bfuse result a b
-puts [checkshape result]
+checkshape result
 
 set nf [llength [explode result f]]
 

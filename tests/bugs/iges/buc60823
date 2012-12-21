@@ -13,8 +13,8 @@ puts "========================"
 igesbrep [locate_data_file buc60823.igs] a *
 
 tpcompound result
-puts [checkshape result]
-puts [checkshape result r]
+checkshape result
+checkshape result r
 
 tclean result
 vinit

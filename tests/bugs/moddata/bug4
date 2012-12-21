@@ -5,12 +5,12 @@ puts "================"
 puts ""
 
 restore [locate_data_file OCC4.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 explode sh e
 
 fillet result sh 15 sh_14
-puts [checkshape result]
+checkshape result
 
 set square 1
 set 2dviewer 0

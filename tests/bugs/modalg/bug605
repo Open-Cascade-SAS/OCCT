@@ -8,9 +8,9 @@ puts ""
 ##############################
 
 restore [locate_data_file OCC605a.brep] w1 
-puts [checkshape w1]
+checkshape w1
 restore [locate_data_file OCC605b.brep] w2 
-puts [checkshape w2]
+checkshape w2
 
 if { [catch {pipe result w2 w1 } catch_result] } {
     puts "Faulty OCC605: function PIPE works with exception."

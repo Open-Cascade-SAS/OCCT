@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC904"
+puts "============"
+puts ""
+#####################################################
+## Invalid resut shell after command fixshell in DRAW with non-manifold mode
+#####################################################
+
+pload QAcommands
+
+restore [locate_data_file OCC904.brep] a
+ 
+if [ catch { set res [OCC904 result a 1] } ] {
+   puts "Faulty OCC904 (case 1)"
+} else {
+  set info [checkshape result]
+  set index [lsearch $result Faulty]
+  if { [regexp "Faulty" $info] == 1 } {
+     puts "Faulty OCC904 (case 2)"
+  } else {
+     puts "OCC904 OK"
+  }
+}
+
+set 2dviewer 1
+

@@ -7,6 +7,6 @@ puts ""
 ############################################
 
 restore [locate_data_file OCC432.brep] result
-puts [checkshape result r]
+checkshape result r
 
 set 2dviewer 0

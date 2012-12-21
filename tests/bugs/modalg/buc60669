@@ -10,9 +10,9 @@ puts ""
 #############################################################
 
 restore [locate_data_file buc60669a.brep] shell1 
-puts [checkshape shell1]
+checkshape shell1
 restore [locate_data_file buc60669b.brep] shell2
-puts [checkshape shell2]
+checkshape shell2
 
 ksection result shell1 shell2 1000 0.0001 0.00001 0 
 

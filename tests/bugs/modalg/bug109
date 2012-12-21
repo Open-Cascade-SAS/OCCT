@@ -11,7 +11,7 @@ puts ""
 
 restore [locate_data_file OCC109.brep] result
 
-puts [checkshape result]
+checkshape result
 
 vinit
 tclean result

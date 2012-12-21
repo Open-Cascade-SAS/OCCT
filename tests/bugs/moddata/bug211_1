@@ -12,7 +12,7 @@ restore [locate_data_file OCC211.brep] a
 explode a e
 
 blend result a 10 a_24
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 1.34399e+06

@@ -10,7 +10,7 @@ restore [locate_data_file OCC482.brep] a
 
 fixsmall result a 0.05
 
-puts [checkshape result]
+checkshape result
 set 2dviewer 1
 
 

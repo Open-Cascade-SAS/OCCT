@@ -16,6 +16,6 @@ puts ""
 cpulimit 300
 restore [locate_data_file OCC54.brep] result
 
-puts [checkshape result]
+checkshape result
 
 set 3dviewer 0

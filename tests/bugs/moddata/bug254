@@ -5,13 +5,13 @@ puts "================"
 puts ""
 
 restore [locate_data_file OCC254-1.brep] shape1 
-puts [checkshape shape1]
+checkshape shape1
  
 restore [locate_data_file OCC254-3.brep] shape3
-puts [checkshape shape3]
+checkshape shape3
  
 common result shape1 shape3
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set length 1231.07

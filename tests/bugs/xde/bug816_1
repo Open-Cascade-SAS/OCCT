@@ -1,0 +1,24 @@
+puts "======="
+puts "OCC816"
+puts "======="
+puts ""
+########################################################
+## Fail occur during reading iges file that stored in brep mode. It is happens on
+## torus-apple and torus-lemon files (standard files in DE xloop nonregression test).
+########################################################
+
+set file ${imagedir}/OCC816.stp
+
+restore [locate_data_file OCC816-apple.rle] result
+
+if [ catch { brepiges result $file } res ] {
+   puts "Faulty OCC816 : brepiges not complite"
+}
+
+if [ catch { igesbrep $file a *} res ] {
+   puts "Faulty OCC816 : igesbrep not complite"
+}
+
+set 2dviewer 1
+
+

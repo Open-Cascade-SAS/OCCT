@@ -10,13 +10,13 @@ puts ""
 
 restore [locate_data_file OCC758.brep] a 
 explode a
-puts [checkshape a_1]
-puts [checkshape a_2]
-puts [checkshape a_3]
+checkshape a_1
+checkshape a_2
+checkshape a_3
 
 bcut res1 a_1 a_2
 
-puts [checkshape res1]
+checkshape res1
 
 bcut result res1 a_3
 

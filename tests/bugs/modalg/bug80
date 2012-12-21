@@ -8,7 +8,7 @@ puts ""
 ##########################################################
 
 restore [locate_data_file BUC60877_lh.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 plane pl 820 198 140 -1e-06 0 1
 mkface f pl -1000 500 -300 100

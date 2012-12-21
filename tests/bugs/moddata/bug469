@@ -24,7 +24,7 @@ checkshape a_1
 checkshape a_2
 
 bfuse result a_1 a_2
-puts [checkshape result]
+checkshape result
 
 set check_square 1
 set square 10

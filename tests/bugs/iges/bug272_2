@@ -5,8 +5,8 @@ puts "========"
 igesbrep [locate_data_file 919-001-T02-04-FT-VL.igs] a * 
 
 tpcompound result
-puts [checkshape result]
-puts [checkshape result r]
+checkshape result
+checkshape result r
 
 if { [llength [whatis result]] == 3 } {
     puts "Error : There is no result"

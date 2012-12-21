@@ -67,8 +67,8 @@ if { ${IsOK} == 1 } {
 
 if { ${IsOK} == 1 } {
    fixshape result com ${delta}
-   puts [ checkshape result]
-   puts [checkshape result r]
+    checkshape result
+   checkshape result r
 }
 
 set 2dviewer 0

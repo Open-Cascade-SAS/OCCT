@@ -3,12 +3,12 @@ puts "BUC60533"
 puts "=========="
 
 restore [locate_data_file buc60533a.brep] part 
-puts [checkshape part]
+checkshape part
 #puts "Tolerance part"
 #computetolerance part
 
 restore [locate_data_file buc60533b.brep] trTool
-puts [checkshape trTool]
+checkshape trTool
 #puts "Tolerance trTool"
 #computetolerance trTool
 

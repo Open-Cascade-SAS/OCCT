@@ -10,7 +10,7 @@ puts ""
 
 restore [locate_data_file OCC329.brep] a 
 
-puts [checkshape a]
+checkshape a
 set tol1 [maxtolerance a]
 regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full face1
 regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full edge1
@@ -18,7 +18,7 @@ regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol1 full vert1
 
 fixshape result a 1.e-7 0.1
 
-puts [checkshape result]
+checkshape result
 set tol2 [ maxtolerance result]
 regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full face2
 regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tol2 full edge2

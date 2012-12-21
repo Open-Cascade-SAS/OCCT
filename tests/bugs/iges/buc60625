@@ -10,7 +10,7 @@ cpulimit 1500
 set l [igesbrep [locate_data_file BUC60625-1.igs] a xst-transferrable-roots] 
 
 tpcompound result
-puts [checkshape result r]
+checkshape result r
 
 set start [lindex $l 60]
 set bug_list_numb [ llength $l ]

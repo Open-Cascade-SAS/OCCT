@@ -9,7 +9,7 @@ puts ""
 pload QAcommands
 
 restore [locate_data_file OCC625.brep] a 
-puts [checkshape a]
+checkshape a
 
 vinit
 tclean a
@@ -17,7 +17,7 @@ explode a e
 
 blend res1 a 10 a_22 10 a_14
 blend result res1 10 a_17 10 a_4
-puts [checkshape result]
+checkshape result
 
 vinit
 vdisplay result

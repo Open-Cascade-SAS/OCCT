@@ -8,14 +8,14 @@ puts "========================"
 puts ""
 
 restore [locate_data_file CTO909_objects.brep] a 
-puts [checkshape a]
+checkshape a
 
 restore [locate_data_file CTO909_tool_4.brep] b 
-puts [checkshape b]
+checkshape b
 
 bsection sec a b
 puts [checksection sec]
-puts [checkshape sec]
+checkshape sec
 explode a so
 renamevar a_1 a
 

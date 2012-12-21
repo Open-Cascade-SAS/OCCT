@@ -8,9 +8,9 @@ puts ""
 ############################
 
 restore [locate_data_file OCC620a.brep] a 
-puts [checkshape a]
+checkshape a
 restore [locate_data_file OCC620b.brep] b 
-puts [checkshape b]
+checkshape b
 
 bop a b
 

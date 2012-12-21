@@ -4,9 +4,9 @@ puts "PRO19424"
 puts "=========="
 
 restore [locate_data_file pro19424a.brep] b 
-puts [checkshape b]
+checkshape b
 restore [locate_data_file pro19424b.brep] p
-puts [checkshape p]
+checkshape p
 
 if [catch {evolved result b p o } catch_result] {
   puts "Faulty PRO19424 : function EVOLVED works wrongly"

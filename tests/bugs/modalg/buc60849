@@ -5,7 +5,7 @@ puts "============"
 puts ""
 
 restore [locate_data_file BUC60849.brep] result
-puts [checkshape result]
+checkshape result
 
 set bndb [ lindex [bounding result] 3 ]
 

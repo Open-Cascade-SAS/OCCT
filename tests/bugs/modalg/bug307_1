@@ -27,7 +27,7 @@ explode w w
 OCC307 result1 f_4 w_6 0
 OCC307 result2 f_5 result1 0
 
-puts [checkshape result1]
+checkshape result1
 renamevar result2 result
 
 set square 0

@@ -1,0 +1,21 @@
+puts "======="
+puts "OCC872"
+puts "SAM1660"
+puts "======="
+puts ""
+
+########################################
+## Exception is raised during vizualization attached shape.
+########################################
+
+cpulimit 3000
+cpulimit 3500
+
+restore [locate_data_file OCC872.brep] result
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+set only_screen 1

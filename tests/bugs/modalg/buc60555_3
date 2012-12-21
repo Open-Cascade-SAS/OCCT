@@ -4,13 +4,13 @@ puts "CUT Case 3"
 puts "=============="
 cpulimit 5000
 restore [locate_data_file buc60555a.brep] part 
-puts [checkshape part]
+checkshape part
 restore [locate_data_file buc60555b.brep] trTool1
-puts [checkshape trTool1]
+checkshape trTool1
 
 halfspace hs1 trTool1 20000 10000 0
 bcut cut1 part hs1
-puts [checkshape cut1]
+checkshape cut1
 
 set che [checkshape cut1 r]
 if { [regexp {OK} $che] != 1 } {
@@ -24,7 +24,7 @@ maxtolerance cut1
 restore [locate_data_file buc60555c.brep] trTool2
 halfspace hs2 trTool2 10000 10000 0
 bcut cut2 cut1 hs2
-puts [checkshape cut2]
+checkshape cut2
 
 set che [checkshape cut2 r]
 if { [regexp {OK} $che] != 1 } {
@@ -54,7 +54,7 @@ if { [regexp {OK} $che] != 1 } {
     puts "Checking by checkshape - OK"
 }
 
-puts [checkshape cut3 ]
+checkshape cut3 
 
 set tolerance [ maxtolerance cut3 ]
 regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $tolerance full MaxFaceTolerance

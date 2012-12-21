@@ -1,0 +1,34 @@
+if {[array get env os_type] != ""} {
+    set os $env(os_type)
+}
+if {[string compare $os "windows"] != 0 } {
+    puts "TODO OCC12345 ALL: Exception"
+    puts "TODO OCC12345 ALL: An exception was caught"
+    puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+}
+
+pload QAcommands
+
+puts "========"
+puts "OCC426"
+puts "OCC50"
+puts "========"
+#############################################################################
+## The result of fuse operation is invalid
+#############################################################################
+## BRepFilletAPI_MakeFillet presents a bug on fillet computation (build())
+#############################################################################
+## (old topology)
+#############################################################################
+
+OCC426 result rs1 rs2 rs3 fuse32 fuse321 0
+
+checkshape rs1
+checkshape rs2
+checkshape rs3
+checkshape fuse32
+checkshape fuse321
+
+set square 7507.61
+set 2dviewer 1
+

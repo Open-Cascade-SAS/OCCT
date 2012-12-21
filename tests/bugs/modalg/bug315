@@ -6,8 +6,8 @@ puts ""
 
 restore [locate_data_file OCC315-1.brep] f1 
 restore [locate_data_file OCC315-2.brep] f2
-puts [checkshape f1]
-puts [checkshape f2]
+checkshape f1
+checkshape f2
 
 bcut result f1 f2
 

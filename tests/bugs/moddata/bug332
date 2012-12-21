@@ -13,8 +13,8 @@ set major_radius 200
 
 OCC332 ${wall_thickness} ${dia1} ${dia2} ${length} ${major_radius}
 
-puts [checkshape wallSolid_]
-puts [checkshape gasSolid_]
+checkshape wallSolid_
+checkshape gasSolid_
 
 
 vinit

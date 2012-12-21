@@ -8,7 +8,7 @@ puts ""
 ##########################################
 
 restore [locate_data_file BUC60880_sec_error2.brep] sh 
-puts [checkshape sh]
+checkshape sh
 
 plane pl 65000 19000 2600 1 0 0
 mkface f pl

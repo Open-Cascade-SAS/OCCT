@@ -1,0 +1,39 @@
+puts "TODO OCC12345 ALL: Error on Record"
+puts "TODO OCC12345 ALL: OCC926 Faulty"
+
+puts "================"
+puts "OCC926"
+puts "================"
+puts ""
+
+stepread [locate_data_file OCC926.stp] a *
+
+tpcompound result
+set list [nbshapes result]
+
+regexp {VERTEX +: +([-0-9.+eE]+)} $list full VERTEX
+regexp {EDGE +: +([-0-9.+eE]+)} $list full EDGE
+regexp {WIRE +: +([-0-9.+eE]+)} $list full WIRE
+regexp {FACE +: +([-0-9.+eE]+)} $list full FACE
+regexp {SHELL +: +([-0-9.+eE]+)} $list full SHELL
+regexp {SOLID +: +([-0-9.+eE]+)} $list full SOLID
+regexp {COMPSOLID +: +([-0-9.+eE]+)} $list full COMPSOLID
+regexp {COMPOUND +: +([-0-9.+eE]+)} $list full COMPOUND
+regexp {SHAPE +: +([-0-9.+eE]+)} $list full SHAPE
+
+if { $VERTEX != 4474 || \
+    $EDGE != 6907 || \
+    $WIRE != 3823 || \
+    $FACE != 3085 || \
+    $SHELL != 196 || \
+    $SOLID != 154 || \
+    $COMPSOLID != 0 || \
+    $COMPOUND != 32 || \
+    $SHAPE != 18671 } {
+    puts "OCC926 Faulty"
+} else {
+    puts "OCC926 OK"
+}
+
+set 2dviewer 0
+

@@ -1,0 +1,53 @@
+puts "========| OCC565 |========"
+##################################
+## Can not intersect two trimmed conical surfaces 
+##################################
+
+restore [locate_data_file OCC565a.draw] s1 
+restore [locate_data_file OCC565b.draw] s2 
+
+puts "Preliminary check: intersection work with infinite cones:"
+if { [catch {intersect inf s1 s2 } catch_result] } {
+    puts "Faulty OCC565: function intersection works wrongly with infinite cones"
+} else {
+    set j 1
+    set er [lindex [whatis inf] 5]
+    repeat 4 {
+	set err [lindex [whatis inf_$j] 5]
+	if { $err != "curve" && $er != "curve"} {
+	    puts " Faulty OCC565: function intersection works wrongly with infinite cones"
+    	    break
+	} else {
+	    puts [format "curve inf_%s : exist " $j]
+	}
+	incr j
+    }
+    puts "Function intersection works correctly with infinite cones. Then check OCC565:"
+}
+
+trim s1x s1 0 2*pi 0 2.8
+trim s2x s2 0 2*pi 0 2.8
+
+if { [catch {intersect result s1x s2x } catch_result] } {
+    puts "Faulty OCC565 exception: function intersection works wrongly with trimmed cones"
+} else {
+    set nom 0
+    set j 1
+    set er [lindex [whatis result] 5]
+    repeat 4 {
+	set err [lindex [whatis result_$j] 5]
+      	if { $err != "curve" && $er != "curve"} {
+    	    break
+        } else {
+    	    set nom [expr $nom + 1]
+        }
+	incr j
+    }
+    if { $nom == 0} {
+	puts " Faulty OCC565: function intersection works wrongly with trimmed cones"
+    } else {
+	puts " OCC565 OK: function intersection works with trimmed cones"
+    }
+}
+
+

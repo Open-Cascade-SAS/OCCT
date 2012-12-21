@@ -9,7 +9,7 @@ puts ""
 restore [locate_data_file OCC125-2.brep] shell2 
 
 fixshape result shell2 1e-7
-puts [checkshape result]
+checkshape result
 
 set square 282.743
 

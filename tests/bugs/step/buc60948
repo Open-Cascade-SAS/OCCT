@@ -5,7 +5,7 @@ puts "BUC60948"
 puts "========================"
 
 restore [locate_data_file pump4.brep] a_1 
-puts [checkshape a_1]
+checkshape a_1
 
 #####################################################################
 catch {exec rm ${imagedir}/buc60948.stp}
@@ -16,7 +16,7 @@ dall
 stepread ${imagedir}/buc60948.stp a *
 
 tpcompound result
-puts [checkshape result]
+checkshape result
 
 set 2dviewer 0
 

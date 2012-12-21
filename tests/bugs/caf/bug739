@@ -1,0 +1,19 @@
+puts "TODO OCC12345 ALL: Faulty OCC739"
+
+puts "========"
+puts "OCC739"
+puts "========"
+puts ""
+###################################################
+## Invalid GUIDs in DDataStd_DrawPresentation and DDataStd_Sample.
+###################################################
+
+pload QAcommands
+
+if [catch { OCC739_DrawPresentation }] then {
+  puts "Faulty OCC739"
+} else {
+  puts "OCC739 OK"
+}
+
+

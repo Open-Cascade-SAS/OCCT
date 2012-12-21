@@ -18,8 +18,8 @@ puts ""
 if { [ catch { set info_result [OCC825 a1 a2 a3 a4 a5] } ] } {
     puts "Faulty : an exception was caught"
 } else {
-    puts [checkshape a1]
-    puts [checkshape a2]
+    checkshape a1
+    checkshape a2
     bcut result a2 a1
     set ExplodeList [explode result]
     if {[llength ${ExplodeList}] < 1} {
