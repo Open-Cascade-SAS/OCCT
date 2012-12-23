@@ -31,10 +31,10 @@
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePFI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();
+extern Standard_Boolean TopOpeBRepDS_GettracePFI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 static Standard_Boolean TRCF(const Standard_Integer F) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePFI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();

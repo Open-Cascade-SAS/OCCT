@@ -24,7 +24,7 @@
 #include <TopOpeBRepBuild_BuilderON.hxx>
 
 //Standard_IMPORT extern Standard_Boolean GLOBAL_faces2d;
-Standard_EXPORTEXTERN Standard_Boolean GLOBAL_faces2d;
+extern Standard_Boolean GLOBAL_faces2d;
 
 //=======================================================================
 //function : GFillONPartsWES

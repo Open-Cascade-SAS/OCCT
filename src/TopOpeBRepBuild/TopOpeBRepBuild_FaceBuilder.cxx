@@ -61,8 +61,8 @@
 #endif
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettracePURGE();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepBuild_GettracePURGE();
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #include <TopOpeBRepDS_DSX.hxx>
 void debifb() {}
 #endif

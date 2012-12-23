@@ -35,11 +35,11 @@
 Standard_EXPORT void debfctwes(const Standard_Integer /*i*/) {}
 Standard_EXPORT void debfctwesmess(const Standard_Integer i,const TCollection_AsciiString& s = "")
 {cout<<"+ + + debfctwes "<<s<<"F"<<i<<endl;debfctwes(i);}
-Standard_EXPORT void debaddpwes(const Standard_Integer iFOR,const TopAbs_State TB1,const Standard_Integer iEG,const TopAbs_Orientation neworiE,
-				const TopOpeBRepBuild_PBuilder& PB,const TopOpeBRepBuild_PWireEdgeSet& PWES,const TCollection_AsciiString& str1,const TCollection_AsciiString& str2);
+extern void debaddpwes(const Standard_Integer iFOR,const TopAbs_State TB1,const Standard_Integer iEG,const TopAbs_Orientation neworiE,
+                       const TopOpeBRepBuild_PBuilder& PB,const TopOpeBRepBuild_PWireEdgeSet& PWES,const TCollection_AsciiString& str1,const TCollection_AsciiString& str2);
 #endif
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
+Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
 
 #define M_IN(st )      (st == TopAbs_IN)
 #define M_OUT(st)      (st == TopAbs_OUT)

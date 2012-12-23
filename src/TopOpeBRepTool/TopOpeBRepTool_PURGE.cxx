@@ -52,8 +52,8 @@
 //Standard_EXPORT TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds, STATIC_CORR_mapeds;
 
 Standard_EXPORT void debcorrUV(){};
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettracePURGE();
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceCORRISO();
+extern Standard_Boolean TopOpeBRepTool_GettracePURGE();
+extern Standard_Boolean TopOpeBRepTool_GettraceCORRISO();
 #endif
 // DEB
 

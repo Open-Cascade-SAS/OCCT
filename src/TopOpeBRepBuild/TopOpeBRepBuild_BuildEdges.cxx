@@ -27,7 +27,7 @@
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCU();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
 #endif
 
 //=======================================================================

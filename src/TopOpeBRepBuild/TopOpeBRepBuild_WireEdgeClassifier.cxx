@@ -56,7 +56,7 @@
 #ifdef DEB
 #define TSTRA TopOpeBRepDS_GettraceSTRANGE()
 static TCollection_AsciiString PRODINS("dins ");
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #endif
 
 //Standard_IMPORT extern TopOpeBRepBuild_Builder* GLOBAL_PBUILDER;

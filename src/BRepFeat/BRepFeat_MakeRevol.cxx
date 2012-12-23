@@ -81,7 +81,7 @@
 #include <ElCLib.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean BRepFeat_GettraceFEAT();
+extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
 static void MajMap(const TopoDS_Shape&, // base

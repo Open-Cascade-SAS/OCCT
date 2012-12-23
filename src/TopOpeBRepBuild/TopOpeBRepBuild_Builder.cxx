@@ -48,12 +48,12 @@
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCU();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCUV();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSPF();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSPS();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextSF2();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSHEX();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCUV();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSPF();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextSF2();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSHEX();
 Standard_EXPORT void debmarksplit(const Standard_Integer i) {cout<<"++ debmarksplit "<<i<<endl;}
 Standard_EXPORT void debchangesplit(const Standard_Integer i) {cout<<"++ debchangesplit "<<i<<endl;}
 #endif

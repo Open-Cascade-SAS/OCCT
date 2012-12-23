@@ -84,10 +84,10 @@
 #include <Geom2d_TrimmedCurve.hxx>
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSNC();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceBUTO();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceTRPE();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSANTRAN();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
+extern Standard_Boolean TopOpeBRepDS_GettraceBUTO();
+extern Standard_Boolean TopOpeBRepDS_GettraceTRPE();
+extern Standard_Boolean TopOpeBRepDS_GettraceSANTRAN();
 static void DUMPCURVES(const Handle(Geom_Curve)& C3D,const TopOpeBRepDS_Curve& C)
 {
   if ( !C3D.IsNull() ) {

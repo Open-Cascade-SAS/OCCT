@@ -28,8 +28,8 @@
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePCI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettracePCI();
 static Standard_Boolean TRCC() {
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
   Standard_Boolean b3 = TopOpeBRepDS_GettracePCI();

@@ -93,11 +93,8 @@ t_perf2cornerbyinter,t_chfikpartcompdata,t_cheminement,t_remplissage,
 t_t3cornerinit ,t_spherique,t_torique, t_notfilling,t_filling,t_sameparam,
 t_computedata,t_completedata,t_t2cornerDS,t_t3cornerDS;
                
-//Standard_IMPORT extern void ChFi3d_InitChron(OSD_Chronometer& ch);
-Standard_IMPORT void ChFi3d_InitChron(OSD_Chronometer& ch);
-//Standard_IMPORT extern void ChFi3d_ResultChron(OSD_Chronometer & ch,
-Standard_IMPORT void ChFi3d_ResultChron(OSD_Chronometer & ch,
-					       Standard_Real& time);
+extern void ChFi3d_InitChron(OSD_Chronometer& ch);
+extern void ChFi3d_ResultChron(OSD_Chronometer & ch, Standard_Real& time);
 extern Standard_Boolean ChFi3d_GettraceCHRON();
 #endif
 

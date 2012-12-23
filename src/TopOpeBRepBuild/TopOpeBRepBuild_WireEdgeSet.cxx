@@ -49,11 +49,11 @@ static TCollection_AsciiString PRODINS("dins ");
 #include <TopOpeBRepTool_2d.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i);
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSS();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextSSCONNEX();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCHK();
-Standard_EXPORT TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = NULL;
+extern Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer i);
+extern Standard_Boolean TopOpeBRepBuild_GettraceSS();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextSSCONNEX();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
+TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = NULL;
 void debwesclo(const Standard_Integer) {}
 #endif
 

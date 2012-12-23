@@ -40,8 +40,8 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-Standard_IMPORT Standard_Boolean TopOpeBRep_GetcontextNEWKP();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
+extern Standard_Boolean TopOpeBRep_GetcontextNEWKP();
 #endif
 
 // VP<STATIC_lastVPind> is the vp on which was computed the last CPI.
@@ -295,7 +295,7 @@ Standard_Boolean FUNBREP_topowalki_new
 } // FUNBREP_topowalki_new 
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean GLOBAL_bvpr;
+extern Standard_Boolean GLOBAL_bvpr;
 Standard_EXPORT void debvpr2(void) {}
 #endif
 

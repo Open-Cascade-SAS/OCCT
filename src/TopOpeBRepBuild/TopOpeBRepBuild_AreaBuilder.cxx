@@ -30,7 +30,9 @@
 #include <Standard_DomainError.hxx>
 #include <TopAbs.hxx>
 
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+#ifdef DEB
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+#endif
 
 //=======================================================================
 //function : TopOpeBRepBuild_AreaBuilder

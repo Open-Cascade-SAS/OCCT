@@ -45,12 +45,12 @@ Standard_EXPORT Standard_Real GLOBAL_tolFF = 1.e-7;
 
 #ifdef DEB
 #include <TopAbs.hxx>
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceFI();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceFITOL();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceSAVFF();
+extern Standard_Boolean TopOpeBRep_GettraceFI();
+extern Standard_Boolean TopOpeBRep_GettraceFITOL();
+extern Standard_Boolean TopOpeBRep_GettraceSAVFF();
 
-Standard_EXPORT Standard_Integer SAVFFi1 = 0;
-Standard_EXPORT Standard_Integer SAVFFi2 = 0;
+Standard_Integer SAVFFi1 = 0;
+Standard_Integer SAVFFi2 = 0;
 static void SAVFF(const TopoDS_Face& F1,const TopoDS_Face& F2)
 {
   TCollection_AsciiString an1("SAVA");if (SAVFFi1) an1=an1+SAVFFi1;
@@ -62,7 +62,7 @@ static void SAVFF(const TopoDS_Face& F1,const TopoDS_Face& F2)
   cout<<"FaceIntersector : write "<<n1<<","<<n2<<endl;BRepTools::Write(F1,n1);BRepTools::Write(F2,n2); 
 }
 
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
 #include <TopOpeBRepTool_KRO.hxx>
 Standard_EXPORT TOPKRO KRO_DSFILLER_INTFF("intersection face/face");
 

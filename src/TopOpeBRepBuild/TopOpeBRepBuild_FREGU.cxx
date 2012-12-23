@@ -34,9 +34,9 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUFA();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSAVFREGU();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUFA();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSAVFREGU();
 void debregufa(const Standard_Integer /*iF*/) {}
 #endif
 

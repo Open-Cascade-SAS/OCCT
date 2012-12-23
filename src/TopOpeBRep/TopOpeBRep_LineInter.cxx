@@ -46,10 +46,10 @@
 #include <Standard_NotImplemented.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer&);
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceCONIC();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSNC();
+extern Standard_Boolean TopOpeBRep_GetcontextALWLNBP(Standard_Integer&);
+extern Standard_Boolean TopOpeBRep_GettraceCONIC();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
 #endif
 
 //-----------------------------------------------------------------------

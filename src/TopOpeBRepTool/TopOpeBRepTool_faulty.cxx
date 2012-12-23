@@ -39,11 +39,9 @@
 #endif
 
 #ifdef DEB
-//Standard_IMPORT extern TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
-Standard_IMPORT TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
-//Standard_IMPORT extern TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
-Standard_IMPORT TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettracePURGE();
+extern TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
+extern TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
+extern Standard_Boolean TopOpeBRepTool_GettracePURGE();
 Standard_EXPORT void FUN_REINIT()
 {STATIC_PURGE_mapv.Clear(); STATIC_PURGE_mapeds.Clear();}
 static void FUN_RaiseError()

@@ -59,13 +59,13 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED) 
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceISTO();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSP();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer i);
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer a,Standard_Integer b,Standard_Integer c,Standard_Integer d,Standard_Integer e);
-Standard_EXPORT Standard_Boolean GLOBAL_bvpr = Standard_False;void debvpr(){};
-Standard_EXPORT void debvprmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il,Standard_Integer vp,Standard_Integer si)
+extern Standard_Boolean TopOpeBRepDS_GettraceISTO();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSP();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer i);
+extern Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer a,Standard_Integer b,Standard_Integer c,Standard_Integer d,Standard_Integer e);
+extern Standard_Boolean GLOBAL_bvpr = Standard_False;void debvpr(){};
+void debvprmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il,Standard_Integer vp,Standard_Integer si)
 {cout<<"f1,f2,il,vp,si : "<<f1<<","<<f2<<","<<il<<","<<vp<<","<<si<<endl;cout.flush();debvpr();}
 void debpoint(Standard_Integer i) {cout<<"+ debpoint"<<i<<endl;}
 void debvertex(Standard_Integer i){cout<<"+ debvertex"<<i<<endl;}

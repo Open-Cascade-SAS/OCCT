@@ -29,8 +29,8 @@
 #include <TopAbs.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceAREA();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepBuild_GettraceAREA();
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #endif
 
 //=======================================================================

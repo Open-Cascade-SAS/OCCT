@@ -38,11 +38,11 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePEI();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePFI();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepDS_GettracePEI();
+extern Standard_Boolean TopOpeBRepDS_GettracePFI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 static Standard_Boolean FTRCF(const Standard_Integer F) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePFI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
@@ -57,7 +57,7 @@ static Standard_Boolean FTRCE(const Standard_Integer E) {
   Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(E);
   return (b1 || b2 || b3);
 }*/
-Standard_IMPORT void debredfac(const Standard_Integer I);
+extern void debredfac(const Standard_Integer I);
 #endif
 
 static Standard_Boolean STATIC_TOREVERSE = Standard_False; // xpu150498

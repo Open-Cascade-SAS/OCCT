@@ -102,11 +102,8 @@
 #include <OSD_Chronometer.hxx>
 // variables for performance 
 Standard_Real t_mkcurve;
-//Standard_IMPORT extern void ChFi3d_InitChron(OSD_Chronometer& ch);
-Standard_EXPORT void ChFi3d_InitChron(OSD_Chronometer& ch);
-//Standard_IMPORT extern void ChFi3d_ResultChron(OSD_Chronometer & ch,
-Standard_IMPORT void ChFi3d_ResultChron(OSD_Chronometer & ch,
-					Standard_Real&    time);
+extern void ChFi3d_InitChron(OSD_Chronometer& ch);
+extern void ChFi3d_ResultChron(OSD_Chronometer & ch, Standard_Real&    time);
 #ifdef DRAW
 static Standard_Boolean Affich = Standard_False;
 static char name[100];

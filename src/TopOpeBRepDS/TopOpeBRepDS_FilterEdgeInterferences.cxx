@@ -29,10 +29,10 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePEI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceEDPR();
+extern Standard_Boolean TopOpeBRepDS_GettracePEI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceEDPR();
 static Standard_Boolean TRCE(const Standard_Integer SIX) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePEI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();

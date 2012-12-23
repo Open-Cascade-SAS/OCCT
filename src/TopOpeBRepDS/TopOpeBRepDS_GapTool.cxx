@@ -26,7 +26,7 @@
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceGAP();
+extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
 #endif
 
 //=======================================================================

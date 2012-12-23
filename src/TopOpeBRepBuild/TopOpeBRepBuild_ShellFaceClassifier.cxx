@@ -32,7 +32,7 @@
 #include <BRepAdaptor_Surface.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCHK();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
 #endif
 
 //=======================================================================

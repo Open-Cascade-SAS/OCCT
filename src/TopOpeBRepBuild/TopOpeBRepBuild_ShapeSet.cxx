@@ -36,9 +36,9 @@ static TCollection_AsciiString PRODINS("dins ");
 #endif
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCHK();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCHKOK();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceCHKNOK();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCHKOK();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCHKNOK();
 Standard_EXPORT void debaddss(){}
 Standard_IMPORT TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB;
 #endif

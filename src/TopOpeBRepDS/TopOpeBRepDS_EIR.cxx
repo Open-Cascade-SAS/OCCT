@@ -38,7 +38,7 @@
 #ifdef DEB
 #include <TopOpeBRepDS_reDEB.hxx>
 Standard_EXPORT void debredpnc(const Standard_Integer ie){cout<<"+++ debredpnc e"<<ie<<endl;}
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GetcontextNOPNC();
+extern Standard_Boolean TopOpeBRepDS_GetcontextNOPNC();
 #endif
 
 #define M_FORWARD(O)  (O == TopAbs_FORWARD)

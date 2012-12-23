@@ -37,7 +37,7 @@ static Handle(TopOpeBRepDS_HDataStructure)*      Ghds;
 //function :FDSSDM_Close
 //purpose  : 
 //=======================================================================
-Standard_EXPORT void FDSSDM_Close()
+void FDSSDM_Close()
 {
   if (Gps1) {
     delete Gps1;

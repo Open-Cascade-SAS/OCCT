@@ -47,7 +47,7 @@
 #define M_EXTERNAL(ori) (ori == TopAbs_EXTERNAL) 
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceREGUFA(); 
+extern Standard_Boolean TopOpeBRepTool_GettraceREGUFA(); 
 static TopTools_IndexedMapOfShape STATIC_mapf, STATIC_mapw, STATIC_mapv;
 static TopTools_IndexedMapOfOrientedShape STATIC_mapeds;
 void FUN_tro(const Standard_Integer i)
@@ -73,7 +73,7 @@ Standard_EXPORT Standard_Integer FUN_adds(const TopoDS_Shape& s) {
 }
 #endif
 
-Standard_IMPORT void FUN_tool_tori(const TopAbs_Orientation Or);
+extern void FUN_tool_tori(const TopAbs_Orientation Or);
 
 void FUN_tool_Add(TopTools_DataMapOfShapeListOfShape& map,const TopoDS_Shape& key, const TopoDS_Shape& subitem)
 {

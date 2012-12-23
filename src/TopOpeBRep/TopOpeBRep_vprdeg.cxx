@@ -68,8 +68,8 @@ static Standard_Boolean local_FindVertex(const TopOpeBRep_VPointInter& theVP,
 #ifdef DEB
 void static FUN_debdegeneR() {}
 void static FUN_debdegeneF() {}
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDEGEN();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDEGEN();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 Standard_EXPORT Standard_Boolean FUN_debnull(const TopoDS_Shape& s);
 #endif
 

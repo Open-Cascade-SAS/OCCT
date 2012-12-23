@@ -51,7 +51,7 @@ void BREP_makeIDMOVP(const TopoDS_Shape& S,TopOpeBRepDS_IndexedDataMapOfVertexPo
   }
 }
 
-Standard_EXPORT void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
+void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
   TopOpeBRepDS_CurveExplorer cex(BDS);if (!cex.More()) return;

@@ -47,7 +47,7 @@
 #define M_EXTERNAL(sta) (sta == TopAbs_EXTERNAL)
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceREGUFA(); 
+extern Standard_Boolean TopOpeBRepTool_GettraceREGUFA(); 
 static TopTools_IndexedMapOfShape STATIC_mapw,STATIC_mapf;
 static Standard_Integer FUN_adds(const TopoDS_Shape& s) {
   TopAbs_ShapeEnum typ = s.ShapeType();

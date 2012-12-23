@@ -33,7 +33,7 @@
 #include <gp_Pnt.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceVC();
+extern Standard_Boolean TopOpeBRepTool_GettraceVC();
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <gp_Pnt.hxx>
 #endif

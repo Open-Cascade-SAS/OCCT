@@ -39,7 +39,7 @@
 #include <TopOpeBRep_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
 static TCollection_AsciiString PRODINP("dinp ");
 #endif
 

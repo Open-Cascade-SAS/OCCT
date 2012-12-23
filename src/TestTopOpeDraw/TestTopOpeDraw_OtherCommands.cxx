@@ -75,7 +75,7 @@ Standard_EXPORT void DRAWsuppressargs(Standard_Integer& na,const char** a,const 
 }
 
 //-----------------------------------------------------------------------
-Standard_EXPORT void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Displayer& TD)
+void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Displayer& TD)
 //-----------------------------------------------------------------------
 {
   Standard_Integer i,j,l,dloc = 0,iloc,decal = 0, NbArg = na;

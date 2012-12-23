@@ -43,10 +43,9 @@ Standard_IMPORT void FUN_draw2de (const TopoDS_Shape& ed,const TopoDS_Shape& fa)
 #endif
 
 #ifdef DEB
-//Standard_IMPORT extern void* GFABUMAKEFACEPWES_DEB;
-Standard_IMPORT void* GFABUMAKEFACEPWES_DEB;
+extern void* GFABUMAKEFACEPWES_DEB;
 #define DEBSHASET(sarg,meth,shaset,str) TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
-Standard_EXPORT Standard_Integer GLOBAL_iexE = 0;
+Standard_Integer GLOBAL_iexE = 0;
 Standard_EXPORT void debfillw(const Standard_Integer /*i*/) {}
 Standard_EXPORT void debfille(const Standard_Integer /*i*/) {}
 Standard_EXPORT void debffwesON(const Standard_Integer i) {cout<<"++ debffwesON "<<i<<endl;}
@@ -56,17 +55,13 @@ Standard_EXPORT void debsplite(const Standard_Integer i) {cout<<"++ debsplite "<
 Standard_EXPORT void debmergef(const Standard_Integer i) {cout<<"++ debmergef "<<i<<endl;}
 Standard_IMPORT void debfctwesmess(const Standard_Integer i,
 				   const TCollection_AsciiString& s = "");
-Standard_IMPORT void debaddpwes(const Standard_Integer iFOR,
-				const TopAbs_State TB1,
-				const Standard_Integer iEG,
-				const TopAbs_Orientation neworiE,
-				const TopOpeBRepBuild_PBuilder& PB,
-				const TopOpeBRepBuild_PWireEdgeSet& PWES,
-				const TCollection_AsciiString& str1,
-				const TCollection_AsciiString& str2);
+extern void debaddpwes(const Standard_Integer iFOR, const TopAbs_State TB1, const Standard_Integer iEG,
+                       const TopAbs_Orientation neworiE, const TopOpeBRepBuild_PBuilder& PB,
+                       const TopOpeBRepBuild_PWireEdgeSet& PWES, const TCollection_AsciiString& str1, 
+                       const TCollection_AsciiString& str2);
 #endif
 
-Standard_EXPORT Standard_Boolean GLOBAL_faces2d = Standard_False;
+Standard_Boolean GLOBAL_faces2d = Standard_False;
 Standard_EXPORT Standard_Boolean GLOBAL_classifysplitedge = Standard_False;  
 
 #define M_IN(st )      (st == TopAbs_IN)
@@ -120,8 +115,8 @@ static Standard_Boolean FUN_BUI_FACESINTERFER(const TopoDS_Shape& F1,
 //function :TopOpeBRepBuild_FUN_aresamegeom
 //purpose  : 
 //=======================================================================
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom (const TopoDS_Shape& S1,
-								  const TopoDS_Shape& S2)
+Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom (const TopoDS_Shape& S1,
+                                                  const TopoDS_Shape& S2)
 {
   TopoDS_Shape SF1 = S1; 
   SF1.Orientation(TopAbs_FORWARD);

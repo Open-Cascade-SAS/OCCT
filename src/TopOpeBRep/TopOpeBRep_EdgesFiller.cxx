@@ -38,9 +38,9 @@
 
 #ifdef DEB
 #include <TopOpeBRepDS_reDEB.hxx>
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceEDSF();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceEEFF();
+extern Standard_Boolean TopOpeBRepDS_GettraceEDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRep_GettraceEEFF();
 Standard_EXPORT void debefre(const Standard_Integer IE) {cout<<"+++ debefre E"<<IE<<endl;}
 Standard_EXPORT void debposesd(void) {/*cout<<"+++ debposesd"<<endl;*/}
 Standard_EXPORT void debposnesd(void) {cout<<"+++ debposnesd"<<endl;}

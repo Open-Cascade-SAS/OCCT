@@ -42,7 +42,7 @@
 #include <BRep_GCurve.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceCORRISO();
+extern Standard_Boolean TopOpeBRepTool_GettraceCORRISO();
 Standard_EXPORT TopTools_IndexedMapOfShape STATIC_PURGE_mapv;
 Standard_EXPORT TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
 #endif

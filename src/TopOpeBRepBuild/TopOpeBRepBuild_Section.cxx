@@ -49,15 +49,15 @@
 #define MGhc2 Handle(Geom2d_Curve)
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSPS();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSNC();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
 Standard_EXPORT void debsplitse(const Standard_Integer) {}
 Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s = "");
 Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s){cout<<"+++ debsplitse "<<s<<" E"<<i<<endl;debsplitse(i);}
 Standard_EXPORT void debspseou(const Standard_Integer i) {debsplitsemess(i,"OUT");}
 Standard_EXPORT void debspsein(const Standard_Integer i) {debsplitsemess(i,"IN ");}
 Standard_EXPORT void debspseon(const Standard_Integer i) {debsplitsemess(i,"ON ");}
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceC2D();
+extern Standard_Boolean TopOpeBRepTool_GettraceC2D();
 #endif
 
 #ifdef DRAW
@@ -651,49 +651,10 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
   mySplitSectionEdgesDone = Standard_True;  
 } // SplitSectionEdges
 
-//Standard_IMPORT extern TopoDS_Shape GLOBALDS_shape1;
-Standard_EXPORTEXTERN TopoDS_Shape GLOBALDS_shape1;
-//Standard_IMPORT extern TopoDS_Shape GLOBALDS_shape2;
-Standard_EXPORTEXTERN TopoDS_Shape GLOBALDS_shape2;
-
-//unused
-/*#ifdef DEB
-static void FUN_removeonGB(const Handle(TopOpeBRepDS_HDataStructure)& HDS, const TopoDS_Edge& E) 
-{
-  // xpu041198 : removing interferences attached to bounds
-  //             or vertices sdm to bounds of edge<EIX>
-  // (PRO16032, e3on)
-  TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
-  TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(E);
-  TopOpeBRepDS_TKI tki; tki.FillOnGeometry(LI);
-  for (tki.Init(); tki.More(); tki.Next()) {
-    TopOpeBRepDS_Kind K; Standard_Integer G; tki.Value(K,G);
-    TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G);
-    if (K==TopOpeBRepDS_VERTEX) {
-      const TopoDS_Vertex& vG = TopoDS::Vertex(BDS.Shape(G));
-      Standard_Integer iv = FUN_tool_orientVinE(vG,E);
-      if (iv == 0) {
-	TopoDS_Shape oovG;
-        Standard_Boolean sdm = FUN_ds_getoov(vG,BDS,oovG);
-	iv = FUN_tool_orientVinE(TopoDS::Vertex(oovG),E);
-      }
-      Standard_Boolean isonboundE = (iv != 0);
-      if (isonboundE) loi.Clear();
-    }
-  }
-  LI.Clear();
-  for (tki.Init(); tki.More(); tki.Next()) {
-    TopOpeBRepDS_Kind K; Standard_Integer G; tki.Value(K,G);
-    TopOpeBRepDS_ListOfInterference& loi = tki.ChangeValue(K,G);
-    LI.Append(loi);
-  }  
-} // FUN_removeonGB
-#endif*/
-
 #define TheIN (1)
 #define TheON (2)
 #define TheOUT (3)
-Standard_EXPORT Standard_Integer GLOBAL_issp = 0; //++
+Standard_Integer GLOBAL_issp = 0; //++
 
 #define HASSD2d (2)
 #define HASSD3d (3)

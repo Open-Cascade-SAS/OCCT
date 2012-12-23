@@ -29,8 +29,8 @@
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT void debfillp(const Standard_Integer i);
-Standard_EXPORT void debedbu(const Standard_Integer i) {cout<<"++ debedbu "<<i<<endl;}
+extern void debfillp(const Standard_Integer i);
+extern void debedbu(const Standard_Integer i) {cout<<"++ debedbu "<<i<<endl;}
 #endif
 
 #ifdef DRAW

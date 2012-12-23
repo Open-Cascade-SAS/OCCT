@@ -35,7 +35,7 @@
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 Standard_EXPORT void debgsobu(const Standard_Integer /*iSO*/) {}
 #endif
 

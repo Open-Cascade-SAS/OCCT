@@ -36,8 +36,8 @@
 
 #ifdef DEB
 #include <TopAbs.hxx>
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceFITOL();
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceSAVFF();
+extern Standard_Boolean TopOpeBRep_GettraceFITOL();
+extern Standard_Boolean TopOpeBRep_GettraceSAVFF();
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
 #include <BRepTools.hxx>
@@ -48,7 +48,7 @@ static void SAVFE(const TopoDS_Face& F1,const TopoDS_Edge& E)
   cout<<"FaceEdgeIntersector : "<<name_1<<","<<name_2<<endl;
   BRepTools::Write(F1,name_1); BRepTools::Write(E,name_2); 
 }
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
 #include <TopOpeBRepTool_KRO.hxx>
 Standard_EXPORT TOPKRO KRO_DSFILLER_INTFE("intersection face/edge");
 #endif

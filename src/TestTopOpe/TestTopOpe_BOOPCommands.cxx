@@ -34,15 +34,15 @@
 # include <strings.h>
 #endif
 
-Standard_IMPORT void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d);
+extern void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d);
 #ifdef DEB
-Standard_IMPORT void TopOpeBRepTool_SettraceEND(const Standard_Boolean);
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceEND();
+extern void TopOpeBRepTool_SettraceEND(const Standard_Boolean);
+extern Standard_Boolean TopOpeBRepTool_GettraceEND();
 #endif
 
 static const char* kboo[TESTTOPOPE_NKEYS] = {"topo","secc","sece","sec","com","c12","c21","fus"};
 static TestTopOpe_BOOP LOCALBOOP(kboo, "r");
-Standard_EXPORT TestTopOpe_BOOP* PBOOP=&LOCALBOOP;
+TestTopOpe_BOOP* PBOOP=&LOCALBOOP;
 
 void CATIND
 (TCollection_AsciiString& s,const Standard_Integer I,const TCollection_AsciiString& a,const TCollection_AsciiString& b) {s=s+a+TCollection_AsciiString(I)+b;}

@@ -40,10 +40,10 @@
 #include <TopOpeBRepTool_SC.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePEI();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceEDPR();
+extern Standard_Boolean TopOpeBRepDS_GettracePEI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceEDPR();
 static Standard_Boolean TRCE(const Standard_Integer SIX) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePEI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();

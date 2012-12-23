@@ -118,7 +118,7 @@ void TopOpeBRep_traceSIFF::End(const TCollection_AsciiString& s,
 }  
 //////////////////////////////////////////////////////////////////////////
 
-Standard_EXPORT TopOpeBRep_traceSIFF SIFF;
+TopOpeBRep_traceSIFF SIFF;
 
 Standard_EXPORT void TopOpeBRep_SettraceSIFF(const Standard_Boolean b,
 					     Standard_Integer n,char**a)

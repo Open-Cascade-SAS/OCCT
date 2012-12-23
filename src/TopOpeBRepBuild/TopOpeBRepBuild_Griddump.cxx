@@ -71,8 +71,8 @@
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
 #endif
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSPSXX(const Standard_Integer,const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSXX(const Standard_Integer,const Standard_Integer);
 static TCollection_AsciiString PRODINS("dins ");
 #endif
 

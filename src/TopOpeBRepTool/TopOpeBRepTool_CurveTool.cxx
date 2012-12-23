@@ -65,13 +65,12 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <BRep_Tool.hxx>
 
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettracePCURV();
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceCHKBSPL();
-
 #ifdef DEB
 #include <TopOpeBRepTool_KRO.hxx>
 TOPKRO KRO_CURVETOOL_APPRO("approximation");
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern Standard_Boolean TopOpeBRepTool_GettracePCURV();
+extern Standard_Boolean TopOpeBRepTool_GettraceCHKBSPL();
 #endif
 //#define DRAW
 //#define IFV 

@@ -48,7 +48,7 @@
 #include <Standard_ProgramError.hxx>
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceKPB();
+extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();
 #endif
 
 static void FUN_Raise() {

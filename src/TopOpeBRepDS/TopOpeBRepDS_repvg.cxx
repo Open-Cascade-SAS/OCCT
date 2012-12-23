@@ -44,7 +44,7 @@
 
 #ifdef DEB
 #include <TopOpeBRepDS_reDEB.hxx>
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GetcontextMKTONREG();
+extern Standard_Boolean TopOpeBRepDS_GetcontextMKTONREG();
 #endif
   
 //------------------------------------------------------

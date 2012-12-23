@@ -45,10 +45,10 @@
 
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOPURGE();
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOCORRISO();
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GettraceCHK();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextNOPURGE();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextNOCORRISO();
+extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 #define DEBSHASET(sarg,meth,shaset,str) \
 TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
 Standard_EXPORT void debgfabu(const Standard_Integer i) {cout<<"++ debgfabu "<<i<<endl;}
@@ -57,7 +57,7 @@ Standard_EXPORT Standard_Boolean DEBpurclo = Standard_False;
 void debpurclo() {}
 void debpurclomess(Standard_Integer i){cout<<"++ debpurclo "<<i<<endl;debpurclo();}
 Standard_EXPORT void debcorriso(const Standard_Integer i) {cout<<"++ debcorriso "<<i<<endl;}
-Standard_IMPORT void* GFABUMAKEFACEPWES_DEB;
+extern void* GFABUMAKEFACEPWES_DEB;
 #endif
 
 #ifdef DRAW

@@ -75,7 +75,7 @@ static TopTools_IndexedMapOfShape processedEdges;
 static TopTools_IndexedMapOfShape theUsedVertexMap;
 static TopTools_MapOfShape theUnkStateVer;
 
-Standard_IMPORT Standard_Boolean GLOBAL_faces2d;
+extern Standard_Boolean GLOBAL_faces2d;
 
 //modified by NIZNHY-PKV Mon Dec 16 11:38:55 2002 f
 //=======================================================================

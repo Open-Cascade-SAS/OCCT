@@ -72,7 +72,7 @@
 //modified by NIZNHY-PKV Thu Mar 21 17:30:29 2002 t
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean BRepFeat_GettraceFEAT();
+extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
 static void Descendants(const TopoDS_Shape&,

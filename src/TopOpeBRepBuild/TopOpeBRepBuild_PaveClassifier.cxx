@@ -31,8 +31,8 @@
 #include <TopExp.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceVC();
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceCLOV();
+extern Standard_Boolean TopOpeBRepTool_GettraceVC();
+extern Standard_Boolean TopOpeBRepTool_GettraceCLOV();
 #endif
 
 //=======================================================================

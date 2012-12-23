@@ -27,12 +27,12 @@
 #include <TopOpeBRep_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceSI(); 
-Standard_IMPORT Standard_Boolean TopOpeBRep_GetcontextFFOR();
-Standard_IMPORT Standard_Integer SAVFFi1; // FacesIntersector
-Standard_IMPORT Standard_Integer SAVFFi2; // FacesIntersector
-Standard_IMPORT void TopOpeBRep_SettraceEEFF(const Standard_Boolean b);
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceEEFF(const Standard_Integer e1,const Standard_Integer e2,const Standard_Integer f1,const Standard_Integer f2);
+extern Standard_Boolean TopOpeBRep_GettraceSI(); 
+extern Standard_Boolean TopOpeBRep_GetcontextFFOR();
+extern Standard_Integer SAVFFi1; // FacesIntersector
+extern Standard_Integer SAVFFi2; // FacesIntersector
+extern void TopOpeBRep_SettraceEEFF(const Standard_Boolean b);
+extern Standard_Boolean TopOpeBRep_GettraceEEFF(const Standard_Integer e1,const Standard_Integer e2,const Standard_Integer f1,const Standard_Integer f2);
 void seteeff(const Standard_Boolean b,const Standard_Integer e1,const Standard_Integer e2, const Standard_Integer f1,const Standard_Integer f2)
 {cout<<"b,e1,e2,f1,f2 : "<<b<<" "<<e1<<","<<e2<<","<<f1<<","<<f2<<endl;TopOpeBRep_SettraceEEFF(b);}
 void seteefft(const Standard_Integer e1,const Standard_Integer e2, const Standard_Integer f1,const Standard_Integer f2) {seteeff(Standard_True,e1,e2,f1,f2);}

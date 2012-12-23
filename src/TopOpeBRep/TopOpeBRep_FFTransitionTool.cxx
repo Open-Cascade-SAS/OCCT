@@ -37,7 +37,7 @@
 #include <gp_Vec.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 #endif
 
 //-----------------------------------------------------------------------

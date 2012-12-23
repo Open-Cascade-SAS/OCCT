@@ -49,7 +49,7 @@
 #define CLOSING  (5)
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceREGUSO(); 
+extern Standard_Boolean TopOpeBRepTool_GettraceREGUSO(); 
 static TopTools_IndexedMapOfShape STATIC_mape, STATIC_mapf, STATIC_mapw, STATIC_mapsh;
 static Standard_Integer FUN_adds(const TopoDS_Shape& s) {
   TopAbs_ShapeEnum typ = s.ShapeType();

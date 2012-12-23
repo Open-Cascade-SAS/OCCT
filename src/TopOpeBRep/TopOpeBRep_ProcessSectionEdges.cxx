@@ -36,9 +36,9 @@
 #include <TopTools_MapOfShape.hxx>
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSFK();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSNC();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSFK();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSNC();
 #endif
 
 Standard_EXPORT Standard_Boolean FUN_EqualponR(const TopOpeBRep_LineInter& Lrest,

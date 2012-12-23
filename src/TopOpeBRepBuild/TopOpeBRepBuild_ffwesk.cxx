@@ -34,7 +34,7 @@ Standard_EXPORT void debffwesON(const Standard_Integer i);
 Standard_EXPORT void debffwesk(const Standard_Integer i) {cout<<"++ debffwesk "<<i<<endl;}
 #endif
 
-Standard_EXPORT Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
+Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
 
 #define M_IN(st )      (st == TopAbs_IN)
 #define M_OUT(st)      (st == TopAbs_OUT)

@@ -40,7 +40,7 @@
 #include <BRepCheck_Result.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSPS();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
 #endif
 //------------
 //static Standard_Integer ifvNbFace = 0;

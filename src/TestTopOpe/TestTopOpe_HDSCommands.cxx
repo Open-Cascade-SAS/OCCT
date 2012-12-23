@@ -114,8 +114,8 @@ public:
 
 #define ISINTEGER(MMstr) ((strspn((MMstr),"0123456789") == strlen((MMstr))))
 
-Standard_EXPORT TestTopOpe_HDSDisplayer* PHDSD = NULL;
-Standard_EXPORT TestTopOpeDraw_Displayer* POCD = NULL;
+TestTopOpe_HDSDisplayer* PHDSD = NULL;
+static TestTopOpeDraw_Displayer* POCD = NULL;
 //Standard_IMPORT extern Standard_Integer TopOpeBRepDS_GLOBALHDSinterfselector;
 Standard_IMPORT Standard_Integer TopOpeBRepDS_GLOBALHDSinterfselector;
 
@@ -587,7 +587,7 @@ static void decalargs(Standard_Integer& na,const char** a,const Standard_Integer
 //-----------------------------------------------------------------------
 // suppressarg : remove a[d],modify na--
 //-----------------------------------------------------------------------
-Standard_EXPORT void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d) 
+void suppressarg(Standard_Integer& na,const char** a,const Standard_Integer d) 
 {
   for(Standard_Integer i=d;i<na;i++) {
     a[i]=a[i+1];
@@ -738,7 +738,7 @@ static void tds_help(Draw_Interpretor& di)
 }
 
 typedef Standard_Integer (*tf_SeeShape)(const Standard_Integer I,const TopoDS_Shape& S);
-Standard_IMPORT void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Displayer& TD);
+extern void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Displayer& TD);
 void COUTNOHDS(Draw_Interpretor& di) {di<<"no current HDS"<<"\n";}
 Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,const char** a,tf_SeeShape SeeShapefunc)
 {

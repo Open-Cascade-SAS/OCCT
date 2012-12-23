@@ -62,7 +62,7 @@
 #include <Precision.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceFUFA();
+extern Standard_Boolean TopOpeBRepBuild_GettraceFUFA();
 #endif
 
 static void GroupShape(TopTools_ListOfShape&,

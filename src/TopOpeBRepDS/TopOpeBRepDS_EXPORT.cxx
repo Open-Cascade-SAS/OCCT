@@ -56,7 +56,7 @@
 
 #ifdef DEB
 #include <TopOpeBRepDS_reDEB.hxx>
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 Standard_EXPORT void debse1(const Standard_Integer i) {cout<<"+ debse1 se"<<i<<endl;}
 Standard_EXPORT void debse2(const Standard_Integer i) {cout<<"+ debse2 se"<<i<<endl;}
 Standard_EXPORT void debse3(const Standard_Integer i) {cout<<"+ debse3 se"<<i<<endl;}

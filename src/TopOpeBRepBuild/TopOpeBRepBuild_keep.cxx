@@ -23,8 +23,8 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Integer GLOBAL_iexE;
-Standard_IMPORT Standard_Integer GLOBAL_iexF;
+extern Standard_Integer GLOBAL_iexE;
+extern Standard_Integer GLOBAL_iexF;
 Standard_Boolean STATIC_trace_iexE = Standard_False;
 Standard_Boolean STATIC_trace_iexF = Standard_False;
 Standard_EXPORT void debkeep(const Standard_Integer i) {cout<<"++ debkeep "<<i<<endl;}

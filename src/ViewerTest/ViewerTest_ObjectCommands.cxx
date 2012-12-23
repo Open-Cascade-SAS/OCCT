@@ -155,7 +155,7 @@ extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
                                            Standard_Boolean theReplaceIfExists = Standard_True);
-Standard_IMPORT int ViewerMainLoop(Standard_Integer argc, const char** argv);
+extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext();
 
 

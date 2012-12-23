@@ -53,12 +53,12 @@
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
-Standard_IMPORT Standard_Integer TOPOPE_SeeShape(char *name);
+extern Standard_Integer TOPOPE_SeeShape(char *name);
 
 #ifdef DEB
 #include <TopOpeBRepTool_KRO.hxx>
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceKRO();
-Standard_IMPORT void PrintKRO_PREPA();
+extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern void PrintKRO_PREPA();
 #endif
 
 Standard_Integer TestTopOpe_BOOP::Prepare(const char* ns1,const char* ns2)

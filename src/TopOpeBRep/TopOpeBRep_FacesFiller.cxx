@@ -62,9 +62,9 @@ Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt& P,const TopOpeBRep_L
 }
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
 void debffsamdom(void){}
 #endif
 

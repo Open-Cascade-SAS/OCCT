@@ -68,7 +68,7 @@
 #include <Standard_ConstructionError.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean BRepFeat_GettraceFEAT();
+extern Standard_Boolean BRepFeat_GettraceFEAT();
 #endif
 
 #define NECHANT 7 // voir BRepFeat.cxx

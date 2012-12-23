@@ -76,7 +76,7 @@
 #include <BSplCLib.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceFE();
+extern Standard_Boolean TopOpeBRepBuild_GettraceFE();
 #endif
 
 //=======================================================================

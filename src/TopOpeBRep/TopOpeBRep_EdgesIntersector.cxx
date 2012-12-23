@@ -54,16 +54,16 @@
 #include <TopOpeBRep_define.hxx>
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceNYI();
-Standard_EXPORT Standard_Boolean TopOpeBRepTool_GettraceKRO();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceEDSF();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettracePROEDG();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextTOL0();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextNOFEI();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceFITOL();
-Standard_EXPORT Standard_Boolean TopOpeBRep_GettraceEEFF();
-Standard_EXPORT void debeeff();
+extern Standard_Boolean TopOpeBRepTool_GettraceNYI();
+extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern Standard_Boolean TopOpeBRepDS_GettraceEDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRep_GettracePROEDG();
+extern Standard_Boolean TopOpeBRep_GetcontextTOL0();
+extern Standard_Boolean TopOpeBRep_GetcontextNOFEI();
+extern Standard_Boolean TopOpeBRep_GettraceFITOL();
+extern Standard_Boolean TopOpeBRep_GettraceEEFF();
+extern void debeeff();
 #include <TopOpeBRepTool_KRO.hxx>
 Standard_EXPORT TOPKRO KRO_DSFILLER_INTEE("intersection edge/edge");
 #endif

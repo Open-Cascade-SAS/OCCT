@@ -120,8 +120,8 @@
 //#include <DbgTools.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean BRepFeat_GettraceFEAT();
-Standard_IMPORT Standard_Boolean BRepFeat_GettraceFEATRIB();
+extern Standard_Boolean BRepFeat_GettraceFEAT();
+extern Standard_Boolean BRepFeat_GettraceFEATRIB();
 #endif
 
 static void MajMap(const TopoDS_Shape&, // base

@@ -40,9 +40,9 @@
 #include <IntPatch_GLine.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSNC(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF(); 
+extern Standard_Boolean TopOpeBRepDS_GettraceDSFK(); 
 static TCollection_AsciiString PRODINP("dinp ");
 #endif
 

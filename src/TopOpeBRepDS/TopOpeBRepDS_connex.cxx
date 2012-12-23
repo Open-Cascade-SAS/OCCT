@@ -35,7 +35,7 @@ static Standard_Boolean GLOBAL_FDSCNX_prepared = Standard_False;
 //function : FDSCNX_Close
 //purpose  : 
 //=======================================================================
-Standard_EXPORT void FDSCNX_Close()
+void FDSCNX_Close()
 {
   if (GLOBAL_elf1) {
     delete GLOBAL_elf1;

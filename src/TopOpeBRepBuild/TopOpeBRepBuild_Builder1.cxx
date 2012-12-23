@@ -58,7 +58,7 @@ static TopAbs_State ClassifyEdgeToFaceByOnePoint(const TopoDS_Edge& E,
 //because new algo can not be used in LocOpe and Mechanical Features (for the moment)
 //that's why we use new algo only in BRepAlgoAPI_BooleanOperation
 //in all other cases old algo is called (see the methods GFillSolidSFS, GFillShellSFS, etc.);
-Standard_EXPORT Standard_Boolean GLOBAL_USE_NEW_BUILDER = Standard_False;
+Standard_Boolean GLOBAL_USE_NEW_BUILDER = Standard_False;
 
 //=======================================================================
 //function : Constructor
@@ -1013,7 +1013,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
   }
 } // GFillEdgeWES
 
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
+extern Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
 
 //=======================================================================
 //function : PerformONParts

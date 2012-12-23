@@ -26,7 +26,7 @@
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextSPEON();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextSPEON();
 #endif
 
 //=======================================================================

@@ -32,9 +32,9 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUSO();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceSAVSREGU();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUSO();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
+extern Standard_Boolean TopOpeBRepBuild_GettraceSAVSREGU();
 Standard_EXPORT void debreguso(const Standard_Integer iS) {cout<<"++ debreguso "<<iS<<endl;}
 #endif
 

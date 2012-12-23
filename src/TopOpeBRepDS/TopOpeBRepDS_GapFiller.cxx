@@ -45,8 +45,8 @@
 #include <Geom2d_Curve.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceGAP();
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GetcontextNOGAP();
+extern Standard_Boolean TopOpeBRepDS_GettraceGAP();
+extern Standard_Boolean TopOpeBRepDS_GetcontextNOGAP();
 #endif
 
 //=======================================================================

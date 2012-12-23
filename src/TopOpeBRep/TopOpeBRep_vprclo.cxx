@@ -44,8 +44,8 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED) 
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceDSF();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer i1);
+extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer i1);
 Standard_EXPORT void debarc(const Standard_Integer i);
 Standard_EXPORT void debooarc(const Standard_Integer i);
 #endif

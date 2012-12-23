@@ -27,12 +27,12 @@
 #include <gp_Pnt2d.hxx>
 
 #ifdef DEB
-Standard_IMPORT void FUN_REINIT();
-Standard_IMPORT Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
-Standard_IMPORT Standard_Integer FUN_addcheckepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
-Standard_IMPORT Standard_Integer FUN_adds(const TopoDS_Shape& s);
-Standard_IMPORT void FUN_tool_trace(const Standard_Integer Index);
-Standard_IMPORT  void FUN_tool_trace(const gp_Pnt2d p2d);
+extern void FUN_REINIT();
+extern Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
+extern Standard_Integer FUN_addcheckepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
+extern Standard_Integer FUN_adds(const TopoDS_Shape& s);
+extern void FUN_tool_trace(const Standard_Integer Index);
+extern void FUN_tool_trace(const gp_Pnt2d p2d);
 #endif
 // ----------------------------------------------------------------------
 // TopOpeBRepTool_closing.cxx

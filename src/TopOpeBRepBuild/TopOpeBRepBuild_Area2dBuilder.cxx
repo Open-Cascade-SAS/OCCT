@@ -23,7 +23,7 @@
 #include <TopOpeBRepBuild_Loop.hxx>
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GettraceAREA();
+extern Standard_Boolean TopOpeBRepBuild_GettraceAREA();
 #endif
 
 //=======================================================================

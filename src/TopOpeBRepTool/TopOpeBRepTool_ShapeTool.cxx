@@ -250,8 +250,8 @@ Standard_Boolean TopOpeBRepTool_ShapeTool::Closed(const TopoDS_Shape& S1,
 
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceVC();
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceNYI();
+extern Standard_Boolean TopOpeBRepTool_GettraceVC();
+extern Standard_Boolean TopOpeBRepTool_GettraceNYI();
 #endif
 
 

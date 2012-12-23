@@ -42,8 +42,8 @@
 #define MDSkf TopOpeBRepDS_FACE
 
 #ifdef DEB
-Standard_EXPORT void debrededg(const Standard_Integer I) {cout<<"+++ debrededg f"<<I<<endl;}
-Standard_EXPORT void debredfac(const Standard_Integer I) {cout<<"+++ debredfac f"<<I<<endl;}
+void debrededg(const Standard_Integer I) {cout<<"+++ debrededg f"<<I<<endl;}
+void debredfac(const Standard_Integer I) {cout<<"+++ debredfac f"<<I<<endl;}
 void FUN_dumploiS(const TopoDS_Shape& SG,const TopOpeBRepDS_ListOfInterference& loi,const TopOpeBRepDS_DataStructure& BDS,TCollection_AsciiString str) 
 {
   cout<<str<<"   G : "<<BDS.Shape(SG)<<"   S : ";
@@ -61,11 +61,11 @@ void FUN_dumpmosd(TopOpeBRepDS_MapOfShapeData& mosd,const TopOpeBRepDS_DataStruc
 #endif
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePEI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePFI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepDS_GettracePEI();
+extern Standard_Boolean TopOpeBRepDS_GettracePFI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 static Standard_Boolean FTRCF(const Standard_Integer F) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePFI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();

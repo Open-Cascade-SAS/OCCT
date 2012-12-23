@@ -35,13 +35,10 @@
 //modified by NIZNHY-PKV Tue Oct 30 09:21:44 2001 t
 
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 #include <TCollection_AsciiString.hxx>
 #include <TopOpeBRepDS.hxx>
 #endif
-
-Standard_EXPORT TopoDS_Shape GLOBALDS_shape1;
-Standard_EXPORT TopoDS_Shape GLOBALDS_shape2;
 
 //=======================================================================
 //function : TopOpeBRepDS_DataStructure

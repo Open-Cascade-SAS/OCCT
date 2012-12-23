@@ -63,18 +63,17 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face& FF,const TopoDS_Face& FS,
 #define MAKEFEI(IJKLM) (Handle(TopOpeBRepDS_FaceEdgeInterference)::DownCast(IJKLM))
 
 #ifdef DEB
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePFI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettracePI();
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
+extern Standard_Boolean TopOpeBRepDS_GetcontextNOPFI();
+extern Standard_Boolean TopOpeBRepDS_GettracePFI();
+extern Standard_Boolean TopOpeBRepDS_GettracePI();
+extern Standard_Boolean TopOpeBRepDS_GettraceSPSX(const Standard_Integer);
 static Standard_Boolean TRCF(const Standard_Integer F) {
   Standard_Boolean b1 = TopOpeBRepDS_GettracePFI();
   Standard_Boolean b2 = TopOpeBRepDS_GettracePI();
   Standard_Boolean b3 = TopOpeBRepDS_GettraceSPSX(F);
   return (b1 || b2 || b3);
 }
-Standard_EXPORT void debrededg(const Standard_Integer I);
-Standard_EXPORT void debredunkf(const Standard_Integer /*i*/){};
+static void debredunkf(const Standard_Integer /*i*/){};
 #endif
 
 Standard_EXPORT Standard_Boolean FUN_Parameters(const gp_Pnt& Pnt,const TopoDS_Shape& F,Standard_Real& u,Standard_Real& v);

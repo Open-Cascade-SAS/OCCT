@@ -42,7 +42,7 @@
 #include <TopOpeBRepTool_FuseEdges.hxx>
 #include <Standard_ProgramError.hxx>
 #ifdef DEB
-Standard_IMPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOFE();
+extern Standard_Boolean TopOpeBRepBuild_GetcontextNOFE();
 #endif
 
 //=======================================================================

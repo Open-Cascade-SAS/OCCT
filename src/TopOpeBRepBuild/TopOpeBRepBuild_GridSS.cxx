@@ -72,10 +72,10 @@
 
 #ifdef DEB
 #define DEBSHASET(sarg,meth,shaset,str) TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
-Standard_EXPORT Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
+extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 Standard_EXPORT void debsplitf(const Standard_Integer i){cout<<"++ debsplitf "<<i<<endl;}
 Standard_EXPORT void debspanc(const Standard_Integer i){cout<<"++ debspanc "<<i<<endl;}
-Standard_EXPORT Standard_Integer GLOBAL_iexF = 0;
+Standard_Integer GLOBAL_iexF = 0;
 #endif
 
 Standard_EXPORT Handle(Geom2d_Curve) BASISCURVE2D(const Handle(Geom2d_Curve)& C);

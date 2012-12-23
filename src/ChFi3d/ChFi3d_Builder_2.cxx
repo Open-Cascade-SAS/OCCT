@@ -102,16 +102,10 @@
 #include <DrawTrSurf.hxx>
 #endif
 #include <OSD_Chronometer.hxx>
-//Standard_IMPORT extern Standard_Real  t_perfsetofkpart,t_perfsetofkgen,
-Standard_IMPORT Standard_Real  t_perfsetofkpart,t_perfsetofkgen,
-t_makextremities,t_performsurf,t_startsol;
-//Standard_IMPORT extern Standard_Boolean ChFi3d_GettraceCHRON();
-Standard_IMPORT Standard_Boolean ChFi3d_GettraceCHRON();
-//Standard_IMPORT extern void ChFi3d_InitChron(OSD_Chronometer& ch);
-Standard_IMPORT void ChFi3d_InitChron(OSD_Chronometer& ch);
-//Standard_IMPORT extern void ChFi3d_ResultChron(OSD_Chronometer & ch,
-Standard_IMPORT void ChFi3d_ResultChron(OSD_Chronometer & ch,
-					       Standard_Real& time);
+extern Standard_Real  t_perfsetofkpart,t_perfsetofkgen,t_makextremities,t_performsurf,t_startsol;
+extern Standard_Boolean ChFi3d_GettraceCHRON();
+extern void ChFi3d_InitChron(OSD_Chronometer& ch);
+extern void ChFi3d_ResultChron(OSD_Chronometer & ch, Standard_Real& time);
 #endif
 
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:08:19 2001 Begin

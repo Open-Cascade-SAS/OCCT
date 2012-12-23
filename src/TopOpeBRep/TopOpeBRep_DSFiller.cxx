@@ -43,8 +43,8 @@
 #include <TopOpeBRepDS_ShapeWithState.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-Standard_IMPORT void BREP_sortonparameter(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
-Standard_IMPORT void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+extern void BREP_sortonparameter(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
+extern void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS);
 
 
 #ifdef DEB
@@ -62,9 +62,9 @@ void debfillerss(const Standard_Integer i1,const Standard_Integer i2){cout<<"+ +
 
 #include <TopOpeBRepTool_KRO.hxx>
 Standard_EXPORT TOPKRO KRO_DSFILLER_TOTAL("dsfiller");
-Standard_IMPORT TOPKRO KRO_DSFILLER_INTFF;
-Standard_IMPORT TOPKRO KRO_DSFILLER_INTEE;
-Standard_IMPORT TOPKRO KRO_DSFILLER_INTFE;
+extern TOPKRO KRO_DSFILLER_INTFF;
+extern TOPKRO KRO_DSFILLER_INTEE;
+extern TOPKRO KRO_DSFILLER_INTFE;
 static void FUN_RESET_KRO_DSFILLER()
 {
   KRO_DSFILLER_TOTAL.Reset();
@@ -76,13 +76,13 @@ static void FUN_RESET_KRO_DSFILLER()
 #include <TopOpeBRep_traceSIFF.hxx>
 #include <BRepTools.hxx>
 
-Standard_IMPORT  TopOpeBRep_traceSIFF SIFF;
+extern TopOpeBRep_traceSIFF SIFF;
 
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceKRO();
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceSIFF();
-Standard_IMPORT Standard_Boolean TopOpeBRepTool_GettraceEND();
-Standard_IMPORT Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer);
-Standard_IMPORT Standard_Boolean TopOpeBRep_GetcontextNONOG();
+extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
+extern Standard_Boolean TopOpeBRep_GettraceSIFF();
+extern Standard_Boolean TopOpeBRepTool_GettraceEND();
+extern Standard_Boolean TopOpeBRep_GettraceSHA(const Standard_Integer);
+extern Standard_Boolean TopOpeBRep_GetcontextNONOG();
 #endif
 
 //=======================================================================
@@ -314,9 +314,6 @@ static
 
 } // FUN_shareNOG
 
-Standard_IMPORT  TopoDS_Shape GLOBALDS_shape1;
-Standard_IMPORT  TopoDS_Shape GLOBALDS_shape2;
-
 //=======================================================================
 //function : Insert
 //purpose  : 
@@ -345,9 +342,6 @@ void TopOpeBRep_DSFiller::InsertIntersection(const TopoDS_Shape& aS1,
   FBOX_Prepare();
   FC2D_Prepare(aS1,aS2);
 
-  GLOBALDS_shape1 = aS1;
-  GLOBALDS_shape2 = aS2;
-  
   if (myPShapeClassifier == NULL) myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
   myFacesFiller.SetPShapeClassifier(myPShapeClassifier);
   
