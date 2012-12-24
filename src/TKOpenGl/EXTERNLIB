@@ -2,6 +2,9 @@ TKernel
 TKService
 TKV3d
 CSF_OpenGlLibs
+CSF_objc
+CSF_Appkit
+CSF_IOKit
 CSF_FREETYPE
 CSF_FTGL
 CSF_GL2PS

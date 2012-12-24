@@ -77,6 +77,7 @@ OpenGl_Display_2.cxx
 Handle_OpenGl_Window.hxx
 OpenGl_Window.hxx
 OpenGl_Window.cxx
+OpenGl_Window_1.mm
 OpenGl_PriorityList.hxx
 OpenGl_PriorityList.cxx
 OpenGl_AVIWriter.hxx
@@ -100,6 +101,7 @@ OpenGl_tgl_funcs.hxx
 Handle_OpenGl_Context.hxx
 OpenGl_Context.hxx
 OpenGl_Context.cxx
+OpenGl_Context_1.mm
 OpenGl_ArbIns.hxx
 OpenGl_ArbTBO.hxx
 OpenGl_ArbVBO.hxx

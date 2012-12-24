@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <InterfaceGraphic.hxx>
 
 #include <OpenGl_Window.hxx>
@@ -32,6 +31,8 @@
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
+
+#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
 
 namespace
 {
@@ -437,6 +438,8 @@ OpenGl_Window::~OpenGl_Window()
 #endif
 }
 
+#endif // !__APPLE__
+
 // =======================================================================
 // function : Activate
 // purpose  :
@@ -445,6 +448,8 @@ Standard_Boolean OpenGl_Window::Activate()
 {
   return myGlContext->MakeCurrent();
 }
+
+#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
 
 // =======================================================================
 // function : Resize
@@ -470,6 +475,8 @@ void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
 
   Init();
 }
+
+#endif // !__APPLE__
 
 // =======================================================================
 // function : ReadDepths
@@ -507,6 +514,8 @@ void OpenGl_Window::SetBackgroundColor (const Standard_ShortReal theR,
   myBgColor.rgb[2] = theB;
 }
 
+#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+
 // =======================================================================
 // function : Init
 // purpose  :
@@ -539,6 +548,8 @@ void OpenGl_Window::Init()
   glDisable (GL_SCISSOR_TEST);
   glDrawBuffer (GL_BACK);
 }
+
+#endif // !__APPLE__
 
 // =======================================================================
 // function : EnablePolygonOffset

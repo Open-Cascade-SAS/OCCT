@@ -241,6 +241,7 @@ p Visual3d
 p Voxel
 p WNT
 p Xw
+p Cocoa
 r FontMFT
 r Textures
 t TKMeshVS

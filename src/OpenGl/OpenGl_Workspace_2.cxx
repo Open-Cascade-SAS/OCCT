@@ -28,12 +28,12 @@
 # include <config.h>
 #endif
 
-#ifdef HAVE_FREEIMAGE
+#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_FREEIMAGE)
   #include <NCollection_Handle.hxx>
   #include <FreeImagePlus.h>
   #ifdef _MSC_VER
-  #pragma comment( lib, "FreeImage.lib" )
-  #pragma comment( lib, "FreeImagePlus.lib" )
+    #pragma comment( lib, "FreeImage.lib" )
+    #pragma comment( lib, "FreeImagePlus.lib" )
   #endif
   typedef NCollection_Handle<fipImage> FipHandle;
 #endif
@@ -71,7 +71,7 @@ static void getMaxFrameSize(Standard_Integer& theWidth,
   GLint aTexDim = 2048;
   glGetIntegerv (GL_MAX_VIEWPORT_DIMS, (GLint*) &aVpDim);
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &aTexDim);
-  (aVpDim[0] >= aTexDim) ? aMaxX = (GLsizei) aTexDim : 
+  (aVpDim[0] >= aTexDim) ? aMaxX = (GLsizei) aTexDim :
                            aMaxX = getNearestPowOfTwo((GLsizei)aVpDim[0]);
   (aVpDim[1] >= aTexDim) ? aMaxY = (GLsizei) aTexDim :
                            aMaxY = getNearestPowOfTwo((GLsizei)aVpDim[1]);
@@ -99,7 +99,7 @@ static void fitDimensionsRatio (Standard_Integer& theWidth,
 
 // ---------------------------------------------------------------
 // Function: getDimensionsTiling
-// Purpose:  calculate maximum possible dimensions for framebuffer 
+// Purpose:  calculate maximum possible dimensions for framebuffer
 //           in tiling mode according to the view size
 // ---------------------------------------------------------------
 static void getDimensionsTiling (Standard_Integer& theFrameWidth,
@@ -134,7 +134,7 @@ static void initBufferStretch (Standard_Integer& theFrameWidth,
   Standard_Real aWidthRate  = (Standard_Real)theFrameWidth /theViewWidth;
   Standard_Real aHeightRate = (Standard_Real)theFrameHeight/theViewHeight;
 
-  if ((aWidthRate > 1 && aHeightRate > 1 && aWidthRate >= aHeightRate) || 
+  if ((aWidthRate > 1 && aHeightRate > 1 && aWidthRate >= aHeightRate) ||
       (aWidthRate > 1 && aHeightRate <= 1))
   {
     theFrameWidth  = (Standard_Integer)(theFrameWidth /aWidthRate);
@@ -204,13 +204,13 @@ static void initBitmapBuffer (const HDC theMemoryDC,
 // Purpose:  copy the data from image buffer to the device context
 // ---------------------------------------------------------------
 static bool imagePasteDC(HDC theDstDC,    FipHandle theImage, int theOffsetX,
-                         int theOffsetY,  int theWidth, int theHeight, 
+                         int theOffsetY,  int theWidth, int theHeight,
                          int theLeft = 0, int theTop = 0)
 {
   // get image parameters
   BITMAPINFO* aBitmapData = theImage->getInfo ();
   SetStretchBltMode (theDstDC, STRETCH_HALFTONE);
- 
+
   // organize blocks data passing if memory isn't enough to pass all the data
   // at once
   int aLinesComplete = 0, aMaxBlockWidth = theHeight, aBlockWidth = 0,
@@ -279,7 +279,7 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
   unsigned int heightPx   = theImage->getHeight ();
   BITMAPINFO* aBitmapData = theImage->getInfo ();
   SetStretchBltMode (theDstDC, STRETCH_HALFTONE);
-  
+
   // pass lines and check if operation is succesfull
   int aPassed = 0;
   aPassed = StretchDIBits (theDstDC, theOffsetX, theOffsetY, theWidth,
@@ -288,7 +288,7 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
 
   if (aPassed != heightPx)
     return false;
- 
+
   return true;
 }
 #endif
@@ -299,8 +299,8 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
 
 //call_togl_print
 Standard_Boolean OpenGl_Workspace::Print
-  (const Graphic3d_CView& ACView, 
-   const Aspect_CLayer2d& ACUnderLayer, 
+  (const Graphic3d_CView& ACView,
+   const Aspect_CLayer2d& ACUnderLayer,
    const Aspect_CLayer2d& ACOverLayer,
    const Aspect_Handle    hPrintDC,// const Aspect_Drawable hPrintDC,
    const Standard_Boolean showBackground,
@@ -423,7 +423,7 @@ Standard_Boolean OpenGl_Workspace::Print
       }
 #else
       // try to allocate compatible bitmap and necessary resources
-      initBitmapBuffer (hMemDC, hViewBitmap, 
+      initBitmapBuffer (hMemDC, hViewBitmap,
                         aFrameWidth, aFrameHeight, aViewBuffer);
       if (!aViewBuffer)
       {
@@ -493,7 +493,7 @@ Standard_Boolean OpenGl_Workspace::Print
           break;
 #else
         // try to allocate compatible bitmap and necessary resources
-        initBitmapBuffer (hMemDC, hViewBitmap, 
+        initBitmapBuffer (hMemDC, hViewBitmap,
                           aFrameWidth, aFrameHeight, aViewBuffer);
         if (!aViewBuffer)
         {
@@ -515,7 +515,7 @@ Standard_Boolean OpenGl_Workspace::Print
       aMaxHeight = aMaxHeight >> 1;
     }
 
-    // check if there are proper dimensions 
+    // check if there are proper dimensions
     if (aMaxWidth <= 1 || aMaxHeight <= 1)
     {
       MessageBox (NULL, "Print failed: can't allocate buffer for printing.",
@@ -533,7 +533,7 @@ Standard_Boolean OpenGl_Workspace::Print
   }
 
   // setup printing context and viewport
-  GLint aViewPortBack[4]; 
+  GLint aViewPortBack[4];
   GLint anAlignBack = 1;
 
   OpenGl_PrinterContext aPrinterContext (GetGContext());
@@ -620,9 +620,9 @@ Standard_Boolean OpenGl_Workspace::Print
     // calculate total count of frames and cropping size
     Standard_Integer aPxCropx = 0;
     Standard_Integer aPxCropy = 0;
-    Standard_Integer aTotalx = 
+    Standard_Integer aTotalx =
                      (Standard_Integer)floor ((float)width /aFrameWidth);
-    Standard_Integer aTotaly = 
+    Standard_Integer aTotaly =
                      (Standard_Integer)floor ((float)height/aFrameHeight);
     if (width %aFrameWidth != 0)
     {
@@ -722,7 +722,7 @@ Standard_Boolean OpenGl_Workspace::Print
       // stop operation if errors
       if (!isDone)
         break;
- 
+
       // calculate new view offset for x-coordinate
       aOffsetx += 2.0;
       aSubLeft += aRight-aLeft;
@@ -742,12 +742,12 @@ Standard_Boolean OpenGl_Workspace::Print
     if (GetObjectType (hPrnDC) == OBJ_DC)
       AbortDoc (hPrnDC);
   }
-  
+
   // return OpenGl to the previous state
   aPrinterContext.Deactivate ();
   glPixelStorei (GL_PACK_ALIGNMENT, anAlignBack);
   aFrameBuffer->UnbindBuffer (GetGlContext());
-  glViewport (aViewPortBack[0], aViewPortBack[1], 
+  glViewport (aViewPortBack[0], aViewPortBack[1],
               aViewPortBack[2], aViewPortBack[3]);
   if (aPrevBuffer)
   {
@@ -776,14 +776,14 @@ Standard_Boolean OpenGl_Workspace::Print
 
 #else // not WNT
   return Standard_False;
-#endif 
+#endif
 }
 
 /*----------------------------------------------------------------------*/
 
 //redrawView
-void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView, 
-                               const Aspect_CLayer2d& ACUnderLayer, 
+void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
+                               const Aspect_CLayer2d& ACUnderLayer,
                                const Aspect_CLayer2d& ACOverLayer,
                                const int aswap)
 {
@@ -866,7 +866,7 @@ void OpenGl_Workspace::CopyBuffers (Tint vid, int FrontToBack, Tfloat xm, Tfloat
   GLsizei width = myWidth+1, height = myHeight+1;
   Tfloat xmr = 0, ymr = 0;
 
-  if (flag) 
+  if (flag)
   {
     if (!myView.IsNull()) //szvgl: use vid here!
 	{

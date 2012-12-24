@@ -61,27 +61,28 @@
 #include <Visual3d_Layer.hxx>
 #include <cstdlib>
 
-#ifndef WNT
-#include <Graphic3d_GraphicDevice.hxx>
-#include <Xw_GraphicDevice.hxx>
-#include <Xw_WindowQuality.hxx>
-#include <Xw_Window.hxx>
-#include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */
-#include <X11/Xutil.h>
-#include <tk.h>
+#if defined(_WIN32) || defined(__WIN32__)
+  #include <Graphic3d_WNTGraphicDevice.hxx>
+  #include <WNT_WClass.hxx>
+  #include <WNT_Window.hxx>
 
+  #if defined(_MSC_VER)
+    #define _CRT_SECURE_NO_DEPRECATE
+    #pragma warning (disable:4996)
+  #endif
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  #include <Graphic3d_GraphicDevice.hxx>
+  #include <Cocoa_Window.hxx>
+  #include <tk.h>
 #else
-
-#include <Graphic3d_WNTGraphicDevice.hxx>
-#include <WNT_WClass.hxx>
-#include <WNT_Window.hxx>
-
-#define _CRT_SECURE_NO_DEPRECATE
-#pragma warning (disable:4996)
-
+  #include <Graphic3d_GraphicDevice.hxx>
+  #include <Xw_GraphicDevice.hxx>
+  #include <Xw_WindowQuality.hxx>
+  #include <Xw_Window.hxx>
+  #include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */
+  #include <X11/Xutil.h>
+  #include <tk.h>
 #endif
-
-#define OCC120
 
 //==============================================================================
 
@@ -94,7 +95,7 @@ Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
 Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
 extern const Handle(NIS_InteractiveContext)& TheNISContext();
 
-#ifdef WNT
+#if defined(_WIN32) || defined(__WIN32__)
 static Handle(Graphic3d_WNTGraphicDevice)& GetG3dDevice(){
   static Handle(Graphic3d_WNTGraphicDevice) GD;
   return GD;
@@ -104,7 +105,18 @@ static Handle(WNT_Window)& VT_GetWindow() {
   static Handle(WNT_Window) WNTWin;
   return WNTWin;
 }
-
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+static Handle(Graphic3d_GraphicDevice)& GetG3dDevice()
+{
+  static Handle(Graphic3d_GraphicDevice) aGraphicDevice;
+  return aGraphicDevice;
+}
+static Handle(Cocoa_Window)& VT_GetWindow()
+{
+  static Handle(Cocoa_Window) aWindow;
+  return aWindow;
+}
+extern void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow);
 #else
 static Handle(Graphic3d_GraphicDevice)& GetG3dDevice(){
   static Handle(Graphic3d_GraphicDevice) GD;
@@ -119,9 +131,7 @@ static Display *display;
 static void VProcessEvents(ClientData,int);
 #endif
 
-#ifdef OCC120
 static Standard_Boolean DegenerateMode = Standard_True;
-#endif
 
 #define ZCLIPWIDTH 1.
 
@@ -133,9 +143,12 @@ static void OSWindowSetup();
 
 static int Start_Rot = 0;
 static int ZClipIsOn = 0;
-static int X_Motion= 0,Y_Motion=0; // Current cursor position
-static int X_ButtonPress = 0, Y_ButtonPress = 0; // Last ButtonPress position
-
+int X_Motion = 0; // Current cursor position
+int Y_Motion = 0;
+int X_ButtonPress = 0; // Last ButtonPress position
+int Y_ButtonPress = 0;
+Standard_Boolean IsDragged = Standard_False;
+Standard_Boolean DragFirst;
 
 //==============================================================================
 
@@ -161,8 +174,9 @@ static LRESULT WINAPI AdvViewerWindowProc(
 const Handle(MMgt_TShared)& ViewerTest::WClass()
 {
   static Handle(MMgt_TShared) theWClass;
-#ifdef WNT
-  if (theWClass.IsNull()) {
+#if defined(_WIN32) || defined(__WIN32__)
+  if (theWClass.IsNull())
+  {
     theWClass = new WNT_WClass ("GW3D_Class", AdvViewerWindowProc,
       CS_VREDRAW | CS_HREDRAW, 0, 0,
       ::LoadCursor (NULL, IDC_ARROW));
@@ -182,9 +196,9 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
   static Standard_Boolean isFirst = Standard_True;
 
   // Default position and dimension of the viewer window.
-  // Note that left top corner is set to be sufficiently small to have 
+  // Note that left top corner is set to be sufficiently small to have
   // window fit in the small screens (actual for remote desktops, see #23003).
-  // The position corresponds to the window's client area, thus some 
+  // The position corresponds to the window's client area, thus some
   // gap is added for window frame to be visible.
   Standard_Integer aPxLeft   = 20;
   Standard_Integer aPxTop    = 40;
@@ -201,7 +215,7 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
   if (isFirst)
   {
     // Create the Graphic device
-#ifdef WNT
+#if defined(_WIN32) || defined(__WIN32__)
     if (GetG3dDevice().IsNull()) GetG3dDevice() = new Graphic3d_WNTGraphicDevice();
     if (VT_GetWindow().IsNull())
     {
@@ -214,7 +228,18 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
                                        aPxLeft, aPxTop,
                                        aPxWidth, aPxHeight,
                                        Quantity_NOC_BLACK);
-      VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
+    }
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+    if (GetG3dDevice().IsNull())
+    {
+      GetG3dDevice() = new Graphic3d_GraphicDevice (getenv ("DISPLAY"), Xw_TOM_READONLY);
+    }
+    if (VT_GetWindow().IsNull())
+    {
+      VT_GetWindow() = new Cocoa_Window ("Test3d",
+                                         aPxLeft, aPxTop,
+                                         aPxWidth, aPxHeight);
+      ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
     }
 #else
     if (GetG3dDevice().IsNull()) GetG3dDevice() =
@@ -227,9 +252,9 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
                                       aPxWidth, aPxHeight,
                                       Xw_WQ_3DQUALITY,
                                       Quantity_NOC_BLACK);
-      VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
     }
 #endif
+    VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
 
     Handle(V3d_Viewer) a3DViewer, a3DCollector;
     // Viewer and View creation
@@ -266,9 +291,7 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
     Handle (V3d_View) V = ViewerTest::CurrentView();
 
     V->SetDegenerateModeOn();
-#ifdef OCC120
     DegenerateMode = V->DegenerateModeIsOn();
-#endif
     //    V->SetWindow(VT_GetWindow(), NULL, MyViewProc, NULL);
 
     V->SetZClippingDepth(0.5);
@@ -276,19 +299,21 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
     a3DViewer->SetDefaultLights();
     a3DViewer->SetLightOn();
 
-#ifndef WNT
-#if TCL_MAJOR_VERSION  < 8
+  #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  #if TCL_MAJOR_VERSION  < 8
     Tk_CreateFileHandler((void*)ConnectionNumber(display),
       TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
-#else
+  #else
     Tk_CreateFileHandler(ConnectionNumber(display),
       TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
-#endif
-#endif
+  #endif
+  #endif
 
     isFirst = Standard_False;
   }
+
   VT_GetWindow()->Map();
+  ViewerTest::CurrentView()->Redraw();
 }
 
 //==============================================================================
@@ -308,11 +333,10 @@ static int VInit (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 }
 
 //==============================================================================
-//function : ProcessKeyPress
+//function : VT_ProcessKeyPress
 //purpose  : Handle KeyPress event from a CString
 //==============================================================================
-
-static void ProcessKeyPress( char *buf_ret )
+void VT_ProcessKeyPress (const char* buf_ret)
 {
   //cout << "KeyPress" << endl;
   const Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -337,20 +361,15 @@ static void ProcessKeyPress( char *buf_ret )
   else if ( !strcasecmp(buf_ret, "H") ) {
     // HLR
     cout << "HLR" << endl;
-#ifdef OCC120
+
     if (aView->DegenerateModeIsOn()) ViewerTest::CurrentView()->SetDegenerateModeOff();
     else aView->SetDegenerateModeOn();
     DegenerateMode = aView->DegenerateModeIsOn();
-#else
-    ViewerTest::CurrentView()->SetDegenerateModeOff();
-#endif
   }
   else if ( !strcasecmp(buf_ret, "S") ) {
     // SHADING
     cout << "passage en mode 1 (shading pour les shapes)" << endl;
-#ifndef OCC120
-    ViewerTest::CurrentView()->SetDegenerateModeOn();
-#endif
+
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbCurrents()==0 ||
       Ctx->NbSelected()==0)
@@ -370,9 +389,7 @@ static void ProcessKeyPress( char *buf_ret )
   else if ( !strcasecmp(buf_ret, "U") ) {
     // Unset display mode
     cout<<"passage au mode par defaut"<<endl;
-#ifndef OCC120
-    ViewerTest::CurrentView()->SetDegenerateModeOn();
-#endif
+
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbCurrents()==0 ||
       Ctx->NbSelected()==0)
@@ -409,13 +426,7 @@ static void ProcessKeyPress( char *buf_ret )
 
   else if ( !strcasecmp(buf_ret, "W") ) {
     // WIREFRAME
-#ifndef OCC120
-    ViewerTest::CurrentView()->SetDegenerateModeOn();
-#endif
     cout << "passage en mode 0 (filaire pour les shapes)" << endl;
-#ifndef OCC120
-    ViewerTest::CurrentView()->SetDegenerateModeOn();
-#endif
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbCurrents()==0 ||
       Ctx->NbSelected()==0)
@@ -467,38 +478,44 @@ static void ProcessKeyPress( char *buf_ret )
 }
 
 //==============================================================================
-//function : ProcessExpose
+//function : VT_ProcessExpose
 //purpose  : Redraw the View on an Expose Event
 //==============================================================================
-
-static void ProcessExpose(  )
-{ //cout << "Expose" << endl;
-  ViewerTest::CurrentView()->Redraw();
+void VT_ProcessExpose()
+{
+  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
+  if (!aView3d.IsNull())
+  {
+    aView3d->Redraw();
+  }
 }
 
 //==============================================================================
-//function : ProcessConfigure
+//function : VT_ProcessConfigure
 //purpose  : Resize the View on an Configure Event
 //==============================================================================
-
-static void ProcessConfigure()
+void VT_ProcessConfigure()
 {
-  Handle(V3d_View) V = ViewerTest::CurrentView();
-  V->MustBeResized();
-  V->Update();
-  V->Redraw();
+  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
+  if (aView3d.IsNull())
+  {
+    return;
+  }
+
+  aView3d->MustBeResized();
+  aView3d->Update();
+  aView3d->Redraw();
 }
 
 //==============================================================================
-//function : ProcessButton1Press
+//function : VT_ProcessButton1Press
 //purpose  : Picking
 //==============================================================================
-
-static Standard_Boolean ProcessButton1Press(
+Standard_Boolean VT_ProcessButton1Press(
   Standard_Integer ,
-  const char** argv,
+  const char**     argv,
   Standard_Boolean pick,
-  Standard_Boolean shift )
+  Standard_Boolean shift)
 {
   Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
   if ( pick ) {
@@ -520,35 +537,50 @@ static Standard_Boolean ProcessButton1Press(
 }
 
 //==============================================================================
-//function : ProcessButton3Press
+//function : VT_ProcessButton1Release
+//purpose  : End selecting
+//==============================================================================
+void VT_ProcessButton1Release (Standard_Boolean theIsShift)
+{
+  if (IsDragged)
+  {
+    IsDragged = Standard_False;
+    Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
+    if (theIsShift)
+    {
+      EM->ShiftSelect (Min (X_ButtonPress, X_Motion), Max (Y_ButtonPress, Y_Motion),
+                       Max (X_ButtonPress, X_Motion), Min (Y_ButtonPress, Y_Motion));
+    }
+    else
+    {
+      EM->Select (Min (X_ButtonPress, X_Motion), Max (Y_ButtonPress, Y_Motion),
+                  Max (X_ButtonPress, X_Motion), Min (Y_ButtonPress, Y_Motion));
+    }
+  }
+}
+
+//==============================================================================
+//function : VT_ProcessButton3Press
 //purpose  : Start Rotation
 //==============================================================================
-
-static void ProcessButton3Press()
-
-{ // Start rotation
+void VT_ProcessButton3Press()
+{
   Start_Rot = 1;
   ViewerTest::CurrentView()->SetDegenerateModeOn();
   ViewerTest::CurrentView()->StartRotation( X_ButtonPress, Y_ButtonPress );
-
 }
-//==============================================================================
-//function : ProcessButtonRelease
-//purpose  : Start Rotation
-//==============================================================================
 
-static void ProcessButtonRelease()
-
-{ // End rotation
-#ifdef OCC120
-  if (Start_Rot) {
+//==============================================================================
+//function : VT_ProcessButton3Release
+//purpose  : End rotation
+//==============================================================================
+void VT_ProcessButton3Release()
+{
+  if (Start_Rot)
+  {
     Start_Rot = 0;
     if (!DegenerateMode) ViewerTest::CurrentView()->SetDegenerateModeOff();
   }
-#else
-  Start_Rot = 0;
-  ViewerTest::CurrentView()->SetDegenerateModeOff();
-#endif
 }
 
 //==============================================================================
@@ -605,11 +637,10 @@ static void ProcessControlButton1Motion()
 }
 
 //==============================================================================
-//function : ProcessControlButton2Motion
-//purpose  : Pann
+//function : VT_ProcessControlButton2Motion
+//purpose  : Panning
 //==============================================================================
-
-static void ProcessControlButton2Motion()
+void VT_ProcessControlButton2Motion()
 {
   Quantity_Length dx = ViewerTest::CurrentView()->Convert(X_Motion - X_ButtonPress);
   Quantity_Length dy = ViewerTest::CurrentView()->Convert(Y_Motion - Y_ButtonPress);
@@ -623,21 +654,22 @@ static void ProcessControlButton2Motion()
 }
 
 //==============================================================================
-//function : ProcessControlButton3Motion
+//function : VT_ProcessControlButton3Motion
 //purpose  : Rotation
 //==============================================================================
-
-static void ProcessControlButton3Motion()
+void VT_ProcessControlButton3Motion()
 {
-  if ( Start_Rot ) ViewerTest::CurrentView()->Rotation( X_Motion, Y_Motion);
+  if (Start_Rot)
+  {
+    ViewerTest::CurrentView()->Rotation (X_Motion, Y_Motion);
+  }
 }
 
 //==============================================================================
-//function : ProcessPointerMotion
-//purpose  : Rotation
+//function : VT_ProcessMotion
+//purpose  :
 //==============================================================================
-
-static void ProcessMotion()
+void VT_ProcessMotion()
 {
   //pre-hilights detected objects at mouse position
 
@@ -658,7 +690,7 @@ void ViewerTest::GetMousePosition(Standard_Integer& Xpix,Standard_Integer& Ypix)
 
 static int ViewProject(Draw_Interpretor& di, const V3d_TypeOfOrientation ori)
 {
-  if ( ViewerTest::CurrentView().IsNull() ) 
+  if ( ViewerTest::CurrentView().IsNull() )
   {
     di<<"Call vinit before this command, please"<<"\n";
     return 1;
@@ -790,14 +822,6 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   return 0;
 }
 
-Standard_Boolean IsDragged = Standard_False;
-
-Standard_Integer xx1, yy1, xx2, yy2;
-//the first and last point in viewer co-ordinates
-
-Standard_Boolean DragFirst;
-
-
 #ifdef WNT
 
 static Standard_Boolean Ppick = 0;
@@ -824,17 +848,17 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
         HGDIOBJ anObj = SelectObject( hdc, GetStockObject( WHITE_PEN ) );
         SelectObject( hdc, GetStockObject( HOLLOW_BRUSH ) );
         SetROP2( hdc, R2_NOT );
-        Rectangle( hdc, xx1, yy1, xx2, yy2 );
+        Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
         ReleaseDC( hwnd, hdc );
 
         const Handle(ViewerTest_EventManager) EM =
           ViewerTest::CurrentEventManager();
         if ( fwKeys & MK_SHIFT )
-          EM->ShiftSelect( min( xx1, xx2 ), max( yy1, yy2 ),
-          max( xx1, xx2 ), min( yy1, yy2 ));
+          EM->ShiftSelect( min( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
+          max( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ));
         else
-          EM->Select( min( xx1, xx2 ), max( yy1, yy2 ),
-          max( xx1, xx2 ), min( yy1, yy2 ));
+          EM->Select( min( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
+          max( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ));
       }
       return ViewerWindowProc( hwnd, Msg, wParam, lParam );
 
@@ -843,8 +867,8 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
       {
         IsDragged = Standard_True;
         DragFirst = Standard_True;
-        xx1 = LOWORD(lParam);
-        yy1 = HIWORD(lParam);
+        X_ButtonPress = LOWORD(lParam);
+        Y_ButtonPress = HIWORD(lParam);
       }
       return ViewerWindowProc( hwnd, Msg, wParam, lParam );
 
@@ -860,13 +884,13 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
         SetROP2( hdc, R2_NOT );
 
         if( !DragFirst )
-          Rectangle( hdc, xx1, yy1, xx2, yy2 );
+          Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
 
         DragFirst = Standard_False;
-        xx2 = LOWORD(lParam);
-        yy2 = HIWORD(lParam);
+        X_Motion = LOWORD(lParam);
+        Y_Motion = HIWORD(lParam);
 
-        Rectangle( hdc, xx1, yy1, xx2, yy2 );
+        Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );
 
         SelectObject( hdc, anObj );
 
@@ -905,41 +929,36 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
       VT_GetWindow()->Unmap();
       return 0;
     case WM_PAINT:
-      //cout << "\t WM_PAINT" << endl;
       BeginPaint(hwnd, &ps);
       EndPaint(hwnd, &ps);
-      ProcessExpose();
+      VT_ProcessExpose();
       break;
 
     case WM_SIZE:
-      //cout << "\t WM_SIZE" << endl;
-      ProcessConfigure();
+      VT_ProcessConfigure();
       break;
 
     case WM_KEYDOWN:
-      //cout << "\t WM_KEYDOWN " << (int) wParam << endl;
-
-      if ( (wParam != VK_SHIFT) && (wParam != VK_CONTROL) ) {
+      if ((wParam != VK_SHIFT) && (wParam != VK_CONTROL))
+      {
         char c[2];
         c[0] = (char) wParam;
         c[1] = '\0';
-        ProcessKeyPress( c);
+        VT_ProcessKeyPress (c);
       }
       break;
 
     case WM_LBUTTONUP:
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
-      //cout << "\t WM_xBUTTONUP" << endl;
       Up = 1;
-      ProcessButtonRelease();
+      VT_ProcessButton3Release();
       break;
 
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
       {
-        //cout << "\t WM_xBUTTONDOWN" << endl;
         WPARAM fwKeys = wParam;
 
         Up = 0;
@@ -947,15 +966,21 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
         X_ButtonPress = LOWORD(lParam);
         Y_ButtonPress = HIWORD(lParam);
 
-        if ( Msg == WM_LBUTTONDOWN) {
-          if(fwKeys & MK_CONTROL) {
-            Ppick = ProcessButton1Press( Pargc, Pargv, Ppick,  (fwKeys & MK_SHIFT) );
-          } else
-            ProcessButton1Press( Pargc, Pargv, Ppick,  (fwKeys & MK_SHIFT) );
+        if (Msg == WM_LBUTTONDOWN)
+        {
+          if (fwKeys & MK_CONTROL)
+          {
+            Ppick = VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT));
+          }
+          else
+          {
+            VT_ProcessButton1Press (Pargc, Pargv, Ppick, (fwKeys & MK_SHIFT));
+          }
         }
-        else if ( Msg == WM_RBUTTONDOWN ) {
+        else if (Msg == WM_RBUTTONDOWN)
+        {
           // Start rotation
-          ProcessButton3Press( );
+          VT_ProcessButton3Press();
         }
       }
       break;
@@ -975,7 +1000,7 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
 
             if ( fwKeys & MK_RBUTTON ) {
               // Start rotation
-              ProcessButton3Press();
+              VT_ProcessButton3Press();
             }
           }
 
@@ -986,10 +1011,10 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
             else if ( fwKeys & MK_MBUTTON ||
               ((fwKeys&MK_LBUTTON) &&
               (fwKeys&MK_RBUTTON) ) ){
-                ProcessControlButton2Motion();
+                VT_ProcessControlButton2Motion();
               }
             else if ( fwKeys & MK_RBUTTON ) {
-              ProcessControlButton3Motion();
+              VT_ProcessControlButton3Motion();
             }
           }
 #ifdef BUG
@@ -1003,11 +1028,14 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
           }
 #endif
           else
-            if (( fwKeys & MK_MBUTTON || ((fwKeys&MK_LBUTTON) && (fwKeys&MK_RBUTTON) ) )){
+            if ((fwKeys & MK_MBUTTON
+            || ((fwKeys & MK_LBUTTON) && (fwKeys & MK_RBUTTON))))
+            {
               ProcessZClipMotion();
             }
-            else {
-              ProcessMotion();
+            else
+            {
+              VT_ProcessMotion();
             }
       }
       break;
@@ -1051,7 +1079,7 @@ static int ViewerMainLoop(Standard_Integer argc, const char** argv)
 
     //while ( Ppick == -1 ) {
     while ( Ppick == 1 ) {
-      // Wait for a ProcessButton1Press() to toggle pick to 1 or 0
+      // Wait for a VT_ProcessButton1Press() to toggle pick to 1 or 0
       if (GetMessage(&msg, NULL, 0, 0) ) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -1064,8 +1092,7 @@ static int ViewerMainLoop(Standard_Integer argc, const char** argv)
   return Ppick;
 }
 
-
-#else
+#elif !defined(__APPLE__) || defined(MACOSX_USE_GLX)
 
 int min( int a, int b )
 {
@@ -1098,12 +1125,12 @@ XNextEvent( display, &report );
 switch ( report.type ) {
       case Expose:
         {
-          ProcessExpose();
+          VT_ProcessExpose();
         }
         break;
       case ConfigureNotify:
         {
-          ProcessConfigure();
+          VT_ProcessConfigure();
         }
         break;
       case KeyPress:
@@ -1121,8 +1148,9 @@ switch ( report.type ) {
 
           buf_ret[ret_len] = '\0' ;
 
-          if ( ret_len ) {
-            ProcessKeyPress( buf_ret);
+          if (ret_len)
+          {
+            VT_ProcessKeyPress (buf_ret);
           }
         }
         break;
@@ -1132,20 +1160,25 @@ switch ( report.type ) {
           X_ButtonPress = report.xbutton.x;
           Y_ButtonPress = report.xbutton.y;
 
-          if ( report.xbutton.button == Button1 )
-            if(  report.xbutton.state & ControlMask )
-              pick = ProcessButton1Press( argc, argv, pick,
-              ( report.xbutton.state & ShiftMask) );
+          if (report.xbutton.button == Button1)
+          {
+            if (report.xbutton.state & ControlMask)
+            {
+              pick = VT_ProcessButton1Press (argc, argv, pick, (report.xbutton.state & ShiftMask));
+            }
             else
             {
               IsDragged = Standard_True;
-              xx1 = X_ButtonPress;
-              yy1 = Y_ButtonPress;
+              X_ButtonPress = X_ButtonPress;
+              Y_ButtonPress = Y_ButtonPress;
               DragFirst = Standard_True;
             }
-          else if ( report.xbutton.button == Button3 )
+          }
+          else if (report.xbutton.button == Button3)
+          {
             // Start rotation
-            ProcessButton3Press();
+            VT_ProcessButton3Press();
+          }
         }
         break;
       case ButtonRelease:
@@ -1161,7 +1194,7 @@ switch ( report.type ) {
               Aspect_Handle aWindow = VT_GetWindow()->XWindow();
               GC gc = XCreateGC( display, aWindow, 0, 0 );
               //  XSetFunction( display, gc, GXinvert );
-              XDrawRectangle( display, aWindow, gc, min( xx1, xx2 ), min( yy1, yy2 ), abs( xx2-xx1 ), abs( yy2-yy1 ) );
+              XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
             }
 
             Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
@@ -1187,25 +1220,25 @@ switch ( report.type ) {
               else
                 if( ShiftPressed )
                 {
-                  aContext->ShiftSelect( min( xx1, xx2 ), min( yy1, yy2 ),
-                    max( xx1, xx2 ), max( yy1, yy2 ),
+                  aContext->ShiftSelect( min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ),
+                    max( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
                     ViewerTest::CurrentView());
                   //                   cout << "shift select" << endl;
                 }
                 else
                 {
-                  aContext->Select( min( xx1, xx2 ), min( yy1, yy2 ),
-                    max( xx1, xx2 ), max( yy1, yy2 ),
+                  aContext->Select( min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ),
+                    max( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
                     ViewerTest::CurrentView() );
                   //                   cout << "select" << endl;
                 }
             else
-              ProcessButtonRelease();
+              VT_ProcessButton3Release();
 
             IsDragged = Standard_False;
           }
           else
-            ProcessButtonRelease();
+            VT_ProcessButton3Release();
         }
         break;
       case MotionNotify:
@@ -1222,14 +1255,14 @@ switch ( report.type ) {
             XSetFunction( display, gc, GXinvert );
 
             if( !DragFirst )
-              XDrawRectangle( display, aWindow, gc, min( xx1, xx2 ), min( yy1, yy2 ), abs( xx2-xx1 ), abs( yy2-yy1 ) );
+              XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
 
-            xx2 = X_Motion;
-            yy2 = Y_Motion;
+            X_Motion = X_Motion;
+            Y_Motion = Y_Motion;
             DragFirst = Standard_False;
 
-            //cout << "draw rect : " << xx2 << ", " << yy2 << endl;
-            XDrawRectangle( display, aWindow, gc, min( xx1, xx2 ), min( yy1, yy2 ), abs( xx2-xx1 ), abs( yy2-yy1 ) );
+            //cout << "draw rect : " << X_Motion << ", " << Y_Motion << endl;
+            XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
           }
           else
           {
@@ -1273,14 +1306,15 @@ switch ( report.type ) {
                 ProcessControlButton1Motion();
               }
               else if ( report.xmotion.state & Button2Mask ) {
-                ProcessControlButton2Motion();
+                VT_ProcessControlButton2Motion();
               }
               else if ( report.xmotion.state & Button3Mask ) {
-                ProcessControlButton3Motion();
+                VT_ProcessControlButton3Motion();
               }
             }
-            else {
-              ProcessMotion();
+            else
+            {
+              VT_ProcessMotion();
             }
           }
         }
@@ -1316,7 +1350,7 @@ static void VProcessEvents(ClientData,int)
 
 static void OSWindowSetup()
 {
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   // X11
 
   Window  window   = VT_GetWindow()->XWindow();
@@ -1424,8 +1458,6 @@ while (ViewerMainLoop( argc, argv)) {
 return 0;
 }
 
-
-
 //==============================================================================
 //function : InitViewerTest
 //purpose  : initialisation de toutes les variables static de  ViewerTest (dp)
@@ -1441,7 +1473,7 @@ void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)& context)
   ViewerTest::ResetEventManager();
   Handle(Aspect_GraphicDevice) device = viewer->Device();
   Handle(Aspect_Window) window = view->Window();
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   // X11
   VT_GetWindow() = Handle(Xw_Window)::DownCast(window);
   GetG3dDevice() = Handle(Graphic3d_GraphicDevice)::DownCast(device);
@@ -1459,7 +1491,6 @@ void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)& context)
   }
 #endif
 }
-
 
 //==============================================================================
 //function : VSetBg
@@ -2023,7 +2054,7 @@ static int VGraduatedTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
   // Create 3D view if it doesn't exist
   if ( aV3dView.IsNull() )
   {
-    ViewerTest::ViewerInit(); 
+    ViewerTest::ViewerInit();
     aV3dView = ViewerTest::CurrentView();
     if( aV3dView.IsNull() )
     {
@@ -2099,7 +2130,7 @@ static int VGraduatedTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
 //purpose  : Test printing algorithm, print the view to image file with given
 //           width and height. Printing implemented only for WNT.
 //==============================================================================
-static int VPrintView (Draw_Interpretor& di, Standard_Integer argc, 
+static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
                        const char** argv)
 {
 #ifndef WNT
@@ -2178,7 +2209,7 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
 
   Standard_Boolean isSaved = Standard_False, isPrinted = Standard_False;
   if (aBitsOut != NULL)
-  {    
+  {
     if (aMode == 0)
       isPrinted = aView->Print(anDC,1,1,0,Aspect_PA_STRETCH);
     else
@@ -2376,7 +2407,7 @@ V3d_TextItem::V3d_TextItem (const TCollection_AsciiString& theText,
 
 // render item
 void V3d_TextItem::RedrawLayerPrs ()
-{ 
+{
   if (myLayer.IsNull ())
     return;
 
@@ -2388,14 +2419,14 @@ void V3d_TextItem::RedrawLayerPrs ()
 DEFINE_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)
 
 // The Visual3d_LayerItem line item for "vlayerline" command
-// it provides a presentation of line with user-defined 
+// it provides a presentation of line with user-defined
 // linewidth, linetype and transparency.
-class V3d_LineItem : public Visual3d_LayerItem 
+class V3d_LineItem : public Visual3d_LayerItem
 {
 public:
   // CASCADE RTTI
-  DEFINE_STANDARD_RTTI(V3d_LineItem) 
-  
+  DEFINE_STANDARD_RTTI(V3d_LineItem)
+
   // constructor
   Standard_EXPORT V3d_LineItem(Standard_Real X1, Standard_Real Y1,
                                Standard_Real X2, Standard_Real Y2,
@@ -2420,7 +2451,7 @@ IMPLEMENT_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)
 IMPLEMENT_STANDARD_RTTIEXT(V3d_LineItem, Visual3d_LayerItem)
 
 // default constructor for line item
-V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1, 
+V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1,
                            Standard_Real X2, Standard_Real Y2,
                            V3d_LayerMgrPointer theLayerMgr,
                            Aspect_TypeOfLine theType,
@@ -2437,7 +2468,7 @@ V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1,
 void V3d_LineItem::RedrawLayerPrs ()
 {
   Handle (Visual3d_Layer) aOverlay;
- 
+
   if (myLayerMgr)
     aOverlay = myLayerMgr->Overlay();
 
@@ -2505,7 +2536,7 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
   if (argc > 7)
   {
     aTransparency = atof(argv[7]);
-    if (aTransparency < 0 || aTransparency > 1.0) 
+    if (aTransparency < 0 || aTransparency > 1.0)
       aTransparency = 1.0;
   }
 
@@ -2534,9 +2565,9 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
   aView->SetLayerMgr(aMgr);
 
   // add line item
-  Handle (V3d_LineItem) anItem = new V3d_LineItem(X1, Y1, X2, Y2, 
+  Handle (V3d_LineItem) anItem = new V3d_LineItem(X1, Y1, X2, Y2,
                                                   aMgr.operator->(),
-                                                  aLineType, aWidth, 
+                                                  aLineType, aWidth,
                                                   aTransparency);
 
   // update view
@@ -2572,7 +2603,7 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
     di << "(default=255.0 255.0 255.0)\n";
     return 1;
   }
-  
+
   TCollection_AsciiString aText (argv[1]);
   Standard_Real aPosX = atof(argv[2]);
   Standard_Real aPosY = atof(argv[3]);
@@ -2627,9 +2658,9 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
     aView->SetLayerMgr (aMgr);
   }
 
-  Quantity_Color aTextColor (aColorRed, aColorGreen, 
+  Quantity_Color aTextColor (aColorRed, aColorGreen,
     aColorBlue, Quantity_TOC_RGB);
-  Quantity_Color aSubtColor (aSubRed, aSubGreen, 
+  Quantity_Color aSubtColor (aSubRed, aSubGreen,
     aSubBlue, Quantity_TOC_RGB);
 
   // add text item

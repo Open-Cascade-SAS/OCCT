@@ -38,9 +38,6 @@
   #define GLAPI extern
 #endif
 
-// current TKOpenGl implementation is incompatible with native OpenGL on MacOS X
-#define MACOSX_USE_GLX
-
 // exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
 #define GL_GLEXT_LEGACY
 

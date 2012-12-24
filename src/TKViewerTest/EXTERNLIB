@@ -25,3 +25,6 @@ CSF_TclTkLibs
 CSF_user32
 CSF_gdi32
 CSF_OpenGlLibs
+CSF_objc
+CSF_Appkit
+CSF_IOKit

@@ -17,6 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <OpenGl_GlCore11.hxx>
 
 #include <InterfaceGraphic.hxx>
 #include <OpenGl_Display.hxx>
@@ -39,7 +40,49 @@
 /*-----------------------------------------------------------------------------*/
 /*
 * Prototypes variables statiques
-*/                                                 
+*/
+
+struct FontMapNode
+{
+  const char *    EnumName;
+  const char *    FontName;
+  Font_FontAspect FontAspect;
+};
+
+static const FontMapNode myFontMap[] =
+{
+
+#ifdef WNT
+
+  { "Courier"                  , "Courier New"    , Font_FA_Regular },
+  { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
+  { "Times-Bold"               , "Times New Roman", Font_FA_Bold },
+  { "Times-Italic"             , "Times New Roman", Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Times New Roman", Font_FA_BoldItalic  },
+  { "ZapfChancery-MediumItalic", "Script"         , Font_FA_Regular  },
+  { "Symbol"                   , "Symbol"         , Font_FA_Regular  },
+  { "ZapfDingbats"             , "WingDings"      , Font_FA_Regular  },
+  { "Rock"                     , "Arial"          , Font_FA_Regular  },
+  { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
+
+#else   //X11
+
+  { "Courier"                  , "Courier"      , Font_FA_Regular },
+  { "Times-Roman"              , "Times"        , Font_FA_Regular  },
+  { "Times-Bold"               , "Times"        , Font_FA_Bold },
+  { "Times-Italic"             , "Times"        , Font_FA_Italic  },
+  { "Times-BoldItalic"         , "Times"        , Font_FA_BoldItalic  },
+  { "Arial"                    , "Helvetica"    , Font_FA_Regular  },
+  { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , Font_FA_Regular  },
+  { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , Font_FA_Regular  },
+  { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , Font_FA_Regular  },
+  { "Rock"                     , "-sgi-rock-medium-r-normal--*-*-*-*-p-*-iso8859-1"                             , Font_FA_Regular  },
+  { "Iris"                     , "--iris-medium-r-normal--*-*-*-*-m-*-iso8859-1"                                , Font_FA_Regular  }
+#endif
+
+};
+
+#define NUM_FONT_ENTRIES (sizeof(myFontMap)/sizeof(FontMapNode))
 
 /*-----------------------------------------------------------------------------*/
 
@@ -50,9 +93,9 @@
 #ifdef HAVE_GL2PS
 void OpenGl_Display::getGL2PSFontName (const char *src_font, char *ps_font)
 {
-  /* 
+  /*
   Convert font name used for rendering to some "good" font names
-  that produce good vector text 
+  that produce good vector text
   */
   static char const *family[] = {"Helvetica", "Courier", "Times"};
   static char const *italic[] = {"Oblique", "Oblique", "Italic"};
@@ -107,30 +150,56 @@ void OpenGl_Display::getGL2PSFontName (const char *src_font, char *ps_font)
 /*-----------------------------------------------------------------------------*/
 
 /*
-* Fonctions publiques 
+* Fonctions publiques
 */
 
 /*-----------------------------------------------------------------------------*/
 
-Standard_Integer OpenGl_Display::FindFont (Standard_CString theFontName,
-                                           const Font_FontAspect theFontAspect,
-                                           const Standard_Integer theBestSize,
-                                           const Standard_ShortReal theXScale,
-                                           const Standard_ShortReal theYScale)
+int OpenGl_Display::FindFont (const char* AFontName, const Font_FontAspect AFontAspect,
+                             const int ABestSize, const float AXScale, const float AYScale)
 {
-  if (!theFontName)
+  if (!AFontName)
     return -1;
 
-  if (theBestSize != -1)
-    myFontSize = theBestSize;
+  if (ABestSize != -1)
+    myFontSize = ABestSize;
 
-  OpenGl_FontMgr* anOpenGlFontMgr = OpenGl_FontMgr::instance();
+  OpenGl_FontMgr* mgr = OpenGl_FontMgr::instance();
 
-  Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theFontName);
-  myFont = anOpenGlFontMgr->request_font (aFontName, theFontAspect, myFontSize);
+  Handle(TCollection_HAsciiString) family_name = new TCollection_HAsciiString(AFontName);
+  myFont = mgr->request_font( family_name, AFontAspect, myFontSize );
 
-  if (myFont != -1)
-    anOpenGlFontMgr->setCurrentScale (theXScale, theYScale);
+  if( myFont == -1 )
+  {
+    //try to use font names mapping
+    FontMapNode newTempFont = myFontMap[0];
+    for ( int i = 0; i < NUM_FONT_ENTRIES; ++i )
+    {
+      if ( TCollection_AsciiString(myFontMap[i].EnumName).IsEqual( family_name->ToCString() ) )
+      {
+        newTempFont = myFontMap[i];
+        break;
+      }
+    }
+    family_name = new TCollection_HAsciiString(newTempFont.FontName);
+    myFont = mgr->request_font( family_name, newTempFont.FontAspect, myFontSize );
+  }
+
+  // Requested family name not found -> serach for any font family with given aspect and height
+  if ( myFont == -1 )
+  {
+    family_name = new TCollection_HAsciiString( "" );
+    myFont = mgr->request_font( family_name, AFontAspect, myFontSize );
+  }
+
+  // The last resort: trying to use ANY font available in the system
+  if ( myFont == -1 )
+  {
+    myFont = mgr->request_font( family_name, Font_FA_Undefined, -1 );
+  }
+
+  if ( myFont != -1 )
+    mgr->setCurrentScale( AXScale, AYScale );
 
   return myFont;
 }
@@ -162,9 +231,9 @@ class MultilineTextRenderer
 {
   private:
 
-  Standard_Integer        myLFNum;        // Number of '\n' (Line Feed) '\x00\x0A' 
+  Standard_Integer        myLFNum;        // Number of '\n' (Line Feed) '\x00\x0A'
   Standard_Integer        myCurrPos;      // Position of the current substring
-  Standard_Integer        myNewStrLen;    // Length of the new string 
+  Standard_Integer        myNewStrLen;    // Length of the new string
   Standard_Integer        mySubstrNum;    // Number of substrings
   wchar_t                 *myNewStr;      // New string
   const wchar_t           *myStrPtr;      // Pointer to the original string
@@ -326,7 +395,7 @@ class MultilineTextRenderer
         anIndex2 += aHelpIndex - 1;
         aTimeVar = 0;
       }
-      else 
+      else
       {
         myNewStr[anIndex2] = *(myStrPtr + anIndex1);
       }
@@ -378,7 +447,7 @@ class MultilineTextRenderer
     case Graphic3d_VTA_CENTER:
       if ( (myLFNum%2) == 0 )   // An odd number of strings
       {
-        theYdis = (GLdouble)((myLFNum/2.0) * theFnt->FaceSize()) + theDescentFont; 
+        theYdis = (GLdouble)((myLFNum/2.0) * theFnt->FaceSize()) + theDescentFont;
       }
       else                      // An even number of strings
       {
@@ -432,7 +501,7 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
   OpenGl_FontMgr* mgr = OpenGl_FontMgr::instance();
   const FTFont* fnt = mgr->fontById( myFont );
   if ( !fnt )
-    return; 
+    return;
 
   // FTFont changes texture state when it renders and computes size for the text
   glPushAttrib(GL_TEXTURE_BIT);
@@ -488,9 +557,9 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
       (GLint*)viewport,
       &wx, &wy, &wz );
     glLoadIdentity();
-    gluUnProject( wx, wy, wz, 
+    gluUnProject( wx, wy, wz,
       (GLdouble*)identityMatrix, (GLdouble*)projMatrix, (GLint*)viewport,
-      &x1, &y1 , &z1 );    
+      &x1, &y1 , &z1 );
 
     GLdouble h = (GLdouble)fnt->FaceSize();
 
@@ -500,22 +569,22 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
 
     h = (y2-y1)/h;
 
-    glTranslated( x1, y1 , z1 );   
+    glTranslated( x1, y1 , z1 );
     glRotated(aspect->Angle(), 0, 0, 1);
-    glTranslated(xdis, ydis, 0);  
+    glTranslated(xdis, ydis, 0);
 
     if( !aspect->IsZoomable() )
     {
 #ifdef WNT
       // if the context has assigned printer context, use it's parameters
-      OpenGl_PrinterContext* aPrinterContext = 
+      OpenGl_PrinterContext* aPrinterContext =
         OpenGl_PrinterContext::GetPrinterContext( GET_GL_CONTEXT() );
       if( aPrinterContext )
       {
         // get printing scaling in x and y dimensions
         GLfloat aTextScalex = 1, aTextScaley = 1;
         aPrinterContext->GetScale( aTextScalex, aTextScaley );
-        
+
         // text should be scaled in all directions with same
         // factor to save its proportions, so use height (y) scaling
         // as it is better for keeping text/3d graphics proportions
@@ -530,9 +599,9 @@ void OpenGl_Display::RenderText (const wchar_t* str, const int is2d, const float
     }
   }
 
-  GLint renderMode;  
+  GLint renderMode;
   glGetIntegerv(GL_RENDER_MODE, &renderMode);
-  if ( renderMode == GL_FEEDBACK ) 
+  if ( renderMode == GL_FEEDBACK )
   {
 #ifdef HAVE_GL2PS
     export_h = (float)fnt->FaceSize() / export_h;

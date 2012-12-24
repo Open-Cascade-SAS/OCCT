@@ -2,6 +2,9 @@ CSF_user32
 CSF_gdi32
 CSF_opengl32
 CSF_glu32
+CSF_objc
+CSF_Appkit
+CSF_IOKit
 CSF_OpenGlLibs
 CSF_AviLibs
 CSF_FREETYPE

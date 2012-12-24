@@ -165,11 +165,13 @@
 
 #include <TColStd_HArray2OfReal.hxx>
 
-#ifndef WNT
-# include <Xw_Window.hxx>
+#if (defined(_WIN32) || defined(__WIN32__))
+  #include <WNT_Window.hxx>
+#elif (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
+  #include <Cocoa_Window.hxx>
 #else
-# include <WNT_Window.hxx>
-#endif  // WNT
+  #include <Xw_Window.hxx>
+#endif
 
 #include <float.h>
 
@@ -458,36 +460,38 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)&      AWindow,
 }
 // RIC120302
 
-void Visual3d_View::SetWindow (const Handle(Aspect_Window)& AWindow) {
+void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
+{
 
         if (IsDeleted ()) return;
 
         if (IsDefined ())
                 Visual3d_ViewDefinitionError::Raise ("Window already defined");
 
-        MyWindow        = AWindow;
+        MyWindow        = theWindow;
         MyCView.WsId                    = MyCView.ViewId;
         MyCView.DefWindow.IsDefined     = 1;
-#ifndef WNT
-const Handle(Xw_Window) theWindow = *(Handle(Xw_Window) *) &AWindow;
-        MyCView.DefWindow.XWindow       = theWindow->XWindow ();
-#ifdef RIC120302
-        MyCView.DefWindow.XParentWindow = theWindow->XParentWindow ();
-#endif
+
+#if (defined(_WIN32) || defined(__WIN32__))
+  const Handle(WNT_Window) aWin   = Handle(WNT_Window)::DownCast (theWindow);
+  MyCView.DefWindow.XWindow       = (HWND )(aWin->HWindow());
+  MyCView.DefWindow.XParentWindow = (HWND )(aWin->HParentWindow());
+  WNT_WindowData* aWinData = (WNT_WindowData* )GetWindowLongPtr ((HWND )(aWin->HWindow()), GWLP_USERDATA);
+  aWinData->WNT_WDriver_Ptr = (void* )this;
+  aWinData->WNT_VMgr        = (void* )MyPtrViewManager;
+#elif (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
+  const Handle(Cocoa_Window) aWin = Handle(Cocoa_Window)::DownCast (theWindow);
+  MyCView.DefWindow.XWindow       = (Aspect_Drawable )aWin->HView();
+  MyCView.DefWindow.XParentWindow = NULL;
+  //MyCView.DefWindow.XParentWindow = aWin->HParentWindow();
 #else
-WNT_WindowData* wd;
-const Handle(WNT_Window) theWindow = *(Handle(WNT_Window) *) &AWindow;
-        MyCView.DefWindow.XWindow       = ( HWND )(theWindow->HWindow());
-#ifdef RIC120302
-        MyCView.DefWindow.XParentWindow = ( HWND )(theWindow->HParentWindow());
+  const Handle(Xw_Window) aWin    = Handle(Xw_Window)::DownCast (theWindow);
+  MyCView.DefWindow.XWindow       = aWin->XWindow();
+  MyCView.DefWindow.XParentWindow = aWin->XParentWindow();
 #endif
-        wd = ( WNT_WindowData* )GetWindowLongPtr (( HWND )(theWindow->HWindow()), GWLP_USERDATA);
-        wd -> WNT_WDriver_Ptr = ( void* )this;
-        wd -> WNT_VMgr        = ( void* )MyPtrViewManager;
-#endif  /* WNT */
 
         Standard_Integer Width, Height;
-        AWindow->Size (Width, Height);
+        theWindow->Size (Width, Height);
 
         MyCView.DefWindow.dx    = float( Width );
         MyCView.DefWindow.dy    = float( Height );

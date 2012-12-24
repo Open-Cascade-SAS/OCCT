@@ -1,5 +1,4 @@
-// Copyright (c) 1991-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,15 +15,31 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef __INTERFACE_GRAPHIC_HXX
-#define __INTERFACE_GRAPHIC_HXX
+#if (defined(__APPLE__))
 
-#ifdef WNT
-  #include <InterfaceGraphic_WNT.hxx>
-#elif defined(__APPLE__)
-  #include <InterfaceGraphic_Cocoa.hxx>
-#else
-  #include <InterfaceGraphic_X11.hxx>
-#endif
+#include <Cocoa_LocalPool.hxx>
 
-#endif // __INTERFACE_GRAPHIC_HXX
+#import <Cocoa/Cocoa.h>
+
+// =======================================================================
+// function : Cocoa_LocalPool
+// purpose  :
+// =======================================================================
+Cocoa_LocalPool::Cocoa_LocalPool()
+: myPoolObj ([[NSAutoreleasePool alloc] init])
+{
+  //
+}
+
+// =======================================================================
+// function : ~Cocoa_LocalPool
+// purpose  :
+// =======================================================================
+Cocoa_LocalPool::~Cocoa_LocalPool()
+{
+  NSAutoreleasePool* aPool = (NSAutoreleasePool* )myPoolObj;
+  //[aPool drain];
+  [aPool release];
+}
+
+#endif // __APPLE__

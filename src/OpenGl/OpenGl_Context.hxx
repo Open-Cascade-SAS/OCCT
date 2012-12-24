@@ -100,6 +100,8 @@ public:
   Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
                                          const Aspect_Handle           theWindowDC,
                                          const Aspect_RenderingContext theGContext);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  Standard_EXPORT Standard_Boolean Init (const void*                   theGContext);
 #else
   Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theWindow,
                                          const Aspect_Display          theDisplay,
@@ -253,6 +255,8 @@ private: // system-dependent fields
   Aspect_Handle           myWindow;   //!< window handle (owner of GL context) : HWND
   Aspect_Handle           myWindowDC; //!< Device Descriptor handle : HDC
   Aspect_RenderingContext myGContext; //!< Rendering Context handle : HGLRC
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  void*                   myGContext; //!< Rendering Context handle : NSOpenGLContext
 #else
   Aspect_Drawable         myWindow;   //!< window handle (owner of GL context) : GLXDrawable
   Aspect_Display          myDisplay;  //!< connection to the X-server : Display*

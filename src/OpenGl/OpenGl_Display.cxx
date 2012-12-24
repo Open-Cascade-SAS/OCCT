@@ -28,7 +28,7 @@
 
 #include <OpenGl_Light.hxx>
 
-#if (!defined(_WIN32) && !defined(__WIN32__))
+#if (!defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
   #include <X11/Xlib.h> // XOpenDisplay()
 #endif
 
@@ -39,7 +39,7 @@ Handle(OpenGl_Display) openglDisplay;
 
 namespace
 {
-  #if (defined(_WIN32) || defined(__WIN32__))
+  #if (defined(_WIN32) || defined(__WIN32__)) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
     static char* TheDummyDisplay = "DISPLAY";
   #endif
 
@@ -65,7 +65,7 @@ OpenGl_Display::OpenGl_Display (const Standard_CString theDisplay)
   myFont(-1),
   myFontSize(-1)
 {
-#if (defined(_WIN32) || defined(__WIN32__))
+#if (defined(_WIN32) || defined(__WIN32__)) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
   myDisplay = TheDummyDisplay;
 #else
   if (theDisplay != NULL && *theDisplay != '\0')
@@ -257,7 +257,7 @@ void OpenGl_Display::Init()
 {
   if (myDisplay != NULL)
   {
-  #if (!defined(_WIN32) && !defined(__WIN32__))
+  #if (!defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
     XSynchronize ((Display* )myDisplay, (getenv("CALL_SYNCHRO_X") != NULL) ? 1 : 0);
 
     if (getenv("CSF_GraphicSync") != NULL)
@@ -276,7 +276,7 @@ void OpenGl_Display::Init()
   else
   {
     TCollection_AsciiString msg("OpenGl_Display::Init");
-  #if (!defined(_WIN32) && !defined(__WIN32__))
+  #if (!defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
     msg += " : Cannot connect to X server ";
     msg += XDisplayName ((char*) NULL);
   #endif

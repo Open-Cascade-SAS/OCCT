@@ -1,6 +1,6 @@
 // Created on: 2012-01-26
 // Created by: Kirill GAVRILOV
-// Copyright (c) 2012-2012 OPEN CASCADE SAS
+// Copyright (c) 2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,7 +16,6 @@
 // limitation, any warranties of merchantability, fitness for a particular
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
-
 
 #if (defined(_WIN32) || defined(__WIN32__))
   #include <windows.h>
@@ -166,6 +165,8 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
   }
 }
 
+#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+
 // =======================================================================
 // function : IsCurrent
 // purpose  :
@@ -265,6 +266,8 @@ void OpenGl_Context::SwapBuffers()
 #endif
 }
 
+#endif // __APPLE__
+
 // =======================================================================
 // function : findProc
 // purpose  :
@@ -335,6 +338,8 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
   return Standard_False;
 }
 
+#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+
 // =======================================================================
 // function : Init
 // purpose  :
@@ -364,6 +369,8 @@ Standard_Boolean OpenGl_Context::Init()
   return Standard_True;
 }
 
+#endif // __APPLE__
+
 // =======================================================================
 // function : Init
 // purpose  :
@@ -372,6 +379,8 @@ Standard_Boolean OpenGl_Context::Init()
 Standard_Boolean OpenGl_Context::Init (const Aspect_Handle           theWindow,
                                        const Aspect_Handle           theWindowDC,
                                        const Aspect_RenderingContext theGContext)
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+Standard_Boolean OpenGl_Context::Init (const void*                   theGContext)
 #else
 Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
                                        const Aspect_Display          theDisplay,
@@ -379,12 +388,15 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 #endif
 {
   Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called only once!");
-
+#if (defined(_WIN32) || defined(__WIN32__))
   myWindow   = theWindow;
   myGContext = theGContext;
-#if (defined(_WIN32) || defined(__WIN32__))
   myWindowDC = theWindowDC;
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  myGContext = (void* )theGContext;
 #else
+  myWindow   = theWindow;
+  myGContext = theGContext;
   myDisplay  = theDisplay;
 #endif
   if (myGContext == NULL || !MakeCurrent())

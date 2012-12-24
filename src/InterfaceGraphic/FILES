@@ -6,6 +6,7 @@ InterfaceGraphic_Portability.hxx
 InterfaceGraphic_Visual3d.hxx
 InterfaceGraphic_WNT.hxx
 InterfaceGraphic_X11.hxx
+InterfaceGraphic_Cocoa.hxx
 InterfaceGraphic_XWD.hxx
 InterfaceGraphic_wntio.hxx
 InterfaceGraphic_cPrintf.cxx
