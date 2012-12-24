@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC8229"
+puts "============"
+puts ""
+#######################################################################
+# Exeption is raised during the ReadStep in DRAW on the attached shape
+#######################################################################
+
+set BugNumber OCC8229
+
+if [catch { stepread [locate_data_file OCC8229.stp] a * } res] {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+

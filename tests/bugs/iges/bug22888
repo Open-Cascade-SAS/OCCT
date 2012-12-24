@@ -42,7 +42,8 @@ if { $tri_after <= 0 || $nod_after <= 0 } {
     puts "Error : Face is not shaded (number of nodes or triangles is wrong)"
 }
 
-set CR22888_draw 1
+set only_screen 1
+
 
 
 

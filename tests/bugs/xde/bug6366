@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC6366"
+puts "============"
+puts ""
+######################################################
+# FixShape does not fix an edge with invalid SameRange flag 
+######################################################
+
+set BugNumber OCC6366
+
+restore [locate_data_file BUC60393.rle] a
+decho off
+if {[checkshape a] != "This shape seems to be valid"} {
+    puts "Info: we see that the initial shape is bad"
+}
+decho on
+
+puts "launching fixshape..."
+fixshape result a
+set err 0
+
+decho off
+if {[checkshape result] != "This shape seems to be valid"} {
+    puts "Info: we see that the fixed shape is bad too"
+    puts "launching fsameparameter..."
+    set err 1
+    fsameparameter result
+    if {[checkshape result] == "This shape seems to be valid"} {
+	puts "Info: we see that fsameparameter fixed the shape completely"
+    } else {
+        puts "Info: we see that the fixed shape after fsameparameter is bad too"
+    }
+}
+decho on
+
+if { ${err} == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+set 2dviewer 0
+

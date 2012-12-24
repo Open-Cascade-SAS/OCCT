@@ -11,7 +11,8 @@ NewDocument D MDTV-Standard
 catch { SaveAs D ${imagedir}/OCC381.std }
 
 if { [catch { OCC381_Save D } ] } {
-  puts "OCC381: Error" 
+    puts "OCC381: Error" 
 } else {
+    catch { exec chmod 777 ${imagedir}/OCC381.std }
     file delete ${imagedir}/OCC381.std
 }

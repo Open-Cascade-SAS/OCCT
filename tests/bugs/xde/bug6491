@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC6491"
+puts "========"
+puts ""
+####################################################
+## Sewing in DRAW on attached the shape with tolerance 1000 adds duplicated faces
+####################################################
+
+set BugNumber OCC6491
+
+restore [locate_data_file OCC6491.brep] a
+
+set tolerance 1000
+
+sewing result ${tolerance} a
+regexp {FACE +: +([-0-9.+eE]+)} [nbshapes result] full res_faces
+
+set good_faces 263
+
+if { ${res_faces} != ${good_faces} } {
+    puts "Faulty ${BugNumber}"
+}
+
+set 2dviewer 0
+

@@ -1,0 +1,30 @@
+puts "TODO OCC12345 ALL: Faulty OCC448: shape number is wrong"
+
+puts "========"
+puts " OCC448 "
+puts "========"
+puts ""
+############################################
+## wrong translation IGES file in "Only visible" mode
+############################################
+
+if [catch { set list [igesbrep [locate_data_file Amino_172448-65210.igs] a * ] } res] {
+    puts "Faulty OCC448: here is reading problem"
+} else {
+    tpcompound result
+    set length [llength $list]
+    set NbShapes [lindex $list [expr $length - 1]]
+
+  #
+  # ATANTION!!!!!!! FOR TESTING !!!!!!!
+  #
+    set GoodNbShapes 1
+    if { $NbShapes != $GoodNbShapes } {
+	puts "NbShapes=$NbShapes"
+	puts "GoodNbShapes=$GoodNbShapes"
+	puts "Faulty OCC448: shape number is wrong"
+    }
+}
+
+set 2dviewer 0
+

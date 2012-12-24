@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC9517"
+puts "============"
+puts ""
+#######################################################################
+# Wrong use of the method glTexCoordPointer() in OpenGl_PrimitiveArray.c
+#######################################################################
+
+set BugNumber OCC9517
+
+box b 10 10 10
+
+vinit
+vdisplay b
+vtop
+vfit
+
+vtexture b [locate_data_file OCC9517.bmp]
+
+set only_screen 1

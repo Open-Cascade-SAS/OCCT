@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC5027"
+puts "============"
+puts ""
+######################################################
+# Incorrect result translating wire with loops from STEP
+######################################################
+
+set BugNumber OCC5027
+
+if [catch { igesread [locate_data_file OCC5027.igs] a * } res] {
+    puts "Warning ${BugNumber} : here is reading problem"
+} else {
+    tpcompound result
+    set nb_info [nbshapes result]
+    
+    set check_square 1
+    set square 159588
+    set nb_v_good 140
+    set nb_e_good 144
+    set nb_w_good 36
+    set nb_f_good 31
+    set nb_sh_good 0
+    set nb_sol_good 0
+    set nb_compsol_good 0
+    set nb_compound_good 1
+    set nb_shape_good 352
+    
+    set 2dviewer 0
+}
+
+

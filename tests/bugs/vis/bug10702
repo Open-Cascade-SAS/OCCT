@@ -1,0 +1,47 @@
+puts "TODO OCC12345 ALL: An exception was caught"
+puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+
+puts "============"
+puts "OCC10702"
+puts "============"
+puts ""
+#######################################################################
+# MeshVS_NodalColorPrsBuilder does not take into account visibility of mesh elements
+#######################################################################
+
+set BugNumber OCC10702
+
+pload XDE
+
+meshfromstl m [locate_data_file OMF6391_box.stl]
+
+set x_coord 180
+set y_coord 260
+
+meshdispmode m 2
+puts "\nMesh displayed in shading mode"
+
+QAUpdateLights
+checkcolor $x_coord $y_coord 0 0 0.36
+
+meshselmode m 8
+puts "\nSelection of elements is activated"
+
+QAShiftSelect $x_coord $y_coord
+###QAShiftSelect $x_coord $y_coord
+
+meshhidesel m
+puts "\nSelected elemement is hidden"
+
+QAUpdateLights
+checkcolor $x_coord $y_coord 0 0 0.36
+
+nodalcolor_id m
+puts "\nDisplay nodal color presentation"
+
+QAUpdateLights
+checkcolor $x_coord $y_coord 0.46 0.12 0.37
+
+set only_screen 1
+

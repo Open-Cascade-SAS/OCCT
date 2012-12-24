@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC5682"
+puts "============"
+puts ""
+######################################################
+# AIS_InteractiveContext::Remove does not remove the object from memory
+######################################################
+
+set BugNumber OCC5682
+set listmem {}
+
+box b 100 100 100
+
+vinit
+vdisplay b
+vfit
+
+catch {vselmode 4 1}
+vclear
+
+lappend listmem [expr [meminfo w] / 1024]
+if { [checktrend $listmem 0 1 "Memory leak detected"] } {
+   puts "No memory leak"
+   break
+}

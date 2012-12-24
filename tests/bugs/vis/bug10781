@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC10781"
+puts "============"
+puts ""
+#######################################################################
+# MeshVS is not sensitive to width of edges
+#######################################################################
+
+set BugNumber OCC10781
+
+pload XDE
+
+meshfromstl m [locate_data_file OMF6391_box.stl]
+
+set x_coord 210
+set y_coord 280
+
+QAMoveTo $x_coord $y_coord
+QAMoveTo $x_coord $y_coord
+QAUpdateLights
+
+checkcolor $x_coord $y_coord 0 0 0
+
+mesh_edge_width m 20
+puts "\nSet big mesh edge width"
+QAUpdateLights
+
+checkcolor $x_coord $y_coord 1 1 1
+
+set only_screen 1

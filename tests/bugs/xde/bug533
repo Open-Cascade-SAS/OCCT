@@ -1,0 +1,19 @@
+puts "========="
+puts "OCC533"
+puts "========="
+puts ""
+
+#######################################################
+## XmlOcaf-Document is not stored in XDEDRAWEXE although stored in TCAF
+#######################################################
+
+file delete ${imagedir}/A.xml
+
+set res 0
+catch { NewDocument A XmlOcaf }
+if [catch {SaveAs A ${imagedir}/A.xml}] {
+    puts "OCC533 FAULTY"
+} else {
+    puts "OCC533 OK"
+}
+

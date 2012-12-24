@@ -14,6 +14,7 @@ Label $docName 0:2
 SetComment $docName 0:2 $str1
 
 file delete ${imagedir}/${docName}.xml
+file delete ${imagedir}/${newDocName}.xml
 
 if [ catch {SaveAs $docName ${imagedir}/${docName}.xml} ] {
     puts "Error : (SaveAs)"
@@ -21,7 +22,7 @@ if [ catch {SaveAs $docName ${imagedir}/${docName}.xml} ] {
     puts "OK : (SaveAs)"
 }
 
-exec cp ${imagedir}/${docName}.xml ${imagedir}/${newDocName}.xml
+file copy ${imagedir}/${docName}.xml ${imagedir}/${newDocName}.xml
 
 Open ${imagedir}/${newDocName}.xml $newDocName
 

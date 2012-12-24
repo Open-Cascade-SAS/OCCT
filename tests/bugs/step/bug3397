@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC3397"
+puts "============"
+puts ""
+######################################################
+# Incorrect work of ShapeFix_ComposeShell
+######################################################
+
+set BugNumber OCC3397
+
+#mkv-04.09.06
+param read.step.shape.relationship OFF
+
+if [catch { stepread [locate_data_file trj12_b3-tu-203.stp] a * } res] {
+    puts "Faulty ${BugNumber} : here is reading problem"
+} else {
+    tpcompound result
+    set nb_info [nbshapes result]
+    
+    set check_square 1
+    set square 1.48021e+06
+    set nb_v_good 1228
+    set nb_e_good 1938
+    set nb_w_good 762
+    set nb_f_good 696
+    set nb_sh_good 1
+    set nb_sol_good 1
+    set nb_compsol_good 0
+    set nb_compound_good 1
+    set nb_shape_good 4627
+}
+
+set 2dviewer 0

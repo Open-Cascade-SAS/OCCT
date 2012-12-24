@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC6384"
+puts "================"
+puts ""
+#######################################################################################
+# StlAPI_Reader still use old Sewing algorithm
+#######################################################################################
+
+## readstl command from XSDRAWSTLVRML.cxx file !!!!!
+
+set BugNumber OCC6384
+
+readstl res_mesh [locate_data_file OMF6391_box.stl]
+
+

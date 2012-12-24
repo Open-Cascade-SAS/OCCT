@@ -1,0 +1,33 @@
+puts "========="
+puts " OCC945 "
+puts "========="
+puts ""
+#######################################
+## it is necessary to adapt ShapeFix_Face for correct work
+#######################################
+
+restore [locate_data_file OCC945.brep] a
+
+decho off
+set che [checkshape a]
+decho on
+if { [regexp "Faulty" $che] == 1 } {
+    puts "OCC945: Source shape is invalid."
+} else {
+    puts "OCC945: Source shape is valid."
+}
+
+if [catch {fixshape result a 29.9 } result] {
+    puts "Faulty OCC945: here is problem with FIXSHAPE function"
+} else {
+    decho off
+    set che1 [checkshape result]
+    decho on
+    if { [regexp "Faulty" $che1] == 1 } {
+	puts "Faulty OCC945: function FIXSHAPE works WRONGLY."
+    } else {
+	puts "OCC945 OK: function FIXSHAPE works PROPERLY."
+    }
+}
+
+set 2dviewer 1
