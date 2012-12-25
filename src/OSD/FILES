@@ -8,7 +8,6 @@ OSD_Getkey.c
 OSD_Function.hxx
 OSD_ErrorList.hxx
 OSD_WNT.cxx
-OSD_WNT_1.cxx
 OSD_WNT.hxx
 OSD_WNT_1.hxx
 OSD_WNT_BREAK.hxx

@@ -48,7 +48,6 @@ static BOOL   fInit = FALSE;
 static PSID*  predefinedSIDs;
 static HANDLE hHeap;
 /***/
-static DELETE_DIR_PROC   _delete_dir_proc;
 static MOVE_DIR_PROC     _move_dir_proc;
 static COPY_DIR_PROC     _copy_dir_proc;
 static RESPONSE_DIR_PROC _response_dir_proc;
@@ -895,152 +894,6 @@ void FreeAce ( PVOID pACE ) {
 #define WILD_CARD     TEXT( "/*.*" )
 #define WILD_CARD_LEN (  sizeof ( WILD_CARD )  )
 
-/* LD : We do not need this routine any longer : */
-/* Dont remove a no empty directory              */
-
-
-#if 0
-
-/***/
-/******************************************************************************/
-/* Function : DeleteDirectory                                               */
-/* Purpose  : Deletes specified directory tree                              */
-/* Returns  : TRUE on success, FALSE otherwise                              */
-/******************************************************************************/
-/***/
-BOOL DeleteDirectory ( LPCTSTR dirName ) {
-
- PWIN32_FIND_DATA pFD;
- LPTSTR           pName = NULL;
- LPTSTR           pFullName = NULL;
- HANDLE           hFindFile = INVALID_HANDLE_VALUE;
- BOOL             fFind;
- BOOL             retVal = FALSE;
- DIR_RESPONSE     response;
-
- if (   (  pFD = ( PWIN32_FIND_DATA )HeapAlloc (
-                                      hHeap, 0, sizeof ( WIN32_FIND_DATA )
-                                     )
-        ) != NULL &&
-        (  pName = ( LPTSTR )HeapAlloc (
-                              hHeap, 0, lstrlen ( dirName ) + WILD_CARD_LEN +
-                              sizeof (  TEXT( '\x00' )  )
-                             )
-        ) != NULL
- ) {
-
-  lstrcpy ( pName, dirName   );
-  lstrcat ( pName, WILD_CARD );
-
-  retVal = TRUE;
-  fFind  = (  hFindFile = FindFirstFile ( pName, pFD )  ) != INVALID_HANDLE_VALUE;
-
-  while ( fFind ) {
-
-   if (  pFD -> cFileName[ 0 ] != TEXT( '.' ) ||
-         pFD -> cFileName[ 0 ] != TEXT( '.' ) &&
-         pFD -> cFileName[ 1 ] != TEXT( '.' )
-   ) {
-
-    if (   ( pFullName = ( LPTSTR )HeapAlloc (
-                                    hHeap, 0,
-                                    lstrlen ( dirName ) + lstrlen ( pFD -> cFileName ) +
-                                    sizeof (  TEXT( '/' )  ) + sizeof (  TEXT( '\x00' )  )
-                                   )
-           ) == NULL
-    ) break;
-
-    lstrcpy ( pFullName, dirName );
-    lstrcat (  pFullName, TEXT( "/" )  );
-    lstrcat ( pFullName, pFD -> cFileName );
-   
-    if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
-
-     if (   !(  retVal = DeleteDirectory ( pFullName )  )   )
-
-      break;
-   
-    } else {
-retry:   
-     if (   !(  retVal = DeleteFile ( pFullName )  )   ) {
-
-      if ( _response_dir_proc != NULL ) {
-      
-       response = ( *_response_dir_proc ) ( pFullName );
-
-       if ( response == DIR_ABORT )
-
-        break;
-
-       else if ( response == DIR_RETRY )
-
-        goto retry;
-
-       else if ( response == DIR_IGNORE )
-
-        retVal = TRUE;
-
-       else
-
-        break;
-      
-      }  /* end if */
-
-     } else if ( _delete_dir_proc != NULL )
-
-      ( *_delete_dir_proc ) ( pFullName );
-
-    }  /* end else */
-
-    HeapFree ( hHeap, 0, pFullName );
-    pFullName = NULL;
-
-   }  /* end if */
-
-   fFind = FindNextFile ( hFindFile, pFD );
-  
-  }  /* end while */
-
- }  /* end if */
-
- if ( hFindFile != INVALID_HANDLE_VALUE ) FindClose ( hFindFile );
-
- if ( pFullName != NULL ) HeapFree ( hHeap, 0, pFullName );
- if ( pName     != NULL ) HeapFree ( hHeap, 0, pName     );
- if ( pFD       != NULL ) HeapFree ( hHeap, 0, pFD       );
-
- if ( retVal ) {
-retry_1:  
-  retVal = RemoveDirectory ( dirName );
-
-  if ( !retVal ) {
-  
-   if ( _response_dir_proc != NULL ) {
-      
-    response = ( *_response_dir_proc ) ( pFullName );
-
-    if ( response == DIR_RETRY )
-
-     goto retry_1;
-
-    else if ( response == DIR_IGNORE )
-
-     retVal = TRUE;
-
-   }  /* end if */
-  
-  } else if ( _delete_dir_proc != NULL )
-
-   ( *_delete_dir_proc ) ( dirName );
-
- }  /* end if */
-
- return retVal;
-
-}  /* end DeleteDirectory */
-
-#endif
-
 /***/
 /******************************************************************************/
 /* Function : MoveDirectory                                                 */
@@ -1408,20 +1261,6 @@ retry:
  return retVal;
 
 }  /* end CopyDirectory */
-/***/
-/******************************************************************************/
-/* Function : SetDeleteDirectoryProc                                        */
-/* Purpose  : Sets callback procedure which is calling by the               */ 
-/*            'DeleteDirectory' after deleteion of each item in the         */
-/*            directory. To unregister this callback function supply NULL   */
-/*            pointer                                                       */
-/******************************************************************************/
-/***/
-void SetDeleteDirectoryProc ( DELETE_DIR_PROC proc ) {
-
- _delete_dir_proc = proc;
-
-}  /* end SetDeleteDirectoryProc */
 /***/
 /******************************************************************************/
 /* Function : SetMoveDirectoryProc                                          */

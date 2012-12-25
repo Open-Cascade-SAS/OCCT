@@ -27,7 +27,7 @@
 #include <Aspect_Convert.hxx>
 
 #include <stdio.h>
-extern "C" void _debug_break ( char* );
+
 //************************************************************************//
 //***//
 // callback function to manage window's background

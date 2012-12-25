@@ -18,7 +18,7 @@
 
 #include <OSD.ixx>
 
-#ifdef WNT
+#ifdef _WIN32
 
 //---------------------------- Windows NT System --------------------------------
 
@@ -70,7 +70,7 @@ static Standard_Mutex THE_SIGNAL_MUTEX;
 static LONG __fastcall _osd_raise ( DWORD, LPTSTR );
 static BOOL WINAPI     _osd_ctrl_break_handler ( DWORD );
 
-extern "C" Standard_EXPORT LONG _osd_debug   ( void );
+static LONG _osd_debug   ( void );
 
 MB_DESC fatalErrorDesc[] = {
 
@@ -227,55 +227,32 @@ static LONG CallHandler (DWORD dwExceptionCode,
 
  }  // end switch
 
+ // provide message to the user with possibility to stop
  int idx = lstrlen ( buffer );
-
-
  if ( idx && fMsgBox && dwExceptionCode != EXCEPTION_NONCONTINUABLE_EXCEPTION ) {
      // reset FP operations before message box, otherwise it may fail to show up
     _fpreset();
     _clearfp();
 
-  MessageBeep ( MB_ICONHAND );
-  int msgID = MsgBox ( NULL, buffer, TEXT( "Error detected" ), 4, fatalErrorDesc );
-//  cout << "flterr" << flterr << " fFltExceptions " << fFltExceptions << endl ;
-  if ( flterr ) {
-    if ( !fFltExceptions )
-      return EXCEPTION_EXECUTE_HANDLER;
-    _fpreset () ;
-    _clearfp() ;
-    _controlfp ( 0, _OSD_FPX ) ;          // JR add :
-//    cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << hex << _controlfp(0,0) << dec << endl ;
-  }
-  buffer[ idx ] = 0;
-  switch ( msgID ) {
-   case IDYES: {
-    PTCHAR ptr = _tcschr (  buffer, TEXT( '\n' )  );
-    if ( ptr != NULL )
-      *ptr = TEXT( ' ' );
-//    cout << "CallHandler " << dwExceptionCode << endl ;
-    _osd_raise ( dwExceptionCode, buffer );
-   }  // IDYES
-   case IDNO:
-    LONG action ;
-    action = _osd_debug ();
-//    cout << "return from CallHandler -> DebugBreak " << endl ;
-    DebugBreak ();
-    _osd_raise ( dwExceptionCode, buffer );
-//    cout << "CallHandler return : " << action << endl ;
-    return action ;
-   case IDCANCEL:
-    exit ( 0xFFFF );
-   }  // end switch
+    MessageBeep ( MB_ICONHAND );
+    int aChoice = ::MessageBox (0, buffer, "OCCT Exception Handler", MB_ABORTRETRYIGNORE | MB_ICONSTOP);
+    if (aChoice == IDRETRY)
+    {
+      _osd_debug();
+      DebugBreak();
+    } 
+    else if (aChoice == IDABORT)
+      exit(0xFFFF);
  }
- else {
-   if ( flterr ) {
-     if ( !fFltExceptions )
-       return EXCEPTION_EXECUTE_HANDLER;
-     _fpreset () ;
-     _clearfp() ;
-     _controlfp ( 0, _OSD_FPX ) ;          // JR add :
+
+ // reset FPE state
+ if ( flterr ) {
+   if ( !fFltExceptions )
+     return EXCEPTION_EXECUTE_HANDLER;
+   _fpreset () ;
+   _clearfp() ;
+   _controlfp ( 0, _OSD_FPX ) ;          // JR add :
 //     cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << hex << _controlfp(0,0) << dec << endl ;
-   }
  }
  return _osd_raise ( dwExceptionCode, buffer );
 #else

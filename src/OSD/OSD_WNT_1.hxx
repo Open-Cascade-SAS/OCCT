@@ -154,23 +154,12 @@ void       OSDAPI FreeGroupSid  ( PGROUP_SID           );
 PVOID OSDAPI AllocAccessAllowedAce ( DWORD, BYTE, PSID );
 void  OSDAPI FreeAce ( PVOID );
 
-BOOL OSDAPI DeleteDirectory ( LPCTSTR          );
 BOOL OSDAPI MoveDirectory   ( LPCTSTR, LPCTSTR );
 BOOL OSDAPI CopyDirectory   ( LPCTSTR, LPCTSTR );
 
-void OSDAPI SetDeleteDirectoryProc   ( DELETE_DIR_PROC   );
 void OSDAPI SetMoveDirectoryProc     ( MOVE_DIR_PROC     );
 void OSDAPI SetCopyDirectoryProc     ( COPY_DIR_PROC     );
 void OSDAPI SetResponseDirectoryProc ( RESPONSE_DIR_PROC );
-
-BOOL OSDAPI DirWalk (  LPCTSTR, LPCTSTR, BOOL ( * ) ( LPCTSTR, BOOL, void* ), BOOL, void*  );
-
-_TINT OSDAPI MsgBox ( HWND, LPTSTR, LPCTSTR, _TINT, LPMB_DESC );
-
-void    OSDAPI WNT_InitTimer ( void );
-LPCTSTR OSDAPI WNT_StatTimer ( void );
-
-void OSDAPI _debug_break ( LPTSTR );
 
 # ifdef __cplusplus
 }
