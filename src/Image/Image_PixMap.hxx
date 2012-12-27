@@ -215,7 +215,7 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
   }
 
   //! @return bytes reserved for one pixel (may include extra bytes for alignment).
-  static Standard_Size SizePixelBytes (const Image_PixMap::ImgFormat thePixelFormat);
+  Standard_EXPORT static Standard_Size SizePixelBytes (const Image_PixMap::ImgFormat thePixelFormat);
 
   //! @return bytes reserved per row.
   //! Could be larger than needed to store packed row (extra bytes for alignment etc.).
