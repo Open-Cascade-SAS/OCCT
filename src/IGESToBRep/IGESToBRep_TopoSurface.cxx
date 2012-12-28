@@ -899,16 +899,6 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder
   try {
     OCC_CATCH_SIGNALS
     if (extractCurve3d(directrix, aBasisCurve)) {
-      // PTV 29.08.2002 OCC663 file D44-11325-6.igs, entity 4640
-      if (igesDirectrix->IsKind(STANDARD_TYPE(IGESGeom_ConicArc))) {
-        // PTV 30.08.2002 remove regression on xloop k1.brep in face and brep mode.
-        Standard_Real tmpF, tmpL, tmpToler;
-        tmpF = aBasisCurve->FirstParameter();
-        tmpL = aBasisCurve->LastParameter();
-        tmpToler = Precision::PConfusion();
-        if ( (fabs(tmpF) >= tmpToler) && (fabs(tmpL - 2*M_PI) >= tmpToler) )
-          reparamBSpline (aBasisCurve, tmpF, tmpL);
-      }
       gp_Vec dir (pt1, pt2);
       Handle(Geom_Surface) aResultSurf = 
         new Geom_SurfaceOfLinearExtrusion(aBasisCurve, dir);
@@ -1804,15 +1794,13 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const Handle(IGESData_IGESEnti
     Handle(IGESGeom_TabulatedCylinder) igtc = Handle(IGESGeom_TabulatedCylinder)::DownCast(isrf);
     Handle(IGESData_IGESEntity) idie = igtc->Directrix();
     Standard_Real uln=1;
-    if(idie->TypeNumber()==110) {
-      Handle(IGESGeom_Line) igl = Handle(IGESGeom_Line)::DownCast(idie);
-      gp_Pnt SP = igl->StartPoint();
-      gp_Pnt EP = igl->EndPoint();
-      // PTV OCC659 
-      // PTV file D44-11325-6.igs. Faces with parametric curves need * GetUnitFactor();
-      uln=SP.Distance(EP) * GetUnitFactor();
-    }
+    Standard_Real Umin,Umax,Vmin,Vmax;
+    //scaling parameterization from [0,1]
+    Surf->Bounds(Umin,Umax,Vmin,Vmax);
+    uln = Abs(Umax-Umin);
+    //computing shift of pcurves
     uscale = uln/cscale;
+    paramu = Umin/uln;
   }
   
   if (isrf->IsKind(STANDARD_TYPE(IGESSolid_CylindricalSurface))||
