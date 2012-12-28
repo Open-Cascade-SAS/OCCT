@@ -802,24 +802,68 @@ static Standard_Integer numshapes(Draw_Interpretor& di,
 }
 
 //=======================================================================
+// function : DumpExtent
+// purpose  : Dumps the number of sub-shapes in <aStr>.
+//=======================================================================
+static void DumpExtent(const TopoDS_Shape& aS,
+                       TCollection_AsciiString& aStr)
+{
+  const int aNbTypes=8;
+  const char *pNames[aNbTypes+1]={
+    " SHAPE     : ",
+    " COMPOUND  : ",
+    " COMPSOLID : ",
+    " SOLID     : ",
+    " SHELL     : ",
+    " FACE      : ",
+    " WIRE      : ",
+    " EDGE      : ",
+    " VERTEX    : "
+  };
+  Standard_Integer i, aNb, aNbSh;
+  TopAbs_ShapeEnum aType;
+  TopTools_IndexedMapOfShape aM;
+  //
+  aNbSh=0;
+  //
+  for (i=aNbTypes-1; i>=0; --i) {
+    aM.Clear();
+    aType=(TopAbs_ShapeEnum)i;
+    TopExp::MapShapes(aS, aType, aM);
+    aNb=aM.Extent();
+    aStr=aStr+pNames[i+1]+TCollection_AsciiString(aNb)+"\n";
+    aNbSh+=aNb;
+  }
+  aStr=aStr+pNames[0]+TCollection_AsciiString(aNbSh)+"\n";
+}
+
+//=======================================================================
 // nbshapes
 //=======================================================================
 
 static Standard_Integer nbshapes(Draw_Interpretor& di,
-				 Standard_Integer n, const char** a)
+                                 Standard_Integer n, const char** a)
 {
   if (n < 2) return 1;
 
   Standard_Integer i;
+  Standard_Boolean aTotal;
   TopExp_Explorer ex;
+  //
+  aTotal = !strcmp(a[n-1], "-t") ? Standard_True : Standard_False;
+  //
   for (i = 1; i < n; i++) {
     TopoDS_Shape S = DBRep::Get(a[i]);
     if (!S.IsNull()) {
-      BRepTools_ShapeSet BS;
-      BS.Add(S);
       di<<"Number of shapes in "<<a[i]<<"\n";
       TCollection_AsciiString Astr; 
-      BS.DumpExtent(Astr);
+      if (aTotal) {
+        DumpExtent(S, Astr);
+      } else {
+        BRepTools_ShapeSet BS;
+        BS.Add(S);
+        BS.DumpExtent(Astr);
+      }
       di<<Astr.ToCString();
     }
   }
@@ -1160,7 +1204,9 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("complement","complement name1 name2 ...",__FILE__,orientation,g);
   theCommands.Add("invert","invert name, reverse subshapes",__FILE__,invert,g);
   theCommands.Add("normals","normals s (length = 10), disp normals",__FILE__,normals,g);
-  theCommands.Add("nbshapes","nbshapes s; size of shape",__FILE__,nbshapes,g);
+  theCommands.Add("nbshapes",
+                  "\n nbshapes s - shows the number of sub-shapes in <s>;\n nbshapes s -t - shows the number of sub-shapes in <s> counting the same sub-shapes with different location as different sub-shapes.",
+                  __FILE__,nbshapes,g);
   theCommands.Add("numshapes","numshapes s; size of shape",__FILE__,numshapes,g);
   theCommands.Add("countshapes","countshapes s; count of shape",__FILE__,countshapes,g);
 

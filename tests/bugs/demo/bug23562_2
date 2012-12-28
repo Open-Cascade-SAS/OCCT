@@ -1,0 +1,20 @@
+puts "============"
+puts "CR23562"
+puts "============"
+puts ""
+##########################################################################################################
+# nbshapes command works incorrect with the attached shapes
+##########################################################################################################
+
+restore [locate_data_file bug23562_V4.brep] result
+set nb_info [nbshapes result]
+
+set nb_v_good 24
+set nb_e_good 43
+set nb_w_good 20
+set nb_f_good 20
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 110
