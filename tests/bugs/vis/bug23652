@@ -1,0 +1,16 @@
+puts "============"
+puts "CR23652"
+puts "============"
+puts ""
+#######################################################################
+# Non zoomable text with alignment slides away when zooming view
+#######################################################################
+
+pload AISV
+vinit
+vtrihedron tri
+vdrawtext Default 0.0 0.0 0.0 255 255 255 0 0 0 0 20 0
+vdrawtext Right_Align 0.0 0.0 0.0 255 255 255 2 0 0 0 20 0
+vfit
+
+set 3dviewer 7
