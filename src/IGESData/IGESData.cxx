@@ -125,6 +125,13 @@ static Handle(IGESData_DefaultSpecific)   speci;
   Interface_Static::Init ("XSTEP","read.iges.faulty.entities",'&',"eval Off");
   Interface_Static::Init ("XSTEP","read.iges.faulty.entities",'&',"eval On");
   Interface_Static::SetIVal ("read.iges.faulty.entities",0);
+
+  //ika added parameter for writing planes mode 2.11.2012 
+  Interface_Static::Init ("XSTEP","write.iges.plane.mode",'e',"");
+  Interface_Static::Init ("XSTEP","write.iges.plane.mode",'&',"ematch 0");
+  Interface_Static::Init ("XSTEP","write.iges.plane.mode",'&',"eval Plane");
+  Interface_Static::Init ("XSTEP","write.iges.plane.mode",'&',"eval BSpline");
+  Interface_Static::SetIVal ("write.iges.plane.mode",0);
   // Message File for IGES
   // -----------------
 

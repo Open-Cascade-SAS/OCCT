@@ -75,6 +75,7 @@
 
 #include <IGESSolid_PlaneSurface.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 
 #include <gce_MakeLin.hxx>
 
@@ -505,45 +506,56 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
   if (start.IsNull()) {
     return res;
   }
+  if (Interface_Static::IVal("write.iges.plane.mode") == 0){
+    Handle(IGESGeom_Plane) aPlane = new IGESGeom_Plane;
+    Standard_Real A,B,C,D;
+    start->Coefficients(A,B,C,D);
+    D = -D;// because of difference in Geom_Plane class and Type 108
+    gp_XYZ anAttach = start->Location().XYZ();
+    aPlane->Init(A,B,C,D,0,anAttach,0);
+    res = aPlane;
+    return res;
+  }
+  else{
+    Handle(IGESGeom_BSplineSurface) BSpline = new IGESGeom_BSplineSurface;
+    gp_Pnt P1 ,P2, P3, P4;
+    start->D0(Udeb, Vdeb, P1);
+    start->D0(Udeb, Vfin, P2);
+    start->D0(Ufin, Vdeb, P3);
+    start->D0(Ufin, Vfin, P4);
+    Handle(TColgp_HArray2OfXYZ) Poles = new TColgp_HArray2OfXYZ(0, 1, 0, 1);
+    Standard_Real X,Y,Z;
+    P1.Coord(X,Y,Z);
+    Poles->SetValue (0, 0, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
+    P2.Coord(X,Y,Z);
+    Poles->SetValue (0, 1, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
+    P3.Coord(X,Y,Z);
+    Poles->SetValue (1, 0, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
+    P4.Coord(X,Y,Z);
+    Poles->SetValue (1, 1, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
 
-  Handle(IGESGeom_BSplineSurface) BSpline = new IGESGeom_BSplineSurface;
-  gp_Pnt P1 ,P2, P3, P4;
-  start->D0(Udeb, Vdeb, P1);
-  start->D0(Udeb, Vfin, P2);
-  start->D0(Ufin, Vdeb, P3);
-  start->D0(Ufin, Vfin, P4);
-  Handle(TColgp_HArray2OfXYZ) Poles = new TColgp_HArray2OfXYZ(0, 1, 0, 1);
-  Standard_Real X,Y,Z;
-  P1.Coord(X,Y,Z);
-  Poles->SetValue (0, 0, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
-  P2.Coord(X,Y,Z);
-  Poles->SetValue (0, 1, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
-  P3.Coord(X,Y,Z);
-  Poles->SetValue (1, 0, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
-  P4.Coord(X,Y,Z);
-  Poles->SetValue (1, 1, gp_XYZ(X/GetUnit(),Y/GetUnit(),Z/GetUnit()));
+    Handle(TColStd_HArray1OfReal) KnotsU = new TColStd_HArray1OfReal(-1,2);
+    KnotsU->SetValue(-1, Udeb);
+    KnotsU->SetValue(0, Udeb);
+    KnotsU->SetValue(1, Ufin);
+    KnotsU->SetValue(2, Ufin);
 
-  Handle(TColStd_HArray1OfReal) KnotsU = new TColStd_HArray1OfReal(-1,2);
-  KnotsU->SetValue(-1, Udeb);
-  KnotsU->SetValue(0, Udeb);
-  KnotsU->SetValue(1, Ufin);
-  KnotsU->SetValue(2, Ufin);
+    Handle(TColStd_HArray1OfReal) KnotsV = new TColStd_HArray1OfReal(-1,2);
+    KnotsV->SetValue(-1, Vdeb);
+    KnotsV->SetValue(0, Vdeb);
+    KnotsV->SetValue(1, Vfin);
+    KnotsV->SetValue(2, Vfin);
 
-  Handle(TColStd_HArray1OfReal) KnotsV = new TColStd_HArray1OfReal(-1,2);
-  KnotsV->SetValue(-1, Vdeb);
-  KnotsV->SetValue(0, Vdeb);
-  KnotsV->SetValue(1, Vfin);
-  KnotsV->SetValue(2, Vfin);
+    Handle(TColStd_HArray2OfReal) Weights = 
+      new TColStd_HArray2OfReal(0, 1, 0, 1, 1.);
 
-  Handle(TColStd_HArray2OfReal) Weights = 
-    new TColStd_HArray2OfReal(0, 1, 0, 1, 1.);
-
-  //#32 rln 19.10.98
-  BSpline-> Init ( 1, 1, 1, 1, Standard_False , Standard_False, Standard_True, 
-		  Standard_False, Standard_False,
-		  KnotsU, KnotsV, Weights, Poles, Udeb, Ufin, Vdeb, Vfin);
-  res = BSpline;
-  return res;
+    //#32 rln 19.10.98
+    BSpline-> Init ( 1, 1, 1, 1, Standard_False , Standard_False, Standard_True, 
+		    Standard_False, Standard_False,
+		    KnotsU, KnotsV, Weights, Poles, Udeb, Ufin, Vdeb, Vfin);
+    res = BSpline;
+    return res;
+  }
 
 }
 

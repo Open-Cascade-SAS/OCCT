@@ -31,6 +31,7 @@
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Trsf2d.hxx>
@@ -42,6 +43,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
@@ -332,9 +334,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge (const TopoDS_Edge&
   
   // returns the 2d curve associated to myedge in the parametric space of myface
   Standard_Real First, Last;
-
-  Handle(Geom2d_Curve) Curve2d = BRep_Tool::CurveOnSurface
-    (myedge, myface, First, Last);
+  Handle(Geom2d_Curve) Curve2d = BRep_Tool::CurveOnSurface(myedge, myface, First, Last);
   Handle(IGESData_IGESEntity) ICurve2d;
   //#29 rln 19.10.98
 
@@ -347,6 +347,9 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferEdge (const TopoDS_Edge&
     
     TopLoc_Location L;
     Handle(Geom_Surface) st = BRep_Tool::Surface(myface, L);
+    if (st->IsKind(STANDARD_TYPE(Geom_Plane))){
+      return res;
+    }
     Standard_Real Ufirst, Ulast, Vfirst, Vlast;
     BRepTools::UVBounds(myface, Ufirst, Ulast, Vfirst, Vlast);
     Handle(Geom_Surface) Surf;
