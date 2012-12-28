@@ -232,6 +232,7 @@ is
         --          as assemblies (creates assembly structure).
 	--          NOTE: <makePrepare> replace components without location
     	--          in assmebly by located components to avoid some problems.
+    	--          If AutoNaming() is True then automatically attaches names.
 
     addShape (me:mutable; S: Shape from TopoDS;
     	      makeAssembly: Boolean = Standard_True)
@@ -250,6 +251,23 @@ is
     
     Init (me: mutable);
     	---Purpose: set hasComponents into false
+
+    SetAutoNaming (myclass; V: Boolean);
+    	---Purpose: Sets auto-naming mode to <V>. If True then for added
+    	--          shapes, links, assemblies and SHUO's, the TDataStd_Name attribute
+    	--          is automatically added. For shapes it contains a shape type
+    	--          (e.g. "SOLID", "SHELL", etc); for links it has a form
+    	--          "=>[0:1:1:2]" (where a tag is a label containing a shape
+    	--          without a location); for assemblies it is "ASSEMBLY", and
+    	--          "SHUO" for SHUO's.
+    	--          This setting is global; it cannot be made a member function
+    	--          as it is used by static methods as well.
+    	--          By default, auto-naming is enabled.
+    	--          See also AutoNaming().
+    
+    AutoNaming (myclass) returns Boolean;
+    	---Purpose: Returns current auto-naming mode. See SetAutoNaming() for
+    	--          description.
     
     ComputeShapes (me: mutable; L: Label from TDF);
     	---Purpose: recursive

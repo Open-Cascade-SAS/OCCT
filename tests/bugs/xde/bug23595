@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC23595"
+puts "============"
+puts ""
+#######################################################################
+# XCAFDoc_ShapeTool extended with two methods - SetAutoNaming() and AutoNaming()
+#######################################################################
+
+pload QAcommands
+
+OCC23595

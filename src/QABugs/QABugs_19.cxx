@@ -215,6 +215,46 @@ static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*
 
 #endif /* HAVE_TBB */
 
+#include <TDocStd_Application.hxx>
+#include <XCAFApp_Application.hxx>
+#include <TDocStd_Document.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <TDF_Label.hxx>
+#include <TDataStd_Name.hxx>
+
+static Standard_Integer OCC23595 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char **argv)
+{
+  const Handle(TDocStd_Application)& anApp = XCAFApp_Application::GetApplication();
+  Handle(TDocStd_Document) aDoc;
+  anApp->NewDocument ("XmlXCAF", aDoc);
+  QCOMPARE (!aDoc.IsNull(), Standard_True);
+
+  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
+
+  //check default value
+  Standard_Boolean aValue = XCAFDoc_ShapeTool::AutoNaming();
+  QCOMPARE (aValue, Standard_True);
+
+  //true
+  XCAFDoc_ShapeTool::SetAutoNaming (Standard_True);
+  TopoDS_Shape aShape = BRepPrimAPI_MakeBox (100., 200., 300.).Shape();
+  TDF_Label aLabel = aShTool->AddShape (aShape);
+  Handle(TDataStd_Name) anAttr;
+  QCOMPARE (aLabel.FindAttribute (TDataStd_Name::GetID(), anAttr), Standard_True);
+
+  //false
+  XCAFDoc_ShapeTool::SetAutoNaming (Standard_False);
+  aShape = BRepPrimAPI_MakeBox (300., 200., 100.).Shape();
+  aLabel = aShTool->AddShape (aShape);
+  QCOMPARE (!aLabel.FindAttribute (TDataStd_Name::GetID(), anAttr), Standard_True);
+
+  //restore
+  XCAFDoc_ShapeTool::SetAutoNaming (aValue);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -223,6 +263,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23361", "OCC23361", __FILE__, OCC23361, group);
   theCommands.Add ("OCC23237", "OCC23237", __FILE__, OCC23237, group); 
   theCommands.Add ("OCC22980", "OCC22980", __FILE__, OCC22980, group);
+  theCommands.Add ("OCC23595", "OCC23595", __FILE__, OCC23595, group);
 
   return;
 }

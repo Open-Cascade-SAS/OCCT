@@ -58,7 +58,7 @@
 #include <gp_Pnt.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 
-#define AUTONAMING // automatically set names for labels
+static Standard_Boolean theAutoNaming = Standard_True;
 
 // attribute methods //////////////////////////////////////////////////
 
@@ -141,7 +141,6 @@ void XCAFDoc_ShapeTool::Paste (const Handle(TDF_Attribute)& /*into*/,
 {
 }
 
-#ifdef AUTONAMING
 // Auxiliary methods //////////////////////////////////////////////////
 
 //=======================================================================
@@ -189,7 +188,6 @@ static void SetLabelNameByShape(const TDF_Label L)
     TDataStd_Name::Set(L, TCollection_ExtendedString(aName));
   }
 }
-#endif
 
 
 //=======================================================================
@@ -454,9 +452,8 @@ void XCAFDoc_ShapeTool::MakeReference (const TDF_Label &L,
   refNode->Remove(); // abv: fix against bug in TreeNode::Append()
   mainNode->Append(refNode);
 
-#ifdef AUTONAMING
-  SetLabelNameByLink(L);
-#endif
+  if (theAutoNaming)
+    SetLabelNameByLink(L);
 }
 
 //=======================================================================
@@ -496,18 +493,16 @@ TDF_Label XCAFDoc_ShapeTool::addShape (const TopoDS_Shape& S, const Standard_Boo
 //  }
   A->SetShape(S);
   
-#ifdef AUTONAMING
-  SetLabelNameByShape(ShapeLabel);
-#endif
+  if (theAutoNaming)
+    SetLabelNameByShape(ShapeLabel);
 
   // if shape is Compound and flag is set, create assembly
   if ( makeAssembly && S.ShapeType() == TopAbs_COMPOUND ) {
     // mark assembly by assigning UAttribute
     Handle(TDataStd_UAttribute) Uattr;
     Uattr = TDataStd_UAttribute::Set ( ShapeLabel, XCAFDoc::AssemblyGUID() );
-#ifdef AUTONAMING
-    TDataStd_Name::Set(ShapeLabel, TCollection_ExtendedString("ASSEMBLY"));
-#endif
+    if (theAutoNaming)
+      TDataStd_Name::Set(ShapeLabel, TCollection_ExtendedString("ASSEMBLY"));
 
     // iterate on components
     TopoDS_Iterator Iterator(S);
@@ -640,6 +635,28 @@ Standard_Boolean XCAFDoc_ShapeTool::RemoveShape (const TDF_Label& L,
 void XCAFDoc_ShapeTool::Init()
 {
   hasSimpleShapes = Standard_False;
+}
+
+
+//=======================================================================
+//function : SetAutoNaming
+//purpose  : 
+//=======================================================================
+
+void XCAFDoc_ShapeTool::SetAutoNaming (const Standard_Boolean V)
+{
+  theAutoNaming = V;
+}
+
+
+//=======================================================================
+//function : AutoNaming
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean XCAFDoc_ShapeTool::AutoNaming()
+{
+  return theAutoNaming;
 }
 
 
@@ -1384,10 +1401,10 @@ Standard_Boolean XCAFDoc_ShapeTool::SetSHUO (const TDF_LabelSequence& labels,
   
   TDF_TagSource aTag;
   TDF_Label UpperSubL = aTag.NewChild( labels( 1 ) );
-#ifdef AUTONAMING
-  TCollection_ExtendedString Entry("SHUO");
-  TDataStd_Name::Set(UpperSubL, TCollection_ExtendedString( Entry ));
-#endif
+  if (theAutoNaming) {
+    TCollection_ExtendedString Entry("SHUO");
+    TDataStd_Name::Set(UpperSubL, TCollection_ExtendedString( Entry ));
+  }
   Handle(XCAFDoc_GraphNode) aUpperSHUO;
   aUpperSHUO = XCAFDoc_GraphNode::Set( UpperSubL, XCAFDoc::SHUORefGUID() );
   // init out argument by main upper usage SHUO
@@ -1395,11 +1412,11 @@ Standard_Boolean XCAFDoc_ShapeTool::SetSHUO (const TDF_LabelSequence& labels,
   // add other next_usage occurrences.
   for (i = 2; i <= labels.Length(); i++) {
     TDF_Label NextSubL = aTag.NewChild( labels( i ) );
-#ifdef AUTONAMING
-    TCollection_ExtendedString EntrySub("SHUO-");
-    EntrySub += i;
-    TDataStd_Name::Set(NextSubL, TCollection_ExtendedString( EntrySub ));
-#endif
+    if (theAutoNaming) {
+      TCollection_ExtendedString EntrySub("SHUO-");
+      EntrySub += i;
+      TDataStd_Name::Set(NextSubL, TCollection_ExtendedString( EntrySub ));
+    }
     Handle(XCAFDoc_GraphNode) aNextSHUO;
     aNextSHUO = XCAFDoc_GraphNode::Set( NextSubL, XCAFDoc::SHUORefGUID() );
     // set references
