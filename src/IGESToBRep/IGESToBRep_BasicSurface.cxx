@@ -910,7 +910,6 @@ Handle(Geom_BSplineSurface)  IGESToBRep_BasicSurface::TransferBSplineSurface
   //  ===============================
   
   Standard_Integer icont = GetContinuity();
-  if ( icont < 1) return res;
   //Standard_Boolean isC1 = Standard_True, isC2 = Standard_True; //szv#4:S4163:12Mar99 not needed
 
   i = res->LastUKnotIndex();
