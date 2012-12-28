@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_View.hxx>
@@ -75,6 +74,13 @@ static const OPENGL_EXTRA_REP myDefaultExtra =
 
 static const OPENGL_FOG myDefaultFog = { Standard_False, 0.F, 1.F, { { 0.F, 0.F, 0.F, 1.F } } };
 static const TEL_TRANSFORM_PERSISTENCE myDefaultTransPers = { 0, 0.F, 0.F, 0.F };
+static const GLdouble THE_IDENTITY_MATRIX[4][4] =
+{
+  {1.0, 0.0, 0.0, 0.0},
+  {0.0, 1.0, 0.0, 0.0},
+  {0.0, 0.0, 1.0, 0.0},
+  {0.0, 0.0, 0.0, 1.0}
+};
 
 /*----------------------------------------------------------------------*/
 
@@ -513,15 +519,15 @@ void OpenGl_View::GraduatedTrihedronErase ()
 /*----------------------------------------------------------------------*/
 
 //transform_persistence_end
-void OpenGl_View::EndTransformPersistence ()
+void OpenGl_View::EndTransformPersistence()
 {
-  if ( myIsTransPers )
+  if (myIsTransPers)
   {
-    /* restore matrix */
+    // restore matrix
     glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
+    glPopMatrix();
     glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
+    glPopMatrix();
     myIsTransPers = Standard_False;
   }
 }
@@ -529,171 +535,150 @@ void OpenGl_View::EndTransformPersistence ()
 /*----------------------------------------------------------------------*/
 
 //transform_persistence_begin
-const TEL_TRANSFORM_PERSISTENCE * OpenGl_View::BeginTransformPersistence (const TEL_TRANSFORM_PERSISTENCE *ATransPers)
+const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const TEL_TRANSFORM_PERSISTENCE* theTransPers)
 {
-  const TEL_TRANSFORM_PERSISTENCE *TransPers_old = myTransPers;
-
-  myTransPers = ATransPers;
-
-  if ( ATransPers->mode == 0 )
+  const TEL_TRANSFORM_PERSISTENCE* aTransPersPrev = myTransPers;
+  myTransPers = theTransPers;
+  if (theTransPers->mode == 0)
   {
     EndTransformPersistence();
-    return TransPers_old;
+    return aTransPersPrev;
   }
 
-  GLint viewport[4];
-  glGetIntegerv (GL_VIEWPORT, viewport);
-  GLdouble modelMatrix[4][4];
-  glGetDoublev( GL_MODELVIEW_MATRIX,  (GLdouble *) modelMatrix );
-  GLdouble projMatrix[4][4];
-  glGetDoublev( GL_PROJECTION_MATRIX, (GLdouble *) projMatrix );
+  GLint aViewport[4];
+  GLdouble aModelMatrix[4][4];
+  GLdouble aProjMatrix[4][4];
+  glGetIntegerv (GL_VIEWPORT,          aViewport);
+  glGetDoublev  (GL_MODELVIEW_MATRIX,  (GLdouble* )aModelMatrix);
+  glGetDoublev  (GL_PROJECTION_MATRIX, (GLdouble *)aProjMatrix);
+  const GLdouble aViewportW = (GLdouble )aViewport[2];
+  const GLdouble aViewportH = (GLdouble )aViewport[3];
 
-  double W = viewport[2];
-  double H = viewport[3];
-
-  if ( myIsTransPers )
+  if (myIsTransPers)
   {
-    /* restore matrix */
+    // pop matrix stack - it will be overridden later
     glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
+    glPopMatrix();
     glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
+    glPopMatrix();
   }
   else
+  {
     myIsTransPers = Standard_True;
-
-  glMatrixMode( GL_MODELVIEW );
-  glPushMatrix();
-  glLoadIdentity();
-
-  glMatrixMode( GL_PROJECTION );
-  glPushMatrix();
-  glLoadIdentity();
-
-  /*pre loading matrix*/
-  if( ATransPers->mode & TPF_PAN )
-    /* Annulate translate matrix */
-  {
-    modelMatrix[3][0] = 0.;
-    modelMatrix[3][1] = 0.;
-    modelMatrix[3][2] = 0.;
-    projMatrix[3][0] = 0.;
-    projMatrix[3][1] = 0.;
-    projMatrix[3][2] = 0.;
   }
 
-  if( ATransPers->mode & TPF_ZOOM )
-    /* Annulate zoom matrix */
-  {
-    const double scaleX = myExtra.scaleFactors[0];
-    const double scaleY = myExtra.scaleFactors[1];
-    const double scaleZ = myExtra.scaleFactors[2];
-
-    for (int i = 0; i < 3; ++i)
-    {
-      modelMatrix[0][i] /= scaleX;
-      modelMatrix[1][i] /= scaleY;
-      modelMatrix[2][i] /= scaleZ;
-    }
-
-    const double det2 = 0.002 / ( W > H ? projMatrix[1][1] : projMatrix[0][0]);
-    projMatrix[0][0] *= det2;
-    projMatrix[1][1] *= det2;
-  }
-
-  if( ATransPers->mode & TPF_ROTATE )
-    /* Annulate rotate matrix */
-  {
-    modelMatrix[0][0] = 1.;
-    modelMatrix[1][1] = 1.;
-    modelMatrix[2][2] = 1.;
-
-    modelMatrix[1][0] = 0.;
-    modelMatrix[2][0] = 0.;
-    modelMatrix[0][1] = 0.;
-    modelMatrix[2][1] = 0.;
-    modelMatrix[0][2] = 0.;
-    modelMatrix[1][2] = 0.;
-  }
-  else if( ATransPers->mode & TPF_RELATIVE_ROTATE )
-    /* Initialize relative rotate matrix*/
-  {
-    modelMatrix[3][0] = 0.;
-    modelMatrix[3][1] = 0.;
-    modelMatrix[3][2] = 0.;
-
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    glTranslated( ATransPers->pointX, ATransPers->pointY, ATransPers->pointZ );
-  }
-
-  if( ATransPers->mode == TPF_TRIEDRON )
-  {
-    /* Annulate translation matrix */
-    modelMatrix[3][0] = 0.;
-    modelMatrix[3][1] = 0.;
-    modelMatrix[3][2] = 0.;
-
-    projMatrix[3][0] = 0.;
-    projMatrix[3][1] = 0.;
-    projMatrix[3][2] = 0.;
-
-    const double det2 = 0.002 / ( W > H ? projMatrix[1][1] : projMatrix[0][0]);
-    projMatrix[0][0] *= det2;
-    projMatrix[1][1] *= det2;
-  }
-
-  /* load matrix */
+  // push matrices into stack and reset them
   glMatrixMode (GL_MODELVIEW);
-  glMultMatrixd ((GLdouble *) modelMatrix);
+  glPushMatrix();
+  glLoadIdentity();
 
   glMatrixMode (GL_PROJECTION);
-  glMultMatrixd ((GLdouble *) projMatrix);
+  glPushMatrix();
+  glLoadIdentity();
 
-  /*post loading matrix*/
-  if( ATransPers->mode == TPF_TRIEDRON )
+  // get the window's (fixed) coordinates for theTransPers->point before matrixes modifications
+  GLdouble aWinX = 0.0, aWinY = 0.0, aWinZ = 0.0;
+  if ((theTransPers->mode & TPF_PAN) != TPF_PAN)
   {
-    glMatrixMode( GL_PROJECTION );
+    gluProject (theTransPers->pointX, theTransPers->pointY, theTransPers->pointZ,
+                (GLdouble* )aModelMatrix, (GLdouble* )aProjMatrix, aViewport,
+                &aWinX, &aWinY, &aWinZ);
+  }
 
-	double winx, winy, winz;
-    const GLdouble idenMatrix[4][4] = { {1.,0.,0.,0.}, {0.,1.,0.,0.}, {0.,0.,1.,0.}, {0.,0.,0.,1.} };
+  // prevent zooming
+  if ((theTransPers->mode & TPF_ZOOM)
+   || (theTransPers->mode == TPF_TRIEDRON))
+  {
+    // compute fixed-zoom multiplier
+    // actually function works ugly with TelPerspective!
+    const GLdouble aDet2 = 0.002 / (aViewportW > aViewportH ? aProjMatrix[1][1] : aProjMatrix[0][0]);
+    aProjMatrix[0][0] *= aDet2;
+    aProjMatrix[1][1] *= aDet2;
+    aProjMatrix[2][2] *= aDet2;
+  }
 
-    gluUnProject( W/2., H/2., 0., (GLdouble*)idenMatrix, (GLdouble*)projMatrix, (GLint*)viewport, &winx, &winy, &winz);
-    double W1, H1;
-    W1 = winx;
-    H1 = winy;
-    gluUnProject( -W/2., -H/2., 0., (GLdouble*)idenMatrix, (GLdouble*)projMatrix, (GLint*)viewport, &winx, &winy, &winz);
-    double W2, H2;
-    W2 = winx;
-    H2 = winy;
+  // prevent translation - annulate translate matrix
+  if ((theTransPers->mode & TPF_PAN)
+   || (theTransPers->mode == TPF_TRIEDRON))
+  {
+    aModelMatrix[3][0] = 0.0;
+    aModelMatrix[3][1] = 0.0;
+    aModelMatrix[3][2] = 0.0;
+    aProjMatrix [3][0] = 0.0;
+    aProjMatrix [3][1] = 0.0;
+    aProjMatrix [3][2] = 0.0;
+  }
 
-    if( ATransPers->pointX == 0. && ATransPers->pointY == 0. )
+  // prevent scaling-on-axis
+  if (theTransPers->mode & TPF_ZOOM)
+  {
+    const double aScaleX = myExtra.scaleFactors[0];
+    const double aScaleY = myExtra.scaleFactors[1];
+    const double aScaleZ = myExtra.scaleFactors[2];
+    for (int i = 0; i < 3; ++i)
     {
-      /*center*/
-    }
-    else if( ATransPers->pointX > 0. && ATransPers->pointY > 0. )
-    {
-      /*right upper*/
-      glTranslated( 0.5*(W1 - W2 - ATransPers->pointZ), 0.5*(H1 - H2 - ATransPers->pointZ), 0. );
-    }
-    else if( ATransPers->pointX > 0. && ATransPers->pointY < 0. )
-    {
-      /*right lower*/
-      glTranslated( 0.5*(W1 - W2 - ATransPers->pointZ), 0.5*(H2 - H1 + ATransPers->pointZ), 0. );
-    }
-    else if( ATransPers->pointX < 0. && ATransPers->pointY > 0. )
-    {
-      /*left upper*/
-      glTranslated( 0.5*(W2 - W1 + ATransPers->pointZ), 0.5*(H1 - H2 - ATransPers->pointZ), 0. );
-    }
-    else if( ATransPers->pointX < 0 && ATransPers->pointY < 0 )
-    {
-      /*left lower*/
-      glTranslated( -(W1 - W2)/2. + ATransPers->pointZ/2., -(H1-H2)/2. + ATransPers->pointZ/2., 0. );
+      aModelMatrix[0][i] /= aScaleX;
+      aModelMatrix[1][i] /= aScaleY;
+      aModelMatrix[2][i] /= aScaleZ;
     }
   }
 
-  return TransPers_old;
-}
+  // prevent rotating - annulate rotate matrix
+  if (theTransPers->mode & TPF_ROTATE)
+  {
+    aModelMatrix[0][0] = 1.0;
+    aModelMatrix[1][1] = 1.0;
+    aModelMatrix[2][2] = 1.0;
 
-/*----------------------------------------------------------------------*/
+    aModelMatrix[1][0] = 0.0;
+    aModelMatrix[2][0] = 0.0;
+    aModelMatrix[0][1] = 0.0;
+    aModelMatrix[2][1] = 0.0;
+    aModelMatrix[0][2] = 0.0;
+    aModelMatrix[1][2] = 0.0;
+  }
+
+  // load computed matrices
+  glMatrixMode (GL_MODELVIEW);
+  glMultMatrixd ((GLdouble* )aModelMatrix);
+
+  glMatrixMode (GL_PROJECTION);
+  glMultMatrixd ((GLdouble* )aProjMatrix);
+
+  if (theTransPers->mode == TPF_TRIEDRON)
+  {
+    // move to the window corner
+    if (theTransPers->pointX != 0.0
+     && theTransPers->pointY != 0.0)
+    {
+      GLdouble aW1, aH1, aW2, aH2, aDummy;
+      glMatrixMode (GL_PROJECTION);
+      gluUnProject ( 0.5 * aViewportW,  0.5 * aViewportH, 0.0,
+                    (GLdouble* )THE_IDENTITY_MATRIX, (GLdouble* )aProjMatrix, aViewport,
+                    &aW1, &aH1, &aDummy);
+      gluUnProject (-0.5 * aViewportW, -0.5 * aViewportH, 0.0,
+                    (GLdouble* )THE_IDENTITY_MATRIX, (GLdouble* )aProjMatrix, aViewport,
+                    &aW2, &aH2, &aDummy);
+      GLdouble aMoveX = 0.5 * (aW1 - aW2 - theTransPers->pointZ);
+      GLdouble aMoveY = 0.5 * (aH1 - aH2 - theTransPers->pointZ);
+      aMoveX = (theTransPers->pointX > 0.0) ? aMoveX : -aMoveX;
+      aMoveY = (theTransPers->pointY > 0.0) ? aMoveY : -aMoveY;
+      glTranslated (aMoveX, aMoveY, 0.0);
+    }
+  }
+  else if ((theTransPers->mode & TPF_PAN) != TPF_PAN)
+  {
+    // move to thePoint using saved win-coordinates ('marker-behaviour')
+    GLdouble aMoveX, aMoveY, aMoveZ;
+    glGetDoublev (GL_MODELVIEW_MATRIX,  (GLdouble* )aModelMatrix);
+    glGetDoublev (GL_PROJECTION_MATRIX, (GLdouble* )aProjMatrix);
+    gluUnProject (aWinX, aWinY, aWinZ,
+                  (GLdouble* )aModelMatrix, (GLdouble* )aProjMatrix, aViewport,
+                  &aMoveX, &aMoveY, &aMoveZ);
+
+    glMatrixMode (GL_MODELVIEW);
+    glTranslated (aMoveX, aMoveY, aMoveZ);
+  }
+
+  return aTransPersPrev;
+}

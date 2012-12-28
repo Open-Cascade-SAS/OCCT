@@ -22,9 +22,7 @@ enum TP_FLAGS
 {
   TPF_PAN             = 0x001,
   TPF_ZOOM            = 0x002,
-  TPF_RELATIVE_ZOOM   = 0x004,
   TPF_ROTATE          = 0x008,
-  TPF_RELATIVE_ROTATE = 0x010,
   TPF_TRIEDRON        = 0x020   
 };
 
