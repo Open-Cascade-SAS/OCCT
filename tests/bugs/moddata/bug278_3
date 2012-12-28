@@ -22,6 +22,5 @@ if { [regexp "Faulty" $che] != 1 } {
    puts "Error (case 3) : Checkshape command works wrongly"
 }
 
-set check_square 1
 set square 43.3075
 set 2dviewer 0

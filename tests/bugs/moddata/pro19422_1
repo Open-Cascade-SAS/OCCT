@@ -15,7 +15,6 @@ checkshape tool
 
 bcut result shape tool
 
-set check_square 1
 set square 3166.93
 set 2dviewer 0
 

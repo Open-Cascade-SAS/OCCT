@@ -1,7 +1,6 @@
 puts "TODO OCC12345 ALL: An exception was caught"
 puts "TODO OCC12345 ALL: Exception "
 puts "TODO OCC12345 ALL: Faulty OCC745"
-puts "TODO OCC12345 ALL: Error : The command can not be build."
 
 puts "========"
 puts "OCC745"
@@ -40,8 +39,6 @@ if { [catch { mkoffset result w 1 10 } status] } {
             }
         }
     }
+    set length 0
+    set 2dviewer 0
 }
-
-set length 0
-set 2dviewer 0
-

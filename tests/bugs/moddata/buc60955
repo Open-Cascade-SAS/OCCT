@@ -9,7 +9,6 @@ checkshape result
 
 build3d result
 
-set check_square 1
 set square 8464.65
 set 2dviewer 0
 

@@ -11,10 +11,9 @@ restore [locate_data_file case_5_solid.brep] a
 restore [locate_data_file case_4_wire3.brep] b
  puts [bop a b]
  puts [bopcommon result]
- set nb_info [nbshapes result]
+
  set nb_v_good 12
  set nb_e_good 11
-
  set length 1808.02
  set 2dviewer 0
  

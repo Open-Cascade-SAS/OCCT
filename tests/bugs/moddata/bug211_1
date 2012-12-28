@@ -14,7 +14,6 @@ explode a e
 blend result a 10 a_24
 checkshape result
 
-set check_square 1
 set square 1.34399e+06
 set 2dviewer 0
 

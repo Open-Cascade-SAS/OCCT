@@ -18,9 +18,10 @@ if { ${OPT} != 0 } {
 } else {
     set result [OCC6794 ${nb}]
     regexp {Use nb += +([-0-9.+eE]+)} $result full use_nb
-    regexp {aLength += +([-0-9.+eE]+)} $result full length
+    regexp {aLength += +([-0-9.+eE]+)} $result full ll
     
-    if { ${use_nb} != ${nb} || ${length} != ${nb} } {
+    if { ${use_nb} != ${nb} || ${ll} != ${nb} } {
         puts "Faulty ${BugNumber}"
     }
 }
+

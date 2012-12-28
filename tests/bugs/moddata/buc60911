@@ -10,6 +10,5 @@ puts "============"
 restore [locate_data_file BUC60911.brep] result
 invert result
 
-set check_square 1
 set square 16353.8
 set 2dviewer 0

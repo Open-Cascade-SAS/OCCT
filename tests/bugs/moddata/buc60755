@@ -14,7 +14,6 @@ checkshape a
 tcopy a result
 checkshape result
 
-set check_square 1
 set square 623.832
 set 2dviewer 0
 

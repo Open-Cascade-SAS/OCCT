@@ -13,7 +13,6 @@ checkshape S2
 
 bcommon result S1 S2
 
-
 set nb_info [nbshapes result]
 regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full ve
 regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full ed

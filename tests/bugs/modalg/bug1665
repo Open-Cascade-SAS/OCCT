@@ -13,7 +13,6 @@ if {[catch {setvperiodic a} message]} {
     if {[catch {mkface result a} message]} {
 	puts "OCC1665 FAULTY : mkface"
     } else {
-        set nb_info [nbshapes result]
 	set nb_e_good 3
     }
 }

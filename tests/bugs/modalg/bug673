@@ -1,4 +1,3 @@
-puts "TODO OCC12345 ALL: Error : The command can not be build"
 puts "TODO OCC12345 ALL: Faulty OCC673: function SPLITSHAPE works wrongly"
 
 puts "================"
@@ -19,7 +18,9 @@ if [catch {spliteshape result a a b} catch_result] {
     puts "Faulty OCC673: function SPLITSHAPE works wrongly"
 } else {
     puts "OCC673 OK : function SPLITSHAPE works OK"
+    set square 0
+    set 2dviewer 0
 }
 
-set square 0
-set 2dviewer 0
+
+

@@ -29,7 +29,6 @@ bop b s
 bopfuse result
 
 set square 680565
-set nb_info [nbshapes result]
 
 set nb_v_good 11
 set nb_e_good 16

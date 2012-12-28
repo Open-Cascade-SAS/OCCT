@@ -19,6 +19,5 @@ if { $col1 != $col2} {
    puts  "Error : Command mirror does NOT work properly. "
 }
 
-set check_square 1
 set square 13091.3
 set 2dviewer 0

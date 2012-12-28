@@ -16,6 +16,5 @@ restore [locate_data_file OCC278a.brep] a
 mkplane result a
 checkshape result
 
-set check_square 1
 set square 2914.99
 set 2dviewer 0

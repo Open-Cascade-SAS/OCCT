@@ -11,13 +11,11 @@ puts "========================"
  puts " " 
 restore [locate_data_file OCC238a.brep] a
 restore [locate_data_file case_2_wire1.brep] b
- puts [bop a b]
- puts [bopcommon result]
+puts [bop a b]
+puts [bopcommon result]
  
- set nb_info [nbshapes result]
- set nb_v_good 18
- set nb_e_good 10
- 
- set length 0
- set 2dviewer 0
+set nb_v_good 18
+set nb_e_good 10
+set length 0
+set 2dviewer 0
  

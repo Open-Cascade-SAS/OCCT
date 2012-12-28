@@ -12,9 +12,7 @@ if [catch { igesread [locate_data_file OCC5027.igs] a * } res] {
     puts "Warning ${BugNumber} : here is reading problem"
 } else {
     tpcompound result
-    set nb_info [nbshapes result]
     
-    set check_square 1
     set square 159588
     set nb_v_good 140
     set nb_e_good 144

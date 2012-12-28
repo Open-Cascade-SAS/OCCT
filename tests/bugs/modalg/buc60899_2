@@ -45,7 +45,6 @@ bsection result crg cyl
 set nb_info [nbshapes result]
 regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full edgeness
 
-
     #set fullness [ nbshapes res ]
     #puts "$fullness"
     #set qq [ lindex $fullness 0 ]

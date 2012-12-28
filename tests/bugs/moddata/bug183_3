@@ -14,7 +14,6 @@ checkshape b2
 bcut result b1 b2
 checkshape result
 
-set check_square 1
 set square 863.938
 set 2dviewer 0
 

@@ -49,14 +49,14 @@ if { $tri == 0 || $nod == 0 }  {
   set IsGood 0
 }
 
-regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full square
+regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full sq
 set good_square 8623.6
-set square_percent [expr abs(${square} - ${good_square}) / double(${good_square}) * 100.]
+set square_percent [expr abs(${sq} - ${good_square}) / double(${good_square}) * 100.]
 
 set percent_max 0.1
 
 puts "good_square = ${good_square}"
-puts "square = ${square}"
+puts "square = ${sq}"
 puts "square_percent = ${square_percent}"
 
 if {${square_percent} > ${percent_max}} {

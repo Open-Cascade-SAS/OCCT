@@ -15,10 +15,7 @@ checkshape s2
 bop s2 s1
 bopcommon result
 
-set nb_info [nbshapes result]
-
 set square 105.587
-
 set nb_v_good 15
 set nb_e_good 26
 set nb_w_good 12

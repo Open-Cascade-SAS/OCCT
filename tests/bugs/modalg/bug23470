@@ -10,13 +10,11 @@ restore [locate_data_file bug23470_qe.brep] qe
 explode qe
 bop qe_1 qe_2
 bopfuse result
-set nb_info [nbshapes result]
 
 set nb_v_good 2
 set nb_e_good 1
 set nb_w_good 1
 set nb_shape_good 5
-
 set length 48.4459
 set command bopfuse
 

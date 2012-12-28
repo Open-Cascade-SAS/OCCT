@@ -53,12 +53,12 @@ NewCommand D
 set list [DumpCommand D]
 
 # Checking
-set length [llength ${list}]
+set ll [llength ${list}]
 set good_length 17
-puts "length = ${length}"
+puts "length = ${ll}"
 puts "good_length = ${good_length}"
 
-if { ${length} != ${good_length} } {
+if { ${ll} != ${good_length} } {
   puts "OCC2932 Error (case 1)"
 } else {
   set name_attribute [lindex ${list} [expr ${good_length} - 1]]

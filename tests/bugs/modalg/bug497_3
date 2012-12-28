@@ -1,4 +1,5 @@
-puts "TODO OCC12345 ALL: Error : The command can not be build."
+puts "TODO OCC12345 ALL: result is not a topological shape!!!"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 
 puts "========="
 puts " OCC497 "
@@ -16,12 +17,6 @@ restore [locate_data_file OCC497f.brep] a_2
 checkshape a_2
 
 bcut result a_1 a_2
-
-#if { [catch { bcut result a_1 a_2 } catch_result] } {
-#    puts "Faulty OCC497:function CUT works wrongly "
-#} else {
-#    puts "OCC497 : function CUT works without hangs up "
-#}
 
 set square 0
 set 2dviewer 0

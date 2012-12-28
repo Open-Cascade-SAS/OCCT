@@ -11,11 +11,10 @@ puts "========================"
  puts " " 
 restore [locate_data_file case_9_wire_a.brep] a
 restore [locate_data_file case_9_wire2.brep] b
- puts [bop a b]
- puts [bopfuse result]
-set nb_info [nbshapes result]
+puts [bop a b]
+puts [bopfuse result]
+
 set nb_v_good 9
 set nb_e_good 9
-
 set length 0
 set 2dviewer 0

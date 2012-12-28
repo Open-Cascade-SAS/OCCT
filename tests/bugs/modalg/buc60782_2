@@ -1,7 +1,6 @@
 puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 puts "TODO OCC12345 ALL: Faulty : mistakes are found in SOURCE  shape by checkshape command"
 puts "TODO OCC12345 ALL: Faulty BUC60782"
-puts "TODO OCC12345 ALL: Error : The command can not be build."
 	 
 puts "========================"
 puts "BUC60782"
@@ -32,6 +31,6 @@ if { [regexp {OK} $che ] != 1} {
 	puts "OK BUC60782: offset is created"
 	tpcompound result
     }
+    set square 0
+    set 2dviewer 0
 }
-set square 0
-set 2dviewer 0

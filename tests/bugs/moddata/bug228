@@ -16,6 +16,5 @@ checkshape a_2
 
 bcommon result a_1 a_2
 
-set check_square 1
 set square 66231.3
 set 2dviewer 0

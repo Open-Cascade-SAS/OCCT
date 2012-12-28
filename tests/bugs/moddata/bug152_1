@@ -22,7 +22,6 @@ checkshape sh_2
 bcut result sh_1 sh_2
 checkshape result
 
-set check_square 1
 set square 276424
 set 2dviewer 0
 

@@ -26,14 +26,14 @@ set str "(center)"
 set scale_text 4.
 set length_dist -10.0
 set angle 30.0
-set length 5.0
+set ll 5.0
 set txtAngle 0.
 set txtPosH 0.
 set txtPosV 3.
 
 v2dinit
 
-OCC672_ShortLength $x1 $y1 $x2 $y2 $str $scale_text $length_dist $angle $length $x3 $y3 $x4 $y4 $txtAngle $txtPosH $txtPosV
+OCC672_ShortLength $x1 $y1 $x2 $y2 $str $scale_text $length_dist $angle $ll $x3 $y3 $x4 $y4 $txtAngle $txtPosH $txtPosV
 
 v2dfit
 

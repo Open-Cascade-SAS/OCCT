@@ -8,10 +8,10 @@ pload QAcommands
 set wall_thickness 10
 set dia1 30
 set dia2 50
-set length 100
+set ll 100
 set major_radius 200
 
-OCC332 ${wall_thickness} ${dia1} ${dia2} ${length} ${major_radius}
+OCC332 ${wall_thickness} ${dia1} ${dia2} ${ll} ${major_radius}
 
 checkshape wallSolid_
 checkshape gasSolid_

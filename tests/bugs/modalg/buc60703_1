@@ -1,7 +1,6 @@
 puts "TODO OCC12345 ALL: An exception was caught"
 puts "TODO OCC12345 ALL: Exception"
 puts "TODO OCC12345 ALL: Faulty  BUC60703: here is problem with FUSE operation"
-puts "TODO OCC12345 ALL: Error : The command can not be build."
 
 puts "========================"
 puts "BUC60703"
@@ -32,7 +31,7 @@ if [catch {bfuse result a b } catch_result] {
 	puts "BUC60703  OK"
     }
     #  maxtolerance res
+    set square 0
+    set 2dviewer 0
 }
 
-set square 0
-set 2dviewer 0

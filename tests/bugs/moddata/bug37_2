@@ -12,7 +12,6 @@ checkshape sh_2
 bfuse result sh_2 sh_1
 checkshape result
 
-set check_square 1
 set square 665013
 set 2dviewer 0
 

@@ -8,7 +8,6 @@ puts ""
 ################################################
 
 pload XDE
-catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
 
 restore [locate_data_file OCC592.brep] a 
 

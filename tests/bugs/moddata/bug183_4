@@ -14,7 +14,6 @@ checkshape b2
 bcommon result b1 b2
 checkshape result
 
-set check_square 1
 set square 392.699
 set 2dviewer 0
 

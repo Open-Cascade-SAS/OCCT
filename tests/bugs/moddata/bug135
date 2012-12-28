@@ -10,7 +10,6 @@ checkshape sh
 sewing result 1 sh
 checkshape result
 
-set check_square 1
 set square 273837
 set 2dviewer 0
 

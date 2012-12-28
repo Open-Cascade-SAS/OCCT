@@ -12,8 +12,6 @@ explode a f
 chamf result a a_5 a_1 A 1 45 a_6 a_1 A 1 45 a_7 a_1 A 1 45 a_8 a_1 A 1 45
 checkshape result
 
-set check_square 1
 set square 154.145
-
 set 2dviewer 0
 

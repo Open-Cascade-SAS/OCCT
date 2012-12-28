@@ -8,8 +8,8 @@ puts ""
 vinit
 set info [OCC138]
 
-set length [llength ${info}]
-if {${length} < 5 } {
+set ll [llength ${info}]
+if {${ll} < 5 } {
    puts "OCC138: Error (case 1)"
 } else {
   regexp {No of currents += +([-0-9.+eE]+)} $info full NbCurrents

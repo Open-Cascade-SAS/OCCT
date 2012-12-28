@@ -27,3 +27,5 @@ if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
 if { [array get Draw_Groups "ZeViewer"] == "" } {
 	pload AISV
 }
+
+set subgroup mesh

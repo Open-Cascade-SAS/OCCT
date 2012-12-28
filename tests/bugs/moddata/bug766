@@ -10,9 +10,9 @@ restore [locate_data_file OCC766.draw] c
 
 set result [proj c 30 3.944304526105059e-31 20.0]
 
-set length [llength $result]
+set ll [llength $result]
 
-if {$length > 0} {
+if {$ll > 0} {
   puts "OCC770 OK"
 } else {
   puts "Faulty OCC770"

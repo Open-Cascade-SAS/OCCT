@@ -9,7 +9,6 @@ puts ""
 ##################################################################
 
 pload XDE
-catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
 
 restore [locate_data_file CTO908_topo103-t.brep] a 
 

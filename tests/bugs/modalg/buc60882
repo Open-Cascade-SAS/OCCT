@@ -7,7 +7,6 @@ puts ""
 #######################################################################
 
 pload XDE
-catch { source $env(CSF_DrawPluginQADefaults)/QARebuildCommands }
 
 restore [locate_data_file BUC60882_samepar.brep] result
 

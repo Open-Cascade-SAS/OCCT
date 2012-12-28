@@ -13,6 +13,5 @@ offset su2 su -1
 
 mkface result su2
 
-set check_square 1
 set square 7181.83
 set 2dviewer 0

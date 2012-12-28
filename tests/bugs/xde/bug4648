@@ -35,7 +35,7 @@ if [catch { stepread ${imagedir}/annie b *} res] {
 } else {
     renamevar b_1 res
     set info1 [nbshapes res]
-    regexp {Mass +: +([-0-9.+eE]+)} [sprops res] full square
+    regexp {Mass +: +([-0-9.+eE]+)} [sprops res] full sq
     regexp {VERTEX +: +([-0-9.+eE]+)} $info1 full vertex
     regexp {EDGE +: +([-0-9.+eE]+)} $info1 full edge
     regexp {WIRE +: +([-0-9.+eE]+)} $info1 full wire
@@ -46,7 +46,7 @@ if [catch { stepread ${imagedir}/annie b *} res] {
     regexp {COMPOUND +: +([-0-9.+eE]+)} $info1 full compound
     regexp {SHAPE +: +([-0-9.+eE]+)} $info1 full shape
 	
-    if { $square != $good_square
+    if { $sq != $good_square
 	|| $vertex != $good_vertex
 	|| $edge != $good_edge
 	|| $wire != $good_wire

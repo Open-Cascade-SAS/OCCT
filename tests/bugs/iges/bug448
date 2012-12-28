@@ -12,8 +12,8 @@ if [catch { set list [igesbrep [locate_data_file Amino_172448-65210.igs] a * ] }
     puts "Faulty OCC448: here is reading problem"
 } else {
     tpcompound result
-    set length [llength $list]
-    set NbShapes [lindex $list [expr $length - 1]]
+    set ll [llength $list]
+    set NbShapes [lindex $list [expr $ll - 1]]
 
   #
   # ATANTION!!!!!!! FOR TESTING !!!!!!!
@@ -27,4 +27,5 @@ if [catch { set list [igesbrep [locate_data_file Amino_172448-65210.igs] a * ] }
 }
 
 set 2dviewer 0
+
 

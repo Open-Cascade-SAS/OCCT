@@ -9,6 +9,5 @@ checkshape res
 
 nurbsconvert result res
 
-set check_square 1
 set square 693.577
 set 2dviewer 0

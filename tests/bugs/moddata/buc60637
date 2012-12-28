@@ -6,6 +6,5 @@ puts "========================"
 restore [locate_data_file buc60637a.brep] result
 fsameparameter result
 
-set check_square 1
 set square 144.866
 set 2dviewer 0

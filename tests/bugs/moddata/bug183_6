@@ -15,7 +15,6 @@ bop a b
 bopfuse result a b
 checkshape -top result
 
-set check_square 1
 set square 0.0892544
 set 2dviewer 0
 

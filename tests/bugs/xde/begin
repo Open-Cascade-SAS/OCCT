@@ -1,5 +1,7 @@
 pload XDE
 
+set subgroup xde
+
 proc GetPercent {Value GoodValue} {
    set Percent 0.
    if {${GoodValue} != 0.} {

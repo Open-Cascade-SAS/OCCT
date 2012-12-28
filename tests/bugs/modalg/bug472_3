@@ -19,10 +19,8 @@ checkshape b2
 
 bfuse result b1 b2
 
-set nb_info [nbshapes result]
 set nb_v_good 5
 set nb_e_edge 7
-
 set square 0
 set 2dviewer 0
 

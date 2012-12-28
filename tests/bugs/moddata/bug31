@@ -29,6 +29,5 @@ explode res2_4 e
 chamf result res2 res2_4_1 res2_4 7 7
 checkshape result
 
-set check_square 1
 set square 107634
 set 2dviewer 0

@@ -10,6 +10,5 @@ restore [locate_data_file shading_104.brep] result
 checkshape result
 BUC60652 result
 
-set check_square 1
 set square 119134
 set 2dviewer 0

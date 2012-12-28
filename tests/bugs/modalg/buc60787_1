@@ -17,8 +17,6 @@ checkshape S1
 bcommon result S1 S2
 
 set nb_info [nbshapes result]
-
-
 regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full err
 regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full err1
 
