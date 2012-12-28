@@ -22,8 +22,8 @@
 @set %QACADCAM_CMPLRS_EDL = "";
 
 @uses "CSF.edl";
-@ifdefined( %CSF_TCL_INCLUDE ) then
-@string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE" -I"%CSF_TBB_INCLUDES %CMPLRS_CXX_Options ;
-@endif;
+
+@string %CMPLRS_CXX_Options += " " %CSF_TCL_INCLUDE;
+@string %CMPLRS_CXX_Options += " " %CSF_TBB_INCLUDES;
 
 @endif;

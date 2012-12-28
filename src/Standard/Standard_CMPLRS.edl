@@ -21,7 +21,7 @@
 @set %Standard_CMPLRS_EDL="";
 
 @if ( %Station != "sun" ) then
-  @string %CMPLRS_CXX_INCLUDE = " -I"%CMPLRS_CXX_INCLUDE" -I"%CSF_TBB_INCLUDES ;
+  @string %CMPLRS_CXX_INCLUDE += " " %CSF_TBB_INCLUDES;
 @endif;
 
 @endif;

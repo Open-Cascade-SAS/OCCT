@@ -22,8 +22,7 @@
 @set %QADraw_CMPLRS_EDL = "";
 
 @uses "CSF.edl";
-@ifdefined( %CSF_TCL_INCLUDE ) then
-@string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE %CMPLRS_CXX_Options ;
-@endif;
+
+@string %CMPLRS_CXX_Options += " " %CSF_TCL_INCLUDE;
 
 @endif;
