@@ -9,7 +9,6 @@ puts ""
 restore [locate_data_file bug23562_V3.brep] a
 explode a f
 compound a_1 a_16 result
-set nb_info [nbshapes result]
 
 set nb_v_good 6
 set nb_e_good 6

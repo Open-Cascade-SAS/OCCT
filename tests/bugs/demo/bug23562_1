@@ -7,7 +7,6 @@ puts ""
 ##########################################################################################################
 
 restore [locate_data_file bug23562_V3.brep] result
-set nb_info [nbshapes result]
 
 set nb_v_good 25
 set nb_e_good 45

@@ -1,3 +1,7 @@
+puts "TODO OCC22820 ALL: SEWING IS NOT PERFORMED PROPERLY"
+puts "TODO OCC22820 ALL: Volumes' difference is"
+puts "TODO OCC22820 ALL: Error : nbClosedShells is wrong"
+
 restore [locate_data_file CTO909_shape.brep] Shape1
 XNewDoc D_First
 

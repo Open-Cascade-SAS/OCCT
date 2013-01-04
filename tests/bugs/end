@@ -43,7 +43,11 @@ if { [info exists mass] } {
 
 set glob_inf [info global nb_*_good]
 if { [regexp "nb_.*_good" $glob_inf] == 1 } {
-    set nb_info [nbshapes result]
+    if { [info exists nbsh_t] } {
+	set nb_info [nbshapes result -t]
+    } else {
+        set nb_info [nbshapes result]
+    }
 }
 
 if { [info exists nb_v_good] } {
