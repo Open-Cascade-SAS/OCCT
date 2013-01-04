@@ -1138,10 +1138,6 @@ Standard_EXPORT Standard_Boolean FUN_ds_shareG
     gp_Dir nxx1; ok = FUN_tool_getxx(F1,E1,par1,nggeomF1,nxx1);
     if (!ok) return Standard_False;
 
-#ifdef DEB
-//    Standard_Real tol = 1.e3*
-#endif
-              Precision::Angular();
     Standard_Real prod = nxx1.Dot(nxx2);
     shareG =  (prod > 0.);
     return Standard_True;
@@ -1753,10 +1749,7 @@ Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStruct
 	      gp_Vec tgE  ;     ok = TopOpeBRepTool_TOOL::TggeomE(parE,SE,tgE);      // dir
 	      Standard_Real dot = tgEsd.Dot(tgE);
 #ifdef DEB
-	      Standard_Real tola =
-#endif
-                         Precision::Angular();
-#ifdef DEB
+	      Standard_Real tola = Precision::Angular();
 	      if (Abs(dot) < tola) Standard_Failure::Raise("completeforSE6");
 #endif
 	      Standard_Boolean SO = (dot > 0.);
