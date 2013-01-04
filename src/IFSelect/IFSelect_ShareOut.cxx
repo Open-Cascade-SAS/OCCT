@@ -42,7 +42,6 @@ IFSelect_ShareOut::IFSelect_ShareOut ()
 {
   DeclareAndCast(IFSelect_GeneralModifier,modifier,item);
   if (!modifier.IsNull()) {
-    if (modifier.IsNull()) return Standard_False;
     Standard_Boolean formodel = modifier->IsKind(STANDARD_TYPE(IFSelect_Modifier));
     Standard_Integer atnum = ModifierRank(modifier);
     return RemoveModifier (formodel,atnum);
