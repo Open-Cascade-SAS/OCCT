@@ -1,0 +1,20 @@
+pload QAcommands
+
+puts "========"
+puts "OCC369"
+puts "BUC61031"
+puts "========"
+puts ""
+#################################################################
+## BndLib_Add3dCurve raised an exception on edges which range is out of the domain of the curve.
+#################################################################
+
+restore [locate_data_file OCC369.brep] result 
+OCC369 result
+
+set square 0.077223
+set 2dviewer 0
+
+
+
+

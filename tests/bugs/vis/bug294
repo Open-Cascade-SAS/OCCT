@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Faulty OCC294 : result - shape_result is null"
+
+puts "================"
+puts "OCC294"
+puts "SAM1293"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC294.brep] a
+checkshape a
+
+set a_fullness [nbshapes a]
+regexp {EDGE +: +([-0-9.+eE]+)} $a_fullness full a_edg
+
+explode a e
+if [catch { OCC294 result a a_1 } ] {
+   puts "OCC294: FAULTY" 
+} else {
+   set b_fullness [ nbshapes b] 
+   regexp {EDGE +: +([-0-9.+eE]+)} $b_fullness full b_edg
+
+   puts "a_edg = ${a_edg}" 
+   puts "b_edg = ${b_edg}" 
+   if { ${b_edg} >= ${a_edg} } { 
+      puts "OCC294: FAULTY" 
+   } else { 
+      puts "OCC294: OK" 
+   } 
+}

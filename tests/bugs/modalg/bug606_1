@@ -1,0 +1,14 @@
+pload QAcommands
+
+puts "================"
+puts "OCC606"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC606_2.brep] w2 
+checkshape w2
+
+OCC606 result w2 -t
+
+set square 508.243
+set 3dviewer 0

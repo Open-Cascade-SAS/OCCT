@@ -1,0 +1,139 @@
+puts "============"
+puts "OCC2755"
+puts "============"
+puts ""
+######################################################
+# Boolean Bug in OCC5.0 with the shape having a ellipse curve
+######################################################
+
+restore [locate_data_file OCC2755.brep] a 
+
+checkshape a
+
+explode a f
+mksurface gs a_1
+set list [proj gs 0 10 50]
+set ll 4
+
+set good_Parameter1List [list 0 0 0 0]
+set good_Parameter2List [list 40.4616826479819 211.944716681974 64.3186164305428 81.0582330575794]
+set good_OriginXList [list 0 0 0 0]
+set good_OriginYList [list 10 10 10 10]
+set good_OriginZList [list 50 50 50 50]
+set good_AxisXList [list -0.0300865818651084 -0.941236271764613 0.534306660761684 0.998573938898137]
+set good_AxisYList [list 0.999547296325529 -0.337748842654791 -0.845290714645381 0.0533862206328518]
+set good_AxisZList [list 0 0 0 0]
+
+proc CalculatePercent {value good_value} {
+    if {${good_value} == 0. && ${value} == 0.} {
+        set percent 0.
+    } else {
+        set percent [expr abs(${value} - ${good_value}) / double(${good_value}) * 100.]
+    }
+    return ${percent}
+}
+
+if {[llength ${list}] != ${ll}} {
+    puts "Faulty OCC2755"
+} else {
+    set percent_max 0.1
+    set IsGood 1
+    for {set i 0} {$i < ${ll}} {incr i} {
+        set dump_list [dump [lindex ${list} $i]]
+	regexp { *Parameters *: *([-0-9.+eE]+) *([-0-9.+eE]+)} $dump_list full Parameter1 Parameter2
+	regexp { *Origin *:([-0-9.+eE]+), *([-0-9.+eE]+), *([-0-9.+eE]+)} $dump_list full OriginX OriginY OriginZ
+	regexp { *Axis *:([-0-9.+eE]+), *([-0-9.+eE]+), *([-0-9.+eE]+)} $dump_list full AxisX AxisY AxisZ
+
+        set good_Parameter1 [lindex ${good_Parameter1List} $i]
+        set good_Parameter2 [lindex ${good_Parameter2List} $i]
+        set good_OriginX [lindex ${good_OriginXList} $i]
+        set good_OriginY [lindex ${good_OriginYList} $i]
+        set good_OriginZ [lindex ${good_OriginZList} $i]
+        set good_AxisX [lindex ${good_AxisXList} $i]
+        set good_AxisY [lindex ${good_AxisYList} $i]
+        set good_AxisZ [lindex ${good_AxisZList} $i]
+
+        set Parameter1_percent [CalculatePercent ${Parameter1} ${good_Parameter1}]
+        set Parameter2_percent [CalculatePercent ${Parameter2} ${good_Parameter2}]
+        set OriginX_percent [CalculatePercent ${OriginX} ${good_OriginX}]
+        set OriginY_percent [CalculatePercent ${OriginY} ${good_OriginY}]
+        set OriginZ_percent [CalculatePercent ${OriginZ} ${good_OriginZ}]
+        set AxisX_percent [CalculatePercent ${AxisX} ${good_AxisX}]
+        set AxisY_percent [CalculatePercent ${AxisY} ${good_AxisY}]
+        set AxisZ_percent [CalculatePercent ${AxisZ} ${good_AxisZ}]
+
+        puts "good_Parameter1 = ${good_Parameter1}"
+        puts "Parameter1 = ${Parameter1}"
+        puts "Parameter1_percent = ${Parameter1_percent}\n"
+
+        puts "good_Parameter2 = ${good_Parameter2}"
+        puts "Parameter2 = ${Parameter2}"
+        puts "Parameter2_percent = ${Parameter2_percent}\n"
+
+        puts "good_OriginX = ${good_OriginX}"
+        puts "OriginX = ${OriginX}"
+        puts "OriginX_percent = ${OriginX_percent}\n"
+
+        puts "good_OriginY = ${good_OriginY}"
+        puts "OriginY = ${OriginY}"
+        puts "OriginY_percent = ${OriginY_percent}\n"
+
+        puts "good_OriginZ = ${good_OriginZ}"
+        puts "OriginZ = ${OriginZ}"
+        puts "OriginZ_percent = ${OriginZ_percent}\n"
+
+        puts "good_AxisX = ${good_AxisX}"
+        puts "AxisX = ${AxisX}"
+        puts "AxisX_percent = ${AxisX_percent}\n"
+
+        puts "good_AxisY = ${good_AxisY}"
+        puts "AxisY = ${AxisY}"
+        puts "AxisY_percent = ${AxisY_percent}\n"
+
+        puts "good_AxisZ = ${good_AxisZ}"
+        puts "AxisZ = ${AxisZ}"
+        puts "AxisZ_percent = ${AxisZ_percent}\n"
+
+        if {${Parameter1_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${Parameter2_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${OriginX_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${OriginY_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${OriginZ_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${AxisX_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${AxisY_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+        if {${AxisZ_percent} > ${percent_max}} {
+           puts "OCC2755 Faulty (case 3 / $i)"
+           set IsGood 0
+        }
+
+    }
+
+    if {${IsGood} == 1} {
+       puts "OCC2755 OK"
+    }
+
+}
+
+set 3dviewer 0
+

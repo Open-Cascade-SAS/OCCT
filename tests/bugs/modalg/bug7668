@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC7668"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakeOffset wrong generated list
+#######################################################################
+
+puts "#"
+puts "Non stable test case on Linux. MKV. 29.12.2010"
+puts " ( VERTEX : 136  or  VERTEX : 134 )"
+puts "#"
+
+set BugNumber OCC7668
+
+restore [locate_data_file OCC7668.brep] a1 
+
+wire w1 a1
+
+mkoffset result w1 1 2
+
+renamevar result_1 result
+
+# Analysis of "nbshapes res"
+set nb_v_good 134
+set nb_e_good 134
+set nb_w_good 1
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 269
+
+set length 136.008
+set 2dviewer 0

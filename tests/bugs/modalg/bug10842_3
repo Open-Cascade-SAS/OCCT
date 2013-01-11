@@ -1,0 +1,36 @@
+puts "TODO OCC111111 ALL: Error : Result shape is WRONG"
+
+puts "============"
+puts "OCC10842"
+puts "============"
+puts ""
+#######################################################################
+# Bug in Bop
+#######################################################################
+
+set BugNumber OCC10842
+
+restore [locate_data_file OCC10842-1.brep] b1 
+restore [locate_data_file OCC10842-2.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopcut result
+puts "Finish boolean operation ..."
+
+set square 18757.7
+
+# Analysis of "nbshapes res"
+set nb_v_good 13
+set nb_e_good 18
+set nb_w_good 6
+set nb_f_good 6
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 46
+
+set 2dviewer 0

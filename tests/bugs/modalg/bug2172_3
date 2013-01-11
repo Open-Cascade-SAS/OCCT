@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC2172"
+puts "============"
+puts ""
+######################################################
+# Fuse operation produces invalid shape
+######################################################
+## (old topology)
+## (fuse)
+######################################################
+
+restore [locate_data_file OCC2172-torus.brep] torus 
+restore [locate_data_file OCC2172-cylinder.brep] cylinder 
+
+checkshape torus
+checkshape cylinder
+
+if { [catch {bfuse result torus cylinder} catch_result] } {
+    puts "Faulty OCC2172"
+}
+
+set square 28603.8
+set 3dviewer 1
+

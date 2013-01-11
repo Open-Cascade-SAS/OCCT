@@ -1,0 +1,44 @@
+puts "================"
+puts "OCC309"
+puts "================"
+puts ""
+
+pload QAcommands
+
+set result [OCC309]
+
+set ll [llength ${result}]
+if { ${ll} != 2 } {
+    puts "result = ${result}"
+    puts "length = ${ll}"
+    puts "OCC309: ERROR 0"
+} else {
+    set result1 [lindex ${result} 0]
+    set result2 [lindex ${result} 1]
+    set CurrentDirectory [pwd]
+    set UpTrek [file dirname ${CurrentDirectory}]
+    if { [string compare $tcl_platform(platform) "windows"] != 0} {
+	set res1 [ string range $result1 1 [expr [string length $result1] -3 ] ]
+	set res2 [ string range $result2 1 [expr [string length $result2] -3 ] ]
+    } else {
+	set res1 [ string range $result1 1 [expr [string length $result1] -2 ] ]
+	set res2 [ string range $result1 1 [expr [string length $result2] -8 ] ]
+    }
+    if {[string compare ${res1} "${CurrentDirectory}"] == 0} {
+	puts "OCC309: OK 1"
+    } else {
+	puts "result1 = ${result1}"
+	puts "res1 = ${res1}"
+	puts "CurrentDirectory = ${CurrentDirectory}"
+	puts "OCC309: ERROR 1"
+    }
+    if {[string compare ${res2} "${UpTrek}"] == 0} {
+	puts "OCC309: OK 2"
+    } else {
+	puts "result2 = ${result2}"
+	puts "res2 = ${res2}"
+	puts "UpTrek = ${UpTrek}"
+	puts "OCC309: ERROR 2"
+    }
+}
+

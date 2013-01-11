@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC1416"
+puts "============"
+puts ""
+######################################################
+# Shading mode doesn't work on a face of the model
+######################################################
+
+restore [locate_data_file OCC1416.brep] result
+
+# Clean mesh
+isos result 0
+tclean result
+
+#Creating mesh
+incmesh result 0.01
+
+#View the result of mesh
+triangles result
+
+##############################################
+if { [catch { set tri_info [trinfo result] } catch_result] } {
+##############################################
+    puts "Faulty OCC1416"
+} else {
+    set ll [ llength ${tri_info} ]
+    if {${ll} < 6} {
+        puts "Faulty OCC1416"
+    } else {
+	regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+	regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+        if { $tri == 0 || $nod == 0 }  {
+            puts "Faulty OCC1416"
+        } else {
+            puts "Warning: OCC1416 looks like OK, but visual checking is required !!!!"
+        }
+    }
+}
+
+set square 863.938
+set 3dviewer 1

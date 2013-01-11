@@ -1,0 +1,26 @@
+puts "TODO OCC11111 ALL: OCC299: Error 2"
+
+pload QAcommands
+
+puts "================"
+puts "OCC299"
+puts "================"
+puts ""
+
+restore [locate_data_file OCC298.brep] pr 
+checkshape pr
+
+point p 0.86427836 -1 -1
+
+set info_result [OCC299 pr p]
+set ll [llength ${info_result}]
+if { ${ll} < 4 } {
+    puts "OCC299: Error 1"
+} else {
+    if { [regexp {IN} $info_result] } {
+	puts "OCC299: OK"
+    } else {
+	puts "OCC299: Error 2"
+    }
+}
+

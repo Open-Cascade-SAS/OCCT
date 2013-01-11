@@ -1,0 +1,34 @@
+puts "========"
+puts "OCC60"
+puts "SAM723"
+puts "BUC60916"
+puts "========"
+
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+
+set x_coord 83
+set y_coord 337
+
+QAUpdateLights
+checkcolor $x_coord $y_coord 1 1 0
+
+set xmin 1
+set ymin 1
+set xmax 409
+set ymax 300
+
+# Select part of box
+OCC60 ${xmin} ${ymin} ${xmax} ${ymax}
+OCC60 ${xmin} ${ymin} ${xmax} ${ymax}
+
+set Selection_R 0.8
+set Selection_G 0.8
+set Selection_B 0.8
+
+QAUpdateLights
+checkcolor $x_coord $y_coord 0.8 0.8 0.8
+
+set only_screen 1

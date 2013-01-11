@@ -1,0 +1,20 @@
+#INTERFACE IGES
+puts "================"
+puts "OCC137"
+puts "================"
+#
+# The patch "patch-MITUTOYO-USA-05112001.zip" has to be converted to Open Cascade 4.0
+#
+puts "IT IS NECESSARY TO CHECK SHAPE SHADING"
+puts ""
+
+pload XDE
+
+igesbrep [locate_data_file OCC137-ANC101-Solid.igs] a *
+tpcompound a
+vinit
+vdisplay a
+vfit
+vsetdispmode 1
+
+set only_screen 1

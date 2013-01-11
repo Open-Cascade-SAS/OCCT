@@ -1,0 +1,26 @@
+puts "================"
+puts "OCC1726"
+puts "================"
+puts ""
+#######################################################################################
+# TDF_LabelNode::~TDF_LabelNode causes stack overflow
+#######################################################################################
+
+puts "Info: Open the document with 80000 sublabels of the label 0:2"
+chrono h reset; chrono h start
+Open [locate_data_file OCC1726.std] D
+chrono h stop; chrono h show
+
+set IsGood 1
+puts "Info: Close the document"
+chrono h reset; chrono h start
+if [catch {Close D} result] {
+   set IsGood 0
+}
+chrono h stop; chrono h show
+
+if { ${IsGood} == 0} {
+  puts "Faulty OCC1726"
+} else {
+  puts "OK OCC1726"
+}

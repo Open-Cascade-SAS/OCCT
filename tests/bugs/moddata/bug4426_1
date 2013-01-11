@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC4426"
+puts "================"
+puts ""
+#######################################################################################
+# Incorrect result of intersection in 2D between circle and line
+#######################################################################################
+
+v2d2
+circle c1 2 2 1
+2dfit
+2dzoom 120
+line l1 3 0 0 1
+2dintersect l1 c1
+erase l1 c1
+2dfit
+
+puts "ATTENTION! Check following:"
+puts "There is only one intersection point (green X)"
+
+set 2dviewer 1
+

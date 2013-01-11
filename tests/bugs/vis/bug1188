@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC1188"
+puts "Impossible to set background image for V3d_View"
+puts "================"
+puts ""
+
+set x 200
+set y 200
+
+vinit
+
+OCC1188 [locate_data_file OCC1188.gif]
+
+QAUpdateLights
+checkcolor $x $y 0.99 0.99 0.99
+if { ${stat} != 1} {
+    puts "OCC1188: Error"
+}
+
+set only_screen 1

@@ -1,0 +1,14 @@
+puts "================="
+puts "OCC166"
+puts "================="
+puts ""
+
+vinit
+
+if [ catch { OCC166 } res ] then {
+   puts "OCC166: Error"
+} else {
+   puts "OCC166: OK"
+}
+
+set only_screen 1

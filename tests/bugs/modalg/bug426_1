@@ -1,0 +1,26 @@
+puts "TODO OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+
+pload QAcommands
+
+puts "========"
+puts "OCC426"
+puts "OCC50"
+puts "========"
+#############################################################################
+## The result of fuse operation is invalid
+#############################################################################
+## BRepFilletAPI_MakeFillet presents a bug on fillet computation (build())
+#############################################################################
+
+OCC426 result rs1 rs2 rs3 fuse32 fuse321
+
+checkshape rs1
+checkshape rs2
+checkshape rs3
+checkshape fuse32
+checkshape fuse321
+
+set square 7507.61
+set 3dviewer 1
+

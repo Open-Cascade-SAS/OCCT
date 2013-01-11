@@ -1,0 +1,21 @@
+pload QAcommands
+
+puts "================"
+puts "OCC5696"
+puts "================"
+puts ""
+#######################################################################################
+# Exception in BRepAdaptor_CompCurve due to uninitialised variable CurIndex
+#######################################################################################
+
+set BugNumber OCC5696
+
+set info_result [OCC5696]
+set index [string compare ${info_result} "par_edge = 1\n"]
+if {$index != 0} {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+

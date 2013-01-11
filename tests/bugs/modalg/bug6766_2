@@ -1,0 +1,38 @@
+puts "================"
+puts "OCC6766"
+puts "================"
+puts ""
+#######################################################################################
+# Invalid result of intersection of a bspline face with a plane
+#######################################################################################
+
+set BugNumber OCC6766
+
+restore [locate_data_file OCC6766.brep] a 
+
+decho off
+set che_a [checkshape a]
+decho on
+if { [regexp {Faulty} $che_a] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for a"
+}
+    
+set Y 4
+plane pl 0 ${Y} 0 0 1 0
+mkface f pl
+bop a f
+bopsection result
+
+
+set nb_v_good 4
+set nb_e_good 3
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 8
+
+set length 138.474
+set 2dviewer 0

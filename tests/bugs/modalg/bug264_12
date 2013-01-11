@@ -1,0 +1,33 @@
+puts "TODO OCC11111 ALL: Faulty OCC264_12: here is shading problem"
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+
+puts "========"
+puts "OCC264"
+puts " (case 12)"
+puts "========"
+
+restore [locate_data_file OCC264_12.brep] result
+
+tclean result
+vinit
+vdisplay result
+vclear
+
+isos res 0
+triangles result
+
+#smallview
+#fit
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+
+if { $tri != 19 && $nod != 21 }  {
+    puts "Faulty OCC264_12: here is shading problem"
+} else {
+    puts "Shading of OCC264_12 is OK"
+}
+
+set square 0
+set 2dviewer 0

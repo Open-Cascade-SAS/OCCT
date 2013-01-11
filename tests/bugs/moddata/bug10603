@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC10603"
+puts "============"
+puts ""
+#######################################################################
+# Fuse of torus fails
+#######################################################################
+
+set BugNumber OCC10603
+
+puts "Create 3 torus ..."
+ptorus a0 100 20
+tcopy a0 a1
+tcopy a0 a2
+trotate a1 0 0 0 1 0 0 90
+trotate a2 0 0 0 0 1 0 90
+
+puts "Prepare first boolean operation ..."
+bop a0 a1
+
+puts "Start first boolean operation ..."
+bopfuse res1
+puts "Finish first boolean operation ..."
+
+puts "Prepare second boolean operation ..."
+bop res1 a2
+
+puts "Start second boolean operation ..."
+bopfuse result
+checkshape result
+puts "Finish second boolean operation ..."
+
+set square 197753
+
+# Analysis of "nbshapes res"
+set nb_v_good 12
+set nb_e_good 36
+set nb_w_good 12
+set nb_f_good 12
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 75
+
+set 2dviewer 0
+

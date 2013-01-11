@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC5729"
+puts "============"
+puts ""
+######################################################
+# Regression on case cfe 900 K5
+######################################################
+
+set BugNumber OCC5729
+
+restore [locate_data_file OCC5729-f1.brep] f1 
+restore [locate_data_file OCC5729-f2.brep] f2 
+
+decho off
+set che_1 [checkshape f1]
+decho on
+if { [regexp {Faulty} $che_1] } {
+   puts "Faulty ${BugNumber} : checkshape is wrong for f1"
+}
+
+decho off
+set che_2 [checkshape f2]
+decho on
+if { [regexp {Faulty} $che_2] } {
+   puts "Faulty ${BugNumber} : checkshape is wrong for f2"
+}
+
+bfuse result f1 f2
+
+set square 28559.8
+
+set nb_v_good 13
+set nb_e_good 22
+set nb_w_good 15
+set nb_f_good 13
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 66
+

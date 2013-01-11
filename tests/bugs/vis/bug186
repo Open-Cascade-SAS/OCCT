@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC186"
+puts "========"
+
+v2dinit
+v2dcircle circle 0 0 5
+set zoom_factor 10000000
+QAv2dzoom ${zoom_factor}
+
+set only_screen2d 1
+

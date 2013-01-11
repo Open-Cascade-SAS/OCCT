@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC3926"
+puts "============"
+puts ""
+######################################################
+# Exception during reading file using XDEDRAWEXE
+######################################################
+
+pload DCAF
+
+NewDocument D MDTV-XCAF
+UndoLimit D 100
+NewCommand D
+
+ReadStep D [locate_data_file PRO9233.stp]
+

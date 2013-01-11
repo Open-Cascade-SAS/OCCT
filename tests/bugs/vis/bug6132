@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC6132"
+puts "================"
+puts ""
+#######################################################################################
+# Bad isos presentation in Draw for a face built on a periodic surface
+#######################################################################################
+
+set BugNumber OCC6132
+
+restore [locate_data_file OCC6132.brep] result
+checkshape result
+
+set 2dviewer 1
+

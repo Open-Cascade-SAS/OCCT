@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC6063"
+puts "============"
+puts ""
+######################################################
+# Exception is raised during command "sprops" in DRAW on attached shape.
+######################################################
+
+set BugNumber OCC6063
+cpulimit 2000
+
+restore [locate_data_file OCC6063-2.brep] result
+
+decho off
+set che_res [checkshape result]
+decho on
+if { [regexp {Faulty} $che_res] } {
+   puts "Faulty ${BugNumber} : checkshape is wrong for res"
+}
+
+set tol_square 1.e-6
+set square 2465.96
+set 2dviewer 0
+

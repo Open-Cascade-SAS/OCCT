@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC2821"
+puts "============"
+puts ""
+######################################################
+# IGES file not impored correctly
+######################################################
+
+igesbrep [locate_data_file OCC2821.igs] a *
+
+set comp [tpcompound result]
+regexp {([-0-9.+eE]+) +Shape\(s\)} $comp full nb
+if { $nb < 1} {
+    puts "Error : Number of shape(s) listed is wrong"
+} else {
+    set square 41153
+}
+
+set 2dviewer 1
+

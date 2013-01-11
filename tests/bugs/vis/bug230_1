@@ -1,0 +1,17 @@
+puts "========"
+puts "OCC230"
+puts "OCC489"
+puts "========"
+puts ""
+############################################
+## Numeric Error occures in V2d_View::WindowFit() , Magnify()
+############################################
+
+point p1 0 10
+point p2 10 20
+
+if [catch { OCC230 tc p1 p2 } ] {
+   puts "OCC230: Error"
+} else {
+   puts "OCC230: OK"
+}

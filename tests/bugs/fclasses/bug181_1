@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC181"
+puts "OCC701"
+puts "========"
+######################################################
+# Resource_Manager class doen't return status of saving resources in a file.
+######################################################
+# Add method BuildPath to OSD_Directory
+######################################################
+
+# Clear tmp-data
+######################################################################
+set tmp ${imagedir}
+######################################################################
+
+pload QAcommands
+
+file delete ${tmp}/1/2/3/OCC181
+file delete ${tmp}/1/2/OCC181
+file delete ${tmp}/1/OCC181
+file delete ${tmp}/1/2/3
+file delete ${tmp}/1/2
+file delete ${tmp}/1
+
+set log [OCC181 OCC181 ${imagedir} ${tmp}/1 0]
+
+set list [split ${log}]
+set ll [llength ${list}]
+set status [lindex ${list} [expr ${ll} - 2] ]
+
+if { ${status} == "TRUE"} then {
+   puts "OCC181: OK"
+} else {
+   puts "OCC181: Error"
+}
+

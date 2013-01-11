@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC3721"
+puts "============"
+puts ""
+######################################################
+# When using Boolean Operations exception is raised for some tolerance vals.
+######################################################
+## (new topology)
+## (bcut)
+######################################################
+
+restore [locate_data_file OCC3721-1.brep] b1 
+restore [locate_data_file OCC3721-2.brep] b2 
+
+checkshape b1
+checkshape b2
+
+if { [catch {bcut result b1 b2} catch_result] } {
+   puts "Faulty OCC3721"
+}
+
+checkshape result
+
+set square 71185
+set 3dviewer 1
+

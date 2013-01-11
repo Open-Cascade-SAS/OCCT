@@ -1,0 +1,61 @@
+puts "============"
+puts "OCC6278"
+puts "============"
+puts ""
+######################################################
+# Fuse operation produces incorrect result
+######################################################
+
+set BugNumber OCC6278
+
+restore [locate_data_file OCC6278-A.brep] a 
+restore [locate_data_file OCC6278-B.brep] b 
+
+bfuse result a b
+explode result v
+
+set nb_v_good 4
+
+set DumpList [dump result_2]
+if {[llength ${DumpList}] < 40} {
+    puts "Faulty ${BugNumber}: bad format of dump"
+} else {
+    regexp { *- *Point *3D *: *([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} ${DumpList} full x y z
+    puts $x
+    puts $y
+    puts $z
+    
+    set percent_max 0.1
+    
+    set x [lindex ${DumpList} 37]
+    set y [lindex ${DumpList} 38]
+    set z [lindex ${DumpList} 39]
+
+    set x [string range ${x} 0 end-1]
+    set y [string range ${y} 0 end-1]
+
+    set good_x -32.3042674857046
+    set good_y 20.0000000000001
+    set good_z 0.
+
+    set Percent_x [expr abs(${x} - ${good_x}) / abs(${good_x}) * 100.]
+    set Percent_y [expr abs(${y} - ${good_y}) / abs(${good_y}) * 100.]
+    if {${z} == 0.} {
+        set Percent_z 0.
+    } else {
+        set Percent_z [expr abs(${good_z} - ${z}) / abs(${z}) * 100.]
+    }
+
+    if {${Percent_x} > ${percent_max}} {
+        puts "Faulty ${BugNumber}: bad value of x = ${x}"
+    }
+    if {${Percent_y} > ${percent_max}} {
+	puts "Faulty ${BugNumber}: bad value of y = ${y}"
+    }
+    if {${Percent_z} > ${percent_max}} {
+        puts "Faulty ${BugNumber}: bad value of z = ${z}"
+    }
+}
+
+set length 278.725
+set 3dviewer 2

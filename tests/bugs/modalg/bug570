@@ -1,0 +1,11 @@
+pload QAcommands
+
+puts "========"
+puts "OCC570"
+puts "========"
+puts ""
+
+OCC570 result
+
+set square 58500
+set 3dviewer 0

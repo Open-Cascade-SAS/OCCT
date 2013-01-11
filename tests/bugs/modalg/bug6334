@@ -1,0 +1,69 @@
+puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+
+puts "============"
+puts "OCC6334"
+puts "============"
+puts ""
+######################################################
+# Invalid result of MakeCylindricalHole when input solid is REVERSED
+######################################################
+
+set BugNumber OCC6334
+
+# 1. Make box
+box b 100 100 100
+
+subshape b f 1
+offsetshape t b 10 b_1
+
+decho off
+set che_t [checkshape t]
+decho on
+
+if {[regexp {Faulty} $che_t]} {
+    puts "Faulty ${BugNumber} : checkshape is wrong for t"
+}
+
+set bnd_t [bounding t]
+set ori [lindex [dtyp t] 2]
+puts "Orientation of thick solid is $ori"
+
+# 3. Make hole
+hole h t 110 50 50 1 0 0 10
+
+set che [checkshape h]
+if { [regexp {Faulty} $che] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for h"
+}
+
+set bnd_h [bounding h]
+
+renamevar h result
+
+set square 117509
+
+set nb_v_good 32
+set nb_e_good 53
+set nb_w_good 27
+set nb_f_good 24
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 139
+
+
+# 4. Check thickness of box and hole
+set dx_t [expr [lindex $bnd_t 3] - [lindex $bnd_t 0]]
+set dx_h [expr [lindex $bnd_h 3] - [lindex $bnd_h 0]]
+
+if { [expr abs($dx_h - $dx_t)] > 1e-5 } {
+  puts "Thickness of solid = $dx_t"
+  puts "Thickness of solid with hole = $dx_h"
+  puts "Invalid result of making a hole"
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0

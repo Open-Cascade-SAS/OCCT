@@ -1,0 +1,16 @@
+pload QAcommands
+
+puts "============"
+puts "OCC1077"
+puts "============"
+puts ""
+######################################################
+# BUG in boolean operations in the development version
+######################################################
+
+if { [catch { OCC1077 result } catch_result] } {
+     puts "Faulty OCC1077"
+}
+
+set square 587.181
+set 3dviewer 1

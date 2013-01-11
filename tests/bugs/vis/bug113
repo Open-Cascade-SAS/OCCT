@@ -1,0 +1,69 @@
+puts "================"
+puts "OCC113"
+puts "BUC60978"
+puts "================"
+puts ""
+
+# Data
+set X_01 29
+set Y_01 170
+
+set X_02 204
+set Y_02 300
+
+set scale    60.6309
+set center_X 7.07107
+set center_Y 4.08248
+set proj_X   0.479541
+set proj_Y   0.586729
+set proj_Z   0.652525
+set up_X     -0.838029
+set up_Y     0.0856396
+set up_Z     0.538863
+set at_X     8.87741
+set at_Y     -2.73728
+set at_Z     4.68363
+
+# Display two face
+vinit
+box b 10 10 10
+explode b f
+vdisplay b_1
+vdisplay b_2
+vfit
+
+QAUpdateLights
+
+# Check face color
+checkcolor ${X_01} ${Y_01} 0 1 0 
+checkcolor ${X_02} ${Y_02} 0 1 0
+
+# Select faces
+QAAddOrRemoveSelected b_1
+QAAddOrRemoveSelected b_2
+
+# Check face color
+QAUpdateLights
+checkcolor ${X_01} ${Y_01} 0.8 0.8 0.8
+
+QAUpdateLights
+checkcolor ${X_02} ${Y_02} 0.8 0.8 0.8
+
+# Hilight face
+QAMoveTo ${X_01} ${Y_01}
+QAMoveTo ${X_01} ${Y_01}
+
+# Check face color
+QAUpdateLights
+QASelect 10 10
+QAMoveTo ${X_01} ${Y_01}
+checkcolor ${X_01} ${Y_01} 0 1 1
+
+QAUpdateLights
+QAMoveTo ${X_02} ${Y_02}
+checkcolor ${X_02} ${Y_02} 0 1 1
+
+# Rotation
+QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+
+set only_screen 1

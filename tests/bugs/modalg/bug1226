@@ -1,0 +1,24 @@
+puts "================"
+puts "OCC1226"
+puts "The revolution problem reproduced in OCC Samples"
+puts "================"
+puts ""
+
+vertex  v1  0  0 0
+vertex  v2 50  0 0
+vertex  v3 50 50 0
+
+edge    e1 v1 v2
+edge    e2 v2 v3
+edge    e3 v3 v1
+
+wire    w  e1 e2 e3
+
+mkplane f  w
+
+revol result  f  0  0  30 0 1 0 180
+
+set square 23211.3
+set 2dviewer 0
+
+

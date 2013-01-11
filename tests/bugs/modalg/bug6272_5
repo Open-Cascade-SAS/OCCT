@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC6272"
+puts "============"
+puts ""
+######################################################
+# Incorrect results of gluing operation
+######################################################
+
+set BugNumber OCC6272
+
+restore [locate_data_file OCC6272_bridge2.brep] a1 
+
+explode a1
+
+bop a1_1 a1_2
+bopfuse result
+
+set square 6552.67
+
+# Analysis of "nbshapes res"
+set nb_v_good 116
+set nb_e_good 176
+set nb_w_good 72
+set nb_f_good 70
+set nb_sh_good 5
+set nb_sol_good 5
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 445
+
+set 2dviewer 0
+
+

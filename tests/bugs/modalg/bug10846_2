@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC10846"
+puts "============"
+puts ""
+#######################################################################
+# Cut operation produces invalid result
+#######################################################################
+
+set BugNumber OCC10846
+
+restore [locate_data_file bug10846_solid1.brep] b1 
+restore [locate_data_file bug10846_solid2.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+set square 2309.97
+
+# Analysis of "nbshapes res"
+set nb_v_good 25
+set nb_e_good 45
+set nb_w_good 15
+set nb_f_good 15
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 103
+
+set 2dviewer 0

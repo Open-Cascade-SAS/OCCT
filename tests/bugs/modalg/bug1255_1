@@ -1,0 +1,24 @@
+puts "========="
+puts " OCC1255 "
+puts "========="
+puts ""
+###############################################
+## Exception in command 'section'
+#  (This script tests new topology)
+###############################################
+
+restore [locate_data_file OCC1255.brep] a 
+checkshape a
+
+plane p1 0 -36.8067 0 0 1 0
+mkface f1 p1
+
+if { [catch {bop a f1 } ] } {
+    puts "Faulty OCC1255: BOP operation was made wrongly"
+} else {
+    bopsection result
+}
+
+set length 5383.42
+set 2dviewer 0
+

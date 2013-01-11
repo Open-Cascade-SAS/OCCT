@@ -1,0 +1,39 @@
+puts "============"
+puts "OCC6554"
+puts "============"
+puts ""
+######################################################
+# Intersection shell-plane gives a disconnected set of edges
+######################################################
+
+set BugNumber OCC6554
+
+restore [locate_data_file OCC6554-shell.brep] sh 
+restore [locate_data_file OCC6554-face.brep] f 
+
+decho off
+set che_sh [checkshape sh]
+set che_f [checkshape f]
+decho on
+if { [regexp {Faulty} $che_sh] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for sh"
+}
+
+if { [regexp {Faulty} $che_f] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for f"
+}
+
+bsection result sh f -a
+
+regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full Vertices
+
+set good_Vertices 2
+
+if { ${Vertices} != ${good_Vertices} } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+set length 110.045
+set 2dviewer 2

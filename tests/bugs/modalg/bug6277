@@ -1,0 +1,43 @@
+puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+
+puts "============"
+puts "OCC6277"
+puts "============"
+puts ""
+######################################################
+# Cut operation does not produce any result
+######################################################
+
+set BugNumber OCC6277
+
+restore [locate_data_file OCC6277_A.brep] s1 
+restore [locate_data_file OCC6277_B.brep] s2 
+
+decho off
+set che_s1 [checkshape s1]
+set che_s2 [checkshape s2]
+decho on
+if { [regexp {Faulty} $che_s1] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for s1"
+}
+    
+if { [regexp {Faulty} $che_s2] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for s2"
+}
+        
+bcut result s1 s2
+
+set square 40084.9
+
+set nb_v_good 23
+set nb_e_good 34
+set nb_w_good 19
+set nb_f_good 14
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 93
+
+set 2dviewer 0
+

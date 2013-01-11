@@ -1,0 +1,47 @@
+puts "============"
+puts "OCC5805"
+puts "============"
+puts ""
+######################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+######################################################
+
+set BugNumber OCC5805
+
+restore [locate_data_file OCC5805.brep] a 
+
+decho off
+set che_a [checkshape a]
+decho on
+if { [regexp {Faulty} $che_a] } {
+    puts "Faulty ${BugNumber} : checkshape is wrong for a"
+}
+
+if { [catch { offsetshape result a -1 } catch_result] } {
+   puts "Faulty ${BugNumber} : offsetshape is wrong"
+}
+
+if { [catch { set tolmaxres [tolmax result] } catch_result] } {
+   puts "Faulty ${BugNumber} : tolmax is wrong"
+}
+regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full maxtolerance
+if { [catch { expr $maxtolerance } catch_result] } {
+   puts "Faulty ${BugNumber} : maxtolerance is wrong (1)."
+}
+if { $maxtolerance > 1. } {
+   puts "Faulty ${BugNumber} : maxtolerance is wrong (2)"
+}
+
+set square 876.584
+
+set nb_v_good 10
+set nb_e_good 15
+set nb_w_good 7
+set nb_f_good 7
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 41
+
+set 2dviewer 0

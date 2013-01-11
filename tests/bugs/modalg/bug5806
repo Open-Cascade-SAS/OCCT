@@ -1,0 +1,54 @@
+puts "============"
+puts "OCC5806"
+puts "============"
+puts ""
+######################################################
+# BRepOffsetAPI_MakeThickSolid fails to build a result
+######################################################
+
+set BugNumber OCC5806
+
+puts "demonstration of pipes and hollowing for GTISoft"
+puts ""
+puts "Scenario 3A: Hollowed general pipe - ThroughSection with following shell reconstruction"
+
+circle c 0 100 0 1 0 0 5 
+mkedge ec c
+wire wc ec
+polyline pl 10 90 -10  10 90 10  10 110 10  10 110 -10  10 90 -10
+
+if { [catch { thrusections resthru 1 1 wc pl } catch_result] } {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+}
+
+# straighforward hollowing will fail due to problems in the algorithm
+explode resthru f
+
+if { [catch { offsetshape result resthru -0.5 resthru_6 resthru_7 } catch_result] } {
+   puts "Faulty ${BugNumber} : offsetshape is wrong"
+}
+
+if { [catch { set tolmaxres [tolmax result] } catch_result] } {
+   puts "Faulty ${BugNumber} : tolmax is wrong"
+}
+regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full maxtolerance
+if { [catch { expr $maxtolerance } catch_result] } {
+   puts "Faulty ${BugNumber} : maxtolerance is wrong (1)."
+}
+if { $maxtolerance > 1. } {
+   puts "Faulty ${BugNumber} : maxtolerance is wrong (2)."
+}
+
+set square 1116.06
+
+set nb_v_good 10
+set nb_e_good 15
+set nb_w_good 7
+set nb_f_good 7
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 41
+
+set 2dviewer 0

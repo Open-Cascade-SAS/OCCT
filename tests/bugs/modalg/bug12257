@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC12257"
+puts "============"
+puts ""
+#######################################################################
+# Fuse operation fails
+#######################################################################
+
+set BugNumber OCC12257
+
+puts "Load shape ..."
+restore [locate_data_file OCC12257.brep] b1 
+
+explode b1
+
+puts "Prepare boolean operation ..."
+bop b1_1 b1_2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+set square 3394.17
+
+# Analysis of "nbshapes res"
+set nb_v_good 72
+set nb_e_good 109
+set nb_w_good 39
+set nb_f_good 39
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 262
+
+set 2dviewer 1
+

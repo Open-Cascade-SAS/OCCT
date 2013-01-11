@@ -1,0 +1,30 @@
+puts "TODO OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+
+puts "============"
+puts "OCC3721"
+puts "============"
+puts ""
+######################################################
+# When using Boolean Operations exception is raised for some tolerance vals.
+######################################################
+## (new topology)
+## (boptuc)
+######################################################
+
+restore [locate_data_file OCC3721-1.brep] b1 
+restore [locate_data_file OCC3721-2.brep] b2 
+
+checkshape b1
+checkshape b2
+
+bop b1 b2
+if { [catch {boptuc result} catch_result] } {
+   puts "Faulty OCC3721"
+}
+
+checkshape result
+
+set square 71185
+set 3dviewer 1
+

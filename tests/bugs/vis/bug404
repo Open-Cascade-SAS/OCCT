@@ -1,0 +1,65 @@
+puts "========"
+puts "OCC404"
+puts "========"
+
+v2dinit
+
+#
+### RED
+#
+set R1 1
+set G1 0
+set B1 0
+
+OCC404 ${R1} ${G1} ${B1}
+
+set x_coord 10
+set y_coord 10
+set color2d 1
+checkcolor $x_coord $y_coord 1 0 0
+
+if { $stat != 1 } {
+  puts "OCC404: Get background color ERROR (case 1)"
+}
+
+
+#
+### GREEN
+#
+
+set R1 0
+set G1 1
+set B1 0
+
+OCC404 ${R1} ${G1} ${B1}
+
+set x_coord 10
+set y_coord 10
+set color2d 1
+checkcolor $x_coord $y_coord 0 1 0
+
+if { $stat != 1 } {
+  puts "OCC404: Get background color ERROR (case 2)"
+}
+
+
+#
+### BLUE
+#
+
+set R1 0
+set G1 0
+set B1 1
+
+OCC404 ${R1} ${G1} ${B1}
+
+set x_coord 10
+set y_coord 10
+set color2d 1
+checkcolor $x_coord $y_coord 0 0 1
+
+if { $stat != 1 } {
+  puts "OCC404: Get background color ERROR (case 2)"
+}
+
+set only_screen2d 1

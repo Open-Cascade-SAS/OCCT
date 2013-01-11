@@ -1,0 +1,22 @@
+puts "TODO OCC111111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC111111 ALL: Error : The square of result shape is"
+
+pload QAcommands
+
+puts "============"
+puts "OCC6272"
+puts "============"
+puts ""
+######################################################
+# Incorrect results of gluing operation
+######################################################
+
+set BugNumber OCC6272
+
+restore [locate_data_file OCC6272_bridge2.brep] a1 
+
+explode a1
+OCC307 result a1_1 a1_2 1
+
+set square 0
+set 2dviewer 0

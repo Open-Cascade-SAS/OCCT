@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC697"
+puts "============"
+puts ""
+######################################################
+# Fuse operation does not work
+######################################################
+## (new topology)
+## (bopfuse)
+######################################################
+
+restore [locate_data_file OCC697_1.brep] b1 
+restore [locate_data_file OCC697_2.brep] b2 
+
+checkshape b1
+checkshape b2
+
+bop b2 b1
+if { [catch {bopfuse result} catch_result] } {
+   puts "Faulty OCC697"
+}
+set square 8879.41
+set 3dviewer 1
+

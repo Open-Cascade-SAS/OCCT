@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC627"
+puts "========"
+
+v2dinit
+v2dcircle circle 0 0 5
+v2dfit
+
+set i 10
+for {set j 1} {${j} <= ${i}} {incr j} {
+   v2derase circle
+   v2ddisplay circle
+}
+
+set k [lindex [OCC627] 2]
+
+if {${k} != 1} {
+   puts "Sequence length = ${k}"
+   puts "OCC627: Error"
+}
+
+set only_screen2d 1
+
+
+
+
+

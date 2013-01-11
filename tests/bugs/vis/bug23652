@@ -1,16 +1,36 @@
-puts "============"
-puts "CR23652"
-puts "============"
-puts ""
-#######################################################################
-# Non zoomable text with alignment slides away when zooming view
-#######################################################################
+puts "========"
+puts "OCC23652"
+puts "========"
 
-pload AISV
+###############################################################################
+# Non zoomable text with alignment slides away when zooming view
+###############################################################################
+
 vinit
 vtrihedron tri
-vdrawtext Default 0.0 0.0 0.0 255 255 255 0 0 0 0 20 0
-vdrawtext Right_Align 0.0 0.0 0.0 255 255 255 2 0 0 0 20 0
-vfit
+vdrawtext Default 0.0 0.0 0.0 255 255 255 0 0 0 1 20 0
+vdrawtext Right_Align 0.0 0.0 0.0 255 255 255 2 0 0 1 20 0
 
-set 3dviewer 7
+set scale    3.1783114563761763
+set center_X 0
+set center_Y 0
+set proj_X   0.57735025882720947
+set proj_Y   -0.57735025882720947
+set proj_Z   0.57735025882720947
+set up_X     -0.40824827551841736
+set up_Y     0.40824827551841736
+set up_Z     0.81649655103683472
+set at_X     0
+set at_Y     0
+set at_Z     0
+
+QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+
+set x_coord 36
+set y_coord 201
+
+checkcolor $x_coord $y_coord 0.6 0.6 0.6
+
+set only_screen 1
+
+

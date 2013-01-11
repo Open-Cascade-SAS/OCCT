@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC281"
+puts "========"
+puts ''
+
+vinit
+
+OCC281 200 290 9
+OCC281 200 290 9
+puts "Type of marker mast be a ball with 1 color and different saturations!"
+
+set only_screen 1

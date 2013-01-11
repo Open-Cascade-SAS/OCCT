@@ -1,0 +1,37 @@
+pload QAcommands
+
+puts "================"
+puts "OCC7372"
+puts "================"
+puts ""
+#######################################################################################
+# Invalid conversion 2D periodic BSpline curve to Bezier segments
+#######################################################################################
+
+set BugNumber OCC7372
+
+OCC7372
+
+set mistake 0
+set len [llength [directory segment*]]
+if { ${len} != 5 } {
+    puts "Faulty ${BugNumber} : segment number is wrong"
+    set mistake 1
+} else {
+    set good_length 73.3203
+    regexp {The length .* is ([-0-9.+eE]+)} [length segment_5] full current_length
+    if { [expr 1.*abs($good_length - $current_length)/$good_length * 100] > 0.1 } {
+	puts "Faulty ${BugNumber} : length is wrong for segment_5"
+	set mistake 1
+    }
+    renamevar segment_5 result
+}
+
+if { ${mistake} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0
+

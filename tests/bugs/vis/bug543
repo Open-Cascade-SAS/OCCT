@@ -1,0 +1,30 @@
+puts "========"
+puts "OCC543"
+puts "========"
+
+v2dinit
+
+set X 0
+set Y 0
+set Radius 10
+set Alpha 0
+set Beta 3.14
+
+QAv2dcircle Circle ${X} ${Y} ${Radius} ${Alpha} ${Beta}
+v2dfit
+
+set x1 207
+#set y1 103
+set y1 104
+
+QAMoveTo2d ${x1} ${y1}
+
+set result [lindex [OCC543 Circle] 2]
+
+if {${result} == 0} {
+   puts "OCC543: Error"
+}
+
+set only_screen2d 1
+
+

@@ -1,0 +1,20 @@
+puts "================"
+puts "OCC389"
+puts "================"
+puts ""
+
+v2dinit
+
+box b 10 10 10
+
+if [catch { OCC389 proj b } res] {
+   puts "OCC389: Error"
+   puts "${res}"
+} else {
+   puts "OCC389: OK"
+}
+
+v2ddisplay proj
+v2dfit
+set only_screen2d 1
+

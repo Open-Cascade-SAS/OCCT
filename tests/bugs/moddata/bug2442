@@ -1,0 +1,65 @@
+puts "TODO OCC11111 ALL: OCC2442 Faulty"
+
+puts "============"
+puts "OCC2442"
+puts "============"
+puts ""
+######################################################
+# Error in BRepClass3d_SolidClassifier
+######################################################
+
+set IsGood 1
+
+restore [locate_data_file OCC2442-1.brep] a 
+restore [locate_data_file OCC2442-2.brep] b 
+
+distmini dm1 a b
+set dm1_list [dump dm1_val]
+set dm1_length [llength $dm1_list]
+if {$dm1_length < 6} {
+   puts "Faulty OCC2442"
+   set IsGood 0
+}
+
+explode a
+explode b
+distmini dm2 a_1 b_1
+set dm2_list [dump dm2_val]
+set dm2_length [llength $dm2_list]
+if {$dm2_length < 6} {
+   puts "Faulty OCC2442"
+   set IsGood 0
+}
+
+if {$IsGood == 1} {
+    regexp {([-0-9.+eE]+)} $dm1_list full dist1
+    regexp {([-0-9.+eE]+)} $dm2_list full dist2
+
+    set good_dist 18.4816355578064
+    set dist1_percent [expr abs(${dist1} - ${good_dist}) / double(${good_dist}) * 100.]
+
+    set dist2_percent [expr abs(${dist1} - ${dist2}) / double(${dist2}) * 100.]
+
+    set percent_max 0.1
+
+    if {${dist1_percent} > ${percent_max}} {
+        puts "OCC2442 Faulty"
+        set IsGood 0
+    }
+    if {${dist2_percent} > ${percent_max}} {
+        puts "OCC2442 Faulty"
+        set IsGood 0
+    }
+    if {${IsGood} == 1} {
+        puts "OCC2442 OK"
+    }
+}
+
+set boundbox [boundingstr a]
+set x0 [lindex $boundbox 0]
+set y0 [lindex $boundbox 1]
+set z0 [lindex $boundbox 2]
+ttranslate a [expr -1 * $x0] [expr -1 * $y0] [expr -1 * $z0]
+ttranslate b [expr -1 * $x0] [expr -1 * $y0] [expr -1 * $z0]
+
+set 3dviewer 1

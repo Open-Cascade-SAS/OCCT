@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC5157"
+puts "============"
+puts ""
+######################################################
+# DRAW commands vprops and sprops with tolerance 1.e-6 hange on attached shape.
+######################################################
+
+cpulimit 3500
+#dchrono h reset; dchrono h start
+
+catch { pload XDE }
+
+set BugNumber OCC5157
+
+set status 0
+if {[catch { stepread [locate_data_file OCC5157.stp] a * } catch_result] } {
+    puts "Faulty ${BugNumber} : here is reading problem"
+} else {
+    tpcompound result
+}
+
+set tol_square 1.e-6
+set square 35273.9
+set 2dviewer 0
+
+

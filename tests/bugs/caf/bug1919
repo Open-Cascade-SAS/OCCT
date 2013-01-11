@@ -1,0 +1,114 @@
+puts "TODO OCC12345 ALL: OCC1919 Error : Italian locale not seted"
+puts "TODO OCC12345 ALL: OCC1919 Error"
+
+puts "================"
+puts "OCC1919"
+puts "================"
+puts ""
+#######################################################################################
+# Incorrect locale management in XmlDrivers_DocumentRetrievalDriver::Read()
+#######################################################################################
+
+pload QAcommands
+
+set USA_Label 0:10
+set Italian_Label 0:20
+set USA_Real 123.456
+set Italian_Real 123,456
+#set aFile ${filedir}/OCC1919-[file tail [info script]].xml
+set IsGood 1
+
+# Create document
+NewDocument D XmlOcaf
+UndoLimit D 100
+NewCommand D
+
+Label D ${USA_Label}
+Label D ${Italian_Label}
+
+# Set USA locale
+OCC1919_set en_US
+set en_US_local [lindex [OCC1919_get] 2]
+if { ${en_US_local} != "en_US" } {
+   puts "OCC1919 Error : USA - English (ISO-8859-1) locale not seted"
+   set IsGood 0
+}
+
+SetReal D ${USA_Label} ${USA_Real}
+
+# Get a value of the attribute
+set USA_IsDone [catch {set new_USA_Real [GetReal D ${USA_Label}]} message]
+if { ${USA_IsDone} != 0 || ${new_USA_Real}!=${USA_Real} } {
+   puts ${message}
+   puts "USA_Real=${USA_Real} new_USA_Real=${new_USA_Real} "
+   puts "OCC1919 Error : Get bad value of TDataStd_Real attribute"
+   set IsGood 0
+}
+
+# Set italian locale
+OCC1919_set it
+set it_local [lindex [OCC1919_get] 2]
+if { ${it_local} != "it" } {
+   puts "OCC1919 Error : Italian locale not seted"
+   set IsGood 0
+}
+
+OCC1919_real D ${Italian_Label} ${Italian_Real}
+
+# Get a value of the attribute
+set Italian_IsDone [catch {set new_Italian_Real [GetReal D ${Italian_Label}]} message]
+if { ${Italian_IsDone} != 0 || ${new_Italian_Real}!=${Italian_Real} } {
+   puts ${message}
+   puts "Italian_Real=${Italian_Real} new_Italian_Real=${new_Italian_Real}"
+   puts "OCC1919 Error : Get bad value of TDataStd_Real attribute"
+   set IsGood 0
+}
+
+# Get a value of the attribute
+set USA_IsDone [catch {set new_USA_Real [GetReal D ${USA_Label}]} message]
+if { ${USA_IsDone} != 0 || ${new_USA_Real}!=${Italian_Real} } {
+   puts ${message}
+   puts "Italian_Real=${Italian_Real} new_USA_Real=${new_USA_Real}"
+   puts "OCC1919 Error : Get bad value of TDataStd_Real attribute"
+   set IsGood 0
+}
+
+# Store the document
+file delete ${imagedir}/OCC1919-M6.xml
+SaveAs D ${imagedir}/OCC1919-M6.xml
+if { ![file exists ${imagedir}/OCC1919-M6.xml] } {
+   puts "OCC1919 Error : There is not file"
+   set IsGood 0
+}
+catch {exec chmod 777 ${imagedir}/OCC1919-M6.xml}
+Close D
+
+# Set en_US locale 
+OCC1919_set en_US
+set en_US_local [lindex [OCC1919_get] 2]
+if { ${en_US_local} != "en_US" } {
+   puts "OCC1919 Error : USA - English (ISO-8859-1) locale not seted"
+   set IsGood 0
+}
+
+# Restore the document
+Open ${imagedir}/OCC1919-M6.xml DD
+
+# Get a value of the attribute
+set USA_IsDone [catch {set new_USA_Real [GetReal DD ${USA_Label}]} message]
+set Italian_IsDone [catch {set new_Italian_Real [GetReal DD ${Italian_Label}]} message]
+if { ${USA_IsDone} != 0 || ${Italian_IsDone} != 0 || ${new_USA_Real}!=${new_Italian_Real} || ${new_Italian_Real}!=${USA_Real} } {
+   puts ${message}
+   puts "USA_Real=${USA_Real} Italian_Real=${Italian_Real}"
+   puts "new_USA_Real=${new_USA_Real} new_Italian_Real=${new_Italian_Real}"
+   puts "OCC1919 Error : Get bad value of TDataStd_Real attribute from restoring document"
+   set IsGood 0
+}
+
+if { ${IsGood} == 1 } {
+  puts "OCC1919 OK"
+} else {
+  puts "OCC1919 Error"
+}
+
+set make_photo 0

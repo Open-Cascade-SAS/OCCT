@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC267"
+puts "========"
+
+NewDocument D MDTV-Standard
+
+######################################################################
+
+file delete ${imagedir}/OCC267.std
+SaveAs D ${imagedir}/OCC267.std
+

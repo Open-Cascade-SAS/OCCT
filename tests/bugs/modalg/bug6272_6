@@ -1,0 +1,35 @@
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+
+puts "============"
+puts "OCC6272"
+puts "============"
+puts ""
+######################################################
+# Incorrect results of gluing operation
+######################################################
+
+set BugNumber OCC6272
+
+restore [locate_data_file OCC6272_bridge2.brep] a1 
+restore [locate_data_file OCC6272_revolution.brep] a2 
+
+bop a1 a2
+bopfuse result
+
+# puts "See result in the viewer!!!"
+
+set square 8979.70
+
+# Analysis of "nbshapes res"
+set nb_v_good 60
+set nb_e_good 90
+set nb_w_good 42
+set nb_f_good 40
+set nb_sh_good 5
+set nb_sol_good 5
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 243
+
+set 2dviewer 0
+

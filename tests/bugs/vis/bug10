@@ -1,0 +1,16 @@
+puts "================"
+puts "OCC10"
+puts "================"
+puts ""
+
+vinit
+box b 10 10 10
+explode b f
+vdisplay b_1
+vfit
+
+set ll 5
+
+OCC10 trihedron1 b_1 ${ll}
+
+set only_screen 1

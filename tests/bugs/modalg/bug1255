@@ -1,0 +1,16 @@
+puts "================"
+puts "OCC1255"
+puts "================"
+puts ""
+# Exception in command 'section'
+
+restore [locate_data_file OCC1255.brep] a 
+checkshape a
+
+plane p1 0 -36.8067 0 0 1 0
+mkface f1 p1
+
+bsection result a f1
+
+set length 5534.74
+set 2dviewer 0

@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC6283"
+puts "============"
+puts ""
+######################################################
+# Unstable work fixshape on attached shape (different number of warnings)
+######################################################
+
+set BugNumber OCC6283
+
+set list [stepread [locate_data_file wgehaeuse_surface.stp] a *]
+
+if {[lsearch ${list} Error] > -1} {
+    puts "${BugNumber} : Error during reading attached IGES file"
+} else {
+    tpcompound comp
+    if [catch { set fixlist [fixshape result comp 1e-7] } res] {
+	puts "${BugNumber}: Error during fixshape"
+    } else {
+	set index [string first "Segments were disordered; fixed\n" ${fixlist}]
+        if {$index != -1} {
+    	    puts "Faulty ${BugNumber}"
+        } else {
+    	    puts "OK ${BugNumber}"
+        }
+	set square 2.22665e+06
+	set 2dviewer 0
+    }
+}
+

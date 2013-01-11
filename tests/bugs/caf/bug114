@@ -9,7 +9,7 @@ puts "Amount of iterations is $i_max"
 NewDocument D MDTV-Standard
 UndoLimit D 10
 
-restore [locate_data_file OCC114.brep] s
+restore [locate_data_file OCC294.brep] s
 
 set listmem {}
 for {set i 1} {${i} <= ${i_max}} {incr i} {

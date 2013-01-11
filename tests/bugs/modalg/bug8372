@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC8372"
+puts "============"
+puts ""
+######################################################
+# Twisted result of ThruSections operation
+######################################################
+
+set BugNumber OCC8372
+
+restore [locate_data_file OCC8372_1.brep] w1 
+restore [locate_data_file OCC8372_2.brep] w2 
+
+thrusections result 1 1 w1 w2
+
+set square 4140.46
+
+set nb_v_good 12
+set nb_e_good 18
+set nb_w_good 8
+set nb_f_good 8
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 48
+
+set 2dviewer 0

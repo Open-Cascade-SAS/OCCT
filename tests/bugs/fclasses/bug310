@@ -1,0 +1,35 @@
+puts "================"
+puts "OCC310"
+puts "================"
+puts ""
+
+pload QAcommands
+
+set result [OCC310]
+
+set ll [llength ${result}]
+if { ${ll} != 2 } {
+    puts "result = ${result}"
+    puts "length = ${ll}"
+    puts "OCC310: ERROR 0"
+} else {
+    set result1 [lindex ${result} 0]
+    set result2 [lindex ${result} 1]
+    set Directory "|where|you|want|tmp|qwerty|tmp|"
+    set UpTrek "|where|you|want|tmp|qwerty|"
+    if {[string compare ${result1} "${Directory}"] == 0} {
+        puts "OCC310: OK 1"
+    } else {
+        puts "result1 = ${result1}"
+	puts "Directory = ${Directory}"
+        puts "OCC310: ERROR 1"
+    }
+    if {[string compare ${result2} "${UpTrek}"] == 0} {
+	puts "OCC310: OK 2"
+    } else {
+	puts "result2 = ${result2}"
+	puts "UpTrek = ${UpTrek}"
+	puts "OCC310: ERROR 2"
+    }
+}
+

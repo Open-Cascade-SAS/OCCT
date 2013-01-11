@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC301"
+puts "SAM926"
+puts "========"
+puts ""
+
+vinit
+OCC301 50 50 0 5
+OCC301 50 30 0 3
+vtop
+vfit
+puts "Angle dimensions have different arrow sizes"
+
+set only_screen 1

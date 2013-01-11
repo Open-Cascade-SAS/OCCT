@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC6508"
+puts "========"
+puts ""
+######################################################
+# Reading invalid General Symbol entity from an IGES file causes an exception
+######################################################
+
+igesbrep [locate_data_file OCC6508.igs] a *
+tpcompound result
+
+checkshape result
+
+set nb_f_good 192
+
+set 2dviewer 0

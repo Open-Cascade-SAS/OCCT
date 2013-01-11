@@ -1,0 +1,57 @@
+puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+puts "============"
+puts "OCC10160"
+puts "============"
+puts ""
+#######################################################################
+# BOP perfomance improvemen
+#######################################################################
+
+set BugNumber OCC10160
+
+restore [locate_data_file OCC10160-1.brep] b1 
+restore [locate_data_file OCC10160-3.brep] b2 
+
+set NbTests 3
+
+puts "Prepare boolean operation ..."
+dchrono h0 reset; dchrono h0 start
+bop b1 b2
+dchrono h0 stop; set CPU_time0_List [dchrono h0 show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $CPU_time0_List full CPU_user_time0
+puts "CPU_user_time0=${CPU_user_time0}"
+
+puts "Start boolean operation ..."
+dchrono h reset; dchrono h start
+#
+# BOOLEAN OPERATION ----- START
+#
+for {set i 1} {$i <= ${NbTests}} {incr i} {
+   bopfuse result
+}
+#
+# BOOLEAN OPERATION ----- FINISH
+#
+dchrono h stop; set CPU_time_List [dchrono h show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $CPU_time_List full CPU_user_time
+puts "Finish boolean operation ..."
+puts "CPU_user_time=${CPU_user_time}"
+set CPU_user_time [expr ${CPU_user_time} / ${NbTests}]
+puts "CPU_user_time=${CPU_user_time}"
+
+set square 3.61484e+07
+
+# Analysis of "nbshapes res"
+set nb_v_good 121
+set nb_e_good 178
+set nb_w_good 65
+set nb_f_good 59
+set nb_sh_good 3
+set nb_sol_good 2
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 429
+
+set 2dviewer 0
+
+
