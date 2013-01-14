@@ -1,3 +1,5 @@
+puts "TODO ?OCC10603 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC10603 ALL: Error : Result shape is WRONG because it must contains"
 puts "============"
 puts "OCC10603"
 puts "============"

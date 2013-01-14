@@ -3,8 +3,8 @@
 ###    set os $env(os_type)
 ###}
 ###if { [string compare $os "windows"] == 0 } {
-###    puts "TODO OCC12345 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
-###    puts "TODO OCC12345 ALL: Error : The style of edge is NOT dash"
+puts "TODO ?OCC12345 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
+puts "TODO ?OCC12345 ALL: Error : The style of edge is NOT dash"
 ###	by apn: Image is not correct on WNT
 ###}
 

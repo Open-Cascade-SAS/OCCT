@@ -1,3 +1,5 @@
+puts "TODO ?OCC12345 ALL: OCC309: ERROR 2"
+
 puts "================"
 puts "OCC309"
 puts "================"
@@ -21,8 +23,12 @@ if { ${ll} != 2 } {
 	set res1 [ string range $result1 1 [expr [string length $result1] -3 ] ]
 	set res2 [ string range $result2 1 [expr [string length $result2] -3 ] ]
     } else {
-	set res1 [ string range $result1 1 [expr [string length $result1] -2 ] ]
-	set res2 [ string range $result1 1 [expr [string length $result2] -8 ] ]
+	set info [pwd]
+	set CurrentDirectory [string range $info 2 end]
+	set info2 [file dirname ${CurrentDirectory}]
+	set UpTrek [file dirname ${CurrentDirectory}]
+	set res1 [ string range $result1 3 [expr [string length $result1] -2 ] ]
+	set res2 [ string range $result2 3 [expr [string length $result2] -2 ] ]
     }
     if {[string compare ${res1} "${CurrentDirectory}"] == 0} {
 	puts "OCC309: OK 1"
