@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC1477"
+puts "============"
+puts ""
+######################################################
+# Problems in MakePipeShell
+# (case 14)
+# test2.tcl
+######################################################
+
+beziercurve c11 5 0 0 0 10 0 0 20 10 12 25 30 20 50 40 50
+beziercurve c12 4 50 40 50 70 30 30 90 20 20 100 50 0
+mkedge e11 c11
+mkedge e12 c12
+wire s1 e11 e12
+
+beziercurve c21 4 0 0 0 0 0 10 0 10 10 0 10 20
+mkedge e21 c21
+wire s2 e21
+
+puts "###############################################################################"
+puts "# (case /-/-/-/)"
+puts "###############################################################################"
+
+set setsweepOptions ""
+set addsweepOptions ""
+set buildsweepOptions ""
+
+set square 2570.32
+
+set nb_v_good 6
+set nb_e_good 7
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 18
+
+set 2dviewer 0

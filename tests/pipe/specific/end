@@ -1,0 +1,224 @@
+set result [checkshape s1]
+set index [lsearch $result Faulty]
+if {$index > -1} {
+    puts "Faulty OCC1477 (case 1) : checkshape is wrong for s1"
+}
+
+set result [checkshape s2]
+set index [lsearch $result Faulty]
+if {$index > -1} {
+    puts "Faulty OCC1477 (case 2) : checkshape is wrong for s2"
+}
+
+mksweep s1
+
+if {[string length [string trim ${setsweepOptions}]] > 0} {
+    eval setsweep ${setsweepOptions}
+}
+
+###############################################################################
+# setsweep options [arg1 [arg2 [...]]] : options are :
+#    -FR : Tangent and Normal are given by Frenet trihedron
+#    -CF : Tangente is given by Frenet,
+#          the Normal is computed to minimize the torsion 
+###############################################################################
+if {[string length [string trim ${addsweepOptions}]] > 0} {
+    eval addsweep s2 ${addsweepOptions}
+} else {
+    addsweep s2
+}
+
+###############################################################################
+# addsweep wire [Vertex] [-T] [-R] [u0 v0 u1 v1 [...[uN vN]]] : options are :
+#    -T : the wire have to be translated to assume contact
+#         with the spine
+#    -R : the wire have to be rotated to assume orthogonality
+#         with the spine's tangent
+###############################################################################
+set bad_buildsweep 0
+if {[string length [string trim ${buildsweepOptions}]] > 0} {
+    if [catch {eval buildsweep result ${buildsweepOptions}} res] {
+	set bad_buildsweep 1
+    }
+} else {
+    if [catch {buildsweep result} res] {
+	set bad_buildsweep 1
+    }
+}
+
+###############################################################################
+# buildsweep result [-M/-C/-R] [-S] [tol] : options are
+# -M : Discontinuities are treated by Modfication of
+#         the sweeping mode : it is the default
+#    -C : Discontinuities are treated like Right Corner
+#         Treatement is Extent && Intersect
+#    -R : Discontinuities are treated like Round Corner
+#         Treatement is Intersect and Fill
+###############################################################################
+if {${bad_buildsweep} == 1} {
+    puts "Faulty OCC1477 (case 3) : buildsweep is wrong"
+} else {
+    if { [info exists square] } {
+	set prop "square"
+	set mass $square
+	if { [info exists tol_square] } {
+	    regexp {Mass +: +([-0-9.+eE]+)} [sprops result $tol_square] full m
+	} else {
+	    regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+	}
+    }
+    if { [info exists volume] } {
+	set prop "volume"
+	set mass $volume
+	regexp {Mass +: +([-0-9.+eE]+)} [vprops result] full m
+    }
+    if { [info exists length] } {
+	set prop "length"
+	set mass $length
+	regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full m      
+	puts "checksection"
+	puts [checksection result]
+    }
+
+    #if mass (length or square) is empty in test case then result should be an empty shape.
+    if { [info exists mass] } {
+	checkshape result
+      
+	if { [string compare "$mass" "empty"] != 0 } {
+	    if { $m == 0 } {
+       		puts "Error : The command is not valid. The $prop is 0."
+      	    }
+	    if { $mass > 0 } {
+		puts "The expected $prop is $mass"
+      	    }
+      	    #check of change of square is < 1%
+      	    if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
+      		puts "Error : The $prop of result shape is $m"
+      	    }
+	} else {
+      	    if { $m != 0 } {
+       		puts "Error : The command is not valid. The $prop is $m"
+      	    }
+	}
+    }
+
+    set glob_inf [info global nb_*_good]
+    if { [regexp "nb_.*_good" $glob_inf] == 1 } {
+	if { [info exists nbsh_t] } {
+	    set nb_info [nbshapes result -t]
+	} else {
+    	    set nb_info [nbshapes result]
+	}
+    }
+
+    if { [info exists nb_v_good] } {
+	regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_v
+	if { ${nb_v} != ${nb_v_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_v_good} vertexes instead of ${nb_v}"
+	} else {
+    	    puts "Result shape contains ${nb_v} vertexes"
+	}
+    }
+
+    if { [info exists nb_e_good] } {
+	regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_e
+	if { ${nb_e} != ${nb_e_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_e_good} edges instead of ${nb_e}"
+	} else {
+    	    puts "Result shape contains ${nb_e} edges"
+	}
+    }
+
+    if { [info exists nb_w_good] } {
+	regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full nb_w
+	if { ${nb_w} != ${nb_w_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_w_good} wires instead of ${nb_w}"
+	} else {
+    	    puts "Result shape contains ${nb_w} wires"
+	}
+    }
+
+    if { [info exists nb_f_good] } {
+	regexp {FACE +: +([-0-9.+eE]+)} $nb_info full nb_f
+	if { ${nb_f} != ${nb_f_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_f_good} faces instead of ${nb_f}"
+	} else {
+    	    puts "Result shape contains ${nb_f} faces"
+	}
+    }
+
+    if { [info exists nb_sh_good] } {
+	regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full nb_sh
+	if { ${nb_sh} != ${nb_sh_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_sh_good} shells instead of ${nb_sh}"
+	} else {
+    	    puts "Result shape contains ${nb_sh} shells"
+	}
+    }
+
+    if { [info exists nb_sol_good] } {
+	regexp {SOLID +: +([-0-9.+eE]+)} $nb_info full nb_sol
+	if { ${nb_sol} != ${nb_sol_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_sol_good} solids instead of ${nb_sol}"
+	} else {
+    	    puts "Result shape contains ${nb_sol} solids"
+	}
+    }
+
+    if { [info exists nb_compsol_good] } {
+	regexp {COMPSOLID +: +([-0-9.+eE]+)} $nb_info full nb_compsol
+	if { ${nb_compsol} != ${nb_compsol_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_compsol_good} compsolids instead of ${nb_compsol}"
+	} else {
+    	    puts "Result shape contains ${nb_compsol} compsolids"
+	}
+    }
+
+    if { [info exists nb_compound_good] } {
+	regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full nb_compound
+	if { ${nb_compound} != ${nb_compound_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_compound_good} compounds instead of ${nb_compound}"
+	} else {
+    	    puts "Result shape contains ${nb_compound} compounds"
+	}
+    }
+
+    if { [info exists nb_shape_good] } {
+	regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info full nb_shape
+	if { ${nb_shape} != ${nb_shape_good} } {
+    	    puts "Error : Result shape is WRONG because it must contains ${nb_shape_good} shapes instead of ${nb_shape}"
+	} else {
+    	    puts "Result shape contains ${nb_shape} shapes"
+	}
+    }
+}
+if { [isdraw result] } {
+    if { [info exists 2dviewer] } {
+	clear
+	smallview
+	donly result
+	fit
+	xwd $imagedir/${test_image}.png
+    }
+    if { [info exists 3dviewer] } {
+	vinit
+	vclear
+	vdisplay result
+	vsetdispmode 1
+	vfit
+	vzfit
+	vdump $imagedir/${test_image}.png
+    }
+}
+
+if { [info exist only_screen] } {
+   vdump $imagedir/${test_image}.png
+}
+
+if { [info exist only_screen2d] } {
+   v2ddump $imagedir/${test_image}.png
+}
+
+# to end a test script
+puts "TEST COMPLETED"
+

@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC1477"
+puts "============"
+puts ""
+######################################################
+# Problems in MakePipeShell
+# (case 13)
+######################################################
+
+restore [locate_data_file OCC1477_bsplinewire_c0.brep] s1 
+restore [locate_data_file OCC1477_profile1_rectangle.brep] e1 
+wire s2 e1
+
+puts "###############################################################################"
+puts "# (case /-CF/-R/-S/)"
+puts "###############################################################################"
+
+set setsweepOptions "-CF"
+set addsweepOptions "-R"
+set buildsweepOptions "-S"
+
+set square 29331.9
+set volume 65400.7
+
+set nb_v_good 12
+set nb_e_good 20
+set nb_w_good 10
+set nb_f_good 10
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 54
+
+set 2dviewer 0
