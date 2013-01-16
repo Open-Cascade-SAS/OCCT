@@ -38,8 +38,10 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_OffsetCurve.hxx>
 //
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+//
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
+
 
 //=======================================================================
 //class    : IntTools_ComparatorCurve
@@ -160,6 +162,7 @@ class IntTools_ComparatorCurve {
   //
   Standard_Boolean myIsSame;
 };
+//
 //=======================================================================
 //function : Perform
 //purpose  : 
@@ -545,15 +548,331 @@ Standard_Boolean
   bRet=(fabs(aR1-aR2)<aEpsilon);
   return bRet;
 }
+//
+//modified by NIZNHY-PKV Tue Jan 15 07:44:33 2013f
+//=======================================================================
+// class: IntTools_DistCC
+// purpose  : 
+//=======================================================================
+class IntTools_DistCC {
+ public:
+  IntTools_DistCC() {
+    myT11=0.;
+    myT12=0.;
+    myT21=0.;
+    myT21=0.;
+    myErrorStatus=1;
+    myThreshold=1.e-7;
+    myDx=0.;
+    myTx=0.;
+    myNbP=10;
+    myIndent=0.3;
+    myEps=0.001;
+  };
+  //
+  ~IntTools_DistCC() {
+  };
+  //-------- 1
+  void SetCurve1(const Handle(Geom_Curve)& aC1) {
+    myC1=aC1;
+  };
+  //
+  const Handle(Geom_Curve)& Curve1()const {
+    return myC1;
+  };
+  //
+  void SetRange1(const Standard_Real aT11,
+		 const Standard_Real aT12) {
+    myT11=aT11;
+    myT12=aT12;
+  };
+  //
+  void Range1(Standard_Real& aT11,
+	      Standard_Real& aT12)const {
+    aT11=myT11;
+    aT12=myT12;
+  };
+  //-------- 2
+  void SetCurve2(const Handle(Geom_Curve)& aC2) {
+    myC2=aC2;
+  };
+  //
+  const Handle(Geom_Curve)& Curve2()const {
+    return myC2;
+  };
+  //
+  void SetRange2(const Standard_Real aT21,
+		 const Standard_Real aT22) {
+    myT21=aT21;
+    myT22=aT22;
+  };
+  //
+  void Range2(Standard_Real& aT21,
+	      Standard_Real& aT22)const {
+    aT21=myT21;
+    aT22=myT22;
+  };
+  //
+  void SetThreshold(const Standard_Real aD) {
+    myThreshold=aD;
+  }
+  //
+  Standard_Real Threshold() const {
+    return myThreshold;
+  }
+  //
+  void Perform();
+  //
+  Standard_Integer ErrorStatus()const {
+    return myErrorStatus;
+  };
+  //
+  Standard_Real MaxDeviation()const {
+    return myDx;
+  }
+  //
+  Standard_Real MaxParameter()const {
+    return myTx;
+  }
+ //-----------------------------------------------------
+ protected :  
+  //
+  void Init();
+  //
+  void CheckData();
+  //
+  Standard_Real Distance(const Standard_Real aT); 
+  //
+  void FindMaxDeviation();
+  //
+  void FindMaxLocal (const Standard_Real aT11,
+		     const Standard_Real aT12,
+		     const Standard_Real aEps,
+		     Standard_Real& aDx,
+		     Standard_Real& aTx);
+  
+  //
+ protected :
+  Standard_Real myT11;
+  Standard_Real myT12;
+  Handle(Geom_Curve) myC1;
+  
+  Standard_Real myT21;
+  Standard_Real myT22;
+  Handle(Geom_Curve) myC2;
+  //
+  Standard_Real myThreshold;
+  Standard_Integer myErrorStatus;
+  //
+  Standard_Real myDx;
+  Standard_Real myTx;
+  //
+  Standard_Integer myNbP;
+  Standard_Real myIndent;
+  Standard_Real myEps;
+  GeomAPI_ProjectPointOnCurve myPPC2; 
+};
+
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void IntTools_DistCC::Perform()
+{
+  myErrorStatus=0;
+  //
+  CheckData();
+  if (myErrorStatus){
+    return;
+  }
+  // Init
+  myPPC2.Init(myC2, myT21, myT22);
+  //
+  FindMaxDeviation();
+  if (myErrorStatus){
+    return;
+  }
+}
+//=======================================================================
+//function : CheckData
+//purpose  : 
+//=======================================================================
+void IntTools_DistCC::CheckData()
+{
+  myErrorStatus=0;
+  //
+  if (myC1.IsNull()) {
+    myErrorStatus=2;
+    return;
+  }
+  //
+  if (myC2.IsNull()) {
+    myErrorStatus=3;
+    return;
+  }
+}
+//
+//=======================================================================
+//function : FindMaxDeviation
+//purpose  : 
+//=======================================================================
+void IntTools_DistCC::FindMaxDeviation()
+{ 
+  Standard_Integer i, aNbP1, aNbP2;
+  Standard_Real aTmax, aT, aT1, aT2, dT, aDmax, aEps, aD;
+  //
+  myErrorStatus=0;
+  myDx=0.;
+  myTx=0.;
+  //
+  aTmax=0;
+  aDmax=0.;
+  aEps=myEps*(myT12-myT11);
+  //
+  aNbP1=myNbP-1;
+  aNbP2=aNbP1-1;
+  dT=(myT12-myT11)/aNbP1;
+  for (i=0; i<aNbP1; ++i) {
+    aT1=myT11+i*dT;
+    aT2=aT1+dT;
+    //
+    if (!i) {
+      aT1=aT1+myIndent*dT;
+    }
+    else if (i==aNbP2) {
+      aT2=aT2-myIndent*dT;
+      if (aT2>myT12) {
+	aT2=myT12;
+      }
+    }
+    //
+    FindMaxLocal(aT1, aT2, aEps, aD, aT);
+    if (myErrorStatus) {
+      return ;
+    }
+    //
+    if (aD>aDmax) {
+      aDmax=aD;
+      aTmax=aT;
+    }
+  }
+  //
+  myTx=aTmax;
+  myDx=aDmax;
+}
+//=======================================================================
+//function : FindMaxLocal
+//purpose  : Solver: Golden Mean
+//=======================================================================
+void IntTools_DistCC::FindMaxLocal(const Standard_Real aT11,
+				   const Standard_Real aT12,
+				   const Standard_Real aEps,
+				   Standard_Real& aDx,
+				   Standard_Real& aTx)
+{
+  Standard_Integer iErr;
+  Standard_Real aA, aB, aCf, aX1, aX2, aF1, aF2, aX, aF;
+  //
+  myErrorStatus=0;
+  iErr=0;
+  aDx=0.;
+  aTx=0.;
+  //
+  aCf=1.6180339887498948482045868343656;// =0.5*(1.+sqrt(5.));
+  //
+  aA=aT11;
+  aB=aT12;
+  //
+  aX1=aB-(aB-aA)/aCf;
+  aF1=Distance(aX1);
+  if (myErrorStatus) {
+    return ;
+  }
+  //
+  aX2=aA+(aB-aA)/aCf;
+  aF2=Distance(aX2);
+  if (myErrorStatus) {
+    return;
+  }
+  //
+  while(1) {
+    if (fabs(aA-aB)<aEps) {
+      aX=0.5*(aA+aB);
+      aF=Distance(aX);
+      if (myErrorStatus) {
+	return;
+      }
+      //
+      break;
+    }
+    if (aF1<aF2){
+      aA=aX1;
+      aX1=aX2;
+      aF1=aF2;
+      aX2=aA+(aB-aA)/aCf;
+      aF2=Distance(aX2);
+      if (myErrorStatus) {
+	return ;
+      }
+    }
+    else {
+      aB=aX2;
+      aX2=aX1;
+      aF2=aF1;
+      aX1=aB-(aB-aA)/aCf;
+      aF1=Distance(aX1);
+      if (myErrorStatus) {
+	return;
+      }
+    }
+  }
+  //
+  aDx=aF;
+  aTx=aX;
+}
+//=======================================================================
+//function : Distance
+//purpose  : 
+//=======================================================================
+Standard_Real IntTools_DistCC::Distance(const Standard_Real aT)
+{
+  Standard_Integer aNbP2;
+  Standard_Real aD;
+  gp_Pnt aP1;
+  //
+  aD=0.;
+  if (myErrorStatus) {
+    return aD;
+  }
+  //
+  myC1->D0(aT, aP1);
+  myPPC2.Perform(aP1);
+  //
+  aNbP2=myPPC2.NbPoints();
+  if (!aNbP2) {
+    myErrorStatus=4;
+    return aD;
+  }
+  //
+  aD=myPPC2.LowerDistance();
+  if (aD>myThreshold) {
+    myErrorStatus=10;
+  }
+  return aD;
+}
+//modified by NIZNHY-PKV Tue Jan 15 07:44:44 2013t
+//
 //=======================================================================
 //function : IsSameCurves
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntTools_EdgeEdge::IsSameCurves()
 {
-  Standard_Boolean bRet;
+  Standard_Boolean bRet, bIsBC;
+  GeomAbs_CurveType aCT1, aCT2;
   IntTools_ComparatorCurve aICC;
   //
+  // 1. Check letter
   aICC.SetCurve1(myCFrom);
   aICC.SetRange1(myTminFrom, myTmaxFrom);
   //
@@ -562,6 +881,43 @@ Standard_Boolean IntTools_EdgeEdge::IsSameCurves()
   //
   aICC.Perform();
   bRet=aICC.IsSame();
+  if (bRet) {
+    return bRet;
+  }
   //
+  // 2. Check inwards
+  aCT1=myCFrom.GetType();
+  aCT2=myCTo.GetType();
+  bIsBC=(aCT1==GeomAbs_BSplineCurve || 
+	 aCT1==GeomAbs_BezierCurve  ||
+	 aCT2==GeomAbs_BSplineCurve ||
+	 aCT2==GeomAbs_BezierCurve);
+  //
+  if (bIsBC) {
+    Standard_Integer iErr;
+    Standard_Real aT11, aT12, aT21, aT22;
+    Handle(Geom_Curve) aC1, aC2;
+    IntTools_DistCC aDistCC; 
+    //
+    const TopoDS_Edge& aE1=myCFrom.Edge();
+    aC1=BRep_Tool::Curve(aE1, aT11, aT12);
+    //
+    const TopoDS_Edge& aE2=myCTo.Edge();
+    aC2=BRep_Tool::Curve(aE2, aT21, aT22);
+    //
+    aDistCC.SetCurve1(aC1);
+    aDistCC.SetRange1(myTminFrom, myTmaxFrom);
+    aDistCC.SetCurve2(aC2);
+    aDistCC.SetRange2(myTminTo, myTmaxTo);
+    aDistCC.SetThreshold(myCriteria);
+    //
+    aDistCC.Perform();
+    //
+    iErr=aDistCC.ErrorStatus();
+    //
+    bRet=(!iErr); 
+    //
+  }
   return bRet;
 }
+
