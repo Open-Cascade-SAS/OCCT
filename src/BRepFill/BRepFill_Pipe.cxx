@@ -805,7 +805,7 @@ TopoDS_Shape BRepFill_Pipe::ShareFaces
     if (i == 1) {
       jj = 1;
     } else {
-      jj == myFaces->RowLength();
+      jj = myFaces->RowLength();
 
       if (jj == 1) {
         break;
@@ -842,19 +842,11 @@ TopoDS_Shape BRepFill_Pipe::ShareFaces
           TopoDS_Vertex aV[2];
           TopExp::Vertices(TopoDS::Edge(anExp.Current()), aV[0], aV[1]);
           Standard_Integer ie;
-          Standard_Integer je;
-          Standard_Integer indV;
 
           // Compute jj index of edges.
-          if (i == 1) {
-            je = 1;
-          } else {
-            je == myEdges->RowLength();
-          }
+          Standard_Integer je = (i == 1 ? 1 : myEdges->RowLength());
 
-          Standard_Integer j;
-
-          for (j = 0; j < 2; j++) {
+          for (Standard_Integer j = 0; j < 2; j++) {
             if (aMapUsedVtx.Contains(aV[j])) {
               // This vertex is treated.
               continue;
