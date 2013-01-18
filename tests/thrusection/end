@@ -16,7 +16,7 @@ if { [isdraw result] } {
       }
       #check of change of square is < 1%
       if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
-      	 puts "Error : The $prop of result shape is $m"
+      	 puts "Error : The $prop of the resulting shape is $m"
       }
    } else {
       if { $m != 0 } {
@@ -37,7 +37,7 @@ if { [isdraw result] } {
       xwd $imagedir/${test_image}.png
    }
 } else {
-   puts "Error : The $command can not be build."
+   puts "Error : The $command cannot be built."
 }
 
 # to end a test script

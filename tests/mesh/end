@@ -49,12 +49,12 @@ if { [string compare $command "mesh"] == 0 } {
 
 # Collect TODO for area
 if { [string compare $bug_area ""] != 0 } {
-# The difference between square of geometry surface and square of mesh triangles should be less rel_tol value.
-# If rel_tol is 100 we suppose the mesh con not be created.
+# The difference between the area of a geometry surface and the area of mesh triangles should be less than rel_tol value.
+# If rel_tol is 100 we suppose that the mesh cannot be created.
     if { $rel_tol == 100 } {
-	puts "TODO $bug_area All:^\\s*Error  : Meshing algo cannot create mesh.\\s*$"
+	puts "TODO $bug_area All:^\\s*Error  : The meshing algorithm cannot create mesh.\\s*$"
     } else {
-	puts "TODO $bug_area All:^\\s*Error   : area by triangles differs from true area by \[-.0-9\]+ %\\s*$"
+	puts "TODO $bug_area All:^\\s*Error   : The area by triangles differs from the actual area by \[-.0-9\]+ %\\s*$"
     }
 }
 
@@ -115,7 +115,7 @@ set nod 0
 # Deflection
 set def 0
 
-# Collect number of triangles, number ofof nodes and deflection.
+# Collect number of triangles, number of nodes and deflection.
 if { [string compare $command "mesh"] != 0 } {
     set full [trinfo res]
     regexp "(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[0-9\]|\.+)" $full reg_out tri nod def
@@ -128,7 +128,7 @@ if { [string compare $command "mesh"] != 0 } {
 
 if { $tri == 0 || $nod == 0 } {                                                                     
     puts " "
-    puts "Error  : Meshing algo cannot create mesh."    
+    puts "Error  : The meshing algo cannot create mesh."    
 }             
 
 puts " "
@@ -150,7 +150,7 @@ proc CheckTriArea {shape {eps 0}} {
 puts "\nChecking triangulation area (triarea command)..."
 set rel_err [expr abs([CheckTriArea res $area_eps])]
 if { $rel_err > $rel_tol } {
-    puts "Error   : area by triangles differs from true area by $rel_err %"
+    puts "Error   : area by triangles differs from the actual area by $rel_err %"
 } else {
     if { $rel_tol > 1 && $rel_tol < 100 } {
 	puts "Error: Improvement: The current area difference is $rel_err instead of $rel_tol"

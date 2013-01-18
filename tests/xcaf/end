@@ -99,13 +99,13 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     
     ### Verify whether the collors are in document
     if {[eval XFindColor D_First $color1] == "" || [eval XFindColor D_First $color1] == ""} {
-	puts "Error : Color was not added in document or was not found in it after adding"
+	puts "Error : Color was not added in the document or was not found after adding"
 	set ErrorCode 2
     }
     
     ### Verify number of colors in document
     if { [llength [XGetAllColors D_First]] != "2" } {
-	puts "Error : XGetAllColors function returns invalid value"
+	puts "Error : XGetAllColors function returns an invalid value"
 	set ErrorCode 2
     }
     
@@ -122,40 +122,40 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     eval XSetColor D_First c  $color4c c
     ### Verify number of colors in document
     if { [llength [XGetAllColors D_First]] != "8" } {
-	puts "Error : XGetAllColors function returns invalid value after assigning colors to shapes in document"
+	puts "Error : XGetAllColors function returns an invalid value after assigning colors to shapes in the document"
 	set ErrorCode 2
     }
     ### Verify colors of all shapes
     if {[XGetShapeColor D_First [XFindShape D_First b1] s] != $color1name} {
-	puts "Error : Shape b1 has invalid color of surface "
+	puts "Error : Shape b1 has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First b2] s] != $color2name} {
-	puts "Error : Shape b2 has invalid color of surface "
+	puts "Error : Shape b2 has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First b3] s] != $color3name} {
-	puts "Error : Shape b3 has invalid color of surface "
+	puts "Error : Shape b3 has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First c ] s] != $color4name} {
-	puts "Error : Shape c has invalid color of surface "
+	puts "Error : Shape c has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First b1] c] != $color1cname} {
-	puts "Error : Shape b1 has invalid color of surface "
+	puts "Error : Shape b1 has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First b2] c] != $color2cname} {
-	puts "Error : Shape b2 has invalid color of surface "
+	puts "Error : Shape b2 has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First b3] c] != $color3cname} {
-	puts "Error : Shape b3 has invalid color of surface "
+	puts "Error : Shape b3 has an invalid surface color "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First c ] c] != $color4cname} {
-	puts "Error : Shape c has invalid color of surface "
+	puts "Error : Shape c has an invalid surface color
 	set ErrorCode 2
     }
     ### Remove some colors from document
@@ -165,16 +165,16 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     XRemoveColor D_First [eval XFindColor D_First $color2c]
     ### Verify number of colors in document
     if { [llength [XGetAllColors D_First]] != "6" } {
-	puts "Error : XGetAllColors function returns invalid value after removing two colors from document"
+	puts "Error : XGetAllColors function returns an invalid value after removing two colors from the document"
 	set ErrorCode 2
     }
     ### Verify whether b1 and b2 have the removed colors 
     if {[XGetShapeColor D_First [XFindShape D_First b1] s] != ""} {
-	puts "Error : Color of b1 surface was removed from document however XGetShapeColor function returns value "
+	puts "Error : Color of b1 surface was removed from the document however XGetShapeColor function returns value "
 	set ErrorCode 2
     }
     if {[XGetShapeColor D_First [XFindShape D_First b2] c] != ""} {
-	puts "Error : Color of b2 curves was removed from document however XGetShapeColor function returns value "
+	puts "Error : Color of b2 curves was removed from the document however XGetShapeColor function returns value "
 	set ErrorCode 2
     }
     ######################### LAYERS VERIFYING ##############################
@@ -193,7 +193,7 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     }
     ### Verify whether the layers was added in document correctly
     if { [XFindLayer D_First L1] == "" || [XFindLayer D_First L2] == "" || [XFindLayer D_First L3] == "" } {
-	puts "Error : Layers was not added in document correctly "
+	puts "Error : Layers were not added in the document correctly "
 	set ErrorCode 2
     }
     ### Verify XGetOneLayer function
@@ -212,12 +212,12 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     ### Verify removing layer from document 
     XAddLayer D_First LtoRemove
     if { [llength [XGetAllLayers D_First]] != "4" } {
-	puts "Error : Error occurs during adding layer in document "
+	puts "Error : Error occurs when adding a layer in the document "
 	set ErrorCode 2
     }
     XRemoveLayer D_First LtoRemove
     if { [llength [XGetAllLayers D_First]] != "3" } {
-	puts "Error : Error occurs during removing layer from document "
+	puts "Error : Error occurs when removing a layer from the document "
 	set ErrorCode 2
     }
     ### Verify interconnection layers and shapes
@@ -276,13 +276,13 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     eval XAddColor D_First $color2
     ### Verify whether the collors are in document
     if {[eval XFindColor D_First $color1] == "" || [eval XFindColor D_First $color1] == ""} {
-	puts "Error : Color was not added in document or was not found in it after adding"
+	puts "Error : Color was not added in the document or was not found after adding"
 	set ErrorCode 2
     }   
     
     ### Verify number of colors in document
     if { [llength [XGetAllColors D_First]] != "2" } {
-	puts "Error : XGetAllColors function returns invalid value"
+	puts "Error : XGetAllColors function returns an invalid value"
 	set ErrorCode 2
     }
     set list [XGetTopLevelShapes D_First]
@@ -292,11 +292,11 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     }
     foreach {i} $list {
 	if {[XGetShapeColor D_First $i s] != $color1name} {
-	    puts [format "Error : Shape  located on label %s has invalid color of surface " $i]
+	    puts [format "Error : Shape  located on label %s has an invalid surface color " $i]
 	    set ErrorCode 2
 	}
 	if {[XGetShapeColor D_First $i c] != $color1cname} {
-	    puts [format "Error : Shape  located on label %s has invalid color of curves " $i]
+	    puts [format "Error : Shape  located on label %s has an invalid curves color " $i]
 	    set ErrorCode 2
 	}
     }
@@ -304,14 +304,14 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     XRemoveColor D_First [eval XFindColor D_First $color1c]
     ### Verify number of colors in document
     if { [llength [XGetAllColors D_First]] != "2" } {
-	puts "Error : XGetAllColors function returns invalid value after removing colors from document"
+	puts "Error : XGetAllColors function returns an invalid value after removing colors from the document"
 	set ErrorCode 2
     }
     
     ### Verify shapes have the removed colors of curves
     foreach {i} $list {
 	if {[XGetShapeColor D_First $i c] != ""} {
-	    puts "Error : Color of curves was removed from document however XGetShapeColor function returns value "
+	    puts "Error : Curves color was removed from the document however XGetShapeColor function returns value "
 	    set ErrorCode 2
 	}
     }
@@ -322,7 +322,7 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     XAddLayer D_First L3
     ### Verify amount layers in document
     if { [llength [XGetAllLayers D_First]] != "3" } {
-	puts "Error : Error occurs during adding layers in document  "
+	puts "Error : Error occurs when adding layers in the document  "
 	set ErrorCode 2
     }
     if { [llength [XGetLayerLabels D_First]] != "3" } {
@@ -330,9 +330,9 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
 	set ErrorCode 2
     }
     
-    ### Verify whether the layers was added in document correctly
+    ### Verify whether the layers were added in the document correctly
     if { [XFindLayer D_First L1] == "" || [XFindLayer D_First L2] == "" || [XFindLayer D_First L3] == "" } {
-	puts "Error : Layers was not added in document correctly "
+	puts "Error : Layers were not added in the document correctly "
 	set ErrorCode 2
     }
     
@@ -353,12 +353,12 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     ### Verify removing layer from document 
     XAddLayer D_First LtoRemove
     if { [llength [XGetAllLayers D_First]] != "4" } {
-	puts "Error : Error occurs during adding layer in document "
+	puts "Error : Error occurs when adding a layer in the document "
 	set ErrorCode 2
     }
     XRemoveLayer D_First LtoRemove
     if { [llength [XGetAllLayers D_First]] != "3" } {
-	puts "Error : Error occurs during removing layer from document "
+	puts "Error : Error occurs when removing a layer from the document "
 	set ErrorCode 2
     }
     ### Verify interconnection layers and shapes
@@ -387,7 +387,7 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     set list [XGetTopLevelShapes D_First]
     foreach {i} $list {
 	set str [XLabelInfo D_First $i]
-	if {[regexp "Assembly" $str] || [regexp "This Shape don't used" $str]} {
+	if {[regexp "Assembly" $str] || [regexp "This Shape is not used" $str]} {
 	    XUnSetLayer D_First $i L1
 	    XUnsetColor D_First $i c
 	    XUnsetColor D_First $i s
@@ -729,7 +729,7 @@ if {[regexp "FACES" $CompareDocumentsMode]} {
     puts "Faces First: [llength $faces_list_First]"
     puts "Faces Second: [llength $faces_list_Second]"
     if {[llength $faces_list_First] != [llength $faces_list_Second]} {
-	puts "Error : number of faces is wrong"
+	puts "Error : The number of faces is wrong"
 	set ErrorCode 2
     }
 }
@@ -738,7 +738,7 @@ if {[regexp "VOLUME_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDoc
     puts "DocLabels First: $DocLabels_First"
     puts "DocLabels Second: $DocLabels_Second"
     if {[string compare $DocLabels_First $DocLabels_Second] != 0} {
-	puts "Error : DocLabels is wrong"
+	puts "Error : DocLabels are wrong"
 	set ErrorCode 2
     }
     puts "DocVolume First: $DocVolume_First"
@@ -751,10 +751,10 @@ if {[regexp "VOLUME_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDoc
 	    set diff 0
 	}
 	if {[expr $diff > 5]} {
-	    puts [format "Error : Volumes' difference is %f%s" $diff "%"]
+	    puts [format "Error : The difference between volumes is %f%s" $diff "%"]
 	    set ErrorCode 2
 	} else {
-	    puts [format "Volumes' difference is %f%s - OK" $diff "%"] 
+	    puts [format "The difference between volumes is %f%s - OK" $diff "%"] 
 	}
     }
 } elseif {[regexp "VOLUME" $CompareDocumentsMode]} {
@@ -769,10 +769,10 @@ if {[regexp "VOLUME_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDoc
 	    set diff 0
 	}
 	if {[expr $diff > 5]} {
-	    puts [format "Error : Volumes' difference is %f%s" $diff "%"]
+	    puts [format "Error : The difference between volumes is %f%s" $diff "%"]
 	    set ErrorCode 2
 	} else {
-	    puts [format "Volumes' difference is %f%s - OK" $diff "%"] 
+	    puts [format "The difference between volumes is %f%s - OK" $diff "%"] 
 	}
     }
     puts "nbClosedShells First: $nbClosedShells_First"
@@ -787,14 +787,14 @@ if {[regexp "COLORS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMo
     puts "DocAllColors First: $DocAllColors_First"
     puts "DocAllColors Second: $DocAllColors_Second"
     if {[llength $DocAllColors_Second] == 0 && [llength $DocAllColors_First] != 0} {
-	puts "Warning : There are no colors in D_Second although in D_First they are present"
+	puts "Warning : There are no colors in D_Second although they are present in D_First"
 	if {[expr $ErrorCode == 0]} { 
 	    set ErrorCode 1 	
 	}
     }
     if {[regexp "COLORS_EXACTLY" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMode]} {
 	if {[string compare $DocAllColors_First $DocAllColors_Second] != 0} {
-	    puts "Error : Compared documents have different set of colors"
+	    puts "Error : Compared documents have a different set of colors"
 	    set ErrorCode 2
 	}
     }
@@ -803,9 +803,9 @@ if {[regexp "COLORS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsMo
     if {[string compare $DocShapeLabels_First $DocShapeLabels_Second] != 0} {
     	if {[regexp "ALL" $CompareDocumentsMode]} {
 	    set ErrorCode 2
-	    puts "Error : Compared documents have different number of toplevel shape."
+	    puts "Error : Compared documents have a different number of toplevel shapes "
 	} else { 
-	    puts "Warning : Compared documents have different number of toplevel shapes "
+	    puts "Warning : Compared documents have a different number of toplevel shapes "
     	    if {[expr $ErrorCode == 0]} { 
     		set ErrorCode 1
     	    }
@@ -820,9 +820,9 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
     if {[string compare $DocLayers_First $DocLayers_Second] != 0} {
 	if {[regexp "LAYERS_EXACTLY" $CompareDocumentsMode]} {
 	    set ErrorCode 2
-	    puts "Error : Compared documents have different set of LAYERS names"
+	    puts "Error : Compared documents have a different set of LAYERS names"
 	} else { 
-	    puts "Warning : Compared documents have different set of LAYERS names"
+	    puts "Warning : Compared documents have a different set of LAYERS names"
 	    if {[expr $ErrorCode == 0]} { 
 		set ErrorCode 1 
 	    }
@@ -832,10 +832,10 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
     puts "DocLayerLabels Second: $DocLayerLabels_Second"
     if {[string compare $DocLayerLabels_First $DocLayerLabels_Second] != 0} {
 	if {[regexp "LAYERS_EXACTLY" $CompareDocumentsMode]} {
-	    puts [format "Error : Compared documents have different set of LAYERS labels"]
+	    puts [format "Error : Compared documents have a different set of LAYERS labels"]
 	    set ErrorCode 2
 	} else {
-	    puts [format "Warning : Compared documents have different set of LAYERS labels"]
+	    puts [format "Warning : Compared documents have a different set of LAYERS labels"]
 	    if {[expr $ErrorCode == 0]} { 
 		set ErrorCode 1 
 	    }
@@ -889,7 +889,7 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
 		puts [format " DocLayer_First(%s) = %s " $i $DocLayer_First]
 		puts [format "DocLayer_Second(%s) = %s " $i $DocLayer_Second]
 		puts [format "DocLayer_Second(%s) = %s " $NewLabel $DocLayer_Second]
-		puts [format "Error : Compared documents have different LAYERS for shape located on %s label" $i]
+		puts [format "Error : Compared documents have different LAYERS for the shape located on %s label" $i]
     		set ErrorCode 2
 	    }
 	}
@@ -931,7 +931,7 @@ if {[expr $ErrorCode == 2]} {
 } elseif {[expr $ErrorCode == 1]} { 
     puts "WARNING OCCURS DURING TEST"
 } elseif {[expr $ErrorCode != 0]} {
-    puts "Error : wrong value of ErrorCode."
+    puts "Error : a wrong value of ErrorCode."
 }
 
 puts "TEST COMPLETED"

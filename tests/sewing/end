@@ -42,8 +42,8 @@ if { [isdraw result] } {
       puts "Error : Number of free edges is $index"
     }
 
-    puts "Number of faulties for initial shape is $nb_a."
-    puts "Number of faulties for result shape is $nb_r."
+    puts "Number of faults for the initial shape is $nb_a."
+    puts "Number of faults for the resulting shape is $nb_r."
 
     #if nb_f is empty then it is instaility.
     if { [string compare "$nb_f" ""] == 0 || $nb_f > 0 } {
@@ -51,10 +51,10 @@ if { [isdraw result] } {
       if {[array get env os_type] != ""} {
         set os $env(os_type)
       }
-      puts "TODO #23150 $os: Error : Number of faulties is $nb_f"
+      puts "TODO #23150 $os: Error : Number of faults is $nb_f"
     }
     if { $nb_r > $nb_a } {
-      puts "Error : Number of faulties is $nb_r"
+      puts "Error : Number of faults is $nb_r"
     }
   } else { 
     puts "Error : OPERATION FAILED"
@@ -66,7 +66,7 @@ if { [isdraw result] } {
   fit
   xwd $imagedir/${test_image}.png
 } else {
-  puts "Error : The sewing can not be build."
+  puts "Error : The sewing cannot be built."
 }
 
 puts "TEST COMPLETED"

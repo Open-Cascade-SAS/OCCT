@@ -29,16 +29,16 @@ if { [isdraw result] } {
       }
       #check of change of square is < 1%
       if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
-      	 puts "Error : The $prop of result shape is $m"
+      	 puts "Error : The $prop of the resulting shape is $m"
       }
       
       if { [info exists nbsh_v ] } {
 	set arr_v [explode result v]
 	set nb_v [ llength $arr_v ]
         if { $nb_v != $nbsh_v } {
-           puts "Error : Result shape is WRONG because it must contain $nbsh_v vertexes instead of $nb_v"
+           puts "Error : The resulting shape is WRONG because it must contain $nbsh_v vertexes instead of $nb_v"
         } else {
-           puts "Result shape contains $nb_v vertexes"
+           puts "The resulting shape contains $nb_v vertexes"
         }
         
       }
@@ -47,9 +47,9 @@ if { [isdraw result] } {
 	set arr_e [explode result e]
 	set nb_e [ llength $arr_e ]
         if { $nb_e != $nbsh_e } {
-           puts "Error : Result shape is WRONG because it must contain $nbsh_e edges instead of $nb_e"
+           puts "Error : The resulting shape is WRONG because it must contain $nbsh_e edges instead of $nb_e"
         } else {
-           puts "Result shape contains $nb_e edges"
+           puts "The resulting shape contains $nb_e edges"
         }
       }
    } else {
@@ -70,7 +70,7 @@ if { [isdraw result] } {
    fit
    xwd $imagedir/${test_image}.png
 } else {
-   puts "Error : The $command can not be build."
+   puts "Error : The $command cannot be built."
 }
 
 # to end a test script

@@ -2,7 +2,7 @@ proc comparison { x1 x1_o prop } {
     set precision 0.0000001
     if { ( abs($x1) > $precision ) || ( abs($x1_o) > $precision ) } {
 	if { ($x1_o != 0 && [expr 1.*abs($x1_o - $x1)/$x1_o] > 0.01) || ($x1_o == 0 && $x1 != 0) } {
-    	    puts "Error : The $prop of result shape is $x1 and expected $prop is $x1_o"
+    	    puts "Error : The $prop of the resulting shape is $x1 and the expected $prop is $x1_o"
     	}
     }
 }
@@ -74,7 +74,7 @@ if { [isdraw result] } {
 	    }
 	    #check of change of length is < 1%
 	    if { ($mass != 0 && [expr 1.*abs($mass - $m)/$mass] > 0.01) || ($mass == 0 && $m != 0) } {
-		puts "Error : The $prop of result shape is $m"
+		puts "Error : The $prop of the resulting shape is $m"
 	    }
 	} else {
 	    if { $m != 0 } {
@@ -83,7 +83,7 @@ if { [isdraw result] } {
 	}
     }	
 } else {
-    puts "Error : The $command can not be build."
+    puts "Error : The $command cannot be built."
 }
 
 $viewer

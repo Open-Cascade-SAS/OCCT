@@ -12,31 +12,31 @@ if { [isdraw result] } {
 
    if { [info exists MaxFTol ] } {
       if { $MaxFTol != 0 && $maxf > $MaxFTol && [expr 1.*abs($MaxFTol - $maxf)/$MaxFTol] > 0.01 } {
-         puts "Error : Result shape is WRONG. MAX tolerance of FACE should be equal $MaxFTol instead of $maxf"
+         puts "Error : The resulting shape is WRONG. MAX tolerance of a FACE should be equal to $MaxFTol instead of $maxf"
       } elseif { $MaxFTol == 0 && $maxf != 0 } {
-         puts "Error : Result shape is WRONG."
+         puts "Error : The resulting shape is WRONG."
       } else {
-         puts "MAX tolerance of FACE of result shape is equal $maxf"
+         puts "MAX tolerance of a FACE of the resulting shape is equal to $maxf"
       }
    } 
 
    if { [info exists MaxETol ] } {
       if { $MaxETol != 0 && $maxe > $MaxETol && [expr 1.*abs($MaxETol - $maxe)/$MaxETol] > 0.01 } {
-         puts "Error : Result shape is WRONG. MAX tolerance of EDGE should be equal $MaxETol instead of $maxe"
+         puts "Error : The resulting shape is WRONG. MAX tolerance of an EDGE should be equal to $MaxETol instead of $maxe"
       } elseif { $MaxETol == 0 && $maxe != 0 } {
-         puts "Error : Result shape is WRONG."
+         puts "Error : The resulting shape is WRONG."
       } else {
-         puts "MAX tolerance of EDGE of result shape is equal $maxe"
+         puts "MAX tolerance of an EDGE of the resulting shape is equal to $maxe"
       }
    } 
 
    if { [info exists MaxVTol ] } {
       if { $MaxVTol != 0 && $maxv > $MaxVTol && [expr 1.*abs($MaxVTol - $maxv)/$MaxVTol] > 0.01 } {
-         puts "Error : Result shape is WRONG. MAX tolerance of VERTEX should be equal $MaxVTol instead of $maxv"
+         puts "Error : The resulting shape is WRONG. MAX tolerance of VERTEX should be equal to $MaxVTol instead of $maxv"
       } elseif { $MaxVTol == 0 && $maxv != 0 } {
-         puts "Error : Result shape is WRONG."
+         puts "Error : The resulting shape is WRONG."
       } else {
-         puts "MAX tolerance of VERTEX of result shape is equal $maxv"
+         puts "MAX tolerance of a VERTEX of the resulting shape is equal to $maxv"
       }
    } 
 
@@ -47,7 +47,7 @@ if { [isdraw result] } {
    xwd $imagedir/${test_image}.png
 
 } else {
-   puts "Error : The mkface can not be build."
+   puts "Error : The mkface can not be built."
 }
 
 # to end a test script

@@ -34,15 +34,15 @@ if { [isdraw result] && $mist == 0} {
 
 	if { $ll_v == 0 } {
 	    if { $theOff < 0 } {
-		puts [format "Warning : Result shape is empty COMPOUND"]
+		puts [format "Warning : The resulting shape is an empty COMPOUND"]
 	    } else {
-		puts [format "Error : Result shape is empty COMPOUND"]
+		puts [format "Error : The resulting shape is an empty COMPOUND"]
 	    }
 	    puts [whatis result]
 	    puts [nbshapes result]
 	    puts [checksection result]
 	} else {
-	    puts [format "Result shape contains %s wires" $ll_w]
+	    puts [format "The resulting shape contains %s wires" $ll_w]
 	    foreach wire $wire_list {
 		puts "Info for $wire:"
 		regexp {Tolerance +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=[-0-9.+eE]+} [tolerance $wire] full MaxTol_res AvgTol_res
@@ -51,7 +51,7 @@ if { [isdraw result] && $mist == 0} {
 		}
 		regexp {nb +alone +Vertices +: +([-0-9.+eE]+)} [checksection $wire] full num
 		if { $num != 0 } {
-		    puts [format "Error : $wire is UNclosed wire !!!"]
+		    puts [format "Error : $wire is NOT a closed wire"]
 		}
 		mkplane res_plane $wire
 		set chsh_res_plane [checkshape res_plane]
@@ -65,7 +65,7 @@ if { [isdraw result] && $mist == 0} {
 	    puts "The expected length is $length"
 	    #check of change of length is < 1%
 	    if { ($length != 0 && [expr 1.*abs($length - $m)/$length] > 0.01) || ($length == 0 && $m != 0) } {
-		puts "Error : The length of result shape is $m"
+		puts "Error : The length of the resulting shape is $m"
 	    }
 	} else {
 	    if { $m != 0 } {
@@ -75,25 +75,25 @@ if { [isdraw result] && $mist == 0} {
 	# check for number of vertexes
 	if { [info exists nbsh_v ] } {
 	    if { ($ll_v != $nbsh_v) || ($nbsh_v == 0 && $ll_v != 0) } {
-		puts "Error : Result shape is WRONG because it must contain $nbsh_v vertexes instead of $ll_v"
+		puts "Error : The resulting shape is WRONG because it must contain $nbsh_v vertexes instead of $ll_v"
 	    } else {
-		puts "Result shape contains $ll_v vertexes"
+		puts "The resulting shape contains $ll_v vertexes"
 	    }
 	}
 	# check for number of edges
 	if { [info exists nbsh_e ] } {
 	    if { ($ll_e != $nbsh_e) || ($nbsh_e == 0 && $ll_e != 0) } {
-		puts "Error : Result shape is WRONG because it must contain $nbsh_e edges instead of $ll_e"
+		puts "Error : The resulting shape is WRONG because it must contain $nbsh_e edges instead of $ll_e"
 	    } else {
-		puts "Result shape contains $ll_e edges"
+		puts "The resulting shape contains $ll_e edges"
 	    }
 	}
 	# check for number of wires
 	if { [info exists nbsh_w ] } {
 	    if { ($ll_w != $nbsh_w) || ($nbsh_w == 0 && $ll_w != 0) } {
-		puts "Error : Result shape is WRONG because it must contain $nbsh_w wires instead of $ll_w"
+		puts "Error : The resulting shape is WRONG because it must contain $nbsh_w wires instead of $ll_w"
 	    } else {
-		puts "Result shape contains $ll_w wires"
+		puts "The resulting shape contains $ll_w wires"
 	    }
 	}
     } else {
@@ -110,7 +110,7 @@ if { [isdraw result] && $mist == 0} {
 	foreach ResultFace [ explode result f ]  {
 	    regexp {Mass +: +([-0-9.+eE]+)} [sprops $ResultFace] full fmass
 	    if { $fmass < 0 } {
-		puts "Error : Square of face $ResultFace of result shape is negative."
+		puts "Error : The area of face $ResultFace of the resulting shape is negative."
 	    }
 	}
 	#check for bsection
@@ -119,7 +119,7 @@ if { [isdraw result] && $mist == 0} {
 	    if { [ isdraw re ] } {
 		regexp {Mass +: +([-0-9.+eE]+)} [lprops $re] full remass 
 		if { $remass != 0 } {
-		    puts "Error: bsection of result and s is not equal zero."
+		    puts "Error: bsection of the result and s is not equal to zero."
 		}
 	    }
 	}
@@ -129,7 +129,7 @@ if { [isdraw result] && $mist == 0} {
 	}
 	#check of change of volume is < 1%
 	if { ($volume > 0 && [expr 1.*abs($volume - $m)/$volume] > 0.01) || ($volume == 0 && $m != 0 && $sm != $m) } {
-	    puts "Error : The volume of result shape is $m"
+	    puts "Error : The volume of the resulting shape is $m"
 	}
     }
     if { $m > 0 } {
@@ -140,7 +140,7 @@ if { [isdraw result] && $mist == 0} {
 	xwd $imagedir/${test_image}.png
     } 
 } else {
-    puts "Error : The offset can not be build."
+    puts "Error : The offset cannot be built."
 }
 
 # to end a test script

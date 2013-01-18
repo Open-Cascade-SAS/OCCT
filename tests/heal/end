@@ -3,7 +3,7 @@ smallview
 if { [isdraw result] } {
    donly result
 } else {
-   puts "Error : result shape is not done."
+   puts "Error : the resulting shape is not done."
 }
 fit
 xwd $imagedir/${test_image}.png
