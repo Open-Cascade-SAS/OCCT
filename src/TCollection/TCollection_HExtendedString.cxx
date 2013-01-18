@@ -279,9 +279,9 @@ Standard_ExtCharacter TCollection_HExtendedString::Value
 // ----------------------------------------------------------------------------
 // String
 // ----------------------------------------------------------------------------
-TCollection_ExtendedString TCollection_HExtendedString::String() const
+const TCollection_ExtendedString& TCollection_HExtendedString::String() const
 {
-   return myString;
+  return myString;
 }
 
 

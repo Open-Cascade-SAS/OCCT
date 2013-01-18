@@ -216,7 +216,8 @@ is
    raises OutOfRange from Standard;
  
  String(me) returns ExtendedString from TCollection;
-        ---Purpose: Returns the field myString
+   ---Purpose: Returns the field myString
+   ---C++: return const &
 
  Print (me ; astream : out OStream);
    ---Purpose: Displays <me> .
