@@ -558,7 +558,7 @@ static void Project(ProjLib_Projector& P, Handle(Adaptor3d_HCurve)& C)
 ProjLib_ProjectedCurve::ProjLib_ProjectedCurve()
 
 {
-  myTolerance = Precision::PApproximation();
+  myTolerance = Precision::Confusion();
 }
 
 
@@ -570,7 +570,7 @@ ProjLib_ProjectedCurve::ProjLib_ProjectedCurve()
 ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
 (const Handle(Adaptor3d_HSurface)& S)
 {
-  myTolerance = Precision::PApproximation();
+  myTolerance = Precision::Confusion();
   Load(S);
 }
 
@@ -584,7 +584,7 @@ ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
 (const Handle(Adaptor3d_HSurface)& S,
  const Handle(Adaptor3d_HCurve)& C)
 {
-  myTolerance = Precision::PApproximation();
+  myTolerance = Precision::Confusion();
   Load(S);
   Load(C);
 }
@@ -600,7 +600,7 @@ ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
  const Handle(Adaptor3d_HCurve)&   C,
  const Standard_Real             Tol)
 {
-  myTolerance = Max(Tol, Precision::PApproximation());
+  myTolerance = Max(Tol, Precision::Confusion());
   Load(S);
   Load(C);
 }
@@ -624,7 +624,7 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HSurface)& S)
 
 void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 {
-  myTolerance = Max(myTolerance,Precision::PApproximation());
+  myTolerance = Max(myTolerance, Precision::Confusion());
   myCurve = C;
   Standard_Real FirstPar = C->FirstParameter();
   Standard_Real LastPar  = C->LastParameter();
