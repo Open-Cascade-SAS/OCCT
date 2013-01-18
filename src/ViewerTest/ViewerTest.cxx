@@ -560,7 +560,8 @@ void ViewerTest::StandardModeActivation(const Standard_Integer mode )
     case 4: cmode = "Face"; break;
     case 5: cmode = "Shell"; break;
     case 6: cmode = "Solid"; break;
-    case 7: cmode = "Compound"; break;
+    case 7: cmode = "Compsolid"; break;
+    case 8: cmode = "Compound"; break;
     }
 
     if(theactivatedmodes.Contains(mode))
@@ -577,128 +578,6 @@ void ViewerTest::StandardModeActivation(const Standard_Integer mode )
       }
   }
 }
-
-//==============================================================================
-//function : SelectFromContext
-//purpose  : pick / select an object from the last MoveTo() on a
-//            ButtonPress event
-//==============================================================================
-
-Handle(AIS_InteractiveObject) Select(Standard_Integer argc,
-				     const char** argv,
-				     Standard_Boolean shift,
-				     Standard_Boolean pick )
-{
-  Handle(AIS_InteractiveObject) ret;
-  Handle (ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
-  if ( shift ) {
-    EM->ShiftSelect();
-  }
-  else {
-    EM->Select();
-  }
-  const Handle(AIS_InteractiveContext) aContext = EM->Context();
-
-  if ( !aContext->HasOpenedContext() ) {
-    aContext->InitCurrent();
-    while ( aContext->MoreCurrent() ) {
-      Handle(AIS_InteractiveObject) aisPickedShape =
-	Handle(AIS_InteractiveObject)::DownCast(aContext->Current());
-
-//JR/Hp
-      const char *name = (GetMapOfAIS().IsBound1(aisPickedShape))?
-//      const char *name = (GetMapOfAIS().IsBound1(aisPickedShape))?
-	GetMapOfAIS().Find1(aisPickedShape).ToCString() :
-	  "????";
-      Handle(AIS_Shape) TheRealSh = Handle(AIS_Shape)::DownCast(aisPickedShape);
-      if(!TheRealSh.IsNull()){
-	cout << "Current is " << name
-	  << " (" << GetTypeNameFromShape(TheRealSh->Shape())
-	    << ")" << endl;
-      }
-      ret = aisPickedShape;
-      if(!TheRealSh.IsNull()){
-	if ( pick && argc > 4 ) {
-	  DBRep::Set(argv[4], TheRealSh->Shape());
-	}
-      }
-      aContext->NextCurrent();
-    }
-  }
-  else {
-    // A LocalContext is opened, the use xxxxSelected()
-    // to select an object and its SubShape
-    aContext->InitSelected();
-    while ( aContext->MoreSelected() ) {
-      if ( !aContext->HasSelectedShape() ) {
-      }
-      else {
-        TopoDS_Shape PickedShape = aContext->SelectedShape();
-	if ( pick && argc > 5 ) {
-	  DBRep::Set(argv[5], PickedShape);
-	}
-      }
-
-      if ( aContext->Interactive().IsNull() ) {
-        cout << "??? (No InteractiveObject selected)" << endl;
-      }
-      else {
-        Handle(AIS_InteractiveObject) aisPicked =
-          Handle(AIS_InteractiveObject)::DownCast(aContext->Interactive());
-        ret = aisPicked;
-	Handle(AIS_Shape) aisPickedShape = Handle(AIS_Shape)::DownCast(aisPicked);
-
-	// Get back its name
-//JR/Hp
-	const char *name = ( GetMapOfAIS().IsBound1(aisPicked) )?
-//	const char *name = ( GetMapOfAIS().IsBound1(aisPicked) )?
-	  GetMapOfAIS().Find1(aisPicked).ToCString() :
-	    "????";
-
-	if(!aisPickedShape.IsNull()){
-	  if ( pick && argc > 4 ) {
-	    // Create a draw variable to store the wohole shape
-	    // for vpick command
-	    DBRep::Set(argv[4], aisPickedShape->Shape());
-	  }
-
-	  cout << name << " (" << GetTypeNameFromShape(aisPickedShape->Shape())
-	    << ")" << endl  ;
-	}
-      }
-      // Goto the next selected object
-      aContext->NextSelected();
-    }
-  }
-  return ret;
-}
-
-//==============================================================================
-//function : DetectedFromContext
-//purpose  : hilight dynamicaly an object from the last MoveTo() on a
-//            MouseMove event
-//==============================================================================
-Handle(AIS_InteractiveObject) DetectedFromContext(
-	Handle(AIS_InteractiveContext) aContext )
-{
-  Handle(AIS_InteractiveObject) ret;
-  if ( aContext->HasDetected() ) {
-    if ( !aContext->HasDetectedShape() ) {
-      //No SubShape selected
-    }
-    else {
-      // Get the detected SubShape
-      TopoDS_Shape PickedShape = aContext->DetectedShape();
-    }
-    if ( !aContext->DetectedInteractive().IsNull() ) {
-      Handle(AIS_InteractiveObject) aisPickedShape =
-	Handle(AIS_InteractiveObject)::DownCast(aContext->DetectedInteractive());
-      ret = aisPickedShape;
-    }
-  }
-  return ret;
-}
-
 
 //==============================================================================
 //function : VDispAreas,VDispSensitive,...

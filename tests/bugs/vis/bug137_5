@@ -38,16 +38,14 @@ vselmode 4 1
 set x_coord 105
 set y_coord 350
 
-QAMoveTo $x_coord $y_coord
-QAMoveTo $x_coord $y_coord
-QAUpdateLights
+vmoveto $x_coord $y_coord
 
 set x_coord 105
 set y_coord 340
 
 checkcolor $x_coord $y_coord 0 1 1
 
-QASetViewCharac 60.6309 7.07107 4.08248 0.592163 -0.60038 -0.537482 0.369921 -0.390032 0.843228 -3.28175 3.38875 3.0464
+vviewparams 60.6309 7.07107 4.08248 0.592163 -0.60038 -0.537482 0.369921 -0.390032 0.843228 -3.28175 3.38875 3.0464
 set x_coord 105
 set y_coord 340
 

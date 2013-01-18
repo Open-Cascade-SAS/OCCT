@@ -33,8 +33,7 @@ checkcolor ${Shape_X} ${Shape_Y} 0.78 0.54 0.09
 checkcolor ${Triedron_X} ${Triedron_Y} 1 1 1
 
 # Select box
-QASelect ${Shape_X} ${Shape_Y}
-QASelect ${Shape_X} ${Shape_Y}
+vselect ${Shape_X} ${Shape_Y}
 
 # Check box color
 checkcolor ${Shape_X} ${Shape_Y} 0.78 0.54 0.09
@@ -43,8 +42,7 @@ checkcolor ${Shape_X} ${Shape_Y} 0.78 0.54 0.09
 checkcolor ${Triedron_X} ${Triedron_Y} 1 1 1
 
 # Select empty view
-QASelect 1 1
-QASelect 1 1
+vselect 1 1
 
 # Check box color
 checkcolor ${Shape_X} ${Shape_Y} 0.78 0.54 0.09

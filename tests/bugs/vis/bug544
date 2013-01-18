@@ -29,7 +29,7 @@ set at_X     241.985
 set at_Y     329.911
 set at_Z     390.356
 
-QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
 set x1 300
 set y1 70
@@ -40,11 +40,8 @@ set y2 110
 set x3 220
 set y3 110
 
-QAMoveTo ${x1} ${y1}
-QAMoveTo ${x1} ${y1}
+vmoveto ${x1} ${y1}
 
-QAUpdateLights
 checkcolor $x3 $y3 0.04 0.04 0.5
 
 set only_screen 1
-

@@ -22,25 +22,22 @@ set y_coord 260
 meshdispmode m 2
 puts "\nMesh displayed in shading mode"
 
-QAUpdateLights
 checkcolor $x_coord $y_coord 0 0 0.36
 
 meshselmode m 8
 puts "\nSelection of elements is activated"
 
-QAShiftSelect $x_coord $y_coord
-###QAShiftSelect $x_coord $y_coord
+vselect $x_coord $y_coord 1
+###vselect $x_coord $y_coord 1
 
 meshhidesel m
 puts "\nSelected elemement is hidden"
 
-QAUpdateLights
 checkcolor $x_coord $y_coord 0 0 0.36
 
 nodalcolor_id m
 puts "\nDisplay nodal color presentation"
 
-QAUpdateLights
 checkcolor $x_coord $y_coord 0.46 0.12 0.37
 
 set only_screen 1

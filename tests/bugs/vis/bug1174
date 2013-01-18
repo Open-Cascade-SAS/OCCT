@@ -32,15 +32,13 @@ set at_X     -27.258
 set at_Y     30.2321
 set at_Z     -9.0201
 
-QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
 set x_GREEN 300
 set y_GREEN 180
 
 set x_BLUE 180
 set y_BLUE 250
-
-QAUpdateLights
 
 set ColorList1 [QAGetPixelColor ${x_GREEN} ${y_GREEN}]
 regexp {RED +: +([-0-9.+eE]+)} $ColorList1 full RED_1
@@ -71,4 +69,3 @@ if {${IsGreen} == 1 && ${IsBlue} == 1} {
 }
 
 set only_screen 1
-

@@ -33,10 +33,7 @@ OCC137 1
 set x_coord 105
 set y_coord 100
 
-QAMoveTo $x_coord $y_coord
-QAMoveTo $x_coord $y_coord
-
-QAUpdateLights
+vmoveto $x_coord $y_coord
 
 checkcolor $x_coord $y_coord 0 1 1
 

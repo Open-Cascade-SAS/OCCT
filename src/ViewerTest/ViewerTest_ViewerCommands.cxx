@@ -34,6 +34,7 @@
 #include <Graphic3d_ExportFormat.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
+#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_LayerMgr.hxx>
@@ -48,6 +49,8 @@
 #include <Image_AlienPixMap.hxx>
 #include <OSD_Timer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
+#include <TColStd_HSequenceOfReal.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 #include <Visual3d_LayerItem.hxx>
 #include <V3d_LayerMgr.hxx>
 #include <V3d_LayerMgrPointer.hxx>
@@ -94,6 +97,7 @@ Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
 
 Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
 extern const Handle(NIS_InteractiveContext)& TheNISContext();
+extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
 #if defined(_WIN32) || defined(__WIN32__)
 static Handle(Graphic3d_WNTGraphicDevice)& GetG3dDevice(){
@@ -3098,6 +3102,526 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
 }
 
 //=======================================================================
+//function : VSelect
+//purpose  : Emulates different types of selection by mouse:
+//           1) single click selection
+//           2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)
+//           3) selection with polygon having corners at
+//           pixel positions (x1,y1),...,(xn,yn) 
+//           4) any of these selections with shift button pressed
+//=======================================================================
+static Standard_Integer VSelect (Draw_Interpretor& di,
+                                 Standard_Integer argc,
+                                 const char ** argv)
+{
+  if(argc < 3) 
+  {
+    di << "Usage : " << argv[0] << " x1 y1 [x2 y2 [... xn yn]] [shift_selection = 1|0]" << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
+  if(myAIScontext.IsNull()) 
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  const Standard_Boolean isShiftSelection = (argc>3 && !(argc%2) && (atoi(argv[argc-1])==1));
+  Handle(ViewerTest_EventManager) aCurrentEventManager = ViewerTest::CurrentEventManager();
+  aCurrentEventManager->MoveTo(atoi(argv[1]),atoi(argv[2]));
+  if(argc <= 4)
+  {
+    if(isShiftSelection)
+      aCurrentEventManager->ShiftSelect();
+    else
+      aCurrentEventManager->Select();
+  }
+  else if(argc <= 6)
+  {
+    if(isShiftSelection)
+      aCurrentEventManager->ShiftSelect(atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
+    else
+      aCurrentEventManager->Select(atoi(argv[1]),atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
+  }
+  else
+  {
+    Standard_Integer anUpper = 0;
+
+    if(isShiftSelection)
+      anUpper = (argc-1)/2;
+    else
+      anUpper = argc/2;
+    TColgp_Array1OfPnt2d aPolyline(1,anUpper);
+
+    for(Standard_Integer i=1;i<=anUpper;++i)
+      aPolyline.SetValue(i,gp_Pnt2d(atoi(argv[2*i-1]),atoi(argv[2*i])));
+
+    if(isShiftSelection)
+      aCurrentEventManager->ShiftSelect(aPolyline);
+    else
+      aCurrentEventManager->Select(aPolyline);
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : VMoveTo
+//purpose  : Emulates cursor movement to defined pixel position     
+//=======================================================================
+static Standard_Integer VMoveTo (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if(argc != 3) 
+  {
+    di << "Usage : " << argv[0] << " x y" << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull()) 
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  ViewerTest::CurrentEventManager()->MoveTo(atoi(argv[1]),atoi(argv[2]));
+  return 0;
+}
+
+//=======================================================================
+//function : VViewParams
+//purpose  : Gets or sets AIS View characteristics      
+//=======================================================================
+static Standard_Integer VViewParams (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if ( argc != 1 && argc != 13) 
+  {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+  Handle (V3d_View) anAISView = ViewerTest::CurrentView ();
+  if ( anAISView.IsNull () ) 
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if(argc==1){
+    Quantity_Factor anAISViewScale = anAISView -> V3d_View::Scale ();
+    Standard_Real anAISViewCenterCoordinateX = 0.0;
+    Standard_Real anAISViewCenterCoordinateY = 0.0;
+    anAISView -> V3d_View::Center (anAISViewCenterCoordinateX, anAISViewCenterCoordinateY);
+    Standard_Real anAISViewProjX = 0.0;
+    Standard_Real anAISViewProjY = 0.0;
+    Standard_Real anAISViewProjZ = 0.0;
+    anAISView -> V3d_View::Proj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+    Standard_Real anAISViewUpX = 0.0;
+    Standard_Real anAISViewUpY = 0.0;
+    Standard_Real anAISViewUpZ = 0.0;
+    anAISView -> V3d_View::Up (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
+    Standard_Real anAISViewAtX = 0.0;
+    Standard_Real anAISViewAtY = 0.0;
+    Standard_Real anAISViewAtZ = 0.0;
+    anAISView -> V3d_View::At (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
+    di << "Scale of current view: " << anAISViewScale << "\n";
+    di << "Center on X : "<< anAISViewCenterCoordinateX << "; on Y: " << anAISViewCenterCoordinateY << "\n";
+    di << "Proj on X : " << anAISViewProjX << "; on Y: " << anAISViewProjY << "; on Z: " << anAISViewProjZ << "\n";
+    di << "Up on X : " << anAISViewUpX << "; on Y: " << anAISViewUpY << "; on Z: " << anAISViewUpZ << "\n";
+    di << "At on X : " << anAISViewAtX << "; on Y: " << anAISViewAtY << "; on Z: " << anAISViewAtZ << "\n";
+  }
+  else
+  {
+    Quantity_Factor anAISViewScale = atof (argv [1]);
+    Standard_Real anAISViewCenterCoordinateX = atof (argv [2]);
+    Standard_Real anAISViewCenterCoordinateY = atof (argv [3]);
+    Standard_Real anAISViewProjX = atof (argv [4]);
+    Standard_Real anAISViewProjY = atof (argv [5]);
+    Standard_Real anAISViewProjZ = atof (argv [6]);
+    Standard_Real anAISViewUpX = atof (argv [7]);
+    Standard_Real anAISViewUpY = atof (argv [8]);
+    Standard_Real anAISViewUpZ = atof (argv [9]);
+    Standard_Real anAISViewAtX = atof (argv [10]);
+    Standard_Real anAISViewAtY = atof (argv [11]);
+    Standard_Real anAISViewAtZ = atof (argv [12]);
+    anAISView -> V3d_View::SetScale (anAISViewScale);
+    anAISView -> V3d_View::SetCenter (anAISViewCenterCoordinateX, anAISViewCenterCoordinateY);
+    anAISView -> V3d_View::SetAt (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
+    anAISView -> V3d_View::SetProj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+    anAISView -> V3d_View::SetUp (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : VChangeSelected
+//purpose  : Adds the shape to selection or remove one from it    
+//=======================================================================
+static Standard_Integer VChangeSelected (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if(argc != 2)
+  {
+    di<<"Usage : " << argv[0] << " shape \n";
+    return 1;
+  }
+  //get AIS_Shape:
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+  TCollection_AsciiString aName(argv[1]);
+  Handle(AIS_InteractiveObject) anAISObject;
+
+  if(!aMap.IsBound2(aName))
+  {
+    di<<"Use 'vdisplay' before";
+    return 1;
+  }
+  else
+  {
+    anAISObject = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
+    if(anAISObject.IsNull()){
+      di<<"No interactive object \n";
+      return 1;
+    }
+
+    if(aContext->HasOpenedContext())
+    {
+      aContext->AddOrRemoveSelected(anAISObject);
+    }
+    else 
+    {
+      aContext->AddOrRemoveCurrentObject(anAISObject);
+    }
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : VZClipping
+//purpose  : Gets or sets ZClipping mode, width and depth   
+//=======================================================================
+static Standard_Integer VZClipping (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if(argc>4) 
+  {
+    di << "Usage : " << argv[0] << " [mode] [depth  width]" << "\n"
+      <<"mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+    return -1;
+  }
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull()) 
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  V3d_TypeOfZclipping aZClippingMode;
+  if(argc==1)
+  {
+    TCollection_AsciiString aZClippingModeString;
+    Quantity_Length aDepth, aWidth;
+    aZClippingMode = aView->ZClipping(aDepth, aWidth);
+    switch (aZClippingMode)
+    {
+    case V3d_OFF:
+      aZClippingModeString.Copy("OFF");
+      break;
+    case V3d_BACK:
+      aZClippingModeString.Copy("BACK");
+      break;
+    case V3d_FRONT:
+      aZClippingModeString.Copy("FRONT");
+      break;
+    case V3d_SLICE:
+      aZClippingModeString.Copy("SLICE");
+      break;
+    default:
+      aZClippingModeString.Copy(TCollection_AsciiString(aZClippingMode));
+      break;
+    }
+    di << "ZClippingMode = " << aZClippingModeString.ToCString() << "\n"
+      << "ZClipping depth = " << aDepth << "\n"
+      << "ZClipping width = " << aWidth << "\n";
+  }
+  else
+  {
+    if(argc !=3)
+    {
+      Standard_Integer aStatus = 0;
+      if ( strcmp (argv [1], "OFF") == 0 ) {
+        aStatus = 1;
+        aZClippingMode = V3d_OFF;
+      }
+      if ( strcmp (argv [1], "BACK") == 0 ) {
+        aStatus = 1;
+        aZClippingMode = V3d_BACK;
+      }
+      if ( strcmp (argv [1], "FRONT") == 0 ) {
+        aStatus = 1;
+        aZClippingMode = V3d_FRONT;
+      }
+      if ( strcmp (argv [1], "SLICE") == 0 ) {
+        aStatus = 1;
+        aZClippingMode = V3d_SLICE;
+      }
+      if (aStatus != 1)
+      {
+        di << "Bad mode; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
+          << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+        return 1;
+      } 
+      aView->SetZClippingType(aZClippingMode);
+    }
+    if(argc >2)
+    {
+      Quantity_Length aDepth = 0., aWidth = 1.;
+      if(argc == 3)
+      {
+        aDepth = atof(argv[1]);
+        aWidth = atof(argv[2]);
+      }
+      else if(argc == 4)
+      {
+        aDepth = atof(argv[2]);
+        aWidth = atof(argv[3]);
+      }
+      
+      if(aDepth<0. || aDepth>1.)
+      {
+        di << "Bad depth; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
+        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+        return 1;
+      }
+      if(aWidth<0. || aWidth>1.)
+      {
+        di << "Bad width; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
+        << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
+        return 1;
+      }
+
+      aView->SetZClippingDepth(aDepth);
+      aView->SetZClippingWidth(aWidth);
+    }
+    aView->Redraw();
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : VNbSelected
+//purpose  : Returns number of selected objects  
+//=======================================================================
+static Standard_Integer VNbSelected (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if(argc != 1)
+  {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  di << aContext->NbSelected() << "\n";
+  return 0;
+}
+
+//=======================================================================
+//function : VAntialiasing
+//purpose  : Switches altialiasing on or off  
+//=======================================================================
+static Standard_Integer VAntialiasing (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if(argc > 2)
+  {
+    di << "Usage : " << argv[0] << " [1|0]" << "\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+
+  if((argc == 2) && (atof(argv[1]) == 0))
+    aView->SetAntialiasingOff();
+  else
+    aView->SetAntialiasingOn();
+  aView->Update();
+  return 0;
+}
+
+//=======================================================================
+//function : VPurgeDisplay
+//purpose  : Switches altialiasing on or off  
+//=======================================================================
+static Standard_Integer VPurgeDisplay (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if (argc > 2)
+  {
+    di << "Usage : " << argv[0] << " [CollectorToo = 0|1]" << "\n";
+    return 1;
+  }
+  Standard_Boolean isCollectorToo = Standard_False;
+  if (argc == 2)
+  {
+      isCollectorToo = (atoi(argv [1]) != 0);
+  }
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  aContext->CloseAllContexts(Standard_False);
+  di << aContext->PurgeDisplay(isCollectorToo) << "\n";
+  return 0;
+}
+
+//=======================================================================
+//function : VSetViewSize
+//purpose  :
+//=======================================================================
+static Standard_Integer VSetViewSize (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if(argc != 2)
+  {
+    di<<"Usage : " << argv[0] << " Size\n";
+    return 1;
+  }
+  Standard_Real aSize = atof(argv[1]);
+  if (aSize <= 0.)
+  {
+    di<<"Bad Size value  : " << aSize << "\n";
+    return 1;
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  aView->SetSize(aSize);
+  return 0;
+}
+
+//=======================================================================
+//function : VMoveView
+//purpose  :
+//=======================================================================
+static Standard_Integer VMoveView (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if(argc < 4 || argc > 5)
+  {
+    di<<"Usage : " << argv[0] << " Dx Dy Dz [Start = 1|0]\n";
+    return 1;
+  }
+  Standard_Real Dx = atof(argv[1]);
+  Standard_Real Dy = atof(argv[2]);
+  Standard_Real Dz = atof(argv[3]);
+  Standard_Boolean aStart = Standard_True;
+  if (argc == 5)
+  {
+      aStart = (atoi(argv[4]) > 0);
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  aView->Move(Dx,Dy,Dz,aStart);
+  return 0;
+}
+
+//=======================================================================
+//function : VTranslateView
+//purpose  :
+//=======================================================================
+static Standard_Integer VTranslateView (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull())
+  {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if(argc < 4 || argc > 5)
+  {
+    di<<"Usage : " << argv[0] << " Dx Dy Dz [Start = 1|0]\n";
+    return 1;
+  }
+  Standard_Real Dx = atof(argv[1]);
+  Standard_Real Dy = atof(argv[2]);
+  Standard_Real Dz = atof(argv[3]);
+  Standard_Boolean aStart = Standard_True;
+  if (argc == 5) 
+  {
+      aStart = (atoi(argv[4]) > 0);
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  aView->Translate(Dx,Dy,Dz,aStart);
+  return 0;
+}
+
+//=======================================================================
+//function : VTurnView
+//purpose  :
+//=======================================================================
+static Standard_Integer VTurnView (Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if(aContext.IsNull()) {
+    di << "use 'vinit' command before " << argv[0] << "\n";
+    return 1;
+  }
+  if(argc < 4 || argc > 5){
+    di<<"Usage : " << argv[0] << " Ax Ay Az [Start = 1|0]\n";
+    return 1;
+  }
+  Standard_Real Ax = atof(argv[1]);
+  Standard_Real Ay = atof(argv[2]);
+  Standard_Real Az = atof(argv[3]);
+  Standard_Boolean aStart = Standard_True;
+  if (argc == 5) 
+  {
+      aStart = (atoi(argv[4]) > 0);
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  aView->Turn(Ax,Ay,Az,aStart);
+  return 0;
+}
+
+//=======================================================================
 //function : ViewerCommands
 //purpose  :
 //=======================================================================
@@ -3230,4 +3754,50 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("diffimage",
     "diffimage     : diffimage imageFile1 imageFile2 toleranceOfColor(0..1) blackWhite(1|0) borderFilter(1|0) [diffImageFile]",
     __FILE__, VDiffImage, group);
+  theCommands.Add ("vselect",
+    "vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [shift_selection = 0|1]\n"
+    "- emulates different types of selection:\n"
+    "- 1) single click selection\n"
+    "- 2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)\n"
+    "- 3) selection with polygon having corners in pixel positions (x1,y1), (x2,y2),...,(xn,yn)\n"
+    "- 4) any of these selections with shift button pressed",
+    __FILE__, VSelect, group);
+  theCommands.Add ("vmoveto",
+    "vmoveto x y"
+    "- emulates cursor movement to pixel postion (x,y)",
+    __FILE__, VMoveTo, group);
+  theCommands.Add("vviewparams",
+    "vviewparams [scale center_X center_Y proj_X proj_Y proj_Z up_X up_Y up_Z at_X at_Y at_Z]"
+    "- gets or sets current view characteristics",
+    __FILE__,VViewParams, group);
+  theCommands.Add("vchangeselected",
+    "vchangeselected shape" 
+    "- adds to shape to selection or remove one from it",
+		__FILE__, VChangeSelected, group);
+  theCommands.Add("vzclipping",
+    "vzclipping [mode] [depth width]\n"
+    "- mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]\n"
+    "- gets or sets ZClipping mode, width and depth",
+    __FILE__,VZClipping,group);
+  theCommands.Add ("vnbselected",
+    "vnbselected", __FILE__, VNbSelected, group);
+  theCommands.Add("vantialiasing",
+    "vantialiasing 1|0",
+    __FILE__,VAntialiasing,group);
+  theCommands.Add ("vpurgedisplay",
+    "vpurgedisplay [CollectorToo = 0|1]"
+    "- removes structures which don't belong to objects displayed in neutral point",
+    __FILE__, VPurgeDisplay, group);
+  theCommands.Add("vsetviewsize",
+    "vsetviewsize size",
+    __FILE__,VSetViewSize,group);
+  theCommands.Add("vmoveview",
+    "vmoveview Dx Dy Dz [Start = 1|0]",
+    __FILE__,VMoveView,group);
+  theCommands.Add("vtranslateview",
+    "vtranslateview Dx Dy Dz [Start = 1|0)]",
+    __FILE__,VTranslateView,group);
+  theCommands.Add("vturnview",
+    "vturnview Ax Ay Az [Start = 1|0]",
+    __FILE__,VTurnView,group);
 }

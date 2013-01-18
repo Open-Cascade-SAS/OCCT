@@ -28,7 +28,6 @@ vsetcolor face GREEN1
 vsetdispmode  cylinder 1
 vsetcolor cylinder RED1
 
-QAUpdateLights
 set ColorList [QAGetPixelColor $Start_X $Start_Y]
 regexp {RED +: +([-0-9.+eE]+)} $ColorList full R_START_POINT
 regexp {GREEN +: +([-0-9.+eE]+)} $ColorList full G_START_POINT
@@ -38,7 +37,6 @@ puts "R_START_POINT=$R_START_POINT ;   G_START_POINT=$G_START_POINT ;   B_START_
 
 set IsGood 1
 for {set count 0} {${count} <= 11} {incr count 1} {
-    QAUpdateLights
     checkcolor $Start_X $Start_Y $R_START_POINT $G_START_POINT $B_START_POINT
     if {$stat != 1} {
 	 set IsGood 0

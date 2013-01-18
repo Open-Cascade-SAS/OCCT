@@ -25,15 +25,13 @@ set at_Z     -0.0881031528115273
 set x_coord 388
 set y_coord 28
 
-QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
 OCC218 trihedron1 b_1 X Y
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0 0 0
 
 OCC218 trihedron1 b_1 my___axis___1 my___axis2
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.85 0.85 0
 

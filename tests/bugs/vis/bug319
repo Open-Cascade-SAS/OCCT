@@ -37,7 +37,7 @@ set at_X     8.22575855255127
 set at_Y     -2.95449280738831
 set at_Z     3.08669567108154
 
-QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
 set info [trinfo result]
 regexp { +([-0-9.+eE]+) +triangles} $info full tri

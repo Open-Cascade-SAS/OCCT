@@ -14,14 +14,12 @@ set x_coord 10
 set y_coord 240
 
 puts "Before View->FitAll()"
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0 0 0
 
 vfit
 
 puts "After View->FitAll()"
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.78 0.55 0.9
 

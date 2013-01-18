@@ -17,7 +17,6 @@ set x_coord 235
 set y_coord 214
 
 vsetdispmode result 1
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.78 0.55 0.9
 
@@ -26,8 +25,6 @@ if { $stat != 1 } {
 }
 
 vsetdispmode result 0
-
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0 1 0
 

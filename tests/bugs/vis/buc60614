@@ -9,8 +9,7 @@ box b 10 30 50
 compound b c
 vinit
 BUC60614 c
-QAMoveTo 200 200
-QAMoveTo 200 200
+vmoveto 200 200
 vfit
 
 set only_screen 1

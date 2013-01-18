@@ -8,7 +8,6 @@ vinit
 box b 20 10 30
 GER61351 b CYAN3
 vfit
-QAUpdateLights
 
 set x_coord 88
 set y_coord 316

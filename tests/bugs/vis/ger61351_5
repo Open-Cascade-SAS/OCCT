@@ -16,7 +16,6 @@ vinit
 box b 20 10 30
 GER61351 b 0 255 255
 vfit
-QAUpdateLights
 
 set x_coord 89
 set y_coord 363

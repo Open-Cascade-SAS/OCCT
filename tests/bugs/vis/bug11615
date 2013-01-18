@@ -13,12 +13,10 @@ vinit
 vdisplay b
 vfit
 vscale 1 1 1
-QAUpdateLights
 
 set x1 [list 165 340 70]
 set y1 [list 384 283 79]
 
-QAUpdateLights
 puts ""
 for {set i 0} {$i < 3} {incr i} {
    set x_coord [lindex ${x1} $i]
@@ -29,12 +27,10 @@ for {set i 0} {$i < 3} {incr i} {
 
 vscale 0.5 1.5 0.7
 vfit
-QAUpdateLights
 
 set x2 [list 80 390 25]
 set y2 [list 390 218 167]
 
-QAUpdateLights
 puts ""
 for {set i 0} {$i < 3} {incr i} {
    set x_coord [lindex ${x2} $i]

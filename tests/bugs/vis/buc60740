@@ -18,7 +18,6 @@ vsettransparency c 0.5
 set x_coord 154
 set y_coord 257
 
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.6 0.4 0.07
 

@@ -11,8 +11,7 @@ vinit
 vtrihedron tri
 vtri_orig tri
 
-QAMoveTo 205 205
-QAUpdateLights
+vmoveto 205 205
 
 checkcolor $x_coord $y_coord 0 1 1
 

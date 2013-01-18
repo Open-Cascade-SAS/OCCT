@@ -86,7 +86,6 @@ set y12 284
 #
 #
 
-QAUpdateLights
 checkcolor ${x1} ${y1} 1 1 0
 checkcolor ${x2} ${y2} 1 1 0
 checkcolor ${x3} ${y3} 1 1 0

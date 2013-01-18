@@ -29,6 +29,7 @@ uses
     Draw,
     TCollection,
     TColStd,
+    TColgp,
     TopAbs,
     TopTools,
     TopoDS,

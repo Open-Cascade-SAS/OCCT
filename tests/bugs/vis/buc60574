@@ -17,9 +17,7 @@ puts "=================================="
 vinit 
 BUC60574 
 
-QASelect 220 210 
-QASelect 220 210 
-QAUpdateLights
+vselect 220 210 
 puts ""
 
 set x_coord 205

@@ -7,10 +7,7 @@ pcylinder c 100 300
 vinit
 BUC60876 c
 vfit
-QAMoveTo 200 200
-QAMoveTo 200 200
-
-QAUpdateLights
+vmoveto 200 200
 
 set x_coord 200
 set y_coord 200

@@ -14,8 +14,7 @@ vinit
 vdisplay result
 vfit
 vsetdispmode 1
-QASelect 180 180
-QASelect 180 180
+vselect 180 180
 vsetcolor result CYAN3
 
 set x_coord 120

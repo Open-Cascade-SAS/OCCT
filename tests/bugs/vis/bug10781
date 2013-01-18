@@ -15,15 +15,12 @@ meshfromstl m [locate_data_file OMF6391_box.stl]
 set x_coord 210
 set y_coord 280
 
-QAMoveTo $x_coord $y_coord
-QAMoveTo $x_coord $y_coord
-QAUpdateLights
+vmoveto $x_coord $y_coord
 
 checkcolor $x_coord $y_coord 0 0 0
 
 mesh_edge_width m 20
 puts "\nSet big mesh edge width"
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 1 1 1
 

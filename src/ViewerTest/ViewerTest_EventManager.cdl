@@ -26,8 +26,8 @@ class EventManager from ViewerTest inherits TShared from MMgt
 
 uses
     View                from V3d,
-    InteractiveContext  from AIS
-    
+    InteractiveContext  from AIS,
+    Array1OfPnt2d       from TColgp
 is
 
     Create (aView: View from V3d;
@@ -44,6 +44,10 @@ is
     Select(me:mutable;xmin,ymin,xmax,ymax:Integer) is virtual;
     
     ShiftSelect(me:mutable;xmin,ymin,xmax,ymax:Integer) is virtual;
+    
+    Select(me:mutable;thePolyline:Array1OfPnt2d from TColgp) is virtual;
+    
+    ShiftSelect(me:mutable;thePolyline:Array1OfPnt2d from TColgp) is virtual;
 
     Context(me) returns InteractiveContext from AIS;
     ---C++: inline

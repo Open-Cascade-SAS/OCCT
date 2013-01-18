@@ -22,9 +22,7 @@ checkshape result
 
 BUC60569 result
 vfit
-QAMoveTo 250 190
-QASelect 250 190
-QAUpdateLights
+vselect 250 190
 
 set x_coord 335
 set y_coord 331
@@ -35,8 +33,7 @@ if {$stat != 1} {
    puts "Error : The right face is NOT Selected by Select command."
 }
 
-QAShiftSelect 180 350
-QAUpdateLights
+vselect 180 350 1
 
 set x_coord 101
 set y_coord 347

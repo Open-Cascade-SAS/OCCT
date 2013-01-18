@@ -29,7 +29,6 @@ vinit
 vsetdispmode 1
 vdisplay r
 vfit
-QAUpdateLights
 
 set x_coord 270
 set y_coord 230
@@ -37,7 +36,6 @@ set y_coord 230
 checkcolor $x_coord $y_coord 0.78 0.55 0.09
 
 vsettransparency r 0.5
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.8 0.56 0.1
 

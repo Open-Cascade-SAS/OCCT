@@ -20,7 +20,6 @@ vinit
 vdisplay result
 vsetdispmode 1
 vfit
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.77 0.54 0.09
 

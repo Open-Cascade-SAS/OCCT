@@ -19,8 +19,7 @@ set RED_R1   0
 set GREEN_R1 0
 set BLUE_R1  0
 
-QAMoveTo $x_coord $y_coord
-QAMoveTo $x_coord $y_coord
+vmoveto $x_coord $y_coord
 
 meshdispmode m 3
 puts "\nSet shrinked display mode\n"

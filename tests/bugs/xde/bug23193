@@ -16,7 +16,7 @@ writestl a_1 ${aFile} 0
 
 meshfromstl m1 ${aFile}
 meshcolors m1 elem2 1
-QARotateV3dView 4 0 0 1
+vrotate 4 0 0
 vfit
 
 set x_coord 189

@@ -20,8 +20,6 @@ vsetdispmode result 1
 set x_coord 175
 set y_coord 195
 
-QAUpdateLights
-
 checkcolor $x_coord $y_coord 1 0.75 0.15
 
 if { $stat != 1 } {
@@ -30,8 +28,6 @@ if { $stat != 1 } {
 
 ########################################################
 vsetmaterial result COPPER
-
-QAUpdateLights
 
 checkcolor $x_coord $y_coord 0.77 0.32 0.23
 

@@ -14,7 +14,7 @@ vfit
 verase b
 set CollectorToo 1
 
-if [catch {QAPurgeDisplay $CollectorToo} result] {
+if [catch {vpurgedisplay $CollectorToo} result] {
     puts "Faulty OCC2066"
 } else {
     puts "OK OCC2066"

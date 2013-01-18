@@ -27,16 +27,15 @@ checkshape result
 BUC60569 result
 vfit
 
-QAMoveTo 250 190
-QASelect 250 190
-QAShiftSelect 180 350
-QAMoveTo 250 190
-QAMoveTo 180 350
-QASelect 390 390
-QAShiftSelect 250 190
-QAShiftSelect 180 350
-QAMoveTo 250 190
-QAMoveTo 180 350
+vselect 250 190
+vselect 180 350 1
+vmoveto 250 190
+vmoveto 180 350
+vselect 390 390
+vselect 250 190 1
+vselect 180 350 1
+vmoveto 250 190
+vmoveto 180 350
 
 set x_coord 335
 set y_coord 331

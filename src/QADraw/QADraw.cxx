@@ -306,126 +306,6 @@ static Standard_Integer QARebuild (Draw_Interpretor& di, Standard_Integer /*n*/,
   return 0;
 }
 
-static Standard_Integer QAUpdateLights(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc != 1) {
-    di << "Usage : " << argv[0] << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  ViewerTest::CurrentView()->UpdateLights();
-  ViewerTest::CurrentView()->Update();
-  return 0;
-}
-
-static Standard_Integer QAxwd_3d(Draw_Interpretor& di, Standard_Integer argc, const char** argv )
-{
-  if(argc != 2) {
-    di << "Usage : " << argv[0] << " filename" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-  //cout << myV3dView->Dump(argv[1]) << endl;
-  myV3dView->Dump(argv[1]);
-  return 0;
-}
-
-
-static Standard_Integer QAMoveTo(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc != 3) {
-    di << "Usage : " << argv[0] << " x y" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  ViewerTest::CurrentEventManager()->MoveTo(atoi(argv[1]),atoi(argv[2]));
-  return 0;
-}
-
-static Standard_Integer QASelect(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc != 3) {
-    di << "Usage : " << argv[0] << " x y" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  ViewerTest::CurrentEventManager()->MoveTo(atoi(argv[1]),atoi(argv[2]));
-  ViewerTest::CurrentEventManager()->Select();
-  return 0;
-}
-
-static Standard_Integer QAShiftSelect(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc != 3) {
-    di << "Usage : " << argv[0] << " x y" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  ViewerTest::CurrentEventManager()->MoveTo(atoi(argv[1]),atoi(argv[2]));
-  ViewerTest::CurrentEventManager()->ShiftSelect();
-  return 0;
-}
-
-static Standard_Integer QASetAntialiasing(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc > 2) {
-    di << "Usage : " << argv[0] << " [1/0]" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-
-  if((argc == 2) && (atof(argv[1]) == 0))
-    myV3dView->SetAntialiasingOff();
-  else
-    myV3dView->SetAntialiasingOn();
-  myV3dView->Update();
-  return 0;
-}
-
-static Standard_Integer QAvzfit(Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv )
-{
-  Handle(V3d_View) V = ViewerTest::CurrentView();
-  if ( V.IsNull() ) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  V->ZFitAll();
-  return 0;
-}
-
 Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Image_PixMap&    theImage,
                                                  const Standard_Integer theCoordinateX,
                                                  const Standard_Integer theCoordinateY,
@@ -468,165 +348,78 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& theDi,
                                             Standard_Integer  theArgsNb,
                                             const char**      theArgs)
 {
-  if (theArgsNb != 3 && theArgsNb != 6)
-  {
-    theDi << "Usage : " << theArgs[0] << " coordinate_X coordinate_Y [color_R color_G color_B]" << "\n";
-    return 1; // TCL_ERROR
-  }
+ if (theArgsNb != 3 && theArgsNb != 6)
+ {
+   theDi << "Usage : " << theArgs[0] << " coordinate_X coordinate_Y [color_R color_G color_B]" << "\n";
+   return 1; // TCL_ERROR
+ }
 
-  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
-  if (aView3d.IsNull())
-  {
-    theDi << "You must initialize AISViewer before this command.\n";
-    return 1; // TCL_ERROR
-  }
+ Handle(V3d_View) aView3d = ViewerTest::CurrentView();
+ if (aView3d.IsNull())
+ {
+   theDi << "You must initialize AISViewer before this command.\n";
+   return 1; // TCL_ERROR
+ }
 
-  const Handle(Aspect_Window) anAISWindow = aView3d->Window();
-  Standard_Integer aWindowSizeX = 0;
-  Standard_Integer aWindowSizeY = 0;
-  anAISWindow->Size (aWindowSizeX, aWindowSizeY);
+ const Handle(Aspect_Window) anAISWindow = aView3d->Window();
+ Standard_Integer aWindowSizeX = 0;
+ Standard_Integer aWindowSizeY = 0;
+ anAISWindow->Size (aWindowSizeX, aWindowSizeY);
 
-  Standard_Integer anArgIter = 1;
-  const Standard_Integer aPickCoordX = atoi (theArgs[anArgIter++]);
-  const Standard_Integer aPickCoordY = atoi (theArgs[anArgIter++]);
-  const Standard_Integer aRadius = (theArgsNb == 3) ? 0 : 1;
+ Standard_Integer anArgIter = 1;
+ const Standard_Integer aPickCoordX = atoi (theArgs[anArgIter++]);
+ const Standard_Integer aPickCoordY = atoi (theArgs[anArgIter++]);
+ const Standard_Integer aRadius = (theArgsNb == 3) ? 0 : 1;
 
-  Image_ColorRGBF aColorInput = {{ 0.0f, 0.0f, 0.0f }};
-  if (theArgsNb == 6)
-  {
-    aColorInput.r() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-    aColorInput.g() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-    aColorInput.b() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-  }
+ Image_ColorRGBF aColorInput = {{ 0.0f, 0.0f, 0.0f }};
+ if (theArgsNb == 6)
+ {
+   aColorInput.r() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+   aColorInput.g() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+   aColorInput.b() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+ }
 
-  Image_PixMap anImage;
-  aView3d->ToPixMap (anImage, aWindowSizeX, aWindowSizeY);
-  const Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aPickCoordX, aPickCoordY, aRadius);
-  cout << "Length = " << aSeq->Length() << endl;
+ Image_PixMap anImage;
+ aView3d->ToPixMap (anImage, aWindowSizeX, aWindowSizeY);
+ const Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aPickCoordX, aPickCoordY, aRadius);
+ cout << "Length = " << aSeq->Length() << endl;
 
-  Image_ColorRGBF aColorPicked = {{ 0.0f, 0.0f, 0.0f }};
-  Standard_Boolean isNotEqual = Standard_True;
-  for (Standard_Integer i = 1; i <= aSeq->Length(); i += 3)
-  {
-    aColorPicked.r() = (Standard_ShortReal )aSeq->Value (i + 0);
-    aColorPicked.g() = (Standard_ShortReal )aSeq->Value (i + 1);
-    aColorPicked.b() = (Standard_ShortReal )aSeq->Value (i + 2);
+ Image_ColorRGBF aColorPicked = {{ 0.0f, 0.0f, 0.0f }};
+ Standard_Boolean isNotEqual = Standard_True;
+ for (Standard_Integer i = 1; i <= aSeq->Length(); i += 3)
+ {
+   aColorPicked.r() = (Standard_ShortReal )aSeq->Value (i + 0);
+   aColorPicked.g() = (Standard_ShortReal )aSeq->Value (i + 1);
+   aColorPicked.b() = (Standard_ShortReal )aSeq->Value (i + 2);
 
-    if (theArgsNb == 3 ||
-        ((Abs (aColorPicked.r() - aColorInput.r()) <= Precision::Confusion())
-      && (Abs (aColorPicked.g() - aColorInput.g()) <= Precision::Confusion())
-      && (Abs (aColorPicked.b() - aColorInput.b()) <= Precision::Confusion())))
-    {
-      isNotEqual = Standard_False;
-      break;
-    }
-  }
+   if (theArgsNb == 3 ||
+       ((Abs (aColorPicked.r() - aColorInput.r()) <= Precision::Confusion())
+     && (Abs (aColorPicked.g() - aColorInput.g()) <= Precision::Confusion())
+     && (Abs (aColorPicked.b() - aColorInput.b()) <= Precision::Confusion())))
+   {
+     isNotEqual = Standard_False;
+     break;
+   }
+ }
 
-  theDi << "RED :   " << aColorPicked.r() << " "
-        << "GREEN : " << aColorPicked.g() << " "
-        << "BLUE :  " << aColorPicked.b() << "\n";
+ theDi << "RED :   " << aColorPicked.r() << " "
+       << "GREEN : " << aColorPicked.g() << " "
+       << "BLUE :  " << aColorPicked.b() << "\n";
 
-  if (theArgsNb == 6)
-  {
-    theDi << "User color: \n"
-          << "RED :   " << aColorInput.r() << " "
-          << "GREEN : " << aColorInput.g() << " "
-          << "BLUE :  " << aColorInput.b() << "\n";
-  }
+ if (theArgsNb == 6)
+ {
+   theDi << "User color: \n"
+         << "RED :   " << aColorInput.r() << " "
+         << "GREEN : " << aColorInput.g() << " "
+         << "BLUE :  " << aColorInput.b() << "\n";
+ }
 
-  if (isNotEqual)
-  {
-    theDi << "Faulty : colors are not equal.\n";
-    return 1; // TCL_ERROR
-  }
-  return 0;
-}
-
-static Standard_Boolean IsSelectionModeCurrentlyON (Standard_Integer theMode) {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(!aContext->HasOpenedContext()) {
-    return Standard_False ;
-  }
-  const TColStd_ListOfInteger& List = aContext->ActivatedStandardModes();
-  TColStd_ListIteratorOfListOfInteger it;
-  Standard_Boolean Found=Standard_False;
-  for (it.Initialize(List); it.More()&&!Found; it.Next() ) {
-    if (it.Value()==theMode ) Found=Standard_True;
-  }
-  return Found;
-}
-
-static Standard_Integer QAAISSetChoiceMode (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if ( argc != 3 ) {
-    di << "Usage : " << argv[0] << " mode switch" << "\n";
-    di << "      mode:                         " << "\n";
-    // cout << "              SHAPE                 " << endl;
-    di << "              VERTEX                " << "\n";
-    di << "              EDGE                  " << "\n";
-    di << "              WIRE                  " << "\n";
-    di << "              FACE                  " << "\n";
-    di << "              SHELL                 " << "\n";
-    di << "              SOLID                 " << "\n";
-    di << "              COMPOUND              " << "\n";
-    di << "      switch:                       " << "\n";
-    di << "              ON                    " << "\n";
-    di << "              OFF                   " << "\n";
-    return 1;
-  }
-  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
-  if ( QAAISView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  Standard_Integer QAChoosingMode = -1;
-  // if ( strcmp (sc [1], "SHAPE") == 0 ) {
-  //   QAChoosingMode = 0;
-  // }
-  if ( strcmp (argv [1], "VERTEX") == 0 ) {
-    QAChoosingMode = 1;
-  }
-  if ( strcmp (argv [1], "EDGE") == 0 ) {
-    QAChoosingMode = 2;
-  }
-  if ( strcmp (argv [1], "WIRE") == 0 ) {
-    QAChoosingMode = 3;
-  }
-  if ( strcmp (argv [1], "FACE") == 0 ) {
-    QAChoosingMode = 4;
-  }
-  if ( strcmp (argv [1], "SHELL") == 0 ) {
-    QAChoosingMode = 5;
-  }
-  if ( strcmp (argv [1], "SOLID") == 0 ) {
-    QAChoosingMode = 6;
-  }
-  if ( strcmp (argv [1], "COMPOUND") == 0 ) {
-    QAChoosingMode = 7;
-  }
-  if ( QAChoosingMode == -1 ) {
-    di << "Use - QAAISSetChoiceMode mode switch" << "\n";
-    return 1;
-  }
-
-  if ( strcmp (argv [2], "ON") == 0 ) {
-    if ( IsSelectionModeCurrentlyON (QAChoosingMode)) {
-      di << "Mode already ON." << "\n";
-      return 1;
-    }
-    ViewerTest::StandardModeActivation (QAChoosingMode);
-    return 0;
-  }
-  if ( strcmp (argv [2], "OFF") == 0 ) {
-    if (!IsSelectionModeCurrentlyON (QAChoosingMode)) {
-      di << "Mode already OFF." << "\n";
-      return 1;
-    }
-    ViewerTest::StandardModeActivation (QAChoosingMode);
-    return 0;
-  }
-  di << "Usage : " << argv[0] << " mode switch" << "\n";
-  return 1;
+ if (isNotEqual)
+ {
+   theDi << "Faulty : colors are not equal.\n";
+   return 1; // TCL_ERROR
+ }
+ return 0;
 }
 
 #if ! defined(WNT)
@@ -642,93 +435,26 @@ Standard_EXPORT int ViewerMainLoop2d (Standard_Integer argc, const char ** argv)
 
 static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-  if ( argc != 1 ) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
-  if ( QAAISView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  Standard_Integer QAAISMouseCoordinateX = 0;
-  Standard_Integer QAAISMouseCoordinateY = 0;
-  Standard_Integer argccc = 5;
-  const char *bufff[] = { "A", "B", "C", "D", "E" };
-  const char **argvvv = (const char **) bufff;
-  while ( ViewerMainLoop (argccc, argvvv) ) {
-    ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
-  }
-  ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
-  di << "X-coordinate: " << QAAISMouseCoordinateX << "; Y-coordinate: " << QAAISMouseCoordinateY << "\n";
-  return 0;
-}
-
-static Standard_Integer QAAISGetViewCharac (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if ( argc != 1 ) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
-  if ( QAAISView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  Quantity_Factor QAAISViewScale = QAAISView -> V3d_View::Scale ();
-  Standard_Real QAAISViewCenterCoordinateX = 0.0;
-  Standard_Real QAAISViewCenterCoordinateY = 0.0;
-  QAAISView -> V3d_View::Center (QAAISViewCenterCoordinateX, QAAISViewCenterCoordinateY);
-  Standard_Real QAAISViewProjX = 0.0;
-  Standard_Real QAAISViewProjY = 0.0;
-  Standard_Real QAAISViewProjZ = 0.0;
-  QAAISView -> V3d_View::Proj (QAAISViewProjX, QAAISViewProjY, QAAISViewProjZ);
-  Standard_Real QAAISViewUpX = 0.0;
-  Standard_Real QAAISViewUpY = 0.0;
-  Standard_Real QAAISViewUpZ = 0.0;
-  QAAISView -> V3d_View::Up (QAAISViewUpX, QAAISViewUpY, QAAISViewUpZ);
-  Standard_Real QAAISViewAtX = 0.0;
-  Standard_Real QAAISViewAtY = 0.0;
-  Standard_Real QAAISViewAtZ = 0.0;
-  QAAISView -> V3d_View::At (QAAISViewAtX, QAAISViewAtY, QAAISViewAtZ);
-  di << "Scale of current view: " << QAAISViewScale << "\n";
-  di << "Center on X : "<< QAAISViewCenterCoordinateX << "; on Y: " << QAAISViewCenterCoordinateY << "\n";
-  di << "Proj on X : " << QAAISViewProjX << "; on Y: " << QAAISViewProjY << "; on Z: " << QAAISViewProjZ << "\n";
-  di << "Up on X : " << QAAISViewUpX << "; on Y: " << QAAISViewUpY << "; on Z: " << QAAISViewUpZ << "\n";
-  di << "At on X : " << QAAISViewAtX << "; on Y: " << QAAISViewAtY << "; on Z: " << QAAISViewAtZ << "\n";
-  return 0;
-}
-
-static Standard_Integer QAAISSetViewCharac (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if ( argc != 13 ) {
-    di << "Usage : " << argv[0] << " scale center_X center_Y proj_X proj_Y proj_Z up_X up_Y up_Z at_X at_Y at_Z" << "\n";
-    return 1;
-  }
-  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
-  if ( QAAISView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  Quantity_Factor QAAISViewScale = atof (argv [1]);
-  Standard_Real QAAISViewCenterCoordinateX = atof (argv [2]);
-  Standard_Real QAAISViewCenterCoordinateY = atof (argv [3]);
-  Standard_Real QAAISViewProjX = atof (argv [4]);
-  Standard_Real QAAISViewProjY = atof (argv [5]);
-  Standard_Real QAAISViewProjZ = atof (argv [6]);
-  Standard_Real QAAISViewUpX = atof (argv [7]);
-  Standard_Real QAAISViewUpY = atof (argv [8]);
-  Standard_Real QAAISViewUpZ = atof (argv [9]);
-  Standard_Real QAAISViewAtX = atof (argv [10]);
-  Standard_Real QAAISViewAtY = atof (argv [11]);
-  Standard_Real QAAISViewAtZ = atof (argv [12]);
-  QAAISView -> V3d_View::SetScale (QAAISViewScale);
-  QAAISView -> V3d_View::SetCenter (QAAISViewCenterCoordinateX, QAAISViewCenterCoordinateY);
-  QAAISView -> V3d_View::SetAt (QAAISViewAtX, QAAISViewAtY, QAAISViewAtZ);
-  QAAISView -> V3d_View::SetProj (QAAISViewProjX, QAAISViewProjY, QAAISViewProjZ);
-  QAAISView -> V3d_View::SetUp (QAAISViewUpX, QAAISViewUpY, QAAISViewUpZ);
-  QAAISView -> V3d_View::SetProj (QAAISViewProjX, QAAISViewProjY, QAAISViewProjZ);
-  return 0;
+ if ( argc != 1 ) {
+   di << "Usage : " << argv[0] << "\n";
+   return 1;
+ }
+ Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
+ if ( QAAISView.IsNull () ) {
+   di << "You must initialize AISViewer before this command." << "\n";
+   return 1;
+ }
+ Standard_Integer QAAISMouseCoordinateX = 0;
+ Standard_Integer QAAISMouseCoordinateY = 0;
+ Standard_Integer argccc = 5;
+ const char *bufff[] = { "A", "B", "C", "D", "E" };
+ const char **argvvv = (const char **) bufff;
+ while ( ViewerMainLoop (argccc, argvvv) ) {
+   ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
+ }
+ ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
+ di << "X-coordinate: " << QAAISMouseCoordinateX << "; Y-coordinate: " << QAAISMouseCoordinateY << "\n";
+ return 0;
 }
 
 static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -1175,60 +901,11 @@ static int QAxwd_2d (Draw_Interpretor& di, int argc, const char ** argv)
 
 #ifndef WNT
 extern Draw_Viewer dout;
-extern XW_STATUS Xw_save_image_adv (Display *aDisplay,Window aWindow,XWindowAttributes aWinAttr,XImage *aPximage,Colormap aColormap,int aNcolors,char *filename);
 extern Display*         Draw_WindowDisplay;
 extern Colormap         Draw_WindowColorMap;
 #else
 Standard_IMPORT Draw_Viewer dout;
-int __WNT_API SaveWindowToFile (Handle( WNT_GraphicDevice )& gDev,
-				HWND hWnd, char* fName, int x, int y, int w, int h);
 #endif
-
-//=======================================================================
-//function : QAxwd
-//purpose  :
-//=======================================================================
-static int QAxwd (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc < 2)
-  {
-    di << "Usage : " << argv[0] << " [id=1] filename" << "\n";
-    return -1;
-  }
-
-  // enforce repaint if necessary
-  Standard_Integer id = 1;
-  const char* file = argv[1];
-  if (argc > 2) {
-    id  = atoi(argv[1]);
-    file = argv[2];
-  }
-
-  after(id);
-
-  dout.Flush();
-  if(dout.HasView(id)) {
-#if defined (WNT)
-    Handle(WNT_GraphicDevice) aGd = new WNT_GraphicDevice(Standard_False);
-    RECT rc;
-    GetClientRect((HWND)dout.GetWindow(id), &rc);
-    SaveWindowToFile(aGd,(HWND)dout.GetWindow(id),(char*)file,rc.left, rc.top,rc.right-rc.left, rc.bottom-rc.top);
-#else
-    XSync(Draw_WindowDisplay,True);
-
-    XWindowAttributes winAttr;
-    XGetWindowAttributes (Draw_WindowDisplay, dout.GetWindow(id), &winAttr);
-
-    XImage *pximage = XGetImage(Draw_WindowDisplay,dout.GetWindow(id),
-				0,0,winAttr.width,winAttr.height,
-				AllPlanes,ZPixmap);
-
-    Xw_save_image_adv(Draw_WindowDisplay,dout.GetWindow(id),winAttr,pximage,Draw_WindowColorMap,256,(char*)file);
-#endif
-  }
-
-  return 0;
-}
 
 //=======================================================================
 //function : QA2dGetIndexes
@@ -1329,138 +1006,6 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
-//function : QAAddOrRemoveSelected
-//purpose  :
-//=======================================================================
-static Standard_Integer QAAddOrRemoveSelected (Draw_Interpretor& di, Standard_Integer n, const char ** a)
-{
-  if( n != 2)
-  {
-    di<<"Usage : QAAddOrRemoveSelected shape \n";
-    return 1;
-  }
-  //get AIS_Shape:
-  Handle(AIS_InteractiveContext) anAISCtx = ViewerTest::GetAISContext();
-
-  //ViewerTest_DoubleMapOfInteractiveAndName& aMap =
-  //                       ViewerTest::GetDataMapOfAIS ();
-  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-
-  TCollection_AsciiString aName(a[1]);
-  Handle(AIS_InteractiveObject) AISObj;
-
-  if(aMap.IsBound2(aName)){
-    AISObj = Handle(AIS_InteractiveObject)::DownCast(aMap.Find2(aName));
-    if(AISObj.IsNull()){
-      di<<"No interactive object \n";
-      return 1;
-    }
-
-    if(anAISCtx->HasOpenedContext()){
-      anAISCtx->InitSelected();
-      anAISCtx->AddOrRemoveSelected(AISObj);
-    }
-    else {
-      anAISCtx->InitCurrent();
-      anAISCtx->AddOrRemoveCurrentObject(AISObj);
-    }
-    return 0;
-  }
-  //select this shape:
-  else {
-    di<<"Use 'vdisplay' before";
-    return 1;
-  }
-}
-
-//=======================================================================
-//function : QASetZClippingMode
-//purpose  :
-//=======================================================================
-static Standard_Integer QASetZClippingMode (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 2) {
-    di << "Usage : " << argv[0] << " mode(OFF/BACK/FRONT/SLICE)" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Standard_Integer aStatus = 0;
-  V3d_TypeOfZclipping ZClippingMode;
-  if ( strcmp (argv [1], "OFF") == 0 ) {
-    aStatus = 1;
-    ZClippingMode = V3d_OFF;
-  }
-  if ( strcmp (argv [1], "BACK") == 0 ) {
-    aStatus = 1;
-    ZClippingMode = V3d_BACK;
-  }
-  if ( strcmp (argv [1], "FRONT") == 0 ) {
-    aStatus = 1;
-    ZClippingMode = V3d_FRONT;
-  }
-  if ( strcmp (argv [1], "SLICE") == 0 ) {
-    aStatus = 1;
-    ZClippingMode = V3d_SLICE;
-  }
-  if (aStatus != 1)
-  {
-    di << "Bad mode; Usage : " << argv[0] << " mode(OFF/BACK/FRONT/SLICE)" << "\n";
-    return -1;
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->SetZClippingType(ZClippingMode);
-  aView->Redraw();
-
-  return 0;
-}
-
-//=======================================================================
-//function : QAGetZClippingMode
-//purpose  :
-//=======================================================================
-static Standard_Integer QAGetZClippingMode (Draw_Interpretor& di, int /*argc*/, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  TCollection_AsciiString ZClippingModeString;
-  Quantity_Length Depth, Width;
-  V3d_TypeOfZclipping ZClippingMode = aView->ZClipping(Depth, Width);
-  switch (ZClippingMode)
-  {
-  case V3d_OFF:
-    ZClippingModeString.Copy("OFF");
-    break;
-  case V3d_BACK:
-    ZClippingModeString.Copy("BACK");
-    break;
-  case V3d_FRONT:
-    ZClippingModeString.Copy("FRONT");
-    break;
-  case V3d_SLICE:
-    ZClippingModeString.Copy("SLICE");
-    break;
-  default:
-    ZClippingModeString.Copy(TCollection_AsciiString(ZClippingMode));
-    break;
-  }
-  di << "ZClippingMode = " << ZClippingModeString.ToCString() << "\n";
-
-  return 0;
-}
-
 #include <V2d_View.hxx>
 #include <AIS2D_InteractiveObject.hxx>
 #include <Graphic2d_Circle.hxx>
@@ -1539,143 +1084,7 @@ static Standard_Integer ViewId(const Standard_CString a)
   return id;
 }
 
-//=======================================================================
-//function : QAwzoom
-//purpose  :
-//=======================================================================
-
-static Standard_Integer QAwzoom(Draw_Interpretor& di, Standard_Integer argc, const char ** argv) {
-  if(argc < 6){
-    di<<"Usage : " << argv[0] << " view-id X1 Y1 X2 Y2\n";
-    return -1;
-  }
-
-  Standard_Integer id = ViewId(argv [1]);
-  if (id < 0) {
-    return -1;
-  }
-
-  Standard_Integer X1 = atoi (argv [2]);
-  Standard_Integer Y1 = atoi (argv [3]);
-  Standard_Integer X2 = atoi (argv [4]);
-  Standard_Integer Y2 = atoi (argv [5]);
-
-  Standard_Real zx,zy;
-
-  Standard_Integer X,Y,W,H;
-  dout.GetPosSize(id,X,Y,W,H);
-
-  if ((X1 == X2) || (Y1 == Y2)) return 0;
-
-  zx = (Standard_Real) Abs(X2-X1) / (Standard_Real) W;
-  zy = (Standard_Real) Abs(Y2-Y1) / (Standard_Real) H;
-  if (zy > zx) zx = zy;
-  zx = 1/zx;
-  if (X2 < X1) X1 = X2;
-  if (Y2 > Y1) Y1 = Y2;
-  X1 = (Standard_Integer ) (X1*zx);
-  Y1 = (Standard_Integer ) (Y1*zx);
-  dout.SetZoom(id,zx*dout.Zoom(id));
-  dout.SetPan(id,-X1,-Y1);
-  dout.RepaintView(id);
-  if (dout.HasView(id)) {
-    char title[255];
-    sprintf(title,"%d : %s - Zoom %f",id,dout.GetType(id),dout.Zoom(id));
-    dout.SetTitle(id,title);
-  }
-  return 0;
-}
-
 #include <Draw_Display.hxx>
-
-//=======================================================================
-//function : QAGetCoordinatesWzoom
-//purpose  :
-//=======================================================================
-
-static Standard_Integer QAGetCoordinatesWzoom(Draw_Interpretor& di, Standard_Integer, const char **)
-{
-  Standard_Integer id1,X1,Y1,b;
-  Standard_Integer X2,Y2;
-  Standard_Real dX1,dY1,dX2,dY2;
-  di << "Pick first corner"<<"\n";
-  dout.Select(id1,X1,Y1,b);
-
-  gp_Trsf T;
-  gp_Pnt P0(0,0,0);
-  dout.GetTrsf(id1,T);
-  T.Invert();
-  P0.Transform(T);
-  Standard_Real z = dout.Zoom(id1);
-
-  dX1=X1;       dY1=Y1;
-  dX1-=P0.X();  dY1-=P0.Y();
-  dX1/=z;       dY1/=z;
-
-  if (b != 1) return 0;
-  if (id1 < 0) return 0;
-  Draw_Display d = dout.MakeDisplay(id1);
-  d.SetColor(Draw_blanc);
-  d.SetMode(10);
-  Standard_Real dOX2 = dX1;
-  Standard_Real dOY2 = dY1;
-  d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
-  d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
-  d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
-  d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
-  d.Flush();
-  Standard_Real zx,zy;
-  Standard_Integer X,Y,W,H;
-  dout.GetPosSize(id1,X,Y,W,H);
-  di << "Pick second corner"<<"\n";
-  b = 0;
-  while (b == 0) {
-    dout.Select(id1,X2,Y2,b,Standard_False);
-    dX2=X2;          dY2=Y2;
-    dX2-=P0.X();     dY2-=P0.Y();
-    dX2/=z;          dY2/=z;
-
-    d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
-    d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
-    d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
-    d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
-    d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dY2));
-    d.Draw(gp_Pnt2d(dX1,dY2),gp_Pnt2d(dX2,dY2));
-    d.Draw(gp_Pnt2d(dX2,dY2),gp_Pnt2d(dX2,dY1));
-    d.Draw(gp_Pnt2d(dX2,dY1),gp_Pnt2d(dX1,dY1));
-    d.Flush();
-    dOX2 = dX2;
-    dOY2 = dY2;
-  }
-  d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
-  d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
-  d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
-  d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
-  d.Flush();
-  if (b != 1) return 0;
-
-  if ((X1 == X2) || (Y1 == Y2)) return 0;
-
-  di << "X1=" << X1 << " Y1=" << Y1 <<"\n";
-  di << "X2=" << X2 << " Y2=" << Y2 <<"\n";
-
-  zx = (Standard_Real) Abs(X2-X1) / (Standard_Real) W;
-  zy = (Standard_Real) Abs(Y2-Y1) / (Standard_Real) H;
-  if (zy > zx) zx = zy;
-  zx = 1/zx;
-  if (X2 < X1) X1 = X2;
-  if (Y2 > Y1) Y1 = Y2;
-  X1 = (Standard_Integer ) (X1*zx);
-  Y1 = (Standard_Integer ) (Y1*zx);
-  dout.SetZoom(id1,zx*dout.Zoom(id1));
-  dout.SetPan(id1,-X1,-Y1);
-  dout.RepaintView(id1);
-  //SetTitle(id1);
-  char title[255];
-  sprintf(title,"%d : %s - Zoom %f",id1,dout.GetType(id1),dout.Zoom(id1));
-  dout.SetTitle(id1,title);
-  return 0;
-}
 
 //=======================================================================
 // QArename
@@ -1703,21 +1112,6 @@ static Standard_Integer QArename(Draw_Interpretor& di, Standard_Integer n, const
   return 0;
 }
 
-static Standard_Integer QANbSelected (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if(argc != 1) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  di << aContext->NbSelected() << "\n";
-  return 0;
-}
-
 //#if defined(V2D)
 //#include <AIS2D_InteractiveContext.hxx>
 //static Standard_Integer QANbSelected2d (Draw_Interpretor& /*di*/, Standard_Integer argc, char** argv)
@@ -1735,189 +1129,6 @@ static Standard_Integer QANbSelected (Draw_Interpretor& di, Standard_Integer arg
 //  return 0;
 //}
 //#endif
-
-static Standard_Integer QAPurgeDisplay (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc > 2) {
-    di << "Usage : " << argv[0] << " [CollectorToo=0/1]" << "\n";
-    return 1;
-  }
-  Standard_Boolean CollectorTooBoolean = Standard_False;
-  if (argc == 2) {
-    Standard_Integer CollectorTooInteger = atoi (argv [1]);
-    if (CollectorTooInteger != 0)
-      CollectorTooBoolean = Standard_True;
-  }
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  aContext->CloseAllContexts(Standard_False);
-  di << aContext->PurgeDisplay(CollectorTooBoolean) << "\n";
-  return 0;
-}
-
-static Standard_Integer QACloseLocalContext (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc > 3) {
-    di << "Usage : " << argv[0] << " [Index [updateviewer=1/0]]" << "\n";
-    return 1;
-  }
-  Standard_Integer Index = -1;
-  if (argc > 1) {
-    Index = atoi (argv [1]);
-  }
-  //cout << "Index = " << Index << endl;
-  Standard_Boolean updateviewerBoolean = Standard_True;
-  if (argc == 3) {
-    Standard_Integer updateviewerInteger = atoi (argv [2]);
-    if (updateviewerInteger == 0)
-      updateviewerBoolean = Standard_False;
-  }
-  //if (updateviewerBoolean)
-  //  cout << "updateviewer = Standard_True" << endl;
-  //else
-  //  cout << "updateviewer = Standard_False" << endl;
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  aContext->CloseLocalContext(Index, updateviewerBoolean);
-  return 0;
-}
-
-static Standard_Integer QACloseAllContexts (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc > 2) {
-    di << "Usage : " << argv[0] << " [updateviewer=1/0]" << "\n";
-    return 1;
-  }
-  Standard_Boolean updateviewerBoolean = Standard_True;
-  if (argc == 2) {
-    Standard_Integer updateviewerInteger = atoi (argv [1]);
-    if (updateviewerInteger == 0)
-      updateviewerBoolean = Standard_False;
-  }
-  //if (updateviewerBoolean)
-  //  cout << "updateviewer = Standard_True" << endl;
-  //else
-  //  cout << "updateviewer = Standard_False" << endl;
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  aContext->CloseAllContexts(updateviewerBoolean);
-  return 0;
-}
-
-static Standard_Integer QAIndexOfCurrentLocal (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc > 1) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  di << aContext->IndexOfCurrentLocal() << "\n";
-  return 0;
-}
-
-#include <AIS_ListOfInteractive.hxx>
-static Standard_Integer QADisplayedObjects (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc > 2) {
-    di << "Usage : " << argv[0] << " [OnlyFromNeutral=0/1]" << "\n";
-    return 1;
-  }
-
-  Standard_Boolean OnlyFromNeutralBoolean = Standard_False;
-  if (argc == 2) {
-    Standard_Integer OnlyFromNeutralInteger = atoi (argv [1]);
-    if (OnlyFromNeutralInteger != 0)
-      OnlyFromNeutralBoolean = Standard_True;
-  }
-  //if (OnlyFromNeutralBoolean)
-  //  cout << "OnlyFromNeutral = Standard_True" << endl;
-  //else
-  //  cout << "OnlyFromNeutral = Standard_False" << endl;
-
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  Standard_Integer ListOfInteractiveExtent = 0;
-  if(!aContext->HasOpenedContext()) {
-    ListOfInteractiveExtent = 0;
-  } else {
-    AIS_ListOfInteractive ListOfInteractive;
-    aContext->DisplayedObjects(ListOfInteractive, OnlyFromNeutralBoolean);
-    ListOfInteractiveExtent = ListOfInteractive.Extent();
-  }
-  di << ListOfInteractiveExtent << "\n";
-  return 0;
-}
-
-static Standard_Integer QASelectRectangle(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc != 5) {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Standard_Integer x1 = atoi(argv[1]);
-  Standard_Integer y1 = atoi(argv[2]);
-  Standard_Integer x2 = atoi(argv[3]);
-  Standard_Integer y2 = atoi(argv[4]);
-
-  Handle(ViewerTest_EventManager) aCurrentEventManager = ViewerTest::CurrentEventManager();
-//  Handle(V3d_View) aCurrentView = ViewerTest::CurrentView();
-
-  aCurrentEventManager->MoveTo(x1,y1);
-  aCurrentEventManager->Select(x1,y1,x2,y2);
-  aCurrentEventManager->MoveTo(x2,y2);
-
-  return 0;
-}
-
-static Standard_Integer QAShiftSelectRectangle(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
-{
-  if(argc != 5) {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2" << "\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Standard_Integer x1 = atoi(argv[1]);
-  Standard_Integer y1 = atoi(argv[2]);
-  Standard_Integer x2 = atoi(argv[3]);
-  Standard_Integer y2 = atoi(argv[4]);
-
-  Handle(ViewerTest_EventManager) aCurrentEventManager = ViewerTest::CurrentEventManager();
-//  Handle(V3d_View) aCurrentView = ViewerTest::CurrentView();
-
-  aCurrentEventManager->MoveTo(x1,y1);
-  aCurrentEventManager->ShiftSelect(x1,y1,x2,y2);
-  aCurrentEventManager->MoveTo(x2,y2);
-
-  return 0;
-}
 
 static int QASelect2dRectangle (Draw_Interpretor& di, int argc, const char ** argv)
 {
@@ -1979,239 +1190,6 @@ static int QAShiftSelect2dRectangle (Draw_Interpretor& di, int argc, const char 
   return 0;
 }
 
-//=======================================================================
-//function : QARotateV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QARotateV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 4 || argc > 5){
-    di<<"Usage : " << argv[0] << " Ax Ay Az [Start(1/0)]\n";
-    return -1;
-  }
-  Standard_Real Ax = atof(argv[1]);
-  Standard_Real Ay = atof(argv[2]);
-  Standard_Real Az = atof(argv[3]);
-  Standard_Boolean Start = Standard_True;
-  if (argc == 5) {
-    Standard_Integer StartInteger = atoi(argv[4]);
-    if (StartInteger > 0) {
-      Start = Standard_True;
-    } else {
-      Start = Standard_False;
-    }
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->Rotate(Ax,Ay,Az,Start);
-  return 0;
-}
-
-//=======================================================================
-//function : QAMoveV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QAMoveV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 4 || argc > 5){
-    di<<"Usage : " << argv[0] << " Dx Dy Dz [Start(1/0)]\n";
-    return -1;
-  }
-  Standard_Real Dx = atof(argv[1]);
-  Standard_Real Dy = atof(argv[2]);
-  Standard_Real Dz = atof(argv[3]);
-  Standard_Boolean Start = Standard_True;
-  if (argc == 5) {
-    Standard_Integer StartInteger = atoi(argv[4]);
-    if (StartInteger > 0) {
-      Start = Standard_True;
-    } else {
-      Start = Standard_False;
-    }
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->Move(Dx,Dy,Dz,Start);
-  return 0;
-}
-
-//=======================================================================
-//function : QATranslateV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QATranslateV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 4 || argc > 5){
-    di<<"Usage : " << argv[0] << " Dx Dy Dz [Start(1/0)]\n";
-    return -1;
-  }
-  Standard_Real Dx = atof(argv[1]);
-  Standard_Real Dy = atof(argv[2]);
-  Standard_Real Dz = atof(argv[3]);
-  Standard_Boolean Start = Standard_True;
-  if (argc == 5) {
-    Standard_Integer StartInteger = atoi(argv[4]);
-    if (StartInteger > 0) {
-      Start = Standard_True;
-    } else {
-      Start = Standard_False;
-    }
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->Translate(Dx,Dy,Dz,Start);
-  return 0;
-}
-
-//=======================================================================
-//function : QATurnV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QATurnV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 4 || argc > 5){
-    di<<"Usage : " << argv[0] << " Ax Ay Az [Start(1/0)]\n";
-    return -1;
-  }
-  Standard_Real Ax = atof(argv[1]);
-  Standard_Real Ay = atof(argv[2]);
-  Standard_Real Az = atof(argv[3]);
-  Standard_Boolean Start = Standard_True;
-  if (argc == 5) {
-    Standard_Integer StartInteger = atoi(argv[4]);
-    if (StartInteger > 0) {
-      Start = Standard_True;
-    } else {
-      Start = Standard_False;
-    }
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->Turn(Ax,Ay,Az,Start);
-  return 0;
-}
-
-//=======================================================================
-//function : QAPanningV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QAPanningV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 3 || argc > 5){
-    di<<"Usage : " << argv[0] << " Dx Dy [Zoom [Start(1/0)]]\n";
-    return -1;
-  }
-  Standard_Real Dx = atof(argv[1]);
-  Standard_Real Dy = atof(argv[2]);
-  Standard_Real Zoom = 1.;
-  if (argc > 3) {
-    Zoom = atof(argv[3]);
-    if (Zoom <= 0.) {
-      di<<"Bad Zoom value  : " << Zoom << "\n";
-      return -1;
-    }
-  }
-  Standard_Boolean Start = Standard_True;
-  if (argc == 5) {
-    Standard_Integer StartInteger = atoi(argv[4]);
-    if (StartInteger > 0) {
-      Start = Standard_True;
-    } else {
-      Start = Standard_False;
-    }
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->Panning(Dx,Dy,Zoom,Start);
-  return 0;
-}
-
-//=======================================================================
-//function : QASetZoomV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QASetZoomV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 2 || argc > 3){
-    di<<"Usage : " << argv[0] << " Zoom [Start(1/0)]\n";
-    return -1;
-  }
-  Standard_Real Zoom = atof(argv[1]);
-  if (Zoom <= 0.) {
-    di<<"Bad Zoom value  : " << Zoom << "\n";
-    return -1;
-  }
-  Standard_Boolean Start = Standard_True;
-  if (argc == 3) {
-    Standard_Integer StartInteger = atoi(argv[2]);
-    if (StartInteger > 0) {
-      Start = Standard_True;
-    } else {
-      Start = Standard_False;
-    }
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->SetZoom(Zoom,Start);
-  return 0;
-}
-
-//=======================================================================
-//function : QASetSizeV3dView
-//purpose  :
-//=======================================================================
-static Standard_Integer QASetSizeV3dView (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) AIScontext = ViewerTest::GetAISContext();
-  if(AIScontext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc != 2){
-    di<<"Usage : " << argv[0] << " Size\n";
-    return -1;
-  }
-  Standard_Real Size = atof(argv[1]);
-  if (Size <= 0.) {
-    di<<"Bad Size value  : " << Size << "\n";
-    return -1;
-  }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  aView->SetSize(Size);
-  return 0;
-}
-
 void QADraw::CommonCommands(Draw_Interpretor& theCommands)
 {
   ios::sync_with_stdio();
@@ -2227,18 +1205,8 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   const char* group = "QA_Commands";
 
   theCommands.Add("QARebuild","QARebuild command_name",__FILE__,QARebuild,group);
-  theCommands.Add("QAxwd_3d","QAxwd_3d filename",__FILE__,QAxwd_3d,group);
-  theCommands.Add("QAMoveTo","QAMoveTo x y",__FILE__,QAMoveTo,group);
-  theCommands.Add("QASelect","QASelect x y",__FILE__,QASelect,group);
-  theCommands.Add("QAShiftSelect","QAShiftSelect x y",__FILE__,QAShiftSelect,group);
-  theCommands.Add("QAUpdateLights","QAUpdateLights",__FILE__,QAUpdateLights,group);
-  theCommands.Add("QASetAntialiasing","QASetAntialiasing [1/0]",__FILE__,QASetAntialiasing,group);
-  theCommands.Add("QAvzfit","QAvzfit",__FILE__,QAvzfit,group);
   theCommands.Add("QAGetPixelColor", "QAGetPixelColor coordinate_X coordinate_Y [color_R color_G color_B]", __FILE__,QAAISGetPixelColor, group);
-  theCommands.Add("QASetChoiceMode", "QASetChoiceMode mode switch ; Use without params to see a help ", __FILE__,QAAISSetChoiceMode, group);
   theCommands.Add("QAGetMousePoint", "QAGetMousePoint", __FILE__,QAAISGetMousePoint, group);
-  theCommands.Add("QAGetViewCharac", "QAGetViewCharac", __FILE__,QAAISGetViewCharac, group);
-  theCommands.Add("QASetViewCharac", "QASetViewCharac scale center_X center_Y proj_X proj_Y proj_Z up_X up_Y up_Z at_X at_Y at_Z", __FILE__,QAAISSetViewCharac, group);
   theCommands.Add("QAGetColorCoord", "QAGetColorCoord [3d|2d]", __FILE__,QAAISGetColorCoord, group);
 //#ifndef WNT
   theCommands.Add("QAAISGetPixelColor2d",
@@ -2269,57 +1237,23 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   theCommands.Add("QAMoveTo2d", "QAMoveTo2d x y", __FILE__, QAMoveTo2d, group);
   theCommands.Add("QASelect2d", "QASelect2d x y", __FILE__, QASelect2d, group);
   theCommands.Add("QAShiftSelect2d", "QAShiftSelect2d x y", __FILE__, QAShiftSelect2d, group);
-
   theCommands.Add("QAv2dSetHighlightMode",
                   "QAv2dSetHighlightMode mode", __FILE__, V2dSetHighlightMode, group);
-
   theCommands.Add("QAxwd_2d", "QAxwd_2d filename", __FILE__, QAxwd_2d, group);
-
-  theCommands.Add("QAxwd", "QAxwd [id=1] filename", __FILE__, QAxwd, group);
-
   theCommands.Add("QA2dGetIndexes", "QA2dGetIndexes", __FILE__, QA2dGetIndexes, group);
 
   theCommands.Add("vtri_orig",
 		  "vtri_orig         : vtri_orig trihedron_name  -  draws axis origin lines",
 		  __FILE__,VTrihedronOrigins,group);
-
-  theCommands.Add("QAAddOrRemoveSelected",
-                  "QAAddOrRemoveSelected shape : selects the shape by AddOrRemoveSelected method",
-		  __FILE__, QAAddOrRemoveSelected, group);
-
-  theCommands.Add("QASetZClippingMode","QASetZClippingMode mode(OFF/BACK/FRONT/SLICE)",__FILE__,QASetZClippingMode,group);
-  theCommands.Add("QAGetZClippingMode","QAGetZClippingMode",__FILE__,QAGetZClippingMode,group);
   theCommands.Add("QAv2dcircle", "QAv2dcircle CircleName X Y Radius Alpha Beta [Color_index]", __FILE__, QAv2dcircle, group);
-
-  theCommands.Add("QAwzoom","QAwzoom view-id X1 Y1 X2 Y2; zoom on a window",__FILE__,QAwzoom,group);
-  theCommands.Add("QAGetCoordinatesWzoom","QAGetCoordinatesWzoom ; Get coordinates for zoom on a window",__FILE__,QAGetCoordinatesWzoom,group);
 
 // adding commands "rename" leads to the fact that QA commands doesn't work properly OCC23410, use function "renamevar"
 // theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,QArename,group);
-
-  theCommands.Add ("QANbSelected", "QANbSelected", __FILE__, QANbSelected, group);
 //#if defined(V2D)
 //  theCommands.Add ("QANbSelected2d", "QANbSelected2d", __FILE__, QANbSelected2d, group);
 //#endif
-
-  theCommands.Add ("QAPurgeDisplay", "QAPurgeDisplay [CollectorToo=0/1]", __FILE__, QAPurgeDisplay, group);
-  theCommands.Add ("QACloseLocalContext", "QACloseLocalContext [Index [updateviewer=1/0]]", __FILE__, QACloseLocalContext, group);
-  theCommands.Add ("QACloseAllContexts", "QACloseAllContexts [updateviewer=1/0]", __FILE__, QACloseAllContexts, group);
-  theCommands.Add ("QAIndexOfCurrentLocal", "QAIndexOfCurrentLocal", __FILE__, QAIndexOfCurrentLocal, group);
-  theCommands.Add ("QADisplayedObjects", "QADisplayedObjects [OnlyFromNeutral=0/1]", __FILE__, QADisplayedObjects, group);
-
-  theCommands.Add("QASelectRectangle","QASelectRectangle x1 y1 x2 y2",__FILE__,QASelectRectangle,group);
-  theCommands.Add("QAShiftSelectRectangle","QAShiftSelectRectangle x1 y1 x2 y2",__FILE__,QAShiftSelectRectangle,group);
   theCommands.Add("QASelect2dRectangle","QASelect2dRectangle x1 y1 x2 y2",__FILE__,QASelect2dRectangle,group);
   theCommands.Add("QAShiftSelect2dRectangle","QAShiftSelect2dRectangle x1 y1 x2 y2",__FILE__,QAShiftSelect2dRectangle,group);
-
-  theCommands.Add("QARotateV3dView","QARotateV3dView Ax Ay Az [Start(1/0)]",__FILE__,QARotateV3dView,group);
-  theCommands.Add("QAMoveV3dView","QAMoveV3dView Dx Dy Dz [Start(1/0)]",__FILE__,QAMoveV3dView,group);
-  theCommands.Add("QATranslateV3dView","QATranslateV3dView Dx Dy Dz [Start(1/0)]",__FILE__,QATranslateV3dView,group);
-  theCommands.Add("QATurnV3dView","QATurnV3dView Ax Ay Az [Start(1/0)]",__FILE__,QATurnV3dView,group);
-  theCommands.Add("QAPanningV3dView","QAPanningV3dView Dx Dy [Zoom [Start(1/0)]]",__FILE__,QAPanningV3dView,group);
-  theCommands.Add("QASetZoomV3dView","QASetZoomV3dView Zoom [Start(1/0)]",__FILE__,QASetZoomV3dView,group);
-  theCommands.Add("QASetSizeV3dView","QASetSizeV3dView Size",__FILE__,QASetSizeV3dView,group);
 }
 /*
 extern "C" int Tkqadraw_Init(Tcl_Interp *);

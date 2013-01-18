@@ -12,16 +12,14 @@ vsetdispmode 1
 set x1 172
 set y1 223
 
-QAUpdateLights
 checkcolor ${x1} ${y1} 1 0 0
 
-QASetZClippingMode FRONT
-set ZClippingMode [lindex [QAGetZClippingMode] 2]
+vzclipping FRONT
+set ZClippingMode [lindex [vzclipping] 2]
 if {${ZClippingMode} != "FRONT"} {
     puts "OCC270: Error (ZClippingMode != FRONT)"
 }
 
-QAUpdateLights
 checkcolor ${x1} ${y1} 1 0 0
 vfit
 

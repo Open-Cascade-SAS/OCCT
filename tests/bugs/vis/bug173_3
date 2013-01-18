@@ -26,7 +26,6 @@ regexp {BLUE +: +([-0-9.+eE]+)} $color1 full bl1
 ########################################################
 vsettransparency result 0.5
 
-QAUpdateLights
 set color2 [QAGetPixelColor 175 195]
 regexp {RED +: +([-0-9.+eE]+)} $color2 full rd2
 regexp {GREEN +: +([-0-9.+eE]+)} $color2 full gr2

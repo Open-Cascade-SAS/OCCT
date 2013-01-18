@@ -32,38 +32,31 @@ vdisplay b_1
 vdisplay b_2
 vfit
 
-QAUpdateLights
-
 # Check face color
 checkcolor ${X_01} ${Y_01} 0 1 0 
 checkcolor ${X_02} ${Y_02} 0 1 0
 
 # Select faces
-QAAddOrRemoveSelected b_1
-QAAddOrRemoveSelected b_2
+vchangeselected b_1
+vchangeselected b_2
 
 # Check face color
-QAUpdateLights
 checkcolor ${X_01} ${Y_01} 0.8 0.8 0.8
 
-QAUpdateLights
 checkcolor ${X_02} ${Y_02} 0.8 0.8 0.8
 
 # Hilight face
-QAMoveTo ${X_01} ${Y_01}
-QAMoveTo ${X_01} ${Y_01}
+vmoveto ${X_01} ${Y_01}
 
 # Check face color
-QAUpdateLights
-QASelect 10 10
-QAMoveTo ${X_01} ${Y_01}
+vselect 10 10
+vmoveto ${X_01} ${Y_01}
 checkcolor ${X_01} ${Y_01} 0 1 1
 
-QAUpdateLights
-QAMoveTo ${X_02} ${Y_02}
+vmoveto ${X_02} ${Y_02}
 checkcolor ${X_02} ${Y_02} 0 1 1
 
 # Rotation
-QASetViewCharac ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
 
 set only_screen 1

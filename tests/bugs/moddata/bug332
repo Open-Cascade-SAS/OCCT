@@ -20,7 +20,7 @@ checkshape gasSolid_
 vinit
 vdisplay wallSolid_
 vdisplay gasSolid_
-QAvzfit
+vzfit
 
 
 explode wallSolid_ w

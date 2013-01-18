@@ -14,8 +14,7 @@ puts "================"
 vinit
 BUC60632 0 100
 vfit
-QAMoveTo 313 254
-QAMoveTo 313 254
+vmoveto 313 254
 puts "Highlighting by 'Move To' command in wireframe mode"
 
 set x_coord 315

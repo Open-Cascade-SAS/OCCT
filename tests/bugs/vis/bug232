@@ -47,8 +47,7 @@ catch {QAGetPixelColor $x6 $y6 $Yellow_R $Yellow_G $Yellow_B} result16
 
 # Move a mouse
 puts "Move a mouse"
-QAMoveTo $x2 $y2
-QAMoveTo $x2 $y2
+vmoveto $x2 $y2
 
 # Second box of first CompSolid is selected
 puts "Second box of first CompSolid is selected"
@@ -62,7 +61,6 @@ if { [array get env os_type] != "" } {
     set os $env(os_type)
 }
 if { [string compare $os "windows"] != 0 } {
-   QAUpdateLights
    catch {QAGetPixelColor $x2 $y2 $Cyan_R $Cyan_G $Cyan_B} result31
 }
 

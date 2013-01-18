@@ -136,69 +136,94 @@ static Standard_Integer zoom(Draw_Interpretor& , Standard_Integer n, const char*
 //purpose  :
 //=======================================================================
 
-static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  Standard_Integer id1,X1,Y1,b;
-  Standard_Integer X2,Y2;
-  Standard_Real dX1,dY1,dX2,dY2;
-  di << "Pick first corner"<<"\n";
-  dout.Select(id1,X1,Y1,b);
+  Standard_Integer id,X,Y,W,H,X1,Y1,X2,Y2,b;
+  Standard_Real dX1,dY1,dX2,dY2,zx,zy;
+  if(argc != 1 && argc != 6)
+  {
+    di<<"Usage : " << argv[0] << " [view-id X1 Y1 X2 Y2]\n";
+    return 1;
+  }
+  if(argc == 1)
+  {
+    di << "Pick first corner"<<"\n";
+    dout.Select(id,X1,Y1,b);
 
-  gp_Trsf T;
-  gp_Pnt P0(0,0,0);
-  dout.GetTrsf(id1,T);
-  T.Invert();
-  P0.Transform(T);
-  Standard_Real z = dout.Zoom(id1);
+    gp_Trsf T;
+    gp_Pnt P0(0,0,0);
+    dout.GetTrsf(id,T);
+    T.Invert();
+    P0.Transform(T);
+    Standard_Real z = dout.Zoom(id);
 
-  dX1=X1;       dY1=Y1;
-  dX1-=P0.X();  dY1-=P0.Y();
-  dX1/=z;       dY1/=z;
+    dX1=X1;       dY1=Y1;
+    dX1-=P0.X();  dY1-=P0.Y();
+    dX1/=z;       dY1/=z;
 
-  if (b != 1) return 0;
-  if (id1 < 0) return 0;
-  Draw_Display d = dout.MakeDisplay(id1);
-  d.SetColor(Draw_blanc);
-  d.SetMode(10);
-  Standard_Real dOX2 = dX1;
-  Standard_Real dOY2 = dY1;
-  d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
-  d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
-  d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
-  d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
-  d.Flush();
-  Standard_Real zx,zy;
-  Standard_Integer X,Y,W,H;
-  dout.GetPosSize(id1,X,Y,W,H);
-  di << "Pick second corner"<<"\n";
-  b = 0;
-  while (b == 0) {
-    dout.Select(id1,X2,Y2,b,Standard_False);
-    dX2=X2;          dY2=Y2;
-    dX2-=P0.X();     dY2-=P0.Y();
-    dX2/=z;          dY2/=z;
-
+    if (b != 1) return 0;
+    if (id < 0) return 0;
+    Draw_Display d = dout.MakeDisplay(id);
+    d.SetColor(Draw_blanc);
+    d.SetMode(10);
+    Standard_Real dOX2 = dX1;
+    Standard_Real dOY2 = dY1;
     d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
     d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
     d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
     d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
-    d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dY2));
-    d.Draw(gp_Pnt2d(dX1,dY2),gp_Pnt2d(dX2,dY2));
-    d.Draw(gp_Pnt2d(dX2,dY2),gp_Pnt2d(dX2,dY1));
-    d.Draw(gp_Pnt2d(dX2,dY1),gp_Pnt2d(dX1,dY1));
     d.Flush();
-    dOX2 = dX2;
-    dOY2 = dY2;
+    dout.GetPosSize(id,X,Y,W,H);
+    di << "Pick second corner"<<"\n";
+    b = 0;
+    while (b == 0) {
+      dout.Select(id,X2,Y2,b,Standard_False);
+      dX2=X2;          dY2=Y2;
+      dX2-=P0.X();     dY2-=P0.Y();
+      dX2/=z;          dY2/=z;
+
+      d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
+      d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
+      d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
+      d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
+      d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dY2));
+      d.Draw(gp_Pnt2d(dX1,dY2),gp_Pnt2d(dX2,dY2));
+      d.Draw(gp_Pnt2d(dX2,dY2),gp_Pnt2d(dX2,dY1));
+      d.Draw(gp_Pnt2d(dX2,dY1),gp_Pnt2d(dX1,dY1));
+      d.Flush();
+      dOX2 = dX2;
+      dOY2 = dY2;
+    }
+    d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
+    d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
+    d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
+    d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
+    d.Flush();
+    if (b != 1) return 0;
+    d.SetMode(0);
   }
-  d.Draw(gp_Pnt2d(dX1,dY1),gp_Pnt2d(dX1,dOY2));
-  d.Draw(gp_Pnt2d(dX1,dOY2),gp_Pnt2d(dOX2,dOY2));
-  d.Draw(gp_Pnt2d(dOX2,dOY2),gp_Pnt2d(dOX2,dY1));
-  d.Draw(gp_Pnt2d(dOX2,dY1),gp_Pnt2d(dX1,dY1));
-  d.Flush();
-  if (b != 1) return 0;
+  else
+  {
+    id = atoi(argv[1]); 
+    if ((id < 0) || (id >= MAXVIEW)) 
+    {
+      cout << "Incorrect view-id, must be in 0.."<<MAXVIEW-1<<endl;
+      return 1;
+    }
+    if (!dout.HasView(id))
+    {
+      cout <<"View "<<id<<" does not exist."<<endl;
+      return 1;
+    }
+    X1 = atoi (argv [2]);
+    Y1 = atoi (argv [3]);
+    X2 = atoi (argv [4]);
+    Y2 = atoi (argv [5]);
+
+    dout.GetPosSize(id,X,Y,W,H);
+  }
 
   if ((X1 == X2) || (Y1 == Y2)) return 0;
-
   zx = (Standard_Real) Abs(X2-X1) / (Standard_Real) W;
   zy = (Standard_Real) Abs(Y2-Y1) / (Standard_Real) H;
   if (zy > zx) zx = zy;
@@ -207,11 +232,10 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer, const char
   if (Y2 > Y1) Y1 = Y2;
   X1 = (Standard_Integer ) (X1*zx);
   Y1 = (Standard_Integer ) (Y1*zx);
-  d.SetMode(0);
-  dout.SetZoom(id1,zx*dout.Zoom(id1));
-  dout.SetPan(id1,-X1,-Y1);
-  dout.RepaintView(id1);
-  SetTitle(id1);
+  dout.SetZoom(id,zx*dout.Zoom(id));
+  dout.SetPan(id,-X1,-Y1);
+  dout.RepaintView(id);
+  SetTitle(id);
   return 0;
 }
 
@@ -947,8 +971,11 @@ void Draw::GraphicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,zoom,g);
   theCommands.Add("2dzoom","2dzoom [view-id] z, or zoom2d z for all 2d views",
 		  __FILE__,zoom,g);
-  theCommands.Add("wzoom","zoom on a window",
-		  __FILE__,wzoom,g);
+  theCommands.Add("wzoom","wzoom [view-id X1 Y1 X2 Y2]\n"
+      "- fits the contents of a given rectangle into a view window.\n"
+      "- The view window and rectangle corners are specified through the arguments\n"
+      "- or selected interactively by the user if no arguments are given",
+      __FILE__,wzoom,g);
   theCommands.Add("view","view view-id type X(0) Y(0) W(500) H(500)",
 		  __FILE__,view,g);
   theCommands.Add("delete","delete [view-id]",

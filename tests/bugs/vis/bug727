@@ -19,18 +19,18 @@ set y1 300
 set x2 350
 set y2 120
 
-QASelect 0 0
-QASelect ${x1} ${y1}
-QAShiftSelect ${x2} ${y2}
+vselect 0 0
+vselect ${x1} ${y1}
+vselect ${x2} ${y2} 1
 
-set NbSelected1 [QANbSelected]
+set NbSelected1 [vnbselected]
 if { ${NbSelected1} != 2 } {
   puts "Error : (case 1)"
 }
 
-QAShiftSelect ${x2} ${y2}
+vselect ${x2} ${y2} 1
 
-set NbSelected1 [QANbSelected]
+set NbSelected1 [vnbselected]
 if { ${NbSelected1} != 1 } {
   puts "Error : (case 2)"
 }

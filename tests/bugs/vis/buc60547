@@ -12,7 +12,6 @@ puts "========================="
 vinit
 BUC60547 f
 vfit
-QAUpdateLights
 
 set x_coord 290
 set y_coord 33

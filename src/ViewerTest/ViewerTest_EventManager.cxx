@@ -118,3 +118,47 @@ void ViewerTest_EventManager::ShiftSelect()
   if (!aView.IsNull())
     aView->Select(myX, myY, Standard_True);
 }
+
+//=======================================================================
+//function : Select
+//purpose  : Selection with polyline
+//=======================================================================
+
+void ViewerTest_EventManager::Select(const TColgp_Array1OfPnt2d& thePolyline)
+{
+  if(!myCtx.IsNull() && !myView.IsNull())
+    myCtx->Select(thePolyline,myView);
+  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast(myView);
+  if (!aView.IsNull())
+  {
+    NCollection_List<gp_XY> aPolylist;
+    for(Standard_Integer anIter = thePolyline.Lower();anIter <= thePolyline.Upper();++anIter)
+    {
+      aPolylist.Append(gp_XY(thePolyline.Value(anIter).X(),
+        thePolyline.Value(anIter).Y()));
+    }
+    aView->Select(aPolylist);
+  }
+}
+
+//=======================================================================
+//function : ShiftSelect
+//purpose  : Selection with polyline without erasing of current selection
+//=======================================================================
+
+void ViewerTest_EventManager::ShiftSelect(const TColgp_Array1OfPnt2d& thePolyline)
+{
+  if(!myCtx.IsNull() && !myView.IsNull())
+    myCtx->ShiftSelect(thePolyline,myView);
+  const Handle(NIS_View) aView = Handle(NIS_View)::DownCast(myView);
+  if (!aView.IsNull())
+  {
+    NCollection_List<gp_XY> aPolylist;
+    for(Standard_Integer anIter = thePolyline.Lower();anIter <= thePolyline.Upper();++anIter)
+    {
+      aPolylist.Append(gp_XY(thePolyline.Value(anIter).X(),
+        thePolyline.Value(anIter).Y()));
+    }
+    aView->Select(aPolylist, Standard_True);
+  }
+}

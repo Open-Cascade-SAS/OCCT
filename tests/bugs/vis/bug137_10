@@ -25,10 +25,9 @@ vdisplay a
 vfit
 vsetdispmode 1
 
-QASetChoiceMode FACE ON
+vselmode FACE ON
 set x 170
 set y 80
-QASelect $x $y
-QASelect $x $y
+vselect $x $y
 
 set only_screen 1

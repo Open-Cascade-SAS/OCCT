@@ -12,7 +12,6 @@ vfit
 set x_coord 83
 set y_coord 337
 
-QAUpdateLights
 checkcolor $x_coord $y_coord 1 1 0
 
 set xmin 1
@@ -28,7 +27,6 @@ set Selection_R 0.8
 set Selection_G 0.8
 set Selection_B 0.8
 
-QAUpdateLights
 checkcolor $x_coord $y_coord 0.8 0.8 0.8
 
 set only_screen 1
