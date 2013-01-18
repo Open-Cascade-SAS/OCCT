@@ -1414,11 +1414,12 @@ void IntTools_EdgeFace::CheckData()
 							Standard_Real& aTx) 
 {
   Standard_Real aTF, aTL, Tol, U1f,U1l,V1f,V1l, af, al,aDist2, aMinDist2, aTm, aDist2New;
+  Standard_Real aEpsT;
   Standard_Boolean theflag=Standard_False;
   Standard_Integer aNbExt, i, iLower ;
 
   aCP.Range1(aTF, aTL);
-
+  aEpsT=8.e-5;
   aTm=0.5*(aTF+aTL);
   aDist2=DistanceFunction(aTm);
   aDist2 *= aDist2;
@@ -1472,15 +1473,15 @@ void IntTools_EdgeFace::CheckData()
   Extrema_POnSurf aPOnS;
   anExtrema.Points(iLower, aPOnC, aPOnS);
 
-  
+ 
   aTx=aPOnC.Parameter();
-  
-  if (fabs (aTx-aTF) < myEpsT) {
-    return !theflag;
+  ///
+  if (fabs (aTx-aTF) < aEpsT) {
+    return theflag;
   }
 
-  if (fabs (aTx-aTL) < myEpsT) {
-    return !theflag;
+  if (fabs (aTx-aTL) < aEpsT) {
+    return theflag;
   }
 
   if (aTx>aTF && aTx<aTL) {
