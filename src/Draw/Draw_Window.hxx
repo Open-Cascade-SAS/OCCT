@@ -25,7 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 
 const Standard_Integer MAXCOLOR = 15;
 
@@ -189,7 +189,134 @@ void Destroy_Appli();
 //======================================================
 void GetNextEvent(Event&);
 
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+
+const Standard_Integer MAXCOLOR = 15;
+
+struct Segment
+{
+  Standard_Integer myXStart;
+  Standard_Integer myYStart;
+  Standard_Integer myXEnd;
+  Standard_Integer myYEnd;
+
+  void Init(short theXStart, short theYStart, short theXEnd, short theYEnd) {
+    myXStart = theXStart; myYStart = theYStart; myXEnd = theXEnd; myYEnd = theYEnd;
+  }
+
+};
+
+#ifdef __OBJC__
+  @class NSView;
+  @class NSWindow;
+  @class NSImage;
+  @class Draw_CocoaView;
 #else
+  struct NSView;
+  struct NSWindow;
+  struct NSImage;
+  struct Draw_CocoaView;
+#endif
+
+
+class Draw_Window
+{
+  public :
+
+  Draw_Window (); // the window is not initialized
+  Draw_Window (Standard_CString        theTitle,
+               const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYTop   = 0,
+               const Standard_Integer& theWidth = 50, const Standard_Integer& theHeight = 50);
+
+  Draw_Window (NSWindow*               theWindow,     Standard_CString        theTitle,
+               const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYTop   = 0,
+               const Standard_Integer& theWidth = 50, const Standard_Integer& theHeight = 50);
+
+  void Init (const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYLeft  = 0,
+             const Standard_Integer& theWidth = 50, const Standard_Integer& theHeight = 50);
+
+  virtual ~Draw_Window ();
+
+  void SetPosition (const Standard_Integer& theNewXpos,
+                    const Standard_Integer& theNewYpos);
+
+  void SetDimension (const Standard_Integer& theNewWidth,
+                     const Standard_Integer& theNewHeight);
+
+  void GetPosition (Standard_Integer &thePosX,
+                    Standard_Integer &thePosY);
+
+  Standard_Integer HeightWin() const;
+  Standard_Integer WidthWin()  const;
+
+  void  SetTitle (Standard_CString theTitle);
+  Standard_CString GetTitle ();
+
+  void DisplayWindow();
+  void Hide();
+  void Destroy();
+  void Clear();
+
+  void InitBuffer();
+
+  static Standard_Boolean DefineColor (const Standard_Integer&, Standard_CString);
+  void SetColor     (const Standard_Integer& theColor);
+  void SetMode      (const Standard_Integer& theMode);
+  void DrawString   (const Standard_Integer& theX, const Standard_Integer& theY, char* theText);
+  void DrawSegments (Segment* theSegment, const Standard_Integer& theNumberOfElements);
+  void Redraw();
+  static void Flush();
+  
+  // save snapshot
+  Standard_Boolean Save (Standard_CString theFileName) const;
+  
+  Standard_Boolean IsEqualWindows (const Standard_Integer& theWindowNumber);
+
+private:
+  NSWindow*        myWindow;
+  Draw_CocoaView*  myView;
+  NSImage*         myImageBuffer;
+  Standard_Boolean myUseBuffer;
+  Standard_Integer myCurrentColor;
+
+  static Draw_Window* firstWindow;
+  Draw_Window*        nextWindow;
+  Draw_Window*        previousWindow;
+
+};
+
+//======================================================
+// funtion : Run_Appli
+// purpose : run the application
+//           interp will be called to interpret a command
+//           and return True if the command is complete
+//======================================================
+
+void Run_Appli(Standard_Boolean (*inteprete) (const char*));
+
+//======================================================
+// funtion : Init_Appli
+// purpose :
+//======================================================
+Standard_Boolean Init_Appli();
+
+//======================================================
+// funtion : Destroy_Appli()
+// purpose :
+//======================================================
+void Destroy_Appli();
+
+//======================================================
+// funtion : GetNextEvent()
+// purpose :
+//======================================================
+void GetNextEvent (Standard_Boolean  theWait,
+                   Standard_Integer& theWindowNumber,
+                   Standard_Integer& theX,
+                   Standard_Integer& theY,
+                   Standard_Integer& theButton);
+#else
+
 // Specifique WNT
 
 #include <windows.h>

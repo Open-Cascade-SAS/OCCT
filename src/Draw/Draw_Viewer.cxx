@@ -77,7 +77,7 @@ class Draw_View : public Draw_Window {
 	      Standard_Integer W,
 	      Standard_Integer H);
 
-#ifdef WNT
+#if defined(_WIN32) || defined(__WIN32__)
     Draw_View(Standard_Integer i,
 	      Draw_Viewer* v,
 	      Standard_Integer X,
@@ -85,6 +85,14 @@ class Draw_View : public Draw_Window {
 	      Standard_Integer W,
 	      Standard_Integer H,
         HWND win);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  Draw_View(Standard_Integer i,
+            Draw_Viewer* v,
+            Standard_Integer X,
+            Standard_Integer Y,
+            Standard_Integer W,
+            Standard_Integer H,
+            NSWindow* theWindow);
 #endif
 
   Draw_View(Standard_Integer i,
@@ -139,7 +147,7 @@ Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
   Framex0=Framey0=Framex1=Framey1=0;
 }
 
-#ifdef WNT
+#if defined(_WIN32) || defined(__WIN32__)
 //=======================================================================
 //function : Draw_View
 //purpose  :
@@ -154,16 +162,24 @@ Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
 {
   Framex0=Framey0=Framex1=Framey1=0;
 }
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
+                     Standard_Integer X,
+                     Standard_Integer Y,
+                     Standard_Integer W,
+                     Standard_Integer H,
+                     NSWindow* theWindow) :
+Draw_Window(theWindow, "Win", X, Y, W, H), id(i), viewer(v)
+{
+  Framex0=Framey0=Framex1=Framey1=0;
+}
 #endif
 
 //=======================================================================
 //function : Draw_View
 //purpose  :
 //=======================================================================
-
-// Portage WNT
-
-#ifdef WNT
+#if defined(_WIN32) || defined (__WIN32__) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
 Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v, const char* w)
 #else
 Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v, const char* w) :
@@ -1034,9 +1050,9 @@ unsigned long Draw_Viewer::GetWindow (const Standard_Integer id) const
 {
   if (Draw_Batch) return 0;
   if (myViews[id]) {
-    #ifdef WNT
+  #if defined(_WIN32) || defined(__WIN32__)
     return (unsigned long)(myViews[id]->win);
-	#else
+	#elif !defined(__APPLE__) || defined(MACOSX_USE_GLX)
     return myViews[id]->win;
 	#endif
   }
@@ -1240,7 +1256,7 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
 {
   if (Draw_Batch) return;
   Flush();
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (!wait) {
     if (id >=0 && id < MAXVIEW) {
       if (myViews[id]) myViews[id]->Wait(wait);
@@ -1298,6 +1314,31 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
     Y = -Y - myViews[id]->dY;
   }
   if (!wait) myViews[id]->Wait(!wait);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  Standard_Integer aWindowNumber;
+
+  id = MAXVIEW;
+  while (id >= MAXVIEW)
+  {
+    GetNextEvent(wait, aWindowNumber, X, Y, Button);
+    
+    if (Y < 0)
+    {
+      continue; // mouse clicked on window title
+    }
+
+    for (Standard_Integer anIter = 0; anIter < MAXVIEW; anIter++)
+    {
+      if (myViews[anIter] && myViews[anIter]->IsEqualWindows (aWindowNumber))
+      {
+        id = anIter;
+      }
+    }
+  }
+
+  X =  X - myViews[id]->dX;
+  Y = -Y - myViews[id]->dY;
+
 #else
   HANDLE hWnd;
 
