@@ -538,7 +538,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
   Handle(BRepBlend_AppFunc) TheFunc 
     = new (BRepBlend_AppFunc)(lin, Func, tolapp3d, 1.e-5);
 
-  Standard_Integer Degmax = 20, Segmax = 100;
+  Standard_Integer Degmax = 20, Segmax = 5000;
   BRepBlend_AppSurface approx (TheFunc, 
 			       lin->Point(1).Parameter(),
 			       lin->Point(lin->NbPoints()).Parameter(),
