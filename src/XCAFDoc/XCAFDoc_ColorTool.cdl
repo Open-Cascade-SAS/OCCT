@@ -123,7 +123,7 @@ is
     	---Purpose: Returns True if label <L> has a color assignment 
     	--          of the type <type>
     
-    GetColor (me: mutable; L: Label from TDF;
+    GetColor (myclass; L: Label from TDF;
 		  type : ColorType from XCAFDoc;
     	    	  colorL: out Label from TDF) returns Boolean;
         ---Purpose: Returns label with color assigned to <L> as <type>

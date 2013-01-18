@@ -30,24 +30,6 @@
 #include <Standard_ImmutableObject.hxx>
 
 
-//=======================================================================
-//function : TDF_Label
-//purpose  : 
-//=======================================================================
-
-TDF_Label::TDF_Label()
-:myLabelNode(NULL)
-{}
-
-//=======================================================================
-//function : TDF_Label
-//purpose  : 
-//=======================================================================
-
-TDF_Label::TDF_Label(const TDF_LabelNodePtr& aNode)
-:myLabelNode(aNode)
-{}
-
 // Attribute methods ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 

@@ -73,7 +73,7 @@ const Standard_GUID& XCAFDoc_Location::GetID()
 //purpose  : 
 //=======================================================================
 
- TopLoc_Location XCAFDoc_Location::Get() const
+const TopLoc_Location& XCAFDoc_Location::Get() const
 {
   return myLocation;
 }

@@ -50,6 +50,7 @@ is
     
     Get (me)
     returns Location from TopLoc;
+        ---C++: return const & 
 
     --IsCaptured(me) returns Boolean;
 	---Purpose: Returns True if there is a reference on the same label

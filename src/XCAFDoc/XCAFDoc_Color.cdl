@@ -64,6 +64,7 @@ is
     Set (me : mutable;  R,G,B : Real from Standard);
 		    
     GetColor (me) returns Color from Quantity;
+        ---C++: return const & 
 
     GetNOC (me) returns NameOfColor from Quantity;
 	     

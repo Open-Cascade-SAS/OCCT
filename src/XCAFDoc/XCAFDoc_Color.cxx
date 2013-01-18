@@ -135,7 +135,7 @@ void XCAFDoc_Color::Set(const Quantity_Color& C)
 //purpose  : 
 //=======================================================================
 
- Quantity_Color XCAFDoc_Color::GetColor() const
+const Quantity_Color& XCAFDoc_Color::GetColor() const
 {
   return myColor;
 }

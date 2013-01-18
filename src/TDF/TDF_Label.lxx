@@ -26,6 +26,14 @@
 #include <TDF_LabelNode.hxx>
 #include <TDF_TagSource.hxx>
 
+inline TDF_Label::TDF_Label()
+:myLabelNode(NULL)
+{}
+
+inline TDF_Label::TDF_Label(const TDF_LabelNodePtr& aNode)
+:myLabelNode(aNode)
+{}
+
 inline void TDF_Label::Nullify()
 { myLabelNode = NULL; }
 

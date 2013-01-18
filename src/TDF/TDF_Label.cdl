@@ -65,11 +65,13 @@ raises
 
 is
     Create returns Label from TDF;
-	---Purpose: Constructs an empty label object.
+        ---Purpose: Constructs an empty label object.
+        ---C++: inline
     
     Create(aNode : LabelNodePtr from TDF) returns Label from TDF
         is private;
         ---Purpose: Reserved to the friends.
+        ---C++: inline
 
 
     Nullify(me : in out);
