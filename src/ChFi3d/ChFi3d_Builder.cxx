@@ -64,7 +64,9 @@
 
 #include <ChFi3d_Builder_0.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
-
+#include <BRepLib.hxx>
+#include <ShapeFix.hxx>
+#include <Precision.hxx>
 
 #ifdef DRAW
 #include <TestTopOpeTools.hxx>
@@ -72,6 +74,8 @@
 #endif
 #ifdef DEB
 #include <OSD_Chronometer.hxx>
+
+
 
 // variables for performances 
 
@@ -559,6 +563,27 @@ void  ChFi3d_Builder::Compute()
     cout<<"-temps ChFi3d_sameparameter "<<t_sameparam<<"s"<<endl<<endl;
   }
 #endif
+  //
+  // Inspect the new faces to provide sameparameter 
+  // if it is necessary
+  if (IsDone())
+  {
+    Standard_Real SameParTol = Precision::Confusion();
+    Standard_Integer aNbSurfaces, iF;
+    TopTools_ListIteratorOfListOfShape aIt;
+    //
+    aNbSurfaces=myDS->NbSurfaces();
+    
+    for (iF=1; iF<=aNbSurfaces; ++iF) {
+      const TopTools_ListOfShape& aLF=myCoup->NewFaces(iF);
+      aIt.Initialize(aLF);
+      for (; aIt.More(); aIt.Next()) {
+	const TopoDS_Shape& aF=aIt.Value();
+	BRepLib::SameParameter(aF, SameParTol, Standard_True);
+	ShapeFix::SameParameter(aF, Standard_False, SameParTol);
+      }
+    }
+  }
 }
 
 //=======================================================================
