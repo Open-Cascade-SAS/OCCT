@@ -72,17 +72,11 @@ MyNorme (Standard_ShortReal (Graphic3d_Vector::NormeOf (AX, AY, AZ))) {
 
 Graphic3d_Vector::Graphic3d_Vector (const Graphic3d_Vertex& APoint1, const Graphic3d_Vertex& APoint2) {
 
-Standard_Real X1, Y1, Z1;
-Standard_Real X2, Y2, Z2;
+	MyX	= APoint2.X() - APoint1.X();
+	MyY	= APoint2.Y() - APoint1.Y();
+	MyZ	= APoint2.Z() - APoint1.Z();
 
-	APoint1.Coord (X1, Y1, Z1);
-	APoint2.Coord (X2, Y2, Z2);
-
-	MyX	= Standard_ShortReal (X2 - X1);
-	MyY	= Standard_ShortReal (Y2 - Y1);
-	MyZ	= Standard_ShortReal (Z2 - Z1);
-
-	MyNorme	= Standard_ShortReal (Graphic3d_Vector::NormeOf (X2 - X1, Y2 - Y1, Z2 - Z1));
+	MyNorme	= Standard_ShortReal (Graphic3d_Vector::NormeOf (MyX, MyY, MyZ));
 
 }
 

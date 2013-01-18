@@ -211,7 +211,7 @@ void V3d_Viewer::ShowGridEcho( const Handle(V3d_View)& aView,
     }
 
     static Graphic3d_Vertex lastVertex;
-    if( Graphic3d_Vertex::Distance(aVertex,lastVertex) != 0.0 ) {
+    if( aVertex.Distance(lastVertex) != 0.0 ) {
       lastVertex = aVertex;
       myGridEchoGroup->Clear();
 #ifdef OCC281

@@ -34,11 +34,6 @@ void OpenGl_GraphicDriver::ClearGroup (const Graphic3d_CGroup& theCGroup)
   InvalidateAllWorkspaces();
 }
 
-void OpenGl_GraphicDriver::CloseGroup (const Graphic3d_CGroup& )
-{
-  // Do nothing
-}
-
 void OpenGl_GraphicDriver::FaceContextGroup (const Graphic3d_CGroup& theCGroup,
                                              const Standard_Integer  theNoInsert)
 {
@@ -94,11 +89,6 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
     ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (theCGroup.ContextMarker, theNoInsert);
     InvalidateAllWorkspaces();
   }
-}
-
-void OpenGl_GraphicDriver::OpenGroup (const Graphic3d_CGroup& )
-{
-  // Do nothing
 }
 
 void OpenGl_GraphicDriver::RemoveGroup (const Graphic3d_CGroup& theCGroup)

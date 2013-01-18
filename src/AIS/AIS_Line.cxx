@@ -19,15 +19,13 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351	//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
+//GER61351	//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 #include <AIS_Line.ixx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Precision.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -157,13 +155,11 @@ void AIS_Line::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 //=======================================================================
 
 void AIS_Line::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_Line::SetColor(const Quantity_Color &aCol)
-#endif
 {
   hasOwnColor=Standard_True;
   myOwnColor=aCol;
@@ -190,15 +186,9 @@ void AIS_Line::UnsetColor()
 
   if (!HasWidth()) myDrawer->SetLineAspect(NullAsp);
   else{
-#ifdef GER61351
     Quantity_Color CC;
     if( HasColor() ) CC = myOwnColor;
     else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
-#else
-    Quantity_NameOfColor CC =
-		AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line);
-#endif 
-
     myDrawer->LineAspect()->SetColor(CC);
     myOwnColor = CC;
  }
@@ -212,17 +202,10 @@ void AIS_Line::SetWidth(const Standard_Real aValue)
 {
   myOwnWidth=aValue;
 
-#ifndef GER61351
-  Quantity_NameOfColor CC =
-		 HasColor()? myOwnColor : AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line);
-#endif
-
   if (!myDrawer->HasLineAspect ()) {
-#ifdef GER61351
     Quantity_Color CC;
     if( HasColor() ) CC = myOwnColor;
     else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
-#endif
     myDrawer->SetLineAspect (new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,aValue));
   } else
     myDrawer->LineAspect()->SetWidth(aValue);
@@ -251,16 +234,11 @@ void AIS_Line::UnsetWidth()
 //=======================================================================
 void AIS_Line::ComputeInfiniteLine( const Handle(Prs3d_Presentation)& aPresentation)
 {
-
   GeomAdaptor_Curve curv(myComponent);
-  Standard_Boolean isPrimitiveArraysEnabled = Graphic3d_ArrayOfPrimitives::IsEnable();
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Disable();
   StdPrs_Curve::Add(aPresentation,curv,myDrawer);
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Enable();
 
   //pas de prise en compte lors du FITALL
   aPresentation->SetInfiniteState (Standard_True);
-
 }
 
 //=======================================================================
@@ -269,7 +247,6 @@ void AIS_Line::ComputeInfiniteLine( const Handle(Prs3d_Presentation)& aPresentat
 //=======================================================================
 void AIS_Line::ComputeSegmentLine( const Handle(Prs3d_Presentation)& aPresentation)
 {
-
   gp_Pnt P1 = myStartPoint->Pnt();
   gp_Pnt P2 = myEndPoint->Pnt();
   
@@ -277,11 +254,7 @@ void AIS_Line::ComputeSegmentLine( const Handle(Prs3d_Presentation)& aPresentati
 
   Standard_Real dist = P1.Distance(P2);
   GeomAdaptor_Curve curv(myComponent,0.,dist);
-  Standard_Boolean isPrimitiveArraysEnabled = Graphic3d_ArrayOfPrimitives::IsEnable();
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Disable();
   StdPrs_Curve::Add(aPresentation,curv,myDrawer);
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Enable();
-
 }
 
 

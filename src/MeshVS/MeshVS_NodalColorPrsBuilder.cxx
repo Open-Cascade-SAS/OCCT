@@ -27,9 +27,7 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_TextureParams.hxx>
 
 #include <Prs3d_ShadingAspect.hxx>
@@ -59,7 +57,6 @@
 #include <Graphic3d_TypeOfTextureMode.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <Graphic3d_Array1OfVertexNT.hxx>
 #include <AIS_Drawer.hxx>
 #include <Quantity_Array1OfColor.hxx>
 #include <Aspect_SequenceOfColor.hxx>
@@ -531,9 +528,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Handle(Graphic3d_Group) aGroup1 = Prs3d_Root::CurrentGroup ( Prs );
 
   aGroup1->SetPrimitivesAspect( anAsp );
-  aGroup1->BeginPrimitives();
   aGroup1->AddPrimitiveArray( aCPolyArr );
-  aGroup1->EndPrimitives();
 
   if (aShowEdges)
   {
@@ -544,9 +539,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     anAsp->SetTextureMapOff();
     aGroup2->SetPrimitivesAspect( anAsp );
     aGroup2->SetPrimitivesAspect( anLAsp );
-    aGroup2->BeginPrimitives();
     aGroup2->AddPrimitiveArray( aPolyL );
-    aGroup2->EndPrimitives();
     anAsp->SetEdgeOn();
   }
 }

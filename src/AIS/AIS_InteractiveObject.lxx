@@ -19,8 +19,7 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor. 
+//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 
 inline Standard_Boolean  AIS_InteractiveObject::AcceptShapeDecomposition() const 
@@ -66,19 +65,13 @@ inline Standard_Integer AIS_InteractiveObject::SelectionMode() const
 
 inline Quantity_NameOfColor AIS_InteractiveObject::Color() const 
 {
-#ifdef GER61351
- return myOwnColor.Name();
-#else
- return myOwnColor;
-#endif
+  return myOwnColor.Name();
 }
 
-#ifdef GER61351
 inline void AIS_InteractiveObject::Color(Quantity_Color& aColor) const 
 {
- aColor = myOwnColor;
+  aColor = myOwnColor;
 }
-#endif
 
 inline Standard_Boolean AIS_InteractiveObject::HasWidth() const 
 {return (!myOwnWidth == 0.);}

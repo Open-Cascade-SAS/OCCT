@@ -18,7 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <DsgPrs_OffsetPresentation.ixx>
 
 #include <gp_Lin.hxx>
@@ -29,7 +28,7 @@
 #include <gce_MakeLin.hxx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -59,11 +58,11 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& AttachmentPoint2,
 				     const gp_Dir& aDirection,
 				     const gp_Dir& aDirection2,
-				     const gp_Pnt& OffsetPoint) {
-
-
+				     const gp_Pnt& OffsetPoint)
+{
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection2);
   gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L1,OffsetPoint),L1);
@@ -104,55 +103,34 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   gp_Pnt PointMin = ElCLib::Value(parmin,L3);
   gp_Pnt PointMax = ElCLib::Value(parmax,L3);
 
-  Graphic3d_Array1OfVertex V(1,2);
-
-  Quantity_Length X,Y,Z;
-
-  PointMin.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-
-  PointMax.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
   // trait de cote : 1er groupe
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+  aPrims->AddVertex(PointMin);
+  aPrims->AddVertex(PointMax);
 
+  Prs3d_Root::NewGroup(aPresentation);
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  if (DimNulle) {
-
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction(),
-		      LA->Arrow1Aspect()->Angle(),
-		      LA->Arrow1Aspect()->Length());
-
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction().Reversed(),
-		      LA->Arrow1Aspect()->Angle(),
-		      LA->Arrow1Aspect()->Length());
-  } else {
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    
-    if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) {
+  if (DimNulle)
+  {
+    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction(),LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction().Reversed(),LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+  }
+  else
+  {
+    if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length()))
       outside = Standard_True;
-    }
     gp_Dir arrdir = L3.Direction().Reversed();
-    
-    if (outside) {
+    if (outside)
       arrdir.Reverse();
-    }
+
     // fleche 1 : 2eme groupe
-    Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,
-		      LA->Arrow1Aspect()->Angle(),
-		      LA->Arrow1Aspect()->Length());
-    
-    
+    Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     
     // ball 1 : 3eme groupe
-    
     Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
     MarkerAsp->SetType(Aspect_TOM_BALL);
     MarkerAsp->SetScale(0.8);
@@ -171,26 +149,18 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
   }
 
-  AttachmentPoint1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Proj1.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  // trait de rappel 1 : 5eme groupe
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-  
-  AttachmentPoint2.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Proj2.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  // trait de rappel 1 : 5eme groupe
+  aPrims->AddVertex(AttachmentPoint1);
+  aPrims->AddVertex(Proj1);
+
   // trait de rappel 2 : 6eme groupe
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-  
+  aPrims->AddVertex(AttachmentPoint2);
+  aPrims->AddVertex(Proj2);
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 }
 
 void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPresentation,
@@ -200,10 +170,8 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
 					 const gp_Pnt& AttachmentPoint2,
 					 const gp_Dir& aDirection,
 					 const gp_Dir& aDirection2,
-					 const gp_Pnt& OffsetPoint) {
-
-
-
+					 const gp_Pnt& OffsetPoint)
+{
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L1,OffsetPoint),L1);
 
@@ -221,33 +189,26 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(AxeAsp);
 
-  Graphic3d_Array1OfVertex V(1,2);
-  Quantity_Length X,Y,Z;
-
-  AttachmentPoint1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-
-  Proj1.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
   // trait d'axe : 1er groupe
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(AttachmentPoint1);
+  aPrims->AddVertex(Proj1);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   Prs3d_Root::NewGroup(aPresentation);
+
   Handle(Graphic3d_AspectLine3d) Axe2Asp = new Graphic3d_AspectLine3d (acolor, atype, awidth);
   Axe2Asp->SetType  ( Aspect_TOL_DOTDASH);
   Axe2Asp->SetWidth ( 4.);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(Axe2Asp);
 
-  AttachmentPoint2.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-
-  Proj2.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
   // trait d'axe: 2eme groupe
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(AttachmentPoint2);
+  aPrims->AddVertex(Proj2);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // anneau : 3eme et 4eme groupes
-
   Graphic3d_Vertex V3d(Proj2.X() ,Proj2.Y(), Proj2.Z());
 
   Prs3d_Root::NewGroup(aPresentation);
@@ -267,5 +228,4 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   Marker2Asp->SetColor(acolor);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(Marker2Asp);
   Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-  
 }

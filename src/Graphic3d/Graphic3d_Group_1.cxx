@@ -18,10 +18,6 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define XDESTROY
-
-
-
 //-Version	
 
 //-Design	Declaration des variables specifiques aux groupes
@@ -81,25 +77,22 @@ void Graphic3d_Group::Clear (Standard_Boolean theUpdateStructureMgr)
     Update ();
 }
 
-void Graphic3d_Group::Destroy () {
-
-#ifdef DESTROY
-	cout << "Graphic3d_Group::Destroy ()\n";
-#endif
-
+void Graphic3d_Group::Destroy ()
+{
   // tell graphics driver to clear internal resources of the group
   if (!IsEmpty () && !MyGraphicDriver.IsNull ())
     MyGraphicDriver->ClearGroup (MyCGroup);
 
 }
 
-void Graphic3d_Group::Remove () {
-
+void Graphic3d_Group::Remove ()
+{
 	if (IsDeleted ()) return;
 
-	MyCGroup.IsDeleted	= 1;
 	MyGraphicDriver->RemoveGroup (MyCGroup);
 	MyStructure->Remove (this);
+	MyCGroup.ptrGroup	= NULL;
+
 	Update ();
 
 	MyBounds.XMin	= ShortRealLast (),
@@ -113,37 +106,4 @@ void Graphic3d_Group::Remove () {
 	if (MyContainsFacet) MyStructure->GroupsWithFacet (-1);
 	MyContainsFacet	= Standard_False,
 	MyIsEmpty	= Standard_True;
-
 }
-
-void Graphic3d_Group::BeginPrimitives () {
-
-	if (IsDeleted ()) return;
-	if (MyCGroup.IsOpen) return;
-
-	MyCGroup.IsOpen	= 1;
-
-	MyGraphicDriver->OpenGroup (MyCGroup);
-
-}
-
-void Graphic3d_Group::EndPrimitives () {
-
-	if (IsDeleted ()) return;
-	if (! MyCGroup.IsOpen) return;
-
-	MyCGroup.IsOpen	= 0;
-
-	MyGraphicDriver->CloseGroup (MyCGroup);
-
-}
-
-/*void Graphic3d_Group::SetTransformPersistence(  const Graphic3d_TransModeFlags& AFlag )
-{
-	//MyCGroup.TransformPersistenceFlag = AFlag;
-}
-
-Graphic3d_TransModeFlags Graphic3d_Group::TransformPersistence() const
-{
-	//return MyCGroup.TransformPersistenceFlag;
-}*/

@@ -69,6 +69,7 @@ uses
 
     TCollection,
     TColStd,
+    TColgp,
     OSD,
     Quantity,
     Aspect,
@@ -502,24 +503,8 @@ is
     ---Purpose: 3d vector
     ---Category: Classes
 
-    class Vertex;
+    imported Vertex;
     ---Purpose: 3d vertex
-    ---Category: Classes
-
-    class VertexN;
-    ---Purpose: 3d vertex with a normal vector
-    ---Category: Classes
-
-    class VertexNT;
-    ---Purpose: 3d vertex with a normal vector and texture coordinate
-    ---Category: Classes
-
-    class VertexC;
-    ---Purpose: 3d vertex with a colour
-    ---Category: Classes
-
-    class VertexNC;
-    ---Purpose: 3d vertex with a normal and a colour
     ---Category: Classes
 
     ---------------------
@@ -587,38 +572,6 @@ is
 
     class Array2OfVertex instantiates
             Array2 from TCollection (Vertex from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array1OfVertexC instantiates
-            Array1 from TCollection (VertexC from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array2OfVertexC instantiates
-            Array2 from TCollection (VertexC from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array1OfVertexN instantiates
-            Array1 from TCollection (VertexN from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array2OfVertexN instantiates
-            Array2 from TCollection (VertexN from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array1OfVertexNT instantiates
-            Array1 from TCollection (VertexNT from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array2OfVertexNT instantiates
-            Array2 from TCollection (VertexNT from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array1OfVertexNC instantiates
-            Array1 from TCollection (VertexNC from Graphic3d);
-    ---Category: Instantiated classes
-
-    class Array2OfVertexNC instantiates
-            Array2 from TCollection (VertexNC from Graphic3d);
     ---Category: Instantiated classes
 
     class ListOfShortReal instantiates

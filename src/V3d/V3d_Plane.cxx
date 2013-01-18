@@ -34,14 +34,14 @@
 #include <Viewer_BadValue.hxx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <gp_Pln.hxx>
 
 //-Constructors
 
-V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D) {
-
+V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D)
+{
   Viewer_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::V3d_Plane, bad plane coefficients");
 
   MyPlane = new Visual3d_ClipPlane(A,B,C,D) ;
@@ -49,70 +49,71 @@ V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standar
 
 //-Methods, in order
 
-void V3d_Plane::SetPlane( const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D) {
-
+void V3d_Plane::SetPlane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D)
+{
   Viewer_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::SetPlane, bad plane coefficients");
 
   MyPlane->SetPlane(A,B,C,D) ;
-
-  if( IsDisplayed() ) {
+  if( IsDisplayed() )
     Update();
-  }
 }
 
 void V3d_Plane::Display(const Handle(V3d_View)& aView,
-			const Quantity_Color& aColor) {
-    Handle(V3d_Viewer) theViewer = aView->Viewer();
-    if (!MyGraphicStructure.IsNull()) {
-      MyGraphicStructure->Clear();
-    }
-    Standard_Real size = theViewer->DefaultViewSize();
-    Standard_Real offset = size/10000.;
-    MyGraphicStructure = new Graphic3d_Structure(theViewer->Viewer());
-    Handle(Graphic3d_Group) group = new Graphic3d_Group(MyGraphicStructure);
-    Handle(Graphic3d_AspectFillArea3d) aspect =
-				new Graphic3d_AspectFillArea3d();
-    Graphic3d_MaterialAspect plastic(Graphic3d_NOM_PLASTIC);
-    plastic.SetColor(aColor);
-    plastic.SetTransparency(0.5);
-    aView->SetTransparency(Standard_True);
-    aspect->SetFrontMaterial(plastic);
-//    aspect->SetInteriorStyle (Aspect_IS_SOLID);
-    aspect->SetInteriorStyle (Aspect_IS_HATCH);
-    aspect->SetHatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE);
-    MyGraphicStructure->SetPrimitivesAspect(aspect);
-    Graphic3d_Array1OfVertex p(1,4);
-    p(1).SetCoord(-size/2.,-size/2.,offset);
-    p(2).SetCoord(-size/2., size/2.,offset);
-    p(3).SetCoord( size/2., size/2.,offset);
-    p(4).SetCoord( size/2.,-size/2.,offset);
-    group->Polygon(p);
-    MyGraphicStructure->Display(0);
-    Update();
+                        const Quantity_Color& aColor)
+{
+  Handle(V3d_Viewer) theViewer = aView->Viewer();
+  if (!MyGraphicStructure.IsNull())
+    MyGraphicStructure->Clear();
+
+  MyGraphicStructure = new Graphic3d_Structure(theViewer->Viewer());
+  Handle(Graphic3d_Group) group = new Graphic3d_Group(MyGraphicStructure);
+  Handle(Graphic3d_AspectFillArea3d) aspect = new Graphic3d_AspectFillArea3d();
+  Graphic3d_MaterialAspect plastic(Graphic3d_NOM_PLASTIC);
+  plastic.SetColor(aColor);
+  plastic.SetTransparency(0.5);
+  aView->SetTransparency(Standard_True);
+  aspect->SetFrontMaterial(plastic);
+  aspect->SetInteriorStyle (Aspect_IS_HATCH);
+  aspect->SetHatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE);
+  MyGraphicStructure->SetPrimitivesAspect(aspect);
+
+  const Standard_ShortReal size = (Standard_ShortReal)(0.5*theViewer->DefaultViewSize());
+  const Standard_ShortReal offset = size/5000.F;
+
+  Handle(Graphic3d_ArrayOfQuadrangles) aPrims = new Graphic3d_ArrayOfQuadrangles(4);
+  aPrims->AddVertex(-size,-size,offset);
+  aPrims->AddVertex(-size, size,offset);
+  aPrims->AddVertex( size, size,offset);
+  aPrims->AddVertex( size,-size,offset);
+  group->AddPrimitiveArray(aPrims);
+
+  MyGraphicStructure->Display(0);
+  Update();
 }
 
-void V3d_Plane::Erase() {
+void V3d_Plane::Erase()
+{
   if (!MyGraphicStructure.IsNull()) MyGraphicStructure->Erase();
 }
 
-void V3d_Plane::Plane(Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& D)const  {
-
+void V3d_Plane::Plane(Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& D) const
+{
   MyPlane->Plane(A,B,C,D) ;
 }
 
-Handle(Visual3d_ClipPlane) V3d_Plane::Plane()const  {
-
-  return MyPlane ;
+Handle(Visual3d_ClipPlane) V3d_Plane::Plane()const
+{
+  return MyPlane;
 }
 
-Standard_Boolean V3d_Plane::IsDisplayed() const {
-
+Standard_Boolean V3d_Plane::IsDisplayed() const
+{
   if( MyGraphicStructure.IsNull() ) return Standard_False;
   return MyGraphicStructure->IsDisplayed();
 }
 
-void V3d_Plane::Update() {
-
+void V3d_Plane::Update()
+{
   if( !MyGraphicStructure.IsNull() ) {
     TColStd_Array2OfReal matrix(1,4,1,4);
     Standard_Real A,B,C,D;

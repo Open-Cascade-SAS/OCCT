@@ -85,7 +85,27 @@ is
     -- -------------------------------------------------------------------
 
     AddVertex( me:mutable;
-           aVertice: Pnt from gp)
+               aVertice: Pnt from gp)
+    returns Integer from Standard
+    ---Level: Public 
+    ---Purpose: Adds a vertice in the array.
+    -- returns the actual vertex number.
+    raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
+
+    AddVertex( me:mutable;
+               X,Y,Z: Real from Standard)
+    returns Integer from Standard
+    ---Level: Public 
+    ---Purpose: Adds a vertice in the array.
+    -- returns the actual vertex number.
+    raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
+
+    AddVertex( me:mutable;
+               X,Y,Z: ShortReal from Standard)
     returns Integer from Standard
     ---Level: Public 
     ---Purpose: Adds a vertice in the array.
@@ -94,17 +114,8 @@ is
     -- if the actual vertex number is >= <maxVertexs>
 
     AddVertex( me:mutable;
-           X,Y,Z: Real from Standard)
-    returns Integer from Standard
-    ---Level: Public 
-    ---Purpose: Adds a vertice in the array.
-    -- returns the actual vertex number.
-    raises OutOfRange from Standard;
-    -- if the actual vertex number is >= <maxVertexs>
-
-        AddVertex( me:mutable;
-                   aVertice: Pnt from gp;
-                   aColor: Color from Quantity)
+               aVertice: Pnt from gp;
+               aColor: Color from Quantity)
         returns Integer from Standard
         ---Level: Public
     ---Purpose: Adds a vertice and vertex color in the vertex array.
@@ -117,7 +128,7 @@ is
     AddVertex( me       : mutable;
                aVertice : Pnt from gp;
                aColor   : Integer from Standard)
-        returns Integer from Standard
+    returns Integer from Standard
     ---Level: Public
     ---Purpose: Adds a vertice and vertex color in the vertex array.
     -- returns the actual vertex number.
@@ -129,12 +140,37 @@ is
         raises OutOfRange from Standard;
     -- if the actual vertex number is >= <maxVertexs>
 
-
     AddVertex( me       :mutable;
-                   aVertice : Pnt from gp;
-                   aNormal  : Dir from gp)
-        returns Integer from Standard
-        ---Level: Public
+               aVertice : Pnt from gp;
+               aNormal  : Dir from gp)
+    returns Integer from Standard
+    ---Level: Public
+    ---Purpose: Adds a vertice and vertex normal in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
+
+    AddVertex( me:mutable;
+               X,Y,Z: Real from Standard;
+               NX,NY,NZ: Real from Standard)
+    returns Integer from Standard
+    ---Level: Public
+    ---Purpose: Adds a vertice and vertex normal in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
+
+    AddVertex( me:mutable;
+               X,Y,Z: ShortReal from Standard;
+               NX,NY,NZ: ShortReal from Standard)
+    returns Integer from Standard
+    ---Level: Public
     ---Purpose: Adds a vertice and vertex normal in the vertex array.
     -- returns the actual vertex number.
     --  Warning: <aNormal> is ignored when the <hasVNormals>
@@ -143,23 +179,11 @@ is
     -- if the actual vertex number is >= <maxVertexs>
 
     AddVertex( me:mutable;
-           X,Y,Z: Real from Standard;
-           NX,NY,NZ: Real from Standard)
-        returns Integer from Standard
-        ---Level: Public
-    ---Purpose: Adds a vertice and vertex normal in the vertex array.
-    -- returns the actual vertex number.
-    --  Warning: <aNormal> is ignored when the <hasVNormals>
-    -- constructor parameter is FALSE.
-        raises OutOfRange from Standard;
-    -- if the actual vertex number is >= <maxVertexs>
-
-    AddVertex( me:mutable;
-                   aVertice: Pnt from gp;
-                   aNormal: Dir from gp;
-                   aColor: Color from Quantity)
-        returns Integer from Standard
-        ---Level: Public
+               aVertice: Pnt from gp;
+               aNormal: Dir from gp;
+               aColor: Color from Quantity)
+    returns Integer from Standard
+    ---Level: Public
     ---Purpose: Adds a vertice,vertex normal and color in the vertex array.
     -- returns the actual vertex number.
     --  Warning: <aNormal> is ignored when the <hasVNormals>
@@ -173,7 +197,7 @@ is
                aVertice : Pnt from gp;
                aNormal  : Dir from gp;
                aColor   : Integer from Standard)
-        returns Integer from Standard
+    returns Integer from Standard
     ---Level: Public
     ---Purpose: Adds a vertice,vertex normal and color in the vertex array.
     -- returns the actual vertex number.
@@ -186,25 +210,38 @@ is
     -- use this byte order.
         raises OutOfRange from Standard;
     -- if the actual vertex number is >= <maxVertexs>
-                                                         
 
     AddVertex( me:mutable;
-                   aVertice: Pnt from gp;
-                   aTexel: Pnt2d from gp)
-        returns Integer from Standard
-        ---Level: Public
+               aVertice: Pnt from gp;
+               aTexel: Pnt2d from gp)
+    returns Integer from Standard
+    ---Level: Public
     ---Purpose: Adds a vertice and vertex texture in the vertex array.
     -- returns the actual vertex number.
     -- <aTexel> is ignored when the <hasVTexels>
     -- constructor parameter is FALSE.
         raises OutOfRange from Standard;
     -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
 
     AddVertex( me:mutable;
-           X,Y,Z: Real from Standard;
-           TX,TY: Real from Standard)
-        returns Integer from Standard
-        ---Level: Public
+               X,Y,Z: Real from Standard;
+               TX,TY: Real from Standard)
+    returns Integer from Standard
+    ---Level: Public
+    ---Purpose: Adds a vertice and vertex texture coordinates in the vertex array.
+    -- returns the actual vertex number.
+    -- <aTexel> is ignored when the <hasVTexels>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
+
+    AddVertex( me:mutable;
+               X,Y,Z: ShortReal from Standard;
+               TX,TY: ShortReal from Standard)
+    returns Integer from Standard
+    ---Level: Public
     ---Purpose: Adds a vertice and vertex texture coordinates in the vertex array.
     -- returns the actual vertex number.
     -- <aTexel> is ignored when the <hasVTexels>
@@ -213,11 +250,11 @@ is
     -- if the actual vertex number is >= <maxVertexs>
 
     AddVertex( me:mutable;
-                   aVertice: Pnt from gp;
-                   aNormal: Dir from gp;
-                   aTexel: Pnt2d from gp)
-        returns Integer from Standard
-        ---Level: Public
+               aVertice: Pnt from gp;
+               aNormal: Dir from gp;
+               aTexel: Pnt2d from gp)
+    returns Integer from Standard
+    ---Level: Public
     ---Purpose: Adds a vertice,vertex normal and texture in the vertex array.
     -- returns the actual vertex number.
     --  Warning: <aNormal> is ignored when the <hasVNormals>
@@ -226,13 +263,30 @@ is
     -- constructor parameter is FALSE.
         raises OutOfRange from Standard;
     -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
 
     AddVertex( me:mutable;
-           X,Y,Z: Real from Standard;
-           NX,NY,NZ: Real from Standard;
-           TX,TY: Real from Standard)
-        returns Integer from Standard
-        ---Level: Public
+               X,Y,Z: Real from Standard;
+               NX,NY,NZ: Real from Standard;
+               TX,TY: Real from Standard)
+    returns Integer from Standard
+    ---Level: Public
+    ---Purpose: Adds a vertice,vertex normal and texture in the vertex array.
+    -- returns the actual vertex number.
+    --  Warning: <aNormal> is ignored when the <hasVNormals>
+    -- constructor parameter is FALSE.
+    -- <aTexel> is ignored when the <hasVTexels>
+    -- constructor parameter is FALSE.
+        raises OutOfRange from Standard;
+    -- if the actual vertex number is >= <maxVertexs>
+    ---C++: inline
+
+    AddVertex( me:mutable;
+               X,Y,Z: ShortReal from Standard;
+               NX,NY,NZ: ShortReal from Standard;
+               TX,TY: ShortReal from Standard)
+    returns Integer from Standard
+    ---Level: Public
     ---Purpose: Adds a vertice,vertex normal and texture in the vertex array.
     -- returns the actual vertex number.
     --  Warning: <aNormal> is ignored when the <hasVNormals>
@@ -252,8 +306,8 @@ is
     -- if the actual Bound number is >= <maxBounds>
 
     AddBound( me:mutable;
-                edgeNumber: Integer from Standard;
-                aBColor: Color from Quantity)
+              edgeNumber: Integer from Standard;
+              aBColor: Color from Quantity)
         returns Integer from Standard
         ---Level: Public
     ---Purpose: Adds a bound of length <edgeNumber> and bound color 
@@ -338,16 +392,16 @@ is
     -- or if the <aBoundIndex> parameter is < 1 or > ItemNumber()
 
     SetVertice( me:mutable;
-         anIndex: Integer from Standard;
-                 aVertice: Pnt from gp)
+                anIndex: Integer from Standard;
+                aVertice: Pnt from gp)
         ---Level: Public
         ---Purpose: Change the vertice of rank <anIndex> in the array.
         raises OutOfRange from Standard;
         -- if the index is <1 or > VertexNumber()
 
     SetVertice( me:mutable;
-         anIndex: Integer from Standard;
-                 X,Y,Z: Real from Standard)
+                anIndex: Integer from Standard;
+                X,Y,Z: ShortReal from Standard)
         ---Level: Public
         ---Purpose: Change the vertice of rank <anIndex> in the array.
         raises OutOfRange from Standard;
@@ -632,25 +686,6 @@ is
     -------------------------------------------------------------------
     -- Category Miscellaneous 
     -------------------------------------------------------------------
-
-    Enable( myclass );
-    ---Level: Public 
-    ---Purpose: Enable to use the arrays of primitives
-    --  Warning: Updates the current value of the environment symbol 
-    --  CSF_USE_ARRAY_OF_PRIMITIVES
-
-    Disable( myclass );
-    ---Level: Public 
-    ---Purpose: Disable to use the arrays of primitives
-    --  Warning: Updates the current value of the environment symbol 
-    --  CSF_USE_ARRAY_OF_PRIMITIVES
-
-    IsEnable( myclass )
-    returns Boolean from Standard;
-    ---Level: Public 
-    ---Purpose: Returns TRUE when the arrays are enable to use.
-    --  Warning: The initial value can be defined seting the symbol
-    --  CSF_USE_ARRAY_OF_PRIMITIVES to "Yes" or "No"
 
     IsValid( me:mutable )
     returns Boolean from Standard;

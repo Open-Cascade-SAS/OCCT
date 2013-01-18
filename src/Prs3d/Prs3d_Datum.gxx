@@ -30,21 +30,19 @@
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 
 void Prs3d_Datum::Add( const Handle(Prs3d_Presentation)& aPresentation,
                        const anyDatum& aDatum,
-                       const Handle(Prs3d_Drawer)& aDrawer ) {
-
+                       const Handle(Prs3d_Drawer)& aDrawer )
+{
   Handle(Prs3d_DatumAspect) DA = aDrawer->DatumAspect();
-
   Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
 
   Quantity_Color Col; Aspect_TypeOfLine Tol; Standard_Real W;
   DA->FirstAxisAspect()->Aspect()->Values(Col,Tol,W);
 
-  Handle(Graphic3d_AspectMarker3d) Asp = new Graphic3d_AspectMarker3d
-    (Aspect_TOM_BALL,Col,.1);
+  Handle(Graphic3d_AspectMarker3d) Asp = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Col,.1);
 
   gp_Ax2 Axis = DatumTool::Ax2(aDatum);
   gp_Pnt Orig = Axis.Location();
@@ -56,72 +54,63 @@ void Prs3d_Datum::Add( const Handle(Prs3d_Presentation)& aPresentation,
 // Trace d'une petite sphere au debut du vecteur:
 //
 
-  Quantity_Length xo,yo,zo,x,y,z;
-
+  Quantity_Length xo,yo,zo;
   Orig.Coord(xo,yo,zo);
   G->SetPrimitivesAspect(Asp);
   G->Marker(Graphic3d_Vertex (xo,yo,zo));
 
-
-  Graphic3d_Array1OfVertex A(1,2);
-  A(1).SetCoord(xo,yo,zo);
-
   Quantity_Length DS;
-
-#ifdef IMP120100
   Quantity_Length arrowAngle = aDrawer->ArrowAspect()->Angle();
   Quantity_Length textHeight = aDrawer->TextAspect()->Height();
-#endif
 
-  if (DA->DrawFirstAndSecondAxis()) {
-    oX.Coord(x,y,z);
+  Handle(Graphic3d_ArrayOfSegments) aPrims;
+  if (DA->DrawFirstAndSecondAxis())
+  {
     DS = DA->FirstAxisLength();
-    x = xo + x*DS;   y = yo + y*DS;  z = zo + z*DS;
-    A(2).SetCoord(x,y,z);
+    const gp_Pnt p1(Orig.XYZ() + oX.XYZ()*DS);
+    
     G->SetPrimitivesAspect(DA->FirstAxisAspect()->Aspect());
-    G->Polyline(A);
-#ifdef IMP120100
+    aPrims = new Graphic3d_ArrayOfSegments(2);
+    aPrims->AddVertex(Orig);
+    aPrims->AddVertex(p1);
+    G->AddPrimitiveArray(aPrims);
+
     G->SetPrimitivesAspect(aDrawer->ArrowAspect()->Aspect());
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oX,arrowAngle,DS/10.);
+    Prs3d_Arrow::Draw(aPresentation,p1,oX,arrowAngle,DS/10.);
     G->SetPrimitivesAspect(aDrawer->TextAspect()->Aspect());
-    G->Text(Standard_CString("X"),A(2),16.);
-#else
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oX,M_PI/180.*10.,DS/10.);
-    Prs3d_Root::CurrentGroup(aPresentation)->Text(Standard_CString("X"),A(2),1./81.);
-#endif
-}
-  if (DA->DrawFirstAndSecondAxis()) {
-    oY.Coord(x,y,z);
+    Graphic3d_Vertex v1(p1.X(),p1.Y(),p1.Z());
+    G->Text(Standard_CString("X"),v1,16.);
+
     DS = DA->SecondAxisLength();
-    x = xo + x*DS;   y = yo + y*DS;  z = zo + z*DS;
-    A(2).SetCoord(x,y,z);
+    const gp_Pnt p2(Orig.XYZ() + oY.XYZ()*DS);
+
     G->SetPrimitivesAspect(DA->SecondAxisAspect()->Aspect());
-    G->Polyline(A);
-#ifdef IMP120100
+    aPrims = new Graphic3d_ArrayOfSegments(2);
+    aPrims->AddVertex(Orig);
+    aPrims->AddVertex(p2);
+    G->AddPrimitiveArray(aPrims);
+
     G->SetPrimitivesAspect(aDrawer->ArrowAspect()->Aspect());
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oY,arrowAngle,DS/10.);
+    Prs3d_Arrow::Draw(aPresentation,p2,oY,arrowAngle,DS/10.);
     G->SetPrimitivesAspect(aDrawer->TextAspect()->Aspect());
-    G->Text(Standard_CString("Y"),A(2),16.);
-#else
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oY,M_PI/180.*10.,DS/10.);
-    Prs3d_Root::CurrentGroup(aPresentation)->Text(Standard_CString("Y"),A(2),1./81.);
-#endif
-}
-  if (DA->DrawThirdAxis()) {
-    oZ.Coord(x,y,z); 
+    Graphic3d_Vertex v2(p2.X(),p2.Y(),p2.Z());
+    G->Text(Standard_CString("Y"),v2,16.);
+  }
+  if (DA->DrawThirdAxis())
+  {
     DS = DA->ThirdAxisLength();
-    x = xo + x*DS;   y = yo + y*DS;  z = zo + z*DS;
-    A(2).SetCoord(x,y,z);
+    const gp_Pnt p3(Orig.XYZ() + oZ.XYZ()*DS);
+
     G->SetPrimitivesAspect(DA->ThirdAxisAspect()->Aspect());
-    G->Polyline(A);
-#ifdef IMP120100
+    aPrims = new Graphic3d_ArrayOfSegments(2);
+    aPrims->AddVertex(Orig);
+    aPrims->AddVertex(p3);
+    G->AddPrimitiveArray(aPrims);
+
     G->SetPrimitivesAspect(aDrawer->ArrowAspect()->Aspect());
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oZ,arrowAngle,DS/10.);
+    Prs3d_Arrow::Draw(aPresentation,p3,oZ,arrowAngle,DS/10.);
     G->SetPrimitivesAspect(aDrawer->TextAspect()->Aspect());
-    G->Text(Standard_CString("Z"),A(2),16.);
-#else
-    Prs3d_Root::CurrentGroup(aPresentation)->Text(Standard_CString("Z"),A(2),1./81.);
-    Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),oZ,M_PI/180.*10.,DS/10.);
-#endif
-}
+    Graphic3d_Vertex v3(p3.X(),p3.Y(),p3.Z());
+    G->Text(Standard_CString("Z"),v3,16.);
+  }
 }

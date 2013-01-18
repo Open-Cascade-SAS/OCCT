@@ -18,15 +18,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_FilletRadiusPresentation.ixx>
 
 #include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
 #include <ElCLib.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Prs3d_LengthAspect.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -79,6 +78,7 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
 {
   char valcar[80];
   sprintf(valcar,"%5.2f",theval);
+
   Standard_Real FirstParCirc, LastParCirc;
   Standard_Boolean SpecCase;
   gp_Dir DirOfArrow;
@@ -86,6 +86,7 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
   //  gp_Pnt NewPosition, EndOfArrow;
   Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
+
   Standard_Real ArrowLength = LA->Arrow1Aspect()->Length();
   DsgPrs::ComputeFilletRadiusPresentation( ArrowLength,
 					   theval,
@@ -106,40 +107,34 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
 					   );
   // Creating the fillet's arc 				      
   if( !SpecCase )
-    {
-      Standard_Real Alpha = Abs(LastParCirc - FirstParCirc);
-      Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / M_PI));
-      Graphic3d_Array1OfVertex ApproxArc( 0, NodeNumber-1 );
-      Standard_Real delta = Alpha / ( NodeNumber - 1 );
-      gp_Pnt CurPnt;
-      for (Standard_Integer i = 0 ; i < NodeNumber; i++)
-	{
-	  CurPnt =  ElCLib::Value( FirstParCirc, FilletCirc );
-	  ApproxArc(i).SetCoord( CurPnt.X(), CurPnt.Y(), CurPnt.Z() );
-	  FirstParCirc += delta ;
-	}
-      Prs3d_Root::CurrentGroup( aPresentation )->Polyline( ApproxArc );
-      HasCircle = Standard_True;
-      Handle(Geom_Circle) Circle = new Geom_Circle( FilletCirc );
-      TrimCurve = new Geom_TrimmedCurve( Circle,  FirstParCirc, LastParCirc );
-    }
+  {
+    const Standard_Real Alpha = Abs(LastParCirc - FirstParCirc);
+    const Standard_Integer NodeNumber = Max (4 , Standard_Integer (50. * Alpha / M_PI));
+    const Standard_Real delta = Alpha / ( NodeNumber - 1 );
+
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
+    for (Standard_Integer i = 0 ; i < NodeNumber; i++, FirstParCirc += delta)
+	  aPrims->AddVertex(ElCLib::Value( FirstParCirc, FilletCirc ));
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+
+    HasCircle = Standard_True;
+    Handle(Geom_Circle) Circle = new Geom_Circle( FilletCirc );
+    TrimCurve = new Geom_TrimmedCurve( Circle,  FirstParCirc, LastParCirc );
+  }
   else // null or PI anle or Radius = 0
-    {
-      HasCircle = Standard_False;
-    }
+  {
+    HasCircle = Standard_False;
+  }
   
   // Line from position to intersection point on fillet's circle (EndOfArrow)
-  Graphic3d_Array1OfVertex Vrap(1,2);
-  Vrap(1).SetCoord(DrawPosition.X(),
-		   DrawPosition.Y(),
-		   DrawPosition.Z());
-  Vrap(2).SetCoord( EndOfArrow.X(), EndOfArrow.Y(), EndOfArrow.Z() );
-  Prs3d_Root::CurrentGroup( aPresentation )->Polyline( Vrap );
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(DrawPosition);
+  aPrims->AddVertex(EndOfArrow);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+
   // Drawing the text
   Prs3d_Text::Draw(aPresentation, LA->TextAspect(), aText, DrawPosition);
    
   // Add presentation of arrows
   DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow, EndOfArrow, DirOfArrow, DirOfArrow, ArrowPrs );
-  
 }
-

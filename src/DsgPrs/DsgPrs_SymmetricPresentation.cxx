@@ -18,8 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_SymmetricPresentation.ixx>
 
 #include <Precision.hxx>
@@ -42,7 +40,8 @@
 #include <gce_MakeDir.hxx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Vertex.hxx>
@@ -74,11 +73,11 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 					const gp_Pnt& OffsetPoint)
 { 
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
   gp_Pnt ProjOffsetPoint = ElCLib::Value(ElCLib::Parameter(aAxis,OffsetPoint),aAxis);
   gp_Pnt PjAttachPnt1    = ElCLib::Value(ElCLib::Parameter(aAxis,AttachmentPoint1),aAxis);
   gp_Dir aDirectionAxis  = aAxis.Direction();
-//  gp_Lin L1 (AttachmentPoint1,aDirection1);
   Standard_Real h = fabs(ProjOffsetPoint.Distance(PjAttachPnt1)/cos(aDirectionAxis.Angle(aDirection1)));
   
   gp_Vec VL1(aDirection1);
@@ -132,19 +131,12 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 
   gp_Pnt PointMin = ElCLib::Value(parmin,L3);
   gp_Pnt PointMax = ElCLib::Value(parmax,L3);
-  Graphic3d_Array1OfVertex V(1,2);
-  Graphic3d_Array1OfVertex Vc(1,3);
-  Quantity_Length X,Y,Z;
-  Standard_Real D1,coeff;
-  coeff = .5;
-  D1 = aAxis.Distance(AttachmentPoint1);
-  gp_Pnt pint,Pj_P1,P1Previous;
-  P1Previous.SetX(P1.X());
-  P1Previous.SetY(P1.Y());
-  P1Previous.SetZ(P1.Z());
 
+  Quantity_Length X,Y,Z;
+  Standard_Real D1(aAxis.Distance(AttachmentPoint1)),coeff(.5);
+  gp_Pnt pint,Pj_P1,P1Previous = P1;
   
-/*//=======================================================
+  //=======================================================
   // TO AVOID CROSSING
   //        P1  -=- P2                P2  -=- P1         
   //          \<-->/                    |<-->|
@@ -155,7 +147,6 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   // Pattach2 /____\ Pattach1 Pattach2 /______\ Pattach1
   //         /  NO \                  /   YES  \
   //=======================================================
-*/
 
   Standard_Boolean Cross = Standard_False;
   gp_Vec Attch1_PjAttch1(AttachmentPoint1,PjAttachPnt1);
@@ -167,16 +158,15 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     P1       = P2;
     P2       = PntTempo;
   }  
-/*  //===================================
+  //===================================
   // FRACTURES OF TRAITS OF CALL    
   //        /             \         
   //       /               \
   //       |      -=-      |
   //       |<------------->| 
   //===================================
-*/
+
   gp_Vec        Vfix;
-//  Standard_Real alpha,b,s,d;
   Standard_Real alpha,b;
 
   if(aAxis.Distance(P1) > D1*(1 + coeff) && !Cross){
@@ -184,13 +174,12 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //==== PROCESSING OF FACE ===========
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
     Pj_P1 = ElCLib::Value(ElCLib::Parameter(aAxis,P1),aAxis);
     gp_Vec Vp(Pj_P1,P1);
     Vfix = Vp.Divided(Vp.Magnitude()).Multiplied(D1*(1 + coeff));
-    Pj_P1.Translated(Vfix).Coord(X,Y,Z);
-    P1.SetCoord(X,Y,Z);
-    Pj_P1.Translated(Vfix.Reversed()).Coord(X,Y,Z);
-    P2.SetCoord(X,Y,Z);
+    P1 = Pj_P1.Translated(Vfix);
+    P2 = Pj_P1.Translated(Vfix.Reversed());
 
     //=================================
     // LISTING AT THE EXTERIOR
@@ -220,49 +209,37 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     PointMin = ElCLib::Value(parmin,L3);
     PointMax = ElCLib::Value(parmax,L3);
 
-    PointMin.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    PointMax.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(8,3);
+
+    aPrims->AddBound(2);
+    aPrims->AddVertex(PointMin);
+    aPrims->AddVertex(PointMax);
     
     //==== PROCESSING OF CALL 1 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    AttachmentPoint1.Coord(X,Y,Z);
-    Vc(1).SetCoord(X,Y,Z);
-    
     alpha = aDirectionAxis.Angle(aDirection1);
     b = (coeff*D1)/sin(alpha);
     gp_Vec Vpint(AttachmentPoint1,P1Previous);
-    AttachmentPoint1.Translated(Vpint.Divided(Vpint.Magnitude()).Multiplied(b)).Coord(X,Y,Z);
-    pint.SetCoord(X,Y,Z);
+    pint = AttachmentPoint1.Translated(Vpint.Divided(Vpint.Magnitude()).Multiplied(b));
 
-    pint.Coord(X,Y,Z);
-    Vc(2).SetCoord(X,Y,Z);
-    P1.Coord(X,Y,Z);
-    Vc(3).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc);
-    
+    aPrims->AddBound(3);
+    aPrims->AddVertex(AttachmentPoint1);
+    aPrims->AddVertex(pint);
+    aPrims->AddVertex(P1);
+
     //==== PROCESSING OF CALL 2 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    AttachmentPoint2.Coord(X,Y,Z);
-    Vc(1).SetCoord(X,Y,Z);
     gp_Pnt Pj_pint  = ElCLib::Value(ElCLib::Parameter(aAxis,pint),aAxis);
     gp_Vec V_int(pint, Pj_pint);
-    gp_Pnt Sym_pint;
-    Pj_pint.Translated(V_int).Coord(X,Y,Z);
-    Sym_pint.SetCoord(X,Y,Z);
+    gp_Pnt Sym_pint = Pj_pint.Translated(V_int);
 
-    Sym_pint.Coord(X,Y,Z);
-    Vc(2).SetCoord(X,Y,Z);
-    P2.Coord(X,Y,Z);
-    Vc(3).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc);
+    aPrims->AddBound(3);
+    aPrims->AddVertex(AttachmentPoint2);
+    aPrims->AddVertex(Sym_pint);
+    aPrims->AddVertex(P2);
+
+	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
 
-/*//===================================
+  //===================================
   // FRACTURES OF PROCESSING OF CALL    
   //              -=-    
   //         |<--------->| 
@@ -270,12 +247,12 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //        /             \         
   //       /               \
   //===================================
-*/
   else if (aAxis.Distance(P1) < D1*(1 - coeff) || Cross) {
 
     //------ PROCESSING OF FACE ------------
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
     Pj_P1 = ElCLib::Value(ElCLib::Parameter(aAxis,P1),aAxis);
     gp_Vec VpInf(Pj_P1,P1);
     Vfix = VpInf.Divided(VpInf.Magnitude()).Multiplied(D1*(1 - coeff));
@@ -311,75 +288,55 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     PointMin = ElCLib::Value(parmin,L3);
     PointMax = ElCLib::Value(parmax,L3);
 
-    PointMin.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    PointMax.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(8,3);
+
+    aPrims->AddBound(2);
+	aPrims->AddVertex(PointMin);
+    aPrims->AddVertex(PointMax);
     
     //==== PROCESSING OF CALL 1 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    AttachmentPoint1.Coord(X,Y,Z);
-    Vc(1).SetCoord(X,Y,Z);
-    
     alpha = aDirectionAxis.Angle(aDirection1);
     b = (coeff*D1)/sin(alpha);
     gp_Vec Vpint(AttachmentPoint1,P1Previous);
-    AttachmentPoint1.Translated(Vpint.Divided(Vpint.Magnitude()).Multiplied(b)).Coord(X,Y,Z);
-    pint.SetCoord(X,Y,Z);
+    pint = AttachmentPoint1.Translated(Vpint.Divided(Vpint.Magnitude()).Multiplied(b));
 
-    pint.Coord(X,Y,Z);
-    Vc(2).SetCoord(X,Y,Z);
-    P1.Coord(X,Y,Z);
-    Vc(3).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc);
+    aPrims->AddBound(3);
+    aPrims->AddVertex(AttachmentPoint1);
+    aPrims->AddVertex(pint);
+    aPrims->AddVertex(P1);
     
     //==== PROCESSING OF CALL 2 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    AttachmentPoint2.Coord(X,Y,Z);
-    Vc(1).SetCoord(X,Y,Z);
     gp_Pnt Pj_pint  = ElCLib::Value(ElCLib::Parameter(aAxis,pint),aAxis);
     gp_Vec V_int(pint, Pj_pint);
-    gp_Pnt Sym_pint;
-    Pj_pint.Translated(V_int).Coord(X,Y,Z);
-    Sym_pint.SetCoord(X,Y,Z);
+    gp_Pnt Sym_pint = Pj_pint.Translated(V_int);
 
-    Sym_pint.Coord(X,Y,Z);
-    Vc(2).SetCoord(X,Y,Z);
-    P2.Coord(X,Y,Z);
-    Vc(3).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc);
+    aPrims->AddBound(3);
+    aPrims->AddVertex(AttachmentPoint2);
+    aPrims->AddVertex(Sym_pint);
+    aPrims->AddVertex(P2);
+
+	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
   else {
     
     //==== PROCESSING OF FACE ===========
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    PointMin.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    PointMax.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
+    Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+
+	aPrims->AddVertex(PointMin);
+    aPrims->AddVertex(PointMax);
+    
     //==== PROCESSING OF CALL 1 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    AttachmentPoint1.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    P1.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+    aPrims->AddVertex(AttachmentPoint1);
+    aPrims->AddVertex(P1);
 
     //==== PROCESSING OF CALL 2 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    AttachmentPoint2.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    P2.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+    aPrims->AddVertex(AttachmentPoint2);
+    aPrims->AddVertex(P2);
+
+	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
 
   //==== ARROWS ================
@@ -390,14 +347,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
   // arrow 1 ----
-  Prs3d_Arrow::Draw(aPresentation,P1,arrdir,
-		    LA->Arrow1Aspect()->Angle(),
-		    LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,P1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
   
   // arrow 2 ----
-  Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),
-		    LA->Arrow2Aspect()->Angle(),
-		    LA->Arrow2Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
 
   //-------------------------------------------------------------------------------------
   //|                                SYMBOL OF SYMMETRY                                 |
@@ -427,42 +380,35 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   else {
     pm = P1.Translated(Vvar.Multiplied(.5));
   }
-  //pm = P1.Translated(Vvar.Multiplied(.5));
   pOff = OffsetPoint.Translated(vecB);
   
   //Calculate the extremities of the symbol axis
   gp_Vec vecAxe = vecA.Multiplied(.7);
-  pOff.Translated(vecAxe).Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  pOff.Translated(vecAxe.Reversed()).Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
+
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+
+  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(13,5);
+
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pOff.Translated(vecAxe));
+  aPrims->AddVertex(pOff.Translated(vecAxe.Reversed()));
 
   //Calculate the extremities of the superior segment of the symbol
   gp_Vec vec1 = vecAxe.Multiplied(.6);
   vecAxe = Vaxe.Multiplied(vecAxe.Magnitude());
   gp_Vec vec2 = vecAxe.Multiplied(.4);
 
-  pOff.Translated(vec1.Added(vec2)).Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  pOff.Translated(vec1.Reversed().Added(vec2)).Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pOff.Translated(vec1.Added(vec2)));
+  aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2)));
 
   //Calculate the extremities of the inferior segment of the symbol
-  pOff.Translated(vec1.Added(vec2.Reversed())).Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  pOff.Translated(vec1.Reversed().Added(vec2.Reversed())).Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-  
-/*//--------------------------------------------------------------------------------------
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pOff.Translated(vec1.Added(vec2.Reversed())));
+  aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
+
+  //--------------------------------------------------------------------------------------
   //|                          MARKING OF THE SYMMETRY AXIS                             |
   //--------------------------------------------------------------------------------------     
   //        ____
@@ -470,42 +416,31 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //         \/
   //         /\
   //        /__\
-*/
 
-  Graphic3d_Array1OfVertex cursor(1,5);
-  Standard_Real Dist = (aAxis.Distance(AttachmentPoint1)+
-			aAxis.Distance(AttachmentPoint2))/75;
+  Standard_Real Dist = (aAxis.Distance(AttachmentPoint1)+aAxis.Distance(AttachmentPoint2))/75;
   gp_Vec vs(aDirectionAxis);
   gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
-  
   gp_Vec vsymper(vsym.Y(),-vsym.X(),vsym.Z());
   
+  aPrims->AddBound(5);
   gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));
-  cursor(1).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+  aPrims->AddVertex(pm1);
   pm1 = pm1.Translated(vsym.Reversed().Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
-  cursor(2).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+  aPrims->AddVertex(pm1);
   pm1 = pm1.Translated(vsymper.Multiplied(2));
-  cursor(3).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+  aPrims->AddVertex(pm1);
   pm1 = pm1.Translated(vsym.Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
-  cursor(4).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+  aPrims->AddVertex(pm1);
   pm1 = pm1.Translated(vsymper.Multiplied(2));
-  cursor(5).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
-
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(cursor);
+  aPrims->AddVertex(pm1);
 
   vsym.Multiply(4);
-  V(1).SetCoord(pm.Translated(vsym).X(),
-		pm.Translated(vsym).Y(),
-		pm.Translated(vsym).Z());
-  V(2).SetCoord(pm.Translated(vsym.Reversed()).X(),
-		pm.Translated(vsym.Reversed()).Y(),
-		pm.Translated(vsym.Reversed()).Z());
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);  
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pm.Translated(vsym));
+  aPrims->AddVertex(pm.Translated(vsym.Reversed()));
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 }
   
 //===================================================================
@@ -522,13 +457,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 {
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
+
   gp_Pnt OffsetPnt(OffsetPoint.X(),OffsetPoint.Y(),OffsetPoint.Z());
   gp_Pnt Center1 = aCircle1.Location();
   gp_Pnt ProjOffsetPoint = ElCLib::Value(ElCLib::Parameter(aAxis,OffsetPnt),aAxis);
   gp_Pnt ProjCenter1     = ElCLib::Value(ElCLib::Parameter(aAxis,Center1),aAxis);
   gp_Vec Vp(ProjCenter1,Center1);
   if (Vp.Magnitude() <= Precision::Confusion()) Vp = gp_Vec(aAxis.Direction())^aCircle1.Position().Direction();
-
 
   Standard_Real Dt,R,h;
   Dt = ProjCenter1.Distance(ProjOffsetPoint);
@@ -553,10 +488,6 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   if (parcur < parmin) parmin = parcur;
   if (parcur > parmax) parmax = parcur;
   parcur = ElCLib::Parameter(L3,OffsetPnt);
-#ifdef DEB
-  gp_Pnt offp =
-#endif
-                ElCLib::Value(parcur,L3);
 
   Standard_Boolean outside = Standard_False;
   if (parcur < parmin) {
@@ -569,32 +500,23 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
   gp_Pnt PointMin = ElCLib::Value(parmin,L3);
   gp_Pnt PointMax = ElCLib::Value(parmax,L3);
-  Graphic3d_Array1OfVertex V(1,2);
-  Quantity_Length X,Y,Z;
-    
+
   //==== PROCESSING OF FACE ===========
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  PointMin.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  PointMax.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(PointMin);
+  aPrims->AddVertex(PointMax);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   //==== PROCESSING OF CALL 1 =====
   Standard_Integer nbp = 10;
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect()); 
   Standard_Real ParamP1       = ElCLib::Parameter(aCircle1,P1);
   Standard_Real ParamPAttach1 = ElCLib::Parameter(aCircle1,AttachmentPoint1);
-//  gp_Vec Center1_PAttach1(Center1,AttachmentPoint1);
-//  gp_Vec Center1_P1(Center1,P1);
   Standard_Real alpha,Dalpha,alphaIter;
 
   alpha = fabs(ParamP1 - ParamPAttach1);
   if(ParamP1 < ParamPAttach1){
     if(alpha > M_PI){
-      alpha  = (2*M_PI) - alpha;
+      alpha  = (2.*M_PI) - alpha;
       nbp    = (Standard_Integer ) IntegerPart(alpha/(alpha*.02));
       Dalpha = alpha/(nbp - 1);
     }
@@ -605,7 +527,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
   else{
     if(alpha > M_PI){
-      alpha  = (2*M_PI) - alpha;
+      alpha  = (2.*M_PI) - alpha;
       nbp    = (Standard_Integer ) IntegerPart(alpha/(alpha*.02));
       Dalpha = -alpha/(nbp - 1);
     }
@@ -615,28 +537,17 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     }
   }
 
-  Graphic3d_Array1OfVertex Vc1(1,nbp);
-  AttachmentPoint1.Coord(X,Y,Z);
-  Vc1(1).SetCoord(X,Y,Z);
+  aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  aPrims->AddVertex(AttachmentPoint1);
   alphaIter = Dalpha;
   gp_Pnt PntIter;
-  Standard_Integer i ;
-  for( i = 2; i <= nbp; i++){    
-    PntIter = ElCLib::Value(ParamPAttach1 + alphaIter,aCircle1);
-    alphaIter = alphaIter + Dalpha;
-    PntIter.Coord(X,Y,Z);
-    Vc1(i).SetCoord(X,Y,Z);
-    
-  }
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc1);
+  Standard_Integer i;
+  for(i = 2; i <= nbp; i++, alphaIter += Dalpha)
+    aPrims->AddVertex(ElCLib::Value(ParamPAttach1 + alphaIter,aCircle1));
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   
   //==== PROCESSING OF CALL 2 =====
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Pnt Center2 = ProjCenter1.Translated(Vp.Reversed());
-//  gp_Vec Center2_PAttach2(Center2,AttachmentPoint2);
-//  gp_Vec Center2_P2(Center2,P2);
-  
   gp_Dir DirC2 = aCircle1.Axis().Direction();
   gp_Ax2 AxeC2(Center2,DirC2);
   gp_Circ aCircle2(AxeC2,aCircle1.Radius());
@@ -668,18 +579,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     }
   }
 
-  Graphic3d_Array1OfVertex Vc2(1,nbp);
-  AttachmentPoint2.Coord(X,Y,Z);
-  Vc2(1).SetCoord(X,Y,Z);
+  aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  aPrims->AddVertex(AttachmentPoint2);
   alphaIter = Dalpha;
-  for(i = 2; i <= nbp; i++){
-    PntIter = ElCLib::Value(ParamPAttach2 + alphaIter,aCircle2);
-    alphaIter = alphaIter + Dalpha;
-    PntIter.Coord(X,Y,Z);
-    Vc2(i).SetCoord(X,Y,Z);
-  }
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vc2);
-  
+  for(i = 2; i <= nbp; i++, alphaIter += Dalpha)
+    aPrims->AddVertex(ElCLib::Value(ParamPAttach2 + alphaIter,aCircle2));
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+
   //==== ARROWS ================
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -688,14 +594,10 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
   // arrow 1 ----
-  Prs3d_Arrow::Draw(aPresentation,P1,arrdir,
-		    LA->Arrow1Aspect()->Angle(),
-		    LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,P1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
   
   // arrow 2 ----
-  Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),
-		    LA->Arrow2Aspect()->Angle(),
-		    LA->Arrow2Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
 
   //-------------------------------------------------------------------------------------
   //|                                SYMBOL OF SYMMETRY                                 |
@@ -706,9 +608,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //           -------    : Inferior Segment 
   
   gp_Vec Vvar(P1,P2);
-  gp_Vec vec;
   gp_Vec Vtmp = Vvar.Divided(Vvar.Magnitude()).Multiplied(2*(aAxis.Distance(Center1)));
-  vec.SetCoord(Vtmp.X(),Vtmp.Y(),Vtmp.Z());
+  gp_Vec vec = Vtmp;
   gp_Vec vecA = vec.Multiplied(.1);
 
   gp_Dir DirAxis = aAxis.Direction();
@@ -716,48 +617,36 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   gp_Vec vecB = Vaxe.Multiplied(vecA.Magnitude());
   vecB.Multiply(.5);
 
-  //gp_Vec vecB(-vec.Y(),vec.X(),vec.Z());
-  //vecB.Multiply(.05);
-  gp_Pnt pm,pOff;
-  pm = P1.Translated(Vvar.Multiplied(.5));
-  pOff = OffsetPnt.Translated(vecB);
+  gp_Pnt pm = P1.Translated(Vvar.Multiplied(.5));
+  gp_Pnt pOff = OffsetPnt.Translated(vecB);
 
   //Calculation of extremas of the axis of the symbol
   gp_Vec vecAxe = vecA.Multiplied(.7);
-  pOff.Translated(vecAxe).Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  pOff.Translated(vecAxe.Reversed()).Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
+
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+
+  aPrims = new Graphic3d_ArrayOfPolylines(13,5);
+
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pOff.Translated(vecAxe));
+  aPrims->AddVertex(pOff.Translated(vecAxe.Reversed()));
 
   //Calculation of extremas of the superior segment of the symbol
   gp_Vec vec1 = vecAxe.Multiplied(.6);
-
   vecAxe = Vaxe.Multiplied(vecAxe.Magnitude());
-  //vecAxe.SetCoord(-vecAxe.Y(),vecAxe.X(),vecAxe.Z());
-
   gp_Vec vec2 = vecAxe.Multiplied(.4);
 
-  pOff.Translated(vec1.Added(vec2)).Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  pOff.Translated(vec1.Reversed().Added(vec2)).Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pOff.Translated(vec1.Added(vec2)));
+  aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2)));
 
   //Calculation of extremas of the inferior segment of the symbol
-  pOff.Translated(vec1.Added(vec2.Reversed())).Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  pOff.Translated(vec1.Reversed().Added(vec2.Reversed())).Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pOff.Translated(vec1.Added(vec2.Reversed())));
+  aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
   
-/*//--------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------
   //|                          MARKING OF THE AXIS OF SYMMETRY                           |
   //--------------------------------------------------------------------------------------     
   //        ____
@@ -765,44 +654,34 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //         \/
   //         /\
   //        /__\
-*/
 
-  Graphic3d_Array1OfVertex cursor(1,5);
-  //Standard_Real Dist = aCircle1.Radius()/37;
   Standard_Real Dist = aAxis.Distance(Center1)/37;
   gp_Dir aDirectionAxis = aAxis.Direction();
   gp_Vec vs(aDirectionAxis);
   gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
-  
   gp_Vec vsymper(vsym.Y(),-vsym.X(),vsym.Z());
-  gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));
-  cursor(1).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
-  pm1 = pm1.Translated(vsym.Reversed().Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
-  cursor(2).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
-  pm1 = pm1.Translated(vsymper.Multiplied(2));
-  cursor(3).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
-  pm1 = pm1.Translated(vsym.Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
-  cursor(4).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
-  pm1 = pm1.Translated(vsymper.Multiplied(2));
-  cursor(5).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(cursor);
+  aPrims->AddBound(5);
+  gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));
+  aPrims->AddVertex(pm1);
+  pm1 = pm1.Translated(vsym.Reversed().Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
+  aPrims->AddVertex(pm1);
+  pm1 = pm1.Translated(vsymper.Multiplied(2));
+  aPrims->AddVertex(pm1);
+  pm1 = pm1.Translated(vsym.Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
+  aPrims->AddVertex(pm1);
+  pm1 = pm1.Translated(vsymper.Multiplied(2));
+  aPrims->AddVertex(pm1);
 
   vsym.Multiply(4);
-  V(1).SetCoord(pm.Translated(vsym).X(),
-		pm.Translated(vsym).Y(),
-		pm.Translated(vsym).Z());
-  V(2).SetCoord(pm.Translated(vsym.Reversed()).X(),
-		pm.Translated(vsym.Reversed()).Y(),
-		pm.Translated(vsym.Reversed()).Z());
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);  
+  aPrims->AddBound(2);
+  aPrims->AddVertex(pm.Translated(vsym));
+  aPrims->AddVertex(pm.Translated(vsym.Reversed()));
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 }
-  
+
 //===================================================================
 //Function:Add
 //Purpose: draws the representation of an axial symmetry between two vertex.
@@ -817,7 +696,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
 
-  if (AttachmentPoint1.IsEqual(AttachmentPoint2,Precision::Confusion())){
+  if (AttachmentPoint1.IsEqual(AttachmentPoint2,Precision::Confusion()))
+  {
     //==============================================================
     //  SYMMETRY WHEN THE REFERENCE POINT IS ON THE AXIS OF SYM.:
     //==============================================================
@@ -831,22 +711,17 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
     MarkerAsp->SetColor(acolor);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-    Graphic3d_Vertex V3d(AttachmentPoint1.X(),
-			 AttachmentPoint1.Y(), 
-			 AttachmentPoint1.Z());
+    Graphic3d_Vertex V3d(AttachmentPoint1.X(),AttachmentPoint1.Y(),AttachmentPoint1.Z());
     Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
 
     //Trace of the linking segment 
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Graphic3d_Array1OfVertex Vrac(1,2);
-    Vrac(1).SetCoord(AttachmentPoint1.X(),
-		     AttachmentPoint1.Y(), 
-		     AttachmentPoint1.Z());
-    Vrac(2).SetCoord(OffsetPoint.X(),
-		     OffsetPoint.Y(),
-		     OffsetPoint.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
+
+    Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(8);
+
+	aPrims->AddVertex(AttachmentPoint1);
+    aPrims->AddVertex(OffsetPoint);
   
     //--------------------------------------------------------------------------------------
     //|                                SYMBOL OF SYMMETRY                                 |
@@ -860,43 +735,39 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     gp_Vec uVAO  = VAO.Divided(VAO.Magnitude());
     gp_Pnt pDaxe = OffsetPoint.Translated(uVAO.Multiplied(3.));
     gp_Pnt pFaxe = pDaxe.Translated(uVAO.Multiplied(12.));
-    Vrac(1).SetCoord(pDaxe.X(),pDaxe.Y(),pDaxe.Z());
-    Vrac(2).SetCoord(pFaxe.X(),pFaxe.Y(),pFaxe.Z());
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
+
+    aPrims->AddVertex(pDaxe);
+    aPrims->AddVertex(pFaxe);
 
     //Calculate extremas of the superior segment of the symbol
     gp_Vec nVAO  (-uVAO.Y(),uVAO.X(),uVAO.Z());
     gp_Pnt sgP11 = pDaxe.Translated(uVAO.Multiplied(2.).Added(nVAO.Multiplied(2.)));
     gp_Pnt sgP12 = sgP11.Translated(uVAO.Multiplied(8.));
-    Vrac(1).SetCoord(sgP11.X(),sgP11.Y(),sgP11.Z());
-    Vrac(2).SetCoord(sgP12.X(),sgP12.Y(),sgP12.Z());
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
+
+    aPrims->AddVertex(sgP11);
+    aPrims->AddVertex(sgP12);
 
     //Calculate extremas of the inferior segment of the symbol
     gp_Vec nVAOr = nVAO.Reversed();
     gp_Pnt sgP21 = pDaxe.Translated(uVAO.Multiplied(2.).Added(nVAOr.Multiplied(2.)));
     gp_Pnt sgP22 = sgP21.Translated(uVAO.Multiplied(8.));
-    Vrac(1).SetCoord(sgP21.X(),sgP21.Y(),sgP21.Z());
-    Vrac(2).SetCoord(sgP22.X(),sgP22.Y(),sgP22.Z());
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrac);
+
+    aPrims->AddVertex(sgP21);
+    aPrims->AddVertex(sgP22);
+
+	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
   //==============================================================
   //  OTHER CASES                                                 :
   //==============================================================
 
-  else{
+  else {
     gp_Pnt ProjOffsetPoint      = ElCLib::Value(ElCLib::Parameter(aAxis,OffsetPoint),aAxis);
     gp_Pnt ProjAttachmentPoint1 = ElCLib::Value(ElCLib::Parameter(aAxis,AttachmentPoint1),aAxis);
     gp_Vec PjAtt1_Att1(ProjAttachmentPoint1,AttachmentPoint1);
     gp_Pnt P1 = ProjOffsetPoint.Translated(PjAtt1_Att1);
     gp_Pnt P2 = ProjOffsetPoint.Translated(PjAtt1_Att1.Reversed());
-        
+
     gp_Lin L3 = gce_MakeLin(P1,P2);
     Standard_Real parmin,parmax,parcur;
     parmin = ElCLib::Parameter(L3,P1);
@@ -906,10 +777,6 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     if (parcur < parmin) parmin = parcur;
     if (parcur > parmax) parmax = parcur;
     parcur = ElCLib::Parameter(L3,OffsetPoint);
-#ifdef DEB
-    gp_Pnt offp =
-#endif
-                  ElCLib::Value(parcur,L3);
     
     Standard_Boolean outside = Standard_False;
     if (parcur < parmin) {
@@ -922,57 +789,41 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     }
     gp_Pnt PointMin = ElCLib::Value(parmin,L3);
     gp_Pnt PointMax = ElCLib::Value(parmax,L3);
-    Graphic3d_Array1OfVertex V(1,2);
-    Quantity_Length X,Y,Z;
-    
+
     //==== PROCESSING OF FACE ===========
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    PointMin.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    PointMax.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+
+    Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(6);
+
+	aPrims->AddVertex(PointMin);
+    aPrims->AddVertex(PointMax);
     
     //==== PROCESSING OF CALL 1 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect()); 
-    AttachmentPoint1.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    P1.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+    aPrims->AddVertex(AttachmentPoint1);
+    aPrims->AddVertex(P1);
     
     //==== PROCESSING OF CALL 2 =====
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect()); 
-    AttachmentPoint2.Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    P2.Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+    aPrims->AddVertex(AttachmentPoint2);
+    aPrims->AddVertex(P2);
+
+	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
  
     //==== ARROWS ================
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    
     if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) outside = Standard_True;
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside) arrdir.Reverse();
     // arrow 1 ----
-    Prs3d_Arrow::Draw(aPresentation,P1,arrdir,
-		      LA->Arrow1Aspect()->Angle(),
-		      LA->Arrow1Aspect()->Length());
+    Prs3d_Arrow::Draw(aPresentation,P1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
   
     // arrow 2 ----
-    Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),
-		      LA->Arrow2Aspect()->Angle(),
-		      LA->Arrow2Aspect()->Length());
+    Prs3d_Arrow::Draw(aPresentation,P2,arrdir.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
     
     //==== POINTS ================
     //Marker of localization of attachment points:
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
     Handle(Graphic3d_AspectMarker3d) MarkerAspAtt = new Graphic3d_AspectMarker3d();
     MarkerAspAtt->SetType(Aspect_TOM_BALL);
     MarkerAspAtt->SetScale(0.8);
@@ -982,18 +833,14 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     LA->LineAspect()->Aspect()->Values(color, type, width);
     MarkerAspAtt->SetColor(color);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAspAtt);
-    Graphic3d_Vertex Vatt1(AttachmentPoint1.X(),
-			   AttachmentPoint1.Y(), 
-			   AttachmentPoint1.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt1);  
+    Graphic3d_Vertex Vatt1(AttachmentPoint1.X(),AttachmentPoint1.Y(),AttachmentPoint1.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt1);
 
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAspAtt);
-    Graphic3d_Vertex Vatt2(AttachmentPoint2.X(),
-			   AttachmentPoint2.Y(), 
-			   AttachmentPoint2.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt2);    
+    Graphic3d_Vertex Vatt2(AttachmentPoint2.X(),AttachmentPoint2.Y(),AttachmentPoint2.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt2);
       
     //-------------------------------------------------------------------------------------
     //|                                SYMBOL OF SYMMETRY                                 |
@@ -1011,49 +858,36 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     gp_Vec vecB = Vaxe.Multiplied(vecA.Magnitude());
     vecB.Multiply(.5);
 
-    //gp_Vec vecB(-vec.Y(),vec.X(),vec.Z());
-    //vecB.Multiply(.05);
-
-    gp_Pnt pm,pOff;
-    pm = P1.Translated(vec.Multiplied(.5));
-    pOff = OffsetPoint.Translated(vecB);
+    gp_Pnt pm = P1.Translated(vec.Multiplied(.5));
+    gp_Pnt pOff = OffsetPoint.Translated(vecB);
     
     //Calculate the extremas of the axis of the symbol
     gp_Vec vecAxe = vecA.Multiplied(.7);
-    pOff.Translated(vecAxe).Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    pOff.Translated(vecAxe.Reversed()).Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
+
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-    
+
+	aPrims = new Graphic3d_ArrayOfPolylines(13,5);
+
+    aPrims->AddBound(2);
+	aPrims->AddVertex(pOff.Translated(vecAxe));
+    aPrims->AddVertex(pOff.Translated(vecAxe.Reversed()));
+
     //Calculate the extremas of the superior segment of the symbol
     gp_Vec vec1 = vecAxe.Multiplied(.6);
-
     vecAxe = Vaxe.Multiplied(vecAxe.Magnitude());
-
-    //vecAxe.SetCoord(-vecAxe.Y(),vecAxe.X(),vecAxe.Z());
     gp_Vec vec2 = vecAxe.Multiplied(.4);
-    
-    pOff.Translated(vec1.Added(vec2)).Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    pOff.Translated(vec1.Reversed().Added(vec2)).Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+
+    aPrims->AddBound(2);
+    aPrims->AddVertex(pOff.Translated(vec1.Added(vec2)));
+    aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2)));
     
     //Calculate the extremas of the inferior segment of the symbol
-    pOff.Translated(vec1.Added(vec2.Reversed())).Coord(X,Y,Z);
-    V(1).SetCoord(X,Y,Z);
-    pOff.Translated(vec1.Reversed().Added(vec2.Reversed())).Coord(X,Y,Z);
-    V(2).SetCoord(X,Y,Z);
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-    
-/*  //--------------------------------------------------------------------------------------
+    aPrims->AddBound(2);
+    aPrims->AddVertex(pOff.Translated(vec1.Added(vec2.Reversed())));
+    aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
+
+    //--------------------------------------------------------------------------------------
     //|                          MARKING OF THE AXIS OF SYMMETRY                           |
     //--------------------------------------------------------------------------------------     
     //        ____
@@ -1061,49 +895,31 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //         \/
     //         /\
     //        /__\
-*/
     
-    Graphic3d_Array1OfVertex cursor(1,5);
     Standard_Real Dist = P1.Distance(P2)/75;
     gp_Dir aDirectionAxis = aAxis.Direction();
     gp_Vec vs(aDirectionAxis);
     gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
-    
     gp_Vec vsymper(vsym.Y(),-vsym.X(),vsym.Z());
+
+    aPrims->AddBound(5);
     gp_Pnt pm1 = pm.Translated(vsym.Added(vsymper));
-    cursor(1).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+    aPrims->AddVertex(pm1);
     pm1 = pm1.Translated(vsym.Reversed().Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
-    cursor(2).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+    aPrims->AddVertex(pm1);
     pm1 = pm1.Translated(vsymper.Multiplied(2));
-    cursor(3).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+    aPrims->AddVertex(pm1);
     pm1 = pm1.Translated(vsym.Multiplied(2).Added(vsymper.Reversed().Multiplied(2)));
-    cursor(4).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
+    aPrims->AddVertex(pm1);
     pm1 = pm1.Translated(vsymper.Multiplied(2));
-    cursor(5).SetCoord(pm1.X(),pm1.Y(),pm1.Z());
-    
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(cursor);
-    
+    aPrims->AddVertex(pm1);
+
     vsym.Multiply(4);
-    V(1).SetCoord(pm.Translated(vsym).X(),
-		  pm.Translated(vsym).Y(),
-		  pm.Translated(vsym).Z());
-    V(2).SetCoord(pm.Translated(vsym.Reversed()).X(),
-		  pm.Translated(vsym.Reversed()).Y(),
-		  pm.Translated(vsym.Reversed()).Z());
-    
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V); 
+
+    aPrims->AddBound(2);
+    aPrims->AddVertex(pm.Translated(vsym));
+    aPrims->AddVertex(pm.Translated(vsym.Reversed()));
+
+	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   } 
 }
-
-
-
-
-
-
-
-
-

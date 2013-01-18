@@ -23,7 +23,7 @@
 #include <DsgPrs_ConcentricPresentation.ixx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Prs3d_LengthAspect.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -47,51 +47,43 @@ void DsgPrs_ConcentricPresentation::Add(
 
   //Creation et discretisation du plus gros cercle
   gp_Circ Circ(gp_Ax2(aCenter,aNorm), aRadius);
-  Standard_Integer nbp = 50;
-  Standard_Real dteta = (2 * M_PI)/nbp;
-  Graphic3d_Array1OfVertex V(1,nbp+1);
-  gp_Pnt ptcur;
-  Standard_Real ucur = 0;
+  const Standard_Integer nbp = 50;
+  const Standard_Real dteta = (2. * M_PI)/nbp;
+
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
+  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(2*nbp+6,4);
+
+  gp_Pnt pt1 = ElCLib::Value(0., Circ);
+  aPrims->AddBound(nbp+1);
+  aPrims->AddVertex(pt1);
+  Standard_Real ucur = dteta;
   Standard_Integer i ;
-  for ( i = 1; i<=nbp; i++) {
-    ptcur = ElCLib::Value(ucur, Circ);
-    V(i).SetCoord(ptcur.X(), ptcur.Y(),ptcur.Z());
-    ucur = ucur + dteta;
-  }
-  V(nbp+1).SetCoord( V(1).X(), V(1).Y(), V(1).Z());
-  Prs3d_Root::CurrentGroup(aPresentation)
-    ->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  for (i = 2; i<=nbp; i++, ucur += dteta)
+    aPrims->AddVertex(ElCLib::Value(ucur, Circ));
+  aPrims->AddVertex(pt1);
 
   //Creation et discretisation du plus petit cercle
-  Circ.SetRadius(aRadius/2);
-  ucur = 0;
-  for ( i = 1; i<=nbp; i++) {
-    ptcur = ElCLib::Value(ucur, Circ);
-    V(i).SetCoord(ptcur.X(), ptcur.Y(),ptcur.Z());
-    ucur = ucur + dteta;
-  }
-  V(nbp+1).SetCoord( V(1).X(), V(1).Y(), V(1).Z());
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)
-    ->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Circ.SetRadius(0.5*aRadius);
+  pt1 = ElCLib::Value(0., Circ);
+  aPrims->AddBound(nbp+1);
+  aPrims->AddVertex(pt1);
+  ucur = dteta;
+  for (i = 2; i<=nbp; i++, ucur += dteta)
+    aPrims->AddVertex(ElCLib::Value(ucur, Circ));
+  aPrims->AddVertex(pt1);
 
   //Creation de la croix
      //1er segment
-  gp_Dir vecnorm(aPoint.XYZ() - aCenter.XYZ() );
+  gp_Dir vecnorm(aPoint.XYZ() - aCenter.XYZ());
   gp_Vec vec(vecnorm);
   vec.Multiply(aRadius);
   gp_Pnt p1 = aCenter.Translated(vec);
   gp_Pnt p2 = aCenter.Translated(-vec);
-  
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->
-    SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Graphic3d_Array1OfVertex VExt(1,2);
-  VExt(1).SetCoord(p1.X(), p1.Y(), p1.Z());
-  VExt(2).SetCoord(p2.X(), p2.Y(), p2.Z());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(VExt);
+
+  aPrims->AddBound(2);
+  aPrims->AddVertex(p1);
+  aPrims->AddVertex(p2);
 
      //2ieme segment
   vec.Cross(aNorm);
@@ -100,12 +92,10 @@ void DsgPrs_ConcentricPresentation::Add(
   vec.Multiply(aRadius);
   p1 = aCenter.Translated(vec);
   p2 = aCenter.Translated(-vec);
-  VExt(1).SetCoord(p1.X(), p1.Y(), p1.Z());
-  VExt(2).SetCoord(p2.X(), p2.Y(), p2.Z());
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->
-    SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(VExt);
+  aPrims->AddBound(2);
+  aPrims->AddVertex(p1);
+  aPrims->AddVertex(p2);
 
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 }

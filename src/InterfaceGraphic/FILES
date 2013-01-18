@@ -15,4 +15,3 @@ InterfaceGraphic_PrimitiveArray.hxx
 InterfaceGraphic_telem.hxx
 InterfaceGraphic_degeneration.hxx
 InterfaceGraphic_tgl_all.hxx
-InterfaceGraphic_Cextern.hxx

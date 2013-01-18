@@ -31,7 +31,7 @@ static void OpenGl_CreateMarkers(const Graphic3d_CGroup& ACGroup, const Standard
   ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement( TelMarkerSet, amarkerset );
 }
 
-void OpenGl_GraphicDriver::Marker (const Graphic3d_CGroup& ACGroup, const Graphic3d_Vertex& APoint, const Standard_Boolean )
+void OpenGl_GraphicDriver::Marker (const Graphic3d_CGroup& ACGroup, const Graphic3d_Vertex &APoint)
 {
   if (!ACGroup.ptrGroup)
     return;
@@ -91,8 +91,7 @@ void OpenGl_GraphicDriver::Marker (const Graphic3d_CGroup& ACGroup, const Graphi
 }
 
 void OpenGl_GraphicDriver::MarkerSet (const Graphic3d_CGroup& ACGroup,
-                                     const Graphic3d_Array1OfVertex& ListVertex,
-                                     const Standard_Boolean )
+                                      const Graphic3d_Array1OfVertex& ListVertex)
 {
   if (!ACGroup.ptrGroup)
     return;

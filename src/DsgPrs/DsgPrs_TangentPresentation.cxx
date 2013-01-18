@@ -18,12 +18,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_TangentPresentation.ixx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -57,27 +55,19 @@ void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresent
 
   // Array1OfVertex
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Graphic3d_Array1OfVertex V(1,2);
-  Quantity_Length X,Y,Z;
-  p1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  p2.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(p1);
+  aPrims->AddVertex(p2);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // fleche 1 : 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw(aPresentation,p1,aDirection,
-		    LA->Arrow1Aspect()->Angle(),
-		    LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,p1,aDirection,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
 
   // fleche 2
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw(aPresentation,p2,aDirection.Reversed(),
-		    LA->Arrow2Aspect()->Angle(),
-		    LA->Arrow2Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,p2,aDirection.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
 }
-
-

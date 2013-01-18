@@ -31,7 +31,7 @@
 #include <gp_Pnt.hxx>
 #include <ElSLib.hxx>
 
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -245,58 +245,59 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
 
   ComputeFields();
   aPresentation->SetInfiniteState(myInfiniteState);
-  if (myCurrentMode) 
-    myDrawer->PlaneAspect()->EdgesAspect()->SetWidth(3);
-  else 
-    myDrawer->PlaneAspect()->EdgesAspect()->SetWidth(1);
-  if(aMode == 0){
-    if (!myIsXYZPlane){
-      ComputeFrame();
-      const Handle(Geom_Plane)& pl = myComponent;
-      const Handle(Geom_Plane)& thegoodpl = Handle(Geom_Plane)::DownCast
-	(pl->Translated(pl->Location(),myCenter));
-      GeomAdaptor_Surface surf(thegoodpl);
-      StdPrs_Plane::Add(aPresentation,surf,myDrawer);
-    }
-    else {
-      DsgPrs_XYZPlanePresentation::Add(aPresentation,myDrawer,myCenter,myPmin,myPmax);
-    }
-  }
-  else if (aMode == 1){
-    if (!myIsXYZPlane){
-      ComputeFrame();
-      Handle(Prs3d_PlaneAspect) theaspect = myDrawer->PlaneAspect();
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
-      gp_Pnt p1;
-      Standard_Real Xmax,Ymax;
-      Xmax = Standard_Real(theaspect->PlaneXLength())/2.;
-      Ymax = Standard_Real(theaspect->PlaneYLength())/2.;
-      static Graphic3d_Array1OfVertex vertices(1,5);
-      TheGroup->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
-      myComponent->D0(-Xmax,Ymax,p1);
-      vertices(1).SetCoord(p1.X(),p1.Y(),p1.Z());
-      vertices(5).SetCoord(p1.X(),p1.Y(),p1.Z());
-      myComponent->D0(Xmax,Ymax,p1);
-      vertices(2).SetCoord(p1.X(),p1.Y(),p1.Z());
-      myComponent->D0(Xmax,-Ymax,p1);
-      vertices(3).SetCoord(p1.X(),p1.Y(),p1.Z());
-      myComponent->D0(-Xmax,-Ymax,p1);
-      vertices(4).SetCoord(p1.X(),p1.Y(),p1.Z());
-      TheGroup->Polygon(vertices);
-	
-      }
-    else{
-      DsgPrs_ShadedPlanePresentation::Add(aPresentation,myDrawer,myCenter,myPmin,myPmax);
-      
-    }
-  }
+  myDrawer->PlaneAspect()->EdgesAspect()->SetWidth(myCurrentMode == 0? 1 : 3);
 
+  switch (aMode)
+  {
+    case 0:
+    {
+      if (!myIsXYZPlane)
+      {
+        ComputeFrame();
+        const Handle(Geom_Plane)& pl = myComponent;
+        const Handle(Geom_Plane)& thegoodpl = Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter));
+        GeomAdaptor_Surface surf(thegoodpl);
+        StdPrs_Plane::Add(aPresentation,surf,myDrawer);
+      }
+      else
+        DsgPrs_XYZPlanePresentation::Add(aPresentation,myDrawer,myCenter,myPmin,myPmax);
+      break;
+    }
+    case 1:
+    {
+      if (!myIsXYZPlane)
+      {
+        ComputeFrame();
+        Handle(Prs3d_PlaneAspect) theaspect = myDrawer->PlaneAspect();
+        Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+        TheGroup->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
+        gp_Pnt p1;
+        const Standard_Real Xmax = 0.5*Standard_Real(theaspect->PlaneXLength());
+        const Standard_Real Ymax = 0.5*Standard_Real(theaspect->PlaneYLength());
+
+        Handle(Graphic3d_ArrayOfQuadrangles) aQuads = new Graphic3d_ArrayOfQuadrangles(4);
+
+        myComponent->D0(-Xmax,Ymax,p1);
+        aQuads->AddVertex(p1);
+        myComponent->D0(Xmax,Ymax,p1);
+        aQuads->AddVertex(p1);
+        myComponent->D0(Xmax,-Ymax,p1);
+        aQuads->AddVertex(p1);
+        myComponent->D0(-Xmax,-Ymax,p1);
+        aQuads->AddVertex(p1);
+
+        TheGroup->AddPrimitiveArray(aQuads);
+      }
+      else
+        DsgPrs_ShadedPlanePresentation::Add(aPresentation,myDrawer,myCenter,myPmin,myPmax);
+      break;
+    }
+  }
 }
 
 void AIS_Plane::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Geom_Transformation& aTransformation, const Handle_Prs3d_Presentation& aPresentation)
 {
-// Standard_NotImplemented::Raise("AIS_Plane::Compute(const Handle_Prs3d_Projector&, const Handle_Geom_Transformation&, const Handle_Prs3d_Presentation&)");
- PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation) ;
+  PrsMgr_PresentableObject::Compute(aProjector, aTransformation, aPresentation);
 }
 
 //=======================================================================

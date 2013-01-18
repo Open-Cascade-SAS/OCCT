@@ -18,15 +18,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-#define OCC218	// SAV Enable to compute the triedhron color texts and arrows.
-
-
 #include <DsgPrs_XYZAxisPresentation.ixx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 
 
 //=======================================================================
@@ -43,24 +39,18 @@ void DsgPrs_XYZAxisPresentation::Add(
 		       const gp_Pnt& aPfirst,
 		       const gp_Pnt& aPlast)
 {
+  Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
+  G->SetPrimitivesAspect(aLineAspect->Aspect());
 
-
- Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
-
- Quantity_Length xo,yo,zo,x,y,z;
-  
- aPfirst.Coord(xo,yo,zo);
- aPlast.Coord(x,y,z);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(aPfirst);
+  aPrims->AddVertex(aPlast);
+  G->AddPrimitiveArray(aPrims);
  
- Graphic3d_Array1OfVertex A(1,2);
- A(1).SetCoord(xo,yo,zo);
- A(2).SetCoord(x,y,z);
- 
- G->SetPrimitivesAspect(aLineAspect->Aspect());
- G->Polyline(A);
- Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),aDir,M_PI/180.*10.,aVal/10.);
- Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,A(2),1./81.);
+  Prs3d_Arrow::Draw(aPresentation,aPlast,aDir,M_PI/180.*10.,aVal/10.);
 
+  Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
+  Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
 }
 
 
@@ -74,23 +64,18 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& aPfirst,
 				     const gp_Pnt& aPlast)
 {
-#ifdef OCC218
   Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
-
-  Quantity_Length xo,yo,zo,x,y,z;
-  
-  aPfirst.Coord(xo,yo,zo);
-  aPlast.Coord(x,y,z);
- 
-  Graphic3d_Array1OfVertex A(1,2);
-  A(1).SetCoord(xo,yo,zo);
-  A(2).SetCoord(x,y,z);
- 
   G->SetPrimitivesAspect(aLineAspect->Aspect());
-  G->Polyline(A);
+
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(aPfirst);
+  aPrims->AddVertex(aPlast);
+  G->AddPrimitiveArray(aPrims);
+
   G->SetPrimitivesAspect( anArrowAspect->Aspect() );
-  Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x,y,z),aDir,M_PI/180.*10.,aVal/10.);
+  Prs3d_Arrow::Draw(aPresentation,aPlast,aDir,M_PI/180.*10.,aVal/10.);
+
   G->SetPrimitivesAspect(aTextAspect->Aspect());
-  Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,A(2),1./81.);
-#endif
+  Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
+  Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
 }

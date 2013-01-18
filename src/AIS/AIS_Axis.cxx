@@ -19,15 +19,13 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
+//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 #include <AIS_Axis.ixx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -177,10 +175,7 @@ void AIS_Axis::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   aPresentation->SetDisplayPriority(5);
   if (!myIsXYZAxis ){
     GeomAdaptor_Curve curv(myComponent);
-    Standard_Boolean isPrimitiveArraysEnabled = Graphic3d_ArrayOfPrimitives::IsEnable();
-    if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Disable();
     StdPrs_Curve::Add(aPresentation,curv,myDrawer);
-    if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Enable();
   }
   else {
     DsgPrs_XYZAxisPresentation::Add(aPresentation,myLineAspect,myDir,myVal,myText,myPfirst,myPlast);
@@ -217,13 +212,11 @@ void AIS_Axis::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 
 void AIS_Axis::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_Axis::SetColor(const Quantity_Color &aCol)
-#endif
 {
   hasOwnColor=Standard_True;
   myOwnColor=aCol;

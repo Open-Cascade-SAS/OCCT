@@ -19,14 +19,12 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
+//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 #include <AIS_Circle.ixx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -122,7 +120,6 @@ void AIS_Circle::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 //=======================================================================
 
 void AIS_Circle::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
@@ -133,7 +130,6 @@ void AIS_Circle::SetColor(const Quantity_NameOfColor aCol)
 //=======================================================================
 
 void AIS_Circle::SetColor(const Quantity_Color &aCol)
-#endif
 {
   hasOwnColor=Standard_True;
   myOwnColor=aCol;
@@ -157,17 +153,10 @@ void AIS_Circle::SetWidth(const Standard_Real aValue)
 {
   myOwnWidth=aValue;
 
-#ifndef GER61351
-  Quantity_NameOfColor CC = 
-	HasColor() ? myOwnColor : AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line);
-#endif
-
   if (!myDrawer->HasLineAspect ()) {
-#ifdef GER61351
     Quantity_Color CC;
     if( HasColor() ) CC = myOwnColor;
     else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
-#endif
     myDrawer->SetLineAspect (new Prs3d_LineAspect(CC,Aspect_TOL_SOLID,aValue));
   } else
     myDrawer->LineAspect()->SetWidth(aValue);
@@ -186,17 +175,12 @@ void AIS_Circle::UnsetColor()
 
   if (!HasWidth()) myDrawer->SetLineAspect(NullAsp);
   else{
-#ifdef GER61351
-  Quantity_Color CC;
-  if( HasColor() ) CC = myOwnColor;
-  else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
-#else
-    Quantity_NameOfColor CC = 
-#endif
-		AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line);
+    Quantity_Color CC;
+    if( HasColor() ) CC = myOwnColor;
+    else AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
     myDrawer->LineAspect()->SetColor(CC);
     myOwnColor = CC;
- }
+  }
 }
 
 //=======================================================================
@@ -225,10 +209,7 @@ void AIS_Circle::ComputeCircle( const Handle(Prs3d_Presentation)& aPresentation)
   GeomAdaptor_Curve curv(myComponent);
   Standard_Real prevdev = myDrawer->DeviationCoefficient();
   myDrawer->SetDeviationCoefficient(1.e-5);
-  Standard_Boolean isPrimitiveArraysEnabled = Graphic3d_ArrayOfPrimitives::IsEnable();
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Disable();
   StdPrs_DeflectionCurve::Add(aPresentation,curv,myDrawer);
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Enable();
   myDrawer->SetDeviationCoefficient(prevdev);
 
 }
@@ -240,16 +221,11 @@ void AIS_Circle::ComputeCircle( const Handle(Prs3d_Presentation)& aPresentation)
 //=======================================================================
 void AIS_Circle::ComputeArc( const Handle(Prs3d_Presentation)& aPresentation)
 {
-
   GeomAdaptor_Curve curv(myComponent,myUStart,myUEnd);
   Standard_Real prevdev = myDrawer->DeviationCoefficient();
   myDrawer->SetDeviationCoefficient(1.e-5);
-  Standard_Boolean isPrimitiveArraysEnabled = Graphic3d_ArrayOfPrimitives::IsEnable();
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Disable();
   StdPrs_DeflectionCurve::Add(aPresentation,curv,myDrawer);
-  if(isPrimitiveArraysEnabled) Graphic3d_ArrayOfPrimitives::Enable();
   myDrawer->SetDeviationCoefficient(prevdev);
-
 }
 
 //=======================================================================

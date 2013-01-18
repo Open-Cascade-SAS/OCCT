@@ -2257,7 +2257,6 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic2d_GraphicObject.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
@@ -2389,9 +2388,7 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentat
   Graphic3d_Vertex vertices_text;
   vertices_text.SetCoord(aPosition.X(),aPosition.Y(),aPosition.Y());
   TheGroup->SetPrimitivesAspect(aspect);
-  TheGroup->BeginPrimitives();
   TheGroup->Text(aText,vertices_text,aHeight,Standard_True);
-  TheGroup->EndPrimitives();
   */
 };
 
@@ -2489,7 +2486,6 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Triangle.hxx>
@@ -3205,11 +3201,7 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPrese
                               const Standard_Integer aMode)
 {
   aPresentation->Clear();
-
-  Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPresentation);
-  aGroup->BeginPrimitives ();
-  aGroup->AddPrimitiveArray (myArray);
-  aGroup->EndPrimitives ();
+  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (myArray);
 }
 
 static bool CheckInputCommand (const TCollection_AsciiString theCommand,

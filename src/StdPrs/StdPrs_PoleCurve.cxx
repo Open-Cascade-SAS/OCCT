@@ -18,10 +18,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <StdPrs_PoleCurve.ixx>
-#include <Graphic3d_Array1OfVertex.hxx>
+
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Arrow.hxx>
@@ -47,27 +46,22 @@ void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 
   GeomAbs_CurveType CType = aCurve.GetType();
   if (CType == GeomAbs_BezierCurve || CType == GeomAbs_BSplineCurve) {
-    Standard_Real x,y,z;
     Standard_Integer i, Nb;
     if (CType == GeomAbs_BezierCurve) {
       Handle(Geom_BezierCurve) Bz = aCurve.Bezier();
       Nb = Bz->NbPoles();
-      Graphic3d_Array1OfVertex VertexArray(1, Nb);
-      for (i = 1; i <= Nb; i++) { 
-	(Bz->Pole(i)).Coord(x,y,z);
-	VertexArray(i).SetCoord(x,y,z);
-      }
-      Prs3d_Root::CurrentGroup(aPresentation)->Polyline(VertexArray);
+      Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Nb);
+      for (i = 1; i <= Nb; i++)
+        aPrims->AddVertex(Bz->Pole(i));
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
     }
     else if (CType == GeomAbs_BSplineCurve) {
       Handle(Geom_BSplineCurve) Bs = aCurve.BSpline();
       Nb = Bs->NbPoles();
-      Graphic3d_Array1OfVertex VertexArray(1, Nb);
-      for (i = 1; i <= Nb; i++) { 
-	(Bs->Pole(i)).Coord(x,y,z);
-	VertexArray(i).SetCoord(x,y,z);
-      }
-      Prs3d_Root::CurrentGroup(aPresentation)->Polyline(VertexArray);
+      Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Nb);
+      for (i = 1; i <= Nb; i++)
+        aPrims->AddVertex(Bs->Pole(i));
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
     }
   }
   

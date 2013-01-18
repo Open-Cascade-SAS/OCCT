@@ -76,7 +76,6 @@ void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
   gp_Pnt P1, P2;
   gp_Vec D1U, D1V, D1, D2;
 
-  Prs3d_Root::CurrentGroup (thePrs)->BeginPrimitives();
   for (Standard_Integer NU = 1; NU <= aNBUintv; ++NU)
   {
     for (Standard_Integer NV = 1; NV <= aNBVintv; ++NV)
@@ -113,6 +112,5 @@ void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
       }
       Prs3d_Root::CurrentGroup (thePrs)->AddPrimitiveArray (aPArray);
     }
-    Prs3d_Root::CurrentGroup (thePrs)->EndPrimitives();
   }
 }

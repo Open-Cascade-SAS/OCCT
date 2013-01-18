@@ -44,8 +44,7 @@
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 
 #include <Prs3d_Presentation.hxx>
@@ -104,23 +103,17 @@ void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
                            const Bnd_Box& B,
                            const Handle(Prs3d_Drawer)& aDrawer)
 {
-  Standard_Real X[2],Y[2],Z[2];
-  Standard_Integer Indx [16] ;
+  static const Standard_Integer Indx[][3] =
+  { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 0, 1 }, { 0, 0, 1 },
+    { 0, 1, 1 }, { 1, 1, 1 }, { 1, 1, 0 }, { 0, 1, 0 },
+    { 0, 0, 0 }, { 0, 0, 1 }, { 1, 0, 1 }, { 1, 1, 1 },
+    { 0, 1, 1 }, { 0, 1, 0 }, { 1, 1, 0 }, { 1, 0, 0 } };
+
   if ( B.IsVoid() )
     return; // nothing to show
 
-  Indx [0]=1;Indx [1]=2;Indx [2]=4;Indx [3]=3;
-  Indx [4]=5;Indx [5]=6;Indx [6]=8;Indx [7]=7;
-  Indx [8]=1;Indx [9]=3;Indx [10]=7;Indx [11]=5;
-  Indx [12]=2;Indx [13]=4;Indx [14]=8;Indx [15]=6;
+  Standard_Real X[2],Y[2],Z[2];
   B.Get(X[0], Y[0], Z[0], X[1], Y[1], Z[1]);
-
-  Graphic3d_Array1OfVertex V(1,8);
-  Standard_Integer Rank(0);
-  for(Standard_Integer k=0;k<=1;k++)
-    for(Standard_Integer j=0;j<=1;j++)
-      for(Standard_Integer i=0;i<=1;i++)
-        V(++Rank) = Graphic3d_Vertex(X[i],Y[j],Z[k]);
 
   Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPrs);
   Quantity_Color Q;
@@ -130,16 +123,11 @@ void AIS_Shape::DisplayBox(const Handle(Prs3d_Presentation)& aPrs,
 
   G->SetGroupPrimitivesAspect(new Graphic3d_AspectLine3d(Q,Aspect_TOL_DOTDASH,W));
 
-  G->BeginPrimitives();Standard_Integer I,J;
-  Graphic3d_Array1OfVertex VVV (1,5);
-  for(I=1;I<=4;I++){
-    for(J=1;J<=4;J++){
-      VVV.SetValue(J,V(Indx[J+4*I-5]));
-    }
-    VVV.SetValue(5,VVV(1));
-    G->Polyline(VVV);
-  }
-  G->EndPrimitives();
+  Handle(Graphic3d_ArrayOfPolylines) aPolyline = new Graphic3d_ArrayOfPolylines(16);
+  Standard_Integer i(0);
+  for(;i<16;i++)
+    aPolyline->AddVertex(X[Indx[i][0]],Y[Indx[i][1]],Z[Indx[i][2]]);
+  G->AddPrimitiveArray(aPolyline);
 }
 
 static Standard_Boolean IsInList(const TColStd_ListOfInteger& LL, const Standard_Integer aMode)

@@ -49,7 +49,7 @@
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_Group.hxx>
 
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 
 /*----------------------------------------------------------------------*/
 /*
@@ -84,39 +84,34 @@ return ZLetter;
 
 /*----------------------------------------------------------------------*/
 
-void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& aPlane) {
+void V3d_Viewer::SetPrivilegedPlane(const gp_Ax3& aPlane)
+{
   myPrivilegedPlane = aPlane;
-#ifdef IMP240300
   Grid()->SetDrawMode(Grid()->DrawMode());
-  for (InitActiveViews (); MoreActiveViews (); NextActiveViews ()) {
+  for (InitActiveViews (); MoreActiveViews (); NextActiveViews ())
     ActiveView ()->SetGrid (myPrivilegedPlane, Grid ());
-  }
-#endif
-  if(myDisplayPlane) {
-    Standard_Real s = myDisplayPlaneLength;
-    DisplayPrivilegedPlane(Standard_True,s);
-#ifdef IMP240300	
-  } else {
+  if(myDisplayPlane)
+    DisplayPrivilegedPlane(Standard_True,myDisplayPlaneLength);
+  else
     Update();
-#else
-    Update();
-#endif
-  }
 }
 
 /*----------------------------------------------------------------------*/
-gp_Ax3  V3d_Viewer::PrivilegedPlane() const {
+
+gp_Ax3 V3d_Viewer::PrivilegedPlane() const
+{
   return myPrivilegedPlane;
-    
 }
 
 /*----------------------------------------------------------------------*/
-void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quantity_Length aSize) {
-  Standard_Boolean Change =  myDisplayPlane != OnOff;
+void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quantity_Length aSize)
+{
+  Standard_Boolean Change = (myDisplayPlane != OnOff);
   myDisplayPlane = OnOff;
   myDisplayPlaneLength = aSize;
 
-  if(myDisplayPlane) {
+  if(myDisplayPlane)
+  {
     if(myPlaneStructure.IsNull()) {
       myPlaneStructure = new Graphic3d_Structure(MyViewer);
       myPlaneStructure->SetInfiniteState(Standard_True);
@@ -124,9 +119,8 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quan
     }
     else
       myPlaneStructure->Clear();
-    
-//    Handle(Graphic3d_Structure) thePlaneStructure = new Graphic3d_Structure(MyViewer);
-    Handle(Graphic3d_Group) Group = new Graphic3d_Group(myPlaneStructure) ;
+
+    Handle(Graphic3d_Group) Group = new Graphic3d_Group(myPlaneStructure);
 
     Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d() ;
     LineAttrib->SetColor(Quantity_Color(Quantity_NOC_GRAY60));
@@ -135,39 +129,33 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quan
     Handle(Graphic3d_AspectText3d) TextAttrib = new Graphic3d_AspectText3d();
     TextAttrib->SetColor(Quantity_Color(Quantity_NOC_ROYALBLUE1));
     Group->SetPrimitivesAspect(TextAttrib);
+
+    Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+
+    const gp_Pnt &p0 = myPrivilegedPlane.Location();
+
+    const gp_Pnt pX(p0.XYZ() + myDisplayPlaneLength*myPrivilegedPlane.XDirection().XYZ());
+    aPrims->AddVertex(p0);
+    aPrims->AddVertex(pX);
+    Group->Text(XLetter.ToCString(),Graphic3d_Vertex(pX.X(),pX.Y(),pX.Z()),1./81.);
+
+    const gp_Pnt pY(p0.XYZ() + myDisplayPlaneLength*myPrivilegedPlane.YDirection().XYZ());
+    aPrims->AddVertex(p0);
+    aPrims->AddVertex(pY);
+    Group->Text(YLetter.ToCString(),Graphic3d_Vertex(pY.X(),pY.Y(),pY.Z()),1./81.);
     
-    Graphic3d_Array1OfVertex Points(0,1) ;
-    Standard_Real xl,yl,zl;
-    myPrivilegedPlane.Location().Coord(xl,yl,zl);
-    Points(0).SetCoord(xl,yl,zl);
+    const gp_Pnt pZ(p0.XYZ() + myDisplayPlaneLength*myPrivilegedPlane.Direction().XYZ());
+    aPrims->AddVertex(p0);
+    aPrims->AddVertex(pZ);
+    Group->Text(ZLetter.ToCString(),Graphic3d_Vertex(pZ.X(),pZ.Y(),pZ.Z()),1./81.);
 
-    Standard_Real ay,by,cy;
+    Group->AddPrimitiveArray(aPrims);
 
-    myPrivilegedPlane.XDirection().Coord(ay,by,cy);
-    Points(1).SetCoord(xl+myDisplayPlaneLength*ay,
-		       yl+myDisplayPlaneLength*by,
-		       zl+myDisplayPlaneLength*cy);
-    Group->Polyline(Points);
-    Group->Text(XLetter.ToCString(),Points(1),1./81.);
-
-    myPrivilegedPlane.YDirection().Coord(ay,by,cy);
-    Points(1).SetCoord(xl+myDisplayPlaneLength*ay,
-		       yl+myDisplayPlaneLength*by,
-		       zl+myDisplayPlaneLength*cy);
-    Group->Polyline(Points);
-    Group->Text(YLetter.ToCString(),Points(1),1./81.);
-    
-    myPrivilegedPlane.Direction().Coord(ay,by,cy);
-    Points(1).SetCoord(xl+myDisplayPlaneLength*ay,
-		       yl+myDisplayPlaneLength*by,
-		       zl+myDisplayPlaneLength*cy);
-    Group->Polyline(Points);
-    Group->Text(ZLetter.ToCString(),Points(1),1./81.);
-#ifdef IMP240300
-    myPlaneStructure->Display();
-  } else {
+	myPlaneStructure->Display();
+  }
+  else
+  {
     if( !myPlaneStructure.IsNull() )  myPlaneStructure->Erase();
-#endif
   }
   if(Change) Update();
 }

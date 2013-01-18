@@ -44,7 +44,7 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
@@ -185,9 +185,8 @@ void V3d_PositionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const 
 
 
 void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
-                                    const V3d_TypeOfRepresentation TPres ) {
-
-  Graphic3d_Array1OfVertex PRadius(0,1);
+                                   const V3d_TypeOfRepresentation TPres )
+{
   Graphic3d_Vertex PText ;
   Standard_Real X,Y,Z,Rayon;
   Standard_Real X0,Y0,Z0,VX,VY,VZ;
@@ -202,24 +201,24 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
 //  Creation of a structure snopick of non-markable elements (target, meridian and 
 //  parallel).
 
-    Pres = TPres;
-    Handle(V3d_Viewer) TheViewer = aView->Viewer();
-    UpdSov = TheViewer->UpdateMode();
-    TheViewer->SetUpdateMode(V3d_WAIT);
-    if (!MyGraphicStructure.IsNull()) {
-       MyGraphicStructure->Disconnect(MyGraphicStructure1);
-       MyGraphicStructure->Clear();
-       MyGraphicStructure1->Clear();
-       if (Pres == V3d_SAMELAST) Pres = MyTypeOfRepresentation;
-    }
-    else {
-      if (Pres == V3d_SAMELAST) Pres = V3d_SIMPLE;
-      Handle(Graphic3d_Structure) slight = new Graphic3d_Structure(TheViewer->Viewer());
-      MyGraphicStructure = slight;
-      Handle(Graphic3d_Structure) snopick = new Graphic3d_Structure(TheViewer->Viewer()); 
-      MyGraphicStructure1 = snopick;
-    }
-   
+  Pres = TPres;
+  Handle(V3d_Viewer) TheViewer = aView->Viewer();
+  UpdSov = TheViewer->UpdateMode();
+  TheViewer->SetUpdateMode(V3d_WAIT);
+  if (!MyGraphicStructure.IsNull()) {
+    MyGraphicStructure->Disconnect(MyGraphicStructure1);
+    MyGraphicStructure->Clear();
+    MyGraphicStructure1->Clear();
+    if (Pres == V3d_SAMELAST) Pres = MyTypeOfRepresentation;
+  }
+  else {
+    if (Pres == V3d_SAMELAST) Pres = V3d_SIMPLE;
+    Handle(Graphic3d_Structure) slight = new Graphic3d_Structure(TheViewer->Viewer());
+    MyGraphicStructure = slight;
+    Handle(Graphic3d_Structure) snopick = new Graphic3d_Structure(TheViewer->Viewer()); 
+    MyGraphicStructure1 = snopick;
+  }
+
   Handle(Graphic3d_Group) gradius;
   Handle(Graphic3d_Group) gExtArrow;
   Handle(Graphic3d_Group) gIntArrow;
@@ -259,24 +258,22 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
 // Display of the radius of the sphere (line + text)
 
     if (Pres == V3d_COMPLETE) {
-      PRadius(0).SetCoord(X0,Y0,Z0);
       this->Position(X,Y,Z);
-      PRadius(1).SetCoord(X,Y,Z);
-      gnopick->Polyline(PRadius);
-      V3d::ArrowOfRadius(gExtArrow,X-(X-X0)/10.,
-			 Y-(Y-Y0)/10.,
-			 Z-(Z-Z0) / 10., X-X0, Y-Y0, Z-Z0, M_PI / 15., Rayon / 20.);
+      Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+      aPrims->AddVertex(X0,Y0,Z0);
+      aPrims->AddVertex(X,Y,Z);
+      gnopick->AddPrimitiveArray(aPrims);
+      V3d::ArrowOfRadius(gExtArrow,X-.1*(X-X0),Y-.1*(Y-Y0),Z-.1*(Z-Z0),X-X0,Y-Y0,Z-Z0,M_PI/15.,Rayon/20.);
       V3d::ArrowOfRadius(gIntArrow, X0, Y0, Z0, X0-X, Y0-Y, Z0-Z, M_PI / 15., Rayon / 20.);
       TCollection_AsciiString ValOfRadius(Rayon);
-      PText.SetCoord( (X0+X)/2., (Y0+Y)/2. , (Z0+Z)/2. );
+      PText.SetCoord( 0.5*(X0+X), 0.5*(Y0+Y), 0.5*(Z0+Z) );
       gradius->Text(ValOfRadius.ToCString(),PText,0.01);
     }
     
 // Display of the meridian
 
     Quantity_Color Col2(Quantity_NOC_GREEN);
-    Handle(Graphic3d_AspectLine3d) Asp2 = new Graphic3d_AspectLine3d
-      (Col2,Aspect_TOL_SOLID,1.);
+    Handle(Graphic3d_AspectLine3d) Asp2 = new Graphic3d_AspectLine3d(Col2,Aspect_TOL_SOLID,1.);
     gnopick->SetPrimitivesAspect(Asp2);
     
 //    Definition of the axis of circle
@@ -304,7 +301,6 @@ void V3d_PositionalLight::Display( const Handle(V3d_View)& aView,
     VZ = DXRef*DYini - DYRef*DXini;
     
     V3d::CircleInPlane(gnopick,X0,Y0,Z0,VX,VY,VZ,Rayon);
-
   }
 
   MyGraphicStructure->Connect(MyGraphicStructure1,Graphic3d_TOC_DESCENDANT);

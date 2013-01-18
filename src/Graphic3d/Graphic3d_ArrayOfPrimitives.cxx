@@ -36,9 +36,10 @@ Graphic3d_ArrayOfPrimitives :: Graphic3d_ArrayOfPrimitives (
                         const Standard_Boolean hasVColors,
                         const Standard_Boolean hasFColors,
                         const Standard_Boolean hasVTexels,
-                        const Standard_Boolean hasEdgeInfos
-) : myMaxBounds(0),myMaxVertexs(0),myMaxEdges(0) {
-  Standard_Integer size = sizeof(CALL_DEF_PARRAY);
+                        const Standard_Boolean hasEdgeInfos )
+: myMaxBounds(0),myMaxVertexs(0),myMaxEdges(0)
+{
+  const Standard_Integer size = sizeof(CALL_DEF_PARRAY);
   Standard_Integer format = MVERTICE;
   if( hasVNormals ) format |= MVNORMAL;
   if( hasVColors ) format |= MVCOLOR;
@@ -98,7 +99,8 @@ Graphic3d_ArrayOfPrimitives :: Graphic3d_ArrayOfPrimitives (
   myPrimitiveArray->num_edges     = 0;
 }
 
-void Graphic3d_ArrayOfPrimitives::Destroy (  ){
+void Graphic3d_ArrayOfPrimitives::Destroy ()
+{
   if( myPrimitiveArray ) {
     if( myPrimitiveArray->vertices ){
       Standard::Free( (Standard_Address&)myPrimitiveArray->vertices );
@@ -147,167 +149,86 @@ void Graphic3d_ArrayOfPrimitives::Destroy (  ){
   }
 }
 
-void Graphic3d_ArrayOfPrimitives::Enable() {
-  ///
-}
-
-void Graphic3d_ArrayOfPrimitives::Disable() {
-  ///
-}
-
-Standard_Boolean Graphic3d_ArrayOfPrimitives::IsEnable() {
-  return Standard_True;
-}
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                const gp_Pnt& aVertice) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  return AddVertex(x,y,z);
-}
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-        const Standard_Real X, const Standard_Real Y, const Standard_Real Z) {
-
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Z)
+{
   if( !myPrimitiveArray ) return 0;
-
-  Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
-  if( index > myMaxVertexs ) {
-    Standard_OutOfRange::Raise(" TOO many VERTEX");
-  }
+  const Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
   SetVertice(index,X,Y,Z);
   return index;
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
-                                                        const Quantity_Color& aColor) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Integer index = AddVertex(x,y,z);
-  Standard_Real r,g,b;
-  aColor.Values(r,g,b,Quantity_TOC_RGB);
-  SetVertexColor(index,r,g,b);
-  return index;
-}
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
-                                                        const Standard_Integer aColor) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Integer index = AddVertex(x,y,z);
-  SetVertexColor(index,aColor);
-  return index;
-}
-
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
-                                                        const gp_Dir& aNormal) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Real nx,ny,nz;
-  aNormal.Coord(nx,ny,nz);
-  return AddVertex(x,y,z,nx,ny,nz);
-}
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-        const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
-        const Standard_Real NX, const Standard_Real NY, const Standard_Real NZ) {
-  if( !myPrimitiveArray ) return 0;
-
-  Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
-  if( index > myMaxVertexs ) {
-    Standard_OutOfRange::Raise(" TOO many VERTEX");
-  }
-  SetVertice(index,X,Y,Z);
-  SetVertexNormal(index,NX,NY,NZ);
-  return index;
-}
-
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
-                                                        const gp_Dir& aNormal,
-                                                        const Quantity_Color& aColor) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Real nx,ny,nz;
-  aNormal.Coord(nx,ny,nz);
-  Standard_Integer index = AddVertex(x,y,z,nx,ny,nz);
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(const gp_Pnt& aVertice, const Quantity_Color& aColor)
+{
+  const Standard_Integer index = AddVertex(aVertice);
   Standard_Real r,g,b;
   aColor.Values(r,g,b,Quantity_TOC_RGB);
   SetVertexColor(index,r,g,b);
   return index;
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(const gp_Pnt& aVertice, const Standard_Integer aColor)
+{
+  const Standard_Integer index = AddVertex(aVertice);
+  SetVertexColor(index,aColor);
+  return index;
+}
+
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Z,
+                                                        const Standard_ShortReal NX, const Standard_ShortReal NY, const Standard_ShortReal NZ)
+{
+  if( !myPrimitiveArray ) return 0;
+  const Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
+  SetVertice(index,X,Y,Z);
+  SetVertexNormal(index,NX,NY,NZ);
+  return index;
+}
+
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(const gp_Pnt& aVertice,
                                                         const gp_Dir& aNormal,
-                                                        const Standard_Integer aColor) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Real nx,ny,nz;
-  aNormal.Coord(nx,ny,nz);
-  Standard_Integer index = AddVertex(x,y,z,nx,ny,nz);
+                                                        const Quantity_Color& aColor)
+{
+  const Standard_Integer index = AddVertex(aVertice,aNormal);
+  Standard_Real r,g,b;
+  aColor.Values(r,g,b,Quantity_TOC_RGB);
+  SetVertexColor(index,r,g,b);
+  return index;
+}
+
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(const gp_Pnt& aVertice,
+                                                        const gp_Dir& aNormal,
+                                                        const Standard_Integer aColor)
+{
+  const Standard_Integer index = AddVertex(aVertice,aNormal);
   SetVertexColor(index,aColor);
   return index;
 }
 
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
-                                                        const gp_Pnt2d& aTexel) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Real tx,ty;
-  aTexel.Coord(tx,ty);
-  return AddVertex(x,y,z,tx,ty);
-}
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-        const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
-        const Standard_Real TX, const Standard_Real TY) {
+        const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Z,
+        const Standard_ShortReal TX, const Standard_ShortReal TY)
+{
   if( !myPrimitiveArray ) return 0;
-
-  Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
-  if( index > myMaxVertexs ) {
-    Standard_OutOfRange::Raise(" TOO many VERTEX");
-  }
+  const Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
   SetVertice(index,X,Y,Z);
   SetVertexTexel(index,TX,TY);
   return index;
 }
 
 Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-                                                        const gp_Pnt& aVertice,
-                                                        const gp_Dir& aNormal,
-                                                        const gp_Pnt2d& aTexel) {
-  Standard_Real x,y,z;
-  aVertice.Coord(x,y,z);
-  Standard_Real nx,ny,nz;
-  aNormal.Coord(nx,ny,nz);
-  Standard_Real tx,ty;
-  aTexel.Coord(tx,ty);
-  return AddVertex(x,y,z,nx,ny,nz,tx,ty);
-}
-
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddVertex(
-        const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
-        const Standard_Real NX, const Standard_Real NY, const Standard_Real NZ,
-        const Standard_Real TX, const Standard_Real TY) {
+        const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Z,
+        const Standard_ShortReal NX, const Standard_ShortReal NY, const Standard_ShortReal NZ,
+        const Standard_ShortReal TX, const Standard_ShortReal TY)
+{
   if( !myPrimitiveArray ) return 0;
-
-  Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
-  if( index > myMaxVertexs ) {
-    Standard_OutOfRange::Raise(" TOO many VERTEX");
-  }
+  const Standard_Integer index = myPrimitiveArray->num_vertexs + 1;
   SetVertice(index,X,Y,Z);
   SetVertexNormal(index,NX,NY,NZ);
   SetVertexTexel(index,TX,TY);
   return index;
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound( const Standard_Integer edgeNumber) {
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound( const Standard_Integer edgeNumber)
+{
   Standard_Integer index = 0;
   if( myPrimitiveArray && myPrimitiveArray->bounds ) {
     index = myPrimitiveArray->num_bounds;
@@ -322,22 +243,20 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound( const Standard_Integer e
   return index;
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(
-                                                        const Standard_Integer edgeNumber,
-                                                        const Quantity_Color& aFColor
-) {
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound( const Standard_Integer edgeNumber,
+                                                        const Quantity_Color& aFColor)
+{
   Standard_Real r,g,b;
   aFColor.Values(r,g,b,Quantity_TOC_RGB);
   return AddBound(edgeNumber,r,g,b);
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(
-                                                        const Standard_Integer edgeNumber,
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound( const Standard_Integer edgeNumber,
                                                         const Standard_Real R, 
                                                         const Standard_Real G,
-                                                        const Standard_Real B) { 
+                                                        const Standard_Real B)
+{
   if( !myPrimitiveArray ) return 0;
-
   Standard_Integer index = myPrimitiveArray->num_bounds;
   if( index >= myMaxBounds ) {
     Standard_OutOfRange::Raise(" TOO many BOUND");
@@ -348,9 +267,9 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddBound(
   return index;
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge(
-                                                      const Standard_Integer vertexIndex,
-                                                      const Standard_Boolean isVisible) {
+Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge(const Standard_Integer vertexIndex,
+                                                      const Standard_Boolean isVisible)
+{
   if( !myPrimitiveArray ) return 0;
 
   Standard_Integer index = myPrimitiveArray->num_edges;
@@ -371,15 +290,15 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge(
   return index;
 }
 
-Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
-                        const gp_Dir& aNormal) {
+Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(const gp_Dir& aNormal)
+{
   return Orientate(1,Max(VertexNumber(),EdgeNumber()),aNormal);
 }
 
-Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
-                                                        const Standard_Integer aVertexIndex,
+Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(const Standard_Integer aVertexIndex,
                                                         const Standard_Integer aVertexNumber,
-                                                        const gp_Dir& aNormal) {
+                                                        const gp_Dir& aNormal)
+{
   Standard_Boolean somethingHasChange = Standard_False;
   if( myPrimitiveArray && (myPrimitiveArray->num_vertexs > 2) ) {
     Standard_Integer i,j,k=aVertexNumber,n=aVertexIndex-1;
@@ -495,9 +414,9 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
   return somethingHasChange;
 }
 
-Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
-                                                        const Standard_Integer aBoundIndex,
-                                                        const gp_Dir& aNormal) {
+Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(const Standard_Integer aBoundIndex,
+                                                        const gp_Dir& aNormal)
+{
   Standard_Boolean somethingHasChange = Standard_False;
   if( myPrimitiveArray && myPrimitiveArray->vertices ) {
     if( myPrimitiveArray->bounds && 
@@ -537,26 +456,25 @@ Standard_Boolean Graphic3d_ArrayOfPrimitives::Orientate(
   return somethingHasChange;
 }
 
-void Graphic3d_ArrayOfPrimitives::SetVertice(
-                                              const Standard_Integer anIndex,
-                                              const gp_Pnt& aVertice) {
+void Graphic3d_ArrayOfPrimitives::SetVertice( const Standard_Integer anIndex,
+                                              const gp_Pnt& aVertice)
+{
   Standard_Real x,y,z;
   aVertice.Coord(x,y,z);
-  SetVertice(anIndex,x,y,z);
+  SetVertice(anIndex,Standard_ShortReal(x),Standard_ShortReal(y),Standard_ShortReal(z));
 }
 
-void Graphic3d_ArrayOfPrimitives::SetVertexColor(
-                                                  const Standard_Integer anIndex,
-                                                  const Quantity_Color& aColor) {
+void Graphic3d_ArrayOfPrimitives::SetVertexColor( const Standard_Integer anIndex,
+                                                  const Quantity_Color& aColor)
+{
   Standard_Real r,g,b;
   aColor.Values(r,g,b,Quantity_TOC_RGB);
   SetVertexColor(anIndex,r,g,b);
 }
 
-void Graphic3d_ArrayOfPrimitives::SetVertexColor(
-                                                  const Standard_Integer anIndex,
-                                                  const Standard_Integer aColor) {
-
+void Graphic3d_ArrayOfPrimitives::SetVertexColor( const Standard_Integer anIndex,
+                                                  const Standard_Integer aColor)
+{
   if( !myPrimitiveArray ) return;
   if( anIndex < 1 || anIndex > myMaxVertexs ) {
     Standard_OutOfRange::Raise(" BAD VERTEX index");
@@ -580,31 +498,33 @@ void Graphic3d_ArrayOfPrimitives::SetVertexColor(
 
   }
 }
-void Graphic3d_ArrayOfPrimitives::SetVertexNormal(
-                                                  const Standard_Integer anIndex,
-                                                  const gp_Dir& aNormal) {
+
+void Graphic3d_ArrayOfPrimitives::SetVertexNormal(const Standard_Integer anIndex,
+                                                  const gp_Dir& aNormal)
+{
   Standard_Real x,y,z;
   aNormal.Coord(x,y,z);
   SetVertexNormal(anIndex,x,y,z);
 }
 
-void Graphic3d_ArrayOfPrimitives::SetVertexTexel(
-                                                  const Standard_Integer anIndex,
-                                                  const gp_Pnt2d& aTexel) {
+void Graphic3d_ArrayOfPrimitives::SetVertexTexel( const Standard_Integer anIndex,
+                                                  const gp_Pnt2d& aTexel)
+{
   Standard_Real x,y;
   aTexel.Coord(x,y);
   SetVertexTexel(anIndex,x,y);
 }
 
-void Graphic3d_ArrayOfPrimitives::SetBoundColor(
-                                                const Standard_Integer anIndex,
-                                                const Quantity_Color& aColor) {
+void Graphic3d_ArrayOfPrimitives::SetBoundColor(const Standard_Integer anIndex,
+                                                const Quantity_Color& aColor)
+{
   Standard_Real r,g,b;
   aColor.Values(r,g,b,Quantity_TOC_RGB);
   SetBoundColor(anIndex,r,g,b);
 }
 
-Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const {
+Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const
+{
   TCollection_AsciiString name("UndefinedArray");
   switch( myPrimitiveArray->type ) {
     case TelPointsArrayType:
@@ -641,37 +561,43 @@ Standard_CString Graphic3d_ArrayOfPrimitives::StringType() const {
   return name.ToCString();
 }
 
-gp_Pnt Graphic3d_ArrayOfPrimitives::Vertice(const Standard_Integer aRank) const {
+gp_Pnt Graphic3d_ArrayOfPrimitives::Vertice(const Standard_Integer aRank) const
+{
   Standard_Real x,y,z;
   Vertice(aRank,x,y,z);
   return gp_Pnt(x,y,z);
 }
 
-Quantity_Color Graphic3d_ArrayOfPrimitives::VertexColor(const Standard_Integer aRank) const {
+Quantity_Color Graphic3d_ArrayOfPrimitives::VertexColor(const Standard_Integer aRank) const
+{
   Standard_Real r,g,b;
   VertexColor(aRank,r,g,b);
   return Quantity_Color(r,g,b,Quantity_TOC_RGB);
 }
 
-gp_Dir Graphic3d_ArrayOfPrimitives::VertexNormal(const Standard_Integer aRank) const {
+gp_Dir Graphic3d_ArrayOfPrimitives::VertexNormal(const Standard_Integer aRank) const
+{
   Standard_Real x,y,z;
   VertexNormal(aRank,x,y,z);
   return gp_Dir(x,y,z);
 }
 
-gp_Pnt2d Graphic3d_ArrayOfPrimitives::VertexTexel(const Standard_Integer aRank) const {
+gp_Pnt2d Graphic3d_ArrayOfPrimitives::VertexTexel(const Standard_Integer aRank) const
+{
   Standard_Real x,y;
   VertexTexel(aRank,x,y);
   return gp_Pnt2d(x,y);
 }
 
-Quantity_Color Graphic3d_ArrayOfPrimitives::BoundColor(const Standard_Integer aRank) const {
+Quantity_Color Graphic3d_ArrayOfPrimitives::BoundColor(const Standard_Integer aRank) const
+{
   Standard_Real r,g,b;
   BoundColor(aRank,r,g,b);
   return Quantity_Color(r,g,b,Quantity_TOC_RGB);
 }
 
-Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const {
+Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const
+{
   Standard_Integer number=-1;
   if( myPrimitiveArray ) switch( myPrimitiveArray->type ) {
     case TelPointsArrayType:
@@ -720,9 +646,9 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::ItemNumber() const {
   return number;
 }
 
-void Graphic3d_ArrayOfPrimitives::ComputeVNormals(
-                                                  const Standard_Integer from,
-                                                  const Standard_Integer to) {
+void Graphic3d_ArrayOfPrimitives::ComputeVNormals(const Standard_Integer from,
+                                                  const Standard_Integer to)
+{
   Standard_Integer next = from+1;
   Standard_Integer last = to+1;
   gp_Pnt p1,p2,p3;
@@ -769,8 +695,8 @@ void Graphic3d_ArrayOfPrimitives::ComputeVNormals(
   }
 }
 
-Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid() {
-
+Standard_Boolean Graphic3d_ArrayOfPrimitives::IsValid()
+{
   if( !myPrimitiveArray ) return Standard_False;
 
   Standard_Integer nvertexs = myPrimitiveArray->num_vertexs;

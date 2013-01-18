@@ -19,14 +19,12 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351	//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
+//GER61351	//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 #define BUC60915 	//GG 05/06/01 Enable to compute the requested arrow size 
 //			if any in all dimensions.
 
 #include <AIS.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_Group.hxx>
 
 #include <AIS_Relation.ixx>
@@ -222,13 +220,11 @@ void AIS_Relation::ComputeProjVertexPresentation(const Handle(Prs3d_Presentation
 //=======================================================================
 
 void AIS_Relation::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_Relation::SetColor(const Quantity_Color &aCol)
-#endif
 {
   if(hasOwnColor && myOwnColor==aCol) return;
 
@@ -268,13 +264,9 @@ void AIS_Relation::UnsetColor()
   if (!hasOwnColor) return;
   hasOwnColor = Standard_False;
   const Handle(Prs3d_LineAspect)& LA = myDrawer->LineAspect();
-#ifdef GER61351
   Quantity_Color CC;
   AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
   LA->SetColor(CC);
-#else
-  LA->SetColor(AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line));
-#endif
   myDrawer->AngleAspect()->SetLineAspect(LA);
   myDrawer->LengthAspect()->SetLineAspect(LA);
   myDrawer->SetTextAspect(myDrawer->Link()->TextAspect());

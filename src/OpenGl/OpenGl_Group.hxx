@@ -55,9 +55,6 @@ public:
 
   void AddElement (const TelType, OpenGl_Element * );
 
-  void RemovePrimitiveArray (const Handle(OpenGl_Context)& theGlCtx,
-                             CALL_DEF_PARRAY*              thePArray);
-
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
 

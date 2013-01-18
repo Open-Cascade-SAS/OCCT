@@ -46,10 +46,7 @@
 
 Standard_Boolean Graphic3d_Group::IsDeleted () const {
 
-  if ( (MyCGroup.IsDeleted) || (MyStructure->IsDeleted ()) )
-    return (Standard_True);
-  else
-    return (Standard_False);
+  return ( (MyCGroup.ptrGroup == NULL) || (MyStructure->IsDeleted ()) );
 
 }
 
@@ -114,13 +111,6 @@ void Graphic3d_Group::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin, Sta
     YMax  = Standard_Real (MyBounds.YMax);
     ZMax  = Standard_Real (MyBounds.ZMax);
   }
-
-}
-
-void Graphic3d_Group::Labels (Standard_Integer& LB, Standard_Integer& LE) const {
-
-  LB  = Standard_Integer (MyCGroup.LabelBegin);
-  LE  = Standard_Integer (MyCGroup.LabelEnd);
 
 }
 

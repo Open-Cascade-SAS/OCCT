@@ -77,49 +77,38 @@ MyListOfPArray()
 // This () is the instance of the class, the current groupe
 //Handle(Graphic3d_Group) me	= Handle(Graphic3d_Group)::DownCast (This ());
 
-Standard_Integer TheLabelBegin, TheLabelEnd;
+  MyPtrStructure = (void *) AStructure.operator->();
+  MyStructure->Add (this);
 
-	// MyStructure	= AStructure;
-	MyPtrStructure	= (void *) AStructure.operator->();
-	MyStructure->GroupLabels (TheLabelBegin, TheLabelEnd);
-	MyStructure->Add (this);
+  MyContainsFacet     = Standard_False,
+  MyIsEmpty           = Standard_True;
 
-	MyContainsFacet			= Standard_False,
-	MyIsEmpty			= Standard_True;
+  MyCGroup.Struct     = MyStructure->CStructure();
+  MyCGroup.Struct->Id = int (MyStructure->Identification ());
+  MyCGroup.ptrGroup	= NULL;
 
-	MyCGroup.Struct	    = MyStructure->CStructure();
-	MyCGroup.Struct->Id	= int (MyStructure->Identification ());
-	MyCGroup.IsDeleted	= 0;
-	MyCGroup.IsOpen		= 0;
-	MyCGroup.LabelBegin	= int (TheLabelBegin);
-	MyCGroup.LabelEnd	= int (TheLabelEnd);
+  MyCGroup.ContextLine.IsDef     = 0,
+  MyCGroup.ContextText.IsDef     = 0,
+  MyCGroup.ContextMarker.IsDef   = 0,
+  MyCGroup.ContextFillArea.IsDef = 0;
 
-	MyCGroup.StructureEnd	= Structure_END;
+  MyCGroup.ContextLine.IsSet     = 0,
+  MyCGroup.ContextText.IsSet     = 0,
+  MyCGroup.ContextMarker.IsSet   = 0,
+  MyCGroup.ContextFillArea.IsSet = 0;
 
-	MyCGroup.ContextLine.IsDef	= 0,
-	MyCGroup.ContextText.IsDef	= 0,
-	MyCGroup.ContextMarker.IsDef	= 0,
-	MyCGroup.ContextFillArea.IsDef	= 0;
+  MyCGroup.PickId.IsDef = 0,
+  MyCGroup.PickId.IsSet = 0,
+  MyCGroup.PickId.Value = 0;
 
-	MyCGroup.ContextLine.IsSet	= 0,
-	MyCGroup.ContextText.IsSet	= 0,
-	MyCGroup.ContextMarker.IsSet	= 0,
-	MyCGroup.ContextFillArea.IsSet	= 0;
+  Handle(Aspect_GraphicDriver) agd =
+    ((MyStructure->StructureManager ())->GraphicDevice ())->GraphicDriver ();
 
-	MyCGroup.PickId.IsDef	= 0,
-	MyCGroup.PickId.IsSet	= 0,
-	MyCGroup.PickId.Value	= 0;
+  MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
 
-Handle(Aspect_GraphicDriver) agd =
-((MyStructure->StructureManager ())->GraphicDevice ())->GraphicDriver ();
+  MyGraphicDriver->Group (MyCGroup);
 
-	MyGraphicDriver	= *(Handle(Graphic3d_GraphicDriver) *) &agd;
-
-	MyGraphicDriver->Group (MyCGroup);
-
-        //MyCGroup.TransformPersistenceFlag = Graphic3d_TMF_None;
-        //MyCGroup.Struct->TransformPersistenceFlag = Graphic3d_TMF_None;
-        MyMarkWidth = 0;
-	MyMarkHeight = 0;
-        MyMarkArray.Nullify();
+  MyMarkWidth = 0;
+  MyMarkHeight = 0;
+  MyMarkArray.Nullify();
 }

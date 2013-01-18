@@ -83,27 +83,13 @@ class Group from Graphic3d inherits TShared
         GraphicDriver               from Graphic3d,
         Structure                   from Graphic3d,
         TextPath                    from Graphic3d,
-        TypeOfPolygon               from Graphic3d,
         Vector                      from Graphic3d,
         Array1OfVertex              from Graphic3d,
         Array2OfVertex              from Graphic3d,
         Vertex                      from Graphic3d,
-        Array1OfVertexC             from Graphic3d,
-        Array2OfVertexC             from Graphic3d,
-        VertexC                     from Graphic3d,
-        Array1OfVertexN             from Graphic3d,
-        Array2OfVertexN             from Graphic3d,
-        VertexN                     from Graphic3d,
-        Array1OfVertexNC            from Graphic3d,
-        Array2OfVertexNC            from Graphic3d,
-        VertexNC                    from Graphic3d,
         VerticalTextAlignment       from Graphic3d, 
-        VertexNT                    from Graphic3d, 
-        Array1OfVertexNT            from Graphic3d,
-        Array2OfVertexNT            from Graphic3d,
         ArrayOfPrimitives           from Graphic3d,
         ListOfPArray                from Graphic3d,
-        ListIteratorOfListOfPArray  from Graphic3d,
         TransModeFlags              from Graphic3d,
         CBounds                     from Graphic3d
     
@@ -282,109 +268,6 @@ class Group from Graphic3d inherits TShared
         --     vertices.
         ---Category: Methods to create Marker
     
-        --------------------------------------
-        -- Category: Methods to create Polygon
-        --------------------------------------
-    
-        --------------------------------------------------
-        -- Summary of Polygons                          --
-        --                                              --
-        -- They are limited to one boundary.            --
-        --                                              --
-        -- The boundary should be closed.               --
-        --                                              --
-        -- They should have at least three vertices.    --
-        --                                              --
-        -- They should be planar.                       --
-        --                                              --
-        -- They should have a normal.                   --
-        --                                              --
-        -- The boundary is drawn only when the interior --
-        -- style is hollow.                             --
-        --                                              --
-        -- The boundary have the following attributes : --
-        --                                              --
-        --  Line Type.                              --
-        --  Line Width Scale Factor.                --
-        --  Line Color.                             --
-        --                                              --
-        -- They have only interior attributes :         --
-        --                                              --
-        --  Interior Style.                         --
-        --  Interior Color.                         --
-        --  Front Material.                         --
-        --  Back Material.                          --
-        --------------------------------------------------
-    
-        Polygon ( me            : mutable;
-                  ListVertex    : Array1OfVertex from Graphic3d;
-                  AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
-                  EvalMinMax    : Boolean from Standard = Standard_True )
-            is static;
-        ---Level: Public
-        ---Purpose: Links up points to create a face drawn
-        --      using the current fill attributes (AspectFillArea3d))
-        --      The first and last points are not duplicates.
-        ---Category: Methods to create Polygon
-
-        PolygonSet ( me           : mutable;
-                     Bounds       : Array1OfInteger from TColStd;
-                     ListVertex   : Array1OfVertex from Graphic3d;
-                     AType        : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
-                     EvalMinMax   : Boolean from Standard = Standard_True )
-            is static;
-        ---Level: Public
-        ---Purpose: Links up points to create a set of face drawn
-        --      using the current fill attributes (AspectFillArea3d))
-        --      The first and last points are not duplicates.
-        ---Category: Methods to create Polygon
-    
-        ---------------------------------------
-        -- Category: Methods to create Polyline
-        ---------------------------------------
-    
-        --------------------------------------------
-        -- Summary of Polylines                   --
-        --                                        --
-        -- They should have two or more vertices. --
-        --                                        --
-        -- They have the following attributes.    --
-        --                                        --
-        --  Line Type.                        --
-        --  Line Width Scale Factor.          --
-        --  Line Color.                       --
-        --------------------------------------------
-    
-        Polyline ( me           : mutable;
-                   APT1         : Vertex from Graphic3d;
-                   APT2         : Vertex from Graphic3d;
-                   EvalMinMax   : Boolean from Standard = Standard_True )
-            is static;
-        ---Level: Public
-        ---Purpose: Links up points to create a line drawn
-        --      using the current line attributes (AspectLine)
-        ---Category: Methods to create Polyline
-    
-        Polyline ( me         : mutable;
-                   ListVertex : Array1OfVertex from Graphic3d;
-                   EvalMinMax : Boolean from Standard = Standard_True )
-            is static;
-        ---Level: Public
-        ---Purpose: Links up points to create a line drawn
-        --      using the current line attributes (AspectLine)
-        ---Category: Methods to create Polyline
-    
-        Polyline ( me         : mutable;
-                   ListVertex : Array1OfVertexC from Graphic3d;
-                   EvalMinMax : Boolean from Standard = Standard_True )
-            is static;
-        ---Level: Public
-        ---Purpose: Links up points to create a line drawn
-        --      using the current line attributes (AspectLine)
-        --      except for the colour which is defined
-        --      for each vertex.
-        ---Category: Methods to create Polyline
-    
         -----------------------------------
         -- Category: Methods to create Text
         -----------------------------------
@@ -511,17 +394,6 @@ class Group from Graphic3d inherits TShared
         ---Level: Public
     ---Purpose: Adds an array of primitives for display
 
-    RemovePrimitiveArray( me       : mutable;
-                          aRank    : Integer from Standard) 
-        ---Level: Public
-    ---Purpose: Remove the array of primitives of rank <aRank> 
-        raises OutOfRange from Standard is static;
-    -- if <aRank> is < 1 or > ArrayNumber()
-
-    RemovePrimitiveArrays( me       : mutable);
-        ---Level: Public
-    ---Purpose: Remove all array of primitives 
-    
     UserDraw ( me           : mutable;
                AnObject     : Address from Standard; 
                EvalMinMax   : Boolean from Standard = Standard_True; 
@@ -536,30 +408,6 @@ class Group from Graphic3d inherits TShared
         ----------------------------
         -- Category: Inquire methods
         ----------------------------
-
-    ArrayNumber( me )
-    returns Integer from Standard;
-        ---Level: Public
-    ---Purpose: Returns the number of primitive array added in this group 
-
-    InitDefinedArray( me:mutable );
-        ---Level: Public
-    ---Purpose: Initialize the array list iterator. 
-
-    NextDefinedArray( me:mutable );
-        ---Level: Public
-    ---Purpose: Increments the array list iterator. 
-
-    MoreDefinedArray( me:mutable )
-    returns Boolean from Standard;
-        ---Level: Public
-    ---Purpose: Returns TRUE if more array exists in the list.
-
-    DefinedArray( me )
-    returns mutable ArrayOfPrimitives from Graphic3d;
-        ---Level: Public
-    ---Purpose: Returns the current array of primitives according
-    -- to the array list iterator value. 
 
         IsGroupPrimitivesAspectSet ( me;
                     theAspect : GroupAspect from Graphic3d )
@@ -640,13 +488,6 @@ class Group from Graphic3d inherits TShared
         -- Category: Private methods
         ----------------------------
         
-        Labels ( me;
-             LB, LE : in out Integer from Standard )
-            is static private;
-        ---Level: Internal
-        ---Purpose: Returns the position of the group in the structure.
-        ---Category: Private methods
-    
         MinMaxCoord ( me;
                       XMin, YMin, ZMin : out Real from Standard;
                       XMax, YMax, ZMax : out Real from Standard )
@@ -664,22 +505,6 @@ class Group from Graphic3d inherits TShared
         ---Purpose: Calls the Update method of the StructureManager which
         --      contains the associated Structure of the Group <me>.
         ---Category: Private methods
-    
-        -----------------------------
-        -- Category: Internal methods
-        -----------------------------
-    
-        BeginPrimitives ( me : mutable )
-            is static;
-        ---Level: Internal
-        ---Category: Internal methods
-    
-        EndPrimitives ( me : mutable )
-            is static;
-        ---Level: Internal
-        ---Category: Internal methods
-
-    --
     
     fields
     
@@ -708,7 +533,6 @@ class Group from Graphic3d inherits TShared
     MyBounds                :       CBounds from Graphic3d;
 
     MyListOfPArray          :   ListOfPArray from Graphic3d;
-    MyListOfPArrayIterator  :   ListIteratorOfListOfPArray from Graphic3d;
 
     MyMarkArray             :       HArray1OfByte from TColStd;
     MyMarkWidth             :       Integer from Standard;

@@ -37,7 +37,6 @@
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <AIS_Drawer.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Quantity_Color.hxx>
 #include <Aspect_TypeOfLine.hxx>

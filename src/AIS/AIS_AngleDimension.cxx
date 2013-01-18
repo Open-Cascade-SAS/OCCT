@@ -101,7 +101,7 @@
 #include <GC_MakeConicalSurface.hxx>
 #include <gce_MakePln.hxx>
 #include <gce_MakeCone.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>  
+
 
 //=======================================================================
 //function : Constructor
@@ -1975,19 +1975,17 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
 
   gp_Pnt AttachmentPnt;
   gp_Pnt OppositePnt;
-  gp_Pnt aPnt, tmpPnt;
-  Quantity_Length X,Y,Z;
 
   Standard_Real param = ElCLib::Parameter(myCircle, myPosition);
 
-  aPnt = Apex;
+  gp_Pnt aPnt = Apex;
   gp_Pnt P1 = ElCLib::Value(0., myCircle);
   gp_Pnt P2 = ElCLib::Value(M_PI, myCircle);
 
-  gce_MakePln mkPln(P1, P2,  aPnt);   // create a plane whitch defines plane for projection aPosition on it
+  gce_MakePln mkPln(P1, P2, aPnt);   // create a plane whitch defines plane for projection aPosition on it
 
-  aPnt =  AIS::ProjectPointOnPlane(myPosition, mkPln.Value()); 
-  tmpPnt = aPnt;
+  aPnt = AIS::ProjectPointOnPlane(myPosition, mkPln.Value()); 
+  gp_Pnt tmpPnt = aPnt;
 
   if( aPnt.Distance(P1) <  aPnt.Distance(P2) ){
     AttachmentPnt = P1; 
@@ -2015,49 +2013,30 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
 
   if( myPosition.Distance( myCircle.Location() ) <= myCircle.Radius() )
     if( 2 * myCircle.Radius() > aCircle2.Radius() * 0.4 ) IsArrowOut = Standard_False;  //four times more than an arrow size
- 
-  Graphic3d_Array1OfVertex V(1, 12);
-  
-  Standard_Real angle;
-  param = ElCLib::Parameter(aCircle2, tmpPnt);
 
-  if(IsArrowOut) {
-    angle = OppParam - AttParam + M_PI / 6; //An angle between AttParam and OppParam + 30 degrees
-    param = AttParam - M_PI / 12;      //out parts of dimension line are 15 degrees
-    
-    while ( angle > 2 * M_PI ) angle -= 2 * M_PI;
-    for( i = 0; i <= 11; i++ ) {       //calculating of arc             
-      aPnt = ElCLib::Value(param + angle/11 * i, aCircle2);
-      aPnt.Coord(X, Y, Z);
-      V(i+1).SetCoord(X, Y, Z);    
-    }
-      
-  }
-  else {
-    angle = OppParam - AttParam;
-    param = AttParam;
-    while ( angle > 2 * M_PI ) angle -= 2 * M_PI;
-    for( i = 0; i <= 11; i++ ) {       //calculating of arc             
-      aPnt = ElCLib::Value(param + angle/11 * i, aCircle2);
-      aPnt.Coord(X, Y, Z);
-      V(i+1).SetCoord(X, Y, Z);
-    }
-  }
-  
-  for(i = 1; i<=11; i++) {
+  param = AttParam;
+  Standard_Real angle = OppParam - AttParam;
 
-    V(i).Coord(X, Y, Z);
-    P1.SetCoord(X, Y, Z);
-    V(i+1).Coord(X, Y, Z);
-    P1.SetCoord(X, Y, Z);
-
-    seg = new Select3D_SensitiveSegment(owner, P1, P2);
-    aSelection->Add(seg);   
+  if(IsArrowOut)
+  {
+    angle += M_PI / 6; //An angle between AttParam and OppParam + 30 degrees
+    param -= M_PI / 12;      //out parts of dimension line are 15 degrees
   }
 
-  tmpPnt =  tmpPnt.Translated(gp_Vec(0, 0, -1)*2);
+  while ( angle > 2. * M_PI ) angle -= 2. * M_PI;
 
-  Standard_Real size(Min(myVal/100.+1.e-6,myArrowSize+1.e-6));
+  gp_Pnt Vprev = ElCLib::Value(param, aCircle2);
+  for( i = 1; i <= 11; i++ ) //calculating of arc
+  {
+    gp_Pnt Vcur = ElCLib::Value(param + angle/11 * i, aCircle2);
+    seg = new Select3D_SensitiveSegment(owner, Vprev, Vcur);
+    aSelection->Add(seg);
+    Vprev = Vcur;
+  }
+
+  tmpPnt = tmpPnt.Translated(gp_Vec(0, 0, -2));
+
+  const Standard_Real size(Min(myVal/100.+1.e-6,myArrowSize+1.e-6));
   Handle( Select3D_SensitiveBox ) box = new Select3D_SensitiveBox( owner,
 								   tmpPnt.X(),
 								   tmpPnt.Y(),
@@ -2067,6 +2046,3 @@ void AIS_AngleDimension::ComputeConeAngleSelection(const Handle(SelectMgr_Select
 								   tmpPnt.Z() + size);
   aSelection->Add(box);
 }
-
-
-

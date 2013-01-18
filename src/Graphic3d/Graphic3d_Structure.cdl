@@ -72,9 +72,8 @@ uses
 	TypeOfPrimitive		from Graphic3d,
 	TypeOfStructure		from Graphic3d,
 	Vector			from Graphic3d,
-	VertexNC		from Graphic3d,
 	Vertex			from Graphic3d,
-        TransModeFlags          from Graphic3d,
+	TransModeFlags          from Graphic3d,
 	Pnt                     from gp
 
 raises
@@ -236,8 +235,8 @@ is
 	---Level: Public
 	---Purpose: Modifies the order of displaying the structure.
 	--	    Values are between 0 and 10.
-	--      Structures are drawn according to their display priorities
-	--      in ascending order.
+	--          Structures are drawn according to their display priorities
+	--          in ascending order.
 	--	    A structure of priority 10 is displayed the last and appears over the others.
 	--	    The default value is 5.
 	--  Category: Methods to modify the class definition
@@ -860,13 +859,6 @@ is
 	---Purpose: Suppress the highlight for the structure <me>.
 	---Category: Private methods
 
-	GroupLabels ( me	: mutable;
-		      LB, LE	: in out Integer from Standard )
-		is static private;
-	---Level: Internal
-	---Purpose: Returns the labels for a new group in the structure <me>.
-	---Category: Private methods
-
 	Identification ( me )
 		returns Integer from Standard
 		is static;
@@ -992,9 +984,6 @@ fields
 
 	-- the associated C structure
 	MyCStructure		:	CStructure from Graphic3d;
-
-	-- the group identifier generator
-	MyGroupGenId		:	GenId from Aspect;
 
 	-- the structures to which the structure is attached
 	MyAncestors		:	SequenceOfAddress from TColStd;

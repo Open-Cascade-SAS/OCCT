@@ -18,11 +18,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_FixPresentation.ixx>
 
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
@@ -44,8 +42,6 @@
 #include <Quantity_Color.hxx>
 
 
-
-
 //=======================================================================
 //function : Add
 //purpose  : 
@@ -62,57 +58,52 @@ void DsgPrs_FixPresentation::Add(
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(10);
+
   //Trace du segment de raccordement
-  Graphic3d_Array1OfVertex V(1,2);
-  V(1).SetCoord(aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
-  V(2).SetCoord(aPntEnd.X(), aPntEnd.Y(), aPntEnd.Z() );
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddVertex(aPntAttach);
+  aPrims->AddVertex(aPntEnd);
 
   // trace du symbole 'Fix'
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-
-  
-  gp_Vec dirac(aPntAttach, aPntEnd);
-                                   // vecteur directeur du seg. de raccord
+  gp_Vec dirac(aPntAttach, aPntEnd); // vecteur directeur du seg. de raccord
   dirac.Normalize();
   gp_Vec norac = dirac.Crossed(gp_Vec(aNormPln));
   gp_Ax1 ax(aPntEnd, aNormPln);
-  norac.Rotate(ax, M_PI/8);
-                                  // vecteur normal au seg. de raccord
+  norac.Rotate(ax, M_PI/8); // vecteur normal au seg. de raccord
   norac*=(symbsize/2);
   gp_Pnt P1 = aPntEnd.Translated(norac);
   gp_Pnt P2 = aPntEnd.Translated(-norac);
 
-  V(1).SetCoord(P1.X(),P1.Y(),P1.Z());
-  V(2).SetCoord(P2.X(),P2.Y(),P2.Z());
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddVertex(P1);
+  aPrims->AddVertex(P2);
 
   // trace des 'dents'
   norac*=0.8;
   P1 = aPntEnd.Translated(norac);
   P2 = aPntEnd.Translated(-norac);
   dirac*=(symbsize/2);
-  gp_Pnt PF(P1.XYZ());
+  gp_Pnt PF = P1;
   gp_Pnt PL = PF.Translated(dirac);
   PL.Translate(norac);
-  V(1).SetCoord( PF.X(), PF.Y(), PF.Z() );
-  V(2).SetCoord( PL.X(), PL.Y(), PL.Z() );
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  PF.SetXYZ(P2.XYZ());
+  aPrims->AddVertex(PF);
+  aPrims->AddVertex(PL);
+
+  PF = P2;
   PL = PF.Translated(dirac);
   PL.Translate(norac);
-  V(1).SetCoord( PF.X(), PF.Y(), PF.Z() );
-  V(2).SetCoord( PL.X(), PL.Y(), PL.Z() );
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
 
-  PF.SetXYZ((P1.XYZ() + P2.XYZ())/2);
+  aPrims->AddVertex(PF);
+  aPrims->AddVertex(PL);
+
+  PF.SetXYZ(0.5*(P1.XYZ() + P2.XYZ()));
   PL = PF.Translated(dirac);
   PL.Translate(norac);
-  V(1).SetCoord( PF.X(), PF.Y(), PF.Z() );
-  V(2).SetCoord( PL.X(), PL.Y(), PL.Z() );
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+
+  aPrims->AddVertex(PF);
+  aPrims->AddVertex(PL);
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // On ajoute un rond au point d'attache
   Prs3d_Root::NewGroup(aPresentation);
@@ -128,5 +119,4 @@ void DsgPrs_FixPresentation::Add(
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
   Graphic3d_Vertex V3d(aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
   Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-
 }

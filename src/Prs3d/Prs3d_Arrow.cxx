@@ -18,7 +18,8 @@
 
 #include <Prs3d_Arrow.ixx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 
 //=======================================================================
 //function : Draw
@@ -27,10 +28,10 @@
 
 void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
                        const gp_Pnt& aLocation,
-		       const gp_Dir& aDirection,
+                       const gp_Dir& aDirection,
                        const Quantity_PlaneAngle anAngle,
-    		       const Quantity_Length aLength) {
-
+                       const Quantity_Length aLength)
+{
   Quantity_Length dx,dy,dz;  aDirection.Coord(dx,dy,dz);
 //
 // Point of the arrow:
@@ -54,34 +55,36 @@ void Prs3d_Arrow::Draw(const Handle(Prs3d_Presentation)& aPresentation,
   Quantity_Length Norme = sqrt ( xi*xi + yi*yi + zi*zi );
   xi = xi / Norme; yi = yi / Norme; zi = zi/Norme;
 
-  Quantity_Length  xj = dy * zi - dz * yi;
-  Quantity_Length  yj = dz * xi - dx * zi;
-  Quantity_Length  zj = dx * yi - dy * xi;
+  const Quantity_Length  xj = dy * zi - dz * yi;
+  const Quantity_Length  yj = dz * xi - dx * zi;
+  const Quantity_Length  zj = dx * yi - dy * xi;
 
-  Standard_Integer NbPoints = 15;
+  const Standard_Integer NbPoints = 15;
 
-  Graphic3d_Array1OfVertex VN(1,NbPoints+1);
-  Graphic3d_Array1OfVertex V2(1,2);
-  V2(1).SetCoord(xo,yo,zo);
+  Handle(Graphic3d_ArrayOfSegments) aPrims1 = new Graphic3d_ArrayOfSegments(2*NbPoints);
+  Handle(Graphic3d_ArrayOfPolylines) aPrims2 = new Graphic3d_ArrayOfPolylines(NbPoints+1);
 
-  Quantity_Length x,y,z;
-  Standard_Real cosinus,sinus, Tg=tan(anAngle);
+  gp_Pnt p1;
+  const Standard_Real Tg=tan(anAngle);
 
-  for (Standard_Integer i = 1 ; i <= NbPoints ; i++) {
+  for (Standard_Integer i = 1; i <= NbPoints ; i++)
+  {
+    const Standard_Real cosinus = cos ( 2 * M_PI / NbPoints * (i-1) );   
+    const Standard_Real sinus   = sin ( 2 * M_PI / NbPoints * (i-1) );
 
-    cosinus = cos ( 2 * M_PI / NbPoints * (i-1) );   
-    sinus   = sin ( 2 * M_PI / NbPoints * (i-1) );
+    const gp_Pnt pp(xc + (cosinus * xi + sinus * xj) * aLength * Tg,
+                    yc + (cosinus * yi + sinus * yj) * aLength * Tg,
+                    zc + (cosinus * zi + sinus * zj) * aLength * Tg);
 
-    x = xc + (cosinus * xi + sinus * xj) * aLength * Tg;
-    y = yc + (cosinus * yi + sinus * yj) * aLength * Tg;
-    z = zc + (cosinus * zi + sinus * zj) * aLength * Tg;
-
-    VN(i).SetCoord(x,y,z);
-    if(i==1) VN(NbPoints+1).SetCoord(x,y,z);
-    V2(2).SetCoord(x,y,z);
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V2);
+    aPrims1->AddVertex(aLocation);
+    aPrims1->AddVertex(pp);
+    if(i==1) p1 = pp;
+    aPrims2->AddVertex(pp);
   }
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(VN);
+  aPrims2->AddVertex(p1);
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims1);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims2);
 }
 
 //=======================================================================
@@ -93,6 +96,6 @@ void Prs3d_Arrow::Fill(const Handle(Prs3d_Presentation)& /*aPresentation*/,
                        const gp_Pnt& /*aLocation*/,
                        const gp_Dir& /*aDirection*/,
                        const Quantity_PlaneAngle /*anAngle*/,
-    		       const Quantity_Length /*aLength*/)
+                       const Quantity_Length /*aLength*/)
 {
 }

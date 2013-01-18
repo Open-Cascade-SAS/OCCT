@@ -28,7 +28,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Prs3d_Text.hxx>
 
 void Prs3d_LengthPresentation::Draw (
@@ -37,53 +37,33 @@ void Prs3d_LengthPresentation::Draw (
 			       const TCollection_ExtendedString& aText,
 			       const gp_Pnt& AttachmentPoint1,
 			       const gp_Pnt& AttachmentPoint2,
-			       const gp_Pnt& OffsetPoint) {
-
-
+			       const gp_Pnt& OffsetPoint)
+{
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
- Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
   gp_Dir D (gp_Vec(AttachmentPoint1,AttachmentPoint2));
   gp_Lin L (OffsetPoint,D);
   gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L,AttachmentPoint1),L);
   gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L,AttachmentPoint2),L);
-  Graphic3d_Array1OfVertex V(1,2);
+
+  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);
+  aPrims->AddVertex(AttachmentPoint1);
+  aPrims->AddVertex(Proj1);
+  aPrims->AddVertex(Proj2);
+  aPrims->AddVertex(AttachmentPoint2);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   Quantity_Length X,Y,Z;
-
   Proj1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
+  if (LA->DrawFirstArrow())
+    Prs3d_Arrow::Draw(aPresentation,Proj1,D.Reversed(),LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
 
-  AttachmentPoint1.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-
-  
-  Proj2.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-
-  AttachmentPoint2.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-
-  Proj1.Coord(X,Y,Z);
-  if (LA->DrawFirstArrow()) {
-    Prs3d_Arrow::Draw(aPresentation,Proj1,D.Reversed(),
-                      LA->Arrow1Aspect()->Angle(),
-		      LA->Arrow1Aspect()->Length());
-    }
   Quantity_Length X2,Y2,Z2;
   Proj2.Coord(X2,Y2,Z2);
-  if (LA->DrawSecondArrow()) {
-    Prs3d_Arrow::Draw(aPresentation,Proj2,D,
-                      LA->Arrow2Aspect()->Angle(),
-		      LA->Arrow2Aspect()->Length());
-    }
+  if (LA->DrawSecondArrow())
+    Prs3d_Arrow::Draw(aPresentation,Proj2,D,LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
 
-  gp_Pnt p;
-  p.SetCoord( (X+X2)/2. , (Y+Y2)/2. , (Z+Z2)/2.);
-
+  gp_Pnt p( .5*(X+X2), .5*(Y+Y2), .5*(Z+Z2) );
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,p);
 }
-
-

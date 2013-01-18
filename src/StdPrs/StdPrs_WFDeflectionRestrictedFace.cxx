@@ -23,8 +23,6 @@
 #include <StdPrs_WFDeflectionRestrictedFace.ixx>
 
 #include <Hatch_Hatcher.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_Group.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -117,8 +115,6 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 #ifdef DEB_MESH
   FFaceTimer1.Start();
 #endif
-
-  Standard_Boolean isPA = Graphic3d_ArrayOfPrimitives::IsEnable();
 
   StdPrs_ToolRFace ToolRst (aFace);
   Standard_Real UF, UL, VF, VL;
@@ -326,7 +322,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	FindLimits(GC, aLimit,b1, b2);
 	if (b2-b1>Precision::Confusion()) {
 	  TColgp_SequenceOfPnt Points;
-	  StdPrs_DeflectionCurve::Add(aPresentation, GC, b1, b2, Deflection, Points, anAngle, !isPA);
+	  StdPrs_DeflectionCurve::Add(aPresentation, GC, b1, b2, Deflection, Points, anAngle, Standard_False);
 	  Curves.Append(Points);
 	}
       }
@@ -338,7 +334,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	FindLimits(anIso, aLimit,b1, b2);
 	if (b2-b1>Precision::Confusion()) {
 	  TColgp_SequenceOfPnt Points;
-	  StdPrs_DeflectionCurve::Add(aPresentation, anIso, b1, b2, Deflection, Points, anAngle, !isPA);
+	  StdPrs_DeflectionCurve::Add(aPresentation, anIso, b1, b2, Deflection, Points, anAngle, Standard_False);
 	  Curves.Append(Points);
 	}
       }
@@ -493,27 +489,18 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
 void StdPrs_WFDeflectionRestrictedFace::Add
   (const Handle (Prs3d_Presentation)& aPresentation,
    const Handle(BRepAdaptor_HSurface)& aFace,
-   const Handle (Prs3d_Drawer)& aDrawer){
-
-  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
-
-  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
-  TheGroup->BeginPrimitives();
-
+   const Handle (Prs3d_Drawer)& aDrawer)
+{
   Prs3d_NListOfSequenceOfPnt Curves;
   StdPrs_WFDeflectionRestrictedFace::Add (aPresentation,
 					  aFace,
 					  Standard_True,
 					  Standard_True,
-					  Deflection,
-					  finu,
-					  finv,
+					  aDrawer->MaximalChordialDeviation(),
+					  aDrawer->UIsoAspect()->Number(),
+					  aDrawer->VIsoAspect()->Number(),
 					  aDrawer,
 					  Curves);
-
-  TheGroup->EndPrimitives();
 }
 
 
@@ -524,20 +511,17 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 void StdPrs_WFDeflectionRestrictedFace::AddUIso
   (const Handle (Prs3d_Presentation)& aPresentation,
    const Handle(BRepAdaptor_HSurface)& aFace,
-   const Handle (Prs3d_Drawer)& aDrawer) {
-
-  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+   const Handle (Prs3d_Drawer)& aDrawer)
+{
   Prs3d_NListOfSequenceOfPnt Curves;
   StdPrs_WFDeflectionRestrictedFace::Add ( 
 		      aPresentation,
 		      aFace,
 		      Standard_True,
 		      Standard_False,
-		      Deflection,
-		      finu,
-		      finv,
+		      aDrawer->MaximalChordialDeviation(),
+		      aDrawer->UIsoAspect()->Number(),
+		      aDrawer->VIsoAspect()->Number(),
 		      aDrawer,
 		      Curves);
 }
@@ -550,20 +534,17 @@ void StdPrs_WFDeflectionRestrictedFace::AddUIso
 void StdPrs_WFDeflectionRestrictedFace::AddVIso
   (const Handle (Prs3d_Presentation)& aPresentation,
    const Handle(BRepAdaptor_HSurface)& aFace,
-   const Handle (Prs3d_Drawer)& aDrawer) {
-
-  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+   const Handle (Prs3d_Drawer)& aDrawer)
+{
   Prs3d_NListOfSequenceOfPnt Curves;
   StdPrs_WFDeflectionRestrictedFace::Add ( 
 		      aPresentation,
 		      aFace,
 		      Standard_False,
 		      Standard_True,
-		      Deflection,
-		      finu,
-		      finv,
+		      aDrawer->MaximalChordialDeviation(),
+		      aDrawer->UIsoAspect()->Number(),
+		      aDrawer->VIsoAspect()->Number(),
 		      aDrawer,
 		      Curves);
 }
@@ -579,20 +560,17 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
    const Quantity_Length Z,
    const Quantity_Length aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
-   const Handle (Prs3d_Drawer)& aDrawer){
-
-  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+   const Handle (Prs3d_Drawer)& aDrawer)
+{
   return StdPrs_WFDeflectionRestrictedFace::Match (  
                       X,Y,Z,aDistance,
-		      aFace,
-		      aDrawer,
-		      Standard_True,
-		      Standard_True,
-		      Deflection,
-		      finu,
-		      finv);
+                      aFace,
+                      aDrawer,
+                      Standard_True,
+                      Standard_True,
+                      aDrawer->MaximalChordialDeviation(),
+                      aDrawer->UIsoAspect()->Number(),
+                      aDrawer->VIsoAspect()->Number());
 }
 
 
@@ -606,20 +584,17 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::MatchUIso
    const Quantity_Length Z,
    const Quantity_Length aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
-   const Handle (Prs3d_Drawer)& aDrawer) {
-
-  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+   const Handle (Prs3d_Drawer)& aDrawer)
+{
   return StdPrs_WFDeflectionRestrictedFace::Match ( 
                       X,Y,Z,aDistance,
-		      aFace,
-		      aDrawer,
-		      Standard_True,
-		      Standard_False,
-		      Deflection,
-		      finu,
-		      finv);
+                      aFace,
+                      aDrawer,
+                      Standard_True,
+                      Standard_False,
+                      aDrawer->MaximalChordialDeviation(),
+                      aDrawer->UIsoAspect()->Number(),
+                      aDrawer->VIsoAspect()->Number());
 }
 
 
@@ -633,20 +608,15 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::MatchVIso
    const Quantity_Length Z,
    const Quantity_Length aDistance,
    const Handle(BRepAdaptor_HSurface)& aFace,
-   const Handle (Prs3d_Drawer)& aDrawer) {
-
-  Quantity_Length Deflection = aDrawer->MaximalChordialDeviation();
-  Standard_Integer finu = aDrawer->UIsoAspect()->Number();
-  Standard_Integer finv = aDrawer->VIsoAspect()->Number();
+   const Handle (Prs3d_Drawer)& aDrawer)
+{
   return StdPrs_WFDeflectionRestrictedFace::Match ( 
                       X,Y,Z,aDistance,
-		      aFace,
-		      aDrawer,
-		      Standard_False,
-		      Standard_True,
-		      Deflection,
-		      finu,
-		      finv);
+                      aFace,
+                      aDrawer,
+                      Standard_False,
+                      Standard_True,
+                      aDrawer->MaximalChordialDeviation(),
+                      aDrawer->UIsoAspect()->Number(),
+                      aDrawer->VIsoAspect()->Number());
 }
-
-

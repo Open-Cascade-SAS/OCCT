@@ -112,7 +112,6 @@
 //-Constructors
 
 Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManager)& AManager):
-MyGroupGenId (Group_IDMIN, Group_IDMAX),
 MyAncestors (),
 MyDescendants (),
 MyGroups (),
@@ -170,9 +169,6 @@ MyHighlightColor (Quantity_NOC_WHITE)
   MyCStructure.ContainsFacet      = 0,
   MyCStructure.IsInfinite         = 0,
   MyCStructure.HLRValidation      = 0;
-
-  MyCStructure.GroupBegin = Structure_GROUPBEGIN;
-  MyCStructure.GroupEnd   = Structure_GROUPEND;
 
   MyCStructure.ContextLine.IsDef         = 1,
   MyCStructure.ContextFillArea.IsDef     = 1,
@@ -236,10 +232,7 @@ void Graphic3d_Structure::Clear (const Standard_Boolean WithDestruction)
 
   // only then remove group references
   if (WithDestruction)
-  {
-    MyGroupGenId.Free();
     MyGroups.Clear();
-  }
 
   MyStructureManager->Clear (this, WithDestruction);
 
@@ -726,12 +719,6 @@ void Graphic3d_Structure::GraphicClear (const Standard_Boolean WithDestruction)
 
   if (WithDestruction)
   {
-    /*
-    * void Prs3d_Presentation::Clear () {
-    *   Graphic3d_Structure::Clear ();
-    *   myCurrentGroup = new Graphic3d_Group (this);
-    * }
-    */
     while (!MyGroups.IsEmpty())
     {
       Handle(Graphic3d_Group) aGroup = MyGroups.First();
@@ -1251,8 +1238,8 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
-  MyCStructure.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
-  MyCStructure.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
+  MyCStructure.ContextFillArea.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
+  MyCStructure.ContextFillArea.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   MyGraphicDriver->ContextStructure (MyCStructure);
@@ -1306,7 +1293,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText
   MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
   MyCStructure.ContextText.TextAngle        = float (ATextAngle);
-  MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;
+  MyCStructure.ContextText.TextFontAspect   = int (ATextFontAspect);
 
   MyCStructure.ContextText.IsDef          = 1;
 
@@ -1743,13 +1730,6 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin
   }
 }
 
-void Graphic3d_Structure::GroupLabels (Standard_Integer& LB, Standard_Integer& LE) {
-
-  LB      = MyGroupGenId.Next ();
-  LE      = MyGroupGenId.Next ();
-
-}
-
 Standard_Integer Graphic3d_Structure::Identification () const {
 
   Standard_Integer Result = MyCStructure.Id;
@@ -1842,20 +1822,14 @@ void Graphic3d_Structure::Remove (const Standard_Address APtr, const Graphic3d_T
 
 void Graphic3d_Structure::Remove (const Handle(Graphic3d_Group)& AGroup) {
 
-  Standard_Integer index = 0;
-  Standard_Integer Length = MyGroups.Length ();
-  for (Standard_Integer i=1; i<=Length && index==0; i++)
-    if (MyGroups.Value (i) == AGroup) index = i;
-
+  const Standard_Integer Length = MyGroups.Length ();
   // Search in Groups
-  if (index != 0) {
-    Standard_Integer GroupLabelBegin, GroupLabelEnd;
-    AGroup->Labels (GroupLabelBegin, GroupLabelEnd);
-    MyGroupGenId.Free (GroupLabelBegin);
-    MyGroupGenId.Free (GroupLabelEnd);
-    MyGroups.Remove (index);
-  }
-
+  for (Standard_Integer i=1; i<=Length; i++)
+    if (MyGroups.Value (i) == AGroup)
+    {
+      MyGroups.Remove (i);
+      return;
+    }
 }
 
 Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager () const {
@@ -1887,11 +1861,11 @@ void Graphic3d_Structure::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin,
           (MyGroups.Value (i))->MinMaxValues(Xm, Ym, Zm, XM, YM, ZM);
           Graphic3d_Vertex vertex1(Xm, Ym, Zm);
           Graphic3d_Vertex vertex2(XM, YM, ZM);
-          Standard_Real distance = vertex1.Distance( vertex1,vertex2 );
+          const Standard_Real distance = vertex1.Distance( vertex2 );
           if( distance >= 500000.0){
-            XMin = XMax = (Xm+ XM)/2.0;
-            YMin = YMax = (Ym+ YM)/2.0;
-            ZMin = ZMax = (Zm+ ZM)/2.0;
+            XMin = XMax = 0.5*(Xm+ XM);
+            YMin = YMax = 0.5*(Ym+ YM);
+            ZMin = ZMax = 0.5*(Zm+ ZM);
             return;
           }
         }
@@ -2144,7 +2118,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
   MyCStructure.ContextText.TextAngle        = float (ATextAngle);
-  MyCStructure.ContextText.TextFontAspect   = (int)ATextFontAspect;
+  MyCStructure.ContextText.TextFontAspect   = int (ATextFontAspect);
 
 
 
@@ -2323,8 +2297,8 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTXF->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
-  MyCStructure.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
-  MyCStructure.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
+  MyCStructure.ContextFillArea.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
+  MyCStructure.ContextFillArea.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 }
 

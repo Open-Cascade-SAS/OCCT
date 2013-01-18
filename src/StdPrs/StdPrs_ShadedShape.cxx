@@ -206,9 +206,7 @@ namespace
           }
         }
       }
-      Prs3d_Root::CurrentGroup (thePresentation)->BeginPrimitives();
       Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPArray);
-      Prs3d_Root::CurrentGroup (thePresentation)->EndPrimitives();
     }
     return Standard_True;
   }
@@ -332,9 +330,7 @@ namespace
 
     Handle(Graphic3d_Group) aPrsGrp = Prs3d_Root::NewGroup (thePresentation);
     aPrsGrp->SetGroupPrimitivesAspect (aBoundaryAspect);
-    aPrsGrp->BeginPrimitives ();
     aPrsGrp->AddPrimitiveArray (aSegments);
-    aPrsGrp->EndPrimitives ();
   }
 };
 

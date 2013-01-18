@@ -43,9 +43,7 @@ et TelBackInteriorShadingMethod
 #ifndef  OPENGL_TSM_H
 #define  OPENGL_TSM_H
 
-#define OCC1188 /* SAV 23/12/02 Added structure to control background texture
-+ enum to control texture fill method
-*/
+// OCC1188 SAV 23/12/02 Added structure to control background texture enum to control texture fill method
 
 typedef  enum
 {

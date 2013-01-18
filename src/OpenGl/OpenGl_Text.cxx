@@ -46,11 +46,9 @@ OpenGl_Text::OpenGl_Text (const TCollection_ExtendedString& AText,
   if (myString) delete[] myString;
   myString = wstr;
 
-  Standard_Real X, Y, Z;
-  APoint.Coord(X, Y, Z);
-  myAttachPnt.xyz[0] = float (X);
-  myAttachPnt.xyz[1] = float (Y);
-  myAttachPnt.xyz[2] = float (Z);
+  myAttachPnt.xyz[0] = APoint.X();
+  myAttachPnt.xyz[1] = APoint.Y();
+  myAttachPnt.xyz[2] = APoint.Z();
 
   myParam.Height = int (AHeight);
 

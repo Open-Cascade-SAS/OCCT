@@ -74,25 +74,12 @@ uses
     Structure           from Graphic3d,
     TextPath            from Graphic3d,
     TypeOfComposition   from Graphic3d,
-    TypeOfPolygon       from Graphic3d,
     TypeOfPrimitive     from Graphic3d,
     Vector              from Graphic3d,
     Array1OfVertex      from Graphic3d,
     Array2OfVertex      from Graphic3d,
     Vertex              from Graphic3d,
-    Array1OfVertexC     from Graphic3d,
-    Array2OfVertexC     from Graphic3d,
-    VertexC             from Graphic3d,
-    Array1OfVertexN     from Graphic3d,
-    Array2OfVertexN     from Graphic3d,
-    VertexN             from Graphic3d,
-    Array1OfVertexNC    from Graphic3d,
-    Array2OfVertexNC    from Graphic3d,
-    VertexNC            from Graphic3d,
     VerticalTextAlignment   from Graphic3d,
-    VertexNT            from Graphic3d,
-    Array1OfVertexNT    from Graphic3d,
-    Array2OfVertexNT    from Graphic3d,
     PrimitiveArray      from Graphic3d,
     PtrFrameBuffer      from Graphic3d,
     HArray1OfByte       from TColStd,
@@ -201,11 +188,6 @@ is
         is deferred;
     ---Purpose: call_togl_cleargroup
 
-    CloseGroup ( me     : mutable;
-             ACGroup    : CGroup from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_closegroup
-
     FaceContextGroup ( me       : mutable;
                        ACGroup  : CGroup from Graphic3d;
                        NoInsert : Integer from Standard )
@@ -237,11 +219,6 @@ is
                          ATexture   : HArray1OfByte from TColStd )
                 is deferred;
     ---Purpose: call_togl_markercontextgroup
-
-    OpenGroup ( me      : mutable;
-                ACGroup : CGroup from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_opengroup
 
     RemoveGroup ( me        : mutable;
                   ACGroup   : CGroup from Graphic3d )
@@ -500,28 +477,13 @@ is
 
     Marker ( me         : mutable;
              ACGroup    : CGroup from Graphic3d;
-             APoint     : Vertex from Graphic3d;
-             EvalMinMax : Boolean from Standard = Standard_True )
+             APoint     : Vertex from Graphic3d )
         is deferred;
 
     MarkerSet ( me          : mutable;
                 ACGroup     : CGroup from Graphic3d;
-                ListVertex  : Array1OfVertex from Graphic3d;
-                EvalMinMax  : Boolean from Standard = Standard_True )
+                ListVertex  : Array1OfVertex from Graphic3d )
         is deferred;
-
-    ----------------------------------------
-    -- Category: Methods to create Polygon
-    -- for Purpose : see Graphic3d_Group.cdl
-    ----------------------------------------
-
-    Polygon ( me            : mutable;
-              ACGroup       : CGroup from Graphic3d;
-              ListVertex    : Array1OfVertex from Graphic3d;
-              AType         : TypeOfPolygon from Graphic3d = Graphic3d_TOP_CONVEX;
-              EvalMinMax    : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_polygon
 
     ----------------------------------------
     -- Category: Methods to create Text
@@ -1012,15 +974,6 @@ is
     -- Export scene into the one of the Vector graphics formats (SVG, PS, PDF...).
     -- In contrast to Bitmaps, Vector graphics is scalable (so you may got quality benefits on printing to laser printer).
     -- Notice however that results may differ a lot and do not contain some elements.
-
-    RemovePrimitiveArray( me        : mutable;
-                          theCGroup : CGroup from Graphic3d;
-                          thePArray : PrimitiveArray from Graphic3d )
-        is deferred;
-        ---Purpose: Clear visualization data in graphical driver and
-        -- stop displaying the primitives array of the graphical group
-        -- <theCGroup>. This method is internal and should be used
-        -- by Graphic3d_Group only.
 
     AddZLayer( me         : mutable;
                theCView   : CView from Graphic3d;

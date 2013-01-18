@@ -18,15 +18,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_ParalPresentation.ixx>
 #include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeLin.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -42,9 +40,8 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 				    const gp_Pnt& AttachmentPoint1,
 				    const gp_Pnt& AttachmentPoint2,
 				    const gp_Dir& aDirection,
-				    const gp_Pnt& OffsetPoint) {
-
-
+				    const gp_Pnt& OffsetPoint)
+{
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Lin L1 (AttachmentPoint1,aDirection);
@@ -75,67 +72,45 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   gp_Pnt PointMin = ElCLib::Value(parmin,L3);
   gp_Pnt PointMax = ElCLib::Value(parmax,L3);
 
-  Graphic3d_Array1OfVertex V(1,2);
-
-  Quantity_Length X,Y,Z;
-
-  PointMin.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-
-  PointMax.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
   // processing of side : 1st group
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+  aPrims->AddVertex(PointMin);
+  aPrims->AddVertex(PointMax);
 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
-  if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) {
+  if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length()))
     outside = Standard_True;
-  }
   gp_Dir arrdir = L3.Direction().Reversed();
-
-  if (outside) {
+  if (outside)
     arrdir.Reverse();
-  }
+
   // arrow 1 : 2nd group
-  Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,
-		    LA->Arrow1Aspect()->Angle(),
-		    LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   // arrow 2 : 3rd group
-  Prs3d_Arrow::Draw(aPresentation,Proj2,arrdir.Reversed(),
-		    LA->Arrow2Aspect()->Angle(),
-		    LA->Arrow2Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,Proj2,arrdir.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   
   // text : 4th group
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
-  
-  AttachmentPoint1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Proj1.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
 
-  Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
   // processing of call 1 : 5th group
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddVertex(AttachmentPoint1);
+  aPrims->AddVertex(Proj1);
   
-  AttachmentPoint2.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Proj2.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   // processing of call 2 : 6th group
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-  
+  aPrims->AddVertex(AttachmentPoint2);
+  aPrims->AddVertex(Proj2);
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 }
 
 
@@ -150,9 +125,8 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 				    const gp_Pnt& AttachmentPoint2,
 				    const gp_Dir& aDirection,
 				    const gp_Pnt& OffsetPoint,
-				    const DsgPrs_ArrowSide ArrowPrs){
-
-
+				    const DsgPrs_ArrowSide ArrowPrs)
+{
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
@@ -184,53 +158,30 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   gp_Pnt PointMin = ElCLib::Value(parmin,L3);
   gp_Pnt PointMax = ElCLib::Value(parmax,L3);
 
-  Graphic3d_Array1OfVertex V(1,2);
-
-  Quantity_Length X,Y,Z;
-
-  PointMin.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-
-  PointMax.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-
   // processing of face 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
+  aPrims->AddVertex(PointMin);
+  aPrims->AddVertex(PointMax);
   
-  if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length())) {
+  if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length()))
     outside = Standard_True;
-  }
   gp_Dir arrdir = L3.Direction().Reversed();
-
-  if (outside) {
+  if (outside)
     arrdir.Reverse();
-  }
-
-
-  AttachmentPoint1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Proj1.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
 
   // processing of call 1 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddVertex(AttachmentPoint1);
+  aPrims->AddVertex(Proj1);
   
-  AttachmentPoint2.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  Proj2.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
+  // processing of call 2 
+  aPrims->AddVertex(AttachmentPoint2);
+  aPrims->AddVertex(Proj2);
 
-   // processing of call 2 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-  
-  
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+
   // text 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
   
   //arrows
   DsgPrs::ComputeSymbol(aPresentation,LA,Proj1,Proj2,arrdir,arrdir.Reversed(),ArrowPrs);
-
-
 }
-
-

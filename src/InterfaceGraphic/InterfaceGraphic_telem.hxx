@@ -44,9 +44,10 @@ struct TEL_TEXTURE_COORD
 
 typedef TEL_TEXTURE_COORD* tel_texture_coord;
 
-struct TEL_POINT
+class TEL_POINT
 {
-  float  xyz[3];
+ public:
+  float xyz[3];
   DEFINE_STANDARD_ALLOC
 };
 typedef TEL_POINT* tel_point;

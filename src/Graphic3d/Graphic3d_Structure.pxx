@@ -49,12 +49,6 @@
 
 #include <Graphic3d_Group.pxx>
 
-	// check the value of Group_IDMIN (must be > last label value)
-	//				 (today Structure_LABCONNECT)
-#define Structure_GROUPBEGIN	Group_IDMIN-2
-#define Structure_GROUPEND	Group_IDMIN-1
-#define Structure_END		Group_IDMIN-1
-
 #define MyStructureManager ((Graphic3d_StructureManager*) MyPtrStructureManager)
 #define MyFirstStructureManager ((Graphic3d_StructureManager*) MyFirstPtrStructureManager)
 

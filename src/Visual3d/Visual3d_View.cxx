@@ -91,12 +91,10 @@
 #define RIC120302       //GG Add a NEW SetWindow method which enable
 //                      to connect a graphic widget and context to OGL.
 
-#define  BUC61044    /* 25/10/01 SAV ; added functionality to control gl depth testing
-                        from higher API */
-#define  BUC61045    /* 25/10/01 SAV ; added functionality to control gl lighting
-                        from higher API */
+//BUC61044 25/10/01 SAV ; added functionality to control gl depth testing from higher API
+//BUC61045 25/10/01 SAV ; added functionality to control gl lighting from higher API
 
-#define OCC1188         //SAV Added methods to set background image
+//OCC1188 SAV Added methods to set background image
 
 /*----------------------------------------------------------------------*/
 /*
@@ -995,7 +993,6 @@ void Visual3d_View::SetBackgroundImage( const Standard_CString FileName,
                                         const Aspect_FillMethod FillStyle,
                                         const Standard_Boolean update )
 {
-#ifdef OCC1188
   if ( IsDeleted() )
     return;
   if ( !IsDefined() )
@@ -1007,13 +1004,11 @@ void Visual3d_View::SetBackgroundImage( const Standard_CString FileName,
     Update();
   else if ( MyViewManager->UpdateMode() == Aspect_TOU_ASAP )
     Update();
-#endif
 }
 
 void Visual3d_View::SetBgImageStyle( const Aspect_FillMethod FillStyle,
                                      const Standard_Boolean update )
 {
-#ifdef OCC1188
   if ( IsDeleted() )
     return;
   if ( !IsDefined() )
@@ -1025,7 +1020,6 @@ void Visual3d_View::SetBgImageStyle( const Aspect_FillMethod FillStyle,
     Update();
   else if ( MyViewManager->UpdateMode() == Aspect_TOU_ASAP )
     Update();
-#endif
 }
 
 Aspect_Background Visual3d_View::Background () const {
@@ -4190,18 +4184,12 @@ Visual3d_TypeOfBackfacingModel Visual3d_View :: BackFacingModel () const {
 
 void Visual3d_View::EnableDepthTest( const Standard_Boolean enable ) const
 {
-#ifdef BUC61044
   MyGraphicDriver->SetDepthTestEnabled( MyCView, enable );
-#endif
 }
 
 Standard_Boolean Visual3d_View::IsDepthTestEnabled() const
 {
-#ifdef BUC61044
   return MyGraphicDriver->IsDepthTestEnabled( MyCView );
-#else
-  return Standard_True;
-#endif
 }
 
 void Visual3d_View::ReadDepths(const Standard_Integer x,
@@ -4248,19 +4236,13 @@ Standard_Boolean Visual3d_View::BufferDump (Image_PixMap&               theImage
 
 void Visual3d_View::EnableGLLight( const Standard_Boolean enable ) const
 {
-#ifdef BUC61045
   MyGraphicDriver->SetGLLightEnabled( MyCView, enable );
-#endif
 }
 
 
 Standard_Boolean Visual3d_View::IsGLLightEnabled() const
 {
-#ifdef BUC61045
   return MyGraphicDriver->IsGLLightEnabled( MyCView );
-#else
-  return Standard_True;
-#endif
 }
 
 Standard_Boolean Visual3d_View::Export (const Standard_CString       theFileName,

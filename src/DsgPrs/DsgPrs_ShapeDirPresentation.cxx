@@ -18,8 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_ShapeDirPresentation.ixx>
 
 #include <gp.hxx>
@@ -42,20 +40,17 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools_WireExplorer.hxx>
-//#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepClass_Edge.hxx>
 #include <BRepBndLib.hxx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>
 
 #include <Quantity_Length.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-
 
 
 //=======================================================================
@@ -157,15 +152,9 @@ static Standard_Boolean ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir
     Handle(Geom_Curve) curve = Handle(Geom_Curve)::DownCast(curv0->Copy());
     curve->Transform(loc.Transformation()); 
     GeomLProp_CLProps lProps(curve, 1, gp::Resolution());
-    if (mode == 0) {
-      lProps.SetParameter(last);
-    }
-    else if (mode == 1) {
-      lProps.SetParameter(first);
-    }
-    if (!lProps.IsTangentDefined()) {
+    lProps.SetParameter((mode == 0)? last : first);
+    if (!lProps.IsTangentDefined())
       return Standard_False;
-    }
     pt = lProps.Value();
     lProps.Tangent(dir);
   }
@@ -178,16 +167,13 @@ static Standard_Boolean ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir
       pt2d.SetCoord((u1+u2)*0.5, (v1+v2)*0.5);
     }
     else {
-      Standard_Boolean found = FindPointOnFace(TopoDS::Face(shape), pt2d);
-      if (!found) {
-	return Standard_False;
-      }
+      if (!FindPointOnFace(TopoDS::Face(shape), pt2d))
+        return Standard_False;
     }
     
     GeomLProp_SLProps lProps(surface, pt2d.X(), pt2d.Y(), 1, gp::Resolution());
-    if (!lProps.IsNormalDefined()) {
+    if (!lProps.IsNormalDefined())
       return Standard_False;
-    }
 
     pt = lProps.Value();
     dir = lProps.Normal();
@@ -211,9 +197,8 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
 				      const Standard_Integer mode)
      
 {
-  if ((mode != 0) && (mode != 1)) {
+  if ((mode != 0) && (mode != 1))
     return;
-  }
   
   gp_Dir dir;
   gp_Pnt pt;
@@ -234,9 +219,8 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
     for (anExp.Init(TopoDS::Wire(shape)); anExp.More(); anExp.Next()) {
       const TopoDS_Edge& edge = anExp.Current();
       nb++;
-      if (nb <=3) {
-	BRepBndLib::Add(edge, box);
-      }
+      if (nb <=3)
+        BRepBndLib::Add(edge, box);
       aList.Append(edge);
     }
 
@@ -273,15 +257,14 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
   // mei 19/09/96 extrusion infinie -> taille fixe
   if (leng >= 20000.) leng = 50;
 
-  gp_Pnt pt2(pt.X()+leng*dir.X(), pt.Y()+leng*dir.Y(), pt.Z()+leng*dir.Z());
-  Graphic3d_Array1OfVertex line(1,2);
-  line(1).SetCoord(pt.X(), pt.Y(), pt.Z());
-  line(2).SetCoord(pt2.X(), pt2.Y(), pt2.Z());
-  
+  gp_Pnt pt2(pt.XYZ()+leng*dir.XYZ());
+
   Prs3d_Root::CurrentGroup(prs)->SetPrimitivesAspect(drawer->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup(prs)->Polyline(line);
+
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(pt);
+  aPrims->AddVertex(pt2);
+  Prs3d_Root::CurrentGroup(prs)->AddPrimitiveArray(aPrims);
 
   Prs3d_Arrow::Draw(prs, pt2, dir, M_PI/180.*10., leng*0.3);
 }
-
-

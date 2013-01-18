@@ -587,8 +587,8 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   Standard_ShortReal    aPolyFactor, aPolyUnits;
   CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
   MyCGroup.ContextFillArea.PolygonOffsetMode   = aPolyMode;
-  MyCGroup.ContextFillArea.PolygonOffsetFactor = aPolyFactor;
-  MyCGroup.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
+  MyCGroup.ContextFillArea.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
+  MyCGroup.ContextFillArea.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   int noinsert    = 0;
@@ -1110,8 +1110,7 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
   CTXF->SetFrontMaterial (Front);
 }
 
-void Graphic3d_Group::PrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF) const {
-
-        GroupPrimitivesAspect (CTXL, CTXT, CTXM, CTXF);
-
+void Graphic3d_Group::PrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF) const
+{
+  GroupPrimitivesAspect (CTXL, CTXT, CTXM, CTXF);
 }

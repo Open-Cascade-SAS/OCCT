@@ -33,7 +33,6 @@
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Poly_Connect.hxx>
 
@@ -54,14 +53,6 @@
 
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 #include <Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx>
-
-#ifdef DEB_MESH
-#include <OSD_Timer.hxx>
-extern OSD_Timer RestrictedFaceTimer1,RestrictedFaceTimer2,RestrictedFaceTimer3,RestrictedFaceTimer4;
-extern OSD_Timer ShapeTimer;
-extern OSD_Timer FaceExplorerTimer, CurveExplorerTimer;
-extern OSD_Timer UIsoTimer,VIsoTimer,WireTimer,FreeBoundaryTimer,UnFreeBoundaryTimer;
-#endif
 
 static Standard_Boolean IsSame(const Handle(Graphic3d_AspectLine3d)& UAspect,
 			       const Handle(Graphic3d_AspectLine3d)& VAspect)
@@ -84,50 +75,29 @@ static Standard_Boolean IsSame(const Handle(Graphic3d_AspectLine3d)& UAspect,
 
 
 static Standard_Boolean AddPolygon(const TopoDS_Edge&           E,
-				   Handle(Graphic3d_Group)&     TheGroup,
-				   const Standard_Real          deflection,
-				   const Handle (Prs3d_Drawer)&           ,
-				   TColgp_SequenceOfPnt&        Pnts)
+                                   Handle(Graphic3d_Group)&     TheGroup,
+                                   const Standard_Real          deflection,
+                                   const Handle (Prs3d_Drawer)&           ,
+                                   TColgp_SequenceOfPnt&        Pnts)
 {
   TopLoc_Location l;
-  gp_Pnt P;
-  Standard_Boolean result = Standard_False;
-  Standard_Boolean IsPrimArray = Graphic3d_ArrayOfPrimitives::IsEnable();
-  Standard_Boolean OK;
   Standard_Real fi, la;
-
-  Handle(Poly_Polygon3D) Polyg;
   Handle(Geom_Curve) CC3d = BRep_Tool::Curve(E, fi, la);
-  
-  Polyg = BRep_Tool::Polygon3D(E, l);
-  if (!Polyg.IsNull()) {
-    OK = Polyg->Deflection() <= deflection;
-    OK = OK || (CC3d.IsNull());
+  Handle(Poly_Polygon3D) Polyg = BRep_Tool::Polygon3D(E, l);
 
-    if (OK) {
-      result = Standard_True;
+  if (!Polyg.IsNull()) {
+    if ((Polyg->Deflection() <= deflection) || CC3d.IsNull()) {
       const TColgp_Array1OfPnt& Points = Polyg->Nodes();
-      Graphic3d_Array1OfVertex V(1, Points.Length());
-      Standard_Integer po, ii = 1;
+      Standard_Integer po = Points.Lower();
       if (l.IsIdentity()) {
-	for (po = Points.Lower(); po <= Points.Upper(); po++) {
-	  P = Points.Value(po);
-	  V(ii).SetCoord(P.X(), P.Y(), P.Z());
-	  Pnts.Append(P);
-	  ii++;
-	}
+        for (; po <= Points.Upper(); po++)
+          Pnts.Append(Points.Value(po));
       }
       else {
-	for (po = Points.Lower(); po <= Points.Upper(); po++) {
-	  P = Points.Value(po).Transformed(l);
-	  V(ii).SetCoord(P.X(), P.Y(), P.Z());
-	  Pnts.Append(P);
-	  ii++;
-	}
+        for (; po <= Points.Upper(); po++)
+          Pnts.Append(Points.Value(po).Transformed(l));
       }
-      if(!IsPrimArray)
-	TheGroup->Polyline(V);
-      return result;
+      return Standard_True;
     }
   }
 
@@ -135,44 +105,24 @@ static Standard_Boolean AddPolygon(const TopoDS_Edge&           E,
   Handle(Poly_PolygonOnTriangulation) HIndices;
   BRep_Tool::PolygonOnTriangulation(E, HIndices, Tr, l);
   if (!HIndices.IsNull()) {
-
-    OK = HIndices->Deflection() <= deflection;
-    OK = OK || (CC3d.IsNull());
-      
-    if (OK) {
-      result = Standard_True;
+    if ((HIndices->Deflection() <= deflection) || CC3d.IsNull()) {
       const TColStd_Array1OfInteger& Indices = HIndices->Nodes();
       const TColgp_Array1OfPnt& Nodes = Tr->Nodes();
-      Graphic3d_Array1OfVertex V(1, Indices.Length());
       
-      Standard_Integer po, ii = 1;
+      Standard_Integer po = Indices.Lower();
       if (l.IsIdentity()) {
-	for (po = Indices.Lower(); po <= Indices.Upper(); po++) {
-	  P = Nodes(Indices(po));
-	  V(ii).SetCoord(P.X(), P.Y(), P.Z());
-	  Pnts.Append(P);
-	  ii++;
-	}
+        for (; po <= Indices.Upper(); po++)
+          Pnts.Append(Nodes(Indices(po)));
       }
       else {
-	for (po = Indices.Lower(); po <= Indices.Upper(); po++) {
-	  P = Nodes(Indices(po)).Transformed(l);
-	  V(ii).SetCoord(P.X(), P.Y(), P.Z());
-	  Pnts.Append(P);
-	  ii++;
-	}
+        for (; po <= Indices.Upper(); po++)
+          Pnts.Append(Nodes(Indices(po)).Transformed(l));
       }
-      if(!IsPrimArray)
-	TheGroup->Polyline(V);
-      return result;
+      return Standard_True;
     }
   }
-  return result;
+  return Standard_False;
 }
-
-
-
-
 
 
 //=========================================================================
@@ -185,17 +135,6 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 {
   if (aShape.IsNull()) return;
 
-  Standard_Boolean isPrimArrayEnabled = Graphic3d_ArrayOfPrimitives::IsEnable();
-#ifdef DEB_MESH
-  RestrictedFaceTimer1.Reset();
-  RestrictedFaceTimer2.Reset();
-  RestrictedFaceTimer3.Reset();
-  RestrictedFaceTimer4.Reset();
-#endif
-
-#ifdef DEB_MESH
-  ShapeTimer.Start();
-#endif
   Prs3d_ShapeTool Tool(aShape);
   TopTools_ListOfShape LFree, LUnFree, LWire;
   for (Tool.InitCurve();Tool.MoreCurve();Tool.NextCurve())
@@ -208,13 +147,6 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
       default: LUnFree.Append(E);
     }
   }
-#ifdef DEB_MESH
-  ShapeTimer.Stop();
-#endif
-
-#ifdef DEB_MESH
-  RestrictedFaceTimer1.Start();
-#endif
 
   Standard_Real aDeflection;
   if (aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE) 
@@ -235,10 +167,6 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   else
     aDeflection = aDrawer->MaximalChordialDeviation();
 
-#ifdef DEB_MESH
-  RestrictedFaceTimer1.Stop();
-#endif
-
   Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
 
   Prs3d_NListOfSequenceOfPnt UIsoCurves;
@@ -252,15 +180,8 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   {
     const Standard_Integer isoU = aDrawer->UIsoAspect()->Number();
     const Standard_Integer isoV = aDrawer->VIsoAspect()->Number();
-#ifdef DEB_MESH
-    UIsoTimer.Start();
-#endif
     if (isoU || isoV)
     {
-      if(!isPrimArrayEnabled) {
-	TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-	TheGroup->BeginPrimitives();
-      }
       BRepAdaptor_Surface S;
       for (Tool.InitFace();Tool.MoreFace();Tool.NextFace())
       {
@@ -285,34 +206,18 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	    }
 	    catch (Standard_Failure)
 	    {
-#ifdef DEB_MESH
-	      const TopoDS_Face& FF = S.Face();
-	      cout <<"probleme pour les isos de la face "<< (void*) &(*(FF).TShape()) << endl;
-#endif
 	    }
 	  }
 	}
       }
-      if(!isPrimArrayEnabled)
-	TheGroup->EndPrimitives();
     }
-#ifdef DEB_MESH
-    UIsoTimer.Stop();
-#endif
   }
   else
   {
     const Standard_Integer isoU = aDrawer->UIsoAspect()->Number();
     const Standard_Integer isoV = aDrawer->VIsoAspect()->Number();
-#ifdef DEB_MESH
-    UIsoTimer.Start();
-#endif
     if (isoU)
     {
-      if(!isPrimArrayEnabled) {
-	TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-	TheGroup->BeginPrimitives();
-      }
       BRepAdaptor_Surface S;
       for (Tool.InitFace();Tool.MoreFace();Tool.NextFace())
       {
@@ -343,19 +248,9 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	  }
 	}
       }
-      if(!isPrimArrayEnabled)
-	TheGroup->EndPrimitives();
     }
-#ifdef DEB_MESH
-    UIsoTimer.Stop();
-    VIsoTimer.Start();
-#endif
     if (isoV)
     {
-      if(!isPrimArrayEnabled) {
-	TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
-	TheGroup->BeginPrimitives();
-      }
       BRepAdaptor_Surface S;
       for (Tool.InitFace();Tool.MoreFace();Tool.NextFace())
       {
@@ -386,65 +281,48 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	  }
 	}
       }
-      if (!isPrimArrayEnabled) TheGroup->EndPrimitives();
     }
-#ifdef DEB_MESH
-    VIsoTimer.Stop();
-#endif
   }
   Standard_Integer nbVertices = 0, nbBounds = 0;
 
-  if(isPrimArrayEnabled) {
-    if(UIsoCurves.Size() > 0) {
-      nbBounds = UIsoCurves.Size();
-      Prs3d_NListIteratorOfListOfSequenceOfPnt It;
-      for( It.Init(UIsoCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
-      Handle(Graphic3d_ArrayOfPolylines) UIsoArray =
-	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
-      for( It.Init(UIsoCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	UIsoArray->AddBound(Pnts.Length());
-	for(int i=1; i<=Pnts.Length(); i++)
-	  UIsoArray->AddVertex(Pnts.Value(i));
-      }      
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
-      TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-      TheGroup->AddPrimitiveArray(UIsoArray);
-      TheGroup->EndPrimitives();
-    }
+  if(UIsoCurves.Size() > 0) {
+    nbBounds = UIsoCurves.Size();
+    Prs3d_NListIteratorOfListOfSequenceOfPnt It;
+    for( It.Init(UIsoCurves); It.More(); It.Next())
+      nbVertices += It.Value().Length();
+    Handle(Graphic3d_ArrayOfPolylines) UIsoArray =
+      new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
+    for( It.Init(UIsoCurves); It.More(); It.Next()) {
+      TColgp_SequenceOfPnt Pnts;
+      Pnts.Assign(It.Value());
+      UIsoArray->AddBound(Pnts.Length());
+      for(int i=1; i<=Pnts.Length(); i++)
+        UIsoArray->AddVertex(Pnts.Value(i));
+    }      
+    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+    TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
+    TheGroup->AddPrimitiveArray(UIsoArray);
+  }
     
-    if(VIsoCurves.Size() > 0) {
-      nbBounds = VIsoCurves.Size();
-      Prs3d_NListIteratorOfListOfSequenceOfPnt It;
-      for( It.Init(VIsoCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
-      Handle(Graphic3d_ArrayOfPolylines) VIsoArray =
-	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
-      for( It.Init(VIsoCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	VIsoArray->AddBound(Pnts.Length());
-	for(int i=1; i<=Pnts.Length(); i++)
-	  VIsoArray->AddVertex(Pnts.Value(i));
-      }
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
-      TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-      TheGroup->AddPrimitiveArray(VIsoArray);
-      TheGroup->EndPrimitives();
+  if(VIsoCurves.Size() > 0) {
+    nbBounds = VIsoCurves.Size();
+    Prs3d_NListIteratorOfListOfSequenceOfPnt It;
+    for( It.Init(VIsoCurves); It.More(); It.Next())
+      nbVertices += It.Value().Length();
+    Handle(Graphic3d_ArrayOfPolylines) VIsoArray =
+      new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
+    for( It.Init(VIsoCurves); It.More(); It.Next()) {
+      TColgp_SequenceOfPnt Pnts;
+      Pnts.Assign(It.Value());
+      VIsoArray->AddBound(Pnts.Length());
+      for(int i=1; i<=Pnts.Length(); i++)
+        VIsoArray->AddVertex(Pnts.Value(i));
     }
+    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+    TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
+    TheGroup->AddPrimitiveArray(VIsoArray);
   }
 
-#ifdef DEB_MESH
-  WireTimer.Start();
-#endif
-  if(!isPrimArrayEnabled) {
-    TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-    TheGroup->BeginPrimitives();
-  }
   gp_Pnt P;
   TopLoc_Location l;
   Graphic3d_Vertex V1, V2;
@@ -514,11 +392,6 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	    gp_Pnt P2 = Nodes(Free(2*i)).Transformed(l);
 	    SurfPnts.Append(P1);
 	    SurfPnts.Append(P2);
-	    if(!isPrimArrayEnabled) { 
-	      V1.SetCoord(P1.X(), P1.Y(), P1.Z());
-	      V2.SetCoord(P2.X(), P2.Y(), P2.Z());
-	      TheGroup->Polyline(V1, V2);
-	    }
 	  }
 	}
 	if(DispTriangles) {
@@ -527,19 +400,12 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	    gp_Pnt P2 = Nodes(Internal(2*i)).Transformed(l);
 	    SurfPnts.Append(P1);
 	    SurfPnts.Append(P2);
-	    if(!isPrimArrayEnabled) { 
-	      V1.SetCoord(P1.X(), P1.Y(), P1.Z());
-	      V2.SetCoord(P2.X(), P2.Y(), P2.Z());
-	      TheGroup->Polyline(V1, V2);
-	    }
 	  }
 	}
       }
     }
   }
-  if(!isPrimArrayEnabled) 
-    TheGroup->EndPrimitives();
-  if(isPrimArrayEnabled && SurfPnts.Length()>0){
+  if(SurfPnts.Length()>0){
     nbVertices = SurfPnts.Length();
     nbBounds = (Standard_Integer)nbVertices / 2;
     Handle(Graphic3d_ArrayOfPolylines) SurfArray =
@@ -550,15 +416,11 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
       SurfArray->AddVertex(SurfPnts.Value(i+1));
     }
     Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
-    if(DispTriangles && Tool.HasSurface()) {
+    if(DispTriangles && Tool.HasSurface())
       TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-    }
-    else {
+    else
       TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());
-    }
-    TheGroup->BeginPrimitives();
     TheGroup->AddPrimitiveArray(SurfArray);
-    TheGroup->EndPrimitives();
   }
   TopTools_ListIteratorOfListOfShape It;
 
@@ -566,7 +428,6 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
   {
     // Wire (without any neighbour)
     TheGroup->SetPrimitivesAspect(aDrawer->WireAspect()->Aspect());
-    TheGroup->BeginPrimitives();
     for (It.Initialize(LWire); It.More(); It.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(It.Value());
       try
@@ -576,7 +437,7 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	if (!AddPolygon(E, TheGroup, aDeflection, aDrawer, Pnts)) {
 	  if (BRep_Tool::IsGeometric(E))  {
 	    BRepAdaptor_Curve C(E);
-	    CurvePresentation::Add(aPresentation, C, aDeflection, aDrawer, Pnts, !isPrimArrayEnabled);
+	    CurvePresentation::Add(aPresentation, C, aDeflection, aDrawer, Pnts, Standard_False);
 	    WireCurves.Append(Pnts);
 	  }
 	}
@@ -590,21 +451,11 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 #endif
       }
     }
-    TheGroup->EndPrimitives();
   }
-  
-#ifdef DEB_MESH
-  WireTimer.Stop();
-  FreeBoundaryTimer.Start();
-#endif
   
   if (aDrawer->FreeBoundaryDraw())
   {
     // Free boundaries;
-    if(!isPrimArrayEnabled) {
-      TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-    }
     for (It.Initialize(LFree); It.More(); It.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(It.Value());
       if (!BRep_Tool::Degenerated(E)) {
@@ -614,7 +465,7 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	  if (!AddPolygon(E, TheGroup, aDeflection, aDrawer, Pnts)) {
 	    if (BRep_Tool::IsGeometric(E))  {
 	      BRepAdaptor_Curve C(E);
-	      CurvePresentation::Add(aPresentation, C, aDeflection, aDrawer, Pnts, !isPrimArrayEnabled);
+	      CurvePresentation::Add(aPresentation, C, aDeflection, aDrawer, Pnts, Standard_False);
 	      FreeCurves.Append(Pnts);
 	    }
 	  }
@@ -629,23 +480,12 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	}  
       }
     }
-    if(!isPrimArrayEnabled)
-      TheGroup->EndPrimitives();
   }  
-
-#ifdef DEB_MESH
-  FreeBoundaryTimer.Stop();
-  UnFreeBoundaryTimer.Start();
-#endif
 
   if (aDrawer->UnFreeBoundaryDraw()) { 
 
 // Unfree boundaries;
 
-    if(!isPrimArrayEnabled) {
-      TheGroup->SetPrimitivesAspect(aDrawer->UnFreeBoundaryAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-    }
     for (It.Initialize(LUnFree); It.More(); It.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(It.Value());
       try
@@ -655,7 +495,7 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 	if (!AddPolygon(E, TheGroup, aDeflection, aDrawer, Pnts)) {
 	  if (BRep_Tool::IsGeometric(E))  {
 	    BRepAdaptor_Curve C(E);
-	    CurvePresentation::Add(aPresentation, C, aDeflection, aDrawer, Pnts, !isPrimArrayEnabled);
+	    CurvePresentation::Add(aPresentation, C, aDeflection, aDrawer, Pnts, Standard_False);
 	    UnFreeCurves.Append(Pnts);
 	  }
 	}
@@ -669,113 +509,77 @@ void Prs3d_WFShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 #endif
       }
     }
-    if(!isPrimArrayEnabled)
-      TheGroup->EndPrimitives();
   }
   
-  if(isPrimArrayEnabled) {
-    if(WireCurves.Size() > 0) {
-      nbBounds = WireCurves.Size();
-      Prs3d_NListIteratorOfListOfSequenceOfPnt It;
-      for( It.Init(WireCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
-      Handle(Graphic3d_ArrayOfPolylines) WireArray =
-	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
-      for( It.Init(WireCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	WireArray->AddBound(Pnts.Length());
-	for(i=1; i<=Pnts.Length(); i++)
-	  WireArray->AddVertex(Pnts.Value(i));
-      }  
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
-      TheGroup->SetPrimitivesAspect(aDrawer->WireAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-      TheGroup->AddPrimitiveArray(WireArray);
-      TheGroup->EndPrimitives();
-    }
-    if(FreeCurves.Size() > 0) {
-      nbBounds = FreeCurves.Size();
-      Prs3d_NListIteratorOfListOfSequenceOfPnt It;
-      for( It.Init(FreeCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
-      Handle(Graphic3d_ArrayOfPolylines) FreeArray =
-	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
-      for( It.Init(FreeCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	FreeArray->AddBound(Pnts.Length());
-	for(i=1; i<=Pnts.Length(); i++)
-	  FreeArray->AddVertex(Pnts.Value(i));
-      }  
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
-      TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-      TheGroup->AddPrimitiveArray(FreeArray);
-      TheGroup->EndPrimitives();
-    }
-    if(UnFreeCurves.Size() > 0) {
-      nbBounds = UnFreeCurves.Size();
-      Prs3d_NListIteratorOfListOfSequenceOfPnt It;
-      for( It.Init(UnFreeCurves); It.More(); It.Next())
-	nbVertices += It.Value().Length();
-      Handle(Graphic3d_ArrayOfPolylines) UnFreeArray =
-	new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
-      for( It.Init(UnFreeCurves); It.More(); It.Next()) {
-	TColgp_SequenceOfPnt Pnts;
-	Pnts.Assign(It.Value());
-	UnFreeArray->AddBound(Pnts.Length());
-	for(i=1; i<=Pnts.Length(); i++)
-	  UnFreeArray->AddVertex(Pnts.Value(i));
-      }  
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
-      TheGroup->SetPrimitivesAspect(aDrawer->UnFreeBoundaryAspect()->Aspect());
-      TheGroup->BeginPrimitives();
-      TheGroup->AddPrimitiveArray(UnFreeArray);
-      TheGroup->EndPrimitives();
-    }
+  if(WireCurves.Size() > 0) {
+    nbBounds = WireCurves.Size();
+    Prs3d_NListIteratorOfListOfSequenceOfPnt It;
+    for( It.Init(WireCurves); It.More(); It.Next())
+      nbVertices += It.Value().Length();
+    Handle(Graphic3d_ArrayOfPolylines) WireArray =
+      new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
+    for( It.Init(WireCurves); It.More(); It.Next()) {
+      TColgp_SequenceOfPnt Pnts;
+      Pnts.Assign(It.Value());
+      WireArray->AddBound(Pnts.Length());
+      for(i=1; i<=Pnts.Length(); i++)
+        WireArray->AddVertex(Pnts.Value(i));
+    }  
+    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+    TheGroup->SetPrimitivesAspect(aDrawer->WireAspect()->Aspect());
+    TheGroup->AddPrimitiveArray(WireArray);
   }
+  if(FreeCurves.Size() > 0) {
+    nbBounds = FreeCurves.Size();
+    Prs3d_NListIteratorOfListOfSequenceOfPnt It;
+    for( It.Init(FreeCurves); It.More(); It.Next())
+      nbVertices += It.Value().Length();
+    Handle(Graphic3d_ArrayOfPolylines) FreeArray =
+      new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
+    for( It.Init(FreeCurves); It.More(); It.Next()) {
+      TColgp_SequenceOfPnt Pnts;
+      Pnts.Assign(It.Value());
+      FreeArray->AddBound(Pnts.Length());
+      for(i=1; i<=Pnts.Length(); i++)
+        FreeArray->AddVertex(Pnts.Value(i));
+    }  
+    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+    TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());
+    TheGroup->AddPrimitiveArray(FreeArray);
+  }
+  if(UnFreeCurves.Size() > 0) {
+    nbBounds = UnFreeCurves.Size();
+    Prs3d_NListIteratorOfListOfSequenceOfPnt It;
+    for( It.Init(UnFreeCurves); It.More(); It.Next())
+      nbVertices += It.Value().Length();
+    Handle(Graphic3d_ArrayOfPolylines) UnFreeArray =
+      new Graphic3d_ArrayOfPolylines(nbVertices,nbBounds);
+    for( It.Init(UnFreeCurves); It.More(); It.Next()) {
+      TColgp_SequenceOfPnt Pnts;
+      Pnts.Assign(It.Value());
+      UnFreeArray->AddBound(Pnts.Length());
+      for(i=1; i<=Pnts.Length(); i++)
+        UnFreeArray->AddVertex(Pnts.Value(i));
+    }  
+    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+    TheGroup->SetPrimitivesAspect(aDrawer->UnFreeBoundaryAspect()->Aspect());
+    TheGroup->AddPrimitiveArray(UnFreeArray);
+  }
+
   // Points
-  Standard_Boolean theFirst = Standard_True;
-  for(Tool.InitVertex();Tool.MoreVertex();Tool.NextVertex()){
-    if(theFirst){
-      theFirst = Standard_False;
-      if(!isPrimArrayEnabled) {
-	TheGroup->SetPrimitivesAspect(aDrawer->PointAspect()->Aspect());
-	TheGroup->BeginPrimitives();
-      }
-    }
-    TopoDS_Vertex V = Tool.GetVertex();
-    if(!isPrimArrayEnabled)
-      PointPresentation::Add(aPresentation,V);
-    ShapePoints.Append(BRep_Tool::Pnt(V));
-  }
-  if (!theFirst) TheGroup->EndPrimitives();
+  for(Tool.InitVertex();Tool.MoreVertex();Tool.NextVertex())
+    ShapePoints.Append(BRep_Tool::Pnt(Tool.GetVertex()));
 
   nbVertices = ShapePoints.Length();
-  if(isPrimArrayEnabled && nbVertices > 0) {
+  if(nbVertices > 0) {
     Graphic3d_Array1OfVertex PointArray(1, nbVertices);
     for(i=1; i<=nbVertices; i++)
       PointArray.SetValue(i, Graphic3d_Vertex(ShapePoints.Value(i).X(), ShapePoints.Value(i).Y(), ShapePoints.Value(i).Z()));
     
     Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
     TheGroup->SetPrimitivesAspect(aDrawer->PointAspect()->Aspect());
-    TheGroup->BeginPrimitives();
     TheGroup->MarkerSet(PointArray);
-    TheGroup->EndPrimitives();
   }
-
-#ifdef DEB_MESH
-  UnFreeBoundaryTimer.Stop();
-//  cout << "Restrictions Min Max computation  " ;
-//  RestrictedFaceTimer1.Show();
-//  cout << "Iso loading                       " ;
-//  RestrictedFaceTimer2.Show();
-//  cout << "Iso hatching                      " ;
-//  RestrictedFaceTimer3.Show();
-//  cout << "Iso drawing                       " ;
-// RestrictedFaceTimer4.Show();
-#endif
 }
 
 

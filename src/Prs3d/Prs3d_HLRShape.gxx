@@ -40,7 +40,6 @@ void Prs3d_HLRShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
 
   aGroup->SetPrimitivesAspect(aDrawer->SeenLineAspect()->Aspect());
   
-  aGroup->BeginPrimitives();
   Standard_Real anAngle = aDrawer->DeviationAngle();
   TColgp_SequenceOfPnt Points;
   for (i=1;i<=NbEdge;i++){
@@ -49,19 +48,17 @@ void Prs3d_HLRShape::Add(const Handle (Prs3d_Presentation)& aPresentation,
       CurvePresentation::Add(aPresentation,TheCurve,U1,U2,def, Points, anAngle);
     }
   }
-  aGroup->EndPrimitives();
 
-  if(aDrawer->DrawHiddenLine()){
+  if(aDrawer->DrawHiddenLine())
+  {
     aGroup->SetPrimitivesAspect(aDrawer->HiddenLineAspect()->Aspect());     
     
-    aGroup->BeginPrimitives();
     for (i=1;i<=NbEdge;i++){
       for(Tool.InitHidden(i);Tool.MoreHidden();Tool.NextHidden()){
 	Tool.Hidden(TheCurve,U1,U2);
 	CurvePresentation::Add(aPresentation,TheCurve,U1,U2,def, Points, anAngle);
       }
     }
-    aGroup->EndPrimitives();
   }
 }   
 

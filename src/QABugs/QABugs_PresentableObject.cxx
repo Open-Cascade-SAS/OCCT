@@ -81,9 +81,7 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager3d
     break;
   }
 
-  aGroup->BeginPrimitives();
   aGroup->AddPrimitiveArray (aPrims);
-  aGroup->EndPrimitives();
 }
 
 void QABugs_PresentableObject::ComputeSelection(const Handle(SelectMgr_Selection)& ,

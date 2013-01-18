@@ -23,7 +23,8 @@
 #include <DsgPrs_IdenticPresentation.ixx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 
@@ -50,12 +51,10 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  Graphic3d_Array1OfVertex V(1,2);
-  V(1).SetCoord(aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
-  V(2).SetCoord(aPntOffset.X(), aPntOffset.Y(), aPntOffset.Z());
-
-  // trait de cote 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(aPntAttach);
+  aPrims->AddVertex(aPntOffset);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // On ajoute un rond au point d'attache
   Prs3d_Root::NewGroup(aPresentation);
@@ -77,7 +76,6 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
 }
 
 
-
 void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresentation,
 				      const Handle(Prs3d_Drawer)& aDrawer,
 				      const TCollection_ExtendedString& aText,
@@ -88,31 +86,30 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
-  Graphic3d_Array1OfVertex V(1,2);
-  V(1).SetCoord(aFAttach.X(), aFAttach.Y(), aFAttach.Z());
-  V(2).SetCoord(aSAttach.X(), aSAttach.Y(), aSAttach.Z());
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(4);
 
-  // trait de cote 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  aPrims->AddVertex(aFAttach);
+  aPrims->AddVertex(aSAttach);
 
   // trait joignant aPntOffset
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Vec v1(aFAttach, aSAttach);
   gp_Vec v2(aSAttach, aPntOffset);
-  V(1).SetCoord(aPntOffset.X(), aPntOffset.Y(), aPntOffset.Z());
-  if ( !v1.IsParallel(v2, Precision::Angular())) {
+
+  aPrims->AddVertex(aPntOffset);
+  if ( !v1.IsParallel(v2, Precision::Angular()))
+  {
     // on joint aPntOffset a son projete
     gp_Lin ll(aFAttach, gp_Dir(v1));
-    gp_Pnt ProjPntOffset = ElCLib::Value(ElCLib::Parameter(ll,aPntOffset ), ll);
-    V(2).SetCoord(ProjPntOffset.X(), ProjPntOffset.Y(), ProjPntOffset.Z());
+    aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(ll,aPntOffset ), ll));
   }
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V); 
+  else
+    aPrims->AddVertex(aSAttach);
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
 }
-
 
 
 void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresentation,
@@ -134,32 +131,29 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real pFAttach =  ElCLib::Parameter(CC, aFAttach);
   Standard_Real pSAttach =  ElCLib::Parameter(CC, aSAttach);
   Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2 * M_PI;
-  Standard_Integer nb = (Standard_Integer )( 50. * alpha / M_PI);
-  Standard_Integer nbp = Max (4 , nb);
-  Graphic3d_Array1OfVertex V(1,nbp);
-  Standard_Real dteta = alpha/(nbp-1);
-  gp_Pnt ptcur;
-  for (Standard_Integer i = 1; i<=nbp; i++)
-    {
-      ptcur =  ElCLib::Value(pFAttach + dteta*(i-1),CC);
-      V(i).SetCoord(ptcur.X(),ptcur.Y(),ptcur.Z());
-    }
+  if ( alpha < 0 ) alpha += 2. * M_PI;
+  const Standard_Integer nb = (Standard_Integer )( 50. * alpha / M_PI);
+  const Standard_Integer nbp = Max (4, nb);
+  const Standard_Real dteta = alpha/(nbp-1);
 
-  // trait de cote 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfPolylines) aPrims;
   
   // trait joignant aPntOffset
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Graphic3d_Array1OfVertex V2(1,2);
-  if ( Abs((aPntOffset.Distance(aCenter) - rad )) >= Precision::Confusion() ) {
-    gp_Pnt ProjPntOffset = ElCLib::Value(ElCLib::Parameter(CC,aPntOffset ), CC);
-    
-    V2(1).SetCoord(aPntOffset.X(), aPntOffset.Y(), aPntOffset.Z());
-    V2(2).SetCoord(ProjPntOffset.X(), ProjPntOffset.Y(), ProjPntOffset.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V2); 
+  if ( Abs((aPntOffset.Distance(aCenter) - rad )) >= Precision::Confusion() )
+  {
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp+2,2);
+    aPrims->AddBound(2);
+    aPrims->AddVertex(aPntOffset);
+    aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(CC,aPntOffset ), CC));
+    aPrims->AddBound(nbp);
   }
+  else
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+
+  for (Standard_Integer i = 1; i<=nbp; i++)
+    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta*(i-1),CC));
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
@@ -183,34 +177,32 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   ax.SetLocation(aCenter);
   Standard_Real rad = aCenter.Distance(aFAttach);
   gp_Circ CC(ax,rad );
-  Standard_Real pFAttach =  ElCLib::Parameter(CC, aFAttach);
-  Standard_Real pSAttach =  ElCLib::Parameter(CC, aSAttach);
+  Standard_Real pFAttach = ElCLib::Parameter(CC, aFAttach);
+  Standard_Real pSAttach = ElCLib::Parameter(CC, aSAttach);
   Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2 * M_PI;
-  Standard_Integer nb = (Standard_Integer )( 50. * alpha / M_PI);
-  Standard_Integer nbp = Max (4 , nb);
-  Graphic3d_Array1OfVertex V(1,nbp);
-  Standard_Real dteta = alpha/(nbp-1);
-  gp_Pnt ptcur;
-  for (Standard_Integer i = 1; i<=nbp; i++)
-    {
-      ptcur =  ElCLib::Value(pFAttach + dteta*(i-1),CC);
-      V(i).SetCoord(ptcur.X(),ptcur.Y(),ptcur.Z());
-    }
+  if ( alpha < 0 ) alpha += 2. * M_PI;
+  const Standard_Integer nb = (Standard_Integer)( 50. * alpha / M_PI);
+  const Standard_Integer nbp = Max (4, nb);
+  const Standard_Real dteta = alpha/(nbp-1);
 
-  // trait de cote 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-  
+  Handle(Graphic3d_ArrayOfPolylines) aPrims;
+
   // trait joignant aPntOffset
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Graphic3d_Array1OfVertex V2(1,2);
   if ( aPntOffset.Distance(aPntOnCirc) >= Precision::Confusion() )
-    {
-      V2(1).SetCoord(aPntOffset.X(), aPntOffset.Y(), aPntOffset.Z());
-      V2(2).SetCoord(aPntOnCirc.X(), aPntOnCirc.Y(), aPntOnCirc.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V2); 
-    }
+  {
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp+2,2);
+    aPrims->AddBound(2);
+    aPrims->AddVertex(aPntOffset);
+    aPrims->AddVertex(aPntOnCirc);
+    aPrims->AddBound(nbp);
+  }
+  else
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+
+  for (Standard_Integer i = 1; i<=nbp; i++)
+    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta*(i-1),CC));
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);
@@ -233,32 +225,29 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real pFAttach =  ElCLib::Parameter(anEllipse, aFAttach);
   Standard_Real pSAttach =  ElCLib::Parameter(anEllipse, aSAttach);
   Standard_Real alpha = pSAttach - pFAttach;
-  if ( alpha < 0 ) alpha += 2 * M_PI;
-  Standard_Integer nb = (Standard_Integer)(50.0*alpha/M_PI);
-  Standard_Integer nbp = Max (4 , nb);
-  Graphic3d_Array1OfVertex V(1,nbp);
-  Standard_Real dteta = alpha/(nbp-1);
-  gp_Pnt ptcur;
-  for (Standard_Integer i = 1; i<=nbp; i++)
-    {
-      ptcur =  ElCLib::Value(pFAttach + dteta*(i-1),anEllipse);
-      V(i).SetCoord(ptcur.X(),ptcur.Y(),ptcur.Z());
-    }
+  if ( alpha < 0 ) alpha += 2. * M_PI;
+  const Standard_Integer nb = (Standard_Integer)(50.0*alpha/M_PI);
+  const Standard_Integer nbp = Max (4, nb);
+  const Standard_Real dteta = alpha/(nbp-1);
 
-  // trait de cote 
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfPolylines) aPrims;
   
   // trait joignant aPntOffset
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Graphic3d_Array1OfVertex V2(1,2);
-
   if ( ! aPntOnElli.IsEqual(aPntOffset, Precision::Confusion()) )
-    {
-      V2(1).SetCoord(aPntOffset.X(), aPntOffset.Y(), aPntOffset.Z());
-      V2(2).SetCoord(aPntOnElli.X(), aPntOnElli.Y(), aPntOnElli.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V2); 
-    }
+  {
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp+2,2);
+    aPrims->AddBound(2);
+    aPrims->AddVertex(aPntOffset);
+    aPrims->AddVertex(aPntOnElli);
+    aPrims->AddBound(nbp);
+  }
+  else
+    aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+
+  for (Standard_Integer i = 1; i<=nbp; i++)
+    aPrims->AddVertex(ElCLib::Value(pFAttach + dteta*(i-1),anEllipse));
+
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // texte 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);

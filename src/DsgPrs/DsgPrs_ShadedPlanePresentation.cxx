@@ -18,15 +18,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_ShadedPlanePresentation.ixx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPolygons.hxx>
 
 
 //=======================================================================
@@ -43,18 +41,11 @@ void DsgPrs_ShadedPlanePresentation::Add(const Handle(Prs3d_Presentation)& aPres
   Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
   TheGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());
   TheGroup->SetPrimitivesAspect(aDrawer->ShadingAspect()->Aspect());
-  Quantity_Length x1,y1,z1,x2,y2,z2,x3,y3,z3;
-  
-  aPt1.Coord(x1,y1,z1);
-  aPt2.Coord(x2,y2,z2);
-  aPt3.Coord(x3,y3,z3);
-  
-  Graphic3d_Array1OfVertex A(1,5);
-  A(1).SetCoord(x1,y1,z1);
-  A(2).SetCoord(x2,y2,z2);
-  A(3).SetCoord(x3,y3,z3);
-  A(4).SetCoord(x1,y1,z1);
-  A(5)=A(1);
- 
-  TheGroup->Polygon(A);
+
+  Handle(Graphic3d_ArrayOfPolygons) aPrims = new Graphic3d_ArrayOfPolygons(4);
+  aPrims->AddVertex(aPt1);
+  aPrims->AddVertex(aPt2);
+  aPrims->AddVertex(aPt3);
+  aPrims->AddVertex(aPt1);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 }

@@ -203,8 +203,6 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   aTextGroup->SetPrimitivesAspect( aTextAspect );
   aTextGroup->SetPrimitivesAspect( anAspectMarker3d );
 
-  aTextGroup->BeginPrimitives();
-
   MeshVS_Buffer aCoordsBuf (3*aMaxFaceNodes*sizeof(Standard_Real));
   TColStd_Array1OfReal aCoords (aCoordsBuf, 1, 3*aMaxFaceNodes);
   Standard_Integer NbNodes;
@@ -269,8 +267,6 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       }
     }
   }
-
-  aTextGroup->EndPrimitives();
 
   if (!aCustomElements.IsEmpty())
     CustomBuild ( Prs, aCustomElements, IDsToExclude, theDisplayMode );

@@ -339,10 +339,8 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     new Graphic3d_AspectLine3d ( aColor, Aspect_TOL_SOLID, 1.5 );
 
   aVGroup->SetPrimitivesAspect( aLinAspect );
-
-  aVGroup->BeginPrimitives();
   aVGroup->AddPrimitiveArray( aLineArray );
-  aVGroup->EndPrimitives();
+
   if ( !myIsSimplePrs )
   {
     Graphic3d_MaterialAspect aMatAspect;
@@ -356,10 +354,7 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
                                       1., aMatAspect, aMatAspect );
 
     aVGroup->SetPrimitivesAspect( aFillAspect );
-
-    aVGroup->BeginPrimitives();
     aVGroup->AddPrimitiveArray( aTriangleArray );
-    aVGroup->EndPrimitives();
   }
   else
   {
@@ -367,10 +362,7 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       new Graphic3d_AspectLine3d ( aColor, Aspect_TOL_SOLID, mySimpleWidthPrm * 1.5 );
 
     aVGroup->SetPrimitivesAspect( anArrowLinAspect );
-    
-    aVGroup->BeginPrimitives();
     aVGroup->AddPrimitiveArray( aArrowLineArray );
-    aVGroup->EndPrimitives();
   }
 
   if( !aCustomElements.IsEmpty() )

@@ -31,7 +31,7 @@
 #include <Prs3d_ArrowAspect.hxx>
 
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -60,8 +60,6 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
    				       const DsgPrs_ArrowSide ArrowPrs,
 				       const Standard_Boolean IsDiamSymbol )
 {
-
-
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
@@ -69,32 +67,26 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   gp_Pnt        ptoncirc = ElCLib::Value    (parat, aCircle);
 
   // sideline
-
   gp_Pnt        center  = aCircle.Location();
   gp_Vec        vecrap  (ptoncirc,center);
 
   Standard_Real dist    = center.Distance(AttachmentPoint);
   Standard_Real aRadius = aCircle.Radius();
-  Standard_Boolean inside  = Standard_False;
+  Standard_Boolean inside = (dist < aRadius);
 
   gp_Pnt pt1 = AttachmentPoint;
-  if (dist < aRadius) {
+  if (inside) {
     pt1 = ptoncirc;
     dist = aRadius;
-    inside = Standard_True;
   }
   vecrap.Normalize();
   vecrap *= (dist+aRadius);
-  gp_Pnt        OppositePoint = pt1.Translated(vecrap);
-
+  gp_Pnt OppositePoint = pt1.Translated(vecrap);
   
-  Graphic3d_Array1OfVertex V(1,2);
-  Quantity_Length X,Y,Z;
-  pt1.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-  OppositePoint.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(pt1);
+  aPrims->AddVertex(OppositePoint);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // value
   TCollection_ExtendedString Text = aText;
@@ -103,10 +95,8 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Prs3d_Text::Draw(aPresentation, LA->TextAspect(), Text, AttachmentPoint);
 
   // arrows
-
   gp_Dir arrdir (vecrap);
   if (inside) arrdir.Reverse();
-
 
   gp_Vec vecrap2 = vecrap; 
   gp_Pnt ptoncirc2 = ptoncirc;
@@ -128,7 +118,7 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
     if(lpar > fpar)
       return ((para >= fpar) && (para <= lpar));
     else { // fpar > lpar
-      Standard_Real delta = 2*M_PI-fpar;
+      Standard_Real delta = 2.*M_PI-fpar;
       Standard_Real lp, par, fp;
       lp = lpar + delta;
       par = para + delta;
@@ -137,7 +127,6 @@ static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
       fp = 0.;
       return ((par >= fp) && (par <= lp));
     }
-      
   }
   if (para >= (fpar+2*M_PI)) return Standard_True;
   if (para <= lpar) return Standard_True;
@@ -162,16 +151,14 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 {
   Standard_Real fpara = uFirst;
   Standard_Real lpara = uLast;
-  while (lpara > 2*M_PI) {
-    fpara -= 2*M_PI;
-    lpara -= 2*M_PI;
+  while (lpara > 2.*M_PI) {
+    fpara -= 2.*M_PI;
+    lpara -= 2.*M_PI;
   }
 
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
-//  Handle(Prs3d_TextAspect) TA = aDrawer->TextAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-// AspectText3d from Graphic3d
-  Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle,AttachmentPoint); //
+  Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle,AttachmentPoint);
   gp_Pnt EndOfArrow;
   gp_Pnt DrawPosition = AttachmentPoint;// point of attachment
   Standard_Boolean otherside = Standard_False;
@@ -194,34 +181,26 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
       gp_Lin L1( Center, dir1 );
       gp_Lin L2( Center, dir2 );
       if(L1.Distance(AttachmentPoint) < L2.Distance(AttachmentPoint))
-	{
-	  EndOfArrow = FirstPoint; //***
-	  DrawPosition = ElCLib::Value(ElCLib::Parameter( L1, AttachmentPoint ), L1);	
-	}
+      {
+        EndOfArrow = FirstPoint; //***
+        DrawPosition = ElCLib::Value(ElCLib::Parameter( L1, AttachmentPoint ), L1);	
+      }
       else
-	{
-	  EndOfArrow = SecondPoint; //***
-	  DrawPosition = ElCLib::Value(ElCLib::Parameter( L2, AttachmentPoint ), L2);
-	}      
+      {
+        EndOfArrow = SecondPoint; //***
+        DrawPosition = ElCLib::Value(ElCLib::Parameter( L2, AttachmentPoint ), L2);
+      }      
     }
-//    EndOfArrow   = ElCLib::Value(parEndOfArrow, aCircle);
-//    DrawPosition = AttachmentPoint;
   } 
   else {
     EndOfArrow   = ElCLib::Value(parEndOfArrow, aCircle);
     DrawPosition = AttachmentPoint;
   }
-  Graphic3d_Array1OfVertex Vrap(1,2);
 
-  Quantity_Length X,Y,Z;
-
-  DrawPosition.Coord(X,Y,Z);
-  Vrap(1).SetCoord(X,Y,Z);
-
-  EndOfArrow.Coord(X,Y,Z);
-  Vrap(2).SetCoord(X,Y,Z);
-
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(Vrap);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(DrawPosition);
+  aPrims->AddVertex(EndOfArrow);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // text
   TCollection_ExtendedString Text = aText;
@@ -229,8 +208,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
     Text = TCollection_ExtendedString("\330 ") +  Text;//  => \330 | \370?
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),Text,DrawPosition);
 
-// Add presentation of arrow 
+  // Add presentation of arrow 
   gp_Dir DirOfArrow(gp_Vec(DrawPosition, EndOfArrow).XYZ()); 
-  DsgPrs::ComputeSymbol(aPresentation, LA,  EndOfArrow,  EndOfArrow, DirOfArrow, DirOfArrow, ArrowPrs);
-
+  DsgPrs::ComputeSymbol(aPresentation, LA, EndOfArrow, EndOfArrow, DirOfArrow, DirOfArrow, ArrowPrs);
 }

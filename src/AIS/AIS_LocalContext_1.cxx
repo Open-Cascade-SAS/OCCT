@@ -93,7 +93,7 @@
 #include <AIS_LocalStatus.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <Visual3d_TransientManager.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
@@ -1430,17 +1430,18 @@ void AIS_LocalContext::HilightTriangle(const Standard_Integer Rank,
 {
   static Standard_Integer PrevRank(0);
   if(Rank==PrevRank) return;
-//  PrevRank = Rank; 
   Handle(SelectBasics_SensitiveEntity) SE = myMainVS->Primitive(Rank);
-  if(SE->IsKind(STANDARD_TYPE(Select3D_SensitiveTriangulation))){
+  if(SE->IsKind(STANDARD_TYPE(Select3D_SensitiveTriangulation)))
+  {
     Handle(Select3D_SensitiveTriangulation) Tr = *((Handle(Select3D_SensitiveTriangulation)*)&SE);
     gp_Pnt p1,p2,p3 ; Tr->DetectedTriangle(p1,p2,p3);
-    static Graphic3d_Array1OfVertex Vtt(1,3);
 
-    Vtt.SetValue(1,Graphic3d_Vertex(p1.X(),p1.Y(),p1.Z()));
-    Vtt.SetValue(2,Graphic3d_Vertex(p2.X(),p2.Y(),p2.Z()));
-    Vtt.SetValue(3,Graphic3d_Vertex(p3.X(),p3.Y(),p3.Z()));
-    static Handle(Prs3d_Presentation)  TriPrs = 
+    Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles(3);
+	aTris->AddVertex(p1);
+	aTris->AddVertex(p2);
+	aTris->AddVertex(p3);
+
+    static Handle(Prs3d_Presentation) TriPrs = 
       new Prs3d_Presentation(myMainPM->StructureManager());
     TriPrs->Clear();
 #ifdef IMP300101
@@ -1448,20 +1449,17 @@ void AIS_LocalContext::HilightTriangle(const Standard_Integer Rank,
     asp->SetColor(myCTX->HilightColor());
     TriPrs->SetShadingAspect(asp);
 #endif
-    Prs3d_Root::CurrentGroup(TriPrs)->Polygon(Vtt);
+    Prs3d_Root::CurrentGroup(TriPrs)->AddPrimitiveArray(aTris);
 
 #ifndef IMP300101
     if(view->TransientManagerBeginDraw())
       Visual3d_TransientManager::EndDraw();
 #endif
     if(view->TransientManagerBeginDraw()) {
-      //P->Exploration();
       Visual3d_TransientManager::DrawStructure(TriPrs);
       Visual3d_TransientManager::EndDraw();
     }
-    
   }
-  
 }
 
 //=======================================================================

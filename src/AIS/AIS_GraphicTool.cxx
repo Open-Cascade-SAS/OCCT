@@ -19,8 +19,7 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351 //GG_171199     Enable to get an object RGB color
-//              instead a restricted object NameOfColor.
+//GER61351 //GG_171199     Enable to get an object RGB color instead a restricted object NameOfColor.
 
 
 
@@ -92,7 +91,6 @@ static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
 }
 
 Quantity_NameOfColor AIS_GraphicTool::GetLineColor (const Handle(Prs3d_Drawer)& Dr, const AIS_TypeOfAttribute Att)
-#ifdef GER61351
 {
   Quantity_Color color;
   GetLineColor(Dr,Att,color);
@@ -100,20 +98,10 @@ Quantity_NameOfColor AIS_GraphicTool::GetLineColor (const Handle(Prs3d_Drawer)& 
 }
 
 void AIS_GraphicTool::GetLineColor (const Handle(Prs3d_Drawer)& Dr, const AIS_TypeOfAttribute Att, Quantity_Color &aColor)
-#endif
 {
   Standard_Real W;
   Aspect_TypeOfLine TYP;
-  
-  Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr,Att);
-  
-#ifdef GER61351
-  LA->Aspect()->Values(aColor,TYP,W);
-#else
-  Quantity_Color QCol;
-  LA->Aspect()->Values(QCol,TYP,W);
-  return QCol.Name();
-#endif
+  GetLineAspect(Dr,Att)->Aspect()->Values(aColor,TYP,W);
 }
 
 Standard_Real AIS_GraphicTool::GetLineWidth (const Handle(Prs3d_Drawer)& Dr,
@@ -159,7 +147,6 @@ void AIS_GraphicTool::GetLineAtt(const Handle(Prs3d_Drawer)& Dr,
 }
 
 Quantity_NameOfColor AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer)& Dr)
-#ifdef GER61351
 {
   Quantity_Color color;
   GetInteriorColor(Dr,color);
@@ -167,24 +154,16 @@ Quantity_NameOfColor AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer
 }
 
 void AIS_GraphicTool::GetInteriorColor(const Handle(Prs3d_Drawer)& Dr, Quantity_Color &aColor)
-#endif
 {
   Handle(Graphic3d_AspectFillArea3d) AFA = Dr->ShadingAspect()->Aspect();
   Aspect_InteriorStyle IS;
   Aspect_TypeOfLine T;
   Standard_Real W;
-#ifdef GER61351
   Quantity_Color EC;
   AFA->Values(IS,aColor,EC,T,W);
-#else
-  Quantity_Color IC,EC;
-  AFA->Values(IS,IC,EC,T,W);
-  return IC.Name();
-#endif
 }
 
 Graphic3d_MaterialAspect AIS_GraphicTool::GetMaterial(const Handle(Prs3d_Drawer)& Dr)
 {
   return Dr->ShadingAspect()->Aspect()->BackMaterial();
-
 }

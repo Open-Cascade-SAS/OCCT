@@ -26,7 +26,6 @@
 #include <OpenGl_Element.hxx>
 
 #include <Graphic3d_Array1OfVertex.hxx>
-#include <Graphic3d_Array1OfVertexC.hxx>
 
 class OpenGl_Polyline : public OpenGl_Element
 {

@@ -31,8 +31,6 @@ public:
 
   int   Priority;
   int   PreviousPriority;
-  int   GroupBegin;
-  int   GroupEnd;
 
   CALL_DEF_CONTEXTLINE     ContextLine;
   CALL_DEF_CONTEXTFILLAREA ContextFillArea;

@@ -24,8 +24,6 @@
 #include <Graphic3d_Group.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <Prs3d_Root.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>

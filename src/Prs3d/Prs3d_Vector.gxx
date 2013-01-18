@@ -24,7 +24,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 
 
 void Prs3d_Vector::Add(const Handle(Prs3d_Presentation)& aPresentation,
@@ -33,9 +33,7 @@ void Prs3d_Vector::Add(const Handle(Prs3d_Presentation)& aPresentation,
 {
   gp_Pnt Pnt = VectorTool::Location(aVector);
   gp_Vec Vec = VectorTool::Vec(aVector);
-  Quantity_Length x1,y1,z1,dx,dy,dz;
-  Pnt.Coord(x1,y1,z1);
-  Vec.Coord(dx,dy,dz);
+  gp_Pnt Pnt2 = Pnt.Translated(Vec);
 
   Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
   G->SetPrimitivesAspect(aDrawer->VectorAspect()->Aspect());
@@ -43,25 +41,20 @@ void Prs3d_Vector::Add(const Handle(Prs3d_Presentation)& aPresentation,
   Quantity_Color Col; Aspect_TypeOfLine Tol; Standard_Real W;
   aDrawer->VectorAspect()->Aspect()->Values(Col,Tol,W);
 
-  Graphic3d_Array1OfVertex A(1,2);
 //
 // Trace d'une petite sphere au debut du vecteur:
 //
-  Graphic3d_Vertex VTX;
-  VTX.SetCoord(x1,y1,z1);
-  Handle(Graphic3d_AspectMarker3d) Asp = new Graphic3d_AspectMarker3d
-    (Aspect_TOM_BALL,Col,1.);
+  Quantity_Length x1,y1,z1;
+  Pnt.Coord(x1,y1,z1);
+  Graphic3d_Vertex VTX(x1,y1,z1);
+  Handle(Graphic3d_AspectMarker3d) Asp = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Col,1.);
   G->SetPrimitivesAspect(Asp);
   G->Marker(VTX);
 
-  A(1).SetCoord(x1,y1,z1);
-  A(2).SetCoord(x1+dx,y1+dy,z1+dz);
-  G->Polyline(A);
-  Prs3d_Arrow::Draw(aPresentation,gp_Pnt(x1+dx,y1+dy,z1+dz),gp_Dir(Vec),
-                  M_PI/180.*10.,Sqrt(dx*dx+dy*dy+dz*dz)/10.);
-  
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(Pnt);
+  aPrims->AddVertex(Pnt2);
+  G->AddPrimitiveArray(aPrims);
+
+  Prs3d_Arrow::Draw(aPresentation,Pnt2,gp_Dir(Vec),M_PI/180.*10.,Vec.Magnitude()/10.);
 }
-
-
-
-

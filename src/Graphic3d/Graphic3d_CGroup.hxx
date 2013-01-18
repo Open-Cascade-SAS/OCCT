@@ -90,11 +90,7 @@ class Graphic3d_CGroup
 
 public:
 
-  int   LabelBegin;
-  int   LabelEnd;
   void* ptrGroup;
-
-  int   StructureEnd;
 
   CALL_DEF_CONTEXTLINE     ContextLine;
   CALL_DEF_CONTEXTFILLAREA ContextFillArea;
@@ -104,9 +100,6 @@ public:
   Graphic3d_CStructure* Struct;
 
   CALL_DEF_PICKID PickId;
-
-  unsigned IsDeleted : 1;
-  unsigned IsOpen    : 1;
 
 };
 

@@ -18,18 +18,13 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define _POLYGONES_
-// if define _POLYGONES_ ColorPrsBuilder use ArrayOfPolygons for drawing faces
-
 #include <MeshVS_ElementalColorPrsBuilder.ixx>
 
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Root.hxx>
@@ -375,18 +370,14 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     if ( IsPolyG )
     {
       aGGroup->SetPrimitivesAspect ( anAsp );
-      aGGroup->BeginPrimitives();
       aGGroup->AddPrimitiveArray ( aPolyGArr );
-      aGGroup->EndPrimitives();
     }
     if ( IsPolyL )
     {
       anAsp->SetEdgeOff();
       aLGroup->SetPrimitivesAspect ( anAsp );
       aLGroup->SetPrimitivesAspect ( anLAsp );
-      aLGroup->BeginPrimitives();
       aLGroup->AddPrimitiveArray ( aPolyLArr );
-      aLGroup->EndPrimitives();
       if (anEdgeOn)
         anAsp->SetEdgeOn();
       else
@@ -446,10 +437,8 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     if ( aSize<=0 )
       continue;
 
-#ifdef _POLYGONES_
     Handle (Graphic3d_ArrayOfPolygons) aPolyArr = new Graphic3d_ArrayOfPolygons
       ( aMaxFaceNodes*aSize, aSize, 0, IsReflect );
-#endif
 
     MeshVS_TwoColors aTC = aColIter2.Key();
     Quantity_Color aMyIntColor, aMyBackColor;
@@ -469,7 +458,6 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       anAsp->SetEdgeOff();
 
     aGroup2->SetPrimitivesAspect ( anAsp );
-    aGroup2->BeginPrimitives();
 
     for( it.Reset(); it.More(); it.Next() )
     {
@@ -491,15 +479,10 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
           Standard_Boolean hasNormals = /*IsReflect &&*/
             aSource->GetNormalsByElement( aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals );
 
-#ifdef _POLYGONES_
           aPolyArr->AddBound ( NbNodes );
-#else
-          Graphic3d_Array1OfVertex aVertArr ( 1, NbNodes );
-#endif
 
           for ( i=1; i<=NbNodes; i++ )
           {
-#ifdef _POLYGONES_
             if ( IsReflect )
             {
               hasNormals ? aPolyArr->AddVertex ( aCoords(3 * i - 2), 
@@ -519,43 +502,11 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
               aPolyArr->AddVertex ( aCoords(3*i-2), 
                                     aCoords(3*i-1), 
                                     aCoords(3*i  ) );
-#else
-            if ( IsReflect )
-            {
-              aVertArr (i) = hasNormals ? Graphic3d_VertexN( aCoords(3 * i - 2), 
-                                                             aCoords(3 * i - 1), 
-                                                             aCoords(3 * i    ),
-                                                             aNormals->Value(3 * i - 2), 
-                                                             aNormals->Value(3 * i - 1), 
-                                                             aNormals->Value(3 * i    ),
-                                                             Standard_False ) :
-                                            Graphic3d_VertexN( aCoords(3 * i - 2), 
-                                                             aCoords(3 * i - 1), 
-                                                             aCoords(3 * i    ),
-                                                             0., 
-                                                             0., 
-                                                             1.,
-                                                             Standard_False );
-										 
-            }
-            else
-              Graphic3d_Vertex ( aCoords(3 * i - 2), 
-                                 aCoords(3 * i - 1), 
-                                 aCoords(3 * i    ) );
-#endif
           }
-
-
-#ifndef _POLYGONES_
-          aGroup2->Polygon ( aVertArr );
-#endif
         }
       }
     }
-#ifdef _POLYGONES_
     aGroup2->AddPrimitiveArray ( aPolyArr );
-#endif
-    aGroup2->EndPrimitives();
   }
 }
 

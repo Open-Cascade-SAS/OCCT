@@ -16,7 +16,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>
@@ -26,29 +26,25 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d.hxx>
 
-static void DrawLine (const anyLine& aLine,
-                      const Handle(Graphic3d_Group)& aGroup) {
-
-  Standard_Integer Count=0;
+static void DrawLine (const anyLine& aLine, const Handle(Graphic3d_Group)& aGroup)
+{
   Quantity_Length x,y,z;
 
-  Standard_Integer Lower = LineTool::Lower(aLine);
-  Standard_Integer Upper = LineTool::Upper(aLine);
+  Standard_Integer i = LineTool::Lower(aLine);
+  const Standard_Integer Upper = LineTool::Upper(aLine);
 
-  Graphic3d_Array1OfVertex VertexArray(1,Upper-Lower+1);
-
-  for (Standard_Integer i=Lower;i<=Upper;i++){
+  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Upper-i+1);
+  for (; i <= Upper; i++) {
     LineTool::Coord(aLine,i,x,y,z);
-    VertexArray(++Count).SetCoord(x,y,z);
+    aPrims->AddVertex((Standard_ShortReal)x,(Standard_ShortReal)y,(Standard_ShortReal)z);
   }
-  aGroup->Polyline(VertexArray);
+  aGroup->AddPrimitiveArray(aPrims);
 }
 
 void Prs3d_Line::Add (const Handle (Prs3d_Presentation)& aPresentation,
 		    const anyLine& aLine,
-		    const Handle (Prs3d_Drawer)& aDrawer){
-
-//  Prs3d_Root::NewGroup(aPresentation);    
+		    const Handle (Prs3d_Drawer)& aDrawer)
+{
   Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);    
   TheGroup->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
   DrawLine(aLine,TheGroup);
@@ -68,12 +64,10 @@ void Prs3d_Line::Add (const Handle (Prs3d_Presentation)& aPresentation,
     }
   }
 }
-void Prs3d_Line::Add (const Handle (Prs3d_Presentation)& aPresentation,
-			   const anyLine& aLine){
 
-    
+void Prs3d_Line::Add (const Handle (Prs3d_Presentation)& aPresentation, const anyLine& aLine)
+{
   DrawLine (aLine,Prs3d_Root::CurrentGroup(aPresentation));
-
 }
 
 Standard_Integer Prs3d_Line::Pick
@@ -83,46 +77,45 @@ Standard_Integer Prs3d_Line::Pick
 	      const Quantity_Length aDistance,
 	      const anyLine& aLine,
 	      const Handle (Prs3d_Drawer)& aDrawer,
-	      const Prs3d_TypeOfLinePicking TypeOfPicking){
-
-
-  Standard_Integer Lower = LineTool::Lower(aLine);
-  Standard_Integer Upper = LineTool::Upper(aLine);
+	      const Prs3d_TypeOfLinePicking TypeOfPicking)
+{
+  Standard_Integer i = LineTool::Lower(aLine);
+  const Standard_Integer Upper = LineTool::Upper(aLine);
 
   Standard_Integer num = 0;
   Quantity_Length X1,Y1,Z1,X2,Y2,Z2,dist;
 
   Standard_Real DistMin = RealLast();
 
-  for (Standard_Integer i=Lower;i<=Upper;i++){
+  for (; i <= Upper; i++)
+  {
     LineTool::Coord(aLine,i,X2,Y2,Z2);
     switch (TypeOfPicking) {
-    case Prs3d_TOLP_Point: {
-      dist = Abs(X-X2)+Abs(Y-Y2)+ Abs(Z-Z2);
-      if(dist < aDistance) {
-	if (dist < DistMin) {
-	  DistMin = dist;
-	  num = i;
-	}
+      case Prs3d_TOLP_Point: {
+        dist = Abs(X-X2)+Abs(Y-Y2)+ Abs(Z-Z2);
+        if(dist < aDistance) {
+          if (dist < DistMin) {
+            DistMin = dist;
+            num = i;
+          }
+        }
+        break;
       }
-    }
-      break;
-    case Prs3d_TOLP_Segment: {
-      if (i > 1) {
-	if (Prs3d::MatchSegment
-        (X,Y,Z,aDistance,gp_Pnt(X1,Y1,Z1),gp_Pnt(X2,Y2,Z2),dist)){
-	  if(dist < aDistance) {
-	    if (dist < DistMin) {
-	      DistMin = dist;
-	      num = i;
-	    }
-	  }
-	}
+      case Prs3d_TOLP_Segment: {
+        if (i > 1) {
+          if (Prs3d::MatchSegment(X,Y,Z,aDistance,gp_Pnt(X1,Y1,Z1),gp_Pnt(X2,Y2,Z2),dist)) {
+            if(dist < aDistance) {
+              if (dist < DistMin) {
+                DistMin = dist;
+                num = i;
+              }
+            }
+          }
+        }
+        X1=X2;Y1=Y2;Z1=Z2;
+        break;
       }
-      X1=X2;Y1=Y2;Z1=Z2;
-    }
-    break;
     }
   }
-    return num;
+  return num;
 }

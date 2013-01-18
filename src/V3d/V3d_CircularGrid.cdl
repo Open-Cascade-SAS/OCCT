@@ -72,10 +72,8 @@ is
 
 fields
 	myStructure		: Structure from Graphic3d;
-	myGroup1, myGroup2	: Group from Graphic3d;
-	myCurViewPlane		: Ax3 from gp;
---	myColor, myTenthColor	: Color from Quantity;
---	myCurColor1, myCurColor2: Color from Quantity;
+	myGroup	        : Group from Graphic3d;
+	myCurViewPlane	: Ax3 from gp;
 	myViewer		: ViewerPointer from V3d;
 	myCurAreDefined		: Boolean from Standard;
 	myCurDrawMode		: GridDrawMode from Aspect;

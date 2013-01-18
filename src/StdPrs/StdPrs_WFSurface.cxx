@@ -144,8 +144,6 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     Standard_Real  U1, U2, V1, V2;
     Standard_Real MaxP = aDrawer->MaximalParameterValue();
 
-    Standard_Boolean isPA = Graphic3d_ArrayOfPrimitives::IsEnable();
-
     FindLimits(aSurface, MaxP, U1, U2, V1, V2);
 
     Prs3d_NListOfSequenceOfPnt freeCurves; 
@@ -191,22 +189,22 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       if ( !UClosed ) 
 	{ 
 	  anIso.Load(GeomAbs_IsoU,U1,V1,V2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, !isPA);
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
 	  freeCurves.Append(Pnts);
 	  Pnts.Clear();
 	  anIso.Load(GeomAbs_IsoU,U2,V1,V2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, !isPA);
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
 	  freeCurves.Append(Pnts);
 	  Pnts.Clear();
 	}
       if ( !VClosed )
 	{
 	  anIso.Load(GeomAbs_IsoV,V1,U1,U2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, !isPA);
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
 	  freeCurves.Append(Pnts);
 	  Pnts.Clear();
 	  anIso.Load(GeomAbs_IsoV,V2,U1,U2);
-	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, !isPA);
+	  StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
 	  freeCurves.Append(Pnts);
 	  Pnts.Clear();
 	}
@@ -224,7 +222,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       Standard_Real du= UClosed ? (U2-U1)/fin : (U2-U1)/(1+fin);
       for (Standard_Integer i=1; i<=fin;i++){
 	anIso.Load(GeomAbs_IsoU,U1+du*i,V1,V2);
-	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, !isPA);
+	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
 	UIsoCurves.Append(Pnts);
 	Pnts.Clear();
       }
@@ -238,14 +236,12 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       Standard_Real dv= VClosed ?(V2-V1)/fin : (V2-V1)/(1+fin);
       for (Standard_Integer i=1; i<=fin;i++){
 	anIso.Load(GeomAbs_IsoV,V1+dv*i,U1,U2);
-	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, !isPA);
+	StdPrs_Curve::Add(aPresentation,anIso,TheDeflection, aDrawer, Pnts, Standard_False);
 	VIsoCurves.Append(Pnts);
 	Pnts.Clear();
       }
     }
     
-    if(!Graphic3d_ArrayOfPrimitives::IsEnable())
-      return;
     Standard_Integer nbVertices = 0, nbBounds = 0; 
     //Draw surface via primitive array
     if(UIsoCurves.Size() > 0) {
@@ -264,9 +260,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       }      
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
-      TheGroup->BeginPrimitives();
       TheGroup->AddPrimitiveArray(UIsoArray);
-      TheGroup->EndPrimitives();
     }
     
     if(VIsoCurves.Size() > 0) {
@@ -285,9 +279,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       }
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
-      TheGroup->BeginPrimitives();
       TheGroup->AddPrimitiveArray(VIsoArray);
-      TheGroup->EndPrimitives();
     } 
     if(freeCurves.Size() > 0) {
       nbBounds = freeCurves.Size();
@@ -305,9 +297,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
       }
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());
-      TheGroup->BeginPrimitives();
       TheGroup->AddPrimitiveArray(freeArray);
-      TheGroup->EndPrimitives();
     }
   }
 

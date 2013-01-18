@@ -60,80 +60,29 @@
  * Constant
  */
 
-// in case NO_TRACE_ECHO and NO_TRACE_POINTS, in V3d_View_4.cxx and 
-// V3d_View.cxx, suspend MyGridEchoStructure and MyGridEchoGroup in cdl
-#define TRACE_ECHO
-#define NO_TRACE_VALUES
-#define NO_TRACE_POINTS
-
 #define MYEPSILON1 0.0001		// Comparison with 0.0
 #define MYEPSILON2 M_PI / 180.	// Delta between 2 angles
 
-#ifdef TRACE_POINTS
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#endif
-
-#ifdef TRACE_VALUES
-#include <Visual3d_ViewOrientation.hxx>
-#endif
-
-#if defined TRACE_VALUES || defined TRACE_POINTS
-static char *CAR [26] = {"a", "b", "c", "d", "e", "f", "g", "h",
-			"i", "j", "k", "l", "m", "n", "o", "p",
-			"q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-#endif
-
 /*----------------------------------------------------------------------*/
 
-void V3d_View::SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid) {
-
+void V3d_View::SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid)
+{
 	MyPlane	= aPlane;
 	MyGrid	= aGrid;
 
-#ifdef TRACE_VALUES
-        if (MyGrid->IsKind (STANDARD_TYPE (Aspect_RectangularGrid))) {
-		cout << "Aspect_RectangularGrid" << endl;
-Handle(Aspect_RectangularGrid) theGrid = *(Handle(Aspect_RectangularGrid) *) &MyGrid;
-		cout << "\tOrigine : " << theGrid->XOrigin () << ", "
-		     << theGrid->YOrigin () << endl;
-		cout << "\tAngle : " << theGrid->RotationAngle () << endl;
-		cout << "\tSteps : " << theGrid->XStep () << ", "
-		     << theGrid->YStep () << endl;
-	}
-	else {
-		cout << "Aspect_CircularGrid" << endl;
-Handle(Aspect_CircularGrid) theGrid = *(Handle(Aspect_CircularGrid) *) &MyGrid;
-		cout << "\tOrigine : " << theGrid->XOrigin () << ", "
-		     << theGrid->YOrigin () << endl;
-		cout << "\tAngle : " << theGrid->RotationAngle () << endl;
-		cout << "\tRadiusStep, Division : " << theGrid->RadiusStep ()
-		     << ", " << theGrid->DivisionNumber () << endl;
-	}
-
-#endif
-
-Standard_Real xl, yl, zl;
-Standard_Real xdx, xdy, xdz;
-Standard_Real ydx, ydy, ydz;
-Standard_Real dx, dy, dz;
+	Standard_Real xl, yl, zl;
+	Standard_Real xdx, xdy, xdz;
+	Standard_Real ydx, ydy, ydz;
+	Standard_Real dx, dy, dz;
 	aPlane.Location ().Coord (xl, yl, zl);
 	aPlane.XDirection ().Coord (xdx, xdy, xdz);
 	aPlane.YDirection ().Coord (ydx, ydy, ydz);
 	aPlane.Direction ().Coord (dx, dy, dz);
 
-#ifdef TRACE_VALUES
-cout << "Grid Plane " << xl << ", " << yl << ", " << zl << endl;
-cout << "\tLocation " << xl << ", " << yl << ", " << zl << endl;
-cout << "\tDirection " << dx << ", " << dy << ", " << dz << endl;
-cout << "\tXDirection " << xdx << ", " << xdy << ", " << xdz << endl;
-cout << "\tYDirection " << ydx << ", " << ydy << ", " << ydz << endl;
-#endif
+	Standard_Real CosAlpha = Cos (MyGrid->RotationAngle ());
+	Standard_Real SinAlpha = Sin (MyGrid->RotationAngle ());
 
-Standard_Real CosAlpha = Cos (MyGrid->RotationAngle ());
-Standard_Real SinAlpha = Sin (MyGrid->RotationAngle ());
-
-TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
+	TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
 	Trsf1 (4, 4) = 1.0;
 	Trsf1 (4, 1) = Trsf1 (4, 2) = Trsf1 (4, 3) = 0.0;
 	// Translation
@@ -151,7 +100,7 @@ TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
 	Trsf1 (2, 3) = dy,
 	Trsf1 (3, 3) = dz;
 
-TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
+	TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
 	Trsf2 (4, 4) = 1.0;
 	Trsf2 (4, 1) = Trsf2 (4, 2) = Trsf2 (4, 3) = 0.0;
 	// Translation of the origin
@@ -169,10 +118,10 @@ TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
 	Trsf2 (2, 3) = 0.0,
 	Trsf2 (3, 3) = 1.0;
 
-Standard_Real valuetrsf;
-Standard_Real valueoldtrsf;
-Standard_Real valuenewtrsf;
-Standard_Integer i, j, k;
+	Standard_Real valuetrsf;
+	Standard_Real valueoldtrsf;
+	Standard_Real valuenewtrsf;
+	Standard_Integer i, j, k;
 	// Calculation of the product of matrices
 	for (i=1; i<=4; i++)
 	    for (j=1; j<=4; j++) {
@@ -184,125 +133,52 @@ Standard_Integer i, j, k;
 		    MyTrsf (i, j) = valuenewtrsf;
 		}
 	   }
-
 }
 
-void V3d_View::SetGridActivity (const Standard_Boolean AFlag) {
-
+void V3d_View::SetGridActivity (const Standard_Boolean AFlag)
+{
 	if (AFlag) MyGrid->Activate ();
 	else MyGrid->Deactivate ();
-
 }
 
-void V3d_View::SetGridGraphicValues (const Handle(Aspect_Grid)&
-#ifdef TRACE_VALUES
-                                                                aGrid
-#endif
-                                    ) {
-
-#ifdef TRACE_VALUES
-Standard_Real XSize, YSize, Radius, OffSet;
-        if (aGrid->IsKind (STANDARD_TYPE (V3d_RectangularGrid))) {
-		cout << "V3d_RectangularGrid" << endl;
-Handle(V3d_RectangularGrid) theGrid = *(Handle(V3d_RectangularGrid) *) &aGrid;
-		theGrid->GraphicValues (XSize, YSize, OffSet);
-		cout << "\tSizes : " << XSize << ", " << YSize << endl;
-		cout << "\tOffSet : " << OffSet << endl;
-	}
-	else {
-		cout << "V3d_CircularGrid" << endl;
-Handle(V3d_CircularGrid) theGrid = *(Handle(V3d_CircularGrid) *) &aGrid;
-		theGrid->GraphicValues (Radius, OffSet);
-		cout << "\tRadius : " << Radius << endl;
-		cout << "\tOffSet : " << OffSet << endl;
-	}
-#endif
-
+void V3d_View::SetGridGraphicValues (const Handle(Aspect_Grid)& )
+{
 }
 
-Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const {
-
-Graphic3d_Vertex CurPoint, NewPoint;
-Standard_Real X1, Y1, Z1, X2, Y2, Z2;
-Standard_Real XPp, YPp;
+Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
+{
+	Graphic3d_Vertex CurPoint, NewPoint;
+	Standard_Real X1, Y1, Z1, X2, Y2, Z2;
+	Standard_Real XPp, YPp;
 
 	MyView->ViewOrientation ().ViewReferencePlane ().Coord (X1, Y1, Z1);
 	MyPlane.Direction ().Coord (X2, Y2, Z2);
 
-gp_Dir VPN (X1, Y1, Z1);
-gp_Dir GPN (X2, Y2, Z2);
-
-#ifdef TRACE_VALUES
-	cout << "View Plane : " << X1 << ", " << Y1 << ", " << Z1 << endl;
-	cout << "Grid Plane " << X2 << ", " << Y2 << ", " << Z2 << endl;
-	cout << "Angle VPN GPN : " << VPN.Angle (GPN) << endl;
-#endif
+	gp_Dir VPN (X1, Y1, Z1);
+	gp_Dir GPN (X2, Y2, Z2);
 
 	AVertex.Coord (X1, Y1, Z1);
 	Project (X1, Y1, Z1, XPp, YPp);
-
-#ifdef TRACE_VALUES
-	cout << "AVertex : " << X1 << ", " << Y1 << ", " << Z1 << endl;
-#endif
 
 	// Casw when the plane of the grid and the plane of the view
 	// are perpendicular to MYEPSILON2 close radians
 	if (Abs (VPN.Angle (GPN) - M_PI / 2.) < MYEPSILON2) {
 		NewPoint.SetCoord (X1, Y1, Z1);
-#ifdef TRACE_POINTS
-		TextAttrib->SetColor (Quantity_Color (Quantity_NOC_RED));
-		MyGridEchoGroup->SetPrimitivesAspect (TextAttrib);
-		MyGridEchoGroup->Text ("Q", NewPoint, 1./81.);
-		MyGridEchoGroup->Polyline (AVertex, NewPoint);
-		Update ();
-#endif
 #ifdef IMP240100
 		MyViewer->ShowGridEcho(this,NewPoint);
-#else
-#ifdef TRACE_ECHO
-char *trace_echo = NULL;
-		trace_echo = (char *)(getenv ("CSF_GraphicEcho"));
-		if (trace_echo) {
-			MyGridEchoGroup->Clear ();
-			MyGridEchoGroup->Marker (NewPoint);
-			Visual3d_TransientManager::BeginDraw
-				(MyView, Standard_False, Standard_False);
-			Visual3d_TransientManager::DrawStructure (MyGridEchoStructure);
-			Visual3d_TransientManager::EndDraw (Standard_True);
-		}
-#endif
 #endif	//IMP240100
 		return NewPoint;
 	}
 
-#ifdef TRACE_POINTS
-Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d ();
-Handle(Graphic3d_AspectText3d) TextAttrib = new Graphic3d_AspectText3d ();
-
-	MyGridEchoGroup->Clear ();
-
-	LineAttrib->SetColor (Quantity_Color (Quantity_NOC_RED));
-	MyGridEchoGroup->SetGroupPrimitivesAspect (LineAttrib);
-
-	TextAttrib->SetColor (Quantity_Color (Quantity_NOC_RED));
-	MyGridEchoGroup->SetGroupPrimitivesAspect (TextAttrib);
-
-	MyGridEchoGroup->Text ("P", AVertex, 1./81.);
-	CurPoint.SetCoord (AVertex.X (), AVertex.Y (), AVertex.Z ());
-
-	TextAttrib->SetColor (Quantity_Color (Quantity_NOC_GREEN));
-	MyGridEchoGroup->SetPrimitivesAspect (TextAttrib);
-#endif
-
-Standard_Boolean IsRectangular = 
+	Standard_Boolean IsRectangular = 
 		MyGrid->IsKind (STANDARD_TYPE (Aspect_RectangularGrid));
 
-Graphic3d_Vertex P1;
+	Graphic3d_Vertex P1;
 
-Standard_Real XO = 0.0, YO = 0.0;
-Standard_Real XOp, YOp;
-Standard_Real XAp, YAp;
-Standard_Real XBp, YBp;
+	Standard_Real XO = 0.0, YO = 0.0;
+	Standard_Real XOp, YOp;
+	Standard_Real XAp, YAp;
+	Standard_Real XBp, YBp;
 
 	X1 = XO, Y1 = YO, Z1 = 0.0;
 	// MyTrsf * Point to return to the plane of 3D grid
@@ -312,18 +188,9 @@ Standard_Real XBp, YBp;
 	Project (X2, Y2, Z2, XOp, YOp);
 	XPp = XPp - XOp, YPp = YPp - YOp;
 
-#ifdef TRACE_POINTS
-	MyGridEchoGroup->Text ("O", CurPoint, 1./81.);
-#endif
-
-#ifdef TRACE_VALUES
-	cout << "Projection de P : " << XPp << ", " << YPp << endl;
-	cout << "Projection de O : " << XOp << ", " << YOp << endl;
-#endif
-
-        if (IsRectangular) {
-Standard_Real XS, YS;
-Handle(Aspect_RectangularGrid) theGrid =
+    if (IsRectangular) {
+		Standard_Real XS, YS;
+		Handle(Aspect_RectangularGrid) theGrid =
 			*(Handle(Aspect_RectangularGrid) *) &MyGrid;
 		XS = theGrid->XStep (), YS = theGrid->YStep ();
 
@@ -335,10 +202,6 @@ Handle(Aspect_RectangularGrid) theGrid =
 		Project (X2, Y2, Z2, XAp, YAp);
 		XAp = XAp - XOp, YAp = YAp - YOp;
 
-#ifdef TRACE_POINTS
-		MyGridEchoGroup->Text ("A", CurPoint, 1./81.);
-#endif
-
 		X1 = XO, Y1 = YO + YS, Z1 = 0.0;
 		// MyTrsf *  Point to return to the plane of 3D grid
 		P1.SetCoord (X1, Y1, Z1);
@@ -347,16 +210,7 @@ Handle(Aspect_RectangularGrid) theGrid =
 		Project (X2, Y2, Z2, XBp, YBp);
 		XBp = XBp - XOp, YBp = YBp - YOp;
 
-#ifdef TRACE_POINTS
-		MyGridEchoGroup->Text ("B", CurPoint, 1./81.);
-#endif
-
-#ifdef TRACE_VALUES
-		cout << "Projection de A : " << XAp << ", " << YAp << endl;
-		cout << "Projection de B : " << XBp << ", " << YBp << endl;
-#endif
-
-Standard_Real Determin = XAp*YBp - XBp*YAp;
+		Standard_Real Determin = XAp*YBp - XBp*YAp;
 
 		Z1 = 0.0;
 		if (Abs (Determin) > MYEPSILON1) {
@@ -368,41 +222,35 @@ Standard_Real Determin = XAp*YBp - XBp*YAp;
 			Y1 = (Y1 > 0. ?
 			Standard_Real (Standard_Integer (Abs (Y1)+0.5)) * YS :
 			- Standard_Real (Standard_Integer (Abs (Y1)+0.5)) * YS);
-#ifdef TRACE_VALUES
-			cout << "Chosen point : " << X1 << ", " << Y1 << endl;
-#endif
 			// MyTrsf *  Point to return to the plane of 3D grid
 			P1.SetCoord (X1, Y1, Z1);
 			CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
 			CurPoint.Coord (X2, Y2, Z2);
 		}
 		else {
-cout << "*****************" << endl;
-cout << "Zero Determinant!" << endl;
-cout << "*****************" << endl;
-#ifdef TRACE_VALUES
-			cout << "Zero Determinant !" << endl;
-#endif
+			//cout << "*****************" << endl;
+			//cout << "Zero Determinant!" << endl;
+			//cout << "*****************" << endl;
 			AVertex.Coord (X2, Y2, Z2);
 			CurPoint.SetCoord (X2, Y2, Z2);
 		}
 	} // IsRectangular
-        else {
-Standard_Real RS;
-Standard_Integer DN;
-Standard_Real Alpha;
-Handle(Aspect_CircularGrid) theGrid =
+    else {
+		Standard_Real RS;
+		Standard_Integer DN;
+		Standard_Real Alpha;
+		Handle(Aspect_CircularGrid) theGrid =
 			*(Handle(Aspect_CircularGrid) *) &MyGrid;
 		RS = theGrid->RadiusStep ();
 		DN = theGrid->DivisionNumber ();
 		Alpha = M_PI / Standard_Real (DN);
 
-Standard_Real DistOP = Sqrt (XPp*XPp + YPp*YPp);
+		Standard_Real DistOP = Sqrt (XPp*XPp + YPp*YPp);
 
-Standard_Integer i, ICur=0;
-Standard_Real Angle, AngleCur;
-Standard_Real XCurp=0, YCurp=0;
-gp_Dir2d OP (XPp, YPp);
+		Standard_Integer i, ICur=0;
+		Standard_Real Angle, AngleCur;
+		Standard_Real XCurp=0, YCurp=0;
+		gp_Dir2d OP (XPp, YPp);
 		AngleCur = 2 * M_PI;
 		for (i=1; i<=DN*2; i++) {
 			X1 = XO + Cos (Alpha * i) * RS,
@@ -420,33 +268,20 @@ gp_Dir2d OP (XPp, YPp);
 				ICur = i;
 				AngleCur = Angle;
 				XCurp = XAp, YCurp = YAp;
-#ifdef TRACE_VALUES
-				cout << "Angle between OP and O" << CAR [i-1]
-				     << " : " << Angle << endl;
-#endif
 			}
 
-#ifdef TRACE_POINTS
-			MyGridEchoGroup->Text (CAR [i-1], CurPoint, 1./81.);
-#endif
 		} // for (i=1; i<=DN*2; i++)
 
-Standard_Real DistOCur = Sqrt (XCurp*XCurp + YCurp*YCurp);
+		Standard_Real DistOCur = Sqrt (XCurp*XCurp + YCurp*YCurp);
 
 		// Determination of the circle of the grid closest to P
-Standard_Integer N = Standard_Integer (DistOP / DistOCur + 0.5);
-Standard_Real Radius = N * RS;
-#ifdef TRACE_VALUES
-		cout << "Circle : " << N << " Radius : " << Radius << endl;
-#endif
+		Standard_Integer N = Standard_Integer (DistOP / DistOCur + 0.5);
+		Standard_Real Radius = N * RS;
 
 		X1 = Cos (Alpha * ICur) * Radius,
 		Y1 = Sin (Alpha * ICur) * Radius,
 		Z1 = 0.0;
 
-#ifdef TRACE_VALUES
-		cout << "Chosen Point : " << X1 << ", " << Y1 << endl;
-#endif
 		// MyTrsf * Point to return to the plane of 3D grid
 		P1.SetCoord (X1, Y1, Z1);
 		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
@@ -455,28 +290,8 @@ Standard_Real Radius = N * RS;
 
 	NewPoint.SetCoord (CurPoint.X (), CurPoint.Y (), CurPoint.Z ());
 
-#ifdef TRACE_POINTS
-	TextAttrib->SetColor (Quantity_Color (Quantity_NOC_RED));
-	MyGridEchoGroup->SetPrimitivesAspect (TextAttrib);
-	MyGridEchoGroup->Text ("Q", NewPoint, 1./81.);
-	MyGridEchoGroup->Polyline (AVertex, NewPoint);
-	Update ();
-#endif
 #ifdef IMP240100
 	MyViewer->ShowGridEcho(this,NewPoint);
-#else
-#ifdef TRACE_ECHO
-char *trace_echo = NULL;
-	trace_echo = (char *)(getenv ("CSF_GraphicEcho"));
-	if (trace_echo) {
-		MyGridEchoGroup->Clear ();
-		MyGridEchoGroup->Marker (NewPoint);
-		Visual3d_TransientManager::BeginDraw
-			(MyView, Standard_False, Standard_False);
-		Visual3d_TransientManager::DrawStructure (MyGridEchoStructure);
-		Visual3d_TransientManager::EndDraw (Standard_True);
-	}
-#endif
 #endif	//IMP240100
 	return NewPoint;
 }
@@ -494,18 +309,18 @@ void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor XColor,
 }
 
 void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition APosition,
- const Quantity_NameOfColor AColor, const Standard_Real AScale, const V3d_TypeOfVisualization AMode ) {
-
+ const Quantity_NameOfColor AColor, const Standard_Real AScale, const V3d_TypeOfVisualization AMode )
+{
 	MyView->TriedronDisplay (APosition, AColor, AScale, (AMode == V3d_WIREFRAME));
 }
 
-void V3d_View::TriedronErase ( ) {
-
+void V3d_View::TriedronErase ( )
+{
 	MyView->TriedronErase ( );
 }
 
-void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho AType ) {
-
+void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho AType )
+{
 	MyView->TriedronEcho (AType);
 }
 

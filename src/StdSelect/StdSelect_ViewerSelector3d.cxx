@@ -32,7 +32,7 @@
 #include <V3d_PerspectiveView.hxx>
 #include <V3d_Plane.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
 #include <SelectBasics_ListOfBox2d.hxx>
 #include <Visual3d_TransientManager.hxx>
@@ -64,6 +64,8 @@
 #include <OSD_Environment.hxx>
 #include <V3d.hxx>
 #include <V3d_View.hxx>
+#include <TColgp_SequenceOfPnt.hxx>
+
 
 static Standard_Integer StdSel_NumberOfFreeEdges (const Handle(Poly_Triangulation)& Trg)
 {
@@ -286,9 +288,7 @@ void StdSelect_ViewerSelector3d
 // Purpose : Selection using a polyline
 //==================================================
 
-void StdSelect_ViewerSelector3d
-::Pick(const TColgp_Array1OfPnt2d& aPolyline,
-       const Handle(V3d_View)& aView)
+void StdSelect_ViewerSelector3d::Pick(const TColgp_Array1OfPnt2d& aPolyline, const Handle(V3d_View)& aView)
 {
   if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
@@ -302,8 +302,7 @@ void StdSelect_ViewerSelector3d
   Standard_Integer i;
 
   // Convert pixel
-  Handle(TColgp_HArray1OfPnt2d) P2d =
-    new TColgp_HArray1OfPnt2d(1,NbPix);
+  Handle(TColgp_HArray1OfPnt2d) P2d = new TColgp_HArray1OfPnt2d(1,NbPix);
 
   for (i = 1; i <= NbPix; ++i)
   {
@@ -328,38 +327,31 @@ void StdSelect_ViewerSelector3d
 // Purpose : display the activated areas...
 //==================================================
 
-void StdSelect_ViewerSelector3d::
-DisplayAreas(const Handle(V3d_View)& aView)
+void StdSelect_ViewerSelector3d::DisplayAreas(const Handle(V3d_View)& aView)
 {
   if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
   {
     SetSensitivity (aView->Convert (mypixtol));
-		myupdatetol = Standard_False;
+    myupdatetol = Standard_False;
   }
   UpdateProj(aView);
   UpdateSort(); // Updates the activated areas
 
   if(mystruct.IsNull())
-  {
     mystruct = new Graphic3d_Structure(aView->Viewer()->Viewer());
-  }
+
   if(myareagroup.IsNull())
-  {
     myareagroup  = new Graphic3d_Group(mystruct);
-  }
 
   SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive It(myentities);
   Handle(Select3D_Projector) prj = StdSelect::GetProjector(aView);
   prj->SetView(aView);
 
-
-  Graphic3d_Array1OfVertex Av1 (1,5);
-
   Standard_Real xmin,ymin,xmax,ymax;
   gp_Pnt Pbid;
   SelectBasics_ListOfBox2d BoxList;
 
-  myareagroup->BeginPrimitives();
+  TColgp_SequenceOfPnt aSeqLines;
   for (; It.More(); It.Next())
   {
     It.Value()->Areas(BoxList);
@@ -369,31 +361,40 @@ DisplayAreas(const Handle(V3d_View)& aView)
 
       Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
       prj->Transform (Pbid, prj->InvertedTransformation());
-      Av1.SetValue (1, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
+	  aSeqLines.Append(Pbid);
 
       Pbid.SetCoord (xmax + mytolerance, ymin - mytolerance, 0.0);
       prj->Transform (Pbid, prj->InvertedTransformation());
-      Av1.SetValue (2, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
+	  aSeqLines.Append(Pbid);
 
       Pbid.SetCoord (xmax + mytolerance, ymax + mytolerance, 0.0);
       prj->Transform (Pbid, prj->InvertedTransformation());
-      Av1.SetValue (3, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
+	  aSeqLines.Append(Pbid);
 
       Pbid.SetCoord (xmin - mytolerance, ymax + mytolerance, 0.0);
       prj->Transform (Pbid, prj->InvertedTransformation());
-      Av1.SetValue (4,Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
-
-      Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      prj->Transform (Pbid, prj->InvertedTransformation());
-      Av1.SetValue (5, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
-
-      myareagroup->Polyline (Av1);
+	  aSeqLines.Append(Pbid);
     }
   }
 
-  myareagroup->EndPrimitives();
-  myareagroup->SetGroupPrimitivesAspect (new
-    Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
+  if (aSeqLines.Length())
+  {
+    Standard_Integer n, np;
+    const Standard_Integer nbl = aSeqLines.Length() / 4;
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(5*nbl,nbl);
+    for (np = 1, n=0; n<nbl; n++) {
+      aPrims->AddBound(5);
+      const gp_Pnt &p1 = aSeqLines(np++);
+      aPrims->AddVertex(p1);
+      aPrims->AddVertex(aSeqLines(np++));
+      aPrims->AddVertex(aSeqLines(np++));
+      aPrims->AddVertex(aSeqLines(np++));
+      aPrims->AddVertex(p1);
+    }
+    myareagroup->AddPrimitiveArray(aPrims);
+  }
+
+  myareagroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
   myareagroup->Structure()->SetDisplayPriority(10);
   myareagroup->Structure()->Display();
 
@@ -413,8 +414,7 @@ DisplayAreas(const Handle(V3d_View)& aView)
 // Purpose :
 //==================================================
 
-void StdSelect_ViewerSelector3d::
-ClearAreas(const Handle(V3d_View)& aView)
+void StdSelect_ViewerSelector3d::ClearAreas(const Handle(V3d_View)& aView)
 {
   if(myareagroup.IsNull()) return;
   myareagroup->Clear();
@@ -437,8 +437,7 @@ ClearAreas(const Handle(V3d_View)& aView)
 //                            10   1. if pers 0. else
 //==================================================
 
-Standard_Boolean  StdSelect_ViewerSelector3d::
-UpdateProj(const Handle(V3d_View)& aView)
+Standard_Boolean StdSelect_ViewerSelector3d::UpdateProj(const Handle(V3d_View)& aView)
 {
   myprevcoeff[ 9] = 0.0;
   myprevcoeff[10] = 0.0;
@@ -558,9 +557,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive(const Handle(V3d_View)& aViou)
   // Remplissage de la structure...
 
   SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-  // Standard_Integer isel (0);
 
-  mysensgroup->BeginPrimitives();
   for (; It.More(); It.Next())
   {
     if (It.Value()==0)
@@ -569,7 +566,6 @@ void StdSelect_ViewerSelector3d::DisplaySensitive(const Handle(V3d_View)& aViou)
       ComputeSensitivePrs(Sel);
     }
   }
-  mysensgroup->EndPrimitives();
 
   mysensgroup->Structure()->SetDisplayPriority(10);
   mystruct->Display();
@@ -624,11 +620,8 @@ DisplaySensitive (const Handle(SelectMgr_Selection)& Sel,
 
   if(ClearOthers) mysensgroup->Clear();
 
-  mysensgroup->BeginPrimitives();
-
   ComputeSensitivePrs(Sel);
 
-  mysensgroup->EndPrimitives();
   mystruct->SetDisplayPriority(10);
   mystruct->Display();
   if(aViou->TransientManagerBeginDraw())
@@ -654,18 +647,16 @@ DisplayAreas (const Handle(SelectMgr_Selection)& Sel,
 {
   if (mystruct.IsNull())
     mystruct = new Graphic3d_Structure (aViou->Viewer()->Viewer());
+
   if (mysensgroup.IsNull())
   {
     myareagroup = new Graphic3d_Group (mystruct);
-    myareagroup->SetGroupPrimitivesAspect (
-      new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
+    myareagroup->SetGroupPrimitivesAspect(new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
   }
 
   if(ClearOthers) myareagroup->Clear();
 
-  myareagroup->BeginPrimitives();
   ComputeAreasPrs(Sel);
-  myareagroup->EndPrimitives();
 
   mystruct->SetDisplayPriority(10);
   mystruct->Display();
@@ -686,15 +677,15 @@ DisplayAreas (const Handle(SelectMgr_Selection)& Sel,
 //purpose  :
 //=======================================================================
 
-void StdSelect_ViewerSelector3d::
-ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
+void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
 {
+  TColgp_SequenceOfPnt aSeqLines, aSeqFree;
+  TColStd_SequenceOfInteger aSeqBnds;
+
   for(Sel->Init();Sel->More();Sel->Next())
   {
-    Handle(Select3D_SensitiveEntity) Ent =
-      Handle(Select3D_SensitiveEntity)::DownCast(Sel->Sensitive());
-    Standard_Boolean hasloc = (Ent.IsNull()) ? Standard_False:
-      (Ent->HasLocation()? Standard_True:Standard_False);
+    Handle(Select3D_SensitiveEntity) Ent = Handle(Select3D_SensitiveEntity)::DownCast(Sel->Sensitive());
+    const Standard_Boolean hasloc = (Ent.IsNull()? Standard_False : Ent->HasLocation());
 
     TopLoc_Location theloc;
     if(hasloc)
@@ -709,6 +700,7 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
       const Bnd_Box& B = Handle(Select3D_SensitiveBox)::DownCast (Ent)->Box();
       Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
       B.Get (xmin, ymin, zmin, xmax, ymax, zmax);
+      Standard_Integer i;
       gp_Pnt theboxpoint[8] =
       {
         gp_Pnt(xmin,ymin,zmin),
@@ -722,38 +714,25 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
       };
       if(hasloc)
       {
-        for (Standard_Integer ii = 0; ii <= 7; ii++)
-          theboxpoint[ii].Transform (theloc.Transformation());
+        for (i = 0; i <= 7; i++)
+          theboxpoint[i].Transform (theloc.Transformation());
       }
-      Graphic3d_Array1OfVertex Vtx (1, 5);
 
-      Standard_Integer ip;
-      for (ip = 0; ip < 4; ip++)
-      {
-        Vtx.SetValue (ip + 1, Graphic3d_Vertex (theboxpoint[ip].X(),
-                                                theboxpoint[ip].Y(),
-                                                theboxpoint[ip].Z()));
-      }
-      mysensgroup->Polyline (Vtx);
-      for (ip = 0; ip < 4; ip++)
-      {
-        Vtx.SetValue (ip + 1, Graphic3d_Vertex (theboxpoint[ip + 4].X(),
-                                                theboxpoint[ip + 4].Y(),
-                                                theboxpoint[ip + 4].Z()));
-      }
-      mysensgroup->Polyline (Vtx);
+      aSeqBnds.Append(5);
+      for (i = 0; i < 4; i++)
+        aSeqLines.Append(theboxpoint[i]);
+      aSeqLines.Append(theboxpoint[0]);
 
-      Graphic3d_Array1OfVertex Vtx2 (1, 2);
-      for (ip = 0; ip < 4; ip++)
-      {
-        Vtx2.SetValue (1, Graphic3d_Vertex (theboxpoint[ip].X(),
-                                            theboxpoint[ip].Y(),
-                                            theboxpoint[ip].Z()));
+      aSeqBnds.Append(5);
+      for (i = 4; i < 8; i++)
+        aSeqLines.Append(theboxpoint[i]);
+      aSeqLines.Append(theboxpoint[4]);
 
-        Vtx2.SetValue (2, Graphic3d_Vertex (theboxpoint[ip + 4].X(),
-                                            theboxpoint[ip + 4].Y(),
-                                            theboxpoint[ip + 4].Z()));
-        mysensgroup->Polyline (Vtx2);
+      for (i = 0; i < 4; i++)
+      {
+        aSeqBnds.Append(2);
+        aSeqLines.Append(theboxpoint[i]);
+        aSeqLines.Append(theboxpoint[i+4]);
       }
     }
     //==============
@@ -766,22 +745,14 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
       aFace->Points3D(TheHPts);
       const TColgp_Array1OfPnt& ThePts = TheHPts->Array1();
 
-      Graphic3d_Array1OfVertex Vtx (ThePts.Lower(), ThePts.Upper());
-
+      aSeqBnds.Append(ThePts.Length());
       for (Standard_Integer I = ThePts.Lower(); I <= ThePts.Upper(); I++)
       {
         if (hasloc)
-        {
-          const gp_Pnt& curP = ThePts (I);
-          gp_Pnt ptrans = curP.Transformed (theloc.Transformation()).XYZ();
-          Vtx.SetValue (I, Graphic3d_Vertex (ptrans.X(), ptrans.Y(), ptrans.Z()));
-        }
+          aSeqLines.Append(ThePts(I).Transformed (theloc.Transformation()));
         else
-        {
-          Vtx.SetValue (I, Graphic3d_Vertex (ThePts (I).X(), ThePts (I).Y(), ThePts (I).Z()));
-        }
+          aSeqLines.Append(ThePts(I));
       }
-      mysensgroup->Polyline (Vtx);
     }
     //==============
     // Curve
@@ -793,29 +764,23 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
       aCurve->Points3D(TheHPts);
       const TColgp_Array1OfPnt& ThePts = TheHPts->Array1();
 
-      Graphic3d_Array1OfVertex Vtx (ThePts.Lower(), ThePts.Upper());
+      aSeqBnds.Append(ThePts.Length());
       for (Standard_Integer I = ThePts.Lower(); I <= ThePts.Upper(); I++)
       {
         if (hasloc)
-        {
-          gp_Pnt ptrans (ThePts (I).Transformed (theloc.Transformation()).XYZ());
-          Vtx.SetValue (I, Graphic3d_Vertex (ptrans.X(), ptrans.Y(), ptrans.Z()));
-        }
+          aSeqLines.Append(ThePts(I).Transformed (theloc.Transformation()));
         else
-        {
-          Vtx.SetValue (I, Graphic3d_Vertex (ThePts (I).X(), ThePts (I).Y(), ThePts (I).Z()));
-        }
+          aSeqLines.Append(ThePts(I));
       }
-      mysensgroup->Polyline (Vtx);
     }
     //==============
     // Wire
     //=============
     else if (Ent->DynamicType()==STANDARD_TYPE(Select3D_SensitiveWire))
     {
-    	Handle(Select3D_SensitiveWire) aWire = Handle(Select3D_SensitiveWire)::DownCast(Ent);
-    	Select3D_SensitiveEntitySequence EntitySeq;
-    	aWire->GetEdges (EntitySeq);
+      Handle(Select3D_SensitiveWire) aWire = Handle(Select3D_SensitiveWire)::DownCast(Ent);
+      Select3D_SensitiveEntitySequence EntitySeq;
+      aWire->GetEdges (EntitySeq);
 
       for (int i = 1; i <= EntitySeq.Length(); i++)
       {
@@ -824,7 +789,6 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
         //Segment
         if (SubEnt->DynamicType()==STANDARD_TYPE(Select3D_SensitiveSegment))
         {
-          Graphic3d_Array1OfVertex Vtx (1, 2);
           gp_Pnt P1 (Handle(Select3D_SensitiveSegment)::DownCast(SubEnt)->StartPoint().XYZ());
           gp_Pnt P2 (Handle(Select3D_SensitiveSegment)::DownCast(SubEnt)->EndPoint().XYZ());
           if (hasloc)
@@ -832,9 +796,9 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
             P1.Transform(theloc.Transformation());
             P2.Transform(theloc.Transformation());
           }
-          Vtx.SetValue (1, Graphic3d_Vertex (P1.X(), P1.Y(), P1.Z()));
-          Vtx.SetValue (2, Graphic3d_Vertex (P2.X(), P2.Y(), P2.Z()));
-          mysensgroup->Polyline (Vtx);
+          aSeqBnds.Append(2);
+          aSeqLines.Append(P1);
+          aSeqLines.Append(P2);
         }
 
         //circle
@@ -846,7 +810,6 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
           Standard_Integer II = Lo;
           while (II <= Up - 2)
           {
-            Graphic3d_Array1OfVertex Vtx (1, 4);
             gp_Pnt ThePts[3] =
             {
               gp_Pnt (C->GetPoint3d (II).XYZ()),
@@ -860,12 +823,11 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
                 ThePts[jj].Transform (theloc.Transformation());
             }
 
-            Vtx.SetValue (1, Graphic3d_Vertex (ThePts[0].X(), ThePts[0].Y(), ThePts[0].Z()));
-            Vtx.SetValue (2, Graphic3d_Vertex (ThePts[1].X(), ThePts[1].Y(), ThePts[1].Z()));
-            Vtx.SetValue (3, Graphic3d_Vertex (ThePts[2].X(), ThePts[2].Y(), ThePts[2].Z()));
-            Vtx.SetValue (4, Graphic3d_Vertex (ThePts[0].X(), ThePts[0].Y(), ThePts[0].Z()));
-
-            mysensgroup->Polyline (Vtx);
+            aSeqBnds.Append(4);
+            aSeqLines.Append(ThePts[0]);
+            aSeqLines.Append(ThePts[1]);
+            aSeqLines.Append(ThePts[2]);
+            aSeqLines.Append(ThePts[0]);
           }
         }
 
@@ -876,20 +838,15 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
           Handle(TColgp_HArray1OfPnt) TheHPts;
           aCurve->Points3D (TheHPts);
           const TColgp_Array1OfPnt& ThePts = TheHPts->Array1();
-          Graphic3d_Array1OfVertex Vtx (ThePts.Lower(), ThePts.Upper());
+
+          aSeqBnds.Append(ThePts.Length());
           for (Standard_Integer I = ThePts.Lower(); I <= ThePts.Upper(); I++)
           {
             if (hasloc)
-            {
-              gp_Pnt ptrans (ThePts (I).Transformed (theloc.Transformation()).XYZ());
-              Vtx.SetValue (I, Graphic3d_Vertex (ptrans.X(), ptrans.Y(), ptrans.Z()));
-            }
+              aSeqLines.Append(ThePts(I).Transformed (theloc.Transformation()));
             else
-            {
-              Vtx.SetValue (I, Graphic3d_Vertex (ThePts (I).X(), ThePts (I).Y(), ThePts (I).Z()));
-            }
+              aSeqLines.Append(ThePts(I));
           }
-          mysensgroup->Polyline (Vtx);
         }
       }
     }
@@ -898,7 +855,6 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
     //=============
     else if (Ent->DynamicType()==STANDARD_TYPE(Select3D_SensitiveSegment))
     {
-      Graphic3d_Array1OfVertex Vtx (1,2);
       gp_Pnt P1 (Handle(Select3D_SensitiveSegment)::DownCast(Ent)->StartPoint().XYZ());
       gp_Pnt P2 (Handle(Select3D_SensitiveSegment)::DownCast(Ent)->EndPoint().XYZ());
       if (hasloc)
@@ -906,9 +862,9 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
         P1.Transform (theloc.Transformation());
         P2.Transform (theloc.Transformation());
       }
-      Vtx.SetValue (1, Graphic3d_Vertex (P1.X(), P1.Y(), P1.Z()));
-      Vtx.SetValue (2, Graphic3d_Vertex (P2.X(), P2.Y(), P2.Z()));
-      mysensgroup->Polyline (Vtx);
+      aSeqBnds.Append(2);
+      aSeqLines.Append(P1);
+      aSeqLines.Append(P2);
     }
     //==============
     // Circle
@@ -921,7 +877,6 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
       Standard_Integer II = Lo;
       while (II <= Up - 2)
       {
-        Graphic3d_Array1OfVertex Vtx (1,4);
         gp_Pnt ThePts[3] =
         {
           gp_Pnt (C->GetPoint3d (II).XYZ()),
@@ -935,12 +890,11 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
             ThePts[jj].Transform (theloc.Transformation());
         }
 
-        Vtx.SetValue (1, Graphic3d_Vertex (ThePts[0].X(), ThePts[0].Y(), ThePts[0].Z()));
-        Vtx.SetValue (2, Graphic3d_Vertex (ThePts[1].X(), ThePts[1].Y(), ThePts[1].Z()));
-        Vtx.SetValue (3, Graphic3d_Vertex (ThePts[2].X(), ThePts[2].Y(), ThePts[2].Z()));
-        Vtx.SetValue (4, Graphic3d_Vertex (ThePts[0].X(), ThePts[0].Y(), ThePts[0].Z()));
-
-        mysensgroup->Polyline (Vtx);
+        aSeqBnds.Append(4);
+        aSeqLines.Append(ThePts[0]);
+        aSeqLines.Append(ThePts[1]);
+        aSeqLines.Append(ThePts[2]);
+        aSeqLines.Append(ThePts[0]);
       }
     }
     //==============
@@ -964,9 +918,7 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
 
       const Poly_Array1OfTriangle& triangles = PT->Triangles();
       const TColgp_Array1OfPnt& Nodes = PT->Nodes();
-      //      gp_Pnt P1, P2, P3;
       Standard_Integer n[3];
-      Graphic3d_Array1OfVertex AV (1, 4);
 
       TopLoc_Location iloc, bidloc;
       if ((*((Handle(Select3D_SensitiveTriangulation)*) &Ent))->HasInitLocation())
@@ -988,16 +940,15 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
         gp_XYZ V2 (P2.XYZ());
         gp_XYZ V3 (P3.XYZ());
         gp_XYZ CDG (P1.XYZ()); CDG += (P2.XYZ()); CDG += (P3.XYZ()); CDG /= 3.0;
-
         V1 -= CDG; V2 -= CDG; V3 -= CDG;
-
         V1 *= 0.9; V2 *= 0.9; V3 *= 0.9;
         V1 += CDG; V2 += CDG; V3 += CDG;
-        AV.SetValue (1, Graphic3d_Vertex (V1.X(), V1.Y(), V1.Z()));
-        AV.SetValue (2, Graphic3d_Vertex (V2.X(), V2.Y(), V2.Z()));
-        AV.SetValue (3, Graphic3d_Vertex (V3.X(), V3.Y(), V3.Z()));
-        AV.SetValue (4, Graphic3d_Vertex (V1.X(), V1.Y(), V1.Z()));
-        mysensgroup->Polyline (AV);
+
+        aSeqBnds.Append(4);
+        aSeqLines.Append(gp_Pnt(V1));
+        aSeqLines.Append(gp_Pnt(V2));
+        aSeqLines.Append(gp_Pnt(V3));
+        aSeqLines.Append(gp_Pnt(V1));
       }
 
       // recherche des bords libres...
@@ -1023,43 +974,58 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
           }
         }
       }
-      Standard_Integer Node1, Node2;
-      mysensgroup->SetPrimitivesAspect (
-        new Graphic3d_AspectLine3d (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
       for (Standard_Integer ifri = 1; ifri <= FreeE.Length(); ifri += 2)
       {
-        Node1 = FreeE (ifri);
-        Node2 = FreeE (ifri + 1);
-        Graphic3d_Array1OfVertex FE (1, 2);
-        gp_Pnt pe1 (Nodes (Node1).Transformed (iloc)), pe2 (Nodes (Node2).Transformed (iloc));
-        FE.SetValue (1,Graphic3d_Vertex (pe1.X(), pe1.Y(), pe1.Z()));
-        FE.SetValue (2,Graphic3d_Vertex (pe2.X(), pe2.Y(), pe2.Z()));
-        mysensgroup->Polyline (FE);
+        gp_Pnt pe1 (Nodes (FreeE (ifri)).Transformed (iloc)), pe2 (Nodes (FreeE (ifri + 1)).Transformed (iloc));
+        aSeqFree.Append(pe1);
+        aSeqFree.Append(pe2);
       }
-
-      mysensgroup->SetPrimitivesAspect (
-        new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
     }
     else if (Ent->DynamicType()==STANDARD_TYPE(Select3D_SensitiveTriangle))
     {
       Handle(Select3D_SensitiveTriangle) Str = Handle(Select3D_SensitiveTriangle)::DownCast(Ent);
-      gp_Pnt P1, P2, P3, CDG;
-      Graphic3d_Array1OfVertex AV (1, 4);
+      gp_Pnt P1, P2, P3;
       Str->Points3D (P1, P2, P3);
-      CDG = Str->Center3D();
+      gp_Pnt CDG = Str->Center3D();
 
       gp_XYZ V1 (P1.XYZ()); V1 -= (CDG.XYZ());
       gp_XYZ V2 (P2.XYZ()); V2 -= (CDG.XYZ());
       gp_XYZ V3 (P3.XYZ()); V3 -= (CDG.XYZ());
-
       V1 *= 0.9; V2 *= 0.9; V3 *= 0.9;
       V1 += CDG.XYZ(); V2 += CDG.XYZ(); V3 += CDG.XYZ();
-      AV.SetValue (1, Graphic3d_Vertex (V1.X(), V1.Y(), V1.Z()));
-      AV.SetValue (2, Graphic3d_Vertex (V2.X(), V2.Y(), V2.Z()));
-      AV.SetValue (3, Graphic3d_Vertex (V3.X(), V3.Y(), V3.Z()));
-      AV.SetValue (4, Graphic3d_Vertex (V1.X(), V1.Y(), V1.Z()));
-      mysensgroup->Polyline (AV);
+
+      aSeqBnds.Append(4);
+      aSeqLines.Append(gp_Pnt(V1));
+      aSeqLines.Append(gp_Pnt(V2));
+      aSeqLines.Append(gp_Pnt(V3));
+      aSeqLines.Append(gp_Pnt(V1));
     }
+  }
+
+  Standard_Integer i;
+
+  if (aSeqLines.Length())
+  {
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(aSeqLines.Length(),aSeqBnds.Length());
+    for (i = 1; i <= aSeqLines.Length(); i++)
+      aPrims->AddVertex(aSeqLines(i));
+    for (i = 1; i <= aSeqBnds.Length(); i++)
+      aPrims->AddBound(aSeqBnds(i));
+    myareagroup->AddPrimitiveArray(aPrims);
+  }
+
+  if (aSeqFree.Length())
+  {
+    mysensgroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(aSeqFree.Length(),aSeqFree.Length()/2);
+    for (i = 1; i <= aSeqFree.Length(); i++)
+	{
+      aPrims->AddBound(2);
+      aPrims->AddVertex(aSeqLines(i++));
+      aPrims->AddVertex(aSeqLines(i));
+	}
+    mysensgroup->AddPrimitiveArray(aPrims);
+    mysensgroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
   }
 }
 
@@ -1068,15 +1034,13 @@ ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
 //purpose  :
 //=======================================================================
 
-void StdSelect_ViewerSelector3d::
-ComputeAreasPrs (const Handle(SelectMgr_Selection)& Sel)
+void StdSelect_ViewerSelector3d::ComputeAreasPrs (const Handle(SelectMgr_Selection)& Sel)
 {
-  // Select3D_Projector myprj = StdSelect::GetProjector (aView);
-  Graphic3d_Array1OfVertex Av1 (1, 5);
   Standard_Real xmin, ymin, xmax, ymax;
   gp_Pnt Pbid;
   SelectBasics_ListOfBox2d BoxList;
 
+  TColgp_SequenceOfPnt aSeqLines;
   for (Sel->Init(); Sel->More(); Sel->Next())
   {
     Sel->Sensitive()->Areas (BoxList);
@@ -1086,26 +1050,37 @@ ComputeAreasPrs (const Handle(SelectMgr_Selection)& Sel)
 
       Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
       myprj->Transform (Pbid, myprj->InvertedTransformation());
-      Av1.SetValue (1, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
+      aSeqLines.Append(Pbid);
 
       Pbid.SetCoord (xmax + mytolerance, ymin - mytolerance, 0.0);
       myprj->Transform (Pbid, myprj->InvertedTransformation());
-      Av1.SetValue (2, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
+      aSeqLines.Append(Pbid);
 
       Pbid.SetCoord (xmax + mytolerance, ymax + mytolerance, 0.0);
       myprj->Transform (Pbid, myprj->InvertedTransformation());
-      Av1.SetValue (3, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
+      aSeqLines.Append(Pbid);
 
       Pbid.SetCoord (xmin - mytolerance, ymax + mytolerance, 0.0);
       myprj->Transform (Pbid, myprj->InvertedTransformation());
-      Av1.SetValue (4, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
-
-      Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      myprj->Transform (Pbid, myprj->InvertedTransformation());
-      Av1.SetValue (5, Graphic3d_Vertex (Pbid.X(), Pbid.Y(), Pbid.Z()));
-
-      myareagroup->Polyline (Av1);
+      aSeqLines.Append(Pbid);
     }
+  }
+
+  if (aSeqLines.Length())
+  {
+    Standard_Integer n, np;
+    const Standard_Integer nbl = aSeqLines.Length() / 4;
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(5*nbl,nbl);
+    for (np = 1, n=0; n<nbl; n++) {
+      aPrims->AddBound(5);
+      const gp_Pnt &p1 = aSeqLines(np++);
+      aPrims->AddVertex(p1);
+      aPrims->AddVertex(aSeqLines(np++));
+      aPrims->AddVertex(aSeqLines(np++));
+      aPrims->AddVertex(aSeqLines(np++));
+      aPrims->AddVertex(p1);
+    }
+    myareagroup->AddPrimitiveArray(aPrims);
   }
 }
 

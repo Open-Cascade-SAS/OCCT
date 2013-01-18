@@ -19,8 +19,7 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
+//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 #define IMP120100	// GG Add SetTextColor() and SetArrowColor() methods
 
@@ -430,13 +429,11 @@ void AIS_Trihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSelecti
 //=======================================================================
 
 void AIS_Trihedron::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_Trihedron::SetColor(const Quantity_Color &aCol)
-#endif
 {
   hasOwnColor=Standard_True;
   myOwnColor = aCol;

@@ -29,6 +29,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_Group.hxx>
@@ -155,10 +156,7 @@ void MeshVS_MeshPrsBuilder::BuildNodes ( const Handle(Prs3d_Presentation)& Prs,
     Prs3d_Root::NewGroup ( Prs );
     Handle (Graphic3d_Group) aNodeGroup = Prs3d_Root::CurrentGroup ( Prs );
     aNodeGroup->SetPrimitivesAspect ( aNodeMark );
-
-    aNodeGroup->BeginPrimitives();
     aNodeGroup->MarkerSet ( aNodePoints );
-    aNodeGroup->EndPrimitives();
   }
 }
 
@@ -347,14 +345,6 @@ void MeshVS_MeshPrsBuilder::BuildElements( const Handle(Prs3d_Presentation)& Prs
           // add shading presentation
           if ( ( IsShading || IsShrink ) && !HasSelectFlag )
             AddVolumePrs ( aTopo, aCoords, NbNodes, aVolumes, IsReflect, IsShrink, HasSelectFlag, aShrinkCoef );
-
-          /*
-          Handle( Graphic3d_ArrayOfPrimitives ) anArr = aVolumes;
-          if( IsWireFrame || HasSelectFlag )
-            anArr = aPolylines;
-
-          AddVolumePrs ( aTopo, aCoords, NbNodes, anArr, IsReflect, IsShrink, HasSelectFlag, aShrinkCoef );
-          */
         }
         break;
 
@@ -492,26 +482,21 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs ( const Handle(Prs3d_Presentation)& 
     case MeshVS_ET_Link:
     {
       aHilightGroup->SetPrimitivesAspect ( aBeam );
-      aHilightGroup->Polyline ( Graphic3d_Vertex ( aCoords(1), aCoords(2), aCoords(3) ),
-                                Graphic3d_Vertex ( aCoords(4), aCoords(5), aCoords(6) ) );
+      Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+      aPrims->AddVertex(aCoords(1),aCoords(2),aCoords(3));
+      aPrims->AddVertex(aCoords(4),aCoords(5),aCoords(6));
+      aHilightGroup->AddPrimitiveArray(aPrims);
     }
     break;
 
     case MeshVS_ET_Face:
     if ( NbNodes > 0 )
     {
-      Standard_Real X, Y, Z;
       aHilightGroup->SetPrimitivesAspect ( aFill );
-      Graphic3d_Array1OfVertex aVArr ( 1, NbNodes );
-
+      Handle(Graphic3d_ArrayOfPolygons) aPrims = new Graphic3d_ArrayOfPolygons(NbNodes);
       for ( Standard_Integer k=1; k<=NbNodes; k++)
-      {
-        X = aCoords(3*k-2);
-        Y = aCoords(3*k-1);
-        Z = aCoords(3*k);
-        aVArr.SetValue ( k, Graphic3d_Vertex ( X, Y, Z ) );
-      }
-      aHilightGroup->Polygon ( aVArr );
+        aPrims->AddVertex(aCoords(3*k-2),aCoords(3*k-1),aCoords(3*k));
+      aHilightGroup->AddPrimitiveArray(aPrims);
     }
     break;
 
@@ -524,21 +509,25 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs ( const Handle(Prs3d_Presentation)& 
 
       if( aSource->Get3DGeom( ID, NbNodes, aTopo ) )
       {
-        Standard_Integer low = aTopo->Lower(), up = aTopo->Upper(), i, j, m, ind;
-        for( i=low; i<=up; i++ )
+        const Standard_Integer up = aTopo->Upper();
+        const Standard_Integer lo = aTopo->Lower();
+        Standard_Integer nbnodes = 0, i, j;
+        for( i=lo; i<=up; i++ )
+          nbnodes += aTopo->Value( i ).Length();
+
+        Handle(Graphic3d_ArrayOfPolygons) aPrims = new Graphic3d_ArrayOfPolygons(nbnodes,aTopo->Length());
+        for( i=lo; i<=up; i++ )
         {
           const TColStd_SequenceOfInteger& aSeq = aTopo->Value( i );
-          m = aSeq.Length();
-          Graphic3d_Array1OfVertex aVArr( 1, m );
+          const Standard_Integer m = aSeq.Length();
+          aPrims->AddBound(m);
           for( j=1; j<=m; j++ )
           {
-            ind = aSeq.Value( j );
-            aVArr.SetValue( j, Graphic3d_Vertex( aCoords( 3*ind+1 ),
-                                                 aCoords( 3*ind+2 ), 
-                                                 aCoords( 3*ind+3 ) ) );
+            const Standard_Integer ind = 3*aSeq.Value( j );
+            aPrims->AddVertex(aCoords(ind+1),aCoords(ind+2),aCoords(ind+3));
           }
-          aHilightGroup->Polygon ( aVArr );
         }
+        aHilightGroup->AddPrimitiveArray(aPrims);
       }
     }
     break;
@@ -933,9 +922,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
     if( IsFacePolygons )
     {
       aGroup->SetPrimitivesAspect ( theFillAsp );
-      aGroup->BeginPrimitives ();
       aGroup->AddPrimitiveArray ( thePolygons );
-      aGroup->EndPrimitives ();
     }
 
     if( IsVolumePolygons )
@@ -952,9 +939,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
         aCullFillAsp->SuppressBackFace();
 
       aGroup->SetPrimitivesAspect ( aCullFillAsp );
-      aGroup->BeginPrimitives ();
       aGroup->AddPrimitiveArray ( theVolumesInShad );
-      aGroup->EndPrimitives ();
     }
   }
 
@@ -972,9 +957,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
       aLGroup->SetPrimitivesAspect ( new Graphic3d_AspectLine3d
         ( anEdgeColor, Aspect_TOL_SOLID, aWidth ) );
     }
-    aLGroup->BeginPrimitives ();
     aLGroup->AddPrimitiveArray ( theLines );
-    aLGroup->EndPrimitives ();
     theFillAsp->SetEdgeOn();
   }
 
@@ -987,10 +970,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
     if ( !IsSelected )
       aBeamGroup->SetPrimitivesAspect ( theFillAsp );
     aBeamGroup->SetPrimitivesAspect ( theLineAsp );
-
-    aBeamGroup->BeginPrimitives();
     aBeamGroup->AddPrimitiveArray ( theLinkLines );
-    aBeamGroup->EndPrimitives();
     theFillAsp->SetEdgeOn();
   }
 
@@ -1012,9 +992,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
     if( IsFacePolygons )
     {
       aGroup->SetPrimitivesAspect ( theFillAsp );
-      aGroup->BeginPrimitives ();
       aGroup->AddPrimitiveArray ( thePolygons );
-      aGroup->EndPrimitives ();
     }
 
     if( IsVolumePolygons )
@@ -1031,9 +1009,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
         aCullFillAsp->SuppressBackFace();
 
       aGroup->SetPrimitivesAspect ( aCullFillAsp );
-      aGroup->BeginPrimitives ();
       aGroup->AddPrimitiveArray ( theVolumesInShad );
-      aGroup->EndPrimitives ();
     }
   }
 }

@@ -19,8 +19,7 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#define GER61351		//GG_171199     Enable to set an object RGB color
-//						  instead a restricted object NameOfColor.
+//GER61351		//GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
 
 #define OCC218                  //SAV using DsgPrs_XYZAxisPresentation to draw axes.
 // + X/YAxis() returns AIS_Line instead of AIS_Axis
@@ -280,13 +279,11 @@ void AIS_PlaneTrihedron::ComputeSelection(const Handle(SelectMgr_Selection)& aSe
 }
 
 void AIS_PlaneTrihedron::SetColor(const Quantity_NameOfColor aCol)
-#ifdef GER61351
 {
   SetColor(Quantity_Color(aCol));
 }
 
 void AIS_PlaneTrihedron::SetColor(const Quantity_Color &aCol)
-#endif
 {
   hasOwnColor=Standard_True;
   myOwnColor = aCol;

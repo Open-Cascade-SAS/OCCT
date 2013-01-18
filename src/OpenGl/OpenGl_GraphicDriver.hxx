@@ -47,7 +47,6 @@
 #include <Graphic3d_CGroup.hxx>
 #include <Graphic3d_TypeOfPrimitive.hxx>
 #include <Graphic3d_CPick.hxx>
-#include <Graphic3d_TypeOfPolygon.hxx>
 #include <Graphic3d_TextPath.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
@@ -59,13 +58,7 @@
 #include <Graphic3d_SortType.hxx>
 #include <Graphic3d_PtrFrameBuffer.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
-#include <Graphic3d_Array1OfVertexN.hxx>
-#include <Graphic3d_Array1OfVertexNT.hxx>
-#include <Graphic3d_Array1OfVertexC.hxx>
-#include <Graphic3d_Array1OfVertexNC.hxx>
 #include <Graphic3d_Array2OfVertex.hxx>
-#include <Graphic3d_Array2OfVertexN.hxx>
-#include <Graphic3d_Array2OfVertexNT.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -73,7 +66,6 @@ class TColStd_Array1OfInteger;
 class TColStd_Array1OfReal;
 class TColStd_Array2OfReal;
 class TColStd_HArray1OfByte;
-class Graphic3d_VertexNC;
 class Graphic3d_Vector;
 class Quantity_Color;
 class Graphic3d_Vertex;
@@ -108,7 +100,6 @@ public:
 public: // Methods for graphical groups
 
   Standard_EXPORT void ClearGroup (const Graphic3d_CGroup& ACGroup);
-  Standard_EXPORT void CloseGroup (const Graphic3d_CGroup& ACGroup);
   Standard_EXPORT void FaceContextGroup (const Graphic3d_CGroup& theCGroup,
                                          const Standard_Integer  theNoInsert);
   Standard_EXPORT void Group (Graphic3d_CGroup& theCGroup);
@@ -121,7 +112,6 @@ public: // Methods for graphical groups
                                            const Standard_Integer  theMarkWidth,
                                            const Standard_Integer  theMarkHeight,
                                            const Handle(TColStd_HArray1OfByte)& theTexture);
-  Standard_EXPORT void OpenGroup (const Graphic3d_CGroup& theCGroup);
   Standard_EXPORT void RemoveGroup (const Graphic3d_CGroup& theCGroup);
   Standard_EXPORT void TextContextGroup (const Graphic3d_CGroup& theCGroup,
                                          const Standard_Integer  theNoInsert);
@@ -171,9 +161,8 @@ public:
   Standard_EXPORT void ViewMapping (const Graphic3d_CView& ACView, const Standard_Boolean AWait);
   Standard_EXPORT void ViewOrientation (const Graphic3d_CView& ACView,const Standard_Boolean AWait);
   Standard_EXPORT void Environment (const Graphic3d_CView& ACView);
-  Standard_EXPORT void Marker (const Graphic3d_CGroup& ACGroup, const Graphic3d_Vertex& APoint, const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void MarkerSet (const Graphic3d_CGroup& ACGroup, const Graphic3d_Array1OfVertex& ListVertex, const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void Polygon (const Graphic3d_CGroup& ACGroup, const Graphic3d_Array1OfVertex& ListVertex, const Graphic3d_TypeOfPolygon AType = Graphic3d_TOP_CONVEX, const Standard_Boolean EvalMinMax = Standard_True);
+  Standard_EXPORT void Marker (const Graphic3d_CGroup& ACGroup, const Graphic3d_Vertex& APoint);
+  Standard_EXPORT void MarkerSet (const Graphic3d_CGroup& ACGroup, const Graphic3d_Array1OfVertex& ListVertex);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
@@ -267,7 +256,6 @@ public:
   //! Clear visualization data in graphical driver and stop <br>
   //! displaying the primitives array of the graphical group <theCGroup>. <br>
   //! This method is internal and should be used by Graphic3d_Group only. <br>
-  Standard_EXPORT void RemovePrimitiveArray(const Graphic3d_CGroup& theCGroup,const Graphic3d_PrimitiveArray& thePArray);
   Standard_EXPORT Standard_Integer InquirePlaneLimit();
   Standard_EXPORT Standard_ShortReal DefaultTextHeight() const;
   Standard_EXPORT void FBOGetDimensions(const Graphic3d_CView& view,const Graphic3d_PtrFrameBuffer fboPtr,Standard_Integer& width,Standard_Integer& height,Standard_Integer& widthMax,Standard_Integer& heightMax);

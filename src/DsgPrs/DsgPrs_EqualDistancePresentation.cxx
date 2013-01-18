@@ -18,15 +18,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <DsgPrs_EqualDistancePresentation.ixx>
 
 #include <DsgPrs.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_LengthAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Prs3d_Root.hxx>
 #include <gp_Dir.hxx>
 #include <gce_MakeDir.hxx>
@@ -52,24 +51,17 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
-  Graphic3d_Array1OfVertex VertexArray( 1, 2 );
-  Quantity_Length X,Y,Z;
-
   // Line between two middles
   gp_Pnt Middle12( (Point1.XYZ() + Point2.XYZ()) * 0.5 ), Middle34( (Point3.XYZ() + Point4.XYZ()) * 0.5 );
 
-  Middle12.Coord( X, Y, Z );
-  VertexArray( 1 ).SetCoord( X, Y, Z );
-  Middle34.Coord( X, Y, Z );
-  VertexArray( 2 ).SetCoord( X, Y, Z );
-  Prs3d_Root::CurrentGroup( aPresentation )->Polyline( VertexArray );
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(Middle12);
+  aPrims->AddVertex(Middle34);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // Add presentation of arrows (points)
   gp_Dir aDir( 0, 0, 1 );
-  DsgPrs::ComputeSymbol(aPresentation, LA,
-			Middle12, Middle34,
-			aDir, aDir,
-			DsgPrs_AS_BOTHPT );
+  DsgPrs::ComputeSymbol(aPresentation, LA, Middle12, Middle34, aDir, aDir, DsgPrs_AS_BOTHPT );
 // ota -- begin --  
   // Two small lines in the middle of this line
   gp_Pnt Middle( (Middle12.XYZ() + Middle34.XYZ()) * 0.5 ), aTextPos;
@@ -79,22 +71,22 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   gp_Vec LineVec, OrtVec;
 
   if (Dist > Precision::Confusion())
-    {
-      SmallDist = Dist * 0.05; // 1/20.0 part
-      if (SmallDist <= Precision::Confusion())
-	SmallDist = Dist;
-      LineDir = gce_MakeDir( Middle12, Middle34 );
-      OrtDir  = Plane->Pln().Axis().Direction() ^ LineDir;
-      LineVec = gp_Vec( LineDir ) * SmallDist;
-      OrtVec  = gp_Vec( OrtDir ) * SmallDist;
+  {
+    SmallDist = Dist * 0.05; // 1/20.0 part
+    if (SmallDist <= Precision::Confusion())
+      SmallDist = Dist;
+    LineDir = gce_MakeDir( Middle12, Middle34 );
+    OrtDir  = Plane->Pln().Axis().Direction() ^ LineDir;
+    LineVec = gp_Vec( LineDir ) * SmallDist;
+    OrtVec  = gp_Vec( OrtDir ) * SmallDist;
 
-      aTextPos = Middle.Translated( OrtVec );
-    }
+    aTextPos = Middle.Translated( OrtVec );
+  }
   else
-    {
-      gp_Vec Vec1( Middle, Point1 );
+  {
+    gp_Vec Vec1( Middle, Point1 );
 
-      if (Vec1.SquareMagnitude() > Precision::SquareConfusion())
+    if (Vec1.SquareMagnitude() > Precision::Confusion()*Precision::Confusion())
 	{
 	  Standard_Real Angle = gp_Vec( Middle, Point1 ).Angle( gp_Vec( Middle, Point3 ) );
 	  gp_Pnt MidPnt = Point1.Rotated( Plane->Pln().Axis(), Angle*0.5 );
@@ -109,20 +101,21 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 	  OrtVec = gp_Vec( OrtDir ) * SmallDist;
 	  LineVec = gp_Vec( LineDir ) * SmallDist;
 	}
-      else
+    else
 	{
 	  SmallDist = 5.0;
 	  OrtVec = gp_Vec( Plane->Pln().XAxis().Direction() ) * SmallDist;
 	  LineVec = gp_Vec( Plane->Pln().YAxis().Direction() ) * SmallDist;
 	}
-      aTextPos =  Middle.Translated (OrtVec);
-    }
+    aTextPos =  Middle.Translated (OrtVec);
+  }
 
   TCollection_ExtendedString aText("==");
 
   //Draw the text
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(), aText, aTextPos);
 }
+
 
 //==================================================================================
 //function  : AddInterval
@@ -140,7 +133,6 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 						    gp_Pnt& aProj2) 
 {
   const Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
-//set color
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   gp_Lin L1 (aPoint1,aDirection);
@@ -148,38 +140,19 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   aProj1 = ElCLib::Value(ElCLib::Parameter(L1, aPosition),L1);
   aProj2 = ElCLib::Value(ElCLib::Parameter(L2, aPosition),L2);
 
-  Graphic3d_Array1OfVertex V(1,2);
-
-  Quantity_Length X,Y,Z;
-
-  aProj1.Coord (X, Y, Z);
-  V(1).SetCoord(X, Y, Z);
-
-  aPoint1.Coord(X, Y, Z);
-  V(2).SetCoord(X, Y, Z);
-
-  //add first attached line  
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-
-  //add distance interval 
-  aProj2.Coord(X, Y, Z);
-  V(2).SetCoord(X, Y, Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
-
-
-  //add second attached line
-  aPoint2.Coord(X, Y, Z);
-  V(1).SetCoord(X, Y, Z);
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);
+  aPrims->AddVertex(aPoint1);
+  aPrims->AddVertex(aProj1);
+  aPrims->AddVertex(aProj2);
+  aPrims->AddVertex(aPoint2);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   //add arrows presentation
   gp_Dir aDir(aProj2.XYZ() - aProj1.XYZ());
   
-  DsgPrs::ComputeSymbol(aPresentation, LA,
-			aProj1, aProj2,
-			aDir.Reversed(), aDir,
-			anArrowSide);
+  DsgPrs::ComputeSymbol(aPresentation, LA, aProj1, aProj2, aDir.Reversed(), aDir, anArrowSide);
 }
+
 
 //========================================================================
 // function : AddIntervalBetweenTwoArcs 
@@ -197,9 +170,9 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 							      const gp_Pnt& aPoint4,
 							      const DsgPrs_ArrowSide anArrowSide) 
 {
-//it seems to set color
   const Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
   Standard_Real aPar11, aPar12, aPar21, aPar22;
   if(aCirc1.Radius() > Precision::Confusion()){
     aPar11 = ElCLib::Parameter (aCirc1, aPoint1);
@@ -218,49 +191,48 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
     aPar22 = M_PI;
   }
 
-  Graphic3d_Array1OfVertex V(1,2);
-  V(1).SetCoord(aPoint2.X(), aPoint2.Y(), aPoint2.Z());
-  V(2).SetCoord(aPoint4.X(), aPoint4.Y(), aPoint4.Z());
-  Prs3d_Root::CurrentGroup( aPresentation )->Polyline( V );
+  Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(aPoint2);
+  aPrims->AddVertex(aPoint4);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
-  Standard_Integer aNodeNb; 
+  Standard_Integer i, aNodeNb;
   Standard_Real aDelta, aCurPar;
-  if(aPar12 < aPar11 ) aPar12 +=2*M_PI;
-  if (Abs(aPar12 - aPar11) > Precision::Confusion()) {
+  if(aPar12 < aPar11 ) aPar12 += 2.*M_PI;
+  if (Abs(aPar12 - aPar11) > Precision::Confusion())
+  {
     aNodeNb = Standard_Integer(Max(Abs(aPar12 - aPar11)*50./M_PI + 0.5, 4.));
-    Graphic3d_Array1OfVertex ApproxArc1( 1, aNodeNb+1);
     aDelta = (aPar12 - aPar11)/aNodeNb;
     aCurPar= aPar11;
-    for ( int i = 1; i<= aNodeNb ; aCurPar+= aDelta, i++)
-      {
-	gp_Pnt CurPnt =  ElCLib::Value( aCurPar, aCirc1);
-	ApproxArc1(i).SetCoord( CurPnt.X(), CurPnt.Y(), CurPnt.Z() );
-      }
-    ApproxArc1(aNodeNb+1).SetCoord( aPoint2.X(), aPoint2.Y(), aPoint2.Z() );
 
-    Prs3d_Root::CurrentGroup( aPresentation )->Polyline( ApproxArc1 );
+    aPrims = new Graphic3d_ArrayOfPolylines(aNodeNb+1);
+    for (i = 1; i<= aNodeNb; aCurPar += aDelta, i++)
+      aPrims->AddVertex(ElCLib::Value( aCurPar, aCirc1));
+    aPrims->AddVertex(aPoint2);
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
-  if (aPar22 < aPar21) aPar22 += 2*M_PI;
-  if ( Abs(aPar22 - aPar21) > Precision::Confusion()){
+  if (aPar22 < aPar21) aPar22 += 2.*M_PI;
+  if ( Abs(aPar22 - aPar21) > Precision::Confusion())
+  {
     aNodeNb = Standard_Integer(Max(Abs(aPar22 - aPar21)*50./M_PI + 0.5, 4.));
-    Graphic3d_Array1OfVertex ApproxArc2( 1, aNodeNb+1);
     aDelta = (aPar22 - aPar21)/aNodeNb;
     aCurPar= aPar21;
-    for ( int i=1; i<= aNodeNb; aCurPar+= aDelta, i++)
-      {
-	gp_Pnt CurPnt =  ElCLib::Value( aCurPar, aCirc2);
-	ApproxArc2(i).SetCoord( CurPnt.X(), CurPnt.Y(), CurPnt.Z() );
-      }
-    ApproxArc2(aNodeNb+1).SetCoord( aPoint4.X(), aPoint4.Y(), aPoint4.Z() );
-    Prs3d_Root::CurrentGroup( aPresentation )->Polyline( ApproxArc2 );
+
+    aPrims = new Graphic3d_ArrayOfPolylines(aNodeNb+1);
+    for (i = 1; i<= aNodeNb; aCurPar += aDelta, i++)
+      aPrims->AddVertex(ElCLib::Value( aCurPar, aCirc2));
+    aPrims->AddVertex(aPoint4);
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
 
   //get the direction of interval
-  gp_Dir  DirOfArrow;
-  if(aPoint4.Distance(aPoint2) > Precision::Confusion()){
+  gp_Dir DirOfArrow;
+  if(aPoint4.Distance(aPoint2) > Precision::Confusion())
+  {
     DirOfArrow.SetXYZ(aPoint4.XYZ() - aPoint2.XYZ());
   }
-  else {
+  else
+  {
     //Let's take the radius direction
     gp_Pnt aCenter = aCirc1.Location();
     if(aPoint4.Distance(aCenter) < Precision::Confusion())
@@ -270,6 +242,5 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 
   // Add presentation of arrows
   DsgPrs::ComputeSymbol( aPresentation, LA, aPoint2, aPoint4, DirOfArrow.Reversed(), DirOfArrow, anArrowSide );
-  
 }
 //-- ota -- end

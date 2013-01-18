@@ -33,42 +33,28 @@
  */
 #include <V3d_View.jxx>
 
-#define  BUC61044    /* 25/10/01 SAV ; added functionality to control gl depth testing
-			from higher API */
-#define  BUC61045    /* 25/10/01 SAV ; added functionality to control gl lighting 
-			from higher API */
+//BUC61044 25/10/01 SAV ; added functionality to control gl depth testing from higher API
+//BUC61045 25/10/01 SAV ; added functionality to control gl lighting from higher API
 
 
 void V3d_View::EnableDepthTest( const Standard_Boolean enable ) const
 {
-#ifdef BUC61044
   MyView->EnableDepthTest( enable );
-#endif
 }
 
 Standard_Boolean V3d_View::IsDepthTestEnabled() const
 {
-#ifdef BUC61044
   return MyView->IsDepthTestEnabled();
-#else
-  return Standard_True;
-#endif
 }
 
 void V3d_View::EnableGLLight( const Standard_Boolean enable ) const
 {
-#ifdef BUC61045
   MyView->EnableGLLight( enable );
-#endif
 }
 
 Standard_Boolean V3d_View::IsGLLightEnabled() const
 {
-#ifdef BUC61045
   return MyView->IsGLLightEnabled();
-#else
-  return Standard_True;
-#endif
 }
 
 void V3d_View::SetLayerMgr(const Handle(V3d_LayerMgr)& aMgr)

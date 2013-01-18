@@ -132,36 +132,6 @@ void OpenGl_Group::AddElement (const TelType AType, OpenGl_Element *AElem )
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Group::RemovePrimitiveArray (const Handle(OpenGl_Context)& theGlCtx,
-                                         CALL_DEF_PARRAY*              thePArray)
-{
-  OpenGl_ElementNode *prevnode = NULL, *node = myFirst;
-  while (node != NULL)
-  {
-    if (node->type == TelParray)
-    {
-      CALL_DEF_PARRAY* aCurPArray = ((const OpenGl_PrimitiveArray* )node->elem)->PArray();
-
-      // validate for correct pointer
-      if (aCurPArray->num_bounds  == thePArray->num_bounds  &&
-          aCurPArray->num_edges   == thePArray->num_edges   &&
-          aCurPArray->num_vertexs == thePArray->num_vertexs &&
-          aCurPArray->type        == thePArray->type)
-      {
-        (prevnode ? prevnode->next : myFirst) = node->next;
-        if (!myFirst) myLast = NULL;
-        OpenGl_Element::Destroy (theGlCtx, node->elem);
-        delete node;
-        break;
-      }
-    }
-    prevnode = node;
-    node = node->next;
-  }
-}
-
-/*----------------------------------------------------------------------*/
-
 void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Is rendering in ADD or IMMEDIATE mode?

@@ -27,7 +27,7 @@
 #include <gp_Circ.hxx>
 #include <ElCLib.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -48,13 +48,12 @@
 
 
 static Standard_Boolean DsgPrs_InDomain(const Standard_Real fpar,
-					const Standard_Real lpar,
-					const Standard_Real para) 
+                                        const Standard_Real lpar,
+                                        const Standard_Real para)
 {
-  if (fpar >= 0.) {
+  if (fpar >= 0.)
     return ((para >= fpar) && (para <= lpar));
-  }
-  if (para >= (fpar+2*M_PI)) return Standard_True;
+  if (para >= (fpar+2.*M_PI)) return Standard_True;
   if (para <= lpar) return Standard_True;
   return Standard_False;
 }
@@ -76,48 +75,36 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 {
   Standard_Real fpara = firstparam;
   Standard_Real lpara = lastparam;
-  while (lpara > 2*M_PI) {
-    fpara -= 2*M_PI;
-    lpara -= 2*M_PI;
+  while (lpara > 2.*M_PI) {
+    fpara -= 2.*M_PI;
+    lpara -= 2.*M_PI;
   }
   Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+
   Standard_Real parat = ElCLib::Parameter(aCircle,AttachmentPoint);
   gp_Pnt attpoint = AttachmentPoint;
   Standard_Boolean otherside = Standard_False;
   if ( !DsgPrs_InDomain(fpara,lpara,parat)) {
     Standard_Real otherpar = parat + M_PI;
-    if (otherpar > 2*M_PI) otherpar -= 2*M_PI;
+    if (otherpar > 2.*M_PI) otherpar -= 2.*M_PI;
     if (DsgPrs_InDomain(fpara,lpara,otherpar)) {
       parat = otherpar;
       otherside = Standard_True;
     }
     else {
-      Standard_Real ecartpar = Min(Abs(fpara-parat),
-				   Abs(lpara-parat));
-      Standard_Real ecartoth = Min(Abs(fpara-otherpar),
-				   Abs(lpara-otherpar));
+      const Standard_Real ecartpar = Min(Abs(fpara-parat),Abs(lpara-parat));
+      const Standard_Real ecartoth = Min(Abs(fpara-otherpar),Abs(lpara-otherpar));
       if (ecartpar <= ecartoth) {
-	if (parat < fpara) {
-	  parat = fpara;
-	}
-	else {
-	  parat = lpara;
-	}
+        parat = (parat < fpara)? fpara : lpara;
       }
       else {
-	otherside = Standard_True;
-	if (otherpar < fpara) {
-	  parat = fpara;
-	}
-	else {
-	  parat = lpara;
-	}
+        otherside = Standard_True;
+        parat = (otherpar < fpara)? fpara : lpara;
       }
       gp_Pnt ptdir = ElCLib::Value(parat,aCircle);
-      gp_Lin lsup(aCircle.Location(),
-		  gp_Dir(ptdir.XYZ()-aCircle.Location().XYZ()));
-      Standard_Real parpos = ElCLib::Parameter(lsup,AttachmentPoint);
+      gp_Lin lsup(aCircle.Location(),gp_Dir(ptdir.XYZ()-aCircle.Location().XYZ()));
+      const Standard_Real parpos = ElCLib::Parameter(lsup,AttachmentPoint);
       attpoint = ElCLib::Value(parpos,lsup);
     }
   }
@@ -126,40 +113,28 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   gp_Pnt firstpoint = attpoint;
   gp_Pnt drawtopoint = ptoncirc;
   if (drawFromCenter && !otherside) {
-    Standard_Real uatt = ElCLib::Parameter(L,attpoint);
-    Standard_Real uptc = ElCLib::Parameter(L,ptoncirc);
-    if (Abs(uatt) > Abs(uptc)) {
+    const Standard_Real uatt = ElCLib::Parameter(L,attpoint);
+    const Standard_Real uptc = ElCLib::Parameter(L,ptoncirc);
+    if (Abs(uatt) > Abs(uptc))
       drawtopoint = aCircle.Location();
-    }
-    else {
+    else
       firstpoint = aCircle.Location();
-    }
   }
 
-  Graphic3d_Array1OfVertex V(1,2);
-
-  Quantity_Length X,Y,Z;
-
-  firstpoint.Coord(X,Y,Z);
-  V(1).SetCoord(X,Y,Z);
-
-  drawtopoint.Coord(X,Y,Z);
-  V(2).SetCoord(X,Y,Z);
-
-  Prs3d_Root::CurrentGroup(aPresentation)->Polyline(V);
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(firstpoint);
+  aPrims->AddVertex(drawtopoint);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   gp_Dir arrdir = L.Direction();
-  if (reverseArrow) {
+  if (reverseArrow)
     arrdir.Reverse();
-  }
+
   // fleche
-  Prs3d_Arrow::Draw(aPresentation,ptoncirc,arrdir,
-		    LA->Arrow1Aspect()->Angle(),
-		    LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,ptoncirc,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
 
   // texte
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,attpoint);
-  
 }
 
 //=======================================================================
@@ -181,27 +156,19 @@ void DsgPrs_RadiusPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
-  Graphic3d_Array1OfVertex VertexArray( 1, 2 );
-  gp_Pnt  LineOrigin, LineEnd;
-  Quantity_Length X,Y,Z;
+  gp_Pnt LineOrigin, LineEnd;
+  DsgPrs::ComputeRadiusLine(Center, EndOfArrow, AttachmentPoint, drawFromCenter, LineOrigin, LineEnd);
 
-  DsgPrs::ComputeRadiusLine( Center, EndOfArrow, AttachmentPoint, drawFromCenter,
-			    LineOrigin, LineEnd);
-//
-  LineOrigin.Coord( X, Y, Z );
-  VertexArray(1).SetCoord( X, Y, Z );
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(LineOrigin);
+  aPrims->AddVertex(LineEnd);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
-  LineEnd.Coord( X, Y, Z );
-  VertexArray(2).SetCoord( X, Y, Z );
-
-  Prs3d_Root::CurrentGroup( aPresentation )->Polyline( VertexArray );
   // text
   Prs3d_Text::Draw( aPresentation, LA->TextAspect(), aText, AttachmentPoint );
 
   gp_Dir ArrowDir = gce_MakeDir( LineOrigin , LineEnd );
   if (reverseArrow)
     ArrowDir.Reverse();
-  DsgPrs::ComputeSymbol( aPresentation, LA, Center, EndOfArrow, ArrowDir.Reversed(), ArrowDir,
-			ArrowPrs, drawFromCenter );
+  DsgPrs::ComputeSymbol( aPresentation, LA, Center, EndOfArrow, ArrowDir.Reversed(), ArrowDir, ArrowPrs, drawFromCenter );
 }
-  

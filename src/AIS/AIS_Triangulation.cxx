@@ -30,7 +30,6 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 
 
 IMPLEMENT_STANDARD_HANDLE(AIS_Triangulation, AIS_InteractiveObject)
@@ -66,7 +65,7 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPre
       if( myFlagColor == 1 )
         hasVColors = Standard_True; 
 
-      Handle(Graphic3d_ArrayOfTriangles) array = 
+      Handle(Graphic3d_ArrayOfTriangles) anArray =
          new Graphic3d_ArrayOfTriangles ( myNbNodes,        //maxVertexs
                                           myNbTriangles * 3,//maxEdges
                                           hasVNormals,      //hasVNormals
@@ -83,24 +82,22 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPre
       Standard_Real ambient = aspect->FrontMaterial().Ambient();
       for ( i = nodes.Lower(); i<= nodes.Upper(); i++ ){ 
         if( myFlagColor == 1 )
-          array->AddVertex( nodes(i), AttenuateColor(myColor->Value(i),ambient));
+          anArray->AddVertex( nodes(i), AttenuateColor(myColor->Value(i),ambient));
         if( myFlagColor == 0 )
-          array->AddVertex( nodes(i) );
+          anArray->AddVertex( nodes(i) );
         j = (i - nodes.Lower()) * 3;
-        array->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+        anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
       }
 
       Standard_Integer indexTriangle[3] = {0,0,0};
       for ( i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
         triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
-        array->AddEdge(indexTriangle[0]);
-        array->AddEdge(indexTriangle[1]);
-        array->AddEdge(indexTriangle[2]);
+        anArray->AddEdge(indexTriangle[0]);
+        anArray->AddEdge(indexTriangle[1]);
+        anArray->AddEdge(indexTriangle[2]);
       }
       TheGroup->SetPrimitivesAspect(aspect);
-      TheGroup->BeginPrimitives();
-      TheGroup->AddPrimitiveArray(array);
-      TheGroup->EndPrimitives();
+      TheGroup->AddPrimitiveArray(anArray);
       break;
   }
 }

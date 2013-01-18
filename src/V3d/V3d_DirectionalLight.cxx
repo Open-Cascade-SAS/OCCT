@@ -44,7 +44,7 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
@@ -136,14 +136,13 @@ void V3d_DirectionalLight::DisplayPosition(Standard_Real& Xp, Standard_Real& Yp,
   MyDisplayPosition.Coord(Xp,Yp,Zp) ;
 }
 
-void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const Handle(V3d_View)& aView) const {
-
+void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const Handle(V3d_View)& aView) const
+{
   Standard_Real Xi,Yi,Zi,Xf,Yf,Zf,Rayon,PXT,PYT,X,Y,Z,XT,YT,ZT;
   Standard_Real A,B,C,Dist,Beta,CosBeta,SinBeta,Coef,X1,Y1,Z1;
   Standard_Real DX,DY,DZ,VX,VY,VZ;
   Standard_Integer IXP,IYP,j;
   TColStd_Array2OfReal MatRot(0,2,0,2);
-  Graphic3d_Array1OfVertex Line(0,1);
 
   aView->Proj(VX,VY,VZ);
   this->DisplayPosition(Xi,Yi,Zi);
@@ -192,9 +191,12 @@ void V3d_DirectionalLight::Symbol (const Handle(Graphic3d_Group)& gsymbol, const
   Rayon = this->Radius();
   this->Direction(DX,DY,DZ);
   X = Xi + DX*Rayon/10.; Y = Yi + DY*Rayon/10.; Z = Zi + DZ*Rayon/10.;
-  Line(0).SetCoord(Xi,Yi,Zi);
-  Line(1).SetCoord(X,Y,Z);
-  gsymbol->Polyline(Line);
+
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
+  aPrims->AddVertex(Standard_ShortReal(Xi),Standard_ShortReal(Yi),Standard_ShortReal(Zi));
+  aPrims->AddVertex(Standard_ShortReal(X),Standard_ShortReal(Y),Standard_ShortReal(Z));
+  gsymbol->AddPrimitiveArray(aPrims);
+
   V3d::ArrowOfRadius(gsymbol, X, Y, Z, DX, DY, DZ, M_PI / 15., Rayon / 20.);
 }
 

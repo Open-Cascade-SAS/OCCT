@@ -31,8 +31,7 @@
 
 ************************************************************************/
 
-#define GER61351	//GG_15/12/99 Adds SetDefaultBackgroundColor()
-//				      and DefaultBackgroundColor() methods
+//GER61351	//GG_15/12/99 Adds SetDefaultBackgroundColor() and DefaultBackgroundColor() methods
 
 #define IMP240100	//GG 
 //			Initalize grid echo fields
@@ -202,29 +201,19 @@ void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_TypeOfColor Type, cons
   if( V3 < 0. ) V3 = 0. ; else if( V3 > 1. ) V3 = 1. ;
 
   Quantity_Color C(V1,V2,V3,Type) ;
-#ifdef GER61351
   SetDefaultBackgroundColor(C);
-#else
-  MyBackground.SetColor(C) ;
-#endif
 }
 
-void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_NameOfColor Name) {
-
+void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_NameOfColor Name)
+{
   Quantity_Color C(Name) ;
-#ifdef GER61351
   SetDefaultBackgroundColor(C);
-#else
-  MyBackground.SetColor(C) ;
-#endif
 }
 
-#ifdef GER61351
-void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_Color &Color) {
-
+void V3d_Viewer::SetDefaultBackgroundColor(const Quantity_Color &Color)
+{
   MyBackground.SetColor(Color) ;
 }
-#endif
 
 void V3d_Viewer::SetDefaultBgGradientColors( const Quantity_NameOfColor Name1,
                                              const Quantity_NameOfColor Name2,
@@ -290,23 +279,19 @@ void V3d_Viewer::SetUpdateMode(const V3d_TypeOfUpdate Mode) {
   MyViewer->SetUpdateMode((Aspect_TypeOfUpdate)Mode) ;
 }
 
-void V3d_Viewer::DefaultBackgroundColor(const Quantity_TypeOfColor Type,Standard_Real &V1,Standard_Real &V2,Standard_Real &V3) const {
-
-#ifdef GER61351
+void V3d_Viewer::DefaultBackgroundColor(const Quantity_TypeOfColor Type,Standard_Real &V1,Standard_Real &V2,Standard_Real &V3) const
+{
   Quantity_Color C = DefaultBackgroundColor();
-#else
-  Quantity_Color C = MyBackground.Color() ;
-#endif
   C.Values(V1,V2,V3,Type) ;
 }
 
-#ifdef GER61351
-Quantity_Color V3d_Viewer::DefaultBackgroundColor() const {
+Quantity_Color V3d_Viewer::DefaultBackgroundColor() const
+{
   return MyBackground.Color() ;
 }
-#endif
 
-void V3d_Viewer::DefaultBgGradientColors(Quantity_Color& Color1,Quantity_Color& Color2) const{   
+void V3d_Viewer::DefaultBgGradientColors(Quantity_Color& Color1,Quantity_Color& Color2) const
+{
   MyGradientBackground.Colors(Color1,Color2);     
 }
 
