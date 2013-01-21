@@ -1,4 +1,4 @@
-puts "TODO #22911 ALL: Error : The bcut is not valid. The square is 0"
+puts "TODO #22911 ALL: Error : The bcut is not valid. The area is 0"
 
 restore [locate_data_file f4] b1
 restore [locate_data_file f5] b2

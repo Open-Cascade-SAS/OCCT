@@ -1,7 +1,7 @@
 # Original bug : pro12877
 # Date : 02 Dec 98
 
-puts "TODO OCC22803 All:Error: The tolerance of result shape is too big"
+puts "TODO OCC22803 All:Error: The tolerance of the resulting shape is too big"
 
 restore [locate_data_file CFE903_pro12ggx.rle] base
 

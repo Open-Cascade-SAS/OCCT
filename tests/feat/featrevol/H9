@@ -1,7 +1,7 @@
 #puts "TODO OCC22810 All:No error"
 puts "*"
 puts "TODO OCC22810 All:Error in featperform"
-puts "TODO OCC22810 All:Error : The feat can not be build"
+puts "TODO OCC22810 All:Error : The feat grid cannot be built."
 #
 box b 8 8 8
 ttranslate b -4 0 0 

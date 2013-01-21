@@ -10,7 +10,7 @@ if {
     &&  [string compare $os "Mandriva2010"] != 0
     &&  [string compare $os "Mandriva2008"] != 0
    } {
-  puts "TODO OCC23068 $os: Error : Result shape is WRONG"
+  puts "TODO OCC23068 $os: Error : The resulting shape is WRONG"
 }
 
 

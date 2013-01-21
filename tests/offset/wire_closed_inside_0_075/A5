@@ -8,7 +8,7 @@ if {
     &&  [string compare $os "Mandriva2008"] != 0
    } {
   puts "TODO OCC23068 $os: Error : result is not a topological shape"
-  puts "TODO OCC23068 $os: Error : The offset can not be build."
+  puts "TODO OCC23068 $os: Error : The offset cannot be built."
 }
 restore [locate_data_file offset_wire_006.brep] s
 

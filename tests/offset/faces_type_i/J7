@@ -1,6 +1,6 @@
 puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_3 "
-puts "TODO OCC23068 ALL: Error : Square of face result_4 of result shape is negative."
-puts "TODO OCC23068 ALL: Error : The volume of result shape "
+puts "TODO OCC23068 ALL: Error : The area of face result_4 of the resulting shape is negative."
+puts "TODO OCC23068 ALL: Error : The volume of the resulting shape "
 pcone s 9 4 15 270
 
 OFFSETSHAPE 1 {s_2 s_3} $calcul $type

@@ -11,7 +11,7 @@ if {
   puts "TODO OCC23068 $os: TEST INCOMPLETE"
 } else {
   puts "TODO OCC23068 $os: Faulty shapes in variables faulty_1 to faulty_2"
-  puts "TODO OCC23068 $os: Error : The volume of result shape is"
+  puts "TODO OCC23068 $os: Error : The volume of the resulting shape is"
 }
 
 ellipse w1 0 0 0 15 10

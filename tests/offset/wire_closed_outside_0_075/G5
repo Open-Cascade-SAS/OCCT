@@ -8,7 +8,7 @@ if {
       ||  [string compare $os "Debian40"    ] == 0
       ||  [string compare $os "Mandriva2008"] == 0
    } {
-  puts "TODO OCC23068 $os: Error : The offset can not be build."
+  puts "TODO OCC23068 $os: Error : The offset cannot be built."
   puts "TODO OCC23068 $os: An exception was caught"
   puts "TODO OCC23068 $os: \\*\\* Exception \\*\\*.*"
 }

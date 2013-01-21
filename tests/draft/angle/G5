@@ -1,6 +1,6 @@
 #F3----------------------------------------------
-puts "TODO OCC22803 All:Error in depouille"
-puts "TODO OCC22803 All:Error : The depouille can not be build."
+puts "TODO OCC22803 All: Error in depouille"
+puts "TODO OCC22803 All: Error : The skin cannot be built."
 
 polyline p 0 0 7  0 0 0  10 0 0  10 0 7  
 beziercurve bc 4 10 0 7  7 0 7  3 0 7  0 0 7

@@ -2,7 +2,7 @@
 # Date : 24mar98
 
 puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_4"
-puts "TODO #22911 ALL: Error : The square of result shape is"
+puts "TODO #22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file pro9373a.rle] a
 restore [locate_data_file pro9373b.rle] b

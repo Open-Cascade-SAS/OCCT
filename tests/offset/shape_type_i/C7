@@ -1,6 +1,6 @@
 puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC23068 ALL: Error : Square of face result_\\d+ of result shape is negative."
-puts "TODO ?OCC23068 ALL: Error: bsection of result and s is not equal zero"
+puts "TODO ?OCC23068 ALL: Error : The area of face result_\\d+ of the resulting shape is negative."
+puts "TODO ?OCC23068 ALL: Error: bsection of the result and s is not equal zero"
 puts "TODO ?OCC23068 ALL:Error\\s*:\\s*.*The volume"
 
 ellipse w1 0 0 0 15 10

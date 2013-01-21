@@ -60,7 +60,7 @@ if { [isdraw result] } {
 	    set mass $length
 	    regexp {The +length +result +is +([-0-9.+eE]+)} [length result] full m
 	} elseif { [info exist square] } {
-	    set prop "square"
+	    set prop "area"
 	    set mass $square
 	    regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
 	}

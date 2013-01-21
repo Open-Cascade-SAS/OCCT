@@ -1,4 +1,4 @@
-puts "TODO #22911 ALL: Error : The bopcut can not be build"
+puts "TODO #22911 ALL: Error : The bopcut cannot be built."
 
 restore [locate_data_file OCC228.brep] sh
 explode sh

@@ -7,7 +7,7 @@ mkplane cont cont
 puts "*"
 
 puts "TODO OCC22810 ALL:Error in featperform"
-puts "TODO OCC22810 ALL:Error : The feat can not be build"
+puts "TODO OCC22810 ALL:Error : The feat grid cannot be built."
 
 restore [locate_data_file CFE900_cts21gbs.rle] base
 restore [locate_data_file cts21322_face.rle] wire

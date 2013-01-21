@@ -6,7 +6,7 @@ puts ""
 ## Intersection between edge and a face produces extra vertex
 #########################################################
 
-restore [locate_data_file bug23651_q1.brep] b1
+restore [locate_data_file bug23676_q1.brep] b1
 
 explode b1
 copy b1_1 b1

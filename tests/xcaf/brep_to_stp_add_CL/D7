@@ -1,4 +1,4 @@
-puts "TODO OCC23213 ALL: Error : number of faces is wrong"
+puts "TODO OCC23213 ALL: Error : The number of faces is wrong"
 
 puts "TODO OCC23213 ALL: Error : errors occur during test"
 

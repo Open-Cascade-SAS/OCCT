@@ -6,7 +6,7 @@ if { [isdraw result] } {
    puts $ch
    
    if { [info exists square] } {
-      set prop "square"
+      set prop "area"
       set mass $square
       regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m      
    }

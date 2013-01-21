@@ -26,7 +26,7 @@ if { [isdraw result] } {
       xwd $imagedir/${test_image}.png
    }
 } else {
-   puts "Error : The blend cannot be build."
+   puts "Error : The blend cannot be built."
 }
 
 # to end a test script

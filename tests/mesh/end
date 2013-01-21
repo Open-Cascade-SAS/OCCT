@@ -52,9 +52,9 @@ if { [string compare $bug_area ""] != 0 } {
 # The difference between the area of a geometry surface and the area of mesh triangles should be less than rel_tol value.
 # If rel_tol is 100 we suppose that the mesh cannot be created.
     if { $rel_tol == 100 } {
-	puts "TODO $bug_area All:^\\s*Error  : The meshing algorithm cannot create mesh.\\s*$"
+	puts "TODO $bug_area All:^\\s*Error  : The meshing algo cannot create mesh.\\s*$"
     } else {
-	puts "TODO $bug_area All:^\\s*Error   : The area by triangles differs from the actual area by \[-.0-9\]+ %\\s*$"
+	puts "TODO $bug_area All:^\\s*Error   : area by triangles differs from the actual area by \[-.0-9\]+ %\\s*$"
     }
 }
 

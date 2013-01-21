@@ -1,6 +1,6 @@
-puts "TODO ?OCC23068 Mandriva2010: Error: bsection of result and s is not equal zero"
+puts "TODO ?OCC23068 Mandriva2010: Error: bsection of the result and s is not equal zero"
 puts "TODO ?OCC23068 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_2"
-puts "TODO OCC23068 Mandriva2010: Error : The volume of result shape"
+puts "TODO OCC23068 Mandriva2010: Error : The volume of the resulting shape"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2

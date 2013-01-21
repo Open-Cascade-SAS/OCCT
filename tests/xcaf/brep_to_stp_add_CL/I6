@@ -1,17 +1,17 @@
-puts "TODO OCC23213 ALL: Error : number of faces is wrong"
+puts "TODO OCC23213 ALL: Error : The number of faces is wrong"
 
-puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:4 label"
+puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for the shape located on 0:1:1:4 label"
 
-puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:7 label"
+puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for the shape located on 0:1:1:7 label"
 
-#puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:12 label"
+#puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for the shape located on 0:1:1:12 label"
 
-puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:15 label"
+puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for the shape located on 0:1:1:15 label"
 
-puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:18 label"
+puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for the shape located on 0:1:1:18 label"
 
 ###don't reproduced IR-2012-10-15-IR-2012-10-12
-###puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for shape located on 0:1:1:23 label"
+###puts "TODO OCC23213 ALL: Error : Compared documents have different LAYERS for the shape located on 0:1:1:23 label"
 
 puts "TODO OCC23213 ALL: Error : errors occur during test"
 

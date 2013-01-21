@@ -1,4 +1,4 @@
-puts "TODO OCC23068 ALL: Error : The offset can not be build."
+puts "TODO OCC23068 ALL: Error : The offset cannot be built."
 puts "TODO OCC23068 ALL: An exception was caught"
 puts "TODO OCC23068 ALL: \\*\\* Exception \\*\\*.*"
 restore [locate_data_file offset_wire_012.brep] s

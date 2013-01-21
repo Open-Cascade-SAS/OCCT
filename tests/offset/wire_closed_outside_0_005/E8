@@ -11,7 +11,7 @@ if {
   puts "TODO OCC23068 $os: Faulty shapes in variables faulty_1 to faulty_26"
 } else {
   puts "TODO OCC23068 $os: Error : result is not a topological shape"
-  puts "TODO OCC23068 $os: Error : The offset can not be build."
+  puts "TODO OCC23068 $os: Error : The offset cannot be built."
 }
 restore [locate_data_file offset_wire_059.brep] s
 

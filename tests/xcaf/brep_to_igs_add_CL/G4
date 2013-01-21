@@ -1,5 +1,5 @@
 puts "TODO OCC22820 ALL: Error : SEWING IS NOT PERFORMED PROPERLY"
-puts "TODO OCC22820 ALL: Volumes' difference is"
+puts "TODO OCC22820 ALL: The difference between volumes is"
 puts "TODO OCC22820 ALL: nbClosedShells is wrong"
 
 restore [locate_data_file CTO909_part_syb.brep] Shape1
