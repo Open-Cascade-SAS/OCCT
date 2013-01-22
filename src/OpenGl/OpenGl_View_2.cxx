@@ -35,8 +35,6 @@
 #include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_Structure.hxx>
 
-#include <GL/glu.h> // gluBuild2DMipmaps()
-
 #define EPSI 0.0001
 
 static const GLfloat default_amb[4] = { 0.F, 0.F, 0.F, 1.F };

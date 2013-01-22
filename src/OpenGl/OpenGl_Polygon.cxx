@@ -27,8 +27,6 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Workspace.hxx>
 
-#include <GL/glu.h>
-
 #if (defined(_WIN32) || defined(__WIN32__))
   #define STATIC
 #else

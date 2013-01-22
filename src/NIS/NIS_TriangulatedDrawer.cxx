@@ -24,10 +24,8 @@
 #ifdef _DEBUG
 #include <Standard_ProgramError.hxx>
 #endif
-#ifdef WNT
-#include <windows.h>
-#endif
-#include <GL/gl.h>
+
+#include <OpenGl_GlCore11.hxx>
 
 // Comment this line if you see no hilighting of triangulations due to negative
 // polygon offsets. Disabling this macro means that all offsets will be created
@@ -35,7 +33,7 @@
 
 // But before changing this macro please play with your OpenGL video card
 // settings in the direction of performance improvement. Particularly, I had a
-// good result after checking "Enable write combining" option in NVIDIA 6600. 
+// good result after checking "Enable write combining" option in NVIDIA 6600.
 
 #define NEGATIVE_POFFSET
 
@@ -65,7 +63,7 @@ NIS_TriangulatedDrawer::NIS_TriangulatedDrawer
 
 //=======================================================================
 //function : Assign
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_TriangulatedDrawer::Assign (const Handle_NIS_Drawer& theOther)
@@ -115,7 +113,7 @@ Standard_Boolean NIS_TriangulatedDrawer::IsEqual
 
 //=======================================================================
 //function : BeforeDraw
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_TriangulatedDrawer::BeforeDraw (const DrawType      theType,
@@ -195,7 +193,7 @@ void NIS_TriangulatedDrawer::BeforeDraw (const DrawType      theType,
 
 //=======================================================================
 //function : AfterDraw
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_TriangulatedDrawer::AfterDraw (const DrawType      theType,
@@ -230,7 +228,7 @@ void NIS_TriangulatedDrawer::AfterDraw (const DrawType      theType,
 
 //=======================================================================
 //function : Draw
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_TriangulatedDrawer::Draw (const Handle_NIS_InteractiveObject& theObj,

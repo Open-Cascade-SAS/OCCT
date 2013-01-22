@@ -17,6 +17,8 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <InterfaceGraphic.hxx>
 
 #include <OpenGl_Window.hxx>
@@ -26,8 +28,6 @@
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
-
-#include <GL/glu.h> // gluOrtho2D()
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)

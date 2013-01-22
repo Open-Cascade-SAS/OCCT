@@ -23,8 +23,6 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_Workspace.hxx>
 
-#include <GL/glu.h> // gluUnProject()
-
 /*----------------------------------------------------------------------*/
 
 OpenGl_Text::OpenGl_Text (const TCollection_ExtendedString& AText,

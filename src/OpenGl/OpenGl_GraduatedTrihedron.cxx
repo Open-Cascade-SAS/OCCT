@@ -29,8 +29,6 @@
 #include <InterfaceGraphic_Aspect.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 
-#include <GL/glu.h> // gluUnProject()
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -52,7 +50,7 @@ const OpenGl_AspectLine myDefaultAspectLine;
 float xmin = 0.0f, ymin = 0.0f, zmin = 0.0f, xmax = 100.0f, ymax = 100.0f, zmax = 100.0f;
 
 /* Normal of the view (not normalized!) */
-static float getNormal(float* normal) 
+static float getNormal(float* normal)
 {
   GLint viewport[4];
   GLdouble model_matrix[16], proj_matrix[16];
@@ -87,47 +85,47 @@ static float getDistance2Corner(float* normal, float* center, float x, float y, 
     return normal[0] * (x - center[0]) + normal[1] * (y - center[1]) + normal[2] * (z - center[2]);
 }
 
-static char getFarestCorner(float d000, float d100, float d010, float d001, 
+static char getFarestCorner(float d000, float d100, float d010, float d001,
                             float d110, float d101, float d011, float d111)
 {
-    if (d000 > 0.0f && 
-        d000 > d100 && d000 > d010 && d000 > d001 && d000 > d110 && 
+    if (d000 > 0.0f &&
+        d000 > d100 && d000 > d010 && d000 > d001 && d000 > d110 &&
         d000 > d101 && d000 > d011 && d000 > d111)
     {
         return 1;
     }
     else if (d100 > 0.0f &&
-             d100 > d000 && d100 > d010 && d100 > d001 && d100 > d110 && 
+             d100 > d000 && d100 > d010 && d100 > d001 && d100 > d110 &&
              d100 > d101 && d100 > d011 && d100 > d111)
     {
         return 2;
     }
     else if (d010 > 0.0f &&
-             d010 > d000 && d010 > d100 && d010 > d001 && d010 > d110 && 
+             d010 > d000 && d010 > d100 && d010 > d001 && d010 > d110 &&
              d010 > d101 && d010 > d011 && d010 > d111)
     {
         return 3;
     }
     else if (d001 > 0.0f &&
-             d001 > d000 && d001 > d100 && d001 > d010 && d001 > d110 && 
+             d001 > d000 && d001 > d100 && d001 > d010 && d001 > d110 &&
              d001 > d101 && d001 > d011 && d001 > d111)
     {
         return 4;
     }
     else if (d110 > 0.0f &&
-             d110 > d000 && d110 > d100 && d110 > d010 && d110 > d001 && 
+             d110 > d000 && d110 > d100 && d110 > d010 && d110 > d001 &&
              d110 > d101 && d110 > d011 && d110 > d111)
     {
         return 5;
     }
     else if (d101 > 0.0f &&
-             d101 > d000 && d101 > d100 && d101 > d010 && d101 > d001 && 
+             d101 > d000 && d101 > d100 && d101 > d010 && d101 > d001 &&
              d101 > d110 && d101 > d011 && d101 > d111)
     {
         return 6;
     }
     else if (d011 > 0.0f &&
-             d011 > d000 && d011 > d100 && d011 > d010 && d011 > d001 && 
+             d011 > d000 && d011 > d100 && d011 > d010 && d011 > d001 &&
              d011 > d110 && d011 > d101 && d011 > d111)
     {
         return 7;
@@ -157,7 +155,7 @@ static void drawText(const Handle(OpenGl_Workspace) &AWorkspace, const wchar_t* 
 */
 }
 
-static void drawArrow(float x1, float y1, float z1, 
+static void drawArrow(float x1, float y1, float z1,
                       float x2, float y2, float z2,
                       float xn, float yn, float zn)
 {
@@ -809,7 +807,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     {
       glColor3fv(myXNameColor);
       offset = myXAxisOffset + myXTickmarkLength;
-      drawText(AWorkspace, myXName, myFontOfNames, myStyleOfNames, mySizeOfNames, 
+      drawText(AWorkspace, myXName, myFontOfNames, myStyleOfNames, mySizeOfNames,
                m1[0], m1[1] + offset * m2[1], m1[2] + offset * m2[2]);
     }
 
@@ -825,7 +823,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
       {
         sprintf(textValue, "%g", LX1[0] + i * step);
         j = 0; while (wtextValue[j] = textValue[j]) j++;
-        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues, 
+        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues,
                  LX1[0] + i * step, m1[1] + offset * m2[1], m1[2] + offset * m2[2]);
         i++;
       }
@@ -881,7 +879,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     {
       glColor3fv(myYNameColor);
       offset = myYAxisOffset + myYTickmarkLength;
-      drawText(AWorkspace, myYName, myFontOfNames, myStyleOfNames, mySizeOfNames, 
+      drawText(AWorkspace, myYName, myFontOfNames, myStyleOfNames, mySizeOfNames,
                m1[0] + offset * m2[0], m1[1], m1[2] + offset * m2[2]);
     }
 
@@ -897,7 +895,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
       {
         sprintf(textValue, "%g", LY1[1] + i * step);
         j = 0; while (wtextValue[j] = textValue[j]) j++;
-        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues, 
+        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues,
                  m1[0] + offset * m2[0], LY1[1] + i * step, m1[2] + offset * m2[2]);
         i++;
       }
@@ -953,7 +951,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     {
       glColor3fv(myZNameColor);
       offset = myZAxisOffset + myZTickmarkLength;
-      drawText(AWorkspace, myZName, myFontOfNames, myStyleOfNames, mySizeOfNames, 
+      drawText(AWorkspace, myZName, myFontOfNames, myStyleOfNames, mySizeOfNames,
                m1[0] + offset * m2[0], m1[1] + offset * m2[1], m1[2]);
     }
 
@@ -969,7 +967,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
       {
         sprintf(textValue, "%g", LZ1[2] + i * step);
         j = 0; while (wtextValue[j] = textValue[j]) j++;
-        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues, 
+        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues,
                  m1[0] + offset * m2[0], m1[1] + offset * m2[1], LZ1[2] + i * step);
         i++;
       }

@@ -34,8 +34,6 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Trihedron.hxx>
 
-#include <GL/glu.h> // gluNewQuadric()
-
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Trihedron,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Trihedron,MMgt_TShared)
 

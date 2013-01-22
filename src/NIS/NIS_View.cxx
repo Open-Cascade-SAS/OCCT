@@ -25,10 +25,8 @@
 #include <Visual3d_View.hxx>
 #include <Bnd_B2f.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#ifdef WNT
-#include <Windows.h>
-#endif
-#include <GL/gl.h>
+
+#include <OpenGl_GlCore11.hxx>
 
 IMPLEMENT_STANDARD_HANDLE  (NIS_View, V3d_OrthographicView)
 IMPLEMENT_STANDARD_RTTIEXT (NIS_View, V3d_OrthographicView)
@@ -40,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT (NIS_View, V3d_OrthographicView)
 
 NIS_View::NIS_View (const Handle(V3d_Viewer)&    theViewer,
                     const Handle(Aspect_Window)& theWindow)
-  : V3d_OrthographicView (theViewer), 
+  : V3d_OrthographicView (theViewer),
     myIsTopHilight(Standard_False),
     myDoHilightSelected(Standard_True)
 {
@@ -50,7 +48,7 @@ NIS_View::NIS_View (const Handle(V3d_Viewer)&    theViewer,
 
 //=======================================================================
 //function : SetWindow
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_View::SetWindow(const Handle(Aspect_Window) &theWindow)
@@ -69,7 +67,7 @@ void NIS_View::SetWindow(const Handle(Aspect_Window) &theWindow)
 
 //=======================================================================
 //function : AddContext
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void  NIS_View::AddContext (NIS_InteractiveContext * theCtx)
@@ -85,7 +83,7 @@ void  NIS_View::AddContext (NIS_InteractiveContext * theCtx)
 
 //=======================================================================
 //function : RemoveContext
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_View::RemoveContext (NIS_InteractiveContext * theCtx)
@@ -108,7 +106,7 @@ void NIS_View::RemoveContext (NIS_InteractiveContext * theCtx)
 
 //=======================================================================
 //function : FitAll3d
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean NIS_View::FitAll3d (const Quantity_Coefficient theCoef)
@@ -194,7 +192,7 @@ Standard_Boolean NIS_View::FitAll3d (const Quantity_Coefficient theCoef)
 
 //=======================================================================
 //function : GetBndBox
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Bnd_B3f NIS_View::GetBndBox() const
@@ -226,13 +224,13 @@ Bnd_B3f NIS_View::GetBndBox() const
 
 //=======================================================================
 //function : GetBndBox
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void NIS_View::GetBndBox( Standard_Integer& theXMin, Standard_Integer& theXMax, 
+void NIS_View::GetBndBox( Standard_Integer& theXMin, Standard_Integer& theXMax,
                           Standard_Integer& theYMin, Standard_Integer& theYMax ) const
 {
-  theXMin = theYMin = 0; 
+  theXMin = theYMin = 0;
   theXMax = theYMax = -1;
 
   Bnd_B3f aBox = GetBndBox();
@@ -260,23 +258,23 @@ void NIS_View::GetBndBox( Standard_Integer& theXMin, Standard_Integer& theXMax,
     if (aLimp[0] < aLimp[1] && aLimp[2] < aLimp[3])
     {
       // Scale the view
-      // WindowFit (aLimp[0], aLimp[2], aLimp[1], aLimp[3]);  
+      // WindowFit (aLimp[0], aLimp[2], aLimp[1], aLimp[3]);
       theXMin = aLimp[0];
       theXMax = aLimp[1];
       theYMin = aLimp[2];
       theYMax = aLimp[3];
-    } 
+    }
   }
 }
 
 
 //=======================================================================
 //function : MyCallback
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 int NIS_View::MyCallback (Aspect_Drawable                /* Window ID */,
-                          void*                          ptrData, 
+                          void*                          ptrData,
                           Aspect_GraphicCallbackStruct*  callData /* call data */)
 {
   // Avoid multiple rendering of the scene ( accordingly with update of
@@ -286,7 +284,7 @@ int NIS_View::MyCallback (Aspect_Drawable                /* Window ID */,
   // see comments to OCC_REDRAW_ADDITIONAL_CALLBACKS definition )
   if (callData->reason & OCC_REDRAW_ADDITIONAL_CALLBACKS)
     return 0;
-  
+
   const Handle(NIS_View) thisView (static_cast<NIS_View *> (ptrData));
   NCollection_List<NIS_InteractiveContext *>::Iterator anIter;
 #ifdef CLIP
@@ -387,7 +385,7 @@ int NIS_View::MyCallback (Aspect_Drawable                /* Window ID */,
 
 //=======================================================================
 //function : DynamicHilight
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_View::DynamicHilight  (const Standard_Integer theX,
@@ -396,7 +394,7 @@ void NIS_View::DynamicHilight  (const Standard_Integer theX,
   myDetected.Clear();
   const Handle(NIS_InteractiveObject) aSelected = Pick (theX, theY);
 
-  // ASV: if at least one Context returns IsSelectable()==False, 
+  // ASV: if at least one Context returns IsSelectable()==False,
   // hilight is canceled, this method returns
   if (aSelected.IsNull() == Standard_False) {
     if (aSelected->IsSelectable() == Standard_False)
@@ -411,7 +409,7 @@ void NIS_View::DynamicHilight  (const Standard_Integer theX,
 
     // 30.07.10 - NKV - synchronize behaviour with AIS interactive context (if need)
     if (aSelected.IsNull() ||
-        (myDoHilightSelected == Standard_False && 
+        (myDoHilightSelected == Standard_False &&
          aSelected->GetDrawer()->GetContext()->IsSelected(aSelected)))
     {
       myDynHilighted.Nullify();
@@ -427,7 +425,7 @@ void NIS_View::DynamicHilight  (const Standard_Integer theX,
 
 //=======================================================================
 //function : DynamicUnhilight
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_View::DynamicUnhilight(const Handle_NIS_InteractiveObject& theObj)
@@ -594,7 +592,7 @@ void  NIS_View::Select (const NCollection_List<gp_XY> &thePolygon,
 
 //=======================================================================
 //function : Pick
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Handle_NIS_InteractiveObject NIS_View::Pick (const Standard_Integer theX,
@@ -616,7 +614,7 @@ Handle_NIS_InteractiveObject NIS_View::Pick (const Standard_Integer theX,
 
 //=======================================================================
 //function : Pick
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Handle_NIS_InteractiveObject NIS_View::Pick

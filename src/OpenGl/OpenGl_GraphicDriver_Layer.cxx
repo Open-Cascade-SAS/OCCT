@@ -28,8 +28,6 @@
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_TextParam.hxx>
 
-#include <GL/glu.h>
-
 /*----------------------------------------------------------------------*/
 
 struct OpenGl_LAYER_PROP
@@ -263,7 +261,7 @@ void OpenGl_GraphicDriver::SetTextAttributes (const Standard_CString Font, const
   // update if there are any modifications
   if (strcmp (TheLayerProp.AspectText.Font(), Font) != 0   ||
       (int)TheLayerProp.AspectText.DisplayType() != AType  ||
-      aSubColor.rgb[0] != (float)R || 
+      aSubColor.rgb[0] != (float)R ||
       aSubColor.rgb[1] != (float)G ||
       aSubColor.rgb[2] != (float)B)
   {
@@ -319,7 +317,7 @@ void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_Sh
         glLogicOp(GL_XOR);
       }
       break;
-      
+
       // subtitle type
       case Aspect_TODT_SUBTITLE:
       {
@@ -345,7 +343,7 @@ void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_Sh
         gluUnProject (aWinX,  aWinY + aDescent, aWinZ, aModelMatrix,
           aProjMatrix, aViewport, &aCoordX[0], &aCoordY[0], &aCoordZ[0]);
 
-        // right bottom corner        
+        // right bottom corner
         gluUnProject (aWinX + aWidth, aWinY + aDescent, aWinZ, aModelMatrix,
           aProjMatrix, aViewport, &aCoordX[1], &aCoordY[1], &aCoordZ[1]);
 
@@ -354,7 +352,7 @@ void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_Sh
           aProjMatrix, aViewport, &aCoordX[2], &aCoordY[2], &aCoordZ[2]);
 
         // left top corner
-        gluUnProject (aWinX, aWinY + anAscent, aWinZ, aModelMatrix, 
+        gluUnProject (aWinX, aWinY + anAscent, aWinZ, aModelMatrix,
           aProjMatrix, aViewport, &aCoordX[3], &aCoordY[3], &aCoordZ[3]);
 
         // draw colored plane and reset the color
@@ -394,13 +392,13 @@ void OpenGl_GraphicDriver::Text (const Standard_CString AText, const Standard_Sh
         gluUnProject (aWinX, aWinY, aWinZ, aModelMatrix, aProjMatrix,
           aViewport, &aProjX, &aProjY, &aProjZ);
 
-        gluUnProject (aWinX - 1, aWinY - 1, aWinZ, aModelMatrix, aProjMatrix, 
+        gluUnProject (aWinX - 1, aWinY - 1, aWinZ, aModelMatrix, aProjMatrix,
           aViewport, &aProjX, &aProjY, &aProjZ);
 
         openglDisplay->RenderText(aWChStr, 1, (float)aProjX, (float)aProjY,
           (float)aProjZ, &TheLayerProp.AspectText, &TheLayerProp.TextParam);
 
-        gluUnProject (aWinX - 1, aWinY + 1, aWinZ, aModelMatrix, aProjMatrix, 
+        gluUnProject (aWinX - 1, aWinY + 1, aWinZ, aModelMatrix, aProjMatrix,
           aViewport, &aProjX, &aProjY, &aProjZ);
 
         openglDisplay->RenderText(aWChStr, 1, (float)aProjX, (float)aProjY,

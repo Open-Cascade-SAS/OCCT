@@ -21,10 +21,7 @@
 #include <NIS_Drawer.hxx>
 #include <NIS_View.hxx>
 
-#ifdef WNT
-#include <windows.h>
-#endif
-#include <GL/gl.h>
+#include <OpenGl_GlCore11.hxx>
 
 //=======================================================================
 //function : NIS_DrawList()
@@ -75,7 +72,7 @@ NIS_DrawList::NIS_DrawList (const Handle_NIS_View& theView)
 
 //=======================================================================
 //function : ~NIS_DrawList
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 NIS_DrawList::~NIS_DrawList ()
@@ -145,7 +142,7 @@ void NIS_DrawList::ClearListID (const Handle_NIS_View& theView)
 
 //=======================================================================
 //function : BeginPrepare
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_DrawList::BeginPrepare (const Standard_Integer theType)
@@ -162,7 +159,7 @@ void NIS_DrawList::BeginPrepare (const Standard_Integer theType)
 
 //=======================================================================
 //function : EndPrepare
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_DrawList::EndPrepare (const Standard_Integer theType)
@@ -173,7 +170,7 @@ void NIS_DrawList::EndPrepare (const Standard_Integer theType)
 
 //=======================================================================
 //function : Call
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_DrawList::Call (const Standard_Integer theType)
@@ -183,7 +180,7 @@ void NIS_DrawList::Call (const Standard_Integer theType)
 
 //=======================================================================
 //function : SetDynHilighted
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean NIS_DrawList::SetDynHilighted
@@ -212,12 +209,12 @@ Standard_Boolean NIS_DrawList::SetDynHilighted
 
 //=======================================================================
 //function : SetUpdated
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_DrawList::SetUpdated (const Standard_Integer theType,
                                const Standard_Boolean theFlag)
-{ 
+{
   if (theFlag)
     SetUpdated(theType);
   else
@@ -226,7 +223,7 @@ void NIS_DrawList::SetUpdated (const Standard_Integer theType,
 
 //=======================================================================
 //function : SetUpdated
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void NIS_DrawList::SetUpdated (const Standard_Integer theType)

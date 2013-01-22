@@ -32,8 +32,6 @@
 
 #include <Graphic3d_TextureEnv.hxx>
 
-#include <GL/glu.h> // gluUnProject()
-
 IMPLEMENT_STANDARD_HANDLE(OpenGl_View,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,MMgt_TShared)
 

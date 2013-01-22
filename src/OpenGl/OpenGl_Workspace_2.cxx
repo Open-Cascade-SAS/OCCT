@@ -43,8 +43,6 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Display.hxx>
 
-#include <GL/glu.h> // gluOrtho2D()
-
 //10-05-96 : CAL ; Ajout d'un nouveau delta dans les copies de pixels (voir CALL_DEF_DELTA)
 #define CALL_DEF_DELTA 10
 
