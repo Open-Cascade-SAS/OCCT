@@ -73,15 +73,15 @@ is
     class AncestorIterator;
     
     deferred class Storable ;
-    	primitive Boolean      inherits Storable;
-    	primitive Character    inherits Storable;
+        primitive Boolean      inherits Storable;
+        primitive Character    inherits Storable;
         primitive ExtCharacter inherits Storable;
         primitive Integer      inherits Storable;
-	primitive Byte         inherits Storable;
+        primitive Byte         inherits Storable;
         primitive Real         inherits Storable;
         primitive ShortReal    inherits Storable;
-	
-    	primitive OId          inherits Storable;
+        primitive Time         inherits Storable;
+        primitive OId          inherits Storable;
 
     	deferred class Persistent ; -- inherits Storable
 	class GUID;     -- inherits Storable

@@ -110,7 +110,7 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
   thefilename = new TCollection_HAsciiString(afilename);
 
   struct stat buf;
-  if(!stat(afilename,&buf)) thetime = (Standard_Integer)buf.st_ctime;
+  if(!stat(afilename,&buf)) thetime = buf.st_ctime;
 
   thequantitiessequence = new Units_QuantitiesSequence();
   

@@ -105,7 +105,7 @@ is
 fields
 
     thefilename         : HAsciiString from TCollection;
-    thetime             : Integer;
+    thetime             : Time from Standard;
     thesequenceoftokens : TokensSequence from Units;
 
 end Lexicon;

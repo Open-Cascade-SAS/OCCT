@@ -29,7 +29,7 @@ inherits
     Transient
     
 uses
-    OStream           from  Standard,
+    OStream           from Standard,
     HAsciiString      from TCollection,
     MaterialsSequence from Materials,
     Material          from Materials
@@ -85,7 +85,7 @@ is
 fields
 
     thefilename          : HAsciiString from TCollection;
-    thetime              : Integer from Standard;
+    thetime              : Time from Standard;
     thematerialssequence : MaterialsSequence from Materials;
 
 end MaterialsDictionary;

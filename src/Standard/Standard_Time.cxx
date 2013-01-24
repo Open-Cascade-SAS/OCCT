@@ -1,5 +1,4 @@
-// Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,33 +15,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <Standard_Time.hxx>
+#include <Standard_ConstructionError.hxx>
 
-#ifndef _Standard_TypeDef_HeaderFile
-#define _Standard_TypeDef_HeaderFile
+const Handle_Standard_Type& Standard_Time_Type_()
+{
+  static Handle_Standard_Type _aType =
+    new Standard_Type ("Standard_Time", sizeof(Standard_Time), 0, NULL);
 
-#include <stddef.h>
-#include <ctime>
-
-#define Standard_False (Standard_Boolean)0
-#define Standard_True  (Standard_Boolean)1
-
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
-typedef int Standard_Integer;
-typedef double Standard_Real;
-typedef unsigned int Standard_Boolean;
-typedef float Standard_ShortReal;
-typedef char  Standard_Character;
-typedef short Standard_ExtCharacter;
-typedef unsigned char  Standard_Byte;
-typedef void* Standard_Address;
-typedef size_t Standard_Size;
-//
-typedef const char*  Standard_CString;
-typedef const short* Standard_ExtString;
-
-typedef std::time_t Standard_Time;
-
-#endif
+  return _aType;
+}

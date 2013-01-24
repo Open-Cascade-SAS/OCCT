@@ -136,7 +136,7 @@ is
 fields
 
     thefilename                    : HAsciiString                from TCollection;
-    thetime                        : Integer from Standard                                ;
-    thesequenceofmethoddefinitions : SequenceOfMethodDefinitions from Dynamic    ;
+    thetime                        : Time                        from Standard;
+    thesequenceofmethoddefinitions : SequenceOfMethodDefinitions from Dynamic;
 
 end MethodDefinitionsDictionary;

@@ -49,6 +49,8 @@ Standard_ShortReal.cxx
 Standard_ShortReal.hxx
 Standard_Stream.hxx
 Standard_String.hxx
+Standard_Time.cxx
+Standard_Time.hxx
 Standard_Transient.hxx
 Standard_Transient_proto.hxx
 Standard_TypeDef.hxx

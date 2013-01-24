@@ -111,7 +111,7 @@ is
 fields
 
     thefilename           : HAsciiString from TCollection;
-    thetime               : Integer;
+    thetime               : Time from Standard;
     thequantitiessequence : QuantitiesSequence from Units;
 
 end UnitsDictionary;

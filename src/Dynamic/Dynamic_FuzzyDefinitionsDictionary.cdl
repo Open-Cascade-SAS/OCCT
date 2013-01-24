@@ -128,7 +128,7 @@ is
 fields
 
     thefilename                   : HAsciiString               from TCollection;
-    thetime                       : Integer from Standard                                ;
-    thesequenceoffuzzydefinitions : SequenceOfFuzzyDefinitions from Dynamic    ;
+    thetime                       : Time                       from Standard;
+    thesequenceoffuzzydefinitions : SequenceOfFuzzyDefinitions from Dynamic;
 
 end FuzzyDefinitionsDictionary;
