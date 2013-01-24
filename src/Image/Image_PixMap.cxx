@@ -20,7 +20,7 @@
 #include <Image_PixMap.hxx>
 
 #ifdef _MSC_VER
-  //
+  #include <malloc.h>
 #elif (defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 1)
   #include <mm_malloc.h>
 #else
