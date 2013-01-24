@@ -432,6 +432,79 @@ static int VImmediateFront (Draw_Interpretor& theDI,
   return 0;
 }
 
+//==============================================================================
+//function : VGlInfo
+//purpose  :
+//==============================================================================
+
+static int VGlInfo (Draw_Interpretor& theDI,
+                    Standard_Integer  theArgNb,
+                    const char**      theArgVec)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  if (theArgNb <= 1)
+  {
+    theDI << "OpenGL info:\n"
+          << "  GLvendor    = '" << (const char* )glGetString(GL_VENDOR)   << "'\n"
+          << "  GLdevice    = '" << (const char* )glGetString(GL_RENDERER) << "'\n"
+          << "  GLversion   = '" << (const char* )glGetString(GL_VERSION)  << "'\n"
+          << "  GLSLversion = '" << (const char* )glGetString(GL_SHADING_LANGUAGE_VERSION) << "'\n";
+    return 0;
+  }
+
+  const Standard_Boolean isList = theArgNb >= 3;
+  for (Standard_Integer anIter = 1; anIter < theArgNb; ++anIter)
+  {
+    TCollection_AsciiString aName (theArgVec[anIter]);
+    aName.UpperCase();
+    const char* aValue = NULL;
+    if (aName.Search ("VENDOR") != -1)
+    {
+      aValue = (const char* )glGetString (GL_VENDOR);
+    }
+    else if (aName.Search ("RENDERER") != -1)
+    {
+      aValue = (const char* )glGetString (GL_RENDERER);
+    }
+    else if (aName.Search ("SHADING_LANGUAGE_VERSION") != -1
+          || aName.Search ("GLSL") != -1)
+    {
+      aValue = (const char* )glGetString (GL_SHADING_LANGUAGE_VERSION);
+    }
+    else if (aName.Search ("VERSION") != -1)
+    {
+      aValue = (const char* )glGetString (GL_VERSION);
+    }
+    else if (aName.Search ("EXTENSIONS") != -1)
+    {
+      aValue = (const char* )glGetString (GL_EXTENSIONS);
+    }
+    else
+    {
+      std::cerr << "Unknown key '" << aName.ToCString() << "'\n";
+      return 1;
+    }
+
+    if (isList)
+    {
+      theDI << "{" << aValue << "} ";
+    }
+    else
+    {
+      theDI << aValue;
+    }
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : OpenGlCommands
 //purpose  :
@@ -451,4 +524,8 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
     "vimmediatefront : render immediate mode to front buffer or to back buffer",
     __FILE__, VImmediateFront, aGroup);
 
+  theCommands.Add("vglinfo",
+    "vglinfo [GL_VENDOR] [GL_RENDERER] [GL_VERSION] [GL_SHADING_LANGUAGE_VERSION] [GL_EXTENSIONS]"
+    " : prints GL info",
+    __FILE__, VGlInfo, aGroup);
 }

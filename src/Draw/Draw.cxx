@@ -31,6 +31,7 @@
 
 #include <Draw_Appli.hxx>
 #include <OSD.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_Timer.hxx>
 
 #ifdef HAVE_SYS_TIME_H
@@ -159,13 +160,41 @@ void exitProc(ClientData /*dc*/)
 // *******************************************************************
 // main
 // *******************************************************************
-#ifdef WNT
+#ifdef _WIN32
 //Standard_EXPORT void Draw_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lps
 Standard_EXPORT void Draw_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpszLine, int nShow,const FDraw_InitAppli Draw_InitAppli)
 #else
 void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_InitAppli)
 #endif
 {
+
+// prepend extra DLL search path to override system libraries like opengl32.dll
+#ifdef _WIN32
+  OSD_Environment aUserDllEnv ("CSF_UserDllPath");
+  TCollection_AsciiString aUserDllPath = aUserDllEnv.Value();
+  if (!aUserDllPath.IsEmpty())
+  {
+    // This function available since Win XP SP1 #if (_WIN32_WINNT >= 0x0502).
+    // We retrieve dynamically here (kernel32 should be always preloaded).
+    typedef BOOL (WINAPI *SetDllDirectoryA_t)(const char* thePathName);
+    HMODULE aKern32Module = GetModuleHandleA ("kernel32");
+    SetDllDirectoryA_t aFunc = (aKern32Module != NULL)
+                             ? (SetDllDirectoryA_t )GetProcAddress (aKern32Module, "SetDllDirectoryA") : NULL;
+    if (aFunc != NULL)
+    {
+      aFunc (aUserDllPath.ToCString());
+    }
+    else
+    {
+      //std::cerr << "SetDllDirectoryA() is not available on this system!\n";
+    }
+    if (aKern32Module != NULL)
+    {
+      FreeLibrary (aKern32Module);
+    }
+  }
+#endif
+
   // *****************************************************************
   // analyze arguments
   // *****************************************************************
@@ -174,7 +203,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   Standard_Integer i;
   Standard_Boolean isInteractiveForced = Standard_False;
 
-#ifdef WNT
+#ifdef _WIN32
   // On NT command line arguments are in the lpzline and not in argv
   int argc = 0;
   const int MAXARGS = 1024;
