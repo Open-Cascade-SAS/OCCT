@@ -18,9 +18,11 @@
 #include <Graphic3d_ExportFormat.hxx>
 #include <QWindowsStyle>
   
-#ifdef WNT
+#if defined(_WIN32) || defined(__WIN32__)
 #include <WNT_Window.hxx>
 #include <Graphic3d_WNTGraphicDevice.hxx>
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#include <Cocoa_Window.hxx>
 #else
 #include <QX11Info>
 #include <GL/glx.h>
@@ -53,7 +55,7 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
 : QWidget( parent ),
 myViewActions( 0 )
 {
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   //XSynchronize( x11Display(),true ); // it is possible to use QApplication::syncX();
   XSynchronize( x11Info().display(),true ); // it is possible to use QApplication::syncX();
 #endif
@@ -70,7 +72,7 @@ myViewActions( 0 )
 	setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
 
-#if !defined WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
     XVisualInfo* pVisualInfo;
     if ( x11Info().display() )
     {
@@ -161,22 +163,28 @@ View::~View()
 
 void View::init()
 {
-    if(myView.IsNull())
-    myView = myContext->CurrentViewer()->CreateView();
-    int windowHandle = (int) winId();
-    short hi, lo;
-    lo = (short) windowHandle;
-    hi = (short) (windowHandle >> 16);
-#ifdef WNT
-    Handle(WNT_Window) hWnd = new WNT_Window(Handle(Graphic3d_WNTGraphicDevice)::DownCast(myContext->CurrentViewer()->Device()),(int) hi,(int) lo);
+  if (myView.IsNull())
+  myView = myContext->CurrentViewer()->CreateView();
+#if defined(_WIN32) || defined(__WIN32__)
+  Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
+  Handle(WNT_Window) hWnd = new WNT_Window (Handle(Graphic3d_WNTGraphicDevice)::DownCast (myContext->CurrentViewer()->Device()),
+                                            aWindowHandle);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  NSView* aViewHandle = (NSView* )winId();
+  Handle(Cocoa_Window) hWnd = new Cocoa_Window (aViewHandle);
 #else
-    Handle(Xw_Window) hWnd = new Xw_Window(Handle(Graphic3d_GraphicDevice)::DownCast(myContext->CurrentViewer()->Device()),(int) hi,(int) lo,Xw_WQ_SAMEQUALITY);
+  Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
+  Handle(Xw_Window) hWnd = new Xw_Window (Handle(Graphic3d_GraphicDevice)::DownCast (myContext->CurrentViewer()->Device()),
+                                          aWindowHandle,
+                                          Xw_WQ_SAMEQUALITY);
 #endif // WNT
-    myView->SetWindow( hWnd );
-    if ( !hWnd->IsMapped() )
-        hWnd->Map();
-    myView->SetBackgroundColor(Quantity_NOC_BLACK);
-    myView->MustBeResized();
+  myView->SetWindow (hWnd);
+  if (!hWnd->IsMapped())
+  {
+    hWnd->Map();
+  }
+  myView->SetBackgroundColor (Quantity_NOC_BLACK);
+  myView->MustBeResized();
 }
 
 void View::paintEvent( QPaintEvent * e )

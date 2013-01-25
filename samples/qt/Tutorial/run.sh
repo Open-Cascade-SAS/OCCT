@@ -8,7 +8,17 @@ host=`uname -s`
 STATION=$host
 
 RES_DIR="${aSamplePath}/res"
-BIN_DIR="${aSamplePath}/${STATION}/bin"
+
+aSystem=`uname -s`
+if [ "$aSystem" == "Darwin" ]; then
+  if [ "${CASDEB}" == "d" ]; then
+    BIN_DIR="${aSamplePath}/build/Debug/Tutorial.app/Contents/MacOS"
+  else
+    BIN_DIR="${aSamplePath}/build/Release/Tutorial.app/Contents/MacOS"
+  fi
+else
+  BIN_DIR="${aSamplePath}/${STATION}/bin${CASDEB}"
+fi
 
 CSF_ResourcesDefaults="${RES_DIR}"
 CSF_TutorialResourcesDefaults="${RES_DIR}"
@@ -19,9 +29,13 @@ export CSF_TutorialResourcesDefaults CSF_ResourcesDefaults
 export PATH
 
 if test ! -r "${BIN_DIR}/Tutorial"; then
-   echo "Executable \"${BIN_DIR}/Tutorial\" not found."
-   echo "Probably you don't compile the application. Execute \"make\"."
-   exit 1
+  echo "Executable \"${BIN_DIR}/Tutorial\" not found."
+  if [ "$aSystem" == "Darwin" ]; then
+    echo "Probably you don't compile the application. Build it with Xcode."
+  else
+    echo "Probably you don't compile the application. Execute \"make\"."
+  fi
+  exit 1
 fi
 
 ${BIN_DIR}/Tutorial
