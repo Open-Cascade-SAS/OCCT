@@ -1,0 +1,61 @@
+puts "================"
+puts "OCC23192"
+puts "================"
+puts ""
+#######################################################################################
+# Regression in writestl command
+#######################################################################################
+
+catch { pload XDE }
+
+set BugNumber OCC23192
+
+set aFile $imagedir/${test_image}.stl
+catch {exec rm -f ${aFile}}
+
+set anASCIImode 1
+set InParallel 0
+
+box res 10 10 10
+
+writestl res ${aFile} ${anASCIImode} ${InParallel}
+catch {exec chmod 777 ${aFile}}
+
+if { [file exists ${aFile}] } {
+  readstl result ${aFile}
+
+set nb_v_good 8
+set nb_e_good 18
+set nb_w_good 12
+set nb_f_good 12
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 51
+
+  # Check file size
+  set size_status 0
+  if [string compare $tcl_platform(platform) "windows"] {
+	set filesize [lindex [exec ls -l ${aFile}] 5]
+  } else {
+	set filesize [lindex [exec ls -l ${aFile}] 4]
+  }
+  if { ${filesize} != 0 } {
+     set size_status 0
+  } else {
+     set size_status 1
+  }
+
+  if { ${size_status} == 0 } {
+     puts "OK ${BugNumber}"
+  } else {
+     puts "Faulty ${BugNumber}"
+  }
+} else {
+  puts "Faulty ${BugNumber}"
+}
+
+set square 600
+set 3dviewer 0
+

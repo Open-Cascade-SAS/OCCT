@@ -1,0 +1,18 @@
+puts "========================"
+puts "OCC22500"
+puts "========================"
+puts ""
+#######################################################################
+# Sewing creates invalid shape
+#######################################################################
+
+set BugNumber OCC22500
+
+restore [locate_data_file OCC22500-bug602badsewing.brep] a 
+
+if { [catch {sewing result 0.01 a} catch_result] } {
+    puts "Faulty ${BugNumber} : function Sewing works wrongly"
+}
+
+set square 0.0363594
+set 3dviewer 0

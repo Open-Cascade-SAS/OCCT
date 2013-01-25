@@ -1,0 +1,43 @@
+puts "================"
+puts "OCC22762"
+puts "================"
+puts ""
+######################################################################################
+# Bug in Graphic3d_Vector::IsParallel
+######################################################################################
+
+set BugNumber OCC22762
+
+set x0 0
+set y0 0
+set z0 0
+set x1 0.57735026
+set y1 0.57735026
+set z1 0.57735026
+set x2 -0.40824828
+set y2 -0.40824828
+set z2 0.81649655
+
+vinit
+vpoint p0 $x0 $y0 $z0
+vpoint p1 $x1 $y1 $z1
+vpoint p2 $x2 $y2 $z2
+vline line1 p0 p1
+vline line2 p0 p2
+vfit
+
+set info [ OCC22762 $x1 $y1 $z1 $x2 $y2 $z2]
+set Word [string compare [lindex ${info} end] "false"]
+
+# Resume
+puts ""
+if { ${Word} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+set only_screen 1
+
+
+

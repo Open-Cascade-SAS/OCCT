@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC20827"
+puts "================"
+puts ""
+#######################################################################################
+# Problem of displaying in SHADING mode
+######################################################################################
+
+set BugNumber OCC20827
+
+restore [locate_data_file OCC20827-ran24s_a-d_1_f107.brep] result
+
+set square 9707.82
+
+set nb_v_good 93
+set nb_e_good 93
+set nb_w_good 13
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 200
+
+set 3dviewer 0

@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC22985"
+puts "============"
+puts ""
+#######################################################################
+# Regression: no shading on good face
+#######################################################################
+
+set BugNumber OCC22985
+
+restore [locate_data_file OCC22985-gt602-f72-noshading.brep] result
+
+vinit
+vdisplay result
+vfit
+
+vsetdispmode 1
+
+set x 150
+set y 175
+
+set RED_R1   0.68627399206161499
+set GREEN_R1 0.48627400398254395
+set BLUE_R1  0.078431000000000001
+
+vmoveto $x $y
+vmoveto $x $y
+
+checkcolor $x $y ${RED_R1} ${GREEN_R1} ${BLUE_R1}
+
+set square 0.0984334
+set only_screen 1
+

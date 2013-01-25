@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC22828"
+puts "============"
+puts ""
+#######################################################################
+# Fuse on simple shapes with conical surfaces crashes
+#######################################################################
+
+set BugNumber OCC22828
+
+restore [locate_data_file bug22828_shape1.brep] b1 
+restore [locate_data_file bug22828_shape2.brep] b2 
+catch { bfuse result b1 b2 }
+
+set square 4029.04
+
+set nb_v_good 11
+set nb_e_good 15
+set nb_w_good 12
+set nb_f_good 9
+set nb_sh_good 2
+set nb_sol_good 2
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 52
+
+set 3dviewer 1
+

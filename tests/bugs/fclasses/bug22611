@@ -1,0 +1,26 @@
+puts "TODO OCC22611 ALL: Tcl Exception: invalid command name"
+puts "TODO OCC22611 ALL: TEST INCOMPLETE"
+
+puts "========"
+puts "OCC22611"
+puts "========"
+puts ""
+#######################################################################
+# Memory leak in expression interpreter
+#######################################################################
+
+pload QAcommands
+
+set BugNumber OCC22611
+
+OCC22611 "0.1214343" 1
+
+set listmem {}
+set i_max 1000000
+OCC22611 "0.1214343" ${i_max}
+
+lappend listmem [expr [meminfo w] / 1024]
+if { [checktrend $listmem 0 1 "Memory leak detected"] } {
+    puts "No memory leak"
+    break
+}

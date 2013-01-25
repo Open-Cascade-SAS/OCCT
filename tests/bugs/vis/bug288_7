@@ -1,0 +1,31 @@
+puts "================"
+puts "OCC288"
+puts "================"
+puts ""
+#######################################################################################
+# Currently meshing (for shading) of some shapes looks incorrect
+######################################################################################
+
+set BugNumber OCC288
+
+restore [locate_data_file shading_058.brep] result
+
+set square 14125.5
+
+set nb_v_good 23
+set nb_e_good 40
+set nb_w_good 19
+set nb_f_good 19
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 104
+
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+set 3dviewer 1

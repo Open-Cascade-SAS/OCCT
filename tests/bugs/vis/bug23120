@@ -6,8 +6,6 @@ puts ""
 # Transform persistence is not restored
 ###########################################################################
 
-pload QAcommands
-
 box b1 10 20 30
 box b2 10 20 30
 ttranslate b2 50 50 0

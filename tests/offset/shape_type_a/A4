@@ -1,6 +1,8 @@
-#old file ofs9
+puts "TODO ?OCC23086 ALL: Error : The offset is not valid. The volume is 0."
+puts "TODO ?OCC23086 ALL: Error : The volume of the resulting shape is"
 
-restore [locate_data_file CHE_bb9.rle] s
-OFFSETSHAPE -0.1 {} $calcul $type
+pcone s 10 5 20
 
-set volume 24.6541
+OFFSETSHAPE -1 {} $calcul $type
+
+set volume 2462.04

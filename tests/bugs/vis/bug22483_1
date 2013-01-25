@@ -1,0 +1,16 @@
+puts "============"
+puts "OCC22483"
+puts "============"
+puts ""
+#######################################################################
+# ZBufferTrihedron loses user-defined color
+#######################################################################
+
+set BugNumber OCC22483
+
+vinit
+vzbufftrihedron
+
+set only_screen 1
+
+

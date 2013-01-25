@@ -1,0 +1,53 @@
+pload QAcommands
+
+puts "============"
+puts "OCC22884"
+puts "============"
+puts ""
+#############################################################################
+# The attached face cannot be displayed in shading mode
+#############################################################################
+
+set BugNumber OCC22884
+
+set x1 136
+set y1 176
+
+restore [locate_data_file bug22884_Face_1.brep] result
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+set square 697.812
+
+set nb_v_good 46
+set nb_e_good 46
+set nb_w_good 3
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 96
+
+set Color [QAGetPixelColor $x1 $y1]
+set R [lindex ${Color} 2]
+set G [lindex ${Color} 5]
+set B [lindex ${Color} 8]
+set color_status 0
+if { $R == 0 && $G == 0 && $B == 0 } {
+    set color_status 1
+} else {
+    set color_status 0
+}
+
+
+if { ${color_status} == 0} {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+set 3dviewer 0
+

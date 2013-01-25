@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC331"
+puts "================"
+puts ""
+#######################################################################################
+# Dark spot on a sphere after nurbsconvert
+######################################################################################
+
+set BugNumber OCC331
+
+box b -5 -5 -5 10 10 10
+psphere s 6
+fuse res2 s b
+nurbsconvert result res2
+
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+set square 619.595
+set 3dviewer 1

@@ -1,0 +1,22 @@
+pload QAcommands
+
+puts "==========="
+puts "OCC22586"
+puts "==========="
+puts ""
+#######################################################################
+# ShapeFix_FixSmallFace mistakenly removes a non-small pipe-like face with a seam edge
+#######################################################################
+
+set BugNumber OCC22586
+
+restore [locate_data_file OCC22586.brep] shape 
+
+if { [catch { OCC22586 shape result } catch_result] } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "${BugNumber}  OK"
+}
+
+set 3dviewer 1 
+set square 11275.7

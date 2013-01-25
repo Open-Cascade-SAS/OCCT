@@ -1,0 +1,32 @@
+puts "================"
+puts "OCC23172"
+puts "================"
+puts ""
+######################################
+# vexport failed on some Intel GPUs
+######################################
+
+set BugNumber OCC23172
+
+box b 1 2 3
+vinit
+vdisplay b
+vfit
+
+set aFile $imagedir/${test_image}.svg
+
+if { [file exists ${aFile}] } {
+  file delete ${aFile}
+}
+
+vexport $aFile SVG
+
+if { [file exists ${aFile}] } {
+   puts "Export to SVG file was done"
+   puts "OK : Export to SVG file was done"
+} else {
+   puts "Faulty : Export to SVG file was not done"
+}
+
+set only_screen 1
+

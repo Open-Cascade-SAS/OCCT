@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC22796"
+puts "============"
+puts ""
+#######################################################################
+# Possibility to display multi-line text in 3D
+#######################################################################
+
+set BugNumber OCC22796
+
+vdrawtext "MyTest1\rHello,\tWor\vld!\nMyTest2\t\a\bMyTest3" 0 0 0 255 255 255 0 0 0 1 50 0
+
+set only_screen 1
+
+
+
+

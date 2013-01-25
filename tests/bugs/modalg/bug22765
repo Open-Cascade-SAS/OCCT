@@ -1,0 +1,16 @@
+puts "========================"
+puts "OCC22765"
+puts "========================"
+puts ""
+#######################################################################
+# Sewing produced invalid shape from attached compound with tolerance 0.1
+#######################################################################
+
+set BugNumber OCC22765
+
+restore [locate_data_file OCC22765.brep] a 
+sewing result 0.1 a
+
+checkshape result f
+set square 0.0141287
+set 3dviewer 1

@@ -1,0 +1,40 @@
+puts "============"
+puts "OCC22771"
+puts "============"
+puts ""
+#######################################################################
+# An extra vertex produced in result of Boolean section for the cases of closed intersection curves.
+#######################################################################
+
+set BugNumber OCC22771
+
+puts "Load first shape ..."
+restore [locate_data_file bug22771_Box_1.brep] b1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug22771_Cylinder_1.brep] b2 
+
+puts "Prepare boolean operation ..."
+explode b1 f
+copy b1_5 b1
+copy b2_1 b2
+
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopsection result
+puts "Finish boolean operation ..."
+
+set length 314.159
+
+set nb_v_good 1
+set nb_e_good 1
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 3
+
+set 3dviewer 1

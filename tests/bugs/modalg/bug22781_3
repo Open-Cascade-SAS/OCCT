@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC22781"
+puts "================"
+puts ""
+#######################################################################################
+# Regression in GCPnts_TangentialDeflection
+######################################################################################
+
+set BugNumber OCC22781
+
+restore [locate_data_file OCC22781-BeforeCont.brep] result
+
+set length 5.82393
+set 3dviewer 0
+

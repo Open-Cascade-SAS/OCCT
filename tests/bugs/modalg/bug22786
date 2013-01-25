@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC22786"
+puts "============"
+puts ""
+#######################################################################
+# 64bit issue in AdvApp2Var
+#######################################################################
+
+set BugNumber OCC22786
+
+restore [locate_data_file OCC22786-c.brep] c 
+
+explode c
+
+gplate result 5 0 c_1 0 c_2 0 c_3 0 c_4 0 c_5 0
+
+set square 2.92409
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 10
+
+
+vinit
+vdisplay c_1 c_2 c_3 c_4 c_5
+vdisplay result
+vsetdispmode 1
+vfit
+
+set only_screen 1

@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC23065"
+puts "================"
+puts ""
+##########################################################################################
+# This is desirable to add general DRAW command to estimate visualization performance
+##########################################################################################
+
+set BugNumber OCC23065
+
+vinit
+set Log [vfps]
+
+set status 0
+if { [llength ${Log}] == 5} {
+   set word1 [string compare [lindex ${Log} end] "msec"]
+   set word2 [string compare [lindex ${Log} end-2] "CPU:"]
+   set word3 [string compare [lindex ${Log} end-4] "FPS:"]
+   if { ${word1} == 0 && ${word2} == 0 && ${word3} == 0 } {
+      set status 0
+   } else {
+      set status 1
+   }
+} else {
+   set status 1
+}
+
+# Resume
+puts ""
+if { ${status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}

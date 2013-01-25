@@ -1,0 +1,18 @@
+pload QAcommands
+
+puts "============"
+puts "OCC22744"
+puts "============"
+puts ""
+#######################################################################
+# Global HashCode function for TCollection_ExtendedString
+#######################################################################
+
+set BugNumber OCC22744
+
+set QATestVar [ catch { OCC22744 } ]
+if { ${QATestVar} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}

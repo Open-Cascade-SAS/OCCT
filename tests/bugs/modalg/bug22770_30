@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC22770"
+puts "================"
+puts ""
+#######################################################################################
+# Improve comman sewing in DRAW
+######################################################################################
+
+set BugNumber OCC22770
+
+restore [locate_data_file 22770-tramp.brep] a 
+restore [locate_data_file 22770-trans.brep] b 
+
+sewing result 0.1 a b -p
+
+set square 1.8847e+07
+
+set nb_v_good 480
+set nb_e_good 741
+set nb_w_good 273
+set nb_f_good 259
+set nb_sh_good 2
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 1756
+
+set 3dviewer 0

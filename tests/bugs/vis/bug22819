@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC22819"
+puts "============"
+puts ""
+##################################################################
+# Redesign of OpenGl driver(Tests ColorScale)
+##################################################################
+
+set BugNumber OCC22819
+
+plane p 100 100 100 0 0 1 1 0 0
+psphere result p 30
+vinit
+vdisplay result
+vsetmaterial result SILVER
+vsettransparency result 0.6
+vcolorscale
+vsetdispmode result 1 
+
+set square 11309.6
+set only_screen 1
+

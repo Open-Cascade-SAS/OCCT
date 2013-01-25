@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC22726"
+puts "============"
+puts ""
+#######################################################################
+# Exception on restoring shape
+#######################################################################
+
+set BugNumber OCC22726
+
+restore [locate_data_file OCC22726-b211.brep] result
+
+whatis result
+
+vinit
+vdisplay result
+vfit
+
+set square 812.984
+set 3dviewer 1
+

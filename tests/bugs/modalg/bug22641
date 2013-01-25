@@ -1,0 +1,36 @@
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+
+puts "================"
+puts "OCC22641"
+puts "================"
+puts ""
+#######################################################################################
+# Meshing problem on the attached model
+######################################################################################
+
+set BugNumber OCC22641
+
+catch { pload XDE }
+
+testreadstep [locate_data_file OCC22641-RailBosch.stp] result
+
+set square 160133
+
+set nb_v_good 7608
+set nb_e_good 12032
+set nb_w_good 4750
+set nb_f_good 4444
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 28836
+
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+set 3dviewer 1

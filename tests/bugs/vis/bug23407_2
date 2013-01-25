@@ -5,8 +5,6 @@ puts ""
 #######################################################################
 # Draw face outlines for XDE objects
 #######################################################################
-pload QAcommands
-pload AISV MODELING
 
 box b 10 10 10
 vinit

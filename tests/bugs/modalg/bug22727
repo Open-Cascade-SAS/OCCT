@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC22727"
+puts "================"
+puts ""
+#######################################################################################
+# Fillet not produces a result
+######################################################################################
+
+set BugNumber OCC22727
+
+restore [locate_data_file OCC22727-toFillet.brep] t
+
+tscale t 0.0507219 -0.0399294 -0.00324254 1000
+explode t e
+blend result t 2. t_3
+
+set square 3471.94
+
+set nb_v_good 12
+set nb_e_good 14
+set nb_w_good 3
+set nb_f_good 3
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 34
+
+set 3dviewer 1
+

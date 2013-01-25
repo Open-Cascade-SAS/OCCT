@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23160"
+puts "============"
+puts ""
+#######################################################################
+# Cut operation with the attached shapes produces a not correct result.
+#######################################################################
+
+set BugNumber OCC23160
+
+restore [locate_data_file bug23160_tshape.brep] b1 
+restore [locate_data_file bug23160_box.brep] b2 
+bop b1 b2
+bopcut result
+
+set square 270192
+
+set nb_v_good 16
+set nb_e_good 24
+set nb_w_good 10
+set nb_f_good 10
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 63
+
+set 3dviewer 0

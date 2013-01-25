@@ -1,0 +1,27 @@
+puts "==========="
+puts "OCC23004"
+puts "==========="
+######################################################
+# Boolean operation cut produces incorrect result
+######################################################
+
+set BugNumber OCC23004
+
+restore [locate_data_file bug23004_b_7_1] b1 
+restore [locate_data_file bug23004_b_7_2] b2 
+bop b1 b2
+bopcut result
+
+set square 31308.8
+
+set nb_v_good 26
+set nb_e_good 41
+set nb_w_good 17
+set nb_f_good 17
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 104
+
+set 3dviewer 1

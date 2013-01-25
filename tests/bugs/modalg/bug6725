@@ -1,0 +1,46 @@
+puts "============"
+puts "OCC6725"
+puts "============"
+puts ""
+######################################################
+# Application crashed with "Segmentation Fault" message. Red Hat Linux 8.0
+######################################################
+
+set BugNumber OCC6725
+
+restore [locate_data_file OCC6725.brep] result
+
+set text [incmesh result 0.01]
+set last [lindex $text end]
+set r [string compare $last Failure]
+
+set status1 0
+if {$r == 0} {
+   set status1 1
+}
+
+set square 624989
+
+set nb_v_good 3806
+set nb_e_good 3808
+set nb_w_good 756
+set nb_f_good 730
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 9101
+
+if { ${status1} != 0} {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+set 3dviewer 1

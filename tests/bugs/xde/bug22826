@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC22826"
+puts "============"
+puts ""
+#######################################################################
+# Increasiong of perfomance of fixes applied during translation of STEP files.
+#######################################################################
+
+set BugNumber OCC22826
+
+restore [locate_data_file bug22610_f1.brep] a 
+mksurface s1 a
+
+proj s1 1500 1500 500 g
+set x [lindex [length ext_2] end]
+
+proj s1 1500 1500 500 t
+set y [lindex [length ext_1] end]
+
+# Resume
+puts ""
+if { $x == $y } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+

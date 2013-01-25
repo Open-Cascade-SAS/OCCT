@@ -5,7 +5,6 @@ puts ""
 #######################################################################
 # Draw face outlines for XDE objects
 #######################################################################
-pload QAcommands
 pload XDEDRAW
 
 XNewDoc Doc1

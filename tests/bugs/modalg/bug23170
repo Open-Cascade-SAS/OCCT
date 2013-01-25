@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC23170"
+puts "============"
+puts ""
+######################################
+# Bug of creating a full sphere face
+######################################
+
+set BugNumber OCC23170
+
+pload MODELING
+
+sphere s 10
+
+mkface result s 0 6.2831853071795880 -1.5707963267948970 1.5707963267948970
+
+set square 1256.63
+set 3dviewer 0

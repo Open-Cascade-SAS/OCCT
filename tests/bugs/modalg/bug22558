@@ -1,0 +1,30 @@
+pload QAcommands
+
+puts "============"
+puts "OCC22558"
+puts "============"
+puts ""
+#######################################################################
+# Bug in gp_Dir::Mirror(const gp_Ax2 & axis)
+#######################################################################
+
+set BugNumber OCC22558
+
+set check1 -57735
+set check2 57735
+set info [ OCC22558 1 1 1 1 0 0 0 0 0 ]
+
+set res_z1 [lindex ${info} end]
+set res_y1 [lindex ${info} end-1]
+set res_x1 [lindex ${info} end-2]
+
+set res_z [ expr int($res_z1 * 100000) ]
+set res_y [ expr int($res_y1 * 100000) ]
+set res_x [ expr int($res_x1 * 100000) ]
+
+if { ${res_x} == ${check1} && ${res_y} == ${check2} && ${res_z} == ${check2} } {
+  puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}
+

@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC22728"
+puts "================"
+puts ""
+#######################################################################################
+# STEP export API does not provide possibility to control output stream
+######################################################################################
+
+set BugNumber OCC22728
+
+box b 10 10 10
+
+cd ${imagedir}
+
+set text [stepwrite a b test.step]
+
+if { [regexp "File test.step written" $text] != 1 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+

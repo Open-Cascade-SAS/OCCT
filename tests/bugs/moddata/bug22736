@@ -1,0 +1,31 @@
+pload QAcommands
+
+puts "========"
+puts "OCC22736"
+puts "========"
+puts ""
+###########################################################
+# Incorrect Transformation
+###########################################################
+
+set BugNumber OCC22736
+
+set X_mirrorFirstPoint 2.0
+set Y_mirrorFirstPoint 1.0
+set X_mirrorSecondPoint 3.0
+set Y_mirrorSecondPoint 1.0
+set X_p1 1.0
+set Y_p1 0.0
+set X_p2 1.0
+set Y_p2 2.0
+set result_info [OCC22736 ${X_mirrorFirstPoint} ${Y_mirrorFirstPoint} ${X_mirrorSecondPoint} ${Y_mirrorSecondPoint} ${X_p1} {$Y_p1} ${X_p2} ${Y_p2}]
+regexp {Status = ([-0-9.+eE]+)} $result_info full status
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC22459"
+puts "============"
+#######################################################################
+# The ImportExport sample crash
+#######################################################################
+
+catch { pload XDE }
+
+set BugNumber OCC22459
+
+stepread [locate_data_file OCC22459-TEST2.stp] result *
+
+set exception_status 0
+set msg [ tpstat c ]
+set index [ lsearch $msg Exeption ]
+
+if {$index > -1} {
+  set exception_status 1
+}
+
+if { ${exception_status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0
+
+
+
+

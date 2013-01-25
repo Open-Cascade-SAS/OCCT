@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC22990"
+puts "============"
+puts ""
+############################################################################################################
+# Regression vs 6.5.2: splitting sphere across the seam is incomplete
+###########################################################################################################
+
+set BugNumber OCC22990
+
+psphere s 10
+plane p 2 0 0 1 0 0
+mkface f p -100 100 -100 100
+bsection e s f -2d
+
+explode s f
+explode e e
+
+splitshape result s s_1 e_1 e_2
+
+set nb_f_good 3
+set square 1256.64
+set 3dviewer 0
+

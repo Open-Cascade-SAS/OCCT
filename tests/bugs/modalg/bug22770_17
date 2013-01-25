@@ -1,0 +1,31 @@
+puts "================"
+puts "OCC22770"
+puts "================"
+puts ""
+#######################################################################################
+# Improve comman sewing in DRAW
+######################################################################################
+
+set BugNumber OCC22770
+
+vertex a 1 0 0
+vertex b 10 0 0
+edge e1 a b
+vertex c 10.01 0 0
+vertex d 20 0 0
+edge e2 c d
+sewing result 0.1 e1 e2 -e
+
+set length 18.99
+
+set nb_v_good 4
+set nb_e_good 2
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 7
+
+set 3dviewer 0

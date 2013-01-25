@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC22881"
+puts "================"
+puts ""
+#######################################################################################
+# Sewing does not sew edge to its copy
+######################################################################################
+
+set BugNumber OCC22881
+
+restore [locate_data_file OCC22881-sewing-pb.brep] a 
+
+sewing result a
+
+set square 12.819
+
+set nb_v_good 4
+set nb_e_good 6
+set nb_w_good 4
+set nb_f_good 4
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 19
+
+set 3dviewer 0

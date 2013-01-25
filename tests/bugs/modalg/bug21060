@@ -1,0 +1,33 @@
+puts "TODO OCC11111 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+
+puts "================"
+puts "OCC21060"
+puts "================"
+puts ""
+#######################################################################################
+# Triangulatiom fails on non-manifold face with Sl wire
+######################################################################################
+
+set BugNumber OCC21060
+
+restore [locate_data_file OCC21060-A9_205.brep] result
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+set square 12
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 13
+
+set 3dviewer 1
