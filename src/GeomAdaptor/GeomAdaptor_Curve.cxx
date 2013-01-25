@@ -331,6 +331,7 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 {
   Standard_Integer myNbIntervals = 1;
   Standard_Integer NbSplit;
+  Standard_Real FirstParam = myFirst, LastParam = myLast;
 
   if (myTypeCurve == GeomAbs_BSplineCurve) 
     {
@@ -398,6 +399,8 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 	    BSplCLib::LocateParameter(myBspl->Degree(),TK,TM,myLast,
 				      myBspl->IsPeriodic(),
 				      1,Nb,Index2,newLast);
+            FirstParam = newFirst;
+            LastParam = newLast;
 	    // On decale eventuellement les indices  
 	    // On utilise une "petite" tolerance, la resolution ne doit 
 	    // servir que pour les tres longue courbes....(PRO9248)
@@ -456,8 +459,8 @@ void GeomAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
     // akm 05/04/02 ^^^
   }
   
-  T( T.Lower() ) = myFirst;
-  T( T.Lower() + myNbIntervals ) = myLast;
+  T( T.Lower() ) = FirstParam;
+  T( T.Lower() + myNbIntervals ) = LastParam;
 }
 
 //=======================================================================

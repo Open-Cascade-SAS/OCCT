@@ -158,5 +158,9 @@ if { [info exist only_screen2d] } {
    v2ddump $imagedir/${test_image}.png
 }
 
+if { [info exist only_screen_axo] } {
+   xwd $imagedir/${test_image}.png
+}
+
 # to end a test script
 puts "TEST COMPLETED"

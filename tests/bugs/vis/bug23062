@@ -1,0 +1,21 @@
+puts "========"
+puts "CR23062"
+puts "========"
+puts ""
+
+#######################################################
+## Incorrect display of edge in draw axo viewer
+#######################################################
+
+restore [locate_data_file bug23062_ProblemWire.brep] result
+
+smallview
+display result
+fit
+
+explode result v
+
+vinit
+vdisplay result
+
+set only_screen_axo 1
