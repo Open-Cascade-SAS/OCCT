@@ -239,17 +239,6 @@ void AIS_ConcentricRelation::Compute(const Handle(Prs3d_Projector)&,
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-
-void AIS_ConcentricRelation::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-				     const Handle(Graphic2d_GraphicObject)&,
-				     const Standard_Integer)
-{
-}
-
-//=======================================================================
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================

@@ -291,15 +291,6 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_Color &aCol)
   myDrawer->DatumAspect()->SecondAxisAspect()->SetColor(aCol);
 }
 
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-			       const Handle(Graphic2d_GraphicObject)&,
-			       const Standard_Integer)
-{
-}
 
 void AIS_PlaneTrihedron::Compute(const Handle(Prs3d_Projector)&, 
 			       const Handle(Prs3d_Presentation)&)

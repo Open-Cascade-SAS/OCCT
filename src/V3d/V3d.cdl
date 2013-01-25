@@ -55,7 +55,6 @@ uses
         TCollection,
         Quantity,
         Aspect,
-        PlotMgt,
         Image,
         gp,
         OSD,

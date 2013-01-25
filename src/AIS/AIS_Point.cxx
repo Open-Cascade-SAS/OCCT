@@ -168,15 +168,7 @@ TopoDS_Vertex AIS_Point::Vertex() const
   return BRepBuilderAPI_MakeVertex(P);
 }
 
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-			   const Handle(Graphic2d_GraphicObject)&,
-			   const Standard_Integer)
-{
-}
+
 //=======================================================================
 //function : Compute
 //purpose  : to avoid warning

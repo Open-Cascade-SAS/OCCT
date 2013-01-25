@@ -141,7 +141,6 @@ uses
     Geom,
     Bnd,
     Aspect,
-    Graphic2d,
     Graphic3d,
     V3d,
     TopAbs,

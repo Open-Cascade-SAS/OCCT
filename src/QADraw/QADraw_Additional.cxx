@@ -27,10 +27,6 @@
 //#else
 #include <QANewDBRepNaming.hxx>
 //#endif
-
-#if defined(WOKC40)
-#include <QAViewer2dTest.hxx>
-#endif
 #include <QANCollection.hxx>
 
 void QADraw::AdditionalCommands(Draw_Interpretor& theCommands)
@@ -43,10 +39,6 @@ void QADraw::AdditionalCommands(Draw_Interpretor& theCommands)
 //#else
   QANewDBRepNaming::AllCommands(theCommands);
 //#endif
-
-#if defined(WOKC40)
-  QAViewer2dTest::Commands(theCommands);
-#endif
   QANCollection::Commands(theCommands);
 
   return;

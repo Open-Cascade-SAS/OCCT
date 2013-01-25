@@ -33,8 +33,6 @@ class MultipleConnectedShape from AIS inherits MultipleConnectedInteractive from
 uses
 
     PresentationManager3d  from PrsMgr,
-    PresentationManager2d from PrsMgr,
-    GraphicObject         from Graphic2d,    
     Shape                from TopoDS,
     Projector            from Prs3d,
     Presentation         from Prs3d,
@@ -108,18 +106,6 @@ is
     	--          presentation of this last object, with
     	--          a transformation if there's one stored. 
     is redefined virtual private;
-
-    Compute(me:mutable;
-    	        aPresentationManager: PresentationManager2d from PrsMgr;
-                aPresentation: mutable GraphicObject from Graphic2d;
-                aMode: Integer from Standard = 0)
-    	---Level: Internal 
-    	---Purpose: this method should fill the presentation according to the
-    	--          enumerated mode of the application and to the display parameter
-    	--          of the application.
-		
-    raises NotImplemented from Standard
-    is redefined;
     
 fields
     myShape : Shape   from TopoDS; -- celle qui sert au compute Hidden lines et selection

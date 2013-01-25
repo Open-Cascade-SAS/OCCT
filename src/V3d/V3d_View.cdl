@@ -128,7 +128,6 @@ uses
         BufferType                        from Graphic3d,
         Background                        from Aspect,
         GradientBackground                from Aspect,
-        PlotterDriver                     from PlotMgt,
         TypeOfColor                       from Quantity,
         NameOfColor                       from Quantity,
         Color                             from Quantity,
@@ -1584,13 +1583,6 @@ is
         --          Returns the number of images per second
         --          if <AnimationMode> is Standard_True, the animation mode
         --          is activated.
-
-        ScreenCopy (me               : mutable;
-                    aPlotterDriver   : PlotterDriver from PlotMgt;
-                    fWhiteBackground : Boolean from Standard = Standard_True;
-                    aScale           : Factor from Quantity = 1.0
-        ) is static;
-        ---Purpose: dump the view
 
         Dump ( me: mutable;
                theFile       : CString from Standard;

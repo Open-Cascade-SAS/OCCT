@@ -148,19 +148,6 @@ void  AIS_MaxRadiusDimension::Compute(const Handle(Prs3d_Projector)& aProjector,
 
 //=======================================================================
 //function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-
-void  AIS_MaxRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
-                                      const Handle(Graphic2d_GraphicObject)& aPresentation,
-                                      const Standard_Integer aMode)
-{
-// Standard_NotImplemented::Raise("AIS_MaxRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager, const Handle(Graphic2d_GraphicObject)& aPresentation, const Standard_Integer aMode)");
- PrsMgr_PresentableObject::Compute( aPresentationManager ,aPresentation,aMode) ;
-}
-
-//=======================================================================
-//function : Compute
 //purpose  : 
 //=======================================================================
 

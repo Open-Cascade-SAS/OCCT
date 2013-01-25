@@ -1,9 +1,0 @@
-MFT_CommandDescriptor.hxx
-MFT_CommandDescriptor.cxx
-MFT_FileHandle.hxx
-MFT_FileRecord.hxx
-MFT_FileRecord.cxx
-MFT_FilePosition.hxx
-MFT.edl
-MFT_CMPLRS.edl
-MFT_WOKSteps.edl

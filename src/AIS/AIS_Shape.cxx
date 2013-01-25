@@ -277,17 +277,6 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 
 //=======================================================================
 //function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager2d)& /*aPresentationManager*/,
-                        const Handle(Graphic2d_GraphicObject)& /*aGRO*/,
-                        const Standard_Integer /*aMode*/)
-{
-}
-
-//=======================================================================
-//function : Compute
 //purpose  : Hidden Line Removal
 //=======================================================================
 void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,

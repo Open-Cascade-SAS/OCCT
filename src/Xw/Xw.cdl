@@ -38,19 +38,13 @@ uses
         Quantity,
         Image,
         TColQuantity,
-        MFT,
-	TColStd
+        TColStd
 
 is
 
         --------------------
         -- Category: Classes
         --------------------
-
-        class Driver;
-        ---Purpose: Creates the X driver.
-        --          Activates the c routines of the X interface.
-        ---Category: Classes
 
         class Window;
         ---Purpose: Creates the X Window drawable.
@@ -82,10 +76,6 @@ is
 
         class IconBox;
         ---Purpose: Creates the X Icon Box
-        ---Category: Classes
-
-        class TextManager;
-        ---Purpose: Creates a text manager for MFT fonts.
         ---Category: Classes
 
         -------------------------
@@ -122,15 +112,6 @@ is
                                         TOM_READONLY
         end TypeOfMapping from Xw;
         ---Purpose: Definition of the colormap type
-
-        ---------------------------------
-        -- Category: Instantiated classes
-        ---------------------------------
-
-        class ListOfMFTFonts instantiates
-                Array1 from TCollection (FontManager from MFT);
-        class HListOfMFTFonts instantiates
-                HArray1 from TCollection (FontManager from MFT, ListOfMFTFonts);
 
         -----------------------------
         -- Category: Trace management

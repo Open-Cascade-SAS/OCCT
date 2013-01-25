@@ -298,15 +298,6 @@ void AIS_Line::ComputeSegmentLineSelection(const Handle(SelectMgr_Selection)& aS
 									myEndPoint->Pnt());
   aSelection->Add(seg);
 }
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Line::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-			  const Handle(Graphic2d_GraphicObject)&,
-			  const Standard_Integer)
-{
-}
 
 //=======================================================================
 //function : Compute

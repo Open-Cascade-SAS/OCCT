@@ -252,16 +252,6 @@ void AIS_Axis::SetWidth(const Standard_Real aValue)
 //function : Compute
 //purpose  : to avoid warning
 //=======================================================================
-void AIS_Axis::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-			  const Handle(Graphic2d_GraphicObject)&,
-			  const Standard_Integer)
-{
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
 void AIS_Axis::Compute(const Handle(Prs3d_Projector)&, 
 		       const Handle(Prs3d_Presentation)&)
 {

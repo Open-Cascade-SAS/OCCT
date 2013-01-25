@@ -43,31 +43,9 @@
 #include <Aspect_Driver.ixx>
 #include <OSD_Environment.hxx>
 
-static Standard_Boolean dirMFTisDefined = Standard_False;
 
 Aspect_Driver::Aspect_Driver () {
 
-  OSD_Environment CSF_MDTVFontDirectory ;
-
-  char *fontdir , *casroot ;
-  fontdir =  getenv("CSF_MDTVFontDirectory" );
-  if ( !fontdir) {
-    casroot  = getenv("CASROOT");
-    if ( casroot ) {
-      TCollection_AsciiString CasRootString (casroot);
-      CasRootString += "/src/FontMFT" ; 
-      CSF_MDTVFontDirectory = OSD_Environment(CasRootString.ToCString());
-    } else {
-      cout << " CASROOT or CSF_MDTVFontDirectory  are mandatory to use this fonctionnality " << endl;
-      Standard_Failure::Raise ( "CSF_MDTVTexturesDirectory and CASROOT not setted " );
-    }
-  } else {
-    CSF_MDTVFontDirectory = OSD_Environment("CSF_MDTVFontDirectory");
-  }
-  TCollection_AsciiString dir(CSF_MDTVFontDirectory.Value());
-
-  dirMFTisDefined = (dir.Length() > 0);
-  myUseMFT = Standard_True;
   myColorMapIsDefined = Standard_False;   
   myWidthMapIsDefined = Standard_False;   
   myTypeMapIsDefined  = Standard_False;   
@@ -112,10 +90,8 @@ Handle(Aspect_WidthMap) Aspect_Driver::WidthMap () const {
   return myWidthMap;
 }
 
-void Aspect_Driver::SetFontMap (const Handle(Aspect_FontMap)& aFontMap,
-				const Standard_Boolean useMFT) 
+void Aspect_Driver::SetFontMap (const Handle(Aspect_FontMap)& aFontMap) 
  {
-   myUseMFT = useMFT;
    myFontMap = aFontMap;
    this->InitializeFontMap(aFontMap);
    myFontMapIsDefined = Standard_True;
@@ -138,6 +114,3 @@ Handle(Aspect_MarkMap) Aspect_Driver::MarkMap () const {
   return myMarkMap;
 }
 
-Standard_Boolean Aspect_Driver::UseMFT () const {
-  return myUseMFT & dirMFTisDefined;
-}

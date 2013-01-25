@@ -2256,7 +2256,6 @@ static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const cha
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_AspectText3d.hxx>
-#include <Graphic2d_GraphicObject.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>

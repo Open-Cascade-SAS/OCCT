@@ -539,16 +539,6 @@ void AIS_Plane::ComputeFrame()
 //function : Compute
 //purpose  : to avoid warning
 //=======================================================================
-void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-			   const Handle(Graphic2d_GraphicObject)&,
-			   const Standard_Integer)
-{
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
 void AIS_Plane::Compute(const Handle(Prs3d_Projector)&, 
 			   const Handle(Prs3d_Presentation)&)
 {

@@ -72,12 +72,6 @@ void StdSelect_Shape::Compute(const Handle_Prs3d_Projector& aProjector ,
   PrsMgr_PresentableObject::Compute(aProjector,aGeomTrans,aPresentation);
 }
 
-void StdSelect_Shape::Compute(const Handle_PrsMgr_PresentationManager2d& aPrsMgr,
-			      const Handle_Graphic2d_GraphicObject& aGO, 
-			      const int anInt)
-{
-  PrsMgr_PresentableObject::Compute(aPrsMgr,aGO,anInt);
-}
 
 void StdSelect_Shape::Compute(const Handle_Prs3d_Projector& aProjector,
 			      const Handle_Prs3d_Presentation& aPresentation)

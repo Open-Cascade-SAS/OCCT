@@ -11,7 +11,6 @@ WNT_ColorRef.hxx
 WNT_Dword.hxx
 WNT_LogFont.hxx
 WNT_Long.hxx
-WNT_MFTDraw.hxx
 WNT_Uint.hxx
 WNT.h
 WNT_Bitmap.h
@@ -26,7 +25,6 @@ WNT_IconBox_1.cxx
 WNT_ImageProcessor.cxx
 WNT_LogFont.cxx
 WNT_Long.cxx
-WNT_MFTDraw.cxx
 WNT_Uint.cxx
 WNT_WindowData.cxx
 WNT_WndProc.cxx

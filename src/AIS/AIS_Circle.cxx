@@ -254,15 +254,6 @@ void AIS_Circle::ComputeArcSelection(const Handle(SelectMgr_Selection)& aSelecti
 								      myComponent,myUStart,myUEnd);
   aSelection->Add(seg);
 }
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Circle::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-                         const Handle(Graphic2d_GraphicObject)&,
-                         const Standard_Integer)
-{
-}
 
 //=======================================================================
 //function : Compute

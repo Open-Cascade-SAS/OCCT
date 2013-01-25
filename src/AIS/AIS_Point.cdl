@@ -36,8 +36,6 @@ uses
     Selection             from SelectMgr,
     Projector             from Prs3d,
     Transformation        from Geom,
-    PresentationManager2d from PrsMgr,
-    GraphicObject         from Graphic2d,
     Vertex                from TopoDS,
     KindOfInteractive     from AIS   
 
@@ -75,13 +73,7 @@ is
     Compute(me:mutable;
     	        aProjector: Projector from Prs3d;
                 aPresentation: mutable Presentation from Prs3d)
-    is redefined static private;     
-
-    Compute(me:mutable;
-    	    aPresentationManager: PresentationManager2d from PrsMgr;
-            aPresentation: mutable GraphicObject from Graphic2d;
-            aMode: Integer from Standard = 0)
-    is redefined static private;	
+    is redefined static private;
 
     Compute(me            : mutable;
             aProjector    : Projector from Prs3d;

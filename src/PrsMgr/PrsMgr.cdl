@@ -37,7 +37,6 @@ package PrsMgr
 uses
 
     MMgt,TCollection,
-    Graphic2d,
     TopLoc,
     Prs3d,Graphic3d,
     Quantity,Geom,
@@ -63,11 +62,9 @@ is
     deferred class Presentation;
     deferred class PresentableObject;
     
-    class PresentationManager2d;
     class PresentationManager3d;
     
     class Prs;
-    class Presentation2d;
     class Presentation3d;
 
     class ModedPresentation;

@@ -519,15 +519,6 @@ Quantity_NameOfColor AIS_Trihedron::ArrowColor() const {
 }
 #endif
 
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Trihedron::Compute(const Handle(PrsMgr_PresentationManager2d)&, 
-			       const Handle(Graphic2d_GraphicObject)&,
-			       const Standard_Integer)
-{
-}
 
 //=======================================================================
 //function : Compute

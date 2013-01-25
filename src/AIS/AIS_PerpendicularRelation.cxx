@@ -129,19 +129,6 @@ void AIS_PerpendicularRelation::Compute(const Handle(Prs3d_Projector)& aProjecto
  PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_PerpendicularRelation::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager2d,
-					const Handle(Graphic2d_GraphicObject)& 
-aGraphicObject,
-					const Standard_Integer anInteger)
-{
-// Standard_NotImplemented::Raise("AIS_PerpendicularRelation::Compute(const Handle(PrsMgr_PresentationManager2d)&,const Handle(Graphic2d_GraphicObject)&,const Standard_Integer)");
- PrsMgr_PresentableObject::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ;
-}
-
 void AIS_PerpendicularRelation::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Geom_Transformation& aTransformation, const Handle_Prs3d_Presentation& aPresentation)
 {
 // Standard_NotImplemented::Raise("AIS_PerpendicularRelation::Compute(const Handle_Prs3d_Projector&, const Handle_Geom_Transformation&, const Handle_Prs3d_Presentation&)");

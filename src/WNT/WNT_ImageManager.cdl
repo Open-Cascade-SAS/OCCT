@@ -173,7 +173,6 @@ class ImageManager from WNT inherits TShared from MMgt
 
  friends
  
-    class WDriver from WNT,
     class Window  from WNT
 
 end ImageManager;

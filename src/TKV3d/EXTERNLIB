@@ -8,7 +8,6 @@ TKG3d
 TKGeomBase
 TKMesh
 TKGeomAlgo
-TKV2d
 TKHLR
 CSF_user32
 CSF_gdi32

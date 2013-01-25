@@ -24,7 +24,6 @@
 
 #include <PrsMgr_PresentableObject.ixx>
 #include <PrsMgr_Presentation.hxx>
-#include <PrsMgr_Presentation2d.hxx>
 #include <PrsMgr_Presentation3d.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
@@ -55,10 +54,7 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject(const PrsMgr_TypeOfPresentati
 void PrsMgr_PresentableObject::Fill(const Handle(PrsMgr_PresentationManager)& aPresentationManager,
 				    const Handle(PrsMgr_Presentation)& aPresentation,
 				    const Standard_Integer aMode) {
-  if (aPresentation->DynamicType() == STANDARD_TYPE(PrsMgr_Presentation2d)) {
-    Compute(((Handle(PrsMgr_PresentationManager2d)&)aPresentationManager),((Handle(PrsMgr_Presentation2d)&)aPresentation)->Presentation(),aMode);
-  }
-  else if (aPresentation->DynamicType() == STANDARD_TYPE(PrsMgr_Presentation3d)) {
+  if (aPresentation->DynamicType() == STANDARD_TYPE(PrsMgr_Presentation3d)) {
     Compute(((Handle(PrsMgr_PresentationManager3d)&)aPresentationManager),((Handle(PrsMgr_Presentation3d)&)aPresentation)->Presentation(),aMode);
     UpdateLocation(((Handle(PrsMgr_Presentation3d)&)aPresentation)->Presentation());
     Handle(Graphic3d_Structure) aStruct = Handle(Graphic3d_Structure)::DownCast( ((Handle(PrsMgr_Presentation3d)&)aPresentation)->Presentation() );
@@ -68,16 +64,7 @@ void PrsMgr_PresentableObject::Fill(const Handle(PrsMgr_PresentationManager)& aP
   }
 }
 
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-void PrsMgr_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager2d)& /*aPresentationManager*/,
-				       const Handle(Graphic2d_GraphicObject)& /*aPresentation*/,
-                                       const Standard_Integer /*aMode*/) 
-{
-  Standard_NotImplemented::Raise("cannot compute in a 2d visualizer");
-}
+
 //=======================================================================
 //function : Compute
 //purpose  : 

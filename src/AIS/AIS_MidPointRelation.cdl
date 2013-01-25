@@ -26,10 +26,8 @@ uses
     ExtendedString        from TCollection,
     Projector             from Prs3d,
     Presentation          from Prs3d,
-    PresentationManager2d from PrsMgr,
     PresentationManager3d from PrsMgr,
     Selection             from SelectMgr,
-    GraphicObject         from Graphic2d,
     Dir                   from gp,
     Pnt                   from gp,
     Lin                   from gp,
@@ -69,12 +67,6 @@ is
     	    aProjector   : Projector from Prs3d;
             aPresentation: mutable Presentation from Prs3d)
     is redefined static private;     
-
-    Compute(me: mutable;
-    	    aPresentationManager: PresentationManager2d from PrsMgr;
-            aPresentation       : mutable GraphicObject from Graphic2d;
-            aMode               : Integer from Standard = 0)
-    is redefined static private;	
 
     Compute(me: mutable;
     	    aProjector    : Projector from Prs3d;

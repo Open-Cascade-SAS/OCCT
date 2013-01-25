@@ -87,8 +87,7 @@ is
 	---Category: Methods to define the WidthIndexs
 
 	SetFontMap(me: mutable;
-			aFontMap: FontMap from Aspect;
-			useMFT: Boolean from Standard = Standard_True)
+			aFontMap: FontMap from Aspect)
 		raises DriverError from Aspect is static;
 	---Category: Methods to define the FontIndexs
 	---Purpose:
@@ -414,8 +413,6 @@ is
         --          the DWU position .
         ---Category: Inquire methods
 
-	UseMFT ( me ) returns Boolean from Standard is static;
-
 	---Level: Advanced
 	---Purpose: Returns TRUE when the driver must use MDTV fonts
 	--	instead system fonts.
@@ -431,6 +428,5 @@ fields
         myTypeMapIsDefined: Boolean from Standard;    
         myFontMapIsDefined: Boolean from Standard;    
         myMarkMapIsDefined: Boolean from Standard;    
-	myUseMFT: Boolean from Standard;
     
 end Driver from Aspect;

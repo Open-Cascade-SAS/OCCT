@@ -29,14 +29,12 @@ package WNT
 
     Aspect,
     Image,
-    PlotMgt,
     Quantity,
     TCollection,
     TColStd,
     TShort,
     MMgt,
-    OSD,
-    MFT
+    OSD
 
  is
 
@@ -49,9 +47,6 @@ package WNT
     exception ClassDefinitionError inherits ConstructionError;
         ---Category: Exceptions
 
-    exception FontMapEntryDefinitionError inherits ConstructionError;
-        ---Category: Exceptions
-
 
         --------------------
         -- Category: Classes
@@ -60,14 +55,6 @@ package WNT
 
     class GraphicDevice;
         ---Purpose:  Creates the graphic device associated with DISPLAY.
-        ---Category: Classes
-
-    class WDriver;
-        ---Purpose:  Creates the window driver.
-        ---Category: Classes
-
-    class DDriver;
-        ---Purpose:  Creates the device driver ( for printing/plotting )
         ---Category: Classes
 
     class Window;
@@ -82,11 +69,6 @@ package WNT
         ---Purpose:  Creates the Icon Box window.
         ---Category: Classes
 
-    class FontMapEntry;
-        ---Purpose:  Defines correspondence between FontMapEntry from
-        --           Aspect and Windows NT font handle.
-        ---Category: Classes
-
     class ImageManager;
         ---Purpose:  Creates and manages images and/or icons.
         ---Category: Classes
@@ -98,11 +80,6 @@ package WNT
     class Icon;
         ---Purpose:  Defines the class
         ---Category: Classes
-
-    class TextManager;
-        ---Purpose:  Defines the class for text drawing with MFT
-        ---Category: Classes
-
 
         ---------------------------
         -- Category: Enumerations
@@ -170,25 +147,7 @@ package WNT
     class HColorTable instantiates
      HArray1 from TCollection ( ColorRef from WNT, ColorTable from WNT );
 
-    class FontTable instantiates
-     Array1 from TCollection ( FontMapEntry from WNT );
-
-    class HFontTable instantiates
-     HArray1 from TCollection (
-                   FontMapEntry from WNT,
-                   FontTable    from WNT
-                  );
-
     class SequenceOfImage instantiates
      Sequence from TCollection ( Image from WNT );
-
-        ---------------------------------
-    -- Changes for MFT Text drawing
-        ---------------------------------
-          class ListOfMFTFonts instantiates
-                  Array1 from TCollection (FontManager from MFT);
-
-          class HListOfMFTFonts instantiates
-                  HArray1 from TCollection (FontManager from MFT, ListOfMFTFonts);
 
 end WNT;

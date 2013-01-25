@@ -148,18 +148,6 @@ void AIS_OffsetDimension::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
 // PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning at compilation (SUN)
-//=======================================================================
-void AIS_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager2d)& /*aPresentationManager2d*/,
-				  const Handle(Graphic2d_GraphicObject)& /*aGraphicObject*/,
-				  const Standard_Integer /*anInteger*/)
-{
-// Standard_NotImplemented::Raise("AIS_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager2d)&,const Handle(Graphic2d_GraphicObject)&,const Standard_Integer)");
-// PrsMgr_PresentableObject::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ;
-}
-
 void AIS_OffsetDimension::Compute(const Handle(Prs3d_Projector)& aProjector, 
 				  const Handle(Geom_Transformation)& aTransformation,
 				  const Handle(Prs3d_Presentation)& aPresentation)

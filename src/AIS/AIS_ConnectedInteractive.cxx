@@ -152,12 +152,6 @@ void AIS_ConnectedInteractive::Compute(const Handle_Prs3d_Projector& aProjector,
  PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
-void AIS_ConnectedInteractive::Compute(const Handle_PrsMgr_PresentationManager2d& aPresentationManager2d, const Handle_Graphic2d_GraphicObject& aGraphicObject, const int anInteger)
-{
-// Standard_NotImplemented::Raise("AIS_ConnectedInteractive::Compute(const Handle_PrsMgr_PresentationManager2d&, const Handle_Graphic2d_GraphicObject&, const int)");
- PrsMgr_PresentableObject::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ;
-}
-
 //=======================================================================
 //function : ComputeSelection
 //purpose  : 

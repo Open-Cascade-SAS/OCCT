@@ -70,7 +70,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Draw_PluginMacro.hxx>
 #include <ViewerTest.hxx>
-#include <Viewer2dTest.hxx>
 
 // avoid warnings on 'extern "C"' functions returning C++ classes
 #ifdef WNT
@@ -3234,16 +3233,13 @@ static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a
   return 0;
 }
 //============================================================================
-#include <AIS2D_InteractiveContext.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <Prs3d_Projector.hxx>
-#include <AIS2D_ProjShape.hxx>
-#include <gp_Ax2.hxx>
 #include <gp.hxx>
 Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char** a)
 {
 
-  Handle(AIS2D_InteractiveContext) aContext2D = Viewer2dTest::GetAIS2DContext();
+  /*Handle(AIS2D_InteractiveContext) aContext2D = Viewer2dTest::GetAIS2DContext();
   /////////////////////
   TopoDS_Shape aShape =  DBRep::Get(a[1]);
   aContext2D->EraseAll(Standard_True);
@@ -3295,7 +3291,7 @@ Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char**
 
 
   aContext2D->Display( myDisplayableShape,Standard_True );
-  aContext2D->UpdateCurrentViewer();
+  aContext2D->UpdateCurrentViewer();*/
 
   return 0;
 }
@@ -3303,7 +3299,7 @@ Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char**
 Standard_Integer phlrtest(Draw_Interpretor&,   Standard_Integer n,   const char** a)
 {
 
-  Handle(AIS2D_InteractiveContext) aContext2D = Viewer2dTest::GetAIS2DContext();
+  /*Handle(AIS2D_InteractiveContext) aContext2D = Viewer2dTest::GetAIS2DContext();
   /////////////////////
   TopoDS_Shape aShape =  DBRep::Get(a[1]);
   aContext2D->EraseAll(Standard_True);
@@ -3355,7 +3351,7 @@ Standard_Integer phlrtest(Draw_Interpretor&,   Standard_Integer n,   const char*
 
 
   aContext2D->Display( myDisplayableShape,Standard_True );
-  aContext2D->UpdateCurrentViewer();
+  aContext2D->UpdateCurrentViewer();*/
 
   return 0;
 }
@@ -3734,9 +3730,9 @@ void ViewerTest::MyCommands( Draw_Interpretor& theCommands)
 void ViewerTest::Factory(Draw_Interpretor& theDI)
 {
   // definition of Viewer Command
-      ViewerTest::Commands(theDI);
-      ViewerTest::AviCommands(theDI);
-      Viewer2dTest::Commands(theDI);
+  ViewerTest::Commands(theDI);
+  ViewerTest::AviCommands(theDI);
+
 #ifdef DEB
       theDI << "Draw Plugin : OCC V2d & V3d commands are loaded" << "\n";
 #endif

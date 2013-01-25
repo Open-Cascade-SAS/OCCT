@@ -55,12 +55,9 @@ uses
     TColStd,
     gp,
     Select3D,
-    Select2D,
-    Graphic2d,
     Graphic3d,Visual3d,
     Quantity,
     Prs3d,
-    V2d,
     V3d,
     PrsMgr,
     SelectBasics,
@@ -101,12 +98,6 @@ is
     	---Purpose: Viewer Selector for a view from V3d
     	--          Accepts Only Sensitive Entities inheriting Select3D entities...
     
-    class ViewerSelector2d;
-    	---Purpose: Viewer Selector for a view from V2d
-    	--          Accepts Only Sensitive Entities inheriting Select2D entities...
-    
-    
-    
     
     
     class BRepSelectionTool;
@@ -131,9 +122,6 @@ is
 
 
 
-
-    class SensitiveText2d;
-    class TextProjector2d;
 
 
 

@@ -35,7 +35,7 @@
 deferred class PresentableObject from PrsMgr inherits TShared from MMgt
 
 
-    	---Purpose: A framework to supply the Graphic2d or Graphic3d
+    	---Purpose: A framework to supply the Graphic3d
     	-- structure of the object to be presented. On the first
     	-- display request, this structure is created by calling the
     	-- appropriate algorithm and retaining this frameworkfor
@@ -54,10 +54,8 @@ deferred class PresentableObject from PrsMgr inherits TShared from MMgt
 uses
     Presentation          from PrsMgr,
     Presentation          from Prs3d,
-    GraphicObject         from Graphic2d,
     Presentations         from PrsMgr,
     PresentationManager   from PrsMgr,
-    PresentationManager2d from PrsMgr,
     PresentationManager3d from PrsMgr,
     TypeOfPresentation3d  from PrsMgr,
     DataStructureManager  from Graphic3d,
@@ -80,19 +78,6 @@ is
     
 ---Category: deferred methods.
 --           
-    Compute(me:mutable;
-                aPresentationManager: PresentationManager2d from PrsMgr;
-                aPresentation: mutable GraphicObject from Graphic2d;
-                aMode: Integer from Standard = 0)
-    	---Purpose: Calculates the 2D view aPresentation and its
-    	-- updates. The latter are managed by aPresentationManager.
-    	-- aPresentableObject has the display mode aMode;
-    	-- this has the default value of 0, that is, the wireframe display mode.
-    	-- Note that this syntax is not used in AIS as that
-    	-- package only concerns 3D display.
-                
-    raises NotImplemented from Standard
-    is virtual protected;
     
     Compute(me:mutable;
                 aPresentationManager: PresentationManager3d from PrsMgr;

@@ -12,7 +12,6 @@ TKGeomBase
 TKMesh
 TKService
 TKV3d
-TKV2d
 TKFillet
 TKPrim
 TKBool

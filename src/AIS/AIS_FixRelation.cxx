@@ -237,19 +237,6 @@ void AIS_FixRelation::Compute(const Handle(Prs3d_Projector)& aProjector,
 
 //=======================================================================
 //function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-
-void AIS_FixRelation::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager2d,
-			      const Handle(Graphic2d_GraphicObject)& aGraphicObject,
-			      const Standard_Integer anInteger)
-{
-// Standard_NotImplemented::Raise("AIS_FixRelation::Compute(const Handle(PrsMgr_PresentationManager2d)&,const Handle(Graphic2d_GraphicObject)&,const Standard_Integer)");
- PrsMgr_PresentableObject::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ; 
-}
-
-//=======================================================================
-//function : Compute
 //purpose  : 
 //=======================================================================
 

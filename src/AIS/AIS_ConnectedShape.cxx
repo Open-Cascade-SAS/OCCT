@@ -167,19 +167,6 @@ void AIS_ConnectedShape::Compute(const Handle(Prs3d_Projector)& aProjector,
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_ConnectedShape::Compute(const Handle_PrsMgr_PresentationManager2d& aPresentationManager2d,
-                                 const Handle_Graphic2d_GraphicObject& aGraphicObject,
-                                 const int anInteger)
-{
-// Standard_NotImplemented::Raise("AIS_ConnectedShape::Compute(const Handle_PrsMgr_PresentationManager2d&, const Handle_Graphic2d_GraphicObject&, const int)");
- AIS_ConnectedInteractive::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ; 
-}
-
-//=======================================================================
 //function : ComputeSelection 
 //purpose  : Attention fragile...
 //=======================================================================

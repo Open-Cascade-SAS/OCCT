@@ -166,19 +166,6 @@ void AIS_EqualRadiusRelation::Compute( const Handle( Prs3d_Projector )& /*aProje
 
 //=======================================================================
 //function : Compute
-//purpose  : to avoid warning at compilation (SUN)
-//=======================================================================
-
-void AIS_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager2d )& /*aPresentationManager2d*/,
-				       const Handle( Graphic2d_GraphicObject )& /*aGraphicObject*/,
-				       const Standard_Integer /*anInteger*/)
-{
-// Standard_NotImplemented::Raise("AIS_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager2d )&,const Handle( Graphic2d_GraphicObject )&,const Standard_Integer )");
-// PrsMgr_PresentableObject::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ;
-}
-
-//=======================================================================
-//function : Compute
 //purpose  : 
 //=======================================================================
 

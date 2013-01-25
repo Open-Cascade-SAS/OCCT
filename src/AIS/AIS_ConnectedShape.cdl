@@ -42,9 +42,7 @@ uses
     Integer              from Standard,
     Shape                from AIS,
     TypeOfPresentation3d from PrsMgr,
-    GraphicObject         from Graphic2d,
     PresentationManager3d from PrsMgr,
-    PresentationManager2d from PrsMgr,
     InteractiveObject    from AIS,
     KindOfInteractive    from AIS,
     Location             from TopLoc,
@@ -112,17 +110,6 @@ is
 	    aTrsf                : Transformation from Geom;
 	    aPresentation        : mutable Presentation from Prs3d)
     is redefined virtual private;
-
-    Compute(me:mutable;
-    	    aPresentationManager: PresentationManager2d from PrsMgr;
-            aPresentation: mutable GraphicObject from Graphic2d;
-            aMode: Integer from Standard = 0)
-    raises NotImplemented from Standard
-    is redefined;
-    	---Level: Internal 
-    	---Purpose: this method should fill the presentation according to the
-    	--          enumerated mode of the application and to the display parameter
-    	--          of the application.
 
     ComputeSelection(me:mutable; aSelection :mutable Selection from SelectMgr;
                                  aMode      :        Integer   from Standard)

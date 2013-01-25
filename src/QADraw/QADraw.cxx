@@ -40,10 +40,6 @@
 #include <Aspect_WindowDriver.hxx>
 #include <stdio.h>
 
-#include <Viewer2dTest.hxx>
-#include <V2d_View.hxx>
-#include <Viewer2dTest_EventManager.hxx>
-
 #if ! defined(WNT)
 #include <Xw_Window.hxx>
 //#include <Xm/Xm.h>
@@ -348,78 +344,78 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& theDi,
                                             Standard_Integer  theArgsNb,
                                             const char**      theArgs)
 {
- if (theArgsNb != 3 && theArgsNb != 6)
- {
-   theDi << "Usage : " << theArgs[0] << " coordinate_X coordinate_Y [color_R color_G color_B]" << "\n";
-   return 1; // TCL_ERROR
- }
+  if (theArgsNb != 3 && theArgsNb != 6)
+  {
+    theDi << "Usage : " << theArgs[0] << " coordinate_X coordinate_Y [color_R color_G color_B]" << "\n";
+    return 1; // TCL_ERROR
+  }
 
- Handle(V3d_View) aView3d = ViewerTest::CurrentView();
- if (aView3d.IsNull())
- {
-   theDi << "You must initialize AISViewer before this command.\n";
-   return 1; // TCL_ERROR
- }
+  Handle(V3d_View) aView3d = ViewerTest::CurrentView();
+  if (aView3d.IsNull())
+  {
+    theDi << "You must initialize AISViewer before this command.\n";
+    return 1; // TCL_ERROR
+  }
 
- const Handle(Aspect_Window) anAISWindow = aView3d->Window();
- Standard_Integer aWindowSizeX = 0;
- Standard_Integer aWindowSizeY = 0;
- anAISWindow->Size (aWindowSizeX, aWindowSizeY);
+  const Handle(Aspect_Window) anAISWindow = aView3d->Window();
+  Standard_Integer aWindowSizeX = 0;
+  Standard_Integer aWindowSizeY = 0;
+  anAISWindow->Size (aWindowSizeX, aWindowSizeY);
 
- Standard_Integer anArgIter = 1;
- const Standard_Integer aPickCoordX = atoi (theArgs[anArgIter++]);
- const Standard_Integer aPickCoordY = atoi (theArgs[anArgIter++]);
- const Standard_Integer aRadius = (theArgsNb == 3) ? 0 : 1;
+  Standard_Integer anArgIter = 1;
+  const Standard_Integer aPickCoordX = atoi (theArgs[anArgIter++]);
+  const Standard_Integer aPickCoordY = atoi (theArgs[anArgIter++]);
+  const Standard_Integer aRadius = (theArgsNb == 3) ? 0 : 1;
 
- Image_ColorRGBF aColorInput = {{ 0.0f, 0.0f, 0.0f }};
- if (theArgsNb == 6)
- {
-   aColorInput.r() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-   aColorInput.g() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-   aColorInput.b() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
- }
+  Image_ColorRGBF aColorInput = {{ 0.0f, 0.0f, 0.0f }};
+  if (theArgsNb == 6)
+  {
+    aColorInput.r() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+    aColorInput.g() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+    aColorInput.b() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+  }
 
- Image_PixMap anImage;
- aView3d->ToPixMap (anImage, aWindowSizeX, aWindowSizeY);
- const Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aPickCoordX, aPickCoordY, aRadius);
- cout << "Length = " << aSeq->Length() << endl;
+  Image_PixMap anImage;
+  aView3d->ToPixMap (anImage, aWindowSizeX, aWindowSizeY);
+  const Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aPickCoordX, aPickCoordY, aRadius);
+  cout << "Length = " << aSeq->Length() << endl;
 
- Image_ColorRGBF aColorPicked = {{ 0.0f, 0.0f, 0.0f }};
- Standard_Boolean isNotEqual = Standard_True;
- for (Standard_Integer i = 1; i <= aSeq->Length(); i += 3)
- {
-   aColorPicked.r() = (Standard_ShortReal )aSeq->Value (i + 0);
-   aColorPicked.g() = (Standard_ShortReal )aSeq->Value (i + 1);
-   aColorPicked.b() = (Standard_ShortReal )aSeq->Value (i + 2);
+  Image_ColorRGBF aColorPicked = {{ 0.0f, 0.0f, 0.0f }};
+  Standard_Boolean isNotEqual = Standard_True;
+  for (Standard_Integer i = 1; i <= aSeq->Length(); i += 3)
+  {
+    aColorPicked.r() = (Standard_ShortReal )aSeq->Value (i + 0);
+    aColorPicked.g() = (Standard_ShortReal )aSeq->Value (i + 1);
+    aColorPicked.b() = (Standard_ShortReal )aSeq->Value (i + 2);
 
-   if (theArgsNb == 3 ||
-       ((Abs (aColorPicked.r() - aColorInput.r()) <= Precision::Confusion())
-     && (Abs (aColorPicked.g() - aColorInput.g()) <= Precision::Confusion())
-     && (Abs (aColorPicked.b() - aColorInput.b()) <= Precision::Confusion())))
-   {
-     isNotEqual = Standard_False;
-     break;
-   }
- }
+    if (theArgsNb == 3 ||
+        ((Abs (aColorPicked.r() - aColorInput.r()) <= Precision::Confusion())
+      && (Abs (aColorPicked.g() - aColorInput.g()) <= Precision::Confusion())
+      && (Abs (aColorPicked.b() - aColorInput.b()) <= Precision::Confusion())))
+    {
+      isNotEqual = Standard_False;
+      break;
+    }
+  }
 
- theDi << "RED :   " << aColorPicked.r() << " "
-       << "GREEN : " << aColorPicked.g() << " "
-       << "BLUE :  " << aColorPicked.b() << "\n";
+  theDi << "RED :   " << aColorPicked.r() << " "
+        << "GREEN : " << aColorPicked.g() << " "
+        << "BLUE :  " << aColorPicked.b() << "\n";
 
- if (theArgsNb == 6)
- {
-   theDi << "User color: \n"
-         << "RED :   " << aColorInput.r() << " "
-         << "GREEN : " << aColorInput.g() << " "
-         << "BLUE :  " << aColorInput.b() << "\n";
- }
+  if (theArgsNb == 6)
+  {
+    theDi << "User color: \n"
+          << "RED :   " << aColorInput.r() << " "
+          << "GREEN : " << aColorInput.g() << " "
+          << "BLUE :  " << aColorInput.b() << "\n";
+  }
 
- if (isNotEqual)
- {
-   theDi << "Faulty : colors are not equal.\n";
-   return 1; // TCL_ERROR
- }
- return 0;
+  if (isNotEqual)
+  {
+    theDi << "Faulty : colors are not equal.\n";
+    return 1; // TCL_ERROR
+  }
+  return 0;
 }
 
 #if ! defined(WNT)
@@ -435,26 +431,26 @@ Standard_EXPORT int ViewerMainLoop2d (Standard_Integer argc, const char ** argv)
 
 static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
- if ( argc != 1 ) {
-   di << "Usage : " << argv[0] << "\n";
-   return 1;
- }
- Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
- if ( QAAISView.IsNull () ) {
-   di << "You must initialize AISViewer before this command." << "\n";
-   return 1;
- }
- Standard_Integer QAAISMouseCoordinateX = 0;
- Standard_Integer QAAISMouseCoordinateY = 0;
- Standard_Integer argccc = 5;
- const char *bufff[] = { "A", "B", "C", "D", "E" };
- const char **argvvv = (const char **) bufff;
- while ( ViewerMainLoop (argccc, argvvv) ) {
-   ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
- }
- ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
- di << "X-coordinate: " << QAAISMouseCoordinateX << "; Y-coordinate: " << QAAISMouseCoordinateY << "\n";
- return 0;
+  if ( argc != 1 ) {
+    di << "Usage : " << argv[0] << "\n";
+    return 1;
+  }
+  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
+  if ( QAAISView.IsNull () ) {
+    di << "You must initialize AISViewer before this command." << "\n";
+    return 1;
+  }
+  Standard_Integer QAAISMouseCoordinateX = 0;
+  Standard_Integer QAAISMouseCoordinateY = 0;
+  Standard_Integer argccc = 5;
+  const char *bufff[] = { "A", "B", "C", "D", "E" };
+  const char **argvvv = (const char **) bufff;
+  while ( ViewerMainLoop (argccc, argvvv) ) {
+    ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
+  }
+  ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
+  di << "X-coordinate: " << QAAISMouseCoordinateX << "; Y-coordinate: " << QAAISMouseCoordinateY << "\n";
+  return 0;
 }
 
 static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -477,16 +473,6 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
     }
     QAAISWindow = Handle(Xw_Window)::DownCast (QAAIS_MainView->V3d_View::Window());
     is3d = 1;
-  }
-
-  if(argc == 2 && !strcmp(argv[1],"2d")) {
-    Handle(V2d_View) V = Viewer2dTest::CurrentView();
-    if (V.IsNull()) {
-      di << "You must initialize AIS 2D Viewer before this command." << "\n";
-      return 1;
-    }
-    QAAISWindow = Handle(Xw_Window)::DownCast (V->Driver()->Window());
-    is3d = 0;
   }
 
   Standard_Integer QAAIS_WindowSize_X = 0;
@@ -529,11 +515,6 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
       Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView();
       QAAIS_MainView->ToPixMap (anImage, QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
     }
-    else
-    {
-      Viewer2dTest::GetMousePosition (QAAIS_MousePoint_X, QAAIS_MousePoint_Y);
-      QAAISWindow->ToPixMap (anImage);
-    }
     aSeq = GetColorOfPixel (anImage, QAAIS_MousePoint_X, QAAIS_MousePoint_Y, 0);
 
     QAAIS_ColorRED = aSeq->Value(1);
@@ -556,349 +537,6 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
 //==============================================================================
 //  VIEWER GLOBALs
 //==============================================================================
-#if ! defined(WNT)
-extern int V2dPickGrid (Draw_Interpretor& , Standard_Integer argc, const char ** argv);
-#else
-Standard_EXPORT int V2dPickGrid (Draw_Interpretor& , Standard_Integer argc, const char ** argv);
-#endif
-//==============================================================================
-//function : V2dSetHighlightMode
-//purpose  : QAv2dSetHighlightMode mode
-//==============================================================================
-static int V2dSetHighlightMode (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage: QAv2dSetHighlightMode mode" << "\n";
-    return 1;
-  }
-
-  Viewer2dTest::StandardModeActivation(atoi(argv[1]));
-  return 0;
-}
-
-//#ifndef WNT
-//==============================================================================
-//function : QAAISGetPixelColor2d
-//purpose  : QAAISGetPixelColor2d coord_X coord_Y Red Green Blue
-//==============================================================================
-
-static int QAAISGetPixelColor2d (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc != 6 && argc != 3)
-  {
-    di << "Args: coord_X coord_Y [Red Green Blue]" << "\n";
-    return 1;
-  }
-
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-  if (V.IsNull())
-  {
-    di << "You must initialize AIS 2D Viewer before this command." << "\n";
-    return 1;
-  }
-
-  // Get Color
-  #if (defined(_WIN32) || defined(__WIN32__))
-    Handle(WNT_Window) QAAISWindow = Handle(WNT_Window)::DownCast (V->Driver()->Window());
-  #else
-    Handle(Xw_Window)  QAAISWindow = Handle(Xw_Window )::DownCast (V->Driver()->Window());
-  #endif
-
-  Standard_ShortReal aCoordinateX = atoi(argv[1]);
-  Standard_ShortReal aCoordinateY = atoi(argv[2]);
-
-  // Get Color
-  Standard_ShortReal aColorRED_V = 0;
-  Standard_ShortReal aColorGRN_V = 0;
-  Standard_ShortReal aColorBLU_V = 0;
-
-  if ( argc == 6 ) {
-    aColorRED_V = atof (argv [3]);
-    aColorGRN_V = atof (argv [4]);
-    aColorBLU_V = atof (argv [5]);
-
-    di << "Begin aColorRED_User = " << aColorRED_V << "\n";
-    di << "Begin aColorGRN_User = " << aColorGRN_V << "\n";
-    di << "Begin aColorBLU_User = " << aColorBLU_V << "\n";
-  }
-
-  Standard_Integer aRadius = 1;
-  if ( argc == 3 ) {
-    aRadius=0;
-  }
-
-  Image_PixMap anImage;
-  QAAISWindow->ToPixMap (anImage);
-  Handle(TColStd_HSequenceOfReal) aSeq = GetColorOfPixel (anImage, aCoordinateX, aCoordinateY, aRadius);
-
-  Standard_Boolean IsNotEqual = Standard_True;
-  Standard_Integer i;
-  for(i=1; i<=aSeq->Length();i+=3) {
-    // mkv 29.04.03
-    Standard_ShortReal aColorRED_R = (((Standard_ShortReal) ((Standard_Integer) (aSeq->Value(i+0) * 1000000))) / 1000000.);
-    Standard_ShortReal aColorGRN_R = (((Standard_ShortReal) ((Standard_Integer) (aSeq->Value(i+1) * 1000000))) / 1000000.);
-    Standard_ShortReal aColorBLU_R = (((Standard_ShortReal) ((Standard_Integer) (aSeq->Value(i+2) * 1000000))) / 1000000.);
-    // mkv 29.04.03
-
-    if ( argc == 3 ) {
-      di << "RED : "    << aColorRED_R << " GREEN : " << aColorGRN_R  << " BLUE : "  << aColorBLU_R << "\n";
-      IsNotEqual = Standard_False;
-      break;
-    }
-
-    if (   aColorRED_R == aColorRED_V
-	&& aColorGRN_R == aColorGRN_V
-	&& aColorBLU_R == aColorBLU_V
-	) {
-      IsNotEqual = Standard_False;
-      break;
-    }
-  }
-  if (IsNotEqual) {
-    di << "Faulty : colors are not equal." << "\n";
-    return 1;
-  }
-  return 0;
-}
-//#endif // !WNT
-
-//==============================================================================
-//function : QAMoveTo2d
-//purpose  : QAMoveTo2d x y
-//==============================================================================
-static int QAMoveTo2d (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " x y" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Viewer2dTest::CurrentEventManager()->MoveTo
-    (atoi(argv[1]), atoi(argv[2]), Viewer2dTest::CurrentView());
-  return 0;
-}
-
-//==============================================================================
-//function : QASelect2d
-//purpose  : QASelect2d x y
-//==============================================================================
-static int QASelect2d (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " x y" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Viewer2dTest::CurrentEventManager()->MoveTo
-    (atoi(argv[1]), atoi(argv[2]), Viewer2dTest::CurrentView());
-  Viewer2dTest::CurrentEventManager()->Select();
-  return 0;
-}
-
-//==============================================================================
-//function : QAShiftSelect2d
-//purpose  : QAShiftSelect2d x y
-//==============================================================================
-static int QAShiftSelect2d (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " x y" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Viewer2dTest::CurrentEventManager()->MoveTo
-    (atoi(argv[1]), atoi(argv[2]), Viewer2dTest::CurrentView());
-  Viewer2dTest::CurrentEventManager()->ShiftSelect();
-  return 0;
-}
-
-//==============================================================================
-//function : V2dZoom
-//purpose  : QAv2dzoom zoom_factor
-//==============================================================================
-static int V2dZoom (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " zoom_factor" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Viewer2dTest::CurrentView()->Zoom(atof(argv[1]));
-  return 0;
-}
-
-//==============================================================================
-//function : V2dPan
-//purpose  : QAv2dpan dx dy
-//==============================================================================
-static int V2dPan (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " dx dy" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Viewer2dTest::CurrentView()->Pan(atoi(argv[1]), atoi(argv[2]));
-  return 0;
-}
-
-//==============================================================================
-//function : V2dGetViewCharac
-//purpose  : v2dGetViewCharac
-//==============================================================================
-static int V2dGetViewCharac (Draw_Interpretor& di, int si, const char ** /*sc*/)
-{
-  if (si != 1)
-  {
-    di << "Use - v2dGetViewCharac" << "\n";
-    return 1;
-  }
-
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-  if (V.IsNull())
-  {
-    di << "You must initialize AIS 2D Viewer before this command." << "\n";
-    return 1;
-  }
-
-//  Quantity_Factor aViewScale = V->Scale();
-
-  Standard_Real aCenterCoordX = 0.0;
-  Standard_Real aCenterCoordY = 0.0;
-  V->Center(aCenterCoordX, aCenterCoordY);
-
-  Standard_Real aViewProjX = 0.0;
-  Standard_Real aViewProjY = 0.0;
-  Standard_Real aViewProjZ = 0.0;
-//  V->Proj(aViewProjX, aViewProjY, aViewProjZ);
-
-  Standard_Real aViewUpX = 0.0;
-  Standard_Real aViewUpY = 0.0;
-  Standard_Real aViewUpZ = 0.0;
-//  V->Up(aViewUpX, aViewUpY, aViewUpZ);
-
-  Standard_Real aViewAtX = 0.0;
-  Standard_Real aViewAtY = 0.0;
-  Standard_Real aViewAtZ = 0.0;
-//  V->At(aViewAtX, aViewAtY, aViewAtZ);
-
-//  cout << "Scale of current view: " << aViewScale << endl;
-//  cout << "Center on X : "<< aViewCenterCoordX << "; on Y: " << aViewCenterCoordY << endl;
-//  cout << "Proj on X : " << aViewProjX << "; on Y: " << aViewProjY << "; on Z: " << aViewProjZ << endl;
-//  cout << "Up on X : " << aViewUpX << "; on Y: " << aViewUpY << "; on Z: " << aViewUpZ << endl;
-//  cout << "At on X : " << aViewAtX << "; on Y: " << aViewAtY << "; on Z: " << aViewAtZ << endl;
-
-//  cout << aViewScale << " " << aViewCenterCoordX << " " << aViewCenterCoordY << " ";
-  di << aViewProjX << " " << aViewProjY << " " << aViewProjZ << " ";
-  di << aViewUpX << " " << aViewUpY << " " << aViewUpZ << " ";
-  di << aViewAtX << " " << aViewAtY << " " << aViewAtZ << "\n";
-  return 0;
-}
-
-//==============================================================================
-//function : V2dSetViewCharac
-//purpose  : v2dSetViewCharac
-//==============================================================================
-static int V2dSetViewCharac (Draw_Interpretor& di, int si, const char ** sc)
-{
-  if (si != 13)
-  {
-    di << "Use - v2dSetViewCharac scale center(X Y) proj(X Y Z) up(X Y Z) at(X Y Z)" << "\n";
-    return 1;
-  }
-
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-  if (V.IsNull())
-  {
-    di << "You must initialize AIS 2D Viewer before this command." << "\n";
-    return 1;
-  }
-
-  Quantity_Factor aViewScale = atof(sc[1]);
-
-  Standard_Real aViewCenterCoordX = atof(sc[2]);
-  Standard_Real aViewCenterCoordY = atof(sc[3]);
-
-  Standard_Real aViewProjX = atof(sc[4]);
-  Standard_Real aViewProjY = atof(sc[5]);
-  Standard_Real aViewProjZ = atof(sc[6]);
-
-  Standard_Real aViewUpX = atof(sc[7]);
-  Standard_Real aViewUpY = atof(sc[8]);
-  Standard_Real aViewUpZ = atof(sc[9]);
-
-  Standard_Real aViewAtX = atof(sc[10]);
-  Standard_Real aViewAtY = atof(sc[11]);
-  Standard_Real aViewAtZ = atof(sc[12]);
-
-//  V->SetScale(aViewScale);
-//  V->SetCenter(aViewCenterCoordX, aViewCenterCoordY);
-//  V->SetAt(aViewAtX, aViewAtY, aViewAtZ);
-//  V->SetProj(aViewProjX, aViewProjY, aViewProjZ);
-//  V->SetUp(aViewUpX, aViewUpY, aViewUpZ);
-//  V->SetProj(aViewProjX, aViewProjY, aViewProjZ);
-  return 0;
-}
-
-//=======================================================================
-//function : QAxwd_2d
-//purpose  :
-//=======================================================================
-static int QAxwd_2d (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " filename" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-  V->Dump(argv[1]);
-  return 0;
-}
-
 #ifndef WNT
 extern Draw_Viewer dout;
 extern Display*         Draw_WindowDisplay;
@@ -908,27 +546,6 @@ Standard_IMPORT Draw_Viewer dout;
 #endif
 
 //=======================================================================
-//function : QA2dGetIndexes
-//purpose  :
-//=======================================================================
-static int QA2dGetIndexes (Draw_Interpretor& di, int /*argc*/, const char ** argv)
-{
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  Handle(Aspect_WindowDriver) aWindowDriver = Viewer2dTest::CurrentView()->Driver();
-
-  Standard_Integer aFontMin, aFontMax, aColorMin, aColorMax;
-  aWindowDriver->FontBoundIndexs(aFontMin, aFontMax);
-  di << "Available font  indexes are " << aFontMin << " - " << aFontMax << "\n";
-  aWindowDriver->ColorBoundIndexs(aColorMin, aColorMax);
-  di << "Available color indexes are " << aColorMin << " - " << aColorMax << "\n";
-  return 0;
-}
-
 #if ! defined(WNT)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 extern Handle(AIS_InteractiveContext)& TheAISContext();
@@ -1006,69 +623,8 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   return 0;
 }
 
-#include <V2d_View.hxx>
-#include <AIS2D_InteractiveObject.hxx>
-#include <Graphic2d_Circle.hxx>
-#include <Graphic2d_TypeOfPolygonFilling.hxx>
-#include <V2d_Viewer.hxx>
-#include <Viewer2dTest_DoubleMapOfInteractiveAndName.hxx>
-
-#if ! defined(WNT)
-extern Viewer2dTest_DoubleMapOfInteractiveAndName& GetMapOfAIS2D();
-#else
-Standard_EXPORT Viewer2dTest_DoubleMapOfInteractiveAndName& GetMapOfAIS2D();
-#endif
-
-//=======================================================================
-//function :  QAv2dcircle
-//purpose  :
-//=======================================================================
-static Standard_Integer QAv2dcircle (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS2D_InteractiveContext) aContext = Viewer2dTest::GetAIS2DContext();
-  if(aContext.IsNull()) {
-    di << "ERROR: Use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc < 7){
-    di<<"Usage : " << argv[0] << " CircleName X Y Radius Alpha Beta [Color_index]\n";
-    return -1;
-  }
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-
-  TCollection_AsciiString name = argv[1];
-  Standard_Real x = atof(argv[2]);
-  Standard_Real y = atof(argv[3]);
-  Standard_Real radius = atof(argv[4]);
-  Standard_Real alpha = atof(argv[5]);
-  Standard_Real beta = atof(argv[6]);
-
-  if (GetMapOfAIS2D().IsBound2(name)) {
-    di << "There is already an object with name " << name.ToCString() << "\n";
-    return -1;
-  }
-  Handle(AIS2D_InteractiveObject) aisobj = new AIS2D_InteractiveObject();
-  aisobj->SetView(V->View());
-  Handle(Graphic2d_Circle) circle = new Graphic2d_Circle(aisobj,x,y,radius,alpha,beta);
-  if(argc > 7){
-    Standard_Integer color_index = atoi(argv[7]);
-    circle->SetTypeOfPolygonFilling(Graphic2d_TOPF_FILLED);
-    circle->SetInteriorColorIndex(color_index);
-  }
-  GetMapOfAIS2D().Bind(aisobj, name);
-  aisobj->Display();
-  V->Viewer()->Update();
-  return 0;
-}
-
 #include <Draw_Viewer.hxx>
 #include <Draw.hxx>
-
-#ifndef WNT
-extern Draw_Viewer dout;
-#else
-Standard_IMPORT Draw_Viewer dout;
-#endif
 
 static Standard_Integer ViewId(const Standard_CString a)
 {
@@ -1130,66 +686,6 @@ static Standard_Integer QArename(Draw_Interpretor& di, Standard_Integer n, const
 //}
 //#endif
 
-static int QASelect2dRectangle (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 5)
-  {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Standard_Integer x1 = atoi(argv[1]);
-  Standard_Integer y1 = atoi(argv[2]);
-  Standard_Integer x2 = atoi(argv[3]);
-  Standard_Integer y2 = atoi(argv[4]);
-
-  Handle(Viewer2dTest_EventManager) aCurrentEventManager = Viewer2dTest::CurrentEventManager();
-  Handle(V2d_View) aCurrentView = Viewer2dTest::CurrentView();
-
-  aCurrentEventManager->MoveTo(x1,y1,aCurrentView);
-  aCurrentEventManager->Select(x1,y1,x2,y2,aCurrentView);
-  aCurrentEventManager->MoveTo(x2,y2,aCurrentView);
-
-  return 0;
-}
-
-static int QAShiftSelect2dRectangle (Draw_Interpretor& di, int argc, const char ** argv)
-{
-  if (argc != 5)
-  {
-    di << "Usage : " << argv[0] << " x1 y1 x2 y2" << "\n";
-    return -1;
-  }
-
-  Handle(AIS2D_InteractiveContext) myAIScontext = Viewer2dTest::GetAIS2DContext();
-  if (myAIScontext.IsNull())
-  {
-    di << "use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-
-  Standard_Integer x1 = atoi(argv[1]);
-  Standard_Integer y1 = atoi(argv[2]);
-  Standard_Integer x2 = atoi(argv[3]);
-  Standard_Integer y2 = atoi(argv[4]);
-
-  Handle(Viewer2dTest_EventManager) aCurrentEventManager = Viewer2dTest::CurrentEventManager();
-  Handle(V2d_View) aCurrentView = Viewer2dTest::CurrentView();
-
-  aCurrentEventManager->MoveTo(x1,y1,aCurrentView);
-  aCurrentEventManager->ShiftSelect(x1,y1,x2,y2,aCurrentView);
-  aCurrentEventManager->MoveTo(x2,y2,aCurrentView);
-
-  return 0;
-}
-
 void QADraw::CommonCommands(Draw_Interpretor& theCommands)
 {
   ios::sync_with_stdio();
@@ -1208,52 +704,12 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   theCommands.Add("QAGetPixelColor", "QAGetPixelColor coordinate_X coordinate_Y [color_R color_G color_B]", __FILE__,QAAISGetPixelColor, group);
   theCommands.Add("QAGetMousePoint", "QAGetMousePoint", __FILE__,QAAISGetMousePoint, group);
   theCommands.Add("QAGetColorCoord", "QAGetColorCoord [3d|2d]", __FILE__,QAAISGetColorCoord, group);
-//#ifndef WNT
-  theCommands.Add("QAAISGetPixelColor2d",
-                  "QAAISGetPixelColor2d coord_X coord_Y [Red Green Blue] : Check a color of pixel",
-                  __FILE__, QAAISGetPixelColor2d, group);
-//#endif
-
-  theCommands.Add("v2dgetgrid",
-		  "v2dgetgrid coord_X coord_Y [grid_X grid_Y] : Get/print coordinates of a grid point near to (coord_X, coord_Y)",
-		  __FILE__, V2dPickGrid, group);
-
-  theCommands.Add("QAv2dzoom",
-		  "QAv2dzoom zoom_factor         : Set Scale Factor",
-		  __FILE__, V2dZoom, group);
-
-  theCommands.Add("QAv2dpan",
-		  "QAv2dpan dx dy                : script analog of Ctrl+MB2",
-		  __FILE__, V2dPan, group);
-
-//  theCommands.Add("QAGetViewCharac2d",
-//                  "QAGetViewCharac2d - dumps viewer characteristics",
-//                  V2dGetViewCharac, group);
-
-//  theCommands.Add("QASetViewCharac2d",
-//                  "QASetViewCharac2d scale center(X Y) proj(X Y Z) up(X Y Z) at(X Y Z)",
-//                  V2dSetViewCharac, group);
-
-  theCommands.Add("QAMoveTo2d", "QAMoveTo2d x y", __FILE__, QAMoveTo2d, group);
-  theCommands.Add("QASelect2d", "QASelect2d x y", __FILE__, QASelect2d, group);
-  theCommands.Add("QAShiftSelect2d", "QAShiftSelect2d x y", __FILE__, QAShiftSelect2d, group);
-  theCommands.Add("QAv2dSetHighlightMode",
-                  "QAv2dSetHighlightMode mode", __FILE__, V2dSetHighlightMode, group);
-  theCommands.Add("QAxwd_2d", "QAxwd_2d filename", __FILE__, QAxwd_2d, group);
-  theCommands.Add("QA2dGetIndexes", "QA2dGetIndexes", __FILE__, QA2dGetIndexes, group);
-
   theCommands.Add("vtri_orig",
 		  "vtri_orig         : vtri_orig trihedron_name  -  draws axis origin lines",
 		  __FILE__,VTrihedronOrigins,group);
-  theCommands.Add("QAv2dcircle", "QAv2dcircle CircleName X Y Radius Alpha Beta [Color_index]", __FILE__, QAv2dcircle, group);
 
 // adding commands "rename" leads to the fact that QA commands doesn't work properly OCC23410, use function "renamevar"
 // theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,QArename,group);
-//#if defined(V2D)
-//  theCommands.Add ("QANbSelected2d", "QANbSelected2d", __FILE__, QANbSelected2d, group);
-//#endif
-  theCommands.Add("QASelect2dRectangle","QASelect2dRectangle x1 y1 x2 y2",__FILE__,QASelect2dRectangle,group);
-  theCommands.Add("QAShiftSelect2dRectangle","QAShiftSelect2dRectangle x1 y1 x2 y2",__FILE__,QAShiftSelect2dRectangle,group);
 }
 /*
 extern "C" int Tkqadraw_Init(Tcl_Interp *);

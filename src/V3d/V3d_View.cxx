@@ -177,13 +177,7 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Aspect_WidthMap.hxx>
 #include <Aspect_MarkMap.hxx>
 #include <Aspect_FontMap.hxx>
-#include <PlotMgt_ImageDriver.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-#ifdef WNT
-# include <WNT_WDriver.hxx>
-#else
-# include <Xw_Driver.hxx>
-#endif
 
 #ifdef G003
 # define V3d_FLAG_ANIMATION     0x00000001
@@ -3301,94 +3295,6 @@ Standard_Real V3d_View::Tumble (const Standard_Integer NbImages, const Standard_
 
   return NbImages/CPUtime;
 }
-
-#define SCREENCOPY_FILENAME "screencopy3d.gif"
-void V3d_View::ScreenCopy (const Handle(PlotMgt_PlotterDriver)& aPlotterDriver,
-                           const Standard_Boolean fWhiteBackground,
-                           const Quantity_Factor aPlotScale)
-{
-  TCollection_AsciiString aFileToDump;
-  Handle(Aspect_WindowDriver) aWindowDriver =
-#ifdef WNT
-    new WNT_WDriver (Handle(WNT_Window)::DownCast(MyWindow));
-#else
-    new Xw_Driver (Handle(Xw_Window)::DownCast(MyWindow));
-#endif // WNT
-  Quantity_Factor    aScale;
-  Quantity_Length    thePixel;
-  Quantity_Parameter theWWidth, theWHeight;
-  Quantity_Parameter thePWidth, thePHeight;
-  aPlotterDriver -> WorkSpace (thePWidth, thePHeight);
-  aWindowDriver  -> WorkSpace (theWWidth, theWHeight);
-  thePixel = aWindowDriver -> Convert (1);
-
-  if (theWWidth * theWHeight != 0.) {
-    if (aPlotScale == 0.) {
-      aScale = Min (thePWidth / theWWidth, thePHeight / theWHeight);
-    } else {
-      // To be changed !!!!!!!!!!!!!!!
-      aScale = Min (thePWidth / theWWidth, thePHeight / theWHeight);
-    }
-
-    // Set default maps (color, type, etc) for plotter driver
-    aPlotterDriver -> SetColorMap ( new Aspect_GenericColorMap () );
-    aPlotterDriver -> SetTypeMap  ( new Aspect_TypeMap         () );
-    aPlotterDriver -> SetWidthMap ( new Aspect_WidthMap        () );
-    aPlotterDriver -> SetFontMap  ( new Aspect_FontMap         () );
-    aPlotterDriver -> SetMarkMap  ( new Aspect_MarkMap         () );
-
-    // Set backgroung to white, unihiglight if any
-    Quantity_Parameter theRed, theGreen, theBlue;
-    Handle(TColStd_HSequenceOfInteger) theFlags;
-    Graphic3d_MapOfStructure  theStructures;
-    BackgroundColor (Quantity_TOC_RGB, theRed, theGreen, theBlue);
-    if (fWhiteBackground)
-      SetBackgroundColor (Quantity_NOC_WHITE);
-    MyView -> DisplayedStructures (theStructures);
-    theFlags      = new TColStd_HSequenceOfInteger ();
-    Graphic3d_MapIteratorOfMapOfStructure Iterator (theStructures);
-    while (Iterator.More ()) {
-      Handle(Graphic3d_Structure) aStructure = Iterator.Key();
-      if (aStructure -> IsHighlighted()) {
-        theFlags -> Append (1);
-        aStructure -> UnHighlight ();
-      } else {
-        theFlags -> Append (0);
-      }
-      Iterator.Next ();
-    }
-    Redraw ();
-
-    // Dump the view
-    if (aPlotterDriver->IsKind(STANDARD_TYPE(PlotMgt_ImageDriver))) {
-      aFileToDump  = aPlotterDriver->PlotFileName();
-    } else {
-      aFileToDump  = aPlotterDriver->SpoolDirectory();
-      aFileToDump += SCREENCOPY_FILENAME;
-    }
-    MyWindow -> Dump (aFileToDump.ToCString());
-
-    Standard_Integer theCurStruct = 1;
-    Iterator = Graphic3d_MapIteratorOfMapOfStructure (theStructures);
-    while (Iterator.More ()) {
-      if (theFlags -> Value(theCurStruct))
-        Iterator.Key() -> Highlight (Aspect_TOHM_COLOR);
-      Iterator.Next ();
-      theCurStruct++;
-    }
-    if (fWhiteBackground)
-      SetBackgroundColor (Quantity_TOC_RGB, theRed, theGreen, theBlue);
-    Redraw ();
-
-    // Draw imagefile by plotter driver
-    aPlotterDriver -> SetPixelSize (thePixel);
-    aPlotterDriver -> BeginDraw ();
-    aPlotterDriver -> DrawImageFile (
-      aFileToDump.ToCString(), (float)(thePWidth / 2.), (float)(thePHeight / 2.), aScale);
-    aPlotterDriver -> EndDraw ();
-  }
-}
-#undef SCREENCOPY_FILENAME
 
 #include <Aspect.hxx>
 #include <Visual3d_Layer.hxx>

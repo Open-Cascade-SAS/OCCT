@@ -55,8 +55,6 @@ uses
     Projector             from Prs3d,
     Transformation        from Geom,
     Drawer                from Prs3d,
-    PresentationManager2d from PrsMgr,
-    GraphicObject         from Graphic2d,
     Line                  from AIS,
     Point                 from AIS,
     Plane                 from Geom,
@@ -109,11 +107,6 @@ is
                 aPresentation: mutable Presentation from Prs3d)
     is redefined static private;     
 
-    Compute(me:mutable;
-    	    aPresentationManager: PresentationManager2d from PrsMgr;
-            aPresentation: mutable GraphicObject from Graphic2d;
-            aMode: Integer from Standard = 0)
-    is redefined static private;	
 
     Compute(me            : mutable;
             aProjector    : Projector from Prs3d;

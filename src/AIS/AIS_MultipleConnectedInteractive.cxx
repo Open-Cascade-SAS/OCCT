@@ -176,19 +176,6 @@ void AIS_MultipleConnectedInteractive::Compute(const Handle_Prs3d_Projector& aPr
 //purpose  : 
 //=======================================================================
 
-void AIS_MultipleConnectedInteractive::Compute(const Handle_PrsMgr_PresentationManager2d& aPresentationManager2d,
-                                               const Handle_Graphic2d_GraphicObject& aGraphicObject,
-                                               const int anInteger)
-{
-// Standard_NotImplemented::Raise("AIS_MultipleConnectedInteractive::Compute(const Handle_PrsMgr_PresentationManager2d&, const Handle_Graphic2d_GraphicObject&, const int)");
- PrsMgr_PresentableObject::Compute( aPresentationManager2d ,aGraphicObject,anInteger) ;
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
 void AIS_MultipleConnectedInteractive::Compute(const Handle_Prs3d_Projector& aProjector,
                                                const Handle_Geom_Transformation& aTransformation,
                                                const Handle_Prs3d_Presentation& aPresentation)

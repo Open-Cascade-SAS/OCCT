@@ -168,19 +168,6 @@ void AIS_DiameterDimension::Compute(const Handle(Prs3d_Projector)& aProjector,
  PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
 }
 
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-
-void AIS_DiameterDimension::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
-                                    const Handle(Graphic2d_GraphicObject)& aPresentation,
-                                    const Standard_Integer aMode)
-{
-// Standard_NotImplemented::Raise("AIS_DiameterDimension::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager, const Handle(Graphic2d_GraphicObject)& aPresentation, const Standard_Integer aMode)");
- PrsMgr_PresentableObject::Compute( aPresentationManager ,aPresentation,aMode) ;
-}
-
 void AIS_DiameterDimension::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_Geom_Transformation& aTransformation, const Handle_Prs3d_Presentation& aPresentation)
 {
 // Standard_NotImplemented::Raise("AIS_DiameterDimension::Compute(const Handle_Prs3d_Projector&, const Handle_Geom_Transformation&, const Handle_Prs3d_Presentation&)");

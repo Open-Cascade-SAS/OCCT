@@ -16,7 +16,6 @@ TKG3d
 TKOffset
 TKVoxel
 TKMesh
-TKV2d
 TKV3d
 TKDraw
 TKOpenGl

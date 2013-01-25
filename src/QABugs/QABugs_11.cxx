@@ -1478,50 +1478,6 @@ static Standard_Integer OCC525(Draw_Interpretor& di, Standard_Integer /*argc*/, 
   return 0;
 }
 
-#include <Viewer2dTest.hxx>
-#include <Viewer2dTest_DoubleMapOfInteractiveAndName.hxx>
-
-#include <AIS2D_InteractiveContext.hxx>
-#include <V2d_View.hxx>
-#include <AIS2D_InteractiveObject.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
-
-#if ! defined(WNT)
-extern Viewer2dTest_DoubleMapOfInteractiveAndName& GetMapOfAIS2D();
-#else
-Standard_EXPORT Viewer2dTest_DoubleMapOfInteractiveAndName& GetMapOfAIS2D();
-#endif
-
-//=======================================================================
-//function :  OCC543
-//purpose  :
-//=======================================================================
-static Standard_Integer OCC543 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS2D_InteractiveContext) aContext = Viewer2dTest::GetAIS2DContext();
-  if(aContext.IsNull()) {
-    di << "ERROR: Use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc != 2){
-    di<<"Usage : " << argv[0] << " name\n";
-    return -1;
-  }
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-
-  TCollection_AsciiString name = argv[1];
-
-  if (!GetMapOfAIS2D().IsBound2(name)) {
-//    di << "There is not an object with name " << name.ToCString() << "\n";
-//    return -1;
-  }
-
-  Handle(AIS2D_InteractiveObject) aShape = GetMapOfAIS2D().Find2(name);
-  Standard_Integer PickedIndex = aShape->PickedIndex();
-  di << "PickedIndex = " << PickedIndex << "\n";
-  return 0;
-}
-
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <gce_MakeRotation.hxx>
 #include <gce_MakeTranslation.hxx>
@@ -1654,34 +1610,6 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
   DBRep::Set(argv[3], sub_etch1);
-
-  return 0;
-}
-
-#include <Graphic2d_DisplayList.hxx>
-#include <Graphic2d_View.hxx>
-
-//=======================================================================
-//function :  OCC627
-//purpose  :
-//=======================================================================
-static Standard_Integer OCC627 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS2D_InteractiveContext) aContext = Viewer2dTest::GetAIS2DContext();
-  if(aContext.IsNull()) {
-    di << "ERROR: Use 'v2dinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if(argc != 1){
-    di<<"Usage : " << argv[0] << "\n";
-    return -1;
-  }
-
-  Handle(V2d_View) V = Viewer2dTest::CurrentView();
-  Handle(Graphic2d_View) View = V->View();
-  Handle(Graphic2d_DisplayList) DisplayList = View->DisplayList();
-  Standard_Integer Length = DisplayList->Length();
-  di << "Length = " << Length << "\n";
 
   return 0;
 }
@@ -5511,10 +5439,8 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC369", "OCC369 Shape", __FILE__, OCC369, group);
   theCommands.Add("OCC524", "OCC524 LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix LowerColMatrix UpperColMatrix InitialValueMatrix", __FILE__, OCC524, group);
   theCommands.Add("OCC525", "OCC525", __FILE__, OCC525, group);
-  theCommands.Add("OCC543", "OCC543 name", __FILE__, OCC543, group);
   //theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3 [BRepAlgoAPI/BRepAlgo = 1/0]", __FILE__, OCC578, group);
-  theCommands.Add("OCC627", "OCC627", __FILE__, OCC627, group);
   theCommands.Add("OCC669", "OCC669 GUID", __FILE__, OCC669, group);
   theCommands.Add("OCC738_ShapeRef", "OCC738_ShapeRef", __FILE__, OCC738_ShapeRef, group);
   theCommands.Add("OCC738_Assembly", "OCC738_Assembly", __FILE__, OCC738_Assembly, group);
