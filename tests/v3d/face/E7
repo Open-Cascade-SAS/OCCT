@@ -1,0 +1,55 @@
+vclear
+box t_box 100 100 100
+vdisplay t_box
+vfit
+vmoveto 0 0
+vselmode 4 1
+vmoveto 150 250
+vselect 100 346
+vmoveto 0 0
+vmoveto 90 89
+vmoveto 0 0
+vselect 90 89 1
+vmoveto 0 0
+vmoveto 150 250
+vmoveto 0 0
+vmoveto 90 89
+vmoveto 0 0
+vmoveto 250 250
+vmoveto 350 250
+vmoveto 0 0
+vviewparams 6.063090 70.710700 40.8249 0.411696 -0.786621 0.462736 -0.373037 0.31875 0.871669 -5.442030 22.021500 -10.360400
+vfit
+vmoveto 0 0
+vmoveto 200 200
+vmoveto 0 0
+vmoveto 30 290
+vmoveto 0 0
+vmoveto 300 300
+vmoveto 0 0
+vselect 200 200 1
+vmoveto 0 0
+vmoveto 200 200
+vmoveto 0 0
+vmoveto 30 290
+vmoveto 0 0
+vmoveto 300 300
+vmoveto 0 0
+vviewparams 6.063090 70.710700 40.82481 0.826197 -0.328587 -0.456835 -0.325366 0.383482 -0.864270 52.8625 108.023000 126.162000
+vfit
+vmoveto 0 0
+vmoveto 250 300
+vmoveto 0 0
+vmoveto 300 250
+vmoveto 0 0
+vmoveto 200 200
+vmoveto 0 0
+vselect 0 0
+vmoveto 0 0
+vmoveto 300 250
+vmoveto 0 0
+vviewparams 6.063090 70.710700 40.924699 -0.333605 0.937786 -0.108455 -0.146382 -0.163422 -0.975587 4.079070 -26.221900 108.54900
+vfit
+vmoveto 0 0
+vmoveto 100 150
+

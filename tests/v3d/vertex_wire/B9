@@ -1,0 +1,22 @@
+vclear
+box t_box 100 100 100
+vdisplay t_box
+vfit
+vmoveto 0 0
+vselmode 1 1
+vmoveto 102 204
+vselmode 3 1
+vmoveto 295 54
+vmoveto 27 307
+vselect 27 307
+vmoveto 0 0
+vmoveto 204 409
+vmoveto 0 0
+vselect 204 409 1
+vmoveto 0 0
+vmoveto 27 307
+vmoveto 0 0
+vmoveto 204 409
+vmoveto 0 0
+
+

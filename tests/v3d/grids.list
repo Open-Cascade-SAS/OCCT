@@ -1,0 +1,11 @@
+001 edge
+002 edge_face
+003 edge_solid
+004 face
+005 vertex
+006 vertex_edge
+007 vertex_face
+008 vertex_solid
+009 vertex_wire
+010 wire
+011 wire_solid

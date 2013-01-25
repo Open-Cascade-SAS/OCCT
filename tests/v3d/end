@@ -1,0 +1,14 @@
+catch { vfit }
+if { [ catch { vdump $imagedir/${test_image}.gif } catch_result ] } {
+    puts $catch_result
+}
+
+set diff [diffimage $imagedir/${test_image}.gif [ locate_data_file ${group}_${subgroup}_${test_image}.gif ] 0. 0 0 ]
+
+if { $diff > 10 } {
+    puts "Error : images are different"
+}
+
+puts "TEST COMPLETED"
+
+
