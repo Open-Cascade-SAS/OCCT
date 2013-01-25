@@ -18,8 +18,6 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
---      05-97: CAL; Ajout du Clear sur les TOS_COMPUTED.
-
 class TransientManager from Visual3d inherits TShared
 
     ---Version:
@@ -28,10 +26,6 @@ class TransientManager from Visual3d inherits TShared
     --      above one View.
     --      A simple way to drawn something very quicly above
     --      a complex scene (Hilighting,Sketching,...)
-    --      All transient graphics will be drawn with
-    --      the projection defined by the view with the current
-    --      attributes depending of the primitive type :
-    --      Lines,Markers,Polygons,Texts
     --      All transient graphics will be erased at the next
     --      View::BeginDraw().
     --      If RetainMode is active,
@@ -137,7 +131,7 @@ is
     -- if   Drawing is already opened.
     -- or   the associated view is not mapped on a window.
     raises TransientDefinitionError from Visual3d;
-    
+
     EndDraw (myclass;
          Synchronize: Boolean = Standard_False)
     ---Level: Public
@@ -147,7 +141,7 @@ is
         --  Raises TransientDefinitionError from Visual3d;
     -- if   Drawing is not opened.
     raises TransientDefinitionError from Visual3d;
-    
+
     ClearDraw (myclass; aView : View from Visual3d; 
                             aFlush : Boolean from Standard = Standard_True)
     ---Level: Public
@@ -157,7 +151,7 @@ is
     -- if   Drawing is already opened.
     -- or   the associated view is not mapped on a window.
     raises TransientDefinitionError from Visual3d;
-    
+
     ---------------------------------------------------
     -- Category: Methods to modify the class definition
     ---------------------------------------------------
@@ -183,145 +177,16 @@ is
     -- if   Drawing is already opened.
     -- or   the associated view is not mapped on a window.
     raises TransientDefinitionError from Visual3d;
-    
+
     EndAddDraw (myclass)
     ---Purpose: Flush all add graphics to the front buffer.
     -- Raises TransientDefinitionError from Visual3d;
     -- if   Drawing is not opened.
-raises TransientDefinitionError from Visual3d;
+    raises TransientDefinitionError from Visual3d;
 
     ---------------------------------------
     -- Category: Graphic definition methods
     ---------------------------------------
-
-    BeginPolyline (myclass)
-    ---Level: Public
-    ---Purpose: After this call, <me> is ready to receive
-    --      a definition of a polyline with AddVertex().
-        --  Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is already opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    BeginPolygon (myclass)
-    ---Level: Public
-    ---Purpose: After this call, <me> is ready to receive
-    --      a definition of a polygon with AddVertex().
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is already opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    BeginTriangleMesh (myclass)
-    ---Level: Public
-    ---Purpose: After this call, <me> is ready to receive
-    --      a definition of a triangle mesh with AddVertex().
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is already opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    BeginMarker (myclass)
-    ---Level: Public
-    ---Purpose: After this call, <me> is ready to receive
-    --      a definition of a marker with AddVertex().
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is already opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    BeginBezier (myclass)
-    ---Level: Public
-    ---Purpose: After this call, <me> is ready to receive
-    --      a definition of a curve with AddVertex().
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is already opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    AddVertex (myclass;
-               X, Y, Z : Real from Standard;
-               AFlag   : Boolean from Standard = Standard_True)
-    ---Level: Public
-    ---Purpose: Puts <X, Y, Z> as a new point in the current primitive.
-    --      If <AFlag> then it is a draw between last point and
-    --      this point else it is a move between last point and
-    --      this point.
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is not opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    AddVertex (myclass;
-               X, Y, Z, W  : Real from Standard;
-               AFlag        : Boolean from Standard = Standard_True)
-    ---Level: Public
-    ---Purpose: Puts <X, Y, Z, W> as a new point coordinates and
-    --      weight in the current primitive.
-    --      If <AFlag> then it is a draw between last point and
-    --      this point else it is a move between last point and
-    --      this point.
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is not opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    AddVertex (myclass;
-               X, Y, Z     : Real from Standard;
-               NX, NY, NZ  : Real from Standard;
-               AFlag       : Boolean from Standard = Standard_True)
-    ---Level: Public
-    ---Purpose: Puts <X, Y, Z> as a new point in the current primitive.
-    --          Puts <NX, NY, NZ> as a new normal in the current 
-    --      primitive.
-    --      If <AFlag> then it is a draw between last point and
-    --      this point else it is a move between last point and
-    --      this point.
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is not opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    ClosePrimitive (myclass)
-    ---Level: Public
-    ---Purpose: After this call, <me> stops the reception of
-    --      a definition of a Begin... primitive.
-        --  Raises TransientDefinitionError from Visual3d;
-    -- if a Begin... primitive is not opened,
-    -- or   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    DrawText (myclass;
-              AText   : ExtendedString from TCollection;
-              X, Y, Z : Real from Standard;
-              AHeight : Real from Standard;
-              AAngle  : PlaneAngle from Quantity = 0.0;
-              ATp     : TextPath from Graphic3d = Graphic3d_TP_RIGHT;
-              AHta    : HorizontalTextAlignment from Graphic3d = Graphic3d_HTA_LEFT;
-              AVta    : VerticalTextAlignment from Graphic3d = Graphic3d_VTA_BOTTOM)
-        ---Purpose: Drawn the string <AText> at position <X,Y,Z>.
-        --     The 3D point of attachment is projected. The text is
-        --          written in the plane of projection.
-        --  The attributes are given with respect to the plane of
-        --          projection.
-        --          AHeight     : Height of text.
-        --             (Relative to the Normalized Projection
-        --                          Coordinates (NPC) Space).
-        --          AAngle      : Orientation of the text
-        --                  (with respect to the horizontal).
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
 
     DrawStructure (myclass;
                 AStructure   : Structure from Graphic3d)
@@ -329,105 +194,5 @@ raises TransientDefinitionError from Visual3d;
     -- Raises TransientDefinitionError from Visual3d;
     -- if   Drawing is not opened.
     raises TransientDefinitionError from Visual3d;
-    
 
-    ------------------------------------------------
-    -- Summary of attributes                      --
-    ------------------------------------------------
-
-    SetPrimitivesAspect (myclass;
-        CTX : AspectLine3d from Graphic3d)
-    ---Level: Public
-    ---Purpose: Modifies the current lines attributes.
-    --  Warning: No default attributes
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-    SetPrimitivesAspect (myclass;
-        CTX : AspectFillArea3d from Graphic3d)
-    ---Level: Public
-    ---Purpose: Modifies the current faces attributes
-    --  Warning: No default attributes
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-
-    SetPrimitivesAspect (myclass;
-        CTX : AspectText3d from Graphic3d)
-    ---Level: Public
-    ---Purpose: Modifies the current texts attributes
-    --  Warning: No default attributes
-    --    Raises TransientDefinitionError from Visual3d;
-    -- if   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-    SetPrimitivesAspect (myclass;
-        CTX : AspectMarker3d from Graphic3d)
-    ---Level: Public
-    ---Purpose: Modifies the current markers attributes
-    --  Warning: No default attributes
-    -- Raises TransientDefinitionError from Visual3d;
-    -- if   Drawing is not opened.
-    raises TransientDefinitionError from Visual3d;
-    
-    ----------------------------
-    -- Category: Inquire methods
-    ----------------------------
-
-    MinMaxValues (myclass;
-                  XMin, YMin, ZMin    : out Real from Standard;
-                  XMax, YMax, ZMax    : out Real from Standard);
-    ---Level: Public
-    ---Purpose: Returns the coordinates of the boundary box
-    --      of the Transient graphics actually drawn
-    --      since BeginDraw() has been call.
-    --  Warning: If nothing has been drawn then :
-    --      XMin = YMin = ZMin = RealFirst ().
-    --      XMax = YMax = ZMax = RealLast ().
-    ---Category: Inquire methods
-
-    MinMaxValues (myclass;
-                  UMin, VMin  : out Real from Standard;
-                  UMax, VMax  : out Real from Standard);
-    ---Level: Public
-    ---Purpose: Returns the coordinates of the boundary box projection
-    --      of the Transient graphics actually drawn
-    --      since BeginDraw() has been call.
-    --  Warning: If nothing has been drawn then :
-    --      XMin = YMin = ZMin = RealFirst ().
-    --      XMax = YMax = ZMax = RealLast ().
-    ---Category: Inquire methods
-
-    -----------------------------------------------------------
-    -- Category: Methods to manage the graphics transformation
-    -----------------------------------------------------------
-
-    SetTransform (myclass;
-        AMatrix : Array2OfReal from TColStd;
-        AType   : TypeOfComposition from Graphic3d =
-                    Graphic3d_TOC_REPLACE)
-    ---Level: Public
-    ---Purpose: Modifies the current local modelling transformation
-    --      of the transient graphics.
-    --
-    --      It is defined as a 4*4 real matrix.
-    --
-    --      -------------------
-    --      | a11 a12 a13  t1 |
-    --      | a21 a22 a23  t2 |
-    --      | a31 a32 a33  t3 |
-    --      |  0   0   0   1  |
-    --      -------------------
-    --
-    --      TypeOfComposition : TOC_REPLACE
-    --              TOC_POSTCONCATENATE
-    --
-    ---Category: Methods to manage the graphic transformation
-    -- Raises TransformError from Graphic3d
-    -- if   Drawing is not opened.
-    -- or the matrix is not a 4x4 matrix.
-    raises TransformError from Graphic3d;
-    
 end TransientManager from Visual3d;

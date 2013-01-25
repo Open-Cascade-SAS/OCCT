@@ -169,6 +169,7 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 
 // S3892
 #include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
 // S3603
 #include <Aspect_GenericColorMap.hxx>
@@ -3440,8 +3441,9 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
                                      const Graphic3d_BufferType& theBufferType,
                                      const Standard_Boolean      theIsForceCentred)
 {
-  // always prefer hardware accelerated offscreen buffer
   Graphic3d_CView* cView = (Graphic3d_CView* )MyView->CView();
+
+  // always prefer hardware accelerated offscreen buffer
   Graphic3d_PtrFrameBuffer aFBOPtr = NULL;
   Graphic3d_PtrFrameBuffer aPrevFBOPtr = (Graphic3d_PtrFrameBuffer )cView->ptrFBO;
   Standard_Integer aFBOVPSizeX (theWidth), aFBOVPSizeY (theHeight), aFBOSizeXMax (0), aFBOSizeYMax (0);
@@ -3531,7 +3533,17 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   {
     MyLayerMgr->Compute();
   }
+
+  // render immediate structures into back buffer rather than front
+  Handle(Graphic3d_GraphicDriver) aDriver = Handle(Graphic3d_GraphicDriver)::DownCast (MyView->GraphicDriver());
+  const Standard_Boolean aPrevImmediateMode = aDriver.IsNull() ? Standard_True : aDriver->SetImmediateModeDrawToFront (*cView, Standard_False);
+
   Redraw();
+
+  if (!aDriver.IsNull())
+  {
+    aDriver->SetImmediateModeDrawToFront (*cView, aPrevImmediateMode);
+  }
 
   //szv: restore mapping
   MyViewMapping = prevMapping;

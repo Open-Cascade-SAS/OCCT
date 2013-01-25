@@ -1,6 +1,6 @@
 // Created on: 2011-09-20
 // Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Copyright (c) 2011-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -38,6 +38,8 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
+
+#include <NCollection_Sequence.hxx>
 
 #include <OpenGl_tsm.hxx>
 
@@ -107,6 +109,7 @@ public:
   void EndAnimation();
   void EraseAnimation();
 
+  Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
   Standard_Boolean BeginAddMode();
   void EndAddMode();
   void ClearImmediatMode (const Graphic3d_CView& theCView,
@@ -116,17 +119,7 @@ public:
                                       const Standard_Boolean theUseDepthTest,
                                       const Standard_Boolean theRetainMode);
   void EndImmediatMode();
-  void Transform (const TColStd_Array2OfReal& theMatrix, const Graphic3d_TypeOfComposition theType);
   void DrawStructure (const OpenGl_Structure* theStructure);
-  void BeginPolyline();
-  void EndPolyline();
-  void Draw (const Standard_ShortReal theX, const Standard_ShortReal theY, const Standard_ShortReal theZ);
-  void Move (const Standard_ShortReal theX, const Standard_ShortReal theY, const Standard_ShortReal theZ);
-  void SetLineColor (const Standard_ShortReal theR, const Standard_ShortReal theG, const Standard_ShortReal theB);
-  void SetLineType (const Standard_Integer theType);
-  void SetLineWidth (const Standard_ShortReal theWidth);
-  void SetMinMax (const Standard_ShortReal X1, const Standard_ShortReal Y1, const Standard_ShortReal Z1,
-                  const Standard_ShortReal X2, const Standard_ShortReal Y2, const Standard_ShortReal Z2);
 
   Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
   void FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr);
@@ -196,10 +189,7 @@ public:
 
 protected:
 
-  void CopyBuffers (Tint vid, int FrontToBack,
-                    Tfloat xm, Tfloat ym, Tfloat zm,
-                    Tfloat XM, Tfloat YM, Tfloat ZM,
-                    Tint flag);
+  void CopyBuffers (const Standard_Boolean theFrontToBack);
 
   virtual Standard_Boolean Activate();
 
@@ -217,9 +207,11 @@ protected:
 protected: //! @name protected fields
 
   Handle(OpenGl_View)    myView;            // WSViews - now just one view is supported
-  Tint                   myTransientList;   // WSTransient
   Standard_Boolean       myIsTransientOpen; // transientOpen
-  Tint                   myRetainMode;      // WSRetainMode
+  Standard_Boolean       myRetainMode;
+  Standard_Boolean       myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
+
+  NCollection_Sequence<const OpenGl_Structure*> myTransientList;
 
   Standard_Boolean       myUseTransparency;
   Standard_Boolean       myUseZBuffer;

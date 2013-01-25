@@ -43,7 +43,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 
   // cache render mode state
   GLint aRendMode = GL_RENDER;
-  glGetIntegerv (GL_RENDER_MODE, &aRendMode);
+  glGetIntegerv (GL_RENDER_MODE,  &aRendMode);
   aGlCtx->SetFeedback (aRendMode == GL_FEEDBACK);
 
   Tint toSwap = (aRendMode == GL_RENDER); // swap buffers
@@ -58,7 +58,10 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   }
 
   Redraw1 (theCView, theCUnderLayer, theCOverLayer, toSwap);
-  RedrawImmediatMode();
+  if (aFrameBuffer == NULL || !myTransientDrawToFront)
+  {
+    RedrawImmediatMode();
+  }
 
   if (aFrameBuffer != NULL)
   {

@@ -71,6 +71,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
 : OpenGl_Window (theDisplay, theCWindow, theGContext, theShareCtx),
   myTransientList (0),
   myIsTransientOpen (Standard_False),
+  myTransientDrawToFront (Standard_True),
   myRetainMode (Standard_False),
   myUseTransparency (Standard_False),
   myUseZBuffer (Standard_False),
@@ -112,6 +113,17 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
 
   // Polygon Offset
   EnablePolygonOffset();
+}
+
+// =======================================================================
+// function : SetImmediateModeDrawToFront
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Workspace::SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer)
+{
+  const Standard_Boolean aPrevMode = myTransientDrawToFront;
+  myTransientDrawToFront = theDrawToFrontBuffer;
+  return aPrevMode;
 }
 
 // =======================================================================

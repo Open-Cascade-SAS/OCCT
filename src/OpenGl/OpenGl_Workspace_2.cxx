@@ -591,7 +591,11 @@ Standard_Boolean OpenGl_Workspace::Print
                               (GLfloat)aFrameHeight/viewHeight);
     aFrameBuffer->SetupViewport ();
     Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
-    RedrawImmediatMode();
+    if (!myTransientDrawToFront)
+    {
+      // render to FBO only if allowed to render to back buffer
+      RedrawImmediatMode();
+    }
     glReadPixels (0, 0, aFrameWidth, aFrameHeight,
                   GL_BGR_EXT, GL_UNSIGNED_BYTE, (GLvoid* )aViewBuffer);
 
@@ -698,7 +702,11 @@ Standard_Boolean OpenGl_Workspace::Print
         // draw to the offscreen buffer and capture the result
         aFrameBuffer->SetupViewport ();
         Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
-        RedrawImmediatMode();
+        if (!myTransientDrawToFront)
+        {
+          // render to FBO only if forces to render to back buffer
+          RedrawImmediatMode();
+        }
         glReadPixels (0, 0, aFrameWidth, aFrameHeight,
                       GL_BGR_EXT, GL_UNSIGNED_BYTE, (GLvoid* )aViewBuffer);
 #ifdef HAVE_FREEIMAGE
@@ -849,9 +857,12 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
 /*----------------------------------------------------------------------*/
 
 //TelCopyBuffers
-void OpenGl_Workspace::CopyBuffers (Tint vid, int FrontToBack, Tfloat xm, Tfloat ym, Tfloat zm, Tfloat XM, Tfloat YM, Tfloat ZM, Tint flag)
+void OpenGl_Workspace::CopyBuffers (const Standard_Boolean theFrontToBack)
 {
-  if (FrontToBack) myBackBufferRestored = Standard_False;
+  if (theFrontToBack)
+  {
+    myBackBufferRestored = Standard_False;
+  }
 
   glMatrixMode (GL_PROJECTION);
   glPushMatrix ();
@@ -863,84 +874,11 @@ void OpenGl_Workspace::CopyBuffers (Tint vid, int FrontToBack, Tfloat xm, Tfloat
 
   DisableFeatures();
 
-  GLsizei width = myWidth+1, height = myHeight+1;
-  Tfloat xmr = 0, ymr = 0;
+  glDrawBuffer (theFrontToBack ? GL_BACK  : GL_FRONT);
+  glReadBuffer (theFrontToBack ? GL_FRONT : GL_BACK);
 
-  if (flag)
-  {
-    if (!myView.IsNull()) //szvgl: use vid here!
-	{
-    // Calculate bounding box and store the projected rectangle
-    Tfloat xr[8], yr[8];
-    // Project bounding box
-    if (myView->ProjectObjectToRaster (myWidth, myHeight, xm, ym, zm, xr[0], yr[0]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, xm, YM, zm, xr[1], yr[1]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, XM, YM, zm, xr[2], yr[2]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, XM, ym, zm, xr[3], yr[3]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, xm, ym, ZM, xr[4], yr[4]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, xm, YM, ZM, xr[5], yr[5]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, XM, YM, ZM, xr[6], yr[6]) &&
-        myView->ProjectObjectToRaster (myWidth, myHeight, XM, ym, ZM, xr[7], yr[7]))
-    {
-      Tfloat XMR, YMR;
-      xmr = ymr = (float ) shortreallast ();
-      XMR = YMR = (float ) shortrealfirst ();
-      /*
-      * Recherche du rectangle projete
-      */
-      Tint i;
-      for (i=0; i<8; i++) {
-        if (xmr > xr[i]) xmr = xr[i];
-        if (ymr > yr[i]) ymr = yr[i];
-        if (XMR < xr[i]) XMR = xr[i];
-        if (YMR < yr[i]) YMR = yr[i];
-      }
-      /* pour eviter les bavures de pixels ! */
-      xmr--;ymr--;
-      XMR++;YMR++;
-
-      /*
-      * Ajout CAL : 10/05/96
-      * Si les MinMax viennent d'un ensemble de markers
-      * on ne tient pas compte du scale factor de ceux-ci
-      * dans les valeurs de MinMax. En effet, ce facteur
-      * est dans l'espace pixel et les MinMax dans l'espace
-      * du modele. Donc ajout d'un delta de pixels
-      * en esperant que les applis n'utilisent pas des
-      * markers tres gros !
-      */
-      xmr -= CALL_DEF_DELTA; ymr -= CALL_DEF_DELTA;
-      XMR += CALL_DEF_DELTA; YMR += CALL_DEF_DELTA;
-
-      /*
-      * Le rectangle projete peut-etre clippe
-      */
-      width = (GLsizei) (XMR-xmr+1);
-      height = (GLsizei) (YMR-ymr+1);
-      /*
-      * (xmr,ymr) coin inferieur gauche
-      * (XMR,YMR) coin superieur droit
-      */
-      /* cas ou 1 coin est en dehors de la fenetre */
-      if (xmr < 0) { width  = (GLsizei) (XMR+1); xmr = 0; }
-      if (ymr < 0) { height = (GLsizei) (YMR+1); ymr = 0; }
-      if (XMR > myWidth)  { width  = (GLsizei) (myWidth-xmr+1); }
-      if (YMR > myHeight) { height = (GLsizei) (myHeight-ymr+1); }
-
-      /* cas ou les 2 coins sont en dehors de la fenetre */
-      if (XMR < 0) { xmr = 0; width = height = 1; }
-      if (YMR < 0) { ymr = 0; width = height = 1; }
-      if (xmr > myWidth)  { xmr = 0; width = height = 1; }
-      if (ymr > myHeight) { ymr = 0; width = height = 1; }
-    }
-	}
-  }
-
-  glDrawBuffer (FrontToBack? GL_BACK : GL_FRONT);
-  glReadBuffer (FrontToBack? GL_FRONT : GL_BACK);
-  /* copie complete */
-  glRasterPos2i ((GLint) xmr, (GLint) ymr);
-  glCopyPixels ((GLint) xmr, (GLint) ymr, width, height, GL_COLOR);
+  glRasterPos2i (0, 0);
+  glCopyPixels  (0, 0, myWidth  + 1, myHeight + 1, GL_COLOR);
 
   EnableFeatures();
 

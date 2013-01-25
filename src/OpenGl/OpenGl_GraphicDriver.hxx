@@ -32,6 +32,7 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Handle_AlienImage_AlienImage.hxx>
 #include <Handle_OpenGl_View.hxx>
+#include <Handle_OpenGl_Workspace.hxx>
 
 #include <Aspect_Display.hxx>
 #include <Aspect_GradientFillMethod.hxx>
@@ -178,21 +179,14 @@ public:
   Standard_EXPORT void GraduatedTrihedronMinMaxValues (const Standard_ShortReal xmin, const Standard_ShortReal ymin, const Standard_ShortReal zmin, const Standard_ShortReal xmax, const Standard_ShortReal ymax, const Standard_ShortReal zmax);
   Standard_EXPORT void BeginAnimation (const Graphic3d_CView& ACView);
   Standard_EXPORT void EndAnimation (const Graphic3d_CView& ACView);
+  Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
+                                                                const Standard_Boolean theDrawToFrontBuffer);
   Standard_EXPORT Standard_Boolean BeginAddMode (const Graphic3d_CView& ACView);
   Standard_EXPORT void EndAddMode ();
   Standard_EXPORT Standard_Boolean BeginImmediatMode(const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Boolean DoubleBuffer, const Standard_Boolean RetainMode);
-  Standard_EXPORT void BeginPolyline ();
   Standard_EXPORT void ClearImmediatMode (const Graphic3d_CView& ACView,const Standard_Boolean aFlush = Standard_True);
-  Standard_EXPORT void Draw (const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Z);
   Standard_EXPORT void DrawStructure (const Graphic3d_CStructure& ACStructure);
   Standard_EXPORT void EndImmediatMode (const Standard_Integer Synchronize);
-  Standard_EXPORT void EndPolyline ();
-  Standard_EXPORT void Move (const Standard_ShortReal X, const Standard_ShortReal Y, const Standard_ShortReal Z);
-  Standard_EXPORT void SetLineColor (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B);
-  Standard_EXPORT void SetLineType (const Standard_Integer Type);
-  Standard_EXPORT void SetLineWidth (const Standard_ShortReal Width);
-  Standard_EXPORT void SetMinMax (const Standard_ShortReal X1, const Standard_ShortReal Y1, const Standard_ShortReal Z1, const Standard_ShortReal X2, const Standard_ShortReal Y2, const Standard_ShortReal Z2);
-  Standard_EXPORT void Transform (const TColStd_Array2OfReal& AMatrix, const Graphic3d_TypeOfComposition AType);
   Standard_EXPORT void Layer (Aspect_CLayer2d& ACLayer);
   Standard_EXPORT void RemoveLayer (const Aspect_CLayer2d& ACLayer);
   Standard_EXPORT void BeginLayer (const Aspect_CLayer2d& ACLayer);
@@ -342,6 +336,7 @@ private:
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      myMapOfView;
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> myMapOfWS;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
+  Handle(OpenGl_Workspace)                                        myImmediateWS;
   OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
 
 };

@@ -1,6 +1,6 @@
 // Created on: 2011-10-20
 // Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Copyright (c) 2011-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,10 +17,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GraphicDriver.hxx>
 
 #include <OpenGl_Context.hxx>
+#include <OpenGl_CView.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -149,4 +149,128 @@ Standard_Boolean OpenGl_GraphicDriver::MemoryInfo (Standard_Size&           theF
   theFreeBytes = aGlCtx.AvailableMemory();
   theInfo      = aGlCtx.MemoryInfo();
   return !theInfo.IsEmpty();
+}
+
+// =======================================================================
+// function : SetImmediateModeDrawToFront
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
+                                                                    const Standard_Boolean theDrawToFrontBuffer)
+{
+  if (theCView.ViewId == -1)
+  {
+    return Standard_False;
+  }
+
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL)
+  {
+    return aCView->WS->SetImmediateModeDrawToFront (theDrawToFrontBuffer);
+  }
+  return Standard_False;
+}
+
+// =======================================================================
+// function : BeginAddMode
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::BeginAddMode (const Graphic3d_CView& theCView)
+{
+  if (theCView.ViewId == -1)
+  {
+    return Standard_False;
+  }
+
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL && aCView->WS->BeginAddMode())
+  {
+    myImmediateWS = aCView->WS;
+    return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+// =======================================================================
+// function : EndAddMode
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::EndAddMode()
+{
+  if (!myImmediateWS.IsNull())
+  {
+    myImmediateWS->EndAddMode();
+    myImmediateWS.Nullify();
+  }
+}
+
+// =======================================================================
+// function : BeginImmediatMode
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_GraphicDriver::BeginImmediatMode (const Graphic3d_CView& theCView,
+                                                          const Aspect_CLayer2d& theCUnderLayer,
+                                                          const Aspect_CLayer2d& theCOverLayer,
+                                                          const Standard_Boolean theDoubleBuffer,
+                                                          const Standard_Boolean theRetainMode)
+{
+  if (theCView.ViewId == -1)
+  {
+    return Standard_False;
+  }
+
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL && aCView->WS->BeginImmediatMode (theCView, theDoubleBuffer, theRetainMode))
+  {
+    myImmediateWS = aCView->WS;
+    return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+// =======================================================================
+// function : ClearImmediatMode
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::ClearImmediatMode (const Graphic3d_CView& theCView,
+                                              const Standard_Boolean theToFlush)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL)
+  {
+    aCView->WS->ClearImmediatMode (theCView, theToFlush);
+  }
+}
+
+// =======================================================================
+// function : DrawStructure
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::DrawStructure (const Graphic3d_CStructure& theCStructure)
+{
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  if (aStructure == NULL)
+  {
+    return;
+  }
+
+  if (!myImmediateWS.IsNull())
+  {
+    myImmediateWS->DrawStructure (aStructure);
+  }
+}
+
+// =======================================================================
+// function : EndImmediatMode
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::EndImmediatMode (const Standard_Integer )
+{
+  if (!myImmediateWS.IsNull())
+  {
+    myImmediateWS->EndImmediatMode();
+    myImmediateWS.Nullify();
+  }
 }

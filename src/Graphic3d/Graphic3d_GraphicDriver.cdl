@@ -656,6 +656,23 @@ is
     -- Category: Immediat mode methods
     ----------------------------------
 
+    SetImmediateModeDrawToFront (me                   : mutable;
+                                 theCView             : CView from Graphic3d;
+                                 theDrawToFrontBuffer : Boolean from Standard)
+    returns Boolean from Standard
+    is deferred;
+    ---Purpose: @param theDrawToFrontBuffer Advanced option to modify rendering mode:
+    -- 1. TRUE.  Drawing immediate mode structures directly to the front buffer over the scene image.
+    --    Fast, so preferred for interactive work (used by default).
+    --    However these extra drawings will be missed in image dump since it is performed from back buffer.
+    --    Notice that since no pre-buffering used the V-Sync will be ignored and rendering could be seen
+    --    in run-time (in case of slow hardware) and/or tearing may appear.
+    --    So this is strongly recommended to draw only simple (fast) structures.
+    -- 2. FALSE. Drawing immediate mode structures to the back buffer.
+    --    The complete scene is redrawn first, so this mode is slower if scene contains complex data and/or V-Sync is turned on.
+    --    But it works in any case and is especially useful for view dump because the dump image is read from the back buffer.
+    -- @return previous mode.
+
     BeginImmediatMode ( me              : mutable;
                         ACView          : CView from Graphic3d;
                         ACUnderLayer    : CLayer2d from Aspect;
@@ -666,21 +683,10 @@ is
         is deferred;
     ---Purpose: call_togl_begin_immediat_mode
 
-    BeginPolyline ( me  : mutable )
-        is deferred;
-    ---Purpose: call_togl_begin_polyline
-
     ClearImmediatMode ( me  : mutable; ACView       : CView from Graphic3d;
                   aFlush        : Boolean from Standard = Standard_True)
         is deferred;
     ---Purpose: call_togl_clear_immediat_mode
-
-    Draw ( me   : mutable;
-           X    : ShortReal from Standard;
-           Y    : ShortReal from Standard;
-           Z    : ShortReal from Standard )
-        is deferred;
-    ---Purpose: call_togl_draw
 
     DrawStructure ( me          : mutable;
                     ACStructure : CStructure from Graphic3d )
@@ -691,50 +697,6 @@ is
                       Synchronize   : Integer from Standard )
         is deferred;
     ---Purpose: call_togl_end_immediat_mode
-
-    EndPolyline ( me    : mutable )
-        is deferred;
-    ---Purpose: call_togl_end_polyline
-
-    Move ( me   : mutable;
-           X    : ShortReal from Standard;
-           Y    : ShortReal from Standard;
-           Z    : ShortReal from Standard )
-        is deferred;
-    ---Purpose: call_togl_move
-
-    SetLineColor ( me   : mutable;
-                   R    : ShortReal from Standard;
-                   G    : ShortReal from Standard;
-                   B    : ShortReal from Standard )
-        is deferred;
-    ---Purpose: call_togl_set_linecolor
-
-    SetLineType ( me    : mutable;
-                  Type  : Integer from Standard )
-        is deferred;
-    ---Purpose: call_togl_set_linetype
-
-    SetLineWidth ( me   : mutable;
-               Width    : ShortReal from Standard )
-        is deferred;
-    ---Purpose: call_togl_set_linewidth
-
-    SetMinMax ( me  : mutable;
-                X1  : ShortReal from Standard;
-                Y1  : ShortReal from Standard;
-                Z1  : ShortReal from Standard;
-                X2  : ShortReal from Standard;
-                Y2  : ShortReal from Standard;
-                Z2  : ShortReal from Standard )
-        is deferred;
-    ---Purpose: call_togl_set_minmax
-
-    Transform ( me      : mutable;
-                AMatrix : Array2OfReal from TColStd;
-                AType   : TypeOfComposition from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_transform
 
     -------------------------------
     -- Category: Layer mode methods

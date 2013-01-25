@@ -48,6 +48,7 @@
 #include <V3d_Viewer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d_View.hxx>
+#include <Visual3d_View.hxx>
 
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
@@ -193,8 +194,6 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   glEnd();
   glPopAttrib();
 }
-
-
 
 OpenGl_Element* VUserDrawCallback(const CALL_DEF_USERDRAW * theUserDraw)
 {
@@ -395,6 +394,44 @@ static int VFeedback (Draw_Interpretor& theDI,
   }
 }
 
+//==============================================================================
+//function : VImmediateFront
+//purpose  :
+//==============================================================================
+
+static int VImmediateFront (Draw_Interpretor& theDI,
+                            Standard_Integer  theArgNb,
+                            const char**      theArgVec)
+{
+  // get the context
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  Handle(Graphic3d_GraphicDriver) aDriver =
+         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  if (aDriver.IsNull())
+  {
+    std::cerr << "Graphic driver not available.\n";
+    return 1;
+  }
+
+  if (theArgNb < 2)
+  {
+    //theDI << "VBO: " << aDriver->ToUseVBO() << "\n";
+    //return 0;
+    std::cerr << "Wrong number of arguments.\n";
+    return 1;
+  }
+
+  Graphic3d_CView* aCView = (Graphic3d_CView* )(ViewerTest::CurrentView()->View()->CView());
+  aDriver->SetImmediateModeDrawToFront (*aCView, atoi(theArgVec[1]) != 0);
+  return 0;
+}
+
 //=======================================================================
 //function : OpenGlCommands
 //purpose  :
@@ -410,4 +447,8 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vfeedback",
     "vfeedback       : perform test GL feedback rendering",
     __FILE__, VFeedback, aGroup);
+  theCommands.Add("vimmediatefront",
+    "vimmediatefront : render immediate mode to front buffer or to back buffer",
+    __FILE__, VImmediateFront, aGroup);
+
 }
