@@ -51,7 +51,7 @@ BinMDataStd_NamedDataDriver::BinMDataStd_NamedDataDriver(const Handle(CDM_Messag
 
 //=======================================================================
 //function : NewEmpty
-//purpose  : 
+//purpose  :
 //=======================================================================
 Handle(TDF_Attribute) BinMDataStd_NamedDataDriver::NewEmpty() const
 {
@@ -153,12 +153,12 @@ Standard_Boolean BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent& 
 	Handle(TColStd_HArray1OfInteger) aTargetArray = new TColStd_HArray1OfInteger (low, up);
 	if(!theSource.GetIntArray (&(aTargetArray->ChangeArray1())(low), up-low+1))
 	  return Standard_False;
-	
+
 	Standard_Boolean Ok = anIntArrays.Bind(aKey, aTargetArray);
 	aResult |= Ok;
       }
     }
-    if (aResult) 
+    if (aResult)
       T->ChangeArraysOfIntegers(anIntArrays);
   }
 
@@ -176,7 +176,8 @@ Standard_Boolean BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent& 
       Standard_Integer low, up;
       if (! (theSource >> low >> up))
         return Standard_False;
-      if(up < low) Standard_False;
+      if (up < low)
+        return Standard_False;
       if(low | up) {
         Handle(TColStd_HArray1OfReal) aTargetArray =
           new TColStd_HArray1OfReal(low, up);
@@ -203,7 +204,7 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   Handle(TDataStd_NamedData) S = Handle(TDataStd_NamedData)::DownCast (theSource);
   if(S.IsNull()) return;
 //  Standard_Integer i=0;
-  
+
   if(S->HasIntegers() && !S->GetIntegersContainer().IsEmpty()) {
     theTarget.PutInteger(1) << S->GetIntegersContainer().Extent(); //dim
     TColStd_DataMapIteratorOfDataMapOfStringInteger itr(S->GetIntegersContainer());
@@ -213,7 +214,7 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   } else {
     theTarget.PutInteger(0).PutInteger(0);
   }
-    
+
   if(S->HasReals() && !S->GetRealsContainer().IsEmpty()) {
     theTarget.PutInteger(1) << S->GetRealsContainer().Extent();
     TDataStd_DataMapIteratorOfDataMapOfStringReal itr(S->GetRealsContainer());
