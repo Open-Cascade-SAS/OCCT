@@ -29,7 +29,7 @@
 
 //=======================================================================
 //function : QANColStdAllocator1
-//purpose  : 
+//purpose  :
 //=======================================================================
 static Standard_Integer QANColStdAllocator1(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
@@ -83,7 +83,7 @@ static Standard_Integer QANColStdAllocator1(Draw_Interpretor& di, Standard_Integ
 
 //=======================================================================
 //function : QANColStdAllocator2
-//purpose  : 
+//purpose  :
 //=======================================================================
 static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
@@ -117,7 +117,9 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
     }
 
     //using void-specialization allocator
-    std::vector<int, NCollection_StdAllocator<void> > aV2;
+    NCollection_StdAllocator<void> aVAlloc;
+    std::vector<int, NCollection_StdAllocator<int> > aV2 (aVAlloc);
+
     aV2.resize (10);
     aV2.push_back (-1);
     if ( aV2.size() == size_t (11) ) {
@@ -147,8 +149,8 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
 void QANCollection::Commands4(Draw_Interpretor& theCommands) {
   const char *group = "QANCollection";
 
-  theCommands.Add("QANColStdAllocator1", "QANColStdAllocator1", __FILE__, QANColStdAllocator1, group);  
-  theCommands.Add("QANColStdAllocator2", "QANColStdAllocator2", __FILE__, QANColStdAllocator2, group);  
+  theCommands.Add("QANColStdAllocator1", "QANColStdAllocator1", __FILE__, QANColStdAllocator1, group);
+  theCommands.Add("QANColStdAllocator2", "QANColStdAllocator2", __FILE__, QANColStdAllocator2, group);
 
   return;
 }
