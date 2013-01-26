@@ -42,7 +42,7 @@ static Standard_Boolean S3D_Str_NearSegment (const gp_XY& p0, const gp_XY& p1, c
 
   gp_XY Vec(TheP);
   Vec -= p0;
-  
+
   Standard_Real u = Vec*V01.Normalized();
   if(u<-aTol) return Standard_False;
   Standard_Real u1 = u-aTol;
@@ -80,9 +80,9 @@ mytype (aType)
 //==================================================
 
 Standard_Boolean Select3D_SensitiveTriangle::
-Matches(const Standard_Real X, 
-        const Standard_Real Y, 
-        const Standard_Real aTol, 
+Matches(const Standard_Real X,
+        const Standard_Real Y,
+        const Standard_Real aTol,
         Standard_Real& DMin)
 {
   Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
@@ -131,7 +131,7 @@ Matches (const Standard_Real XMin,
 
 //=======================================================================
 //function : Matches
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveTriangle::
@@ -141,9 +141,6 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 {
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
-  Standard_Real Tolu,Tolv;
-  Tolu = 1e-7;
-  Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
   for(Standard_Integer anIndex=0;anIndex<=2;++anIndex)
@@ -211,7 +208,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const Standard_Real X,
 
 //=======================================================================
 //function : Status
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
@@ -225,7 +222,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   B.Update(p0.X(),p0.Y());B.Update(p1.X(),p1.Y());B.Update(p2.X(),p2.Y());
   B.Enlarge(aTol);
   if(B.IsOut(TheP)) return 2;
-  
+
   // the point is classified corresponding to demi-spaces limited
   // by each side of the triangle (with tolerance)
   gp_XY V01(p1);V01-=p0;
@@ -235,9 +232,9 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   // check these particular cases...
   // if one of vectors is almost null (2 points are mixed),
   // leave at once (it is already in the bounding box, which is good...)
-  
+
   DMin = aTol;
-  
+
   if ( V01.SquareModulus() <= gp::Resolution() )
   {
     Standard_Real LV = V02.SquareModulus();
@@ -246,7 +243,7 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
 
     if ( S3D_Str_NearSegment (p0, p2, TheP, aTol, DMin) )
       return 0;
-    return 2;    
+    return 2;
   }
   if ( V02.SquareModulus() <= gp::Resolution() )
   {
@@ -268,16 +265,16 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
   }
 
   // oriented normal to p0p1...
-  gp_Dir2d N (-V01.Y(), V01.X()); 
+  gp_Dir2d N (-V01.Y(), V01.X());
   Standard_Boolean Neg = (N * V02 < 0.);
-  if ( Neg ) 
+  if ( Neg )
     N.Reverse();
 
   gp_XY Vec(TheP);
   Vec -= p0;
-  
+
   Standard_Real aD1 = Vec * N.XY();
-  if ( aD1 < -aTol ) 
+  if ( aD1 < -aTol )
     return 2;
 
   // oriented normal to p1p2...
@@ -285,10 +282,10 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
     N.SetCoord(p2.Y()-p1.Y(),p1.X()-p2.X());
   else
     N.SetCoord(p1.Y()-p2.Y(),p2.X()-p1.X());
-  
+
   Vec.SetCoord(TheP.X()-p1.X(),TheP.Y()-p1.Y());
   Standard_Real aD2 = Vec * N.XY();
-  if ( aD2 < -aTol ) 
+  if ( aD2 < -aTol )
     return 2;   // outside
 
   // oriented normal to p2p0...
@@ -298,10 +295,10 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
     N.SetCoord(p0.Y()-p2.Y(),p2.X()-p0.X());
   else
     N.SetCoord(p2.Y()-p0.Y(),p0.X()-p2.X());
-  
+
   Vec.SetCoord(TheP.X()-p2.X(),TheP.Y()-p2.Y());
   Standard_Real aD3 = Vec * N.XY();
-  if ( aD3 < -aTol ) 
+  if ( aD3 < -aTol )
     return 2;  // outside
 
   // compute 2d distance to triangle
@@ -312,10 +309,10 @@ Standard_Integer  Select3D_SensitiveTriangle::Status(const gp_XY& p0,
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void Select3D_SensitiveTriangle::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const 
+void Select3D_SensitiveTriangle::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
 {
   // general information....
 
@@ -331,7 +328,7 @@ void Select3D_SensitiveTriangle::Dump(Standard_OStream& S,const Standard_Boolean
   S<<"\t\t P1 [ "<<aPnt2.X()<<" , "<<aPnt2.Y()<<" , "<<aPnt2.Z()<<" ]"<<endl;
   S<<"\t\t P2 [ "<<aPnt3.X()<<" , "<<aPnt3.Y()<<" , "<<aPnt3.Z()<<" ]"<<endl;
 
-  if(FullDump) 
+  if(FullDump)
   {
     S<<"\t\tProjected Points"<<endl;
 
@@ -348,7 +345,7 @@ void Select3D_SensitiveTriangle::Dump(Standard_OStream& S,const Standard_Boolean
 
 //=======================================================================
 //function : ComputeDepth
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Real Select3D_SensitiveTriangle::ComputeDepth(const gp_Lin& EyeLine) const
@@ -361,34 +358,34 @@ Standard_Real Select3D_SensitiveTriangle::ComputeDepth(const gp_Lin& EyeLine) co
   P3 = mypolyg.Pnt(2);
 
   gp_Trsf TheTrsf ;
-  if(HasLocation()) 
+  if(HasLocation())
     TheTrsf = Location().Transformation();
-  
-  if(TheTrsf.Form()!=gp_Identity) 
+
+  if(TheTrsf.Form()!=gp_Identity)
   {
     P1.Transform(TheTrsf);
     P2.Transform(TheTrsf);
     P3.Transform(TheTrsf);
   }
-  
+
   // formula calculation of the point parameters on intersection
   // t = (P1P2 ^P1P3)* OP1  / ((P1P2^P1P3)*Dir)
-  
+
   gp_Pnt Oye  = EyeLine.Location(); // origin of the target line eye/point...
   gp_Dir Dir  = EyeLine.Direction();
-  
+
   gp_Vec P1P2 (P1,P2), P1P3(P1,P3);
   P1P2.Normalize();
   P1P3.Normalize();
-  
+
   gp_Vec oP1(Oye,P1);
   Standard_Real val1 = oP1.DotCross(P1P2,P1P3);
   Standard_Real val2 = Dir.DotCross(P1P2,P1P3);
-  
+
   if(Abs(val2)>Precision::Confusion())
     prof =val1/val2;
-  
-  if (prof==Precision::Infinite()) 
+
+  if (prof==Precision::Infinite())
   {
     prof= ElCLib::Parameter(EyeLine,P1);
     prof = Min (prof, ElCLib::Parameter(EyeLine,P2));
@@ -403,14 +400,14 @@ Standard_Real Select3D_SensitiveTriangle::ComputeDepth(const gp_Lin& EyeLine) co
 //==================================================
 
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveTriangle::
-GetConnected(const TopLoc_Location &theLocation) 
+GetConnected(const TopLoc_Location &theLocation)
 {
-  // Create a copy of this 
-  Handle(Select3D_SensitiveEntity) aNewEntity = 
+  // Create a copy of this
+  Handle(Select3D_SensitiveEntity) aNewEntity =
     new Select3D_SensitiveTriangle(myOwnerId, mypolyg.Pnt(0), mypolyg.Pnt(1), mypolyg.Pnt(2), mytype);
 
-  if (HasLocation()) 
-    aNewEntity->SetLocation(Location()); 
+  if (HasLocation())
+    aNewEntity->SetLocation(Location());
 
   aNewEntity->UpdateLocation(theLocation);
 

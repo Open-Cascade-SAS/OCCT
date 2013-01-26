@@ -115,30 +115,27 @@ Matches (const Standard_Real XMin,
 
 //=======================================================================
 //function : Matches
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean Select3D_SensitivePoint::
 Matches (const TColgp_Array1OfPnt2d& aPoly,
          const Bnd_Box2d& aBox,
          const Standard_Real aTol)
-{ 
+{
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
-  Standard_Real Tolu,Tolv;
-  Tolu = 1e-7;
-  Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
   Standard_Integer RES = aClassifier2d.SiDans(myprojpt);
   if(RES==1) return Standard_True;
-  
+
   return Standard_False;
 }
 
 //=======================================================================
 //function : Point
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 gp_Pnt Select3D_SensitivePoint::Point() const
@@ -146,10 +143,10 @@ gp_Pnt Select3D_SensitivePoint::Point() const
 
 //=======================================================================
 //function : GetConnected
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitivePoint::GetConnected(const TopLoc_Location& aLoc)  
+Handle(Select3D_SensitiveEntity) Select3D_SensitivePoint::GetConnected(const TopLoc_Location& aLoc)
 {
   Handle(Select3D_SensitivePoint) NiouEnt = new Select3D_SensitivePoint(myOwnerId,mypoint);
   if(HasLocation()) NiouEnt->SetLocation(Location());
@@ -159,7 +156,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitivePoint::GetConnected(const Top
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_SensitivePoint::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
@@ -174,7 +171,7 @@ void Select3D_SensitivePoint::Dump(Standard_OStream& S,const Standard_Boolean Fu
 
 //=======================================================================
 //function : ComputeDepth
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Real Select3D_SensitivePoint::ComputeDepth(const gp_Lin& EyeLine) const

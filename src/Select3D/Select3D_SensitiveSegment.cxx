@@ -43,7 +43,7 @@
 //=====================================================
 
 Select3D_SensitiveSegment::
-Select3D_SensitiveSegment(const Handle(SelectBasics_EntityOwner)& OwnerId, 
+Select3D_SensitiveSegment(const Handle(SelectBasics_EntityOwner)& OwnerId,
                           const gp_Pnt& FirstP,
                           const gp_Pnt& LastP,
                           const Standard_Integer MaxRect):
@@ -65,15 +65,15 @@ void Select3D_SensitiveSegment
   Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
   gp_Pnt2d aPoint2dStart;
   gp_Pnt2d aPoint2dEnd;
-  
-  if(HasLocation()) 
+
+  if(HasLocation())
   {
     gp_Pnt aStart(mystart.x, mystart.y, mystart.z);
     gp_Pnt aEnd(myend.x, myend.y, myend.z);
     aProj->Project(aStart.Transformed(Location().Transformation()),aPoint2dStart);
     aProj->Project(aEnd.Transformed(Location().Transformation()),aPoint2dEnd);
   }
-  else 
+  else
   {
     aProj->Project(mystart,aPoint2dStart);
     aProj->Project(myend,aPoint2dEnd);
@@ -83,7 +83,7 @@ void Select3D_SensitiveSegment
 }
 
 //=====================================================
-// Function : Areas 
+// Function : Areas
 // Purpose  :
 //=====================================================
 
@@ -92,30 +92,30 @@ void Select3D_SensitiveSegment
 {
 //  gp_Dir2d dy (0.,1.);
   gp_Pnt2d aPStart(myprojstart.x,myprojstart.y);
-  if(aPStart.Distance(myprojend)<=Precision::Confusion()) 
+  if(aPStart.Distance(myprojend)<=Precision::Confusion())
   {
       Bnd_Box2d curbox;
       curbox.Set(myprojstart);
       theareas.Append(curbox);
   }
-  else 
+  else
   {
     gp_Vec2d MyVec(myprojstart,myprojend);//,VAxx(gp_Dir2d(0.,1.));
     Standard_Real theangle = Abs(gp_Dir2d(0.,1.).Angle(gp_Vec2d(myprojstart,myprojend)));
     if(theangle>=M_PI/2.) theangle-=M_PI/2;
     if(theangle>=M_PI/12. && theangle <=5*M_PI/12.)
-      { 
-        TColgp_Array1OfPnt2d BoxPoint (1,mymaxrect+1); 
+      {
+        TColgp_Array1OfPnt2d BoxPoint (1,mymaxrect+1);
         BoxPoint (1) = myprojstart;
-        BoxPoint(mymaxrect+1)=myprojend; 
+        BoxPoint(mymaxrect+1)=myprojend;
         gp_Vec2d Vtr = MyVec/mymaxrect;
-        Standard_Integer i; 
-        for ( i=2;i<=mymaxrect;i++) 
-        { 
-          BoxPoint (i) = BoxPoint (i-1).Translated(Vtr); 
-        } 
-        for (i=2;i<=mymaxrect+1;i++) 
-        { 
+        Standard_Integer i;
+        for ( i=2;i<=mymaxrect;i++)
+        {
+          BoxPoint (i) = BoxPoint (i-1).Translated(Vtr);
+        }
+        for (i=2;i<=mymaxrect+1;i++)
+        {
           Bnd_Box2d curbox;
           curbox.Set(BoxPoint(i-1));
           curbox.Add(BoxPoint(i));
@@ -123,10 +123,10 @@ void Select3D_SensitiveSegment
         }
       }
     else
-      { 
-        Bnd_Box2d curbox; 
-        curbox.Set(myprojstart); 
-        curbox.Add(myprojend); 
+      {
+        Bnd_Box2d curbox;
+        curbox.Set(myprojstart);
+        curbox.Add(myprojend);
         theareas.Append(curbox);
       }
   }
@@ -171,19 +171,16 @@ Matches (const Standard_Real XMin,
 
 //=======================================================================
 //function : Matches
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveSegment::
 Matches (const TColgp_Array1OfPnt2d& aPoly,
          const Bnd_Box2d& aBox,
          const Standard_Real aTol)
-{ 
+{
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
-  Standard_Real Tolu,Tolv;
-  Tolu = 1e-7;
-  Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
   Standard_Integer RES = aClassifier2d.SiDans(myprojstart);
@@ -198,13 +195,13 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 
 //=======================================================================
 //function : GetConnected
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveSegment::
-GetConnected(const TopLoc_Location& aLoc)  
+GetConnected(const TopLoc_Location& aLoc)
 {
-  Handle(Select3D_SensitiveSegment) NiouEnt = 
+  Handle(Select3D_SensitiveSegment) NiouEnt =
     new Select3D_SensitiveSegment(myOwnerId,mystart,myend,mymaxrect);
 
   if(HasLocation()) NiouEnt->SetLocation(Location());
@@ -214,7 +211,7 @@ GetConnected(const TopLoc_Location& aLoc)
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Select3D_SensitiveSegment::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
@@ -225,11 +222,11 @@ void Select3D_SensitiveSegment::Dump(Standard_OStream& S,const Standard_Boolean 
   S<<"\t\t P1 [ "<<mystart.x<<" , "<<mystart.y <<" , "<<mystart.z <<" ]"<<endl;
   S<<"\t\t P2 [ "<<myend.x<<" , "<<myend.y <<" , "<<myend.z <<" ]"<<endl;
   S<<"\t\t maxrect ="<<mymaxrect<<endl;
-  
+
 }
 //=======================================================================
 //function : ComputeDepth
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Real Select3D_SensitiveSegment::ComputeDepth(const gp_Lin& EyeLine) const

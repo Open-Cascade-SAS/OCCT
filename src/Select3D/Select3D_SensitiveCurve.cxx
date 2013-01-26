@@ -39,7 +39,7 @@ Select3D_SensitiveCurve
                           const Handle(Geom_Curve)& C,
                           const Standard_Integer NbPoints):
 Select3D_SensitivePoly(OwnerId, NbPoints),
-mylastseg(0), 
+mylastseg(0),
 myCurve(C)
 {
   LoadPoints(C,NbPoints);
@@ -113,7 +113,7 @@ Matches (const Standard_Real XMin,
 {
   Bnd_Box2d BoundBox;
   BoundBox.Update(XMin-aTol,YMin-aTol,XMax+aTol,YMax+aTol);
-  
+
   for(Standard_Integer anIndex=0; anIndex<mypolyg.Size(); ++anIndex)
     {
       if(BoundBox.IsOut(mypolyg.Pnt2d(anIndex)))
@@ -124,7 +124,7 @@ Matches (const Standard_Real XMin,
 
 //=======================================================================
 //function : Matches
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveCurve::
@@ -134,9 +134,6 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 {
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
-  Standard_Real Tolu,Tolv;
-  Tolu = 1e-7;
-  Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
   for(Standard_Integer anIndex=0;anIndex<mypolyg.Size();++anIndex)
@@ -156,7 +153,7 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 void Select3D_SensitiveCurve
 ::LoadPoints (const Handle(Geom_Curve)& aCurve,const Standard_Integer NbP)
 {
-  /*this method is private and it used only inside of constructor. 
+  /*this method is private and it used only inside of constructor.
     That's why check !NbP==mypolyg3d->Length() was removed*/
 
   Standard_Real Step = (aCurve->LastParameter()- aCurve->FirstParameter())/(NbP-1);
@@ -170,10 +167,10 @@ void Select3D_SensitiveCurve
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const 
+void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
 {
   S<<"\tSensitiveCurve 3D :"<<endl;
   if (HasLocation())
@@ -189,7 +186,7 @@ void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean Fu
 
 //=======================================================================
 //function : ComputeDepth
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Real Select3D_SensitiveCurve::ComputeDepth(const gp_Lin& EyeLine) const
@@ -219,33 +216,33 @@ Standard_Real Select3D_SensitiveCurve::ComputeDepth(const gp_Lin& EyeLine) const
 
 //=======================================================================
 //function : GetConnected
-//purpose  : 
-//======================================================================= 
+//purpose  :
+//=======================================================================
 
-Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected(const TopLoc_Location &theLocation) 
+Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected(const TopLoc_Location &theLocation)
 {
-  // Create a copy of this 
+  // Create a copy of this
   Handle(Select3D_SensitiveEntity) aNewEntity;
-  // this was constructed using Handle(Geom_Curve) 
-  if (!myCurve.IsNull()) 
+  // this was constructed using Handle(Geom_Curve)
+  if (!myCurve.IsNull())
   {
     aNewEntity = new Select3D_SensitiveCurve(myOwnerId, myCurve);
   }
   // this was constructed using TColgp_HArray1OfPnt
-  else 
+  else
   {
     Standard_Integer aSize = mypolyg.Size();
     Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt(1, aSize);
     // Fill the array with points from mypolyg3d
-    for (Standard_Integer anIndex = 1; anIndex <= aSize; ++anIndex) 
+    for (Standard_Integer anIndex = 1; anIndex <= aSize; ++anIndex)
     {
       aPoints->SetValue(anIndex, mypolyg.Pnt(anIndex-1));
     }
      aNewEntity = new Select3D_SensitiveCurve(myOwnerId, aPoints);
   }
-  
-  if (HasLocation()) 
-    aNewEntity->SetLocation(Location()); 
+
+  if (HasLocation())
+    aNewEntity->SetLocation(Location());
 
   aNewEntity->UpdateLocation(theLocation);
 

@@ -113,10 +113,10 @@ static Standard_Boolean S3D_IsEdgeIn(const Standard_Integer e1,
 //=======================================================================
 
 Select3D_SensitiveTriangulation::
-Select3D_SensitiveTriangulation(const Handle(SelectBasics_EntityOwner)& OwnerId, 
-                                const Handle(Poly_Triangulation)& Trg, 
-                                const TopLoc_Location& Loc, 
-                                const Standard_Boolean InteriorFlag): 
+Select3D_SensitiveTriangulation(const Handle(SelectBasics_EntityOwner)& OwnerId,
+                                const Handle(Poly_Triangulation)& Trg,
+                                const TopLoc_Location& Loc,
+                                const Standard_Boolean InteriorFlag):
 Select3D_SensitiveEntity(OwnerId),
 myTriangul(Trg),
 myiniloc(Loc),
@@ -133,24 +133,24 @@ myDetectedTr(-1)
   Standard_Integer nbTriangles (myTriangul->NbTriangles());
   gp_XYZ cdg(0,0,0);
   Standard_Integer n[3];
-  
+
   // to find connections in case when the border is not concerned...
-  if(!myIntFlag) 
+  if(!myIntFlag)
   {
     myFreeEdges = new TColStd_HArray1OfInteger(1,2*S3D_NumberOfFreeEdges(Trg));
     TColStd_Array1OfInteger& FreeE = myFreeEdges->ChangeArray1();
     Poly_Connect pc(myTriangul);
     Standard_Integer t[3];
     Standard_Integer i,j;
-    for ( i = 1; i <= nbTriangles; i++) 
+    for ( i = 1; i <= nbTriangles; i++)
     {
       pc.Triangles(i,t[0],t[1],t[2]);
       triangles(i).Get(n[0],n[1],n[2]);
       cdg += (Nodes(n[0]).XYZ() + Nodes(n[1]).XYZ()+ Nodes(n[2]).XYZ())/3.;
-      for (j = 0; j < 3; j++) 
+      for (j = 0; j < 3; j++)
       {
-        Standard_Integer k = (j+1) % 3; 
-        if (t[j] == 0) 
+        Standard_Integer k = (j+1) % 3;
+        if (t[j] == 0)
         {
           FreeE(fr)  = n[j];
           FreeE(fr+1)= n[k];
@@ -160,7 +160,7 @@ myDetectedTr(-1)
     }
   }
   else{
-    for (Standard_Integer i = 1; i <= nbTriangles; i++) 
+    for (Standard_Integer i = 1; i <= nbTriangles; i++)
     {
       triangles(i).Get(n[0],n[1],n[2]);
       cdg += (Nodes(n[0]).XYZ() + Nodes(n[1]).XYZ()+ Nodes(n[2]).XYZ())/3.;
@@ -183,11 +183,11 @@ myDetectedTr(-1)
 //=======================================================================
 
 Select3D_SensitiveTriangulation::
-Select3D_SensitiveTriangulation(const Handle(SelectBasics_EntityOwner)& OwnerId, 
-                                const Handle(Poly_Triangulation)& Trg, 
-                                const TopLoc_Location& Loc, 
-                                const Handle(TColStd_HArray1OfInteger)& FreeEdges, 
-                                const gp_Pnt& TheCDG, 
+Select3D_SensitiveTriangulation(const Handle(SelectBasics_EntityOwner)& OwnerId,
+                                const Handle(Poly_Triangulation)& Trg,
+                                const TopLoc_Location& Loc,
+                                const Handle(TColStd_HArray1OfInteger)& FreeEdges,
+                                const gp_Pnt& TheCDG,
                                 const Standard_Boolean InteriorFlag):
 Select3D_SensitiveEntity(OwnerId),
 myTriangul(Trg),
@@ -242,7 +242,7 @@ void Select3D_SensitiveTriangulation::Areas(SelectBasics_ListOfBox2d& boxes)
 //purpose  :
 //=======================================================================
 Standard_Boolean Select3D_SensitiveTriangulation::
-Matches(const Standard_Real X, 
+Matches(const Standard_Real X,
         const Standard_Real Y,
         const Standard_Real aTol,
         Standard_Real& DMin)
@@ -295,9 +295,9 @@ Matches(const Standard_Real X,
       }
     }
   }
-  
+
   //    Case only Test on Border of the triangulation...
-  //   
+  //
   else
   {
     //Standard_Integer ifirst;
@@ -373,9 +373,6 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 {
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
-  Standard_Real Tolu,Tolv;
-  Tolu = 1e-7;
-  Tolv = 1e-7;
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
 
   for(Standard_Integer j=1;j<=myNodes2d.Length();j++)
@@ -392,7 +389,7 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
 //=======================================================================
 
 Standard_Integer Select3D_SensitiveTriangulation::
-Status (const gp_XY& TheP, 
+Status (const gp_XY& TheP,
         const gp_XY& Proj0,
         const gp_XY& Proj1,
         const gp_XY& Proj2,
@@ -420,17 +417,17 @@ Standard_Boolean Select3D_SensitiveTriangulation::IsFree(const Standard_Integer 
   {
     if(FreeE(I) == n[0])
     {
-      if(FreeE(I+1)== n[1] || FreeE(I+1)== n[2]) 
+      if(FreeE(I+1)== n[1] || FreeE(I+1)== n[2])
         FoundIndex=I;
     }
     else if(FreeE(I) == n[1])
     {
-      if(FreeE(I+1)== n[0] || FreeE(I+1)== n[2]) 
+      if(FreeE(I+1)== n[0] || FreeE(I+1)== n[2])
         FoundIndex=I;
     }
     else if(FreeE(I) == n[2])
     {
-      if(FreeE(I+1)== n[0] || FreeE(I+1)== n[1]) 
+      if(FreeE(I+1)== n[0] || FreeE(I+1)== n[1])
         FoundIndex=I;
     }
   }
@@ -450,7 +447,7 @@ GetConnected(const TopLoc_Location& aLoc)
   Handle(Select3D_SensitiveTriangulation) NiouEnt =
     new Select3D_SensitiveTriangulation(myOwnerId,myTriangul,myiniloc,myFreeEdges,myCDG3D,myIntFlag);
 
-  if(HasLocation()) 
+  if(HasLocation())
     NiouEnt->SetLocation(Location());
 //  TopLoc_Location TheLocToApply = HasLocation() ?  Location()*aLoc : aLoc;
 //  if(!TheLocToApply.IsIdentity())
@@ -500,7 +497,7 @@ void Select3D_SensitiveTriangulation::Dump(Standard_OStream& S,const Standard_Bo
   S<<"\t\tNb Nodes     : "<<myTriangul->NbNodes()<<endl;
   S<<"\t\tNb Free Edges: "<<myFreeEdges->Length()/2<<endl;
 
-  if(FullDump) 
+  if(FullDump)
   {
 //    S<<"\t\t\tOwner:"<<myOwnerId<<endl;
     Select3D_SensitiveEntity::DumpBox(S,mybox2d);
@@ -529,7 +526,7 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
       P[i].Transform(myTrsf);
     }
   }
-  
+
   // formula calculate the parameter of the point on the intersection
   // t = (P1P2 ^P1P3)* OP1  / ((P1P2^P1P3)*Dir)
   Standard_Real prof(Precision::Infinite());
@@ -540,7 +537,7 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
   for(Standard_Integer i=0;i<=2;i++)
     Vtr[i] = gp_Vec(P[i%3],P[(i+1)%3]);
   Vtr[2] = -Vtr[2];
-  
+
   // remove singular cases immediately...
   Standard_Integer SingularCase(-1);
   if(Vtr[0].SquareMagnitude()<= Precision::Confusion())
@@ -551,9 +548,9 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
   if(Vtr[2].SquareMagnitude()<= Precision::Confusion())
     if( SingularCase < 0 ) SingularCase = 1;
 #endif
-  
+
   // 3 pts mixed...
-  if(SingularCase ==2) 
+  if(SingularCase ==2)
   {
     prof= ElCLib::Parameter(EyeLine,P[0]);
     return prof;
@@ -566,8 +563,8 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
     Vtr[2].Normalize();
   gp_Vec OPo(Oye,P[0]);
   // 2 points mixed... the intersection between the segment and the target line eye/point.
-  // 
-  if(SingularCase!=-1) 
+  //
+  if(SingularCase!=-1)
   {
     gp_Vec V = SingularCase==0 ? Vtr[2] : Vtr[0];
     gp_Vec Det = Dir^V;
@@ -579,7 +576,7 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
     else if(Det.Z()> Precision::Confusion())
       prof = VSM.Z()/Det.Z();
   }
-  else 
+  else
   {
     Standard_Real val1 = OPo.DotCross(Vtr[0],Vtr[2]);
     Standard_Real val2 = Dir.DotCross(Vtr[0],Vtr[2]);
@@ -587,7 +584,7 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
     if(Abs(val2)>Precision::Confusion())
       prof =val1/val2;
   }
-  if (prof==Precision::Infinite()) 
+  if (prof==Precision::Infinite())
   {
     prof= ElCLib::Parameter(EyeLine,P[0]);
     prof = Min (prof, ElCLib::Parameter(EyeLine,P[1]));
@@ -603,8 +600,8 @@ Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLin
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveTriangulation::
-DetectedTriangle(gp_Pnt& P1, 
-                 gp_Pnt& P2, 
+DetectedTriangle(gp_Pnt& P1,
+                 gp_Pnt& P2,
                  gp_Pnt& P3) const
 {
   if(myDetectedTr==-1) return Standard_False; // currently not implemented...
@@ -616,7 +613,7 @@ DetectedTriangle(gp_Pnt& P1,
   P1 = Nodes(n1);
   P2 = Nodes(n2);
   P3 = Nodes(n3);
-  if(myTrsf.Form()!=gp_Identity) 
+  if(myTrsf.Form()!=gp_Identity)
   {
     P1.Transform(myTrsf);
     P2.Transform(myTrsf);
@@ -632,11 +629,11 @@ DetectedTriangle(gp_Pnt& P1,
 //=============================================================================
 
 Standard_Boolean Select3D_SensitiveTriangulation::
-DetectedTriangle2d(gp_Pnt2d& P1, 
-                   gp_Pnt2d& P2, 
+DetectedTriangle2d(gp_Pnt2d& P1,
+                   gp_Pnt2d& P2,
                    gp_Pnt2d& P3) const
 {
-  if(myDetectedTr==-1) 
+  if(myDetectedTr==-1)
     return Standard_False; //  currently not implemented...
   const Poly_Array1OfTriangle& triangles = myTriangul->Triangles();
   Standard_Integer n1,n2,n3;
@@ -670,14 +667,14 @@ void Select3D_SensitiveTriangulation::ComputeTotalTrsf()
   {
     if(myiniloc.IsIdentity())
       myTrsf = Location().Transformation();
-    else if(HasLocation()) 
+    else if(HasLocation())
     {
       myTrsf = (Location()*myiniloc).Transformation();
     }
     else
       myTrsf = myiniloc.Transformation();
   }
-  else 
+  else
   {
     gp_Trsf TheId;
     myTrsf = TheId;
