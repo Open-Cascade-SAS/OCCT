@@ -2,7 +2,9 @@
 puts "============"
 puts "BUC60905"
 puts "============"
-puts ""                                                                                                                                                                        
+puts ""
+puts "TODO CR23530 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 #########################################################
 ## shape contains open shells if sewing would be made with big tolerance invalid shape
 ## will be produced, and visualization crashes. 

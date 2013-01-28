@@ -3,7 +3,7 @@
 ## Test    : K9
 ## Comment : from pro13892
 ## ====================================
-puts "TODO OCC22817 All:Faulty shapes in variables faulty_1 to faulty_8"
+puts "TODO OCC22817 All:Faulty shapes in variables faulty_1 to faulty_"
 
 restore [locate_data_file CFI_pro13892.rle] a
 explode a e

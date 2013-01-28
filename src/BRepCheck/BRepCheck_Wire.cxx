@@ -369,71 +369,190 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
   }
   return myCstat;
 }
+
+//=======================================================================
+//function : IsDistanceIn3DTolerance
+//purpose  : Return Standard_True if distance between thePnt_f and
+//           thePnt_l is not more, than aTol3d
+//=======================================================================
+Standard_Boolean IsDistanceIn3DTolerance (const BRepAdaptor_Surface& aFaceSurface,
+                                          const gp_Pnt& thePnt_f,
+                                          const gp_Pnt& thePnt_l,
+                                          const Standard_Real aTol3d)
+  {
+  Standard_Real Dist		= thePnt_f.Distance(thePnt_l);
+  
+  if (Dist < aTol3d)
+    return Standard_True;
+
+#ifdef DEB
+  cout << endl;
+  cout << "--------Function IsDistanceIn3DTolerance(...)----------"												<< endl;
+  cout << "--- BRepCheck Wire: Closed3d -> Error"																					<< endl;
+  cout << "--- Dist (" << Dist << ") > Tol3d (" << aTol3d << ")"													<< endl;
+  cout << "Pnt1(" << thePnt_f.X() << "; " << thePnt_f.Y() << "; " << thePnt_f.Z() << ")"	<< endl;
+  cout << "Pnt2(" << thePnt_l.X() << "; " << thePnt_l.Y() << "; " << thePnt_l.Z() << ")"	<< endl;
+  cout << "------------------------------------------------------"												<< endl;
+#endif
+
+  return Standard_False;
+  }
+
+//=======================================================================
+//function : IsDistanceIn3DTolerance
+//purpose  : 
+//=======================================================================
+Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurface,
+                                          const gp_Pnt2d& thePnt,
+                                          const gp_Pnt2d& thePntRef,
+                                          const Standard_Real aTol3d,
+                                          const Standard_Boolean PrintWarnings = Standard_True)
+  {
+  Standard_Real dumax = 0.01 * (aFaceSurface.LastUParameter() - aFaceSurface.FirstUParameter());
+  Standard_Real dvmax = 0.01 * (aFaceSurface.LastVParameter() -	aFaceSurface.FirstVParameter());
+  Standard_Real dumin = Abs(thePnt.X() - thePntRef.X());
+  Standard_Real dvmin = Abs(thePnt.Y() - thePntRef.Y());
+  
+  if((dumin < dumax) && (dvmin < dvmax))
+    return Standard_True;
+
+#ifdef DEB
+  if(PrintWarnings)
+    {
+    cout << endl;
+    cout << "--------Function IsDistanceIn2DTolerance(...)----------"								<< endl;
+    cout << "--- BRepCheck Wire: Closed2d -> Error"																	<< endl;
+    cout << "*****************************************************"									<< endl;
+    cout << "*dumin = " << dumin << "; dumax = " << dumax														<< endl;
+    cout << "* dvmin = " << dvmin << "; dvmax = " << dvmax													<< endl;
+    cout << "* (dumin > dumax) or (dvmin > dvmax)."																	<< endl;
+    cout << "*****************************************************"									<< endl;
+    cout << endl;
+    cout << "UFirst = "  << aFaceSurface.FirstUParameter();
+    cout << "; ULast = " << aFaceSurface.LastUParameter()														<< endl;
+    cout << "VFirst = " << aFaceSurface.FirstVParameter();
+    cout << "; VLast = " << aFaceSurface.LastVParameter()														<< endl;
+    }
+
+  dumax = aFaceSurface.UResolution(aTol3d);
+  dvmax = aFaceSurface.VResolution(aTol3d);
+
+  if(PrintWarnings)
+    {
+    cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax		<< endl;
+    cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"										<< endl;
+    cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"						<< endl;
+    }
+
+#else
+  dumax = aFaceSurface.UResolution(aTol3d);
+  dvmax = aFaceSurface.VResolution(aTol3d);
+#endif
+
+  Standard_Real aTol2d = 2*Max(	dumax, dvmax);
+  
+#ifdef DEB
+  if((aTol2d <= 0.0) && (PrintWarnings))
+    {
+    cout<<"BRepCheck_Wire : UResolution and VResolution = 0.0 (Face too small ?)"<<endl;
+    cout.flush();
+    }
+#endif
+
+  //Standard_Real Dist = thePntRef.Distance(thePnt);
+  Standard_Real Dist = Max(dumin, dvmin);
+  
+  if (Dist < aTol2d)
+    return Standard_True;
+
+#ifdef DEB
+  if(PrintWarnings)
+    {
+    cout << endl;
+    cout << "--------Function IsDistanceIn2DTolerance(...)----------"							<< endl;
+    cout << "--- BRepCheck Wire: Closed2d -> Error"																<< endl;
+    cout << "*****************************************************"								<< endl;
+    cout << "* Dist = " << Dist	<< " > Tol2d = " <<	aTol2d												<< endl;
+    cout << "*****************************************************"								<< endl;
+    cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax	<< endl;
+    cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"									<< endl;
+    cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"					<< endl;
+    }
+#endif
+
+  return Standard_False;
+  }
+
 //=======================================================================
 //function : Closed2d
 //purpose  : for periodic faces
 //=======================================================================
 BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
                                           const Standard_Boolean Update)
-{
-
-  // 3d closure checked?
+  {
+  // 3d closure checked too
   BRepCheck_Status aClosedStat = Closed();
-  if (aClosedStat != BRepCheck_NoError) {
-    if (Update) 
+  if (aClosedStat != BRepCheck_NoError)
+    {
+    if (Update)
       BRepCheck::Add(myMap(myShape),aClosedStat);
-    return aClosedStat;
-  }
 
-  // 20/03/02 akm vvv : (OCC234) Hence this method will be used to check
-  //                    both periodic and non-periodic faces
-  //   // this check is for periodic faces 
+    return aClosedStat;
+    }
+
+// 20/03/02 akm vvv : (OCC234) Hence this method will be used to check
+//                    both periodic and non-periodic faces
+//   // this check is for periodic faces 
   BRepAdaptor_Surface aFaceSurface (theFace, Standard_False);
-  // if (!aFaceSurface.IsUPeriodic() && !aFaceSurface.IsVPeriodic())
-  // {
-  //   if (Update) 
-  //     BRepCheck::Add(myMap(myShape),aClosedStat);
-  //   return aClosedStat;
-  // }
-  // 20/03/02 akm ^^^
-  
-  // count edges having FORWARD or REVERSED orientation
+// if (!aFaceSurface.IsUPeriodic() && !aFaceSurface.IsVPeriodic())
+// {
+//   if (Update) 
+//     BRepCheck::Add(myMap(myShape),aClosedStat);
+//   return aClosedStat;
+// }
+// 20/03/02 akm ^^^
+
+// count edges having FORWARD or REVERSED orientation
   Standard_Integer aNbOrirntedEdges = 0;
   TopExp_Explorer anEdgeExp(myShape,TopAbs_EDGE);
-  for (;anEdgeExp.More(); anEdgeExp.Next()) {
+  for (;anEdgeExp.More(); anEdgeExp.Next())
+    {
     if (IsOriented(anEdgeExp.Current())) 
       aNbOrirntedEdges++;
-  }
+    }
+
   if (aNbOrirntedEdges==0)
-  {
-    if (Update) 
+    {
+    if (Update)
       BRepCheck::Add(myMap(myShape),aClosedStat);
+
     return aClosedStat;
-  }
-  
-  // all those edges must form a closed 2d contour and be found by WireExplorer
+    }
+
+// all those edges must form a closed 2d contour and be found by WireExplorer
 
   Standard_Integer aNbFoundEdges = 0;
-
   BRepTools_WireExplorer aWireExp(TopoDS::Wire(myShape), theFace);
   TopoDS_Edge aFirstEdge = aWireExp.Current();
   TopoDS_Vertex aFirstVertex = aWireExp.CurrentVertex();
   TopoDS_Edge aLastEdge;
+
   for (;aWireExp.More(); aWireExp.Next())
-  {
+    {
     aNbFoundEdges++;
     aLastEdge = aWireExp.Current();
-  }
+    }
 
   if (aNbFoundEdges != aNbOrirntedEdges)
-  {
+    {
     aClosedStat = BRepCheck_NotClosed;
     if (Update) 
       BRepCheck::Add(myMap(myShape),aClosedStat);
-    return aClosedStat;
-  }
     
-  // Check distance between 2d ends of first and last edges
+    return aClosedStat;
+    }
+
+// Check distance between 2d ends of first and last edges
 //  Modified by Sergey KHROMOV - Mon May 13 12:42:10 2002 Begin
 //   First check if first and last edges are infinite:
   Standard_Real      aF;
@@ -444,92 +563,89 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
 
   anOri = aFirstEdge.Orientation();
   BRep_Tool::Range(aFirstEdge, aF, aL);
-  if ((anOri == TopAbs_FORWARD  && aF == -Precision::Infinite()) ||
-      (anOri == TopAbs_REVERSED && aL ==  Precision::Infinite()))
+  if ((anOri == TopAbs_FORWARD  && Precision::IsNegativeInfinite( aF )) ||
+         (anOri == TopAbs_REVERSED && Precision::IsPositiveInfinite( aL )))
     isFirstInfinite = Standard_True;
 
   anOri = aLastEdge.Orientation();
   BRep_Tool::Range(aLastEdge, aF, aL);
-  if ((anOri == TopAbs_FORWARD  && aL ==  Precision::Infinite()) ||
-      (anOri == TopAbs_REVERSED && aF == -Precision::Infinite()))
+  
+  if ((anOri == TopAbs_FORWARD  && Precision::IsPositiveInfinite( aL )) ||
+         (anOri == TopAbs_REVERSED && Precision::IsNegativeInfinite( aF )))
     isLastInfinite = Standard_True;
 
-  if (isFirstInfinite && isLastInfinite) {
-    if (Update) 
+  if (isFirstInfinite && isLastInfinite)
+    {
+    if (Update)
       BRepCheck::Add(myMap(myShape),aClosedStat);
+
     return aClosedStat;
-  } else if (aFirstVertex.IsNull()) {
+    }
+  else if (aFirstVertex.IsNull())
+    {
     aClosedStat = BRepCheck_NotClosed;
+    
     if (Update) 
       BRepCheck::Add(myMap(myShape),aClosedStat);
+    
     return aClosedStat;
-  }
+    }
 //  Modified by Sergey KHROMOV - Mon May 13 12:42:10 2002 End
 
-  gp_Pnt2d p, p1, p2; // ends of prev edge, next edge, bidon
-
-  // get first point
-  BRep_Tool::UVPoints(aLastEdge, theFace, p2, p);
-  if (aLastEdge.Orientation() == TopAbs_REVERSED) p = p2; 
+  gp_Pnt2d aP_first, aP_last, aP_temp; // ends of prev edge, next edge, bidon
   
+// get last point
+  BRep_Tool::UVPoints(aLastEdge, theFace, aP_temp, aP_last);
+  if (aLastEdge.Orientation() == TopAbs_REVERSED)
+    aP_last = aP_temp;
+
 //  Modified by Sergey KHROMOV - Mon Apr 22 10:36:33 2002 Begin
 //   Standard_Real aTol, aUResol, aVResol;
-
 //   // find 2d tolerance
 //   aTol  = BRep_Tool::Tolerance(aFirstVertex);
 //   aUResol = 2*aFaceSurface.UResolution(aTol);
 //   aVResol = 2*aFaceSurface.VResolution(aTol);
 
-  // get second point
+// get first point
   if (aFirstEdge.Orientation() == TopAbs_REVERSED)
-    BRep_Tool::UVPoints(aFirstEdge, theFace, p2, p1);
+    BRep_Tool::UVPoints(aFirstEdge, theFace, aP_temp, aP_first);
   else 
-    BRep_Tool::UVPoints(aFirstEdge, theFace, p1, p2);
+    BRep_Tool::UVPoints(aFirstEdge, theFace, aP_first, aP_temp);
 
 //  Modified by Sergey KHROMOV - Thu Jun 20 10:55:42 2002 OCC325 Begin
 // Check 2d distance for periodic faces with seam edge
-  if (!IsClosed2dForPeriodicFace(theFace, p, p1, aFirstVertex)) {
+  if (!IsClosed2dForPeriodicFace(theFace, aP_first, aP_last, aFirstVertex))
+    {
     aClosedStat = BRepCheck_NotClosed;
-    if (Update) 
+    if (Update)
       BRepCheck::Add(myMap(myShape),aClosedStat);
+    
     return aClosedStat;
-  }
+    }
 //  Modified by Sergey KHROMOV - Thu Jun 20 10:58:05 2002 End
 
-  // check distance
+// check distance
 //   Standard_Real dfUDist=Abs(p.X()-p1.X());
 //   Standard_Real dfVDist=Abs(p.Y()-p1.Y());
 //   if (dfUDist > aUResol || dfVDist > aVResol)
 //   {
-  Standard_Real aTol3d = BRep_Tool::Tolerance(aFirstVertex);
-  gp_Pnt        aPRef  = BRep_Tool::Pnt(aFirstVertex);
-  gp_Pnt        aP1    = aFaceSurface.Value(p.X(),  p.Y());
-  gp_Pnt        aP2    = aFaceSurface.Value(p1.X(), p1.Y());
-  Standard_Real Dist1  = aPRef.Distance(aP1);
-  Standard_Real Dist2  = aPRef.Distance(aP2);
 
-  if (Dist1 > aTol3d || Dist2 > aTol3d) {
-//  Modified by Sergey KHROMOV - Mon Apr 22 10:36:44 2002 End
-#ifdef DEB
-    cout << endl;
-    cout << "------------------------------------------------------"   <<endl;
-    cout << "--- BRepCheck Wire: Closed2d -> Erreur"                   <<endl;
-    if (Dist1 > aTol3d)
-      cout << "--- Dist1 (" << Dist1 << ") > Tol3d (" << aTol3d << ")" <<endl;
-    if (Dist2 > aTol3d)
-      cout << "--- Dist2 (" << Dist2 << ") > Tol3d (" << aTol3d << ")" <<endl;
-    cout << "------------------------------------------------------"   <<endl;
-#endif
+  Standard_Real aTol3d	= Max(BRep_Tool::Tolerance(aFirstVertex),BRep_Tool::Tolerance(aWireExp.CurrentVertex()));
+
+  gp_Pnt aPntRef = BRep_Tool::Pnt(aFirstVertex);
+  gp_Pnt aPnt		 = BRep_Tool::Pnt(aWireExp.CurrentVertex());
+
+  if (!(IsDistanceIn2DTolerance(aFaceSurface, aP_first, aP_last, aTol3d)))
     aClosedStat = BRepCheck_NotClosed;
-    if (Update) 
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-    return aClosedStat;
-  }
-  
+
+  if(!IsDistanceIn3DTolerance(aFaceSurface, aPntRef, aPnt, aTol3d))
+    aClosedStat = BRepCheck_NotClosed;
+
   if (Update) 
     BRepCheck::Add(myMap(myShape),aClosedStat);
+
   return aClosedStat;
-}
+  }
 //=======================================================================
 //function : Orientation
 //purpose  : 
@@ -1465,182 +1581,156 @@ static TopAbs_Orientation GetOrientation(const TopTools_MapOfShape& mapE,
 }
 //=======================================================================
 //function : ChoixUV
-//purpose  : 
+//purpose  : For vertex theVertex given function find an edge along 
+//           that we should go further.
 //=======================================================================
- void ChoixUV(const TopoDS_Vertex& V,
-	      const TopoDS_Edge& Edg,
-	      const TopoDS_Face& F,
-	      TopTools_ListOfShape& L)
-{
-  TopTools_ListIteratorOfListOfShape It( L );
+void ChoixUV(const TopoDS_Vertex& theVertex,
+             const TopoDS_Edge& theEdge,
+             const TopoDS_Face& theFace,
+             TopTools_ListOfShape& theLOfShape)
+  {
+  TopTools_ListIteratorOfListOfShape It( theLOfShape );
   while (It.More())
     {
-      if (Edg.IsSame( It.Value() ))
-	L.Remove( It );
-      else
-	It.Next();
+    if (theEdge.IsSame( It.Value() ))
+      theLOfShape.Remove( It );
+    else
+      It.Next();
     }
 
-  Standard_Integer index = 0, imin = 0;
-  TopoDS_Edge Evois;
-  gp_Pnt2d PntRef, Pnt;
-  gp_Vec2d DerRef, Der;
-  Standard_Real MinAngle, MaxAngle, angle;
-  Standard_Real gpResolution=gp::Resolution();
-  TopAbs_Orientation aVOrientation, aEdgOrientation;
-  Standard_Real dist2d = 0, p = 0;
-  Standard_Real f, l, parpiv;
-  Standard_Real tolv = BRep_Tool::Tolerance(V);
-  BRepAdaptor_Surface Ads(F,Standard_False); // no restriction
-  Standard_Real ures = Ads.UResolution(tolv);
-  Standard_Real vres = Ads.VResolution(tolv);
-  Standard_Real tol = Max(ures,vres);
-  if(tol<=0.0) { 
-#ifdef DEB 
+  Standard_Real aTol3d	= BRep_Tool::Tolerance(theVertex);
 
-    cout<<"BRepCheck_Wire : UResolution and VResolution = 0.0 (Face too small ?)"<<endl;cout.flush();
-#endif
-  }
-  else {
-    tol += tol; 
-  }
-  //
-  Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(Edg, F, f, l);
-  if (C2d.IsNull()) {// JAG 10.12.96
-    return;
-  }
+  Standard_Integer anIndex = 0, anIndMin = 0;
+  TopoDS_Edge anEFound;
+  gp_Pnt2d aPntRef, aPnt;
+  gp_Vec2d aDerRef, aDer;
+  Standard_Real aMinAngle, aMaxAngle, anAngle;
+  Standard_Real a_gpResolution=gp::Resolution();
+  TopAbs_Orientation aVOrientation, anEdgOrientation;
+  Standard_Real aParam = 0.0, aFirstParam = 0.0, aLastParam = 0.0, aParPiv = 0.0;
+  BRepAdaptor_Surface aFaceSurface(theFace,Standard_False); // no restriction
   
-  aVOrientation=V.Orientation();
-  aEdgOrientation=Edg.Orientation();
+  Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
+  if (C2d.IsNull())// JAG 10.12.96
+    return;
 
-  parpiv =(aVOrientation==aEdgOrientation) ? f : l;
-      
-  MinAngle = RealLast();
-  MaxAngle = RealFirst();
+  aVOrientation = theVertex.Orientation();
+  anEdgOrientation = theEdge.Orientation();
+  
+  aParPiv =(aVOrientation==anEdgOrientation) ? aFirstParam : aLastParam;
+  aMinAngle = RealLast();
+  aMaxAngle = RealFirst();
 
-  CurveDirForParameter(C2d, parpiv, PntRef, DerRef);
+  CurveDirForParameter(C2d, aParPiv, aPntRef, aDerRef);
+  
+  if (aVOrientation != anEdgOrientation)
+    aDerRef.Reverse();
 
-  if (aVOrientation != aEdgOrientation){
-    DerRef.Reverse();
-  }
-  //
-  It.Initialize(L);
-  for (; It.More(); It.Next()) {
-    index++;
-    const TopoDS_Edge& aE=TopoDS::Edge(It.Value());
-    C2d = BRep_Tool::CurveOnSurface(aE, F, f, l);
-    if(C2d.IsNull()) {
+  It.Initialize(theLOfShape);
+
+  for (; It.More(); It.Next())
+    {
+    anIndex++;
+    const TopoDS_Edge& anE=TopoDS::Edge(It.Value());
+    C2d = BRep_Tool::CurveOnSurface(anE, theFace, aFirstParam, aLastParam);
+    if(C2d.IsNull())
       continue;
-    }
 
-    p =(aVOrientation != aE.Orientation()) ? f : l;
-    //
-    Pnt = C2d->Value(p);
-    dist2d = Pnt.Distance( PntRef );
-    if (dist2d > tol){
+    aParam =(aVOrientation != anE.Orientation()) ? aFirstParam : aLastParam;
+    aPnt = C2d->Value(aParam);
+
+    if(!IsDistanceIn2DTolerance(aFaceSurface, aPnt, aPntRef, aTol3d, Standard_False))
       continue;
-    }
-    //
-    CurveDirForParameter(C2d, p, Pnt, Der);
-    
-    if (aVOrientation == aE.Orientation()){
-      Der.Reverse();
-    }
-    
-    if (DerRef.Magnitude() <= gpResolution || 
-	Der.Magnitude() <= gpResolution){
+
+    CurveDirForParameter(C2d, aParam, aPnt, aDer);
+
+    if (aVOrientation == anE.Orientation())
+      aDer.Reverse();
+
+    if ((aDerRef.Magnitude() <= a_gpResolution) || 
+                 (aDer.Magnitude() <= a_gpResolution))
+//Vector length is too small
       continue;
-    }
-    //
-    angle = DerRef.Angle( Der );
-    angle *= -1.;
-    if (angle < 0.)
-      angle += 2.*M_PI;
-    
-    if (F.Orientation() == TopAbs_FORWARD) { 
-      if (angle < MinAngle) {
-	imin = index;
-	MinAngle = angle;
+
+    anAngle = -aDerRef.Angle( aDer );
+
+    if ( anAngle < 0. )
+      anAngle += 2.*M_PI;
+
+    if ( theFace.Orientation() == TopAbs_FORWARD )
+      {
+      if ( anAngle < aMinAngle )
+        {
+        anIndMin = anIndex;
+        aMinAngle = anAngle;
+        }
       }
-    } 
-    else { //F.Orientation() != TopAbs_FORWARD
-      if (angle > MaxAngle){
-	imin = index;
-	MaxAngle = angle;
+    else //theFace.Orientation() != TopAbs_FORWARD
+      {
+      if ( anAngle > aMaxAngle )
+        {
+        anIndMin = anIndex;
+        aMaxAngle = anAngle;
+        }
       }
-    }
-  }//end of for
-  //
-  // Update edge
-  if (imin == 0)
-    if (L.Extent() == 1) {
-      Standard_Boolean onjette = 0; //all right
-      Evois = TopoDS::Edge(L.First());
-      if (dist2d > tol) {
-#ifdef DEB 
-	cout<<"BRepCheckWire : control closure in 2d --> false"<<endl;cout.flush();
-#endif
-	if(Evois.IsNull() || BRep_Tool::Degenerated(Edg) ||
-	   BRep_Tool::Degenerated(Evois)){
-	  onjette = 1; //bad
-	}
-	else {
-	  Ads.Initialize(F);
-	  Standard_Real dumax = 0.01 * (Ads.LastUParameter() - Ads.FirstUParameter());
-	  Standard_Real dvmax = 0.01 * (Ads.LastVParameter() - Ads.FirstVParameter());
-	  Standard_Real dumin = Abs(Pnt.X() - PntRef.X());
-	  Standard_Real dvmin = Abs(Pnt.Y() - PntRef.Y());
-	  if(dumin > dumax || dvmin > dvmax){
-	    onjette = 1;
-	  }
-	  else {
-	    BRepAdaptor_Curve bcEdg(Edg,F);
-	    BRepAdaptor_Curve bcEvois(Evois,F);
-	    gp_Pnt pEdg = bcEdg.Value(parpiv);
-	    gp_Pnt pEvois = bcEvois.Value(p);
-	    Standard_Real d3d = pEvois.Distance(pEdg);
-#ifdef DEB
-	    cout<<"point P            "<<pEdg.X()<<" "<<pEdg.Y()<<" "<<pEdg.Z()<<endl;
-	    cout<<"distance 3d      : "<<d3d<<endl;
-	    cout<<"tolerance vertex : "<<tolv<<endl;
-	    cout.flush();
-#endif
-	    //if(d3d > tolv){
-	    if(d3d > 2.*tolv){
-	      onjette = 1;
-	    }
-#ifdef DEB
-	    else
-	      cout<<"control closure in 3d --> ok"<<endl;cout.flush();
-#endif
-	  }
-	}
-      } //if (dist2d > tol)
-      else {//angle was not defined but points are close
-	onjette = 0;
+    }//end of for
+
+// Update edge
+  if (anIndMin == 0)
+    if (theLOfShape.Extent() == 1)
+      {
+      Standard_Boolean IsFound = Standard_True; //all right
+      anEFound = TopoDS::Edge(theLOfShape.First());
+
+      if(anEFound.IsNull() || BRep_Tool::Degenerated(theEdge) ||
+                                  BRep_Tool::Degenerated(anEFound))
+        IsFound = Standard_False; //bad
+      else if (!IsDistanceIn2DTolerance(aFaceSurface, aPnt, aPntRef, aTol3d))
+        IsFound = Standard_False; //bad
+      else 
+        // clousureness in 3D
+        {
+//IsDistanceIn3DTolerance
+        BRepAdaptor_Curve bcEdg(theEdge, theFace);
+        BRepAdaptor_Curve bcEvois(anEFound, theFace);
+        gp_Pnt pEdg = bcEdg.Value(aParPiv);
+        gp_Pnt pEFound = bcEvois.Value(aParam);
+
+        if(!IsDistanceIn3DTolerance(theFace, pEdg, pEFound, aTol3d))
+          IsFound = Standard_False;
+        else
+//angle was not defined but points are close
+          IsFound = Standard_True; //all right
+        }
+
+      if(!IsFound)
+        {
+        theLOfShape.Clear();
+        }
+      }//if (theLOfShape.Extent() == 1)
+    else //if (anIndMin == 0)
+      {
+      theLOfShape.Clear();
       }
-      if(onjette) {
-#ifdef DEB
-	cout<<"control closure in 3d --> false"<<endl;cout.flush();
-#endif
-	L.Clear();
+  else
+    {
+    anIndex = 1;
+
+    while (anIndex < anIndMin)
+      {
+      theLOfShape.RemoveFirst();
+      anIndex++;
       }
-    }
-    else {
-      L.Clear();
-    }
-  else  {
-    index = 1;
-    while (index < imin) {
-      L.RemoveFirst();
-      index++;
-    }
-    It.Initialize(L);
+
+    It.Initialize(theLOfShape);
     It.Next();
+
     while (It.More())
-      L.Remove(It);
-  }
-}
+      theLOfShape.Remove(It);
+    }
+  }//End of function
+
+
 //=======================================================================
 //function : CurveDirForParameter
 //purpose  : 
