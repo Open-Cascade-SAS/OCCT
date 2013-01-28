@@ -983,7 +983,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=sqrt(aD2max);
     }
   }//if((aType1==GeomAbs_SurfaceOfRevolution ...
-  //modified by NIZNHY-PKV Thu Aug 30 13:31:10 2012f
   else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
 	   (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere)) {
     Standard_Integer i, j, aNbP;
@@ -1041,7 +1040,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=sqrt(aD2max);
     }
   }//else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ...
-  //modified by NIZNHY-PKV Thu Aug 30 13:31:12 2012t
 }
 //=======================================================================
 //function : MakeCurve
@@ -2517,6 +2515,15 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
     enlarge=Standard_True;
   }
   //
+  if (aType==GeomAbs_Sphere) {
+    Standard_Real dV;
+    //
+    dV=thevmax-thevmin;
+    if (dV+delta<M_PI) {
+      enlarge=Standard_True;
+    }
+  }
+  //
   if(!isuperiodic && enlarge) {
 
     if((theumin - uinf) > delta )
@@ -2679,7 +2686,7 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 // because inside degenerated zone of the surface the approx. algo.
 // uses wrong values of normal, etc., and resulting curve will have
 // oscillations that we would not like to have. 
-//                                               PKV Tue Feb 12 2002  
+                                                 
  
 
 static
