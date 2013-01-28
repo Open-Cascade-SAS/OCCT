@@ -11,7 +11,7 @@ catch { pload XDE }
 set BugNumber OCC23192
 
 set aFile $imagedir/${test_image}.stl
-catch {exec rm -f ${aFile}}
+file delete ${aFile}
 
 set anASCIImode 0
 set InParallel 0
@@ -36,11 +36,7 @@ set nb_shape_good 51
 
   # Check file size
   set size_status 0
-  if [string compare $tcl_platform(platform) "windows"] {
-    set filesize [lindex [exec ls -l ${aFile}] 5]
-  } else {
-    set filesize [lindex [exec ls -l ${aFile}] 4]
-  }
+  set filesize [ file size ${aFile} ]
   if { ${filesize} != 0 } {
      set size_status 0
   } else {
@@ -58,3 +54,4 @@ set nb_shape_good 51
 
 set square 600
 set 3dviewer 0
+
