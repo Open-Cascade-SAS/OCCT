@@ -126,7 +126,6 @@ static
 				       IntPolyh_StartPoint & SP,
 				       const Standard_Boolean Prepend=Standard_False); 
 
-//modified by NIZNHY-PKV Fri Jan 20 11:01:30 2012f
 static
   Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HSurface)& aS,
 				 const Standard_Integer aIndex,
@@ -139,7 +138,6 @@ static
 			const Standard_Integer aIsoDirection,
 			Standard_Integer& aI1,
 			Standard_Integer& aI2);
-//modified by NIZNHY-PKV Fri Jan 20 11:01:32 2012t
 
 //=======================================================================
 //function : IntPolyh_MaillageAffinage
@@ -398,7 +396,6 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   Handle(Adaptor3d_HSurface)& aS=(SurfID==1)? MaSurface1:MaSurface2;
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   //
-  //modified by NIZNHY-PKV Fri Jan 20 09:48:57 2012f
   aJD1=0;
   aJD2=0;
   aID1=0;
@@ -407,13 +404,10 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   if (!(aJD1 || aJD2)) {
     DegeneratedIndex(Upars, aNbU, aS, 2, aID1, aID2);
   }
-  //modified by NIZNHY-PKV Fri Jan 20 09:49:00 2012t
   //
   iCnt=0;
   for(i=1; i<=aNbU; ++i){
-    //modified by NIZNHY-PKV Fri Jan 20 13:59:15 2012f
     bDegI=(aID1==i || aID2==i);
-    //modified by NIZNHY-PKV Fri Jan 20 13:59:17 2012t
     aU=Upars(i);
     for(j=1; j<=aNbV; ++j){
       aV=Vpars(j);
@@ -422,12 +416,10 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
       IntPolyh_Point& aIP=TPoints[iCnt];
       aIP.Set(aX, aY, aZ, aU, aV);
       //
-      //modified by NIZNHY-PKV Fri Jan 20 13:59:06 2012f
       bDeg=bDegI || (aJD1==j || aJD2==j);
       if (bDeg) {
 	aIP.SetDegenerated(bDeg);
       }
-      //modified by NIZNHY-PKV Fri Jan 20 13:59:02 2012t
       ++iCnt;
       aBox.Add(aP);
     }
@@ -480,7 +472,6 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   //
   IntCurveSurface_ThePolyhedronOfHInter polyhedron(aS, Upars, Vpars);
   Tol=polyhedron.DeflectionOverEstimation();
-  //modified by NIZNHY-PKV Fri Jan 20 09:48:57 2012f
   aJD1=0;
   aJD2=0;
   aID1=0;
@@ -489,13 +480,10 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   if (!(aJD1 || aJD2)) {
     DegeneratedIndex(Upars, aNbU, aS, 2, aID1, aID2);
   }
-  //modified by NIZNHY-PKV Fri Jan 20 09:49:00 2012t
   //
   iCnt=0;
   for(i=1; i<=aNbU; ++i){
-    //modified by NIZNHY-PKV Fri Jan 20 13:59:15 2012f
     bDegI=(aID1==i || aID2==i);
-    //modified by NIZNHY-PKV Fri Jan 20 13:59:17 2012t
     aU = Upars(i);
     for(j=1; j<=aNbV; ++j){
       aV = Vpars(j);
@@ -519,12 +507,10 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
       aP.Coord(aX, aY, aZ);
       aIP.Set(aX, aY, aZ, aU, aV);
       //
-      //modified by NIZNHY-PKV Fri Jan 20 13:59:06 2012f
       bDeg=bDegI || (aJD1==j || aJD2==j);
       if (bDeg) {
 	aIP.SetDegenerated(bDeg);
       }
-      //modified by NIZNHY-PKV Fri Jan 20 13:59:02 2012t
       ++iCnt;
       aBox.Add(aP);
     }
@@ -3223,15 +3209,32 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleComparePSP ()
 	  && (TTriangles2[i_S2].GetFleche() >= 0.0) ) {
 	IntPolyh_StartPoint SP1, SP2;
 	//If a triangle is dead or not in BSB, comparison is not possible
-    	if (TriContact(TPoints1[TTriangles1[i_S1].FirstPoint()],
-		       TPoints1[TTriangles1[i_S1].SecondPoint()],
-		       TPoints1[TTriangles1[i_S1].ThirdPoint()],
-		       TPoints2[TTriangles2[i_S2].FirstPoint()],
-		       TPoints2[TTriangles2[i_S2].SecondPoint()],
-		       TPoints2[TTriangles2[i_S2].ThirdPoint()],
-		       CoupleAngle)){
-
-
+	//
+	Standard_Integer iDeg1, iDeg2, iDeg3, iDeg;
+	//
+	const IntPolyh_Point& P1=TPoints1[TTriangles1[i_S1].FirstPoint()];
+	const IntPolyh_Point& P2=TPoints1[TTriangles1[i_S1].SecondPoint()];
+	const IntPolyh_Point& P3=TPoints1[TTriangles1[i_S1].ThirdPoint()];
+	iDeg1=(P1.Degenerated()) ? 1 : 0;
+	iDeg2=(P2.Degenerated()) ? 1 : 0;
+	iDeg3=(P3.Degenerated()) ? 1 : 0;
+	iDeg=iDeg1+iDeg2+iDeg3;
+	if (iDeg>1) {
+	  continue;
+	}
+	//
+	const IntPolyh_Point& Q1=TPoints2[TTriangles2[i_S2].FirstPoint()];
+	const IntPolyh_Point& Q2=TPoints2[TTriangles2[i_S2].SecondPoint()];
+	const IntPolyh_Point& Q3=TPoints2[TTriangles2[i_S2].ThirdPoint()];
+	iDeg1=(Q1.Degenerated()) ? 1 : 0;
+	iDeg2=(Q2.Degenerated()) ? 1 : 0;
+	iDeg3=(Q3.Degenerated()) ? 1 : 0;
+	iDeg=iDeg1+iDeg2+iDeg3;
+	if (iDeg>1) {
+	  continue;
+	}
+	//
+	if (TriContact(P1, P2, P3, Q1, Q2, Q3, CoupleAngle)) {
 	  TTriangles1[i_S1].SetIndiceIntersection(1);//The triangle is cut by another
 	  TTriangles2[i_S2].SetIndiceIntersection(1);
 	  
@@ -3300,15 +3303,32 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleCompare ()
 	//If a triangle is dead or not in BSB, comparison is not possible
 	IntPolyh_Triangle &Triangle1 =  TTriangles1[i_S1];
 	IntPolyh_Triangle &Triangle2 =  TTriangles2[i_S2];
-
-    	if (TriContact(TPoints1[Triangle1.FirstPoint()],
-		       TPoints1[Triangle1.SecondPoint()],
-		       TPoints1[Triangle1.ThirdPoint()],
-		       TPoints2[Triangle2.FirstPoint()],
-		       TPoints2[Triangle2.SecondPoint()],
-		       TPoints2[Triangle2.ThirdPoint()],
-		       CoupleAngle)){
-
+	//
+	Standard_Integer iDeg1, iDeg2, iDeg3, iDeg;
+    	//
+	const IntPolyh_Point& P1=TPoints1[Triangle1.FirstPoint()];
+	const IntPolyh_Point& P2=TPoints1[Triangle1.SecondPoint()];
+	const IntPolyh_Point& P3=TPoints1[Triangle1.ThirdPoint()];
+	iDeg1=(P1.Degenerated()) ? 1 : 0;
+	iDeg2=(P2.Degenerated()) ? 1 : 0;
+	iDeg3=(P3.Degenerated()) ? 1 : 0;
+	iDeg=iDeg1+iDeg2+iDeg3;
+	if (iDeg>1) {
+	  continue;
+	}
+	//
+	const IntPolyh_Point& Q1=TPoints2[Triangle2.FirstPoint()];
+	const IntPolyh_Point& Q2=TPoints2[Triangle2.SecondPoint()];
+	const IntPolyh_Point& Q3=TPoints2[Triangle2.ThirdPoint()];
+	iDeg1=(Q1.Degenerated()) ? 1 : 0;
+	iDeg2=(Q2.Degenerated()) ? 1 : 0;
+	iDeg3=(Q3.Degenerated()) ? 1 : 0;
+	iDeg=iDeg1+iDeg2+iDeg3;
+	if (iDeg>1) {
+	  continue;
+	}
+	//
+	if (TriContact(P1, P2, P3, Q1, Q2, Q3, CoupleAngle)) {
 	  if (CpteurTab >= NbTTC)
 	    {
 	      TTrianglesContacts.SetNbItems(CpteurTab);
@@ -3874,7 +3894,6 @@ Standard_Boolean IntPolyh_MaillageAffinage::GetEnlargeZone() const
 {
   return myEnlargeZone;
 }
-//modified by NIZNHY-PKV Fri Jan 20 10:06:13 2012f
 //=======================================================================
 //function : DegeneratedIndex
 //purpose  : 
@@ -3996,9 +4015,8 @@ Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HSurface)& aS,
   //
   return bRet;
 }
-//modified by NIZNHY-PKV Fri Jan 20 10:06:15 2012t
-#ifdef DEB
 
+#ifdef DEB
 #include <TopoDS_Shape.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TColgp_Array1OfPnt.hxx>
