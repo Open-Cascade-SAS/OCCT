@@ -1,0 +1,18 @@
+puts "========="
+puts "CR23699"
+puts "========="
+puts ""
+###############################
+## Exception reaised during intersection between two surfaces
+###############################
+
+restore [locate_data_file bug23699_Compound_sigsegv.brep] b1
+
+explode b1 f
+
+mksurface s1 b1_1
+mksurface s2 b1_2
+
+intersect result s1 s2
+
+set 2dviewer 1
