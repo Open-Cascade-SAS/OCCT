@@ -1163,6 +1163,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   //
   Standard_Real tg1, tg2, aDA1A2, aTol2;
   gp_Pnt aPApex1, aPApex2;
+
+  Standard_Real TOL_APEX_CONF = 1.e-10;
+  
   //
   tg1=Tan(Con1.SemiAngle());
   tg2=Tan(Con2.SemiAngle());
@@ -1187,6 +1190,12 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     Standard_Real d=gp_Vec(D).Dot(gp_Vec(P,Con2.Apex()));
     
     if(Abs(tg1-tg2)>myEPSILON_ANGLE_CONE) { 
+      if (fabs(d) < TOL_APEX_CONF) {
+	typeres = IntAna_Point;
+	nbint = 1;
+	pt1 = P;
+	return;
+      }
       x=(d*tg2)/(tg1+tg2);
       pt1.SetCoord( P.X() + x*D.X()
 		   ,P.Y() + x*D.Y()
@@ -1203,7 +1212,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       typeres=IntAna_Circle;
     }
     else {
-      if (fabs(d)<1.e-10) { 
+      if (fabs(d) < TOL_APEX_CONF) { 
 	typeres=IntAna_Same;
       }
       else {
@@ -1361,9 +1370,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     if (aRD2>(aR2+Tol)) {
       iRet=0;
       typeres=IntAna_Empty; //nothing
-      //modified by NIZNHY-PKV Fri Mar 23 08:12:23 2012f
       return;
-      //modified by NIZNHY-PKV Fri Mar 23 08:12:29 2012t
     }
     //
     iRet=1; //touch case => 1 line
