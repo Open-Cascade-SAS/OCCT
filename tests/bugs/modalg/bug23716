@@ -11,6 +11,6 @@ explode b
 bop b_1 b_3
 bopfuse result
 
-set square 4844.63
+set square 45605.9
 
 set 2dviewer 1
