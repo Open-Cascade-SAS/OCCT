@@ -1,0 +1,16 @@
+puts "========"
+puts "CR23716"
+puts "========"
+########################################################
+## Boolean Fuse between two faces fails
+########################################################
+
+restore [locate_data_file bug23716_qf.brep] b
+explode b
+
+bop b_1 b_3
+bopfuse result
+
+set square 4844.63
+
+set 2dviewer 1
