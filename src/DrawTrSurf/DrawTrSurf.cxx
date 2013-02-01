@@ -260,8 +260,8 @@ static Standard_Integer nbiso (Draw_Interpretor& di, Standard_Integer n, const c
 {
   if (n < 4) {
     if (n == 3) {
-      NbUIsos = atoi(a[1]);
-      NbVIsos = atoi(a[2]);
+      NbUIsos = Draw::Atoi(a[1]);
+      NbVIsos = Draw::Atoi(a[2]);
     }
     di << NbUIsos << " " << NbVIsos;
   }
@@ -269,7 +269,7 @@ static Standard_Integer nbiso (Draw_Interpretor& di, Standard_Integer n, const c
     for (Standard_Integer i = 1; i < n - 2; i++) {
       Handle(DrawTrSurf_Surface) DS = GetSurface(a[i]);
       if (!DS.IsNull()) {
-	DS->ShowIsos(atoi(a[n-2]),atoi(a[n-1]));
+	DS->ShowIsos(Draw::Atoi(a[n-2]),Draw::Atoi(a[n-1]));
 	Draw::Repaint();
       }
     }
@@ -424,13 +424,13 @@ static Standard_Integer draw (Draw_Interpretor& di, Standard_Integer n, const ch
 	
 	else if (!strcmp(a[0],"discr")) {
 	  if (n == 2)
-	    Discret = atoi(a[n-1]);
+	    Discret = Draw::Atoi(a[n-1]);
 	  di << Discret;
 	}
 	
 	else if (!strcmp(a[0],"defle")) {
 	  if (n == 2)
-	    Deflection = atof(a[n-1]);
+	    Deflection = Draw::Atof(a[n-1]);
 	  di << Deflection;
 	}
   }
@@ -445,11 +445,11 @@ static Standard_Integer draw (Draw_Interpretor& di, Standard_Integer n, const ch
 	}
 	
 	else if (!strcmp(a[0],"discr")) {
-	  D->SetDiscretisation(atoi(a[n-1]));
+	  D->SetDiscretisation(Draw::Atoi(a[n-1]));
 	}
 	
 	else if (!strcmp(a[0],"defle")) {
-	  D->SetDeflection(atof(a[n-1]));
+	  D->SetDeflection(Draw::Atof(a[n-1]));
 	}
 	
 	Draw::Repaint();
@@ -470,22 +470,22 @@ static Standard_Integer transform (Draw_Interpretor& di, Standard_Integer n, con
   gp_Trsf T;
   Standard_Integer i,last = n-1;
   if (!strcmp(a[0],"pscale")) {
-    Standard_Real s = atof(a[last]);
+    Standard_Real s = Draw::Atof(a[last]);
     last--;
     if (last < 4) return 1;
-    gp_Pnt P(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
+    gp_Pnt P(Draw::Atof(a[last-2]),Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     T.SetScale(P,s);
   }
   else if (!strcmp(a[0]+1,"mirror")) {
     if (last < 4) return 1;
-    gp_Pnt P(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
+    gp_Pnt P(Draw::Atof(a[last-2]),Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     if (*a[0] == 'p') {
       T.SetMirror(P);
     }
     else {
       last -= 3;
       if (last < 4) return 1;
-      gp_Pnt O(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
+      gp_Pnt O(Draw::Atof(a[last-2]),Draw::Atof(a[last-1]),Draw::Atof(a[last]));
       last -= 3;
       gp_Dir D(P.X(),P.Y(),P.Z());
       if (*a[0] == 'l') {
@@ -500,18 +500,18 @@ static Standard_Integer transform (Draw_Interpretor& di, Standard_Integer n, con
 
   else if (!strcmp(a[0],"translate")) {
     if (last < 4) return 1;
-    gp_Vec V(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
+    gp_Vec V(Draw::Atof(a[last-2]),Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     last -= 3;
     T.SetTranslation(V);
   }
 
   else if (!strcmp(a[0],"rotate")) {
     if (last < 8) return 1;
-    Standard_Real ang = atof(a[last]) * (M_PI / 180.0);
+    Standard_Real ang = Draw::Atof(a[last]) * (M_PI / 180.0);
     last --;
-    gp_Dir D(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
+    gp_Dir D(Draw::Atof(a[last-2]),Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     last -= 3;
-    gp_Pnt P(atof(a[last-2]),atof(a[last-1]),atof(a[last]));
+    gp_Pnt P(Draw::Atof(a[last-2]),Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     last -= 3;
     T.SetRotation(gp_Ax1(P,D),ang);
   }
@@ -545,23 +545,23 @@ static Standard_Integer d2transform (Draw_Interpretor& di, Standard_Integer n, c
   gp_Trsf2d T;
   Standard_Integer i,last = n-1;
   if (!strcmp(a[0],"2dpscale")) {
-    Standard_Real s = atof(a[last]);
+    Standard_Real s = Draw::Atof(a[last]);
     last--;
     if (last < 3) return 1;
-    gp_Pnt2d P(atof(a[last-1]),atof(a[last]));
+    gp_Pnt2d P(Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     T.SetScale(P,s);
   }
   else if ( (!strcmp(a[0],"2dpmirror")) || 
 	    (!strcmp(a[0],"2dlmirror"))   ) {
     if (last < 3) return 1;
-    gp_Pnt2d P(atof(a[last-1]),atof(a[last]));
+    gp_Pnt2d P(Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     if (!strcmp(a[0],"2dpmirror")) {
       T.SetMirror(P);
     }
     else {
       last -= 2;
       if (last < 3) return 1;
-      gp_Pnt2d O(atof(a[last-1]),atof(a[last]));
+      gp_Pnt2d O(Draw::Atof(a[last-1]),Draw::Atof(a[last]));
       last -= 2;
       gp_Dir2d D(P.X(),P.Y());
       T.SetMirror(gp_Ax2d(O,D));
@@ -570,16 +570,16 @@ static Standard_Integer d2transform (Draw_Interpretor& di, Standard_Integer n, c
 
   else if (!strcmp(a[0],"2dtranslate")) {
     if (last < 3) return 1;
-    gp_Vec2d V(atof(a[last-1]),atof(a[last]));
+    gp_Vec2d V(Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     last -= 2;
     T.SetTranslation(V);
   }
 
   else if (!strcmp(a[0],"2drotate")) {
     if (last < 4) return 1;
-    Standard_Real ang = atof(a[last]) * (M_PI / 180.0);
+    Standard_Real ang = Draw::Atof(a[last]) * (M_PI / 180.0);
     last --;
-    gp_Pnt2d P(atof(a[last-1]),atof(a[last]));
+    gp_Pnt2d P(Draw::Atof(a[last-1]),Draw::Atof(a[last]));
     last -= 2;
     T.SetRotation(P,ang);
   }

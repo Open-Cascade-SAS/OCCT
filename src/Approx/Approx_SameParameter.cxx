@@ -570,7 +570,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     }
     Handle(Geom2d_BSplineCurve) DEBBS = 
       new Geom2d_BSplineCurve(DEBP2d,DEBKnots,DEBMults,1);
-    sprintf(Name,"DEBC2d_%d",++NbCurve);
+    Sprintf(Name,"DEBC2d_%d",++NbCurve);
 #ifdef DRAW
     DrawTrSurf::Set(Name,DEBBS);
 #endif
@@ -651,7 +651,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     Handle(Geom2d_BSplineCurve) DEBBS = 
       new Geom2d_BSplineCurve(DEBP2d,DEBKnots,DEBMults,1);
-    sprintf(Name,"DEBC2d_%d_%d",NbCurve,nbcoups );
+    Sprintf(Name,"DEBC2d_%d_%d",NbCurve,nbcoups );
 #ifdef DRAW
     DrawTrSurf::Set(Name,DEBBS);
 #endif

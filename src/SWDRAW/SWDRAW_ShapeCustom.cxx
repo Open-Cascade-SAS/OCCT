@@ -18,9 +18,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//    abv 08.05.99: new command convtorevol
-
 #include <SWDRAW_ShapeCustom.ixx>
+
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <SWDRAW.hxx>
 #include <TopoDS_Shape.hxx>
@@ -287,8 +287,8 @@ static Standard_Integer expshape(Draw_Interpretor& di, Standard_Integer argc, co
   }
   Standard_CString arg2 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg2);
-  Standard_Integer Degree = atoi(argv[2]);
-  Standard_Integer MaxSeg = atoi(argv[3]);
+  Standard_Integer Degree = Draw::Atoi(argv[2]);
+  Standard_Integer MaxSeg = Draw::Atoi(argv[3]);
   GeomAbs_Shape aCont3 = GeomAbs_C0;
   Standard_Integer k = 4;
   if( argc > k)
@@ -407,7 +407,7 @@ static Standard_Integer scaleshape(Draw_Interpretor& di, Standard_Integer argc, 
   TopoDS_Shape Shape = DBRep::Get(arg2);
   if (Shape.IsNull()) { di << "Shape unknown: " << arg2 << "\n"; return 1 /* Error */; }
 
-  TopoDS_Shape result = ShapeCustom::ScaleShape (Shape, atof(argv[3]));
+  TopoDS_Shape result = ShapeCustom::ScaleShape (Shape, Draw::Atof(argv[3]));
   if (result.IsNull()) { di << "NO RESULT" << "\n"; return 1; }
   else if (result == Shape) { di << "NO MODIFICATIONS" << "\n"; return 0; }
   DBRep::Set (argv[1],result);
@@ -444,7 +444,7 @@ static Standard_Integer BSplRes(Draw_Interpretor& di, Standard_Integer argc, con
     di<< "Invalid argument Cont3e" << "\n"; return 1; }
 
   Handle(ShapeCustom_RestrictionParameters) aParameters = new ShapeCustom_RestrictionParameters;
-  TopoDS_Shape result = ShapeCustom::BSplineRestriction (Shape, atof(argv[3]), atof(argv[4]), atoi(argv[5]),atoi(argv[6]),aCont3,aCont2,(Standard_Boolean) atoi(argv[9]),(Standard_Boolean) atoi(argv[10]),aParameters);
+  TopoDS_Shape result = ShapeCustom::BSplineRestriction (Shape, Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atoi(argv[5]),Draw::Atoi(argv[6]),aCont3,aCont2,(Standard_Boolean) Draw::Atoi(argv[9]),(Standard_Boolean) Draw::Atoi(argv[10]),aParameters);
   if (result.IsNull()) { di << "NO RESULT" << "\n"; return 1; }
   else if (result == Shape) { 
     di << "NO MODIFICATIONS" << "\n";

@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -252,10 +251,10 @@ static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, c
   
   TCollection_ExtendedString aText(argv[5]);
   //Standard_ExtString ExtString_aText = aText.ToExtString();
-  //di << ExtString_aText << " " << atof(argv[4]) << "\n";
-  di << argv[5] << " " << atof(argv[4]) << "\n";
+  //di << ExtString_aText << " " << Draw::Atof(argv[4]) << "\n";
+  di << argv[5] << " " << Draw::Atof(argv[4]) << "\n";
   
-  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond, aPlane, atof(argv[4]), aText);
+  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond, aPlane, Draw::Atof(argv[4]), aText);
   aContext->Display(aDim);                                                         
   
   return 0;
@@ -535,7 +534,7 @@ static Standard_Integer OCC252 (Draw_Interpretor& di, Standard_Integer argc, con
   //QAModTopOpe_ModeOfLimitation ModeOfLimitation = QAModTopOpe_Forward;
   QANewModTopOpe_ModeOfLimitation ModeOfLimitation = QANewModTopOpe_Forward;
   if(argc==5) {
-    Standard_Integer ModeOfLimitationInteger = atoi(argv[4]);
+    Standard_Integer ModeOfLimitationInteger = Draw::Atoi(argv[4]);
     if(!(ModeOfLimitationInteger == 0 || ModeOfLimitationInteger == 1 || ModeOfLimitationInteger == 2)) {
       di << "Usage : " << argv[0] << " result part tool [ModeOfLimitation=0/1/2]" << "\n";
       return 1;
@@ -571,7 +570,7 @@ static Standard_Integer OCC307 (Draw_Interpretor& di, Standard_Integer argc, con
 
   Standard_Boolean AllowCutting = Standard_False;
   if(argc==5) {
-    Standard_Integer AllowCuttingInteger = atoi(argv[4]);
+    Standard_Integer AllowCuttingInteger = Draw::Atoi(argv[4]);
     if(!( AllowCuttingInteger == 0 || AllowCuttingInteger == 1)) {
       di << "Usage : " << argv[0] << " result part tool [AllowCutting=0/1]" << "\n";
       return 1;
@@ -651,13 +650,13 @@ static Standard_Integer OCC394 (Draw_Interpretor& di, Standard_Integer argc, con
    Standard_Integer mode = 2;
    Standard_Real tolang = M_PI/2;
    if(argc > k) 
-     tol = atof(argv[k++]);
+     tol = Draw::Atof(argv[k++]);
    
    if(argc > k) 
-     mode=  atoi(argv[k++]);
+     mode=  Draw::Atoi(argv[k++]);
    
    if(argc > k) 
-     tolang = atof(argv[k++]);
+     tolang = Draw::Atof(argv[k++]);
      
    
    Handle(ShapeFix_Wireframe) aSfwr = new ShapeFix_Wireframe();
@@ -693,10 +692,10 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
 
-  Standard_Real X = atof(argv[1]);
-  Standard_Real Y = atof(argv[2]);
-  Standard_Real Z = atof(argv[3]);
-  Standard_Real ArrowSize = atof(argv[4]);
+  Standard_Real X = Draw::Atof(argv[1]);
+  Standard_Real Y = Draw::Atof(argv[2]);
+  Standard_Real Z = Draw::Atof(argv[3]);
+  Standard_Real ArrowSize = Draw::Atof(argv[4]);
 
   gp_Pnt p1 = gp_Pnt(10.,10.,0.);
   gp_Pnt p2 = gp_Pnt(50.,10.,0.);
@@ -757,10 +756,10 @@ static Standard_Integer OCC60 (Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
-  Standard_Integer xmin = atoi(argv[1]);
-  Standard_Integer ymin = atoi(argv[2]);
-  Standard_Integer xmax = atoi(argv[3]);
-  Standard_Integer ymax = atoi(argv[4]);
+  Standard_Integer xmin = Draw::Atoi(argv[1]);
+  Standard_Integer ymin = Draw::Atoi(argv[2]);
+  Standard_Integer xmax = Draw::Atoi(argv[3]);
+  Standard_Integer ymax = Draw::Atoi(argv[4]);
 
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
 
@@ -790,7 +789,7 @@ static Standard_Integer OCC70 (Draw_Interpretor& di, Standard_Integer argc, cons
   TColgp_Array1OfPnt2d Polyline(1,np);
   j = 1;
   for (i = 1; i <= np; i++) {
-    Polyline(i) = gp_Pnt2d(atof(argv[j]), atof(argv[j+1]));
+    Polyline(i) = gp_Pnt2d(Draw::Atof(argv[j]), Draw::Atof(argv[j+1]));
     j += 2;
   }
 
@@ -845,7 +844,7 @@ static Standard_Integer OCC904 (Draw_Interpretor& di, Standard_Integer argc, con
     di << " Shape is null" << "\n";
     return 1;
   }
-  Standard_Boolean nonmanifmode = (atoi(argv[3]) != 0);
+  Standard_Boolean nonmanifmode = (Draw::Atoi(argv[3]) != 0);
   Handle(ShapeFix_Shell) SFSh = new ShapeFix_Shell;
   SFSh->FixFaceOrientation(TopoDS::Shell(S),Standard_True,nonmanifmode);
   DBRep::Set(argv[1],SFSh->Shape());

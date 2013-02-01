@@ -132,7 +132,7 @@ Standard_Integer Mes(Draw_Interpretor& di,Standard_Integer na, const char** a)
     }
     else if (na == 4) {
       if (!strcmp(a[1],"xy")) {
-	Standard_Integer i = atoi(a[2]); 
+	Standard_Integer i = Draw::Atoi(a[2]); 
 	const TestTopOpeTools_Mesure& M = (*PAMES).Value(SetName(a[3],di));
 	Standard_Real x,y,z;gp_Pnt p=M.Pnt(i);p.Coord(x,y,z);
 	di<<x<<" "<<y;
@@ -146,7 +146,7 @@ Standard_Integer Mes(Draw_Interpretor& di,Standard_Integer na, const char** a)
 	 (D.IsNull() && ((*PDel).Value(CurrentMES4) == "1"))) // after a "dall" 
 	{ 
 	  TestTopOpeTools_Mesure *MES4 = (new TestTopOpeTools_Mesure(a[1]));
-	  (*MES4).Add(atoi(a[2]),atof(a[3]));
+	  (*MES4).Add(Draw::Atoi(a[2]),Draw::Atof(a[3]));
 	  if((*PDel).Value(CurrentMES4) == "1") {
 	    TestTopOpeTools_Mesure MES3;
 	    MES3 = (*PAMES).Value(CurrentMES4);
@@ -156,7 +156,7 @@ Standard_Integer Mes(Draw_Interpretor& di,Standard_Integer na, const char** a)
 	  (*PAMES).SetValue(CurrentMES4, *MES4);
 	} else {
 	  TestTopOpeTools_Mesure& MES4 = (*PAMES).ChangeValue(CurrentMES4);
-	  MES4.Add(atoi(a[2]),atof(a[3]));
+	  MES4.Add(Draw::Atoi(a[2]),Draw::Atof(a[3]));
 	  (*PAMES).SetValue(CurrentMES4, MES4);
 	}
       
@@ -199,8 +199,8 @@ Standard_Integer Mes(Draw_Interpretor& di,Standard_Integer na, const char** a)
     if (na < 3) return 0;
     Standard_Real dx=1.,dy=1.;
     Standard_Boolean isX = Standard_False, isY = Standard_False;
-    if      (!strcmp(a[0],"seemx")) { dx = atof(a[na-1]); isX = Standard_True; }
-    else if (!strcmp(a[0],"seemy")) { dy = atof(a[na-1]); isY = Standard_True; }
+    if      (!strcmp(a[0],"seemx")) { dx = Draw::Atof(a[na-1]); isX = Standard_True; }
+    else if (!strcmp(a[0],"seemy")) { dy = Draw::Atof(a[na-1]); isY = Standard_True; }
     TestTopOpeTools_Mesure MES5;
     Handle(Draw_Drawable3D) D;
     Handle(TestTopOpeDraw_DrawableMesure) DMES5;
@@ -234,7 +234,7 @@ Standard_Integer Mes(Draw_Interpretor& di,Standard_Integer na, const char** a)
   else if (!strcmp(a[0],"seemxy")) {
     if (na < 4) return 0;
     TestTopOpeTools_Mesure& M = (*PAMES).ChangeValue(SetName(a[1],di));
-    Standard_Real dx=atof(a[2]),dy=atof(a[3]);
+    Standard_Real dx=Draw::Atof(a[2]),dy=Draw::Atof(a[3]);
     Handle(Draw_Drawable3D) D = Draw::Get(a[1],Standard_False);
     Handle(TestTopOpeDraw_DrawableMesure) DM;
     DM = Handle(TestTopOpeDraw_DrawableMesure)::DownCast(D);

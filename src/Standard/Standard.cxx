@@ -29,8 +29,9 @@
 #include <Standard_MMgrTBBalloc.hxx>
 
 #if(defined(_WIN32) || defined(__WIN32__))
-#include <windows.h>
-#include <malloc.h>
+  #include <windows.h>
+  #include <malloc.h>
+  #include <locale.h>
 #endif
 
 #ifndef OCCT_MMGT_OPT_DEFAULT
@@ -63,11 +64,22 @@ class Standard_MMgrFactory {
 Standard_MMgrFactory::Standard_MMgrFactory()
 : myFMMgr (NULL)
 {
+/*#if defined(_MSC_VER) && (_MSC_VER > 1400)
+  // Turn ON thread-safe C locale globally to avoid side effects by setlocale() calls between threads.
+  // After this call all following _configthreadlocale() will be ignored assuming
+  // Notice that this is MSVCRT feature - on POSIX systems xlocale API (uselocale instead of setlocale)
+  // should be used explicitly to ensure thread-safety!
+
+  // This is not well documented call because _ENABLE_PER_THREAD_LOCALE_GLOBAL flag is defined but not implemented for some reason.
+  // -1 will set global locale flag to force _ENABLE_PER_THREAD_LOCALE_GLOBAL + _ENABLE_PER_THREAD_LOCALE_NEW behaviour
+  // although there NO way to turn it off again and following calls will have no effect (locale will be changed only for current thread).
+  _configthreadlocale (-1);
+#endif*/
+
   char* aVar;
   Standard_Integer anAllocId   = (aVar = getenv ("MMGT_OPT"      )) ?  atoi (aVar)       :
     (OCCT_MMGT_OPT_DEFAULT);
   Standard_Boolean toClear     = (aVar = getenv ("MMGT_CLEAR"    )) ? (atoi (aVar) != 0) : Standard_True;
-
 
   // on Windows (actual for XP and 2000) activate low fragmentation heap
   // for CRT heap in order to get best performance.

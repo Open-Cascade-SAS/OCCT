@@ -43,7 +43,7 @@
 Standard_Integer testtopopedraw_cdinp(Draw_Interpretor&,Standard_Integer na,const char** a)
 {
   if ( na < 5 ) return 0;
-  TestTopOpeDraw_P3DDisplayer PD(a[1],atof(a[2]),atof(a[3]),atof(a[4]));
+  TestTopOpeDraw_P3DDisplayer PD(a[1],Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]));
   return 0;
 }
 
@@ -102,13 +102,13 @@ void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Dis
 	    char sis[40]; sis[0] = '\0';
 	    Standard_Integer kk = 0, k = j+1;
 	    for (; k<l; k++,kk++,sis[kk] = '\0' ) sis[kk] = a[iloc][k];
-	    inbr = atoi(sis);
+	    inbr = Draw::Atoi(sis);
 	    inbrdef = Standard_True;
 	  }
 	}
 	else if(a[iloc][j] == 'p') { 
 	  if (iloc < na - 1) {
-	    tpar = atof(a[iloc+1]);
+	    tpar = Draw::Atof(a[iloc+1]);
 	    dloc++; decal++;
 	  }
 	}
@@ -229,8 +229,8 @@ static void BoopReadInitFile(Draw_Interpretor& di, const char* filename)
 
 static Standard_Integer ttab(Draw_Interpretor& di, Standard_Integer narg, const char** a) {
   char s[2000]; strcpy(s,"");
-  sprintf(s,"%s%s",s,"proc addt {at args} {upvar $at x;set L \"\";addl L [join $args];");
-  sprintf(s,"%s%s",s,"foreach l $L {set x([array size x]) $l}};");
+  Sprintf(s,"%s%s",s,"proc addt {at args} {upvar $at x;set L \"\";addl L [join $args];");
+  Sprintf(s,"%s%s",s,"foreach l $L {set x([array size x]) $l}};");
   di.Eval(s);
   return 0;
 }
@@ -325,7 +325,7 @@ public:
     char s[1000];
     mypdi->Eval("info proc vx2d_displayface");
     if (mypdi->Result()) {
-      sprintf(s,"vx2d_displayface %s",myfacename.ToCString());
+      Sprintf(s,"vx2d_displayface %s",myfacename.ToCString());
       mypdi->Eval(s);
     }
     else cout<<"procedure vx2d_displayface non trouvee"<<endl;
@@ -508,16 +508,16 @@ Standard_Integer cvx2d::displayedge(const TopoDS_Shape& S) {
   lenames(l2,ste2);
 
   cout<<endl;
-  sprintf(stol,"%g",tole);
+  Sprintf(stol,"%g",tole);
   cout<<"# "<<ste<<" : tole "<<stol<<" : uv "<<pe1.X()<<" "<<pe1.Y()<<" UV "<<pe2.X()<<" "<<pe2.Y();
   cout<<endl;
-  sprintf(stol,"%g",tol1);
+  Sprintf(stol,"%g",tol1);
   cout<<"# "<<sv1<<" : tol1 "<<stol<<" : uv "<<p1.X()<<" "<<p1.Y()<<" : edges "<<ste1;
   cout<<endl;
-  sprintf(stol,"%g",tol2);
+  Sprintf(stol,"%g",tol2);
   cout<<"# "<<sv2<<" : tol2 "<<stol<<" : uv "<<p2.X()<<" "<<p2.Y()<<" : edges "<<ste2;
   cout<<endl;
-  sprintf(stol,"%g",v1v2); cout<<"# v1v2 = "<<stol;
+  Sprintf(stol,"%g",v1v2); cout<<"# v1v2 = "<<stol;
   cout<<endl;
   cout.flush();
 
@@ -567,7 +567,7 @@ Standard_Integer vx2d(Draw_Interpretor& di, Standard_Integer na, const char** a)
   for(Standard_Integer ia=1;ia<na;ia++) {
     if     (!strcasecmp(a[1],"-n")) { dostep=+1; DRAWsuppressarg(na,a,ia); }
     else if(!strcasecmp(a[1],"-p")) { dostep=-1; DRAWsuppressarg(na,a,ia); }
-    else if (ISINTEGER(a[1])) { doiedge=atoi(a[1]); DRAWsuppressarg(na,a,ia); }
+    else if (ISINTEGER(a[1])) { doiedge=Draw::Atoi(a[1]); DRAWsuppressarg(na,a,ia); }
   }
   
   if (dostep) {
@@ -585,7 +585,7 @@ Standard_Integer vx2d(Draw_Interpretor& di, Standard_Integer na, const char** a)
   TCollection_AsciiString sta1(a[1]); TopAbs_ShapeEnum t = S.ShapeType();
   TopAbs_ShapeEnum tt = ( t == TopAbs_FACE) ? TopAbs_EDGE : TopAbs_FACE;
 
-  Standard_Integer iearg = (na >= 3) ? atoi(a[2]) : 0;
+  Standard_Integer iearg = (na >= 3) ? Draw::Atoi(a[2]) : 0;
   TCollection_AsciiString stss; Standard_Integer i = 1;
   TopExp_Explorer ex;
   for (ex.Init(S,tt);ex.More();ex.Next(),i++) {

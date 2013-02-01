@@ -144,7 +144,7 @@ void  XmlMNaming_Shape1::SetShape (const Standard_Integer       theID,
   case TopAbs_EXTERNAL  : anOr = 'e'; break;
   default               : anOr = '\0';
   }
-  sprintf (aBuffer, "%c%i", anOr, theID);
+  Sprintf (aBuffer, "%c%i", anOr, theID);
   Element().setAttribute (::TShapeString(), aBuffer);
   if (theLocID > 0)
     Element().setAttribute (::LocationString(), theLocID);
@@ -160,12 +160,12 @@ void XmlMNaming_Shape1::SetVertex (const TopoDS_Shape& theVertex)
   gp_Pnt aPos = BRep_Tool::Pnt(aV);
 
   char buf [16];
-  sprintf (buf, "%.8g", aPos.X());
+  Sprintf (buf, "%.8g", aPos.X());
   Element().setAttribute (::XCoordString(), buf);
 
-  sprintf (buf, "%.8g", aPos.Y());
+  Sprintf (buf, "%.8g", aPos.Y());
   Element().setAttribute (::YCoordString(), buf);
 
-  sprintf (buf, "%.8g", aPos.Z());
+  Sprintf (buf, "%.8g", aPos.Z());
   Element().setAttribute (::ZCoordString(), buf);
 }

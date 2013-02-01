@@ -39,7 +39,7 @@ static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char
   if (n < 7) return 1;
   TopoDS_Shape InpLine =  DBRep::Get(a[2]);
   TopoDS_Shape InpShape = DBRep::Get(a[3]);
-  Standard_Real DX=atof(a[4]),DY=atof(a[5]),DZ=atof(a[6]);
+  Standard_Real DX=Draw::Atof(a[4]),DY=Draw::Atof(a[5]),DZ=Draw::Atof(a[6]);
   gp_Dir TD(DX,DY,DZ);
   BRepProj_Projection Prj(InpLine,InpShape,TD);
   Standard_Integer i = 1;
@@ -48,7 +48,7 @@ static Standard_Integer prj(Draw_Interpretor& di, Standard_Integer n, const char
 
   if (Prj.IsDone()) {
     while (Prj.More()) {
-      sprintf(newname,"%s_%d",a[1],i);
+      Sprintf(newname,"%s_%d",a[1],i);
       DBRep::Set(temp,Prj.Current());
       //cout<<newname<<" ";
       di<<newname<<" ";
@@ -68,7 +68,7 @@ static Standard_Integer cprj(Draw_Interpretor& di, Standard_Integer n, const cha
   if (n < 7) return 1;
   TopoDS_Shape InpLine =  DBRep::Get(a[2]);
   TopoDS_Shape InpShape = DBRep::Get(a[3]);
-  Standard_Real PX=atof(a[4]),PY=atof(a[5]),PZ=atof(a[6]);
+  Standard_Real PX=Draw::Atof(a[4]),PY=Draw::Atof(a[5]),PZ=Draw::Atof(a[6]);
   gp_Pnt P(PX,PY,PZ);
   BRepProj_Projection Prj(InpLine,InpShape,P);
   Standard_Integer i = 1;
@@ -76,7 +76,7 @@ static Standard_Integer cprj(Draw_Interpretor& di, Standard_Integer n, const cha
 
   if (Prj.IsDone()) {
     while (Prj.More()) {
-      sprintf(newname,"%s_%d",a[1],i);
+      Sprintf(newname,"%s_%d",a[1],i);
       DBRep::Set(temp,Prj.Current());
       //cout<<newname<<" ";
       di<<newname<<" ";

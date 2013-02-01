@@ -22,6 +22,7 @@
 
 #include <SWDRAW_ShapeAnalysis.ixx>
 #include <stdio.h>
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 #include <SWDRAW.hxx>
@@ -113,9 +114,9 @@ static Standard_Integer tolerance
     if (nextarg < 3) opt = 'a';
 
     Standard_Real tol1= 0., tol2= 0.;
-    if (nextarg < argc)   tol1 = atof (argv[nextarg]);
-    if (nextarg < argc-1) tol2 = atof (argv[nextarg+1]);
-//    Standard_Real tol = atof (argv[2]);
+    if (nextarg < argc)   tol1 = Draw::Atof (argv[nextarg]);
+    if (nextarg < argc-1) tol2 = Draw::Atof (argv[nextarg+1]);
+//    Standard_Real tol = Draw::Atof (argv[2]);
     Handle(TopTools_HSequenceOfShape) list = sat.InTolerance (Shape,tol1,tol2,type);
     Standard_Integer i, nb = list->Length();
     switch (type) {
@@ -133,7 +134,7 @@ static Standard_Integer tolerance
     di<<"\n";
     char nomsh[30];
     for (i = 1; i <= nb; i ++) {
-      sprintf (nomsh,"tol_%d",i);
+      Sprintf (nomsh,"tol_%d",i);
       DBRep::Set (nomsh,list->Value(i));
     }
   }
@@ -152,10 +153,10 @@ static Standard_Integer projface
   Handle(Geom_Surface) thesurf = BRep_Tool::Surface (F);  // pas locface
 //  On y va
   Standard_Real X,Y,Z,U,V;
-  X = U = atof (argv[2]);
-  Y = V = atof (argv[3]);
+  X = U = Draw::Atof (argv[2]);
+  Y = V = Draw::Atof (argv[3]);
   if (argc > 4) {
-    Z = atof (argv[4]);
+    Z = Draw::Atof (argv[4]);
     gp_Pnt P3D (X,Y,Z);
     di<<" Point 3D X = "<<X<<"  Y = "<<Y<<"  Z = "<<Z<<"\n";
     Standard_Real uf, ul, vf, vl;
@@ -219,14 +220,14 @@ static Standard_Integer projcurve
     if (C.IsNull())
       {  di<<arg1<<" neither EDGE nor CURVE 3D"<<"\n"; return 1 /* Error */;  }
     cf = C->FirstParameter();  cl = C->LastParameter();
-    if (argc >= 7) { cf = atof (argv[2]);  cl = atof (argv[3]); i0 = 2; }
+    if (argc >= 7) { cf = Draw::Atof (argv[2]);  cl = Draw::Atof (argv[3]); i0 = 2; }
     di<<"Curve 3D "<<arg1<<" Params from "<<cf<<" to "<<cl<<"\n";
   }
 
   Standard_Real X,Y,Z;
-  X = atof (argv[2+i0]);
-  Y = atof (argv[3+i0]);
-  Z = atof (argv[4+i0]);
+  X = Draw::Atof (argv[2+i0]);
+  Y = Draw::Atof (argv[3+i0]);
+  Z = Draw::Atof (argv[4+i0]);
   di<<"Precision (BRepBuilderAPI) : "<<BRepBuilderAPI::Precision()
     <<"  Projection : "<<X<<"  "<<Y<<"  "<<Z<<"\n";
 
@@ -477,42 +478,42 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di, Standard_Integer 
   if(analyzer.ModifyBigSplineMode()) {
     sec = analyzer.BigSplineSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
-      sprintf(nompart,"%s_bigspl_%d",arg2,i);
+      Sprintf(nompart,"%s_bigspl_%d",arg2,i);
       DBRep::Set (nompart,sec->Value(i));
     }
   }
   if(analyzer.ModifyIndirectMode()) {
     sec = analyzer.IndirectSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
-      sprintf(nompart,"%s_indsur_%d",arg2,i);
+      Sprintf(nompart,"%s_indsur_%d",arg2,i);
       DBRep::Set (nompart,sec->Value(i));
     }
   }
   if(analyzer.ModifyOffestSurfaceMode()) {
     sec = analyzer.OffsetSurfaceSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
-      sprintf(nompart,"%s_ofsur_%d",arg2,i);
+      Sprintf(nompart,"%s_ofsur_%d",arg2,i);
       DBRep::Set (nompart,sec->Value(i));
     }
   }
   if(analyzer.ModifyTrimmed3dMode()) {
     sec = analyzer.Trimmed3dSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
-      sprintf(nompart,"%s_trc3d_%d",arg2,i);
+      Sprintf(nompart,"%s_trc3d_%d",arg2,i);
       DBRep::Set (nompart,sec->Value(i));
     }
   }
   if(analyzer.ModifyOffsetCurveMode()) {
     sec = analyzer.OffsetCurveSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
-      sprintf(nompart,"%s_ofcur_%d",arg2,i);
+      Sprintf(nompart,"%s_ofcur_%d",arg2,i);
       DBRep::Set (nompart,sec->Value(i));
     }
   }
   if(analyzer.ModifyTrimmed2dMode()) {
     sec = analyzer.Trimmed2dSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
-      sprintf(nompart,"%s_trc2d_%d",arg2,i);
+      Sprintf(nompart,"%s_trc2d_%d",arg2,i);
       DBRep::Set (nompart,sec->Value(i));
     }
   }
@@ -540,7 +541,7 @@ static Standard_Integer XSHAPE_comptoledge
   Standard_CString prefix = 0;
   if ( argc >2 ) {
     if ( IsDigit(argv[2][0]) ) {
-      nbpnts = atoi(argv[2]);
+      nbpnts = Draw::Atoi(argv[2]);
       if ( nbpnts <2 ) nbpnts = 2;
       if ( argc >3 ) prefix = argv[3];
     }
@@ -577,12 +578,12 @@ static Standard_Integer XSHAPE_comptoledge
           "MAX=" << relmax << " AVG=" << relave/num << " MIN=" << relmin << "\n"; 
   if ( prefix && prefix[0] ) {
     char name[21];
-    sprintf ( name, "%.10s_edge_tol", prefix );
+    Sprintf ( name, "%.10s_edge_tol", prefix );
     DBRep::Set (name,edmax);
     di << "Edge with max tolerance saved to " << name;
     if ( edmax.IsSame ( edmaxrel ) ) di << "\n";
     else {
-      sprintf ( name, "%.10s_edge_rel", prefix );
+      Sprintf ( name, "%.10s_edge_rel", prefix );
       DBRep::Set (name,edmaxrel);
       di << "; edge with max relation saved to " << name << "\n";
     }
@@ -593,7 +594,7 @@ static Standard_Integer XSHAPE_comptoledge
 	TopoDS_Edge edge = TopoDS::Edge ( ed.Current() );
 	if ( edge.IsSame ( edmax ) || edge.IsSame ( edmaxrel ) ) {
 	  if ( ! num1 ) di << "Concerned faces saved to shapes ";
-	  sprintf ( name, "%.10s_%d", prefix, num1+1 );
+	  Sprintf ( name, "%.10s_%d", prefix, num1+1 );
 	  DBRep::Set (name,face);
 	  //cout << ( num1 ? ", " : "" ) << name;
 	  if (num1 == 0) {
@@ -622,10 +623,10 @@ static Standard_Integer freebounds (Draw_Interpretor& di,
   if ((n < 3) || (n > 5)) return 1;
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull()) return 1;
-  Standard_Real toler = atof (a[2]);
+  Standard_Real toler = Draw::Atof (a[2]);
   Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
-  if ( n > 3) splitclosed = atoi (a[3]);
-  if ( n > 4) splitopen   = atoi (a[4]);
+  if ( n > 3) splitclosed = Draw::Atoi (a[3]);
+  if ( n > 4) splitopen   = Draw::Atoi (a[4]);
 
   ShapeAnalysis_FreeBounds F;
   if (toler <= 0)
@@ -635,11 +636,11 @@ static Standard_Integer freebounds (Draw_Interpretor& di,
 
   char name[100];
   TopoDS_Shape wires = F.GetClosedWires();
-  sprintf (name, "%s_c", a[1]);
+  Sprintf (name, "%s_c", a[1]);
   DBRep::Set (name, wires);
   di << name << " - closed wires" << "\n";
   wires = F.GetOpenWires();
-  sprintf (name, "%s_o", a[1]);
+  Sprintf (name, "%s_o", a[1]);
   DBRep::Set (name, wires);
   di << name << " - open wires" << "\n";
 
@@ -662,7 +663,7 @@ static void PrintProps(Standard_Integer i,
   Standard_Real ratio = fbd->Ratio();
   Standard_Real width = fbd->Width();
   Standard_Integer notch = fbd->NbNotches();
-  sprintf(str," %d\t%12.5f\t%12.5f\t%12.5f\t%12.5f\t%d", i, area, perimeter, ratio, width, notch);
+  Sprintf(str," %d\t%12.5f\t%12.5f\t%12.5f\t%12.5f\t%d", i, area, perimeter, ratio, width, notch);
   di<<str<<"\n";
 }
 
@@ -687,9 +688,9 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
 
   Standard_Real toler = 0.;
   Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
-  if (n > 2) toler =  atof(a[2]);
-  if (n > 3) splitclosed = atoi(a[3]);
-  if (n > 4) splitopen   = atoi(a[4]);
+  if (n > 2) toler =  Draw::Atof(a[2]);
+  if (n > 3) splitclosed = Draw::Atoi(a[3]);
+  if (n > 4) splitopen   = Draw::Atoi(a[4]);
   ShapeAnalysis_FreeBoundsProperties analyzer;
   if (toler > 0)
     analyzer.Init(source, toler, splitclosed, splitopen);
@@ -724,10 +725,10 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
   }
 
   char name[100];
-  sprintf (name, "%s_c",a[1]);
+  Sprintf (name, "%s_c",a[1]);
   di << name << " - closed wires,  ";
   DBRep::Set(name, closed);
-  sprintf (name, "%s_o",a[1]);
+  Sprintf (name, "%s_o",a[1]);
   di << name << " - closed wires " << "\n";
   DBRep::Set(name, open);
   return 0;
@@ -744,10 +745,10 @@ static Standard_Integer closefreebounds (Draw_Interpretor& di,
   if ((n < 4) || (n > 6)) return 1;
   TopoDS_Shape shape = DBRep::Get(a[1]);
   if (shape.IsNull()) return 1;
-  Standard_Real sewtoler = atof (a[2]), closetoler = atof (a[3]);
+  Standard_Real sewtoler = Draw::Atof (a[2]), closetoler = Draw::Atof (a[3]);
   Standard_Boolean splitclosed = Standard_False, splitopen = Standard_False;
-  if ( n > 4) splitclosed = atoi (a[3]);
-  if ( n > 5) splitopen   = atoi (a[4]);
+  if ( n > 4) splitclosed = Draw::Atoi (a[3]);
+  if ( n > 5) splitopen   = Draw::Atoi (a[4]);
 
   ShapeFix_FreeBounds F;
   if (sewtoler <= 0)
@@ -757,11 +758,11 @@ static Standard_Integer closefreebounds (Draw_Interpretor& di,
 
   char name[100];
   TopoDS_Shape wires = F.GetClosedWires();
-  sprintf (name, "%s_c", a[1]);
+  Sprintf (name, "%s_c", a[1]);
   DBRep::Set (name, wires);
   di << name << " - closed wires" << "\n";
   wires = F.GetOpenWires();
-  sprintf (name, "%s_o", a[1]);
+  Sprintf (name, "%s_o", a[1]);
   DBRep::Set (name, wires);
   di << name << " - open wires" << "\n";
 
@@ -783,7 +784,7 @@ static Standard_Integer MyVISEDG (Draw_Interpretor& /*di*/,
   if (TheList.IsNull()) return 1;
   Standard_Real toler = 0.001;
   int create = 0;
-  if ( n >= 3) toler = atof(a[2]);
+  if ( n >= 3) toler = Draw::Atof(a[2]);
   if (n == 4 && !strcmp(a[3],"C")) create = 1;
   ShapeAnalysis_FreeBounds F(TheList,toler);
   //
@@ -798,7 +799,7 @@ static Standard_Integer MyVISEDG (Draw_Interpretor& /*di*/,
       Standard_Integer iwire = 0;
       while (S.More())
 	{
-	  sprintf (num,"%d",iwire);
+	  Sprintf (num,"%d",iwire);
 	  name[0] = 'w';
 	  name[1] = '\0';
 	  strncat(name,num,strlen(num));
@@ -813,7 +814,7 @@ static Standard_Integer MyVISEDG (Draw_Interpretor& /*di*/,
       iwire = 0;
       while (S.More())
 	{
-	  sprintf (num,"%d",iwire);
+	  Sprintf (num,"%d",iwire);
 	  name[0] = 'E';
 	  name[1] = '\0';
 	  strncat(name,num,strlen(num));

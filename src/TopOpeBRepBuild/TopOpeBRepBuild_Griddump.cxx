@@ -296,7 +296,8 @@ void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E,
   Standard_Integer n = 0;
   GdumpSHAORI(E, (char *) "vertices of ");cout<<endl;
   TopOpeBRepTool_ShapeExplorer ex(E,TopAbs_VERTEX);
-  char strpar[256]; sprintf(strpar," #");
+  char strpar[256]; 
+  Sprintf(strpar," #");
   for (; ex.More(); ex.Next()) {
     const TopoDS_Vertex& VV = TopoDS::Vertex(ex.Current());
     TopAbs_Orientation o = VV.Orientation();
@@ -307,7 +308,9 @@ void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E,
     else if (o == TopAbs_EXTERNAL) cout<<"E";
     cout<<++n<<" "; TopOpeBRepBuild_Builder::PrintPnt(VV); cout<<";";
     Standard_Real par = BRep_Tool::Parameter(VV,EE);
-    char spar[255];sprintf(spar," par%d %f",n,par); strcat(strpar,spar);
+    char spar[255];
+    Sprintf(spar," par%d %f",n,par); 
+    strcat(strpar,spar);
   }
   if(n) cout<<strpar<<endl;
   cout.flush();

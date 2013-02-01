@@ -67,6 +67,7 @@
 #include <TopOpeBRepTool_ShapeClassifier.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DrawTrSurf.hxx>
 #include <Draw_Color.hxx>
@@ -575,7 +576,7 @@ void FUN_mkBnd2dBREP(const TopoDS_Shape& W, const TopoDS_Shape& F,Bnd_Box2d& B2d
 static Standard_Integer drawbnd2d(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
   if (n < 5) return 1;
-  Standard_Integer i = atoi(a[4]);
+  Standard_Integer i = Draw::Atoi(a[4]);
   TopoDS_Shape W = DBRep::Get(a[2]);
   TopoDS_Shape F = DBRep::Get(a[3]);
   if (W.IsNull() || F.IsNull()) return 1;
@@ -643,7 +644,7 @@ static Standard_Integer classifBnd2d(Draw_Interpretor& di, Standard_Integer n, c
 static Standard_Integer pntonc(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 3) return 1;
-  Standard_Real x = atof(a[1]);
+  Standard_Real x = Draw::Atof(a[1]);
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
   if (C.IsNull()) {di<<"null curve"<<"\n"; return 1;}
   gp_Pnt p = C->Value(x);
@@ -655,7 +656,7 @@ static Standard_Integer pntonc(Draw_Interpretor& di, Standard_Integer n, const c
 static Standard_Integer pntonc2d(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 4) return 1;
-  Standard_Real x = atof(a[1]);
+  Standard_Real x = Draw::Atof(a[1]);
   Handle(Geom2d_Curve) C2d = DrawTrSurf::GetCurve2d(a[2]);
   if (C2d.IsNull()) {di<<"null curve"<<"\n"; return 1;}
   Handle(Geom_Surface) S   = DrawTrSurf::GetSurface(a[3]);
@@ -701,7 +702,7 @@ static Standard_Integer solidclassifier(Draw_Interpretor& di, Standard_Integer n
   TopoDS_Shape s = DBRep::Get(a[1]);
   if (s.IsNull()) {di<<"null shape"<<"\n";return 1;}
   gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
-  Standard_Real tol = atof(a[3]);
+  Standard_Real tol = Draw::Atof(a[3]);
   
   TopOpeBRepTool_SolidClassifier soclassi;
   TopAbs_State sta = TopAbs_UNKNOWN;
@@ -725,7 +726,7 @@ static Standard_Integer class3dclassifier(Draw_Interpretor& di, Standard_Integer
   TopoDS_Shape s = DBRep::Get(a[1]);
   if (s.IsNull()) {di<<"null shape"<<"\n";return 1;}
   gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
-  Standard_Real tol = atof(a[3]);
+  Standard_Real tol = Draw::Atof(a[3]);
   
   BRepClass3d_SolidClassifier soclassi(s);
   TopAbs_State sta = TopAbs_UNKNOWN;
@@ -783,7 +784,7 @@ static Standard_Integer normal(Draw_Interpretor& di, Standard_Integer n, const c
   if (f.IsNull()) {di<<"null shape"<<"\n";return 1;}
   gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
 #ifdef DEB
-  Standard_Real length = atof(a[3]);
+  Standard_Real length = Draw::Atof(a[3]);
 #endif
   Standard_Real dist=0.; gp_Pnt2d uv; Standard_Boolean ok = FUN_tool_projPonF(p,f,uv,dist);
   if (!ok) {di<<"projection failed"<<"\n"; return 1;}
@@ -805,9 +806,9 @@ static Standard_Integer curvature(Draw_Interpretor& di, Standard_Integer n, cons
   TopoDS_Face f = TopoDS::Face(aLocalShape);
 //  TopoDS_Face f = TopoDS::Face(DBRep::Get(a[1]));
   if (f.IsNull()) {di<<"null shape"<<"\n";return 1;}
-  Standard_Real x = atof(a[2]);
-  Standard_Real y = atof(a[3]);
-  Standard_Real z = atof(a[4]);
+  Standard_Real x = Draw::Atof(a[2]);
+  Standard_Real y = Draw::Atof(a[3]);
+  Standard_Real z = Draw::Atof(a[4]);
   Handle(Geom_Line) line = new Geom_Line(gp_Ax1(gp_Pnt(0.,0.,0.), gp_Dir(x,y,z)));
   BRepAdaptor_Surface BS(f);
   Handle(Geom_Surface) su = BRep_Tool::Surface(f);

@@ -160,7 +160,7 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_Integer aValue)
 
   union { int bid ;      // ?? to ensure alignment of t[] by double-word??
           char t [13]; } CHN ; 
-  sprintf(&CHN.t[0],"%d",aValue);
+  Sprintf(&CHN.t[0],"%d",aValue);
 #if OptJr
   STRINGLEN( CHN.t , mylength ) ;
 #else
@@ -184,7 +184,7 @@ TCollection_AsciiString::TCollection_AsciiString(const Standard_Real aValue)
 
   union { int bid ;
           char t [50]; } CHN ;
-  sprintf(&CHN.t[0],"%g",aValue);
+  Sprintf(&CHN.t[0],"%g",aValue);
 #if OptJr
   STRINGLEN( CHN.t , mylength ) ;
 #else
@@ -1023,11 +1023,7 @@ Standard_Boolean TCollection_AsciiString::IsRealValue()const
 {
   char *ptr;
   if(mystring) {
-//#ifdef DEB
-//    Standard_Real value = strtod(mystring,&ptr);
-//#else
-    strtod(mystring,&ptr);
-//#endif
+    Strtod(mystring,&ptr);
     if (ptr != mystring) return Standard_True;
     else                 return Standard_False; 
   }
@@ -1161,7 +1157,7 @@ Standard_Real TCollection_AsciiString::RealValue()const
   char *ptr;
   Standard_Real value = 0;
   if(mystring) {
-    value = strtod(mystring,&ptr);
+    value = Strtod(mystring,&ptr);
     if (ptr != mystring) return value;
   }
   Standard_NumericError::Raise("TCollection_AsciiString::RealValue");

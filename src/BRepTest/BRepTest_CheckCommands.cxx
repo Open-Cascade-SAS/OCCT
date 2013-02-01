@@ -171,7 +171,7 @@ static void PrintSub(Standard_OStream& OS,
 	  if (!FindNamed(sub,Name)) {
 	    nbfaulty++;
 	    Name = (char*)malloc(18*sizeof(char));
-	    sprintf(Name,"%s%d",checkfaultyname,nbfaulty);
+	    Sprintf(Name,"%s%d",checkfaultyname,nbfaulty);
 	    DBRep::Set(Name,sub);
 	    lfaulty.Append(Draw::Get((Standard_CString&)Name));
 	  }
@@ -179,7 +179,7 @@ static void PrintSub(Standard_OStream& OS,
 	  if (!FindNamed(S,Name)) {
 	    nbfaulty++;
 	    Name = (char*)malloc(18*sizeof(char));
-	    sprintf(Name,"%s%d",checkfaultyname,nbfaulty);
+	    Sprintf(Name,"%s%d",checkfaultyname,nbfaulty);
 	    DBRep::Set(Name,S);
 	    lfaulty.Append(Draw::Get((Standard_CString&)Name));
 	  }
@@ -215,7 +215,7 @@ static void Print(Standard_OStream& OS,
       if (!FindNamed(S,Name)) {
 	nbfaulty++;
 	Name = (char*)malloc(18*sizeof(char));
-	sprintf(Name,"%s%d",checkfaultyname,nbfaulty);
+	Sprintf(Name,"%s%d",checkfaultyname,nbfaulty);
 	DBRep::Set(Name,S);
 	lfaulty.Append(Draw::Get((Standard_CString&)Name));
       }
@@ -318,7 +318,7 @@ static Standard_Integer checksection(Draw_Interpretor& di,
   TopTools_MapIteratorOfMapOfShape itvx;
   for (itvx.Initialize(theVertices); itvx.More(); itvx.Next()) {
     ipp++;
-    sprintf(Name,"alone_%d",ipp);
+    Sprintf(Name,"alone_%d",ipp);
     DBRep::Set(Name, itvx.Key());
     //cout << Name << " " ;
     di << Name << " " ;
@@ -339,7 +339,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
   const char* syntaxe = "checkdiff arg1 [arg2..argn] result [closedSolid (0/1)] [geomCtrl (1/0)]";
   if (narg < 3) {
     if (narg==2) {
-      Standard_Integer bcrtrace=atoi(a[narg-1]);
+      Standard_Integer bcrtrace=Draw::Atoi(a[narg-1]);
       bcrtrace=BRepCheck_Trace(bcrtrace);
       //cout << "BRepCheck_Trace : " << bcrtrace << endl;
       di << "BRepCheck_Trace : " << bcrtrace << "\n";
@@ -362,7 +362,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
       di << syntaxe << "\n";
       return 1;
     }
-    closedSolid=atoi(a[narg-1]);
+    closedSolid=Draw::Atoi(a[narg-1]);
     resu = DBRep::Get(a[narg-2]);
     lastArg=narg-3;
     if (resu.IsNull()) {
@@ -372,7 +372,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
 	return 1;
       }
       geomCtrl=closedSolid;
-      closedSolid=atoi(a[narg-2]);
+      closedSolid=Draw::Atoi(a[narg-2]);
       resu = DBRep::Get(a[narg-3]);
       lastArg=narg-4;
       if (resu.IsNull()) {
@@ -820,7 +820,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     for(i=1; i<=nb; i++)
       B.Add(comp,slv->Value(i));
     char aName[20];
-    sprintf(aName,"%s_v",Pref);
+    Sprintf(aName,"%s_v",Pref);
     DBRep::Set(aName,comp);
     //cout<<"VERTEX"<<"	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
     if (nb > 9)
@@ -835,7 +835,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     for(i=1; i<=nb; i++)
       B.Add(comp,sle->Value(i));
     char aName[20];
-    sprintf(aName,"%s_e",Pref);
+    Sprintf(aName,"%s_e",Pref);
     DBRep::Set(aName,comp);
     //cout<<"EDGE"<<"	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
     if (nb > 9)
@@ -850,7 +850,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     for(i=1; i<=nb; i++)
       B.Add(comp,slw->Value(i));
     char aName[20];
-    sprintf(aName,"%s_w",Pref);
+    Sprintf(aName,"%s_w",Pref);
     DBRep::Set(aName,comp);
     //cout<<"WIRE"<<"	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
     if (nb > 9)
@@ -865,7 +865,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     for(i=1; i<=nb; i++)
       B.Add(comp,slf->Value(i));
     char aName[20];
-    sprintf(aName,"%s_f",Pref);
+    Sprintf(aName,"%s_f",Pref);
     DBRep::Set(aName,comp);
     //cout<<"FACE"<<"	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
     if (nb > 9)
@@ -880,7 +880,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     for(i=1; i<=nb; i++)
       B.Add(comp,sls->Value(i));
     char aName[20];
-    sprintf(aName,"%s_s",Pref);
+    Sprintf(aName,"%s_s",Pref);
     DBRep::Set(aName,comp);
     //cout<<"SHELL"<<"	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
     if (nb > 9)
@@ -895,7 +895,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     for(i=1; i<=nb; i++)
       B.Add(comp,slo->Value(i));
     char aName[20];
-    sprintf(aName,"%s_o",Pref);
+    Sprintf(aName,"%s_o",Pref);
     DBRep::Set(aName,comp);
     //cout<<"SOLID"<<"	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
     if (nb > 9)
@@ -1105,12 +1105,12 @@ static Standard_Integer shapeG1continuity (Draw_Interpretor& di, Standard_Intege
    
  
 
-  nbeval = (Standard_Integer ) atof( a[3]);
+  nbeval = (Standard_Integer ) Draw::Atof( a[3]);
 
   switch(n)
-    { case 7  : epsG1 = atof(a[6]);
-      case 6  : epsC0   = atof(a[5]);
-      case 5  : epsnl    = atof(a[4]);
+    { case 7  : epsG1 = Draw::Atof(a[6]);
+      case 6  : epsC0   = Draw::Atof(a[5]);
+      case 5  : epsnl    = Draw::Atof(a[4]);
       case 4  : {} break;
       default : return 1;
     }
@@ -1230,11 +1230,11 @@ static Standard_Integer shapeG0continuity (Draw_Interpretor& di, Standard_Intege
    
  
 
-  nbeval = (Standard_Integer ) atof( a[3]);
+  nbeval = (Standard_Integer ) Draw::Atof( a[3]);
 
   switch(n)
-    { case 6  : epsC0   = atof(a[5]);
-      case 5  : epsnl    = atof(a[4]);
+    { case 6  : epsC0   = Draw::Atof(a[5]);
+      case 5  : epsnl    = Draw::Atof(a[4]);
       case 4  : {} break;
       default : return 1;
     }
@@ -1351,15 +1351,15 @@ static Standard_Integer shapeG2continuity (Draw_Interpretor& di, Standard_Intege
    
  
 
-  nbeval = (Standard_Integer ) atof( a[3]);
+  nbeval = (Standard_Integer ) Draw::Atof( a[3]);
 
   switch(n)
     { 
-      case 9  :  maxlen   = atof(a[8]);
-      case 8   : percent   = atof(a[7]);      
-      case 7   : epsG1 = atof(a[6]);
-      case 6  :  epsC0   = atof(a[5]);
-      case 5  :  epsnl   = atof(a[4]);
+      case 9  :  maxlen   = Draw::Atof(a[8]);
+      case 8   : percent   = Draw::Atof(a[7]);      
+      case 7   : epsG1 = Draw::Atof(a[6]);
+      case 6  :  epsC0   = Draw::Atof(a[5]);
+      case 5  :  epsnl   = Draw::Atof(a[4]);
       case 4  : {} break;
       default : return 1;
     }
@@ -1454,7 +1454,7 @@ static Standard_Integer clintedge(Draw_Interpretor& di,
     Standard_Integer i = 1;
     char* temp = newname;
 
-    sprintf(newname,"%s_%d",a[1],i);
+    Sprintf(newname,"%s_%d",a[1],i);
     DBRep::Set(temp,mypurgealgo.Shape());
     //cout<<newname<<" ";
     di<<newname<<" ";
@@ -1495,7 +1495,7 @@ static Standard_Integer facintedge(Draw_Interpretor& di,
 
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itFacEdg;
   for (itFacEdg.Initialize(mymap); itFacEdg.More(); itFacEdg.Next()) {
-      sprintf(newname,"%s_%d",a[1],i);
+      Sprintf(newname,"%s_%d",a[1],i);
       DBRep::Set(temp,itFacEdg.Key());
       //cout<<newname<<" ";
       di<<newname<<" ";
@@ -1539,7 +1539,7 @@ static Standard_Integer fuseedge(Draw_Interpretor& di,
     Standard_Integer i = 1;
     char* temp = newname;
 
-    sprintf(newname,"%s_%d",a[1],i);
+    Sprintf(newname,"%s_%d",a[1],i);
     DBRep::Set(temp,myfusealgo.Shape());
     //cout<<newname<<" ";
     di<<newname<<" ";
@@ -1585,7 +1585,7 @@ static Standard_Integer listfuseedge(Draw_Interpretor& di,
       TopTools_ListIteratorOfListOfShape itEdg; 
       i = 1;
       for (itEdg.Initialize(LmapEdg); itEdg.More(); itEdg.Next()) {
-	sprintf(newname,"%s_%d_%d",a[1],iLst,i);
+	Sprintf(newname,"%s_%d_%d",a[1],iLst,i);
 	DBRep::Set(temp,itEdg.Value());
 	//cout<<newname<<" ";
 	di<<newname<<" ";

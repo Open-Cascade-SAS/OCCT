@@ -91,6 +91,7 @@ Storage_Error FSD_File::Open(const TCollection_AsciiString& aName,const Storage_
     }
     else {
       myStream.precision(17);
+      myStream.imbue (std::locale::classic()); // use always C locale
       SetOpenMode(aMode);
     }
   }
@@ -461,25 +462,9 @@ Storage_BaseDriver& FSD_File::PutBoolean(const Standard_Boolean aValue)
 
 Storage_BaseDriver& FSD_File::PutReal(const Standard_Real aValue)
 {
-#ifdef USEOSDREAL
-  char realbuffer[100];
-
-  realbuffer[0] = '\0';
-  if (OSD::RealToCString(aValue,realbuffer)) {
-    myStream << realbuffer << " ";
-  }
-  else {
-    Storage_StreamWriteError::Raise();
-  }
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
-
-  return *this;
-#else
   myStream << ((Standard_Real)aValue) << " ";
-
   if (myStream.bad()) Storage_StreamWriteError::Raise();
   return *this;
-#endif
 }
 
 //=======================================================================
@@ -489,25 +474,9 @@ Storage_BaseDriver& FSD_File::PutReal(const Standard_Real aValue)
 
 Storage_BaseDriver& FSD_File::PutShortReal(const Standard_ShortReal aValue)
 {
-#ifdef USEOSDREAL
-  char realbuffer[100];
-
-  realbuffer[0] = '\0';
-  if (OSD::RealToCString(aValue,realbuffer)) {
-    myStream << realbuffer << " ";
-  }
-  else {
-    Storage_StreamWriteError::Raise();
-  }
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
-
-  return *this;
-#else
   myStream << aValue << " ";
-
   if (myStream.bad()) Storage_StreamWriteError::Raise();
   return *this;
-#endif
 }
 
 //=======================================================================

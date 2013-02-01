@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -60,7 +59,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 8) {
-    Standard_Integer IsB = atoi(argv[7]);
+    Standard_Integer IsB = Draw::Atoi(argv[7]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -231,12 +230,12 @@ static Standard_Integer OCC486(Draw_Interpretor& di, Standard_Integer argc, cons
       Handle(Geom_Surface) GS;
       GS = DrawTrSurf::GetSurface(argv[1]);
       if (GS.IsNull()) { di << "OCC486 FAULTY. Null surface /n";return 1;}
-      gp_Pnt P3D( atof(argv[2]),atof(argv[3]),atof(argv[4]) );
+      gp_Pnt P3D( Draw::Atof(argv[2]),Draw::Atof(argv[3]),Draw::Atof(argv[4]) );
 
       Standard_Real Tol = Precision::PConfusion();
       Extrema_ExtPS myExtPS;
-      if (argc > 5) du = atof(argv[5]);
-      if (argc > 6) dv = atof(argv[6]);
+      if (argc > 5) du = Draw::Atof(argv[5]);
+      if (argc > 6) dv = Draw::Atof(argv[6]);
 
       Standard_Real uf, ul, vf, vl;
       GS->Bounds(uf, ul, vf, vl);
@@ -306,8 +305,8 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
   //      Case:3   draftAngle = 10, slabThick = 40 --> Ok
   //
   //      --------------------------------------------------
-  Standard_Real draftAngle = atof(argv[1]);
-  Standard_Real slabThick = atof(argv[2]);
+  Standard_Real draftAngle = Draw::Atof(argv[1]);
+  Standard_Real slabThick = Draw::Atof(argv[2]);
 
   Standard_Real f1 = 75;
   Standard_Real f2 = 35;
@@ -466,7 +465,7 @@ static Standard_Integer OCC822_1 (Draw_Interpretor& di, Standard_Integer argc, c
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 5) {
-    Standard_Integer IsB = atoi(argv[4]);
+    Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -556,7 +555,7 @@ static Standard_Integer OCC822_2 (Draw_Interpretor& di,Standard_Integer argc, co
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 5) {
-    Standard_Integer IsB = atoi(argv[4]);
+    Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -623,7 +622,7 @@ static Standard_Integer OCC823 (Draw_Interpretor& di,Standard_Integer argc, cons
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 5) {
-    Standard_Integer IsB = atoi(argv[4]);
+    Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -691,7 +690,7 @@ static Standard_Integer OCC824 (Draw_Interpretor& di,Standard_Integer argc, cons
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 5) {
-    Standard_Integer IsB = atoi(argv[4]);
+    Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -760,7 +759,7 @@ static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, cons
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 7) {
-    Standard_Integer IsB = atoi(argv[6]);
+    Standard_Integer IsB = Draw::Atoi(argv[6]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def02)
@@ -866,7 +865,7 @@ static Standard_Integer OCC826 (Draw_Interpretor& di,Standard_Integer argc, cons
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 5) {
-    Standard_Integer IsB = atoi(argv[4]);
+    Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -945,7 +944,7 @@ static Standard_Integer OCC827 (Draw_Interpretor& di,Standard_Integer argc, cons
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 7) {
-    Standard_Integer IsB = atoi(argv[6]);
+    Standard_Integer IsB = Draw::Atoi(argv[6]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)

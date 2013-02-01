@@ -74,7 +74,7 @@ static Standard_Integer BUC60897 (Draw_Interpretor& di, Standard_Integer /*argc*
   Standard_Character abuf[16];
 
   Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(-1, 0));
-  sprintf(abuf,"line");
+  Sprintf(abuf,"line");
   Standard_CString st = abuf;
   DrawTrSurf::Set (st, aLine);
 
@@ -83,7 +83,7 @@ static Standard_Integer BUC60897 (Draw_Interpretor& di, Standard_Integer /*argc*
   aPoints.SetValue(2, gp_Pnt2d(50, 50));
   aPoints.SetValue(3, gp_Pnt2d(0, 100));
   Handle(Geom2d_BezierCurve) aCurve = new Geom2d_BezierCurve(aPoints);
-  sprintf(abuf,"curve");
+  Sprintf(abuf,"curve");
   DrawTrSurf::Set (st, aCurve);
 
   Geom2dAdaptor_Curve aCLine(aLine);
@@ -107,7 +107,7 @@ static Standard_Integer BUC60897 (Draw_Interpretor& di, Standard_Integer /*argc*
     di << "\n" << "tangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
     di << "\n" << "tangency2 : X " << aPnt2d2.X() << " Y " << aPnt2d2.Y() << "\n";
     
-    sprintf(abuf,"circle_%d",i);
+    Sprintf(abuf,"circle_%d",i);
     Handle(Geom2d_Curve) circ_res = new Geom2d_Circle(aCirc2d);
     DrawTrSurf::Set (st, circ_res);
   }
@@ -137,7 +137,7 @@ static Standard_Integer BUC60889 (Draw_Interpretor& di, Standard_Integer argc, c
     BRepAdaptor_Curve curve(ed);
     gp_Dir d = curve.Line().Direction();
     Bnd_Box bnd_box;
-    bnd_box.Update(atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]), atof(argv[8]), atof(argv[9]));
+    bnd_box.Update(Draw::Atof(argv[4]), Draw::Atof(argv[5]), Draw::Atof(argv[6]), Draw::Atof(argv[7]), Draw::Atof(argv[8]), Draw::Atof(argv[9]));
     if(bnd_box.IsOut(p1, p2, d))
       di << "The band lies out of the box" << "\n";
     else
@@ -159,7 +159,7 @@ static Standard_Integer BUC60852 (Draw_Interpretor& di, Standard_Integer argc, c
       BRepAdaptor_Curve curve(shape);
       gp_Lin lin = curve.Line();
       Bnd_Box bnd_box;
-      bnd_box.Update(atof(argv[2]), atof(argv[3]), atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]));
+      bnd_box.Update(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Draw::Atof(argv[6]), Draw::Atof(argv[7]));
       if(bnd_box.IsOut(lin))
 	di << "Line that lies on edge does not intersect the box" << "\n";
       else
@@ -278,11 +278,11 @@ static Standard_Integer BUC60870 (Draw_Interpretor& di, Standard_Integer argc, c
   }
   const char *ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
   TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2))  ;
-  Standard_Real dev =  atof(argv[4]);
+  Standard_Real dev =  Draw::Atof(argv[4]);
   BRepExtrema_DistShapeShape dst(S1 ,S2, dev );
   if (dst.IsDone()) {
     char named[100];
-    sprintf(named, "%s%s" ,ns0,"_val");
+    Sprintf(named, "%s%s" ,ns0,"_val");
     char* tempd = named;
     Draw::Set(tempd,dst.Value());
     di << named << " ";
@@ -294,9 +294,9 @@ static Standard_Integer BUC60870 (Draw_Interpretor& di, Standard_Integer argc, c
 	TopoDS_Vertex V =BRepLib_MakeVertex(P1);
 	char namev[100];
 	if (i1==1) {
-	  sprintf(namev, "%s" ,ns0);
+	  Sprintf(namev, "%s" ,ns0);
 	} else {
-	  sprintf(namev, "%s%d" ,ns0,i1);
+	  Sprintf(namev, "%s%d" ,ns0,i1);
 	}
 	char* tempv = namev;
 	DBRep::Set(tempv,V);
@@ -305,9 +305,9 @@ static Standard_Integer BUC60870 (Draw_Interpretor& di, Standard_Integer argc, c
 	char name[100];
 	TopoDS_Edge E = BRepLib_MakeEdge (P1, P2);
 	if (i1==1) {
-	  sprintf(name,"%s",ns0);
+	  Sprintf(name,"%s",ns0);
 	} else {
-	  sprintf(name,"%s%d",ns0,i1);
+	  Sprintf(name,"%s%d",ns0,i1);
 	}
 	char* temp = name;
 	DBRep::Set(temp,E);
@@ -573,7 +573,7 @@ static Standard_Integer BUC60924 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
   
-  gp_XYZ aVec(atof(argv[2]),atof(argv[3]),atof(argv[4]));
+  gp_XYZ aVec(Draw::Atof(argv[2]),Draw::Atof(argv[3]),Draw::Atof(argv[4]));
   
   Standard_Boolean isPlanar=Standard_False;
   isPlanar=ShapeAnalysis_Curve::IsPlanar(aCurve,aVec,1e-7);
@@ -702,7 +702,7 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
   LDOM_Document myDOM;
 
   //Standard_Character  *File = new Standard_Character [100];
-  //sprintf(File,"%s",argv[1]);
+  //Sprintf(File,"%s",argv[1]);
   const char *File = (argv[1]);
 
   if(!aParser.parse(File)) {
@@ -728,7 +728,7 @@ static Standard_Integer OCC1786 (Draw_Interpretor& di, Standard_Integer argc, co
     cerr << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  Standard_Integer AutoHilightInteger =  atoi(argv[1]);
+  Standard_Integer AutoHilightInteger =  Draw::Atoi(argv[1]);
   Standard_Boolean AutoHilightBoolean = Standard_False;
   if (AutoHilightInteger != 0) {
      AutoHilightBoolean = Standard_True;
@@ -859,7 +859,7 @@ static Standard_Integer OCC1919_real (Draw_Interpretor& di, Standard_Integer arg
     TDF_Label L;
     DDF::AddLabel(DF, argv[2], L);
 
-    //TDataStd_Real::Set(L,atof(arg[3]));
+    //TDataStd_Real::Set(L,Draw::Atof(arg[3]));
     TCollection_AsciiString AsciiStringReal(argv[3]);
     if (!AsciiStringReal.IsRealValue()) return 1;
     Standard_Real aReal = AsciiStringReal.RealValue();
@@ -914,7 +914,7 @@ static Standard_Integer OCC2932_SetTag (Draw_Interpretor& di, Standard_Integer a
   if (!DDF::GetDF(argv[1],DF)) return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  Standard_Integer Tag = atoi(argv[3]);
+  Standard_Integer Tag = Draw::Atoi(argv[3]);
   Handle(TDF_TagSource) A = TDF_TagSource::Set(L);
   A->Set(Tag);
   return 0;
@@ -1001,12 +1001,12 @@ static Standard_Integer OCC6794 (Draw_Interpretor& di, Standard_Integer argc, co
   
   Standard_Integer aNb = 1;
   if ( max )
-    aNb += atoi( max );
+    aNb += Draw::Atoi( max );
   else
     aNb += 40000;
 
   if ( argc > 1 )
-    aNb = atoi( argv[1] );
+    aNb = Draw::Atoi( argv[1] );
 
   di << "Use nb = " << aNb << "\n";
 

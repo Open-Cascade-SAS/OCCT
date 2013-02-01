@@ -163,7 +163,7 @@ static Standard_Integer FromShape (Draw_Interpretor& di, Standard_Integer argc, 
   }
   
   char command[256];
-  sprintf ( command, "fromshape %.200s -1", argv[1] );
+  Sprintf ( command, "fromshape %.200s -1", argv[1] );
   Handle(Dico_DictionaryOfTransient) DictWS = thedictws;
   if ( DictWS->IsEmpty() ) return di.Eval ( command );
   

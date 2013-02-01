@@ -130,7 +130,7 @@ static Standard_Integer sweep (Draw_Interpretor&,
     Pipe.Init(path, Support, firstS);
   }
   else if (Option == GeomFill_IsConstantNormal) {
-    gp_Dir D ( atof(a[3]), atof(a[4]), atof(a[5]) );
+    gp_Dir D ( Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]) );
     Handle(Geom_Curve) path = DrawTrSurf::GetCurve(a[6]);
     Handle(Geom_Curve) firstS = DrawTrSurf::GetCurve(a[7]);
     Pipe.Init(path, firstS, D);
@@ -146,8 +146,8 @@ static Standard_Integer sweep (Draw_Interpretor&,
   }     
 
   if (n >=isection+2) { 
-    MaxDegree = atoi(a[isection+1]);
-    if (n >isection+2) NbSeg = atoi(a[isection+2]);
+    MaxDegree = Draw::Atoi(a[isection+1]);
+    if (n >isection+2) NbSeg = Draw::Atoi(a[isection+2]);
   }
     
   Pipe.Perform(Tol, Standard_False,  GeomAbs_C2, MaxDegree, NbSeg);
@@ -188,7 +188,7 @@ static Standard_Integer tuyau (Draw_Interpretor&,
   if ( firstS.IsNull()) {
     if ( narg == 4) { 
       // tuyau a rayon constant.
-      Pipe.Init(path, atof(a[isect]));
+      Pipe.Init(path, Draw::Atof(a[isect]));
     }
     else 
       return 1;
@@ -321,7 +321,7 @@ static Standard_Integer fillcurves(Draw_Interpretor& di,
 
   Standard_Integer ist = 2;
   GeomFill_FillingStyle Style = GeomFill_CoonsStyle;
-  if(n > 6) ist = atoi(a[6]);
+  if(n > 6) ist = Draw::Atoi(a[6]);
 
   if(ist == 1) Style =  GeomFill_StretchStyle;
   if(ist == 2) Style =  GeomFill_CoonsStyle;

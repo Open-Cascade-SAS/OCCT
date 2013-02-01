@@ -164,7 +164,7 @@ static Standard_Integer DFOpenAttribute (Draw_Interpretor& di,
   Handle(DDF_Browser) browser =
     Handle(DDF_Browser)::DownCast (Draw::Get(a[1], Standard_True)); 
 
-  const Standard_Integer index = atoi(a[2]);
+  const Standard_Integer index = Draw::Atoi(a[2]);
   TCollection_AsciiString list = browser->OpenAttribute(index);
   di<<list.ToCString();
   return 0;

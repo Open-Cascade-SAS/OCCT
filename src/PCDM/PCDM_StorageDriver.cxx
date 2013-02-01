@@ -39,14 +39,8 @@
 
 
 
-void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString&  aFileName) {
-
- // on sauvegarde l'ancien LC_NUMERIC
-  char *oldnum,*plocal ;
-  plocal =   setlocale(LC_NUMERIC, NULL) ;
-  oldnum = new char[strlen(plocal)+1] ;
-  strcpy(oldnum,plocal);
-
+void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString&  aFileName) 
+{
   Handle(Storage_Schema) theSchema=PCDM::Schema(SchemaName(),aDocument->Application());
 
   TColStd_SequenceOfExtendedString theExtensions;
@@ -103,10 +97,6 @@ void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCol
   PCDM_ReadWriter::Open(theFile,aFileName,Storage_VSWrite);
   theSchema->Write(theFile,theData);
   theFile.Close();
-
-  // on remet le LC_NUMERIC a la precedente valeur
-  setlocale(LC_NUMERIC, oldnum) ;
-  delete[] oldnum;
 
   if ( theData->ErrorStatus() != Storage_VSOk )
     PCDM_DriverError::Raise(theData->ErrorStatusExtension().ToCString());

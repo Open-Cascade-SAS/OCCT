@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -54,9 +53,9 @@ static Standard_Integer OCC895 (Draw_Interpretor& di, Standard_Integer argc, con
   }
 
   const Standard_Real rad = 1.0;
-  const Standard_Real angle = (argc > 2)? atof(argv[2]) : 0.0;
-  const Standard_Integer reverse = (argc > 3)? atoi(argv[3]) : 0;
-  const Standard_Integer order = (argc > 4)? atoi(argv[4]) : 0;
+  const Standard_Real angle = (argc > 2)? Draw::Atof(argv[2]) : 0.0;
+  const Standard_Integer reverse = (argc > 3)? Draw::Atoi(argv[3]) : 0;
+  const Standard_Integer order = (argc > 4)? Draw::Atoi(argv[4]) : 0;
 
   // Make a wire from the first arc for ThruSections.
   //

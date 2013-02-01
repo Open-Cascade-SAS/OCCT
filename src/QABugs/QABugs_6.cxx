@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -47,9 +46,9 @@ static Standard_Integer OCC281bug (Draw_Interpretor& di, Standard_Integer argc, 
   }
 
   Standard_Integer x,y,TypeOfMarker;
-  x = atoi(argv[1]);
-  y = atoi(argv[2]);
-  TypeOfMarker = atoi(argv[3]);
+  x = Draw::Atoi(argv[1]);
+  y = Draw::Atoi(argv[2]);
+  TypeOfMarker = Draw::Atoi(argv[3]);
   if( x <= 0) {
     di << "Bad value x=" << x << "\n";
     return 1;

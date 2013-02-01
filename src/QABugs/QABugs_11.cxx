@@ -23,6 +23,7 @@
 
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -164,7 +165,7 @@ static Standard_Integer  OCC128 (Draw_Interpretor& di, Standard_Integer /*argc*/
 //
 //    Standard_Integer aNum = -1;
 //
-//    if(atoi(argv[2])) {
+//    if(Draw::Atoi(argv[2])) {
 //      aNum = anAISCtx->OpenLocalContext();
 //    }
 //
@@ -274,7 +275,7 @@ static int BUC60610(Draw_Interpretor& di, Standard_Integer argc, const char ** a
     di << "Num points = " << plin.NbPoints() << "\n";
     if(argc > 2) {
       i++;
-      sprintf(Ch,"%s_%i",argv[2],1);
+      Sprintf(Ch,"%s_%i",argv[2],1);
       DBRep::Set(Ch,E);
     }
   }
@@ -304,7 +305,7 @@ static Standard_Integer BUC60661(Draw_Interpretor& di, Standard_Integer argc, co
 #endif
 
   Standard_Character  *file1 = new Standard_Character [strlen(DD)+strlen(a[1])+2];
-  sprintf(file1,"%s/%s",DD,a[1]);
+  Sprintf(file1,"%s/%s",DD,a[1]);
 
   IGESToBRep_Reader reader;
   Standard_Integer status = reader.LoadFile(file1);
@@ -360,7 +361,7 @@ static int OCC105(Draw_Interpretor& di, Standard_Integer argc, const char ** arg
   }
 //  TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get("aa.brep"));
   TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
-  Standard_Real l = 0.5; //atof(argv[2]);
+  Standard_Real l = 0.5; //Draw::Atof(argv[2]);
   // Find the first vertex of the wire
   BRepTools_WireExplorer wire_exp(myTopoDSWire);
   TopoDS_Vertex vlast;
@@ -445,10 +446,10 @@ static int pipe_OCC9 (Draw_Interpretor& di,
   GeomFill_Pipe aPipe(Handle(Geom_Curve)::DownCast( aCurveSeq(1) ),
 		      Handle(Geom_Curve)::DownCast( aCurveSeq(2) ),
 		      Handle(Geom_Curve)::DownCast( aCurveSeq(3) ),
-		      atof (a[5]) );
+		      Draw::Atof (a[5]) );
 
   if (n == 7) {
-    aPipe.Perform(atof (a[6]), Standard_True);
+    aPipe.Perform(Draw::Atof (a[6]), Standard_True);
   } else {
     aPipe.Perform(Standard_True/*, Standard_True*/);
   }
@@ -530,7 +531,7 @@ Standard_Integer  OCC157(Draw_Interpretor& di,
     di << "Invalid input shape"<< "\n";
     return 1;
   }
-  Standard_Real toler = atof(a[3]);
+  Standard_Real toler = Draw::Atof(a[3]);
   TopoDS_Wire aWire = TopoDS::Wire(inputShape);
   BRepLib_FindSurface FS(aWire, toler, Standard_True);
   if(FS.Found()) {
@@ -897,13 +898,13 @@ Standard_Integer OCC299bug (Draw_Interpretor& di,
 
   TopoDS_Shape aS = DBRep::Get(a[1]);
   if (aS.IsNull()) {
-    sprintf(sbf, " Null Shape is not allowed here\n");
+    Sprintf(sbf, " Null Shape is not allowed here\n");
     di<<sbf;
     return 1;
   }
 
   if (aS.ShapeType()!=TopAbs_SOLID) {
-    sprintf(sbf, " Shape type must be SOLID\n");
+    Sprintf(sbf, " Shape type must be SOLID\n");
     di<<sbf;
     return 1;
   }
@@ -914,14 +915,14 @@ Standard_Integer OCC299bug (Draw_Interpretor& di,
   gp_Pnt aP(8., 9., 10.);
 
   if (!DrawTrSurf::GetPoint(a[2], aP) ) {
-    sprintf(sbf, " Null Point is not allowed here\n");
+    Sprintf(sbf, " Null Point is not allowed here\n");
     di<<sbf;
     return 1;
   }
 
   aTol=1.e-7;
   if (n==4) {
-    aTol=atof(a[3]);
+    aTol=Draw::Atof(a[3]);
   }
   //
   BRepClass3d_SolidClassifier aSC(aS);
@@ -929,28 +930,28 @@ Standard_Integer OCC299bug (Draw_Interpretor& di,
   //
   aState = aSC.State();
   //
-  sprintf(sbf, "The point is "); di<<sbf;
+  Sprintf(sbf, "The point is "); di<<sbf;
   //
   switch (aState) {
   case TopAbs_IN:
-    sprintf(sbf, sIN.ToCString());
+    Sprintf(sbf, sIN.ToCString());
     break;
   case TopAbs_OUT:
-    sprintf(sbf, sOUT.ToCString());
+    Sprintf(sbf, sOUT.ToCString());
     break;
   case TopAbs_ON:
-    sprintf(sbf, sON.ToCString());
+    Sprintf(sbf, sON.ToCString());
     break;
   case TopAbs_UNKNOWN:
-    sprintf(sbf, sUNKNOWN.ToCString());
+    Sprintf(sbf, sUNKNOWN.ToCString());
     break;
   default:
-    sprintf(sbf, sUNKNOWN.ToCString());
+    Sprintf(sbf, sUNKNOWN.ToCString());
     break;
   }
   di<<sbf;
 	//
-  sprintf(sbf, " shape\n");
+  Sprintf(sbf, " shape\n");
   di<<sbf;
 
   return 0;
@@ -1006,7 +1007,7 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (nb == 2) {
-    Standard_Integer IsB = atoi(a[1]);
+    Standard_Integer IsB = Draw::Atoi(a[1]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
     }
@@ -1068,9 +1069,9 @@ static Standard_Integer OCC333bug (Draw_Interpretor& di, Standard_Integer n, con
   Standard_Real aDistDomain = 0.0;
   Standard_Integer k = 3;
   if(k < n)
-    aTol = atof(a[k++]);
+    aTol = Draw::Atof(a[k++]);
   if(k < n)
-    aDistDomain = atof(a[k++]);
+    aDistDomain = Draw::Atof(a[k++]);
 
   ShapeAnalysis_Edge sae;
   if(sae.CheckOverlapping(e1,e2,aTol,aDistDomain)) {
@@ -1203,9 +1204,9 @@ static Standard_Integer OCC377 (Draw_Interpretor& di, Standard_Integer argc, con
 
     // 2. Initialize parameters
     gp_Pnt2d p2d;
-    p2d.SetX ( atof(argv[2]) );
-    p2d.SetY ( atof(argv[3]) );
-    Standard_Real precuv = atof (argv[4] );
+    p2d.SetX ( Draw::Atof(argv[2]) );
+    p2d.SetY ( Draw::Atof(argv[3]) );
+    Standard_Real precuv = Draw::Atof (argv[4] );
 
     // 3. Read shape
     BRep_Builder B;
@@ -1418,14 +1419,14 @@ static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, con
     di<<"Usage : " << argv[0] << " LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix LowerColMatrix UpperColMatrix InitialValueMatrix\n";
     return 1;
   }
-  Standard_Integer LowerVector = atoi(argv[1]);
-  Standard_Integer UpperVector = atoi(argv[2]);
-  Standard_Real InitialValueVector = atof(argv[3]);
-  Standard_Integer LowerRowMatrix = atoi(argv[4]);
-  Standard_Integer UpperRowMatrix = atoi(argv[5]);
-  Standard_Integer LowerColMatrix = atoi(argv[6]);
-  Standard_Integer UpperColMatrix = atoi(argv[7]);
-  Standard_Real InitialValueMatrix = atof(argv[8]);
+  Standard_Integer LowerVector = Draw::Atoi(argv[1]);
+  Standard_Integer UpperVector = Draw::Atoi(argv[2]);
+  Standard_Real InitialValueVector = Draw::Atof(argv[3]);
+  Standard_Integer LowerRowMatrix = Draw::Atoi(argv[4]);
+  Standard_Integer UpperRowMatrix = Draw::Atoi(argv[5]);
+  Standard_Integer LowerColMatrix = Draw::Atoi(argv[6]);
+  Standard_Integer UpperColMatrix = Draw::Atoi(argv[7]);
+  Standard_Real InitialValueMatrix = Draw::Atof(argv[8]);
 
   math_Vector Vector1(LowerVector, UpperVector);
   math_Vector Vector2(LowerVector, UpperVector);
@@ -1503,7 +1504,7 @@ static Standard_Integer OCC578 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 5) {
-    Standard_Integer IsB = atoi(argv[4]);
+    Standard_Integer IsB = Draw::Atoi(argv[4]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 //      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
@@ -1769,10 +1770,10 @@ static Standard_Integer OCC867(Draw_Interpretor& di, Standard_Integer argc, cons
   gp_Pnt aPoint3d;        
   DrawTrSurf::GetPoint(argv[1],aPoint3d);
   Handle (Geom_Surface) aSurface=DrawTrSurf::GetSurface(argv[2]);
-  Standard_Real             Umin=atof(argv[3]);
-  Standard_Real             Usup=atof(argv[4]);
-  Standard_Real             Vmin=atof(argv[5]);
-  Standard_Real             Vsup=atof(argv[6]);
+  Standard_Real             Umin=Draw::Atof(argv[3]);
+  Standard_Real             Usup=Draw::Atof(argv[4]);
+  Standard_Real             Vmin=Draw::Atof(argv[5]);
+  Standard_Real             Vsup=Draw::Atof(argv[6]);
  
   if (aSurface.IsNull()) {
     di << argv[2] << " Null surface \n" ;
@@ -1899,7 +1900,7 @@ static Standard_Integer OCC1029_AISTransparency (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetTransparency(atof(arg[3]));
+	prs->SetTransparency(Draw::Atof(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {
@@ -1933,7 +1934,7 @@ static Standard_Integer OCC1030_AISColor (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetColor((Quantity_NameOfColor)atoi(arg[3]));
+	prs->SetColor((Quantity_NameOfColor)Draw::Atoi(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else
@@ -1966,7 +1967,7 @@ static Standard_Integer OCC1031_AISMaterial (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetMaterial((Graphic3d_NameOfMaterial)atoi(arg[3]));
+	prs->SetMaterial((Graphic3d_NameOfMaterial)Draw::Atoi(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {
@@ -2000,7 +2001,7 @@ static Standard_Integer OCC1032_AISWidth (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetWidth(atof(arg[3]));
+	prs->SetWidth(Draw::Atof(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {
@@ -2034,7 +2035,7 @@ static Standard_Integer OCC1033_AISMode (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetMode(atoi(arg[3]));
+	prs->SetMode(Draw::Atoi(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {
@@ -2068,7 +2069,7 @@ static Standard_Integer OCC1034_AISSelectionMode (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetSelectionMode(atoi(arg[3]));
+	prs->SetSelectionMode(Draw::Atoi(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {
@@ -2099,7 +2100,7 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 6) {
-    Standard_Integer IsB = atoi(argv[5]);
+    Standard_Integer IsB = Draw::Atoi(argv[5]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 //      di << "Error: There is not BRepAlgo_Cut class" << "\n";
@@ -2107,7 +2108,7 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
     }
   }
 
-  Standard_Integer CaseNumber = atoi(argv[1]);
+  Standard_Integer CaseNumber = Draw::Atoi(argv[1]);
 
   //BRepPrimAPI_MakeCylinder o_mc1 (gp_Ax2 (gp_Pnt(0,-50,140), gp_Dir(1,0,0)), 50,1000);
   gp_Dir myDir(1,0,0);
@@ -2306,7 +2307,7 @@ static Standard_Integer OCC5739_UniAbs (Draw_Interpretor& di, Standard_Integer a
     }
     adapCurve = new BRepAdaptor_CompCurve(TopoDS::Wire(wire));
   }
-  double step = atof(argv[3]);
+  double step = Draw::Atof(argv[3]);
   GCPnts_UniformAbscissa aUni(*adapCurve, step);
   int res;
   if (!aUni.IsDone())
@@ -2322,7 +2323,7 @@ static Standard_Integer OCC5739_UniAbs (Draw_Interpretor& di, Standard_Integer a
       double par = aUni.Parameter(i+1);
       gp_Pnt p = adapCurve->Value(par);
       char n[20], *pname=n;
-      sprintf(n,"%s_%d",name,i+1);
+      Sprintf(n,"%s_%d",name,i+1);
       DrawTrSurf::Set(pname,p);
       di<<pname<<" ";
     }
@@ -2340,8 +2341,8 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Standard_Integer nb = atoi(argv[1]);
-  Standard_Integer sz = atoi(argv[2]);
+  Standard_Integer nb = Draw::Atoi(argv[1]);
+  Standard_Integer sz = Draw::Atoi(argv[2]);
   Standard_Real val = 10;
   math_Vector **pv = new math_Vector *[nb];
 
@@ -2708,7 +2709,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
     }
 
   if (argc > 1)
-    nCount = atoi(argv[1]);
+    nCount = Draw::Atoi(argv[1]);
   STEPCAFControl_Writer writer;
   Handle_TDocStd_Document document;
   document = new TDocStd_Document("Pace Test-StepExporter-");
@@ -2868,8 +2869,8 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  Standard_Integer LOWER = atoi(argv[1]);
-  Standard_Integer UPPER = atoi(argv[2]);
+  Standard_Integer LOWER = Draw::Atoi(argv[1]);
+  Standard_Integer UPPER = Draw::Atoi(argv[2]);
 
   //! 0. Create an empty document with several test labels
   Handle(TDocStd_Document) doc = new TDocStd_Document("XmlOcaf");
@@ -3082,8 +3083,8 @@ static Standard_Integer OCC7639 (Draw_Interpretor& di, Standard_Integer argc, co
   NCollection_Vector<int> vec;
   for (i = 0; i < argc - 1; i++) {
     i++;
-    aValue = atoi(argv[i]);
-    aPosition = atoi(argv[i+1]);
+    aValue = Draw::Atoi(argv[i]);
+    aPosition = Draw::Atoi(argv[i+1]);
     vec.SetValue(aValue, aPosition);
   }
   NCollection_Vector<int>::Iterator it(vec);
@@ -3210,7 +3211,7 @@ static Standard_Integer OCC11457 (Draw_Interpretor& di, Standard_Integer argc, c
   BRepBuilderAPI_MakePolygon W;
   j = 3;
   for (i = 1; i <= np; i ++) {
-    W.Add(gp_Pnt(atof(argv[j]),atof(argv[j+1]),atof(argv[j+2])));
+    W.Add(gp_Pnt(Draw::Atof(argv[j]),Draw::Atof(argv[j+1]),Draw::Atof(argv[j+2])));
     j += 3;
   }
   W.Close();
@@ -3228,12 +3229,12 @@ static Standard_Integer OCC13963 (Draw_Interpretor& di, Standard_Integer argc, c
   gp_Ax2 aPln (gp_Pnt(0.,0.,0.),
                gp_Dir(1., -1., 0.));
   gp_GTrsf aTrf;
-  aTrf.SetAffinity (aPln, atof(argv[4]));
-  gp_XYZ aOrigin (atof(argv[1]),atof(argv[2]),atof(argv[3]));
+  aTrf.SetAffinity (aPln, Draw::Atof(argv[4]));
+  gp_XYZ aOrigin (Draw::Atof(argv[1]),Draw::Atof(argv[2]),Draw::Atof(argv[3]));
   gp_XYZ aResult (aOrigin);
   aTrf.Transforms(aResult);
   char sbf[512];
-  sprintf(sbf, "( %8.3f %8.3f %8.3f ) => ( %8.3f %8.3f %8.3f )\n",
+  Sprintf(sbf, "( %8.3f %8.3f %8.3f ) => ( %8.3f %8.3f %8.3f )\n",
           aOrigin.X(), aOrigin.Y(), aOrigin.Z(),
           aResult.X(), aResult.Y(), aResult.Z());
   di<<sbf;
@@ -3256,7 +3257,7 @@ Standard_Integer OCC14376(Draw_Interpretor& di, Standard_Integer argc, const cha
 
   Standard_Real aDeflection = 0.45110277533;
   if (argc > 2) {
-    aDeflection = atof(argv[2]);
+    aDeflection = Draw::Atof(argv[2]);
   }
   di<<"deflection="<< aDeflection << "\n";
 
@@ -3282,7 +3283,7 @@ static Standard_Integer OCC15489 (Draw_Interpretor& di, Standard_Integer argc, c
   }
   try
     {
-      gp_Lin2d aLin2d (atof(argv[1]),atof(argv[2]),atof(argv[3]));
+      gp_Lin2d aLin2d (Draw::Atof(argv[1]),Draw::Atof(argv[2]),Draw::Atof(argv[3]));
       gp_Pnt2d anOrigin = aLin2d.Location();
       di << "X_0 = " << anOrigin.X() << "   Y_0 = " << anOrigin.Y() << "\n" ;
     }
@@ -4585,7 +4586,7 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
   Standard_Integer mode = 0;
   if (argc == 2)
   {
-    mode = atoi(argv[1]);
+    mode = Draw::Atoi(argv[1]);
   }
   if (mode > 2 || mode < 0)
   {
@@ -4689,7 +4690,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 // amv 26.09.2003 : this is used to avoid error of enter's simbol        
       char str[80];                                                             
       cin>>str;                                                                 
-      modepri = atoi(str);   
+      modepri = Draw::Atoi(str);   
     }
 
     if (modepri == 0) {  //fin
@@ -4724,7 +4725,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
         //amv 26.09.2003                                                        
         char str_a[80];                                                         
         cin >> str_a;                                                           
-        answer = atoi(str_a);    
+        answer = Draw::Atoi(str_a);    
       }
       if ( answer == 0) continue;
       if ( answer == 1 || answer == 3) {
@@ -4732,7 +4733,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	// save the shape
 	if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
 	char fname[110];
-	sprintf(fname, "%s", rnom.ToCString());
+	Sprintf(fname, "%s", rnom.ToCString());
 	di << "Saving shape in variable Draw : " << fname << "\n";
 	if (answer == 3) IGESToBRep::WriteShape (shape,1);
 	try {
@@ -4755,7 +4756,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	  TopoDS_Shape shape = Reader.Shape(inum);
 	  if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
 	  char fname[110];
-	  sprintf(fname, "%s_%d", rnom.ToCString(),inum);
+	  Sprintf(fname, "%s_%d", rnom.ToCString(),inum);
 	  di << "Saving shape in variable Draw : " << fname << "\n";
 	  if (answer == 4) IGESToBRep::WriteShape (shape,inum);
 	  try {
@@ -4782,7 +4783,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
       if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
       else {
 	nbs = Reader.NbShapes();
-	char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nent);
+	char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nent);
 	di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
 	di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
 	TopoDS_Shape sh = Reader.Shape(nbs);
@@ -4820,7 +4821,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
         TopoDS_Shape shape = Reader.OneShape();
         // save the shape
         char fname[110];
-        sprintf(fname, "%s", rnom.ToCString());
+        Sprintf(fname, "%s", rnom.ToCString());
         di << "Saving shape in variable Draw : " << fname << "\n";
         try {
           OCC_CATCH_SIGNALS
@@ -4868,7 +4869,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
           // anv 26.09.2003                                                     
           char str_answer[80];                                                  
           cin>>str_answer;                                                      
-          answer = atoi(str_answer);    
+          answer = Draw::Atoi(str_answer);    
 	}
 	if (answer <= 0 || answer > 3) continue;
 	if (answer == 3) {
@@ -4895,7 +4896,7 @@ static Standard_Integer OCC18612igesbrep (Draw_Interpretor& di, Standard_Integer
 	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
 	    else {
 	      nbs = Reader.NbShapes();
-	      char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
+	      char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
 	      di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
 	      di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
 	      TopoDS_Shape sh = Reader.Shape(nbs);
@@ -4938,10 +4939,10 @@ static Standard_Integer OCC20766 (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
 
-  Standard_Real A = atof(argv[2]);
-  Standard_Real B = atof(argv[3]);
-  Standard_Real C = atof(argv[4]);
-  Standard_Real D = atof(argv[5]);
+  Standard_Real A = Draw::Atof(argv[2]);
+  Standard_Real B = Draw::Atof(argv[3]);
+  Standard_Real C = Draw::Atof(argv[4]);
+  Standard_Real D = Draw::Atof(argv[5]);
 
   Handle(Geom_Geometry) result;
 
@@ -4959,7 +4960,7 @@ static Standard_Integer OCC20627 (Draw_Interpretor& di, Standard_Integer argc, c
       di << "Usage : " << argv[0] << " MaxNbr" << "\n";
       return -1;
     }
-  Standard_Integer aMaxNbr = atoi(argv[1]);
+  Standard_Integer aMaxNbr = Draw::Atoi(argv[1]);
 
   for (Standard_Integer i=0;i<aMaxNbr;i++)
     {
@@ -4982,12 +4983,12 @@ Standard_Integer OCC22762 (Draw_Interpretor& di, Standard_Integer argc, const ch
 	    di << "Wrong number of arguments" << "\n";
 	    return -1;
 	}
-    Standard_Real X1_Pnt = atof(argv[1]);
-    Standard_Real Y1_Pnt = atof(argv[2]);
-    Standard_Real Z1_Pnt = atof(argv[3]);
-    Standard_Real X2_Pnt = atof(argv[4]);
-    Standard_Real Y2_Pnt = atof(argv[5]);
-    Standard_Real Z2_Pnt = atof(argv[6]);
+    Standard_Real X1_Pnt = Draw::Atof(argv[1]);
+    Standard_Real Y1_Pnt = Draw::Atof(argv[2]);
+    Standard_Real Z1_Pnt = Draw::Atof(argv[3]);
+    Standard_Real X2_Pnt = Draw::Atof(argv[4]);
+    Standard_Real Y2_Pnt = Draw::Atof(argv[5]);
+    Standard_Real Z2_Pnt = Draw::Atof(argv[6]);
     
     Graphic3d_Vector AV1(X1_Pnt, Y1_Pnt, Z1_Pnt);
     Graphic3d_Vector AV2(X2_Pnt, Y2_Pnt, Z2_Pnt);
@@ -5016,15 +5017,15 @@ Standard_Integer OCC17424 (Draw_Interpretor& di, Standard_Integer argc, const ch
     return 1;
   }
 
-  Standard_Real X_Pnt = atof(argv[2]);
-  Standard_Real Y_Pnt = atof(argv[3]);
-  Standard_Real Z_Pnt = atof(argv[4]);
+  Standard_Real X_Pnt = Draw::Atof(argv[2]);
+  Standard_Real Y_Pnt = Draw::Atof(argv[3]);
+  Standard_Real Z_Pnt = Draw::Atof(argv[4]);
 
-  Standard_Real X_Dir = atof(argv[5]);
-  Standard_Real Y_Dir = atof(argv[6]);
-  Standard_Real Z_Dir = atof(argv[7]);
+  Standard_Real X_Dir = Draw::Atof(argv[5]);
+  Standard_Real Y_Dir = Draw::Atof(argv[6]);
+  Standard_Real Z_Dir = Draw::Atof(argv[7]);
 
-  Standard_Real PInf  = atof(argv[8]);
+  Standard_Real PInf  = Draw::Atof(argv[8]);
 
   IntCurvesFace_ShapeIntersector intersector;
   intersector.Load(shape, Precision::Intersection());
@@ -5127,17 +5128,17 @@ Standard_Integer OCC22558 (Draw_Interpretor& di, Standard_Integer argc, const ch
 	return 1;
     }
     
-    Standard_Real X_vec = atof(argv[1]);
-    Standard_Real Y_vec = atof(argv[2]);
-    Standard_Real Z_vec = atof(argv[3]);
+    Standard_Real X_vec = Draw::Atof(argv[1]);
+    Standard_Real Y_vec = Draw::Atof(argv[2]);
+    Standard_Real Z_vec = Draw::Atof(argv[3]);
     
-    Standard_Real X_dir = atof(argv[4]);
-    Standard_Real Y_dir = atof(argv[5]);
-    Standard_Real Z_dir = atof(argv[6]);
+    Standard_Real X_dir = Draw::Atof(argv[4]);
+    Standard_Real Y_dir = Draw::Atof(argv[5]);
+    Standard_Real Z_dir = Draw::Atof(argv[6]);
     
-    Standard_Real X_pnt = atof(argv[7]);
-    Standard_Real Y_pnt = atof(argv[8]);
-    Standard_Real Z_pnt = atof(argv[9]);
+    Standard_Real X_pnt = Draw::Atof(argv[7]);
+    Standard_Real Y_pnt = Draw::Atof(argv[8]);
+    Standard_Real Z_pnt = Draw::Atof(argv[9]);
     
     gp_Dir toSym(X_vec, Y_vec, Z_vec);
     gp_Dir dir(X_dir, Y_dir, Z_dir);
@@ -5158,14 +5159,14 @@ Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const ch
     return 1;
   }
 
-  Standard_Real X_mirrorFirstPoint = atof(argv[1]);
-  Standard_Real Y_mirrorFirstPoint = atof(argv[2]);
-  Standard_Real X_mirrorSecondPoint = atof(argv[3]);
-  Standard_Real Y_mirrorSecondPoint = atof(argv[4]);
-  Standard_Real X_p1 = atof(argv[5]);
-  Standard_Real Y_p1 = atof(argv[6]);
-  Standard_Real X_p2 = atof(argv[7]);
-  Standard_Real Y_p2 = atof(argv[8]);
+  Standard_Real X_mirrorFirstPoint = Draw::Atof(argv[1]);
+  Standard_Real Y_mirrorFirstPoint = Draw::Atof(argv[2]);
+  Standard_Real X_mirrorSecondPoint = Draw::Atof(argv[3]);
+  Standard_Real Y_mirrorSecondPoint = Draw::Atof(argv[4]);
+  Standard_Real X_p1 = Draw::Atof(argv[5]);
+  Standard_Real Y_p1 = Draw::Atof(argv[6]);
+  Standard_Real X_p2 = Draw::Atof(argv[7]);
+  Standard_Real Y_p2 = Draw::Atof(argv[8]);
   
   gp_Trsf2d identityTransformation;
 
@@ -5343,7 +5344,7 @@ Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const cha
     return 1; //TCL_ERROR
   }
 
-  const Standard_Integer aMode = atoi(argv[1]);
+  const Standard_Integer aMode = Draw::Atoi(argv[1]);
 
   //===================================================================
 

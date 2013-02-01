@@ -334,8 +334,8 @@ static Standard_Integer DDataStd_TreeBrowse (Draw_Interpretor& di,
 
   Handle(DDataStd_TreeBrowser) NewTreeNode = new DDataStd_TreeBrowser (lab);
   char *name = new char[50];
-  if (n == 4) sprintf(name,"treebrowser_%s",a[3]);
-  else        sprintf(name,"treebrowser_%s",a[1]);
+  if (n == 4) Sprintf(name,"treebrowser_%s",a[3]);
+  else        Sprintf(name,"treebrowser_%s",a[1]);
 
   Draw::Set(name, NewTreeNode);
   TCollection_AsciiString inst1("treebrowser ");
@@ -387,7 +387,7 @@ static Standard_Integer DDataStd_ChildNodeIterate (Draw_Interpretor& di,
   if (n >= 4) {
     Handle(TDF_Data) DF;
     if (!DDF::GetDF(a[1],DF)) return 1;
-    const Standard_Boolean AllLevels(atoi(a[3]));
+    const Standard_Boolean AllLevels(Draw::Atoi(a[3]));
     Handle(TDataStd_TreeNode) TN, Value;
 
     Standard_GUID ID;
@@ -450,7 +450,7 @@ static Standard_Integer DDataStd_InitChildNodeIterator (Draw_Interpretor& di,
     }
 
     if (!DDF::Find(DF, a[2], ID, TN)) return 1; 
-    const Standard_Boolean AllLevels(atoi(a[3]));
+    const Standard_Boolean AllLevels(Draw::Atoi(a[3]));
     cni.Initialize(TN, AllLevels);
     return 0;
   }

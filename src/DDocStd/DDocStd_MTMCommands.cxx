@@ -56,7 +56,7 @@ static int mtmCreate (Draw_Interpretor& /*di*/, int n, const char** a)
 
   sMultiTransactionManager = new TDocStd_MultiTransactionManager();
   if(n > 1)
-    sMultiTransactionManager->SetUndoLimit(atoi(a[1]));
+    sMultiTransactionManager->SetUndoLimit(Draw::Atoi(a[1]));
   return 0;
 }
 
@@ -198,7 +198,7 @@ static int mtmNestedMode (Draw_Interpretor& di, int n, const char** a)
   }
   Standard_Boolean aMode = Standard_False;
   if(n > 1) {
-    aMode = atoi(a[1]) ? Standard_True : Standard_False;
+    aMode = Draw::Atoi(a[1]) ? Standard_True : Standard_False;
   }
   sMultiTransactionManager->SetNestedTransactionMode(aMode);
   return 0;
@@ -220,7 +220,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   TDF_Tool::Label(browser->Data(),argv[2],lab);
   if ( lab.IsNull() ) { di << "ERROR: label is Null: " << argv[2] << "\n"; return 0; }
   
-  Standard_Integer num = atoi ( argv[3] );
+  Standard_Integer num = Draw::Atoi ( argv[3] );
   TDF_AttributeIterator itr(lab,Standard_False);
   for (Standard_Integer i=1; itr.More() && i < num; i++) itr.Next();
   

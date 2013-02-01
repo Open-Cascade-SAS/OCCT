@@ -400,12 +400,12 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
 static Standard_Integer draw(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
   if (n < 3) return 1;
-  Standard_Integer id = atoi(a[1]);
+  Standard_Integer id = Draw::Atoi(a[1]);
   if (!dout.HasView(id)) {
     cout << "bad view number in draw"<<endl;
     return 1;
   }
-  Standard_Integer mo = atoi(a[2]);
+  Standard_Integer mo = Draw::Atoi(a[2]);
   Draw_Display d = dout.MakeDisplay(id);
   d.SetMode(mo);
   Standard_Integer i;
@@ -479,7 +479,7 @@ static Standard_Integer whatis(Draw_Interpretor& di, Standard_Integer n, const c
 static Standard_Integer value(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n != 2) return 1;
-  di << atof(a[1]);
+  di << Draw::Atof(a[1]);
 
   return 0;
 }
@@ -586,7 +586,7 @@ static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char
   Standard_Real val=0;
   for (i = 1; i < n; i += 2) {
     val = 0;
-    if (i+1 < n) val = atof(a[i+1]);
+    if (i+1 < n) val = Draw::Atof(a[i+1]);
     Draw::Set(a[i],val);
   }
   di << val;
@@ -681,7 +681,7 @@ static Standard_Integer pick(Draw_Interpretor& , Standard_Integer n, const char*
   Standard_Integer id;
   Standard_Integer X,Y,b;
   Standard_Boolean wait = (n == 6);
-  if (!wait) id = atoi(a[1]);
+  if (!wait) id = Draw::Atoi(a[1]);
   dout.Select(id,X,Y,b,wait);
   Standard_Real z = dout.Zoom(id);
   gp_Pnt P((Standard_Real)X /z,(Standard_Real)Y /z,0);
@@ -945,7 +945,7 @@ void  Draw::Repaint()
 static Standard_Integer trigo (Draw_Interpretor& di, Standard_Integer , const char** a)
 {
 
-  Standard_Real x = atof(a[1]);
+  Standard_Real x = Draw::Atof(a[1]);
 
   if (!strcasecmp(a[0],"cos"))
     di << Cos(x);
@@ -960,7 +960,7 @@ static Standard_Integer trigo (Draw_Interpretor& di, Standard_Integer , const ch
   else if (!strcasecmp(a[0],"asin"))
     di << ASin(x);
   else if (!strcasecmp(a[0],"atan2"))
-    di << ATan2(x,atof(a[2]));
+    di << ATan2(x,Draw::Atof(a[2]));
 
   return 0;
 }
@@ -969,9 +969,6 @@ static Standard_Integer trigo (Draw_Interpretor& di, Standard_Integer , const ch
 //=======================================================================
 // Atof and Atoi
 //=======================================================================
-
-#undef atof
-#undef atoi
 
 static Standard_Boolean Numeric(char c)
 {
@@ -1028,7 +1025,7 @@ static Standard_Real ParseValue(char*& name)
 	*p = '\0';
 	
 	if (Numeric(*name))   // numeric litteral
-	  x = atof(name);
+	  x = Atof(name);
 	else if (!Draw::Get((Standard_CString) name,x)) {  // variable
 	  
 	  // search for a function ...
@@ -1086,7 +1083,7 @@ static Standard_Real ParseValue(char*& name)
 		  x = 0;
 		}
 		else
-		  x = atof(theCommands.Result());
+		  x = Atof(theCommands.Result());
 		theCommands.Reset();
 		if (sv) {
 		  theCommands << sv;

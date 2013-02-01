@@ -70,15 +70,10 @@ void PCDM_RetrievalDriver::RaiseIfUnknownTypes(const Handle(Storage_Schema)& aSc
 //purpose  : 
 //=======================================================================
 
-void PCDM_RetrievalDriver::Read(const TCollection_ExtendedString& theFileName, 
+void PCDM_RetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
 				const Handle(CDM_Document)& aNewDocument,
-				const Handle(CDM_Application)& theApplication) {
-
-
-  char *oldnum,*plocal ;
-  plocal =   setlocale(LC_NUMERIC, NULL) ;
-  oldnum = new char[strlen(plocal)+1] ;
-  strcpy(oldnum,plocal);
+				const Handle(CDM_Application)& theApplication)
+{
   Standard_SStream aMsg;
   Standard_Boolean Failure=Standard_False;
   Handle(Storage_Schema) aSchema;
@@ -201,10 +196,6 @@ void PCDM_RetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
 // read comments
   aNewDocument->SetComments(theData->Comments());
 
-// on remet le LC_NUMERIC a la precedente valeur
-  setlocale(LC_NUMERIC, oldnum) ;
-  delete[] oldnum;
-  
   PCDM_DriverError_Raise_if(Failure,aMsg);
 }
 

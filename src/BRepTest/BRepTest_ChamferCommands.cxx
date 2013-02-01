@@ -25,6 +25,7 @@
 
 #include <Draw_Interpretor.hxx>
 #include <BRepTest.hxx>
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -97,7 +98,7 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
 //      F = TopoDS::Face(DBRep::Get(a[i + 1], TopAbs_FACE));
       if (Method == 0) {
         if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
-          d1 = atof(a[i + 3]);
+          d1 = Draw::Atof(a[i + 3]);
 
           if ( d1 > Precision::Confusion()) 
 	    aMCh.Add(d1,E ,F);
@@ -106,8 +107,8 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
       }
       else if (Method == 1) {
         if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
-          d1 = atof(a[i + 2]);
-          d2 = atof(a[i + 3]);
+          d1 = Draw::Atof(a[i + 2]);
+          d2 = Draw::Atof(a[i + 3]);
       
           if (   (d1 > Precision::Confusion())
 	      && (d2 > Precision::Confusion()) )
@@ -117,8 +118,8 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
       }
       else {
         if (!E.IsNull() && !F.IsNull() && (aMCh.Contour(E) == 0) )  {
-          d1     = atof(a[i + 3]);
-          angle  = atof(a[i + 4]);
+          d1     = Draw::Atof(a[i + 3]);
+          angle  = Draw::Atof(a[i + 4]);
           angle *= M_PI / 180.;
       
           if (   (d1 > Precision::Confusion())

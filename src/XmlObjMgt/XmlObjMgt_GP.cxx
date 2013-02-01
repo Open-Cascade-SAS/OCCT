@@ -36,7 +36,7 @@ XmlObjMgt_DOMString XmlObjMgt_GP::Translate (const gp_Trsf& aTrsf)
   char buf [256];
   XmlObjMgt_DOMString S1 (Translate(aTrsf.HVectorialPart())),
                       S2 (Translate(aTrsf.TranslationPart()));
-  sprintf (buf, "%.17g %d %s %s", aTrsf.ScaleFactor(), aTrsf.Form(),
+  Sprintf (buf, "%.17g %d %s %s", aTrsf.ScaleFactor(), aTrsf.Form(),
            S1.GetString(), S2.GetString());
 
   return XmlObjMgt_DOMString (buf);
@@ -52,7 +52,7 @@ XmlObjMgt_DOMString XmlObjMgt_GP::Translate (const gp_Mat& aMat)
   XmlObjMgt_DOMString S1 (Translate(aMat.Row(1))),
                       S2 (Translate(aMat.Row(2))),
                       S3 (Translate(aMat.Row(3)));
-  sprintf (buf, "%s %s %s", S1.GetString(), S2.GetString(), S3.GetString());
+  Sprintf (buf, "%s %s %s", S1.GetString(), S2.GetString(), S3.GetString());
   return XmlObjMgt_DOMString (buf);
 }
 
@@ -63,7 +63,7 @@ XmlObjMgt_DOMString XmlObjMgt_GP::Translate (const gp_Mat& aMat)
 XmlObjMgt_DOMString XmlObjMgt_GP::Translate (const gp_XYZ& anXYZ)
 {
   char buf [64];
-  sprintf (buf, "%.17g %.17g %.17g", anXYZ.X(), anXYZ.Y(), anXYZ.Z());
+  Sprintf (buf, "%.17g %.17g %.17g", anXYZ.X(), anXYZ.Y(), anXYZ.Z());
   return XmlObjMgt_DOMString (buf);
 }
 
@@ -80,7 +80,7 @@ Standard_Boolean XmlObjMgt_GP::Translate
   const char * aStr = theStr.GetString();
   char * ptr;
   errno = 0;
-  Standard_Real aScaleFactor = Standard_Real(strtod (aStr, &ptr));
+  Standard_Real aScaleFactor = Standard_Real(Strtod (aStr, &ptr));
   if (ptr != aStr && errno != ERANGE && errno != EINVAL)
   {
     T._CSFDB_Setgp_Trsfscale(aScaleFactor);
@@ -154,15 +154,15 @@ static const char * Translate (const char * theStr, gp_XYZ& P)
   char * ptr;
   if (theStr) {
     errno = 0;
-    Standard_Real aC = strtod (theStr, &ptr);
+    Standard_Real aC = Strtod (theStr, &ptr);
     if (ptr != theStr && errno != ERANGE && errno != EINVAL) {
       P.SetX(aC);
       theStr = ptr;
-      aC = strtod (theStr, &ptr);
+      aC = Strtod (theStr, &ptr);
       if (ptr != theStr && errno != ERANGE && errno != EINVAL) {
         P.SetY(aC);
         theStr = ptr;
-        aC = strtod (theStr, &ptr);
+        aC = Strtod (theStr, &ptr);
         if (ptr != theStr && errno != ERANGE && errno != EINVAL) {
           P.SetZ(aC);
           theStr = ptr;

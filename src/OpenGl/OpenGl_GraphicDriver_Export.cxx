@@ -15,14 +15,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/************************************************************************/
-/* Includes                                                             */
-/************************************************************************/
-
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_CView.hxx>
-#include <OSD_Localizer.hxx>
+
+#include <Standard_CLocaleSentry.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -31,8 +28,6 @@
 #ifdef HAVE_GL2PS
 #include <gl2ps.h>
 #endif
-
-#include <locale.h>
 
 /************************************************************************/
 /* Print Methods                                                        */
@@ -110,7 +105,7 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
   GLint anErrCode = GL2PS_SUCCESS;
 
   // gl2ps uses standard write functions and do not check locale
-  OSD_Localizer locate (LC_NUMERIC, "C");
+  Standard_CLocaleSentry aLocaleSentry;
 
   while (aBufferSize > 0)
   {
@@ -139,7 +134,6 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
       break;
   }
 
-  locate.Restore();
   return anErrCode == GL2PS_SUCCESS;
 #else
   return Standard_False;

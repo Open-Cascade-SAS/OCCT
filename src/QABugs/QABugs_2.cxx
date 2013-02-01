@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -60,7 +59,7 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
     }
     Standard_Boolean IsBRepAlgoAPI = Standard_True;
     if (argc == 3) {
-      Standard_Integer IsB = atoi(argv[2]);
+      Standard_Integer IsB = Draw::Atoi(argv[2]);
       if (IsB != 1) {
 	IsBRepAlgoAPI = Standard_False;
 //#if ! defined(BRepAlgo_def04)
@@ -76,13 +75,13 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
 
     // 3. Explode entry shape on faces and build sections from Zmin to Zmax with step aStep
     const Standard_Real Zmin = -40.228173882121, Zmax = 96.408126285268, aStep = 1.0;
-    char str[100]; str[0] = 0; sprintf(str,"Test range: [%f, %f] with step %f\n",Zmin,Zmax,aStep); di << str;
+    char str[100]; str[0] = 0; Sprintf(str,"Test range: [%f, %f] with step %f\n",Zmin,Zmax,aStep); di << str;
     int nbf = 0;
     TopExp_Explorer aExp1;
     for (aExp1.Init(aShape,TopAbs_FACE); aExp1.More(); aExp1.Next())
     {
       // Process one face
-      str[0] = 0; sprintf(str,"Face #%d: \t",nbf++); di << str;
+      str[0] = 0; Sprintf(str,"Face #%d: \t",nbf++); di << str;
       TopoDS_Face aFace = TopoDS::Face(aExp1.Current());
       
       // Build BndBox in order to avoid try of building section 
@@ -150,15 +149,15 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
 //       if (wasBuilt) 
 //       {
 //         if(gmaxdist > Precision::Confusion())
-//           sprintf(str,"Dist=%f, Param=%f FAULTY\n",gmaxdist,gzmax);
+//           Sprintf(str,"Dist=%f, Param=%f FAULTY\n",gmaxdist,gzmax);
 //         else
-//           sprintf(str,"Dist=%f, Param=%f\n",gmaxdist,gzmax);
+//           Sprintf(str,"Dist=%f, Param=%f\n",gmaxdist,gzmax);
         if(dist > toler)
-          sprintf(str,"Dist=%f, Toler=%f, Param=%f FAULTY\n",dist,toler,gzmax);
+          Sprintf(str,"Dist=%f, Toler=%f, Param=%f FAULTY\n",dist,toler,gzmax);
         else
-          sprintf(str,"Dist=%f, Toler=%f, Param=%f\n",dist,toler,gzmax);
+          Sprintf(str,"Dist=%f, Toler=%f, Param=%f\n",dist,toler,gzmax);
 //       }
-//       else sprintf(str,"No result\n");
+//       else Sprintf(str,"No result\n");
       di << str;
             }
             if (lmaxdist > gmaxdist)

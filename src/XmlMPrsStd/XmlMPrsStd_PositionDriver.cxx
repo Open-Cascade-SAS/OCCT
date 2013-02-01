@@ -122,7 +122,7 @@ void XmlMPrsStd_PositionDriver::Paste
   {
     gp_Pnt aPos = aTPos->GetPosition();
     char buf [64];
-    sprintf (buf, "%.17g %.17g %.17g", aPos.X(), aPos.Y(), aPos.Z());
+    Sprintf (buf, "%.17g %.17g %.17g", aPos.X(), aPos.Y(), aPos.Z());
     XmlObjMgt::SetStringValue(theTarget.Element(), buf);
   }
 }

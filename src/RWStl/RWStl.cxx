@@ -251,7 +251,7 @@ Standard_Boolean RWStl::WriteAscii (const Handle(StlMesh_Mesh)& theMesh,
         // si Vnorm est quasi-nul, on le charge a 0 explicitement
         Vnorm.SetCoord (0., 0., 0.);
       }
-      sprintf (sval,
+      Sprintf (sval,
           " facet normal % 12e % 12e % 12e\n"
           "   outer loop\n"
           "     vertex % 12e % 12e % 12e\n"
@@ -411,7 +411,6 @@ Handle_StlMesh_Mesh RWStl::ReadAscii (const OSD_Path& thePath,
   Standard_Integer nbLines = 0;
   Standard_Integer nbTris = 0;
   Standard_Integer iTri;
-  Standard_ShortReal x[4],y[4],z[4];
   Standard_Integer i1,i2,i3;
   Handle(StlMesh_Mesh) ReadMesh;
 
@@ -426,8 +425,6 @@ Handle_StlMesh_Mesh RWStl::ReadAscii (const OSD_Path& thePath,
 
   fclose(file);
   file = fopen(filename.ToCString(),"r");
-
-
 
   // count the number of lines
   for (ipos = 0; ipos < filesize; ++ipos) {
@@ -455,23 +452,33 @@ Handle_StlMesh_Mesh RWStl::ReadAscii (const OSD_Path& thePath,
   Message_ProgressSentry aPS (theProgInd, "Triangles", 0, (nbTris - 1) * 1.0 / IND_THRESHOLD, 1);
   for (iTri = 0; iTri < nbTris && aPS.More();)
   {
+    char x[256]="", y[256]="", z[256]="";
+
     // reading the facet normal
-    fscanf(file,"%*s %*s %f %f %f\n",&x[0],&y[0],&z[0]);
+    if (3 != fscanf(file,"%*s %*s %80s %80s %80s\n", x, y, z))
+      break; // error should be properly reported
+    gp_XYZ aN (Atof(x), Atof(y), Atof(z));
 
     // skip the keywords "outer loop"
     fscanf(file,"%*s %*s");
 
     // reading vertex
-    fscanf(file,"%*s %f %f %f\n",&x[1],&y[1],&z[1]);
-    fscanf(file,"%*s %f %f %f\n",&x[2],&y[2],&z[2]);
-    fscanf(file,"%*s %f %f %f\n",&x[3],&y[3],&z[3]);
+    if (3 != fscanf(file,"%*s %80s %80s %80s\n", x, y, z))
+      break; // error should be properly reported
+    gp_XYZ aV1 (Atof(x), Atof(y), Atof(z));
+    if (3 != fscanf(file,"%*s %80s %80s %80s\n", x, y, z))
+      break; // error should be properly reported
+    gp_XYZ aV2 (Atof(x), Atof(y), Atof(z));
+    if (3 != fscanf(file,"%*s %80s %80s %80s\n", x, y, z))
+      break; // error should be properly reported
+    gp_XYZ aV3 (Atof(x), Atof(y), Atof(z));
 
     // here the facet must be built and put in the mesh datastructure
 
-    i1 = ReadMesh->AddOnlyNewVertex ((Standard_Real)x[1],(Standard_Real)y[1],(Standard_Real)z[1]);
-    i2 = ReadMesh->AddOnlyNewVertex ((Standard_Real)x[2],(Standard_Real)y[2],(Standard_Real)z[2]);
-    i3 = ReadMesh->AddOnlyNewVertex ((Standard_Real)x[3],(Standard_Real)y[3],(Standard_Real)z[3]);
-    ReadMesh->AddTriangle (i1,i2,i3,(Standard_Real)x[0],(Standard_Real)y[0],(Standard_Real)z[0]);
+    i1 = ReadMesh->AddOnlyNewVertex (aV1.X(), aV1.Y(), aV1.Z());
+    i2 = ReadMesh->AddOnlyNewVertex (aV2.X(), aV2.Y(), aV2.Z());
+    i3 = ReadMesh->AddOnlyNewVertex (aV3.X(), aV3.Y(), aV3.Z());
+    ReadMesh->AddTriangle (i1, i2, i3, aN.X(), aN.Y(), aN.Z());
 
     // skip the keywords "endloop"
     fscanf(file,"%*s");
@@ -488,5 +495,4 @@ Handle_StlMesh_Mesh RWStl::ReadAscii (const OSD_Path& thePath,
 #endif
   fclose(file);
   return ReadMesh;
-
 }

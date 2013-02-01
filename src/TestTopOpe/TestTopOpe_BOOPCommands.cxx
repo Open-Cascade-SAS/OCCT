@@ -29,6 +29,7 @@
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
@@ -99,18 +100,18 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 	    }
 	    else if (na > 3) { 
 	      // tsp IN/ON/OUT e/f/s i1 i2 ...
-	      for(i=3;i<na;i++) PBOOP->GetSplit(typ,sta,atoi(a[i])); 
+	      for(i=3;i<na;i++) PBOOP->GetSplit(typ,sta,Draw::Atoi(a[i])); 
 	    }
 	  }
 	  else {
 	    // tsp IN/ON/OUT i1 i2 ...
-	    for(i=2;i<na;i++) PBOOP->GetSplit(sta,atoi(a[i])); 
+	    for(i=2;i<na;i++) PBOOP->GetSplit(sta,Draw::Atoi(a[i])); 
 	  }
 	}
       }
       else { // tsp i1 i2 ...
 	for (i = 1; i < na; i++) {
-	  if ( ISINTEGER(a[i]) ) PBOOP->GetSplit(atoi(a[i]));
+	  if ( ISINTEGER(a[i]) ) PBOOP->GetSplit(Draw::Atoi(a[i]));
 	}
       }
     }
@@ -142,18 +143,18 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 	    }
 	    else if (na > 3) { 
 	      // tme IN/ON/OUT e/f/s i1 i2 ...
-	      for(i=3;i<na;i++) PBOOP->GetMerged(typ,sta,atoi(a[i])); 
+	      for(i=3;i<na;i++) PBOOP->GetMerged(typ,sta,Draw::Atoi(a[i])); 
 	    }
 	  }
 	  else {
 	    // tme IN/ON/OUT i1 i2 ...
-	    for(i=2;i<na;i++) PBOOP->GetMerged(sta,atoi(a[i])); 
+	    for(i=2;i<na;i++) PBOOP->GetMerged(sta,Draw::Atoi(a[i])); 
 	  }
 	}
       }
       else { // tme i1 i2 ...
 	for (i = 1; i < na; i++) {
-	  if ( ISINTEGER(a[i]) ) PBOOP->GetMerged(atoi(a[i]));
+	  if ( ISINTEGER(a[i]) ) PBOOP->GetMerged(Draw::Atoi(a[i]));
 	}
       }
     }
@@ -186,7 +187,7 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
       if (!strcmp(a[ia],"-d")) continue;
       if (!strcmp(a[ia],"-c")) continue;
       if (!strcmp(a[ia],"-AB")) continue;
-      Standard_Integer ie = atoi(a[ia]);
+      Standard_Integer ie = Draw::Atoi(a[ia]);
       if (ie>=1 && ie<=n) { onedef = Standard_True; tabloe->SetValue(ie,Standard_True); }
     }
     if (!onedef) tabloe->Init(Standard_True);
@@ -327,7 +328,7 @@ Standard_Integer BOOPCHK(Draw_Interpretor& ,Standard_Integer na,const char** a)
 #ifdef DEB
 //    Standard_IMPORT extern Standard_Integer TopOpeBRepTool_BOOOPE_CHECK_DEB;
     Standard_IMPORT Standard_Integer TopOpeBRepTool_BOOOPE_CHECK_DEB;
-    if ( na >= 2 ) TopOpeBRepTool_BOOOPE_CHECK_DEB = (atoi(a[1])) ? 1 : 0;
+    if ( na >= 2 ) TopOpeBRepTool_BOOOPE_CHECK_DEB = (Draw::Atoi(a[1])) ? 1 : 0;
 #endif
     return 0;
   }
@@ -345,21 +346,21 @@ Standard_Integer TOPOSETCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const c
     return 1;
   case 4:
     if(!strcasecmp(a[1],"p"))
-      PT.SetTol(TopOpeBRepDS_POINT,atoi(a[2]),atof(a[3]));
+      PT.SetTol(TopOpeBRepDS_POINT,Draw::Atoi(a[2]),Draw::Atof(a[3]));
     else if(!strcasecmp(a[1],"c"))// c ou C
-      PT.SetTol(TopOpeBRepDS_CURVE,atoi(a[2]),atof(a[3]));
+      PT.SetTol(TopOpeBRepDS_CURVE,Draw::Atoi(a[2]),Draw::Atof(a[3]));
     else if(!strcasecmp(a[1],"s"))
-      PT.SetTol(TopOpeBRepDS_SURFACE,atoi(a[2]),atof(a[3]));
+      PT.SetTol(TopOpeBRepDS_SURFACE,Draw::Atoi(a[2]),Draw::Atof(a[3]));
     else if(!strcasecmp(a[1],"sh") ||
 	    !strcasecmp(a[1],"v") ||
 	    !strcasecmp(a[1],"e") ||
 	    !strcasecmp(a[1],"f") ||
 	    !strcasecmp(a[1],"w"))
-      PT.SetTol(atoi(a[2]),atof(a[3])); 
+      PT.SetTol(Draw::Atoi(a[2]),Draw::Atof(a[3])); 
     break;
   case 6:
     if(!strcasecmp(a[1],"p"))
-      PT.SetPnt(atoi(a[2]),atof(a[3]),atof(a[4]),atof(a[5]));
+      PT.SetPnt(Draw::Atoi(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
     else
       return 1;
     break;
@@ -431,7 +432,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
     else if (!strcmp(thea,"-tx")) {
       suppressarg(na,a,ia);
       if (ia + 1 < na) {
-	VT.SetTolx(atof(a[ia]),atof(a[ia + 1]));
+	VT.SetTolx(Draw::Atof(a[ia]),Draw::Atof(a[ia + 1]));
 	suppressarg(na,a,ia);
 	suppressarg(na,a,ia);
       }
@@ -441,7 +442,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
 	  suppressarg(na,a,ia);
 	}
 	else {
-	  VT.SetTolx(atof(a[ia]),atof(a[ia]));
+	  VT.SetTolx(Draw::Atof(a[ia]),Draw::Atof(a[ia]));
 	  suppressarg(na,a,ia);
 	}
       }
@@ -449,7 +450,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
     else if (!strcmp(thea,"-ti")) {
       suppressarg(na,a,ia);
       if (ia + 1 < na) {
-	VT.SetToli(atof(a[ia]),atof(a[ia + 1]));
+	VT.SetToli(Draw::Atof(a[ia]),Draw::Atof(a[ia + 1]));
 	suppressarg(na,a,ia);
 	suppressarg(na,a,ia);
       }
@@ -459,7 +460,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
 	  suppressarg(na,a,ia);
 	}
 	else {
-	  VT.SetToli(atof(a[ia]),atof(a[ia]));
+	  VT.SetToli(Draw::Atof(a[ia]),Draw::Atof(a[ia]));
 	  suppressarg(na,a,ia);
 	}
       }
@@ -467,7 +468,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
     else if (!strcmp(thea,"-c")) {
       suppressarg(na,a,ia);
       if (ia < na) {
-	VT.SetClear((Standard_Boolean)atoi(a[ia]));
+	VT.SetClear((Standard_Boolean)Draw::Atoi(a[ia]));
 	suppressarg(na,a,ia);
       }
       else VT.SetClear(Standard_True);
@@ -483,7 +484,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
     else if (!strcmp(thea,"-m")) {
       suppressarg(na,a,ia);
       if (ia < na) {
-	VT.SetMode(atoi(a[ia]));
+	VT.SetMode(Draw::Atoi(a[ia]));
 	suppressarg(na,a,ia);
       }
       else VT.SetMode(0);
@@ -491,7 +492,7 @@ Standard_Integer VARSTOPOARGS(TestTopOpe_BOOP& PT,Standard_Integer& na,const cha
     else if (!strcmp(thea,"-v")) {
       suppressarg(na,a,ia);
       if (ia < na) {
-	VT.SetVerbose(atoi(a[ia]));
+	VT.SetVerbose(Draw::Atoi(a[ia]));
 	suppressarg(na,a,ia);
       }
       else VT.SetVerbose(0);

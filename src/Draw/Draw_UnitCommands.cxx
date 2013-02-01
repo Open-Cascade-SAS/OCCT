@@ -45,7 +45,7 @@ static Standard_Integer parsing
   TCollection_AsciiString aStrTok(argv[1]);
   Standard_Integer nbIter =1;
   if(argc >2)
-    nbIter = atoi(argv[2]);
+    nbIter = Draw::Atoi(argv[2]);
   UnitsAPI::SetLocalSystem();
   Handle(Units_Token) atoken;
   Units_UnitSentence aUnitSent(aStrTok.ToCString());
@@ -93,7 +93,7 @@ static Standard_Integer converttoSI
     return 1;
   }
 
-  Standard_Real aData = atof(argv[1]);
+  Standard_Real aData = Draw::Atof(argv[1]);
   Standard_CString aUnit = argv[2];
 
   Standard_Real res = UnitsAPI::AnyToSI(aData,aUnit);
@@ -115,7 +115,7 @@ static Standard_Integer converttoMDTV
     return 1;
   }
 
-  Standard_Real aData = atof(argv[1]);
+  Standard_Real aData = Draw::Atof(argv[1]);
   Standard_CString aUnit = argv[2];
 
   UnitsAPI::SetLocalSystem(UnitsAPI_MDTV);
@@ -134,7 +134,7 @@ static Standard_Integer converttoMDTV
 static Standard_Integer unit(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
   if(n == 4) {
-    cout << Units::Convert(atof(a[1]), a[2], a[3]) << endl;
+    cout << Units::Convert(Draw::Atof(a[1]), a[2], a[3]) << endl;
     return 0;
   }
   else

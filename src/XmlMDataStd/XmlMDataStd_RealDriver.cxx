@@ -84,7 +84,7 @@ void XmlMDataStd_RealDriver::Paste (const Handle(TDF_Attribute)& theSource,
   TCollection_AsciiString aValueStr (anInt->Get());
 #else
   char aValueChar[32];
-  sprintf(aValueChar, "%.15g", anInt->Get());
+  Sprintf(aValueChar, "%.15g", anInt->Get());
   TCollection_AsciiString aValueStr(aValueChar);
 #endif
   // No occurrence of '&', '<' and other irregular XML characters

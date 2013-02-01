@@ -290,8 +290,8 @@ static int initActivator = 0;
       }
       Standard_Real Rmin=0., Rmax=0.;
       if (argc > 4) {
-	Rmin = atof(pilot->Word(4).ToCString());
-	Rmax = atof(pilot->Word(5).ToCString());
+	Rmin = Atof(pilot->Word(4).ToCString());
+	Rmax = Atof(pilot->Word(5).ToCString());
 	if (Rmin <= 0 || Rmax <= 0) { cout<<"intervalle : donner reels > 0"<<endl; return IFSelect_RetError; }
       }
       Handle(IGESSelect_FloatFormat) fm = new IGESSelect_FloatFormat;

@@ -1548,20 +1548,10 @@ Handle(Storage_Data)& Storage_Schema::ICurrentData()
 
 TCollection_AsciiString Storage_Schema::ICreationDate()
 {
- // on sauvegarde l'ancien LC_NUMERIC
-  char *oldnum,*plocal ;
-  plocal =   setlocale(LC_NUMERIC, NULL);
-  oldnum = new char[strlen(plocal)+1] ;
-  strcpy(oldnum,plocal);
-
-
   char nowstr[SLENGTH];
   time_t nowbin;
   struct tm *nowstruct;
-
-  (void)setlocale(LC_ALL, "");
-
-  if (time(&nowbin) == (time_t) - 1)
+  if (time(&nowbin) == (time_t)-1)
     cerr << "Storage ERROR : Could not get time of day from time()" << endl;
 
   nowstruct = localtime(&nowbin);
@@ -1570,11 +1560,6 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
     cerr << "Storage ERROR : Could not get string from strftime()" << endl;
 
   TCollection_AsciiString t(nowstr);
-
-  // on remet le LC_NUMERIC a la precedente valeur
-  setlocale(LC_NUMERIC, oldnum);
-  delete[] oldnum;
-
   return t;
 }
 

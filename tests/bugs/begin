@@ -26,6 +26,7 @@ if { [info exists test_image] == 0 } {
 }
 
 # Procedure to check equality of two reals with tolerance (relative and absolute)
+help checkreal {name value expected tol_abs tol_rel}
 proc checkreal {name value expected tol_abs tol_rel} {
     if { abs ($value - $expected) > $tol_abs + $tol_rel * abs ($expected) } {
         puts "Error: $name = $value is not equal to expected $expected"
@@ -35,7 +36,22 @@ proc checkreal {name value expected tol_abs tol_rel} {
     return
 }
 
+# Procedure to check equality of two reals with tolerance (relative and absolute)
+help checkarea {shape area_expected tol_abs tol_rel}
+proc checkarea {shape area_expected tol_abs tol_rel} {
+    # compute area with half of the relative tolerance
+    # to be used in comparison; 0.001 is added to avoid zero value
+    set prop [uplevel sprops $shape [expr 0.5 * abs($tol_rel) + 0.001]]
 
+    # get te value
+    if { ! [regexp {Mass\s*:\s*([0-9.e+-]+)} $prop res area] } {
+        puts "Error: cannot get area of the shape $shape"
+        return
+    }
+
+    # compare with expected value
+    checkreal "area of $shape" $area $area_expected $tol_abs $tol_rel
+}
 
 # Procedure to check color in the point near default coordinate
 

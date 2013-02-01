@@ -318,14 +318,14 @@ static Standard_Integer setVal (Draw_Interpretor& di, Standard_Integer argc, con
   }
   if ( !strcmp(argv[3],"-r") )
   {
-    int Nb = atoi(argv[4]);
+    int Nb = Draw::Atoi(argv[4]);
     Handle(TColStd_HArray1OfReal) rArr = new TColStd_HArray1OfReal(1,Nb);
     for ( int i = 1; i <= Nb; i++ )
-      rArr->SetValue(i, atof(argv[4+i]));
+      rArr->SetValue(i, Draw::Atof(argv[4+i]));
     tObj->SetRealArr( rArr );
   }
   else
-    tObj->SetInt( atoi(argv[3] ) ); 
+    tObj->SetInt( Draw::Atoi(argv[3] ) ); 
   
   return 0;
 }

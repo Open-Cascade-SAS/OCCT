@@ -111,12 +111,12 @@ static Standard_Integer QANewDBRepNaming_NameBooleanOperationFeat (Draw_Interpre
   TDF_Label L;
   if (!DDF::AddLabel(D->GetData(), arg[2], L)) return 1;  
   
-  const Standard_Integer Op = (Standard_Integer)atoi(arg[3]);
+  const Standard_Integer Op = (Standard_Integer)Draw::Atoi(arg[3]);
   const TopoDS_Shape& S1 = DBRep::Get(arg[4]);
   const TopoDS_Shape& S2 = DBRep::Get(arg[5]);
 
   Standard_Integer Orientation = 0;
-  if (nb == 7) Orientation = atoi(arg[6]);
+  if (nb == 7) Orientation = Draw::Atoi(arg[6]);
 
   switch (Op) {
   case 1: {
@@ -320,7 +320,7 @@ static Standard_Integer QANewDBRepNaming_NameLimit (Draw_Interpretor& di,
   const TopoDS_Shape& S2 = DBRep::Get(arg[4]);
   Standard_Integer Orientation = 0;
   if (nb == 6) {
-    Orientation = atoi(arg[5]);
+    Orientation = Draw::Atoi(arg[5]);
   }
   QANewBRepNaming_Limitation nameBool(L);
   const QANewModTopOpe_ModeOfLimitation aMode = (QANewModTopOpe_ModeOfLimitation) Orientation;

@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 
 #include <TopoDS.hxx>
@@ -70,15 +71,15 @@ static Standard_Integer bef   (Draw_Interpretor& di,
   Standard_Real aTol=.0000001, aDeflection=.01, aFrom, aTo;
   
   if (n>=4) {  
-    aDiscr=atoi (a[3]);
+    aDiscr=Draw::Atoi (a[3]);
   }
 
   if (n>=5) {  
-    aTol=atof (a[4]);
+    aTol=Draw::Atof (a[4]);
   }
 
   if (n>=6) {  
-    aDeflection=atof (a[5]);
+    aDeflection=Draw::Atof (a[5]);
   }
 
   di << " bef: ===Begin===\n";

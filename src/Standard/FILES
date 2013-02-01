@@ -21,6 +21,8 @@ Standard_Boolean.cxx
 Standard_Boolean.hxx
 Standard_Byte.hxx
 Standard_PByte.hxx
+Standard_CLocaleSentry.hxx
+Standard_CLocaleSentry.cxx
 Standard_CString.cxx
 Standard_CString.hxx
 Standard_Character.cxx

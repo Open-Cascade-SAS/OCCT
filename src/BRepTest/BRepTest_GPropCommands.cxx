@@ -63,7 +63,7 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   Standard_Real eps = 1.0;
   Standard_Boolean witheps = Standard_False;
   if(n > 2 && *a[2]=='c' || n > 3 && *a[3]=='c') onlyClosed = Standard_True;
-  if(n > 2 && *a[2]!='c' && n != 5) {eps = atof (a[2]); witheps = Standard_True;}
+  if(n > 2 && *a[2]!='c' && n != 5) {eps = Draw::Atof (a[2]); witheps = Standard_True;}
 
   if (witheps){
     if (Abs(eps) < Precision::Angular()) return 2;
@@ -177,13 +177,13 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 //Standard_Real    aDefaultTol = 1.e-3;
   Standard_Integer mode = 0;
 
-  eps = atof(a[2]);
-  mode = atoi(a[3]);
+  eps = Draw::Atof(a[2]);
+  mode = Draw::Atoi(a[3]);
   if(mode > 0) onlyClosed = Standard_True;
-  mode = atoi(a[4]);
+  mode = Draw::Atoi(a[4]);
   if(mode > 0) isUseSpan = Standard_True;
 
-  mode = atoi(a[5]);
+  mode = Draw::Atoi(a[5]);
   if(mode == 1 || mode == 3) CGFlag = Standard_True;
   if(mode == 2 || mode == 3) IFlag = Standard_True;
 

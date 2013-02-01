@@ -125,7 +125,7 @@ void IGESGeom_ToolCircularArc::OwnCheck
   Standard_Real ratio = Abs(Rad1 - Rad2) / (Rad1+Rad2);
   if (ratio > eps) {
     char mess[80];
-    sprintf(mess,"Radius at Start & End Points, relative gap over %f",
+    Sprintf(mess,"Radius at Start & End Points, relative gap over %f",
 	    Interface_MSG::Intervalled (ratio));
     ach.AddFail(mess,"Radius at Start & End Points, relative gap over %f");
   }

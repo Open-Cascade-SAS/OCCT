@@ -391,7 +391,7 @@ static Standard_Integer Draw_wait(Draw_Interpretor& , Standard_Integer n, const 
 {
   Standard_Integer w = 10;
   if (n > 1)
-    w = atoi(a[1]);
+    w = Draw::Atoi(a[1]);
   time_t ct = time(NULL) + w;
   while (time(NULL) < ct) {};
   return 0;
@@ -443,7 +443,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
     CPU_LIMIT = RLIM_INFINITY;
   else
   {
-    CPU_LIMIT = atoi (a[1]);
+    CPU_LIMIT = Draw::Atoi (a[1]);
     Standard_Real anUserSeconds, aSystemSeconds;
     OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
     CPU_CURRENT = clock_t(anUserSeconds + aSystemSeconds);
@@ -464,7 +464,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   if (n <= 1)
     rlp.rlim_cur = RLIM_INFINITY;
   else
-    rlp.rlim_cur = atoi(a[1]);
+    rlp.rlim_cur = Draw::Atoi(a[1]);
   CPU_LIMIT = rlp.rlim_cur;
 
   int status;
@@ -517,7 +517,7 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
   }
   if (strcmp(a[1], "set") == 0)
   {
-    int aType = (n > 2 ? atoi(a[2]) : 1);
+    int aType = (n > 2 ? Draw::Atoi(a[2]) : 1);
     if (aType < 0 || aType > 2)
     {
       di << "unknown op of the command set" << "\n";
@@ -581,7 +581,7 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
     const char* aOutFile = "mem-stat.txt";
     if (n > 2)
     {
-      includeAlive = (atoi(a[2]) != 0);
+      includeAlive = (Draw::Atoi(a[2]) != 0);
       if (n > 3)
       {
         aLogFile = a[3];
@@ -605,6 +605,38 @@ By default <logfile> is \"mem-log.txt\", <outfile> is \"mem-stat.txt\""
     di << "unrecognized command " << a[1] << "\n";
     return 1;
   }
+  return 0;
+}
+
+//==============================================================================
+//function : dlocale
+//purpose  :
+//==============================================================================
+
+static int dlocale (Draw_Interpretor& di, Standard_Integer n, const char** argv)
+{
+  int category = LC_ALL;
+  if (n > 1)
+  {
+    const char *cat = argv[1];
+    if ( ! strcmp (cat, "LC_ALL") ) category = LC_ALL;
+    else if ( ! strcmp (cat, "LC_COLLATE") ) category = LC_COLLATE;
+    else if ( ! strcmp (cat, "LC_CTYPE") ) category = LC_CTYPE;
+    else if ( ! strcmp (cat, "LC_MONETARY") ) category = LC_MONETARY;
+    else if ( ! strcmp (cat, "LC_NUMERIC") ) category = LC_NUMERIC;
+    else if ( ! strcmp (cat, "LC_TIME") ) category = LC_TIME;
+    else 
+    {
+      cout << "Error: cannot recognize argument " << cat << " as one of LC_ macros" << endl;
+      return 1;
+    }
+  }
+  const char* locale = (n > 2 ? argv[2] : NULL);
+  const char* result = setlocale (category, locale);
+  if (result)
+    di << result;
+  else 
+    cout << "Error: unsupported locale specification: " << locale << endl;
   return 0;
 }
 
@@ -702,4 +734,6 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,dbreak,g);
   theCommands.Add("dversion", "provides information on OCCT build configuration (version, compiler, OS, C library, etc.)",
 		  __FILE__,dversion,g);
+  theCommands.Add("dlocale", "set and / or query locate of C subsystem (function setlocale())",
+		  __FILE__,dlocale,g);
 }

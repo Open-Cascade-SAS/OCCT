@@ -17,16 +17,15 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QANCollection.hxx>
+
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 
 #include <gp_Pnt.hxx>
-// HashCode and IsEquel must be defined for key types of maps
 
-Standard_Integer HashCode(const gp_Pnt thePnt, 
-                          int theUpper)
+// HashCode and IsEquel must be defined for key types of maps
+Standard_Integer HashCode(const gp_Pnt thePnt, int theUpper)
 {
   return HashCode(thePnt.X(),theUpper);
 }
@@ -57,8 +56,8 @@ Standard_Integer CheckArguments1(Draw_Interpretor& di, Standard_Integer argc, co
     di << "Usage : " << argv[0] << " Lower Upper" << "\n";
     return 1;
   }
-  Lower = atoi(argv[1]);
-  Upper = atoi(argv[2]);
+  Lower = Draw::Atoi(argv[1]);
+  Upper = Draw::Atoi(argv[2]);
   if ( Lower > Upper ) {
     di << "Lower > Upper" << "\n";
     return 1;
@@ -76,10 +75,10 @@ Standard_Integer CheckArguments2(Draw_Interpretor& di, Standard_Integer argc, co
     di << "Usage : " << argv[0] << " LowerRow UpperRow LowerCol UpperCol" << "\n";
     return 1;
   }
-  LowerRow = atoi(argv[1]);
-  UpperRow = atoi(argv[2]);
-  LowerCol = atoi(argv[3]);
-  UpperCol = atoi(argv[4]);
+  LowerRow = Draw::Atoi(argv[1]);
+  UpperRow = Draw::Atoi(argv[2]);
+  LowerCol = Draw::Atoi(argv[3]);
+  UpperCol = Draw::Atoi(argv[4]);
   if ( LowerRow > UpperRow ) {
     di << "LowerRow > UpperRow" << "\n";
     return 1;

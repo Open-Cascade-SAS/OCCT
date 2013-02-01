@@ -153,17 +153,17 @@ static Standard_Integer polelaw (Draw_Interpretor& , Standard_Integer n, const c
 
   if (n < 3) return 1;
   Standard_Boolean periodic = Standard_False ;
-  Standard_Integer deg = atoi(a[2]);
-  Standard_Integer nbk = atoi(a[3]);
+  Standard_Integer deg = Draw::Atoi(a[2]);
+  Standard_Integer nbk = Draw::Atoi(a[3]);
   
   TColStd_Array1OfReal    knots(1, nbk);
   TColStd_Array1OfInteger mults(1, nbk);
   k = 4;
   Standard_Integer Sigma = 0;
   for (i = 1; i<=nbk; i++) {
-    knots( i) = atof(a[k]);
+    knots( i) = Draw::Atof(a[k]);
     k++;
-    mults( i) = atoi(a[k]);
+    mults( i) = Draw::Atoi(a[k]);
     Sigma += mults(i);
     k++;
   }
@@ -185,7 +185,7 @@ static Standard_Integer polelaw (Draw_Interpretor& , Standard_Integer n, const c
 				  flat_knots,
 				  schoenberg_points) ;
   for (i = 1; i <= np; i++) {
-    poles(i).SetCoord(schoenberg_points(i),atof(a[k]));
+    poles(i).SetCoord(schoenberg_points(i),Draw::Atof(a[k]));
     k++;
   }
     
@@ -270,9 +270,9 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
   Standard_Integer ONE = 1;
 
   if (n == 3)
-    sprintf(name,"p");
+    Sprintf(name,"p");
   else if (n == 4) {
-    sprintf(name,"%s",a[1]);
+    Sprintf(name,"%s",a[1]);
     ONE = 2;
   }
   else {
@@ -306,8 +306,8 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
   Handle(Geom2d_Curve) PCur2d; // Only for isoparametric projection
 
   for(k = 1; k <= Projector.NbCurves(); k++){
-    sprintf(newname,"%s_%d",name,k);
-    sprintf(newname1,"%s2d_%d",name,k);
+    Sprintf(newname,"%s_%d",name,k);
+    Sprintf(newname1,"%s2d_%d",name,k);
     if(Projector.IsSinglePnt(k, P2d)){
 //      cout<<"Part "<<k<<" of the projection is punctual"<<endl;
       Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
@@ -430,7 +430,7 @@ static Standard_Integer project (Draw_Interpretor& di,
     if ( a[index][0] != '-') return 1;
 
     if ( a[index][1] == 'e') {
-      Standard_Real p = atof(a[index+1]);
+      Standard_Real p = Draw::Atof(a[index+1]);
       Standard_Real dU = p * (U2 - U1) / 100.;
       Standard_Real dV = p * (V2 - V1) / 100.;
       U1 -= dU; U2 += dU; V1 -= dV; V2 += dV;
@@ -438,10 +438,10 @@ static Standard_Integer project (Draw_Interpretor& di,
     }
     else if ( a[index][1] == 'v') {
       Verif = Standard_True;
-      NbPoints = atoi(a[index+1]);
+      NbPoints = Draw::Atoi(a[index+1]);
     }
     else if ( a[index][1] == 't') {
-      tolerance = atof(a[index+1]);
+      tolerance = Draw::Atof(a[index+1]);
     }
     index += 2;
   }
@@ -507,13 +507,13 @@ Standard_Integer projonplane(Draw_Interpretor& di,
   if ( C.IsNull()) return 1;
   
   Standard_Boolean Param = Standard_True;
-  if ((n == 5 && atoi(a[4]) == 0) ||
-      (n == 8 && atoi(a[7]) == 0)) Param = Standard_False;
+  if ((n == 5 && Draw::Atoi(a[4]) == 0) ||
+      (n == 8 && Draw::Atoi(a[7]) == 0)) Param = Standard_False;
 
   gp_Dir D;
   
   if ( n == 8) {
-    D = gp_Dir(atof(a[4]),atof(a[5]),atof(a[6]));
+    D = gp_Dir(Draw::Atof(a[4]),Draw::Atof(a[5]),Draw::Atof(a[6]));
   }
   else { 
     D = Pl->Pln().Position().Direction();
@@ -539,9 +539,9 @@ static void solution(const Handle(GccInt_Bisec)& Bis,
 {
   char solname[200];
   if ( i == 0) 
-    sprintf(solname,"%s",name);
+    Sprintf(solname,"%s",name);
   else
-    sprintf(solname,"%s_%d",name,i);
+    Sprintf(solname,"%s_%d",name,i);
   const char* temp = solname; // pour portage WNT
 
   switch ( Bis->ArcType()) {
@@ -591,7 +591,7 @@ static Standard_Integer bisec (Draw_Interpretor& di,
 	  char solname[200];
 	  NbSol = Bis.NbSolutions();
 	  for ( i = 1; i <= NbSol; i++) {
-	    sprintf(solname,"%s_%d",a[1],i);
+	    Sprintf(solname,"%s_%d",a[1],i);
 	    const char* temp = solname; // pour portage WNT
 	    DrawTrSurf::Set(temp,new Geom2d_Line(Bis.ThisSolution(i)));
 	  }
@@ -775,8 +775,8 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
   tolerance,
   tx ;
 
-  u = atof(a[2]);
-  x = atof(a[3]);
+  u = Draw::Atof(a[2]);
+  x = Draw::Atof(a[3]);
   tolerance = 1.0e-5 ;
   dimension = 2 ;
   if (n < 5) {
@@ -784,9 +784,9 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
   }
   Handle(Geom2d_BSplineCurve) G2 = DrawTrSurf::GetBSplineCurve2d(a[1]);
   if (!G2.IsNull()) {
-      tx = atof(a[4]) ;
+      tx = Draw::Atof(a[4]) ;
       if (n == 6) {
-	condition = Max(atoi(a[5]), -1)  ;
+	condition = Max(Draw::Atoi(a[5]), -1)  ;
 	condition = Min(condition, G2->Degree()-1) ;
       }
       TColgp_Array1OfPnt2d   curve_poles(1,G2->NbPoles()) ;
@@ -891,7 +891,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   Standard_Real defl;
 
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
-  defl = atof(a[3]);
+  defl = Draw::Atof(a[3]);
 
   GeomAdaptor_Curve GAC(C);
   GCPnts_QuasiUniformDeflection PntGen(GAC, defl);
@@ -948,10 +948,10 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   Standard_Real defl, angle = Precision::Angular();
 
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
-  defl = atof(a[3]);
+  defl = Draw::Atof(a[3]);
 
   if(n > 3)
-    angle = atof(a[4]);
+    angle = Draw::Atof(a[4]);
 
   GeomAdaptor_Curve GAC(C);
   GCPnts_TangentialDeflection PntGen(GAC, angle, defl, 2);
@@ -1017,7 +1017,7 @@ static Standard_Integer uniformAbscissa (Draw_Interpretor& di, Standard_Integer 
   }
 
   Standard_Integer nocp;
-  nocp = atoi(a[2]);
+  nocp = Draw::Atoi(a[2]);
   if(nocp < 2)
     return 1;
 
@@ -1065,12 +1065,12 @@ static Standard_Integer EllipsUniformAbscissa (Draw_Interpretor& di, Standard_In
     return 1;  
   
   Standard_Real R1;
-  R1 = atof(a[1]);
+  R1 = Draw::Atof(a[1]);
   Standard_Real R2;
-  R2 = atof(a[2]);
+  R2 = Draw::Atof(a[2]);
 
   Standard_Integer nocp;
-  nocp = atoi(a[3]);
+  nocp = Draw::Atoi(a[3]);
   if(nocp < 2)
     return 1;
   
@@ -1143,7 +1143,7 @@ static Standard_Integer mypoints (Draw_Interpretor& di, Standard_Integer /*n*/, 
   Standard_Real defl;
 
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
-  defl = atof(a[3]);
+  defl = Draw::Atof(a[3]);
   const Handle(Geom_BSplineCurve)& aBS = Handle(Geom_BSplineCurve)::DownCast(C);
 
   if(aBS.IsNull()) return 1;
@@ -1271,7 +1271,7 @@ static Standard_Integer surfpoints (Draw_Interpretor& /*di*/, Standard_Integer /
   Standard_Real defl;
 
   Handle(Geom_Surface) S = DrawTrSurf::GetSurface(a[2]);
-  defl = atof(a[3]);
+  defl = Draw::Atof(a[3]);
 
   Handle(GeomAdaptor_HSurface) AS = new GeomAdaptor_HSurface(S);
 
@@ -1348,7 +1348,7 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
   }
   //
   Standard_Real tol = Precision::Confusion();
-  if (n == 5 || n == 9 || n == 13 || n == 17) tol = atof(a[n-1]);
+  if (n == 5 || n == 9 || n == 13 || n == 17) tol = Draw::Atof(a[n-1]);
   //
   Handle(Geom_Curve) Result;
   gp_Pnt             Point;
@@ -1381,11 +1381,11 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
       }
       if (useStart)
         for (Standard_Integer i=ista1; i <= ista2; i++)
-          UVsta[i-ista1] = atof(a[i]);
+          UVsta[i-ista1] = Draw::Atof(a[i]);
       if (useBnd) {
         Standard_Real UVbnd[8];
         for (Standard_Integer i=ibnd1; i <= ibnd2; i++)
-          UVbnd[i-ibnd1] = atof(a[i]);
+          UVbnd[i-ibnd1] = Draw::Atof(a[i]);
         AS1 = new GeomAdaptor_HSurface(GS1,UVbnd[0],UVbnd[1],UVbnd[2],UVbnd[3]);
         AS2 = new GeomAdaptor_HSurface(GS2,UVbnd[4],UVbnd[5],UVbnd[6],UVbnd[7]);
       }
@@ -1415,7 +1415,7 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
     aNbLines = Inters.NbLines();
     if (aNbLines >= 2) {
       for (i=1; i<=aNbLines; ++i) {
-	sprintf(buf, "%s_%d",a[1],i);
+	Sprintf(buf, "%s_%d",a[1],i);
 	Result = Inters.Line(i);
 	const char* temp = buf; 
 	DrawTrSurf::Set(temp,Result);
@@ -1429,7 +1429,7 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
     aNbPoints=Inters.NbPoints();
     for (i=1; i<=aNbPoints; ++i) {
       Point=Inters.Point(i);
-      sprintf(buf,"%s_p_%d",a[1],i);
+      Sprintf(buf,"%s_p_%d",a[1],i);
       const char* temp =buf;
       DrawTrSurf::Set(temp, Point);
     }
@@ -1448,13 +1448,13 @@ static Standard_Integer intersection (Draw_Interpretor& di, Standard_Integer n, 
       Standard_Integer i;
       Standard_Integer Compt = 1;
       for (i = 1; i <= nblines; i++, Compt++) {
-	sprintf(newname,"%s_%d",a[1],Compt);
+	Sprintf(newname,"%s_%d",a[1],Compt);
 	Result = Inters.Segment(i);
 	const char* temp = newname; // pour portage WNT
 	DrawTrSurf::Set(temp,Result);
       }
       for (i = 1; i <= nbpoints; i++, Compt++) {
-	sprintf(newname,"%s_%d",a[1],i);
+	Sprintf(newname,"%s_%d",a[1],i);
 	Point = Inters.Point(i);
 	const char* temp = newname; // pour portage WNT
 	DrawTrSurf::Set(temp,Point);

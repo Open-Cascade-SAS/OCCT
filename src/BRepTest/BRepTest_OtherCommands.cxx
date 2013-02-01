@@ -21,6 +21,7 @@
 
 #include <BRepTest.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -197,12 +198,12 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
   p++;
   Standard_Integer i = 0;
   if (n == 3) {
-    Standard_Integer isub = atoi(a[2]);
+    Standard_Integer isub = Draw::Atoi(a[2]);
     TopoDS_Iterator itr(S);
     while (itr.More()) {
       i++;
       if ( i == isub ) {
-	sprintf(p,"%d",i);
+	Sprintf(p,"%d",i);
 	DBRep::Set(newname,itr.Value());
 	di.AppendElement(newname);
 	break;
@@ -254,7 +255,7 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
 	return 1;
     }
     
-    Standard_Integer isub = atoi(a[3]);
+    Standard_Integer isub = Draw::Atoi(a[3]);
     TopTools_MapOfShape M;
     M.Add(S);
     TopExp_Explorer ex(S,typ);
@@ -262,7 +263,7 @@ Standard_Integer subshape(Draw_Interpretor& di, Standard_Integer n, const char**
       if (M.Add(ex.Current())) {
 	i++;
 	if ( i == isub ) {
-	  sprintf(p,"%d",i);
+	  Sprintf(p,"%d",i);
 	  DBRep::Set(newname,ex.Current());
 	  di.AppendElement(newname);
 	  break;
@@ -298,7 +299,7 @@ Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const char** 
       nbpi++;
       char name[64];
       char* temp = name; // pour portage WNT
-      sprintf(temp, "%s_%d", "brics", nbpi); 
+      Sprintf(temp, "%s_%d", "brics", nbpi); 
       DrawTrSurf::Set(temp, curp);
     }
   }
@@ -315,7 +316,7 @@ Standard_Integer brepintcs(Draw_Interpretor& , Standard_Integer n, const char** 
 	  nbpi++;
 	  char name[64];
 	  char* temp = name; // pour portage WNT
-	  sprintf(temp, "%s_%d", "brics", nbpi); 
+	  Sprintf(temp, "%s_%d", "brics", nbpi); 
 	  DrawTrSurf::Set(temp, curp);
 	}
       }
@@ -369,7 +370,7 @@ Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const char** a
   TopoDS_Face F = TopoDS::Face(InputShape);
 //  TopoDS_Face F = TopoDS::Face(DBRep::Get( a[2] ));
   
-  Standard_Real Off = -atof( a[3] );
+  Standard_Real Off = -Draw::Atof( a[3] );
 
   BRepOffset_MakeOffset Offset;
 
@@ -455,7 +456,7 @@ Standard_Integer xclassify (Draw_Interpretor& aDI, Standard_Integer n, const cha
   //
   aTol=1.e-7; 
   if (n==3) {
-    aTol=atof(a[2]);
+    aTol=Draw::Atof(a[2]);
   }
   //
   BRepClass3d_SolidClassifier aSC(aS);

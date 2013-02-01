@@ -18,9 +18,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <SWDRAW_ShapeFix.ixx>
+
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <SWDRAW.hxx>
 #include <gp_XYZ.hxx>
@@ -125,10 +125,10 @@ static Standard_Integer settolerance (Draw_Interpretor& di, Standard_Integer arg
 
   Standard_Real tmin,tmax;
   mod2 = argv[premarg][0];
-  if (mod2 == '=') tmin = tmax = atof (argv[argc-1]);
-  else if (mod2 == '<') { tmin = 0; tmax = atof (argv[argc-1]); }
-  else if (mod2 == '>') { tmin = atof (argv[argc-1]); tmax = 0; }
-  else { tmin = atof (argv[premarg]);  tmax = atof (argv[argc-1]); }
+  if (mod2 == '=') tmin = tmax = Draw::Atof (argv[argc-1]);
+  else if (mod2 == '<') { tmin = 0; tmax = Draw::Atof (argv[argc-1]); }
+  else if (mod2 == '>') { tmin = Draw::Atof (argv[argc-1]); tmax = 0; }
+  else { tmin = Draw::Atof (argv[premarg]);  tmax = Draw::Atof (argv[argc-1]); }
 
   if (argc == premarg + 1 || tmin == tmax) di<<"Setting Tolerance to "<<tmin<<"\n";
   else if (tmax < tmin) di<<"Minimum Tolerance to "<<tmin<<"\n";
@@ -439,8 +439,8 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
         if(initShape.IsNull()) continue;
         sfs->Init ( initShape );
       } break;
-      case 2: sfs->SetPrecision   (atof(argv[i])); break;
-      case 3: sfs->SetMaxTolerance(atof(argv[i])); break;
+      case 2: sfs->SetPrecision   (Draw::Atof(argv[i])); break;
+      case 3: sfs->SetMaxTolerance(Draw::Atof(argv[i])); break;
       }
     }
     par++;
@@ -508,7 +508,7 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
     if ( mess < 0 )
     {
       char buff[256];
-      sprintf ( buff, "%s_%s", res, "m" );
+      Sprintf ( buff, "%s_%s", res, "m" );
       di << " Modified shapes saved in compound: " << buff;
       DBRep::Set (buff, aCompound);
     }
@@ -533,7 +533,7 @@ Standard_Integer fixgaps(Draw_Interpretor& di, Standard_Integer n, const char** 
   }
 
   Handle(ShapeFix_Wireframe) SFWF = new ShapeFix_Wireframe(S);
-  Standard_Real prec = ( n >3 ? atof(a[3]) : 0. );
+  Standard_Real prec = ( n >3 ? Draw::Atof(a[3]) : 0. );
   SFWF->SetPrecision(prec);
   if ( SFWF->FixWireGaps() ) {
     DBRep::Set(a[1],SFWF->Shape());
@@ -558,7 +558,7 @@ Standard_Integer fixsmall(Draw_Interpretor& di, Standard_Integer n, const char**
     return 1;
   }
 
-  Standard_Real prec = (n == 4)? atof(a[3]) : 1.;
+  Standard_Real prec = (n == 4)? Draw::Atof(a[3]) : 1.;
   ShapeFix_Wireframe SFWF(S);
   SFWF.SetPrecision(prec);
   
@@ -588,13 +588,13 @@ static Standard_Integer fixsmalledges(Draw_Interpretor& di, Standard_Integer n, 
   Standard_Integer mode = 2;
   Standard_Real tolang = M_PI/2;
   if(n > k) 
-    tol = atof(a[k++]);
+    tol = Draw::Atof(a[k++]);
   
   if(n > k) 
-    mode=  atoi(a[k++]);
+    mode=  Draw::Atoi(a[k++]);
    
   if(n > k) 
-    tolang = atof(a[k++]);
+    tolang = Draw::Atof(a[k++]);
      
   Handle(ShapeFix_Wireframe) aSfwr = new ShapeFix_Wireframe();
   Handle(ShapeBuild_ReShape) aReShape = new ShapeBuild_ReShape;
@@ -642,9 +642,9 @@ static Standard_Integer checkoverlapedges(Draw_Interpretor& di, Standard_Integer
    Standard_Real aDistDomain = 0.0;
    Standard_Integer k = 3;
    if(k < n)
-     aTol = atof(a[k++]);
+     aTol = Draw::Atof(a[k++]);
    if(k < n)
-     aDistDomain = atof(a[k++]);
+     aDistDomain = Draw::Atof(a[k++]);
    
    ShapeAnalysis_Edge sae;
    if(sae.CheckOverlapping(e1,e2,aTol,aDistDomain)) {
@@ -672,8 +672,8 @@ static Standard_Integer checkfclass2d(Draw_Interpretor& di, Standard_Integer n, 
     return 1;
   }
   TopoDS_Shape Sh1 = DBRep::Get(a[1]);
-  Standard_Real ucoord = atof(a[2]);
-  Standard_Real vcoord = atof(a[3]);
+  Standard_Real ucoord = Draw::Atof(a[2]);
+  Standard_Real vcoord = Draw::Atof(a[3]);
   if(Sh1.IsNull() || Sh1.ShapeType()!= TopAbs_FACE) {
     di<<"Invalid arguments"<<"\n";
     return 1;
@@ -706,11 +706,11 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
   }
   Standard_Real aTol = Precision::Confusion();
   if( n > 3)
-    aTol = atof(a[3]);
+    aTol = Draw::Atof(a[3]);
   
   Standard_Boolean shared = Standard_True;
   if( n > 4)
-    shared = (atoi(a[4]) == 1);
+    shared = (Draw::Atoi(a[4]) == 1);
   TopExp_Explorer aExpE(aSh1,TopAbs_EDGE);
   Handle(TopTools_HSequenceOfShape) aSeqEdges = new TopTools_HSequenceOfShape;
   Handle(TopTools_HSequenceOfShape) aSeqWires = new TopTools_HSequenceOfShape;

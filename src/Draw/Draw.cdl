@@ -182,13 +182,13 @@ is
 	---Purpose: Sets a TCL sting variable
 	
     Atof(Name : CString) returns Real;
-	---Purpose: Search a  numeric  variable.  If none found converts
-	--          the string to a real.
+	---Purpose: Converts numeric expression, that can involve DRAW
+        --          variables, to real value.
     
     Atoi(Name : CString) returns Integer;
-	---Purpose: Search a  numeric  variable.  If none found converts
-	--          the string to an integer.
-    
+	---Purpose: Converts numeric expression, that can involve DRAW
+        --          variables, to integer value. 
+        --          Implemented as cast of Atof() to integer.
     
     LastPick(view,X,Y,button : out Integer);
 	---Purpose: Returns last graphic selection description.

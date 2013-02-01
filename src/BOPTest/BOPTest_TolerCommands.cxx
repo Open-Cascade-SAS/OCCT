@@ -25,6 +25,7 @@
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <gp_Pnt2d.hxx>
 
@@ -124,7 +125,7 @@ Standard_Integer  btolx(Draw_Interpretor& di, Standard_Integer n,  const char** 
   //
   Standard_Real aTolEMin=1.e-7;
   if (n==3) {
-    aTolEMin=atof(a[2]);
+    aTolEMin=Draw::Atof(a[2]);
   }
   //
   // Edge Tolerances

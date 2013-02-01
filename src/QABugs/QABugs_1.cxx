@@ -236,7 +236,7 @@ static Standard_Integer OCC145bug (Draw_Interpretor& di, Standard_Integer argc, 
   }
 
   TCollection_AsciiString aFileName = argv[1];
-  Standard_Integer aMaxNbr = atoi(argv[2]);
+  Standard_Integer aMaxNbr = Draw::Atoi(argv[2]);
 
   BRep_Builder aBld;
   TopoDS_Shape aShape;
@@ -282,7 +282,7 @@ static Standard_Integer OCC73_SelectionMode (Draw_Interpretor& di, Standard_Inte
   //cout << "OCC73_SelectionMode  4" << endl;
   if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
     if( argc == 4 ) {
-      prs->SetSelectionMode((Standard_Integer)atoi(argv[3]));
+      prs->SetSelectionMode((Standard_Integer)Draw::Atoi(argv[3]));
       TPrsStd_AISViewer::Update(L);
     }
     else {
@@ -316,7 +316,7 @@ static Standard_Integer OCC10bug (Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   TCollection_AsciiString name(argv[1]);
-  Standard_Real Length = atof(argv[3]);
+  Standard_Real Length = Draw::Atof(argv[3]);
   
   // Construction de l'AIS_PlaneTrihedron
   Handle(AIS_PlaneTrihedron) theAISPlaneTri;
@@ -412,7 +412,7 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
   TCollection_AsciiString aName(argv[1]);
   Handle(AIS_InteractiveObject) AISObj;
 
-  Standard_Integer SelectMode = atoi(argv[2]);
+  Standard_Integer SelectMode = Draw::Atoi(argv[2]);
   
   if(!aMap.IsBound2(aName)) {
     di << "Use 'vdisplay' before" << "\n";

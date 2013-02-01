@@ -19,8 +19,6 @@
 #include <FSD_CmpFile.ixx>
 #include <OSD.hxx>
 
-#include <OSD_Real2String.hxx>
-
 #include <Storage_StreamModeError.hxx>
 #include <Storage_StreamUnknownTypeError.hxx>
 #include <Standard_PCharacter.hxx>
@@ -122,6 +120,7 @@ Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName,const Stora
     }
     else {
       myStream.precision(17);
+      myStream.imbue (std::locale::classic()); // use always C locale
       SetOpenMode(aMode);
     }
   }
@@ -529,29 +528,9 @@ Storage_BaseDriver& FSD_CmpFile::PutBoolean(const Standard_Boolean aValue)
 
 Storage_BaseDriver& FSD_CmpFile::PutReal(const Standard_Real aValue)
 {
-#ifdef BUC60808
-  char realbuffer[100];
-  Standard_PCharacter pChar;
-  //
-  pChar=realbuffer;
-  realbuffer[0] = '\0';
-  //
-  if (myRealConv.RealToCString(aValue,pChar)) {
-    myStream << realbuffer << " ";
-  }
-  else {
-    Storage_StreamWriteError::Raise();
-  }
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
-
-  return *this;
-
-#else
   myStream << ((Standard_Real)aValue) << " ";
-
   if (myStream.bad()) Storage_StreamWriteError::Raise();
   return *this;
-#endif
 }
 
 //=======================================================================
@@ -561,28 +540,9 @@ Storage_BaseDriver& FSD_CmpFile::PutReal(const Standard_Real aValue)
 
 Storage_BaseDriver& FSD_CmpFile::PutShortReal(const Standard_ShortReal aValue)
 {
-#ifdef BUC60808
-  char realbuffer[100];
-  Standard_PCharacter pStr;
-  //
-  pStr=realbuffer;
-  realbuffer[0] = '\0';
-  //
-  if (myRealConv.RealToCString(aValue,pStr)) {
-    myStream << realbuffer << " ";
-  }
-  else {
-    Storage_StreamWriteError::Raise();
-  }
-  if (myStream.bad()) Storage_StreamWriteError::Raise();
-
-  return *this;
-#else
   myStream << aValue << " ";
-
   if (myStream.bad()) Storage_StreamWriteError::Raise();
   return *this;
-#endif
 }
 
 //=======================================================================
@@ -669,10 +629,9 @@ Storage_BaseDriver& FSD_CmpFile::GetReal(Standard_Real& aValue)
     cerr << "\t buffer is" << realbuffer<< endl;
     Storage_StreamTypeMismatchError::Raise();
   }
-  if (!myRealConv.CStringToReal(realbuffer,aValue)) {
+  if (!OSD::CStringToReal(realbuffer,aValue)) {
     cerr << "%%%ERROR: read error of double at offset " << myStream.tellg() << endl;
     cerr << "\t buffer is" << realbuffer<< endl;
-    //if (!OSD::CStringToReal(realbuffer,aValue))
     Storage_StreamTypeMismatchError::Raise();
   }
 
@@ -697,8 +656,8 @@ Storage_BaseDriver& FSD_CmpFile::GetShortReal(Standard_ShortReal& aValue)
 
   realbuffer[0] = '\0';
   if (!(myStream >> realbuffer)) Storage_StreamTypeMismatchError::Raise();
-  // if (!OSD::CStringToReal(realbuffer,r)) 
-  if (!myRealConv.CStringToReal(realbuffer,r))  Storage_StreamTypeMismatchError::Raise();
+  if (!OSD::CStringToReal(realbuffer,r))
+    Storage_StreamTypeMismatchError::Raise();
 
   aValue = (Standard_ShortReal)r;
 

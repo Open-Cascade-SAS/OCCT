@@ -35,6 +35,7 @@
 #include <TColStd_HSequenceOfReal.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Graphic3d_GraphicDevice.hxx>
+#include <Draw.hxx>
 #include <Draw_Window.hxx>
 #include <Draw_Viewer.hxx>
 #include <Aspect_WindowDriver.hxx>
@@ -106,7 +107,7 @@ static Standard_Boolean shouldDUP() {
 					 "QA_DUP",TCL_GLOBAL_ONLY);
 #endif
   Standard_Integer aDUP=1;
-  if((adup != NULL) && (atof(adup) == 0)) {
+  if((adup != NULL) && (Draw::Atof(adup) == 0)) {
     aDUP = 0;
   }
 
@@ -363,16 +364,16 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& theDi,
   anAISWindow->Size (aWindowSizeX, aWindowSizeY);
 
   Standard_Integer anArgIter = 1;
-  const Standard_Integer aPickCoordX = atoi (theArgs[anArgIter++]);
-  const Standard_Integer aPickCoordY = atoi (theArgs[anArgIter++]);
+  const Standard_Integer aPickCoordX = Draw::Atoi (theArgs[anArgIter++]);
+  const Standard_Integer aPickCoordY = Draw::Atoi (theArgs[anArgIter++]);
   const Standard_Integer aRadius = (theArgsNb == 3) ? 0 : 1;
 
   Image_ColorRGBF aColorInput = {{ 0.0f, 0.0f, 0.0f }};
   if (theArgsNb == 6)
   {
-    aColorInput.r() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-    aColorInput.g() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
-    aColorInput.b() = (Standard_ShortReal )atof (theArgs[anArgIter++]);
+    aColorInput.r() = (Standard_ShortReal )Draw::Atof (theArgs[anArgIter++]);
+    aColorInput.g() = (Standard_ShortReal )Draw::Atof (theArgs[anArgIter++]);
+    aColorInput.b() = (Standard_ShortReal )Draw::Atof (theArgs[anArgIter++]);
   }
 
   Image_PixMap anImage;
@@ -495,9 +496,9 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
   Standard_Integer QAAIS_MousePoint_X = 0;
   Standard_Integer QAAIS_MousePoint_Y = 0;
   Standard_Character QAAIS_MousePointX[32];
-  sprintf (QAAIS_MousePointX, "X : %d", QAAIS_MousePoint_X);
+  Sprintf (QAAIS_MousePointX, "X : %d", QAAIS_MousePoint_X);
   Standard_Character QAAIS_MousePointY[32];
-  sprintf (QAAIS_MousePointY, "Y : %d", QAAIS_MousePoint_Y);
+  Sprintf (QAAIS_MousePointY, "Y : %d", QAAIS_MousePoint_Y);
   Standard_ShortReal QAAIS_ColorRED = 0;
   Standard_ShortReal QAAIS_ColorGRN = 0;
   Standard_ShortReal QAAIS_ColorBLU = 0;
@@ -524,8 +525,8 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
     QAAIS_ColorView -> SetBackgroundColor (QAAIS_ShowingColor);
     QAAIS_ColorView -> Redraw ();
     QAAIS_CoordWindow.Clear();
-    sprintf (QAAIS_MousePointX, "X : %d", QAAIS_MousePoint_X);
-    sprintf (QAAIS_MousePointY, "Y : %d", QAAIS_MousePoint_Y);
+    Sprintf (QAAIS_MousePointX, "X : %d", QAAIS_MousePoint_X);
+    Sprintf (QAAIS_MousePointY, "Y : %d", QAAIS_MousePoint_Y);
     QAAIS_CoordWindow.DrawString (30, 35, QAAIS_MousePointX);
     QAAIS_CoordWindow.DrawString (125, 35, QAAIS_MousePointY);
   }
@@ -628,7 +629,7 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
 
 static Standard_Integer ViewId(const Standard_CString a)
 {
-  Standard_Integer id = atoi(a);
+  Standard_Integer id = Draw::Atoi(a);
   if ((id < 0) || (id >= MAXVIEW)) {
     cout << "Incorrect view-id, must be in 0.."<<MAXVIEW-1<<endl;
     return -1;

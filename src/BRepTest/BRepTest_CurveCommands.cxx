@@ -88,7 +88,7 @@ static Standard_Integer vertex(Draw_Interpretor& , Standard_Integer n, const cha
   if (n < 4) return 1;
   if (n >= 5) {
     DBRep::Set(a[1],
-	       BRepBuilderAPI_MakeVertex(gp_Pnt(atof(a[2]),atof(a[3]),atof(a[4]))));
+	       BRepBuilderAPI_MakeVertex(gp_Pnt(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]))));
     }
   else {
     TopoDS_Shape S = DBRep::Get(a[3]);
@@ -96,7 +96,7 @@ static Standard_Integer vertex(Draw_Interpretor& , Standard_Integer n, const cha
     if (S.ShapeType() != TopAbs_EDGE) return 0;
     BRepAdaptor_Curve C(TopoDS::Edge(S));
     gp_Pnt P;
-    C.D0(atof(a[2]),P);
+    C.D0(Draw::Atof(a[2]),P);
     DBRep::Set(a[1], BRepBuilderAPI_MakeVertex(P));
   }
   return 0;
@@ -113,8 +113,8 @@ static Standard_Integer range(Draw_Interpretor& , Standard_Integer n, const char
   TopoDS_Edge E = TopoDS::Edge(aLocalShape);
 //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
   if (E.IsNull()) return 1;
-  Standard_Real f = atof(a[n-2]);
-  Standard_Real l = atof(a[n-1]);
+  Standard_Real f = Draw::Atof(a[n-2]);
+  Standard_Real l = Draw::Atof(a[n-1]);
   BRep_Builder B;
   if (n == 4)
     B.Range(E,f,l);
@@ -188,7 +188,7 @@ static Standard_Integer polyline(Draw_Interpretor& , Standard_Integer n, const c
   BRepBuilderAPI_MakePolygon W;
   j = 2;
   for (i = 1; i <= np; i ++) {
-    W.Add(gp_Pnt(atof(a[j]),atof(a[j+1]),atof(a[j+2])));
+    W.Add(gp_Pnt(Draw::Atof(a[j]),Draw::Atof(a[j+1]),Draw::Atof(a[j+2])));
     j += 3;
   }
   DBRep::Set(a[1],W.Wire());
@@ -277,11 +277,11 @@ static Standard_Integer mkedge(Draw_Interpretor& di, Standard_Integer n, const c
     if (n == 5+i) {
       if (V1.IsNull()) {
 	if (!C.IsNull())   
-	  edge = BRepBuilderAPI_MakeEdge(C,atof(a[3]),atof(a[4]));
+	  edge = BRepBuilderAPI_MakeEdge(C,Draw::Atof(a[3]),Draw::Atof(a[4]));
 	else if (S.IsNull())              
-	  edge = BRepBuilderAPI_MakeEdge2d(C2d,atof(a[3]),atof(a[4]));
+	  edge = BRepBuilderAPI_MakeEdge2d(C2d,Draw::Atof(a[3]),Draw::Atof(a[4]));
 	else
-	  edge = BRepBuilderAPI_MakeEdge(C2d,S,atof(a[4]),atof(a[5]));
+	  edge = BRepBuilderAPI_MakeEdge(C2d,S,Draw::Atof(a[4]),Draw::Atof(a[5]));
       }
       else {
 	aLocalShape = DBRep::Get(a[4+i],TopAbs_VERTEX);
@@ -300,11 +300,11 @@ static Standard_Integer mkedge(Draw_Interpretor& di, Standard_Integer n, const c
       TopoDS_Vertex V2 = TopoDS::Vertex(aLocalShape);
 //      TopoDS_Vertex V2 = TopoDS::Vertex(DBRep::Get(a[5+i],TopAbs_VERTEX));
       if (!C.IsNull())   
-	edge = BRepBuilderAPI_MakeEdge(C,V1,V2,atof(a[4]),atof(a[6]));
+	edge = BRepBuilderAPI_MakeEdge(C,V1,V2,Draw::Atof(a[4]),Draw::Atof(a[6]));
       else if (S.IsNull())         
-	edge = BRepBuilderAPI_MakeEdge2d(C2d,V1,V2,atof(a[4]),atof(a[6]));
+	edge = BRepBuilderAPI_MakeEdge2d(C2d,V1,V2,Draw::Atof(a[4]),Draw::Atof(a[6]));
       else              
-	edge = BRepBuilderAPI_MakeEdge(C2d,S,V1,V2,atof(a[5]),atof(a[7]));
+	edge = BRepBuilderAPI_MakeEdge(C2d,S,V1,V2,Draw::Atof(a[5]),Draw::Atof(a[7]));
     }
     else
       return 1;
@@ -442,9 +442,9 @@ static Standard_Integer isoedge(Draw_Interpretor& , Standard_Integer n, const ch
   if (n < 6) return 1;
 
   Standard_Boolean uiso = *a[0] == 'u';
-  Standard_Real p = atof(a[3]);
-  Standard_Real p1 = atof(a[4]);
-  Standard_Real p2 = atof(a[5]);
+  Standard_Real p = Draw::Atof(a[3]);
+  Standard_Real p1 = Draw::Atof(a[4]);
+  Standard_Real p2 = Draw::Atof(a[5]);
   TopoDS_Shape Sh = DBRep::Get(a[2],TopAbs_FACE);
   if (Sh.IsNull()) return 1;
   TopLoc_Location Loc;
@@ -603,8 +603,8 @@ static Standard_Integer profile(Draw_Interpretor& di,
 	di << "profile: The F instruction must precede all moves";
 	return 1;
       }
-      x0 = x = atof(a[i-1]);
-      y0 = y = atof(a[i]);
+      x0 = x = Draw::Atof(a[i-1]);
+      y0 = y = Draw::Atof(a[i]);
       stayfirst = Standard_True;
       break;
 
@@ -612,7 +612,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'o':
       i += 3;
       if (i >= n) goto badargs;
-      P.SetLocation(gp_Pnt(atof(a[i-2]),atof(a[i-1]),atof(a[i])));
+      P.SetLocation(gp_Pnt(Draw::Atof(a[i-2]),Draw::Atof(a[i-1]),Draw::Atof(a[i])));
       stayfirst = Standard_True;
       break;
 
@@ -621,8 +621,8 @@ static Standard_Integer profile(Draw_Interpretor& di,
       i += 6;
       if (i >= n) goto badargs;
       {
-	gp_Vec vn(atof(a[i-5]),atof(a[i-4]),atof(a[i-3]));
-	gp_Vec vx(atof(a[i-2]),atof(a[i-1]),atof(a[i]));
+	gp_Vec vn(Draw::Atof(a[i-5]),Draw::Atof(a[i-4]),Draw::Atof(a[i-3]));
+	gp_Vec vx(Draw::Atof(a[i-2]),Draw::Atof(a[i-1]),Draw::Atof(a[i]));
 	if (vn.Magnitude() <= Precision::Confusion()) {
 	  di << "profile : null direction";
 	  return 1;
@@ -664,7 +664,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'x':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       if ((a[i-1][1] == 'X') || (a[i-1][1] == 'x')) {
 	length -= x;
       }
@@ -676,7 +676,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'y':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       if ((a[i-1][1] == 'Y') || (a[i-1][1] == 'y')) {
 	length -= y;
       }
@@ -688,7 +688,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'l':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       move = line;
       break;
 
@@ -697,8 +697,8 @@ static Standard_Integer profile(Draw_Interpretor& di,
       i += 2;
       if (i >= n) goto badargs;
       {
-	Standard_Real vx = atof(a[i-1]);
-	Standard_Real vy = atof(a[i]);
+	Standard_Real vx = Draw::Atof(a[i-1]);
+	Standard_Real vy = Draw::Atof(a[i]);
 	if ((a[i-2][1] == 'T') || (a[i-2][1] == 't')) {
 	  vx -= x;
 	  vy -= y;
@@ -716,7 +716,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'r':
       i++;
       if (i >= n) goto badargs;
-      angle = atof(a[i]) * (M_PI / 180.0);
+      angle = Draw::Atof(a[i]) * (M_PI / 180.0);
       if ((a[i-1][1] == 'R') || (a[i-1][1] == 'r')) {
 	dx = Cos(angle);
 	dy = Sin(angle);
@@ -735,8 +735,8 @@ static Standard_Integer profile(Draw_Interpretor& di,
       i += 2;
       if (i >= n) goto badargs;
       {
-	Standard_Real vx = atof(a[i-1]);
-	Standard_Real vy = atof(a[i]);
+	Standard_Real vx = Draw::Atof(a[i-1]);
+	Standard_Real vy = Draw::Atof(a[i]);
 	length = Sqrt(vx*vx+vy*vy);
 	if (length > Precision::Confusion()) {
 	  // move = line; DUB
@@ -750,9 +750,9 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'c':
       i += 2;
       if (i >= n) goto badargs;
-      radius = atof(a[i-1]);
+      radius = Draw::Atof(a[i-1]);
       if (Abs(radius) > Precision::Confusion()) {
-	angle = atof(a[i]) * (M_PI / 180.0);
+	angle = Draw::Atof(a[i]) * (M_PI / 180.0);
 	move = circle;
       }
       break;
@@ -761,7 +761,7 @@ static Standard_Integer profile(Draw_Interpretor& di,
     case 'i':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       if ((a[i-1][1] == 'X') || (a[i-1][1] == 'x')) {
 	if (Abs(dx) < Precision::Confusion()) {
 	  di << "Profile : cannot intersect, arg " << i-1;
@@ -1242,8 +1242,8 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
 	di << "profile: The F instruction must precede all moves";
 	return 1;
       }
-      x0 = x = atof(a[i-1]);
-      y0 = y = atof(a[i]);
+      x0 = x = Draw::Atof(a[i-1]);
+      y0 = y = Draw::Atof(a[i]);
       stayfirst = Standard_True;
       break;
 
@@ -1251,7 +1251,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'x':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       if ((a[i-1][1] == 'X') || (a[i-1][1] == 'x')) {
 	length -= x;
       }
@@ -1263,7 +1263,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'y':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       if ((a[i-1][1] == 'Y') || (a[i-1][1] == 'y')) {
 	length -= y;
       }
@@ -1275,7 +1275,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'l':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       move = line;
       break;
 
@@ -1284,8 +1284,8 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
       i += 2;
       if (i >= n) goto badargs;
       {
-	Standard_Real vx = atof(a[i-1]);
-	Standard_Real vy = atof(a[i]);
+	Standard_Real vx = Draw::Atof(a[i-1]);
+	Standard_Real vy = Draw::Atof(a[i]);
 	if ((a[i-2][1] == 'T') || (a[i-2][1] == 't')) {
 	  vx -= x;
 	  vy -= y;
@@ -1303,7 +1303,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'r':
       i++;
       if (i >= n) goto badargs;
-      angle = atof(a[i]) * (M_PI / 180.0);
+      angle = Draw::Atof(a[i]) * (M_PI / 180.0);
       if ((a[i-1][1] == 'R') || (a[i-1][1] == 'r')) {
 	dx = Cos(angle);
 	dy = Sin(angle);
@@ -1322,8 +1322,8 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
       i += 2;
       if (i >= n) goto badargs;
       {
-	Standard_Real vx = atof(a[i-1]);
-	Standard_Real vy = atof(a[i]);
+	Standard_Real vx = Draw::Atof(a[i-1]);
+	Standard_Real vy = Draw::Atof(a[i]);
 	length = Sqrt(vx*vx+vy*vy);
 	if (length > Precision::Confusion()) {
 	  // move = line; DUB
@@ -1337,9 +1337,9 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'c':
       i += 2;
       if (i >= n) goto badargs;
-      radius = atof(a[i-1]);
+      radius = Draw::Atof(a[i-1]);
       if (Abs(radius) > Precision::Confusion()) {
-	angle = atof(a[i]) * (M_PI / 180.0);
+	angle = Draw::Atof(a[i]) * (M_PI / 180.0);
 	move = circle;
       }
       break;
@@ -1348,7 +1348,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
     case 'i':
       i++;
       if (i >= n) goto badargs;
-      length = atof(a[i]);
+      length = Draw::Atof(a[i]);
       if ((a[i-1][1] == 'X') || (a[i-1][1] == 'x')) {
 	if (Abs(dx) < Precision::Confusion()) {
 	  di << "Profile : cannot intersect, arg " << i-1;
@@ -1394,7 +1394,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
 	Handle(Geom2d_TrimmedCurve) ct = 
 	  new Geom2d_TrimmedCurve(l,0,length);
 	NbCurves++;
-	sprintf(name,"%s_%d",a[1],NbCurves);
+	Sprintf(name,"%s_%d",a[1],NbCurves);
 	DrawTrSurf::Set(name,ct);
 	di.AppendElement(name);
 	x += length*dx;
@@ -1420,7 +1420,7 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
 	Handle(Geom2d_TrimmedCurve) ct = 
 	  new Geom2d_TrimmedCurve(c,0,angle);
 	NbCurves++;
-	sprintf(name,"%s_%d",a[1],NbCurves);
+	Sprintf(name,"%s_%d",a[1],NbCurves);
 	DrawTrSurf::Set(name,ct);	
 	di.AppendElement(name);
 	gp_Pnt2d p;
@@ -1508,11 +1508,11 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
 
   Standard_Real U, dU;
   Standard_Integer Nb;
-  dU = atof(a[4]);
-  Nb = atoi(a[3]);
+  dU = Draw::Atof(a[4]);
+  Nb = Draw::Atoi(a[3]);
 
   Standard_Real Alt = 0.;
-  if ( n == 6) Alt = atof(a[5]);
+  if ( n == 6) Alt = Draw::Atof(a[5]);
   Standard_Integer Compt = 1;
 
   for ( Standard_Integer i = 1; i <= Nb; i++) {
@@ -1523,7 +1523,7 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
       di << " Parali aux fraises" << "\n";
     }
     else {
-      sprintf(name,"%s_%d", a[1], Compt++);
+      Sprintf(name,"%s_%d", a[1], Compt++);
       char* temp = name; // portage WNT
       DBRep::Set(temp,Paral.Shape());
     }
@@ -1545,7 +1545,7 @@ Standard_Integer pickface(Draw_Interpretor& di,
   if (S.IsNull()) return 1;
   
   char* name = new char[100];
-  sprintf(name,"PickedFace %s",pick_name);
+  Sprintf(name,"PickedFace %s",pick_name);
   DBRep::Set(name,S);
   di.AppendElement(name);
   return 0;
@@ -1578,7 +1578,7 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
   //-----------------------------------------------------
   EInter.SetFaces(F,F);
   Standard_Real TolInter = 1.e-7;
-  if (n == 6) TolInter = atof(a[5]);
+  if (n == 6) TolInter = Draw::Atof(a[5]);
   EInter.ForceTolerances(TolInter,TolInter);
   Standard_Boolean reducesegments = Standard_True;
   EInter.Perform (E[0],E[1],reducesegments);
@@ -1601,7 +1601,7 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
     gp_Pnt           P    = P2D.Value();
     TopoDS_Vertex    V    = BRepLib_MakeVertex(P);
     NbV ++;
-    sprintf(name,"%s_%d",a[1],NbV);
+    Sprintf(name,"%s_%d",a[1],NbV);
     DBRep::Set(name,V);
     for (Standard_Integer i = 1; i <= 2; i++) {
       //---------------------------------------------------------------
@@ -1687,7 +1687,7 @@ Standard_Integer  build3d(Draw_Interpretor& di,
   if (S.IsNull()) return 1;
   
   if (n==2) { Ok = BRepLib::BuildCurves3d(S); }
-  else      { Ok = BRepLib::BuildCurves3d(S,atof(a[2])); }
+  else      { Ok = BRepLib::BuildCurves3d(S,Draw::Atof(a[2])); }
   //if (!Ok) {cout << " one of the computation failed" << endl;}
   if (!Ok) {di << " one of the computation failed" << "\n";}
 

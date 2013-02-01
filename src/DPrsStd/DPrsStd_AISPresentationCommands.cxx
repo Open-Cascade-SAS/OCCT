@@ -329,7 +329,7 @@ static Standard_Integer DPrsStd_AISTransparency (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetTransparency(atof(arg[3]));
+	prs->SetTransparency(Draw::Atof(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {
@@ -396,7 +396,7 @@ static Standard_Integer DPrsStd_AISColor (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetColor((Quantity_NameOfColor)atoi(arg[3]));
+	prs->SetColor((Quantity_NameOfColor)Draw::Atoi(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else
@@ -465,7 +465,7 @@ static Standard_Integer DPrsStd_AISMaterial (Draw_Interpretor& di,
     Handle(TPrsStd_AISPresentation) prs;
     if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
       if( nb == 4 ) {
-	prs->SetMaterial((Graphic3d_NameOfMaterial)atoi(arg[3]));
+	prs->SetMaterial((Graphic3d_NameOfMaterial)Draw::Atoi(arg[3]));
 	TPrsStd_AISViewer::Update(L);
       }
       else {

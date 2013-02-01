@@ -64,9 +64,6 @@ extern Draw_Viewer dout;
 extern Standard_Boolean Draw_Batch;
 #endif
 
-#define atof(X) Draw::Atof(X)
-#define atoi(X) Draw::Atoi(X)
-
 class Draw_SaveAndRestore {
 
   public :

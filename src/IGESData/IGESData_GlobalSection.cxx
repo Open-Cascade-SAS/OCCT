@@ -153,7 +153,7 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
     if (fpt == Interface_ParamInteger) {
        // but a real is expected 
       if ( i == 13 || i == 17 || i == 19 || i == 20)
-	realval = atof(val);
+	realval = Atof(val);
       intval  = atoi(val);
     }
 
@@ -168,7 +168,7 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
           text[j++] = val[k];  
         if (val[k] == '\0') break;
       }
-      realval = atof(text);//Interface_FileReaderData::Fastof(val);
+      realval = Atof(text);
     }
 
     // if the param is a text

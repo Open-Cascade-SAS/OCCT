@@ -64,7 +64,7 @@ static Standard_Integer DEP(Draw_Interpretor& theCommands,
   TopoDS_Shape V = DBRep::Get(a[2]);
   BRepOffsetAPI_DraftAngle drft(V);
 
-  gp_Dir Dirextract(atof(a[3]),atof(a[4]),atof(a[5]));
+  gp_Dir Dirextract(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
 
   TopoDS_Face F;
   Standard_Real Angle;
@@ -74,9 +74,9 @@ static Standard_Integer DEP(Draw_Interpretor& theCommands,
     TopoDS_Shape aLocalShape(DBRep::Get(a[8*ii+6],TopAbs_FACE));
     F = TopoDS::Face(aLocalShape);
 //    F = TopoDS::Face(DBRep::Get(a[8*ii+6],TopAbs_FACE));
-    Angle = atof(a[8*ii+7])*M_PI/180.;
-    Pax.SetCoord(atof(a[8*ii+8]),atof(a[8*ii+9]),atof(a[8*ii+10]));
-    Dax.SetCoord(atof(a[8*ii+11]),atof(a[8*ii+12]),atof(a[8*ii+13]));
+    Angle = Draw::Atof(a[8*ii+7])*M_PI/180.;
+    Pax.SetCoord(Draw::Atof(a[8*ii+8]),Draw::Atof(a[8*ii+9]),Draw::Atof(a[8*ii+10]));
+    Dax.SetCoord(Draw::Atof(a[8*ii+11]),Draw::Atof(a[8*ii+12]),Draw::Atof(a[8*ii+13]));
     drft.Add(F,Dirextract,Angle,gp_Pln(Pax,Dax));
     if (!drft.AddDone()) {
       break;
@@ -115,7 +115,7 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
 
   BRepOffsetAPI_DraftAngle drft(V);
 
-  gp_Dir Dirextract(atof(a[3]),atof(a[4]),atof(a[5]));
+  gp_Dir Dirextract(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
 
   TopoDS_Face F;
   Standard_Real Angle;
@@ -134,13 +134,13 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
     }
 
 //#ifdef DEB
-//    Flag = atof(a[9*ii+7]); // BUG?? Real -> Boolean ???
+//    Flag = Draw::Atof(a[9*ii+7]); // BUG?? Real -> Boolean ???
 //#else
-    Flag = (Standard_Boolean ) atof(a[9*ii+7]);
+    Flag = (Standard_Boolean ) Draw::Atof(a[9*ii+7]);
 //#endif
-    Angle = atof(a[9*ii+8])*M_PI/180.;
-    Pax.SetCoord(atof(a[9*ii+9]),atof(a[9*ii+10]),atof(a[9*ii+11]));
-    Dax.SetCoord(atof(a[9*ii+12]),atof(a[9*ii+13]),atof(a[9*ii+14]));
+    Angle = Draw::Atof(a[9*ii+8])*M_PI/180.;
+    Pax.SetCoord(Draw::Atof(a[9*ii+9]),Draw::Atof(a[9*ii+10]),Draw::Atof(a[9*ii+11]));
+    Dax.SetCoord(Draw::Atof(a[9*ii+12]),Draw::Atof(a[9*ii+13]),Draw::Atof(a[9*ii+14]));
     drft.Add(F,Dirextract,Angle,gp_Pln(Pax,Dax), Flag);
     if (!drft.AddDone()) {
       break;
@@ -175,10 +175,10 @@ static Standard_Integer draft (Draw_Interpretor& di,
   Standard_Real x, y ,z, teta;
   TopoDS_Shape SInit = DBRep::Get(a[2]);//shape d'arret
   
-  x = atof(a[3]);   
-  y = atof(a[4]);  // direction de depouille
-  z = atof(a[5]);  
-  teta = atof(a[6]); //angle de depouille (teta)
+  x = Draw::Atof(a[3]);   
+  y = Draw::Atof(a[4]);  // direction de depouille
+  z = Draw::Atof(a[5]);  
+  teta = Draw::Atof(a[6]); //angle de depouille (teta)
 
   gp_Dir D(x,y,z);
  
@@ -238,7 +238,7 @@ static Standard_Integer draft (Draw_Interpretor& di,
       MkDraft.Perform(Surf, KeepInside);
     }
     else {  // by Lenght
-      Standard_Real L = atof(a[7]);
+      Standard_Real L = Draw::Atof(a[7]);
       if (L > 1.e-7) {
 	 MkDraft.Perform(L);
       }

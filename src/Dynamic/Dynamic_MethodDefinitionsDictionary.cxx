@@ -175,7 +175,7 @@ void Dynamic_MethodDefinitionsDictionary::Creates(const Standard_CString afilena
 	    methoddefinition->AddVariable(new Dynamic_IntegerParameter(name,atoi(value)),Dynamic::Mode(mode),group);
 
 	  else if(!strcasecmp(type,"Standard_Real"))
-	    methoddefinition->AddVariable(new Dynamic_RealParameter(name,atof(value)),Dynamic::Mode(mode),group);
+	    methoddefinition->AddVariable(new Dynamic_RealParameter(name,Atof(value)),Dynamic::Mode(mode),group);
 
 	  else if(!strcasecmp(type,"Standard_CString"))
 	    methoddefinition->AddVariable(new Dynamic_StringParameter(name,value),Dynamic::Mode(mode),group);

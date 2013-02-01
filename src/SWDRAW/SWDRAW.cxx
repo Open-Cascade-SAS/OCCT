@@ -17,11 +17,8 @@
 
 #include <SWDRAW.ixx>
 
+#include <Draw.hxx>
 #include <DBRep.hxx>
-// CKY 4-AOUT-1998 : pb avec GeomFill
-//#include <GeometryTest.hxx>
-//#include <BRepTest.hxx>
-//#include <MeshTest.hxx>
 
 #include <SWDRAW_ShapeTool.hxx>
 #include <SWDRAW_ShapeAnalysis.hxx>
@@ -162,9 +159,9 @@ static Standard_Integer NSPApply (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
   TopoDS_Shape newshape;
-  Standard_Real tol = atof(argv[5]);
+  Standard_Real tol = Draw::Atof(argv[5]);
   Standard_Real maxtol = 1.;
-  if (argc > 6) maxtol = atof(argv[6]);
+  if (argc > 6) maxtol = Draw::Atof(argv[6]);
 
   XSAlgo::AlgoContainer()->PrepareForTransfer();
   Handle(Standard_Transient) info;  // reserved for special uses

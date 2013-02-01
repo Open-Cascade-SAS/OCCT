@@ -87,7 +87,7 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
   // Prepare textual progress info
   char text[2048];
   Standard_Integer n = 0;
-  n += sprintf ( &text[n], "Progress: %.0f%%", 100. * GetPosition() );
+  n += Sprintf ( &text[n], "Progress: %.0f%%", 100. * GetPosition() );
   for ( Standard_Integer i=GetNbScopes(); i >=1; i-- ) {
     const Message_ProgressScale &scale = GetScope ( i );
     if ( scale.GetName().IsNull() ) continue; // skip unnamed scopes
@@ -95,16 +95,16 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
     Standard_Real locPos = ( i >1 ? GetScope ( i-1 ).GetLast() : GetPosition() );
     // print progress info differently for finite and infinite scopes
     if ( scale.GetInfinite() )
-      n += sprintf ( &text[n], " %s: %.0f", scale.GetName()->ToCString(), 
+      n += Sprintf ( &text[n], " %s: %.0f", scale.GetName()->ToCString(), 
                      scale.BaseToLocal ( locPos ) );
     else 
-      n += sprintf ( &text[n], " %s: %.0f / %.0f", scale.GetName()->ToCString(), 
+      n += Sprintf ( &text[n], " %s: %.0f / %.0f", scale.GetName()->ToCString(), 
                      scale.BaseToLocal ( locPos ), scale.GetMax() );
   }
 
   // In addition, write elapsed/estimated/remaining time
   if ( GetPosition() > 0.01 ) {
-    n += sprintf ( &text[n], "\nElapsed/estimated time: %ld/%.0f sec", 
+    n += Sprintf ( &text[n], "\nElapsed/estimated time: %ld/%.0f sec", 
                    (long)(aTime - myStartTime), ( aTime - myStartTime ) / GetPosition() );
   }
   
@@ -112,7 +112,7 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
   if ( myGraphMode ) {
     if ( ! myShown ) {
       char command[1024];
-      sprintf ( command, "toplevel .xprogress -height 100 -width 410;"
+      Sprintf ( command, "toplevel .xprogress -height 100 -width 410;"
                          "wm title .xprogress \"Progress\";"
                          "set xprogress_stop 0;"
                          "canvas .xprogress.bar -width 402 -height 22;"
@@ -127,12 +127,12 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
     }
     char command[1024];
     Standard_Integer num = 0;
-    num += sprintf ( &command[num], ".xprogress.bar coords progress 2 2 %.0f 21;", 
+    num += Sprintf ( &command[num], ".xprogress.bar coords progress 2 2 %.0f 21;", 
                   1+400*GetPosition() );
-    num += sprintf ( &command[num], ".xprogress.bar coords progress_next 2 2 %.0f 21;", 
+    num += Sprintf ( &command[num], ".xprogress.bar coords progress_next 2 2 %.0f 21;", 
                   1+400*GetScope(1).GetLast() );
-    num += sprintf ( &command[num], ".xprogress.text configure -text \"%s\";", text );
-    num += sprintf ( &command[num], "update" );
+    num += Sprintf ( &command[num], ".xprogress.text configure -text \"%s\";", text );
+    num += Sprintf ( &command[num], "update" );
     ((Draw_Interpretor*)myDraw)->Eval ( command );
   }
 

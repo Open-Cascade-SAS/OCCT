@@ -169,7 +169,7 @@ Standard_Integer TestTopOpe_BOOP::FindShape(const TCollection_AsciiString& name)
   Standard_Integer ix = 0;
   if (ISINTEGER(name.ToCString())) {
     if (myHDS.IsNull()) return 0;
-    Standard_Integer is = atoi(name.ToCString());
+    Standard_Integer is = Draw::Atoi(name.ToCString());
     Standard_Integer ns = myHDS->NbShapes();
     Standard_Integer i1 = 0, i2 = 0;
     if (is != 0) { 

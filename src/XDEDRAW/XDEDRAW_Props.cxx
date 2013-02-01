@@ -21,6 +21,7 @@
 
 #include <XDEDRAW_Props.ixx>
 
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 
@@ -233,7 +234,7 @@ static Standard_Integer SetProps (Draw_Interpretor& di, Standard_Integer argc, c
     
     // retrieve epsilon
     Standard_Real anEps;
-    if(argc > 3 ) anEps = atof(argv[3]);
+    if(argc > 3 ) anEps = Draw::Atof(argv[3]);
     else anEps = 0.001;
     
     GProp_GProps G;
@@ -288,7 +289,7 @@ static Standard_Integer SetVolume (Draw_Interpretor& di, Standard_Integer argc, 
     }
   }
   if ( !aLabel.IsNull() ) {
-    res = atof(argv[3]);
+    res = Draw::Atof(argv[3]);
     Handle(XCAFDoc_Volume) aVolume = new XCAFDoc_Volume;
     if (!aLabel.FindAttribute (XCAFDoc_Volume::GetID(), aVolume)) aLabel.AddAttribute(aVolume);
     aVolume->Set(res);
@@ -326,7 +327,7 @@ static Standard_Integer SetArea (Draw_Interpretor& di, Standard_Integer argc, co
     }
   }
   if ( !aLabel.IsNull() ) {
-    res = atof(argv[3]);
+    res = Draw::Atof(argv[3]);
     Handle(XCAFDoc_Area) aArea = new XCAFDoc_Area;
     if (!aLabel.FindAttribute (XCAFDoc_Area::GetID(), aArea)) aLabel.AddAttribute(aArea);
     aArea->Set(res);
@@ -363,13 +364,13 @@ static Standard_Integer SetCentroid (Draw_Interpretor& di, Standard_Integer argc
     }
   }
   if ( !aLabel.IsNull() ) {
-    aPoint.SetX(atof(argv[3]));
-    aPoint.SetY(atof(argv[4]));
-    aPoint.SetZ(atof(argv[5]));
+    aPoint.SetX(Draw::Atof(argv[3]));
+    aPoint.SetY(Draw::Atof(argv[4]));
+    aPoint.SetZ(Draw::Atof(argv[5]));
     Handle(XCAFDoc_Centroid) aCentroid = new XCAFDoc_Centroid;
     if (!aLabel.FindAttribute (XCAFDoc_Centroid::GetID(), aCentroid)) aLabel.AddAttribute(aCentroid);
     aCentroid->Set(aPoint);
-    di << atof(argv[3])<<" "<<atof(argv[4])<<" "<<atof(argv[5]);
+    di << Draw::Atof(argv[3])<<" "<<Draw::Atof(argv[4])<<" "<<Draw::Atof(argv[5]);
   }
   return 0;
 }
@@ -518,7 +519,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
   Standard_Boolean withVolFix = Standard_False;
-  if ( argc >2 && atof(argv[2]) != 0 ) withVolFix = Standard_True;
+  if ( argc >2 && Draw::Atof(argv[2]) != 0 ) withVolFix = Standard_True;
   Standard_Boolean wholeDoc = ( argc <4 );
   TDF_LabelSequence seq;
   if ( ! wholeDoc ) {
@@ -567,7 +568,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
     //printf ( "%s%-12.12s", ( wholeDoc ? "" : "Label " ), str.ToCString() );
     //fflush ( stdout );
     char string1[260];
-    sprintf (string1, "%s%-12.12s", ( wholeDoc ? "" : "Label " ), str.ToCString() );
+    Sprintf (string1, "%s%-12.12s", ( wholeDoc ? "" : "Label " ), str.ToCString() );
     di << string1;
     Handle(TDataStd_Name) N;
     if ( aLabel.FindAttribute ( TDataStd_Name::GetID(), N ) && ! wholeDoc ) {
@@ -594,7 +595,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	//	(Standard_Integer)( Abs ( G.Mass() ) > 1e-10 ? 100. * ( aArea->Get() - G.Mass() ) / G.Mass() : 999. ),
 	//	( wholeDoc ? "" : "\n" ));
 	char string2[260];
-	sprintf (string2, "%s%9.1f (%3d%%)%s", ( wholeDoc ? "" : "  Area defect:   " ),
+	Sprintf (string2, "%s%9.1f (%3d%%)%s", ( wholeDoc ? "" : "  Area defect:   " ),
 		 aArea->Get() - G.Mass(), 
 		 (Standard_Integer)( Abs ( G.Mass() ) > 1e-10 ? 100. * ( aArea->Get() - G.Mass() ) / G.Mass() : 999. ),
 		 ( wholeDoc ? "" : "\n" ));
@@ -603,14 +604,14 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
       catch (Standard_Failure) {
 	//printf ( "%-16.16s", "exception" );
 	char string3[260];
-	sprintf (string3, "%-16.16s", "exception" );
+	Sprintf (string3, "%-16.16s", "exception" );
 	di << string3;
       }
     }
     else if ( wholeDoc ) {
       //printf ( "%16.16s", "" );
       char string4[260];
-      sprintf (string4, "%16.16s", "" );
+      Sprintf (string4, "%16.16s", "" );
       di << string4;
     }
 
@@ -621,7 +622,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	Standard_Real localVolume;
 	gp_Pnt pcg(0,0,0);
 	if ( withVolFix ) {
-	  Standard_Real tol = atof(argv[2]);
+	  Standard_Real tol = Draw::Atof(argv[2]);
 	  Standard_Boolean withForce = Standard_False;
 	  if ( tol < 0 ) {
 	    withForce = Standard_True;
@@ -641,7 +642,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 		//  (Standard_Integer)( Abs ( localVolume ) > 1e-10 ? 100. * ( aVolume->Get() - localVolume ) / localVolume : 999. ),
 		//  ( wholeDoc ? "" : "\n" ));
 	  char string5[260];
-	  sprintf (string5, "%s%9.1f (%3d%%)%s", ( wholeDoc ? "" : "  Volume defect: " ),
+	  Sprintf (string5, "%s%9.1f (%3d%%)%s", ( wholeDoc ? "" : "  Volume defect: " ),
 		   aVolume->Get() - localVolume,
 		   (Standard_Integer)( Abs ( localVolume ) > 1e-10 ? 100. * ( aVolume->Get() - localVolume ) / localVolume : 999. ),
 		   ( wholeDoc ? "" : "\n" ));
@@ -650,7 +651,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	else if ( wholeDoc ) {
 	  //printf ( "%16.16s", "" );
 	  char string6[260];
-	  sprintf (string6, "%16.16s", "" );
+	  Sprintf (string6, "%16.16s", "" );
 	  di << string6;
 	}
 
@@ -660,12 +661,12 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	  if ( wholeDoc ) {
 	    //printf ( " %7.2f %7.2f %7.2f", 
 		//    p.X() - pcg.X(), p.Y() - pcg.Y(), p.Z() - pcg.Z() );
-	    sprintf (string7, " %7.2f %7.2f %7.2f", 
+	    Sprintf (string7, " %7.2f %7.2f %7.2f", 
 		    p.X() - pcg.X(), p.Y() - pcg.Y(), p.Z() - pcg.Z() );
 	  } else {
 	    //printf ( "  CG defect: dX=%.3f, dY=%.3f, dZ=%.3f\n", 
 		//    p.X() - pcg.X(), p.Y() - pcg.Y(), p.Z() - pcg.Z() );
-	    sprintf (string7, "  CG defect: dX=%.3f, dY=%.3f, dZ=%.3f\n", 
+	    Sprintf (string7, "  CG defect: dX=%.3f, dY=%.3f, dZ=%.3f\n", 
 		    p.X() - pcg.X(), p.Y() - pcg.Y(), p.Z() - pcg.Z() );
 	  }
 	  di << string7;
@@ -673,14 +674,14 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 	else if ( wholeDoc ) {
 	  //printf ( "%24.24s", "" );
 	  char string8[260];
-	  sprintf (string8, "%24.24s", "" );
+	  Sprintf (string8, "%24.24s", "" );
 	  di << string8;
 	}
       }
       catch (Standard_Failure) {
 	//printf ( "%40.40s", "exception" );
 	char string9[260];
-	sprintf (string9, "%40.40s", "exception" );
+	Sprintf (string9, "%40.40s", "exception" );
 	di << string9;
 #ifdef DEB
 	//fflush ( stdout );
@@ -693,7 +694,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
     else if ( wholeDoc ) {
       //printf ( "%40.40s", "" );
       char string10[260];
-      sprintf (string10, "%40.40s", "" );
+      Sprintf (string10, "%40.40s", "" );
       di << string10;
     }
     //fflush ( stdout );
@@ -725,7 +726,7 @@ static Standard_Integer ShapeVolume (Draw_Interpretor& di, Standard_Integer argc
   if (aShape.IsNull()) return 1;
   gp_Pnt aPoint(0,0,0);
   Standard_Real localVolume;
-  Standard_Real tol = atof(argv[2]);
+  Standard_Real tol = Draw::Atof(argv[2]);
   Standard_Boolean withForce = Standard_False;
   if ( tol < 0 ) {
     withForce = Standard_True;
@@ -845,7 +846,7 @@ static Standard_Integer ShapeMassProps (Draw_Interpretor& di, Standard_Integer a
   DDocStd::GetDocument(argv[1], Doc);
   Standard_Real atol = Precision::Confusion();
   if(argc >2)
-    atol  = atof(argv[2]);
+    atol  = Draw::Atof(argv[2]);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
   Standard_Boolean wholeDoc = ( argc <4 );
   TDF_LabelSequence seq;
@@ -915,7 +916,7 @@ static Standard_Integer SetMaterial (Draw_Interpretor& di, Standard_Integer argc
   Handle(XCAFDoc_MaterialTool) MatTool = XCAFDoc_DocumentTool::MaterialTool(Doc->Main());
 
   MatTool->SetMaterial(aLabel, new TCollection_HAsciiString(argv[3]),
-                       new TCollection_HAsciiString(""), atof(argv[4]),
+                       new TCollection_HAsciiString(""), Draw::Atof(argv[4]),
                        new TCollection_HAsciiString("density measure"),
                        new TCollection_HAsciiString("POSITIVE_RATIO_MEASURE"));
 

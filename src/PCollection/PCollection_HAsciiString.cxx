@@ -402,7 +402,7 @@ Standard_Boolean PCollection_HAsciiString::IsRealValue () const
    for(i = 0; i < astring->Length(); i++)
                             cnvbuf[i] = astring->Value(i+1);
    cnvbuf[i] = 0;
-   cnvreal = strtod(cnvbuf,&ptr);
+   cnvreal = Strtod(cnvbuf,&ptr);
    if (ptr < cnvbuf+astring->Length()) return Standard_False;
    else                                return Standard_True;
 }

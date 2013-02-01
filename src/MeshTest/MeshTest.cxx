@@ -199,11 +199,11 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer n
     di << " null shapes is not allowed here\n";
     return 0;
   }
-  Standard_Real aDeflection = atof(argv[2]);
+  Standard_Real aDeflection = Draw::Atof(argv[2]);
 
   Standard_Boolean isInParallel = Standard_False;
   if (nbarg == 4) {
-	isInParallel = atoi(argv[3]) == 1;
+	isInParallel = Draw::Atoi(argv[3]) == 1;
   }
   di << "Incremental Mesh, multi-threading "
     << (isInParallel ? "ON\n" : "OFF\n");
@@ -280,17 +280,17 @@ static Standard_Integer fastdiscret(Draw_Interpretor& di, Standard_Integer nbarg
   TopoDS_Shape S = DBRep::Get(argv[1]);
   if (S.IsNull()) return 1;
 
-  const Standard_Real d = atof(argv[2]);
+  const Standard_Real d = Draw::Atof(argv[2]);
 
   Standard_Boolean WithShare = Standard_True;
-  if (nbarg > 3) WithShare = atoi(argv[3]);
+  if (nbarg > 3) WithShare = Draw::Atoi(argv[3]);
 
   Bnd_Box B;
   BRepBndLib::Add(S,B);
   BRepMesh_FastDiscret MESH(d,0.5,B,WithShare,Standard_True,Standard_False,Standard_True);
 
   //Standard_Integer NbIterations = MESH.NbIterations();
-  //if (nbarg > 4) NbIterations = atoi(argv[4]);
+  //if (nbarg > 4) NbIterations = Draw::Atoi(argv[4]);
   //MESH.NbIterations() = NbIterations;
 
   di<<"Starting FastDiscret with :"<<"\n";
@@ -472,19 +472,19 @@ static Standard_Integer triangule(Draw_Interpretor& di, Standard_Integer nbarg, 
   TopoDS_Shape S = DBRep::Get(id1);
   if (S.IsNull()) return 1;
   di << argv[1] << " ";
-  Standard_Real Deflect=atof(argv[3]);
+  Standard_Real Deflect=Draw::Atof(argv[3]);
   if (Deflect<=0.) {
     di << " Donner la fleche !" << "\n";
     return 1;
   }
 
   if (nbarg >4) {
-    save = (atoi(argv[4])==1);
+    save = (Draw::Atoi(argv[4])==1);
   }
 
   Standard_Boolean partage=Standard_True;
   if (nbarg>5) {
-    partage=atoi(argv[5])==1;
+    partage=Draw::Atoi(argv[5])==1;
   }
 
   Handle(MeshTest_DrawableMesh) DM =
@@ -664,7 +664,7 @@ static Standard_Integer medge (Draw_Interpretor&, Standard_Integer n, const char
   Standard_Integer i,j,e;
   TColStd_SequenceOfInteger& eseq = D->Edges();
   for (i = 2; i < n; i++) {
-    e = atoi(a[i]);
+    e = Draw::Atoi(a[i]);
     if (e > 0)
       eseq.Append(e);
     else if (e < 0) {
@@ -702,7 +702,7 @@ static Standard_Integer mvertex (Draw_Interpretor&, Standard_Integer n, const ch
   Standard_Integer i,j,v;
   TColStd_SequenceOfInteger& vseq = D->Vertices();
   for (i = 2; i < n; i++) {
-    v = atoi(a[i]);
+    v = Draw::Atoi(a[i]);
     if (v > 0)
       vseq.Append(v);
     else if (v < 0) {
@@ -739,7 +739,7 @@ static Standard_Integer triangle (Draw_Interpretor&, Standard_Integer n, const c
   Standard_Integer i,j,v;
   TColStd_SequenceOfInteger& tseq = D->Triangles();
   for (i = 2; i < n; i++) {
-    v = atoi(a[i]);
+    v = Draw::Atoi(a[i]);
     if (v > 0)
       tseq.Append(v);
     else if (v < 0) {
@@ -810,12 +810,12 @@ Handle(BRepMesh_DataStructureOfDelaun) struc = D->Mesh()->Result();
 
 Standard_Integer in=1;
 if (argc>=3) {
-in=atoi(argv[2]);
+in=Draw::Atoi(argv[2]);
 in=Max(1,in);
 }
 Standard_Integer nbn=in;
 if (argc>=4) {
-nbn=atoi(argv[3]);
+nbn=Draw::Atoi(argv[3]);
 nbn=Min(nbn,struc->NbNodes());
 }
 
@@ -850,12 +850,12 @@ if (D.IsNull()) return 1;
 Handle(BRepMesh_DataStructureOfDelaun) struc=D->Mesh()->Result();
 Standard_Integer il=1;
 if (argc>=3) {
-il=atoi(argv[2]);
+il=Draw::Atoi(argv[2]);
 il=Max(1, il);
 }
 Standard_Integer nbl=il;
 if (argc>=4) {
-nbl=atoi(argv[3]);
+nbl=Draw::Atoi(argv[3]);
 nbl=Min(nbl, struc->NbLinks());
 }
 
@@ -890,12 +890,12 @@ if (D.IsNull()) return 1;
 Handle(BRepMesh_DataStructureOfDelaun) struc=D->Mesh()->Result();
 Standard_Integer ie=1;
 if (argc>=3) {
-ie=atoi(argv[2]);
+ie=Draw::Atoi(argv[2]);
 ie=Max(1, ie);
 }
 Standard_Integer nbe=ie;
 if (argc>=4) {
-nbe=atoi(argv[3]);
+nbe=Draw::Atoi(argv[3]);
 nbe=Min(nbe, struc->NbElements());
 }
 
@@ -1429,7 +1429,7 @@ Standard_Integer onetriangulation(Draw_Interpretor&, Standard_Integer nbarg, con
   }
   }
 
-  sprintf(name, "%s_%i", "tr", nbshell);
+  Sprintf(name, "%s_%i", "tr", nbshell);
   DrawTrSurf::Set(name, TFinale);
 
   }
@@ -1502,10 +1502,10 @@ Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer nbarg, const cha
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(argv[1]);
 
   Standard_Real X, Y, Z, U0;
-  X = atof(argv[2]);
-  Y = atof(argv[3]);
-  Z = atof(argv[4]);
-  U0 = atof(argv[5]);
+  X = Draw::Atof(argv[2]);
+  Y = Draw::Atof(argv[3]);
+  Z = Draw::Atof(argv[4]);
+  U0 = Draw::Atof(argv[5]);
 
   gp_Pnt P(X, Y, Z);
   GeomAdaptor_Curve GC(C);
@@ -1586,9 +1586,9 @@ Standard_Integer triedgepoints(Draw_Interpretor& di, Standard_Integer nbarg, con
           P3d.Transform(aLoc.Transformation());
 
         if( anEdgeMap.Extent() > 1 )
-          sprintf(p,"%d_%d",nbEdge,j);
+          Sprintf(p,"%d_%d",nbEdge,j);
         else
-          sprintf(p,"%d",j);
+          Sprintf(p,"%d",j);
 	      DBRep::Set( newname, BRepBuilderAPI_MakeVertex(P3d) );
 	      di.AppendElement(newname);
       }

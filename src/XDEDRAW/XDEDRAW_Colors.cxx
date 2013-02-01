@@ -17,9 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <XDEDRAW_Colors.ixx>
 
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 
@@ -52,7 +52,7 @@ static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, c
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  Quantity_Color Col ( atof(argv[3]), atof(argv[4]), atof(argv[5]), Quantity_TOC_RGB );
+  Quantity_Color Col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
   
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   XCAFDoc_ColorType ctype = ( argc <=6 ? XCAFDoc_ColorGen : 
@@ -154,7 +154,7 @@ static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, c
   TDF_Label aLabel;
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
 
-  Quantity_Color Col ( atof(argv[2]), atof(argv[3]), atof(argv[4]), Quantity_TOC_RGB );
+  Quantity_Color Col ( Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB );
   aLabel = myColors->AddColor(Col);
   
   TCollection_AsciiString Entry;
@@ -193,7 +193,7 @@ static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, 
 
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   
-  Quantity_Color Col ( atof(argv[2]), atof(argv[3]), atof(argv[4]), Quantity_TOC_RGB );
+  Quantity_Color Col ( Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB );
   
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(myColors->FindColor(Col), Entry);
@@ -235,7 +235,7 @@ static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer ar
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
   Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
   Standard_Boolean isvisible = Standard_False;
-  if ( (argc==4) && (atoi(argv[3])==1) ) isvisible = Standard_True;
+  if ( (argc==4) && (Draw::Atoi(argv[3])==1) ) isvisible = Standard_True;
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
@@ -341,7 +341,7 @@ static Standard_Integer setStyledcolor (Draw_Interpretor& di, Standard_Integer a
   TopoDS_Shape aShape;
   aShape = DBRep::Get(argv[2]);
 
-  Quantity_Color col ( atof(argv[3]), atof(argv[4]), atof(argv[5]), Quantity_TOC_RGB );
+  Quantity_Color col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
   XCAFDoc_ColorType type;
   if ( argv[6] && argv[6][0] == 's' )
     type = XCAFDoc_ColorSurf;

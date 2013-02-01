@@ -89,10 +89,10 @@ void TopOpeBRep_ALWL::Set(const Standard_Boolean b,
     for (Standard_Integer i=0; i < n; i++) {
       const char *p = a[i];
       if      ( !strcasecmp(p,"def") ) {
-	if ( ++i < n ) SetDef(atof(a[i]));
+	if ( ++i < n ) SetDef(Atof(a[i]));
       }
       else if ( !strcasecmp(p,"pas") ) {
-	if ( ++i < n ) SetPas(atof(a[i]));
+	if ( ++i < n ) SetPas(Atof(a[i]));
       }
       else if ( !strcasecmp(p,"nbp") ) { 
 	if ( ++i < n ) SetNbp(atoi(a[i]));

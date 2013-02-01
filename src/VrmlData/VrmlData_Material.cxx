@@ -202,7 +202,7 @@ VrmlData_ErrorStatus VrmlData_Material::Write (const char * thePrefix) const
     const Standard_Real aConf (0.001 * Precision::Confusion());
 
     if (OK(aStatus) && fabs(myAmbientIntensity - 0.2) > aConf) {
-      sprintf (buf, "%.6g", myAmbientIntensity);
+      Sprintf (buf, "%.6g", myAmbientIntensity);
       aStatus = aScene.WriteLine ("ambientIntensity ", buf);
     }
     if (OK(aStatus)) {
@@ -211,30 +211,30 @@ VrmlData_ErrorStatus VrmlData_Material::Write (const char * thePrefix) const
           (val[1] - 0.8) * (val[1] - 0.8) +
           (val[2] - 0.8) * (val[2] - 0.8) > 1e-7)
       {
-        sprintf (buf, "%.6g %.6g %.6g", val[0], val[1], val[2]);
+        Sprintf (buf, "%.6g %.6g %.6g", val[0], val[1], val[2]);
         aStatus = aScene.WriteLine ("diffuseColor     ", buf);
       }
     }
     if (OK(aStatus)) {
       myEmissiveColor.Values  (val[0], val[1], val[2], bidType);
       if (val[0] * val[0] + val[1] * val[1] + val[2] * val[2] > 1e-7) {      
-        sprintf (buf, "%.6g %.6g %.6g", val[0], val[1], val[2]);
+        Sprintf (buf, "%.6g %.6g %.6g", val[0], val[1], val[2]);
         aStatus = aScene.WriteLine ("emissiveColor    ", buf);
       }
     }
     if (OK(aStatus) && fabs(myShininess - 0.2) > aConf) {
-      sprintf (buf, "%.6g", myShininess);
+      Sprintf (buf, "%.6g", myShininess);
       aStatus = aScene.WriteLine ("shininess        ", buf);
     }
     if (OK(aStatus)) {
       mySpecularColor.Values  (val[0], val[1], val[2], bidType);
       if (val[0] * val[0] + val[1] * val[1] + val[2] * val[2] > 1e-7) {      
-        sprintf (buf, "%.6g %.6g %.6g", val[0], val[1], val[2]);
+        Sprintf (buf, "%.6g %.6g %.6g", val[0], val[1], val[2]);
         aStatus = aScene.WriteLine ("specularColor    ", buf);
       }
     }
     if (OK(aStatus) && myTransparency > aConf) {
-      sprintf (buf, "%.6g", myTransparency);
+      Sprintf (buf, "%.6g", myTransparency);
       aStatus = aScene.WriteLine ("transparency     ", buf);
     }
 

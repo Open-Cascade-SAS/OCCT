@@ -55,8 +55,8 @@ Interface_FloatWriter::Interface_FloatWriter (const Standard_Integer chars)
     strcpy(therangeform ,"%f");
   } else {
     char pourcent = '%'; char point = '.';
-    sprintf(themainform,  "%c%d%c%dE",pourcent,chars+2,point,chars);
-    sprintf(therangeform, "%c%d%c%df",pourcent,chars+2,point,chars);
+    Sprintf(themainform,  "%c%d%c%dE",pourcent,chars+2,point,chars);
+    Sprintf(therangeform, "%c%d%c%df",pourcent,chars+2,point,chars);
   }
   therange1 = 0.1; therange2 = 1000.;
   thezerosup = Standard_True;
@@ -111,10 +111,10 @@ Standard_Integer Interface_FloatWriter::Convert (const Standard_Real val,
   //
   if ( (val >= R1 && val <  R2) ||
       (val <= -R1 && val > -R2) ) {
-    sprintf(pText,rangeform,val);
+    Sprintf(pText,rangeform,val);
   }
   else {
-    sprintf(pText,mainform,val);
+    Sprintf(pText,mainform,val);
   }
   
   if (zsup) {

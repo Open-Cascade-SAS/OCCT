@@ -103,7 +103,7 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
       return 1;
     }
 
-    Standard_Real p1 = atof(a[i+1]);
+    Standard_Real p1 = Draw::Atof(a[i+1]);
     if (*a[i] == 'F') {
       MF.AddFillet(V,p1);
     }
@@ -116,7 +116,7 @@ static Standard_Integer chfi2d(Draw_Interpretor& di, Standard_Integer n, const c
 	}
 	return 1;
       }
-      Standard_Real p2 = atof(a[i+2]);
+      Standard_Real p2 = Draw::Atof(a[i+2]);
       if (a[i][2] == 'D') {
 	MF.AddChamfer(E1,E2,p1,p2);
       }

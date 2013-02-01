@@ -89,7 +89,7 @@ static Standard_Integer solutions(Draw_Interpretor& di,
   if (ct3.IsDone()) {
     for (Standard_Integer i = 1 ; i <= ct3.NbSolutions() ; i++) {
       Handle(Geom2d_Circle) C = new Geom2d_Circle(ct3.ThisSolution(i));
-      sprintf(solname,"%s_%d",name,i);
+      Sprintf(solname,"%s_%d",name,i);
       char* temp = solname; // pour portage WNT
       DrawTrSurf::Set(temp,C);
       di << solname << " ";
@@ -113,7 +113,7 @@ static Standard_Integer solutions(Draw_Interpretor& di,
   if (ct3.IsDone()) {
     for (Standard_Integer i = 1 ; i <= ct3.NbSolutions() ; i++) {
       Handle(Geom2d_Circle) C = new Geom2d_Circle(ct3.ThisSolution(i));
-      sprintf(solname,"%s_%d",name,i);
+      Sprintf(solname,"%s_%d",name,i);
       char* temp = solname; // pour portage WNT
       DrawTrSurf::Set(temp,C);
       di << solname << " ";
@@ -144,7 +144,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
   Standard_Boolean ip3 = DrawTrSurf::GetPoint2d(a[4],P3);
   
   Standard_Real tol = Precision::Confusion();
-  if (n > 5) tol = atof(a[5]);
+  if (n > 5) tol = Draw::Atof(a[5]);
 
 
   if (!C1.IsNull()) {
@@ -173,7 +173,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// C-C-R
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
 				    Geom2dGcc::Unqualified(C2),
-				    atof(a[4]),tol);
+				    Draw::Atof(a[4]),tol);
 	return solutions(di,ct3,a[1]);
       }
     }
@@ -201,7 +201,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// C-P-R
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
 				    new Geom2d_CartesianPoint(P2),
-				    atof(a[4]),tol);
+				    Draw::Atof(a[4]),tol);
 	return solutions(di,ct3,a[1]);
       }
     }
@@ -212,7 +212,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// C-R-C
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
 				    Geom2dGcc::Unqualified(C3),
-				    atof(a[3]),
+				    Draw::Atof(a[3]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -221,7 +221,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// C-R-P
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C1),
 				    new Geom2d_CartesianPoint(P3),
-				    atof(a[3]),
+				    Draw::Atof(a[3]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -260,7 +260,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// P-C-R
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C2),
 				    new Geom2d_CartesianPoint(P1),
-				    atof(a[4]),tol);
+				    Draw::Atof(a[4]),tol);
 	return solutions(di,ct3,a[1]);
       }
     }
@@ -288,7 +288,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// P-P-R
 	Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P1),
 				    new Geom2d_CartesianPoint(P2),
-				    atof(a[4]),tol);
+				    Draw::Atof(a[4]),tol);
 	return solutions(di,ct3,a[1]);
       }
     }
@@ -299,7 +299,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// P-R-C
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C3),
 				    new Geom2d_CartesianPoint(P1),
-				    atof(a[3]),
+				    Draw::Atof(a[3]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -308,7 +308,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// P-R-P
 	Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P1),
 				    new Geom2d_CartesianPoint(P3),
-				    atof(a[3]),
+				    Draw::Atof(a[3]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -329,7 +329,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// R-C-C
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C2),
 				    Geom2dGcc::Unqualified(C3),
-				    atof(a[2]),
+				    Draw::Atof(a[2]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -338,7 +338,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// R-C-P
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C2),
 				    new Geom2d_CartesianPoint(P3),
-				    atof(a[2]),
+				    Draw::Atof(a[2]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -355,7 +355,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// R-P-C
 	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C3),
 				    new Geom2d_CartesianPoint(P2),
-				    atof(a[2]),
+				    Draw::Atof(a[2]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -364,7 +364,7 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
 	// R-P-P
 	Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P2),
 				    new Geom2d_CartesianPoint(P3),
-				    atof(a[2]),
+				    Draw::Atof(a[2]),
 				    tol);
 	return solutions(di,ct3,a[1]);
       }
@@ -411,7 +411,7 @@ static Standard_Integer lintang (Draw_Interpretor& di,Standard_Integer n, const 
       di << "Second argument must be a line";
       return 1;
     }
-    Standard_Real ang = atof(a[4]) * (M_PI / 180.0);
+    Standard_Real ang = Draw::Atof(a[4]) * (M_PI / 180.0);
     Geom2dGcc_Lin2dTanObl ct3(Geom2dGcc::Unqualified(C1),
 			      L->Lin2d(),
 			      Precision::Angular(),
@@ -420,7 +420,7 @@ static Standard_Integer lintang (Draw_Interpretor& di,Standard_Integer n, const 
     if (ct3.IsDone()) {
       for (Standard_Integer i = 1 ; i <= ct3.NbSolutions() ; i++) {
 	Handle(Geom2d_Line) LS = new Geom2d_Line(ct3.ThisSolution(i));
-	sprintf(solname,"%s_%d",a[1],i);
+	Sprintf(solname,"%s_%d",a[1],i);
 	char* temp = solname; // pour portage WNT
 	DrawTrSurf::Set(temp,LS);
 	di << solname << " ";
@@ -438,7 +438,7 @@ static Standard_Integer lintang (Draw_Interpretor& di,Standard_Integer n, const 
     if (ct3.IsDone()) {
       for (Standard_Integer i = 1 ; i <= ct3.NbSolutions() ; i++) {
 	Handle(Geom2d_Line) LS = new Geom2d_Line(ct3.ThisSolution(i));
-	sprintf(solname,"%s_%d",a[1],i);
+	Sprintf(solname,"%s_%d",a[1],i);
 	char* temp = solname; // pour portage WNT
 	DrawTrSurf::Set(temp,LS);
 	di << solname << " ";
@@ -684,7 +684,7 @@ static Standard_Integer tanginterpol (Draw_Interpretor& di,
     periodic_flag = Standard_True ;
     num_read += 1 ;
   }
-  num_parameters = atoi(a[num_read]) ;
+  num_parameters = Draw::Atoi(a[num_read]) ;
 
   if (num_parameters < 2) {
     num_parameters = 2 ;
@@ -703,7 +703,7 @@ static Standard_Integer tanginterpol (Draw_Interpretor& di,
   num_read += 1 ;
   while (num_read <= num_parameters * 3 + num_start ) {
     for (jj = 1 ; jj <= 3 ; jj++) {
-      a_point.SetCoord(jj,atof(a[num_read])) ;
+      a_point.SetCoord(jj,Draw::Atof(a[num_read])) ;
       num_read += 1 ;
     }
     PointsArrayPtr->SetValue(ii,a_point) ;
@@ -728,7 +728,7 @@ static Standard_Integer tanginterpol (Draw_Interpretor& di,
     ii = 1 ;
     while (ii <= num_tangents) {
       for (jj = 1 ; jj <= 3 ; jj++) {
-	a_vector.SetCoord(jj,atof(a[num_read])) ;
+	a_vector.SetCoord(jj,Draw::Atof(a[num_read])) ;
 	num_read += 1 ;
       }
       TangentsArray.SetValue(ii,a_vector) ;

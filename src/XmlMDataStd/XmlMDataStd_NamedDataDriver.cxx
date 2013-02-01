@@ -767,7 +767,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
 	aValueStr2 += TCollection_AsciiString(anArr1.Value(j));
 #else
 	char aValueChar[32];
-	sprintf(aValueChar, "%.15g", anArr1.Value(j));
+	Sprintf(aValueChar, "%.15g", anArr1.Value(j));
 	TCollection_AsciiString aValueStr(aValueChar);
 	aValueStr2 += aValueStr;
 #endif

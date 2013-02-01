@@ -227,7 +227,7 @@ static Standard_Integer dump (Draw_Interpretor& di, Standard_Integer argc, const
 
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   Standard_Boolean deep = Standard_False;
-  if ( (argc==3) && (atoi(argv[2])==1) ) deep = Standard_True;
+  if ( (argc==3) && (Draw::Atoi(argv[2])==1) ) deep = Standard_True;
   myAssembly->Dump(deep);
   return 0;
 }
@@ -483,7 +483,7 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
 
   // init viewer
 //  char string[260];
-//  sprintf ( string, "AISInitViewer %s", argv[1] );
+//  Sprintf ( string, "AISInitViewer %s", argv[1] );
 //  di.Eval ( string );
   TDF_Label acces = Doc->GetData()->Root();
   Handle(TPrsStd_AISViewer) viewer;
@@ -589,7 +589,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   TDF_Tool::Label(browser->Data(),argv[2],lab);
   if ( lab.IsNull() ) { di << "ERROR: label is Null: " << argv[2] << "\n"; return 0; }
 
-  Standard_Integer num = atoi ( argv[3] );
+  Standard_Integer num = Draw::Atoi ( argv[3] );
   TDF_AttributeIterator itr(lab,Standard_False);
   for (Standard_Integer i=1; itr.More() && i < num; i++) itr.Next();
 
@@ -713,7 +713,7 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
     Handle(XCAFDoc_Color) val = Handle(XCAFDoc_Color)::DownCast ( att );
     Quantity_Color C = val->GetColor();
     char string[260];
-    sprintf ( string, "%s (%g, %g, %g)", C.StringName ( C.Name() ),
+    Sprintf ( string, "%s (%g, %g, %g)", C.StringName ( C.Name() ),
 	      C.Red(), C.Green(), C.Blue() );
     di << string;
   }
@@ -811,7 +811,7 @@ static Standard_Integer setviewName (Draw_Interpretor& di, Standard_Integer argc
     return 1;
   }
   Standard_Boolean mode = Standard_False;
-  if (atoi(argv[1]) == 1) mode = Standard_True;
+  if (Draw::Atoi(argv[1]) == 1) mode = Standard_True;
   XCAFPrs::SetViewNameMode(mode);
   return 0;
 }
@@ -845,7 +845,7 @@ static Standard_Integer XSetTransparency (Draw_Interpretor& di, Standard_Integer
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
 
-  const Standard_Real aTransparency = atof(argv[2]);
+  const Standard_Real aTransparency = Draw::Atof(argv[2]);
 
   // collect sequence of labels
   Handle(XCAFDoc_ShapeTool) shapes = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
@@ -965,28 +965,28 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
   Aspect_TypeOfLine  aLineType = Aspect_TOL_SOLID;
   
   // turn boundaries on/off
-  Standard_Boolean isBoundaryDraw = (atoi (argv[3]) == 1);
+  Standard_Boolean isBoundaryDraw = (Draw::Atoi (argv[3]) == 1);
   aDrawer->SetFaceBoundaryDraw (isBoundaryDraw);
   
   // set boundary color
   if (argc >= 7)
   {
     // Text color
-    aRed   = atof (argv[4])/255.;
-    aGreen = atof (argv[5])/255.;
-    aBlue  = atof (argv[6])/255.;
+    aRed   = Draw::Atof (argv[4])/255.;
+    aGreen = Draw::Atof (argv[5])/255.;
+    aBlue  = Draw::Atof (argv[6])/255.;
   }
 
   // set line width
   if (argc >= 8)
   {
-    aWidth = (Standard_Real)atof (argv[7]);
+    aWidth = (Standard_Real)Draw::Atof (argv[7]);
   }
 
   // select appropriate line type
   if (argc == 9)
   {
-    switch (atoi (argv[8]))
+    switch (Draw::Atoi (argv[8]))
     {
       case 1: aLineType = Aspect_TOL_DASH;    break;
       case 2: aLineType = Aspect_TOL_DOT;     break;

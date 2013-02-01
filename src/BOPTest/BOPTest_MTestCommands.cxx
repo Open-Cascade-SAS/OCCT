@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
@@ -67,10 +68,10 @@ static Standard_Integer bbedge (Draw_Interpretor& di,
   Standard_Real aTol=.0000001, aDeflection=.01;
   Standard_Real f1, l1, f2, l2;
 
-  f1=atof (a[3]);
-  l1=atof (a[4]);
-  f2=atof (a[5]);
-  l2=atof (a[6]);
+  f1=Draw::Atof (a[3]);
+  l1=Draw::Atof (a[4]);
+  f2=Draw::Atof (a[5]);
+  l2=Draw::Atof (a[6]);
 
   IntTools_Range aR1, aR2;
   aR1.SetFirst(f1);  aR1.SetLast(l1);
@@ -172,15 +173,15 @@ static Standard_Integer bedge (Draw_Interpretor& di,
   aR2.SetFirst(f2);  aR2.SetLast(l2);
 
   if (n>=4) {  
-    aDiscr=atoi (a[3]);
+    aDiscr=Draw::Atoi (a[3]);
   }
 
   if (n>=5) {  
-    aTol=atof (a[4]);
+    aTol=Draw::Atof (a[4]);
   }
 
   if (n>=6) {  
-    aDeflection=atof (a[5]);
+    aDeflection=Draw::Atof (a[5]);
   }
 
   di << " bedge: ===Begin===\n";

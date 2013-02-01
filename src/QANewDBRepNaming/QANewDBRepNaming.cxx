@@ -189,14 +189,14 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
 
 // ***
 
-  if (!atoi(a[3])) return 0;
+  if (!Draw::Atoi(a[3])) return 0;
   Standard_Real aDX = 100.0;
   Standard_Real aDY = 100.0;
   Standard_Real aDZ = 100.0;
   if(nb > 6) {
-    aDX = atof(a[6]);
-    if(nb > 7) aDY = atof(a[7]);
-    if(nb > 8) aDZ = atof(a[8]);
+    aDX = Draw::Atof(a[6]);
+    if(nb > 7) aDY = Draw::Atof(a[7]);
+    if(nb > 8) aDZ = Draw::Atof(a[8]);
   }
 //  cout<<endl;
 //  cout<<"TRANSLATION ... DX = "<<aDX <<" DY = "<< aDY <<" DZ = " << aDZ <<endl;
@@ -266,7 +266,7 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
       if (aRes.IsNull()) {
 //  	cout<<"Failure of TNaming_Tool::FindShape()!"<<endl;
 // 	return 1;
-	sprintf(aNotSolved,"%s %d",aNotSolved,i);
+	Sprintf(aNotSolved,"%s %d",aNotSolved,i);
 	isFailured = Standard_True;
 //	break;
 	continue;
@@ -338,7 +338,7 @@ static Standard_Integer QANewDBRepNaming_CheckSelectShape(Draw_Interpretor& di, 
   DDF::AddLabel(DF, a[2], L);
 
   di<<"SELECT A SUB-SHAPE ..."<<"\n"; 
-  TopoDS_Shape aSelectedShape = ViewerTest::PickShape((TopAbs_ShapeEnum)atoi(a[3]));
+  TopoDS_Shape aSelectedShape = ViewerTest::PickShape((TopAbs_ShapeEnum)Draw::Atoi(a[3]));
   if (aSelectedShape.IsNull()) {
     di<<"QANewDBRepNaming_CheckSelectShape(): Nothing is selected ..."<<"\n";
     return 1;
@@ -351,7 +351,7 @@ static Standard_Integer QANewDBRepNaming_CheckSelectShape(Draw_Interpretor& di, 
     Handle(TNaming_NamedShape) NS;
     if (itr.Value().FindAttribute(TNaming_NamedShape::GetID(), NS)) {
       aContext = NS->Get();
-      TopExp_Explorer expl(aContext, (TopAbs_ShapeEnum)atoi(a[3]));
+      TopExp_Explorer expl(aContext, (TopAbs_ShapeEnum)Draw::Atoi(a[3]));
       for (; expl.More(); expl.Next()) {
 	if (expl.Current().IsSame(aSelectedShape)) {
 	  di<<"QANewDBRepNaming_CheckSelectShape(): The context is found at ";

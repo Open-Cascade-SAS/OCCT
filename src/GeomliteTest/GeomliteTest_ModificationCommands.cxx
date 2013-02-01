@@ -59,7 +59,7 @@ static Standard_Integer extendcurve (Draw_Interpretor& di, Standard_Integer n, c
 	apres = Standard_False ;
       }
   }
-  Standard_Integer cont=atoi(a[3]);  
+  Standard_Integer cont=Draw::Atoi(a[3]);  
   GeomLib::ExtendCurveToPoint(GB,P,cont,apres);
   DrawTrSurf::Set(a[1],GB);
   return 0;
@@ -80,8 +80,8 @@ static Standard_Integer extendsurf (Draw_Interpretor& di, Standard_Integer n, co
     di << "extendsurf needs a Bounded surface";
     return 1;
   }
-  Standard_Real chord=atof(a[2]);
-  Standard_Integer cont=atoi(a[3]);
+  Standard_Real chord=Draw::Atof(a[2]);
+  Standard_Integer cont=Draw::Atoi(a[3]);
   Standard_Boolean enU = Standard_True, apres = Standard_True;
   if (n >= 5) {
       if (strcmp(a[4], "V") == 0) {
@@ -116,10 +116,10 @@ static Standard_Integer samerange (Draw_Interpretor& di, Standard_Integer n, con
   Handle(Geom2d_Curve) C = DrawTrSurf::GetCurve2d(a[2]);
   Handle(Geom2d_Curve) Res;
   Standard_Real f, l, rf, rl;
-  f = atof(a[3]);
-  l = atof(a[4]);
-  rf = atof(a[5]);
-  rl = atof(a[6]);
+  f = Draw::Atof(a[3]);
+  l = Draw::Atof(a[4]);
+  rf = Draw::Atof(a[5]);
+  rl = Draw::Atof(a[6]);
 
   GeomLib::SameRange(Precision::PConfusion(), C, 
 		     f, l, rf, rl, Res);

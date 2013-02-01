@@ -76,10 +76,6 @@ Handle(Standard_Transient) XmlLDrivers::Factory(const Standard_GUID& theGUID)
 //=======================================================================
 TCollection_AsciiString XmlLDrivers::CreationDate ()
 {
-  const TCollection_AsciiString anOldNumLocale =
-    (Standard_CString) setlocale (LC_NUMERIC, NULL);
-  setlocale(LC_NUMERIC, "C");
-
   Standard_Character nowstr[SLENGTH];
   time_t nowbin;
   struct tm *nowstruct;
@@ -92,7 +88,6 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
   if (strftime(nowstr, SLENGTH, "%Y-%m-%d", nowstruct) == (size_t) 0)
     cerr << "Storage ERROR : Could not get string from strftime()" << endl;
 
-  setlocale(LC_NUMERIC, (char *) anOldNumLocale.ToCString()) ;
   return nowstr;
 }
 

@@ -108,12 +108,12 @@ Standard_Boolean Poly_CoherentNode::RemoveTriangle
 void Poly_CoherentNode::Dump(Standard_OStream& theStream) const
 {
   char buf[256];
-  sprintf (buf, "  X =%9.4f; Y =%9.4f; Z =%9.4f", X(), Y(), Z());
+  Sprintf (buf, "  X =%9.4f; Y =%9.4f; Z =%9.4f", X(), Y(), Z());
   theStream << buf << endl;
   Poly_CoherentTriPtr::Iterator anIter(* myTriangles);
   for (; anIter.More(); anIter.Next()) {
     const Poly_CoherentTriangle& aTri = anIter.Value();
-    sprintf (buf, "      %5d %5d %5d", aTri.Node(0),aTri.Node(1),aTri.Node(2));
+    Sprintf (buf, "      %5d %5d %5d", aTri.Node(0),aTri.Node(1),aTri.Node(2));
     theStream << buf << endl;
   }
 }

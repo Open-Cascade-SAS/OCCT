@@ -86,7 +86,7 @@ static Standard_Integer Ascendants (Draw_Interpretor& di, Standard_Integer n, co
 
   Standard_Integer T;
 
-  if (n > 3) T = atoi(a[3]);
+  if (n > 3) T = Draw::Atoi(a[3]);
   else       T = ND->Transaction ();
 
   //TNaming_OldShapeIterator it (S, T, US);  
@@ -95,7 +95,7 @@ static Standard_Integer Ascendants (Draw_Interpretor& di, Standard_Integer n, co
   TCollection_AsciiString entry;
   for (;it.More (); it.Next ()) {
     S = it.Shape ();
-    sprintf (name,"%s_%s_%d",a[2],"old", i++);
+    Sprintf (name,"%s_%s_%d",a[2],"old", i++);
     DBRep::Set (name,it.Shape());
     TDF_Label Label = it.Label ();
     TDF_Tool::Entry(Label,entry);
@@ -127,7 +127,7 @@ static Standard_Integer Descendants (Draw_Interpretor& di, Standard_Integer n, c
 
   Standard_Integer T;
 
-  if (n > 3) T = atoi(a[3]);
+  if (n > 3) T = Draw::Atoi(a[3]);
   else       T = ND->Transaction ();
 
   TNaming_NewShapeIterator it (S, T, ND->Root());
@@ -135,7 +135,7 @@ static Standard_Integer Descendants (Draw_Interpretor& di, Standard_Integer n, c
   TCollection_AsciiString entry;
   for (;it.More (); it.Next ()) {
     S = it.Shape ();
-    sprintf (name,"%s_%s_%d",a[2],"new", i++);
+    Sprintf (name,"%s_%s_%d",a[2],"new", i++);
     DBRep::Set (name,it.Shape ());
     TDF_Label Label = it.Label ();
     TDF_Tool::Entry(Label,entry);
@@ -285,7 +285,7 @@ static Standard_Integer Exploreshape (Draw_Interpretor& di, Standard_Integer n, 
 //  ND->Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
   
   Standard_Integer Trans = ND->Transaction();
-  if (n == 5) { Trans = (Standard_Integer ) atof(a[4]);}
+  if (n == 5) { Trans = (Standard_Integer ) Draw::Atof(a[4]);}
   
   TDF_Label Lab;
   DDF::FindLabel(ND,a[2],Lab);
@@ -304,11 +304,11 @@ static Standard_Integer Exploreshape (Draw_Interpretor& di, Standard_Integer n, 
   
   for (TNaming_Iterator itL(Lab,Trans) ; itL.More(); itL.Next()) {
     if (!itL.OldShape().IsNull()) {
-      sprintf(name,"%s%s_%d","old",a[3],NbShapes);
+      Sprintf(name,"%s%s_%d","old",a[3],NbShapes);
       DBRep::Set (name,itL.OldShape());
     }
     if (!itL.NewShape().IsNull()) {    
-      sprintf(name,"%s_%d",a[3],NbShapes);
+      Sprintf(name,"%s_%d",a[3],NbShapes);
       DBRep::Set (name,itL.NewShape());
     }
     NbShapes++;
@@ -393,7 +393,7 @@ static Standard_Integer Collect (Draw_Interpretor& di,
     if (!DDF::GetDF(arg[1],DF)) return 1;
     if (!DDF::Find(DF,arg[2],TNaming_NamedShape::GetID(),A)) return 1;
     if (nb >= 4) {
-      OnlyModif = atoi(arg[3]);
+      OnlyModif = Draw::Atoi(arg[3]);
     }
     TNaming_Tool::Collect(A,MNS,OnlyModif);
     for (TNaming_MapIteratorOfMapOfNamedShape it(MNS); it.More(); it.Next()) {

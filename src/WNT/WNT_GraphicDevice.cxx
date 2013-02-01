@@ -600,7 +600,7 @@ static int __fastcall _createColorRamp ( HPALETTE* pal ) {
 
  if (  GetEnvironmentVariable ( "CSF_GammaValue", buff, 32 )  ) {
  
-  gamma = atof ( buff );
+  gamma = Atof ( buff );
 
   if ( gamma == 0.0 )
 

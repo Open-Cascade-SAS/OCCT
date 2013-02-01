@@ -172,7 +172,7 @@ static Standard_Integer Loc(Draw_Interpretor& theCommands,
   i = 0;
   for (; its.More(); its.Next()) {
     i++;
-    sprintf(p,"%d",i);
+    Sprintf(p,"%d",i);
     DBRep::Set(newname,its.Value());
   }
   if (i >= 2) {
@@ -223,10 +223,10 @@ static Standard_Integer HOLE1(Draw_Interpretor& theCommands,
   if (narg<10 || narg == 11) return 1;
   TopoDS_Shape S = DBRep::Get(a[2]);
 
-  gp_Pnt Or(atof(a[3]),atof(a[4]),atof(a[5]));
-  gp_Dir Di(atof(a[6]),atof(a[7]),atof(a[8]));
+  gp_Pnt Or(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]),Draw::Atof(a[7]),Draw::Atof(a[8]));
 
-  Standard_Real Radius = atof(a[9]);
+  Standard_Real Radius = Draw::Atof(a[9]);
 
   theHole.Init(S,gp_Ax1(Or,Di));
 
@@ -234,8 +234,8 @@ static Standard_Integer HOLE1(Draw_Interpretor& theCommands,
     theHole.Perform(Radius);
   }
   else {
-    Standard_Real pfrom = atof(a[10]);
-    Standard_Real pto   = atof(a[11]);
+    Standard_Real pfrom = Draw::Atof(a[10]);
+    Standard_Real pto   = Draw::Atof(a[11]);
     theHole.Perform(Radius,pfrom,pto,WithControl);
   }
 
@@ -257,10 +257,10 @@ static Standard_Integer HOLE2(Draw_Interpretor& theCommands,
   if (narg<10) return 1;
   TopoDS_Shape S = DBRep::Get(a[2]);
 
-  gp_Pnt Or(atof(a[3]),atof(a[4]),atof(a[5]));
-  gp_Dir Di(atof(a[6]),atof(a[7]),atof(a[8]));
+  gp_Pnt Or(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]),Draw::Atof(a[7]),Draw::Atof(a[8]));
 
-  Standard_Real Radius = atof(a[9]);
+  Standard_Real Radius = Draw::Atof(a[9]);
 
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformThruNext(Radius,WithControl);
@@ -283,10 +283,10 @@ static Standard_Integer HOLE3(Draw_Interpretor& theCommands,
   if (narg<10) return 1;
   TopoDS_Shape S = DBRep::Get(a[2]);
 
-  gp_Pnt Or(atof(a[3]),atof(a[4]),atof(a[5]));
-  gp_Dir Di(atof(a[6]),atof(a[7]),atof(a[8]));
+  gp_Pnt Or(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]),Draw::Atof(a[7]),Draw::Atof(a[8]));
 
-  Standard_Real Radius = atof(a[9]);
+  Standard_Real Radius = Draw::Atof(a[9]);
 
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformUntilEnd(Radius,WithControl);
@@ -309,11 +309,11 @@ static Standard_Integer HOLE4(Draw_Interpretor& theCommands,
   if (narg<11) return 1;
   TopoDS_Shape S = DBRep::Get(a[2]);
 
-  gp_Pnt Or(atof(a[3]),atof(a[4]),atof(a[5]));
-  gp_Dir Di(atof(a[6]),atof(a[7]),atof(a[8]));
+  gp_Pnt Or(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
+  gp_Dir Di(Draw::Atof(a[6]),Draw::Atof(a[7]),Draw::Atof(a[8]));
 
-  Standard_Real Radius = atof(a[9]);
-  Standard_Real Length = atof(a[10]);
+  Standard_Real Radius = Draw::Atof(a[9]);
+  Standard_Real Length = Draw::Atof(a[10]);
 
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformBlind(Radius,Length,WithControl);
@@ -378,19 +378,19 @@ static Standard_Integer PRW(Draw_Interpretor& theCommands,
       if (narg < 11) {
 	return 1;
       }
-      V.SetCoord(atof(a[6]),atof(a[7]),atof(a[8]));
+      V.SetCoord(Draw::Atof(a[6]),Draw::Atof(a[7]),Draw::Atof(a[8]));
       FFrom   = DBRep::Get(a[4],TopAbs_SHAPE);
       FUntil  = DBRep::Get(a[5],TopAbs_SHAPE);
       borne = 9;
     }
     else {
-      V.SetCoord(atof(a[5]),atof(a[6]),atof(a[7]));
+      V.SetCoord(Draw::Atof(a[5]),Draw::Atof(a[6]),Draw::Atof(a[7]));
       FUntil  = DBRep::Get(a[4],TopAbs_SHAPE);
       borne = 8;
     }
   }
   else {
-    V.SetCoord(atof(a[4]),atof(a[5]),atof(a[6]));
+    V.SetCoord(Draw::Atof(a[4]),Draw::Atof(a[5]),Draw::Atof(a[6]));
     borne = 7;
   }
   Standard_Real Length = V.Magnitude();
@@ -554,19 +554,19 @@ static Standard_Integer PRF(Draw_Interpretor& theCommands,
 	return 1;
       }
       borne = 9;
-      V.SetCoord(atof(a[6]),atof(a[7]),atof(a[8]));
+      V.SetCoord(Draw::Atof(a[6]),Draw::Atof(a[7]),Draw::Atof(a[8]));
       FFrom  = DBRep::Get(a[4],TopAbs_SHAPE);
       FUntil  = DBRep::Get(a[5],TopAbs_SHAPE);
     }
     else {
       borne = 8;
-      V.SetCoord(atof(a[5]),atof(a[6]),atof(a[7]));
+      V.SetCoord(Draw::Atof(a[5]),Draw::Atof(a[6]),Draw::Atof(a[7]));
       FUntil  = DBRep::Get(a[4],TopAbs_SHAPE);
     }
   }
   else {
     borne = 7;
-    V.SetCoord(atof(a[4]),atof(a[5]),atof(a[6]));
+    V.SetCoord(Draw::Atof(a[4]),Draw::Atof(a[5]),Draw::Atof(a[6]));
   }
   Standard_Real Length = V.Magnitude();
   if (Length < Precision::Confusion()) {
@@ -813,7 +813,7 @@ Standard_Integer thickshell(Draw_Interpretor& ,
   TopoDS_Shape  S  = DBRep::Get(a[2]);
   if (S.IsNull()) return 1;
 
-  Standard_Real    Of    = atof(a[3]);
+  Standard_Real    Of    = Draw::Atof(a[3]);
 
   GeomAbs_JoinType JT= GeomAbs_Arc;
   if (n > 4)
@@ -827,7 +827,7 @@ Standard_Integer thickshell(Draw_Interpretor& ,
   Standard_Boolean Inter = Standard_False; //Standard_True;
   Standard_Real    Tol = Precision::Confusion();
   if (n > 5)
-    Tol = atof(a[5]);
+    Tol = Draw::Atof(a[5]);
 
   BRepOffset_MakeOffset B;
   B.Initialize(S,Of,Tol,BRepOffset_Skin,Inter,0,JT, Standard_True);
@@ -859,7 +859,7 @@ Standard_Integer offsetshape(Draw_Interpretor& ,
   TopoDS_Shape  S  = DBRep::Get(a[2]);
   if (S.IsNull()) return 1;
 
-  Standard_Real    Of    = atof(a[3]);
+  Standard_Real    Of    = Draw::Atof(a[3]);
   Standard_Boolean Inter = (!strcmp(a[0],"offsetcompshape"));
   GeomAbs_JoinType JT= GeomAbs_Arc;
   if (!strcmp(a[0],"offsetinter")) {
@@ -874,7 +874,7 @@ Standard_Integer offsetshape(Draw_Interpretor& ,
     TopoDS_Shape  SF  = DBRep::Get(a[4],TopAbs_FACE);
     if (SF.IsNull()) {
       IB  = 5;
-      Tol = atof(a[4]);
+      Tol = Draw::Atof(a[4]);
     }
   }
   B.Initialize(S,Of,Tol,BRepOffset_Skin,Inter,0,JT);
@@ -947,7 +947,7 @@ Standard_Integer offsetparameter(Draw_Interpretor& di,
 
   if ( n < 4 ) return 1;
   
-  TheTolerance = atof(a[1]);
+  TheTolerance = Draw::Atof(a[1]);
   TheInter     = strcmp(a[2],"p");
   
   if      ( !strcmp(a[3],"a")) TheJoin = GeomAbs_Arc;
@@ -970,7 +970,7 @@ Standard_Integer offsetload(Draw_Interpretor& ,
   TopoDS_Shape  S  = DBRep::Get(a[1]);
   if (S.IsNull()) return 1;
 
-  Standard_Real    Of    = atof(a[2]);
+  Standard_Real    Of    = Draw::Atof(a[2]);
   TheRadius = Of;
 //  Standard_Boolean Inter = Standard_True;
   
@@ -1003,7 +1003,7 @@ Standard_Integer offsetonface(Draw_Interpretor&, Standard_Integer n, const char*
   for (Standard_Integer i = 1 ; i < n; i+=2) {
     TopoDS_Shape  SF  = DBRep::Get(a[i],TopAbs_FACE);
     if (!SF.IsNull()) {
-      Standard_Real Of = atof(a[i+1]);
+      Standard_Real Of = Draw::Atof(a[i+1]);
       TheOffset.SetOffsetOnFace(TopoDS::Face(SF),Of);
     }
   }
@@ -1123,7 +1123,7 @@ static Standard_Integer ROW(Draw_Interpretor& theCommands,
 
   FFrom   = DBRep::Get(a[4],TopAbs_SHAPE);
   if (FFrom.IsNull()) {
-    Angle = atof(a[4]);
+    Angle = Draw::Atof(a[4]);
     Angle *=M_PI/180.;
     i = 5;
   }
@@ -1144,8 +1144,8 @@ static Standard_Integer ROW(Draw_Interpretor& theCommands,
   }
   borne = i+6;
 
-  Or.SetCoord(atof(a[i]),atof(a[i+1]),atof(a[i+2]));
-  D.SetCoord(atof(a[i+3]),atof(a[i+4]),atof(a[i+5]));
+  Or.SetCoord(Draw::Atof(a[i]),Draw::Atof(a[i+1]),Draw::Atof(a[i+2]));
+  D.SetCoord(Draw::Atof(a[i+3]),Draw::Atof(a[i+4]),Draw::Atof(a[i+5]));
   gp_Ax1 theAxis(Or,D);
 
   TopoDS_Shape aLocalShape(DBRep::Get(a[borne],TopAbs_FACE));
@@ -1284,7 +1284,7 @@ static Standard_Integer ROF(Draw_Interpretor& theCommands,
 
   FFrom   = DBRep::Get(a[4],TopAbs_SHAPE);
   if (FFrom.IsNull()) {
-    Angle = atof(a[4]);
+    Angle = Draw::Atof(a[4]);
     Angle *=M_PI/180.;
     i = 5;
   }
@@ -1305,8 +1305,8 @@ static Standard_Integer ROF(Draw_Interpretor& theCommands,
   }
 
   borne = i+6;
-  Or.SetCoord(atof(a[i]),atof(a[i+1]),atof(a[i+2]));
-  D.SetCoord(atof(a[i+3]),atof(a[i+4]),atof(a[i+5]));
+  Or.SetCoord(Draw::Atof(a[i]),Draw::Atof(a[i+1]),Draw::Atof(a[i+2]));
+  D.SetCoord(Draw::Atof(a[i+3]),Draw::Atof(a[i+4]),Draw::Atof(a[i+5]));
   gp_Ax1 theAxis(Or,D);
 
   TopoDS_Shape ToRotate;
@@ -1501,8 +1501,8 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
     theCommands << "null basis shape";
     return 1;
   }
-  Standard_Integer Ifuse  = atoi(a[narg-2]);
-  Standard_Integer Imodif = atoi(a[narg-1]);
+  Standard_Integer Ifuse  = Draw::Atoi(a[narg-2]);
+  Standard_Integer Imodif = Draw::Atoi(a[narg-1]);
   
   Standard_Integer Fuse = Ifuse;
   Standard_Boolean Modify = (Imodif!=0);
@@ -1547,9 +1547,9 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
   if (narg == 9 || narg == 12 || narg == 14) {
 //    Standard_Real X,Y,Z,X1,Y1,Z1;
     Standard_Real X,Y,Z;
-    X = atof(a[4]);
-    Y = atof(a[5]);
-    Z = atof(a[6]);
+    X = Draw::Atof(a[4]);
+    Y = Draw::Atof(a[5]);
+    Z = Draw::Atof(a[6]);
     
     if (narg == 9) { // prism
       prdef = Standard_True;      
@@ -1558,11 +1558,11 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
     else if(narg == 14) {
       rfdef = Standard_True;
       gp_Pnt Or(X, Y, Z);
-      X = atof(a[7]);
-      Y = atof(a[8]);
-      Z = atof(a[9]);
-      Standard_Real H1 = atof(a[10]);
-      Standard_Real H2 = atof(a[11]);
+      X = Draw::Atof(a[7]);
+      Y = Draw::Atof(a[8]);
+      Z = Draw::Atof(a[9]);
+      Standard_Real H1 = Draw::Atof(a[10]);
+      Standard_Real H2 = Draw::Atof(a[11]);
       gp_Ax1 ax1(Or, gp_Dir(X, Y, Z));
       theRF.Init(Sbase, W, P, ax1, H1, H2, Fuse, Modify);
       if (!theRF.IsDone()) {
@@ -1577,18 +1577,18 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
     else if(narg == 12 && strcasecmp(a[0],"FEATLF")) {
       rvdef = Standard_True;
       gp_Pnt Or(X,Y,Z);
-      X = atof(a[7]);
-      Y = atof(a[8]);
-      Z = atof(a[9]);
+      X = Draw::Atof(a[7]);
+      Y = Draw::Atof(a[8]);
+      Z = Draw::Atof(a[9]);
       theRevol.Init(Sbase,Pbase,Skface,gp_Ax1(Or,gp_Dir(X,Y,Z)),
 		    Fuse,Modify);
     }
     else {
       lfdef = Standard_True;
       gp_Vec Direct(X,Y,Z);
-      X = atof(a[7]);
-      Y = atof(a[8]);
-      Z = atof(a[9]);
+      X = Draw::Atof(a[7]);
+      Y = Draw::Atof(a[8]);
+      Z = Draw::Atof(a[9]);
       theLF.Init(Sbase, W, P, Direct, gp_Vec(X,Y,Z), Fuse,Modify);
       if (!theLF.IsDone()) {
 	se = theLF.CurrentStatusError();
@@ -1606,7 +1606,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
 	theCommands << "Invalid DPrism base";
 	return 1;
       }
-      Standard_Real Angle = atof(a[4])*M_PI/360; 
+      Standard_Real Angle = Draw::Atof(a[4])*M_PI/360; 
       dprdef = Standard_True;
       theDPrism.Init(Sbase,TopoDS::Face(Pbase),Skface,Angle,Fuse,Modify);
     }
@@ -1785,7 +1785,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       return 1;
     }
     if (narg == 4) {
-      Standard_Real Val = atof(a[3]);
+      Standard_Real Val = Draw::Atof(a[3]);
       if (Kas == 1) {
 	thePrism.Perform(Val);
       }
@@ -1806,7 +1806,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       }
     }
     else if(narg == 5) {
-      Standard_Real Val = atof(a[3]);
+      Standard_Real Val = Draw::Atof(a[3]);
       TopoDS_Shape FUntil = DBRep::Get(a[4],TopAbs_SHAPE);
       if (Kas == 1) {
 	thePrism.PerformUntilHeight(FUntil, Val);
@@ -2059,14 +2059,14 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
   Standard_Integer dprsig=0;
   if (!strcasecmp("ENDEDGES",a[0])) {
     Kas = 1;
-    dprsig = atoi(a[4]);
+    dprsig = Draw::Atoi(a[4]);
   }
   else if (!strcasecmp("FILLET",a[0])) {
     Kas = 2;
   }
   else if (!strcasecmp("BOSSAGE",a[0])) {
     Kas = 3;
-    dprsig = atoi(a[5]);
+    dprsig = Draw::Atoi(a[5]);
   }
  
   TopoDS_Shape theShapeTop; 
@@ -2137,7 +2137,7 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
 
     if (Kas == 2) {
       for (Standard_Integer ii = 1; ii < (narg-1)/2; ii++){
-	Rad = atof(a[2*ii + 1]);
+	Rad = Draw::Atof(a[2*ii + 1]);
 	if (Rad == 0.) continue;
 	S = DBRep::Get(a[(2*ii+2)],TopAbs_SHAPE);
 	TopExp_Explorer exp;
@@ -2151,7 +2151,7 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
       }
     }
     else if (Kas == 3) {
-      Rad = atof(a[3]);
+      Rad = Draw::Atof(a[3]);
       if (Rad != 0.) {
 	S = theShapeTop;
 	TopExp_Explorer exp;
@@ -2163,7 +2163,7 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
 	  }
 	} 
       }
-      Rad = atof(a[4]);
+      Rad = Draw::Atof(a[4]);
       if (Rad != 0.) {
 	S = theShapeBottom;
 	TopExp_Explorer exp;

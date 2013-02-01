@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -46,14 +45,14 @@ static Standard_Integer BUC60720 (Draw_Interpretor& di,Standard_Integer argc,con
     di << "Usage : " << argv[0] << " 0/1" << "\n";
   }
 
-  if(atoi(argv[1]) == 0) {
+  if(Draw::Atoi(argv[1]) == 0) {
     if ( theObject1.IsNull() )
       {
 	theObject1 = new QABugs_PresentableObject();
 	theObject1->SetDisplayMode(0);
 	myAISContext->Display(theObject1);
       }
-  } else if(atoi(argv[1]) == 1) {
+  } else if(Draw::Atoi(argv[1]) == 1) {
     if ( theObject2.IsNull() )
       {
 	theObject2 = new QABugs_PresentableObject();

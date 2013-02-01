@@ -328,10 +328,10 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
 
 static int VInit (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  Standard_Integer aPxLeft   = (argc > 1) ? atoi (argv[1]) : 0;
-  Standard_Integer aPxTop    = (argc > 2) ? atoi (argv[2]) : 0;
-  Standard_Integer aPxWidth  = (argc > 3) ? atoi (argv[3]) : 0;
-  Standard_Integer aPxHeight = (argc > 4) ? atoi (argv[4]) : 0;
+  Standard_Integer aPxLeft   = (argc > 1) ? Draw::Atoi (argv[1]) : 0;
+  Standard_Integer aPxTop    = (argc > 2) ? Draw::Atoi (argv[2]) : 0;
+  Standard_Integer aPxWidth  = (argc > 3) ? Draw::Atoi (argv[3]) : 0;
+  Standard_Integer aPxHeight = (argc > 4) ? Draw::Atoi (argv[4]) : 0;
   ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight);
   return 0;
 }
@@ -475,7 +475,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
   }
   // Number
   else{
-    Standard_Integer Num = atoi(buf_ret);
+    Standard_Integer Num = Draw::Atoi(buf_ret);
     if(Num>=0 && Num<=7)
       ViewerTest::StandardModeActivation(Num);
   }
@@ -1606,17 +1606,17 @@ static int VSetGradientBg(Draw_Interpretor& di, Standard_Integer argc, const cha
   if (argc == 8)
   {
 
-    Standard_Real R1 = atof(argv[1])/255.;
-    Standard_Real G1 = atof(argv[2])/255.;
-    Standard_Real B1 = atof(argv[3])/255.;
+    Standard_Real R1 = Draw::Atof(argv[1])/255.;
+    Standard_Real G1 = Draw::Atof(argv[2])/255.;
+    Standard_Real B1 = Draw::Atof(argv[3])/255.;
     Quantity_Color aColor1(R1,G1,B1,Quantity_TOC_RGB);
 
-    Standard_Real R2 = atof(argv[4])/255.;
-    Standard_Real G2 = atof(argv[5])/255.;
-    Standard_Real B2 = atof(argv[6])/255.;
+    Standard_Real R2 = Draw::Atof(argv[4])/255.;
+    Standard_Real G2 = Draw::Atof(argv[5])/255.;
+    Standard_Real B2 = Draw::Atof(argv[6])/255.;
 
     Quantity_Color aColor2(R2,G2,B2,Quantity_TOC_RGB);
-    int aType = atoi(argv[7]);
+    int aType = Draw::Atoi(argv[7]);
     if( aType < 0 || aType > 8 )
     {
       di << "Wrong fill type " << "\n";
@@ -1656,7 +1656,7 @@ static int VSetGradientBgMode(Draw_Interpretor& di, Standard_Integer argc, const
   }
   if (argc == 2)
   {
-    int aType = atoi(argv[1]);
+    int aType = Draw::Atoi(argv[1]);
     if( aType < 0 || aType > 8 )
     {
       di << "Wrong fill type " << "\n";
@@ -1696,9 +1696,9 @@ static int VSetColorBg(Draw_Interpretor& di, Standard_Integer argc, const char**
   if (argc == 4)
   {
 
-    Standard_Real R = atof(argv[1])/255.;
-    Standard_Real G = atof(argv[2])/255.;
-    Standard_Real B = atof(argv[3])/255.;
+    Standard_Real R = Draw::Atof(argv[1])/255.;
+    Standard_Real G = Draw::Atof(argv[2])/255.;
+    Standard_Real B = Draw::Atof(argv[3])/255.;
     Quantity_Color aColor(R,G,B,Quantity_TOC_RGB);
 
     Handle(V3d_View) V3dView = ViewerTest::CurrentView();
@@ -1723,7 +1723,7 @@ static int VScale(Draw_Interpretor& di, Standard_Integer argc, const char** argv
     di << argv[0] << "Invalid number of arguments" << "\n";
     return 1;
   }
-  V3dView->SetAxialScale( atof(argv[1]),  atof(argv[2]),  atof(argv[3]) );
+  V3dView->SetAxialScale( Draw::Atof(argv[1]),  Draw::Atof(argv[2]),  Draw::Atof(argv[3]) );
   return 0;
 }
 //==============================================================================
@@ -1774,12 +1774,12 @@ static int VTestZBuffTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
       return 1;
     }
 
-    Standard_Real R = atof(argv[2])/255.;
-    Standard_Real G = atof(argv[3])/255.;
-    Standard_Real B = atof(argv[4])/255.;
+    Standard_Real R = Draw::Atof(argv[2])/255.;
+    Standard_Real G = Draw::Atof(argv[3])/255.;
+    Standard_Real B = Draw::Atof(argv[4])/255.;
     Quantity_Color aColor(R, G, B, Quantity_TOC_RGB);
 
-    Standard_Real aScale = atof(argv[5]);
+    Standard_Real aScale = Draw::Atof(argv[5]);
 
     if( aScale <= 0.0 )
     {
@@ -1829,10 +1829,10 @@ static int VRotate( Draw_Interpretor& di, Standard_Integer argc, const char** ar
   }
 
   if ( argc == 4 ) {
-    V3dView->Rotate( atof(argv[1]), atof(argv[2]), atof(argv[3]) );
+    V3dView->Rotate( Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]) );
     return 0;
   } else if ( argc == 7 ) {
-    V3dView->Rotate( atof(argv[1]), atof(argv[2]), atof(argv[3]), atof(argv[4]), atof(argv[5]), atof(argv[6]) );
+    V3dView->Rotate( Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Draw::Atof(argv[6]) );
     return 0;
   } else {
     di << argv[0] << " Invalid number of arguments" << "\n";
@@ -1852,12 +1852,12 @@ static int VZoom( Draw_Interpretor& di, Standard_Integer argc, const char** argv
   }
 
   if ( argc == 2 ) {
-    Standard_Real coef = atof(argv[1]);
+    Standard_Real coef = Draw::Atof(argv[1]);
     if ( coef <= 0.0 ) {
       di << argv[1] << "Invalid value" << "\n";
       return 1;
     }
-    V3dView->SetZoom( atof(argv[1]) );
+    V3dView->SetZoom( Draw::Atof(argv[1]) );
     return 0;
   } else {
     di << argv[0] << " Invalid number of arguments" << "\n";
@@ -1875,7 +1875,7 @@ static int VPan( Draw_Interpretor& di, Standard_Integer argc, const char** argv 
   if ( V3dView.IsNull() ) return 1;
 
   if ( argc == 3 ) {
-    V3dView->Pan( atoi(argv[1]), atoi(argv[2]) );
+    V3dView->Pan( Draw::Atoi(argv[1]), Draw::Atoi(argv[2]) );
     return 0;
   } else {
     di << argv[0] << " Invalid number of arguments" << "\n";
@@ -1993,18 +1993,18 @@ static int VColorScale (Draw_Interpretor& di, Standard_Integer argc, const char 
   {
      if( argc > 3 )
      {
-       minRange = atof( argv[1] );
-       maxRange = atof( argv[2] );
-       numIntervals = atoi( argv[3] );
+       minRange = Draw::Atof( argv[1] );
+       maxRange = Draw::Atof( argv[2] );
+       numIntervals = Draw::Atoi( argv[3] );
      }
      if ( argc > 4 )
-       textHeight = atoi( argv[4] );
+       textHeight = Draw::Atoi( argv[4] );
      if ( argc > 5 )
-       position = (Aspect_TypeOfColorScalePosition)atoi( argv[5] );
+       position = (Aspect_TypeOfColorScalePosition)Draw::Atoi( argv[5] );
      if ( argc > 7 )
      {
-       X = atof( argv[6] );
-       Y = atof( argv[7] );
+       X = Draw::Atof( argv[6] );
+       Y = Draw::Atof( argv[7] );
      }
   }
   Handle(V3d_View) curView = ViewerTest::CurrentView( );
@@ -2068,7 +2068,7 @@ static int VGraduatedTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   // Erase (==0) or display (!=0)
-  const int display = atoi(argv[1]);
+  const int display = Draw::Atoi(argv[1]);
 
   if (display)
   {
@@ -2080,7 +2080,7 @@ static int VGraduatedTrihedron(Draw_Interpretor& di, Standard_Integer argc, cons
       font.AssignCat(argv[5]);
 
     // Text is multibyte
-    const Standard_Boolean isMultibyte = (argc < 7)? Standard_False : (atoi(argv[6]) != 0);
+    const Standard_Boolean isMultibyte = (argc < 7)? Standard_False : (Draw::Atoi(argv[6]) != 0);
 
     // Set axis names
     TCollection_ExtendedString xname, yname, zname;
@@ -2173,12 +2173,12 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
   }
 
   // get the input params
-  Standard_Integer aWidth  = atoi (argv[1]);
-  Standard_Integer aHeight = atoi (argv[2]);
+  Standard_Integer aWidth  = Draw::Atoi (argv[1]);
+  Standard_Integer aHeight = Draw::Atoi (argv[2]);
   Standard_Integer aMode   = 0;
   TCollection_AsciiString aFileName = TCollection_AsciiString (argv[3]);
   if (argc==5)
-    aMode = atoi (argv[4]);
+    aMode = Draw::Atoi (argv[4]);
 
   // check the input parameters
   if (aWidth <= 0 || aHeight <= 0)
@@ -2316,7 +2316,7 @@ static int VZLayer (Draw_Interpretor& di, Standard_Integer argc, const char** ar
       return 1;
     }
 
-    Standard_Integer aDelId = atoi (argv[2]);
+    Standard_Integer aDelId = Draw::Atoi (argv[2]);
     if (!aViewer->RemoveZLayer (aDelId))
     {
       di << "Impossible to remove the z layer or invalid id!\n";
@@ -2519,10 +2519,10 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
   }
 
   // get the input params
-  Standard_Real X1 = atof(argv[1]);
-  Standard_Real Y1 = atof(argv[2]);
-  Standard_Real X2 = atof(argv[3]);
-  Standard_Real Y2 = atof(argv[4]);
+  Standard_Real X1 = Draw::Atof(argv[1]);
+  Standard_Real Y1 = Draw::Atof(argv[2]);
+  Standard_Real X2 = Draw::Atof(argv[3]);
+  Standard_Real Y2 = Draw::Atof(argv[4]);
 
   Standard_Real    aWidth = 0.5;
   Standard_Integer aType  = 0;
@@ -2530,16 +2530,16 @@ static int VLayerLine(Draw_Interpretor& di, Standard_Integer argc, const char** 
 
   // has width
   if (argc > 5)
-    aWidth = atof(argv[5]);
+    aWidth = Draw::Atof(argv[5]);
 
   // has type
   if (argc > 6)
-     aType = (Standard_Integer) atoi(argv[6]);
+     aType = (Standard_Integer) Draw::Atoi(argv[6]);
 
   // has transparency
   if (argc > 7)
   {
-    aTransparency = atof(argv[7]);
+    aTransparency = Draw::Atof(argv[7]);
     if (aTransparency < 0 || aTransparency > 1.0)
       aTransparency = 1.0;
   }
@@ -2609,9 +2609,9 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
   }
 
   TCollection_AsciiString aText (argv[1]);
-  Standard_Real aPosX = atof(argv[2]);
-  Standard_Real aPosY = atof(argv[3]);
-  Standard_Real aHeight = (argc >= 5) ? atof (argv[4]) : 10.0;
+  Standard_Real aPosX = Draw::Atof(argv[2]);
+  Standard_Real aPosY = Draw::Atof(argv[3]);
+  Standard_Real aHeight = (argc >= 5) ? Draw::Atof (argv[4]) : 10.0;
 
   // font name
   TCollection_AsciiString aFontName = "Courier";
@@ -2624,9 +2624,9 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
   Quantity_Parameter aColorBlue  = 1.0;
   if (argc >= 9)
   {
-    aColorRed   = atof (argv[6])/255.;
-    aColorGreen = atof (argv[7])/255.;
-    aColorBlue  = atof (argv[8])/255.;
+    aColorRed   = Draw::Atof (argv[6])/255.;
+    aColorGreen = Draw::Atof (argv[7])/255.;
+    aColorBlue  = Draw::Atof (argv[8])/255.;
   }
 
   // display type
@@ -2648,9 +2648,9 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
   Quantity_Parameter aSubBlue  = 1.0;
   if (argc == 13)
   {
-    aSubRed   = atof (argv[10])/255.;
-    aSubGreen = atof (argv[11])/255.;
-    aSubBlue  = atof (argv[12])/255.;
+    aSubRed   = Draw::Atof (argv[10])/255.;
+    aSubGreen = Draw::Atof (argv[11])/255.;
+    aSubBlue  = Draw::Atof (argv[12])/255.;
   }
 
   // check fo current overlay
@@ -2750,13 +2750,13 @@ static int VGrid (Draw_Interpretor& theDI,
     Quantity_Length aRStepX, aRStepY;
     aViewer->RectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
 
-    anOriginX = atof (theArgVec[anIter++]);
-    anOriginY = atof (theArgVec[anIter++]);
+    anOriginX = Draw::Atof (theArgVec[anIter++]);
+    anOriginY = Draw::Atof (theArgVec[anIter++]);
     if (aTail == 5)
     {
-      aRStepX   = atof (theArgVec[anIter++]);
-      aRStepY   = atof (theArgVec[anIter++]);
-      aRotAngle = atof (theArgVec[anIter++]);
+      aRStepX   = Draw::Atof (theArgVec[anIter++]);
+      aRStepY   = Draw::Atof (theArgVec[anIter++]);
+      aRotAngle = Draw::Atof (theArgVec[anIter++]);
     }
     aViewer->SetRectangularGridValues (anOriginX, anOriginY, aRStepX, aRStepY, aRotAngle);
     aViewer->ActivateGrid (aType, aMode);
@@ -2767,13 +2767,13 @@ static int VGrid (Draw_Interpretor& theDI,
     Standard_Integer aDivisionNumber;
     aViewer->CircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
 
-    anOriginX = atof (theArgVec[anIter++]);
-    anOriginY = atof (theArgVec[anIter++]);
+    anOriginX = Draw::Atof (theArgVec[anIter++]);
+    anOriginY = Draw::Atof (theArgVec[anIter++]);
     if (aTail == 5)
     {
-      aRadiusStep     = atof (theArgVec[anIter++]);
-      aDivisionNumber = atoi (theArgVec[anIter++]);
-      aRotAngle       = atof (theArgVec[anIter++]);
+      aRadiusStep     = Draw::Atof (theArgVec[anIter++]);
+      aDivisionNumber = Draw::Atoi (theArgVec[anIter++]);
+      aRotAngle       = Draw::Atof (theArgVec[anIter++]);
     }
 
     aViewer->SetCircularGridValues (anOriginX, anOriginY, aRadiusStep, aDivisionNumber, aRotAngle);
@@ -2800,7 +2800,7 @@ static int VFps (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Integer aFramesNb = (theArgNb > 1) ? atoi(theArgVec[1]) : 100;
+  Standard_Integer aFramesNb = (theArgNb > 1) ? Draw::Atoi(theArgVec[1]) : 100;
   if (aFramesNb <= 0)
   {
     std::cerr << "Incorrect arguments!\n";
@@ -2867,7 +2867,7 @@ static int VVbo (Draw_Interpretor& theDI,
     return 1;
   }
 
-  aDriver->EnableVBO (atoi(theArgVec[1]) != 0);
+  aDriver->EnableVBO (Draw::Atoi(theArgVec[1]) != 0);
   return 0;
 }
 
@@ -2942,8 +2942,8 @@ static int VReadPixel (Draw_Interpretor& theDI,
 
   Standard_Integer aWidth, aHeight;
   aView->Window()->Size (aWidth, aHeight);
-  const Standard_Integer anX = atoi (theArgVec[1]);
-  const Standard_Integer anY = atoi (theArgVec[2]);
+  const Standard_Integer anX = Draw::Atoi (theArgVec[1]);
+  const Standard_Integer anY = Draw::Atoi (theArgVec[2]);
   if (anX < 0 || anX >= aWidth || anY < 0 || anY > aHeight)
   {
     std::cerr << "Pixel coordinates (" << anX << "; " << anY << ") are out of view (" << aWidth << " x " << aHeight << ")\n";
@@ -3068,14 +3068,14 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
   const char* anImgPathNew = theArgVec[2];
 
   // get string tolerance and check its validity
-  Standard_Real aTolColor = atof (theArgVec[3]);
+  Standard_Real aTolColor = Draw::Atof (theArgVec[3]);
   if (aTolColor < 0.0)
     aTolColor = 0.0;
   if (aTolColor > 1.0)
     aTolColor = 1.0;
 
-  Standard_Boolean toBlackWhite     = (atoi (theArgVec[4]) == 1);
-  Standard_Boolean isBorderFilterOn = (atoi (theArgVec[5]) == 1);
+  Standard_Boolean toBlackWhite     = (Draw::Atoi (theArgVec[4]) == 1);
+  Standard_Boolean isBorderFilterOn = (Draw::Atoi (theArgVec[5]) == 1);
 
   // image file of difference
   const char* aDiffImagePath = (theArgNb >= 7) ? theArgVec[6] : NULL;

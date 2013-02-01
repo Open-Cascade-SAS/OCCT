@@ -677,18 +677,18 @@ static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char
   }
   else if( argc > 1 )
   {
-    StdSelect_SensitivityMode aMode = ( StdSelect_SensitivityMode )atoi( argv[1] );
+    StdSelect_SensitivityMode aMode = ( StdSelect_SensitivityMode )Draw::Atoi( argv[1] );
     aContext->SetSensitivityMode( aMode );
     if( argc > 2 )
     {
       if( aMode == StdSelect_SM_WINDOW )
       {
-        Standard_Integer aPixelTolerance = atoi( argv[2] );
+        Standard_Integer aPixelTolerance = Draw::Atoi( argv[2] );
         aContext->SetPixelTolerance( aPixelTolerance );
       }
       else if( aMode == StdSelect_SM_VIEW )
       {
-        Standard_Real aSensitivity = atof( argv[2] );
+        Standard_Real aSensitivity = Draw::Atof( argv[2] );
         aContext->SetSensitivity( aSensitivity );
       }
     }
@@ -727,8 +727,8 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
     }
   }
 
-  Standard_Integer aWidth  = (argc > 3) ? atoi (argv[3]) : 0;
-  Standard_Integer aHeight = (argc > 4) ? atoi (argv[4]) : 0;
+  Standard_Integer aWidth  = (argc > 3) ? Draw::Atoi (argv[3]) : 0;
+  Standard_Integer aHeight = (argc > 4) ? Draw::Atoi (argv[4]) : 0;
 
   Handle(AIS_InteractiveContext) IC;
   Handle(V3d_View) view;
@@ -855,7 +855,7 @@ static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** ar
     }
   }
   else if(argc==2){
-    Standard_Integer Dmode = atoi(argv[1]);
+    Standard_Integer Dmode = Draw::Atoi(argv[1]);
     if(Ctx->NbCurrents()==0 && TypeOfOperation==3){
       Handle(AIS_InteractiveObject) IO;
       VwrTst_DispErase(IO,Dmode,TypeOfOperation,Standard_True);
@@ -878,7 +878,7 @@ static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** ar
     if(GetMapOfAIS().IsBound2(name))
       IO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
     if (!IO.IsNull())
-      VwrTst_DispErase(IO,atoi(argv[2]),TypeOfOperation,Standard_True);
+      VwrTst_DispErase(IO,Draw::Atoi(argv[2]),TypeOfOperation,Standard_True);
   }
   return 0;
 }
@@ -891,7 +891,7 @@ static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** ar
 static int VSubInt(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if(argc==1) return 1;
-  Standard_Integer On = atoi(argv[1]);
+  Standard_Integer On = Draw::Atoi(argv[1]);
   const Handle(AIS_InteractiveContext)& Ctx = ViewerTest::GetAISContext();
 
   if(argc==2){
@@ -1095,14 +1095,14 @@ static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
         const Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast(anObj);
         if(HaveToSet)
-          TheAISContext()->SetTransparency(ashape,atof(argv[2]) );
+          TheAISContext()->SetTransparency(ashape,Draw::Atof(argv[2]) );
         else
           TheAISContext()->UnsetTransparency(ashape);
       } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_InteractiveObject) ashape =
           Handle(NIS_InteractiveObject)::DownCast(anObj);
         if(HaveToSet)
-          ashape->SetTransparency(atof(argv[2]) );
+          ashape->SetTransparency(Draw::Atof(argv[2]) );
         else
           ashape->UnsetTransparency();
       }
@@ -1118,7 +1118,7 @@ static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
       {
         Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
         if(HaveToSet)
-          TheAISContext()->SetTransparency(ashape,atof(argv[1]),Standard_False);
+          TheAISContext()->SetTransparency(ashape,Draw::Atof(argv[1]),Standard_False);
         else
           TheAISContext()->UnsetTransparency(ashape,Standard_False);
       }
@@ -1136,7 +1136,7 @@ static int VTransparency  (Draw_Interpretor& di, Standard_Integer argc,
           Handle(AIS_InteractiveObject)::DownCast(it.Key1());
         if (!ashape.IsNull())
           if(HaveToSet)
-            TheAISContext()->SetTransparency(ashape,atof(argv[1]),Standard_False);
+            TheAISContext()->SetTransparency(ashape,Draw::Atof(argv[1]),Standard_False);
           else
             TheAISContext()->UnsetTransparency(ashape,Standard_False);
         it.Next();
@@ -1281,14 +1281,14 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
         const Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
         if (HaveToSet)
-          TheAISContext()->SetWidth ( ashape,atof (argv[2]) );
+          TheAISContext()->SetWidth ( ashape,Draw::Atof (argv[2]) );
         else
           TheAISContext()->UnsetWidth (ashape);
       } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
         const Handle(NIS_Triangulated) ashape =
           Handle(NIS_Triangulated)::DownCast(GetMapOfAIS().Find2(name));
         if (HaveToSet && !ashape.IsNull())
-          ashape->SetLineWidth ( atof (argv[2]) );
+          ashape->SetLineWidth ( Draw::Atof (argv[2]) );
       }
     }
 
@@ -1303,7 +1303,7 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
       {
         Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
         if (HaveToSet)
-          TheAISContext()->SetWidth(ashape,atof(argv[1]),Standard_False);
+          TheAISContext()->SetWidth(ashape,Draw::Atof(argv[1]),Standard_False);
         else
           TheAISContext()->UnsetWidth(ashape,Standard_False);
       }
@@ -1320,7 +1320,7 @@ static int VWidth (Draw_Interpretor& di, Standard_Integer argc, const char** arg
          Handle(AIS_InteractiveObject)::DownCast (it.Key1());
        if (!ashape.IsNull())
          if (HaveToSet)
-           TheAISContext()->SetWidth(ashape,atof(argv[1]),Standard_False);
+           TheAISContext()->SetWidth(ashape,Draw::Atof(argv[1]),Standard_False);
          else
            TheAISContext()->UnsetWidth(ashape,Standard_False);
        it.Next();
@@ -1387,7 +1387,7 @@ static int VInteriorStyle (Draw_Interpretor& di, Standard_Integer argc, const ch
       if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
         const Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(name));
-        SetInteriorStyle (ashape, atoi (argv[2]), di);
+        SetInteriorStyle (ashape, Draw::Atoi (argv[2]), di);
       }
     }
     //=======================================================================
@@ -1400,7 +1400,7 @@ static int VInteriorStyle (Draw_Interpretor& di, Standard_Integer argc, const ch
            TheAISContext() ->NextCurrent() )
       {
         Handle(AIS_InteractiveObject) ashape =  TheAISContext() -> Current();
-        SetInteriorStyle (ashape, atoi (argv[1]), di);
+        SetInteriorStyle (ashape, Draw::Atoi (argv[1]), di);
       }
     }
     //=======================================================================
@@ -1413,7 +1413,7 @@ static int VInteriorStyle (Draw_Interpretor& di, Standard_Integer argc, const ch
         Handle(AIS_InteractiveObject) ashape =
           Handle(AIS_InteractiveObject)::DownCast (it.Key1());
         if (!ashape.IsNull())
-          SetInteriorStyle (ashape, atoi (argv[1]), di);
+          SetInteriorStyle (ashape, Draw::Atoi (argv[1]), di);
         it.Next();
       }
     }
@@ -1773,8 +1773,8 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
 	}
 
       myShape->SetTextureScale (( argv[2] ? Standard_True    : Standard_False ),
-				( argv[2] ? atof(argv[2])    : 1.0 ),
-				( argv[2] ? atof(argv[argc-1]) : 1.0 ) );
+				( argv[2] ? Draw::Atof(argv[2])    : 1.0 ),
+				( argv[2] ? Draw::Atof(argv[argc-1]) : 1.0 ) );
       break;
 
     case 3: // vtexorigin : we change the origin of the texture on the shape
@@ -1784,8 +1784,8 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
 	  return 1;
 	}
       myShape->SetTextureOrigin (( argv[2] ? Standard_True    : Standard_False ),
-				 ( argv[2] ? atof(argv[2])    : 0.0 ),
-				 ( argv[2] ? atof(argv[argc-1]) : 0.0 ));
+				 ( argv[2] ? Draw::Atof(argv[2])    : 0.0 ),
+				 ( argv[2] ? Draw::Atof(argv[argc-1]) : 0.0 ));
       break;
 
     case 4: // vtexrepeat : we change the number of occurences of the texture on the shape
@@ -1797,7 +1797,7 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
       if (argc>2 && argv[2])
 	{
 	  di <<"Texture repeat enabled"<<"\n";
-	  myShape->SetTextureRepeat(Standard_True, atof(argv[2]), atof(argv[argc-1]) );
+	  myShape->SetTextureRepeat(Standard_True, Draw::Atof(argv[2]), Draw::Atof(argv[argc-1]) );
 	}
       else
 	{
@@ -2040,7 +2040,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
 
   myTimer.Start();
 
-  if (atoi(argv[3])==1 ) {
+  if (Draw::Atoi(argv[3])==1 ) {
     di<<" Primitives sensibles OFF"<<"\n";
     TheAISContext()->Deactivate(aIO);
   }
@@ -2048,7 +2048,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
     di<<" Primitives sensibles ON"<<"\n";
   }
   // Movement par transformation
-  if(atoi(argv[2]) ==1) {
+  if(Draw::Atoi(argv[2]) ==1) {
     di<<" Calcul par Transformation"<<"\n";
     for (Standard_Real myAngle=0;Angle<10*2*M_PI; myAngle++) {
 
@@ -2075,7 +2075,7 @@ static int VPerf(Draw_Interpretor& di, Standard_Integer , const char** argv) {
       TheAISContext() ->UpdateCurrentViewer();
     }
   }
-  if (atoi(argv[3])==1 ){
+  if (Draw::Atoi(argv[3])==1 ){
     // On reactive la selection des primitives sensibles
     TheAISContext()->Activate(aIO,0);
   }
@@ -2219,7 +2219,7 @@ static int VShading(Draw_Interpretor& ,Standard_Integer argc, const char** argv)
   if (argc < 3) {
     myDevCoef  = 0.0008;
   } else {
-    myDevCoef  =atof(argv[2]);
+    myDevCoef  =Draw::Atof(argv[2]);
   }
 
   TCollection_AsciiString name=argv[1];
@@ -2294,7 +2294,7 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
 
     // IL n'y a aps de nom de shape passe en argument
     if (HaveToSet && !ThereIsName){
-      Standard_Integer aMode=atoi(argv [1]);
+      Standard_Integer aMode=Draw::Atoi(argv [1]);
 
       const char *cmode="???";
       switch (aMode) {
@@ -2406,7 +2406,7 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
       }
     }
     else if (HaveToSet && ThereIsName){
-      Standard_Integer aMode=atoi(argv [2]);
+      Standard_Integer aMode=Draw::Atoi(argv [2]);
       Handle(AIS_InteractiveObject) aIO =
         Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[1]));
 
@@ -3173,20 +3173,20 @@ static int VSetTransMode ( Draw_Interpretor& di, Standard_Integer argc, const ch
 
   TCollection_AsciiString shapeName;
   shapeName = argv[1];
-  Standard_Integer persFlag1 = atoi(argv[2]);
+  Standard_Integer persFlag1 = Draw::Atoi(argv[2]);
   Standard_Integer persFlag2 = 0;
   Standard_Integer persFlag3 = 0;
   gp_Pnt origin = gp_Pnt( 0.0, 0.0, 0.0 );
   if ( argc == 4 || argc == 5 || argc == 7 || argc == 8 ) {
-    persFlag2 = atoi(argv[3]);
+    persFlag2 = Draw::Atoi(argv[3]);
   }
   if ( argc == 5 || argc == 8 ) {
-    persFlag3 = atoi(argv[4]);
+    persFlag3 = Draw::Atoi(argv[4]);
   }
   if ( argc >= 6 ) {
-    origin.SetX( atof(argv[argc - 3]) );
-    origin.SetY( atof(argv[argc - 2]) );
-    origin.SetZ( atof(argv[argc - 1]) );
+    origin.SetX( Draw::Atof(argv[argc - 3]) );
+    origin.SetY( Draw::Atof(argv[argc - 2]) );
+    origin.SetZ( Draw::Atof(argv[argc - 1]) );
   }
 
   Standard_Boolean IsBound = GetMapOfAIS().IsBound2(shapeName);
@@ -3247,7 +3247,7 @@ Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char**
   Standard_Boolean IsPoly = Standard_False;
   gp_Ax2 anAx2 = gp::XOY();
 
-  //if(n > 2) aPolyAlgo = atoi(a[2]);
+  //if(n > 2) aPolyAlgo = Draw::Atoi(a[2]);
 
   //IsPoly = aPolyAlgo > 0;
 
@@ -3256,17 +3256,17 @@ Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char**
 
   if (n == 11)
   {
-    Standard_Real x = atof(a[2]);
-    Standard_Real y = atof(a[3]);
-    Standard_Real z = atof(a[4]);
+    Standard_Real x = Draw::Atof(a[2]);
+    Standard_Real y = Draw::Atof(a[3]);
+    Standard_Real z = Draw::Atof(a[4]);
 
-    Standard_Real dx = atof(a[5]);
-    Standard_Real dy = atof(a[6]);
-    Standard_Real dz = atof(a[7]);
+    Standard_Real dx = Draw::Atof(a[5]);
+    Standard_Real dy = Draw::Atof(a[6]);
+    Standard_Real dz = Draw::Atof(a[7]);
 
-    Standard_Real dx1 = atof(a[8]);
-    Standard_Real dy1 = atof(a[9]);
-    Standard_Real dz1 = atof(a[10]);
+    Standard_Real dx1 = Draw::Atof(a[8]);
+    Standard_Real dy1 = Draw::Atof(a[9]);
+    Standard_Real dz1 = Draw::Atof(a[10]);
 
     gp_Pnt anOrigin (x, y, z);
     gp_Dir aNormal  (dx, dy, dz);
@@ -3307,7 +3307,7 @@ Standard_Integer phlrtest(Draw_Interpretor&,   Standard_Integer n,   const char*
   Standard_Boolean IsPoly = Standard_True;
   gp_Ax2 anAx2 = gp::XOY();
 
-  //if(n > 2) aPolyAlgo = atoi(a[2]);
+  //if(n > 2) aPolyAlgo = Draw::Atoi(a[2]);
 
   //IsPoly = aPolyAlgo > 0;
 
@@ -3316,17 +3316,17 @@ Standard_Integer phlrtest(Draw_Interpretor&,   Standard_Integer n,   const char*
 
   if (n == 11)
   {
-    Standard_Real x = atof(a[2]);
-    Standard_Real y = atof(a[3]);
-    Standard_Real z = atof(a[4]);
+    Standard_Real x = Draw::Atof(a[2]);
+    Standard_Real y = Draw::Atof(a[3]);
+    Standard_Real z = Draw::Atof(a[4]);
 
-    Standard_Real dx = atof(a[5]);
-    Standard_Real dy = atof(a[6]);
-    Standard_Real dz = atof(a[7]);
+    Standard_Real dx = Draw::Atof(a[5]);
+    Standard_Real dy = Draw::Atof(a[6]);
+    Standard_Real dz = Draw::Atof(a[7]);
 
-    Standard_Real dx1 = atof(a[8]);
-    Standard_Real dy1 = atof(a[9]);
-    Standard_Real dz1 = atof(a[10]);
+    Standard_Real dx1 = Draw::Atof(a[8]);
+    Standard_Real dy1 = Draw::Atof(a[9]);
+    Standard_Real dz1 = Draw::Atof(a[10]);
 
     gp_Pnt anOrigin (x, y, z);
     gp_Dir aNormal  (dx, dy, dz);
@@ -3623,7 +3623,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
 // argv[4] - Standard_Real Angle
 // argv[5] - Standard_Integer Reverse
 
-//  sprintf(prefix, argv[1]);
+//  Sprintf(prefix, argv[1]);
   Standard_Real anAngle = 0;
   Standard_Boolean Rev = Standard_False;
   Standard_Integer rev = 0;
@@ -3635,7 +3635,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
     di << "TEST : Plane is NULL" << "\n";
     return 1;
   }
-  anAngle = atof(argv[4]);
+  anAngle = Draw::Atof(argv[4]);
   anAngle = 2*M_PI * anAngle / 360.0;
   gp_Pln aPln;
   Handle( Geom_Surface )aSurf;
@@ -3643,7 +3643,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
   Standard_Real Offset;
   gp_Dir aDir;
   if(argc > 4) { // == 5
-    rev = atoi(argv[5]);
+    rev = Draw::Atoi(argv[5]);
     Rev = (rev)? Standard_True : Standard_False;
   }
 

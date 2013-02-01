@@ -22,6 +22,7 @@
 
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -94,7 +95,7 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
 
   gp_Pln pln = plne->Pln();
   Handle(Geom2d_Curve) curve2d = GeomAPI::To2d (ell, pln);
-  sprintf(abuf,"ell");
+  Sprintf(abuf,"ell");
   DrawTrSurf::Set(st,curve2d);
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
@@ -103,7 +104,7 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
   }
 
   Handle(Geom2d_Curve) fromcurve2d = GeomAPI::To2d (cir, pln);
-  sprintf(abuf,"cil");
+  Sprintf(abuf,"cil");
   DrawTrSurf::Set(st,fromcurve2d);
   if(!aContext.IsNull()) {
     Handle(AIS_Shape) aisp = 
@@ -117,7 +118,7 @@ static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*
   Geom2dGcc_Lin2d2Tan lintan (qcur, qfromcur, 0.1, 0.0, 0.0);
   Standard_Integer i=0;
   for(i=0;i<lintan.NbSolutions();i++) {
-    sprintf(abuf,"lintan_%d",i);
+    Sprintf(abuf,"lintan_%d",i);
     Handle(Geom2d_Line) glin = new Geom2d_Line(lintan.ThisSolution(i));
     DrawTrSurf::Set(st,glin);
     if(!aContext.IsNull()) {
@@ -139,11 +140,11 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
   Standard_Real par1 = 0.0, par2 = 0.0;
   Standard_Real tol  = Precision::Angular();
   if (argc >= 5)
-    par1 = atof(argv[4]);
+    par1 = Draw::Atof(argv[4]);
   if (argc == 6)
-    par2 = atof(argv[5]);
+    par2 = Draw::Atof(argv[5]);
   if (argc == 7)
-    tol = atof(argv[6]);
+    tol = Draw::Atof(argv[6]);
   Handle(Geom2d_Curve)  aCur2d1 = DrawTrSurf::GetCurve2d(argv[2]);
   Handle(Geom2d_Curve)  aCur2d2 = DrawTrSurf::GetCurve2d(argv[3]);
   if (aCur2d1.IsNull() || aCur2d2.IsNull()) {
@@ -154,7 +155,7 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
   Handle(Geom2d_Circle) aCir2d = Handle(Geom2d_Circle)::DownCast(aCur2d1);
   if (!aCir2d.IsNull()) {
     c1IsCircle = Standard_True;
-    if (argc == 6) tol = atof(argv[5]);
+    if (argc == 6) tol = Draw::Atof(argv[5]);
   }
   if(c1IsCircle) {
     Geom2dAdaptor_Curve acur(aCur2d2);
@@ -431,13 +432,13 @@ static Standard_Integer BUC60821(Draw_Interpretor& di, Standard_Integer argc,con
     return -1;
   }
 
-  Handle(QABugs_MyText) txt1 = new QABugs_MyText("Gosha1",gp_Pnt(0,0,0),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_RED,atoi(argv[1]));
+  Handle(QABugs_MyText) txt1 = new QABugs_MyText("Gosha1",gp_Pnt(0,0,0),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_RED,Draw::Atoi(argv[1]));
   aContext->Display(txt1);
 
-  Handle(QABugs_MyText) txt2 = new QABugs_MyText("Gosha2",gp_Pnt(0,0,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_YELLOW,atoi(argv[2]));
+  Handle(QABugs_MyText) txt2 = new QABugs_MyText("Gosha2",gp_Pnt(0,0,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_YELLOW,Draw::Atoi(argv[2]));
   aContext->Display(txt2);
 
-  Handle(QABugs_MyText) txt3 = new QABugs_MyText("Gosha3",gp_Pnt(0,100,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_SKYBLUE,atoi(argv[3]));
+  Handle(QABugs_MyText) txt3 = new QABugs_MyText("Gosha3",gp_Pnt(0,100,100),Font_NOF_ASCII_SIMPLEX,Quantity_NOC_SKYBLUE,Draw::Atoi(argv[3]));
   aContext->Display(txt3);
 
   return 0;
@@ -507,7 +508,7 @@ static Standard_Integer OCC353 (Draw_Interpretor& di, Standard_Integer , const c
     res = sol.NbSolutions();
     for(Standard_Integer i=1;i<=res;i++) {
       Handle(Geom2d_Circle) aC = new Geom2d_Circle(sol.ThisSolution(i));
-      sprintf(buf,"Result_%d",i);
+      Sprintf(buf,"Result_%d",i);
       st = buf;
       DrawTrSurf::Set(st,aC);
     }
@@ -535,14 +536,14 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
 
-  Standard_Integer HLR = atoi(argv[1]);
+  Standard_Integer HLR = Draw::Atoi(argv[1]);
   if (HLR != 0) {
     HLR = 1;
   }
 
   Handle(V3d_View) anOldView = ViewerTest::CurrentView();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  if (atoi (argv[2]))
+  if (Draw::Atoi (argv[2]))
   {
     aViewer->SetDefaultSurfaceDetail (V3d_TEX_ALL);
   }
@@ -901,8 +902,8 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di,
   TopoDS_Shape aLocalEdge(DBRep::Get(a[1],TopAbs_EDGE));
   TopoDS_Edge E = TopoDS::Edge(aLocalEdge);
   for (Standard_Integer ii = 1; ii <= (narg/2)-1; ii++){
-    Par = atof(a[2*ii]);
-    Rad = atof(a[2*ii + 1]);
+    Par = Draw::Atof(a[2*ii]);
+    Rad = Draw::Atof(a[2*ii + 1]);
     uandr.ChangeValue(ii).SetCoord(Par,Rad);
   }
   //HELPDESK: Add law creation
@@ -1018,8 +1019,8 @@ static Standard_Integer OCC813 (Draw_Interpretor& di, Standard_Integer argc,cons
   }
 
   Standard_CString str;
-  Standard_Real U = atof(argv[1]);
-  Standard_Real V = atof(argv[2]);
+  Standard_Real U = Draw::Atof(argv[1]);
+  Standard_Real V = Draw::Atof(argv[2]);
 
   //Between ellipse and point:
 
@@ -1057,7 +1058,7 @@ static Standard_Integer OCC813 (Draw_Interpretor& di, Standard_Integer argc,cons
 
   Standard_Integer i;
   for(i=1;i<=lintan.NbSolutions();i++) {
-    sprintf(abuf,"lintan_%d",i);
+    Sprintf(abuf,"lintan_%d",i);
     Handle(Geom2d_Line) glin = new Geom2d_Line(lintan.ThisSolution(i));
     DrawTrSurf::Set(st,glin);
     if(!aContext.IsNull()) {
@@ -1128,7 +1129,7 @@ static Standard_Integer OCC814 (Draw_Interpretor& di, Standard_Integer argc,cons
 
   Standard_Integer i;
   for(i=1;i<=lintan.NbSolutions();i++) {
-    sprintf(abuf,"lintan_%d",i);
+    Sprintf(abuf,"lintan_%d",i);
     Handle(Geom2d_Line) glin = new Geom2d_Line(lintan.ThisSolution(i));
     DrawTrSurf::Set(st,glin);
     if(!aContext.IsNull()) {
@@ -1204,7 +1205,7 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
   { 
     gp_Pnt pt = points3d(i); 
     di << "Info: Intersecting pt : (" << pt.X() << ", " << pt.Y() << ", " << pt.Z() << ")\n";
-    sprintf(str,"p_%d",i);
+    Sprintf(str,"p_%d",i);
     DrawTrSurf::Set(name,pt);
   }
 
@@ -1212,8 +1213,8 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
   sfw->Load(wire);
   sfw->SetFace(face);
 
-  if (argc > 3) sfw->SetPrecision(atof(argv[3])/*0.1*/);
-  if (argc > 4) sfw->SetMaxTolerance(atof(argv[4]));
+  if (argc > 3) sfw->SetPrecision(Draw::Atof(argv[3])/*0.1*/);
+  if (argc > 4) sfw->SetMaxTolerance(Draw::Atof(argv[4]));
   di << "Info: Precision is set to " << sfw->Precision() << "\n";
   di << "Info: MaxTolerance is set to " << sfw->MaxTolerance() << "\n";
 
@@ -1443,9 +1444,9 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  Standard_Real    angle  = atof(argv[1]);
-  Standard_Integer fuse   = atoi(argv[2]);
-  Standard_Real    length = atof(argv[3]);
+  Standard_Real    angle  = Draw::Atof(argv[1]);
+  Standard_Integer fuse   = Draw::Atoi(argv[2]);
+  Standard_Real    length = Draw::Atof(argv[3]);
 
   BRepBuilderAPI_MakeEdge edge1(gp_Pnt(0, 0, 0), gp_Pnt(50, 0, 0));
   BRepBuilderAPI_MakeEdge edge2(gp_Pnt(50, 0, 0), gp_Pnt(50, 50, 0));
@@ -1499,7 +1500,7 @@ static Standard_Integer OCCN2 (Draw_Interpretor& di, Standard_Integer argc, cons
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 2) {
-    Standard_Integer IsB = atoi(argv[1]);
+    Standard_Integer IsB = Draw::Atoi(argv[1]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def04)
@@ -1565,7 +1566,7 @@ static Standard_Integer OCC2569 (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  int poles=atoi(argv[1]); 
+  int poles=Draw::Atoi(argv[1]); 
 
   TColgp_Array1OfPnt arr(1, poles); 
   for(int i=1; i<=poles; i++) 

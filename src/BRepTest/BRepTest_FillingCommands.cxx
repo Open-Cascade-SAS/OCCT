@@ -140,7 +140,7 @@ Standard_Integer MaxSegments = defMaxSegments;
 static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const char** a)
 {
   if (n < 8 ) return 1;
-  Standard_Integer NbCurFront=atoi(a[3]);
+  Standard_Integer NbCurFront=Draw::Atoi(a[3]);
   Handle(GeomPlate_HArray1OfHCurveOnSurface) Fronts = new GeomPlate_HArray1OfHCurveOnSurface(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) Tang = new TColStd_HArray1OfInteger(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) NbPtsCur = new TColStd_HArray1OfInteger(1,NbCurFront);
@@ -158,9 +158,9 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
     TopoDS_Face F = TopoDS::Face(aLocalFace);
 //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[3*i+2],TopAbs_FACE));
     if(F.IsNull()) return 1;
-    Standard_Integer T = atoi(a[3*i+3]);
+    Standard_Integer T = Draw::Atoi(a[3*i+3]);
     Tang->SetValue(i,T);
-    NbPtsCur->SetValue(i,atoi(a[2]));
+    NbPtsCur->SetValue(i,Draw::Atoi(a[2]));
     Handle(BRepAdaptor_HSurface) S = new BRepAdaptor_HSurface();
     S->ChangeSurface().Initialize(F);
     Handle(BRepAdaptor_HCurve2d) C = new BRepAdaptor_HCurve2d();
@@ -204,7 +204,7 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
     B.UpdateVertex(TopExp::LastVertex(E), ErrG0);
     BRepLib::BuildCurve3d(E);
     char name[100];
-    sprintf(name,"Edge_%d", i);
+    Sprintf(name,"Edge_%d", i);
     DBRep::Set(name, E);
     MW.Add(E);
     if (MW.IsDone()==Standard_False) {
@@ -227,8 +227,8 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
 static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const char** a)
 {
   if (n < 6 ) return 1; 
-  Standard_Integer NbCurFront=atoi(a[2]),
-  NbPointConstraint=atoi(a[3]);
+  Standard_Integer NbCurFront=Draw::Atoi(a[2]),
+  NbPointConstraint=Draw::Atoi(a[3]);
   
   GeomPlate_BuildPlateSurface Henri(3,15,2);
   
@@ -251,7 +251,7 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
     TopoDS_Edge E = TopoDS::Edge(aLocalShape);
 //    TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[Indice++],TopAbs_EDGE));
     if(E.IsNull()) return 1;
-    Conti=atoi(a[Indice++]);
+    Conti=Draw::Atoi(a[Indice++]);
     if ((Conti==0)||(Conti==-1))
       { Handle(BRepAdaptor_HCurve) C = new BRepAdaptor_HCurve();
 	C->ChangeCurve().Initialize(E);
@@ -289,10 +289,10 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
 	  Indice++;
 	}
       else
-	{ Standard_Real u=atof(a[Indice++]), 
-	                v=atof(a[Indice++]);
+	{ Standard_Real u=Draw::Atof(a[Indice++]), 
+	                v=Draw::Atof(a[Indice++]);
 
-	  Conti=atoi(a[Indice++]);
+	  Conti=Draw::Atoi(a[Indice++]);
 	  aLocalFace = DBRep::Get(a[Indice++],TopAbs_FACE);
 	  TopoDS_Face F = TopoDS::Face(aLocalFace);
 //	  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
@@ -339,8 +339,8 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
 static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,const char** a)
 {
   if (n < 9 ) return 1;
-  Standard_Integer NbMedium=atoi(a[2]);
-  Standard_Integer NbCurFront=atoi(a[3]);
+  Standard_Integer NbMedium=Draw::Atoi(a[2]);
+  Standard_Integer NbCurFront=Draw::Atoi(a[3]);
   Handle(GeomPlate_HArray1OfHCurveOnSurface) Fronts = new GeomPlate_HArray1OfHCurveOnSurface(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) Tang = new TColStd_HArray1OfInteger(1,NbCurFront);
   Handle(TColStd_HArray1OfInteger) NbPtsCur = new TColStd_HArray1OfInteger(1,NbCurFront);
@@ -357,7 +357,7 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
     TopoDS_Face F = TopoDS::Face(aLocalFace);
 //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[3*i+2],TopAbs_FACE));
     if(F.IsNull()) return 1;
-    Standard_Integer T = atoi(a[3*i+3]);
+    Standard_Integer T = Draw::Atoi(a[3*i+3]);
     Tang->SetValue(i,T);
     NbPtsCur->SetValue(i,NbMedium);
     Handle(BRepAdaptor_HSurface) S = new BRepAdaptor_HSurface();
@@ -381,10 +381,10 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
   //cout<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<endl;
   di<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<"\n";
 
-  Tol3d = atof(a[3*NbCurFront+4]);
-  Standard_Integer Nbmax = atoi(a[3*NbCurFront+5]);
-  Standard_Integer degmax = atoi(a[3*NbCurFront+6]);
-  Standard_Integer CritOrder = atoi(a[3*NbCurFront+7]);
+  Tol3d = Draw::Atof(a[3*NbCurFront+4]);
+  Standard_Integer Nbmax = Draw::Atoi(a[3*NbCurFront+5]);
+  Standard_Integer degmax = Draw::Atoi(a[3*NbCurFront+6]);
+  Standard_Integer CritOrder = Draw::Atoi(a[3*NbCurFront+7]);
   Handle(GeomPlate_Surface) surf = Henri.Surface();
   Handle(Geom_BSplineSurface) support;
 
@@ -462,9 +462,9 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 #endif
 
   if (n < 7) return 1;
-  Standard_Integer NbBounds = atoi( a[2] );
-  Standard_Integer NbConstraints = atoi( a[3] );
-  Standard_Integer NbPoints = atoi( a[4] );
+  Standard_Integer NbBounds = Draw::Atoi( a[2] );
+  Standard_Integer NbConstraints = Draw::Atoi( a[3] );
+  Standard_Integer NbPoints = Draw::Atoi( a[4] );
 
   BRepOffsetAPI_MakeFilling MakeFilling( Degree,
 				   NbPtsOnCur,
@@ -502,7 +502,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
       if (! F.IsNull())
 	i++;
 
-      Order = atoi( a[i++] );
+      Order = Draw::Atoi( a[i++] );
       
       if (! E.IsNull() && ! F.IsNull())
 	MakeFilling.Add( E, F, (GeomAbs_Shape)Order );
@@ -539,7 +539,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
       if (! F.IsNull())
 	i++;
       
-      Order = atoi( a[i++] );
+      Order = Draw::Atoi( a[i++] );
       
       if (F.IsNull())
 	MakeFilling.Add( E, (GeomAbs_Shape)Order, Standard_False );
@@ -555,7 +555,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 	}
       else
 	{
-	  Standard_Real U = atof( a[i++] ), V = atof( a[i++] );
+	  Standard_Real U = Draw::Atof( a[i++] ), V = Draw::Atof( a[i++] );
 	  //aLocalFace = DBRep::Get( a[i++], TopAbs_FACE );
 	  //F = TopoDS::Face( aLocalFace);
 	  F = TopoDS::Face( DBRep::Get(a[i++], TopAbs_FACE));
@@ -565,7 +565,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 	      di<<"Wrong parameters"<<"\n";
 	      return 1;
 	    }
-	  Order = atoi( a[i++] );
+	  Order = Draw::Atoi( a[i++] );
 
 	  MakeFilling.Add( U, V, F, (GeomAbs_Shape)Order );
 	}
@@ -669,22 +669,22 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
 	}
       else if (strcmp( flag, "-r" ) == 0 && n == 6)
 	{
-	  Degree      = atoi( a[2] );
-	  NbPtsOnCur  = atoi( a[3] );
-	  NbIter      = atoi( a[4] );
-	  Anisotropie = atoi( a[5] );
+	  Degree      = Draw::Atoi( a[2] );
+	  NbPtsOnCur  = Draw::Atoi( a[3] );
+	  NbIter      = Draw::Atoi( a[4] );
+	  Anisotropie = Draw::Atoi( a[5] );
 	}
       else if (strcmp( flag, "-c" ) == 0 && n == 6)
 	{
-	  Tol2d   = atof( a[2] ); 
-	  Tol3d   = atof( a[3] );
-	  TolAng  = atof( a[4] );
-	  TolCurv = atof( a[5] );
+	  Tol2d   = Draw::Atof( a[2] ); 
+	  Tol3d   = Draw::Atof( a[3] );
+	  TolAng  = Draw::Atof( a[4] );
+	  TolCurv = Draw::Atof( a[5] );
 	}
       else if (strcmp( flag, "-a" ) == 0 && n == 4)
 	{
-	  MaxDeg      = atoi( a[2] );
-	  MaxSegments = atoi( a[3] );
+	  MaxDeg      = Draw::Atoi( a[2] );
+	  MaxSegments = Draw::Atoi( a[3] );
 	}
       else
 	{

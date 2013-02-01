@@ -218,7 +218,7 @@ static Standard_Integer DDataStd_SetPattern (Draw_Interpretor& di,
   Handle(TDataXtd_PatternStd) aP = TDataXtd_PatternStd::Set(L);
 
   // set signature
-  Standard_Integer signature = atoi(arg[3]);
+  Standard_Integer signature = Draw::Atoi(arg[3]);
   aP->Signature(signature);
 
   TDF_Label aLab;     
@@ -410,7 +410,7 @@ static Standard_Integer DDataStd_SetPosition (Draw_Interpretor& di,
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
 
-    Standard_Real X = atof(arg[3]), Y = atof(arg[4]), Z = atof(arg[5]);
+    Standard_Real X = Draw::Atof(arg[3]), Y = Draw::Atof(arg[4]), Z = Draw::Atof(arg[5]);
     gp_Pnt aPos (X, Y, Z);
 
     TDataXtd_Position::Set(L,aPos);  

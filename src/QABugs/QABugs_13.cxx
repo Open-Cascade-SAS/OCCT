@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -74,11 +73,11 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   double major_radius = 280.0;
 
   // Convert arguments
-  if (argc>1) wall_thickness = atof(argv[1]);
-  if (argc>2) dia1 = atof(argv[2]);
-  if (argc>3) dia2 = atof(argv[3]);
-  if (argc>4) major_radius = atof(argv[4]);
-  if (argc>5) length = atof(argv[5]);
+  if (argc>1) wall_thickness = Draw::Atof(argv[1]);
+  if (argc>2) dia1 = Draw::Atof(argv[2]);
+  if (argc>3) dia2 = Draw::Atof(argv[3]);
+  if (argc>4) major_radius = Draw::Atof(argv[4]);
+  if (argc>5) length = Draw::Atof(argv[5]);
   double bend_angle = length/major_radius;
 
   //if ((bend_angle >= M_PI)) {
@@ -203,20 +202,20 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   if (!mkEdge.IsDone()) return 0;
   TopoDS_Wire SpineWire = BRepBuilderAPI_MakeWire(mkEdge.Edge()).Wire();
 
-  sprintf (name,"SpineWire");
+  Sprintf (name,"SpineWire");
   DBRep::Set(name,SpineWire);
 
-  sprintf (name,"Wire1_");
+  Sprintf (name,"Wire1_");
   DBRep::Set(name,Wire1_);
 
-  sprintf (name,"outerWire1_");
+  Sprintf (name,"outerWire1_");
   DBRep::Set(name,outerWire1_);
 
   // SUPPORT:
   // - There is no need to create 2nd circles
-  //sprintf (name,"Wire2_");
+  //Sprintf (name,"Wire2_");
   //DBRep::Set(name,Wire2_);
-  //sprintf (name,"outerWire2_");
+  //Sprintf (name,"outerWire2_");
   //DBRep::Set(name,outerWire2_);
 
   di.Eval("fit");
@@ -292,7 +291,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   mkPipe1.MakeSolid();
   gasSolid = mkPipe1.Shape();
 
-  sprintf (name,"gasSolid_");
+  Sprintf (name,"gasSolid_");
   DBRep::Set(name,gasSolid);
 
   //getFaces.Clear();
@@ -313,7 +312,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   B.MakeSolid(wallSolid);
   B.Add(wallSolid,TubeShell);
 
-  sprintf (name,"wallSolid_");
+  Sprintf (name,"wallSolid_");
   DBRep::Set(name,wallSolid);
 
   // Now calculated the volume of the outside tube.
@@ -385,7 +384,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   while (getFaces.More())
     {
       i++;
-      sprintf(name,"Face%d",i);
+      Sprintf(name,"Face%d",i);
       di << "Face named " << name << "\n";
       DBRep::Set(name,getFaces.Current());
       getFaces.Next();
@@ -415,7 +414,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 7) {
-    Standard_Integer IsB = atoi(argv[6]);
+    Standard_Integer IsB = Draw::Atoi(argv[6]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def01)
@@ -442,11 +441,11 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 		    
 
   // Convert arguments
-  if (argc>1) radius_l = atof(argv[1]);
-  if (argc>2) radius_r = atof(argv[2]);
-  if (argc>3) bend_angle = atof(argv[3]);
-  if (argc>4) major_rad = atof(argv[4]);
-  if (argc>5) wall_thickness = atof(argv[5]);
+  if (argc>1) radius_l = Draw::Atof(argv[1]);
+  if (argc>2) radius_r = Draw::Atof(argv[2]);
+  if (argc>3) bend_angle = Draw::Atof(argv[3]);
+  if (argc>4) major_rad = Draw::Atof(argv[4]);
+  if (argc>5) wall_thickness = Draw::Atof(argv[5]);
 
   // mkv 15.07.03 if ((bend_angle >= 2.0*M_PI)) {
   if ((bend_angle >= 2.0*M_PI)) {
@@ -538,19 +537,19 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   if (!mkEdge.IsDone()) return TCL_ERROR;
   TopoDS_Wire SpineWire = BRepBuilderAPI_MakeWire(mkEdge.Edge()).Wire();
 
-  sprintf (name,"SpineWire");
+  Sprintf (name,"SpineWire");
   DBRep::Set(name,SpineWire);
 
-  sprintf (name,"Wire1_");
+  Sprintf (name,"Wire1_");
   DBRep::Set(name,Wire1_);
 
-  sprintf (name,"outerWire1_");
+  Sprintf (name,"outerWire1_");
   DBRep::Set(name,outerWire1_);
 
-  sprintf (name,"Wire2_");
+  Sprintf (name,"Wire2_");
   DBRep::Set(name,Wire2_);
 
-  sprintf (name,"outerWire2_");
+  Sprintf (name,"outerWire2_");
   DBRep::Set(name,outerWire2_);
 
   di.Eval("fit");
@@ -559,10 +558,10 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   TopExp::Vertices(SpineWire, Location2, Location1);
 
-  sprintf (name,"Location1");
+  Sprintf (name,"Location1");
   DBRep::Set(name,Location1);
 
-  sprintf (name,"Location2");
+  Sprintf (name,"Location2");
   DBRep::Set(name,Location2);
 
   // Make inner pipe shell
@@ -583,16 +582,16 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
  mkPipe2.Build();
   if (!mkPipe2.IsDone()) return TCL_ERROR;
 
-//    sprintf(name,"w1-first");
+//    Sprintf(name,"w1-first");
 //    DBRep::Set(name,mkPipe1.FirstShape());
 
-//    sprintf(name,"w1-last");
+//    Sprintf(name,"w1-last");
 //    DBRep::Set(name,mkPipe1.LastShape());
 
-//    sprintf(name,"w2-first");
+//    Sprintf(name,"w2-first");
 //    DBRep::Set(name,mkPipe2.FirstShape());
 
-//    sprintf(name,"w2-last");
+//    Sprintf(name,"w2-last");
 //    DBRep::Set(name,mkPipe2.LastShape());
 
   BRepOffsetAPI_Sewing SewIt(1.0e-4);
@@ -727,7 +726,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 	  {
 	    di << "Next shell found in compound" << "\n";
 	    di << "B.Add(wallSolid,TopoDS::Shell(getShel.Current()));" << "\n";
-	    sprintf(name,"shell%d", i++);
+	    Sprintf(name,"shell%d", i++);
 	    DBRep::Set(name,getShel.Current());
 	    B.Add(wallSolid,TopoDS::Shell(getShel.Current()));
 	    getShel.Next();
@@ -736,7 +735,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
     }
   }
 
-  sprintf(name,"result");
+  Sprintf(name,"result");
   DBRep::Set(name,wallSolid);
 
   // Now calculated the volume of the outside tube.
@@ -825,7 +824,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   Standard_Boolean IsBRepAlgoAPI = Standard_True;
   if (argc == 4) {
-    Standard_Integer IsB = atoi(argv[3]);
+    Standard_Integer IsB = Draw::Atoi(argv[3]);
     if (IsB != 1) {
       IsBRepAlgoAPI = Standard_False;
 #if ! defined(BRepAlgo_def02)
@@ -840,7 +839,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   
   Standard_Real delt = 5.0*Precision::Confusion();
-  Standard_Real mesh_delt = atof(argv[2]);
+  Standard_Real mesh_delt = Draw::Atof(argv[2]);
   if (mesh_delt <= 0.0)
   {
     di<<"Error: mesh_delta must be positive value"<<"\n";
@@ -1050,7 +1049,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
       if (err)
       {
         char astr[80];
-        sprintf(astr,"e_%d",l);
+        Sprintf(astr,"e_%d",l);
         DBRep::Set(astr,commonShape);
       }
     }

@@ -165,7 +165,7 @@ void tsee_entity::Delete()
 Standard_Integer tsee_entity::Set(Standard_Integer na,const char** a,Standard_Integer iargK,Standard_Integer iargI) {
   myEOK = Standard_False;
   if (iargK>=na) return 1; if (iargI>=na) return 1;
-  TCollection_AsciiString ascK = a[iargK]; myEindex = atoi(a[iargI]);
+  TCollection_AsciiString ascK = a[iargK]; myEindex = Draw::Atoi(a[iargI]);
   myEiskind = TestTopOpeDraw_TTOT::StringToKind(ascK,myETK);
   if (!myEiskind) return 1; if (myETK == TopOpeBRepDS_UNKNOWN) return 1;
   
@@ -649,7 +649,7 @@ static void tsee_flags(Standard_Integer& na,const char** a) {
     }
     else if (!strcasecmp(a[ia],"-p") && (ia < na-1)) {
       suppressargs(na,a,ia,ia+1);
-      Standard_Real t = atof(a[ia+1]);
+      Standard_Real t = Draw::Atof(a[ia+1]);
       if (t >= 0. && t <= 1.) {
 	OldParFlag = ParFlag; ParFlag = t;
       }
@@ -788,7 +788,7 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
   
   else if ( Tpar.isshap() ) {
     // na == 2 : display all DS shapes of type TS
-    // na  > 2 : display DS shapes of type TS of index atoi(a[2]..a[narg-1])
+    // na  > 2 : display DS shapes of type TS of index Draw::Atoi(a[2]..a[narg-1])
     if (na == 2 ) {
       TopOpeBRepDS_Explorer x(HDS,Tpar.TS(),Standard_False);
       for(;x.More();x.Next()) (*SeeShapefunc)(x.Index(),x.Current());
@@ -809,7 +809,7 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
 	}
 	else {
 	  for (ia = i1arg+1; ia < na; ia++) { 
-	    is = atoi(a[ia]);
+	    is = Draw::Atoi(a[ia]);
 	    (*SeeShapefunc)(is,GetShape(is,Tpar.TS()));
 	  }
 	}
@@ -817,7 +817,7 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
       }
       else {
 	for (ia = i1arg+1; ia < na; ia++) { 
-	  is = atoi(a[ia]);
+	  is = Draw::Atoi(a[ia]);
 	  (*SeeShapefunc)(is,GetShape(is,Tpar.TS()));
 	}
       }
@@ -826,9 +826,9 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
   
   else if ( Tpar.isgeom() ) { 
     // na == 2 : display all DS geometries of type TK
-    // na  > 2 : display DS geometries of type TK index atoi(a[2])..a[narg-1])
+    // na  > 2 : display DS geometries of type TK index Draw::Atoi(a[2])..a[narg-1])
     if (na == 2 ) SeeGeometry(Tpar.TK());
-    else for (ia = i1arg+1; ia < na; ia++) SeeGeometry(Standard_Integer(atoi(a[ia])),Tpar.TK());
+    else for (ia = i1arg+1; ia < na; ia++) SeeGeometry(Standard_Integer(Draw::Atoi(a[ia])),Tpar.TK());
   }
   
   else if ( Tpar.isafev() ) {
@@ -841,14 +841,14 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
   
   else if ( Tpar.isedcu() ) {
     // na == 2 : display curves of all DS edges
-    // na  > 2 : display curve of DS edges index atoi(a[2])..a[narg-1])
+    // na  > 2 : display curve of DS edges index Draw::Atoi(a[2])..a[narg-1])
     if ( na == 2 ) {
       TopOpeBRepDS_Explorer x(HDS,TopAbs_EDGE,Standard_False);
       for (;x.More();x.Next()) SeeEdgeCurve(x.Index(),x.Edge());
     }
     else {
       for (ia = i1arg+1; ia < na; ia++) { 
-	is = atoi(a[ia]);
+	is = Draw::Atoi(a[ia]);
 	SeeEdgeCurve(is,GetShape(is,TopAbs_EDGE));
       }
     }
@@ -857,7 +857,7 @@ Standard_Integer tsee_SeeShapefunc(Draw_Interpretor& di,Standard_Integer na_in,c
   else if ( Tpar.issect() ) { // na=2 all section edges,na>2 section edges (a[2]..a[na-1])
     Standard_Integer ise,nse = BDS.NbSectionEdges(); 
     if (na == 2) for (ise = 1; ise<=nse; ise++) SeeSectionEdge(ise);
-    else         for (ia = i1arg+1; ia<na; ia++) SeeSectionEdge(atoi(a[ia]));
+    else         for (ia = i1arg+1; ia<na; ia++) SeeSectionEdge(Draw::Atoi(a[ia]));
   }
 
   else if (Tpar.isdege()) {      
@@ -1173,7 +1173,7 @@ Standard_Integer tds(Draw_Interpretor& di,Standard_Integer na,const char** a)
     return 0;
   } // (na == 2)
   
-  // nna  > 2 : dump DS entities of type TK index atoi(a[2])..a[narg-1])  
+  // nna  > 2 : dump DS entities of type TK index Draw::Atoi(a[2])..a[narg-1])  
   for (ia = 2; ia < na; ia++) {
     
     if ( !strcmp(a[ia],"sd") ) { // dump all shapes HasSameDomain of type TS
@@ -1183,7 +1183,7 @@ Standard_Integer tds(Draw_Interpretor& di,Standard_Integer na,const char** a)
       }
     }
     else {
-      ids = atoi(a[ia]); 
+      ids = Draw::Atoi(a[ia]); 
       if ( Tpar.isshap() ) {
 	if (Tpar.TS() != TopAbs_SHAPE) Dumper.DumpTopology(Tpar.TK(),ids,cout);
 	else {
@@ -1216,8 +1216,8 @@ Standard_Integer TPPE(Draw_Interpretor& di,Standard_Integer na,const char** a)
   gp_Pnt pds;
   TopoDS_Edge ed;
   
-  Standard_Integer ip = atoi(a[2]);
-  Standard_Integer ie = atoi(a[4]);
+  Standard_Integer ip = Draw::Atoi(a[2]);
+  Standard_Integer ie = Draw::Atoi(a[4]);
   ok = ok && (ip >= 1); ok = ok && (ie >= 1);
   if (!ok) {
     di <<" bad data"<<"\n";
@@ -1371,7 +1371,7 @@ Standard_Integer tcx(Draw_Interpretor& di,Standard_Integer na,const char** a)
   if ( HDS.IsNull() ) { COUTNOHDS(di); return 0; }
   if      (na == 1) FDSCNX_Dump(HDS);
   else if (na == 2) {
-    if   (ISINTEGER(a[1])) FDSCNX_Dump(HDS,atoi(a[1]));
+    if   (ISINTEGER(a[1])) FDSCNX_Dump(HDS,Draw::Atoi(a[1]));
     else 
   }
   return 0;
@@ -1396,11 +1396,11 @@ Standard_Integer tdsri(Draw_Interpretor& di,Standard_Integer na_in,const char** 
   TDSpar Tpar(a[i1arg]);
   
   if ( strcasecmp(a[i1arg + 2],"i") ) return 0;
-  Standard_Integer ii = atoi(a[i1arg + 3]);  
+  Standard_Integer ii = Draw::Atoi(a[i1arg + 3]);  
 //  Standard_Integer ia,is,ig;
   Standard_Integer is,ig;
   if ( Tpar.isshap() ) {
-    is = atoi(a[i1arg + 1]);
+    is = Draw::Atoi(a[i1arg + 1]);
     const TopoDS_Shape& s = GetShape(is,Tpar.TS()); if (s.IsNull()) return 0;
     TopOpeBRepDS_ListOfInterference& li = BDS.ChangeShapeInterferences(is);
     Standard_Integer i=0; TopOpeBRepDS_ListIteratorOfListOfInterference it(li);
@@ -1413,7 +1413,7 @@ Standard_Integer tdsri(Draw_Interpretor& di,Standard_Integer na_in,const char** 
     }
   }
   else if ( Tpar.isgeom() ) { 
-    ig = atoi(a[i1arg + 1]);
+    ig = Draw::Atoi(a[i1arg + 1]);
   }
   return 0;
 } // tdsri

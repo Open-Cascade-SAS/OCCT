@@ -237,15 +237,15 @@ Standard_Integer GRILLE(Draw_Interpretor& di, Standard_Integer narg, const char*
   if (narg != 10) return 1;
   Standard_Real xmin,ymin,zmin,xmax,ymax,zmax,dx,dy,dz;
   Standard_Integer nbx,nby,nbz;
-  xmin = atof(a[1]);
-  ymin = atof(a[2]);
-  zmin = atof(a[3]);
-  xmax = atof(a[4]);
-  ymax = atof(a[5]);
-  zmax = atof(a[6]);
-  nbx  = atoi(a[7]);
-  nby  = atoi(a[8]);
-  nbz  = atoi(a[9]);
+  xmin = Draw::Atof(a[1]);
+  ymin = Draw::Atof(a[2]);
+  zmin = Draw::Atof(a[3]);
+  xmax = Draw::Atof(a[4]);
+  ymax = Draw::Atof(a[5]);
+  zmax = Draw::Atof(a[6]);
+  nbx  = Draw::Atoi(a[7]);
+  nby  = Draw::Atoi(a[8]);
+  nbz  = Draw::Atoi(a[9]);
   if(xmax<xmin || ymax<ymin || zmax<zmin || nbx<0 || nby<0 || nbz<0) 
     return 1;
   if(nbx) dx = (xmax-xmin)/nbx; else dx=0;

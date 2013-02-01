@@ -70,9 +70,9 @@ Handle(Dynamic_Parameter) Materials_MaterialDefinition::Switch(
       fr = sscanf(avalue,"%s%s%s",value1,value2,value3);
       
       Handle(Materials_Color) pcolor =
-	new Materials_Color(Quantity_Color(atof(value1),
-					    atof(value2),
-					    atof(value3),
+	new Materials_Color(Quantity_Color(Atof(value1),
+					    Atof(value2),
+					    Atof(value3),
 					    Quantity_TOC_RGB));
       objectparameter = new Dynamic_ObjectParameter(aname,pcolor);
       parameter = *(Handle_Dynamic_Parameter*)&objectparameter;

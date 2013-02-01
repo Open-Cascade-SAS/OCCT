@@ -152,7 +152,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 // amv 26.09.2003 : this is used to avoid error of enter's simbol        
       char str[80];                                                             
       cin>>str;                                                                 
-      modepri = atoi(str);   
+      modepri = Draw::Atoi(str);   
     }
 
     if (modepri == 0) {  //fin
@@ -187,7 +187,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
         //amv 26.09.2003                                                        
         char str_a[80];                                                         
         cin >> str_a;                                                           
-        answer = atoi(str_a);    
+        answer = Draw::Atoi(str_a);    
       }
       if ( answer == 0) continue;
       if ( answer == 1 || answer == 3) {
@@ -195,7 +195,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	// save the shape
 	if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
 	char fname[110];
-	sprintf(fname, "%s", rnom.ToCString());
+	Sprintf(fname, "%s", rnom.ToCString());
 	di << "Saving shape in variable Draw : " << fname << "\n";
 	if (answer == 3) IGESToBRep::WriteShape (shape,1);
 	try {
@@ -218,7 +218,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  TopoDS_Shape shape = Reader.Shape(inum);
 	  if (shape.IsNull()) { di<<"No Shape produced"<<"\n"; continue; }
 	  char fname[110];
-	  sprintf(fname, "%s_%d", rnom.ToCString(),inum);
+	  Sprintf(fname, "%s_%d", rnom.ToCString(),inum);
 	  di << "Saving shape in variable Draw : " << fname << "\n";
 	  if (answer == 4) IGESToBRep::WriteShape (shape,inum);
 	  try {
@@ -245,7 +245,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
       else {
 	nbs = Reader.NbShapes();
-	char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nent);
+	char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nent);
 	di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
 	di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
 	TopoDS_Shape sh = Reader.Shape(nbs);
@@ -283,7 +283,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
         TopoDS_Shape shape = Reader.OneShape();
         // save the shape
         char fname[110];
-        sprintf(fname, "%s", rnom.ToCString());
+        Sprintf(fname, "%s", rnom.ToCString());
         di << "Saving shape in variable Draw : " << fname << "\n";
         try {
           OCC_CATCH_SIGNALS
@@ -331,7 +331,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
           // anv 26.09.2003                                                     
           char str_answer[80];                                                  
           cin>>str_answer;                                                      
-          answer = atoi(str_answer);    
+          answer = Draw::Atoi(str_answer);    
 	}
 	if (answer <= 0 || answer > 3) continue;
 	if (answer == 3) {
@@ -358,7 +358,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result"<<"\n";
 	    else {
 	      nbs = Reader.NbShapes();
-	      char shname[30];  sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
+	      char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
 	      di<<"Transfer entity n0 "<<nent<<" OK  -> DRAW Shape: "<<shname<<"\n";
 	      di<<"Now, "<<nbs<<" Shapes produced"<<"\n";
 	      TopoDS_Shape sh = Reader.Shape(nbs);

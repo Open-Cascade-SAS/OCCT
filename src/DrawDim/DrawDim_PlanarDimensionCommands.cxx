@@ -224,7 +224,7 @@ static Standard_Integer DrawDim_VARIABLES (Draw_Interpretor& di,
       if (M.Add(vf)) {
 	i++;
 	char* p = (char *)malloc(100);
-	sprintf(p,"%s_%dv",a[1],i);
+	Sprintf(p,"%s_%dv",a[1],i);
 	DBRep::Set(p,vf);
 	di.AppendElement(p);
 	DrawDim::DrawShapeName (vf,p);
@@ -232,14 +232,14 @@ static Standard_Integer DrawDim_VARIABLES (Draw_Interpretor& di,
       if (M.Add(vl)) {
 	i++;
 	char *p = (char *)malloc(100);
-	sprintf(p,"%s_%dv",a[1],i);
+	Sprintf(p,"%s_%dv",a[1],i);
 	DBRep::Set(p,vl);
 	di.AppendElement(p);	
 	DrawDim::DrawShapeName (vl,p);
       }
       i++;
       char *p = (char *)malloc(100);
-      sprintf(p,"%s_%de",a[1],i);
+      Sprintf(p,"%s_%de",a[1],i);
       DBRep::Set(p,ex.Current());
       di.AppendElement(p);
       DrawDim::DrawShapeName (ex.Current(),p);

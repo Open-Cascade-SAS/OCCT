@@ -130,7 +130,7 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
       if (theolds->HasItem(com.ToCString())) num = theolds->Item(com.ToCString());
     if (num == 0) continue;
     if (!IFSelect_Activator::Select(com.ToCString(),nact,act))
-      sprintf (help,"type :  xhelp %s for help",com.ToCString());
+      Sprintf (help,"type :  xhelp %s for help",com.ToCString());
     else if (!act.IsNull()) strcpy(help,act->Help(nact));
     if (num < 0) theCommands.Add (com.ToCString(),help,XSTEPDRAWRUN,act->Group());
     else theCommands.Add (thenews->Value(num).ToCString(),help,XSTEPDRAWRUN,act->Group());
@@ -141,7 +141,7 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
     (const Standard_CString command, const Standard_CString varname)
 {
   char mess[100];
-  sprintf (mess,command,varname);
+  Sprintf (mess,command,varname);
 #ifdef DEB
   IFSelect_ReturnStatus stat = 
 #endif

@@ -481,7 +481,7 @@ extern "C" void ExprIntrp_NumValue()
   char num[30];
   int nbcar;
   nbcar = ExprIntrp_GetResult(num);
-  Standard_Real value = atof(num);
+  Standard_Real value = Atof(num);
   Handle(Expr_NumericValue) nval = new Expr_NumericValue(value);
   ExprIntrp_Recept.Push(nval);
 }
@@ -621,7 +621,7 @@ extern "C" void ExprIntrp_ConstantDefinition()
   char num[30];
   int nbcar;
   nbcar = ExprIntrp_GetResult(num);
-  Standard_Real val = atof(num);
+  Standard_Real val = Atof(num);
   Handle(Expr_NamedConstant) theconst = new Expr_NamedConstant(name,val);
   ExprIntrp_Recept.Use(theconst);
   ExprIntrp_Recept.Push(theconst);

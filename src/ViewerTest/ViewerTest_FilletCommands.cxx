@@ -104,10 +104,10 @@ static Standard_Integer tolblend(Draw_Interpretor& di, Standard_Integer narg, co
     return 0;
   }
   else if(narg == 5){
-    ta = atof(a[1]);
-    t3d = atof(a[2]);
-    t2d = atof(a[3]);
-    fl = atof(a[4]);
+    ta = Draw::Atof(a[1]);
+    t3d = Draw::Atof(a[2]);
+    t2d = Draw::Atof(a[3]);
+    fl = Draw::Atof(a[4]);
     return 0;
   }
   return 1;
@@ -149,7 +149,7 @@ static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, cons
   TopoDS_Edge E;
   Standard_Integer nbedge = 0;
   for (Standard_Integer ii = 1; ii < (narg-1)/2; ii++){
-    Rad = atof(a[2*ii + 1]);
+    Rad = Draw::Atof(a[2*ii + 1]);
     TopoDS_Shape aLocalShape = DBRep::Get(a[(2*ii+2)],TopAbs_EDGE);
     E = TopoDS::Edge(aLocalShape);
 //    E = TopoDS::Edge(DBRep::Get(a[(2*ii+2)],TopAbs_EDGE));

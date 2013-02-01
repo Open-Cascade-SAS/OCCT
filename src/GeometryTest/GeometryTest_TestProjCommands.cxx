@@ -70,12 +70,12 @@ static Standard_Integer xdistcs(Draw_Interpretor& , Standard_Integer n, const ch
     return 0;
   }
   //
-  aT1=atof(a[3]);
-  aT2=atof(a[4]);
+  aT1=Draw::Atof(a[3]);
+  aT2=Draw::Atof(a[4]);
   //
   aNbP=10;
   if (n>5) {
-    aNbP=atoi(a[5]);
+    aNbP=Draw::Atoi(a[5]);
   }
   //
   iSize=3;

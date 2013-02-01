@@ -129,7 +129,7 @@ static Standard_Integer DNaming_Select (Draw_Interpretor& di, Standard_Integer n
     }
     if (n > 4) {  
       Standard_Boolean Orient(Standard_False);
-      if(n == 6) Orient = (Standard_Boolean)atoi(a[5]);
+      if(n == 6) Orient = (Standard_Boolean)Draw::Atoi(a[5]);
       TopoDS_Shape S = DBRep::Get(a[3], TopAbs_SHAPE);
       TopoDS_Shape C = DBRep::Get(a[4], TopAbs_SHAPE);
       SL.Select (S, C, geometry, Orient);       
@@ -223,7 +223,7 @@ static Standard_Integer DNaming_SolveSelection (Draw_Interpretor& di, Standard_I
 	if(!isSolved)
 		di << "!!! Solver is failed" <<"\n";
     TopoDS_Shape Res = TNaming_Tool::CurrentShape(SL.NamedShape());
-    sprintf (name,"%s_%s","new",a[2]);
+    Sprintf (name,"%s_%s","new",a[2]);
     Display (name,Res);
     return 0;
   }

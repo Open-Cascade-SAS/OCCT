@@ -109,7 +109,7 @@ static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, c
   }
   else {
     if (narg >3) return 1;
-    if (narg == 3) {  tapp_angle = Abs(atof(a[2])); }
+    if (narg == 3) {  tapp_angle = Abs(Draw::Atof(a[2])); }
     char c=a[1][1];
     switch (c) {
     case '0':
@@ -149,10 +149,10 @@ static Standard_Integer tolblend(Draw_Interpretor& di, Standard_Integer narg, co
     return 0;
   }
   else if(narg == 5){
-    ta = atof(a[1]);
-    t3d = atof(a[2]);
-    t2d = atof(a[3]);
-    fl = atof(a[4]);
+    ta = Draw::Atof(a[1]);
+    t3d = Draw::Atof(a[2]);
+    t2d = Draw::Atof(a[3]);
+    fl = Draw::Atof(a[4]);
     return 0;
   }
   return 1;
@@ -180,7 +180,7 @@ static Standard_Integer BLEND(Draw_Interpretor& di, Standard_Integer narg, const
   TopoDS_Edge E;
   Standard_Integer nbedge = 0;
   for (Standard_Integer ii = 1; ii < (narg-1)/2; ii++){
-    Rad = atof(a[2*ii + 1]);
+    Rad = Draw::Atof(a[2*ii + 1]);
     TopoDS_Shape aLocalEdge(DBRep::Get(a[(2*ii+2)],TopAbs_EDGE));
     E = TopoDS::Edge(aLocalEdge);
 //    E = TopoDS::Edge(DBRep::Get(a[(2*ii+2)],TopAbs_EDGE));
@@ -207,13 +207,13 @@ static void PrintHist(const TopoDS_Shape& S,
   B.Add(C,S);
   char localname[100];
   if(nbgen<10){
-    sprintf(localname,"generated_00%d", nbgen++);
+    Sprintf(localname,"generated_00%d", nbgen++);
   }
   else if(nbgen<100){
-    sprintf(localname,"generated_0%d", nbgen++);
+    Sprintf(localname,"generated_0%d", nbgen++);
   }
   else {
-    sprintf(localname,"generated_%d", nbgen++);
+    Sprintf(localname,"generated_%d", nbgen++);
   }
   for(; It.More(); It.Next()){
     B.Add(C,It.Value());
@@ -299,8 +299,8 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di,
   TopoDS_Edge E = TopoDS::Edge(aLocalEdge);
 //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
   for (Standard_Integer ii = 1; ii <= (narg/2)-1; ii++){
-    Par = atof(a[2*ii]);
-    Rad = atof(a[2*ii + 1]);
+    Par = Draw::Atof(a[2*ii]);
+    Rad = Draw::Atof(a[2*ii + 1]);
     uandr.ChangeValue(ii).SetCoord(Par,Rad);
   }
   Rake->Add(uandr,E);
@@ -341,7 +341,7 @@ Standard_Integer topoblend(Draw_Interpretor& di, Standard_Integer narg, const ch
   Standard_Boolean fuse  = !strcmp(a[0],"fubl");
   TopoDS_Shape S1 = DBRep::Get(a[2]);
   TopoDS_Shape S2 = DBRep::Get(a[3]);
-  Standard_Real Rad = atof(a[4]);
+  Standard_Real Rad = Draw::Atof(a[4]);
   BRepAlgo_BooleanOperation* BC;
   if(fuse){
     BC = new BRepAlgo_Fuse(S1,S2);
@@ -402,7 +402,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
     printf(" Null shapes are not allowed \n");
     return 1;
   }
-  Standard_Real Rad = atof(a[4]);
+  Standard_Real Rad = Draw::Atof(a[4]);
 
   BOPTools_DSFiller theDSFiller;
 
@@ -476,7 +476,7 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
   Standard_Real Rad;
   Standard_Boolean simul=Standard_False;
   const char *ns0=(a[1]);
-  Rad = atof(a[3]);
+  Rad = Draw::Atof(a[3]);
   TopTools_ListOfShape E;
   for (i=4; i <=(narg-1) ; i++){
     TopoDS_Shape edge= DBRep::Get(a[i],TopAbs_EDGE);
@@ -559,47 +559,47 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
       di<<"precision "<< i << "= "<<Rakk.TolApp3d(i)<<"\n";
       
       // display resulting surfaces  
-      sprintf(localname, "%s%d" ,ns0,i);
+      Sprintf(localname, "%s%d" ,ns0,i);
       temp = localname;
       DrawTrSurf::Set(temp,Rakk.SurfaceFillet(i));
       di << localname<< " ";
       
       // display curves 3d 
-      sprintf(localname, "%s%d" ,"courb1",i);
+      Sprintf(localname, "%s%d" ,"courb1",i);
       temp =localname; 
       DrawTrSurf::Set(temp,Rakk.CurveOnFace1(i));
       di << localname<< " ";
-      sprintf(localname, "%s%d" ,"courb2",i);
+      Sprintf(localname, "%s%d" ,"courb2",i);
       temp =localname;
       DrawTrSurf::Set(temp,Rakk.CurveOnFace2(i));
       di << localname<< " ";     
       
       // display supports 
-      sprintf(localname, "%s%d" ,"face1",i);
+      Sprintf(localname, "%s%d" ,"face1",i);
       temp =localname ;
       DBRep::Set(temp,Rakk.SupportFace1(i));
       di << localname<< " ";
-      sprintf(localname, "%s%d" ,"face2",i);
+      Sprintf(localname, "%s%d" ,"face2",i);
       temp =localname; 
       DBRep::Set(temp,Rakk.SupportFace2(i));
       di << localname<< " ";
       
       // display Pcurves on faces 
-      sprintf(localname, "%s%d" ,"pcurveonface1",i);
+      Sprintf(localname, "%s%d" ,"pcurveonface1",i);
       temp =localname ;
       DrawTrSurf::Set(temp,Rakk.PCurveOnFace1(i));
       di << localname<< " ";
-      sprintf(localname, "%s%d" ,"pcurveonface2",i);
+      Sprintf(localname, "%s%d" ,"pcurveonface2",i);
       temp =localname; 
       DrawTrSurf::Set(temp,Rakk.PCurveOnFace2(i));
       di << localname<< " ";
       
       // display Pcurves on the fillet
-      sprintf(localname, "%s%d" ,"pcurveonconge1",i);
+      Sprintf(localname, "%s%d" ,"pcurveonconge1",i);
       temp =localname;
       DrawTrSurf::Set(temp,Rakk.PCurve1OnFillet(i));
       di << localname<< " ";
-      sprintf(localname, "%s%d" ,"pcurveonconge2",i);
+      Sprintf(localname, "%s%d" ,"pcurveonconge2",i);
       temp =localname; 
       DrawTrSurf::Set(temp,Rakk.PCurve2OnFillet(i));
       di << localname<< " ";
@@ -613,7 +613,7 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
     for (j=1;j<=s;j++)
      {Handle(Geom_TrimmedCurve Sec);
      Rakk.Section(i,j,Sec);
-    sprintf(localname, "%s%d%d" ,"sec",i,j);
+    Sprintf(localname, "%s%d%d" ,"sec",i,j);
      temp =localname;
     DrawTrSurf::Set (temp,Sec);
     di << localname<< " ";}
@@ -633,7 +633,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if ( S.IsNull()) return 1;
-  Standard_Real Rad = atof(a[3]);
+  Standard_Real Rad = Draw::Atof(a[3]);
   
   Standard_Real Tol = t3d; //the same as blend ! 1.e-7;
   
@@ -708,7 +708,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
       di << "   " << From << "     " << To << "\n";
       for (Standard_Integer j = From; j <= To; j++) {
 	const TopoDS_Shape& CurF = Roll.Face(j);
-	sprintf(localname,"%s_%d_%d",a[1],i,j);
+	Sprintf(localname,"%s_%d_%d",a[1],i,j);
 	DBRep::Set(localname,CurF);
       }
     }

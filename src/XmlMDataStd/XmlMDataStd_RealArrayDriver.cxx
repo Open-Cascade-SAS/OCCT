@@ -172,7 +172,7 @@ void XmlMDataStd_RealArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
     aValueStr += TCollection_AsciiString(aRealArray->Value(i));
 #else
     char aValueChar[32];
-    sprintf(aValueChar, "%.15g", aRealArray->Value(i));
+    Sprintf(aValueChar, "%.15g", aRealArray->Value(i));
     aValueStr += aValueChar;
 #endif
     if (i >= anU) break;

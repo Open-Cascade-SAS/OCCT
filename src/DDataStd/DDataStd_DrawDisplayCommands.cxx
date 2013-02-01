@@ -76,9 +76,9 @@ static Standard_Integer DDataStd_PNT (Draw_Interpretor& di,
     if (!DDF::GetDF (arg[1], DF)) return 1;  
     TDF_Label L;
     DDF::AddLabel (DF, arg[2], L);    
-    Standard_Real x = atof(arg[3]);
-    Standard_Real y = atof(arg[4]);
-    Standard_Real z = atof(arg[5]);
+    Standard_Real x = Draw::Atof(arg[3]);
+    Standard_Real y = Draw::Atof(arg[4]);
+    Standard_Real z = Draw::Atof(arg[5]);
     TDataXtd_Point::Set (L,gp_Pnt(x,y,z));
     return 0;
   }  

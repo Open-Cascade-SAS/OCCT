@@ -193,7 +193,7 @@ static Standard_Integer DDocStd_UndoLimit (Draw_Interpretor& di,Standard_Integer
   if (!DDocStd::GetDocument(a[1],D)) return 1;
   
   if (n > 2) {
-    Standard_Integer lim = atoi(a[2]);
+    Standard_Integer lim = Draw::Atoi(a[2]);
     D->SetUndoLimit(lim);
   }
   
@@ -218,7 +218,7 @@ static Standard_Integer DDocStd_Undo (Draw_Interpretor& di,Standard_Integer n, c
   
   Standard_Integer i,step = 1;
   if (n > 2) {
-    step = atoi(a[2]);
+    step = Draw::Atoi(a[2]);
   }
 
   // test if the command was undo or redo

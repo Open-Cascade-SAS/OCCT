@@ -143,13 +143,13 @@ Materials_MaterialsDictionary::Materials_MaterialsDictionary()
 	  if     (!strcasecmp(type,"Materials_Color"))
             {
               Quantity_Color color
-		(atof(value1),atof(value2),atof(value3),Quantity_TOC_RGB);
+		(Atof(value1),Atof(value2),Atof(value3),Quantity_TOC_RGB);
               pcolor = new Materials_Color(color);
               material->Parameter(name,pcolor);
             }
 	  else if(!strcasecmp(type,"Standard_Real"))
             {
-              material->Parameter(name,atof(value1));
+              material->Parameter(name,Atof(value1));
             }
           else if(!strcasecmp(type,"Standard_CString"))
             {

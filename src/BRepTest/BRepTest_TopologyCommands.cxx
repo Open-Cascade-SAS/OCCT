@@ -196,7 +196,7 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
   if (n < 6) return 1;
 
   // Le point indiquant le cote "matiere".
-  gp_Pnt RefPnt = gp_Pnt(atof(a[3]),atof(a[4]),atof(a[5]));
+  gp_Pnt RefPnt = gp_Pnt(Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]));
 
   TopoDS_Shape Face = DBRep::Get(a[2],TopAbs_FACE);
   if ( Face.IsNull()) {

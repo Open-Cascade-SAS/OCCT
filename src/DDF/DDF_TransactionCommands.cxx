@@ -112,7 +112,7 @@ static Standard_Integer CommitTran (Draw_Interpretor& di,
       Handle(DDF_Transaction) tr = DDF_TStack.Top();
       di<<"Commit transaction # "<<tr->Transaction()<<" # "<<DF->Transaction()<<"\n";
       Standard_Boolean withDelta = Standard_False;
-      if (n > 2) withDelta = (atoi(a[2]) != 0);
+      if (n > 2) withDelta = (Draw::Atoi(a[2]) != 0);
       DDF_LastDelta = tr->Commit(withDelta);
       DDF_TStack.Pop();
     }
@@ -169,7 +169,7 @@ static Standard_Integer Undo (Draw_Interpretor& di,
   Handle(TDF_Data) DF;
   if (DDF::GetDF (a[1], DF)) {
     Standard_Boolean withDelta = Standard_False;
-    if (n > 2) withDelta = (atoi(a[2]) != 0);
+    if (n > 2) withDelta = (Draw::Atoi(a[2]) != 0);
     if (!DDF_LastDelta.IsNull()) {
       if (DF->IsApplicable(DDF_LastDelta)) {
 	Handle(TDF_Delta) tmp = DF->Undo(DDF_LastDelta,withDelta);

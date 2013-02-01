@@ -184,9 +184,9 @@ Standard_Boolean  Interface_Static::Init
       else if (init[0] == 'i' && init[2] == 'a')
 	unstat->SetIntegerLimit (Standard_True ,atoi(&init[iblc]));
       else if (init[0] == 'r' && init[2] == 'i')
-	unstat->SetRealLimit (Standard_False,atof(&init[iblc]));
+	unstat->SetRealLimit (Standard_False,Atof(&init[iblc]));
       else if (init[0] == 'r' && init[2] == 'a')
-	unstat->SetRealLimit (Standard_True ,atof(&init[iblc]));
+	unstat->SetRealLimit (Standard_True ,Atof(&init[iblc]));
       else if (init[0] == 'u')
 	unstat->SetUnitDef (&init[iblc]);
       else if (init[0] == 'e' && init[1] == 'm')
@@ -249,12 +249,12 @@ Standard_CString  Interface_Static::CDef
   if (part[0] == 'i') {
     Standard_Integer ilim;
     if (!stat->IntegerLimit((part[2] == 'a'),ilim)) return "";
-    sprintf(defmess,"%d",ilim);   return defmess;
+    Sprintf(defmess,"%d",ilim);   return defmess;
   }
   if (part[0] == 'r') {
     Standard_Real rlim;
     if (!stat->RealLimit((part[2] == 'a'),rlim)) return "";
-    sprintf(defmess,"%f",rlim);   return defmess;
+    Sprintf(defmess,"%f",rlim);   return defmess;
   }
   if (part[0] == 'u') return stat->UnitDef();
   return "";

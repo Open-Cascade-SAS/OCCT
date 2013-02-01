@@ -74,7 +74,7 @@ static char Draw_fontsizedefault[FONTLENGTH]="150";
 
 static Standard_Integer ViewId(const Standard_CString a)
 {
-  Standard_Integer id = atoi(a);
+  Standard_Integer id = Draw::Atoi(a);
   if ((id < 0) || (id >= MAXVIEW)) {
     cout << "Incorrect view-id, must be in 0.."<<MAXVIEW-1<<endl;
     return -1;
@@ -90,7 +90,7 @@ static void SetTitle(const Standard_Integer id)
 {
   if (dout.HasView(id)) {
     char title[255];
-    sprintf(title,"%d : %s - Zoom %f",id,dout.GetType(id),dout.Zoom(id));
+    Sprintf(title,"%d : %s - Zoom %f",id,dout.GetType(id),dout.Zoom(id));
     dout.SetTitle(id,title);
   }
 }
@@ -106,7 +106,7 @@ static Standard_Integer zoom(Draw_Interpretor& , Standard_Integer n, const char*
   // two argument -> First is the view
   Standard_Boolean z2d = !strcasecmp(a[0],"2dzoom");
   if (n == 2) {
-    Standard_Real z = atof(a[1]);
+    Standard_Real z = Draw::Atof(a[1]);
     for (Standard_Integer id = 0; id < MAXVIEW; id++) {
       if (dout.HasView(id)) {
 	if ((z2d && !dout.Is3D(id)) || (!z2d && dout.Is3D(id))) {
@@ -121,7 +121,7 @@ static Standard_Integer zoom(Draw_Interpretor& , Standard_Integer n, const char*
   else if (n >= 3) {
     Standard_Integer id = ViewId(a[1]);
     if (id < 0) return 1;
-    Standard_Real z = atof(a[2]);
+    Standard_Real z = Draw::Atof(a[2]);
     dout.SetZoom(id,z);
     dout.RepaintView(id);
     SetTitle(id);
@@ -263,7 +263,7 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
   if (Draw_Batch) return 1;
 
   if ((n >= 3) && (n != 4)) {
-    Standard_Integer id = atoi(a[1]);
+    Standard_Integer id = Draw::Atoi(a[1]);
     if ((id < 0) || (id >= MAXVIEW)) {
       di <<"View-id must be in 0.."<<MAXVIEW-1<<"\n";
       return 1;
@@ -276,13 +276,13 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
     if (dout.HasView(id))
       dout.GetPosSize(id,X,Y,W,H);
     if (n >= 4)
-      X = atoi(a[3]);
+      X = Draw::Atoi(a[3]);
     if (n >= 5)
-      Y = atoi(a[4]);
+      Y = Draw::Atoi(a[4]);
     if (n >= 6)
-      W = atoi(a[5]);
+      W = Draw::Atoi(a[5]);
     if (n >= 7)
-      H = atoi(a[6]);
+      H = Draw::Atoi(a[6]);
     dout.MakeView(id,a[2],X,Y,W,H);
     if (!dout.HasView(id)) {
       di << "View creation failed"<<"\n";
@@ -294,7 +294,7 @@ static Standard_Integer view(Draw_Interpretor& di, Standard_Integer n, const cha
   }
   else if (n == 4) {
     // create a view on a given window
-    Standard_Integer id = atoi(a[1]);
+    Standard_Integer id = Draw::Atoi(a[1]);
     if ((id < 0) || (id >= MAXVIEW)) {
       di <<"View-id must be in 0.."<<MAXVIEW-1<<"\n";
       return 1;
@@ -421,7 +421,7 @@ static Standard_Integer setfocal(Draw_Interpretor& di, Standard_Integer n, const
     }
   }
   else {
-    Standard_Real f = atof(a[1]);
+    Standard_Real f = Draw::Atof(a[1]);
     for (Standard_Integer id = 0; id < MAXVIEW; id++) {
       if (!strcasecmp(dout.GetType(id),"PERS"))
 	dout.SetFocal(id,f);
@@ -575,14 +575,14 @@ static Standard_Integer ptv(Draw_Interpretor& , Standard_Integer n, const char**
     Standard_Integer anid = ViewId(a[1]);
     if (anid < 0) return 1;
     start = end = anid;
-    X = atof(a[2]);
-    Y = atof(a[3]);
-    Z = atof(a[4]);
+    X = Draw::Atof(a[2]);
+    Y = Draw::Atof(a[3]);
+    Z = Draw::Atof(a[4]);
   }
   else {
-    X = atof(a[1]);
-    Y = atof(a[2]);
-    Z = atof(a[3]);
+    X = Draw::Atof(a[1]);
+    Y = Draw::Atof(a[2]);
+    Z = Draw::Atof(a[3]);
   }
 
   for (Standard_Integer id = start; id <= end; id++) {
@@ -614,14 +614,14 @@ static Standard_Integer dptv(Draw_Interpretor& , Standard_Integer n, const char*
     Standard_Integer anid = ViewId(a[1]);
     if (anid < 0) return 1;
     start = end = anid;
-    DX = atof(a[2]);
-    DY = atof(a[3]);
-    DZ = atof(a[4]);
+    DX = Draw::Atof(a[2]);
+    DY = Draw::Atof(a[3]);
+    DZ = Draw::Atof(a[4]);
   }
   else {
-    DX = atof(a[1]);
-    DY = atof(a[2]);
-    DZ = atof(a[3]);
+    DX = Draw::Atof(a[1]);
+    DY = Draw::Atof(a[2]);
+    DZ = Draw::Atof(a[3]);
   }
 
   for (Standard_Integer id = start; id <= end; id++) {
@@ -647,7 +647,7 @@ static Standard_Integer color(Draw_Interpretor& di, Standard_Integer n, const ch
   if (n < 3) {
     Draw_BlackBackGround = !Draw_BlackBackGround;
   }
-  else if (!dout.DefineColor(atoi(a[1]),a[2])) {
+  else if (!dout.DefineColor(Draw::Atoi(a[1]),a[2])) {
     di << "Could not allocate color "<<a[2]<<"\n";
     return 1;
   }
@@ -826,7 +826,7 @@ static Standard_Integer hcolor(Draw_Interpretor& di, Standard_Integer n, const c
     di << "12 = Yellow,\t 13 = Khaki,\t 14 = Coral" << "\n" ;
     di << "1 <= width <= 11,  0 (noir)  <= gray <= 1 (blanc)" << "\n" ;
   } else {
-    dout.PostColor(atoi(a[1]),atoi(a[2]),atof(a[3]));
+    dout.PostColor(Draw::Atoi(a[1]),Draw::Atoi(a[2]),Draw::Atof(a[3]));
   }
   return 0;
 }
@@ -848,7 +848,7 @@ static Standard_Integer xwd(Draw_Interpretor& , Standard_Integer n, const char**
   Standard_Integer id = 1;
   const char* file = a[1];
   if (n > 2) {
-    id  = atoi(a[1]);
+    id  = Draw::Atoi(a[1]);
     file = a[2];
   }
   if (!dout.SaveView(id,file))
@@ -873,19 +873,19 @@ static Standard_Integer grid (Draw_Interpretor& , Standard_Integer NbArg, const 
       StepZ = DefaultGridStep ;
       break ;
     case 2 :
-      StepX = Abs (atof (Arg[1])) ;
-      StepY = Abs (atof (Arg[1])) ;
-      StepZ = Abs (atof (Arg[1])) ;
+      StepX = Abs (Draw::Atof (Arg[1])) ;
+      StepY = Abs (Draw::Atof (Arg[1])) ;
+      StepZ = Abs (Draw::Atof (Arg[1])) ;
       break ;
     case 3 :
-      StepX = Abs (atof (Arg[1])) ;
-      StepY = Abs (atof (Arg[2])) ;
-      StepZ = Abs (atof (Arg[2])) ;
+      StepX = Abs (Draw::Atof (Arg[1])) ;
+      StepY = Abs (Draw::Atof (Arg[2])) ;
+      StepZ = Abs (Draw::Atof (Arg[2])) ;
       break ;
     case 4 :
-      StepX = Abs (atof (Arg[1])) ;
-      StepY = Abs (atof (Arg[2])) ;
-      StepZ = Abs (atof (Arg[3])) ;
+      StepX = Abs (Draw::Atof (Arg[1])) ;
+      StepY = Abs (Draw::Atof (Arg[2])) ;
+      StepZ = Abs (Draw::Atof (Arg[3])) ;
       break ;
     default :
       return 1 ;
@@ -941,7 +941,7 @@ static Standard_Integer dtext(Draw_Interpretor& di, Standard_Integer n, const ch
   }
   else if (n >= 4) {
     is3d = n > 4;
-    P.SetCoord(atof(a[1]),atof(a[2]),is3d ? atof(a[3]) : 0);
+    P.SetCoord(Draw::Atof(a[1]),Draw::Atof(a[2]),is3d ? Draw::Atof(a[3]) : 0);
   }
   else
     return 0;

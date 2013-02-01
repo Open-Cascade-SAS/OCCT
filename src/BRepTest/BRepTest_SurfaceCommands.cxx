@@ -110,9 +110,9 @@ static Standard_Integer mkface(Draw_Interpretor& , Standard_Integer n, const cha
   }
   else {
     if (mkface)
-      res = BRepBuilderAPI_MakeFace(S,atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]),Precision::Confusion());
+      res = BRepBuilderAPI_MakeFace(S,Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]),Draw::Atof(a[6]),Precision::Confusion());
     else
-      res = BRepBuilderAPI_MakeShell(S,atof(a[3]),atof(a[4]),atof(a[5]),atof(a[6]),
+      res = BRepBuilderAPI_MakeShell(S,Draw::Atof(a[3]),Draw::Atof(a[4]),Draw::Atof(a[5]),Draw::Atof(a[6]),
 			      Segment);
   }
   
@@ -246,7 +246,7 @@ static Standard_Integer pcurve(Draw_Interpretor& , Standard_Integer n, const cha
       col = DBRep_ColorOrientation(ex.Current().Orientation());
       DrawTrSurf_CurveColor(col);
 
-      sprintf(name,"%s_%d",a[1],i);
+      Sprintf(name,"%s_%d",a[1],i);
       DrawTrSurf::Set(name,new Geom2d_TrimmedCurve(c,f,l));
     }
     DrawTrSurf_CurveColor(savecol);
@@ -309,9 +309,9 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
         {
           if (tolower(theArgv[i][2]) == 'i' && i+1 < theArgc)
           {
-            if (atof (theArgv[i+1]))
+            if (Draw::Atof (theArgv[i+1]))
             {
-              aMinTol = atof (theArgv[++i]);
+              aMinTol = Draw::Atof (theArgv[++i]);
               aSetMinTol = Standard_True;
             }
             else
@@ -322,8 +322,8 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
           }
           if (tolower(theArgv[i][2]) == 'a' && i+1 < theArgc)
           {
-            if (atof (theArgv[i+1]))
-              aMaxTol = atof (theArgv[++i]);
+            if (Draw::Atof (theArgv[i+1]))
+              aMaxTol = Draw::Atof (theArgv[++i]);
             else
             {
               theDi << "Error! max tolerance can't possess the null value" << "\n";
@@ -351,8 +351,8 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
       }
       else
       {
-        if (atof (theArgv[i]))
-          aTol = atof (theArgv[i]);
+        if (Draw::Atof (theArgv[i]))
+          aTol = Draw::Atof (theArgv[i]);
       }
     }
   }
@@ -430,7 +430,7 @@ static Standard_Integer continuity (Draw_Interpretor& ,
   Standard_Integer i=1;
   if (sh.IsNull()) {
     if (n < 3) return (1);
-    Standard_Real tol = atof(a[1]);
+    Standard_Real tol = Draw::Atof(a[1]);
     aFind.Init(tol, Standard_False);
     i = 2;
   }
@@ -478,7 +478,7 @@ static Standard_Integer encoderegularity (Draw_Interpretor& ,
   if (n==2) 
     BRepLib::EncodeRegularity(sh);
   else {
-    Standard_Real Tol = atof(a[2]);
+    Standard_Real Tol = Draw::Atof(a[2]);
     Tol *= M_PI/180.;
     BRepLib::EncodeRegularity(sh, Tol);
   }

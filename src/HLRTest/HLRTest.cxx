@@ -95,22 +95,22 @@ hprj (Draw_Interpretor& , Standard_Integer n, const char** a)
 {
   Standard_Integer id = 1;
   if (n < 2) return 1;
-  if (n > 2) id = atoi(a[2]);
+  if (n > 2) id = Draw::Atoi(a[2]);
   //
   gp_Ax2 anAx2 = gp::XOY();
   if (n == 11)
   {
-    Standard_Real x = atof(a[2]);
-    Standard_Real y = atof(a[3]);
-    Standard_Real z = atof(a[4]);
+    Standard_Real x = Draw::Atof(a[2]);
+    Standard_Real y = Draw::Atof(a[3]);
+    Standard_Real z = Draw::Atof(a[4]);
 
-    Standard_Real dx = atof(a[5]);
-    Standard_Real dy = atof(a[6]);
-    Standard_Real dz = atof(a[7]);
+    Standard_Real dx = Draw::Atof(a[5]);
+    Standard_Real dy = Draw::Atof(a[6]);
+    Standard_Real dz = Draw::Atof(a[7]);
 
-    Standard_Real dx1 = atof(a[8]);
-    Standard_Real dy1 = atof(a[9]);
-    Standard_Real dz1 = atof(a[10]);
+    Standard_Real dx1 = Draw::Atof(a[8]);
+    Standard_Real dy1 = Draw::Atof(a[9]);
+    Standard_Real dz1 = Draw::Atof(a[10]);
 
     gp_Pnt anOrigin (x, y, z);
     gp_Dir aNormal  (dx, dy, dz);
@@ -152,7 +152,7 @@ hfil (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   Standard_Integer nbIso = 0;
   if (n < 3) return 1;
-  if (n > 3) nbIso = atoi(a[3]);
+  if (n > 3) nbIso = Draw::Atoi(a[3]);
   const char *name1 = a[1];
   Handle(HLRTopoBRep_OutLiner) HS = HLRTest::GetOutLiner(name1);
   if (HS.IsNull()) {

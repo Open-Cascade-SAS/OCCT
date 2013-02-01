@@ -176,13 +176,6 @@ is
          class Thread;
              ---Purpose: A tool to manage threads
 
-    class Real2String;
-             ---Purpose: Convertion of CString to Real and reciprocally
-
-    class Localizer;
-             ---Purpose: Manages locale.
-
-
     -----------------------------------------------
     --  UNIX specific exceptions and enumeration --
     -----------------------------------------------

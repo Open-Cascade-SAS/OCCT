@@ -55,6 +55,7 @@
 #include <TopAbs.hxx>
 #include <TopAbs_State.hxx>
 
+#include <Draw.hxx>
 #include <DBRep.hxx>
 
 #include <DrawTrSurf.hxx>
@@ -464,8 +465,8 @@ Standard_Integer baddve (Draw_Interpretor& di, Standard_Integer n, const char** 
 
 
   Standard_Real p1, p2;
-  p1=atof(a[4]);
-  p2=atof(a[5]);
+  p1=Draw::Atof(a[4]);
+  p2=Draw::Atof(a[5]);
   
   TopoDS_Edge E=aE;
   E.EmptyCopy();
@@ -552,7 +553,7 @@ static Standard_Integer bexplode(Draw_Interpretor& di,
     TopoDS_Iterator itr(S);
     while (itr.More()) {
       i++;
-      sprintf(p,"%d",i);
+      Sprintf(p,"%d",i);
       DBRep::Set(newname,itr.Value());
       di.AppendElement(newname);
       itr.Next();
@@ -610,7 +611,7 @@ static Standard_Integer bexplode(Draw_Interpretor& di,
     for (; ex.More(); ex.Next()) {
       const TopoDS_Shape& aS = ex.Current();
       i++;
-      sprintf(p,"%d",i);
+      Sprintf(p,"%d",i);
       DBRep::Set(newname,aS);
       di.AppendElement(newname);
     }
@@ -629,20 +630,20 @@ Standard_Integer bclassify (Draw_Interpretor& aDI,
   char sbf[512];	
   
   if (n < 3) {
-    sprintf(sbf, " Use >bclassify Solid Point [Tolerance=1.e-7]\n");
+    Sprintf(sbf, " Use >bclassify Solid Point [Tolerance=1.e-7]\n");
     aDI<<sbf;
     return 1;
   }
   
   TopoDS_Shape aS = DBRep::Get(a[1]);
   if (aS.IsNull()) {
-    sprintf(sbf, " Null Shape is not allowed here\n");
+    Sprintf(sbf, " Null Shape is not allowed here\n");
     aDI<<sbf;
     return 1;
   }
   
   if (aS.ShapeType()!=TopAbs_SOLID) {
-    sprintf(sbf, " Shape type must be SOLID\n");
+    Sprintf(sbf, " Shape type must be SOLID\n");
     aDI<<sbf;
     return 1;
   }
@@ -655,7 +656,7 @@ Standard_Integer bclassify (Draw_Interpretor& aDI,
   
   aTol=1.e-7; 
   if (n==4) {
-    aTol=atof(a[3]);
+    aTol=Draw::Atof(a[3]);
   }
   //
   BRepClass3d_SolidClassifier aSC(aS);
@@ -679,20 +680,20 @@ Standard_Integer b2dclassify (Draw_Interpretor& aDI,
   char sbf[512];	
   
   if (n < 3) {
-    sprintf(sbf, " Use >bclassify Face Point2d [Tol2D=Tol(Face)]\n");
+    Sprintf(sbf, " Use >bclassify Face Point2d [Tol2D=Tol(Face)]\n");
     aDI<<sbf;
     return 1;
   }
   
   TopoDS_Shape aS = DBRep::Get(a[1]);
   if (aS.IsNull()) {
-    sprintf(sbf, " Null Shape is not allowed here\n");
+    Sprintf(sbf, " Null Shape is not allowed here\n");
     aDI<<sbf;
     return 1;
   }
   
   if (aS.ShapeType()!=TopAbs_FACE) {
-    sprintf(sbf, " Shape type must be FACE\n");
+    Sprintf(sbf, " Shape type must be FACE\n");
     aDI<<sbf;
     return 1;
   }
@@ -706,7 +707,7 @@ Standard_Integer b2dclassify (Draw_Interpretor& aDI,
   const TopoDS_Face& aF=TopoDS::Face(aS);
   aTol=BRep_Tool::Tolerance(aF); 
   if (n==4) {
-    aTol=atof(a[3]);
+    aTol=Draw::Atof(a[3]);
   }
   //
   BRepClass_FaceClassifier aClassifier;
@@ -728,28 +729,28 @@ void PrintState (Draw_Interpretor& aDI,
   char sbf[512];	
   TCollection_AsciiString sIN("IN"), sOUT("OUT of"), sON("ON"), sUNKNOWN("UNKNOWN"); 
   //
-  sprintf(sbf, "The point is "); aDI<<sbf;
+  Sprintf(sbf, "The point is "); aDI<<sbf;
   //
   switch (aState) {
   case TopAbs_IN:		
-    sprintf(sbf, sIN.ToCString());
+    Sprintf(sbf, sIN.ToCString());
     break;
   case TopAbs_OUT:		
-    sprintf(sbf, sOUT.ToCString());
+    Sprintf(sbf, sOUT.ToCString());
     break;
   case TopAbs_ON:		
-    sprintf(sbf, sON.ToCString());
+    Sprintf(sbf, sON.ToCString());
     break;
   case TopAbs_UNKNOWN:		
-    sprintf(sbf, sUNKNOWN.ToCString());
+    Sprintf(sbf, sUNKNOWN.ToCString());
     break;
   default:
-    sprintf(sbf, sUNKNOWN.ToCString()); 
+    Sprintf(sbf, sUNKNOWN.ToCString()); 
     break;
   }
   aDI<<sbf; 
 	//
-  sprintf(sbf, " shape\n");
+  Sprintf(sbf, " shape\n");
   aDI<<sbf;
   
 }
@@ -765,20 +766,20 @@ Standard_Integer bhole (Draw_Interpretor& aDI,
   char sbf[512];	
   
   if (n!=2) {
-    sprintf(sbf, " Use bhole Face\n");
+    Sprintf(sbf, " Use bhole Face\n");
     aDI<<sbf;
     return 1;
   }
   
   TopoDS_Shape aS = DBRep::Get(a[1]);
   if (aS.IsNull()) {
-    sprintf(sbf, " Null Shape is not allowed here\n");
+    Sprintf(sbf, " Null Shape is not allowed here\n");
     aDI<<sbf;
     return 1;
   }
   
   if (aS.ShapeType()!=TopAbs_FACE) {
-    sprintf(sbf, " Shape type must be FACE\n");
+    Sprintf(sbf, " Shape type must be FACE\n");
     aDI<<sbf;
     return 1;
   }
@@ -851,24 +852,24 @@ Standard_Integer bxhole (Draw_Interpretor& aDI,
   Standard_Integer aNbIter;
   //
   if (n!=3) {
-    sprintf(sbf, " Use bxhole Face NbIter\n");
+    Sprintf(sbf, " Use bxhole Face NbIter\n");
     aDI<<sbf;
     return 1;
   }
   
   TopoDS_Shape aS = DBRep::Get(a[1]);
   if (aS.IsNull()) {
-    sprintf(sbf, " Null Shape is not allowed here\n");
+    Sprintf(sbf, " Null Shape is not allowed here\n");
     aDI<<sbf;
     return 1;
   }
   if (aS.ShapeType()!=TopAbs_FACE) {
-    sprintf(sbf, " Shape type must be FACE\n");
+    Sprintf(sbf, " Shape type must be FACE\n");
     aDI<<sbf;
     return 1;
   }
   //
-  aNbIter=atoi(a[2]);
+  aNbIter=Draw::Atoi(a[2]);
   if (aNbIter<1) {
     aNbIter=1;
   }

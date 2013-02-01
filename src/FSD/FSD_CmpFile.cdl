@@ -30,8 +30,7 @@ uses Position    from Storage,
      SequenceOfAsciiString from TColStd,
      SequenceOfExtendedString from TColStd,
      ExtendedString from TCollection,
-     FStream     from FSD,
-     Real2String  from  OSD
+     FStream     from FSD
      
 raises StreamTypeMismatchError from Storage,
        StreamFormatError from Storage,
@@ -331,6 +330,5 @@ is
         
 fields
     
-    	myStream    : FStream from FSD;
-	myRealConv  : Real2String  from  OSD;
+    myStream    : FStream from FSD;
 end;

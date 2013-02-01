@@ -242,7 +242,7 @@ void BOPTools_Checker::PerformVV()
     
     if (!aFlag) {
       char buf[512];
-      sprintf (buf, "VV: (%d, %d)", n1, n2);
+      Sprintf (buf, "VV: (%d, %d)", n1, n2);
 
       BOPTools_CheckResult aChRes;
       aChRes.AddShape(aV1);
@@ -308,7 +308,7 @@ void BOPTools_Checker::PerformVE()
     //
     if (!aFlag) {
       char buf[512];
-      sprintf (buf, "VE: (%d, %d)", aWhat, aWith);
+      Sprintf (buf, "VE: (%d, %d)", aWhat, aWith);
 
       BOPTools_CheckResult aChRes;
       aChRes.AddShape(aV1);
@@ -369,7 +369,7 @@ void BOPTools_Checker::PerformVF()
     //
     if (!aFlag) {
       char buf[512];
-      sprintf (buf, "VF: (%d, %d)", aWhat, aWith);
+      Sprintf (buf, "VF: (%d, %d)", aWhat, aWith);
 
       BOPTools_CheckResult aChRes;
       aChRes.AddShape(aV1);
@@ -530,7 +530,7 @@ void BOPTools_Checker::PerformEE()
 		}
 		//
 		char buf[512];
-		sprintf (buf, "EE: (%d, %d), vertex at t1=%f, t2=%f", aWhat, aWith, aT1, aT2);
+		Sprintf (buf, "EE: (%d, %d), vertex at t1=%f, t2=%f", aWhat, aWith, aT1, aT2);
 		//
 		gp_Pnt aPnt;
 		BOPTools_Tools::PointOnEdge(aEWhat, aT1, aPnt);
@@ -570,7 +570,7 @@ void BOPTools_Checker::PerformEE()
 		}
 		//
 		char buf[512];
-		sprintf (buf, "EE: (%d, %d), common block ", aWhat, aWith);
+		Sprintf (buf, "EE: (%d, %d), common block ", aWhat, aWith);
                 
                 BOPTools_CheckResult aChRes;
                 aChRes.AddShape(aE1);
@@ -704,7 +704,7 @@ void BOPTools_Checker::PerformEF()
 	      }
 	      //
 	      char buf[512];
-	      sprintf (buf, "EF: (%d, %d), vertex at t=%f", nE, nF, aT);
+	      Sprintf (buf, "EF: (%d, %d), vertex at t=%f", nE, nF, aT);
 	      //
 	      gp_Pnt aPnt;
 	      BOPTools_Tools::PointOnEdge(aE, aT, aPnt);
@@ -734,7 +734,7 @@ void BOPTools_Checker::PerformEF()
 	      }
 	      //
 	      char buf[512];
-	      sprintf (buf, "EF: (%d, %d), common block ", nE, nF);
+	      Sprintf (buf, "EF: (%d, %d), common block ", nE, nF);
 
               BOPTools_CheckResult aChRes;
               aChRes.AddShape(aE);
@@ -846,7 +846,7 @@ void BOPTools_Checker::PerformEF()
       
       if (aNbPoints) {
 	char buf[512];
-	sprintf (buf, "FF: (%d, %d) ", nF1, nF2);
+	Sprintf (buf, "FF: (%d, %d) ", nF1, nF2);
 	//
 	const IntTools_PntOn2Faces& aPntOn2Faces=aPnts(1);
 	const IntTools_PntOnFace& aPntOnFace=aPntOn2Faces.P1();
@@ -881,7 +881,7 @@ void BOPTools_Checker::PerformEF()
 	    //
 	    if (bValid) {
 	      char buf[512];
-	      sprintf (buf, "FF: (%d, %d) ", nF1, nF2);
+	      Sprintf (buf, "FF: (%d, %d) ", nF1, nF2);
 	      //
 	      Handle (Geom_Curve) aC3D=aC.Curve();
 	      Handle (Geom_TrimmedCurve) aTC3D=Handle (Geom_TrimmedCurve)::DownCast(aC3D);
@@ -1036,7 +1036,7 @@ void BOPTools_Checker::PerformEF()
 
       char buf[512];
       if (!aSR.IsDone()) {
-	sprintf (buf, "Can not obtain ShrunkRange for Edge %d", nE);
+	Sprintf (buf, "Can not obtain ShrunkRange for Edge %d", nE);
         
         BOPTools_CheckResult aChRes;
         aChRes.AddShape(aE);
@@ -1048,7 +1048,7 @@ void BOPTools_Checker::PerformEF()
       }
       //
       if (anErrorStatus==6) {
-	sprintf(buf,
+	Sprintf(buf,
 		"Warning: [PreparePaveBlocks()] Max.Dummy Shrunk Range for Edge %d\n", nE);
 
         BOPTools_CheckResult aChRes;

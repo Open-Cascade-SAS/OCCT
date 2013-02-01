@@ -1249,9 +1249,9 @@ Standard_Boolean IGESData_ParamReader::ReadingReal (const Standard_Integer num,
       text[j++] = orig[i];  
     if (orig[i] == '\0') break;
   }
-  if (FP.ParamType() == Interface_ParamReal) val = atof(text);
-    //Interface_FileReaderData::Fastof(FP.CValue());
-   else if (FP.ParamType() == Interface_ParamEnum) {  // convention
+  if (FP.ParamType() == Interface_ParamReal) 
+    val = Atof(text);
+  else if (FP.ParamType() == Interface_ParamEnum) {  // convention
     if (!pbrealform) {
       if (testconv < 0) testconv = 0; //Interface_Static::IVal("iges.convert.read");
       if (testconv > 0) {
@@ -1266,7 +1266,7 @@ Standard_Boolean IGESData_ParamReader::ReadingReal (const Standard_Integer num,
     // mais avec exposant (sinon ce serait un entier)
     // -> un message avertissement + on ajoute le point puis on convertit
     
-    val = atof(text);//Interface_FileReaderData::Fastof(text);
+    val = Atof(text);
   } else if (FP.ParamType() == Interface_ParamVoid) {
     val = 0.0;    // DEFAULT
   } else {
@@ -1317,8 +1317,8 @@ Standard_Boolean IGESData_ParamReader::ReadingReal
       text[j++] = orig[i];  
     if (orig[i] == '\0') break;
   }
-  if (FP.ParamType() == Interface_ParamReal) val = atof(text);
-    //Interface_FileReaderData::Fastof(FP.CValue());
+  if (FP.ParamType() == Interface_ParamReal) 
+    val = Atof(text);
   else if (FP.ParamType() == Interface_ParamEnum) {  // convention
     if (!pbrealform) {
       if (testconv < 0) testconv = 0; //Interface_Static::IVal("iges.convert.read");
@@ -1334,7 +1334,7 @@ Standard_Boolean IGESData_ParamReader::ReadingReal
     // mais avec exposant (sinon ce serait un entier)
     // -> un message avertissement + on ajoute le point puis on convertit
     
-    val = atof(text);//Interface_FileReaderData::Fastof(text);
+    val = Atof(text);
   } else if (FP.ParamType() == Interface_ParamVoid) {
     val = 0.0;    // DEFAULT
   } else {

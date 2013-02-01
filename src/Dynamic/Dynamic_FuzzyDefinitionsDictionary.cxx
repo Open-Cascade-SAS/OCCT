@@ -164,7 +164,7 @@ void Dynamic_FuzzyDefinitionsDictionary::Creates(const Standard_CString afilenam
 	    fuzzydefinition->Parameter(new Dynamic_IntegerParameter(name,atoi(value)));
 
 	  else if(!strcasecmp(type,"Standard_Real"))
-	    fuzzydefinition->Parameter(new Dynamic_RealParameter(name,atof(value)));
+	    fuzzydefinition->Parameter(new Dynamic_RealParameter(name,Atof(value)));
 
 	  else if(!strcasecmp(type,"Standard_CString"))
 	    fuzzydefinition->Parameter(new Dynamic_StringParameter(name,value));

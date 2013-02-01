@@ -20,6 +20,7 @@
 
 #include <XDEDRAW_Layers.ixx>
 
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DDocStd.hxx>
 
@@ -108,7 +109,7 @@ static Standard_Integer setLayer (Draw_Interpretor& di, Standard_Integer argc, c
     return 1;
   }
   Standard_Boolean shapeInOneLayer = Standard_False;
-  if ( (argc==5) && (atoi(argv[4])==1) ) shapeInOneLayer = Standard_True;
+  if ( (argc==5) && (Draw::Atoi(argv[4])==1) ) shapeInOneLayer = Standard_True;
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
@@ -220,7 +221,7 @@ static Standard_Integer setLinkLayer (Draw_Interpretor& di, Standard_Integer arg
     return 1;
   }
   Standard_Boolean shapeInOneLayer = Standard_False;
-  if ( (argc==5) && (atoi(argv[4])==1) ) shapeInOneLayer = Standard_True;
+  if ( (argc==5) && (Draw::Atoi(argv[4])==1) ) shapeInOneLayer = Standard_True;
   Handle(TDocStd_Document) Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
@@ -365,7 +366,7 @@ static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer ar
   if ( Doc.IsNull() ) { di << argv[1] << " is not a document" << "\n"; return 1; }
   Handle(XCAFDoc_LayerTool) localLayerTool = XCAFDoc_DocumentTool::LayerTool(Doc->Main());
   Standard_Boolean isvisible = Standard_False;
-  if ( (argc==4) && (atoi(argv[3])==1) ) isvisible = Standard_True;
+  if ( (argc==4) && (Draw::Atoi(argv[3])==1) ) isvisible = Standard_True;
   
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);

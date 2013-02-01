@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -117,14 +116,14 @@ static Standard_Integer OCC137 (Draw_Interpretor& di, Standard_Integer argc, con
   ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it(GetMapOfAIS());
   while ( it.More() ) {
     Handle(AIS_InteractiveObject) AISObj = Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-    AISObj->SetHilightMode(atoi(argv[1]));
+    AISObj->SetHilightMode(Draw::Atoi(argv[1]));
     if(AISObj->HasSelection(4)) {
       //Handle(SelectMgr_Selection)& aSelection = AISObj->Selection(4);
       const Handle(SelectMgr_Selection)& aSelection = AISObj->Selection(4);
       if(!aSelection.IsNull()) {
         for(aSelection->Init();aSelection->More();aSelection->Next()) {
           Handle(StdSelect_BRepOwner) aO = Handle(StdSelect_BRepOwner)::DownCast(aSelection->Sensitive()->OwnerId());
-          aO->SetHilightMode(atoi(argv[1]));
+          aO->SetHilightMode(Draw::Atoi(argv[1]));
         }
       }
     }
@@ -145,7 +144,7 @@ static Standard_Integer OCC137_z (Draw_Interpretor& di, Standard_Integer argc, c
     di << "ERROR : Usage : " << argv[0] << " [ZDetection_mode]" << "\n";
     return 1;
   }
-  aContext->SetZDetection(((argc == 1 || (argc == 2 && atoi(argv[1]) == 1)) ? Standard_True : Standard_False));
+  aContext->SetZDetection(((argc == 1 || (argc == 2 && Draw::Atoi(argv[1]) == 1)) ? Standard_True : Standard_False));
   return 0;
 }
 

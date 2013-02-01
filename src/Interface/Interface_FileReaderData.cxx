@@ -405,10 +405,10 @@ static const Standard_Real vtab[] =
   je = jx*9;
   if (jx > jj) {
     valdiv = 1.;
-    if (jx >= 100 || grexp) return atof(ligne);  // issue de secours
+    if (jx >= 100 || grexp) return Atof(ligne);  // issue de secours
   } else {
     k = jj*9;
-    if (jj >= 100 || grexp || (k-je >= 900)) return atof(ligne);  // issue de secours
+    if (jj >= 100 || grexp || (k-je >= 900)) return Atof(ligne);  // issue de secours
     valdiv = vtab[k-je];
     je = k;
   }

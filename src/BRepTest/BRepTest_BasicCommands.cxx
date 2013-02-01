@@ -77,7 +77,7 @@ static Standard_Integer addpcurve(Draw_Interpretor& , Standard_Integer n, const 
   TopoDS_Shape F = DBRep::Get(a[3]);
   Standard_Real tol = 1.e-7;
   if (n > 4) {
-    tol = atof(a[4]);
+    tol = Draw::Atof(a[4]);
   }
   BRep_Builder BB;
   BB.UpdateEdge(TopoDS::Edge(E), PC, TopoDS::Face(F),tol); 
@@ -108,25 +108,25 @@ static Standard_Integer transform(Draw_Interpretor& di,Standard_Integer n,const 
   }
   else if (!strcmp(a[0],"ttranslate")) {
     if (n < 5) return 1;
-    T.SetTranslation(gp_Vec(atof(a[n-3]),atof(a[n-2]),atof(a[n-1])));
+    T.SetTranslation(gp_Vec(Draw::Atof(a[n-3]),Draw::Atof(a[n-2]),Draw::Atof(a[n-1])));
     last = n-3;
   }
   else if (!strcmp(a[0],"trotate")) {
     if (n < 9) return 1;
-    T.SetRotation(gp_Ax1(gp_Pnt(atof(a[n-7]),atof(a[n-6]),atof(a[n-5])),
-			 gp_Vec(atof(a[n-4]),atof(a[n-3]),atof(a[n-2]))),
-		  atof(a[n-1])* (M_PI / 180.0));
+    T.SetRotation(gp_Ax1(gp_Pnt(Draw::Atof(a[n-7]),Draw::Atof(a[n-6]),Draw::Atof(a[n-5])),
+			 gp_Vec(Draw::Atof(a[n-4]),Draw::Atof(a[n-3]),Draw::Atof(a[n-2]))),
+		  Draw::Atof(a[n-1])* (M_PI / 180.0));
     last = n-7;
   }
   else if (!strcmp(a[0],"tmirror")) {
     if (n < 8) return 1;
-    T.SetMirror(gp_Ax2(gp_Pnt(atof(a[n-6]),atof(a[n-5]),atof(a[n-4])),
-		       gp_Vec(atof(a[n-3]),atof(a[n-2]),atof(a[n-1]))));
+    T.SetMirror(gp_Ax2(gp_Pnt(Draw::Atof(a[n-6]),Draw::Atof(a[n-5]),Draw::Atof(a[n-4])),
+		       gp_Vec(Draw::Atof(a[n-3]),Draw::Atof(a[n-2]),Draw::Atof(a[n-1]))));
     last = n-6;
   }
   else if (!strcmp(a[0],"tscale")) {
     if (n < 6) return 1;
-    T.SetScale(gp_Pnt(atof(a[n-4]),atof(a[n-3]),atof(a[n-2])),atof(a[n-1]));
+    T.SetScale(gp_Pnt(Draw::Atof(a[n-4]),Draw::Atof(a[n-3]),Draw::Atof(a[n-2])),Draw::Atof(a[n-1]));
     last = n-4;
 
   }
@@ -180,8 +180,8 @@ static Standard_Integer deform(Draw_Interpretor& di,Standard_Integer n,const cha
   gp_Trsf T;
   gp_GTrsf GT(T);
   
-//  gp_Mat rot(atof(a[last-3]),0,0,0,atof(a[last-2]),0,0,0,atof(a[last-1]));
-  gp_Mat rot(atof(a[3]),0,0,0,atof(a[4]),0,0,0,atof(a[5]));
+//  gp_Mat rot(Draw::Atof(a[last-3]),0,0,0,Draw::Atof(a[last-2]),0,0,0,Draw::Atof(a[last-1]));
+  gp_Mat rot(Draw::Atof(a[3]),0,0,0,Draw::Atof(a[4]),0,0,0,Draw::Atof(a[5]));
   GT.SetVectorialPart(rot);
   last -= 3;
   BRepBuilderAPI_GTransform gtrf(GT);
@@ -278,7 +278,7 @@ static Standard_Integer mkedgecurve (Draw_Interpretor& ,Standard_Integer n,const
   Standard_Boolean CurveDone ;
 
   if (n < 3) return 1;
-  Standard_Real Tolerance = atof(a[2]) ;
+  Standard_Real Tolerance = Draw::Atof(a[2]) ;
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   
@@ -301,7 +301,7 @@ static Standard_Integer sameparameter(Draw_Interpretor& ,Standard_Integer n,cons
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull()) return 1;
   Standard_Boolean force  = !strcmp(a[0],"fsameparameter");
-  if (n == 3) tol = atof(a[2]);
+  if (n == 3) tol = Draw::Atof(a[2]);
 
   BRepLib::SameParameter(S,tol,force);
 
@@ -390,12 +390,12 @@ static Standard_Integer bounding(Draw_Interpretor& di,Standard_Integer n,const c
     di << axmin<<" "<< aymin<<" "<< azmin<<" "<< axmax<<" "<< aymax<<" "<< azmax;
   }
   else if (n == 7) {
-    axmin=atof(a[1]);
-    aymin=atof(a[2]);
-    azmin=atof(a[3]);
-    axmax=atof(a[4]);
-    aymax=atof(a[5]);
-    azmax=atof(a[6]);
+    axmin=Draw::Atof(a[1]);
+    aymin=Draw::Atof(a[2]);
+    azmin=Draw::Atof(a[3]);
+    axmax=Draw::Atof(a[4]);
+    aymax=Draw::Atof(a[5]);
+    azmax=Draw::Atof(a[6]);
     DB = new Draw_Box(gp_Pnt(axmin,aymin,azmin),gp_Pnt(axmax,aymax,azmax),Draw_orange);
     dout<<DB;
   }
@@ -434,7 +434,7 @@ static Standard_Integer precision(Draw_Interpretor& di,Standard_Integer n,const 
     di << " Current Precision = " << BRepBuilderAPI::Precision() << "\n";
   }
   else {
-    BRepBuilderAPI::Precision(atof(a[1]));
+    BRepBuilderAPI::Precision(Draw::Atof(a[1]));
   }
   return 0;
 }
@@ -707,26 +707,26 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
     if (!strcmp(a[arg],"-d")) {
       arg++;
       if(n > arg)
-	MaxDistance = atof(a[arg++]);
+	MaxDistance = Draw::Atof(a[arg++]);
       OrtProj.SetMaxDistance(MaxDistance);
     }
   if(n > arg) {
-    Tol = Max(atof(a[arg++]),1.e-10);
+    Tol = Max(Draw::Atof(a[arg++]),1.e-10);
   }
 
   if(n > arg) {
-    if (atoi(a[arg]) == 0) Continuity = GeomAbs_C0;
-    else if (atoi(a[arg]) == 1) Continuity = GeomAbs_C1;
+    if (Draw::Atoi(a[arg]) == 0) Continuity = GeomAbs_C0;
+    else if (Draw::Atoi(a[arg]) == 1) Continuity = GeomAbs_C1;
     arg++;
   }
 
  
   if(n > arg) {
-    MaxDeg = atoi(a[arg++]);
+    MaxDeg = Draw::Atoi(a[arg++]);
     if (MaxDeg<1 || MaxDeg>14) MaxDeg = 14;
   }
 
-  if(n > arg) MaxSeg = atoi(a[arg]);
+  if(n > arg) MaxSeg = Draw::Atoi(a[arg]);
     
   Tol2d = Pow(Tol, 2./3);
 
@@ -766,7 +766,7 @@ static Standard_Integer wexplo (Draw_Interpretor&,
   Standard_Integer k = 1;
   while (we.More()) {
     TopoDS_Edge E = we.Current();
-    sprintf(name,"WEDGE_%d",k);	
+    Sprintf(name,"WEDGE_%d",k);	
 	  DBRep::Set(name,E);
     we.Next();
     k++;
@@ -782,9 +782,9 @@ static Standard_Integer scalexyz(Draw_Interpretor& di, Standard_Integer n, const
   TopoDS_Shape aShapeBase = DBRep::Get(a[2]);
   if (aShapeBase.IsNull()) return 1;
   
-  Standard_Real aFactorX = atof(a[3]);
-  Standard_Real aFactorY = atof(a[4]);
-  Standard_Real aFactorZ = atof(a[5]);
+  Standard_Real aFactorX = Draw::Atof(a[3]);
+  Standard_Real aFactorY = Draw::Atof(a[4]);
+  Standard_Real aFactorZ = Draw::Atof(a[5]);
 
   gp_GTrsf aGTrsf;
   gp_Mat rot (aFactorX, 0, 0,

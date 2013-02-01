@@ -35,6 +35,7 @@
 
 #include <Geom_Curve.hxx>
 #include <DrawTrSurf.hxx>
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <IntTools_Tools.hxx>
 
@@ -182,7 +183,7 @@ Standard_Integer bopcurves (Draw_Interpretor& di,
   
   aTol=1.e-7;
   if (n>2) {
-    aTol=atof(a[2]);
+    aTol=Draw::Atof(a[2]);
     if (aTol<=0.) {
       aTol=1.e-7;
     }

@@ -99,9 +99,9 @@ IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
     if (hasrange) {
       char flotrange[20];
       file.SendText(forminrange.ToCString());
-      sprintf(flotrange,"%f",rangemin);
+      Sprintf(flotrange,"%f",rangemin);
       file.SendText(flotrange);
-      sprintf(flotrange,"%f",rangemax);
+      Sprintf(flotrange,"%f",rangemax);
       file.SendText(flotrange);
     }
     return Standard_True;
@@ -214,8 +214,8 @@ IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
     if (file.NbParams() >= 5) {
       //char flotrange[20]; //szv#4:S4163:12Mar99 unused
       Standard_Real    rangemin, rangemax;
-      rangemin = atof (file.ParamValue(4).ToCString());
-      rangemax = atof (file.ParamValue(5).ToCString());
+      rangemin = Atof (file.ParamValue(4).ToCString());
+      rangemax = Atof (file.ParamValue(5).ToCString());
       ff->SetFormatForRange (file.ParamValue(3).ToCString(),rangemin,rangemax);
     }
     item = ff;

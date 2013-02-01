@@ -120,16 +120,16 @@ Standard_Boolean XmlObjMgt::SetExtendedString
     const Standard_Integer aLen = theString.Length();
 //    const Standard_ExtCharacter * aString = theString.ToExtString();
     char * buf0 = new char [4 * (aLen + 1) + 3];
-    sprintf (&buf0[0], "##%04x", 0xfeff);          // set UNICODE header
+    Sprintf (&buf0[0], "##%04x", 0xfeff);          // set UNICODE header
     char * buf = &buf0[6];
 //     Standard_Integer i = 0;
 //     while (i <= (aLen - 4)) {
-//       sprintf (&buf[i*4], "%04x%04x%04x%04x", aString[i], aString[i+1],
+//       Sprintf (&buf[i*4], "%04x%04x%04x%04x", aString[i], aString[i+1],
 //                aString[i+2], aString[i+3]);
 //         i += 4;
 //     }
 //     while (i < aLen) {
-//       sprintf (&buf[i*4], "%04x", aString[i]);
+//       Sprintf (&buf[i*4], "%04x", aString[i]);
 //       ++i;
 //     }
 //     buf[4*aLen] = '\0';
@@ -346,7 +346,7 @@ Standard_Boolean XmlObjMgt::GetReal (Standard_CString& theString,
 {
   char * ptr;
   errno = 0;
-  double aValue = strtod (theString, &ptr);
+  double aValue = Strtod (theString, &ptr);
   if (ptr == theString || errno == ERANGE || errno == EINVAL)
     return Standard_False;
   theValue = Standard_Real (aValue);
@@ -376,7 +376,7 @@ Standard_Boolean XmlObjMgt::GetReal (const XmlObjMgt_DOMString& theString,
       char       * ptr;
       const char * aString = theString.GetString();
       errno = 0;
-      double aValue = strtod (aString, &ptr);
+      double aValue = Strtod (aString, &ptr);
       if (ptr == aString || errno == ERANGE || errno == EINVAL)
         return Standard_False;
       theValue = Standard_Real (aValue);

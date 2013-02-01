@@ -76,7 +76,7 @@ static Standard_Integer BuildNamedShape (Draw_Interpretor& di,
     }
     
 //     if (nb >= 4) {
-//       OnlyModif = atoi(arg[3]);
+//       OnlyModif = Draw::Atoi(arg[3]);
 //     }
   } else {
     di<<"Usage: BuildName df entry evolution(P[RIMITIVE] G[ENERATED] M[ODIFY] D[ELETE] R[EPLACE] S[ELECTED]) shape1 [shape2 ...]"<<"\n";

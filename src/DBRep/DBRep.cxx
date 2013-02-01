@@ -139,7 +139,7 @@ static Standard_Integer isos (Draw_Interpretor& di,
   Standard_Boolean Change = Standard_False ;
   if (!Characters (NbArg) && Float (NbArg)) return 1 ;
   if (!Characters (NbArg)) {
-    NbIsos = atoi (Arg[NbArg]) ;
+    NbIsos = Draw::Atoi (Arg[NbArg]) ;
     NbArg-- ;
     Change = Standard_True ;
   }
@@ -233,7 +233,7 @@ static Standard_Integer hlr (Draw_Interpretor& di,
   if (n >= 3 && !strcasecmp(a[1],"ang"  )) {
     nFirst = 3;
     if (n == 3) {
-      Standard_Real ang = atof(a[2]);
+      Standard_Real ang = Draw::Atof(a[2]);
       anglHLR = ang * M_PI / 180;
       if (anglHLR < HAngMin) anglHLR = HAngMin;
       if (anglHLR > HAngMax) anglHLR = HAngMax;
@@ -279,7 +279,7 @@ static Standard_Integer hlr (Draw_Interpretor& di,
 	    localRgN = Standard_True;
 	  }
 	  else if (!strcasecmp(a[1],"ang"  )) {
-	    Standard_Real ang = atof(a[2]);
+	    Standard_Real ang = Draw::Atof(a[2]);
 	    localAng = ang * M_PI / 180;
 	  }
 	  else return 1;
@@ -332,7 +332,7 @@ static Standard_Integer discretisation(Draw_Interpretor& di,
   if (n <= 1)
     di << "Current number of points : "<<discret<<"\n";
   else {
-    discret = atoi(a[1]);
+    discret = Draw::Atoi(a[1]);
   }
   return 0;
 }
@@ -496,7 +496,7 @@ static Standard_Integer explode(Draw_Interpretor& di,
     TopoDS_Iterator itr(S);
     while (itr.More()) {
       i++;
-      sprintf(p,"%d",i);
+      Sprintf(p,"%d",i);
       DBRep::Set(newname,itr.Value());
       di.AppendElement(newname);
       itr.Next();
@@ -557,7 +557,7 @@ static Standard_Integer explode(Draw_Interpretor& di,
       Standard_Boolean added = M.Add(Sx);
       if (added) {
 	i++;
-	sprintf(p,"%d",i);
+	Sprintf(p,"%d",i);
 	DBRep::Set(newname,Sx);
 	di.AppendElement(newname);
       }
@@ -651,7 +651,7 @@ static Standard_Integer nexplode(Draw_Interpretor& di,
   }
   
   for (Index=1 ;Index <= MaxShapes; Index++) {
-    sprintf(p,"%d",Index);
+    Sprintf(p,"%d",Index);
     DBRep::Set(newname,aShapes(OrderInd(Index)));
     di.AppendElement(newname);    
   }
@@ -680,7 +680,7 @@ static Standard_Integer exwire(Draw_Interpretor& ,
   BRepTools_WireExplorer ex(TopoDS::Wire(S));
   while (ex.More()) {
     i++;
-    sprintf(p,"%d",i);
+    Sprintf(p,"%d",i);
     DBRep::Set(newname,ex.Current());
     ex.Next();
   }
@@ -1021,7 +1021,7 @@ static Standard_Integer normals(Draw_Interpretor& di,
   if (n <= 1) return 1;
   Standard_Real l = 1.;
   if (n > 2) 
-    l = atof(a[2]);
+    l = Draw::Atof(a[2]);
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull()) return 1;

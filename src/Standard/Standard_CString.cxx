@@ -1,5 +1,5 @@
 // Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 1999-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -30,9 +30,9 @@
 # include <config.h>
 #endif
 
-
+#include <Standard_CLocaleSentry.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Type.hxx> 
+#include <Standard_Type.hxx>
 #include <Standard_OStream.hxx>
 
 #if OptJr
@@ -51,13 +51,14 @@ static const Standard_Integer static_MaskEndIntegerString[4] = { 0x00000000 ,
 
 #include <Standard_String.hxx>
 #include <string.h>
+#include <stdarg.h>
 
 //============================================================================
-//==== 
+//====
 //============================================================================
-const Handle_Standard_Type& Standard_CString_Type_() 
+const Handle_Standard_Type& Standard_CString_Type_()
 {
-  static Handle_Standard_Type _aType = 
+  static Handle_Standard_Type _aType =
     new Standard_Type("Standard_CString",sizeof(Standard_CString),0,NULL);
 
   return _aType;
@@ -72,7 +73,7 @@ Standard_EXPORT void ShallowDump (const Standard_CString Value, Standard_OStream
 //============================================================================
 //==== HashCode of a CString
 //============================================================================
-Standard_Integer HashCode (const Standard_CString Value, 
+Standard_Integer HashCode (const Standard_CString Value,
                            const Standard_Integer Upper )
 {
   Standard_Integer aLen ;
@@ -113,7 +114,7 @@ Standard_Integer HashCodes (const Standard_CString Value ,
                   *tmphash;
  char              tabchar[20];
 #endif
-  
+
  if (Value != NULL) {
 
 #if !OptJr
@@ -124,7 +125,7 @@ Standard_Integer HashCodes (const Standard_CString Value ,
            else tabchar[count] = charPtr[pos + count];
            i++;
 	 }
-        tmphash = (Standard_Integer *)tabchar;   
+        tmphash = (Standard_Integer *)tabchar;
         aHashCode = aHashCode ^ *tmphash;
       }
  }
@@ -256,4 +257,67 @@ Standard_Boolean ISSIMILAR(const Standard_CString One ,
   return Standard_True ;
 }
 
+#ifdef __APPLE__
+  // There are a lot of *_l functions availalbe on Mac OS X - we use them
+  #define SAVE_TL()
+#elif defined(_WIN32)
+  // MSVCRT has equivalents with slightly different syntax
+  #define SAVE_TL()
+  #define strtod_l(thePtr, theNextPtr, theLocale)                _strtod_l(thePtr, theNextPtr, theLocale)
+  #define vprintf_l(theLocale, theFormat, theArgPtr)             _vprintf_l(theFormat, theLocale, theArgPtr)
+  #define vsprintf_l(theBuffer, theLocale, theFormat, theArgPtr) _vsprintf_l(theBuffer, theFormat, theLocale, theArgPtr)
+  #define vfprintf_l(theFile,   theLocale, theFormat, theArgPtr) _vfprintf_l(theFile,   theFormat, theLocale, theArgPtr)
+#else
+  // glibc provides only limited xlocale implementation:
+  // strtod_l/strtol_l/strtoll_l functions with explicitly specified locale
+  // and newlocale/uselocale/freelocale to switch locale within current thread only.
+  // So we switch to C locale temporarily
+  #define SAVE_TL() Standard_CLocaleSentry aLocaleSentry;
+  #ifndef HAVE_XLOCALE_H
+    #error System does not support xlocale. Import/export could be broken if C locale did not specified by application.
+    #define strtod_l(thePtr, theNextPtr, theLocale)              strtod(thePtr, theNextPtr)
+  #endif
+  #define vprintf_l(theLocale, theFormat, theArgPtr)             vprintf(theFormat, theArgPtr)
+  #define vsprintf_l(theBuffer, theLocale, theFormat, theArgPtr) vsprintf(theBuffer, theFormat, theArgPtr)
+  #define vfprintf_l(theFile,   theLocale, theFormat, theArgPtr) vfprintf(theFile,   theFormat, theArgPtr)
+#endif
 
+double Strtod (const char* theStr, char** theNextPtr)
+{
+  return strtod_l (theStr, theNextPtr, Standard_CLocaleSentry::GetCLocale());
+}
+
+double Atof (const char* theStr)
+{
+  return Strtod (theStr, NULL);
+}
+
+int Printf  (const Standard_CString theFormat, ...)
+{
+  SAVE_TL();
+  va_list argp;
+  va_start(argp, theFormat);
+  int result = vprintf_l (Standard_CLocaleSentry::GetCLocale(), theFormat, argp);
+  va_end(argp);
+  return result;
+}
+
+int Fprintf (FILE* theFile, const char* theFormat, ...)
+{
+  SAVE_TL();
+  va_list argp;
+  va_start(argp, theFormat);
+  int result = vfprintf_l(theFile, Standard_CLocaleSentry::GetCLocale(), theFormat, argp);
+  va_end(argp);
+  return result;
+}
+
+int Sprintf (char* theBuffer, const char* theFormat, ...)
+{
+  SAVE_TL();
+  va_list argp;
+  va_start(argp, theFormat);
+  int result = vsprintf_l(theBuffer, Standard_CLocaleSentry::GetCLocale(), theFormat, argp);
+  va_end(argp);
+  return result;
+}

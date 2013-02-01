@@ -48,10 +48,10 @@ TCollection_AsciiString Message::FillTime (const Standard_Integer hour,
 {
   char t [30];
   if (hour > 0)
-    sprintf (t, "%02dh:%02dm:%.2fs", hour, minute, second);
+    Sprintf (t, "%02dh:%02dm:%.2fs", hour, minute, second);
   else if (minute > 0)
-    sprintf (t, "%02dm:%.2fs", minute, second);
+    Sprintf (t, "%02dm:%.2fs", minute, second);
   else
-    sprintf (t, "%.2fs", second);
+    Sprintf (t, "%.2fs", second);
   return TCollection_AsciiString (t);
 }

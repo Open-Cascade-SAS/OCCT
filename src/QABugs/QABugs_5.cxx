@@ -83,7 +83,7 @@ static Standard_Integer OCC6001 (Draw_Interpretor& di, Standard_Integer argc, co
     di<<"inter "<<i<<": W = "<<par<<"\n"
       <<"\tpnt = "<<p.X()<<" "<<p.Y()<<" "<<p.Z()<<"\n";
     char n[20], *pname=n;
-    sprintf(n,"%s_%d",name,i);
+    Sprintf(n,"%s_%d",name,i);
     DrawTrSurf::Set(pname,p);
   }
 

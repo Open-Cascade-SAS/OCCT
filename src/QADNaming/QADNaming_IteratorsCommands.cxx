@@ -75,7 +75,7 @@ static Standard_Integer GetNewShapes (Draw_Interpretor& di,
     for(a=1;anIter.More();anIter.Next(),a++) {
       if (anIter.NewShape().IsNull()) a--;
       else if (nb==4) {
-	sprintf(aName,"%s_%d",arg[3],a);
+	Sprintf(aName,"%s_%d",arg[3],a);
 	DBRep::Set (aName,anIter.NewShape());
       }
     }
@@ -105,7 +105,7 @@ static Standard_Integer GetOldShapes (Draw_Interpretor& di,
     for(a=1;anIter.More();anIter.Next(),a++) {
       if (anIter.OldShape().IsNull()) a--;
       else if (nb==4) {
-	sprintf(aName,"%s_%d",arg[3],a);
+	Sprintf(aName,"%s_%d",arg[3],a);
 	DBRep::Set (aName,anIter.OldShape());
       }
     }

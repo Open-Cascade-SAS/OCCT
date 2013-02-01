@@ -20,6 +20,7 @@
 
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -131,7 +132,7 @@ static Standard_Integer OCC181 (Draw_Interpretor& di, Standard_Integer argc, con
   Standard_CString aFileName = argv[1];
   Standard_CString aDir1 = argv[2];
   Standard_CString aDir2 = argv[3];
-  Standard_Integer verboseInt = atoi(argv[4]);
+  Standard_Integer verboseInt = Draw::Atoi(argv[4]);
 
   Standard_Boolean verboseBool = Standard_False;
   if (verboseInt != 0) {
@@ -180,11 +181,11 @@ static Standard_Integer OCC367 (Draw_Interpretor& di, Standard_Integer argc, con
   }
 
   TopoDS_Wire myTopoDSWire = TopoDS::Wire(DBRep::Get(argv[1]));
-  Standard_Real l = atof(argv[2]);
-  Standard_Real goodX = atof(argv[3]);
-  Standard_Real goodY = atof(argv[4]);
-  Standard_Real goodZ = atof(argv[5]);
-  Standard_Real percent = atof(argv[6]);
+  Standard_Real l = Draw::Atof(argv[2]);
+  Standard_Real goodX = Draw::Atof(argv[3]);
+  Standard_Real goodY = Draw::Atof(argv[4]);
+  Standard_Real goodZ = Draw::Atof(argv[5]);
+  Standard_Real percent = Draw::Atof(argv[6]);
   Standard_Boolean Status = Standard_False;
 
   // Find the first vertex of the wire

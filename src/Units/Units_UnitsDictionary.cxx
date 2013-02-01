@@ -54,22 +54,6 @@
 #include <Units_Operators.hxx>
 #include <OSD.hxx>
 
-
-// GG 09.04.98 PRO13136
-// Ne pas utiliser la fonction systeme atof() qui
-// depend de la localisation
-static char DecimalPoint = '\0';
-static void GetDecimalPoint() {
-  Standard_Real f = 1.1 ;
-  char str[5] ;
-
-  sprintf(str,"%.1f",f) ;
-//#ifdef DEB
-//  printf("Local System is  %s\n",str) ;
-//#endif
-  DecimalPoint = str[1] ;
-}
-
 //=======================================================================
 //function : Units_UnitsDictionary
 //purpose  : 

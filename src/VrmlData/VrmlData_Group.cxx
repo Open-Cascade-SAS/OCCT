@@ -478,13 +478,13 @@ VrmlData_ErrorStatus VrmlData_Group::Write (const char * thePrefix) const
         };
         // Check that the box is not void
         if (aBoxCorner[0].X() < aBoxCorner[1].X() + Precision::Confusion()) {
-          sprintf (buf, "bboxCenter  %.9g %.9g %.9g",
+          Sprintf (buf, "bboxCenter  %.9g %.9g %.9g",
                    0.5 * (aBoxCorner[0].X() + aBoxCorner[1].X()),
                    0.5 * (aBoxCorner[0].Y() + aBoxCorner[1].Y()),
                    0.5 * (aBoxCorner[0].Z() + aBoxCorner[1].Z()));
           aStatus = aScene.WriteLine (buf);
           if (OK(aStatus)) {
-            sprintf (buf, "bboxSize    %.9g %.9g %.9g",
+            Sprintf (buf, "bboxSize    %.9g %.9g %.9g",
                      aBoxCorner[1].X() - aBoxCorner[0].X(),
                      aBoxCorner[1].Y() - aBoxCorner[0].Y(),
                      aBoxCorner[1].Z() - aBoxCorner[0].Z());
@@ -499,7 +499,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write (const char * thePrefix) const
         if ((aScaleFactor - 1.)*(aScaleFactor - 1.) >
             0.0001*Precision::Confusion())
         {
-          sprintf (buf, "scale       %.12g %.12g %.12g",
+          Sprintf (buf, "scale       %.12g %.12g %.12g",
                    aScaleFactor, aScaleFactor, aScaleFactor);
           aStatus = aScene.WriteLine (buf);
         }
@@ -507,7 +507,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write (const char * thePrefix) const
         // Output the Translation
         const gp_XYZ& aTrans = myTrsf.TranslationPart();
         if (aTrans.SquareModulus() > 0.0001*Precision::Confusion()) {
-          sprintf (buf, "translation %.12g %.12g %.12g",
+          Sprintf (buf, "translation %.12g %.12g %.12g",
                    aTrans.X(), aTrans.Y(), aTrans.Z());
           aStatus = aScene.WriteLine (buf);
         }
@@ -517,7 +517,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write (const char * thePrefix) const
         Standard_Real anAngle;
         if (myTrsf.GetRotation (anAxis, anAngle)) {
           // output the Rotation
-          sprintf (buf, "rotation    %.12g %.12g %.12g %.9g",
+          Sprintf (buf, "rotation    %.12g %.12g %.12g %.9g",
                    anAxis.X(), anAxis.Y(), anAxis.Z(), anAngle);
           aStatus = aScene.WriteLine (buf);
         }

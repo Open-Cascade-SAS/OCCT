@@ -195,10 +195,6 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myFileName = theFileName;
-  const TCollection_AsciiString anOldNumLocale =
-    (Standard_CString) setlocale (LC_NUMERIC, NULL);
-  setlocale(LC_NUMERIC, "C");
-  
   Handle(CDM_MessageDriver) aMessageDriver = theApplication -> MessageDriver();
   ::take_time (~0, " +++++ Start RETRIEVE procedures ++++++", aMessageDriver);
 
@@ -216,8 +212,6 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
   ::take_time (0, " +++++ Fin parsing XML :       ", aMessageDriver);
 
   ReadFromDomDocument (anElement, theNewDocument, theApplication);
-
-  setlocale(LC_NUMERIC, (char *) anOldNumLocale.ToCString()) ;
 }
 
 //=======================================================================
@@ -497,7 +491,7 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
   if (isReset) tmbuf0 = tmbuf;
   else {
     char take_tm_buf [64];
-    sprintf (take_tm_buf, "%9.2f s ++++",
+    Sprintf (take_tm_buf, "%9.2f s ++++",
              double(tmbuf.time - tmbuf0.time) +
              double(tmbuf.millitm - tmbuf0.millitm)/1000.);
     aMessage += take_tm_buf;

@@ -155,7 +155,7 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write (const char * thePrefix) const
   {
     char buf[4096];
     if (myTitle) {
-      sprintf (buf, "title \"%s\"", myTitle);
+      Sprintf (buf, "title \"%s\"", myTitle);
       aStatus = aScene.WriteLine (buf);
     }
 
@@ -163,7 +163,7 @@ VrmlData_ErrorStatus VrmlData_WorldInfo::Write (const char * thePrefix) const
       if (OK (aStatus, aScene.WriteLine ("info [", 0L, GlobalIndent()))) {
         NCollection_List<const char *>::Iterator anIter (myInfo);
         while (anIter.More()) {
-          sprintf (buf, "\"%s\"", anIter.Value());
+          Sprintf (buf, "\"%s\"", anIter.Value());
           anIter.Next();
           if (anIter.More())
             aStatus = aScene.WriteLine (buf, ",");

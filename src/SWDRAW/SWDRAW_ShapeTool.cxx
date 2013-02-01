@@ -22,6 +22,7 @@
 // 15.06.99 abv/pdn: command comptol added (from S4030)
 #include <SWDRAW_ShapeTool.ixx>
 
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
@@ -82,7 +83,7 @@ static Standard_Integer XSHAPE_edge
     if (curve3d.IsNull()) {
       char nomsh[30];
       nbf ++;
-      sprintf (nomsh,"faultedge_%d",nbf);
+      Sprintf (nomsh,"faultedge_%d",nbf);
       di<<"Edge sans Curve3d, n0 "<<nbe<<"\n";
       DBRep::Set (nomsh,Edge);
     }
@@ -139,11 +140,11 @@ static Standard_Integer XSHAPE_explorewire
   for (i = 1; i <= nbe; i ++) {
     if (nbs[i] < 1) {
       di<<"Edge n0 "<<i<<" pas vue par WE"<<"\n";
-      sprintf (nomsh,"NOWE_%d",i);
+      Sprintf (nomsh,"NOWE_%d",i);
       DBRep::Set (nomsh,map.FindKey(i));
     } else if (nbs[i] > 1) {
       di<<"Edge n0 "<<i<<" vue par WE : "<<nbs[i]<<" fois"<<"\n";
-      sprintf (nomsh,"MULT_%d",i);
+      Sprintf (nomsh,"MULT_%d",i);
       DBRep::Set (nomsh,map.FindKey(i));
     }
   }
@@ -207,7 +208,7 @@ static Standard_Integer XSHAPE_edgeregul
   }
   Standard_CString arg1 = argv[1];
   Standard_CString arg2 = argv[2];
-  if (argc > 2) tolang = atof (arg2);
+  if (argc > 2) tolang = Draw::Atof (arg2);
   if (tolang <= 0) {
     di<<"Not a suitable value : "<<tolang<<"\n";
     return 1 /* Error */;
@@ -234,10 +235,10 @@ static Standard_Integer samerange (Draw_Interpretor& di,  Standard_Integer argc,
     Handle(Geom2d_Curve) C = DrawTrSurf::GetCurve2d(argv[2]);
     if (C.IsNull()) { di<<"Curve unknown: "<<argv[2]<<"\n"; return 1; }
   
-    Standard_Real oldFirst = atof(argv[3]);
-    Standard_Real oldLast = atof(argv[4]);
-    Standard_Real current_first = atof(argv[5]);
-    Standard_Real current_last = atof(argv[6]);
+    Standard_Real oldFirst = Draw::Atof(argv[3]);
+    Standard_Real oldLast = Draw::Atof(argv[4]);
+    Standard_Real current_first = Draw::Atof(argv[5]);
+    Standard_Real current_last = Draw::Atof(argv[6]);
     Standard_Real Tol = Precision::PConfusion();
     Handle(Geom2d_Curve) NewC2d;
     GeomLib::SameRange(Tol, C,  oldFirst,oldLast,

@@ -83,7 +83,7 @@ static Standard_Integer QANewDBRepNaming_NameBox (Draw_Interpretor& di,
     TDF_Label L;
     if (!QADNaming::Entry(arg, L)) return 1;
 
-    BRepPrimAPI_MakeBox mkBox(atof(arg[3]), atof(arg[4]), atof(arg[5]));
+    BRepPrimAPI_MakeBox mkBox(Draw::Atof(arg[3]), Draw::Atof(arg[4]), Draw::Atof(arg[5]));
     mkBox.Build();
 
     if(!mkBox.IsDone()) {
@@ -112,10 +112,10 @@ static Standard_Integer QANewDBRepNaming_NameCylinder (Draw_Interpretor& di,
     TDF_Label L;
     if (!QADNaming::Entry(arg, L)) return 1;
 
-    BRepPrimAPI_MakeCylinder mkCylinder(atof(arg[3]), atof(arg[4]));
-    if (atof(arg[5]) != 0.) {
-      // for Mandrake-10 - mkv,02.06.06 - mkCylinder = BRepPrimAPI_MakeCylinder(atof(arg[3]), atof(arg[4]), atof(arg[5]));
-      BRepPrimAPI_MakeCylinder MakeCylinder(atof(arg[3]), atof(arg[4]), atof(arg[5]));
+    BRepPrimAPI_MakeCylinder mkCylinder(Draw::Atof(arg[3]), Draw::Atof(arg[4]));
+    if (Draw::Atof(arg[5]) != 0.) {
+      // for Mandrake-10 - mkv,02.06.06 - mkCylinder = BRepPrimAPI_MakeCylinder(Draw::Atof(arg[3]), Draw::Atof(arg[4]), Draw::Atof(arg[5]));
+      BRepPrimAPI_MakeCylinder MakeCylinder(Draw::Atof(arg[3]), Draw::Atof(arg[4]), Draw::Atof(arg[5]));
       mkCylinder = MakeCylinder;
     }
     mkCylinder.Build();
@@ -127,7 +127,7 @@ static Standard_Integer QANewDBRepNaming_NameCylinder (Draw_Interpretor& di,
 
     QANewBRepNaming_Cylinder nameCylinder(L);
     if (nb == 6) nameCylinder.Load(mkCylinder, QANewBRepNaming_SHELL);
-    else if (atoi(arg[6]) == 0) nameCylinder.Load(mkCylinder, QANewBRepNaming_SHELL);
+    else if (Draw::Atoi(arg[6]) == 0) nameCylinder.Load(mkCylinder, QANewBRepNaming_SHELL);
     else nameCylinder.Load(mkCylinder, QANewBRepNaming_SOLID);
 
     return 0;
@@ -148,15 +148,15 @@ static Standard_Integer QANewDBRepNaming_NameCylinder (Draw_Interpretor& di,
  {
    TDF_Label L;
    if (!QADNaming::Entry(arg, L)) return 1;
-   Standard_Real R = atof(arg[3]);
-   Standard_Real X = atof(arg[4]);
-   Standard_Real Y = atof(arg[5]);
-   Standard_Real Z = atof(arg[6]);
-   Standard_Real DX = atof(arg[7]);
-   Standard_Real DY = atof(arg[8]);
-   Standard_Real DZ = atof(arg[9]);
+   Standard_Real R = Draw::Atof(arg[3]);
+   Standard_Real X = Draw::Atof(arg[4]);
+   Standard_Real Y = Draw::Atof(arg[5]);
+   Standard_Real Z = Draw::Atof(arg[6]);
+   Standard_Real DX = Draw::Atof(arg[7]);
+   Standard_Real DY = Draw::Atof(arg[8]);
+   Standard_Real DZ = Draw::Atof(arg[9]);
    QANewBRepNaming_TypeOfPrimitive3D type = QANewBRepNaming_SHELL;
-   if (nb == 11) type = (QANewBRepNaming_TypeOfPrimitive3D) atoi(arg[10]);
+   if (nb == 11) type = (QANewBRepNaming_TypeOfPrimitive3D) Draw::Atoi(arg[10]);
    
    QANewBRepNaming_Sphere nameSphere(L); 
    BRepPrimAPI_MakeSphere mkSphere(R);
@@ -196,7 +196,7 @@ static Standard_Integer QANewDBRepNaming_NamePrism (Draw_Interpretor& di,
   if (!QADNaming::Entry(arg, L)) return 1;
   if (!DDF::AddLabel(L.Data(), arg[3], BL)) return 1;  
 
-  Standard_Real H = atof(arg[4]);
+  Standard_Real H = Draw::Atof(arg[4]);
 
   Handle(TNaming_NamedShape) BasisNS;
   if (!BL.FindAttribute(TNaming_NamedShape::GetID(), BasisNS)) return 1;
@@ -205,7 +205,7 @@ static Standard_Integer QANewDBRepNaming_NamePrism (Draw_Interpretor& di,
   QANewBRepNaming_Prism namePrism(L);
 
   if (nb >= 8) {
-    gp_Dir Direction(atof(arg[5]), atof(arg[6]), atof(arg[7]));
+    gp_Dir Direction(Draw::Atof(arg[5]), Draw::Atof(arg[6]), Draw::Atof(arg[7]));
     gp_Vec Vector(Direction);
     Vector.Normalize();
     Vector *= H;
@@ -222,7 +222,7 @@ static Standard_Integer QANewDBRepNaming_NamePrism (Draw_Interpretor& di,
       namePrism.Load(mkPrism, Basis);
     }      
     else if (nb == 9) {
-      BRepPrimAPI_MakePrism mkPrism(Basis, Direction, (Standard_Boolean)atoi(arg[8]));  
+      BRepPrimAPI_MakePrism mkPrism(Basis, Direction, (Standard_Boolean)Draw::Atoi(arg[8]));  
       mkPrism.Build();
       
       if(!mkPrism.IsDone()) {
@@ -295,7 +295,7 @@ static Standard_Integer QANewDBRepNaming_NameRevol (Draw_Interpretor& di,
   }
   else if (nb == 6) {
 
-    Standard_Real Angle = atof(arg[5]);
+    Standard_Real Angle = Draw::Atof(arg[5]);
 
     BRepPrimAPI_MakeRevol mkRevol(Basis, axis, Angle);  
     mkRevol.Build();
@@ -331,7 +331,7 @@ static Standard_Integer QANewDBRepNaming_NameFillet (Draw_Interpretor& di,
 
   if (!DDF::AddLabel(L.Data(), arg[3], BL)) return 1;  
   if (!DDF::AddLabel(L.Data(), arg[4], PL)) return 1;  
-  Standard_Real aRadius = atoi(arg[5]);
+  Standard_Real aRadius = Draw::Atoi(arg[5]);
   Handle(TNaming_NamedShape) BasisNS, PathNS;
   if (!BL.FindAttribute(TNaming_NamedShape::GetID(), BasisNS)) return 1;
   if (!PL.FindAttribute(TNaming_NamedShape::GetID(), PathNS)) return 1;
@@ -374,8 +374,8 @@ static Standard_Integer QANewDBRepNaming_NameChamfer (Draw_Interpretor& di,
   if (!DDF::AddLabel(L.Data(), arg[3], BL)) return 1;  
   if (!DDF::AddLabel(L.Data(), arg[4], EL)) return 1;  
   if (!DDF::AddLabel(L.Data(), arg[5], FL)) return 1;  
-  aDist1 = atoi(arg[6]);
-  aDist2 = atoi(arg[7]);
+  aDist1 = Draw::Atoi(arg[6]);
+  aDist2 = Draw::Atoi(arg[7]);
 
   Handle(TNaming_NamedShape) BasisNS, EdgeNS, FaceNS;
   if (!BL.FindAttribute(TNaming_NamedShape::GetID(), BasisNS)) return 1;

@@ -64,9 +64,9 @@ BattenCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 
   Standard_Boolean Ok;
   FairCurve_AnalysisCode Iana;
-  Standard_Real a1 = atof(cangle1),
-                a2 = atof(cangle2),
-                h  = atof(cheigth);
+  Standard_Real a1 = Draw::Atof(cangle1),
+                a2 = Draw::Atof(cangle2),
+                h  = Draw::Atof(cheigth);
   gp_Pnt2d P1, P2;
 
 
@@ -108,9 +108,9 @@ MVCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 
   Standard_Boolean Ok;
   FairCurve_AnalysisCode Iana;
-  Standard_Real a1 = atof(cangle1),
-                a2 = atof(cangle2),
-                h  = atof(cheigth);
+  Standard_Real a1 = Draw::Atof(cangle1),
+                a2 = Draw::Atof(cangle2),
+                h  = Draw::Atof(cheigth);
   gp_Pnt2d P1, P2;
 
 
@@ -146,7 +146,7 @@ SetPoint(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *PointName = argv[2];
   const char *BattenName = argv[3];
 
-  Standard_Integer cote = atoi(side);
+  Standard_Integer cote = Draw::Atoi(side);
 
   Handle(DrawTrSurf_Point)
      Pnt =  Handle(DrawTrSurf_Point)::DownCast(Draw::Get(PointName));
@@ -173,8 +173,8 @@ SetAngle(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *val = argv[2];
   const char *BattenName = argv[3];
 
-  Standard_Real angle = atof(val); 
-  Standard_Integer cote = atoi(side);
+  Standard_Real angle = Draw::Atof(val); 
+  Standard_Integer cote = Draw::Atoi(side);
  
   Handle(DrawFairCurve_Batten) 
     Bat = Handle(DrawFairCurve_Batten)::DownCast(Draw::Get(BattenName));
@@ -197,8 +197,8 @@ SetCurvature(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *val = argv[2];
   const char *MVCName = argv[3];
 
-  Standard_Real rho = atof(val); 
-  Standard_Integer cote = atoi(side);
+  Standard_Real rho = Draw::Atof(val); 
+  Standard_Integer cote = Draw::Atoi(side);
  
   Handle(DrawFairCurve_MinimalVariation) 
     MVC = Handle(DrawFairCurve_MinimalVariation)::DownCast(Draw::Get(MVCName));
@@ -221,7 +221,7 @@ SetSlide(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *val = argv[1];
   const char *BattenName = argv[2];
 
-  Standard_Real slide = atof(val); 
+  Standard_Real slide = Draw::Atof(val); 
  
   Handle(DrawFairCurve_Batten) 
     Bat = Handle(DrawFairCurve_Batten)::DownCast(Draw::Get(BattenName));
@@ -243,7 +243,7 @@ FreeAngle(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *side = argv[1];
   const char *BattenName = argv[2];
  
-  Standard_Integer cote = atoi(side);
+  Standard_Integer cote = Draw::Atoi(side);
  
   Handle(DrawFairCurve_Batten) 
     Bat = Handle(DrawFairCurve_Batten)::DownCast(Draw::Get(BattenName));
@@ -264,7 +264,7 @@ FreeCurvature(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *side = argv[1];
   const char *MVCName = argv[2];
  
-  Standard_Integer cote = atoi(side);
+  Standard_Integer cote = Draw::Atoi(side);
  
   Handle(DrawFairCurve_MinimalVariation) 
     MVC = Handle(DrawFairCurve_MinimalVariation)::DownCast(Draw::Get(MVCName));
@@ -303,7 +303,7 @@ SetHeight(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *val = argv[1];
   const char *BattenName = argv[2];
 
-  Standard_Real Height = atof(val); 
+  Standard_Real Height = Draw::Atof(val); 
  
   Handle(DrawFairCurve_Batten) 
     Bat = Handle(DrawFairCurve_Batten)::DownCast(Draw::Get(BattenName));
@@ -324,7 +324,7 @@ SetSlope(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *val = argv[1];
   const char *BattenName = argv[2];
 
-  Standard_Real Slope = atof(val); 
+  Standard_Real Slope = Draw::Atof(val); 
  
   Handle(DrawFairCurve_Batten) 
     Bat = Handle(DrawFairCurve_Batten)::DownCast(Draw::Get(BattenName));
@@ -344,7 +344,7 @@ SetPhysicalRatio(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *val = argv[1];
   const char *MVCName = argv[2];
 
-  Standard_Real ratio = atof(val); 
+  Standard_Real ratio = Draw::Atof(val); 
  
   Handle(DrawFairCurve_MinimalVariation) 
       MVC = Handle(DrawFairCurve_MinimalVariation)::DownCast(Draw::Get(MVCName));

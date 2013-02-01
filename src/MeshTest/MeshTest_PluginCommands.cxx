@@ -29,6 +29,7 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepMesh_PDiscretRoot.hxx>
+#include <Draw.hxx>
 #include <DBRep.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
@@ -235,10 +236,10 @@ static Standard_Integer mpincmesh (Draw_Interpretor& , Standard_Integer n, const
     return 0;
   }
   //
-  aDeflection=atof(a[2]);
+  aDeflection=Draw::Atof(a[2]);
   aAngle=0.5;
   if (n>3) {
-    aAngle=atof(a[3]);
+    aAngle=Draw::Atof(a[3]);
   }
   //
   Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (aS,
@@ -276,7 +277,7 @@ static Standard_Integer triarea (Draw_Interpretor& di, int n, const char ** a)
   if (shape.IsNull()) return 1;
   Standard_Real anEps = -1.;
   if (n > 2)
-    anEps = atof(a[2]);
+    anEps = Draw::Atof(a[2]);
 
   TopTools_IndexedMapOfShape aMapF;
   TopExp::MapShapes (shape, TopAbs_FACE, aMapF);
@@ -526,7 +527,7 @@ static int mpparallel (Draw_Interpretor& di, Standard_Integer argc, const char**
 {
   if (argc == 2)
   {
-    Standard_Boolean isParallelOn = atoi (argv[1]) == 1;
+    Standard_Boolean isParallelOn = Draw::Atoi (argv[1]) == 1;
     BRepMesh_IncrementalMesh::SetParallelDefault (isParallelOn);
     if (isParallelOn)
       Standard::SetReentrant(Standard_True);

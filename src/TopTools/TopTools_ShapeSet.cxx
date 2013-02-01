@@ -448,16 +448,10 @@ void  TopTools_ShapeSet::Dump(Standard_OStream& OS)const
 
 void  TopTools_ShapeSet::Write(Standard_OStream& OS)
 {
+  // always use C locale for writing shapes
+  std::locale anOldLocale = OS.imbue (std::locale::classic());
 
- // on sauvegarde l'ancien LC_NUMERIC
-  char *oldnum,*plocal ;
-  plocal =   setlocale(LC_NUMERIC, NULL) ;
-  oldnum = new char[strlen(plocal)+1] ;
-  strcpy(oldnum,plocal);
-
-  // on positionne LC_NUMERIC a "C" (point decimal)
-  setlocale(LC_NUMERIC, "C") ;
-
+  // use 15-digit precision
   std::streamsize prec = OS.precision(15);
 
   // write the copyright
@@ -470,14 +464,6 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
   // write the locations
   //-----------------------------------------
 
-  if (!myProgress.IsNull() && myProgress->UserBreak()) {
-    cout << "Interrupted by the user"<<endl;
-    // on remet le LC_NUMERIC a la precedente valeur
-    setlocale(LC_NUMERIC, oldnum) ;
-    delete[] oldnum;
-    return;
-  }
-
   if ( !myProgress.IsNull() ) 
     myProgress->NewScope ( 10, "Locations" );
   myLocations.SetProgress(myProgress);
@@ -487,12 +473,9 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
     myProgress->Show();
   }
 
-
   if (!myProgress.IsNull() && myProgress->UserBreak()) {
-    cout << "Interrupted by the user"<<endl;
-    // on remet le LC_NUMERIC a la precedente valeur
-    setlocale(LC_NUMERIC, oldnum) ;
-    delete[] oldnum;
+    OS << "Interrupted by the user"<<endl;
+    OS.imbue (anOldLocale);
     return;
   }
 
@@ -515,7 +498,6 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
   Standard_Integer i, nbShapes = myShapes.Extent();
   
   OS << "\nTShapes " << nbShapes << "\n";
-  
 
   // subshapes are written first
   //OCC19559
@@ -566,15 +548,15 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS)
   
   OS << endl;
   OS.precision(prec);
+  OS.imbue (anOldLocale);
+
   PS.Relieve();
   if (!myProgress.IsNull()) {
     myProgress->EndScope();
     myProgress->Show();
+    if (myProgress->UserBreak())
+      OS << "Interrupted by the user"<<endl;
   }
-
-  // on remet le LC_NUMERIC a la precedente valeur
-  setlocale(LC_NUMERIC, oldnum) ;
-  delete[] oldnum;
 }
 
 //=======================================================================
@@ -624,11 +606,8 @@ static TopAbs_ShapeEnum ReadShapeEnum(Standard_IStream& IS)
 
 void  TopTools_ShapeSet::Read(Standard_IStream& IS)
 {
- // on sauvegarde l'ancien LC_NUMERIC
-  char *oldnum,*plocal ;
-  plocal =   setlocale(LC_NUMERIC, NULL) ;
-  oldnum = new char[strlen(plocal)+1] ;
-  strcpy(oldnum,plocal);
+  // always use C locale for reading shapes
+  std::locale anOldLocale = IS.imbue (std::locale::classic());
 
   Clear();
 
@@ -648,9 +627,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   } while ( ! IS.fail() && strcmp(vers,Version) && strcmp(vers,Version2) );
   if (IS.fail()) {
     cout << "File was not written with this version of the topology"<<endl;
-  // on remet le LC_NUMERIC a la precedente valeur
-    setlocale(LC_NUMERIC, oldnum) ;
-    delete[] oldnum;
+    IS.imbue (anOldLocale);
     return;
   }
   if (strcmp(vers,Version2) == 0) SetFormatNb(2);
@@ -664,8 +641,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   if (!myProgress.IsNull() && myProgress->UserBreak()) {
     cout << "Interrupted by the user"<<endl;
     // on remet le LC_NUMERIC a la precedente valeur
-    setlocale(LC_NUMERIC, oldnum) ;
-    delete[] oldnum;
+    IS.imbue (anOldLocale);
     return;
   }
   if ( !myProgress.IsNull() ) 
@@ -680,8 +656,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   if (!myProgress.IsNull() && myProgress->UserBreak()) {
     cout << "Interrupted by the user"<<endl;
     // on remet le LC_NUMERIC a la precedente valeur
-    setlocale(LC_NUMERIC, oldnum) ;
-    delete[] oldnum;
+    IS.imbue (anOldLocale);
     return;
   }
 
@@ -705,8 +680,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   if (strcmp(buffer,"TShapes")) {
     cout << "Not a TShape table"<<endl;
     // on remet le LC_NUMERIC a la precedente valeur
-    setlocale(LC_NUMERIC, oldnum) ;
-    delete[] oldnum;
+    IS.imbue (anOldLocale);
     return;
   }
 
@@ -764,8 +738,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   }
 
   // on remet le LC_NUMERIC a la precedente valeur
-  setlocale(LC_NUMERIC, oldnum) ;
-  delete[] oldnum;
+  IS.imbue (anOldLocale);
 }
 
 //=======================================================================

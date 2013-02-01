@@ -36,9 +36,9 @@ StepSelect_FloatFormat::StepSelect_FloatFormat ()
   } else {
     char format[20];
     char pourcent = '%'; char point = '.';
-    sprintf(format,  "%c%d%c%dE",pourcent,digits+2,point,digits);
+    Sprintf(format,  "%c%d%c%dE",pourcent,digits+2,point,digits);
     themainform.AssignCat  (format);
-    sprintf(format,  "%c%d%c%df",pourcent,digits+2,point,digits);
+    Sprintf(format,  "%c%d%c%df",pourcent,digits+2,point,digits);
     theformrange.AssignCat (format);
   }
   therangemin = 0.1; therangemax = 1000.;
@@ -90,7 +90,7 @@ StepSelect_FloatFormat::StepSelect_FloatFormat ()
   lab.AssignCat (themainform);
   if (theformrange.Length() > 0) {
     char mess[30];
-    sprintf(mess,", in range %f %f %s",
+    Sprintf(mess,", in range %f %f %s",
 	    therangemin,therangemax,theformrange.ToCString());
     lab.AssignCat(mess);
   }

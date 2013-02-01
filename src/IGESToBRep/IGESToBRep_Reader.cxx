@@ -197,11 +197,11 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
   Standard_Integer minute, hour;
   c.Show(second, minute, hour,cpu);
   if (hour > 0)
-    sprintf(t,"%dh:%dm:%.2fs",hour,minute,second);
+    Sprintf(t,"%dh:%dm:%.2fs",hour,minute,second);
   else if (minute > 0)
-    sprintf(t,"%dm:%.2fs",minute,second);
+    Sprintf(t,"%dm:%.2fs",minute,second);
   else
-    sprintf(t,"%.2fs",second);
+    Sprintf(t,"%.2fs",second);
   // Sending of message : End of Loading
   Msg8.Arg(t);
   TF->Send (Msg8, Message_Info);
@@ -467,11 +467,11 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
   Standard_Integer minute, hour;
   c.Show(second, minute, hour,cpu);
   if (hour > 0)
-    sprintf(t,"%dh:%dm:%.2fs",hour,minute,second);
+    Sprintf(t,"%dh:%dm:%.2fs",hour,minute,second);
   else if (minute > 0)
-    sprintf(t,"%dm:%.2fs",minute,second);
+    Sprintf(t,"%dm:%.2fs",minute,second);
   else
-    sprintf(t,"%.2fs",second);
+    Sprintf(t,"%.2fs",second);
   // Sending of message : End of Loading
   msg2065.Arg(t);
   TF->Send (msg2065, Message_Info);
@@ -588,11 +588,11 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
   Standard_Integer minute, hour;
   c.Show(second, minute, hour,cpu);
   if (hour > 0)
-    sprintf(t,"%dh:%dm:%.2fs",hour,minute,second);
+    Sprintf(t,"%dh:%dm:%.2fs",hour,minute,second);
   else if (minute > 0)
-    sprintf(t,"%dm:%.2fs",minute,second);
+    Sprintf(t,"%dm:%.2fs",minute,second);
   else
-    sprintf(t,"%.2fs",second);
+    Sprintf(t,"%.2fs",second);
   // Sending of message : End of Loading
   msg2065.Arg(t);
   TF->Send (msg2065, Message_Info);

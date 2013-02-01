@@ -80,6 +80,7 @@ Storage_Error DDF_IOStream::Open(const TCollection_AsciiString& aName,const Stor
       }
       else {
 	myIStream->precision(17);
+        myIStream->imbue (std::locale::classic()); // always use C locale
 	SetOpenMode(aMode);
       }
     }
@@ -91,6 +92,7 @@ Storage_Error DDF_IOStream::Open(const TCollection_AsciiString& aName,const Stor
       }
       else {
 	myOStream->precision(17);
+        myOStream->imbue (std::locale::classic()); // make sure to always use C locale
 	SetOpenMode(aMode);
       }
     }
@@ -113,6 +115,7 @@ Storage_Error DDF_IOStream::Open(istream* anIStream)
   SetOpenMode(Storage_VSRead);
   myIStream = anIStream;
   myIStream->precision(17);
+  myIStream->imbue (std::locale::classic()); // use always C locale
   SetName("DDF_IOStream");
   return Storage_VSOk; // ou Storage_VSAlreadyOpen ?
 }
@@ -128,6 +131,7 @@ Storage_Error DDF_IOStream::Open(ostream* anOStream)
   SetOpenMode(Storage_VSWrite);
   myOStream = anOStream;
   myOStream->precision(17);
+  myOStream->imbue (std::locale::classic()); // use always C locale
   SetName("DDF_IOStream");
   return Storage_VSOk; // ou Storage_VSAlreadyOpen ?
 }

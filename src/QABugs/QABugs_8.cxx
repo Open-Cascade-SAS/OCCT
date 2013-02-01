@@ -17,10 +17,9 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <QABugs.hxx>
 
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
@@ -126,7 +125,7 @@ static Standard_Integer BUC60753 (Draw_Interpretor& di, Standard_Integer argc, c
   Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
   
   myV3dView->SetAnimationMode(Standard_True,Standard_True);
-  myAISContext-> SetDegenerateModel((Aspect_TypeOfDegenerateModel) atoi(argv[1]),atof(argv[2]));
+  myAISContext-> SetDegenerateModel((Aspect_TypeOfDegenerateModel) Draw::Atoi(argv[1]),Draw::Atof(argv[2]));
   
 //		  Timer.Reset ();
 //		  Timer.Start ();
@@ -194,7 +193,7 @@ static Standard_Integer  OCC204 (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
   Standard_Boolean UpdateViewer = Standard_True;
-  Standard_Integer IntegerUpdateViewer = atoi(argv[1]);
+  Standard_Integer IntegerUpdateViewer = Draw::Atoi(argv[1]);
   if (IntegerUpdateViewer == 0) {
     UpdateViewer = Standard_False;
   }
@@ -245,8 +244,8 @@ static Standard_Integer OCC1651 (Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
   if (aShape.IsNull()) return 0;
 
-  gp_Pnt aP1(atof(argv[2]), atof(argv[3]), atof(argv[4]));
-  gp_Dir aD1(atof(argv[5]), atof(argv[6]), atof(argv[7]));
+  gp_Pnt aP1(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]));
+  gp_Dir aD1(Draw::Atof(argv[5]), Draw::Atof(argv[6]), Draw::Atof(argv[7]));
   gp_Lin aL1(aP1,aD1);
   BRepClass3d_Intersector3d aI1;
   aI1.Perform(aL1, -250, 1e-7, TopoDS::Face(aShape));

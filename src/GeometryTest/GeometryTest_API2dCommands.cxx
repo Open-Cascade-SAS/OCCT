@@ -55,7 +55,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if ( n < 4) return 1;
 
-  gp_Pnt2d P(atof(a[2]),atof(a[3]));
+  gp_Pnt2d P(Draw::Atof(a[2]),Draw::Atof(a[3]));
 
   char name[100];
 
@@ -72,7 +72,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
     Handle(Geom2d_Line) L = new Geom2d_Line(P,gp_Vec2d(P,P1));
     Handle(Geom2d_TrimmedCurve) CT = 
       new Geom2d_TrimmedCurve(L, 0., P.Distance(P1));
-    sprintf(name,"%s%d","ext_",i);
+    Sprintf(name,"%s%d","ext_",i);
     char* temp = name; // portage WNT
     DrawTrSurf::Set(temp, CT);
     di << name << " ";
@@ -108,14 +108,14 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
 
   if (n < 3) {
     if (n == 2) 
-      Tol2d = atof(a[1]);
+      Tol2d = Draw::Atof(a[1]);
     
     di << "Tolerance for 2d approx : "<< Tol2d << "\n";
     return 0;
   }
 
 
-  Standard_Integer i, Nb = atoi(a[2]);
+  Standard_Integer i, Nb = Draw::Atoi(a[2]);
   
   Standard_Boolean hasPoints = Standard_True;
   TColgp_Array1OfPnt2d Points(1, Nb);
@@ -170,17 +170,17 @@ static Standard_Integer appro(Draw_Interpretor& di, Standard_Integer n, const ch
 	// points
 	nc = 3;
 	for (i = 1; i <= Nb; i++) {
-	  Points(i).SetCoord(atof(a[nc]),atof(a[nc+1]));
+	  Points(i).SetCoord(Draw::Atof(a[nc]),Draw::Atof(a[nc+1]));
 	  nc += 2;
 	}
       }
       else if (nc - 2 == Nb) {
 	// YValues
 	nc = 5;
-	X0 = atof(a[3]);
-	DX = atof(a[4]);
+	X0 = Draw::Atof(a[3]);
+	DX = Draw::Atof(a[4]);
       	for (i = 1; i <= Nb; i++) {
-	  YValues(i) = atof(a[nc]);
+	  YValues(i) = Draw::Atof(a[nc]);
 	  Points(i).SetCoord(X0+(i-1)*DX,YValues(i));
 	  nc++;
 	}
@@ -245,7 +245,7 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     Handle(Geom2d_Line) L = new Geom2d_Line(P1,gp_Vec2d(P1,P2));
     Handle(Geom2d_TrimmedCurve) CT = 
       new Geom2d_TrimmedCurve(L, 0., P1.Distance(P2));
-    sprintf(name,"%s%d","ext_",i);
+    Sprintf(name,"%s%d","ext_",i);
     char* temp = name; // portage WNT
     DrawTrSurf::Set(temp, CT);
     di << name << " ";

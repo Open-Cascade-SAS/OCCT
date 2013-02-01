@@ -82,12 +82,12 @@ static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integ
   Handle(Geom_Surface) surf2 = DrawTrSurf::GetSurface(a[5]);
   if (surf2.IsNull()) return 1;
    
-      U1 = atof(a[3]);
-      U2 = atof(a[6]);
-      V1 = atof(a[4]); 
-      V2 = atof(a[7]); 
+      U1 = Draw::Atof(a[3]);
+      U2 = Draw::Atof(a[6]);
+      V1 = Draw::Atof(a[4]); 
+      V2 = Draw::Atof(a[7]); 
 
-      ord = atoi(a[1]);
+      ord = Draw::Atoi(a[1]);
 
       surf1->Bounds(u1, u2, v1, v2);
       b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
@@ -103,8 +103,8 @@ static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integ
        switch ( ord )
        { case 0 : { TypeCont=GeomAbs_C0;
                     switch(n)
-			{ case 10  : epsC0= atof(a[9]);
-			  case 9   : epsnl = atof(a[8]);
+			{ case 10  : epsC0= Draw::Atof(a[9]);
+			  case 9   : epsnl = Draw::Atof(a[8]);
 			  case 8 : {} break;
 			  default : return 1;
 			} 
@@ -118,9 +118,9 @@ static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integ
 		  break;
 	 case 1 : { TypeCont=GeomAbs_C1;
                      switch(n)
-			{ case 11 : epsC1=atof(a[10]); 
-                          case 10  : epsC0= atof(a[9]);
-			  case 9  : epsnl = atof(a[8]);
+			{ case 11 : epsC1=Draw::Atof(a[10]); 
+                          case 10  : epsC0= Draw::Atof(a[9]);
+			  case 9  : epsnl = Draw::Atof(a[8]);
 			  case 8  : {} break;
 			  default : return 1;
 			} 
@@ -136,10 +136,10 @@ static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integ
 	 case 2 : { TypeCont=GeomAbs_C2;
                     switch(n)
 		       {
-                          case 12 : epsC2= atof(a[11]); 
-                          case 11 : epsC1=atof(a[10]); 
-                          case 10 : epsC0= atof(a[9]);
-			  case 9  : epsnl = atof(a[8]);
+                          case 12 : epsC2= Draw::Atof(a[11]); 
+                          case 11 : epsC1=Draw::Atof(a[10]); 
+                          case 10 : epsC0= Draw::Atof(a[9]);
+			  case 9  : epsnl = Draw::Atof(a[8]);
 			  case 8  : {} break;
 			  default : return 1;
 			} 
@@ -176,12 +176,12 @@ static Standard_Integer surfaceGcontinuity (Draw_Interpretor& di, Standard_Integ
   Handle(Geom_Surface) surf2 = DrawTrSurf::GetSurface(a[5]);
   if (surf2.IsNull()) return 1;
    
-      U1 = atof(a[3]);
-      U2 = atof(a[6]);
-      V1 = atof(a[4]); 
-      V2 = atof(a[7]); 
+      U1 = Draw::Atof(a[3]);
+      U2 = Draw::Atof(a[6]);
+      V1 = Draw::Atof(a[4]); 
+      V2 = Draw::Atof(a[7]); 
 
-      ord = atoi(a[1]);
+      ord = Draw::Atoi(a[1]);
 
       surf1->Bounds(u1, u2, v1, v2);
       b1 = ((((U1>=u1)&&(U1<=u2))||((U1<=u1)&&(U1>=u2))));
@@ -198,9 +198,9 @@ static Standard_Integer surfaceGcontinuity (Draw_Interpretor& di, Standard_Integ
        { 
 	 case 1 : { TypeCont=GeomAbs_G1;
                      switch(n)
-			 { case 11 : epsG1=atof(a[10]); 
-                          case 10  : epsC0= atof(a[9]);
-			  case 9  : epsnl = atof(a[8]);
+			 { case 11 : epsG1=Draw::Atof(a[10]); 
+                          case 10  : epsC0= Draw::Atof(a[9]);
+			  case 9  : epsnl = Draw::Atof(a[8]);
 			  case 8  : {} break;
 			  default : return 1;
 			} 
@@ -215,11 +215,11 @@ static Standard_Integer surfaceGcontinuity (Draw_Interpretor& di, Standard_Integ
 		  break;
 	 case 2 : { TypeCont=GeomAbs_G2;
                     switch(n)
-		      {   case 13 : maxlen =atof (a[12]);
-                          case 12 :  perce=atof(a[11]); 
-                          case 11 : epsG1=atof(a[10]); 
-                          case 10 : epsC0= atof(a[9]);
-			  case 9  : epsnl = atof(a[8]);
+		      {   case 13 : maxlen =Draw::Atof (a[12]);
+                          case 12 :  perce=Draw::Atof(a[11]); 
+                          case 11 : epsG1=Draw::Atof(a[10]); 
+                          case 10 : epsC0= Draw::Atof(a[9]);
+			  case 9  : epsnl = Draw::Atof(a[8]);
 			  case 8  : {} break;
 			  default : return 1;
 			} 
@@ -253,10 +253,10 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
   Handle(Geom_Curve) curv2 = DrawTrSurf::GetCurve(a[4]);
   if (curv2.IsNull()) return 1;
 
-  U1 = atof(a[3]);
-  U2 = atof(a[5]);
+  U1 = Draw::Atof(a[3]);
+  U2 = Draw::Atof(a[5]);
  
-  ord = atoi(a[1]);
+  ord = Draw::Atoi(a[1]);
 
   u1=curv1->FirstParameter();
   u2=curv1->LastParameter();
@@ -273,9 +273,9 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
        { 
 	  case 1 : {
                     switch(n)
-			{ case 9 :  epsG1=atof(a[8]); 
-                          case 8  : epsC0= atof(a[7]);
-			  case 7  : epsnl = atof(a[6]);
+			{ case 9 :  epsG1=Draw::Atof(a[8]); 
+                          case 8  : epsC0= Draw::Atof(a[7]);
+			  case 7  : epsnl = Draw::Atof(a[6]);
 			  case 6  : {} break;
 			  default : return 1;
 			}                         
@@ -291,12 +291,12 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
 	 case 2 : { 
                     TypeCont=GeomAbs_G2;
                     switch(n)
-		       {case 12 :maxlen =atof(a[11]);
-			case  11 :percent=atof(a[10]);
-                        case 10 : epsG2= atof(a[9]); 
-                        case 9 : epsG1=atof(a[8]); 
-                        case 8  : epsC0= atof(a[7]);
-			case 7  : epsnl = atof(a[6]);
+		       {case 12 :maxlen =Draw::Atof(a[11]);
+			case  11 :percent=Draw::Atof(a[10]);
+                        case 10 : epsG2= Draw::Atof(a[9]); 
+                        case 9 : epsG1=Draw::Atof(a[8]); 
+                        case 8  : epsC0= Draw::Atof(a[7]);
+			case 7  : epsnl = Draw::Atof(a[6]);
 			case 6  : {} break;
 			default : return 1;
 			} 
@@ -328,10 +328,10 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
   Handle(Geom_Curve) curv2 = DrawTrSurf::GetCurve(a[4]);
   if (curv2.IsNull()) return 1;
 
-   U1 = atof(a[3]);
-   U2 = atof(a[5]);
+   U1 = Draw::Atof(a[3]);
+   U2 = Draw::Atof(a[5]);
  
-   ord = atoi(a[1]);
+   ord = Draw::Atoi(a[1]);
 
    u1=curv1->FirstParameter();
    u2=curv1->LastParameter();
@@ -347,8 +347,8 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
    InitEpsCurv( epsnl,epsC0, epsC1, epsC2, epsG1, epsG2, percent,maxlen);
    switch ( ord )
        { case 0 : {  switch(n)
-			{ case 8  : epsC0= atof(a[7]);
-			  case 7  : epsnl = atof(a[6]);
+			{ case 8  : epsC0= Draw::Atof(a[7]);
+			  case 7  : epsnl = Draw::Atof(a[6]);
 			  case 6  : {} break;
 			  default : return 1;
 			}                     
@@ -362,9 +362,9 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
 
 		   }  break;
 	 case 1 : { switch(n)
-			{ case 9 : epsC1 =atof(a[8]);
-                          case 8  : epsC0= atof(a[7]);
-			  case 7  : epsnl = atof(a[6]);
+			{ case 9 : epsC1 =Draw::Atof(a[8]);
+                          case 8  : epsC0= Draw::Atof(a[7]);
+			  case 7  : epsnl = Draw::Atof(a[6]);
 			  case 6  : {} break;
 			  default : return 1;
 			}                          
@@ -380,10 +380,10 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
 	 case 2 : {  TypeCont=GeomAbs_C2;
                      switch(n)
 		       {
-                          case 10 : epsC2= atof(a[9]); 
-                          case 9  : epsC1=atof(a[8]); 
-                          case 8  : epsC0= atof(a[7]);
-			  case 7  : epsnl = atof(a[6]);
+                          case 10 : epsC2= Draw::Atof(a[9]); 
+                          case 9  : epsC1=Draw::Atof(a[8]); 
+                          case 8  : epsC0= Draw::Atof(a[7]);
+			  case 7  : epsnl = Draw::Atof(a[6]);
 			  case 6  : {} break;
 			  default : return 1;
 			} 

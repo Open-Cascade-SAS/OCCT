@@ -48,8 +48,8 @@ static Standard_Integer polytr(Draw_Interpretor& di, Standard_Integer n, const c
   if (n < 4)
     return 1;
 
-  Standard_Integer nbNodes = atoi(a[2]);
-  Standard_Integer nbTri   = atoi(a[3]);
+  Standard_Integer nbNodes = Draw::Atoi(a[2]);
+  Standard_Integer nbTri   = Draw::Atoi(a[3]);
 
   // read the nodes
   Standard_Integer i, j = 4;
@@ -60,7 +60,7 @@ static Standard_Integer polytr(Draw_Interpretor& di, Standard_Integer n, const c
       di << "Not enough nodes";
       return 1;
     }
-    Nodes(i).SetCoord(atof(a[j]),atof(a[j+1]),atof(a[j+2]));
+    Nodes(i).SetCoord(Draw::Atof(a[j]),Draw::Atof(a[j+1]),Draw::Atof(a[j+2]));
     j += 3;
   }
 
@@ -72,7 +72,7 @@ static Standard_Integer polytr(Draw_Interpretor& di, Standard_Integer n, const c
       di << "Not enough triangles";
       return 1;
     }
-    Triangles(i).Set(atoi(a[j]),atoi(a[j+1]),atoi(a[j+2]));
+    Triangles(i).Set(Draw::Atoi(a[j]),Draw::Atoi(a[j+1]),Draw::Atoi(a[j+2]));
     j += 3;
   }
 
@@ -94,7 +94,7 @@ static Standard_Integer polygon3d(Draw_Interpretor& di, Standard_Integer n, cons
   if (n < 4)
     return 1;
 
-  Standard_Integer nbNodes = atoi(a[2]);
+  Standard_Integer nbNodes = Draw::Atoi(a[2]);
 
   // read the nodes
   Standard_Integer i, j = 3;
@@ -105,7 +105,7 @@ static Standard_Integer polygon3d(Draw_Interpretor& di, Standard_Integer n, cons
       di << "Not enough nodes";
       return 1;
     }
-    Nodes(i).SetCoord(atof(a[j]),atof(a[j+1]),atof(a[j+2]));
+    Nodes(i).SetCoord(Draw::Atof(a[j]),Draw::Atof(a[j+1]),Draw::Atof(a[j+2]));
     j += 3;
   }
 
@@ -126,7 +126,7 @@ static Standard_Integer polygon2d(Draw_Interpretor& di, Standard_Integer n, cons
   if (n < 4)
     return 1;
 
-  Standard_Integer nbNodes = atoi(a[2]);
+  Standard_Integer nbNodes = Draw::Atoi(a[2]);
 
   // read the nodes
   Standard_Integer i, j = 3;
@@ -137,7 +137,7 @@ static Standard_Integer polygon2d(Draw_Interpretor& di, Standard_Integer n, cons
       di << "Not enough nodes";
       return 1;
     }
-    Nodes(i).SetCoord(atof(a[j]),atof(a[j+1]));
+    Nodes(i).SetCoord(Draw::Atof(a[j]),Draw::Atof(a[j+1]));
     j += 2;
   }
 

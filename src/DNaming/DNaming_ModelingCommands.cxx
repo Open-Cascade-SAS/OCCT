@@ -17,7 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
+#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <DNaming.hxx>
@@ -321,9 +321,9 @@ static Standard_Integer DNaming_AddBox (Draw_Interpretor& theDI,
     
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
     Standard_Real dx,dy,dz;
-    dx = atof(theArg[2]);
-    dy = atof(theArg[3]);
-    dz = atof(theArg[4]);
+    dx = Draw::Atof(theArg[2]);
+    dy = Draw::Atof(theArg[3]);
+    dz = Draw::Atof(theArg[4]);
 
     DNaming::GetReal(aFun,BOX_DX)->Set(dx);
     DNaming::GetReal(aFun,BOX_DY)->Set(dy);
@@ -378,7 +378,7 @@ static Standard_Integer DNaming_BoxDX (Draw_Interpretor& theDI,
 
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun,BOX_DX)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun,BOX_DX)->Label());
       return 0;
@@ -411,7 +411,7 @@ static Standard_Integer DNaming_BoxDY (Draw_Interpretor& theDI,
     
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun,BOX_DY)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun,BOX_DY)->Label());
       return 0;
@@ -444,7 +444,7 @@ static Standard_Integer DNaming_BoxDZ (Draw_Interpretor& theDI,
     
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun,BOX_DZ)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun,BOX_DZ)->Label());
       return 0;
@@ -682,10 +682,10 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	  aResultLabel.ForgetAllAttributes(Standard_True);
 	  Standard_Boolean aKeepOrientation(Standard_False);
 	  if (nb >= 6) 
-	    aKeepOrientation = (Standard_Boolean) atoi(a[5]);
+	    aKeepOrientation = (Standard_Boolean) Draw::Atoi(a[5]);
 	  Standard_Boolean aGeometry(Standard_False);
 	  if (nb == 7) 
-	    aGeometry = (Standard_Boolean) atoi(a[6]);
+	    aGeometry = (Standard_Boolean) Draw::Atoi(a[6]);
 	  Handle(TNaming_NamedShape) aCont =  DNaming::GetObjectValue(aContext);
 #ifdef DEBUG
 	  if(aCont.IsNull() || aCont->IsEmpty())
@@ -758,10 +758,10 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
 	  aResultLabel.ForgetAllAttributes(Standard_True);
 	  Standard_Boolean aKeepOrientation(Standard_False);
 	  if (nb >= 5) 
-	    aKeepOrientation = (Standard_Boolean) atoi(a[4]);
+	    aKeepOrientation = (Standard_Boolean) Draw::Atoi(a[4]);
 	  Standard_Boolean aGeometry(Standard_False);
 	  if (nb == 6) 
-	    aGeometry = (Standard_Boolean) atoi(a[5]);
+	    aGeometry = (Standard_Boolean) Draw::Atoi(a[5]);
 	  Handle(TNaming_NamedShape) aCont =  DNaming::GetObjectValue(aContext);
 
 	  if(aCont.IsNull() || aCont->IsEmpty())
@@ -815,8 +815,8 @@ static Standard_Integer DNaming_AddCylinder (Draw_Interpretor& theDI,
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
 
     Standard_Real aR, aH;
-    aR = atof(theArg[2]);
-    aH = atof(theArg[3]);
+    aR = Draw::Atof(theArg[2]);
+    aH = Draw::Atof(theArg[3]);
 
     Handle(TDataStd_UAttribute) Axis; 
     if (!DDocStd::Find(aDocument, theArg[4], GEOMOBJECT_GUID, Axis)) return 1;
@@ -854,7 +854,7 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun,CYL_RADIUS)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun,CYL_RADIUS)->Label());
       return 0;
@@ -991,7 +991,7 @@ static Standard_Integer DNaming_AddFillet (Draw_Interpretor& theDI,
 
   TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
 
-  Standard_Real aRadius = atof(theArg[3]);
+  Standard_Real aRadius = Draw::Atof(theArg[3]);
   DNaming::GetReal(aFun,FILLET_RADIUS)->Set(aRadius);  
 
   Handle(TDataStd_UAttribute) aPath;
@@ -1027,13 +1027,13 @@ static Standard_Integer DNaming_PTranslateDXYZ (Draw_Interpretor& di,
     TDataStd_Name::Set(aFun->Label(), "ParTranslation");
     
     Standard_Real aDx=0., aDy=0., aDz=0.;
-    aDx = atof(a[3]);
+    aDx = Draw::Atof(a[3]);
     //cout << "DX = " << aDx<<endl;
     if(nb > 4) {
-      aDy = atof(a[4]);
+      aDy = Draw::Atof(a[4]);
       //cout << "DY = " << aDy<<endl;
       if(nb > 5) {
-	aDz = atof(a[5]);
+	aDz = Draw::Atof(a[5]);
 	//cout << "DZ = " << aDz<<endl;
       }
     }
@@ -1075,7 +1075,7 @@ static Standard_Integer DNaming_PTranslateLine (Draw_Interpretor& di,
     TDataStd_Name::Set(aFun->Label(), "ParTranslationAlongLine");
         
     Standard_Real anOff = 0.;
-    anOff =  atof(a[4]);
+    anOff =  Draw::Atof(a[4]);
     DNaming::GetReal(aFun,PTRANSF_OFF)->Set(anOff);
   
     DNaming::SetObjectArg(aFun, PTRANSF_LINE, aLine); 
@@ -1115,7 +1115,7 @@ static Standard_Integer DNaming_PRotateLine(Draw_Interpretor& di,
     TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL));
 
     Standard_Real anAngle = 0.;
-    anAngle =  atof(a[4]);
+    anAngle =  Draw::Atof(a[4]);
     Standard_Real aK = 2*M_PI/360;
     anAngle = anAngle * aK;
     DNaming::GetReal(aFun,PTRANSF_ANG)->Set(anAngle);
@@ -1189,9 +1189,9 @@ static Standard_Integer DNaming_AddPrism (Draw_Interpretor& theDI,
   Handle(TDataStd_UAttribute) aBasisObj;
   if (!DDocStd::Find(aDocument, theArg[2], GEOMOBJECT_GUID, aBasisObj)) return 1;
   DNaming::SetObjectArg(aFun, PRISM_BASIS, aBasisObj); 
-  Standard_Real height = atof(theArg[3]);
+  Standard_Real height = Draw::Atof(theArg[3]);
   DNaming::GetReal(aFun,PRISM_HEIGHT)->Set(height);
-  Standard_Integer reverse = atoi(theArg[4]);
+  Standard_Integer reverse = Draw::Atoi(theArg[4]);
   DNaming::GetInteger(aFun,PRISM_DIR)->Set(reverse);
   DDF::ReturnLabel(theDI, anObj->Label());
   return 0;
@@ -1219,7 +1219,7 @@ static Standard_Integer DNaming_PrismHeight (Draw_Interpretor& theDI,
     
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun, PRISM_HEIGHT)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun,PRISM_HEIGHT)->Label());
       return 0;
@@ -1277,12 +1277,12 @@ static Standard_Integer DNaming_AddRevol (Draw_Interpretor& theDI,
   DNaming::SetObjectArg(aFun, REVOL_AXIS, anAxObj); 
 
   if(theNb > 4 ) {  
-    Standard_Real angle = atof(theArg[4]);
+    Standard_Real angle = Draw::Atof(theArg[4]);
     Standard_Real aK = 2*M_PI/360;
     angle = angle * aK;
     DNaming::GetReal(aFun,REVOL_ANGLE)->Set(angle);
     if( theNb == 6) {
-      Standard_Integer reverse = atoi(theArg[5]);
+      Standard_Integer reverse = Draw::Atoi(theArg[5]);
       DNaming::GetInteger(aFun, REVOL_REV)->Set(reverse);
     }
   }
@@ -1312,7 +1312,7 @@ static Standard_Integer DNaming_RevolutionAngle (Draw_Interpretor& theDI,
     
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun, REVOL_ANGLE)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun,REVOL_ANGLE)->Label());
       return 0;
@@ -1351,7 +1351,7 @@ static Standard_Integer DNaming_AddSphere (Draw_Interpretor& theDI,
   if (!DDocStd::Find(aDocument, theArg[2], GEOMOBJECT_GUID, aCenterObj)) return 1;
   DNaming::SetObjectArg(aFun, SPHERE_CENTER, aCenterObj);
 
-  Standard_Real aRadius = atof(theArg[3]);
+  Standard_Real aRadius = Draw::Atof(theArg[3]);
   DNaming::GetReal(aFun,SPHERE_RADIUS)->Set(aRadius);
   
   DDF::ReturnLabel(theDI, anObj->Label());
@@ -1380,7 +1380,7 @@ static Standard_Integer DNaming_SphereRadius (Draw_Interpretor& theDI,
 
     Handle(TFunction_Function) aFun = GetFunction(objLabel,funGUID);
     if(!aFun.IsNull()) {
-      Standard_Real value = atof(theArg[3]);
+      Standard_Real value = Draw::Atof(theArg[3]);
       DNaming::GetReal(aFun, SPHERE_RADIUS)->Set(value);
       DDF::ReturnLabel(theDI, DNaming::GetReal(aFun, SPHERE_RADIUS)->Label());
       return 0;
@@ -1414,9 +1414,9 @@ static Standard_Integer DNaming_AddPoint (Draw_Interpretor& theDI,
     
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
     Standard_Real x,y,z;
-    x = atof(theArg[2]);
-    y = atof(theArg[3]);
-    z = atof(theArg[4]);
+    x = Draw::Atof(theArg[2]);
+    y = Draw::Atof(theArg[3]);
+    z = Draw::Atof(theArg[4]);
 
     DNaming::GetReal(aFun,PNT_DX)->Set(x);
     DNaming::GetReal(aFun,PNT_DY)->Set(y);
@@ -1457,9 +1457,9 @@ static Standard_Integer DNaming_AddPointRlt (Draw_Interpretor& theDI,
     if (!DDocStd::Find(aDocument, theArg[2], GEOMOBJECT_GUID, aRefPnt)) return 1;
 
     Standard_Real dx,dy,dz;
-    dx = atof(theArg[3]);
-    dy = atof(theArg[4]);
-    dz = atof(theArg[5]);
+    dx = Draw::Atof(theArg[3]);
+    dy = Draw::Atof(theArg[4]);
+    dz = Draw::Atof(theArg[5]);
 
     DNaming::GetReal(aFun,PNT_DX)->Set(dx);
     DNaming::GetReal(aFun,PNT_DY)->Set(dy);
@@ -1504,17 +1504,17 @@ static Standard_Integer DNaming_PntOffset (Draw_Interpretor& theDI,
       Standard_Real value(0.0);
       Standard_Boolean isDX = (strcmp(theArg[3],"skip"));
       if(isDX) {
-	value = atof(theArg[3]);
+	value = Draw::Atof(theArg[3]);
 	DNaming::GetReal(aFun,PNT_DX)->Set(value);
       }
       Standard_Boolean isDY = (strcmp(theArg[4],"skip"));
       if(isDY) {
-	value = atof(theArg[4]);
+	value = Draw::Atof(theArg[4]);
 	DNaming::GetReal(aFun,PNT_DY)->Set(value);
       }
       Standard_Boolean isDZ = (strcmp(theArg[5],"skip"));
       if(isDZ) {
-	value = atof(theArg[5]);
+	value = Draw::Atof(theArg[5]);
 	DNaming::GetReal(aFun,PNT_DZ)->Set(value);
       }
       if(isDX || isDY || isDZ)
@@ -1554,7 +1554,7 @@ static Standard_Integer DNaming_Line3D (Draw_Interpretor& theDI,
   TDataStd_Name::Set(aFun->Label(), "Line3D_Function");
   TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
  
-  Standard_Integer aType = atoi(theArg[2]);
+  Standard_Integer aType = Draw::Atoi(theArg[2]);
   DNaming::GetInteger(aFun,LINE3D_TYPE)->Set(aType);
   
 //LINE3D_PNTNB
@@ -1869,11 +1869,11 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
     Standard_Boolean XSelection(Standard_False);
     Standard_Boolean Geometry(Standard_False);
     if(theNb == 4)
-      Orientation = (Standard_Boolean)atoi(theArg[3]);
+      Orientation = (Standard_Boolean)Draw::Atoi(theArg[3]);
     if(theNb == 5)
-      XSelection = (Standard_Boolean)atoi(theArg[4]);
+      XSelection = (Standard_Boolean)Draw::Atoi(theArg[4]);
     if (theNb == 6) 
-      Geometry = (Standard_Boolean) atoi(theArg[5]);
+      Geometry = (Standard_Boolean) Draw::Atoi(theArg[5]);
     Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue( aCntObj);
 
     if(!aNS.IsNull() && !aNS->IsEmpty()) {
@@ -2008,11 +2008,11 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
     Standard_Boolean XSelection(Standard_False);
     Standard_Boolean Geometry(Standard_False);
     if(theNb == 4)
-      Orientation = (Standard_Boolean)atoi(theArg[3]);
+      Orientation = (Standard_Boolean)Draw::Atoi(theArg[3]);
     if(theNb == 5)
-      XSelection = (Standard_Boolean)atoi(theArg[4]);
+      XSelection = (Standard_Boolean)Draw::Atoi(theArg[4]);
     if (theNb == 6) 
-      Geometry = (Standard_Boolean) atoi(theArg[5]);
+      Geometry = (Standard_Boolean) Draw::Atoi(theArg[5]);
     Handle(TNaming_NamedShape) aNS = DNaming::GetObjectValue( aCntObj);
 
     if(!aNS.IsNull() && !aNS->IsEmpty()) {

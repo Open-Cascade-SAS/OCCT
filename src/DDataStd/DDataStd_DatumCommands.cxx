@@ -62,12 +62,12 @@
 static void Location (Standard_Integer nb, const char** arg, gp_Ax2& Loc) {
 
   if (nb == 9) {
-    Standard_Real X  = atof(arg[3]);
-    Standard_Real Y  = atof(arg[4]);
-    Standard_Real Z  = atof(arg[5]);
-    Standard_Real DX = atof(arg[6]);
-    Standard_Real DY = atof(arg[7]);
-    Standard_Real DZ = atof(arg[8]);
+    Standard_Real X  = Draw::Atof(arg[3]);
+    Standard_Real Y  = Draw::Atof(arg[4]);
+    Standard_Real Z  = Draw::Atof(arg[5]);
+    Standard_Real DX = Draw::Atof(arg[6]);
+    Standard_Real DY = Draw::Atof(arg[7]);
+    Standard_Real DZ = Draw::Atof(arg[8]);
     Loc = gp_Ax2 (gp_Pnt(X,Y,Z), gp_Dir(DX,DY,DZ));
   }  
 }
@@ -193,9 +193,9 @@ static Standard_Integer DDataStd_SetPlane (Draw_Interpretor& di,
 //     if (nb < 6) return 1;
     
 //     gp_Trsf T;
-//     Standard_Real x = atof(arg[3]);
-//     Standard_Real y = atof(arg[4]);
-//     Standard_Real z = atof(arg[5]);
+//     Standard_Real x = Draw::Atof(arg[3]);
+//     Standard_Real y = Draw::Atof(arg[4]);
+//     Standard_Real z = Draw::Atof(arg[5]);
     
 //     if (nb == 6) {
 //       T.SetTranslation(gp_Vec(x,y,z));
@@ -203,10 +203,10 @@ static Standard_Integer DDataStd_SetPlane (Draw_Interpretor& di,
 //     else if (nb < 10)
 //       return 1;
 //     else {
-//       Standard_Real dx = atof(arg[6]);
-//       Standard_Real dy = atof(arg[7]);
-//       Standard_Real dz = atof(arg[8]);
-//       Standard_Real ang = atof(arg[9]);
+//       Standard_Real dx = Draw::Atof(arg[6]);
+//       Standard_Real dy = Draw::Atof(arg[7]);
+//       Standard_Real dz = Draw::Atof(arg[8]);
+//       Standard_Real ang = Draw::Atof(arg[9]);
 //       T.SetRotation(gp_Ax1(gp_Pnt(x,y,z),
 //                         gp_Vec(dx,dy,dz)),
 //                  ang * (M_PI / 180.0));

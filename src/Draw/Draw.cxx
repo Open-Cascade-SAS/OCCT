@@ -110,7 +110,7 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
     try {
       aPath.ChangeAll ('\\', '/');
 
-      sprintf(console_command, "source \"%.980s\"", aPath.ToCString());
+      Sprintf(console_command, "source \"%.980s\"", aPath.ToCString());
       console_semaphore = HAS_CONSOLE_COMMAND;
       while (console_semaphore == HAS_CONSOLE_COMMAND)
         Sleep(10);
@@ -122,7 +122,7 @@ static void ReadInitFile (const TCollection_AsciiString& theFileName)
   } else {
 #endif
     char* com = new char [aPath.Length() + strlen ("source ") + 2];
-    sprintf (com, "source %s", aPath.ToCString());
+    Sprintf (com, "source %s", aPath.ToCString());
     Draw_Interprete (com);
     delete [] com;
 #ifdef WNT

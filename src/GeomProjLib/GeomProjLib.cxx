@@ -91,9 +91,9 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)& C,
 //POP pour NT
 //    char name[100];
     char* name = new char[100];
-    sprintf(name,"PROJCURV_%d",NBPROJ);
+    Sprintf(name,"PROJCURV_%d",NBPROJ);
     DrawTrSurf::Set(name,C);
-    sprintf(name,"PROJSURF_%d",NBPROJ);
+    Sprintf(name,"PROJSURF_%d",NBPROJ);
     DrawTrSurf::Set(name,S);
     NBPROJ++;
   }

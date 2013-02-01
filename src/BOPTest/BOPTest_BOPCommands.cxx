@@ -1496,8 +1496,8 @@ Standard_Integer bopsinf (Draw_Interpretor& di,
   const BooleanOperations_ShapesDataStructure& aDS=pDF->DS();
 
   Standard_Integer nSp=0, nF1, nF2, anExistFlag=0;
-  nF1=atoi(a[1]);
-  nF2=atoi(a[2]);
+  nF1=Draw::Atoi(a[1]);
+  nF2=Draw::Atoi(a[2]);
 
   const TopoDS_Shape& aS1=aDS.GetShape(nF1);
   const TopoDS_Shape& aS2=aDS.GetShape(nF2);
@@ -1558,8 +1558,8 @@ Standard_Integer bopsonf (Draw_Interpretor& di,
   const BooleanOperations_ShapesDataStructure& aDS=pDF->DS();
 
   Standard_Integer nSp=0, nF1, nF2, anExistFlag=0;
-  nF1=atoi(a[1]);
-  nF2=atoi(a[2]);
+  nF1=Draw::Atoi(a[1]);
+  nF2=Draw::Atoi(a[2]);
 
   const TopoDS_Shape& aS1=aDS.GetShape(nF1);
   const TopoDS_Shape& aS2=aDS.GetShape(nF2);
@@ -1621,7 +1621,7 @@ Standard_Integer bopwho (Draw_Interpretor& di,
   Standard_Boolean bIsNewShape;
   Standard_Integer iNum, i, aNbLines, aNbObj, aNewShape, aWhat, aWith;
   //
-  iNum=atoi(a[1]);
+  iNum=Draw::Atoi(a[1]);
   if (iNum<=0) {
     di << " Shape Index must be >0 .\n";
     return 1;
