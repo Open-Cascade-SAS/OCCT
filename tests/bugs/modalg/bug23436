@@ -1,0 +1,13 @@
+puts "============"
+puts "CR23436"
+puts "============"
+puts ""
+######################################################
+# BRepOffsetAPI_ThruSections crashes when lofting through identical profiles
+######################################################
+
+restore [locate_data_file bug23436_myloft.brep] s
+
+explode s
+
+thrusections result 0 0 s_1 s_2 s_3

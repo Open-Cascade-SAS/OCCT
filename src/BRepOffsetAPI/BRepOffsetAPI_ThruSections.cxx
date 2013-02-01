@@ -102,7 +102,27 @@
 #include <BRepBuilderAPI_FindPlane.hxx>
 
 
+//=======================================================================
+//function : PreciseUpar
+//purpose  : pins the u-parameter of surface close to U-knot
+//           to this U-knot
+//=======================================================================
 
+static Standard_Real PreciseUpar(const Standard_Real anUpar,
+                                 const Handle(Geom_BSplineSurface)& aSurface)
+{
+  Standard_Real Tol = Precision::PConfusion();
+  Standard_Integer i1, i2;
+
+  aSurface->LocateU(anUpar, Tol, i1, i2);
+  Standard_Real U1 = aSurface->UKnot(i1);
+  Standard_Real U2 = aSurface->UKnot(i2);
+
+  Standard_Real NewU = anUpar;
+
+  NewU = (anUpar - U1 < U2 - anUpar)? U1 : U2;
+  return NewU;
+}
 
 //=======================================================================
 //function :  PerformPlan
@@ -629,6 +649,8 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     Standard_Real Ui1,Ui2,V0,V1;
     Ui1 = i-1;
     Ui2 = i;
+    Ui1 = PreciseUpar(Ui1, surface);
+    Ui2 = PreciseUpar(Ui2, surface);
     V0  = surface->VKnot(surface->FirstVKnotIndex());
     V1  = surface->VKnot(surface->LastVKnotIndex());
     surface->Segment(Ui1,Ui2,V0,V1);
