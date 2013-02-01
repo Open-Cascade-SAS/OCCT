@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG"
+puts "============"
+puts "OCC18186"
+puts "============"
+puts ""
+#######################################################################
+# Boolean operation algo fails
+#######################################################################
+
+restore [locate_data_file OCC18186_r3.brep] bb
+restore [locate_data_file OCC18186_Tool2.brep] bc
+
+bop bb bc
+bopcut result
+
+set square 308374
+set nb_v_good 43
+set nb_e_good 68
+set nb_w_good 27
+set nb_f_good 27
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 168
+
+set 2dviewer 0
+

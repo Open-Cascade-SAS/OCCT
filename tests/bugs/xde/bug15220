@@ -1,0 +1,16 @@
+puts "==========="
+puts "OCC15220"
+puts "==========="
+
+set BugNumber OCC15220
+
+######################################################
+# Problems with IGES file locations
+######################################################
+
+
+igesbrep [locate_data_file OCC15220.igs] result *
+
+set square 5.69952e+07
+
+set 2dviewer 0

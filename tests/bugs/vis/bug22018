@@ -1,0 +1,61 @@
+puts "============"
+puts "OCC22018"
+puts "============"
+puts ""
+#######################################################################
+# Select3D_SensitiveCircle::Matches(): DMin parameter left uninitialized
+#######################################################################
+
+set BugNumber OCC22018
+
+vinit
+
+vpoint p1 -5 0 0
+vpoint p2 0 5 0
+vpoint p3 5 0 0
+
+vcircle c p1 p2 p3 1
+
+vpoint p4 0 0 0
+vpoint p5 5 5 0
+vpoint p6 10 0 0
+
+vcircle c1 p4 p5 p6 1
+
+verase p1 p2 p3 p4 p5 p6
+
+vfit
+vtop
+
+set White_R 1
+set White_G 1
+set White_B 0.94901901483535767
+
+set Select_R 0
+set Select_G 1
+set Select_B 1
+
+set x1 150
+set x2 300
+set y  200
+
+vmoveto 0 0
+vmoveto 0 0
+
+checkcolor ${x1} ${y} ${White_R} ${White_G} ${White_B}
+checkcolor ${x2} ${y} ${White_R} ${White_G} ${White_B}
+
+vmoveto ${x1} ${y}
+vmoveto ${x1} ${y}
+
+checkcolor ${x1} ${y} ${Select_R} ${Select_G} ${Select_B}
+checkcolor ${x2} ${y} ${White_R} ${White_G} ${White_B}
+
+vmoveto ${x2} ${y}
+vmoveto ${x2} ${y}
+
+checkcolor ${x1} ${y} ${White_R} ${White_G} ${White_B}
+checkcolor ${x2} ${y} ${Select_R} ${Select_G} ${Select_B}
+
+set only_screen 1
+

@@ -1,0 +1,25 @@
+puts "==========="
+puts "OCC16950"
+puts "==========="
+######################################################
+# OCC Visualization fails to display empty nested compounds
+######################################################
+
+set BugNumber OCC16950
+
+puts "Make compound containing another (empty) one"
+compound c
+compound c result
+
+puts "And display it"
+vinit
+vdisplay result
+
+# Resume
+if [catch { vsetdispmode 1 } res] {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+

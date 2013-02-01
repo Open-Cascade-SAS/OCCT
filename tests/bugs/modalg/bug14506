@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG"
+
+puts "============"
+puts "OCC14506"
+puts "============"
+puts ""
+#######################################################################
+# Wrong section of faces with bspline geometry
+#######################################################################
+
+restore [locate_data_file bug14506_face1.brep] face1
+restore [locate_data_file bug14506_face2.brep] face2
+
+bop face1 face2
+bopsection result
+
+set length 129.639
+set nb_v_good 2
+set nb_e_good 2
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 5
+
+set 2dviewer 0
+

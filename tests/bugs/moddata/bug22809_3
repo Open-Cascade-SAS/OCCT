@@ -1,0 +1,141 @@
+puts "============"
+puts "OCC22809"
+puts "============"
+puts ""
+############################################################################################################
+# BRepIntCS does not find intersections of an ellipsoid and a line passing through it's apex
+###########################################################################################################
+
+set BugNumber OCC22809
+
+#
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+
+set percent_max 0.1
+#
+
+psphere a 100
+nurbsconvert r1 a
+line l -0.000001 0.0000000001 -100 0 0 1
+BRepIntCS l r1
+
+regexp {.* is a ([A-Za-z0-9]*)} [ whatis brics_1] full info1
+
+# N.B. multiple result points are to be processed by other algorithms
+# Now there are 3 result points
+regexp {.* is a ([A-Za-z0-9]*)} [ whatis brics_2 ] full info2
+
+set word1 [string compare $info1 "point"]
+set word2 [string compare $info2 "point"]
+
+set status_point 0
+if { ${word1} == 0 && ${word2} == 0 } {
+    set status_point 0
+} else {
+    set status_point 1
+}
+
+regexp {.* is a ([A-Za-z0-9]*)} [ whatis brics_3 ] full info3
+set word3 [string compare $info3 "a"]
+
+set status_nb 0
+if { ${word3} == 0 } {
+    set status_nb 0
+} else {
+    set status_nb 1
+    # N.B. multiple result points are to be processed by other algorithms
+    set status_nb 0
+}
+
+set dump1 [ dump brics_1 ]
+
+regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $dump1 full x1 y1 z1
+
+set good_x1 -1.000000000000000e-06
+set good_y1 1.000000000000000e-10
+set good_z1 -1.000000000000000e+02
+
+set status_xyz1 0
+set x1_percent [GetPercent ${x1} ${good_x1}]
+puts "x1_percent = ${x1_percent}"
+if { ${x1_percent} > ${percent_max} } {
+   puts "x1: Faulty ${BugNumber}"
+   set status_xyz1 1
+} else {
+   puts "x1: OK ${BugNumber}"
+}
+
+set y1_percent [GetPercent ${y1} ${good_y1}]
+puts "y1_percent = ${y1_percent}"
+if { ${y1_percent} > ${percent_max} } {
+   puts "y1: Faulty ${BugNumber}"
+   set status_xyz1 1
+} else {
+   puts "y1: OK ${BugNumber}"
+}
+
+set z1_percent [GetPercent ${z1} ${good_z1}]
+puts "z1_percent = ${z1_percent}"
+if { ${z1_percent} > ${percent_max} } {
+   puts "z1: Faulty ${BugNumber}"
+   set status_xyz1 1
+} else {
+   puts "z1: OK ${BugNumber}"
+}
+
+set dump2 [ dump brics_2 ]
+# N.B. multiple result points are to be processed by other algorithms
+set dump2 [ dump brics_2 ]
+
+regexp {Point : ([-0-9.+eE]+), ([-0-9.+eE]+), ([-0-9.+eE]+)} $dump2 full x2 y2 z2
+
+set good_x2 -1.000000000000000e-06
+set good_y2 1.000000000000000e-10
+set good_z2 1.000000000000000e+02
+
+set status_xyz2 0
+set x2_percent [GetPercent ${x2} ${good_x2}]
+puts "x2_percent = ${x2_percent}"
+if { ${x2_percent} > ${percent_max} } {
+   puts "x2: Faulty ${BugNumber}"
+   set status_xyz2 1
+} else {
+   puts "x2: OK ${BugNumber}"
+}
+
+set y2_percent [GetPercent ${y2} ${good_y2}]
+puts "y2_percent = ${y2_percent}"
+if { ${y2_percent} > ${percent_max} } {
+   puts "y2: Faulty ${BugNumber}"
+   set status_xyz2 1
+} else {
+   puts "y2: OK ${BugNumber}"
+}
+
+set z2_percent [GetPercent ${z2} ${good_z2}]
+puts "z2_percent = ${z2_percent}"
+if { ${z2_percent} > ${percent_max} } {
+   puts "z2: Faulty ${BugNumber}"
+   set status_xyz2 1
+} else {
+   puts "z2: OK ${BugNumber}"
+}
+
+# Resume
+puts ""
+if { ${status_point} == 0 && ${status_nb} == 0 && ${status_xyz1} == 0 && ${status_xyz2} == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+

@@ -1,0 +1,10 @@
+set BugNumber OCC12584
+
+puts "============"
+puts "OCC12584"
+puts "============"
+puts ""
+vinit
+OCC12584
+
+set only_screen 1

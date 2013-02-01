@@ -1,0 +1,31 @@
+puts "========================"
+puts "OCC22303"
+puts "========================"
+puts ""
+#######################################################################
+# The algorithm BRepExtrema_DistShapeShape crashes with exception if one of the shapes does non contain vertices
+#######################################################################
+
+set BugNumber OCC22303
+
+line ll 0 20 0  1 0 0
+mkedge ee ll
+psphere ss 10
+
+distmini dd ee ss
+puts "Distance=[dval dd_val]"
+
+if [expr [dval dd_val] - 10. > 1.e-3 ] {
+   set status 1
+} else {
+   set status 0
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

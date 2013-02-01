@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC22356"
+puts "============"
+puts ""
+#######################################################################
+# The result of fuse is not valid for two straight edges.
+#    Appendix to the SALOME bug: IPAL22182
+#######################################################################
+
+set BugNumber OCC22356
+
+restore [locate_data_file bug22356_cy.brep] bq 
+explode bq e
+copy bq_1 b1
+copy bq_2 b2
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopfuse result
+puts "Finish boolean operation ..."
+
+set length 300
+
+set nb_v_good 3
+set nb_e_good 2
+set nb_w_good 1
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 7
+
+
+set 2dviewer 0

@@ -1,0 +1,97 @@
+puts "TODO OCC11111 ALL: Faulty OCC22188"
+
+puts "============"
+puts "OCC22188"
+puts "Customer : TATA"
+puts "============"
+puts ""
+#######################################################################
+# Visualization of solid fails (in BRepMesh_FastDiscretFace) 
+#######################################################################
+
+set BugNumber OCC22188
+
+restore [locate_data_file OCC22188.brep] result
+tclean result
+
+vinit
+vdisplay result
+vsetdispmode 1
+vfit
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+regexp {Maximal deflection +([-0-9.+eE]+)} $tri_info full defl
+
+if { [string compare $tcl_platform(os) "Windows"] == 0 }  {
+   set good_tri  6114
+   set good_nod  3080
+   set good_defl 0.50050406431775729
+} else {
+    set good_tri  6148
+    set good_nod  3097
+    set good_defl 0.5153628044287929
+}
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+
+set percent_max 0.1
+set status 0
+
+set triangle_percent [GetPercent ${tri} ${good_tri}]
+puts "triangle_percent = ${triangle_percent}"
+if { ${triangle_percent} > ${percent_max} } {
+   puts "triangle: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "triangle: OK ${BugNumber}"
+}
+
+set node_percent [GetPercent ${nod} ${good_nod}]
+puts "node_percent = ${node_percent}"
+if { ${node_percent} > ${percent_max} } {
+   puts "node: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "node: OK ${BugNumber}"
+}
+
+set deflection_percent [GetPercent ${defl} ${good_defl}]
+puts "deflection_percent = ${deflection_percent}"
+if { ${deflection_percent} > ${percent_max} } {
+   puts "deflection: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "deflection: OK ${BugNumber}"
+}
+
+set square 33561.4
+
+set nb_v_good 2
+set nb_e_good 3
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 9
+
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set only_screen 0

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC19777"
+puts "========"
+puts ""
+######################################################
+# FIP:Integration of new version of read/write VRML2.0 files 
+######################################################
+
+set BugNumber OCC19777
+
+if [catch { restore [locate_data_file OCC19777.brep] result} catch_result] { 
+  puts "Error ${BugNumber}: there is reading problem"
+} else {
+
+set nb_v_good 0
+set nb_e_good 0
+set nb_w_good 0
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 1
+
+}
+
+set 2dviewer 0

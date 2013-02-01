@@ -1,0 +1,465 @@
+puts "TODO OCC12345 ALL: Tcl Exception:"
+puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "============"
+puts "OCC23226"
+puts "============"
+puts ""
+#######################################################################
+# Extend OpenGl_Context to store map of shared GPU resources
+#######################################################################
+
+set BugNumber OCC23226
+
+#
+# This test is modified test cdl/934/C2
+#
+
+# this test performs automatical test of primitives array objects by pixel checking
+# this test ALSO DUMPS two result images (the primitives on the images should have
+# same contours, WIREFRAME OBJECTS ARE IN YELLOW-RED COLORS, SHADED OBJECTS ARE
+# BLUE-GREEN COLORS)
+
+set BUGNUMBER OCC22583
+set status 0
+set ImageName1 "occ22583-image1.png"
+set ImageName2 "occ22583-image2.png"
+
+# set window width and height, this values should correspond to a 
+# view window sizes to pass the test
+set view_width  405
+set view_height 405
+
+# colors used for tests
+# yellow
+set colorY_R 1
+set colorY_G 1
+set colorY_B 0
+
+# red
+set colorR_R 1
+set colorR_G 0
+set colorR_B 0
+
+# blue
+set colorB_R 0
+set colorB_G 1
+set colorB_B 1
+
+# green
+set colorG_R 0
+set colorG_G 1
+set colorG_B 0
+
+# limit of range where the pixels are tested (sets number of iterations)
+# 30 pixels in width and in height will be enough to test all primitives
+set limit_x 3
+set limit_y 3
+
+# this procedure is internal and will be removed at the end of the script
+# generate points for primitive
+proc generate_points {x y z r g b} {
+	# define top plane points
+	global pts01 pts02 pts03 pts04 pts05 pts06
+	set pts01 "v [expr "$x-5"] [expr "$y+5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+	set pts02 "v [expr "$x  "] [expr "$y+5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+	set pts03 "v [expr "$x  "] [expr "$y "] [expr "$z"]  n 0 0 -1 c $r $g $b"
+	set pts04 "v [expr "$x+5"] [expr "$y "] [expr "$z"]  n 0 0 -1 c $r $g $b"
+	set pts05 "v [expr "$x-5"] [expr "$y-5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+	set pts06 "v [expr "$x  "] [expr "$y-5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+}
+
+# this procedure is internal and will be removed at the end of the script
+# check pixels of primitive
+proc check_primitive {name1 r g b args} {
+	global limit_x limit_y view_width view_height
+	# show only primitive that we interested in to test
+	vdonly $name1 $args
+	vtop
+	vfit
+	
+	# move cursor not to select shape
+	vmoveto 0 0
+	vmoveto 0 0
+	
+	# test pixels in a top left corner
+	set TestPassed 0
+	set HasPixel 0
+	for {set i 0} {$i < $limit_x} {incr i} {
+		for {set j 0} {$j < $limit_y} {incr j} {
+			set QATestVar [ catch { QAGetPixelColor $i $j $r $g $b } ]
+			if { $QATestVar == 0 } {
+				set HasPixel 1
+			}
+		}
+	}
+	if { $HasPixel == 1 } { 
+		set TestPassed [expr $TestPassed + 1]
+	} else {
+		set TestPassed 0
+	}
+
+	# test pixels in bottom left corner
+	set HasPixel 1
+	for {set i 0} {$i < $limit_x} {incr i} {
+		for {set j 0} {$j < $limit_y} {incr j} {
+			set QATestVar [ catch { QAGetPixelColor $i [expr $view_height-$j] $r $g $b  } ]
+			if { $QATestVar == 0 } {
+				set HasPixel 1
+			}
+		}
+	}
+	if { $HasPixel == 1 } { 
+		set TestPassed [expr $TestPassed + 1]
+	} else {
+		set TestPassed 0
+	}
+	
+	# test pixels in center right corner
+	set HasPixel 1
+	for {set i 0} {$i < $limit_x} {incr i} {
+		for {set j 0} {$j < $limit_y} {incr j} {
+			set QATestVar [ catch { QAGetPixelColor [expr ($view_width-$limit_y) + $i] [expr ($view_height-$limit_y)/2 + $j] $r $g $b  } ]
+			if { $QATestVar == 0 } {
+				set HasPixel 1
+			}
+		}
+	}
+	if { $HasPixel == 1 } { 
+		set TestPassed [expr $TestPassed + 1]
+	} else {
+		set TestPassed 0
+	}
+	
+	# test pixels in center left corner (shouldn't be anything)
+	set HasPixel 0
+	for {set i 0} {$i < $limit_x} {incr i} {
+		for {set j 0} {$j < $limit_y} {incr j} {
+			set QATestVar [ catch { QAGetPixelColor [expr $view_width/4 + $i] [expr ($view_height-$limit_y)/2 + $j] $r $g $b  } ]
+			if { $QATestVar == 0 } {
+				set HasPixel 1
+			}
+		}
+	}
+	if { $HasPixel == 1 } { 
+		set TestPassed 0
+	} else {
+		set TestPassed [expr $TestPassed + 1]
+	}
+
+	# show all primitives
+	vdisplayall
+	vtop
+	vfit
+	
+	# return a result
+	if { ${TestPassed} == 4 } {
+      return 1
+	} else {
+      return 0
+	}
+}
+
+# ### THIS IS THE HEAD LOOP OF THE TEST ####################
+# During this test primitives are created and displayed
+# with commands vdrawparray, and verified for consistency
+# with check_primitive procedure. In spite of the fact that there
+# a lot of code below, it's similar and divided on the similar
+# blocks of code.
+# The iteration loop is intended to check primitives with
+# "vertex buffer objects" turned off (vbo_enable = 0) and
+# turned on (vbo_enable = 1)
+
+for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
+
+	if { $vbo_enable == 0 } { 
+	    vvbo 0
+    	    puts "TEST WITH VBO is OFF"
+	}
+	if { $vbo_enable == 1 } {
+	    vvbo 1
+	    puts "TEST WITH VBO is ON"
+	}
+	
+	vinit
+	veraseall
+	vclear
+
+	# this points are only to simplify visiual check of dumped image
+	vpoint point1   65 0 0
+	vpoint point2 -145 0 0
+
+	# ****************************** Graphic3d_ArrayOfPoints ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfPoints: TEST"
+	# 
+	# 1: verticies
+	#
+	generate_points 60 0 0   $colorY_R $colorY_G $colorY_B
+	eval vdrawparray pt01 points $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06
+	#
+	# Final result
+	#
+	if { [ check_primitive pt01 $colorY_R $colorY_G $colorY_B ] == 0 } {
+		puts "WARNING! definition by verticies failed"
+		puts "WARNING! Graphic3d_ArrayOfPoints: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfPoints: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfSegments ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfSegments: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points 50 0 0   $colorY_R $colorY_G $colorY_B
+	eval vdrawparray seg01 segments $vbo_enable $pts02 $pts01 $pts01 $pts03 $pts03 $pts05 $pts05 $pts06 $pts06 $pts04 $pts04 $pts02
+	if { [ check_primitive seg01 $colorY_R $colorY_G $colorY_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: edges
+	#
+	generate_points 40 0 0   $colorR_R $colorR_G $colorR_B
+	eval vdrawparray seg02 segments $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 1 e 2 e 2 e 4 e 4 e 6 e 6 e 5 e 5 e 3 e 3 e 1
+	if { [ check_primitive seg02 $colorR_R $colorR_G $colorR_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfSegments: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfSegments: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfPolylines ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfPolylines: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points 30 0 0   $colorY_R $colorY_G $colorY_B
+	eval vdrawparray pline01 polylines $vbo_enable $pts02 $pts01 $pts03 $pts05 $pts06 $pts04 $pts02
+	if { [ check_primitive pline01 $colorY_R $colorY_G $colorY_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: edges
+	#
+	generate_points 20 0 0   $colorR_R $colorR_G $colorR_B
+	eval vdrawparray pline02 polylines $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 2 e 4 e 6 e 5 e 3 e 1 e 2
+	if { [ check_primitive pline02 $colorR_R $colorR_G $colorR_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
+	#
+	# 3: bounds
+	#
+	generate_points 10 0 0   $colorY_R $colorY_G $colorY_B
+	eval vdrawparray pline03 polylines $vbo_enable ( b 3 ( $pts02 $pts01 $pts03 )), ( b 4 ( $pts03 $pts05 $pts06 $pts04 )), ( b 2 ( $pts04 $pts02 ))
+	if { [ check_primitive pline03 $colorY_R $colorY_G $colorY_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
+	#
+	# 4: verticies, bounds and edges
+	#
+	generate_points 0 0 0   $colorR_R $colorR_G $colorR_B
+	eval vdrawparray pline04 polylines $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 4 ( e 2 e 1 e 3 e 5 )), ( b 4 ( e 5 e 6 e 4 e 2 ))
+	if { [ check_primitive pline04 $colorR_R $colorR_G $colorR_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies, bounds and edges failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfPolylines: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfPolylines: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfTriangles ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfTriangles: TEST"
+	#
+	# 1: verticies 
+	#
+	generate_points   -10 0 0   $colorB_R $colorB_G $colorB_B
+	eval vdrawparray t01 triangles $vbo_enable ( $pts03 $pts02 $pts01 ) , ( $pts03 $pts04 $pts02 ) , ( $pts04 $pts03 $pts06 ) , ( $pts06 $pts03 $pts05 )
+	if { [ check_primitive t01 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: by edges
+	#
+	generate_points -20 0 0   $colorG_R $colorG_G $colorG_B
+	eval vdrawparray t02 triangles $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 6 e 3 e 5 e 6 e 4 e 3 e 1 e 3 e 2 e 2 e 3 e 4
+	if { [ check_primitive t02 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and egdes failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfTriangles: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfTriangles: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfTriangleFans ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfTriangleFans: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points -30 0 0    $colorB_R $colorB_G $colorB_B
+	eval vdrawparray tfan01 trianglefans $vbo_enable ( $pts02 $pts01 $pts03 $pts04 )
+	eval vdrawparray tfan02 trianglefans $vbo_enable ( $pts03 $pts05 $pts06 $pts04 )
+	if { [ check_primitive tfan01 $colorB_R $colorB_G $colorB_B tfan02 ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: bounds and verticies
+	#
+	generate_points -40 0 0   $colorG_R $colorG_G $colorG_B
+	eval vdrawparray tfan03 trianglefans $vbo_enable ( b 4 ( $pts02 $pts01 $pts03 $pts04 )), ( b 4 ( $pts03 $pts05 $pts06 $pts04 ))
+	if { [ check_primitive tfan03 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfTriangleFans: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfTriangleFans: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfTriangleStrips ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfTriangleStrips: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points -50 0 0    $colorB_R $colorB_G $colorB_B
+	eval vdrawparray tstrip01 trianglestrips $vbo_enable ( $pts06 $pts04 $pts03 $pts02 $pts01 )
+	eval vdrawparray tstrip02 trianglestrips $vbo_enable ( $pts03 $pts05 $pts06 )
+	if { [ check_primitive tstrip01 $colorB_R $colorB_G $colorB_B tstrip02 ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: bounds and verticies
+	#
+	generate_points -60 0 0    $colorG_R $colorG_G $colorG_B
+	eval vdrawparray tstrip03 trianglestrips $vbo_enable ( b 5 ( $pts06 $pts04 $pts03 $pts02 $pts01 )) , ( b 3 ( $pts03 $pts05 $pts06 ))
+	if { [ check_primitive tstrip03 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfTriangleStrips: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfTriangleStrips: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfQuadrangles ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfQuadrangles: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points -70 0 0    $colorB_R $colorB_G $colorB_B
+	eval vdrawparray q01 quads $vbo_enable ( $pts01 $pts03 $pts04 $pts02 )
+	eval vdrawparray q02 quads $vbo_enable ( $pts03 $pts05 $pts06 $pts04 )
+	if { [ check_primitive q01 $colorB_R $colorB_G $colorB_B q02 ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: verticies and edges
+	#
+	generate_points -80 0 0    $colorG_R $colorG_G $colorG_B
+	eval vdrawparray q03 quads $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 1 e 3 e 4 e 2 e 3 e 5 e 6 e 4
+	if { [ check_primitive q03 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfQuadrangles: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfQuadrangles: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfQuadrangleStrips ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfQuadrangleStrips: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points -90 0 0    $colorB_R $colorB_G $colorB_B
+	eval vdrawparray qstrips01 quadstrips $vbo_enable ( $pts02 $pts01 $pts04 $pts03 $pts06 $pts05 )
+	if { [ check_primitive qstrips01 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: verticies and edges
+	#
+	generate_points -100 0 0    $colorG_R $colorG_G $colorG_B
+	eval vdrawparray qstrips02 quadstrips $vbo_enable ( b 4 ( $pts02 $pts01 $pts04 $pts03 )) , ( b 4 ( $pts04 $pts03 $pts06 $pts05 ))
+	if { [ check_primitive qstrips02 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfQuadrangleStrips: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfQuadrangleStrips: PASSED"
+	}
+
+
+	# ****************************** Graphic3d_ArrayOfPolygons ****************************** #
+	set IntermediateResult 1
+	puts "Graphic3d_ArrayOfPolygons: TEST"
+	#
+	# 1: verticies
+	#
+	generate_points -110 0 0    $colorB_R $colorB_G $colorB_B
+	eval vdrawparray poly01 polygons $vbo_enable ( $pts04 $pts02 $pts01 $pts03 $pts05 $pts06 )
+	if { [ check_primitive poly01 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
+	#
+	# 2: verticies and bounds
+	#
+	generate_points -120 0 0   $colorG_R $colorG_G $colorG_B
+	eval vdrawparray poly02 polygons $vbo_enable ( b 5 ( $pts04 $pts02 $pts01 $pts03 $pts06 )) , ( b 3 ( $pts06 $pts03 $pts05 ))
+	if { [ check_primitive poly02 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
+	#
+	# 3: verticies and edges
+	#
+	generate_points -130 0 0   $colorB_R $colorB_G $colorB_B
+	eval vdrawparray poly03 polygons $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 4 e 2 e 1 e 3 e 5 e 6
+	if { [ check_primitive poly03 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
+	#
+	# 4: vertices, bounds and edges
+	#
+	generate_points -140 0 0   $colorG_R $colorG_G $colorG_B
+	eval vdrawparray poly04 polygons $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 5 ( e 4 e 2 e 1 e 3 e 6 )), ( b 3 ( e 6 e 3 e 5 ))
+	if { [ check_primitive poly04 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies, bounds and edges failed" }
+	#
+	# Final result
+	#
+	if { $IntermediateResult == 0 } {
+		puts "WARNING! Graphic3d_ArrayOfPolygons: FAILED"
+		set status 1
+	} else {
+		puts "Graphic3d_ArrayOfPolygons: PASSED"
+	}
+	
+	vtop
+	vfit
+	
+	# dump resulted image
+	if { $vbo_enable == 0 } { vfeedback; vdump $ImageName1 }
+	if { $vbo_enable == 1 } { vfeedback; vdump $ImageName2 }
+
+}
+
+# delete internal procedures
+rename generate_points ""
+rename check_primitive ""
+
+if { ${status} == 0 } {
+	puts "BUG OK ${BUGNUMBER}"
+} else {
+	puts "BUG FAULTY ${BUGNUMBER}"
+}
+
+set only_screen 1
+

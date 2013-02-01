@@ -1,0 +1,31 @@
+puts "========================"
+puts "OCC20465"
+puts "========================"
+puts ""
+#######################################################################
+# Wrong checkshape results for shells
+#######################################################################
+
+set BugNumber OCC20465
+
+restore [locate_data_file OCC20465.brep] r 
+
+checkshape r
+explode r f
+compound r_1 r_2 r_3 r_4 r_5 r_6 r_7 r_8 r_9 r_10 r_11 result
+
+set square 900
+
+set nb_v_good 23
+set nb_e_good 33
+set nb_w_good 13
+set nb_f_good 11
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 81
+
+set square 900
+set 2dviewer 0
+

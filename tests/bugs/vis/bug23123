@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23123"
+puts "============"
+puts ""
+#######################################################################
+# Bug/Regression in visualization of XDE documents in shaded mode
+#######################################################################
+
+set BugNumber OCC23123
+
+catch { pload XDE }
+
+ReadStep D [locate_data_file OCC23123-test.step]
+XShow D
+vfit
+vsetdispmode 1
+
+if { [string compare $tcl_platform(platform) "windows"] != 0 } {
+    set x1 150
+    set y1 210
+} else {
+    set x1 240
+    set y1 299
+}
+checkcolor $x1 $y1 0.67 0.67 0.67
+
+set only_screen 1
+

@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC20222"
+puts "============"
+puts ""
+#######################################################################
+# Chamfer operation produces incorrect shape (PACE-01-006)
+#######################################################################
+
+set BugNumber OCC20222
+
+restore [locate_data_file OCC20222.brep] s 
+explode s f
+explode s_10 e
+chamf result s s_10_3 s_10 S 50
+
+checkshape result
+
+set square 712126
+set 2dviewer 0

@@ -1,0 +1,25 @@
+puts "==========="
+puts "OCC22976"
+puts "==========="
+######################################################
+# A draw-command CopyDF failes to copy content of a label
+######################################################
+
+set BugNumber OCC22976
+
+# Create a new document and set UndoLimit
+NewDocument D
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+SetReal D 0:1 1.2345
+CopyDF D 0:1 0:2
+catch { GetReal D 0:2 } catch_result
+
+if { $catch_result == 1.2344999999999999 } {
+   puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}

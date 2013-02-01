@@ -1,0 +1,60 @@
+puts "============"
+puts "OCC22296"
+puts "============"
+puts ""
+#######################################################################
+# The algorithm BRepSweep_MakeRevol produce non-licit toroidal based face.
+#    Appendix to the SALOME bug: IPAL22181
+#######################################################################
+
+set BugNumber OCC22296
+
+restore [locate_data_file bug22296_ring.brep] b1 
+revol r b1 0.6 3 0 0 0 1 -90
+
+set E_Length [explode r f]
+
+if { ${E_Length} < 6} {
+   puts "Bad format of explode draw-command"
+   puts "Faulty ${BugNumber}"
+} else {
+
+   copy r_2 f
+
+   set good_umin 0
+   set good_umax 6.28319
+   set good_vmin 0
+   set good_vmax 6.28319
+
+   set xlist [xbounds f]
+   set umin [lindex $xlist 0]
+   set umax [lindex $xlist 1]
+   set vmin [lindex $xlist 2]
+   set vmax [lindex $xlist 3]
+
+   set bad_bound 0
+   if {${umin} < ${good_umin}} {
+      puts "umin: ${umin} is wrong"
+      set bad_bound[expr  ${bad_bound} + 1]	
+   }
+   if {${umax} > ${good_umax}} {
+      puts "umax: ${umax} is wrong"
+      set bad_bound [expr ${bad_bound} + 10]	
+   }
+   if {${vmin} < ${good_vmin}} {
+      puts "vmin: ${vmin} is wrong"
+      set bad_bound [expr ${bad_bound} + 100]	
+   }
+   if {${vmax} > ${good_vmax}} {
+      puts "vmax: ${vmax} is wrong"	
+      set bad_bound [expr ${bad_bound} + 1000]
+   }
+
+   if {${bad_bound} > 0 } {
+      puts "${BugNumber}: Faulty"
+   } else {
+      puts "OK ${BugNumber}"
+   }
+
+}
+

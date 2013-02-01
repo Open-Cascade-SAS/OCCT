@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC17046"
+puts "============"
+puts ""
+#######################################################################
+# Exception in Extrema_ExtPS on Mandriva2006 32-bits
+#######################################################################
+
+set BugNumber OCC17046
+
+# Create ellipsoidal surface
+ellipse ell 0 0 300 1 0 0 150 100
+mkedge ell_e ell
+wire ell_w ell_e
+mkplane ell_f ell_w 1
+
+box ell_t -10 -110 140 20 110 460
+cut ell_d ell_f ell_t
+
+revol ell_z ell_d 0 0 0 0 0 1 360
+explode ell_z F
+mksurface su1 ell_z_1
+
+# Perform projection
+set BugStatus 0
+if [catch { proj su1 0 100 300 } ] {
+  set BugStatus 1
+}
+
+# Resume
+puts ""
+if { ${BugStatus} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

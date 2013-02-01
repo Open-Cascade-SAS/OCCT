@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC1540"
+puts "================"
+puts ""
+##########################################################
+# exception while writing step file with invisible layer
+##########################################################
+
+set BugNumber OCC1540
+
+XNewDoc D
+box b 10 10 10
+XAddShape D b 1
+XAddLayer D invis
+XSetLayer D b invis
+XSetVisibility D invis 0
+
+set status [ catch { WriteStep D $imagedir/${test_image}.stp } ]
+
+if  { $status == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+

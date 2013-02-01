@@ -1,0 +1,20 @@
+puts "==========="
+puts "OCC23067"
+puts "==========="
+puts ""
+################################################################################
+# OpenGl package API needed by UserDraw feature is not exported
+################################################################################
+
+set BugNumber OCC23067
+set x1 321
+set y1 159
+
+vinit
+vuserdraw a
+vfit
+checkcolor ${x1} ${y1} 1 1 0
+
+set only_screen 1
+
+ 

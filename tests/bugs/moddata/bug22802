@@ -1,0 +1,71 @@
+pload QAcommands
+
+puts "==========="
+puts "OCC22802"
+puts "==========="
+puts ""
+#######################################################################
+#  The memory alloccated with an excess is not released
+#######################################################################
+
+set BugNumber OCC22802
+
+set log [bcarray]
+
+#
+#state before release the unused memory
+#Length: 10
+#FactLength: 100000
+#BlockLength: 100000
+#
+#state after release the unused memory
+#Length: 10
+#FactLength: 10
+#BlockLength: 100000
+#
+
+set linelist [split $log "\n"]
+
+set il 0
+set ifl 0
+set ibl 0
+
+set xl_0 0
+set xl_1 0
+set xfl_0 0
+set xfl_1 0
+set xbl_0 0
+set xbl_1 0
+
+foreach line $linelist {
+    if { [regexp {^Length: ([-0-9.+eE]+)} $line full xl_$il] } { incr il }
+    if { [regexp {FactLength: ([-0-9.+eE]+)} $line full xfl_$ifl] } { incr ifl }
+    if { [regexp {BlockLength: ([-0-9.+eE]+)} $line full xbl_$ibl] } { incr ibl }
+}
+
+set status 0
+if { ${xl_0} != 10} {
+  incr status
+}
+if { ${xfl_0} != 100000} {
+  incr status
+}
+if { ${xbl_0} != 100000} {
+  incr status
+}
+if { ${xl_1} != 10} {
+  incr status
+}
+if { ${xfl_1} != 10} {
+  incr status
+}
+if { ${xbl_1} != 100000} {
+  incr status
+}
+
+if { ${status} != 0} {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "${BugNumber}  OK"
+}
+

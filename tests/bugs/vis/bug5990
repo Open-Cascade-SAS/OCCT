@@ -1,0 +1,49 @@
+puts "================"
+puts "OCC5990"
+puts "================"
+puts ""
+#######################################################################################
+# SetColor does not change color of wireframe entities in shading mode
+######################################################################################
+
+set BugNumber OCC5990
+
+set x1 162
+set y1 159
+set x2 204
+set y2 269
+set x3 348
+set y3 238
+
+set KUB_R 0.45098000764846802
+set KUB_G 0.32941100001335144
+set KUB_B 1
+
+set LINE_R 0
+set LINE_G 0
+set LINE_B 1
+
+
+box b1 10 10 10
+vertex v1 20 0 0
+vertex v2 20 0 10
+vertex v3 30 0 0
+vertex v4 30 0 10
+vertex v5 30 10 10
+edge e1 v1 v2
+edge e2 v3 v4
+edge e3 v4 v5
+compound e2 e3 c1
+vinit
+vdisplay b1 e1 c1
+vsetdispmode 1
+vfit
+vsetcolor b1 BLUE1
+vsetcolor e1 BLUE1
+vsetcolor c1 BLUE1
+
+checkcolor ${x1} ${y1} ${KUB_R} ${KUB_G} ${KUB_B}
+checkcolor ${x2} ${y2} ${LINE_R} ${LINE_G} ${LINE_B}
+checkcolor ${x3} ${y3} ${LINE_R} ${LINE_G} ${LINE_B}
+
+set only_screen 1

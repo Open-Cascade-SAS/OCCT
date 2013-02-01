@@ -1,0 +1,41 @@
+puts "================"
+puts "OCC129"
+puts "================"
+puts ""
+#######################################################################################
+# Object is not selectable in the Cascade Viewer
+######################################################################################
+
+set BugNumber OCC22129
+
+cylinder c 0 0 1 10
+mkface f c
+
+vinit
+vdisplay f
+
+set x1 207
+set y1 184
+set x2 222
+set y2 175
+
+set UNSELECT_R 1
+set UNSELECT_G 1
+set UNSELECT_B 0
+
+set MOVESELECT_R 0
+set MOVESELECT_G 1
+set MOVESELECT_B 1
+
+
+vmoveto ${x1} ${y1}
+checkcolor ${x1} ${y1} 0 1 1
+
+vselect ${x1} ${y1}
+checkcolor ${x1} ${y1} 0.8 0.8 0.8
+
+vselect ${x2} ${y2}
+checkcolor ${x1} ${y1} 1 1 0
+
+set only_screen 1
+

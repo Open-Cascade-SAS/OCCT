@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23363"
+puts "============"
+puts ""
+####################################################################################
+# ZBufer trihedron drawn without shading
+####################################################################################
+
+vinit
+vzbufftrihedron
+pcylinder p 100 200
+vdisplay p
+vsetdispmode p 1
+vsetinteriorstyle p 1
+
+set x_coord 59
+set y_coord 380
+checkcolor $x_coord $y_coord 0.54 0 0
+set x_coord 50
+set y_coord 362
+checkcolor $x_coord $y_coord 0 0.77 0
+set x_coord 41
+set y_coord 354
+checkcolor $x_coord $y_coord 0 0 0.62
+
+set only_screen 1
+
+

@@ -1,0 +1,175 @@
+puts "TODO OCC12345 ALL: Dump1 : Faulty"
+puts "TODO OCC12345 ALL: Dump2 : Faulty"
+puts "TODO OCC12345 ALL: Dump3 : Faulty"
+puts "TODO OCC12345 ALL: Dump4 : Faulty"
+puts "TODO OCC12345 ALL: Dump5 : Faulty"
+puts "TODO OCC12345 ALL: Dump6 : Faulty"
+puts "TODO OCC12345 ALL: Faulty OCC9746"
+
+puts "============"
+puts "OCC9746"
+puts "============"
+puts ""
+#######################################################################
+# Incorrect writing of integer array in BinMNaming_NamingDriver::Paste
+#######################################################################
+
+set BugNumber OCC9746
+
+# Create a new document
+NewDocument D BinOcaf
+
+box b 130 111 145
+ttranslate b 35 1 1
+pcylinder cyl 50 120 230
+ttranslate cyl 1 1 75
+
+set aLab1 [ImportShape D 0:2 b Box1]
+set aLab2 [ImportShape D 0:3 cyl Cylinder]
+
+GetShape D $aLab1 S
+explode S F
+set BoxNamLab [Label D 0:4]
+SelectShape D $BoxNamLab:1 S_1 S
+SelectShape D $BoxNamLab:2 S_2 S
+SelectShape D $BoxNamLab:3 S_3 S
+SelectShape D $BoxNamLab:4 S_4 S
+SelectShape D $BoxNamLab:5 S_5 S
+SelectShape D $BoxNamLab:6 S_6 S
+
+GetShape D $aLab2 C
+explode C F
+set CylNamLab [Label D 0:5]
+SelectShape D $CylNamLab:1 C_1 C
+SelectShape D $CylNamLab:2 C_2 C
+
+explode S E
+SelectShape D $BoxNamLab:10 S_1 S
+SelectShape D $BoxNamLab:11 S_3 S
+
+explode S V
+SelectShape D $BoxNamLab:21 S_3 S
+SelectShape D $BoxNamLab:22 S_5 S
+
+explode C V
+SelectShape D $CylNamLab:10 C_1 C
+SelectShape D $CylNamLab:11 C_2 C
+SelectShape D $CylNamLab:12 C_3 C
+
+# Save the document
+set aFile ${imagedir}/OCC9746-Z3.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+   puts "There is not ${aFile} file; SaveAs command: Error"
+   puts "${BugNumber}: ERROR (case 1)"
+}
+catch {exec chmod 777 ${aFile}}
+
+Close D
+
+# Restore the document
+catch {Open ${aFile} DDoc}
+
+#
+set BoxNamLab [Label DDoc 0:4]
+set CylNamLab [Label DDoc 0:5]
+
+# one Naming argument
+Attachment DDoc $BoxNamLab:1
+Attachment DDoc $BoxNamLab:2
+Attachment DDoc $BoxNamLab:3
+Attachment DDoc $BoxNamLab:4
+Attachment DDoc $BoxNamLab:5
+Attachment DDoc $BoxNamLab:6
+
+# two Naming arguments
+Attachment DDoc $BoxNamLab:10
+Attachment DDoc $BoxNamLab:11
+GetShape DDoc $BoxNamLab:10
+GetShape DDoc $BoxNamLab:11
+
+# three naming arguments
+Attachment DDoc $BoxNamLab:21
+Attachment DDoc $BoxNamLab:22
+GetShape DDoc $BoxNamLab:21
+GetShape DDoc $BoxNamLab:22
+
+# one naming argument
+Attachment DDoc $CylNamLab:1
+Attachment DDoc $CylNamLab:2
+GetShape DDoc $CylNamLab:1
+GetShape DDoc $CylNamLab:2
+
+# three naming arguments
+Attachment DDoc $CylNamLab:10
+GetShape DDoc $CylNamLab:10
+set Dump1 [DumpSelection DDoc $CylNamLab:10]
+set Dump2 [DumpSelection DDoc $CylNamLab:10:1]
+
+Attachment DDoc $CylNamLab:11
+GetShape DDoc $CylNamLab:11
+set Dump3 [DumpSelection DDoc $CylNamLab:11]
+set Dump4 [DumpSelection DDoc $CylNamLab:10:1]
+
+Attachment DDoc $CylNamLab:12
+GetShape DDoc $CylNamLab:12
+set Dump5 [DumpSelection DDoc $CylNamLab:12]
+set Dump6 [DumpSelection DDoc $CylNamLab:12:1]
+
+#
+set Good_Dump1 "IDENTITY VERTEX 0:5:10:1 Stop 0:5:10:1\n"
+set Good_Dump2 "INTERSECTION VERTEX 0:3:5 0:3:1 0:3:2 Stop 0:3:2\n"
+set Good_Dump3 "IDENTITY VERTEX 0:5:11:1 Stop 0:5:11:1\n"
+set Good_Dump4 "INTERSECTION VERTEX 0:3:5 0:3:1 0:3:2 Stop 0:3:2\n"
+set Good_Dump5 "IDENTITY VERTEX 0:5:12:1 Stop 0:5:12:1\n"
+set Good_Dump6 "INTERSECTION VERTEX 0:3:3 0:3:5 0:3:1 Stop 0:3:1\n"
+#
+
+# Checking
+set status 0
+puts ""
+if { ${Dump1} != ${Good_Dump1} } {
+   set status 1
+   puts "Dump1 : Faulty"
+} else {
+   puts "Dump1 : OK"
+}
+if { ${Dump2} != ${Good_Dump2} } {
+   set status 1
+   puts "Dump2 : Faulty"
+} else {
+   puts "Dump2 : OK"
+}
+if { ${Dump3} != ${Good_Dump3} } {
+   set status 1
+   puts "Dump3 : Faulty"
+} else {
+   puts "Dump3 : OK"
+}
+if { ${Dump4} != ${Good_Dump4} } {
+   set status 1
+   puts "Dump4 : Faulty"
+} else {
+   puts "Dump4 : OK"
+}
+if { ${Dump5} != ${Good_Dump5} } {
+   set status 1
+   puts "Dump5 : Faulty"
+} else {
+   puts "Dump5 : OK"
+}
+if { ${Dump6} != ${Good_Dump6} } {
+   set status 1
+   puts "Dump6 : Faulty"
+} else {
+   puts "Dump6 : OK"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

@@ -1,0 +1,54 @@
+puts "================"
+puts "OCC23012"
+puts "================"
+puts ""
+#######################################################################################
+# Detection gives incorrect results
+######################################################################################
+
+set BugNumber OCC23012
+
+catch {pload XDE}
+
+set x1 210
+set y1 184
+
+set x2 205
+set y2 180
+
+stepread [locate_data_file OCC23012-Sample_3.stp] a *
+stepread [locate_data_file OCC23012-Sample_9.stp] b *
+vdisplay a_1 b_1
+vsetdispmode a_1 1
+vsetdispmode b_1 1
+vselprecision
+vselprecision 1 0.1
+
+set ColorBefore [QAGetPixelColor ${x1} ${y1}]
+set R1 [lindex ${ColorBefore} 2]
+set G1 [lindex ${ColorBefore} 5]
+set B1 [lindex ${ColorBefore} 8]
+
+vmoveto ${x2} ${y2}
+
+set ColorAfter [QAGetPixelColor ${x1} ${y1}]
+set R2 [lindex ${ColorAfter} 2]
+set G2 [lindex ${ColorAfter} 5]
+set B2 [lindex ${ColorAfter} 8]
+
+set check_color 0
+if { ${R1} == ${R2} && ${G1} == ${G2} && ${B1} == ${B2} } {
+    set check_color 0
+} else {
+    set check_color 1
+}
+
+# Resume
+puts ""
+if { ${check_color} != 0} {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+vfit
+set only_screen 1

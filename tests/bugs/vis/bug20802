@@ -1,0 +1,18 @@
+puts "========================"
+puts "OCC20802"
+puts "========================"
+puts ""
+#######################################################################
+# V3d_View: Text size used by V3d_ZBUFFER'ed trihedron is too large
+#######################################################################
+
+set BugNumber OCC20802
+
+vinit
+vzbufftrihedron
+
+puts "V3d_View: Text size used by V3d_ZBUFFER'ed trihedron is too large"
+
+puts "OK ${BugNumber}"
+
+set only_screen 1

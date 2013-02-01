@@ -1,0 +1,30 @@
+puts "========================"
+puts "OCC20404"
+puts "========================"
+puts ""
+#######################################################################
+# Command distmini gives wrong result for given shapes
+#######################################################################
+
+set BugNumber OCC20404
+
+restore [locate_data_file OCC20404-line1.brep] e1 
+restore [locate_data_file OCC20404-line2.brep] e2 
+
+distmini d e1 e2
+puts "Distance=[dval d_val]"
+
+if [expr [dval d_val] > 7.e-13] {
+   set status 1
+} else {
+   set status 0
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

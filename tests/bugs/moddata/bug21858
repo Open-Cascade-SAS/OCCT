@@ -1,0 +1,50 @@
+puts "============"
+puts "OCC21858"
+puts "============"
+puts ""
+####################################
+# Visualization hangs on this face ( OCC21858.brep )
+####################################
+
+set BugNumber OCC21858
+cpulimit 40
+restore [locate_data_file OCC21858.brep] result
+
+set length 6.48642
+
+set nb_v_good 9
+set nb_e_good 10
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 21
+
+set only_screen 0
+
+vinit
+vsetdispmode 1
+dchrono TestTimer reset
+dchrono TestTimer start
+vdisplay result
+dchrono TestTimer stop
+vfit
+puts ""
+set time_o 0.1
+set tim [ dchrono TestTimer show ]
+regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} $tim full hourVDisplay minuVDisplay secoVDisplay
+
+set timVDisplay [expr $hourVDisplay * 3600 + $minuVDisplay * 60 + $secoVDisplay ]
+
+if { ${tim} < ${time_o} } {
+	set chro "CHRONO  : Faulty (${timVDisplay}%)"
+	set status 1
+	puts ${chro}
+} else {
+	puts "${BugNumber} OK"
+     	set status 0
+}
+puts "timVDisplay = ${timVDisplay}"
+

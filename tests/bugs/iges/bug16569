@@ -1,0 +1,10 @@
+puts "========"
+puts "OCC16569"
+puts "========"
+puts ""
+######################################################
+# Exception in IGESDraw_Planar::Init when allEntities parameter is a null handle
+######################################################
+
+igesbrep [locate_data_file OCC16569.igs] a *
+

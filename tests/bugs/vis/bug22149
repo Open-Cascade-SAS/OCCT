@@ -1,0 +1,15 @@
+puts "================"
+puts "OCC22149"
+puts "================"
+puts ""
+#######################################################################
+# Strings with Japanese characters can not be displayed in 3D viewer
+#######################################################################
+
+set BugNumber OCC22149
+
+vinit
+vdrawtext HELLO 0 0 0 0 255 0 0 0 0 0 50 1
+vdrawtext \x30\x42 0 0 200 255 0 0 0 0 0 0 50 0 Mona 1
+
+set only_screen 1

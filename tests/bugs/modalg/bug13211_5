@@ -1,0 +1,43 @@
+puts "============"
+puts "OCC13211"
+puts "============"
+puts ""
+#######################################################################
+# Wrong treatment of conical faces in BOP algorithm
+#######################################################################
+
+vertex v1 136.06, 187.51, 0.0
+vertex v2 136.06, 143.01, 0.0
+edge e1 v1 v2
+vertex v3 136.06, 143.01, 0.0
+vertex v4 128.08, 143.01, 0.0
+edge e2 v3 v4
+vertex v5 128.08, 143.01, 0.0
+vertex v6 127.88, 164.75, 0.0
+edge e3 v5 v6
+vertex v7 127.88, 164.75, 0.0
+vertex v8 116.11, 176.00, 0.0
+edge e4 v7 v8
+vertex v9 116.11, 176.00, 0.0
+vertex v10 136.06, 187.51, 0.0
+edge e5 v9 v10
+wire twire e1 e2 e3 e4 e5
+mkplane tface twire
+revol r1 tface 153.08, 143.01 0.0 1 0 0 360 1
+revol r2 tface 136.06, 68.01, 0.0 0 1 0 360 1
+
+bop r1 r2
+boptuc result
+
+set square 3006.19
+set nb_v_good 11
+set nb_e_good 18
+set nb_w_good 11
+set nb_f_good 11
+set nb_sh_good 3
+set nb_sol_good 3
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 58
+
+set 2dviewer 0

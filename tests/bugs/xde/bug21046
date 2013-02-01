@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC21046"
+puts "============"
+puts ""
+#######################################################################
+# XShow raises an exception
+#######################################################################
+
+pload DCAF
+
+set BugNumber OCC21046
+
+box B 100 100 100
+XNewDoc D
+SetShape D 0:1 B
+XShow D 0:1
+if [catch { XShow D 0:1 } ] {
+  puts "Faulty ${BugNumber} : XShow is wrong"
+} elseif [catch { vmoveto 10 10 } ] {
+  puts "Faulty ${BugNumber} : XShow is wrong"
+} else {
+  puts "OK ${BugNumber}"
+}

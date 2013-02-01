@@ -1,0 +1,73 @@
+puts "============"
+puts "OCC19820"
+puts "============"
+puts ""
+#######################################################################
+# 3D discrete topology (voxels)
+#######################################################################
+
+set BugNumber OCC19820
+
+set status 0
+
+puts "1.  voxelboolds ..."
+if [catch {voxelboolds}] {
+   set status 1
+}
+
+puts "2.  voxelcolords ..."
+if [catch {voxelcolords}] {
+   set status 1
+}
+
+puts "3.  voxelfloatds ..."
+if [catch {voxelfloatds}] {
+   set status 1
+}
+
+puts "4.  voxeloctboolds ..."
+if [catch {voxeloctboolds}] {
+   set status 1
+}
+
+puts "5.  voxelroctboolds ..."
+if [catch {voxelroctboolds}] {
+   set status 1
+}
+
+puts "6.  voxelfuseboolds ..."
+if [catch {voxelfuseboolds}] {
+   set status 1
+}
+
+puts "7.  voxelfusecolords ..."
+if [catch {voxelfusecolords}] {
+   set status 1
+}
+
+puts "8.  voxelfusefloatds ..."
+if [catch {voxelfusefloatds}] {
+   set status 1
+}
+
+puts "9.  voxelcutboolds ..."
+if [catch {voxelcutboolds}] {
+   set status 1
+}
+
+puts "10. voxelcutcolords ..."
+if [catch {voxelcutcolords}] {
+   set status 1
+}
+
+puts "11. voxelcutfloatds ..."
+if [catch {voxelcutfloatds}] {
+   set status 1
+}
+
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

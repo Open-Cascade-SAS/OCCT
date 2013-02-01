@@ -1,0 +1,51 @@
+puts "========"
+puts "OCC22241"
+puts "========"
+puts ""
+###########################################################
+# The bug is appendix to the Salome Bug 0021148
+###########################################################
+
+set BugNumber OCC22241
+
+restore [locate_data_file bug22241_c1.draw] c1 
+restore [locate_data_file bug22241_c2.draw] c2 
+
+set extrema_res [extrema c1 c2]
+set extrema_length [llength ${extrema_res} ]
+
+if {${extrema_length} < 8 } {
+   puts "${BugNumber}: Faulty"
+} else {
+    regexp {Extrema 1 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $extrema_res full X Y Z
+   set good_X 1
+   set good_Y 3.0891916307971289e-33
+   set good_Z 0.059999999999999998
+
+  set percent_max 0.1
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+   set X_percent [GetPercent ${X} ${good_X}]
+   set Y_percent [GetPercent ${Y} ${good_Y}]
+   set Z_percent [GetPercent ${Z} ${good_Z}]
+
+   if {${X_percent} > ${percent_max} || ${Y_percent} > ${percent_max} || ${Z_percent} > ${percent_max}} {
+      puts "X = ${X} Y = ${Y} Z = ${Z}"
+      puts "X_percent = ${X_percent} Y_percent = ${Y_percent} Z_percent = ${Z_percent}"
+      puts "${BugNumber}: Faulty"
+   } else {
+      puts "${BugNumber}: OK"
+   }
+
+}
+

@@ -1,0 +1,58 @@
+puts "============"
+puts "OCC5805"
+puts "============"
+
+#######################################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+#######################################################################
+
+set BugNumber OCC5805
+
+# ellipse1
+ellipse ell 10 0 0 1 0 0 5 3
+mkedge ee1 ell
+wire UpCover ee1
+
+# ellipse2
+copy ee1 ee2
+ttranslate ee2 -20 0 0
+wire BottomCover ee2
+
+set issolid 1
+set isruled 1
+if [catch { thrusections s ${issolid} ${isruled} UpCover BottomCover } catch_result] {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+   
+}
+
+set distance -0.5
+catch { OFFSETSHAPE $distance {} $calcul $type }
+
+
+set square 495.635
+
+set nb_v_good 2
+set nb_e_good 3
+set nb_w_good 3
+set nb_f_good 3
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 13
+
+
+set index [lsearch [whatis s] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : s is not Closed shape"
+  
+}
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+
+set 2dviewer 0

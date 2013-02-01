@@ -1,0 +1,38 @@
+puts "================"
+puts "OCC22924"
+puts "================"
+puts ""
+######################################################################################
+# We need more stable work of ShapeAnalysis_FreeBounds::ConnectEdgesToWires()
+######################################################################################
+
+set BugNumber OCC22924
+
+pload XDE
+
+set order {1 2 3 4 5 6 7 8 9 10}
+restore [locate_data_file bug22924_3D_Sketcher.brep] a 
+set err 0
+set numcheck 100
+set lord [split $order " "]
+for {set i 1} {$i <= $numcheck} {incr i} {
+    set val [connectedges r a]
+    set lnum [lindex [split $val \n] 1]
+    set llnum [split $lnum " "]
+    set ll [llength $llnum]
+    for {set j 0} {$j <= $ll} {incr j} {
+        set ref_val [lindex $lord $j]
+        set check_val [lindex $llnum $j]
+	if {$ref_val == $check_val} {
+            continue
+	}
+	incr err
+    }
+}
+
+if $err  {
+    puts "Error $err"
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK"
+}

@@ -1,0 +1,56 @@
+puts "============"
+puts "OCC21255"
+puts "============"
+puts ""
+#######################################################################
+# Some problems with 3D chamfer construction
+#######################################################################
+
+set BugNumber OCC21255
+
+restore [locate_data_file OCC21255-1.brep] ss 
+explode ss F
+explode ss_7 E
+
+vinit
+if [catch { chamf result ss ss_7_2 ss_7 5. 5. } ] {
+  puts "Faulty ${BugNumber} : chamf is wrong"
+} else {
+set square 45382.5
+
+set nb_v_good 15
+set nb_e_good 22
+set nb_w_good 9
+set nb_f_good 9
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 58
+
+  set 3dviewer 0
+  vdisplay result
+  vsetdispmode 1
+  vfit
+
+  set scale    5.8955238204183011
+  set center_X -43.928617104386774
+  set center_Y 295.47887425975171
+  set proj_X   0.62061613798141479
+  set proj_Y   -0.6891753077507019
+  set proj_Z   -0.37399500608444214
+  set up_X     -0.12894462049007416
+  set up_Y     -0.56017255783081055
+  set up_Z     0.81827831268310547
+  set at_X     15.248310089111328
+  set at_Y     165.90042114257812
+  set at_Z     225.19309997558594
+
+  vviewparams ${scale} ${center_X} ${center_Y} \
+ 		${proj_X} ${proj_Y} ${proj_Z} \
+ 		${up_X} ${up_Y} ${up_Z} \
+		${at_X} ${at_Y} ${at_Z}
+
+}
+
+set only_screen 1

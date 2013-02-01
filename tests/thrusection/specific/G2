@@ -1,0 +1,56 @@
+puts "TODO OCC7166 ALL: The resulting shape is WRONG "
+puts "TODO OCC7166 ALL: Error : The square of the resulting shape is"
+
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+pbsplinecurve pbc1 3 9 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 -1 0 0 1 -2 2 0 1 0 1 0 1 2 2 0 1 1 0 0 1 2 -2 0 1 0 -1 0 1 -2 -2 0 1
+mkedge e1 pbc1
+wire w1 e1
+
+#vertex v1 40 0 20
+#vertex v2 40 0 -20
+circle c1 40 0 20  0 0 -1  -1 1 0  0.1
+mkedge ec1 c1
+wire wc1 ec1
+
+circle c2 40 0 -20  0 0 -1  -1 1 0  0.1
+mkedge ec2 c2
+wire wc2 ec2
+
+set issolid 1
+set isruled 0
+#catch {thrusections result ${issolid} ${isruled} v1 w1 v2 }
+catch {thrusections result ${issolid} ${isruled} wc1 w1 wc2}
+
+
+set square 702.921
+
+
+set nb_v_good 4
+set nb_e_good 6
+set nb_w_good 4
+set nb_f_good 4
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 20
+
+
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+set 3dviewer 0
+

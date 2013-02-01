@@ -1,0 +1,66 @@
+puts "========"
+puts "OCC21292"
+puts "========"
+puts ""
+######################################################
+# Shading on large model too long
+######################################################
+
+set BugNumber OCC21292
+
+# 1 munite
+cpulimit 60
+
+restore [locate_data_file OCC21292.brep] result
+
+vinit
+vsetdispmode 1
+
+chrono h reset; chrono h start
+#
+# DISPLAY OPERATION ----- START
+#
+vdisplay result
+#
+# DISPLAY OPERATION ----- FINISH
+#
+chrono h stop; set CPU_time_List [chrono h show]
+
+set CPU_user_time [lindex ${CPU_time_List} 11]
+puts "CPU_user_time=${CPU_user_time}"
+
+
+set square 1.40193e+07
+set nb_v_good 372
+set nb_e_good 369
+set nb_w_good 2
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 745
+
+
+if {[string compare $tcl_platform(platform) "windows"] == 0} {
+   puts "windows"
+   set Good_CPU_user_time 0.
+} else {
+   if {[string compare $tcl_platform(os) "SunOS"] == 0} {
+      puts "SunOS"
+      set Good_CPU_user_time 6.
+   } else {
+      puts "Linux"
+      set Good_CPU_user_time 6.
+   }
+}
+
+# Check time boolean operation
+if {${Good_CPU_user_time} > ${CPU_user_time}} {
+   puts "OK ${BugNumber} : CPU user time is good"
+} else {
+   puts "Faulty ${BugNumber} : CPU user time is wrong"
+}
+
+
+set only_screen 0

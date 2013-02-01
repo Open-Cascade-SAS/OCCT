@@ -1,0 +1,36 @@
+puts "================"
+puts "OCC23244"
+puts "================"
+puts ""
+#######################################################################
+# Bug of BRepClass_FaceClassifier: it does not take into account the tolerance
+#######################################################################
+
+set BugNumber OCC23244
+
+restore [locate_data_file OCC23244-comp.brep] a
+
+explode a
+explode a_1
+
+smallview
+donly a_1_2 a_3
+fit
+
+mkpoint p3 a_3
+projponf a_1_2 p3
+point pp3 69.220445243320853 1216.6123701316949
+
+set result [split [b2dclassify a_1_2 pp3 1.e-5] ]
+
+set ll [llength ${result}]
+if {${ll} < 4} {
+   puts "Bad format of bclassify draw-command; Faulty ${BugNumber}"
+} else {
+   if { [regexp "ON" $result] == 1 } {
+      puts "OK ${BugNumber}"
+   } else {
+      puts "Faulty ${BugNumber}"
+   }
+}
+

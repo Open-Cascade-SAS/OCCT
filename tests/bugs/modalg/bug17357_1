@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC17357"
+puts "============"
+puts ""
+#######################################################################
+# Any boolean operation is impossible between attached shapes
+#######################################################################
+
+restore [locate_data_file OCC17357-1.brep] b1
+restore [locate_data_file OCC17357-2.brep] b2
+
+bop b1 b2
+bopcommon result
+
+set square 1.18671
+set nb_v_good 10
+set nb_e_good 18
+set nb_w_good 8
+set nb_f_good 8
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 47
+
+set 2dviewer 0
+

@@ -1,0 +1,79 @@
+puts "============"
+puts "OCC23201"
+puts "============"
+puts ""
+#######################################################################
+# Projection algorithm produces wrong results.
+#######################################################################
+
+set BugNumber OCC23201
+
+proc GetPercent {Value GoodValue} {
+   set Percent 0.
+   if {${GoodValue} != 0.} {
+      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+   } elseif {${Value} != 0.} {
+      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+   } else {
+      set Percent 0.
+   }
+   return ${Percent}
+}
+
+restore [locate_data_file bug23201_Tool_1.brep] b2
+restore [locate_data_file bug23201_Tool_2.brep] b3
+
+explode b2 f
+mksurface s2 b2_1
+
+explode b3 f
+mksurface s3 b3_1
+
+explode b2 e
+mkcurve c2 b2_2
+
+explode b3 e
+mkcurve c3 b3_2
+
+set BugStatus 0
+
+set percent_max 0.1
+set good_c23 3.1415926535897922
+set good_c32 3.1415926535897922
+
+if [catch { project c23 c2 s3 } ] {
+    set BugStatus 1
+} else {
+    set c23_length [lindex [length c23] end]
+    set length_percent [GetPercent ${c23_length} ${good_c23}]
+    puts "length_percent = ${length_percent}"
+    if {${length_percent} > ${percent_max}} {
+	puts "c23: Faulty"
+	set BugStatus 1
+    } else {
+	puts "c23: OK"
+    }
+}
+
+if [catch { project c32 c3 s2 } ] {
+    set BugStatus 1
+} else {
+    set c32_length [lindex [length c32] end]
+    set length_percent [GetPercent ${c32_length} ${good_c32}]
+    puts "length_percent = ${length_percent}"
+    if {${length_percent} > ${percent_max}} {
+	puts "c32: Faulty"
+	set BugStatus 1
+    } else {
+	puts "c32: OK"
+    }
+}
+
+# Resume
+puts ""
+if { ${BugStatus} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+

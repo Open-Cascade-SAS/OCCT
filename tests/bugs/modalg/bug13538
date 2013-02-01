@@ -1,0 +1,30 @@
+puts "============"
+puts "OCC13538"
+puts "============"
+puts ""
+#######################################################################
+# Problem with Boolean operation on Shells
+#######################################################################
+
+box a 100 100 100
+box b 100 100 100
+ttranslate b 0 0 100
+explode a Sh
+explode b Sh
+
+bop a_1 b_1
+bopcommon result
+
+set square 10000
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 12
+
+set 2viewer 0
+

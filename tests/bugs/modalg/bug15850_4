@@ -1,0 +1,38 @@
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG"
+puts "============"
+puts "OCC15850"
+puts "============"
+puts ""
+#######################################################################
+# Regression in BOP - wrong results for simple shapes with Bspline geometry
+#######################################################################
+
+set BugNumber OCC15850
+
+restore [locate_data_file OCC15850_bb.brep] bb
+restore [locate_data_file OCC15850_bc.brep] bc
+
+bop bb bc
+bopsection result
+
+set length 37.6991
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 9
+
+regexp {nb alone Vertices +: +([-0-9.+eE]+)} [checksection result] full Vertices
+set good_Vertices 0
+if { ${Vertices} != ${good_Vertices} } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0
+

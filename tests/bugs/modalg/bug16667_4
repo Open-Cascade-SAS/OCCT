@@ -1,0 +1,28 @@
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG"
+puts "============"
+puts "OCC16667"
+puts "============"
+puts ""
+#######################################################################
+# 2D Offset algorithm fails
+#######################################################################
+
+restore [locate_data_file OCC16667-wire.brep] a
+
+mkoffset resoffset a 1 -20
+renamevar resoffset_1 result
+
+set length 1200.16
+set nb_v_good 8
+set nb_e_good 8
+set nb_w_good 1
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 17
+
+set 2dviewer 0
+
+

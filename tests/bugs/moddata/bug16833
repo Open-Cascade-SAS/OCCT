@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC16833"
+puts "============"
+puts ""
+#######################################################################
+# Error in Coons algorithm
+#######################################################################
+
+set BugNumber OCC16833
+
+restore [locate_data_file OCC16833-c1.draw] c1
+restore [locate_data_file OCC16833-c2.draw] c2
+restore [locate_data_file OCC16833-c3.draw] c3
+restore [locate_data_file OCC16833-c4.draw] c4
+
+set  mistake 0
+if [catch { fillcurves result c1 c2 c3 c4 } res] {
+  set  mistake 1
+  puts "Faulty ${BugNumber}: filling problem"
+} else {
+  puts "Filling ${BugNumber}  OK"
+  set What [whatis result]
+  if { [regexp "surface" $What] != 1 } {
+    set  mistake 1
+  } else {
+    set  mistake 0
+  }
+}
+
+# Resume
+puts ""
+if { ${mistake} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+

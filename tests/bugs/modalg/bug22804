@@ -1,0 +1,58 @@
+puts "========================"
+puts "OCC22804"
+puts "========================"
+puts ""
+#######################################################################
+# Sewing increases tolerance of vertices for redundant value.
+#######################################################################
+
+set BugNumber OCC22804
+
+catch {pload XDE}
+
+restore [locate_data_file OCC22804-sew_bug.brep] a 
+
+set tol 200
+sewing result ${tol} a
+
+set ToleranceList [tolerance result]
+regexp {Tolerance MAX=([-0-9.+eE]+)} $ToleranceList full oTolerance
+regexp {FACE[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full FaceTolerance
+regexp {EDGE[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full EdgeTolerance
+regexp {VERTEX[ \t]*: MAX=([-0-9.+eE]+)} $ToleranceList full VertexTolerance
+
+set percent_max 0.1
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+set IsOk 1
+
+set minTolerance ${EdgeTolerance}
+if { ${minTolerance}  > ${VertexTolerance} } {
+   set minTolerance $(VertexTolerance)
+}
+
+set minTolerance_percent [GetPercent ${minTolerance} ${oTolerance}]
+puts "minTolerance_percent = ${minTolerance_percent} %"
+if { ${minTolerance_percent}  > ${percent_max} } {
+   set IsOk 0
+}
+
+if { ${IsOk}  == 0 } {
+   puts "${BugNumber}: Faulty"
+} else {
+   puts "${BugNumber}: OK"
+}
+
+set square 1.22542e+09
+set 2dviewer 0
+

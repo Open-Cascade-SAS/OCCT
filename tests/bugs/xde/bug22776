@@ -1,0 +1,124 @@
+puts "================"
+puts "OCC22776"
+puts "================"
+puts ""
+#######################################################################################
+# XCAFPrs_AISObject does not support transparency
+######################################################################################
+
+catch {pload DCAF}
+pload QAcommands
+
+NewDocument D MDTV-Standard
+UndoLimit D 100
+NewCommand D
+
+#Set NamedShape attribute
+box Box 100 200 300
+set Label 0:2
+SetShape D ${Label} Box
+
+# Initialize 3D viewer
+AISInitViewer D
+
+# Add AISPresentation attribute with parameter NS
+AISSet D ${Label} NS
+
+# Set shading mode
+vsetdispmode 1
+
+# Display presentation of NamedShape in the viewer
+AISDisplay D ${Label}
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1031_AISMaterial D ${Label}]
+regexp {Material = ([-0-9.+eE]+)} $list full AISMaterial1
+
+# Set a material of the shape as NOM_COPPER
+set CopperMaterial 2
+OCC1031_AISMaterial D ${Label} ${CopperMaterial}
+
+set list [OCC1031_AISMaterial D ${Label}]
+regexp {Material = ([-0-9.+eE]+)} $list full AISMaterial2
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1032_AISWidth D ${Label}]
+regexp {Width = ([-0-9.+eE]+)} $list full AISWidth1
+
+# Set a width
+set Width 10
+OCC1032_AISWidth D ${Label} ${Width}
+
+set list [OCC1032_AISWidth D ${Label}]
+regexp {Width = ([-0-9.+eE]+)} $list full AISWidth2
+
+# Close/Open transaction
+NewCommand D
+
+set list [OCC1029_AISTransparency D ${Label}]
+regexp {Transparency = ([-0-9.+eE]+)} $list full Transparency1
+
+# Set a transparency
+set Transparency 0.9
+XSetTransparency D ${Transparency} ${Label}
+
+set list [OCC1029_AISTransparency D ${Label}]
+regexp {Transparency = ([-0-9.+eE]+)} $list full Transparency2
+
+# Update the viewer
+AISRepaint D
+
+
+# Check the material
+puts "AISMaterial1 = ${AISMaterial1}"
+puts "AISMaterial2 = ${AISMaterial2}"
+set DefaultAISMaterial 0
+set status 0
+if { ${AISMaterial1} != ${DefaultAISMaterial} } {
+	puts "Default material is wrong: Error"
+	set status 1
+}
+if { ${AISMaterial2} != ${CopperMaterial} } {
+	puts "OCC1031_AISMaterial command: Error"
+	set status 1
+}
+
+# Check the width
+puts "AISWidth1 = ${AISWidth1}"
+puts "AISWidth2 = ${AISWidth2}"
+set DefaultAISWidth 0
+if { ${AISWidth1} != ${DefaultAISWidth} } {
+	puts "Default width is wrong: Error"
+	set status 1
+}
+if { ${AISWidth2} != ${Width} } {
+	puts "OCC1032_AISWidth command: Error"
+	set status 1
+}
+
+# Check the transparency
+puts "Transparency1 = ${Transparency1}"
+puts "Transparency2 = ${Transparency2}"
+set DefaultAISTransparency 0
+if { ${Transparency1} != ${DefaultAISTransparency} } {
+	puts "Default transparency is worng: Error"
+	set status 1
+}
+
+if { ${Transparency2} != ${Transparency} } {
+	puts "XSetTransparency command: Error"
+	set status 1
+}
+
+
+if { ${status} == 0} {
+	puts "OK"
+} else {
+	puts "FAULTY"
+}
+
+set 3dviewer 1

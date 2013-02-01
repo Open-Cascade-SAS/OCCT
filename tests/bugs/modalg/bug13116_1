@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC13116"
+puts "============"
+puts ""
+#######################################################################
+# Boolean Operations produce faulty shape
+#######################################################################
+
+set BugNumber OCC13116
+
+restore [locate_data_file OCC13116_sh1.brep] b1
+restore [locate_data_file OCC13116_sh2.brep] b2
+
+bop b1 b2
+bopfuse result
+
+set square 438194
+set nb_v_good 21
+set nb_e_good 37
+set nb_w_good 16
+set nb_f_good 16
+set nb_sh_good 2
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 94
+
+set 2dviewer 0
+

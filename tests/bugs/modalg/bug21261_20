@@ -1,0 +1,36 @@
+puts "========"
+puts "OCC21261"
+puts "Customer : TATA"
+puts "========"
+puts ""
+######################################################
+# Implementation of thickening of shell functionality
+######################################################
+
+set BugNumber OCC21261
+
+restore [locate_data_file OCC21261-comb.brep] s 
+
+thickshell result s -5
+
+set square 25639.3
+
+set nb_v_good 18
+set nb_e_good 31
+set nb_w_good 17
+set nb_f_good 15
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 83
+
+
+
+vinit
+vdisplay result
+vsetdispmode 0
+vfit
+
+
+set only_screen 0

@@ -1,0 +1,61 @@
+puts "TODO ?OCC12345 ALL: OCC16119: Faulty"
+puts "============"
+puts "OCC16119"
+puts "============"
+puts ""
+#######################################################################
+# Bug in GeomFill_Coons algorithm
+#######################################################################
+
+set BugNumber OCC16119
+
+proc GetPercent {Value GoodValue} {
+   set Percent 0.
+   if {${GoodValue} != 0.} {
+      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+   } elseif {${Value} != 0.} {
+      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+   } else {
+      set Percent 0.
+   }
+   return ${Percent}
+}
+
+restore [locate_data_file OCC16119-c1.draw] c1
+restore [locate_data_file OCC16119-c2.draw] c2
+restore [locate_data_file OCC16119-c31.draw] c31
+restore [locate_data_file OCC16119-c32.draw] c32
+restore [locate_data_file OCC16119-c41.draw] c41
+restore [locate_data_file OCC16119-c42.draw] c42
+restore [locate_data_file OCC16119-cv.draw] cv
+
+fillcurves s11 c1 c41 cv c31
+fillcurves s12 cv c42 c2 c32
+
+svalue s11 .5 .5 x1 y1 z1 dux1 duy1 duz1 dvx1 dvy1 dvz1
+svalue s12 .5 .5 x2 y2 z2 dux2 duy2 duz2 dvx2 dvy2 dvz2
+
+set deltaX [dval dvx1-dvx2]
+set deltaY [dval dvy1-dvy2]
+set deltaZ [dval dvz1-dvz2]
+
+set percent_max 0.1
+set good_deltaX 4.4408920985006262e-015
+set good_deltaY -4.6629367034256575e-015
+set good_deltaZ -2.6645352591003757e-015
+
+set deltaX_percent [GetPercent ${deltaX} ${good_deltaX}]
+puts "deltaX_percent = ${deltaX_percent}"
+
+set deltaY_percent [GetPercent ${deltaY} ${good_deltaY}]
+puts "deltaY_percent = ${deltaY_percent}"
+
+set deltaZ_percent [GetPercent ${deltaZ} ${good_deltaZ}]
+puts "deltaZ_percent = ${deltaZ_percent}"
+
+if {${deltaX_percent} > ${percent_max} || ${deltaY_percent} > ${percent_max} || ${deltaZ_percent} > ${percent_max} } {
+   puts "${BugNumber}: Faulty"
+} else {
+   puts "${BugNumber}: OK"
+}
+

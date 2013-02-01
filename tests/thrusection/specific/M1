@@ -1,0 +1,47 @@
+puts "TODO OCC7166 ALL: Error : The square of the resulting shape is"
+
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+# spine
+polyline s1 0 0 20 0 0 -20
+
+# profile
+pbsplinecurve pbs1 3 9 0 1 1 1 2 1 3 1 4 1 5 1 6 1 7 1 8 1 -1 0 0 1 -2 2 0 1 0 1 0 1 2 2 0 1 1 0 0 1 2 -2 0 1 0 -1 0 1 -2 -2 0 1
+mkedge e1 pbs1
+wire s2 e1
+
+# 1 vertex
+vertex v1 40 0 -20
+
+mksweep s1
+
+addsweep v1
+addsweep s2
+
+catch {buildsweep result}
+
+
+set square 898.589
+
+set nb_v_good 2
+set nb_e_good 3
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 8
+
+
+
+set 3dviewer 0
+

@@ -1,0 +1,27 @@
+puts "========================"
+puts "OCC11081"
+puts "========================"
+puts ""
+#######################################################################
+# BRepExtrema_DistShapeShape misses one of two solutions
+#######################################################################
+
+set BugNumber OCC11081
+
+# finite line is used
+
+line ll 6834.93 -4100 500 0 0 1
+trim trll ll -1000 -500
+mkedge tree trll
+restore [locate_data_file OCC11081.brep] section4100
+set res_list [distmini dd tree section4100]
+set res_length [llength ${res_list}]
+puts "res_length = ${res_length}"
+
+# Resume
+puts ""
+if { ${res_length} != 3 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC23341"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result done by 2D classifier algorithm for a point and a face
+#######################################################################
+
+set BugNumber OCC23341
+
+restore [locate_data_file bug23341_f1] f1
+restore [locate_data_file bug23341_p] p
+set info [b2dclassify f1 p]
+set check [regexp "OUT" $info]
+
+if { ${check} == 1 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+

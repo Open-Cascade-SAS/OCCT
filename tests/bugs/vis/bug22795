@@ -1,0 +1,66 @@
+puts "================"
+puts "OCC22795"
+puts "================"
+puts ""
+#########################################################################################################
+# Make possible to display some presentable objecys in overlay of others, groupped by display priority 
+#########################################################################################################
+
+set BugNumber OCC22795
+
+box b 10 10 10
+box s 10 10 10
+ttranslate s 10 0 0
+vdisplay b s
+vsetdispmode b 1
+vsetdispmode s 1
+vfit
+vzlayer add
+vzlayer add
+vzlayer add
+set info1 [ vzlayer get ]
+
+vzlayer del 1
+
+set info2 [ vzlayer get ]
+
+set status_vzlayer 0
+
+if { [string compare $info1 "0 1 2 3"] == 0 && [string compare $info1 "0 2 3"] == 0 } {
+   set status_vzlayer 0
+} else {
+   set status_vzlayer 1
+}
+
+vobjzlayer set b 2
+set info3 [ vobjzlayer get b ]
+set word8 [string compare ${info3} "Z layer id: 2"]
+
+vobjzlayer set s 3
+set info4 [ vobjzlayer get s ]
+set word9 [string compare ${info4} "Z layer id: 3"]
+
+vzlayer del 3
+set info5 [ vobjzlayer get s ]
+set word10 [string compare ${info5} "Z layer id: 0"]
+
+set status_vobjzlayer 0
+
+if { ${word8} == 0 && ${word9} == 0 && ${word10} == 0 } {
+    set status_vobjzlayer 0
+} else {
+    set status_vobjzlayer 1
+}
+
+if { ${status_vzlayer} != 0 && ${status_vobjzlayer} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+
+
+
+
+
+

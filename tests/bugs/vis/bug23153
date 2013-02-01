@@ -1,0 +1,83 @@
+puts "============"
+puts "OCC23153"
+puts "============"
+puts ""
+#######################################################################
+# BRepMesh can't apply a mesh for a face of attached shape
+#######################################################################
+
+pload XDE
+set BugNumber OCC23153
+
+set TheFileName OCC23153-long_furrowed_shape.stp
+decho off
+stepread [locate_data_file $TheFileName] a *
+decho on
+tpcompound result
+
+set square 14684.4
+set nb_v_good 1152
+set nb_e_good 1735
+set nb_w_good 635
+set nb_f_good 581
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 4106
+
+vinit
+vsetdispmode 1
+vdisplay result
+vtop
+vfit
+
+set status 0
+set RED 0
+set GREEN 0
+set BLUE 0
+set x1 223
+set y1 195
+set Color1 [QAGetPixelColor ${x1} ${y1}]
+regexp {RED +: +([-0-9.+eE]+)} $Color1 full R1
+regexp {GREEN +: +([-0-9.+eE]+)} $Color1 full G1
+regexp {BLUE +: +([-0-9.+eE]+)} $Color1 full B1
+if { $R1 == ${RED} && $G1 == ${GREEN} && $B1 == ${BLUE} } {
+    set status 1
+    puts "Faulty Color1"
+}
+
+set x2 224
+set y2 240
+set Color2 [QAGetPixelColor ${x2} ${y2}]
+regexp {RED +: +([-0-9.+eE]+)} $Color2 full R2
+regexp {GREEN +: +([-0-9.+eE]+)} $Color2 full G2
+regexp {BLUE +: +([-0-9.+eE]+)} $Color2 full B2
+
+if { $R2 == ${RED} && $G2 == ${GREEN} && $B2 == ${BLUE} } {
+    set status 1
+    puts "Faulty Color2"
+}
+
+set x3 223
+set y3 266
+set Color3 [QAGetPixelColor ${x3} ${y3}]
+regexp {RED +: +([-0-9.+eE]+)} $Color3 full R3
+regexp {GREEN +: +([-0-9.+eE]+)} $Color3 full G3
+regexp {BLUE +: +([-0-9.+eE]+)} $Color3 full B3
+if { $R3 == ${RED} && $G3 == ${GREEN} && $B3 == ${BLUE} } {
+    set status 1
+    puts "Faulty Color3"
+}
+
+# Resume
+puts ""
+if { ${status} == 0 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+set only_screen 1
+
+

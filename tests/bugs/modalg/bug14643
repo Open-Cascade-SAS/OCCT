@@ -1,0 +1,39 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "============"
+puts "OCC14643"
+puts "============"
+puts ""
+#######################################################################
+# Checkshape command gives wrong result for compound of 66 solids
+#######################################################################
+
+set BugNumber OCC14643
+
+restore [locate_data_file OCC14643.brep] result
+
+set square 8.63143e+07
+set nb_v_good 108
+set nb_e_good 282
+set nb_w_good 239
+set nb_f_good 259
+set nb_sh_good 66
+set nb_sol_good 66
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 1021
+
+puts ""
+puts "Check each solid"
+explode result
+for {set k 1} {$k < 67} {incr k} { 
+  puts ""
+  puts [eval whatis result_$k]
+  puts [eval checkshape result_$k]
+  wait .5
+}
+puts ""
+puts "End check each solid"
+
+set 2dviewer 0
+

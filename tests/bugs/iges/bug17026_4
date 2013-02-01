@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC17026"
+puts "============"
+puts ""
+########################################################################
+# Problem of reading IGES files
+########################################################################
+
+igesread [locate_data_file OCC17026-4.iges] a *
+tpcompound result
+
+set square 7.72668e+08
+set nb_v_good 175
+set nb_e_good 175
+set nb_w_good 38
+set nb_f_good 38
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 2
+set nb_shape_good 428
+
+set 2dviewer 0

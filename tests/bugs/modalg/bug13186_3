@@ -1,0 +1,29 @@
+puts "TODO OCC12345 ALL: Error : Result shape is WRONG"
+puts "============"
+puts "OCC13186"
+puts "============"
+puts ""
+#######################################################################
+# Problem with Boolean operation
+# Bug is reprodused on Linux platform only
+#######################################################################
+
+restore [locate_data_file OCC13186_cutcyl11.brep] b1
+restore [locate_data_file OCC13186_sphere.brep] b2
+
+bop b1 b2
+bopcommon result
+
+set square 14.9648
+set nb_v_good 8
+set nb_e_good 11
+set nb_w_good 7
+set nb_f_good 5
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 34
+
+set 2dviewer 0
+

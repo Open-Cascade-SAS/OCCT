@@ -1,0 +1,59 @@
+puts "============"
+puts "OCC22967"
+puts "============"
+puts ""
+############################################################################################################
+# Boolean operations between two cylinders with orthogonal axis generate a shape with big vertex tolerance
+###########################################################################################################
+
+set BugNumber OCC22967
+set check_value 1.04742e-05
+
+restore [locate_data_file bug22967_Cylinder_1.brep] b1 
+restore [locate_data_file bug22967_Scale_1.brep] b2 
+bop b1 b2
+bopfuse result
+set info [ maxtolerance result ]
+
+regexp {Edge[ \t]*:.*Max[ \t]*([-0-9.+eE]+)} $info full last1
+regexp {Vertex[ \t]*:.*Max[ \t]*([-0-9.+eE]+)} $info full last
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+
+set percent_max 5
+set status 0
+
+set Tolerance_percent [expr abs ( [GetPercent ${last} ${check_value}] ) ]
+if {${Tolerance_percent} > ${percent_max}} {
+    set status 1
+} else {
+    set status 0
+}
+
+set Tolerance_percent [expr abs ( [GetPercent ${last1} ${check_value}] ) ]
+if {${Tolerance_percent} > ${percent_max}} {
+    set status 1
+} else {
+    set status 0
+}
+
+# Resume
+if {${status} > 0} {
+   puts "${BugNumber}: Faulty"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set square 671262
+set 2dviewer 0
+

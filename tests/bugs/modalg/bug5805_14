@@ -1,0 +1,74 @@
+puts "============"
+puts "OCC5805"
+puts "============"
+
+#######################################################################
+# BRepOffsetAPI_MakeThickSolid behaves unstably and produces very different results.
+#######################################################################
+
+set BugNumber OCC5805
+
+#
+#                    v12                   v11
+#                    *---------------------*
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    |                     |
+#                    *---------------------*
+#                    v13                   v14
+#
+
+set z1 5
+set z2 -5
+
+# quadrangle1
+polyline UpCover 0 0 ${z1} 5 0 ${z1} 5 5 ${z1} 0 5 ${z1} 0 0 ${z1}
+
+# quadrangle2
+polyline BottomCover 0 0 ${z2} 5 0 ${z2} 5 5 ${z2} 0 5 ${z2} 0 0 ${z2}
+
+set issolid 1
+set isruled 1
+if [catch { thrusections s ${issolid} ${isruled} UpCover BottomCover } catch_result] {
+   puts "Faulty ${BugNumber} : thrusections is wrong"
+   
+}
+
+set distance -0.5
+catch { OFFSETSHAPE $distance {s_5} $calcul $type }
+
+
+set square 402
+
+set nb_v_good 16
+set nb_e_good 24
+set nb_w_good 12
+set nb_f_good 11
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 65
+
+
+set index [lsearch [whatis s] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : s is not Closed shape"
+  
+}
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+
+set 2dviewer 0

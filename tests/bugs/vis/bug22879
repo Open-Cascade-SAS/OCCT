@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC22879"
+puts "============"
+puts ""
+#######################################################################
+# Possible bug in Opengl_togl_begin_layer_mode.cxx
+#######################################################################
+
+set BugNumber OCC22879
+
+vinit
+
+voverlaytext "Text Height=14" 10.0 10.0 14.0
+voverlaytext "Text Height=25" 10.0 40.0 25.0
+voverlaytext "Arial" 10.0 60.0 18.0 "Arial" 255.0 0.0 0.0
+voverlaytext "Times New Roman" 10.0 80.0 20.0 "Times New Roman" 0.0 0.0 255.0
+voverlaytext "Subtitle" 10.0 110.0 20.0 "Arial" 0.0 255.0 0.0 subtitle 76.5 76.5 76.5
+voverlaytext "Decal" 10.0 140.0 20.0 "Arial" 0.0 0.0 255.0 decal 255.0 0.0 0.0
+voverlaytext "Blend" 10.0 170.0 20.0 "Arial" 255.0 0.0 0.0 blend
+box b 50 -700 450 50 50 50
+vdisplay b
+vsetdispmode 1
+vsetcolor b ANTIQUEWHITE
+
+checkcolor 24 55 0.75686198472976685 0 0
+checkcolor 16 76 0 0 0.50195999999999996
+checkcolor 26 107 0.18039199709892273 0.5686269998550415 0.180392
+checkcolor 34 114 0.29803898930549622 0.29803898930549622 0.298039
+checkcolor 24 131 0.61960697174072266 0 0
+checkcolor 18 139 0.21568599343299866 0 0.78431300000000004
+checkcolor 56 160 1 0 0
+checkcolor 30 160 0 1 0.90980300000000003
+
+set only_screen 1
+

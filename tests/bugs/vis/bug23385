@@ -1,0 +1,42 @@
+puts "============"
+puts "OCC23385"
+puts "============"
+puts ""
+####################################################################################
+# Bug in AIS_TexturedShape::Compute()
+####################################################################################
+
+set BugNumber OCC23385
+
+vinit
+restore [locate_data_file OCC23115-bottle.brep] b
+explode b F
+vdisplay b_16
+vtexture b_16 [locate_data_file OCC23385-carrelage1.gif]
+vtexrepeat b_16 3 2
+vsetdispmode b_16 1
+vfit
+
+set color [QAGetPixelColor 85 73]
+regexp {RED +: +([-0-9.+eE]+)} $color full R_check
+regexp {GREEN +: +([-0-9.+eE]+)} $color full G_check
+regexp {BLUE +: +([-0-9.+eE]+)} $color full B_check
+set color_status 0
+if { ${R_check} != 0 || ${G_check} != 0 || ${B_check} != 0 } {
+    set color_status 0
+} else {
+    set color_status 1
+}
+
+puts ""
+if { ${color_status} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+
+set only_screen 1
+
+
+
+

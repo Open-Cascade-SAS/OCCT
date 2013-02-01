@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23306"
+puts "============"
+puts ""
+####################################################################################
+# Failures reading some attributes of BinOcaf document
+####################################################################################
+
+set BugNumber OCC23306
+
+NewDocument D1 BinOcaf
+SetExtStringArray D1 0:1:1 0 1 3 String1 String2 String3
+SaveAs D1 ${imagedir}/ocaf1.cbf
+Close D1
+set warn [Open ${imagedir}/ocaf1.cbf D2]
+set info [lsearch $warn "warning:"]
+
+if { $info == -1 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+
+
+
+
+

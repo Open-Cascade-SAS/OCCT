@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC21171"
+puts "============"
+puts ""
+#######################################################################
+# Problem with vfit of vertex and edge 
+#######################################################################
+
+set BugNumber OCC21171
+
+box result 100 100 100
+explode result e
+
+vinit
+vdisplay result_1
+vfit
+
+# Resume
+puts ""
+puts "1 edge is not fit"
+
+set only_screen 1

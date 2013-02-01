@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC23102"
+puts "================"
+puts ""
+###################################################################################################
+# Change the algorithm of rendering the 3d viewer background using tiled texture
+###################################################################################################
+
+set BugNumber OCC23102
+
+vinit
+vsetbg [locate_data_file OCC23102.bmp] TILED
+
+set x1 58
+set y1 4
+set R_bg 0.70196002721786499
+set G_bg 0.78039199113845825
+set B_bg 0.86274499999999998
+
+set Color [QAGetPixelColor ${x1} ${y1}]
+set R [lindex ${Color} 2]
+set G [lindex ${Color} 5]
+set B [lindex ${Color} 8]
+
+#Resume
+puts ""
+if { $R != ${R_bg} && $G != ${G_bg} && $B != ${B_bg} } {
+   puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}
+
+set only_screen 1
+

@@ -1,0 +1,156 @@
+puts "================"
+puts "OCC23165"
+puts "================"
+puts ""
+###################################################################################################################
+# BndLib_Add3dCurve::Add incorrectly segmented original B-Spline what resulting in wrong bounding box or exception.
+###################################################################################################################
+
+catch { pload XDE }
+
+set BugNumber OCC23165
+
+smallview 
+
+# 1 step
+set exception_status 0
+set e1_status 0
+set status 0
+
+set percent_max 0.1
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+        set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+
+restore [locate_data_file OCC23165-edge1.brep] e1 
+
+donly e1
+catch { bounding e1 } msg
+fit
+
+set index [lsearch $msg exception]
+if {$index > -1} {
+  set exception_status 1
+} else {
+  set e1_result [bounding e1]
+
+  set e1_x1 [lindex ${e1_result} 0]
+  set e1_y1 [lindex ${e1_result} 1]
+  set e1_z1 [lindex ${e1_result} 2]
+  set e1_x2 [lindex ${e1_result} 3]
+  set e1_y2 [lindex ${e1_result} 4]
+  set e1_z2 [lindex ${e1_result} 5]
+
+  set e1_good_x1 -17.610622244944413
+  set e1_good_y1 -0.010622244944394899
+  set e1_good_z1 -3.0106222449443973
+  set e1_good_x2 -17.589377755055537
+  set e1_good_y2 5.7106222251726582
+  set e1_good_z2 -1.6146050638816589
+
+  set e1_x1_percent [GetPercent ${e1_x1} ${e1_good_x1}]
+  set e1_y1_percent [GetPercent ${e1_y1} ${e1_good_y1}]
+  set e1_z1_percent [GetPercent ${e1_z1} ${e1_good_z1}]
+  set e1_x2_percent [GetPercent ${e1_x2} ${e1_good_x2}]
+  set e1_y2_percent [GetPercent ${e1_y2} ${e1_good_y2}]
+  set e1_z2_percent [GetPercent ${e1_z2} ${e1_good_z2}]
+
+  if {${e1_x1_percent} > ${percent_max}} {
+        puts "Faulty ${BugNumber} : x1 for e1 is wrong"
+        set e1_status 1
+  }
+  if {${e1_y1_percent} > ${percent_max}} {
+        puts "Faulty ${BugNumber} : y1 for e1 is wrong"
+        set e1_status 1
+  }
+  if {${e1_z1_percent} > ${percent_max}} {
+        puts "Faulty ${BugNumber} : z1 for e1 is wrong"
+        set e1_status 1
+  }
+  if {${e1_x2_percent} > ${percent_max}} {
+        puts "Faulty ${BugNumber} : x2 for e1 is wrong"
+        set e1_status 1
+  }
+  if {${e1_y2_percent} > ${percent_max}} {
+        puts "Faulty ${BugNumber} : y2 for e1 is wrong"
+        set e1_status 1
+  }
+  if {${e1_z2_percent} > ${percent_max}} {
+        puts "Faulty ${BugNumber} : z2 for e1 is wrong"
+        set e1_status 1
+  }
+
+}
+
+# 2 step
+restore [locate_data_file OCC23165-curve.rle] c 
+mkedge result c 20 36
+
+donly result
+set result [bounding result]
+fit
+
+set x1 [lindex ${result} 0]
+set y1 [lindex ${result} 1]
+set z1 [lindex ${result} 2]
+set x2 [lindex ${result} 3]
+set y2 [lindex ${result} 4]
+set z2 [lindex ${result} 5]
+
+set good_x1 -17.6105835090592
+set good_y1 -4.7133570660117909
+set good_z1 -4.3679100133425806
+set good_x2 -17.589416490940806
+set good_y2 5.7105834892874094
+set good_z2 -1.6146437997669054
+
+set x1_percent [GetPercent ${x1} ${good_x1}]
+set y1_percent [GetPercent ${y1} ${good_y1}]
+set z1_percent [GetPercent ${z1} ${good_z1}]
+set x2_percent [GetPercent ${x2} ${good_x2}]
+set y2_percent [GetPercent ${y2} ${good_y2}]
+set z2_percent [GetPercent ${z2} ${good_z2}]
+
+if {${x1_percent} > ${percent_max}} {
+   puts "Faulty ${BugNumber} : x1 is wrong"
+   set status 1
+}
+if {${y1_percent} > ${percent_max}} {
+   puts "Faulty ${BugNumber} : y1 is wrong"
+   set status 1
+}
+if {${z1_percent} > ${percent_max}} {
+   puts "Faulty ${BugNumber} : z1 is wrong"
+   set status 1
+}
+if {${x2_percent} > ${percent_max}} {
+   puts "Faulty ${BugNumber} : x2 is wrong"
+   set status 1
+}
+if {${y2_percent} > ${percent_max}} {
+   puts "Faulty ${BugNumber} : y2 is wrong"
+   set status 1
+}
+if {${z2_percent} > ${percent_max}} {
+   puts "Faulty ${BugNumber} : z2 is wrong"
+   set status 1
+}
+
+if { ${status} == 0 && ${exception_status} == 0&& ${e1_status} == 0 } {
+   puts "${BugNumber}: OK"
+} else {
+   puts "${BugNumber}: Faulty"
+}
+
+set 2dviewer 1
+set length 15.8888
+

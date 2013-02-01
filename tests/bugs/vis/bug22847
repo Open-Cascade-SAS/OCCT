@@ -1,0 +1,51 @@
+puts "============"
+puts "OCC22847"
+puts "============"
+puts ""
+##############################################################################################
+# DrawTrSurf: provide interface for configuring visualization properties in axonometric viewer
+##############################################################################################
+
+set BugNumber OCC22847
+
+axo
+point p1 0 0 0
+point p2 30 0 0
+point p3 60 0 0
+point p4 90 0 0
+point p5 120 0 0
+point a1 0 30 0
+point a2 0 60 0
+point a3 0 90 0
+point a4 0 120 0
+point b1 0 0 30
+point b2 0 0 60
+point b3 0 0 90
+point b4 0 0 120
+
+changepointcolor white p1
+changepointcolor red p2
+changepointcolor blue p3
+changepointcolor green p4
+changepointcolor cyan p5
+changepointcolor golden a1
+changepointcolor brown a3
+changepointcolor orange a4
+changepointcolor pink a2
+changepointcolor coral b1
+changepointcolor violet b2
+changepointcolor pink b3
+changepointcolor pink b4
+
+changepointmarker square p5
+changepointmarker diamond p4
+changepointmarker x p3
+changepointmarker plus a4
+changepointmarker circle a3
+changepointmarker circle b3
+
+setpointcolor white
+setpointmarker square
+point f 100 50 50
+
+puts "It's a visualization bug. There are not results. See photo."

@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22893"
+puts "============"
+puts ""
+#############################################################################
+# Possible regression is tesselation algorithm of OCCT 6.5.2 
+#############################################################################
+
+set BugNumber OCC22893
+
+catch {pload XDE}
+
+igesread [locate_data_file OCC22893-thread_22534_boing777.igs] result *
+
+set square 26974.5
+
+set nb_v_good 4183
+set nb_e_good 4191
+set nb_w_good 653
+set nb_f_good 639
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 9667
+
+set 2dviewer 0
+
+

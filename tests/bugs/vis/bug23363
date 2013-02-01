@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23363"
+puts "============"
+puts ""
+####################################################################################
+# [Regression] Lost gradient background when switching to the hollow interior style
+####################################################################################
+
+set BugNumber OCC23363
+
+vinit
+vsetgradientbg 250 0 0 0 255 0 2
+pcylinder p 100 200
+vdisplay p
+vsetdispmode p 1
+vsetinteriorstyle p 1
+
+set color [QAGetPixelColor 10 0]
+regexp {RED +: +([-0-9.+eE]+)} $color full R_check
+
+puts ""
+if { ${R_check} == 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+set only_screen 1

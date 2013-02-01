@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC23092"
+puts "================"
+puts ""
+###################################################################################################
+# Error in BRepProj_Projection algorithm: some edges of resulting projected wire are duplicated
+###################################################################################################
+
+set BugNumber OCC23092
+
+restore [locate_data_file OCC23092-bal8h.brep] h 
+restore [locate_data_file OCC23092-bal8s.brep] s 
+set info1 [ prj r s h 0 0 1 ]
+set word1 [string compare [lindex ${info1} end] "r_1"]
+don r_1 r_2
+explode r_1 E
+explode r_2 V
+set info2 [ don r_1_10 r_2_1 r_2_2 ]
+set word2 [string compare [lindex ${info2} end] "r_1_10"]
+
+# Resume
+puts ""
+if { ${word1} == 0 && ${word2} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+

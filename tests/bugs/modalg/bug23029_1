@@ -1,0 +1,56 @@
+puts "============"
+puts "OCC23029"
+puts "============"
+puts ""
+#######################################################################
+# split shape algorithm works incorrectly in some cases
+#######################################################################
+
+set BugNumber OCC23029
+
+catch { pload XDE }
+
+testreadstep [locate_data_file OCC23029-ProblemF.stp] a
+restore [locate_data_file OCC23029-TempW.brep] t 
+
+checkshape a
+explode a f
+splitshape result a a_1 t
+
+set square 215.198
+
+set nb_v_good 19
+set nb_e_good 21
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 45
+
+set CheckShape_status 0
+
+set ll [ llength [explode result f2 ] ]
+
+if { $ll != 2 } {
+    set CheckShape_status 1
+}
+
+# Resume
+puts ""
+if { ${CheckShape_status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+vmoveto 252 289
+
+set only_screen 1
+

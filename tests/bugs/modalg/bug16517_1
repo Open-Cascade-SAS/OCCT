@@ -1,0 +1,44 @@
+puts "============"
+puts "OCC16517"
+puts "============"
+puts ""
+#######################################################################
+# Cylindrical projection is wrong
+#######################################################################
+
+set BugNumber OCC16517
+
+restore [locate_data_file OCC16517_c.brep] c
+restore [locate_data_file OCC16517_s.brep] s
+
+set Result_List [prj p c s 0 0 1]
+set Result_Numbers [llength ${Result_List}]
+set mistake 0
+if { ${Result_Numbers} != 2 } {
+  puts "Faulty ${BugNumber} : projection numbers are wrong"
+  set mistake 1
+} else {
+  puts "First projection ..."
+  renamevar p_1 result
+
+  set status 0
+  set length 110.167
+  set nb_v_good 1
+  set nb_e_good 1
+  set nb_w_good 1
+  set nb_f_good 0
+  set nb_sh_good 0
+  set nb_sol_good 0
+  set nb_compsol_good 0
+  set nb_compound_good 0
+  set nb_shape_good 3
+}
+
+if { ${mistake} != 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0
+

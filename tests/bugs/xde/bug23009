@@ -1,0 +1,26 @@
+puts "========================"
+puts "OCC23009"
+puts "========================"
+puts ""
+#######################################################################
+# Request of a new feature fot units management during step import
+#######################################################################
+
+set BugNumber OCC23009
+
+set exception_status 1
+set info [ stepfileunits [locate_data_file OCC22459-TEST2.stp] ]
+set index1 [lsearch $info centimetre]
+set index2 [lsearch $info DEGREES]
+set index3 [lsearch $info steradian]
+if {$index1 > -1 && $index2 > -1 && $index3 > -1} {
+    set exception_status 0
+}
+
+puts ""
+if { ${exception_status} != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}
+

@@ -1,0 +1,108 @@
+puts "==========="
+puts "OCC15570"
+puts "==========="
+
+set BugNumber OCC15570
+
+######################################################
+# Incorrect handling of Unicode strings
+######################################################
+
+pload XDE
+
+proc GetPercent {Value GoodValue} {
+   set Percent 0.
+   if {${GoodValue} != 0.} {
+      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+   } elseif {${Value} != 0.} {
+      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+   } else {
+      set Percent 0.
+   }
+   return ${Percent}
+}
+
+igesbrep [locate_data_file OCC15570.igs] a *
+tpcompound result
+
+set BoundList [boundingstr result]
+set xmin [lindex ${BoundList} 0]
+set ymin [lindex ${BoundList} 1]
+set zmin [lindex ${BoundList} 2]
+set xmax [lindex ${BoundList} 3]
+set ymax [lindex ${BoundList} 4]
+set zmax [lindex ${BoundList} 5]
+
+set percent_max 0.1
+set good_xmin -22.500000100000001
+set good_ymin -88.366946209482094
+set good_zmin -1.0000002775557561e-07
+set good_xmax 22.500000100000001
+set good_ymax 22.776076069021901
+set good_zmax 86.12676222997429
+set status 0
+
+set xmin_percent [GetPercent ${xmin} ${good_xmin}]
+puts "xmin_percent = ${xmin_percent}"
+if { ${xmin_percent} > ${percent_max} } {
+   puts "xmin: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "xmin: OK ${BugNumber}"
+}
+
+set ymin_percent [GetPercent ${ymin} ${good_ymin}]
+puts "ymin_percent = ${ymin_percent}"
+if { ${ymin_percent} > ${percent_max} } {
+   puts "ymin: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "ymin: OK ${BugNumber}"
+}
+
+set zmin_percent [GetPercent ${zmin} ${good_zmin}]
+puts "zmin_percent = ${zmin_percent}"
+if { ${zmin_percent} > ${percent_max} } {
+   puts "zmin: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "zmin: OK ${BugNumber}"
+}
+
+set xmax_percent [GetPercent ${xmax} ${good_xmax}]
+puts "xmax_percent = ${xmax_percent}"
+if { ${xmax_percent} > ${percent_max} } {
+   puts "xmax: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "xmax: OK ${BugNumber}"
+}
+
+set ymax_percent [GetPercent ${ymax} ${good_ymax}]
+puts "ymax_percent = ${ymax_percent}"
+if { ${ymax_percent} > ${percent_max} } {
+   puts "ymax: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "ymax: OK ${BugNumber}"
+}
+
+set zmax_percent [GetPercent ${zmax} ${good_zmax}]
+puts "zmax_percent = ${zmax_percent}"
+if { ${zmax_percent} > ${percent_max} } {
+   puts "zmax: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "zmax: OK ${BugNumber}"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0
+

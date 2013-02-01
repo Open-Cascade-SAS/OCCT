@@ -1,0 +1,86 @@
+puts "TODO OCC12345 ALL: triangle: Faulty OCC15519"
+puts "TODO OCC12345 ALL: node: Faulty OCC15519"
+puts "TODO OCC12345 ALL: deflection: Faulty OCC15519"
+puts "TODO OCC12345 ALL: Faulty OCC15519"
+puts "============"
+puts "OCC15519"
+puts "============"
+puts ""
+#######################################################################
+# Exception while meshing shape
+#######################################################################
+
+set BugNumber OCC15519
+
+proc GetPercent {Value GoodValue} {
+   set Percent 0.
+   if {${GoodValue} != 0.} {
+      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+   } elseif {${Value} != 0.} {
+      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+   } else {
+      set Percent 0.
+   }
+   return ${Percent}
+}
+
+restore [locate_data_file OCC15519.brep] result
+tclean result
+
+set Deflection 1.
+catch {incmesh result ${Deflection} }
+
+set InfoList [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $InfoList full tri
+regexp { +([-0-9.+eE]+) +nodes} $InfoList full nod
+regexp {Maximal deflection +([-0-9.+eE]+)} $InfoList full defl
+
+if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
+   set good_tri  96265
+   set good_nod  71339
+   set good_defl 27.956052399907215
+} else {
+   set good_tri  95582
+   set good_nod  70796
+   set good_defl 0.99827404224216676
+}
+
+set percent_max 0.1
+set status 0
+
+set triangle_percent [GetPercent ${tri} ${good_tri}]
+puts "triangle_percent = ${triangle_percent}"
+if { ${triangle_percent} > ${percent_max} } {
+   puts "triangle: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "triangle: OK ${BugNumber}"
+}
+
+set node_percent [GetPercent ${nod} ${good_nod}]
+puts "node_percent = ${node_percent}"
+if { ${node_percent} > ${percent_max} } {
+   puts "node: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "node: OK ${BugNumber}"
+}
+
+set deflection_percent [GetPercent ${defl} ${good_defl}]
+puts "deflection_percent = ${deflection_percent}"
+if { ${deflection_percent} > ${percent_max} } {
+   puts "deflection: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "deflection: OK ${BugNumber}"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0

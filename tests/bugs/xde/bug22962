@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC22962"
+puts "============"
+puts ""
+#######################################################################
+# Invalid realization of reading and writing material in STEP
+#######################################################################
+
+set BugNumber OCC22962
+set check_value 94
+pload DCAF
+
+ReadStep D1 [locate_data_file OCC22962-dm1-oc-214.stp]
+set dump_info [ XDumpDF D1 ]
+
+regexp {attributes dumped between ([-0-9.+eE]+)} ${dump_info} full a1
+
+set c1 [string compare $a1 $check_value]
+
+if { $c1 != 0 } {
+    puts "Faulty ${BugNumber}"
+} else {
+    puts "OK ${BugNumber}"
+}

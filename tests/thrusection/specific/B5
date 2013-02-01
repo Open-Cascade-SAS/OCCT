@@ -1,0 +1,45 @@
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+circle c1 0 0 0 10
+mkedge e1 c1
+wire w1 e1
+
+vertex v1 40 0 20
+vertex v2 40 0 -20
+
+set issolid 1
+set isruled 1
+catch {thrusections result ${issolid} ${isruled} v1 w1 v2}
+
+
+set square 2160.94
+
+
+set nb_v_good 3
+set nb_e_good 5
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 14
+
+
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+set 3dviewer 0
+

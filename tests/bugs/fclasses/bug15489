@@ -1,0 +1,62 @@
+puts "==========="
+puts "OCC15489"
+puts "==========="
+
+set BugNumber OCC15489
+
+######################################################
+# Constructor gp_Lin2d(A, B, C) creates line with origin point in infinity
+######################################################
+
+proc GetPercent {Value GoodValue} {
+   set Percent 0.
+   if {${GoodValue} != 0.} {
+      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+   } elseif {${Value} != 0.} {
+      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+   } else {
+      set Percent 0.
+   }
+   return ${Percent}
+}
+
+pload QAcommands
+
+set A 1e-20
+set B -1.
+set C 2.
+
+set OriginList [OCC15489 $A $B $C]
+regexp {X_0 += +([-0-9.+eE]+)} $OriginList full X_0
+regexp {Y_0 += +([-0-9.+eE]+)} $OriginList full Y_0
+
+set percent_max 0.1
+set good_X_0 -1.9999999999999999e-20
+set good_Y_0 2
+set status 0
+
+set X_0_percent [GetPercent ${X_0} ${good_X_0}]
+puts "X_0_percent = ${X_0_percent}"
+if { ${X_0_percent} > ${percent_max} } {
+   puts "X_0: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "X_0: OK ${BugNumber}"
+}
+
+set Y_0_percent [GetPercent ${Y_0} ${good_Y_0}]
+puts "Y_0_percent = ${Y_0_percent}"
+if { ${Y_0_percent} > ${percent_max} } {
+   puts "Y_0: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "Y_0: OK ${BugNumber}"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

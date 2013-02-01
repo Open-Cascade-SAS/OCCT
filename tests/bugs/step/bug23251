@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC23251"
+puts "============"
+puts ""
+#######################################################################
+# Crash during reading materials from STEP file for case when name of material is not set.
+#######################################################################
+
+set BugNumber OCC23251
+
+ReadStep D [locate_data_file OCC23251-dm1-oc-214.stp] res
+

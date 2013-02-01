@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC22489"
+puts "================"
+puts ""
+#######################################################################
+# BRepClass3d_SolidClassifier::PerformInfinitePoint() gives wrong result on the given solid 
+#######################################################################
+
+set BugNumber OCC22489
+
+restore [locate_data_file bug22489_Solid_2.brep] b 
+
+point p 1000 1000 1000
+
+set res [split [bclassify b p] ]
+
+set ll [llength ${res}]
+if {${ll} < 4} {
+   puts "Bad format of bclassify draw-command; Faulty ${BugNumber}"
+} else {
+   if {[regexp {The point is OUT of shape} $res]} {
+      puts "OK ${BugNumber}"
+   } else {
+      puts "Faulty ${BugNumber}"
+   }
+}
+

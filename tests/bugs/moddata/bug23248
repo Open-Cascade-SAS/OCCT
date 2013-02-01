@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC23248"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result done by solid classifier algorithm for infinite point
+#######################################################################
+
+set BugNumber OCC23248
+
+restore [locate_data_file bug23248_so] b
+
+set result [split [xclassify b 1e-7]]
+
+set ll [llength ${result}]
+if {${ll} < 3} {
+    puts "Bad format of xclassify draw-command; Faulty ${BugNumber}"
+} else {
+    set status [lindex ${result} 2]
+    if { [regexp "OUT" $result] == 1 } {
+	puts "OK ${BugNumber}"
+    } else {
+	puts "Faulty ${BugNumber}"
+    }
+}
+
+

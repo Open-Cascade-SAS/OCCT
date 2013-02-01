@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC5988"
+puts "============"
+puts ""
+#######################################################################
+# A textured shape (AIS_TextureShape) becomes black if we display an AIS_PlaneTrihedron with it
+#######################################################################
+
+set BugNumber OCC5988
+
+vinit
+vclear
+box box 100 100 100
+vdisplay box
+vfit
+puts "display box"
+
+set x 200
+set y 200
+checkcolor $x $y 0 0 0
+
+puts "display trihedron"
+vtrihedron vtr
+
+puts "display textured box"
+catch { vtexture box [locate_data_file OCC5988_2d_floor.rgb] }
+
+set x 200
+set y 200
+decho off
+if [catch { QAGetPixelColor $x $y 0 0 0 } res] {
+    puts "box is not black - OK"
+    puts "OK ${BugNumber}"
+} else {
+    puts "box is black - Faulty"
+    puts "Faulty ${BugNumber}"
+}
+decho on
+
+set only_screen 1
+

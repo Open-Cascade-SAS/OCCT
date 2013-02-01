@@ -1,0 +1,60 @@
+puts "============"
+puts "OCC7166"
+puts "============"
+puts ""
+#######################################################################
+# Improvement of API of ThruSection
+#######################################################################
+
+set BugNumber OCC7166
+
+#
+#              * v2
+#             / \
+#           /     \
+#         /    *    \
+#       /    v4, v5   \
+#     *----------------* v3
+#     v1
+#     
+
+vertex v1 0 0 0
+vertex v2 5 5 0
+vertex v3 10 0 0
+
+vertex v4 5 2.5 20
+vertex v5 5 2.5 -20
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v1
+
+wire w1 e1 e2 e3
+
+set issolid 0
+set isruled 0
+thrusections result ${issolid} ${isruled} v4 w1 v5
+
+
+set square 646.621
+
+set nb_v_good 2
+set nb_e_good 9
+set nb_w_good 3
+set nb_f_good 3
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 18
+
+
+
+set index [lsearch [whatis result] Closed]
+if {$index == -1} {
+  puts "Faulty ${BugNumber} : result is not Closed shape"
+  
+}
+
+set 3dviewer 0
+

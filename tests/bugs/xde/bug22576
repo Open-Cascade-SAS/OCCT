@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC22576"
+puts "============"
+puts ""
+##################################################################
+#  ShapeFix_Edge::SameParameter() now retains original 3D interval
+##################################################################
+
+set BugNumber OCC22576
+
+puts "Load shape ..."
+restore [locate_data_file test-fix280-face.brep] res
+
+fixshape result res
+
+set length 1.56058
+set 2dviewer 0
+

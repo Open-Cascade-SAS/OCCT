@@ -1,0 +1,74 @@
+puts "TODO OCC11111 ALL: Faulty OCC23069"
+puts "TODO OCC11111 ALL: FPS_percent"
+puts "TODO ?OCC11111 ALL: CPU_percent"
+
+puts "==========="
+puts "OCC23069"
+puts "==========="
+puts ""
+################################################################################
+# OpenGL state extraction for GL_RENDER_MODE significantly impact performance
+################################################################################
+
+set BugNumber OCC23069
+
+vinit
+for {set anInter 1} {$anInter <= 1000} {incr anInter} {
+   box b${anInter} [expr $anInter * 20] 0 0 10 20 30
+   vdisplay b${anInter}
+}
+vfit
+
+set Log [vfps]
+
+#
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+        set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+
+set percent_max 20.0
+
+set good_FPS 4.2
+set good_CPU 15.0
+
+set status 0
+if { [llength ${Log}] == 5} {
+    if { [regexp {FPS: [-0-9.+eE]+} $Log] && [regexp {CPU: [-0-9.+eE]+ msec} $Log] } {
+        set status 0
+        regexp {FPS: ([-0-9.+eE]+)} $Log full FPS
+        regexp {CPU: ([-0-9.+eE]+) msec} $Log full CPU
+
+        set CPU_percent [GetPercent ${CPU} ${good_CPU}]
+        if { ${CPU_percent} > ${percent_max} } {
+            puts "CPU_percent = ${CPU_percent} ; CPU: Faulty"
+            set status 1
+        }
+
+        set FPS_percent [GetPercent ${FPS} ${good_FPS}]
+        if { ${FPS_percent} > ${percent_max} } {
+            puts "FPS_percent = ${FPS_percent} ; FPS: Faulty"
+            set status 1
+        }
+    } else {
+	set status 1
+    }
+} else {
+   set status 1
+}
+
+# Resume
+puts ""
+if { ${status} == 0 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+

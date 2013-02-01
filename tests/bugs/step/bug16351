@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC16351"
+puts "============"
+puts ""
+#######################################################################
+# Crash in ShapeFix_Edge::FixAddPCurve
+#######################################################################
+
+decho off
+stepread [locate_data_file OCC16351.step] a *
+decho on
+

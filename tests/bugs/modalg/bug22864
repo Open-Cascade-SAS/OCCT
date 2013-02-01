@@ -1,0 +1,101 @@
+puts "============"
+puts "OCC22864"
+puts "============"
+puts ""
+##############################################################################################
+# The algorithm BiTgte_Blend obtains instable results
+##############################################################################################
+
+set BugNumber OCC22864
+
+restore [locate_data_file bug22864_face1.brep] f1 
+restore [locate_data_file bug22864_face2.brep] f2 
+
+shape aShape C
+add f1 aShape
+add f2 aShape
+
+#
+set status 0
+#
+set nb_v_good 2
+set nb_e_good 3
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 8
+#
+set Numbers 11
+#
+for {set i 0} {$i < ${Numbers}} {incr i} {
+    puts "i=$i"
+    rollingball result aShape 15 @ f1 f2
+    
+    set nb_info [nbshapes result]
+    regexp {VERTEX +: +([-0-9.+eE]+)} $nb_info full nb_v
+    regexp {EDGE +: +([-0-9.+eE]+)} $nb_info full nb_e
+    regexp {WIRE +: +([-0-9.+eE]+)} $nb_info full nb_w
+    regexp {FACE +: +([-0-9.+eE]+)} $nb_info full nb_f
+    regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full nb_sh
+    regexp {SOLID +: +([-0-9.+eE]+)} $nb_info full nb_sol
+    regexp {COMPSOLID +: +([-0-9.+eE]+)} $nb_info full nb_compsol
+    regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full nb_compound
+    regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info full nb_shape
+    
+    if {$nb_v != $nb_v_good || $nb_e != $nb_e_good ||
+	$nb_w != $nb_w_good || $nb_f != $nb_f_good ||
+	$nb_sh != $nb_sh_good || $nb_sol != $nb_sol_good || 
+	$nb_compsol != $nb_compsol_good || $nb_compound != $nb_compound_good ||
+	$nb_shape != $nb_shape_good } {
+        set status 1
+    }
+     
+    set aFile $imagedir/${test_image}.brep
+    puts "aFile=${aFile}"
+    file delete ${aFile}
+    if { [file exists ${aFile}] } {
+	puts "There is old ${aFile} file; Error"
+	set status 1
+    }
+  #
+    save result ${aFile}
+    catch {exec chmod 777 ${aFile}}
+    if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; save command: Error"
+	set status 1
+    }
+
+    set fp [open ${aFile} "r"]
+    set Log [read -nonewline ${fp}]
+    close ${fp}
+  #
+    if {$i == 0} {
+	set StandardLog ${Log}
+    } else {
+	set info_result [string compare ${Log} ${StandardLog}]
+	if {${info_result} == 0} {
+    	    # Log == StandardLog
+    	    puts "Log == StandardLog"
+	} else {
+    	    # Log != StandardLog
+    	    set status 1
+    	    puts "Log != StandardLog"
+	}
+    }
+}
+
+# Resume
+puts ""
+if {${status} == 0} {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
+
+set square 6935.38
+set 2dviewer 0
+
+

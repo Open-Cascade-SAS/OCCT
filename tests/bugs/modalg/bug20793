@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC20793"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakeOffset produces incorrect result
+#######################################################################
+
+set BugNumber OCC20793
+
+puts "Load shape ..."
+restore [locate_data_file OCC20793.brep] a 
+
+if [catch { mkoffset resoffset a 1 10 } ] {
+  puts "Faulty ${BugNumber} : mkoffset is wrong"
+} else {
+  renamevar resoffset_1 result
+
+set length 671.746
+
+set nb_v_good 4
+set nb_e_good 4
+set nb_w_good 1
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 9
+
+}
+
+set 2dviewer 0

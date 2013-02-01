@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC22310"
+puts "============"
+puts ""
+#######################################################################
+# Boolean operation common fails. Appendix to the SALOME bug: 0021128
+#######################################################################
+
+set BugNumber OCC22310
+
+puts "Load first shape ..."
+restore [locate_data_file bug22310_vol_inf_30.brep] b1 
+
+puts "Load second shape ..."
+restore [locate_data_file bug22310_vol_sup_30.brep] b2 
+
+puts "Prepare boolean operation ..."
+bop b1 b2
+
+puts "Start boolean operation ..."
+bopcommon result
+puts "Finish boolean operation ..."
+
+set square 0.0457691
+
+set nb_v_good 6
+set nb_e_good 9
+set nb_w_good 5
+set nb_f_good 5
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 28
+
+
+set 2dviewer 0

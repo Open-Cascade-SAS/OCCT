@@ -1,0 +1,82 @@
+puts "================"
+puts "OCC12661"
+puts "================"
+puts ""
+#######################################################################################
+# Wrong calculation of bnd box for edge if edge has polygon of triangulation
+#######################################################################################
+
+proc GetPercent {Value GoodValue} {
+   set Percent 0.
+   if {${GoodValue} != 0.} {
+      set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+   } elseif {${Value} != 0.} {
+      set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+   } else {
+      set Percent 0.
+   }
+   return ${Percent}
+}
+
+set BugNumber OCC12661
+
+restore [locate_data_file OCC12661.brep] result
+set res [bounding result]
+
+set x1 [lindex ${res} 0]
+set y1 [lindex ${res} 1]
+set z1 [lindex ${res} 2]
+set x2 [lindex ${res} 3]
+set y2 [lindex ${res} 4]
+set z2 [lindex ${res} 5]
+
+set good_x1 -6.3659273065258741
+set good_y1 0.7051405053395956
+set good_z1 -2.5792617865186296
+set good_x2 6.3659273065258795
+set good_y2 7.6599592236605769
+set good_z2 3.0815250146676485
+
+set percent_max 0.1
+set status 0
+
+set x1_percent [GetPercent ${x1} ${good_x1}]
+set y1_percent [GetPercent ${y1} ${good_y1}]
+set z1_percent [GetPercent ${z1} ${good_z1}]
+set x2_percent [GetPercent ${x2} ${good_x2}]
+set y2_percent [GetPercent ${y2} ${good_y2}]
+set z2_percent [GetPercent ${z2} ${good_z2}]
+
+if {${x1_percent} > ${percent_max}} {
+    puts "Faulty ${BugNumber} : x1 is wrong"
+    set status 1
+}
+if {${y1_percent} > ${percent_max}} {
+    puts "Faulty ${BugNumber} : y1 is wrong"
+    set status 1
+}
+if {${z1_percent} > ${percent_max}} {
+    puts "Faulty ${BugNumber} : z1 is wrong"
+    set status 1
+}
+if {${x2_percent} > ${percent_max}} {
+    puts "Faulty ${BugNumber} : x2 is wrong"
+    set status 1
+}
+if {${y2_percent} > ${percent_max}} {
+    puts "Faulty ${BugNumber} : y2 is wrong"
+    set status 1
+}
+if {${z2_percent} > ${percent_max}} {
+    puts "Faulty ${BugNumber} : z2 is wrong"
+    set status 1
+}
+
+if { ${status} == 0 } {
+    puts "${BugNumber}: OK"
+} else {
+    puts "${BugNumber}: Faulty"
+}
+
+set 2dviewer 0
+
