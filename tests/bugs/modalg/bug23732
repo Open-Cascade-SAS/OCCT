@@ -1,0 +1,17 @@
+puts "========="
+puts "CR23722"
+puts "========="
+puts ""
+###############################
+## Exception reaised during intersection between two surfaces
+###############################
+
+restore [locate_data_file bug23732_fx1.brep] b1
+restore [locate_data_file bug23732_fx2.brep] b2
+
+mksurface s1 b1
+mksurface s2 b1
+
+intersect result s1 s2
+
+set 2dviewer 1
