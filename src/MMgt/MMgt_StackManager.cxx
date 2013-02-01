@@ -33,43 +33,13 @@
 #define  SHALLOWDUMP
 #endif
 
-//============================================================================
-//==== There are two declaration of classes just for protections =============
-//============================================================================
-
-class _BaseElement {
- public:
-  virtual void M1() =0;
-  virtual void M2() =0;
-  virtual void M3() =0;
-  virtual void M4() =0;
-  virtual void M5() =0;
-  virtual void M6() =0;
-  virtual void M7() =0;
-  virtual void M8() =0;
-  virtual void M9() =0;
-  virtual void M10()=0;
-}; 
-
-static class _Element: public _BaseElement 
+static class _Element 
 {
  public:
   _Element() {};
-  void Msg() 
-    {Standard_ProgramError::Raise("Attempt to access to a 'deleted' object");}
-  void M1() {Msg();}
-  void M2() {Msg();}
-  void M3() {Msg();}
-  void M4() {Msg();}
-  void M5() {Msg();}
-  void M6() {Msg();}
-  void M7() {Msg();}
-  void M8() {Msg();}
-  void M9() {Msg();}
-  void M10(){Msg();}
-  
+
   Standard_Address myNext;
-  
+
 } *anElement = new _Element;
 
 //============================================================================
