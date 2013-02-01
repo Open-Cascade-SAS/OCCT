@@ -153,19 +153,20 @@ static Standard_Boolean LocalIsKeepTwice(const TopoDS_Face&          aF1,
   try {
     OCC_CATCH_SIGNALS
 
-    // modified by NIZHNY-MKK  Fri Sep  3 15:14:17 2004.BEGIN
     if(!myDSFiller->IsDone()) {
       myErrorStatus = 1;
       BOPTColStd_Dump::PrintMessage("DSFiller is invalid: Can not build result\n");
       return;
     }
-    // modified by NIZHNY-MKK  Fri Sep  3 15:14:20 2004.END
+    //
+    PrepareReferences();
+    //
     Standard_Boolean bIsNewFiller;
     bIsNewFiller=aDSFiller.IsNewFiller();
     
     if (bIsNewFiller) {
       Prepare();
-
+      
       PrepareFaceSplits();
 
       aDSFiller.SetNewFiller(!bIsNewFiller);
@@ -199,7 +200,43 @@ static Standard_Boolean LocalIsKeepTwice(const TopoDS_Face&          aF1,
     BOPTColStd_Dump::PrintMessage("Can not build result\n");
   }
 }
-
+//=================================================================================
+// function: PrepareReferences
+// purpose: 
+//=================================================================================
+void BOP_SolidSolid::PrepareReferences() 
+{
+  Standard_Integer i;
+  const BooleanOperations_ShapesDataStructure& aDS = myDSFiller->DS();
+  //
+  for (i=0; i<2; ++i) {
+    const TopoDS_Shape& aS=(!i)? aDS.Object() : aDS.Tool();
+    //
+    TopoDS_Solid aRefSolid;
+    //
+    if(aS.ShapeType() == TopAbs_SOLID) {
+      aRefSolid = TopoDS::Solid(aS);
+    }
+    else {
+      BRep_Builder aBB;
+      TopExp_Explorer aExp;
+      //
+      aBB.MakeSolid(aRefSolid);
+      //
+      aExp.Init(aS, TopAbs_SHELL);
+      for(; aExp.More(); aExp.Next()) {
+	const TopoDS_Shape& aShell = aExp.Current();
+	aBB.Add(aRefSolid, aShell);
+      }
+    }
+    if(!i) {
+      myRefObject=aRefSolid;
+    }
+    else {
+      myRefTool=aRefSolid;
+    }
+  }
+}
 //=================================================================================
 // function: BuildResult
 // purpose: 
@@ -391,7 +428,6 @@ static Standard_Boolean LocalIsKeepTwice(const TopoDS_Face&          aF1,
       }
     }
 
-    // modified by NIZHNY-MKK  Tue Sep 16 11:11:22 2003.BEGIN
     Standard_Boolean bIsCommonalgo = CheckFaceIntersection(nF1, myDSFiller);
     BOP_WireEdgeSet atmpWES (myFace);
     BOP_WireEdgeSet atmpWESAvoid (myFace);
@@ -726,7 +762,6 @@ static Standard_Boolean LocalIsKeepTwice(const TopoDS_Face&          aF1,
       }
       //end for (; aWES2.MoreStartElements...
     }
-    // modified by NIZHNY-MKK  Tue Sep 16 11:11:33 2003.END
     
     //
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -23,6 +23,20 @@
 
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
+
+#include <gp_Dir.hxx>
+#include <gp_Vec.hxx>
+
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Surface.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <Geom2dHatch_Hatcher.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <HatchGen_Domain.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -33,10 +47,22 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Compound.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+//
+#include <TopExp_Explorer.hxx>
+#include <BRepTools.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
+
+#include <TopTools_DataMapOfShapeInteger.hxx>
 
 #include <BooleanOperations_ShapesDataStructure.hxx>
 #include <BooleanOperations_StateOfShape.hxx>
+#include <BooleanOperations_AncestorsSeqAndSuccessorsSeq.hxx>
 #include <BOPTColStd_IndexedDataMapOfIntegerIndexedMapOfInteger.hxx>
+
+#include <IntTools_Tools.hxx>
+#include <IntTools_Context.hxx>
 
 #include <BOPTools_SSInterference.hxx>
 #include <BOPTools_InterferencePool.hxx>
@@ -48,21 +74,11 @@
 #include <BOPTools_ListIteratorOfListOfPaveBlock.hxx>
 #include <BOPTools_ListIteratorOfListOfCommonBlock.hxx>
 #include <BOPTools_Curve.hxx>
-
+#include <BOPTools_Tools2D.hxx>
 #include <BOPTools_Tools3D.hxx>
-
-#include <IntTools_Context.hxx>
+#include <BOPTools_StateFiller.hxx>
 
 #include <BOP_BuilderTools.hxx>
-
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
-
-#include <TopTools_DataMapOfShapeInteger.hxx>
-#include <BooleanOperations_AncestorsSeqAndSuccessorsSeq.hxx>
-#include <BOPTools_StateFiller.hxx>
-#include <gp_Dir.hxx>
-#include <BRep_Builder.hxx>
 
 static
 Standard_Integer GetIndex(const TopoDS_Shape& theShape, 
@@ -83,17 +99,40 @@ void GetStatesOfAdjacentFaces(const TColStd_ListOfInteger& theListOfFacesToCheck
 			      Standard_Boolean&            bFoundOUTOUT);
 
 static
-Standard_Boolean ComputeStateForAnalyticalSurfaces(const Standard_Integer theFaceIndex,
-						   const Standard_Integer theBaseFaceIndex,
-						   const BOPTColStd_IndexedDataMapOfIntegerIndexedMapOfInteger& theFFMap,
-						   const BOPTools_DSFiller& theDSFiller,
-						   TopAbs_State& theState);
+  Standard_Boolean ComputeStateForAnalyticalSurfaces
+  (const Standard_Integer theFaceIndex,
+   const Standard_Integer theBaseFaceIndex,
+   const BOPTColStd_IndexedDataMapOfIntegerIndexedMapOfInteger& theFFMap,
+   const BOPTools_DSFiller& theDSFiller,
+   TopAbs_State& theState);
 
 static 
 Standard_Boolean IsEdgeValidForFace(const Standard_Integer theEdgeIndex,
 				    const Standard_Integer theFaceIndex,
 				    BOPTools_SSInterference& theFF,
 				    const BOPTools_DSFiller& theDSFiller);
+
+static
+  TopAbs_State ComputeState(const TopoDS_Face& theF,
+			  const TopoDS_Solid& theRef,
+			  const Standard_Real theTol,
+			  const Handle(IntTools_Context)& theCtx);
+
+static
+  Standard_Integer PntInFace(const TopoDS_Face& aF,
+			     gp_Pnt& theP,
+			     gp_Pnt2d& theP2D);
+
+static
+  Standard_Integer PntHoverFace(const TopoDS_Face& aF,
+				gp_Pnt& theP);
+
+static
+  TopAbs_State ComputeState(const gp_Pnt& theP,
+			    const TopoDS_Solid& theRef,
+			    const Standard_Real theTol,
+			    const Handle(IntTools_Context)& theCtx);
+
 
 //=================================================================================
 // function: PrepareFaceSplits
@@ -263,15 +302,16 @@ Standard_Boolean BOP_SolidSolid::PropagateFaceStateByEdges(const TopoDS_Shape& t
   return Standard_True;
 }
 
-// =====================================================================================================================
-//  function: ComputeStateByInsidePoints
-//  purpose:
-// =====================================================================================================================
-Standard_Boolean BOP_SolidSolid::ComputeStateByInsidePoints(const Standard_Integer theFaceIndex,
-							    const Standard_Integer theBaseFaceIndex,
-							    const Standard_Integer theFaceRank,
-							    const BOPTColStd_IndexedDataMapOfIntegerIndexedMapOfInteger& theFFMap,
-							    TopAbs_State& theState) 
+//=======================================================================
+//function : ComputeStateByInsidePoints
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOP_SolidSolid::
+  ComputeStateByInsidePoints(const Standard_Integer theFaceIndex,
+			     const Standard_Integer theBaseFaceIndex,
+			     const Standard_Integer theFaceRank,
+			     const BOPTColStd_IndexedDataMapOfIntegerIndexedMapOfInteger& theFFMap,
+			     TopAbs_State& theState) 
 
 {
   TopAbs_State aState = TopAbs_ON;
@@ -344,11 +384,10 @@ Standard_Boolean BOP_SolidSolid::ComputeStateByInsidePoints(const Standard_Integ
 
   return Standard_True;
 }
-
-// =====================================================================================================================
-//  function: TakeOnSplit
-//  purpose:
-// =====================================================================================================================
+//=======================================================================
+//function : TakeOnSplit
+//purpose  : 
+//=======================================================================
 Standard_Boolean BOP_SolidSolid::TakeOnSplit(const Standard_Integer theFaceIndex,
 					     const Standard_Integer theBaseFaceIndex) const
 {
@@ -361,13 +400,59 @@ Standard_Boolean BOP_SolidSolid::TakeOnSplit(const Standard_Integer theFaceIndex
   TColStd_MapOfInteger aMapOfUsedIndices;
   TColStd_ListOfInteger aListOfFacesToCheck;
   aListOfFacesToCheck.Append(theFaceIndex);
-
-  GetStatesOfAdjacentFaces(aListOfFacesToCheck, *myDSFiller, aMapOfUsedIndices, binout, binin, boutout);
+  //DEB
+  Handle(IntTools_Context) aCtx;
+  TopAbs_Orientation aOrF1;
+  TopoDS_Face aF1, aFSp;
+  //
+  const BooleanOperations_ShapesDataStructure& aDS=myDSFiller->DS();
+  const BOPTools_PaveFiller& aPF =myDSFiller->PaveFiller();
+  BOPTools_PaveFiller* pPF = (BOPTools_PaveFiller*)&aPF;
+  aCtx=pPF->Context();
+  //
+  aF1=TopoDS::Face(aDS.Shape(theBaseFaceIndex));
+  aOrF1=aF1.Orientation();
+  aFSp=TopoDS::Face(aDS.Shape(theFaceIndex));
+  aFSp.Orientation(aOrF1);
+  //
+  GetStatesOfAdjacentFaces(aListOfFacesToCheck, 
+			   *myDSFiller, 
+			   aMapOfUsedIndices, 
+			   binout, binin, boutout);
   
+  //zzf
+  if (!binout && !binin && !boutout) {
+    Standard_Real aTol;
+    TopAbs_State aState;
+    //
+    aTol=1.e-5;
+    aState=ComputeState(aFSp, myRefTool, aTol, aCtx);
+    //
+    if (aState==TopAbs_IN) {
+      if (myOperation==BOP_FUSE || myOperation==BOP_COMMON) {
+	bTake=Standard_False;
+      }
+      else {
+	bTake=Standard_True;
+      }
+    }
+    //
+    else if (aState==TopAbs_OUT) {
+      if (myOperation==BOP_FUSE || myOperation==BOP_COMMON) {
+	bTake=Standard_True;
+      }
+      else {
+	bTake=Standard_False;
+      }
+    }
+    //
+    return bTake;
+  }//if (!binout && !binin && !boutout) {
+  //zzt
   switch(myOperation) {
   case BOP_FUSE: {
     if(binout || (!binin && !boutout)) {
-      bTake = Standard_True;
+      bTake = Standard_True; 
     }
     break;
   }
@@ -477,11 +562,10 @@ void GetAttachedFaces(const Standard_Integer   theEdgeIndex,
     }
   }  
 }
-
-// ------------------------------------------------------------------------------------
-// static function: GetStatesOfAdjacentFaces
-// purpose:
-// ------------------------------------------------------------------------------------
+//=======================================================================
+//function : GetStatesOfAdjacentFaces
+//purpose  : 
+//=======================================================================
 void GetStatesOfAdjacentFaces(const TColStd_ListOfInteger& theListOfFacesToCheck,
 			      const BOPTools_DSFiller&     theDSFiller,
 			      TColStd_MapOfInteger&        theMapOfUsedIndices,
@@ -489,33 +573,38 @@ void GetStatesOfAdjacentFaces(const TColStd_ListOfInteger& theListOfFacesToCheck
 			      Standard_Boolean&            bFoundININ,
 			      Standard_Boolean&            bFoundOUTOUT)
 {
-
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller.DS();
   TColStd_ListOfInteger aLisOfON;
+  Standard_Integer nE, nF, nFa;
+  BooleanOperations_StateOfShape aStFa;
+  //
+  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller.DS();
+  //
   TColStd_ListIteratorOfListOfInteger anItF(theListOfFacesToCheck);
-
   for(; anItF.More(); anItF.Next()) {
-    Standard_Integer nF = anItF.Value();
+    nF = anItF.Value();
+    const TopoDS_Shape& aF=aDS.Shape(nF);
 
     if(theMapOfUsedIndices.Contains(nF)) {
       continue;
     }
+    //
     theMapOfUsedIndices.Add(nF);
-
+    
     TopoDS_Shape aFace = aDS.Shape(nF);
 
     TopExp_Explorer anExpE(aFace, TopAbs_EDGE);
 
     for(; anExpE.More(); anExpE.Next()) {
       const TopoDS_Shape& anEdge = anExpE.Current();
-      Standard_Integer nE = 0;
       nE = GetIndex(anEdge, aDS);
 
-      if(nE <= 0)
+      if(nE <= 0) {
 	continue;
-
-      if(theMapOfUsedIndices.Contains(nE))
+      }
+      if(theMapOfUsedIndices.Contains(nE)) {
 	continue;
+      }
+      //
       theMapOfUsedIndices.Add(nE);
       TColStd_ListOfInteger aListOfFaces, aListOfIN, aListOfOUT;
       GetAttachedFaces(nE, nF, theDSFiller, aListOfFaces);
@@ -523,18 +612,23 @@ void GetStatesOfAdjacentFaces(const TColStd_ListOfInteger& theListOfFacesToCheck
       TColStd_ListIteratorOfListOfInteger anIt(aListOfFaces);
 
       for(; anIt.More(); anIt.Next()) {
-	if(theMapOfUsedIndices.Contains(anIt.Value()))
-	    continue;
-
-	// 	if((aDS.GetState(anIt.Value()) != BooleanOperations_IN) &&
-	// 	   (aDS.GetState(anIt.Value()) != BooleanOperations_OUT))
-	if(aDS.GetState(anIt.Value()) == BooleanOperations_ON)
-	  aLisOfON.Append(anIt.Value());
-
-	if(aDS.GetState(anIt.Value()) == BooleanOperations_IN)
-	  aListOfIN.Append(anIt.Value());
-	else if(aDS.GetState(anIt.Value()) == BooleanOperations_OUT)
-	  aListOfOUT.Append(anIt.Value());
+	nFa=anIt.Value();
+	aStFa=aDS.GetState(nFa);
+	//
+	const TopoDS_Shape& aFa=aDS.Shape(nFa);
+	if(theMapOfUsedIndices.Contains(nFa)) {
+	  continue;
+	}
+	//
+	if(aStFa==BooleanOperations_ON) {
+	  aLisOfON.Append(nFa);
+	}
+	if(aStFa==BooleanOperations_IN) {
+	  aListOfIN.Append(nFa);
+	}
+	else if(aStFa==BooleanOperations_OUT) {
+	  aListOfOUT.Append(nFa);
+	}
       }
       bFoundINOUT  = bFoundINOUT || (!aListOfIN.IsEmpty() && !aListOfOUT.IsEmpty());
       bFoundININ   = bFoundININ  || (!aListOfIN.IsEmpty() && aListOfOUT.IsEmpty());
@@ -707,7 +801,193 @@ Standard_Boolean IsEdgeValidForFace(const Standard_Integer theEdgeIndex,
       }
     }
   }
-  
-
   return Standard_False;
 }
+//=======================================================================
+// function:  ComputeState
+// purpose:
+//=======================================================================
+TopAbs_State ComputeState(const TopoDS_Face& theF,
+			  const TopoDS_Solid& theRef,
+			  const Standard_Real theTol,
+			  const Handle(IntTools_Context)& theCtx)
+{
+  Standard_Integer iErr;
+  TopAbs_State aRet;
+  gp_Pnt aP;
+  //
+  aRet=TopAbs_UNKNOWN;
+  //
+  iErr=PntHoverFace(theF, aP);
+  if (iErr) {
+    return aRet;
+  }
+  //
+  aRet=ComputeState(aP, theRef, theTol, theCtx);
+  return aRet;
+}
+
+//=======================================================================
+// function:  ComputeState
+// purpose:
+//=======================================================================
+TopAbs_State ComputeState(const gp_Pnt& theP,
+			  const TopoDS_Solid& theRef,
+			  const Standard_Real theTol,
+			  const Handle(IntTools_Context)& theCtx)
+{
+  TopAbs_State aState;
+  //
+  BRepClass3d_SolidClassifier& aSC=theCtx->SolidClassifier(theRef);
+  aSC.Perform(theP, theTol);
+  //
+  aState=aSC.State();
+  //
+  return aState;
+}
+//=======================================================================
+//function : PntHoverFace
+//purpose  :
+//=======================================================================
+Standard_Integer PntHoverFace(const TopoDS_Face& aF,
+			      gp_Pnt& theP)
+{
+  Standard_Integer iErr;
+  Standard_Real aU, aV, aX;
+  gp_Pnt aP;
+  gp_Vec aDN;
+  gp_Pnt2d aP2D;
+  //
+  iErr=PntInFace(aF, aP,  aP2D);
+  if (iErr) {
+    return iErr;
+  }
+  //
+  aX=1e-4;
+  //
+  aP2D.Coord(aU, aV);
+  BOPTools_Tools2D::FaceNormal(aF, aU, aV, aDN);
+  //
+  theP.SetXYZ(aP.XYZ()+aX*aDN.XYZ());
+  //
+  return iErr;
+}
+//=======================================================================
+//function : PntInFace
+//purpose  :
+//=======================================================================
+Standard_Integer PntInFace(const TopoDS_Face& aF,
+			   gp_Pnt& theP,
+			   gp_Pnt2d& theP2D)
+{
+  Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
+  Standard_Integer iErr, aIx, aNbDomains, i;
+  Standard_Real aUMin, aUMax, aVMin, aVMax;
+  Standard_Real aVx, aUx, aV1, aV2, aU1, aU2, aEpsT;
+  Standard_Real aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
+  gp_Dir2d aD2D (0., 1.);
+  gp_Pnt2d aP2D;
+  gp_Pnt aPx;
+  Handle(Geom2d_Curve) aC2D;
+  Handle(Geom2d_TrimmedCurve) aCT2D;
+  Handle(Geom2d_Line) aL2D;
+  Handle(Geom_Surface) aS;
+  TopAbs_Orientation aOrE;
+  TopoDS_Face aFF;
+  TopExp_Explorer aExp;
+  //
+  aTolHatch2D=1.e-8;
+  aTolHatch3D=1.e-8;
+  aTolArcIntr=1.e-10;
+  aTolTangfIntr=1.e-10;
+  //
+  Geom2dHatch_Intersector aIntr(aTolArcIntr, aTolTangfIntr);
+  Geom2dHatch_Hatcher aHatcher(aIntr,
+			       aTolHatch2D, aTolHatch3D,
+			       Standard_True, Standard_False);
+  //
+  iErr=0;
+  aEpsT=1.e-12;
+  //
+  aFF=aF;
+  aFF.Orientation (TopAbs_FORWARD);
+  //
+  aS=BRep_Tool::Surface(aFF);
+  BRepTools::UVBounds(aFF, aUMin, aUMax, aVMin, aVMax);
+  //
+  // 1
+  aExp.Init (aFF, TopAbs_EDGE);
+  for (; aExp.More() ; aExp.Next()) {
+    const TopoDS_Edge& aE=*((TopoDS_Edge*)&aExp.Current());
+    aOrE=aE.Orientation();
+    //
+    aC2D=BRep_Tool::CurveOnSurface (aE, aFF, aU1, aU2);
+    if (aC2D.IsNull() ) {
+      iErr=1;
+      return iErr;
+    }
+    if (fabs(aU1-aU2) < aEpsT) {
+      iErr=2;
+      return iErr;
+    }
+    //
+    aCT2D=new Geom2d_TrimmedCurve(aC2D, aU1, aU2);
+    aHatcher.AddElement(aCT2D, aOrE);
+  }// for (; aExp.More() ; aExp.Next()) {
+  //
+  // 2
+  aUx=IntTools_Tools::IntermediatePoint(aUMin, aUMax);
+  aP2D.SetCoord(aUx, 0.);
+  aL2D=new Geom2d_Line (aP2D, aD2D);
+  Geom2dAdaptor_Curve aHCur(aL2D);
+  //
+  aIx=aHatcher.AddHatching(aHCur) ;
+  //
+  // 3.
+  aHatcher.Trim();
+  bIsDone=aHatcher.TrimDone(aIx);
+  if (!bIsDone) {
+    iErr=3;
+    return iErr;
+  }
+  //
+  aHatcher.ComputeDomains(aIx);
+  bIsDone=aHatcher.IsDone(aIx);
+  if (!bIsDone) {
+    iErr=4;
+    return iErr;
+  }
+  //
+  // 4.
+  aNbDomains=aHatcher.NbDomains(aIx);
+  for (i=1; i<=aNbDomains; ++i) {
+    const HatchGen_Domain& aDomain=aHatcher.Domain (aIx, i) ;
+    bHasFirstPoint=aDomain.HasFirstPoint();
+    if (!bHasFirstPoint) {
+      iErr=5;
+      return iErr;
+    }
+    //
+    aV1=aDomain.FirstPoint().Parameter();
+    //
+    bHasSecondPoint=aDomain.HasSecondPoint();
+    if (!bHasSecondPoint) {
+      iErr=6;
+      return iErr;
+    }
+    //
+    aV2=aDomain.SecondPoint().Parameter();
+    //
+    aVx=IntTools_Tools::IntermediatePoint(aV1, aV2);
+    //
+    break;
+  }
+  //
+  aS->D0(aUx, aVx, aPx);
+  //
+  theP2D.SetCoord(aUx, aVx);
+  theP=aPx;
+  //
+  return iErr;
+}
+
