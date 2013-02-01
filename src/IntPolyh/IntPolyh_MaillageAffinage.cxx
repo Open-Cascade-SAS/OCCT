@@ -138,7 +138,13 @@ static
 			const Standard_Integer aIsoDirection,
 			Standard_Integer& aI1,
 			Standard_Integer& aI2);
-
+static
+  void EnlargeZone(const Handle(Adaptor3d_HSurface)& MaSurface,
+		   Standard_Real &u0, 
+		   Standard_Real &u1, 
+		   Standard_Real &v0, 
+		   Standard_Real &v1);
+ 
 //=======================================================================
 //function : IntPolyh_MaillageAffinage
 //purpose  : 
@@ -216,11 +222,10 @@ IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
 void IntPolyh_MaillageAffinage::FillArrayOfPnt
   (const Standard_Integer SurfID)
 {
-  Standard_Integer NbSamplesU, NbSamplesV;
-  Standard_Real u0, u1, v0, v1;
-  Handle(Adaptor3d_HSurface) MaSurface;
+  Standard_Integer NbSamplesU, NbSamplesV, i, aNbSamplesU1, aNbSamplesV1;
+  Standard_Real u0, u1, v0, v1, aU, aV, dU, dV;
   //
-  MaSurface=(SurfID==1)? MaSurface1:MaSurface2;
+  const Handle(Adaptor3d_HSurface&) MaSurface=(SurfID==1)? MaSurface1 : MaSurface2;
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
   NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
@@ -230,60 +235,36 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   v0 = (MaSurface)->FirstVParameter();  
   v1 = (MaSurface)->LastVParameter();  
 
-  if(myEnlargeZone) {
-    if(MaSurface->GetType() == GeomAbs_BSplineSurface ||
-       MaSurface->GetType() == GeomAbs_BezierSurface) {
-      if((!MaSurface->IsUClosed() && !MaSurface->IsUPeriodic()) &&
-	 (Abs(u0) < 1.e+100 && Abs(u1) < 1.e+100) ) {
-	Standard_Real delta_u = Abs(u1 - u0) / 100.;
-	u0 -= delta_u;
-	u1 += delta_u;
-      }
-      if((!MaSurface->IsVClosed() && !MaSurface->IsVPeriodic()) &&
-	 (Abs(v0) < 1.e+100 && Abs(v1) < 1.e+100) ) {
-	Standard_Real delta_v = Abs(v1 - v0) / 100.;
-	v0 -= delta_v;
-	v1 += delta_v;
-      }
-    }
+  if(myEnlargeZone) { 
+    EnlargeZone(MaSurface, u0, u1, v0, v1);
   }
   //
-  Standard_Integer iCnt, BoucleU, BoucleV;
-  Standard_Real itU, itV, U, V, Tol;
-  Bnd_Box *PtrBox;
-  gp_Pnt PtXYZ;
+  TColStd_Array1OfReal aUpars(1, NbSamplesU);
+  TColStd_Array1OfReal aVpars(1, NbSamplesV);
   //
-  iCnt=0;
-  itU=(u1-u0)/Standard_Real(NbSamplesU-1);
-  itV=(v1-v0)/Standard_Real(NbSamplesV-1);
-  PtrBox = (SurfID==1) ? (&MyBox1) : (&MyBox2);
-
-  for(BoucleU=0; BoucleU<NbSamplesU; BoucleU++){
-     U = (BoucleU == (NbSamplesU - 1)) ? u1 : u0+BoucleU*itU;
-    for(BoucleV=0; BoucleV<NbSamplesV; BoucleV++){
-      V = (BoucleV == (NbSamplesV - 1)) ? v1 : v0+BoucleV*itV;
-      PtXYZ = (MaSurface)->Value(U,V);
-      IntPolyh_Point& aIPnt=TPoints[iCnt];
-      aIPnt.Set(PtXYZ.X(), PtXYZ.Y(), PtXYZ.Z(), U, V);
-      iCnt++;
-      PtrBox->Add(PtXYZ);
+  aNbSamplesU1=NbSamplesU-1;
+  aNbSamplesV1=NbSamplesV-1;
+  //
+  dU=(u1-u0)/Standard_Real(aNbSamplesU1);
+  dV=(v1-v0)/Standard_Real(aNbSamplesV1);
+  //
+  for (i=0; i<NbSamplesU; ++i) {
+    aU=u0+i*dU;
+    if (i==aNbSamplesU1) {
+      aU=u1;
     }
+    aUpars.SetValue(i+1, aU);
   }
-  TPoints.SetNbItems(iCnt);
   //
-  IntCurveSurface_ThePolyhedronOfHInter polyhedron(MaSurface,
-						   NbSamplesU,
-						   NbSamplesV,
-						   u0,v0,
-						   u1,v1);
-  Tol=polyhedron.DeflectionOverEstimation();
-  Tol*=1.2;
+  for (i=0; i<NbSamplesV; ++i) {
+    aV=v0+i*dV;
+    if (i==aNbSamplesV1) {
+      aV=v1;
+    }
+    aVpars.SetValue(i+1, aV);
+  }
   //
-  Standard_Real a1,a2,a3,b1,b2,b3;
-  //
-  PtrBox->Get(a1,a2,a3,b1,b2,b3);
-  PtrBox->Update(a1-Tol,a2-Tol,a3-Tol,b1+Tol,b2+Tol,b3+Tol);
-  PtrBox->Enlarge(MyTolerance);
+  FillArrayOfPnt(SurfID, aUpars, aVpars);
 }
 //=======================================================================
 //function : FillArrayOfPnt
@@ -294,86 +275,48 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   (const Standard_Integer SurfID,
    const Standard_Boolean isShiftFwd)
 {
-
-  Handle(Adaptor3d_HSurface) MaSurface=(SurfID==1)? MaSurface1:MaSurface2;
+  Standard_Integer NbSamplesU, NbSamplesV, i, aNbSamplesU1, aNbSamplesV1; 
+  Standard_Real u0, u1, v0, v1, aU, aV, dU, dV;
+  const Handle(Adaptor3d_HSurface)& MaSurface=(SurfID==1)? MaSurface1 : MaSurface2;
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
-  Standard_Integer NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
-  Standard_Integer NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
+  NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
+  NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
 
-  Standard_Real u0 = (MaSurface)->FirstUParameter();  
-  Standard_Real u1 = (MaSurface)->LastUParameter();
-  Standard_Real v0 = (MaSurface)->FirstVParameter();  
-  Standard_Real v1 = (MaSurface)->LastVParameter();  
+  u0 = (MaSurface)->FirstUParameter();  
+  u1 = (MaSurface)->LastUParameter();
+  v0 = (MaSurface)->FirstVParameter();  
+  v1 = (MaSurface)->LastVParameter();  
 
   if(myEnlargeZone) {
-    if(MaSurface->GetType() == GeomAbs_BSplineSurface ||
-       MaSurface->GetType() == GeomAbs_BezierSurface) {
-      if((!MaSurface->IsUClosed() && !MaSurface->IsUPeriodic()) &&
-	 (Abs(u0) < 1.e+100 && Abs(u1) < 1.e+100) ) {
-	Standard_Real delta_u = Abs(u1 - u0) / 100.;
-	u0 -= delta_u;
-	u1 += delta_u;
-      }
-      if((!MaSurface->IsVClosed() && !MaSurface->IsVPeriodic()) &&
-	 (Abs(v0) < 1.e+100 && Abs(v1) < 1.e+100) ) {
-	Standard_Real delta_v = Abs(v1 - v0) / 100.;
-	v0 -= delta_v;
-	v1 += delta_v;
-      }
-    }
+    EnlargeZone(MaSurface, u0, u1, v0, v1);
   }
-  
-  IntCurveSurface_ThePolyhedronOfHInter polyhedron(MaSurface,
-						   NbSamplesU,
-						   NbSamplesV,
-						   u0,v0,
-						   u1,v1);
-  Standard_Real Tol=polyhedron.DeflectionOverEstimation();
-
-  Standard_Integer CpteurTabPnt=0;
-  Standard_Real itU=(u1-u0)/Standard_Real(NbSamplesU-1);
-  Standard_Real itV=(v1-v0)/Standard_Real(NbSamplesV-1);
-
-  Bnd_Box *PtrBox = (SurfID==1) ? (&MyBox1) : (&MyBox2);
-  Standard_Real resol = gp::Resolution();
-
-  for(Standard_Integer BoucleU=0; BoucleU<NbSamplesU; BoucleU++){
-    Standard_Real U = (BoucleU == (NbSamplesU - 1)) ? u1 : u0+BoucleU*itU;
-    for(Standard_Integer BoucleV=0; BoucleV<NbSamplesV; BoucleV++){
-      Standard_Real V = (BoucleV == (NbSamplesV - 1)) ? v1 : v0+BoucleV*itV;
-
-      gp_Pnt PtXYZ;
-      gp_Vec aDU;
-      gp_Vec aDV;
-      gp_Vec aNorm;
-
-      MaSurface->D1(U, V, PtXYZ, aDU, aDV);
-      
-      aNorm = aDU.Crossed(aDV);
-      Standard_Real aMag = aNorm.Magnitude();
-      if (aMag > resol) {
-        aNorm /= aMag;
-        aNorm.Multiply(Tol*1.5);
-
-        if (isShiftFwd)
-          PtXYZ.Translate(aNorm);
-        else
-          PtXYZ.Translate(aNorm.Reversed());
-      }
-
-      (TPoints[CpteurTabPnt]).Set(PtXYZ.X(), PtXYZ.Y(), PtXYZ.Z(), U, V);
-      CpteurTabPnt++;
-      PtrBox->Add(PtXYZ);
+  //
+  TColStd_Array1OfReal aUpars(1, NbSamplesU);
+  TColStd_Array1OfReal aVpars(1, NbSamplesV);
+  //
+  aNbSamplesU1=NbSamplesU-1;
+  aNbSamplesV1=NbSamplesV-1;
+  //
+  dU=(u1-u0)/Standard_Real(aNbSamplesU1);
+  dV=(v1-v0)/Standard_Real(aNbSamplesV1);
+  //
+  for (i=0; i<NbSamplesU; ++i) {
+    aU=u0+i*dU;
+    if (i==aNbSamplesU1) {
+      aU=u1;
     }
+    aUpars.SetValue(i+1, aU);
   }
-  TPoints.SetNbItems(CpteurTabPnt);
-
-  Tol*=1.2;
-
-  Standard_Real a1,a2,a3,b1,b2,b3;
-  PtrBox->Get(a1,a2,a3,b1,b2,b3);
-  PtrBox->Update(a1-Tol,a2-Tol,a3-Tol,b1+Tol,b2+Tol,b3+Tol);
-  PtrBox->Enlarge(MyTolerance);
+  //
+  for (i=0; i<NbSamplesV; ++i) {
+    aV=v0+i*dV;
+    if (i==aNbSamplesV1) {
+      aV=v1;
+    }
+    aVpars.SetValue(i+1, aV);
+  }
+  //
+  FillArrayOfPnt(SurfID, isShiftFwd, aUpars, aVpars);  
 }
 //=======================================================================
 //function : FillArrayOfPnt
@@ -4018,6 +3961,32 @@ Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HSurface)& aS,
   }
   //
   return bRet;
+}
+//=======================================================================
+//function : EnlargeZone
+//purpose  : 
+//=======================================================================
+void EnlargeZone(const Handle(Adaptor3d_HSurface)& MaSurface,
+		 Standard_Real &u0, 
+		 Standard_Real &u1, 
+		 Standard_Real &v0, 
+		 Standard_Real &v1) 
+{
+  if(MaSurface->GetType() == GeomAbs_BSplineSurface ||
+     MaSurface->GetType() == GeomAbs_BezierSurface) {
+    if((!MaSurface->IsUClosed() && !MaSurface->IsUPeriodic()) &&
+       (Abs(u0) < 1.e+100 && Abs(u1) < 1.e+100) ) {
+      Standard_Real delta_u = 0.01*Abs(u1 - u0);
+      u0 -= delta_u;
+      u1 += delta_u;
+    }
+    if((!MaSurface->IsVClosed() && !MaSurface->IsVPeriodic()) &&
+       (Abs(v0) < 1.e+100 && Abs(v1) < 1.e+100) ) {
+      Standard_Real delta_v = 0.01*Abs(v1 - v0);
+      v0 -= delta_v;
+      v1 += delta_v;
+    }
+  }
 }
 
 #ifdef DEB
