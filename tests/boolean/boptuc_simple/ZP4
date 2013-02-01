@@ -13,4 +13,4 @@ explode r so
 bop r_1 b1
 boptuc result
 
-set square empty
+set square 96

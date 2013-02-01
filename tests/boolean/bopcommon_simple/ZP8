@@ -13,4 +13,4 @@ explode r so
 bop r_1 b1
 bopcommon result
 
-set square 96
+set square empty

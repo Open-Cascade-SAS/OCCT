@@ -36,6 +36,7 @@ uses
     IndexedDataMapOfIntegerIndexedMapOfInteger from BOPTColStd,
     DataMapOfShapeInteger from TopTools,
     Shape        from TopoDS,
+    Solid        from TopoDS,
     State        from TopAbs,
     
     ListOfShape  from TopTools
@@ -102,6 +103,12 @@ is
     	    	    theBaseFaceIndex: Integer from Standard)
     	returns Boolean from Standard
     	is private;
-
---fields
+     
+    PrepareReferences(me:out) 
+    	is protected; 
+    
+fields  
+    myRefObject: Solid from TopoDS is protected;   
+    myRefTool  : Solid from TopoDS is protected;     
+    
 end SolidSolid;
