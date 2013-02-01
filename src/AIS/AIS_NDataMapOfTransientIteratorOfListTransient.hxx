@@ -24,12 +24,6 @@
 #include <AIS_NListIteratorOfListTransient.hxx>
 #include <NCollection_DefineDataMap.hxx>
 
-inline Standard_Boolean IsEqual (const Handle_Standard_Transient& theH1,
-				 const Handle_Standard_Transient& theH2)
-{
-  return (theH1 == theH2);
-}
-
 DEFINE_BASECOLLECTION(AIS_BaseCollItListTransient,
                       AIS_NListIteratorOfListTransient)
 DEFINE_DATAMAP       (AIS_NDataMapOfTransientIteratorOfListTransient,

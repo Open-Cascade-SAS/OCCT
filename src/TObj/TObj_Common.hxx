@@ -33,17 +33,6 @@
 #include <TCollection_HExtendedString.hxx>
 #include <Standard_Failure.hxx>
 
-//! The function IsEqual explicitly defined for Handle(Standard_Transient)
-//! in order to avoid the problem with implicit using of IsEqual() defined 
-//! for Standard_Address. The problem is that Handle(Standard_Transient)
-//! have only operator of type casting to (non-const) Standard_Transient*,
-//! hence this implicit way cannot be used for const Handle(Standard_Transient)
-inline Standard_Boolean IsEqual(const Handle(Standard_Transient)& One,
-                                const Handle(Standard_Transient)& Two)
-{
-  return One == Two;
-}
-
 //! Methods inline implimentation for HExtendedString
 
 inline Standard_Integer HashCode (const Handle(TCollection_HExtendedString)& theStr,

@@ -33,32 +33,6 @@ float h_scale = 0;
 
 void dump_texture( int id);
 
-class Font_DataMap:
-  public NCollection_DataMap< Handle(TCollection_HAsciiString),
-  Handle(TCollection_HAsciiString)>
-{
-public:
-  inline Font_DataMap
-    (const Standard_Integer NbBuckets = 1,
-    const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
-    :  NCollection_DataMap<Handle(TCollection_HAsciiString),
-    Handle(TCollection_HAsciiString)> (NbBuckets, theAllocator)
-  {}
-
-  inline Font_DataMap (const Font_DataMap& theOther)
-    :  NCollection_DataMap<Handle(TCollection_HAsciiString),
-    Handle(TCollection_HAsciiString)> (theOther)
-  {}  
-  friend Standard_Boolean IsEqual( const Handle(TCollection_HAsciiString)& h1,
-    const Handle(TCollection_HAsciiString)& h2 );
-};
-inline Standard_Boolean
-IsEqual( const Handle(TCollection_HAsciiString)& h1,
-        const Handle(TCollection_HAsciiString)& h2 )
-{
-  return (!h1->IsLess(h2) && !h1->IsGreater(h2));
-}
-
 OpenGl_FontMgr::OpenGl_FontMgr()
 : myCurrentFontId(-1),
 myXCurrentScale(1.f),

@@ -236,6 +236,16 @@ private:
   Standard_Transient *entity;
 };
 
+//! Function in global scope to check handles for equality.
+//! Will be used with standard OCCT collections like NCollection_DataMap within NCollection_DefaultHasher
+//! when there are no specialization defined for concrete type.
+//! Notice that this implementation compares only pointers to objects!
+inline Standard_Boolean IsEqual (const Handle(Standard_Transient)& theFirst,
+                                 const Handle(Standard_Transient)& theSecond)
+{
+  return theFirst == theSecond;
+}
+
 #ifdef _WIN32
 #pragma warning (pop)
 #endif

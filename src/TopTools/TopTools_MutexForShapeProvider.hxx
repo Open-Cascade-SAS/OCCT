@@ -32,9 +32,6 @@ class TopoDS_Shape;
 //!   This class is used to create and store mutexes associated with shapes.
 class TopTools_MutexForShapeProvider
 {
-  friend Standard_Boolean IsEqual(const Handle_TopoDS_TShape & theFirstHandle,
-                                  const Handle_TopoDS_TShape & theSecondHandle);
-
 public:
   //! Constructor
   Standard_EXPORT TopTools_MutexForShapeProvider();
@@ -65,11 +62,5 @@ private:
   NCollection_DataMap<Handle_TopoDS_TShape, Standard_Mutex *> myMap;
 
 };
-
-inline Standard_Boolean IsEqual(const Handle_TopoDS_TShape & theFirstHandle,
-                                const Handle_TopoDS_TShape & theSecondHandle)
-{
-  return (theFirstHandle == theSecondHandle);
-}
 
 #endif
