@@ -1912,7 +1912,7 @@ proc load_data_file {file format shape} {
 # procedure to get name of temporary directory,
 # ensuring it is existing and writeable 
 proc _get_temp_dir {} {
-    global env
+    global env tcl_platform
 
     # check typical environment variables 
     foreach var {TempDir Temp Tmp} {
@@ -1939,7 +1939,7 @@ proc _get_temp_dir {} {
         }
     }
     foreach dir $paths {
-        if { [file isdirectory $dir] && [file iswritable $dir] } {
+        if { [file isdirectory $dir] && [file writable $dir] } {
             return $dir
         }
     }
