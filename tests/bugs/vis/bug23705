@@ -1,0 +1,22 @@
+puts "========"
+puts "CR23705"
+puts "========"
+puts ""
+###############################################################
+## Isoline in the AIS viewer is not trimmed
+###############################################################
+
+restore [locate_data_file bug23705_plancher20igs_face.brep] result
+
+vinit
+visos 10 10 1
+
+vdisplay result
+vfit
+
+set x 326
+set y 295
+
+checkcolor $x $y 0 0 0
+
+set only_screen 1

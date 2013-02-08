@@ -56,6 +56,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_IsoAspect.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -3556,6 +3557,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   const char *group = "AIS_Display";
 
   // display
+  theCommands.Add("visos",
+                  "visos [name1 ...] [nbUIsos nbVIsos IsoOnPlane(0|1)]\n"
+                  "\tIf last 3 optional parameters are not set prints numbers of U-, V- isolines and IsoOnPlane.\n",
+		  __FILE__, visos, group);
 
   theCommands.Add("vdisplay",
 		  "vdisplay         : vdisplay2 name1 [name2] ... [name n] ",

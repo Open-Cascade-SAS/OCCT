@@ -146,6 +146,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   gp_Pnt dummypnt;
   Standard_Real ddefle= Max(UMax-UMin, VMax-VMin) * aDrawer->DeviationCoefficient();
   TColgp_SequenceOfPnt2d tabP;
+  Standard_Real aHatchingTol = 1.e100;
 
   UMin = VMin = 1.e100;
   UMax = VMax = -1.e100;
@@ -173,6 +174,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	      UMax = Max(P2.X(), UMax);
 	      VMin = Min(P2.Y(), VMin);
 	      VMax = Max(P2.Y(), VMax);
+              aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
 
 	      if(Orient == TopAbs_FORWARD ) {
 		//isobuild.Trim(P1,P2);
@@ -219,6 +221,8 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	UMax = Max(P2.X(), UMax);
 	VMin = Min(P2.Y(), VMin);
 	VMax = Max(P2.Y(), VMax);
+        aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
+
 	if(Orient == TopAbs_FORWARD ) {
 	 // isobuild.Trim(P1,P2);
 	  tabP.Append(P1);
@@ -240,8 +244,13 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   FFaceTimer2.Start();
 #endif
 
+  // Compute the hatching tolerance.
+  aHatchingTol *= 0.1;
+  aHatchingTol = Max(Precision::Confusion(), aHatchingTol);
+  aHatchingTol = Min(1.e-5, aHatchingTol);
+
   // load the isos
-  Hatch_Hatcher isobuild(1.e-5,ToolRst.IsOriented());
+  Hatch_Hatcher isobuild(aHatchingTol, ToolRst.IsOriented());
   Standard_Boolean UClosed = aFace->IsUClosed();
   Standard_Boolean VClosed = aFace->IsVClosed();
 
