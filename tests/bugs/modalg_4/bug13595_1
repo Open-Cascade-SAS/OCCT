@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC13595"
+puts "============"
+puts ""
+######################################################
+# MakePipe raises exception
+######################################################
+
+set BugNumber OCC13595
+
+restore [locate_data_file bug13595_spine.brep] sp
+restore [locate_data_file bug13595_profile1.brep] p1
+restore [locate_data_file bug13595_profile2.brep] p2
+
+if [catch { pipe result sp p1 } catch_result] {
+  puts "${BugNumber}: Faulty (1)"
+} else {
+set square 80
+
+set nb_v_good 4
+set nb_e_good 6
+set nb_w_good 2
+set nb_f_good 2
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 16
+
+}
+
+set 2dviewer 0

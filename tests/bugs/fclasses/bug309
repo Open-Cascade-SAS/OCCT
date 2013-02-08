@@ -1,4 +1,4 @@
-puts "TODO ?OCC12345 ALL: OCC309: ERROR 2"
+puts "TODO ?OCC12345 ALL: OCC309: Error 2"
 
 puts "================"
 puts "OCC309"
@@ -13,7 +13,7 @@ set ll [llength ${result}]
 if { ${ll} != 2 } {
     puts "result = ${result}"
     puts "length = ${ll}"
-    puts "OCC309: ERROR 0"
+    puts "OCC309: Error 0"
 } else {
     set result1 [lindex ${result} 0]
     set result2 [lindex ${result} 1]
@@ -23,12 +23,8 @@ if { ${ll} != 2 } {
 	set res1 [ string range $result1 1 [expr [string length $result1] -3 ] ]
 	set res2 [ string range $result2 1 [expr [string length $result2] -3 ] ]
     } else {
-	set info [pwd]
-	set CurrentDirectory [string range $info 2 end]
-	set info2 [file dirname ${CurrentDirectory}]
-	set UpTrek [file dirname ${CurrentDirectory}]
-	set res1 [ string range $result1 3 [expr [string length $result1] -2 ] ]
-	set res2 [ string range $result2 3 [expr [string length $result2] -2 ] ]
+	set res1 [ string range $result1 1 [expr [string length $result1] -2 ] ]
+	set res2 [ string range $result2 1 [expr [string length $result2] -2 ] ]
     }
     if {[string compare ${res1} "${CurrentDirectory}"] == 0} {
 	puts "OCC309: OK 1"
@@ -36,7 +32,7 @@ if { ${ll} != 2 } {
 	puts "result1 = ${result1}"
 	puts "res1 = ${res1}"
 	puts "CurrentDirectory = ${CurrentDirectory}"
-	puts "OCC309: ERROR 1"
+	puts "OCC309: Error 1"
     }
     if {[string compare ${res2} "${UpTrek}"] == 0} {
 	puts "OCC309: OK 2"
@@ -44,7 +40,7 @@ if { ${ll} != 2 } {
 	puts "result2 = ${result2}"
 	puts "res2 = ${res2}"
 	puts "UpTrek = ${UpTrek}"
-	puts "OCC309: ERROR 2"
+	puts "OCC309: Error 2"
     }
 }
 

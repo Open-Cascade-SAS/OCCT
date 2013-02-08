@@ -1,0 +1,35 @@
+puts "============"
+puts "OCC22646"
+puts "============"
+puts ""
+######################################################
+# Error in algorithms BRepOffsetAPI_ThruSections and BRepOffsetAPI_MakePipeShell: 
+# sections with degenerated edges are processed in
+######################################################
+
+set BugNumber OCC22646
+
+
+restore [locate_data_file bug22646_source.brep] s1
+restore [locate_data_file bug22646_scale_translate_xyz.brep] s2
+restore [locate_data_file bug22646_scale_translate_yz.brep] s3
+restore [locate_data_file bug22646_scale_translate_z.brep] s4
+
+vinit
+explode s1
+explode s2
+explode s3
+explode s4
+vfit
+
+donly s1_1 s2_1
+thrusections res2 0 0 s1_1 s2_1
+
+donly s1_1 s3_1
+thrusections res3 0 0 s1_1 s3_1
+
+donly s1_1 s4_1
+thrusections res4 0 0 s1_1 s4_1
+
+set only_screen 1
+

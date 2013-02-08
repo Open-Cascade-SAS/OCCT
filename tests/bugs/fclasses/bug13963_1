@@ -1,0 +1,57 @@
+pload QAcommands
+
+puts "============"
+puts "OCC13963"
+puts "============"
+puts ""
+#######################################################################
+# Some improvements in Bnd and gp classes
+#######################################################################
+
+set BugNumber OCC13963
+
+set Result [OCC13963 1 0 0 1]
+
+regexp {\([ \t]*([-0-9.+eE]+)[ \t]*([-0-9.+eE]+)[ \t]*([-0-9.+eE]+)[ \t]*\)[ \t]*=>[ \t]*\([ \t]*([-0-9.+eE]+)[ \t]*([-0-9.+eE]+)[ \t]*([-0-9.+eE]+)[ \t]*\)} $Result full OriginX OriginY OriginZ ResultX ResultY ResultZ
+
+if { ${OriginX} == 1.000 } {
+   set Status 0
+} else {
+   set Status 1
+}
+if { ${OriginY} == 0.000 } {
+   set Status 0
+} else {
+   set Status 2
+}
+if { ${OriginZ} == 0.000 } {
+   set Status 0
+} else {
+   set Status 3
+}
+
+if { ${ResultX} == 1.000 } {
+   set Status 0
+} else {
+   set Status 4
+}
+if { ${ResultY} == 0.000 } {
+   set Status 0
+} else {
+   set Status 5
+}
+if { ${ResultZ} == 0.000 } {
+   set Status 0
+} else {
+   set Status 6
+}
+
+puts "Status = ${Status}"
+# Resume
+puts ""
+if { ${Status} != 0 } {
+  puts "Faulty ${BugNumber}"
+} else {
+  puts "OK ${BugNumber}"
+}
+

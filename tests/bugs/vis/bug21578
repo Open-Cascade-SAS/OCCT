@@ -1,0 +1,52 @@
+puts "TODO OCC11111 ALL: OCC21578: Faulty"
+puts "TODO OCC11111 ALL: Error : The square of result shape is"
+
+puts "============"
+puts "OCC21578"
+puts "============"
+puts ""
+######################################################
+# Attached shape is not vizualized in the shaded mode
+######################################################
+
+set BugNumber OCC21578
+
+restore [locate_data_file OCC21578.brep] result
+
+vinit
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+regexp {Maximal deflection +([-0-9.+eE]+)} $tri_info full defl
+
+set good_tri 231
+set good_nod 236
+set good_defl 0.004029564463949387
+
+puts [format " Triangles= %s  Nodes= %s Deflection= %s " $tri $nod $defl]
+
+set status 0
+if {${tri} != ${good_tri}} {
+  set status 1
+}
+if {${nod} != ${good_nod}} {
+  set status 1
+}
+#if {${defl} != ${good_defl}} {
+#  set status 1
+#}
+
+if { ${status} != 0 } {
+  puts "${BugNumber}: Faulty"
+} else {
+  puts "${BugNumber}: OK"
+}
+
+set only_screen 1
+set square 0
+

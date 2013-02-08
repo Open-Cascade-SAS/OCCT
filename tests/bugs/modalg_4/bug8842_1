@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC8842"
+puts "============"
+puts ""
+#######################################################################
+# Errors in Offset Shape algorithm working with bspline and surface of revolution
+#######################################################################
+
+set BugNumber OCC8842
+
+if {[info commands testreadiges] == ""} {pload XSDRAW}
+
+proc myoffset {result sh val tan} {
+  if {$tan == 1} {
+    offsetparameter 1e-7 p i
+  } else {
+    offsetparameter 1e-7 p a
+  }
+  uplevel offsetload $sh $val
+  uplevel offsetperform $result
+}
+
+testreadiges [locate_data_file OCC8842_cone_CATIA.igs] a1
+
+sewing con1 a1
+
+# join type Arc
+puts "***** offsetting with join type Arc"
+puts "   cone_CATIA + 5"
+
+if [catch { myoffset result con1 5 0 } catch_result] {
+  puts "${BugNumber}: Faulty (1)"
+} else {
+
+set square 32396.2
+
+set nb_v_good 5
+set nb_e_good 8
+set nb_w_good 4
+set nb_f_good 4
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 23
+
+}
+
+set 2dviewer 0
