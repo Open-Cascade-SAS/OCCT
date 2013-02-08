@@ -1069,8 +1069,9 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSe
         if ( PDR.IsNull() ) continue;
         if ( PDR->HasDescription() && 
             PDR->Description()->Length() >0 ) name = PDR->Description();
-        else if ( PDR->Name()->Length() >0 ) name = PDR->Name();
-        else name = PDR->Id();
+        else if ( !PDR->Name().IsNull() && PDR->Name()->Length() >0 ) name = PDR->Name();
+        else if ( !PDR->Id().IsNull()) name = PDR->Id();
+        else name = new TCollection_HAsciiString;
       }
       // find proper label
       L = FindInstance ( NAUO, STool, Tool, PDFileMap, ShapeLabelMap );
@@ -1086,8 +1087,9 @@ Standard_Boolean STEPCAFControl_Reader::ReadNames (const Handle(XSControl_WorkSe
 	Handle(StepBasic_ProductDefinition)::DownCast(enti);
       if(PD.IsNull()) continue;
       Handle(StepBasic_Product) Prod = PD->Formation()->OfProduct();
-      if(Prod->Name()->UsefullLength()>0) name = Prod->Name();
-      else name = Prod->Id();
+      if(!Prod->Name().IsNull() && Prod->Name()->UsefullLength()>0) name = Prod->Name();
+      else if (!Prod->Id().IsNull()) name = Prod->Id();
+      else name = new TCollection_HAsciiString;
       L = GetLabelFromPD ( PD, STool, TP, PDFileMap, ShapeLabelMap );
       if ( L.IsNull() ) continue;
       TCollection_ExtendedString str ( name->String() );
