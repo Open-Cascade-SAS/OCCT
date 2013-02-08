@@ -1,0 +1,13 @@
+puts "========"
+puts "CR23722"
+puts "========"
+puts ""
+#############################
+## stack overflow during reading IGES in Test Harness
+#############################
+
+restore [locate_data_file bug23722_face.brep]
+
+brepiges bug23722_face ${imagedir}/face.igs
+
+igesbrep ${imagedir}/face.igs a *

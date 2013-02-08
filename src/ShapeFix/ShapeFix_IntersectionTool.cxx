@@ -1226,30 +1226,31 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
                 TopoDS_Edge tmpE,SegE;
                 // split edge1
                 Standard_Integer akey1=0, akey2=0;
+                Standard_Real newTolerance;
                 // analysis fo P01
-                if(P01.Distance(PV1)<Max(tolV1,BRep_Tool::Tolerance(V1))) {
-                  NewV1 = V1;
-                  if(tolV1>BRep_Tool::Tolerance(V1))
-                    B.UpdateVertex(NewV1,tolV1);
+                newTolerance = Max(tolV1,BRep_Tool::Tolerance(V1));
+                if(P01.Distance(PV1)<newTolerance) {
+                  B.MakeVertex(NewV1,BRep_Tool::Pnt(V1),newTolerance);
+                  NewV1.Orientation(V1.Orientation());
                   akey1++;
                 }
-                if(P01.Distance(PV2)<Max(tolV1,BRep_Tool::Tolerance(V2))) {
-                  NewV1 = V2;
-                  if(tolV1>BRep_Tool::Tolerance(V2))
-                    B.UpdateVertex(NewV1,tolV1);
+                newTolerance = Max(tolV1,BRep_Tool::Tolerance(V2));
+                if(P01.Distance(PV2)<newTolerance) {
+                  B.MakeVertex(NewV1,BRep_Tool::Pnt(V2),newTolerance);
+                  NewV1.Orientation(V2.Orientation());
                   akey1++;
                 }
                 // analysis fo P02
-                if(P02.Distance(PV1)<Max(tolV2,BRep_Tool::Tolerance(V1))) {
-                  NewV2 = V1;
-                  if(tolV2>BRep_Tool::Tolerance(V1))
-                    B.UpdateVertex(NewV2,tolV2);
+                newTolerance = Max(tolV2,BRep_Tool::Tolerance(V1));
+                if(P02.Distance(PV1)<newTolerance) {
+                  B.MakeVertex(NewV2,BRep_Tool::Pnt(V1),newTolerance);
+                  NewV2.Orientation(V1.Orientation());
                   akey2++;
                 }
-                if(P02.Distance(PV2)<Max(tolV2,BRep_Tool::Tolerance(V2))) {
-                  NewV2 = V2;
-                  if(tolV2>BRep_Tool::Tolerance(V2))
-                    B.UpdateVertex(NewV2,tolV2);
+                newTolerance = Max(tolV2,BRep_Tool::Tolerance(V2));
+                if(P02.Distance(PV2)<newTolerance) {
+                  B.MakeVertex(NewV2,BRep_Tool::Pnt(V2),newTolerance);
+                  NewV2.Orientation(V2.Orientation());
                   akey2++;
                 }
                 if( akey1>1 || akey2>1 ) continue;
