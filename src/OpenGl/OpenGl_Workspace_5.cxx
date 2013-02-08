@@ -625,34 +625,13 @@ const OpenGl_AspectMarker* OpenGl_Workspace::AspectMarker (const Standard_Boolea
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_AspectText * OpenGl_Workspace::AspectText(const Standard_Boolean WithApply)
+const OpenGl_AspectText* OpenGl_Workspace::AspectText (const Standard_Boolean theWithApply)
 {
-  if ( WithApply )
+  if (theWithApply)
   {
-    Standard_Boolean toApply = Standard_False;
-    if ( AspectText_set != AspectText_applied )
-    {
-      if ( !AspectText_applied )
-        toApply = Standard_True;
-      else if ( strcmp( AspectText_set->Font(), AspectText_applied->Font() ) ||
-                ( AspectText_set->FontAspect() != AspectText_applied->FontAspect() ) )
-        toApply = Standard_True;
-
-      AspectText_applied = AspectText_set;
-    }
-    if ( TextParam_set != TextParam_applied )
-    {
-      if ( !TextParam_applied )
-        toApply = Standard_True;
-      else if ( TextParam_set->Height != TextParam_applied->Height )
-        toApply = Standard_True;
-
-      TextParam_applied = TextParam_set;
-    }
-    if ( toApply )
-    {
-      FindFont(AspectText_applied->Font(), AspectText_applied->FontAspect(), TextParam_applied->Height);
-    }
+    AspectText_applied = AspectText_set;
+    TextParam_applied  = TextParam_set;
   }
+
   return AspectText_set;
 }

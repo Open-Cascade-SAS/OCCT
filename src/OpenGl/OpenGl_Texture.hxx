@@ -58,6 +58,24 @@ public:
     return myTarget;
   }
 
+  //! @return texture width (0 LOD)
+  inline GLsizei SizeX() const
+  {
+    return mySizeX;
+  }
+
+  //! @return texture height (0 LOD)
+  inline GLsizei SizeY() const
+  {
+    return mySizeY;
+  }
+
+  //! @return texture ID
+  inline GLuint TextureId() const
+  {
+    return myTextureId;
+  }
+
   //! Creates Texture id if not yet generated.
   //! Data should be initialized by another method.
   Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theCtx);

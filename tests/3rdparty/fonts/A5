@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case prints 3D labels with different text alignment styles"
+puts "============"
+puts ""
+
+vtrihedron trihedr
+
+vpoint pTL  -700  100 600
+vdrawtext "Top-Left\nFirst line\nLion The Second\n3rd"       -700  100  600 000 255 255 0 2 000 1 50 1 Times-Roman
+
+vpoint pTC  0  100 600
+vdrawtext "Top-Center\nFirst line\nLion The Second\n3rd"        0  100  600 000 255 255 1 2 000 1 50 1 Times-Roman
+
+vpoint pTR  700  100 600
+vdrawtext "Top-Right\nFirst line\nLion The Second\n3rd"       700  100  600 000 255 255 2 2 000 1 50 1 Times-Roman
+
+vpoint pCL  -700  100 -100
+vdrawtext "Center-Left\nFirst line\nLion The Second\n3rd"    -700  100 -100 255 255 255 0 1 000 1 50 1 Times-Roman
+
+vpoint pCC  0  100 -100
+vdrawtext "Center-Center\nFirst line\nLion The Second\n3rd"     0  100 -100 255 255 255 1 1 000 1 50 1 Times-Roman
+
+vpoint pCR  700  100 -100
+vdrawtext "Center-Right\nFirst line\nLion The Second\n3rd"    700  100 -100 255 255 255 2 1 000 1 50 1 Times-Roman
+
+vpoint pBL  -700  100 -700
+vdrawtext "Bottom-Left\nFirst line\nLion The Second\n3rd"    -700  100 -700 255 255   0 0 0 000 1 50 1 Times-Roman
+
+vpoint pBC  0  100 -700
+vdrawtext "Bottom-Center\nFirst line\nLion The Second\n3rd"     0  100 -700 255 255   0 1 0 000 1 50 1 Times-Roman
+
+vpoint pBR  700  100 -700
+vdrawtext "Bottom-Right\nFirst line\nLion The Second\n3rd"    700  100 -700 255 255   0 2 0 000 1 50 1 Times-Roman
+
+vfit
+
+vfps

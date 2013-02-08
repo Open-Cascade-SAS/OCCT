@@ -39,19 +39,6 @@ static inline bool isPowerOfTwo (const GLsizei theNumber)
 	return !(theNumber & (theNumber - 1));
 }
 
-static inline GLsizei getPowerOfTwo (const GLsizei theNumber,
-                                     const GLsizei theThreshold)
-{
-  for (GLsizei p2 = 2; p2 <= theThreshold; p2 <<= 1)
-  {
-    if (theNumber <= p2)
-    {
-      return p2;
-    }
-  }
-  return theThreshold;
-}
-
 OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
 : mySizeX (0),
   mySizeY (0),
@@ -84,10 +71,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   // upscale width/height if numbers are odd
   if (toForcePowerOfTwo)
   {
-    GLint aMaxTexDim = 2048;
-    glGetIntegerv (GL_MAX_TEXTURE_SIZE, &aMaxTexDim);
-    mySizeX = getPowerOfTwo (theViewportSizeX, aMaxTexDim);
-    mySizeY = getPowerOfTwo (theViewportSizeY, aMaxTexDim);
+    mySizeX = OpenGl_Context::GetPowerOfTwo (theViewportSizeX, theGlContext->MaxTextureSize());
+    mySizeY = OpenGl_Context::GetPowerOfTwo (theViewportSizeY, theGlContext->MaxTextureSize());
   }
   else
   {

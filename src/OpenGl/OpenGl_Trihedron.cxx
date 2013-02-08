@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 
 #include <stddef.h>
@@ -34,8 +33,10 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Trihedron.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_Trihedron,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Trihedron,MMgt_TShared)
+static const OpenGl_TextParam THE_LABEL_PARAMS =
+{
+  16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
+};
 
 static const CALL_DEF_CONTEXTLINE myDefaultContextLine =
 {
@@ -89,10 +90,10 @@ static int   theNbFacettes = 12;
 */
 
 //call_triedron_redraw
-void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Standard_Real U = AWorkspace->ActiveView()->Height();
-  const Standard_Real V = AWorkspace->ActiveView()->Width();
+  const Standard_Real U = theWorkspace->ActiveView()->Height();
+  const Standard_Real V = theWorkspace->ActiveView()->Width();
 
   /* la taille des axes est 1 proportion (fixee a l'init du triedre) */
   /* de la dimension la plus petite de la window.                    */
@@ -157,7 +158,7 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
   /*
   * Creation du triedre
   */
-  const OpenGl_AspectLine *AspectLine = AWorkspace->AspectLine( Standard_True );
+  const OpenGl_AspectLine *AspectLine = theWorkspace->AspectLine( Standard_True );
 
   /* Fotis Sioutis 2007-11-14 15:06
   I have also seen in previous posts that the view trihedron in V3d_WIREFRAME mode
@@ -258,15 +259,13 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
   }
   glEnd();
 
-  /*
-  * Noms des axes et de l'origine
-  */
-  const OpenGl_AspectText *AspectText = AWorkspace->AspectText( Standard_True );
-  glColor3fv (AspectText->Color().rgb);
-
-  AWorkspace->RenderText (L"X", 0, float(L + rayon),    0.0f,                   float(-rayon));
-  AWorkspace->RenderText (L"Y", 0, float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon));
-  AWorkspace->RenderText (L"Z", 0, float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon));
+  // draw axes labels
+  myLabelX.SetPosition (OpenGl_Vec3(float(L + rayon),    0.0f,                   float(-rayon)));
+  myLabelY.SetPosition (OpenGl_Vec3(float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon)));
+  myLabelZ.SetPosition (OpenGl_Vec3(float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon)));
+  myLabelX.Render (theWorkspace);
+  myLabelY.Render (theWorkspace);
+  myLabelZ.Render (theWorkspace);
 
   /*
   * restauration du contexte des matrices
@@ -282,10 +281,10 @@ void OpenGl_Trihedron::Redraw (const Handle(OpenGl_Workspace) &AWorkspace) const
 *  Draws ZBUFFER trihedron mode
 *******************************************************/
 //call_zbuffer_triedron_redraw
-void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const Standard_Real U = AWorkspace->ActiveView()->Height();
-  const Standard_Real V = AWorkspace->ActiveView()->Width();
+  const Standard_Real U = theWorkspace->ActiveView()->Height();
+  const Standard_Real V = theWorkspace->ActiveView()->Width();
 
   GLdouble modelMatrix[4][4];
   glGetDoublev( GL_MODELVIEW_MATRIX,  (GLdouble *) modelMatrix );
@@ -351,7 +350,7 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
     L *= myRatio;
   }
 
-  const OpenGl_AspectLine *AspectLine = AWorkspace->AspectLine( Standard_True );
+  const OpenGl_AspectLine *AspectLine = theWorkspace->AspectLine( Standard_True );
   const TEL_COLOUR &aLineColor = AspectLine->Color();
 
   /*
@@ -529,15 +528,13 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
 
   glDisable(GL_LIGHTING);
 
-  /*
-  * origine names
-  */
-  const OpenGl_AspectText *AspectText = AWorkspace->AspectText( Standard_True );
-  glColor3fv (AspectText->Color().rgb);
-
-  AWorkspace->RenderText (L"X", 0, float(L + rayon),    0.0f,                   float(-rayon));
-  AWorkspace->RenderText (L"Y", 0, float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon));
-  AWorkspace->RenderText (L"Z", 0, float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon));
+  // draw axes labels
+  myLabelX.SetPosition (OpenGl_Vec3(float(L + rayon),    0.0f,                   float(-rayon)));
+  myLabelY.SetPosition (OpenGl_Vec3(float(rayon),        float(L + 3.0 * rayon), float(2.0 * rayon)));
+  myLabelZ.SetPosition (OpenGl_Vec3(float(-2.0 * rayon), float(0.5 * rayon),     float(L + 3.0 * rayon)));
+  myLabelX.Render (theWorkspace);
+  myLabelY.Render (theWorkspace);
+  myLabelZ.Render (theWorkspace);
 
   /*PCD 17/06/07    */
   glDepthFunc(df);
@@ -565,15 +562,20 @@ void OpenGl_Trihedron::RedrawZBuffer (const Handle(OpenGl_Workspace) &AWorkspace
 */
 
 //call_triedron_init
-OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition APosition, const Quantity_NameOfColor AColor,
-                                  const Standard_Real AScale, const Standard_Boolean AsWireframe)
-: myPos(APosition),
-  myScale(AScale),
-  myIsWireframe(AsWireframe)
+OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosition,
+                                    const Quantity_NameOfColor          theColor,
+                                    const Standard_Real                 theScale,
+                                    const Standard_Boolean              theAsWireframe)
+: myPos (thePosition),
+  myScale (theScale),
+  myIsWireframe (theAsWireframe),
+  myLabelX (TCollection_ExtendedString ("X"), OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelY (TCollection_ExtendedString ("Y"), OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelZ (TCollection_ExtendedString ("Z"), OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS)
 {
   Standard_Real R,G,B;
-  Quantity_Color Color(AColor);
-  Color.Values(R,G,B,Quantity_TOC_RGB);
+  Quantity_Color aColor (theColor);
+  aColor.Values (R, G, B, Quantity_TOC_RGB);
 
   CALL_DEF_CONTEXTLINE aContextLine = myDefaultContextLine;
   aContextLine.Color.r = (float)R;
@@ -603,8 +605,19 @@ OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition APositio
 */
 
 //call_triedron_erase
-OpenGl_Trihedron::~OpenGl_Trihedron ()
+OpenGl_Trihedron::~OpenGl_Trihedron()
 {
+}
+
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
+void OpenGl_Trihedron::Release (const Handle(OpenGl_Context)& theCtx)
+{
+  myLabelX.Release (theCtx);
+  myLabelY.Release (theCtx);
+  myLabelZ.Release (theCtx);
 }
 
 /*----------------------------------------------------------------------*/
@@ -640,11 +653,11 @@ void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) con
 
   if (myIsWireframe)
   {
-    Redraw (theWorkspace);
+    redraw (theWorkspace);
   }
   else
   {
-    RedrawZBuffer (theWorkspace);
+    redrawZBuffer (theWorkspace);
   }
 
   // restore aspects

@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case performs rendering of single huge text label"
+puts "============"
+puts ""
+
+vtrihedron trihedr
+
+set aFileHandle [open "$::env(CASROOT)/data/step/screw.step" r]
+set aText [read $aFileHandle]
+close $aFileHandle
+
+vpoint p0     0      0 -400
+vpoint p1     0  10000 -400
+vpoint p2  1000      0 -400
+vfit
+
+vdrawtext "$aText"  100  100 -400 000 255 255 0 0 000 1 50 1 Times-Roman
+
+vfps

@@ -68,6 +68,12 @@ NCollection_EBTree.hxx
 NCollection_UBTree.hxx
 NCollection_UBTreeFiller.hxx
 
+NCollection_UtfIterator.hxx
+NCollection_UtfIterator.lxx
+NCollection_UtfString.hxx
+NCollection_UtfString.lxx
+NCollection_String.hxx
+
 NCollection_SparseArray.hxx
 NCollection_SparseArrayBase.hxx
 NCollection_SparseArrayBase.cxx

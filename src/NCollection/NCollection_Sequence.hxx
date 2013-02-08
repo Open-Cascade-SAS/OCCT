@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef NCollection_Sequence_HeaderFile
 #define NCollection_Sequence_HeaderFile
 
@@ -113,6 +112,20 @@ template <class TheItemType> class NCollection_Sequence
   //! Number of items
   Standard_Integer Length (void) const
   { return mySize; }
+
+  //! Method for consistency with other collections.
+  //! @return Lower bound (inclusive) for iteration.
+  Standard_Integer Lower() const
+  {
+    return 1;
+  }
+
+  //! Method for consistency with other collections.
+  //! @return Upper bound (inclusive) for iteration.
+  Standard_Integer Upper() const
+  {
+    return mySize;
+  }
 
   //! Empty query
   Standard_Boolean IsEmpty (void) const
@@ -253,6 +266,16 @@ template <class TheItemType> class NCollection_Sequence
     return ((const Node *) myFirstItem) -> Value();
   }
 
+  //! First item access
+  TheItemType& ChangeFirst()
+  {
+#if !defined No_Exception && !defined No_Standard_NoSuchObject
+    if (mySize == 0)
+      Standard_NoSuchObject::Raise ("NCollection_Sequence::ChangeFirst");
+#endif
+    return ((Node* )myFirstItem)->ChangeValue();
+  }
+
   //! Last item access
   const TheItemType& Last () const
   {
@@ -261,6 +284,16 @@ template <class TheItemType> class NCollection_Sequence
       Standard_NoSuchObject::Raise ("NCollection_Sequence::Last");
 #endif
     return ((const Node *) myLastItem) -> Value();
+  }
+
+  //! Last item access
+  TheItemType& ChangeLast()
+  {
+#if !defined No_Exception && !defined No_Standard_NoSuchObject
+    if (mySize == 0)
+      Standard_NoSuchObject::Raise ("NCollection_Sequence::ChangeLast");
+#endif
+    return ((Node* )myLastItem)->ChangeValue();
   }
 
   //! Constant item access by theIndex

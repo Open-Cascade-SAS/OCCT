@@ -47,6 +47,7 @@
 #include <OpenGl_Display.hxx>
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
+#include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_TextParam.hxx>
 
 #include <Handle_OpenGl_View.hxx>
@@ -92,7 +93,8 @@ public:
 
   //! Special method to perform printing.
   //! System-specific and currently only Win platform implemented.
-  Standard_Boolean Print (const Graphic3d_CView& theCView,
+  Standard_Boolean Print (const Handle(OpenGl_PrinterContext)& thePrintContext,
+                          const Graphic3d_CView& theCView,
                           const Aspect_CLayer2d& theCUnderLayer,
                           const Aspect_CLayer2d& theCOverLayer,
                           const Aspect_Handle    theHPrintDC,
@@ -100,6 +102,11 @@ public:
                           const Standard_CString theFileName,
                           const Aspect_PrintAlgo thePrintAlgorithm,
                           const Standard_Real    theScaleFactor);
+
+  const Handle(OpenGl_PrinterContext)& PrinterContext() const
+  {
+    return myPrintContext;
+  }
 
   void DisplayCallback (const Graphic3d_CView& theCView, int theReason);
 
@@ -156,6 +163,10 @@ public:
   Standard_EXPORT const OpenGl_AspectFace*   AspectFace   (const Standard_Boolean theWithApply);
   Standard_EXPORT const OpenGl_AspectMarker* AspectMarker (const Standard_Boolean theWithApply);
   Standard_EXPORT const OpenGl_AspectText*   AspectText   (const Standard_Boolean theWithApply);
+  inline const OpenGl_TextParam* AspectTextParams() const
+  {
+    return TextParam_applied;
+  }
 
   //! Clear the applied aspect state.
   void ResetAppliedAspect();
@@ -163,29 +174,6 @@ public:
   Standard_EXPORT Handle(OpenGl_Texture) DisableTexture();
   Standard_EXPORT Handle(OpenGl_Texture) EnableTexture (const Handle(OpenGl_Texture)&          theTexture,
                                                         const Handle(Graphic3d_TextureParams)& theParams = NULL);
-
-  //// RELATED TO FONTS ////
-
-  int FindFont (const char*           theFontName,
-                const Font_FontAspect theFontAspect,
-                const int             theBestSize = -1,
-                const float           theXScale = 1.0f,
-                const float           theYScale = 1.0f)
-  {
-    return myDisplay->FindFont (theFontName, theFontAspect, theBestSize, theXScale, theYScale);
-  }
-
-  void StringSize (const wchar_t* theText, int& theWidth, int& theAscent, int& theDescent)
-  {
-    myDisplay->StringSize (theText, theWidth, theAscent, theDescent);
-  }
-
-  void RenderText (const wchar_t* theText, const int theIs2d,
-                   const float theX, const float theY, const float theZ)
-  {
-    const OpenGl_AspectText* anAspect = AspectText (Standard_True);
-    myDisplay->RenderText (theText, theIs2d, theX, theY, theZ, anAspect, TextParam_applied);
-  }
 
 protected:
 
@@ -206,6 +194,7 @@ protected:
 
 protected: //! @name protected fields
 
+  Handle(OpenGl_PrinterContext) myPrintContext;
   Handle(OpenGl_View)    myView;            // WSViews - now just one view is supported
   Standard_Boolean       myIsTransientOpen; // transientOpen
   Standard_Boolean       myRetainMode;

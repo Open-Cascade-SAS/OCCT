@@ -1,5 +1,5 @@
 // Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 1999-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -47,7 +47,6 @@ __Standard_API long             NextPrime   (const long               me);
 __Standard_API Standard_Integer CharToInt   (const Standard_Character me); 
 __Standard_API Standard_Integer CharToInt   (const Standard_CString   me); 
 __Standard_API Standard_Integer ShallowCopy (const Standard_Integer   me);   
-//__Standard_API Standard_Integer HashCode    (const Standard_Integer, const Standard_Integer);
 
 // ===============
 // Inline methods
@@ -64,19 +63,41 @@ inline  Standard_Integer Abs (const Standard_Integer Value)
 // ------------------------------------------------------------------
 // Hascode : Computes a hascoding value for a given Integer
 // ------------------------------------------------------------------
-inline Standard_Integer HashCode(const Standard_Integer me,
-			         const Standard_Integer Upper)
+inline Standard_Integer HashCode (const Standard_Integer theMe,
+                                  const Standard_Integer theUpper)
 {
-//   return (Abs(me) % Upper) + 1;
-   return ( ( me & 0x7fffffff ) % Upper) + 1;
+  //return (Abs (theMe) % theUpper) + 1;
+  return ((theMe & 0x7fffffff ) % theUpper) + 1;
 }
 
 // ------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two integers are equal
 // ------------------------------------------------------------------
-inline Standard_Boolean IsEqual(const Standard_Integer One
-			       ,const Standard_Integer Two)
-{ return One == Two; }
+inline Standard_Boolean IsEqual (const Standard_Integer theOne,
+                                 const Standard_Integer theTwo)
+{
+  return theOne == theTwo;
+}
+
+#if (defined(_LP64) || defined(__LP64__) || defined(_WIN64))
+// ------------------------------------------------------------------
+// Hascode : Computes a hascoding value for a given unsigned integer
+// ------------------------------------------------------------------
+inline Standard_Integer HashCode (const Standard_Utf32Char theMe,
+                                  const Standard_Integer   theUpper)
+{
+  return ((theMe & 0x7fffffff ) % theUpper) + 1;
+}
+
+// ------------------------------------------------------------------
+// IsEqual : Returns Standard_True if two integers are equal
+// ------------------------------------------------------------------
+inline Standard_Boolean IsEqual (const Standard_Utf32Char theOne,
+                                 const Standard_Utf32Char theTwo)
+{
+  return theOne == theTwo;
+}
+#endif
 
 // ------------------------------------------------------------------
 // IsSimilar : Returns Standard_True if two integers are equal

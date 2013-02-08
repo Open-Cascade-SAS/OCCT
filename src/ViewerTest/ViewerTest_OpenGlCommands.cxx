@@ -175,7 +175,7 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   const OpenGl_AspectMarker* aMA = theWorkspace->AspectMarker(0);
   aMA->Type();
   const OpenGl_AspectText* aTA = theWorkspace->AspectText(0);
-  aTA->Font();
+  aTA->FontName();
   TEL_COLOUR aColor = theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT ?
     *(theWorkspace->HighlightColor) : aLA->Color();
 

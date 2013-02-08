@@ -1,6 +1,6 @@
 // Created on: 2011-09-20
 // Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Copyright (c) 2011-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 
 #include <stddef.h>
@@ -30,10 +29,10 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+  #include <config.h>
 #endif
 #ifdef HAVE_STRING_H
-#include <string.h>
+  #include <string.h>
 #endif
 
 #include <OpenGl_Workspace.hxx>
@@ -41,10 +40,12 @@
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_AspectLine.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(OpenGl_GraduatedTrihedron,MMgt_TShared)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraduatedTrihedron,MMgt_TShared)
-
 const OpenGl_AspectLine myDefaultAspectLine;
+
+static const OpenGl_TextParam THE_LABEL_PARAMS =
+{
+  16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
+};
 
 /* Bounding box */
 float xmin = 0.0f, ymin = 0.0f, zmin = 0.0f, xmax = 100.0f, ymax = 100.0f, zmax = 100.0f;
@@ -133,28 +134,6 @@ static char getFarestCorner(float d000, float d100, float d010, float d001,
     return 8; /* d111 */
 }
 
-static void drawText(const Handle(OpenGl_Workspace) &AWorkspace, const wchar_t* text, const char* font, Font_FontAspect style, int size, float x, float y, float z)
-{
-  AWorkspace->FindFont(font, style, size);
-  AWorkspace->RenderText(text, 0, x, y, z);
-
-/* 4 OCC 6.3.1 and older:
-    GLuint fontBase;
-
-#ifndef WNT
-     fontBase = tXfmsetfont (1.0F, 1.0F);
-#else
-     fontBase = WNTSetFont (1.0F, 1.0F);
-#endif
-
-#ifndef WNT
-     tXfmprstr(text, fontBase, x, y, z);
-#else
-     WNTPuts(text, fontBase, 0, x, y, z);
-#endif
-*/
-}
-
 static void drawArrow(float x1, float y1, float z1,
                       float x2, float y2, float z2,
                       float xn, float yn, float zn)
@@ -210,121 +189,103 @@ static void drawArrow(float x1, float y1, float z1,
     glEnd();
 }
 
-OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron (const Graphic3d_CGraduatedTrihedron &AData)
-: myXName(NULL), myYName(NULL), myZName(NULL),
-  myDrawXName(AData.xdrawname), myDrawYName(AData.ydrawname), myDrawZName(AData.zdrawname),
-  myDrawXValues(AData.xdrawvalues), myDrawYValues(AData.ydrawvalues), myDrawZValues(AData.zdrawvalues),
-  myDrawGrid(AData.drawgrid), myDrawAxes(AData.drawaxes),
-  myNbX(AData.nbx), myNbY(AData.nby), myNbZ(AData.nbz),
-  myXOffset(AData.xoffset), myYOffset(AData.yoffset), myZOffset(AData.zoffset),
-  myXAxisOffset(AData.xaxisoffset), myYAxisOffset(AData.yaxisoffset), myZAxisOffset(AData.zaxisoffset),
-  myDrawXTickmarks(AData.xdrawtickmarks), myDrawYTickmarks(AData.ydrawtickmarks), myDrawZTickmarks(AData.zdrawtickmarks),
-  myXTickmarkLength(AData.xtickmarklength), myYTickmarkLength(AData.ytickmarklength), myZTickmarkLength(AData.ztickmarklength),
-  myFontOfNames(NULL),
-  myStyleOfNames(AData.styleOfNames),
-  mySizeOfNames(AData.sizeOfNames),
-  myFontOfValues(NULL),
-  myStyleOfValues(AData.styleOfValues),
-  mySizeOfValues(AData.sizeOfValues),
-  myCbCubicAxes(AData.cbCubicAxes),
-  myPtrVisual3dView(AData.ptrVisual3dView)
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
+void OpenGl_GraduatedTrihedron::Release (const Handle(OpenGl_Context)& theCtx)
 {
-  /* Names of axes */
-  /* X-name */
-  int len = AData.xname.Length();
-  if (len)
-  {
-    Standard_ExtString iname = AData.xname.ToExtString();
-    wchar_t *xname = new wchar_t[len+1];
-    len = 0; while (xname[len] = (wchar_t)(iname[len])) len++;
-    myXName = xname;
-  }
-  /* Y-name */
-  len = AData.yname.Length();
-  if (len)
-  {
-    Standard_ExtString iname = AData.yname.ToExtString();
-    wchar_t *yname = new wchar_t[len+1];
-    len = 0; while (yname[len] = (wchar_t)(iname[len])) len++;
-    myYName = yname;
-  }
-  /* Z-name */
-  len = AData.zname.Length();
-  if (len)
-  {
-    Standard_ExtString iname = AData.zname.ToExtString();
-    wchar_t *zname = new wchar_t[len+1];
-    len = 0; while (zname[len] = (wchar_t)(iname[len])) len++;
-    myZName = zname;
-  }
-  /* Grid color */
-  myGridColor[0] = (float) AData.gridcolor.Red();
-  myGridColor[1] = (float) AData.gridcolor.Green();
-  myGridColor[2] = (float) AData.gridcolor.Blue();
-  /* X name color */
-  myXNameColor[0] = (float) AData.xnamecolor.Red();
-  myXNameColor[1] = (float) AData.xnamecolor.Green();
-  myXNameColor[2] = (float) AData.xnamecolor.Blue();
-  /* Y name color */
-  myYNameColor[0] = (float) AData.ynamecolor.Red();
-  myYNameColor[1] = (float) AData.ynamecolor.Green();
-  myYNameColor[2] = (float) AData.ynamecolor.Blue();
-  /* Z name color */
-  myZNameColor[0] = (float) AData.znamecolor.Red();
-  myZNameColor[1] = (float) AData.znamecolor.Green();
-  myZNameColor[2] = (float) AData.znamecolor.Blue();
-  /* X color of axis and values */
-  myXColor[0] = (float) AData.xcolor.Red();
-  myXColor[1] = (float) AData.xcolor.Green();
-  myXColor[2] = (float) AData.xcolor.Blue();
-  /* Y color of axis and values */
-  myYColor[0] = (float) AData.ycolor.Red();
-  myYColor[1] = (float) AData.ycolor.Green();
-  myYColor[2] = (float) AData.ycolor.Blue();
-  /* Z color of axis and values */
-  myZColor[0] = (float) AData.zcolor.Red();
-  myZColor[1] = (float) AData.zcolor.Green();
-  myZColor[2] = (float) AData.zcolor.Blue();
-  /* Font name of names of axes: Courier, Arial, ... */
-  len = AData.fontOfNames.Length();
-  char *fontOfNames = new char[len+1];
-  if (len)
-    strcpy(fontOfNames, AData.fontOfNames.ToCString());
-  else
-    fontOfNames[0] = '\0';
-  myFontOfNames = fontOfNames;
-  /* Font name of values: Courier, Arial, ... */
-  len = AData.fontOfValues.Length();
-  char *fontOfValues = new char[len+1];
-  if (len)
-    strcpy(fontOfValues, AData.fontOfValues.ToCString());
-  else
-    fontOfValues[0] = '\0';
-  myFontOfValues = fontOfValues;
+  myLabelX.Release (theCtx);
+  myLabelY.Release (theCtx);
+  myLabelZ.Release (theCtx);
+  myLabelValues.Release (theCtx);
 }
 
-OpenGl_GraduatedTrihedron::~OpenGl_GraduatedTrihedron ()
+OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron (const Graphic3d_CGraduatedTrihedron& theData)
+: myLabelX (theData.xname, OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelY (theData.yname, OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelZ (theData.zname, OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS),
+  myToDrawXName (theData.xdrawname == Standard_True),
+  myToDrawYName (theData.ydrawname == Standard_True),
+  myToDrawZName (theData.zdrawname == Standard_True),
+  myToDrawXValues (theData.xdrawvalues == Standard_True),
+  myToDrawYValues (theData.ydrawvalues == Standard_True),
+  myToDrawZValues (theData.zdrawvalues == Standard_True),
+  myToDrawGrid (theData.drawgrid == Standard_True),
+  myToDrawAxes (theData.drawaxes == Standard_True),
+  myNbX (theData.nbx),
+  myNbY (theData.nby),
+  myNbZ (theData.nbz),
+  myXOffset (theData.xoffset),
+  myYOffset (theData.yoffset),
+  myZOffset (theData.zoffset),
+  myXAxisOffset (theData.xaxisoffset),
+  myYAxisOffset (theData.yaxisoffset),
+  myZAxisOffset (theData.zaxisoffset),
+  myDrawXTickmarks (theData.xdrawtickmarks),
+  myDrawYTickmarks (theData.ydrawtickmarks),
+  myDrawZTickmarks (theData.zdrawtickmarks),
+  myXTickmarkLength (theData.xtickmarklength),
+  myYTickmarkLength (theData.ytickmarklength),
+  myZTickmarkLength (theData.ztickmarklength),
+  myCbCubicAxes (theData.cbCubicAxes),
+  myPtrVisual3dView (theData.ptrVisual3dView)
 {
-  // Names of axes
-  if (myXName)
-    delete[] myXName;
-  if (myYName)
-    delete[] myYName;
-  if (myZName)
-    delete[] myZName;
+  myAspectLabels.ChangeFontName() = theData.fontOfNames;
+  myAspectValues.ChangeFontName() = theData.fontOfValues;
+  myAspectLabels.SetFontAspect (theData.styleOfNames);
+  myAspectValues.SetFontAspect (theData.styleOfValues);
+  myLabelX.SetFontSize (NULL, theData.sizeOfNames);
+  myLabelY.SetFontSize (NULL, theData.sizeOfNames);
+  myLabelZ.SetFontSize (NULL, theData.sizeOfNames);
+  myLabelValues.SetFontSize (NULL, theData.sizeOfValues);
 
-  // Fonts
-  if (myFontOfNames)
-    delete[] myFontOfNames;
-  if (myFontOfValues)
-    delete[] myFontOfValues;
+  // Grid color
+  myGridColor[0] = (float) theData.gridcolor.Red();
+  myGridColor[1] = (float) theData.gridcolor.Green();
+  myGridColor[2] = (float) theData.gridcolor.Blue();
+  // X name color
+  myXNameColor.rgb[0] = (float )theData.xnamecolor.Red();
+  myXNameColor.rgb[1] = (float )theData.xnamecolor.Green();
+  myXNameColor.rgb[2] = (float )theData.xnamecolor.Blue();
+  myXNameColor.rgb[3] = 1.0f;
+  // Y name color
+  myYNameColor.rgb[0] = (float )theData.ynamecolor.Red();
+  myYNameColor.rgb[1] = (float )theData.ynamecolor.Green();
+  myYNameColor.rgb[2] = (float )theData.ynamecolor.Blue();
+  myYNameColor.rgb[3] = 1.0f;
+  // Z name color
+  myZNameColor.rgb[0] = (float )theData.znamecolor.Red();
+  myZNameColor.rgb[1] = (float )theData.znamecolor.Green();
+  myZNameColor.rgb[2] = (float )theData.znamecolor.Blue();
+  myZNameColor.rgb[3] = 1.0f;
+  // X color of axis and values
+  myXColor.rgb[0] = (float )theData.xcolor.Red();
+  myXColor.rgb[1] = (float )theData.xcolor.Green();
+  myXColor.rgb[2] = (float )theData.xcolor.Blue();
+  myXColor.rgb[3] = 1.0f;
+  // Y color of axis and values
+  myYColor.rgb[0] = (float )theData.ycolor.Red();
+  myYColor.rgb[1] = (float )theData.ycolor.Green();
+  myYColor.rgb[2] = (float )theData.ycolor.Blue();
+  myYColor.rgb[3] = 1.0f;
+  // Z color of axis and values
+  myZColor.rgb[0] = (float )theData.zcolor.Red();
+  myZColor.rgb[1] = (float )theData.zcolor.Green();
+  myZColor.rgb[2] = (float )theData.zcolor.Blue();
+  myZColor.rgb[3] = 1.0f;
+}
+
+OpenGl_GraduatedTrihedron::~OpenGl_GraduatedTrihedron()
+{
+  //
 }
 
 //call_graduatedtrihedron_redraw
-void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
+void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_AspectLine *oldAspectLine = AWorkspace->SetAspectLine(&myDefaultAspectLine);
-  AWorkspace->AspectLine(Standard_True);
+  const OpenGl_AspectLine *oldAspectLine = theWorkspace->SetAspectLine(&myDefaultAspectLine);
+  theWorkspace->AspectLine(Standard_True);
 
   /* Update boundary box */
   if (myCbCubicAxes)
@@ -650,17 +611,17 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     }
   }
 
-  /* Draw the graduated trihedron */
-  unsigned int i, j, offset;
+  // Draw the graduated trihedron
+  unsigned int i, offset;
   float m1[3], m2[3];
   float step, dx, dy, dz;
 
-  /* Grid */
-  if (myDrawGrid)
+  // Grid
+  if (myToDrawGrid)
   {
     glColor3fv(myGridColor);
     glBegin(GL_LINES);
-    /* Boundary grid-lines */
+    // Boundary grid-lines
     if (LX1draw == 1)
     {
       glVertex3fv(&(LX1[0]));
@@ -712,7 +673,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     /* X-Grid lines */
     if (myNbX > 0)
     {
-      i = myDrawAxes ? 1 : 0;
+      i = myToDrawAxes ? 1 : 0;
       step = fabsf(LX1[3] - LX1[0]) / (float) myNbX;
       while (i < myNbX)
       {
@@ -727,7 +688,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     /* Y-Grid lines */
     if (myNbY > 0)
     {
-      i = myDrawAxes ? 1 : 0;
+      i = myToDrawAxes ? 1 : 0;
       step = fabsf(LY1[4] - LY1[1]) / (float) myNbY;
       while (i < myNbY)
       {
@@ -742,8 +703,9 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     /* Z-Grid lines */
     if (myNbZ > 0)
     {
-      i = myDrawAxes ? 1 : 0;
+      i = myToDrawAxes ? 1 : 0;
       step = fabsf(LZ1[5] - LZ1[2]) / (float) myNbZ;
+
       while (i < myNbZ)
       {
         glBegin(GL_LINE_STRIP);
@@ -756,39 +718,38 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     }
   }
 
-  /* Axes (arrows) */
-  if (myDrawAxes)
+  // Axes (arrows)
+  if (myToDrawAxes)
   {
-    /* X-axis */
-    glColor3fv(myXColor);
+    // X-axis
+    glColor3fv(myXColor.rgb);
     drawArrow(xmin, ymin, zmin, xmax, ymin, zmin, normal[0], normal[1], normal[2]);
 
-    /* Y-axis */
-    glColor3fv(myYColor);
+    // Y-axis
+    glColor3fv(myYColor.rgb);
     drawArrow(xmin, ymin, zmin, xmin, ymax, zmin, normal[0], normal[1], normal[2]);
 
-    /* Z-axis */
-    glColor3fv(myZColor);
+    // Z-axis
+    glColor3fv(myZColor.rgb);
     drawArrow(xmin, ymin, zmin, xmin, ymin, zmax, normal[0], normal[1], normal[2]);
   }
 
-  /* Names of axes & values */
+  // Names of axes & values
   char textValue[128];
-  wchar_t wtextValue[128];
 
-  if (myDrawXName || myDrawXValues)
+  if (myToDrawXName || myToDrawXValues)
   {
-    /* Middle point of the first X-axis */
+    // Middle point of the first X-axis
     m1[0] = 0.5f * (LX1[0] + LX1[3]);
     m1[1] = 0.5f * (LX1[1] + LX1[4]);
     m1[2] = 0.5f * (LX1[2] + LX1[5]);
 
-    /* Middle point of the second X-axis */
+    // Middle point of the second X-axis
     m2[0] = 0.5f * (LX2[0] + LX2[3]);
     m2[1] = 0.5f * (LX2[1] + LX2[4]);
     m2[2] = 0.5f * (LX2[2] + LX2[5]);
 
-    /* Apply offset to m1 */
+    // Apply offset to m1
     dy = m1[1] - m2[1];
     if (fabsf(dy) > 1.e-7f)
     {
@@ -802,64 +763,66 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     m2[1] = dpix * dy;
     m2[2] = dpix * dz;
 
-    /* Name of X-axis */
-    if (myDrawXName)
+    // Name of X-axis
+    if (myToDrawXName)
     {
-      glColor3fv(myXNameColor);
       offset = myXAxisOffset + myXTickmarkLength;
-      drawText(AWorkspace, myXName, myFontOfNames, myStyleOfNames, mySizeOfNames,
-               m1[0], m1[1] + offset * m2[1], m1[2] + offset * m2[2]);
+
+      // draw axes labels
+      myAspectLabels.ChangeColor() = myXNameColor;
+      const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectLabels);
+      myLabelX.SetPosition (OpenGl_Vec3(m1[0], m1[1] + offset * m2[1], m1[2] + offset * m2[2]));
+      myLabelX.Render (theWorkspace);
+      theWorkspace->SetAspectText (aPrevAspectText);
     }
 
-    /* X-values */
-    if (myDrawXValues && myNbX > 0)
+    // X-values
+    if (myToDrawXValues && myNbX > 0)
     {
-      glColor3fv(myXColor);
+      myAspectValues.ChangeColor() = myXColor;
+      const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectValues);
 
-      i = 0;
       step = fabsf(LX1[3] - LX1[0]) / (float) myNbX;
       offset = myXOffset + myXTickmarkLength;
-      while (i <= myNbX)
+      for (unsigned int anIter = 0; anIter <= myNbX; ++anIter)
       {
-        sprintf(textValue, "%g", LX1[0] + i * step);
-        j = 0; while (wtextValue[j] = textValue[j]) j++;
-        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues,
-                 LX1[0] + i * step, m1[1] + offset * m2[1], m1[2] + offset * m2[2]);
-        i++;
+        sprintf (textValue, "%g", LX1[0] + anIter * step);
+        myLabelValues.Init (theWorkspace->GetGlContext(), textValue,
+                            OpenGl_Vec3(LX1[0] + anIter * step, m1[1] + offset * m2[1], m1[2] + offset * m2[2]));
+        myLabelValues.Render (theWorkspace);
       }
+      theWorkspace->SetAspectText (aPrevAspectText);
     }
 
-    /* X-tickmark */
+    // X-tickmark
     if (myDrawXTickmarks && myNbX > 0)
     {
       glColor3fv(myGridColor);
 
-      i = 0;
       step = fabsf(LX1[3] - LX1[0]) / (float) myNbX;
-      while (i <= myNbX)
+      for (unsigned int anIter = 0; anIter <= myNbX; ++anIter)
       {
         glBegin(GL_LINES);
-        glVertex3f(LX1[0] + i * step, m1[1],                             m1[2]);
-        glVertex3f(LX1[0] + i * step, m1[1] + myXTickmarkLength * m2[1], m1[2] + myXTickmarkLength * m2[2]);
+        glVertex3f(LX1[0] + anIter * step, m1[1],                             m1[2]);
+        glVertex3f(LX1[0] + anIter * step, m1[1] + myXTickmarkLength * m2[1], m1[2] + myXTickmarkLength * m2[2]);
         glEnd();
-        i++;
       }
     }
   }
 
-  if (myDrawYName || myDrawYValues)
+  if (myToDrawYName || myToDrawYValues)
   {
-    /* Middle point of the first Y-axis */
+    // Middle point of the first Y-axis
     m1[0] = 0.5f * (LY1[0] + LY1[3]);
     m1[1] = 0.5f * (LY1[1] + LY1[4]);
     m1[2] = 0.5f * (LY1[2] + LY1[5]);
 
-    /* Middle point of the second Y-axis */
+    // Middle point of the second Y-axis
     m2[0] = 0.5f * (LY2[0] + LY2[3]);
     m2[1] = 0.5f * (LY2[1] + LY2[4]);
     m2[2] = 0.5f * (LY2[2] + LY2[5]);
 
-    /* Apply offset to m1 */
+    // Apply offset to m1
     dx = m1[0] - m2[0];
     if (fabsf(dx) > 1.e-7f)
     {
@@ -874,34 +837,37 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     m2[0] = dpix * dx;
     m2[2] = dpix * dz;
 
-    /* Name of Y-axis */
-    if (myDrawYName)
+    // Name of Y-axis
+    if (myToDrawYName)
     {
-      glColor3fv(myYNameColor);
       offset = myYAxisOffset + myYTickmarkLength;
-      drawText(AWorkspace, myYName, myFontOfNames, myStyleOfNames, mySizeOfNames,
-               m1[0] + offset * m2[0], m1[1], m1[2] + offset * m2[2]);
+
+      myAspectLabels.ChangeColor() = myYNameColor;
+      const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectLabels);
+      myLabelY.SetPosition (OpenGl_Vec3(m1[0] + offset * m2[0], m1[1], m1[2] + offset * m2[2]));
+      myLabelY.Render (theWorkspace);
+      theWorkspace->SetAspectText (aPrevAspectText);
     }
 
-    /* Y-values */
-    if (myDrawYValues && myNbY > 0)
+    // Y-values
+    if (myToDrawYValues && myNbY > 0)
     {
-      glColor3fv(myYColor);
+      myAspectValues.ChangeColor() = myYColor;
+      const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectValues);
 
-      i = 0;
       step = fabsf(LY1[4] - LY1[1]) / (float) myNbY;
       offset = myYOffset + myYTickmarkLength;
-      while (i <= myNbY)
+      for (unsigned int anIter = 0; anIter <= myNbY; ++anIter)
       {
-        sprintf(textValue, "%g", LY1[1] + i * step);
-        j = 0; while (wtextValue[j] = textValue[j]) j++;
-        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues,
-                 m1[0] + offset * m2[0], LY1[1] + i * step, m1[2] + offset * m2[2]);
-        i++;
+        sprintf (textValue, "%g", LY1[1] + anIter * step);
+        myLabelValues.Init (theWorkspace->GetGlContext(), textValue,
+                            OpenGl_Vec3(m1[0] + offset * m2[0], LY1[1] + anIter * step, m1[2] + offset * m2[2]));
+        myLabelValues.Render (theWorkspace);
       }
+      theWorkspace->SetAspectText (aPrevAspectText);
     }
 
-    /* Y-tickmark */
+    // Y-tickmark
     if (myDrawYTickmarks && myNbY > 0)
     {
       glColor3fv(myGridColor);
@@ -919,19 +885,19 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     }
   }
 
-  if (myDrawZName || myDrawZValues)
+  if (myToDrawZName || myToDrawZValues)
   {
-    /* Middle point of the first Z-axis */
+    // Middle point of the first Z-axis
     m1[0] = 0.5f * (LZ1[0] + LZ1[3]);
     m1[1] = 0.5f * (LZ1[1] + LZ1[4]);
     m1[2] = 0.5f * (LZ1[2] + LZ1[5]);
 
-    /* Middle point of the second Z-axis */
+    // Middle point of the second Z-axis
     m2[0] = 0.5f * (LZ2[0] + LZ2[3]);
     m2[1] = 0.5f * (LZ2[1] + LZ2[4]);
     m2[2] = 0.5f * (LZ2[2] + LZ2[5]);
 
-    /* Apply offset to m1 */
+    // Apply offset to m1
     dx = m1[0] - m2[0];
     if (fabsf(dx) > 1.e-7f)
     {
@@ -946,34 +912,37 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     m2[0] = dpix * dx;
     m2[1] = dpix * dy;
 
-    /* Name of Z-axis */
-    if (myDrawZName)
+    // Name of Z-axis
+    if (myToDrawZName)
     {
-      glColor3fv(myZNameColor);
       offset = myZAxisOffset + myZTickmarkLength;
-      drawText(AWorkspace, myZName, myFontOfNames, myStyleOfNames, mySizeOfNames,
-               m1[0] + offset * m2[0], m1[1] + offset * m2[1], m1[2]);
+
+      myAspectLabels.ChangeColor() = myZNameColor;
+      const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectLabels);
+      myLabelZ.SetPosition (OpenGl_Vec3(m1[0] + offset * m2[0], m1[1] + offset * m2[1], m1[2]));
+      myLabelZ.Render (theWorkspace);
+      theWorkspace->SetAspectText (aPrevAspectText);
     }
 
-    /* Z-values */
-    if (myDrawZValues && myNbZ > 0)
+    // Z-values
+    if (myToDrawZValues && myNbZ > 0)
     {
-      glColor3fv(myZColor);
+      myAspectValues.ChangeColor() = myZColor;
+      const OpenGl_AspectText* aPrevAspectText = theWorkspace->SetAspectText (&myAspectValues);
 
-      i = 0;
       step = fabsf(LZ1[5] - LZ1[2]) / (float) myNbZ;
       offset = myZOffset + myZTickmarkLength;
-      while (i <= myNbZ)
+      for (unsigned int anIter = 0; anIter <= myNbZ; ++anIter)
       {
-        sprintf(textValue, "%g", LZ1[2] + i * step);
-        j = 0; while (wtextValue[j] = textValue[j]) j++;
-        drawText(AWorkspace, wtextValue, myFontOfValues, myStyleOfValues, mySizeOfValues,
-                 m1[0] + offset * m2[0], m1[1] + offset * m2[1], LZ1[2] + i * step);
-        i++;
+        sprintf (textValue, "%g", LZ1[2] + anIter * step);
+        myLabelValues.Init (theWorkspace->GetGlContext(), textValue,
+                            OpenGl_Vec3(m1[0] + offset * m2[0], m1[1] + offset * m2[1], LZ1[2] + anIter * step));
+        myLabelValues.Render (theWorkspace);
       }
+      theWorkspace->SetAspectText (aPrevAspectText);
     }
 
-    /* Z-tickmark */
+    // Z-tickmark
     if (myDrawZTickmarks && myNbZ > 0)
     {
       glColor3fv(myGridColor);
@@ -991,11 +960,11 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace) &AWorkspa
     }
   }
 
-  /* Activate the lighting if it was turned off by this method call */
+  // Activate the lighting if it was turned off by this method call
   if (light)
     glEnable(GL_LIGHTING);
 
-  AWorkspace->SetAspectLine(oldAspectLine);
+  theWorkspace->SetAspectLine(oldAspectLine);
 }
 
 //call_graduatedtrihedron_minmaxvalues

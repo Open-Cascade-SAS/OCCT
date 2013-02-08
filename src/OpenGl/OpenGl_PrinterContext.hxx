@@ -17,127 +17,79 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef _OPENGL_PRINTERCONTEXT_H
 #define _OPENGL_PRINTERCONTEXT_H
 
-#include <OpenGl_GlCore11.hxx>
-
-#include <MMgt_TShared.hxx>
-#include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
-#include <Handle_MMgt_TShared.hxx>
-#include <NCollection_DataMap.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
-#include <InterfaceGraphic_Visual3d.hxx>
 #include <TColStd_Array2OfReal.hxx>
-
-#include <OpenGl_Workspace.hxx>
-
-class Standard_Transient;
-class Handle(Standard_Type);
-class Handle(MMgt_TShared);
-class OpenGl_PrinterContext;
-
-DEFINE_STANDARD_HANDLE(OpenGl_PrinterContext,MMgt_TShared)
+#include <Handle_Standard_Transient.hxx>
 
 //! Class provides specific information for redrawing view to offscreen buffer
 //! on printing. The information is: projection matrixes for tiling,
 //! scaling factors for text/markers and layer viewport dimensions.
-//! The OpenGl_PrinterContext class allows to have only one global instance
-//! that can be accessed by GetPrinterContext() during printing operation. 
-//! The class instance can be created only by call_togl_print().
-class OpenGl_PrinterContext : public MMgt_TShared
+class OpenGl_PrinterContext : public Standard_Transient
 {
 
 public:
 
-  //! Get the PrinterContext instance assigned for OpenGl context.
-  //! Return NULL, if there is no current printing operation and
-  //! there is no assigned instance for "theCtx" OpenGl context.
-  static OpenGl_PrinterContext* GetPrinterContext(GLCONTEXT theCtx);
+  //! Constructor
+  OpenGl_PrinterContext();
+
+  //! Destructor
+  virtual ~OpenGl_PrinterContext();
 
   //! Get view projection transformation matrix.
-  const TColStd_Array2OfReal& GetProjTransformation () 
+  inline const TColStd_Array2OfReal& GetProjTransformation() const
   {
     return myProjTransform; 
   }
 
-  //! Get view projection transformation matrix.
-  void GetProjTransformation (GLfloat theMatrix[16]); 
+  //! Set view projection transformation matrix for printing/tiling purposes
+  //! theProjTransform parameter should be an 4x4 array.
+  bool SetProjTransformation (const TColStd_Array2OfReal& theProjTransform);
+
+  //! Setup view projection transformation matrix (glLoadMatrixf).
+  void LoadProjTransformation();
 
   //! Get text/markers scale factor
-  void GetScale (GLfloat& theScaleX, GLfloat& theScaleY)
+  inline void GetScale (Standard_ShortReal& theScaleX,
+                        Standard_ShortReal& theScaleY) const
   {
     theScaleX = myScaleX;
     theScaleY = myScaleY;
   }
 
+  //! Set text scale factor
+  void SetScale (const Standard_ShortReal theScaleX,
+                 const Standard_ShortReal theScaleY);
+
   //! Get layer viewport dimensions
-  void GetLayerViewport (GLsizei& theViewportX,
-                         GLsizei& theViewportY)
+  inline void GetLayerViewport (Standard_Integer& theViewportX,
+                                Standard_Integer& theViewportY) const
   {
     theViewportX = myLayerViewportX;
     theViewportY = myLayerViewportY;
   }
 
-private:
-
-  //! Constructor
-  OpenGl_PrinterContext (GLCONTEXT theCtx);
-
-  //! Destructor
-  virtual ~OpenGl_PrinterContext ();
-
-  //! Deactivate current printing context.
-  //! Useful when you need to redraw in usual mode the same OpenGl context
-  //! that you used for printing right after printing, before the 
-  //! OpenGl_PrinterContext instance destroyed.
-  void Deactivate ();
-
-  //! Set view projection transformation matrix for printing/tiling purposes
-  //! theProjTransform parameter should be an 4x4 array.
-  bool SetProjTransformation (TColStd_Array2OfReal& theProjTransform);
-
-  //! Set text scale factor
-  void SetScale (GLfloat theScaleX, GLfloat theScaleY)
-  {
-    myScaleX = theScaleX;
-    myScaleY = theScaleY;
-  }
-
   //! Set layer viewport dimensions
-  void SetLayerViewport (GLsizei theViewportX,
-                         GLsizei theViewportY) 
-  {
-    myLayerViewportX = theViewportX; 
-    myLayerViewportY = theViewportY;
-  }
+  void SetLayerViewport (const Standard_Integer theViewportX,
+                         const Standard_Integer theViewportY);
 
 private:
 
-  static OpenGl_PrinterContext* g_PrinterContext;
-  static GLCONTEXT g_ContextId;
   TColStd_Array2OfReal myProjTransform;
-  GLfloat              myScaleX;
-  GLfloat              myScaleY;
-  GLsizei              myLayerViewportX;
-  GLsizei              myLayerViewportY;
-  GLCONTEXT            myCtx;
+  Standard_ShortReal   myProjMatrixGl[16];
+  Standard_ShortReal   myScaleX;
+  Standard_ShortReal   myScaleY;
+  Standard_Integer     myLayerViewportX;
+  Standard_Integer     myLayerViewportY;
 
-  // the printer context could be created only in method call_togl_print
-  /*friend Standard_Boolean call_togl_print (CALL_DEF_VIEW *, CALL_DEF_LAYER *,
-                                           CALL_DEF_LAYER *, 
-                                           const Aspect_Drawable, const int,
-                                           const char*, const int, const float);*/
-  friend Standard_Boolean OpenGl_Workspace::Print (const Graphic3d_CView& ACView,
-                                                  const Aspect_CLayer2d& ACUnderLayer, 
-                                                  const Aspect_CLayer2d& ACOverLayer,
-                                                  const Aspect_Handle    hPrintDC,
-                                                  const Standard_Boolean showBackground,
-                                                  const Standard_CString filename,
-                                                  const Aspect_PrintAlgo printAlgorithm,
-                                                  const Standard_Real theScaleFactor);
+public:
+
+  DEFINE_STANDARD_RTTI(OpenGl_PrinterContext) // Type definition
+
 };
+
+DEFINE_STANDARD_HANDLE(OpenGl_PrinterContext, Standard_Transient)
 
 #endif

@@ -1,6 +1,6 @@
-// Created on: 2011-09-20
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created on: 2013-01-28
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,18 +17,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _NCollection_String_H__
+#define _NCollection_String_H__
 
-#ifndef _Handle_OpenGl_Trihedron_Header
-#define _Handle_OpenGl_Trihedron_Header
+#include "NCollection_UtfString.hxx"
 
-#include <Standard_DefineHandle.hxx>
-#include <Handle_MMgt_TShared.hxx>
+typedef NCollection_Utf8String NCollection_String;
 
-class OpenGl_Trihedron;
-
-// Handle definition
-//
-DEFINE_STANDARD_HANDLE(OpenGl_Trihedron,MMgt_TShared)
-
-
-#endif //_Handle_OpenGl_Trihedron_Header
+#endif // _NCollection_String_H__

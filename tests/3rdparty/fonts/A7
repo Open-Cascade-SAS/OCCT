@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case prints overlay labels with different subtitle styles"
+puts "============"
+puts ""
+
+voverlaytext "Overlay Test Blend"    100  50 16 Times-Roman 255 255   0 blend    0 0 255
+
+voverlaytext "Overlay Test Decal"    100 100 16 Times-Roman 255 255   0 decal    0 0 255
+
+voverlaytext "Overlay Test Subtitle" 100 150 16 Times-Roman 255 255   0 subtitle 0 0 255
+
+voverlaytext "Overlay Test Normal"   100 200 16 Times-Roman   0 255 255 normal   0 0 255
+
+voverlaytext "    Overlay Test Normal  \n    Second line" 100 250 16 Times-Roman   0 255 255 normal   0 0 255
+
+voverlaytext "    Overlay Test Subtitle\n    Second line" 100 300 16 Times-Roman 255 255   0 subtitle 0 0 255
+
+voverlaytext "    Overlay Test Decal   \n    Second line" 100 350 16 Times-Roman 255 255   0 decal    0 0 255
+
+voverlaytext "    Overlay Test Blend   \n    Second line" 100 400 16 Times-Roman 255 255   0 blend    0 0 255
+
+box b 1 2 3
+vsetdispmode 1
+vdisplay b
+vfit
+
+vfps

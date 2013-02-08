@@ -1,6 +1,6 @@
-// Created on: 2011-09-20
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created on: 2013-02-01
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,18 +17,22 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <OpenGl_Element.hxx>
 
-#ifndef _Handle_OpenGl_GraduatedTrihedron_Header
-#define _Handle_OpenGl_GraduatedTrihedron_Header
+// =======================================================================
+// function : OpenGl_Element
+// purpose  :
+// =======================================================================
+OpenGl_Element::OpenGl_Element()
+{
+  //
+}
 
-#include <Standard_DefineHandle.hxx>
-#include <Handle_MMgt_TShared.hxx>
-
-class OpenGl_GraduatedTrihedron;
-
-// Handle definition
-//
-DEFINE_STANDARD_HANDLE(OpenGl_GraduatedTrihedron,MMgt_TShared)
-
-
-#endif //_Handle_OpenGl_GraduatedTrihedron_Header
+// =======================================================================
+// function : ~OpenGl_Element
+// purpose  :
+// =======================================================================
+OpenGl_Element::~OpenGl_Element()
+{
+  //
+}

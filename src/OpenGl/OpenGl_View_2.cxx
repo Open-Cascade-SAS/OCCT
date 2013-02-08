@@ -631,10 +631,11 @@ call_util_mat_mul( matrix3 mat_a, matrix3 mat_b, matrix3 mat_c)
 /*----------------------------------------------------------------------*/
 
 //call_func_redraw_all_structs_proc
-void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
-                         const Graphic3d_CView& ACView,
-                         const Aspect_CLayer2d& ACUnderLayer,
-                         const Aspect_CLayer2d& ACOverLayer)
+void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
+                          const Handle(OpenGl_Workspace) &AWorkspace,
+                          const Graphic3d_CView& ACView,
+                          const Aspect_CLayer2d& ACUnderLayer,
+                          const Aspect_CLayer2d& ACOverLayer)
 {
   // Reset FLIST status after modification of myBackfacing
   if (myResetFLIST)
@@ -862,7 +863,7 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
 
   /////////////////////////////////////////////////////////////////////////////
   // Step 2: Draw underlayer
-  RedrawLayer2d(AWorkspace, ACView, ACUnderLayer);
+  RedrawLayer2d (thePrintContext, AWorkspace, ACView, ACUnderLayer);
 
   /////////////////////////////////////////////////////////////////////////////
   // Step 3: Redraw main plane
@@ -896,15 +897,11 @@ void OpenGl_View::Render (const Handle(OpenGl_Workspace) &AWorkspace,
 
   glMatrixMode( GL_PROJECTION );
 
-#ifdef WNT
+#ifdef _WIN32
   // add printing scale/tiling transformation
-  OpenGl_PrinterContext* aPrinterContext = OpenGl_PrinterContext::GetPrinterContext(AWorkspace->GetGContext());
-
-  if (aPrinterContext)
+  if (!thePrintContext.IsNull())
   {
-    GLfloat aProjMatrix[16];
-    aPrinterContext->GetProjTransformation(aProjMatrix);
-    glLoadMatrixf((GLfloat*) aProjMatrix);
+    thePrintContext->LoadProjTransformation();
   }
   else
 #endif
@@ -1186,11 +1183,15 @@ D = -[Px,Py,Pz] dot |Nx|
   for ( planeid = GL_CLIP_PLANE0; planeid < lastid; planeid++ )
     glDisable( planeid );
 
-  /* affichage de Triedre Non Zoomable de la vue s'il existe */
-  if (!myTrihedron.IsNull())
-    myTrihedron->Render(AWorkspace);
-  if (!myGraduatedTrihedron.IsNull())
-    myGraduatedTrihedron->Render(AWorkspace);
+  // display global trihedron
+  if (myTrihedron != NULL)
+  {
+    myTrihedron->Render (AWorkspace);
+  }
+  if (myGraduatedTrihedron != NULL)
+  {
+    myGraduatedTrihedron->Render (AWorkspace);
+  }
 
   // Restore face culling
   if ( myBackfacing )
@@ -1209,7 +1210,7 @@ D = -[Px,Py,Pz] dot |Nx|
   const int aMode = 0;
   AWorkspace->DisplayCallback (ACView, (aMode | OCC_PRE_OVERLAY));
 
-  RedrawLayer2d(AWorkspace, ACView, ACOverLayer);
+  RedrawLayer2d (thePrintContext, AWorkspace, ACView, ACOverLayer);
 
   AWorkspace->DisplayCallback (ACView, aMode);
 
@@ -1277,7 +1278,10 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 /*----------------------------------------------------------------------*/
 
 //call_togl_redraw_layer2d
-void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACLayer)
+void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
+                                 const Handle(OpenGl_Workspace)&      AWorkspace,
+                                 const Graphic3d_CView&               ACView,
+                                 const Aspect_CLayer2d&               ACLayer)
 {
   if (&ACLayer == NULL
    || ACLayer.ptrLayer == NULL
@@ -1346,11 +1350,9 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
     }
   }
 
-#ifdef WNT
+#ifdef _WIN32
   // Check printer context that exists only for print operation
-  OpenGl_PrinterContext* aPrinterContext = OpenGl_PrinterContext::GetPrinterContext (AWorkspace->GetGContext());
-
-  if (aPrinterContext)
+  if (!thePrintContext.IsNull())
   {
     // additional transformation matrix could be applied to
     // render only those parts of viewport that will be
@@ -1358,16 +1360,14 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_Workspace) &AWorkspace, con
     // tiling; scaling of graphics by matrix helps render a
     // part of a view (frame) in same viewport, but with higher
     // resolution
-    GLfloat aProjMatrix[16];
-    aPrinterContext->GetProjTransformation (aProjMatrix);
-    glLoadMatrixf ((GLfloat*) aProjMatrix);
+    thePrintContext->LoadProjTransformation();
 
     // printing operation also assumes other viewport dimension
     // to comply with transformation matrix or graphics scaling
     // factors for tiling for layer redraw
     GLsizei anViewportX = 0;
     GLsizei anViewportY = 0;
-    aPrinterContext->GetLayerViewport (anViewportX, anViewportY);
+    thePrintContext->GetLayerViewport (anViewportX, anViewportY);
     if (anViewportX != 0 && anViewportY != 0)
       glViewport (0, 0, anViewportX, anViewportY);
   }

@@ -30,6 +30,8 @@
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_GlCore20.hxx>
 
+#include <NCollection_Vector.hxx>
+
 #include <Standard_ProgramError.hxx>
 
 #if (defined(_WIN32) || defined(__WIN32__))
@@ -84,7 +86,8 @@ OpenGl_Context::OpenGl_Context()
   atiMem (Standard_False),
   nvxMem (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
-  myReleaseQueue (new OpenGl_ResourcesQueue()),
+  myDelayed         (new OpenGl_DelayReleaseMap()),
+  myReleaseQueue    (new OpenGl_ResourcesQueue()),
   myGlLibHandle (NULL),
   myGlCore20 (NULL),
   myMaxTexDim  (1024),
@@ -127,6 +130,7 @@ OpenGl_Context::~OpenGl_Context()
     }
   }
   mySharedResources.Nullify();
+  myDelayed.Nullify();
 
   delete myGlCore20;
   delete arbVBO;
@@ -161,6 +165,7 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
   if (!theShareCtx.IsNull())
   {
     mySharedResources = theShareCtx->mySharedResources;
+    myDelayed         = theShareCtx->myDelayed;
     myReleaseQueue    = theShareCtx->myReleaseQueue;
   }
 }
@@ -955,7 +960,8 @@ Standard_Boolean OpenGl_Context::ShareResource (const TCollection_AsciiString& t
 // function : ReleaseResource
 // purpose  :
 // =======================================================================
-void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey)
+void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey,
+                                      const Standard_Boolean         theToDelay)
 {
   if (!mySharedResources->IsBound (theKey))
   {
@@ -967,8 +973,15 @@ void OpenGl_Context::ReleaseResource (const TCollection_AsciiString& theKey)
     return;
   }
 
-  aRes->Release (this);
-  mySharedResources->UnBind (theKey);
+  if (theToDelay)
+  {
+    myDelayed->Bind (theKey, 1);
+  }
+  else
+  {
+    aRes->Release (this);
+    mySharedResources->UnBind (theKey);
+  }
 }
 
 // =======================================================================
@@ -987,9 +1000,48 @@ void OpenGl_Context::DelayedRelease (Handle(OpenGl_Resource)& theResource)
 // =======================================================================
 void OpenGl_Context::ReleaseDelayed()
 {
+  // release queued elements
   while (!myReleaseQueue->IsEmpty())
   {
     myReleaseQueue->Front()->Release (this);
     myReleaseQueue->Pop();
+  }
+
+  // release delayed shared resoruces
+  NCollection_Vector<TCollection_AsciiString> aDeadList;
+  for (NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator anIter (*myDelayed);
+       anIter.More(); anIter.Next())
+  {
+    if (++anIter.ChangeValue() <= 2)
+    {
+      continue; // postpone release one more frame to ensure noone use it periodically
+    }
+
+    const TCollection_AsciiString& aKey = anIter.Key();
+    if (!mySharedResources->IsBound (aKey))
+    {
+      // mixed unshared strategy delayed/undelayed was used!
+      aDeadList.Append (aKey);
+      continue;
+    }
+
+    Handle(OpenGl_Resource)& aRes = mySharedResources->ChangeFind (aKey);
+    if (aRes->GetRefCount() > 1)
+    {
+      // should be only 1 instance in mySharedResources
+      // if not - resource was reused again
+      aDeadList.Append (aKey);
+      continue;
+    }
+
+    // release resource if no one requiested it more than 2 redraw calls
+    aRes->Release (this);
+    mySharedResources->UnBind (aKey);
+    aDeadList.Append (aKey);
+  }
+
+  for (Standard_Integer anIter = 0; anIter < aDeadList.Length(); ++anIter)
+  {
+    myDelayed->UnBind (aDeadList.Value (anIter));
   }
 }

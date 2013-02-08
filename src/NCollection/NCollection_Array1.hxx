@@ -221,6 +221,30 @@ template <class TheItemType> class NCollection_Array1
     return *this; 
   }
 
+  //! @return first element
+  const TheItemType& First() const
+  {
+    return myData[myLowerBound];
+  }
+
+  //! @return first element
+  TheItemType& ChangeFirst()
+  {
+    return myData[myLowerBound];
+  }
+
+  //! @return last element
+  const TheItemType& Last() const
+  {
+    return myData[myUpperBound];
+  }
+
+  //! @return last element
+  TheItemType& ChangeLast()
+  {
+    return myData[myUpperBound];
+  }
+
   //! Constant value access
   const TheItemType& Value (const Standard_Integer theIndex) const
   {

@@ -1,3 +1,7 @@
 EXTERNLIB
+Font_FTFont.hxx
+Font_FTFont.cxx
+Font_FTLibrary.hxx
+Font_FTLibrary.cxx
 Font_NListOfSystemFont.hxx
 Font_NameOfFont.hxx

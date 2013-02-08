@@ -67,6 +67,11 @@ is
     primitive PCharacter;
     primitive PExtCharacter;
 
+    primitive Utf8Char;
+    primitive Utf16Char;
+    primitive Utf32Char;
+    primitive WideChar;
+
     deferred class ErrorHandlerCallback;
     class ErrorHandler;
     

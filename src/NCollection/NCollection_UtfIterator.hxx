@@ -1,0 +1,209 @@
+// Created on: 2013-01-28
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+#ifndef _NCollection_UtfIterator_H__
+#define _NCollection_UtfIterator_H__
+
+#include <Standard_TypeDef.hxx>
+
+//! Template class for Unicode strings support.
+//! It defines an iterator and provide correct way to read multi-byte text (UTF-8 and UTF-16)
+//! and convert it from one to another.
+//! The current value of iterator returned as UTF-32 Unicode code.
+template<typename Type>
+class NCollection_UtfIterator
+{
+
+public:
+
+  //! Constructor.
+  //! @param theString buffer to iterate
+  NCollection_UtfIterator (const Type* theString)
+  : myPosition(theString),
+    myPosNext(theString),
+    myCharIndex(0),
+    myCharUtf32(0)
+  {
+    if (theString != NULL)
+    {
+      ++(*this);
+      myCharIndex = 0;
+    }
+  }
+
+  //! Initialize iterator within specified NULL-terminated string.
+  void Init (const Type* theString)
+  {
+    myPosition  = theString;
+    myPosNext   = theString;
+    myCharUtf32 = 0;
+    if (theString != NULL)
+    {
+      ++(*this);
+    }
+    myCharIndex = 0;
+  }
+
+  //! Pre-increment operator. Reads the next unicode character.
+  //! Notice - no protection against overrun!
+  NCollection_UtfIterator& operator++()
+  {
+    myPosition = myPosNext;
+    ++myCharIndex;
+    switch (sizeof(Type))
+    {
+      case 1: readUTF8();  break;
+      case 2: readUTF16(); break;
+      case 4: // UTF-32
+      default:
+        myCharUtf32 = *myPosNext++;
+    }
+    return *this;
+  }
+
+  //! Post-increment operator.
+  //! Notice - no protection against overrun!
+  NCollection_UtfIterator operator++ (int )
+  {
+    NCollection_UtfIterator aCopy = *this;
+    ++*this;
+    return aCopy;
+  }
+
+  //! Equality operator.
+  bool operator== (const NCollection_UtfIterator& theRight) const
+  {
+    return myPosition == theRight.myPosition;
+  }
+
+  //! Dereference operator.
+  //! @return the UTF-32 codepoint of the character currently pointed by iterator.
+  Standard_Utf32Char operator*() const
+  {
+    return myCharUtf32;
+  }
+
+  //! Buffer-fetching getter.
+  const Type* BufferHere() const { return myPosition; }
+
+  //! Buffer-fetching getter. Dangerous! Iterator should be reinitialized on buffer change.
+  Type* ChangeBufferHere() { return (Type* )myPosition; }
+
+  //! Buffer-fetching getter.
+  const Type* BufferNext() const { return myPosNext; }
+
+  //! @return the index displacement from iterator intialization
+  Standard_Integer Index() const
+  {
+    return myCharIndex;
+  }
+
+  //! @return the advance in bytes to store current symbol in UTF-8.
+  //! 0 means an invalid symbol;
+  //! 1-4 bytes are valid range.
+  Standard_Integer AdvanceBytesUtf8() const;
+
+  //! @return the advance in bytes to store current symbol in UTF-16.
+  //! 0 means an invalid symbol;
+  //! 2 bytes is a general case;
+  //! 4 bytes for surrogate pair.
+  Standard_Integer AdvanceBytesUtf16() const;
+
+  //! @return the advance in bytes to store current symbol in UTF-32.
+  //! Always 4 bytes (method for consistency).
+  Standard_Integer AdvanceBytesUtf32() const
+  {
+    return Standard_Integer(sizeof(Standard_Utf32Char));
+  }
+
+  //! Fill the UTF-8 buffer within current Unicode symbol.
+  //! Use method AdvanceUtf8() to allocate buffer with enough size.
+  //! @param theBuffer buffer to fill
+  //! @return new buffer position (for next char)
+  Standard_Utf8Char*  GetUtf8 (Standard_Utf8Char*  theBuffer) const;
+  Standard_Utf8UChar* GetUtf8 (Standard_Utf8UChar* theBuffer) const;
+
+  //! Fill the UTF-16 buffer within current Unicode symbol.
+  //! Use method AdvanceUtf16() to allocate buffer with enough size.
+  //! @param theBuffer buffer to fill
+  //! @return new buffer position (for next char)
+  Standard_Utf16Char* GetUtf16 (Standard_Utf16Char* theBuffer) const;
+
+  //! Fill the UTF-32 buffer within current Unicode symbol.
+  //! Use method AdvanceUtf32() to allocate buffer with enough size.
+  //! @param theBuffer buffer to fill
+  //! @return new buffer position (for next char)
+  Standard_Utf32Char* GetUtf32 (Standard_Utf32Char* theBuffer) const;
+
+  //! @return the advance in TypeWrite chars needed to store current symbol
+  template<typename TypeWrite>
+  Standard_Integer AdvanceBytesUtf() const;
+
+  //! Fill the UTF-** buffer within current Unicode symbol.
+  //! Use method AdvanceUtf**() to allocate buffer with enough size.
+  //! @param theBuffer buffer to fill
+  //! @return new buffer position (for next char)
+  template<typename TypeWrite>
+  TypeWrite* GetUtf (TypeWrite* theBuffer) const;
+
+private:
+
+  //! Helper function for reading a single UTF8 character from the string.
+  //! Updates internal state appropriately.
+  void readUTF8();
+
+  //! Helper function for reading a single UTF16 character from the string.
+  //! Updates internal state appropriately.
+  void readUTF16();
+
+private: //! @name unicode magic numbers
+
+  static const unsigned char UTF8_BYTES_MINUS_ONE[256];
+  static const unsigned long offsetsFromUTF8[6];
+  static const unsigned char UTF8_FIRST_BYTE_MARK[7];
+  static const unsigned long UTF8_BYTE_MASK;
+  static const unsigned long UTF8_BYTE_MARK;
+  static const unsigned long UTF16_SURROGATE_HIGH_START;
+  static const unsigned long UTF16_SURROGATE_HIGH_END;
+  static const unsigned long UTF16_SURROGATE_LOW_START;
+  static const unsigned long UTF16_SURROGATE_LOW_END;
+  static const unsigned long UTF16_SURROGATE_HIGH_SHIFT;
+  static const unsigned long UTF16_SURROGATE_LOW_BASE;
+  static const unsigned long UTF16_SURROGATE_LOW_MASK;
+  static const unsigned long UTF32_MAX_BMP;
+  static const unsigned long UTF32_MAX_LEGAL;
+
+private: //! @name private fields
+
+  const Type*        myPosition;  //!< buffer position of the first element in the current character
+  const Type*        myPosNext;   //!< buffer position of the first element in the next character
+  Standard_Integer   myCharIndex; //!< index displacement from iterator intialization
+  Standard_Utf32Char myCharUtf32; //!< character stored at the current buffer position
+
+};
+
+typedef NCollection_UtfIterator<Standard_Utf8Char>  NCollection_Utf8Iter;
+typedef NCollection_UtfIterator<Standard_Utf16Char> NCollection_Utf16Iter;
+typedef NCollection_UtfIterator<Standard_Utf32Char> NCollection_Utf32Iter;
+typedef NCollection_UtfIterator<Standard_WideChar>  NCollection_UtfWideIter;
+
+// template implementation
+#include "NCollection_UtfIterator.lxx"
+
+#endif // _NCollection_UtfIterator_H__

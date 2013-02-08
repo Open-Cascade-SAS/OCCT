@@ -1,6 +1,6 @@
-// Created on: 2011-10-20
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created on: 2013-01-28
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,28 +17,32 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <Font_FTLibrary.hxx>
 
-#include <OpenGl_GraphicDriver.hxx>
+IMPLEMENT_STANDARD_HANDLE (Font_FTLibrary, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Font_FTLibrary, Standard_Transient)
 
-#include <Standard_NotImplemented.hxx>
-#include <OpenGl_CView.hxx>
-
-Standard_Boolean OpenGl_GraphicDriver::Print
-  (const Graphic3d_CView& ACView, 
-   const Aspect_CLayer2d& ACUnderLayer, 
-   const Aspect_CLayer2d& ACOverLayer,
-   const Aspect_Handle    hPrintDC,
-   const Standard_Boolean showBackground,
-   const Standard_CString filename,
-   const Aspect_PrintAlgo printAlgorithm,
-   const Standard_Real theScaleFactor) const
+// =======================================================================
+// function : Font_FTLibrary
+// purpose  :
+// =======================================================================
+Font_FTLibrary::Font_FTLibrary()
+: myFTLib (NULL)
 {
-#ifdef WNT
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    return aCView->WS->Print(ACView,ACUnderLayer,ACOverLayer,hPrintDC,showBackground,filename,printAlgorithm,theScaleFactor);
-#else
-  Standard_NotImplemented::Raise ("OpenGl_GraphicDriver::Print is implemented only on Windows");
-#endif
-  return Standard_False;
+  if (FT_Init_FreeType (&myFTLib) != 0)
+  {
+    myFTLib = NULL;
+  }
+}
+
+// =======================================================================
+// function : ~Font_FTLibrary
+// purpose  :
+// =======================================================================
+Font_FTLibrary::~Font_FTLibrary()
+{
+  if (IsValid())
+  {
+    FT_Done_FreeType (myFTLib);
+  }
 }

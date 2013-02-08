@@ -21,17 +21,20 @@
 
 #include <InterfaceGraphic.hxx>
 
-#include <OpenGl_Workspace.hxx>
-
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Context.hxx>
-
+#include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Texture.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
+
+#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
+  #include <OpenGl_AVIWriter.hxx>
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Workspace,OpenGl_Window)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,OpenGl_Window)
@@ -69,20 +72,20 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                                     Aspect_RenderingContext       theGContext,
                                     const Handle(OpenGl_Context)& theShareCtx)
 : OpenGl_Window (theDisplay, theCWindow, theGContext, theShareCtx),
-  myTransientList (0),
+  NamedStatus (0),
+  DegenerateModel (0),
+  SkipRatio (0.F),
+  HighlightColor (&myDefaultHighlightColor),
+  //
   myIsTransientOpen (Standard_False),
-  myTransientDrawToFront (Standard_True),
   myRetainMode (Standard_False),
+  myTransientDrawToFront (Standard_True),
   myUseTransparency (Standard_False),
   myUseZBuffer (Standard_False),
   myUseDepthTest (Standard_True),
   myUseGLLight (Standard_True),
   myBackBufferRestored (Standard_False),
   //
-  NamedStatus (0),
-  DegenerateModel (0),
-  SkipRatio (0.F),
-  HighlightColor (&myDefaultHighlightColor),
   AspectLine_set (&myDefaultAspectLine),
   AspectLine_applied (NULL),
   AspectFace_set (&myDefaultAspectFace),
@@ -433,4 +436,72 @@ Handle(OpenGl_Texture) OpenGl_Workspace::EnableTexture (const Handle(OpenGl_Text
   setTextureParams (myTextureBound, theParams);
 
   return aPrevTexture;
+}
+
+// =======================================================================
+// function : Redraw
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
+                               const Aspect_CLayer2d& theCUnderLayer,
+                               const Aspect_CLayer2d& theCOverLayer)
+{
+  if (!Activate())
+  {
+    return;
+  }
+
+  // release pending GL resources
+  Handle(OpenGl_Context) aGlCtx = GetGlContext();
+  aGlCtx->ReleaseDelayed();
+
+  // cache render mode state
+  GLint aRendMode = GL_RENDER;
+  glGetIntegerv (GL_RENDER_MODE,  &aRendMode);
+  aGlCtx->SetFeedback (aRendMode == GL_FEEDBACK);
+
+  Tint toSwap = (aRendMode == GL_RENDER); // swap buffers
+  GLint aViewPortBack[4];
+  OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
+  if (aFrameBuffer != NULL)
+  {
+    glGetIntegerv (GL_VIEWPORT, aViewPortBack);
+    aFrameBuffer->SetupViewport();
+    aFrameBuffer->BindBuffer (aGlCtx);
+    toSwap = 0; // no need to swap buffers
+  }
+
+  Redraw1 (theCView, theCUnderLayer, theCOverLayer, toSwap);
+  if (aFrameBuffer == NULL || !myTransientDrawToFront)
+  {
+    RedrawImmediatMode();
+  }
+
+  if (aFrameBuffer != NULL)
+  {
+    aFrameBuffer->UnbindBuffer (aGlCtx);
+    // move back original viewport
+    glViewport (aViewPortBack[0], aViewPortBack[1], aViewPortBack[2], aViewPortBack[3]);
+  }
+
+#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
+  if (OpenGl_AVIWriter_AllowWriting (theCView.DefWindow.XWindow))
+  {
+    GLint params[4];
+    glGetIntegerv (GL_VIEWPORT, params);
+    int nWidth  = params[2] & ~0x7;
+    int nHeight = params[3] & ~0x7;
+
+    const int nBitsPerPixel = 24;
+    GLubyte* aDumpData = new GLubyte[nWidth * nHeight * nBitsPerPixel / 8];
+
+    glPixelStorei (GL_PACK_ALIGNMENT, 1);
+    glReadPixels (0, 0, nWidth, nHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, aDumpData);
+    OpenGl_AVIWriter_AVIWriter (aDumpData, nWidth, nHeight, nBitsPerPixel);
+    delete[] aDumpData;
+  }
+#endif
+
+  // reset render mode state
+  aGlCtx->SetFeedback (Standard_False);
 }

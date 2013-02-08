@@ -18,8 +18,8 @@
 
 package Font
 
-uses Standard ,  
-     Quantity ,  
+uses Standard,
+     Quantity,
      TCollection,
      OSD,
      TColStd
@@ -31,7 +31,9 @@ is
   class SystemFont;
   
   imported NListOfSystemFont;
-  
+  imported FTFont;
+  imported FTLibrary;
+
   class FontMgr;
 
-end Font;   
+end Font;

@@ -17,18 +17,18 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef OpenGl_Element_Header
 #define OpenGl_Element_Header
 
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_Workspace.hxx>
 
+//! Base interface for drawable elements.
 class OpenGl_Element
 {
 public:
 
-  OpenGl_Element() {}
+  Standard_EXPORT OpenGl_Element();
 
   virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const = 0;
 
@@ -52,7 +52,7 @@ public:
 
 protected:
 
-  virtual ~OpenGl_Element() {}
+  Standard_EXPORT virtual ~OpenGl_Element();
 
 public:
 
@@ -60,4 +60,4 @@ public:
 
 };
 
-#endif //OpenGl_Element_Header
+#endif // OpenGl_Element_Header

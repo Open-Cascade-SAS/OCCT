@@ -17,110 +17,92 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
+#include <OpenGl_GlCore11.hxx>
 #include <OpenGl_PrinterContext.hxx>
 
-OpenGl_PrinterContext* OpenGl_PrinterContext::g_PrinterContext = NULL;
-GLCONTEXT             OpenGl_PrinterContext::g_ContextId      = NULL;
+IMPLEMENT_STANDARD_HANDLE (OpenGl_PrinterContext, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PrinterContext, Standard_Transient)
 
 //=======================================================================
 //function : OpenGl_PrinterContext
-//purpose  : Constructor
+//purpose  :
 //=======================================================================
-
-OpenGl_PrinterContext::OpenGl_PrinterContext (GLCONTEXT theCtx) :
-  myCtx (theCtx), myProjTransform (0, 3, 0, 3), myLayerViewportX (0),
-  myLayerViewportY (0), myScaleX (1.0f), myScaleY (1.0f)
+OpenGl_PrinterContext::OpenGl_PrinterContext()
+: myProjTransform  (0, 3, 0, 3),
+  myLayerViewportX (0),
+  myLayerViewportY (0),
+  myScaleX (1.0f),
+  myScaleY (1.0f)
 {
-  // assign global instance to the current object
-  if (myCtx != NULL)
-  {
-    g_PrinterContext = this;
-    g_ContextId      = myCtx;
-  }
-
-  // init projection matrix
+  // identity projection matrix
   Standard_Real anInitValue = 0.0;
   myProjTransform.Init (anInitValue);
-  myProjTransform (0,0)  = 1.0f;
-  myProjTransform (1,1)  = 1.0f;
-  myProjTransform (2,2)  = 1.0f;
-  myProjTransform (3,3)  = 1.0f;
+  myProjTransform (0, 0)  = 1.0;
+  myProjTransform (1, 1)  = 1.0;
+  myProjTransform (2, 2)  = 1.0;
+  myProjTransform (3, 3)  = 1.0;
+  SetProjTransformation (myProjTransform);
 }
 
-//=======================================================================
-//function : ~OpenGl_PrinterContext
-//purpose  : Destructor
-//=======================================================================
-
-OpenGl_PrinterContext::~OpenGl_PrinterContext () 
+// =======================================================================
+// function : ~OpenGl_PrinterContext
+// purpose  :
+// =======================================================================
+OpenGl_PrinterContext::~OpenGl_PrinterContext()
 {
-  // unassign global instance
-  if (g_PrinterContext == this)
-  {
-    g_ContextId      = NULL;
-    g_PrinterContext = NULL;
-  }
+  //
 }
 
-//=======================================================================
-//function : GetProjTransformation
-//purpose  : Get view projection transformation matrix.
-//=======================================================================
-
-void OpenGl_PrinterContext::GetProjTransformation (GLfloat theMatrix[16])
+// =======================================================================
+// function : LoadProjTransformation
+// purpose  :
+// =======================================================================
+void OpenGl_PrinterContext::LoadProjTransformation()
 {
-  for (int i = 0, k = 0; i < 4; i++)
-    for (int j = 0; j < 4; j++, k++)
-      theMatrix[k] = (GLfloat)myProjTransform (i,j);
+  glLoadMatrixf ((GLfloat* )myProjMatrixGl);
 }
 
-//=======================================================================
-//function : SetProjTransformation
-//purpose  : Set view projection transformation matrix for printing purposes.
-//           theProjTransform parameter should be an 4x4 array.
-//=======================================================================
-
-bool OpenGl_PrinterContext::SetProjTransformation (TColStd_Array2OfReal& thePrj)
+// =======================================================================
+// function : SetProjTransformation
+// purpose  : Set view projection transformation matrix for printing purposes.
+//            theProjTransform parameter should be an 4x4 array.
+// =======================================================================
+bool OpenGl_PrinterContext::SetProjTransformation (const TColStd_Array2OfReal& thePrj)
 {
   if (thePrj.RowLength () != 4 || thePrj.ColLength () != 4)
+  {
     return false;
+  }
 
   myProjTransform = thePrj;
-
+  for (int i = 0, k = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++, k++)
+    {
+      myProjMatrixGl[k] = (Standard_ShortReal )myProjTransform (i, j);
+    }
+  }
   return true;
 }
 
-//=======================================================================
-//function : Deactivate
-//purpose  : Deactivate PrinterContext object.
-//           Useful when you need to redraw in usual mode the same
-//           OpenGl context that you used for printing right after printing,
-//           before the OpenGl_PrinterContext instance destroyed
-//=======================================================================
-
-void OpenGl_PrinterContext::Deactivate ()
+// =======================================================================
+// function : SetScale
+// purpose  :
+// =======================================================================
+void OpenGl_PrinterContext::SetScale (const Standard_ShortReal theScaleX,
+                                      const Standard_ShortReal theScaleY)
 {
-  // unassign global instance
-  if (g_PrinterContext == this)
-  {
-    g_ContextId      = NULL;
-    g_PrinterContext = NULL;
-  }
+  myScaleX = theScaleX;
+  myScaleY = theScaleY;
 }
 
-
-//=======================================================================
-//function : GetInstance
-//purpose  : Get the PrinterContext instance assigned for OpenGl context.
-//           Return NULL, if there is no current printing operation and
-//           there is no assigned instance for "theCtx" OpenGl context.
-//=======================================================================
-
-OpenGl_PrinterContext* OpenGl_PrinterContext::GetPrinterContext (GLCONTEXT theCtx)
+// =======================================================================
+// function : SetLayerViewport
+// purpose  :
+// =======================================================================
+void OpenGl_PrinterContext::SetLayerViewport (const Standard_Integer theViewportX,
+                                              const Standard_Integer theViewportY)
 {
-  if (g_ContextId == theCtx)
-    return g_PrinterContext;
-  else
-    return NULL;
+  myLayerViewportX = theViewportX;
+  myLayerViewportY = theViewportY;
 }

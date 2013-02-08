@@ -61,9 +61,7 @@ OpenGl_Display::OpenGl_Display (const Standard_CString theDisplay)
   myAntiAliasingMode(3),
   myLinestyleBase(0),
   myPatternBase(0),
-  myMarkerBase(0),
-  myFont(-1),
-  myFontSize(-1)
+  myMarkerBase(0)
 {
 #if (defined(_WIN32) || defined(__WIN32__)) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
   myDisplay = TheDummyDisplay;
@@ -99,9 +97,7 @@ OpenGl_Display::OpenGl_Display (const Aspect_Display theDisplay)
   myAntiAliasingMode(3),
   myLinestyleBase(0),
   myPatternBase(0),
-  myMarkerBase(0),
-  myFont(-1),
-  myFontSize(-1)
+  myMarkerBase(0)
 {
 #if (defined(_WIN32) || defined(__WIN32__))
   myDisplay = TheDummyDisplay;

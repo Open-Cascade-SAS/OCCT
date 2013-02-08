@@ -27,23 +27,6 @@
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Texture, OpenGl_Resource)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Texture, OpenGl_Resource)
 
-//! Function for getting power of to number larger or equal to input number.
-//! @param theNumber    number to 'power of two'
-//! @param theThreshold upper threshold
-//! @return power of two number
-inline GLsizei getPowerOfTwo (const GLsizei theNumber,
-                              const GLsizei theThreshold)
-{
-  for (GLsizei p2 = 2; p2 <= theThreshold; p2 <<= 1)
-  {
-    if (theNumber <= p2)
-    {
-      return p2;
-    }
-  }
-  return theThreshold;
-}
-
 // =======================================================================
 // function : OpenGl_Texture
 // purpose  :
@@ -295,8 +278,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   // Trying to create NPOT rextures on such hardware will not fail
   // but driver will fall back into software rendering,
   const bool    toForceP2  = !theCtx->IsGlGreaterEqual (3, 0) && !theCtx->arbNPTW;
-  const GLsizei aWidthOut  = toForceP2 ? getPowerOfTwo (aWidth,  aMaxSize) : Min (aWidth,  aMaxSize);
-  const GLsizei aHeightOut = toForceP2 ? getPowerOfTwo (aHeight, aMaxSize) : Min (aHeight, aMaxSize);
+  const GLsizei aWidthOut  = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aWidth,  aMaxSize) : Min (aWidth,  aMaxSize);
+  const GLsizei aHeightOut = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aHeight, aMaxSize) : Min (aHeight, aMaxSize);
 
   GLint aTestWidth  = 0;
   GLint aTestHeight = 0;
@@ -342,6 +325,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexImage1D (GL_TEXTURE_1D, 0, aTextureFormat,
                     aWidthOut, 0,
                     aPixelFormat, aDataType, aDataPtr);
+      if (glGetError() != GL_NO_ERROR)
+      {
+        Unbind (theCtx);
+        return false;
+      }
+
+      mySizeX = aWidthOut;
+      mySizeY = 1;
 
       Unbind (theCtx);
       return true;
@@ -386,6 +377,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexImage2D (GL_TEXTURE_2D, 0, aTextureFormat,
                     aWidthOut, aHeightOut, 0,
                     aPixelFormat, aDataType, aDataPtr);
+      if (glGetError() != GL_NO_ERROR)
+      {
+        Unbind (theCtx);
+        return false;
+      }
+
+      mySizeX = aWidthOut;
+      mySizeY = aHeightOut;
 
       Unbind (theCtx);
       return true;
@@ -418,6 +417,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         glTexImage2D (GL_TEXTURE_2D, 0, aTextureFormat,
                       aWidthOut, aHeightOut, 0,
                       aPixelFormat, aDataType, theImage.Data());
+        if (glGetError() != GL_NO_ERROR)
+        {
+          Unbind (theCtx);
+          return false;
+        }
+
+        mySizeX = aWidthOut;
+        mySizeY = aHeightOut;
 
         // generate mipmaps
         //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
@@ -431,6 +438,12 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, aTextureFormat,
                                             aWidth, aHeight,
                                             aPixelFormat, aDataType, theImage.Data()) == 0;
+        if (isCreated)
+        {
+          glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &mySizeX);
+          glGetTexLevelParameteriv (GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &mySizeY);
+        }
+
         Unbind (theCtx);
         return isCreated;
       }

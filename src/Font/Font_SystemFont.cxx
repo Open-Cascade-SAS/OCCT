@@ -38,8 +38,8 @@ Font_SystemFont::Font_SystemFont( const Handle(TCollection_HAsciiString)& FontNa
                                 const Handle(TCollection_HAsciiString)& FilePath ):
 MyFontName(FontName),
 MyFontAspect(FontAspect),
-MyFilePath(FilePath),
 MyFaceSize(-1),
+MyFilePath(FilePath),
 MyVerification(Standard_True)
 {
 
@@ -47,8 +47,9 @@ MyVerification(Standard_True)
 
 Font_SystemFont::Font_SystemFont (const Handle(TCollection_HAsciiString)& theXLFD,
                                   const Handle(TCollection_HAsciiString)& theFilePath) :
-MyFilePath(theFilePath),
-MyFontAspect(Font_FA_Regular)
+MyFontAspect(Font_FA_Regular),
+MyFaceSize(-1),
+MyFilePath(theFilePath)
 {
   MyVerification = Standard_True;
   if (theXLFD.IsNull())
@@ -73,7 +74,7 @@ MyFontAspect(Font_FA_Regular)
       MyFaceSize = aXLFD.Token ("-", 7).IntegerValue();
 
     // Detect font aspect
-    if (aXLFD.Token ("-", 3).IsEqual ("bold") && 
+    if (aXLFD.Token ("-", 3).IsEqual ("bold") &&
        (aXLFD.Token ("-", 4).IsEqual ("i") || aXLFD.Token ("-", 4).IsEqual ("o")))
     {
       MyFontAspect = Font_FA_BoldItalic;
@@ -99,7 +100,7 @@ Standard_Boolean Font_SystemFont::IsValid() const{
   if ( MyFontName->IsEmpty() || !MyFontName->IsAscii() )
     return Standard_False;
 
-  OSD_Path path;  
+  OSD_Path path;
   return path.IsValid( MyFilePath->String() );
 }
 

@@ -78,36 +78,37 @@ public:
   //! Modify current element in VBO.
   theVec_t& Value()
   {
-      return myTmpBuffer.ChangeValue (myElemsNb);
+    return myTmpBuffer.ChangeValue (myElemsNb);
   }
 
   //! Move to the next position in VBO.
   Standard_Boolean Next()
   {
-      if (++myElemsNb > myTmpBuffer.Upper())
-      {
-          return Flush();
-      }
-      return Standard_True;
+    if (++myElemsNb > myTmpBuffer.Upper())
+    {
+      return Flush();
+    }
+    return Standard_True;
   }
 
   //! Push current data from local buffer to VBO.
   Standard_Boolean Flush()
   {
-      if (myElemsNb <= 0)
-      {
-          return Standard_True;
-      }
-
-      if (!myVbo->SubData (myGlCtx, myElemFrom, myElemsNb, &myTmpBuffer.Value (0)[0]))
-      {
-          // should never happens
-          return Standard_False;
-      }
-      myElemFrom += myElemsNb;
-      myElemsNb = 0;
-
+    if (myElemsNb <= 0)
+    {
       return Standard_True;
+    }
+
+    if (myVbo.IsNull()
+     || !myVbo->SubData (myGlCtx, myElemFrom, myElemsNb, &myTmpBuffer.Value (0)[0]))
+    {
+      // should never happens
+      return Standard_False;
+    }
+    myElemFrom += myElemsNb;
+    myElemsNb = 0;
+
+    return Standard_True;
   }
 
 private:

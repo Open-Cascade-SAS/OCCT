@@ -1,6 +1,6 @@
 // Created on: 2011-07-13
 // Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Copyright (c) 2011-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -20,77 +20,73 @@
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Workspace.hxx>
 
-static const TEL_COLOUR myDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
-
-/*----------------------------------------------------------------------*/
-
-OpenGl_AspectText::OpenGl_AspectText ()
- : myZoomable(0),
-   myAngle(0.0F),
-   myFontAspect(Font_FA_Regular),
-   myFont(NULL),
-   //mySpace(0.3F),
-   //myExpan(1.0F),
-   myColor(myDefaultColor),
-   myStyleType(Aspect_TOST_NORMAL),
-   myDisplayType(Aspect_TODT_NORMAL),
-   mySubtitleColor(myDefaultColor)
+namespace
 {
-  SetFontName( (const char *) "Courier" );
+  static const TEL_COLOUR TheDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
+};
+
+// =======================================================================
+// function : OpenGl_AspectText
+// purpose  :
+// =======================================================================
+OpenGl_AspectText::OpenGl_AspectText()
+: myFont ("Courier") ,
+  myColor (TheDefaultColor),
+  mySubtitleColor (TheDefaultColor),
+  myAngle (0.0f),
+  myStyleType   (Aspect_TOST_NORMAL),
+  myDisplayType (Aspect_TODT_NORMAL),
+  myFontAspect  (Font_FA_Regular),
+  myZoomable (false)
+{
+  //
 }
 
-/*----------------------------------------------------------------------*/
-
-OpenGl_AspectText::~OpenGl_AspectText ()
+// =======================================================================
+// function : ~OpenGl_AspectText
+// purpose  :
+// =======================================================================
+OpenGl_AspectText::~OpenGl_AspectText()
 {
-  if (myFont)
-    delete[] myFont;
+  //
 }
 
-/*----------------------------------------------------------------------*/
-
-void OpenGl_AspectText::SetContext (const CALL_DEF_CONTEXTTEXT &AContext)
+// =======================================================================
+// function : SetContext
+// purpose  :
+// =======================================================================
+void OpenGl_AspectText::SetContext (const CALL_DEF_CONTEXTTEXT& theContext)
 {
-  myZoomable = (int) AContext.TextZoomable;
-  myAngle = (float) AContext.TextAngle;
-  myFontAspect = (Font_FontAspect) AContext.TextFontAspect;
-  //mySpace = (float) AContext.Space;
-  //myExpan = (float) AContext.Expan;
-  myColor.rgb[0] = (float) AContext.Color.r;
-  myColor.rgb[1] = (float) AContext.Color.g;
-  myColor.rgb[2] = (float) AContext.Color.b;
+  myFont = theContext.Font;
+  myColor.rgb[0] = (float )theContext.Color.r;
+  myColor.rgb[1] = (float )theContext.Color.g;
+  myColor.rgb[2] = (float )theContext.Color.b;
   myColor.rgb[3] = 1.0f;
-  myStyleType = (Aspect_TypeOfStyleText) AContext.Style;
-  myDisplayType = (Aspect_TypeOfDisplayText) AContext.DisplayType;
-  mySubtitleColor.rgb[0] = (float) AContext.ColorSubTitle.r;
-  mySubtitleColor.rgb[1] = (float) AContext.ColorSubTitle.g;
-  mySubtitleColor.rgb[2] = (float) AContext.ColorSubTitle.b;
+  mySubtitleColor.rgb[0] = (float )theContext.ColorSubTitle.r;
+  mySubtitleColor.rgb[1] = (float )theContext.ColorSubTitle.g;
+  mySubtitleColor.rgb[2] = (float )theContext.ColorSubTitle.b;
   mySubtitleColor.rgb[3] = 1.0f;
-
-  SetFontName( (const char *) AContext.Font );
+  myAngle = (float )theContext.TextAngle;
+  myStyleType   = (Aspect_TypeOfStyleText   )theContext.Style;
+  myDisplayType = (Aspect_TypeOfDisplayText )theContext.DisplayType;
+  myFontAspect  = (Font_FontAspect )theContext.TextFontAspect;
+  myZoomable    = (theContext.TextZoomable != 0);
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Render
+// purpose  :
+// =======================================================================
 void OpenGl_AspectText::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   theWorkspace->SetAspectText (this);
 }
 
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
 void OpenGl_AspectText::Release (const Handle(OpenGl_Context)& theContext)
 {
   //
 }
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_AspectText::SetFontName (const char *AFont)
-{
-  if (myFont)
-    delete[] myFont;
-  char *fontname = new char[ strlen( AFont ) + 1 ];
-  strcpy( fontname, AFont );
-  myFont = fontname;
-}
-
-/*----------------------------------------------------------------------*/

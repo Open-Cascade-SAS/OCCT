@@ -1,6 +1,6 @@
 // Created on: 2011-07-13
 // Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Copyright (c) 2011-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -25,8 +25,11 @@
 #include <Aspect_TypeOfStyleText.hxx>
 #include <Aspect_TypeOfDisplayText.hxx>
 
+#include <TCollection_AsciiString.hxx>
+
 #include <OpenGl_Element.hxx>
 
+//! Text representation parameters
 class OpenGl_AspectText : public OpenGl_Element
 {
 
@@ -35,36 +38,99 @@ public:
   OpenGl_AspectText();
   virtual ~OpenGl_AspectText();
 
-  void SetContext (const CALL_DEF_CONTEXTTEXT &AContext);
+  //! Copy parameters
+  void SetContext (const CALL_DEF_CONTEXTTEXT& theContext);
 
-  int                      IsZoomable() const { return myZoomable; }
-  float                    Angle() const { return myAngle; }
-  Font_FontAspect          FontAspect() const { return myFontAspect; }
-  const char *             Font() const { return myFont; }
-  const TEL_COLOUR &       Color() const { return myColor; }
-  Aspect_TypeOfStyleText   StyleType() const { return myStyleType; }
-  Aspect_TypeOfDisplayText DisplayType() const { return myDisplayType; }
-  const TEL_COLOUR &       SubtitleColor() const { return mySubtitleColor; }
+  //! @return font family name
+  const TCollection_AsciiString& FontName() const
+  {
+    return myFont;
+  }
+
+  //! @return font family name
+  TCollection_AsciiString& ChangeFontName()
+  {
+    return myFont;
+  }
+
+  //! @return is zoomable flag
+  bool IsZoomable() const
+  {
+    return myZoomable;
+  }
+
+  //! @return rotation angle
+  float Angle() const
+  {
+    return myAngle;
+  }
+
+  //! @return font aspect (regular/bold/italic)
+  Font_FontAspect FontAspect() const
+  {
+    return myFontAspect;
+  }
+
+  //! @param theValue font aspect (regular/bold/italic)
+  void SetFontAspect (const Font_FontAspect theValue)
+  {
+    myFontAspect = theValue;
+  }
+
+  //! @return text color
+  const TEL_COLOUR& Color() const
+  {
+    return myColor;
+  }
+
+  //! @return text color
+  TEL_COLOUR& ChangeColor()
+  {
+    return myColor;
+  }
+
+  //! @return annotation style
+  Aspect_TypeOfStyleText StyleType() const
+  {
+    return myStyleType;
+  }
+
+  //! @return subtitle style (none/blend/decale/subtitle)
+  Aspect_TypeOfDisplayText DisplayType() const
+  {
+    return myDisplayType;
+  }
+
+  void SetDisplayType (const Aspect_TypeOfDisplayText theType)
+  {
+    myDisplayType = theType;
+  }
+
+  //! @return subtitle color
+  const TEL_COLOUR& SubtitleColor() const
+  {
+    return mySubtitleColor;
+  }
+
+  //! @return subtitle color
+  TEL_COLOUR& ChangeSubtitleColor()
+  {
+    return mySubtitleColor;
+  }
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected:
 
-  void SetFontName (const char *AFont);
-
-protected:
-
-  int                      myZoomable;
-  float                    myAngle;
-  Font_FontAspect          myFontAspect;
-  const char              *myFont;
-  //float                  mySpace;
-  //float                  myExpan;
+  TCollection_AsciiString  myFont;
   TEL_COLOUR               myColor;
+  TEL_COLOUR               mySubtitleColor;
+  float                    myAngle;
   Aspect_TypeOfStyleText   myStyleType;
   Aspect_TypeOfDisplayText myDisplayType;
-  TEL_COLOUR               mySubtitleColor;
+  Font_FontAspect          myFontAspect;
+  bool                     myZoomable;
 
 public:
 
@@ -72,4 +138,4 @@ public:
 
 };
 
-#endif //OpenGl_AspectText_Header
+#endif // OpenGl_AspectText_Header

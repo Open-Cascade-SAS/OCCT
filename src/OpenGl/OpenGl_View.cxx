@@ -132,6 +132,8 @@ OpenGl_View::~OpenGl_View ()
 
 void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
+  OpenGl_Element::Destroy (theCtx, myTrihedron);
+  OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
   if (!myTextureEnv.IsNull())
   {
     theCtx->DelayedRelease (myTextureEnv);
@@ -487,31 +489,37 @@ void OpenGl_View::SetFog (const Graphic3d_CView& theCView,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition APosition, const Quantity_NameOfColor AColor,
-                                  const Standard_Real AScale, const Standard_Boolean AsWireframe)
+void OpenGl_View::TriedronDisplay (const Handle(OpenGl_Context)&       theCtx,
+                                   const Aspect_TypeOfTriedronPosition thePosition,
+                                   const Quantity_NameOfColor          theColor,
+                                   const Standard_Real                 theScale,
+                                   const Standard_Boolean              theAsWireframe)
 {
-  myTrihedron = new OpenGl_Trihedron (APosition, AColor, AScale, AsWireframe);
+  OpenGl_Element::Destroy (theCtx, myTrihedron);
+  myTrihedron = new OpenGl_Trihedron (thePosition, theColor, theScale, theAsWireframe);
 }
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::TriedronErase ()
+void OpenGl_View::TriedronErase (const Handle(OpenGl_Context)& theCtx)
 {
-  myTrihedron.Nullify();
+  OpenGl_Element::Destroy (theCtx, myTrihedron);
 }
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::GraduatedTrihedronDisplay (const Graphic3d_CGraduatedTrihedron &data)
+void OpenGl_View::GraduatedTrihedronDisplay (const Handle(OpenGl_Context)&        theCtx,
+                                             const Graphic3d_CGraduatedTrihedron& theData)
 {
-  myGraduatedTrihedron = new OpenGl_GraduatedTrihedron(data);
+  OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
+  myGraduatedTrihedron = new OpenGl_GraduatedTrihedron (theData);
 }
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::GraduatedTrihedronErase ()
+void OpenGl_View::GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx)
 {
-  myGraduatedTrihedron.Nullify();
+  OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
 }
 
 /*----------------------------------------------------------------------*/

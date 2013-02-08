@@ -49,10 +49,10 @@ NIS_TriangulatedDrawer::NIS_TriangulatedDrawer
                                 (const Quantity_Color theNormal,
                                  const Quantity_Color theHilight,
                                  const Quantity_Color theDynHilight)
-  : myLineWidth      (1.f),
+  : myPolygonAsLineLoop (Standard_False),
+    myLineWidth      (1.f),
     myIsDrawPolygons (Standard_False),
-    myPolygonType    (NIS_Triangulated::Polygon_Default),
-    myPolygonAsLineLoop (Standard_False)
+    myPolygonType    (NIS_Triangulated::Polygon_Default)
 {
   myColor[Draw_Normal]       = theNormal;
   myColor[Draw_Top]          = theNormal;
@@ -285,6 +285,7 @@ void NIS_TriangulatedDrawer::Draw (const Handle_NIS_InteractiveObject& theObj,
   else {
     Standard_Boolean isLoop;
     if (pObject->IsLine(isLoop))
+    {
       if (isLoop) {
 //         glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements (GL_LINE_LOOP, pObject->NLineNodes(),
@@ -294,6 +295,7 @@ void NIS_TriangulatedDrawer::Draw (const Handle_NIS_InteractiveObject& theObj,
         glDrawElements (GL_LINE_STRIP, pObject->NLineNodes(),
                         aType, pObject->mypLines);
       }
+    }
   }
 
 }

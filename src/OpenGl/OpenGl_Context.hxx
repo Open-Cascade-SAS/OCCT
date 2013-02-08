@@ -82,6 +82,25 @@ class OpenGl_Context : public Standard_Transient
 {
 public:
 
+  //! Function for getting power of to number larger or equal to input number.
+  //! @param theNumber    number to 'power of two'
+  //! @param theThreshold upper threshold
+  //! @return power of two number
+  inline static Standard_Integer GetPowerOfTwo (const Standard_Integer theNumber,
+                                                const Standard_Integer theThreshold)
+  {
+    for (Standard_Integer p2 = 2; p2 <= theThreshold; p2 <<= 1)
+    {
+      if (theNumber <= p2)
+      {
+        return p2;
+      }
+    }
+    return theThreshold;
+  }
+
+public:
+
   //! Empty constructor. You should call Init() to perform initialization with bound GL context.
   Standard_EXPORT OpenGl_Context();
 
@@ -201,8 +220,10 @@ public:
   //! This means that current object itself should nullify handle before this call.
   //! Notice that this is unrecommended operation at all and should be used
   //! only in case of fat resources to release memory for other needs.
-  //! @param  theKey - unique identifier.
-  Standard_EXPORT void ReleaseResource (const TCollection_AsciiString& theKey);
+  //! @param theKey     unique identifier
+  //! @param theToDelay postpone release until next redraw call
+  Standard_EXPORT void ReleaseResource (const TCollection_AsciiString& theKey,
+                                        const Standard_Boolean         theToDelay = Standard_False);
 
   //! Append resource to queue for delayed clean up.
   //! Resources in this queue will be released at next redraw call.
@@ -265,13 +286,16 @@ private: // system-dependent fields
 
 private: // context info
 
+  typedef NCollection_DataMap<TCollection_AsciiString, Standard_Integer> OpenGl_DelayReleaseMap;
+  typedef NCollection_Handle<OpenGl_DelayReleaseMap> Handle(OpenGl_DelayReleaseMap);
   typedef NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> OpenGl_ResourcesMap;
   typedef NCollection_Handle<OpenGl_ResourcesMap> Handle(OpenGl_ResourcesMap);
   typedef NCollection_Queue<Handle(OpenGl_Resource)> OpenGl_ResourcesQueue;
   typedef NCollection_Handle<OpenGl_ResourcesQueue> Handle(OpenGl_ResourcesQueue);
 
-  Handle(OpenGl_ResourcesMap)   mySharedResources; //!< shared resourced with unique identification key
-  Handle(OpenGl_ResourcesQueue) myReleaseQueue;    //!< queue of resources for delayed clean up
+  Handle(OpenGl_ResourcesMap)    mySharedResources; //!< shared resources with unique identification key
+  Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release
+  Handle(OpenGl_ResourcesQueue)  myReleaseQueue;    //!< queue of resources for delayed clean up
 
   void*            myGlLibHandle;   //!< optional handle to GL library
   OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0

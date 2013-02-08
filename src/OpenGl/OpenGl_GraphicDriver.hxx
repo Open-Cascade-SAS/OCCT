@@ -23,6 +23,7 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Handle_OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_PrinterContext.hxx>
 
 #include <Standard_CString.hxx>
 
@@ -78,6 +79,7 @@ class TColStd_HArray1OfReal;
 class Handle(OpenGl_Workspace);
 class OpenGl_Element;
 class OpenGl_Structure;
+class OpenGl_Text;
 
 //! This class defines an OpenGl graphic driver <br>
 class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
@@ -337,7 +339,9 @@ private:
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> myMapOfWS;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
   Handle(OpenGl_Workspace)                                        myImmediateWS;
+  mutable Handle(OpenGl_PrinterContext)                           myPrintContext;
   OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
+  OpenGl_Text*                                                    myTempText;         //!< variable for compatibility (drawing text in layers)
 
 };
 

@@ -17,8 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #ifndef NCollection_Vector_HeaderFile
 #define NCollection_Vector_HeaderFile
 
@@ -200,6 +198,26 @@ template <class TheItemType> class NCollection_Vector
   //! Total number of items in the vector
   virtual Standard_Integer Size () const        { return Length(); }
 
+  //! Method for consistency with other collections.
+  //! @return Lower bound (inclusive) for iteration.
+  Standard_Integer Lower() const
+  {
+    return 0;
+  }
+
+  //! Method for consistency with other collections.
+  //! @return Upper bound (inclusive) for iteration.
+  Standard_Integer Upper() const
+  {
+    return Length() - 1;
+  }
+
+  //! Empty query
+  Standard_Boolean IsEmpty() const
+  {
+    return (Length() == 0);
+  }
+
   //! Virtual assignment (any collection to this array)
   virtual void Assign (const NCollection_BaseCollection<TheItemType>& theOther)
   {
@@ -240,6 +258,30 @@ template <class TheItemType> class NCollection_Vector
   const TheItemType& Value (const Standard_Integer theIndex) const {
 //    if (myNBlocks == 1) return ((MemBlock *) myData) -> Value(theIndex);
     return * (const TheItemType *) Find (theIndex);
+  }
+
+  //! @return first element
+  const TheItemType& First() const
+  {
+    return *(const TheItemType* )Find (Lower());
+  }
+
+  //! @return first element
+  TheItemType& ChangeFirst()
+  {
+    return *(TheItemType* )Find (Lower());
+  }
+
+  //! @return last element
+  const TheItemType& Last() const
+  {
+    return *(const TheItemType* )Find (Upper());
+  }
+
+  //! @return last element
+  TheItemType& ChangeLast()
+  {
+    return *(TheItemType* )Find (Upper());
   }
 
   //! Operator () - query the value

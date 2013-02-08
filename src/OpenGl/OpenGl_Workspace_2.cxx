@@ -297,7 +297,8 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
 
 //call_togl_print
 Standard_Boolean OpenGl_Workspace::Print
-  (const Graphic3d_CView& ACView,
+  (const Handle(OpenGl_PrinterContext)& thePrintContext,
+   const Graphic3d_CView& ACView,
    const Aspect_CLayer2d& ACUnderLayer,
    const Aspect_CLayer2d& ACOverLayer,
    const Aspect_Handle    hPrintDC,// const Aspect_Drawable hPrintDC,
@@ -306,6 +307,11 @@ Standard_Boolean OpenGl_Workspace::Print
    const Aspect_PrintAlgo printAlgorithm,
    const Standard_Real theScaleFactor)
 {
+  if (thePrintContext.IsNull())
+  {
+    return Standard_False;
+  }
+
 #ifdef WNT
 
   if (!Activate())
@@ -531,12 +537,11 @@ Standard_Boolean OpenGl_Workspace::Print
   }
 
   // setup printing context and viewport
+  myPrintContext = thePrintContext;
   GLint aViewPortBack[4];
   GLint anAlignBack = 1;
-
-  OpenGl_PrinterContext aPrinterContext (GetGContext());
-  aPrinterContext.SetLayerViewport ((GLsizei)aFrameWidth,
-                                    (GLsizei)aFrameHeight);
+  myPrintContext->SetLayerViewport ((GLsizei )aFrameWidth,
+                                    (GLsizei )aFrameHeight);
   glGetIntegerv (GL_VIEWPORT, aViewPortBack);
   glGetIntegerv (GL_PACK_ALIGNMENT, &anAlignBack);
   glPixelStorei (GL_PACK_ALIGNMENT, 4);
@@ -565,6 +570,7 @@ Standard_Boolean OpenGl_Workspace::Print
       DeleteDC (hMemDC);
 #endif
 
+      myPrintContext.Nullify();
       return Standard_False;
     }
   }
@@ -585,8 +591,8 @@ Standard_Boolean OpenGl_Workspace::Print
 
   if (!IsTiling)
   {
-    aPrinterContext.SetScale ((GLfloat)aFrameWidth /viewWidth,
-                              (GLfloat)aFrameHeight/viewHeight);
+    myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
+                              (GLfloat )aFrameHeight/viewHeight);
     aFrameBuffer->SetupViewport ();
     Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
     if (!myTransientDrawToFront)
@@ -647,8 +653,8 @@ Standard_Boolean OpenGl_Workspace::Print
     // calculate and set the text scaling factor for printing context
     GLfloat aScaleRatex = (GLfloat)aFrameWidth /viewWidth;
     GLfloat aScaleRatey = (GLfloat)aFrameHeight/viewHeight;
-    aPrinterContext.SetScale (aScaleRatex*(GLfloat)aScalex,
-                              aScaleRatey*(GLfloat)aScaley);
+    myPrintContext->SetScale (aScaleRatex * (GLfloat )aScalex,
+                              aScaleRatey * (GLfloat )aScaley);
 
     // initialize projection matrix for printer context
     TColStd_Array2OfReal aProj (0, 3, 0, 3);
@@ -690,7 +696,7 @@ Standard_Boolean OpenGl_Workspace::Print
         // set projection matrix
         aProj(0,0) = aScalex;
         aProj(1,1) = aScaley;
-        aPrinterContext.SetProjTransformation (aProj);
+        myPrintContext->SetProjTransformation (aProj);
 
         // calculate cropped frame rect
         aTop    = (j == 0)         ? aPxCropy : 0;
@@ -750,7 +756,6 @@ Standard_Boolean OpenGl_Workspace::Print
   }
 
   // return OpenGl to the previous state
-  aPrinterContext.Deactivate ();
   glPixelStorei (GL_PACK_ALIGNMENT, anAlignBack);
   aFrameBuffer->UnbindBuffer (GetGlContext());
   glViewport (aViewPortBack[0], aViewPortBack[1],
@@ -778,9 +783,11 @@ Standard_Boolean OpenGl_Workspace::Print
   // Reset status after printing
   NamedStatus &= ~OPENGL_NS_WHITEBACK;
 
+  myPrintContext.Nullify();
   return (Standard_Boolean) isDone;
 
 #else // not WNT
+  myPrintContext.Nullify();
   return Standard_False;
 #endif
 }
@@ -789,9 +796,9 @@ Standard_Boolean OpenGl_Workspace::Print
 
 //redrawView
 void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
-                               const Aspect_CLayer2d& ACUnderLayer,
-                               const Aspect_CLayer2d& ACOverLayer,
-                               const int aswap)
+                                const Aspect_CLayer2d& ACUnderLayer,
+                                const Aspect_CLayer2d& ACOverLayer,
+                                const int aswap)
 {
   if (myDisplay.IsNull() || myView.IsNull())
     return;
@@ -840,7 +847,7 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
   glClear (toClear);
 
   Handle(OpenGl_Workspace) aWS(this);
-  myView->Render(aWS,ACView,ACUnderLayer,ACOverLayer);
+  myView->Render (myPrintContext, aWS, ACView, ACUnderLayer, ACOverLayer);
 
   // Swap the buffers
   if ( aswap )

@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef NCollection_DataMap_HeaderFile
 #define NCollection_DataMap_HeaderFile
 
@@ -288,6 +287,29 @@ template < class TheKeyType,
     }
     Standard_NoSuchObject::Raise("NCollection_DataMap::Find");
     return p->Value(); // This for compiler
+  }
+
+  //! Find value for key with copying.
+  //! @return true if key was found
+  Standard_Boolean Find (const TheKeyType& theKey,
+                         TheItemType&      theValue) const
+  {
+    if (IsEmpty())
+    {
+      return Standard_False;
+    }
+
+    for (DataMapNode* aNodeIter = (DataMapNode* )myData1[Hasher::HashCode (theKey, NbBuckets())];
+         aNodeIter != NULL;
+         aNodeIter = (DataMapNode* )aNodeIter->Next())
+    {
+      if (Hasher::IsEqual (aNodeIter->Key(), theKey))
+      {
+        theValue = aNodeIter->Value();
+        return Standard_True;
+      }
+    }
+    return Standard_False;
   }
 
   //! operator ()
